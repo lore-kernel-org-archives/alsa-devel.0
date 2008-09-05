@@ -1,39 +1,33 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] ALSA: ASoC: Fix memory leaks for the
- CS4270 driver
-Date: Fri, 05 Sep 2008 08:45:40 -0500
-Message-ID: <48C13804.8070307@freescale.com>
-References: <1220479634-26912-1-git-send-email-timur@freescale.com>	<s5hd4jko0p2.wl%tiwai@suse.de>	<48C004B4.2000208@freescale.com>	<s5htzcv98j8.wl%tiwai@suse.de>	<ed82fe3e0809041120u7b070c33j4bae7c221b935f36@mail.gmail.com>
-	<s5hvdxbt81w.wl%tiwai@suse.de>
+From: "Bryan Wu" <cooloney@kernel.org>
+Subject: Re: [alsa-devel] [PATCH 0/9] ASoC Blackfin supporting (v2)
+Date: Fri, 5 Sep 2008 22:00:47 +0800
+Message-ID: <386072610809050700l192b7c29me1920da8dc37054@mail.gmail.com>
+References: <1220610102-7716-1-git-send-email-cooloney@kernel.org>
+	 <20080905123701.GE12383@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw02.freescale.net (az33egw02.freescale.net
-	[192.88.158.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3A1DB244EB
-	for <alsa-devel@alsa-project.org>;
-	Fri,  5 Sep 2008 15:45:48 +0200 (CEST)
-In-Reply-To: <s5hvdxbt81w.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753820AbYIEOBA@vger.kernel.org>
+In-Reply-To: <20080905123701.GE12383@sirena.org.uk>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bryan Wu <cooloney@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+On Fri, Sep 5, 2008 at 8:37 PM, Mark Brown <broonie@sirena.org.uk> wrote:
+> On Fri, Sep 05, 2008 at 06:21:33PM +0800, Bryan Wu wrote:
+>
+>> With Cliff's effort, we update this patch series quickly according to
+>> your review.
+>
+> Thanks.  Please, when sending updates to this patch series could you
+> send incremental patches as I asked?  There is a lot of code here, most
+> of which has already been acked and is not changing so showing only the
+> changes that have been made will greatly simplify the review process.
+>
 
-> OK, thanks.  Let me know if you finish the revised patch.
+Thanks, I will follow this procedure as your mentioned. I just want to
+make it easier for
+your git-am operation, -:)))
 
-No, I'm just going to drop the whole thing.  It's not worth fixing.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+-Bryan
