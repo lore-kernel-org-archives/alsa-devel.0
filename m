@@ -1,26 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 10/14] ASoC: Blackfin: I2S CPU DAI driver
-Date: Fri,  5 Sep 2008 15:35:18 +0100
-Message-ID: <1220625322-27982-10-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 05/14] ASoC codec: SSM2602 audio codec driver
+Date: Fri,  5 Sep 2008 15:35:13 +0100
+Message-ID: <1220625322-27982-5-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20080905143504.GA27793@rakim.wolfsonmicro.main>
 	<1220625322-27982-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1220625322-27982-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1220625322-27982-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1220625322-27982-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1220625322-27982-5-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1220625322-27982-6-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1220625322-27982-7-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1220625322-27982-8-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1220625322-27982-9-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B409C10385C
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5E72A103865
 	for <alsa-devel@alsa-project.org>;
-	Fri,  5 Sep 2008 16:35:26 +0200 (CEST)
-In-Reply-To: <1220625322-27982-9-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Fri,  5 Sep 2008 16:35:27 +0200 (CEST)
+In-Reply-To: <1220625322-27982-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,30 +31,68 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Cliff Cai <cliff.cai@analog.com>
 
-[Additional coding standards fixes by Mark Brown.]
+[Some checkpatch fixups done by Mark Brown.]
 
 Signed-off-by: Cliff Cai <cliff.cai@analog.com>
 Signed-off-by: Bryan Wu <cooloney@kernel.org>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/blackfin/bf5xx-i2s.c |  292 ++++++++++++++++++++++++++++++++++++++++
- sound/soc/blackfin/bf5xx-i2s.h |   14 ++
- 2 files changed, 306 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/blackfin/bf5xx-i2s.c
- create mode 100644 sound/soc/blackfin/bf5xx-i2s.h
+ sound/soc/codecs/Kconfig   |    4 +
+ sound/soc/codecs/Makefile  |    2 +
+ sound/soc/codecs/ssm2602.c |  776 ++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/ssm2602.h |  130 ++++++++
+ 4 files changed, 912 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/codecs/ssm2602.c
+ create mode 100644 sound/soc/codecs/ssm2602.h
 
-diff --git a/sound/soc/blackfin/bf5xx-i2s.c b/sound/soc/blackfin/bf5xx-i2s.c
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index cceac73..8b4bb5c 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -4,6 +4,7 @@ config SND_SOC_ALL_CODECS
+ 	select SPI
+ 	select SPI_MASTER
+ 	select SND_SOC_AK4535
++	select SND_SOC_SSM2602
+ 	select SND_SOC_UDA1380
+ 	select SND_SOC_WM8510
+ 	select SND_SOC_WM8580
+@@ -93,3 +94,6 @@ config SND_SOC_TLV320AIC26
+ config SND_SOC_TLV320AIC3X
+ 	tristate
+ 	depends on I2C
++
++config SND_SOC_SSM2602
++	tristate
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 35daaa9..0cd55ee 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -15,6 +15,7 @@ snd-soc-wm9713-objs := wm9713.o
+ snd-soc-cs4270-objs := cs4270.o
+ snd-soc-tlv320aic26-objs := tlv320aic26.o
+ snd-soc-tlv320aic3x-objs := tlv320aic3x.o
++snd-soc-ssm2602-objs := ssm2602.o
+ 
+ obj-$(CONFIG_SND_SOC_AC97_CODEC)	+= snd-soc-ac97.o
+ obj-$(CONFIG_SND_SOC_AD1980)	+= snd-soc-ad1980.o
+@@ -33,3 +34,4 @@ obj-$(CONFIG_SND_SOC_WM9713)	+= snd-soc-wm9713.o
+ obj-$(CONFIG_SND_SOC_CS4270)	+= snd-soc-cs4270.o
+ obj-$(CONFIG_SND_SOC_TLV320AIC26)	+= snd-soc-tlv320aic26.o
+ obj-$(CONFIG_SND_SOC_TLV320AIC3X)	+= snd-soc-tlv320aic3x.o
++obj-$(CONFIG_SND_SOC_SSM2602)	+= snd-soc-ssm2602.o
+diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
 new file mode 100644
-index 0000000..43a4092
+index 0000000..940ce1c
 --- /dev/null
-+++ b/sound/soc/blackfin/bf5xx-i2s.c
-@@ -0,0 +1,292 @@
++++ b/sound/soc/codecs/ssm2602.c
+@@ -0,0 +1,776 @@
 +/*
-+ * File:         sound/soc/blackfin/bf5xx-i2s.c
++ * File:         sound/soc/codecs/ssm2602.c
 + * Author:       Cliff Cai <Cliff.Cai@analog.com>
 + *
 + * Created:      Tue June 06 2008
-+ * Description:  Blackfin I2S CPU DAI driver
++ * Description:  Driver for ssm2602 sound chip
 + *
 + * Modified:
 + *               Copyright 2008 Analog Devices Inc.
@@ -82,288 +115,888 @@ index 0000000..43a4092
 + * 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 + */
 +
-+#include <linux/init.h>
 +#include <linux/module.h>
-+#include <linux/device.h>
++#include <linux/moduleparam.h>
++#include <linux/init.h>
 +#include <linux/delay.h>
++#include <linux/pm.h>
++#include <linux/i2c.h>
++#include <linux/platform_device.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
-+#include <sound/initval.h>
 +#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/initval.h>
 +
-+#include <asm/irq.h>
-+#include <asm/portmux.h>
-+#include <linux/mutex.h>
-+#include <linux/gpio.h>
++#include "ssm2602.h"
 +
-+#include "bf5xx-sport.h"
-+#include "bf5xx-i2s.h"
++#define AUDIO_NAME "ssm2602"
++#define SSM2602_VERSION "0.1"
 +
-+struct bf5xx_i2s_port {
-+	u16 tcr1;
-+	u16 rcr1;
-+	u16 tcr2;
-+	u16 rcr2;
-+	int counter;
++struct snd_soc_codec_device soc_codec_dev_ssm2602;
++
++/* codec private data */
++struct ssm2602_priv {
++	unsigned int sysclk;
++	struct snd_pcm_substream *master_substream;
++	struct snd_pcm_substream *slave_substream;
 +};
 +
-+static struct bf5xx_i2s_port bf5xx_i2s;
-+static int sport_num = CONFIG_SND_BF5XX_SPORT_NUM;
++/*
++ * ssm2602 register cache
++ * We can't read the ssm2602 register space when we are
++ * using 2 wire for device control, so we cache them instead.
++ * There is no point in caching the reset register
++ */
++static const u16 ssm2602_reg[SSM2602_CACHEREGNUM] = {
++	0x0017, 0x0017, 0x0079, 0x0079,
++	0x0000, 0x0000, 0x0000, 0x000a,
++	0x0000, 0x0000
++};
 +
-+static struct sport_param sport_params[2] = {
-+	{
-+		.dma_rx_chan	= CH_SPORT0_RX,
-+		.dma_tx_chan	= CH_SPORT0_TX,
-+		.err_irq	= IRQ_SPORT0_ERROR,
-+		.regs		= (struct sport_register *)SPORT0_TCR1,
-+	},
-+	{
-+		.dma_rx_chan	= CH_SPORT1_RX,
-+		.dma_tx_chan	= CH_SPORT1_TX,
-+		.err_irq	= IRQ_SPORT1_ERROR,
-+		.regs		= (struct sport_register *)SPORT1_TCR1,
++/*
++ * read ssm2602 register cache
++ */
++static inline unsigned int ssm2602_read_reg_cache(struct snd_soc_codec *codec,
++	unsigned int reg)
++{
++	u16 *cache = codec->reg_cache;
++	if (reg == SSM2602_RESET)
++		return 0;
++	if (reg >= SSM2602_CACHEREGNUM)
++		return -1;
++	return cache[reg];
++}
++
++/*
++ * write ssm2602 register cache
++ */
++static inline void ssm2602_write_reg_cache(struct snd_soc_codec *codec,
++	u16 reg, unsigned int value)
++{
++	u16 *cache = codec->reg_cache;
++	if (reg >= SSM2602_CACHEREGNUM)
++		return;
++	cache[reg] = value;
++}
++
++/*
++ * write to the ssm2602 register space
++ */
++static int ssm2602_write(struct snd_soc_codec *codec, unsigned int reg,
++	unsigned int value)
++{
++	u8 data[2];
++
++	/* data is
++	 *   D15..D9 ssm2602 register offset
++	 *   D8...D0 register data
++	 */
++	data[0] = (reg << 1) | ((value >> 8) & 0x0001);
++	data[1] = value & 0x00ff;
++
++	ssm2602_write_reg_cache(codec, reg, value);
++	if (codec->hw_write(codec->control_data, data, 2) == 2)
++		return 0;
++	else
++		return -EIO;
++}
++
++#define ssm2602_reset(c)	ssm2602_write(c, SSM2602_RESET, 0)
++
++/*Appending several "None"s just for OSS mixer use*/
++static const char *ssm2602_input_select[] = {
++	"Line", "Mic", "None", "None", "None",
++	"None", "None", "None",
++};
++
++static const char *ssm2602_deemph[] = {"None", "32Khz", "44.1Khz", "48Khz"};
++
++static const struct soc_enum ssm2602_enum[] = {
++	SOC_ENUM_SINGLE(SSM2602_APANA, 2, 2, ssm2602_input_select),
++	SOC_ENUM_SINGLE(SSM2602_APDIGI, 1, 4, ssm2602_deemph),
++};
++
++static const struct snd_kcontrol_new ssm2602_snd_controls[] = {
++
++SOC_DOUBLE_R("Master Playback Volume", SSM2602_LOUT1V, SSM2602_ROUT1V,
++	0, 127, 0),
++SOC_DOUBLE_R("Master Playback ZC Switch", SSM2602_LOUT1V, SSM2602_ROUT1V,
++	7, 1, 0),
++
++SOC_DOUBLE_R("Capture Volume", SSM2602_LINVOL, SSM2602_RINVOL, 0, 31, 0),
++SOC_DOUBLE_R("Capture Switch", SSM2602_LINVOL, SSM2602_RINVOL, 7, 1, 1),
++
++SOC_SINGLE("Mic Boost (+20dB)", SSM2602_APANA, 0, 1, 0),
++SOC_SINGLE("Mic Switch", SSM2602_APANA, 1, 1, 1),
++
++SOC_SINGLE("Sidetone Playback Volume", SSM2602_APANA, 6, 3, 1),
++
++SOC_SINGLE("ADC High Pass Filter Switch", SSM2602_APDIGI, 0, 1, 1),
++SOC_SINGLE("Store DC Offset Switch", SSM2602_APDIGI, 4, 1, 0),
++
++SOC_ENUM("Capture Source", ssm2602_enum[0]),
++
++SOC_ENUM("Playback De-emphasis", ssm2602_enum[1]),
++};
++
++/* add non dapm controls */
++static int ssm2602_add_controls(struct snd_soc_codec *codec)
++{
++	int err, i;
++
++	for (i = 0; i < ARRAY_SIZE(ssm2602_snd_controls); i++) {
++		err = snd_ctl_add(codec->card,
++			snd_soc_cnew(&ssm2602_snd_controls[i], codec, NULL));
++		if (err < 0)
++			return err;
 +	}
++
++	return 0;
++}
++
++/* Output Mixer */
++static const struct snd_kcontrol_new ssm2602_output_mixer_controls[] = {
++SOC_DAPM_SINGLE("Line Bypass Switch", SSM2602_APANA, 3, 1, 0),
++SOC_DAPM_SINGLE("Mic Sidetone Switch", SSM2602_APANA, 5, 1, 0),
++SOC_DAPM_SINGLE("HiFi Playback Switch", SSM2602_APANA, 4, 1, 0),
 +};
 +
-+static int bf5xx_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
++/* Input mux */
++static const struct snd_kcontrol_new ssm2602_input_mux_controls =
++SOC_DAPM_ENUM("Input Select", ssm2602_enum[0]);
++
++static const struct snd_soc_dapm_widget ssm2602_dapm_widgets[] = {
++SND_SOC_DAPM_MIXER("Output Mixer", SSM2602_PWR, 4, 1,
++	&ssm2602_output_mixer_controls[0],
++	ARRAY_SIZE(ssm2602_output_mixer_controls)),
++SND_SOC_DAPM_DAC("DAC", "HiFi Playback", SSM2602_PWR, 3, 1),
++SND_SOC_DAPM_OUTPUT("LOUT"),
++SND_SOC_DAPM_OUTPUT("LHPOUT"),
++SND_SOC_DAPM_OUTPUT("ROUT"),
++SND_SOC_DAPM_OUTPUT("RHPOUT"),
++SND_SOC_DAPM_ADC("ADC", "HiFi Capture", SSM2602_PWR, 2, 1),
++SND_SOC_DAPM_MUX("Input Mux", SND_SOC_NOPM, 0, 0, &ssm2602_input_mux_controls),
++SND_SOC_DAPM_PGA("Line Input", SSM2602_PWR, 0, 1, NULL, 0),
++SND_SOC_DAPM_MICBIAS("Mic Bias", SSM2602_PWR, 1, 1),
++SND_SOC_DAPM_INPUT("MICIN"),
++SND_SOC_DAPM_INPUT("RLINEIN"),
++SND_SOC_DAPM_INPUT("LLINEIN"),
++};
++
++static const struct snd_soc_dapm_route audio_conn[] = {
++	/* output mixer */
++	{"Output Mixer", "Line Bypass Switch", "Line Input"},
++	{"Output Mixer", "HiFi Playback Switch", "DAC"},
++	{"Output Mixer", "Mic Sidetone Switch", "Mic Bias"},
++
++	/* outputs */
++	{"RHPOUT", NULL, "Output Mixer"},
++	{"ROUT", NULL, "Output Mixer"},
++	{"LHPOUT", NULL, "Output Mixer"},
++	{"LOUT", NULL, "Output Mixer"},
++
++	/* input mux */
++	{"Input Mux", "Line", "Line Input"},
++	{"Input Mux", "Mic", "Mic Bias"},
++	{"ADC", NULL, "Input Mux"},
++
++	/* inputs */
++	{"Line Input", NULL, "LLINEIN"},
++	{"Line Input", NULL, "RLINEIN"},
++	{"Mic Bias", NULL, "MICIN"},
++};
++
++static int ssm2602_add_widgets(struct snd_soc_codec *codec)
++{
++	snd_soc_dapm_new_controls(codec, ssm2602_dapm_widgets,
++				  ARRAY_SIZE(ssm2602_dapm_widgets));
++
++	snd_soc_dapm_add_routes(codec, audio_conn, ARRAY_SIZE(audio_conn));
++
++	snd_soc_dapm_new_widgets(codec);
++	return 0;
++}
++
++struct _coeff_div {
++	u32 mclk;
++	u32 rate;
++	u16 fs;
++	u8 sr:4;
++	u8 bosr:1;
++	u8 usb:1;
++};
++
++/* codec mclk clock divider coefficients */
++static const struct _coeff_div coeff_div[] = {
++	/* 48k */
++	{12288000, 48000, 256, 0x0, 0x0, 0x0},
++	{18432000, 48000, 384, 0x0, 0x1, 0x0},
++	{12000000, 48000, 250, 0x0, 0x0, 0x1},
++
++	/* 32k */
++	{12288000, 32000, 384, 0x6, 0x0, 0x0},
++	{18432000, 32000, 576, 0x6, 0x1, 0x0},
++	{12000000, 32000, 375, 0x6, 0x0, 0x1},
++
++	/* 8k */
++	{12288000, 8000, 1536, 0x3, 0x0, 0x0},
++	{18432000, 8000, 2304, 0x3, 0x1, 0x0},
++	{11289600, 8000, 1408, 0xb, 0x0, 0x0},
++	{16934400, 8000, 2112, 0xb, 0x1, 0x0},
++	{12000000, 8000, 1500, 0x3, 0x0, 0x1},
++
++	/* 96k */
++	{12288000, 96000, 128, 0x7, 0x0, 0x0},
++	{18432000, 96000, 192, 0x7, 0x1, 0x0},
++	{12000000, 96000, 125, 0x7, 0x0, 0x1},
++
++	/* 44.1k */
++	{11289600, 44100, 256, 0x8, 0x0, 0x0},
++	{16934400, 44100, 384, 0x8, 0x1, 0x0},
++	{12000000, 44100, 272, 0x8, 0x1, 0x1},
++
++	/* 88.2k */
++	{11289600, 88200, 128, 0xf, 0x0, 0x0},
++	{16934400, 88200, 192, 0xf, 0x1, 0x0},
++	{12000000, 88200, 136, 0xf, 0x1, 0x1},
++};
++
++static inline int get_coeff(int mclk, int rate)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(coeff_div); i++) {
++		if (coeff_div[i].rate == rate && coeff_div[i].mclk == mclk)
++			return i;
++	}
++	return i;
++}
++
++static int ssm2602_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	u16 srate;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_device *socdev = rtd->socdev;
++	struct snd_soc_codec *codec = socdev->codec;
++	struct ssm2602_priv *ssm2602 = codec->private_data;
++	u16 iface = ssm2602_read_reg_cache(codec, SSM2602_IFACE) & 0xfff3;
++	int i = get_coeff(ssm2602->sysclk, params_rate(params));
++
++	/*no match is found*/
++	if (i == ARRAY_SIZE(coeff_div))
++		return -EINVAL;
++
++	srate = (coeff_div[i].sr << 2) |
++		(coeff_div[i].bosr << 1) | coeff_div[i].usb;
++
++	ssm2602_write(codec, SSM2602_ACTIVE, 0);
++	ssm2602_write(codec, SSM2602_SRATE, srate);
++
++	/* bit size */
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		break;
++	case SNDRV_PCM_FORMAT_S20_3LE:
++		iface |= 0x0004;
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		iface |= 0x0008;
++		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		iface |= 0x000c;
++		break;
++	}
++	ssm2602_write(codec, SSM2602_IFACE, iface);
++	ssm2602_write(codec, SSM2602_ACTIVE, ACTIVE_ACTIVATE_CODEC);
++	return 0;
++}
++
++static int ssm2602_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_device *socdev = rtd->socdev;
++	struct snd_soc_codec *codec = socdev->codec;
++	struct ssm2602_priv *ssm2602 = codec->private_data;
++	struct snd_pcm_runtime *master_runtime;
++
++	/* The DAI has shared clocks so if we already have a playback or
++	 * capture going then constrain this substream to match it.
++	 */
++	if (ssm2602->master_substream) {
++		master_runtime = ssm2602->master_substream->runtime;
++		snd_pcm_hw_constraint_minmax(substream->runtime,
++					     SNDRV_PCM_HW_PARAM_RATE,
++					     master_runtime->rate,
++					     master_runtime->rate);
++
++		snd_pcm_hw_constraint_minmax(substream->runtime,
++					     SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
++					     master_runtime->sample_bits,
++					     master_runtime->sample_bits);
++
++		ssm2602->slave_substream = substream;
++	} else
++		ssm2602->master_substream = substream;
++
++	return 0;
++}
++
++static int ssm2602_pcm_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_device *socdev = rtd->socdev;
++	struct snd_soc_codec *codec = socdev->codec;
++	/* set active */
++	ssm2602_write(codec, SSM2602_ACTIVE, ACTIVE_ACTIVATE_CODEC);
++
++	return 0;
++}
++
++static void ssm2602_shutdown(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_device *socdev = rtd->socdev;
++	struct snd_soc_codec *codec = socdev->codec;
++	/* deactivate */
++	if (!codec->active)
++		ssm2602_write(codec, SSM2602_ACTIVE, 0);
++}
++
++static int ssm2602_mute(struct snd_soc_dai *dai, int mute)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	u16 mute_reg = ssm2602_read_reg_cache(codec, SSM2602_APDIGI) & ~APDIGI_ENABLE_DAC_MUTE;
++	if (mute)
++		ssm2602_write(codec, SSM2602_APDIGI,
++				mute_reg | APDIGI_ENABLE_DAC_MUTE);
++	else
++		ssm2602_write(codec, SSM2602_APDIGI, mute_reg);
++	return 0;
++}
++
++static int ssm2602_set_dai_sysclk(struct snd_soc_dai *codec_dai,
++		int clk_id, unsigned int freq, int dir)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	struct ssm2602_priv *ssm2602 = codec->private_data;
++	switch (freq) {
++	case 11289600:
++	case 12000000:
++	case 12288000:
++	case 16934400:
++	case 18432000:
++		ssm2602->sysclk = freq;
++		return 0;
++	}
++	return -EINVAL;
++}
++
++static int ssm2602_set_dai_fmt(struct snd_soc_dai *codec_dai,
 +		unsigned int fmt)
 +{
-+	int ret = 0;
++	struct snd_soc_codec *codec = codec_dai->codec;
++	u16 iface = 0;
 +
-+	/* interface format:support I2S,slave mode */
++	/* set master/slave audio interface */
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBM_CFM:
++		iface |= 0x0040;
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/* interface format */
 +	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
 +	case SND_SOC_DAIFMT_I2S:
++		iface |= 0x0002;
++		break;
++	case SND_SOC_DAIFMT_RIGHT_J:
 +		break;
 +	case SND_SOC_DAIFMT_LEFT_J:
-+		ret = -EINVAL;
++		iface |= 0x0001;
++		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		iface |= 0x0003;
++		break;
++	case SND_SOC_DAIFMT_DSP_B:
++		iface |= 0x0013;
 +		break;
 +	default:
-+		ret = -EINVAL;
-+		break;
++		return -EINVAL;
 +	}
 +
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		ret = -EINVAL;
++	/* clock inversion */
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
 +		break;
-+	case SND_SOC_DAIFMT_CBM_CFS:
-+		ret = -EINVAL;
++	case SND_SOC_DAIFMT_IB_IF:
++		iface |= 0x0090;
 +		break;
-+	case SND_SOC_DAIFMT_CBM_CFM:
++	case SND_SOC_DAIFMT_IB_NF:
++		iface |= 0x0080;
 +		break;
-+	case SND_SOC_DAIFMT_CBS_CFM:
-+		ret = -EINVAL;
++	case SND_SOC_DAIFMT_NB_IF:
++		iface |= 0x0010;
 +		break;
 +	default:
-+		ret = -EINVAL;
-+		break;
++		return -EINVAL;
 +	}
++
++	/* set iface */
++	ssm2602_write(codec, SSM2602_IFACE, iface);
++	return 0;
++}
++
++static int ssm2602_set_bias_level(struct snd_soc_codec *codec,
++				 enum snd_soc_bias_level level)
++{
++	u16 reg = ssm2602_read_reg_cache(codec, SSM2602_PWR) & 0xff7f;
++
++	switch (level) {
++	case SND_SOC_BIAS_ON:
++		/* vref/mid, osc on, dac unmute */
++		ssm2602_write(codec, SSM2602_PWR, reg);
++		break;
++	case SND_SOC_BIAS_PREPARE:
++		break;
++	case SND_SOC_BIAS_STANDBY:
++		/* everything off except vref/vmid, */
++		ssm2602_write(codec, SSM2602_PWR, reg | PWR_CLK_OUT_PDN);
++		break;
++	case SND_SOC_BIAS_OFF:
++		/* everything off, dac mute, inactive */
++		ssm2602_write(codec, SSM2602_ACTIVE, 0);
++		ssm2602_write(codec, SSM2602_PWR, 0xffff);
++		break;
++
++	}
++	codec->bias_level = level;
++	return 0;
++}
++
++#define SSM2602_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
++		SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |\
++		SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
++		SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |\
++		SNDRV_PCM_RATE_96000)
++
++struct snd_soc_dai ssm2602_dai = {
++	.name = "SSM2602",
++	.playback = {
++		.stream_name = "Playback",
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = SSM2602_RATES,
++		.formats = SNDRV_PCM_FMTBIT_S32_LE,},
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = SSM2602_RATES,
++		.formats = SNDRV_PCM_FMTBIT_S32_LE,},
++	.ops = {
++		.startup = ssm2602_startup,
++		.prepare = ssm2602_pcm_prepare,
++		.hw_params = ssm2602_hw_params,
++		.shutdown = ssm2602_shutdown,
++	},
++	.dai_ops = {
++		.digital_mute = ssm2602_mute,
++		.set_sysclk = ssm2602_set_dai_sysclk,
++		.set_fmt = ssm2602_set_dai_fmt,
++	}
++};
++EXPORT_SYMBOL_GPL(ssm2602_dai);
++
++static int ssm2602_suspend(struct platform_device *pdev, pm_message_t state)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec = socdev->codec;
++
++	ssm2602_set_bias_level(codec, SND_SOC_BIAS_OFF);
++	return 0;
++}
++
++static int ssm2602_resume(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec = socdev->codec;
++	int i;
++	u8 data[2];
++	u16 *cache = codec->reg_cache;
++
++	/* Sync reg_cache with the hardware */
++	for (i = 0; i < ARRAY_SIZE(ssm2602_reg); i++) {
++		data[0] = (i << 1) | ((cache[i] >> 8) & 0x0001);
++		data[1] = cache[i] & 0x00ff;
++		codec->hw_write(codec->control_data, data, 2);
++	}
++	ssm2602_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
++	ssm2602_set_bias_level(codec, codec->suspend_bias_level);
++	return 0;
++}
++
++/*
++ * initialise the ssm2602 driver
++ * register the mixer and dsp interfaces with the kernel
++ */
++static int ssm2602_init(struct snd_soc_device *socdev)
++{
++	struct snd_soc_codec *codec = socdev->codec;
++	int reg, ret = 0;
++
++	codec->name = "SSM2602";
++	codec->owner = THIS_MODULE;
++	codec->read = ssm2602_read_reg_cache;
++	codec->write = ssm2602_write;
++	codec->set_bias_level = ssm2602_set_bias_level;
++	codec->dai = &ssm2602_dai;
++	codec->num_dai = 1;
++	codec->reg_cache_size = sizeof(ssm2602_reg);
++	codec->reg_cache = kmemdup(ssm2602_reg, sizeof(ssm2602_reg),
++					GFP_KERNEL);
++	if (codec->reg_cache == NULL)
++		return -ENOMEM;
++
++	ssm2602_reset(codec);
++
++	/* register pcms */
++	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
++	if (ret < 0) {
++		pr_err("ssm2602: failed to create pcms\n");
++		goto pcm_err;
++	}
++	/*power on device*/
++	ssm2602_write(codec, SSM2602_ACTIVE, 0);
++	/* set the update bits */
++	reg = ssm2602_read_reg_cache(codec, SSM2602_LINVOL);
++	ssm2602_write(codec, SSM2602_LINVOL, reg | LINVOL_LRIN_BOTH);
++	reg = ssm2602_read_reg_cache(codec, SSM2602_RINVOL);
++	ssm2602_write(codec, SSM2602_RINVOL, reg | RINVOL_RLIN_BOTH);
++	reg = ssm2602_read_reg_cache(codec, SSM2602_LOUT1V);
++	ssm2602_write(codec, SSM2602_LOUT1V, reg | LOUT1V_LRHP_BOTH);
++	reg = ssm2602_read_reg_cache(codec, SSM2602_ROUT1V);
++	ssm2602_write(codec, SSM2602_ROUT1V, reg | ROUT1V_RLHP_BOTH);
++	/*select Line in as default input*/
++	ssm2602_write(codec, SSM2602_APANA,
++			APANA_ENABLE_MIC_BOOST2 | APANA_SELECT_DAC |
++			APANA_ENABLE_MIC_BOOST);
++	ssm2602_write(codec, SSM2602_PWR, 0);
++
++	ssm2602_add_controls(codec);
++	ssm2602_add_widgets(codec);
++	ret = snd_soc_register_card(socdev);
++	if (ret < 0) {
++		pr_err("ssm2602: failed to register card\n");
++		goto card_err;
++	}
++
++	return ret;
++
++card_err:
++	snd_soc_free_pcms(socdev);
++	snd_soc_dapm_free(socdev);
++pcm_err:
++	kfree(codec->reg_cache);
++	return ret;
++}
++
++static struct snd_soc_device *ssm2602_socdev;
++
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++/*
++ * ssm2602 2 wire address is determined by GPIO5
++ * state during powerup.
++ *    low  = 0x1a
++ *    high = 0x1b
++ */
++static int ssm2602_i2c_probe(struct i2c_client *i2c,
++			     const struct i2c_device_id *id)
++{
++	struct snd_soc_device *socdev = ssm2602_socdev;
++	struct snd_soc_codec *codec = socdev->codec;
++	int ret;
++
++	i2c_set_clientdata(i2c, codec);
++	codec->control_data = i2c;
++
++	ret = ssm2602_init(socdev);
++	if (ret < 0)
++		pr_err("failed to initialise SSM2602\n");
 +
 +	return ret;
 +}
 +
-+static int bf5xx_i2s_startup(struct snd_pcm_substream *substream)
++static int ssm2602_i2c_remove(struct i2c_client *client)
 +{
-+	pr_debug("%s enter\n", __func__);
-+
-+	/*this counter is used for counting how many pcm streams are opened*/
-+	bf5xx_i2s.counter++;
++	struct snd_soc_codec *codec = i2c_get_clientdata(client);
++	kfree(codec->reg_cache);
 +	return 0;
 +}
 +
-+static int bf5xx_i2s_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params)
++static const struct i2c_device_id ssm2602_i2c_id[] = {
++	{ "ssm2602", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, ssm2602_i2c_id);
++/* corgi i2c codec control layer */
++static struct i2c_driver ssm2602_i2c_driver = {
++	.driver = {
++		.name = "SSM2602 I2C Codec",
++		.owner = THIS_MODULE,
++	},
++	.probe = ssm2602_i2c_probe,
++	.remove = ssm2602_i2c_remove,
++	.id_table = ssm2602_i2c_id,
++};
++
++static int ssm2602_add_i2c_device(struct platform_device *pdev,
++				  const struct ssm2602_setup_data *setup)
 +{
-+	int ret = 0;
-+
-+	bf5xx_i2s.tcr2 &= ~0x1f;
-+	bf5xx_i2s.rcr2 &= ~0x1f;
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		bf5xx_i2s.tcr2 |= 15;
-+		bf5xx_i2s.rcr2 |= 15;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		bf5xx_i2s.tcr2 |= 23;
-+		bf5xx_i2s.rcr2 |= 23;
-+		break;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		bf5xx_i2s.tcr2 |= 31;
-+		bf5xx_i2s.rcr2 |= 31;
-+		break;
-+	}
-+
-+	if (bf5xx_i2s.counter == 1) {
-+		/*
-+		 * TX and RX are not independent,they are enabled at the
-+		 * same time, even if only one side is running. So, we
-+		 * need to configure both of them at the time when the first
-+		 * stream is opened.
-+		 *
-+		 * CPU DAI format:I2S, slave mode.
-+		 */
-+		ret = sport_config_rx(sport_handle, RFSR | RCKFE,
-+				      RSFSE|bf5xx_i2s.rcr2, 0, 0);
-+		if (ret) {
-+			pr_err("SPORT is busy!\n");
-+			return -EBUSY;
-+		}
-+
-+		ret = sport_config_tx(sport_handle, TFSR | TCKFE,
-+				      TSFSE|bf5xx_i2s.tcr2, 0, 0);
-+		if (ret) {
-+			pr_err("SPORT is busy!\n");
-+			return -EBUSY;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static void bf5xx_i2s_shutdown(struct snd_pcm_substream *substream)
-+{
-+	pr_debug("%s enter\n", __func__);
-+	bf5xx_i2s.counter--;
-+}
-+
-+static int bf5xx_i2s_probe(struct platform_device *pdev,
-+			   struct snd_soc_dai *dai)
-+{
-+	u16 sport_req[][7] = {
-+		{ P_SPORT0_DTPRI, P_SPORT0_TSCLK, P_SPORT0_RFS,
-+		  P_SPORT0_DRPRI, P_SPORT0_RSCLK, 0},
-+		{ P_SPORT1_DTPRI, P_SPORT1_TSCLK, P_SPORT1_RFS,
-+		  P_SPORT1_DRPRI, P_SPORT1_RSCLK, 0},
-+	};
-+
-+	pr_debug("%s enter\n", __func__);
-+	if (peripheral_request_list(&sport_req[sport_num][0], "soc-audio")) {
-+		pr_err("Requesting Peripherals failed\n");
-+		return -EFAULT;
-+	}
-+
-+	/* request DMA for SPORT */
-+	sport_handle = sport_init(&sport_params[sport_num], 4, \
-+			2 * sizeof(u32), NULL);
-+	if (!sport_handle) {
-+		peripheral_free_list(&sport_req[sport_num][0]);
-+		return -ENODEV;
-+	}
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+static int bf5xx_i2s_suspend(struct platform_device *dev,
-+			     struct snd_soc_dai *dai)
-+{
-+	struct sport_device *sport =
-+		(struct sport_device *)dai->private_data;
-+
-+	pr_debug("%s : sport %d\n", __func__, dai->id);
-+	if (!dai->active)
-+		return 0;
-+	if (dai->capture.active)
-+		sport_rx_stop(sport);
-+	if (dai->playback.active)
-+		sport_tx_stop(sport);
-+	return 0;
-+}
-+
-+static int bf5xx_i2s_resume(struct platform_device *pdev,
-+			    struct snd_soc_dai *dai)
-+{
++	struct i2c_board_info info;
++	struct i2c_adapter *adapter;
++	struct i2c_client *client;
 +	int ret;
-+	struct sport_device *sport =
-+		(struct sport_device *)dai->private_data;
 +
-+	pr_debug("%s : sport %d\n", __func__, dai->id);
-+	if (!dai->active)
-+		return 0;
-+
-+	ret = sport_config_rx(sport_handle, RFSR | RCKFE, RSFSE|0x1f, 0, 0);
-+	if (ret) {
-+		pr_err("SPORT is busy!\n");
-+		return -EBUSY;
++	ret = i2c_add_driver(&ssm2602_i2c_driver);
++	if (ret != 0) {
++		dev_err(&pdev->dev, "can't add i2c driver\n");
++		return ret;
 +	}
-+
-+	ret = sport_config_tx(sport_handle, TFSR | TCKFE, TSFSE|0x1f, 0, 0);
-+	if (ret) {
-+		pr_err("SPORT is busy!\n");
-+		return -EBUSY;
++	memset(&info, 0, sizeof(struct i2c_board_info));
++	info.addr = setup->i2c_address;
++	strlcpy(info.type, "ssm2602", I2C_NAME_SIZE);
++	adapter = i2c_get_adapter(setup->i2c_bus);
++	if (!adapter) {
++		dev_err(&pdev->dev, "can't get i2c adapter %d\n",
++		setup->i2c_bus);
++		goto err_driver;
 +	}
-+
-+	if (dai->capture.active)
-+		sport_rx_start(sport);
-+	if (dai->playback.active)
-+		sport_tx_start(sport);
++	client = i2c_new_device(adapter, &info);
++	i2c_put_adapter(adapter);
++	if (!client) {
++		dev_err(&pdev->dev, "can't add i2c device at 0x%x\n",
++		(unsigned int)info.addr);
++		goto err_driver;
++	}
 +	return 0;
++err_driver:
++	i2c_del_driver(&ssm2602_i2c_driver);
++	return -ENODEV;
 +}
-+
-+#else
-+#define bf5xx_i2s_suspend	NULL
-+#define bf5xx_i2s_resume	NULL
 +#endif
 +
-+#define BF5XX_I2S_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
-+		SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 | \
-+		SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 | \
-+		SNDRV_PCM_RATE_96000)
++static int ssm2602_probe(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct ssm2602_setup_data *setup;
++	struct snd_soc_codec *codec;
++	struct ssm2602_priv *ssm2602;
++	int ret = 0;
 +
-+#define BF5XX_I2S_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |\
-+	SNDRV_PCM_FMTBIT_S32_LE)
++	pr_info("ssm2602 Audio Codec %s", SSM2602_VERSION);
 +
-+struct snd_soc_dai bf5xx_i2s_dai = {
-+	.name = "bf5xx-i2s",
-+	.id = 0,
-+	.type = SND_SOC_DAI_I2S,
-+	.probe = bf5xx_i2s_probe,
-+	.suspend = bf5xx_i2s_suspend,
-+	.resume = bf5xx_i2s_resume,
-+	.playback = {
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = BF5XX_I2S_RATES,
-+		.formats = BF5XX_I2S_FORMATS,},
-+	.capture = {
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = BF5XX_I2S_RATES,
-+		.formats = BF5XX_I2S_FORMATS,},
-+	.ops = {
-+		.startup   = bf5xx_i2s_startup,
-+		.shutdown  = bf5xx_i2s_shutdown,
-+		.hw_params = bf5xx_i2s_hw_params,},
-+	.dai_ops = {
-+		.set_fmt = bf5xx_i2s_set_dai_fmt,
-+	},
++	setup = socdev->codec_data;
++	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
++	if (codec == NULL)
++		return -ENOMEM;
++
++	ssm2602 = kzalloc(sizeof(struct ssm2602_priv), GFP_KERNEL);
++	if (ssm2602 == NULL) {
++		kfree(codec);
++		return -ENOMEM;
++	}
++
++	codec->private_data = ssm2602;
++	socdev->codec = codec;
++	mutex_init(&codec->mutex);
++	INIT_LIST_HEAD(&codec->dapm_widgets);
++	INIT_LIST_HEAD(&codec->dapm_paths);
++
++	ssm2602_socdev = socdev;
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++	if (setup->i2c_address) {
++		codec->hw_write = (hw_write_t)i2c_master_send;
++		ret = ssm2602_add_i2c_device(pdev, setup);
++	}
++#else
++	/* other interfaces */
++#endif
++	return ret;
++}
++
++/* remove everything here */
++static int ssm2602_remove(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec = socdev->codec;
++
++	if (codec->control_data)
++		ssm2602_set_bias_level(codec, SND_SOC_BIAS_OFF);
++
++	snd_soc_free_pcms(socdev);
++	snd_soc_dapm_free(socdev);
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++	i2c_unregister_device(codec->control_data);
++	i2c_del_driver(&ssm2602_i2c_driver);
++#endif
++	kfree(codec->private_data);
++	kfree(codec);
++
++	return 0;
++}
++
++struct snd_soc_codec_device soc_codec_dev_ssm2602 = {
++	.probe = 	ssm2602_probe,
++	.remove = 	ssm2602_remove,
++	.suspend = 	ssm2602_suspend,
++	.resume =	ssm2602_resume,
 +};
-+EXPORT_SYMBOL_GPL(bf5xx_i2s_dai);
++EXPORT_SYMBOL_GPL(soc_codec_dev_ssm2602);
 +
-+/* Module information */
++MODULE_DESCRIPTION("ASoC ssm2602 driver");
 +MODULE_AUTHOR("Cliff Cai");
-+MODULE_DESCRIPTION("I2S driver for ADI Blackfin");
 +MODULE_LICENSE("GPL");
-+
-diff --git a/sound/soc/blackfin/bf5xx-i2s.h b/sound/soc/blackfin/bf5xx-i2s.h
+diff --git a/sound/soc/codecs/ssm2602.h b/sound/soc/codecs/ssm2602.h
 new file mode 100644
-index 0000000..7107d1a
+index 0000000..f344e6d
 --- /dev/null
-+++ b/sound/soc/blackfin/bf5xx-i2s.h
-@@ -0,0 +1,14 @@
++++ b/sound/soc/codecs/ssm2602.h
+@@ -0,0 +1,130 @@
 +/*
-+ * linux/sound/arm/bf5xx-i2s.h
++ * File:         sound/soc/codecs/ssm2602.h
++ * Author:       Cliff Cai <Cliff.Cai@analog.com>
++ *
++ * Created:      Tue June 06 2008
++ *
++ * Modified:
++ *               Copyright 2008 Analog Devices Inc.
++ *
++ * Bugs:         Enter bugs at http://blackfin.uclinux.org/
 + *
 + * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see the file COPYING, or write
++ * to the Free Software Foundation, Inc.,
++ * 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 + */
 +
-+#ifndef _BF5XX_I2S_H
-+#define _BF5XX_I2S_H
++#ifndef _SSM2602_H
++#define _SSM2602_H
 +
-+extern struct snd_soc_dai bf5xx_i2s_dai;
++/* SSM2602 Codec Register definitions */
++
++#define SSM2602_LINVOL   0x00
++#define SSM2602_RINVOL   0x01
++#define SSM2602_LOUT1V   0x02
++#define SSM2602_ROUT1V   0x03
++#define SSM2602_APANA    0x04
++#define SSM2602_APDIGI   0x05
++#define SSM2602_PWR      0x06
++#define SSM2602_IFACE    0x07
++#define SSM2602_SRATE    0x08
++#define SSM2602_ACTIVE   0x09
++#define SSM2602_RESET	 0x0f
++
++/*SSM2602 Codec Register Field definitions
++ *(Mask value to extract the corresponding Register field)
++ */
++
++/*Left ADC Volume Control (SSM2602_REG_LEFT_ADC_VOL)*/
++#define     LINVOL_LIN_VOL                0x01F   /* Left Channel PGA Volume control                      */
++#define     LINVOL_LIN_ENABLE_MUTE        0x080   /* Left Channel Input Mute                              */
++#define     LINVOL_LRIN_BOTH              0x100   /* Left Channel Line Input Volume update                */
++
++/*Right ADC Volume Control (SSM2602_REG_RIGHT_ADC_VOL)*/
++#define     RINVOL_RIN_VOL                0x01F   /* Right Channel PGA Volume control                     */
++#define     RINVOL_RIN_ENABLE_MUTE        0x080   /* Right Channel Input Mute                             */
++#define     RINVOL_RLIN_BOTH              0x100   /* Right Channel Line Input Volume update               */
++
++/*Left DAC Volume Control (SSM2602_REG_LEFT_DAC_VOL)*/
++#define     LOUT1V_LHP_VOL                0x07F   /* Left Channel Headphone volume control                */
++#define     LOUT1V_ENABLE_LZC             0x080   /* Left Channel Zero cross detect enable                */
++#define     LOUT1V_LRHP_BOTH              0x100   /* Left Channel Headphone volume update                 */
++
++/*Right DAC Volume Control (SSM2602_REG_RIGHT_DAC_VOL)*/
++#define     ROUT1V_RHP_VOL                0x07F   /* Right Channel Headphone volume control               */
++#define     ROUT1V_ENABLE_RZC             0x080   /* Right Channel Zero cross detect enable               */
++#define     ROUT1V_RLHP_BOTH              0x100   /* Right Channel Headphone volume update                */
++
++/*Analogue Audio Path Control (SSM2602_REG_ANALOGUE_PATH)*/
++#define     APANA_ENABLE_MIC_BOOST       0x001   /* Primary Microphone Amplifier gain booster control    */
++#define     APANA_ENABLE_MIC_MUTE        0x002   /* Microphone Mute Control                              */
++#define     APANA_ADC_IN_SELECT          0x004   /* Microphone/Line IN select to ADC (1=MIC, 0=Line In)  */
++#define     APANA_ENABLE_BYPASS          0x008   /* Line input bypass to line output                     */
++#define     APANA_SELECT_DAC             0x010   /* Select DAC (1=Select DAC, 0=Don't Select DAC)        */
++#define     APANA_ENABLE_SIDETONE        0x020   /* Enable/Disable Side Tone                             */
++#define     APANA_SIDETONE_ATTN          0x0C0   /* Side Tone Attenuation                                */
++#define     APANA_ENABLE_MIC_BOOST2      0x100   /* Secondary Microphone Amplifier gain booster control  */
++
++/*Digital Audio Path Control (SSM2602_REG_DIGITAL_PATH)*/
++#define     APDIGI_ENABLE_ADC_HPF         0x001   /* Enable/Disable ADC Highpass Filter                   */
++#define     APDIGI_DE_EMPHASIS            0x006   /* De-Emphasis Control                                  */
++#define     APDIGI_ENABLE_DAC_MUTE        0x008   /* DAC Mute Control                                     */
++#define     APDIGI_STORE_OFFSET           0x010   /* Store/Clear DC offset when HPF is disabled           */
++
++/*Power Down Control (SSM2602_REG_POWER)
++ *(1=Enable PowerDown, 0=Disable PowerDown)
++ */
++#define     PWR_LINE_IN_PDN            0x001   /* Line Input Power Down                                */
++#define     PWR_MIC_PDN                0x002   /* Microphone Input & Bias Power Down                   */
++#define     PWR_ADC_PDN                0x004   /* ADC Power Down                                       */
++#define     PWR_DAC_PDN                0x008   /* DAC Power Down                                       */
++#define     PWR_OUT_PDN                0x010   /* Outputs Power Down                                   */
++#define     PWR_OSC_PDN                0x020   /* Oscillator Power Down                                */
++#define     PWR_CLK_OUT_PDN            0x040   /* CLKOUT Power Down                                    */
++#define     PWR_POWER_OFF              0x080   /* POWEROFF Mode                                        */
++
++/*Digital Audio Interface Format (SSM2602_REG_DIGITAL_IFACE)*/
++#define     IFACE_IFACE_FORMAT           0x003   /* Digital Audio input format control                   */
++#define     IFACE_AUDIO_DATA_LEN         0x00C   /* Audio Data word length control                       */
++#define     IFACE_DAC_LR_POLARITY        0x010   /* Polarity Control for clocks in RJ,LJ and I2S modes   */
++#define     IFACE_DAC_LR_SWAP            0x020   /* Swap DAC data control                                */
++#define     IFACE_ENABLE_MASTER          0x040   /* Enable/Disable Master Mode                           */
++#define     IFACE_BCLK_INVERT            0x080   /* Bit Clock Inversion control                          */
++
++/*Sampling Control (SSM2602_REG_SAMPLING_CTRL)*/
++#define     SRATE_ENABLE_USB_MODE        0x001   /* Enable/Disable USB Mode                              */
++#define     SRATE_BOS_RATE               0x002   /* Base Over-Sampling rate                              */
++#define     SRATE_SAMPLE_RATE            0x03C   /* Clock setting condition (Sampling rate control)      */
++#define     SRATE_CORECLK_DIV2           0x040   /* Core Clock divider select                            */
++#define     SRATE_CLKOUT_DIV2            0x080   /* Clock Out divider select                             */
++
++/*Active Control (SSM2602_REG_ACTIVE_CTRL)*/
++#define     ACTIVE_ACTIVATE_CODEC         0x001   /* Activate Codec Digital Audio Interface               */
++
++/*********************************************************************/
++
++#define SSM2602_CACHEREGNUM 	10
++
++#define SSM2602_SYSCLK	0
++#define SSM2602_DAI		0
++
++struct ssm2602_setup_data {
++	int i2c_bus;
++	unsigned short i2c_address;
++};
++
++extern struct snd_soc_dai ssm2602_dai;
++extern struct snd_soc_codec_device soc_codec_dev_ssm2602;
 +
 +#endif
 -- 
