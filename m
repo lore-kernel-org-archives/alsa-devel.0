@@ -1,51 +1,45 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [alsa-devel] [PATCH 3/5] SOUND: SOC: CODECS: Add support for the TWL4030 audio codec
-Date: Fri, 5 Sep 2008 11:30:40 +0100
-Message-ID: <20080905103040.GD12383@sirena.org.uk>
-References: <1220504520-6067-1-git-send-email-sakoman@gmail.com> <1220504520-6067-2-git-send-email-sakoman@gmail.com> <1220504520-6067-3-git-send-email-sakoman@gmail.com> <1220504520-6067-4-git-send-email-sakoman@gmail.com> <20080904132632.e64c3ce2.jarkko.nikula@nokia.com> <5e088bd90809040732x24b2123cl68fa9d2242ae2ae0@mail.gmail.com>
+From: Kevin Gilbert <kevin952@tpg.com.au>
+Subject: Re: Problems with pulseaudio / asla on PS3
+Date: Fri, 5 Sep 2008 21:02:06 +1000
+Message-ID: <200809052102.06534.kevin952@tpg.com.au>
+References: <200809050842.08596.kevin952@tpg.com.au>
+	<s5hwshrt84y.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail9.tpgi.com.au (mail9.tpgi.com.au [203.12.160.104])
+	by alsa0.perex.cz (Postfix) with ESMTP id B0123103825
+	for <alsa-devel@alsa-project.org>;
+	Fri,  5 Sep 2008 13:02:35 +0200 (CEST)
+Received: from giles.localnet (60-242-39-232.static.tpgi.com.au
+	[60.242.39.232]) (authenticated bits=0)
+	by mail9.tpgi.com.au (envelope-from kevin952@tpg.com.au)
+	(8.14.3/8.14.3) with ESMTP id m85B2UcA003855
+	for <alsa-devel@alsa-project.org>; Fri, 5 Sep 2008 21:02:32 +1000
+In-Reply-To: <s5hwshrt84y.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <5e088bd90809040732x24b2123cl68fa9d2242ae2ae0@mail.gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Steve Sakoman <sakoman@gmail.com>
-Cc: Jarkko Nikula <jarkko.nikula@nokia.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Steve Sakoman <steve@sakoman.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 04, 2008 at 07:32:28AM -0700, Steve Sakoman wrote:
-> On Thu, Sep 4, 2008 at 3:26 AM, Jarkko Nikula <jarkko.nikula@nokia.com> wrote:
+Hi Takashi,
 
-> >> +static void twl4030_dump_registers(void)
-> >> +{
+On Fri, 5 Sep 2008, Takashi Iwai opined:
+> Well, it's no bug in softvol, at least.  The softvol doesn't do any
+> format or layout conversions.  The layout conversion is done via plug
+> plugin applied onto the softvol.
 
-> > This is not needed since there is already nice function
-> > for it: sound/soc/soc-core.c: codec_reg_show.
+OK (not that I fully understand what you have said) but where does that leave 
+me? Is there something that I should try? Some ALSA or kernel configuration 
+option that might be in error?
 
-> I could probably get rid of this function.  It was quite useful during
-> debugging and I was not aware of codec_reg_show.  IIRC, most of the
-> other codec drivers also have the equivalent of this function, so we
-> might want to clean them up too if there is a standard function to
-> replace them.
-
-Any references?  None of the in-tree drivers have them...
-
-> >> +static void twl4030_power_down(struct snd_soc_codec *codec)
-> >> +{
-> > ...
-> >> +     udelay(10);
-> >> +}
-> > REVISIT comment for these kind of magic delays if doesn't work without.
-
-> It *seems* to work without them, but every historic TI driver seemed
-> to have them.  I figured that they might know something not reflected
-> in the documentation.  I will add a REVIST comment.
-
-This sort of stuff is very common in codec drivers - normally the delays
-are there to allow the analogue side of the system time to settle down
-(waiting for capacitors to charge/discharge or reference voltages to
-stabalise, for example).  Ideally they have comments saying what's going
-on, of course.  Missing these delays often won't actually stop things
-working completely but will instead do things like reduce performance or
-generate audio artefacts - and sometimes it's application dependant if
-these are important.
+Kevin
