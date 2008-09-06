@@ -1,19 +1,21 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ALSA: ASoC V2: optimize init sequence
-	of	Freescale MPC8610 sound drivers
-Date: Sat, 6 Sep 2008 17:41:21 +0100
-Message-ID: <20080906164120.GA6904@sirena.org.uk>
-References: <1220647888-30550-1-git-send-email-timur@freescale.com>
+From: William Estrada <MrUmunhum@popdial.com>
+Subject: snd_pcm_hw_param_any returns bad data
+Date: Sat, 06 Sep 2008 10:52:31 -0700
+Message-ID: <48C2C35F.8060001@popdial.com>
+Reply-To: MrUmunhum@popdial.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id BD546243D0
+Received: from MAIL02.inside.adbasesystems.com (mail.1dial.com [64.136.164.73])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1717124426
 	for <alsa-devel@alsa-project.org>;
-	Sat,  6 Sep 2008 18:41:33 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1220647888-30550-1-git-send-email-timur@freescale.com>
+	Sat,  6 Sep 2008 19:52:31 +0200 (CEST)
+Received: from [10.1.1.50] (64.124.13.3.gatespeed.com [64.124.13.3]) by
+	MAIL02.inside.adbasesystems.com
+	(Vircom SMTPRS 4.5.654.13) with ESMTP id
+	<B0594567845@MAIL02.inside.adbasesystems.com> for
+	<alsa-devel@alsa-project.org>; Sat, 6 Sep 2008 13:52:27 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,14 +25,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 05, 2008 at 03:51:28PM -0500, Timur Tabi wrote:
-> In the Freescale MPC8610 sound drivers, relocate all code from the _prepare
-> functions into the corresponding _hw_params functions.  These drivers assumed
-> that the sample size is known in the _prepare function and not in the
-> _hw_params function, but this is not true.
+Hi group,
 
-Applied, thanks.
+  I'm using snd_pcm_hw_param_any to retrieve the parameters from an 
+opened device
+and I'm getting garbage back in the structures. My code is here: 
+http://64.124.13.3/_ALSA_/
+This is a simple test to show the problem. The output is shown in 
+show.txt. as you can see the
+before ( within the open function ) is much different than the after.
+
+  I am assuming that it is my code that has the problem, any ideas???
+
+  Thanks for your time.
+
+-- 
+William Estrada
+MrUmunhum@popdial.com
+Mt-Umunhum-Wireless.net ( http://Mt-Umunhum-Wireless.net )
+Ymessenger: MrUmunhum
