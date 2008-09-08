@@ -1,19 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/3] ALSA: ASoC: Sort Kconfig and Makefile
-	entries for codecs
-Date: Mon,  8 Sep 2008 16:13:53 +0100
-Message-ID: <1220886834-14504-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <20080908151250.GA14434@rakim.wolfsonmicro.main>
-	<1220886834-14504-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH1/1] hda: digital slave support for IDT codecs
+Date: Mon, 08 Sep 2008 11:20:05 -0400
+Message-ID: <48C542A5.9020106@embeddedalley.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 59AAA243D0
+Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
+	by alsa0.perex.cz (Postfix) with SMTP id D55F324399
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Sep 2008 17:13:55 +0200 (CEST)
-In-Reply-To: <1220886834-14504-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Mon,  8 Sep 2008 17:20:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,153 +19,115 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hopefully this will make merges a little bit easier.
+Added slave_dig_outs entries for several IDT codecs that have multiple
+SPDIF outs, and enabled these SPDIF outs in several pin configs.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/Kconfig  |   64 ++++++++++++++++++++++----------------------
- sound/soc/codecs/Makefile |   16 +++++-----
- 2 files changed, 40 insertions(+), 40 deletions(-)
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 8b4bb5c..27f2dfa 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -4,7 +4,10 @@ config SND_SOC_ALL_CODECS
- 	select SPI
- 	select SPI_MASTER
- 	select SND_SOC_AK4535
-+	select SND_SOC_CS4270
- 	select SND_SOC_SSM2602
-+	select SND_SOC_TLV320AIC26
-+	select SND_SOC_TLV320AIC3X
- 	select SND_SOC_UDA1380
- 	select SND_SOC_WM8510
- 	select SND_SOC_WM8580
-@@ -14,9 +17,6 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_WM8900
- 	select SND_SOC_WM8903
- 	select SND_SOC_WM8990
--	select SND_SOC_CS4270
--	select SND_SOC_TLV320AIC26
--	select SND_SOC_TLV320AIC3X
-         help
-           Normally ASoC codec drivers are only built if a machine driver which
-           uses them is also built since they are only usable with a machine
-@@ -36,6 +36,35 @@ config SND_SOC_AD1980
- config SND_SOC_AK4535
- 	tristate
- 
-+# Cirrus Logic CS4270 Codec
-+config SND_SOC_CS4270
-+	tristate
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index ee24a0d..655a87c 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -235,6 +235,10 @@ static hda_nid_t stac92hd73xx_pwr_nids[8] = {
+ 	0x0f, 0x10, 0x11
+ };
+
++static hda_nid_t stac92hd73xx_slave_dig_outs[2] = {
++	0x26, 0,
++};
 +
-+# Cirrus Logic CS4270 Codec Hardware Mute Support
-+# Select if you have external muting circuitry attached to your CS4270.
-+config SND_SOC_CS4270_HWMUTE
-+	bool
-+	depends on SND_SOC_CS4270
+ static hda_nid_t stac92hd73xx_adc_nids[2] = {
+ 	0x1a, 0x1b
+ };
+@@ -284,6 +288,10 @@ static hda_nid_t stac92hd83xxx_pwr_nids[4] = {
+ 	0xa, 0xb, 0xd, 0xe,
+ };
+
++static hda_nid_t stac92hd83xxx_slave_dig_outs[2] = {
++	0x1e, 0,
++};
 +
-+# Cirrus Logic CS4270 Codec VD = 3.3V Errata
-+# Select if you are affected by the errata where the part will not function
-+# if MCLK divide-by-1.5 is selected and VD is set to 3.3V.  The driver will
-+# not select any sample rates that require MCLK to be divided by 1.5.
-+config SND_SOC_CS4270_VD33_ERRATA
-+	bool
-+	depends on SND_SOC_CS4270
+ static unsigned int stac92hd83xxx_pwr_mapping[4] = {
+ 	0x03, 0x0c, 0x10, 0x40,
+ };
+@@ -317,6 +325,10 @@ static hda_nid_t stac92hd71bxx_dmic_nids[STAC92HD71BXX_NUM_DMICS + 1] = {
+ 	0x18, 0x19, 0
+ };
+
++static hda_nid_t stac92hd71bxx_slave_dig_outs[2] = {
++	0x22, 0
++};
 +
-+config SND_SOC_SSM2602
-+	tristate
-+
-+config SND_SOC_TLV320AIC26
-+	tristate "TI TLV320AIC26 Codec support"
-+	depends on SND_SOC && SPI
-+
-+config SND_SOC_TLV320AIC3X
-+	tristate
-+	depends on I2C
-+
- config SND_SOC_UDA1380
-         tristate
- 
-@@ -68,32 +97,3 @@ config SND_SOC_WM9712
- 
- config SND_SOC_WM9713
- 	tristate
--
--# Cirrus Logic CS4270 Codec
--config SND_SOC_CS4270
--	tristate
--
--# Cirrus Logic CS4270 Codec Hardware Mute Support
--# Select if you have external muting circuitry attached to your CS4270.
--config SND_SOC_CS4270_HWMUTE
--	bool
--	depends on SND_SOC_CS4270
--
--# Cirrus Logic CS4270 Codec VD = 3.3V Errata
--# Select if you are affected by the errata where the part will not function
--# if MCLK divide-by-1.5 is selected and VD is set to 3.3V.  The driver will
--# not select any sample rates that require MCLK to be divided by 1.5.
--config SND_SOC_CS4270_VD33_ERRATA
--	bool
--	depends on SND_SOC_CS4270
--
--config SND_SOC_TLV320AIC26
--	tristate "TI TLV320AIC26 Codec support"
--	depends on SND_SOC && SPI
--
--config SND_SOC_TLV320AIC3X
--	tristate
--	depends on I2C
--
--config SND_SOC_SSM2602
--	tristate
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 0cd55ee..c2b8783 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -1,6 +1,10 @@
- snd-soc-ac97-objs := ac97.o
- snd-soc-ad1980-objs := ad1980.o
- snd-soc-ak4535-objs := ak4535.o
-+snd-soc-cs4270-objs := cs4270.o
-+snd-soc-ssm2602-objs := ssm2602.o
-+snd-soc-tlv320aic26-objs := tlv320aic26.o
-+snd-soc-tlv320aic3x-objs := tlv320aic3x.o
- snd-soc-uda1380-objs := uda1380.o
- snd-soc-wm8510-objs := wm8510.o
- snd-soc-wm8580-objs := wm8580.o
-@@ -12,14 +16,14 @@ snd-soc-wm8903-objs := wm8903.o
- snd-soc-wm8990-objs := wm8990.o
- snd-soc-wm9712-objs := wm9712.o
- snd-soc-wm9713-objs := wm9713.o
--snd-soc-cs4270-objs := cs4270.o
--snd-soc-tlv320aic26-objs := tlv320aic26.o
--snd-soc-tlv320aic3x-objs := tlv320aic3x.o
--snd-soc-ssm2602-objs := ssm2602.o
- 
- obj-$(CONFIG_SND_SOC_AC97_CODEC)	+= snd-soc-ac97.o
- obj-$(CONFIG_SND_SOC_AD1980)	+= snd-soc-ad1980.o
- obj-$(CONFIG_SND_SOC_AK4535)	+= snd-soc-ak4535.o
-+obj-$(CONFIG_SND_SOC_CS4270)	+= snd-soc-cs4270.o
-+obj-$(CONFIG_SND_SOC_SSM2602)	+= snd-soc-ssm2602.o
-+obj-$(CONFIG_SND_SOC_TLV320AIC26)	+= snd-soc-tlv320aic26.o
-+obj-$(CONFIG_SND_SOC_TLV320AIC3X)	+= snd-soc-tlv320aic3x.o
- obj-$(CONFIG_SND_SOC_UDA1380)	+= snd-soc-uda1380.o
- obj-$(CONFIG_SND_SOC_WM8510)	+= snd-soc-wm8510.o
- obj-$(CONFIG_SND_SOC_WM8580)	+= snd-soc-wm8580.o
-@@ -31,7 +35,3 @@ obj-$(CONFIG_SND_SOC_WM8903)	+= snd-soc-wm8903.o
- obj-$(CONFIG_SND_SOC_WM8990)	+= snd-soc-wm8990.o
- obj-$(CONFIG_SND_SOC_WM9712)	+= snd-soc-wm9712.o
- obj-$(CONFIG_SND_SOC_WM9713)	+= snd-soc-wm9713.o
--obj-$(CONFIG_SND_SOC_CS4270)	+= snd-soc-cs4270.o
--obj-$(CONFIG_SND_SOC_TLV320AIC26)	+= snd-soc-tlv320aic26.o
--obj-$(CONFIG_SND_SOC_TLV320AIC3X)	+= snd-soc-tlv320aic3x.o
--obj-$(CONFIG_SND_SOC_SSM2602)	+= snd-soc-ssm2602.o
--- 
-1.5.6.5
+ static hda_nid_t stac925x_adc_nids[1] = {
+         0x03,
+ };
+@@ -418,9 +430,10 @@ static hda_nid_t stac92hd83xxx_pin_nids[14] = {
+ 	0x0f, 0x10, 0x11, 0x12, 0x13,
+ 	0x1d, 0x1e, 0x1f, 0x20
+ };
+-static hda_nid_t stac92hd71bxx_pin_nids[10] = {
++static hda_nid_t stac92hd71bxx_pin_nids[11] = {
+ 	0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
+ 	0x0f, 0x14, 0x18, 0x19, 0x1e,
++	0x1f,
+ };
+
+ static hda_nid_t stac927x_pin_nids[14] = {
+@@ -1492,22 +1505,22 @@ static struct snd_pci_quirk stac92hd83xxx_cfg_tbl[] = {
+ 		      "DFI LanParty", STAC_92HD71BXX_REF),
+ };
+
+-static unsigned int ref92hd71bxx_pin_configs[10] = {
++static unsigned int ref92hd71bxx_pin_configs[11] = {
+ 	0x02214030, 0x02a19040, 0x01a19020, 0x01014010,
+ 	0x0181302e, 0x01114010, 0x01019020, 0x90a000f0,
+-	0x90a000f0, 0x01452050,
++	0x90a000f0, 0x01452050, 0x01452050,
+ };
+
+-static unsigned int dell_m4_1_pin_configs[10] = {
++static unsigned int dell_m4_1_pin_configs[11] = {
+ 	0x0421101f, 0x04a11221, 0x40f000f0, 0x90170110,
+ 	0x23a1902e, 0x23014250, 0x40f000f0, 0x90a000f0,
+-	0x40f000f0, 0x4f0000f0,
++	0x40f000f0, 0x4f0000f0, 0x4f0000f0,
+ };
+
+-static unsigned int dell_m4_2_pin_configs[10] = {
++static unsigned int dell_m4_2_pin_configs[11] = {
+ 	0x0421101f, 0x04a11221, 0x90a70330, 0x90170110,
+ 	0x23a1902e, 0x23014250, 0x40f000f0, 0x40f000f0,
+-	0x40f000f0, 0x044413b0,
++	0x40f000f0, 0x044413b0, 0x044413b0,
+ };
+
+ static unsigned int *stac92hd71bxx_brd_tbl[STAC_92HD71BXX_MODELS] = {
+@@ -3984,6 +3997,7 @@ static int patch_stac92hd83xxx(struct hda_codec *codec)
+ 		return -ENOMEM;
+
+ 	codec->spec = spec;
++	codec->slave_dig_outs = stac92hd83xxx_slave_dig_outs;
+ 	spec->mono_nid = 0x19;
+ 	spec->digbeep_nid = 0x21;
+ 	spec->dmic_nids = stac92hd83xxx_dmic_nids;
+@@ -4134,6 +4148,7 @@ again:
+ 	case 0x111d76b5:
+ 		spec->mixer = stac92hd71bxx_mixer;
+ 		spec->init = stac92hd71bxx_core_init;
++		codec->slave_dig_outs = stac92hd71bxx_slave_dig_outs;
+ 		break;
+ 	case 0x111d7608: /* 5 Port with Analog Mixer */
+ 		if ((codec->revision_id & 0xf) == 0 ||
+@@ -4166,6 +4181,7 @@ again:
+ 	default:
+ 		spec->mixer = stac92hd71bxx_analog_mixer;
+ 		spec->init = stac92hd71bxx_analog_core_init;
++		codec->slave_dig_outs = stac92hd71bxx_slave_dig_outs;
+ 	}
+
+ 	spec->aloopback_mask = 0x20;
