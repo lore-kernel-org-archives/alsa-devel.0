@@ -1,21 +1,21 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 1/5] Permit simultaneous compilation of
-	both PXA AC97 drivers
-Date: Mon, 8 Sep 2008 11:35:09 +0100
-Message-ID: <20080908103508.GF790@sirena.org.uk>
-References: <20080908085339.GA31573@doriath.ww600.siemens.net>
-	<1220864773-31745-1-git-send-email-dbaryshkov@gmail.com>
-	<20080908093047.GA790@sirena.org.uk> <48C4FC21.3060107@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 7/8] ASoC: Add SPI support for WM8731
+Date: Mon, 8 Sep 2008 14:52:01 +0100
+Message-ID: <20080908135201.GA11376@rakim.wolfsonmicro.main>
+References: <1220291224-11269-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<200809031701.46791.gineera@aspect135.co.uk>
+	<386072610809031846j18a1534s937a143f66203782@mail.gmail.com>
+	<200809041148.29439.gineera@aspect135.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 373F524545
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F08D024365
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Sep 2008 12:35:10 +0200 (CEST)
+	Mon,  8 Sep 2008 15:52:02 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <48C4FC21.3060107@gmail.com>
+In-Reply-To: <200809041148.29439.gineera@aspect135.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,17 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dmitry Baryshkov <dbaryshkov@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Alan Horstmann <gineera@aspect135.co.uk>
+Cc: Cliff Cai <cliff.cai@analog.com>, Bryan Wu <cooloney@kernel.org>, ALSA devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 08, 2008 at 02:19:13PM +0400, Dmitry Baryshkov wrote:
+On Thu, Sep 04, 2008 at 11:48:29AM +0100, Alan Horstmann wrote:
 
-> Against which tree should I develop? 
-> git://opensource.wolfsonmicro.com/linux-2.6-asoc ?
+> I assume that spi_transfer sends bytes in order, from the tx_buf position, and 
+> it seems clear that data[0] is the high byte that should go first.  As msg[2] 
+> is u16 (why?), I would have thought that the byte at &msg[0] would be the low 
+> byte on LE, high byte on BE so it would only be correct on BE.
 
-That or the topic/asoc or master branch of Takashi's tree:
+Your analysis makes sense to me.
 
-	git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+> Changing the code to use 
 
-(the two should be in very close sync).
+...
+
+> fixes the problem here.
+
+Could you supply a patch, please?
