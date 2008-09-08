@@ -1,25 +1,21 @@
-From: "Steve Sakoman" <sakoman@gmail.com>
-Subject: Re: [PATCH 3/5] ALSA: ASoC: Add support for TWL4030
-	audio codec (rev 3)
-Date: Mon, 8 Sep 2008 11:16:17 -0700
-Message-ID: <5e088bd90809081116v58ff6b14rd2331e5fccaeb097@mail.gmail.com>
-References: <1220769704-16705-1-git-send-email-sakoman@gmail.com>
-	<1220769704-16705-2-git-send-email-sakoman@gmail.com>
-	<1220769704-16705-3-git-send-email-sakoman@gmail.com>
-	<1220769704-16705-4-git-send-email-sakoman@gmail.com>
-	<20080908095607.GC790@sirena.org.uk>
+From: William Estrada <MrUmunhum@popdial.com>
+Subject: How to wait for end of callback?
+Date: Mon, 08 Sep 2008 11:29:50 -0700
+Message-ID: <48C56F1E.60005@popdial.com>
+Reply-To: MrUmunhum@popdial.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id BE9351037F1
+Received: from MAIL02.inside.adbasesystems.com (mail.1dial.com [64.136.164.73])
+	by alsa0.perex.cz (Postfix) with ESMTP id 789E72443F
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Sep 2008 20:16:18 +0200 (CEST)
-Received: by py-out-1112.google.com with SMTP id a29so991250pyi.36
-	for <alsa-devel@alsa-project.org>; Mon, 08 Sep 2008 11:16:17 -0700 (PDT)
-In-Reply-To: <20080908095607.GC790@sirena.org.uk>
-Content-Disposition: inline
+	Mon,  8 Sep 2008 20:29:55 +0200 (CEST)
+Received: from [10.1.1.50] (64.124.13.3.gatespeed.com [64.124.13.3]) by
+	MAIL02.inside.adbasesystems.com
+	(Vircom SMTPRS 4.5.654.13) with ESMTP id
+	<B0595629686@MAIL02.inside.adbasesystems.com> for
+	<alsa-devel@alsa-project.org>; Mon, 8 Sep 2008 14:29:52 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,27 +25,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: sakoman@gmail.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Steve Sakoman <steve@sakoman.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 8, 2008 at 2:56 AM, Mark Brown <broonie@sirena.org.uk> wrote:
-> On Sat, Sep 06, 2008 at 11:41:42PM -0700, sakoman@gmail.com wrote:
->
->> +
->> +config SND_SOC_TWL4030
->> +     tristate
->> +     depends on SND_SOC && I2C
->> +
->
-> Sorry, didn't notice earlier: this should depend on whatever the config
-> option is for the TWL4030 core driver rather than on I2C since it
-> doesn't actually interact with I2C directly.  Although in most
-> applications this won't make much odds since the machine driver will
-> select the codec driver and select ignores the dependencies anyway.
+Hi group,
 
-You are correct.  Good catch, though as you say it doesn't really
-matter in practice.
+  What API call fo I use to wait for a callback to end? Right now I use 
+a select() and wait
+for stdin input or a system interrupt. Is there another way?
 
-I will re-submit a version with this fixed nonetheless.
-
-Steve
+-- 
+William Estrada
+MrUmunhum@popdial.com
+Mt-Umunhum-Wireless.net ( http://Mt-Umunhum-Wireless.net )
+Ymessenger: MrUmunhum
