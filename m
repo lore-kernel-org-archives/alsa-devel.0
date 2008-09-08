@@ -1,17 +1,21 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: how is 'dir' in snd_pcm_hw_params_set_periods_near()
-	supposed to	work?
-Date: Mon, 8 Sep 2008 22:28:08 +0200
-Message-ID: <20080908202808.GB5221@tango.0pointer.de>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 7/8] ASoC: Add SPI support for WM8731
+Date: Mon, 8 Sep 2008 21:51:06 +0100
+Message-ID: <20080908205105.GA32649@sirena.org.uk>
+References: <1220291224-11269-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<200809041148.29439.gineera@aspect135.co.uk>
+	<20080908135201.GA11376@rakim.wolfsonmicro.main>
+	<200809082127.13653.gineera@aspect135.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 220B224391
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id D5B602435D
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Sep 2008 22:28:09 +0200 (CEST)
+	Mon,  8 Sep 2008 22:51:07 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <200809082127.13653.gineera@aspect135.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,33 +25,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Alan Horstmann <gineera@aspect135.co.uk>
+Cc: Cliff Cai <cliff.cai@analog.com>, ALSA devel <alsa-devel@alsa-project.org>, Bryan Wu <cooloney@kernel.org>, Liam Girdwood <lrg@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Heya!
+On Mon, Sep 08, 2008 at 09:27:13PM +0100, Alan Horstmann wrote:
 
-How is the 'dir' argument in snd_pcm_hw_params_set_periods_near()
-supposed to work?
+> Attached and here inline is the small change we applied to ensure the byte 
+> order is correct in the _spi_write function.  Note we observed the spi bus 
 
-I'd assume that passing dir=1 would mean that it is looked for a
-number of periods that is greater *or equal* to what we request. If we
-pass dir=-1 we'd be looking for a number of periods that is smaller
-*or equal* to what we request. 
+I take it you're happy to give this your Signed-off-by?
 
-However, what I am experiencing is that there is no "or equal". On my
-softvol on hda setup here if I ask for 5 periods I will always get 6
-if I pass dir=1 -- even if the could give me 5 and will give me five
-if I pass dir=0.
+> With just this one change we have been successful in running the codec over 
+> spi.  At present we do have an issue with dapm during capture -nothing is 
+> being turned on!  Any pointers would be appreciated.
 
-The docs don't really elaborate on this much. 
+If you define DEBUG when building soc-dapm.c (a define at the top of the
+source file will do the trick) then it will be very verbose about the
+decisions it's making - that will normally point out the problem.
+Probably either one of the input controls is not configured to make a
+path from the input pins to the ADC or the input has been mistakenly
+marked as disabled.
 
-I'd certainly think that having ">=" and "<=" here is much more useful
-and natural than ">" and "<", and hence I was wondering: is this just
-a bug in the software or is it really intended to be this way?
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Otherwise if you post the machine driver and the kernel output with
+DEBUG enabled someone might be able to spot something.
