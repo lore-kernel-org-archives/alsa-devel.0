@@ -1,17 +1,17 @@
 From: umeshyv <umeshyv@gmail.com>
 Subject: Asoc and alsa utils regarded
-Date: Mon, 8 Sep 2008 10:20:03 +0530
-Message-ID: <b5c34db00809072150w4928030t34a660bfd158d4eb@mail.gmail.com>
+Date: Mon, 8 Sep 2008 10:31:44 +0530
+Message-ID: <b5c34db00809072201y514eda40k6a61742329ecd78a@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 802FC243ED
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 791AE243AE
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Sep 2008 06:50:04 +0200 (CEST)
-Received: by yx-out-1718.google.com with SMTP id 36so746999yxh.2
-	for <alsa-devel@alsa-project.org>; Sun, 07 Sep 2008 21:50:03 -0700 (PDT)
+	Mon,  8 Sep 2008 07:01:45 +0200 (CEST)
+Received: by yx-out-1718.google.com with SMTP id 36so749633yxh.2
+	for <alsa-devel@alsa-project.org>; Sun, 07 Sep 2008 22:01:44 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -35,6 +35,7 @@ sh-3.2# aplay -c1 -r8000 -fs8 Infected.wav
 ALSA lib conf.c:3009:(snd_config_update_r) Cannot
 access file /home/alsa/install/share/alsa/alsa.conf
 ALSA lib pcm.c:2184:(snd_pcm_open_noupdate) Unknown
+
 
 PCM default
 aplay: main:583: audio open error: No such file or
