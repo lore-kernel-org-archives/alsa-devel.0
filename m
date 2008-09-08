@@ -1,61 +1,28 @@
-From: Liam Girdwood <lrg@kernel.org>
-Subject: Re: [PATCH 2/5] Separate common pxa2xx-ac97 code
-Date: Mon, 08 Sep 2008 10:51:37 +0100
-Message-ID: <1220867497.17091.94.camel@odin>
-References: <20080908085339.GA31573@doriath.ww600.siemens.net>
-	<1220864773-31745-1-git-send-email-dbaryshkov@gmail.com>
-	<1220864773-31745-2-git-send-email-dbaryshkov@gmail.com>
-	<1220866410.17091.81.camel@odin>  <ga2s2q$sge$3@ger.gmane.org>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [alsa-devel] [PATCH 3/5] ALSA: ASoC: Add support for TWL4030 audio codec (rev 3)
+Date: Mon, 8 Sep 2008 10:56:14 +0100
+Message-ID: <20080908095607.GC790@sirena.org.uk>
+References: <1220769704-16705-1-git-send-email-sakoman@gmail.com> <1220769704-16705-2-git-send-email-sakoman@gmail.com> <1220769704-16705-3-git-send-email-sakoman@gmail.com> <1220769704-16705-4-git-send-email-sakoman@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hera.kernel.org (hera.kernel.org [140.211.167.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5DE7E244F2
-	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Sep 2008 11:51:41 +0200 (CEST)
-In-Reply-To: <ga2s2q$sge$3@ger.gmane.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dmitry Baryshkov <dbaryshkov@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1220769704-16705-4-git-send-email-sakoman@gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: sakoman@gmail.com
+Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Steve Sakoman <steve@sakoman.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2008-09-08 at 09:42 +0000, Dmitry Baryshkov wrote:
-> Liam Girdwood wrote:
-> 
-> > On Mon, 2008-09-08 at 13:06 +0400, Dmitry Baryshkov wrote:
-> >> ASoC and non-ASoC drivers for ACLINK on PXA share lot's of common code.
-> >> Move all common code into separate file.
-> >> 
-> >> +#include "pxa2xx-ac97-lib.c"
-> >>  
-> >>  
-> > Any reason for not linking with pxa2xx-ac97-lib.o ?
-> > 
-> 
-> >> +#include "../../arm/pxa2xx-ac97-lib.c"
-> > 
-> > 
-> > ditto
-> > 
-> >>  static void pxa2xx_ac97_warm_reset(struct snd_ac97 *ac97) {
-> > 
-> > Liam
-> 
-> 
-> That is the interim change. In the next patch the file is fully separated
-> into distinct module. I can squash those patches if you'd prefer.
-> 
-> 
+On Sat, Sep 06, 2008 at 11:41:42PM -0700, sakoman@gmail.com wrote:
 
-Yes, please - makes it easier to read.
+> +
+> +config SND_SOC_TWL4030
+> +	tristate
+> +	depends on SND_SOC && I2C
+> +
 
-Liam
+Sorry, didn't notice earlier: this should depend on whatever the config
+option is for the TWL4030 core driver rather than on I2C since it
+doesn't actually interact with I2C directly.  Although in most
+applications this won't make much odds since the machine driver will
+select the codec driver and select ignores the dependencies anyway.
