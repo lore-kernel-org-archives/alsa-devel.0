@@ -1,17 +1,18 @@
-From: Liam Girdwood <lrg@kernel.org>
-Subject: Re: ASoC vs non-ASoC: 2 pcm driver questions.
-Date: Mon, 08 Sep 2008 09:37:48 +0100
-Message-ID: <1220863068.17091.70.camel@odin>
-References: <ga2i5s$sge$2@ger.gmane.org>
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Subject: [GIT PULL] unify two pxa sound drivers
+Date: Mon, 8 Sep 2008 12:53:39 +0400
+Message-ID: <20080908085339.GA31573@doriath.ww600.siemens.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hera.kernel.org (hera.kernel.org [140.211.167.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id D8397244DE
+Received: from ik-out-1112.google.com (ik-out-1112.google.com [66.249.90.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id BBF96244FC
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Sep 2008 10:37:53 +0200 (CEST)
-In-Reply-To: <ga2i5s$sge$2@ger.gmane.org>
+	Mon,  8 Sep 2008 10:56:44 +0200 (CEST)
+Received: by ik-out-1112.google.com with SMTP id c30so909643ika.0
+	for <alsa-devel@alsa-project.org>; Mon, 08 Sep 2008 01:56:43 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,33 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dmitry Baryshkov <dbaryshkov@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2008-09-08 at 06:53 +0000, Dmitry Baryshkov wrote:
-> Hi,
-> 
-> While unifying pxa2xx-pcm drivers (ASoC and plain one) I've encountered the
-> following differences in snd_pcm_open:
-> 
-> 1. ASoC one uses snd_soc_set_runtime_hardware() function instead of
->  just copying runtime->hw = pxa2xx_pcm_hardware;
-> However the major difference is that snd_soc_set_runtime_hardware() doesn't
-> initialise few fields which are set later in generic soc_pcm_open().
-> Can I drop this call and use the same assignment as in non-asoc driver.
-> 
+Hi,
 
-Do you mean snd_soc_set_runtime_hw_params() ?
+Please consider this changeset. It was partially tested, but additional
+testing will be appreciated. pxa3xx was only compile tested.
 
-Give it a try.
+The following changes since commit 6a55617ed5d1aa62b850de2cf66f5ede2eef4825:
+  Linus Torvalds (1):
+        Linux v2.6.27-rc4
 
-> 2. To enforce some constraints ASoC driver uses generic
->  snd_pcm_hw_constraint_step() instead of hand-written rule functions.
->  Can this be also unified or there are some hidden differencies?
-> 
+are available in the git repository at:
 
-This could also be unified, can't think of any reason why they should
-not.
+  git://git.infradead.org/users/dbaryshkov/zaurus-2.6.git pxa2xx-asoc-cleanup
 
-Liam
+Dmitry Baryshkov (4):
+      Permit simultaneous compilation of both PXA AC97 drivers
+      Separate common pxa2xx-ac97 code
+      Make pxa-ac97-lib separate module
+      Separate common pxa2xx-pcm code
+
+Russ Dill (1):
+      pxa2xx-lib: support building for several pxa's
+
+ arch/arm/mach-pxa/include/mach/pxa-regs.h |    4 +-
+ include/sound/pxa2xx-lib.h                |   45 +++++
+ sound/arm/Kconfig                         |    9 +-
+ sound/arm/Makefile                        |    4 +
+ sound/arm/pxa2xx-ac97-lib.c               |  297 +++++++++++++++++++++++++++++
+ sound/arm/pxa2xx-ac97.c                   |  247 ++----------------------
+ sound/arm/pxa2xx-pcm-lib.c                |  277 +++++++++++++++++++++++++++
+ sound/arm/pxa2xx-pcm.c                    |  252 +-----------------------
+ sound/arm/pxa2xx-pcm.h                    |   13 +-
+ sound/soc/pxa/Kconfig                     |    3 +
+ sound/soc/pxa/pxa2xx-ac97.c               |  272 +-------------------------
+ sound/soc/pxa/pxa2xx-i2s.c                |   26 ++-
+ sound/soc/pxa/pxa2xx-pcm.c                |  265 +-------------------------
+ sound/soc/pxa/pxa2xx-pcm.h                |   15 --
+ 14 files changed, 707 insertions(+), 1022 deletions(-)
+ create mode 100644 include/sound/pxa2xx-lib.h
+ create mode 100644 sound/arm/pxa2xx-ac97-lib.c
+ create mode 100644 sound/arm/pxa2xx-pcm-lib.c
+
+-- 
+With best wishes
+Dmitry
