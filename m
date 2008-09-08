@@ -1,18 +1,29 @@
-From: Liam Girdwood <lrg@kernel.org>
-Subject: Re: Where can I find some info about the DAI?
-Date: Mon, 08 Sep 2008 10:38:18 +0100
-Message-ID: <1220866698.17091.84.camel@odin>
-References: <48C4EA43.2090607@atmel.com> <1220864830.17091.77.camel@odin>
-	<48C4F0B0.40907@atmel.com>
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Subject: Re: [PATCH 2/5] Separate common pxa2xx-ac97 code
+Date: Mon, 8 Sep 2008 09:42:50 +0000 (UTC)
+Message-ID: <ga2s2q$sge$3@ger.gmane.org>
+References: <20080908085339.GA31573@doriath.ww600.siemens.net>
+	<1220864773-31745-1-git-send-email-dbaryshkov@gmail.com>
+	<1220864773-31745-2-git-send-email-dbaryshkov@gmail.com>
+	<1220866410.17091.81.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hera.kernel.org (hera.kernel.org [140.211.167.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4DED024542
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 315F72454A
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Sep 2008 11:38:22 +0200 (CEST)
-In-Reply-To: <48C4F0B0.40907@atmel.com>
+	Mon,  8 Sep 2008 11:43:04 +0200 (CEST)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1KcdGq-0004x9-TE
+	for alsa-devel@alsa-project.org; Mon, 08 Sep 2008 09:42:56 +0000
+Received: from iap-pxy-mow1.siemens.ru ([212.248.25.26])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 08 Sep 2008 09:42:56 +0000
+Received: from dbaryshkov by iap-pxy-mow1.siemens.ru with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 08 Sep 2008 09:42:56 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,21 +33,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sedji Gaouaou <sedji.gaouaou@atmel.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAyMDA4LTA5LTA4IGF0IDExOjMwICswMjAwLCBTZWRqaSBHYW91YW91IHdyb3RlOgo+
-IEhpIExpYW0sCj4gTGlhbSBHaXJkd29vZCBhIMOpY3JpdCA6Cj4gCj4gPiBIYXZlIHlvdSBsb29r
-ZWQgaW4gRG9jdW1lbnRhdGlvbi9zb3VuZC9hbHNhL3NvYyA/Cj4gPiAKPiA+IExpYW0KPiA+IAo+
-ID4gCj4gCj4gWWVzLCBidXQgSSBjYW4ndCBmaW5kIGFueXRoaW5nIHJlZ2FyZGluZyB0aGUgY3B1
-X2RhaS4gVGhlcmUgc29tZSAKPiBkb2N1bWVudGF0aW9uIGFib3V0IHRoZSBjb2RlYWMgREFJLCBi
-dXQgbm90aGluZyBhYm91dCB0aGUgY3B1IG9uZS4KPiBJIHdhcyB3b25kZXJpbmcgaWYgdGhlcmUg
-aXMgYW55IHVwZGF0ZSBjb25jZXJuaW5nIHRoaXMgZG9jdW1lbnRhdGlvbj8KPiAKCkl0J3MgdGhl
-IHNhbWUgdGhpbmcgKHN0cnVjdCkgbm93LiBEb2N1bWVudGF0aW9uIHByb2JhYmx5IG5lZWRzIHVw
-ZGF0ZWQKdG8gcmVmbGVjdCB0aGlzLgoKSWYgeW91IGFyZSBzdGFydGluZyBhIERBSSBkcml2ZXIg
-ZnJvbSBzY3JhdGNoIHRoZW4gaXQncyBiZXN0IHRvIGxvb2sgYXQKdGhlIG90aGVyIENQVSBkYWkg
-ZHJpdmVycyBhcyBleGFtcGxlcy4KCkxpYW0KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+Liam Girdwood wrote:
+
+> On Mon, 2008-09-08 at 13:06 +0400, Dmitry Baryshkov wrote:
+>> ASoC and non-ASoC drivers for ACLINK on PXA share lot's of common code.
+>> Move all common code into separate file.
+>> 
+>> +#include "pxa2xx-ac97-lib.c"
+>>  
+>>  
+> Any reason for not linking with pxa2xx-ac97-lib.o ?
+> 
+
+>> +#include "../../arm/pxa2xx-ac97-lib.c"
+> 
+> 
+> ditto
+> 
+>>  static void pxa2xx_ac97_warm_reset(struct snd_ac97 *ac97) {
+> 
+> Liam
+
+
+That is the interim change. In the next patch the file is fully separated
+into distinct module. I can squash those patches if you'd prefer.
+
+
+-- 
+With best wishes
+Dmitry
