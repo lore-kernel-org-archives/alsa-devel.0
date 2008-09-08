@@ -1,41 +1,72 @@
-From: William Estrada <MrUmunhum@popdial.com>
-Subject: How to wait for end of callback?
-Date: Mon, 08 Sep 2008 11:29:50 -0700
-Message-ID: <48C56F1E.60005@popdial.com>
-Reply-To: MrUmunhum@popdial.com
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?=
+	<ukleinek@informatik.uni-freiburg.de>
+Subject: [RESEND, PATCH] Fix section for sa11xx-uda1341 platform driver
+Date: Mon, 8 Sep 2008 20:51:23 +0200
+Message-ID: <20080908185123.GA22076@informatik.uni-freiburg.de>
+References: <20080902210501.GA4306@informatik.uni-freiburg.de> <1220876004-5784-1-git-send-email-ukleinek@informatik.uni-freiburg.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from MAIL02.inside.adbasesystems.com (mail.1dial.com [64.136.164.73])
-	by alsa0.perex.cz (Postfix) with ESMTP id 789E72443F
-	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Sep 2008 20:29:55 +0200 (CEST)
-Received: from [10.1.1.50] (64.124.13.3.gatespeed.com [64.124.13.3]) by
-	MAIL02.inside.adbasesystems.com
-	(Vircom SMTPRS 4.5.654.13) with ESMTP id
-	<B0595629686@MAIL02.inside.adbasesystems.com> for
-	<alsa-devel@alsa-project.org>; Mon, 8 Sep 2008 14:29:52 -0400
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755440AbYIHSvn@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1220876004-5784-1-git-send-email-ukleinek@informatik.uni-freiburg.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Russell King <rmk+kernel@arm.linux.org.uk>, Jaroslav Kysela <perex@perex.cz>, Brian Avery <b.avery@hp.com>, alsa-devel@alsa-project.org, Andrew Morton <akpm@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi group,
+Don't use __init but __devinit to define probe function.  A pointer to
+sa11xx_uda1341_probe is passed to the core via platform_driver_register=
+ and
+so the function must not disappear after the module is loaded.  Using _=
+_init
+and having HOTPLUG=3Dy and SND_SA11XX_UDA1341=3Dm the following probabl=
+y oopses:
 
-  What API call fo I use to wait for a callback to end? Right now I use 
-a select() and wait
-for stdin input or a system interrupt. Is there another way?
+	echo -n sa11xx_uda1341.1 > /sys/bus/platform/driver/sa11xx_uda1341/unb=
+ind
+	echo -n sa11xx_uda1341.1 > /sys/bus/platform/driver/sa11xx_uda1341/bin=
+d
 
--- 
-William Estrada
-MrUmunhum@popdial.com
-Mt-Umunhum-Wireless.net ( http://Mt-Umunhum-Wireless.net )
-Ymessenger: MrUmunhum
+Signed-off-by: Uwe Kleine-K=F6nig <ukleinek@informatik.uni-freiburg.de>
+Cc: Russell King <rmk+kernel@arm.linux.org.uk>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Brian Avery <b.avery@hp.com>
+Cc: alsa-devel@alsa-project.org
+Cc: Andrew Morton <akpm@linux-foundation.org>
+
+---
+Hello,
+
+uups, I forgot to add the right cc:.  Sorry.
+
+@Andrew,  I have a few more patches of this type pending.  Is it OK for
+you if they go via you?  This would ease the process a bit for me.
+
+Uwe
+
+ sound/arm/sa11xx-uda1341.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/arm/sa11xx-uda1341.c b/sound/arm/sa11xx-uda1341.c
+index b9c51bf..da25b41 100644
+--- a/sound/arm/sa11xx-uda1341.c
++++ b/sound/arm/sa11xx-uda1341.c
+@@ -879,7 +879,7 @@ void snd_sa11xx_uda1341_free(struct snd_card *card)
+ 	audio_dma_free(&chip->s[SNDRV_PCM_STREAM_CAPTURE]);
+ }
+=20
+-static int __init sa11xx_uda1341_probe(struct platform_device *devptr)
++static int __devinit sa11xx_uda1341_probe(struct platform_device *devp=
+tr)
+ {
+ 	int err;
+ 	struct snd_card *card;
+--=20
+tg: (7686ad5..) t/sectionfixes/sa11xx_uda1341 (depends on: t/sectionfix=
+es/sa11xx_uda1341)
+
+--=20
+Uwe Kleine-K=F6nig
+
+http://www.google.com/search?q=3D1+electron+mass%3D
