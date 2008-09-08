@@ -1,22 +1,16 @@
-From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
-Subject: Re: [PATCH] ice1712 drivers coding style fixes (part 2)
-Date: Mon, 8 Sep 2008 19:41:11 +0200
-Message-ID: <fd3eb9bf0809081041q761f4444mc4e9ebbdeeb02d31@mail.gmail.com>
-References: <fd3eb9bf0809070807r1ac8b2coe5eb0af7c99fa616@mail.gmail.com>
-	<s5hvdx6pv96.wl%tiwai@suse.de>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: Re: [PATCH1/1] hda: digital slave support for IDT
+	codecs
+Date: Mon, 08 Sep 2008 13:53:01 -0400
+Message-ID: <48C5667D.4050207@embeddedalley.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f17.google.com (mail-gx0-f17.google.com
-	[209.85.217.17])
-	by alsa0.perex.cz (Postfix) with ESMTP id 656281037FF
+Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
+	by alsa0.perex.cz (Postfix) with SMTP id CF1E524408
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Sep 2008 19:41:13 +0200 (CEST)
-Received: by gxk10 with SMTP id 10so8213166gxk.8
-	for <alsa-devel@alsa-project.org>; Mon, 08 Sep 2008 10:41:12 -0700 (PDT)
-In-Reply-To: <s5hvdx6pv96.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Mon,  8 Sep 2008 19:53:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,21 +20,123 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-MjAwOC85LzggVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPjoKPiBBdCBTdW4sIDcgU2VwIDIw
-MDggMTc6MDc6MzkgKzAyMDAsCj4gPT9VVEYtOD9RP1ZlZHJhbl9NaWxldGk9QzQ9ODc/PSB3cm90
-ZToKPj4KPj4gSSBzdGFydGVkIHdpdGggVGFrYXNoaSdzIHNvdW5kLXVuc3RhYmxlIHRyZWUgYXMg
-YSBiYXNlOgo+Cj4gT2gsIHBsZWFzZSBiYXNlIG9uIHNvdW5kLTIuNiB0cmVlLiAgVGhlIHVuc3Rh
-YmxlIHRyZWUgaXMgcmVhbGx5Cj4gdW5zdGFibGUsIG5vdCBmb3IgdXBzdHJlYW0gbWVyZ2UuCk9r
-LCB0aGFua3MgZm9yIGNsYXJpZmljYXRpb24uIFdpbGwgZG8uCj4KPj4gRml4ZWQ6Cj4+ICogaWNl
-MTcyNCBjb21waWxhdGlvbiBlcnJvciAob25lIHsgdG9vIG11Y2gpCj4KPiBXZWxsLCBJIGFscmVh
-ZHkgYXBwbGllZCB5b3VyIGZpcnN0IG9uZSwgc28gdGhpcyB2ZXJzaW9uIGNvbmZsaWN0cy4KPiBQ
-bGVhc2UgcmUtY3JlYXRlIGZyb20gdGhlIGxhdGVzdCBzb3VuZC0yLjYuZ2l0IHRyZWUuCkkga25v
-dyB0aGlzIGlzbid0IGEgcGxhY2UgdG8gYXNrIGZvciBnaXQgbGVzc29ucywgYnV0IGlzIHRoZXJl
-IGEgd2F5CnRvIGRvIGl0IHNlbWktYXV0b21hZ2ljYWxseSB3aXRoIGdpdD8KPgo+IHRoYW5rcywK
-Pgo+IFRha2FzaGkKPgoKCgotLSAKVmVkcmFuIE1pbGV0acSHCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Added slave_dig_outs entries for several IDT codecs that have multiple
+SPDIF outs, and enabled these SPDIF outs in several pin configs.
+
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+---
+
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index ee24a0d..5280eff 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -235,6 +235,10 @@ static hda_nid_t stac92hd73xx_pwr_nids[8] = {
+ 	0x0f, 0x10, 0x11
+ };
+
++static hda_nid_t stac92hd73xx_slave_dig_outs[2] = {
++	0x26, 0,
++};
++
+ static hda_nid_t stac92hd73xx_adc_nids[2] = {
+ 	0x1a, 0x1b
+ };
+@@ -284,6 +288,10 @@ static hda_nid_t stac92hd83xxx_pwr_nids[4] = {
+ 	0xa, 0xb, 0xd, 0xe,
+ };
+
++static hda_nid_t stac92hd83xxx_slave_dig_outs[2] = {
++	0x1e, 0,
++};
++
+ static unsigned int stac92hd83xxx_pwr_mapping[4] = {
+ 	0x03, 0x0c, 0x10, 0x40,
+ };
+@@ -317,6 +325,10 @@ static hda_nid_t stac92hd71bxx_dmic_nids[STAC92HD71BXX_NUM_DMICS + 1] = {
+ 	0x18, 0x19, 0
+ };
+
++static hda_nid_t stac92hd71bxx_slave_dig_outs[2] = {
++	0x22, 0
++};
++
+ static hda_nid_t stac925x_adc_nids[1] = {
+         0x03,
+ };
+@@ -418,9 +430,10 @@ static hda_nid_t stac92hd83xxx_pin_nids[14] = {
+ 	0x0f, 0x10, 0x11, 0x12, 0x13,
+ 	0x1d, 0x1e, 0x1f, 0x20
+ };
+-static hda_nid_t stac92hd71bxx_pin_nids[10] = {
++static hda_nid_t stac92hd71bxx_pin_nids[11] = {
+ 	0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
+ 	0x0f, 0x14, 0x18, 0x19, 0x1e,
++	0x1f,
+ };
+
+ static hda_nid_t stac927x_pin_nids[14] = {
+@@ -1492,22 +1505,22 @@ static struct snd_pci_quirk stac92hd83xxx_cfg_tbl[] = {
+ 		      "DFI LanParty", STAC_92HD71BXX_REF),
+ };
+
+-static unsigned int ref92hd71bxx_pin_configs[10] = {
++static unsigned int ref92hd71bxx_pin_configs[11] = {
+ 	0x02214030, 0x02a19040, 0x01a19020, 0x01014010,
+ 	0x0181302e, 0x01114010, 0x01019020, 0x90a000f0,
+-	0x90a000f0, 0x01452050,
++	0x90a000f0, 0x01452050, 0x01452050,
+ };
+
+-static unsigned int dell_m4_1_pin_configs[10] = {
++static unsigned int dell_m4_1_pin_configs[11] = {
+ 	0x0421101f, 0x04a11221, 0x40f000f0, 0x90170110,
+ 	0x23a1902e, 0x23014250, 0x40f000f0, 0x90a000f0,
+-	0x40f000f0, 0x4f0000f0,
++	0x40f000f0, 0x4f0000f0, 0x4f0000f0,
+ };
+
+-static unsigned int dell_m4_2_pin_configs[10] = {
++static unsigned int dell_m4_2_pin_configs[11] = {
+ 	0x0421101f, 0x04a11221, 0x90a70330, 0x90170110,
+ 	0x23a1902e, 0x23014250, 0x40f000f0, 0x40f000f0,
+-	0x40f000f0, 0x044413b0,
++	0x40f000f0, 0x044413b0, 0x044413b0,
+ };
+
+ static unsigned int *stac92hd71bxx_brd_tbl[STAC_92HD71BXX_MODELS] = {
+@@ -3846,6 +3859,7 @@ static int patch_stac92hd73xx(struct hda_codec *codec)
+ 		return -ENOMEM;
+
+ 	codec->spec = spec;
++	codec->slave_dig_outs = stac92hd73xx_slave_dig_outs;
+ 	spec->num_pins = ARRAY_SIZE(stac92hd73xx_pin_nids);
+ 	spec->pin_nids = stac92hd73xx_pin_nids;
+ 	spec->board_config = snd_hda_check_board_config(codec,
+@@ -3984,6 +3998,7 @@ static int patch_stac92hd83xxx(struct hda_codec *codec)
+ 		return -ENOMEM;
+
+ 	codec->spec = spec;
++	codec->slave_dig_outs = stac92hd83xxx_slave_dig_outs;
+ 	spec->mono_nid = 0x19;
+ 	spec->digbeep_nid = 0x21;
+ 	spec->dmic_nids = stac92hd83xxx_dmic_nids;
+@@ -4134,6 +4149,7 @@ again:
+ 	case 0x111d76b5:
+ 		spec->mixer = stac92hd71bxx_mixer;
+ 		spec->init = stac92hd71bxx_core_init;
++		codec->slave_dig_outs = stac92hd71bxx_slave_dig_outs;
+ 		break;
+ 	case 0x111d7608: /* 5 Port with Analog Mixer */
+ 		if ((codec->revision_id & 0xf) == 0 ||
+@@ -4166,6 +4182,7 @@ again:
+ 	default:
+ 		spec->mixer = stac92hd71bxx_analog_mixer;
+ 		spec->init = stac92hd71bxx_analog_core_init;
++		codec->slave_dig_outs = stac92hd71bxx_slave_dig_outs;
+ 	}
+
+ 	spec->aloopback_mask = 0x20;
