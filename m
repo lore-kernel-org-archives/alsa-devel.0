@@ -1,16 +1,25 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: Re: [PATCH1/1] hda: digital slave support for IDT
-	codecs
-Date: Mon, 08 Sep 2008 13:53:01 -0400
-Message-ID: <48C5667D.4050207@embeddedalley.com>
+From: "Steve Sakoman" <sakoman@gmail.com>
+Subject: Re: [PATCH 3/5] ALSA: ASoC: Add support for TWL4030
+	audio codec (rev 3)
+Date: Mon, 8 Sep 2008 11:16:17 -0700
+Message-ID: <5e088bd90809081116v58ff6b14rd2331e5fccaeb097@mail.gmail.com>
+References: <1220769704-16705-1-git-send-email-sakoman@gmail.com>
+	<1220769704-16705-2-git-send-email-sakoman@gmail.com>
+	<1220769704-16705-3-git-send-email-sakoman@gmail.com>
+	<1220769704-16705-4-git-send-email-sakoman@gmail.com>
+	<20080908095607.GC790@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
-	by alsa0.perex.cz (Postfix) with SMTP id CF1E524408
+Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id BE9351037F1
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Sep 2008 19:53:24 +0200 (CEST)
+	Mon,  8 Sep 2008 20:16:18 +0200 (CEST)
+Received: by py-out-1112.google.com with SMTP id a29so991250pyi.36
+	for <alsa-devel@alsa-project.org>; Mon, 08 Sep 2008 11:16:17 -0700 (PDT)
+In-Reply-To: <20080908095607.GC790@sirena.org.uk>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,123 +29,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: sakoman@gmail.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Steve Sakoman <steve@sakoman.com>
 List-Id: alsa-devel@alsa-project.org
 
-Added slave_dig_outs entries for several IDT codecs that have multiple
-SPDIF outs, and enabled these SPDIF outs in several pin configs.
+On Mon, Sep 8, 2008 at 2:56 AM, Mark Brown <broonie@sirena.org.uk> wrote:
+> On Sat, Sep 06, 2008 at 11:41:42PM -0700, sakoman@gmail.com wrote:
+>
+>> +
+>> +config SND_SOC_TWL4030
+>> +     tristate
+>> +     depends on SND_SOC && I2C
+>> +
+>
+> Sorry, didn't notice earlier: this should depend on whatever the config
+> option is for the TWL4030 core driver rather than on I2C since it
+> doesn't actually interact with I2C directly.  Although in most
+> applications this won't make much odds since the machine driver will
+> select the codec driver and select ignores the dependencies anyway.
 
-Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
----
+You are correct.  Good catch, though as you say it doesn't really
+matter in practice.
 
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index ee24a0d..5280eff 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -235,6 +235,10 @@ static hda_nid_t stac92hd73xx_pwr_nids[8] = {
- 	0x0f, 0x10, 0x11
- };
+I will re-submit a version with this fixed nonetheless.
 
-+static hda_nid_t stac92hd73xx_slave_dig_outs[2] = {
-+	0x26, 0,
-+};
-+
- static hda_nid_t stac92hd73xx_adc_nids[2] = {
- 	0x1a, 0x1b
- };
-@@ -284,6 +288,10 @@ static hda_nid_t stac92hd83xxx_pwr_nids[4] = {
- 	0xa, 0xb, 0xd, 0xe,
- };
-
-+static hda_nid_t stac92hd83xxx_slave_dig_outs[2] = {
-+	0x1e, 0,
-+};
-+
- static unsigned int stac92hd83xxx_pwr_mapping[4] = {
- 	0x03, 0x0c, 0x10, 0x40,
- };
-@@ -317,6 +325,10 @@ static hda_nid_t stac92hd71bxx_dmic_nids[STAC92HD71BXX_NUM_DMICS + 1] = {
- 	0x18, 0x19, 0
- };
-
-+static hda_nid_t stac92hd71bxx_slave_dig_outs[2] = {
-+	0x22, 0
-+};
-+
- static hda_nid_t stac925x_adc_nids[1] = {
-         0x03,
- };
-@@ -418,9 +430,10 @@ static hda_nid_t stac92hd83xxx_pin_nids[14] = {
- 	0x0f, 0x10, 0x11, 0x12, 0x13,
- 	0x1d, 0x1e, 0x1f, 0x20
- };
--static hda_nid_t stac92hd71bxx_pin_nids[10] = {
-+static hda_nid_t stac92hd71bxx_pin_nids[11] = {
- 	0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
- 	0x0f, 0x14, 0x18, 0x19, 0x1e,
-+	0x1f,
- };
-
- static hda_nid_t stac927x_pin_nids[14] = {
-@@ -1492,22 +1505,22 @@ static struct snd_pci_quirk stac92hd83xxx_cfg_tbl[] = {
- 		      "DFI LanParty", STAC_92HD71BXX_REF),
- };
-
--static unsigned int ref92hd71bxx_pin_configs[10] = {
-+static unsigned int ref92hd71bxx_pin_configs[11] = {
- 	0x02214030, 0x02a19040, 0x01a19020, 0x01014010,
- 	0x0181302e, 0x01114010, 0x01019020, 0x90a000f0,
--	0x90a000f0, 0x01452050,
-+	0x90a000f0, 0x01452050, 0x01452050,
- };
-
--static unsigned int dell_m4_1_pin_configs[10] = {
-+static unsigned int dell_m4_1_pin_configs[11] = {
- 	0x0421101f, 0x04a11221, 0x40f000f0, 0x90170110,
- 	0x23a1902e, 0x23014250, 0x40f000f0, 0x90a000f0,
--	0x40f000f0, 0x4f0000f0,
-+	0x40f000f0, 0x4f0000f0, 0x4f0000f0,
- };
-
--static unsigned int dell_m4_2_pin_configs[10] = {
-+static unsigned int dell_m4_2_pin_configs[11] = {
- 	0x0421101f, 0x04a11221, 0x90a70330, 0x90170110,
- 	0x23a1902e, 0x23014250, 0x40f000f0, 0x40f000f0,
--	0x40f000f0, 0x044413b0,
-+	0x40f000f0, 0x044413b0, 0x044413b0,
- };
-
- static unsigned int *stac92hd71bxx_brd_tbl[STAC_92HD71BXX_MODELS] = {
-@@ -3846,6 +3859,7 @@ static int patch_stac92hd73xx(struct hda_codec *codec)
- 		return -ENOMEM;
-
- 	codec->spec = spec;
-+	codec->slave_dig_outs = stac92hd73xx_slave_dig_outs;
- 	spec->num_pins = ARRAY_SIZE(stac92hd73xx_pin_nids);
- 	spec->pin_nids = stac92hd73xx_pin_nids;
- 	spec->board_config = snd_hda_check_board_config(codec,
-@@ -3984,6 +3998,7 @@ static int patch_stac92hd83xxx(struct hda_codec *codec)
- 		return -ENOMEM;
-
- 	codec->spec = spec;
-+	codec->slave_dig_outs = stac92hd83xxx_slave_dig_outs;
- 	spec->mono_nid = 0x19;
- 	spec->digbeep_nid = 0x21;
- 	spec->dmic_nids = stac92hd83xxx_dmic_nids;
-@@ -4134,6 +4149,7 @@ again:
- 	case 0x111d76b5:
- 		spec->mixer = stac92hd71bxx_mixer;
- 		spec->init = stac92hd71bxx_core_init;
-+		codec->slave_dig_outs = stac92hd71bxx_slave_dig_outs;
- 		break;
- 	case 0x111d7608: /* 5 Port with Analog Mixer */
- 		if ((codec->revision_id & 0xf) == 0 ||
-@@ -4166,6 +4182,7 @@ again:
- 	default:
- 		spec->mixer = stac92hd71bxx_analog_mixer;
- 		spec->init = stac92hd71bxx_analog_core_init;
-+		codec->slave_dig_outs = stac92hd71bxx_slave_dig_outs;
- 	}
-
- 	spec->aloopback_mask = 0x20;
+Steve
