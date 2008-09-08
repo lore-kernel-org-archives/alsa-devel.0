@@ -1,29 +1,18 @@
-From: Dmitry Baryshkov <dbaryshkov@gmail.com>
-Subject: Re: [PATCH 2/5] Separate common pxa2xx-ac97 code
-Date: Mon, 8 Sep 2008 09:42:50 +0000 (UTC)
-Message-ID: <ga2s2q$sge$3@ger.gmane.org>
-References: <20080908085339.GA31573@doriath.ww600.siemens.net>
-	<1220864773-31745-1-git-send-email-dbaryshkov@gmail.com>
-	<1220864773-31745-2-git-send-email-dbaryshkov@gmail.com>
-	<1220866410.17091.81.camel@odin>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: Where can I find some info about the DAI?
+Date: Mon, 8 Sep 2008 10:47:33 +0100
+Message-ID: <20080908094733.GB790@sirena.org.uk>
+References: <48C4EA43.2090607@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 315F72454A
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id CBC3E244D8
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Sep 2008 11:43:04 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1KcdGq-0004x9-TE
-	for alsa-devel@alsa-project.org; Mon, 08 Sep 2008 09:42:56 +0000
-Received: from iap-pxy-mow1.siemens.ru ([212.248.25.26])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 08 Sep 2008 09:42:56 +0000
-Received: from dbaryshkov by iap-pxy-mow1.siemens.ru with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 08 Sep 2008 09:42:56 +0000
+	Mon,  8 Sep 2008 11:47:34 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <48C4EA43.2090607@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,35 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Liam Girdwood wrote:
+On Mon, Sep 08, 2008 at 11:02:59AM +0200, Sedji Gaouaou wrote:
 
-> On Mon, 2008-09-08 at 13:06 +0400, Dmitry Baryshkov wrote:
->> ASoC and non-ASoC drivers for ACLINK on PXA share lot's of common code.
->> Move all common code into separate file.
->> 
->> +#include "pxa2xx-ac97-lib.c"
->>  
->>  
-> Any reason for not linking with pxa2xx-ac97-lib.o ?
-> 
+> I am trying to write a DAI.
+> I am working with a wolfson wm8731 and an atmel at91sam9g20. Basically I 
+> had a look at the file eti_b1_wm8731.c, but I would like to use another 
+> ssc archi(atmel_ssc instead of at91_ssc).
+> So I would like to know where should I find some info concerning the DAI.
 
->> +#include "../../arm/pxa2xx-ac97-lib.c"
-> 
-> 
-> ditto
-> 
->>  static void pxa2xx_ac97_warm_reset(struct snd_ac97 *ac97) {
-> 
-> Liam
+There is some documentation in Documentation/sound/alsa/soc which may be
+helpful.  It should also be useful to refer to existing drivers for
+examples of how to do things - the PXA and S3C24xx architectures get
+much of the attention here so are among the best places to look.
 
-
-That is the interim change. In the next patch the file is fully separated
-into distinct module. I can squash those patches if you'd prefer.
-
-
--- 
-With best wishes
-Dmitry
+If you run into trouble please just ask here.
