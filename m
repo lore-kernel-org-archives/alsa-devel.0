@@ -1,21 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Problems with pulseaudio / asla on PS3
-Date: Tue, 9 Sep 2008 10:53:08 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0809091051310.1221@tm8103.perex-int.cz>
-References: <200809050842.08596.kevin952@tpg.com.au>
-	<s5hwshrt84y.wl%tiwai@suse.de>
-	<200809052102.06534.kevin952@tpg.com.au>
-	<20080908202135.GA5221@tango.0pointer.de>
-	<s5hmyihu2yr.wl%tiwai@suse.de>
+From: Liam Girdwood <lrg@kernel.org>
+Subject: Re: [PATCH 7/8] ASoC: Add SPI support for WM8731
+Date: Tue, 09 Sep 2008 10:03:58 +0100
+Message-ID: <1220951038.17091.177.camel@odin>
+References: <1220291224-11269-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<200809082127.13653.gineera@aspect135.co.uk>
+	<20080908205105.GA32649@sirena.org.uk>
+	<200809090945.35359.gineera@aspect135.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id A3F722454A
+Received: from hera.kernel.org (hera.kernel.org [140.211.167.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9769824528
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Sep 2008 10:53:09 +0200 (CEST)
-In-Reply-To: <s5hmyihu2yr.wl%tiwai@suse.de>
+	Tue,  9 Sep 2008 11:04:05 +0200 (CEST)
+In-Reply-To: <200809090945.35359.gineera@aspect135.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,52 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Lennart Poettering <mznyfn@0pointer.de>
+To: Alan Horstmann <gineera@aspect135.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Cliff Cai <cliff.cai@analog.com>, ALSA devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@sirena.org.uk>, Bryan Wu <cooloney@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 9 Sep 2008, Takashi Iwai wrote:
-
-> At Mon, 8 Sep 2008 22:21:36 +0200,
-> Lennart Poettering wrote:
-> > 
-> > On Fri, 05.09.08 21:02, Kevin Gilbert (kevin952@tpg.com.au) wrote:
-> > 
-> > > 
-> > > Hi Takashi,
-> > > 
-> > > On Fri, 5 Sep 2008, Takashi Iwai opined:
-> > > > Well, it's no bug in softvol, at least.  The softvol doesn't do any
-> > > > format or layout conversions.  The layout conversion is done via plug
-> > > > plugin applied onto the softvol.
-> > > 
-> > > OK (not that I fully understand what you have said) but where does that leave 
-> > > me? Is there something that I should try? Some ALSA or kernel configuration 
-> > > option that might be in error?
-> > 
-> > Takashi, as Kevin wrote originally, the problem is not that softvol
-> > doesn't do any format/layout conversions, but that it claims it
-> > does. PA asks softvol for INTERLEAVED samples, softvol agrees to
-> > that -- and actually hands us only NONINTERLEAVED samples because it
-> > doesn't reformat the from the underlying layer.
-> > 
-> > So, it *is* a bug in softvol. However, you are right that it doesn't
-> > do any conversions.
+On Tue, 2008-09-09 at 09:45 +0100, Alan Horstmann wrote:
+> On Monday 08 September 2008 21:51, you wrote:
+> > On Mon, Sep 08, 2008 at 09:27:13PM +0100, Alan Horstmann wrote:
+> > > Attached and here inline is the small change we applied to ensure the
+> > > byte order is correct in the _spi_write function.  Note we observed the
+> > > spi bus
+> >
+> > I take it you're happy to give this your Signed-off-by?
 > 
-> Does it happen only with softvol?  For example, try to put any
-> other conversion, such as, linear plugin instead of softvol.
-> Could you check whether it works?
+> Yes, fine, though obviously we haven't tested this with any other soc systems.
 > 
-> Basically softvol does nothing special, just like other normal plugins.
-> So I don't think this is specific to softvol.
+> wm8731_spi_write_byte_order.patch
+> 
+> Ensure wm8731_spi_write byte order is consistent regardless of endianess.
+> 
+> Signed-off-by: Alan Horstmann <gineera@aspect135.co.uk>
+> 
 
-Also, output from snd_pcm_dump() after initialization (before samples r/w) 
-might help us to determine the problem. I'll try to reproduce this 
-behavior with the snd-dummy module.
+Might be worth rolling this out to other SPI capable codecs too.....
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Liam 
