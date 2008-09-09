@@ -1,17 +1,28 @@
-From: Jaroslav Kysela <perex@perex.cz>
+From: Colin Guthrie <gmane@colin.guthr.ie>
 Subject: Re: Where to report ALSA bugs?
-Date: Tue, 9 Sep 2008 19:58:15 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0809091957070.1221@tm8103.perex-int.cz>
+Date: Tue, 09 Sep 2008 19:36:46 +0100
+Message-ID: <ga6fnu$lc2$1@ger.gmane.org>
 References: <48C6B780.4070807@popdial.com>
+	<Pine.LNX.4.61.0809091957070.1221@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 048CB245F5
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9822D103850
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Sep 2008 19:58:16 +0200 (CEST)
-In-Reply-To: <48C6B780.4070807@popdial.com>
+	Tue,  9 Sep 2008 20:36:57 +0200 (CEST)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1Kd85A-0001i1-DB
+	for alsa-devel@alsa-project.org; Tue, 09 Sep 2008 18:36:56 +0000
+Received: from 80-192-67-147.cable.ubr10.edin.blueyonder.co.uk
+	([80.192.67.147]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 09 Sep 2008 18:36:56 +0000
+Received: from gmane by 80-192-67-147.cable.ubr10.edin.blueyonder.co.uk with
+	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 09 Sep 2008 18:36:56 +0000
+In-Reply-To: <Pine.LNX.4.61.0809091957070.1221@tm8103.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,30 +32,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: William Estrada <MrUmunhum@popdial.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 9 Sep 2008, William Estrada wrote:
+Jaroslav Kysela wrote:
+> You may report bugs to this list or our bug tracker - see 
+> www.alsa-project.org.
 
-> Hi group,
-> 
->   I am making progress with my ALSA apps but in the process I have found 
-> a few bugs. One of them is in the documentation.
-> 
->   In 
-> http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#g692ad9e5902d0623b56a0decee0fa686
-> Under Parameters=> 'Size  frames to be written' should be 'frames to be 
-> read'.
+Has that ever really actually "worked"? All the times I comment on bugs 
+there, it just seems to be pretty much ignored. And it has to be said, 
+Mantis is just horrible to use!
 
-Fixed. Thanks.
+This mailing list is much better :)
 
-You may report bugs to this list or our bug tracker - see 
-www.alsa-project.org.
+Col
 
-					Jaroslav
+-- 
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+   Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+   Mandriva Linux Contributor [http://www.mandriva.com/]
+   PulseAudio Hacker [http://www.pulseaudio.org/]
+   Trac Hacker [http://trac.edgewall.org/]
