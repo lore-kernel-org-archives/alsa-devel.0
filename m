@@ -1,17 +1,19 @@
-From: Liam Girdwood <lrg@kernel.org>
-Subject: Re: wm8731 capture -dapm failure
-Date: Tue, 09 Sep 2008 16:54:02 +0100
-Message-ID: <1220975642.17091.200.camel@odin>
-References: <200809091642.14114.gineera@aspect135.co.uk>
+From: Harald Welte <HaraldWelte@viatech.com>
+Subject: Re: [PATCH 0/7] HDA patch_via.c update
+Date: Wed, 10 Sep 2008 01:10:48 +0800
+Message-ID: <20080909171048.GG4213@prithivi.gnumonks.org>
+References: <20080909073717.GC9638@prithivi.gnumonks.org>
+	<fd3eb9bf0809090708k249b59d6l92133c9fd4a29296@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hera.kernel.org (hera.kernel.org [140.211.167.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id CED38103853
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id 80CF4103856
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Sep 2008 17:54:07 +0200 (CEST)
-In-Reply-To: <200809091642.14114.gineera@aspect135.co.uk>
+	Tue,  9 Sep 2008 19:20:12 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <fd3eb9bf0809090708k249b59d6l92133c9fd4a29296@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,84 +23,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Cliff Cai <cliff.cai@analog.com>, Bryan Wu <cooloney@kernel.org>
+To: Vedran =?utf-8?Q?Mileti=C4=87?= <rivanvx@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2008-09-09 at 16:42 +0100, Alan Horstmann wrote:
-> I've started a new thread to avoid confusion, and copied bits here:
-> 
-> On Monday 08 September 2008 21:51, Mark Brown wrote:
-> > On Mon, Sep 08, 2008 at 09:27:13PM +0100, Alan Horstmann wrote:
-> > > With just this one change we have been successful in running the codec
-> > > over spi.  At present we do have an issue with dapm during capture
-> > > -nothing is being turned on!  Any pointers would be appreciated.
-> >
-> > If you define DEBUG when building soc-dapm.c (a define at the top of the
-> > source file will do the trick) then it will be very verbose about the
-> > decisions it's making - that will normally point out the problem.
-> > Probably either one of the input controls is not configured to make a
-> > path from the input pins to the ADC or the input has been mistakenly
-> > marked as disabled.
-> 
-> That gets us lots of info to digest, and it does look like there are no dapm 
-> capture paths -listing below.  What we cannot fathom is why!
-> 
-> Can users of wm8731 confirm successful capture with dapm on any platform?  It 
-> is not clear at this stage whether we are looking for a problem on our 
-> platform, or a general bug in the driver dapm code.
-> 
-
-Afaik, it works on corgi.
-
-> Any assistance would be appreciated.
-> 
-
-Could you define your _intended_ input path i.e.
-
-Mic --> Mixer --> ADC
-
-> Alan
-> 
-> widget ADC
->  HiFi Capture stream Capture event 1
-> widget DAC
->  HiFi Playback stream Capture event 1
-> reg old 5f new 5f change 0
-> reg old 5f new 5f change 0
-> DAPM WM8731 snd_soc_dapm_stream_event
-> Ext Spk: Off  in 0 out 1
->  in  static LHPOUT
-> Int Mic: Off  in 1 out 0
->  out static Mic Bias
-> LLINEIN: Off  in 0 out 1
->  out static Line Input
-> RLINEIN: Off  in 0 out 1
->  out static Line Input
-> MICIN: Off  in 1 out 0
->  in  static Mic Bias
->  out static Mic Bias
-> Mic Bias: Off  in 1 out 0
->  in  static Int Mic
->  in  static MICIN
->  out static MICIN
-> Line Input: Off  in 0 out 1
->  in  static RLINEIN
->  in  static LLINEIN
->  out Line In Input Mux
-> Input Mux: Off  in 0 out 1
->  in  Line In Line Input
->  out static ADC
-> ADC: Off  in 0 out 1
->  in  static Input Mux
-
-No valid input to ADC.
-
-We currently have 
-
-R/LLINEIN --> Input Mux --> ADC
-
-but R/LLINEIN are not active. Call snd_soc_dapm_enable_pin(codec, pin)
-to activate.
-
-Liam
+SGFsbG8gVmVkcmFuLAoKT24gVHVlLCBTZXAgMDksIDIwMDggYXQgMDQ6MDg6MDRQTSArMDIwMCwg
+VmVkcmFuIE1pbGV0acSHIHdyb3RlOgoKPiAyMDA4LzkvOSBIYXJhbGQgV2VsdGUgPEhhcmFsZFdl
+bHRlQHZpYXRlY2guY29tPjoKPiA+IElmIHlvdSBoYXZlIGFueSBxdWVzdGlvbnMgcmVnYXJkaW5n
+IFZJQSdzIGhhcmR3YXJlIG9yIG5lZWQgYWNjZXNzIHRvIGRhdGEKPiA+IHNoZWV0cyBvciB0aGUg
+bGlrZSwgSSBhbSBoYXBweSB0byBhc3Npc3QuCj4KPiBZZXMuLi4gSSAoYW5kIHByb2JhYmx5IG1h
+bnkgb3RoZXJzKSB3b3VsZCBsaWtlIHRvIGtub3cgaWYgdGhlcmUgaXMgYW55Cj4gRW52eTI0LUlJ
+IGhhcmR3YXJlIG91dCAoYmVzaWRlcyBNRURJQVNUQVRJT05bMV0pPyBUaGlzIGNoaXAgaGFzIGJl
+ZW4KPiBvdXQgZm9yIGEgd2hpbGUuCgpJIGNhbiBhc2ssIGJ1dCBJIGFtIG5vdCBzdXJlIGlmIFZJ
+QSBjYW4gb3Igd2FudCB0byBkaXNjbG9zZSBpbmZvcm1hdGlvbnMgYWJvdXQKdGhlaXIgY3VzdG9t
+ZXJzLiAgVXN1YWxseSB0aGVyZSBhcmUgdHdvLXdheSBOREEncywgc28gVklBIGNhbm5vdCBzYXkg
+YW55dGhpbmcKYWJvdXQgd2hhdCB0aGVpciBjdXN0b21lcnMgZG8gYW5kIHZpY2UgdmVyc2EuCgot
+LSAKLSBIYXJhbGQgV2VsdGUgPEhhcmFsZFdlbHRlQHZpYXRlY2guY29tPgkgICAgaHR0cDovL2xp
+bnV4LnZpYS5jb20udHcvCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KVklBIE9wZW4gU291cmNlIExpYWlz
+b24KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
