@@ -1,17 +1,17 @@
 From: Alexander Beregalov <a.beregalov@gmail.com>
-Subject: [PATCH 22/24] sound/pci: coding style fixes: via82xx
-Date: Tue, 9 Sep 2008 06:02:26 +0400
-Message-ID: <20080909020226.GY6211@orion>
+Subject: [PATCH 23/24] sound/pci: coding style fixes: vx222
+Date: Tue, 9 Sep 2008 06:02:59 +0400
+Message-ID: <20080909020259.GZ6211@orion>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.144])
-	by alsa0.perex.cz (Postfix) with ESMTP id E119E103844
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6A222103844
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Sep 2008 04:02:31 +0200 (CEST)
-Received: by ey-out-1920.google.com with SMTP id 21so727328eyc.56
-	for <alsa-devel@alsa-project.org>; Mon, 08 Sep 2008 19:02:31 -0700 (PDT)
+	Tue,  9 Sep 2008 04:03:05 +0200 (CEST)
+Received: by fk-out-0910.google.com with SMTP id b27so1407398fka.0
+	for <alsa-devel@alsa-project.org>; Mon, 08 Sep 2008 19:03:05 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -36,572 +36,433 @@ Only compile tested.
 Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
 ---
 
- sound/pci/via82xx.c       |   76 ++++++++++++++++++++++----------------------
- sound/pci/via82xx_modem.c |   60 ++++++++++++++++++------------------
- 2 files changed, 68 insertions(+), 68 deletions(-)
+ sound/pci/vx222/vx222.c     |    2 +-
+ sound/pci/vx222/vx222_ops.c |  330 +++++++++++++++++++++---------------------
+ 2 files changed, 166 insertions(+), 166 deletions(-)
 
-diff --git a/sound/pci/via82xx.c b/sound/pci/via82xx.c
-index 1aafe95..8a84cb2 100644
---- a/sound/pci/via82xx.c
-+++ b/sound/pci/via82xx.c
-@@ -43,10 +43,10 @@
-  *	  routines for each chipset.
-  *
-  * Sep. 26, 2005	Karsten Wiese <annabellesgarden@yahoo.de>
-- *	- Optimize position calculation for the 823x chips. 
-+ *	- Optimize position calculation for the 823x chips.
-  */
- 
+diff --git a/sound/pci/vx222/vx222.c b/sound/pci/vx222/vx222.c
+index acc352f..ec7c743 100644
+--- a/sound/pci/vx222/vx222.c
++++ b/sound/pci/vx222/vx222.c
+@@ -154,7 +154,7 @@ static int __devinit snd_vx222_create(struct snd_card *card, struct pci_dev *pci
+ 	vx_ops = hw->type == VX_TYPE_BOARD ? &vx222_old_ops : &vx222_ops;
+ 	chip = snd_vx_create(card, hw, vx_ops,
+ 			     sizeof(struct snd_vx222) - sizeof(struct vx_core));
+-	if (! chip) {
++	if (!chip) {
+ 		pci_disable_device(pci);
+ 		return -ENOMEM;
+ 	}
+diff --git a/sound/pci/vx222/vx222_ops.c b/sound/pci/vx222/vx222_ops.c
+index 7e87f39..7d1350a 100644
+--- a/sound/pci/vx222/vx222_ops.c
++++ b/sound/pci/vx222/vx222_ops.c
+@@ -28,7 +28,7 @@
+ #include <sound/core.h>
+ #include <sound/control.h>
+ #include <sound/tlv.h>
 -#include <asm/io.h>
 +#include <linux/io.h>
- #include <linux/delay.h>
- #include <linux/interrupt.h>
- #include <linux/init.h>
-@@ -146,7 +146,7 @@ module_param(enable, bool, 0444);
- #define   VIA_REG_CTRL_TERMINATE	0x40	/* WO */
- #define   VIA_REG_CTRL_AUTOSTART	0x20
- #define   VIA_REG_CTRL_PAUSE		0x08	/* RW */
--#define   VIA_REG_CTRL_INT_STOP		0x04		
-+#define   VIA_REG_CTRL_INT_STOP		0x04
- #define   VIA_REG_CTRL_INT_EOL		0x02
- #define   VIA_REG_CTRL_INT_FLAG		0x01
- #define   VIA_REG_CTRL_RESET		0x01	/* RW - probably reset? undocumented */
-@@ -310,7 +310,7 @@ DEFINE_VIA_REGSET(CAPTURE_8233, 0x60);
- struct snd_via_sg_table {
- 	unsigned int offset;
- 	unsigned int size;
--} ;
-+};
+ #include "vx222.h"
  
- #define VIA_TABLE_SIZE	255
- #define VIA_MAX_BUFSIZE	(1<<24)
-@@ -431,9 +431,9 @@ static int build_via_table(struct viadev *dev, struct snd_pcm_substream *substre
- 					&dev->table) < 0)
- 			return -ENOMEM;
+ 
+@@ -50,12 +50,12 @@ static int vx2_reg_offset[VX_REG_MAX] = {
+ 	[VX_HIFREQ] = 0x38,
+ 	[VX_CSUER]  = 0x3c,
+ 	[VX_SELMIC] = 0x40,
+-	[VX_COMPOT] = 0x44, // Write: POTENTIOMETER ; Read: COMPRESSION LEVEL activate
+-	[VX_SCOMPR] = 0x48, // Read: COMPRESSION THRESHOLD activate
+-	[VX_GLIMIT] = 0x4c, // Read: LEVEL LIMITATION activate
+-	[VX_INTCSR] = 0x4c, // VX_INTCSR_REGISTER_OFFSET
+-	[VX_CNTRL]  = 0x50,		// VX_CNTRL_REGISTER_OFFSET
+-	[VX_GPIOC]  = 0x54,		// VX_GPIOC (new with PLX9030)
++	[VX_COMPOT] = 0x44, /* Write: POTENTIOMETER; Read: COMPRESSION LEVEL activate */
++	[VX_SCOMPR] = 0x48, /* Read: COMPRESSION THRESHOLD activate */
++	[VX_GLIMIT] = 0x4c, /* Read: LEVEL LIMITATION activate */
++	[VX_INTCSR] = 0x4c, /* VX_INTCSR_REGISTER_OFFSET */
++	[VX_CNTRL]  = 0x50,		/* VX_CNTRL_REGISTER_OFFSET */
++	[VX_GPIOC]  = 0x54,		/* VX_GPIOC (new with PLX9030) */
+ };
+ 
+ static int vx2_reg_index[VX_REG_MAX] = {
+@@ -107,7 +107,7 @@ static unsigned char vx2_inb(struct vx_core *chip, int offset)
+ static void vx2_outb(struct vx_core *chip, int offset, unsigned char val)
+ {
+ 	outb(val, vx2_reg_addr(chip, offset));
+-	//printk("outb: %x -> %x\n", val, vx2_reg_addr(chip, offset));
++	/* printk("outb: %x -> %x\n", val, vx2_reg_addr(chip, offset)); */
+ }
+ 
+ /**
+@@ -126,7 +126,7 @@ static unsigned int vx2_inl(struct vx_core *chip, int offset)
+  */
+ static void vx2_outl(struct vx_core *chip, int offset, unsigned int val)
+ {
+-	// printk("outl: %x -> %x\n", val, vx2_reg_addr(chip, offset));
++	/* printk("outl: %x -> %x\n", val, vx2_reg_addr(chip, offset)); */
+ 	outl(val, vx2_reg_addr(chip, offset));
+ }
+ 
+@@ -187,7 +187,7 @@ static int vx2_test_xilinx(struct vx_core *_chip)
+ 	vx_outl(chip, CDSP, chip->regCDSP & ~VX_CDSP_TEST0_MASK);
+ 	vx_inl(chip, ISR);
+ 	data = vx_inl(chip, STATUS);
+-	if (! (data & VX_STATUS_VAL_TEST0_MASK)) {
++	if (!(data & VX_STATUS_VAL_TEST0_MASK)) {
+ 		snd_printdd("bad! #2\n");
+ 		return -ENODEV;
  	}
--	if (! dev->idx_table) {
-+	if (!dev->idx_table) {
- 		dev->idx_table = kmalloc(sizeof(*dev->idx_table) * VIA_TABLE_SIZE, GFP_KERNEL);
--		if (! dev->idx_table)
-+		if (!dev->idx_table)
- 			return -ENOMEM;
- 	}
- 
-@@ -459,14 +459,14 @@ static int build_via_table(struct viadev *dev, struct snd_pcm_substream *substre
- 			((u32 *)dev->table.area)[idx << 1] = cpu_to_le32(addr);
- 			r = snd_pcm_sgbuf_get_chunk_size(substream, ofs, rest);
- 			rest -= r;
--			if (! rest) {
-+			if (!rest) {
- 				if (i == periods - 1)
- 					flag = VIA_TBL_BIT_EOL; /* buffer boundary */
- 				else
- 					flag = VIA_TBL_BIT_FLAG; /* period boundary */
- 			} else
- 				flag = 0; /* period continues to the next */
--			// printk("via: tbl %d: at %d  size %d (rest %d)\n", idx, ofs, r, rest);
-+			/* printk("via: tbl %d: at %d  size %d (rest %d)\n", idx, ofs, r, rest); */
- 			((u32 *)dev->table.area)[(idx<<1) + 1] = cpu_to_le32(r | flag);
- 			dev->idx_table[idx].offset = ofs;
- 			dev->idx_table[idx].size = r;
-@@ -502,17 +502,17 @@ static inline unsigned int snd_via82xx_codec_xread(struct via82xx *chip)
- {
- 	return inl(VIAREG(chip, AC97));
- }
-- 
-+
- static inline void snd_via82xx_codec_xwrite(struct via82xx *chip, unsigned int val)
- {
- 	outl(val, VIAREG(chip, AC97));
- }
-- 
-+
- static int snd_via82xx_codec_ready(struct via82xx *chip, int secondary)
- {
- 	unsigned int timeout = 1000;	/* 1ms */
- 	unsigned int val;
--	
-+
- 	while (timeout-- > 0) {
- 		udelay(1);
- 		if (!((val = snd_via82xx_codec_xread(chip)) & VIA_REG_AC97_BUSY))
-@@ -522,14 +522,14 @@ static int snd_via82xx_codec_ready(struct via82xx *chip, int secondary)
- 		   secondary, snd_via82xx_codec_xread(chip));
- 	return -EIO;
- }
-- 
-+
- static int snd_via82xx_codec_valid(struct via82xx *chip, int secondary)
- {
- 	unsigned int timeout = 1000;	/* 1ms */
- 	unsigned int val, val1;
- 	unsigned int stat = !secondary ? VIA_REG_AC97_PRIMARY_VALID :
- 					 VIA_REG_AC97_SECONDARY_VALID;
--	
-+
- 	while (timeout-- > 0) {
- 		val = snd_via82xx_codec_xread(chip);
- 		val1 = val & (VIA_REG_AC97_BUSY | stat);
-@@ -539,7 +539,7 @@ static int snd_via82xx_codec_valid(struct via82xx *chip, int secondary)
- 	}
- 	return -EIO;
- }
-- 
-+
- static void snd_via82xx_codec_wait(struct snd_ac97 *ac97)
- {
- 	struct via82xx *chip = ac97->private_data;
-@@ -602,7 +602,7 @@ static void snd_via82xx_channel_reset(struct via82xx *chip, struct viadev *viade
- 	/* clear interrupts */
- 	outb(0x03, VIADEV_REG(viadev, OFFSET_STATUS));
- 	outb(0x00, VIADEV_REG(viadev, OFFSET_TYPE)); /* for via686 */
--	// outl(0, VIADEV_REG(viadev, OFFSET_CURR_PTR));
-+	/* outl(0, VIADEV_REG(viadev, OFFSET_CURR_PTR)); */
- 	viadev->lastpos = 0;
- 	viadev->hwptr_done = 0;
- }
-@@ -619,7 +619,7 @@ static irqreturn_t snd_via686_interrupt(int irq, void *dev_id)
- 	unsigned int i;
- 
- 	status = inl(VIAREG(chip, SGD_SHADOW));
--	if (! (status & chip->intr_mask)) {
-+	if (!(status & chip->intr_mask)) {
- 		if (chip->rmidi)
- 			/* check mpu401 interrupt */
- 			return snd_mpu401_uart_interrupt(irq, chip->rmidi->private_data);
-@@ -631,12 +631,12 @@ static irqreturn_t snd_via686_interrupt(int irq, void *dev_id)
- 	for (i = 0; i < chip->num_devs; i++) {
- 		struct viadev *viadev = &chip->devs[i];
- 		unsigned char c_status = inb(VIADEV_REG(viadev, OFFSET_STATUS));
--		if (! (c_status & (VIA_REG_STAT_EOL|VIA_REG_STAT_FLAG|VIA_REG_STAT_STOPPED)))
-+		if (!(c_status & (VIA_REG_STAT_EOL|VIA_REG_STAT_FLAG|VIA_REG_STAT_STOPPED)))
- 			continue;
- 		if (viadev->substream && viadev->running) {
- 			/*
- 			 * Update hwptr_done based on 'period elapsed'
--			 * interrupts. We'll use it, when the chip returns 0 
-+			 * interrupts. We'll use it, when the chip returns 0
- 			 * for OFFSET_CURR_COUNT.
- 			 */
- 			if (c_status & VIA_REG_STAT_EOL)
-@@ -685,7 +685,7 @@ static irqreturn_t snd_via8233_interrupt(int irq, void *dev_id)
- 		if (substream && viadev->running) {
- 			/*
- 			 * Update hwptr_done based on 'period elapsed'
--			 * interrupts. We'll use it, when the chip returns 0 
-+			 * interrupts. We'll use it, when the chip returns 0
- 			 * for OFFSET_CURR_COUNT.
- 			 */
- 			if (c_status & VIA_REG_STAT_EOL)
-@@ -783,7 +783,7 @@ static inline unsigned int calc_linear_pos(struct viadev *viadev, unsigned int i
- 			   (int)size, (int)count);
- 		res = viadev->lastpos;
- 	} else {
--		if (! count) {
-+		if (!count) {
- 			/* Some mobos report count = 0 on the DMA boundary,
- 			 * i.e. count = size indeed.
- 			 * Let's check whether this step is above the expected size.
-@@ -855,7 +855,7 @@ static snd_pcm_uframes_t snd_via8233_pcm_pointer(struct snd_pcm_substream *subst
- 	struct viadev *viadev = substream->runtime->private_data;
- 	unsigned int idx, count, res;
- 	int status;
--	
-+
- 	if (snd_BUG_ON(!viadev->tbl_entries))
- 		return 0;
- 
-@@ -865,7 +865,7 @@ static snd_pcm_uframes_t snd_via8233_pcm_pointer(struct snd_pcm_substream *subst
- 	if (!status)
- 		status = inb(VIADEV_REG(viadev, OFFSET_STATUS));
- 
--	/* An apparent bug in the 8251 is worked around by sending a 
-+	/* An apparent bug in the 8251 is worked around by sending a
- 	 * REG_CTRL_START. */
- 	if (chip->revision == VIA_REV_8251 && (status & VIA_REG_STAT_EOL))
- 		snd_via82xx_pcm_trigger(substream, SNDRV_PCM_TRIGGER_START);
-@@ -896,7 +896,7 @@ static snd_pcm_uframes_t snd_via8233_pcm_pointer(struct snd_pcm_substream *subst
- 					res += viadev->fragsize;
- 				}
+@@ -207,7 +207,7 @@ static int vx2_test_xilinx(struct vx_core *_chip)
+ 		vx_outl(chip, CDSP, chip->regCDSP & ~VX_CDSP_TEST1_MASK);
+ 		vx_inl(chip, ISR);
+ 		data = vx_inl(chip, STATUS);
+-		if (! (data & VX_STATUS_VAL_TEST1_MASK)) {
++		if (!(data & VX_STATUS_VAL_TEST1_MASK)) {
+ 			snd_printdd("bad! #4\n");
+ 			return -ENODEV;
  		}
--	}			    
-+	}
- unlock:
- 	viadev->lastpos = res;
- 	spin_unlock(&chip->reg_lock);
-@@ -1166,7 +1166,7 @@ static int snd_via82xx_pcm_open(struct via82xx *chip, struct viadev *viadev,
- 	struct via_rate_lock *ratep;
- 
- 	runtime->hw = snd_via82xx_hw;
--	
-+
- 	/* set the hw rate condition */
- 	ratep = &chip->rates[viadev->direction];
- 	spin_lock_irq(&ratep->lock);
-@@ -1185,7 +1185,7 @@ static int snd_via82xx_pcm_open(struct via82xx *chip, struct viadev *viadev,
- 				     SNDRV_PCM_RATE_8000_48000);
- 		runtime->hw.rate_min = 8000;
- 		runtime->hw.rate_max = 48000;
--	} else if (! ratep->rate) {
-+	} else if (!ratep->rate) {
- 		int idx = viadev->direction ? AC97_RATES_ADC : AC97_RATES_FRONT_DAC;
- 		runtime->hw.rates = chip->ac97->rates[idx];
- 		snd_pcm_limit_hw_rates(runtime);
-@@ -1276,11 +1276,11 @@ static int snd_via82xx_pcm_close(struct snd_pcm_substream *substream)
- 	ratep = &chip->rates[viadev->direction];
- 	spin_lock_irq(&ratep->lock);
- 	ratep->used--;
--	if (! ratep->used)
-+	if (!ratep->used)
- 		ratep->rate = 0;
- 	spin_unlock_irq(&ratep->lock);
--	if (! ratep->rate) {
--		if (! viadev->direction) {
-+	if (!ratep->rate) {
-+		if (!viadev->direction) {
- 			snd_ac97_update_power(chip->ac97,
- 					      AC97_PCM_FRONT_DAC_RATE, 0);
- 			snd_ac97_update_power(chip->ac97,
-@@ -1457,7 +1457,7 @@ static int __devinit snd_via8233a_pcm_new(struct via82xx *chip)
- 					      64*1024, VIA_MAX_BUFSIZE);
- 
- 	/* SPDIF supported? */
--	if (! ac97_can_spdif(chip->ac97))
-+	if (!ac97_can_spdif(chip->ac97))
- 		return 0;
- 
- 	/* PCM #1:  DXS3 playback (for spdif) */
-@@ -1921,7 +1921,7 @@ static int __devinit snd_via8233_init_misc(struct via82xx *chip)
- 		memset(&sid, 0, sizeof(sid));
- 		strcpy(sid.name, "PCM Playback Volume");
- 		sid.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
--		if (! snd_ctl_find_id(chip->card, &sid)) {
-+		if (!snd_ctl_find_id(chip->card, &sid)) {
- 			snd_printd(KERN_INFO "Using DXS as PCM Playback\n");
- 			err = snd_ctl_add(chip->card, snd_ctl_new1(&snd_via8233_pcmdxs_volume_control, chip));
- 			if (err < 0)
-@@ -2026,7 +2026,7 @@ static void snd_via82xx_proc_read(struct snd_info_entry *entry,
- {
- 	struct via82xx *chip = entry->private_data;
- 	int i;
--	
-+
- 	snd_iprintf(buffer, "%s\n\n", chip->card->longname);
- 	for (i = 0; i < 0xa0; i += 4) {
- 		snd_iprintf(buffer, "%02x: %08x\n", i, inl(chip->port + i));
-@@ -2037,7 +2037,7 @@ static void __devinit snd_via82xx_proc_init(struct via82xx *chip)
- {
- 	struct snd_info_entry *entry;
- 
--	if (! snd_card_proc_new(chip->card, "via82xx", &entry))
-+	if (!snd_card_proc_new(chip->card, "via82xx", &entry))
- 		snd_info_set_text_ops(entry, chip, snd_via82xx_proc_read);
- }
- 
-@@ -2057,7 +2057,7 @@ static int snd_via82xx_chip_init(struct via82xx *chip)
- 		pci_write_config_byte(chip->pci, VIA_FUNC_ENABLE, 0);
- #endif
- 	pci_read_config_byte(chip->pci, VIA_ACLINK_STAT, &pval);
--	if (! (pval & VIA_ACLINK_C00_READY)) { /* codec not ready? */
-+	if (!(pval & VIA_ACLINK_C00_READY)) { /* codec not ready? */
- 		/* deassert ACLink reset, force SYNC */
- 		pci_write_config_byte(chip->pci, VIA_ACLINK_CTRL,
- 				      VIA_ACLINK_CTRL_ENABLE |
-@@ -2078,7 +2078,7 @@ static int snd_via82xx_chip_init(struct via82xx *chip)
- 		pci_write_config_byte(chip->pci, VIA_ACLINK_CTRL, VIA_ACLINK_CTRL_INIT);
- 		udelay(100);
- 	}
--	
-+
- 	/* Make sure VRA is enabled, in case we didn't do a
- 	 * complete codec reset, above */
- 	pci_read_config_byte(chip->pci, VIA_ACLINK_CTRL, &pval);
-@@ -2239,7 +2239,7 @@ static int snd_via82xx_free(struct via82xx *chip)
- 
- 	if (chip->irq >= 0)
- 		free_irq(chip->irq, chip);
-- __end_hw:
-+__end_hw:
- 	release_and_free_resource(chip->mpu_res);
- 	pci_release_regions(chip->pci);
- 
-@@ -2477,7 +2477,7 @@ static int __devinit snd_via82xx_probe(struct pci_dev *pci,
- 		err = -EINVAL;
- 		goto __error;
- 	}
--		
-+
- 	if ((err = snd_via82xx_create(card, pci, chip_type, pci->revision,
- 				      ac97_clock, &chip)) < 0)
- 		goto __error;
-@@ -2493,7 +2493,7 @@ static int __devinit snd_via82xx_probe(struct pci_dev *pci,
- 		if (chip_type == TYPE_VIA8233A) {
- 			if ((err = snd_via8233a_pcm_new(chip)) < 0)
- 				goto __error;
--			// chip->dxs_fixed = 1; /* FIXME: use 48k for DXS #3? */
-+			/* chip->dxs_fixed = 1;  FIXME: use 48k for DXS #3? */
- 		} else {
- 			if ((err = snd_via8233_pcm_new(chip)) < 0)
- 				goto __error;
-@@ -2527,7 +2527,7 @@ static int __devinit snd_via82xx_probe(struct pci_dev *pci,
- 	pci_set_drvdata(pci, card);
+@@ -400,7 +400,7 @@ static int vx2_load_xilinx_binary(struct vx_core *chip, const struct firmware *x
  	return 0;
- 
-- __error:
-+__error:
- 	snd_card_free(card);
- 	return err;
  }
-diff --git a/sound/pci/via82xx_modem.c b/sound/pci/via82xx_modem.c
-index 5bd79d2..833f56e 100644
---- a/sound/pci/via82xx_modem.c
-+++ b/sound/pci/via82xx_modem.c
-@@ -31,7 +31,7 @@
-  *      modems.
+ 
+-	
++
+ /*
+  * load the boot/dsp images
   */
- 
--#include <asm/io.h>
-+#include <linux/io.h>
- #include <linux/delay.h>
- #include <linux/interrupt.h>
- #include <linux/init.h>
-@@ -90,7 +90,7 @@ module_param(enable, bool, 0444);
- #define   VIA_REG_CTRL_TERMINATE	0x40	/* WO */
- #define   VIA_REG_CTRL_AUTOSTART	0x20
- #define   VIA_REG_CTRL_PAUSE		0x08	/* RW */
--#define   VIA_REG_CTRL_INT_STOP		0x04		
-+#define   VIA_REG_CTRL_INT_STOP		0x04
- #define   VIA_REG_CTRL_INT_EOL		0x02
- #define   VIA_REG_CTRL_INT_FLAG		0x01
- #define   VIA_REG_CTRL_RESET		0x01	/* RW - probably reset? undocumented */
-@@ -212,7 +212,7 @@ DEFINE_VIA_REGSET(MI, 0x50);
- struct snd_via_sg_table {
- 	unsigned int offset;
- 	unsigned int size;
--} ;
-+};
- 
- #define VIA_TABLE_SIZE	255
- 
-@@ -291,9 +291,9 @@ static int build_via_table(struct viadev *dev, struct snd_pcm_substream *substre
- 					&dev->table) < 0)
- 			return -ENOMEM;
- 	}
--	if (! dev->idx_table) {
-+	if (!dev->idx_table) {
- 		dev->idx_table = kmalloc(sizeof(*dev->idx_table) * VIA_TABLE_SIZE, GFP_KERNEL);
--		if (! dev->idx_table)
-+		if (!dev->idx_table)
- 			return -ENOMEM;
- 	}
- 
-@@ -321,14 +321,14 @@ static int build_via_table(struct viadev *dev, struct snd_pcm_substream *substre
- 			if (rest < r)
- 				r = rest;
- 			rest -= r;
--			if (! rest) {
-+			if (!rest) {
- 				if (i == periods - 1)
- 					flag = VIA_TBL_BIT_EOL; /* buffer boundary */
- 				else
- 					flag = VIA_TBL_BIT_FLAG; /* period boundary */
- 			} else
- 				flag = 0; /* period continues to the next */
--			// printk("via: tbl %d: at %d  size %d (rest %d)\n", idx, ofs, r, rest);
-+			/* printk("via: tbl %d: at %d  size %d (rest %d)\n", idx, ofs, r, rest); */
- 			((u32 *)dev->table.area)[(idx<<1) + 1] = cpu_to_le32(r | flag);
- 			dev->idx_table[idx].offset = ofs;
- 			dev->idx_table[idx].size = r;
-@@ -363,17 +363,17 @@ static inline unsigned int snd_via82xx_codec_xread(struct via82xx_modem *chip)
+@@ -439,12 +439,12 @@ static int vx2_load_dsp(struct vx_core *vx, int index, const struct firmware *ds
+ static int vx2_test_and_ack(struct vx_core *chip)
  {
- 	return inl(VIAREG(chip, AC97));
- }
-- 
-+
- static inline void snd_via82xx_codec_xwrite(struct via82xx_modem *chip, unsigned int val)
- {
- 	outl(val, VIAREG(chip, AC97));
- }
-- 
-+
- static int snd_via82xx_codec_ready(struct via82xx_modem *chip, int secondary)
- {
- 	unsigned int timeout = 1000;	/* 1ms */
- 	unsigned int val;
+ 	/* not booted yet? */
+-	if (! (chip->chip_status & VX_STAT_XILINX_LOADED))
++	if (!(chip->chip_status & VX_STAT_XILINX_LOADED))
+ 		return -ENXIO;
+ 
+-	if (! (vx_inl(chip, STATUS) & VX_STATUS_MEMIRQ_MASK))
++	if (!(vx_inl(chip, STATUS) & VX_STATUS_MEMIRQ_MASK))
+ 		return -EIO;
 -	
 +
- 	while (timeout-- > 0) {
- 		udelay(1);
- 		if (!((val = snd_via82xx_codec_xread(chip)) & VIA_REG_AC97_BUSY))
-@@ -383,14 +383,14 @@ static int snd_via82xx_codec_ready(struct via82xx_modem *chip, int secondary)
- 		   secondary, snd_via82xx_codec_xread(chip));
- 	return -EIO;
- }
-- 
-+
- static int snd_via82xx_codec_valid(struct via82xx_modem *chip, int secondary)
- {
- 	unsigned int timeout = 1000;	/* 1ms */
- 	unsigned int val, val1;
- 	unsigned int stat = !secondary ? VIA_REG_AC97_PRIMARY_VALID :
- 					 VIA_REG_AC97_SECONDARY_VALID;
+ 	/* ok, interrupts generated, now ack it */
+ 	/* set ACQUIT bit up and down */
+ 	vx_outl(chip, STATUS, 0);
+@@ -512,154 +512,154 @@ static void vx2_write_codec_reg(struct vx_core *chip, unsigned int data)
+ #define AKM_CODEC_RIGHT_LEVEL_CMD   0xA500
+ 
+ static const u8 vx2_akm_gains_lut[VX2_AKM_LEVEL_MAX+1] = {
+-    0x7f,       // [000] =  +0.000 dB  ->  AKM(0x7f) =  +0.000 dB  error(+0.000 dB)
+-    0x7d,       // [001] =  -0.500 dB  ->  AKM(0x7d) =  -0.572 dB  error(-0.072 dB)
+-    0x7c,       // [002] =  -1.000 dB  ->  AKM(0x7c) =  -0.873 dB  error(+0.127 dB)
+-    0x7a,       // [003] =  -1.500 dB  ->  AKM(0x7a) =  -1.508 dB  error(-0.008 dB)
+-    0x79,       // [004] =  -2.000 dB  ->  AKM(0x79) =  -1.844 dB  error(+0.156 dB)
+-    0x77,       // [005] =  -2.500 dB  ->  AKM(0x77) =  -2.557 dB  error(-0.057 dB)
+-    0x76,       // [006] =  -3.000 dB  ->  AKM(0x76) =  -2.937 dB  error(+0.063 dB)
+-    0x75,       // [007] =  -3.500 dB  ->  AKM(0x75) =  -3.334 dB  error(+0.166 dB)
+-    0x73,       // [008] =  -4.000 dB  ->  AKM(0x73) =  -4.188 dB  error(-0.188 dB)
+-    0x72,       // [009] =  -4.500 dB  ->  AKM(0x72) =  -4.648 dB  error(-0.148 dB)
+-    0x71,       // [010] =  -5.000 dB  ->  AKM(0x71) =  -5.134 dB  error(-0.134 dB)
+-    0x70,       // [011] =  -5.500 dB  ->  AKM(0x70) =  -5.649 dB  error(-0.149 dB)
+-    0x6f,       // [012] =  -6.000 dB  ->  AKM(0x6f) =  -6.056 dB  error(-0.056 dB)
+-    0x6d,       // [013] =  -6.500 dB  ->  AKM(0x6d) =  -6.631 dB  error(-0.131 dB)
+-    0x6c,       // [014] =  -7.000 dB  ->  AKM(0x6c) =  -6.933 dB  error(+0.067 dB)
+-    0x6a,       // [015] =  -7.500 dB  ->  AKM(0x6a) =  -7.571 dB  error(-0.071 dB)
+-    0x69,       // [016] =  -8.000 dB  ->  AKM(0x69) =  -7.909 dB  error(+0.091 dB)
+-    0x67,       // [017] =  -8.500 dB  ->  AKM(0x67) =  -8.626 dB  error(-0.126 dB)
+-    0x66,       // [018] =  -9.000 dB  ->  AKM(0x66) =  -9.008 dB  error(-0.008 dB)
+-    0x65,       // [019] =  -9.500 dB  ->  AKM(0x65) =  -9.407 dB  error(+0.093 dB)
+-    0x64,       // [020] = -10.000 dB  ->  AKM(0x64) =  -9.826 dB  error(+0.174 dB)
+-    0x62,       // [021] = -10.500 dB  ->  AKM(0x62) = -10.730 dB  error(-0.230 dB)
+-    0x61,       // [022] = -11.000 dB  ->  AKM(0x61) = -11.219 dB  error(-0.219 dB)
+-    0x60,       // [023] = -11.500 dB  ->  AKM(0x60) = -11.738 dB  error(-0.238 dB)
+-    0x5f,       // [024] = -12.000 dB  ->  AKM(0x5f) = -12.149 dB  error(-0.149 dB)
+-    0x5e,       // [025] = -12.500 dB  ->  AKM(0x5e) = -12.434 dB  error(+0.066 dB)
+-    0x5c,       // [026] = -13.000 dB  ->  AKM(0x5c) = -13.033 dB  error(-0.033 dB)
+-    0x5b,       // [027] = -13.500 dB  ->  AKM(0x5b) = -13.350 dB  error(+0.150 dB)
+-    0x59,       // [028] = -14.000 dB  ->  AKM(0x59) = -14.018 dB  error(-0.018 dB)
+-    0x58,       // [029] = -14.500 dB  ->  AKM(0x58) = -14.373 dB  error(+0.127 dB)
+-    0x56,       // [030] = -15.000 dB  ->  AKM(0x56) = -15.130 dB  error(-0.130 dB)
+-    0x55,       // [031] = -15.500 dB  ->  AKM(0x55) = -15.534 dB  error(-0.034 dB)
+-    0x54,       // [032] = -16.000 dB  ->  AKM(0x54) = -15.958 dB  error(+0.042 dB)
+-    0x53,       // [033] = -16.500 dB  ->  AKM(0x53) = -16.404 dB  error(+0.096 dB)
+-    0x52,       // [034] = -17.000 dB  ->  AKM(0x52) = -16.874 dB  error(+0.126 dB)
+-    0x51,       // [035] = -17.500 dB  ->  AKM(0x51) = -17.371 dB  error(+0.129 dB)
+-    0x50,       // [036] = -18.000 dB  ->  AKM(0x50) = -17.898 dB  error(+0.102 dB)
+-    0x4e,       // [037] = -18.500 dB  ->  AKM(0x4e) = -18.605 dB  error(-0.105 dB)
+-    0x4d,       // [038] = -19.000 dB  ->  AKM(0x4d) = -18.905 dB  error(+0.095 dB)
+-    0x4b,       // [039] = -19.500 dB  ->  AKM(0x4b) = -19.538 dB  error(-0.038 dB)
+-    0x4a,       // [040] = -20.000 dB  ->  AKM(0x4a) = -19.872 dB  error(+0.128 dB)
+-    0x48,       // [041] = -20.500 dB  ->  AKM(0x48) = -20.583 dB  error(-0.083 dB)
+-    0x47,       // [042] = -21.000 dB  ->  AKM(0x47) = -20.961 dB  error(+0.039 dB)
+-    0x46,       // [043] = -21.500 dB  ->  AKM(0x46) = -21.356 dB  error(+0.144 dB)
+-    0x44,       // [044] = -22.000 dB  ->  AKM(0x44) = -22.206 dB  error(-0.206 dB)
+-    0x43,       // [045] = -22.500 dB  ->  AKM(0x43) = -22.664 dB  error(-0.164 dB)
+-    0x42,       // [046] = -23.000 dB  ->  AKM(0x42) = -23.147 dB  error(-0.147 dB)
+-    0x41,       // [047] = -23.500 dB  ->  AKM(0x41) = -23.659 dB  error(-0.159 dB)
+-    0x40,       // [048] = -24.000 dB  ->  AKM(0x40) = -24.203 dB  error(-0.203 dB)
+-    0x3f,       // [049] = -24.500 dB  ->  AKM(0x3f) = -24.635 dB  error(-0.135 dB)
+-    0x3e,       // [050] = -25.000 dB  ->  AKM(0x3e) = -24.935 dB  error(+0.065 dB)
+-    0x3c,       // [051] = -25.500 dB  ->  AKM(0x3c) = -25.569 dB  error(-0.069 dB)
+-    0x3b,       // [052] = -26.000 dB  ->  AKM(0x3b) = -25.904 dB  error(+0.096 dB)
+-    0x39,       // [053] = -26.500 dB  ->  AKM(0x39) = -26.615 dB  error(-0.115 dB)
+-    0x38,       // [054] = -27.000 dB  ->  AKM(0x38) = -26.994 dB  error(+0.006 dB)
+-    0x37,       // [055] = -27.500 dB  ->  AKM(0x37) = -27.390 dB  error(+0.110 dB)
+-    0x36,       // [056] = -28.000 dB  ->  AKM(0x36) = -27.804 dB  error(+0.196 dB)
+-    0x34,       // [057] = -28.500 dB  ->  AKM(0x34) = -28.699 dB  error(-0.199 dB)
+-    0x33,       // [058] = -29.000 dB  ->  AKM(0x33) = -29.183 dB  error(-0.183 dB)
+-    0x32,       // [059] = -29.500 dB  ->  AKM(0x32) = -29.696 dB  error(-0.196 dB)
+-    0x31,       // [060] = -30.000 dB  ->  AKM(0x31) = -30.241 dB  error(-0.241 dB)
+-    0x31,       // [061] = -30.500 dB  ->  AKM(0x31) = -30.241 dB  error(+0.259 dB)
+-    0x30,       // [062] = -31.000 dB  ->  AKM(0x30) = -30.823 dB  error(+0.177 dB)
+-    0x2e,       // [063] = -31.500 dB  ->  AKM(0x2e) = -31.610 dB  error(-0.110 dB)
+-    0x2d,       // [064] = -32.000 dB  ->  AKM(0x2d) = -31.945 dB  error(+0.055 dB)
+-    0x2b,       // [065] = -32.500 dB  ->  AKM(0x2b) = -32.659 dB  error(-0.159 dB)
+-    0x2a,       // [066] = -33.000 dB  ->  AKM(0x2a) = -33.038 dB  error(-0.038 dB)
+-    0x29,       // [067] = -33.500 dB  ->  AKM(0x29) = -33.435 dB  error(+0.065 dB)
+-    0x28,       // [068] = -34.000 dB  ->  AKM(0x28) = -33.852 dB  error(+0.148 dB)
+-    0x27,       // [069] = -34.500 dB  ->  AKM(0x27) = -34.289 dB  error(+0.211 dB)
+-    0x25,       // [070] = -35.000 dB  ->  AKM(0x25) = -35.235 dB  error(-0.235 dB)
+-    0x24,       // [071] = -35.500 dB  ->  AKM(0x24) = -35.750 dB  error(-0.250 dB)
+-    0x24,       // [072] = -36.000 dB  ->  AKM(0x24) = -35.750 dB  error(+0.250 dB)
+-    0x23,       // [073] = -36.500 dB  ->  AKM(0x23) = -36.297 dB  error(+0.203 dB)
+-    0x22,       // [074] = -37.000 dB  ->  AKM(0x22) = -36.881 dB  error(+0.119 dB)
+-    0x21,       // [075] = -37.500 dB  ->  AKM(0x21) = -37.508 dB  error(-0.008 dB)
+-    0x20,       // [076] = -38.000 dB  ->  AKM(0x20) = -38.183 dB  error(-0.183 dB)
+-    0x1f,       // [077] = -38.500 dB  ->  AKM(0x1f) = -38.726 dB  error(-0.226 dB)
+-    0x1e,       // [078] = -39.000 dB  ->  AKM(0x1e) = -39.108 dB  error(-0.108 dB)
+-    0x1d,       // [079] = -39.500 dB  ->  AKM(0x1d) = -39.507 dB  error(-0.007 dB)
+-    0x1c,       // [080] = -40.000 dB  ->  AKM(0x1c) = -39.926 dB  error(+0.074 dB)
+-    0x1b,       // [081] = -40.500 dB  ->  AKM(0x1b) = -40.366 dB  error(+0.134 dB)
+-    0x1a,       // [082] = -41.000 dB  ->  AKM(0x1a) = -40.829 dB  error(+0.171 dB)
+-    0x19,       // [083] = -41.500 dB  ->  AKM(0x19) = -41.318 dB  error(+0.182 dB)
+-    0x18,       // [084] = -42.000 dB  ->  AKM(0x18) = -41.837 dB  error(+0.163 dB)
+-    0x17,       // [085] = -42.500 dB  ->  AKM(0x17) = -42.389 dB  error(+0.111 dB)
+-    0x16,       // [086] = -43.000 dB  ->  AKM(0x16) = -42.978 dB  error(+0.022 dB)
+-    0x15,       // [087] = -43.500 dB  ->  AKM(0x15) = -43.610 dB  error(-0.110 dB)
+-    0x14,       // [088] = -44.000 dB  ->  AKM(0x14) = -44.291 dB  error(-0.291 dB)
+-    0x14,       // [089] = -44.500 dB  ->  AKM(0x14) = -44.291 dB  error(+0.209 dB)
+-    0x13,       // [090] = -45.000 dB  ->  AKM(0x13) = -45.031 dB  error(-0.031 dB)
+-    0x12,       // [091] = -45.500 dB  ->  AKM(0x12) = -45.840 dB  error(-0.340 dB)
+-    0x12,       // [092] = -46.000 dB  ->  AKM(0x12) = -45.840 dB  error(+0.160 dB)
+-    0x11,       // [093] = -46.500 dB  ->  AKM(0x11) = -46.731 dB  error(-0.231 dB)
+-    0x11,       // [094] = -47.000 dB  ->  AKM(0x11) = -46.731 dB  error(+0.269 dB)
+-    0x10,       // [095] = -47.500 dB  ->  AKM(0x10) = -47.725 dB  error(-0.225 dB)
+-    0x10,       // [096] = -48.000 dB  ->  AKM(0x10) = -47.725 dB  error(+0.275 dB)
+-    0x0f,       // [097] = -48.500 dB  ->  AKM(0x0f) = -48.553 dB  error(-0.053 dB)
+-    0x0e,       // [098] = -49.000 dB  ->  AKM(0x0e) = -49.152 dB  error(-0.152 dB)
+-    0x0d,       // [099] = -49.500 dB  ->  AKM(0x0d) = -49.796 dB  error(-0.296 dB)
+-    0x0d,       // [100] = -50.000 dB  ->  AKM(0x0d) = -49.796 dB  error(+0.204 dB)
+-    0x0c,       // [101] = -50.500 dB  ->  AKM(0x0c) = -50.491 dB  error(+0.009 dB)
+-    0x0b,       // [102] = -51.000 dB  ->  AKM(0x0b) = -51.247 dB  error(-0.247 dB)
+-    0x0b,       // [103] = -51.500 dB  ->  AKM(0x0b) = -51.247 dB  error(+0.253 dB)
+-    0x0a,       // [104] = -52.000 dB  ->  AKM(0x0a) = -52.075 dB  error(-0.075 dB)
+-    0x0a,       // [105] = -52.500 dB  ->  AKM(0x0a) = -52.075 dB  error(+0.425 dB)
+-    0x09,       // [106] = -53.000 dB  ->  AKM(0x09) = -52.990 dB  error(+0.010 dB)
+-    0x09,       // [107] = -53.500 dB  ->  AKM(0x09) = -52.990 dB  error(+0.510 dB)
+-    0x08,       // [108] = -54.000 dB  ->  AKM(0x08) = -54.013 dB  error(-0.013 dB)
+-    0x08,       // [109] = -54.500 dB  ->  AKM(0x08) = -54.013 dB  error(+0.487 dB)
+-    0x07,       // [110] = -55.000 dB  ->  AKM(0x07) = -55.173 dB  error(-0.173 dB)
+-    0x07,       // [111] = -55.500 dB  ->  AKM(0x07) = -55.173 dB  error(+0.327 dB)
+-    0x06,       // [112] = -56.000 dB  ->  AKM(0x06) = -56.512 dB  error(-0.512 dB)
+-    0x06,       // [113] = -56.500 dB  ->  AKM(0x06) = -56.512 dB  error(-0.012 dB)
+-    0x06,       // [114] = -57.000 dB  ->  AKM(0x06) = -56.512 dB  error(+0.488 dB)
+-    0x05,       // [115] = -57.500 dB  ->  AKM(0x05) = -58.095 dB  error(-0.595 dB)
+-    0x05,       // [116] = -58.000 dB  ->  AKM(0x05) = -58.095 dB  error(-0.095 dB)
+-    0x05,       // [117] = -58.500 dB  ->  AKM(0x05) = -58.095 dB  error(+0.405 dB)
+-    0x05,       // [118] = -59.000 dB  ->  AKM(0x05) = -58.095 dB  error(+0.905 dB)
+-    0x04,       // [119] = -59.500 dB  ->  AKM(0x04) = -60.034 dB  error(-0.534 dB)
+-    0x04,       // [120] = -60.000 dB  ->  AKM(0x04) = -60.034 dB  error(-0.034 dB)
+-    0x04,       // [121] = -60.500 dB  ->  AKM(0x04) = -60.034 dB  error(+0.466 dB)
+-    0x04,       // [122] = -61.000 dB  ->  AKM(0x04) = -60.034 dB  error(+0.966 dB)
+-    0x03,       // [123] = -61.500 dB  ->  AKM(0x03) = -62.532 dB  error(-1.032 dB)
+-    0x03,       // [124] = -62.000 dB  ->  AKM(0x03) = -62.532 dB  error(-0.532 dB)
+-    0x03,       // [125] = -62.500 dB  ->  AKM(0x03) = -62.532 dB  error(-0.032 dB)
+-    0x03,       // [126] = -63.000 dB  ->  AKM(0x03) = -62.532 dB  error(+0.468 dB)
+-    0x03,       // [127] = -63.500 dB  ->  AKM(0x03) = -62.532 dB  error(+0.968 dB)
+-    0x03,       // [128] = -64.000 dB  ->  AKM(0x03) = -62.532 dB  error(+1.468 dB)
+-    0x02,       // [129] = -64.500 dB  ->  AKM(0x02) = -66.054 dB  error(-1.554 dB)
+-    0x02,       // [130] = -65.000 dB  ->  AKM(0x02) = -66.054 dB  error(-1.054 dB)
+-    0x02,       // [131] = -65.500 dB  ->  AKM(0x02) = -66.054 dB  error(-0.554 dB)
+-    0x02,       // [132] = -66.000 dB  ->  AKM(0x02) = -66.054 dB  error(-0.054 dB)
+-    0x02,       // [133] = -66.500 dB  ->  AKM(0x02) = -66.054 dB  error(+0.446 dB)
+-    0x02,       // [134] = -67.000 dB  ->  AKM(0x02) = -66.054 dB  error(+0.946 dB)
+-    0x02,       // [135] = -67.500 dB  ->  AKM(0x02) = -66.054 dB  error(+1.446 dB)
+-    0x02,       // [136] = -68.000 dB  ->  AKM(0x02) = -66.054 dB  error(+1.946 dB)
+-    0x02,       // [137] = -68.500 dB  ->  AKM(0x02) = -66.054 dB  error(+2.446 dB)
+-    0x02,       // [138] = -69.000 dB  ->  AKM(0x02) = -66.054 dB  error(+2.946 dB)
+-    0x01,       // [139] = -69.500 dB  ->  AKM(0x01) = -72.075 dB  error(-2.575 dB)
+-    0x01,       // [140] = -70.000 dB  ->  AKM(0x01) = -72.075 dB  error(-2.075 dB)
+-    0x01,       // [141] = -70.500 dB  ->  AKM(0x01) = -72.075 dB  error(-1.575 dB)
+-    0x01,       // [142] = -71.000 dB  ->  AKM(0x01) = -72.075 dB  error(-1.075 dB)
+-    0x01,       // [143] = -71.500 dB  ->  AKM(0x01) = -72.075 dB  error(-0.575 dB)
+-    0x01,       // [144] = -72.000 dB  ->  AKM(0x01) = -72.075 dB  error(-0.075 dB)
+-    0x01,       // [145] = -72.500 dB  ->  AKM(0x01) = -72.075 dB  error(+0.425 dB)
+-    0x01,       // [146] = -73.000 dB  ->  AKM(0x01) = -72.075 dB  error(+0.925 dB)
+-    0x00};      // [147] = -73.500 dB  ->  AKM(0x00) =  mute       error(+infini)
++    0x7f,       /* [000] =  +0.000 dB  ->  AKM(0x7f) =  +0.000 dB  error(+0.000 dB) */
++    0x7d,       /* [001] =  -0.500 dB  ->  AKM(0x7d) =  -0.572 dB  error(-0.072 dB) */
++    0x7c,       /* [002] =  -1.000 dB  ->  AKM(0x7c) =  -0.873 dB  error(+0.127 dB) */
++    0x7a,       /* [003] =  -1.500 dB  ->  AKM(0x7a) =  -1.508 dB  error(-0.008 dB) */
++    0x79,       /* [004] =  -2.000 dB  ->  AKM(0x79) =  -1.844 dB  error(+0.156 dB) */
++    0x77,       /* [005] =  -2.500 dB  ->  AKM(0x77) =  -2.557 dB  error(-0.057 dB) */
++    0x76,       /* [006] =  -3.000 dB  ->  AKM(0x76) =  -2.937 dB  error(+0.063 dB) */
++    0x75,       /* [007] =  -3.500 dB  ->  AKM(0x75) =  -3.334 dB  error(+0.166 dB) */
++    0x73,       /* [008] =  -4.000 dB  ->  AKM(0x73) =  -4.188 dB  error(-0.188 dB) */
++    0x72,       /* [009] =  -4.500 dB  ->  AKM(0x72) =  -4.648 dB  error(-0.148 dB) */
++    0x71,       /* [010] =  -5.000 dB  ->  AKM(0x71) =  -5.134 dB  error(-0.134 dB) */
++    0x70,       /* [011] =  -5.500 dB  ->  AKM(0x70) =  -5.649 dB  error(-0.149 dB) */
++    0x6f,       /* [012] =  -6.000 dB  ->  AKM(0x6f) =  -6.056 dB  error(-0.056 dB) */
++    0x6d,       /* [013] =  -6.500 dB  ->  AKM(0x6d) =  -6.631 dB  error(-0.131 dB) */
++    0x6c,       /* [014] =  -7.000 dB  ->  AKM(0x6c) =  -6.933 dB  error(+0.067 dB) */
++    0x6a,       /* [015] =  -7.500 dB  ->  AKM(0x6a) =  -7.571 dB  error(-0.071 dB) */
++    0x69,       /* [016] =  -8.000 dB  ->  AKM(0x69) =  -7.909 dB  error(+0.091 dB) */
++    0x67,       /* [017] =  -8.500 dB  ->  AKM(0x67) =  -8.626 dB  error(-0.126 dB) */
++    0x66,       /* [018] =  -9.000 dB  ->  AKM(0x66) =  -9.008 dB  error(-0.008 dB) */
++    0x65,       /* [019] =  -9.500 dB  ->  AKM(0x65) =  -9.407 dB  error(+0.093 dB) */
++    0x64,       /* [020] = -10.000 dB  ->  AKM(0x64) =  -9.826 dB  error(+0.174 dB) */
++    0x62,       /* [021] = -10.500 dB  ->  AKM(0x62) = -10.730 dB  error(-0.230 dB) */
++    0x61,       /* [022] = -11.000 dB  ->  AKM(0x61) = -11.219 dB  error(-0.219 dB) */
++    0x60,       /* [023] = -11.500 dB  ->  AKM(0x60) = -11.738 dB  error(-0.238 dB) */
++    0x5f,       /* [024] = -12.000 dB  ->  AKM(0x5f) = -12.149 dB  error(-0.149 dB) */
++    0x5e,       /* [025] = -12.500 dB  ->  AKM(0x5e) = -12.434 dB  error(+0.066 dB) */
++    0x5c,       /* [026] = -13.000 dB  ->  AKM(0x5c) = -13.033 dB  error(-0.033 dB) */
++    0x5b,       /* [027] = -13.500 dB  ->  AKM(0x5b) = -13.350 dB  error(+0.150 dB) */
++    0x59,       /* [028] = -14.000 dB  ->  AKM(0x59) = -14.018 dB  error(-0.018 dB) */
++    0x58,       /* [029] = -14.500 dB  ->  AKM(0x58) = -14.373 dB  error(+0.127 dB) */
++    0x56,       /* [030] = -15.000 dB  ->  AKM(0x56) = -15.130 dB  error(-0.130 dB) */
++    0x55,       /* [031] = -15.500 dB  ->  AKM(0x55) = -15.534 dB  error(-0.034 dB) */
++    0x54,       /* [032] = -16.000 dB  ->  AKM(0x54) = -15.958 dB  error(+0.042 dB) */
++    0x53,       /* [033] = -16.500 dB  ->  AKM(0x53) = -16.404 dB  error(+0.096 dB) */
++    0x52,       /* [034] = -17.000 dB  ->  AKM(0x52) = -16.874 dB  error(+0.126 dB) */
++    0x51,       /* [035] = -17.500 dB  ->  AKM(0x51) = -17.371 dB  error(+0.129 dB) */
++    0x50,       /* [036] = -18.000 dB  ->  AKM(0x50) = -17.898 dB  error(+0.102 dB) */
++    0x4e,       /* [037] = -18.500 dB  ->  AKM(0x4e) = -18.605 dB  error(-0.105 dB) */
++    0x4d,       /* [038] = -19.000 dB  ->  AKM(0x4d) = -18.905 dB  error(+0.095 dB) */
++    0x4b,       /* [039] = -19.500 dB  ->  AKM(0x4b) = -19.538 dB  error(-0.038 dB) */
++    0x4a,       /* [040] = -20.000 dB  ->  AKM(0x4a) = -19.872 dB  error(+0.128 dB) */
++    0x48,       /* [041] = -20.500 dB  ->  AKM(0x48) = -20.583 dB  error(-0.083 dB) */
++    0x47,       /* [042] = -21.000 dB  ->  AKM(0x47) = -20.961 dB  error(+0.039 dB) */
++    0x46,       /* [043] = -21.500 dB  ->  AKM(0x46) = -21.356 dB  error(+0.144 dB) */
++    0x44,       /* [044] = -22.000 dB  ->  AKM(0x44) = -22.206 dB  error(-0.206 dB) */
++    0x43,       /* [045] = -22.500 dB  ->  AKM(0x43) = -22.664 dB  error(-0.164 dB) */
++    0x42,       /* [046] = -23.000 dB  ->  AKM(0x42) = -23.147 dB  error(-0.147 dB) */
++    0x41,       /* [047] = -23.500 dB  ->  AKM(0x41) = -23.659 dB  error(-0.159 dB) */
++    0x40,       /* [048] = -24.000 dB  ->  AKM(0x40) = -24.203 dB  error(-0.203 dB) */
++    0x3f,       /* [049] = -24.500 dB  ->  AKM(0x3f) = -24.635 dB  error(-0.135 dB) */
++    0x3e,       /* [050] = -25.000 dB  ->  AKM(0x3e) = -24.935 dB  error(+0.065 dB) */
++    0x3c,       /* [051] = -25.500 dB  ->  AKM(0x3c) = -25.569 dB  error(-0.069 dB) */
++    0x3b,       /* [052] = -26.000 dB  ->  AKM(0x3b) = -25.904 dB  error(+0.096 dB) */
++    0x39,       /* [053] = -26.500 dB  ->  AKM(0x39) = -26.615 dB  error(-0.115 dB) */
++    0x38,       /* [054] = -27.000 dB  ->  AKM(0x38) = -26.994 dB  error(+0.006 dB) */
++    0x37,       /* [055] = -27.500 dB  ->  AKM(0x37) = -27.390 dB  error(+0.110 dB) */
++    0x36,       /* [056] = -28.000 dB  ->  AKM(0x36) = -27.804 dB  error(+0.196 dB) */
++    0x34,       /* [057] = -28.500 dB  ->  AKM(0x34) = -28.699 dB  error(-0.199 dB) */
++    0x33,       /* [058] = -29.000 dB  ->  AKM(0x33) = -29.183 dB  error(-0.183 dB) */
++    0x32,       /* [059] = -29.500 dB  ->  AKM(0x32) = -29.696 dB  error(-0.196 dB) */
++    0x31,       /* [060] = -30.000 dB  ->  AKM(0x31) = -30.241 dB  error(-0.241 dB) */
++    0x31,       /* [061] = -30.500 dB  ->  AKM(0x31) = -30.241 dB  error(+0.259 dB) */
++    0x30,       /* [062] = -31.000 dB  ->  AKM(0x30) = -30.823 dB  error(+0.177 dB) */
++    0x2e,       /* [063] = -31.500 dB  ->  AKM(0x2e) = -31.610 dB  error(-0.110 dB) */
++    0x2d,       /* [064] = -32.000 dB  ->  AKM(0x2d) = -31.945 dB  error(+0.055 dB) */
++    0x2b,       /* [065] = -32.500 dB  ->  AKM(0x2b) = -32.659 dB  error(-0.159 dB) */
++    0x2a,       /* [066] = -33.000 dB  ->  AKM(0x2a) = -33.038 dB  error(-0.038 dB) */
++    0x29,       /* [067] = -33.500 dB  ->  AKM(0x29) = -33.435 dB  error(+0.065 dB) */
++    0x28,       /* [068] = -34.000 dB  ->  AKM(0x28) = -33.852 dB  error(+0.148 dB) */
++    0x27,       /* [069] = -34.500 dB  ->  AKM(0x27) = -34.289 dB  error(+0.211 dB) */
++    0x25,       /* [070] = -35.000 dB  ->  AKM(0x25) = -35.235 dB  error(-0.235 dB) */
++    0x24,       /* [071] = -35.500 dB  ->  AKM(0x24) = -35.750 dB  error(-0.250 dB) */
++    0x24,       /* [072] = -36.000 dB  ->  AKM(0x24) = -35.750 dB  error(+0.250 dB) */
++    0x23,       /* [073] = -36.500 dB  ->  AKM(0x23) = -36.297 dB  error(+0.203 dB) */
++    0x22,       /* [074] = -37.000 dB  ->  AKM(0x22) = -36.881 dB  error(+0.119 dB) */
++    0x21,       /* [075] = -37.500 dB  ->  AKM(0x21) = -37.508 dB  error(-0.008 dB) */
++    0x20,       /* [076] = -38.000 dB  ->  AKM(0x20) = -38.183 dB  error(-0.183 dB) */
++    0x1f,       /* [077] = -38.500 dB  ->  AKM(0x1f) = -38.726 dB  error(-0.226 dB) */
++    0x1e,       /* [078] = -39.000 dB  ->  AKM(0x1e) = -39.108 dB  error(-0.108 dB) */
++    0x1d,       /* [079] = -39.500 dB  ->  AKM(0x1d) = -39.507 dB  error(-0.007 dB) */
++    0x1c,       /* [080] = -40.000 dB  ->  AKM(0x1c) = -39.926 dB  error(+0.074 dB) */
++    0x1b,       /* [081] = -40.500 dB  ->  AKM(0x1b) = -40.366 dB  error(+0.134 dB) */
++    0x1a,       /* [082] = -41.000 dB  ->  AKM(0x1a) = -40.829 dB  error(+0.171 dB) */
++    0x19,       /* [083] = -41.500 dB  ->  AKM(0x19) = -41.318 dB  error(+0.182 dB) */
++    0x18,       /* [084] = -42.000 dB  ->  AKM(0x18) = -41.837 dB  error(+0.163 dB) */
++    0x17,       /* [085] = -42.500 dB  ->  AKM(0x17) = -42.389 dB  error(+0.111 dB) */
++    0x16,       /* [086] = -43.000 dB  ->  AKM(0x16) = -42.978 dB  error(+0.022 dB) */
++    0x15,       /* [087] = -43.500 dB  ->  AKM(0x15) = -43.610 dB  error(-0.110 dB) */
++    0x14,       /* [088] = -44.000 dB  ->  AKM(0x14) = -44.291 dB  error(-0.291 dB) */
++    0x14,       /* [089] = -44.500 dB  ->  AKM(0x14) = -44.291 dB  error(+0.209 dB) */
++    0x13,       /* [090] = -45.000 dB  ->  AKM(0x13) = -45.031 dB  error(-0.031 dB) */
++    0x12,       /* [091] = -45.500 dB  ->  AKM(0x12) = -45.840 dB  error(-0.340 dB) */
++    0x12,       /* [092] = -46.000 dB  ->  AKM(0x12) = -45.840 dB  error(+0.160 dB) */
++    0x11,       /* [093] = -46.500 dB  ->  AKM(0x11) = -46.731 dB  error(-0.231 dB) */
++    0x11,       /* [094] = -47.000 dB  ->  AKM(0x11) = -46.731 dB  error(+0.269 dB) */
++    0x10,       /* [095] = -47.500 dB  ->  AKM(0x10) = -47.725 dB  error(-0.225 dB) */
++    0x10,       /* [096] = -48.000 dB  ->  AKM(0x10) = -47.725 dB  error(+0.275 dB) */
++    0x0f,       /* [097] = -48.500 dB  ->  AKM(0x0f) = -48.553 dB  error(-0.053 dB) */
++    0x0e,       /* [098] = -49.000 dB  ->  AKM(0x0e) = -49.152 dB  error(-0.152 dB) */
++    0x0d,       /* [099] = -49.500 dB  ->  AKM(0x0d) = -49.796 dB  error(-0.296 dB) */
++    0x0d,       /* [100] = -50.000 dB  ->  AKM(0x0d) = -49.796 dB  error(+0.204 dB) */
++    0x0c,       /* [101] = -50.500 dB  ->  AKM(0x0c) = -50.491 dB  error(+0.009 dB) */
++    0x0b,       /* [102] = -51.000 dB  ->  AKM(0x0b) = -51.247 dB  error(-0.247 dB) */
++    0x0b,       /* [103] = -51.500 dB  ->  AKM(0x0b) = -51.247 dB  error(+0.253 dB) */
++    0x0a,       /* [104] = -52.000 dB  ->  AKM(0x0a) = -52.075 dB  error(-0.075 dB) */
++    0x0a,       /* [105] = -52.500 dB  ->  AKM(0x0a) = -52.075 dB  error(+0.425 dB) */
++    0x09,       /* [106] = -53.000 dB  ->  AKM(0x09) = -52.990 dB  error(+0.010 dB) */
++    0x09,       /* [107] = -53.500 dB  ->  AKM(0x09) = -52.990 dB  error(+0.510 dB) */
++    0x08,       /* [108] = -54.000 dB  ->  AKM(0x08) = -54.013 dB  error(-0.013 dB) */
++    0x08,       /* [109] = -54.500 dB  ->  AKM(0x08) = -54.013 dB  error(+0.487 dB) */
++    0x07,       /* [110] = -55.000 dB  ->  AKM(0x07) = -55.173 dB  error(-0.173 dB) */
++    0x07,       /* [111] = -55.500 dB  ->  AKM(0x07) = -55.173 dB  error(+0.327 dB) */
++    0x06,       /* [112] = -56.000 dB  ->  AKM(0x06) = -56.512 dB  error(-0.512 dB) */
++    0x06,       /* [113] = -56.500 dB  ->  AKM(0x06) = -56.512 dB  error(-0.012 dB) */
++    0x06,       /* [114] = -57.000 dB  ->  AKM(0x06) = -56.512 dB  error(+0.488 dB) */
++    0x05,       /* [115] = -57.500 dB  ->  AKM(0x05) = -58.095 dB  error(-0.595 dB) */
++    0x05,       /* [116] = -58.000 dB  ->  AKM(0x05) = -58.095 dB  error(-0.095 dB) */
++    0x05,       /* [117] = -58.500 dB  ->  AKM(0x05) = -58.095 dB  error(+0.405 dB) */
++    0x05,       /* [118] = -59.000 dB  ->  AKM(0x05) = -58.095 dB  error(+0.905 dB) */
++    0x04,       /* [119] = -59.500 dB  ->  AKM(0x04) = -60.034 dB  error(-0.534 dB) */
++    0x04,       /* [120] = -60.000 dB  ->  AKM(0x04) = -60.034 dB  error(-0.034 dB) */
++    0x04,       /* [121] = -60.500 dB  ->  AKM(0x04) = -60.034 dB  error(+0.466 dB) */
++    0x04,       /* [122] = -61.000 dB  ->  AKM(0x04) = -60.034 dB  error(+0.966 dB) */
++    0x03,       /* [123] = -61.500 dB  ->  AKM(0x03) = -62.532 dB  error(-1.032 dB) */
++    0x03,       /* [124] = -62.000 dB  ->  AKM(0x03) = -62.532 dB  error(-0.532 dB) */
++    0x03,       /* [125] = -62.500 dB  ->  AKM(0x03) = -62.532 dB  error(-0.032 dB) */
++    0x03,       /* [126] = -63.000 dB  ->  AKM(0x03) = -62.532 dB  error(+0.468 dB) */
++    0x03,       /* [127] = -63.500 dB  ->  AKM(0x03) = -62.532 dB  error(+0.968 dB) */
++    0x03,       /* [128] = -64.000 dB  ->  AKM(0x03) = -62.532 dB  error(+1.468 dB) */
++    0x02,       /* [129] = -64.500 dB  ->  AKM(0x02) = -66.054 dB  error(-1.554 dB) */
++    0x02,       /* [130] = -65.000 dB  ->  AKM(0x02) = -66.054 dB  error(-1.054 dB) */
++    0x02,       /* [131] = -65.500 dB  ->  AKM(0x02) = -66.054 dB  error(-0.554 dB) */
++    0x02,       /* [132] = -66.000 dB  ->  AKM(0x02) = -66.054 dB  error(-0.054 dB) */
++    0x02,       /* [133] = -66.500 dB  ->  AKM(0x02) = -66.054 dB  error(+0.446 dB) */
++    0x02,       /* [134] = -67.000 dB  ->  AKM(0x02) = -66.054 dB  error(+0.946 dB) */
++    0x02,       /* [135] = -67.500 dB  ->  AKM(0x02) = -66.054 dB  error(+1.446 dB) */
++    0x02,       /* [136] = -68.000 dB  ->  AKM(0x02) = -66.054 dB  error(+1.946 dB) */
++    0x02,       /* [137] = -68.500 dB  ->  AKM(0x02) = -66.054 dB  error(+2.446 dB) */
++    0x02,       /* [138] = -69.000 dB  ->  AKM(0x02) = -66.054 dB  error(+2.946 dB) */
++    0x01,       /* [139] = -69.500 dB  ->  AKM(0x01) = -72.075 dB  error(-2.575 dB) */
++    0x01,       /* [140] = -70.000 dB  ->  AKM(0x01) = -72.075 dB  error(-2.075 dB) */
++    0x01,       /* [141] = -70.500 dB  ->  AKM(0x01) = -72.075 dB  error(-1.575 dB) */
++    0x01,       /* [142] = -71.000 dB  ->  AKM(0x01) = -72.075 dB  error(-1.075 dB) */
++    0x01,       /* [143] = -71.500 dB  ->  AKM(0x01) = -72.075 dB  error(-0.575 dB) */
++    0x01,       /* [144] = -72.000 dB  ->  AKM(0x01) = -72.075 dB  error(-0.075 dB) */
++    0x01,       /* [145] = -72.500 dB  ->  AKM(0x01) = -72.075 dB  error(+0.425 dB) */
++    0x01,       /* [146] = -73.000 dB  ->  AKM(0x01) = -72.075 dB  error(+0.925 dB) */
++    0x00};      /* [147] = -73.500 dB  ->  AKM(0x00) =  mute       error(+infini) */
+ 
+ /*
+  * pseudo-codec write entry
+@@ -738,7 +738,7 @@ static void vx2_reset_codec(struct vx_core *_chip)
+ 	msleep(5);  /* additionnel wait time for AKM's */
+ 
+ 	vx2_write_codec_reg(_chip, AKM_CODEC_POWER_CONTROL_CMD); /* DAC power up, ADC power up, Vref power down */
 -	
 +
- 	while (timeout-- > 0) {
- 		val = snd_via82xx_codec_xread(chip);
- 		val1 = val & (VIA_REG_AC97_BUSY | stat);
-@@ -400,7 +400,7 @@ static int snd_via82xx_codec_valid(struct via82xx_modem *chip, int secondary)
- 	}
- 	return -EIO;
- }
-- 
-+
- static void snd_via82xx_codec_wait(struct snd_ac97 *ac97)
- {
- 	struct via82xx_modem *chip = ac97->private_data;
-@@ -416,10 +416,10 @@ static void snd_via82xx_codec_write(struct snd_ac97 *ac97,
- {
- 	struct via82xx_modem *chip = ac97->private_data;
- 	unsigned int xval;
--	if(reg == AC97_GPIO_STATUS) {
-+	if (reg == AC97_GPIO_STATUS) {
- 		outl(val, VIAREG(chip, GPI_STATUS));
- 		return;
--	}	
-+	}
- 	xval = !ac97->num ? VIA_REG_AC97_CODEC_ID_PRIMARY : VIA_REG_AC97_CODEC_ID_SECONDARY;
- 	xval <<= VIA_REG_AC97_CODEC_ID_SHIFT;
- 	xval |= reg << VIA_REG_AC97_CMD_SHIFT;
-@@ -466,7 +466,7 @@ static void snd_via82xx_channel_reset(struct via82xx_modem *chip, struct viadev
- 	/* clear interrupts */
- 	outb(0x03, VIADEV_REG(viadev, OFFSET_STATUS));
- 	outb(0x00, VIADEV_REG(viadev, OFFSET_TYPE)); /* for via686 */
--	// outl(0, VIADEV_REG(viadev, OFFSET_CURR_PTR));
-+	/* outl(0, VIADEV_REG(viadev, OFFSET_CURR_PTR)); */
- 	viadev->lastpos = 0;
- }
+ 	vx2_write_codec_reg(_chip, AKM_CODEC_CLOCK_FORMAT_CMD); /* default */
+ 	vx2_write_codec_reg(_chip, AKM_CODEC_MUTE_CMD); /* Mute = ON ,Deemphasis = OFF */
+ 	vx2_write_codec_reg(_chip, AKM_CODEC_RESET_OFF_CMD); /* DAC and ADC normal operation */
+@@ -798,7 +798,7 @@ static void vx2_reset_board(struct vx_core *_chip, int cold_reset)
+ 	struct snd_vx222 *chip = (struct snd_vx222 *)_chip;
  
-@@ -482,7 +482,7 @@ static irqreturn_t snd_via82xx_interrupt(int irq, void *dev_id)
- 	unsigned int i;
- 
- 	status = inl(VIAREG(chip, SGD_SHADOW));
--	if (! (status & chip->intr_mask)) {
-+	if (!(status & chip->intr_mask)) {
- 		return IRQ_NONE;
- 	}
- // _skip_sgd:
-@@ -493,7 +493,7 @@ static irqreturn_t snd_via82xx_interrupt(int irq, void *dev_id)
- 		struct viadev *viadev = &chip->devs[i];
- 		unsigned char c_status = inb(VIADEV_REG(viadev, OFFSET_STATUS));
- 		c_status &= (VIA_REG_STAT_EOL|VIA_REG_STAT_FLAG|VIA_REG_STAT_STOPPED);
--		if (! c_status)
-+		if (!c_status)
- 			continue;
- 		if (viadev->substream && viadev->running) {
- 			spin_unlock(&chip->reg_lock);
-@@ -583,7 +583,7 @@ static inline unsigned int calc_linear_pos(struct viadev *viadev, unsigned int i
- 				   "using last valid pointer\n");
- 			res = viadev->lastpos;
- 		} else {
--			if (! count)
-+			if (!count)
- 				/* bogus count 0 on the DMA boundary? */
- 				res = viadev->idx_table[idx].offset;
- 			else
-@@ -744,7 +744,7 @@ static int snd_via82xx_modem_pcm_open(struct via82xx_modem *chip, struct viadev
-         };
- 
- 	runtime->hw = snd_via82xx_hw;
--	
-+
-         if ((err = snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
- 					      &hw_constraints_rates)) < 0)
-                 return err;
-@@ -918,7 +918,7 @@ static void snd_via82xx_proc_read(struct snd_info_entry *entry, struct snd_info_
- {
- 	struct via82xx_modem *chip = entry->private_data;
- 	int i;
--	
-+
- 	snd_iprintf(buffer, "%s\n\n", chip->card->longname);
- 	for (i = 0; i < 0xa0; i += 4) {
- 		snd_iprintf(buffer, "%02x: %08x\n", i, inl(chip->port + i));
-@@ -929,7 +929,7 @@ static void __devinit snd_via82xx_proc_init(struct via82xx_modem *chip)
- {
- 	struct snd_info_entry *entry;
- 
--	if (! snd_card_proc_new(chip->card, "via82xx", &entry))
-+	if (!snd_card_proc_new(chip->card, "via82xx", &entry))
- 		snd_info_set_text_ops(entry, chip, snd_via82xx_proc_read);
- }
- 
-@@ -944,13 +944,13 @@ static int snd_via82xx_chip_init(struct via82xx_modem *chip)
- 	unsigned char pval;
- 
- 	pci_read_config_byte(chip->pci, VIA_MC97_CTRL, &pval);
--	if((pval & VIA_MC97_CTRL_INIT) != VIA_MC97_CTRL_INIT) {
-+	if ((pval & VIA_MC97_CTRL_INIT) != VIA_MC97_CTRL_INIT) {
- 		pci_write_config_byte(chip->pci, 0x44, pval|VIA_MC97_CTRL_INIT);
- 		udelay(100);
- 	}
- 
- 	pci_read_config_byte(chip->pci, VIA_ACLINK_STAT, &pval);
--	if (! (pval & VIA_ACLINK_C00_READY)) { /* codec not ready? */
-+	if (!(pval & VIA_ACLINK_C00_READY)) { /* codec not ready? */
- 		/* deassert ACLink reset, force SYNC */
- 		pci_write_config_byte(chip->pci, VIA_ACLINK_CTRL,
- 				      VIA_ACLINK_CTRL_ENABLE |
-@@ -970,7 +970,7 @@ static int snd_via82xx_chip_init(struct via82xx_modem *chip)
- 		pci_write_config_byte(chip->pci, VIA_ACLINK_CTRL, VIA_ACLINK_CTRL_INIT);
- 		udelay(100);
- 	}
--	
-+
- 	pci_read_config_byte(chip->pci, VIA_ACLINK_CTRL, &pval);
- 	if ((pval & VIA_ACLINK_CTRL_INIT) != VIA_ACLINK_CTRL_INIT) {
- 		/* ACLink on, deassert ACLink reset, VSR, SGD data out */
-@@ -1009,7 +1009,7 @@ static int snd_via82xx_chip_init(struct via82xx_modem *chip)
-       __ac97_ok2:
- 
- 	/* route FM trap to IRQ, disable FM trap */
--	// pci_write_config_byte(chip->pci, VIA_FM_NMI_CTRL, 0);
-+	/* pci_write_config_byte(chip->pci, VIA_FM_NMI_CTRL, 0); */
- 	/* disable all GPI interrupts */
- 	outl(0, VIAREG(chip, GPI_INTR));
- 
-@@ -1078,7 +1078,7 @@ static int snd_via82xx_free(struct via82xx_modem *chip)
- 	for (i = 0; i < chip->num_devs; i++)
- 		snd_via82xx_channel_reset(chip, &chip->devs[i]);
- 
--      __end_hw:
-+__end_hw:
- 	if (chip->irq >= 0)
- 		free_irq(chip->irq, chip);
- 	pci_release_regions(chip->pci);
-@@ -1182,7 +1182,7 @@ static int __devinit snd_via82xx_probe(struct pci_dev *pci,
- 		err = -EINVAL;
- 		goto __error;
- 	}
--		
-+
- 	if ((err = snd_via82xx_create(card, pci, chip_type, pci->revision,
- 				      ac97_clock, &chip)) < 0)
- 		goto __error;
-@@ -1190,7 +1190,7 @@ static int __devinit snd_via82xx_probe(struct pci_dev *pci,
- 	if ((err = snd_via82xx_mixer_new(chip)) < 0)
- 		goto __error;
- 
--	if ((err = snd_via686_pcm_new(chip)) < 0 )
-+	if ((err = snd_via686_pcm_new(chip)) < 0)
- 		goto __error;
- 
- 	/* disable interrupts */
-@@ -1209,7 +1209,7 @@ static int __devinit snd_via82xx_probe(struct pci_dev *pci,
- 	pci_set_drvdata(pci, card);
- 	return 0;
- 
-- __error:
-+__error:
- 	snd_card_free(card);
- 	return err;
+ 	/* initialize the register values */
+-	chip->regCDSP = VX_CDSP_CODEC_RESET_MASK | VX_CDSP_DSP_RESET_MASK ;
++	chip->regCDSP = VX_CDSP_CODEC_RESET_MASK | VX_CDSP_DSP_RESET_MASK;
+ 	chip->regCFG = 0;
  }
