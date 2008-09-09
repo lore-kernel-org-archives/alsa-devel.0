@@ -1,24 +1,22 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 7/8] ASoC: Add SPI support for WM8731
-Date: Tue, 9 Sep 2008 10:55:33 +0100
-Message-ID: <20080909095532.GC31314@sirena.org.uk>
-References: <1220291224-11269-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<200809082127.13653.gineera@aspect135.co.uk>
-	<20080908205105.GA32649@sirena.org.uk>
-	<200809090945.35359.gineera@aspect135.co.uk>
-	<1220951038.17091.177.camel@odin>
-	<20080909093522.GA31314@sirena.org.uk>
-	<1220953595.17091.181.camel@odin>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Problems with pulseaudio / asla on PS3
+Date: Tue, 9 Sep 2008 13:17:06 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0809091312550.1221@tm8103.perex-int.cz>
+References: <200809050842.08596.kevin952@tpg.com.au>
+	<s5hwshrt84y.wl%tiwai@suse.de>
+	<200809052102.06534.kevin952@tpg.com.au>
+	<20080908202135.GA5221@tango.0pointer.de>
+	<s5hmyihu2yr.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0809091051310.1221@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9469A24540
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5987A103840
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Sep 2008 11:55:34 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1220953595.17091.181.camel@odin>
+	Tue,  9 Sep 2008 13:17:07 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.61.0809091051310.1221@tm8103.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,17 +26,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@kernel.org>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Cliff Cai <cliff.cai@analog.com>, Bryan Wu <cooloney@kernel.org>
+To: Lennart Poettering <mznyfn@0pointer.de>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 09, 2008 at 10:46:35AM +0100, Liam Girdwood wrote:
-> On Tue, 2008-09-09 at 10:35 +0100, Mark Brown wrote:
+On Tue, 9 Sep 2008, Jaroslav Kysela wrote:
 
-> > Yeah, unfortunately it'll need to be done codec by codec checking the
-> > exact wire format required.
+> On Tue, 9 Sep 2008, Takashi Iwai wrote:
+> 
+> > At Mon, 8 Sep 2008 22:21:36 +0200,
+> > Lennart Poettering wrote:
+> > > 
+> > > Takashi, as Kevin wrote originally, the problem is not that softvol
+> > > doesn't do any format/layout conversions, but that it claims it
+> > > does. PA asks softvol for INTERLEAVED samples, softvol agrees to
+> > > that -- and actually hands us only NONINTERLEAVED samples because it
+> > > doesn't reformat the from the underlying layer.
+> > > 
+> > > So, it *is* a bug in softvol. However, you are right that it doesn't
+> > > do any conversions.
+> > 
+> > Does it happen only with softvol?  For example, try to put any
+> > other conversion, such as, linear plugin instead of softvol.
+> > Could you check whether it works?
+> > 
+> > Basically softvol does nothing special, just like other normal plugins.
+> > So I don't think this is specific to softvol.
+> 
+> Also, output from snd_pcm_dump() after initialization (before samples r/w) 
+> might help us to determine the problem. I'll try to reproduce this 
+> behavior with the snd-dummy module.
 
-> It will be same/similar per vendor/family (based on IP reuse).
+I found the culprit. Lennart was right. The softvol plugin does in-place 
+sample recalculation, thus it cannot change the access type as a side 
+effect (which is true for linear plugins).
 
-Oh, definitely - should just be a case of going through the devices and
-checking with their datasheets exactly what they expect.
+The fix is available here:
+
+http://git.alsa-project.org/?p=alsa-lib.git;a=commit;h=a13707da6bb0161db855a146c3e4d1d849e4108b
+
+Also, for debugging purposes, I added snd_pcm_channel_area_t dump to 
+aplay:
+
+http://git.alsa-project.org/?p=alsa-utils.git;a=commit;h=6bd621177dea5afd74261621c72ff98ca4fc118a
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
