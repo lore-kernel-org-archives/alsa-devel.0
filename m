@@ -1,17 +1,17 @@
 From: Alexander Beregalov <a.beregalov@gmail.com>
-Subject: [PATCH 18/24] sound/pci: coding style fixes: rme9652
-Date: Tue, 9 Sep 2008 05:59:43 +0400
-Message-ID: <20080909015943.GU6211@orion>
+Subject: [PATCH 08/24] sound/pci: coding style fixes: emu10k1
+Date: Tue, 9 Sep 2008 05:51:38 +0400
+Message-ID: <20080909015138.GL6211@orion>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 80377103839
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7F0EB103800
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Sep 2008 03:59:53 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id 16so1537150fgg.44
-	for <alsa-devel@alsa-project.org>; Mon, 08 Sep 2008 18:59:53 -0700 (PDT)
+	Tue,  9 Sep 2008 03:52:11 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id 16so1535544fgg.44
+	for <alsa-devel@alsa-project.org>; Mon, 08 Sep 2008 18:52:11 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -36,2887 +36,3796 @@ Only compile tested.
 Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
 ---
 
- sound/pci/rme9652/hdsp.c    |  530 +++++++++++++++++++++---------------------
- sound/pci/rme9652/hdspm.c   |  114 +++++-----
- sound/pci/rme9652/rme9652.c |  146 ++++++------
- 3 files changed, 395 insertions(+), 395 deletions(-)
+ sound/pci/emu10k1/emu10k1.c          |    8 +-
+ sound/pci/emu10k1/emu10k1_callback.c |   28 ++--
+ sound/pci/emu10k1/emu10k1_main.c     |  266 +++++++++++++++++-----------------
+ sound/pci/emu10k1/emu10k1_patch.c    |   14 +-
+ sound/pci/emu10k1/emu10k1_synth.c    |    2 +-
+ sound/pci/emu10k1/emu10k1x.c         |  156 ++++++++++----------
+ sound/pci/emu10k1/emufx.c            |  148 ++++++++++----------
+ sound/pci/emu10k1/emumixer.c         |  130 ++++++++--------
+ sound/pci/emu10k1/emumpu401.c        |    2 +-
+ sound/pci/emu10k1/emupcm.c           |   56 ++++----
+ sound/pci/emu10k1/emuproc.c          |   80 +++++-----
+ sound/pci/emu10k1/io.c               |   32 ++--
+ sound/pci/emu10k1/irq.c              |   18 +-
+ sound/pci/emu10k1/memory.c           |    8 +-
+ sound/pci/emu10k1/p16v.c             |  132 +++++++++---------
+ sound/pci/emu10k1/p16v.h             |   14 +-
+ sound/pci/emu10k1/p17v.h             |    6 +-
+ sound/pci/emu10k1/voice.c            |   32 ++--
+ 18 files changed, 566 insertions(+), 566 deletions(-)
 
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index d723543..de05602 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -41,7 +41,7 @@
+diff --git a/sound/pci/emu10k1/emu10k1.c b/sound/pci/emu10k1/emu10k1.c
+index 8354c1a..094a874 100644
+--- a/sound/pci/emu10k1/emu10k1.c
++++ b/sound/pci/emu10k1/emu10k1.c
+@@ -20,7 +20,7 @@
+  *   along with this program; if not, write to the Free Software
+  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+  *
+- * 
++ *
+  */
  
- #include <asm/byteorder.h>
- #include <asm/current.h>
--#include <asm/io.h>
-+#include <linux/io.h>
+ #include <linux/init.h>
+@@ -134,7 +134,7 @@ static int __devinit snd_card_emu10k1_probe(struct pci_dev *pci,
+ 	if ((err = snd_emu10k1_pcm_efx(emu, 2, NULL)) < 0)
+ 		goto error;
+ 	/* This stores the periods table. */
+-	if (emu->card_capabilities->ca0151_chip) { /* P16V */	
++	if (emu->card_capabilities->ca0151_chip) { /* P16V */
+ 		if ((err = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, snd_dma_pci_data(pci),
+ 					       1024, &emu->p16v_buffer)) < 0)
+ 			goto error;
+@@ -142,7 +142,7 @@ static int __devinit snd_card_emu10k1_probe(struct pci_dev *pci,
  
- static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
- static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
-@@ -113,7 +113,7 @@ MODULE_FIRMWARE("digiface_firmware_rev11.bin");
+ 	if ((err = snd_emu10k1_mixer(emu, 0, 3)) < 0)
+ 		goto error;
+-	
++
+ 	if ((err = snd_emu10k1_timer(emu, 0)) < 0)
+ 		goto error;
  
- /* the meters are regular i/o-mapped registers, but offset
-    considerably from the rest. the peak registers are reset
--   when read; the least-significant 4 bits are full-scale counters; 
-+   when read; the least-significant 4 bits are full-scale counters;
-    the actual peak value is in the most-significant 24 bits.
- */
- 
-@@ -131,7 +131,7 @@ MODULE_FIRMWARE("digiface_firmware_rev11.bin");
-    26*3 values are read in ss mode
-    14*3 in ds mode, with no gap between values
- */
--#define HDSP_9652_peakBase	7164	
-+#define HDSP_9652_peakBase	7164
- #define HDSP_9652_rmsBase	4096
- 
- /* c.f. the hdsp_9632_meters_t struct */
-@@ -173,12 +173,12 @@ MODULE_FIRMWARE("digiface_firmware_rev11.bin");
- #define HDSP_SPDIFEmphasis        (1<<10) /* 0=none, 1=on */
- #define HDSP_SPDIFNonAudio        (1<<11) /* 0=off, 1=on */
- #define HDSP_SPDIFOpticalOut      (1<<12) /* 1=use 1st ADAT connector for SPDIF, 0=do not */
--#define HDSP_SyncRef2             (1<<13) 
--#define HDSP_SPDIFInputSelect0    (1<<14) 
--#define HDSP_SPDIFInputSelect1    (1<<15) 
--#define HDSP_SyncRef0             (1<<16) 
-+#define HDSP_SyncRef2             (1<<13)
-+#define HDSP_SPDIFInputSelect0    (1<<14)
-+#define HDSP_SPDIFInputSelect1    (1<<15)
-+#define HDSP_SyncRef0             (1<<16)
- #define HDSP_SyncRef1             (1<<17)
--#define HDSP_AnalogExtensionBoard (1<<18) /* For H9632 cards */ 
-+#define HDSP_AnalogExtensionBoard (1<<18) /* For H9632 cards */
- #define HDSP_XLRBreakoutCable     (1<<20) /* For H9632 cards */
- #define HDSP_Midi0InterruptEnable (1<<22)
- #define HDSP_Midi1InterruptEnable (1<<23)
-@@ -314,7 +314,7 @@ MODULE_FIRMWARE("digiface_firmware_rev11.bin");
- #define HDSP_TimecodeSync       (1<<27)
- #define HDSP_AEBO          	(1<<28) /* H9632 specific Analog Extension Boards */
- #define HDSP_AEBI		(1<<29) /* 0 = present, 1 = absent */
--#define HDSP_midi0IRQPending    (1<<30) 
-+#define HDSP_midi0IRQPending    (1<<30)
- #define HDSP_midi1IRQPending    (1<<31)
- 
- #define HDSP_spdifFrequencyMask    (HDSP_spdifFrequency0|HDSP_spdifFrequency1|HDSP_spdifFrequency2)
-@@ -391,7 +391,7 @@ MODULE_FIRMWARE("digiface_firmware_rev11.bin");
- #define HDSP_CHANNEL_BUFFER_BYTES    (4*HDSP_CHANNEL_BUFFER_SAMPLES)
- 
- /* the size of the area we need to allocate for DMA transfers. the
--   size is the same regardless of the number of channels - the 
-+   size is the same regardless of the number of channels - the
-    Multiface still uses the same memory area.
- 
-    Note that we allocate 1 more channel than is apparently needed
-@@ -460,7 +460,7 @@ struct hdsp {
- 	unsigned char	      qs_in_channels;	     /* quad speed mode for H9632 */
- 	unsigned char         ds_in_channels;
- 	unsigned char         ss_in_channels;	    /* different for multiface/digiface */
--	unsigned char	      qs_out_channels;	    
-+	unsigned char	      qs_out_channels;
- 	unsigned char         ds_out_channels;
- 	unsigned char         ss_out_channels;
- 
-@@ -502,9 +502,9 @@ static char channel_map_df_ss[HDSP_MAX_CHANNELS] = {
- 
- static char channel_map_mf_ss[HDSP_MAX_CHANNELS] = { /* Multiface */
- 	/* Analog */
--	0, 1, 2, 3, 4, 5, 6, 7, 
-+	0, 1, 2, 3, 4, 5, 6, 7,
- 	/* ADAT 2 */
--	16, 17, 18, 19, 20, 21, 22, 23, 
-+	16, 17, 18, 19, 20, 21, 22, 23,
- 	/* SPDIF */
- 	24, 25,
- 	-1, -1, -1, -1, -1, -1, -1, -1
-@@ -525,11 +525,11 @@ static char channel_map_H9632_ss[HDSP_MAX_CHANNELS] = {
- 	/* SPDIF */
- 	8, 9,
- 	/* Analog */
--	10, 11, 
-+	10, 11,
- 	/* AO4S-192 and AI4S-192 extension boards */
- 	12, 13, 14, 15,
- 	/* others don't exist */
--	-1, -1, -1, -1, -1, -1, -1, -1, 
-+	-1, -1, -1, -1, -1, -1, -1, -1,
- 	-1, -1
- };
- 
-@@ -539,7 +539,7 @@ static char channel_map_H9632_ds[HDSP_MAX_CHANNELS] = {
- 	/* SPDIF */
- 	8, 9,
- 	/* Analog */
--	10, 11, 
-+	10, 11,
- 	/* AO4S-192 and AI4S-192 extension boards */
- 	12, 13, 14, 15,
- 	/* others don't exist */
-@@ -587,7 +587,7 @@ static void snd_hammerfall_free_buffer(struct snd_dma_buffer *dmab, struct pci_d
- static struct pci_device_id snd_hdsp_ids[] = {
- 	{
- 		.vendor = PCI_VENDOR_ID_XILINX,
--		.device = PCI_DEVICE_ID_XILINX_HAMMERFALL_DSP, 
-+		.device = PCI_DEVICE_ID_XILINX_HAMMERFALL_DSP,
- 		.subvendor = PCI_ANY_ID,
- 		.subdevice = PCI_ANY_ID,
- 	}, /* RME Hammerfall-DSP */
-@@ -599,15 +599,15 @@ MODULE_DEVICE_TABLE(pci, snd_hdsp_ids);
- /* prototypes */
- static int snd_hdsp_create_alsa_devices(struct snd_card *card, struct hdsp *hdsp);
- static int snd_hdsp_create_pcm(struct snd_card *card, struct hdsp *hdsp);
--static int snd_hdsp_enable_io (struct hdsp *hdsp);
--static void snd_hdsp_initialize_midi_flush (struct hdsp *hdsp);
--static void snd_hdsp_initialize_channels (struct hdsp *hdsp);
-+static int snd_hdsp_enable_io(struct hdsp *hdsp);
-+static void snd_hdsp_initialize_midi_flush(struct hdsp *hdsp);
-+static void snd_hdsp_initialize_channels(struct hdsp *hdsp);
- static int hdsp_fifo_wait(struct hdsp *hdsp, int count, int timeout);
- static int hdsp_autosync_ref(struct hdsp *hdsp);
- static int snd_hdsp_set_defaults(struct hdsp *hdsp);
--static void snd_hdsp_9652_enable_mixer (struct hdsp *hdsp);
-+static void snd_hdsp_9652_enable_mixer(struct hdsp *hdsp);
- 
--static int hdsp_playback_to_output_key (struct hdsp *hdsp, int in, int out)
-+static int hdsp_playback_to_output_key(struct hdsp *hdsp, int in, int out)
- {
- 	switch (hdsp->io_type) {
- 	case Multiface:
-@@ -624,7 +624,7 @@ static int hdsp_playback_to_output_key (struct hdsp *hdsp, int in, int out)
+@@ -176,7 +176,7 @@ static int __devinit snd_card_emu10k1_probe(struct pci_dev *pci,
+ 		arg->max_voices = max_synth_voices[dev];
  	}
- }
- 
--static int hdsp_input_to_output_key (struct hdsp *hdsp, int in, int out)
-+static int hdsp_input_to_output_key(struct hdsp *hdsp, int in, int out)
- {
- 	switch (hdsp->io_type) {
- 	case Multiface:
-@@ -651,7 +651,7 @@ static unsigned int hdsp_read(struct hdsp *hdsp, int reg)
- 	return readl (hdsp->iobase + reg);
- }
- 
--static int hdsp_check_for_iobox (struct hdsp *hdsp)
-+static int hdsp_check_for_iobox(struct hdsp *hdsp)
- {
- 
- 	if (hdsp->io_type == H9652 || hdsp->io_type == H9632) return 0;
-@@ -670,19 +670,19 @@ static int snd_hdsp_load_firmware_from_cache(struct hdsp *hdsp) {
- 	unsigned long flags;
- 
- 	if ((hdsp_read (hdsp, HDSP_statusRegister) & HDSP_DllError) != 0) {
--		
+ #endif
+- 
 +
- 		snd_printk ("Hammerfall-DSP: loading firmware\n");
- 
- 		hdsp_write (hdsp, HDSP_control2Reg, HDSP_S_PROGRAM);
- 		hdsp_write (hdsp, HDSP_fifoData, 0);
--		
+ 	strcpy(card->driver, emu->card_capabilities->driver);
+ 	strcpy(card->shortname, emu->card_capabilities->name);
+ 	snprintf(card->longname, sizeof(card->longname),
+diff --git a/sound/pci/emu10k1/emu10k1_callback.c b/sound/pci/emu10k1/emu10k1_callback.c
+index 0e649dc..7bc7fce 100644
+--- a/sound/pci/emu10k1/emu10k1_callback.c
++++ b/sound/pci/emu10k1/emu10k1_callback.c
+@@ -103,7 +103,7 @@ snd_emu10k1_synth_get_voice(struct snd_emu10k1 *hw)
+ 			int ch;
+ 			vp = &emu->voices[best[i].voice];
+ 			if ((ch = vp->ch) < 0) {
+-				//printk("synth_get_voice: ch < 0 (%d) ??", i);
++				/* printk("synth_get_voice: ch < 0 (%d) ??", i); */
+ 				continue;
+ 			}
+ 			vp->emu->num_voices--;
+@@ -128,7 +128,7 @@ release_voice(struct snd_emux_voice *vp)
+ {
+ 	int dcysusv;
+ 	struct snd_emu10k1 *hw;
+-	
 +
- 		if (hdsp_fifo_wait (hdsp, 0, HDSP_LONG_WAIT)) {
- 			snd_printk ("Hammerfall-DSP: timeout waiting for download preparation\n");
- 			return -EIO;
+ 	hw = vp->hw;
+ 	dcysusv = 0x8000 | (unsigned char)vp->reg.parm.modrelease;
+ 	snd_emu10k1_ptr_write(hw, DCYSUSM, vp->ch, dcysusv);
+@@ -144,7 +144,7 @@ static void
+ terminate_voice(struct snd_emux_voice *vp)
+ {
+ 	struct snd_emu10k1 *hw;
+-	
++
+ 	if (snd_BUG_ON(!vp))
+ 		return;
+ 	hw = vp->hw;
+@@ -164,7 +164,7 @@ static void
+ free_voice(struct snd_emux_voice *vp)
+ {
+ 	struct snd_emu10k1 *hw;
+-	
++
+ 	hw = vp->hw;
+ 	/* FIXME: emu10k1_synth is broken. */
+ 	/* This can get called with hw == 0 */
+@@ -173,7 +173,7 @@ free_voice(struct snd_emux_voice *vp)
+ 	if (hw && (vp->ch >= 0)) {
+ 		snd_emu10k1_ptr_write(hw, IFATN, vp->ch, 0xff00);
+ 		snd_emu10k1_ptr_write(hw, DCYSUSV, vp->ch, 0x807f | DCYSUSV_CHANNELENABLE_MASK);
+-		// snd_emu10k1_ptr_write(hw, DCYSUSV, vp->ch, 0);
++		/* snd_emu10k1_ptr_write(hw, DCYSUSV, vp->ch, 0); */
+ 		snd_emu10k1_ptr_write(hw, VTFT, vp->ch, 0xffff);
+ 		snd_emu10k1_ptr_write(hw, CVCF, vp->ch, 0xffff);
+ 		snd_emu10k1_voice_free(hw, &hw->voices[vp->ch]);
+@@ -190,7 +190,7 @@ static void
+ update_voice(struct snd_emux_voice *vp, int update)
+ {
+ 	struct snd_emu10k1 *hw;
+-	
++
+ 	hw = vp->hw;
+ 	if (update & SNDRV_EMUX_UPDATE_VOLUME)
+ 		snd_emu10k1_ptr_write(hw, IFATN_ATTENUATION, vp->ch, vp->avol);
+@@ -250,7 +250,7 @@ lookup_voices(struct snd_emux *emu, struct snd_emu10k1 *hw,
+ 			bp = best + V_RELEASED;
+ #if 1
+ 			val = snd_emu10k1_ptr_read(hw, CVCF_CURRENTVOL, vp->ch);
+-			if (! val)
++			if (!val)
+ 				bp = best + V_OFF;
+ #endif
  		}
--		
-+
- 		hdsp_write (hdsp, HDSP_control2Reg, HDSP_S_LOAD);
--		
-+
- 		for (i = 0; i < 24413; ++i) {
- 			hdsp_write(hdsp, HDSP_fifoData, hdsp->firmware_cache[i]);
- 			if (hdsp_fifo_wait (hdsp, 127, HDSP_LONG_WAIT)) {
-@@ -692,7 +692,7 @@ static int snd_hdsp_load_firmware_from_cache(struct hdsp *hdsp) {
- 		}
- 
- 		ssleep(3);
--		
-+
- 		if (hdsp_fifo_wait (hdsp, 0, HDSP_LONG_WAIT)) {
- 			snd_printk ("Hammerfall-DSP: timeout at end of firmware loading\n");
- 		    	return -EIO;
-@@ -705,15 +705,15 @@ static int snd_hdsp_load_firmware_from_cache(struct hdsp *hdsp) {
- #endif
- 		hdsp_write (hdsp, HDSP_control2Reg, hdsp->control2_register);
- 		snd_printk ("Hammerfall-DSP: finished firmware loading\n");
--		
-+
- 	}
- 	if (hdsp->state & HDSP_InitializationComplete) {
- 		snd_printk(KERN_INFO "Hammerfall-DSP: firmware loaded from cache, restoring defaults\n");
- 		spin_lock_irqsave(&hdsp->lock, flags);
- 		snd_hdsp_set_defaults(hdsp);
--		spin_unlock_irqrestore(&hdsp->lock, flags); 
-+		spin_unlock_irqrestore(&hdsp->lock, flags);
- 	}
+@@ -323,7 +323,7 @@ start_voice(struct snd_emux_voice *vp)
+ 	struct snd_midi_channel *chan;
+ 	struct snd_emu10k1 *hw;
+ 	struct snd_emu10k1_memblk *emem;
 -	
 +
- 	hdsp->state |= HDSP_FirmwareLoaded;
- 
- 	return 0;
-@@ -722,7 +722,7 @@ static int snd_hdsp_load_firmware_from_cache(struct hdsp *hdsp) {
- static int hdsp_get_iobox_version (struct hdsp *hdsp)
- {
- 	if ((hdsp_read (hdsp, HDSP_statusRegister) & HDSP_DllError) != 0) {
--	
-+
- 		hdsp_write (hdsp, HDSP_control2Reg, HDSP_PROGRAM);
- 		hdsp_write (hdsp, HDSP_fifoData, 0);
- 		if (hdsp_fifo_wait (hdsp, 0, HDSP_SHORT_WAIT) < 0)
-@@ -738,7 +738,7 @@ static int hdsp_get_iobox_version (struct hdsp *hdsp)
- 			hdsp_fifo_wait (hdsp, 0, HDSP_SHORT_WAIT);
- 		} else {
- 			hdsp->io_type = Digiface;
--		} 
-+		}
- 	} else {
- 		/* firmware was already loaded, get iobox type */
- 		if (hdsp_read(hdsp, HDSP_status2Register) & HDSP_version1)
-@@ -754,19 +754,19 @@ static int hdsp_get_iobox_version (struct hdsp *hdsp)
- static int hdsp_request_fw_loader(struct hdsp *hdsp);
- #endif
- 
--static int hdsp_check_for_firmware (struct hdsp *hdsp, int load_on_demand)
-+static int hdsp_check_for_firmware(struct hdsp *hdsp, int load_on_demand)
- {
- 	if (hdsp->io_type == H9652 || hdsp->io_type == H9632)
- 		return 0;
- 	if ((hdsp_read (hdsp, HDSP_statusRegister) & HDSP_DllError) != 0) {
- 		hdsp->state &= ~HDSP_FirmwareLoaded;
--		if (! load_on_demand)
-+		if (!load_on_demand)
- 			return -EIO;
- 		snd_printk(KERN_ERR "Hammerfall-DSP: firmware not present.\n");
- 		/* try to load firmware */
--		if (! (hdsp->state & HDSP_FirmwareCached)) {
-+		if (!(hdsp->state & HDSP_FirmwareCached)) {
- #ifdef HDSP_FW_LOADER
--			if (! hdsp_request_fw_loader(hdsp))
-+			if (!hdsp_request_fw_loader(hdsp))
- 				return 0;
- #endif
- 			snd_printk(KERN_ERR
-@@ -786,13 +786,13 @@ static int hdsp_check_for_firmware (struct hdsp *hdsp, int load_on_demand)
- 
- 
- static int hdsp_fifo_wait(struct hdsp *hdsp, int count, int timeout)
--{    
-+{
- 	int i;
- 
- 	/* the fifoStatus registers reports on how many words
- 	   are available in the command FIFO.
- 	*/
--	
-+
- 	for (i = 0; i < timeout; i++) {
- 
- 		if ((int)(hdsp_read (hdsp, HDSP_fifoStatus) & 0xff) <= count)
-@@ -824,11 +824,11 @@ static int hdsp_write_gain(struct hdsp *hdsp, unsigned int addr, unsigned short
- 
- 	if (addr >= HDSP_MATRIX_MIXER_SIZE)
- 		return -1;
--	
-+
- 	if (hdsp->io_type == H9652 || hdsp->io_type == H9632) {
- 
- 		/* from martin bjornsen:
--		   
-+
- 		   "You can only write dwords to the
- 		   mixer memory which contain two
- 		   mixer values in the low and high
-@@ -847,7 +847,7 @@ static int hdsp_write_gain(struct hdsp *hdsp, unsigned int addr, unsigned short
- 
- 		hdsp->mixer_matrix[addr] = data;
- 
--		
-+
- 		/* `addr' addresses a 16-bit wide address, but
- 		   the address space accessed via hdsp_write
- 		   uses byte offsets. put another way, addr
-@@ -856,17 +856,17 @@ static int hdsp_write_gain(struct hdsp *hdsp, unsigned int addr, unsigned short
- 		   to access 0 to 2703 ...
- 		*/
- 		ad = addr/2;
--	
--		hdsp_write (hdsp, 4096 + (ad*4), 
--			    (hdsp->mixer_matrix[(addr&0x7fe)+1] << 16) + 
-+
-+		hdsp_write (hdsp, 4096 + (ad*4),
-+			    (hdsp->mixer_matrix[(addr&0x7fe)+1] << 16) +
- 			    hdsp->mixer_matrix[addr&0x7fe]);
--		
-+
- 		return 0;
- 
- 	} else {
- 
- 		ad = (addr << 16) + data;
--		
-+
- 		if (hdsp_fifo_wait(hdsp, 127, HDSP_LONG_WAIT))
- 			return -1;
- 
-@@ -902,7 +902,7 @@ static int hdsp_spdif_sample_rate(struct hdsp *hdsp)
- 
- 	if (status & HDSP_SPDIFErrorFlag)
- 		return 0;
--	
-+
- 	switch (rate_bits) {
- 	case HDSP_spdifFrequency32KHz: return 32000;
- 	case HDSP_spdifFrequency44_1KHz: return 44100;
-@@ -910,13 +910,13 @@ static int hdsp_spdif_sample_rate(struct hdsp *hdsp)
- 	case HDSP_spdifFrequency64KHz: return 64000;
- 	case HDSP_spdifFrequency88_2KHz: return 88200;
- 	case HDSP_spdifFrequency96KHz: return 96000;
--	case HDSP_spdifFrequency128KHz: 
-+	case HDSP_spdifFrequency128KHz:
- 		if (hdsp->io_type == H9632) return 128000;
- 		break;
--	case HDSP_spdifFrequency176_4KHz: 
-+	case HDSP_spdifFrequency176_4KHz:
- 		if (hdsp->io_type == H9632) return 176400;
- 		break;
--	case HDSP_spdifFrequency192KHz: 
-+	case HDSP_spdifFrequency192KHz:
- 		if (hdsp->io_type == H9632) return 192000;
- 		break;
- 	default:
-@@ -1027,7 +1027,7 @@ static void hdsp_set_dds_value(struct hdsp *hdsp, int rate)
- {
- 	u64 n;
- 	u32 r;
--	
-+
- 	if (rate >= 112000)
- 		rate /= 4;
- 	else if (rate >= 56000)
-@@ -1053,35 +1053,35 @@ static int hdsp_set_rate(struct hdsp *hdsp, int rate, int called_internally)
- 	   there is no need for it (e.g. during module
- 	   initialization).
- 	*/
--	
--	if (!(hdsp->control_register & HDSP_ClockModeMaster)) {	
-+
-+	if (!(hdsp->control_register & HDSP_ClockModeMaster)) {
- 		if (called_internally) {
- 			/* request from ctl or card initialization */
- 			snd_printk(KERN_ERR "Hammerfall-DSP: device is not running as a clock master: cannot set sample rate.\n");
- 			return -1;
--		} else {		
-+		} else {
- 			/* hw_param request while in AutoSync mode */
- 			int external_freq = hdsp_external_sample_rate(hdsp);
- 			int spdif_freq = hdsp_spdif_sample_rate(hdsp);
--		
-+
- 			if ((spdif_freq == external_freq*2) && (hdsp_autosync_ref(hdsp) >= HDSP_AUTOSYNC_FROM_ADAT1))
- 				snd_printk(KERN_INFO "Hammerfall-DSP: Detected ADAT in double speed mode\n");
- 			else if (hdsp->io_type == H9632 && (spdif_freq == external_freq*4) && (hdsp_autosync_ref(hdsp) >= HDSP_AUTOSYNC_FROM_ADAT1))
--				snd_printk(KERN_INFO "Hammerfall-DSP: Detected ADAT in quad speed mode\n");			
-+				snd_printk(KERN_INFO "Hammerfall-DSP: Detected ADAT in quad speed mode\n");
- 			else if (rate != external_freq) {
- 				snd_printk(KERN_INFO "Hammerfall-DSP: No AutoSync source for requested rate\n");
- 				return -1;
--			}		
--		}	
-+			}
-+		}
- 	}
- 
- 	current_rate = hdsp->system_sample_rate;
- 
- 	/* Changing from a "single speed" to a "double speed" rate is
- 	   not allowed if any substreams are open. This is because
--	   such a change causes a shift in the location of 
-+	   such a change causes a shift in the location of
- 	   the DMA buffers and a reduction in the number of available
--	   buffers. 
-+	   buffers.
- 
- 	   Note that a similar but essentially insoluble problem
- 	   exists for externally-driven rate changes. All we can do
-@@ -1089,7 +1089,7 @@ static int hdsp_set_rate(struct hdsp *hdsp, int rate, int called_internally)
- 
- 	if (rate > 96000 && hdsp->io_type != H9632)
+ 	hw = vp->hw;
+ 	ch = vp->ch;
+ 	if (snd_BUG_ON(ch < 0))
+@@ -335,7 +335,7 @@ start_voice(struct snd_emux_voice *vp)
  		return -EINVAL;
+ 	emem->map_locked++;
+ 	if (snd_emu10k1_memblk_map(hw, emem) < 0) {
+-		// printk("emu: cannot map!\n");
++		/* printk("emu: cannot map!\n"); */
+ 		return -ENOMEM;
+ 	}
+ 	mapped_offset = snd_emu10k1_memblk_offset(emem) >> 1;
+@@ -347,11 +347,11 @@ start_voice(struct snd_emux_voice *vp)
+ 	/* set channel routing */
+ 	/* A = left(0), B = right(1), C = reverb(c), D = chorus(d) */
+ 	if (hw->audigy) {
+-		temp = FXBUS_MIDI_LEFT | (FXBUS_MIDI_RIGHT << 8) | 
++		temp = FXBUS_MIDI_LEFT | (FXBUS_MIDI_RIGHT << 8) |
+ 			(FXBUS_MIDI_REVERB << 16) | (FXBUS_MIDI_CHORUS << 24);
+ 		snd_emu10k1_ptr_write(hw, A_FXRT1, ch, temp);
+ 	} else {
+-		temp = (FXBUS_MIDI_LEFT << 16) | (FXBUS_MIDI_RIGHT << 20) | 
++		temp = (FXBUS_MIDI_LEFT << 16) | (FXBUS_MIDI_RIGHT << 20) |
+ 			(FXBUS_MIDI_REVERB << 24) | (FXBUS_MIDI_CHORUS << 28);
+ 		snd_emu10k1_ptr_write(hw, FXRT, ch, temp);
+ 	}
+@@ -437,7 +437,7 @@ start_voice(struct snd_emux_voice *vp)
+ 		temp = ((unsigned int)hw->silent_page.addr << 1) | MAP_PTI_MASK;
+ 		snd_emu10k1_ptr_write(hw, MAPA, ch, temp);
+ 		snd_emu10k1_ptr_write(hw, MAPB, ch, temp);
+-		
++
+ 		/* fill cache */
+ 		val -= 4;
+ 		val <<= 25;
+@@ -476,11 +476,11 @@ trigger_voice(struct snd_emux_voice *vp)
+ 	unsigned int temp, ptarget;
+ 	struct snd_emu10k1 *hw;
+ 	struct snd_emu10k1_memblk *emem;
 -	
 +
- 	switch (rate) {
- 	case 32000:
- 		if (current_rate > 48000)
-@@ -1179,7 +1179,7 @@ static int hdsp_set_rate(struct hdsp *hdsp, int rate, int called_internally)
- 			break;
+ 	hw = vp->hw;
+ 
+ 	emem = (struct snd_emu10k1_memblk *)vp->block;
+-	if (! emem || emem->mapped_page < 0)
++	if (!emem || emem->mapped_page < 0)
+ 		return; /* not mapped */
+ 
+ #if 0
+diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
+index 2f283ea..ab57586 100644
+--- a/sound/pci/emu10k1/emu10k1_main.c
++++ b/sound/pci/emu10k1/emu10k1_main.c
+@@ -153,7 +153,7 @@ static unsigned int i2c_adc_init[][2] = {
+ 	{ 0x14, 0xa6 },  /* Limiter control */
+ 	{ 0x15, ADC_MUX_2 },  /* ADC Mixer control. Mic for Audigy 2 ZS Notebook */
+ };
+-	
++
+ static int snd_emu10k1_init(struct snd_emu10k1 *emu, int enable_ir, int resume)
+ {
+ 	unsigned int silent_page;
+@@ -197,12 +197,12 @@ static int snd_emu10k1_init(struct snd_emu10k1 *emu, int enable_ir, int resume)
+ 
+ 	if (emu->card_capabilities->ca0151_chip) { /* audigy2 */
+ 		/* Hacks for Alice3 to work independent of haP16V driver */
+-		//Setup SRCMulti_I2S SamplingRate
++		/* Setup SRCMulti_I2S SamplingRate */
+ 		tmp = snd_emu10k1_ptr_read(emu, A_SPDIF_SAMPLERATE, 0);
+ 		tmp &= 0xfffff1ff;
+ 		tmp |= (0x2<<9);
+ 		snd_emu10k1_ptr_write(emu, A_SPDIF_SAMPLERATE, 0, tmp);
+-		
++
+ 		/* Setup SRCSel (Enable Spdif,I2S SRCMulti) */
+ 		snd_emu10k1_ptr20_write(emu, SRCSel, 0, 0x14);
+ 		/* Setup SRCMulti Input Audio Enable */
+@@ -217,7 +217,7 @@ static int snd_emu10k1_init(struct snd_emu10k1 *emu, int enable_ir, int resume)
+ 	if (emu->card_capabilities->ca0108_chip) { /* audigy2 Value */
+ 		/* Hacks for Alice3 to work independent of haP16V driver */
+ 		snd_printk(KERN_INFO "Audigy2 value: Special config.\n");
+-		//Setup SRCMulti_I2S SamplingRate
++		/* Setup SRCMulti_I2S SamplingRate */
+ 		tmp = snd_emu10k1_ptr_read(emu, A_SPDIF_SAMPLERATE, 0);
+ 		tmp &= 0xfffff1ff;
+ 		tmp |= (0x2<<9);
+@@ -276,7 +276,7 @@ static int snd_emu10k1_init(struct snd_emu10k1 *emu, int enable_ir, int resume)
+ 		}
+ 	}
+ 
+-	
++
+ 	snd_emu10k1_ptr_write(emu, PTB, 0, emu->ptb_pages.addr);
+ 	snd_emu10k1_ptr_write(emu, TCB, 0, 0);	/* taken from original driver */
+ 	snd_emu10k1_ptr_write(emu, TCBS, 0, 4);	/* taken from original driver */
+@@ -313,7 +313,7 @@ static int snd_emu10k1_init(struct snd_emu10k1 *emu, int enable_ir, int resume)
+ 	    (emu->model == 0x21 && emu->revision < 6))
+ 		outl(HCFG_LOCKTANKCACHE_MASK | HCFG_AUTOMUTE, emu->port + HCFG);
+ 	else
+-		// With on-chip joystick
++		/* With on-chip joystick */
+ 		outl(HCFG_LOCKTANKCACHE_MASK | HCFG_AUTOMUTE | HCFG_JOYENABLE, emu->port + HCFG);
+ 
+ 	if (enable_ir) {	/* enable IR for SB Live */
+@@ -337,7 +337,7 @@ static int snd_emu10k1_init(struct snd_emu10k1 *emu, int enable_ir, int resume)
+ 			outl(reg, emu->port + HCFG);
+  		}
+ 	}
+-	
++
+ 	if (emu->card_capabilities->emu_model) {
+ 		;  /* Disable all access to A_IOCFG for the emu1010 */
+ 	} else if (emu->card_capabilities->i2c_adc) {
+@@ -364,7 +364,7 @@ static void snd_emu10k1_audio_enable(struct snd_emu10k1 *emu)
+ 		;  /* Disable A_IOCFG for Audigy 2 ZS Notebook */
+ 	} else if (emu->audigy) {
+ 		outl(inl(emu->port + A_IOCFG) & ~0x44, emu->port + A_IOCFG);
+- 
++
+ 		if (emu->card_capabilities->ca0151_chip) { /* audigy2 */
+ 			/* Unmute Analog now.  Set GPO6 to 1 for Apollo.
+ 			 * This has to be done after init ALice3 I2SOut beyond 48KHz.
+@@ -378,12 +378,12 @@ static void snd_emu10k1_audio_enable(struct snd_emu10k1 *emu)
+ 			outl(inl(emu->port + A_IOCFG) | 0x0080, emu->port + A_IOCFG);
  		}
  	}
 -	
 +
- 	hdsp->system_sample_rate = rate;
+ #if 0
+ 	{
+ 	unsigned int tmp;
+ 	/* FIXME: the following routine disables LiveDrive-II !! */
+-	// TOSLink detection
++	/* TOSLink detection */
+ 	emu->tos_link = 0;
+ 	tmp = inl(emu->port + HCFG);
+ 	if (tmp & (HCFG_GPINPUT0 | HCFG_GPINPUT1)) {
+@@ -495,7 +495,7 @@ int snd_emu10k1_done(struct snd_emu10k1 * emu)
  
- 	return 0;
-@@ -1189,7 +1189,7 @@ static int hdsp_set_rate(struct hdsp *hdsp, int rate, int called_internally)
-    MIDI
-   ----------------------------------------------------------------------------*/
+ #define EC_LAST_PROMFILE_ADDR	0x2f
  
--static unsigned char snd_hdsp_midi_read_byte (struct hdsp *hdsp, int id)
-+static unsigned char snd_hdsp_midi_read_byte(struct hdsp *hdsp, int id)
- {
- 	/* the hardware already does the relevant bit-mask with 0xff */
- 	if (id)
-@@ -1198,7 +1198,7 @@ static unsigned char snd_hdsp_midi_read_byte (struct hdsp *hdsp, int id)
- 		return hdsp_read(hdsp, HDSP_midiDataIn0);
- }
+-#define EC_SERIALNUM_ADDR	0x30	/* First word of serial number.  The 
++#define EC_SERIALNUM_ADDR	0x30	/* First word of serial number.  The
+ 					 * can be up to 30 characters in length
+ 					 * and is stored as a NULL-terminated
+ 					 * ASCII string.  Any unused bytes must be
+@@ -503,8 +503,8 @@ int snd_emu10k1_done(struct snd_emu10k1 * emu)
+ #define EC_CHECKSUM_ADDR	0x3f	/* Location at which checksum is stored */
  
--static void snd_hdsp_midi_write_byte (struct hdsp *hdsp, int id, int val)
-+static void snd_hdsp_midi_write_byte(struct hdsp *hdsp, int id, int val)
- {
- 	/* the hardware already does the relevant bit-mask with 0xff */
- 	if (id)
-@@ -1207,7 +1207,7 @@ static void snd_hdsp_midi_write_byte (struct hdsp *hdsp, int id, int val)
- 		hdsp_write(hdsp, HDSP_midiDataOut0, val);
- }
  
--static int snd_hdsp_midi_input_available (struct hdsp *hdsp, int id)
-+static int snd_hdsp_midi_input_available(struct hdsp *hdsp, int id)
- {
- 	if (id)
- 		return (hdsp_read(hdsp, HDSP_midiStatusIn1) & 0xff);
-@@ -1215,7 +1215,7 @@ static int snd_hdsp_midi_input_available (struct hdsp *hdsp, int id)
- 		return (hdsp_read(hdsp, HDSP_midiStatusIn0) & 0xff);
- }
+-/* Most of this stuff is pretty self-evident.  According to the hardware 
+- * dudes, we need to leave the ADCCAL bit low in order to avoid a DC 
++/* Most of this stuff is pretty self-evident.  According to the hardware
++ * dudes, we need to leave the ADCCAL bit low in order to avoid a DC
+  * offset problem.  Weird.
+  */
+ #define EC_RAW_RUN_MODE		(EC_DACMUTEN | EC_ADCRSTN | EC_TRIM_MUTEN | \
+@@ -574,7 +574,7 @@ static void snd_emu10k1_ecard_setadcgain(struct snd_emu10k1 * emu,
  
--static int snd_hdsp_midi_output_possible (struct hdsp *hdsp, int id)
-+static int snd_hdsp_midi_output_possible(struct hdsp *hdsp, int id)
- {
- 	int fifo_bytes_used;
- 
-@@ -1230,13 +1230,13 @@ static int snd_hdsp_midi_output_possible (struct hdsp *hdsp, int id)
- 		return 0;
- }
- 
--static void snd_hdsp_flush_midi_input (struct hdsp *hdsp, int id)
-+static void snd_hdsp_flush_midi_input(struct hdsp *hdsp, int id)
- {
- 	while (snd_hdsp_midi_input_available (hdsp, id))
- 		snd_hdsp_midi_read_byte (hdsp, id);
- }
- 
--static int snd_hdsp_midi_output_write (struct hdsp_midi *hmidi)
-+static int snd_hdsp_midi_output_write(struct hdsp_midi *hmidi)
- {
- 	unsigned long flags;
- 	int n_pending;
-@@ -1245,16 +1245,16 @@ static int snd_hdsp_midi_output_write (struct hdsp_midi *hmidi)
- 	unsigned char buf[128];
- 
- 	/* Output is not interrupt driven */
+ 	for (bit = (1 << 15); bit; bit >>= 1) {
+ 		unsigned int value;
 -		
 +
- 	spin_lock_irqsave (&hmidi->lock, flags);
- 	if (hmidi->output) {
- 		if (!snd_rawmidi_transmit_empty (hmidi->output)) {
- 			if ((n_pending = snd_hdsp_midi_output_possible (hmidi->hdsp, hmidi->id)) > 0) {
- 				if (n_pending > (int)sizeof (buf))
- 					n_pending = sizeof (buf);
--				
-+
- 				if ((to_write = snd_rawmidi_transmit (hmidi->output, buf, n_pending)) > 0) {
--					for (i = 0; i < to_write; ++i) 
-+					for (i = 0; i < to_write; ++i)
- 						snd_hdsp_midi_write_byte (hmidi->hdsp, hmidi->id, buf[i]);
+ 		value = emu->ecard_ctrl & ~(EC_TRIM_CSN | EC_TRIM_SDATA);
+ 
+ 		if (gain & bit)
+@@ -598,7 +598,7 @@ static int snd_emu10k1_ecard_init(struct snd_emu10k1 * emu)
+ 			  EC_SPDIF0_SELECT(EC_DEFAULT_SPDIF0_SEL) |
+ 			  EC_SPDIF1_SELECT(EC_DEFAULT_SPDIF1_SEL);
+ 
+-	/* Step 0: Set the codec type in the hardware control register 
++	/* Step 0: Set the codec type in the hardware control register
+ 	 * and enable audio output */
+ 	hc_value = inl(emu->port + HCFG);
+ 	outl(hc_value | HCFG_AUDIOENABLE | HCFG_CODECFORMAT_I2S, emu->port + HCFG);
+@@ -685,13 +685,13 @@ static int snd_emu1010_load_firmware(struct snd_emu10k1 * emu, const char * file
+ 	outl(0x80, emu->port + A_IOCFG); /* Leave bit 7 set during netlist setup. */
+ 	write_post = inl(emu->port + A_IOCFG);
+ 	udelay(100); /* Allow FPGA memory to clean */
+-	for(n = 0; n < fw_entry->size; n++) {
+-		value=fw_entry->data[n];	
+-		for(i = 0; i < 8; i++) {
++	for (n = 0; n < fw_entry->size; n++) {
++		value=fw_entry->data[n];
++		for (i = 0; i < 8; i++) {
+ 			reg = 0x80;
+ 			if (value & 0x1)
+ 				reg = reg | 0x20;
+-			value = value >> 1;   
++			value = value >> 1;
+ 			outl(reg, emu->port + A_IOCFG);
+ 			write_post = inl(emu->port + A_IOCFG);
+ 			outl(reg | 0x40, emu->port + A_IOCFG);
+@@ -719,13 +719,13 @@ static int emu1010_firmware_thread(void *data)
+ 		msleep_interruptible(1000);
+ 		if (kthread_should_stop())
+ 			break;
+-		snd_emu1010_fpga_read(emu, EMU_HANA_IRQ_STATUS, &tmp ); /* IRQ Status */
+-		snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg ); /* OPTIONS: Which cards are attached to the EMU */
++		snd_emu1010_fpga_read(emu, EMU_HANA_IRQ_STATUS, &tmp); /* IRQ Status */
++		snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg); /* OPTIONS: Which cards are attached to the EMU */
+ 		if (reg & EMU_HANA_OPTION_DOCK_OFFLINE) {
+ 			/* Audio Dock attached */
+ 			/* Return to Audio Dock programming mode */
+ 			snd_printk(KERN_INFO "emu1010: Loading Audio Dock Firmware\n");
+-			snd_emu1010_fpga_write(emu,  EMU_HANA_FPGA_CONFIG, EMU_HANA_FPGA_CONFIG_AUDIODOCK );
++			snd_emu1010_fpga_write(emu,  EMU_HANA_FPGA_CONFIG, EMU_HANA_FPGA_CONFIG_AUDIODOCK);
+ 			if (emu->card_capabilities->emu_model ==
+ 			    EMU_MODEL_EMU1010) {
+ 				if ((err = snd_emu1010_load_firmware(emu, DOCK_FILENAME)) != 0) {
+@@ -743,11 +743,11 @@ static int emu1010_firmware_thread(void *data)
  				}
  			}
-@@ -1264,7 +1264,7 @@ static int snd_hdsp_midi_output_write (struct hdsp_midi *hmidi)
- 	return 0;
- }
  
--static int snd_hdsp_midi_input_read (struct hdsp_midi *hmidi)
-+static int snd_hdsp_midi_input_read(struct hdsp_midi *hmidi)
- {
- 	unsigned char buf[128]; /* this buffer is designed to match the MIDI input FIFO size */
- 	unsigned long flags;
-@@ -1325,14 +1325,14 @@ static void snd_hdsp_midi_output_timer(unsigned long data)
- {
- 	struct hdsp_midi *hmidi = (struct hdsp_midi *) data;
- 	unsigned long flags;
+-			snd_emu1010_fpga_write(emu,  EMU_HANA_FPGA_CONFIG, 0 );
+-			snd_emu1010_fpga_read(emu, EMU_HANA_IRQ_STATUS, &reg );
++			snd_emu1010_fpga_write(emu,  EMU_HANA_FPGA_CONFIG, 0);
++			snd_emu1010_fpga_read(emu, EMU_HANA_IRQ_STATUS, &reg);
+ 			snd_printk(KERN_INFO "emu1010: EMU_HANA+DOCK_IRQ_STATUS=0x%x\n",reg);
+ 			/* ID, should read & 0x7f = 0x55 when FPGA programmed. */
+-			snd_emu1010_fpga_read(emu, EMU_HANA_ID, &reg );
++			snd_emu1010_fpga_read(emu, EMU_HANA_ID, &reg);
+ 			snd_printk(KERN_INFO "emu1010: EMU_HANA+DOCK_ID=0x%x\n",reg);
+ 			if ((reg & 0x1f) != 0x15) {
+ 				/* FPGA failed to be programmed */
+@@ -755,14 +755,14 @@ static int emu1010_firmware_thread(void *data)
+ 				continue;
+ 			}
+ 			snd_printk(KERN_INFO "emu1010: Audio Dock Firmware loaded\n");
+-			snd_emu1010_fpga_read(emu, EMU_DOCK_MAJOR_REV, &tmp );
+-			snd_emu1010_fpga_read(emu, EMU_DOCK_MINOR_REV, &tmp2 );
++			snd_emu1010_fpga_read(emu, EMU_DOCK_MAJOR_REV, &tmp);
++			snd_emu1010_fpga_read(emu, EMU_DOCK_MINOR_REV, &tmp2);
+ 			snd_printk("Audio Dock ver:%d.%d\n",tmp ,tmp2);
+ 			/* Sync clocking between 1010 and Dock */
+ 			/* Allow DLL to settle */
+ 			msleep(10);
+ 			/* Unmute all. Default is muted after a firmware load */
+-			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_UNMUTE );
++			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_UNMUTE);
+ 		}
+ 	}
+ 	snd_printk(KERN_INFO "emu1010: firmware thread stopping\n");
+@@ -818,7 +818,7 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 * emu)
+ 	 * Lock Tank Memory Cache,
+ 	 * Mute all codecs.
+ 	 */
+-	outl(0x0005a004, emu->port + HCFG); 
++	outl(0x0005a004, emu->port + HCFG);
+ 	/* AC97 2.1, Any 16Meg of 4Gig address, Auto-Mute, EMU32 Slave,
+ 	 * Mute all codecs.
+ 	 */
+@@ -829,18 +829,18 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 * emu)
+ 	outl(0x0005a000, emu->port + HCFG);
+ 
+ 	/* Disable 48Volt power to Audio Dock */
+-	snd_emu1010_fpga_write(emu,  EMU_HANA_DOCK_PWR,  0 );
++	snd_emu1010_fpga_write(emu,  EMU_HANA_DOCK_PWR,  0);
+ 
+ 	/* ID, should read & 0x7f = 0x55. (Bit 7 is the IRQ bit) */
+-	snd_emu1010_fpga_read(emu, EMU_HANA_ID, &reg );
++	snd_emu1010_fpga_read(emu, EMU_HANA_ID, &reg);
+ 	snd_printdd("reg1=0x%x\n",reg);
+ 	if ((reg & 0x3f) == 0x15) {
+ 		/* FPGA netlist already present so clear it */
+ 		/* Return to programming mode */
+ 
+-		snd_emu1010_fpga_write(emu,  EMU_HANA_FPGA_CONFIG, 0x02 );
++		snd_emu1010_fpga_write(emu,  EMU_HANA_FPGA_CONFIG, 0x02);
+ 	}
+-	snd_emu1010_fpga_read(emu, EMU_HANA_ID, &reg );
++	snd_emu1010_fpga_read(emu, EMU_HANA_ID, &reg);
+ 	snd_printdd("reg2=0x%x\n",reg);
+ 	if ((reg & 0x3f) == 0x15) {
+ 		/* FPGA failed to return to programming mode */
+@@ -876,7 +876,7 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 * emu)
+ 	}
+ 
+ 	/* ID, should read & 0x7f = 0x55 when FPGA programmed. */
+-	snd_emu1010_fpga_read(emu, EMU_HANA_ID, &reg );
++	snd_emu1010_fpga_read(emu, EMU_HANA_ID, &reg);
+ 	if ((reg & 0x3f) != 0x15) {
+ 		/* FPGA failed to be programmed */
+ 		snd_printk(KERN_INFO "emu1010: Loading Hana Firmware file failed, reg=0x%x\n", reg);
+@@ -884,17 +884,17 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 * emu)
+ 	}
+ 
+ 	snd_printk(KERN_INFO "emu1010: Hana Firmware loaded\n");
+-	snd_emu1010_fpga_read(emu, EMU_HANA_MAJOR_REV, &tmp );
+-	snd_emu1010_fpga_read(emu, EMU_HANA_MINOR_REV, &tmp2 );
++	snd_emu1010_fpga_read(emu, EMU_HANA_MAJOR_REV, &tmp);
++	snd_emu1010_fpga_read(emu, EMU_HANA_MINOR_REV, &tmp2);
+ 	snd_printk("Hana ver:%d.%d\n",tmp ,tmp2);
+ 	/* Enable 48Volt power to Audio Dock */
+-	snd_emu1010_fpga_write(emu,  EMU_HANA_DOCK_PWR,  EMU_HANA_DOCK_PWR_ON );
++	snd_emu1010_fpga_write(emu,  EMU_HANA_DOCK_PWR,  EMU_HANA_DOCK_PWR_ON);
+ 
+-	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg );
++	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg);
+ 	snd_printk(KERN_INFO "emu1010: Card options=0x%x\n",reg);
+-	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg );
++	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg);
+ 	snd_printk(KERN_INFO "emu1010: Card options=0x%x\n",reg);
+-	snd_emu1010_fpga_read(emu, EMU_HANA_OPTICAL_TYPE, &tmp ); 
++	snd_emu1010_fpga_read(emu, EMU_HANA_OPTICAL_TYPE, &tmp);
+ 	/* Optical -> ADAT I/O  */
+ 	/* 0 : SPDIF
+ 	 * 1 : ADAT
+@@ -904,41 +904,41 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 * emu)
+ 	tmp = 0;
+ 	tmp = (emu->emu1010.optical_in ? EMU_HANA_OPTICAL_IN_ADAT : 0) |
+ 		(emu->emu1010.optical_out ? EMU_HANA_OPTICAL_OUT_ADAT : 0);
+-	snd_emu1010_fpga_write(emu, EMU_HANA_OPTICAL_TYPE, tmp );
+-	snd_emu1010_fpga_read(emu, EMU_HANA_ADC_PADS, &tmp );
++	snd_emu1010_fpga_write(emu, EMU_HANA_OPTICAL_TYPE, tmp);
++	snd_emu1010_fpga_read(emu, EMU_HANA_ADC_PADS, &tmp);
+ 	/* Set no attenuation on Audio Dock pads. */
+-	snd_emu1010_fpga_write(emu, EMU_HANA_ADC_PADS, 0x00 );
++	snd_emu1010_fpga_write(emu, EMU_HANA_ADC_PADS, 0x00);
+ 	emu->emu1010.adc_pads = 0x00;
+-	snd_emu1010_fpga_read(emu, EMU_HANA_DOCK_MISC, &tmp );
++	snd_emu1010_fpga_read(emu, EMU_HANA_DOCK_MISC, &tmp);
+ 	/* Unmute Audio dock DACs, Headphone source DAC-4. */
+-	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_MISC, 0x30 );
+-	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_LEDS_2, 0x12 );
+-	snd_emu1010_fpga_read(emu, EMU_HANA_DAC_PADS, &tmp );
++	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_MISC, 0x30);
++	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_LEDS_2, 0x12);
++	snd_emu1010_fpga_read(emu, EMU_HANA_DAC_PADS, &tmp);
+ 	/* DAC PADs. */
+-	snd_emu1010_fpga_write(emu, EMU_HANA_DAC_PADS, 0x0f );
++	snd_emu1010_fpga_write(emu, EMU_HANA_DAC_PADS, 0x0f);
+ 	emu->emu1010.dac_pads = 0x0f;
+-	snd_emu1010_fpga_read(emu, EMU_HANA_DOCK_MISC, &tmp );
+-	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_MISC, 0x30 );
+-	snd_emu1010_fpga_read(emu, EMU_HANA_SPDIF_MODE, &tmp );
++	snd_emu1010_fpga_read(emu, EMU_HANA_DOCK_MISC, &tmp);
++	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_MISC, 0x30);
++	snd_emu1010_fpga_read(emu, EMU_HANA_SPDIF_MODE, &tmp);
+ 	/* SPDIF Format. Set Consumer mode, 24bit, copy enable */
+-	snd_emu1010_fpga_write(emu, EMU_HANA_SPDIF_MODE, 0x10 );
++	snd_emu1010_fpga_write(emu, EMU_HANA_SPDIF_MODE, 0x10);
+ 	/* MIDI routing */
+-	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_IN, 0x19 );
++	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_IN, 0x19);
+ 	/* Unknown. */
+-	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_OUT, 0x0c );
+-	/* snd_emu1010_fpga_write(emu, 0x09, 0x0f ); // IRQ Enable: All on */
++	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_OUT, 0x0c);
++	/* snd_emu1010_fpga_write(emu, 0x09, 0x0f);  IRQ Enable: All on */
+ 	/* IRQ Enable: All off */
+-	snd_emu1010_fpga_write(emu, EMU_HANA_IRQ_ENABLE, 0x00 );
++	snd_emu1010_fpga_write(emu, EMU_HANA_IRQ_ENABLE, 0x00);
+ 
+-	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg );
++	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg);
+ 	snd_printk(KERN_INFO "emu1010: Card options3=0x%x\n",reg);
+ 	/* Default WCLK set to 48kHz. */
+-	snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, 0x00 );
++	snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, 0x00);
+ 	/* Word Clock source, Internal 48kHz x1 */
+-	snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK, EMU_HANA_WCLOCK_INT_48K );
+-	//snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK, EMU_HANA_WCLOCK_INT_48K | EMU_HANA_WCLOCK_4X );
++	snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK, EMU_HANA_WCLOCK_INT_48K);
++	/* snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK, EMU_HANA_WCLOCK_INT_48K | EMU_HANA_WCLOCK_4X); */
+ 	/* Audio Dock LEDs. */
+-	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_LEDS_2, 0x12 );
++	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_LEDS_2, 0x12);
+ 
+ #if 0
+ 	/* For 96kHz */
+@@ -992,7 +992,7 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 * emu)
+ 	 * Defaults only, users will set their own values anyways, let's
+ 	 * just copy/paste.
+ 	 */
 -	
 +
- 	snd_hdsp_midi_output_write(hmidi);
- 	spin_lock_irqsave (&hmidi->lock, flags);
+ 	snd_emu1010_fpga_link_dst_src_write(emu,
+ 		EMU_DST_ALICE2_EMU32_8, EMU_SRC_DOCK_MIC_A1);
+ 	snd_emu1010_fpga_link_dst_src_write(emu,
+@@ -1037,19 +1037,19 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 * emu)
+ 	snd_emu1010_fpga_link_dst_src_write(emu,
+ 		EMU_DST_ALICE2_EMU32_F, EMU_SRC_HAMOA_ADC_LEFT2);
+ #endif
+-	for (i = 0;i < 0x20; i++ ) {
++	for (i = 0; i < 0x20; i++) {
+ 		/* AudioDock Elink <-  Silence */
+ 		snd_emu1010_fpga_link_dst_src_write(emu, 0x0100+i, EMU_SRC_SILENCE);
+ 	}
+-	for (i = 0;i < 4; i++) {
++	for (i = 0; i < 4; i++) {
+ 		/* Hana SPDIF Out <- Silence */
+ 		snd_emu1010_fpga_link_dst_src_write(emu, 0x0200+i, EMU_SRC_SILENCE);
+ 	}
+-	for (i = 0;i < 7; i++) {
++	for (i = 0; i < 7; i++) {
+ 		/* Hamoa DAC <- Silence */
+ 		snd_emu1010_fpga_link_dst_src_write(emu, 0x0300+i, EMU_SRC_SILENCE);
+ 	}
+-	for (i = 0;i < 7; i++) {
++	for (i = 0; i < 7; i++) {
+ 		/* Hana ADAT Out <- Silence */
+ 		snd_emu1010_fpga_link_dst_src_write(emu, EMU_DST_HANA_ADAT + i, EMU_SRC_SILENCE);
+ 	}
+@@ -1065,30 +1065,30 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 * emu)
+ 		EMU_DST_ALICE_I2S2_LEFT, EMU_SRC_DOCK_ADC3_LEFT1);
+ 	snd_emu1010_fpga_link_dst_src_write(emu,
+ 		EMU_DST_ALICE_I2S2_RIGHT, EMU_SRC_DOCK_ADC3_RIGHT1);
+-	snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, 0x01 ); // Unmute all
++	snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, 0x01); /* Unmute all */
++
++	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &tmp);
  
- 	/* this does not bump hmidi->istimer, because the
- 	   kernel automatically removed the timer when it
- 	   expired, and we are now adding it back, thus
--	   leaving istimer wherever it was set before.  
-+	   leaving istimer wherever it was set before.
- 	*/
+-	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &tmp );
+-	
+ 	/* AC97 1.03, Any 32Meg of 2Gig address, Auto-Mute, EMU32 Slave,
+ 	 * Lock Sound Memory Cache, Lock Tank Memory Cache,
+ 	 * Mute all codecs.
+ 	 */
+-	outl(0x0000a000, emu->port + HCFG); 
++	outl(0x0000a000, emu->port + HCFG);
+ 	/* AC97 1.03, Any 32Meg of 2Gig address, Auto-Mute, EMU32 Slave,
+ 	 * Lock Sound Memory Cache, Lock Tank Memory Cache,
+ 	 * Un-Mute all codecs.
+ 	 */
+ 	outl(0x0000a001, emu->port + HCFG);
+- 
++
+ 	/* Initial boot complete. Now patches */
  
- 	if (hmidi->istimer) {
-@@ -1435,7 +1435,7 @@ static struct snd_rawmidi_ops snd_hdsp_midi_input =
- 	.trigger =	snd_hdsp_midi_input_trigger,
+-	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &tmp );
+-	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_IN, 0x19 ); /* MIDI Route */
+-	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_OUT, 0x0c ); /* Unknown */
+-	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_IN, 0x19 ); /* MIDI Route */
+-	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_OUT, 0x0c ); /* Unknown */
+-	snd_emu1010_fpga_read(emu, EMU_HANA_SPDIF_MODE, &tmp ); 
+-	snd_emu1010_fpga_write(emu, EMU_HANA_SPDIF_MODE, 0x10 ); /* SPDIF Format spdif  (or 0x11 for aes/ebu) */
++	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &tmp);
++	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_IN, 0x19); /* MIDI Route */
++	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_OUT, 0x0c); /* Unknown */
++	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_IN, 0x19); /* MIDI Route */
++	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_OUT, 0x0c); /* Unknown */
++	snd_emu1010_fpga_read(emu, EMU_HANA_SPDIF_MODE, &tmp);
++	snd_emu1010_fpga_write(emu, EMU_HANA_SPDIF_MODE, 0x10); /* SPDIF Format spdif  (or 0x11 for aes/ebu) */
+ 
+ 	/* Start Micro/Audio Dock firmware loader thread */
+ 	if (!emu->emu1010.firmware_thread) {
+@@ -1218,20 +1218,20 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 * emu)
+ 		emu->emu1010.output_source[23] = 28;
+ 	}
+ 	/* TEMP: Select SPDIF in/out */
+-	//snd_emu1010_fpga_write(emu, EMU_HANA_OPTICAL_TYPE, 0x0); /* Output spdif */
++	/* snd_emu1010_fpga_write(emu, EMU_HANA_OPTICAL_TYPE, 0x0);  Output spdif */
+ 
+ 	/* TEMP: Select 48kHz SPDIF out */
+ 	snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, 0x0); /* Mute all */
+ 	snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, 0x0); /* Default fallback clock 48kHz */
+ 	/* Word Clock source, Internal 48kHz x1 */
+-	snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK, EMU_HANA_WCLOCK_INT_48K );
+-	//snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK, EMU_HANA_WCLOCK_INT_48K | EMU_HANA_WCLOCK_4X );
++	snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK, EMU_HANA_WCLOCK_INT_48K);
++	/* snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK, EMU_HANA_WCLOCK_INT_48K | EMU_HANA_WCLOCK_4X); */
+ 	emu->emu1010.internal_clock = 1; /* 48000 */
+ 	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_LEDS_2, 0x12);/* Set LEDs on Audio Dock */
+ 	snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, 0x1); /* Unmute all */
+-	//snd_emu1010_fpga_write(emu, 0x7, 0x0); /* Mute all */
+-	//snd_emu1010_fpga_write(emu, 0x7, 0x1); /* Unmute all */
+-	//snd_emu1010_fpga_write(emu, 0xe, 0x12); /* Set LEDs on Audio Dock */
++	/* snd_emu1010_fpga_write(emu, 0x7, 0x0);  Mute all */
++	/* snd_emu1010_fpga_write(emu, 0x7, 0x1);  Unmute all */
++	/* snd_emu1010_fpga_write(emu, 0xe, 0x12);  Set LEDs on Audio Dock */
+ 
+ 	return 0;
+ }
+@@ -1253,7 +1253,7 @@ static int snd_emu10k1_free(struct snd_emu10k1 *emu)
+        	}
+ 	if (emu->card_capabilities->emu_model == EMU_MODEL_EMU1010) {
+ 		/* Disable 48Volt power to Audio Dock */
+-		snd_emu1010_fpga_write(emu,  EMU_HANA_DOCK_PWR,  0 );
++		snd_emu1010_fpga_write(emu,  EMU_HANA_DOCK_PWR,  0);
+ 	}
+ 	if (emu->emu1010.firmware_thread)
+ 		kthread_stop(emu->emu1010.firmware_thread);
+@@ -1278,7 +1278,7 @@ static int snd_emu10k1_free(struct snd_emu10k1 *emu)
+ #endif
+ 	if (emu->port)
+ 		pci_release_regions(emu->pci);
+-	if (emu->card_capabilities->ca0151_chip) /* P16V */	
++	if (emu->card_capabilities->ca0151_chip) /* P16V */
+ 		snd_p16v_free(emu);
+ 	pci_disable_device(emu->pci);
+ 	kfree(emu);
+@@ -1301,7 +1301,7 @@ static struct snd_emu_chip_details emu_chip_details[] = {
+ 	 * CA0151: None
+ 	 */
+ 	{.vendor = 0x1102, .device = 0x0008, .subsystem = 0x10011102,
+-	 .driver = "Audigy2", .name = "Audigy 2 Value [SB0400]", 
++	 .driver = "Audigy2", .name = "Audigy 2 Value [SB0400]",
+ 	 .id = "Audigy2",
+ 	 .emu10k2_chip = 1,
+ 	 .ca0108_chip = 1,
+@@ -1346,7 +1346,7 @@ static struct snd_emu_chip_details emu_chip_details[] = {
+ 	 * CA0151: None
+ 	 */
+ 	{.vendor = 0x1102, .device = 0x0008, .subsystem = 0x10211102,
+-	 .driver = "Audigy2", .name = "Audigy 4 [SB0610]", 
++	 .driver = "Audigy2", .name = "Audigy 4 [SB0610]",
+ 	 .id = "Audigy2",
+ 	 .emu10k2_chip = 1,
+ 	 .ca0108_chip = 1,
+@@ -1359,7 +1359,7 @@ static struct snd_emu_chip_details emu_chip_details[] = {
+ 	 * Digital output working. (AC3 not checked, only PCM)
+ 	 * Audio Mic/Line inputs working.
+ 	 * Digital input not tested.
+-	 */ 
++	 */
+ 	/* DSP: Tina2
+ 	 * DAC: Wolfson WM8768/WM8568
+ 	 * ADC: Wolfson WM8775
+@@ -1386,7 +1386,7 @@ static struct snd_emu_chip_details emu_chip_details[] = {
+ 	 *
+ 	 */
+ 	{.vendor = 0x1102, .device = 0x0008, .subsystem = 0x20011102,
+-	 .driver = "Audigy2", .name = "Audigy 2 ZS Notebook [SB0530]", 
++	 .driver = "Audigy2", .name = "Audigy 2 ZS Notebook [SB0530]",
+ 	 .id = "Audigy2",
+ 	 .emu10k2_chip = 1,
+ 	 .ca0108_chip = 1,
+@@ -1396,7 +1396,7 @@ static struct snd_emu_chip_details emu_chip_details[] = {
+ 	 .spk71 = 1} ,
+ 	/* Tested by James@superbug.co.uk 4th Nov 2007. */
+ 	{.vendor = 0x1102, .device = 0x0008, .subsystem = 0x42011102,
+-	 .driver = "Audigy2", .name = "E-mu 1010 Notebook [MAEM8950]", 
++	 .driver = "Audigy2", .name = "E-mu 1010 Notebook [MAEM8950]",
+ 	 .id = "EMU1010",
+ 	 .emu10k2_chip = 1,
+ 	 .ca0108_chip = 1,
+@@ -1405,7 +1405,7 @@ static struct snd_emu_chip_details emu_chip_details[] = {
+ 	 .emu_model = EMU_MODEL_EMU1616},
+ 	/* Tested by James@superbug.co.uk 4th Nov 2007. */
+ 	{.vendor = 0x1102, .device = 0x0008, .subsystem = 0x40041102,
+-	 .driver = "Audigy2", .name = "E-mu 1010b PCI [MAEM????]", 
++	 .driver = "Audigy2", .name = "E-mu 1010b PCI [MAEM????]",
+ 	 .id = "EMU1010",
+ 	 .emu10k2_chip = 1,
+ 	 .ca0108_chip = 1,
+@@ -1436,15 +1436,15 @@ static struct snd_emu_chip_details emu_chip_details[] = {
+ 	 .spk71 = 1,
+ 	 .emu_model = EMU_MODEL_EMU0404}, /* EMU 0404 */
+ 	/* Audigy4 (Not PRO) SB0610 */
+-	{.vendor = 0x1102, .device = 0x0008, 
+-	 .driver = "Audigy2", .name = "Audigy 2 Value [Unknown]", 
++	{.vendor = 0x1102, .device = 0x0008,
++	 .driver = "Audigy2", .name = "Audigy 2 Value [Unknown]",
+ 	 .id = "Audigy2",
+ 	 .emu10k2_chip = 1,
+ 	 .ca0108_chip = 1,
+ 	 .ac97_chip = 1} ,
+ 	/* Tested by James@superbug.co.uk 3rd July 2005 */
+ 	{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x20071102,
+-	 .driver = "Audigy2", .name = "Audigy 4 PRO [SB0380]", 
++	 .driver = "Audigy2", .name = "Audigy 4 PRO [SB0380]",
+ 	 .id = "Audigy2",
+ 	 .emu10k2_chip = 1,
+ 	 .ca0102_chip = 1,
+@@ -1457,7 +1457,7 @@ static struct snd_emu_chip_details emu_chip_details[] = {
+ 	 * Just like 0x20021102
+ 	 */
+ 	{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x20061102,
+-	 .driver = "Audigy2", .name = "Audigy 2 [SB0350b]", 
++	 .driver = "Audigy2", .name = "Audigy 2 [SB0350b]",
+ 	 .id = "Audigy2",
+ 	 .emu10k2_chip = 1,
+ 	 .ca0102_chip = 1,
+@@ -1466,7 +1466,7 @@ static struct snd_emu_chip_details emu_chip_details[] = {
+ 	 .spdif_bug = 1,
+ 	 .ac97_chip = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x20021102,
+-	 .driver = "Audigy2", .name = "Audigy 2 ZS [SB0350]", 
++	 .driver = "Audigy2", .name = "Audigy 2 ZS [SB0350]",
+ 	 .id = "Audigy2",
+ 	 .emu10k2_chip = 1,
+ 	 .ca0102_chip = 1,
+@@ -1475,7 +1475,7 @@ static struct snd_emu_chip_details emu_chip_details[] = {
+ 	 .spdif_bug = 1,
+ 	 .ac97_chip = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x20011102,
+-	 .driver = "Audigy2", .name = "Audigy 2 ZS [2001]", 
++	 .driver = "Audigy2", .name = "Audigy 2 ZS [2001]",
+ 	 .id = "Audigy2",
+ 	 .emu10k2_chip = 1,
+ 	 .ca0102_chip = 1,
+@@ -1492,7 +1492,7 @@ static struct snd_emu_chip_details emu_chip_details[] = {
+ 	 * CA0151: Yes
+ 	 */
+ 	{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x10071102,
+-	 .driver = "Audigy2", .name = "Audigy 2 [SB0240]", 
++	 .driver = "Audigy2", .name = "Audigy 2 [SB0240]",
+ 	 .id = "Audigy2",
+ 	 .emu10k2_chip = 1,
+ 	 .ca0102_chip = 1,
+@@ -1502,7 +1502,7 @@ static struct snd_emu_chip_details emu_chip_details[] = {
+ 	 .adc_1361t = 1,  /* 24 bit capture instead of 16bit */
+ 	 .ac97_chip = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x10051102,
+-	 .driver = "Audigy2", .name = "Audigy 2 EX [1005]", 
++	 .driver = "Audigy2", .name = "Audigy 2 EX [1005]",
+ 	 .id = "Audigy2",
+ 	 .emu10k2_chip = 1,
+ 	 .ca0102_chip = 1,
+@@ -1521,7 +1521,7 @@ static struct snd_emu_chip_details emu_chip_details[] = {
+ 	 .spdif_bug = 1,
+ 	 .ac97_chip = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x10021102,
+-	 .driver = "Audigy2", .name = "Audigy 2 Platinum [SB0240P]", 
++	 .driver = "Audigy2", .name = "Audigy 2 Platinum [SB0240P]",
+ 	 .id = "Audigy2",
+ 	 .emu10k2_chip = 1,
+ 	 .ca0102_chip = 1,
+@@ -1540,44 +1540,44 @@ static struct snd_emu_chip_details emu_chip_details[] = {
+ 	 .spdif_bug = 1,
+ 	 .ac97_chip = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x00531102,
+-	 .driver = "Audigy", .name = "Audigy 1 [SB0090]", 
++	 .driver = "Audigy", .name = "Audigy 1 [SB0090]",
+ 	 .id = "Audigy",
+ 	 .emu10k2_chip = 1,
+ 	 .ca0102_chip = 1,
+ 	 .ac97_chip = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x00521102,
+-	 .driver = "Audigy", .name = "Audigy 1 ES [SB0160]", 
++	 .driver = "Audigy", .name = "Audigy 1 ES [SB0160]",
+ 	 .id = "Audigy",
+ 	 .emu10k2_chip = 1,
+ 	 .ca0102_chip = 1,
+ 	 .spdif_bug = 1,
+ 	 .ac97_chip = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x00511102,
+-	 .driver = "Audigy", .name = "Audigy 1 [SB0090]", 
++	 .driver = "Audigy", .name = "Audigy 1 [SB0090]",
+ 	 .id = "Audigy",
+ 	 .emu10k2_chip = 1,
+ 	 .ca0102_chip = 1,
+ 	 .ac97_chip = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0004,
+-	 .driver = "Audigy", .name = "Audigy 1 [Unknown]", 
++	 .driver = "Audigy", .name = "Audigy 1 [Unknown]",
+ 	 .id = "Audigy",
+ 	 .emu10k2_chip = 1,
+ 	 .ca0102_chip = 1,
+ 	 .ac97_chip = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x806B1102,
+-	 .driver = "EMU10K1", .name = "SBLive! [SB0105]", 
++	 .driver = "EMU10K1", .name = "SBLive! [SB0105]",
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x806A1102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [SB0103]", 
++	 .driver = "EMU10K1", .name = "SBLive! Value [SB0103]",
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80691102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [SB0101]", 
++	 .driver = "EMU10K1", .name = "SBLive! Value [SB0101]",
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+@@ -1585,26 +1585,26 @@ static struct snd_emu_chip_details emu_chip_details[] = {
+ 	/* Tested by ALSA bug#1680 26th December 2005 */
+ 	/* note: It really has SB0220 written on the card. */
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80661102,
+-	 .driver = "EMU10K1", .name = "SB Live 5.1 Dell OEM [SB0220]", 
++	 .driver = "EMU10K1", .name = "SB Live 5.1 Dell OEM [SB0220]",
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+ 	/* Tested by Thomas Zehetbauer 27th Aug 2005 */
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80651102,
+-	 .driver = "EMU10K1", .name = "SB Live 5.1 [SB0220]", 
++	 .driver = "EMU10K1", .name = "SB Live 5.1 [SB0220]",
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x100a1102,
+-	 .driver = "EMU10K1", .name = "SB Live 5.1 [SB0220]", 
++	 .driver = "EMU10K1", .name = "SB Live 5.1 [SB0220]",
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80641102,
+-	 .driver = "EMU10K1", .name = "SB Live 5.1", 
++	 .driver = "EMU10K1", .name = "SB Live 5.1",
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+@@ -1619,78 +1619,78 @@ static struct snd_emu_chip_details emu_chip_details[] = {
+ 			  */
+ 	 .sblive51 = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80511102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [CT4850]", 
++	 .driver = "EMU10K1", .name = "SBLive! Value [CT4850]",
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80401102,
+-	 .driver = "EMU10K1", .name = "SBLive! Platinum [CT4760P]", 
++	 .driver = "EMU10K1", .name = "SBLive! Platinum [CT4760P]",
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80321102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [CT4871]", 
++	 .driver = "EMU10K1", .name = "SBLive! Value [CT4871]",
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80311102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [CT4831]", 
++	 .driver = "EMU10K1", .name = "SBLive! Value [CT4831]",
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80281102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [CT4870]", 
++	 .driver = "EMU10K1", .name = "SBLive! Value [CT4870]",
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+ 	/* Tested by James@superbug.co.uk 3rd July 2005 */
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80271102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [CT4832]", 
++	 .driver = "EMU10K1", .name = "SBLive! Value [CT4832]",
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80261102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [CT4830]", 
++	 .driver = "EMU10K1", .name = "SBLive! Value [CT4830]",
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80231102,
+-	 .driver = "EMU10K1", .name = "SB PCI512 [CT4790]", 
++	 .driver = "EMU10K1", .name = "SB PCI512 [CT4790]",
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80221102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [CT4780]", 
++	 .driver = "EMU10K1", .name = "SBLive! Value [CT4780]",
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x40011102,
+-	 .driver = "EMU10K1", .name = "E-mu APS [4001]", 
++	 .driver = "EMU10K1", .name = "E-mu APS [4001]",
+ 	 .id = "APS",
+ 	 .emu10k1_chip = 1,
+ 	 .ecard = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x00211102,
+-	 .driver = "EMU10K1", .name = "SBLive! [CT4620]", 
++	 .driver = "EMU10K1", .name = "SBLive! [CT4620]",
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x00201102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [CT4670]", 
++	 .driver = "EMU10K1", .name = "SBLive! Value [CT4670]",
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002,
+-	 .driver = "EMU10K1", .name = "SB Live [Unknown]", 
++	 .driver = "EMU10K1", .name = "SB Live [Unknown]",
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+@@ -1715,7 +1715,7 @@ int __devinit snd_emu10k1_create(struct snd_card *card,
+ 	static struct snd_device_ops ops = {
+ 		.dev_free =	snd_emu10k1_dev_free,
+ 	};
+-	
++
+ 	*remu = NULL;
+ 
+ 	/* enable PCI device */
+@@ -1751,11 +1751,11 @@ int __devinit snd_emu10k1_create(struct snd_card *card,
+ 	for (c = emu_chip_details; c->vendor; c++) {
+ 		if (c->vendor == pci->vendor && c->device == pci->device) {
+ 			if (subsystem) {
+-				if (c->subsystem && (c->subsystem == subsystem) ) {
++				if (c->subsystem && (c->subsystem == subsystem)) {
+ 					break;
+ 				} else continue;
+ 			} else {
+-				if (c->subsystem && (c->subsystem != emu->serial) )
++				if (c->subsystem && (c->subsystem != emu->serial))
+ 					continue;
+ 				if (c->revision && c->revision != emu->revision)
+ 					continue;
+@@ -1772,13 +1772,13 @@ int __devinit snd_emu10k1_create(struct snd_card *card,
+ 	emu->card_capabilities = c;
+ 	if (c->subsystem && !subsystem)
+ 		snd_printdd("Sound card name=%s\n", c->name);
+-	else if (subsystem) 
++	else if (subsystem)
+ 		snd_printdd("Sound card name=%s, vendor=0x%x, device=0x%x, subsystem=0x%x. Forced to subsytem=0x%x\n",
+ 		       	c->name, pci->vendor, pci->device, emu->serial, c->subsystem);
+-	else 
++	else
+ 		snd_printdd("Sound card name=%s, vendor=0x%x, device=0x%x, subsystem=0x%x.\n",
+ 		      	c->name, pci->vendor, pci->device, emu->serial);
+-	
++
+ 	if (!*card->id && c->id) {
+ 		int i, n = 0;
+ 		strlcpy(card->id, c->id, sizeof(card->id));
+@@ -1913,7 +1913,7 @@ int __devinit snd_emu10k1_create(struct snd_card *card,
+ 		snd_emu10k1_synth_alloc(emu, 4096);
+ 	if (emu->reserved_page)
+ 		emu->reserved_page->map_locked = 1;
+-	
++
+ 	/* Clear silent pages and set up pointers */
+ 	memset(emu->silent_page.area, 0, PAGE_SIZE);
+ 	silent_page = emu->silent_page.addr << 1;
+@@ -1978,7 +1978,7 @@ static int __devinit alloc_pm_buffer(struct snd_emu10k1 *emu)
+ 	if (emu->audigy)
+ 		size += ARRAY_SIZE(saved_regs_audigy);
+ 	emu->saved_ptr = vmalloc(4 * NUM_G * size);
+-	if (! emu->saved_ptr)
++	if (!emu->saved_ptr)
+ 		return -ENOMEM;
+ 	if (snd_emu10k1_efx_alloc_pm_buffer(emu) < 0)
+ 		return -ENOMEM;
+diff --git a/sound/pci/emu10k1/emu10k1_patch.c b/sound/pci/emu10k1/emu10k1_patch.c
+index e10f027..8e59bba 100644
+--- a/sound/pci/emu10k1/emu10k1_patch.c
++++ b/sound/pci/emu10k1/emu10k1_patch.c
+@@ -88,7 +88,7 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd_sf_sample *sp,
+ 
+ 	/* try to allocate a memory block */
+ 	blocksize = truesize;
+-	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
++	if (!(sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
+ 		blocksize *= 2;
+ 	sp->block = snd_emu10k1_synth_alloc(emu, blocksize);
+ 	if (sp->block == NULL) {
+@@ -102,7 +102,7 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd_sf_sample *sp,
+ 	/* write blank samples at head */
+ 	offset = 0;
+ 	size = BLANK_HEAD_SIZE;
+-	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
++	if (!(sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
+ 		size *= 2;
+ 	if (offset + size > blocksize)
+ 		return -EINVAL;
+@@ -111,7 +111,7 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd_sf_sample *sp,
+ 
+ 	/* copy start->loopend */
+ 	size = loopend;
+-	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
++	if (!(sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
+ 		size *= 2;
+ 	if (offset + size > blocksize)
+ 		return -EINVAL;
+@@ -127,7 +127,7 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd_sf_sample *sp,
+ 	/* handle reverse (or bidirectional) loop */
+ 	if (sp->v.mode_flags & (SNDRV_SFNT_SAMPLE_BIDIR_LOOP|SNDRV_SFNT_SAMPLE_REVERSE_LOOP)) {
+ 		/* copy loop in reverse */
+-		if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS)) {
++		if (!(sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS)) {
+ 			int woffset;
+ 			unsigned short *wblock = (unsigned short*)block;
+ 			woffset = offset / 2;
+@@ -160,7 +160,7 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd_sf_sample *sp,
+ 	size = sp->v.size - loopend;
+ 	if (size < 0)
+ 		return -EINVAL;
+-	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
++	if (!(sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
+ 		size *= 2;
+ 	if (snd_emu10k1_synth_copy_from_user(emu, sp->block, offset, data, size)) {
+ 		snd_emu10k1_synth_free(emu, sp->block);
+@@ -184,7 +184,7 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd_sf_sample *sp,
+ #if 0 /* not supported yet */
+ 	if (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_UNSIGNED) {
+ 		/* unsigned -> signed */
+-		if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS)) {
++		if (!(sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS)) {
+ 			unsigned short *wblock = (unsigned short*)block;
+ 			for (i = 0; i < truesize; i++)
+ 				wblock[i] ^= 0x8000;
+@@ -197,7 +197,7 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd_sf_sample *sp,
+ 
+ 	/* recalculate offset */
+ 	start_addr = BLANK_HEAD_SIZE * 2;
+-	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
++	if (!(sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
+ 		start_addr >>= 1;
+ 	sp->v.start += start_addr;
+ 	sp->v.end += start_addr;
+diff --git a/sound/pci/emu10k1/emu10k1_synth.c b/sound/pci/emu10k1/emu10k1_synth.c
+index ad7b714..bedb7dd 100644
+--- a/sound/pci/emu10k1/emu10k1_synth.c
++++ b/sound/pci/emu10k1/emu10k1_synth.c
+@@ -105,7 +105,7 @@ static int snd_emu10k1_synth_delete_device(struct snd_seq_device *dev)
+ 
+ static int __init alsa_emu10k1_synth_init(void)
+ {
+-	
++
+ 	static struct snd_seq_dev_ops ops = {
+ 		snd_emu10k1_synth_new_device,
+ 		snd_emu10k1_synth_delete_device,
+diff --git a/sound/pci/emu10k1/emu10k1x.c b/sound/pci/emu10k1/emu10k1x.c
+index 5ff4dbb..0c02d87 100644
+--- a/sound/pci/emu10k1/emu10k1x.c
++++ b/sound/pci/emu10k1/emu10k1x.c
+@@ -107,7 +107,7 @@ MODULE_PARM_DESC(enable, "Enable the EMU10K1X soundcard.");
+ /* Emu10k1x pointer-offset register set, accessed through the PTR and DATA registers			*/
+ /********************************************************************************************************/
+ #define PLAYBACK_LIST_ADDR	0x00		/* Base DMA address of a list of pointers to each period/size */
+-						/* One list entry: 4 bytes for DMA address, 
++						/* One list entry: 4 bytes for DMA address,
+ 						 * 4 bytes for period_size << 16.
+ 						 * One list entry is 8 bytes long.
+ 						 * One list entry for each period in the buffer.
+@@ -186,7 +186,7 @@ MODULE_PARM_DESC(enable, "Enable the EMU10K1X soundcard.");
+  *  - channel 1 is the rear channel
+  *  - channel 2 is the center/lfe chanel
+  * Volume is controlled by the AC97 for the front and rear channels by
+- * the PCM Playback Volume, Sigmatel Surround Playback Volume and 
++ * the PCM Playback Volume, Sigmatel Surround Playback Volume and
+  * Surround Playback Volume. The Sigmatel 4-Speaker Stereo switch affects
+  * the front/rear channel mixing in the REAR OUT jack. When using the
+  * 4-Speaker Stereo, both front and rear channels will be mixed in the
+@@ -199,7 +199,7 @@ struct emu10k1x_voice {
+ 	struct emu10k1x *emu;
+ 	int number;
+ 	int use;
+-  
++
+ 	struct emu10k1x_pcm *epcm;
  };
  
--static int snd_hdsp_create_midi (struct snd_card *card, struct hdsp *hdsp, int id)
-+static int snd_hdsp_create_midi(struct snd_card *card, struct hdsp *hdsp, int id)
- {
- 	char buf[32];
+@@ -246,7 +246,7 @@ struct emu10k1x {
  
-@@ -1501,7 +1501,7 @@ static int snd_hdsp_control_spdif_info(struct snd_kcontrol *kcontrol, struct snd
- static int snd_hdsp_control_spdif_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
+ 	struct emu10k1x_voice voices[3];
+ 	struct emu10k1x_voice capture_voice;
+-	u32 spdif_bits[3]; // SPDIF out setup
++	u32 spdif_bits[3]; /* SPDIF out setup */
+ 
+ 	struct snd_dma_buffer dma_buffer;
+ 
+@@ -255,7 +255,7 @@ struct emu10k1x {
+ 
+ /* hardware definition */
+ static struct snd_pcm_hardware snd_emu10k1x_playback_hw = {
+-	.info =			(SNDRV_PCM_INFO_MMAP | 
++	.info =			(SNDRV_PCM_INFO_MMAP |
+ 				 SNDRV_PCM_INFO_INTERLEAVED |
+ 				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 				 SNDRV_PCM_INFO_MMAP_VALID),
+@@ -274,7 +274,7 @@ static struct snd_pcm_hardware snd_emu10k1x_playback_hw = {
+ };
+ 
+ static struct snd_pcm_hardware snd_emu10k1x_capture_hw = {
+-	.info =			(SNDRV_PCM_INFO_MMAP | 
++	.info =			(SNDRV_PCM_INFO_MMAP |
+ 				 SNDRV_PCM_INFO_INTERLEAVED |
+ 				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 				 SNDRV_PCM_INFO_MMAP_VALID),
+@@ -292,13 +292,13 @@ static struct snd_pcm_hardware snd_emu10k1x_capture_hw = {
+ 	.fifo_size =		0,
+ };
+ 
+-static unsigned int snd_emu10k1x_ptr_read(struct emu10k1x * emu, 
+-					  unsigned int reg, 
++static unsigned int snd_emu10k1x_ptr_read(struct emu10k1x * emu,
++					  unsigned int reg,
+ 					  unsigned int chn)
  {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
+ 	unsigned long flags;
+ 	unsigned int regptr, val;
+-  
 +
- 	snd_hdsp_convert_to_aes(&ucontrol->value.iec958, hdsp->creg_spdif);
- 	return 0;
+ 	regptr = (reg << 16) | chn;
+ 
+ 	spin_lock_irqsave(&emu->emu_lock, flags);
+@@ -308,9 +308,9 @@ static unsigned int snd_emu10k1x_ptr_read(struct emu10k1x * emu,
+ 	return val;
  }
-@@ -1511,7 +1511,7 @@ static int snd_hdsp_control_spdif_put(struct snd_kcontrol *kcontrol, struct snd_
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	u32 val;
--	
-+
- 	val = snd_hdsp_convert_from_aes(&ucontrol->value.iec958);
- 	spin_lock_irq(&hdsp->lock);
- 	change = val != hdsp->creg_spdif;
-@@ -1530,7 +1530,7 @@ static int snd_hdsp_control_spdif_stream_info(struct snd_kcontrol *kcontrol, str
- static int snd_hdsp_control_spdif_stream_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
+ 
+-static void snd_emu10k1x_ptr_write(struct emu10k1x *emu, 
+-				   unsigned int reg, 
+-				   unsigned int chn, 
++static void snd_emu10k1x_ptr_write(struct emu10k1x *emu,
++				   unsigned int reg,
++				   unsigned int chn,
+ 				   unsigned int data)
  {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
+ 	unsigned int regptr;
+@@ -396,10 +396,10 @@ static int snd_emu10k1x_playback_open(struct snd_pcm_substream *substream)
+ 		return -ENOMEM;
+ 	epcm->emu = chip;
+ 	epcm->substream = substream;
+-  
 +
- 	snd_hdsp_convert_to_aes(&ucontrol->value.iec958, hdsp->creg_spdif_stream);
+ 	runtime->private_data = epcm;
+ 	runtime->private_free = snd_emu10k1x_pcm_free_substream;
+-  
++
+ 	runtime->hw = snd_emu10k1x_playback_hw;
+ 
  	return 0;
- }
-@@ -1540,7 +1540,7 @@ static int snd_hdsp_control_spdif_stream_put(struct snd_kcontrol *kcontrol, stru
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	u32 val;
--	
-+
- 	val = snd_hdsp_convert_from_aes(&ucontrol->value.iec958);
- 	spin_lock_irq(&hdsp->lock);
- 	change = val != hdsp->creg_spdif_stream;
-@@ -1602,7 +1602,7 @@ static int snd_hdsp_info_spdif_in(struct snd_kcontrol *kcontrol, struct snd_ctl_
- static int snd_hdsp_get_spdif_in(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	ucontrol->value.enumerated.item[0] = hdsp_spdif_in(hdsp);
- 	return 0;
- }
-@@ -1612,7 +1612,7 @@ static int snd_hdsp_put_spdif_in(struct snd_kcontrol *kcontrol, struct snd_ctl_e
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	unsigned int val;
--	
-+
- 	if (!snd_hdsp_use_is_exclusive(hdsp))
- 		return -EBUSY;
- 	val = ucontrol->value.enumerated.item[0] % ((hdsp->io_type == H9632) ? 4 : 3);
-@@ -1649,7 +1649,7 @@ static int hdsp_set_spdif_output(struct hdsp *hdsp, int out)
- static int snd_hdsp_get_spdif_out(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	ucontrol->value.integer.value[0] = hdsp_spdif_out(hdsp);
- 	return 0;
- }
-@@ -1659,7 +1659,7 @@ static int snd_hdsp_put_spdif_out(struct snd_kcontrol *kcontrol, struct snd_ctl_
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	unsigned int val;
--	
-+
- 	if (!snd_hdsp_use_is_exclusive(hdsp))
- 		return -EBUSY;
- 	val = ucontrol->value.integer.value[0] & 1;
-@@ -1693,7 +1693,7 @@ static int hdsp_set_spdif_professional(struct hdsp *hdsp, int val)
- static int snd_hdsp_get_spdif_professional(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	ucontrol->value.integer.value[0] = hdsp_spdif_professional(hdsp);
- 	return 0;
- }
-@@ -1703,7 +1703,7 @@ static int snd_hdsp_put_spdif_professional(struct snd_kcontrol *kcontrol, struct
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	unsigned int val;
--	
-+
- 	if (!snd_hdsp_use_is_exclusive(hdsp))
- 		return -EBUSY;
- 	val = ucontrol->value.integer.value[0] & 1;
-@@ -1737,7 +1737,7 @@ static int hdsp_set_spdif_emphasis(struct hdsp *hdsp, int val)
- static int snd_hdsp_get_spdif_emphasis(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	ucontrol->value.integer.value[0] = hdsp_spdif_emphasis(hdsp);
- 	return 0;
- }
-@@ -1747,7 +1747,7 @@ static int snd_hdsp_put_spdif_emphasis(struct snd_kcontrol *kcontrol, struct snd
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	unsigned int val;
--	
-+
- 	if (!snd_hdsp_use_is_exclusive(hdsp))
- 		return -EBUSY;
- 	val = ucontrol->value.integer.value[0] & 1;
-@@ -1781,7 +1781,7 @@ static int hdsp_set_spdif_nonaudio(struct hdsp *hdsp, int val)
- static int snd_hdsp_get_spdif_nonaudio(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	ucontrol->value.integer.value[0] = hdsp_spdif_nonaudio(hdsp);
- 	return 0;
- }
-@@ -1791,7 +1791,7 @@ static int snd_hdsp_put_spdif_nonaudio(struct snd_kcontrol *kcontrol, struct snd
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	unsigned int val;
--	
-+
- 	if (!snd_hdsp_use_is_exclusive(hdsp))
- 		return -EBUSY;
- 	val = ucontrol->value.integer.value[0] & 1;
-@@ -1828,7 +1828,7 @@ static int snd_hdsp_info_spdif_sample_rate(struct snd_kcontrol *kcontrol, struct
- static int snd_hdsp_get_spdif_sample_rate(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	switch (hdsp_spdif_sample_rate(hdsp)) {
- 	case 32000:
- 		ucontrol->value.enumerated.item[0] = 0;
-@@ -1858,7 +1858,7 @@ static int snd_hdsp_get_spdif_sample_rate(struct snd_kcontrol *kcontrol, struct
- 		ucontrol->value.enumerated.item[0] = 9;
- 		break;
- 	default:
--		ucontrol->value.enumerated.item[0] = 6;		
-+		ucontrol->value.enumerated.item[0] = 6;
- 	}
- 	return 0;
- }
-@@ -1882,7 +1882,7 @@ static int snd_hdsp_info_system_sample_rate(struct snd_kcontrol *kcontrol, struc
- static int snd_hdsp_get_system_sample_rate(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	ucontrol->value.enumerated.item[0] = hdsp->system_sample_rate;
- 	return 0;
- }
-@@ -1899,10 +1899,10 @@ static int snd_hdsp_get_system_sample_rate(struct snd_kcontrol *kcontrol, struct
- static int snd_hdsp_info_autosync_sample_rate(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	static char *texts[] = {"32000", "44100", "48000", "64000", "88200", "96000", "None", "128000", "176400", "192000"};	
-+	static char *texts[] = {"32000", "44100", "48000", "64000", "88200", "96000", "None", "128000", "176400", "192000"};
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
- 	uinfo->count = 1;
--	uinfo->value.enumerated.items = (hdsp->io_type == H9632) ? 10 : 7 ;
-+	uinfo->value.enumerated.items = (hdsp->io_type == H9632) ? 10 : 7;
- 	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
- 		uinfo->value.enumerated.item = uinfo->value.enumerated.items - 1;
- 	strcpy(uinfo->value.enumerated.name, texts[uinfo->value.enumerated.item]);
-@@ -1912,7 +1912,7 @@ static int snd_hdsp_info_autosync_sample_rate(struct snd_kcontrol *kcontrol, str
- static int snd_hdsp_get_autosync_sample_rate(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	switch (hdsp_external_sample_rate(hdsp)) {
- 	case 32000:
- 		ucontrol->value.enumerated.item[0] = 0;
-@@ -1940,9 +1940,9 @@ static int snd_hdsp_get_autosync_sample_rate(struct snd_kcontrol *kcontrol, stru
- 		break;
- 	case 192000:
- 		ucontrol->value.enumerated.item[0] = 9;
--		break;	
-+		break;
- 	default:
--		ucontrol->value.enumerated.item[0] = 6;		
-+		ucontrol->value.enumerated.item[0] = 6;
- 	}
- 	return 0;
- }
-@@ -1968,7 +1968,7 @@ static int hdsp_system_clock_mode(struct hdsp *hdsp)
- static int snd_hdsp_info_system_clock_mode(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)
- {
- 	static char *texts[] = {"Master", "Slave" };
--	
-+
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
- 	uinfo->count = 1;
- 	uinfo->value.enumerated.items = 2;
-@@ -1981,7 +1981,7 @@ static int snd_hdsp_info_system_clock_mode(struct snd_kcontrol *kcontrol, struct
- static int snd_hdsp_get_system_clock_mode(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	ucontrol->value.enumerated.item[0] = hdsp_system_clock_mode(hdsp);
- 	return 0;
- }
-@@ -2018,7 +2018,7 @@ static int hdsp_clock_source(struct hdsp *hdsp)
- 		case 192000:
- 			return 9;
- 		default:
--			return 3;	
-+			return 3;
- 		}
- 	} else {
+@@ -418,7 +418,7 @@ static int snd_emu10k1x_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct emu10k1x_pcm *epcm = runtime->private_data;
+ 
+-	if (! epcm->voice) {
++	if (!epcm->voice) {
+ 		epcm->voice = &epcm->emu->voices[substream->pcm->device];
+ 		epcm->voice->use = 1;
+ 		epcm->voice->epcm = epcm;
+@@ -436,7 +436,7 @@ static int snd_emu10k1x_pcm_hw_free(struct snd_pcm_substream *substream)
+ 
+ 	if (runtime->private_data == NULL)
  		return 0;
-@@ -2032,7 +2032,7 @@ static int hdsp_set_clock_source(struct hdsp *hdsp, int mode)
- 	case HDSP_CLOCK_SOURCE_AUTOSYNC:
- 		if (hdsp_external_sample_rate(hdsp) != 0) {
- 		    if (!hdsp_set_rate(hdsp, hdsp_external_sample_rate(hdsp), 1)) {
--			hdsp->control_register &= ~HDSP_ClockModeMaster;		
-+			hdsp->control_register &= ~HDSP_ClockModeMaster;
- 			hdsp_write(hdsp, HDSP_controlRegister, hdsp->control_register);
- 			return 0;
- 		    }
-@@ -2043,7 +2043,7 @@ static int hdsp_set_clock_source(struct hdsp *hdsp, int mode)
- 		break;
- 	case HDSP_CLOCK_SOURCE_INTERNAL_44_1KHZ:
- 		rate = 44100;
--		break;	    
-+		break;
- 	case HDSP_CLOCK_SOURCE_INTERNAL_48KHZ:
- 		rate = 48000;
- 		break;
-@@ -2078,13 +2078,13 @@ static int snd_hdsp_info_clock_source(struct snd_kcontrol *kcontrol, struct snd_
- {
- 	static char *texts[] = {"AutoSync", "Internal 32.0 kHz", "Internal 44.1 kHz", "Internal 48.0 kHz", "Internal 64.0 kHz", "Internal 88.2 kHz", "Internal 96.0 kHz", "Internal 128 kHz", "Internal 176.4 kHz", "Internal 192.0 KHz" };
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
 -	
 +
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
- 	uinfo->count = 1;
- 	if (hdsp->io_type == H9632)
- 	    uinfo->value.enumerated.items = 10;
- 	else
--	    uinfo->value.enumerated.items = 7;	
-+	    uinfo->value.enumerated.items = 7;
- 	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
- 		uinfo->value.enumerated.item = uinfo->value.enumerated.items - 1;
- 	strcpy(uinfo->value.enumerated.name, texts[uinfo->value.enumerated.item]);
-@@ -2094,7 +2094,7 @@ static int snd_hdsp_info_clock_source(struct snd_kcontrol *kcontrol, struct snd_
- static int snd_hdsp_get_clock_source(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
+ 	epcm = runtime->private_data;
+ 
+ 	if (epcm->voice) {
+@@ -458,8 +458,8 @@ static int snd_emu10k1x_pcm_prepare(struct snd_pcm_substream *substream)
+ 	u32 *table_base = (u32 *)(emu->dma_buffer.area+1024*voice);
+ 	u32 period_size_bytes = frames_to_bytes(runtime, runtime->period_size);
+ 	int i;
 -	
+-	for(i = 0; i < runtime->periods; i++) {
 +
- 	ucontrol->value.enumerated.item[0] = hdsp_clock_source(hdsp);
- 	return 0;
- }
-@@ -2104,7 +2104,7 @@ static int snd_hdsp_put_clock_source(struct snd_kcontrol *kcontrol, struct snd_c
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	int val;
--	
-+
- 	if (!snd_hdsp_use_is_exclusive(hdsp))
- 		return -EBUSY;
- 	val = ucontrol->value.enumerated.item[0];
-@@ -2130,7 +2130,7 @@ static int snd_hdsp_put_clock_source(struct snd_kcontrol *kcontrol, struct snd_c
- static int snd_hdsp_get_clock_source_lock(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	ucontrol->value.integer.value[0] = hdsp->clock_source_locked;
- 	return 0;
- }
-@@ -2165,7 +2165,7 @@ static int hdsp_da_gain(struct hdsp *hdsp)
- 	case HDSP_DAGainMinus10dBV:
- 		return 2;
- 	default:
--		return 1;	
-+		return 1;
++	for (i = 0; i < runtime->periods; i++) {
+ 		*table_base++=runtime->dma_addr+(i*period_size_bytes);
+ 		*table_base++=period_size_bytes<<16;
  	}
- }
- 
-@@ -2180,8 +2180,8 @@ static int hdsp_set_da_gain(struct hdsp *hdsp, int mode)
- 		hdsp->control_register |= HDSP_DAGainPlus4dBu;
- 		break;
- 	case 2:
--		hdsp->control_register |= HDSP_DAGainMinus10dBV;		
--		break;	    
-+		hdsp->control_register |= HDSP_DAGainMinus10dBV;
-+		break;
- 	default:
- 		return -1;
- 
-@@ -2193,7 +2193,7 @@ static int hdsp_set_da_gain(struct hdsp *hdsp, int mode)
- static int snd_hdsp_info_da_gain(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)
- {
- 	static char *texts[] = {"Hi Gain", "+4 dBu", "-10 dbV"};
--	
-+
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
- 	uinfo->count = 1;
- 	uinfo->value.enumerated.items = 3;
-@@ -2206,7 +2206,7 @@ static int snd_hdsp_info_da_gain(struct snd_kcontrol *kcontrol, struct snd_ctl_e
- static int snd_hdsp_get_da_gain(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	ucontrol->value.enumerated.item[0] = hdsp_da_gain(hdsp);
- 	return 0;
- }
-@@ -2216,7 +2216,7 @@ static int snd_hdsp_put_da_gain(struct snd_kcontrol *kcontrol, struct snd_ctl_el
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	int val;
--	
-+
- 	if (!snd_hdsp_use_is_exclusive(hdsp))
- 		return -EBUSY;
- 	val = ucontrol->value.enumerated.item[0];
-@@ -2250,7 +2250,7 @@ static int hdsp_ad_gain(struct hdsp *hdsp)
- 	case HDSP_ADGainLowGain:
- 		return 2;
- 	default:
--		return 1;	
-+		return 1;
- 	}
- }
- 
-@@ -2262,11 +2262,11 @@ static int hdsp_set_ad_gain(struct hdsp *hdsp, int mode)
- 		hdsp->control_register |= HDSP_ADGainMinus10dBV;
- 		break;
- 	case 1:
--		hdsp->control_register |= HDSP_ADGainPlus4dBu;		
-+		hdsp->control_register |= HDSP_ADGainPlus4dBu;
- 		break;
- 	case 2:
--		hdsp->control_register |= HDSP_ADGainLowGain;		
--		break;	    
-+		hdsp->control_register |= HDSP_ADGainLowGain;
-+		break;
- 	default:
- 		return -1;
- 
-@@ -2278,7 +2278,7 @@ static int hdsp_set_ad_gain(struct hdsp *hdsp, int mode)
- static int snd_hdsp_info_ad_gain(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)
- {
- 	static char *texts[] = {"-10 dBV", "+4 dBu", "Lo Gain"};
--	
-+
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
- 	uinfo->count = 1;
- 	uinfo->value.enumerated.items = 3;
-@@ -2291,7 +2291,7 @@ static int snd_hdsp_info_ad_gain(struct snd_kcontrol *kcontrol, struct snd_ctl_e
- static int snd_hdsp_get_ad_gain(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	ucontrol->value.enumerated.item[0] = hdsp_ad_gain(hdsp);
- 	return 0;
- }
-@@ -2301,7 +2301,7 @@ static int snd_hdsp_put_ad_gain(struct snd_kcontrol *kcontrol, struct snd_ctl_el
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	int val;
--	
-+
- 	if (!snd_hdsp_use_is_exclusive(hdsp))
- 		return -EBUSY;
- 	val = ucontrol->value.enumerated.item[0];
-@@ -2335,7 +2335,7 @@ static int hdsp_phone_gain(struct hdsp *hdsp)
- 	case HDSP_PhoneGainMinus12dB:
- 		return 2;
- 	default:
--		return 0;	
-+		return 0;
- 	}
- }
- 
-@@ -2347,11 +2347,11 @@ static int hdsp_set_phone_gain(struct hdsp *hdsp, int mode)
- 		hdsp->control_register |= HDSP_PhoneGain0dB;
- 		break;
- 	case 1:
--		hdsp->control_register |= HDSP_PhoneGainMinus6dB;		
-+		hdsp->control_register |= HDSP_PhoneGainMinus6dB;
- 		break;
- 	case 2:
--		hdsp->control_register |= HDSP_PhoneGainMinus12dB;		
--		break;	    
-+		hdsp->control_register |= HDSP_PhoneGainMinus12dB;
-+		break;
- 	default:
- 		return -1;
- 
-@@ -2363,7 +2363,7 @@ static int hdsp_set_phone_gain(struct hdsp *hdsp, int mode)
- static int snd_hdsp_info_phone_gain(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)
- {
- 	static char *texts[] = {"0 dB", "-6 dB", "-12 dB"};
--	
-+
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
- 	uinfo->count = 1;
- 	uinfo->value.enumerated.items = 3;
-@@ -2376,7 +2376,7 @@ static int snd_hdsp_info_phone_gain(struct snd_kcontrol *kcontrol, struct snd_ct
- static int snd_hdsp_get_phone_gain(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	ucontrol->value.enumerated.item[0] = hdsp_phone_gain(hdsp);
- 	return 0;
- }
-@@ -2386,7 +2386,7 @@ static int snd_hdsp_put_phone_gain(struct snd_kcontrol *kcontrol, struct snd_ctl
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	int val;
--	
-+
- 	if (!snd_hdsp_use_is_exclusive(hdsp))
- 		return -EBUSY;
- 	val = ucontrol->value.enumerated.item[0];
-@@ -2432,7 +2432,7 @@ static int hdsp_set_xlr_breakout_cable(struct hdsp *hdsp, int mode)
- static int snd_hdsp_get_xlr_breakout_cable(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	ucontrol->value.enumerated.item[0] = hdsp_xlr_breakout_cable(hdsp);
- 	return 0;
- }
-@@ -2442,7 +2442,7 @@ static int snd_hdsp_put_xlr_breakout_cable(struct snd_kcontrol *kcontrol, struct
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	int val;
--	
-+
- 	if (!snd_hdsp_use_is_exclusive(hdsp))
- 		return -EBUSY;
- 	val = ucontrol->value.integer.value[0] & 1;
-@@ -2488,7 +2488,7 @@ static int hdsp_set_aeb(struct hdsp *hdsp, int mode)
- static int snd_hdsp_get_aeb(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	ucontrol->value.enumerated.item[0] = hdsp_aeb(hdsp);
- 	return 0;
- }
-@@ -2498,7 +2498,7 @@ static int snd_hdsp_put_aeb(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_v
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	int val;
--	
-+
- 	if (!snd_hdsp_use_is_exclusive(hdsp))
- 		return -EBUSY;
- 	val = ucontrol->value.integer.value[0] & 1;
-@@ -2576,7 +2576,7 @@ static int snd_hdsp_info_pref_sync_ref(struct snd_kcontrol *kcontrol, struct snd
- {
- 	static char *texts[] = {"Word", "IEC958", "ADAT1", "ADAT Sync", "ADAT2", "ADAT3" };
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
- 	uinfo->count = 1;
- 
-@@ -2595,7 +2595,7 @@ static int snd_hdsp_info_pref_sync_ref(struct snd_kcontrol *kcontrol, struct snd
- 		uinfo->value.enumerated.items = 0;
- 		break;
- 	}
--		
-+
- 	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
- 		uinfo->value.enumerated.item = uinfo->value.enumerated.items - 1;
- 	strcpy(uinfo->value.enumerated.name, texts[uinfo->value.enumerated.item]);
-@@ -2605,7 +2605,7 @@ static int snd_hdsp_info_pref_sync_ref(struct snd_kcontrol *kcontrol, struct snd
- static int snd_hdsp_get_pref_sync_ref(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	ucontrol->value.enumerated.item[0] = hdsp_pref_sync_ref(hdsp);
- 	return 0;
- }
-@@ -2615,7 +2615,7 @@ static int snd_hdsp_put_pref_sync_ref(struct snd_kcontrol *kcontrol, struct snd_
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
- 	int change, max;
- 	unsigned int val;
--	
-+
- 	if (!snd_hdsp_use_is_exclusive(hdsp))
- 		return -EBUSY;
- 
-@@ -2664,7 +2664,7 @@ static int hdsp_autosync_ref(struct hdsp *hdsp)
- 	case HDSP_SelSyncRef_SPDIF:
- 		return HDSP_AUTOSYNC_FROM_SPDIF;
- 	case HDSP_SelSyncRefMask:
--		return HDSP_AUTOSYNC_FROM_NONE;	
-+		return HDSP_AUTOSYNC_FROM_NONE;
- 	case HDSP_SelSyncRef_ADAT1:
- 		return HDSP_AUTOSYNC_FROM_ADAT1;
- 	case HDSP_SelSyncRef_ADAT2:
-@@ -2680,7 +2680,7 @@ static int hdsp_autosync_ref(struct hdsp *hdsp)
- static int snd_hdsp_info_autosync_ref(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)
- {
- 	static char *texts[] = {"Word", "ADAT Sync", "IEC958", "None", "ADAT1", "ADAT2", "ADAT3" };
--	
-+
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
- 	uinfo->count = 1;
- 	uinfo->value.enumerated.items = 7;
-@@ -2693,7 +2693,7 @@ static int snd_hdsp_info_autosync_ref(struct snd_kcontrol *kcontrol, struct snd_
- static int snd_hdsp_get_autosync_ref(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	ucontrol->value.enumerated.item[0] = hdsp_autosync_ref(hdsp);
- 	return 0;
- }
-@@ -2727,7 +2727,7 @@ static int hdsp_set_line_output(struct hdsp *hdsp, int out)
- static int snd_hdsp_get_line_out(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	spin_lock_irq(&hdsp->lock);
- 	ucontrol->value.integer.value[0] = hdsp_line_out(hdsp);
- 	spin_unlock_irq(&hdsp->lock);
-@@ -2739,7 +2739,7 @@ static int snd_hdsp_put_line_out(struct snd_kcontrol *kcontrol, struct snd_ctl_e
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	unsigned int val;
--	
-+
- 	if (!snd_hdsp_use_is_exclusive(hdsp))
- 		return -EBUSY;
- 	val = ucontrol->value.integer.value[0] & 1;
-@@ -2773,7 +2773,7 @@ static int hdsp_set_precise_pointer(struct hdsp *hdsp, int precise)
- static int snd_hdsp_get_precise_pointer(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	spin_lock_irq(&hdsp->lock);
- 	ucontrol->value.integer.value[0] = hdsp->precise_ptr;
- 	spin_unlock_irq(&hdsp->lock);
-@@ -2785,7 +2785,7 @@ static int snd_hdsp_put_precise_pointer(struct snd_kcontrol *kcontrol, struct sn
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	unsigned int val;
--	
-+
- 	if (!snd_hdsp_use_is_exclusive(hdsp))
- 		return -EBUSY;
- 	val = ucontrol->value.integer.value[0] & 1;
-@@ -2819,7 +2819,7 @@ static int hdsp_set_use_midi_tasklet(struct hdsp *hdsp, int use_tasklet)
- static int snd_hdsp_get_use_midi_tasklet(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	spin_lock_irq(&hdsp->lock);
- 	ucontrol->value.integer.value[0] = hdsp->use_midi_tasklet;
- 	spin_unlock_irq(&hdsp->lock);
-@@ -2831,7 +2831,7 @@ static int snd_hdsp_put_use_midi_tasklet(struct snd_kcontrol *kcontrol, struct s
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	unsigned int val;
--	
-+
- 	if (!snd_hdsp_use_is_exclusive(hdsp))
- 		return -EBUSY;
- 	val = ucontrol->value.integer.value[0] & 1;
-@@ -2873,12 +2873,12 @@ static int snd_hdsp_get_mixer(struct snd_kcontrol *kcontrol, struct snd_ctl_elem
- 
- 	source = ucontrol->value.integer.value[0];
- 	destination = ucontrol->value.integer.value[1];
--	
-+
- 	if (source >= hdsp->max_channels)
- 		addr = hdsp_playback_to_output_key(hdsp,source-hdsp->max_channels,destination);
- 	else
- 		addr = hdsp_input_to_output_key(hdsp,source, destination);
--	
-+
- 	spin_lock_irq(&hdsp->lock);
- 	ucontrol->value.integer.value[2] = hdsp_read_gain (hdsp, addr);
- 	spin_unlock_irq(&hdsp->lock);
-@@ -2926,7 +2926,7 @@ static int snd_hdsp_put_mixer(struct snd_kcontrol *kcontrol, struct snd_ctl_elem
- 
- static int snd_hdsp_info_sync_check(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)
- {
--	static char *texts[] = {"No Lock", "Lock", "Sync" };	
-+	static char *texts[] = {"No Lock", "Lock", "Sync" };
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
- 	uinfo->count = 1;
- 	uinfo->value.enumerated.items = 3;
-@@ -2971,7 +2971,7 @@ static int hdsp_spdif_sync_check(struct hdsp *hdsp)
- 	int status = hdsp_read(hdsp, HDSP_statusRegister);
- 	if (status & HDSP_SPDIFErrorFlag)
- 		return 0;
--	else {	
-+	else {
- 		if (status & HDSP_SPDIFSync)
- 			return 2;
- 		else
-@@ -3007,7 +3007,7 @@ static int hdsp_adatsync_sync_check(struct hdsp *hdsp)
- 			return 1;
- 	} else
- 		return 0;
--}	
-+}
- 
- static int snd_hdsp_get_adatsync_sync_check(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
-@@ -3025,17 +3025,17 @@ static int snd_hdsp_get_adatsync_sync_check(struct snd_kcontrol *kcontrol, struc
- }
- 
- static int hdsp_adat_sync_check(struct hdsp *hdsp, int idx)
--{	
-+{
- 	int status = hdsp_read(hdsp, HDSP_statusRegister);
--	
-+
- 	if (status & (HDSP_Lock0>>idx)) {
- 		if (status & (HDSP_Sync0>>idx))
- 			return 2;
- 		else
--			return 1;		
-+			return 1;
- 	} else
- 		return 0;
--} 
-+}
- 
- static int snd_hdsp_get_adat_sync_check(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
-@@ -3053,7 +3053,7 @@ static int snd_hdsp_get_adat_sync_check(struct snd_kcontrol *kcontrol, struct sn
- 		break;
- 	case Multiface:
- 	case H9632:
--		if (offset >= 1) 
-+		if (offset >= 1)
- 			return -EINVAL;
- 		break;
- 	default:
-@@ -3115,7 +3115,7 @@ static int snd_hdsp_info_dds_offset(struct snd_kcontrol *kcontrol, struct snd_ct
- static int snd_hdsp_get_dds_offset(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	
-+
- 	ucontrol->value.enumerated.item[0] = hdsp_dds_offset(hdsp);
- 	return 0;
- }
-@@ -3125,7 +3125,7 @@ static int snd_hdsp_put_dds_offset(struct snd_kcontrol *kcontrol, struct snd_ctl
- 	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	int val;
--	
-+
- 	if (!snd_hdsp_use_is_exclusive(hdsp))
- 		return -EBUSY;
- 	val = ucontrol->value.enumerated.item[0];
-@@ -3170,7 +3170,7 @@ static struct snd_kcontrol_new snd_hdsp_controls[] = {
- 	.get =		snd_hdsp_control_spdif_mask_get,
- 	.private_value = IEC958_AES0_NONAUDIO |
-   			 IEC958_AES0_PROFESSIONAL |
--			 IEC958_AES0_CON_EMPHASIS,	                                                                                      
-+			 IEC958_AES0_CON_EMPHASIS,
- },
- {
- 	.access =	SNDRV_CTL_ELEM_ACCESS_READ,
-@@ -3188,7 +3188,7 @@ HDSP_SPDIF_OUT("IEC958 Output also on ADAT1", 0),
- HDSP_SPDIF_PROFESSIONAL("IEC958 Professional Bit", 0),
- HDSP_SPDIF_EMPHASIS("IEC958 Emphasis Bit", 0),
- HDSP_SPDIF_NON_AUDIO("IEC958 Non-audio Bit", 0),
--/* 'Sample Clock Source' complies with the alsa control naming scheme */ 
-+/* 'Sample Clock Source' complies with the alsa control naming scheme */
- HDSP_CLOCK_SOURCE("Sample Clock Source", 0),
- {
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-@@ -3240,7 +3240,7 @@ static int snd_hdsp_create_controls(struct snd_card *card, struct hdsp *hdsp)
- 				return err;
- 		}
- 	}
--	
-+
- 	/* DA, AD and Phone gain and XLR breakout cable controls for H9632 cards */
- 	if (hdsp->io_type == H9632) {
- 		for (idx = 0; idx < ARRAY_SIZE(snd_hdsp_9632_controls); idx++) {
-@@ -3259,7 +3259,7 @@ static int snd_hdsp_create_controls(struct snd_card *card, struct hdsp *hdsp)
- }
- 
- /*------------------------------------------------------------
--   /proc interface 
-+   /proc interface
-  ------------------------------------------------------------*/
- 
- static void
-@@ -3298,7 +3298,7 @@ snd_hdsp_proc_read(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
- 			}
- 		}
- 	}
--	
-+
- 	status = hdsp_read(hdsp, HDSP_statusRegister);
- 	status2 = hdsp_read(hdsp, HDSP_status2Register);
- 
-@@ -3362,17 +3362,17 @@ snd_hdsp_proc_read(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
- 		break;
- 		case HDSP_CLOCK_SOURCE_INTERNAL_192KHZ:
- 		clock_source = "Internal 192 kHz";
--		break;	
-+		break;
- 	default:
--		clock_source = "Error";		
-+		clock_source = "Error";
- 	}
- 	snd_iprintf (buffer, "Sample Clock Source: %s\n", clock_source);
--			
-+
- 	if (hdsp_system_clock_mode(hdsp))
- 		system_clock_mode = "Slave";
- 	else
- 		system_clock_mode = "Master";
--	
-+
- 	switch (hdsp_pref_sync_ref (hdsp)) {
- 	case HDSP_SYNC_FROM_WORD:
- 		pref_sync_ref = "Word Clock";
-@@ -3397,7 +3397,7 @@ snd_hdsp_proc_read(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
- 		break;
- 	}
- 	snd_iprintf (buffer, "Preferred Sync Reference: %s\n", pref_sync_ref);
--	
-+
- 	switch (hdsp_autosync_ref (hdsp)) {
- 	case HDSP_AUTOSYNC_FROM_WORD:
- 		autosync_ref = "Word Clock";
-@@ -3410,7 +3410,7 @@ snd_hdsp_proc_read(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
- 		break;
- 	case HDSP_AUTOSYNC_FROM_NONE:
- 		autosync_ref = "None";
--		break;	
-+		break;
- 	case HDSP_AUTOSYNC_FROM_ADAT1:
- 		autosync_ref = "ADAT1";
- 		break;
-@@ -3425,14 +3425,14 @@ snd_hdsp_proc_read(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
- 		break;
- 	}
- 	snd_iprintf (buffer, "AutoSync Reference: %s\n", autosync_ref);
--	
-+
- 	snd_iprintf (buffer, "AutoSync Frequency: %d\n", hdsp_external_sample_rate(hdsp));
--	
-+
- 	snd_iprintf (buffer, "System Clock Mode: %s\n", system_clock_mode);
- 
- 	snd_iprintf (buffer, "System Clock Frequency: %d\n", hdsp->system_sample_rate);
- 	snd_iprintf (buffer, "System Clock Locked: %s\n", hdsp->clock_source_locked ? "Yes" : "No");
--		
-+
- 	snd_iprintf(buffer, "\n");
- 
- 	switch (hdsp_spdif_in(hdsp)) {
-@@ -3452,7 +3452,7 @@ snd_hdsp_proc_read(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
- 		snd_iprintf(buffer, "IEC958 input: ???\n");
- 		break;
- 	}
--	
-+
- 	if (hdsp->control_register & HDSP_SPDIFOpticalOut)
- 		snd_iprintf(buffer, "IEC958 output: Coaxial & ADAT1\n");
- 	else
-@@ -3510,13 +3510,13 @@ snd_hdsp_proc_read(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
- 		snd_iprintf (buffer, "SPDIF: No Lock\n");
- 	else
- 		snd_iprintf (buffer, "SPDIF: %s\n", x ? "Sync" : "Lock");
--	
-+
- 	x = status2 & HDSP_wc_sync;
- 	if (status2 & HDSP_wc_lock)
- 		snd_iprintf (buffer, "Word Clock: %s\n", x ? "Sync" : "Lock");
- 	else
- 		snd_iprintf (buffer, "Word Clock: No Lock\n");
--	
-+
- 	x = status & HDSP_TimecodeSync;
- 	if (status & HDSP_TimecodeLock)
- 		snd_iprintf(buffer, "ADAT Sync: %s\n", x ? "Sync" : "Lock");
-@@ -3524,11 +3524,11 @@ snd_hdsp_proc_read(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
- 		snd_iprintf(buffer, "ADAT Sync: No Lock\n");
- 
- 	snd_iprintf(buffer, "\n");
--	
-+
- 	/* Informations about H9632 specific controls */
- 	if (hdsp->io_type == H9632) {
- 		char *tmp;
--	
-+
- 		switch (hdsp_ad_gain(hdsp)) {
- 		case 0:
- 			tmp = "-10 dBV";
-@@ -3554,7 +3554,7 @@ snd_hdsp_proc_read(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
- 			break;
- 		}
- 		snd_iprintf(buffer, "DA Gain : %s\n", tmp);
--		
-+
- 		switch (hdsp_phone_gain(hdsp)) {
- 		case 0:
- 			tmp = "0 dB";
-@@ -3568,8 +3568,8 @@ snd_hdsp_proc_read(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
- 		}
- 		snd_iprintf(buffer, "Phones Gain : %s\n", tmp);
- 
--		snd_iprintf(buffer, "XLR Breakout Cable : %s\n", hdsp_xlr_breakout_cable(hdsp) ? "yes" : "no");	
--		
-+		snd_iprintf(buffer, "XLR Breakout Cable : %s\n", hdsp_xlr_breakout_cable(hdsp) ? "yes" : "no");
-+
- 		if (hdsp->control_register & HDSP_AnalogExtensionBoard)
- 			snd_iprintf(buffer, "AEB : on (ADAT1 internal)\n");
- 		else
-@@ -3583,7 +3583,7 @@ static void snd_hdsp_proc_init(struct hdsp *hdsp)
- {
- 	struct snd_info_entry *entry;
- 
--	if (! snd_card_proc_new(hdsp->card, "hdsp", &entry))
-+	if (!snd_card_proc_new(hdsp->card, "hdsp", &entry))
- 		snd_info_set_text_ops(entry, hdsp, snd_hdsp_proc_read);
- }
- 
-@@ -3632,18 +3632,18 @@ static int snd_hdsp_set_defaults(struct hdsp *hdsp)
- 
- 	/* set defaults:
- 
--	   SPDIF Input via Coax 
-+	   SPDIF Input via Coax
- 	   Master clock mode
- 	   maximum latency (7 => 2^7 = 8192 samples, 64Kbyte buffer,
- 	                    which implies 2 4096 sample, 32Kbyte periods).
--           Enable line out.			    
-+           Enable line out.
- 	 */
- 
--	hdsp->control_register = HDSP_ClockModeMaster | 
--		                 HDSP_SPDIFInputCoaxial | 
--		                 hdsp_encode_latency(7) | 
-+	hdsp->control_register = HDSP_ClockModeMaster |
-+		                 HDSP_SPDIFInputCoaxial |
-+		                 hdsp_encode_latency(7) |
- 		                 HDSP_LineOut;
--	
-+
- 
- 	hdsp_write(hdsp, HDSP_controlRegister, hdsp->control_register);
- 
-@@ -3661,7 +3661,7 @@ static int snd_hdsp_set_defaults(struct hdsp *hdsp)
- 	hdsp_compute_period_size(hdsp);
- 
- 	/* silence everything */
--	
-+
- 	for (i = 0; i < HDSP_MATRIX_MIXER_SIZE; ++i)
- 		hdsp->mixer_matrix[i] = MINUS_INFINITY_GAIN;
- 
-@@ -3669,7 +3669,7 @@ static int snd_hdsp_set_defaults(struct hdsp *hdsp)
- 		if (hdsp_write_gain (hdsp, i, MINUS_INFINITY_GAIN))
- 			return -EIO;
- 	}
--	
-+
- 	/* H9632 specific defaults */
- 	if (hdsp->io_type == H9632) {
- 		hdsp->control_register |= (HDSP_DAGainPlus4dBu | HDSP_ADGainPlus4dBu | HDSP_PhoneGain0dB);
-@@ -3687,12 +3687,12 @@ static int snd_hdsp_set_defaults(struct hdsp *hdsp)
- static void hdsp_midi_tasklet(unsigned long arg)
- {
- 	struct hdsp *hdsp = (struct hdsp *)arg;
--	
-+
- 	if (hdsp->midi[0].pending)
- 		snd_hdsp_midi_input_read (&hdsp->midi[0]);
- 	if (hdsp->midi[1].pending)
- 		snd_hdsp_midi_input_read (&hdsp->midi[1]);
--} 
-+}
- 
- static irqreturn_t snd_hdsp_interrupt(int irq, void *dev_id)
- {
-@@ -3704,7 +3704,7 @@ static irqreturn_t snd_hdsp_interrupt(int irq, void *dev_id)
- 	unsigned int midi0status;
- 	unsigned int midi1status;
- 	int schedule = 0;
--	
-+
- 	status = hdsp_read(hdsp, HDSP_statusRegister);
- 
- 	audio = status & HDSP_audioIRQPending;
-@@ -3718,15 +3718,15 @@ static irqreturn_t snd_hdsp_interrupt(int irq, void *dev_id)
- 
- 	midi0status = hdsp_read (hdsp, HDSP_midiStatusIn0) & 0xff;
- 	midi1status = hdsp_read (hdsp, HDSP_midiStatusIn1) & 0xff;
--	
-+
- 	if (audio) {
- 		if (hdsp->capture_substream)
- 			snd_pcm_period_elapsed(hdsp->pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream);
--		
-+
- 		if (hdsp->playback_substream)
- 			snd_pcm_period_elapsed(hdsp->pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream);
- 	}
--	
-+
- 	if (midi0 && midi0status) {
- 		if (hdsp->use_midi_tasklet) {
- 			/* we disable interrupts for this input until processing is done */
-@@ -3769,10 +3769,10 @@ static char *hdsp_channel_buffer_location(struct hdsp *hdsp,
- 
-         if (snd_BUG_ON(channel < 0 || channel >= hdsp->max_channels))
- 		return NULL;
--        
-+
- 	if ((mapped_channel = hdsp->channel_map[channel]) < 0)
- 		return NULL;
--	
-+
- 	if (stream == SNDRV_PCM_STREAM_CAPTURE)
- 		return hdsp->capture_buffer + (mapped_channel * HDSP_CHANNEL_BUFFER_BYTES);
- 	else
-@@ -3910,7 +3910,7 @@ static int snd_hdsp_hw_params(struct snd_pcm_substream *substream,
- 	 */
- 
- 	spin_lock_irq(&hdsp->lock);
--	if (! hdsp->clock_source_locked) {
-+	if (!hdsp->clock_source_locked) {
- 		if ((err = hdsp_set_rate(hdsp, params_rate(params), 0)) < 0) {
- 			spin_unlock_irq(&hdsp->lock);
- 			_snd_pcm_hw_param_setempty(params, SNDRV_PCM_HW_PARAM_RATE);
-@@ -3965,7 +3965,7 @@ static int snd_hdsp_trigger(struct snd_pcm_substream *substream, int cmd)
- 	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
- 	struct snd_pcm_substream *other;
- 	int running;
--	
-+
- 	if (hdsp_check_for_iobox (hdsp))
- 		return -EIO;
- 
-@@ -4016,7 +4016,7 @@ static int snd_hdsp_trigger(struct snd_pcm_substream *substream, int cmd)
- 		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
- 				hdsp_silence_playback(hdsp);
- 	}
-- _ok:
-+_ok:
- 	snd_pcm_trigger_done(substream, substream);
- 	if (!hdsp->running && running)
- 		hdsp_start_audio(hdsp);
-@@ -4059,10 +4059,10 @@ static struct snd_pcm_hardware snd_hdsp_playback_subinfo =
- 	.formats =		SNDRV_PCM_FMTBIT_S32_LE,
- #endif
- 	.rates =		(SNDRV_PCM_RATE_32000 |
--				 SNDRV_PCM_RATE_44100 | 
--				 SNDRV_PCM_RATE_48000 | 
--				 SNDRV_PCM_RATE_64000 | 
--				 SNDRV_PCM_RATE_88200 | 
-+				 SNDRV_PCM_RATE_44100 |
-+				 SNDRV_PCM_RATE_48000 |
-+				 SNDRV_PCM_RATE_64000 |
-+				 SNDRV_PCM_RATE_88200 |
- 				 SNDRV_PCM_RATE_96000),
- 	.rate_min =		32000,
- 	.rate_max =		96000,
-@@ -4088,10 +4088,10 @@ static struct snd_pcm_hardware snd_hdsp_capture_subinfo =
- 	.formats =		SNDRV_PCM_FMTBIT_S32_LE,
- #endif
- 	.rates =		(SNDRV_PCM_RATE_32000 |
--				 SNDRV_PCM_RATE_44100 | 
--				 SNDRV_PCM_RATE_48000 | 
--				 SNDRV_PCM_RATE_64000 | 
--				 SNDRV_PCM_RATE_88200 | 
-+				 SNDRV_PCM_RATE_44100 |
-+				 SNDRV_PCM_RATE_48000 |
-+				 SNDRV_PCM_RATE_64000 |
-+				 SNDRV_PCM_RATE_88200 |
- 				 SNDRV_PCM_RATE_96000),
- 	.rate_min =		32000,
- 	.rate_max =		96000,
-@@ -4170,7 +4170,7 @@ static int snd_hdsp_hw_rule_in_channels_rate(struct snd_pcm_hw_params *params,
- 			.max = hdsp->qs_in_channels,
- 			.integer = 1,
- 		};
--		return snd_interval_refine(c, &t);	
-+		return snd_interval_refine(c, &t);
- 	} else if (r->min > 48000 && r->max <= 96000) {
- 		struct snd_interval t = {
- 			.min = hdsp->ds_in_channels,
-@@ -4201,7 +4201,7 @@ static int snd_hdsp_hw_rule_out_channels_rate(struct snd_pcm_hw_params *params,
- 			.max = hdsp->qs_out_channels,
- 			.integer = 1,
- 		};
--		return snd_interval_refine(c, &t);	
-+		return snd_interval_refine(c, &t);
- 	} else if (r->min > 48000 && r->max <= 96000) {
- 		struct snd_interval t = {
- 			.min = hdsp->ds_out_channels,
-@@ -4318,8 +4318,8 @@ static int snd_hdsp_playback_open(struct snd_pcm_substream *substream)
- 	if (hdsp->io_type == H9632) {
- 		runtime->hw.channels_min = hdsp->qs_out_channels;
- 		runtime->hw.channels_max = hdsp->ss_out_channels;
--	}	
--	
-+	}
-+
- 	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
- 			     snd_hdsp_hw_rule_out_channels, hdsp,
- 			     SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-@@ -4536,7 +4536,7 @@ static int hdsp_get_peak(struct hdsp *hdsp, struct hdsp_peak_rms __user *peak_rm
- 				hdsp->iobase + HDSP_playbackRmsLevel + i * 8 + 4,
- 				hdsp->iobase + HDSP_playbackRmsLevel + i * 8))
- 			return -EFAULT;
--		if (copy_u64_le(&peak_rms->input_rms[i], 
-+		if (copy_u64_le(&peak_rms->input_rms[i],
- 				hdsp->iobase + HDSP_inputRmsLevel + i * 8 + 4,
- 				hdsp->iobase + HDSP_inputRmsLevel + i * 8))
- 			return -EFAULT;
-@@ -4546,7 +4546,7 @@ static int hdsp_get_peak(struct hdsp *hdsp, struct hdsp_peak_rms __user *peak_rm
- 
- static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *hw, struct file *file, unsigned int cmd, unsigned long arg)
- {
--	struct hdsp *hdsp = (struct hdsp *)hw->private_data;	
-+	struct hdsp *hdsp = (struct hdsp *)hw->private_data;
- 	void __user *argp = (void __user *)arg;
+@@ -491,7 +491,7 @@ static int snd_emu10k1x_pcm_trigger(struct snd_pcm_substream *substream,
  
  	switch (cmd) {
-@@ -4571,9 +4571,9 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *hw, struct file *file, unsigne
- 		struct hdsp_config_info info;
- 		unsigned long flags;
- 		int i;
--		
+ 	case SNDRV_PCM_TRIGGER_START:
+-		if(runtime->periods == 2)
++		if (runtime->periods == 2)
+ 			snd_emu10k1x_intr_enable(emu, (INTE_CH_0_LOOP | INTE_CH_0_HALF_LOOP) << channel);
+ 		else
+ 			snd_emu10k1x_intr_enable(emu, INTE_CH_0_LOOP << channel);
+@@ -527,10 +527,10 @@ snd_emu10k1x_pcm_pointer(struct snd_pcm_substream *substream)
+ 	ptr1 = snd_emu10k1x_ptr_read(emu, PLAYBACK_POINTER, channel);
+ 	ptr4 = snd_emu10k1x_ptr_read(emu, PLAYBACK_LIST_PTR, channel);
+ 
+-	if(ptr4 == 0 && ptr1 == frames_to_bytes(runtime, runtime->buffer_size))
++	if (ptr4 == 0 && ptr1 == frames_to_bytes(runtime, runtime->buffer_size))
+ 		return 0;
+-	
+-	if (ptr3 != ptr4) 
 +
- 		if (!(hdsp->state & HDSP_FirmwareLoaded)) {
--			snd_printk(KERN_ERR "Hammerfall-DSP: Firmware needs to be uploaded to the card.\n");	
-+			snd_printk(KERN_ERR "Hammerfall-DSP: Firmware needs to be uploaded to the card.\n");
- 			return -EINVAL;
- 		}
- 		spin_lock_irqsave(&hdsp->lock, flags);
-@@ -4601,7 +4601,7 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *hw, struct file *file, unsigne
- 			info.ad_gain = (unsigned char)hdsp_ad_gain(hdsp);
- 			info.phone_gain = (unsigned char)hdsp_phone_gain(hdsp);
- 			info.xlr_breakout_cable = (unsigned char)hdsp_xlr_breakout_cable(hdsp);
--		
++	if (ptr3 != ptr4)
+ 		ptr1 = snd_emu10k1x_ptr_read(emu, PLAYBACK_POINTER, channel);
+ 	ptr2 = bytes_to_frames(runtime, ptr1);
+ 	ptr2 += (ptr4 >> 3) * runtime->period_size;
+@@ -595,7 +595,7 @@ static int snd_emu10k1x_pcm_hw_params_capture(struct snd_pcm_substream *substrea
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct emu10k1x_pcm *epcm = runtime->private_data;
+ 
+-	if (! epcm->voice) {
++	if (!epcm->voice) {
+ 		if (epcm->emu->capture_voice.use)
+ 			return -EBUSY;
+ 		epcm->voice = &epcm->emu->capture_voice;
+@@ -634,7 +634,7 @@ static int snd_emu10k1x_pcm_prepare_capture(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 
+ 	snd_emu10k1x_ptr_write(emu, CAPTURE_DMA_ADDR, 0, runtime->dma_addr);
+-	snd_emu10k1x_ptr_write(emu, CAPTURE_BUFFER_SIZE, 0, frames_to_bytes(runtime, runtime->buffer_size)<<16); // buffer size in bytes
++	snd_emu10k1x_ptr_write(emu, CAPTURE_BUFFER_SIZE, 0, frames_to_bytes(runtime, runtime->buffer_size)<<16); /* buffer size in bytes */
+ 	snd_emu10k1x_ptr_write(emu, CAPTURE_POINTER, 0, 0);
+ 	snd_emu10k1x_ptr_write(emu, CAPTURE_UNKNOWN, 0, 0);
+ 
+@@ -652,14 +652,14 @@ static int snd_emu10k1x_pcm_trigger_capture(struct snd_pcm_substream *substream,
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+-		snd_emu10k1x_intr_enable(emu, INTE_CAP_0_LOOP | 
++		snd_emu10k1x_intr_enable(emu, INTE_CAP_0_LOOP |
+ 					 INTE_CAP_0_HALF_LOOP);
+ 		snd_emu10k1x_ptr_write(emu, TRIGGER_CHANNEL, 0, snd_emu10k1x_ptr_read(emu, TRIGGER_CHANNEL, 0)|TRIGGER_CAPTURE);
+ 		epcm->running = 1;
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 		epcm->running = 0;
+-		snd_emu10k1x_intr_disable(emu, INTE_CAP_0_LOOP | 
++		snd_emu10k1x_intr_disable(emu, INTE_CAP_0_LOOP |
+ 					  INTE_CAP_0_HALF_LOOP);
+ 		snd_emu10k1x_ptr_write(emu, TRIGGER_CHANNEL, 0, snd_emu10k1x_ptr_read(emu, TRIGGER_CHANNEL, 0) & ~(TRIGGER_CAPTURE));
+ 		break;
+@@ -706,7 +706,7 @@ static unsigned short snd_emu10k1x_ac97_read(struct snd_ac97 *ac97,
+ 	struct emu10k1x *emu = ac97->private_data;
+ 	unsigned long flags;
+ 	unsigned short val;
+-  
 +
- 		}
- 		if (hdsp->io_type == H9632 || hdsp->io_type == H9652)
- 			info.analog_extension_board = (unsigned char)hdsp_aeb(hdsp);
-@@ -4612,7 +4612,7 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *hw, struct file *file, unsigne
+ 	spin_lock_irqsave(&emu->emu_lock, flags);
+ 	outb(reg, emu->port + AC97ADDRESS);
+ 	val = inw(emu->port + AC97DATA);
+@@ -719,7 +719,7 @@ static void snd_emu10k1x_ac97_write(struct snd_ac97 *ac97,
+ {
+ 	struct emu10k1x *emu = ac97->private_data;
+ 	unsigned long flags;
+-  
++
+ 	spin_lock_irqsave(&emu->emu_lock, flags);
+ 	outb(reg, emu->port + AC97ADDRESS);
+ 	outw(val, emu->port + AC97DATA);
+@@ -735,7 +735,7 @@ static int snd_emu10k1x_ac97(struct emu10k1x *chip)
+ 		.write = snd_emu10k1x_ac97_write,
+ 		.read = snd_emu10k1x_ac97_read,
+ 	};
+-  
++
+ 	if ((err = snd_ac97_bus(chip->card, 0, &ops, NULL, &pbus)) < 0)
+ 		return err;
+ 	pbus->no_vra = 1; /* we don't need VRA */
+@@ -749,26 +749,26 @@ static int snd_emu10k1x_ac97(struct emu10k1x *chip)
+ static int snd_emu10k1x_free(struct emu10k1x *chip)
+ {
+ 	snd_emu10k1x_ptr_write(chip, TRIGGER_CHANNEL, 0, 0);
+-	// disable interrupts
++	/* disable interrupts */
+ 	outl(0, chip->port + INTE);
+-	// disable audio
++	/* disable audio */
+ 	outl(HCFG_LOCKSOUNDCACHE, chip->port + HCFG);
+ 
+ 	/* release the irq */
+ 	if (chip->irq >= 0)
+ 		free_irq(chip->irq, chip);
+ 
+-	// release the i/o port
++	/* release the i/o port */
+ 	release_and_free_resource(chip->res_port);
+ 
+-	// release the DMA
++	/* release the DMA */
+ 	if (chip->dma_buffer.area) {
+ 		snd_dma_free_pages(&chip->dma_buffer);
  	}
- 	case SNDRV_HDSP_IOCTL_GET_9632_AEB: {
- 		struct hdsp_9632_aeb h9632_aeb;
--		
-+
- 		if (hdsp->io_type != H9632) return -EINVAL;
- 		h9632_aeb.aebi = hdsp->ss_in_channels - H9632_SS_CHANNELS;
- 		h9632_aeb.aebo = hdsp->ss_out_channels - H9632_SS_CHANNELS;
-@@ -4623,7 +4623,7 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *hw, struct file *file, unsigne
- 	case SNDRV_HDSP_IOCTL_GET_VERSION: {
- 		struct hdsp_version hdsp_version;
- 		int err;
--		
-+
- 		if (hdsp->io_type == H9652 || hdsp->io_type == H9632) return -EINVAL;
- 		if (hdsp->io_type == Undefined) {
- 			if ((err = hdsp_get_iobox_version(hdsp)) < 0)
-@@ -4639,7 +4639,7 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *hw, struct file *file, unsigne
- 		struct hdsp_firmware __user *firmware;
- 		u32 __user *firmware_data;
- 		int err;
--		
-+
- 		if (hdsp->io_type == H9652 || hdsp->io_type == H9632) return -EINVAL;
- 		/* SNDRV_HDSP_IOCTL_GET_VERSION must have been called */
- 		if (hdsp->io_type == Undefined) return -EINVAL;
-@@ -4652,25 +4652,25 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *hw, struct file *file, unsigne
  
- 		if (get_user(firmware_data, &firmware->firmware_data))
- 			return -EFAULT;
--		
-+
- 		if (hdsp_check_for_iobox (hdsp))
- 			return -EIO;
+ 	pci_disable_device(chip->pci);
  
- 		if (copy_from_user(hdsp->firmware_cache, firmware_data, sizeof(hdsp->firmware_cache)) != 0)
- 			return -EFAULT;
--		
-+
- 		hdsp->state |= HDSP_FirmwareCached;
+-	// release the data
++	/* release the data */
+ 	kfree(chip);
+ 	return 0;
+ }
+@@ -790,43 +790,43 @@ static irqreturn_t snd_emu10k1x_interrupt(int irq, void *dev_id)
  
- 		if ((err = snd_hdsp_load_firmware_from_cache(hdsp)) < 0)
- 			return err;
+ 	status = inl(chip->port + IPR);
+ 
+-	if (! status)
++	if (!status)
+ 		return IRQ_NONE;
+ 
+-	// capture interrupt
++	/* capture interrupt */
+ 	if (status & (IPR_CAP_0_LOOP | IPR_CAP_0_HALF_LOOP)) {
+ 		struct emu10k1x_voice *cap_voice = &chip->capture_voice;
+ 		if (cap_voice->use)
+ 			snd_emu10k1x_pcm_interrupt(chip, cap_voice);
+ 		else
+-			snd_emu10k1x_intr_disable(chip, 
++			snd_emu10k1x_intr_disable(chip,
+ 						  INTE_CAP_0_LOOP |
+ 						  INTE_CAP_0_HALF_LOOP);
+ 	}
 -		
 +
- 		if (!(hdsp->state & HDSP_InitializationComplete)) {
- 			if ((err = snd_hdsp_enable_io(hdsp)) < 0)
- 				return err;
--			
--			snd_hdsp_initialize_channels(hdsp);		
+ 	mask = IPR_CH_0_LOOP|IPR_CH_0_HALF_LOOP;
+ 	for (i = 0; i < 3; i++) {
+ 		if (status & mask) {
+ 			if (pvoice->use)
+ 				snd_emu10k1x_pcm_interrupt(chip, pvoice);
+-			else 
++			else
+ 				snd_emu10k1x_intr_disable(chip, mask);
+ 		}
+ 		pvoice++;
+ 		mask <<= 1;
+ 	}
+-		
 +
-+			snd_hdsp_initialize_channels(hdsp);
- 			snd_hdsp_initialize_midi_flush(hdsp);
+ 	if (status & (IPR_MIDITRANSBUFEMPTY|IPR_MIDIRECVBUFEMPTY)) {
+ 		if (chip->midi.interrupt)
+ 			chip->midi.interrupt(chip, status);
+ 		else
+ 			snd_emu10k1x_intr_disable(chip, INTE_MIDITXENABLE|INTE_MIDIRXENABLE);
+ 	}
+-		
+-	// acknowledge the interrupt if necessary
++
++	/* acknowledge the interrupt if necessary */
+ 	outl(status, chip->port + IPR);
+ 
+-	// snd_printk(KERN_INFO "interrupt %08x\n", status);
++	/* snd_printk(KERN_INFO "interrupt %08x\n", status); */
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -835,17 +835,17 @@ static int __devinit snd_emu10k1x_pcm(struct emu10k1x *emu, int device, struct s
+ 	struct snd_pcm *pcm;
+ 	int err;
+ 	int capture = 0;
+-  
++
+ 	if (rpcm)
+ 		*rpcm = NULL;
+ 	if (device == 0)
+ 		capture = 1;
+-	
++
+ 	if ((err = snd_pcm_new(emu->card, "emu10k1x", device, 1, capture, &pcm)) < 0)
+ 		return err;
+-  
++
+ 	pcm->private_data = emu;
+-	
++
+ 	switch(device) {
+ 	case 0:
+ 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_emu10k1x_playback_ops);
+@@ -873,12 +873,12 @@ static int __devinit snd_emu10k1x_pcm(struct emu10k1x *emu, int device, struct s
+ 	emu->pcm = pcm;
+ 
+ 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+-					      snd_dma_pci_data(emu->pci), 
++					      snd_dma_pci_data(emu->pci),
+ 					      32*1024, 32*1024);
+-  
++
+ 	if (rpcm)
+ 		*rpcm = pcm;
+-  
++
+ 	return 0;
+ }
+ 
+@@ -916,10 +916,10 @@ static int __devinit snd_emu10k1x_create(struct snd_card *card,
+ 
+ 	spin_lock_init(&chip->emu_lock);
+ 	spin_lock_init(&chip->voice_lock);
+-  
++
+ 	chip->port = pci_resource_start(pci, 0);
+ 	if ((chip->res_port = request_region(chip->port, 8,
+-					     "EMU10K1X")) == NULL) { 
++					     "EMU10K1X")) == NULL) {
+ 		snd_printk(KERN_ERR "emu10k1x: cannot allocate the port 0x%lx\n", chip->port);
+ 		snd_emu10k1x_free(chip);
+ 		return -EBUSY;
+@@ -932,8 +932,8 @@ static int __devinit snd_emu10k1x_create(struct snd_card *card,
+ 		return -EBUSY;
+ 	}
+ 	chip->irq = pci->irq;
+-  
+-	if(snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, snd_dma_pci_data(pci),
++
++	if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, snd_dma_pci_data(pci),
+ 			       4 * 1024, &chip->dma_buffer) < 0) {
+ 		snd_emu10k1x_free(chip);
+ 		return -ENOMEM;
+@@ -947,9 +947,9 @@ static int __devinit snd_emu10k1x_create(struct snd_card *card,
+ 	snd_printk(KERN_INFO "Model %04x Rev %08x Serial %08x\n", chip->model,
+ 		   chip->revision, chip->serial);
+ 
+-	outl(0, chip->port + INTE);	
++	outl(0, chip->port + INTE);
+ 
+-	for(ch = 0; ch < 3; ch++) {
++	for (ch = 0; ch < 3; ch++) {
+ 		chip->voices[ch].emu = chip;
+ 		chip->voices[ch].number = ch;
+ 	}
+@@ -969,27 +969,27 @@ static int __devinit snd_emu10k1x_create(struct snd_card *card,
+ 	 *  P                 = 0     (Consumer)
+ 	 */
+ 	snd_emu10k1x_ptr_write(chip, SPCS0, 0,
+-			       chip->spdif_bits[0] = 
++			       chip->spdif_bits[0] =
+ 			       SPCS_CLKACCY_1000PPM | SPCS_SAMPLERATE_48 |
+ 			       SPCS_CHANNELNUM_LEFT | SPCS_SOURCENUM_UNSPEC |
+ 			       SPCS_GENERATIONSTATUS | 0x00001200 |
+ 			       0x00000000 | SPCS_EMPHASIS_NONE | SPCS_COPYRIGHT);
+ 	snd_emu10k1x_ptr_write(chip, SPCS1, 0,
+-			       chip->spdif_bits[1] = 
++			       chip->spdif_bits[1] =
+ 			       SPCS_CLKACCY_1000PPM | SPCS_SAMPLERATE_48 |
+ 			       SPCS_CHANNELNUM_LEFT | SPCS_SOURCENUM_UNSPEC |
+ 			       SPCS_GENERATIONSTATUS | 0x00001200 |
+ 			       0x00000000 | SPCS_EMPHASIS_NONE | SPCS_COPYRIGHT);
+ 	snd_emu10k1x_ptr_write(chip, SPCS2, 0,
+-			       chip->spdif_bits[2] = 
++			       chip->spdif_bits[2] =
+ 			       SPCS_CLKACCY_1000PPM | SPCS_SAMPLERATE_48 |
+ 			       SPCS_CHANNELNUM_LEFT | SPCS_SOURCENUM_UNSPEC |
+ 			       SPCS_GENERATIONSTATUS | 0x00001200 |
+ 			       0x00000000 | SPCS_EMPHASIS_NONE | SPCS_COPYRIGHT);
+ 
+-	snd_emu10k1x_ptr_write(chip, SPDIF_SELECT, 0, 0x700); // disable SPDIF
+-	snd_emu10k1x_ptr_write(chip, ROUTING, 0, 0x1003F); // routing
+-	snd_emu10k1x_gpio_write(chip, 0x1080); // analog mode
++	snd_emu10k1x_ptr_write(chip, SPDIF_SELECT, 0, 0x700); /* disable SPDIF */
++	snd_emu10k1x_ptr_write(chip, ROUTING, 0, 0x1003F); /* routing */
++	snd_emu10k1x_gpio_write(chip, 0x1080); /* analog mode */
+ 
+ 	outl(HCFG_LOCKSOUNDCACHE|HCFG_AUDIOENABLE, chip->port+HCFG);
+ 
+@@ -1002,7 +1002,7 @@ static int __devinit snd_emu10k1x_create(struct snd_card *card,
+ 	return 0;
+ }
+ 
+-static void snd_emu10k1x_proc_reg_read(struct snd_info_entry *entry, 
++static void snd_emu10k1x_proc_reg_read(struct snd_info_entry *entry,
+ 				       struct snd_info_buffer *buffer)
+ {
+ 	struct emu10k1x *emu = entry->private_data;
+@@ -1011,16 +1011,16 @@ static void snd_emu10k1x_proc_reg_read(struct snd_info_entry *entry,
+ 	int i;
+ 
+ 	snd_iprintf(buffer, "Registers:\n\n");
+-	for(i = 0; i < 0x20; i+=4) {
++	for (i = 0; i < 0x20; i += 4) {
+ 		spin_lock_irqsave(&emu->emu_lock, flags);
+ 		value = inl(emu->port + i);
+ 		spin_unlock_irqrestore(&emu->emu_lock, flags);
+ 		snd_iprintf(buffer, "Register %02X: %08lX\n", i, value);
+ 	}
+ 	snd_iprintf(buffer, "\nRegisters\n\n");
+-	for(i = 0; i <= 0x48; i++) {
++	for (i = 0; i <= 0x48; i++) {
+ 		value = snd_emu10k1x_ptr_read(emu, i, 0);
+-		if(i < 0x10 || (i >= 0x20 && i < 0x40)) {
++		if (i < 0x10 || (i >= 0x20 && i < 0x40)) {
+ 			value1 = snd_emu10k1x_ptr_read(emu, i, 1);
+ 			value2 = snd_emu10k1x_ptr_read(emu, i, 2);
+ 			snd_iprintf(buffer, "%02X: %08lX %08lX %08lX\n", i, value, value1, value2);
+@@ -1030,7 +1030,7 @@ static void snd_emu10k1x_proc_reg_read(struct snd_info_entry *entry,
+ 	}
+ }
+ 
+-static void snd_emu10k1x_proc_reg_write(struct snd_info_entry *entry, 
++static void snd_emu10k1x_proc_reg_write(struct snd_info_entry *entry,
+ 					struct snd_info_buffer *buffer)
+ {
+ 	struct emu10k1x *emu = entry->private_data;
+@@ -1041,8 +1041,8 @@ static void snd_emu10k1x_proc_reg_write(struct snd_info_entry *entry,
+ 		if (sscanf(line, "%x %x %x", &reg, &channel_id, &val) != 3)
+ 			continue;
+ 
+-		if ((reg < 0x49) && (reg >= 0) && (val <= 0xffffffff) 
+-		    && (channel_id >= 0) && (channel_id <= 2) )
++		if ((reg < 0x49) && (reg >= 0) && (val <= 0xffffffff)
++		    && (channel_id >= 0) && (channel_id <= 2))
+ 			snd_emu10k1x_ptr_write(emu, reg, channel_id, val);
+ 	}
+ }
+@@ -1050,14 +1050,14 @@ static void snd_emu10k1x_proc_reg_write(struct snd_info_entry *entry,
+ static int __devinit snd_emu10k1x_proc_init(struct emu10k1x * emu)
+ {
+ 	struct snd_info_entry *entry;
+-	
+-	if(! snd_card_proc_new(emu->card, "emu10k1x_regs", &entry)) {
++
++	if (!snd_card_proc_new(emu->card, "emu10k1x_regs", &entry)) {
+ 		snd_info_set_text_ops(entry, emu, snd_emu10k1x_proc_reg_read);
+ 		entry->c.text.write = snd_emu10k1x_proc_reg_write;
+ 		entry->mode |= S_IWUSR;
+ 		entry->private_data = emu;
+ 	}
+-	
++
+ 	return 0;
+ }
+ 
+@@ -1080,15 +1080,15 @@ static int snd_emu10k1x_shared_spdif_put(struct snd_kcontrol *kcontrol,
+ 	unsigned int val;
+ 	int change = 0;
+ 
+-	val = ucontrol->value.integer.value[0] ;
++	val = ucontrol->value.integer.value[0];
+ 
+ 	if (val) {
+-		// enable spdif output
++		/* enable spdif output */
+ 		snd_emu10k1x_ptr_write(emu, SPDIF_SELECT, 0, 0x000);
+ 		snd_emu10k1x_ptr_write(emu, ROUTING, 0, 0x700);
+ 		snd_emu10k1x_gpio_write(emu, 0x1000);
+ 	} else {
+-		// disable spdif output
++		/* disable spdif output */
+ 		snd_emu10k1x_ptr_write(emu, SPDIF_SELECT, 0, 0x700);
+ 		snd_emu10k1x_ptr_write(emu, ROUTING, 0, 0x1003F);
+ 		snd_emu10k1x_gpio_write(emu, 0x1080);
+@@ -1317,7 +1317,7 @@ static int snd_emu10k1x_midi_input_open(struct snd_rawmidi_substream *substream)
+ 	struct emu10k1x *emu;
+ 	struct emu10k1x_midi *midi = substream->rmidi->private_data;
+ 	unsigned long flags;
+-	
++
+ 	emu = midi->emu;
+ 	if (snd_BUG_ON(!emu))
+ 		return -ENXIO;
+@@ -1439,7 +1439,7 @@ static void snd_emu10k1x_midi_output_trigger(struct snd_rawmidi_substream *subst
+ 	if (up) {
+ 		int max = 4;
+ 		unsigned char byte;
+-	
++
+ 		/* try to send some amount of bytes here before interrupts */
+ 		spin_lock_irqsave(&midi->output_lock, flags);
+ 		while (max > 0) {
+@@ -1575,7 +1575,7 @@ static int __devinit snd_emu10k1x_probe(struct pci_dev *pci,
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+-	
++
+ 	if ((err = snd_emu10k1x_midi(chip)) < 0) {
+ 		snd_card_free(card);
+ 		return err;
+diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
+index 7dba08f..f8ce97b 100644
+--- a/sound/pci/emu10k1/emufx.c
++++ b/sound/pci/emu10k1/emufx.c
+@@ -52,7 +52,7 @@
+ 
+ /*
+  *  Tables
+- */ 
++ */
+ 
+ static char *fxbuses[16] = {
+ 	/* 0x00 */ "PCM Left",
+@@ -303,7 +303,7 @@ static const u32 onoff_table[2] = {
+ 
+ /*
+  */
+- 
++
+ static inline mm_segment_t snd_enter_user(void)
+ {
+ 	mm_segment_t fs = get_fs();
+@@ -342,7 +342,7 @@ static int snd_emu10k1_gpr_ctl_get(struct snd_kcontrol *kcontrol, struct snd_ctl
+ 		(struct snd_emu10k1_fx8010_ctl *) kcontrol->private_value;
+ 	unsigned long flags;
+ 	unsigned int i;
+-	
++
+ 	spin_lock_irqsave(&emu->reg_lock, flags);
+ 	for (i = 0; i < ctl->vcount; i++)
+ 		ucontrol->value.integer.value[i] = ctl->value[i];
+@@ -359,7 +359,7 @@ static int snd_emu10k1_gpr_ctl_put(struct snd_kcontrol *kcontrol, struct snd_ctl
+ 	unsigned int nval, val;
+ 	unsigned int i, j;
+ 	int change = 0;
+-	
++
+ 	spin_lock_irqsave(&emu->reg_lock, flags);
+ 	for (i = 0; i < ctl->vcount; i++) {
+ 		nval = ucontrol->value.integer.value[i];
+@@ -398,7 +398,7 @@ static int snd_emu10k1_gpr_ctl_put(struct snd_kcontrol *kcontrol, struct snd_ctl
+ 			break;
+ 		}
+ 	}
+-      __error:
++__error:
+ 	spin_unlock_irqrestore(&emu->reg_lock, flags);
+ 	return change;
+ }
+@@ -431,7 +431,7 @@ int snd_emu10k1_fx8010_register_irq_handler(struct snd_emu10k1 *emu,
+ {
+ 	struct snd_emu10k1_fx8010_irq *irq;
+ 	unsigned long flags;
+-	
++
+ 	irq = kmalloc(sizeof(*irq), GFP_ATOMIC);
+ 	if (irq == NULL)
+ 		return -ENOMEM;
+@@ -459,7 +459,7 @@ int snd_emu10k1_fx8010_unregister_irq_handler(struct snd_emu10k1 *emu,
+ {
+ 	struct snd_emu10k1_fx8010_irq *tmp;
+ 	unsigned long flags;
+-	
++
+ 	spin_lock_irqsave(&emu->fx8010.irq_lock, flags);
+ 	if ((tmp = emu->fx8010.irq_handlers) == irq) {
+ 		emu->fx8010.irq_handlers = tmp->next;
+@@ -703,7 +703,7 @@ static int copy_gctl_to_user(struct snd_emu10k1 *emu,
+ 
+ 	if (emu->support_tlv)
+ 		return copy_to_user(&_gctl[idx], gctl, sizeof(*gctl));
+-	
++
+ 	octl = (struct snd_emu10k1_fx8010_control_old_gpr __user *)_gctl;
+ 	return copy_to_user(&octl[idx], gctl, sizeof(*octl));
+ }
+@@ -716,7 +716,7 @@ static int snd_emu10k1_verify_controls(struct snd_emu10k1 *emu,
+ 	struct snd_ctl_elem_id id;
+ 	struct snd_emu10k1_fx8010_control_gpr *gctl;
+ 	int err;
+-	
++
+ 	for (i = 0, _id = icode->gpr_del_controls;
+ 	     i < icode->gpr_del_control_count; i++, _id++) {
+ 	     	if (copy_from_user(&id, _id, sizeof(id)))
+@@ -725,7 +725,7 @@ static int snd_emu10k1_verify_controls(struct snd_emu10k1 *emu,
+ 			return -ENOENT;
+ 	}
+ 	gctl = kmalloc(sizeof(*gctl), GFP_KERNEL);
+-	if (! gctl)
++	if (!gctl)
+ 		return -ENOMEM;
+ 	err = 0;
+ 	for (i = 0; i < icode->gpr_add_control_count; i++) {
+@@ -755,7 +755,7 @@ static int snd_emu10k1_verify_controls(struct snd_emu10k1 *emu,
+ 			goto __error;
+ 		}
+ 	}
+- __error:
++__error:
+ 	kfree(gctl);
+ 	return err;
+ }
+@@ -763,7 +763,7 @@ static int snd_emu10k1_verify_controls(struct snd_emu10k1 *emu,
+ static void snd_emu10k1_ctl_private_free(struct snd_kcontrol *kctl)
+ {
+ 	struct snd_emu10k1_fx8010_ctl *ctl;
+-	
++
+ 	ctl = (struct snd_emu10k1_fx8010_ctl *) kctl->private_value;
+ 	kctl->private_value = 0;
+ 	list_del(&ctl->list);
+@@ -801,7 +801,7 @@ static int snd_emu10k1_add_controls(struct snd_emu10k1 *emu,
+ 			err = -EINVAL;
+ 			goto __error;
+ 		}
+-		if (! gctl->id.name[0]) {
++		if (!gctl->id.name[0]) {
+ 			err = -EINVAL;
+ 			goto __error;
+ 		}
+@@ -857,7 +857,7 @@ static int snd_emu10k1_add_controls(struct snd_emu10k1 *emu,
+ 		}
+ 		snd_emu10k1_gpr_ctl_put(ctl->kcontrol, val);
+ 	}
+-      __error:
++__error:
+ 	kfree(nctl);
+ 	kfree(gctl);
+ 	kfree(val);
+@@ -872,7 +872,7 @@ static int snd_emu10k1_del_controls(struct snd_emu10k1 *emu,
+ 	struct snd_ctl_elem_id __user *_id;
+ 	struct snd_emu10k1_fx8010_ctl *ctl;
+ 	struct snd_card *card = emu->card;
+-	
++
+ 	for (i = 0, _id = icode->gpr_del_controls;
+ 	     i < icode->gpr_del_control_count; i++, _id++) {
+ 	     	if (copy_from_user(&id, _id, sizeof(id)))
+@@ -896,7 +896,7 @@ static int snd_emu10k1_list_controls(struct snd_emu10k1 *emu,
+ 	struct snd_ctl_elem_id *id;
+ 
+ 	gctl = kmalloc(sizeof(*gctl), GFP_KERNEL);
+-	if (! gctl)
++	if (!gctl)
+ 		return -ENOMEM;
+ 
+ 	list_for_each_entry(ctl, &emu->fx8010.gpr_ctl, list) {
+@@ -959,7 +959,7 @@ static int snd_emu10k1_icode_poke(struct snd_emu10k1 *emu,
+ 		snd_emu10k1_ptr_write(emu, A_DBG, 0, emu->fx8010.dbg);
+ 	else
+ 		snd_emu10k1_ptr_write(emu, DBG, 0, emu->fx8010.dbg);
+-      __error:
++__error:
+ 	mutex_unlock(&emu->fx8010.lock);
+ 	return err;
+ }
+@@ -1023,7 +1023,7 @@ static int snd_emu10k1_ipcm_poke(struct snd_emu10k1 *emu,
+ 		for (i = 0; i < pcm->channels; i++)
+ 			pcm->etram[i] = ipcm->etram[i];
+ 	}
+-      __error:
++__error:
+ 	spin_unlock_irq(&emu->reg_lock);
+ 	mutex_unlock(&emu->fx8010.lock);
+ 	return err;
+@@ -1075,7 +1075,7 @@ snd_emu10k1_init_mono_control(struct snd_emu10k1_fx8010_control_gpr *ctl,
+ 	ctl->min = 0;
+ 	ctl->max = 100;
+ 	ctl->tlv = snd_emu10k1_db_scale1;
+-	ctl->translation = EMU10K1_GPR_TRANSLATION_TABLE100;	
++	ctl->translation = EMU10K1_GPR_TRANSLATION_TABLE100;
+ }
+ 
+ static void __devinit
+@@ -1177,7 +1177,7 @@ static int __devinit _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
+ 	/* clear free GPRs */
+ 	for (i = 0; i < 512; i++)
+ 		set_bit(i, icode->gpr_valid);
+-		
++
+ 	/* clear TRAM data & address lines */
+ 	for (i = 0; i < 256; i++)
+ 		set_bit(i, icode->tram_valid);
+@@ -1210,7 +1210,7 @@ static int __devinit _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
+ 	A_OP(icode, &ptr, iMAC0, A_GPR(playback+3), A_C_00000000, A_GPR(gpr+1), A_FXBUS(FXBUS_PCM_RIGHT_REAR));
+ 	snd_emu10k1_init_stereo_control(&controls[nctl++], "PCM Surround Playback Volume", gpr, 100);
+ 	gpr += 2;
+-	
++
+ 	/* PCM Side Playback (independent from stereo mix) */
+ 	if (emu->card_capabilities->spk71) {
+ 		A_OP(icode, &ptr, iMAC0, A_GPR(playback+6), A_C_00000000, A_GPR(gpr), A_FXBUS(FXBUS_PCM_LEFT_SIDE));
+@@ -1228,7 +1228,7 @@ static int __devinit _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
+ 	A_OP(icode, &ptr, iMAC0, A_GPR(playback+5), A_C_00000000, A_GPR(gpr), A_FXBUS(FXBUS_PCM_LFE));
+ 	snd_emu10k1_init_mono_control(&controls[nctl++], "PCM LFE Playback Volume", gpr, 100);
+ 	gpr++;
+-	
++
+ 	/*
+ 	 * Stereo Mix
+ 	 */
+@@ -1255,7 +1255,7 @@ static int __devinit _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
+ 	A_OP(icode, &ptr, iMAC0, A_GPR(capture+1), A_GPR(capture+1), A_GPR(gpr+1), A_FXBUS(FXBUS_MIDI_RIGHT));
+ 	snd_emu10k1_init_stereo_control(&controls[nctl++], "Synth Capture Volume", gpr, 0);
+ 	gpr += 2;
+-      
++
+ 	/*
+ 	 * inputs
+ 	 */
+@@ -1288,7 +1288,7 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
+ 	snd_emu10k1_init_stereo_control(&controls[nctl++], "Mic Capture Volume", gpr, 0);
+ 	gpr += 2;
+ 
+-	/* mic capture buffer */	
++	/* mic capture buffer */
+ 	A_OP(icode, &ptr, iINTERP, A_EXTOUT(A_EXTOUT_MIC_CAP), A_EXTIN(A_EXTIN_AC97_L), 0xcd, A_EXTIN(A_EXTIN_AC97_R));
+ 
+ 	/* Audigy CD Playback Volume */
+@@ -1331,7 +1331,7 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
+ 					emu->card_capabilities->ac97_chip ? "Line2 Capture Volume" : "Line Capture Volume",
+ 					gpr, 0);
+ 	gpr += 2;
+-        
++
+ 	/* Philips ADC Playback Volume */
+ 	A_ADD_VOLUME_IN(stereo_mix, gpr, A_EXTIN_ADC_L);
+ 	A_ADD_VOLUME_IN(stereo_mix+1, gpr+1, A_EXTIN_ADC_R);
+@@ -1357,13 +1357,13 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
+ 					emu->card_capabilities->ac97_chip ? "Aux2 Capture Volume" : "Aux Capture Volume",
+ 					gpr, 0);
+ 	gpr += 2;
+-	
++
+ 	/* Stereo Mix Front Playback Volume */
+ 	A_OP(icode, &ptr, iMAC0, A_GPR(playback), A_GPR(playback), A_GPR(gpr), A_GPR(stereo_mix));
+ 	A_OP(icode, &ptr, iMAC0, A_GPR(playback+1), A_GPR(playback+1), A_GPR(gpr+1), A_GPR(stereo_mix+1));
+ 	snd_emu10k1_init_stereo_control(&controls[nctl++], "Front Playback Volume", gpr, 100);
+ 	gpr += 2;
+-	
++
+ 	/* Stereo Mix Surround Playback */
+ 	A_OP(icode, &ptr, iMAC0, A_GPR(playback+2), A_GPR(playback+2), A_GPR(gpr), A_GPR(stereo_mix));
+ 	A_OP(icode, &ptr, iMAC0, A_GPR(playback+3), A_GPR(playback+3), A_GPR(gpr+1), A_GPR(stereo_mix+1));
+@@ -1381,7 +1381,7 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
+ 	A_OP(icode, &ptr, iMAC0, A_GPR(playback+5), A_GPR(playback+5), A_GPR(gpr), A_GPR(tmp));
+ 	snd_emu10k1_init_mono_control(&controls[nctl++], "LFE Playback Volume", gpr, 0);
+ 	gpr++;
+-	
++
+ 	if (emu->card_capabilities->spk71) {
+ 		/* Stereo Mix Side Playback */
+ 		A_OP(icode, &ptr, iMAC0, A_GPR(playback+6), A_GPR(playback+6), A_GPR(gpr), A_GPR(stereo_mix));
+@@ -1420,7 +1420,7 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
+ 		A_OP(icode, &ptr, iACC3, A_GPR(playback + SND_EMU10K1_PLAYBACK_CHANNELS + 6), A_GPR(playback + 6), A_C_00000000, A_C_00000000); /* side left */
+ 		A_OP(icode, &ptr, iACC3, A_GPR(playback + SND_EMU10K1_PLAYBACK_CHANNELS + 7), A_GPR(playback + 7), A_C_00000000, A_C_00000000); /* side right */
+ 	}
+-	
++
+ 
+ 	ctl = &controls[nctl + 0];
+ 	ctl->id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+@@ -1529,7 +1529,7 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
+ 		}
+ 	}
+ 
+-	/* IEC958 Optical Raw Playback Switch */ 
++	/* IEC958 Optical Raw Playback Switch */
+ 	gpr_map[gpr++] = 0;
+ 	gpr_map[gpr++] = 0x1008;
+ 	gpr_map[gpr++] = 0xffff0000;
+@@ -1552,7 +1552,7 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
+ 	}
+ 	snd_emu10k1_init_stereo_onoff_control(controls + nctl++, SNDRV_CTL_NAME_IEC958("Optical Raw ",PLAYBACK,SWITCH), gpr, 0);
+ 	gpr += 2;
+-	
++
+ 	A_PUT_STEREO_OUTPUT(A_EXTOUT_REAR_L, A_EXTOUT_REAR_R, playback+2 + SND_EMU10K1_PLAYBACK_CHANNELS);
+ 	A_PUT_OUTPUT(A_EXTOUT_CENTER, playback+4 + SND_EMU10K1_PLAYBACK_CHANNELS);
+ 	A_PUT_OUTPUT(A_EXTOUT_LFE, playback+5 + SND_EMU10K1_PLAYBACK_CHANNELS);
+@@ -1569,10 +1569,10 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
+ 		if (emu->card_capabilities->ca0108_chip) {
+ 			snd_printk("EMU2 inputs on\n");
+ 			for (z = 0; z < 0x10; z++) {
+-				snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, 
++				snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp,
+ 									bit_shifter16,
+ 									A3_EMU32IN(z),
+-									A_FXBUS2(z*2) );
++									A_FXBUS2(z*2));
+ 			}
+ 		} else {
+ 			snd_printk("EMU inputs on\n");
+@@ -1584,7 +1584,7 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
+ 			 * so all other A_P16VIN channels will need to also be delayed
+ 			 */
+ 			/* Left ADC in. 1 of 2 */
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_P16VIN(0x0), A_FXBUS2(0) );
++			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_P16VIN(0x0), A_FXBUS2(0));
+ 			/* Right ADC in 1 of 2 */
+ 			gpr_map[gpr++] = 0x00000000;
+ 			/* Delaying by one sample: instead of copying the input
+@@ -1592,28 +1592,28 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
+ 			 * we use an auxiliary register, delaying the value by one
+ 			 * sample
+ 			 */
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(2) );
++			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(2));
+ 			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0x1), A_C_00000000, A_C_00000000);
+ 			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(4) );
++			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(4));
+ 			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0x2), A_C_00000000, A_C_00000000);
+ 			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(6) );
++			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(6));
+ 			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0x3), A_C_00000000, A_C_00000000);
+ 			/* For 96kHz mode */
+ 			/* Left ADC in. 2 of 2 */
+ 			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(0x8) );
++			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(0x8));
+ 			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0x4), A_C_00000000, A_C_00000000);
+ 			/* Right ADC in 2 of 2 */
+ 			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(0xa) );
++			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(0xa));
+ 			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0x5), A_C_00000000, A_C_00000000);
+ 			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(0xc) );
++			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(0xc));
+ 			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0x6), A_C_00000000, A_C_00000000);
+ 			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(0xe) );
++			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(0xe));
+ 			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0x7), A_C_00000000, A_C_00000000);
+ 			/* Pavel Hofman - we still have voices, A_FXBUS2s, and
+ 			 * A_P16VINs available -
+@@ -1692,7 +1692,7 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
+ 			A_OP(icode, &ptr, iACC3, A_FXBUS2(z), A_C_00000000, A_C_00000000, A_EXTIN(z));
+ 		}
+ 	}
+-	
++
+ #endif /* JCD test */
+ 	/*
+ 	 * ok, set up done..
+@@ -1715,7 +1715,7 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
+ 	emu->support_tlv = 0; /* clear again */
+ 	snd_leave_user(seg);
+ 
+- __err:
++__err:
+ 	kfree(controls);
+ 	if (icode != NULL) {
+ 		kfree((void __force *)icode->gpr_map);
+@@ -1804,7 +1804,7 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ 	icode->tram_data_map = icode->gpr_map + 256;
+ 	icode->tram_addr_map = icode->tram_data_map + 160;
+ 	icode->code = icode->tram_addr_map + 160;
+-	
++
+ 	/* clear free GPRs */
+ 	for (i = 0; i < 256; i++)
+ 		set_bit(i, icode->gpr_valid);
+@@ -1904,7 +1904,7 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ 	/* 18: */ OP(icode, &ptr, iSKIP, GPR_COND, GPR_COND, CC_REG_MINUS, C_00000001);
+ 	/* 19: */ OP(icode, &ptr, iACC3, GPR(tmp + 0), C_00000000, C_00000000, C_00000000);
+ 	/* 1a: */ OP(icode, &ptr, iACC3, GPR(ipcm->gpr_ptr), GPR(tmp + 0), C_00000000, C_00000000);
+-	
++
+ 	/* 1b: */ OP(icode, &ptr, iACC3, GPR(ipcm->gpr_tmpcount), GPR(ipcm->gpr_tmpcount), C_ffffffff, C_00000000);
+ 	/* 1c: */ OP(icode, &ptr, iSKIP, GPR_COND, GPR_COND, CC_REG_NONZERO, C_00000002);
+ 	/* 1d: */ OP(icode, &ptr, iACC3, GPR(ipcm->gpr_tmpcount), GPR(ipcm->gpr_count), C_00000000, C_00000000);
+@@ -1931,7 +1931,7 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ 		VOLUME(icode, &ptr, playback + 2 + z, z, gpr + z);
+ 	snd_emu10k1_init_stereo_control(controls + i++, "Wave Surround Playback Volume", gpr, 0);
+ 	gpr += 2;
+-	
++
+ 	/* Wave Center/LFE Playback Volume */
+ 	OP(icode, &ptr, iACC3, GPR(tmp + 0), FXBUS(FXBUS_PCM_LEFT), FXBUS(FXBUS_PCM_RIGHT), C_00000000);
+ 	OP(icode, &ptr, iMACINT0, GPR(tmp + 0), C_00000000, GPR(tmp + 0), C_00000002);
+@@ -2016,14 +2016,14 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ 		VOLUME_ADDIN(icode, &ptr, capture + 1, EXTIN_AC97_R, gpr); gpr++;
+ 		snd_emu10k1_init_stereo_control(controls + i++, "AC97 Capture Volume", gpr-2, 100);
+ 	}
+-	
++
+ 	if (emu->fx8010.extin_mask & ((1<<EXTIN_SPDIF_CD_L)|(1<<EXTIN_SPDIF_CD_R))) {
+ 		/* IEC958 TTL Playback Volume */
+ 		for (z = 0; z < 2; z++)
+ 			VOLUME_ADDIN(icode, &ptr, playback + z, EXTIN_SPDIF_CD_L + z, gpr + z);
+ 		snd_emu10k1_init_stereo_control(controls + i++, SNDRV_CTL_NAME_IEC958("TTL ",PLAYBACK,VOLUME), gpr, 0);
+ 		gpr += 2;
+-	
++
+ 		/* IEC958 TTL Capture Volume + Switch */
+ 		for (z = 0; z < 2; z++) {
+ 			SWITCH_IN(icode, &ptr, tmp + 0, EXTIN_SPDIF_CD_L + z, gpr + 2 + z);
+@@ -2033,14 +2033,14 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ 		snd_emu10k1_init_stereo_onoff_control(controls + i++, SNDRV_CTL_NAME_IEC958("TTL ",CAPTURE,SWITCH), gpr + 2, 0);
+ 		gpr += 4;
+ 	}
+-	
++
+ 	if (emu->fx8010.extin_mask & ((1<<EXTIN_ZOOM_L)|(1<<EXTIN_ZOOM_R))) {
+ 		/* Zoom Video Playback Volume */
+ 		for (z = 0; z < 2; z++)
+ 			VOLUME_ADDIN(icode, &ptr, playback + z, EXTIN_ZOOM_L + z, gpr + z);
+ 		snd_emu10k1_init_stereo_control(controls + i++, "Zoom Video Playback Volume", gpr, 0);
+ 		gpr += 2;
+-	
++
+ 		/* Zoom Video Capture Volume + Switch */
+ 		for (z = 0; z < 2; z++) {
+ 			SWITCH_IN(icode, &ptr, tmp + 0, EXTIN_ZOOM_L + z, gpr + 2 + z);
+@@ -2050,14 +2050,14 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ 		snd_emu10k1_init_stereo_onoff_control(controls + i++, "Zoom Video Capture Switch", gpr + 2, 0);
+ 		gpr += 4;
+ 	}
+-	
++
+ 	if (emu->fx8010.extin_mask & ((1<<EXTIN_TOSLINK_L)|(1<<EXTIN_TOSLINK_R))) {
+ 		/* IEC958 Optical Playback Volume */
+ 		for (z = 0; z < 2; z++)
+ 			VOLUME_ADDIN(icode, &ptr, playback + z, EXTIN_TOSLINK_L + z, gpr + z);
+ 		snd_emu10k1_init_stereo_control(controls + i++, SNDRV_CTL_NAME_IEC958("LiveDrive ",PLAYBACK,VOLUME), gpr, 0);
+ 		gpr += 2;
+-	
++
+ 		/* IEC958 Optical Capture Volume */
+ 		for (z = 0; z < 2; z++) {
+ 			SWITCH_IN(icode, &ptr, tmp + 0, EXTIN_TOSLINK_L + z, gpr + 2 + z);
+@@ -2067,14 +2067,14 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ 		snd_emu10k1_init_stereo_onoff_control(controls + i++, SNDRV_CTL_NAME_IEC958("LiveDrive ",CAPTURE,SWITCH), gpr + 2, 0);
+ 		gpr += 4;
+ 	}
+-	
++
+ 	if (emu->fx8010.extin_mask & ((1<<EXTIN_LINE1_L)|(1<<EXTIN_LINE1_R))) {
+ 		/* Line LiveDrive Playback Volume */
+ 		for (z = 0; z < 2; z++)
+ 			VOLUME_ADDIN(icode, &ptr, playback + z, EXTIN_LINE1_L + z, gpr + z);
+ 		snd_emu10k1_init_stereo_control(controls + i++, "Line LiveDrive Playback Volume", gpr, 0);
+ 		gpr += 2;
+-	
++
+ 		/* Line LiveDrive Capture Volume + Switch */
+ 		for (z = 0; z < 2; z++) {
+ 			SWITCH_IN(icode, &ptr, tmp + 0, EXTIN_LINE1_L + z, gpr + 2 + z);
+@@ -2084,14 +2084,14 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ 		snd_emu10k1_init_stereo_onoff_control(controls + i++, "Line LiveDrive Capture Switch", gpr + 2, 0);
+ 		gpr += 4;
+ 	}
+-	
++
+ 	if (emu->fx8010.extin_mask & ((1<<EXTIN_COAX_SPDIF_L)|(1<<EXTIN_COAX_SPDIF_R))) {
+ 		/* IEC958 Coax Playback Volume */
+ 		for (z = 0; z < 2; z++)
+ 			VOLUME_ADDIN(icode, &ptr, playback + z, EXTIN_COAX_SPDIF_L + z, gpr + z);
+ 		snd_emu10k1_init_stereo_control(controls + i++, SNDRV_CTL_NAME_IEC958("Coaxial ",PLAYBACK,VOLUME), gpr, 0);
+ 		gpr += 2;
+-	
++
+ 		/* IEC958 Coax Capture Volume + Switch */
+ 		for (z = 0; z < 2; z++) {
+ 			SWITCH_IN(icode, &ptr, tmp + 0, EXTIN_COAX_SPDIF_L + z, gpr + 2 + z);
+@@ -2101,7 +2101,7 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ 		snd_emu10k1_init_stereo_onoff_control(controls + i++, SNDRV_CTL_NAME_IEC958("Coaxial ",CAPTURE,SWITCH), gpr + 2, 0);
+ 		gpr += 4;
+ 	}
+-	
++
+ 	if (emu->fx8010.extin_mask & ((1<<EXTIN_LINE2_L)|(1<<EXTIN_LINE2_R))) {
+ 		/* Line LiveDrive Playback Volume */
+ 		for (z = 0; z < 2; z++)
+@@ -2109,7 +2109,7 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ 		snd_emu10k1_init_stereo_control(controls + i++, "Line2 LiveDrive Playback Volume", gpr, 0);
+ 		controls[i-1].id.index = 1;
+ 		gpr += 2;
+-	
++
+ 		/* Line LiveDrive Capture Volume */
+ 		for (z = 0; z < 2; z++) {
+ 			SWITCH_IN(icode, &ptr, tmp + 0, EXTIN_LINE2_L + z, gpr + 2 + z);
+@@ -2249,7 +2249,7 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ 
+ 		gpr += 4;
+ 	}
+-	
++
+ 	if (emu->fx8010.extout_mask & ((1<<EXTOUT_REAR_L)|(1<<EXTOUT_REAR_R)))
+ 		for (z = 0; z < 2; z++)
+ 			OP(icode, &ptr, iACC3, EXTOUT(EXTOUT_REAR_L + z), GPR(playback + SND_EMU10K1_PLAYBACK_CHANNELS + 2 + z), C_00000000, C_00000000);
+@@ -2277,12 +2277,12 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ 		OP(icode, &ptr, iACC3, EXTOUT(EXTOUT_ALFE), GPR(playback + SND_EMU10K1_PLAYBACK_CHANNELS + 1), C_00000000, C_00000000);
+ #endif
+ 	}
+-	
++
+ #ifndef EMU10K1_CAPTURE_DIGITAL_OUT
+ 	for (z = 0; z < 2; z++)
+  		OP(icode, &ptr, iACC3, EXTOUT(EXTOUT_ADC_CAP_L + z), GPR(capture + z), C_00000000, C_00000000);
+ #endif
+-	
++
+ 	if (emu->fx8010.extout_mask & (1<<EXTOUT_MIC_CAP))
+ 		OP(icode, &ptr, iACC3, EXTOUT(EXTOUT_MIC_CAP), GPR(capture + 2), C_00000000, C_00000000);
+ 
+@@ -2291,10 +2291,10 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ 		/* On the Live! 5.1, FXBUS2(1) and FXBUS(2) are shared with EXTOUT_ACENTER
+ 		 * and EXTOUT_ALFE, so we can't connect inputs to them for multitrack recording.
+ 		 *
+-		 * Since only 14 of the 16 EXTINs are used, this is not a big problem.  
+-		 * We route AC97L and R to FX capture 14 and 15, SPDIF CD in to FX capture 
+-		 * 0 and 3, then the rest of the EXTINs to the corresponding FX capture 
+-		 * channel.  Multitrack recorders will still see the center/lfe output signal 
++		 * Since only 14 of the 16 EXTINs are used, this is not a big problem.
++		 * We route AC97L and R to FX capture 14 and 15, SPDIF CD in to FX capture
++		 * 0 and 3, then the rest of the EXTINs to the corresponding FX capture
++		 * channel.  Multitrack recorders will still see the center/lfe output signal
+ 		 * on the second and third channels.
+ 		 */
+ 		OP(icode, &ptr, iACC3, FXBUS2(14), C_00000000, C_00000000, EXTIN(0));
+@@ -2307,7 +2307,7 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ 		for (z = 0; z < 16; z++)
+ 			OP(icode, &ptr, iACC3, FXBUS2(z), C_00000000, C_00000000, EXTIN(z));
+ 	}
 -	    
 +
- 			if ((err = snd_hdsp_create_alsa_devices(hdsp->card, hdsp)) < 0) {
- 				snd_printk(KERN_ERR "Hammerfall-DSP: error creating alsa devices\n");
- 				return err;
-@@ -4717,10 +4717,10 @@ static int snd_hdsp_create_hwdep(struct snd_card *card, struct hdsp *hdsp)
+ 
+ 	if (gpr > tmp) {
+ 		snd_BUG();
+@@ -2319,7 +2319,7 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ 		err = -EIO;
+ 		goto __err;
+ 	}
+-	
++
+ 	/* clear remaining instruction memory */
+ 	while (ptr < 0x200)
+ 		OP(icode, &ptr, iACC3, C_00000000, C_00000000, C_00000000, C_00000000);
+@@ -2335,7 +2335,7 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ 	snd_leave_user(seg);
+ 	if (err >= 0)
+ 		err = snd_emu10k1_ipcm_poke(emu, ipcm);
+-      __err:
++__err:
+ 	kfree(ipcm);
+ 	kfree(controls);
+ 	if (icode != NULL) {
+@@ -2471,7 +2471,7 @@ static int snd_emu10k1_fx8010_ioctl(struct snd_hwdep * hw, struct file *file, un
+ 	unsigned int addr;
+ 	void __user *argp = (void __user *)arg;
+ 	int res;
+-	
++
+ 	switch (cmd) {
+ 	case SNDRV_EMU10K1_IOCTL_PVERSION:
+ 		emu->support_tlv = 1;
+@@ -2617,7 +2617,7 @@ int __devinit snd_emu10k1_fx8010_new(struct snd_emu10k1 *emu, int device, struct
  {
  	struct snd_hwdep *hw;
  	int err;
 -	
 +
- 	if ((err = snd_hwdep_new(card, "HDSP hwdep", 0, &hw)) < 0)
- 		return err;
--		
-+
- 	hdsp->hwdep = hw;
- 	hw->private_data = hdsp;
- 	strcpy(hw->name, "HDSP hwdep interface");
-@@ -4728,7 +4728,7 @@ static int snd_hdsp_create_hwdep(struct snd_card *card, struct hdsp *hdsp)
- 	hw->ops.open = snd_hdsp_hwdep_dummy_op;
- 	hw->ops.ioctl = snd_hdsp_hwdep_ioctl;
- 	hw->ops.release = snd_hdsp_hwdep_dummy_op;
--		
-+
+ 	if (rhwdep)
+ 		*rhwdep = NULL;
+ 	if ((err = snd_hwdep_new(emu->card, "FX8010", device, &hw)) < 0)
+@@ -2640,16 +2640,16 @@ int __devinit snd_emu10k1_efx_alloc_pm_buffer(struct snd_emu10k1 *emu)
+ 
+ 	len = emu->audigy ? 0x200 : 0x100;
+ 	emu->saved_gpr = kmalloc(len * 4, GFP_KERNEL);
+-	if (! emu->saved_gpr)
++	if (!emu->saved_gpr)
+ 		return -ENOMEM;
+ 	len = emu->audigy ? 0x100 : 0xa0;
+ 	emu->tram_val_saved = kmalloc(len * 4, GFP_KERNEL);
+ 	emu->tram_addr_saved = kmalloc(len * 4, GFP_KERNEL);
+-	if (! emu->tram_val_saved || ! emu->tram_addr_saved)
++	if (!emu->tram_val_saved || ! emu->tram_addr_saved)
+ 		return -ENOMEM;
+ 	len = emu->audigy ? 2 * 1024 : 2 * 512;
+ 	emu->saved_icode = vmalloc(len * 4);
+-	if (! emu->saved_icode)
++	if (!emu->saved_icode)
+ 		return -ENOMEM;
  	return 0;
  }
- 
-@@ -4752,33 +4752,33 @@ static int snd_hdsp_create_pcm(struct snd_card *card, struct hdsp *hdsp)
- 	return 0;
- }
- 
--static void snd_hdsp_9652_enable_mixer (struct hdsp *hdsp)
-+static void snd_hdsp_9652_enable_mixer(struct hdsp *hdsp)
- {
-         hdsp->control2_register |= HDSP_9652_ENABLE_MIXER;
- 	hdsp_write (hdsp, HDSP_control2Reg, hdsp->control2_register);
- }
- 
--static int snd_hdsp_enable_io (struct hdsp *hdsp)
-+static int snd_hdsp_enable_io(struct hdsp *hdsp)
- {
- 	int i;
--	
-+
- 	if (hdsp_fifo_wait (hdsp, 0, 100)) {
- 		snd_printk(KERN_ERR "Hammerfall-DSP: enable_io fifo_wait failed\n");
- 		return -EIO;
+@@ -2721,7 +2721,7 @@ void snd_emu10k1_efx_resume(struct snd_emu10k1 *emu)
+ 	for (i = 0; i < len; i++) {
+ 		snd_emu10k1_ptr_write(emu, TANKMEMDATAREGBASE + i, 0,
+ 				      emu->tram_val_saved[i]);
+-		if (! emu->audigy)
++		if (!emu->audigy)
+ 			snd_emu10k1_ptr_write(emu, TANKMEMADDRREGBASE + i, 0,
+ 					      emu->tram_addr_saved[i]);
+ 		else {
+diff --git a/sound/pci/emu10k1/emumixer.c b/sound/pci/emu10k1/emumixer.c
+index f34bbfb..a1366e0 100644
+--- a/sound/pci/emu10k1/emumixer.c
++++ b/sound/pci/emu10k1/emumixer.c
+@@ -83,7 +83,7 @@ static int snd_emu10k1_spdif_get_mask(struct snd_kcontrol *kcontrol,
+  * Items labels in enum mixer controls assigning source data to
+  * each destination
+  */
+-static char *emu1010_src_texts[] = { 
++static char *emu1010_src_texts[] = {
+ 	"Silence",
+ 	"Dock Mic A",
+ 	"Dock Mic B",
+@@ -615,12 +615,12 @@ static int snd_emu1010_adc_pads_put(struct snd_kcontrol *kcontrol, struct snd_ct
+ 	unsigned int val, cache;
+ 	val = ucontrol->value.integer.value[0];
+ 	cache = emu->emu1010.adc_pads;
+-	if (val == 1) 
++	if (val == 1)
+ 		cache = cache | mask;
+ 	else
+ 		cache = cache & ~mask;
+ 	if (cache != emu->emu1010.adc_pads) {
+-		snd_emu1010_fpga_write(emu, EMU_HANA_ADC_PADS, cache );
++		snd_emu1010_fpga_write(emu, EMU_HANA_ADC_PADS, cache);
+ 	        emu->emu1010.adc_pads = cache;
  	}
--	
-+
- 	for (i = 0; i < hdsp->max_channels; ++i) {
- 		hdsp_write (hdsp, HDSP_inputEnable + (4 * i), 1);
- 		hdsp_write (hdsp, HDSP_outputEnable + (4 * i), 1);
- 	}
--	
-+
- 	return 0;
- }
  
- static void snd_hdsp_initialize_channels(struct hdsp *hdsp)
- {
- 	int status, aebi_channels, aebo_channels;
--	
-+
- 	switch (hdsp->io_type) {
- 	case Digiface:
- 		hdsp->card_name = "RME Hammerfall DSP + Digiface";
-@@ -4791,7 +4791,7 @@ static void snd_hdsp_initialize_channels(struct hdsp *hdsp)
- 		hdsp->ss_in_channels = hdsp->ss_out_channels = H9652_SS_CHANNELS;
- 		hdsp->ds_in_channels = hdsp->ds_out_channels = H9652_DS_CHANNELS;
- 		break;
--	
-+
- 	case H9632:
- 		status = hdsp_read(hdsp, HDSP_statusRegister);
- 		/* HDSP_AEBx bits are low when AEB are connected */
-@@ -4811,14 +4811,14 @@ static void snd_hdsp_initialize_channels(struct hdsp *hdsp)
- 		hdsp->ss_in_channels = hdsp->ss_out_channels = MULTIFACE_SS_CHANNELS;
- 		hdsp->ds_in_channels = hdsp->ds_out_channels = MULTIFACE_DS_CHANNELS;
- 		break;
+@@ -663,12 +663,12 @@ static int snd_emu1010_dac_pads_put(struct snd_kcontrol *kcontrol, struct snd_ct
+ 	unsigned int val, cache;
+ 	val = ucontrol->value.integer.value[0];
+ 	cache = emu->emu1010.dac_pads;
+-	if (val == 1) 
++	if (val == 1)
+ 		cache = cache | mask;
+ 	else
+ 		cache = cache & ~mask;
+ 	if (cache != emu->emu1010.dac_pads) {
+-		snd_emu1010_fpga_write(emu, EMU_HANA_DAC_PADS, cache );
++		snd_emu1010_fpga_write(emu, EMU_HANA_DAC_PADS, cache);
+ 	        emu->emu1010.dac_pads = cache;
+ 	}
+ 
+@@ -702,7 +702,7 @@ static int snd_emu1010_internal_clock_info(struct snd_kcontrol *kcontrol,
+ 	static char *texts[4] = {
+ 		"44100", "48000", "SPDIF", "ADAT"
+ 	};
 -		
 +
- 	default:
-  		/* should never get here */
- 		break;
- 	}
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+ 	uinfo->count = 1;
+ 	uinfo->value.enumerated.items = 4;
+@@ -710,8 +710,8 @@ static int snd_emu1010_internal_clock_info(struct snd_kcontrol *kcontrol,
+ 		uinfo->value.enumerated.item = uinfo->value.enumerated.items - 1;
+ 	strcpy(uinfo->value.enumerated.name, texts[uinfo->value.enumerated.item]);
+ 	return 0;
+-	
+-	
++
++
  }
  
--static void snd_hdsp_initialize_midi_flush (struct hdsp *hdsp)
-+static void snd_hdsp_initialize_midi_flush(struct hdsp *hdsp)
- {
- 	snd_hdsp_flush_midi_input (hdsp, 0);
- 	snd_hdsp_flush_midi_input (hdsp, 1);
-@@ -4827,12 +4827,12 @@ static void snd_hdsp_initialize_midi_flush (struct hdsp *hdsp)
- static int snd_hdsp_create_alsa_devices(struct snd_card *card, struct hdsp *hdsp)
- {
- 	int err;
--	
-+
- 	if ((err = snd_hdsp_create_pcm(card, hdsp)) < 0) {
- 		snd_printk(KERN_ERR "Hammerfall-DSP: Error creating pcm interface\n");
- 		return err;
- 	}
--	
-+
+ static int snd_emu1010_internal_clock_get(struct snd_kcontrol *kcontrol,
+@@ -730,7 +730,7 @@ static int snd_emu1010_internal_clock_put(struct snd_kcontrol *kcontrol,
+ 	unsigned int val;
+ 	int change = 0;
  
- 	if ((err = snd_hdsp_create_midi(card, hdsp, 0)) < 0) {
- 		snd_printk(KERN_ERR "Hammerfall-DSP: Error creating first midi interface\n");
-@@ -4863,19 +4863,19 @@ static int snd_hdsp_create_alsa_devices(struct snd_card *card, struct hdsp *hdsp
- 		snd_printk(KERN_ERR "Hammerfall-DSP: Error setting default values\n");
- 		return err;
- 	}
--	
+-	val = ucontrol->value.enumerated.item[0] ;
++	val = ucontrol->value.enumerated.item[0];
+ 	/* Limit: uinfo->value.enumerated.items = 4; */
+ 	if (val >= 4)
+ 		return -EINVAL;
+@@ -741,75 +741,75 @@ static int snd_emu1010_internal_clock_put(struct snd_kcontrol *kcontrol,
+ 		case 0:
+ 			/* 44100 */
+ 			/* Mute all */
+-			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_MUTE );
++			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_MUTE);
+ 			/* Default fallback clock 48kHz */
+-			snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, EMU_HANA_DEFCLOCK_44_1K );
++			snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, EMU_HANA_DEFCLOCK_44_1K);
+ 			/* Word Clock source, Internal 44.1kHz x1 */
+ 			snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK,
+-			EMU_HANA_WCLOCK_INT_44_1K | EMU_HANA_WCLOCK_1X );
++			EMU_HANA_WCLOCK_INT_44_1K | EMU_HANA_WCLOCK_1X);
+ 			/* Set LEDs on Audio Dock */
+ 			snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_LEDS_2,
+-				EMU_HANA_DOCK_LEDS_2_44K | EMU_HANA_DOCK_LEDS_2_LOCK );
++				EMU_HANA_DOCK_LEDS_2_44K | EMU_HANA_DOCK_LEDS_2_LOCK);
+ 			/* Allow DLL to settle */
+ 			msleep(10);
+ 			/* Unmute all */
+-			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_UNMUTE );
++			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_UNMUTE);
+ 			break;
+ 		case 1:
+ 			/* 48000 */
+ 			/* Mute all */
+-			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_MUTE );
++			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_MUTE);
+ 			/* Default fallback clock 48kHz */
+-			snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, EMU_HANA_DEFCLOCK_48K );
++			snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, EMU_HANA_DEFCLOCK_48K);
+ 			/* Word Clock source, Internal 48kHz x1 */
+ 			snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK,
+-				EMU_HANA_WCLOCK_INT_48K | EMU_HANA_WCLOCK_1X );
++				EMU_HANA_WCLOCK_INT_48K | EMU_HANA_WCLOCK_1X);
+ 			/* Set LEDs on Audio Dock */
+ 			snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_LEDS_2,
+-				EMU_HANA_DOCK_LEDS_2_48K | EMU_HANA_DOCK_LEDS_2_LOCK );
++				EMU_HANA_DOCK_LEDS_2_48K | EMU_HANA_DOCK_LEDS_2_LOCK);
+ 			/* Allow DLL to settle */
+ 			msleep(10);
+ 			/* Unmute all */
+-			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_UNMUTE );
++			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_UNMUTE);
+ 			break;
+-			
 +
- 	if (!(hdsp->state & HDSP_InitializationComplete)) {
- 		strcpy(card->shortname, "Hammerfall DSP");
--		sprintf(card->longname, "%s at 0x%lx, irq %d", hdsp->card_name, 
-+		sprintf(card->longname, "%s at 0x%lx, irq %d", hdsp->card_name,
- 			hdsp->port, hdsp->irq);
--	    
+ 		case 2: /* Take clock from S/PDIF IN */
+ 			/* Mute all */
+-			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_MUTE );
++			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_MUTE);
+ 			/* Default fallback clock 48kHz */
+-			snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, EMU_HANA_DEFCLOCK_48K );
++			snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, EMU_HANA_DEFCLOCK_48K);
+ 			/* Word Clock source, sync to S/PDIF input */
+ 			snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK,
+-				EMU_HANA_WCLOCK_HANA_SPDIF_IN | EMU_HANA_WCLOCK_1X );
++				EMU_HANA_WCLOCK_HANA_SPDIF_IN | EMU_HANA_WCLOCK_1X);
+ 			/* Set LEDs on Audio Dock */
+ 			snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_LEDS_2,
+-				EMU_HANA_DOCK_LEDS_2_EXT | EMU_HANA_DOCK_LEDS_2_LOCK );
+-			/* FIXME: We should set EMU_HANA_DOCK_LEDS_2_LOCK only when clock signal is present and valid */	
++				EMU_HANA_DOCK_LEDS_2_EXT | EMU_HANA_DOCK_LEDS_2_LOCK);
++			/* FIXME: We should set EMU_HANA_DOCK_LEDS_2_LOCK only when clock signal is present and valid */
+ 			/* Allow DLL to settle */
+ 			msleep(10);
+ 			/* Unmute all */
+-			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_UNMUTE );
++			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_UNMUTE);
+ 			break;
+-		
+-		case 3: 			
 +
- 		if ((err = snd_card_register(card)) < 0) {
- 			snd_printk(KERN_ERR "Hammerfall-DSP: error registering card\n");
- 			return err;
++		case 3:
+ 			/* Take clock from ADAT IN */
+ 			/* Mute all */
+-			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_MUTE );
++			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_MUTE);
+ 			/* Default fallback clock 48kHz */
+-			snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, EMU_HANA_DEFCLOCK_48K );
++			snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, EMU_HANA_DEFCLOCK_48K);
+ 			/* Word Clock source, sync to ADAT input */
+ 			snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK,
+-				EMU_HANA_WCLOCK_HANA_ADAT_IN | EMU_HANA_WCLOCK_1X );
++				EMU_HANA_WCLOCK_HANA_ADAT_IN | EMU_HANA_WCLOCK_1X);
+ 			/* Set LEDs on Audio Dock */
+-			snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_LEDS_2, EMU_HANA_DOCK_LEDS_2_EXT | EMU_HANA_DOCK_LEDS_2_LOCK );
+-			/* FIXME: We should set EMU_HANA_DOCK_LEDS_2_LOCK only when clock signal is present and valid */	
++			snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_LEDS_2, EMU_HANA_DOCK_LEDS_2_EXT | EMU_HANA_DOCK_LEDS_2_LOCK);
++			/* FIXME: We should set EMU_HANA_DOCK_LEDS_2_LOCK only when clock signal is present and valid */
+ 			/* Allow DLL to settle */
+ 			msleep(10);
+ 			/*   Unmute all */
+-			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_UNMUTE );
+-			 
+-			
+-			break;		
++			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_UNMUTE);
++
++
++			break;
  		}
- 		hdsp->state |= HDSP_InitializationComplete;
  	}
+         return change;
+@@ -958,7 +958,7 @@ static int snd_audigy_i2c_volume_put(struct snd_kcontrol *kcontrol,
+ 		return 0;
+ 	if (ogain != ngain) {
+ 		if (emu->i2c_capture_source == source_id)
+-			snd_emu10k1_i2c_write(emu, ADC_ATTEN_ADCL, ((ngain) & 0xff) );
++			snd_emu10k1_i2c_write(emu, ADC_ATTEN_ADCL, ((ngain) & 0xff));
+ 		emu->i2c_capture_volume[source_id][0] = ngain;
+ 		change = 1;
+ 	}
+@@ -1014,7 +1014,7 @@ static int snd_audigy_spdif_output_rate_get(struct snd_kcontrol *kcontrol,
+ 	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
+ 	unsigned int tmp;
+ 	unsigned long flags;
 -	
++
+ 
+ 	spin_lock_irqsave(&emu->reg_lock, flags);
+ 	tmp = snd_emu10k1_ptr_read(emu, A_SPDIF_SAMPLERATE, 0);
+@@ -1058,7 +1058,7 @@ static int snd_audigy_spdif_output_rate_put(struct snd_kcontrol *kcontrol,
+ 		break;
+ 	}
+ 
+-	
++
+ 	spin_lock_irqsave(&emu->reg_lock, flags);
+ 	reg = snd_emu10k1_ptr_read(emu, A_SPDIF_SAMPLERATE, 0);
+ 	tmp = reg & ~A_SPDIF_RATE_MASK;
+@@ -1182,7 +1182,7 @@ static int snd_emu10k1_send_routing_get(struct snd_kcontrol *kcontrol,
+ 	spin_lock_irqsave(&emu->reg_lock, flags);
+ 	for (voice = 0; voice < 3; voice++)
+ 		for (idx = 0; idx < num_efx; idx++)
+-			ucontrol->value.integer.value[(voice * num_efx) + idx] = 
++			ucontrol->value.integer.value[(voice * num_efx) + idx] =
+ 				mix->send_routing[voice][idx] & mask;
+ 	spin_unlock_irqrestore(&emu->reg_lock, flags);
+ 	return 0;
+@@ -1207,7 +1207,7 @@ static int snd_emu10k1_send_routing_put(struct snd_kcontrol *kcontrol,
+ 				mix->send_routing[voice][idx] = val;
+ 				change = 1;
+ 			}
+-		}	
++		}
+ 	if (change && mix->epcm) {
+ 		if (mix->epcm->voices[0] && mix->epcm->voices[1]) {
+ 			update_emu10k1_fxrt(emu, mix->epcm->voices[0]->number,
+@@ -1395,7 +1395,7 @@ static int snd_emu10k1_efx_send_routing_get(struct snd_kcontrol *kcontrol,
+ 
+ 	spin_lock_irqsave(&emu->reg_lock, flags);
+ 	for (idx = 0; idx < num_efx; idx++)
+-		ucontrol->value.integer.value[idx] = 
++		ucontrol->value.integer.value[idx] =
+ 			mix->send_routing[0][idx] & mask;
+ 	spin_unlock_irqrestore(&emu->reg_lock, flags);
+ 	return 0;
+@@ -1419,7 +1419,7 @@ static int snd_emu10k1_efx_send_routing_put(struct snd_kcontrol *kcontrol,
+ 			mix->send_routing[0][idx] = val;
+ 			change = 1;
+ 		}
+-	}	
++	}
+ 
+ 	if (change && mix->epcm) {
+ 		if (mix->epcm->voices[ch]) {
+@@ -1581,7 +1581,7 @@ static int snd_emu10k1_shared_spdif_get(struct snd_kcontrol *kcontrol,
+ 	if (emu->card_capabilities->invert_shared_spdif)
+ 		ucontrol->value.integer.value[0] =
+ 			!ucontrol->value.integer.value[0];
+-		
 +
  	return 0;
  }
  
-@@ -4886,7 +4886,7 @@ static int hdsp_request_fw_loader(struct hdsp *hdsp)
- 	const char *fwfile;
- 	const struct firmware *fw;
- 	int err;
--		
-+
- 	if (hdsp->io_type == H9652 || hdsp->io_type == H9632)
- 		return 0;
- 	if (hdsp->io_type == Undefined) {
-@@ -4895,7 +4895,7 @@ static int hdsp_request_fw_loader(struct hdsp *hdsp)
- 		if (hdsp->io_type == H9652 || hdsp->io_type == H9632)
- 			return 0;
- 	}
--	
-+
- 	/* caution: max length of firmware filename is 30! */
- 	switch (hdsp->io_type) {
- 	case Multiface:
-@@ -4929,12 +4929,12 @@ static int hdsp_request_fw_loader(struct hdsp *hdsp)
- 	memcpy(hdsp->firmware_cache, fw->data, sizeof(hdsp->firmware_cache));
- 
- 	release_firmware(fw);
--		
-+
- 	hdsp->state |= HDSP_FirmwareCached;
- 
- 	if ((err = snd_hdsp_load_firmware_from_cache(hdsp)) < 0)
- 		return err;
--		
-+
- 	if (!(hdsp->state & HDSP_InitializationComplete)) {
- 		if ((err = snd_hdsp_enable_io(hdsp)) < 0)
+@@ -1597,7 +1597,7 @@ static int snd_emu10k1_shared_spdif_put(struct snd_kcontrol *kcontrol,
+ 	if (emu->card_capabilities->invert_shared_spdif)
+ 		sw = !sw;
+ 	spin_lock_irqsave(&emu->reg_lock, flags);
+-	if ( emu->card_capabilities->i2c_adc) {
++	if (emu->card_capabilities->i2c_adc) {
+ 		/* Do nothing for Audigy 2 ZS Notebook */
+ 	} else if (emu->audigy) {
+ 		reg = inl(emu->port + A_IOCFG);
+@@ -1738,7 +1738,7 @@ int __devinit snd_emu10k1_mixer(struct snd_emu10k1 *emu,
+ 		NULL
+ 	};
+ 	static char *audigy_rename_ctls_i2c_adc[] = {
+-		//"Analog Mix Capture Volume","OLD Analog Mix Capture Volume",
++		/*"Analog Mix Capture Volume","OLD Analog Mix Capture Volume", */
+ 		"Line Capture Volume", "Analog Mix Capture Volume",
+ 		"Wave Playback Volume", "OLD PCM Playback Volume",
+ 		"Wave Master Playback Volume", "Master Playback Volume",
+@@ -1808,7 +1808,7 @@ int __devinit snd_emu10k1_mixer(struct snd_emu10k1 *emu,
+ 		if ((err = snd_ac97_bus(emu->card, 0, &ops, NULL, &pbus)) < 0)
  			return err;
-@@ -4981,14 +4981,14 @@ static int __devinit snd_hdsp_create(struct snd_card *card,
- 	hdsp->max_channels = 26;
- 
- 	hdsp->card = card;
--	
+ 		pbus->no_vra = 1; /* we don't need VRA */
+-		
 +
- 	spin_lock_init(&hdsp->lock);
- 
- 	tasklet_init(&hdsp->midi_tasklet, hdsp_midi_tasklet, (unsigned long)hdsp);
--	
-+
- 	pci_read_config_word(hdsp->pci, PCI_CLASS_REVISION, &hdsp->firmware_rev);
- 	hdsp->firmware_rev &= 0xff;
--	
-+
- 	/* From Martin Bjoernsen :
- 	    "It is important that the card's latency timer register in
- 	    the PCI configuration space is set to a value much larger
-@@ -4997,7 +4997,7 @@ static int __devinit snd_hdsp_create(struct snd_card *card,
- 	    to its maximum 255 to avoid problems with some computers."
- 	*/
- 	pci_write_config_byte(hdsp->pci, PCI_LATENCY_TIMER, 0xFF);
--	
-+
- 	strcpy(card->driver, "H-DSP");
- 	strcpy(card->mixername, "Xilinx FPGA");
- 
-@@ -5011,7 +5011,7 @@ static int __devinit snd_hdsp_create(struct snd_card *card,
- 	} else {
- 		hdsp->card_name = "RME HDSP 9632";
- 		hdsp->max_channels = 16;
--		is_9632 = 1;	
-+		is_9632 = 1;
- 	}
- 
- 	if ((err = pci_enable_device(pci)) < 0)
-@@ -5040,7 +5040,7 @@ static int __devinit snd_hdsp_create(struct snd_card *card,
- 
- 	if ((err = snd_hdsp_initialize_memory(hdsp)) < 0)
- 		return err;
--	
-+
- 	if (!is_9652 && !is_9632) {
- 		/* we wait 2 seconds to let freshly inserted cardbus cards do their hardware init */
- 		ssleep(2);
-@@ -5063,35 +5063,35 @@ static int __devinit snd_hdsp_create(struct snd_card *card,
- 				return err;
- 			return 0;
- 		} else {
--			snd_printk(KERN_INFO "Hammerfall-DSP: Firmware already present, initializing card.\n");	    
-+			snd_printk(KERN_INFO "Hammerfall-DSP: Firmware already present, initializing card.\n");
- 			if (hdsp_read(hdsp, HDSP_status2Register) & HDSP_version1)
- 				hdsp->io_type = Multiface;
+ 		memset(&ac97, 0, sizeof(ac97));
+ 		ac97.private_data = emu;
+ 		ac97.private_free = snd_emu10k1_mixer_free_ac97;
+@@ -1828,7 +1828,7 @@ int __devinit snd_emu10k1_mixer(struct snd_emu10k1 *emu,
+ 			snd_ac97_write_cache(emu->ac97, AC97_REC_SEL, 0x0000);
+ 			if (emu->card_capabilities->adc_1361t)
+ 				c = audigy_remove_ctls_1361t_adc;
 -			else 
 +			else
- 				hdsp->io_type = Digiface;
+ 				c = audigy_remove_ctls;
+ 		} else {
+ 			/*
+@@ -1906,13 +1906,13 @@ int __devinit snd_emu10k1_mixer(struct snd_emu10k1 *emu,
+ 	kctl->id.device = multi_device;
+ 	if ((err = snd_ctl_add(card, kctl)))
+ 		return err;
+-	
++
+ 	if ((kctl = emu->ctl_efx_send_volume = snd_ctl_new1(&snd_emu10k1_efx_send_volume_control, emu)) == NULL)
+ 		return -ENOMEM;
+ 	kctl->id.device = multi_device;
+ 	if ((err = snd_ctl_add(card, kctl)))
+ 		return err;
+-	
++
+ 	if ((kctl = emu->ctl_efx_attn = snd_ctl_new1(&snd_emu10k1_efx_attn_control, emu)) == NULL)
+ 		return -ENOMEM;
+ 	kctl->id.device = multi_device;
+@@ -1923,27 +1923,27 @@ int __devinit snd_emu10k1_mixer(struct snd_emu10k1 *emu,
+ 	for (pcm = 0; pcm < 32; pcm++) {
+ 		struct snd_emu10k1_pcm_mixer *mix;
+ 		int v;
+-		
++
+ 		mix = &emu->pcm_mixer[pcm];
+ 		mix->epcm = NULL;
+ 
+ 		for (v = 0; v < 4; v++)
+-			mix->send_routing[0][v] = 
+-				mix->send_routing[1][v] = 
++			mix->send_routing[0][v] =
++				mix->send_routing[1][v] =
+ 				mix->send_routing[2][v] = v;
+-		
++
+ 		memset(&mix->send_volume, 0, sizeof(mix->send_volume));
+ 		mix->send_volume[0][0] = mix->send_volume[0][1] =
+ 		mix->send_volume[1][0] = mix->send_volume[2][1] = 255;
+-		
++
+ 		mix->attn[0] = mix->attn[1] = mix->attn[2] = 0xffff;
+ 	}
+-	
++
+ 	/* initialize the routing and volume table for the multichannel playback stream */
+ 	for (pcm = 0; pcm < NUM_EFX_PLAYBACK; pcm++) {
+ 		struct snd_emu10k1_pcm_mixer *mix;
+ 		int v;
+-		
++
+ 		mix = &emu->efx_pcm_mixer[pcm];
+ 		mix->epcm = NULL;
+ 
+@@ -1954,14 +1954,14 @@ int __devinit snd_emu10k1_mixer(struct snd_emu10k1 *emu,
+ 		if (emu->audigy)
+ 			for (v = 0; v < 4; v++)
+ 				mix->send_routing[0][4+v] = 60+v;
+-		
++
+ 		memset(&mix->send_volume, 0, sizeof(mix->send_volume));
+ 		mix->send_volume[0][0]  = 255;
+-		
++
+ 		mix->attn[0] = 0xffff;
+ 	}
+-	
+-	if (! emu->card_capabilities->ecard) { /* FIXME: APS has these controls? */
++
++	if (!emu->card_capabilities->ecard) { /* FIXME: APS has these controls? */
+ 		/* sb live! and audigy */
+ 		if ((kctl = snd_ctl_new1(&snd_emu10k1_spdif_mask_control, emu)) == NULL)
+ 			return -ENOMEM;
+@@ -1990,7 +1990,7 @@ int __devinit snd_emu10k1_mixer(struct snd_emu10k1 *emu,
+ 		if ((err = snd_ctl_add(card, kctl)))
+ 			return err;
+ #endif
+-	} else if (! emu->card_capabilities->ecard) {
++	} else if (!emu->card_capabilities->ecard) {
+ 		/* sb live! */
+ 		if ((kctl = snd_ctl_new1(&snd_emu10k1_shared_spdif, emu)) == NULL)
+ 			return -ENOMEM;
+@@ -2073,7 +2073,7 @@ int __devinit snd_emu10k1_mixer(struct snd_emu10k1 *emu,
+ 			return err;
+ 	}
+ 
+-	if ( emu->card_capabilities->i2c_adc) {
++	if (emu->card_capabilities->i2c_adc) {
+ 		int i;
+ 
+ 		err = snd_ctl_add(card, snd_ctl_new1(&snd_audigy_i2c_capture_source, emu));
+@@ -2086,6 +2086,6 @@ int __devinit snd_emu10k1_mixer(struct snd_emu10k1 *emu,
+ 				return err;
  		}
  	}
--	
-+
- 	if ((err = snd_hdsp_enable_io(hdsp)) != 0)
- 		return err;
--	
-+
- 	if (is_9652)
- 	        hdsp->io_type = H9652;
--	
-+
- 	if (is_9632)
- 		hdsp->io_type = H9632;
- 
- 	if ((err = snd_hdsp_create_hwdep(card, hdsp)) < 0)
- 		return err;
--	
-+
- 	snd_hdsp_initialize_channels(hdsp);
- 	snd_hdsp_initialize_midi_flush(hdsp);
- 
--	hdsp->state |= HDSP_FirmwareLoaded;	
-+	hdsp->state |= HDSP_FirmwareLoaded;
- 
- 	if ((err = snd_hdsp_create_alsa_devices(card, hdsp)) < 0)
- 		return err;
- 
--	return 0;	
-+	return 0;
- }
- 
- static int snd_hdsp_free(struct hdsp *hdsp)
-@@ -5107,13 +5107,13 @@ static int snd_hdsp_free(struct hdsp *hdsp)
- 		free_irq(hdsp->irq, (void *)hdsp);
- 
- 	snd_hdsp_free_buffers(hdsp);
--	
-+
- 	if (hdsp->iobase)
- 		iounmap(hdsp->iobase);
- 
- 	if (hdsp->port)
- 		pci_release_regions(hdsp->pci);
 -		
 +
- 	pci_disable_device(hdsp->pci);
  	return 0;
  }
-@@ -5156,7 +5156,7 @@ static int __devinit snd_hdsp_probe(struct pci_dev *pci,
+diff --git a/sound/pci/emu10k1/emumpu401.c b/sound/pci/emu10k1/emumpu401.c
+index 8578c70..18495b4 100644
+--- a/sound/pci/emu10k1/emumpu401.c
++++ b/sound/pci/emu10k1/emumpu401.c
+@@ -277,7 +277,7 @@ static void snd_emu10k1_midi_output_trigger(struct snd_rawmidi_substream *substr
+ 	if (up) {
+ 		int max = 4;
+ 		unsigned char byte;
+-	
++
+ 		/* try to send some amount of bytes here before interrupts */
+ 		spin_lock_irqsave(&midi->output_lock, flags);
+ 		while (max > 0) {
+diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
+index cf9276d..f9144dc 100644
+--- a/sound/pci/emu10k1/emupcm.c
++++ b/sound/pci/emu10k1/emupcm.c
+@@ -86,7 +86,7 @@ static void snd_emu10k1_pcm_efx_interrupt(struct snd_emu10k1 *emu,
  	}
- 
- 	strcpy(card->shortname, "Hammerfall DSP");
--	sprintf(card->longname, "%s at 0x%lx, irq %d", hdsp->card_name, 
-+	sprintf(card->longname, "%s at 0x%lx, irq %d", hdsp->card_name,
- 		hdsp->port, hdsp->irq);
- 
- 	if ((err = snd_card_register(card)) < 0) {
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 98762f9..16ca8ab 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -29,7 +29,7 @@
- #include <linux/moduleparam.h>
- #include <linux/slab.h>
- #include <linux/pci.h>
--#include <asm/io.h>
-+#include <linux/io.h>
- 
- #include <sound/core.h>
- #include <sound/control.h>
-@@ -84,7 +84,7 @@ MODULE_DESCRIPTION("RME HDSPM");
- MODULE_LICENSE("GPL");
- MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
- 
--/* --- Write registers. --- 
-+/* --- Write registers. ---
-   These are defined as byte-offsets from the iobase value.  */
- 
- #define HDSPM_controlRegister	     64
-@@ -96,10 +96,10 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
- #define HDSPM_eeprom_wr		     384  /* for AES32 */
- 
- /* DMA enable for 64 channels, only Bit 0 is relevant */
--#define HDSPM_outputEnableBase       512  /* 512-767  input  DMA */ 
-+#define HDSPM_outputEnableBase       512  /* 512-767  input  DMA */
- #define HDSPM_inputEnableBase        768  /* 768-1023 output DMA */
- 
--/* 16 page addresses for each of the 64 channels DMA buffer in and out 
-+/* 16 page addresses for each of the 64 channels DMA buffer in and out
-    (each 64k=16*4k) Buffer must be 4k aligned (which is default i386 ????) */
- #define HDSPM_pageAddressBufferOut       8192
- #define HDSPM_pageAddressBufferIn        (HDSPM_pageAddressBufferOut+64*16*4)
-@@ -122,15 +122,15 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
- #define HDSPM_midiDataIn1     364
- 
- /* status is data bytes in MIDI-FIFO (0-128) */
--#define HDSPM_midiStatusOut0  384	
--#define HDSPM_midiStatusOut1  388	
--#define HDSPM_midiStatusIn0   392	
--#define HDSPM_midiStatusIn1   396	
-+#define HDSPM_midiStatusOut0  384
-+#define HDSPM_midiStatusOut1  388
-+#define HDSPM_midiStatusIn0   392
-+#define HDSPM_midiStatusIn1   396
- 
- 
- /* the meters are regular i/o-mapped registers, but offset
-    considerably from the rest. the peak registers are reset
--   when read; the least-significant 4 bits are full-scale counters; 
-+   when read; the least-significant 4 bits are full-scale counters;
-    the actual peak value is in the most-significant 24 bits.
- */
- #define HDSPM_MADI_peakrmsbase 	4096	/* 4096-8191 2x64x32Bit Meters */
-@@ -156,7 +156,7 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
- 				     56channelMODE=0 */ /* MADI ONLY*/
- #define HDSPM_Emphasis    (1<<10) /* Emphasis */ /* AES32 ONLY */
- 
--#define HDSPM_AutoInp     (1<<11) /* Auto Input (takeover) == Safe Mode, 
-+#define HDSPM_AutoInp     (1<<11) /* Auto Input (takeover) == Safe Mode,
-                                      0=off, 1=on  */ /* MADI ONLY */
- #define HDSPM_Dolby       (1<<11) /* Dolby = "NonAudio" ?? */ /* AES32 ONLY */
- 
-@@ -171,7 +171,7 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
- #define HDSPM_SyncRef3     (1<<25)
- 
- #define HDSPM_SMUX         (1<<18) /* Frame ??? */ /* MADI ONY */
--#define HDSPM_clr_tms      (1<<19) /* clear track marker, do not use 
-+#define HDSPM_clr_tms      (1<<19) /* clear track marker, do not use
-                                       AES additional bits in
- 				      lower 5 Audiodatabits ??? */
- #define HDSPM_taxi_reset   (1<<20) /* ??? */ /* MADI ONLY ? */
-@@ -272,7 +272,7 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
- #define HDSPM_madiLock           (1<<3)	/* MADI Locked =1, no=0 */
- 
- #define HDSPM_BufferPositionMask 0x000FFC0 /* Bit 6..15 : h/w buffer pointer */
--                                           /* since 64byte accurate last 6 bits 
-+                                           /* since 64byte accurate last 6 bits
-                                               are not used */
- 
- #define HDSPM_madiSync          (1<<18) /* MADI is in sync */
-@@ -344,7 +344,7 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
- /* status */
- #define HDSPM_AES32_wcLock	0x0200000
- #define HDSPM_AES32_wcFreq_bit  22
--/* (status >> HDSPM_AES32_wcFreq_bit) & 0xF gives WC frequency (cf function 
-+/* (status >> HDSPM_AES32_wcFreq_bit) & 0xF gives WC frequency (cf function
-   HDSPM_bit2freq */
- #define HDSPM_AES32_syncref_bit  16
- /* (status >> HDSPM_AES32_syncref_bit) & 0xF gives sync source */
-@@ -403,7 +403,7 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
- 
- /* the size of the area we need to allocate for DMA transfers. the
-    size is the same regardless of the number of channels, and
--   also the latency to use. 
-+   also the latency to use.
-    for one direction !!!
- */
- #define HDSPM_DMA_AREA_BYTES (HDSPM_MAX_CHANNELS * HDSPM_CHANNEL_BUFFER_BYTES)
-@@ -563,8 +563,8 @@ static inline unsigned int hdspm_read(struct hdspm * hdspm, unsigned int reg)
- 	return readl(hdspm->iobase + reg);
- }
- 
--/* for each output channel (chan) I have an Input (in) and Playback (pb) Fader 
--   mixer is write only on hardware so we have to cache him for read 
-+/* for each output channel (chan) I have an Input (in) and Playback (pb) Fader
-+   mixer is write only on hardware so we have to cache him for read
-    each fader is a u32, but uses only the first 16 bit */
- 
- static inline int hdspm_read_in_gain(struct hdspm * hdspm, unsigned int chan,
-@@ -764,7 +764,7 @@ static snd_pcm_uframes_t hdspm_hw_pointer(struct hdspm * hdspm)
- 
- 	/* hwpointer comes in bytes and is 64Bytes accurate (by docu since
- 	   PCI Burst)
--	   i have experimented that it is at most 64 Byte to much for playing 
-+	   i have experimented that it is at most 64 Byte to much for playing
- 	   so substraction of 64 byte should be ok for ALSA, but use it only
- 	   for application where you know what you do since if you come to
- 	   near with record pointer it can be a disaster */
-@@ -832,16 +832,16 @@ static void hdspm_set_dds_value(struct hdspm *hdspm, int rate)
- {
- 	u64 n;
- 	u32 r;
--	
-+
- 	if (rate >= 112000)
- 		rate /= 4;
- 	else if (rate >= 56000)
- 		rate /= 2;
- 
- 	/* RME says n = 104857600000000, but in the windows MADI driver, I see:
--//	return 104857600000000 / rate; // 100 MHz
--	return 110100480000000 / rate; // 105 MHz
--        */	   
-+//	return 104857600000000 / rate; //100 MHz
-+	return 110100480000000 / rate; //105 MHz
-+        */
- 	/* n = 104857600000000ULL; */ /*  =  2^20 * 10^8 */
- 	n = 110100480000000ULL;    /* Value checked for AES32 and MADI */
- 	div64_32(&n, rate, &r);
-@@ -864,13 +864,13 @@ static int hdspm_set_rate(struct hdspm * hdspm, int rate, int called_internally)
- 
- 	if (!(hdspm->control_register & HDSPM_ClockModeMaster)) {
- 
--	        /* SLAVE --- */ 
-+	        /* SLAVE --- */
- 		if (called_internally) {
- 
--        	  /* request from ctl or card initialization 
--	             just make a warning an remember setting 
-+        	  /* request from ctl or card initialization
-+	             just make a warning an remember setting
- 		     for future master mode switching */
--    
-+
- 			snd_printk(KERN_WARNING "HDSPM: "
- 				   "Warning: device is not running "
- 				   "as a clock master.\n");
-@@ -907,7 +907,7 @@ static int hdspm_set_rate(struct hdspm * hdspm, int rate, int called_internally)
- 
- 	   Note that a similar but essentially insoluble problem exists for
- 	   externally-driven rate changes. All we can do is to flag rate
--	   changes in the read/write routines.  
-+	   changes in the read/write routines.
- 	 */
- 
- 	if (current_rate <= 48000)
-@@ -975,10 +975,10 @@ static int hdspm_set_rate(struct hdspm * hdspm, int rate, int called_internally)
- 	/* For AES32, need to set DDS value in FREQ register
- 	   For MADI, also apparently */
- 	hdspm_set_dds_value(hdspm, rate);
--	
-+
- 	if (hdspm->is_aes32 && rate != current_rate)
- 		hdspm_write(hdspm, HDSPM_eeprom_wr, 0);
--	
-+
- 	/* For AES32 and for MADI (at least rev 204), channel_map needs to
- 	 * always be channel_map_madi_ss, whatever the sample rate */
- 	hdspm->channel_map = channel_map_madi_ss;
-@@ -1015,7 +1015,7 @@ static void all_in_all_mixer(struct hdspm * hdspm, int sgain)
-    MIDI
-   ----------------------------------------------------------------------------*/
- 
--static inline unsigned char snd_hdspm_midi_read_byte (struct hdspm *hdspm,
-+static inline unsigned char snd_hdspm_midi_read_byte(struct hdspm *hdspm,
- 						      int id)
- {
- 	/* the hardware already does the relevant bit-mask with 0xff */
-@@ -1025,7 +1025,7 @@ static inline unsigned char snd_hdspm_midi_read_byte (struct hdspm *hdspm,
- 		return hdspm_read(hdspm, HDSPM_midiDataIn0);
- }
- 
--static inline void snd_hdspm_midi_write_byte (struct hdspm *hdspm, int id,
-+static inline void snd_hdspm_midi_write_byte(struct hdspm *hdspm, int id,
- 					      int val)
- {
- 	/* the hardware already does the relevant bit-mask with 0xff */
-@@ -1035,7 +1035,7 @@ static inline void snd_hdspm_midi_write_byte (struct hdspm *hdspm, int id,
- 		hdspm_write(hdspm, HDSPM_midiDataOut0, val);
- }
- 
--static inline int snd_hdspm_midi_input_available (struct hdspm *hdspm, int id)
-+static inline int snd_hdspm_midi_input_available(struct hdspm *hdspm, int id)
- {
- 	if (id)
- 		return (hdspm_read(hdspm, HDSPM_midiStatusIn1) & 0xff);
-@@ -1043,7 +1043,7 @@ static inline int snd_hdspm_midi_input_available (struct hdspm *hdspm, int id)
- 		return (hdspm_read(hdspm, HDSPM_midiStatusIn0) & 0xff);
- }
- 
--static inline int snd_hdspm_midi_output_possible (struct hdspm *hdspm, int id)
-+static inline int snd_hdspm_midi_output_possible(struct hdspm *hdspm, int id)
- {
- 	int fifo_bytes_used;
- 
-@@ -1065,7 +1065,7 @@ static void snd_hdspm_flush_midi_input(struct hdspm *hdspm, int id)
- 		snd_hdspm_midi_read_byte (hdspm, id);
- }
- 
--static int snd_hdspm_midi_output_write (struct hdspm_midi *hmidi)
-+static int snd_hdspm_midi_output_write(struct hdspm_midi *hmidi)
- {
- 	unsigned long flags;
- 	int n_pending;
-@@ -1074,7 +1074,7 @@ static int snd_hdspm_midi_output_write (struct hdspm_midi *hmidi)
- 	unsigned char buf[128];
- 
- 	/* Output is not interrupt driven */
--		
-+
- 	spin_lock_irqsave (&hmidi->lock, flags);
- 	if (hmidi->output &&
- 	    !snd_rawmidi_transmit_empty (hmidi->output)) {
-@@ -1083,11 +1083,11 @@ static int snd_hdspm_midi_output_write (struct hdspm_midi *hmidi)
- 		if (n_pending > 0) {
- 			if (n_pending > (int)sizeof (buf))
- 				n_pending = sizeof (buf);
--		
-+
- 			to_write = snd_rawmidi_transmit (hmidi->output, buf,
- 							 n_pending);
- 			if (to_write > 0) {
--				for (i = 0; i < to_write; ++i) 
-+				for (i = 0; i < to_write; ++i)
- 					snd_hdspm_midi_write_byte (hmidi->hdspm,
- 								   hmidi->id,
- 								   buf[i]);
-@@ -1098,7 +1098,7 @@ static int snd_hdspm_midi_output_write (struct hdspm_midi *hmidi)
- 	return 0;
- }
- 
--static int snd_hdspm_midi_input_read (struct hdspm_midi *hmidi)
-+static int snd_hdspm_midi_input_read(struct hdspm_midi *hmidi)
- {
- 	unsigned char buf[128]; /* this buffer is designed to match the MIDI
- 				 * input FIFO size
-@@ -1167,14 +1167,14 @@ static void snd_hdspm_midi_output_timer(unsigned long data)
- {
- 	struct hdspm_midi *hmidi = (struct hdspm_midi *) data;
- 	unsigned long flags;
--	
-+
- 	snd_hdspm_midi_output_write(hmidi);
- 	spin_lock_irqsave (&hmidi->lock, flags);
- 
- 	/* this does not bump hmidi->istimer, because the
- 	   kernel automatically removed the timer when it
- 	   expired, and we are now adding it back, thus
--	   leaving istimer wherever it was set before.  
-+	   leaving istimer wherever it was set before.
- 	*/
- 
- 	if (hmidi->istimer) {
-@@ -1278,7 +1278,7 @@ static struct snd_rawmidi_ops snd_hdspm_midi_input =
- 	.trigger =	snd_hdspm_midi_input_trigger,
- };
- 
--static int __devinit snd_hdspm_create_midi (struct snd_card *card,
-+static int __devinit snd_hdspm_create_midi(struct snd_card *card,
- 					    struct hdspm *hdspm, int id)
- {
- 	int err;
-@@ -1312,12 +1312,12 @@ static int __devinit snd_hdspm_create_midi (struct snd_card *card,
- static void hdspm_midi_tasklet(unsigned long arg)
- {
- 	struct hdspm *hdspm = (struct hdspm *)arg;
--	
-+
- 	if (hdspm->midi[0].pending)
- 		snd_hdspm_midi_input_read (&hdspm->midi[0]);
- 	if (hdspm->midi[1].pending)
- 		snd_hdspm_midi_input_read (&hdspm->midi[1]);
--} 
+ #endif
+ 	snd_pcm_period_elapsed(emu->pcm_capture_efx_substream);
+-}	 
 +}
  
- 
- /*-----------------------------------------------------------------------------
-@@ -2475,8 +2475,8 @@ static int snd_hdspm_put_qs_wire(struct snd_kcontrol *kcontrol,
- /*           Simple Mixer
-   deprecated since to much faders ???
-   MIXER interface says output (source, destination, value)
--   where source > MAX_channels are playback channels 
--   on MADICARD 
-+   where source > MAX_channels are playback channels
-+   on MADICARD
-   - playback mixer matrix: [channelout+64] [output] [value]
-   - input(thru) mixer matrix: [channelin] [output] [value]
-   (better do 2 kontrols for seperation ?)
-@@ -2586,7 +2586,7 @@ static int snd_hdspm_put_mixer(struct snd_kcontrol *kcontrol,
- 
- /* The simple mixer control(s) provide gain control for the
-    basic 1:1 mappings of playback streams to output
--   streams. 
-+   streams.
- */
- 
- #define HDSPM_PLAYBACK_MIXER \
-@@ -2634,7 +2634,7 @@ static int snd_hdspm_get_playback_mixer(struct snd_kcontrol *kcontrol,
- 	snd_printdd("get pb mixer index %d, channel %d, mapped_channel %d, "
- 		    "value %d\n",
- 		    ucontrol->id.index, channel, mapped_channel,
--		    ucontrol->value.integer.value[0]); 
-+		    ucontrol->value.integer.value[0]);
- 	*/
- 	return 0;
- }
-@@ -2906,7 +2906,7 @@ static int snd_hdspm_create_controls(struct snd_card *card, struct hdspm * hdspm
- 		}
- 	}
- 
--	/* Channel playback mixer as default control 
-+	/* Channel playback mixer as default control
- 	   Note: the whole matrix would be 128*HDSPM_MIXER_CHANNELS Faders,
- 	   thats too * big for any alsamixer they are accesible via special
- 	   IOCTL on hwdep and the mixer 2dimensional mixer control
-@@ -2934,7 +2934,7 @@ static int snd_hdspm_create_controls(struct snd_card *card, struct hdspm * hdspm
- }
- 
- /*------------------------------------------------------------
--   /proc interface 
-+   /proc interface
-  ------------------------------------------------------------*/
- 
- static void
-@@ -3341,7 +3341,7 @@ static void __devinit snd_hdspm_proc_init(struct hdspm * hdspm)
- }
- 
- /*------------------------------------------------------------
--   hdspm intitialize 
-+   hdspm intitialize
-  ------------------------------------------------------------*/
- 
- static int snd_hdspm_set_defaults(struct hdspm * hdspm)
-@@ -3417,7 +3417,7 @@ static int snd_hdspm_set_defaults(struct hdspm * hdspm)
- 
- 
- /*------------------------------------------------------------
--   interrupt 
-+   interrupt
-  ------------------------------------------------------------*/
- 
- static irqreturn_t snd_hdspm_interrupt(int irq, void *dev_id)
-@@ -3481,7 +3481,7 @@ static irqreturn_t snd_hdspm_interrupt(int irq, void *dev_id)
- }
- 
- /*------------------------------------------------------------
--   pcm interface 
-+   pcm interface
-   ------------------------------------------------------------*/
- 
- 
-@@ -3719,7 +3719,7 @@ static int snd_hdspm_hw_free(struct snd_pcm_substream *substream)
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 
--		/* params_channels(params) should be enough, 
-+		/* params_channels(params) should be enough,
- 		   but to get sure in case of error */
- 		for (i = 0; i < HDSPM_MAX_CHANNELS; ++i)
- 			snd_hdspm_enable_out(hdspm, i, 0);
-@@ -3827,7 +3827,7 @@ static int snd_hdspm_trigger(struct snd_pcm_substream *substream, int cmd)
- 		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
- 			hdspm_silence_playback(hdspm);
- 	}
--      _ok:
-+_ok:
- 	snd_pcm_trigger_done(substream, substream);
- 	if (!hdspm->running && running)
- 		hdspm_start_audio(hdspm);
-@@ -4124,13 +4124,13 @@ static int snd_hdspm_hwdep_ioctl(struct snd_hwdep * hw, struct file *file,
- 		/* maybe there is a chance to memorymap in future
- 		 * so dont touch just copy
- 		 */
--		if(copy_to_user_fromio((void __user *)rms.peak,
-+		if (copy_to_user_fromio((void __user *)rms.peak,
- 				       hdspm->iobase+HDSPM_MADI_peakrmsbase,
--				       sizeof(struct hdspm_peak_rms)) != 0 )
-+				       sizeof(struct hdspm_peak_rms)) != 0)
- 			return -EFAULT;
- 
- 		break;
--		
-+
- 
- 	case SNDRV_HDSPM_IOCTL_GET_CONFIG_INFO:
- 
-@@ -4222,7 +4222,7 @@ static int __devinit snd_hdspm_create_hwdep(struct snd_card *card,
- 
- 
- /*------------------------------------------------------------
--   memory interface 
-+   memory interface
-  ------------------------------------------------------------*/
- static int __devinit snd_hdspm_preallocate_memory(struct hdspm * hdspm)
+ static snd_pcm_uframes_t snd_emu10k1_efx_playback_pointer(struct snd_pcm_substream *substream)
  {
-diff --git a/sound/pci/rme9652/rme9652.c b/sound/pci/rme9652/rme9652.c
-index 2570907..7a4fdad 100644
---- a/sound/pci/rme9652/rme9652.c
-+++ b/sound/pci/rme9652/rme9652.c
-@@ -1,5 +1,5 @@
- /*
-- *   ALSA driver for RME Digi9652 audio interfaces 
-+ *   ALSA driver for RME Digi9652 audio interfaces
-  *
-  *	Copyright (c) 1999 IEM - Winfried Ritsch
-  *      Copyright (c) 1999-2001  Paul Davis
-@@ -35,7 +35,7 @@
- #include <sound/initval.h>
- 
- #include <asm/current.h>
--#include <asm/io.h>
-+#include <linux/io.h>
- 
- static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
- static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
-@@ -60,7 +60,7 @@ MODULE_SUPPORTED_DEVICE("{{RME,Hammerfall},"
-    capture, one for playback. Both the ADAT and S/PDIF channels appear
-    to the host CPU in the same block of memory. There is no functional
-    difference between them in terms of access.
--   
-+
-    The Hammerfall Light is identical to the Hammerfall, except that it
-    has 2 sets 18 channels (16 ADAT + 2 S/PDIF) for capture and playback.
- */
-@@ -115,7 +115,7 @@ MODULE_SUPPORTED_DEVICE("{{RME,Hammerfall},"
- 
- /* Bits 31,30,29 are bits 5,4,3 of h/w pointer position on later
-    Rev G EEPROMS and Rev 1.5 cards or later.
--*/ 
-+*/
- 
- #define RME9652_REV15_buf_pos(x) ((((x)&0xE0000000)>>26)|((x)&RME9652_buf_pos))
- 
-@@ -186,7 +186,7 @@ MODULE_SUPPORTED_DEVICE("{{RME,Hammerfall},"
- #define RME9652_CHANNEL_BUFFER_BYTES    (4*RME9652_CHANNEL_BUFFER_SAMPLES)
- 
- /* the size of the area we need to allocate for DMA transfers. the
--   size is the same regardless of the number of channels - the 
-+   size is the same regardless of the number of channels - the
-    9636 still uses the same memory area.
- 
-    Note that we allocate 1 more channel than is apparently needed
-@@ -204,7 +204,7 @@ struct snd_rme9652 {
- 	int irq;
- 	unsigned long port;
- 	void __iomem *iobase;
+@@ -130,7 +130,7 @@ static int snd_emu10k1_pcm_channel_alloc(struct snd_emu10k1_pcm * epcm, int voic
+ 				      epcm->type == PLAYBACK_EMUVOICE ? EMU10K1_PCM : EMU10K1_EFX,
+ 				      voices,
+ 				      &epcm->voices[0]);
 -	
 +
- 	int precise_ptr;
- 
- 	u32 control_register;	/* cached value */
-@@ -217,7 +217,7 @@ struct snd_rme9652 {
- 
-         size_t hw_offsetmask;     	/* &-with status register to get real hw_offset */
- 	size_t prev_hw_offset;		/* previous hw offset */
--	size_t max_jitter;		/* maximum jitter in frames for 
-+	size_t max_jitter;		/* maximum jitter in frames for
- 					   hw pointer */
- 	size_t period_bytes;		/* guess what this is */
- 
-@@ -266,7 +266,7 @@ static char channel_map_9652_ss[26] = {
- };
- 
- static char channel_map_9636_ss[26] = {
--	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 
-+	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
- 	/* channels 16 and 17 are S/PDIF */
- 	24, 25,
- 	/* channels 18-25 don't exist */
-@@ -367,7 +367,7 @@ static inline void rme9652_compute_period_size(struct snd_rme9652 *rme9652)
- 
- 	i = rme9652->control_register & RME9652_latency;
- 	rme9652->period_bytes = 1 << ((rme9652_decode_latency(i) + 8));
--	rme9652->hw_offsetmask = 
-+	rme9652->hw_offsetmask =
- 		(rme9652->period_bytes * 2 - 1) & RME9652_buf_pos;
- 	rme9652->max_jitter = 80;
+ 	if (err < 0)
+ 		return err;
+ 	epcm->voices[0]->epcm = epcm;
+@@ -253,12 +253,12 @@ static unsigned int emu10k1_select_interprom(unsigned int pitch_target)
+ 		return CCCA_INTERPROM_4;
+ 	else if (pitch_target >= PITCH_57081)
+ 		return CCCA_INTERPROM_3;
+-	else  
++	else
+ 		return CCCA_INTERPROM_2;
  }
-@@ -426,7 +426,7 @@ static inline void rme9652_reset_hw_pointer(struct snd_rme9652 *rme9652)
- 	/* reset the FIFO pointer to zero. We do this by writing to 8
- 	   registers, each of which is a 32bit wide register, and set
- 	   them all to zero. Note that s->iobase is a pointer to
--	   int32, not pointer to char.  
-+	   int32, not pointer to char.
- 	*/
  
- 	for (i = 0; i < 8; i++) {
-@@ -494,9 +494,9 @@ static int rme9652_set_rate(struct snd_rme9652 *rme9652, int rate)
- 
- 	/* Changing from a "single speed" to a "double speed" rate is
- 	   not allowed if any substreams are open. This is because
--	   such a change causes a shift in the location of 
-+	   such a change causes a shift in the location of
- 	   the DMA buffers and a reduction in the number of available
--	   buffers. 
-+	   buffers.
- 
- 	   Note that a similar but essentially insoluble problem
- 	   exists for externally-driven rate changes. All we can do
-@@ -605,7 +605,7 @@ static void rme9652_set_thru(struct snd_rme9652 *rme9652, int channel, int enabl
- 
- 		rme9652_write(rme9652,
- 			       RME9652_thru_base + mapped_channel * 4,
--			       enable ? 1 : 0);			       
-+			       enable ? 1 : 0);
+ /*
+- * calculate cache invalidate size 
++ * calculate cache invalidate size
+  *
+  * stereo: channel is stereo
+  * w_16: using 16bit samples
+@@ -323,7 +323,7 @@ static void snd_emu10k1_pcm_init_voice(struct snd_emu10k1 *emu,
  	}
+ 
+ 	ccis = emu10k1_ccis(stereo, w_16);
+-	
++
+ 	if (master) {
+ 		evoice->epcm->ccca_start_addr = start_addr + ccis;
+ 		if (extra) {
+@@ -359,7 +359,7 @@ static void snd_emu10k1_pcm_init_voice(struct snd_emu10k1 *emu,
+ 	snd_emu10k1_ptr_write(emu, PSST, voice, start_addr | (send_amount[2] << 24));
+ 	if (emu->card_capabilities->emu_model)
+ 		pitch_target = PITCH_48000; /* Disable interpolators on emu1010 card */
+-	else 
++	else
+ 		pitch_target = emu10k1_calc_pitch_target(runtime->rate);
+ 	if (extra)
+ 		snd_emu10k1_ptr_write(emu, CCCA, voice, start_addr |
+@@ -416,7 +416,7 @@ static int snd_emu10k1_playback_hw_params(struct snd_pcm_substream *substream,
+ 			snd_emu10k1_free_pages(emu, epcm->memblk);
+ 		epcm->memblk = snd_emu10k1_alloc_pages(emu, substream);
+ 		epcm->start_addr = 0;
+-		if (! epcm->memblk)
++		if (!epcm->memblk)
+ 			return -ENOMEM;
+ 		mapped = ((struct snd_emu10k1_memblk *)epcm->memblk)->mapped_page;
+ 		if (mapped < 0)
+@@ -602,7 +602,7 @@ static int snd_emu10k1_capture_prepare(struct snd_pcm_substream *substream)
+ 		break;
+ 	default:
+ 		break;
+-	}	
++	}
+ 	snd_emu10k1_ptr_write(emu, epcm->capture_ba_reg, 0, runtime->dma_addr);
+ 	epcm->capture_bufsize = snd_pcm_lib_buffer_bytes(substream);
+ 	epcm->capture_bs_val = 0;
+@@ -685,7 +685,7 @@ static void snd_emu10k1_playback_prepare_voice(struct snd_emu10k1 *emu, struct s
+ 	snd_emu10k1_ptr_write(emu, CVCF, voice, vattn | 0xffff);
+ 	snd_emu10k1_ptr_write(emu, DCYSUSV, voice, 0x7f7f);
+ 	snd_emu10k1_voice_clear_loop_stop(emu, voice);
+-}	
++}
+ 
+ static void snd_emu10k1_playback_trigger_voice(struct snd_emu10k1 *emu, struct snd_emu10k1_voice *evoice, int master, int extra)
+ {
+@@ -702,7 +702,7 @@ static void snd_emu10k1_playback_trigger_voice(struct snd_emu10k1 *emu, struct s
+ 	pitch = snd_emu10k1_rate_to_pitch(runtime->rate) >> 8;
+ 	if (emu->card_capabilities->emu_model)
+ 		pitch_target = PITCH_48000; /* Disable interpolators on emu1010 card */
+-	else 
++	else
+ 		pitch_target = emu10k1_calc_pitch_target(runtime->rate);
+ 	snd_emu10k1_ptr_write(emu, PTRX_PITCHTARGET, voice, pitch_target);
+ 	if (master || evoice->epcm->type == PLAYBACK_EFX)
+@@ -799,7 +799,7 @@ static int snd_emu10k1_capture_trigger(struct snd_pcm_substream *substream,
+ 			} else
+ 				snd_emu10k1_ptr_write(emu, FXWC, 0, epcm->capture_cr_val);
+ 			break;
+-		default:	
++		default:
+ 			break;
+ 		}
+ 		snd_emu10k1_ptr_write(emu, epcm->capture_bs_reg, 0, epcm->capture_bs_val);
+@@ -875,7 +875,7 @@ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 		/* prepare voices */
+-		for (i = 0; i < NUM_EFX_PLAYBACK; i++) {	
++		for (i = 0; i < NUM_EFX_PLAYBACK; i++) {
+ 			snd_emu10k1_playback_invalidate_cache(emu, 0, epcm->voices[i]);
+ 		}
+ 		snd_emu10k1_playback_invalidate_cache(emu, 1, epcm->extra);
+@@ -899,7 +899,7 @@ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		epcm->running = 0;
+-		for (i = 0; i < NUM_EFX_PLAYBACK; i++) {	
++		for (i = 0; i < NUM_EFX_PLAYBACK; i++) {
+ 			snd_emu10k1_playback_stop_voice(emu, epcm->voices[i]);
+ 		}
+ 		snd_emu10k1_playback_stop_voice(emu, epcm->extra);
+@@ -985,8 +985,8 @@ static struct snd_pcm_hardware snd_emu10k1_capture_efx =
+ 				 SNDRV_PCM_INFO_RESUME |
+ 				 SNDRV_PCM_INFO_MMAP_VALID),
+ 	.formats =		SNDRV_PCM_FMTBIT_S16_LE,
+-	.rates =		SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 | 
+-				 SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 | 
++	.rates =		SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
++				 SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
+ 				 SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000,
+ 	.rate_min =		44100,
+ 	.rate_max =		192000,
+@@ -1008,7 +1008,7 @@ static void snd_emu10k1_pcm_mixer_notify1(struct snd_emu10k1 *emu, struct snd_kc
+ {
+ 	struct snd_ctl_elem_id id;
+ 
+-	if (! kctl)
++	if (!kctl)
+ 		return;
+ 	if (activate)
+ 		kctl->vd[idx].access &= ~SNDRV_CTL_ELEM_ACCESS_INACTIVE;
+@@ -1066,13 +1066,13 @@ static int snd_emu10k1_efx_playback_open(struct snd_pcm_substream *substream)
+ 	epcm->emu = emu;
+ 	epcm->type = PLAYBACK_EFX;
+ 	epcm->substream = substream;
+-	
++
+ 	emu->pcm_playback_efx_substream = substream;
+ 
+ 	runtime->private_data = epcm;
+ 	runtime->private_free = snd_emu10k1_pcm_free_substream;
+ 	runtime->hw = snd_emu10k1_efx_playback;
+-	
++
+ 	for (i = 0; i < NUM_EFX_PLAYBACK; i++) {
+ 		mix = &emu->efx_pcm_mixer[i];
+ 		mix->send_routing[0][0] = i;
+@@ -1243,7 +1243,7 @@ static int snd_emu10k1_capture_efx_open(struct snd_pcm_substream *substream)
+ 		 * channels_min = 16,
+ 		 * channels_max = 16,
+ 		 * Need to add mixer control to fix sample rate
+-		 *                 
++		 *
+ 		 * There are 32 mono channels of 16bits each.
+ 		 * 24bit Audio uses 2x channels over 16bit
+ 		 * 96kHz uses 2x channels over 48kHz
+@@ -1470,7 +1470,7 @@ static int snd_emu10k1_pcm_efx_voices_mask_get(struct snd_kcontrol *kcontrol, st
+ 	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
+ 	int nefx = emu->audigy ? 64 : 32;
+ 	int idx;
+-	
++
+ 	spin_lock_irq(&emu->reg_lock);
+ 	for (idx = 0; idx < nefx; idx++)
+ 		ucontrol->value.integer.value[idx] = (emu->efx_voices_mask[idx / 32] & (1 << (idx % 32))) ? 1 : 0;
+@@ -1485,18 +1485,18 @@ static int snd_emu10k1_pcm_efx_voices_mask_put(struct snd_kcontrol *kcontrol, st
+ 	int nefx = emu->audigy ? 64 : 32;
+ 	int nefxb = emu->audigy ? 7 : 6;
+ 	int change, idx;
+-	
++
+ 	nval[0] = nval[1] = 0;
+ 	for (idx = 0, bits = 0; idx < nefx; idx++)
+ 		if (ucontrol->value.integer.value[idx]) {
+ 			nval[idx / 32] |= 1 << (idx % 32);
+ 			bits++;
+ 		}
+-		
++
+ 	for (idx = 0; idx < nefxb; idx++)
+ 		if (1 << idx == bits)
+ 			break;
+-	
++
+ 	if (idx >= nefxb)
+ 		return -EINVAL;
+ 
+@@ -1622,7 +1622,7 @@ static int snd_emu10k1_fx8010_playback_prepare(struct snd_pcm_substream *substre
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_emu10k1_fx8010_pcm *pcm = &emu->fx8010.pcm[substream->number];
+ 	unsigned int i;
+-	
++
+ 	/* printk("prepare: etram_pages = 0x%p, dma_area = 0x%x, buffer_size = 0x%x (0x%x)\n", emu->fx8010.etram_pages, runtime->dma_area, runtime->buffer_size, runtime->buffer_size << 2); */
+ 	memset(&pcm->pcm_rec, 0, sizeof(pcm->pcm_rec));
+ 	pcm->pcm_rec.hw_buffer_size = pcm->buffer_size * 2; /* byte size */
+@@ -1682,7 +1682,7 @@ static int snd_emu10k1_fx8010_playback_trigger(struct snd_pcm_substream *substre
+ 		result = -EINVAL;
+ 		break;
+ 	}
+-      __err:
++__err:
+ 	spin_unlock(&emu->reg_lock);
+ 	return result;
  }
+@@ -1783,10 +1783,10 @@ int __devinit snd_emu10k1_pcm_efx(struct snd_emu10k1 * emu, int device, struct s
+ 	if (rpcm)
+ 		*rpcm = pcm;
  
-@@ -619,7 +619,7 @@ static int rme9652_set_passthru(struct snd_rme9652 *rme9652, int onoff)
- 		*/
+-	/* EFX capture - record the "FXBUS2" channels, by default we connect the EXTINs 
++	/* EFX capture - record the "FXBUS2" channels, by default we connect the EXTINs
+ 	 * to these
+-	 */	
+-	
++	 */
++
+ 	/* emu->efx_voices_mask[0] = FXWC_DEFAULTROUTE_C | FXWC_DEFAULTROUTE_A; */
+ 	if (emu->audigy) {
+ 		emu->efx_voices_mask[0] = 0;
+diff --git a/sound/pci/emu10k1/emuproc.c b/sound/pci/emu10k1/emuproc.c
+index 216f974..012c0c3 100644
+--- a/sound/pci/emu10k1/emuproc.c
++++ b/sound/pci/emu10k1/emuproc.c
+@@ -46,7 +46,7 @@ static void snd_emu10k1_proc_spdif_status(struct snd_emu10k1 * emu,
+ 	static char *channel[16] = { "unspec", "left", "right", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" };
+ 	static char *emphasis[8] = { "none", "50/15 usec 2 channel", "2", "3", "4", "5", "6", "7" };
+ 	unsigned int status, rate = 0;
+-	
++
+ 	status = snd_emu10k1_ptr_read(emu, status_reg, 0);
  
- 		rme9652->control_register =
--			RME9652_inp_0 | 
-+			RME9652_inp_0 |
- 			rme9652_encode_latency(7) |
- 			RME9652_start_bit;
- 
-@@ -630,24 +630,24 @@ static int rme9652_set_passthru(struct snd_rme9652 *rme9652, int onoff)
- 		rme9652->passthru = 1;
+ 	snd_iprintf(buffer, "\n%s\n", title);
+@@ -70,7 +70,7 @@ static void snd_emu10k1_proc_spdif_status(struct snd_emu10k1 * emu,
+ 			snd_iprintf(buffer, "S/PDIF Locked         : %s\n", rate & SRCS_SPDIFLOCKED ? "on" : "off");
+ 			snd_iprintf(buffer, "Rate Locked           : %s\n", rate & SRCS_RATELOCKED ? "on" : "off");
+ 			/* From ((Rate * 48000 ) / 262144); */
+-			snd_iprintf(buffer, "Estimated Sample Rate : %d\n", ((rate & 0xFFFFF ) * 375) >> 11); 
++			snd_iprintf(buffer, "Estimated Sample Rate : %d\n", ((rate & 0xFFFFF ) * 375) >> 11);
+ 		}
  	} else {
- 		rme9652_set_thru(rme9652, -1, 0);
--		rme9652_stop(rme9652);		
-+		rme9652_stop(rme9652);
- 		rme9652->passthru = 0;
- 	}
+ 		snd_iprintf(buffer, "No signal detected.\n");
+@@ -78,7 +78,7 @@ static void snd_emu10k1_proc_spdif_status(struct snd_emu10k1 * emu,
  
+ }
+ 
+-static void snd_emu10k1_proc_read(struct snd_info_entry *entry, 
++static void snd_emu10k1_proc_read(struct snd_info_entry *entry,
+ 				  struct snd_info_buffer *buffer)
+ {
+ 	/* FIXME - output names are in emufx.c too */
+@@ -189,7 +189,7 @@ static void snd_emu10k1_proc_read(struct snd_info_entry *entry,
+ 	int nefx = emu->audigy ? 64 : 32;
+ 	char **outputs = emu->audigy ? audigy_outs : creative_outs;
+ 	int idx;
+-	
++
+ 	snd_iprintf(buffer, "EMU10K1\n\n");
+ 	snd_iprintf(buffer, "Card                  : %s\n",
+ 		    emu->audigy ? "Audigy" : (emu->card_capabilities->ecard ? "EMU APS" : "Creative"));
+@@ -235,7 +235,7 @@ static void snd_emu10k1_proc_read(struct snd_info_entry *entry,
+ 		snd_iprintf(buffer, "  Output %02i [%s]\n", idx, outputs[idx]);
+ }
+ 
+-static void snd_emu10k1_proc_spdif_read(struct snd_info_entry *entry, 
++static void snd_emu10k1_proc_spdif_read(struct snd_info_entry *entry,
+ 				  struct snd_info_buffer *buffer)
+ {
+ 	struct snd_emu10k1 *emu = entry->private_data;
+@@ -253,7 +253,7 @@ static void snd_emu10k1_proc_spdif_read(struct snd_info_entry *entry,
+ 			snd_emu1010_fpga_read(emu, 0x2a, &value);
+ 			snd_emu1010_fpga_read(emu, 0x2b, &value2);
+ 			spin_unlock_irqrestore(&emu->emu_lock, flags);
+-			rate = 0x1770000 / (((value << 5) | value2)+1);	
++			rate = 0x1770000 / (((value << 5) | value2)+1);
+ 			snd_iprintf(buffer, "ADAT Locked : %u\n", rate);
+ 		} else {
+ 			snd_iprintf(buffer, "ADAT Unlocked\n");
+@@ -266,7 +266,7 @@ static void snd_emu10k1_proc_spdif_read(struct snd_info_entry *entry,
+ 			snd_emu1010_fpga_read(emu, 0x28, &value);
+ 			snd_emu1010_fpga_read(emu, 0x29, &value2);
+ 			spin_unlock_irqrestore(&emu->emu_lock, flags);
+-			rate = 0x1770000 / (((value << 5) | value2)+1);	
++			rate = 0x1770000 / (((value << 5) | value2)+1);
+ 			snd_iprintf(buffer, "SPDIF Locked : %d\n", rate);
+ 		} else {
+ 			snd_iprintf(buffer, "SPDIF Unlocked\n");
+@@ -283,7 +283,7 @@ static void snd_emu10k1_proc_spdif_read(struct snd_info_entry *entry,
+ #endif
+ }
+ 
+-static void snd_emu10k1_proc_rates_read(struct snd_info_entry *entry, 
++static void snd_emu10k1_proc_rates_read(struct snd_info_entry *entry,
+ 				  struct snd_info_buffer *buffer)
+ {
+ 	static int samplerate[8] = { 44100, 48000, 96000, 192000, 4, 5, 6, 7 };
+@@ -298,7 +298,7 @@ static void snd_emu10k1_proc_rates_read(struct snd_info_entry *entry,
+ 	}
+ }
+ 
+-static void snd_emu10k1_proc_acode_read(struct snd_info_entry *entry, 
++static void snd_emu10k1_proc_acode_read(struct snd_info_entry *entry,
+ 				        struct snd_info_buffer *buffer)
+ {
+ 	u32 pc;
+@@ -308,7 +308,7 @@ static void snd_emu10k1_proc_acode_read(struct snd_info_entry *entry,
+ 	snd_iprintf(buffer, "  Code dump      :\n");
+ 	for (pc = 0; pc < (emu->audigy ? 1024 : 512); pc++) {
+ 		u32 low, high;
+-			
++
+ 		low = snd_emu10k1_efx_read(emu, pc * 2);
+ 		high = snd_emu10k1_efx_read(emu, pc * 2 + 1);
+ 		if (emu->audigy)
+@@ -350,7 +350,7 @@ static long snd_emu10k1_fx8010_read(struct snd_info_entry *entry,
+ 	struct snd_emu10k1 *emu = entry->private_data;
+ 	unsigned int offset;
+ 	int tram_addr = 0;
+-	
++
+ 	if (!strcmp(entry->name, "fx8010_tram_addr")) {
+ 		offset = TANKMEMADDRREGBASE;
+ 		tram_addr = 1;
+@@ -374,7 +374,7 @@ static long snd_emu10k1_fx8010_read(struct snd_info_entry *entry,
+ 			if (tram_addr && emu->audigy) {
+ 				tmp[idx] = snd_emu10k1_ptr_read(emu, offset + idx + (pos >> 2), 0) >> 11;
+ 				tmp[idx] |= snd_emu10k1_ptr_read(emu, 0x100 + idx + (pos >> 2), 0) << 20;
+-			} else 
++			} else
+ 				tmp[idx] = snd_emu10k1_ptr_read(emu, offset + idx + (pos >> 2), 0);
+ 		if (copy_to_user(buf, ((char *)tmp) + (pos & 3), size))
+ 			res = -EFAULT;
+@@ -387,13 +387,13 @@ static long snd_emu10k1_fx8010_read(struct snd_info_entry *entry,
  	return 0;
  }
  
--static void rme9652_spdif_set_bit (struct snd_rme9652 *rme9652, int mask, int onoff)
-+static void rme9652_spdif_set_bit(struct snd_rme9652 *rme9652, int mask, int onoff)
+-static void snd_emu10k1_proc_voices_read(struct snd_info_entry *entry, 
++static void snd_emu10k1_proc_voices_read(struct snd_info_entry *entry,
+ 				  struct snd_info_buffer *buffer)
  {
--	if (onoff) 
-+	if (onoff)
- 		rme9652->control_register |= mask;
--	else 
-+	else
- 		rme9652->control_register &= ~mask;
--		
+ 	struct snd_emu10k1 *emu = entry->private_data;
+ 	struct snd_emu10k1_voice *voice;
+ 	int idx;
+-	
 +
- 	rme9652_write(rme9652, RME9652_control_register, rme9652->control_register);
- }
+ 	snd_iprintf(buffer, "ch\tuse\tpcm\tefx\tsynth\tmidi\n");
+ 	for (idx = 0; idx < NUM_G; idx++) {
+ 		voice = &emu->voices[idx];
+@@ -417,7 +417,7 @@ static void snd_emu_proc_emu1010_reg_read(struct snd_info_entry *entry,
+ 	int i;
+ 	snd_iprintf(buffer, "EMU1010 Registers:\n\n");
  
--static void rme9652_spdif_write_byte (struct snd_rme9652 *rme9652, const int val)
-+static void rme9652_spdif_write_byte(struct snd_rme9652 *rme9652, const int val)
- {
- 	long mask;
- 	long i;
-@@ -655,7 +655,7 @@ static void rme9652_spdif_write_byte (struct snd_rme9652 *rme9652, const int val
- 	for (i = 0, mask = 0x80; i < 8; i++, mask >>= 1) {
- 		if (val & mask)
- 			rme9652_spdif_set_bit (rme9652, RME9652_SPDIF_WRITE, 1);
--		else 
-+		else
- 			rme9652_spdif_set_bit (rme9652, RME9652_SPDIF_WRITE, 0);
- 
- 		rme9652_spdif_set_bit (rme9652, RME9652_SPDIF_CLOCK, 1);
-@@ -663,7 +663,7 @@ static void rme9652_spdif_write_byte (struct snd_rme9652 *rme9652, const int val
+-	for(i = 0; i < 0x40; i+=1) {
++	for (i = 0; i < 0x40; i++) {
+ 		spin_lock_irqsave(&emu->emu_lock, flags);
+ 		snd_emu1010_fpga_read(emu, i, &value);
+ 		spin_unlock_irqrestore(&emu->emu_lock, flags);
+@@ -433,7 +433,7 @@ static void snd_emu_proc_io_reg_read(struct snd_info_entry *entry,
+ 	unsigned long flags;
+ 	int i;
+ 	snd_iprintf(buffer, "IO Registers:\n\n");
+-	for(i = 0; i < 0x40; i+=4) {
++	for (i = 0; i < 0x40; i += 4) {
+ 		spin_lock_irqsave(&emu->emu_lock, flags);
+ 		value = inl(emu->port + i);
+ 		spin_unlock_irqrestore(&emu->emu_lock, flags);
+@@ -451,7 +451,7 @@ static void snd_emu_proc_io_reg_write(struct snd_info_entry *entry,
+ 	while (!snd_info_get_line(buffer, line, sizeof(line))) {
+ 		if (sscanf(line, "%x %x", &reg, &val) != 2)
+ 			continue;
+-		if ((reg < 0x40) && (reg >= 0) && (val <= 0xffffffff) ) {
++		if ((reg < 0x40) && (reg >= 0) && (val <= 0xffffffff)) {
+ 			spin_lock_irqsave(&emu->emu_lock, flags);
+ 			outl(val, emu->port + (reg & 0xfffffffc));
+ 			spin_unlock_irqrestore(&emu->emu_lock, flags);
+@@ -505,10 +505,10 @@ static void snd_emu_proc_ptr_reg_read(struct snd_info_entry *entry,
+ 		return;
+ 	}
+ 	snd_iprintf(buffer, "Registers 0x%x\n", iobase);
+-	for(i = offset; i < offset+length; i++) {
++	for (i = offset; i < offset+length; i++) {
+ 		snd_iprintf(buffer, "%02X: ",i);
+ 		for (j = 0; j < voices; j++) {
+-			if(iobase == 0)
++			if (iobase == 0)
+                 		value = snd_ptr_read(emu, 0, i, j);
+ 			else
+                 		value = snd_ptr_read(emu, 0x20, i, j);
+@@ -527,7 +527,7 @@ static void snd_emu_proc_ptr_reg_write(struct snd_info_entry *entry,
+ 	while (!snd_info_get_line(buffer, line, sizeof(line))) {
+ 		if (sscanf(line, "%x %x %x", &reg, &channel_id, &val) != 3)
+ 			continue;
+-		if ((reg < 0xa0) && (reg >= 0) && (val <= 0xffffffff) && (channel_id >= 0) && (channel_id <= 3) )
++		if ((reg < 0xa0) && (reg >= 0) && (val <= 0xffffffff) && (channel_id >= 0) && (channel_id <= 3))
+ 			snd_ptr_write(emu, iobase, reg, channel_id, val);
  	}
  }
- 
--static int rme9652_spdif_read_byte (struct snd_rme9652 *rme9652)
-+static int rme9652_spdif_read_byte(struct snd_rme9652 *rme9652)
+@@ -543,7 +543,7 @@ static void snd_emu_proc_ptr_reg_write20(struct snd_info_entry *entry,
  {
- 	long mask;
- 	long val;
-@@ -681,7 +681,7 @@ static int rme9652_spdif_read_byte (struct snd_rme9652 *rme9652)
+ 	snd_emu_proc_ptr_reg_write(entry, buffer, 0x20);
+ }
+-	
++
+ 
+ static void snd_emu_proc_ptr_reg_read00a(struct snd_info_entry *entry,
+ 					 struct snd_info_buffer *buffer)
+@@ -585,85 +585,85 @@ int __devinit snd_emu10k1_proc_init(struct snd_emu10k1 * emu)
+ 	struct snd_info_entry *entry;
+ #ifdef CONFIG_SND_DEBUG
+ 	if (emu->card_capabilities->emu_model) {
+-		if (! snd_card_proc_new(emu->card, "emu1010_regs", &entry)) 
++		if (!snd_card_proc_new(emu->card, "emu1010_regs", &entry))
+ 			snd_info_set_text_ops(entry, emu, snd_emu_proc_emu1010_reg_read);
+ 	}
+-	if (! snd_card_proc_new(emu->card, "io_regs", &entry)) {
++	if (!snd_card_proc_new(emu->card, "io_regs", &entry)) {
+ 		snd_info_set_text_ops(entry, emu, snd_emu_proc_io_reg_read);
+ 		entry->c.text.write = snd_emu_proc_io_reg_write;
+ 		entry->mode |= S_IWUSR;
+ 	}
+-	if (! snd_card_proc_new(emu->card, "ptr_regs00a", &entry)) {
++	if (!snd_card_proc_new(emu->card, "ptr_regs00a", &entry)) {
+ 		snd_info_set_text_ops(entry, emu, snd_emu_proc_ptr_reg_read00a);
+ 		entry->c.text.write = snd_emu_proc_ptr_reg_write00;
+ 		entry->mode |= S_IWUSR;
+ 	}
+-	if (! snd_card_proc_new(emu->card, "ptr_regs00b", &entry)) {
++	if (!snd_card_proc_new(emu->card, "ptr_regs00b", &entry)) {
+ 		snd_info_set_text_ops(entry, emu, snd_emu_proc_ptr_reg_read00b);
+ 		entry->c.text.write = snd_emu_proc_ptr_reg_write00;
+ 		entry->mode |= S_IWUSR;
+ 	}
+-	if (! snd_card_proc_new(emu->card, "ptr_regs20a", &entry)) {
++	if (!snd_card_proc_new(emu->card, "ptr_regs20a", &entry)) {
+ 		snd_info_set_text_ops(entry, emu, snd_emu_proc_ptr_reg_read20a);
+ 		entry->c.text.write = snd_emu_proc_ptr_reg_write20;
+ 		entry->mode |= S_IWUSR;
+ 	}
+-	if (! snd_card_proc_new(emu->card, "ptr_regs20b", &entry)) {
++	if (!snd_card_proc_new(emu->card, "ptr_regs20b", &entry)) {
+ 		snd_info_set_text_ops(entry, emu, snd_emu_proc_ptr_reg_read20b);
+ 		entry->c.text.write = snd_emu_proc_ptr_reg_write20;
+ 		entry->mode |= S_IWUSR;
+ 	}
+-	if (! snd_card_proc_new(emu->card, "ptr_regs20c", &entry)) {
++	if (!snd_card_proc_new(emu->card, "ptr_regs20c", &entry)) {
+ 		snd_info_set_text_ops(entry, emu, snd_emu_proc_ptr_reg_read20c);
+ 		entry->c.text.write = snd_emu_proc_ptr_reg_write20;
+ 		entry->mode |= S_IWUSR;
+ 	}
+ #endif
+-	
+-	if (! snd_card_proc_new(emu->card, "emu10k1", &entry))
++
++	if (!snd_card_proc_new(emu->card, "emu10k1", &entry))
+ 		snd_info_set_text_ops(entry, emu, snd_emu10k1_proc_read);
+ 
+ 	if (emu->card_capabilities->emu10k2_chip) {
+-		if (! snd_card_proc_new(emu->card, "spdif-in", &entry))
++		if (!snd_card_proc_new(emu->card, "spdif-in", &entry))
+ 			snd_info_set_text_ops(entry, emu, snd_emu10k1_proc_spdif_read);
+ 	}
+ 	if (emu->card_capabilities->ca0151_chip) {
+-		if (! snd_card_proc_new(emu->card, "capture-rates", &entry))
++		if (!snd_card_proc_new(emu->card, "capture-rates", &entry))
+ 			snd_info_set_text_ops(entry, emu, snd_emu10k1_proc_rates_read);
+ 	}
+ 
+-	if (! snd_card_proc_new(emu->card, "voices", &entry))
++	if (!snd_card_proc_new(emu->card, "voices", &entry))
+ 		snd_info_set_text_ops(entry, emu, snd_emu10k1_proc_voices_read);
+ 
+-	if (! snd_card_proc_new(emu->card, "fx8010_gpr", &entry)) {
++	if (!snd_card_proc_new(emu->card, "fx8010_gpr", &entry)) {
+ 		entry->content = SNDRV_INFO_CONTENT_DATA;
+ 		entry->private_data = emu;
+ 		entry->mode = S_IFREG | S_IRUGO /*| S_IWUSR*/;
+ 		entry->size = emu->audigy ? A_TOTAL_SIZE_GPR : TOTAL_SIZE_GPR;
+ 		entry->c.ops = &snd_emu10k1_proc_ops_fx8010;
+ 	}
+-	if (! snd_card_proc_new(emu->card, "fx8010_tram_data", &entry)) {
++	if (!snd_card_proc_new(emu->card, "fx8010_tram_data", &entry)) {
+ 		entry->content = SNDRV_INFO_CONTENT_DATA;
+ 		entry->private_data = emu;
+ 		entry->mode = S_IFREG | S_IRUGO /*| S_IWUSR*/;
+-		entry->size = emu->audigy ? A_TOTAL_SIZE_TANKMEM_DATA : TOTAL_SIZE_TANKMEM_DATA ;
++		entry->size = emu->audigy ? A_TOTAL_SIZE_TANKMEM_DATA : TOTAL_SIZE_TANKMEM_DATA;
+ 		entry->c.ops = &snd_emu10k1_proc_ops_fx8010;
+ 	}
+-	if (! snd_card_proc_new(emu->card, "fx8010_tram_addr", &entry)) {
++	if (!snd_card_proc_new(emu->card, "fx8010_tram_addr", &entry)) {
+ 		entry->content = SNDRV_INFO_CONTENT_DATA;
+ 		entry->private_data = emu;
+ 		entry->mode = S_IFREG | S_IRUGO /*| S_IWUSR*/;
+-		entry->size = emu->audigy ? A_TOTAL_SIZE_TANKMEM_ADDR : TOTAL_SIZE_TANKMEM_ADDR ;
++		entry->size = emu->audigy ? A_TOTAL_SIZE_TANKMEM_ADDR : TOTAL_SIZE_TANKMEM_ADDR;
+ 		entry->c.ops = &snd_emu10k1_proc_ops_fx8010;
+ 	}
+-	if (! snd_card_proc_new(emu->card, "fx8010_code", &entry)) {
++	if (!snd_card_proc_new(emu->card, "fx8010_code", &entry)) {
+ 		entry->content = SNDRV_INFO_CONTENT_DATA;
+ 		entry->private_data = emu;
+ 		entry->mode = S_IFREG | S_IRUGO /*| S_IWUSR*/;
+ 		entry->size = emu->audigy ? A_TOTAL_SIZE_CODE : TOTAL_SIZE_CODE;
+ 		entry->c.ops = &snd_emu10k1_proc_ops_fx8010;
+ 	}
+-	if (! snd_card_proc_new(emu->card, "fx8010_acode", &entry)) {
++	if (!snd_card_proc_new(emu->card, "fx8010_acode", &entry)) {
+ 		entry->content = SNDRV_INFO_CONTENT_TEXT;
+ 		entry->private_data = emu;
+ 		entry->mode = S_IFREG | S_IRUGO /*| S_IWUSR*/;
+diff --git a/sound/pci/emu10k1/io.c b/sound/pci/emu10k1/io.c
+index b5a802b..c77f5f2 100644
+--- a/sound/pci/emu10k1/io.c
++++ b/sound/pci/emu10k1/io.c
+@@ -42,16 +42,16 @@ unsigned int snd_emu10k1_ptr_read(struct snd_emu10k1 * emu, unsigned int reg, un
+ 
+ 	if (reg & 0xff000000) {
+ 		unsigned char size, offset;
+-		
++
+ 		size = (reg >> 24) & 0x3f;
+ 		offset = (reg >> 16) & 0x1f;
+ 		mask = ((1 << size) - 1) << offset;
+-		
++
+ 		spin_lock_irqsave(&emu->emu_lock, flags);
+ 		outl(regptr, emu->port + PTR);
+ 		val = inl(emu->port + DATA);
+ 		spin_unlock_irqrestore(&emu->emu_lock, flags);
+-		
++
+ 		return (val & mask) >> offset;
+ 	} else {
+ 		spin_lock_irqsave(&emu->emu_lock, flags);
+@@ -90,7 +90,7 @@ void snd_emu10k1_ptr_write(struct snd_emu10k1 *emu, unsigned int reg, unsigned i
+ 		outl(regptr, emu->port + PTR);
+ 		data |= inl(emu->port + DATA) & ~mask;
+ 		outl(data, emu->port + DATA);
+-		spin_unlock_irqrestore(&emu->emu_lock, flags);		
++		spin_unlock_irqrestore(&emu->emu_lock, flags);
+ 	} else {
+ 		spin_lock_irqsave(&emu->emu_lock, flags);
+ 		outl(regptr, emu->port + PTR);
+@@ -101,13 +101,13 @@ void snd_emu10k1_ptr_write(struct snd_emu10k1 *emu, unsigned int reg, unsigned i
+ 
+ EXPORT_SYMBOL(snd_emu10k1_ptr_write);
+ 
+-unsigned int snd_emu10k1_ptr20_read(struct snd_emu10k1 * emu, 
+-					  unsigned int reg, 
++unsigned int snd_emu10k1_ptr20_read(struct snd_emu10k1 * emu,
++					  unsigned int reg,
+ 					  unsigned int chn)
+ {
+ 	unsigned long flags;
+ 	unsigned int regptr, val;
+-  
++
+ 	regptr = (reg << 16) | chn;
+ 
+ 	spin_lock_irqsave(&emu->emu_lock, flags);
+@@ -117,9 +117,9 @@ unsigned int snd_emu10k1_ptr20_read(struct snd_emu10k1 * emu,
  	return val;
  }
  
--static void rme9652_write_spdif_codec (struct snd_rme9652 *rme9652, const int address, const int data)
-+static void rme9652_write_spdif_codec(struct snd_rme9652 *rme9652, const int address, const int data)
+-void snd_emu10k1_ptr20_write(struct snd_emu10k1 *emu, 
+-				   unsigned int reg, 
+-				   unsigned int chn, 
++void snd_emu10k1_ptr20_write(struct snd_emu10k1 *emu,
++				   unsigned int reg,
++				   unsigned int chn,
+ 				   unsigned int data)
  {
- 	rme9652_spdif_set_bit (rme9652, RME9652_SPDIF_SELECT, 1);
- 	rme9652_spdif_write_byte (rme9652, 0x20);
-@@ -691,7 +691,7 @@ static void rme9652_write_spdif_codec (struct snd_rme9652 *rme9652, const int ad
- }
- 
- 
--static int rme9652_spdif_read_codec (struct snd_rme9652 *rme9652, const int address)
-+static int rme9652_spdif_read_codec(struct snd_rme9652 *rme9652, const int address)
- {
- 	int ret;
- 
-@@ -708,7 +708,7 @@ static int rme9652_spdif_read_codec (struct snd_rme9652 *rme9652, const int addr
- 	return ret;
- }
- 
--static void rme9652_initialize_spdif_receiver (struct snd_rme9652 *rme9652)
-+static void rme9652_initialize_spdif_receiver(struct snd_rme9652 *rme9652)
- {
- 	/* XXX what unsets this ? */
- 
-@@ -726,19 +726,19 @@ static inline int rme9652_spdif_sample_rate(struct snd_rme9652 *s)
- 	if (rme9652_read(s, RME9652_status_register) & RME9652_ERF) {
- 		return -1;	/* error condition */
- 	}
--	
-+
- 	if (s->hw_rev == 15) {
- 
- 		int x, y, ret;
--		
-+
- 		x = rme9652_spdif_read_codec (s, 30);
- 
--		if (x != 0) 
-+		if (x != 0)
- 			y = 48000 * 64 / x;
- 		else
- 			y = 0;
- 
--		if      (y > 30400 && y < 33600)  ret = 32000; 
-+		if      (y > 30400 && y < 33600)  ret = 32000;
- 		else if (y > 41900 && y < 46000)  ret = 44100;
- 		else if (y > 46000 && y < 50400)  ret = 48000;
- 		else if (y > 60800 && y < 67200)  ret = 64000;
-@@ -819,7 +819,7 @@ static int snd_rme9652_control_spdif_info(struct snd_kcontrol *kcontrol, struct
- static int snd_rme9652_control_spdif_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_rme9652 *rme9652 = snd_kcontrol_chip(kcontrol);
--	
-+
- 	snd_rme9652_convert_to_aes(&ucontrol->value.iec958, rme9652->creg_spdif);
- 	return 0;
- }
-@@ -829,7 +829,7 @@ static int snd_rme9652_control_spdif_put(struct snd_kcontrol *kcontrol, struct s
- 	struct snd_rme9652 *rme9652 = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	u32 val;
--	
-+
- 	val = snd_rme9652_convert_from_aes(&ucontrol->value.iec958);
- 	spin_lock_irq(&rme9652->lock);
- 	change = val != rme9652->creg_spdif;
-@@ -848,7 +848,7 @@ static int snd_rme9652_control_spdif_stream_info(struct snd_kcontrol *kcontrol,
- static int snd_rme9652_control_spdif_stream_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_rme9652 *rme9652 = snd_kcontrol_chip(kcontrol);
--	
-+
- 	snd_rme9652_convert_to_aes(&ucontrol->value.iec958, rme9652->creg_spdif_stream);
- 	return 0;
- }
-@@ -858,7 +858,7 @@ static int snd_rme9652_control_spdif_stream_put(struct snd_kcontrol *kcontrol, s
- 	struct snd_rme9652 *rme9652 = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	u32 val;
--	
-+
- 	val = snd_rme9652_convert_from_aes(&ucontrol->value.iec958);
- 	spin_lock_irq(&rme9652->lock);
- 	change = val != rme9652->creg_spdif_stream;
-@@ -891,7 +891,7 @@ static int snd_rme9652_control_spdif_mask_get(struct snd_kcontrol *kcontrol, str
- static unsigned int rme9652_adat1_in(struct snd_rme9652 *rme9652)
- {
- 	if (rme9652->control_register & RME9652_ADAT1_INTERNAL)
--		return 1; 
-+		return 1;
- 	return 0;
- }
- 
-@@ -936,7 +936,7 @@ static int snd_rme9652_info_adat1_in(struct snd_kcontrol *kcontrol, struct snd_c
- static int snd_rme9652_get_adat1_in(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_rme9652 *rme9652 = snd_kcontrol_chip(kcontrol);
--	
-+
- 	spin_lock_irq(&rme9652->lock);
- 	ucontrol->value.enumerated.item[0] = rme9652_adat1_in(rme9652);
- 	spin_unlock_irq(&rme9652->lock);
-@@ -948,7 +948,7 @@ static int snd_rme9652_put_adat1_in(struct snd_kcontrol *kcontrol, struct snd_ct
- 	struct snd_rme9652 *rme9652 = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	unsigned int val;
--	
-+
- 	if (!snd_rme9652_use_is_exclusive(rme9652))
- 		return -EBUSY;
- 	val = ucontrol->value.enumerated.item[0] % 2;
-@@ -1007,7 +1007,7 @@ static int snd_rme9652_info_spdif_in(struct snd_kcontrol *kcontrol, struct snd_c
- static int snd_rme9652_get_spdif_in(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_rme9652 *rme9652 = snd_kcontrol_chip(kcontrol);
--	
-+
- 	spin_lock_irq(&rme9652->lock);
- 	ucontrol->value.enumerated.item[0] = rme9652_spdif_in(rme9652);
- 	spin_unlock_irq(&rme9652->lock);
-@@ -1019,7 +1019,7 @@ static int snd_rme9652_put_spdif_in(struct snd_kcontrol *kcontrol, struct snd_ct
- 	struct snd_rme9652 *rme9652 = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	unsigned int val;
--	
-+
- 	if (!snd_rme9652_use_is_exclusive(rme9652))
- 		return -EBUSY;
- 	val = ucontrol->value.enumerated.item[0] % 3;
-@@ -1069,7 +1069,7 @@ static int rme9652_set_spdif_output(struct snd_rme9652 *rme9652, int out)
- static int snd_rme9652_get_spdif_out(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_rme9652 *rme9652 = snd_kcontrol_chip(kcontrol);
--	
-+
- 	spin_lock_irq(&rme9652->lock);
- 	ucontrol->value.integer.value[0] = rme9652_spdif_out(rme9652);
- 	spin_unlock_irq(&rme9652->lock);
-@@ -1081,7 +1081,7 @@ static int snd_rme9652_put_spdif_out(struct snd_kcontrol *kcontrol, struct snd_c
- 	struct snd_rme9652 *rme9652 = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	unsigned int val;
--	
-+
- 	if (!snd_rme9652_use_is_exclusive(rme9652))
- 		return -EBUSY;
- 	val = ucontrol->value.integer.value[0] & 1;
-@@ -1156,7 +1156,7 @@ static int snd_rme9652_info_sync_mode(struct snd_kcontrol *kcontrol, struct snd_
- static int snd_rme9652_get_sync_mode(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_rme9652 *rme9652 = snd_kcontrol_chip(kcontrol);
--	
-+
- 	spin_lock_irq(&rme9652->lock);
- 	ucontrol->value.enumerated.item[0] = rme9652_sync_mode(rme9652);
- 	spin_unlock_irq(&rme9652->lock);
-@@ -1168,7 +1168,7 @@ static int snd_rme9652_put_sync_mode(struct snd_kcontrol *kcontrol, struct snd_c
- 	struct snd_rme9652 *rme9652 = snd_kcontrol_chip(kcontrol);
- 	int change;
- 	unsigned int val;
--	
-+
- 	val = ucontrol->value.enumerated.item[0] % 3;
- 	spin_lock_irq(&rme9652->lock);
- 	change = (int)val != rme9652_sync_mode(rme9652);
-@@ -1248,7 +1248,7 @@ static int snd_rme9652_info_sync_pref(struct snd_kcontrol *kcontrol, struct snd_
- static int snd_rme9652_get_sync_pref(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_rme9652 *rme9652 = snd_kcontrol_chip(kcontrol);
--	
-+
- 	spin_lock_irq(&rme9652->lock);
- 	ucontrol->value.enumerated.item[0] = rme9652_sync_pref(rme9652);
- 	spin_unlock_irq(&rme9652->lock);
-@@ -1260,7 +1260,7 @@ static int snd_rme9652_put_sync_pref(struct snd_kcontrol *kcontrol, struct snd_c
- 	struct snd_rme9652 *rme9652 = snd_kcontrol_chip(kcontrol);
- 	int change, max;
- 	unsigned int val;
--	
-+
- 	if (!snd_rme9652_use_is_exclusive(rme9652))
- 		return -EBUSY;
- 	max = rme9652->ss_channels == RME9652_NCHANNELS ? 4 : 3;
-@@ -1308,7 +1308,7 @@ static int snd_rme9652_put_thru(struct snd_kcontrol *kcontrol, struct snd_ctl_el
- 		if (ucontrol->value.integer.value[chn])
- 			thru_bits |= 1 << chn;
- 	}
--	
-+
- 	spin_lock_irq(&rme9652->lock);
- 	change = thru_bits ^ rme9652->thru_bits;
- 	if (change) {
-@@ -1379,7 +1379,7 @@ static int snd_rme9652_info_spdif_rate(struct snd_kcontrol *kcontrol, struct snd
- static int snd_rme9652_get_spdif_rate(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_rme9652 *rme9652 = snd_kcontrol_chip(kcontrol);
--	
-+
- 	spin_lock_irq(&rme9652->lock);
- 	ucontrol->value.integer.value[0] = rme9652_spdif_sample_rate(rme9652);
- 	spin_unlock_irq(&rme9652->lock);
-@@ -1409,11 +1409,11 @@ static int snd_rme9652_get_adat_sync(struct snd_kcontrol *kcontrol, struct snd_c
- {
- 	struct snd_rme9652 *rme9652 = snd_kcontrol_chip(kcontrol);
- 	unsigned int mask1, mask2, val;
--	
-+
- 	switch (kcontrol->private_value) {
--	case 0: mask1 = RME9652_lock_0; mask2 = RME9652_sync_0; break;	
--	case 1: mask1 = RME9652_lock_1; mask2 = RME9652_sync_1; break;	
--	case 2: mask1 = RME9652_lock_2; mask2 = RME9652_sync_2; break;	
-+	case 0: mask1 = RME9652_lock_0; mask2 = RME9652_sync_0; break;
-+	case 1: mask1 = RME9652_lock_1; mask2 = RME9652_sync_1; break;
-+	case 2: mask1 = RME9652_lock_2; mask2 = RME9652_sync_2; break;
- 	default: return -EINVAL;
- 	}
- 	val = rme9652_read(rme9652, RME9652_status_register);
-@@ -1433,8 +1433,8 @@ static int snd_rme9652_get_adat_sync(struct snd_kcontrol *kcontrol, struct snd_c
- static int snd_rme9652_get_tc_valid(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_rme9652 *rme9652 = snd_kcontrol_chip(kcontrol);
--	
--	ucontrol->value.integer.value[0] = 
-+
-+	ucontrol->value.integer.value[0] =
- 		(rme9652_read(rme9652, RME9652_status_register) & RME9652_tc_valid) ? 1 : 0;
- 	return 0;
- }
-@@ -1520,7 +1520,7 @@ static struct snd_kcontrol_new snd_rme9652_controls[] = {
- 	.get =		snd_rme9652_control_spdif_mask_get,
- 	.private_value = IEC958_AES0_NONAUDIO |
- 			IEC958_AES0_PROFESSIONAL |
--			IEC958_AES0_CON_EMPHASIS,	                                                                                      
-+			IEC958_AES0_CON_EMPHASIS,
- },
- {
- 	.access =	SNDRV_CTL_ELEM_ACCESS_READ,
-@@ -1582,7 +1582,7 @@ static int snd_rme9652_create_controls(struct snd_card *card, struct snd_rme9652
- }
- 
- /*------------------------------------------------------------
--   /proc interface 
-+   /proc interface
-  ------------------------------------------------------------*/
- 
- static void
-@@ -1606,10 +1606,10 @@ snd_rme9652_proc_read(struct snd_info_entry *entry, struct snd_info_buffer *buff
- 
- 	snd_iprintf(buffer, "\n");
- 
--	x = 1 << (6 + rme9652_decode_latency(rme9652->control_register & 
-+	x = 1 << (6 + rme9652_decode_latency(rme9652->control_register &
- 					     RME9652_latency));
- 
--	snd_iprintf(buffer, "Latency: %d samples (2 periods of %lu bytes)\n", 
-+	snd_iprintf(buffer, "Latency: %d samples (2 periods of %lu bytes)\n",
- 		    x, (unsigned long) rme9652->period_bytes);
- 	snd_iprintf(buffer, "Hardware pointer (frames): %ld\n",
- 		    rme9652_hw_pointer(rme9652));
-@@ -1655,7 +1655,7 @@ snd_rme9652_proc_read(struct snd_info_entry *entry, struct snd_info_buffer *buff
- 
- 	snd_iprintf(buffer, "\n");
- 
--	switch (rme9652_decode_spdif_in(rme9652->control_register & 
-+	switch (rme9652_decode_spdif_in(rme9652->control_register &
- 					RME9652_inp)) {
- 	case RME9652_SPDIFIN_OPTICAL:
- 		snd_iprintf(buffer, "IEC958 input: ADAT1\n");
-@@ -1762,7 +1762,7 @@ static void __devinit snd_rme9652_proc_init(struct snd_rme9652 *rme9652)
- {
- 	struct snd_info_entry *entry;
- 
--	if (! snd_card_proc_new(rme9652->card, "rme9652", &entry))
-+	if (!snd_card_proc_new(rme9652->card, "rme9652", &entry))
- 		snd_info_set_text_ops(entry, rme9652, snd_rme9652_proc_read);
- }
- 
-@@ -1828,11 +1828,11 @@ static void snd_rme9652_set_defaults(struct snd_rme9652 *rme9652)
- 
- 	/* set defaults:
- 
--	   SPDIF Input via Coax 
-+	   SPDIF Input via Coax
- 	   autosync clock mode
- 	   maximum latency (7 = 8192 samples, 64Kbyte buffer,
- 	   which implies 2 4096 sample, 32Kbyte periods).
--	   
-+
- 	   if rev 1.5, initialize the S/PDIF receiver.
- 
- 	 */
-@@ -1893,11 +1893,11 @@ static char *rme9652_channel_buffer_location(struct snd_rme9652 *rme9652,
- 
- 	if (snd_BUG_ON(channel < 0 || channel >= RME9652_NCHANNELS))
- 		return NULL;
--        
-+
- 	if ((mapped_channel = rme9652->channel_map[channel]) < 0) {
- 		return NULL;
- 	}
--	
-+
- 	if (stream == SNDRV_PCM_STREAM_CAPTURE) {
- 		return rme9652->capture_buffer +
- 			(mapped_channel * RME9652_CHANNEL_BUFFER_BYTES);
-@@ -2142,10 +2142,10 @@ static int snd_rme9652_trigger(struct snd_pcm_substream *substream,
- 				rme9652_silence_playback(rme9652);
+ 	unsigned int regptr;
+@@ -230,7 +230,7 @@ int snd_emu10k1_i2c_write(struct snd_emu10k1 *emu,
+ 				break;
+ 			}
  		}
- 	} else {
--		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) 
-+		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
- 			rme9652_silence_playback(rme9652);
+-		//Read back and see if the transaction is successful
++		/* Read back and see if the transaction is successful */
+ 		if ((status & I2C_A_ADC_ABORT) == 0)
+ 			break;
  	}
-- _ok:
-+_ok:
- 	snd_pcm_trigger_done(substream, substream);
- 	if (!rme9652->running && running)
- 		rme9652_start(rme9652);
-@@ -2178,9 +2178,9 @@ static struct snd_pcm_hardware snd_rme9652_playback_subinfo =
- 				 SNDRV_PCM_INFO_SYNC_START |
- 				 SNDRV_PCM_INFO_DOUBLE),
- 	.formats =		SNDRV_PCM_FMTBIT_S32_LE,
--	.rates =		(SNDRV_PCM_RATE_44100 | 
--				 SNDRV_PCM_RATE_48000 | 
--				 SNDRV_PCM_RATE_88200 | 
-+	.rates =		(SNDRV_PCM_RATE_44100 |
-+				 SNDRV_PCM_RATE_48000 |
-+				 SNDRV_PCM_RATE_88200 |
- 				 SNDRV_PCM_RATE_96000),
- 	.rate_min =		44100,
- 	.rate_max =		96000,
-@@ -2201,9 +2201,9 @@ static struct snd_pcm_hardware snd_rme9652_capture_subinfo =
- 				 SNDRV_PCM_INFO_NONINTERLEAVED |
- 				 SNDRV_PCM_INFO_SYNC_START),
- 	.formats =		SNDRV_PCM_FMTBIT_S32_LE,
--	.rates =		(SNDRV_PCM_RATE_44100 | 
--				 SNDRV_PCM_RATE_48000 | 
--				 SNDRV_PCM_RATE_88200 | 
-+	.rates =		(SNDRV_PCM_RATE_44100 |
-+				 SNDRV_PCM_RATE_48000 |
-+				 SNDRV_PCM_RATE_88200 |
- 				 SNDRV_PCM_RATE_96000),
- 	.rate_min =		44100,
- 	.rate_max =		96000,
-@@ -2478,7 +2478,7 @@ static int __devinit snd_rme9652_create(struct snd_card *card,
- 		snd_printk(KERN_ERR "unable to remap region 0x%lx-0x%lx\n", rme9652->port, rme9652->port + RME9652_IO_EXTENT - 1);
- 		return -EBUSY;
+@@ -242,7 +242,7 @@ int snd_emu10k1_i2c_write(struct snd_emu10k1 *emu,
+ 		/* dump_stack(); */
+ 		err = -EINVAL;
  	}
--	
+-    
 +
- 	if (request_irq(pci->irq, snd_rme9652_interrupt, IRQF_SHARED,
- 			"rme9652", rme9652)) {
- 		snd_printk(KERN_ERR "unable to request IRQ %d\n", pci->irq);
-@@ -2503,7 +2503,7 @@ static int __devinit snd_rme9652_create(struct snd_card *card,
- 	   "Light", which does not have the expansion board. This
- 	   method comes from information received from Mathhias
- 	   Clausen at RME. Display the EEPROM and h/w revID where
--	   relevant.  
-+	   relevant.
- 	*/
+ 	spin_unlock(&emu->i2c_lock);
+ 	return err;
+ }
+@@ -291,10 +291,10 @@ int snd_emu1010_fpga_read(struct snd_emu10k1 * emu, u32 reg, u32 *value)
+  */
+ int snd_emu1010_fpga_link_dst_src_write(struct snd_emu10k1 * emu, u32 dst, u32 src)
+ {
+-	snd_emu1010_fpga_write(emu, 0x00, ((dst >> 8) & 0x3f) );
+-	snd_emu1010_fpga_write(emu, 0x01, (dst & 0x3f) );
+-	snd_emu1010_fpga_write(emu, 0x02, ((src >> 8) & 0x3f) );
+-	snd_emu1010_fpga_write(emu, 0x03, (src & 0x3f) );
++	snd_emu1010_fpga_write(emu, 0x00, ((dst >> 8) & 0x3f));
++	snd_emu1010_fpga_write(emu, 0x01, (dst & 0x3f));
++	snd_emu1010_fpga_write(emu, 0x02, ((src >> 8) & 0x3f));
++	snd_emu1010_fpga_write(emu, 0x03, (src & 0x3f));
  
- 	switch (rev) {
-@@ -2616,7 +2616,7 @@ static int __devinit snd_rme9652_probe(struct pci_dev *pci,
- 	sprintf(card->longname, "%s at 0x%lx, irq %d",
- 		card->shortname, rme9652->port, rme9652->irq);
+ 	return 0;
+ }
+diff --git a/sound/pci/emu10k1/irq.c b/sound/pci/emu10k1/irq.c
+index 30bfed6..e4947a6 100644
+--- a/sound/pci/emu10k1/irq.c
++++ b/sound/pci/emu10k1/irq.c
+@@ -157,19 +157,19 @@ irqreturn_t snd_emu10k1_interrupt(int irq, void *dev_id)
+ 				struct snd_emu10k1_voice *pvoice = &(emu->p16v_voices[0]);
+ 				struct snd_emu10k1_voice *cvoice = &(emu->p16v_capture_voice);
  
--	
+-				//printk(KERN_INFO "status2=0x%x\n", status2);
++				/* printk(KERN_INFO "status2=0x%x\n", status2); */
+ 				orig_status2 = status2;
+-				if(status2 & mask) {
+-					if(pvoice->use) {
++				if (status2 & mask) {
++					if (pvoice->use) {
+ 						snd_pcm_period_elapsed(pvoice->epcm->substream);
+-					} else { 
++					} else {
+ 						snd_printk(KERN_ERR "p16v: status: 0x%08x, mask=0x%08x, pvoice=%p, use=%d\n", status2, mask, pvoice, pvoice->use);
+ 					}
+ 				}
+-				if(status2 & 0x110000) {
+-					//printk(KERN_INFO "capture int found\n");
+-					if(cvoice->use) {
+-						//printk(KERN_INFO "capture period_elapsed\n");
++				if (status2 & 0x110000) {
++					/* printk(KERN_INFO "capture int found\n"); */
++					if (cvoice->use) {
++						/* printk(KERN_INFO "capture period_elapsed\n"); */
+ 						snd_pcm_period_elapsed(cvoice->epcm->substream);
+ 					}
+ 				}
+@@ -181,7 +181,7 @@ irqreturn_t snd_emu10k1_interrupt(int irq, void *dev_id)
+ 		if (status) {
+ 			unsigned int bits;
+ 			snd_printk(KERN_ERR "emu10k1: unhandled interrupt: 0x%08x\n", status);
+-			//make sure any interrupts we don't handle are disabled:
++			/* make sure any interrupts we don't handle are disabled: */
+ 			bits = INTE_FXDSPENABLE |
+ 				INTE_PCIERRORENABLE |
+ 				INTE_VOLINCRENABLE |
+diff --git a/sound/pci/emu10k1/memory.c b/sound/pci/emu10k1/memory.c
+index 6a47672..e6067f6 100644
+--- a/sound/pci/emu10k1/memory.c
++++ b/sound/pci/emu10k1/memory.c
+@@ -323,7 +323,7 @@ snd_emu10k1_alloc_pages(struct snd_emu10k1 *emu, struct snd_pcm_substream *subst
+ 		unsigned long ofs = idx << PAGE_SHIFT;
+ 		dma_addr_t addr;
+ 		addr = snd_pcm_sgbuf_get_addr(substream, ofs);
+-		if (! is_valid_page(emu, addr)) {
++		if (!is_valid_page(emu, addr)) {
+ 			printk(KERN_ERR "emu: failure page = %d\n", idx);
+ 			mutex_unlock(&hdr->block_mutex);
+ 			return NULL;
+@@ -368,7 +368,7 @@ struct snd_util_memblk *
+ snd_emu10k1_synth_alloc(struct snd_emu10k1 *hw, unsigned int size)
+ {
+ 	struct snd_emu10k1_memblk *blk;
+-	struct snd_util_memhdr *hdr = hw->memhdr; 
++	struct snd_util_memhdr *hdr = hw->memhdr;
+ 
+ 	mutex_lock(&hdr->block_mutex);
+ 	blk = (struct snd_emu10k1_memblk *)__snd_util_mem_alloc(hdr, size);
+@@ -394,7 +394,7 @@ EXPORT_SYMBOL(snd_emu10k1_synth_alloc);
+ int
+ snd_emu10k1_synth_free(struct snd_emu10k1 *emu, struct snd_util_memblk *memblk)
+ {
+-	struct snd_util_memhdr *hdr = emu->memhdr; 
++	struct snd_util_memhdr *hdr = emu->memhdr;
+ 	struct snd_emu10k1_memblk *blk = (struct snd_emu10k1_memblk *)memblk;
+ 	unsigned long flags;
+ 
+@@ -499,7 +499,7 @@ static inline void *offset_ptr(struct snd_emu10k1 *emu, int page, int offset)
+ 	if (snd_BUG_ON(page < 0 || page >= emu->max_cache_pages))
+ 		return NULL;
+ 	ptr = emu->page_ptr_table[page];
+-	if (! ptr) {
++	if (!ptr) {
+ 		printk(KERN_ERR "emu10k1: access to NULL ptr: page = %d\n", page);
+ 		return NULL;
+ 	}
+diff --git a/sound/pci/emu10k1/p16v.c b/sound/pci/emu10k1/p16v.c
+index 749a21b..dd71b65 100644
+--- a/sound/pci/emu10k1/p16v.c
++++ b/sound/pci/emu10k1/p16v.c
+@@ -123,17 +123,17 @@
+ 
+  /* hardware definition */
+ static struct snd_pcm_hardware snd_p16v_playback_hw = {
+-	.info =			SNDRV_PCM_INFO_MMAP | 
++	.info =			SNDRV_PCM_INFO_MMAP |
+ 				SNDRV_PCM_INFO_INTERLEAVED |
+ 				SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 				SNDRV_PCM_INFO_RESUME |
+ 				SNDRV_PCM_INFO_MMAP_VALID |
+ 				SNDRV_PCM_INFO_SYNC_START,
+ 	.formats =		SNDRV_PCM_FMTBIT_S32_LE, /* Only supports 24-bit samples padded to 32 bits. */
+-	.rates =		SNDRV_PCM_RATE_192000 | SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_44100, 
++	.rates =		SNDRV_PCM_RATE_192000 | SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_44100,
+ 	.rate_min =		44100,
+ 	.rate_max =		192000,
+-	.channels_min =		8, 
++	.channels_min =		8,
+ 	.channels_max =		8,
+ 	.buffer_bytes_max =	((65536 - 64) * 8),
+ 	.period_bytes_min =	64,
+@@ -150,7 +150,7 @@ static struct snd_pcm_hardware snd_p16v_capture_hw = {
+ 				 SNDRV_PCM_INFO_RESUME |
+ 				 SNDRV_PCM_INFO_MMAP_VALID),
+ 	.formats =		SNDRV_PCM_FMTBIT_S32_LE,
+-	.rates =		SNDRV_PCM_RATE_192000 | SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_44100, 
++	.rates =		SNDRV_PCM_RATE_192000 | SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_44100,
+ 	.rate_min =		44100,
+ 	.rate_max =		192000,
+ 	.channels_min =		2,
+@@ -166,9 +166,9 @@ static struct snd_pcm_hardware snd_p16v_capture_hw = {
+ static void snd_p16v_pcm_free_substream(struct snd_pcm_runtime *runtime)
+ {
+ 	struct snd_emu10k1_pcm *epcm = runtime->private_data;
+-  
 +
- 	if ((err = snd_card_register(card)) < 0) {
- 		snd_card_free(card);
+ 	if (epcm) {
+-        	//snd_printk("epcm free: %p\n", epcm);
++        	/* snd_printk("epcm free: %p\n", epcm); */
+ 		kfree(epcm);
+ 	}
+ }
+@@ -183,26 +183,26 @@ static int snd_p16v_pcm_open_playback_channel(struct snd_pcm_substream *substrea
+ 	int err;
+ 
+ 	epcm = kzalloc(sizeof(*epcm), GFP_KERNEL);
+-        //snd_printk("epcm kcalloc: %p\n", epcm);
++        /* snd_printk("epcm kcalloc: %p\n", epcm); */
+ 
+ 	if (epcm == NULL)
+ 		return -ENOMEM;
+ 	epcm->emu = emu;
+ 	epcm->substream = substream;
+-        //snd_printk("epcm device=%d, channel_id=%d\n", substream->pcm->device, channel_id);
+-  
++        /* snd_printk("epcm device=%d, channel_id=%d\n", substream->pcm->device, channel_id); */
++
+ 	runtime->private_data = epcm;
+ 	runtime->private_free = snd_p16v_pcm_free_substream;
+-  
++
+ 	runtime->hw = snd_p16v_playback_hw;
+ 
+         channel->emu = emu;
+         channel->number = channel_id;
+ 
+         channel->use=1;
+-	//snd_printk("p16v: open channel_id=%d, channel=%p, use=0x%x\n", channel_id, channel, channel->use);
+-        //printk("open:channel_id=%d, chip=%p, channel=%p\n",channel_id, chip, channel);
+-        //channel->interrupt = snd_p16v_pcm_channel_interrupt;
++	/* snd_printk("p16v: open channel_id=%d, channel=%p, use=0x%x\n", channel_id, channel, channel->use); */
++        /* printk("open:channel_id=%d, chip=%p, channel=%p\n",channel_id, chip, channel); */
++        /* channel->interrupt = snd_p16v_pcm_channel_interrupt; */
+         channel->epcm=epcm;
+ 	if ((err = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS)) < 0)
+                 return err;
+@@ -224,26 +224,26 @@ static int snd_p16v_pcm_open_capture_channel(struct snd_pcm_substream *substream
+ 	int err;
+ 
+ 	epcm = kzalloc(sizeof(*epcm), GFP_KERNEL);
+-	//snd_printk("epcm kcalloc: %p\n", epcm);
++	/* snd_printk("epcm kcalloc: %p\n", epcm); */
+ 
+ 	if (epcm == NULL)
+ 		return -ENOMEM;
+ 	epcm->emu = emu;
+ 	epcm->substream = substream;
+-	//snd_printk("epcm device=%d, channel_id=%d\n", substream->pcm->device, channel_id);
++	/* snd_printk("epcm device=%d, channel_id=%d\n", substream->pcm->device, channel_id); */
+ 
+ 	runtime->private_data = epcm;
+ 	runtime->private_free = snd_p16v_pcm_free_substream;
+-  
++
+ 	runtime->hw = snd_p16v_capture_hw;
+ 
+ 	channel->emu = emu;
+ 	channel->number = channel_id;
+ 
+ 	channel->use=1;
+-	//snd_printk("p16v: open channel_id=%d, channel=%p, use=0x%x\n", channel_id, channel, channel->use);
+-	//printk("open:channel_id=%d, chip=%p, channel=%p\n",channel_id, chip, channel);
+-	//channel->interrupt = snd_p16v_pcm_channel_interrupt;
++	/* snd_printk("p16v: open channel_id=%d, channel=%p, use=0x%x\n", channel_id, channel, channel->use); */
++	/* printk("open:channel_id=%d, chip=%p, channel=%p\n",channel_id, chip, channel); */
++	/* channel->interrupt = snd_p16v_pcm_channel_interrupt; */
+ 	channel->epcm=epcm;
+ 	if ((err = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS)) < 0)
  		return err;
+@@ -256,8 +256,8 @@ static int snd_p16v_pcm_open_capture_channel(struct snd_pcm_substream *substream
+ static int snd_p16v_pcm_close_playback(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_emu10k1 *emu = snd_pcm_substream_chip(substream);
+-	//struct snd_pcm_runtime *runtime = substream->runtime;
+-	//struct snd_emu10k1_pcm *epcm = runtime->private_data;
++	/* struct snd_pcm_runtime *runtime = substream->runtime; */
++	/* struct snd_emu10k1_pcm *epcm = runtime->private_data; */
+ 	emu->p16v_voices[substream->pcm->device - emu->p16v_device_offset].use = 0;
+ 	/* FIXME: maybe zero others */
+ 	return 0;
+@@ -267,8 +267,8 @@ static int snd_p16v_pcm_close_playback(struct snd_pcm_substream *substream)
+ static int snd_p16v_pcm_close_capture(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_emu10k1 *emu = snd_pcm_substream_chip(substream);
+-	//struct snd_pcm_runtime *runtime = substream->runtime;
+-	//struct snd_emu10k1_pcm *epcm = runtime->private_data;
++	/* struct snd_pcm_runtime *runtime = substream->runtime; */
++	/* struct snd_emu10k1_pcm *epcm = runtime->private_data; */
+ 	emu->p16v_capture_voice.use = 0;
+ 	/* FIXME: maybe zero others */
+ 	return 0;
+@@ -281,7 +281,7 @@ static int snd_p16v_pcm_open_playback_front(struct snd_pcm_substream *substream)
+ 
+ static int snd_p16v_pcm_open_capture(struct snd_pcm_substream *substream)
+ {
+-	// Only using channel 0 for now, but the card has 2 channels.
++	/* Only using channel 0 for now, but the card has 2 channels. */
+ 	return snd_p16v_pcm_open_capture_channel(substream, 0);
+ }
+ 
+@@ -333,10 +333,10 @@ static int snd_p16v_pcm_prepare_playback(struct snd_pcm_substream *substream)
+ 	u32 period_size_bytes = frames_to_bytes(runtime, runtime->period_size);
+ 	int i;
+ 	u32 tmp;
+-	
+-        //snd_printk("prepare:channel_number=%d, rate=%d, format=0x%x, channels=%d, buffer_size=%ld, period_size=%ld, periods=%u, frames_to_bytes=%d\n",channel, runtime->rate, runtime->format, runtime->channels, runtime->buffer_size, runtime->period_size, runtime->periods, frames_to_bytes(runtime, 1));
+-        //snd_printk("dma_addr=%x, dma_area=%p, table_base=%p\n",runtime->dma_addr, runtime->dma_area, table_base);
+-	//snd_printk("dma_addr=%x, dma_area=%p, dma_bytes(size)=%x\n",emu->p16v_buffer.addr, emu->p16v_buffer.area, emu->p16v_buffer.bytes);
++
++        /* snd_printk("prepare:channel_number=%d, rate=%d, format=0x%x, channels=%d, buffer_size=%ld, period_size=%ld, periods=%u, frames_to_bytes=%d\n",channel, runtime->rate, runtime->format, runtime->channels, runtime->buffer_size, runtime->period_size, runtime->periods, frames_to_bytes(runtime, 1)); */
++        /* snd_printk("dma_addr=%x, dma_area=%p, table_base=%p\n",runtime->dma_addr, runtime->dma_area, table_base); */
++	/* snd_printk("dma_addr=%x, dma_area=%p, dma_bytes(size)=%x\n",emu->p16v_buffer.addr, emu->p16v_buffer.area, emu->p16v_buffer.bytes); */
+ 	tmp = snd_emu10k1_ptr_read(emu, A_SPDIF_SAMPLERATE, channel);
+         switch (runtime->rate) {
+ 	case 44100:
+@@ -354,17 +354,17 @@ static int snd_p16v_pcm_prepare_playback(struct snd_pcm_substream *substream)
+ 	  break;
+ 	}
+ 	/* FIXME: Check emu->buffer.size before actually writing to it. */
+-	for(i = 0; i < runtime->periods; i++) {
++	for (i = 0; i < runtime->periods; i++) {
+ 		table_base[i*2]=runtime->dma_addr+(i*period_size_bytes);
+ 		table_base[(i*2)+1]=period_size_bytes<<16;
+ 	}
+- 
++
+ 	snd_emu10k1_ptr20_write(emu, PLAYBACK_LIST_ADDR, channel, emu->p16v_buffer.addr+(8*16*channel));
+ 	snd_emu10k1_ptr20_write(emu, PLAYBACK_LIST_SIZE, channel, (runtime->periods - 1) << 19);
+ 	snd_emu10k1_ptr20_write(emu, PLAYBACK_LIST_PTR, channel, 0);
+ 	snd_emu10k1_ptr20_write(emu, PLAYBACK_DMA_ADDR, channel, runtime->dma_addr);
+-	//snd_emu10k1_ptr20_write(emu, PLAYBACK_PERIOD_SIZE, channel, frames_to_bytes(runtime, runtime->period_size)<<16); // buffer size in bytes
+-	snd_emu10k1_ptr20_write(emu, PLAYBACK_PERIOD_SIZE, channel, 0); // buffer size in bytes
++	/* snd_emu10k1_ptr20_write(emu, PLAYBACK_PERIOD_SIZE, channel, frames_to_bytes(runtime, runtime->period_size)<<16); buffer size in bytes */
++	snd_emu10k1_ptr20_write(emu, PLAYBACK_PERIOD_SIZE, channel, 0); /* buffer size in bytes */
+ 	snd_emu10k1_ptr20_write(emu, PLAYBACK_POINTER, channel, 0);
+ 	snd_emu10k1_ptr20_write(emu, 0x07, channel, 0x0);
+ 	snd_emu10k1_ptr20_write(emu, 0x08, channel, 0);
+@@ -379,7 +379,7 @@ static int snd_p16v_pcm_prepare_capture(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	int channel = substream->pcm->device - emu->p16v_device_offset;
+ 	u32 tmp;
+-	//printk("prepare capture:channel_number=%d, rate=%d, format=0x%x, channels=%d, buffer_size=%ld, period_size=%ld, frames_to_bytes=%d\n",channel, runtime->rate, runtime->format, runtime->channels, runtime->buffer_size, runtime->period_size,  frames_to_bytes(runtime, 1));
++	/* printk("prepare capture:channel_number=%d, rate=%d, format=0x%x, channels=%d, buffer_size=%ld, period_size=%ld, frames_to_bytes=%d\n",channel, runtime->rate, runtime->format, runtime->channels, runtime->buffer_size, runtime->period_size,  frames_to_bytes(runtime, 1)); */
+ 	tmp = snd_emu10k1_ptr_read(emu, A_SPDIF_SAMPLERATE, channel);
+         switch (runtime->rate) {
+ 	case 44100:
+@@ -399,10 +399,10 @@ static int snd_p16v_pcm_prepare_capture(struct snd_pcm_substream *substream)
+ 	/* FIXME: Check emu->buffer.size before actually writing to it. */
+ 	snd_emu10k1_ptr20_write(emu, 0x13, channel, 0);
+ 	snd_emu10k1_ptr20_write(emu, CAPTURE_DMA_ADDR, channel, runtime->dma_addr);
+-	snd_emu10k1_ptr20_write(emu, CAPTURE_BUFFER_SIZE, channel, frames_to_bytes(runtime, runtime->buffer_size) << 16); // buffer size in bytes
++	snd_emu10k1_ptr20_write(emu, CAPTURE_BUFFER_SIZE, channel, frames_to_bytes(runtime, runtime->buffer_size) << 16); /* buffer size in bytes */
+ 	snd_emu10k1_ptr20_write(emu, CAPTURE_POINTER, channel, 0);
+-	//snd_emu10k1_ptr20_write(emu, CAPTURE_SOURCE, 0x0, 0x333300e4); /* Select MIC or Line in */
+-	//snd_emu10k1_ptr20_write(emu, EXTENDED_INT_MASK, 0, snd_emu10k1_ptr20_read(emu, EXTENDED_INT_MASK, 0) | (0x110000<<channel));
++	/* snd_emu10k1_ptr20_write(emu, CAPTURE_SOURCE, 0x0, 0x333300e4);  Select MIC or Line in */
++	/* snd_emu10k1_ptr20_write(emu, EXTENDED_INT_MASK, 0, snd_emu10k1_ptr20_read(emu, EXTENDED_INT_MASK, 0) | (0x110000<<channel)); */
+ 
+ 	return 0;
+ }
+@@ -459,13 +459,13 @@ static int snd_p16v_pcm_trigger_playback(struct snd_pcm_substream *substream,
+ 		runtime = s->runtime;
+ 		epcm = runtime->private_data;
+ 		channel = substream->pcm->device-emu->p16v_device_offset;
+-		//snd_printk("p16v channel=%d\n",channel);
++		/* snd_printk("p16v channel=%d\n",channel); */
+ 		epcm->running = running;
+ 		basic |= (0x1<<channel);
+ 		inte |= (INTE2_PLAYBACK_CH_0_LOOP<<channel);
+                 snd_pcm_trigger_done(s, substream);
+         }
+-	//snd_printk("basic=0x%x, inte=0x%x\n",basic, inte);
++	/* snd_printk("basic=0x%x, inte=0x%x\n",basic, inte); */
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+@@ -503,7 +503,7 @@ static int snd_p16v_pcm_trigger_capture(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 		snd_emu10k1_ptr20_write(emu, BASIC_INTERRUPT, 0, snd_emu10k1_ptr20_read(emu, BASIC_INTERRUPT, 0) & ~(0x100<<channel));
+ 		snd_p16v_intr_disable(emu, inte);
+-		//snd_emu10k1_ptr20_write(emu, EXTENDED_INT_MASK, 0, snd_emu10k1_ptr20_read(emu, EXTENDED_INT_MASK, 0) & ~(0x110000<<channel));
++		/* snd_emu10k1_ptr20_write(emu, EXTENDED_INT_MASK, 0, snd_emu10k1_ptr20_read(emu, EXTENDED_INT_MASK, 0) & ~(0x110000<<channel)); */
+ 		epcm->running = 0;
+ 		break;
+ 	default:
+@@ -558,7 +558,7 @@ snd_p16v_pcm_pointer_capture(struct snd_pcm_substream *substream)
+ 		ptr -= runtime->buffer_size;
+ 		printk(KERN_WARNING "buffer capture limited!\n");
+ 	}
+-	//printk("ptr1 = 0x%lx, ptr2=0x%lx, ptr=0x%lx, buffer_size = 0x%x, period_size = 0x%x, bits=%d, rate=%d\n", ptr1, ptr2, ptr, (int)runtime->buffer_size, (int)runtime->period_size, (int)runtime->frame_bits, (int)runtime->rate);
++	/* printk("ptr1 = 0x%lx, ptr2=0x%lx, ptr=0x%lx, buffer_size = 0x%x, period_size = 0x%x, bits=%d, rate=%d\n", ptr1, ptr2, ptr, (int)runtime->buffer_size, (int)runtime->period_size, (int)runtime->frame_bits, (int)runtime->rate); */
+ 
+ 	return ptr;
+ }
+@@ -589,10 +589,10 @@ static struct snd_pcm_ops snd_p16v_capture_ops = {
+ 
+ int snd_p16v_free(struct snd_emu10k1 *chip)
+ {
+-	// release the data
++	/* release the data */
+ 	if (chip->p16v_buffer.area) {
+ 		snd_dma_free_pages(&chip->p16v_buffer);
+-		//snd_printk("period lables free: %p\n", &chip->p16v_buffer);
++		/* snd_printk("period lables free: %p\n", &chip->p16v_buffer); */
+ 	}
+ 	return 0;
+ }
+@@ -603,18 +603,18 @@ int __devinit snd_p16v_pcm(struct snd_emu10k1 *emu, int device, struct snd_pcm *
+ 	struct snd_pcm_substream *substream;
+ 	int err;
+         int capture=1;
+-  
+-	//snd_printk("snd_p16v_pcm called. device=%d\n", device);
++
++	/* snd_printk("snd_p16v_pcm called. device=%d\n", device); */
+ 	emu->p16v_device_offset = device;
+ 	if (rpcm)
+ 		*rpcm = NULL;
+ 
+ 	if ((err = snd_pcm_new(emu->card, "p16v", device, 1, capture, &pcm)) < 0)
+ 		return err;
+-  
++
+ 	pcm->private_data = emu;
+-	// Single playback 8 channel device.
+-	// Single capture 2 channel device.
++	/* Single playback 8 channel device. */
++	/* Single capture 2 channel device. */
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_p16v_playback_front_ops);
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_p16v_capture_ops);
+ 
+@@ -623,31 +623,31 @@ int __devinit snd_p16v_pcm(struct snd_emu10k1 *emu, int device, struct snd_pcm *
+ 	strcpy(pcm->name, "p16v");
+ 	emu->pcm_p16v = pcm;
+ 
+-	for(substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream; 
+-	    substream; 
++	for (substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
++	    substream;
+ 	    substream = substream->next) {
+-		if ((err = snd_pcm_lib_preallocate_pages(substream, 
+-							 SNDRV_DMA_TYPE_DEV, 
+-							 snd_dma_pci_data(emu->pci), 
+-							 ((65536 - 64) * 8), ((65536 - 64) * 8))) < 0) 
++		if ((err = snd_pcm_lib_preallocate_pages(substream,
++							 SNDRV_DMA_TYPE_DEV,
++							 snd_dma_pci_data(emu->pci),
++							 ((65536 - 64) * 8), ((65536 - 64) * 8))) < 0)
+ 			return err;
+-		//snd_printk("preallocate playback substream: err=%d\n", err);
++		/* snd_printk("preallocate playback substream: err=%d\n", err); */
+ 	}
+ 
+-	for (substream = pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream; 
+-	      substream; 
++	for (substream = pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream;
++	      substream;
+ 	      substream = substream->next) {
+- 		if ((err = snd_pcm_lib_preallocate_pages(substream, 
+-	                                           SNDRV_DMA_TYPE_DEV, 
+-	                                           snd_dma_pci_data(emu->pci), 
++ 		if ((err = snd_pcm_lib_preallocate_pages(substream,
++	                                           SNDRV_DMA_TYPE_DEV,
++	                                           snd_dma_pci_data(emu->pci),
+ 	                                           65536 - 64, 65536 - 64)) < 0)
+ 			return err;
+-		//snd_printk("preallocate capture substream: err=%d\n", err);
++		/* snd_printk("preallocate capture substream: err=%d\n", err); */
+ 	}
+-  
++
+ 	if (rpcm)
+ 		*rpcm = pcm;
+-  
++
+ 	return 0;
+ }
+ 
+@@ -696,7 +696,7 @@ static int snd_p16v_volume_put(struct snd_kcontrol *kcontrol,
+ 	} else {
+ 		value &= 0xffff0000;
+ 		value |= ((0xff - ucontrol->value.integer.value[0]) << 8) |
+-			((0xff - ucontrol->value.integer.value[1]) );
++			((0xff - ucontrol->value.integer.value[1]));
+ 	}
+ 	if (value != oval) {
+ 		snd_emu10k1_ptr20_write(emu, reg, 0, value);
+@@ -740,7 +740,7 @@ static int snd_p16v_capture_source_put(struct snd_kcontrol *kcontrol,
+ 	u32 mask;
+ 	u32 source;
+ 
+-	val = ucontrol->value.enumerated.item[0] ;
++	val = ucontrol->value.enumerated.item[0];
+ 	if (val > 7)
+ 		return -EINVAL;
+ 	change = (emu->p16v_capture_source != val);
+@@ -784,7 +784,7 @@ static int snd_p16v_capture_channel_put(struct snd_kcontrol *kcontrol,
+ 	int change = 0;
+ 	u32 tmp;
+ 
+-	val = ucontrol->value.enumerated.item[0] ;
++	val = ucontrol->value.enumerated.item[0];
+ 	if (val > 3)
+ 		return -EINVAL;
+ 	change = (emu->p16v_capture_channel != val);
+@@ -854,7 +854,7 @@ int __devinit snd_p16v_mixer(struct snd_emu10k1 *emu)
+ int __devinit snd_p16v_alloc_pm_buffer(struct snd_emu10k1 *emu)
+ {
+ 	emu->p16v_saved = vmalloc(NUM_CHS * 4 * 0x80);
+-	if (! emu->p16v_saved)
++	if (!emu->p16v_saved)
+ 		return -ENOMEM;
+ 	return 0;
+ }
+diff --git a/sound/pci/emu10k1/p16v.h b/sound/pci/emu10k1/p16v.h
+index 1532149..7964c8e 100644
+--- a/sound/pci/emu10k1/p16v.h
++++ b/sound/pci/emu10k1/p16v.h
+@@ -81,14 +81,14 @@
+ /********************************************************************************************************/
+ /* Audigy2 P16V pointer-offset register set, accessed through the PTR2 and DATA2 registers                     */
+ /********************************************************************************************************/
+-                                                                                                                           
++
+ /* The sample rate of the SPDIF outputs is set by modifying a register in the EMU10K2 PTR register A_SPDIF_SAMPLERATE.
+  * The sample rate is also controlled by the same registers that control the rate of the EMU10K2 sample rate converters.
+  */
+ 
+ /* Initally all registers from 0x00 to 0x3f have zero contents. */
+ #define PLAYBACK_LIST_ADDR	0x00		/* Base DMA address of a list of pointers to each period/size */
+-						/* One list entry: 4 bytes for DMA address, 
++						/* One list entry: 4 bytes for DMA address,
+ 						 * 4 bytes for period_size << 16.
+ 						 * One list entry is 8 bytes long.
+ 						 * One list entry for each period in the buffer.
+@@ -167,11 +167,11 @@
+ 						 *                               3 - 192 khz
+ 						 *                               7 - undefined rate.
+ 						 * [19] Channel 0. 1 - Valid, 0 - Not Valid.
+-						 * [22:20] Channel 1 Detected sample rate. 
++						 * [22:20] Channel 1 Detected sample rate.
+ 						 * [23] Channel 1. 1 - Valid, 0 - Not Valid.
+-						 * [26:24] Channel 2 Detected sample rate. 
++						 * [26:24] Channel 2 Detected sample rate.
+ 						 * [27] Channel 2. 1 - Valid, 0 - Not Valid.
+-						 * [30:28] Channel 3 Detected sample rate. 
++						 * [30:28] Channel 3 Detected sample rate.
+ 						 * [31] Channel 3. 1 - Valid, 0 - Not Valid.
+ 						 */
+ /* 0x18 - 0x1f unused */
+@@ -204,7 +204,7 @@
+ /* 0x43,0x48 do not remember settings */
+ /* 0x41-45 unused */
+ #define WATERMARK            0x46		/* Test bit to indicate cache level usage */
+-						/* Values it can have while playing on channel 0. 
++						/* Values it can have while playing on channel 0.
+ 						 * 0000f000, 0000f004, 0000f008, 0000f00c.
+ 						 * Readonly.
+ 						 */
+@@ -253,7 +253,7 @@
+ 						 * [23:16] The corresponding P16V channel to SRCMulti SPDIF enabled.
+ 						 * [31:24] The corresponding E10K2 channel to SRCMulti SPDIF enabled.
+ 						 */
+-						/* Bypass P16V 0xff00ff00 
++						/* Bypass P16V 0xff00ff00
+ 						 * Bitmap. 0 = Off, 1 = On.
+ 						 * P16V playback outputs:
+ 						 * 0xXXXXXXX1 = PCM0 Left. (Front)
+diff --git a/sound/pci/emu10k1/p17v.h b/sound/pci/emu10k1/p17v.h
+index 4ef5f68..0a28974 100644
+--- a/sound/pci/emu10k1/p17v.h
++++ b/sound/pci/emu10k1/p17v.h
+@@ -27,11 +27,11 @@
+ /* 00 - 07: Not used */
+ #define P17V_PLAYBACK_FIFO_PTR	0x08	/* Current playback fifo pointer
+ 					 * and number of sound samples in cache.
+-					 */  
++					 */
+ /* 09 - 12: Not used */
+ #define P17V_CAPTURE_FIFO_PTR	0x13	/* Current capture fifo pointer
+ 					 * and number of sound samples in cache.
+-					 */  
++					 */
+ /* 14 - 17: Not used */
+ #define P17V_PB_CHN_SEL		0x18	/* P17v playback channel select */
+ #define P17V_SE_SLOT_SEL_L	0x19	/* Sound Engine slot select low */
+@@ -58,7 +58,7 @@
+ #define I2C_A_ADC_LAST		0x00000400	/*I2C last transaction */
+ #define I2C_A_ADC_BYTE		0x00000800	/*I2C one byte mode */
+ 
+-#define I2C_D_ADC_REG_MASK	0xfe000000  	/*ADC address register */ 
++#define I2C_D_ADC_REG_MASK	0xfe000000  	/*ADC address register */
+ #define I2C_D_ADC_DAT_MASK	0x01ff0000  	/*ADC data register */
+ 
+ #define ADC_TIMEOUT		0x00000007	/*ADC Timeout Clock Disable */
+diff --git a/sound/pci/emu10k1/voice.c b/sound/pci/emu10k1/voice.c
+index d7300a1..de271d0 100644
+--- a/sound/pci/emu10k1/voice.c
++++ b/sound/pci/emu10k1/voice.c
+@@ -5,7 +5,7 @@
+  *  Routines for control of EMU10K1 chips - voice manager
+  *
+  *  Rewrote voice allocator for multichannel support - rlrevell 12/2004
+- * 
++ *
+  *  BUGS:
+  *    --
+  *
+@@ -32,14 +32,14 @@
+ #include <sound/core.h>
+ #include <sound/emu10k1.h>
+ 
+-/* Previously the voice allocator started at 0 every time.  The new voice 
+- * allocator uses a round robin scheme.  The next free voice is tracked in 
+- * the card record and each allocation begins where the last left off.  The 
+- * hardware requires stereo interleaved voices be aligned to an even/odd 
+- * boundary.  For multichannel voice allocation we ensure than the block of 
+- * voices does not cross the 32 voice boundary.  This simplifies the 
+- * multichannel support and ensures we can use a single write to the 
+- * (set|clear)_loop_stop registers.  Otherwise (for example) the voices would 
++/* Previously the voice allocator started at 0 every time.  The new voice
++ * allocator uses a round robin scheme.  The next free voice is tracked in
++ * the card record and each allocation begins where the last left off.  The
++ * hardware requires stereo interleaved voices be aligned to an even/odd
++ * boundary.  For multichannel voice allocation we ensure than the block of
++ * voices does not cross the 32 voice boundary.  This simplifies the
++ * multichannel support and ensures we can use a single write to the
++ * (set|clear)_loop_stop registers.  Otherwise (for example) the voices would
+  * get out of sync when pausing/resuming a stream.
+  *							--rlrevell
+  */
+@@ -52,8 +52,8 @@ static int voice_alloc(struct snd_emu10k1 *emu, int type, int number,
+ 
+ 	*rvoice = NULL;
+ 	first_voice = last_voice = 0;
+-	for (i = emu->next_free_voice, j = 0; j < NUM_G ; i += number, j += number) {
+-		// printk("i %d j %d next free %d!\n", i, j, emu->next_free_voice);
++	for (i = emu->next_free_voice, j = 0; j < NUM_G; i += number, j += number) {
++		/* printk("i %d j %d next free %d!\n", i, j, emu->next_free_voice); */
+ 		i %= NUM_G;
+ 
+ 		/* stereo voices must be even/odd */
+@@ -61,7 +61,7 @@ static int voice_alloc(struct snd_emu10k1 *emu, int type, int number,
+ 			i++;
+ 			continue;
+ 		}
+-			
++
+ 		skip = 0;
+ 		for (k = 0; k < number; k++) {
+ 			voice = &emu->voices[(i+k) % NUM_G];
+@@ -71,20 +71,20 @@ static int voice_alloc(struct snd_emu10k1 *emu, int type, int number,
+ 			}
+ 		}
+ 		if (!skip) {
+-			// printk("allocated voice %d\n", i);
++			/* printk("allocated voice %d\n", i); */
+ 			first_voice = i;
+ 			last_voice = (i + number) % NUM_G;
+ 			emu->next_free_voice = last_voice;
+ 			break;
+ 		}
+ 	}
+-	
++
+ 	if (first_voice == last_voice)
+ 		return -ENOMEM;
+-	
++
+ 	for (i = 0; i < number; i++) {
+ 		voice = &emu->voices[(first_voice + i) % NUM_G];
+-		// printk("voice alloc - %i, %i of %i\n", voice->number, idx-first_voice+1, number);
++		/* printk("voice alloc - %i, %i of %i\n", voice->number, idx-first_voice+1, number); */
+ 		voice->use = 1;
+ 		switch (type) {
+ 		case EMU10K1_PCM:
