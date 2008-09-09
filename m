@@ -1,18 +1,24 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: how is 'dir' in
- snd_pcm_hw_params_set_periods_near() supposed to work?
-Date: Tue, 09 Sep 2008 10:02:15 +0200
-Message-ID: <48C62D87.8090303@ladisch.de>
-References: <20080908202808.GB5221@tango.0pointer.de>
+From: Harald Welte <HaraldWelte@viatech.com>
+Subject: [PATCH 1/7] HDA patch_via.c: cleanup
+Date: Tue, 9 Sep 2008 15:40:38 +0800
+Message-ID: <20080909074038.GD9638@prithivi.gnumonks.org>
+References: <20080909073717.GC9638@prithivi.gnumonks.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 7C7BA10380E
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1359810383F
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Sep 2008 10:02:15 +0200 (CEST)
-In-Reply-To: <20080908202808.GB5221@tango.0pointer.de>
+	Tue,  9 Sep 2008 10:02:43 +0200 (CEST)
+Received: from uucp by ganesha.gnumonks.org with local-bsmtp (Exim 4.63)
+	(envelope-from <HaraldWelte@viatech.com>) id 1KcyBO-0007uX-Ig
+	for alsa-devel@alsa-project.org; Tue, 09 Sep 2008 10:02:42 +0200
+Received: from laforge by prithivi.gnumonks.org with local (Exim 4.69)
+	(envelope-from <HaraldWelte@viatech.com>) id 1Kcxq2-0004y0-3s
+	for alsa-devel@alsa-project.org; Tue, 09 Sep 2008 15:40:38 +0800
+Content-Disposition: inline
+In-Reply-To: <20080909073717.GC9638@prithivi.gnumonks.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,50 +28,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lennart Poettering <mznyfn@0pointer.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lennart Poettering wrote:
-> How is the 'dir' argument in snd_pcm_hw_params_set_periods_near()
-> supposed to work?
+[ALSA] HDA VIA: various cleanup
 
-Short answer: use NULL.
+* add extra parenthesis to make code more readable
+* use kzalloc() for alloc+zero rather than kcalloc()
+* ensure that AUTO_SEQ_* starts at 0 
 
-Long answer: Before calling the function, -1 means that the number of
-periods must be less than 'val', 1 means greater.  After calling the
-function, 'dir' is set to -1 to indicate that the actual number of
-periods is less than 'val', etc.
+Signed-off-by: Harald Welte <HaraldWelte@viatech.com>
 
-> I'd assume that passing dir=1 would mean that it is looked for a
-> number of periods that is greater *or equal* to what we request. [...]
-> The docs don't really elaborate on this much.
-
-While the docs don't really elaborate on anything, for any ALSA
-function, in this case they actually say "<" and not "<=".
-
-> I'd certainly think that having ">=" and "<=" here is much more useful
-> and natural than ">" and "<", and hence I was wondering: is this just
-> a bug in the software or is it really intended to be this way?
-
-It's intended.
-
-In the configuration space, parameters like the number of periods are
-represented as an interval, i.e., as a minimum and a maximum value.
-Since it is possible to have values that are not integers (e.g., buffer
-size = 1000, period size = 400 => number of periods = 2.5), both bounds
-of the interval can be 'open', i.e., the respective boundary value does
-not belong the the interval.  In the above example, the minimum would be
-2 and the maximum 3, with both values themselves excluded.
-
-It is not very useful to set the 'dir' parameter before calling
-snd_pcm_hw_params_set_periods_near(); if you don't want an exact value,
-you're more likely to set an interval with *_set_*_min() and *_max()
-anyway.
-
-The 'dir' parameter is useful to determine, after the call, that the
-value is not an integer.  In this case, <= or >= would not make sense.
-
-
-Regards,
-Clemens
+Index: linux-2.6/sound/pci/hda/patch_via.c
+===================================================================
+--- linux-2.6.orig/sound/pci/hda/patch_via.c
++++ linux-2.6/sound/pci/hda/patch_via.c
+@@ -77,7 +77,7 @@
+ };
+ 
+ enum {
+-	AUTO_SEQ_FRONT,
++	AUTO_SEQ_FRONT = 0,
+ 	AUTO_SEQ_SURROUND,
+ 	AUTO_SEQ_CENLFE,
+ 	AUTO_SEQ_SIDE
+@@ -283,11 +283,11 @@
+ 		return snd_hda_input_mux_put(codec, spec->input_mux, ucontrol,
+ 					     0x18, &spec->cur_mux[adc_idx]);
+ 	else if ((IS_VT1709_10CH_VENDORID(vendor_id) ||
+-		  IS_VT1709_6CH_VENDORID(vendor_id)) && adc_idx == 0)
++		  IS_VT1709_6CH_VENDORID(vendor_id)) && (adc_idx == 0))
+ 		return snd_hda_input_mux_put(codec, spec->input_mux, ucontrol,
+ 					     0x19, &spec->cur_mux[adc_idx]);
+ 	else if ((IS_VT1708B_8CH_VENDORID(vendor_id) ||
+-		  IS_VT1708B_4CH_VENDORID(vendor_id)) && adc_idx == 0)
++		  IS_VT1708B_4CH_VENDORID(vendor_id)) && (adc_idx == 0))
+ 		return snd_hda_input_mux_put(codec, spec->input_mux, ucontrol,
+ 					     0x17, &spec->cur_mux[adc_idx]);
+ 	else
+@@ -897,7 +898,7 @@
+ 	int err;
+ 
+ 	/* create a codec specific record */
+-	spec = kcalloc(1, sizeof(*spec), GFP_KERNEL);
++	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
+ 	if (spec == NULL)
+ 		return -ENOMEM;
+ 
+@@ -1360,7 +1362,7 @@
+ 	int err;
+ 
+ 	/* create a codec specific record */
+-	spec = kcalloc(1, sizeof(*spec), GFP_KERNEL);
++	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
+ 	if (spec == NULL)
+ 		return -ENOMEM;
+ 
+@@ -1451,7 +1453,7 @@
+ 	int err;
+ 
+ 	/* create a codec specific record */
+-	spec = kcalloc(1, sizeof(*spec), GFP_KERNEL);
++	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
+ 	if (spec == NULL)
+ 		return -ENOMEM;
+ 
+@@ -1890,7 +1893,7 @@
+ 	int err;
+ 
+ 	/* create a codec specific record */
+-	spec = kcalloc(1, sizeof(*spec), GFP_KERNEL);
++	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
+ 	if (spec == NULL)
+ 		return -ENOMEM;
+ 
+@@ -1939,7 +1942,7 @@
+ 	int err;
+ 
+ 	/* create a codec specific record */
+-	spec = kcalloc(1, sizeof(*spec), GFP_KERNEL);
++	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
+ 	if (spec == NULL)
+ 		return -ENOMEM;
+ 
+-- 
+- Harald Welte <HaraldWelte@viatech.com>	    http://linux.via.com.tw/
+============================================================================
+VIA Open Source Liaison
