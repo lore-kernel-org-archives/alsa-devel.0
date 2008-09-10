@@ -1,18 +1,19 @@
-From: "vasudha rao" <vasudha.jrao@gmail.com>
-Subject: Unable to play aplay
-Date: Wed, 10 Sep 2008 18:16:56 +0530
-Message-ID: <eeb9eca50809100546w5475ebffqafd3d1e8224206c0@mail.gmail.com>
+From: Liam Girdwood <lrg@kernel.org>
+Subject: Re: [PATCH 1/4] Separate common pxa2xx-ac97 code
+Date: Wed, 10 Sep 2008 13:52:41 +0100
+Message-ID: <1221051161.17091.241.camel@odin>
+References: <1221008480-13377-1-git-send-email-dbaryshkov@gmail.com>
+	<20080910115717.GC23682@sirena.org.uk>
+	<20080910123456.GB17144@doriath.ww600.siemens.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ag-out-0708.google.com (ag-out-0708.google.com [72.14.246.241])
-	by alsa0.perex.cz (Postfix) with ESMTP id 254A5243D1
+Received: from hera.kernel.org (hera.kernel.org [140.211.167.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5965C2414D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 10 Sep 2008 14:46:58 +0200 (CEST)
-Received: by ag-out-0708.google.com with SMTP id 22so6282893agd.8
-	for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2008 05:46:57 -0700 (PDT)
-Content-Disposition: inline
+	Wed, 10 Sep 2008 14:52:45 +0200 (CEST)
+In-Reply-To: <20080910123456.GB17144@doriath.ww600.siemens.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,28 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi ,
+On Wed, 2008-09-10 at 16:34 +0400, Dmitry Baryshkov wrote:
+> On Wed, Sep 10, 2008 at 12:57:20PM +0100, Mark Brown wrote:
+> > On Wed, Sep 10, 2008 at 05:01:17AM +0400, Dmitry Baryshkov wrote:
+> > > ASoC and non-ASoC drivers for ACLINK on PXA share lot's of common code.
+> > > Move all common code into separate module snd-pxa2xx-lib.
+> > > 
+> > > Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+> > 
+> > These look good from code review but I'd like to do some testing on the
+> > systems I have here before acking.  Could you confirm which platforms
+> > you're able to test on?
+> 
+> Slightly tested on pxa255 (tosa, kernel compiled with support for all pxa
+> models) and pxa27x (spitz under qemu, same kernel).
+> 
 
-I want to play and record audio file in my custom atmel 9263 board running
-with linux(2.6.20).
-when I tried to play aplay for a wave file, I got
+I'd prefer some real hardware for pxa27x since it has some different
+AC97 silicon errata. However, since there are no pxa27x volunteers we
+should upstream and wait for any unlikely pxa27x issues in the 2.6.28-rc
+series.
 
-$aplay /home/alarm.wav
-ALSA lib pcm.c:1707:(snd_pcm_open_noupdate) Unknown PCM default
-aplay: main:446: audio open error: No such file or directory
+Acked-by Liam Girdwood <lrg@kernel.org>
 
-$aplay -l
-aplay: device_list:187: no soundcards found...
-
-$cat /proc/asound/devices
-  2:        : timer
-  3:        : sequencer
-  4: [ 0- 0]: digital audio playback
-  5: [ 0]   : control
-
-Can you tel me where I am doing wrong..??
-
-Thanks in advance..
+Liam
