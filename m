@@ -1,17 +1,20 @@
 From: "vasudha rao" <vasudha.jrao@gmail.com>
-Subject: aplay not working
-Date: Thu, 11 Sep 2008 13:33:10 +0530
-Message-ID: <eeb9eca50809110103p66bfe351j2a01961552128317@mail.gmail.com>
+Subject: Re: aplay not working
+Date: Thu, 11 Sep 2008 14:36:13 +0530
+Message-ID: <eeb9eca50809110206h2dacd60cn837fb9f81ca4f3e9@mail.gmail.com>
+References: <eeb9eca50809110103p66bfe351j2a01961552128317@mail.gmail.com>
+	<1221121853.25078.48.camel@dinesh.dua>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.243])
-	by alsa0.perex.cz (Postfix) with ESMTP id 68F8E243ED
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.250])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2AC9C24368
 	for <alsa-devel@alsa-project.org>;
-	Thu, 11 Sep 2008 10:03:12 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id f25so235594rvb.32
-	for <alsa-devel@alsa-project.org>; Thu, 11 Sep 2008 01:03:10 -0700 (PDT)
+	Thu, 11 Sep 2008 11:06:14 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id f25so256062rvb.32
+	for <alsa-devel@alsa-project.org>; Thu, 11 Sep 2008 02:06:13 -0700 (PDT)
+In-Reply-To: <1221121853.25078.48.camel@dinesh.dua>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,26 +25,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: aggarwal <anuj.aggarwal@gmail.com>
+To: dinesh <dinesh.dua@coraltele.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgLAoKSSBhbSBub3QgYWJsZSB0byBkbyBhdWRpbyByZWNvcmQgYWxzby4uCgpJIHRyaWVkIGZv
-bGxvd2luZyBjb21tYW5kcy4uCgokYXJlY29yZApSSUZGJO+/ve+/vS5XQVZFZm10IC4uLkAuQC5k
-YXRh77+977+9LlJlY29yZGluZyBXQVZFICdzdGRvdXQnIDogVW5zaWduZWQgOCBiaXQsIFJhdGUK
-ODAwMCBIeiwgTW9ubwphcmVjb3JkOiB4cnVuOjEwMzc6IHJlYWQvd3JpdGUgZXJyb3IsIHN0YXRl
-ID0gUFJFUEFSRUQKCiRhcGxheSAtbAoqKioqIExpc3Qgb2YgUExBWUJBQ0sgSGFyZHdhcmUgRGV2
-aWNlcyAqKioqCmNhcmQgMDogQUM5NyBbQXRtZWwgQUM5N10sIGRldmljZSAwOiBBdG1lbCBBQzk3
-IFtBdG1lbCBBQzk3XQogIFN1YmRldmljZXM6IDEvMQogIFN1YmRldmljZSAjMDogc3ViZGV2aWNl
-ICMwCgokYXBsYXkKYXBsYXk6IG1haW46NTA4OiBhdWRpbyBvcGVuIGVycm9yOiBJbmFwcHJvcHJp
-YXRlIGlvY3RsIGZvciBkZXZpY2UKCiRjYXQgL3Byb2MvYXNvdW5kL2NhcmRzCiAwIFtBQzk3ICAg
-ICAgICAgICBdOiBhYzk3YyAtIEF0bWVsIEFDOTcKICAgICAgICAgICAgICAgICAgICAgIEF0bWVs
-IEFDOTcgQ29udHJvbGxlciBhdCAweGZmZmEwMDAwLCBpcnEgMTgKCgokY2F0IC9wcm9jL2Fzb3Vu
-ZC92ZXJzaW9uCkFkdmFuY2VkIExpbnV4IFNvdW5kIEFyY2hpdGVjdHVyZSBEcml2ZXIgVmVyc2lv
-biAxLjAuMTRyYzEgKFR1ZSBKYW4gMDkKMDk6NTY6MTcgMjAwNyBVVEMpLgoKJGNhdCAvcHJvYy9h
-c291bmQvZGV2aWNlcwogIDI6ICAgICAgICA6IHRpbWVyCiAgMzogICAgICAgIDogc2VxdWVuY2Vy
-CiAgNDogWyAwLSAwXTogZGlnaXRhbCBhdWRpbyBwbGF5YmFjawogIDU6IFsgMF0gICA6IGNvbnRy
-b2wKCgpXaGVyZSBJIGFtIGRvaW5nIHdyb25nLi4KCgoKVGhhbmsgeW91Li4KX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+U2lyLApJZiB5b3UgaGF2ZSwgY2FuIHlvdSBwbGVhc2Ugc2VuZCBtZSB0aGUgby9wIG9mIHRoaXMg
+Y29tYW5kLAoKJGxzIC1saCAvZGV2L3NuZC8KCgoKClRoYW5rIHlvdS4uCgoKT24gVGh1LCBTZXAg
+MTEsIDIwMDggYXQgMjowMCBQTSwgZGluZXNoIDxkaW5lc2guZHVhQGNvcmFsdGVsZS5jb20+IHdy
+b3RlOgoKPiAgSGksCj4gQXMgcGVyIHVyIHByb2MgZW50ZXJpZXMgeW91IGhhdm4ndCByZWdpc3Rl
+cmVkIGFueSBjYXB0dXJlIGRldmljZSBzbyB1IGNhbgo+IG5vdCBkbyByZWNvcmRpbmcgd2l0aCB1
+ciBkZXZpY2UuCj4KPgo+Cj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KPiAqRnJvbSo6IHZh
+c3VkaGEgcmFvIDx2YXN1ZGhhLmpyYW9AZ21haWwuY29tPHZhc3VkaGElMjByYW8lMjAlM2N2YXN1
+ZGhhLmpyYW9AZ21haWwuY29tJTNlPgo+ID4KPiAqVG8qOiBhZ2dhcndhbCA8YW51ai5hZ2dhcndh
+bEBnbWFpbC5jb208YWdnYXJ3YWwlMjAlM2NhbnVqLmFnZ2Fyd2FsQGdtYWlsLmNvbSUzZT4KPiA+
+Cj4gKkNjKjogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gKlN1YmplY3QqOiBbYWxzYS1k
+ZXZlbF0gYXBsYXkgbm90IHdvcmtpbmcKPiAqRGF0ZSo6IFRodSwgMTEgU2VwIDIwMDggMTM6MzM6
+MTAgKzA1MzAKPgo+IEhpICwKPgo+IEkgYW0gbm90IGFibGUgdG8gZG8gYXVkaW8gcmVjb3JkIGFs
+c28uLgo+Cj4gSSB0cmllZCBmb2xsb3dpbmcgY29tbWFuZHMuLgo+Cj4gJGFyZWNvcmQKPiBSSUZG
+JO+/ve+/vS5XQVZFZm10IC4uLkAuQC5kYXRh77+977+9LlJlY29yZGluZyBXQVZFICdzdGRvdXQn
+IDogVW5zaWduZWQgOCBiaXQsIFJhdGUKPiA4MDAwIEh6LCBNb25vCj4gYXJlY29yZDogeHJ1bjox
+MDM3OiByZWFkL3dyaXRlIGVycm9yLCBzdGF0ZSA9IFBSRVBBUkVECj4KPiAkYXBsYXkgLWwKPiAq
+KioqIExpc3Qgb2YgUExBWUJBQ0sgSGFyZHdhcmUgRGV2aWNlcyAqKioqCj4gY2FyZCAwOiBBQzk3
+IFtBdG1lbCBBQzk3XSwgZGV2aWNlIDA6IEF0bWVsIEFDOTcgW0F0bWVsIEFDOTddCj4gICBTdWJk
+ZXZpY2VzOiAxLzEKPiAgIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCj4KPiAkYXBsYXkKPiBh
+cGxheTogbWFpbjo1MDg6IGF1ZGlvIG9wZW4gZXJyb3I6IEluYXBwcm9wcmlhdGUgaW9jdGwgZm9y
+IGRldmljZQo+Cj4gJGNhdCAvcHJvYy9hc291bmQvY2FyZHMKPiAgMCBbQUM5NyAgICAgICAgICAg
+XTogYWM5N2MgLSBBdG1lbCBBQzk3Cj4gICAgICAgICAgICAgICAgICAgICAgIEF0bWVsIEFDOTcg
+Q29udHJvbGxlciBhdCAweGZmZmEwMDAwLCBpcnEgMTgKPgo+Cj4gJGNhdCAvcHJvYy9hc291bmQv
+dmVyc2lvbgo+IEFkdmFuY2VkIExpbnV4IFNvdW5kIEFyY2hpdGVjdHVyZSBEcml2ZXIgVmVyc2lv
+biAxLjAuMTRyYzEgKFR1ZSBKYW4gMDkKPiAwOTo1NjoxNyAyMDA3IFVUQykuCj4KPiAkY2F0IC9w
+cm9jL2Fzb3VuZC9kZXZpY2VzCj4gICAyOiAgICAgICAgOiB0aW1lcgo+ICAgMzogICAgICAgIDog
+c2VxdWVuY2VyCj4gICA0OiBbIDAtIDBdOiBkaWdpdGFsIGF1ZGlvIHBsYXliYWNrCj4gICA1OiBb
+IDBdICAgOiBjb250cm9sCj4KPgo+IFdoZXJlIEkgYW0gZG9pbmcgd3JvbmcuLgo+Cj4KPgo+IFRo
+YW5rIHlvdS4uCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZ2h0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cj4KPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
