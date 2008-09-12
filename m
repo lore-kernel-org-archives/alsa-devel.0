@@ -1,21 +1,15 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 2/4] pxa2xx-ac97-lib: support building for
-	several CPUs
-Date: Fri, 12 Sep 2008 14:40:09 +0100
-Message-ID: <20080912134008.GB2471@sirena.org.uk>
-References: <1221008480-13377-1-git-send-email-dbaryshkov@gmail.com>
-	<1221008480-13377-2-git-send-email-dbaryshkov@gmail.com>
-	<20080911150413.GC12311@sirena.org.uk>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: Added a STAC_HP_M4 quirk
+Date: Fri, 12 Sep 2008 12:02:30 -0400
+Message-ID: <48CA9296.6000701@embeddedalley.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 26A98246A7
+Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
+	by alsa0.perex.cz (Postfix) with SMTP id 549ED2470A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 12 Sep 2008 15:40:11 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20080911150413.GC12311@sirena.org.uk>
+	Fri, 12 Sep 2008 18:02:44 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,17 +19,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dmitry Baryshkov <dbaryshkov@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, "Tellman, Steven" <Steven.Tellman@idt.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 11, 2008 at 04:04:13PM +0100, Mark Brown wrote:
+Added a new quirk for STAC_HP_M4 series for an 92hd75xxx family laptop.
 
-> fixed that up locally.  However, PXA3xx support seems broken in some
-> other way, it fails during init - I'll debug this and post updated
-> patches.
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+---
 
-This was a false alarm, sorry - the machine I was using for testing
-required some unmerged MFP configuration for AC97 to work.
+diff --git a/pci/hda/patch_sigmatel.c b/pci/hda/patch_sigmatel.c
+index f00334f..3000ecf 100644
+--- a/pci/hda/patch_sigmatel.c
++++ b/pci/hda/patch_sigmatel.c
+@@ -80,6 +80,7 @@ enum {
+ 	STAC_92HD71BXX_REF,
+ 	STAC_DELL_M4_1,
+ 	STAC_DELL_M4_2,
++	STAC_HP_M4,
+ 	STAC_92HD71BXX_MODELS
+ };
 
--- 
-"You grabbed my hand and we fell into it, like a daydream - or a fever."
+@@ -1527,12 +1528,14 @@ static unsigned int *stac92hd71bxx_brd_tbl[STAC_92HD71BXX_MODELS] = {
+ 	[STAC_92HD71BXX_REF] = ref92hd71bxx_pin_configs,
+ 	[STAC_DELL_M4_1]	= dell_m4_1_pin_configs,
+ 	[STAC_DELL_M4_2]	= dell_m4_2_pin_configs,
++	[STAC_HP_M4]		= NULL,
+ };
+
+ static const char *stac92hd71bxx_models[STAC_92HD71BXX_MODELS] = {
+ 	[STAC_92HD71BXX_REF] = "ref",
+ 	[STAC_DELL_M4_1] = "dell-m4-1",
+ 	[STAC_DELL_M4_2] = "dell-m4-2",
++	[STAC_HP_M4] = "hp-m4",
+ };
+
+ static struct snd_pci_quirk stac92hd71bxx_cfg_tbl[] = {
+@@ -4204,10 +4207,24 @@ again:
+
+ 	spec->num_muxes = ARRAY_SIZE(stac92hd71bxx_mux_nids);
+ 	spec->num_adcs = ARRAY_SIZE(stac92hd71bxx_adc_nids);
+-	spec->num_dmics = STAC92HD71BXX_NUM_DMICS;
+-	spec->num_smuxes = ARRAY_SIZE(stac92hd71bxx_smux_nids);
+ 	spec->num_dmuxes = ARRAY_SIZE(stac92hd71bxx_dmux_nids);
+
++	switch (spec->board_config) {
++	case STAC_HP_M4:
++		spec->num_dmics = 0;
++		spec->num_smuxes = 1;
++		spec->num_dmuxes = 0;
++
++		/* enable internal microphone */
++		snd_hda_codec_write_cache(codec, 0x0e, 0,
++			AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80);
++		break;
++	default:
++		spec->num_dmics = STAC92HD71BXX_NUM_DMICS;
++		spec->num_smuxes = ARRAY_SIZE(stac92hd71bxx_smux_nids);
++		spec->num_dmuxes = ARRAY_SIZE(stac92hd71bxx_dmux_nids);
++	};
++
+ 	spec->multiout.num_dacs = 1;
+ 	spec->multiout.hp_nid = 0x11;
+ 	spec->multiout.dac_nids = stac92hd71bxx_dac_nids;
