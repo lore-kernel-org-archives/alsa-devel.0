@@ -1,50 +1,40 @@
-From: William Estrada <MrUmunhum@popdial.com>
-Subject: alsa callback not async
-Date: Fri, 12 Sep 2008 13:21:04 -0700
-Message-ID: <48CACF30.90707@popdial.com>
-Reply-To: MrUmunhum@popdial.com
+From: "Steve Sakoman" <sakoman@gmail.com>
+Subject: [PATCH] ASoC: OMAP: Fix Gumstix Overo machine driver by using snd_soc_dai struct
+Date: Fri, 12 Sep 2008 13:42:42 -0700
+Message-ID: <5e088bd90809121342i1f7f360fk6ae6123cc54556b6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-user-bounces@lists.sourceforge.net
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-To: "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-omap-owner@vger.kernel.org
+To: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi guys,
+Structs snd_soc_codec_dai and snd_soc_cpu_dai are obsolete and are merged to
+snd_soc_dai by the commit 8687eb8bded8c3c5842a85bd0c30e43fc5a3e0e0.
 
-  I am cross posting this because I am not sure which list it belongs to.
+Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
+Acked-by: Steve Sakoman <steve@sakoman.com>
+---
+ sound/soc/omap/overo.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-  I have a test program I wrote to help me learn ALSA APIs, It work to a 
-degree. It is a
-simple Capture/Playback interface. My problem is that when the Callback 
-starts, it
-does not allow any cycles back to the main program. The main program 
-waits for console
-input to tell the callback when to stop. Well it does not accept any 
-console input when
-the callback is running. Any ideas??
+diff --git a/sound/soc/omap/overo.c b/sound/soc/omap/overo.c
+index 542ff6b..1a086ce 100644
+--- a/sound/soc/omap/overo.c
++++ b/sound/soc/omap/overo.c
+@@ -39,8 +39,8 @@ static int overo_hw_params(struct snd_pcm_substream
+*substream,
+ 	struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_codec_dai *codec_dai = rtd->dai->codec_dai;
+-	struct snd_soc_cpu_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+ 	int ret;
 
-  The source is here: http://64.124.13.3/_ALSA_/Echo/
-
+ 	/* Set codec DAI configuration */
 -- 
-William Estrada
-MrUmunhum@popdial.com
-Mt-Umunhum-Wireless.net ( http://Mt-Umunhum-Wireless.net )
-Ymessenger: MrUmunhum
-
-
-
--------------------------------------------------------------------------
-This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
-Build the coolest Linux based applications with Moblin SDK & win great prizes
-Grand prize is a trip for two to an Open Source event anywhere in the world
-http://moblin-contest.org/redirect.php?banner_id=100&url=/
+1.5.6.5
