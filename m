@@ -1,16 +1,16 @@
 From: robbat2@gentoo.org
-Subject: [PATCH] ALSA: HDA: patch_analog: Fix SPDIF output on
-	AD1989B
-Date: Sat, 13 Sep 2008 16:55:00 -0700
-Message-ID: <1221350101-11772-4-git-send-email-robbat2@gentoo.org>
+Subject: [PATCH] ALSA: HDA: patch_analog: Quirk for Asus P5Q
+	Premium/Pro boards.
+Date: Sat, 13 Sep 2008 16:55:01 -0700
+Message-ID: <1221350101-11772-5-git-send-email-robbat2@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.isohunt.com (b01.ext.isohunt.com [208.71.112.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1CBC5245E2
+	by alsa0.perex.cz (Postfix) with ESMTP id 8E6DC245E7
 	for <alsa-devel@alsa-project.org>;
-	Sun, 14 Sep 2008 02:01:44 +0200 (CEST)
+	Sun, 14 Sep 2008 02:01:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,32 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, "Robin H. Johnson" <robbat2@gentoo.org>
+Cc: alsa-devel@alsa-project.org, "Robin H. Johnson" <robbat2@orbis-terrarum.net>, "Robin H. Johnson" <robbat2@gentoo.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Robin H. Johnson <robbat2@gentoo.org>
+From: Robin H. Johnson <robbat2@orbis-terrarum.net>
 
-The SPDIF pins for AD1989 are not enabled by default. Set OUT bit so that they
-actually work. Also initialize the HDMI SPDIF at the same time.
+Use 6STACK_DIG for the AD2000BX variant of the AD1989B chip used by Asus
+on their Asus P5Q Premium and Pro boards.
 
 Signed-off-by: Robin H. Johnson <robbat2@gentoo.org>
 
 diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
-index b037324..42b1a23 100644
+index 42b1a23..2b00c4a 100644
 --- a/sound/pci/hda/patch_analog.c
 +++ b/sound/pci/hda/patch_analog.c
-@@ -2255,8 +2255,12 @@ static struct hda_verb ad1988_spdif_init_verbs[] = {
- 
- /* AD1989 has no ADC -> SPDIF route */
- static struct hda_verb ad1989_spdif_init_verbs[] = {
--	/* SPDIF out pin */
-+	/* SPDIF-1 out pin */
-+	{0x1b, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
- 	{0x1b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE | 0x27}, /* 0dB */
-+	/* SPDIF-2/HDMI out pin */
-+	{0x1d, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
-+	{0x1d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE | 0x27}, /* 0dB */
- 	{ }
+@@ -2884,6 +2884,7 @@ static struct snd_pci_quirk ad1988_cfg_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x81ec, "Asus P5B-DLX", AD1988_6STACK_DIG),
+ 	SND_PCI_QUIRK(0x1043, 0x81f6, "Asus M2N-SLI", AD1988_6STACK_DIG),
+ 	SND_PCI_QUIRK(0x1043, 0x8277, "Asus P5K-E/WIFI-AP", AD1988_6STACK_DIG),
++	SND_PCI_QUIRK(0x1043, 0x8311, "Asus P5Q-Premium/Pro", AD1988_6STACK_DIG),
+ 	{}
  };
  
 -- 
