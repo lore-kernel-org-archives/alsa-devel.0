@@ -1,19 +1,16 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: [PATCH] ALSA: HDA: hda_local: Less magic numbers.
-Date: Wed, 17 Sep 2008 13:31:58 +0930 (CST)
-Message-ID: <200809170401.m8H41wmn014947@mercury.physics.adelaide.edu.au>
-References: <s5h8wtsmgtu.wl%tiwai@suse.de>
+From: robbat2@gentoo.org
+Subject: [ALSA hda_codec 1/1] NULL pointer deference fixes for
+	slave_dig_outs
+Date: Sat, 13 Sep 2008 04:18:46 -0700
+Message-ID: <1221304726-31183-1-git-send-email-robbat2@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelphi.physics.adelaide.edu.au
-	(adelphi.physics.adelaide.edu.au [129.127.102.1])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8929A1037F8
+Received: from mail.isohunt.com (b01.ext.isohunt.com [208.71.112.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6DFB024437
 	for <alsa-devel@alsa-project.org>;
-	Wed, 17 Sep 2008 06:15:35 +0200 (CEST)
-In-Reply-To: <s5h8wtsmgtu.wl%tiwai@suse.de> from "Takashi Iwai" at Sep 16,
-	2008 02:10:53 PM
+	Sat, 13 Sep 2008 13:18:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,49 +20,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, "Robin H. Johnson" <robbat2@gentoo.org>, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, "Robin H. Johnson" <robbat2@gentoo.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi
+From: Robin H. Johnson <robbat2@gentoo.org>
 
-> > A quick glance at the codebase shows:
-> > 
-> > AC_PINCTL* long form:
-> > patch_conexant.c
-> > patch_realtek.c
-> > patch_sigmatel.c
-> > 
-> > /PIN_(VREF|IN|OUT|HP)/
-> > hda_codec.c
-> > patch_analog.c
-> > patch_atihdmi.c
-> > patch_cmedia.c
-> > patch_conexant.c
-> > patch_realtek.c
-> > patch_sigmatel.c
-> > patch_via.c
-> > 
-> > Raw hex for AC_VERB_SET_PIN_WIDGET_CONTROL verbs:
-> > patch_analog.c
-> > patch_realtek.c (LOTS)
-> > patch_via.c (LOTS)
-> > 
-> > The raw hex ones SHOULD be replaced, but the rest of them I'm not fussed either
-> > way. Takashi can make a decision as to which variant is preferred, I don't mind
-> > doing the cleanup.
-> 
-> Robin's patch is a right improvement wrt readability for whom are not
-> familiar with HD-audio codec spec, so I applied it as is.
+The new multiple digital output code forgot to check the slave_dig_outs for
+NULL in several places. This manifests as an OOPS when changing volume amongst
+other things.
 
-I have no problem with this so long as it hasn't broken anything.  I can't
-easily test this myself until I return from LPC.
+Signed-off-by: Robin H. Johnson <robbat2@gentoo.org>
 
-> FWIW, AC_* and PIN_* have somewhat different fields: the former is the
-> definition of each bit, and the latter is the values used in the real
-> world.
-
-Thanks - that's very succintly put. :-)
-
-Regards
-  jonathan
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 696d77e..b22061b 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -1462,14 +1462,15 @@ static int snd_hda_spdif_default_put(struct snd_kcontrol *kcontrol,
+ 					  AC_VERB_SET_DIGI_CONVERT_2,
+ 					  val >> 8);
+ 
+-		for (d = codec->slave_dig_outs; *d; d++) {
+-			snd_hda_codec_write_cache(codec, *d, 0,
+-					  AC_VERB_SET_DIGI_CONVERT_1,
+-					  val & 0xff);
+-			snd_hda_codec_write_cache(codec, *d, 0,
+-					  AC_VERB_SET_DIGI_CONVERT_2,
+-					  val >> 8);
+-		}
++		if (codec->slave_dig_outs)
++			for (d = codec->slave_dig_outs; *d; d++) {
++				snd_hda_codec_write_cache(codec, *d, 0,
++						  AC_VERB_SET_DIGI_CONVERT_1,
++						  val & 0xff);
++				snd_hda_codec_write_cache(codec, *d, 0,
++						  AC_VERB_SET_DIGI_CONVERT_2,
++						  val >> 8);
++			}
+ 	}
+ 
+ 	mutex_unlock(&codec->spdif_mutex);
+@@ -1507,10 +1508,12 @@ static int snd_hda_spdif_out_switch_put(struct snd_kcontrol *kcontrol,
+ 					  AC_VERB_SET_DIGI_CONVERT_1,
+ 					  val & 0xff);
+ 
+-		for (d = codec->slave_dig_outs; *d; d++)
+-			snd_hda_codec_write_cache(codec, *d, 0,
+-					  AC_VERB_SET_DIGI_CONVERT_1,
+-					  val & 0xff);
++		if (codec->slave_dig_outs)
++			for (d = codec->slave_dig_outs; *d; d++)
++				snd_hda_codec_write_cache(codec, *d, 0,
++						  AC_VERB_SET_DIGI_CONVERT_1,
++						  val & 0xff);
++
+ 		/* unmute amp switch (if any) */
+ 		if ((get_wcaps(codec, nid) & AC_WCAP_OUT_AMP) &&
+ 		    (val & AC_DIG1_ENABLE))
+@@ -1664,9 +1667,10 @@ static int snd_hda_spdif_in_switch_put(struct snd_kcontrol *kcontrol,
+ 		snd_hda_codec_write_cache(codec, nid, 0,
+ 					  AC_VERB_SET_DIGI_CONVERT_1, val);
+ 
+-		for (d = codec->slave_dig_outs; *d; d++)
+-			snd_hda_codec_write_cache(codec, *d, 0,
+-					  AC_VERB_SET_DIGI_CONVERT_1, val);
++		if (codec->slave_dig_outs)
++			for (d = codec->slave_dig_outs; *d; d++)
++				snd_hda_codec_write_cache(codec, *d, 0,
++						  AC_VERB_SET_DIGI_CONVERT_1, val);
+ 	}
+ 	mutex_unlock(&codec->spdif_mutex);
+ 	return change;
+@@ -2617,10 +2621,11 @@ static void setup_dig_out_stream(struct hda_codec *codec, hda_nid_t nid,
+ 		snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_DIGI_CONVERT_1,
+ 			    codec->spdif_ctls & ~AC_DIG1_ENABLE & 0xff);
+ 
+-		for (d = codec->slave_dig_outs; *d; d++)
+-			snd_hda_codec_write(codec, *d, 0,
+-					AC_VERB_SET_DIGI_CONVERT_1,
+-				    codec->spdif_ctls & ~AC_DIG1_ENABLE & 0xff);
++		if (codec->slave_dig_outs)
++			for (d = codec->slave_dig_outs; *d; d++)
++				snd_hda_codec_write(codec, *d, 0,
++						AC_VERB_SET_DIGI_CONVERT_1,
++					    codec->spdif_ctls & ~AC_DIG1_ENABLE & 0xff);
+ 	}
+ 	snd_hda_codec_setup_stream(codec, nid, stream_tag, 0, format);
+ 	/* turn on again (if needed) */
+@@ -2628,10 +2633,11 @@ static void setup_dig_out_stream(struct hda_codec *codec, hda_nid_t nid,
+ 		snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_DIGI_CONVERT_1,
+ 				    codec->spdif_ctls & 0xff);
+ 
+-		for (d = codec->slave_dig_outs; *d; d++)
+-			snd_hda_codec_write(codec, *d, 0,
+-					AC_VERB_SET_DIGI_CONVERT_1,
+-				    codec->spdif_ctls & 0xff);
++		if (codec->slave_dig_outs)
++			for (d = codec->slave_dig_outs; *d; d++)
++				snd_hda_codec_write(codec, *d, 0,
++						AC_VERB_SET_DIGI_CONVERT_1,
++					    codec->spdif_ctls & 0xff);
+ 	}
+ 
+ }
+-- 
+1.6.0.1
