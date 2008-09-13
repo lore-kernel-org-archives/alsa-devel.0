@@ -1,13 +1,14 @@
 From: robbat2@gentoo.org
-Subject: [PATCH] ALSA: HDA: hda_local: Less magic numbers.
-Date: Sat, 13 Sep 2008 16:54:59 -0700
-Message-ID: <1221350101-11772-3-git-send-email-robbat2@gentoo.org>
+Subject: [PATCH] ALSA: HDA: hda_proc: Fix printf format
+	specifier
+Date: Sat, 13 Sep 2008 16:54:57 -0700
+Message-ID: <1221350101-11772-1-git-send-email-robbat2@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.isohunt.com (b01.ext.isohunt.com [208.71.112.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3EF9F245E1
+	by alsa0.perex.cz (Postfix) with ESMTP id DB463245E3
 	for <alsa-devel@alsa-project.org>;
 	Sun, 14 Sep 2008 01:55:07 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -25,36 +26,24 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Robin H. Johnson <robbat2@gentoo.org>
 
-Explain some of the magic numbers I saw while trying to fix the AD1989 SPDIF
-issue. Maybe should just use the expanded form directly in the verbs?
+The Pincap output had a typod format specifier, leading to an extraneous "08"
+in the output, which is a reserved bit of the Vref field, and was really
+confused :-).
 
 Signed-off-by: Robin H. Johnson <robbat2@gentoo.org>
 
-diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
-index d688f50..7957fef 100644
---- a/sound/pci/hda/hda_local.h
-+++ b/sound/pci/hda/hda_local.h
-@@ -368,12 +368,15 @@ int snd_hda_parse_pin_def_config(struct hda_codec *codec,
- #define AMP_OUT_UNMUTE	0xb000
- #define AMP_OUT_ZERO	0xb000
- /* pinctl values */
--#define PIN_IN		0x20
--#define PIN_VREF80	0x24
--#define PIN_VREF50	0x21
--#define PIN_OUT		0x40
--#define PIN_HP		0xc0
--#define PIN_HP_AMP	0x80
-+#define PIN_IN			(AC_PINCTL_IN_EN)
-+#define PIN_VREFHIZ	(AC_PINCTL_IN_EN | AC_PINCTL_VREF_HIZ)
-+#define PIN_VREF50		(AC_PINCTL_IN_EN | AC_PINCTL_VREF_50)
-+#define PIN_VREFGRD	(AC_PINCTL_IN_EN | AC_PINCTL_VREF_GRD)
-+#define PIN_VREF80		(AC_PINCTL_IN_EN | AC_PINCTL_VREF_80)
-+#define PIN_VREF100	(AC_PINCTL_IN_EN | AC_PINCTL_VREF_100)
-+#define PIN_OUT		(AC_PINCTL_OUT_EN)
-+#define PIN_HP			(AC_PINCTL_OUT_EN | AC_PINCTL_HP_EN)
-+#define PIN_HP_AMP		(AC_PINCTL_HP_EN)
+diff --git a/sound/pci/hda/hda_proc.c b/sound/pci/hda/hda_proc.c
+index 4927c4b..743d779 100644
+--- a/sound/pci/hda/hda_proc.c
++++ b/sound/pci/hda/hda_proc.c
+@@ -216,7 +216,7 @@ static void print_pin_caps(struct snd_info_buffer *buffer,
+ 	unsigned int caps, val;
  
- /*
-  * get widget capabilities
+ 	caps = snd_hda_param_read(codec, nid, AC_PAR_PIN_CAP);
+-	snd_iprintf(buffer, "  Pincap 0x08%x:", caps);
++	snd_iprintf(buffer, "  Pincap 0x%08x:", caps);
+ 	if (caps & AC_PINCAP_IN)
+ 		snd_iprintf(buffer, " IN");
+ 	if (caps & AC_PINCAP_OUT)
 -- 
 1.6.0.1
