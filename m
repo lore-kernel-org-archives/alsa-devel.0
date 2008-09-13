@@ -1,14 +1,13 @@
 From: robbat2@gentoo.org
-Subject: [PATCH] ALSA: HDA: patch_analog: Implement multiple
-	outputs for AD1988
-Date: Sat, 13 Sep 2008 16:54:58 -0700
-Message-ID: <1221350101-11772-2-git-send-email-robbat2@gentoo.org>
+Subject: [PATCH] ALSA: HDA: hda_local: Less magic numbers.
+Date: Sat, 13 Sep 2008 16:54:59 -0700
+Message-ID: <1221350101-11772-3-git-send-email-robbat2@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.isohunt.com (b01.ext.isohunt.com [208.71.112.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3ABF8245DF
+	by alsa0.perex.cz (Postfix) with ESMTP id 3EF9F245E1
 	for <alsa-devel@alsa-project.org>;
 	Sun, 14 Sep 2008 01:55:07 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -26,46 +25,36 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Robin H. Johnson <robbat2@gentoo.org>
 
-Implement the slave_dig_outs for AD1989 cards. Untested due to lack of
-hardware.
+Explain some of the magic numbers I saw while trying to fix the AD1989 SPDIF
+issue. Maybe should just use the expanded form directly in the verbs?
 
 Signed-off-by: Robin H. Johnson <robbat2@gentoo.org>
 
-diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
-index 0899b6b..b037324 100644
---- a/sound/pci/hda/patch_analog.c
-+++ b/sound/pci/hda/patch_analog.c
-@@ -1826,9 +1826,14 @@ static hda_nid_t ad1988_capsrc_nids[3] = {
- 	0x0c, 0x0d, 0x0e
- };
+diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
+index d688f50..7957fef 100644
+--- a/sound/pci/hda/hda_local.h
++++ b/sound/pci/hda/hda_local.h
+@@ -368,12 +368,15 @@ int snd_hda_parse_pin_def_config(struct hda_codec *codec,
+ #define AMP_OUT_UNMUTE	0xb000
+ #define AMP_OUT_ZERO	0xb000
+ /* pinctl values */
+-#define PIN_IN		0x20
+-#define PIN_VREF80	0x24
+-#define PIN_VREF50	0x21
+-#define PIN_OUT		0x40
+-#define PIN_HP		0xc0
+-#define PIN_HP_AMP	0x80
++#define PIN_IN			(AC_PINCTL_IN_EN)
++#define PIN_VREFHIZ	(AC_PINCTL_IN_EN | AC_PINCTL_VREF_HIZ)
++#define PIN_VREF50		(AC_PINCTL_IN_EN | AC_PINCTL_VREF_50)
++#define PIN_VREFGRD	(AC_PINCTL_IN_EN | AC_PINCTL_VREF_GRD)
++#define PIN_VREF80		(AC_PINCTL_IN_EN | AC_PINCTL_VREF_80)
++#define PIN_VREF100	(AC_PINCTL_IN_EN | AC_PINCTL_VREF_100)
++#define PIN_OUT		(AC_PINCTL_OUT_EN)
++#define PIN_HP			(AC_PINCTL_OUT_EN | AC_PINCTL_HP_EN)
++#define PIN_HP_AMP		(AC_PINCTL_HP_EN)
  
--#define AD1988_SPDIF_OUT	0x02
-+#define AD1988_SPDIF_OUT		0x02
-+#define AD1988_SPDIF_OUT_HDMI	0x0b
- #define AD1988_SPDIF_IN		0x07
- 
-+static hda_nid_t ad1989b_slave_dig_outs[2] = {
-+	AD1988_SPDIF_OUT, AD1988_SPDIF_OUT_HDMI
-+};
-+
- static struct hda_input_mux ad1988_6stack_capture_source = {
- 	.num_items = 5,
- 	.items = {
-@@ -2143,6 +2148,7 @@ static struct snd_kcontrol_new ad1988_spdif_in_mixers[] = {
- 
- static struct snd_kcontrol_new ad1989_spdif_out_mixers[] = {
- 	HDA_CODEC_VOLUME("IEC958 Playback Volume", 0x1b, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_VOLUME("HDMI Playback Volume", 0x1d, 0x0, HDA_OUTPUT),
- 	{ } /* end */
- };
- 
-@@ -2981,6 +2987,7 @@ static int patch_ad1988(struct hda_codec *codec)
- 				ad1989_spdif_out_mixers;
- 			spec->init_verbs[spec->num_init_verbs++] =
- 				ad1989_spdif_init_verbs;
-+			codec->slave_dig_outs = ad1989b_slave_dig_outs;
- 		} else {
- 			spec->mixers[spec->num_mixers++] =
- 				ad1988_spdif_out_mixers;
+ /*
+  * get widget capabilities
 -- 
 1.6.0.1
