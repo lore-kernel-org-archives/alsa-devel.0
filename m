@@ -1,16 +1,16 @@
 From: robbat2@gentoo.org
-Subject: [PATCH] ALSA: HDA: hda_proc: Fix printf format
-	specifier
-Date: Sat, 13 Sep 2008 16:54:57 -0700
-Message-ID: <1221350101-11772-1-git-send-email-robbat2@gentoo.org>
+Subject: [PATCH take 2] ALSA: HDA: patch_analog: Quirk for Asus
+	P5Q Premium/Pro boards.
+Date: Sat, 13 Sep 2008 16:55:58 -0700
+Message-ID: <1221350158-11833-1-git-send-email-robbat2@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.isohunt.com (b01.ext.isohunt.com [208.71.112.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id DB463245E3
+	by alsa0.perex.cz (Postfix) with ESMTP id 4EE3C245DE
 	for <alsa-devel@alsa-project.org>;
-	Sun, 14 Sep 2008 01:55:07 +0200 (CEST)
+	Sun, 14 Sep 2008 01:56:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,24 +26,22 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Robin H. Johnson <robbat2@gentoo.org>
 
-The Pincap output had a typod format specifier, leading to an extraneous "08"
-in the output, which is a reserved bit of the Vref field, and was really
-confused :-).
+Use 6STACK_DIG for the AD2000BX variant of the AD1989B chip used by Asus
+on their Asus P5Q Premium and Pro boards.
 
 Signed-off-by: Robin H. Johnson <robbat2@gentoo.org>
 
-diff --git a/sound/pci/hda/hda_proc.c b/sound/pci/hda/hda_proc.c
-index 4927c4b..743d779 100644
---- a/sound/pci/hda/hda_proc.c
-+++ b/sound/pci/hda/hda_proc.c
-@@ -216,7 +216,7 @@ static void print_pin_caps(struct snd_info_buffer *buffer,
- 	unsigned int caps, val;
+diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
+index 42b1a23..2b00c4a 100644
+--- a/sound/pci/hda/patch_analog.c
++++ b/sound/pci/hda/patch_analog.c
+@@ -2884,6 +2884,7 @@ static struct snd_pci_quirk ad1988_cfg_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x81ec, "Asus P5B-DLX", AD1988_6STACK_DIG),
+ 	SND_PCI_QUIRK(0x1043, 0x81f6, "Asus M2N-SLI", AD1988_6STACK_DIG),
+ 	SND_PCI_QUIRK(0x1043, 0x8277, "Asus P5K-E/WIFI-AP", AD1988_6STACK_DIG),
++	SND_PCI_QUIRK(0x1043, 0x8311, "Asus P5Q-Premium/Pro", AD1988_6STACK_DIG),
+ 	{}
+ };
  
- 	caps = snd_hda_param_read(codec, nid, AC_PAR_PIN_CAP);
--	snd_iprintf(buffer, "  Pincap 0x08%x:", caps);
-+	snd_iprintf(buffer, "  Pincap 0x%08x:", caps);
- 	if (caps & AC_PINCAP_IN)
- 		snd_iprintf(buffer, " IN");
- 	if (caps & AC_PINCAP_OUT)
 -- 
 1.6.0.1
