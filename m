@@ -1,18 +1,17 @@
-From: Harald Welte <HaraldWelte@viatech.com>
-Subject: [PATCH 3/3] HDA VIA: Replace buggy Mic Boost
-Date: Mon, 15 Sep 2008 22:43:23 +0800
-Message-ID: <20080915144323.GD8061@prithivi.gnumonks.org>
-References: <20080915144005.GA8061@prithivi.gnumonks.org>
+From: "S. Aguinaga" <sa_jr@yahoo.com>
+Subject: alsa on Apple Mac Pro Tower ( macPro3, 1, quad core,
+	xenon)
+Date: Mon, 15 Sep 2008 09:14:35 -0700 (PDT)
+Message-ID: <767489.26449.qm@web65616.mail.ac4.yahoo.com>
+Reply-To: "S. Aguinaga" <sa_jr@ieee.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 48C362413F
+Received: from web65616.mail.ac4.yahoo.com (web65616.mail.ac4.yahoo.com
+	[76.13.9.84]) by alsa0.perex.cz (Postfix) with SMTP id 007B0243BC
 	for <alsa-devel@alsa-project.org>;
-	Mon, 15 Sep 2008 16:43:42 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20080915144005.GA8061@prithivi.gnumonks.org>
+	Mon, 15 Sep 2008 18:14:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,173 +22,117 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Logan Li <loganli@viatech.com.cn>
 List-Id: alsa-devel@alsa-project.org
 
-[ALSA] HDA VIA: Replace buggy Mic Boost
-    
-VT1708S' Mic Boost should be hidden in hardware design according to some
-customers' requirements.  However, in case of bugs, it has to be exhibited to
-normal users, so we need to:
-* open a software backdoor, which is disabled by default in hardware
-* re-write .tlv & .info, to indicate the actual necessary info, which we cannot
-  get from amplifier's capabiliies
-    
-Signed-off-by: Logan Li <LoganLi@viatech.com.cn>
-Signed-off-by: Harald Welte <HaraldWelte@viatech.com>
+I downloaded the latest development drivers, lib, and utils (1.0.18rc3) and compiled and installed it again.  Next I made sure that the /etc/modprobe.d/sound had the following line:
+options snd-hda-intel model=imac24
 
---- a/sound/pci/hda/patch_via.c
-+++ b/sound/pci/hda/patch_via.c
-@@ -35,6 +35,7 @@
- /* 2008-04-09  Lydia Wang  Add mute front speaker when HP plugin             */
- /* 2008-04-09  Lydia Wang  Add Independent HP feature                        */
- /* 2008-05-28  Lydia Wang  Add second S/PDIF Out support for VT1702	     */
-+/* 2008-09-15  Logan Li    Add VT1708S Mic Boost workaround/backdoor	     */
- /*                                                                           */
- /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
- 
-@@ -87,6 +88,48 @@
- #define IS_VT1708S_VENDORID(x)		((x) >= 0x11060397 && (x) <= 0x11067397)
- #define IS_VT1702_VENDORID(x)		((x) >= 0x11060398 && (x) <= 0x11067398)
- 
-+enum VIA_HDA_CODEC {
-+	UNKNOWN = -1,
-+	VT1708,
-+	VT1709_10CH,
-+	VT1709_6CH,
-+	VT1708B_8CH,
-+	VT1708B_4CH,
-+	VT1708S,
-+	VT1702,
-+	CODEC_TYPES,
-+};
-+
-+static enum VIA_HDA_CODEC get_codec_type(u32 vendor_id)
-+{
-+	u16 ven_id = vendor_id >> 16;
-+	u16 dev_id = vendor_id & 0xffff;
-+	enum VIA_HDA_CODEC codec_type;
-+
-+	/* get codec type */
-+	if (ven_id != 0x1106)
-+		codec_type = UNKNOWN;
-+	else if (dev_id >= 0x1708 && dev_id <= 0x170b)
-+		codec_type = VT1708;
-+	else if (dev_id >= 0xe710 && dev_id <= 0xe713)
-+		codec_type = VT1709_10CH;
-+	else if (dev_id >= 0xe714 && dev_id <= 0xe717)
-+		codec_type = VT1709_6CH;
-+	else if (dev_id >= 0xe720 && dev_id <= 0xe723)
-+		codec_type = VT1708B_8CH;
-+	else if (dev_id >= 0xe724 && dev_id <= 0xe727)
-+		codec_type = VT1708B_4CH;
-+	else if ((dev_id & 0xfff) == 0x397
-+		 && (dev_id >> 12) < 8)
-+		codec_type = VT1708S;
-+	else if ((dev_id & 0xfff) == 0x398
-+		 && (dev_id >> 12) < 8)
-+		codec_type = VT1702;
-+	else
-+		codec_type = UNKNOWN;
-+	return codec_type;
-+};
-+
- #define VIA_HP_EVENT		0x01
- #define VIA_GPIO_EVENT		0x02
- 
-@@ -102,6 +145,48 @@ enum {
- 	AUTO_SEQ_SIDE
- };
- 
-+#define get_amp_nid(kc)	((kc)->private_value & 0xffff)
-+
-+/* Some VT1708S based boards gets the micboost setting wrong, so we have
-+ * to apply some brute-force and re-write the TLV's by software. */
-+static int mic_boost_tlv(struct snd_kcontrol *kcontrol, int op_flag,
-+			 unsigned int size, unsigned int __user *_tlv)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	hda_nid_t nid = get_amp_nid(kcontrol);
-+
-+	if (get_codec_type(codec->vendor_id) == VT1708S
-+	    && (nid == 0x1a || nid == 0x1e)) {
-+		if (size < 4 * sizeof(unsigned int))
-+			return -ENOMEM;
-+		if (put_user(1, _tlv))	/* SNDRV_CTL_TLVT_DB_SCALE */
-+			return -EFAULT;
-+		if (put_user(2 * sizeof(unsigned int), _tlv + 1))
-+			return -EFAULT;
-+		if (put_user(0, _tlv + 2)) /* offset = 0 */
-+			return -EFAULT;
-+		if (put_user(1000, _tlv + 3)) /* step size = 10 dB */
-+			return -EFAULT;
-+	}
-+	return 0;
-+}
-+
-+static int mic_boost_volume_info(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_info *uinfo)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	hda_nid_t nid = get_amp_nid(kcontrol);
-+
-+	if (get_codec_type(codec->vendor_id) == VT1708S
-+	    && (nid == 0x1a || nid == 0x1e)) {
-+		uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+		uinfo->count = 2;
-+		uinfo->value.integer.min = 0;
-+		uinfo->value.integer.max = 3;
-+	}
-+	return 0;
-+}
-+
- static struct snd_kcontrol_new vt1708_control_templates[] = {
- 	HDA_CODEC_VOLUME(NULL, 0, 0, 0),
- 	HDA_CODEC_MUTE(NULL, 0, 0, 0),
-@@ -2430,14 +2515,29 @@ static int patch_vt1708B_4ch(struct hda_codec *codec)
- 
- /* Patch for VT1708S */
- 
-+/* VT1708S software backdoor based override for buggy hardware micboost
-+ * setting */
-+#define MIC_BOOST_VOLUME(xname, nid) {				\
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,		\
-+	.name = xname,					\
-+	.index = 0,					\
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |	\
-+	SNDRV_CTL_ELEM_ACCESS_TLV_READ |		\
-+	SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK,		\
-+	.info = mic_boost_volume_info,			\
-+	.get = snd_hda_mixer_amp_volume_get,		\
-+	.put = snd_hda_mixer_amp_volume_put,		\
-+	.tlv = { .c = mic_boost_tlv },			\
-+	.private_value = HDA_COMPOSE_AMP_VAL(nid, 3, 0, HDA_INPUT) }
-+
- /* capture mixer elements */
- static struct snd_kcontrol_new vt1708S_capture_mixer[] = {
- 	HDA_CODEC_VOLUME("Capture Volume", 0x13, 0x0, HDA_INPUT),
- 	HDA_CODEC_MUTE("Capture Switch", 0x13, 0x0, HDA_INPUT),
- 	HDA_CODEC_VOLUME_IDX("Capture Volume", 1, 0x14, 0x0, HDA_INPUT),
- 	HDA_CODEC_MUTE_IDX("Capture Switch", 1, 0x14, 0x0, HDA_INPUT),
--	HDA_CODEC_VOLUME("Mic Boost", 0x1A, 0x0, HDA_INPUT),
--	HDA_CODEC_VOLUME("Front Mic Boost", 0x1E, 0x0, HDA_INPUT),
-+	MIC_BOOST_VOLUME("Mic Boost Capture Volume", 0x1A),
-+	MIC_BOOST_VOLUME("Front Mic Boost Capture Volume", 0x1E),
- 	{
- 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 		/* The multiple "Capture Source" controls confuse alsamixer
-@@ -2472,6 +2572,8 @@ static struct hda_verb vt1708S_volume_init_verbs[] = {
- 	/* PW9, PW10  Output enable */
- 	{0x20, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40},
- 	{0x21, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40},
-+	/* Enable Mic Boost Volume backdoor */
-+	{0x1, 0xf98, 0x1},
- 	{ }
- };
- 
+and first I checked the gui tool called "PulseAudio Volume Control" from my "multimedia" section, and it crashes!  
+
+Next I tried the aplay somesound.wav file from the command line, it my Mac Pro sings!!!
 
 
--- 
-- Harald Welte <HaraldWelte@viatech.com>	    http://linux.via.com.tw/
-============================================================================
-VIA Open Source Liaison
+I don't know what the PulseAudio issues are, but ... oh well!!
+
+Next I checked that Amrok works using the alsa engine, and it does!!
+
+
+If I plug in a headphone set, and I play music again it comes out of the MacPro speaker only, but no from the headphones. 
+
+
+Do you have a handle this, if you guys have some links for me to read, please send them my way!
+
+Thank you.
+// Sal Aguinaga
+// Northwestern University
+// Evanston, IL 
+
+
+
+----- Original Message ----
+From: Takashi Iwai <tiwai@suse.de>
+To: S. Aguinaga <sa_jr@ieee.org>
+Cc: alsa-devel@alsa-project.org
+Sent: Tuesday, August 19, 2008 5:48:47 AM
+Subject: Re: [alsa-devel] Alsa-devel Digest, Vol 18, Issue 45
+
+At Mon, 18 Aug 2008 10:26:42 -0700 (PDT),
+S. Aguinaga wrote:
+> 
+> ==============================================
+> Trying to figure out where to add this "model=macpro"
+> and it looks like it should be in a file called modprobe.conf or an options file under /etc/modprobe.d/
+> 
+> but I don't have (with my installation -- fedora {9} ) those files, do you have any input on this?
+
+You can create any file, typically, /etc/modprobe.d/sound or so.
+Put the following line there
+
+options snd-hda-intel model=macpro
+
+Then reload the module, check the sysfs file
+/sys/modules/snd_hda_intel/parameters/macpro to see whether the
+specified option was really passed properly.
+
+
+Takashi
+
+> below are the only files I have.
+> 
+> /etc/modprobe.d/
+>  
+> anaconda  
+> blacklist-visor  
+> i915modeset
+> blacklist  
+> floppy-pnp      
+> modprobe.conf.dist
+> 
+> 
+> ==============================================
+> Subject: Re: [alsa-devel] Alsa-devel Digest, Vol 18, Issue 45
+> 
+> At Sat, 16 Aug 2008 06:15:46 -0700 (PDT),
+> S. Aguinaga wrote:
+> > 
+> > S. Aguinaga wrote:
+> > > 
+> > > Hello Stan,
+> > > 
+> > > This is awesome I did find the problem it's listed in the /var/log/messages under ALSA.
+> > > 
+> > > 1.   When I bring up the "Pulse Volume Control" gui, the first tab "Playback"  comes up empty, and grayed-out is "No Streams Available"
+> > > 2.   aplay does not produce sound, period!
+> > > 3.   Amrok's welcome sample does not produce sound out of the std tower speaker or the headphone jack.
+> > > 
+> > > I didn't notice anything strange on the output of the alsa-info.sh file, but when I checked the var/log/messages, this is what I found:
+> > > 
+> > >  sudo cat /var/log/messages | grep ALSA
+> > > Aug 11 07:52:10 macprolinx kernel: ALSA sound/pci/hda/hda_intel.c:1810: chipset global capabilities = 0x4401
+> > > Aug 11 07:52:10 macprolinx kernel: ALSA sound/pci/hda/hda_intel.c:749: codec_mask = 0x1
+> > > Aug 11 07:52:10 macprolinx kernel: ALSA sound/pci/hda/hda_codec.c:1073: Cannot find slave Surround Playback Volume, skipped
+> (snip)
+> 
+> These messages are harmless.  It's just information from the driver,
+> enabled only when you build it with CONFIG_SND_DEBUG_VERBOSE=y.
+> 
+> > I think your problem is a misidentification of your sound chip.  The 
+> > model being used for your 889A appears to be incompatible, thus all 
+> > the errors above.  It appears that the macpro ALC885 is being selected 
+> > before it gets to the choice for the ALC889A.  Perhaps a developer can 
+> > look into this.
+> 
+> Well, ALC882, ALC885 and ALC889A are almost compatible.  In the
+> driver, they are all handled in the same routine.
+> 
+> There are a few models for intel macs with ALC88x.  Try to specify
+> either model=macpro, model=mbp3 or model=imac24 as the module option
+> of snd-hda-intel driver.
+> 
+> 
+> Takashi
+> 
+> 
+> 
+>      
+> 
