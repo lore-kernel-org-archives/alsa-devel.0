@@ -1,21 +1,16 @@
-From: William Estrada <MrUmunhum@popdial.com>
-Subject: alsa callback not async - Second post to this list
-Date: Sun, 14 Sep 2008 13:16:54 -0700
-Message-ID: <48CD7136.7070702@popdial.com>
-Reply-To: MrUmunhum@popdial.com
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 0/6] ASoC updates
+Date: Mon, 15 Sep 2008 14:24:19 +0100
+Message-ID: <20080915132418.GA23825@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from MAIL02.inside.adbasesystems.com (mail.1dial.com [64.136.164.73])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5E4671037E3
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A998624652
 	for <alsa-devel@alsa-project.org>;
-	Mon, 15 Sep 2008 14:46:07 +0200 (CEST)
-Received: from [10.1.1.50] (64.124.13.3.gatespeed.com [64.124.13.3]) by
-	MAIL02.inside.adbasesystems.com
-	(Vircom SMTPRS 4.5.654.13) with ESMTP id
-	<B0599343604@MAIL02.inside.adbasesystems.com> for
-	<alsa-devel@alsa-project.org>; Sun, 14 Sep 2008 16:16:59 -0400
+	Mon, 15 Sep 2008 15:24:20 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,27 +20,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi guys,
+The following changes since commit 3e3b5651631629482e0e1541f8c4298a435bb100:
+  Mark Brown (1):
+        ALSA: ASoC: Use codec digital mute when stopping playback
 
-  I am cross posting this because I am not sure which list it belongs to.
+are available in the git repository at:
 
-  I have a test program I wrote to help me learn ALSA APIs, It work to a 
-degree. It is a
-simple Capture/Playback interface. My problem is that when the Callback 
-starts, it
-does not allow any cycles back to the main program. The main program 
-waits for console
-input to tell the callback when to stop. Well it does not accept any 
-console input when
-the callback is running. Any ideas??
+  git://opensource.wolfsonmicro.com/linux-2.6-asoc for-tiwai
 
-  The source is here: http://64.124.13.3/_ALSA_/Echo/
+Alan Horstmann (1):
+      ASoC: Fix WM8731 SPI write
 
--- 
-William Estrada
-MrUmunhum@popdial.com
-Mt-Umunhum-Wireless.net ( http://Mt-Umunhum-Wireless.net )
-Ymessenger: MrUmunhum
+Dmitry Baryshkov (4):
+      ASoC: Support runtime selection of CPU in pxa2xx-i2s
+      ALSA: Separate common pxa2xx-ac97 code
+      ALSA: pxa2xx-ac97-lib: support building for several CPUs
+      ALSA: Separate common pxa2xx-pcm code
+
+Kenneth Kiraly (1):
+      ASoC: Add WM8971 CODEC driver
+
+ include/sound/pxa2xx-lib.h  |   45 ++
+ sound/arm/Kconfig           |    9 +
+ sound/arm/Makefile          |    4 +
+ sound/arm/pxa2xx-ac97-lib.c |  384 ++++++++++++++++++
+ sound/arm/pxa2xx-ac97.c     |  247 +-----------
+ sound/arm/pxa2xx-pcm-lib.c  |  278 +++++++++++++
+ sound/arm/pxa2xx-pcm.c      |  252 +-----------
+ sound/arm/pxa2xx-pcm.h      |   13 +-
+ sound/soc/codecs/Kconfig    |    4 +
+ sound/soc/codecs/Makefile   |    2 +
+ sound/soc/codecs/wm8731.c   |    5 +-
+ sound/soc/codecs/wm8971.c   |  942 +++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/wm8971.h   |   64 +++
+ sound/soc/pxa/Kconfig       |    3 +
+ sound/soc/pxa/pxa2xx-ac97.c |  272 +------------
+ sound/soc/pxa/pxa2xx-i2s.c  |   20 +-
+ sound/soc/pxa/pxa2xx-pcm.c  |  261 +------------
+ sound/soc/pxa/pxa2xx-pcm.h  |   15 -
+ 18 files changed, 1802 insertions(+), 1018 deletions(-)
+ create mode 100644 include/sound/pxa2xx-lib.h
+ create mode 100644 sound/arm/pxa2xx-ac97-lib.c
+ create mode 100644 sound/arm/pxa2xx-pcm-lib.c
+ create mode 100644 sound/soc/codecs/wm8971.c
+ create mode 100644 sound/soc/codecs/wm8971.h
