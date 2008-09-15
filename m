@@ -1,16 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 0/6] ASoC updates
-Date: Mon, 15 Sep 2008 14:24:19 +0100
-Message-ID: <20080915132418.GA23825@rakim.wolfsonmicro.main>
+Subject: [PATCH 3/6] ASoC: Support runtime selection of CPU in
+	pxa2xx-i2s
+Date: Mon, 15 Sep 2008 14:25:03 +0100
+Message-ID: <1221485106-23881-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <20080915132418.GA23825@rakim.wolfsonmicro.main>
+	<1221485106-23881-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1221485106-23881-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A998624652
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2DDB124658
 	for <alsa-devel@alsa-project.org>;
-	Mon, 15 Sep 2008 15:24:20 +0200 (CEST)
-Content-Disposition: inline
+	Mon, 15 Sep 2008 15:25:08 +0200 (CEST)
+In-Reply-To: <1221485106-23881-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,50 +25,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: Dmitry Baryshkov <dbaryshkov@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 3e3b5651631629482e0e1541f8c4298a435bb100:
-  Mark Brown (1):
-        ALSA: ASoC: Use codec digital mute when stopping playback
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
 
-are available in the git repository at:
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/pxa/pxa2xx-i2s.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
-  git://opensource.wolfsonmicro.com/linux-2.6-asoc for-tiwai
-
-Alan Horstmann (1):
-      ASoC: Fix WM8731 SPI write
-
-Dmitry Baryshkov (4):
-      ASoC: Support runtime selection of CPU in pxa2xx-i2s
-      ALSA: Separate common pxa2xx-ac97 code
-      ALSA: pxa2xx-ac97-lib: support building for several CPUs
-      ALSA: Separate common pxa2xx-pcm code
-
-Kenneth Kiraly (1):
-      ASoC: Add WM8971 CODEC driver
-
- include/sound/pxa2xx-lib.h  |   45 ++
- sound/arm/Kconfig           |    9 +
- sound/arm/Makefile          |    4 +
- sound/arm/pxa2xx-ac97-lib.c |  384 ++++++++++++++++++
- sound/arm/pxa2xx-ac97.c     |  247 +-----------
- sound/arm/pxa2xx-pcm-lib.c  |  278 +++++++++++++
- sound/arm/pxa2xx-pcm.c      |  252 +-----------
- sound/arm/pxa2xx-pcm.h      |   13 +-
- sound/soc/codecs/Kconfig    |    4 +
- sound/soc/codecs/Makefile   |    2 +
- sound/soc/codecs/wm8731.c   |    5 +-
- sound/soc/codecs/wm8971.c   |  942 +++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/wm8971.h   |   64 +++
- sound/soc/pxa/Kconfig       |    3 +
- sound/soc/pxa/pxa2xx-ac97.c |  272 +------------
- sound/soc/pxa/pxa2xx-i2s.c  |   20 +-
- sound/soc/pxa/pxa2xx-pcm.c  |  261 +------------
- sound/soc/pxa/pxa2xx-pcm.h  |   15 -
- 18 files changed, 1802 insertions(+), 1018 deletions(-)
- create mode 100644 include/sound/pxa2xx-lib.h
- create mode 100644 sound/arm/pxa2xx-ac97-lib.c
- create mode 100644 sound/arm/pxa2xx-pcm-lib.c
- create mode 100644 sound/soc/codecs/wm8971.c
- create mode 100644 sound/soc/codecs/wm8971.h
+diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
+index c796b18..21ca3fe 100644
+--- a/sound/soc/pxa/pxa2xx-i2s.c
++++ b/sound/soc/pxa/pxa2xx-i2s.c
+@@ -65,11 +65,6 @@ static struct pxa2xx_gpio gpio_bus[] = {
+ 		.frm = GPIO31_SYNC_I2S_MD,
+ 	},
+ 	{ /* I2S SoC Master */
+-#ifdef CONFIG_PXA27x
+-		.sys = GPIO113_I2S_SYSCLK_MD,
+-#else
+-		.sys = GPIO32_SYSCLK_I2S_MD,
+-#endif
+ 		.rx = GPIO29_SDATA_IN_I2S_MD,
+ 		.tx = GPIO30_SDATA_OUT_I2S_MD,
+ 		.clk = GPIO28_BITCLK_OUT_I2S_MD,
+@@ -343,6 +338,11 @@ static struct platform_driver pxa2xx_i2s_driver = {
+ 
+ static int __init pxa2xx_i2s_init(void)
+ {
++	if (cpu_is_pxa27x())
++		gpio_bus[1].sys = GPIO113_I2S_SYSCLK_MD;
++	else
++		gpio_bus[1].sys = GPIO32_SYSCLK_I2S_MD;
++
+ 	clk_i2s = ERR_PTR(-ENOENT);
+ 	return platform_driver_register(&pxa2xx_i2s_driver);
+ }
+-- 
+1.5.6.5
