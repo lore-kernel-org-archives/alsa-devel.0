@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: Dai for at91sam9g20.
-Date: Tue, 16 Sep 2008 13:23:46 +0100
-Message-ID: <20080916122345.GA10122@sirena.org.uk>
-References: <48CFA4BC.8030700@atmel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 0/3] ASoC updates
+Date: Tue, 16 Sep 2008 13:48:51 +0100
+Message-ID: <20080916124851.GA15445@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 510DE243F3
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B81982440F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 16 Sep 2008 14:23:47 +0200 (CEST)
+	Tue, 16 Sep 2008 14:48:52 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <48CFA4BC.8030700@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,13 +20,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 16, 2008 at 02:21:16PM +0200, Sedji Gaouaou wrote:
+The following changes since commit 78bd2cd2124d3a77f7f78af47849ea571a73f2a1:
+  Dmitry Baryshkov (1):
+        ALSA: Separate common pxa2xx-pcm code
 
-> I have written a dai to use a wolfson 8731 with the sam9g20 atmel board.
-> I would like to know what is the proper place to post my patch, is it here?
+are available in the git repository at:
 
-Yes, please submit the patch here.
+  git://opensource.wolfsonmicro.com/linux-2.6-asoc for-tiwai
+
+Mark Brown (3):
+      ASoC: Fix dependency on AC97_BUS
+      ASoC: DAPM support for ADC on WM9713 PCM interface
+      ASoC: Add WM8750 SPI support
+
+ sound/soc/Kconfig         |    1 +
+ sound/soc/codecs/wm8750.c |   70 ++++++++++++++++++++++++++++++++++++++++++++-
+ sound/soc/codecs/wm8750.h |    1 +
+ sound/soc/codecs/wm9713.c |   12 ++++++-
+ 4 files changed, 81 insertions(+), 3 deletions(-)
