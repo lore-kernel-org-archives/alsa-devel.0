@@ -1,15 +1,18 @@
 From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: [PATCH] hda: SPDIF mux fixes for STAC927x
-Date: Tue, 16 Sep 2008 10:39:37 -0400
-Message-ID: <48CFC529.7010605@embeddedalley.com>
+Subject: Re: hda_intel (sigmatel) defunct in mmotm
+	2008-09-13-03-09
+Date: Tue, 16 Sep 2008 10:43:13 -0400
+Message-ID: <48CFC601.9050608@embeddedalley.com>
+References: <48CE6A90.1070309@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
-	by alsa0.perex.cz (Postfix) with SMTP id 3103E2446A
+	by alsa0.perex.cz (Postfix) with SMTP id AEE2D243D4
 	for <alsa-devel@alsa-project.org>;
-	Tue, 16 Sep 2008 16:39:49 +0200 (CEST)
+	Tue, 16 Sep 2008 16:43:20 +0200 (CEST)
+In-Reply-To: <48CE6A90.1070309@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,79 +22,376 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Jiri Slaby <jirislaby@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Corrected bounds-checking in stac92xx_auto_create_mux_input_ctls() and added a spec->spdif_labels
-pointer for custom SPDIF mux labels for non-standard codec connections.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
----
+Bug fix patch at:
 
-diff --git a/pci/hda/patch_sigmatel.c b/pci/hda/patch_sigmatel.c
-index f00334f..dc7393f 100644
---- a/pci/hda/patch_sigmatel.c
-+++ b/pci/hda/patch_sigmatel.c
-@@ -175,6 +175,7 @@ struct sigmatel_spec {
- 	unsigned int num_dmuxes;
- 	hda_nid_t *smux_nids;
- 	unsigned int num_smuxes;
-+	const char **spdif_labels;
+http://mailman.alsa-project.org/pipermail/alsa-devel/2008-September/010767.html
 
- 	hda_nid_t dig_in_nid;
- 	hda_nid_t mono_nid;
-@@ -383,6 +384,11 @@ static hda_nid_t stac927x_dmic_nids[STAC927X_NUM_DMICS + 1] = {
- 	0x13, 0x14, 0
- };
+Thanks,
 
-+static const char *stac927x_spdif_labels[5] = {
-+	"Digital Playback", "ADAT", "Analog Mux 1",
-+	"Analog Mux 2", "Analog Mux 3"
-+};
-+
- static hda_nid_t stac9205_adc_nids[2] = {
-         0x12, 0x13
- };
-@@ -2893,26 +2899,29 @@ static int stac92xx_auto_create_mux_input_ctls(struct hda_codec *codec)
- };
+Matt Ranostay
 
- static const char *stac92xx_spdif_labels[3] = {
--	"Digital Playback", "Analog Mux 1", "Analog Mux 2"
-+	"Digital Playback", "Analog Mux 1", "Analog Mux 2",
- };
 
- static int stac92xx_auto_create_spdif_mux_ctls(struct hda_codec *codec)
- {
- 	struct sigmatel_spec *spec = codec->spec;
- 	struct hda_input_mux *spdif_mux = &spec->private_smux;
-+	const char **labels = spec->spdif_labels;
- 	int i, num_cons;
--	hda_nid_t con_lst[ARRAY_SIZE(stac92xx_spdif_labels)];
-+	hda_nid_t con_lst[HDA_MAX_NUM_INPUTS];
+Jiri Slaby wrote:
+> Hi,
+> 
+> I've found my sound defunct in mmotm 2008-09-13-03-09 (opposing to
+> 2008-09-10-19-39).
+> 
+> My debug shows:
+> HDA Intel 0000:00:1b.0: PCI INT A -> GSI 22 (level, low) -> IRQ 22
+> HDA Intel 0000:00:1b.0: setting latency timer to 64
+> azx_codec_create (1232): t=0, max=4, def=3, mask=4, probe_mask=ffffffff
+> snd_hda_codec_new A: ffff88007b6988f8
+> patch_stac927x A: 0
+> stac92xx_parse_auto_config A
+> stac92xx_parse_auto_config B
+> stac92xx_parse_auto_config E
+> stac92xx_parse_auto_config F
+> stac92xx_parse_auto_config G
+> stac92xx_parse_auto_config H
+> stac92xx_parse_auto_config L: 0
+> stac92xx_parse_auto_config M: 0
+> stac92xx_parse_auto_config O
+> stac92xx_parse_auto_config P
+> stac92xx_parse_auto_config Q
+> stac92xx_auto_create_spdif_mux_ctls: num_cons=5
+> patch_stac927x B: -22
+> snd_hda_codec_new E: -22
+> azx_codec_create (1239): c=2, err=-22
+> azx_codec_create (1251): cod=0, acod=0
+> hda-intel: no codecs initialized
+> HDA Intel 0000:00:1b.0: PCI INT A disabled
+> 
+> 
+> The problem lays in the newly added function:
+> stac92xx_auto_create_spdif_mux_ctls
+> The count (=5) is out of bounds.
+> 
+> 
+> 
+> 
+> The device is:
+> 00:1b.0 Audio device: Intel Corporation 82801I (ICH9 Family) HD Audio Controller
+> (rev 02)
+>         Subsystem: Intel Corporation Optiplex 755
+>         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
+> Stepping- SERR- FastB2B- DisINTx-
+>         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort-
+> <MAbort- >SERR- <PERR- INTx-
+>         Latency: 0, Cache Line Size: 32 bytes
+>         Interrupt: pin A routed to IRQ 22
+>         Region 0: Memory at ffa70000 (64-bit, non-prefetchable) [size=16K]
+>         Capabilities: [50] Power Management version 2
+>                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+> PME(D0+,D1-,D2-,D3hot+,D3cold+)
+>                 Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+>         Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+ Count=1/1
+> Enable-
+>                 Address: 0000000000000000  Data: 0000
+>         Capabilities: [70] Express (v1) Root Complex Integrated Endpoint, MSI 00
+>                 DevCap: MaxPayload 128 bytes, PhantFunc 0, Latency L0s <64ns, L1
+> <1us
+>                         ExtTag- RBE- FLReset+
+>                 DevCtl: Report errors: Correctable- Non-Fatal- Fatal- Unsupported-
+>                         RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
+>                         MaxPayload 128 bytes, MaxReadReq 128 bytes
+>                 DevSta: CorrErr- UncorrErr- FatalErr- UnsuppReq- AuxPwr+ TransPend-
+>                 LnkCap: Port #0, Speed unknown, Width x0, ASPM unknown, Latency
+> L0 <64ns, L1 <1us
+>                         ClockPM- Suprise- LLActRep- BwNot-
+>                 LnkCtl: ASPM Disabled; Disabled- Retrain- CommClk-
+>                         ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
+>                 LnkSta: Speed unknown, Width x0, TrErr- Train- SlotClk-
+> DLActive- BWMgmt- ABWMgmt-
+>         Capabilities: [100] Virtual Channel <?>
+>         Capabilities: [130] Root Complex Link <?>
+>         Kernel driver in use: HDA Intel
+> 00: 86 80 3e 29 06 00 10 00 02 00 03 04 08 00 00 00
+> 10: 04 00 a7 ff 00 00 00 00 00 00 00 00 00 00 00 00
+> 20: 00 00 00 00 00 00 00 00 00 00 00 00 86 80 3e 29
+> 30: 00 00 00 00 50 00 00 00 00 00 00 00 0a 01 00 00
+> 
+> 
+> 
+> 
+> codec output from OK kernel:
+> Codec: SigmaTel STAC9274D
+> Address: 2
+> Vendor Id: 0x83847621
+> Subsystem Id: 0x100
+> Revision Id: 0x100201
+> No Modem Function Group found
+> Default PCM:
+>     rates [0x7e0]: 44100 48000 88200 96000 176400 192000
+>     bits [0xe]: 16 20 24
+>     formats [0x1]: PCM
+> Default Amp-In caps: ofs=0x00, nsteps=0x0e, stepsize=0x05, mute=0
+> Default Amp-Out caps: ofs=0x7f, nsteps=0x7f, stepsize=0x02, mute=1
+> GPIO: io=3, o=0, i=0, unsolicited=1, wake=1
+>   IO[0]: enable=1, dir=1, wake=0, sticky=0, data=1
+>   IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0
+>   IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0
+> Node 0x02 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
+>   Amp-Out caps: N/A
+>   Amp-Out vals:  [0x49 0x49]
+>   Converter: stream=5, channel=0
+>   Power: setting=D0, actual=D0
+>   Delay: 13 samples
+> Node 0x03 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
+>   Amp-Out caps: N/A
+>   Amp-Out vals:  [0x49 0x49]
+>   Converter: stream=5, channel=0
+>   Power: setting=D0, actual=D0
+>   Delay: 13 samples
+> Node 0x04 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
+>   Amp-Out caps: N/A
+>   Amp-Out vals:  [0x49 0x46]
+>   Converter: stream=5, channel=0
+>   Power: setting=D0, actual=D0
+>   Delay: 13 samples
+> Node 0x05 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
+>   Amp-Out caps: N/A
+>   Amp-Out vals:  [0x49 0x49]
+>   Converter: stream=5, channel=0
+>   Power: setting=D0, actual=D0
+>   Delay: 13 samples
+> Node 0x06 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
+>   Amp-Out caps: N/A
+>   Amp-Out vals:  [0xff 0xff]
+>   Converter: stream=0, channel=0
+>   Power: setting=D3, actual=D3
+>   Delay: 13 samples
+> Node 0x07 [Audio Input] wcaps 0x1d0541: Stereo
+>   Converter: stream=0, channel=0
+>   SDI-Select: 0
+>   Power: setting=D0, actual=D0
+>   Delay: 13 samples
+>   Connection: 1
+>      0x1b
+>   Processing caps: benign=0, ncoeff=0
+> Node 0x08 [Audio Input] wcaps 0x1d0541: Stereo
+>   Converter: stream=0, channel=0
+>   SDI-Select: 0
+>   Power: setting=D0, actual=D0
+>   Delay: 13 samples
+>   Connection: 1
+>      0x1c
+>   Processing caps: benign=0, ncoeff=0
+> Node 0x09 [Audio Input] wcaps 0x1d0541: Stereo
+>   Converter: stream=0, channel=0
+>   SDI-Select: 0
+>   Power: setting=D0, actual=D0
+>   Delay: 13 samples
+>   Connection: 1
+>      0x1d
+>   Processing caps: benign=0, ncoeff=0
+> Node 0x0a [Pin Complex] wcaps 0x400181: Stereo
+>   Pincap 0x08173f: IN OUT HP Detect Trigger ImpSense
+>     Vref caps: HIZ 50 GRD 80
+>   Pin Default 0x02214020: [Jack] HP Out at Ext Front
+>     Conn = 1/8, Color = Green
+>     DefAssociation = 0x2, Sequence = 0x0
+>   Pin-ctls: 0xc0: OUT HP VREF_HIZ
+>   Unsolicited: tag=30, enabled=1
+>   Connection: 3
+>      0x02* 0x03 0x06
+> Node 0x0b [Pin Complex] wcaps 0x400181: Stereo
+>   Pincap 0x08173f: IN OUT HP Detect Trigger ImpSense
+>     Vref caps: HIZ 50 GRD 80
+>   Pin Default 0x02a19080: [Jack] Mic at Ext Front
+>     Conn = 1/8, Color = Pink
+>     DefAssociation = 0x8, Sequence = 0x0
+>   Pin-ctls: 0x24: IN VREF_80
+>   Unsolicited: tag=00, enabled=0
+>   Connection: 3
+>      0x02* 0x03 0x06
+> Node 0x0c [Pin Complex] wcaps 0x400181: Stereo
+>   Pincap 0x081737: IN OUT Detect Trigger ImpSense
+>     Vref caps: HIZ 50 GRD 80
+>   Pin Default 0x0181304e: [Jack] Line In at Ext Rear
+>     Conn = 1/8, Color = Blue
+>     DefAssociation = 0x4, Sequence = 0xe
+>   Pin-ctls: 0x20: IN VREF_HIZ
+>   Unsolicited: tag=00, enabled=0
+>   Connection: 1
+>      0x03
+> Node 0x0d [Pin Complex] wcaps 0x400181: Stereo
+>   Pincap 0x08173f: IN OUT HP Detect Trigger ImpSense
+>     Vref caps: HIZ 50 GRD 80
+>   Pin Default 0x01014010: [Jack] Line Out at Ext Rear
+>     Conn = 1/8, Color = Green
+>     DefAssociation = 0x1, Sequence = 0x0
+>   Pin-ctls: 0x40: OUT VREF_HIZ
+>   Unsolicited: tag=00, enabled=0
+>   Connection: 1
+>      0x02
+> Node 0x0e [Pin Complex] wcaps 0x400181: Stereo
+>   Pincap 0x081737: IN OUT Detect Trigger ImpSense
+>     Vref caps: HIZ 50 GRD 80
+>   Pin Default 0x01a19040: [Jack] Mic at Ext Rear
+>     Conn = 1/8, Color = Pink
+>     DefAssociation = 0x4, Sequence = 0x0
+>   Pin-ctls: 0x24: IN VREF_80
+>   Unsolicited: tag=00, enabled=0
+>   Connection: 1
+>      0x04
+> Node 0x0f [Pin Complex] wcaps 0x400181: Stereo
+>   Pincap 0x081737: IN OUT Detect Trigger ImpSense
+>     Vref caps: HIZ 50 GRD 80
+>   Pin Default 0x01011012: [Jack] Line Out at Ext Rear
+>     Conn = 1/8, Color = Black
+>     DefAssociation = 0x1, Sequence = 0x2
+>   Pin-ctls: 0x40: OUT VREF_HIZ
+>   Unsolicited: tag=00, enabled=0
+>   Connection: 1
+>      0x05
+> Node 0x10 [Pin Complex] wcaps 0x400181: Stereo
+>   Pincap 0x0837: IN OUT Detect Trigger ImpSense
+>   Pin Default 0x01016011: [Jack] Line Out at Ext Rear
+>     Conn = 1/8, Color = Orange
+>     DefAssociation = 0x1, Sequence = 0x1
+>   Pin-ctls: 0x40: OUT
+>   Unsolicited: tag=00, enabled=0
+>   Connection: 1
+>      0x04
+> Node 0x11 [Pin Complex] wcaps 0x400181: Stereo
+>   Pincap 0x0837: IN OUT Detect Trigger ImpSense
+>   Pin Default 0x01012014: [Jack] Line Out at Ext Rear
+>     Conn = 1/8, Color = Grey
+>     DefAssociation = 0x1, Sequence = 0x4
+>   Pin-ctls: 0x40: OUT
+>   Unsolicited: tag=00, enabled=0
+>   Connection: 1
+>      0x03
+> Node 0x12 [Pin Complex] wcaps 0x400001: Stereo
+>   Pincap 0x0820: IN
+>   Pin Default 0x503301f0: [N/A] CD at Int N/A
+>     Conn = ATAPI, Color = Unknown
+>     DefAssociation = 0xf, Sequence = 0x0
+>     Misc = NO_PRESENCE
+>   Pin-ctls: 0x00:
+> Node 0x13 [Pin Complex] wcaps 0x400001: Stereo
+>   Pincap 0x0820: IN
+>   Pin Default 0x50a001f0: [N/A] Mic at Int N/A
+>     Conn = Unknown, Color = Unknown
+>     DefAssociation = 0xf, Sequence = 0x0
+>     Misc = NO_PRESENCE
+>   Pin-ctls: 0x00:
+> Node 0x14 [Pin Complex] wcaps 0x400001: Stereo
+>   Pincap 0x0820: IN
+>   Pin Default 0x50a001f0: [N/A] Mic at Int N/A
+>     Conn = Unknown, Color = Unknown
+>     DefAssociation = 0xf, Sequence = 0x0
+>     Misc = NO_PRESENCE
+>   Pin-ctls: 0x00:
+> Node 0x15 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+>   Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
+>   Amp-Out vals:  [0x00 0x00]
+>   Connection: 9
+>      0x0e* 0x12 0x0f 0x0b 0x0c 0x0d 0x0a 0x10 0x11
+> Node 0x16 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+>   Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
+>   Amp-Out vals:  [0x00 0x00]
+>   Connection: 9
+>      0x0e* 0x12 0x0f 0x0b 0x0c 0x0d 0x0a 0x10 0x11
+> Node 0x17 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+>   Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
+>   Amp-Out vals:  [0x00 0x00]
+>   Connection: 9
+>      0x0e* 0x12 0x0f 0x0b 0x0c 0x0d 0x0a 0x10 0x11
+> Node 0x18 [Audio Selector] wcaps 0x300103: Stereo Amp-In
+>   Amp-In caps: N/A
+>   Amp-In vals:  [0x00 0x00]
+>   Connection: 1
+>      0x15
+> Node 0x19 [Audio Selector] wcaps 0x300103: Stereo Amp-In
+>   Amp-In caps: N/A
+>   Amp-In vals:  [0x00 0x00]
+>   Connection: 1
+>      0x16
+> Node 0x1a [Audio Selector] wcaps 0x300103: Stereo Amp-In
+>   Amp-In caps: N/A
+>   Amp-In vals:  [0x00 0x00]
+>   Connection: 1
+>      0x17
+> Node 0x1b [Audio Selector] wcaps 0x30090d: Stereo Amp-Out R/L
+>   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+>   Amp-Out vals:  [0x00 0x00]
+>   Connection: 3
+>      0x18* 0x13 0x14
+> Node 0x1c [Audio Selector] wcaps 0x30090d: Stereo Amp-Out R/L
+>   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+>   Amp-Out vals:  [0x80 0x80]
+>   Connection: 3
+>      0x19* 0x13 0x14
+> Node 0x1d [Audio Selector] wcaps 0x30090d: Stereo Amp-Out R/L
+>   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+>   Amp-Out vals:  [0x80 0x80]
+>   Connection: 3
+>      0x1a* 0x13 0x14
+> Node 0x1e [Audio Output] wcaps 0x40211: Stereo Digital
+>   Converter: stream=0, channel=0
+>   Digital:
+>   Digital category: 0x0
+>   PCM:
+>     rates [0x7e0]: 44100 48000 88200 96000 176400 192000
+>     bits [0xe]: 16 20 24
+>     formats [0x5]: PCM AC3
+>   Delay: 4 samples
+> Node 0x1f [Vendor Defined Widget] wcaps 0xf30201: Stereo Digital
+>   Delay: 3 samples
+> Node 0x20 [Audio Input] wcaps 0x140311: Stereo Digital
+>   Converter: stream=0, channel=0
+>   SDI-Select: 0
+>   Digital:
+>   Digital category: 0x0
+>   PCM:
+>     rates [0x160]: 44100 48000 96000
+>     bits [0xe]: 16 20 24
+>     formats [0x5]: PCM AC3
+>   Delay: 4 samples
+>   Connection: 1
+>      0x22
+> Node 0x21 [Pin Complex] wcaps 0x400301: Stereo Digital
+>   Pincap 0x0810: OUT
+>   Pin Default 0x01442170: [Jack] SPDIF Out at Ext Rear
+>     Conn = RCA, Color = Grey
+>     DefAssociation = 0x7, Sequence = 0x0
+>     Misc = NO_PRESENCE
+>   Pin-ctls: 0x40: OUT
+>   Connection: 5
+>      0x1e* 0x1f 0x1b 0x1c 0x1d
+> Node 0x22 [Pin Complex] wcaps 0x430681: Stereo Digital
+>   Pincap 0x0810024: IN EAPD Detect
+>   EAPD 0x0:
+>   Pin Default 0x81c42090: [Fixed] SPDIF In at Ext Rear
+>     Conn = RCA, Color = Grey
+>     DefAssociation = 0x9, Sequence = 0x0
+>   Pin-ctls: 0x20: IN
+>   Unsolicited: tag=00, enabled=0
+>   Power: setting=D0, actual=D0
+>   Delay: 3 samples
+> Node 0x23 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
+>   Amp-Out caps: ofs=0x03, nsteps=0x03, stepsize=0x17, mute=0
+>   Amp-Out vals:  [0x00]
+> Node 0x24 [Volume Knob Widget] wcaps 0x600000: Mono
+>   Volume-Knob: delta=1, steps=127, direct=1, val=127
+>   Connection: 5
+>      0x02* 0x03 0x04 0x05 0x06
+> 
 
- 	num_cons = snd_hda_get_connections(codec,
- 				spec->smux_nids[0],
- 				con_lst,
- 				HDA_MAX_NUM_INPUTS);
--	if (!num_cons || num_cons > ARRAY_SIZE(stac92xx_spdif_labels))
-+	if (!num_cons)
- 		return -EINVAL;
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (Darwin)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-+	if (!labels)
-+		labels = stac92xx_spdif_labels;
-+
- 	for (i = 0; i < num_cons; i++) {
--		spdif_mux->items[spdif_mux->num_items].label =
--					stac92xx_spdif_labels[i];
-+		spdif_mux->items[spdif_mux->num_items].label = labels[i];
- 		spdif_mux->items[spdif_mux->num_items].index = i;
- 		spdif_mux->num_items++;
- 	}
-@@ -4376,6 +4385,7 @@ static int patch_stac927x(struct hda_codec *codec)
- 	spec->num_muxes = ARRAY_SIZE(stac927x_mux_nids);
- 	spec->smux_nids = stac927x_smux_nids;
- 	spec->num_smuxes = ARRAY_SIZE(stac927x_smux_nids);
-+	spec->spdif_labels = stac927x_spdif_labels;
- 	spec->dac_list = stac927x_dac_nids;
- 	spec->multiout.dac_nids = spec->dac_nids;
+iEYEARECAAYFAkjPxgAACgkQ7s2wy7nhBHULRQCeM0uqdR/rIPRHl+YhMKuZqIg7
+NxEAoKQDzb2zw05UyY+i48Y2G65KZkoA
+=CQnT
+-----END PGP SIGNATURE-----
