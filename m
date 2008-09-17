@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@sirena.org.uk>
+From: Sedji Gaouaou <sedji.gaouaou@atmel.com>
 Subject: Re: ALSA:AT91SAM9G20: Add support(DAI) for wolfson8731
-Date: Wed, 17 Sep 2008 16:21:44 +0100
-Message-ID: <20080917152143.GC7679@sirena.org.uk>
+Date: Wed, 17 Sep 2008 17:23:20 +0200
+Message-ID: <48D120E8.4060504@atmel.com>
 References: <48D0D30D.7070807@atmel.com> <20080917110530.GA7679@sirena.org.uk>
 	<48D11D0E.90701@endrelia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id B802224654
+Received: from atmel-es2.atmel.fr (mail.atmel.fr [81.80.104.162])
+	by alsa0.perex.cz (Postfix) with ESMTP id D4F8524654
 	for <alsa-devel@alsa-project.org>;
-	Wed, 17 Sep 2008 17:21:51 +0200 (CEST)
-Content-Disposition: inline
+	Wed, 17 Sep 2008 17:23:40 +0200 (CEST)
 In-Reply-To: <48D11D0E.90701@endrelia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,69 +23,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Frank Mandarino <fmandarino@endrelia.com>
-Cc: Sedji Gaouaou <sedji.gaouaou@atmel.com>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 17, 2008 at 11:06:54AM -0400, Frank Mandarino wrote:
+Hi Frank,
+Frank Mandarino a =E9crit :
 > Mark Brown wrote:
+> =
 
-> >> +
-> >> +	switch (div_id) {
-> >> +	case AT91SSC_CMR_DIV:
-> >> +		/*
-> >> +		 * The same master clock divider is used for both
-> >> +		 * transmit and receive, so if a value has already
-> >> +		 * been set, it must match this value.
-> >> +		 */
-> >> +		if (ssc_p->cmr_div == 0)
-> >> +			ssc_p->cmr_div = div;
-> >> +		else
-> >> +			if (div != ssc_p->cmr_div)
-> >> +				return -EBUSY;
-> >> +		break;
+>> The only major issue I see with the patch is a documentation one: it's
+>> not clear to me reading the code how the atmel_ssc DAI driver relates to
+>> the existing at91_ssc driver.  It may be that this is something that's
+>> obvious to someone familiar with the at91 hardware but just looking at
+>> the code it's not clear to me what the difference is between the two and
+>> when each should be used.  =
 
-> > What happens if the user wants to change the master clock divider at
-> > runtime - for example, when changing sample rates?
+>>
+>> Looking at the code they appear to be similar to the point where they
+>> should be the same driver but it's entirely possible that I'm missing
+>> something here.  I've CCed in Frank Mandarino who did the existing AT91
+>> support.  If they should be separate drivers then some comments should
+>> be added in the driver and the Kconfig help text explaning the
+>> situation.
+> =
 
-> This is code from at91-ssc.c.  I really didn't consider the case of
-> changing the sample rate on an open substream.  This logic could be
-> updated to allow the new divider value if there is only one substream open.
+> I agree that the drivers should be combined.  Unfortunately, at this
+> time I am unable to contribute to this effort.
+> =
 
-Ah, right - on further inspection I see that cmr_div is reset when the
-stream is shut down.  That's fine since it means that the clocks can be
-reconfigured when reopening the device which is the case I was worried
-about.
+I agree with you as well. I wanted to use the drivers/misc/atmel-ssc in =
 
-Changing the dividers on an active stream is unlikely to work well so
-it's perfectly reasonable to not support it.
+the dai because it is a common arch between atmel ARM and AVR core.
+I will have a look at the at91-ssc code and at the eti_b1_wm8731.c file =
 
-> >> +		start_event = channels == 1
-> >> +				? 4
-> >> +				: 7;
+to see what changes should be done.
+> =
 
-> > This would be much clearer if it were expanded into multiple statements.
-> 
+>>> +		start_event =3D channels =3D=3D 1
+>>> +				? 4
+>>> +				: 7;
+>> This would be much clearer if it were expanded into multiple statements.
+> =
+
 > This was a little clearer in at91-ssc.c:
+> =
 
->                 start_event = channels == 1
+>                 start_event =3D channels =3D=3D 1
 >                                 ? AT91_SSC_START_FALLING_RF
 >                                 : AT91_SSC_START_EDGE_RF;
+> =
 
 > Perhaps these constant definitions are no longer available it the latest
 > kernel.  Are there updated definitions to use instead of magic numbers?
 
-> Also, I'm fine with using multiple statements if that helps readability.
+My mistake, I will use your constant def.
+> =
 
-I wasn't so worried about the magic numbers as the combination of
-assignment and an equality test without even any brackets.  I can see
-what's going on but it's certainly not the most transparent way of
-writing it.
-
-> > These may as well be removed - if someone implements suspend/resume
-> > support they can add them then then.
+>>> +#ifdef CONFIG_PM
+>>> +#define atmel_ssc_suspend	NULL
+>>> +#define atmel_ssc_resume	NULL
+>>> +#else
+>>> +#define atmel_ssc_suspend	NULL
+>>> +#define atmel_ssc_resume	NULL
+>>> +#endif
+>> These may as well be removed - if someone implements suspend/resume
+>> support they can add them then then.
+> =
 
 > Is there a reason that suspend/resume was removed?  It is really
 > important for embedded systems.
+I removed resume/suspend because I didn't have the time to write it...
+I wanted to add it in a next patch, but maybe I shoul do it now.
 
-Yeah, I did wonder, though there are plenty of embedded systems that
-aren't particular power sensitive for one reason or another.
+Mark, concerning your other comments I am working on it.
+I will send another patch as soon as it is finished.
+
+Regards,
+Sedji
