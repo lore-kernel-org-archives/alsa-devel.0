@@ -1,324 +1,74 @@
-From: "vasudha rao" <vasudha.jrao@gmail.com>
-Subject: Re: Unable to play aplay
-Date: Wed, 17 Sep 2008 13:02:28 +0530
-Message-ID: <eeb9eca50809170032r28772352ma81d321776cc2cfc@mail.gmail.com>
-References: <173835.16239.qm@web50112.mail.re2.yahoo.com>
+From: Jiri Slaby <jirislaby@gmail.com>
+Subject: Re: hda_intel (sigmatel) defunct in mmotm 2008-09-13-03-09
+Date: Wed, 17 Sep 2008 10:58:05 +0200
+Message-ID: <48D0C69D.4090105@gmail.com>
+References: <48CE6A90.1070309@gmail.com> <48CFC601.9050608@embeddedalley.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.243])
-	by alsa0.perex.cz (Postfix) with ESMTP id 54A202452A
-	for <alsa-devel@alsa-project.org>;
-	Wed, 17 Sep 2008 09:32:29 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id f25so2968188rvb.32
-	for <alsa-devel@alsa-project.org>; Wed, 17 Sep 2008 00:32:28 -0700 (PDT)
-In-Reply-To: <173835.16239.qm@web50112.mail.re2.yahoo.com>
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Nitin Mahajan <nitinm76@yahoo.com>
-Cc: alsa-devel@alsa-project.org, aggarwal <anuj.aggarwal@gmail.com>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754397AbYIQI6n@vger.kernel.org>
+In-Reply-To: <48CFC601.9050608@embeddedalley.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Matthew Ranostay <mranostay@embeddedalley.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 09/16/2008 04:43 PM, Matthew Ranostay wrote:
+> Bug fix patch at:
+> 
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2008-September/010767.html
 
-> As far as arecord  is concerned,check if your codec chip has an ADC, what
-mixer controls are available for recording? Are u setting them ?
+It works, thanks.
 
-My codec chip is AD1981B..it is having 2 adc s and 2 dac s..
+Another problem is when I switch IEC958 in alsamixer, I get:
 
-As I understood ur question, I am using alsamixer for controlling.. In this
-there is no capture option to control..
-
-Since I am using 2.6.20 linux kernel, which is having in built alsa
-driver..I inserted these modules only..
-
-Should I cross compile alsa-driver from alsa site and test ??Is this problem
-related to this..??
-
-I am using alsa for my Atmel's at91sam9263 board..having AC97 based sound
-card..
-
-What I may do to resolve this ..??
-
-Thank you..
-
-
-
-
-
-
-
-> ----- Original Message ----
-> > From: vasudha rao <vasudha.jrao@gmail.com>
-> > To: aggarwal <anuj.aggarwal@gmail.com>
-> > Cc: alsa-devel@alsa-project.org
-> > Sent: Tuesday, September 16, 2008 17:08:30
-> > Subject: Re: [alsa-devel] Unable to play aplay
-> >
-> > I inserted modules to my linux kernel (2.6.20)like..
-> >
-> > $insmod snd.ko
-> > $insmod snd-timer.ko
-> > $insmod snd-page-alloc.ko
-> > $insmod snd-pcm.ko
-> > $insmod ac97_bus.ko
-> > $insmod snd-ac97-codec.ko
-> > $insmod snd-at91-ac97.ko
-> >
-> > After this, I am getting,
-> >
-> > $aplay
-> >
-> > No error messages..
-> >
-> > $aplay laughter.wav
-> > Playing WAVE 'laughter.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
-> > Bad pte = 5fc3e05f, process = aplay, vm_flags = 800fb, vaddr = 4032c000
-> > Bad pte = 5fc3f05f, process = aplay, vm_flags = 800fb, vaddr = 4032d000
-> > Unable to handle kernel paging request at virtual address ff800001
-> > pgd = c346c000
-> > [ff800001] *pgd=00000000
-> > Internal error: Oops: 1 [#1]
-> > Modules linked in: snd_at91_ac97 snd_ac97_codec ac97_bus snd_pcm
-> > snd_page_alloc snd_timer snd
-> > CPU: 0
-> > PC is at snd_pcm_mmap_data_nopage+0xc4/0xe8 [snd_pcm]
-> > LR is at 0x4032e000
-> > pc : []    lr : [<4032e000>]    Not tainted
-> > sp : c3bb3e6c  ip : ff7ffffd  fp : c3bb3e80
-> > r10: 4032e000  r9 : c001f380  r8 : c3bb2000
-> > r7 : c3449764  r6 : 00000000  r5 : c3bb3ea0  r4 : c34a8c00
-> > r3 : 00000093  r2 : 00000013  r1 : 00006000  r0 : c0aa3800
-> > Flags: nzcv  IRQs off  FIQs on  Mode SVC_32  Segment user
-> > Control: 5317F
-> > Table: 2346C000  DAC: 00000015
-> > Process aplay (pid: 916, stack limit = 0xc3bb2250)
-> > Stack: (0xc3bb3e6c to 0xc3bb4000)
-> > 3e60:                            00000000 c3e192ec c3bb3ecc c3bb3e84
-> > c0067c58
-> > 3e80: bf019030 c346d008 c001f3c0 5fc3f05f 00000000 00000000 c346d008
-> > 00000000
-> > 3ea0: 00000002 ffffffeb c3d2b040 c3449764 c001f380 c001f3b4 c3bb3fb0
-> > 4032e000
-> > 3ec0: c3bb3f04 c3bb3ed0 c00293a4 c0067b2c 00022b70 00000000 00000017
-> > ffffffff
-> > 3ee0: c027900c 00000017 c3bb3fb0 4032e000 40388000 400cb5fc c3bb3fac
-> > c3bb3f08
-> > 3f00: c00295c0 c00292dc c3bb3f2c c0377f20 ffffffe7 c0844123 00000000
-> > c0023ec4
-> > 3f20: 400cb5fc c3bb3f40 c3bb3f34 bf018af4 bf018194 c3bb3f5c c3bb3f44
-> > c00823d0
-> > 3f40: bf018ad0 c0377f20 00022b70 00000004 c3bb3f84 c3bb3f60 c00826ac
-> > c00823a4
-> > 3f60: 000014c2 ffffffff c3bb3fac c3bb3f78 c01f7ee0 c00275a8 c3d2b080
-> > c3d2b154
-> > 3f80: 0082ca24 ffffffff 40388734 ffffffff 40389734 00000008 00000004
-> > 00000004
-> > 3fa0: 00000000 c3bb3fb0 c0023cc8 c0029594 00000000 4032e000 40354000
-> > 00000100
-> > 3fc0: 00006800 40389734 00000008 00000004 00000004 40388000 400cb5fc
-> > 00006dcd
-> > 3fe0: 00000100 bea539d0 00000100 4008ce20 20000010 ffffffff 00000000
-> > 00000029
-> > Backtrace:
-> > [] (snd_pcm_mmap_data_nopage+0x0/0xe8 [snd_pcm]) from []
-> > (__handle_mm_fault+0x13c/0x760)
-> > r5 = C3E192EC  r4 = 00000000
-> > [] (__handle_mm_fault+0x0/0x760) from []
-> > (do_page_fault+0xd8/0x20c)
-> > [] (do_page_fault+0x0/0x20c) from []
-> > (do_DataAbort+0x3c/0xa0)
-> > [] (do_DataAbort+0x0/0xa0) from []
-> > (ret_from_exception+0x0/0x10)
-> > r8 = 00000004  r7 = 00000004  r6 = 00000008  r5 = 40389734
-> > r4 = FFFFFFFF
-> > Code: 1590c00c e10f2000 e3823080 e121f003 (e59c3004)
-> > Segmentation fault
-> >
-> >
-> > $aplay -l
-> > card 0: AC97 [Atmel AC97], device 0: Atmel AC97 [Atmel AC97]
-> >   Subdevices: 1/1
-> >   Subdevice #0: subdevice #0
-> >
-> > $arecord
-> > ALSA lib pcm_dmix.c:812:(snd_pcm_dmix_open) The dmix plugin supports only
-> > playback stream
-> > arecord: main:446: audio open error: Invalid argument
-> >
-> > $arecord -l
-> >
-> As far as arecord  is concerned,check if your codec chip has an ADC, what
-> mixer controls are available for recording? Are u setting them ?
->
-> > No message here..
-> >
-> > $cat /proc/asound/pcm
-> > 00-00: Atmel AC97 : Atmel AC97 : playback 1
-> >
-> > Why I am not able to here or record sound..??
-> > Where I am doing wrong...??
-> >
-> > Thank you..
-> >
-> >
-> >
-> >
-> >
-> >
-> >
-> >
-> >
-> >
-> >
-> >
-> > On Thu, Sep 11, 2008 at 10:46 AM, vasudha rao wrote:
-> >
-> > > Hi anuj ,
-> > >
-> > > Sorry my mistake..that time I hav not loaded conf files in /usr/share/
-> .. I
-> > > loaded now..
-> > > So now when I give command like,
-> > >
-> > > -------------------------------------------------
-> > > $aplay -l
-> > > **** List of PLAYBACK Hardware Devices ****
-> > > card 0: AC97 [Atmel AC97], device 0: Atmel AC97 [Atmel AC97]
-> > > Subdevices: 1/1
-> > > Subdevice #0: subdevice #0
-> > > ---------------------------------------------------
-> > >
-> > > but,aplay not proper,,
-> > > ----------------------------
-> > > $aplay
-> > > aplay: main:508: audio open error: Inappropriate ioctl for device
-> > > ----------------------------
-> > >
-> > > Where I am doing wrong..??
-> > >
-> > > Thank you..
-> > >
-> > > On Thu, Sep 11, 2008 at 10:07 AM, vasudha rao wrote:
-> > >
-> > >>
-> > >>
-> > >>
-> > >> Hi Anuj,
-> > >>
-> > >> Nodes were not there before..I created now..
-> > >>
-> > >> Now when I did $aplay -l ,
-> > >> I got,
-> > >>
-> > >>  **** List of PLAYBACK Hardware Devices ***
-> > >> *ALSA lib control.c:739:(snd_ctl_open_noupdate) Invalid CTL hw:0
-> > >> aplay: device_list:208: control open (0): No such file or directory
-> > >> aplay: conf.c:3083: snd_config_update_free: Assertion `update->count >
-> 0
-> > >> && update->finfo' failed.Aborted
-> > >>
-> > >> Where I am doing wrong..??
-> > >>
-> > >>
-> > >>
-> > >>
-> > >>
-> > >>
-> > >>
-> > >>
-> > >>
-> > >>
-> > >>
-> > >>
-> > >>
-> > >> Thank you..
-> > >>
-> > >>
-> > >>
-> > >>
-> > >>
-> > >>
-> > >>
-> > >>
-> > >> On Wed, Sep 10, 2008 at 11:54 PM, anuj aggarwal
-> > wrote:
-> > >>
-> > >>> Vasudha,
-> > >>>
-> > >>> Could you please check the device nodes in /dev/snd folder? The
-> > >>> desired output is:
-> > >>>
-> > >>> [root@ /home]# ls -l /dev/snd/
-> > >>> crw-rw----    1 root     root     116,   5 Jan  1 00:00 controlC0
-> > >>> crw-rw----    1 root     root     116,   4 Jan  1 00:00 pcmC0D0c
-> > >>> crw-rw----    1 root     root     116,   3 Jan  1 00:00 pcmC0D0p
-> > >>>
-> > >>> If the nodes are not there, you have to create them first before
-> trying
-> > >>> aplay.
-> > >>>
-> > >>> Regards,
-> > >>> Anuj
-> > >>>
-> > >>>
-> > >>> On Wed, Sep 10, 2008 at 6:16 PM, vasudha rao
-> > >>> wrote:
-> > >>> >
-> > >>> > Hi ,
-> > >>> >
-> > >>> > I want to play and record audio file in my custom atmel 9263 board
-> > >>> running
-> > >>> > with linux(2.6.20).
-> > >>> > when I tried to play aplay for a wave file, I got
-> > >>> >
-> > >>> > $aplay /home/alarm.wav
-> > >>> > ALSA lib pcm.c:1707:(snd_pcm_open_noupdate) Unknown PCM default
-> > >>> > aplay: main:446: audio open error: No such file or directory
-> > >>> >
-> > >>> > $aplay -l
-> > >>> > aplay: device_list:187: no soundcards found...
-> > >>> >
-> > >>> > $cat /proc/asound/devices
-> > >>> >  2:        : timer
-> > >>> >  3:        : sequencer
-> > >>> >  4: [ 0- 0]: digital audio playback
-> > >>> >  5: [ 0]   : control
-> > >>> >
-> > >>> > Can you tel me where I am doing wrong..??
-> > >>> >
-> > >>> > Thanks in advance..
-> > >>> > _______________________________________________
-> > >>> > Alsa-devel mailing list
-> > >>> > Alsa-devel@alsa-project.org
-> > >>> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> > >>>
-> > >>>
-> > >>>
-> > >>> --
-> > >>> Best Regards,
-> > >>> Anuj Aggarwal
-> > >>>
-> > >>
-> > >>
-> > >
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
->
->
->       Get your preferred Email name!
-> Now you can @ymail.com and @rocketmail.com.
-> http://mail.promotions.yahoo.com/newdomains/aa/
->
+BUG: unable to handle kernel NULL pointer dereference at 0000000000000000
+IP: [<ffffffffa0057d8a>] snd_hda_spdif_out_switch_put+0xca/0x170 [snd_hda_intel]
+PGD 7a3ea067 PUD 7a378067 PMD 0
+Oops: 0000 [1] SMP
+last sysfs file: /sys/devices/virtual/net/tun0/type
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+CPU 0
+Modules linked in: arc4 ecb cryptomgr aead crypto_blkcipher crypto_algapi ath5k
+mac80211 hid_microsoft led_class usbhid rtc_cmos snd_hda_intel hid ohci1394
+ieee1394 evdev cfg80211 ff_memless [last unloaded: freq_table]
+Pid: 3831, comm: alsamixer Tainted: G        W 2.6.27-rc6-mm1_64 #452
+RIP: 0010:[<ffffffffa0057d8a>]  [<ffffffffa0057d8a>]
+snd_hda_spdif_out_switch_put+0xca/0x170 [snd_hda_intel]
+RSP: 0018:ffff88007a3d5c68  EFLAGS: 00010202
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 000000000000000f
+RDX: ffff88007b410be0 RSI: 0000000000070d1e RDI: ffff88007bda9bb0
+RBP: ffff88007a3d5ca8 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffff8049083f R11: ffff880078cd4240 R12: ffff88007bd2f398
+R13: 0000000000000001 R14: 0000000000000001 R15: 000000000000001e
+FS:  00007fb6b40476f0(0000) GS:ffffffff806f2400(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000007a3cc000 CR4: 00000000000006e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+Process alsamixer (pid: 3831, threadinfo ffff88007a3d4000, task ffff88007a35b300)
+Stack:  0000000101e33400 ffff88007bd2f568 001e88007a3d5cc8 ffff88007b51d1f0
+ ffff880078cd4240 ffff88007bd2d5a0 ffff88007bd2d708 ffff88007b7720c8
+ ffff88007a3d5cc8 ffffffff80493097 ffff88007b51d1f0 ffff880078cd4240
+Call Trace:
+ [<ffffffff80493097>] slave_put_val+0x37/0xc0
+ [<ffffffff804933bc>] slave_put+0x5c/0x70
+ [<ffffffff8048fdf9>] snd_ctl_elem_write+0x119/0x160
+ [<ffffffff804908a5>] snd_ctl_ioctl+0x295/0x940
+ [<ffffffff80258934>] ? up+0x34/0x50
+ [<ffffffff80254502>] ? remove_wait_queue+0x52/0x60
+ [<ffffffff803a198c>] ? read_chan+0x3ac/0x8b0
+ [<ffffffff8023193e>] ? __wake_up+0x4e/0x70
+ [<ffffffff80242b32>] ? current_fs_time+0x22/0x30
+ [<ffffffff802c9d01>] vfs_ioctl+0x31/0xa0
+ [<ffffffff802c9ff3>] do_vfs_ioctl+0x283/0x2f0
+ [<ffffffff802ca0aa>] sys_ioctl+0x4a/0x80
+ [<ffffffff8020c4cb>] system_call_fastpath+0x16/0x1b
+Code: 00 4c 89 e7 0f b7 c9 44 0f b7 7d d6 44 0f b6 e9 89 4d c4 45 89 e8 b9 0d 07
+00 00 44 89 fe e8 8e f6 ff ff 49 8b 9c 24 f8 01 00 00 <0f> b7 03 66 85 c0 74 27
+66 0f 1f 44 00 00 31 d2 48 83 c3 02 0f
+RIP  [<ffffffffa0057d8a>] snd_hda_spdif_out_switch_put+0xca/0x170 [snd_hda_intel]
+ RSP <ffff88007a3d5c68>
+CR2: 0000000000000000
+---[ end trace 4eaa2a86a8e2da22 ]---
