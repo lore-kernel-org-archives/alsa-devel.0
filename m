@@ -1,27 +1,19 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: [PATCH] alsactl crashes on 1.0.18rc3 alsa-utils
-Date: Wed, 17 Sep 2008 00:29:50 +0100
-Message-ID: <gapfhe$33v$2@ger.gmane.org>
-References: <gak3n7$rgg$1@ger.gmane.org> <s5h7i9cge7c.wl%tiwai@suse.de>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: [PATCH] ALSA: HDA: hda_local: Less magic numbers.
+Date: Wed, 17 Sep 2008 13:31:58 +0930 (CST)
+Message-ID: <200809170401.m8H41wmn014947@mercury.physics.adelaide.edu.au>
+References: <s5h8wtsmgtu.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id E773D2447F
+Received: from adelphi.physics.adelaide.edu.au
+	(adelphi.physics.adelaide.edu.au [129.127.102.1])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8929A1037F8
 	for <alsa-devel@alsa-project.org>;
-	Wed, 17 Sep 2008 01:30:07 +0200 (CEST)
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1Kfjze-0001GS-Te
-	for alsa-devel@alsa-project.org; Tue, 16 Sep 2008 23:30:02 +0000
-Received: from 80-192-67-147.cable.ubr10.edin.blueyonder.co.uk
-	([80.192.67.147]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 16 Sep 2008 23:30:02 +0000
-Received: from gmane by 80-192-67-147.cable.ubr10.edin.blueyonder.co.uk with
-	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 16 Sep 2008 23:30:02 +0000
-In-Reply-To: <s5h7i9cge7c.wl%tiwai@suse.de>
+	Wed, 17 Sep 2008 06:15:35 +0200 (CEST)
+In-Reply-To: <s5h8wtsmgtu.wl%tiwai@suse.de> from "Takashi Iwai" at Sep 16,
+	2008 02:10:53 PM
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,34 +23,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, "Robin H. Johnson" <robbat2@gentoo.org>, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Sun, 14 Sep 2008 23:37:27 +0100,
-> Colin Guthrie wrote:
->> Hi,
->>
->> One of my Mandriva colleagues (Gustavo De Nardin) fixed this in the 
->> following patch:
->> http://svn.mandriva.com/cgi-bin/viewvc.cgi/packages/cooker/alsa-utils/current/SOURCES/alsa-utils-1.0.18rc3-mdv-alsactl_segfault.patch?revision=HEAD&view=markup
+Hi Takashi
+
+> > A quick glance at the codebase shows:
+> > 
+> > AC_PINCTL* long form:
+> > patch_conexant.c
+> > patch_realtek.c
+> > patch_sigmatel.c
+> > 
+> > /PIN_(VREF|IN|OUT|HP)/
+> > hda_codec.c
+> > patch_analog.c
+> > patch_atihdmi.c
+> > patch_cmedia.c
+> > patch_conexant.c
+> > patch_realtek.c
+> > patch_sigmatel.c
+> > patch_via.c
+> > 
+> > Raw hex for AC_VERB_SET_PIN_WIDGET_CONTROL verbs:
+> > patch_analog.c
+> > patch_realtek.c (LOTS)
+> > patch_via.c (LOTS)
+> > 
+> > The raw hex ones SHOULD be replaced, but the rest of them I'm not fussed either
+> > way. Takashi can make a decision as to which variant is preferred, I don't mind
+> > doing the cleanup.
 > 
-> Thanks.  This was already fixed in the latest git.
+> Robin's patch is a right improvement wrt readability for whom are not
+> familiar with HD-audio codec spec, so I applied it as is.
 
-I thought that may have been the case, but thought I'd better report it 
-to be safe :)
+I have no problem with this so long as it hasn't broken anything.  I can't
+easily test this myself until I return from LPC.
 
-Col
+> FWIW, AC_* and PIN_* have somewhat different fields: the former is the
+> definition of each bit, and the latter is the values used in the real
+> world.
 
--- 
+Thanks - that's very succintly put. :-)
 
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-   Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-   Mandriva Linux Contributor [http://www.mandriva.com/]
-   PulseAudio Hacker [http://www.pulseaudio.org/]
-   Trac Hacker [http://trac.edgewall.org/]
+Regards
+  jonathan
