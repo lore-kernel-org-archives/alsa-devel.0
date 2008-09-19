@@ -1,21 +1,19 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ASoC: Fix at32-pcm build breakage with PM
-	enabled
-Date: Fri, 19 Sep 2008 20:25:14 +0100
-Message-ID: <20080919192513.GA18851@sirena.org.uk>
-References: <1221843045-18093-1-git-send-email-haavard.skinnemoen@atmel.com>
-	<20080919182036.GA16316@sirena.org.uk>
-	<20080919211437.08db455c@hskinnemo-gx745.norway.atmel.com>
+From: Mark Lokowich <lokowich@acdstar.com>
+Subject: Re: DaVinci ASoC DMA stalls
+Date: Fri, 19 Sep 2008 17:06:16 -0500
+Message-ID: <48D42258.3060306@acdstar.com>
+References: <48BFE50E.3000802@acdstar.com>
+	<48C015B2.2070401@gmail.com>	<48C05FFD.4030009@acdstar.com>
+	<F8C55F6A02E92D48BDDFC6048552C6F1142BB196@dlee03.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7393D24679
+Received: from g2host.com (mailfront1.g2host.com [208.42.176.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 16ED124729
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Sep 2008 21:25:17 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20080919211437.08db455c@hskinnemo-gx745.norway.atmel.com>
+	Sat, 20 Sep 2008 00:06:20 +0200 (CEST)
+In-Reply-To: <F8C55F6A02E92D48BDDFC6048552C6F1142BB196@dlee03.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,24 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lrg@slimlogic.co.uk
+To: "Griffis, Brad" <bgriffis@ti.com>
+Cc: ALSA-devel <alsa-devel@alsa-project.org>, davinci-linux-open-source <davinci-linux-open-source@linux.davincidsp.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 19, 2008 at 09:14:37PM +0200, Haavard Skinnemoen wrote:
-> Mark Brown <broonie@sirena.org.uk> wrote:
 
-> > Please submit all ALSA patches to alsa-devel (added to the CC).
 
-> I would if it wasn't listed as subscribers-only...but from a closer
-> look, it appears like it's only moderated for non-subscribers. Should I
-> resend the patch?
+Griffis, Brad wrote:
+>> My test is simply to run aplay or speaker-test,
+>> then quit and run it again.  The first run is audible, the second and
+>> subsequent runs are not audible until I provide a manual DMA event trigger.
+>>     
+>
+> When the ASP transmitter is taken out of reset it sends XEVT to the EDMA where it is "captured" in event register (ER).  If that event gets cleared out before turning on the EDMA you'll end up with a scenario like you described, i.e. once you kick off a transfer manually it will then run.  I haven't looked at the code you're using, but it sounds to me like the (re-)initialization sequence isn't correct.
+>
+> The best way for the code to work would be for the EDMA to be configured BEFORE the McBSP.  That way, even if the EDMA initialization procedure clears the ER bits it won't matter because when the McBSP is subsequently released from reset it will send a new XEVT to the EDMA.
+>
+> Brad
+>
+>   
 
-Probably best, yes.  Or if the subscribers thing is an issue you could
-send it to Takashi directly.
+    Excellent tip, but the ASoC software is doing just what you
+    suggested, starting the DMA prior to starting the ASP.  I also found
+    that the latest DMA software also causes buffer underruns when
+    playing Ogg Vorbis files, while the 2.6.25 version doesn't have
+    these issues.  I'll keep looking.
 
-> Btw, Liam Girdwood's mail address from MAINTAINERS doesn't work.
+    Thanks,
+    Mark
 
-Yup, he's now lrg@slimlogic.co.uk (I'd updated the address for this
-thread when I replied).  He's submitted a patch for MAINTAINERS already
-but it's not propagated beyond ALSA git yet.
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>
+>   
