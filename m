@@ -1,64 +1,49 @@
-From: Paul Mundt <lethal@linux-sh.org>
-Subject: Re: [alsa-devel] Audio buffer mmap-ing on sh arch vs. cache aliasing	problem
-Date: Sun, 21 Sep 2008 10:13:10 +0900
-Message-ID: <20080921011310.GB2522@linux-sh.org>
-References: <1220527434.3299.2074.camel@bri1004.bri.st.com> <s5h63owgdk1.wl%tiwai@suse.de>
+From: niteblade@gmx.net
+Subject: Random controls with hda-intel
+Date: Sun, 21 Sep 2008 13:10:20 +0200
+Message-ID: <48D62B9C.8010003@gmx.net>
+Reply-To: niteblade@gmx.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5h63owgdk1.wl%tiwai@suse.de>
-Sender: linux-sh-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Pawel MOLL <pawel.moll@st.com>, alsa-devel@alsa-project.org, linux-sh@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 464AA245F7
+	for <alsa-devel@alsa-project.org>;
+	Sun, 21 Sep 2008 13:10:24 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 16, 2008 at 08:18:06PM +0200, Takashi Iwai wrote:
-> At Thu, 04 Sep 2008 12:23:54 +0100,
-> Pawel MOLL wrote:
-> > As a quick-and-dirty work-around I have modified
-> > snd_pcm_alloc_vmalloc_buffer() to allocate always 12kB more and then use
-> > 16k-aligned pointer:
-> > 
-> > static int snd_pcm_alloc_vmalloc_buffer(struct snd_pcm_substream *subs, size_t size)
-> > {
-> >         struct snd_pcm_runtime *runtime = subs->runtime;
-> >         if (runtime->dma_addr) {
-> >                 if (runtime->dma_bytes >= size)
-> >                         return 0; /* already large enough */
-> >                 vfree((void *)runtime->dma_addr);
-> >         }
-> >         runtime->dma_addr = (unsigned long)vmalloc(size + 12 * 1024);
-> >         if (!runtime->dma_addr)
-> >                 return -ENOMEM;
-> >         runtime->dma_area = (void *)ALIGN(runtime->dma_addr, 16 * 1024);
-> >         runtime->dma_bytes = size;
-> >         return 0;
-> > }
-> > 
-> > Of course it cannot be regarded as anything more as a hack. And
-> > definitely not as a solution... So my question is:
-> > 
-> > Any idea how the "proper solution" should look like? I see no obvious
-> > method to get an arch-independent "mmap-compliant" buffer. This problem
-> > was found on a sh arch, using an USB Audio Class device, however out
-> > there some other architectures are suffering from this MMU "feature" as
-> > well (ie. see http://docs.hp.com/en/B3906-90006/ch07s09.html) and
-> > possibly other drivers could behave "wrongly" (quoted as the driver is
-> > actually innocent...)
-> 
-> Currently, it's PITA on Linux to get a non-cached mmap properly in a
-> generic way.  Especially together with coherent memory allocations,
-> there is no API for that.  But, in the case of usb-audio, the problem
-> is the vmaloc'ed intermediate buffer, and this could be a bit easier.
-> 
-> One thing we can try is a patch like below.  But, I'm not sure whether
-> this is correct over all architectures, too.  At best, a generic API
-> would be helpful for such a thing...
-> 
-pgprot_noncached() is the closest you will get to a generic API, but it's
-true that not every architecture implements it. Given that, you will have
-to toss up an #ifdef pgprot_noncached() around it, as seems to already be
-the case for snd_pcm_lib_mmap_iomem(). Any sane platform that has
-problems in this regard will have to define pgprot_noncached(), and
-that's already true for things like /dev/mem today.
+Hi guys,
+
+This is a problem I already posted on alsa-users, but since the only
+reply I got was a me-too, I'm posting here.
+
+I have some problems with the snd-hda-intel driver. The mixer controls
+seem to be unpredictably appearing and disappearing or changing type
+(on/off-switch vs volume) from alsa-driver
+version to version. In the current daily snapshot (12th Sept 2008) I
+have no volume control at all. In the driver shipped with 2.6.25 kernel
+at least I get a pcm volume control. Several driver versions ago (dont
+remember the version number) I had a master volume control. Several
+other controls seem to have no effect on anything.
+
+When loading the snd-hda-intel driver, I get in my syslog:
+
+ hda_codec: Unknown model for ALC861, trying auto-probe from BIOS...
+
+The alsa info script has uploaded my infos here:
+http://www.alsa-project.org/db/?f=be535315befdb3dbb24430e90e46a7b4ed07a591
+
+Any help is appreciated
+
+Kai
