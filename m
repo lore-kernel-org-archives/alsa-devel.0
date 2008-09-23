@@ -1,18 +1,19 @@
-From: "Klaus Schulz" <kls.schlz@googlemail.com>
-Subject: Driver: EMU USB 0404 driver development
-Date: Mon, 22 Sep 2008 20:13:31 +0200
-Message-ID: <d9690f190809221113p1b410102oa733628ccfe8fc95@mail.gmail.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: maintainers - update email address
+	for	Liam Girdwood
+Date: Tue, 23 Sep 2008 09:52:15 +0100
+Message-ID: <20080923085214.GA32245@sirena.org.uk>
+References: <1221744997.6892.74.camel@odin> <s5hk5d9jdf3.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from el-out-1112.google.com (el-out-1112.google.com [209.85.162.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id A13CA244E2
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5C5242446A
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Sep 2008 20:13:34 +0200 (CEST)
-Received: by el-out-1112.google.com with SMTP id o28so417885ele.2
-	for <alsa-devel@alsa-project.org>; Mon, 22 Sep 2008 11:13:33 -0700 (PDT)
+	Tue, 23 Sep 2008 10:52:17 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <s5hk5d9jdf3.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi folks.
+On Fri, Sep 19, 2008 at 12:29:36AM +0200, Takashi Iwai wrote:
+> At Thu, 18 Sep 2008 14:36:37 +0100,
+> Liam Girdwood wrote:
 
-I learned that EMU handed over specs related to the EMU 0202/0404 USB to
-you guys some time ago.
+> > This patch updates the maintainers email address for Liam Girdwood and
+> > adds a URL for the ASoC website.
 
-http://ubuntuforums.org/showpost.php?p=4892734&postcount=157
+> > Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-Is anybody assigned to the task?
+> Applied now.  Thanks.
 
-Cheers
+It may be a good idea to pull this over into 2.6.27 if possible - people
+keep attempting to mail Liam at the old address, causing a bit of
+confusion.  It's rather late in cycle but hopefully safe enough.
