@@ -1,43 +1,41 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ASoC: maintainers - update email address
-	for	Liam Girdwood
-Date: Tue, 23 Sep 2008 09:52:15 +0100
-Message-ID: <20080923085214.GA32245@sirena.org.uk>
-References: <1221744997.6892.74.camel@odin> <s5hk5d9jdf3.wl%tiwai@suse.de>
+From: "Bryan Wu" <cooloney-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Some idea about usb audio gadget driver.
+Date: Tue, 23 Sep 2008 17:50:33 +0800
+Message-ID: <386072610809230250w2e43c20ei89076a8db62c5044@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5C5242446A
-	for <alsa-devel@alsa-project.org>;
-	Tue, 23 Sep 2008 10:52:17 +0200 (CEST)
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <s5hk5d9jdf3.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@kernel.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, ALSA devel <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 19, 2008 at 12:29:36AM +0200, Takashi Iwai wrote:
-> At Thu, 18 Sep 2008 14:36:37 +0100,
-> Liam Girdwood wrote:
+Hi ALSA and USB folks,
 
-> > This patch updates the maintainers email address for Liam Girdwood and
-> > adds a URL for the ASoC website.
+I plan to develop a usb audio gadget driver on Blackfin platform (can
+be shared for other embedded system).
 
-> > Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
+ - A new usb gadget driver which recognized by Linux/Windows PC as an
+USB audio card.
+ - There is an ALSA sound card on the same embedded device.
+ - The usb gadget driver receives audio data from host and send them
+to ALSA sound card to playback
+ - The usb gadget driver send the audio data recorded by ALSA sound
+card to host as recording.
+ - The usb gadget driver response to some audio card control command
+such as volume/mute control
 
-> Applied now.  Thanks.
+Questions,
 
-It may be a good idea to pull this over into 2.6.27 if possible - people
-keep attempting to mail Liam at the old address, causing a bit of
-confusion.  It's rather late in cycle but hopefully safe enough.
+ - Is there any similar things on this planet?
+ - How about gmidi usb midi gadget driver?
+ - How can I open/playback/record/close a ALSA sound card in kernel
+space not using alsalib in user space?
+
+Thanks a lot
+-Bryan
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
