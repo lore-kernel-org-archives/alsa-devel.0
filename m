@@ -1,19 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: maintainers - update email
-	address	for	Liam Girdwood
-Date: Tue, 23 Sep 2008 12:47:46 +0100
-Message-ID: <1222170466.6884.35.camel@dell-desktop.example.com>
-References: <1221744997.6892.74.camel@odin> <s5hk5d9jdf3.wl%tiwai@suse.de>
-	<20080923085214.GA32245@sirena.org.uk> <s5hskrrun6l.wl%tiwai@suse.de>
+From: Matthieu CASTET <matthieu.castet@parrot.com>
+Subject: Re: Some idea about usb audio gadget driver.
+Date: Tue, 23 Sep 2008 14:08:05 +0200
+Message-ID: <48D8DC25.2060405@parrot.com>
+References: <386072610809230250w2e43c20ei89076a8db62c5044@mail.gmail.com>
+	<20080923104542.GB24627@gandalf.research.nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from slimlogic.co.uk (slimlogic.co.uk [89.16.172.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 60044244C7
+Received: from toronto.xi-lite.net (co203.xi-lite.net [149.6.83.203])
+	by alsa0.perex.cz (Postfix) with ESMTP id C9778244DA
 	for <alsa-devel@alsa-project.org>;
-	Tue, 23 Sep 2008 13:48:04 +0200 (CEST)
-In-Reply-To: <s5hskrrun6l.wl%tiwai@suse.de>
+	Tue, 23 Sep 2008 14:08:09 +0200 (CEST)
+In-Reply-To: <20080923104542.GB24627@gandalf.research.nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,33 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>
+To: felipe.balbi@nokia.com
+Cc: ext Bryan Wu <cooloney@kernel.org>, "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2008-09-23 at 13:16 +0200, Takashi Iwai wrote:
-> At Tue, 23 Sep 2008 09:52:15 +0100,
-> Mark Brown wrote:
-> > 
-> > On Fri, Sep 19, 2008 at 12:29:36AM +0200, Takashi Iwai wrote:
-> > > At Thu, 18 Sep 2008 14:36:37 +0100,
-> > > Liam Girdwood wrote:
-> > 
-> > > > This patch updates the maintainers email address for Liam Girdwood and
-> > > > adds a URL for the ASoC website.
-> > 
-> > > > Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
-> > 
-> > > Applied now.  Thanks.
-> > 
-> > It may be a good idea to pull this over into 2.6.27 if possible - people
-> > keep attempting to mail Liam at the old address, causing a bit of
-> > confusion.  It's rather late in cycle but hopefully safe enough.
-> 
-> Makes sense.  I'll include it to the next pull request later.
-> 
+Felipe Balbi a =E9crit :
+> On Tue, Sep 23, 2008 at 05:50:33PM +0800, ext Bryan Wu wrote:
+>> Hi ALSA and USB folks,
+>>
+>>
+>>  - Is there any similar things on this planet?
+>>  - How about gmidi usb midi gadget driver?
+>>  - How can I open/playback/record/close a ALSA sound card in kernel
+>> space not using alsalib in user space?
+> =
 
-Thanks, I'll do another patch when I get some time in the next couple of
-days for my email address in source files.
+> Start by converting gmidi to composite framework. Separate the alsa
+> generic code from usb generic code and the function driver (in that case
+> MIDI). Then, all you have to do is add a new function driver with proper
+> audio streaming.
+I am not sure there is lot's of common alsa code. IIRC Midi and Pcm API
+are different in alsa.
 
-Liam
+But I think we shouldn't try to drive a sound card from kernel, we
+should create an alsa sound card like gmidi, and let's userspace do what
+it wants (redirect from/to another sound card, stream files, ...).
+
+
+Mattieu
