@@ -1,21 +1,16 @@
-From: Jiri Slaby <jirislaby@gmail.com>
-Subject: Re: hda_intel (sigmatel) defunct in mmotm
-	2008-09-13-03-09
-Date: Wed, 24 Sep 2008 11:42:21 +0200
-Message-ID: <48DA0B7D.3060801@gmail.com>
-References: <48CE6A90.1070309@gmail.com> <48CFC601.9050608@embeddedalley.com>
-	<48D0C69D.4090105@gmail.com> <48D10F8F.5090703@embeddedalley.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 0/4] ASoC updates
+Date: Wed, 24 Sep 2008 12:59:07 +0100
+Message-ID: <20080924115907.GA12401@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0579F243C2
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 596FC2415D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 24 Sep 2008 11:42:26 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id 16so2103246fgg.44
-	for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2008 02:42:26 -0700 (PDT)
-In-Reply-To: <48D10F8F.5090703@embeddedalley.com>
+	Wed, 24 Sep 2008 13:59:09 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,23 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Matthew Ranostay <mranostay@embeddedalley.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/17/2008 04:09 PM, Matthew Ranostay wrote:
-> Jiri Slaby wrote:
->> On 09/16/2008 04:43 PM, Matthew Ranostay wrote:
->>> Bug fix patch at:
->>>
->>> http://mailman.alsa-project.org/pipermail/alsa-devel/2008-September/010767.html
->> It works, thanks.
-> 
->> Another problem is when I switch IEC958 in alsamixer, I get:
-> 
-> 
-> Ok, the problem was that codec->slave_dig_outs getting a dereference when NULL.
-> This has been already fixed in Takashi's sound-2.6.git tree, with the commit id
-> 06efc354f735d5dbbdf4653fc6a8acd489ac5a18.
+This series fixes a couple of bugs (neither of which affect 2.6.27) and
+introduces a new API call for marking disconnected pins, mostly as a
+placeholder for future development so machine drivers can start using it
+now and then benefit when a more substantial implementation follows.
 
-ACKing this. Thanks.
+The following changes since commit 3090258fed179996ac4daecb482bad28d84cb054:
+  Jean Delvare (1):
+        ALSA: ASoC: Convert tlv320aic3x to a new-style i2c driver (v2)
+
+are available in the git repository at:
+
+  git://opensource.wolfsonmicro.com/linux-2.6-asoc for-tiwai
+
+Mark Brown (4):
+      ASoC: Fix inverted input PGA mute bits in WM8903
+      ASoC: Fix build of GTA01 audio driver
+      ASoC: Allow machine drivers to mark pins as not connected
+      ASoC: Use snd_soc_dapm_nc_pin() in GTA01 audio driver
+
+ include/sound/soc-dapm.h           |    1 +
+ sound/soc/codecs/wm8903.c          |    4 ++--
+ sound/soc/s3c24xx/neo1973_wm8753.c |   17 ++++++++---------
+ sound/soc/soc-dapm.c               |   20 ++++++++++++++++++++
+ 4 files changed, 31 insertions(+), 11 deletions(-)
