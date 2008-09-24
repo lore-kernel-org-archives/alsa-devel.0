@@ -1,16 +1,15 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Something wrong with snd_pcm_avail_update
-Date: Wed, 24 Sep 2008 02:19:54 +0200
-Message-ID: <20080924001954.GA5422@tango.0pointer.de>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: use last DAC defined for hp_pin
+Date: Tue, 23 Sep 2008 21:46:30 -0400
+Message-ID: <48D99BF6.5090103@embeddedalley.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7D39B24149
+Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
+	by alsa0.perex.cz (Postfix) with SMTP id F00822434B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 24 Sep 2008 02:19:55 +0200 (CEST)
-Content-Disposition: inline
+	Wed, 24 Sep 2008 03:46:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,39 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Heya!
+Patch allows the last DAC in the dac_nids for the hp_nid if there is an
+available one this isn't in use by a line_out entry or if hp_nid isn't already
+defined. This solves the issues with the 'Headphone Playback' mixer
+controls on the 92hd73xxx branch and possibly others.
 
-There seems to be something wrong with snd_pcm_update_avail() for mmap
-in recent 2.6.26 kernels:
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+---
 
-Quoting Alexander Gavrilov:
+diff --git a/pci/hda/patch_sigmatel.c b/pci/hda/patch_sigmatel.c
+index b5c1449..01f5475 100644
+--- a/pci/hda/patch_sigmatel.c
++++ b/pci/hda/patch_sigmatel.c
+@@ -2817,6 +2817,10 @@ static int stac92xx_auto_create_multi_out_ctls(struct hda_codec *codec,
+ 		}
+ 	}
 
-<snip>
-Fedora 9 with kernel 2.6.26.3-29 exhibits a bug where
-the driver decrements its hw.ptr under certain stress
-conditions, or at least it appears so from debugging.
-
-It causes alsa-lib to give absurdly huge avail numbers
-to pulseaudio, which crashes it. This patch adds a
-work-around to avoid such unfriendly behavior until
-the bug is fixed.
-
-As this is not a real fix, it displays a message every
-time it is activated.
-</snip>
-
-https://bugzilla.redhat.com/show_bug.cgi?id=462200
-
-(see the patch attached to that bug report)
-
-Takashi, Jaroslav, do you know anything about this?
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
++	if ((spec->multiout.num_dacs - cfg->line_outs) > 0 &&
++			cfg->hp_outs && !spec->multiout.hp_nid)
++		spec->multiout.hp_nid = nid;
++
+ 	if (cfg->hp_outs > 1) {
+ 		err = stac92xx_add_control(spec,
+ 			STAC_CTL_WIDGET_HP_SWITCH,
+@@ -4083,8 +4087,6 @@ again:
+ 	case STAC_DELL_M6:
+ 		spec->init = dell_eq_core_init;
+ 		spec->num_smuxes = 0;
+-		spec->multiout.hp_nid =
+-			spec->multiout.dac_nids[spec->multiout.num_dacs - 1];
+ 		spec->mixer = &stac92hd73xx_6ch_mixer[DELL_M6_MIXER];
+ 		spec->amp_nids = &stac92hd73xx_amp_nids[DELL_M6_AMP];
+ 		spec->num_amps = 1;
