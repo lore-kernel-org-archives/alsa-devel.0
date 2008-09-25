@@ -1,16 +1,16 @@
 From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: [PATCH] alsa-plugins: Fix destruction logic on failed
-	construction
-Date: Thu, 25 Sep 2008 21:03:01 +0200
-Message-ID: <20080925190301.GA30284@omega>
+Subject: alsa-plugins is missing from the listing
+	on	http://git.alsa-project.org/
+Date: Thu, 25 Sep 2008 21:09:35 +0200
+Message-ID: <20080925190934.GA25932@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id B18A924431
+	by alsa0.perex.cz (Postfix) with ESMTP id 9636A24431
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Sep 2008 21:03:02 +0200 (CEST)
+	Thu, 25 Sep 2008 21:09:35 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,31 +26,9 @@ List-Id: alsa-devel@alsa-project.org
 
 Heya!
 
-We need to stop the main loop first, then free the context and finally
-free the mainloop.
----
- pulse/pulse.c |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
-
-diff --git a/pulse/pulse.c b/pulse/pulse.c
-index 022ca55..3940238 100644
---- a/pulse/pulse.c
-+++ b/pulse/pulse.c
-@@ -208,6 +208,12 @@ snd_pulse_t *pulse_new(void)
- 
- fail:
- 	if (p->mainloop)
-+		pa_threaded_mainloop_stop(p->mainloop);
-+
-+	if (p->context)
-+		pa_context_unref(p->context);
-+
-+	if (p->mainloop)
- 		pa_threaded_mainloop_free(p->mainloop);
- 
- 	if (p->main_fd >= 0)
--- 
-1.6.0.1
+When I open http://git.alsa-project.org/ in my web browser I don't see
+the alsa-plugins repo listed there although it actually is
+existant. There's something wrong with the gitweb installation...
 
 Lennart
 
