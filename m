@@ -1,19 +1,17 @@
-From: Pawel MOLL <pawel.moll@st.com>
-Subject: Re: Audio buffer mmap-ing on sh arch vs.
-	cache	aliasing	problem
-Date: Thu, 25 Sep 2008 15:55:53 +0100
-Message-ID: <1222354553.28498.30.camel@bri1004.bri.st.com>
-References: <1220527434.3299.2074.camel@bri1004.bri.st.com>
-	<s5h63owgdk1.wl%tiwai@suse.de>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: [PATCH] alsa-plugins: Start PA event loop after we
+	have created	the context.
+Date: Thu, 25 Sep 2008 21:01:22 +0200
+Message-ID: <20080925190122.GA30171@omega>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from s200aog16.obsmtp.com (s200aog16.obsmtp.com [207.126.144.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id 799AF2433A
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id D3F1524431
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Sep 2008 16:56:06 +0200 (CEST)
-In-Reply-To: <s5h63owgdk1.wl%tiwai@suse.de>
+	Thu, 25 Sep 2008 21:01:25 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,39 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGksIFRha3Nhc2hpLAoKPiBPbmUgdGhpbmcgd2UgY2FuIHRyeSBpcyBhIHBhdGNoIGxpa2UgYmVs
-b3cuICBCdXQsIEknbSBub3Qgc3VyZSB3aGV0aGVyCj4gdGhpcyBpcyBjb3JyZWN0IG92ZXIgYWxs
-IGFyY2hpdGVjdHVyZXMsIHRvby4gIEF0IGJlc3QsIGEgZ2VuZXJpYyBBUEkKPiB3b3VsZCBiZSBo
-ZWxwZnVsIGZvciBzdWNoIGEgdGhpbmcuLi4KPiArCWFyZWEtPnZtX3BhZ2VfcHJvdCA9IHBncHJv
-dF9ub25jYWNoZWQoYXJlYS0+dm1fcGFnZV9wcm90KTsKCldlbGwsIGl0J3Mgbm90IGVub3VnaCwg
-YmVjYXVzZSB0aGUga2VybmVsIG1hcHBpbmcgb2YgYnVmZmVyIGlzIHN0aWxsCmNhY2hlZC4uLiBB
-IGhhY2sgYmVsb3cgZG9lcyB0aGUgam9iLCBidXQgaXQgaXMgbm90IG5pY2UgYXMgd2VsbC4uLgoK
-Q2hlZXJzCgpQYXdlxYIKCmRpZmYgLS1naXQgYS9zb3VuZC9jb3JlL3BjbV9uYXRpdmUuYyBiL3Nv
-dW5kL2NvcmUvcGNtX25hdGl2ZS5jCmluZGV4IDU5YjI5Y2QuLjMwNGY5ZTUgMTAwNjQ0Ci0tLSBh
-L3NvdW5kL2NvcmUvcGNtX25hdGl2ZS5jCisrKyBiL3NvdW5kL2NvcmUvcGNtX25hdGl2ZS5jCkBA
-IC0zMTU5LDYgKzMxNTksOSBAQCBzdGF0aWMgc3RydWN0IHZtX29wZXJhdGlvbnNfc3RydWN0IHNu
-ZF9wY21fdm1fb3BzX2RhdGEgPQogc3RhdGljIGludCBzbmRfcGNtX2RlZmF1bHRfbW1hcChzdHJ1
-Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBzdHJ1Y3Qgdm1fYXJlYV9zdHJ1Y3QgKmFyZWEpCiB7CisjaWZkZWYgcGdwcm90X25v
-bmNhY2hlZAorICAgICAgIGFyZWEtPnZtX3BhZ2VfcHJvdCA9IHBncHJvdF9ub25jYWNoZWQoYXJl
-YS0+dm1fcGFnZV9wcm90KTsKKyNlbmRpZgogICAgICAgIGFyZWEtPnZtX29wcyA9ICZzbmRfcGNt
-X3ZtX29wc19kYXRhOwogICAgICAgIGFyZWEtPnZtX3ByaXZhdGVfZGF0YSA9IHN1YnN0cmVhbTsK
-ICAgICAgICBhcmVhLT52bV9mbGFncyB8PSBWTV9SRVNFUlZFRDsKZGlmZiAtLWdpdCBhL3NvdW5k
-L3VzYi91c2JhdWRpby5jIGIvc291bmQvdXNiL3VzYmF1ZGlvLmMKaW5kZXggN2JkNTg1Mi4uYzk4
-YTRlYyAxMDA2NDQKLS0tIGEvc291bmQvdXNiL3VzYmF1ZGlvLmMKKysrIGIvc291bmQvdXNiL3Vz
-YmF1ZGlvLmMKQEAgLTcxNCw3ICs3MTQsOCBAQCBzdGF0aWMgaW50IHNuZF9wY21fYWxsb2Nfdm1h
-bGxvY19idWZmZXIoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzLCBzaXplX3QgcwogICAg
-ICAgICAgICAgICAgICAgICAgICByZXR1cm4gMDsgLyogYWxyZWFkeSBsYXJnZSBlbm91Z2ggKi8K
-ICAgICAgICAgICAgICAgIHZmcmVlKHJ1bnRpbWUtPmRtYV9hcmVhKTsKICAgICAgICB9Ci0gICAg
-ICAgcnVudGltZS0+ZG1hX2FyZWEgPSB2bWFsbG9jKHNpemUpOworICAgICAgIHJ1bnRpbWUtPmRt
-YV9hcmVhID0gX192bWFsbG9jKHNpemUsIEdGUF9LRVJORUwgfCBfX0dGUF9ISUdITUVNLAorICAg
-ICAgICAgICAgICAgICAgICAgICBQQUdFX0tFUk5FTF9OT0NBQ0hFKTsKICAgICAgICBpZiAoISBy
-dW50aW1lLT5kbWFfYXJlYSkKICAgICAgICAgICAgICAgIHJldHVybiAtRU5PTUVNOwogICAgICAg
-IHJ1bnRpbWUtPmRtYV9ieXRlcyA9IHNpemU7CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwK
+Heya!
+
+We shouldn't be passing the main loop object to the pa_context while
+that loop is running and not locked. Push the main loop startup after we
+created the main loop.
+---
+ pulse/pulse.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/pulse/pulse.c b/pulse/pulse.c
+index 617851e..022ca55 100644
+--- a/pulse/pulse.c
++++ b/pulse/pulse.c
+@@ -188,9 +188,6 @@ snd_pulse_t *pulse_new(void)
+ 	if (!p->mainloop)
+ 		goto fail;
+ 
+-	if (pa_threaded_mainloop_start(p->mainloop) < 0)
+-		goto fail;
+-
+ 	if (pa_get_binary_name(proc, sizeof(proc)))
+ 		snprintf(buf, sizeof(buf), "ALSA plug-in [%s]",
+ 			 pa_path_get_filename(proc));
+@@ -204,6 +201,9 @@ snd_pulse_t *pulse_new(void)
+ 
+ 	pa_context_set_state_callback(p->context, context_state_cb, p);
+ 
++	if (pa_threaded_mainloop_start(p->mainloop) < 0)
++		goto fail;
++
+ 	return p;
+ 
+ fail:
+-- 
+1.6.0.1
+
+
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
