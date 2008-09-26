@@ -1,21 +1,15 @@
-From: "Klaus Schulz" <kls.schlz@googlemail.com>
-Subject: Re: Driver: EMU USB 0404 driver development
-Date: Fri, 26 Sep 2008 15:44:29 +0200
-Message-ID: <d9690f190809260644q48897b4drdcaf2418dc7784b2@mail.gmail.com>
-References: <d9690f190809221113p1b410102oa733628ccfe8fc95@mail.gmail.com>
-	<fd3eb9bf0809260320r71a9f46bp30be1a2535b0c557@mail.gmail.com>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: 92xx S/PDIF In support
+Date: Fri, 26 Sep 2008 10:06:40 -0400
+Message-ID: <48DCEC70.6050907@embeddedalley.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id A1CF810382B
+Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
+	by alsa0.perex.cz (Postfix) with SMTP id 4C2082414D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 26 Sep 2008 15:44:30 +0200 (CEST)
-Received: by yx-out-1718.google.com with SMTP id 36so273396yxh.2
-	for <alsa-devel@alsa-project.org>; Fri, 26 Sep 2008 06:44:29 -0700 (PDT)
-In-Reply-To: <fd3eb9bf0809260320r71a9f46bp30be1a2535b0c557@mail.gmail.com>
-Content-Disposition: inline
+	Fri, 26 Sep 2008 16:06:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,56 +19,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-2?Q?Vedran_Mileti=E6?= <rivanvx@gmail.com>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Yep.  But rather by coincidence ( at least a quirk to recognize the card and
-a small routine (usbaudio.c) to handle the samples properly has been
-implemented).
+Add support for S/PDIF IN on reference boards quirks. Also disable the
+IEC958 capture switch on boards with GPIO0 enabled.
 
-First you need to upgrade the  firmware via Windows - which is a must. After
-that the card defaults to 44,1/16 after power up.
-This is the reason why 44.1/16 playback works.
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+---
 
-What's missing, is the complete control of the card modes, register settings
-etc.
+diff --git a/pci/hda/patch_sigmatel.c b/pci/hda/patch_sigmatel.c
+index b5c1449..128b8a1 100644
+--- a/pci/hda/patch_sigmatel.c
++++ b/pci/hda/patch_sigmatel.c
+@@ -1245,7 +1245,7 @@ static int stac92xx_build_controls(struct hda_codec *codec)
+ 			return err;
+ 		spec->multiout.share_spdif = 1;
+ 	}
+-	if (spec->dig_in_nid) {
++	if (spec->dig_in_nid && (!spec->gpio_dir & 0x01)) {
+ 		err = snd_hda_create_spdif_in_ctls(codec, spec->dig_in_nid);
+ 		if (err < 0)
+ 			return err;
+@@ -4075,10 +4075,6 @@ again:
+ 	memcpy(&spec->private_dimux, &stac92hd73xx_dmux,
+ 			sizeof(stac92hd73xx_dmux));
 
-If the registers are known, which I assume, according to EMU statement, it
-shouldn't be a big deal to get it working.
+-	/* GPIO0 High = Enable EAPD */
+-	spec->eapd_mask = spec->gpio_mask = spec->gpio_dir = 0x1;
+-	spec->gpio_data = 0x01;
+-
+ 	switch (spec->board_config) {
+ 	case STAC_DELL_M6:
+ 		spec->init = dell_eq_core_init;
+@@ -4118,6 +4114,11 @@ again:
+ 		spec->num_dmics = STAC92HD73XX_NUM_DMICS;
+ 		spec->num_smuxes = ARRAY_SIZE(stac92hd73xx_smux_nids);
+ 	}
++	if (spec->board_config > STAC_92HD73XX_REF) {
++		/* GPIO0 High = Enable EAPD */
++		spec->eapd_mask = spec->gpio_mask = spec->gpio_dir = 0x1;
++		spec->gpio_data = 0x01;
++	}
+ 	spec->dinput_mux = &spec->private_dimux;
 
-Now it would be interesting to know who sits on these information. I'd be
-happy to get in touch with him to support the design process.
+ 	spec->num_pwrs = ARRAY_SIZE(stac92hd73xx_pwr_nids);
+@@ -4354,10 +4355,12 @@ again:
+ 	spec->aloopback_mask = 0x20;
+ 	spec->aloopback_shift = 0;
 
-Cheers
+-	/* GPIO0 High = EAPD */
+-	spec->gpio_mask = 0x01;
+-	spec->gpio_dir = 0x01;
+-	spec->gpio_data = 0x01;
++	if (spec->board_config > STAC_92HD71BXX_REF) {
++		/* GPIO0 = EAPD */
++		spec->gpio_mask = 0x01;
++		spec->gpio_dir = 0x01;
++		spec->gpio_data = 0x01;
++	}
 
+ 	spec->powerdown_adcs = 1;
+ 	spec->digbeep_nid = 0x26;
+@@ -4599,9 +4602,11 @@ static int patch_stac927x(struct hda_codec *codec)
+ 		spec->num_dmuxes = ARRAY_SIZE(stac927x_dmux_nids);
+ 		break;
+ 	default:
+-		/* GPIO0 High = Enable EAPD */
+-		spec->eapd_mask = spec->gpio_mask = spec->gpio_dir = 0x1;
+-		spec->gpio_data = 0x01;
++		if (spec->board_config > STAC_D965_REF) {
++			/* GPIO0 High = Enable EAPD */
++			spec->eapd_mask = spec->gpio_mask = 0x01;
++			spec->gpio_dir = spec->gpio_data = 0x01;
++		}
+ 		spec->num_dmics = 0;
 
-
-
-On Fri, Sep 26, 2008 at 12:20 PM, Vedran Mileti=E6 <rivanvx@gmail.com> wrot=
-e:
-
-> Doesn't it already sort of work with limited functionality?
->
-> 2008/9/22 Klaus Schulz <kls.schlz@googlemail.com>:
-> > Hi folks.
-> >
-> > I learned that EMU handed over specs related to the EMU 0202/0404 USB to
-> > you guys some time ago.
-> >
-> > http://ubuntuforums.org/showpost.php?p=3D4892734&postcount=3D157
-> >
-> > Is anybody assigned to the task?
-> >
-> > Cheers
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >
->
->
->
-> --
-> Vedran Mileti=E6
->
+ 		spec->init = stac927x_core_init;
+@@ -4715,6 +4720,9 @@ static int patch_stac9205(struct hda_codec *codec)
+ 		 */
+ 		spec->gpio_data = 0x01;
+ 		break;
++	case STAC_9205_REF:
++		/* SPDIF-In enabled */
++		break;
+ 	default:
+ 		/* GPIO0 High = EAPD */
+ 		spec->eapd_mask = spec->gpio_mask = spec->gpio_dir = 0x1;
