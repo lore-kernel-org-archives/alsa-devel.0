@@ -1,20 +1,22 @@
-From: Richard Zhao <linuxzsc@gmail.com>
-Subject: [PATCH 1/1] ALSA: ASoC: Fix wrong param when call
-	snd_soc_test_bits
-Date: Sat, 27 Sep 2008 20:43:16 +0800
-Message-ID: <1222519396-6916-1-git-send-email-linuxzsc@gmail.com>
+From: "Bryan Wu" <cooloney@kernel.org>
+Subject: Re: [PATCH 1/1] ASoC Blackfin: fix bug - Audio Latency
+	on AD1981 with MMAP enabled
+Date: Sat, 27 Sep 2008 21:40:58 +0800
+Message-ID: <386072610809270640jc80a554n8807b58f2b10f000@mail.gmail.com>
+References: <1222505889-22287-1-git-send-email-cooloney@kernel.org>
+	<20080927093316.GB3330@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ti-out-0910.google.com (ti-out-0910.google.com [209.85.142.186])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0F51B24386
+Received: from mail-gx0-f17.google.com (mail-gx0-f17.google.com
+	[209.85.217.17]) by alsa0.perex.cz (Postfix) with ESMTP id 420F6243AE
 	for <alsa-devel@alsa-project.org>;
-	Sat, 27 Sep 2008 14:43:22 +0200 (CEST)
-Received: by ti-out-0910.google.com with SMTP id j3so538792tid.8
-	for <alsa-devel@alsa-project.org>; Sat, 27 Sep 2008 05:43:21 -0700 (PDT)
-In-Reply-To: <>
-References: <>
+	Sat, 27 Sep 2008 15:41:00 +0200 (CEST)
+Received: by gxk10 with SMTP id 10so10749505gxk.8
+	for <alsa-devel@alsa-project.org>; Sat, 27 Sep 2008 06:40:59 -0700 (PDT)
+In-Reply-To: <20080927093316.GB3330@sirena.org.uk>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,50 +26,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: liam.girdwood@wolfsonmicro.com, alsa-devel@alsa-project.org, Richard Zhao <linuxzsc@gmail.com>
+To: Bryan Wu <cooloney@kernel.org>, alsa-devel@alsa-project.org, Cliff Cai <cliff.cai@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fix wrong param when call snd_soc_test_bits in function dapm_mux_update_power.
+On Sat, Sep 27, 2008 at 5:33 PM, Mark Brown <broonie@sirena.org.uk> wrote:
+> On Sat, Sep 27, 2008 at 04:58:09PM +0800, Bryan Wu wrote:
+>> From: Cliff Cai <cliff.cai@analog.com>
+>
+>> With MMAP enabled (DMA mode) on the AD1981, there is +/- 250ms of delay between
+>> writing data to alsa and audio starts coming out of the AD1981.
+>>
+>> Copy more data to local buffer before starting DMA
+>
+>> Signed-off-by: Cliff Cai <cliff.cai@analog.com>
+>> Signed-off-by: Bryan Wu <cooloney@kernel.org>
+>
+> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+>
+> but
+>
+>> + *
+>> + * Revision history
+>> + *      6th June 2008 Initial version
+>> + *      25th Sep 2008 fix latency when enable mmap
+>>   */
+>
+> it'd be good to drop the in-code changelogs - we're already tracking the
+> history of the code with git and they're likely to end up providing an
+> inaccurate history due to people not updating them (this applies to most
+> of the Blackfin code).  There were in-code changelogs in ASoC in the past
+> from the time it was out of tree but they shouldn't be required now.
+>
 
-Signed-off-by: Richard Zhao <linuxzsc@gmail.com>
+OK, I will submit a new patch by moving the changelogs to git log.
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index c016426..9ca9c08 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -693,7 +693,7 @@ static void dbg_dump_dapm(struct snd_soc_codec* codec, const char *action)
- /* test and update the power status of a mux widget */
- static int dapm_mux_update_power(struct snd_soc_dapm_widget *widget,
- 				 struct snd_kcontrol *kcontrol, int mask,
--				 int val, struct soc_enum* e)
-+				 int mux, int val, struct soc_enum *e)
- {
- 	struct snd_soc_dapm_path *path;
- 	int found = 0;
-@@ -709,12 +709,12 @@ static int dapm_mux_update_power(struct snd_soc_dapm_widget *widget,
- 		if (path->kcontrol != kcontrol)
- 			continue;
- 
--		if (!path->name || ! e->texts[val])
-+		if (!path->name || !e->texts[mux])
- 			continue;
- 
- 		found = 1;
- 		/* we now need to match the string in the enum to the path */
--		if (!(strcmp(path->name, e->texts[val])))
-+		if (!(strcmp(path->name, e->texts[mux])))
- 			path->connect = 1; /* new connection */
- 		else
- 			path->connect = 0; /* old connection must be powered down */
-@@ -1291,7 +1291,7 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
- 
- 	mutex_lock(&widget->codec->mutex);
- 	widget->value = val;
--	dapm_mux_update_power(widget, kcontrol, mask, mux, e);
-+	dapm_mux_update_power(widget, kcontrol, mask, mux, val, e);
- 	if (widget->event) {
- 		if (widget->event_flags & SND_SOC_DAPM_PRE_REG) {
- 			ret = widget->event(widget,
--- 
-1.5.4.3
+Thanks
+-Bryan
