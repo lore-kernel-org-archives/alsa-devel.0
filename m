@@ -1,15 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/1] ALSA: ASoC: Fix wrong param when
-	call	snd_soc_test_bits
-Date: Sat, 27 Sep 2008 17:33:02 +0100
-Message-ID: <20080927163300.GA3225@sirena.org.uk>
-References: <1222519396-6916-1-git-send-email-linuxzsc@gmail.com>
+From: Jean Delvare <khali@linux-fr.org>
+Subject: [PATCH] ASoC: Fix another cs4270 error path
+Date: Sat, 27 Sep 2008 20:30:52 +0200
+Message-ID: <20080927203052.2a9ed6a1@hyperion.delvare>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
-In-Reply-To: <1222519396-6916-1-git-send-email-linuxzsc@gmail.com>
+Received: from services.gcu-squad.org (zone0.gcu-squad.org [212.85.147.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id D0473103849
+	for <alsa-devel@alsa-project.org>;
+	Sat, 27 Sep 2008 20:31:00 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,23 +19,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Richard Zhao <linuxzsc@gmail.com>
-Cc: liam.girdwood@wolfsonmicro.com, alsa-devel@alsa-project.org, patch@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@sirena.org.uk>, Liam Girdwood <lrg@kernel.org>, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Sep 27, 2008 at 08:43:16PM +0800, Richard Zhao wrote:
+Conversion to new-style i2c driver missed the error path of the
+probe function. Fix it.
 
-> Fix wrong param when call snd_soc_test_bits in function dapm_mux_update_power.
+Signed-off-by: Jean Delvare <khali@linux-fr.org>
+Cc: Timur Tabi <timur@freescale.com>
+---
+ sound/soc/codecs/cs4270.c |    7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-So...  This patch doesn't actually do what the changelog entry here
-says: the arguments to snd_soc_test_bits() remain the same before and
-after your change.
+--- linux-2.6.27-rc7.orig/sound/soc/codecs/cs4270.c	2008-09-27 17:45:47.000000000 +0200
++++ linux-2.6.27-rc7/sound/soc/codecs/cs4270.c	2008-09-27 18:10:52.000000000 +0200
+@@ -610,17 +610,12 @@ static int cs4270_i2c_probe(struct i2c_c
+ 	return 0;
+ 
+ error:
+-	if (codec->control_data) {
+-		i2c_detach_client(i2c_client);
+-		codec->control_data = NULL;
+-	}
++	codec->control_data = NULL;
+ 
+ 	kfree(codec->reg_cache);
+ 	codec->reg_cache = NULL;
+ 	codec->reg_cache_size = 0;
+ 
+-	kfree(i2c_client);
+-
+ 	return ret;
+ }
+ 
 
-> -		if (!path->name || ! e->texts[val])
-> +		if (!path->name || !e->texts[mux])
->  			continue;
 
-What this is actually doing is changing the enum text examined to be
-indexed by mux (the value of the enumerated control) rather than val
-(the bitmask in the register).  This looks like a good change but I want
-to double check with a test system.
+-- 
+Jean Delvare
