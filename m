@@ -1,32 +1,17 @@
-From: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
-Subject: [PATCH] ALSA: hda - Map ALC662 model for Foxconn
-	45CMX/45GMX/45CMX-K
-Date: Fri, 26 Sep 2008 23:48:45 -0300
-Message-ID: <200809262348.45582.herton@mandriva.com.br>
+From: Peter Korsgaard <jacmet@sunsite.dk>
+Subject: [PATCH] hda: appletv support
+Date: Sat, 27 Sep 2008 09:13:45 +0200
+Message-ID: <1222499625-7411-1-git-send-email-jacmet@sunsite.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perninha.conectiva.com.br (perninha.conectiva.com.br
-	[200.140.247.100])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0DA20244DD
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.175])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0D99124521
 	for <alsa-devel@alsa-project.org>;
-	Sat, 27 Sep 2008 04:48:49 +0200 (CEST)
-Received: from localhost (perninha.conectiva.com.br [127.0.0.1])
-	by perninha.conectiva.com.br (Postfix) with ESMTP id 2CE833EB2
-	for <alsa-devel@alsa-project.org>; Fri, 26 Sep 2008 22:49:07 -0400 (EDT)
-Received: from perninha.conectiva.com.br ([127.0.0.1])
-	by localhost (perninha.conectiva.com.br [127.0.0.1]) (amavisd-new,
-	port 10025)
-	with LMTP id Di-0voZkPiIT for <alsa-devel@alsa-project.org>;
-	Fri, 26 Sep 2008 22:49:06 -0400 (EDT)
-Received: from fox.conectiva (fox.conectiva [10.0.2.195])
-	by perninha.conectiva.com.br (Postfix) with ESMTP id D342C3EB1
-	for <alsa-devel@alsa-project.org>; Fri, 26 Sep 2008 22:49:06 -0400 (EDT)
-Received: from [172.21.225.14] (unknown [172.21.225.14])
-	by fox.conectiva (Postfix) with ESMTP id E9CE62F246
-	for <alsa-devel@alsa-project.org>; Fri, 26 Sep 2008 23:48:46 -0300 (BRT)
-Content-Disposition: inline
+	Sat, 27 Sep 2008 09:13:46 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id 30so51212ugs.24
+	for <alsa-devel@alsa-project.org>; Sat, 27 Sep 2008 00:13:45 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,21 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Peter Korsgaard <jacmet@sunsite.dk>
 List-Id: alsa-devel@alsa-project.org
 
-Use 3stack-6ch-dig ALC662 model for Foxconn 45CMX/45GMX/45CMX-K motherboard.
+The AppleTV needs the same handling as the 24" iMac.
 
-Signed-off-by: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
+Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
+---
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff -p -up linux-2.6.26/sound/pci/hda/patch_realtek.c.orig linux-2.6.26/sound/pci/hda/patch_realtek.c
---- linux-2.6.26/sound/pci/hda/patch_realtek.c.orig	2008-09-26 23:27:24.000000000 -0300
-+++ linux-2.6.26/sound/pci/hda/patch_realtek.c	2008-09-26 23:28:15.000000000 -0300
-@@ -15702,6 +15702,8 @@ static struct snd_pci_quirk alc662_cfg_t
- 	SND_PCI_QUIRK(0x1043, 0x1833, "ASUS NB", ALC663_ASUS_MODE6),
- 	SND_PCI_QUIRK(0x1043, 0x1763, "ASUS NB", ALC663_ASUS_MODE6),
- 	SND_PCI_QUIRK(0x1043, 0x1765, "ASUS NB", ALC663_ASUS_MODE6),
-+	SND_PCI_QUIRK(0x105b, 0x0d47, "Foxconn 45CMX/45GMX/45CMX-K",
-+		      ALC662_3ST_6ch_DIG),
- 	SND_PCI_QUIRK(0x17aa, 0x101e, "Lenovo", ALC662_LENOVO_101E),
- 	SND_PCI_QUIRK(0x1019, 0x9087, "ECS", ALC662_ECS),
- 	SND_PCI_QUIRK(0x105b, 0x0cd6, "Foxconn", ALC662_ECS),
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index c2ff85d..b0b665e 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6656,6 +6656,7 @@ static int patch_alc882(struct hda_codec *codec)
+ 			board_config = ALC885_MACPRO;
+ 			break;
+ 		case 0x106b1000: /* iMac 24 */
++		case 0x106b2800: /* AppleTV */
+ 			board_config = ALC885_IMAC24;
+ 			break;
+ 		case 0x106b00a1: /* Macbook (might be wrong - PCI SSID?) */
+-- 
+1.5.6.5
