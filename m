@@ -1,17 +1,21 @@
-From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
-Subject: GeForce 8200 HD audio seems to work!
-Date: Sun, 28 Sep 2008 01:20:36 +0200
-Message-ID: <fd3eb9bf0809271620s25b8566w58178658a94c68@mail.gmail.com>
+From: "Richard Zhao" <linuxzsc@gmail.com>
+Subject: Re: [PATCH 1/1] ALSA: ASoC: Fix wrong param when call
+	snd_soc_test_bits
+Date: Sun, 28 Sep 2008 07:27:27 +0800
+Message-ID: <4e090d470809271627t587270a0x3724b5b08b89a247@mail.gmail.com>
+References: <1222519396-6916-1-git-send-email-linuxzsc@gmail.com>
+	<20080927163300.GA3225@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.173])
-	by alsa0.perex.cz (Postfix) with ESMTP id 93D7A2414C
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id CC36B2414C
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 Sep 2008 01:20:37 +0200 (CEST)
-Received: by wf-out-1314.google.com with SMTP id 24so1594067wfg.23
-	for <alsa-devel@alsa-project.org>; Sat, 27 Sep 2008 16:20:36 -0700 (PDT)
+	Sun, 28 Sep 2008 01:27:28 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id l35so1550067waf.16
+	for <alsa-devel@alsa-project.org>; Sat, 27 Sep 2008 16:27:27 -0700 (PDT)
+In-Reply-To: <20080927163300.GA3225@sirena.org.uk>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,28 +26,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: Richard Zhao <linuxzsc@gmail.com>, patch@alsa-project.org, liam.girdwood@wolfsonmicro.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SSBqdXN0IGluc3RhbGxlZCBMaW51eCBvbiBBU1JPQ0sgR2VGb3JjZSA4MjAwIGJvYXJkLiBCZWlu
-ZyBhCnJlbGF0aXZlbHkgbmV3IGNoaXBzZXQsIEkgaGFkIGEgY291cGxlIG9mIGlzc3VlcyBib290
-aW5nIG9sZGVyCmtlcm5lbHMsIGZpbmFsbHkgc2V0dGxpbmcgZm9yIERlYmlhbiBsZW5ueSBzaW5j
-ZSBpdCBoYWQgYSBDRCB0aGF0CmJvb3RlZC4gSSB3YXMgd29ycmllZCBhYm91dCBvbmJvYXJkIGF1
-ZGlvLCBzaW5jZSBpdCdzIG9uZSBvZiB0aG91c2FuZHMKb2YgSEQgYXVkaW8gc29sdXRpb25zLCBh
-bmQgSSBleHBlY3RlZCB0byBoYXZlIHByb2JsZW1zIHdpdGggaXQuClRvIG1ha2UgdGhlIGxvbmcg
-c3Rvcnkgc2hvcnQ6CjEuMC4xNiAtPiBvbmx5IG5vaXNlLCBkb2Vzbid0IHNvdW5kIGNsb3NlIHRv
-IHRyYWNrIHBsYXllZAoxLjAuMTcgLT4gc291bmQgKyBsb3RzIG9mIG5vaXNlLCBidXQgeW91IGNh
-biByZWNvbmduaXplIHRoZSBzb25nIHRoYXQgaXMgcGxheWluZwp0YWthc2hpJ3Mgc291bmQtMi42
-IC0+IGV2ZXJ5dGhpbmcgd29ya3MgKGluY2x1ZGluZyBmcm9udCBwYW5lbCkgKyBIRE1JCmF1ZGlv
-IHNlZWVtcyB0byBiZSBzdXBwb3J0ZWQKCk1hc3NpdmUgcHJvcHMgdG8gd2hvZXZlciBtYWRlIGl0
-IHdvcmsuCgpJIGp1c3QgaGF2ZSB0d28gcXVlc3Rpb25zOgoxKSBPbiBSUzY5MCBJIHVzZWQgdG8g
-aGF2ZSBzZXBhcmF0ZSBkZXZpY2UgZm9yIFJTNjkwL1JTNzgwIEhETUkgKHRoYXQKaXMgSERBIEFU
-SSBhbmQgSERBIEFUSSBIRE1JKSwgb24gTlZJRElBIEkgb25seSBoYXZlIEhEQSBOVklESUEsIHdo
-aWNoCmhhcyBzdWJkZXZpY2UgZm9yIEhETUksIHdoeT8KMikgYWxzYW1peGVyIHNheXM6IENhcmQ6
-IEhEQSBOVmlkaWEgfCBDaGlwOiBHZW5lcmljIDEwZGUgTlZJRElBIE1DUDc4CkhETUkuIFNob3Vs
-ZG4ndCBjaGlwIGJlICJSZWFsdGVrIEFMQzY2MiByZXYxIiBvciBzb21ldGhpbmcgbGlrZSB0aGF0
-PwpBbHNvLCB3aHkgZG9lcyBpdCBzYXkgR2VuZXJpYyAxMGRlPyBXaGVyZSBpcyB0aGF0IHJlYWQg
-ZnJvbT8KClJlZ2FyZHMsCgotLSAKVmVkcmFuIE1pbGV0acSHCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Mark,
+Without the patch, value of val is the value of the enumerated control
+(mux), so dapm_mux_update_power didn't go wrong. But snd_soc_test_bits
+need the bitmask value, so I changed the original variable name "val"
+to "mux" and add a new variable "val" which means bitmask value. So
+the meaning of val and mux is unified with that in
+dapm_mux_update_power.
+Though you can't find "if (!snd_soc_test_bits(widget->codec, e->reg,
+mask, val))" in the patch, it's what I want to fix.
+
+Thanks
+Richard
+
+2008/9/28 Mark Brown <broonie@opensource.wolfsonmicro.com>
+>
+> On Sat, Sep 27, 2008 at 08:43:16PM +0800, Richard Zhao wrote:
+>
+> > Fix wrong param when call snd_soc_test_bits in function dapm_mux_update_power.
+>
+> So...  This patch doesn't actually do what the changelog entry here
+> says: the arguments to snd_soc_test_bits() remain the same before and
+> after your change.
+>
+> > -             if (!path->name || ! e->texts[val])
+> > +             if (!path->name || !e->texts[mux])
+> >                       continue;
+>
+> What this is actually doing is changing the enum text examined to be
+> indexed by mux (the value of the enumerated control) rather than val
+> (the bitmask in the register).  This looks like a good change but I want
+> to double check with a test system.
