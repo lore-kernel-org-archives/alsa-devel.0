@@ -1,21 +1,22 @@
-From: "Richard Zhao" <linuxzsc@gmail.com>
-Subject: Re: [PATCH 1/1] ALSA: ASoC: Fix wrong param when call
-	snd_soc_test_bits
-Date: Sun, 28 Sep 2008 07:27:27 +0800
-Message-ID: <4e090d470809271627t587270a0x3724b5b08b89a247@mail.gmail.com>
-References: <1222519396-6916-1-git-send-email-linuxzsc@gmail.com>
-	<20080927163300.GA3225@sirena.org.uk>
+From: "Klaus Schulz" <kls.schlz@googlemail.com>
+Subject: Re: Driver: EMU USB 0404 driver development
+Date: Sun, 28 Sep 2008 18:14:44 +0200
+Message-ID: <d9690f190809280914l5c3b1d63me99d61d7faaa2a8a@mail.gmail.com>
+References: <d9690f190809221113p1b410102oa733628ccfe8fc95@mail.gmail.com>
+	<fd3eb9bf0809260320r71a9f46bp30be1a2535b0c557@mail.gmail.com>
+	<d9690f190809260644q48897b4drdcaf2418dc7784b2@mail.gmail.com>
+	<fd3eb9bf0809260804p6ae3ef30ieb70ee00063ee1c3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.177])
-	by alsa0.perex.cz (Postfix) with ESMTP id CC36B2414C
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1752D243C0
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 Sep 2008 01:27:28 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id l35so1550067waf.16
-	for <alsa-devel@alsa-project.org>; Sat, 27 Sep 2008 16:27:27 -0700 (PDT)
-In-Reply-To: <20080927163300.GA3225@sirena.org.uk>
+	Sun, 28 Sep 2008 18:14:45 +0200 (CEST)
+Received: by yx-out-1718.google.com with SMTP id 36so515831yxh.2
+	for <alsa-devel@alsa-project.org>; Sun, 28 Sep 2008 09:14:44 -0700 (PDT)
+In-Reply-To: <fd3eb9bf0809260804p6ae3ef30ieb70ee00063ee1c3@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,37 +27,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Richard Zhao <linuxzsc@gmail.com>, patch@alsa-project.org, liam.girdwood@wolfsonmicro.com, alsa-devel@alsa-project.org
+To: =?ISO-8859-2?Q?Vedran_Mileti=E6?= <rivanvx@gmail.com>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
-Without the patch, value of val is the value of the enumerated control
-(mux), so dapm_mux_update_power didn't go wrong. But snd_soc_test_bits
-need the bitmask value, so I changed the original variable name "val"
-to "mux" and add a new variable "val" which means bitmask value. So
-the meaning of val and mux is unified with that in
-dapm_mux_update_power.
-Though you can't find "if (!snd_soc_test_bits(widget->codec, e->reg,
-mask, val))" in the patch, it's what I want to fix.
+Hi Vedran.
 
-Thanks
-Richard
+How can I get in touch with him?
+I looked up responsibilities for EMU10k1. Takashi and Jaroslav seem to be in
+charge for that EMU product.
 
-2008/9/28 Mark Brown <broonie@opensource.wolfsonmicro.com>
+THX
+Cheers
+
+On Fri, Sep 26, 2008 at 5:04 PM, Vedran Mileti=E6 <rivanvx@gmail.com> wrote:
+
+> James Courtier-Dutton has been making drivers for E-mu PCI cards, so
+> there is a chance that he might be the guy who got the datasheets or
+> know who did. Maybe you should ask him.
 >
-> On Sat, Sep 27, 2008 at 08:43:16PM +0800, Richard Zhao wrote:
+> 2008/9/26 Klaus Schulz <kls.schlz@googlemail.com>:
+> > Yep.  But rather by coincidence ( at least a quirk to recognize the card
+> and
+> > a small routine (usbaudio.c) to handle the samples properly has been
+> > implemented).
+> >
+> > First you need to upgrade the  firmware via Windows - which is a must.
+> After
+> > that the card defaults to 44,1/16 after power up.
+> > This is the reason why 44.1/16 playback works.
+> >
+> > What's missing, is the complete control of the card modes, register
+> settings
+> > etc.
+> >
+> > If the registers are known, which I assume, according to EMU statement,
+> it
+> > shouldn't be a big deal to get it working.
+> >
+> > Now it would be interesting to know who sits on these information. I'd =
+be
+> > happy to get in touch with him to support the design process.
+> >
+> > Cheers
+> >
+> >
+> >
+> >
+> > On Fri, Sep 26, 2008 at 12:20 PM, Vedran Mileti=E6 <rivanvx@gmail.com>
+> wrote:
+> >>
+> >> Doesn't it already sort of work with limited functionality?
+> >>
+> >> 2008/9/22 Klaus Schulz <kls.schlz@googlemail.com>:
+> >> > Hi folks.
+> >> >
+> >> > I learned that EMU handed over specs related to the EMU 0202/0404 USB
+> to
+> >> > you guys some time ago.
+> >> >
+> >> > http://ubuntuforums.org/showpost.php?p=3D4892734&postcount=3D157
+> >> >
+> >> > Is anybody assigned to the task?
+> >> >
+> >> > Cheers
+> >> > _______________________________________________
+> >> > Alsa-devel mailing list
+> >> > Alsa-devel@alsa-project.org
+> >> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >> >
+> >>
+> >>
+> >>
+> >> --
+> >> Vedran Mileti=E6
+> >
+> >
 >
-> > Fix wrong param when call snd_soc_test_bits in function dapm_mux_update_power.
 >
-> So...  This patch doesn't actually do what the changelog entry here
-> says: the arguments to snd_soc_test_bits() remain the same before and
-> after your change.
 >
-> > -             if (!path->name || ! e->texts[val])
-> > +             if (!path->name || !e->texts[mux])
-> >                       continue;
+> --
+> Vedran Mileti=E6
 >
-> What this is actually doing is changing the enum text examined to be
-> indexed by mux (the value of the enumerated control) rather than val
-> (the bitmask in the register).  This looks like a good change but I want
-> to double check with a test system.
