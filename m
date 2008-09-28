@@ -1,23 +1,21 @@
-From: "Klaus Schulz" <kls.schlz@googlemail.com>
-Subject: Re: Driver: EMU USB 0404 driver development
-Date: Sun, 28 Sep 2008 18:14:44 +0200
-Message-ID: <d9690f190809280914l5c3b1d63me99d61d7faaa2a8a@mail.gmail.com>
-References: <d9690f190809221113p1b410102oa733628ccfe8fc95@mail.gmail.com>
-	<fd3eb9bf0809260320r71a9f46bp30be1a2535b0c557@mail.gmail.com>
-	<d9690f190809260644q48897b4drdcaf2418dc7784b2@mail.gmail.com>
-	<fd3eb9bf0809260804p6ae3ef30ieb70ee00063ee1c3@mail.gmail.com>
+From: Troy Kisky <troy.kisky@boundarydevices.com>
+Subject: AIC23 codec ADC problem
+Date: Sun, 28 Sep 2008 14:15:29 -0700
+Message-ID: <48DFF3F1.8010101@boundarydevices.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.154])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1752D243C0
+Received: from smtpauth02.csee.onr.siteprotect.com
+	(smtpauth02.csee.onr.siteprotect.com [64.26.60.136])
+	by alsa0.perex.cz (Postfix) with ESMTP id E766C2415F
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 Sep 2008 18:14:45 +0200 (CEST)
-Received: by yx-out-1718.google.com with SMTP id 36so515831yxh.2
-	for <alsa-devel@alsa-project.org>; Sun, 28 Sep 2008 09:14:44 -0700 (PDT)
-In-Reply-To: <fd3eb9bf0809260804p6ae3ef30ieb70ee00063ee1c3@mail.gmail.com>
-Content-Disposition: inline
+	Sun, 28 Sep 2008 23:15:43 +0200 (CEST)
+Received: from [192.168.0.251] (unknown [67.42.45.38])
+	(Authenticated sender: troy.kisky@boundarydevices.com)
+	by smtpauth02.csee.onr.siteprotect.com (Postfix) with ESMTP id
+	C78C6E38008
+	for <alsa-devel@alsa-project.org>; Sun, 28 Sep 2008 16:15:40 -0500 (CDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,85 +25,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-2?Q?Vedran_Mileti=E6?= <rivanvx@gmail.com>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Vedran.
+Hi All
 
-How can I get in touch with him?
-I looked up responsibilities for EMU10k1. Takashi and Jaroslav seem to be in
-charge for that EMU product.
 
-THX
-Cheers
+I'm using the TLV320AIC23 to record sound from a mic. It sounds fine
+when I play it back, but when I look at the data, the value
+in one channel is always exactly double the value in the other.
+Since the mic gives the same input to both ADC's I was expecting
+to have the same value in the left & right channels. Has
+anyone seen this before? Any guesses to what I might be doing
+wrong? Can someone using an AIC23 check their data for me?
+I'm using a davinci DM644x platform and spi interface to the codec
+in dsp_a mode.
 
-On Fri, Sep 26, 2008 at 5:04 PM, Vedran Mileti=E6 <rivanvx@gmail.com> wrote:
 
-> James Courtier-Dutton has been making drivers for E-mu PCI cards, so
-> there is a chance that he might be the guy who got the datasheets or
-> know who did. Maybe you should ask him.
->
-> 2008/9/26 Klaus Schulz <kls.schlz@googlemail.com>:
-> > Yep.  But rather by coincidence ( at least a quirk to recognize the card
-> and
-> > a small routine (usbaudio.c) to handle the samples properly has been
-> > implemented).
-> >
-> > First you need to upgrade the  firmware via Windows - which is a must.
-> After
-> > that the card defaults to 44,1/16 after power up.
-> > This is the reason why 44.1/16 playback works.
-> >
-> > What's missing, is the complete control of the card modes, register
-> settings
-> > etc.
-> >
-> > If the registers are known, which I assume, according to EMU statement,
-> it
-> > shouldn't be a big deal to get it working.
-> >
-> > Now it would be interesting to know who sits on these information. I'd =
-be
-> > happy to get in touch with him to support the design process.
-> >
-> > Cheers
-> >
-> >
-> >
-> >
-> > On Fri, Sep 26, 2008 at 12:20 PM, Vedran Mileti=E6 <rivanvx@gmail.com>
-> wrote:
-> >>
-> >> Doesn't it already sort of work with limited functionality?
-> >>
-> >> 2008/9/22 Klaus Schulz <kls.schlz@googlemail.com>:
-> >> > Hi folks.
-> >> >
-> >> > I learned that EMU handed over specs related to the EMU 0202/0404 USB
-> to
-> >> > you guys some time ago.
-> >> >
-> >> > http://ubuntuforums.org/showpost.php?p=3D4892734&postcount=3D157
-> >> >
-> >> > Is anybody assigned to the task?
-> >> >
-> >> > Cheers
-> >> > _______________________________________________
-> >> > Alsa-devel mailing list
-> >> > Alsa-devel@alsa-project.org
-> >> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >> >
-> >>
-> >>
-> >>
-> >> --
-> >> Vedran Mileti=E6
-> >
-> >
->
->
->
-> --
-> Vedran Mileti=E6
->
+
+sample data
+00ec40 fffeffff 00040002 00040002 00000000
+00ec50 fffeffff fffeffff 00000000 fffafffd
+00ec60 fffeffff 00020001 00040002 00080004
+00ec70 000a0005 0016000b 0014000a 001a000d
+00ec80 001c000e 001e000f 00200010 00260013
+00ec90 001e000f 001e000f 001e000f 001c000e
+00eca0 001c000e 0018000c 0014000a 0014000a
+00ecb0 0014000a 000e0007 00120009 0014000a
+          ^        ^        ^        ^
+          Always even
+
+
+After swapping the left & right channels
+at the codec
+
+011af0 fffcfffe fffeffff 00060003 00060003
+011b00 000a0005 000c0006 000e0007 000c0006
+011b10 00080004 00080004 00060003 00060003
+011b20 00080004 00060003 00060003 00040002
+011b30 00020001 00020001 00000000 00020001
+011b40 fffeffff 00000000 00040002 00060003
+011b50 000c0006 000e0007 00100008 0014000a
+011b60 00120009 000e0007 00100008 00100008
+011b70 000e0007 00080004 00080004 00060003
+011b80 00060003 00060003 00060003 000a0005
+
+
+No change, so the ADC's both do convert to
+the same value. But there appears to be a 1 bit
+delay between the two channels.
+
+My McBsp is reading 1 32 bit element, so I don't
+think it can shift only half of the element.
+
+
+
+After switching to dsp_b mode (an extra bit
+delay before data starts)
+
+00b130 fff8fff8 fff5fff5 fffafffa fffcfffc
+00b140 fffefffe 00010001 00000000 00010001
+00b150 00020002 00010001 00010001 00010001
+00b160 00000000 ffffffff 00020002 00000000
+00b170 00000000 00000000 fffefffe fffefffe
+00b180 fffdfffd fffdfffd 00000000 ffffffff
+00b190 00020002 00010001 00020002 00030003
+00b1a0 00030003 00030003 00050005 00030003
+00b1b0 00050005 00030003 00010001 00000000
+
+When I play this back in dsp_b mode I hear
+random soft popping from the speaker, but it is loud.
+
+Playing it in dsp_a mode is quiet with no popping.
+
+So, I conclude that recording with the codec is buggy
+in dsp_a mode and playback is buggy in dsp_b mode.
+I hope someone will tell me I'm wrong.
+
+Thanks
+Troy
