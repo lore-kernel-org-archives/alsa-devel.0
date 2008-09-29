@@ -1,15 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 0/6] ASoC Blackfin and API updates
-Date: Mon, 29 Sep 2008 14:39:51 +0100
-Message-ID: <20080929133951.GA20161@rakim.wolfsonmicro.main>
+From: "Timur Tabi" <timur@freescale.com>
+Subject: Re: [PATCH] ASoC: Fix cs4270 error path
+Date: Mon, 29 Sep 2008 08:42:15 -0500
+Message-ID: <ed82fe3e0809290642l358dab29r274ba97d5bd4b473@mail.gmail.com>
+References: <20080831144214.62a17be6@hyperion.delvare>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7568D2438A
+Received: from mail-gx0-f17.google.com (mail-gx0-f17.google.com
+	[209.85.217.17]) by alsa0.perex.cz (Postfix) with ESMTP id 2687524397
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Sep 2008 15:39:52 +0200 (CEST)
+	Mon, 29 Sep 2008 15:42:17 +0200 (CEST)
+Received: by gxk10 with SMTP id 10so12639016gxk.8
+	for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2008 06:42:15 -0700 (PDT)
+In-Reply-To: <20080831144214.62a17be6@hyperion.delvare>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,46 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Jean Delvare <khali@linux-fr.org>, Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit ad7f41b60efde140df0f929e8d408ebe2e59cb0e:
-  Jean Delvare (1):
-        ALSA: Drop Vladimir Barinov's e-mail address
+On Sun, Aug 31, 2008 at 7:42 AM, Jean Delvare <khali@linux-fr.org> wrote:
+> The error path in cs4270_probe/cs4270_remove is pretty broken:
+> * If cs4270_probe fails, codec is leaked.
+> * If snd_soc_register_card fails, cs4270_i2c_driver stays registered.
+> * If I2C support is enabled but no I2C device is found, i2c_del_driver
+>  is never called (neither in cs4270_probe nor in cs4270_remove.)
+>
+> Fix the first 2 problems by implementing a clean error path in
+> cs4270_probe and jumping to its labels as needed. Fix the 3rd problem
+> by removing the condition to call i2c_del_driver in cs4270_remove.
+>
+> Signed-off-by: Jean Delvare <khali@linux-fr.org>
 
-adding the Blackfin updates Brian posted over the weekend plus some more
-usage of snd_soc_dapm_nc_pin() are available in the git repository at:
+Acked-By: Timur Tabi <timur@freescale.com>
 
-  git://opensource.wolfsonmicro.com/linux-2.6-asoc for-tiwai
+Takashi, this patch needs to go into 2.6.27 as well.  Sorry about
+that.  I don't know how I missed so many problems with my code.
 
-Cliff Cai (4):
-      ASoC codec: AD73311 audio codec driver
-      ASoC Blackfin: add I2S DAI support for AD73311
-      ASoC Blackfin: add asoc ad73311 driver supporting in Blackfin boards
-      ASoC Blackfin: fix bug - Audio Latency on AD1981 with MMAP enabled
-
-Mark Brown (2):
-      ASoC: Use snd_soc_dapm_nc_pin() in Zaurus machine drivers
-      ASoC: Use snd_soc_dapm_nc_pin() in N810 machine driver
-
- sound/soc/blackfin/Kconfig          |   16 +++
- sound/soc/blackfin/Makefile         |    3 +-
- sound/soc/blackfin/bf5xx-ac97-pcm.c |   42 +++++-
- sound/soc/blackfin/bf5xx-ac97.c     |    1 -
- sound/soc/blackfin/bf5xx-ad73311.c  |  240 +++++++++++++++++++++++++++++++++++
- sound/soc/blackfin/bf5xx-i2s.c      |   47 +++++--
- sound/soc/blackfin/bf5xx-sport.h    |    2 +
- sound/soc/codecs/Kconfig            |    4 +
- sound/soc/codecs/Makefile           |    2 +
- sound/soc/codecs/ad73311.c          |  107 ++++++++++++++++
- sound/soc/codecs/ad73311.h          |   90 +++++++++++++
- sound/soc/omap/n810.c               |    6 +-
- sound/soc/pxa/corgi.c               |    4 +-
- sound/soc/pxa/poodle.c              |    4 +-
- sound/soc/pxa/spitz.c               |   14 +-
- sound/soc/pxa/tosa.c                |    4 +-
- 16 files changed, 547 insertions(+), 39 deletions(-)
- create mode 100644 sound/soc/blackfin/bf5xx-ad73311.c
- create mode 100644 sound/soc/codecs/ad73311.c
- create mode 100644 sound/soc/codecs/ad73311.h
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
