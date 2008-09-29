@@ -1,17 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/6] ASoC codec: AD73311 audio codec driver
-Date: Mon, 29 Sep 2008 14:44:28 +0100
-Message-ID: <1222695873-20252-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/6] ASoC Blackfin: add I2S DAI support for
+	AD73311
+Date: Mon, 29 Sep 2008 14:44:29 +0100
+Message-ID: <1222695873-20252-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20080929133951.GA20161@rakim.wolfsonmicro.main>
+	<1222695873-20252-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8DAE5243A5
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 586DA243A1
 	for <alsa-devel@alsa-project.org>;
 	Mon, 29 Sep 2008 15:44:35 +0200 (CEST)
-In-Reply-To: <20080929133951.GA20161@rakim.wolfsonmicro.main>
+In-Reply-To: <1222695873-20252-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,263 +33,129 @@ Signed-off-by: Cliff Cai <cliff.cai@analog.com>
 Signed-off-by: Bryan Wu <cooloney@kernel.org>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/Kconfig   |    4 ++
- sound/soc/codecs/Makefile  |    2 +
- sound/soc/codecs/ad73311.c |  107 ++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/ad73311.h |   90 +++++++++++++++++++++++++++++++++++++
- 4 files changed, 203 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/codecs/ad73311.c
- create mode 100644 sound/soc/codecs/ad73311.h
+ sound/soc/blackfin/bf5xx-i2s.c |   47 ++++++++++++++++++++++++++++------------
+ 1 files changed, 33 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index e0b9869..0507fcf 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -3,6 +3,7 @@ config SND_SOC_ALL_CODECS
- 	depends on I2C
- 	select SPI
- 	select SPI_MASTER
-+	select SND_SOC_AD73311
- 	select SND_SOC_AK4535
- 	select SND_SOC_CS4270
- 	select SND_SOC_SSM2602
-@@ -34,6 +35,9 @@ config SND_SOC_AC97_CODEC
- config SND_SOC_AD1980
- 	tristate
+diff --git a/sound/soc/blackfin/bf5xx-i2s.c b/sound/soc/blackfin/bf5xx-i2s.c
+index 43a4092..827587f 100644
+--- a/sound/soc/blackfin/bf5xx-i2s.c
++++ b/sound/soc/blackfin/bf5xx-i2s.c
+@@ -70,6 +70,13 @@ static struct sport_param sport_params[2] = {
+ 	}
+ };
  
-+config SND_SOC_AD73311
-+	tristate
-+
- config SND_SOC_AK4535
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index f977978..0731844 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -1,5 +1,6 @@
- snd-soc-ac97-objs := ac97.o
- snd-soc-ad1980-objs := ad1980.o
-+snd-soc-ad73311-objs := ad73311.o
- snd-soc-ak4535-objs := ak4535.o
- snd-soc-cs4270-objs := cs4270.o
- snd-soc-ssm2602-objs := ssm2602.o
-@@ -20,6 +21,7 @@ snd-soc-wm9713-objs := wm9713.o
- 
- obj-$(CONFIG_SND_SOC_AC97_CODEC)	+= snd-soc-ac97.o
- obj-$(CONFIG_SND_SOC_AD1980)	+= snd-soc-ad1980.o
-+obj-$(CONFIG_SND_SOC_AD73311) += snd-soc-ad73311.o
- obj-$(CONFIG_SND_SOC_AK4535)	+= snd-soc-ak4535.o
- obj-$(CONFIG_SND_SOC_CS4270)	+= snd-soc-cs4270.o
- obj-$(CONFIG_SND_SOC_SSM2602)	+= snd-soc-ssm2602.o
-diff --git a/sound/soc/codecs/ad73311.c b/sound/soc/codecs/ad73311.c
-new file mode 100644
-index 0000000..37af860
---- /dev/null
-+++ b/sound/soc/codecs/ad73311.c
-@@ -0,0 +1,107 @@
-+/*
-+ * ad73311.c  --  ALSA Soc AD73311 codec support
-+ *
-+ * Copyright:	Analog Device Inc.
-+ * Author:	Cliff Cai <cliff.cai@analog.com>
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ *
-+ *  Revision history
-+ *    25th Sep 2008   Initial version.
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/version.h>
-+#include <linux/kernel.h>
-+#include <linux/device.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/ac97_codec.h>
-+#include <sound/initval.h>
-+#include <sound/soc.h>
-+
-+#include "ad73311.h"
-+
-+struct snd_soc_dai ad73311_dai = {
-+	.name = "AD73311",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 1,
-+		.channels_max = 1,
-+		.rates = SNDRV_PCM_RATE_8000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE, },
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 1,
-+		.channels_max = 1,
-+		.rates = SNDRV_PCM_RATE_8000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE, },
++static u16 sport_req[][7] = {
++		{ P_SPORT0_DTPRI, P_SPORT0_TSCLK, P_SPORT0_RFS,
++		  P_SPORT0_DRPRI, P_SPORT0_RSCLK, 0},
++		{ P_SPORT1_DTPRI, P_SPORT1_TSCLK, P_SPORT1_RFS,
++		  P_SPORT1_DRPRI, P_SPORT1_RSCLK, 0},
 +};
-+EXPORT_SYMBOL_GPL(ad73311_dai);
 +
-+static int ad73311_soc_probe(struct platform_device *pdev)
+ static int bf5xx_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		unsigned int fmt)
+ {
+@@ -78,6 +85,14 @@ static int bf5xx_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 	/* interface format:support I2S,slave mode */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
++		bf5xx_i2s.tcr1 |= TFSR | TCKFE;
++		bf5xx_i2s.rcr1 |= RFSR | RCKFE;
++		bf5xx_i2s.tcr2 |= TSFSE;
++		bf5xx_i2s.rcr2 |= RSFSE;
++		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		bf5xx_i2s.tcr1 |= TFSR;
++		bf5xx_i2s.rcr1 |= RFSR;
+ 		break;
+ 	case SND_SOC_DAIFMT_LEFT_J:
+ 		ret = -EINVAL;
+@@ -127,14 +142,17 @@ static int bf5xx_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_FORMAT_S16_LE:
+ 		bf5xx_i2s.tcr2 |= 15;
+ 		bf5xx_i2s.rcr2 |= 15;
++		sport_handle->wdsize = 2;
+ 		break;
+ 	case SNDRV_PCM_FORMAT_S24_LE:
+ 		bf5xx_i2s.tcr2 |= 23;
+ 		bf5xx_i2s.rcr2 |= 23;
++		sport_handle->wdsize = 3;
+ 		break;
+ 	case SNDRV_PCM_FORMAT_S32_LE:
+ 		bf5xx_i2s.tcr2 |= 31;
+ 		bf5xx_i2s.rcr2 |= 31;
++		sport_handle->wdsize = 4;
+ 		break;
+ 	}
+ 
+@@ -145,17 +163,17 @@ static int bf5xx_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		 * need to configure both of them at the time when the first
+ 		 * stream is opened.
+ 		 *
+-		 * CPU DAI format:I2S, slave mode.
++		 * CPU DAI:slave mode.
+ 		 */
+-		ret = sport_config_rx(sport_handle, RFSR | RCKFE,
+-				      RSFSE|bf5xx_i2s.rcr2, 0, 0);
++		ret = sport_config_rx(sport_handle, bf5xx_i2s.rcr1,
++				      bf5xx_i2s.rcr2, 0, 0);
+ 		if (ret) {
+ 			pr_err("SPORT is busy!\n");
+ 			return -EBUSY;
+ 		}
+ 
+-		ret = sport_config_tx(sport_handle, TFSR | TCKFE,
+-				      TSFSE|bf5xx_i2s.tcr2, 0, 0);
++		ret = sport_config_tx(sport_handle, bf5xx_i2s.tcr1,
++				      bf5xx_i2s.tcr2, 0, 0);
+ 		if (ret) {
+ 			pr_err("SPORT is busy!\n");
+ 			return -EBUSY;
+@@ -174,13 +192,6 @@ static void bf5xx_i2s_shutdown(struct snd_pcm_substream *substream)
+ static int bf5xx_i2s_probe(struct platform_device *pdev,
+ 			   struct snd_soc_dai *dai)
+ {
+-	u16 sport_req[][7] = {
+-		{ P_SPORT0_DTPRI, P_SPORT0_TSCLK, P_SPORT0_RFS,
+-		  P_SPORT0_DRPRI, P_SPORT0_RSCLK, 0},
+-		{ P_SPORT1_DTPRI, P_SPORT1_TSCLK, P_SPORT1_RFS,
+-		  P_SPORT1_DRPRI, P_SPORT1_RSCLK, 0},
+-	};
+-
+ 	pr_debug("%s enter\n", __func__);
+ 	if (peripheral_request_list(&sport_req[sport_num][0], "soc-audio")) {
+ 		pr_err("Requesting Peripherals failed\n");
+@@ -198,6 +209,13 @@ static int bf5xx_i2s_probe(struct platform_device *pdev,
+ 	return 0;
+ }
+ 
++static void bf5xx_i2s_remove(struct platform_device *pdev,
++			   struct snd_soc_dai *dai)
 +{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec *codec;
-+	int ret = 0;
-+
-+	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
-+	if (codec == NULL)
-+		return -ENOMEM;
-+	mutex_init(&codec->mutex);
-+	codec->name = "AD73311";
-+	codec->owner = THIS_MODULE;
-+	codec->dai = &ad73311_dai;
-+	codec->num_dai = 1;
-+	socdev->codec = codec;
-+	INIT_LIST_HEAD(&codec->dapm_widgets);
-+	INIT_LIST_HEAD(&codec->dapm_paths);
-+
-+	/* register pcms */
-+	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
-+	if (ret < 0) {
-+		printk(KERN_ERR "ad73311: failed to create pcms\n");
-+		goto pcm_err;
-+	}
-+
-+	ret = snd_soc_register_card(socdev);
-+	if (ret < 0) {
-+		printk(KERN_ERR "ad73311: failed to register card\n");
-+		goto register_err;
-+	}
-+
-+	return ret;
-+
-+register_err:
-+	snd_soc_free_pcms(socdev);
-+pcm_err:
-+	kfree(socdev->codec);
-+	socdev->codec = NULL;
-+	return ret;
++	pr_debug("%s enter\n", __func__);
++	peripheral_free_list(&sport_req[sport_num][0]);
 +}
 +
-+static int ad73311_soc_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec *codec = socdev->codec;
-+
-+	if (codec == NULL)
-+		return 0;
-+	snd_soc_free_pcms(socdev);
-+	kfree(codec);
-+	return 0;
-+}
-+
-+struct snd_soc_codec_device soc_codec_dev_ad73311 = {
-+	.probe = 	ad73311_soc_probe,
-+	.remove = 	ad73311_soc_remove,
-+};
-+EXPORT_SYMBOL_GPL(soc_codec_dev_ad73311);
-+
-+MODULE_DESCRIPTION("ASoC ad73311 driver");
-+MODULE_AUTHOR("Cliff Cai ");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/ad73311.h b/sound/soc/codecs/ad73311.h
-new file mode 100644
-index 0000000..507ce0c
---- /dev/null
-+++ b/sound/soc/codecs/ad73311.h
-@@ -0,0 +1,90 @@
-+/*
-+ * File:         sound/soc/codec/ad73311.h
-+ * Based on:
-+ * Author:       Cliff Cai <cliff.cai@analog.com>
-+ *
-+ * Created:      Thur Sep 25, 2008
-+ * Description:  definitions for AD73311 registers
-+ *
-+ *
-+ * Modified:
-+ *               Copyright 2006 Analog Devices Inc.
-+ *
-+ * Bugs:         Enter bugs at http://blackfin.uclinux.org/
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, see the file COPYING, or write
-+ * to the Free Software Foundation, Inc.,
-+ * 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ */
-+
-+#ifndef __AD73311_H__
-+#define __AD73311_H__
-+
-+#define AD_CONTROL	0x8000
-+#define AD_DATA		0x0000
-+#define AD_READ		0x4000
-+#define AD_WRITE	0x0000
-+
-+/* Control register A */
-+#define CTRL_REG_A	(0 << 8)
-+
-+#define REGA_MODE_PRO	0x00
-+#define REGA_MODE_DATA	0x01
-+#define REGA_MODE_MIXED	0x03
-+#define REGA_DLB		0x04
-+#define REGA_SLB		0x08
-+#define REGA_DEVC(x)		((x & 0x7) << 4)
-+#define REGA_RESET		0x80
-+
-+/* Control register B */
-+#define CTRL_REG_B	(1 << 8)
-+
-+#define REGB_DIRATE(x)	(x & 0x3)
-+#define REGB_SCDIV(x)	((x & 0x3) << 2)
-+#define REGB_MCDIV(x)	((x & 0x7) << 4)
-+#define REGB_CEE		(1 << 7)
-+
-+/* Control register C */
-+#define CTRL_REG_C	(2 << 8)
-+
-+#define REGC_PUDEV		(1 << 0)
-+#define REGC_PUADC		(1 << 3)
-+#define REGC_PUDAC		(1 << 4)
-+#define REGC_PUREF		(1 << 5)
-+#define REGC_REFUSE		(1 << 6)
-+
-+/* Control register D */
-+#define CTRL_REG_D	(3 << 8)
-+
-+#define REGD_IGS(x)		(x & 0x7)
-+#define REGD_RMOD		(1 << 3)
-+#define REGD_OGS(x)		((x & 0x7) << 4)
-+#define REGD_MUTE		(x << 7)
-+
-+/* Control register E */
-+#define CTRL_REG_E	(4 << 8)
-+
-+#define REGE_DA(x)		(x & 0x1f)
-+#define REGE_IBYP		(1 << 5)
-+
-+/* Control register F */
-+#define CTRL_REG_F	(5 << 8)
-+
-+#define REGF_SEEN		(1 << 5)
-+#define REGF_INV		(1 << 6)
-+#define REGF_ALB		(1 << 7)
-+
-+extern struct snd_soc_dai ad73311_dai;
-+extern struct snd_soc_codec_device soc_codec_dev_ad73311;
-+#endif
+ #ifdef CONFIG_PM
+ static int bf5xx_i2s_suspend(struct platform_device *dev,
+ 			     struct snd_soc_dai *dai)
+@@ -263,15 +281,16 @@ struct snd_soc_dai bf5xx_i2s_dai = {
+ 	.id = 0,
+ 	.type = SND_SOC_DAI_I2S,
+ 	.probe = bf5xx_i2s_probe,
++	.remove = bf5xx_i2s_remove,
+ 	.suspend = bf5xx_i2s_suspend,
+ 	.resume = bf5xx_i2s_resume,
+ 	.playback = {
+-		.channels_min = 2,
++		.channels_min = 1,
+ 		.channels_max = 2,
+ 		.rates = BF5XX_I2S_RATES,
+ 		.formats = BF5XX_I2S_FORMATS,},
+ 	.capture = {
+-		.channels_min = 2,
++		.channels_min = 1,
+ 		.channels_max = 2,
+ 		.rates = BF5XX_I2S_RATES,
+ 		.formats = BF5XX_I2S_FORMATS,},
 -- 
 1.5.6.5
