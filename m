@@ -1,18 +1,19 @@
-From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
-Subject: [PATCH] ALSA: cs46xx: Add PCI IDs for TerraTec and
-	Hercules cards
-Date: Mon, 29 Sep 2008 15:22:08 +0200
-Message-ID: <fd3eb9bf0809290622j7d00637fg2183732022ecb7a6@mail.gmail.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 4/5] [RFC] ALSA ASOC adds destination and
+	source port for dma
+Date: Mon, 29 Sep 2008 14:26:58 +0100
+Message-ID: <20080929132656.GH27647@sirena.org.uk>
+References: <dfeb90390809290253kdf153b6p9993882e495f5e5c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_61932_14272670.1222694528733"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.187])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9EC3224334
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 48C042435B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Sep 2008 15:22:09 +0200 (CEST)
-Received: by nf-out-0910.google.com with SMTP id e27so1057642nfd.32
-	for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2008 06:22:08 -0700 (PDT)
+	Mon, 29 Sep 2008 15:26:59 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <dfeb90390809290253kdf153b6p9993882e495f5e5c@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,72 +23,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: Arun KS <arunks@mistralsolutions.com>
+Cc: alsa-devel@alsa-project.org, Jarkko Nikula <jarkko.nikula@nokia.com>, felipe.balbi@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_61932_14272670.1222694528733
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
+On Mon, Sep 29, 2008 at 03:23:52PM +0530, Arun KS wrote:
 
-VGhpcyBwYXRjaCBhZGRzIFBDSSBJRHMgZm9yOgoqIFRlcnJhVGVjIERNWCBYRmlyZSAxMDI0Ciog
-SGVyY3VsZXMgR2FtZXN1cnJvdW5kIEZvcnRpc3NpbW8gSUkKKiBIZXJjdWxlcyBHYW1lc3Vycm91
-bmQgRm9ydGlzc2ltbyBJSUkgNy4xCkFsbCB0aG9zZSBjYXJkcyB3ZXJlIHN1cHBvcnRlZCBhcyBn
-ZW5lcmljIENTNDZ4eCBkZXZpY2UsCnNvIHRoZXkgd2lsbCB3b3JrIGFzIGJlZm9yZS4gSSdtIHBy
-ZXR0eSBzdXJlIHRoYXQgZmlyc3QgdHdvCmNhcmRzIHdvcmssIGFzIHRoZXkgaGF2ZSBzYW1lIGhh
-cmR3YXJlIGRlc2lnbiBhcyByZWZlcmVuY2UKY2FyZC4gTm90IHN1cmUgYWJvdXQgRm9ydGlzc2lt
-byBJSUksIGJ1dCB0aGlzIHdvbid0IGJyZWFrIGl0CmlmIGl0IHdvcmtlZC4KClRlc3RlZCBvbiBU
-ZXJyYVRlYyBETVggWEZpcmUgMTAyNC4KCi0tIApWZWRyYW4gTWlsZXRpxIcK
-------=_Part_61932_14272670.1222694528733
-Content-Type: text/x-patch;
- name=0001-ALSA-cs46xx-Add-PCI-IDs-for-TerraTec-and-Hercules.patch
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_flp4quao0
-Content-Disposition: attachment;
- filename=0001-ALSA-cs46xx-Add-PCI-IDs-for-TerraTec-and-Hercules.patch
+> @@ -147,12 +148,14 @@ static int omap_pcm_prepare(struct
+> snd_pcm_substream *substream)
 
-RnJvbSA0YTc4YmE0YzRhNzAyMDlmODk3Mjg2YWUxNTU4N2ZmN2VhMGYyZWNjIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBWZWRyYW4gTWlsZXRpYyA8cml2YW52eEBnbWFpbC5jb20+CkRh
-dGU6IE1vbiwgMjkgU2VwIDIwMDggMTU6MDg6MDAgKzAyMDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBjczQ2eHg6IEFkZCBQQ0kgSURzIGZvciBUZXJyYVRlYyBhbmQgSGVyY3VsZXMgY2FyZHMKClRo
-aXMgcGF0Y2ggYWRkcyBQQ0kgSURzIGZvcjoKKiBUZXJyYVRlYyBETVggWEZpcmUgMTAyNAoqIEhl
-cmN1bGVzIEdhbWVzdXJyb3VuZCBGb3J0aXNzaW1vIElJCiogSGVyY3VsZXMgR2FtZXN1cnJvdW5k
-IEZvcnRpc3NpbW8gSUlJIDcuMQpBbGwgdGhvc2UgY2FyZHMgd2VyZSBzdXBwb3J0ZWQgYXMgZ2Vu
-ZXJpYyBDUzQ2eHggZGV2aWNlLApzbyB0aGV5IHdpbGwgd29yayBhcyBiZWZvcmUuIEknbSBwcmV0
-dHkgc3VyZSB0aGF0IGZpcnN0IHR3bwpjYXJkcyB3b3JrLCBhcyB0aGV5IGhhdmUgc2FtZSBoYXJk
-d2FyZSBkZXNpZ24gYXMgcmVmZXJlbmNlCmNhcmQuIE5vdCBzdXJlIGFib3V0IEZvcnRpc3NpbW8g
-SUlJLCBidXQgdGhpcyB3b24ndCBicmVhayBpdAppZiBpdCB3b3JrZWQuCgpUZXN0ZWQgb24gVGVy
-cmFUZWMgRE1YIFhGaXJlIDEwMjQuCgpTaWduZWQtb2ZmLWJ5OiBWZWRyYW4gTWlsZXRpYyA8cml2
-YW52eEBnbWFpbC5jb20+Ci0tLQogcGNpL2NzNDZ4eC9jczQ2eHhfbGliLmMgfCAgIDE5ICsrKysr
-KysrKysrKysrKysrKy0KIDEgZmlsZXMgY2hhbmdlZCwgMTggaW5zZXJ0aW9ucygrKSwgMSBkZWxl
-dGlvbnMoLSkKCmRpZmYgLS1naXQgYS9wY2kvY3M0Nnh4L2NzNDZ4eF9saWIuYyBiL3BjaS9jczQ2
-eHgvY3M0Nnh4X2xpYi5jCmluZGV4IGExMGFiODIuLmZiNmRjMzkgMTAwNjQ0Ci0tLSBhL3BjaS9j
-czQ2eHgvY3M0Nnh4X2xpYi5jCisrKyBiL3BjaS9jczQ2eHgvY3M0Nnh4X2xpYi5jCkBAIC0zNTAx
-LDggKzM1MDEsOSBAQCBzdGF0aWMgc3RydWN0IGNzX2NhcmRfdHlwZSBfX2RldmluaXRkYXRhIGNh
-cmRzW10gPSB7CiAJCS5uYW1lID0gIk1pdGFjIE1JNjAyMC8yMSIsCiAJCS5hbXAgPSBhbXBfdm95
-ZXRyYSwKIAl9LAorCS8qIEhlcmN1bGVzIEdhbWUgVGhlYXRyZSBYUCAqLwogCXsKLQkJLnZlbmRv
-ciA9IDB4MTRBRiwKKwkJLnZlbmRvciA9IDB4MTRhZiwgLyogR3VpbGxlbW90IENvcnBvcmF0aW9u
-ICovCiAJCS5pZCA9IDB4MDA1MCwKIAkJLm5hbWUgPSAiSGVyY3VsZXMgR2FtZSBUaGVhdHJlIFhQ
-IiwKIAkJLmFtcCA9IGFtcF9oZXJjdWxlcywKQEAgLTM1NDQsOSArMzU0NSwyNSBAQCBzdGF0aWMg
-c3RydWN0IGNzX2NhcmRfdHlwZSBfX2RldmluaXRkYXRhIGNhcmRzW10gPSB7CiAJCS5hbXAgPSBh
-bXBfaGVyY3VsZXMsCiAJCS5taXhlcl9pbml0ID0gaGVyY3VsZXNfbWl4ZXJfaW5pdCwKIAl9LAor
-CS8qIEhlcmN1bGVzcyBGb3J0aXNzaW1vICovCisJeworCQkudmVuZG9yID0gMHgxNjgxLAorCQku
-aWQgPSAweGEwMTAsCisJCS5uYW1lID0gIkhlcmN1bGVzIEdhbWVzdXJyb3VuZCBGb3J0aXNzaW1v
-IElJIiwKKwl9LAorCXsKKwkJLnZlbmRvciA9IDB4MTY4MSwKKwkJLmlkID0gMHhhMDExLAorCQku
-bmFtZSA9ICJIZXJjdWxlcyBHYW1lc3Vycm91bmQgRm9ydGlzc2ltbyBJSUkgNy4xIiwKKwl9LAog
-CS8qIFRlcmF0ZWMgKi8KIAl7CiAJCS52ZW5kb3IgPSAweDE1M2IsCisJCS5pZCA9IDB4MTEyZSwK
-KwkJLm5hbWUgPSAiVGVycmF0ZWMgRE1YIFhGaXJlIDEwMjQiLAorCX0sCisJeworCQkudmVuZG9y
-ID0gMHgxNTNiLAogCQkuaWQgPSAweDExMzYsCiAJCS5uYW1lID0gIlRlcnJhdGVjIFNpWFBhY2sg
-NS4xIiwKIAl9LAotLSAKMS41LjYuNQoK
-------=_Part_61932_14272670.1222694528733
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-------=_Part_61932_14272670.1222694528733--
+Your MUA appears to have word wrapped and therefore corrupted this
+patch (and may well have done the same thing with the others).  You
+might want to look into using something like git send-email to generate
+your patches if you can't see how to fix this with the client you are
+using.
