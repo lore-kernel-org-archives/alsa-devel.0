@@ -1,14 +1,20 @@
-From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: Re: [PATCH 4/5] [RFC] ALSA ASOC adds destination and
- source port for dma
-Date: Mon, 29 Sep 2008 14:06:42 +0300
-Message-ID: <20080929140642.2be080ff.jarkko.nikula__21982.2780731649$1222686528$gmane$org@nokia.com>
-References: <dfeb90390809290253kdf153b6p9993882e495f5e5c@mail.gmail.com>
+From: Felipe Balbi <felipe.balbi@nokia.com>
+Subject: Re: [PATCH 2/5] [RFC] ALSA ASOC Support for 5912 osk
+Date: Mon, 29 Sep 2008 14:08:49 +0300
+Message-ID: <20080929110849.GE13245@gandalf.research.nokia.com>
+References: <dfeb90390809290248h5638e275n458e80743954c0cf@mail.gmail.com>
+	<20080929110419.GC27647@sirena.org.uk>
+Reply-To: felipe.balbi@nokia.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <dfeb90390809290253kdf153b6p9993882e495f5e5c@mail.gmail.com>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 58303243E5
+	for <alsa-devel@alsa-project.org>;
+	Mon, 29 Sep 2008 13:09:22 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20080929110419.GC27647@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,38 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: felipe.balbi@nokia.com, "linux-omap@vger.kernel.org List" <linux-omap@vger.kernel.org>, alsa-devel@vger.kernel.org
+To: ext Mark Brown <broonie@sirena.org.uk>
+Cc: Jarkko Nikula <jarkko.nikula@nokia.com>, alsa-devel@alsa-project.org, Arun KS <arunks@mistralsolutions.com>, felipe.balbi@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 29 Sep 2008 15:23:52 +0530
-"ext Arun KS" <arunks@mistralsolutions.com> wrote:
-
-> Adds destination and source ports for dma which is required for OMAP1
+On Mon, Sep 29, 2008 at 12:04:22PM +0100, ext Mark Brown wrote:
+> On Mon, Sep 29, 2008 at 03:18:32PM +0530, Arun KS wrote:
+> > Adding ASOC machine driver for osk
 > 
-> Signed-off-by: Arun KS <arunks@mistralsolutions.com>
-> ---
->  sound/soc/omap/omap-pcm.c |    3 +++
->  1 files changed, 3 insertions(+), 0 deletions(-)
+> This also looks good - a couple of very minor points below:
 > 
->  	err = omap_request_dma(dma_data->dma_req, dma_data->name,
->  			       omap_pcm_dma_irq, substream, &prtd->dma_ch);
-> +
->  	if (!cpu_is_omap1510()) {
+> BTW, it's "ASoC" not "ASOC".
+> 
+> > + * osk.c  --  SoC audio for 5912 OSK
+> 
+> I don't know anything in particular about these boards but perhaps it
+> would be a good idea to include the part number in the name in case
+> someone decides it's a good idea to make an OSK for another OMAP
+> variant?  Google suggests that the board is referred to as the OSK
+> generally so probably not but I thought I'd better ask - though you do
+> use 5192OSK as well.
 
-Accidentally added line? Actually it pointed out that line after it
-should include test for err before linking channel with itself.
+yes, and they already exist. We had 2430osk as well ;-)
 
-	if (!err && !cpu_is_omap1510()) {
-
-> +		dma_params.dst_port		= OMAP_DMA_PORT_MPUI;
->  	} else {
-...
-> +		dma_params.src_port		= OMAP_DMA_PORT_MPUI;
->  	}
-
-I don't have OMAP1 HW at hand to test but looks ok to me. And this port
-variable is used only with OMAP1's.
-
-
-Jarkko
+-- 
+balbi
