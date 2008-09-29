@@ -1,20 +1,14 @@
-From: Felipe Balbi <felipe.balbi@nokia.com>
-Subject: Re: [PATCH 2/5] [RFC] ALSA ASOC Support for 5912 osk
-Date: Mon, 29 Sep 2008 14:08:49 +0300
-Message-ID: <20080929110849.GE13245@gandalf.research.nokia.com>
-References: <dfeb90390809290248h5638e275n458e80743954c0cf@mail.gmail.com>
-	<20080929110419.GC27647@sirena.org.uk>
-Reply-To: felipe.balbi@nokia.com
+From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Subject: Re: [PATCH 3/5] [RFC] ALSA ASOC Adds DSP DAI format
+ support for platform driver
+Date: Mon, 29 Sep 2008 14:15:40 +0300
+Message-ID: <20080929141540.e6ae8ead.jarkko.nikula__33012.1752610014$1222687076$gmane$org@nokia.com>
+References: <dfeb90390809290250x7c9d3aafh232fbcbe8ae77d7e@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 58303243E5
-	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Sep 2008 13:09:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20080929110419.GC27647@sirena.org.uk>
+In-Reply-To: <dfeb90390809290250x7c9d3aafh232fbcbe8ae77d7e@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,28 +18,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@sirena.org.uk>
-Cc: Jarkko Nikula <jarkko.nikula@nokia.com>, alsa-devel@alsa-project.org, Arun KS <arunks@mistralsolutions.com>, felipe.balbi@nokia.com
+To: alsa-devel@alsa-project.org
+Cc: felipe.balbi@nokia.com, "linux-omap@vger.kernel.org List" <linux-omap@vger.kernel.org>, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 29, 2008 at 12:04:22PM +0100, ext Mark Brown wrote:
-> On Mon, Sep 29, 2008 at 03:18:32PM +0530, Arun KS wrote:
-> > Adding ASOC machine driver for osk
-> 
-> This also looks good - a couple of very minor points below:
-> 
-> BTW, it's "ASoC" not "ASOC".
-> 
-> > + * osk.c  --  SoC audio for 5912 OSK
-> 
-> I don't know anything in particular about these boards but perhaps it
-> would be a good idea to include the part number in the name in case
-> someone decides it's a good idea to make an OSK for another OMAP
-> variant?  Google suggests that the board is referred to as the OSK
-> generally so probably not but I thought I'd better ask - though you do
-> use 5192OSK as well.
+On Mon, 29 Sep 2008 15:20:12 +0530
+"ext Arun KS" <arunks@mistralsolutions.com> wrote:
 
-yes, and they already exist. We had 2430osk as well ;-)
+> Enables DSP DAI format for mcbsp in omap platform driver
+> 
+> Signed-off-by: Arun KS <arunks@mistralsolutions.com>
+> ---
+>  sound/soc/omap/omap-mcbsp.c |    6 ++++++
+>  1 files changed, 6 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+> index 3a4cc4b..1c024aa 100644
+> --- a/sound/soc/omap/omap-mcbsp.c
+> +++ b/sound/soc/omap/omap-mcbsp.c
+> @@ -292,6 +292,12 @@ static int omap_mcbsp_dai_set_dai_fmt(struct
+> snd_soc_dai *cpu_dai,
+>  		regs->rcr2	|= RDATDLY(1);
+>  		regs->xcr2	|= XDATDLY(1);
+>  		break;
+> +	case SND_SOC_DAIFMT_DSP_A:
+> +		/* 0-bit data delay */
+> +		regs->rcr2	|= RDATDLY(0);
+> +		regs->xcr2	|= XDATDLY(0);
+> +		break;
+> +
+>  	default:
 
--- 
-balbi
+I think this is not enough. The word clock length equals to one BCLK
+cycle in DSP mode. Not n channel bit BCLK cycles like in I2S.
+
+
+Jarkko
