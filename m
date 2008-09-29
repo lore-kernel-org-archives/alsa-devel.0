@@ -1,14 +1,20 @@
-From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: Re: [PATCH 3/5] [RFC] ALSA ASOC Adds DSP DAI format
- support for platform driver
-Date: Mon, 29 Sep 2008 14:15:40 +0300
-Message-ID: <20080929141540.e6ae8ead.jarkko.nikula__33012.1752610014$1222687076$gmane$org@nokia.com>
-References: <dfeb90390809290250x7c9d3aafh232fbcbe8ae77d7e@mail.gmail.com>
+From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
+Subject: Re: ICH9 Sound
+Date: Mon, 29 Sep 2008 13:34:48 +0200
+Message-ID: <fd3eb9bf0809290434m4386a252y7e99aacec1c33b66@mail.gmail.com>
+References: <48DE294B.6020907@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <dfeb90390809290250x7c9d3aafh232fbcbe8ae77d7e@mail.gmail.com>
+Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 553A12440E
+	for <alsa-devel@alsa-project.org>;
+	Mon, 29 Sep 2008 13:34:50 +0200 (CEST)
+Received: by wf-out-1314.google.com with SMTP id 24so2024032wfg.23
+	for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2008 04:34:48 -0700 (PDT)
+In-Reply-To: <48DE294B.6020907@web.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,39 +24,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: felipe.balbi@nokia.com, "linux-omap@vger.kernel.org List" <linux-omap@vger.kernel.org>, alsa-devel@vger.kernel.org
+To: Ronald Horn <Ronald.Horn@web.de>, alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 29 Sep 2008 15:20:12 +0530
-"ext Arun KS" <arunks@mistralsolutions.com> wrote:
-
-> Enables DSP DAI format for mcbsp in omap platform driver
-> 
-> Signed-off-by: Arun KS <arunks@mistralsolutions.com>
-> ---
->  sound/soc/omap/omap-mcbsp.c |    6 ++++++
->  1 files changed, 6 insertions(+), 0 deletions(-)
-> 
-> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-> index 3a4cc4b..1c024aa 100644
-> --- a/sound/soc/omap/omap-mcbsp.c
-> +++ b/sound/soc/omap/omap-mcbsp.c
-> @@ -292,6 +292,12 @@ static int omap_mcbsp_dai_set_dai_fmt(struct
-> snd_soc_dai *cpu_dai,
->  		regs->rcr2	|= RDATDLY(1);
->  		regs->xcr2	|= XDATDLY(1);
->  		break;
-> +	case SND_SOC_DAIFMT_DSP_A:
-> +		/* 0-bit data delay */
-> +		regs->rcr2	|= RDATDLY(0);
-> +		regs->xcr2	|= XDATDLY(0);
-> +		break;
-> +
->  	default:
-
-I think this is not enough. The word clock length equals to one BCLK
-cycle in DSP mode. Not n channel bit BCLK cycles like in I2S.
-
-
-Jarkko
+SUNIOSBzb3VuZCBzaG91bGQgYmUgc3VwcG9ydGVkLiBBbmQsIGFzIHlvdSBzZWUsIHlvdXIgY2Fy
+ZCBpcwpkZXRlY3RlZC4gUGVyaGFwcyB0aGUgY29kZWMgb3IgdGhhdCBzcGVjaWZpYyBub3RlYm9v
+ayBpc24ndCBzdXBwb3J0ZWQuCkFyZSB5b3Ugc3VyZSBtaXhlciBsZXZlbHMgYXJlIGFkanVzdGVk
+IHByb3Blcmx5PwoKMjAwOC85LzI3IFJvbmFsZCBIb3JuIDxSb25hbGQuSG9ybkB3ZWIuZGU+Ogo+
+IEhlbGxvLAo+Cj4gSSdtIHVzaW5nIGEgSFAgUGF2aWxpb24gZHY3LTEwNDVlZy4gVGhlIFByb2Js
+ZW0gaXMgSSBoYXZlIG5vIHNvdW5kLAo+IGJlY2F1c2UgdGhlcmUgaXMgbm8gZHJpdmVyIHdpdGNo
+IHdvcmtzLgo+IEhlcmUgYXJlIHNvbWUgcmVwb3J0cyBmcm9tIG15IHN5c3RlbToKPiAvCj4gbHNw
+Y2kgLW52Lwo+IDAwOjFiLjAgMDQwMzogODA4NjoyOTNlIChyZXYgMDMpCj4gICAgICAgIFN1YnN5
+c3RlbTogMTAzYzozMGY0Cj4gICAgICAgIEZsYWdzOiBidXMgbWFzdGVyLCBmYXN0IGRldnNlbCwg
+bGF0ZW5jeSAwLCBJUlEgMjIKPiAgICAgICAgTWVtb3J5IGF0IGRmMzAwMDAwICg2NC1iaXQsIG5v
+bi1wcmVmZXRjaGFibGUpIFtzaXplPTE2S10KPiAgICAgICAgQ2FwYWJpbGl0aWVzOiBbNTBdIFBv
+d2VyIE1hbmFnZW1lbnQgdmVyc2lvbiAyCj4gICAgICAgIENhcGFiaWxpdGllczogWzYwXSBNZXNz
+YWdlIFNpZ25hbGxlZCBJbnRlcnJ1cHRzOiBNYXNrLSA2NGJpdCsKPiBRdWV1ZT0wLzAgRW5hYmxl
+Kwo+ICAgICAgICBDYXBhYmlsaXRpZXM6IFs3MF0gRXhwcmVzcyBSb290IENvbXBsZXggSW50ZWdy
+YXRlZCBFbmRwb2ludCwgTVNJIDAwCj4gICAgICAgIENhcGFiaWxpdGllczogWzEwMF0gVmlydHVh
+bCBDaGFubmVsIDw/Pgo+ICAgICAgICBDYXBhYmlsaXRpZXM6IFsxMzBdIFJvb3QgQ29tcGxleCBM
+aW5rIDw/Pgo+ICAgICAgICBLZXJuZWwgZHJpdmVyIGluIHVzZTogSERBIEludGVsCj4gICAgICAg
+IEtlcm5lbCBtb2R1bGVzOiBzbmQtaGRhLWludGVsCj4KPiAvCj4gY2F0IC9wcm9jL2Fzb3VuZC9j
+YXJkcy8KPiAgMCBbSW50ZWwgICAgICBdOiBIREEtSW50ZWwgLSBIREEgSW50ZWwKPiAgICAgICAg
+ICAgICAgICAgICAgICBIREEgSW50ZWwgYXQgMHhkZjMwMDAwMCBpcnEgMjIKPgo+Cj4gL2hlYWQg
+LW4gMSAvcHJvYy9hc291bmQvY2FyZDAvY29kZWMqLwo+ID09PiAvcHJvYy9hc291bmQvY2FyZDAv
+Y29kZWMjMCA8PT0KPiBDb2RlYzogSURUIDkySEQ3MUI3WAo+ID09PiAvcHJvYy9hc291bmQvY2Fy
+ZDAvY29kZWMjMiA8PT0KPiBDb2RlYzogR2VuZXJpYyAxMGRlIElEIDYKPgo+Cj4gSSdtIHVzaW5n
+IG9wZW5TdXNlIDExLjAgd2l0aCBLZXJuZWwgMi42LjI1LjE2LTAuMS1wYWUuCj4gTWF5YmUgeW91
+ciBwcm9qZWN0IGNvdWxkIGRldmVsb3Agc29tZSBkcml2ZXJzLgo+Cj4gR3JlZXRpbmdzCj4gUm9u
+YWxkCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cj4KCgoKLS0gClZlZHJhbiBNaWxldGnEhwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
