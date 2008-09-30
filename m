@@ -1,54 +1,55 @@
 From: "Arun KS" <arunks@mistralsolutions.com>
-Subject: [PATCH 4/5 v1] ASoC adds destination and source port for dma
-Date: Tue, 30 Sep 2008 15:35:16 +0530
-Message-ID: <dfeb90390809300305o69fc4c20wc54b0dfa27b84fd9@mail.gmail.com>
+Subject: [PATCH 5/5 v1] ASoC Adds DSP DAI format support for
+	platform driver
+Date: Tue, 30 Sep 2008 15:36:54 +0530
+Message-ID: <dfeb90390809300306x60dd476ag5f5adf73b4cc25f5@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.242])
+	by alsa0.perex.cz (Postfix) with ESMTP id C761F2444F
+	for <alsa-devel@alsa-project.org>;
+	Tue, 30 Sep 2008 12:06:57 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id f25so2441435rvb.32
+	for <alsa-devel@alsa-project.org>; Tue, 30 Sep 2008 03:06:56 -0700 (PDT)
 Content-Disposition: inline
-Sender: linux-omap-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: "linux-omap@vger.kernel.org List" <linux-omap@vger.kernel.org>, Jarkko Nikula <jarkko.nikula@nokia.com>, felipe.balbi@nokia.com
+Cc: felipe.balbi@nokia.com, "linux-omap@vger.kernel.org List" <linux-omap@vger.kernel.org>, Jarkko Nikula <jarkko.nikula@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Adds destination and source port for dma in platform driver as
-required by OMAP1
+Enables DSP DAI format for mcbsp in omap platform driver
 
 Signed-off-by: Arun KS <arunks@mistralsolutions.com>
 ---
- sound/soc/omap/omap-pcm.c |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
+ sound/soc/omap/omap-mcbsp.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-index 690bfea..e9084fd 100644
---- a/sound/soc/omap/omap-pcm.c
-+++ b/sound/soc/omap/omap-pcm.c
-@@ -97,7 +97,7 @@ static int omap_pcm_hw_params(struct
-snd_pcm_substream *substream,
- 	prtd->dma_data = dma_data;
- 	err = omap_request_dma(dma_data->dma_req, dma_data->name,
- 			       omap_pcm_dma_irq, substream, &prtd->dma_ch);
--	if (!cpu_is_omap1510()) {
-+	if (!err & !cpu_is_omap1510()) {
- 		/*
- 		 * Link channel with itself so DMA doesn't need any
- 		 * reprogramming while looping the buffer
-@@ -147,12 +147,14 @@ static int omap_pcm_prepare(struct
-snd_pcm_substream *substream)
- 		dma_params.src_or_dst_synch	= OMAP_DMA_DST_SYNC;
- 		dma_params.src_start		= runtime->dma_addr;
- 		dma_params.dst_start		= dma_data->port_addr;
-+		dma_params.dst_port		= OMAP_DMA_PORT_MPUI;
- 	} else {
- 		dma_params.src_amode		= OMAP_DMA_AMODE_CONSTANT;
- 		dma_params.dst_amode		= OMAP_DMA_AMODE_POST_INC;
- 		dma_params.src_or_dst_synch	= OMAP_DMA_SRC_SYNC;
- 		dma_params.src_start		= dma_data->port_addr;
- 		dma_params.dst_start		= runtime->dma_addr;
-+		dma_params.src_port		= OMAP_DMA_PORT_MPUI;
- 	}
- 	/*
- 	 * Set DMA transfer frame size equal to ALSA period size and frame
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index 35310e1..fb920e1 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -245,6 +245,11 @@ static int omap_mcbsp_dai_set_dai_fmt(struct
+snd_soc_dai *cpu_dai,
+ 		regs->rcr2	|= RDATDLY(1);
+ 		regs->xcr2	|= XDATDLY(1);
+ 		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		/* 0-bit data delay */
++		regs->rcr2      |= RDATDLY(0);
++		regs->xcr2      |= XDATDLY(0);
++		break;
+ 	default:
+ 		/* Unsupported data format */
+ 		return -EINVAL;
 -- 
 1.5.3.4
