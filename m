@@ -1,17 +1,19 @@
-From: "Norbert Piotrowski" <piotrowskinorbert@gmail.com>
-Subject: Support for ALC1200
-Date: Tue, 30 Sep 2008 10:10:25 +0200
-Message-ID: <03c501c922d3$ff6765e0$0202fea9@polpak.local>
+From: Jean Delvare <khali@linux-fr.org>
+Subject: Re: [PATCH] ASoC: Fix cs4270 error path
+Date: Tue, 30 Sep 2008 10:31:37 +0200
+Message-ID: <20080930103137.52b428a6@hyperion.delvare>
+References: <20080831144214.62a17be6@hyperion.delvare>
+	<ed82fe3e0809290642l358dab29r274ba97d5bd4b473@mail.gmail.com>
+	<s5hhc7zjc6k.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6BAF3243A0
+Received: from services.gcu-squad.org (zone0.gcu-squad.org [212.85.147.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2A422243D0
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 Sep 2008 10:10:30 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id 16so1809532fgg.44
-	for <alsa-devel@alsa-project.org>; Tue, 30 Sep 2008 01:10:29 -0700 (PDT)
+	Tue, 30 Sep 2008 10:31:48 +0200 (CEST)
+In-Reply-To: <s5hhc7zjc6k.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,360 +23,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-I have a question about ALC1200 which is used by ASUS in P5Q motherboard. Unfortunately I have that board and problems with spdif output ( simply no light, it's not a problem with mute/unmute IEC958 ). ALC1200 is recognized as ALC883, below more details. 
+Hi Takashi,
 
-Realtek don't publish specification for that chip because it was made for Asus request. From what i gathered, 1200 is 890 in disguise, but I'm not sure about that.
+On Mon, 29 Sep 2008 15:48:03 +0200, Takashi Iwai wrote:
+> At Mon, 29 Sep 2008 08:42:15 -0500,
+> Timur Tabi wrote:
+> > 
+> > On Sun, Aug 31, 2008 at 7:42 AM, Jean Delvare <khali@linux-fr.org> wrote:
+> > > The error path in cs4270_probe/cs4270_remove is pretty broken:
+> > > * If cs4270_probe fails, codec is leaked.
+> > > * If snd_soc_register_card fails, cs4270_i2c_driver stays registered.
+> > > * If I2C support is enabled but no I2C device is found, i2c_del_driver
+> > >  is never called (neither in cs4270_probe nor in cs4270_remove.)
+> > >
+> > > Fix the first 2 problems by implementing a clean error path in
+> > > cs4270_probe and jumping to its labels as needed. Fix the 3rd problem
+> > > by removing the condition to call i2c_del_driver in cs4270_remove.
+> > >
+> > > Signed-off-by: Jean Delvare <khali@linux-fr.org>
+> > 
+> > Acked-By: Timur Tabi <timur@freescale.com>
+> > 
+> > Takashi, this patch needs to go into 2.6.27 as well.  Sorry about
+> > that.  I don't know how I missed so many problems with my code.
+> 
+> Don't worry, I already put it to the queue, too.
 
-I would like to know if there is any chance to add support in alsa driver for that kind of codec in the near future ? I will be very grateful for any help or suggestion.
+I fear there's some confusion there. There are two different patches
+fixing error paths in cs4270. One fixing a fallout from the new-style
+i2c driver conversion (in cs4270_i2c_probe), under name "ASoC: Fix
+another cs4270 error path". This one you pushed to Linus last night.
 
-Best regards,
-Norbert
+But there's another one, named "ASoC: Fix cs4270 error path",
+originally posted by myself on August 31st, fixing the error path of
+cs4270_probe. This is the one Timur was just acking, but I do _not_ see
+it in your queue, so I suspect you missed it. I can resend it if it
+helps.
 
-norbert@nelson / $ uname -a
-Linux nelson 2.6.24-16-generic #1 SMP Thu Apr 10 13:23:42 UTC 2008 i686 GNU/Linux
-
-norbert@nelson / $ alsactl -v
-alsactl version 1.0.18rc3
-
-norbert@nelson / $ aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: ALC883 Analog [ALC883 Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: Intel [HDA Intel], device 1: ALC883 Digital [ALC883 Digital]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-norbert@nelson / $ aplay -L
-default:CARD=Intel
-    HDA Intel, ALC883 Analog
-    Default Audio Device
-front:CARD=Intel,DEV=0
-    HDA Intel, ALC883 Analog
-    Front speakers
-surround40:CARD=Intel,DEV=0
-    HDA Intel, ALC883 Analog
-    4.0 Surround output to Front and Rear speakers
-surround41:CARD=Intel,DEV=0
-    HDA Intel, ALC883 Analog
-    4.1 Surround output to Front, Rear and Subwoofer speakers
-surround50:CARD=Intel,DEV=0
-    HDA Intel, ALC883 Analog
-    5.0 Surround output to Front, Center and Rear speakers
-surround51:CARD=Intel,DEV=0
-    HDA Intel, ALC883 Analog
-    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
-surround71:CARD=Intel,DEV=0
-    HDA Intel, ALC883 Analog
-    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
-hdmi:CARD=Intel,DEV=0
-    HDA Intel
-    HDMI Audio Output
-null
-    Discard all samples (playback) or generate zero samples (capture)
-
-
-norbert@nelson / $ cat /proc/asound/card0/codec#0 
-Codec: Realtek ALC888
-Address: 0
-Vendor Id: 0x10ec0888
-Subsystem Id: 0x104382fe
-Revision Id: 0x100101
-No Modem Function Group found
-Default PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-GPIO: io=2, o=0, i=0, unsolicited=1, wake=0
-  IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0
-  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0
-Node 0x02 [Audio Output] wcaps 0x11: Stereo
-  Converter: stream=0, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x03 [Audio Output] wcaps 0x11: Stereo
-  Converter: stream=0, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x04 [Audio Output] wcaps 0x11: Stereo
-  Converter: stream=0, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x05 [Audio Output] wcaps 0x11: Stereo
-  Converter: stream=0, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x5e0]: 44100 48000 88200 96000 192000
-    bits [0x1e]: 16 20 24 32
-    formats [0x1]: PCM
-Node 0x07 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x08 [Audio Input] wcaps 0x10011b: Stereo Amp-In
-  Amp-In caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x00 0x00]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0x6]: 16 20
-    formats [0x1]: PCM
-  Connection: 1
-     0x23
-Node 0x09 [Audio Input] wcaps 0x10011b: Stereo Amp-In
-  Amp-In caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x00 0x00]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0x6]: 16 20
-    formats [0x1]: PCM
-  Connection: 1
-     0x22
-Node 0x0a [Audio Input] wcaps 0x100391: Stereo Digital
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0x1e]: 16 20 24 32
-    formats [0x1]: PCM
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x1f
-Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Connection: 10
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17
-Node 0x0c [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x13 0x13]
-  Connection: 2
-     0x02 0x0b
-Node 0x0d [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 2
-     0x03 0x0b
-Node 0x0e [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 2
-     0x04 0x0b
-Node 0x0f [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 2
-     0x05 0x0b
-Node 0x10 [Audio Output] wcaps 0x211: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x5e0]: 44100 48000 88200 96000 192000
-    bits [0x1e]: 16 20 24 32
-    formats [0x1]: PCM
-Node 0x11 [Pin Complex] wcaps 0x400300: Mono Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x99430140: [Fixed] SPDIF Out at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-    DefAssociation = 0x4, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x10
-Node 0x12 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x14 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x083e: IN OUT HP Detect Trigger
-  Pin Default 0x01014010: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Green
-    DefAssociation = 0x1, Sequence = 0x0
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 5
-     0x0c* 0x0d 0x0e 0x0f 0x26
-Node 0x15 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x083e: IN OUT HP Detect Trigger
-  Pin Default 0x01011012: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x1, Sequence = 0x2
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 5
-     0x0c 0x0d* 0x0e 0x0f 0x26
-Node 0x16 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0836: IN OUT Detect Trigger
-  Pin Default 0x01016011: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Orange
-    DefAssociation = 0x1, Sequence = 0x1
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 5
-     0x0c 0x0d 0x0e* 0x0f 0x26
-Node 0x17 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0836: IN OUT Detect Trigger
-  Pin Default 0x01012014: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Grey
-    DefAssociation = 0x1, Sequence = 0x4
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 5
-     0x0c 0x0d 0x0e 0x0f* 0x26
-Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x08373e: IN OUT HP Detect Trigger
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x01a19850: [Jack] Mic at Ext Rear
-    Conn = 1/8, Color = Pink
-    DefAssociation = 0x5, Sequence = 0x0
-  Pin-ctls: 0x24: IN VREF_80
-  Unsolicited: tag=00, enabled=0
-  Connection: 5
-     0x0c* 0x0d 0x0e 0x0f 0x26
-Node 0x19 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x08373e: IN OUT HP Detect Trigger
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x02a19d60: [Jack] Mic at Ext Front
-    Conn = 1/8, Color = Pink
-    DefAssociation = 0x6, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x24: IN VREF_80
-  Unsolicited: tag=00, enabled=0
-  Connection: 5
-     0x0c* 0x0d 0x0e 0x0f 0x26
-Node 0x1a [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x08373e: IN OUT HP Detect Trigger
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x0181305f: [Jack] Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-    DefAssociation = 0x5, Sequence = 0xf
-  Pin-ctls: 0x20: IN VREF_HIZ
-  Unsolicited: tag=00, enabled=0
-  Connection: 5
-     0x0c* 0x0d 0x0e 0x0f 0x26
-Node 0x1b [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x08373e: IN OUT HP Detect Trigger
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x02214d20: [Jack] HP Out at Ext Front
-    Conn = 1/8, Color = Green
-    DefAssociation = 0x2, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0xc0: OUT HP VREF_HIZ
-  Unsolicited: tag=04, enabled=1
-  Connection: 5
-     0x0c* 0x0d 0x0e 0x0f 0x26
-Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0820: IN
-  Pin Default 0x593301f0: [N/A] CD at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
-Node 0x1d [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x4015e601: [N/A] Speaker at Ext N/A
-    Conn = Optical, Color = White
-    DefAssociation = 0x0, Sequence = 0x1
-  Pin-ctls: 0x20: IN
-Node 0x1e [Pin Complex] wcaps 0x400300: Mono Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x01447130: [Jack] SPDIF Out at Ext Rear
-    Conn = RCA, Color = Yellow
-    DefAssociation = 0x3, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x06
-Node 0x1f [Pin Complex] wcaps 0x400200: Mono Digital
-  Pincap 0x0820: IN
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
-Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
-  Processing caps: benign=0, ncoeff=17
-Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x22 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x80 0x80] [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Connection: 11
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
-Node 0x23 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x80 0x80] [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Connection: 11
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
-Node 0x24 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x25 [Audio Output] wcaps 0x11: Stereo
-  Converter: stream=0, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x26 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 2
-     0x25 0x0b
+Thanks,
+-- 
+Jean Delvare
