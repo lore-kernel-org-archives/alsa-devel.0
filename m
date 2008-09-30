@@ -1,54 +1,54 @@
 From: "Arun KS" <arunks@mistralsolutions.com>
-Subject: [PATCH 3/5 v1] Adds I2C board info for tlvaic23
-Date: Tue, 30 Sep 2008 15:33:32 +0530
-Message-ID: <dfeb90390809300303x6db4c860l1d5d3a4d0c032953@mail.gmail.com>
+Subject: [PATCH 4/5 v1] ASoC adds destination and source port for dma
+Date: Tue, 30 Sep 2008 15:35:16 +0530
+Message-ID: <dfeb90390809300305o69fc4c20wc54b0dfa27b84fd9@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.249])
-	by alsa0.perex.cz (Postfix) with ESMTP id CFD632444B
-	for <alsa-devel@alsa-project.org>;
-	Tue, 30 Sep 2008 12:03:35 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id f25so2440366rvb.32
-	for <alsa-devel@alsa-project.org>; Tue, 30 Sep 2008 03:03:34 -0700 (PDT)
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: linux-omap-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: felipe.balbi@nokia.com, "linux-omap@vger.kernel.org List" <linux-omap@vger.kernel.org>, Jarkko Nikula <jarkko.nikula@nokia.com>
+Cc: "linux-omap@vger.kernel.org List" <linux-omap@vger.kernel.org>, Jarkko Nikula <jarkko.nikula@nokia.com>, felipe.balbi@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-Adding I2C board info required for tlvaic23 i2c chip driver
+Adds destination and source port for dma in platform driver as
+required by OMAP1
 
 Signed-off-by: Arun KS <arunks@mistralsolutions.com>
 ---
- arch/arm/mach-omap1/board-osk.c |    4 +++-
+ sound/soc/omap/omap-pcm.c |    4 +++-
  1 files changed, 3 insertions(+), 1 deletions(-)
 
-diff --git a/arch/arm/mach-omap1/board-osk.c b/arch/arm/mach-omap1/board-osk.c
-index 3e766e4..e506aef 100644
---- a/arch/arm/mach-omap1/board-osk.c
-+++ b/arch/arm/mach-omap1/board-osk.c
-@@ -258,8 +258,10 @@ static struct i2c_board_info __initdata
-osk_i2c_board_info[] = {
- 		.platform_data	= &tps_board,
-
- 	},
-+	{
-+		I2C_BOARD_INFO("tlv320aic23", 0x1B),
-+	},
- 	/* TODO when driver support is ready:
--	 *  - aic23 audio chip at 0x1a
- 	 *  - on Mistral, 24c04 eeprom at 0x50
- 	 *  - optionally on Mistral, ov9640 camera sensor at 0x30
- 	 */
+diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
+index 690bfea..e9084fd 100644
+--- a/sound/soc/omap/omap-pcm.c
++++ b/sound/soc/omap/omap-pcm.c
+@@ -97,7 +97,7 @@ static int omap_pcm_hw_params(struct
+snd_pcm_substream *substream,
+ 	prtd->dma_data = dma_data;
+ 	err = omap_request_dma(dma_data->dma_req, dma_data->name,
+ 			       omap_pcm_dma_irq, substream, &prtd->dma_ch);
+-	if (!cpu_is_omap1510()) {
++	if (!err & !cpu_is_omap1510()) {
+ 		/*
+ 		 * Link channel with itself so DMA doesn't need any
+ 		 * reprogramming while looping the buffer
+@@ -147,12 +147,14 @@ static int omap_pcm_prepare(struct
+snd_pcm_substream *substream)
+ 		dma_params.src_or_dst_synch	= OMAP_DMA_DST_SYNC;
+ 		dma_params.src_start		= runtime->dma_addr;
+ 		dma_params.dst_start		= dma_data->port_addr;
++		dma_params.dst_port		= OMAP_DMA_PORT_MPUI;
+ 	} else {
+ 		dma_params.src_amode		= OMAP_DMA_AMODE_CONSTANT;
+ 		dma_params.dst_amode		= OMAP_DMA_AMODE_POST_INC;
+ 		dma_params.src_or_dst_synch	= OMAP_DMA_SRC_SYNC;
+ 		dma_params.src_start		= dma_data->port_addr;
+ 		dma_params.dst_start		= runtime->dma_addr;
++		dma_params.src_port		= OMAP_DMA_PORT_MPUI;
+ 	}
+ 	/*
+ 	 * Set DMA transfer frame size equal to ALSA period size and frame
 -- 
 1.5.3.4
