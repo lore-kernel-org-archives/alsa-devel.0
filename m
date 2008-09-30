@@ -1,20 +1,20 @@
 From: Frank Mandarino <fmandarino@endrelia.com>
 Subject: Re: [PATCH] ASoC: Remove references to Endrelia ETI-B1
  board
-Date: Tue, 30 Sep 2008 11:30:01 -0400
-Message-ID: <48E245F9.4050402@endrelia.com>
+Date: Tue, 30 Sep 2008 11:39:09 -0400
+Message-ID: <48E2481D.6030208@endrelia.com>
 References: <48E23AE0.3040805@endrelia.com>
-	<200809301611.01162.gineera@aspect135.co.uk>
+	<bd7b27490809300810n77b82690j4ddedb0a0f7108ac@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ironport2-out.teksavvy.com (ironport2-out.pppoe.ca
+Received: from ironport2-out.teksavvy.com (ironport2-out.teksavvy.com
 	[206.248.154.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1045424535
+	by alsa0.perex.cz (Postfix) with ESMTP id 3DDA21037EB
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 Sep 2008 17:30:02 +0200 (CEST)
-In-Reply-To: <200809301611.01162.gineera@aspect135.co.uk>
+	Tue, 30 Sep 2008 17:39:11 +0200 (CEST)
+In-Reply-To: <bd7b27490809300810n77b82690j4ddedb0a0f7108ac@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,43 +24,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: Sedji Gaouaou <sedji.gaouaou@atmel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
 
-Alan Horstmann wrote:
-> On Tuesday 30 September 2008 15:42, Frank Mandarino wrote:
->> See attached.
+
+Jarkko Nikula wrote:
+> 2008/9/30 Frank Mandarino <fmandarino@endrelia.com
+> <mailto:fmandarino@endrelia.com>>
 > 
-> I am a bit unclear about the implications of this, when it was first discussed 
-> and now there is a definite patch to remove eti_b1_wm8731.c
+>     See attached.
 > 
-> We based on this file to create an AT91<->wm8731 system; how is it proposed 
-> that the codec is glued to the board in the future?  Or is most of the code 
-> superfluous anyway?
+>     --
+>     Frank Mandarino                              
+>      fmandarino(a)endrelia.com <http://endrelia.com>
+>     Endrelia Technologies Inc.
+>     Toronto, Ontario, Canada
 > 
-> Alan
+>     The ASoC machine drivers for this board were only provided as examples
+>     for the new AT91 ASoC platform driver.  Since the ETI-B1 board is
+>     proprietary and there are other AT91 ASoC machine drivers available,
+>     it makes sense to remove these drivers.
+> 
+>     Signed-off-by: Frank Mandarino <fmandarino@endrelia.com
+>     <mailto:fmandarino@endrelia.com>>
+>     ---
+>      sound/soc/at91/Kconfig           |   27 ---
+>      sound/soc/at91/Makefile          |    7 -
+>      sound/soc/at91/eti_b1_bluecore.c |  284 -------------------------------
+>      sound/soc/at91/eti_b1_wm8731.c   |  350
+>     --------------------------------------
+>      4 files changed, 0 insertions(+), 668 deletions(-)
+> 
+> Does it make sense to remove these yet? I didn't check different
+> architectures in asoc-dev but are there any other platform and machine
+> driver using multiple DAI links with real and "dummy" codec in ASoC v1?
+> In that sense these are nice reference implementations :-)
+> 
+> 
+> Jarkko
 
-The eti_b1_wm8731.c is the board-specific ASoC machine driver for our
-proprietary ETI-B1 board.  It was only added to the kernel as an example
-of an AT91 machine driver for others to use when developing a machine
-driver for their own boards.
+My reasons for wanting it removed are that 1) it only works on our
+proprietary board, and 2) I don't have time to maintain it as changes
+are made to ASoC.
 
-ASoC requires you to create your own machine driver to glue the codec to
-the board.  The code is not superfluous.
-
-If you have developed an AT91<->wm8731 board which you are planning to
-sell, it makes sense to add your machine driver to the kernel so that
-others can build a kernel for your board.  If you are not selling your
-board, then it probably shouldn't be in the kernel and you should
-maintain your machine driver privately.
-
-This real issue is that only our company can test ASoC changes against
-our board, and we don't have always have the resources to do this in a
-timely fashion.  So I would rather not require others who make
-improvements to ASoC to have to make changes to eti_b1_wm8731.c when
-they are unable to test them.
+If it is still useful for documentation purposes, then perhaps it should
+be moved to a file in Documentation/sound/alsa/soc.  But then again,
+someone will have maintain the documentation.
 
 Regards,
 ../fam
