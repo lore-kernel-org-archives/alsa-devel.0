@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 4/5 v1] ASoC adds destination and source
-	port for dma
-Date: Tue, 30 Sep 2008 11:23:38 +0100
-Message-ID: <20080930102337.GB19862@sirena.org.uk>
-References: <dfeb90390809300305o69fc4c20wc54b0dfa27b84fd9@mail.gmail.com>
+Subject: Re: [PATCH 2/5 v1] Adds ASOC Support for 5912osk
+Date: Tue, 30 Sep 2008 11:25:25 +0100
+Message-ID: <20080930102523.GC19862@sirena.org.uk>
+References: <dfeb90390809300301x464d9411r5fabb9b9b64e73a5@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 967062445D
+	by alsa0.perex.cz (Postfix) with ESMTP id 8BBC524462
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 Sep 2008 12:23:38 +0200 (CEST)
+	Tue, 30 Sep 2008 12:25:26 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <dfeb90390809300305o69fc4c20wc54b0dfa27b84fd9@mail.gmail.com>
+In-Reply-To: <dfeb90390809300301x464d9411r5fabb9b9b64e73a5@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,20 +26,11 @@ To: Arun KS <arunks@mistralsolutions.com>
 Cc: alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org List" <linux-omap@vger.kernel.org>, Jarkko Nikula <jarkko.nikula@nokia.com>, felipe.balbi@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 30, 2008 at 03:35:16PM +0530, Arun KS wrote:
+On Tue, Sep 30, 2008 at 03:31:47PM +0530, Arun KS wrote:
+> Adding ASOC machine driver for 5912osk
+> 
+> Signed-off-by: Arun KS <arunks@mistralsolutions.com>
 
-> @@ -147,12 +147,14 @@ static int omap_pcm_prepare(struct
-> snd_pcm_substream *substream)
-
-Yup, these are definitely being word wrapped by your mailer so they
-won't apply without massaging.  If you can't configure your normal MUA
-to send them through cleanly you might want to look into git send-email
-or the quilt equivalent both of which are specifically designed to
-handle patches.
-
-You can test this by mailing the patches to yourself and then trying to
-apply them.
-
-Anyway, the patch looks OK:
+Looks good - thanks!
 
 Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
