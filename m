@@ -1,22 +1,29 @@
-From: "Jarkko Nikula" <jhnikula@gmail.com>
-Subject: Re: [PATCH] ASoC: Remove references to Endrelia ETI-B1
-	board
-Date: Wed, 1 Oct 2008 09:15:32 +0300
-Message-ID: <bd7b27490809302315jfc8982bofbdb5ce9be3e834b@mail.gmail.com>
-References: <48E23AE0.3040805@endrelia.com>
-	<bd7b27490809300810n77b82690j4ddedb0a0f7108ac@mail.gmail.com>
-	<48E2481D.6030208@endrelia.com> <20080930182520.GB3338@sirena.org.uk>
+From: javier.martinc@alumnos.unican.es
+Subject: How to start with a driver for custom hardware?
+Date: Wed,  1 Oct 2008 17:43:36 +0200
+Message-ID: <20081001174336.b3mj2efijo8kcgwg@correo.alumnos.unican.es>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.186])
-	by alsa0.perex.cz (Postfix) with ESMTP id A56E8247CF
+Received: from ccserver2.unican.es (ccserver2.unican.es [130.206.5.101])
+	by alsa0.perex.cz (Postfix) with ESMTP id BF5AB243CF
 	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Oct 2008 08:15:33 +0200 (CEST)
-Received: by mu-out-0910.google.com with SMTP id w1so432525mue.2
-	for <alsa-devel@alsa-project.org>; Tue, 30 Sep 2008 23:15:32 -0700 (PDT)
-In-Reply-To: <20080930182520.GB3338@sirena.org.uk>
+	Wed,  1 Oct 2008 17:43:53 +0200 (CEST)
+Received: from ccserver2.unican.es (ccserver2.unican.es [127.0.0.1])
+	by ccserver2.unican.es (Postfix) with ESMTP id EB6A315D97D
+	for <alsa-devel@alsa-project.org>;
+	Wed,  1 Oct 2008 17:43:27 +0200 (CEST)
+Received: from ccserver25.unican.es (ccserver25.unican.es [130.206.5.220])by
+	ccserver2.unican.es (Postfix) with ESMTP id E0082E4B58for
+	<alsa-devel@alsa-project.org>; Wed,  1 Oct 2008 17:43:27 +0200 (CEST)
+Received: from correo.alumnos.unican.es (localhost.localdomain
+	[127.0.0.1])by ccserver25.unican.es (Postfix) with ESMTP id
+	A6A0CB00BCfor
+	<alsa-devel@alsa-project.org>; Wed,  1 Oct 2008 17:43:36 +0200 (CEST)
+Received: from localhost (localhost.localdomain [127.0.0.1])by
+	correo.alumnos.unican.es (Postfix) with ESMTP id 97CB1B00B4for
+	<alsa-devel@alsa-project.org>; Wed,  1 Oct 2008 17:43:36 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,54 +34,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: Sedji Gaouaou <sedji.gaouaou@atmel.com>, alsa-devel@alsa-project.org, Frank Mandarino <fmandarino@endrelia.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 30, 2008 at 9:25 PM, Mark Brown <broonie@sirena.org.uk> wrote:
 
-> On Tue, Sep 30, 2008 at 11:39:09AM -0400, Frank Mandarino wrote:
-> > Jarkko Nikula wrote:
->
-> > > In that sense these are nice reference implementations :-)
->
-> Quite frankly nice isn't the first adjective that springs to my mind
-> for how this stuff works in v1.  As with so many other things once v2
-> is in that should make life better.
->
+I am trying to develop an ALSA compatible driver for a custom hardware.
 
-Unfortunately it's sometimes have to stick into older stuff :-)
+The situation is the following:
+We are using a Cyclone II FPGA with a nommu NiosII processor and uClinux.
+We have an external TLV320AIC110 codec with I2C control interface and PCM a=
+udio
+interface.
+Into the FPGA we have a hardware module which controls both interfaces and
+basically copies x amount of data into a given memory position and vice ver=
+sa.
 
+I have been looking at the documentation (which in my honest opinion is sca=
+rce)
+and  many doubts have arisen.
 
->
-> > My reasons for wanting it removed are that 1) it only works on our
-> > proprietary board, and 2) I don't have time to maintain it as changes
-> > are made to ASoC.
->
-> I tend to agree with Frank here - if it's causing too much work for the
-> people with access to the hardware and nobody else can get the hardware
-> it's probably as easy to maintain it out of tree.  Like I say, there's
-> another public example of this sort of setup.
+For example, should I used alsa or asoc? In my opinion, alsa documentation =
+is
+more clear than asoc, but it is highlt oriented to pci drivers.
 
+As you can see it is a simple hardware which control registers are mapped i=
+nto
+memory. Which part of the alsa driver takes care of accesing these hardware
+dependent registers?
 
-Yeah, valid points. And anyway, this driver can still be found from git
-history if needed.
+Maybe we should use some other standard hardware module into the FPGA to get
+better alsa compliance?
 
+I know these are very generic and begginer questions but, anyway, any help =
+will
+be welcome.
 
-> Ideally someone would contribute a driver for a reasonably available
-> platform that does this - OpenMoko doesn't since they use an analogue
-> connection for their Bluetooth audio.
->
+Thank you.
 
-Let's throw a hint here if some hacker is interested that it would be
-possible with Nokia N810 (and N800 as well) by developing DAI driver for
-OMAP2420 EAC - Enhanced Audio Controller. EAC has dedicated ports for codec
-(pins can be muxed to McBSP port 2), modem (not used in N8x0) and bluetooth
-(pins cannot be muxed to McBSP).
-
-Unfortunately this EAC is found only from OMAP2420 where McBSP is in every
-OMAP so EAC DAI driver doesn't have so generic use IMO. But I'm keen to help
-testing and development if someone would do it :-)
-
-
-Jarkko
+Javier Mart=EDn
