@@ -1,71 +1,62 @@
-From: "Arun KS" <arunks@mistralsolutions.com>
-Subject: [PATCH 5/5 v2] ASoC Adds DSP DAI format support for platform driver
-Date: Thu, 2 Oct 2008 15:07:06 +0530
-Message-ID: <dfeb90390810020237r2f5b0fbdpeced17effcfba3c@mail.gmail.com>
+From: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+Subject: Re: [PATCH] Add AC'97 driver for AT91SAM9263ek atmel
+ board.
+Date: Thu, 02 Oct 2008 11:45:54 +0200
+Message-ID: <48E49852.2010504@atmel.com>
+References: <48E3A42C.6090202@atmel.com> <48E48B76.1050809@atmel.com>
+	<s5h4p3vicaz.wl%tiwai@suse.de>
+	<20081002092430.GB2848@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_68218_22594813.1222940226803"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: "linux-omap@vger.kernel.org List" <linux-omap@vger.kernel.org>, Jarkko Nikula <jarkko.nikula@nokia.com>, felipe.balbi@nokia.com, troy.kisky@boundarydevices.com
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from atmel-es2.atmel.fr (mail.atmel.fr [81.80.104.162])
+	by alsa0.perex.cz (Postfix) with ESMTP id 02E9A244C6
+	for <alsa-devel@alsa-project.org>;
+	Thu,  2 Oct 2008 11:45:57 +0200 (CEST)
+In-Reply-To: <20081002092430.GB2848@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_68218_22594813.1222940226803
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Hi,
+Mark Brown a =E9crit :
+> On Thu, Oct 02, 2008 at 11:19:48AM +0200, Takashi Iwai wrote:
+>> Sedji Gaouaou wrote:
+>>> Sedji Gaouaou a ?crit :
+> =
 
-Enables DSP DAI format for mcbsp in omap platform driver
+>>> When I was writing this patch I was wondering if it should actually be =
 
-Signed-off-by: Arun KS <arunks@mistralsolutions.com>
----
- sound/soc/omap/omap-mcbsp.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+>>> in the sound/arm directory or in a sound/soc/atmel directory?
+> =
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 35310e1..fb920e1 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -245,6 +245,11 @@ static int omap_mcbsp_dai_set_dai_fmt(struct
-snd_soc_dai *cpu_dai,
- 		regs->rcr2	|= RDATDLY(1);
- 		regs->xcr2	|= XDATDLY(1);
- 		break;
-+	case SND_SOC_DAIFMT_DSP_A:
-+		/* 0-bit data delay */
-+		regs->rcr2      |= RDATDLY(0);
-+		regs->xcr2      |= XDATDLY(0);
-+		break;
- 	default:
- 		/* Unsupported data format */
- 		return -EINVAL;
--- 
-1.5.3.4
+>> sound/arm looks correct unless the driver is based on the ASoC
+>> framework.
+> =
 
-------=_Part_68218_22594813.1222940226803
-Content-Type: text/x-patch;
- name=0005-ASoC-Adds-DSP-DAI-format-support-for-platform-driver.patch
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_flt71u1s0
-Content-Disposition: attachment;
- filename=0005-ASoC-Adds-DSP-DAI-format-support-for-platform-driver.patch
+> Indeed.
+> =
 
-RnJvbSAzZjNjMjUyNjI1MjM2YmQ3ZjNhM2M5NDk3NjlkNDFiMjZlZmJjODA1IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBBcnVuIEtTIDxhcnVua3NAbWlzdHJhbHNvbHV0aW9ucy5jb20+
-CkRhdGU6IFR1ZSwgMzAgU2VwIDIwMDggMTM6MzA6MTUgKzA1MzAKU3ViamVjdDogW1BBVENIXSBB
-U29DIEFkZHMgRFNQIERBSSBmb3JtYXQgc3VwcG9ydCBmb3IgcGxhdGZvcm0gZHJpdmVyCgpFbmFi
-bGVzIERTUCBEQUkgZm9ybWF0IGZvciBtY2JzcCBpbiBvbWFwIHBsYXRmb3JtIGRyaXZlcgoKU2ln
-bmVkLW9mZi1ieTogQXJ1biBLUyA8YXJ1bmtzQG1pc3RyYWxzb2x1dGlvbnMuY29tPgotLS0KIHNv
-dW5kL3NvYy9vbWFwL29tYXAtbWNic3AuYyB8ICAgIDUgKysrKysKIDEgZmlsZXMgY2hhbmdlZCwg
-NSBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9v
-bWFwL29tYXAtbWNic3AuYyBiL3NvdW5kL3NvYy9vbWFwL29tYXAtbWNic3AuYwppbmRleCAzNTMx
-MGUxLi5mYjkyMGUxIDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvb21hcC9vbWFwLW1jYnNwLmMKKysr
-IGIvc291bmQvc29jL29tYXAvb21hcC1tY2JzcC5jCkBAIC0yNDUsNiArMjQ1LDExIEBAIHN0YXRp
-YyBpbnQgb21hcF9tY2JzcF9kYWlfc2V0X2RhaV9mbXQoc3RydWN0IHNuZF9zb2NfZGFpICpjcHVf
-ZGFpLAogCQlyZWdzLT5yY3IyCXw9IFJEQVRETFkoMSk7CiAJCXJlZ3MtPnhjcjIJfD0gWERBVERM
-WSgxKTsKIAkJYnJlYWs7CisJY2FzZSBTTkRfU09DX0RBSUZNVF9EU1BfQToKKwkJLyogMC1iaXQg
-ZGF0YSBkZWxheSAqLworCQlyZWdzLT5yY3IyICAgICAgfD0gUkRBVERMWSgwKTsKKwkJcmVncy0+
-eGNyMiAgICAgIHw9IFhEQVRETFkoMCk7CisJCWJyZWFrOwogCWRlZmF1bHQ6CiAJCS8qIFVuc3Vw
-cG9ydGVkIGRhdGEgZm9ybWF0ICovCiAJCXJldHVybiAtRUlOVkFMOwotLSAKMS41LjMuNAoK
-------=_Part_68218_22594813.1222940226803--
+> If you look at pxa2xx-ac97 you'll see that for that there's actually two
+> drivers (both of which now share most of the actual hardware access code
+> thanks to some good work by Dmitry Baryshkov), one for the non-ASoC AC97
+> framework and one for use within ASoC.  Both can be useful, though the
+> ASoC one is only useful if people design boards which can make use of
+> the extra features it provides.
+> =
+
+Should I provide the same thing?
+This driver is not based on the ASoC.
+Nevertheless I can see that there is a ac97 driver in sound/soc/codec, =
+
+so should I do the same as pxa, I mean create 2 drivers?
