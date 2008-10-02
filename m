@@ -1,43 +1,32 @@
-From: javier.martinc@alumnos.unican.es
-Subject: Re: How to start with a driver for custom hardware?
-Date: Thu,  2 Oct 2008 11:02:33 +0200
-Message-ID: <20081002110233.v5wregwzs4k4w48g@correo.alumnos.unican.es>
-References: <20081001174336.b3mj2efijo8kcgwg@correo.alumnos.unican.es><20081
-	001155221.GA15760@sirena.org.uk>
+From: "Arun KS" <arunks@mistralsolutions.com>
+Subject: [PATCH 0/5 v2] ASoC Add TLV320AIC23 codec driver
+Date: Thu, 2 Oct 2008 14:41:51 +0530
+Message-ID: <dfeb90390810020211w46654179w9d4ccd8214b74bca@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ccserver2.unican.es (ccserver2.unican.es [130.206.5.101])
-	by alsa0.perex.cz (Postfix) with ESMTP id A78B6244AA
-	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Oct 2008 11:05:06 +0200 (CEST)
-In-Reply-To: <20081001155221.GA15760@sirena.org.uk>
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org
+Sender: linux-omap-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: "linux-omap@vger.kernel.org List" <linux-omap@vger.kernel.org>, troy.kisky@boundarydevices.com, Jarkko Nikula <jarkko.nikula@nokia.com>, felipe.balbi@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-Respuesta a Mark Brown <broonie@sirena.org.uk>:
+Hi all,
 
->> As you can see it is a simple hardware which control registers are 
->> mapped into
->> memory. Which part of the alsa driver takes care of accesing these hardware
->> dependent registers?
->
-> If it were done using ASoC then you'd write ASoC platform drivers
-> which would do this.
+This is the next version of patches for tlv320aic23 codec.
 
-What example or documentation could I check to see how the hardware dependent
-code is integrated into the platform driver?
+Only patch 1 and 2 are different from their version 1 counterparts.
+
+Changes:
+------------
+
+Patch1 - Incorporated the comments from Mark Brown.
+Patch2- File name is changed to osk5912.c from 5912osk.c.
+
+Thanks Troy Kisky for your help and time.
+
+Since my mailer is word wrapping the patches, I am attaching them too.
 
 Thanks
+Arun
