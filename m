@@ -1,16 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates
-Date: Thu, 2 Oct 2008 11:02:00 +0100
-Message-ID: <20081002100200.GA3025@rakim.wolfsonmicro.main>
+Subject: [PATCH 3/5] ASoC: Add widgets before setting endpoints
+	on GTA01
+Date: Thu,  2 Oct 2008 11:02:29 +0100
+Message-ID: <1222941751-3238-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <20081002100200.GA3025@rakim.wolfsonmicro.main>
+	<1222941751-3238-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1222941751-3238-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 98FC8244F0
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 67E0124514
 	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Oct 2008 12:02:01 +0200 (CEST)
-Content-Disposition: inline
+	Thu,  2 Oct 2008 12:02:33 +0200 (CEST)
+In-Reply-To: <1222941751-3238-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,37 +25,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jonas Bonn <jonas.bonn@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 2e2ed79f64e935540b0d148f7e2c3ebefafe133e:
-  Vladimir Barinov (1):
-        ALSA: Correct Vladimir Barinov's e-mail address
+From: Jonas Bonn <jonas.bonn@gmail.com>
 
-are available in the git repository at:
+This prevents error messages at startup where the endpoints are being
+set before the widgets/controls have even been added.
 
-  git://opensource.wolfsonmicro.com/linux-2.6-asoc for-tiwai
+Signed-off-by: Jonas Bonn <jonas.bonn@gmail.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/s3c24xx/neo1973_wm8753.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-Of these only the patch from Rob is 2.6.27 material.
-
-Arun KS (1):
-      ASoC: Add destination and source port for DMA on OMAP1
-
-Frank Mandarino (1):
-      ASoC: Remove references to Endrelia ETI-B1 board
-
-Jonas Bonn (2):
-      ASoC: Add widgets before setting endpoints on GTA01
-      ASoC: Drop device registration from GTA01 lm4857 driver
-
-Rob Sims (1):
-      ASoC: Set correct name for WM8753 rec mixer output
-
- sound/soc/at91/Kconfig             |   17 --
- sound/soc/at91/Makefile            |    5 -
- sound/soc/at91/eti_b1_wm8731.c     |  349 ------------------------------------
- sound/soc/codecs/wm8753.c          |    4 +-
- sound/soc/omap/omap-pcm.c          |    4 +-
- sound/soc/s3c24xx/neo1973_wm8753.c |   57 +-----
- 6 files changed, 14 insertions(+), 422 deletions(-)
- delete mode 100644 sound/soc/at91/eti_b1_wm8731.c
+diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/s3c24xx/neo1973_wm8753.c
+index 41fc69c..f3ac449 100644
+--- a/sound/soc/s3c24xx/neo1973_wm8753.c
++++ b/sound/soc/s3c24xx/neo1973_wm8753.c
+@@ -517,13 +517,13 @@ static int neo1973_wm8753_init(struct snd_soc_codec *codec)
+ 	snd_soc_dapm_nc_pin(codec, "LINE1");
+ 	snd_soc_dapm_nc_pin(codec, "LINE2");
+ 
+-	/* set endpoints to default mode */
+-	set_scenario_endpoints(codec, NEO_AUDIO_OFF);
+-
+ 	/* Add neo1973 specific widgets */
+ 	snd_soc_dapm_new_controls(codec, wm8753_dapm_widgets,
+ 				  ARRAY_SIZE(wm8753_dapm_widgets));
+ 
++	/* set endpoints to default mode */
++	set_scenario_endpoints(codec, NEO_AUDIO_OFF);
++
+ 	/* add neo1973 specific controls */
+ 	for (i = 0; i < ARRAY_SIZE(wm8753_neo1973_controls); i++) {
+ 		err = snd_ctl_add(codec->card,
+-- 
+1.5.6.5
