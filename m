@@ -1,18 +1,20 @@
-From: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+From: Mark Brown <broonie@sirena.org.uk>
 Subject: Re: [PATCH]ASoC: Create a common directory for AVR32
- and ARM9 atmel boards.
-Date: Thu, 02 Oct 2008 18:00:37 +0200
-Message-ID: <48E4F025.80907@atmel.com>
+	and ARM9	atmel boards.
+Date: Thu, 2 Oct 2008 19:12:12 +0100
+Message-ID: <20081002181211.GA3345@sirena.org.uk>
 References: <48E47D42.8080306@atmel.com> <20081002150731.GH2848@sirena.org.uk>
+	<48E4F025.80907@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atmel-es2.atmel.fr (mail.atmel.fr [81.80.104.162])
-	by alsa0.perex.cz (Postfix) with ESMTP id 795AE2439C
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id EFF5924179
 	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Oct 2008 18:00:51 +0200 (CEST)
-In-Reply-To: <20081002150731.GH2848@sirena.org.uk>
+	Thu,  2 Oct 2008 20:12:21 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <48E4F025.80907@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,47 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org, Geoffrey Wossum <geoffrey@pager.net>, Frank Mandarino <fmandarino@endrelia.com>
+To: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+Cc: alsa-devel@alsa-project.org, Geoffrey Wossum <geoffrey@pager.net>, Haavard Skinnemoen <hskinnemoen@atmel.com>, Frank Mandarino <fmandarino@endrelia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown a =E9crit :
-> On Thu, Oct 02, 2008 at 09:50:26AM +0200, Sedji Gaouaou wrote:
-> =
+On Thu, Oct 02, 2008 at 06:00:37PM +0200, Sedji Gaouaou wrote:
 
->> Create a common directory for AVR32 and ARM9 atmel boards to unify atmel =
+> Yes my mistake!! I will change change right now. Nevertheless I don't  
+> even have a AVR compiler so I can't really test the AVR code....
 
->> audio DAI.
-> =
+Ah, right.  While I understand that the hardware is pretty much identical
+are you sure that the APIs for accessing it are the same on both AVR32
+and AT91?  My understanding was that there was some work required to
+handle both but I've no familiarity with either architecture.
 
->> Signed-off-by: Sedji Gaouaou <sedji.gaouaou@atmel.com>
-> =
+CCing in Haavard Skinnemoen for AVR32 advice: Haavard, Sedji is submitting
+patches which unify the audio support for AT91 and AVR32.
 
-> Hrm.  It doesn't look like playpaq_wm8510.c will build after this change
-> - for one thing, at32-pcm.h and at32-ssc.h don't exist any more in the =
+> Ok, no worries. I will create:
+> 	a patch that contains the atmel_ssc_dai.c and .h file,
+> 	a patch for the atmel-pcm.c/.h files
+> 	a patch playback_wm8510.c and sam9g20_wm8731.c files.
+> 	a patch for the Makefile and the Kconfig.
 
-> new atmel directory but there's no change to the file to reflect that.
-> If you're unable to test AVR32 yourself then perhaps Geoffrey (CCed)
-> will be able to help out here?
-> =
+> Is that ok?
 
-Yes my mistake!! I will change change right now. Nevertheless I don't =
-
-even have a AVR compiler so I can't really test the AVR code....
-> Also, please note the changes to the playpaq driver which were made in
-> commit c2d8a0f79a63e3d3ead52fba3a6300f86514758b which was merged into
-> Takashi's tree the other day.
->
-Again my mistake :)
-> Can I also suggest splitting this up so that you do the merge of the
-> existing code in one patch then add your new board drivers in another?
-> If nothing else it'd bring down the size of the main diff.  :)
-> =
-
-Ok, no worries. I will create:
-	a patch that contains the atmel_ssc_dai.c and .h file,
-	a patch for the atmel-pcm.c/.h files
-	a patch playback_wm8510.c and sam9g20_wm8731.c files.
-	a patch for the Makefile and the Kconfig.
-
-Is that ok?
+That's certainly good for review.  We can always squash the patches down
+when they go to git in order to try to preserve the history.  No need to
+keep reposting the patch to remove the old drivers, either (unless you
+switch to using git format-patch -M to show the code moving around).
