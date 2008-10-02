@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ASoC: Remove at91 and at32 directories
-Date: Wed, 1 Oct 2008 17:47:20 +0100
-Message-ID: <20081001164719.GB15760@sirena.org.uk>
-References: <48E3A30E.5010001@atmel.com>
+From: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+Subject: Re: [PATCH] Add AC'97 driver for AT91SAM9263ek atmel
+ board.
+Date: Thu, 02 Oct 2008 10:51:02 +0200
+Message-ID: <48E48B76.1050809@atmel.com>
+References: <48E3A42C.6090202@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id C7CEC24494
+Received: from atmel-es2.atmel.fr (mail.atmel.fr [81.80.104.162])
+	by alsa0.perex.cz (Postfix) with ESMTP id E153024497
 	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Oct 2008 18:47:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <48E3A30E.5010001@atmel.com>
+	Thu,  2 Oct 2008 10:51:09 +0200 (CEST)
+Received: from fwat.rfo.atmel.com (gateway [192.168.1.1])
+	by atmel-es2.atmel.fr (8.11.6+Sun/8.11.6) with SMTP id m928oHI07729
+	for <alsa-devel@alsa-project.org>; Thu, 2 Oct 2008 10:50:18 +0200 (MEST)
+In-Reply-To: <48E3A42C.6090202@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +26,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Sedji Gaouaou <sedji.gaouaou@atmel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Frank Mandarino <fmandarino@endrelia.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 01, 2008 at 06:19:26PM +0200, Sedji Gaouaou wrote:
-> First patch to unify atmel audio dai.
-> Remove at91 and at32 directories.
+Hi,
 
-> sound/soc/at32/at32-ssc.c       |  849 
-> ---------------------------------------
+Sedji Gaouaou a =E9crit :
+> Add AC'97 driver for AT91SAM9263ek atmel board.
+> The driver includes the playback and the capture.
+> =
 
-This patch, and I guess your subsequent patches though I've not yet
-checked, has been word-wrapped by your mailer and so won't apply.
+> Signed-off-by: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+> ---
+>  sound/arm/Kconfig     |    9 +
+>  sound/arm/Makefile    |    4 +
+>  sound/arm/at91-ac97.c |  912 +++++++++++++++++++++++++++++++++++++++++++=
+++++++
+>  sound/arm/at91-ac97.h |  295 ++++++++++++++++
 
-If you can't resolve this with your mailer configuration or by using
-another mailer such as git send-email to send the patch then you should
-be able to work around the issue by including the patches as
-attachements.  It would be preferable to configure your mailer to this,
-though.
+When I was writing this patch I was wondering if it should actually be =
+
+in the sound/arm directory or in a sound/soc/atmel directory?
+
+Regards,
+Sedji
