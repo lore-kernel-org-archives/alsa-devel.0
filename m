@@ -1,16 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2.6.27?] ASoC: Correct inverted Mic PGA Switch
-	control in wm8510 driver
-Date: Fri,  3 Oct 2008 14:48:04 +0100
-Message-ID: <1223041684-4449-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Robert Vincent Krakora <rob.krakora@messagenetsystems.com>
+Subject: Re: [Alsa-user] em28xx_alsa: disagrees about version
+ of symbol xxx after upgrading CentOS 5.2 ALSA .14 for ALSA .17
+Date: Fri, 03 Oct 2008 10:08:59 -0400
+Message-ID: <48E6277B.5050307@messagenetsystems.com>
+References: <48E3DE07.4000707@messagenetsystems.com>
+	<48E4D486.9080801@googlemail.com>
+	<48E524B8.80002@messagenetsystems.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2D08724731
+Received: from unifiedpaging.messagenetsystems.com (unknown [24.123.23.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 791482473C
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Oct 2008 15:48:06 +0200 (CEST)
+	Fri,  3 Oct 2008 16:09:01 +0200 (CEST)
+In-Reply-To: <48E524B8.80002@messagenetsystems.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,34 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
+Cc: geisj@messagenetsystems.com
 List-Id: alsa-devel@alsa-project.org
 
-Mic PGA Switch should be inverted in the WM8510 driver but isn't.
+All:
 
-Reported-by: ext-jukka.hynninen@vaisala.com
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
+I have searched on the web and it seems that at least one person has 
+overcome the problem I am having by rebuilding soundcore.ko (See here: 
+http://redmonk.com/sogrady/2008/04/29/sog-1-busted-sound-0-getting-audio-working-on-the-x300-under-ubuntu/). 
+There is a sound_core.c in the ALSA tar ball. Why doesn't ALSA rebuild 
+the soundcore.ko module? The functions that em28xx_alsa is complaining 
+about reside in soundcore.ko according to my research. Basically, I 
+downloaded .18rc3 driver, lib and util and configured, built and 
+installed. I rebooted and em28xx_alsa complained that symbols that 
+resided down in soundcore.ko did not jive with the versions of the same 
+symbols for which it was trying to resolve linkages. I rebuilt the 
+video4linux code, reinstalled and rebooted and the problem was still 
+present. It looks as though one should be able to build an new 
+soundcore.ko with a ALSA package but there are no instructions on how to 
+do so. Please help!!!
 
-This bugfix applies to 2.6.27 but the issue is not very severe - it'd be
-good to get it in but it's not critical.
-
- sound/soc/codecs/wm8510.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
-index 75ed041..f644da6 100644
---- a/sound/soc/codecs/wm8510.c
-+++ b/sound/soc/codecs/wm8510.c
-@@ -199,7 +199,7 @@ SOC_DAPM_SINGLE("PCM Playback Switch", WM8510_MONOMIX, 0, 1, 0),
- };
- 
- static const struct snd_kcontrol_new wm8510_boost_controls[] = {
--SOC_DAPM_SINGLE("Mic PGA Switch", WM8510_INPPGA,  6, 1, 0),
-+SOC_DAPM_SINGLE("Mic PGA Switch", WM8509_INPPGA,  6, 1, 1),
- SOC_DAPM_SINGLE("Aux Volume", WM8510_ADCBOOST, 0, 7, 0),
- SOC_DAPM_SINGLE("Mic Volume", WM8510_ADCBOOST, 4, 7, 0),
- };
+Best Regards,
 -- 
-1.5.6.5
+Rob Krakora
+Software Engineer
+MessageNet Systems
+101 East Carmel Dr. Suite 105
+Carmel, IN 46032
+(317)566-1677 Ext. 206
+(317)663-0808 Fax
