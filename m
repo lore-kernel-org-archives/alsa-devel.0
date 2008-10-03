@@ -1,43 +1,54 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 1/5 v2] ASoC Add TLV320AIC23 codec driver
-Date: Fri, 3 Oct 2008 11:18:57 +0300
-Message-ID: <20081003081856.GC25482@atomide.com>
-References: <dfeb90390810020215y605ce8a4v43331cb852bd6018@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: More ASoC updates
+Date: Fri, 3 Oct 2008 09:53:38 +0100
+Message-ID: <20081003085338.GA8173@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 87C37246B1
+	for <alsa-devel@alsa-project.org>;
+	Fri,  3 Oct 2008 10:53:39 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <dfeb90390810020215y605ce8a4v43331cb852bd6018@mail.gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Arun KS <arunks@mistralsolutions.com>
-Cc: alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org List" <linux-omap@vger.kernel.org>, Jarkko Nikula <jarkko.nikula@nokia.com>, troy.kisky@boundarydevices.com, felipe.balbi@nokia.com
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The following changes since commit ddaea5119fd2efde7b3936d4ccfa34c4201be0d3:
+  Takashi Iwai (1):
+        Merge branch 'asoc-fixes' into topic/asoc
 
-* Arun KS <arunks@mistralsolutions.com> [081002 12:18]:
-> ASoC codec driver for TLV320AIC23 device
+are available in the git repository at:
 
-One comment below based on a quick browse.
+  git://opensource.wolfsonmicro.com/linux-2.6-asoc for-tiwai
 
-<snip>
+There's more to come on the TLV320AIC23 but at this point it's all
+cleanups and it's much easier to review incremental patches.
 
-> +static void tlv320aic23_shutdown(struct snd_pcm_substream *substream)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_device *socdev = rtd->socdev;
-> +	struct snd_soc_codec *codec = socdev->codec;
-> +
-> +	/* deactivate */
-> +	if (!codec->active) {
-> +		udelay(50);
-> +		tlv320aic23_write(codec, TLV320AIC23_ACTIVE, 0x0);
-> +	}
-> +}
-> +
+Arun KS (3):
+      ASoC: Add TLV320AIC23 codec driver
+      ASoC: Add support for osk5912
+      ASoC: Add DSP DAI format support to the OMAP McBSP driver
 
-What's the purpose of the udelay() here? Looks like if needed it should
-be after the twl32aic23_write().. Otherwise the problem is probably
-somewhere else.
-
-Tony
+ sound/soc/codecs/Kconfig       |    5 +
+ sound/soc/codecs/Makefile      |    2 +
+ sound/soc/codecs/tlv320aic23.c |  670 ++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/tlv320aic23.h |  122 ++++++++
+ sound/soc/omap/Kconfig         |    8 +
+ sound/soc/omap/Makefile        |    2 +
+ sound/soc/omap/omap-mcbsp.c    |    5 +
+ sound/soc/omap/osk5912.c       |  232 ++++++++++++++
+ 8 files changed, 1046 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/codecs/tlv320aic23.c
+ create mode 100644 sound/soc/codecs/tlv320aic23.h
+ create mode 100644 sound/soc/omap/osk5912.c
