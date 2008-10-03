@@ -1,44 +1,61 @@
-From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-Subject: Re: [PATCH]ASoC: Create a common directory for AVR32
- and ARM9 atmel boards.
-Date: Fri, 3 Oct 2008 17:06:13 +0200
-Message-ID: <20081003170613.65c5ffd3@hskinnemo-gx745.norway.atmel.com>
-References: <48E47D42.8080306@atmel.com> <20081002150731.GH2848@sirena.org.uk>
-	<48E4F025.80907@atmel.com> <20081002181211.GA3345@sirena.org.uk>
-	<48E613BB.6090003@atmel.com> <20081003131411.GC26035@sirena.org.uk>
-	<48E62A89.8070803@atmel.com> <20081003143523.GE26035@sirena.org.uk>
-	<20081003164901.7ebddcd9@hskinnemo-gx745.norway.atmel.com>
-	<48E63158.9020708@atmel.com>
+From: David Brownell <david-b@pacbell.net>
+Subject: [patch] bugfix:  SOUND: SOC: OMAP: Add support for Gumstix Overo
+Date: Fri, 3 Oct 2008 08:11:33 -0700
+Message-ID: <200810030811.33484.david-b@pacbell.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bagnes.atmel.com (smtpeu1.atmel.com [195.65.72.27])
-	by alsa0.perex.cz (Postfix) with ESMTP id AFED724149
-	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Oct 2008 17:06:05 +0200 (CEST)
-In-Reply-To: <48E63158.9020708@atmel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sedji Gaouaou <sedji.gaouaou@atmel.com>
-Cc: alsa-devel@alsa-project.org, Frank Mandarino <fmandarino@endrelia.com>, Mark Brown <broonie@sirena.org.uk>, Haavard Skinnemoen <hskinnemoen@atmel.com>, Geoffrey Wossum <geoffrey@pager.net>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-omap-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: linux-omap@vger.kernel.org, Steve Sakoman <steve@sakoman.com>
 List-Id: alsa-devel@alsa-project.org
 
-Sedji Gaouaou <sedji.gaouaou@atmel.com> wrote:
-> This will be my next task I think, I will try to move the at73c213 
-> driver, but I wanted to have a clean ssc dai first.
+From: David Brownell <dbrownell@users.sourceforge.net>
 
-That would be great!
+Get rid of bogus ASOC boot messages on non-Overo boards,
+such as with a kernel built for both Overo and Beagle.
 
-Btw, where is the patch you want me to test? Should I apply all the
-three patches you sent me earlier, or is there a newer version
-somewhere?
+Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
+Acked-By: Steve Sakoman <steve@sakoman.com>
+---
+I'm not sure where the four patches for Overo support are
+in the ALSA queue (that's how they'll merge, yes?) but I'll
+suggest this one merge into the initial "overo.c" submit...
 
-Haavard
+ sound/soc/omap/overo.c |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+--- a/sound/soc/omap/overo.c
++++ b/sound/soc/omap/overo.c
+@@ -107,11 +107,11 @@ static int __init overo_soc_init(void)
+ {
+ 	int ret;
+ 
+-	printk(KERN_INFO "overo SoC init\n");
+ 	if (!machine_is_overo()) {
+-		printk(KERN_ERR "Not Overo!\n");
++		pr_debug("Not Overo!\n");
+ 		return -ENODEV;
+ 	}
++	printk(KERN_INFO "overo SoC init\n");
+ 
+ 	overo_snd_device = platform_device_alloc("soc-audio", -1);
+ 	if (!overo_snd_device) {
+@@ -135,13 +135,12 @@ err1:
+ 
+ 	return ret;
+ }
++module_init(overo_soc_init);
+ 
+ static void __exit overo_soc_exit(void)
+ {
+ 	platform_device_unregister(overo_snd_device);
+ }
+-
+-module_init(overo_soc_init);
+ module_exit(overo_soc_exit);
+ 
+ MODULE_AUTHOR("Steve Sakoman <steve@sakoman.com>");
