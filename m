@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2.6.27?] ASoC: Correct inverted Mic
-	PGA	Switch control in wm8510 driver
-Date: Fri, 3 Oct 2008 18:47:14 +0100
-Message-ID: <20081003174714.GA15409@rakim.wolfsonmicro.main>
-References: <1223041684-4449-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<48E65475.3040203@boundarydevices.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [patch] bugfix: SOUND: SOC: OMAP: Add support for
+	Gumstix Overo
+Date: Fri, 3 Oct 2008 18:49:48 +0100
+Message-ID: <20081003174948.GA17906@sirena.org.uk>
+References: <200810030811.33484.david-b@pacbell.net>
+	<20081003151846.GA9127@sirena.org.uk>
+	<200810030837.15131.david-b@pacbell.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 39DC324343
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8FA222435E
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Oct 2008 19:47:15 +0200 (CEST)
+	Fri,  3 Oct 2008 19:49:52 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <48E65475.3040203@boundarydevices.com>
+In-Reply-To: <200810030837.15131.david-b@pacbell.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,15 +25,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Troy Kisky <troy.kisky@boundarydevices.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: David Brownell <david-b@pacbell.net>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Steve Sakoman <steve@sakoman.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 03, 2008 at 10:20:53AM -0700, Troy Kisky wrote:
+On Fri, Oct 03, 2008 at 08:37:14AM -0700, David Brownell wrote:
 
-> Why the WM509 prefix instead of WM8510?
+> So if the only place these are queued is the OMAP tree, and
+> there is no particular objection to the patch, then there'd
+> seem be no issue merging it to the OMAP tree and having it
+> be part of the initial merge-to-mainline...
 
-Gah.  Because I sent an incorrect, buggy, version of the patch.  Trying
-to do too many things at once :/
-
-Takashi, please don't apply.
+Yes, please squash it in with the other changes when you submit the
+twl4030 dependant stuff.
