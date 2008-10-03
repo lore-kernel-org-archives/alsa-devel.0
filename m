@@ -1,19 +1,15 @@
 From: Sedji Gaouaou <sedji.gaouaou@atmel.com>
-Subject: Re: [PATCH]ASoC: Create a common directory for AVR32
- and ARM9 atmel boards.
-Date: Fri, 03 Oct 2008 16:51:04 +0200
-Message-ID: <48E63158.9020708@atmel.com>
-References: <48E47D42.8080306@atmel.com>	<20081002150731.GH2848@sirena.org.uk>	<48E4F025.80907@atmel.com>	<20081002181211.GA3345@sirena.org.uk>	<48E613BB.6090003@atmel.com>	<20081003131411.GC26035@sirena.org.uk>	<48E62A89.8070803@atmel.com>	<20081003143523.GE26035@sirena.org.uk>
-	<20081003164901.7ebddcd9@hskinnemo-gx745.norway.atmel.com>
+Subject: [PATCH 1/7] ASoC: Change Makefile and Kconfig to
+ support atmel avr32 and at91 merging into a single atmel directory.
+Date: Fri, 03 Oct 2008 16:57:50 +0200
+Message-ID: <48E632EE.1090306@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="------------050208010301030109070009"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from atmel-es2.atmel.fr (mail.atmel.fr [81.80.104.162])
-	by alsa0.perex.cz (Postfix) with ESMTP id 70B0224749
+	by alsa0.perex.cz (Postfix) with ESMTP id 67D8624133
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Oct 2008 16:51:16 +0200 (CEST)
-In-Reply-To: <20081003164901.7ebddcd9@hskinnemo-gx745.norway.atmel.com>
+	Fri,  3 Oct 2008 16:58:09 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,26 +19,113 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-Cc: alsa-devel@alsa-project.org, Frank Mandarino <fmandarino@endrelia.com>, Mark Brown <broonie@sirena.org.uk>, Haavard Skinnemoen <hskinnemoen@atmel.com>, Geoffrey Wossum <geoffrey@pager.net>
+To: alsa-devel@alsa-project.org, Frank Mandarino <fmandarino@endrelia.com>, Mark Brown <broonie@sirena.org.uk>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Haavard,
-Haavard Skinnemoen a =E9crit :
-> Mark Brown <broonie@sirena.org.uk> wrote:
->> I'd still like to see this tested at least somewhat on AVR32, just to
->> make sure.  Even a build test would be good.
-> =
+This is a multi-part message in MIME format.
+--------------050208010301030109070009
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> I can do a build test, but I don't have any board with a supported
-> codec. Ideally, the at73c213 driver should be moved over to the SoC
-> framework, but I'm not sure if I'll find much time to do it in the near
-> future.
-> =
+Change Makefile and Kconfig to support atmel avr32 and at91 merging into a single atmel directory.
 
-> Haavard
-> =
+Signed-off-by: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+---
+ sound/soc/Kconfig  |    3 +--
+ sound/soc/Makefile |    2 +-
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-This will be my next task I think, I will try to move the at73c213 =
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 4dfda66..615ebf0 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -23,8 +23,7 @@ config SND_SOC_AC97_BUS
+ 	bool
+ 
+ # All the supported Soc's
+-source "sound/soc/at32/Kconfig"
+-source "sound/soc/at91/Kconfig"
++source "sound/soc/atmel/Kconfig"
+ source "sound/soc/au1x/Kconfig"
+ source "sound/soc/pxa/Kconfig"
+ source "sound/soc/s3c24xx/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index d849349..4d475c3 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -1,5 +1,5 @@
+ snd-soc-core-objs := soc-core.o soc-dapm.o
+ 
+ obj-$(CONFIG_SND_SOC)	+= snd-soc-core.o
+-obj-$(CONFIG_SND_SOC)	+= codecs/ at32/ at91/ pxa/ s3c24xx/ sh/ fsl/ davinci/
++obj-$(CONFIG_SND_SOC)	+= codecs/ atmel/ pxa/ s3c24xx/ sh/ fsl/ davinci/
+ obj-$(CONFIG_SND_SOC)	+= omap/ au1x/ blackfin/
+-- 
+1.5.3.7
 
-driver, but I wanted to have a clean ssc dai first.
+
+
+
+
+
+--------------050208010301030109070009
+Content-Type: text/plain;
+ name="Change-Makefile-and-Kconfig-to-support-atmel-sound.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename*0="Change-Makefile-and-Kconfig-to-support-atmel-sound.txt"
+
+>From ec6e9878520679b27381cad11dd07f10fb9ce426 Mon Sep 17 00:00:00 2001
+From: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+Date: Thu, 2 Oct 2008 19:51:31 +0200
+Subject: [PATCH] Change Makefile and Kconfig to support atmel avr32 and at91 merging into a
+ single atmel directory.
+
+Signed-off-by: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+---
+ sound/soc/Kconfig  |    3 +--
+ sound/soc/Makefile |    2 +-
+ 2 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 4dfda66..615ebf0 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -23,8 +23,7 @@ config SND_SOC_AC97_BUS
+ 	bool
+ 
+ # All the supported Soc's
+-source "sound/soc/at32/Kconfig"
+-source "sound/soc/at91/Kconfig"
++source "sound/soc/atmel/Kconfig"
+ source "sound/soc/au1x/Kconfig"
+ source "sound/soc/pxa/Kconfig"
+ source "sound/soc/s3c24xx/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index d849349..4d475c3 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -1,5 +1,5 @@
+ snd-soc-core-objs := soc-core.o soc-dapm.o
+ 
+ obj-$(CONFIG_SND_SOC)	+= snd-soc-core.o
+-obj-$(CONFIG_SND_SOC)	+= codecs/ at32/ at91/ pxa/ s3c24xx/ sh/ fsl/ davinci/
++obj-$(CONFIG_SND_SOC)	+= codecs/ atmel/ pxa/ s3c24xx/ sh/ fsl/ davinci/
+ obj-$(CONFIG_SND_SOC)	+= omap/ au1x/ blackfin/
+-- 
+1.5.3.7
+
+
+
+--------------050208010301030109070009
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------050208010301030109070009--
