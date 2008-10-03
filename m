@@ -1,53 +1,46 @@
-From: Sedji Gaouaou <sedji.gaouaou@atmel.com>
-Subject: Re: [PATCH]ASoC: Create a common directory for AVR32
- and ARM9 atmel boards.
-Date: Fri, 03 Oct 2008 17:12:26 +0200
-Message-ID: <48E6365A.6060803@atmel.com>
-References: <48E47D42.8080306@atmel.com>	<20081002150731.GH2848@sirena.org.uk>	<48E4F025.80907@atmel.com>	<20081002181211.GA3345@sirena.org.uk>	<48E613BB.6090003@atmel.com>	<20081003131411.GC26035@sirena.org.uk>	<48E62A89.8070803@atmel.com>	<20081003143523.GE26035@sirena.org.uk>	<20081003164901.7ebddcd9@hskinnemo-gx745.norway.atmel.com>	<48E63158.9020708@atmel.com>
-	<20081003170613.65c5ffd3@hskinnemo-gx745.norway.atmel.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [alsa-devel] [patch] bugfix: SOUND: SOC: OMAP: Add support for Gumstix Overo
+Date: Fri, 3 Oct 2008 16:18:47 +0100
+Message-ID: <20081003151846.GA9127@sirena.org.uk>
+References: <200810030811.33484.david-b@pacbell.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atmel-es2.atmel.fr (mail.atmel.fr [81.80.104.162])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6FF9A24333
-	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Oct 2008 17:12:36 +0200 (CEST)
-In-Reply-To: <20081003170613.65c5ffd3@hskinnemo-gx745.norway.atmel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-Cc: alsa-devel@alsa-project.org, Frank Mandarino <fmandarino@endrelia.com>, Mark Brown <broonie@sirena.org.uk>, Haavard Skinnemoen <hskinnemoen@atmel.com>, Geoffrey Wossum <geoffrey@pager.net>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <200810030811.33484.david-b@pacbell.net>
+Sender: linux-omap-owner@vger.kernel.org
+To: David Brownell <david-b@pacbell.net>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Steve Sakoman <steve@sakoman.com>
 List-Id: alsa-devel@alsa-project.org
 
-Haavard Skinnemoen a =E9crit :
-> Sedji Gaouaou <sedji.gaouaou@atmel.com> wrote:
->> This will be my next task I think, I will try to move the at73c213 =
+On Fri, Oct 03, 2008 at 08:11:33AM -0700, David Brownell wrote:
 
->> driver, but I wanted to have a clean ssc dai first.
-> =
+> Get rid of bogus ASOC boot messages on non-Overo boards,
+> such as with a kernel built for both Overo and Beagle.
 
-> That would be great!
-> =
+<nitpick>It's ASoC, not ASOC.</nitpick>
 
-> Btw, where is the patch you want me to test? Should I apply all the
-> three patches you sent me earlier, or is there a newer version
-> somewhere?
-> =
+> ---
+> I'm not sure where the four patches for Overo support are
+> in the ALSA queue (that's how they'll merge, yes?) but I'll
+> suggest this one merge into the initial "overo.c" submit...
 
-> Haavard
-> =
+They're not queued in ALSA since they depend on the PMIC codec driver
+which in turn depends on the PMIC core driver being merged.  The change
+looks good, FWIW but...
 
-I have just sent a new version in a set of 7 patches.
-But you will still need to apply the patch where I removed all at32 and =
+> @@ -135,13 +135,12 @@ err1:
+>  
+>  	return ret;
+>  }
+> +module_init(overo_soc_init);
+>  
+>  static void __exit overo_soc_exit(void)
+>  {
+>  	platform_device_unregister(overo_snd_device);
+>  }
+> -
+> -module_init(overo_soc_init);
+>  module_exit(overo_soc_exit);
 
-at91 directories([alsa-devel] [PATCH]ASoC: Remove at91 and at32 =
-
-directories).
+This is a reasonable change but unrelated to your patch description.
