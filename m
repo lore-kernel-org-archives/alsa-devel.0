@@ -1,21 +1,22 @@
-From: Mark Brown <broonie@sirena.org.uk>
+From: Tony Lindgren <tony@atomide.com>
 Subject: Re: [patch] bugfix: SOUND: SOC: OMAP: Add support for
 	Gumstix Overo
-Date: Fri, 3 Oct 2008 18:49:48 +0100
-Message-ID: <20081003174948.GA17906@sirena.org.uk>
+Date: Sat, 4 Oct 2008 07:10:06 +0000
+Message-ID: <20081004071006.GC30190@muru.com>
 References: <200810030811.33484.david-b@pacbell.net>
 	<20081003151846.GA9127@sirena.org.uk>
 	<200810030837.15131.david-b@pacbell.net>
+	<20081003174948.GA17906@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8FA222435E
+Received: from muru.com (muru.com [72.249.23.125])
+	by alsa0.perex.cz (Postfix) with ESMTP id 379AB24443
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Oct 2008 19:49:52 +0200 (CEST)
+	Sat,  4 Oct 2008 09:10:13 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <200810030837.15131.david-b@pacbell.net>
+In-Reply-To: <20081003174948.GA17906@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,16 +26,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Brownell <david-b@pacbell.net>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Steve Sakoman <steve@sakoman.com>
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: David Brownell <david-b@pacbell.net>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Steve Sakoman <steve@sakoman.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 03, 2008 at 08:37:14AM -0700, David Brownell wrote:
+On Fri, Oct 03, 2008 at 06:49:48PM +0100, Mark Brown wrote:
+> On Fri, Oct 03, 2008 at 08:37:14AM -0700, David Brownell wrote:
+> 
+> > So if the only place these are queued is the OMAP tree, and
+> > there is no particular objection to the patch, then there'd
+> > seem be no issue merging it to the OMAP tree and having it
+> > be part of the initial merge-to-mainline...
+> 
+> Yes, please squash it in with the other changes when you submit the
+> twl4030 dependant stuff.
 
-> So if the only place these are queued is the OMAP tree, and
-> there is no particular objection to the patch, then there'd
-> seem be no issue merging it to the OMAP tree and having it
-> be part of the initial merge-to-mainline...
+Also, the McBSP changes needed for ASoC are on their way to the
+mainline kernel.
 
-Yes, please squash it in with the other changes when you submit the
-twl4030 dependant stuff.
+Tony
