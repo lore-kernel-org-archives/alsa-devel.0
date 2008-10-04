@@ -1,22 +1,12 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2.6.27?] ASoC: Correct inverted Mic
-	PGA	Switch control in wm8510 driver
-Date: Sat, 4 Oct 2008 19:16:11 +0100
-Message-ID: <20081004181611.GA21873@opensource.wolfsonmicro.com>
-References: <1223041684-4449-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<48E65475.3040203@boundarydevices.com>
-	<20081003174714.GA15409@rakim.wolfsonmicro.main>
-	<s5hiqs8mi8b.wl%tiwai@suse.de>
+From: Troy Kisky <troy.kisky@boundarydevices.com>
+Subject: [PATCH] [ALSA] Allow setting codec register with sys
+	filesystem
+Date: Sat,  4 Oct 2008 16:54:09 -0700
+Message-ID: <1223164449-4133-1-git-send-email-troy.kisky@boundarydevices.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E54D524531
-	for <alsa-devel@alsa-project.org>;
-	Sat,  4 Oct 2008 20:16:11 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hiqs8mi8b.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,12 +16,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: patch@alsa-project.org
 Cc: alsa-devel@alsa-project.org, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Oct 04, 2008 at 06:35:00PM +0200, Takashi Iwai wrote:
+i.e. echo 6 59 >/sys/devices/platform/soc-audio.0/codec_reg
+will set register 0x06 to a value of 0x59
 
-> Will you send a correct one later, or is the fix totally bogus?
+Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
 
-I'll send an updated patch - the fix is fine.
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index ad38113..df23b23 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1002,7 +1002,33 @@ static ssize_t codec_reg_show(struct device *dev,
+ 
+ 	return count;
+ }
+-static DEVICE_ATTR(codec_reg, 0444, codec_reg_show, NULL);
++
++static ssize_t codec_reg_write(struct device *dev,
++	struct device_attribute *attr, const char *buf, size_t count)
++{
++	char *start = (char *)buf;
++	unsigned long reg, value;
++	int step = 1;
++	struct snd_soc_device *devdata = dev_get_drvdata(dev);
++	struct snd_soc_codec *codec = devdata->codec;
++
++	if (codec->reg_cache_step)
++		step = codec->reg_cache_step;
++
++	while (*start == ' ')
++		start++;
++	reg = simple_strtoul(start, &start, 16);
++	if ((reg >= codec->reg_cache_size) || (reg % step))
++		return -EINVAL;
++	while (*start == ' ')
++		start++;
++	if (strict_strtoul(start, 16, &value))
++		return -EINVAL;
++	codec->write(codec, reg, value);
++	return start - buf;
++}
++
++static DEVICE_ATTR(codec_reg, 0644, codec_reg_show, codec_reg_write);
+ 
+ /**
+  * snd_soc_new_ac97_codec - initailise AC97 device
+-- 
+1.5.4.3
