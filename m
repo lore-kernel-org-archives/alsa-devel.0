@@ -1,18 +1,17 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: size of snd_hda_intel
-Date: Sun, 5 Oct 2008 18:19:05 -0400
-Message-ID: <9e4733910810051519k427dce6aobca50815bfac30e2@mail.gmail.com>
+From: "Ted T. Logian" <tedtheologian@gmail.com>
+Subject: Will there ever be emu20k1/x-fi support in Alsa?
+Date: Sun, 05 Oct 2008 18:14:43 -0500
+Message-ID: <1223248483.19560.9.camel@home>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.147])
-	by alsa0.perex.cz (Postfix) with ESMTP id B222A24157
+Received: from mail-gx0-f17.google.com (mail-gx0-f17.google.com
+	[209.85.217.17]) by alsa0.perex.cz (Postfix) with ESMTP id 91C1A24358
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Oct 2008 00:19:06 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 9so503593qwj.56
-	for <alsa-devel@alsa-project.org>; Sun, 05 Oct 2008 15:19:05 -0700 (PDT)
-Content-Disposition: inline
+	Mon,  6 Oct 2008 01:14:46 +0200 (CEST)
+Received: by gxk10 with SMTP id 10so4808078gxk.8
+	for <alsa-devel@alsa-project.org>; Sun, 05 Oct 2008 16:14:45 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,19 +21,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->ismod
-snd_hda_intel         435,772
+I had to ask because oss4 has had emu20k1/x-fi support for a long time
+now.  However, it has the obvious limitations of oss4 and also you
+cannot use usb microphones, so I can't use skype which I'd really like
+to do.
 
-435,772 bytes seems awfully large for an audio driver. The large size
-seems to be due to having support for multiple codecs in the driver.
-Could a generic  hda driver load the correct codec dynamically instead
-of building them all in statically?
-
-I have a Realtek codec.
-
--- 
-Jon Smirl
-jonsmirl@gmail.com
+Any ideas? 
