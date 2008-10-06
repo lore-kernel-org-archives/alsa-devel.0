@@ -1,22 +1,20 @@
-From: ext-jukka.hynninen@vaisala.com
-Subject: ASoC WM8510 Mic PGA problem
-Date: Mon, 6 Oct 2008 10:20:55 +0300
-Message-ID: <B9D3C48C98930741A166756A50C44A610F17B556@helx1.corp.vaisala.com>
-References: <B9D3C48C98930741A166756A50C44A610F17B555@helx1.corp.vaisala.com>
-	<20081003133936.GD26035@sirena.org.uk>
+From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
+Subject: Re: size of snd_hda_intel
+Date: Mon, 6 Oct 2008 10:28:14 +0200
+Message-ID: <fd3eb9bf0810060128y3af886e0m1ad2c39b0f9c78f1@mail.gmail.com>
+References: <9e4733910810051519k427dce6aobca50815bfac30e2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw.vaisala.com (mailgw.vaisala.com [192.81.123.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7209D243B4
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.245])
+	by alsa0.perex.cz (Postfix) with ESMTP id C7F7824335
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Oct 2008 09:20:58 +0200 (CEST)
-Received: from helsrv02.vaisala.com (helsrv02.vaisala.com [192.81.123.16])
-	by mailgw.vaisala.com (8.13.6/8.13.6) with SMTP id m967Kvjo001430
-	for <alsa-devel@alsa-project.org>; Mon, 6 Oct 2008 10:20:57 +0300
-Content-class: urn:content-classes:message
-In-Reply-To: <20081003133936.GD26035@sirena.org.uk>
+	Mon,  6 Oct 2008 10:28:15 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id f25so2438450rvb.32
+	for <alsa-devel@alsa-project.org>; Mon, 06 Oct 2008 01:28:14 -0700 (PDT)
+In-Reply-To: <9e4733910810051519k427dce6aobca50815bfac30e2@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,35 +24,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@sirena.org.uk
-Cc: alsa-devel@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>, alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Quoting Mark Brown:
-
->> When I start capturing, the "Mic PGA" control is instantly turned off
->> again. If I manually enable the control while the capture is running,
-it
->> works just fine.
-> Could you expand on what you're seeing here - what exactly is the user
-> visible behaviour you observe?  Are you looking at dapm_widgets in
-sysfs
-
-I'm looking at the amixer settings, commands
-
-$> amixer sset "Mic PGA" on
-$> arecord -c 1 --rate=48000 --format=S16_LE |aplay &
-$> amixer sget "Mic PGA"
-
-report that the mixer control state is [off] again. Looking at the
-codec_reg on sysfs verifies that the PGA Mute bit (0x2d:6) is set.
-Running the first command again gives the expected audible result.
-
-On the contrary, dapm_widget reports "Mic PGA: On".
-
-> It might help if you were able to provide your machine driver.
-
-The driver is playpaq_wm8510.c
-
-
--Jukka
+SSBiZWxpZXZlIHRoaXMgaXNuJ3QgdGhhdCBlYXN5LiBIZXJlIGlzIHdoeTogaWZmIHlvdSBsb29r
+IGF0IHRoZQppY2UxNzEyL2ljZTE3MjQgZHJpdmVyLCBpdCBkb2Vzbid0IGRldGVjdCBkZXBlbmRl
+bmNpZXMgd2hlbiBtb2Rwcm9iZWQ7CnRoYXQgaXMsIGl0IGxvYWRzLCBmb3IgZXhhbXBsZSwgYWM5
+NyBjb2RlYyBhbmQgYWs0eHh4IGRyaXZlciBldmVuIGlmCnRoZSBjYXJkIGRvZXNuJ3QgaGF2ZSBh
+bnkgb2YgdGhhdC4gSXMgaXQgZXZlbiBwb3NzaWJsZSB0byBkZXRlY3QKZGVwZW5kZW5jaWVzIGFm
+dGVyIG1vZHByb2Jpbmc/CgoyMDA4LzEwLzYgSm9uIFNtaXJsIDxqb25zbWlybEBnbWFpbC5jb20+
+Ogo+PmlzbW9kCj4gc25kX2hkYV9pbnRlbCAgICAgICAgIDQzNSw3NzIKPgo+IDQzNSw3NzIgYnl0
+ZXMgc2VlbXMgYXdmdWxseSBsYXJnZSBmb3IgYW4gYXVkaW8gZHJpdmVyLiBUaGUgbGFyZ2Ugc2l6
+ZQo+IHNlZW1zIHRvIGJlIGR1ZSB0byBoYXZpbmcgc3VwcG9ydCBmb3IgbXVsdGlwbGUgY29kZWNz
+IGluIHRoZSBkcml2ZXIuCj4gQ291bGQgYSBnZW5lcmljICBoZGEgZHJpdmVyIGxvYWQgdGhlIGNv
+cnJlY3QgY29kZWMgZHluYW1pY2FsbHkgaW5zdGVhZAo+IG9mIGJ1aWxkaW5nIHRoZW0gYWxsIGlu
+IHN0YXRpY2FsbHk/Cj4KPiBJIGhhdmUgYSBSZWFsdGVrIGNvZGVjLgo+Cj4gLS0KPiBKb24gU21p
+cmwKPiBqb25zbWlybEBnbWFpbC5jb20KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgoKCgotLSAKVmVkcmFuIE1pbGV0acSHCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
+aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
