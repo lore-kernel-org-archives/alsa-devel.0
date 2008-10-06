@@ -1,20 +1,17 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: ASoC WM8510 Mic PGA problem
-Date: Mon, 6 Oct 2008 11:05:22 +0100
-Message-ID: <20081006100522.GB14087@sirena.org.uk>
-References: <B9D3C48C98930741A166756A50C44A610F17B555@helx1.corp.vaisala.com>
-	<20081003133936.GD26035@sirena.org.uk>
-	<B9D3C48C98930741A166756A50C44A610F17B556@helx1.corp.vaisala.com>
+Subject: Re: [PATCH] [ALSA] Allow setting codec register with
+	sys filesystem
+Date: Mon, 6 Oct 2008 11:12:42 +0100
+Message-ID: <20081006101242.GC14087@sirena.org.uk>
+References: <1223164449-4133-1-git-send-email-troy.kisky@boundarydevices.com>
+	<20081006095856.GA14087@sirena.org.uk>
+	<s5h1vyughvv.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 72629243E0
-	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Oct 2008 12:05:23 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <B9D3C48C98930741A166756A50C44A610F17B556@helx1.corp.vaisala.com>
+In-Reply-To: <s5h1vyughvv.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,29 +21,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext-jukka.hynninen@vaisala.com
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 06, 2008 at 10:20:55AM +0300, ext-jukka.hynninen@vaisala.com wrote:
+On Mon, Oct 06, 2008 at 12:03:32PM +0200, Takashi Iwai wrote:
 
-> I'm looking at the amixer settings, commands
+> OTOH, symmetrical read/write operations also good.
+> Will be the sysfs register show op moved to debugfs, too?
 
-> $> amixer sset "Mic PGA" on
-> $> arecord -c 1 --rate=48000 --format=S16_LE |aplay &
-> $> amixer sget "Mic PGA"
-> 
-> report that the mixer control state is [off] again. Looking at the
-> codec_reg on sysfs verifies that the PGA Mute bit (0x2d:6) is set.
+I'd rather that were available all the time since it's so useful.
 
-Could you confirm when the state of the control changes - looks like
-it's when the recording/playback start?
-
-> > It might help if you were able to provide your machine driver.
-
-> The driver is playpaq_wm8510.c
-
-Ah, right.  I don't suppose I could persuade you to join the efforts
-testing Sedji Gaouaou's recent code to unify the AT91 and AVR32 ASoC
-platform support?  Geoffrey Wossum did offer to help out with that
-already.
+Adding a read interface in debugfs would certainly be sensible, though -
+I have in the past considered adding a much more detailed readback
+interface to debugfs which would not only dump the registers but also
+provide some decode information (eg, reporting the mapping to controls
+for the standard ASoC widgets).  Not something I have the time to do in
+the immediate future, though.
