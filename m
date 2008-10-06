@@ -1,17 +1,16 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] [ALSA] Allow setting codec register with
-	sys filesystem
-Date: Mon, 6 Oct 2008 11:12:42 +0100
-Message-ID: <20081006101242.GC14087@sirena.org.uk>
-References: <1223164449-4133-1-git-send-email-troy.kisky@boundarydevices.com>
-	<20081006095856.GA14087@sirena.org.uk>
-	<s5h1vyughvv.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2.6.27?] ASoC: Correct inverted Mic PGA Switch
+	control in wm8510 driver
+Date: Mon,  6 Oct 2008 11:33:21 +0100
+Message-ID: <1223289201-29091-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
-In-Reply-To: <s5h1vyughvv.wl%tiwai@suse.de>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2B58824400
+	for <alsa-devel@alsa-project.org>;
+	Mon,  6 Oct 2008 12:33:22 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,19 +21,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, Troy Kisky <troy.kisky@boundarydevices.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 06, 2008 at 12:03:32PM +0200, Takashi Iwai wrote:
+Mic PGA Switch should be inverted in the WM8510 driver but isn't.
 
-> OTOH, symmetrical read/write operations also good.
-> Will be the sysfs register show op moved to debugfs, too?
+Reported-by: ext-jukka.hynninen@vaisala.com
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8510.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-I'd rather that were available all the time since it's so useful.
-
-Adding a read interface in debugfs would certainly be sensible, though -
-I have in the past considered adding a much more detailed readback
-interface to debugfs which would not only dump the registers but also
-provide some decode information (eg, reporting the mapping to controls
-for the standard ASoC widgets).  Not something I have the time to do in
-the immediate future, though.
+diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
+index 75ed041..9a37c8d 100644
+--- a/sound/soc/codecs/wm8510.c
++++ b/sound/soc/codecs/wm8510.c
+@@ -199,7 +199,7 @@ SOC_DAPM_SINGLE("PCM Playback Switch", WM8510_MONOMIX, 0, 1, 0),
+ };
+ 
+ static const struct snd_kcontrol_new wm8510_boost_controls[] = {
+-SOC_DAPM_SINGLE("Mic PGA Switch", WM8510_INPPGA,  6, 1, 0),
++SOC_DAPM_SINGLE("Mic PGA Switch", WM8510_INPPGA,  6, 1, 1),
+ SOC_DAPM_SINGLE("Aux Volume", WM8510_ADCBOOST, 0, 7, 0),
+ SOC_DAPM_SINGLE("Mic Volume", WM8510_ADCBOOST, 4, 7, 0),
+ };
+-- 
+1.5.6.5
