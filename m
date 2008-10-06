@@ -1,23 +1,18 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [patch] bugfix: SOUND: SOC: OMAP: Add support
-	for	Gumstix Overo
-Date: Mon, 6 Oct 2008 09:48:08 +0300
-Message-ID: <20081006064806.GE14042@atomide.com>
-References: <200810030811.33484.david-b@pacbell.net>
-	<20081003151846.GA9127@sirena.org.uk>
-	<200810030837.15131.david-b@pacbell.net>
-	<20081003174948.GA17906@sirena.org.uk>
-	<20081004071006.GC30190@muru.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] ALSA: snd-usb-audio: support for Edirol
+ UA-4FX device
+Date: Mon, 06 Oct 2008 08:53:09 +0200
+Message-ID: <48E9B5D5.9080404@ladisch.de>
+References: <12231307783118-git-send-email-pedro.lopez.cabanillas@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mho-01-bos.mailhop.org (mho-01-bos.mailhop.org [63.208.196.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3531F24430
+Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 9F14124373
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Oct 2008 08:45:16 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20081004071006.GC30190@muru.com>
+	Mon,  6 Oct 2008 08:53:03 +0200 (CEST)
+In-Reply-To: <12231307783118-git-send-email-pedro.lopez.cabanillas@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,29 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: David Brownell <david-b@pacbell.net>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Steve Sakoman <steve@sakoman.com>
+To: Pedro Lopez-Cabanillas <pedro.lopez.cabanillas@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-* Tony Lindgren <tony@atomide.com> [081004 10:36]:
-> On Fri, Oct 03, 2008 at 06:49:48PM +0100, Mark Brown wrote:
-> > On Fri, Oct 03, 2008 at 08:37:14AM -0700, David Brownell wrote:
-> > 
-> > > So if the only place these are queued is the OMAP tree, and
-> > > there is no particular objection to the patch, then there'd
-> > > seem be no issue merging it to the OMAP tree and having it
-> > > be part of the initial merge-to-mainline...
-> > 
-> > Yes, please squash it in with the other changes when you submit the
-> > twl4030 dependant stuff.
+Pedro Lopez-Cabanillas wrote:
+> Renamed the old quirk function for ua-700/ua-25 to become more
+> generic, moving the MIDI interfaces to the quirk data header.
 
-I've pushed Dave's fix into linux-omap tree.
+The MIDI interfaces have to be detected dynamically because in the half-
+duplex 96 kHz modes, they have a different interface number.
 
-> Also, the McBSP changes needed for ASoC are on their way to the
-> mainline kernel.
-> 
-> Tony
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+Regards,
+Clemens
