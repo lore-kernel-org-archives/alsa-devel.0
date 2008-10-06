@@ -1,19 +1,19 @@
 From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
-Subject: Re: size of snd_hda_intel
-Date: Mon, 6 Oct 2008 10:28:14 +0200
-Message-ID: <fd3eb9bf0810060128y3af886e0m1ad2c39b0f9c78f1@mail.gmail.com>
-References: <9e4733910810051519k427dce6aobca50815bfac30e2@mail.gmail.com>
+Subject: Re: Will there ever be emu20k1/x-fi support in Alsa?
+Date: Mon, 6 Oct 2008 10:35:13 +0200
+Message-ID: <fd3eb9bf0810060135j5a8771ebt1355da1d5a61dd7f@mail.gmail.com>
+References: <1223248483.19560.9.camel@home> <20081005215927.3a907b59@darius>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.245])
-	by alsa0.perex.cz (Postfix) with ESMTP id C7F7824335
+Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.174])
+	by alsa0.perex.cz (Postfix) with ESMTP id 748342433E
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Oct 2008 10:28:15 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id f25so2438450rvb.32
-	for <alsa-devel@alsa-project.org>; Mon, 06 Oct 2008 01:28:14 -0700 (PDT)
-In-Reply-To: <9e4733910810051519k427dce6aobca50815bfac30e2@mail.gmail.com>
+	Mon,  6 Oct 2008 10:35:15 +0200 (CEST)
+Received: by wf-out-1314.google.com with SMTP id 24so2553463wfg.23
+	for <alsa-devel@alsa-project.org>; Mon, 06 Oct 2008 01:35:14 -0700 (PDT)
+In-Reply-To: <20081005215927.3a907b59@darius>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,25 +24,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>, alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: Brendan Pike <spike@spykes.net>, alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-SSBiZWxpZXZlIHRoaXMgaXNuJ3QgdGhhdCBlYXN5LiBIZXJlIGlzIHdoeTogaWZmIHlvdSBsb29r
-IGF0IHRoZQppY2UxNzEyL2ljZTE3MjQgZHJpdmVyLCBpdCBkb2Vzbid0IGRldGVjdCBkZXBlbmRl
-bmNpZXMgd2hlbiBtb2Rwcm9iZWQ7CnRoYXQgaXMsIGl0IGxvYWRzLCBmb3IgZXhhbXBsZSwgYWM5
-NyBjb2RlYyBhbmQgYWs0eHh4IGRyaXZlciBldmVuIGlmCnRoZSBjYXJkIGRvZXNuJ3QgaGF2ZSBh
-bnkgb2YgdGhhdC4gSXMgaXQgZXZlbiBwb3NzaWJsZSB0byBkZXRlY3QKZGVwZW5kZW5jaWVzIGFm
-dGVyIG1vZHByb2Jpbmc/CgoyMDA4LzEwLzYgSm9uIFNtaXJsIDxqb25zbWlybEBnbWFpbC5jb20+
-Ogo+PmlzbW9kCj4gc25kX2hkYV9pbnRlbCAgICAgICAgIDQzNSw3NzIKPgo+IDQzNSw3NzIgYnl0
-ZXMgc2VlbXMgYXdmdWxseSBsYXJnZSBmb3IgYW4gYXVkaW8gZHJpdmVyLiBUaGUgbGFyZ2Ugc2l6
-ZQo+IHNlZW1zIHRvIGJlIGR1ZSB0byBoYXZpbmcgc3VwcG9ydCBmb3IgbXVsdGlwbGUgY29kZWNz
-IGluIHRoZSBkcml2ZXIuCj4gQ291bGQgYSBnZW5lcmljICBoZGEgZHJpdmVyIGxvYWQgdGhlIGNv
-cnJlY3QgY29kZWMgZHluYW1pY2FsbHkgaW5zdGVhZAo+IG9mIGJ1aWxkaW5nIHRoZW0gYWxsIGlu
-IHN0YXRpY2FsbHk/Cj4KPiBJIGhhdmUgYSBSZWFsdGVrIGNvZGVjLgo+Cj4gLS0KPiBKb24gU21p
-cmwKPiBqb25zbWlybEBnbWFpbC5jb20KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgoKCgotLSAKVmVkcmFuIE1pbGV0acSHCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+VG8gc2F5IHRoYXQgdGhpcyBkcml2ZXIgaXMgcGFydGlhbGx5IHdvcmtpbmcgaXMgYW4gb3ZlcnN0
+YXRlbWVudC4gSXQKaXMgcGFydGlhbGx5IHdvcmtpbmcgb24gdmVyeSBmZXcgc3VwcG9ydGVkIGNh
+cmRzLCBhbmQgc29tZSBvZiB0aGVtIGFyZQpzdXBwb3J0ZWQgYnkgQUxTQSBhcyB3ZWxsLCBpZiBu
+b3QgYmV0dGVyIChYdHJlbWUgQXVkaW8gUENJIGFuZCBYdHJlbWUKQXVkaW8gUENJLUUpLgoKQnkg
+dGhlIHdheSwgZG9uJ3QgYWxsIFgtRmkgY2FyZHMgaGF2ZSBzb21lIGtpbmQgb2YgSERBLWNvbXBh
+dGlibGUKbW9kZT8gSWYgeWVzLCB3aHkgZG9uJ3QgcGVvcGxlIGp1c3QgdXNlIHRoYXQgdW50aWwg
+Q3JlYXRpdmUgd3JpdGVzIGEKZHJpdmVyIGFuZCBzdG9wIGNvbXBsYWluaW5nPwoKMjAwOC8xMC82
+IEJyZW5kYW4gUGlrZSA8c3Bpa2VAc3B5a2VzLm5ldD46Cj4gTm9ib2R5IHdpdGgga25vdy1ob3cg
+aGFzIGJvdGhlcmVkIHRvIHBvcnQgdGhlIHBhcnRpYWxseSB3b3JraW5nIG9zczQKPiBkcml2ZXIg
+dG8gQUxTQSwgc28gaW50ZXJlc3QgaXMgcXVpdGUgbG93LgoKCgotLSAKVmVkcmFuIE1pbGV0acSH
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
