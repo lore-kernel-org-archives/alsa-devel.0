@@ -1,26 +1,15 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH]ASoC: Create a common directory for AVR32
-	and ARM9 atmel boards.
-Date: Mon, 6 Oct 2008 15:27:18 +0100
-Message-ID: <20081006142716.GB19835@sirena.org.uk>
-References: <20081002181211.GA3345@sirena.org.uk> <48E613BB.6090003@atmel.com>
-	<20081003131411.GC26035@sirena.org.uk> <48E62A89.8070803@atmel.com>
-	<20081003143523.GE26035@sirena.org.uk>
-	<20081003164901.7ebddcd9@hskinnemo-gx745.norway.atmel.com>
-	<48E63158.9020708@atmel.com>
-	<20081003170613.65c5ffd3@hskinnemo-gx745.norway.atmel.com>
-	<48E6365A.6060803@atmel.com>
-	<20081006161738.2059f19d@hskinnemo-gx745.norway.atmel.com>
+From: Ronald Horn <Ronald.Horn@web.de>
+Subject: Re: ICH9 Sound
+Date: Mon, 06 Oct 2008 18:38:07 +0200
+Message-ID: <1952499267@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="=-------------12233110882565906937"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2D8A924468
+Received: from fmmailgate06.web.de (fmmailgate06.web.de [217.72.192.247])
+	by alsa0.perex.cz (Postfix) with ESMTP id E7977244AF
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Oct 2008 16:27:32 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20081006161738.2059f19d@hskinnemo-gx745.norway.atmel.com>
+	Mon,  6 Oct 2008 18:38:21 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,21 +19,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-Cc: Sedji Gaouaou <sedji.gaouaou@atmel.com>, alsa-devel@alsa-project.org, Geoffrey Wossum <geoffrey@pager.net>, Frank Mandarino <fmandarino@endrelia.com>
+To: alsa-devel@alsa-project.org, suse@easylinux.de
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 06, 2008 at 04:17:38PM +0200, Haavard Skinnemoen wrote:
-> Sedji Gaouaou <sedji.gaouaou@atmel.com> wrote:
+This is a multi-part message in MIME format.
 
-> > But you will still need to apply the patch where I removed all at32 and 
-> > at91 directories([alsa-devel] [PATCH]ASoC: Remove at91 and at32 
-> > directories).
+--=-------------12233110882565906937
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 
-> Can you please just send me the whole bunch so that I know what we're
-> talking about?
+Hello,
 
-The removal patch doesn't really need to be posted at all while we're
-reviewing stuff (and it's rather too large for alsa-devel anyway).  The
-other patches that Sedji is posting update the Makefile and Kconfig to
-stop referencing the existing at91 and at32 directories anyway.
+all mixer levels are ok.
+I have several times checked all settings. I deinstalled and reinstalled the drivers in yast2, too.
+
+The phenomenon is that then a sound is playing, once an incredible noice is playing over the original sound.
+And this sound is stopping first about ten seconds after I closed the player. It's like an feedback loop.
+
+Greetings
+Ronald
+
+
+
+
+> ICH9 sound should be supported. And, as you see, your card is
+> detected. Perhaps the codec or that specific notebook isn't supported.
+> Are you sure mixer levels are adjusted properly?
+
+
+
+> > I'm using a HP Pavilion dv7-1045eg. The Problem is I have no sound,
+> > because there is no driver witch works.
+> > Here are some reports from my system:
+> > /
+> > lspci -nv/
+> > 00:1b.0 0403: 8086:293e (rev 03)
+> >        Subsystem: 103c:30f4
+> >        Flags: bus master, fast devsel, latency 0, IRQ 22
+> >        Memory at df300000 (64-bit, non-prefetchable) [size=16K]
+> >        Capabilities: [50] Power Management version 2
+> >        Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+
+> > Queue=0/0 Enable+
+> >        Capabilities: [70] Express Root Complex Integrated Endpoint, MSI 00
+> >        Capabilities: [100] Virtual Channel <?>
+> >        Capabilities: [130] Root Complex Link <?>
+> >        Kernel driver in use: HDA Intel
+> >        Kernel modules: snd-hda-intel
+> >
+> > /
+> > cat /proc/asound/cards/
+> >  0 [Intel      ]: HDA-Intel - HDA Intel
+> >                      HDA Intel at 0xdf300000 irq 22
+> >
+> >
+> > /head -n 1 /proc/asound/card0/codec*/
+> > ==> /proc/asound/card0/codec#0 <==
+> > Codec: IDT 92HD71B7X
+> > ==> /proc/asound/card0/codec#2 <==
+> > Codec: Generic 10de ID 6
+> >
+> >
+> > I'm using openSuse 11.0 with Kernel 2.6.25.16-0.1-pae.
+> > Maybe your project could develop some drivers.
+
+
+
+
+--=-------------12233110882565906937
+Content-Type: text/x-vCard;
+ name="Ronald Horn.vcf"
+Content-Disposition: attachment;
+ filename="Ronald Horn.vcf"
+Content-Transfer-Encoding: 7bit
+
+BEGIN:VCARD
+VERSION:2.1
+N:Horn;Ronald;;;
+FN:Ronald Horn
+EMAIL;INTERNET:ronald.horn@web.de
+END:VCARD
+--=-------------12233110882565906937
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--=-------------12233110882565906937--
