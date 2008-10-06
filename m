@@ -1,30 +1,23 @@
-From: Ctirad Fertr <c.fertr@gmail.com>
-Subject: Re: Will there ever be emu20k1/x-fi support in Alsa?
-Date: Mon, 6 Oct 2008 08:39:39 +0200
-Message-ID: <200810060839.39256.c.fertr@gmail.com>
-References: <1223248483.19560.9.camel@home> <20081005215927.3a907b59@darius>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [patch] bugfix: SOUND: SOC: OMAP: Add support
+	for	Gumstix Overo
+Date: Mon, 6 Oct 2008 09:48:08 +0300
+Message-ID: <20081006064806.GE14042@atomide.com>
+References: <200810030811.33484.david-b@pacbell.net>
+	<20081003151846.GA9127@sirena.org.uk>
+	<200810030837.15131.david-b@pacbell.net>
+	<20081003174948.GA17906@sirena.org.uk>
+	<20081004071006.GC30190@muru.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from praha.adaptech.cz (r9bz245.net.upc.cz [78.102.77.245])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1D7F62443F
+Received: from mho-01-bos.mailhop.org (mho-01-bos.mailhop.org [63.208.196.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3531F24430
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Oct 2008 08:39:46 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by praha.adaptech.cz (Postfix) with ESMTP id 1901D5C878
-	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Oct 2008 08:40:13 +0200 (CEST)
-Received: from praha.adaptech.cz ([127.0.0.1])
-	by localhost (praha.adaptech.cz [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id CLGNbUfST2LT for <alsa-devel@alsa-project.org>;
-	Mon,  6 Oct 2008 08:40:07 +0200 (CEST)
-Received: from [192.168.0.12] (unknown [192.168.0.12])
-	by praha.adaptech.cz (Postfix) with ESMTP id 446725C5C4
-	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Oct 2008 08:40:07 +0200 (CEST)
-In-Reply-To: <20081005215927.3a907b59@darius>
+	Mon,  6 Oct 2008 08:45:16 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <20081004071006.GC30190@muru.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,25 +27,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: David Brownell <david-b@pacbell.net>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Steve Sakoman <steve@sakoman.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dne Monday 06 of October 2008 03:59:27 Brendan Pike napsal(a):
-> Yes, just pay James Courtier-Dutton a lot of money to write a driver. If
-> you're in the EMU or X-Fi camp, you should of moved on by now. Creative
-> are providing NDA'd specs to the wrong person at ALSA. (See EMU
-> 0202/0404, and now X-Fi support)
->
-> Don't bother contacting him either, it goes straight to /dev/null.
+* Tony Lindgren <tony@atomide.com> [081004 10:36]:
+> On Fri, Oct 03, 2008 at 06:49:48PM +0100, Mark Brown wrote:
+> > On Fri, Oct 03, 2008 at 08:37:14AM -0700, David Brownell wrote:
+> > 
+> > > So if the only place these are queued is the OMAP tree, and
+> > > there is no particular objection to the patch, then there'd
+> > > seem be no issue merging it to the OMAP tree and having it
+> > > be part of the initial merge-to-mainline...
+> > 
+> > Yes, please squash it in with the other changes when you submit the
+> > twl4030 dependant stuff.
 
-That was quite rough, but kind of true :(
-That was exactly the reason, that I gived up any efforts to improve E-MU PCI 
-driver.  
+I've pushed Dave's fix into linux-omap tree.
 
-> Bottom line, if one can't write a driver or don't have time, don't
-> bother to NDA specifications okay? It just slows things down.
-
-Definitely.
-
----
-Ctirad
+> Also, the McBSP changes needed for ASoC are on their way to the
+> mainline kernel.
+> 
+> Tony
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
