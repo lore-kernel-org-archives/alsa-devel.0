@@ -1,18 +1,30 @@
-From: pedro.lopez.cabanillas@gmail.com
-Subject: [PATCH] ALSA: snd-usb-audio: support for Edirol UA-4FX
-	device
-Date: Sat,  4 Oct 2008 16:32:58 +0200
-Message-ID: <12231307783118-git-send-email-pedro.lopez.cabanillas@gmail.com>
+From: Ctirad Fertr <c.fertr@gmail.com>
+Subject: Re: Will there ever be emu20k1/x-fi support in Alsa?
+Date: Mon, 6 Oct 2008 08:39:39 +0200
+Message-ID: <200810060839.39256.c.fertr@gmail.com>
+References: <1223248483.19560.9.camel@home> <20081005215927.3a907b59@darius>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.186])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8030E24458
+Received: from praha.adaptech.cz (r9bz245.net.upc.cz [78.102.77.245])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1D7F62443F
 	for <alsa-devel@alsa-project.org>;
-	Sat,  4 Oct 2008 16:33:02 +0200 (CEST)
-Received: by nf-out-0910.google.com with SMTP id e27so1172753nfd.32
-	for <alsa-devel@alsa-project.org>; Sat, 04 Oct 2008 07:33:01 -0700 (PDT)
+	Mon,  6 Oct 2008 08:39:46 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by praha.adaptech.cz (Postfix) with ESMTP id 1901D5C878
+	for <alsa-devel@alsa-project.org>;
+	Mon,  6 Oct 2008 08:40:13 +0200 (CEST)
+Received: from praha.adaptech.cz ([127.0.0.1])
+	by localhost (praha.adaptech.cz [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id CLGNbUfST2LT for <alsa-devel@alsa-project.org>;
+	Mon,  6 Oct 2008 08:40:07 +0200 (CEST)
+Received: from [192.168.0.12] (unknown [192.168.0.12])
+	by praha.adaptech.cz (Postfix) with ESMTP id 446725C5C4
+	for <alsa-devel@alsa-project.org>;
+	Mon,  6 Oct 2008 08:40:07 +0200 (CEST)
+In-Reply-To: <20081005215927.3a907b59@darius>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,196 +34,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: tiwai@suse.de, Pedro Lopez-Cabanillas <pedro.lopez.cabanillas@gmail.com>, alsa-devel@alsa-project.org, clemens@ladisch.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Pedro Lopez-Cabanillas <pedro.lopez.cabanillas@gmail.com>
+Dne Monday 06 of October 2008 03:59:27 Brendan Pike napsal(a):
+> Yes, just pay James Courtier-Dutton a lot of money to write a driver. If
+> you're in the EMU or X-Fi camp, you should of moved on by now. Creative
+> are providing NDA'd specs to the wrong person at ALSA. (See EMU
+> 0202/0404, and now X-Fi support)
+>
+> Don't bother contacting him either, it goes straight to /dev/null.
 
-Renamed the old quirk function for ua-700/ua-25 to become more
-generic, moving the MIDI interfaces to the quirk data header.
-Added a new quirk for the Edirol UA-4FX.
+That was quite rough, but kind of true :(
+That was exactly the reason, that I gived up any efforts to improve E-MU PCI 
+driver.  
 
-Signed-off-by: Pedro Lopez-Cabanillas <pedro.lopez.cabanillas@gmail.com>
+> Bottom line, if one can't write a driver or don't have time, don't
+> bother to NDA specifications okay? It just slows things down.
 
-diff --git a/sound/usb/usbaudio.c b/sound/usb/usbaudio.c
-index c5cf682..05c7849 100644
---- a/sound/usb/usbaudio.c
-+++ b/sound/usb/usbaudio.c
-@@ -2996,12 +2996,12 @@ static int create_standard_audio_quirk(struct snd_usb_audio *chip,
- }
- 
- /*
-- * Create a stream for an Edirol UA-700/UA-25 interface.  The only way
-- * to detect the sample rate is by looking at wMaxPacketSize.
-+ * Create a stream for an Edirol UA-700/UA-25/UA-4FX interface.  
-+ * The only way to detect the sample rate is by looking at wMaxPacketSize.
-  */
--static int create_ua700_ua25_quirk(struct snd_usb_audio *chip,
--				   struct usb_interface *iface,
--				   const struct snd_usb_audio_quirk *quirk)
-+static int create_uaxx_quirk(struct snd_usb_audio *chip,
-+			      struct usb_interface *iface,
-+			      const struct snd_usb_audio_quirk *quirk)
- {
- 	static const struct audioformat ua_format = {
- 		.format = SNDRV_PCM_FORMAT_S24_3LE,
-@@ -3016,37 +3016,12 @@ static int create_ua700_ua25_quirk(struct snd_usb_audio *chip,
- 	struct audioformat *fp;
- 	int stream, err;
- 
--	/* both PCM and MIDI interfaces have 2 altsettings */
--	if (iface->num_altsetting != 2)
-+	/* both PCM and MIDI interfaces have 2 or more altsettings */
-+	if (iface->num_altsetting < 2)
- 		return -ENXIO;
- 	alts = &iface->altsetting[1];
- 	altsd = get_iface_desc(alts);
- 
--	if (altsd->bNumEndpoints == 2) {
--		static const struct snd_usb_midi_endpoint_info ua700_ep = {
--			.out_cables = 0x0003,
--			.in_cables  = 0x0003
--		};
--		static const struct snd_usb_audio_quirk ua700_quirk = {
--			.type = QUIRK_MIDI_FIXED_ENDPOINT,
--			.data = &ua700_ep
--		};
--		static const struct snd_usb_midi_endpoint_info ua25_ep = {
--			.out_cables = 0x0001,
--			.in_cables  = 0x0001
--		};
--		static const struct snd_usb_audio_quirk ua25_quirk = {
--			.type = QUIRK_MIDI_FIXED_ENDPOINT,
--			.data = &ua25_ep
--		};
--		if (chip->usb_id == USB_ID(0x0582, 0x002b))
--			return snd_usb_create_midi_interface(chip, iface,
--							     &ua700_quirk);
--		else
--			return snd_usb_create_midi_interface(chip, iface,
--							     &ua25_quirk);
--	}
--
- 	if (altsd->bNumEndpoints != 1)
- 		return -ENXIO;
- 
-@@ -3376,9 +3351,9 @@ static int snd_usb_create_quirk(struct snd_usb_audio *chip,
- 		[QUIRK_MIDI_CME] = snd_usb_create_midi_interface,
- 		[QUIRK_AUDIO_STANDARD_INTERFACE] = create_standard_audio_quirk,
- 		[QUIRK_AUDIO_FIXED_ENDPOINT] = create_fixed_stream_quirk,
--		[QUIRK_AUDIO_EDIROL_UA700_UA25] = create_ua700_ua25_quirk,
- 		[QUIRK_AUDIO_EDIROL_UA1000] = create_ua1000_quirk,
- 		[QUIRK_AUDIO_EDIROL_UA101] = create_ua101_quirk,
-+		[QUIRK_AUDIO_EDIROL_UAXX] = create_uaxx_quirk
- 	};
- 
- 	if (quirk->type < QUIRK_TYPE_COUNT) {
-diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
-index f3ca77f..36e4f7a 100644
---- a/sound/usb/usbaudio.h
-+++ b/sound/usb/usbaudio.h
-@@ -159,9 +159,9 @@ enum quirk_type {
- 	QUIRK_MIDI_US122L,
- 	QUIRK_AUDIO_STANDARD_INTERFACE,
- 	QUIRK_AUDIO_FIXED_ENDPOINT,
--	QUIRK_AUDIO_EDIROL_UA700_UA25,
- 	QUIRK_AUDIO_EDIROL_UA1000,
- 	QUIRK_AUDIO_EDIROL_UA101,
-+	QUIRK_AUDIO_EDIROL_UAXX,
- 
- 	QUIRK_TYPE_COUNT
- };
-diff --git a/sound/usb/usbquirks.h b/sound/usb/usbquirks.h
-index 3f68359..ad7a318 100644
---- a/sound/usb/usbquirks.h
-+++ b/sound/usb/usbquirks.h
-@@ -855,15 +855,19 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 		.data = (const struct snd_usb_audio_quirk[]) {
- 			{
- 				.ifnum = 1,
--				.type = QUIRK_AUDIO_EDIROL_UA700_UA25
-+				.type = QUIRK_AUDIO_EDIROL_UAXX
- 			},
- 			{
- 				.ifnum = 2,
--				.type = QUIRK_AUDIO_EDIROL_UA700_UA25
-+				.type = QUIRK_AUDIO_EDIROL_UAXX
- 			},
- 			{
- 				.ifnum = 3,
--				.type = QUIRK_AUDIO_EDIROL_UA700_UA25
-+				.type = QUIRK_MIDI_FIXED_ENDPOINT,
-+				.data = & (const struct snd_usb_midi_endpoint_info) {
-+					.out_cables = 0x0003,
-+					.in_cables  = 0x0003
-+				}
- 			},
- 			{
- 				.ifnum = -1
-@@ -1197,15 +1201,19 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 		.data = (const struct snd_usb_audio_quirk[]) {
- 			{
- 				.ifnum = 0,
--				.type = QUIRK_AUDIO_EDIROL_UA700_UA25
-+				.type = QUIRK_AUDIO_EDIROL_UAXX
- 			},
- 			{
- 				.ifnum = 1,
--				.type = QUIRK_AUDIO_EDIROL_UA700_UA25
-+				.type = QUIRK_AUDIO_EDIROL_UAXX
- 			},
- 			{
- 				.ifnum = 2,
--				.type = QUIRK_AUDIO_EDIROL_UA700_UA25
-+				.type = QUIRK_MIDI_FIXED_ENDPOINT,
-+				.data = & (const struct snd_usb_midi_endpoint_info) {
-+					.out_cables = 0x0001,
-+					.in_cables  = 0x0001
-+				}
- 			},
- 			{
- 				.ifnum = -1
-@@ -1338,6 +1346,40 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 		}
- 	}
- },
-+{
-+	/*
-+	 * This quirk is for the "Advanced Driver" mode. If off, the UA-4FX
-+	 * is standard compliant, but has only 16-bit PCM and no MIDI.
-+	 */
-+	USB_DEVICE(0x0582, 0x00a3),
-+	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-+		.vendor_name = "EDIROL",
-+		.product_name = "UA-4FX",
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = (const struct snd_usb_audio_quirk[]) {
-+			{
-+				.ifnum = 0,
-+				.type = QUIRK_AUDIO_EDIROL_UAXX
-+			},
-+			{
-+				.ifnum = 1,
-+				.type = QUIRK_AUDIO_EDIROL_UAXX
-+			},
-+			{
-+				.ifnum = 2,
-+				.type = QUIRK_MIDI_FIXED_ENDPOINT,
-+				.data = & (const struct snd_usb_midi_endpoint_info) {
-+					.out_cables = 0x0001,
-+					.in_cables  = 0x0001
-+				}
-+			},
-+			{
-+				.ifnum = -1
-+			}
-+		}
-+	}
-+},
- 	/* TODO: add Edirol MD-P1 support */
- {
- 	USB_DEVICE(0x582, 0x00a6),
--- 
-1.5.2.4
+Definitely.
+
+---
+Ctirad
