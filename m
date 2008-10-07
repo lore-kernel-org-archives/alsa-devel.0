@@ -1,21 +1,21 @@
-From: Richard Zhao <linuxzsc@gmail.com>
-Subject: [PATCH 1/1] ALSA: ASoC: add new param mux to
-	dapm_mux_update_power
-Date: Tue,  7 Oct 2008 08:05:20 +0800
-Message-ID: <1223337920-8225-1-git-send-email-linuxzsc@gmail.com>
+From: "Jon Smirl" <jonsmirl@gmail.com>
+Subject: Re: size of snd_hda_intel
+Date: Mon, 6 Oct 2008 21:29:32 -0400
+Message-ID: <9e4733910810061829h3f607e99s73857005e7ace514@mail.gmail.com>
+References: <9e4733910810051519k427dce6aobca50815bfac30e2@mail.gmail.com>
+	<fd3eb9bf0810060128y3af886e0m1ad2c39b0f9c78f1@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f17.google.com (mail-gx0-f17.google.com
-	[209.85.217.17])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1658C1037EE
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.146])
+	by alsa0.perex.cz (Postfix) with ESMTP id B10891037F1
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Oct 2008 02:05:38 +0200 (CEST)
-Received: by gxk10 with SMTP id 10so6248289gxk.8
-	for <alsa-devel@alsa-project.org>; Mon, 06 Oct 2008 17:05:25 -0700 (PDT)
-In-Reply-To: <>
-References: <>
+	Tue,  7 Oct 2008 03:29:46 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 9so652241qwj.56
+	for <alsa-devel@alsa-project.org>; Mon, 06 Oct 2008 18:29:32 -0700 (PDT)
+In-Reply-To: <fd3eb9bf0810060128y3af886e0m1ad2c39b0f9c78f1@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,55 +25,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, broonie@sirena.org.uk, Richard Zhao <linuxzsc@gmail.com>
+To: =?ISO-8859-2?Q?Vedran_Mileti=E6?= <rivanvx@gmail.com>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Function dapm_mux_update_power needs enum index mux and register mask value val
-as parameters, but it only has a parameter val, and uses it as both val and mux.
-snd_soc_test_bits(widget->codec, e->reg, mask, val) val is register mask here,
-e->texts[val] but val should be enum index mux here.
+On Mon, Oct 6, 2008 at 4:28 AM, Vedran Mileti=E6 <rivanvx@gmail.com> wrote:
+> I believe this isn't that easy. Here is why: iff you look at the
+> ice1712/ice1724 driver, it doesn't detect dependencies when modprobed;
+> that is, it loads, for example, ac97 codec and ak4xxx driver even if
+> the card doesn't have any of that. Is it even possible to detect
+> dependencies after modprobing?
 
-This patch adds a new param mux to fix it.
+The base intel hda module would include code to figure out which codec
+is attached. It can then use loadmodule() to dynamically load it. ASOC
+use the separate codec driver model.
 
-Signed-off-by: Richard Zhao <linuxzsc@gmail.com>
+It would look like a "hda" bus in sysfs with the "codec" module sitting on =
+it.
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index c016426..9ca9c08 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -693,7 +693,7 @@ static void dbg_dump_dapm(struct snd_soc_codec* codec, const char *action)
- /* test and update the power status of a mux widget */
- static int dapm_mux_update_power(struct snd_soc_dapm_widget *widget,
- 				 struct snd_kcontrol *kcontrol, int mask,
--				 int val, struct soc_enum* e)
-+				 int mux, int val, struct soc_enum *e)
- {
- 	struct snd_soc_dapm_path *path;
- 	int found = 0;
-@@ -709,12 +709,12 @@ static int dapm_mux_update_power(struct snd_soc_dapm_widget *widget,
- 		if (path->kcontrol != kcontrol)
- 			continue;
- 
--		if (!path->name || ! e->texts[val])
-+		if (!path->name || !e->texts[mux])
- 			continue;
- 
- 		found = 1;
- 		/* we now need to match the string in the enum to the path */
--		if (!(strcmp(path->name, e->texts[val])))
-+		if (!(strcmp(path->name, e->texts[mux])))
- 			path->connect = 1; /* new connection */
- 		else
- 			path->connect = 0; /* old connection must be powered down */
-@@ -1291,7 +1291,7 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
- 
- 	mutex_lock(&widget->codec->mutex);
- 	widget->value = val;
--	dapm_mux_update_power(widget, kcontrol, mask, mux, e);
-+	dapm_mux_update_power(widget, kcontrol, mask, mux, val, e);
- 	if (widget->event) {
- 		if (widget->event_flags & SND_SOC_DAPM_PRE_REG) {
- 			ret = widget->event(widget,
--- 
-1.5.4.3
+>
+> 2008/10/6 Jon Smirl <jonsmirl@gmail.com>:
+>>>ismod
+>> snd_hda_intel         435,772
+>>
+>> 435,772 bytes seems awfully large for an audio driver. The large size
+>> seems to be due to having support for multiple codecs in the driver.
+>> Could a generic  hda driver load the correct codec dynamically instead
+>> of building them all in statically?
+>>
+>> I have a Realtek codec.
+>>
+>> --
+>> Jon Smirl
+>> jonsmirl@gmail.com
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+>
+>
+>
+> --
+> Vedran Mileti=E6
+>
+
+
+
+-- =
+
+Jon Smirl
+jonsmirl@gmail.com
