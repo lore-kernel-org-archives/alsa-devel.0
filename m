@@ -1,23 +1,25 @@
 From: "Klaas De Craemer" <klaasdc@gmail.com>
 Subject: Re: [PATCH] Sigmatel stac92hd71b7 low HP volume
-Date: Tue, 7 Oct 2008 11:46:58 +0200
-Message-ID: <f59e60020810070246g43b50378lfc14d337d5b13d30@mail.gmail.com>
+Date: Wed, 8 Oct 2008 00:41:27 +0200
+Message-ID: <f59e60020810071541p1dfbfd8epb669cf2c0388e05@mail.gmail.com>
 References: <200810052210.46360.klaasdc@gmail.com>
 	<s5h4p3qgiri.wl%tiwai@suse.de> <200810061248.43643.klaasdc@gmail.com>
 	<s5hskraf0ti.wl%tiwai@suse.de>
 	<f59e60020810061010m39b83fb4qb05f8f008d46adf3@mail.gmail.com>
 	<s5hd4idufg3.wl%tiwai@suse.de>
+	<f59e60020810070246g43b50378lfc14d337d5b13d30@mail.gmail.com>
+	<s5habdgn2f6.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7B414103808
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id B68E624368
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Oct 2008 11:47:11 +0200 (CEST)
-Received: by fk-out-0910.google.com with SMTP id b27so4453087fka.0
-	for <alsa-devel@alsa-project.org>; Tue, 07 Oct 2008 02:46:58 -0700 (PDT)
-In-Reply-To: <s5hd4idufg3.wl%tiwai@suse.de>
+	Wed,  8 Oct 2008 00:41:41 +0200 (CEST)
+Received: by fk-out-0910.google.com with SMTP id b27so4752121fka.0
+	for <alsa-devel@alsa-project.org>; Tue, 07 Oct 2008 15:41:28 -0700 (PDT)
+In-Reply-To: <s5habdgn2f6.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,358 +34,117 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 7, 2008 at 7:44 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Mon, 6 Oct 2008 19:10:14 +0200,
+On Tue, Oct 7, 2008 at 12:07 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Tue, 7 Oct 2008 11:46:58 +0200,
 > Klaas De Craemer wrote:
 >>
->> On Mon, Oct 6, 2008 at 12:57 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> > [please don't drop Cc to alsa-devel ML]
->> >
->> > At Mon, 6 Oct 2008 12:48:43 +0200,
+>> On Tue, Oct 7, 2008 at 7:44 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > At Mon, 6 Oct 2008 19:10:14 +0200,
 >> > Klaas De Craemer wrote:
 >> >>
->> >> Hello,
+>> >> On Mon, Oct 6, 2008 at 12:57 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> >> > [please don't drop Cc to alsa-devel ML]
+>> >> >
+>> >> > At Mon, 6 Oct 2008 12:48:43 +0200,
+>> >> > Klaas De Craemer wrote:
+>> >> >>
+>> >> >> Hello,
+>> >> >>
+>> >> >> I'm sure that the audioquality will degrade somewhat because of the additional amplification,
+>> >> >> but before, the HP-out was not usable at all. I had to use an external ampli just to use my
+>> >> >> headphones, even after turning all volume sliders to 100%. Then again, when removing the HP,
+>> >> >> the volume though the internal speakers was way too loud...
+>> >> >>
+>> >> >> I'm not sure what you mean with the output pin and headphone control, but I have uploaded the
+>> >> >> output of the codegraph tool before and after my modification here:
+>> >> >> http://users.vtk.be/~s0159120/codec_original.svg
+>> >> >> http://users.vtk.be/~s0159120/codec_final.svg
+>> >> >>
+>> >> >> Below is the output of alsa-info with the patched module
+>> >> >> Klaas
+>> >> >
+>> >> > Thanks.
+>> >> >
+>> >> > So, if I understand correctly, when the pin 0x0a is connected directly
+>> >> > from DAC0 0x10, the output level is too low even if you set the all
+>> >> > volumes maximal.
 >> >>
->> >> I'm sure that the audioquality will degrade somewhat because of the additional amplification,
->> >> but before, the HP-out was not usable at all. I had to use an external ampli just to use my
->> >> headphones, even after turning all volume sliders to 100%. Then again, when removing the HP,
->> >> the volume though the internal speakers was way too loud...
+>> >> That is correct.
 >> >>
->> >> I'm not sure what you mean with the output pin and headphone control, but I have uploaded the
->> >> output of the codegraph tool before and after my modification here:
->> >> http://users.vtk.be/~s0159120/codec_original.svg
->> >> http://users.vtk.be/~s0159120/codec_final.svg
 >> >>
->> >> Below is the output of alsa-info with the patched module
->> >> Klaas
+>> >> > In the alsa-info.sh output, I see the following:
+>> >> >> Node 0x10 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
+>> >> >>   Amp-Out caps: N/A
+>> >> >>   Amp-Out vals:  [0x5e 0x5e]
+>> >> >
+>> >> > which means that you decrease the output level intentionally.
+>> >> > Is the HP output still too low even if you set to the higher value?
+>> >>
+>> >>
+>> >> No, after the patch I don't need 100% anymore.
 >> >
->> > Thanks.
+>> > Of course not :)
 >> >
->> > So, if I understand correctly, when the pin 0x0a is connected directly
->> > from DAC0 0x10, the output level is too low even if you set the all
->> > volumes maximal.
->>
->> That is correct.
->>
->>
->> > In the alsa-info.sh output, I see the following:
->> >> Node 0x10 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
->> >>   Amp-Out caps: N/A
->> >>   Amp-Out vals:  [0x5e 0x5e]
+>> >> The HP output is fine
+>> >> now, and I can tune it up and down a bit. Before using the mixer-amp,
+>> >> going from 90 to 100 resulted in going from no sound to little sound.
+>> >> Now the range is more useful.
 >> >
->> > which means that you decrease the output level intentionally.
->> > Is the HP output still too low even if you set to the higher value?
+>> > Could you check the raw value of the widget 0x10 without your patch?
+>> > The percent doesn't tell you exactly what you changed.
+>> >
+>> >
+>> > Takashi
+>> >
 >>
->>
->> No, after the patch I don't need 100% anymore.
+>> I have pasted the output of /proc/asound/card0/codec#0 below, without
+>> the patch. However, I'm not sure what you're exactly looking for? I'm
+>> quite new to all this stuff , but I'd be more than happy to help out
+>> more, so feel free to ask anything.
 >
-> Of course not :)
+> The mixer volume level in percentage might be different from the raw
+> value of the NID 0x10 (or 0x11?) amps because of volume-knob stuff.
+> I just wanted to make sure that a really high value is set to the
+> amp.
 >
->> The HP output is fine
->> now, and I can tune it up and down a bit. Before using the mixer-amp,
->> going from 90 to 100 resulted in going from no sound to little sound.
->> Now the range is more useful.
->
-> Could you check the raw value of the widget 0x10 without your patch?
-> The percent doesn't tell you exactly what you changed.
->
->
-> Takashi
->
+> OTOH, if it happens only with the headphone (I suppose the loud enough
+> output from the speaker after unplugging the headphone), this isn't a
+> matter of the DAC amp value.
 
-I have pasted the output of /proc/asound/card0/codec#0 below, without
-the patch. However, I'm not sure what you're exactly looking for? I'm
-quite new to all this stuff , but I'd be more than happy to help out
-more, so feel free to ask anything.
 
-Also related, in windows (yeah i know), using the IDT drivers, the
-volume is extremely high  :) So I went searching in the driver files
-and it seems that the widget configuration is specified there in an
-ini file. As far as I can see, the mixer is not configured, but an
-external amp is mentioned. Could it be that the external amp of 0x0A
-is not used in snd-hda-intel? Or maybe it refers to the "+3dBV output
-option on headphone capable ports" as mentioned in the datasheet...
-But I'm just guessing now.
+But, with this information, can something be done about it in future
+releases? Maybe a model-option?
+
+I also checked the output by connecting earplugs and by using the jack
+as lineout to my hifi, but it is again quite low-volume. So that rules
+out a "bad" headphone.
 
 Klaas
 
---------------- 92HDM4-1.INI  ---------------
-[HKLM\SOFTWARE\IDT\Config\EventExpressions\JackPresensea]
-110="if(JackState(10) == 1 || JackState(15) ==
-1,(BypassSystemEq(1)),(BypassSystemEq(0)))"
-120="if(JackState(10) == 1 || JackState(15) ==
-1,(BypassSystemComp(1)),(BypassSystemComp(0)))"
-[HKLM\SOFTWARE\IDT\Config\EventExpressions\JackPresensef]
-110="if(JackState(10) == 1 || JackState(15) ==
-1,(BypassSystemEq(1)),(BypassSystemEq(0)))"
-120="if(JackState(10) == 1 || JackState(15) ==
-1,(BypassSystemComp(1)),(BypassSystemComp(0)))"
-[HKR]
-CodecName = "92HD71B8x"
-[HKR\Settings]
-InitVerbs                            = hex:
-TraceFlags                           = dword: 0x89B3
-Biostype1  = hex: 1
-EnablePcBeepAtCd                     = hex: 1
-AllowHpOnNonSupportingPin            = hex: 0
-CPL_SaveExtraPower                   = hex: 1
-CPL_MaySwitchExtAmpPowerState        = hex: 1
-CPL_SecondsAfter                     = dword: 30
-EnableDLCDWA                         = hex: 1
-PmEnabledWidget				= hex: 0A,0B,0C,0D,0E,0F
-ShareSystemMicJackAsLine = hex: 1
-AfgPowerStatePolicy = hex: 2
-CPL_ControlAfgPowerState = hex: 0x1
-KeepAnalogLoopbackAlwaysOn = hex: 0
-DelayInMsAfterPortDisabling = dword: 0x40
-SAEN = dword: 0x08
-[HKR\Settings\pin]
-[HKR\Settings\Pin\0A]
-CfgDflt = dword: 0x0421101F
-Action = hex: 81,0D, 81,0F
-ExtAmpCtrl = hex: 00,05,02
-[HKR\Settings\Pin\0B]
-[HKR\Settings\Pin\0C]
-CfgDflt = dword: 0x400003F0
-[HKR\Settings\Pin\0D]
-CfgDflt = dword: 0x90170010
-[HKR\Settings\Pin\0E]
-[HKR\Settings\Pin\0F]
-CfgDflt = dword: 0x2301401F
-Action = hex: 81,0D
-[HKR\Settings\Pin\14]
-CfgDflt = dword: 0x400003F0
-[HKR\Settings\Pin\18]
-[HKR\Settings\Pin\19]
-CfgDflt = dword: 0x400003F0
-[HKR\Settings\Pin\1E]
-[HKR\Settings\Pin\1F]
-CfgDflt = dword: 0x400000F0
-[HKR\Settings\Pin\20]
-CfgDflt = dword: 0x400000F0
-[HKR\Settings\Pin\27]
-CfgDflt = dword: 0x90300022
-[HKR\Settings\GPIO]
-00                    = hex: 82
+ps: it also seems like most of this conversation is not listed in the
+alsa-devel list?
 
---------------- codecoutput_nonpatched ---------------
-Codec: IDT 92HD71B7X
-Address: 0
-Vendor Id: 0x111d76b2
-Subsystem Id: 0x1028024f
-Revision Id: 0x100302
-No Modem Function Group found
-Default PCM:
-    rates [0x7e0]: 44100 48000 88200 96000 176400 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Default Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-Default Amp-Out caps: ofs=0x7f, nsteps=0x7f, stepsize=0x02, mute=1
-GPIO: io=8, o=0, i=0, unsolicited=1, wake=1
-  IO[0]: enable=1, dir=1, wake=0, sticky=0, data=1
-  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0
-  IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0
-  IO[3]: enable=0, dir=0, wake=0, sticky=0, data=0
-  IO[4]: enable=0, dir=0, wake=0, sticky=0, data=0
-  IO[5]: enable=0, dir=0, wake=0, sticky=0, data=0
-  IO[6]: enable=0, dir=0, wake=0, sticky=0, data=0
-  IO[7]: enable=0, dir=0, wake=0, sticky=0, data=0
-Node 0x0a [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x081c: OUT HP Detect
-  Pin Default 0x0421101f: [Jack] HP Out at Ext Right
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x1, Sequence = 0xf
-  Pin-ctls: 0xc0: OUT HP
-  Unsolicited: tag=30, enabled=1
-  Connection: 3
-     0x10 0x11* 0x17
-Node 0x0b [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x081724: IN Detect
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x04a11221: [Jack] Mic at Ext Right
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x2, Sequence = 0x1
-  Pin-ctls: 0x24: IN VREF_80
-  Unsolicited: tag=00, enabled=0
-Node 0x0c [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x081724: IN Detect
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x40f000f0: [N/A] Other at Ext N/A
-    Conn = Unknown, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x0
-  Pin-ctls: 0x00: VREF_HIZ
-  Unsolicited: tag=00, enabled=0
-Node 0x0d [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x0814: OUT Detect
-  Pin Default 0x90170110: [Fixed] Speaker at Int N/A
-    Conn = Analog, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Unsolicited: tag=00, enabled=0
-  Connection: 3
-     0x10 0x11 0x17*
-Node 0x0e [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x081724: IN Detect
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x23a1902e: [Jack] Mic at Sep Left
-    Conn = 1/8, Color = Pink
-    DefAssociation = 0x2, Sequence = 0xe
-  Pin-ctls: 0x24: IN VREF_80
-  Unsolicited: tag=00, enabled=0
-Node 0x0f [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x0814: OUT Detect
-  Pin Default 0x23014250: [Jack] Line Out at Sep Left
-    Conn = 1/8, Color = Green
-    DefAssociation = 0x5, Sequence = 0x0
-  Pin-ctls: 0x00:
-  Unsolicited: tag=00, enabled=0
-  Connection: 3
-     0x10 0x11 0x17*
-Node 0x10 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x72 0x72]
-  Converter: stream=5, channel=0
-  Power: setting=D0, actual=D0
-  Delay: 13 samples
-Node 0x11 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x65 0x65]
-  Converter: stream=5, channel=0
-  Power: setting=D0, actual=D0
-  Delay: 13 samples
-Node 0x12 [Audio Input] wcaps 0x1d0541: Stereo
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  Power: setting=D0, actual=D0
-  Delay: 13 samples
-  Connection: 1
-     0x1c
-  Processing caps: benign=0, ncoeff=0
-Node 0x13 [Audio Input] wcaps 0x1d0541: Stereo
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  Power: setting=D0, actual=D0
-  Delay: 13 samples
-  Connection: 1
-     0x1d
-  Processing caps: benign=0, ncoeff=0
-Node 0x14 [Pin Complex] wcaps 0x400100: Mono
-  Pincap 0x0810: OUT
-  Pin Default 0x40f000f0: [N/A] Other at Ext N/A
-    Conn = Unknown, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x0
-  Pin-ctls: 0x00:
-  Connection: 1
-     0x16
-Node 0x15 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x10* 0x11 0x17
-Node 0x16 [Audio Mixer] wcaps 0x200100: Mono
-  Connection: 1
-     0x15
-Node 0x17 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x1f 0x1f] [0x97 0x97] [0x97 0x97] [0x97 0x97] [0x97 0x97]
-  Connection: 5
-     0x10 0x11 0x27 0x1a 0x1b
-Node 0x18 [Pin Complex] wcaps 0x40000d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0820: IN
-  Pin Default 0x90a000f0: [Fixed] Mic at Int N/A
-    Conn = Unknown, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x0
-  Pin-ctls: 0x20: IN
-Node 0x19 [Pin Complex] wcaps 0x40000d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0820: IN
-  Pin Default 0x40f000f0: [N/A] Other at Ext N/A
-    Conn = Unknown, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x0
-  Pin-ctls: 0x20: IN
-Node 0x1a [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x01 0x01]
-  Connection: 3
-     0x0b* 0x0c 0x0e
-Node 0x1b [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 3
-     0x0b* 0x0c 0x0e
-Node 0x1c [Audio Selector] wcaps 0x30090d: Stereo Amp-Out R/L
-  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 4
-     0x1a* 0x17 0x18 0x19
-Node 0x1d [Audio Selector] wcaps 0x30090d: Stereo Amp-Out R/L
-  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Connection: 4
-     0x1b* 0x17 0x18 0x19
-Node 0x1e [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x4f0000f0: [N/A] Line Out at Ext UNKNOWN
-    Conn = Unknown, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x0
-  Pin-ctls: 0x00:
-  Connection: 1
-     0x24
-Node 0x1f [Pin Complex] wcaps 0x400701: Stereo Digital
-  Pincap 0x0810010: OUT EAPD
-  EAPD 0x0:
-  Pin Default 0x40f000f6: [N/A] Other at Ext N/A
-    Conn = Unknown, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x6
-  Pin-ctls: 0x00:
-  Power: setting=D0, actual=D0
-  Connection: 2
-     0x24* 0x25
-Node 0x20 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x40f000f7: [N/A] Other at Ext N/A
-    Conn = Unknown, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x7
-  Pin-ctls: 0x00:
-  Connection: 1
-     0x25
-Node 0x21 [Audio Output] wcaps 0x40211: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x7e0]: 44100 48000 88200 96000 176400 192000
-    bits [0xe]: 16 20 24
-    formats [0x5]: PCM AC3
-  Delay: 4 samples
-Node 0x22 [Audio Output] wcaps 0x40211: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x7e0]: 44100 48000 88200 96000 176400 192000
-    bits [0xe]: 16 20 24
-    formats [0x5]: PCM AC3
-  Delay: 4 samples
-Node 0x23 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x24 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x21* 0x1c 0x1d
-Node 0x25 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x22* 0x1c 0x1d
-Node 0x26 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
-  Amp-Out caps: ofs=0x03, nsteps=0x03, stepsize=0x17, mute=1
-  Amp-Out vals:  [0x00]
-Node 0x27 [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x40f000f0: [N/A] Other at Ext N/A
-    Conn = Unknown, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x0
-  Pin-ctls: 0x00:
-Node 0x28 [Volume Knob Widget] wcaps 0x600000: Mono
-  Volume-Knob: delta=1, steps=127, direct=1, val=127
-  Connection: 2
-     0x10* 0x11
+>> Also related, in windows (yeah i know), using the IDT drivers, the
+>> volume is extremely high  :) So I went searching in the driver files
+>> and it seems that the widget configuration is specified there in an
+>> ini file. As far as I can see, the mixer is not configured, but an
+>> external amp is mentioned. Could it be that the external amp of 0x0A
+>> is not used in snd-hda-intel? Or maybe it refers to the "+3dBV output
+>> option on headphone capable ports" as mentioned in the datasheet...
+>
+> This seems to be the normal pin control bit 7 to me.  And we already
+> set it.
+>
+> BTW, you can use hda-verb program to change the verb dynamically.
+> Build the driver with CONFIG_SND_HDA_HWDEP=y, and you'll have the
+> access to hwdep device, e.g. /dev/snd/hwC0D0.  The device number
+> depends on the codec slot.
+>    ftp://ftp.suse.com/pub/people/tiwai/misc/hda-verb-0.2.tar.bz2
+>
+>
+> thanks,
+>
+> Takashi
+>
+>> Klaas
+>>
