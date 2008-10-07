@@ -1,7 +1,8 @@
 From: Wu Fengguang <wfg@linux.intel.com>
-Subject: [PATCH] hda: comment typo fix
-Date: Tue, 7 Oct 2008 14:17:53 +0800
-Message-ID: <1223360275.282524.8948@de>
+Subject: [PATCH] snd-core: enlarge snd_card.components for up
+	to 4 codecs
+Date: Tue, 7 Oct 2008 14:56:06 +0800
+Message-ID: <1223362567.716898.9499@de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,21 +21,34 @@ To: patch@alsa-project.org
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-fix a typo in comment for process_unsol_events().
+Enlarge snd_card.components[80] to 128 bytes, with space for 4 codecs.
+The previous size 80 cannot support HP 2230s which has 3 codecs.
 
-Signed-off-by: Wu Fengguang<wfg@linux.intel.com>
+Signed-off-by: Wu Fengguang <wfg@linux.intel.com>
 ---
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index c742e10..7717a92 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -314,7 +314,7 @@ int snd_hda_queue_unsol_event(struct hda_bus *bus, u32 res, u32 res_ex)
- }
+diff --git a/include/sound/asound.h b/include/sound/asound.h
+index ca2f358..b3801b0 100644
+--- a/include/sound/asound.h
++++ b/include/sound/asound.h
+@@ -708,7 +708,7 @@ struct snd_ctl_card_info {
+ 	unsigned char longname[80];	/* name + info text about soundcard */
+ 	unsigned char reserved_[16];	/* reserved for future (was ID of mixer) */
+ 	unsigned char mixername[80];	/* visual mixer identification */
+-	unsigned char components[80];	/* card components / fine identification, delimited with one space (AC97 etc..) */
++	unsigned char components[128];	/* card components / fine identification, delimited with one space (AC97 etc..) */
+ 	unsigned char reserved[48];	/* reserved for future */
+ };
  
- /*
-- * process queueud unsolicited events
-+ * process queued unsolicited events
-  */
- static void process_unsol_events(struct work_struct *work)
- {
+diff --git a/include/sound/core.h b/include/sound/core.h
+index f52ab6f..dcbc424 100644
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -116,7 +116,7 @@ struct snd_card {
+ 	char shortname[32];		/* short name of this soundcard */
+ 	char longname[80];		/* name of this soundcard */
+ 	char mixername[80];		/* mixer name */
+-	char components[80];		/* card components delimited with
++	char components[128];		/* card components delimited with
+ 								space */
+ 	struct module *module;		/* top-level module */
