@@ -1,20 +1,24 @@
-From: Wu Fengguang <wfg@linux.intel.com>
-Subject: Re: [PATCH] snd-core: enlarge snd_card.components for
-	up to 4	codecs
-Date: Tue, 7 Oct 2008 17:11:18 +0800
-Message-ID: <1223370680.794179.10698@de>
-References: <1223362567.716898.9499@de> <s5htzboomf0.wl%tiwai@suse.de>
-	<1223368470.894420.10038@de> <s5hljx0n5jp.wl%tiwai@suse.de>
+From: "Klaas De Craemer" <klaasdc@gmail.com>
+Subject: Re: [PATCH] Sigmatel stac92hd71b7 low HP volume
+Date: Tue, 7 Oct 2008 11:46:58 +0200
+Message-ID: <f59e60020810070246g43b50378lfc14d337d5b13d30@mail.gmail.com>
+References: <200810052210.46360.klaasdc@gmail.com>
+	<s5h4p3qgiri.wl%tiwai@suse.de> <200810061248.43643.klaasdc@gmail.com>
+	<s5hskraf0ti.wl%tiwai@suse.de>
+	<f59e60020810061010m39b83fb4qb05f8f008d46adf3@mail.gmail.com>
+	<s5hd4idufg3.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from azsmga102.ch.intel.com (mga12.intel.com [143.182.124.36])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9C42010380F
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.191])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7B414103808
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Oct 2008 11:14:58 +0200 (CEST)
+	Tue,  7 Oct 2008 11:47:11 +0200 (CEST)
+Received: by fk-out-0910.google.com with SMTP id b27so4453087fka.0
+	for <alsa-devel@alsa-project.org>; Tue, 07 Oct 2008 02:46:58 -0700 (PDT)
+In-Reply-To: <s5hd4idufg3.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <s5hljx0n5jp.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,94 +32,358 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 07, 2008 at 11:00:26AM +0200, Takashi Iwai wrote:
-> At Tue, 7 Oct 2008 16:34:29 +0800,
-> > FYI, this is the debug patch and kernel message(lookout the first line) on HP 2230s:
-> > 
-> > diff --git a/sound/core/init.c b/sound/core/init.c
-> > index 8af467d..704d7e8 100644
-> > --- a/sound/core/init.c
-> > +++ b/sound/core/init.c
-> > @@ -706,6 +706,8 @@ int snd_component_add(struct snd_card *card, const char *component)
-> >  			return 1;
-> >  	}
-> >  	if (strlen(card->components) + 1 + len + 1 > sizeof(card->components)) {
-> > +		snd_printk(KERN_ERR "components = %s + %s\n",
-> > +				card->components, component);
-> >  		snd_BUG();
-> >  		return -ENOMEM;
-> >  	}
-> > 
-> > 
-> > [   12.590150] ALSA sound/core/init.c:710: components = HDA:11d4194a,103c3037,00100400 HDA:11c11040,103c1378,00100200 + HDA:80862802,80860101,00100000
-> > [   12.590163] ------------[ cut here ]------------
-> > [   12.590166] WARNING: at sound/core/init.c:711 snd_component_add+0xfa/0x110 [snd]()
-> > [   12.590168] BUG?
-> (snip)
-> 
-> Argh, that's bad. 
-> Then I agree with increasing the components as a simple workaround.
-> 
-> How about the patch below?  The control protocol number is increased
-> for this change as well.
-
-The modified patch looks fine, I'll test it out in the following days.
-
-So far grep gives the following referees:
-
-./alsa-driver/acore/ioctl32/ioctl32_new.c:      MAP_COMPAT(SNDRV_CTL_IOCTL_CARD_INFO),
-./alsa-driver/acore/ioctl32/ioctl32_old.c:      MAP_COMPAT(SNDRV_CTL_IOCTL_CARD_INFO),
-./alsa-kernel/sound/core/control_compat.c:      case SNDRV_CTL_IOCTL_CARD_INFO:
-./alsa-kernel/sound/core/control.c:     case SNDRV_CTL_IOCTL_CARD_INFO:
-./alsa-kernel/include/sound/asound.h:   SNDRV_CTL_IOCTL_CARD_INFO = _IOR('U', 0x01, struct snd_ctl_card_info),
-./alsa-lib/src/control/control_shm.c:   ctrl->cmd = SNDRV_CTL_IOCTL_CARD_INFO;
-./alsa-lib/src/control/control_hw.c:    if (ioctl(hw->fd, SNDRV_CTL_IOCTL_CARD_INFO, info) < 0) {
-./alsa-lib/src/control/control_hw.c:            SYSERR("SNDRV_CTL_IOCTL_CARD_INFO failed");
-./alsa-lib/aserver/aserver.c:   case SNDRV_CTL_IOCTL_CARD_INFO:
-./alsa-lib/include/sound/asound.h:      SNDRV_CTL_IOCTL_CARD_INFO = _IOR('U', 0x01, struct sndrv_ctl_card_info),
-
-Thanks,
-Fengguang
----
-
-> 
-> thanks,
-> 
+On Tue, Oct 7, 2008 at 7:44 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Mon, 6 Oct 2008 19:10:14 +0200,
+> Klaas De Craemer wrote:
+>>
+>> On Mon, Oct 6, 2008 at 12:57 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > [please don't drop Cc to alsa-devel ML]
+>> >
+>> > At Mon, 6 Oct 2008 12:48:43 +0200,
+>> > Klaas De Craemer wrote:
+>> >>
+>> >> Hello,
+>> >>
+>> >> I'm sure that the audioquality will degrade somewhat because of the additional amplification,
+>> >> but before, the HP-out was not usable at all. I had to use an external ampli just to use my
+>> >> headphones, even after turning all volume sliders to 100%. Then again, when removing the HP,
+>> >> the volume though the internal speakers was way too loud...
+>> >>
+>> >> I'm not sure what you mean with the output pin and headphone control, but I have uploaded the
+>> >> output of the codegraph tool before and after my modification here:
+>> >> http://users.vtk.be/~s0159120/codec_original.svg
+>> >> http://users.vtk.be/~s0159120/codec_final.svg
+>> >>
+>> >> Below is the output of alsa-info with the patched module
+>> >> Klaas
+>> >
+>> > Thanks.
+>> >
+>> > So, if I understand correctly, when the pin 0x0a is connected directly
+>> > from DAC0 0x10, the output level is too low even if you set the all
+>> > volumes maximal.
+>>
+>> That is correct.
+>>
+>>
+>> > In the alsa-info.sh output, I see the following:
+>> >> Node 0x10 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
+>> >>   Amp-Out caps: N/A
+>> >>   Amp-Out vals:  [0x5e 0x5e]
+>> >
+>> > which means that you decrease the output level intentionally.
+>> > Is the HP output still too low even if you set to the higher value?
+>>
+>>
+>> No, after the patch I don't need 100% anymore.
+>
+> Of course not :)
+>
+>> The HP output is fine
+>> now, and I can tune it up and down a bit. Before using the mixer-amp,
+>> going from 90 to 100 resulted in going from no sound to little sound.
+>> Now the range is more useful.
+>
+> Could you check the raw value of the widget 0x10 without your patch?
+> The percent doesn't tell you exactly what you changed.
+>
+>
 > Takashi
-> 
-> diff --git a/include/sound/asound.h b/include/sound/asound.h
-> index 3eaf155..fbfe992 100644
-> --- a/include/sound/asound.h
-> +++ b/include/sound/asound.h
-> @@ -696,7 +696,7 @@ struct snd_timer_tread {
->   *                                                                          *
->   ****************************************************************************/
->  
-> -#define SNDRV_CTL_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 5)
-> +#define SNDRV_CTL_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 6)
->  
->  struct snd_ctl_card_info {
->  	int card;			/* card number */
-> @@ -707,8 +707,7 @@ struct snd_ctl_card_info {
->  	unsigned char longname[80];	/* name + info text about soundcard */
->  	unsigned char reserved_[16];	/* reserved for future (was ID of mixer) */
->  	unsigned char mixername[80];	/* visual mixer identification */
-> -	unsigned char components[80];	/* card components / fine identification, delimited with one space (AC97 etc..) */
-> -	unsigned char reserved[48];	/* reserved for future */
-> +	unsigned char components[128];	/* card components / fine identification, delimited with one space (AC97 etc..) */
->  };
->  
->  typedef int __bitwise snd_ctl_elem_type_t;
-> diff --git a/include/sound/core.h b/include/sound/core.h
-> index 558b962..221554e 100644
-> --- a/include/sound/core.h
-> +++ b/include/sound/core.h
-> @@ -114,7 +114,7 @@ struct snd_card {
->  	char shortname[32];		/* short name of this soundcard */
->  	char longname[80];		/* name of this soundcard */
->  	char mixername[80];		/* mixer name */
-> -	char components[80];		/* card components delimited with
-> +	char components[128];		/* card components delimited with
->  								space */
->  	struct module *module;		/* top-level module */
->  
+>
+
+I have pasted the output of /proc/asound/card0/codec#0 below, without
+the patch. However, I'm not sure what you're exactly looking for? I'm
+quite new to all this stuff , but I'd be more than happy to help out
+more, so feel free to ask anything.
+
+Also related, in windows (yeah i know), using the IDT drivers, the
+volume is extremely high  :) So I went searching in the driver files
+and it seems that the widget configuration is specified there in an
+ini file. As far as I can see, the mixer is not configured, but an
+external amp is mentioned. Could it be that the external amp of 0x0A
+is not used in snd-hda-intel? Or maybe it refers to the "+3dBV output
+option on headphone capable ports" as mentioned in the datasheet...
+But I'm just guessing now.
+
+Klaas
+
+--------------- 92HDM4-1.INI  ---------------
+[HKLM\SOFTWARE\IDT\Config\EventExpressions\JackPresensea]
+110="if(JackState(10) == 1 || JackState(15) ==
+1,(BypassSystemEq(1)),(BypassSystemEq(0)))"
+120="if(JackState(10) == 1 || JackState(15) ==
+1,(BypassSystemComp(1)),(BypassSystemComp(0)))"
+[HKLM\SOFTWARE\IDT\Config\EventExpressions\JackPresensef]
+110="if(JackState(10) == 1 || JackState(15) ==
+1,(BypassSystemEq(1)),(BypassSystemEq(0)))"
+120="if(JackState(10) == 1 || JackState(15) ==
+1,(BypassSystemComp(1)),(BypassSystemComp(0)))"
+[HKR]
+CodecName = "92HD71B8x"
+[HKR\Settings]
+InitVerbs                            = hex:
+TraceFlags                           = dword: 0x89B3
+Biostype1  = hex: 1
+EnablePcBeepAtCd                     = hex: 1
+AllowHpOnNonSupportingPin            = hex: 0
+CPL_SaveExtraPower                   = hex: 1
+CPL_MaySwitchExtAmpPowerState        = hex: 1
+CPL_SecondsAfter                     = dword: 30
+EnableDLCDWA                         = hex: 1
+PmEnabledWidget				= hex: 0A,0B,0C,0D,0E,0F
+ShareSystemMicJackAsLine = hex: 1
+AfgPowerStatePolicy = hex: 2
+CPL_ControlAfgPowerState = hex: 0x1
+KeepAnalogLoopbackAlwaysOn = hex: 0
+DelayInMsAfterPortDisabling = dword: 0x40
+SAEN = dword: 0x08
+[HKR\Settings\pin]
+[HKR\Settings\Pin\0A]
+CfgDflt = dword: 0x0421101F
+Action = hex: 81,0D, 81,0F
+ExtAmpCtrl = hex: 00,05,02
+[HKR\Settings\Pin\0B]
+[HKR\Settings\Pin\0C]
+CfgDflt = dword: 0x400003F0
+[HKR\Settings\Pin\0D]
+CfgDflt = dword: 0x90170010
+[HKR\Settings\Pin\0E]
+[HKR\Settings\Pin\0F]
+CfgDflt = dword: 0x2301401F
+Action = hex: 81,0D
+[HKR\Settings\Pin\14]
+CfgDflt = dword: 0x400003F0
+[HKR\Settings\Pin\18]
+[HKR\Settings\Pin\19]
+CfgDflt = dword: 0x400003F0
+[HKR\Settings\Pin\1E]
+[HKR\Settings\Pin\1F]
+CfgDflt = dword: 0x400000F0
+[HKR\Settings\Pin\20]
+CfgDflt = dword: 0x400000F0
+[HKR\Settings\Pin\27]
+CfgDflt = dword: 0x90300022
+[HKR\Settings\GPIO]
+00                    = hex: 82
+
+--------------- codecoutput_nonpatched ---------------
+Codec: IDT 92HD71B7X
+Address: 0
+Vendor Id: 0x111d76b2
+Subsystem Id: 0x1028024f
+Revision Id: 0x100302
+No Modem Function Group found
+Default PCM:
+    rates [0x7e0]: 44100 48000 88200 96000 176400 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Default Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+Default Amp-Out caps: ofs=0x7f, nsteps=0x7f, stepsize=0x02, mute=1
+GPIO: io=8, o=0, i=0, unsolicited=1, wake=1
+  IO[0]: enable=1, dir=1, wake=0, sticky=0, data=1
+  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0
+  IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0
+  IO[3]: enable=0, dir=0, wake=0, sticky=0, data=0
+  IO[4]: enable=0, dir=0, wake=0, sticky=0, data=0
+  IO[5]: enable=0, dir=0, wake=0, sticky=0, data=0
+  IO[6]: enable=0, dir=0, wake=0, sticky=0, data=0
+  IO[7]: enable=0, dir=0, wake=0, sticky=0, data=0
+Node 0x0a [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x081c: OUT HP Detect
+  Pin Default 0x0421101f: [Jack] HP Out at Ext Right
+    Conn = 1/8, Color = Black
+    DefAssociation = 0x1, Sequence = 0xf
+  Pin-ctls: 0xc0: OUT HP
+  Unsolicited: tag=30, enabled=1
+  Connection: 3
+     0x10 0x11* 0x17
+Node 0x0b [Pin Complex] wcaps 0x400081: Stereo
+  Pincap 0x081724: IN Detect
+    Vref caps: HIZ 50 GRD 80
+  Pin Default 0x04a11221: [Jack] Mic at Ext Right
+    Conn = 1/8, Color = Black
+    DefAssociation = 0x2, Sequence = 0x1
+  Pin-ctls: 0x24: IN VREF_80
+  Unsolicited: tag=00, enabled=0
+Node 0x0c [Pin Complex] wcaps 0x400081: Stereo
+  Pincap 0x081724: IN Detect
+    Vref caps: HIZ 50 GRD 80
+  Pin Default 0x40f000f0: [N/A] Other at Ext N/A
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x00: VREF_HIZ
+  Unsolicited: tag=00, enabled=0
+Node 0x0d [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x0814: OUT Detect
+  Pin Default 0x90170110: [Fixed] Speaker at Int N/A
+    Conn = Analog, Color = Unknown
+    DefAssociation = 0x1, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x00:
+  Unsolicited: tag=00, enabled=0
+  Connection: 3
+     0x10 0x11 0x17*
+Node 0x0e [Pin Complex] wcaps 0x400081: Stereo
+  Pincap 0x081724: IN Detect
+    Vref caps: HIZ 50 GRD 80
+  Pin Default 0x23a1902e: [Jack] Mic at Sep Left
+    Conn = 1/8, Color = Pink
+    DefAssociation = 0x2, Sequence = 0xe
+  Pin-ctls: 0x24: IN VREF_80
+  Unsolicited: tag=00, enabled=0
+Node 0x0f [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x0814: OUT Detect
+  Pin Default 0x23014250: [Jack] Line Out at Sep Left
+    Conn = 1/8, Color = Green
+    DefAssociation = 0x5, Sequence = 0x0
+  Pin-ctls: 0x00:
+  Unsolicited: tag=00, enabled=0
+  Connection: 3
+     0x10 0x11 0x17*
+Node 0x10 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0x72 0x72]
+  Converter: stream=5, channel=0
+  Power: setting=D0, actual=D0
+  Delay: 13 samples
+Node 0x11 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0x65 0x65]
+  Converter: stream=5, channel=0
+  Power: setting=D0, actual=D0
+  Delay: 13 samples
+Node 0x12 [Audio Input] wcaps 0x1d0541: Stereo
+  Converter: stream=0, channel=0
+  SDI-Select: 0
+  Power: setting=D0, actual=D0
+  Delay: 13 samples
+  Connection: 1
+     0x1c
+  Processing caps: benign=0, ncoeff=0
+Node 0x13 [Audio Input] wcaps 0x1d0541: Stereo
+  Converter: stream=0, channel=0
+  SDI-Select: 0
+  Power: setting=D0, actual=D0
+  Delay: 13 samples
+  Connection: 1
+     0x1d
+  Processing caps: benign=0, ncoeff=0
+Node 0x14 [Pin Complex] wcaps 0x400100: Mono
+  Pincap 0x0810: OUT
+  Pin Default 0x40f000f0: [N/A] Other at Ext N/A
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x16
+Node 0x15 [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 3
+     0x10* 0x11 0x17
+Node 0x16 [Audio Mixer] wcaps 0x200100: Mono
+  Connection: 1
+     0x15
+Node 0x17 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x1f 0x1f] [0x97 0x97] [0x97 0x97] [0x97 0x97] [0x97 0x97]
+  Connection: 5
+     0x10 0x11 0x27 0x1a 0x1b
+Node 0x18 [Pin Complex] wcaps 0x40000d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x0820: IN
+  Pin Default 0x90a000f0: [Fixed] Mic at Int N/A
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x20: IN
+Node 0x19 [Pin Complex] wcaps 0x40000d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x0820: IN
+  Pin Default 0x40f000f0: [N/A] Other at Ext N/A
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x20: IN
+Node 0x1a [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-Out vals:  [0x01 0x01]
+  Connection: 3
+     0x0b* 0x0c 0x0e
+Node 0x1b [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 3
+     0x0b* 0x0c 0x0e
+Node 0x1c [Audio Selector] wcaps 0x30090d: Stereo Amp-Out R/L
+  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 4
+     0x1a* 0x17 0x18 0x19
+Node 0x1d [Audio Selector] wcaps 0x30090d: Stereo Amp-Out R/L
+  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Connection: 4
+     0x1b* 0x17 0x18 0x19
+Node 0x1e [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x4f0000f0: [N/A] Line Out at Ext UNKNOWN
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x24
+Node 0x1f [Pin Complex] wcaps 0x400701: Stereo Digital
+  Pincap 0x0810010: OUT EAPD
+  EAPD 0x0:
+  Pin Default 0x40f000f6: [N/A] Other at Ext N/A
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x6
+  Pin-ctls: 0x00:
+  Power: setting=D0, actual=D0
+  Connection: 2
+     0x24* 0x25
+Node 0x20 [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x40f000f7: [N/A] Other at Ext N/A
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x7
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x25
+Node 0x21 [Audio Output] wcaps 0x40211: Stereo Digital
+  Converter: stream=0, channel=0
+  Digital:
+  Digital category: 0x0
+  PCM:
+    rates [0x7e0]: 44100 48000 88200 96000 176400 192000
+    bits [0xe]: 16 20 24
+    formats [0x5]: PCM AC3
+  Delay: 4 samples
+Node 0x22 [Audio Output] wcaps 0x40211: Stereo Digital
+  Converter: stream=0, channel=0
+  Digital:
+  Digital category: 0x0
+  PCM:
+    rates [0x7e0]: 44100 48000 88200 96000 176400 192000
+    bits [0xe]: 16 20 24
+    formats [0x5]: PCM AC3
+  Delay: 4 samples
+Node 0x23 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x24 [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 3
+     0x21* 0x1c 0x1d
+Node 0x25 [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 3
+     0x22* 0x1c 0x1d
+Node 0x26 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
+  Amp-Out caps: ofs=0x03, nsteps=0x03, stepsize=0x17, mute=1
+  Amp-Out vals:  [0x00]
+Node 0x27 [Pin Complex] wcaps 0x400000: Mono
+  Pincap 0x0820: IN
+  Pin Default 0x40f000f0: [N/A] Other at Ext N/A
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x00:
+Node 0x28 [Volume Knob Widget] wcaps 0x600000: Mono
+  Volume-Knob: delta=1, steps=127, direct=1, val=127
+  Connection: 2
+     0x10* 0x11
