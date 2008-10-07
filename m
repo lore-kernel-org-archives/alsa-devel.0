@@ -1,26 +1,28 @@
-From: "Jesslyn Abdul Salam" <jesslyn.abdulsalam@gmail.com>
-Subject: Re: AIC23 SOC Driver on OSK5912
-Date: Tue, 7 Oct 2008 19:20:45 +0530
-Message-ID: <e762f7a90810070650q642aa05eu1f909e7898042ee6@mail.gmail.com>
-References: <e762f7a90810070448g6eb4545ay340e6be8de775133@mail.gmail.com>
-	<20081007115450.GD19835@sirena.org.uk>
-	<dfeb90390810070502x42ec3d85heb87f21d5c3074ec@mail.gmail.com>
-	<e762f7a90810070506q2d4e299eqe2d6d9bc515aeec0@mail.gmail.com>
-	<e762f7a90810070506x9c26ecfh6fa68a833c2ae98b@mail.gmail.com>
-	<e762f7a90810070518r22dfa404s3f34f3ade79db7bf@mail.gmail.com>
-	<48EB6820.3090809@mistralsolutions.com>
+From: ext-jukka.hynninen@vaisala.com
+Subject: Re: ASoC WM8510 Mic PGA problem
+Date: Tue, 7 Oct 2008 17:21:48 +0300
+Message-ID: <B9D3C48C98930741A166756A50C44A610F17B55E@helx1.corp.vaisala.com>
+References: <B9D3C48C98930741A166756A50C44A610F17B555@helx1.corp.vaisala.com>
+	<20081003133936.GD26035@sirena.org.uk>
+	<B9D3C48C98930741A166756A50C44A610F17B556@helx1.corp.vaisala.com>
+	<20081006100522.GB14087@sirena.org.uk>
+	<B9D3C48C98930741A166756A50C44A610F17B55A@helx1.corp.vaisala.com>
+	<20081007121144.GA5119@rakim.wolfsonmicro.main>
+	<B9D3C48C98930741A166756A50C44A610F17B55D@helx1.corp.vaisala.com>
+	<20081007134318.GF19835@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f17.google.com (mail-gx0-f17.google.com
-	[209.85.217.17]) by alsa0.perex.cz (Postfix) with ESMTP id 6FBC6245BC
+Received: from mailgw.vaisala.com (mailgw.vaisala.com [192.81.123.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8063F245DB
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Oct 2008 15:51:00 +0200 (CEST)
-Received: by gxk10 with SMTP id 10so6900617gxk.8
-	for <alsa-devel@alsa-project.org>; Tue, 07 Oct 2008 06:50:46 -0700 (PDT)
-In-Reply-To: <48EB6820.3090809@mistralsolutions.com>
-Content-Disposition: inline
+	Tue,  7 Oct 2008 16:22:03 +0200 (CEST)
+Received: from helsrv02.vaisala.com (helsrv02.vaisala.com [192.81.123.16])
+	by mailgw.vaisala.com (8.13.6/8.13.6) with SMTP id m97ELnZV016858
+	for <alsa-devel@alsa-project.org>; Tue, 7 Oct 2008 17:21:49 +0300
+Content-class: urn:content-classes:message
+In-Reply-To: <20081007134318.GF19835@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,146 +32,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Arun KS <arunks@mistralsolutions.com>
+To: broonie@sirena.org.uk
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Not yet. Would please share what you have done to make it work ? Also when I
-tried to strace aplay , it keeps looking for a
-</share/alsa/cards/tlv320aic23.conf> file which is not there in the alsa-lib
-package. Any idea what goes in that file ?
+Quoting Mark Brown:
 
-Regards
+> Could you please rebuild ASoC with debug enabled and send the kernel
+> output produced from a failing record?  Depending on your kernel
+version
 
-Jesslyn
+I'm sorry, It seems to be the switch connecting MICN to negative PGA
+terminal that does not stay on (register 0x2c bit 1)
 
-On Tue, Oct 7, 2008 at 7:16 PM, Arun KS <arunks@mistralsolutions.com> wrote:
+Here's the result with my remarks inline:
 
-> Jesslyn Abdul Salam wrote:
->
->> I got it working. I2C_BOARD_INFO macro was wrongly intialized. Instead of
->> tlv320aic23 i had written tlvaic23. Thanks to Arun for pointing this error
->>
->>
-> Can you hear audio playing?
-> Because i had done some hack to make it working in 5912osk.
-> I want to know you are not facing it or not.
->
-> Arun
->
->  Jesslyn Abdul Salam
->>
->>
->> On Tue, Oct 7, 2008 at 5:36 PM, Jesslyn Abdul Salam <
->> jesslyn.abdulsalam@gmail.com> wrote:
->>
->>
->>
->>> ---------- Forwarded message ----------
->>> From: Jesslyn Abdul Salam <jesslyn.abdulsalam@gmail.com>
->>> Date: Tue, Oct 7, 2008 at 5:36 PM
->>> Subject: Re: [alsa-devel] AIC23 SOC Driver on OSK5912
->>> To: Arun KS <arunks@mistralsolutions.com>
->>>
->>>
->>> Yes, it is there. but it shows as "tlv320aic23b" instead of "tlv320aic"
->>> Will that be the reason ????
->>>
->>>
->>>
->>>
->>> On Tue, Oct 7, 2008 at 5:32 PM, Arun KS <arunks@mistralsolutions.com
->>> >wrote:
->>>
->>>
->>>
->>>> On Tue, Oct 7, 2008 at 5:24 PM, Mark Brown <broonie@sirena.org.uk>
->>>> wrote:
->>>>
->>>>
->>>>> On Tue, Oct 07, 2008 at 05:18:55PM +0530, Jesslyn Abdul Salam wrote:
->>>>>
->>>>>
->>>>>
->>>>>> I have been trying to use the AIC23 ALSA SoC driver for OSK5912 for
->>>>>> the
->>>>>>
->>>>>>
->>>>> past
->>>>
->>>>
->>>>> few days. I got the driver patch from the linux-omap/alsa-devel mailing
->>>>>> lists. The driver got compiled along just fine. But when the kernel
->>>>>>
->>>>>>
->>>>> boots,
->>>>
->>>>
->>>>> no sound cards have been listed.
->>>>>>
->>>>>>
->>>>> CCing in Arun KS <arunks@mistralsolutions.com> who contributed that
->>>>> support.
->>>>>
->>>>>
->>>>>
->>>>>> Advanced Linux Sound Architecture Driver Version 1.0.17.
->>>>>>          ASoC version
->>>>>> 0.13.2
->>>>>> AIC23 Audio Codec
->>>>>> 0.1
->>>>>> MCLK = 12000000 [12000000], usecount =
->>>>>> 0
->>>>>> ALSA device
->>>>>> list:
->>>>>>    No soundcards
->>>>>> found.
->>>>>>          Any one have tested this before ?
->>>>>>
->>>>>>
->>>>> Can you check i2c?
->>>>
->>>> # cat /sys/bus/i2c/devices/1-001b/name
->>>> tlv320aic23
->>>>
->>>>
->>>>
->>>>> _______________________________________________
->>>>> Alsa-devel mailing list
->>>>> Alsa-devel@alsa-project.org
->>>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>>>>
->>>>>
->>>>>
->>>>
->>>
->>>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
->>
->>
->>
->
->
-> Please do not print this email unless it is absolutely necessary. Spread
-> environmental awareness.
->
->
-> -------------------------------------------------------DISCLAIMER------------------------------------------------------
-> The information transmitted herewith is confidential and proprietary
-> information intended only for use by the individual or entity to which it is
-> addressed. If the reader of this message is not the intended recipient, you
-> are hereby notified that any review, retransmission, dissemination,
-> distribution, copying or other use of, or taking of any action in reliance
-> upon this information is strictly prohibited. If you have received this
-> communication in error, please contact the sender and delete the material
-> from your computer.
->
-> --------------------------------------------------------------------------------------------------------------------------------
->
->
->
->
+>$ amixer sget 'Mic PGA'
+Simple mixer control 'Mic PGA',0
+  Capabilities: switch
+  Playback channels: Mono
+  Capture channels: Mono
+  Mono: [on]
+>$ arecord -c 1 --rate=48000 --format=S16_LE |aplay
+asoc: WM8510 HiFi <-> at91-ssc1 info:
+asoc: rate mask 0xde
+asoc: min ch 1 max ch 2
+asoc: min rate 8000 max rate 48000
+asoc: WM8510 HiFi <-> at91-ssc1 info:
+asoc: rate mask 0xde
+asoc: min ch 1 max ch 2
+asoc: min rate 8000 max rate 48000
+Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz,
+Mono
+WM8510 register write: 0x04: 10
+WM8510 register write: 0x06: d
+WM8510 register write: 0x06: d
+WM8510 register write: 0x24: 8
+WM8510 register write: 0x25: c
+WM8510 register write: 0x26: 93
+WM8510 register write: 0x27: e9
+WM8510 register write: 0x01: 3a
+WM8510 register write: 0x06: 10d
+WM8510 register write: 0x06: d
+WM8510 register write: 0x04: 10
+WM8510 register write: 0x07: 0
+WM8510 register write: 0x01: 39
+WM8510 register write: 0x02: 10
+WM8510 register write: 0x02: 14
+WM8510 register write: 0x2c: 2  <-- This line missing right after
+bootup!
+WM8510 register write: 0x02: 15
+WM8510 register write: 0x01: 39
+WM8510 register write: 0x0a: 0
+Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Mono
+WM8510 register write: 0x04: 10
+WM8510 register write: 0x06: d
+WM8510 register write: 0x06: d
+WM8510 register write: 0x24: 8
+WM8510 register write: 0x25: c
+WM8510 register write: 0x26: 93
+WM8510 register write: 0x27: e9
+WM8510 register write: 0x01: 39
+WM8510 register write: 0x06: 10d
+WM8510 register write: 0x06: d
+WM8510 register write: 0x04: 10
+WM8510 register write: 0x07: 0
+WM8510 register write: 0x03: 1
+WM8510 register write: 0x03: 9
+WM8510 register write: 0x03: d
+WM8510 register write: 0x03: 8d
+WM8510 register write: 0x03: cd
+WM8510 register write: 0x03: ed
+WM8510 register write: 0x0a: 0
+Aborted by signal Interrupt... <-- Pressed ctrl-c
+WM8510 register write: 0x02: 14
+WM8510 register write: 0x02: 10
+WM8510 register write: 0x02: 0
+WM8510 register write: 0x01: 29
+Aborted by signal Interrupt...
+>$ pop wq checking: Playback status: inactive waiting: yes
+pop wq D1 WM8510 Playback
+WM8510 register write: 0x01: 29
+WM8510 register write: 0x03: 6d
+WM8510 register write: 0x03: 2d
+WM8510 register write: 0x03: d
+WM8510 register write: 0x03: 5
+WM8510 register write: 0x03: 1
+WM8510 register write: 0x03: 0
+pop wq D3 WM8510 Playback
+WM8510 register write: 0x01: 3a
+>$
