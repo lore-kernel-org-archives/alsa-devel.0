@@ -1,23 +1,22 @@
-From: "Arun KS" <getarunks@gmail.com>
-Subject: Re: Fwd: AIC23 SOC Driver on OSK5912
-Date: Tue, 7 Oct 2008 17:49:59 +0530
-Message-ID: <dfeb90390810070519k1305a1fep4ba4db3ea85fa975@mail.gmail.com>
-References: <e762f7a90810070448g6eb4545ay340e6be8de775133@mail.gmail.com>
-	<20081007115450.GD19835@sirena.org.uk>
-	<dfeb90390810070502x42ec3d85heb87f21d5c3074ec@mail.gmail.com>
-	<e762f7a90810070506q2d4e299eqe2d6d9bc515aeec0@mail.gmail.com>
-	<e762f7a90810070506x9c26ecfh6fa68a833c2ae98b@mail.gmail.com>
+From: "Jon Smirl" <jonsmirl@gmail.com>
+Subject: Re: size of snd_hda_intel
+Date: Tue, 7 Oct 2008 08:28:49 -0400
+Message-ID: <9e4733910810070528t35b2e392xedd21d9247756388@mail.gmail.com>
+References: <9e4733910810051519k427dce6aobca50815bfac30e2@mail.gmail.com>
+	<fd3eb9bf0810060128y3af886e0m1ad2c39b0f9c78f1@mail.gmail.com>
+	<9e4733910810061829h3f607e99s73857005e7ace514@mail.gmail.com>
+	<s5hljx0okzp.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ti-out-0910.google.com (ti-out-0910.google.com [209.85.142.189])
-	by alsa0.perex.cz (Postfix) with ESMTP id D8A1224559
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.147])
+	by alsa0.perex.cz (Postfix) with ESMTP id 147BE2456B
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Oct 2008 14:20:13 +0200 (CEST)
-Received: by ti-out-0910.google.com with SMTP id j3so1819506tid.8
-	for <alsa-devel@alsa-project.org>; Tue, 07 Oct 2008 05:19:59 -0700 (PDT)
-In-Reply-To: <e762f7a90810070506x9c26ecfh6fa68a833c2ae98b@mail.gmail.com>
+	Tue,  7 Oct 2008 14:29:02 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 9so710970qwj.56
+	for <alsa-devel@alsa-project.org>; Tue, 07 Oct 2008 05:28:49 -0700 (PDT)
+In-Reply-To: <s5hljx0okzp.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,92 +27,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jesslyn Abdul Salam <jesslyn.abdulsalam@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: =?ISO-8859-2?Q?Vedran_Mileti=E6?= <rivanvx@gmail.com>, alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 7, 2008 at 5:36 PM, Jesslyn Abdul Salam
-<jesslyn.abdulsalam@gmail.com> wrote:
-> ---------- Forwarded message ----------
-> From: Jesslyn Abdul Salam <jesslyn.abdulsalam@gmail.com>
-> Date: Tue, Oct 7, 2008 at 5:36 PM
-> Subject: Re: [alsa-devel] AIC23 SOC Driver on OSK5912
-> To: Arun KS <arunks@mistralsolutions.com>
->
->
-> Yes, it is there. but it shows as "tlv320aic23b" instead of "tlv320aic" Will
-> that be the reason ????
-Yes. Change it to tlv320aic23. Hope it is in the board file.
-
-arch/arm/mach-omap1/board-osk.c |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
-
-diff --git a/arch/arm/mach-omap1/board-osk.c b/arch/arm/mach-omap1/board-osk.c
-index 3e766e4..e506aef 100644
---- a/arch/arm/mach-omap1/board-osk.c
-+++ b/arch/arm/mach-omap1/board-osk.c
-@@ -258,8 +258,10 @@ static struct i2c_board_info __initdata
-osk_i2c_board_info[] = {
- 		.platform_data	= &tps_board,
-
- 	},
-+	{
-+		I2C_BOARD_INFO("tlv320aic23", 0x1B),
-+	},
- 	/* TODO when driver support is ready:
--	 *  - aic23 audio chip at 0x1a
- 	 *  - on Mistral, 24c04 eeprom at 0x50
- 	 *  - optionally on Mistral, ov9640 camera sensor at 0x30
- 	 */
--- 1.5.3.4
-
-
-
->
->
-> On Tue, Oct 7, 2008 at 5:32 PM, Arun KS <arunks@mistralsolutions.com> wrote:
->
->> On Tue, Oct 7, 2008 at 5:24 PM, Mark Brown <broonie@sirena.org.uk> wrote:
->> > On Tue, Oct 07, 2008 at 05:18:55PM +0530, Jesslyn Abdul Salam wrote:
->> >
->> >> I have been trying to use the AIC23 ALSA SoC driver for OSK5912 for the
->> past
->> >> few days. I got the driver patch from the linux-omap/alsa-devel mailing
->> >> lists. The driver got compiled along just fine. But when the kernel
->> boots,
->> >> no sound cards have been listed.
->> >
->> > CCing in Arun KS <arunks@mistralsolutions.com> who contributed that
->> > support.
->> >
->> >> Advanced Linux Sound Architecture Driver Version 1.0.17.
->> >
->> >> ASoC version
->> >> 0.13.2
->> >> AIC23 Audio Codec
->> >> 0.1
->> >> MCLK = 12000000 [12000000], usecount =
->> >> 0
->> >> ALSA device
->> >> list:
->> >>     No soundcards
->> >> found.
->> >
->> >> Any one have tested this before ?
+2008/10/7 Takashi Iwai <tiwai@suse.de>:
+> At Mon, 6 Oct 2008 21:29:32 -0400,
+> Jon Smirl wrote:
 >>
->> Can you check i2c?
+>> On Mon, Oct 6, 2008 at 4:28 AM, Vedran Mileti=E6 <rivanvx@gmail.com> wro=
+te:
+>> > I believe this isn't that easy. Here is why: iff you look at the
+>> > ice1712/ice1724 driver, it doesn't detect dependencies when modprobed;
+>> > that is, it loads, for example, ac97 codec and ak4xxx driver even if
+>> > the card doesn't have any of that. Is it even possible to detect
+>> > dependencies after modprobing?
 >>
->> # cat /sys/bus/i2c/devices/1-001b/name
->> tlv320aic23
->>
->> > _______________________________________________
->> > Alsa-devel mailing list
->> > Alsa-devel@alsa-project.org
->> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>> The base intel hda module would include code to figure out which codec
+>> is attached. It can then use loadmodule() to dynamically load it. ASOC
+>> use the separate codec driver model.
+>
+> You mean AOA?
+> ASoC doesn't do any dynamic module handling by itself, AFAIK.
+
+This lets you load another module from intel_hda:
+
+        request_module("%s", module_name);
+
+
+>> It would look like a "hda" bus in sysfs with the "codec" module sitting =
+on it.
+>
+> Well, originally there shouldn't have been so many codec variants.
+> The current situation came up due to a couple of obvious reasons...
+>
+> Ayway, the current plan is to develop an improved generic parser and
+> add the capability to extra setup for each hardware, either
+> dynamically or statically.  In that way, the whole static function
+> callbacks and mixer arrays can be removed or replaced with smaller
+> hints.
+>
+> The codec reconfigure patches are already in my tree in
+> topic/hda-reconfig branch, and the improvement of generic parser is
+> under development.
+>
+>
+> Takashi
+>
+>
+>> >
+>> > 2008/10/6 Jon Smirl <jonsmirl@gmail.com>:
+>> >>>ismod
+>> >> snd_hda_intel         435,772
+>> >>
+>> >> 435,772 bytes seems awfully large for an audio driver. The large size
+>> >> seems to be due to having support for multiple codecs in the driver.
+>> >> Could a generic  hda driver load the correct codec dynamically instead
+>> >> of building them all in statically?
+>> >>
+>> >> I have a Realtek codec.
+>> >>
+>> >> --
+>> >> Jon Smirl
+>> >> jonsmirl@gmail.com
+>> >> _______________________________________________
+>> >> Alsa-devel mailing list
+>> >> Alsa-devel@alsa-project.org
+>> >> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>> >>
+>> >
+>> >
+>> >
+>> > --
+>> > Vedran Mileti=E6
 >> >
 >>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+>>
+>> --
+>> Jon Smirl
+>> jonsmirl@gmail.com
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
 >
+
+
+
+-- =
+
+Jon Smirl
+jonsmirl@gmail.com
