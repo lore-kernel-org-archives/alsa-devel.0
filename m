@@ -1,20 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2.6.27?] ASoC: Correct inverted Mic PGA
-	Switch control	in wm8510 driver
-Date: Tue, 7 Oct 2008 11:22:25 +0100
-Message-ID: <20081007102225.GA25262@rakim.wolfsonmicro.main>
-References: <1223289201-29091-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<s5hwsgkomow.wl%tiwai@suse.de>
+From: "Jesslyn Abdul Salam" <jesslyn.abdulsalam@gmail.com>
+Subject: AIC23 SOC Driver on OSK5912
+Date: Tue, 7 Oct 2008 17:18:55 +0530
+Message-ID: <e762f7a90810070448g6eb4545ay340e6be8de775133@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1B61724455
+Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id A7C0224544
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Oct 2008 12:22:38 +0200 (CEST)
+	Tue,  7 Oct 2008 13:49:09 +0200 (CEST)
+Received: by wf-out-1314.google.com with SMTP id 24so3225294wfg.23
+	for <alsa-devel@alsa-project.org>; Tue, 07 Oct 2008 04:48:55 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <s5hwsgkomow.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,14 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 07, 2008 at 10:04:47AM +0200, Takashi Iwai wrote:
+Hi all,
 
-> Applied now to asoc-fixes branch.
-> Not sure whether I'll send more push request at this stage, though...
+I have been trying to use the AIC23 ALSA SoC driver for OSK5912 for the past
+few days. I got the driver patch from the linux-omap/alsa-devel mailing
+lists. The driver got compiled along just fine. But when the kernel boots,
+no sound cards have been listed.
 
-It's not the end of the world if it doesn't go - it's trivial to work
-around in user space or backport.
+Advanced Linux Sound Architecture Driver Version 1.0.17.
+
+ASoC version
+0.13.2
+AIC23 Audio Codec
+0.1
+MCLK = 12000000 [12000000], usecount =
+0
+ALSA device
+list:
+    No soundcards
+found.
+
+Any one have tested this before ?
+
+
+- Jesslyn Abdul Salam
