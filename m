@@ -1,22 +1,26 @@
-From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
-Subject: Re: Will there ever be emu20k1/x-fi support in Alsa?
-Date: Tue, 7 Oct 2008 16:50:29 +0200
-Message-ID: <fd3eb9bf0810070750r4b078c7aid6e43f439fd6a0b5@mail.gmail.com>
-References: <1223248483.19560.9.camel@home> <20081005215927.3a907b59@darius>
-	<fd3eb9bf0810060135j5a8771ebt1355da1d5a61dd7f@mail.gmail.com>
-	<1223319368.1486.0.camel@home>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC WM8510 Mic PGA problem
+Date: Tue, 7 Oct 2008 15:59:34 +0100
+Message-ID: <20081007145934.GA32344@rakim.wolfsonmicro.main>
+References: <B9D3C48C98930741A166756A50C44A610F17B555@helx1.corp.vaisala.com>
+	<20081003133936.GD26035@sirena.org.uk>
+	<B9D3C48C98930741A166756A50C44A610F17B556@helx1.corp.vaisala.com>
+	<20081006100522.GB14087@sirena.org.uk>
+	<B9D3C48C98930741A166756A50C44A610F17B55A@helx1.corp.vaisala.com>
+	<20081007121144.GA5119@rakim.wolfsonmicro.main>
+	<B9D3C48C98930741A166756A50C44A610F17B55D@helx1.corp.vaisala.com>
+	<20081007134318.GF19835@sirena.org.uk>
+	<B9D3C48C98930741A166756A50C44A610F17B55E@helx1.corp.vaisala.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f17.google.com (mail-gx0-f17.google.com
-	[209.85.217.17]) by alsa0.perex.cz (Postfix) with ESMTP id 59B6B245F3
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0E54B24604
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Oct 2008 16:50:44 +0200 (CEST)
-Received: by gxk10 with SMTP id 10so7011892gxk.8
-	for <alsa-devel@alsa-project.org>; Tue, 07 Oct 2008 07:50:30 -0700 (PDT)
-In-Reply-To: <1223319368.1486.0.camel@home>
+	Tue,  7 Oct 2008 16:59:48 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <B9D3C48C98930741A166756A50C44A610F17B55E@helx1.corp.vaisala.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,37 +30,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Ted T. Logian" <tedtheologian@gmail.com>, alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: ext-jukka.hynninen@vaisala.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbSB3aGF0IEkgcmVjYWxsIEphbWVzIHRhbGtpbmcgYWJvdXQgaXQsIHlvdSBzaG91bGQgZ28g
-dG8gV2luZG93cwphbmQgc3dpdGNoIHRoZSBtb2RlIGluIFdpbmRvd3MgZHJpdmVyLCBhbmQgcmVi
-b290LiBCdXQgSSBtaWdodCBiZQpzYXlpbmcgdG90YWxseSB3cm9uZywgc2luY2UgSSdtIHRhbGtp
-bmcgZnJvbSB3aGF0IEkgcmVtZW1iZXIuIEl0IHdhcwpzb21ld2hlcmUgaW4gdGhlIG1haWxpbmcg
-bGlzdCwgSSBjYW4ndCBmaW5kIGl0IHJpZ2h0IG5vdy4KCkRyaXZlciBmb3IgSERBIEludGVsIG1v
-ZGUgb2YgQ3JlYXRpdmUgY2FyZHMgaXMgaW4gVGFrYXNoaSdzCnNvdW5kLXVuc3RhYmxlLTIuNiB0
-cmVlLCBpdCdzIGNhbGxlZCBwYXRjaF9jYTAxMTAuYyAtIHNlZSBoZXJlOgpodHRwOi8vZ2l0Lmtl
-cm5lbC5vcmcvP3A9bGludXgva2VybmVsL2dpdC90aXdhaS9zb3VuZC11bnN0YWJsZS0yLjYuZ2l0
-O2E9YmxvYjtmPXNvdW5kL3BjaS9oZGEvcGF0Y2hfY2EwMTEwLmM7aGI9SEVBRAoKMjAwOC8xMC82
-IFRlZCBULiBMb2dpYW4gPHRlZHRoZW9sb2dpYW5AZ21haWwuY29tPjoKPiBTdXBwb3NlZGx5IHRo
-aXMgY29tcGF0YWJpbGl0eSBtb2RlIGV4aXN0cywgYnV0IGhvdyBkbyB5b3UgdHVybiBpdCBvbj8K
-PiBEbyB5b3UgdGhlbiBqdXN0IHN0YXJ0IHVzaW5nIGhkYS1pbnRlbCBhZnRlcndhcmQ/Cj4KPiBJ
-IGFsc28gdW5kZXJzdGFuZCBpdCdzIHNldmVyZWx5IGxpbWl0ZWQuCj4KPgo+Cj4gT24gTW9uLCAy
-MDA4LTEwLTA2IGF0IDEwOjM1ICswMjAwLCBWZWRyYW4gTWlsZXRpxIcgd3JvdGU6Cj4KPj4gVG8g
-c2F5IHRoYXQgdGhpcyBkcml2ZXIgaXMgcGFydGlhbGx5IHdvcmtpbmcgaXMgYW4gb3ZlcnN0YXRl
-bWVudC4gSXQKPj4gaXMgcGFydGlhbGx5IHdvcmtpbmcgb24gdmVyeSBmZXcgc3VwcG9ydGVkIGNh
-cmRzLCBhbmQgc29tZSBvZiB0aGVtIGFyZQo+PiBzdXBwb3J0ZWQgYnkgQUxTQSBhcyB3ZWxsLCBp
-ZiBub3QgYmV0dGVyIChYdHJlbWUgQXVkaW8gUENJIGFuZCBYdHJlbWUKPj4gQXVkaW8gUENJLUUp
-Lgo+Pgo+PiBCeSB0aGUgd2F5LCBkb24ndCBhbGwgWC1GaSBjYXJkcyBoYXZlIHNvbWUga2luZCBv
-ZiBIREEtY29tcGF0aWJsZQo+PiBtb2RlPyBJZiB5ZXMsIHdoeSBkb24ndCBwZW9wbGUganVzdCB1
-c2UgdGhhdCB1bnRpbCBDcmVhdGl2ZSB3cml0ZXMgYQo+PiBkcml2ZXIgYW5kIHN0b3AgY29tcGxh
-aW5pbmc/Cj4+Cj4+IDIwMDgvMTAvNiBCcmVuZGFuIFBpa2UgPHNwaWtlQHNweWtlcy5uZXQ+Ogo+
-PiA+IE5vYm9keSB3aXRoIGtub3ctaG93IGhhcyBib3RoZXJlZCB0byBwb3J0IHRoZSBwYXJ0aWFs
-bHkgd29ya2luZyBvc3M0Cj4+ID4gZHJpdmVyIHRvIEFMU0EsIHNvIGludGVyZXN0IGlzIHF1aXRl
-IGxvdy4KPj4KPj4KPj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwKPgoKCgotLSAKVmVkcmFuIE1pbGV0acSHCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Tue, Oct 07, 2008 at 05:21:48PM +0300, ext-jukka.hynninen@vaisala.com wrote:
+
+> I'm sorry, It seems to be the switch connecting MICN to negative PGA
+> terminal that does not stay on (register 0x2c bit 1)
+
+Ah, I think I see what's going on here.  Could you try this patch,
+please (again, untested)?
+
+diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
+index 94cab49..ea524c4 100644
+--- a/sound/soc/codecs/wm8510.c
++++ b/sound/soc/codecs/wm8510.c
+@@ -227,9 +227,9 @@ SND_SOC_DAPM_PGA("SpkN Out", WM8510_POWER3, 5, 0, NULL, 0),
+ SND_SOC_DAPM_PGA("SpkP Out", WM8510_POWER3, 6, 0, NULL, 0),
+ SND_SOC_DAPM_PGA("Mono Out", WM8510_POWER3, 7, 0, NULL, 0),
+ 
+-SND_SOC_DAPM_PGA("Mic PGA", WM8510_POWER2, 2, 0,
+-		 &wm8510_micpga_controls[0],
+-		 ARRAY_SIZE(wm8510_micpga_controls)),
++SND_SOC_DAPM_MIXER("Mic PGA", WM8510_POWER2, 2, 0,
++		   &wm8510_micpga_controls[0],
++		   ARRAY_SIZE(wm8510_micpga_controls)),
+ SND_SOC_DAPM_MIXER("Boost Mixer", WM8510_POWER2, 4, 0,
+ 	&wm8510_boost_controls[0],
+ 	ARRAY_SIZE(wm8510_boost_controls)),
