@@ -1,19 +1,22 @@
-From: Brendan Pike <spike@spykes.net>
+From: The Source <thesourcehim@gmail.com>
 Subject: Re: Will there ever be emu20k1/x-fi support in Alsa?
-Date: Wed, 8 Oct 2008 00:22:08 -0400
-Message-ID: <20081008002208.464cb3aa@darius>
-References: <1223248483.19560.9.camel@home> <20081006212526.219130@gmx.net>
-	<1223361156.20470.0.camel@home> <48EB049C.1010002@gmail.com>
-	<1223426782.11647.5.camel@home>
+Date: Wed, 08 Oct 2008 08:54:05 +0400
+Message-ID: <48EC3CED.10409@gmail.com>
+References: <1223248483.19560.9.camel@home>
+	<20081006212526.219130@gmx.net>	<1223361156.20470.0.camel@home>
+	<48EB049C.1010002@gmail.com>	<1223426782.11647.5.camel@home>
+	<20081008002208.464cb3aa@darius>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.spykes.net (dsl.spykes.net [76.10.173.13])
-	by alsa0.perex.cz (Postfix) with ESMTP id D291E243CF
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id EBE842442A
 	for <alsa-devel@alsa-project.org>;
-	Wed,  8 Oct 2008 06:22:21 +0200 (CEST)
-In-Reply-To: <1223426782.11647.5.camel@home>
+	Wed,  8 Oct 2008 06:55:13 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id 16so2561407fgg.44
+	for <alsa-devel@alsa-project.org>; Tue, 07 Oct 2008 21:55:00 -0700 (PDT)
+In-Reply-To: <20081008002208.464cb3aa@darius>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,49 +26,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Ted T. Logian" <tedtheologian@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 07 Oct 2008 19:46:22 -0500
-"Ted T. Logian" <tedtheologian@gmail.com> wrote:
+But how to get the specs? I doubt creative will give them freely to us. 
+Unless that guy, who holds them, gives them away.
 
-> Yes, but it is better than nothing, and perhaps some of that is a
-> limitation of oss4:).
-> 
-> On Tue, 2008-10-07 at 10:41 +0400, The Source wrote:
-> 
-> > That driver isn't too good unfortunately. No surround support, sample 
-> > rate stuck at 96000Hz and is read-only (this makes apps that require 
-> > explicit sample rate to fail to use sound), no pulse-audio compatibility 
-> > (pulse-audio fails to load oss modules).
-> > 
-> > Ted T. Logian ?????:
-> > > >From what I understand, they did not use creative code/license for the
-> > > oss4 support, so I wouldn't see why not.
-> > >
-> > > On Mon, 2008-10-06 at 23:25 +0200, Sebastian Schneider wrote:
-> > >
-> > >   
-> > >> Isn't it a question of the license? I mean is it allowed just to port the OSS Code with the Creative Part to Alsa?
-> > >>
-> > >>     
-> > >>> I had to ask because oss4 has had emu20k1/x-fi support for a long time
-> > >>> now.  However, it has the obvious limitations of oss4 and also you
-> > >>> cannot use usb microphones, so I can't use skype which I'd really like
-> > >>> to do.
-> > >>>
-> > >>>       
-
-Porting the oss4 driver over to ALSA would be a start until someone
-can get hold of the datasheets to make it a proper driver with
-hardware mixing and all. Anyone up to the task that we can donate
-money to buy hardware or actual hardware to?
-
-The newer PCIe EMU20K2 X-Fi Titaniums are the ones that are supposed to
-have the intel-hda-audio backwards compatibility, but the older X-Fi's
-based on the EMU20K1 do not. I guess this compatibility is a Vista
-requirement so it appears on the new metal cladded X-Fi models.
-
-Then there's the "fake" X-Fi's based on the CA0106 that
-are supported by ALSA already. Lets not confuse those.
+Brendan Pike ?????:
+> On Tue, 07 Oct 2008 19:46:22 -0500
+> "Ted T. Logian" <tedtheologian@gmail.com> wrote:
+>
+>   
+>> Yes, but it is better than nothing, and perhaps some of that is a
+>> limitation of oss4:).
+>>
+>> On Tue, 2008-10-07 at 10:41 +0400, The Source wrote:
+>>
+>>     
+>>> That driver isn't too good unfortunately. No surround support, sample 
+>>> rate stuck at 96000Hz and is read-only (this makes apps that require 
+>>> explicit sample rate to fail to use sound), no pulse-audio compatibility 
+>>> (pulse-audio fails to load oss modules).
+>>>
+>>> Ted T. Logian ?????:
+>>>       
+>>>> >From what I understand, they did not use creative code/license for the
+>>>> oss4 support, so I wouldn't see why not.
+>>>>
+>>>> On Mon, 2008-10-06 at 23:25 +0200, Sebastian Schneider wrote:
+>>>>
+>>>>   
+>>>>         
+>>>>> Isn't it a question of the license? I mean is it allowed just to port the OSS Code with the Creative Part to Alsa?
+>>>>>
+>>>>>     
+>>>>>           
+>>>>>> I had to ask because oss4 has had emu20k1/x-fi support for a long time
+>>>>>> now.  However, it has the obvious limitations of oss4 and also you
+>>>>>> cannot use usb microphones, so I can't use skype which I'd really like
+>>>>>> to do.
+>>>>>>
+>>>>>>       
+>>>>>>             
+>
+> Porting the oss4 driver over to ALSA would be a start until someone
+> can get hold of the datasheets to make it a proper driver with
+> hardware mixing and all. Anyone up to the task that we can donate
+> money to buy hardware or actual hardware to?
+>
+> The newer PCIe EMU20K2 X-Fi Titaniums are the ones that are supposed to
+> have the intel-hda-audio backwards compatibility, but the older X-Fi's
+> based on the EMU20K1 do not. I guess this compatibility is a Vista
+> requirement so it appears on the new metal cladded X-Fi models.
+>
+> Then there's the "fake" X-Fi's based on the CA0106 that
+> are supported by ALSA already. Lets not confuse those.
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>   
