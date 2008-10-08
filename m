@@ -1,19 +1,20 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] [ALSA] Allow setting codec register
-	with	debugfs filesystem
-Date: Tue, 7 Oct 2008 23:15:34 +0100
-Message-ID: <20081007221533.GA7291@sirena.org.uk>
-References: <1223413435-17571-1-git-send-email-troy.kisky@boundarydevices.com>
+From: "Ted T. Logian" <tedtheologian@gmail.com>
+Subject: Re: Will there ever be emu20k1/x-fi support in Alsa?
+Date: Tue, 07 Oct 2008 19:46:22 -0500
+Message-ID: <1223426782.11647.5.camel@home>
+References: <1223248483.19560.9.camel@home> <20081006212526.219130@gmx.net>
+	<1223361156.20470.0.camel@home>  <48EB049C.1010002@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id A0D8D2434D
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.148])
+	by alsa0.perex.cz (Postfix) with ESMTP id 426DC2438E
 	for <alsa-devel@alsa-project.org>;
-	Wed,  8 Oct 2008 00:15:56 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1223413435-17571-1-git-send-email-troy.kisky@boundarydevices.com>
+	Wed,  8 Oct 2008 02:46:39 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 9so815710qwj.56
+	for <alsa-devel@alsa-project.org>; Tue, 07 Oct 2008 17:46:25 -0700 (PDT)
+In-Reply-To: <48EB049C.1010002@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,65 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Troy Kisky <troy.kisky@boundarydevices.com>
+To: The Source <thesourcehim@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 07, 2008 at 02:03:55PM -0700, Troy Kisky wrote:
+Yes, but it is better than nothing, and perhaps some of that is a
+limitation of oss4:).
 
-Thanks for this - looks good.  A few comments below, nitpicks rather
-than anything substantial.
+On Tue, 2008-10-07 at 10:41 +0400, The Source wrote:
 
-> +#ifdef CONFIG_SND_SOC_DEBUG_FS
-> +	struct dentry	*debugfs_root;
-> +	struct dentry	*debugfs_codec_reg;
-> +#endif
-
-It would be better to just make this conditional on debugfs support -
-this isn't sufficiently high cost to make the additional complexity
-worthwhile.  This is the general idiom for debugfs.
-
-> +static ssize_t code_reg_read_file(struct file *file, char __user *user_buf,
-> +			       size_t count, loff_t *ppos)
-> +{
-> +	ssize_t res;
-
-ret would be more consistent with the rest of ASoC (told you I was
-picking nits).
-
-> +	struct snd_soc_device *devdata = file->private_data;
-> +	char *buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
-
-It should check for out of memory here.  If we ever get codecs with
-enormous register maps we'll need to worry about PAGE_SIZE but that's an
-issue for sysfs too and not an issue currently.
-
-> +static void soc_init_debugfs(struct snd_soc_device *socdev)
-> +{
-> +	struct dentry *root, *debugfs_codec_reg;
-> +	root = debugfs_create_dir(dev_name(socdev->dev), NULL);
-> +	if (IS_ERR(root) || !root)
-> +		goto exit1;
-
-There's an existing debugfs file (the DAPM pop time configuration) which
-I'd expect to be handled by this function - it should probably be
-renamed to something like soc_init_codec_debugfs().
-
-The directory should probably be a subdirectory of that created by DAPM,
-or you could just put the codec register file in that directly until we
-support two codecs (which will needs updates to the sysfs code anyway).
-
-> +	debugfs_codec_reg = debugfs_create_file("codec_reg", 0644,
-> +			root, socdev, &codec_reg_fops);
-> +	if (!debugfs_codec_reg)
-> +		goto exit2;
-
-> +
-> +	socdev->debugfs_root = root;
-
-> +static void soc_cleanup_debugfs(struct snd_soc_device *socdev)
-> +{
-> +	debugfs_remove(socdev->debugfs_codec_reg);
-
-debugfs directory removal is recursive so no need to do this (or
-remember the file) unless you put it in the directory with the DAPM file.
+> That driver isn't too good unfortunately. No surround support, sample 
+> rate stuck at 96000Hz and is read-only (this makes apps that require 
+> explicit sample rate to fail to use sound), no pulse-audio compatibility 
+> (pulse-audio fails to load oss modules).
+> 
+> Ted T. Logian ?????:
+> > >From what I understand, they did not use creative code/license for the
+> > oss4 support, so I wouldn't see why not.
+> >
+> > On Mon, 2008-10-06 at 23:25 +0200, Sebastian Schneider wrote:
+> >
+> >   
+> >> Isn't it a question of the license? I mean is it allowed just to port the OSS Code with the Creative Part to Alsa?
+> >>
+> >>     
+> >>> I had to ask because oss4 has had emu20k1/x-fi support for a long time
+> >>> now.  However, it has the obvious limitations of oss4 and also you
+> >>> cannot use usb microphones, so I can't use skype which I'd really like
+> >>> to do.
+> >>>
+> >>>       
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >
+> >   
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
