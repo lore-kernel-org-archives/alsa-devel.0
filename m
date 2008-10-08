@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/8] ASoC: Add WM8510 SPI support
-Date: Wed,  8 Oct 2008 10:37:55 +0100
-Message-ID: <1223458680-9506-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/8] ASoC: Add custom SOC_SINGLE_TLV for
+	tlv320aic23 codec
+Date: Wed,  8 Oct 2008 10:37:53 +0100
+Message-ID: <1223458680-9506-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20081008093611.GA9425@rakim.wolfsonmicro.main>
-	<1223458680-9506-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1223458680-9506-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 80139244C3
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 40A13244C2
 	for <alsa-devel@alsa-project.org>;
 	Wed,  8 Oct 2008 11:38:15 +0200 (CEST)
-In-Reply-To: <1223458680-9506-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <20081008093611.GA9425@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,132 +23,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Arun KS <arunks@mistralsolutions.com>
 List-Id: alsa-devel@alsa-project.org
 
-Implement SPI support for WM8510, cut'n'pasting from the support for
-WM8731 contributed by Cliff Cai and Alan Horstmann since the wire format
-is the same for both codecs.
+From: Arun KS <arunks@mistralsolutions.com>
 
+Replaces SOC_ENUM with custom SOC_SINGLE_TLV for Sidetone volume
+
+Signed-off-by: Arun KS <arunks@mistralsolutions.com>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8510.c |   70 +++++++++++++++++++++++++++++++++++++++++++-
- sound/soc/codecs/wm8510.h |    1 +
- 2 files changed, 69 insertions(+), 2 deletions(-)
+ sound/soc/codecs/tlv320aic23.c |   53 +++++++++++++++++++++++++++++++++++++---
+ 1 files changed, 49 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
-index 9a37c8d..16768a5 100644
---- a/sound/soc/codecs/wm8510.c
-+++ b/sound/soc/codecs/wm8510.c
-@@ -18,6 +18,7 @@
- #include <linux/pm.h>
- #include <linux/i2c.h>
- #include <linux/platform_device.h>
-+#include <linux/spi/spi.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -747,6 +748,62 @@ err_driver:
- }
- #endif
+diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
+index c2d35e9..bb7cfb8 100644
+--- a/sound/soc/codecs/tlv320aic23.c
++++ b/sound/soc/codecs/tlv320aic23.c
+@@ -113,7 +113,6 @@ static int tlv320aic23_write(struct snd_soc_codec *codec, unsigned int reg,
  
-+#if defined(CONFIG_SPI_MASTER)
-+static int __devinit wm8510_spi_probe(struct spi_device *spi)
+ static const char *rec_src_text[] = { "Line", "Mic" };
+ static const char *deemph_text[] = {"None", "32Khz", "44.1Khz", "48Khz"};
+-static const char *sidetone_text[] = {"-6db", "-9db", "-12db", "-18db", "0db"};
+ 
+ static const struct soc_enum rec_src_enum =
+ 	SOC_ENUM_SINGLE(TLV320AIC23_ANLG, 2, 2, rec_src_text);
+@@ -125,11 +124,56 @@ static const struct soc_enum tlv320aic23_rec_src =
+ 	SOC_ENUM_SINGLE(TLV320AIC23_ANLG, 2, 2, rec_src_text);
+ static const struct soc_enum tlv320aic23_deemph =
+ 	SOC_ENUM_SINGLE(TLV320AIC23_DIGT, 1, 4, deemph_text);
+-static const struct soc_enum tlv320aic23_sidetone =
+-	SOC_ENUM_SINGLE(TLV320AIC23_ANLG, 6, 5, sidetone_text);
+ 
+ static const DECLARE_TLV_DB_SCALE(out_gain_tlv, -12100, 100, 0);
+ static const DECLARE_TLV_DB_SCALE(input_gain_tlv, -1725, 75, 0);
++static const DECLARE_TLV_DB_SCALE(sidetone_vol_tlv, -1800, 300, 0);
++
++static int snd_soc_tlv320aic23_put_volsw(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
 +{
-+	struct snd_soc_device *socdev = wm8510_socdev;
-+	struct snd_soc_codec *codec = socdev->codec;
-+	int ret;
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	u16 val, reg;
 +
-+	codec->control_data = spi;
++	val = (ucontrol->value.integer.value[0] & 0x07);
 +
-+	ret = wm8510_init(socdev);
-+	if (ret < 0)
-+		dev_err(&spi->dev, "failed to initialise WM8510\n");
++	/* linear conversion to userspace
++	* 000	=	-6db
++	* 001	=	-9db
++	* 010	=	-12db
++	* 011	=	-18db (Min)
++	* 100	=	0db (Max)
++	*/
++	val = (val >= 4) ? 4  : (3 - val);
 +
-+	return ret;
-+}
++	reg = tlv320aic23_read_reg_cache(codec, TLV320AIC23_ANLG) & (~0x1C0);
++	tlv320aic23_write(codec, TLV320AIC23_ANLG, reg | (val << 6));
 +
-+static int __devexit wm8510_spi_remove(struct spi_device *spi)
-+{
 +	return 0;
 +}
 +
-+static struct spi_driver wm8510_spi_driver = {
-+	.driver = {
-+		.name	= "wm8510",
-+		.bus	= &spi_bus_type,
-+		.owner	= THIS_MODULE,
-+	},
-+	.probe		= wm8510_spi_probe,
-+	.remove		= __devexit_p(wm8510_spi_remove),
-+};
-+
-+static int wm8510_spi_write(struct spi_device *spi, const char *data, int len)
++static int snd_soc_tlv320aic23_get_volsw(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
 +{
-+	struct spi_transfer t;
-+	struct spi_message m;
-+	u8 msg[2];
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	u16 val;
 +
-+	if (len <= 0)
-+		return 0;
++	val = tlv320aic23_read_reg_cache(codec, TLV320AIC23_ANLG) & (0x1C0);
++	val = val >> 6;
++	val = (val >= 4) ? 4  : (3 -  val);
++	ucontrol->value.integer.value[0] = val;
++	return 0;
 +
-+	msg[0] = data[0];
-+	msg[1] = data[1];
-+
-+	spi_message_init(&m);
-+	memset(&t, 0, (sizeof t));
-+
-+	t.tx_buf = &msg[0];
-+	t.len = len;
-+
-+	spi_message_add_tail(&t, &m);
-+	spi_sync(spi, &m);
-+
-+	return len;
 +}
-+#endif /* CONFIG_SPI_MASTER */
 +
- static int wm8510_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-@@ -772,8 +829,14 @@ static int wm8510_probe(struct platform_device *pdev)
- 		codec->hw_write = (hw_write_t)i2c_master_send;
- 		ret = wm8510_add_i2c_device(pdev, setup);
- 	}
--#else
--	/* Add other interfaces here */
-+#endif
-+#if defined(CONFIG_SPI_MASTER)
-+	if (setup->spi) {
-+		codec->hw_write = (hw_write_t)wm8510_spi_write;
-+		ret = spi_register_driver(&wm8510_spi_driver);
-+		if (ret != 0)
-+			printk(KERN_ERR "can't add spi driver");
-+	}
- #endif
++#define SOC_TLV320AIC23_SINGLE_TLV(xname, reg, shift, max, invert, tlv_array) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
++	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
++		 SNDRV_CTL_ELEM_ACCESS_READWRITE,\
++	.tlv.p = (tlv_array), \
++	.info = snd_soc_info_volsw, .get = snd_soc_tlv320aic23_get_volsw,\
++	.put = snd_soc_tlv320aic23_put_volsw, \
++	.private_value =  SOC_SINGLE_VALUE(reg, shift, max, invert) }
  
- 	if (ret != 0)
-@@ -796,6 +859,9 @@ static int wm8510_remove(struct platform_device *pdev)
- 	i2c_unregister_device(codec->control_data);
- 	i2c_del_driver(&wm8510_i2c_driver);
- #endif
-+#if defined(CONFIG_SPI_MASTER)
-+	spi_unregister_driver(&wm8510_spi_driver);
-+#endif
- 	kfree(codec);
- 
- 	return 0;
-diff --git a/sound/soc/codecs/wm8510.h b/sound/soc/codecs/wm8510.h
-index c536839..bdefcf5 100644
---- a/sound/soc/codecs/wm8510.h
-+++ b/sound/soc/codecs/wm8510.h
-@@ -94,6 +94,7 @@
- #define WM8510_MCLKDIV_12	(7 << 5)
- 
- struct wm8510_setup_data {
-+	int spi;
- 	int i2c_bus;
- 	unsigned short i2c_address;
+ static const struct snd_kcontrol_new tlv320aic23_snd_controls[] = {
+ 	SOC_DOUBLE_R_TLV("Digital Playback Volume", TLV320AIC23_LCHNVOL,
+@@ -141,7 +185,8 @@ static const struct snd_kcontrol_new tlv320aic23_snd_controls[] = {
+ 			 TLV320AIC23_RINVOL, 0, 31, 0, input_gain_tlv),
+ 	SOC_SINGLE("Mic Input Switch", TLV320AIC23_ANLG, 1, 1, 1),
+ 	SOC_SINGLE("Mic Booster Switch", TLV320AIC23_ANLG, 0, 1, 0),
+-	SOC_ENUM("Sidetone Gain", tlv320aic23_sidetone),
++	SOC_TLV320AIC23_SINGLE_TLV("Sidetone Volume", TLV320AIC23_ANLG,
++				  6, 4, 0, sidetone_vol_tlv),
+ 	SOC_ENUM("Playback De-emphasis", tlv320aic23_deemph),
  };
+ 
 -- 
 1.5.6.5
