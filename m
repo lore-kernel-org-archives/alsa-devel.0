@@ -1,17 +1,19 @@
-From: "matthias.nyffenegger@bluewin.ch" <matthias.nyffenegger@bluewin.ch>
-Subject: Re: [PATCH] alsa: Emagic Audiowerk8 low-level ALSA
-	driver
-Date: Wed, 8 Oct 2008 16:32:40 +0000 (GMT)
-Message-ID: <5218519.398371223483560679.JavaMail.webmail@ps21zhb.bluewin.ch>
-Reply-To: matthias.nyffenegger@bluewin.ch
+From: Troy Kisky <troy.kisky@boundarydevices.com>
+Subject: [PATCH] [ALSA] Allow setting codec register with
+	debugfs filesystem
+Date: Wed,  8 Oct 2008 11:36:13 -0700
+Message-ID: <1223490973-9310-1-git-send-email-troy.kisky@boundarydevices.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail13.bluewin.ch (mail13.bluewin.ch [195.186.18.62])
-	by alsa0.perex.cz (Postfix) with ESMTP id 19B9B2447C
+Received: from mpls-qmqp-04.inet.qwest.net (mpls-qmqp-04.inet.qwest.net
+	[63.231.195.115])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9173F244F2
 	for <alsa-devel@alsa-project.org>;
-	Wed,  8 Oct 2008 18:32:54 +0200 (CEST)
+	Wed,  8 Oct 2008 20:36:33 +0200 (CEST)
+In-Reply-To: <>
+References: <>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,51 +23,181 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: Jean-Christian Hassler <jhassler@free.fr>, alsa-devel@alsa-project.org, Cedric Bregardis <cedric.bregardis@free.fr>
+To: alsa-devel@alsa-project.org
+Cc: Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVGFrYXNoaSwKClRoYW5rIHlvdSBmb3IgeW91ciBxdWljayBhbnN3ZXIsIEkgYW0gbm90IHRo
-YXQgZmFzdCA7LSkKCj5BdCB0aGUgbmV4dCB0aW1lLCBpdCdkIGJlIGFwcHJlY2lhdGUgaWYgeW91
-IHBvc3QgdGhlIHBhdGNoIGl0c2VsZiwKPnRoZW4gd2UgY2FuIHJldmlldyBhbmQgZ2l2ZSBjb21t
-ZW50cyBvbiB0aGUgY29kZSBpbiBhIHJlcGx5Lgo+RXZlbiBpZiBpdCdzIHRvbyBiaWcsIHlvdSBj
-YW4gc3BsaXQgdG8gc2V2ZXJhbCBwaWVjZXMuCgpPay4KCj5KdXN0IGNoZWNraW5nIGl0IG5vdywg
-YW5kIHNvb24gZm91bmQgb3V0IHRoYXQgbWFueSBjb21wb25lbnRzIGxvb2sKPnNpbWlsYXIgYXMg
-QVcyLiAgV2UgaGF2ZSBhbHJlYWR5IEFXMiBkcml2ZXIgKHdob3NlIGF1dGhvcnMgY2MnZWQpLgo+
-Q2FuIHlvdSByZXVzZSB0aGUgY29kZT8KCkhtLCBJJ20gYWZyYWlkIG5vdCBhdCBoaXMgcG9pbnQu
-IFRoZSBleGlzdGluZyBBVzIgZHJpdmVyIGlzIElNSE8gYSB2ZXJ5CnN0cmFpZ2h0LWZvcndhcmQg
-aW1wbGVtZW50YXRpb24gLSB3aXRoIGZvY3VzIG9uIEFXMiAtIGFuZCBkb2VzIG5vdCAKcHJvdmlk
-ZSBnZW5lcmljIGNvZGUgcGFydHMgKGFwYXJ0IHNhYTcxNDYgcmVnaXN0ZXIgYWRkci4gZGVmaW5p
-dGlvbnMpIApmb3IgcmV1c2UuIE1heWJlIHRoYXQncyB3aHkgaXQgaGFzIGl0cyBvd24gZGlyZWN0
-b3J5IG5vdCBuYW1lZCBhZnRlcgp0aGUgY2hpcHNldD8KQmVzaWRlcyB0aGF0IEkgaGF2ZSBwdXQg
-bXVjaCBlbXBoYXNpcyBvbiBwcm92aWRpbmcgYW4gYWJzdHJhY3Rpb24tbGF5ZXIKZm9yIHNhYTcx
-NDYgY2hpcHNldCBhdWRpbyBmdW5jdGlvbmFsaXR5LCBvbiB0b3Agb2Ygd2hpY2ggdGhlIGF1ZGlv
-d2VyawpzcGVjaWZpYyBzdHVmZiBpcyBidWlsdC4gSGVuY2UgaXQgZG9lcyBub3QgbWFrZSBtdWNo
-IHNlbnNlIHRvIG1lIHRyeWluZwp0byByZXVzZSBjb2RlIG9mIHRoZSBleGlzdGluZyBBVzIgZHJp
-dmVyLgoKSSBob3BlIHlvdSBzZWUgbXkgcG9pbnQgYW5kIHdvdWxkIGFwcHJlY2lhdGUgeW91ciBv
-cGluaW9uIG9uIHRoaXMuCgpyZWdhcmRzLCAKCk1hdHRoaWFzCgotLS0tVXJzcHLDvG5nbGljaGUg
-TmFjaHJpY2h0LS0tLQpWb246IHRpd2FpQHN1c2UuZGUKRGF0dW06IDE5LjA5LjIwMDggMTc6NTUK
-QW46IDxtYXR0aGlhcy5ueWZmZW5lZ2dlckBibHVld2luLmNoPgpLb3BpZTogIkNlZHJpYyBCcmVn
-YXJkaXMiPGNlZHJpYy5icmVnYXJkaXNAZnJlZS5mcj4sICJKZWFuLUNocmlzdGlhbiBIYXNzbGVy
-IjxqaGFzc2xlckBmcmVlLmZyPiwgPGFsc2EtZGV2ZWxAYWxzYS0KcHJvamVjdC5vcmc+CkJldHJl
-ZmY6IFJlOiBbUEFUQ0hdIGFsc2E6IEVtYWdpYyBBdWRpb3dlcms4IGxvdy1sZXZlbCBBTFNBIGRy
-aXZlcgoKQXQgRnJpLCAxOSBTZXAgMjAwOCAwOToxMDowMCArMDAwMCAoR01UKSwKbWF0dGhpYXMu
-bnlmZmVuZWdnZXJAYmx1ZXdpbi5jaCB3cm90ZToKPiAKPiBGcm9tOiBNYXR0aGlhcyBOeWZmZW5l
-Z2dlciA8bWF0dGhpYXMubnlmZmVuZWdnZXJAYmx1ZXdpbi5jaD4KPiAKPiBMb3ctbGV2ZWwgQUxT
-QSBkcml2ZXIgZm9yIEVtYWdpYyBBdWRpb3dlcms4IHNvdW5kIGNhcmQuCj4gUHJvamVjdCBwYWdl
-OiBodHRwOi8vc291cmNlZm9yZ2UubmV0L3Byb2plY3RzL2F3OC1hbHNhCgpGaXJzdCBvZmYsIHRo
-YW5rcyBmb3IgeW91ciBwYXRjaC4KCkF0IHRoZSBuZXh0IHRpbWUsIGl0J2QgYmUgYXBwcmVjaWF0
-ZSBpZiB5b3UgcG9zdCB0aGUgcGF0Y2ggaXRzZWxmLAp0aGVuIHdlIGNhbiByZXZpZXcgYW5kIGdp
-dmUgY29tbWVudHMgb24gdGhlIGNvZGUgaW4gYSByZXBseS4KRXZlbiBpZiBpdCdzIHRvbyBiaWcs
-IHlvdSBjYW4gc3BsaXQgdG8gc2V2ZXJhbCBwaWVjZXMuCgo+IEJ1aWx0IGFuZCB0ZXN0ZWQgd2l0
-aCBWYW5pbGxhIDIuNi4yNS4xNiwgQUxTQSAxLjAuMTRhLgo+IAo+IFNpZ25lZC1vZmYtYnk6IE1h
-dHRoaWFzIE55ZmZlbmVnZ2VyIDxtYXR0aGlhcy5ueWZmZW5lZ2dlckBibHVld2luLmNoPgo+IC0t
-LQo+IFRoaXMgaXMgYSByZXF1ZXN0IGZvciBzdWJtaXNzaW9uIHRvIEFMU0EtdHJlZS4KPiBVUkw6
-IGh0dHA6Ly9kb3dubG9hZHMuc291cmNlZm9yZ2UubmV0L2F3OC1hbHNhL2F3LWFsc2EtcGF0Y2gt
-MC4yCgpKdXN0IGNoZWNraW5nIGl0IG5vdywgYW5kIHNvb24gZm91bmQgb3V0IHRoYXQgbWFueSBj
-b21wb25lbnRzIGxvb2sKc2ltaWxhciBhcyBBVzIuICBXZSBoYXZlIGFscmVhZHkgQVcyIGRyaXZl
-ciAod2hvc2UgYXV0aG9ycyBjYydlZCkuCkNhbiB5b3UgcmV1c2UgdGhlIGNvZGU/CgoKdGhhbmtz
-LAoKVGFrYXNoaQogCgoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+i.e. echo 6 59 >/sys/kernel/debug/soc-audio.0/codec_reg
+will set register 0x06 to a value of 0x59
+
+Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
+
+Mark, I didn't base it on dapm's pop_time directory
+because that hasn't made it to my testing kernel yet.
+I cannot test directly from the alsa git tree.
+
+
+Thanks for the feedback.
+
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index a1e0357..f616b0e 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -516,6 +516,9 @@ struct snd_soc_device {
+ 	struct delayed_work delayed_work;
+ 	struct work_struct deferred_resume_work;
+ 	void *codec_data;
++#ifdef CONFIG_DEBUG_FS
++	struct dentry	*debugfs_root;
++#endif
+ };
+ 
+ /* runtime channel data */
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index ad38113..156d11a 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -962,10 +962,8 @@ static int soc_new_pcm(struct snd_soc_device *socdev,
+ }
+ 
+ /* codec register dump */
+-static ssize_t codec_reg_show(struct device *dev,
+-	struct device_attribute *attr, char *buf)
++static ssize_t soc_codec_reg_show(struct snd_soc_device *devdata, char *buf)
+ {
+-	struct snd_soc_device *devdata = dev_get_drvdata(dev);
+ 	struct snd_soc_codec *codec = devdata->codec;
+ 	int i, step = 1, count = 0;
+ 
+@@ -1002,8 +1000,112 @@ static ssize_t codec_reg_show(struct device *dev,
+ 
+ 	return count;
+ }
++static ssize_t codec_reg_show(struct device *dev,
++	struct device_attribute *attr, char *buf)
++{
++	struct snd_soc_device *devdata = dev_get_drvdata(dev);
++	return soc_codec_reg_show(devdata, buf);
++}
++
+ static DEVICE_ATTR(codec_reg, 0444, codec_reg_show, NULL);
+ 
++#ifdef CONFIG_DEBUG_FS
++static int code_reg_open_file(struct inode *inode, struct file *file)
++{
++	file->private_data = inode->i_private;
++	return 0;
++}
++
++static ssize_t code_reg_read_file(struct file *file, char __user *user_buf,
++			       size_t count, loff_t *ppos)
++{
++	ssize_t ret;
++	struct snd_soc_device *devdata = file->private_data;
++	char *buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++	ret = soc_codec_reg_show(devdata, buf);
++	if (ret >= 0)
++		ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
++	kfree(buf);
++	return ret;
++}
++
++static ssize_t code_reg_write_file(struct file *file,
++		const char __user *user_buf, size_t count, loff_t *ppos)
++{
++	char buf[32];
++	int buf_size;
++	char *start = buf;
++	unsigned long reg, value;
++	int step = 1;
++	struct snd_soc_device *devdata = file->private_data;
++	struct snd_soc_codec *codec = devdata->codec;
++
++	buf_size = min(count, (sizeof(buf)-1));
++	if (copy_from_user(buf, user_buf, buf_size))
++		return -EFAULT;
++	buf[buf_size] = 0;
++
++	if (codec->reg_cache_step)
++		step = codec->reg_cache_step;
++
++	while (*start == ' ')
++		start++;
++	reg = simple_strtoul(start, &start, 16);
++	if ((reg >= codec->reg_cache_size) || (reg % step))
++		return -EINVAL;
++	while (*start == ' ')
++		start++;
++	if (strict_strtoul(start, 16, &value))
++		return -EINVAL;
++	codec->write(codec, reg, value);
++	return buf_size;
++}
++
++static const struct file_operations codec_reg_fops = {
++	.open = code_reg_open_file,
++	.read = code_reg_read_file,
++	.write = code_reg_write_file,
++};
++
++static void soc_init_codec_debugfs(struct snd_soc_device *socdev)
++{
++	struct dentry *root, *debugfs_codec_reg;
++	root = debugfs_create_dir(dev_name(socdev->dev), NULL);
++	if (IS_ERR(root) || !root)
++		goto exit1;
++
++	debugfs_codec_reg = debugfs_create_file("codec_reg", 0644,
++			root, socdev, &codec_reg_fops);
++	if (!debugfs_codec_reg)
++		goto exit2;
++
++	socdev->debugfs_root = root;
++	return;
++exit2:
++	debugfs_remove(root);
++exit1:
++	dev_err(socdev->dev, "debugfs is not available\n");
++}
++
++static void soc_cleanup_codec_debugfs(struct snd_soc_device *socdev)
++{
++	debugfs_remove_recursive(socdev->debugfs_root);
++	socdev->debugfs_root = NULL;
++}
++
++#else
++
++static inline void soc_init_codec_debugfs(struct snd_soc_device *socdev)
++{
++}
++
++static inline void soc_cleanup_codec_debugfs(struct snd_soc_device *socdev)
++{
++}
++#endif
++
+ /**
+  * snd_soc_new_ac97_codec - initailise AC97 device
+  * @codec: audio codec
+@@ -1217,6 +1319,7 @@ int snd_soc_register_card(struct snd_soc_device *socdev)
+ 	if (err < 0)
+ 		printk(KERN_WARNING "asoc: failed to add codec sysfs files\n");
+ 
++	soc_init_codec_debugfs(socdev);
+ 	mutex_unlock(&codec->mutex);
+ 
+ out:
+@@ -1240,6 +1343,7 @@ void snd_soc_free_pcms(struct snd_soc_device *socdev)
+ #endif
+ 
+ 	mutex_lock(&codec->mutex);
++	soc_cleanup_codec_debugfs(socdev);
+ #ifdef CONFIG_SND_SOC_AC97_BUS
+ 	for (i = 0; i < codec->num_dai; i++) {
+ 		codec_dai = &codec->dai[i];
+-- 
+1.5.4.3
