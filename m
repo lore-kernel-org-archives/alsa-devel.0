@@ -1,21 +1,22 @@
 From: "John Kacur" <jkacur@gmail.com>
-Subject: Re: [PATCH 7/9] ASoC: Blackfin: I2S CPU DAI driver
-Date: Thu, 9 Oct 2008 08:53:03 +0200
-Message-ID: <520f0cf10810082353r2694535evc3edbcb2b3c76796@mail.gmail.com>
+Subject: Fwd: [PATCH 7/9] ASoC: Blackfin: I2S CPU DAI driver
+Date: Thu, 9 Oct 2008 08:58:08 +0200
+Message-ID: <520f0cf10810082358t274a46afy7d9c5bbc5ca56de7@mail.gmail.com>
 References: <1220516528-20301-1-git-send-email-cooloney@kernel.org>
 	<1220516528-20301-8-git-send-email-cooloney@kernel.org>
 	<20080904144343.GB32531@rakim.wolfsonmicro.main>
+	<520f0cf10810082353r2694535evc3edbcb2b3c76796@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.247])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6921D1037ED
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.245])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0BD7A1037F3
 	for <alsa-devel@alsa-project.org>;
-	Thu,  9 Oct 2008 08:53:17 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id f25so4033293rvb.32
-	for <alsa-devel@alsa-project.org>; Wed, 08 Oct 2008 23:53:03 -0700 (PDT)
-In-Reply-To: <20080904144343.GB32531@rakim.wolfsonmicro.main>
+	Thu,  9 Oct 2008 08:58:21 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id f25so4034909rvb.32
+	for <alsa-devel@alsa-project.org>; Wed, 08 Oct 2008 23:58:08 -0700 (PDT)
+In-Reply-To: <520f0cf10810082353r2694535evc3edbcb2b3c76796@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,9 +30,9 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: Bryan Wu <cooloney@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Cliff Cai <cliff.cai@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 4, 2008 at 4:43 PM, Mark Brown <
-broonie@opensource.wolfsonmicro.com> wrote:
-
+On Thu, Sep 4, 2008 at 4:43 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+>
 > On Thu, Sep 04, 2008 at 04:22:06PM +0800, Bryan Wu wrote:
 > > From: Cliff Cai <cliff.cai@analog.com>
 > >
@@ -62,7 +63,6 @@ broonie@opensource.wolfsonmicro.com> wrote:
 > > +      *
 > > +      * CPU DAI format:I2S, slave mode.
 > > +      */
->
 
 +       switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
 +       case SND_SOC_DAIFMT_CBS_CFS:
@@ -80,11 +80,11 @@ broonie@opensource.wolfsonmicro.com> wrote:
 +               break;
 +       }
 
-My eyes fell upon this switch statement, probably I have similar criticisms
-as to what has already been said, but:
+My eyes fell upon this switch statement, probably I have similar
+criticisms as to what has already been said, but:
 1. Surely the default case is also an -EINVAL
-2. Why not let all the EINVALS fall through, it will shorten up the code,
-and IMO make it more readable, something like this?
+2. Why not let all the EINVALS fall through, it will shorten up the
+code, and IMO make it more readable, something like this?
 +       switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
 +       case SND_SOC_DAIFMT_CBM_CFM: /* Passing Case */
 +               break;
