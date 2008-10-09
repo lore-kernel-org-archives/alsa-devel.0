@@ -1,23 +1,21 @@
-From: "Jarkko Nikula" <jhnikula@gmail.com>
-Subject: Re: [topic/asoc][DON'T PUSH][PATCH 0/3] ASoC: OMAP:
-	McBSP DAI driver updates
-Date: Thu, 9 Oct 2008 20:17:08 +0300
-Message-ID: <bd7b27490810091017q38aef300rfd6150d1a17bc9f6@mail.gmail.com>
-References: <1223557042-17279-1-git-send-email-jarkko.nikula@nokia.com>
-	<20081009150228.GA16095@sirena.org.uk>
-	<20081009151054.GB16095@sirena.org.uk>
+From: "Ted T. Logian" <tedtheologian@gmail.com>
+Subject: Re: Will there ever be emu20k1/x-fi support in Alsa?
+Date: Thu, 09 Oct 2008 12:27:39 -0500
+Message-ID: <1223573259.13995.0.camel@home>
+References: <1223248483.19560.9.camel@home> <20081006212526.219130@gmx.net>
+	<1223361156.20470.0.camel@home> <48EB049C.1010002@gmail.com>
+	<1223426782.11647.5.camel@home>  <s5hprmahyue.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f17.google.com (mail-gx0-f17.google.com
-	[209.85.217.17]) by alsa0.perex.cz (Postfix) with ESMTP id DD1CC24568
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.245])
+	by alsa0.perex.cz (Postfix) with ESMTP id E37252456C
 	for <alsa-devel@alsa-project.org>;
-	Thu,  9 Oct 2008 19:17:27 +0200 (CEST)
-Received: by gxk10 with SMTP id 10so293457gxk.8
-	for <alsa-devel@alsa-project.org>; Thu, 09 Oct 2008 10:17:09 -0700 (PDT)
-In-Reply-To: <20081009151054.GB16095@sirena.org.uk>
-Content-Disposition: inline
+	Thu,  9 Oct 2008 19:28:00 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id f25so100269rvb.32
+	for <alsa-devel@alsa-project.org>; Thu, 09 Oct 2008 10:27:42 -0700 (PDT)
+In-Reply-To: <s5hprmahyue.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,46 +25,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: Steve Sakoman <sakoman@gmail.com>, alsa-devel@alsa-project.org, felipe.contreras@gmail.com, Jarkko Nikula <jarkko.nikula@nokia.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, The Source <thesourcehim@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 9, 2008 at 6:10 PM, Mark Brown <broonie@sirena.org.uk> wrote:
+Myself and The source(if I might volunteer him) would likely to be happy
+to test.  I certainly would.
 
-> On Thu, Oct 09, 2008 at 04:02:29PM +0100, Mark Brown wrote:
->
-> > These all look good.  How do you want to merge them?  They could either
-> > go in with the McBSP changes they depend on or via ALSA.  If via ALSA
-> > then if you like I'm happy to queue them up and submit them once their
-> > dependencies are merged (I've got some other changes in a similar
-> > situation myself).  Otherwise I guess you could resubmit them once the
-> > McBSP changes are merged.
->
-> Hrm.  Looking at the ARM list just now it seems both this and the things
-> my other patches are waiting for are now in rmk's tree so I'm already
-> tracking stuff in the same tree for submission - I guess that makes
-> adding these to my queue the most simple approach?
->
+I just want to be able to use my usb mic AND My soundcard at the same
+time.  oss4 does not support usb mic recording on linux.
 
-Commenting from my another address. Yeah, I just saw Russell's mail that he
-pulled in those McBSP patches so should be safe enough to track these
-patches via your queue.
-
-Actually devconf register definitions for 2430 and 34xx, what patch 1 is
-using, are already in mainline and new McBSP DMA port and base address
-definitions are covered by CONFIG_ARCH_OMAPxxxx so ASoC for osk5912 should
-still compile.
-
----
-
-I heard yesterday from Tony Lindgren that TWL4030 changes might be also
-coming into mainline now. Then Steve would be able send his TWL4030 codec
-driver and machine driver for Overo. Machine driver for Beagle exists as
-well and question is should the same machine driver cover both boards since
-now they are very similar? Current understanding is to keep them separated
-since Overo will be extended in the future. Some discussion about it:
-
-http://www.mail-archive.com/linux-omap@vger.kernel.org/msg04389.html
+There's also oss4 problems with myth, etc.   I'm really anxious to get
+back to alsa.
 
 
-Jarkko
+On Thu, 2008-10-09 at 12:00 +0200, Takashi Iwai wrote:
+
+> At Tue, 07 Oct 2008 19:46:22 -0500,
+> Ted T. Logian wrote:
+> > 
+> > Yes, but it is better than nothing, and perhaps some of that is a
+> > limitation of oss4:).
+> 
+> Just looking at their code, and I can conclude it's a half-baked
+> driver, indeed.  Fixed rate, no full duplex, no multi playback, no
+> multi channel, etc, etc.
+> 
+> OTOH, it's pretty easy to port right now because of its shortness.
+> More comprehensive be more longer codes.
+> 
+> OK, if the code is that long, I'll try to port as experimental.
+> It's always good to have a reference at the beginning.
+> Maybe it'll take one or two days...  Will inform you when it's ready.
+> 
+> Note that I have neither XFi hardware nor datasheet, so someone brave
+> has to test it :)
+>      
+> 
+> Takashi
+> 
+> > On Tue, 2008-10-07 at 10:41 +0400, The Source wrote:
+> > 
+> > > That driver isn't too good unfortunately. No surround support, sample 
+> > > rate stuck at 96000Hz and is read-only (this makes apps that require 
+> > > explicit sample rate to fail to use sound), no pulse-audio compatibility 
+> > > (pulse-audio fails to load oss modules).
+> > > 
+> > > Ted T. Logian ?????:
+> > > > >From what I understand, they did not use creative code/license for the
+> > > > oss4 support, so I wouldn't see why not.
+> > > >
+> > > > On Mon, 2008-10-06 at 23:25 +0200, Sebastian Schneider wrote:
+> > > >
+> > > >   
+> > > >> Isn't it a question of the license? I mean is it allowed just to port the OSS Code with the Creative Part to Alsa?
+> > > >>
+> > > >>     
+> > > >>> I had to ask because oss4 has had emu20k1/x-fi support for a long time
+> > > >>> now.  However, it has the obvious limitations of oss4 and also you
+> > > >>> cannot use usb microphones, so I can't use skype which I'd really like
+> > > >>> to do.
+> > > >>>
+> > > >>>       
+> > > > _______________________________________________
+> > > > Alsa-devel mailing list
+> > > > Alsa-devel@alsa-project.org
+> > > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > > >
+> > > >   
+> > > 
+> > > _______________________________________________
+> > > Alsa-devel mailing list
+> > > Alsa-devel@alsa-project.org
+> > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > 
