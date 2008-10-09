@@ -1,21 +1,21 @@
 From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: [topic/asoc][DON'T PUSH][PATCH 3/3] ASoC: OMAP: Add
-	multilink support to McBSP DAI driver
-Date: Thu,  9 Oct 2008 15:57:22 +0300
-Message-ID: <1223557042-17279-4-git-send-email-jarkko.nikula@nokia.com>
+Subject: [topic/asoc][DON'T PUSH][PATCH 2/3] ASoC: OMAP: Set
+	DMA stream name at runtime in McBSP DAI driver
+Date: Thu,  9 Oct 2008 15:57:21 +0300
+Message-ID: <1223557042-17279-3-git-send-email-jarkko.nikula@nokia.com>
 References: <1223557042-17279-1-git-send-email-jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 09A1824481
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id C61F924481
 	for <alsa-devel@alsa-project.org>;
-	Thu,  9 Oct 2008 14:58:12 +0200 (CEST)
-Received: from esebh107.NOE.Nokia.com (esebh107.ntc.nokia.com [172.21.143.143])
-	by mgw-mx09.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
-	m99Cvp9E020866
-	for <alsa-devel@alsa-project.org>; Thu, 9 Oct 2008 07:57:52 -0500
+	Thu,  9 Oct 2008 14:58:14 +0200 (CEST)
+Received: from esebh105.NOE.Nokia.com (esebh105.ntc.nokia.com [172.21.138.211])
+	by mgw-mx03.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
+	m99CvbYe028695
+	for <alsa-devel@alsa-project.org>; Thu, 9 Oct 2008 15:57:55 +0300
 In-Reply-To: <1223557042-17279-1-git-send-email-jarkko.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,122 +30,40 @@ To: alsa-devel@alsa-project.org
 Cc: Jarkko Nikula <jarkko.nikula@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
+This suits better when adding support for multiple links and different
+link formats.
+
 Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
 ---
- sound/soc/omap/omap-mcbsp.c |   72 +++++++++++++++++++++++++------------------
- sound/soc/omap/omap-mcbsp.h |   16 ++++++---
- 2 files changed, 53 insertions(+), 35 deletions(-)
+ sound/soc/omap/omap-mcbsp.c |    9 +++------
+ 1 files changed, 3 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 6e4c315..0a063a9 100644
+index 4ff73fc..6e4c315 100644
 --- a/sound/soc/omap/omap-mcbsp.c
 +++ b/sound/soc/omap/omap-mcbsp.c
-@@ -437,37 +437,49 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 	return err;
- }
- 
--struct snd_soc_dai omap_mcbsp_dai[NUM_LINKS] = {
+@@ -59,12 +59,7 @@ static struct omap_mcbsp_data mcbsp_data[NUM_LINKS];
+  * Stream DMA parameters. DMA request line and port address are set runtime
+  * since they are different between OMAP1 and later OMAPs
+  */
+-static struct omap_pcm_dma_data omap_mcbsp_dai_dma_params[NUM_LINKS][2] = {
 -{
--	.name = "omap-mcbsp-dai",
--	.id = 0,
--	.type = SND_SOC_DAI_I2S,
--	.playback = {
--		.channels_min = 2,
--		.channels_max = 2,
--		.rates = OMAP_MCBSP_RATES,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
--	},
--	.capture = {
--		.channels_min = 2,
--		.channels_max = 2,
--		.rates = OMAP_MCBSP_RATES,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
--	},
--	.ops = {
--		.startup = omap_mcbsp_dai_startup,
--		.shutdown = omap_mcbsp_dai_shutdown,
--		.trigger = omap_mcbsp_dai_trigger,
--		.hw_params = omap_mcbsp_dai_hw_params,
--	},
--	.dai_ops = {
--		.set_fmt = omap_mcbsp_dai_set_dai_fmt,
--		.set_clkdiv = omap_mcbsp_dai_set_clkdiv,
--		.set_sysclk = omap_mcbsp_dai_set_dai_sysclk,
--	},
--	.private_data = &mcbsp_data[0].bus_id,
+-	{ .name		= "I2S PCM Stereo out", },
+-	{ .name		= "I2S PCM Stereo in", },
 -},
-+#define OMAP_MCBSP_DAI_BUILDER(link_id)				\
-+{								\
-+	.name = "omap-mcbsp-dai-(link_id)",			\
-+	.id = (link_id),					\
-+	.type = SND_SOC_DAI_I2S,				\
-+	.playback = {						\
-+		.channels_min = 2,				\
-+		.channels_max = 2,				\
-+		.rates = OMAP_MCBSP_RATES,			\
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,		\
-+	},							\
-+	.capture = {						\
-+		.channels_min = 2,				\
-+		.channels_max = 2,				\
-+		.rates = OMAP_MCBSP_RATES,			\
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,		\
-+	},							\
-+	.ops = {						\
-+		.startup = omap_mcbsp_dai_startup,		\
-+		.shutdown = omap_mcbsp_dai_shutdown,		\
-+		.trigger = omap_mcbsp_dai_trigger,		\
-+		.hw_params = omap_mcbsp_dai_hw_params,		\
-+	},							\
-+	.dai_ops = {						\
-+		.set_fmt = omap_mcbsp_dai_set_dai_fmt,		\
-+		.set_clkdiv = omap_mcbsp_dai_set_clkdiv,	\
-+		.set_sysclk = omap_mcbsp_dai_set_dai_sysclk,	\
-+	},							\
-+	.private_data = &mcbsp_data[(link_id)].bus_id,		\
-+}
-+
-+struct snd_soc_dai omap_mcbsp_dai[] = {
-+	OMAP_MCBSP_DAI_BUILDER(0),
-+	OMAP_MCBSP_DAI_BUILDER(1),
-+#if NUM_LINKS >= 3
-+	OMAP_MCBSP_DAI_BUILDER(2),
-+#endif
-+#if NUM_LINKS == 5
-+	OMAP_MCBSP_DAI_BUILDER(3),
-+	OMAP_MCBSP_DAI_BUILDER(4),
-+#endif
- };
-+
- EXPORT_SYMBOL_GPL(omap_mcbsp_dai);
+-};
++static struct omap_pcm_dma_data omap_mcbsp_dai_dma_params[NUM_LINKS][2];
  
- MODULE_AUTHOR("Jarkko Nikula <jarkko.nikula@nokia.com>");
-diff --git a/sound/soc/omap/omap-mcbsp.h b/sound/soc/omap/omap-mcbsp.h
-index ed8afb5..df7ad13 100644
---- a/sound/soc/omap/omap-mcbsp.h
-+++ b/sound/soc/omap/omap-mcbsp.h
-@@ -38,11 +38,17 @@ enum omap_mcbsp_div {
- 	OMAP_MCBSP_CLKGDV,		/* Sample rate generator divider */
- };
- 
--/*
-- * REVISIT: Preparation for the ASoC v2. Let the number of available links to
-- * be same than number of McBSP ports found in OMAP(s) we are compiling for.
-- */
--#define NUM_LINKS	1
-+#if defined(CONFIG_ARCH_OMAP2420)
-+#define NUM_LINKS	2
-+#endif
-+#if defined(CONFIG_ARCH_OMAP15XX) || defined(CONFIG_ARCH_OMAP16XX)
-+#undef  NUM_LINKS
-+#define NUM_LINKS	3
-+#endif
-+#if defined(CONFIG_ARCH_OMAP2430) || defined(CONFIG_ARCH_OMAP34XX)
-+#undef  NUM_LINKS
-+#define NUM_LINKS	5
-+#endif
- 
- extern struct snd_soc_dai omap_mcbsp_dai[NUM_LINKS];
- 
+ #if defined(CONFIG_ARCH_OMAP15XX) || defined(CONFIG_ARCH_OMAP16XX)
+ static const int omap1_dma_reqs[][2] = {
+@@ -222,6 +217,8 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
+ 	} else {
+ 		return -ENODEV;
+ 	}
++	omap_mcbsp_dai_dma_params[id][substream->stream].name =
++		substream->stream ? "Audio Capture" : "Audio Playback";
+ 	omap_mcbsp_dai_dma_params[id][substream->stream].dma_req = dma;
+ 	omap_mcbsp_dai_dma_params[id][substream->stream].port_addr = port;
+ 	cpu_dai->dma_data = &omap_mcbsp_dai_dma_params[id][substream->stream];
 -- 
 1.5.6.5
