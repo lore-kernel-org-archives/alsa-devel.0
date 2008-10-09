@@ -1,15 +1,25 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: [PATCH] hda: STAC_HP_M4
-Date: Thu, 09 Oct 2008 08:37:28 -0400
-Message-ID: <48EDFB08.1000504@embeddedalley.com>
+From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Subject: [topic/asoc][DON'T PUSH][PATCH 0/3] ASoC: OMAP: McBSP
+	DAI driver updates
+Date: Thu,  9 Oct 2008 15:57:19 +0300
+Message-ID: <1223557042-17279-1-git-send-email-jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
-	by alsa0.perex.cz (Postfix) with SMTP id 5F09024476
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id E555B24481
 	for <alsa-devel@alsa-project.org>;
-	Thu,  9 Oct 2008 14:37:56 +0200 (CEST)
+	Thu,  9 Oct 2008 14:58:13 +0200 (CEST)
+Received: from esebh107.NOE.Nokia.com (esebh107.ntc.nokia.com [172.21.143.143])
+	by mgw-mx09.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
+	m99Cvp9G020866
+	for <alsa-devel@alsa-project.org>; Thu, 9 Oct 2008 07:57:54 -0500
+Received: from localhost.localdomain (esdhcp041113.research.nokia.com
+	[172.21.41.113])
+	by mgw-int01.ntc.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
+	m99CviN6007063
+	for <alsa-devel@alsa-project.org>; Thu, 9 Oct 2008 15:57:45 +0300
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,46 +30,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Set the third microphone to a default config of a 'Line In' to be added the Input Source Mux's.
+Here are updates to OMAP McBSP DAI driver adding support to OMAP2430 &
+OMAP34xx and adding support for multiple simultaneous DAI links.
 
-Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
----
+Please note that the first patch is not randconfig safe until necessary OMAP
+McBSP updates come into mainline so I rather don't push these yet until
+those changes are here.
 
-diff --git a/pci/hda/patch_sigmatel.c b/pci/hda/patch_sigmatel.c
-index b5c1449..5557116 100644
---- a/pci/hda/patch_sigmatel.c
-+++ b/pci/hda/patch_sigmatel.c
-@@ -3605,7 +3605,12 @@ static int stac92xx_init(struct hda_codec *codec)
- 	for (i = 0; i < AUTO_PIN_LAST; i++) {
- 		hda_nid_t nid = cfg->input_pins[i];
- 		if (nid) {
--			unsigned int pinctl = AC_PINCTL_IN_EN;
-+			unsigned int pinctl = snd_hda_codec_read(codec, nid,
-+				0, AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
-+			/* if PINCTL already set then skip */
-+			if (pinctl & AC_PINCAP_IN)
-+				continue;
-+			pinctl = AC_PINCTL_IN_EN;
- 			if (i == AUTO_PIN_MIC || i == AUTO_PIN_FRONT_MIC)
- 				pinctl |= stac92xx_get_vref(codec, nid);
- 			stac92xx_auto_set_pinctl(codec, nid, pinctl);
-@@ -4375,12 +4380,13 @@ again:
- 	switch (spec->board_config) {
- 	case STAC_HP_M4:
- 		spec->num_dmics = 0;
--		spec->num_smuxes = 1;
-+		spec->num_smuxes = 0;
- 		spec->num_dmuxes = 0;
+See
 
- 		/* enable internal microphone */
--		snd_hda_codec_write_cache(codec, 0x0e, 0,
--			AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80);
-+		stac92xx_set_config_reg(codec, 0x0e, 0x01813040);
-+		stac92xx_auto_set_pinctl(codec, 0x0e,
-+			AC_PINCTL_IN_EN | AC_PINCTL_VREF_80);
- 		break;
- 	default:
- 		spec->num_dmics = STAC92HD71BXX_NUM_DMICS;
+http://marc.info/?l=linux-omap&m=122345107722469&w=2
+
+
+-- 
+Jarkko
