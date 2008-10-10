@@ -1,19 +1,23 @@
-From: ext-jukka.hynninen@vaisala.com
-Subject: ASoC: Merging at91 and avr32 dirs - test report
-Date: Fri, 10 Oct 2008 18:15:17 +0300
-Message-ID: <B9D3C48C98930741A166756A50C44A610F17B561@helx1.corp.vaisala.com>
+From: "The Source" <thesourcehim@gmail.com>
+Subject: Fwd:  Backported sbxfi driver (UNTESTED!)
+Date: Fri, 10 Oct 2008 20:41:17 +0400
+Message-ID: <6d00fe310810100941i44c3f4b3v70d3b235e7c1206@mail.gmail.com>
+References: <s5hy70xsl46.wl%tiwai@suse.de> <1223583478.5018.0.camel@home>
+	<s5hbpxt7zui.wl%tiwai@suse.de> <1223619975.4700.2.camel@home>
+	<s5hzlld6j6u.wl%tiwai@suse.de>
+	<6d00fe310810100939h6cd61e0cg7817c7f54f6261f6@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw.vaisala.com (mailgw.vaisala.com [192.81.123.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3EE7124767
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id 422A5103811
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Oct 2008 17:15:37 +0200 (CEST)
-Received: from helsrv02.vaisala.com (helsrv02.vaisala.com [192.81.123.16])
-	by mailgw.vaisala.com (8.13.6/8.13.6) with SMTP id m9AFFJ2T016720
-	for <alsa-devel@alsa-project.org>; Fri, 10 Oct 2008 18:15:19 +0300
-Content-class: urn:content-classes:message
+	Fri, 10 Oct 2008 18:41:35 +0200 (CEST)
+Received: by nf-out-0910.google.com with SMTP id e27so440372nfd.32
+	for <alsa-devel@alsa-project.org>; Fri, 10 Oct 2008 09:41:17 -0700 (PDT)
+In-Reply-To: <6d00fe310810100939h6cd61e0cg7817c7f54f6261f6@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,48 +27,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@sirena.org.uk
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I tested the patches and got everything working with minor changes.
-
-However, there seems to be some problem with PM, occasionally ASoC is
-stuck with Standby mode (looking at dapm_widgets) when I start the
-playback. Restarting the player brings the sound back. I'll carry out
-some further investigation and get back to this.
-
-My kernel is 2.6.27-rc3, and machine driver is adapted from
-playpaq_wm8510.c to run on at91rm9200 board.
-
-The SSC peripheral clock was disabled more often than it was enabled,
-and that catched the bug trap in arch/arm/mach-at91/clock.c. I'm not
-sure if this was the real problem, but it's the way I managed to solve
-it.
+---------- Forwarded message ----------
+From: The Source <thesourcehim@gmail.com>
+Date: 2008/10/10
+Subject: Re: [alsa-devel] Backported sbxfi driver (UNTESTED!)
+To: Takashi Iwai <tiwai@suse.de>
 
 
--Jukka
 
 
-diff -uprN a/sound/soc/atmel/atmel_ssc_dai.c
-b/sound/soc/atmel/atmel_ssc_dai.c
---- a/sound/soc/atmel/atmel_ssc_dai.c   2008-10-10 17:23:46.000000000
-+0300
-+++ b/sound/soc/atmel/atmel_ssc_dai.c   2008-10-10 17:26:06.000000000
-+0300
-@@ -261,11 +261,11 @@ static void atmel_ssc_shutdown(struct sn
-        spin_lock_irq(&ssc_p->lock);
-        ssc_p->dir_mask &= ~dir_mask;
-        if (!ssc_p->dir_mask) {
--               /* Shutdown the SSC clock. */
--               pr_debug("atmel_ssc_dau: Stopping clock\n");
--               clk_disable(ssc_p->ssc->clk);
--
-                if (ssc_p->initialized) {
-+                       /* Shutdown the SSC clock. */
-+                       pr_debug("atmel_ssc_dai: Stopping clock\n");
-+                       clk_disable(ssc_p->ssc->clk);
-+
-                        free_irq(ssc_p->ssc->irq, ssc_p);
-                        ssc_p->initialized = 0;
-                }
+2008/10/10 Takashi Iwai <tiwai@suse.de>
+
+At Fri, 10 Oct 2008 01:26:15 -0500,
+> Ted T. Logian wrote:
+> >
+> >
+> >
+> > On Fri, 2008-10-10 at 08:01 +0200, Takashi Iwai wrote:
+> > > At Thu, 09 Oct 2008 15:17:58 -0500,
+> > > Ted T. Logian wrote:
+> > > >
+> > > > Sorry for the multiple posts, but once I rmmod snd-sbxfi, running
+> mixer does
+> > > > fine.  It seems if I have snd-sbxfi loaded and I run alsamixer, it
+> locks the
+> > > > entire system.
+> > >
+> > > So, do you mean loading the driver itself doesn't lock up?  If so,
+> > > it's better than I expected.
+> > >
+> > > Did you run ever PCM playback/capture before that?  This is more
+> > > dangerous :)
+> > >
+> > > Also, please give your hardware details, as there are different models
+> > > for X-Fi, and some are handled pretty differently.
+> > >
+> > > [BTW, please stop top-posting, and avoid HTML mails for ML.  It's easy
+> > >  to switch to normal (plain) mail mode on Gmail, just a click.]
+> > >
+> > >
+> > > thanks,
+> > >
+> > > Takashi
+> >
+> >
+> > I think perhaps from uninstalling pulseaudio I got further.  I can use
+> > mixer now, and it even has a "Master" device, but nothing else...
+> >
+> > however, I do get a lock up later.
+> >
+> > I get this from running aplay, too, if this helps...
+>
+> Thanks!  That's rather a stupid bug.
+> The patch is below.
+>
+>
+> Takashi
+>
+> diff --git a/sound/pci/sbxfi/sbxfi.c b/sound/pci/sbxfi/sbxfi.c
+> index 8066bf4..8a0eea0 100644
+> --- a/sound/pci/sbxfi/sbxfi.c
+> +++ b/sound/pci/sbxfi/sbxfi.c
+> @@ -831,7 +831,7 @@ static struct sbxfi_port *sbxfi_port_alloc(struct sbxfi
+> *chip,
+>        port->src[0] = src;
+>        port->src[1] = src + 1;
+>        spin_lock_irq(&chip->port_lock);
+> -       list_add(&chip->port_list, &port->list);
+> +       list_add(&port->list, &chip->port_list);
+>        spin_unlock_irq(&chip->port_lock);
+>        return port;
+>  }
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+
+
+Hello, I have tried the driver with the fix you provided, but I couldn't get
+anything. Kernel panic on any attempt to use sound or mixer. Also kernel
+panic several seconds after Xorg starts. Each crash causes either hang or
+reboot so I couldn't get any error messages. If there are some logs left,
+please tell me where they are and I'll send them to you.
+My card is X-Fi Platinum Fatality Champion Series.
