@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/4] ASoC: OMAP: Add multilink support to McBSP
-	DAI driver
-Date: Fri, 10 Oct 2008 15:52:15 +0100
-Message-ID: <1223650337-15371-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <20081010145127.GA15329@rakim.wolfsonmicro.main>
-	<1223650337-15371-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: ext-jukka.hynninen@vaisala.com
+Subject: ASoC: Merging at91 and avr32 dirs - test report
+Date: Fri, 10 Oct 2008 18:15:17 +0300
+Message-ID: <B9D3C48C98930741A166756A50C44A610F17B561@helx1.corp.vaisala.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 43F472476C
+Received: from mailgw.vaisala.com (mailgw.vaisala.com [192.81.123.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3EE7124767
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Oct 2008 16:52:36 +0200 (CEST)
-In-Reply-To: <1223650337-15371-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Fri, 10 Oct 2008 17:15:37 +0200 (CEST)
+Received: from helsrv02.vaisala.com (helsrv02.vaisala.com [192.81.123.16])
+	by mailgw.vaisala.com (8.13.6/8.13.6) with SMTP id m9AFFJ2T016720
+	for <alsa-devel@alsa-project.org>; Fri, 10 Oct 2008 18:15:19 +0300
+Content-class: urn:content-classes:message
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,129 +23,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jarkko Nikula <jarkko.nikula@nokia.com>
+To: broonie@sirena.org.uk
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jarkko Nikula <jarkko.nikula@nokia.com>
+I tested the patches and got everything working with minor changes.
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/omap/omap-mcbsp.c |   72 +++++++++++++++++++++++++------------------
- sound/soc/omap/omap-mcbsp.h |   16 ++++++---
- 2 files changed, 53 insertions(+), 35 deletions(-)
+However, there seems to be some problem with PM, occasionally ASoC is
+stuck with Standby mode (looking at dapm_widgets) when I start the
+playback. Restarting the player brings the sound back. I'll carry out
+some further investigation and get back to this.
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index fb920e1..d32eb47 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -381,37 +381,49 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 	return err;
- }
- 
--struct snd_soc_dai omap_mcbsp_dai[NUM_LINKS] = {
--{
--	.name = "omap-mcbsp-dai",
--	.id = 0,
--	.type = SND_SOC_DAI_I2S,
--	.playback = {
--		.channels_min = 2,
--		.channels_max = 2,
--		.rates = OMAP_MCBSP_RATES,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
--	},
--	.capture = {
--		.channels_min = 2,
--		.channels_max = 2,
--		.rates = OMAP_MCBSP_RATES,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
--	},
--	.ops = {
--		.startup = omap_mcbsp_dai_startup,
--		.shutdown = omap_mcbsp_dai_shutdown,
--		.trigger = omap_mcbsp_dai_trigger,
--		.hw_params = omap_mcbsp_dai_hw_params,
--	},
--	.dai_ops = {
--		.set_fmt = omap_mcbsp_dai_set_dai_fmt,
--		.set_clkdiv = omap_mcbsp_dai_set_clkdiv,
--		.set_sysclk = omap_mcbsp_dai_set_dai_sysclk,
--	},
--	.private_data = &mcbsp_data[0].bus_id,
--},
-+#define OMAP_MCBSP_DAI_BUILDER(link_id)				\
-+{								\
-+	.name = "omap-mcbsp-dai-(link_id)",			\
-+	.id = (link_id),					\
-+	.type = SND_SOC_DAI_I2S,				\
-+	.playback = {						\
-+		.channels_min = 2,				\
-+		.channels_max = 2,				\
-+		.rates = OMAP_MCBSP_RATES,			\
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,		\
-+	},							\
-+	.capture = {						\
-+		.channels_min = 2,				\
-+		.channels_max = 2,				\
-+		.rates = OMAP_MCBSP_RATES,			\
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,		\
-+	},							\
-+	.ops = {						\
-+		.startup = omap_mcbsp_dai_startup,		\
-+		.shutdown = omap_mcbsp_dai_shutdown,		\
-+		.trigger = omap_mcbsp_dai_trigger,		\
-+		.hw_params = omap_mcbsp_dai_hw_params,		\
-+	},							\
-+	.dai_ops = {						\
-+		.set_fmt = omap_mcbsp_dai_set_dai_fmt,		\
-+		.set_clkdiv = omap_mcbsp_dai_set_clkdiv,	\
-+		.set_sysclk = omap_mcbsp_dai_set_dai_sysclk,	\
-+	},							\
-+	.private_data = &mcbsp_data[(link_id)].bus_id,		\
-+}
+My kernel is 2.6.27-rc3, and machine driver is adapted from
+playpaq_wm8510.c to run on at91rm9200 board.
+
+The SSC peripheral clock was disabled more often than it was enabled,
+and that catched the bug trap in arch/arm/mach-at91/clock.c. I'm not
+sure if this was the real problem, but it's the way I managed to solve
+it.
+
+
+-Jukka
+
+
+diff -uprN a/sound/soc/atmel/atmel_ssc_dai.c
+b/sound/soc/atmel/atmel_ssc_dai.c
+--- a/sound/soc/atmel/atmel_ssc_dai.c   2008-10-10 17:23:46.000000000
++0300
++++ b/sound/soc/atmel/atmel_ssc_dai.c   2008-10-10 17:26:06.000000000
++0300
+@@ -261,11 +261,11 @@ static void atmel_ssc_shutdown(struct sn
+        spin_lock_irq(&ssc_p->lock);
+        ssc_p->dir_mask &= ~dir_mask;
+        if (!ssc_p->dir_mask) {
+-               /* Shutdown the SSC clock. */
+-               pr_debug("atmel_ssc_dau: Stopping clock\n");
+-               clk_disable(ssc_p->ssc->clk);
+-
+                if (ssc_p->initialized) {
++                       /* Shutdown the SSC clock. */
++                       pr_debug("atmel_ssc_dai: Stopping clock\n");
++                       clk_disable(ssc_p->ssc->clk);
 +
-+struct snd_soc_dai omap_mcbsp_dai[] = {
-+	OMAP_MCBSP_DAI_BUILDER(0),
-+	OMAP_MCBSP_DAI_BUILDER(1),
-+#if NUM_LINKS >= 3
-+	OMAP_MCBSP_DAI_BUILDER(2),
-+#endif
-+#if NUM_LINKS == 5
-+	OMAP_MCBSP_DAI_BUILDER(3),
-+	OMAP_MCBSP_DAI_BUILDER(4),
-+#endif
- };
-+
- EXPORT_SYMBOL_GPL(omap_mcbsp_dai);
- 
- MODULE_AUTHOR("Jarkko Nikula <jarkko.nikula@nokia.com>");
-diff --git a/sound/soc/omap/omap-mcbsp.h b/sound/soc/omap/omap-mcbsp.h
-index ed8afb5..df7ad13 100644
---- a/sound/soc/omap/omap-mcbsp.h
-+++ b/sound/soc/omap/omap-mcbsp.h
-@@ -38,11 +38,17 @@ enum omap_mcbsp_div {
- 	OMAP_MCBSP_CLKGDV,		/* Sample rate generator divider */
- };
- 
--/*
-- * REVISIT: Preparation for the ASoC v2. Let the number of available links to
-- * be same than number of McBSP ports found in OMAP(s) we are compiling for.
-- */
--#define NUM_LINKS	1
-+#if defined(CONFIG_ARCH_OMAP2420)
-+#define NUM_LINKS	2
-+#endif
-+#if defined(CONFIG_ARCH_OMAP15XX) || defined(CONFIG_ARCH_OMAP16XX)
-+#undef  NUM_LINKS
-+#define NUM_LINKS	3
-+#endif
-+#if defined(CONFIG_ARCH_OMAP2430) || defined(CONFIG_ARCH_OMAP34XX)
-+#undef  NUM_LINKS
-+#define NUM_LINKS	5
-+#endif
- 
- extern struct snd_soc_dai omap_mcbsp_dai[NUM_LINKS];
- 
--- 
-1.5.6.5
+                        free_irq(ssc_p->ssc->irq, ssc_p);
+                        ssc_p->initialized = 0;
+                }
