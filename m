@@ -1,15 +1,27 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [PATCH] ASoC: update email address for Liam Girdwood
-Date: Sun, 12 Oct 2008 13:17:36 +0100
-Message-ID: <1223813856.6814.347.camel@dell-desktop.example.com>
+From: Alexey Bazhin <baz@irc.msk.ru>
+Subject: Re: Backported sbxfi driver (UNTESTED!)
+Date: Sun, 12 Oct 2008 16:53:53 +0400
+Message-ID: <20081012165353.a084d158.baz@irc.msk.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from slimlogic.co.uk (slimlogic.co.uk [89.16.172.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0E69024552
+Received: from mail.mosuzedu.ru (mail.mosuzedu.ru [62.117.117.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6201B24581
 	for <alsa-devel@alsa-project.org>;
-	Sun, 12 Oct 2008 14:18:01 +0200 (CEST)
+	Sun, 12 Oct 2008 14:57:52 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.mosuzedu.ru (Postfix) with ESMTP id 51553BD7E
+	for <alsa-devel@alsa-project.org>; Sun, 12 Oct 2008 16:57:34 +0400 (MSD)
+Received: from mail.mosuzedu.ru ([127.0.0.1])
+	by localhost (sakura.mosuzedu.ru [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id EpQwm4AZa5x0 for <alsa-devel@alsa-project.org>;
+	Sun, 12 Oct 2008 16:57:33 +0400 (MSD)
+Received: from firefly.flat.yume.ru (cicada.yume.ru [217.172.19.143])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested) (Authenticated sender: baz@yume.ru)
+	by mail.mosuzedu.ru (Postfix) with ESMTP
+	for <alsa-devel@alsa-project.org>; Sun, 12 Oct 2008 16:57:33 +0400 (MSD)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,301 +31,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Update the contact information for Liam Girdwood in ASoC core and
-drivers as my old email address is no longer valid.
+Hi,
 
+I have just compiled driver from git and try to run it. My card is pci:
+1102:0005 Multimedia audio controller: Creative Labs SB X-Fi
 
-Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
----
- sound/oss/ac97_codec.c         |    2 +-
- sound/pci/ac97/ac97_patch.c    |    2 +-
- sound/soc/at91/at91-ssc.c      |    2 +-
- sound/soc/at91/eti_b1_wm8731.c |    2 +-
- sound/soc/codecs/ac97.c        |    3 +--
- sound/soc/codecs/wm8510.c      |    2 +-
- sound/soc/codecs/wm8753.c      |    3 +--
- sound/soc/codecs/wm8753.h      |    3 +--
- sound/soc/codecs/wm9712.c      |    3 +--
- sound/soc/codecs/wm9713.c      |    3 +--
- sound/soc/pxa/corgi.c          |    2 +-
- sound/soc/pxa/em-x270.c        |    2 +-
- sound/soc/pxa/poodle.c         |    2 +-
- sound/soc/pxa/pxa2xx-i2s.c     |    4 ++--
- sound/soc/pxa/spitz.c          |    2 +-
- sound/soc/pxa/tosa.c           |    2 +-
- sound/soc/soc-core.c           |    5 ++---
- sound/soc/soc-dapm.c           |    5 ++---
- 18 files changed, 21 insertions(+), 28 deletions(-)
+I got following:
 
-diff --git a/sound/oss/ac97_codec.c b/sound/oss/ac97_codec.c
-index b63839e..456a1b4 100644
---- a/sound/oss/ac97_codec.c
-+++ b/sound/oss/ac97_codec.c
-@@ -30,7 +30,7 @@
-  **************************************************************************
-  *
-  * History
-- * May 02, 2003 Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-+ * May 02, 2003 Liam Girdwood <lrg@slimlogic.co.uk>
-  *	Removed non existant WM9700
-  *	Added support for WM9705, WM9708, WM9709, WM9710, WM9711
-  *	WM9712 and WM9717
-diff --git a/sound/pci/ac97/ac97_patch.c b/sound/pci/ac97/ac97_patch.c
-index 6ce3cbe..6e831af 100644
---- a/sound/pci/ac97/ac97_patch.c
-+++ b/sound/pci/ac97/ac97_patch.c
-@@ -476,7 +476,7 @@ static int patch_yamaha_ymf753(struct snd_ac97 * ac97)
- }
- 
- /*
-- * May 2, 2003 Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-+ * May 2, 2003 Liam Girdwood <lrg@slimlogic.co.uk>
-  *  removed broken wolfson00 patch.
-  *  added support for WM9705,WM9708,WM9709,WM9710,WM9711,WM9712 and WM9717.
-  */
-diff --git a/sound/soc/at91/at91-ssc.c b/sound/soc/at91/at91-ssc.c
-index a5b1a79..1b61cc4 100644
---- a/sound/soc/at91/at91-ssc.c
-+++ b/sound/soc/at91/at91-ssc.c
-@@ -5,7 +5,7 @@
-  *         Endrelia Technologies Inc.
-  *
-  * Based on pxa2xx Platform drivers by
-- * Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-+ * Liam Girdwood <lrg@slimlogic.co.uk>
-  *
-  *  This program is free software; you can redistribute  it and/or modify it
-  *  under  the terms of  the GNU General  Public License as published by the
-diff --git a/sound/soc/at91/eti_b1_wm8731.c b/sound/soc/at91/eti_b1_wm8731.c
-index 684781e..a22f349 100644
---- a/sound/soc/at91/eti_b1_wm8731.c
-+++ b/sound/soc/at91/eti_b1_wm8731.c
-@@ -10,7 +10,7 @@
-  * Copyright 2005 Wolfson Microelectronics PLC.
-  * Copyright 2005 Openedhand Ltd.
-  *
-- * Authors: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-+ * Authors: Liam Girdwood <lrg@slimlogic.co.uk>
-  *          Richard Purdie <richard@openedhand.com>
-  *
-  *  This program is free software; you can redistribute  it and/or modify it
-diff --git a/sound/soc/codecs/ac97.c b/sound/soc/codecs/ac97.c
-index 61fd96c..bd1ebdc 100644
---- a/sound/soc/codecs/ac97.c
-+++ b/sound/soc/codecs/ac97.c
-@@ -2,8 +2,7 @@
-  * ac97.c  --  ALSA Soc AC97 codec support
-  *
-  * Copyright 2005 Wolfson Microelectronics PLC.
-- * Author: Liam Girdwood
-- *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
-+ * Author: Liam Girdwood <lrg@slimlogic.co.uk>
-  *
-  *  This program is free software; you can redistribute  it and/or modify it
-  *  under  the terms of  the GNU General  Public License as published by the
-diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
-index 9a37c8d..d596f70 100644
---- a/sound/soc/codecs/wm8510.c
-+++ b/sound/soc/codecs/wm8510.c
-@@ -3,7 +3,7 @@
-  *
-  * Copyright 2006 Wolfson Microelectronics PLC.
-  *
-- * Author: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-+ * Author: Liam Girdwood <lrg@slimlogic.co.uk>
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License version 2 as
-diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index 8c4df44..be817b0 100644
---- a/sound/soc/codecs/wm8753.c
-+++ b/sound/soc/codecs/wm8753.c
-@@ -2,8 +2,7 @@
-  * wm8753.c  --  WM8753 ALSA Soc Audio driver
-  *
-  * Copyright 2003 Wolfson Microelectronics PLC.
-- * Author: Liam Girdwood
-- *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
-+ * Author: Liam Girdwood <lrg@slimlogic.co.uk>
-  *
-  *  This program is free software; you can redistribute  it and/or modify it
-  *  under  the terms of  the GNU General  Public License as published by the
-diff --git a/sound/soc/codecs/wm8753.h b/sound/soc/codecs/wm8753.h
-index 7defde0..f96c04b 100644
---- a/sound/soc/codecs/wm8753.h
-+++ b/sound/soc/codecs/wm8753.h
-@@ -2,8 +2,7 @@
-  * wm8753.h  --  audio driver for WM8753
-  *
-  * Copyright 2003 Wolfson Microelectronics PLC.
-- * Author: Liam Girdwood
-- *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
-+ * Author: Liam Girdwood <lrg@slimlogic.co.uk>
-  *
-  *  This program is free software; you can redistribute  it and/or modify it
-  *  under  the terms of  the GNU General  Public License as published by the
-diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index 2f1c91b..ffb471e 100644
---- a/sound/soc/codecs/wm9712.c
-+++ b/sound/soc/codecs/wm9712.c
-@@ -2,8 +2,7 @@
-  * wm9712.c  --  ALSA Soc WM9712 codec support
-  *
-  * Copyright 2006 Wolfson Microelectronics PLC.
-- * Author: Liam Girdwood
-- *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
-+ * Author: Liam Girdwood <lrg@slimlogic.co.uk>
-  *
-  *  This program is free software; you can redistribute  it and/or modify it
-  *  under  the terms of  the GNU General  Public License as published by the
-diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
-index 441d058..aba402b 100644
---- a/sound/soc/codecs/wm9713.c
-+++ b/sound/soc/codecs/wm9713.c
-@@ -2,8 +2,7 @@
-  * wm9713.c  --  ALSA Soc WM9713 codec support
-  *
-  * Copyright 2006 Wolfson Microelectronics PLC.
-- * Author: Liam Girdwood
-- *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
-+ * Author: Liam Girdwood <lrg@slimlogic.co.uk>
-  *
-  *  This program is free software; you can redistribute  it and/or modify it
-  *  under  the terms of  the GNU General  Public License as published by the
-diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
-index 1a8373d..fe95384 100644
---- a/sound/soc/pxa/corgi.c
-+++ b/sound/soc/pxa/corgi.c
-@@ -4,7 +4,7 @@
-  * Copyright 2005 Wolfson Microelectronics PLC.
-  * Copyright 2005 Openedhand Ltd.
-  *
-- * Authors: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-+ * Authors: Liam Girdwood <lrg@slimlogic.co.uk>
-  *          Richard Purdie <richard@openedhand.com>
-  *
-  *  This program is free software; you can redistribute  it and/or modify it
-diff --git a/sound/soc/pxa/em-x270.c b/sound/soc/pxa/em-x270.c
-index d9c3f7b..e6ff692 100644
---- a/sound/soc/pxa/em-x270.c
-+++ b/sound/soc/pxa/em-x270.c
-@@ -9,7 +9,7 @@
-  * Copyright 2005 Wolfson Microelectronics PLC.
-  * Copyright 2005 Openedhand Ltd.
-  *
-- * Authors: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-+ * Authors: Liam Girdwood <lrg@slimlogic.co.uk>
-  *          Richard Purdie <richard@openedhand.com>
-  *
-  *  This program is free software; you can redistribute  it and/or modify it
-diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
-index f84f7d8..33851cd 100644
---- a/sound/soc/pxa/poodle.c
-+++ b/sound/soc/pxa/poodle.c
-@@ -4,7 +4,7 @@
-  * Copyright 2005 Wolfson Microelectronics PLC.
-  * Copyright 2005 Openedhand Ltd.
-  *
-- * Authors: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-+ * Authors: Liam Girdwood <lrg@slimlogic.co.uk>
-  *          Richard Purdie <richard@openedhand.com>
-  *
-  *  This program is free software; you can redistribute  it and/or modify it
-diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
-index 2fb5829..e758034 100644
---- a/sound/soc/pxa/pxa2xx-i2s.c
-+++ b/sound/soc/pxa/pxa2xx-i2s.c
-@@ -3,7 +3,7 @@
-  *
-  * Copyright 2005 Wolfson Microelectronics PLC.
-  * Author: Liam Girdwood
-- *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
-+ *         lrg@slimlogic.co.uk
-  *
-  *  This program is free software; you can redistribute  it and/or modify it
-  *  under  the terms of  the GNU General  Public License as published by the
-@@ -405,6 +405,6 @@ module_init(pxa2xx_i2s_init);
- module_exit(pxa2xx_i2s_exit);
- 
- /* Module information */
--MODULE_AUTHOR("Liam Girdwood, liam.girdwood@wolfsonmicro.com, www.wolfsonmicro.com");
-+MODULE_AUTHOR("Liam Girdwood, lrg@slimlogic.co.uk");
- MODULE_DESCRIPTION("pxa2xx I2S SoC Interface");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
-index 9a70b00..8375bb5 100644
---- a/sound/soc/pxa/spitz.c
-+++ b/sound/soc/pxa/spitz.c
-@@ -4,7 +4,7 @@
-  * Copyright 2005 Wolfson Microelectronics PLC.
-  * Copyright 2005 Openedhand Ltd.
-  *
-- * Authors: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-+ * Authors: Liam Girdwood <lrg@slimlogic.co.uk>
-  *          Richard Purdie <richard@openedhand.com>
-  *
-  *  This program is free software; you can redistribute  it and/or modify it
-diff --git a/sound/soc/pxa/tosa.c b/sound/soc/pxa/tosa.c
-index 2baaa75..1300cb5 100644
---- a/sound/soc/pxa/tosa.c
-+++ b/sound/soc/pxa/tosa.c
-@@ -4,7 +4,7 @@
-  * Copyright 2005 Wolfson Microelectronics PLC.
-  * Copyright 2005 Openedhand Ltd.
-  *
-- * Authors: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-+ * Authors: Liam Girdwood <lrg@slimlogic.co.uk>
-  *          Richard Purdie <richard@openedhand.com>
-  *
-  *  This program is free software; you can redistribute  it and/or modify it
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index ad38113..462e635 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -4,8 +4,7 @@
-  * Copyright 2005 Wolfson Microelectronics PLC.
-  * Copyright 2005 Openedhand Ltd.
-  *
-- * Author: Liam Girdwood
-- *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
-+ * Author: Liam Girdwood <lrg@slimlogic.co.uk>
-  *         with code, comments and ideas from :-
-  *         Richard Purdie <richard@openedhand.com>
-  *
-@@ -1886,7 +1885,7 @@ module_init(snd_soc_init);
- module_exit(snd_soc_exit);
- 
- /* Module information */
--MODULE_AUTHOR("Liam Girdwood, liam.girdwood@wolfsonmicro.com, www.wolfsonmicro.com");
-+MODULE_AUTHOR("Liam Girdwood, lrg@slimlogic.co.uk");
- MODULE_DESCRIPTION("ALSA SoC Core");
- MODULE_LICENSE("GPL");
- MODULE_ALIAS("platform:soc-audio");
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 83fa9c4..efbd0b3 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2,8 +2,7 @@
-  * soc-dapm.c  --  ALSA SoC Dynamic Audio Power Management
-  *
-  * Copyright 2005 Wolfson Microelectronics PLC.
-- * Author: Liam Girdwood
-- *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
-+ * Author: Liam Girdwood <lrg@slimlogic.co.uk>
-  *
-  *  This program is free software; you can redistribute  it and/or modify it
-  *  under  the terms of  the GNU General  Public License as published by the
-@@ -1541,6 +1540,6 @@ void snd_soc_dapm_free(struct snd_soc_device *socdev)
- EXPORT_SYMBOL_GPL(snd_soc_dapm_free);
- 
- /* Module information */
--MODULE_AUTHOR("Liam Girdwood, liam.girdwood@wolfsonmicro.com, www.wolfsonmicro.com");
-+MODULE_AUTHOR("Liam Girdwood, lrg@slimlogic.co.uk");
- MODULE_DESCRIPTION("Dynamic Audio Power Management core for ALSA SoC");
- MODULE_LICENSE("GPL");
+root@mayonaka:~# modprobe snd-sbxfi
+root@mayonaka:~# speaker-test -c 2 -r 96000 -t sine
+
+speaker-test 1.0.15
+
+Playback device is default
+Stream parameters are 96000Hz, S16_LE, 2 channels
+Sine wave rate is 440.0000Hz
+Rate set to 96000Hz (requested 96000Hz)
+[  262.522739] XFi DAC reset timeout
+
+Period size ran[  262.564029] XFi DAC reset timeout
+ge from 32 to 16[  262.620275] XFi DAC reset timeout
+384
+Using max b[  262.676529] XFi DAC reset timeout
+uffer size 16384[  262.732784] XFi DAC reset timeout
+
+Periods = 4
+w[  262.789038] XFi DAC reset timeout
+as set period_size = 4096
+was set buffer_size = 16384
+ 0 - Front Left
+[  327.491997] BUG: soft lockup - CPU#0 stuck for 61s! [swapper:0]
+[  327.492001] Kernel panic - not syncing: softlockup: hung tasks
+
+and i did hear the sine on the left channel. Hope it helps...
+
 -- 
-1.5.4.3
+ Alexey Bazhin
+  mailto:baz@irc.msk.ru
+  ICQ 125125882
