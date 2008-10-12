@@ -1,20 +1,17 @@
-From: "Blacky (alsa-devel)" <alsa-devel@blackdog.shacknet.nu>
-Subject: Status of HDMI on Nvidia 10de:0774 device (Asus M3N-H
-	HDMI
-Date: Mon, 13 Oct 2008 00:47:14 +1100
-Message-ID: <assp.11714b3fa6.59BA8640D0DC924897A613C8240D88390442B4@vex.jingella.net>
+From: Huang Weiyi <weiyi.huang@gmail.com>
+Subject: ALSA: ASoC codec: remove unused #include <version.h>
+Date: Sun, 12 Oct 2008 23:12:56 +0800
+Message-ID: <20081012231108.E7F2.WEIYI.HUANG@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from jingella.dyndns.org (unknown [124.189.101.81])
-	by alsa0.perex.cz (Postfix) with ESMTP id B45F32459F
+Received: from ti-out-0910.google.com (ti-out-0910.google.com [209.85.142.191])
+	by alsa0.perex.cz (Postfix) with ESMTP id 85AA62433A
 	for <alsa-devel@alsa-project.org>;
-	Sun, 12 Oct 2008 15:47:34 +0200 (CEST)
-Received: from dalmatian.dnsdojo.net (localhost.localdomain [127.0.0.1])
-	by jingella.dyndns.org (8.13.8/8.13.8) with ESMTP id m9CDlFGo018708
-	for <alsa-devel@alsa-project.org>; Mon, 13 Oct 2008 00:47:15 +1100
-Content-class: urn:content-classes:message
+	Sun, 12 Oct 2008 17:13:21 +0200 (CEST)
+Received: by ti-out-0910.google.com with SMTP id j3so671839tid.8
+	for <alsa-devel@alsa-project.org>; Sun, 12 Oct 2008 08:13:02 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,61 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: liam.girdwood@wolfsonmicro.com, broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
- 
+The files below do not use LINUX_VERSION_CODE nor KERNEL_VERSION.
+ sound/soc/codecs/ad1980.c
+ sound/soc/codecs/wm8580.c
+ sound/soc/codecs/wm8900.c
 
-Hi all,
+This patch removes the said #include <version.h>.
 
- 
+Signed-off-by: Huang Weiyi <weiyi.huang@gmail.com>
 
-I am using the above model (MB Asus M3N-H/HDMI) and attempting to use
-the latest
+diff --git a/sound/soc/codecs/ad1980.c b/sound/soc/codecs/ad1980.c
+index 4e09c1f..1397b8e 100644
+--- a/sound/soc/codecs/ad1980.c
++++ b/sound/soc/codecs/ad1980.c
+@@ -13,7 +13,6 @@
 
-patches for nvhdmi. (By latest, I just checked them from CVS today, and
-they seem
+ #include <linux/init.h>
+ #include <linux/module.h>
+-#include <linux/version.h>
+ #include <linux/kernel.h>
+ #include <linux/device.h>
+ #include <sound/core.h>
+diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
+index df1ffbe..a10edda 100644
+--- a/sound/soc/codecs/wm8580.c
++++ b/sound/soc/codecs/wm8580.c
+@@ -18,7 +18,6 @@
 
-to be very recent.. very bleeding edge)
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+-#include <linux/version.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/delay.h>
+diff --git a/sound/soc/codecs/wm8900.c b/sound/soc/codecs/wm8900.c
+index 0b8c6d3..3b326c9 100644
+--- a/sound/soc/codecs/wm8900.c
++++ b/sound/soc/codecs/wm8900.c
+@@ -18,7 +18,6 @@
 
- 
-
-Do they support the 10de:0774 device?  The source matches them against
-0x10de0004, but
-
-I've not been able to identify if it is matching or not. (There are mask
-values in there which
-
-I've not worked out yet).
-
- 
-
-So far, I've failed abysmally at getting HDMI (audio) output on the
-above mentioned MB.
-
- 
-
-Can anyone tell me if the code is even there to support it?  I'm
-starting to suspect it
-
-isn't.
-
- 
-
- 
-
-I'll follow up with details (aplay -L / -l, asoundconf and other details
-if there is interest.)
-
- 
-
-Getting the HDMI audio working will be the final piece of the puzzle
-stopping me from putting
-
-the new system into the living room as a working mythtv box.  
-
- 
-
-Regards
-
-Blacky
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+-#include <linux/version.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/delay.h>
