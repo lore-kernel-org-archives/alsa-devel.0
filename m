@@ -1,19 +1,15 @@
-From: The Source <thesourcehim@gmail.com>
-Subject: Re: Backported sbxfi driver (UNTESTED!)
-Date: Sun, 12 Oct 2008 13:43:12 +0400
-Message-ID: <48F1C6B0.8030008@gmail.com>
-References: <s5hy70xsl46.wl%tiwai@suse.de>	<1223583478.5018.0.camel@home>	<s5hbpxt7zui.wl%tiwai@suse.de>	<1223619975.4700.2.camel@home>	<s5hzlld6j6u.wl%tiwai@suse.de>	<6d00fe310810100939h6cd61e0cg7817c7f54f6261f6@mail.gmail.com>	<s5hfxn3p206.wl%tiwai@suse.de>	<1223741002.13219.1.camel@home>	<s5hmyhbqbqg.wl%tiwai@suse.de>	<fd3eb9bf0810120141r6bf485cfq484af1cc482b9008@mail.gmail.com>
-	<48F1B9D2.5000107@superbug.co.uk>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: [PATCH] ASoC: update email address for Liam Girdwood
+Date: Sun, 12 Oct 2008 13:17:36 +0100
+Message-ID: <1223813856.6814.347.camel@dell-desktop.example.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------090209090608020309050501"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.187])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7D30B244B3
+Received: from slimlogic.co.uk (slimlogic.co.uk [89.16.172.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0E69024552
 	for <alsa-devel@alsa-project.org>;
-	Sun, 12 Oct 2008 11:45:19 +0200 (CEST)
-Received: by mu-out-0910.google.com with SMTP id w1so1378411mue.2
-	for <alsa-devel@alsa-project.org>; Sun, 12 Oct 2008 02:45:01 -0700 (PDT)
-In-Reply-To: <48F1B9D2.5000107@superbug.co.uk>
+	Sun, 12 Oct 2008 14:18:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,200 +19,301 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------090209090608020309050501
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Update the contact information for Liam Girdwood in ASoC core and
+drivers as my old email address is no longer valid.
 
-James Courtier-Dutton =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> Vedran Mileti=C4=87 wrote:
->  =20
->> What does this mean? That there are X-Fi cards which aren't Vista-comp=
-atible?
->> Also, shouldn't UAA cards work with hda-intel driver with specific
->> patch for Creative?
->>
->>    =20
->
-> X-Fi cards that are Vista compatible boot up in hda-intel mode, so yes,
-> we could provide support in the hda-intel driver for them.
-> The features would be limited, but the user would get some sound.
->
-> Kind Regards
->
-> James
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->  =20
-Attaching files you requested.
-I don't have 96000Hz samples, tried 22KHz - reboot.
-Attempt to load module while Xorg is running causes reboot.
-Note that you should use latest mercurial oss to port - earlier versions=20
-have conflict with drivers like nvidia.
-alsamixer shows only master but that probably because asound.conf=20
-deosn't contain needed info (I usually use system-config-soundcard to=20
-write all that needed to asound.conf but I can't do it since Xorg with=20
-sbxfi don't work).
 
---------------090209090608020309050501
-Content-Type: application/x-bzip;
- name="info.tar.bz2"
-Content-Transfer-Encoding: base64
-Content-Disposition: inline;
- filename="info.tar.bz2"
+Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
+---
+ sound/oss/ac97_codec.c         |    2 +-
+ sound/pci/ac97/ac97_patch.c    |    2 +-
+ sound/soc/at91/at91-ssc.c      |    2 +-
+ sound/soc/at91/eti_b1_wm8731.c |    2 +-
+ sound/soc/codecs/ac97.c        |    3 +--
+ sound/soc/codecs/wm8510.c      |    2 +-
+ sound/soc/codecs/wm8753.c      |    3 +--
+ sound/soc/codecs/wm8753.h      |    3 +--
+ sound/soc/codecs/wm9712.c      |    3 +--
+ sound/soc/codecs/wm9713.c      |    3 +--
+ sound/soc/pxa/corgi.c          |    2 +-
+ sound/soc/pxa/em-x270.c        |    2 +-
+ sound/soc/pxa/poodle.c         |    2 +-
+ sound/soc/pxa/pxa2xx-i2s.c     |    4 ++--
+ sound/soc/pxa/spitz.c          |    2 +-
+ sound/soc/pxa/tosa.c           |    2 +-
+ sound/soc/soc-core.c           |    5 ++---
+ sound/soc/soc-dapm.c           |    5 ++---
+ 18 files changed, 21 insertions(+), 28 deletions(-)
 
-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
---------------090209090608020309050501
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------090209090608020309050501--
+diff --git a/sound/oss/ac97_codec.c b/sound/oss/ac97_codec.c
+index b63839e..456a1b4 100644
+--- a/sound/oss/ac97_codec.c
++++ b/sound/oss/ac97_codec.c
+@@ -30,7 +30,7 @@
+  **************************************************************************
+  *
+  * History
+- * May 02, 2003 Liam Girdwood <liam.girdwood@wolfsonmicro.com>
++ * May 02, 2003 Liam Girdwood <lrg@slimlogic.co.uk>
+  *	Removed non existant WM9700
+  *	Added support for WM9705, WM9708, WM9709, WM9710, WM9711
+  *	WM9712 and WM9717
+diff --git a/sound/pci/ac97/ac97_patch.c b/sound/pci/ac97/ac97_patch.c
+index 6ce3cbe..6e831af 100644
+--- a/sound/pci/ac97/ac97_patch.c
++++ b/sound/pci/ac97/ac97_patch.c
+@@ -476,7 +476,7 @@ static int patch_yamaha_ymf753(struct snd_ac97 * ac97)
+ }
+ 
+ /*
+- * May 2, 2003 Liam Girdwood <liam.girdwood@wolfsonmicro.com>
++ * May 2, 2003 Liam Girdwood <lrg@slimlogic.co.uk>
+  *  removed broken wolfson00 patch.
+  *  added support for WM9705,WM9708,WM9709,WM9710,WM9711,WM9712 and WM9717.
+  */
+diff --git a/sound/soc/at91/at91-ssc.c b/sound/soc/at91/at91-ssc.c
+index a5b1a79..1b61cc4 100644
+--- a/sound/soc/at91/at91-ssc.c
++++ b/sound/soc/at91/at91-ssc.c
+@@ -5,7 +5,7 @@
+  *         Endrelia Technologies Inc.
+  *
+  * Based on pxa2xx Platform drivers by
+- * Liam Girdwood <liam.girdwood@wolfsonmicro.com>
++ * Liam Girdwood <lrg@slimlogic.co.uk>
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+  *  under  the terms of  the GNU General  Public License as published by the
+diff --git a/sound/soc/at91/eti_b1_wm8731.c b/sound/soc/at91/eti_b1_wm8731.c
+index 684781e..a22f349 100644
+--- a/sound/soc/at91/eti_b1_wm8731.c
++++ b/sound/soc/at91/eti_b1_wm8731.c
+@@ -10,7 +10,7 @@
+  * Copyright 2005 Wolfson Microelectronics PLC.
+  * Copyright 2005 Openedhand Ltd.
+  *
+- * Authors: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
++ * Authors: Liam Girdwood <lrg@slimlogic.co.uk>
+  *          Richard Purdie <richard@openedhand.com>
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+diff --git a/sound/soc/codecs/ac97.c b/sound/soc/codecs/ac97.c
+index 61fd96c..bd1ebdc 100644
+--- a/sound/soc/codecs/ac97.c
++++ b/sound/soc/codecs/ac97.c
+@@ -2,8 +2,7 @@
+  * ac97.c  --  ALSA Soc AC97 codec support
+  *
+  * Copyright 2005 Wolfson Microelectronics PLC.
+- * Author: Liam Girdwood
+- *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
++ * Author: Liam Girdwood <lrg@slimlogic.co.uk>
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+  *  under  the terms of  the GNU General  Public License as published by the
+diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
+index 9a37c8d..d596f70 100644
+--- a/sound/soc/codecs/wm8510.c
++++ b/sound/soc/codecs/wm8510.c
+@@ -3,7 +3,7 @@
+  *
+  * Copyright 2006 Wolfson Microelectronics PLC.
+  *
+- * Author: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
++ * Author: Liam Girdwood <lrg@slimlogic.co.uk>
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
+index 8c4df44..be817b0 100644
+--- a/sound/soc/codecs/wm8753.c
++++ b/sound/soc/codecs/wm8753.c
+@@ -2,8 +2,7 @@
+  * wm8753.c  --  WM8753 ALSA Soc Audio driver
+  *
+  * Copyright 2003 Wolfson Microelectronics PLC.
+- * Author: Liam Girdwood
+- *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
++ * Author: Liam Girdwood <lrg@slimlogic.co.uk>
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+  *  under  the terms of  the GNU General  Public License as published by the
+diff --git a/sound/soc/codecs/wm8753.h b/sound/soc/codecs/wm8753.h
+index 7defde0..f96c04b 100644
+--- a/sound/soc/codecs/wm8753.h
++++ b/sound/soc/codecs/wm8753.h
+@@ -2,8 +2,7 @@
+  * wm8753.h  --  audio driver for WM8753
+  *
+  * Copyright 2003 Wolfson Microelectronics PLC.
+- * Author: Liam Girdwood
+- *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
++ * Author: Liam Girdwood <lrg@slimlogic.co.uk>
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+  *  under  the terms of  the GNU General  Public License as published by the
+diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
+index 2f1c91b..ffb471e 100644
+--- a/sound/soc/codecs/wm9712.c
++++ b/sound/soc/codecs/wm9712.c
+@@ -2,8 +2,7 @@
+  * wm9712.c  --  ALSA Soc WM9712 codec support
+  *
+  * Copyright 2006 Wolfson Microelectronics PLC.
+- * Author: Liam Girdwood
+- *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
++ * Author: Liam Girdwood <lrg@slimlogic.co.uk>
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+  *  under  the terms of  the GNU General  Public License as published by the
+diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
+index 441d058..aba402b 100644
+--- a/sound/soc/codecs/wm9713.c
++++ b/sound/soc/codecs/wm9713.c
+@@ -2,8 +2,7 @@
+  * wm9713.c  --  ALSA Soc WM9713 codec support
+  *
+  * Copyright 2006 Wolfson Microelectronics PLC.
+- * Author: Liam Girdwood
+- *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
++ * Author: Liam Girdwood <lrg@slimlogic.co.uk>
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+  *  under  the terms of  the GNU General  Public License as published by the
+diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
+index 1a8373d..fe95384 100644
+--- a/sound/soc/pxa/corgi.c
++++ b/sound/soc/pxa/corgi.c
+@@ -4,7 +4,7 @@
+  * Copyright 2005 Wolfson Microelectronics PLC.
+  * Copyright 2005 Openedhand Ltd.
+  *
+- * Authors: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
++ * Authors: Liam Girdwood <lrg@slimlogic.co.uk>
+  *          Richard Purdie <richard@openedhand.com>
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+diff --git a/sound/soc/pxa/em-x270.c b/sound/soc/pxa/em-x270.c
+index d9c3f7b..e6ff692 100644
+--- a/sound/soc/pxa/em-x270.c
++++ b/sound/soc/pxa/em-x270.c
+@@ -9,7 +9,7 @@
+  * Copyright 2005 Wolfson Microelectronics PLC.
+  * Copyright 2005 Openedhand Ltd.
+  *
+- * Authors: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
++ * Authors: Liam Girdwood <lrg@slimlogic.co.uk>
+  *          Richard Purdie <richard@openedhand.com>
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
+index f84f7d8..33851cd 100644
+--- a/sound/soc/pxa/poodle.c
++++ b/sound/soc/pxa/poodle.c
+@@ -4,7 +4,7 @@
+  * Copyright 2005 Wolfson Microelectronics PLC.
+  * Copyright 2005 Openedhand Ltd.
+  *
+- * Authors: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
++ * Authors: Liam Girdwood <lrg@slimlogic.co.uk>
+  *          Richard Purdie <richard@openedhand.com>
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
+index 2fb5829..e758034 100644
+--- a/sound/soc/pxa/pxa2xx-i2s.c
++++ b/sound/soc/pxa/pxa2xx-i2s.c
+@@ -3,7 +3,7 @@
+  *
+  * Copyright 2005 Wolfson Microelectronics PLC.
+  * Author: Liam Girdwood
+- *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
++ *         lrg@slimlogic.co.uk
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+  *  under  the terms of  the GNU General  Public License as published by the
+@@ -405,6 +405,6 @@ module_init(pxa2xx_i2s_init);
+ module_exit(pxa2xx_i2s_exit);
+ 
+ /* Module information */
+-MODULE_AUTHOR("Liam Girdwood, liam.girdwood@wolfsonmicro.com, www.wolfsonmicro.com");
++MODULE_AUTHOR("Liam Girdwood, lrg@slimlogic.co.uk");
+ MODULE_DESCRIPTION("pxa2xx I2S SoC Interface");
+ MODULE_LICENSE("GPL");
+diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
+index 9a70b00..8375bb5 100644
+--- a/sound/soc/pxa/spitz.c
++++ b/sound/soc/pxa/spitz.c
+@@ -4,7 +4,7 @@
+  * Copyright 2005 Wolfson Microelectronics PLC.
+  * Copyright 2005 Openedhand Ltd.
+  *
+- * Authors: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
++ * Authors: Liam Girdwood <lrg@slimlogic.co.uk>
+  *          Richard Purdie <richard@openedhand.com>
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+diff --git a/sound/soc/pxa/tosa.c b/sound/soc/pxa/tosa.c
+index 2baaa75..1300cb5 100644
+--- a/sound/soc/pxa/tosa.c
++++ b/sound/soc/pxa/tosa.c
+@@ -4,7 +4,7 @@
+  * Copyright 2005 Wolfson Microelectronics PLC.
+  * Copyright 2005 Openedhand Ltd.
+  *
+- * Authors: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
++ * Authors: Liam Girdwood <lrg@slimlogic.co.uk>
+  *          Richard Purdie <richard@openedhand.com>
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index ad38113..462e635 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -4,8 +4,7 @@
+  * Copyright 2005 Wolfson Microelectronics PLC.
+  * Copyright 2005 Openedhand Ltd.
+  *
+- * Author: Liam Girdwood
+- *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
++ * Author: Liam Girdwood <lrg@slimlogic.co.uk>
+  *         with code, comments and ideas from :-
+  *         Richard Purdie <richard@openedhand.com>
+  *
+@@ -1886,7 +1885,7 @@ module_init(snd_soc_init);
+ module_exit(snd_soc_exit);
+ 
+ /* Module information */
+-MODULE_AUTHOR("Liam Girdwood, liam.girdwood@wolfsonmicro.com, www.wolfsonmicro.com");
++MODULE_AUTHOR("Liam Girdwood, lrg@slimlogic.co.uk");
+ MODULE_DESCRIPTION("ALSA SoC Core");
+ MODULE_LICENSE("GPL");
+ MODULE_ALIAS("platform:soc-audio");
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 83fa9c4..efbd0b3 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2,8 +2,7 @@
+  * soc-dapm.c  --  ALSA SoC Dynamic Audio Power Management
+  *
+  * Copyright 2005 Wolfson Microelectronics PLC.
+- * Author: Liam Girdwood
+- *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
++ * Author: Liam Girdwood <lrg@slimlogic.co.uk>
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+  *  under  the terms of  the GNU General  Public License as published by the
+@@ -1541,6 +1540,6 @@ void snd_soc_dapm_free(struct snd_soc_device *socdev)
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_free);
+ 
+ /* Module information */
+-MODULE_AUTHOR("Liam Girdwood, liam.girdwood@wolfsonmicro.com, www.wolfsonmicro.com");
++MODULE_AUTHOR("Liam Girdwood, lrg@slimlogic.co.uk");
+ MODULE_DESCRIPTION("Dynamic Audio Power Management core for ALSA SoC");
+ MODULE_LICENSE("GPL");
+-- 
+1.5.4.3
