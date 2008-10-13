@@ -1,17 +1,17 @@
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: Re: Salsa-lib : _snd_pcm_hw_param_test is not defined
-Date: Mon, 13 Oct 2008 16:01:07 +0200
-Message-ID: <48F354A3.6090501@parrot.com>
-References: <48F3198F.50409@parrot.com> <s5hskr07quh.wl%tiwai@suse.de>
+From: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+Subject: Re: ASoC: Merging at91 and avr32 dirs - test report
+Date: Mon, 13 Oct 2008 16:22:06 +0200
+Message-ID: <48F3598E.3050404@atmel.com>
+References: <B9D3C48C98930741A166756A50C44A610F17B561@helx1.corp.vaisala.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from toronto.xi-lite.net (co203.xi-lite.net [149.6.83.203])
-	by alsa0.perex.cz (Postfix) with ESMTP id D808B244DA
+Received: from atmel-es2.atmel.fr (mail.atmel.fr [81.80.104.162])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8249D244E9
 	for <alsa-devel@alsa-project.org>;
-	Mon, 13 Oct 2008 16:01:38 +0200 (CEST)
-In-Reply-To: <s5hskr07quh.wl%tiwai@suse.de>
+	Mon, 13 Oct 2008 16:23:02 +0200 (CEST)
+In-Reply-To: <B9D3C48C98930741A166756A50C44A610F17B561@helx1.corp.vaisala.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,34 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+To: ext-jukka.hynninen@vaisala.com
+Cc: alsa-devel@alsa-project.org, broonie@sirena.org.uk
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-Takashi Iwai a =E9crit :
-> At Mon, 13 Oct 2008 11:49:03 +0200,
-> Matthieu CASTET wrote:
->> Hi,
->>
->> it seems there is a missing implementation of _snd_pcm_hw_param_test
->> function in src/pcm_params.c .
->>
->> It is used in pcm_macros.h by snd_pcm_hw_params_test_xxx functions.
+ext-jukka.hynninen@vaisala.com a =E9crit :
+> I tested the patches and got everything working with minor changes.
 > =
 
-> Thanks for reporting.  =
+> However, there seems to be some problem with PM, occasionally ASoC is
+> stuck with Standby mode (looking at dapm_widgets) when I start the
+> playback. Restarting the player brings the sound back. I'll carry out
+> some further investigation and get back to this.
+Thank you for your help!
 
-Thanks for your quick reply.
+I've done more tests using the oss emulation in ALSA, and I have
+encountered a problem.
+In a previous mail Mark you mentioned this:
+> +/*
+> > + * Record SSC clock dividers for use in hw_params().
+> > + */
+> > +static int atmel_ssc_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
+> > +	int div_id, int div)
+> > +{
+> > +	struct atmel_ssc_info *ssc_p =3D &ssc_info[cpu_dai->id];
+> > +
+> > +	switch (div_id) {
+> > +	case AT91SSC_CMR_DIV:
+> > +		/*
+> > +		 * The same master clock divider is used for both
+> > +		 * transmit and receive, so if a value has already
+> > +		 * been set, it must match this value.
+> > +		 */
+> > +		if (ssc_p->cmr_div =3D=3D 0)
+> > +			ssc_p->cmr_div =3D div;
+> > +		else
+> > +			if (div !=3D ssc_p->cmr_div)
+> > +				return -EBUSY;
+> > +		break;
 
-> Does the patch below works?
-Hum,
+What happens if the user wants to change the master clock divider at
+runtime - for example, when changing sample rates?
 
-dir is a pointer, but _snd_pcm_hw_param_set want a integer.
+I had actually a crash because of this, so I will send a patch to
+correct it(I simply removed it since I don't thonk it is needed).
 
 
-BTW, some application expect snd_config (from cards.c) to be not null
-after a call to snd_config_update.
-
-Matthieu
+Regards,
+Sedji
