@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Hide TLV320AIC26 configuration
-	option for	non-OpenFirwmare users
-Date: Mon, 13 Oct 2008 19:14:58 +0100
-Message-ID: <20081013181458.GA23014@opensource.wolfsonmicro.com>
-References: <1223915914-12196-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<s5h1vykv1rm.wl%tiwai@suse.de>
+Subject: [PATCH] ASoC: Hide TLV320AIC26 configuration option
+	for non-OpenFirwmare users
+Date: Mon, 13 Oct 2008 19:16:14 +0100
+Message-ID: <1223921774-10272-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <20081013181458.GA23014@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AA4A024599
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 55242245A8
 	for <alsa-devel@alsa-project.org>;
-	Mon, 13 Oct 2008 20:15:16 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5h1vykv1rm.wl%tiwai@suse.de>
+	Mon, 13 Oct 2008 20:16:39 +0200 (CEST)
+In-Reply-To: <20081013181458.GA23014@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,31 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 13, 2008 at 07:33:01PM +0200, Takashi Iwai wrote:
+Make the visibility of the tristate conditional on having the OpenFirmware
+helper code enabed so that users who can't use it don't see the visible
+option. Kconfig ignores dependencies for select so other users are
+unaffected.
 
-> Hmm, I'm afraid this may disable CONFIG_SND_SOC_TLV320AIC26 when
-> CONFIG_SND_SOC_OF_SIMPLE=n automatically, no?
+Thanks to Takashi for the suggestion.
 
-Yes, I'd feared that too but it doesn't do that, at least not in my
-testing - the dependencies are just completely ignored.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/Kconfig |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-> > Thanks to Takashi for the suggestion.
-
-> Actually I proposed a wrong solution.  What I meant was the form using
-> "if" instead of "depends on":
-
-> config SND_SOC_TLV320AIC26
->  	tristate "TI TLV320AIC26 Codec support" if SND_SOC_OF_SIMPLE
-> 	...
-
-> In this way, the selectable item appears only when
-> CONFIG_SND_SOC_OF_SIMPLE is set.  The other dependencies remain as
-> they are.
-
-Ah, yes.  That seems to work too and is a bit neater, though still a bit
-nasty since it looks like the tristate is conditional on the
-OpenFirmware support now so it's still not entirely clear that the right
-thing will happen.  Updated patch coming in a moment.
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 4975d85..38a0e3b 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -68,7 +68,7 @@ config SND_SOC_TLV320AIC23
+ 	depends on I2C
+ 
+ config SND_SOC_TLV320AIC26
+-	tristate "TI TLV320AIC26 Codec support"
++	tristate "TI TLV320AIC26 Codec support" if SND_SOC_OF_SIMPLE
+ 	depends on SPI
+ 
+ config SND_SOC_TLV320AIC3X
+-- 
+1.5.4.3
