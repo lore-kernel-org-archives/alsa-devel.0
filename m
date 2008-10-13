@@ -1,20 +1,20 @@
 From: Philippe CARRIERE <philippe-f.carriere@wanadoo.fr>
-Subject: (no subject)
-Date: Mon, 13 Oct 2008 12:51:11 +0200 (CEST)
-Message-ID: <8230211.582121223895071540.JavaMail.www@wwinf1d32>
+Subject: missing subject in my previous email
+Date: Mon, 13 Oct 2008 14:01:43 +0200 (CEST)
+Message-ID: <11659876.845681223899303085.JavaMail.www@wwinf2223>
 Reply-To: Philippe CARRIERE <philippe-f.carriere@wanadoo.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1d.orange.fr (smtp1d.orange.fr [193.252.22.121])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9CF97243FE
+Received: from smtp22.orange.fr (smtp22.orange.fr [193.252.23.25])
+	by alsa0.perex.cz (Postfix) with ESMTP id 36E0324448
 	for <alsa-devel@alsa-project.org>;
-	Mon, 13 Oct 2008 12:51:29 +0200 (CEST)
+	Mon, 13 Oct 2008 14:02:01 +0200 (CEST)
 Received: from me-wanadoo.net (localhost [127.0.0.1])
-	by mwinf1d03.orange.fr (SMTP Server) with ESMTP id A2E007000082
+	by mwinf2204.orange.fr (SMTP Server) with ESMTP id 2714D1C00098
 	for <alsa-devel@alsa-project.org>;
-	Mon, 13 Oct 2008 12:51:11 +0200 (CEST)
+	Mon, 13 Oct 2008 14:01:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,56 +28,11 @@ To: alsa-devel@alsa-project.org
 Cc: philippe-f.carriere@wanadoo.fr
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Sorry, I realized I omitted the subject in my previous email.
+Read
 
-following is a report of some tests of alsa.1.0.18rc3 in view of support of Tascam US-122L, which might be of interest for you. As a preliminary information, note that I patched my own Fedora kernel and alsa-plugins with Karsten Wiese'patches a few month ago and use regularly Tascam US-122L under Linux which works very fine; I also provide (experimental) packages for Fedora 9 from june 2008 on my web page.
-
-Test 1: succeeded
-
-    - replacement of my own  alsa-plugins-usb_stream-1.0.16-4.us122lv05.fc9 by alsa-plugins-usbstream-1.0.18-1.rc3.fc10 on Fedora 9 (using my own patched kernel 2.6.26 including the snd-usb-us122l module). Everything works.
-
-Test 2: succeeded
-
-    - replacement of previous alsa-1.0.16 by alsa.1.0.18-1.rc3 (Fedora packages; thus alsa-driver-1.0.18rc3 not included). Everything works, including Tascam US-122L when using my patched kernel (which includes the snd-usb-us122l module).
-
-Test 3: failed
-
-    - installation of alsa-driver-1.0.18rc3 (succeeded) on Fedora 9 (as weel, I tested with new Fedora 10 beta which includes kernel 2.6.27.rc3); plug in the US-122L leads to error messages from snd-usb-us122l:
-
-# cat /var/log/messages
-...
-Oct 11 09:21:51 pollux kernel: usb 2-6: new high speed USB device using ehci_hcd and address 3
-Oct 11 09:21:51 pollux kernel: usb 2-6: config 1 interface 1 altsetting 1 bulk endpoint 0x83 has invalid maxpacket 9
-Oct 11 09:21:51 pollux kernel: usb 2-6: configuration #1 chosen from 1 choice
-Oct 11 09:21:51 pollux kernel: usb 2-6: New USB device found, idVendor=0644, idProduct=800e
-Oct 11 09:21:51 pollux kernel: usb 2-6: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-Oct 11 09:21:51 pollux kernel: usb 2-6: Product: US-122L
-Oct 11 09:21:51 pollux kernel: usb 2-6: Manufacturer: TASCAM
-Oct 11 09:21:51 pollux kernel: usb 2-6: SerialNumber: no serial number
-Oct 11 09:21:51 pollux kernel: ALSA /home/Test/alsa-driver-1.0.18rc3/usb/usx2y/../../alsa-kernel/usb/usx2y/usb_stream.c:618: 0
-Oct 11 09:21:55 pollux kernel: ALSA /home/Test/alsa-driver-1.0.18rc3/usb/usx2y/../../alsa-kernel/usb/usx2y/us122l.c:329: us122l_start error -14 
-Oct 11 09:21:55 pollux kernel: snd-usb-us122l: probe of 2-6:1.1 failed with error -5
-
-Oct 11 09:21:55 pollux kernel: usbcore: registered new interface driver snd-usb-us122l
-
-and
-
-# cat /proc/asound/cards
-0 [Intel          ]: HDA-Intel - HDA Intel
-                      HDA Intel at 0xfebfc000 irq 21
-
-US-122L finally not being recognized.
-
-Test 4: succeded
-
-    - same than test 3 for Fedora 9, but using a patched ehci-hcd module (the patch adding some features from the original one by Karsten Wiese not - yet ? - included in kernel 2.6.26). Everything works including of course the US-122L.
-
-Question:
-
-Thus, a patched ehci-hcd module is required. Is the patch scheduled to appear in kernel 2.6.27 or would it be useful to  work for providing a kind of kmod ?
+   ehci-hcd patch required by snd-usb-us122l
 
 Regards
 
 Phil.
--- 
-Philippe Carriere <philippe-f.carriere@wanadoo.fr>
