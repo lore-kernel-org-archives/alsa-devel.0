@@ -1,19 +1,20 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: ASoC: Merging at91 and avr32 dirs - test report
-Date: Mon, 13 Oct 2008 15:34:08 +0100
-Message-ID: <20081013143407.GA20516@sirena.org.uk>
-References: <B9D3C48C98930741A166756A50C44A610F17B561@helx1.corp.vaisala.com>
-	<48F3598E.3050404@atmel.com>
+From: The Source <thesourcehim@gmail.com>
+Subject: Re: Backported sbxfi driver (UNTESTED!)
+Date: Mon, 13 Oct 2008 18:33:48 +0400
+Message-ID: <48F35C4C.40307@gmail.com>
+References: <20081012165353.a084d158.baz@irc.msk.ru>	<s5hod1pz1xl.wl%tiwai@suse.de>	<20081013165805.735bf06e.baz@irc.msk.ru>
+	<s5htzbg63bq.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id D77DF244F8
+Received: from gv-out-0910.google.com (gv-out-0910.google.com [216.239.58.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5E294244F8
 	for <alsa-devel@alsa-project.org>;
-	Mon, 13 Oct 2008 16:34:30 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <48F3598E.3050404@atmel.com>
+	Mon, 13 Oct 2008 16:36:38 +0200 (CEST)
+Received: by gv-out-0910.google.com with SMTP id i36so320755gve.24
+	for <alsa-devel@alsa-project.org>; Mon, 13 Oct 2008 07:36:20 -0700 (PDT)
+In-Reply-To: <s5htzbg63bq.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,29 +24,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sedji Gaouaou <sedji.gaouaou@atmel.com>
-Cc: ext-jukka.hynninen@vaisala.com, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 13, 2008 at 04:22:06PM +0200, Sedji Gaouaou wrote:
-> ext-jukka.hynninen@vaisala.com a ?crit :
-
-> >> +	switch (div_id) {
-> >> +	case AT91SSC_CMR_DIV:
-> >> +		/*
-> >> +		 * The same master clock divider is used for both
-> >> +		 * transmit and receive, so if a value has already
-> >> +		 * been set, it must match this value.
-> >> +		 */
-> >> +		if (ssc_p->cmr_div == 0)
-> >> +			ssc_p->cmr_div = div;
-> >> +		else
-> >> +			if (div != ssc_p->cmr_div)
-> >> +				return -EBUSY;
-> >> +		break;
-
-> What happens if the user wants to change the master clock divider at
-> runtime - for example, when changing sample rates?
-
-Usually you'd end up using constraints to prevent user space selecting a
-different sample rate if it wasn't possible to change safely.
+VGFrYXNoaSBJd2FpINC/0LjRiNC10YI6Cj4gQXQgTW9uLCAxMyBPY3QgMjAwOCAxNjo1ODowNSAr
+MDQwMCwKPiBBbGV4ZXkgQmF6aGluIHdyb3RlOgo+ICAgCj4+IE9uIE1vbiwgMTMgT2N0IDIwMDgg
+MDQ6MDM6MzQgKzAyMDAKPj4gVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90ZToKPj4K
+Pj4gICAgIAo+Pj4gQXQgU3VuLCAxMiBPY3QgMjAwOCAxNjo1Mzo1MyArMDQwMCwKPj4+IEFsZXhl
+eSBCYXpoaW4gd3JvdGU6Cj4+PiAgICAgICAKPj4+PiBIaSwKPj4+Pgo+Pj4+IEkgaGF2ZSBqdXN0
+IGNvbXBpbGVkIGRyaXZlciBmcm9tIGdpdCBhbmQgdHJ5IHRvIHJ1biBpdC4gTXkgY2FyZCBpcwo+
+Pj4+IHBjaTogMTEwMjowMDA1IE11bHRpbWVkaWEgYXVkaW8gY29udHJvbGxlcjogQ3JlYXRpdmUg
+TGFicyBTQiBYLUZpCj4+Pj4KPj4+PiBJIGdvdCBmb2xsb3dpbmc6Cj4+Pj4KPj4+PiByb290QG1h
+eW9uYWthOn4jIG1vZHByb2JlIHNuZC1zYnhmaQo+Pj4+IHJvb3RAbWF5b25ha2E6fiMgc3BlYWtl
+ci10ZXN0IC1jIDIgLXIgOTYwMDAgLXQgc2luZQo+Pj4+Cj4+Pj4gc3BlYWtlci10ZXN0IDEuMC4x
+NQo+Pj4+Cj4+Pj4gUGxheWJhY2sgZGV2aWNlIGlzIGRlZmF1bHQKPj4+PiBTdHJlYW0gcGFyYW1l
+dGVycyBhcmUgOTYwMDBIeiwgUzE2X0xFLCAyIGNoYW5uZWxzCj4+Pj4gU2luZSB3YXZlIHJhdGUg
+aXMgNDQwLjAwMDBIego+Pj4+IFJhdGUgc2V0IHRvIDk2MDAwSHogKHJlcXVlc3RlZCA5NjAwMEh6
+KQo+Pj4+IFsgIDI2Mi41MjI3MzldIFhGaSBEQUMgcmVzZXQgdGltZW91dAo+Pj4+Cj4+Pj4gUGVy
+aW9kIHNpemUgcmFuWyAgMjYyLjU2NDAyOV0gWEZpIERBQyByZXNldCB0aW1lb3V0Cj4+Pj4gZ2Ug
+ZnJvbSAzMiB0byAxNlsgIDI2Mi42MjAyNzVdIFhGaSBEQUMgcmVzZXQgdGltZW91dAo+Pj4+IDM4
+NAo+Pj4+IFVzaW5nIG1heCBiWyAgMjYyLjY3NjUyOV0gWEZpIERBQyByZXNldCB0aW1lb3V0Cj4+
+Pj4gdWZmZXIgc2l6ZSAxNjM4NFsgIDI2Mi43MzI3ODRdIFhGaSBEQUMgcmVzZXQgdGltZW91dAo+
+Pj4+Cj4+Pj4gUGVyaW9kcyA9IDQKPj4+PiB3WyAgMjYyLjc4OTAzOF0gWEZpIERBQyByZXNldCB0
+aW1lb3V0Cj4+Pj4gYXMgc2V0IHBlcmlvZF9zaXplID0gNDA5Ngo+Pj4+IHdhcyBzZXQgYnVmZmVy
+X3NpemUgPSAxNjM4NAo+Pj4+ICAwIC0gRnJvbnQgTGVmdAo+Pj4+IFsgIDMyNy40OTE5OTddIEJV
+Rzogc29mdCBsb2NrdXAgLSBDUFUjMCBzdHVjayBmb3IgNjFzISBbc3dhcHBlcjowXQo+Pj4+IFsg
+IDMyNy40OTIwMDFdIEtlcm5lbCBwYW5pYyAtIG5vdCBzeW5jaW5nOiBzb2Z0bG9ja3VwOiBodW5n
+IHRhc2tzCj4+Pj4KPj4+PiBhbmQgaSBkaWQgaGVhciB0aGUgc2luZSBvbiB0aGUgbGVmdCBjaGFu
+bmVsLiBIb3BlIGl0IGhlbHBzLi4uCj4+Pj4gICAgICAgICAKPj4+IFRyeSB0aGUgdmVyeSBsYXRl
+c3Qgc291bmQtdW5zdGFibGUgdHJlZS4gIFNvbWUgZml4ZXMgYXJlIHRoZXJlLi4uCj4+PiAgICAg
+ICAKPj4gV2l0aG91dCBkZWJ1ZyBpIGdvdCB0aGUgc2FtZSwgd2l0aCBkZWJ1ZyBteSBib3ggZnJl
+ZXplZCB3aXRob3V0Cj4+IHBhbmljLCBpJ2wgcmVzZXQgaXQgd2hlbiBpIGdldCBob21lIGFuZCB3
+aWxsIHRyeSBpdCBhZ2Fpbi4uLgo+PiAgICAgCj4KPiBUcnkgdGhlIGxhdGVzdCB2ZXJzaW9uLiAg
+QW5vdGhlciBmaXggd2FzIHRoZXJlLgo+Cj4KPiBUYWthc2hpCj4gX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+
+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4KPiAgIAoKVHJpZWQgdG9kYXkncyBz
+bmFwc2hvdCBmb3IgbXkgY2FyZCAoWC1GaSBGYXRhbGl0eSBDaGFtcGlvbiBTZXJpZXMpLiBObyAK
+Y2hhbmdlLiBhbHNhbWl4ZXIgc2hvd3Mgb25seSBtYXN0ZXIgYW5kIG1pYy1ib290cyBmb3IgcGxh
+eWJhY2suIEFueSAKYXR0ZW1wdCB0byB1c2Ugc291bmQgd2l0aCBhbHNhIChhcGxheSwgYW55IGFw
+cCB0aGF0IHVzZXMgc291bmQpIHJlc3VsdHMgCmluIHJlYm9vdC4KX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
