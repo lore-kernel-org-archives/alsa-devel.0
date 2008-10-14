@@ -1,23 +1,22 @@
-From: The Source <thesourcehim@gmail.com>
-Subject: Re: Backported sbxfi driver (UNTESTED!)
-Date: Tue, 14 Oct 2008 11:23:42 +0400
-Message-ID: <48F448FE.5090303@gmail.com>
-References: <20081012165353.a084d158.baz@irc.msk.ru>	<s5hod1pz1xl.wl%tiwai@suse.de>	<20081013165805.735bf06e.baz@irc.msk.ru>	<s5htzbg63bq.wl%tiwai@suse.de>
-	<48F35C4C.40307@gmail.com>	<s5hej2k5ysj.wl%tiwai@suse.de>
-	<s5hbpxo5wmw.wl%tiwai@suse.de>	<s5h1vyk5vr3.wl%tiwai@suse.de>
-	<s5hy70s4h0i.wl%tiwai@suse.de>	<20081013232147.026f38c9.baz@irc.msk.ru>
-	<s5hzll7oetb.wl%tiwai@suse.de>
+From: ext-jukka.hynninen@vaisala.com
+Subject: Re: ASoC: Merging at91 and avr32 dirs - test report
+Date: Tue, 14 Oct 2008 10:28:54 +0300
+Message-ID: <B9D3C48C98930741A166756A50C44A610F17B562@helx1.corp.vaisala.com>
+References: <B9D3C48C98930741A166756A50C44A610F17B561@helx1.corp.vaisala.com>
+	<20081010185312.GA10766@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.173])
-	by alsa0.perex.cz (Postfix) with ESMTP id A347224401
+Received: from mailgw.vaisala.com (mailgw.vaisala.com [192.81.123.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id DE55F24401
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Oct 2008 09:26:29 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id 30so748981ugs.24
-	for <alsa-devel@alsa-project.org>; Tue, 14 Oct 2008 00:26:12 -0700 (PDT)
-In-Reply-To: <s5hzll7oetb.wl%tiwai@suse.de>
+	Tue, 14 Oct 2008 09:29:13 +0200 (CEST)
+Received: from helsrv02.vaisala.com (helsrv02.vaisala.com [192.81.123.16])
+	by mailgw.vaisala.com (8.13.6/8.13.6) with SMTP id m9E7Stgj023042
+	for <alsa-devel@alsa-project.org>; Tue, 14 Oct 2008 10:28:55 +0300
+Content-class: urn:content-classes:message
+In-Reply-To: <20081010185312.GA10766@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,87 +26,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@sirena.org.uk
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VGFrYXNoaSBJd2FpINC/0LjRiNC10YI6Cj4gQXQgTW9uLCAxMyBPY3QgMjAwOCAyMzoyMTo0NyAr
-MDQwMCwKPiBBbGV4ZXkgQmF6aGluIHdyb3RlOgo+ICAgCj4+IE9uIE1vbiwgMTMgT2N0IDIwMDgg
-MTg6MDU6NDkgKzAyMDAKPj4gVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90ZToKPj4K
-Pj4gICAgIAo+Pj4gQXQgTW9uLCAxMyBPY3QgMjAwOCAxODowMjowOCArMDIwMCwKPj4+IEkgd3Jv
-dGU6Cj4+PiAgICAgICAKPj4+PiBBdCBNb24sIDEzIE9jdCAyMDA4IDE3OjQzOjAzICswMjAwLAo+
-Pj4+IEkgd3JvdGU6Cj4+Pj4gICAgICAgICAKPj4+Pj4gRm9yIGV4YW1wbGUsIHRoZSBsYXRlc3Qg
-c25hcHNob3QgSSB1cGxvYWRlZCBub3cgaGFzCj4+Pj4+IGFsc2Eta2VybmVsL0hFQUQ6IGEzZTFl
-Zjc0YThlYzhiNmUzYzMwZjdhYTA2YzVkNWQyZjJiZWE3YTkgTWVyZ2UKPj4+Pj4gYnJhbmNoICd0
-b3BpYy9zYnhmaScKPj4+Pj4gICAgICAgICAgIAo+Pj4+IC4uLiBhbmQgYWdhaW4gdXBkYXRlZCB0
-bzoKPj4+PiAgIDVkNDI1ZGQ2MjZkMTA3ZmYyYjJlYTk3YzI3MDY4ZjdlZTRiMzZkZDEgTWVyZ2Ug
-YnJhbmNoCj4+Pj4gJ3RvcGljL3NieGZpJwo+Pj4+ICAgICAgICAgCj4+PiBTbywgZ3V5cywgcGxl
-YXNlIGNoZWNrIHRoZSBsYXRlc3Qgb25lLgo+Pj4KPj4+IElmIHRoZSBoYW5nIHVwIHN0aWxsIG9j
-Y3VycyB3aXRoIHRoaXMgdmVyc2lvbiwgdGhlbiB0cnkgdG8gZGVmaW5lCj4+PiBYWFhfU1lTVEVN
-X1RJTUVSIGluIHNieGZpLmMsIHdoaWNoIGlzIHVuZGVmaW5lZCBhcyBkZWZhdWx0Lgo+Pj4gV2l0
-aCB0aGlzIGJ1aWxkIG9wdGlvbiwgdGhlIGRyaXZlciB3aWxsIHVzZSB0aGUgc3lzdGVtIHRpbWVy
-IGluc3RlYWQKPj4+IG9mIGVtdTIwazEgdGltZXIgaXJxcy4KPj4+Cj4+PiBJZiB0aGlzIHN0aWxs
-IGRvZXNuJ3QgaGVscCwgdHJ5IHRvIHJlbW92ZSBhbGwgc3BpbmxvY2tzLiAgVGhhdCBpcywKPj4+
-IGp1c3QgY29tbWVudCBvdXQgYWxsIHNwaW5fbG9jayooKSBhbmQgc3Bpbl91bmxvY2sqKCkgY2Fs
-bHMgdG8gYXZvaWQKPj4+IHNwaW4gZGVhZGxvY2tzLiAgT2YgY291cnNlLCBpdCBjYW4gYmUgcmFj
-eSwgYnV0IGJldHRlciB0aGFuIGEgc3Bpbgo+Pj4gZGVhZGxvY2suCj4+PiAgICAgICAKPj4gTm93
-IGl0IGRvZXNuJ3QgaGFuZ3MgOikKPj4gICAgIAo+Cj4gR2xhZCB0byBoZWFyLiAgRGlkIHlvdSBo
-YXZlIHRvIHVzZSBYWFhfU1lTVEVNX1RJTUVSIG9yIGFueSB3b3JrYXJvdW5kCj4gbmVlZGVkPyAg
-T3IsIGRpZCBpdCB3b3JrIGFzIGlzPwo+Cj4gICAKPj4gYnV0IHNwZWFrZXJzLXRlc3QgcHJvZHVj
-ZXMgY3JhY2tsaW5nIHNpbmUgYW5kCj4+IGZhaWxzIG9uIHRlc3QuLi4KPj4gICAgIAo+Cj4gRG8g
-eW91IG1lYW4gaXQgYWJvcnRzIHNvbWUgdGltZSBsYXRlciBhZnRlciBzdGFydGluZyB0aGUgc3Ry
-ZWFtPwo+IENvdWxkIHlvdSBzaG93IHRoZSBrZXJuZWwgbWVzc2FnZXM/ICBUaGUgZGVmYXVsdCBk
-ZWJ1ZyBsZXZlbCBzaG91bGQKPiBzdWZmaWNlLCBJIGd1ZXNzLiAgSWYgYW55LCB0cnkgZGVidWc9
-Mi4KPgo+ICAgCj4+IHJvb3RAbWF5b25ha2E6fiMgc3BlYWtlci10ZXN0IC1jIDIgLXIgOTYwMDAg
-LXQKPj4gc2luZSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIAo+Pgo+PiBzcGVha2VyLXRlc3QgMS4wLjE1Cj4+Cj4+IFBsYXliYWNrIGRldmljZSBpcyBk
-ZWZhdWx0Cj4+IFN0cmVhbSBwYXJhbWV0ZXJzIGFyZSA5NjAwMEh6LCBTMTZfTEUsIDIgY2hhbm5l
-bHMKPj4gU2luZSB3YXZlIHJhdGUgaXMgNDQwLjAwMDBIego+PiBSYXRlIHNldCB0byA5NjAwMEh6
-IChyZXF1ZXN0ZWQgOTYwMDBIeikKPj4gQnVmZmVyIHNpemUgcmFuZ2UgZnJvbSAzMiB0byAxNjM4
-NAo+PiBQZXJpb2Qgc2l6ZSByYW5nZSBmcm9tIDMyIHRvIDE2Mzg0Cj4+IFVzaW5nIG1heCBidWZm
-ZXIgc2l6ZSAxNjM4NAo+PiBQZXJpb2RzID0gNAo+PiB3YXMgc2V0IHBlcmlvZF9zaXplID0gNDA5
-Ngo+PiB3YXMgc2V0IGJ1ZmZlcl9zaXplID0gMTYzODQKPj4gIDAgLSBGcm9udCBMZWZ0Cj4+IFdy
-aXRlIGVycm9yOiAtNSxJbnB1dC9vdXRwdXQgZXJyb3IKPj4geHJ1bl9yZWNvdmVyeSBmYWlsZWQ6
-IC01LElucHV0L291dHB1dCBlcnJvcgo+PiBUcmFuc2ZlciBmYWlsZWQ6IE9wZXJhdGlvbiBub3Qg
-cGVybWl0dGVkCj4+Cj4+IEFsc28gaSB0cmllZCBtcGxheWVyLCA5NmtoeiB3b3JrcyBhbG1vc3Qg
-ZmluZSAodmVyeSByYXJlIGNyYWNrbGluZ3MpLAo+PiA0OGtoeiBwbGF5cyBzbG93IChsaWtlIHBs
-YXlpbmcgOTZraHogc2FtcGxlIG9uIDQ4a2h6IHJhdGUgd2l0aG91dAo+PiByZXNhbXBsaW5nKSwg
-NDQuMWtoeiBkb2Vzbid0IHdvcmsgYXQgYWxsIChtcGxheWVyIGRvZXNuJ3QgZXZlbgo+PiBzaG93
-IHRoYXQgaXQgcGxheXMpLgo+PiAgICAgCj4KPiBIb3cgYWJvdXQgdGhlIHBhdGNoIGJlbG93IGZv
-ciA0OGtIej8KPgo+IE5vdCBzdXJlIHdoZXRoZXIgNDQuMWtIeiB3b3JrcyBhdCBhbGwgd2l0aCB0
-aGUgY3VycmVudCBkcml2ZXIgY29kZS4KPiBJIGp1c3QgZ3Vlc3NlZCB0aGF0IHRoZSBwaXRjaCBw
-YXJhbWV0ZXIgd291bGQgaGFuZGxlIHRoYXQuICBCdXQsIG1heWJlCj4gaXQncyBub3QgZW5vdWdo
-Li4uCj4KPiAgIAo+PiBNYXN0ZXIgY29udHJvbCBvbiBtaXhlciBzZWVtcyB0byBiZSB3b3JraW5n
-IGZpbmUuCj4+ICAgICAKPgo+IE9LLgo+Cj4gW0JUVywgaXQnZCBiZSBhcHByZWNpYXRlZCBpZiB5
-b3UgYWRkIG15IGFkZHJlc3MgdG8gQ2MgKG9yLCBUbzogbXkKPiAgYWRkcmVzcyBhbmQgQ2M6IHRv
-IE1MIGxpa2Ugb3RoZXIgcGVvcGxlIGRvKSwgc28gdGhhdCBJIGNhbiBjaGVjayB5b3VyCj4gIHBv
-c3QgcXVpY2tseS5dCj4KPgo+IHRoYW5rcywKPgo+IFRha2FzaGkKPgo+Cj4gZGlmZiAtLWdpdCBh
-L3NvdW5kL3BjaS9zYnhmaS9zYnhmaS5jIGIvc291bmQvcGNpL3NieGZpL3NieGZpLmMKPiBpbmRl
-eCAzZmRlNmE5Li40N2JhOTQxIDEwMDY0NAo+IC0tLSBhL3NvdW5kL3BjaS9zYnhmaS9zYnhmaS5j
-Cj4gKysrIGIvc291bmQvcGNpL3NieGZpL3NieGZpLmMKPiBAQCAtMTAwNSw3ICsxMDA1LDggQEAg
-c3RhdGljIHZvaWQgc2J4Zmlfc2V0dXBfcGxheV9waXRjaChzdHJ1Y3Qgc2J4ZmkgKmNoaXAsCj4g
-IAl1bnNpZ25lZCBpbnQgcGl0Y2gsIHBpdGNoX2NoOwo+ICAKPiAgCS8qIGNvbnZlcnQgdG8gZml4
-ZWQtcG9pbnQgOC4yNCBmb3JtYXQgKi8KPiAtCXBpdGNoID0gZGl2X3U2NChydW50aW1lLT5yYXRl
-ICogKDFVTEwgPDwgMjQpLCBjaGlwLT5iYXNlX3JhdGUpOwo+ICsJLyogcGl0Y2ggPSBkaXZfdTY0
-KHJ1bnRpbWUtPnJhdGUgKiAoMVVMTCA8PCAyNCksIGNoaXAtPmJhc2VfcmF0ZSk7ICovCj4gKwlw
-aXRjaCA9IGRpdl91NjQocnVudGltZS0+cmF0ZSAqICgxVUxMIDw8IDI0KSwgOTYwMDApOwo+ICAK
-PiAgCWZvciAoaSA9IDA7IGkgPCAyOyBpKyspIHsKPiAgCQkvKiB3cml0ZSB0aGUgcGl0Y2ggdG8g
-cGFyYW0gcmluZyBvZiB0aGUgY29ycmVzcG9uc2luZyBTUkMKPiBfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4g
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgo+ICAgCk9rLCBJIGRvd25sb2FkZWQg
-dG9kYXlzICgxNHRoIE9jdG9iZXIpIHNuYXBzaG90LiBBdCBsZWFzdCBmdHAgc2FpcyB0aGUgCmZp
-bGUgYWxzYS1kcml2ZXItdW5zdGFibGUtc25hcHNob3QudGFyLmJ6MiBpcyBvZiAxNC4xMC4yMDA4
-LgpJIGV4dHJhY3RlZCBpdCwgcmFuIGNvbmZpZ3VyZSwgbWFrZSAsIG1ha2UgaW5zdGFsbC4gTm8g
-cmVib290IG9uIGFwbGF5IApub3csIGJ1dCBPb3BzIG9jY3Vycy4gVHJpZWQgd2l0aCBzeXN5dGVt
-IHRpbWVyIChtYWtlIGNsZWFuLCBjaGFuZ2VkIAojdW5kZWYgWFhYX1NZU1RFTV9USU1FUiB0byAj
-ZGVmaW5lIFhYWF9TWVNURU1fVElNRVIgaW4gc2J4ZmkuYywgCmNvbmZpZ3VyZSwgbWFrZSwgbWFr
-ZSBpbnN0YWxsKS4gT29wcyBhZ2Fpbi4KSGVyZSdzIHRoZSBlcnJvciBtZXNzYWdlOgpQbGF5aW5n
-IGZvby53YXY6IFNpZ25lZCAxNmJpdCBMaXR0bGUgRW5kaWFuLCBSYXRlIDIyMDUwSHosIE1vbm8K
-QlVHOiB1bmFibGUgdG8gaGFuZGxlIE5VTEwgcG9pbnRlciBkZXJlZmVyZW5jZSBhdCAwMDAwMDAw
-MDAwMDAwMDA4CklQOiA8ND4gU3B1cmlvdXMgTEFQSUMgdGltZXIgaW50ZXJydXB0IG9uIENQVSAx
-Cls8ZmZmZmZmZmY4MTE0MTBjNz5dIF9fbGlzdF9hZGQrMHgxLzB4NWIKUEdEIDE0YzE0ZTA2NyBQ
-VUQgMTRjMTRmMDY3ClBNRCAxNGU1NzYwNjcgUFRFIDAKT29wczogMDAwMCBbMV0KX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Quoting Mark Brown:
+
+>> However, there seems to be some problem with PM, occasionally ASoC is
+>> stuck with Standby mode (looking at dapm_widgets) when I start the
+>> playback. Restarting the player brings the sound back. I'll carry out
+>> some further investigation and get back to this.
+> How does this compare with the behaviour of the original at32 machine
+> support - did that have similar issues?
+
+Actually I was previously using at91 support. Nevertheless, didn't
+notice such problems. 
+
+I'll gather more info and try to figure out what's going wrong.
+
+
+-Jukka
