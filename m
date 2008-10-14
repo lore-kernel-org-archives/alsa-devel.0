@@ -1,20 +1,16 @@
-From: The Source <thesourcehim@gmail.com>
-Subject: Re: Backported sbxfi driver (UNTESTED!)
-Date: Tue, 14 Oct 2008 12:55:01 +0400
-Message-ID: <48F45E65.7030800@gmail.com>
-References: <20081012165353.a084d158.baz@irc.msk.ru>	<s5hod1pz1xl.wl%tiwai@suse.de>	<20081013165805.735bf06e.baz@irc.msk.ru>	<s5htzbg63bq.wl%tiwai@suse.de>	<48F35C4C.40307@gmail.com>	<s5hej2k5ysj.wl%tiwai@suse.de>	<s5hbpxo5wmw.wl%tiwai@suse.de>	<s5h1vyk5vr3.wl%tiwai@suse.de>	<s5hy70s4h0i.wl%tiwai@suse.de>	<20081013232147.026f38c9.baz@irc.msk.ru>	<s5hzll7oetb.wl%tiwai@suse.de>	<48F45CDF.3060406@gmail.com>
-	<s5hfxmzo8rv.wl%tiwai@suse.de>
+From: Marc Zyngier <maz@misterjones.org>
+Subject: [PATCH] Fix pxa2xx-ac97-lib.c compilation
+Date: Tue, 14 Oct 2008 10:58:43 +0200
+Message-ID: <20081014105843.5d81c024@not-of-this-earth.wild-wind.fr.eu.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.150])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1524F24461
+Received: from inca-roads.misterjones.org (inca-roads.misterjones.org
+	[213.251.177.50])
+	by alsa0.perex.cz (Postfix) with ESMTP id 543402444A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Oct 2008 10:57:49 +0200 (CEST)
-Received: by ey-out-1920.google.com with SMTP id 21so695269eyc.56
-	for <alsa-devel@alsa-project.org>; Tue, 14 Oct 2008 01:57:31 -0700 (PDT)
-In-Reply-To: <s5hfxmzo8rv.wl%tiwai@suse.de>
+	Tue, 14 Oct 2008 10:59:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,90 +20,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.miao@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGFrYXNoaSBJd2FpINC/0LjRiNC10YI6Cj4gQXQgVHVlLCAxNCBPY3QgMjAwOCAxMjo0ODozMSAr
-MDQwMCwKPiBUaGUgU291cmNlIHdyb3RlOgo+ICAgCj4+IFRha2FzaGkgSXdhaSDQv9C40YjQtdGC
-Ogo+PiAgICAgCj4+PiBBdCBNb24sIDEzIE9jdCAyMDA4IDIzOjIxOjQ3ICswNDAwLAo+Pj4gQWxl
-eGV5IEJhemhpbiB3cm90ZToKPj4+ICAgCj4+PiAgICAgICAKPj4+PiBPbiBNb24sIDEzIE9jdCAy
-MDA4IDE4OjA1OjQ5ICswMjAwCj4+Pj4gVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90
-ZToKPj4+Pgo+Pj4+ICAgICAKPj4+PiAgICAgICAgIAo+Pj4+PiBBdCBNb24sIDEzIE9jdCAyMDA4
-IDE4OjAyOjA4ICswMjAwLAo+Pj4+PiBJIHdyb3RlOgo+Pj4+PiAgICAgICAKPj4+Pj4gICAgICAg
-ICAgIAo+Pj4+Pj4gQXQgTW9uLCAxMyBPY3QgMjAwOCAxNzo0MzowMyArMDIwMCwKPj4+Pj4+IEkg
-d3JvdGU6Cj4+Pj4+PiAgICAgICAgIAo+Pj4+Pj4gICAgICAgICAgICAgCj4+Pj4+Pj4gRm9yIGV4
-YW1wbGUsIHRoZSBsYXRlc3Qgc25hcHNob3QgSSB1cGxvYWRlZCBub3cgaGFzCj4+Pj4+Pj4gYWxz
-YS1rZXJuZWwvSEVBRDogYTNlMWVmNzRhOGVjOGI2ZTNjMzBmN2FhMDZjNWQ1ZDJmMmJlYTdhOSBN
-ZXJnZQo+Pj4+Pj4+IGJyYW5jaCAndG9waWMvc2J4ZmknCj4+Pj4+Pj4gICAgICAgICAgIAo+Pj4+
-Pj4+ICAgICAgICAgICAgICAgCj4+Pj4+PiAuLi4gYW5kIGFnYWluIHVwZGF0ZWQgdG86Cj4+Pj4+
-PiAgIDVkNDI1ZGQ2MjZkMTA3ZmYyYjJlYTk3YzI3MDY4ZjdlZTRiMzZkZDEgTWVyZ2UgYnJhbmNo
-Cj4+Pj4+PiAndG9waWMvc2J4ZmknCj4+Pj4+PiAgICAgICAgIAo+Pj4+Pj4gICAgICAgICAgICAg
-Cj4+Pj4+IFNvLCBndXlzLCBwbGVhc2UgY2hlY2sgdGhlIGxhdGVzdCBvbmUuCj4+Pj4+Cj4+Pj4+
-IElmIHRoZSBoYW5nIHVwIHN0aWxsIG9jY3VycyB3aXRoIHRoaXMgdmVyc2lvbiwgdGhlbiB0cnkg
-dG8gZGVmaW5lCj4+Pj4+IFhYWF9TWVNURU1fVElNRVIgaW4gc2J4ZmkuYywgd2hpY2ggaXMgdW5k
-ZWZpbmVkIGFzIGRlZmF1bHQuCj4+Pj4+IFdpdGggdGhpcyBidWlsZCBvcHRpb24sIHRoZSBkcml2
-ZXIgd2lsbCB1c2UgdGhlIHN5c3RlbSB0aW1lciBpbnN0ZWFkCj4+Pj4+IG9mIGVtdTIwazEgdGlt
-ZXIgaXJxcy4KPj4+Pj4KPj4+Pj4gSWYgdGhpcyBzdGlsbCBkb2Vzbid0IGhlbHAsIHRyeSB0byBy
-ZW1vdmUgYWxsIHNwaW5sb2Nrcy4gIFRoYXQgaXMsCj4+Pj4+IGp1c3QgY29tbWVudCBvdXQgYWxs
-IHNwaW5fbG9jayooKSBhbmQgc3Bpbl91bmxvY2sqKCkgY2FsbHMgdG8gYXZvaWQKPj4+Pj4gc3Bp
-biBkZWFkbG9ja3MuICBPZiBjb3Vyc2UsIGl0IGNhbiBiZSByYWN5LCBidXQgYmV0dGVyIHRoYW4g
-YSBzcGluCj4+Pj4+IGRlYWRsb2NrLgo+Pj4+PiAgICAgICAKPj4+Pj4gICAgICAgICAgIAo+Pj4+
-IE5vdyBpdCBkb2Vzbid0IGhhbmdzIDopCj4+Pj4gICAgIAo+Pj4+ICAgICAgICAgCj4+PiBHbGFk
-IHRvIGhlYXIuICBEaWQgeW91IGhhdmUgdG8gdXNlIFhYWF9TWVNURU1fVElNRVIgb3IgYW55IHdv
-cmthcm91bmQKPj4+IG5lZWRlZD8gIE9yLCBkaWQgaXQgd29yayBhcyBpcz8KPj4+Cj4+PiAgIAo+
-Pj4gICAgICAgCj4+Pj4gYnV0IHNwZWFrZXJzLXRlc3QgcHJvZHVjZXMgY3JhY2tsaW5nIHNpbmUg
-YW5kCj4+Pj4gZmFpbHMgb24gdGVzdC4uLgo+Pj4+ICAgICAKPj4+PiAgICAgICAgIAo+Pj4gRG8g
-eW91IG1lYW4gaXQgYWJvcnRzIHNvbWUgdGltZSBsYXRlciBhZnRlciBzdGFydGluZyB0aGUgc3Ry
-ZWFtPwo+Pj4gQ291bGQgeW91IHNob3cgdGhlIGtlcm5lbCBtZXNzYWdlcz8gIFRoZSBkZWZhdWx0
-IGRlYnVnIGxldmVsIHNob3VsZAo+Pj4gc3VmZmljZSwgSSBndWVzcy4gIElmIGFueSwgdHJ5IGRl
-YnVnPTIuCj4+Pgo+Pj4gICAKPj4+ICAgICAgIAo+Pj4+IHJvb3RAbWF5b25ha2E6fiMgc3BlYWtl
-ci10ZXN0IC1jIDIgLXIgOTYwMDAgLXQKPj4+PiBzaW5lICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgCj4+Pj4KPj4+PiBzcGVha2VyLXRlc3QgMS4wLjE1
-Cj4+Pj4KPj4+PiBQbGF5YmFjayBkZXZpY2UgaXMgZGVmYXVsdAo+Pj4+IFN0cmVhbSBwYXJhbWV0
-ZXJzIGFyZSA5NjAwMEh6LCBTMTZfTEUsIDIgY2hhbm5lbHMKPj4+PiBTaW5lIHdhdmUgcmF0ZSBp
-cyA0NDAuMDAwMEh6Cj4+Pj4gUmF0ZSBzZXQgdG8gOTYwMDBIeiAocmVxdWVzdGVkIDk2MDAwSHop
-Cj4+Pj4gQnVmZmVyIHNpemUgcmFuZ2UgZnJvbSAzMiB0byAxNjM4NAo+Pj4+IFBlcmlvZCBzaXpl
-IHJhbmdlIGZyb20gMzIgdG8gMTYzODQKPj4+PiBVc2luZyBtYXggYnVmZmVyIHNpemUgMTYzODQK
-Pj4+PiBQZXJpb2RzID0gNAo+Pj4+IHdhcyBzZXQgcGVyaW9kX3NpemUgPSA0MDk2Cj4+Pj4gd2Fz
-IHNldCBidWZmZXJfc2l6ZSA9IDE2Mzg0Cj4+Pj4gIDAgLSBGcm9udCBMZWZ0Cj4+Pj4gV3JpdGUg
-ZXJyb3I6IC01LElucHV0L291dHB1dCBlcnJvcgo+Pj4+IHhydW5fcmVjb3ZlcnkgZmFpbGVkOiAt
-NSxJbnB1dC9vdXRwdXQgZXJyb3IKPj4+PiBUcmFuc2ZlciBmYWlsZWQ6IE9wZXJhdGlvbiBub3Qg
-cGVybWl0dGVkCj4+Pj4KPj4+PiBBbHNvIGkgdHJpZWQgbXBsYXllciwgOTZraHogd29ya3MgYWxt
-b3N0IGZpbmUgKHZlcnkgcmFyZSBjcmFja2xpbmdzKSwKPj4+PiA0OGtoeiBwbGF5cyBzbG93IChs
-aWtlIHBsYXlpbmcgOTZraHogc2FtcGxlIG9uIDQ4a2h6IHJhdGUgd2l0aG91dAo+Pj4+IHJlc2Ft
-cGxpbmcpLCA0NC4xa2h6IGRvZXNuJ3Qgd29yayBhdCBhbGwgKG1wbGF5ZXIgZG9lc24ndCBldmVu
-Cj4+Pj4gc2hvdyB0aGF0IGl0IHBsYXlzKS4KPj4+PiAgICAgCj4+Pj4gICAgICAgICAKPj4+IEhv
-dyBhYm91dCB0aGUgcGF0Y2ggYmVsb3cgZm9yIDQ4a0h6Pwo+Pj4KPj4+IE5vdCBzdXJlIHdoZXRo
-ZXIgNDQuMWtIeiB3b3JrcyBhdCBhbGwgd2l0aCB0aGUgY3VycmVudCBkcml2ZXIgY29kZS4KPj4+
-IEkganVzdCBndWVzc2VkIHRoYXQgdGhlIHBpdGNoIHBhcmFtZXRlciB3b3VsZCBoYW5kbGUgdGhh
-dC4gIEJ1dCwgbWF5YmUKPj4+IGl0J3Mgbm90IGVub3VnaC4uLgo+Pj4KPj4+ICAgCj4+PiAgICAg
-ICAKPj4+PiBNYXN0ZXIgY29udHJvbCBvbiBtaXhlciBzZWVtcyB0byBiZSB3b3JraW5nIGZpbmUu
-Cj4+Pj4gICAgIAo+Pj4+ICAgICAgICAgCj4+PiBPSy4KPj4+Cj4+PiBbQlRXLCBpdCdkIGJlIGFw
-cHJlY2lhdGVkIGlmIHlvdSBhZGQgbXkgYWRkcmVzcyB0byBDYyAob3IsIFRvOiBteQo+Pj4gIGFk
-ZHJlc3MgYW5kIENjOiB0byBNTCBsaWtlIG90aGVyIHBlb3BsZSBkbyksIHNvIHRoYXQgSSBjYW4g
-Y2hlY2sgeW91cgo+Pj4gIHBvc3QgcXVpY2tseS5dCj4+Pgo+Pj4KPj4+IHRoYW5rcywKPj4+Cj4+
-PiBUYWthc2hpCj4+Pgo+Pj4KPj4+IGRpZmYgLS1naXQgYS9zb3VuZC9wY2kvc2J4Zmkvc2J4Zmku
-YyBiL3NvdW5kL3BjaS9zYnhmaS9zYnhmaS5jCj4+PiBpbmRleCAzZmRlNmE5Li40N2JhOTQxIDEw
-MDY0NAo+Pj4gLS0tIGEvc291bmQvcGNpL3NieGZpL3NieGZpLmMKPj4+ICsrKyBiL3NvdW5kL3Bj
-aS9zYnhmaS9zYnhmaS5jCj4+PiBAQCAtMTAwNSw3ICsxMDA1LDggQEAgc3RhdGljIHZvaWQgc2J4
-Zmlfc2V0dXBfcGxheV9waXRjaChzdHJ1Y3Qgc2J4ZmkgKmNoaXAsCj4+PiAgCXVuc2lnbmVkIGlu
-dCBwaXRjaCwgcGl0Y2hfY2g7Cj4+PiAgCj4+PiAgCS8qIGNvbnZlcnQgdG8gZml4ZWQtcG9pbnQg
-OC4yNCBmb3JtYXQgKi8KPj4+IC0JcGl0Y2ggPSBkaXZfdTY0KHJ1bnRpbWUtPnJhdGUgKiAoMVVM
-TCA8PCAyNCksIGNoaXAtPmJhc2VfcmF0ZSk7Cj4+PiArCS8qIHBpdGNoID0gZGl2X3U2NChydW50
-aW1lLT5yYXRlICogKDFVTEwgPDwgMjQpLCBjaGlwLT5iYXNlX3JhdGUpOyAqLwo+Pj4gKwlwaXRj
-aCA9IGRpdl91NjQocnVudGltZS0+cmF0ZSAqICgxVUxMIDw8IDI0KSwgOTYwMDApOwo+Pj4gIAo+
-Pj4gIAlmb3IgKGkgPSAwOyBpIDwgMjsgaSsrKSB7Cj4+PiAgCQkvKiB3cml0ZSB0aGUgcGl0Y2gg
-dG8gcGFyYW0gcmluZyBvZiB0aGUgY29ycmVzcG9uc2luZyBTUkMKPj4+IF9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+PiBBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdAo+Pj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4+PiBodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+Pj4KPj4+ICAgCj4+
-PiAgICAgICAKPj4gVHJpZWQgOTZLSHogc2FtcGxlICgyNGJpdCwgTGl0dGxlIEVuZGlhbiwgOTYw
-MDBIeiwgU3RlcmVvKS4gTm8gY3Jhc2gsIAo+PiBoYW5nLCByZWJvb3QuIG9vcHMsIHBhbmljIGV0
-Yy4gQnV0IG5vIHNvdW5kIHRvby4KPj4gICAgIAo+Cj4gU3RyYW5nZS4gIE9vcHMgc2hvdWxkbid0
-IGRlcGVuZCBvbiB0aGUgcmF0ZSwgYXQgbGVhc3QuLi4KPgo+IERpZCB5b3UgcmFpc2UgdGhlIG1h
-c3RlciB2b2x1bWU/Cj4KPgo+IFRha2FzaGkKPgo+ICAgClllcywgdG8gMTAwJQpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+[This patch was posted to linux-arm-kernel ML yesterday, and reposted
+here in the hope that it will be merged soon]
+
+The last ALSA merge broke pxa2xx-ac97-lib.c, as it brought back
+references to cpu_is_pxa21x that Eric Miao removed in commit
+0ffcbfd54ea81ca24c0749f55ca4fcf3e2bdc23e:
+
+	[ARM] pxa: make cpu_is_pxa2* macros more consistent
+
+This patch gets rid of those references, and only keeps cpu_is_pxa25x().
+
+Signed-off-by: Marc Zyngier <maz@misterjones.org>
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Acked-by: Eric Miao <eric.miao@marvell.com>
+
+diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
+index 99026df..34c1d94 100644
+--- a/sound/arm/pxa2xx-ac97-lib.c
++++ b/sound/arm/pxa2xx-ac97-lib.c
+@@ -50,7 +50,7 @@ unsigned short pxa2xx_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
+ 	mutex_lock(&car_mutex);
+ 
+ 	/* set up primary or secondary codec space */
+-	if ((cpu_is_pxa21x() || cpu_is_pxa25x()) && reg == AC97_GPIO_STATUS)
++	if (cpu_is_pxa25x() && reg == AC97_GPIO_STATUS)
+ 		reg_addr = ac97->num ? &SMC_REG_BASE : &PMC_REG_BASE;
+ 	else
+ 		reg_addr = ac97->num ? &SAC_REG_BASE : &PAC_REG_BASE;
+@@ -90,7 +90,7 @@ void pxa2xx_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
+ 	mutex_lock(&car_mutex);
+ 
+ 	/* set up primary or secondary codec space */
+-	if ((cpu_is_pxa21x() || cpu_is_pxa25x()) && reg == AC97_GPIO_STATUS)
++	if (cpu_is_pxa25x() && reg == AC97_GPIO_STATUS)
+ 		reg_addr = ac97->num ? &SMC_REG_BASE : &PMC_REG_BASE;
+ 	else
+ 		reg_addr = ac97->num ? &SAC_REG_BASE : &PAC_REG_BASE;
+@@ -200,7 +200,7 @@ static inline void pxa_ac97_cold_pxa3xx(void)
+ bool pxa2xx_ac97_try_warm_reset(struct snd_ac97 *ac97)
+ {
+ #ifdef CONFIG_PXA25x
+-	if (cpu_is_pxa21x() || cpu_is_pxa25x())
++	if (cpu_is_pxa25x())
+ 		pxa_ac97_warm_pxa25x();
+ 	else
+ #endif
+@@ -230,7 +230,7 @@ EXPORT_SYMBOL_GPL(pxa2xx_ac97_try_warm_reset);
+ bool pxa2xx_ac97_try_cold_reset(struct snd_ac97 *ac97)
+ {
+ #ifdef CONFIG_PXA25x
+-	if (cpu_is_pxa21x() || cpu_is_pxa25x())
++	if (cpu_is_pxa25x())
+ 		pxa_ac97_cold_pxa25x();
+ 	else
+ #endif
+@@ -301,7 +301,7 @@ EXPORT_SYMBOL_GPL(pxa2xx_ac97_hw_suspend);
+ 
+ int pxa2xx_ac97_hw_resume(void)
+ {
+-	if (cpu_is_pxa21x() || cpu_is_pxa25x() || cpu_is_pxa27x()) {
++	if (cpu_is_pxa25x() || cpu_is_pxa27x()) {
+ 		pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
+ 		pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
+ 		pxa_gpio_mode(GPIO28_BITCLK_AC97_MD);
+@@ -325,7 +325,7 @@ int __devinit pxa2xx_ac97_hw_probe(struct platform_device *dev)
+ 	if (ret < 0)
+ 		goto err;
+ 
+-	if (cpu_is_pxa21x() || cpu_is_pxa25x() || cpu_is_pxa27x()) {
++	if (cpu_is_pxa25x() || cpu_is_pxa27x()) {
+ 		pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
+ 		pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
+ 		pxa_gpio_mode(GPIO28_BITCLK_AC97_MD);
+
+-- 
+A rat a day keeps the plague away.
