@@ -1,19 +1,29 @@
-From: Manuel Naranjo <manuel@aircable.net>
-Subject: Re: Possible regression on Sigmatel 9205
-Date: Wed, 15 Oct 2008 09:30:19 -0300
-Message-ID: <48F5E25B.5000609@aircable.net>
-References: <48F4AD76.8010409@aircable.net>
+From: Alexey Bazhin <baz@irc.msk.ru>
+Subject: Re: Backported sbxfi driver (UNTESTED!)
+Date: Wed, 15 Oct 2008 16:34:30 +0400
+Message-ID: <20081015163430.7df33167.baz@irc.msk.ru>
+References: <20081012165353.a084d158.baz@irc.msk.ru>
+	<s5hod1pz1xl.wl%tiwai@suse.de>
+	<20081013165805.735bf06e.baz@irc.msk.ru>
+	<s5htzbg63bq.wl%tiwai@suse.de> <48F35C4C.40307@gmail.com>
+	<s5hej2k5ysj.wl%tiwai@suse.de> <s5hbpxo5wmw.wl%tiwai@suse.de>
+	<s5h1vyk5vr3.wl%tiwai@suse.de> <s5hy70s4h0i.wl%tiwai@suse.de>
+	<20081013232147.026f38c9.baz@irc.msk.ru>
+	<s5hzll7oetb.wl%tiwai@suse.de> <48F463AC.1000307@gmail.com>
+	<s5hhc7f4fec.wl%tiwai@suse.de> <48F48166.4030908@gmail.com>
+	<s5hd4i2z7k6.wl%tiwai@suse.de> <48F598D0.3070700@gmail.com>
+	<s5h63nuz4vl.wl%tiwai@suse.de> <48F59FF4.20800@gmail.com>
+	<s5h4p3ez41h.wl%tiwai@suse.de> <48F5A681.8050609@gmail.com>
+	<s5hiqru2pmi.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.172])
-	by alsa0.perex.cz (Postfix) with ESMTP id 66FC5103805
+Received: from mail.mosuzedu.ru (mail.mosuzedu.ru [62.117.117.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id 90737103805
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Oct 2008 14:30:47 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id 30so1174417ugs.24
-	for <alsa-devel@alsa-project.org>; Wed, 15 Oct 2008 05:30:29 -0700 (PDT)
-In-Reply-To: <48F4AD76.8010409@aircable.net>
+	Wed, 15 Oct 2008 14:34:48 +0200 (CEST)
+In-Reply-To: <s5hiqru2pmi.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,29 +33,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, The Source <thesourcehim@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 15 Oct 2008 11:07:17 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-> Hello everyone,
->
-> Sorry to interrupt you all, but I had been trying to get the digital mic
-> of my Dell Inspiron 1521 for the last 5 days without any sucess.
-> .....
-> Thanks,
-> Manuel
-Hello again,
+> At Wed, 15 Oct 2008 12:14:57 +0400,
+> The Source wrote: 
+> > but:
+> > 1. The volume is extremely low. I had not only set volume to
+> > maximum in alsamixer but also set my audio 5.1 system volume to
+> > maximum to hear a sound.
+> 
+> This sounds like an amp isn't turned on somewhere.  Possibly a GPIO
+> setting.
+> 
+> Alexey, what about your hardware?  Is it also so extremely low?
+No, volume is fine.
 
-In my quest to discover what the hell is going on I got the STAC9205 
-datasheet from Integrated Device Technology (this guys bought the 
-techology from sigmatel).
 
-I'm starting to get how the device works, but I have a question, is 
-there any special reason why ADC1 MUX isn't been routed? 
-(stac9205_mux_nids doesn't show it). As far as I get if you don't route 
-this piece then you don't get a route for the INPORT1 MUX.
-
-Anyway, I'll keep reading too see if I can get how this thing works.
-
-Cheers,
-Manuel
+-- 
+ Alexey Bazhin
+  mailto:baz@irc.msk.ru
+  ICQ 125125882
