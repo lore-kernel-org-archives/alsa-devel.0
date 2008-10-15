@@ -1,17 +1,18 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
+From: Mark Brown <broonie@sirena.org.uk>
 Subject: Re: [PATCH] hda: add support for jack detection on
 	IDT/Sigmatel
-Date: Wed, 15 Oct 2008 11:19:10 -0400
-Message-ID: <48F609EE.1040908@embeddedalley.com>
+Date: Wed, 15 Oct 2008 16:32:53 +0100
+Message-ID: <20081015153251.GD14068@sirena.org.uk>
 References: <48F60190.5060601@embeddedalley.com> <s5hvdvtzytl.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from easi.embeddedalley.com (unknown [71.6.201.124])
-	by alsa0.perex.cz (Postfix) with SMTP id 9A9D72475A
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id E3E6E2476C
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Oct 2008 17:19:37 +0200 (CEST)
+	Wed, 15 Oct 2008 17:33:12 +0200 (CEST)
+Content-Disposition: inline
 In-Reply-To: <s5hvdvtzytl.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,131 +24,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Matthew Ranostay <mranostay@embeddedalley.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Wed, 15 Oct 2008 10:43:28 -0400,
+On Wed, Oct 15, 2008 at 05:02:14PM +0200, Takashi Iwai wrote:
 > Matthew Ranostay wrote:
->> diff --git a/core/jack.c b/core/jack.c
->> index 8133a2b..7a5b07b 100644
->> --- a/core/jack.c
->> +++ b/core/jack.c
->> @@ -95,7 +95,7 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
->>  		goto fail_input;
->>  	}
->>
->> -	jack->input_dev->phys = "ALSA";
->> +	jack->input_dev->phys = "ALSA Jack Detection";
-> 
+
+> > +	jack->input_dev->phys = "ALSA Jack Detection";
+
 > Any reason to change?
-> 
+
+Not like that.  The only reason it's set at all at the minute is because
+evdev prints it out for diagnostic purposes and it'd show up as "(NULL)"
+which sets off alarm bells for people.  The particular string isn't
+really important and the terseness varies between drivers that use fixed
+strings.
+
+Note that this isn't the device name - that should generally be verbose
+(and is currently the card longname plus jack name which is idiomatic
+for this).
+
 > Well, I think even the original phys value "ALSA" is a bit strange in
 > comparison with values of other input drivers, such as
 > "isa0060/serio0/input0", "PNP0C0C/button/input0", too...
 > Mark, what do you think?
-> 
-> 
->>  	jack->type = type;
->>
->> diff --git a/pci/Kconfig b/pci/Kconfig
->> index 7003711..7e40890 100644
->> --- a/pci/Kconfig
->> +++ b/pci/Kconfig
->> @@ -501,6 +501,7 @@ config SND_HDA_INTEL
->>  	tristate "Intel HD Audio"
->>  	select SND_PCM
->>  	select SND_VMASTER
->> +	select SND_JACK if INPUT=y || INPUT=SND
->>  	help
->>  	  Say Y here to include support for Intel "High Definition
->>  	  Audio" (Azalia) motherboard devices.
->> diff --git a/pci/hda/hda_codec.h b/pci/hda/hda_codec.h
->> index 60468f5..93dc961 100644
->> --- a/pci/hda/hda_codec.h
->> +++ b/pci/hda/hda_codec.h
->> @@ -729,6 +729,9 @@ struct hda_codec {
->>
->>  	struct snd_hwdep *hwdep;	/* assigned hwdep device */
->>
->> +	/* jack detection */
->> +	struct snd_jack *jack;
->> +
->>  	/* misc flags */
->>  	unsigned int spdif_status_reset :1; /* needs to toggle SPDIF for each
->>  					     * status change
-> 
-> Does this have to be in hda_codec core now?  Maybe later, but I feel
-> it's too early to change the core side unless you really need it.
-> Note that you may have multiple headphone, mic, line-in and whatever
-> jacks.  So, if any, it should be either an array or a list as a more
-> generic representation.
-> 
-> And, if you add struct snd_jack there, include <sound/jack.h> in that
-> header, or add a forward declaration of the struct.
-> 
-> 
->> diff --git a/pci/hda/hda_proc.c b/pci/hda/hda_proc.c
->> index 743d779..e07652a 100644
->> --- a/pci/hda/hda_proc.c
->> +++ b/pci/hda/hda_proc.c
->> @@ -425,6 +425,22 @@ static void print_unsol_cap(struct snd_info_buffer *buffer,
->>  		    (unsol & AC_UNSOL_ENABLED) ? 1 : 0);
->>  }
->>
->> +static void print_presence_cap(struct snd_info_buffer *buffer,
->> +			      struct hda_codec *codec, hda_nid_t nid)
->> +{
->> +	int presence = snd_hda_codec_read(codec, nid, 0,
->> +			AC_VERB_GET_PIN_SENSE, 0);
->> +	int def_conf = snd_hda_codec_read(codec, nid, 0,
->> +			AC_VERB_GET_CONFIG_DEFAULT, 0x00);
->> +	def_conf = get_defcfg_connect(def_conf);
->> +	if (def_conf && def_conf != AC_JACK_PORT_FIXED)
->> +		return;
->> +	snd_iprintf(buffer,
->> +			"  Jack Presence: %s\n",
->> +			(presence & AC_PINSENSE_PRESENCE)
->> +				? "Plugged in" : "Unplugged");
->> +}
->> +
->>  static void print_proc_caps(struct snd_info_buffer *buffer,
->>  			    struct hda_codec *codec, hda_nid_t nid)
->>  {
->> @@ -552,6 +568,9 @@ static void print_codec_info(struct snd_info_entry *entry,
->>  					   AC_PAR_AUDIO_WIDGET_CAP);
->>  		unsigned int wid_type =
->>  			(wid_caps & AC_WCAP_TYPE) >> AC_WCAP_TYPE_SHIFT;
->> +		unsigned int pincap = snd_hda_param_read(codec, nid,
->> +					 AC_PAR_PIN_CAP);
->> +
->>  		hda_nid_t conn[HDA_MAX_CONNECTIONS];
->>  		int conn_len = 0;
->>
->> @@ -632,6 +651,9 @@ static void print_codec_info(struct snd_info_entry *entry,
->>  		if (wid_caps & AC_WCAP_UNSOL_CAP)
->>  			print_unsol_cap(buffer, codec, nid);
->>
->> +		if (pincap & AC_PINCAP_PRES_DETECT)
->> +			print_presence_cap(buffer, codec, nid);
->> +
->>  		if (wid_caps & AC_WCAP_POWER)
->>  			print_power_state(buffer, codec, nid);
-> 
-> Sorry, I don't want to put this into proc file.  In some obscure
-> hardwares, you can't call jack-detect verb always even if the pin
-> shows it's possible, and it breaks the later jack-sense reading
-> (believe nor not :)  In some cases, it needs triggering.
-> So, "just read" is dangerous. 
-So what is the safest way to report the initial state of the jacks then?
 
-> 
-> BTW, this change has nothing to do with the addition of jack layer
-> support.  If this addition is inevitably necessary, please split to an
-> individual patch.
-> 
-> 
-> Thanks,
-> 
-> Takashi
-> 
+It should ideally be something based off the location of the card in the
+system (like those you quote above) - the idea is that it's something
+that doesn't change between reboots and identifies the device.  Not all
+input devices put something meaningful there.  If we change it to
+anything it should probably be to something based off the bus_id of the
+input device.
+
+It mostly only comes into play if you've got more than one of a device
+in the system and even then AIUI user space just uses sysfs these days,
+which is why I didn't bother originally.
