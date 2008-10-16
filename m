@@ -1,25 +1,26 @@
-From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
-Subject: Re: Status of HDMI on Nvidia 10de:0774 device
-	(AsusM3N-H HDMI
-Date: Thu, 16 Oct 2008 14:00:01 +0200
-Message-ID: <fd3eb9bf0810160500r6d037f5fya68aee48e3353697@mail.gmail.com>
-References: <59BA8640D0DC924897A613C8240D88390442B4@vex.jingella.net>
-	<s5h3aj096l4.wl%tiwai@suse.de>
-	<assp.0174c97161.59BA8640D0DC924897A613C8240D88390442BA@vex.jingella.net>
-	<s5hy70pqbjx.wl%tiwai@suse.de>
-	<assp.217580e936.59BA8640D0DC924897A613C8240D88390442BB@vex.jingella.net>
+From: Jan Wolf <xarteras@nostalgicnetworxx.org>
+Subject: Re: Backported sbxfi driver (UNTESTED!)
+Date: Thu, 16 Oct 2008 12:03:41 +0000 (UTC)
+Message-ID: <loom.20081016T120322-319@post.gmane.org>
+References: <s5hy70xsl46.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4E4D02454F
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4046024557
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Oct 2008 14:00:20 +0200 (CEST)
-Received: by wf-out-1314.google.com with SMTP id 24so3117703wfg.23
-	for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2008 05:00:01 -0700 (PDT)
-In-Reply-To: <assp.217580e936.59BA8640D0DC924897A613C8240D88390442BB@vex.jingella.net>
-Content-Disposition: inline
+	Thu, 16 Oct 2008 14:05:24 +0200 (CEST)
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1KqRbC-0000Vr-LZ
+	for alsa-devel@alsa-project.org; Thu, 16 Oct 2008 12:05:02 +0000
+Received: from p579EE846.dip.t-dialin.net ([87.158.232.70])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2008 12:05:02 +0000
+Received: from xarteras by p579EE846.dip.t-dialin.net with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2008 12:05:02 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,35 +30,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Blacky (alsa-devel)" <alsa-devel@blackdog.shacknet.nu>, alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-WW91IGdldCB0aGUgY29tcGxldGUgaW1hZ2UsIG5vdCBqdXN0IG1vZHVsZXMuCgoyMDA4LzEwLzE2
-IEJsYWNreSAoYWxzYS1kZXZlbCkgPGFsc2EtZGV2ZWxAYmxhY2tkb2cuc2hhY2tuZXQubnU+Ogo+
-Cj4gVGFrYXNoaSwKPgo+IFRoYW5rIHlvdSBmb3IgeW91ciBoZWxwLgo+Cj4+ID4KPj4gPiBUaGUg
-c2hvcnQgb2YgaXQgaXMsICdhcGxheSAtRGhkbWknIGF0dGVtcHRzIHRvIG9wZW4gdGhlIGRldmlj
-ZQo+PiA+ICcvZGV2L3NuZC9wY21DMEQzcCcsIHdoaWNoCj4+ID4gZG9lc24ndCBleGlzdHMuIFRo
-ZSByZXBvcnRpbmcgdG9vbHMgc2hvdyB0aGUgSERNSSBhcyBiZWluZwo+PiA+IC9kZXYvc25kL3Bj
-bUMwRDRwLi4KPj4KPj4gT0ssIGl0J3MgYSBidWcgaW4gTnZpZGlhIEhETUkgcGF0Y2guICBGaXhl
-ZCBub3cgb24gc291bmQuZ2l0IHRyZWUuCj4+Cj4+Cj4+IFlvdSBzaG91bGQgY2hlY2sgbXkgc291
-bmQuZ2l0IHRyZWUgdG8gZ2V0IHRoZSB2ZXJ5IGxhdGVzdCB2ZXJzaW9uLgo+PiAgICAgZ2l0Oi8v
-Z2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLTIuNi5n
-aXQKPj4KPj4gVGhlIG1hc3RlciBicmFuY2ggaXMgZm9yIHRoZSBjdXJyZW50bHkgZGV2ZWxvcGVk
-IGtlcm5lbCwgaS5lLiAyLjYuMjguCj4+IFRoZSBkZXZlbCBicmFuY2ggaXMgZm9yIHRoZSBwcmV2
-aW91cyBvbmUsIDIuNi4yNy4gIEZvciB0cmFja2luZyB0aGUKPj4gZGV2ZWxvcG1lbnQsIGp1c3Qg
-Y2hlY2sgb25lIG9mIHRoZW0uCj4+Cj4+IFRoZSByZWFsIHBhdGNoZXMgYXJlIHVzdWFsbHkgY29t
-bWl0dGVkIGludG8gdG9waWMgYnJhbmNoZXMgbGlrZQo+PiB0b3BpYy9oZGEuICBUaGVzZSBhcmUg
-bWVyZ2VkIGludG8gYXBwcm9wcmlhdGUgYnJhbmNoZXMuCj4+Cj4+Cj4+IFRha2FzaGkKPgo+IEl0
-IHdpbGwgYmUgdGhlIHdlZWtlbmQgYmVmb3JlIEkgaGF2ZSBhIGNoYW5jZSB0byB0ZXN0IGl0IGFn
-YWluc3QgYSBIRE1JCj4gcmVjZWl2ZXIgdGhvdWdoLgo+Cj4gSSdsbCBsZXQgeW91IGtub3cgaG93
-IEkgZ28uCj4KPiBJIGdyYWJiZWQgdGhlIHNvdW5kLTIuNiB0cmVlLiAgSWYgSSBzdWNjZXNzZnVs
-bHkgYnVpbGQgaXQsIHdpbGwgaXQKPiBnZW5lcmF0ZSBhIGNvbXBsZXRlCj4ga2VybmVsIHdoaWNo
-IEkgbmVlZCB0byBpbnN0YWxsIGFuZCBib290PyBvciBjYW4gaXQgZ2VuZXJhdGUgbW9kdWxlcyBm
-b3IKPiBteSBleGlzdGluZwo+IGtlcm5lbD8gIE15IGFwb2xvZ2llcyBmb3IgdGhlIGR1bWIgcXVl
-c3Rpb25zLgo+Cj4KPiBSZWdhcmRzCj4gQmxhY2t5Cj4KPiBfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgoKCgotLSAKVmVkcmFuIE1pbGV0acSHCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Takashi Iwai <tiwai <at> suse.de> writes:
+
+> 
+> Hi,
+> 
+> $SUBJECT is now on my sound-unstable git tree:
+>     git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-unstable-2.6.git
+> together with other experimental patches.
+> 
+> If you're using 2.6.27-rc* git tree, pull the master branch of the
+> tree above into yours, and run make oldconfig.  That is,
+>     % cd /your/git-tree
+>     % git pull git://...../sound-unstable-2.6.git master
+> 
+> If you are not using 2.6.27-rc*, or not familiar with git, you can try
+> alsa-driver-unstable snapshot tarball available at
+>     ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/
+> Run configure, make and make install as usual ALSA-driver tarball.
+> 
+> (I didn't check whether the tarball correctly includes the sbxfi
+>  stuff.  It should have been generated automatically.  If not, wait
+>  for a while.  If it still doesn't include sbxfi code, please report.
+>  I'll fix it tomorrow morning.)
+> 
+> The driver is built only for 2.6.26 or later.  If you have an older
+> kernel, edit alsa-driver*/kconfig-vers and change the version of
+> CONFIG_SND_SBXFI to 2.6.24 or whatever you want.  Then run
+> ./gitcompile, instead of configure in this case to update the
+> configure script.
+> 
+> **NOTE**
+> The driver is totally untested.  It's just compiled without errors,
+> but not reviewed after a quick writing.  So, don't expect it ever runs
+> at the first try.  A crash is highly possible.
+> 
+> There are some build conditions found in sound/pci/sbxfi/sbxfi.c,
+> starting with XXX_*.  You can change it if you want.  As default, it's
+> for non-fullduplex but accept different rates.  Not sure whether this
+> works at all.
+> 
+> Any test- (and better debugging-) reports are appreciated.
+> 
+> thanks,
+> 
+> Takashi
+> 
+
+I finally managed to play music over xmms with this driver.
+I needed to modify something, because most music is 44100Hz and the driver did
+not work with this rate.
+
+61,62c61,62
+< #undef XXX_48K_ONLY
+< #define XXX_CONT_RATE
+---
+> #define XXX_48K_ONLY
+> #undef XXX_CONT_RATE
+529a530,532
+>       case 44100:
+>               ratec = 0x4c;
+>               break;
+
+It also needs to run in 48000Hz mode or else it will playback way to slow.
+I think this flag in ratec switches to 96KHz mode in the X-Fi, in windows this
+mode is only available in Audio creation mode, so it must be handled in a
+special way somehow.
+
+Great work with the driver, finally I have sound under linux as creative's
+driver only oopsed the kernel for me :)
