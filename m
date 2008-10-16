@@ -1,19 +1,18 @@
-From: "John Kacur" <jkacur@gmail.com>
-Subject: davinci_request_dma()
-Date: Thu, 16 Oct 2008 10:58:58 +0200
-Message-ID: <520f0cf10810160158y67c8330fg959f198d9026d680@mail.gmail.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: davinci_request_dma()
+Date: Thu, 16 Oct 2008 10:08:11 +0100
+Message-ID: <20081016090810.GA3539@sirena.org.uk>
+References: <520f0cf10810160158y67c8330fg959f198d9026d680@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f24.google.com (mail-gx0-f24.google.com
-	[209.85.217.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4888B103820
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 16F7D10380D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Oct 2008 10:59:17 +0200 (CEST)
-Received: by gxk5 with SMTP id 5so1642803gxk.8
-	for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2008 01:58:58 -0700 (PDT)
+	Thu, 16 Oct 2008 11:08:31 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <520f0cf10810160158y67c8330fg959f198d9026d680@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,22 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: John Kacur <jkacur@gmail.com>
+Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com
 List-Id: alsa-devel@alsa-project.org
 
-I'm looking for a little bit more help reading the SOC code. In
-particular, I'm reading davinci-pcm.c, and function
-davinci_pcm_dma_request, which makes two calls to davinci_request_dma.
-However, when I grep for davinci_request_dma, the only places I can
-find it are in davinci_pcm_dma_request itself!
+On Thu, Oct 16, 2008 at 10:58:58AM +0200, John Kacur wrote:
 
-[jkacur@mydcore linux-2.6.26]$ grep -rn davinci_request_dma *
-sound/soc/davinci/davinci-pcm.c:143:	ret =
-davinci_request_dma(prtd->params->channel, prtd->params->name,
-sound/soc/davinci/davinci-pcm.c:150:	ret =
-davinci_request_dma(PARAM_ANY, "Link",
+[The ASoC DaVinci driver uses davinci_request_dma() but...]
 
-Either I'm missing something, or this code wouldn't even compile. I
-would appreciate any help in understanding this.
+> However, when I grep for davinci_request_dma, the only places I can
+> find it are in davinci_pcm_dma_request itself!
 
-Thank you.
+...
+
+> Either I'm missing something, or this code wouldn't even compile. I
+> would appreciate any help in understanding this.
+
+It was discovered a while ago that the code depends on an unmerged set
+of DMA API updates.  See this thread for more info:
+
+  http://mailman.alsa-project.org/pipermail/alsa-devel/2008-June/008674.html
+
+To be honest, I had expected that the required updates would have been
+merged by now but it seems not.  CCing the DaVinci list - I don't know
+what the status is on merging the new DMA API?
