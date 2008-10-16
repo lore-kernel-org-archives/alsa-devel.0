@@ -1,22 +1,19 @@
-From: "Bjoern Olausson" <lkmlist@gmail.com>
+From: Xarteras <xarteras@nostalgicnetworxx.org>
 Subject: Re: Backported sbxfi driver (UNTESTED!)
-Date: Thu, 16 Oct 2008 22:07:02 +0200
-Message-ID: <5501535d0810161307r4756fd44of5424cd1243e4b29@mail.gmail.com>
-References: <5501535d0810151457t1bc02dfbl767b564456c09594@mail.gmail.com>
-	<s5hljwoq5lc.wl%tiwai@suse.de>
-	<5501535d0810161130i7e3fa4c2hbe267ba2cbb15c00@mail.gmail.com>
+Date: Thu, 16 Oct 2008 21:29:31 +0000
+Message-ID: <48F7B23B.7010105@nostalgicnetworxx.org>
+References: <s5hy70xsl46.wl%tiwai@suse.de>	<loom.20081016T120322-319@post.gmane.org>	<s5h8wso3ejg.wl%tiwai@suse.de>	<48F739F4.5070303@nostalgicnetworxx.org>	<48F74344.4090509@gmail.com>
+	<s5hvdvs1wig.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.174])
-	by alsa0.perex.cz (Postfix) with ESMTP id C5A001037F0
+Received: from nostalgicnetworxx.org (snowleopard.nostalgicnetworxx.org
+	[87.106.211.229])
+	by alsa0.perex.cz (Postfix) with ESMTP id C0AD7103800
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Oct 2008 22:07:21 +0200 (CEST)
-Received: by wf-out-1314.google.com with SMTP id 24so163465wfg.23
-	for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2008 13:07:03 -0700 (PDT)
-In-Reply-To: <5501535d0810161130i7e3fa4c2hbe267ba2cbb15c00@mail.gmail.com>
-Content-Disposition: inline
+	Thu, 16 Oct 2008 23:31:46 +0200 (CEST)
+In-Reply-To: <s5hvdvs1wig.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,34 +23,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, The Source <thesourcehim@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SSBmb3VuZCBhIHNpdGUgd2l0aCBhIGxhcmdlIHJhbmdlIG9mIGZpbGVzOgpodHRwOi8vYmVsbGF0
-cml4LmVjZS5tY2dpbGwuY2EvRG9jdW1lbnRzL0F1ZGlvRm9ybWF0cy9XQVZFL1NhbXBsZXMuaHRt
-bAoKYXBsYXkgcGxheXMgYWxsIGZpbGVzIGl0IGlzIGNhcGFibGUgdG8gZGVjb2RlLiBObyBjcmFj
-a2VsLCBubyBub2lzZSwganVzdCBmaW5lLgoKZ2xhc3Mud2F2ClNpZ25lZCAxNiBiaXQgTGl0dGxl
-IEVuZGlhbiwgUmF0ZSA4MDAwIEh6LCBNb25vCgpNMUYxLWludDE2LUFGc3Aud2F2ClNpZ25lZCAx
-NiBiaXQgTGl0dGxlIEVuZGlhbiwgUmF0ZSA4MDAwIEh6LCBTdGVyZW8KCk0xRjEtaW50MjQtQUZz
-cC53YXYKU2lnbmVkIDI0IGJpdCBMaXR0bGUgRW5kaWFuIGluIDNieXRlcywgUmF0ZSA4MDAwIEh6
-LCBTdGVyZW8KCk0xRjEtaW50MzItQUZzcC53YXYKU2lnbmVkIDMyIGJpdCBMaXR0bGUgRW5kaWFu
-LCBSYXRlIDgwMDAgSHosIFN0ZXJlbwoKTTFGMS11aW50OC1BRnNwLndhdgpVbnNpZ25lZCA4IGJp
-dCwgUmF0ZSA4MDAwIEh6LCBTdGVyZW8KCnN0ZXJlb2wud2F2ClNpZ25lZCAxNiBiaXQgTGl0dGxl
-IEVuZGlhbiwgUmF0ZSAyMjA1MCBIeiwgU3RlcmVvCgpVdG9waWFfQ3JpdGljYWxfU3RvcC53YXYK
-U2lnbmVkIDE2IGJpdCBMaXR0bGUgRW5kaWFuLCBSYXRlIDIyMDUwIEh6LCBNb25vCgpUaG91Z2h0
-IHdoZW4gSSB0cnkgdG8gcGxheSB0aGUgZmlyc3Qgb25lIHdpdGggbXBsYXllciAtLS0+IEZSRUVa
-WlpaWgpTcGllbGUgZ2xhc3Mud2F2LgpBdWRpbyBmaWxlLURhdGVpZm9ybWF0IGVya2FubnQhCj09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09CsOWZmZuZSBBdWRpb2RlY29kZXI6IFtwY21dIFVuY29tcHJlc3NlZCBQ
-Q00gYXVkaW8gZGVjb2RlcgpBVURJTzogODAwMCBIeiwgMSBjaCwgczE2bGUsIDEyOC4wIGtiaXQv
-MTAwLjAwJSAocmF0aW86IDE2MDAwLT4xNjAwMCkKQXVzZ2V3w6RobHRlciBBdWRpb2NvZGVjOiBb
-cGNtXSBhZm06IHBjbSAoVW5jb21wcmVzc2VkIFBDTSkKPT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KCkFtYXJv
-ayB3aXRoIGJhY2tlbmQgQUxTQSBwbGF5cyBhbGwgZmlsZXMgaXQgY2FuIGRlY29kZSB3aXRob3V0
-IHByb2JsZW1zLgoKQWxsIFNpZ25lZCAxNiBiaXQgTGl0dGxlIEVuZGlhbiwgUmF0ZSA4MDAwIHRv
-IDk2MDAwIEh6LCBTdGVyZW8gZG8gd29yawood2l0aCB0aGUgc2FtZSBvc3ppbGF0aW5nIG5vaXNl
-IGRlc2NyaWJlZCBpbiBteSBwcmV2aW91cyBwb3N0IHdpdGggdGhlCm1vbm8gZmlsZXMgW0kganVz
-dCBqb25lZCB0d28gdG8gZ2V0IHN0ZXJlb10pCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+Takashi Iwai wrote:
+> At Thu, 16 Oct 2008 17:36:04 +0400,
+> The Source wrote:
+>>>> And, which X-Fi model do you have?
+>>>> Please show the lspci -nv output, too.
+>>>>
+>>>>     
+>>> I've got the X-Fi Elite Pro.
+>>> That's The one with the external In/Out box.
+>>>
+>>> Speaking of which, the headphone jack on it does not output a signal 
+>>> yet, the signal only goes to line out.
+>>>
+>>> There's some relais on the card that seem to switch these, they click 
+>>> multiple times with the windows driver and not all all with yours, I 
+>>> think that's the reason :)
+>>>   
+>> Original OSS driver doesn't output to external block also, so it 
+>> wouldn't be easy to make this support I think.
+> 
+> The values for port->conv[0] and [1] values in sbxfi_playback_open()
+> might play some role.  It's I2SA_L and I2SA_R, alias DAI_CH_I2SAL
+> and DAI_CH_I2SAR, as default.  You can try other values, such as,
+> DAI_CH_I2SBL, DAI_CH_I2SA1L, and so on.
+
+I opened the external box for checking what's in there and noticed the 
+headphone jack seems to have it's own dedicated second DAC (CS4392KZ), 
+and audio interface receiver (CS8415A), so it could get a bit more 
+complicated.
+I'll see if I can find out more about that.
+
+Also I found the GPIO flags that switch the relais, but that's probably 
+useless as long as their function is not known. (It's 0x04, 0x40, 0x200 
+and 0x1000).
+
+Jan Wolf
