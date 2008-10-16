@@ -1,19 +1,19 @@
 From: The Source <thesourcehim@gmail.com>
 Subject: Re: Backported sbxfi driver (UNTESTED!)
-Date: Thu, 16 Oct 2008 18:51:58 +0400
-Message-ID: <48F7550E.1050400@gmail.com>
+Date: Thu, 16 Oct 2008 19:00:16 +0400
+Message-ID: <48F75700.5060102@gmail.com>
 References: <s5hy70xsl46.wl%tiwai@suse.de>	<loom.20081016T120322-319@post.gmane.org>	<s5h8wso3ejg.wl%tiwai@suse.de>	<48F739F4.5070303@nostalgicnetworxx.org>	<48F74344.4090509@gmail.com>	<s5hvdvs1wig.wl%tiwai@suse.de>	<48F74C91.7040708@gmail.com>	<s5hprm01v3g.wl%tiwai@suse.de>	<48F75284.1040901@gmail.com>
 	<s5hljwo1u01.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id B53482439E
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id BCE3310382A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Oct 2008 16:52:18 +0200 (CEST)
-Received: by nf-out-0910.google.com with SMTP id e27so19393nfd.32
-	for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2008 07:52:01 -0700 (PDT)
+	Thu, 16 Oct 2008 17:00:35 +0200 (CEST)
+Received: by nf-out-0910.google.com with SMTP id e27so21725nfd.32
+	for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2008 08:00:18 -0700 (PDT)
 In-Reply-To: <s5hljwo1u01.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -77,10 +77,12 @@ T05FX0lOU0VSVOKAmSB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbikKPj4g
 ICAgIAo+Cj4gSG1tLCBpdCBzZWVtcyBicm9rZW4gZm9yIG9sZGVyIGtlcm5lbHMgcmlnaHQgbm93
 Lgo+IFRoZSBlYXN5IHdvcmthcm91bmQgaXMgdG8gcGFzcyAtLXdpdGgtY2FyZHM9c2J4ZmkgdG8g
 Y29uZmlndXJlLgo+Cj4gQW55d2F5LCBJJ2xsIGZpeCBpdCBub3cuCj4KPiB0aGFua3MsCj4KPiBU
-YWthc2hpCj4KPiAgIApIZXksIG1hbiwgdGhpcyBpcyBjb29sISBQbGF5cyBqdXN0IGZpbmUgKHZv
-bHVtZSBvaywgc3BlZWQgb2ssIG5vIApnbGl0Y2hlcykgd2l0aCA5NjAwMCwgNDgwMDAsIDQ0MTAw
-LCAyMjA1MCwgMTYvMjQgYml0LCBTdGVyZW8gYW5kIE1vbm8hISAKSSBkaWRuJ3QgY2hhbmdlIGFu
-eXRoaW5nIGluIHRoZSBzb3VyY2UgY29kZSwgc28gSSBkb24ndCB1c2Ugc3lzdGVtIAp0aW1lci4g
-WWVzISEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+YWthc2hpCj4KPiAgIAotLUhleSwgbWFuLCB0aGlzIGlzIGNvb2whIFBsYXlzIGp1c3QgZmluZSAo
+dm9sdW1lIG9rLCBzcGVlZCBvaywgbm8KLS1nbGl0Y2hlcykgd2l0aCA5NjAwMCwgNDgwMDAsIDQ0
+MTAwLCAyMjA1MCwgMTYvMjQgYml0LCBTdGVyZW8gYW5kIC0tTW9ubyEhCi0tSSBkaWRuJ3QgY2hh
+bmdlIGFueXRoaW5nIGluIHRoZSBzb3VyY2UgY29kZSwgc28gSSBkb24ndCB1c2Ugc3lzdGVtCi0t
+dGltZXIuIFllcyEhCgpIb3dldmVyIG9zcyAoYWxzYS1lbXVsYXRlZCkgaXMgdW5zdGFibGUuIEkn
+bGwgdGVzdCBtb3JlLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
