@@ -1,19 +1,23 @@
-From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
-Subject: Re: SB X-Fi driver status update
-Date: Thu, 16 Oct 2008 19:26:06 +0200
-Message-ID: <fd3eb9bf0810161026p2b766b0l444945c05903ad4e@mail.gmail.com>
-References: <s5h1vyg3cgn.wl%tiwai@suse.de>
+From: "Bjoern Olausson" <lkmlist@gmail.com>
+Subject: Re: Backported sbxfi driver (UNTESTED!)
+Date: Thu, 16 Oct 2008 19:53:28 +0200
+Message-ID: <5501535d0810161053p4a9ab638r43f600345e10da70@mail.gmail.com>
+References: <s5hy70xsl46.wl%tiwai@suse.de> <s5hvdvs1wig.wl%tiwai@suse.de>
+	<48F74C91.7040708@gmail.com> <s5hprm01v3g.wl%tiwai@suse.de>
+	<48F75284.1040901@gmail.com> <s5hljwo1u01.wl%tiwai@suse.de>
+	<48F75700.5060102@gmail.com> <s5hfxmw1syu.wl%tiwai@suse.de>
+	<48F75892.8000209@gmail.com> <s5hbpxk1shh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9099B1037F0
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.245])
+	by alsa0.perex.cz (Postfix) with ESMTP id CBAA81037FE
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Oct 2008 19:26:25 +0200 (CEST)
-Received: by yw-out-1718.google.com with SMTP id 9so49844ywk.2
-	for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2008 10:26:07 -0700 (PDT)
-In-Reply-To: <s5h1vyg3cgn.wl%tiwai@suse.de>
+	Thu, 16 Oct 2008 19:53:46 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id f25so85504rvb.32
+	for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2008 10:53:28 -0700 (PDT)
+In-Reply-To: <s5hbpxk1shh.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,14 +28,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-RG9lcyB0aGF0IG1lYW4gdGhhdCB5b3UsIHdpdGhvdXQgaGFyZHdhcmUgKGFsc28sIHdpdGggZW5v
-cm1vdXMgaGVscCBvZgpjb3VwbGUgb2YgZ3V5cyBoZXJlIG9uIHRoZSBtYWlsaW5nIGxpc3QpLCBi
-YXNpY2FsbHkgZ290IGZyb20KYWJzb2x1dGVseSBub3RoaW5nIHRvIHNvbWV3aGF0IHdvcmtpbmcg
-ZHJpdmVyIGluIGxlc3MgdGhhbiBhIHdlZWs/CgpBd2Vzb21lLiBSZWFsbHkgaW1wcmVzc2l2ZS4K
-Ci0tIApWZWRyYW4gTWlsZXRpxIcKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-bHNhLWRldmVsCg==
+Just wanted to ask if someone has some good wav files at different
+samplerates mono/stereo etc etc [for all cases] (maybe with some voice
+instead of the sinus sound I am using.)
+
+Would be nice if we could make our tests based on the same wav files.
+
+Would make it easier to compare the results.
+
+Kind regards
+Bjoern
