@@ -1,26 +1,20 @@
-From: "Bjoern Olausson" <lkmlist@gmail.com>
-Subject: Re: Backported sbxfi driver (UNTESTED!)
-Date: Fri, 17 Oct 2008 17:33:33 +0200
-Message-ID: <5501535d0810170833y9c70e39q9eb685c4ea29f3d4@mail.gmail.com>
-References: <s5hy70xsl46.wl%tiwai@suse.de> <48F7855F.6060806@gmail.com>
-	<s5hbpxj6902.wl%tiwai@suse.de> <48F83013.4060203@gmail.com>
-	<s5h7i8767zu.wl%tiwai@suse.de> <48F8542E.30702@nostalgicnetworxx.org>
-	<s5hwsg7zib3.wl%tiwai@suse.de>
-	<48F85FE3.4060704@nostalgicnetworxx.org>
-	<1224237619.4011.8.camel@localhost>
-	<48F86A8C.6020309@nostalgicnetworxx.org>
+From: Chris Pemberton <cjpembo.mailing.lists@gmail.com>
+Subject: Re: New BIOS, new vendor and device IDs
+Date: Fri, 17 Oct 2008 11:03:56 -0500
+Message-ID: <48F8B76C.3030606@gmail.com>
+References: <48F7FDAF.3010300@gmail.com>	<s5hbpxjzfuy.wl%tiwai@suse.de>	<48F8A4C1.10507@gmail.com>
+	<s5hprlzw9i7.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.247])
-	by alsa0.perex.cz (Postfix) with ESMTP id F2764243E6
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id F144324403
 	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Oct 2008 17:33:51 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id f25so520120rvb.32
-	for <alsa-devel@alsa-project.org>; Fri, 17 Oct 2008 08:33:33 -0700 (PDT)
-In-Reply-To: <48F86A8C.6020309@nostalgicnetworxx.org>
-Content-Disposition: inline
+	Fri, 17 Oct 2008 18:04:24 +0200 (CEST)
+Received: by yx-out-1718.google.com with SMTP id 36so218428yxh.2
+	for <alsa-devel@alsa-project.org>; Fri, 17 Oct 2008 09:04:07 -0700 (PDT)
+In-Reply-To: <s5hprlzw9i7.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,43 +24,121 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alsa Developer Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 17, 2008 at 12:35 PM, Xarteras
-<xarteras@nostalgicnetworxx.org> wrote:
-> Tony Vroon wrote:
->> On Fri, 2008-10-17 at 09:50 +0000, Xarteras wrote:
->>> ossplay still crashes though and strace isn't of much use.
->>> Running ossplay causes a sys reset so fast the strace output cannot even
->>> be flushed to disk anymore, neverless be up long enough to read it on
->>> the screen.
+Takashi Iwai wrote:
+> At Fri, 17 Oct 2008 09:44:17 -0500,
+> Chris Pemberton wrote:
+>   
+>> Takashi Iwai wrote:
+>>     
+>>> At Thu, 16 Oct 2008 21:51:27 -0500,
+>>> Chris Pemberton wrote:
+>>>   
+>>>       
+>>>> My machine is a Lenovo 3000 N100 laptop (0768 model).  I had to recently 
+>>>> update the BIOS.
+>>>>
+>>>> Old BIOS:  lspci -> device id:  [17aa:2066] which is a Realtek ALC861VD 
+>>>> (found in patch_realtek.c)
+>>>>
+>>>> New BIOS: lspci -> device id: [8086:27d8] (found in hda_intel.c)
+>>>>
+>>>> In both cases, I use the module option "model=3stack" to get sound working:
+>>>> Laptop speakers work. 
+>>>> Built-in mic works. 
+>>>> External mic works
+>>>> Headphones work; but automatic speaker muting does not. 
+>>>>     
+>>>>         
+>>> 3stack model doesn't do auto-muting by design.
+>>> Try without any model option with the latest driver below,
+>>>   ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
+>>> If the auto-probing still doesn't work, you can try first model=lenovo.
+>>>
+>>>
+>>> thanks,
+>>>
+>>> Takashi
+>>>
+>>>   
+>>>       
+>> Updated to latest alsa-driver snapshot; configured with full debug support.
 >>
->> A serial console may help you there, assuming you have two machines.
+>> Results:
+>> auto-probing:  no sound
+>>     
 >
-> Good idea :)
+> OK, it means that the BIOS setup is still broken... or there is still
+> a bug in auto-probing code.
 >
-> Just tried it, but even a 115200 baud serial connection isn't fast
-> enough to give me more than the first three lines of useless strace
-> output before it's back to BIOS.
+> The snapshot tarball has HEAD and alsa-kernel/HEAD files to indicate
+> the recent commits.  What do they show?
 >
-> Jan Wolf
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>   
+>> model=lenovo:  no sound 
+>> model=3stack:  sound works as described previously (no auto-muting)
+>>
+>> Results of alsa-info script (latest driver snapshot):
+>> auto-probe:        
+>> http://www.alsa-project.org/db/?f=66f43ddfdabc4b48b9e5c50f9a792d2fcb775905
+>> model=lenovo:  
+>> http://www.alsa-project.org/db/?f=5e082f9a1361d28c187ae3eba21605de8196e4aa
+>> model=3stack:  
+>> http://www.alsa-project.org/db/?f=410592e40da7324d76a39e1b201beb2436a9a96b
+>>     
 >
+> Please post the files (run with --no-upload option) than pasting the
+> URL...
+>
+>
+> thanks,
+>
+> Takashi
+>
+>   
+HEAD:
 
-Same here, not with serial, not with ssh, not even with a Camera
-recording the screen....
+96f7fb25cfed645d0b76cbe3ab506ed06d8a3764 Fix patches for device_create() 
+updates
+3d81866ee2022dad07ffb020a9892067c7d32673 Mark CONFIG_SND_JACK as 2.6.27 
+or later
+5c8695e2c9a9440ebdaf9af13215977af2b069bc Add missing jack.c build stub
+dbae2ea3627142cb382e6f5a2a7ade02a8502a09 Add pci/hda/patch_nvhdmi.c 
+build stub
+3943d3e5994e4b27faf3b113dd00bfd77fcaaeee add print_hex_dump_bytes() wrapper
+2bb9d53803f2383489d62bc405061864668ebfe6 Release v1.0.18rc3
+c30e34d7099dd4e5d3243f22dd816a80f126ce17 Add soc/blackfin build stub
+45a5d457816b81130d7fd8a2268441a71b69a6cf Regenerated pcm_native.patch
+1821e39988d1999ffaa8f04133eb0cb6afbdb6c3 soc - Add a workaround for 
+incompatible debugfs
+d3dc16875ee12dae0522f54e8a846af5b42119ab Add patches for sparc/*.c
 
-No logs either...
+alsa-kernel/HEAD:
 
-By the way,
--amarok with xine as backand using ALSA works
--Flash movies with sound in Opera work
--Xine works flawless (nice sound)...just watched "Big_bug_bunny_080p stereo.ogg"
+c41ec26f49e4dd714ec4fbb7d7c85e14b49f9672 Merge branch 'upstream'
+2e532d68a2b3e2aa6b19731501222069735c741c {pci,pnp} quirks.c: don't use 
+deprecated print_fn_descriptor_symbol()
+52ad096465d60ee7fdc99583f969a99a1166c7c3 Merge 
+git://git.linux-nfs.org/projects/trondmy/nfs-2.6
+8cde1ad6683f8738ad71f788dca8ab4810cf5afe Merge branch 
+'sched-fixes-for-linus' of 
+git://git.kernel.org/pub/scm/linux/kernel/git/tip/linux-2.6-tip
+6bb7a935489dab20802dde6c2cb7d8582f4849bf Merge branch 'for-linus' of 
+git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6
+08d19f51f05a68ce89a289320ce4ed96e757df72 Merge branch 
+'kvm-updates/2.6.28' of 
+git://git.kernel.org/pub/scm/linux/kernel/git/avi/kvm
+1c95e1b69073cff5ff179e592fa1a1e182c78a17 Fix kernel/softirq.c printk 
+format warning properly
+e533b227055598b1f7dc8503a3b4f36b14b9da8a Merge branch 
+'core-v28-for-linus' of 
+git://git.kernel.org/pub/scm/linux/kernel/git/tip/linux-2.6-tip
+0999d978dcdcf59350dafa25afd70def9f924eee Merge branch 
+'x86-fixes-for-linus' of 
+git://git.kernel.org/pub/scm/linux/kernel/git/tip/linux-2.6-tip
+70a3075d40154053ad90d342b3dcb1b795c73dbb FRV: Eliminate NULL test and 
+memset after alloc_bootmem
 
-Now I am listening to my favourite song Diana_Krall_-_Black_Crow.mp3
-(256kbps 44100Hz) with xine.
-Clear, distortionfree, lovely sound!
+Chris
