@@ -1,24 +1,19 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] hda: add SW_LINEOUT_INSERT support
-Date: Fri, 17 Oct 2008 15:19:40 +0100
-Message-ID: <20081017141939.GG2546@sirena.org.uk>
-References: <48F7F600.3040706@embeddedalley.com> <s5hd4hz69ia.wl%tiwai@suse.de>
-	<20081017103857.GA2546@sirena.org.uk>
-	<48F8833D.8080301@embeddedalley.com>
-	<20081017123928.GD2546@sirena.org.uk>
-	<48F88ABD.3010905@embeddedalley.com>
-	<20081017130504.GE2546@sirena.org.uk>
-	<48F89004.7090809@embeddedalley.com>
+From: Chris Pemberton <cjpembo.mailing.lists@gmail.com>
+Subject: Re: New BIOS, new vendor and device IDs
+Date: Fri, 17 Oct 2008 09:44:17 -0500
+Message-ID: <48F8A4C1.10507@gmail.com>
+References: <48F7FDAF.3010300@gmail.com> <s5hbpxjzfuy.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2095F243A0
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id D1AEA243A3
 	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Oct 2008 16:20:00 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <48F89004.7090809@embeddedalley.com>
+	Fri, 17 Oct 2008 16:44:45 +0200 (CEST)
+Received: by yx-out-1718.google.com with SMTP id 36so200522yxh.2
+	for <alsa-devel@alsa-project.org>; Fri, 17 Oct 2008 07:44:27 -0700 (PDT)
+In-Reply-To: <s5hbpxjzfuy.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,38 +23,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Matthew Ranostay <mranostay@embeddedalley.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Dmitry Torokhov <dtor@mail.ru>, alsa-devel@alsa-project.org
+To: Alsa Developer Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 17, 2008 at 09:15:48AM -0400, Matthew Ranostay wrote:
-> Mark Brown wrote:
+Takashi Iwai wrote:
+> At Thu, 16 Oct 2008 21:51:27 -0500,
+> Chris Pemberton wrote:
+>   
+>> My machine is a Lenovo 3000 N100 laptop (0768 model).  I had to recently 
+>> update the BIOS.
+>>
+>> Old BIOS:  lspci -> device id:  [17aa:2066] which is a Realtek ALC861VD 
+>> (found in patch_realtek.c)
+>>
+>> New BIOS: lspci -> device id: [8086:27d8] (found in hda_intel.c)
+>>
+>> In both cases, I use the module option "model=3stack" to get sound working:
+>> Laptop speakers work. 
+>> Built-in mic works. 
+>> External mic works
+>> Headphones work; but automatic speaker muting does not. 
+>>     
+>
+> 3stack model doesn't do auto-muting by design.
+> Try without any model option with the latest driver below,
+>   ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
+> If the auto-probing still doesn't work, you can try first model=lenovo.
+>
+>
+> thanks,
+>
+> Takashi
+>
+>   
+Updated to latest alsa-driver snapshot; configured with full debug support.
 
-[Please fix your MUA to wrap at something less than 80 columns,
-currently your lines are ~90 characters long which makes your mails
-harder to read.]
+Results:
+auto-probing:  no sound
+model=lenovo:  no sound 
+model=3stack:  sound works as described previously (no auto-muting)
 
-> > Could you provide a bit more detail here?  Are you saying that the
-> > hardware has several line outputs and can report connection status but
-> > is unable to identify which of them is connected?
+Results of alsa-info script (latest driver snapshot):
+auto-probe:        
+http://www.alsa-project.org/db/?f=66f43ddfdabc4b48b9e5c50f9a792d2fcb775905
+model=lenovo:  
+http://www.alsa-project.org/db/?f=5e082f9a1361d28c187ae3eba21605de8196e4aa
+model=3stack:  
+http://www.alsa-project.org/db/?f=410592e40da7324d76a39e1b201beb2436a9a96b
 
-> Yep, just wondering if that is an incorrect way of using the jack abstraction layer.
+Thanks,
 
-It'd be easier to comment if you could provide more detail here.  What
-is the hardware actually capable of doing?  Without knowing what you're
-trying to represent it's hard to say for sure if your code matches up
-with that.
-
-> As of yet we are only using this to confirm if an HP and Line Out is connected for use
-> in ALSA plugin, if there is the stream processing is turned off.
-
-Right, that's one of the things I'd expected user space to be able to do
-with this.
-
-> So basically if you plug into two or more line outs, each time you unplug a line out,
-> it will still send a event as if a line out was connected until all line outs are removed.
-
-I *think* from this that you have multiple line output jacks and the
-hardware is able to do detection on each individually?  In that case
-then yes, you are using the API incorrectly - you should be registering
-one jack per physical jack.
+Chris
