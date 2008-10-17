@@ -1,26 +1,20 @@
-From: Tony Vroon <tony@vroon.org>
+From: The Source <thesourcehim@gmail.com>
 Subject: Re: Backported sbxfi driver (UNTESTED!)
-Date: Fri, 17 Oct 2008 11:00:19 +0100
-Message-ID: <1224237619.4011.8.camel@localhost>
-References: <s5hy70xsl46.wl%tiwai@suse.de>
-	<loom.20081016T120322-319@post.gmane.org>	<s5h8wso3ejg.wl%tiwai@suse.de>
-	<48F739F4.5070303@nostalgicnetworxx.org>	<48F74344.4090509@gmail.com>
-	<s5hvdvs1wig.wl%tiwai@suse.de>	<48F74C91.7040708@gmail.com>
-	<s5hprm01v3g.wl%tiwai@suse.de>	<48F75284.1040901@gmail.com>
-	<s5hljwo1u01.wl%tiwai@suse.de>	<48F75700.5060102@gmail.com>
-	<s5hfxmw1syu.wl%tiwai@suse.de>	<48F75892.8000209@gmail.com>
-	<s5hbpxk1shh.wl%tiwai@suse.de>	<48F7855F.6060806@gmail.com>
-	<s5hbpxj6902.wl%tiwai@suse.de>	<48F83013.4060203@gmail.com>
-	<s5h7i8767zu.wl%tiwai@suse.de>	<48F8542E.30702@nostalgicnetworxx.org>
-	<s5hwsg7zib3.wl%tiwai@suse.de> <48F85FE3.4060704@nostalgicnetworxx.org>
+Date: Fri, 17 Oct 2008 14:01:55 +0400
+Message-ID: <48F86293.90205@gmail.com>
+References: <s5hy70xsl46.wl%tiwai@suse.de>	<loom.20081016T120322-319@post.gmane.org>	<s5h8wso3ejg.wl%tiwai@suse.de>	<48F739F4.5070303@nostalgicnetworxx.org>	<48F74344.4090509@gmail.com>	<s5hvdvs1wig.wl%tiwai@suse.de>	<48F74C91.7040708@gmail.com>	<s5hprm01v3g.wl%tiwai@suse.de>	<48F75284.1040901@gmail.com>	<s5hljwo1u01.wl%tiwai@suse.de>	<48F75700.5060102@gmail.com>	<s5hfxmw1syu.wl%tiwai@suse.de>	<48F75892.8000209@gmail.com>	<s5hbpxk1shh.wl%tiwai@suse.de>	<48F7855F.6060806@gmail.com>	<s5hbpxj6902.wl%tiwai@suse.de>	<48F84554.4060800@gmail.com>	<s5hr66fzhqt.wl%tiwai@suse.de>	<48F861BC.8000504@gmail.com>
+	<s5hk5c7zgmb.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4988813654595134432=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganymede.vroon.org (ganymede.vroon.org [195.66.242.11])
-	by alsa0.perex.cz (Postfix) with ESMTP id 743FC10386A
+Received: from ik-out-1112.google.com (ik-out-1112.google.com [66.249.90.176])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4F5FE10386A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Oct 2008 12:01:31 +0200 (CEST)
-In-Reply-To: <48F85FE3.4060704@nostalgicnetworxx.org>
+	Fri, 17 Oct 2008 12:02:15 +0200 (CEST)
+Received: by ik-out-1112.google.com with SMTP id c30so359502ika.0
+	for <alsa-devel@alsa-project.org>; Fri, 17 Oct 2008 03:01:57 -0700 (PDT)
+In-Reply-To: <s5hk5c7zgmb.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,56 +24,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Xarteras <xarteras@nostalgicnetworxx.org>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4988813654595134432==
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-ga1aJP3gUd1ibi+bNMSD"
-
-
---=-ga1aJP3gUd1ibi+bNMSD
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, 2008-10-17 at 09:50 +0000, Xarteras wrote:
-> ossplay still crashes though and strace isn't of much use.
-> Running ossplay causes a sys reset so fast the strace output cannot even=20
-> be flushed to disk anymore, neverless be up long enough to read it on=20
-> the screen.
-
-A serial console may help you there, assuming you have two machines.
-
-> Jan Wolf
-
-Regards,
-Tony V.
-
---=-ga1aJP3gUd1ibi+bNMSD
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-
-iEYEABECAAYFAkj4YjMACgkQp5vW4rUFj5obygCfdJ9GJHOCZFklugSQmITbqu4m
-jH8AoLcMtSZLwhhHjR8GpseVqb7p5QQW
-=qRoK
------END PGP SIGNATURE-----
-
---=-ga1aJP3gUd1ibi+bNMSD--
-
-
---===============4988813654595134432==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============4988813654595134432==--
+VGFrYXNoaSBJd2FpINC/0LjRiNC10YI6Cj4gQXQgRnJpLCAxNyBPY3QgMjAwOCAxMzo1ODoyMCAr
+MDQwMCwKPiBUaGUgU291cmNlIHdyb3RlOgo+ICAgCj4+IFRha2FzaGkgSXdhaSDQv9C40YjQtdGC
+Ogo+PiAgICAgCj4+PiBBdCBGcmksIDE3IE9jdCAyMDA4IDExOjU3OjA4ICswNDAwLAo+Pj4gVGhl
+IFNvdXJjZSB3cm90ZToKPj4+ICAgCj4+PiAgICAgICAKPj4+PiBUYWthc2hpIEl3YWkg0L/QuNGI
+0LXRgjoKPj4+PiAgICAgCj4+Pj4gICAgICAgICAKPj4+Pj4gQXQgVGh1LCAxNiBPY3QgMjAwOCAy
+MjoxODowNyArMDQwMCwKPj4+Pj4gVGhlIFNvdXJjZSB3cm90ZToKPj4+Pj4gICAKPj4+Pj4gICAg
+ICAgCj4+Pj4+ICAgICAgICAgICAKPj4+Pj4+Pj4gT2suIE9wZW5BTCB3aXRoIGFsc2EgYWxzbyBz
+ZWVtIHRvIGNhdXNlIHByb2JsZW1zLgo+Pj4+Pj4+PiAgICAgCj4+Pj4+Pj4+ICAgICAgICAgCj4+
+Pj4+Pj4+ICAgICAgICAgICAgIAo+Pj4+Pj4+PiAgICAgICAgICAgICAgICAgCj4+Pj4+Pj4gSW4g
+Ym90aCBjYXNlcywgY2hlY2sgdGhlIHBlcmlvZF9zaXplIGFuZCBidWZmZXJfc2l6ZSB2YWx1ZXMg
+KHNob3duIGluCj4+Pj4+Pj4gdGhlIGtlcm5lbCBtZXNzYWdlLCBvciAvcHJvYy9hc291bmQvY2Fy
+ZDAvcGNtMHAvc3ViMC9od19wYXJhbXMpLgo+Pj4+Pj4+IEFuZCwgdHJ5IHRvIGFwbGF5IHdpdGgg
+dGhlc2UgcGFyYW1ldGVycywgd2hldGhlciB5b3UgZ2V0IHRoZSBzaW1pbGFyCj4+Pj4+Pj4gcHJv
+YmxlbS4KPj4+Pj4+Pgo+Pj4+Pj4+IAklIGFwbGF5IC12IC0tcGVyaW9kLXNpemU9eHh4IC0tYnVm
+ZmVyLXNpemU9eXl5IGZvby53YXYKPj4+Pj4+Pgo+Pj4+Pj4+Cj4+Pj4+Pj4gVGFrYXNoaQo+Pj4+
+Pj4+Cj4+Pj4+Pj4gICAKPj4+Pj4+PiAgICAgICAKPj4+Pj4+PiAgICAgICAgICAgCj4+Pj4+Pj4g
+ICAgICAgICAgICAgICAKPj4+Pj4+IEknbSBzb3JyeSwgYnV0IGFueSBhdHRlbXAgdG8gcGxheSBm
+aWxlIHdpdGggb3NzcGxheSByZXN1bHRzIGluIGNvbXBsZXRlIAo+Pj4+Pj4gc3lzdGVtIGhhbmcg
+d2l0aCBlcnJvcjoKPj4+Pj4+IHVuYWJsZSB0byBoYW5kbGUgTlVMTCBwb250ZXIgZGVyZWZlcmVu
+Y2UgYXQgYWRkcmVzcyAKPj4+Pj4+IDAwMDAwMDAwMDAwMDAwMDguLi4uLihoYW5nLCBubyBtb3Jl
+IG91dHB1dCkuCj4+Pj4+PiBJIHRyaWVkIG1hbnkgd2F2IGZvcm1hdHMuIFNvIEkgY2FuJ3QgZ2V0
+IGVycm9yIGxvZyBvciBwZXJpb2QgYW5kIGJ1ZmZlciAKPj4+Pj4+IHNpemVzLCBzb3JyeS4KPj4+
+Pj4+ICAgICAKPj4+Pj4+ICAgICAgICAgCj4+Pj4+PiAgICAgICAgICAgICAKPj4+Pj4gQ2FuIGFu
+eW9uZSBjb25maXJtIHRvIHJlcHJvZHVjZSBPb3BzIHdpdGggT1NTIGFwcHMgKG9zc3BsYXkpPwo+
+Pj4+Pgo+Pj4+PiBJJ20gd29uZGVyaW5nIHdoZXRoZXIgdGhpcyBoYXMgYW55dGhpbmcgdG8gZG8g
+d2l0aCB0aGUgY2FwdHVyZS4KPj4+Pj4gQ2FuIHlvdSByZWNvcmQgdGhlIHNvdW5kLCBhbmQgY2hh
+bmdlIHRoZSBjYXB0dXJlIG1peGVyIGVsZW1lbnQgcHJvcGVybHk/Cj4+Pj4+Cj4+Pj4+Cj4+Pj4+
+IHRoYW5rcywKPj4+Pj4KPj4+Pj4gVGFrYXNoaQo+Pj4+Pgo+Pj4+PiAgIAo+Pj4+PiAgICAgICAK
+Pj4+Pj4gICAgICAgICAgIAo+Pj4+IEkgY2hlY2tlZCBtcGxheWVyLiBJdCB1c2VzIHBlcmlvZCBz
+aXplIDEwMjQgaW5zdGVhZCBvZiA0MDk2IGFuZCAxNjM4NCAKPj4+PiBidWZmZXIgc2l6ZSAoZGVm
+YXVsdCkuIFNvdW5kIGlzIGNob3BweSAoc291bmQgcGF1c2VzIGlzIG1vcmUgZnJlcXVlbnQgCj4+
+Pj4gd2hlbiByYXRlIGlzIGxvd2VyKS4KPj4+PiBIb3dldmVyIGFuIGF0dGVtcHQgdG8gcGxheSB0
+aGUgc2FtZSBmaWxlIHdpdGggdGhlIHNhbWUgcGVyaW9kIGFuZCBidWZmZXIgCj4+Pj4gc2l6ZXMg
+d2l0aCBhcGxheSByZXN1bHRzIGluIGNvbXBsZXRlIHN5c3RlbSBoYW5nLgo+Pj4+ICAgICAKPj4+
+PiAgICAgICAgIAo+Pj4gT0ssIHRoYXQgbG9va3MgbGlrZSBhIHByb2JsZW0uICBMb29rcyBsaWtl
+IHRoZSB0aW1lciByZXNvbHV0aW9uIGNhbiBiZQo+Pj4gc2hvcnQgbGlrZSB0aGF0LCBvciBzb21l
+dGhpbmcgcmFjeSBpbiB0aGUgdGltZXIgaGFuZGxpbmcuCj4+Pgo+Pj4gQ2FuIHlvdSBjaGVjayB3
+aGV0aGVyIHRoaXMgaGFwcGVucyB3aXRoIFhYWF9TWVNURU1fVElNRVIsIHRvbz8KPj4+Cj4+PiBP
+ciwgZG9lcyB0aGUgcGF0Y2ggYmVsb3cgYXZvaWQgdGhlIHByb2JsZW0sIGF0IGxlYXN0Pwo+Pj4K
+Pj4+Cj4+PiB0aGFua3MsCj4+Pgo+Pj4gVGFrYXNoaQo+Pj4KPj4+IGRpZmYgLS1naXQgYS9zb3Vu
+ZC9wY2kvc2J4Zmkvc2J4ZmkuYyBiL3NvdW5kL3BjaS9zYnhmaS9zYnhmaS5jCj4+PiBpbmRleCAy
+NmE2Y2QzLi41Y2ViMjI4IDEwMDY0NAo+Pj4gLS0tIGEvc291bmQvcGNpL3NieGZpL3NieGZpLmMK
+Pj4+ICsrKyBiL3NvdW5kL3BjaS9zYnhmaS9zYnhmaS5jCj4+PiBAQCAtMjc3LDYgKzI3Nyw3IEBA
+IHN0YXRpYyB2b2lkIHNieGZpX3JlYXJtX3RpbWVyKHN0cnVjdCBzYnhmaSAqY2hpcCwgaW50IHRp
+Y2tzKQo+Pj4gICNlbHNlCj4+PiAgCj4+PiAgI2RlZmluZSBNQVhfVElDS1MJKCgxIDw8IDEzKSAt
+IDEpCj4+PiArI2RlZmluZSBNSU5fVElDS1MJMTAwMAkJLyogRklYTUU6IHJlYWxseSBzbz8gKi8K
+Pj4+ICAKPj4+ICBzdGF0aWMgdm9pZCBzYnhmaV9pbml0X3RpbWVyKHN0cnVjdCBzYnhmaSAqY2hp
+cCkKPj4+ICB7Cj4+PiBAQCAtMjg3LDYgKzI4OCw4IEBAIHN0YXRpYyB2b2lkIHNieGZpX3NldF90
+aW1lcihzdHJ1Y3Qgc2J4ZmkgKmNoaXAsIGludCB0aWNrcykKPj4+ICAJTE9HKDIsICJTRVQgVElN
+RVIgVElDS1MgPSAlZFxuIiwgdGlja3MpOwo+Pj4gIAlpZiAodGlja3MgPiBNQVhfVElDS1MpCj4+
+PiAgCQl0aWNrcyA9IE1BWF9USUNLUzsKPj4+ICsJZWxzZSBpZiAodGlja3MgPCBNSU5fVElDS1Mp
+Cj4+PiArCQl0aWNrcyA9IE1JTl9USUNLUzsKPj4+ICAJc2J4Zmlfd3JpdGUoY2hpcCwgVElNUiwg
+dGlja3MgfCBUSU1SX0lFIHwgVElNUl9JUCk7Cj4+PiAgfQo+Pj4gIHN0YXRpYyB2b2lkIHNieGZp
+X3N0b3BfdGltZXIoc3RydWN0IHNieGZpICpjaGlwKQo+Pj4KPj4+ICAgCj4+PiAgICAgICAKPj4g
+QWZ0ZXIgcGF0Y2g6Cj4+Cj4+IFdpdGhvdXQgc3lzdGVtIHRpbWVyOgo+Pgo+PiBhcGxheSAtLXBl
+cmlvZC1zaXplPTEwMjQgOTYwMDBfMTZfU3RlcmVvLndhdgo+PiBQbGF5cyBmaW5lCj4+Cj4+IGFw
+bGF5IC0tcGVyaW9kLXNpemU9MTAyNCAyMjA1MF8xNl9Nb25vLndhdgo+PiBCVUc6IHVuYWJsZSB0
+byBoYW5kbGUga2VybmVsIE5VTEwgcG9pbnRlciBkZXJlZmVyZW5jZSBhdCAwMDAwMDAwMDAwMDAw
+MDA4Cj4+IEhhbmcKPj4KPj4gV2l0aCBzeXN0ZW0gdGltZXI6Cj4+Cj4+IGFwbGF5IC0tcGVyaW9k
+LXNpemU9MTAyNCA5NjAwMF8xNl9TdGVyZW8ud2F2Cj4+IFN1cGVyZ2xpdGNoLiBFYWNoIHNhbXBs
+ZSBpcyBwbGF5ZWQgbWFueSB0aW1lcyBiZWZvcmUgYWR2YW5jaW5nIHRvIG5leHQgb25lLgo+Pgo+
+PiBhcGxheSAtLXBlcmlvZC1zaXplPTEwMjQgMjIwNTBfMTZfTW9uby53YXYKPj4gSW5zdGFudCBy
+ZWJvb3QuCj4+ICAgICAKPgo+IEp1c3QgdG8gYmUgc3VyZTogeW91IGRvbid0IGVuYWJsZSBYWFhf
+Q09OVF9SQVRFLCByaWdodD8KPiBJdCdzIGtub3duIHRvIGJlIGJ1Z2d5LCBzbyBkaXNhYmxlZCBh
+cyBkZWZhdWx0IG5vdy4KPgo+Cj4gVGFrYXNoaQo+Cj4gICAKSXQgaXMgZGlzYWJsZWQgZm9yIG1l
+IHRvby4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
