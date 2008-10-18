@@ -1,20 +1,23 @@
-From: Marek Vasut <marek.vasut@gmail.com>
-Subject: Re: Audio on Linux is a mess
-Date: Mon, 20 Oct 2008 08:35:25 +0200
-Message-ID: <200810200835.25706.marek.vasut@gmail.com>
-References: <f188924b0810170624k78e74116o19fba5adb0eaf533@mail.gmail.com>
+From: Erik de Castro Lopo <mle+tools@mega-nerd.com>
+Subject: Re: snd_pcm_sw_params_get_xfer_align deprecated?
+Date: Sun, 19 Oct 2008 08:01:05 +1100
+Message-ID: <20081019080105.e980db24.mle+tools@mega-nerd.com>
+References: <20081018214332.10729096.mle+la@mega-nerd.com>
+	<s5h1vye2b4z.wl%tiwai@suse.de>
+Reply-To: alsa-devel@alsa-project.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.175])
-	by alsa0.perex.cz (Postfix) with ESMTP id 980761037F6
+Received: from outbound.icp-qv1-irony-out3.iinet.net.au
+	(outbound.icp-qv1-irony-out3.iinet.net.au [203.59.1.148])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3B8AD10388B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Oct 2008 08:31:13 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id 30so499422ugs.24
-	for <alsa-devel@alsa-project.org>; Sun, 19 Oct 2008 23:30:55 -0700 (PDT)
-In-Reply-To: <f188924b0810170624k78e74116o19fba5adb0eaf533@mail.gmail.com>
-Content-Disposition: inline
+	Sat, 18 Oct 2008 23:01:26 +0200 (CEST)
+Received: from hendrix (hendrix [192.168.200.99])
+	by hendrix.mega-nerd.net (Postfix) with SMTP id 9C646AB125
+	for <alsa-devel@alsa-project.org>; Sun, 19 Oct 2008 08:01:05 +1100 (EST)
+In-Reply-To: <s5h1vye2b4z.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,33 +28,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: "Fred ." <eldmannen@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 17 of October 2008 15:24:20 Fred . wrote:
-> ALSA lib pulse.c:272:(pulse_connect) PulseAudio: Unable to connect: Timeout
-> ALSA lib pulse.c:272:(pulse_connect) PulseAudio: Unable to connect: Timeout
-> AL lib: alsa.c:344: Could not open playback device 'default': Connection
-> refused AL lib: oss.c:179: Could not open /dev/dsp: Device or resource busy
-> File
-> "/var/lib/python-support/python2.5/pyglet/media/drivers/openal/__init__.py"
->, line 340, in driver_init_device = alc.alcOpenDevice(device_name)
->
-> Audio on Linux is a mess.
-> I launch an Python script that uses audio then it breaks, and when the
-> Python script is closed, I still hear the audio skipping and repeating
-> like,
-> "kakakakakakaka" in infinite loop.
-> And PulseAudio seems to be frozen.
-> Then I kill PulseAudio and finally the audio noise stops.
->
-> Oh, and I heard OpenAL downsamples stereo to mono on Linux due to a bug.
->
-> Whole audio on Linux is just a big mess.
+Takashi Iwai wrote:
 
-Please behave yourself.
-Is there any way we can help you (which I doubt, but ...)?
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> At Sat, 18 Oct 2008 21:43:32 +1100,
+> Erik de Castro Lopo wrote:
+> > 
+> > Hi all,
+> > 
+> > I've got some code that gives me a waring that the above function
+> > is deprecated. What should I do:
+> > 
+> >   a) Call some other function? If so which one?
+> >   b) Just drop the call to that function and everything will
+> >      continue to work as it should?
+> >   c) Something else?
+> 
+> (b).  This function always sets the value 1.
+
+Thanks Takashi.
+
+Cheers,
+Erik
+-- 
+-----------------------------------------------------------------
+Erik de Castro Lopo
+-----------------------------------------------------------------
+"Windows and MacOS are products, contrived by engineers in the service
+of specific companies. Unix, by contrast, is not so much a product as
+it is a painstakingly compiled oral history of the hacker subculture."
+    -- N Stephenson
