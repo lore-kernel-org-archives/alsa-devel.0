@@ -1,28 +1,27 @@
-From: William Pitcock <nenolod@sacredspiral.co.uk>
+From: Xarteras <xarteras@nostalgicnetworxx.org>
 Subject: Re: Backported sbxfi driver (UNTESTED!)
-Date: Fri, 17 Oct 2008 15:48:53 -0500
-Message-ID: <1224276533.4088.4.camel@petrie.sacredspiral.co.uk>
-References: <s5hy70xsl46.wl%tiwai@suse.de>
-	<loom.20081016T120322-319@post.gmane.org>
-	<s5h8wso3ejg.wl%tiwai@suse.de>
-	<48F739F4.5070303@nostalgicnetworxx.org> <48F74344.4090509@gmail.com>
-	<s5hvdvs1wig.wl%tiwai@suse.de> <48F74C91.7040708@gmail.com>
-	<s5hprm01v3g.wl%tiwai@suse.de> <48F75284.1040901@gmail.com>
-	<s5hljwo1u01.wl%tiwai@suse.de> <48F75700.5060102@gmail.com>
-	<s5hfxmw1syu.wl%tiwai@suse.de> <48F75892.8000209@gmail.com>
-	<s5hbpxk1shh.wl%tiwai@suse.de> <48F7855F.6060806@gmail.com>
-	<s5hbpxj6902.wl%tiwai@suse.de> <48F84554.4060800@gmail.com>
-	<s5hr66fzhqt.wl%tiwai@suse.de> <48F861BC.8000504@gmail.com>
-	<s5hk5c7zgmb.wl%tiwai@suse.de> <48F86293.90205@gmail.com>
-	<s5hhc7bzgf4.wl%tiwai@suse.de> <48F86606.9070108@gmail.com>
+Date: Sat, 18 Oct 2008 10:06:20 +0000
+Message-ID: <48F9B51C.1040505@nostalgicnetworxx.org>
+References: <s5hy70xsl46.wl%tiwai@suse.de>	<loom.20081016T120322-319@post.gmane.org>	<s5h8wso3ejg.wl%tiwai@suse.de>	<48F739F4.5070303@nostalgicnetworxx.org>	<48F74344.4090509@gmail.com>
+	<s5hvdvs1wig.wl%tiwai@suse.de>	<48F74C91.7040708@gmail.com>
+	<s5hprm01v3g.wl%tiwai@suse.de>	<48F75284.1040901@gmail.com>
+	<s5hljwo1u01.wl%tiwai@suse.de>	<48F75700.5060102@gmail.com>
+	<s5hfxmw1syu.wl%tiwai@suse.de>	<48F75892.8000209@gmail.com>
+	<s5hbpxk1shh.wl%tiwai@suse.de>	<48F7855F.6060806@gmail.com>
+	<s5hbpxj6902.wl%tiwai@suse.de>	<48F84554.4060800@gmail.com>
+	<s5hr66fzhqt.wl%tiwai@suse.de>	<48F861BC.8000504@gmail.com>
+	<s5hk5c7zgmb.wl%tiwai@suse.de>	<48F86293.90205@gmail.com>
+	<s5hhc7bzgf4.wl%tiwai@suse.de>	<48F86606.9070108@gmail.com>
 	<s5h8wsnzfcu.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5613287823325125632=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from carpathia.dereferenced.org (carpathia.dereferenced.org
-	[64.71.161.129]) by alsa0.perex.cz (Postfix) with ESMTP id 538F324507
+Received: from nostalgicnetworxx.org (snowleopard.nostalgicnetworxx.org
+	[87.106.211.229])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0C17B2439A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Oct 2008 22:49:45 +0200 (CEST)
+	Sat, 18 Oct 2008 12:08:38 +0200 (CEST)
 In-Reply-To: <s5h8wsnzfcu.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -37,252 +36,105 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, The Source <thesourcehim@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============5613287823325125632==
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-yBblRV3tfunxJxSQYeN4"
-
-
---=-yBblRV3tfunxJxSQYeN4
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, 2008-10-17 at 12:27 +0200, Takashi Iwai wrote:
-> At Fri, 17 Oct 2008 14:16:38 +0400,
-> The Source wrote:
-> >=20
-> > Takashi Iwai =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > > At Fri, 17 Oct 2008 14:01:55 +0400,
-> > > The Source wrote:
-> > >  =20
-> > >> Takashi Iwai =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > >>    =20
-> > >>> At Fri, 17 Oct 2008 13:58:20 +0400,
-> > >>> The Source wrote:
-> > >>>  =20
-> > >>>      =20
-> > >>>> Takashi Iwai =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > >>>>    =20
-> > >>>>        =20
-> > >>>>> At Fri, 17 Oct 2008 11:57:08 +0400,
-> > >>>>> The Source wrote:
-> > >>>>>  =20
-> > >>>>>      =20
-> > >>>>>          =20
-> > >>>>>> Takashi Iwai =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > >>>>>>    =20
-> > >>>>>>        =20
-> > >>>>>>            =20
-> > >>>>>>> At Thu, 16 Oct 2008 22:18:07 +0400,
-> > >>>>>>> The Source wrote:
-> > >>>>>>>  =20
-> > >>>>>>>      =20
-> > >>>>>>>          =20
-> > >>>>>>>              =20
-> > >>>>>>>>>> Ok. OpenAL with alsa also seem to cause problems.
-> > >>>>>>>>>>    =20
-> > >>>>>>>>>>        =20
-> > >>>>>>>>>>            =20
-> > >>>>>>>>>>                =20
-> > >>>>>>>>>>                    =20
-> > >>>>>>>>> In both cases, check the period_size and buffer_size values (=
-shown in
-> > >>>>>>>>> the kernel message, or /proc/asound/card0/pcm0p/sub0/hw_param=
-s).
-> > >>>>>>>>> And, try to aplay with these parameters, whether you get the =
-similar
-> > >>>>>>>>> problem.
-> > >>>>>>>>>
-> > >>>>>>>>> 	% aplay -v --period-size=3Dxxx --buffer-size=3Dyyy foo.wav
-> > >>>>>>>>>
-> > >>>>>>>>>
-> > >>>>>>>>> Takashi
-> > >>>>>>>>>
-> > >>>>>>>>>  =20
-> > >>>>>>>>>      =20
-> > >>>>>>>>>          =20
-> > >>>>>>>>>              =20
-> > >>>>>>>>>                  =20
-> > >>>>>>>> I'm sorry, but any attemp to play file with ossplay results in=
- complete=20
-> > >>>>>>>> system hang with error:
-> > >>>>>>>> unable to handle NULL ponter dereference at address=20
-> > >>>>>>>> 0000000000000008.....(hang, no more output).
-> > >>>>>>>> I tried many wav formats. So I can't get error log or period a=
-nd buffer=20
-> > >>>>>>>> sizes, sorry.
-> > >>>>>>>>    =20
-> > >>>>>>>>        =20
-> > >>>>>>>>            =20
-> > >>>>>>>>                =20
-> > >>>>>>> Can anyone confirm to reproduce Oops with OSS apps (ossplay)?
-> > >>>>>>>
-> > >>>>>>> I'm wondering whether this has anything to do with the capture.
-> > >>>>>>> Can you record the sound, and change the capture mixer element =
-properly?
-> > >>>>>>>
-> > >>>>>>>
-> > >>>>>>> thanks,
-> > >>>>>>>
-> > >>>>>>> Takashi
-> > >>>>>>>
-> > >>>>>>>  =20
-> > >>>>>>>      =20
-> > >>>>>>>          =20
-> > >>>>>>>              =20
-> > >>>>>> I checked mplayer. It uses period size 1024 instead of 4096 and =
-16384=20
-> > >>>>>> buffer size (default). Sound is choppy (sound pauses is more fre=
-quent=20
-> > >>>>>> when rate is lower).
-> > >>>>>> However an attempt to play the same file with the same period an=
-d buffer=20
-> > >>>>>> sizes with aplay results in complete system hang.
-> > >>>>>>    =20
-> > >>>>>>        =20
-> > >>>>>>            =20
-> > >>>>> OK, that looks like a problem.  Looks like the timer resolution c=
-an be
-> > >>>>> short like that, or something racy in the timer handling.
-> > >>>>>
-> > >>>>> Can you check whether this happens with XXX_SYSTEM_TIMER, too?
-> > >>>>>
-> > >>>>> Or, does the patch below avoid the problem, at least?
-> > >>>>>
-> > >>>>>
-> > >>>>> thanks,
-> > >>>>>
-> > >>>>> Takashi
-> > >>>>>
-> > >>>>> diff --git a/sound/pci/sbxfi/sbxfi.c b/sound/pci/sbxfi/sbxfi.c
-> > >>>>> index 26a6cd3..5ceb228 100644
-> > >>>>> --- a/sound/pci/sbxfi/sbxfi.c
-> > >>>>> +++ b/sound/pci/sbxfi/sbxfi.c
-> > >>>>> @@ -277,6 +277,7 @@ static void sbxfi_rearm_timer(struct sbxfi *c=
-hip, int ticks)
-> > >>>>>  #else
-> > >>>>> =20
-> > >>>>>  #define MAX_TICKS	((1 << 13) - 1)
-> > >>>>> +#define MIN_TICKS	1000		/* FIXME: really so? */
-> > >>>>> =20
-> > >>>>>  static void sbxfi_init_timer(struct sbxfi *chip)
-> > >>>>>  {
-> > >>>>> @@ -287,6 +288,8 @@ static void sbxfi_set_timer(struct sbxfi *chi=
-p, int ticks)
-> > >>>>>  	LOG(2, "SET TIMER TICKS =3D %d\n", ticks);
-> > >>>>>  	if (ticks > MAX_TICKS)
-> > >>>>>  		ticks =3D MAX_TICKS;
-> > >>>>> +	else if (ticks < MIN_TICKS)
-> > >>>>> +		ticks =3D MIN_TICKS;
-> > >>>>>  	sbxfi_write(chip, TIMR, ticks | TIMR_IE | TIMR_IP);
-> > >>>>>  }
-> > >>>>>  static void sbxfi_stop_timer(struct sbxfi *chip)
-> > >>>>>
-> > >>>>>  =20
-> > >>>>>      =20
-> > >>>>>          =20
-> > >>>> After patch:
-> > >>>>
-> > >>>> Without system timer:
-> > >>>>
-> > >>>> aplay --period-size=3D1024 96000_16_Stereo.wav
-> > >>>> Plays fine
-> > >>>>
-> > >>>> aplay --period-size=3D1024 22050_16_Mono.wav
-> > >>>> BUG: unable to handle kernel NULL pointer dereference at 000000000=
-0000008
-> > >>>> Hang
-> > >>>>
-> > >>>> With system timer:
-> > >>>>
-> > >>>> aplay --period-size=3D1024 96000_16_Stereo.wav
-> > >>>> Superglitch. Each sample is played many times before advancing to =
-next one.
-> > >>>>
-> > >>>> aplay --period-size=3D1024 22050_16_Mono.wav
-> > >>>> Instant reboot.
-> > >>>>    =20
-> > >>>>        =20
-> > >>> Just to be sure: you don't enable XXX_CONT_RATE, right?
-> > >>> It's known to be buggy, so disabled as default now.
-> > >>>
-> > >>>
-> > >>> Takashi
-> > >>>
-> > >>>  =20
-> > >>>      =20
-> > >> It is disabled for me too.
-> > >>    =20
-> > >
-> > > And the patch didn't help?
-> > >
-> > >
-> > > Takashi
-> > >
-> > >  =20
-> > Only 96000Hz Stereo without system timer plays fine after patch.
->=20
-> Please elaborate?  You mean 22.5k still doesn't work with the patch?
-> Does 22.5kHz ever work with other parameters?  It'd be really helpful
-> if you get the full Oops log...
->=20
-> The patch affects only the emu20k1 timer.  The system timer stuff
-> isn't touched by it.
->=20
-> The reboot implies that it's unlikely the timer but the driver wrote
-> something wrong (unless you have the set up that the kernel traps and
-> automatically reboot).  But, it's nothing but a wild guess at this
-> point.
->=20
-> Anyway, I updated the driver code a bit again.  Please check the
-> latest one.
-
-Only 96000Hz stereo works here as of 15 minutes ago. Following .asoundrc
-stanzas result in a hardware fault and return to BIOS:
-
-pcm.xfi-dmix {
-    type dmix
-    ipc_key 1024
-    slave {
-        pcm "hw:2,0"
-        rate 96000
-    }
-}
-
-pcm.xfi0 {
-    type plug
-    slave.pcm "xfi-dmix"
-}
-
-pcm.default pcm.xfi0
-
-Unfortunately, nothing was left in /var/log/kern.log.
-
-William
-
---=-yBblRV3tfunxJxSQYeN4
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQBI+Po1oB+26npOQg4RAmiRAJ0XlLIKHcs25jO/NXa12/3e7e9Q1wCgvR7x
-SoRn9uv24kVukTjIIKiHuBg=
-=fpd5
------END PGP SIGNATURE-----
-
---=-yBblRV3tfunxJxSQYeN4--
-
-
---===============5613287823325125632==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============5613287823325125632==--
+VGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IEZyaSwgMTcgT2N0IDIwMDggMTQ6MTY6MzggKzA0MDAs
+Cj4gVGhlIFNvdXJjZSB3cm90ZToKPj4gVGFrYXNoaSBJd2FpINC/0LjRiNC10YI6Cj4+PiBBdCBG
+cmksIDE3IE9jdCAyMDA4IDE0OjAxOjU1ICswNDAwLAo+Pj4gVGhlIFNvdXJjZSB3cm90ZToKPj4+
+ICAgCj4+Pj4gVGFrYXNoaSBJd2FpINC/0LjRiNC10YI6Cj4+Pj4gICAgIAo+Pj4+PiBBdCBGcmks
+IDE3IE9jdCAyMDA4IDEzOjU4OjIwICswNDAwLAo+Pj4+PiBUaGUgU291cmNlIHdyb3RlOgo+Pj4+
+PiAgIAo+Pj4+PiAgICAgICAKPj4+Pj4+IFRha2FzaGkgSXdhaSDQv9C40YjQtdGCOgo+Pj4+Pj4g
+ICAgIAo+Pj4+Pj4gICAgICAgICAKPj4+Pj4+PiBBdCBGcmksIDE3IE9jdCAyMDA4IDExOjU3OjA4
+ICswNDAwLAo+Pj4+Pj4+IFRoZSBTb3VyY2Ugd3JvdGU6Cj4+Pj4+Pj4gICAKPj4+Pj4+PiAgICAg
+ICAKPj4+Pj4+PiAgICAgICAgICAgCj4+Pj4+Pj4+IFRha2FzaGkgSXdhaSDQv9C40YjQtdGCOgo+
+Pj4+Pj4+PiAgICAgCj4+Pj4+Pj4+ICAgICAgICAgCj4+Pj4+Pj4+ICAgICAgICAgICAgIAo+Pj4+
+Pj4+Pj4gQXQgVGh1LCAxNiBPY3QgMjAwOCAyMjoxODowNyArMDQwMCwKPj4+Pj4+Pj4+IFRoZSBT
+b3VyY2Ugd3JvdGU6Cj4+Pj4+Pj4+PiAgIAo+Pj4+Pj4+Pj4gICAgICAgCj4+Pj4+Pj4+PiAgICAg
+ICAgICAgCj4+Pj4+Pj4+PiAgICAgICAgICAgICAgIAo+Pj4+Pj4+Pj4+Pj4gT2suIE9wZW5BTCB3
+aXRoIGFsc2EgYWxzbyBzZWVtIHRvIGNhdXNlIHByb2JsZW1zLgo+Pj4+Pj4+Pj4+Pj4gICAgIAo+
+Pj4+Pj4+Pj4+Pj4gICAgICAgICAKPj4+Pj4+Pj4+Pj4+ICAgICAgICAgICAgIAo+Pj4+Pj4+Pj4+
+Pj4gICAgICAgICAgICAgICAgIAo+Pj4+Pj4+Pj4+Pj4gICAgICAgICAgICAgICAgICAgICAKPj4+
+Pj4+Pj4+Pj4gSW4gYm90aCBjYXNlcywgY2hlY2sgdGhlIHBlcmlvZF9zaXplIGFuZCBidWZmZXJf
+c2l6ZSB2YWx1ZXMgKHNob3duIGluCj4+Pj4+Pj4+Pj4+IHRoZSBrZXJuZWwgbWVzc2FnZSwgb3Ig
+L3Byb2MvYXNvdW5kL2NhcmQwL3BjbTBwL3N1YjAvaHdfcGFyYW1zKS4KPj4+Pj4+Pj4+Pj4gQW5k
+LCB0cnkgdG8gYXBsYXkgd2l0aCB0aGVzZSBwYXJhbWV0ZXJzLCB3aGV0aGVyIHlvdSBnZXQgdGhl
+IHNpbWlsYXIKPj4+Pj4+Pj4+Pj4gcHJvYmxlbS4KPj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4gCSUg
+YXBsYXkgLXYgLS1wZXJpb2Qtc2l6ZT14eHggLS1idWZmZXItc2l6ZT15eXkgZm9vLndhdgo+Pj4+
+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+PiBUYWthc2hpCj4+Pj4+Pj4+Pj4+Cj4+Pj4+
+Pj4+Pj4+ICAgCj4+Pj4+Pj4+Pj4+ICAgICAgIAo+Pj4+Pj4+Pj4+PiAgICAgICAgICAgCj4+Pj4+
+Pj4+Pj4+ICAgICAgICAgICAgICAgCj4+Pj4+Pj4+Pj4+ICAgICAgICAgICAgICAgICAgIAo+Pj4+
+Pj4+Pj4+IEknbSBzb3JyeSwgYnV0IGFueSBhdHRlbXAgdG8gcGxheSBmaWxlIHdpdGggb3NzcGxh
+eSByZXN1bHRzIGluIGNvbXBsZXRlIAo+Pj4+Pj4+Pj4+IHN5c3RlbSBoYW5nIHdpdGggZXJyb3I6
+Cj4+Pj4+Pj4+Pj4gdW5hYmxlIHRvIGhhbmRsZSBOVUxMIHBvbnRlciBkZXJlZmVyZW5jZSBhdCBh
+ZGRyZXNzIAo+Pj4+Pj4+Pj4+IDAwMDAwMDAwMDAwMDAwMDguLi4uLihoYW5nLCBubyBtb3JlIG91
+dHB1dCkuCj4+Pj4+Pj4+Pj4gSSB0cmllZCBtYW55IHdhdiBmb3JtYXRzLiBTbyBJIGNhbid0IGdl
+dCBlcnJvciBsb2cgb3IgcGVyaW9kIGFuZCBidWZmZXIgCj4+Pj4+Pj4+Pj4gc2l6ZXMsIHNvcnJ5
+Lgo+Pj4+Pj4+Pj4+ICAgICAKPj4+Pj4+Pj4+PiAgICAgICAgIAo+Pj4+Pj4+Pj4+ICAgICAgICAg
+ICAgIAo+Pj4+Pj4+Pj4+ICAgICAgICAgICAgICAgICAKPj4+Pj4+Pj4+IENhbiBhbnlvbmUgY29u
+ZmlybSB0byByZXByb2R1Y2UgT29wcyB3aXRoIE9TUyBhcHBzIChvc3NwbGF5KT8KPj4+Pj4+Pj4+
+Cj4+Pj4+Pj4+PiBJJ20gd29uZGVyaW5nIHdoZXRoZXIgdGhpcyBoYXMgYW55dGhpbmcgdG8gZG8g
+d2l0aCB0aGUgY2FwdHVyZS4KPj4+Pj4+Pj4+IENhbiB5b3UgcmVjb3JkIHRoZSBzb3VuZCwgYW5k
+IGNoYW5nZSB0aGUgY2FwdHVyZSBtaXhlciBlbGVtZW50IHByb3Blcmx5Pwo+Pj4+Pj4+Pj4KPj4+
+Pj4+Pj4+Cj4+Pj4+Pj4+PiB0aGFua3MsCj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4gVGFrYXNoaQo+Pj4+
+Pj4+Pj4KPj4+Pj4+Pj4+ICAgCj4+Pj4+Pj4+PiAgICAgICAKPj4+Pj4+Pj4+ICAgICAgICAgICAK
+Pj4+Pj4+Pj4+ICAgICAgICAgICAgICAgCj4+Pj4+Pj4+IEkgY2hlY2tlZCBtcGxheWVyLiBJdCB1
+c2VzIHBlcmlvZCBzaXplIDEwMjQgaW5zdGVhZCBvZiA0MDk2IGFuZCAxNjM4NCAKPj4+Pj4+Pj4g
+YnVmZmVyIHNpemUgKGRlZmF1bHQpLiBTb3VuZCBpcyBjaG9wcHkgKHNvdW5kIHBhdXNlcyBpcyBt
+b3JlIGZyZXF1ZW50IAo+Pj4+Pj4+PiB3aGVuIHJhdGUgaXMgbG93ZXIpLgo+Pj4+Pj4+PiBIb3dl
+dmVyIGFuIGF0dGVtcHQgdG8gcGxheSB0aGUgc2FtZSBmaWxlIHdpdGggdGhlIHNhbWUgcGVyaW9k
+IGFuZCBidWZmZXIgCj4+Pj4+Pj4+IHNpemVzIHdpdGggYXBsYXkgcmVzdWx0cyBpbiBjb21wbGV0
+ZSBzeXN0ZW0gaGFuZy4KPj4+Pj4+Pj4gICAgIAo+Pj4+Pj4+PiAgICAgICAgIAo+Pj4+Pj4+PiAg
+ICAgICAgICAgICAKPj4+Pj4+PiBPSywgdGhhdCBsb29rcyBsaWtlIGEgcHJvYmxlbS4gIExvb2tz
+IGxpa2UgdGhlIHRpbWVyIHJlc29sdXRpb24gY2FuIGJlCj4+Pj4+Pj4gc2hvcnQgbGlrZSB0aGF0
+LCBvciBzb21ldGhpbmcgcmFjeSBpbiB0aGUgdGltZXIgaGFuZGxpbmcuCj4+Pj4+Pj4KPj4+Pj4+
+PiBDYW4geW91IGNoZWNrIHdoZXRoZXIgdGhpcyBoYXBwZW5zIHdpdGggWFhYX1NZU1RFTV9USU1F
+UiwgdG9vPwo+Pj4+Pj4+Cj4+Pj4+Pj4gT3IsIGRvZXMgdGhlIHBhdGNoIGJlbG93IGF2b2lkIHRo
+ZSBwcm9ibGVtLCBhdCBsZWFzdD8KPj4+Pj4+Pgo+Pj4+Pj4+Cj4+Pj4+Pj4gdGhhbmtzLAo+Pj4+
+Pj4+Cj4+Pj4+Pj4gVGFrYXNoaQo+Pj4+Pj4+Cj4+Pj4+Pj4gZGlmZiAtLWdpdCBhL3NvdW5kL3Bj
+aS9zYnhmaS9zYnhmaS5jIGIvc291bmQvcGNpL3NieGZpL3NieGZpLmMKPj4+Pj4+PiBpbmRleCAy
+NmE2Y2QzLi41Y2ViMjI4IDEwMDY0NAo+Pj4+Pj4+IC0tLSBhL3NvdW5kL3BjaS9zYnhmaS9zYnhm
+aS5jCj4+Pj4+Pj4gKysrIGIvc291bmQvcGNpL3NieGZpL3NieGZpLmMKPj4+Pj4+PiBAQCAtMjc3
+LDYgKzI3Nyw3IEBAIHN0YXRpYyB2b2lkIHNieGZpX3JlYXJtX3RpbWVyKHN0cnVjdCBzYnhmaSAq
+Y2hpcCwgaW50IHRpY2tzKQo+Pj4+Pj4+ICAjZWxzZQo+Pj4+Pj4+ICAKPj4+Pj4+PiAgI2RlZmlu
+ZSBNQVhfVElDS1MJKCgxIDw8IDEzKSAtIDEpCj4+Pj4+Pj4gKyNkZWZpbmUgTUlOX1RJQ0tTCTEw
+MDAJCS8qIEZJWE1FOiByZWFsbHkgc28/ICovCj4+Pj4+Pj4gIAo+Pj4+Pj4+ICBzdGF0aWMgdm9p
+ZCBzYnhmaV9pbml0X3RpbWVyKHN0cnVjdCBzYnhmaSAqY2hpcCkKPj4+Pj4+PiAgewo+Pj4+Pj4+
+IEBAIC0yODcsNiArMjg4LDggQEAgc3RhdGljIHZvaWQgc2J4Zmlfc2V0X3RpbWVyKHN0cnVjdCBz
+YnhmaSAqY2hpcCwgaW50IHRpY2tzKQo+Pj4+Pj4+ICAJTE9HKDIsICJTRVQgVElNRVIgVElDS1Mg
+PSAlZFxuIiwgdGlja3MpOwo+Pj4+Pj4+ICAJaWYgKHRpY2tzID4gTUFYX1RJQ0tTKQo+Pj4+Pj4+
+ICAJCXRpY2tzID0gTUFYX1RJQ0tTOwo+Pj4+Pj4+ICsJZWxzZSBpZiAodGlja3MgPCBNSU5fVElD
+S1MpCj4+Pj4+Pj4gKwkJdGlja3MgPSBNSU5fVElDS1M7Cj4+Pj4+Pj4gIAlzYnhmaV93cml0ZShj
+aGlwLCBUSU1SLCB0aWNrcyB8IFRJTVJfSUUgfCBUSU1SX0lQKTsKPj4+Pj4+PiAgfQo+Pj4+Pj4+
+ICBzdGF0aWMgdm9pZCBzYnhmaV9zdG9wX3RpbWVyKHN0cnVjdCBzYnhmaSAqY2hpcCkKPj4+Pj4+
+Pgo+Pj4+Pj4+ICAgCj4+Pj4+Pj4gICAgICAgCj4+Pj4+Pj4gICAgICAgICAgIAo+Pj4+Pj4gQWZ0
+ZXIgcGF0Y2g6Cj4+Pj4+Pgo+Pj4+Pj4gV2l0aG91dCBzeXN0ZW0gdGltZXI6Cj4+Pj4+Pgo+Pj4+
+Pj4gYXBsYXkgLS1wZXJpb2Qtc2l6ZT0xMDI0IDk2MDAwXzE2X1N0ZXJlby53YXYKPj4+Pj4+IFBs
+YXlzIGZpbmUKPj4+Pj4+Cj4+Pj4+PiBhcGxheSAtLXBlcmlvZC1zaXplPTEwMjQgMjIwNTBfMTZf
+TW9uby53YXYKPj4+Pj4+IEJVRzogdW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgTlVMTCBwb2ludGVy
+IGRlcmVmZXJlbmNlIGF0IDAwMDAwMDAwMDAwMDAwMDgKPj4+Pj4+IEhhbmcKPj4+Pj4+Cj4+Pj4+
+PiBXaXRoIHN5c3RlbSB0aW1lcjoKPj4+Pj4+Cj4+Pj4+PiBhcGxheSAtLXBlcmlvZC1zaXplPTEw
+MjQgOTYwMDBfMTZfU3RlcmVvLndhdgo+Pj4+Pj4gU3VwZXJnbGl0Y2guIEVhY2ggc2FtcGxlIGlz
+IHBsYXllZCBtYW55IHRpbWVzIGJlZm9yZSBhZHZhbmNpbmcgdG8gbmV4dCBvbmUuCj4+Pj4+Pgo+
+Pj4+Pj4gYXBsYXkgLS1wZXJpb2Qtc2l6ZT0xMDI0IDIyMDUwXzE2X01vbm8ud2F2Cj4+Pj4+PiBJ
+bnN0YW50IHJlYm9vdC4KPj4+Pj4+ICAgICAKPj4+Pj4+ICAgICAgICAgCj4+Pj4+IEp1c3QgdG8g
+YmUgc3VyZTogeW91IGRvbid0IGVuYWJsZSBYWFhfQ09OVF9SQVRFLCByaWdodD8KPj4+Pj4gSXQn
+cyBrbm93biB0byBiZSBidWdneSwgc28gZGlzYWJsZWQgYXMgZGVmYXVsdCBub3cuCj4+Pj4+Cj4+
+Pj4+Cj4+Pj4+IFRha2FzaGkKPj4+Pj4KPj4+Pj4gICAKPj4+Pj4gICAgICAgCj4+Pj4gSXQgaXMg
+ZGlzYWJsZWQgZm9yIG1lIHRvby4KPj4+PiAgICAgCj4+PiBBbmQgdGhlIHBhdGNoIGRpZG4ndCBo
+ZWxwPwo+Pj4KPj4+Cj4+PiBUYWthc2hpCj4+Pgo+Pj4gICAKPj4gT25seSA5NjAwMEh6IFN0ZXJl
+byB3aXRob3V0IHN5c3RlbSB0aW1lciBwbGF5cyBmaW5lIGFmdGVyIHBhdGNoLgo+IAo+IFBsZWFz
+ZSBlbGFib3JhdGU/ICBZb3UgbWVhbiAyMi41ayBzdGlsbCBkb2Vzbid0IHdvcmsgd2l0aCB0aGUg
+cGF0Y2g/Cj4gRG9lcyAyMi41a0h6IGV2ZXIgd29yayB3aXRoIG90aGVyIHBhcmFtZXRlcnM/ICBJ
+dCdkIGJlIHJlYWxseSBoZWxwZnVsCj4gaWYgeW91IGdldCB0aGUgZnVsbCBPb3BzIGxvZy4uLgo+
+IAo+IFRoZSBwYXRjaCBhZmZlY3RzIG9ubHkgdGhlIGVtdTIwazEgdGltZXIuICBUaGUgc3lzdGVt
+IHRpbWVyIHN0dWZmCj4gaXNuJ3QgdG91Y2hlZCBieSBpdC4KPiAKPiBUaGUgcmVib290IGltcGxp
+ZXMgdGhhdCBpdCdzIHVubGlrZWx5IHRoZSB0aW1lciBidXQgdGhlIGRyaXZlciB3cm90ZQo+IHNv
+bWV0aGluZyB3cm9uZyAodW5sZXNzIHlvdSBoYXZlIHRoZSBzZXQgdXAgdGhhdCB0aGUga2VybmVs
+IHRyYXBzIGFuZAo+IGF1dG9tYXRpY2FsbHkgcmVib290KS4gIEJ1dCwgaXQncyBub3RoaW5nIGJ1
+dCBhIHdpbGQgZ3Vlc3MgYXQgdGhpcwo+IHBvaW50Lgo+IAo+IEFueXdheSwgSSB1cGRhdGVkIHRo
+ZSBkcml2ZXIgY29kZSBhIGJpdCBhZ2Fpbi4gIFBsZWFzZSBjaGVjayB0aGUKPiBsYXRlc3Qgb25l
+LgoKVGhlIGxhdGVzdCBjaGFuZ2UgaW4gdGhlIHRpbWVyIGNvZGUgcmVhbGx5IGJyb2tlIHBsYXli
+YWNrIGZvciBtZS4KU291bmQgbm93IHN0dXR0ZXJzIGV2ZXJ5IDIgc2Vjb25kcy4KSXQgc2VlbXMg
+dG8gZ28gYmFjayB0byBub3JtYWwgd2hlbiBJIHB1dCBiYWNrIHRoZSBUSU1SX0lQIGZsYWcgdGhh
+dCB3YXMgCmNvbW1lbnRlZCBvdXQgaW4gdGhhdCBwYXRjaC4KCkphbiBXb2xmCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
+aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
