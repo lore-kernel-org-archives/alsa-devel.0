@@ -1,16 +1,16 @@
 From: William Pitcock <nenolod@sacredspiral.co.uk>
-Subject: [PATCH] snd-sbxfi: implement support for 192khz
-	playback/capture.
-Date: Sat, 18 Oct 2008 13:37:24 -0500
-Message-ID: <20081018183020.540B577DF81@carpathia.dereferenced.org>
+Subject: [PATCH] snd-sbxfi: set up the DAC at card
+	initialization, regardless of duplex mode
+Date: Sat, 18 Oct 2008 13:59:46 -0500
+Message-ID: <20081018185158.BE88E77DF81@carpathia.dereferenced.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from carpathia.dereferenced.org (carpathia.dereferenced.org
-	[64.71.161.129]) by alsa0.perex.cz (Postfix) with ESMTP id A4D2F24531
+	[64.71.161.129]) by alsa0.perex.cz (Postfix) with ESMTP id E796F24544
 	for <alsa-devel@alsa-project.org>;
-	Sat, 18 Oct 2008 20:42:37 +0200 (CEST)
+	Sat, 18 Oct 2008 21:04:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,66 +23,51 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Implements support for 192khz initialization for playback and capture.
+We should bring up the DAC at card initialization even in half-duplex mode,
+otherwise we have to deal with unfortunate glitches in the hardware.
+
+Constantly resetting the DAC can cause serious state desyncs, resulting in
+the driver eventually not working until a reboot occurs.
 
 Signed-off-by: William Pitcock <nenolod@sacredspiral.co.uk>
 ---
- sound/pci/sbxfi/sbxfi.c |   18 ++++++++++++++----
- 1 files changed, 14 insertions(+), 4 deletions(-)
+ sound/pci/sbxfi/sbxfi.c |    8 +-------
+ 1 files changed, 1 insertions(+), 7 deletions(-)
 
 diff --git a/sound/pci/sbxfi/sbxfi.c b/sound/pci/sbxfi/sbxfi.c
-index 4c65125..d64d462 100644
+index d64d462..30ad25b 100644
 --- a/sound/pci/sbxfi/sbxfi.c
 +++ b/sound/pci/sbxfi/sbxfi.c
-@@ -514,7 +514,7 @@ static void sbxfi_write_amop(struct sbxfi *chip,
- static void sbxfi_playback_start(struct sbxfi *chip, struct sbxfi_port *port)
- {
- 	unsigned int start, loop;
--	unsigned int ctrl, ratec;
-+	unsigned int ctrl, ratec = 0;
- 	struct snd_pcm_runtime *runtime;
+@@ -62,7 +62,7 @@ MODULE_PARM_DESC(debug, "Debug flag: 0 = disable");
+ /* continuous rate support */
+ #undef XXX_CONT_RATE
  
- 	if (port->tlb_index < 0)
-@@ -523,12 +523,19 @@ static void sbxfi_playback_start(struct sbxfi *chip, struct sbxfi_port *port)
- 	start = port->tlb_index * SBXFI_PAGE_SIZE;
- 	loop = start + frames_to_bytes(runtime, runtime->buffer_size);
+-/* full-duplex support */
++/* full duplex support */
+ #undef XXX_FULL_DUPLEX
  
-+	/*
-+	 * ratec is the rate selection mode, 0x4c = 48000hz, 0x5c = 96000hz,
-+	 * 0x6c = 192000hz.
-+	 */
- 	switch (runtime->rate) {
- 	case 48000:
--		ratec = 0x4c; /* XXX what meaning? */
-+		ratec = 0x4c;
- 		break;
- 	case 96000:
--		ratec = 0x5c; /* XXX what meaning? */
-+		ratec = 0x5c;
-+		break;
-+	case 192000:
-+		ratec = 0x6c;
- 		break;
- 	}
- 	ctrl = ratec;
-@@ -559,7 +566,7 @@ static void sbxfi_playback_stop(struct sbxfi *chip, struct sbxfi_port *port)
- static void sbxfi_capture_start(struct sbxfi *chip, struct sbxfi_port *port)
- {
- 	unsigned int start, loop;
--	unsigned int ctrl, ratec;
-+	unsigned int ctrl, ratec = 0;
- 	struct snd_pcm_runtime *runtime;
+ /* multi playback - not implemented */
+@@ -1364,10 +1364,6 @@ static int sbxfi_playback_prepare(struct snd_pcm_substream *substream)
+ 	port->frag_count = runtime->period_size;
+ 	port->need_update = 0;
  
- 	if (port->tlb_index < 0)
-@@ -575,6 +582,9 @@ static void sbxfi_capture_start(struct sbxfi *chip, struct sbxfi_port *port)
- 	case 96000:
- 		ratec = 0x5d | SRCCTL_RUN_STATE;
- 		break;
-+	case 192000:
-+		ratec = 0x6d | SRCCTL_RUN_STATE;
-+		break;
- 	}
+-#ifndef XXX_FULL_DUPLEX
+-	sbxfi_init_dac(chip);
+-	sbxfi_setup_i2s(chip);
+-#endif
+ 	sbxfi_setup_play_pitch(chip, port);
+ 	sbxfi_setup_play_mixer(chip, port);
+ 	sbxfi_setup_play_mapper(chip, port);
+@@ -1924,10 +1920,8 @@ static int sbxfi_init_hw(struct sbxfi *chip)
  
- 	ctrl = ratec;
+ 	sbxfi_daoimap_clear(chip);
+ 
+-#ifdef XXX_FULL_DUPLEX
+ 	sbxfi_init_dac(chip);
+ 	sbxfi_setup_i2s(chip);
+-#endif
+ 
+ 	return 0;
+ }
 -- 
 1.5.5.4
