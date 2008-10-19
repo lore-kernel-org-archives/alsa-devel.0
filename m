@@ -1,17 +1,16 @@
 From: William Pitcock <nenolod@sacredspiral.co.uk>
-Subject: [PATCH] snd-sbxfi: use SBXXXX model numbers instead of
-	user-unfriendly names like UAA and ORIG.
-Date: Sat, 18 Oct 2008 19:58:23 -0500
-Message-ID: <20081019004820.8D3F0835910@carpathia.dereferenced.org>
+Subject: [PATCH] snd-sbxfi: rename erroneous Master mixer
+	control to "PCM Playback Volume".
+Date: Sat, 18 Oct 2008 20:42:24 -0500
+Message-ID: <20081019013222.73FAF77DF81@carpathia.dereferenced.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from carpathia.dereferenced.org (carpathia.dereferenced.org
-	[64.71.161.129])
-	by alsa0.perex.cz (Postfix) with ESMTP id DB99E1038A0
+	[64.71.161.129]) by alsa0.perex.cz (Postfix) with ESMTP id E1D22245AC
 	for <alsa-devel@alsa-project.org>;
-	Sun, 19 Oct 2008 03:00:39 +0200 (CEST)
+	Sun, 19 Oct 2008 03:44:40 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,34 +23,105 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is just something that bothers me. There's no reason to accept or reject it,
-other than that it might be more informative about what hardware revision we are
-dealing with.
+The OSS4-provided master mixer control is actually relative to EMU20K1 port
+volume settings. So, it should be named PCM. The Master mixer control will be
+shortly readded as a control which sets the master volume.
 
 Signed-off-by: William Pitcock <nenolod@sacredspiral.co.uk>
-
 ---
- sound/pci/sbxfi/sbxfi.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+ sound/pci/sbxfi/sbxfi.c |   28 ++++++++++++++--------------
+ 1 files changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/sound/pci/sbxfi/sbxfi.c b/sound/pci/sbxfi/sbxfi.c
-index 30ad25b..c006278 100644
+index c006278..3e99a97 100644
 --- a/sound/pci/sbxfi/sbxfi.c
 +++ b/sound/pci/sbxfi/sbxfi.c
-@@ -1702,10 +1702,10 @@ static int __devinit sbxfi_create_mixer(struct sbxfi *chip)
+@@ -155,7 +155,7 @@ struct sbxfi {
+ 	int timer_reprogram;
+ 
+ 	unsigned int base_rate;
+-	int master_vol[2];
++	int pcm_vol[2];
+ 	int capture_vol[2];
+ 	int capsrc;
+ 	int micboost;
+@@ -1103,7 +1103,7 @@ static void sbxfi_setup_play_mixer(struct sbxfi *chip,
+ 	int i, vol, audio_ch;
+ 
+ 	for (i = 0; i < 2; i++) {
+-		vol = port->vol[i] + chip->master_vol[i] - MAX_VOLUME;
++		vol = port->vol[i] + chip->pcm_vol[i] - MAX_VOLUME;
+ 		if (vol < 0)
+ 			vol = 0;
+ 		vol = amop_vol_table[vol];
+@@ -1124,9 +1124,9 @@ static int sbxfi_update_play_mixer(struct sbxfi *chip, int *vol)
+ 	struct sbxfi_port *port;
+ 
+ 	for (i = 0; i < 2; i++) {
+-		if (vol[i] == chip->master_vol[i])
++		if (vol[i] == chip->pcm_vol[i])
+ 			continue;
+-		chip->master_vol[i] = vol[i];
++		chip->pcm_vol[i] = vol[i];
+ 		spin_lock_irq(&chip->port_lock);
+ 		list_for_each_entry(port, &chip->port_list, list) {
+ 			if (port->substream->stream !=
+@@ -1516,7 +1516,7 @@ static int __devinit sbxfi_create_pcm(struct sbxfi *chip)
+ /*
+  * Mixer interface
   */
+-static int sbxfi_master_vol_info(struct snd_kcontrol *kcontrol,
++static int sbxfi_pcm_vol_info(struct snd_kcontrol *kcontrol,
+ 				 struct snd_ctl_elem_info *uinfo)
+ {
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+@@ -1526,16 +1526,16 @@ static int sbxfi_master_vol_info(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
  
- static char *typenames[SBXFI_HW_TYPES] = {
--	[SBXFI_HW_ORIG] = "ORIG",
--	[SBXFI_HW_055x] = "055x",
--	[SBXFI_HW_073x] = "073x",
--	[SBXFI_HW_UAA] = "UAA"
-+	[SBXFI_HW_ORIG] = "SB0760",
-+	[SBXFI_HW_055x] = "SB0550",
-+	[SBXFI_HW_073x] = "SB0730",
-+	[SBXFI_HW_UAA] = "SB0886"
- };
+-static int sbxfi_master_vol_get(struct snd_kcontrol *kcontrol,
++static int sbxfi_pcm_vol_get(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct sbxfi *chip = snd_kcontrol_chip(kcontrol);
+-	ucontrol->value.integer.value[0] = chip->master_vol[0];
+-	ucontrol->value.integer.value[1] = chip->master_vol[1];
++	ucontrol->value.integer.value[0] = chip->pcm_vol[0];
++	ucontrol->value.integer.value[1] = chip->pcm_vol[1];
+ 	return 0;
+ }
  
- #ifdef CONFIG_PROC_FS
+-static int sbxfi_master_vol_put(struct snd_kcontrol *kcontrol,
++static int sbxfi_pcm_vol_put(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct sbxfi *chip = snd_kcontrol_chip(kcontrol);
+@@ -1543,7 +1543,7 @@ static int sbxfi_master_vol_put(struct snd_kcontrol *kcontrol,
+ 
+ 	vol[0] = ucontrol->value.integer.value[0];
+ 	vol[1] = ucontrol->value.integer.value[1];
+-	if (!memcmp(vol, chip->master_vol, sizeof(vol)))
++	if (!memcmp(vol, chip->pcm_vol, sizeof(vol)))
+ 		return 0;
+ 
+ 	if (vol[0] < 0)
+@@ -1658,13 +1658,13 @@ static int sbxfi_micboost_put(struct snd_kcontrol *kcontrol,
+ 
+ static struct snd_kcontrol_new mixers[] __devinitdata = {
+ 	{
+-		.name = "Master Playback Volume",
++		.name = "PCM Playback Volume",
+ 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 		.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE
+ 			   /* | SNDRV_CTL_ELEM_ACCESS_TLV_READ*/),
+-		.info = sbxfi_master_vol_info,
+-		.get = sbxfi_master_vol_get,
+-		.put = sbxfi_master_vol_put,
++		.info = sbxfi_pcm_vol_info,
++		.get = sbxfi_pcm_vol_get,
++		.put = sbxfi_pcm_vol_put,
+ 		/*.tlv = { .p = db_master_vol }*/
+ 	},
+ 	{
 -- 
 1.5.5.4
