@@ -1,22 +1,18 @@
-From: Ola Benderius <benderiu@student.chalmers.se>
-Subject: Microphone array using ALSA
-Date: Mon, 20 Oct 2008 13:56:18 +0200
-Message-ID: <48FC71E2.4090009@student.chalmers.se>
+From: "Nir Tzachar" <nir.tzachar@gmail.com>
+Subject: Nvidia hdmi problems
+Date: Mon, 20 Oct 2008 16:35:01 +0200
+Message-ID: <9b2db90b0810200735g61cad43dr538c3afc495398ec@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch-smtp02.sth.basefarm.net (ch-smtp02.sth.basefarm.net
-	[80.76.149.213])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0E9D1103806
+Received: from mail-gx0-f17.google.com (mail-gx0-f17.google.com
+	[209.85.217.17]) by alsa0.perex.cz (Postfix) with ESMTP id A9D5A2454A
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Oct 2008 13:57:18 +0200 (CEST)
-Received: from c83-254-82-238.bredband.comhem.se ([83.254.82.238]:42047
-	helo=[192.168.0.200])
-	by ch-smtp02.sth.basefarm.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.68) (envelope-from <benderiu@student.chalmers.se>)
-	id 1KrtNN-0006Pk-8l
-	for alsa-devel@alsa-project.org; Mon, 20 Oct 2008 13:56:56 +0200
+	Mon, 20 Oct 2008 16:35:20 +0200 (CEST)
+Received: by gxk10 with SMTP id 10so3642502gxk.8
+	for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2008 07:35:02 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,27 +22,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+Hello,
 
-http://en.wikipedia.org/wiki/Microphone_array
+I have been trying to get audio through hdmi to work for some time
+now. I have cloned the sound-2.6 repository to get the latest drivers,
+which should support hdmi, AFAIK.
 
-Would it be possible to use several USB soundcards in GNU/Linux using 
-ALSA to build a microphone array? I have searched the Internet but 
-haven't found any straight answers. What I have read is that it might be 
-hard to sync the captured streams even if it would be possible.
+Motherboard is Gigabyte GA-73PVM-S2H, with nforce 630i and realtek alc889a.
 
-So, three questions.
-1. Is it theoretically possible?
-2. Can it be done using several USB soundcards?
-3. Do you know of any code or project in this area as it is?
+aplay lists the hdmi device:
 
-Think this might be a necessary advancement for the future, the 
-applications are many. Even Windows Vista has support for it.
+> aplay -L
+default:CARD=NVidia
+    HDA NVidia, ALC885 Analog
+    Default Audio Device
+front:CARD=NVidia,DEV=0
+    HDA NVidia, ALC885 Analog
+    Front speakers
+surround40:CARD=NVidia,DEV=0
+    HDA NVidia, ALC885 Analog
+    4.0 Surround output to Front and Rear speakers
+surround41:CARD=NVidia,DEV=0
+    HDA NVidia, ALC885 Analog
+    4.1 Surround output to Front, Rear and Subwoofer speakers
+surround50:CARD=NVidia,DEV=0
+    HDA NVidia, ALC885 Analog
+    5.0 Surround output to Front, Center and Rear speakers
+surround51:CARD=NVidia,DEV=0
+    HDA NVidia, ALC885 Analog
+    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
+surround71:CARD=NVidia,DEV=0
+    HDA NVidia, ALC885 Analog
+    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
+iec958:CARD=NVidia,DEV=0
+    HDA NVidia, ALC885 Digital
+    IEC958 (S/PDIF) Digital Audio Output
+hdmi:CARD=NVidia,DEV=0
+    HDA NVidia
+    HDMI Audio Output
+null
+    Discard all samples (playback) or generate zero samples (capture)
 
-Other thoughts, comments?
+but,
+> aplay -D hdmi test.wav
+aplay: main:583: audio open error: No such file or directory
 
-Regards,
-Ola
+fails when trying to open /dev/snd/pcmC0D3p
+
+only the following devices exists:
+/dev/snd/seq
+/dev/snd/controlC0
+/dev/snd/pcmC0D0c
+/dev/snd/pcmC0D0p
+/dev/snd/pcmC0D1c
+/dev/snd/pcmC0D1p
+/dev/snd/pcmC0D2c
+/dev/snd/timer
+
+I am using alsa-lib and alsa-utils 1.0.17 .
+
+Does anyone have an idea?
+
+Thanks.
