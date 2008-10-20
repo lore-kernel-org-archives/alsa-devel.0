@@ -1,22 +1,24 @@
 From: "John Kacur" <jkacur@gmail.com>
 Subject: Re: No pcm device?
-Date: Mon, 20 Oct 2008 15:16:27 +0200
-Message-ID: <520f0cf10810200616s2ead02cdg4c034de280cd716c@mail.gmail.com>
+Date: Mon, 20 Oct 2008 15:54:32 +0200
+Message-ID: <520f0cf10810200654r585fa7e5k848e243e211a671e@mail.gmail.com>
 References: <520f0cf10810200534j3ccb84cag3e012c4e101de2fe@mail.gmail.com>
 	<20081020124038.GB24360@sirena.org.uk>
 	<520f0cf10810200551y9b4b6c9xc67f7b025497b96e@mail.gmail.com>
 	<20081020130200.GC24360@sirena.org.uk>
+	<520f0cf10810200616s2ead02cdg4c034de280cd716c@mail.gmail.com>
+	<20081020132424.GD24360@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.168])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5701E2450C
+	by alsa0.perex.cz (Postfix) with ESMTP id 87FDC2451D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Oct 2008 15:16:46 +0200 (CEST)
-Received: by wf-out-1314.google.com with SMTP id 24so1824366wfg.23
-	for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2008 06:16:27 -0700 (PDT)
-In-Reply-To: <20081020130200.GC24360@sirena.org.uk>
+	Mon, 20 Oct 2008 15:54:50 +0200 (CEST)
+Received: by wf-out-1314.google.com with SMTP id 24so1838791wfg.23
+	for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2008 06:54:32 -0700 (PDT)
+In-Reply-To: <20081020132424.GD24360@sirena.org.uk>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,53 +33,57 @@ To: Mark Brown <broonie@sirena.org.uk>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 20, 2008 at 3:02 PM, Mark Brown <broonie@sirena.org.uk> wrote:
-> On Mon, Oct 20, 2008 at 02:51:04PM +0200, John Kacur wrote:
->> On Mon, Oct 20, 2008 at 2:40 PM, Mark Brown <broonie@sirena.org.uk> wrote:
+On Mon, Oct 20, 2008 at 3:24 PM, Mark Brown <broonie@sirena.org.uk> wrote:
+> On Mon, Oct 20, 2008 at 03:16:27PM +0200, John Kacur wrote:
 >
->> >> There is however no sound card, thus no PCM device. Now the question
->> >> is how to proceed? In other words what kind of minimal PCM layer do I
->> >> need if any?
+>> ...but I'm still scratching my head when I look at files like
+>> sound/soc/s3c24xx/s3c24xx-pcm.c
+>> It appears to be part of the DAI that connects the i2s driver and
 >
->> > Could you please clarify what you're attempting to do here?
+> No, there is no direct connection between any of the platform drivers
+> and the codec drivers - the platform drivers will be configured to
+> produce and understand signals on I2S as configured by a combination of
+> the machine drivers and core.  The codec will be configured compatibly
+> but at no point should the codec and platform drivers directly know
+> anything about each other.
 >
->> On a simple level, I'm just trying to provide sound, by implementing
->> an alsa driver. I've implemented a low-level library that can
->> manipulate all my hardware's i2s registers, and I've been mirroring
->> other alsa-soc drivers, and I'm at the point where I'm scratching my
->> head over what to do about PCM. The confusion to me, is that the code
->> seems to describe actually hardware - and the only thing I can think
->> of it what my hardware i2s is capable of transmitting, does that sound
->> right?
+>> codec together? So, back to my current source of confusion, do I need
+>> to implement some basic kind of pcm driver for my scenario?
 >
-> I think you've misunderstood how this is supposed to work.  None of the
-> drivers for I2S or DMA controllers are responsible for creating a sound
-> card by themselves.  They provide support for the features of the I2S
-> or DMA controller but then rely on a separate machine driver to describe
-> how they are actually connected into the system.
+> There should be at least a stub platform driver.  The driver is
+> responsible for things that apply over the entire platform - for most
+> platforms this is DMA since the DMA control is the same for all the
+> different audio interfaces the platform has.
 >
-> There's some documentation of the model that's being used here in:
->
->        Documentation/sound/alsa/soc
->
-> In your case you'll want to implement I2S and DMA drivers for your
-> platform and a codec driver for the MAX5556 (looking at the datasheet it
-> has no control of its own but you'll need to provide a DAI for it) and
-> then provide a machine driver which connects them together.
+> This is nothing to do with creating a card, that is initiated by the
+> machine driver.
 >
 
-I've surely misunderstood a thing or two without question. :)
-However, I have read all of the documentation in
-Documentation/sound/alsa/soc, and more than once. And I've been
-reading the code for the ASoC drivers as well, and have been trying to
-emulate it, especially, the code in sound/soc/s3c24xx and
-sound/soc/pxa (as well as davinci at first until I realized that it
-was incomplete)
+Here is the outline of my design. So, if I understand you correctly,
+my jade-pcm.c file is just for implementing dma. Basically, I have a
+simple scenario there is no capture, just read a wav file from user
+space, transport it through i2s to the codec.
 
-...but I'm still scratching my head when I look at files like
-sound/soc/s3c24xx/s3c24xx-pcm.c
-It appears to be part of the DAI that connects the i2s driver and
-codec together? So, back to my current source of confusion, do I need
-to implement some basic kind of pcm driver for my scenario?
+Machine Code (Jade)
+-------------------
+jade-xxsvideo.c
+jade-xxsvideo.h
 
-Thank again for taking the time to answer all my somewhat confused questions.
+Platform Code
+-------------
+jade-pcm.c
+jade-pcm.h
+
+DAI (Digital Audio Interface)
+-----------------------------
+	.cpu_dai 	= &jade_i2s_dai
+		jade-i2s.c
+		jade-i2s.h
+	.codec_dai	= &max5556_dai
+		max5556.c
+		max5556.h
+
+Codec Code (MAX5556ESA_M, TDA7052BT/N1,  TDA8551T)
+--------------------------------------------------
+max5556.c
+max5556.h
