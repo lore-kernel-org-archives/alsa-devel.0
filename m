@@ -1,23 +1,22 @@
-From: Erik de Castro Lopo <mle+tools@mega-nerd.com>
-Subject: Re: snd_pcm_sw_params_get_xfer_align deprecated?
-Date: Sun, 19 Oct 2008 08:01:05 +1100
-Message-ID: <20081019080105.e980db24.mle+tools@mega-nerd.com>
-References: <20081018214332.10729096.mle+la@mega-nerd.com>
-	<s5h1vye2b4z.wl%tiwai@suse.de>
-Reply-To: alsa-devel@alsa-project.org
+From: Oliver Ford <ipaqlinux@oliford.co.uk>
+Subject: ALSA SOC in the ARM linux kernel - pxa2xx-pcm oops on
+	invalid dma_ch.
+Date: Mon, 20 Oct 2008 09:48:40 +0100
+Message-ID: <48FC45E8.2060705@oliford.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from outbound.icp-qv1-irony-out3.iinet.net.au
-	(outbound.icp-qv1-irony-out3.iinet.net.au [203.59.1.148])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3B8AD10388B
+Received: from mx0.thdo.woaf.net (dog.thdo.woaf.net [213.230.192.130])
+	by alsa0.perex.cz (Postfix) with ESMTP id 87D991037FA
 	for <alsa-devel@alsa-project.org>;
-	Sat, 18 Oct 2008 23:01:26 +0200 (CEST)
-Received: from hendrix (hendrix [192.168.200.99])
-	by hendrix.mega-nerd.net (Postfix) with SMTP id 9C646AB125
-	for <alsa-devel@alsa-project.org>; Sun, 19 Oct 2008 08:01:05 +1100 (EST)
-In-Reply-To: <s5h1vye2b4z.wl%tiwai@suse.de>
+	Mon, 20 Oct 2008 10:49:02 +0200 (CEST)
+Received: from i-83-67-105-182.freedom2surf.net ([83.67.105.182]
+	helo=[127.0.0.1])
+	by mx0.thdo.woaf.net with esmtpsa (TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.63) (envelope-from <ipaqlinux@oliford.co.uk>)
+	id 1KrqRO-0003Rj-Bt
+	for alsa-devel@alsa-project.org; Mon, 20 Oct 2008 08:48:44 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,32 +29,23 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+Hi,
 
-> At Sat, 18 Oct 2008 21:43:32 +1100,
-> Erik de Castro Lopo wrote:
-> > 
-> > Hi all,
-> > 
-> > I've got some code that gives me a waring that the above function
-> > is deprecated. What should I do:
-> > 
-> >   a) Call some other function? If so which one?
-> >   b) Just drop the call to that function and everything will
-> >      continue to work as it should?
-> >   c) Something else?
-> 
-> (b).  This function always sets the value 1.
+I had been working on a kernel for the iPAQ 21x series (PXA310 based 
+with a WM9713) which I had originally (June 08) based on 
+arm.linux.org.uk's git tree with   
+wolfsonmicro.com/linux-2.6-asoc/asoc-v2-dev merged in. Recently (last 
+week) I tried to pull the latest changes from arm.linux.org.uk and got 
+too many conflicts in the ALSA SOC code, the mainline kernel code seems 
+to have been cleaned up a lot compared to asoc-v2-dev. Due to this I'm 
+now working from the ALSA SOC code as it comes in arm.linux.org.uk.
 
-Thanks Takashi.
+This mostly works but I'm having trouble with oopses due to invalid DMA 
+channels in pxa2xx-pcm.c. Is this the right place to ask about this, if 
+so I'll post the details here (which I already posted on the arm-linux 
+mailing list). Is there a branch on wolfsonmicro.com that would be 
+closer to what is now in the main kernel?
 
-Cheers,
-Erik
--- 
------------------------------------------------------------------
-Erik de Castro Lopo
------------------------------------------------------------------
-"Windows and MacOS are products, contrived by engineers in the service
-of specific companies. Unix, by contrast, is not so much a product as
-it is a painstakingly compiled oral history of the hacker subculture."
-    -- N Stephenson
+Thanks,
+
+Oliver Ford
