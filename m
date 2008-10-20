@@ -1,25 +1,19 @@
-From: "John Kacur" <jkacur@gmail.com>
-Subject: Re: davinci_request_dma()
-Date: Mon, 20 Oct 2008 11:17:41 +0200
-Message-ID: <520f0cf10810200217t10193b1el7c69809b593866cb@mail.gmail.com>
-References: <520f0cf10810160158y67c8330fg959f198d9026d680@mail.gmail.com>
-	<20081016090810.GA3539@sirena.org.uk>
-	<520f0cf10810160224o6fdc5235s946578544b9034f1@mail.gmail.com>
-	<20081016100135.GC3539@sirena.org.uk>
-	<520f0cf10810160305y673ba91btaf53e5ce4682aa77@mail.gmail.com>
-	<20081016120837.GD3539@sirena.org.uk>
+From: Xarteras <xarteras@nostalgicnetworxx.org>
+Subject: Re: [PATCH] snd-sbxfi: implement Master volume control
+Date: Mon, 20 Oct 2008 12:21:47 +0000
+Message-ID: <48FC77DB.2030509@nostalgicnetworxx.org>
+References: <20081019225808.8054977DF81@carpathia.dereferenced.org>	<s5h8wsjrem3.wl%tiwai@suse.de>
+	<s5hskqrod8k.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id A4BC01037F3
+Received: from nostalgicnetworxx.org (snowleopard.nostalgicnetworxx.org
+	[87.106.211.229])
+	by alsa0.perex.cz (Postfix) with ESMTP id AE1E3103815
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Oct 2008 11:17:59 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id l35so948249waf.16
-	for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2008 02:17:41 -0700 (PDT)
-In-Reply-To: <20081016120837.GD3539@sirena.org.uk>
-Content-Disposition: inline
+	Mon, 20 Oct 2008 14:24:20 +0200 (CEST)
+In-Reply-To: <s5hskqrod8k.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,27 +23,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, William Pitcock <nenolod@sacredspiral.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 16, 2008 at 2:08 PM, Mark Brown <broonie@sirena.org.uk> wrote:
-> On Thu, Oct 16, 2008 at 12:05:41PM +0200, John Kacur wrote:
->> On Thu, Oct 16, 2008 at 12:01 PM, Mark Brown <broonie@sirena.org.uk> wrote:
->
->> > What are you looking to do - if you're looking for an ASoC driver for
->> > DaVinici that's the only one I'm aware of.
->
->> No, I'm looking at doing ASoC drivers in general, not for a DaVinci
->> processor specifically.
->
-> PXA, OMAP or S3C24xx should all be good bets in terms of platform
-> support.  Out of interest, what are you working on?
->
+Takashi Iwai wrote:
+> At Mon, 20 Oct 2008 07:59:32 +0200,
+> I wrote:
+>> At Sun, 19 Oct 2008 18:08:15 -0500,
+>> William Pitcock wrote:
+>>> Unfortunately, the X-Fi does not have a hardware master volume control, so we have
+>>> to create a virtual master and bind all playback controls to it.
+>>>
+>>> This patch depends on the patch that renames Master to PCM.
+>>>
+>>> Signed-off-by: William Pitcock <nenolod@sacredspiral.co.uk>
+>> I don't like this patch because the virtual master implementation is
+>> already found in sbxfi.c  No reason to use yet another vmaster
+>> framework in addition.
+>>
+>> So, no I don't apply both patches.  A simpler fix is just to add PCM
+>> volume like Master volume.  Both can use the same callbacks, so the
+>> addition would be pretty small.
+> 
+> I added PCM volume now using the same mechanism as Master volume.
+> Please give it a try, and let me know if it's broken.
+> 
 
-PXA appears to be incomplete too! s3c24xx looks like the only one that
-might work. (at least with 2.6.26 mainline). If I'm not mistaken PXA
-must also be living in an external git tree, and is only partially
-implemented in the mainline kernel.
+The last version from git is again, not working for me.
 
-Thanks again for all the hints and info.
+To make it work the following fixes are needed:
+The correct option for the ratec is SRCCTL_STATE_INIT, not 
+SRCCTL_STATE_TAIL.
+
+--- sbxfi.c.ori 2008-10-20 14:13:53.000000000 +0200
++++ sbxfi.c     2008-10-20 14:18:06.000000000 +0200
+@@ -542,7 +542,7 @@
+         }
+         ratec |= SRCCTL_FMT_S16;
+         ratec |= SRCCTL_BUS_MASTER;
+-       ratec |= SRCCTL_STATE_TAIL;
++       ratec |= SRCCTL_STATE_INIT;
+
+         ctrl = ratec;
+         ctrl |= SRCCTL_PITCH_MASTER; /* master */
+
+
+
+Also for some strange and for me unknown reason the patch "ALSA: 
+snd-sbxfi: use SBXXXX model numbers instead of user-unfriendly names 
+like UAA and ORIG." broke sound output, too.
+Reverting it and applying the patch above fixes the driver for me.
