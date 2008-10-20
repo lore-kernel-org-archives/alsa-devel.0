@@ -1,22 +1,27 @@
-From: Oliver Ford <ipaqlinux@oliford.co.uk>
-Subject: ALSA SOC in the ARM linux kernel - pxa2xx-pcm oops on
-	invalid dma_ch.
-Date: Mon, 20 Oct 2008 09:48:40 +0100
-Message-ID: <48FC45E8.2060705@oliford.co.uk>
+From: "John Kacur" <jkacur@gmail.com>
+Subject: Re: davinci_request_dma()
+Date: Mon, 20 Oct 2008 11:58:14 +0200
+Message-ID: <520f0cf10810200258s3dca49d3v32caffe9a9ea5532@mail.gmail.com>
+References: <520f0cf10810160158y67c8330fg959f198d9026d680@mail.gmail.com>
+	<20081016090810.GA3539@sirena.org.uk>
+	<520f0cf10810160224o6fdc5235s946578544b9034f1@mail.gmail.com>
+	<20081016100135.GC3539@sirena.org.uk>
+	<520f0cf10810160305y673ba91btaf53e5ce4682aa77@mail.gmail.com>
+	<20081016120837.GD3539@sirena.org.uk>
+	<520f0cf10810200217t10193b1el7c69809b593866cb@mail.gmail.com>
+	<20081020094949.GA18798@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0.thdo.woaf.net (dog.thdo.woaf.net [213.230.192.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id 87D991037FA
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.180])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9579E1037F3
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Oct 2008 10:49:02 +0200 (CEST)
-Received: from i-83-67-105-182.freedom2surf.net ([83.67.105.182]
-	helo=[127.0.0.1])
-	by mx0.thdo.woaf.net with esmtpsa (TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.63) (envelope-from <ipaqlinux@oliford.co.uk>)
-	id 1KrqRO-0003Rj-Bt
-	for alsa-devel@alsa-project.org; Mon, 20 Oct 2008 08:48:44 +0000
+	Mon, 20 Oct 2008 11:58:32 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id l35so955981waf.16
+	for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2008 02:58:14 -0700 (PDT)
+In-Reply-To: <20081020094949.GA18798@sirena.org.uk>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,26 +31,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Mon, Oct 20, 2008 at 11:49 AM, Mark Brown <broonie@sirena.org.uk> wrote:
+> On Mon, Oct 20, 2008 at 11:17:41AM +0200, John Kacur wrote:
+>
+>> PXA appears to be incomplete too! s3c24xx looks like the only one that
+>> might work. (at least with 2.6.26 mainline). If I'm not mistaken PXA
+>> must also be living in an external git tree, and is only partially
+>> implemented in the mainline kernel.
+>
+> What makes you say this?  I do a very large part of my development with
+> mainline PXA boards.
+>
 
-I had been working on a kernel for the iPAQ 21x series (PXA310 based 
-with a WM9713) which I had originally (June 08) based on 
-arm.linux.org.uk's git tree with   
-wolfsonmicro.com/linux-2.6-asoc/asoc-v2-dev merged in. Recently (last 
-week) I tried to pull the latest changes from arm.linux.org.uk and got 
-too many conflicts in the ALSA SOC code, the mainline kernel code seems 
-to have been cleaned up a lot compared to asoc-v2-dev. Due to this I'm 
-now working from the ALSA SOC code as it comes in arm.linux.org.uk.
-
-This mostly works but I'm having trouble with oopses due to invalid DMA 
-channels in pxa2xx-pcm.c. Is this the right place to ask about this, if 
-so I'll post the details here (which I already posted on the arm-linux 
-mailing list). Is there a branch on wolfsonmicro.com that would be 
-closer to what is now in the main kernel?
-
-Thanks,
-
-Oliver Ford
+For example, sound/soc/pxa/corgi.c calls machine_is_corgi(), I can
+only find uses of machine_is_corgi(), but no implementation.
