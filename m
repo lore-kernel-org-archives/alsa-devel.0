@@ -1,18 +1,18 @@
-From: Robert Vincent Krakora <rob.krakora@messagenetsystems.com>
-Subject: Re: Audio on Linux is a mess
-Date: Mon, 20 Oct 2008 12:47:40 -0400
-Message-ID: <48FCB62C.4070809@messagenetsystems.com>
-References: <f188924b0810170624k78e74116o19fba5adb0eaf533@mail.gmail.com>	<200810200835.25706.marek.vasut@gmail.com>	<f188924b0810200741v2982ecb4i2fea9589aa2958a3@mail.gmail.com>
-	<200810201823.27422.marek.vasut@gmail.com>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: 20K1 PCI bars, and mode switching info.
+Date: Mon, 20 Oct 2008 19:34:39 +0100
+Message-ID: <48FCCF3F.3090304@superbug.co.uk>
+References: <48FB5B2C.3030008@superbug.co.uk> <s5hwsg3pude.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from unifiedpaging.messagenetsystems.com (unknown [24.123.23.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id CFC12245A8
+Received: from anchor-post-37.mail.demon.net (anchor-post-37.mail.demon.net
+	[194.217.242.87])
+	by alsa0.perex.cz (Postfix) with ESMTP id D5636245E2
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Oct 2008 18:47:56 +0200 (CEST)
-In-Reply-To: <200810201823.27422.marek.vasut@gmail.com>
+	Mon, 20 Oct 2008 20:35:02 +0200 (CEST)
+In-Reply-To: <s5hwsg3pude.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,75 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: alsa-devel@alsa-project.org, "Fred ." <eldmannen@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Marek Vasut wrote:
-> You got what you paid for.
->
-> Maybe if you change your attitude and supply some information, someone might 
-> consider looking in your issue, othervise it would be a problem since I 
-> forgot my crystal ball back at home.
->
-> On Monday 20 of October 2008 16:41:45 Fred . wrote:
->   
->> Yeah, fix the Linux audio so that if an application behaves wrong, or
->> does something stupid, then after I close the application, the system
->> should be silent.
->> It shouldn't continue make sound even after I quit the application.
->> And PulseAudio shouldn't crash because one application did something
->> even if it was stupid.
+Takashi Iwai wrote:
+> At Sun, 19 Oct 2008 17:07:08 +0100,
+> James Courtier-Dutton wrote:
+>> This info should help the current snd-sbxfi driver to actually work with
+>> the "Vista compatible" cards that it currently does not work with.
+>> I believe the true UAA to 20K1 mode switch code is missing from the
+>> current alsa snd-sbxfi driver.
+> 
+> The code to switch to 20k1 mode is already there.
+> The sbxfi driver uses ioport for the access, and it looks like in BAR5
+> for UAA boards.  This could be the problem...
+> 
+
+Well I cannot find it. I can only find:
+static void sbxfi_switch_xfi_mode(struct sbxfi *chip)
+and that does not do the job.
+
+You need to do this:
+
+>> 2) UAA/20K1 MODE CHANGE (controls who the bus master is):
+>> The "Mode Change" register is located in the UAA configuration space at
+>> location offset 0x3FFC. This location stores 4 values in a ring.
+>> To switch from 20K1 mode to UAA mode write each DW value: CTLA, CTLZ,
+>> CTLL, CTLA.
+>> To switch from UAA mode to 20K1 mode write each DW value: CTLX, CTL-,
+>> CTLF, CTLi
+>> To read the current mode, the 4 value ring may be in any position, so
+>> one might read for example:
+>> CTLL, CTLA, CTLA, CTLZ
 >>
->> On Mon, Oct 20, 2008 at 8:35 AM, Marek Vasut <marek.vasut@gmail.com> wrote:
->>     
->>> On Friday 17 of October 2008 15:24:20 Fred . wrote:
->>>       
->>>> ALSA lib pulse.c:272:(pulse_connect) PulseAudio: Unable to connect:
->>>> Timeout ALSA lib pulse.c:272:(pulse_connect) PulseAudio: Unable to
->>>> connect: Timeout AL lib: alsa.c:344: Could not open playback device
->>>> 'default': Connection refused AL lib: oss.c:179: Could not open
->>>> /dev/dsp: Device or resource busy File
->>>> "/var/lib/python-support/python2.5/pyglet/media/drivers/openal/__init__.
->>>> py" , line 340, in driver_init_device = alc.alcOpenDevice(device_name)
->>>>
->>>> Audio on Linux is a mess.
->>>> I launch an Python script that uses audio then it breaks, and when the
->>>> Python script is closed, I still hear the audio skipping and repeating
->>>> like,
->>>> "kakakakakakaka" in infinite loop.
->>>> And PulseAudio seems to be frozen.
->>>> Then I kill PulseAudio and finally the audio noise stops.
->>>>
->>>> Oh, and I heard OpenAL downsamples stereo to mono on Linux due to a bug.
->>>>
->>>> Whole audio on Linux is just a big mess.
->>>>         
->>> Please behave yourself.
->>> Is there any way we can help you (which I doubt, but ...)?
->>>
->>>       
->>>> _______________________________________________
->>>> Alsa-devel mailing list
->>>> Alsa-devel@alsa-project.org
->>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>>>         
-> Stop ranting and provide some information so that the rest of us can attempt to help you.
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
->
->   
-
-
--- 
-Rob Krakora
-Software Engineer
-MessageNet Systems
-101 East Carmel Dr. Suite 105
-Carmel, IN 46032
-(317)566-1677 Ext. 206
-(317)663-0808 Fax
+>> At power on, the card is in UAA mode.
+>> In UAA mode, the UAA chip is the bus master.
+>> In 20K1 mode, the 20K1 chip is the bus master.
+>> Under either UAA mode or 20K1 mode, the driver can read and write the
+>> configuration space of both UAA chip and 20K1 chip.
+>>
