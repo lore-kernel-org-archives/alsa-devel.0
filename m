@@ -1,22 +1,18 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: View alsa-lib plugins setup for any app?
-Date: Wed, 22 Oct 2008 09:55:01 +1300
-Message-ID: <200810220955.01218.linux@audioscience.com>
-References: <48FD3070.7080406@audioscience.com> <s5h1vyaa22e.wl%tiwai@suse.de>
+From: Anton Blanchard <anton@samba.org>
+Subject: Re: Intel dg45id motherboard - ICH10 HD audio issues
+Date: Wed, 22 Oct 2008 09:48:11 +1100
+Message-ID: <20081021224811.GC1594@kryten>
+References: <20080831012826.GA9900@kryten> <s5h63pg74uc.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 60FA5243E5
+Received: from ozlabs.org (ozlabs.org [203.10.76.45])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0B00A24421
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Oct 2008 22:51:27 +0200 (CEST)
-Received: from zaphod (121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp3.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0K9300AMEWL7CT40@smtp3.clear.net.nz> for
-	alsa-devel@alsa-project.org; Wed, 22 Oct 2008 09:51:07 +1300 (NZDT)
-In-reply-to: <s5h1vyaa22e.wl%tiwai@suse.de>
-Content-disposition: inline
+	Wed, 22 Oct 2008 00:51:56 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5h63pg74uc.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,32 +26,48 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 21 October 2008 19:34:49 Takashi Iwai wrote:
-> Sorry, I don't understand well your question.  Do you want to see the
-> alsa-plugin chain of a running application from the outside, 
 
-Yes. Basically see something that looks like the result of "aplay -v", but for 
-a running app from the outside.  
+Hi Takashi,
 
-E.g. to see if the app is using dmix, plughw etc, what parameters the app sees 
-vs how the card is accessed.
+> > I was unable to get sound to work (analog or SPDIF) on my dg45id using
+> > 2.6.27. After looking at the pinout information I made a quick hack to
+> > get SPDIF out going (it's a mythtv box so thats all I need):
+> > 
+> > Index: linux-source-2.6.27/sound/pci/hda/patch_sigmatel.c
+> > ===================================================================
+> > --- linux-source-2.6.27.orig/sound/pci/hda/patch_sigmatel.c	2008-08-31 11:06:37.000000000 +1000
+> > +++ linux-source-2.6.27/sound/pci/hda/patch_sigmatel.c	2008-08-31 11:07:14.000000000 +1000
+> > @@ -3591,7 +3591,7 @@
+> >  	spec->num_pwrs = ARRAY_SIZE(stac92hd73xx_pwr_nids);
+> >  	spec->pwr_nids = stac92hd73xx_pwr_nids;
+> >  
+> > -	err = stac92xx_parse_auto_config(codec, 0x22, 0x24);
+> > +	err = stac92xx_parse_auto_config(codec, 0x26, 0x24);
+> >  
+> >  	if (!err) {
+> >  		if (spec->board_config < 0) {
+> > 
+> > And pointed mythtv at ALSA:plughw:0,1. Quick and dirty I know :)
+> > 
+> > Details of the chipset are below.
+> 
+> Thanks.  There seems two problems behind.
+> 
+> - the codec has two SPDIF outputs but the driver assumes only the
+>   first one
+> - the driver wrongly probes the pin widget instead of audio-out
+>   widget
+> 
+> So, your patch fixes only the latter problem which is specific to your
+> device.
+> 
+> Could you rewrite the patch to probe the pin first?  That is, check
+> the availability of pin 0x22 and 0x23.  If one of them is available,
+> pick the corresponding audio-out widget (0x25 and 0x26).
 
-Best if this info was available like the proc files for the driver, but if it 
-required running the app in a special context (debugger-like or LD_PRELOAD) 
-that would probably still be useful.
+I'm going to need some help here, I have very little understanding of
+ALSA. Could you give me a quick rundown on how to probe pins or point me
+at an example in code?
 
-The app should not have to be recompiled.
-
-
-> or do you 
-> ask an API to show the alsa-plugin chains, 
-
-no. Now I see that you are thinking of snd_pcm_*_dump() family.
-
-> or a way to show hw_params/sw_params for plugins?
-
-I this is included in my first "yes"
-
-regards
-
-Eliot
+Thanks,
+Anton
