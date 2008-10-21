@@ -1,17 +1,17 @@
 From: Bryan Wu <cooloney@kernel.org>
-Subject: [PATCH 1/3] ASoC: Blackfin: tweak SPORT range for
-	non-BF54x so we get proper behavior for BF52x parts
-Date: Tue, 21 Oct 2008 11:36:11 +0800
-Message-ID: <1224560173-8728-2-git-send-email-cooloney@kernel.org>
+Subject: [PATCH 3/3] ASoC: Blackfin I2S: Setting the TFS pin
+	selector for SPORT 0 based on whether the selected port id F or G.
+Date: Tue, 21 Oct 2008 11:36:13 +0800
+Message-ID: <1224560173-8728-4-git-send-email-cooloney@kernel.org>
 References: <1224560173-8728-1-git-send-email-cooloney@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from nwd2mail10.analog.com (nwd2mail10.analog.com [137.71.25.55])
-	by alsa0.perex.cz (Postfix) with ESMTP id E0CAF24704
+	by alsa0.perex.cz (Postfix) with ESMTP id 6C22E24703
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Oct 2008 05:35:48 +0200 (CEST)
+	Tue, 21 Oct 2008 05:35:49 +0200 (CEST)
 In-Reply-To: <1224560173-8728-1-git-send-email-cooloney@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,29 +23,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: broonie@sirena.org.uk
-Cc: alsa-devel@alsa-project.org, Bryan Wu <cooloney@kernel.org>, Mike Frysinger <vapier.adi@gmail.com>
+Cc: alsa-devel@alsa-project.org, Cliff Cai <cliff.cai@analog.com>, Bryan Wu <cooloney@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mike Frysinger <vapier.adi@gmail.com>
+From: Cliff Cai <cliff.cai@analog.com>
 
-Signed-off-by: Mike Frysinger <vapier.adi@gmail.com>
+Also include some small coding style cleanup.
+
+Signed-off-by: Cliff Cai <cliff.cai@analog.com>
 Signed-off-by: Bryan Wu <cooloney@kernel.org>
 ---
- sound/soc/blackfin/Kconfig |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/soc/blackfin/bf5xx-i2s.c |   33 +++++++++++++++++++++------------
+ 1 files changed, 21 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/blackfin/Kconfig b/sound/soc/blackfin/Kconfig
-index dc00620..3fce187 100644
---- a/sound/soc/blackfin/Kconfig
-+++ b/sound/soc/blackfin/Kconfig
-@@ -80,7 +80,7 @@ config SND_BF5XX_SPORT_NUM
- 	int "Set a SPORT for Sound chip"
- 	depends on (SND_BF5XX_I2S || SND_BF5XX_AC97)
- 	range 0 3 if BF54x
--	range 0 1 if (BF53x || BF561)
-+	range 0 1 if !BF54x
- 	default 0
- 	help
- 	  Set the correct SPORT for sound chip.
+diff --git a/sound/soc/blackfin/bf5xx-i2s.c b/sound/soc/blackfin/bf5xx-i2s.c
+index 827587f..33f5549 100644
+--- a/sound/soc/blackfin/bf5xx-i2s.c
++++ b/sound/soc/blackfin/bf5xx-i2s.c
+@@ -70,12 +70,23 @@ static struct sport_param sport_params[2] = {
+ 	}
+ };
+ 
+-static u16 sport_req[][7] = {
+-		{ P_SPORT0_DTPRI, P_SPORT0_TSCLK, P_SPORT0_RFS,
+-		  P_SPORT0_DRPRI, P_SPORT0_RSCLK, 0},
+-		{ P_SPORT1_DTPRI, P_SPORT1_TSCLK, P_SPORT1_RFS,
+-		  P_SPORT1_DRPRI, P_SPORT1_RSCLK, 0},
+-};
++/*
++ * Setting the TFS pin selector for SPORT 0 based on whether the selected port id F or G. If the port
++ * is F then no conflict should exist for the TFS. When Port G is selected and EMAC then there is a
++ * conflict between the PHY interrupt line and TFS.  Current settings prevent the conflict by ignoring
++ * the TFS pin when Port G is selected. This allows both ssm2602 using Port G and EMAC concurrently.
++ */
++#ifdef CONFIG_BF527_SPORT0_PORTF
++#define LOCAL_SPORT0_TFS (P_SPORT0_TFS)
++#endif
++
++#ifndef CONFIG_BF527_SPORT0_PORTF
++#define LOCAL_SPORT0_TFS (0)
++#endif
++
++static u16 sport_req[][7] = { {P_SPORT0_DTPRI, P_SPORT0_TSCLK, P_SPORT0_RFS,
++		P_SPORT0_DRPRI, P_SPORT0_RSCLK, LOCAL_SPORT0_TFS, 0}, {P_SPORT1_DTPRI,
++		P_SPORT1_TSCLK, P_SPORT1_RFS, P_SPORT1_DRPRI, P_SPORT1_RSCLK, P_SPORT1_TFS, 0} };
+ 
+ static int bf5xx_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		unsigned int fmt)
+@@ -98,23 +109,21 @@ static int bf5xx_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		ret = -EINVAL;
+ 		break;
+ 	default:
++		printk(KERN_ERR "Unknown SND_SOC_DAIFMT_FORMAT type\n");
+ 		ret = -EINVAL;
+ 		break;
+ 	}
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBS_CFS:
+-		ret = -EINVAL;
+-		break;
+-	case SND_SOC_DAIFMT_CBM_CFS:
+-		ret = -EINVAL;
+-		break;
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+ 		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++	case SND_SOC_DAIFMT_CBM_CFS:
+ 	case SND_SOC_DAIFMT_CBS_CFM:
+ 		ret = -EINVAL;
+ 		break;
+ 	default:
++		printk(KERN_ERR "Unknown SND_SOC_DAIFMT_MASTER type\n");
+ 		ret = -EINVAL;
+ 		break;
+ 	}
 -- 
 1.5.6
