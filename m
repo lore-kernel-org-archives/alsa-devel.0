@@ -1,19 +1,18 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: 20K1 PCI bars, and mode switching info.
-Date: Tue, 21 Oct 2008 20:39:28 +0100
-Message-ID: <48FE2FF0.8070003@superbug.co.uk>
-References: <48FB5B2C.3030008@superbug.co.uk>	<s5hwsg3pude.wl%tiwai@suse.de>	<48FCCF3F.3090304@superbug.co.uk>
-	<s5h8wsjvz71.wl%tiwai@suse.de>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH2/4] hda: dynamic jack id
+Date: Tue, 21 Oct 2008 20:41:37 +0100
+Message-ID: <20081021194137.GC6900@sirena.org.uk>
+References: <48FE10D8.4020307@embeddedalley.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from anchor-post-30.mail.demon.net (anchor-post-30.mail.demon.net
-	[194.217.242.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6871D24394
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 54878243A2
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Oct 2008 21:39:51 +0200 (CEST)
-In-Reply-To: <s5h8wsjvz71.wl%tiwai@suse.de>
+	Tue, 21 Oct 2008 21:42:02 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <48FE10D8.4020307@embeddedalley.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,81 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Matthew Ranostay <mranostay@embeddedalley.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Mon, 20 Oct 2008 19:34:39 +0100,
-> James Courtier-Dutton wrote:
->> Takashi Iwai wrote:
->>> At Sun, 19 Oct 2008 17:07:08 +0100,
->>> James Courtier-Dutton wrote:
->>>> This info should help the current snd-sbxfi driver to actually work with
->>>> the "Vista compatible" cards that it currently does not work with.
->>>> I believe the true UAA to 20K1 mode switch code is missing from the
->>>> current alsa snd-sbxfi driver.
->>> The code to switch to 20k1 mode is already there.
->>> The sbxfi driver uses ioport for the access, and it looks like in BAR5
->>> for UAA boards.  This could be the problem...
->>>
->> Well I cannot find it. I can only find:
->> static void sbxfi_switch_xfi_mode(struct sbxfi *chip)
->> and that does not do the job.
-> 
-> Well, this is supposed to be (1), switching to 20k1 mode.
-(1) is a config space switch, nothing else. It leaves the UAA chip in
-control of the bus master.
-> 
->> You need to do this:
->>
->>>> 2) UAA/20K1 MODE CHANGE (controls who the bus master is):
->>>> The "Mode Change" register is located in the UAA configuration space at
->>>> location offset 0x3FFC. This location stores 4 values in a ring.
->>>> To switch from 20K1 mode to UAA mode write each DW value: CTLA, CTLZ,
->>>> CTLL, CTLA.
->>>> To switch from UAA mode to 20K1 mode write each DW value: CTLX, CTL-,
->>>> CTLF, CTLi
->>>> To read the current mode, the 4 value ring may be in any position, so
->>>> one might read for example:
->>>> CTLL, CTLA, CTLA, CTLZ
-> 
-> Hm, but procedure this isn't in OSS driver, too.
-> Doesn't OSS driver work with UAA boards?
-I do not know. I do not have access to any of the X-Fi hardware at the
-moment. I am just reading the datasheets and commenting. There is also
-sample code that I received with the datesheeets.
+On Tue, Oct 21, 2008 at 01:26:48PM -0400, Matthew Ranostay wrote:
+> Allow jack->id to be kstrdup()'ed to prevent scope issues from
+> calling functions.
 
-Here is some pseudo code to explain the CTLX etc. values.
+Your patch doesn't allow it to be duplicated - it does actually
+duplicate it.  Do you mean to say that you want to duplicate the string
+so that users can automatically generate the string without having to
+manage the memory for it?
 
-WriteMemory((bar0 + 0x00003ffc),0x43544c58);  // CTLX
-WriteMemory((bar0 + 0x00003ffc),0x43544c2d);  // CTL-
-WriteMemory((bar0 + 0x00003ffc),0x43544c46);  // CTLF
-WriteMemory((bar0 + 0x00003ffc),0x43544c69);  // CTLi
+That should be OK for the embedded case, the size of the string isn't
+such a big deal if you're able to handle a reasonable amount of audio
+data, and it's probably going to be a common case with autoprobable
+things like HDA.
 
+I'd prefer a clearer changelog but:
 
-> 
->>>> At power on, the card is in UAA mode.
->>>> In UAA mode, the UAA chip is the bus master.
->>>> In 20K1 mode, the 20K1 chip is the bus master.
->>>> Under either UAA mode or 20K1 mode, the driver can read and write the
->>>> configuration space of both UAA chip and 20K1 chip.
-> 
-> Doesn't it mean that 20k1 chip gets the bus master automatically
-> when switch into 20k1 mode from UAA mode?
-(1) is a config space switch and PCI IDs switch, nothing else. It leaves
-the chip in UAA mode. (2) is the real mode change.
-
-> 
-> Anyway ,20k1 mode switching is a mess.  This may screw up also the
-> internal room-keeping of struct pci.  Maybe we can't do it without
-> switching but just master mode switch?
-I agree that it is messy. I did not design the hardware. Maybe we need
-to make a suggestion on LKML so that we can make a call that updates the
-global kernel struct pci once we make the config space switch. I do not
-think we need to switch back from 20K1 to UAA mode. We already have
-hotplug for cardbus pccards, maybe we could use some of those calls.
-
-Kind regards
-
-James
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
