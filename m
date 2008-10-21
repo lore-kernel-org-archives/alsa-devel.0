@@ -1,17 +1,23 @@
-From: "Mike Mazarick" <mazarick@bellsouth.net>
-Subject: Re: Microphone array using ALSA
-Date: Tue, 21 Oct 2008 07:37:42 -0400
-Message-ID: <004901c93371$6e6fc6f0$4b4f54d0$@net>
+From: Tomas Cernaj <tomas@cernaj.de>
+Subject: Re: hda: broken PCM over spdif after AC3; suggestion
+Date: Tue, 21 Oct 2008 13:54:54 +0200
+Message-ID: <1224590094.17188.10.camel@trpazlik>
+References: <1224549448.647.21.camel@trpazlik> <s5h3aiqa26m.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fmailhost04.isp.att.net (fmailhost04.isp.att.net
-	[204.127.217.104])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7AEAA10381D
-	for <Alsa-devel@alsa-project.org>;
-	Tue, 21 Oct 2008 13:38:03 +0200 (CEST)
-Content-Language: en-us
+Received: from mail.cernaj.de (lvps80-237-163-12.dedicated.hosteurope.de
+	[80.237.163.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id B75AC103807
+	for <alsa-devel@alsa-project.org>;
+	Tue, 21 Oct 2008 13:55:16 +0200 (CEST)
+Received: from [192.168.1.35] (dslb-084-059-156-074.pools.arcor-ip.net
+	[84.59.156.74])
+	by mail.cernaj.de (Postfix) with ESMTP id 2295FC916001
+	for <alsa-devel@alsa-project.org>;
+	Tue, 21 Oct 2008 13:54:57 +0200 (CEST)
+In-Reply-To: <s5h3aiqa26m.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,73 +27,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Ola Benderious had written:
+Am Dienstag, den 21.10.2008, 08:32 +0200 schrieb Takashi Iwai:
+[...]
+> I didn't check the launchpad page yet, but did you set "IEC958 Default PCM"
+> switch off?  Or, start AC3 stream first, then analog stream.
+> 
+> The "IEC958 Default PCM" switch determines whether the SPDIF stream is
+> assigned to the "default" PCM or not.
 
-> Would it be possible to use several USB soundcards in GNU/Linux using 
-> ALSA to build a microphone array? I have searched the Internet but 
-> haven't found any straight answers. What I have read is that it might be 
-> hard to sync the captured streams even if it would be possible.
->
-> So, three questions.
-> 1. Is it theoretically possible?
-> 2. Can it be done using several USB soundcards?
-> 3. Do you know of any code or project in this area as it is?
+Thank you for bringing me on the right track! Due to my using an old
+driver there is no "IEC958 Default PCM" switch, but a little research
+discovered that you've dealt with this problem in February already (see
+http://thread.gmane.org/gmane.linux.alsa.devel/50989/focus=51486 ), and
+the proposed solution to set
+	defaults.pcm.dmix.format S16
+in ~/.asoundrc works for me.
 
-A friend of mine (Pete Mander) from England recently sent me the following
-information on ambisonic mics.
-I wrote:
-> On another front, I'm planning on using my GadgetLabs cards to work with
-Helmut Oellers creating a WaveFieldSynthesis system using 32 PC style
-speakers in my house (they have the amps built in).   Since the GL cards
-would only need to be outputs, I believe it may be possible to get 4 of them
-to work in a linux system (however, that's to be tested).
-http://www.syntheticwave.de
- 
-Pete replied:
-I did ponder whether I could do ambisonic recordings with the GL. The
-rigorously synchronised channels are perfect for this. I'll need to find
-time and a child safe workshop to build the soundfield mic from condenser
-capsules and the circuits:
+I'm going to update the drivers anyways, but I'm confident that it will
+work now :-)
 
-http://www.ambisonia.com/wiki/index.php/Microphones#Home_made_tetrahedrons
-
-Later on, Pete provided these additional fruits from his research:
-http://parts.digikey.co.uk/1/1/27254-microphone-cartridge-9-7mm-x-5mm-wm-55a
-103.html
-http://homepage.ntlworld.com/henry01/cheap_soundfield/cheap_soundfield.htm
-http://www.kokkinizita.net/linuxaudio/tetra-pict.html
-http://en.wikipedia.org/wiki/Head-related_transfer_function
-
-If you want to be cc'd on the correspondence between Pete, Helmut, and me,
-send me a note off-line.
-
-To answer your questions:
-Q. Is it possible?   
-A. Yes, but it doesn't quite make much sense to me unless there is some way
-to play back what the mics record.
-
-Q.  Can it be done with several USB soundcards?    
-A.  The simple answer is no.
-My opinion is that you'd want to sync the samples so they would not drift
-apart.   
-I don't know of an easy way to do this unless the soundcards are sync'd
-
-Q. Do you know of any code or project in this area as it is?
-No, I don't know of one.  In addition, it will be a month or two before we
-even have a way to play back sources from multiple locations.
-We are trying to play a few 'tricks' by positioning the speakers in a room
-so that 32 channels sound like there are much more than 32 channels.
-
-If you are going to play games with an array of mics in order to find the
-position of a sound source, it seems that using multiple ambisonic mics is
-the way to go.
-
-Regards,
-
-Mike Mazarick
-
-(PS - if you had a slightly bigger budget, it would be quite possible to do
-the same type of thing and set up a WFS system with the RME 96/52 cards)  
+Again, thank you for your quick response!
+Tomas
