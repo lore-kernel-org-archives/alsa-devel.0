@@ -1,20 +1,23 @@
-From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
-Subject: Re: [PATCH] ALSA: emu10k1: fix device names for
-	Live!/Audigy1/2/4/E-mu and coding style
-Date: Wed, 22 Oct 2008 17:22:01 +0200
-Message-ID: <fd3eb9bf0810220822k4318ff3eha70447f0a15e7e28@mail.gmail.com>
-References: <1224678686.4001.22.camel@localhost>
+From: "Bjoern Olausson" <lkmlist@gmail.com>
+Subject: Re: Backported sbxfi driver (UNTESTED!)
+Date: Wed, 22 Oct 2008 17:24:09 +0200
+Message-ID: <5501535d0810220824o6b8bf427qd2c806783ec1e56f@mail.gmail.com>
+References: <s5hy70xsl46.wl%tiwai@suse.de>
+	<loom.20081016T120322-319@post.gmane.org>
+	<s5h8wso3ejg.wl%tiwai@suse.de>
+	<48F739F4.5070303@nostalgicnetworxx.org> <48F74344.4090509@gmail.com>
+	<s5hvdvs1wig.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id DF2F024612
+Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.168])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5DFDD24612
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Oct 2008 17:22:22 +0200 (CEST)
-Received: by yw-out-1718.google.com with SMTP id 9so1048332ywk.2
-	for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2008 08:22:02 -0700 (PDT)
-In-Reply-To: <1224678686.4001.22.camel@localhost>
+	Wed, 22 Oct 2008 17:24:30 +0200 (CEST)
+Received: by wf-out-1314.google.com with SMTP id 24so2885039wfg.23
+	for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2008 08:24:09 -0700 (PDT)
+In-Reply-To: <s5hvdvs1wig.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,19 +28,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tony Vroon <tony@vroon.org>, alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SG1tLi4uIEkgYWN0dWFsbHkgZm9sbG93ZWQgSmFtZXMgaGVyZSwgaGUgc2V0IHN0YW5kYXJkIG9m
-IG5hbWluZyB3aXRoCkNhcmRCdXMgMTYxNidzIG5hbWUuIEJ1dCwgb2ggd2VsbC4gSSBjYW4gZml4
-IGl0IGluIG15IG5leHQgcnVuLCBhbmQgSQp3aWxsIGxpa2VseSBkbyBpdCB3aGVuIEkgcGxheSBh
-cm91bmQgd2l0aCBwb3J0aW5nIG92ZXIgY29tcGxldGUKa3guaW5mJ3MgZGV2aWNlIGxpc3QuCgoy
-MDA4LzEwLzIyIFRvbnkgVnJvb24gPHRvbnlAdnJvb24ub3JnPjoKPiBPbiBhIHJlbGF0ZWQgbm90
-ZSwgaXQgbG9va3MgdG8gbWUgYXMgaWYgdGhlIGxlYWRpbmcgdHdvIGNoYXJhY3RlcnMgKHRoZQo+
-IG1hbnVmYWN0dXJpbmcgbG9jYXRpb24pIGhhdmUgYmVlbiBlcnJvbmVvdXNseSBpbmNsdWRlZCBm
-b3IgRS1NVQo+IHByb2R1Y3RzLgo+IFlvdSdsbCBzZWUgdGhpcyBNQSBjb2RlIG9uIHNvbWUgc291
-bmQgY2FyZHMgYXMgd2VsbCAoTUFTQnh4eHgpCj4KPiBSZWdhcmRzLAo+IFRvbnkgVi4KPgoKCgot
-LSAKVmVkcmFuIE1pbGV0acSHCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+V2l0aCB0aGUgbGF0ZXN0IGRyaXZlcnMgSSBoYXZlIHJhbmRvbSBzdHV0dGVyaW5ncy4gSSBjYW4n
+dCBzYXkgaWYgdGhleQpvY2N1cmUgcmVndWxhciwgYnV0IHRoZXkgb2NjdXJlIG9mdGVuLiBTb21l
+dGltZXMgZXZlcnkgfjUgc2Vjb25kcywKc29tZXRpbWVzIHdpdGggbW9yZSB0aW1lIGJldHdlZW4s
+IHNvbXRpbWVzIGxlc3MuLi4KCm1wbGF5ZXIgLS0tPgrDlmZmbmUgQXVkaW9kZWNvZGVyOiBbbXAz
+bGliXSBNUEVHIGxheWVyLTIsIGxheWVyLTMKQVVESU86IDQ4MDAwIEh6LCAyIGNoLCBzMTZsZSwg
+MTYwLjAga2JpdC8xMC40MiUgKHJhdGlvOiAyMDAwMC0+MTkyMDAwKQpBdXNnZXfDpGhsdGVyIEF1
+ZGlvY29kZWM6IFttcDNdIGFmbTogbXAzbGliIChtcDNsaWIgTVBFRyBsYXllci0yLCBsYXllci0z
+KQo8LS0tCgpNYXN0ZXIgYW5kIFBDTSBjaGFubmVscyBhcmUgd29ya2luZy4KCmtpbmQgcmVnYXJk
+cwpCam9lcm4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
