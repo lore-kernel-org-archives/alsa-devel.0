@@ -1,25 +1,24 @@
-From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
-Subject: Re: [PATCH] ALSA: emu10k1: fix device names for
-	Live!/Audigy1/2/4/E-mu and coding style
-Date: Wed, 22 Oct 2008 13:07:51 +0200
-Message-ID: <fd3eb9bf0810220407y60864949ybce31fceb016b23f@mail.gmail.com>
-References: <fd3eb9bf0810190533l75f8b20kd31a3dbb158d7c0f@mail.gmail.com>
-	<s5h7i83rdvr.wl%tiwai@suse.de>
-	<fd3eb9bf0810210200l45b33311o7ec5d674b53f5912@mail.gmail.com>
-	<s5habcykl3o.wl%tiwai@suse.de>
-	<fd3eb9bf0810211018r50a12e5bu6a3141e16762fe91@mail.gmail.com>
-	<s5hprltj71z.wl%tiwai@suse.de> <1224671239.4001.19.camel@localhost>
+From: "Arun KS" <getarunks@gmail.com>
+Subject: Re: [PATCH] ASoC: OMAP: Fix DSP DAI format in McBSP
+	DAI driver
+Date: Wed, 22 Oct 2008 17:04:03 +0530
+Message-ID: <dfeb90390810220434r5f8e5567rbe7d2f76c37022af@mail.gmail.com>
+References: <1224505799-16686-1-git-send-email-jarkko.nikula@nokia.com>
+	<dfeb90390810220256t41015140l57cb3fb584e24da0@mail.gmail.com>
+	<20081022131225.b162289e.jarkko.nikula@nokia.com>
+	<20081022102935.GC7640@sirena.org.uk>
+	<20081022135937.c3df238f.jarkko.nikula@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.245])
-	by alsa0.perex.cz (Postfix) with ESMTP id 339072453B
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.248])
+	by alsa0.perex.cz (Postfix) with ESMTP id 095742454F
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Oct 2008 13:08:10 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id d31so172489and.80
-	for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2008 04:07:51 -0700 (PDT)
-In-Reply-To: <1224671239.4001.19.camel@localhost>
+	Wed, 22 Oct 2008 13:34:27 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id f25so2466271rvb.32
+	for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2008 04:34:09 -0700 (PDT)
+In-Reply-To: <20081022135937.c3df238f.jarkko.nikula@nokia.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,24 +29,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tony Vroon <tony@vroon.org>, alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: Jarkko Nikula <jarkko.nikula@nokia.com>
+Cc: alsa-devel@alsa-project.org, ext Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-T0ssIGdyZWF0LiBXaWxsIGNoZWNrIHRoYXQgb25lLCBJIGhhdmUgb25lICJEZWxsIE9FTSIgU0Ig
-TGl2ZSEgKGl0J3MKbm90IGZyb20gRGVsbCBhdCBhbGwsIHRoYXQncyB3aHkgSSBxdW90ZWQgdGhh
-dCBwYXJ0KS4KCjIwMDgvMTAvMjIgVG9ueSBWcm9vbiA8dG9ueUB2cm9vbi5vcmc+Ogo+IFZlZHJh
-biwKPgo+IFdpdGggcmVnYXJkIHRvIHRoZSBTQjAyMjggY29tbWVudCwganVzdCBtYWtlIHN1cmUg
-eW91J3JlIHJlYWRpbmcgdGhlCj4gcHJvZHVjdCBJRCBmcm9tIHRoZSBjb3JyZWN0IGxvY2F0aW9u
-LiBUaGUgc2lsay1zY3JlZW5lZCBudW1iZXIgb24gdGhlCj4gUENCIHdpbGwgYWx3YXlzIGVuZCBp
-biAwLCBidXQgaWYgeW91IHJlYWQgdGhlIHNlcmlhbCBudW1iZXIgbGFiZWwgb24gdGhlCj4gYmFj
-ayBvZiB0aGUgY2FyZCwgeW91J2xsIGZpbmQgdGhlIHJlYWwgcHJvZHVjdCBJRC4KPiBHZW5lcmFs
-bHkgc29tZXRoaW5nIGFsb25nIHRoZSBsaW5lcyBvZiBNMVNCMDIyOHh4eHh4eHh4eAo+IFNraXAg
-dGhlIGZpcnN0IHR3byBjaGFyYWN0ZXJzLCByZWFkIHRoZSBuZXh0IDYuIFRoaXMgd29ya3Mgb24g
-Q3JlYXRpdmUKPiBzb3VuZGNhcmRzIHRoYXQgYXJlIExpdmUhIG9yIG5ld2VyLCBiZWZvcmUgdGhl
-biB0aGVpciBzZXJpYWwgbnVtYmVycwo+IGxvb2tlZCBkaWZmZXJlbnQuCj4KPiBUaGlzIG1heSBo
-ZWxwIHlvdSBmaW5kIG1vcmUgc3BlY2lmaWMgcHJvZHVjdCBJRHMgZm9yIG90aGVyIE9FTSBMaXZl
-ISAmCj4gQXVkaWd5IGJvYXJkcy4KPgo+IFJlZ2FyZHMsCj4gVG9ueSBWLgo+CgoKCi0tIApWZWRy
-YW4gTWlsZXRpxIcKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+On Wed, Oct 22, 2008 at 4:29 PM, Jarkko Nikula <jarkko.nikula@nokia.com> wrote:
+> On Wed, 22 Oct 2008 11:29:36 +0100
+> "ext Mark Brown" <broonie@sirena.org.uk> wrote:
+>
+>> On Wed, Oct 22, 2008 at 01:12:25PM +0300, Jarkko Nikula wrote:
+>>
+>> > > This is modifying what machine driver has chosen. AM I missing something?
+>>
+>> > Since as a McBSP sense, the normal polarities in DSP format (or
+>> > according to AIC33 DSP mode...) were different than in I2S. Idea is to
+>> > keep codec and cpu configuration in sync in the machine driver, i.e.
+>> > same bit clock and frame sync polarity configuration
+>>
+>> Hrm - this suggests that one or more of your codec drivers may be
+>> getting this wrong.  I would expect that the inversion of bit and frame
+>> clocks should be with respect to the normal behaviour of the mode, not
+>> with respect to I2S mode.
+>
+> Yep, that was the idea. As I told before I made this patch according
+> to DSP mode of AIC33 which seems to be somewhat near DSP_B but not the
+> the same e.g. what WM9713 is using. So at least have to do some changes
+> into AIC33 driver to not claim to support DSP_A.
+>
+> Can you Arun test does the following fix on top of my original patch
+> work on OSK? My codec is Tektronix TDS2024 connected into Beagle
+> so cannot hear is it playing correctly :-)
+>
+
+This patch works fine on osk5912.
+
+Thanks,
+Arun
+>
+> Jarkko
+>
+> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+> index 853b33a..4e86d52 100644
+> --- a/sound/soc/omap/omap-mcbsp.c
+> +++ b/sound/soc/omap/omap-mcbsp.c
+> @@ -265,7 +265,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
+>                break;
+>        case SND_SOC_DAIFMT_DSP_A:
+>                regs->srgr2     |= FPER(wlen * 2 - 1);
+> -               regs->srgr1     |= FWID(0);
+> +               regs->srgr1     |= FWID(wlen * 2 - 2);
+>                break;
+>        }
+>
+> @@ -307,8 +307,6 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+>                /* 0-bit data delay */
+>                regs->rcr2      |= RDATDLY(0);
+>                regs->xcr2      |= XDATDLY(0);
+> -               /* Invert bit clock and FS polarity configuration for DSP_A */
+> -               temp_fmt ^= SND_SOC_DAIFMT_IB_IF;
+>                break;
+>        default:
+>                /* Unsupported data format */
+>
