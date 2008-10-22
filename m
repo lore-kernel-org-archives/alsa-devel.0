@@ -1,19 +1,17 @@
-From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
-Subject: Re: help test sbxfi
-Date: Wed, 22 Oct 2008 10:05:40 +0200
-Message-ID: <fd3eb9bf0810220105w7c4264f5w5da2488d96d88571@mail.gmail.com>
-References: <d29b41c30810212131s34c17adfv4506d69ae012c58d@mail.gmail.com>
+From: "John Kacur" <jkacur@gmail.com>
+Subject: quick question, BT codec???
+Date: Wed, 22 Oct 2008 10:36:40 +0200
+Message-ID: <520f0cf10810220136h7d9d1877tbbaa7f4f956be97d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.247])
-	by alsa0.perex.cz (Postfix) with ESMTP id AE85424466
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0BCE5244C7
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Oct 2008 10:05:58 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id f25so2398052rvb.32
-	for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2008 01:05:40 -0700 (PDT)
-In-Reply-To: <d29b41c30810212131s34c17adfv4506d69ae012c58d@mail.gmail.com>
+	Wed, 22 Oct 2008 10:36:58 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id l35so1489656waf.16
+	for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2008 01:36:40 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,21 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: William Zumwalt <wizumwalt@gmail.com>, alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-SnVzdCBidWlsZCBUYWthc2hpJ3Mgc291bmQtdW5zdGFibGUtMi42IHRyZWUgKGF2YWlsYWJsZSBh
-dCBnaXQua2VybmVsLm9yZykuCgoyMDA4LzEwLzIyIFdpbGxpYW0gWnVtd2FsdCA8d2l6dW13YWx0
-QGdtYWlsLmNvbT46Cj4gSSd2ZSBiZWVuIHZlcnkgaW50ZXJlc3RlZCBpbiBhIHdvcmtpbmcgZHJp
-dmVyIGZvciB0aGUgWC1GaSBmb3IgYSBsb25nIHRpbWUsCj4gc2F3IHdvcmsgd2FzIGZpbmFsbHkg
-c3RhcnRlZCwgYW5kIHdvdWxkIGxpa2UgdG8gaGVscCB0ZXN0IHRoaW5ncyBvdXQuCj4KPiBDYW4g
-c29tZW9uZSBsaXN0IHdoZXJlIHRoZSBzb3VyY2UgaXMgYW5kIHRoZSBzdGVwcyBuZWVkZWQgdG8g
-Z2V0IHRoaXMKPiB3b3JraW5nIG9uIGxpbnV4PyBLZXJuZWwgdmVyc2lvbiwgd2hpY2ggWC1GaSBj
-YXJkLCBldGMuLi4gSSdkIGxpa2UgdG8gaGVscAo+IGFuZCBmb2xsb3cgYWxvbmcgaWYgcG9zc2li
-bGUuCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cj4KCgoKLS0gClZlZHJhbiBNaWxldGnEhwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+Hello, quick question, both s3c24xx-pcm.c and pxa2xx-pcm.c contain the
+following comment and code segment, what does the "BT codec" refer to?
+
+/* return if this is a bufferless transfer e.g.
+	 * codec <--> BT codec or GSM modem -- lg FIXME */
+if (!dma)
+	return 0;
