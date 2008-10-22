@@ -1,28 +1,28 @@
 From: "Nir Tzachar" <nir.tzachar@gmail.com>
 Subject: Re: Nvidia hdmi problems
-Date: Wed, 22 Oct 2008 19:09:06 +0200
-Message-ID: <9b2db90b0810221009p6fc8e34awa8332c973e520700@mail.gmail.com>
+Date: Wed, 22 Oct 2008 19:09:41 +0200
+Message-ID: <9b2db90b0810221009v36039a7eu4564c15d79433823@mail.gmail.com>
 References: <9b2db90b0810200735g61cad43dr538c3afc495398ec@mail.gmail.com>
-	<s5hr66a8kr7.wl%tiwai@suse.de>
-	<9b2db90b0810210039y223adcd7nd94053274b6eae18@mail.gmail.com>
-	<s5hod1e8jz8.wl%tiwai@suse.de>
 	<9b2db90b0810210052o6b2720f4h37a67e3cc0eeae49@mail.gmail.com>
 	<s5hiqrm8j2b.wl%tiwai@suse.de>
 	<9b2db90b0810210428q2dd16d94va85a0cb5594ec15d@mail.gmail.com>
 	<s5hskqq15px.wl%tiwai@suse.de>
 	<9b2db90b0810210546i67d54038rcbfe0f356109c545@mail.gmail.com>
-	<s5htzb5ywbi.wl%tiwai@suse.de>
+	<s5hprlu15bv.wl%tiwai@suse.de>
+	<15F501D1A78BD343BE8F4D8DB854566B3563A208@hkemmail01.nvidia.com>
+	<9b2db90b0810212143k18f336dawd20c76bd1822008b@mail.gmail.com>
+	<s5hy70hyx2j.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 746C624671
+Received: from mail-gx0-f17.google.com (mail-gx0-f17.google.com
+	[209.85.217.17]) by alsa0.perex.cz (Postfix) with ESMTP id A636A24671
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Oct 2008 19:09:25 +0200 (CEST)
-Received: by yx-out-1718.google.com with SMTP id 36so1075662yxh.2
-	for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2008 10:09:06 -0700 (PDT)
-In-Reply-To: <s5htzb5ywbi.wl%tiwai@suse.de>
+	Wed, 22 Oct 2008 19:10:00 +0200 (CEST)
+Received: by gxk10 with SMTP id 10so7667189gxk.8
+	for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2008 10:09:41 -0700 (PDT)
+In-Reply-To: <s5hy70hyx2j.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -37,34 +37,29 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: Wei Ni <wni@nvidia.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 22, 2008 at 8:32 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Tue, 21 Oct 2008 14:46:19 +0200,
+On Wed, Oct 22, 2008 at 8:15 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Wed, 22 Oct 2008 06:43:06 +0200,
 > Nir Tzachar wrote:
 >>
->> >> The bad news are that mplayer misbehaves and will get stuck every time
->> >> I try to change the volume. However, this does not happen in vlc.  Any
->> >> ideas?
+>> On Wed, Oct 22, 2008 at 4:42 AM, Wei Ni <wni@nvidia.com> wrote:
+>> > Hi, Takshi
+>> > We have no official plan to support this nforce 630i HDMI audio in linux
+>> > now,
+>> > and we didn't do any test on it yet. So we can't provide the official
+>> > patch for this addition.
 >> >
->> > Well, we need to sort out where the problem comes from.
->> > Try the vanilla Linus tree without sound-2.6 whether the problem
->> > persists.
+>> > I think if someone interest in it and do some test, he can generate
+>> > patch and submit it.
 >>
->> I'll try to remove the sound-2.6 tree and report.
+>> As I am interested, and willing o do the tests, I would be happy to
+>> know which tests are needed.
 >
-> Nir, do you have any results?
-> I tried to reproduce the problem by myself, but I couldn't.
-> So I wonder whether it's a codec specific or I missed something...
+> If you can play both audio streams and non-audio streams over the device
+> by some applications, it's basically confirmed to work :)
 
-No results yet, as I did not have time to test linus's tree. Ill be
-able to do it over the weekend, and will come back with updates. For
-now, the way I got it to work nicely was just taking the sound and
-include/sound dirs, sticking them on a 2.6.27.1 tree, and adding the
-device id as Wei instructed. Otherwise, there were segfaults all over
-the place.
+What do you mean by non-audio stream? Can you give specific commands
+which should work?
 
-
->
-> thanks,
 >
 > Takashi
 >
