@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: quick question, BT codec???
-Date: Wed, 22 Oct 2008 09:48:55 +0100
-Message-ID: <20081022084854.GA7640@sirena.org.uk>
-References: <520f0cf10810220136h7d9d1877tbbaa7f4f956be97d@mail.gmail.com>
+From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Subject: Re: [PATCH] ASoC: OMAP: Fix DSP DAI format in McBSP
+ DAI driver
+Date: Wed, 22 Oct 2008 12:21:28 +0300
+Message-ID: <20081022122128.52d899e2.jarkko.nikula@nokia.com>
+References: <1224505799-16686-1-git-send-email-jarkko.nikula@nokia.com>
+	<dfeb90390810212302q63ac4be2kb7ab107c5fd3f17d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7FF33244D7
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id C6F3A244ED
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Oct 2008 10:49:13 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <520f0cf10810220136h7d9d1877tbbaa7f4f956be97d@mail.gmail.com>
+	Wed, 22 Oct 2008 11:22:19 +0200 (CEST)
+In-Reply-To: <dfeb90390810212302q63ac4be2kb7ab107c5fd3f17d@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John Kacur <jkacur@gmail.com>
+To: ext Arun KS <getarunks@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 22, 2008 at 10:36:40AM +0200, John Kacur wrote:
-> Hello, quick question, both s3c24xx-pcm.c and pxa2xx-pcm.c contain the
-> following comment and code segment, what does the "BT codec" refer to?
-
-> /* return if this is a bufferless transfer e.g.
-> 	 * codec <--> BT codec or GSM modem -- lg FIXME */
-> if (!dma)
-> 	return 0;
-
-A bluetooth codec.
+T24gV2VkLCAyMiBPY3QgMjAwOCAxMTozMjozNSArMDUzMAoiZXh0IEFydW4gS1MiIDxnZXRhcnVu
+a3NAZ21haWwuY29tPiB3cm90ZToKCj4gSGkgSmFya2tvLAo+IAo+IEkgY2FuIGdldCB0aGUgYXVk
+aW8gcGxheWJhY2sgd29ya2luZyBieSBhcHBseWluZyB0aGlzIHBhdGNoIG9uCj4gdGx2YWljMjMg
+YW5kIG9zazU5MTIuIEJ1dCBjYXB0dXJlIGlzIGhhdmluZyBhIGxvdCBvZiBub2lzZS4KPiAKVGhh
+bmtzIGZvciB0ZXN0aW5nIQoKVmVyeSBpbnRlcmVzdGluZywgdGhlIERTUCBtb2RlcyBpbiBhaWMy
+MyBhbmQgYWljMzMgYXJlIG5vdCBjb21wYXRpYmxlCmFuZCBteSBwYXRjaCB3YXMgdHVuZWQgYWNj
+b3JkaW5nIHRvIGFpYzMzLiBJbiBhaWMyMyB0aGUgZmFsbGluZyBlZGdlIG9mCkZTIHN0YXJ0cyB0
+aGUgdHJhbnNmZXIgaW4gRFNQIG1vZGUgd2hlcmUgaW4gYWljMzMgaXQncyBvcHBvc2l0ZS4KCkFJ
+QzIzOgoiCkEgZmFsbGluZyBlZGdlIG9uIExSQ0lOIG9yIExSQ09VVCBzdGFydHMKdGhlIGRhdGEg
+dHJhbnNmZXIuIFRoZSBsZWZ0LWNoYW5uZWwgZGF0YSBjb25zaXN0cyBvZiB0aGUgZmlyc3QgZGF0
+YQp3b3JkLCB3aGljaCBpcyBpbW1lZGlhdGVseSBmb2xsb3dlZCBieSB0aGUgcmlnaHQgY2hhbm5l
+bCBkYXRhIHdvcmQgKHNlZQpGaWd1cmUgMy04KS4gSW5wdXQgd29yZCBsZW5ndGggaXMgZGVmaW5l
+ZCBieSB0aGUgSVdMIHJlZ2lzdGVyLiBGaWd1cmUgM+KAkwo4IHNob3dzIExSUCA9IDEgKGRlZmF1
+bHQgTFJQID0gMCkuCiIKCkFJQzMzOgoiCkluIERTUCBtb2RlLCB0aGUgcmlzaW5nIGVkZ2Ugb2Yg
+dGhlIHdvcmQgY2xvY2sgc3RhcnRzIHRoZSBkYXRhIHRyYW5zZmVyCndpdGggdGhlIGxlZnQgY2hh
+bm5lbCBkYXRhIGZpcnN0IGFuZCBpbW1lZGlhdGVseSBmb2xsb3dlZCBieSB0aGUgcmlnaHQKY2hh
+bm5lbCBkYXRhLiBFYWNoIGRhdGEgYml0IGlzIHZhbGlkIG9uIHRoZSBmYWxsaW5nIGVkZ2Ugb2Yg
+dGhlIGJpdApjbG9jay4KIgoKV29sZnNvbidzIHNwZWMgZm9yIFdNOTcxMyBtYWRlIGl0IG11Y2gg
+bW9yZSBjbGVhci4gVGhlIERTUF9BIHRoZXJlIGlzCnRoZSBzYW1lIGZvcm1hdCB3aGF0IEFJQzIz
+IGlzIHVzaW5nIGFuZCBEU1BfQiBpcyBhbG1vc3Qgd2hhdCBBSUMzMyBpcwp1c2luZyBidXQgYml0
+IGNsb2NrIHBvbGFyaXR5IGlzIGRpZmZlcmVudC4KCmh0dHA6Ly93d3cud29sZnNvbm1pY3JvLmNv
+bS91cGxvYWRzL2RvY3VtZW50cy9lbi9XTTk3MTMucGRmCgpJJ2xsIGZpeCBvbWFwLW1jYnNwLmMg
+c28gdGhhdCBEU1BfQSBpcyB0aGUgZm9ybWF0IHdoYXQgQUlDMjMgYW5kIFdNOTcxMwphcmUgdXNp
+bmcgYW5kIHRoaW5rIGxhdGVyIHdoYXQgdG8gZG8gd2l0aCBBSUMzMyBhbmQgRFNQX0IgOi0pCgoK
+SmFya2tvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
