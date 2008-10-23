@@ -1,27 +1,19 @@
-From: "Bjoern Olausson" <lkmlist@gmail.com>
-Subject: Re: Backported sbxfi driver (UNTESTED!)
-Date: Thu, 23 Oct 2008 13:46:35 +0200
-Message-ID: <5501535d0810230446j52de12aes885d066ea38cb240@mail.gmail.com>
-References: <s5hy70xsl46.wl%tiwai@suse.de>
-	<48F739F4.5070303@nostalgicnetworxx.org> <48F74344.4090509@gmail.com>
-	<s5hvdvs1wig.wl%tiwai@suse.de>
-	<5501535d0810220824o6b8bf427qd2c806783ec1e56f@mail.gmail.com>
-	<s5h4p34mz0j.wl%tiwai@suse.de>
-	<5501535d0810220907p2102afc2t13e47ff5309c01bc@mail.gmail.com>
-	<5501535d0810220924w66341ac6u4d4de4ed87243a7@mail.gmail.com>
-	<48FF7E17.9080601@gmail.com> <s5h4p3350o4.wl%tiwai@suse.de>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: tlv320aic3x: Fix DSP DAI format and
+	signal polarities matching
+Date: Thu, 23 Oct 2008 12:51:53 +0100
+Message-ID: <20081023115151.GH10280@sirena.org.uk>
+References: <1224761223-15988-1-git-send-email-jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.245])
-	by alsa0.perex.cz (Postfix) with ESMTP id D5D9B10385A
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4577C103857
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Oct 2008 13:46:53 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id f25so278146rvb.32
-	for <alsa-devel@alsa-project.org>; Thu, 23 Oct 2008 04:46:35 -0700 (PDT)
-In-Reply-To: <s5h4p3350o4.wl%tiwai@suse.de>
+	Thu, 23 Oct 2008 13:52:11 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <1224761223-15988-1-git-send-email-jarkko.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,32 +23,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Jarkko Nikula <jarkko.nikula@nokia.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-alsa-driver-unstable-snapshot.tar.bz2	2864 KB	10/22/2008 04:21:00 PM
+On Thu, Oct 23, 2008 at 02:27:03PM +0300, Jarkko Nikula wrote:
+> - Codec doesn't support to configure bit clock and frame sync polarities
+> - Codec doesn't support DSP_A format but DSP_B with inverted bit clock
+>   polarity
+> - Match also other formats with their signal polarities
+> 
+> Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
 
-Fails to compile
-
-13:42:51 [~/Desktop/alsa-driver-unstable]
-blub@freax $ ./configure --with-cards=sbxfi,hda-intel
---with-debug=detect && make
-[...]
-In file included from
-/home/blub/Desktop/alsa-driver-unstable/pci/sbxfi/sbxfi.c:2:
-/home/blub/Desktop/alsa-driver-unstable/include/../alsa-kernel/pci/sbxfi/sbxfi.c:
-In function 'sbxfi_reprogram_timer':
-/home/blub/Desktop/alsa-driver-unstable/include/../alsa-kernel/pci/sbxfi/sbxfi.c:356:
-error: 'SBXFI_TIMER_FRE' undeclared (first use in this function)
-/home/blub/Desktop/alsa-driver-unstable/include/../alsa-kernel/pci/sbxfi/sbxfi.c:356:
-error: (Each undeclared identifier is reported only once
-/home/blub/Desktop/alsa-driver-unstable/include/../alsa-kernel/pci/sbxfi/sbxfi.c:356:
-error: for each function it appears in.)
-make[4]: *** [/home/blub/Desktop/alsa-driver-unstable/pci/sbxfi/sbxfi.o] Error 1
-make[3]: *** [/home/blub/Desktop/alsa-driver-unstable/pci/sbxfi] Error 2
-make[2]: *** [/home/blub/Desktop/alsa-driver-unstable/pci] Error 2
-make[1]: *** [_module_/home/blub/Desktop/alsa-driver-unstable] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.27'
-make: *** [compile] Error 2
-13:43:33 [~/Desktop/alsa-driver-unstable]
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
