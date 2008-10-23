@@ -1,10 +1,8 @@
 From: "Nir Tzachar" <nir.tzachar@gmail.com>
 Subject: Re: Nvidia hdmi problems
-Date: Wed, 22 Oct 2008 19:09:41 +0200
-Message-ID: <9b2db90b0810221009v36039a7eu4564c15d79433823@mail.gmail.com>
+Date: Thu, 23 Oct 2008 20:34:30 +0200
+Message-ID: <9b2db90b0810231134t6e3e10h99df8b3bb183741f@mail.gmail.com>
 References: <9b2db90b0810200735g61cad43dr538c3afc495398ec@mail.gmail.com>
-	<9b2db90b0810210052o6b2720f4h37a67e3cc0eeae49@mail.gmail.com>
-	<s5hiqrm8j2b.wl%tiwai@suse.de>
 	<9b2db90b0810210428q2dd16d94va85a0cb5594ec15d@mail.gmail.com>
 	<s5hskqq15px.wl%tiwai@suse.de>
 	<9b2db90b0810210546i67d54038rcbfe0f356109c545@mail.gmail.com>
@@ -12,17 +10,19 @@ References: <9b2db90b0810200735g61cad43dr538c3afc495398ec@mail.gmail.com>
 	<15F501D1A78BD343BE8F4D8DB854566B3563A208@hkemmail01.nvidia.com>
 	<9b2db90b0810212143k18f336dawd20c76bd1822008b@mail.gmail.com>
 	<s5hy70hyx2j.wl%tiwai@suse.de>
+	<9b2db90b0810221009v36039a7eu4564c15d79433823@mail.gmail.com>
+	<s5h7i7z8l2a.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f17.google.com (mail-gx0-f17.google.com
-	[209.85.217.17]) by alsa0.perex.cz (Postfix) with ESMTP id A636A24671
+Received: from el-out-1112.google.com (el-out-1112.google.com [209.85.162.181])
+	by alsa0.perex.cz (Postfix) with ESMTP id 702E124345
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Oct 2008 19:10:00 +0200 (CEST)
-Received: by gxk10 with SMTP id 10so7667189gxk.8
-	for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2008 10:09:41 -0700 (PDT)
-In-Reply-To: <s5hy70hyx2j.wl%tiwai@suse.de>
+	Thu, 23 Oct 2008 20:34:49 +0200 (CEST)
+Received: by el-out-1112.google.com with SMTP id o28so262856ele.2
+	for <alsa-devel@alsa-project.org>; Thu, 23 Oct 2008 11:34:31 -0700 (PDT)
+In-Reply-To: <s5h7i7z8l2a.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -37,29 +37,58 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: Wei Ni <wni@nvidia.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 22, 2008 at 8:15 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Wed, 22 Oct 2008 06:43:06 +0200,
+On Thu, Oct 23, 2008 at 10:04 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Wed, 22 Oct 2008 19:09:41 +0200,
 > Nir Tzachar wrote:
 >>
->> On Wed, Oct 22, 2008 at 4:42 AM, Wei Ni <wni@nvidia.com> wrote:
->> > Hi, Takshi
->> > We have no official plan to support this nforce 630i HDMI audio in linux
->> > now,
->> > and we didn't do any test on it yet. So we can't provide the official
->> > patch for this addition.
+>> On Wed, Oct 22, 2008 at 8:15 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > At Wed, 22 Oct 2008 06:43:06 +0200,
+>> > Nir Tzachar wrote:
+>> >>
+>> >> On Wed, Oct 22, 2008 at 4:42 AM, Wei Ni <wni@nvidia.com> wrote:
+>> >> > Hi, Takshi
+>> >> > We have no official plan to support this nforce 630i HDMI audio in linux
+>> >> > now,
+>> >> > and we didn't do any test on it yet. So we can't provide the official
+>> >> > patch for this addition.
+>> >> >
+>> >> > I think if someone interest in it and do some test, he can generate
+>> >> > patch and submit it.
+>> >>
+>> >> As I am interested, and willing o do the tests, I would be happy to
+>> >> know which tests are needed.
 >> >
->> > I think if someone interest in it and do some test, he can generate
->> > patch and submit it.
+>> > If you can play both audio streams and non-audio streams over the device
+>> > by some applications, it's basically confirmed to work :)
 >>
->> As I am interested, and willing o do the tests, I would be happy to
->> know which tests are needed.
+>> What do you mean by non-audio stream?
 >
-> If you can play both audio streams and non-audio streams over the device
-> by some applications, it's basically confirmed to work :)
+> The passthrough of AC3 stream or so.
+>
+>> Can you give specific commands
+>> which should work?
+>
+> I usually test using ac3dec program included in alsa-tools.
 
-What do you mean by non-audio stream? Can you give specific commands
-which should work?
+Tried  ac3decode, and got a perfect sound out. I am using the
+following asound.conf (if it is relevant):
+pcm.card0 {
+  type hw
+  card 0
+}
 
->
-> Takashi
->
+pcm.dmixer {
+  type dmix
+  ipc_key 1025
+  slave {
+    pcm "hw:0,3"
+    period_time 0
+    period_size 2048
+    buffer_size 32768
+    rate 48000
+  }
+  bindings {
+    0 0
+    1 1
+  }
+}
