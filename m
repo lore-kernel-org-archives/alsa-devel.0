@@ -1,17 +1,26 @@
-From: Oliver Ford <ipaqlinux@oliford.co.uk>
-Subject: Re: Problem setting mixer switch with amixer/alsactl.
-Date: Wed, 22 Oct 2008 23:56:49 +0100
-Message-ID: <48FFAFB1.1090106@oliford.co.uk>
-References: <48FF7538.3090000@oliford.co.uk>
-	<20081022205729.GD7537@sirena.org.uk>
+From: Travis Place <wishie@wishie.net>
+Subject: Re: multiseat and alsa audio systems (usb headsets and
+	usb audio adapters)
+Date: Thu, 23 Oct 2008 12:56:40 +1000
+Message-ID: <200810231256.40939.wishie@wishie.net>
+References: <48FF675C.1060708@powercraft.nl> <48FF8EF3.40200@powercraft.nl>
+	<74eb1fe20810221348y51fb9f85hbe00c5c5caa61a6f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------070200050700030405010105"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0.thdo.woaf.net (dog.thdo.woaf.net [213.230.192.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id 86289103807
+Received: from www.wishie.net (202-137-100-224.dial.usertools.net
+	[202.137.100.224])
+	by alsa0.perex.cz (Postfix) with ESMTP id 445822433E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Oct 2008 00:57:10 +0200 (CEST)
-In-Reply-To: <20081022205729.GD7537@sirena.org.uk>
+	Thu, 23 Oct 2008 04:56:58 +0200 (CEST)
+Received: from laptop.local (unknown [192.168.0.200])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by www.wishie.net (Postfix) with ESMTP id E38D1EBF83
+	for <alsa-devel@alsa-project.org>; Thu, 23 Oct 2008 03:23:24 +1000 (EST)
+In-Reply-To: <74eb1fe20810221348y51fb9f85hbe00c5c5caa61a6f@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,417 +30,291 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Oliver Ford <ipaqlinux@oliford.co.uk>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------070200050700030405010105
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+On Thursday 23 October 2008 6:48:18 am Sean McNamara wrote:
+> Hi,
+>
+> On Wed, Oct 22, 2008 at 4:37 PM, Jelle de Jong
+>
+> <jelledejong@powercraft.nl> wrote:
+> > Sean McNamara wrote:
+> >> On Wed, Oct 22, 2008 at 1:48 PM, Jelle de Jong
+> >>
+> >> <jelledejong@powercraft.nl> wrote:
+> >>> Hello everybody,
+> >>>
+> >>> I have a four to eighth muliseat debian linux system here and it is
+> >>> missing sound for the users. I was hoping the alsa team can help me
+> >>> with this issue.
+> >>
+> >> All sound issues on Linux are extremely application-specific. Getting
+> >> sound to work without any specific application in mind is asking for
+> >> trouble, because there is no single configuration of the sound stack
+> >> (which, if you expand into historical sound APIs and servers, contains
+> >> about 20 different ways to play sound) that will satisfy any
+> >> application without further configuration.
+> >>
+> >> Since this is not a really well-formed question, I will proceed with
+> >> the assumption that you want to be able to run, for example,
+> >>
+> >> aplay /usr/share/sounds/pop.wav
+> >>
+> >> in the console, and have it produce sound in the "appropriate"
+> >> headset. Here's how you proceed:
+> >>
+> >> 1. Each person on the multiseat box must have their own UNIX user
+> >> account. 2. Each user account must have an ~/.asoundrc file.
+> >> 3. Each ~/.asoundrc file must redefine the "default" device. How you
+> >> redefine it depends on a lot of things:
+> >> (a) Do you want _direct_ hardware access to the sound card, i.e. one
+> >> application at a time?
+> >> (b) Do you want to use ALSA's built-in software mixing, i.e. dmix?
+> >> (c) How many channels?
+> >> (d) Do you want to use PulseAudio?
+> >> (e) Do you want to use JACK?
+> >> (f) For each USB headset, what is its corresponding "raw device
+> >> string"? This will be something like hw:n, where n is a number
+> >> starting from 0, depending on the order in which the USB drivers
+> >> initialize each USB controller.
+> >>
+> >> All of the above questions, and others, will determine exactly how
+> >> each user configures their ~/.asoundrc file.
+> >>
+> >> The *extremely naive* (not recommended) example of an ~/.asoundrc is
+> >> like:
+> >>
+> >> pcm.!default {
+> >> card 3
+> >> }
 
-Mark Brown wrote:
-> Please send an alsactl save file with the offending configuration 
+Would this not be:
 
-Attached.
-I saved this file when the audio was working (i.e having turned the 
-offending control on with alsamixer) but restoring it stops it working.
-
-
-> - I'll try to reproduce (though possibly not before Monday).
->   
-
-Thanks.
-
-> Could you please also expand on "audio stops working" - for example, do
-> you get any diagnostics in dmesg, do applications appear to think they
-> are running normally, is there any noise at all (eg, static) and do any
-> other audio paths work?
->   
-No unusual dmesg output, the apps think nothing is wrong.
-It seems that just the offending control (or the actual DACL/R -> SPKMIX 
-mixer channel) stops working. I can still get audio through the 
-headphones, still can get clicks when turning everything else on and 
-off. I can even get audio on the speaker by the alternate routes: DACL 
--> HPMIXL -> SPKL and DACR -> HPMIXR -> INV2 -> OUT4.
-Routing SPKMIX to the headphones gives no output on the headphones.
+pcm.!default {
+type hw
+card 3
+}
 
 
-Oliver
+Also, depending on the order in which they are plugged in, depends on what 
+card number they get assigned. If all USB headsets are the same, you run into 
+more problems telling them apart.
 
---------------070200050700030405010105
-Content-Type: text/plain;
- name="asound.state"
-Content-Transfer-Encoding: base64
-Content-Disposition: inline;
- filename="asound.state"
+For example, if you plug them in a some random order, card3 might infact be 
+going to the 5th seat of the system..
 
-c3RhdGUuaHBpcGFxMjE0IHsNCgljb250cm9sLjEgew0KCQljb21tZW50LmFjY2VzcyAncmVh
-ZCB3cml0ZScNCgkJY29tbWVudC50eXBlIElOVEVHRVINCgkJY29tbWVudC5jb3VudCAxDQoJ
-CWNvbW1lbnQucmFuZ2UgJzAgLSAzMScNCgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnU3BlYWtl
-ciBQbGF5YmFjayBWb2x1bWUnDQoJCXZhbHVlIDENCgl9DQoJY29udHJvbC4yIHsNCgkJY29t
-bWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBCT09MRUFODQoJCWNv
-bW1lbnQuY291bnQgMg0KCQlpZmFjZSBNSVhFUg0KCQluYW1lICdTcGVha2VyIFBsYXliYWNr
-IFN3aXRjaCcNCgkJdmFsdWUuMCB0cnVlDQoJCXZhbHVlLjEgZmFsc2UNCgl9DQoJY29udHJv
-bC4zIHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBJ
-TlRFR0VSDQoJCWNvbW1lbnQuY291bnQgMQ0KCQljb21tZW50LnJhbmdlICcwIC0gMzEnDQoJ
-CWlmYWNlIE1JWEVSDQoJCW5hbWUgJ0hlYWRwaG9uZSBQbGF5YmFjayBWb2x1bWUnDQoJCXZh
-bHVlIDMxDQoJfQ0KCWNvbnRyb2wuNCB7DQoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRl
-Jw0KCQljb21tZW50LnR5cGUgQk9PTEVBTg0KCQljb21tZW50LmNvdW50IDINCgkJaWZhY2Ug
-TUlYRVINCgkJbmFtZSAnSGVhZHBob25lIFBsYXliYWNrIFN3aXRjaCcNCgkJdmFsdWUuMCBm
-YWxzZQ0KCQl2YWx1ZS4xIGZhbHNlDQoJfQ0KCWNvbnRyb2wuNSB7DQoJCWNvbW1lbnQuYWNj
-ZXNzICdyZWFkIHdyaXRlJw0KCQljb21tZW50LnR5cGUgSU5URUdFUg0KCQljb21tZW50LmNv
-dW50IDENCgkJY29tbWVudC5yYW5nZSAnMCAtIDMxJw0KCQlpZmFjZSBNSVhFUg0KCQluYW1l
-ICdMaW5lIEluIFZvbHVtZScNCgkJdmFsdWUgMjMNCgl9DQoJY29udHJvbC42IHsNCgkJY29t
-bWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBJTlRFR0VSDQoJCWNv
-bW1lbnQuY291bnQgMQ0KCQljb21tZW50LnJhbmdlICcwIC0gMzEnDQoJCWlmYWNlIE1JWEVS
-DQoJCW5hbWUgJ1BDTSBQbGF5YmFjayBWb2x1bWUnDQoJCXZhbHVlIDYNCgl9DQoJY29udHJv
-bC43IHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBJ
-TlRFR0VSDQoJCWNvbW1lbnQuY291bnQgMQ0KCQljb21tZW50LnJhbmdlICcwIC0gMzEnDQoJ
-CWlmYWNlIE1JWEVSDQoJCW5hbWUgJ01pYyAxIFZvbHVtZScNCgkJdmFsdWUgMjMNCgl9DQoJ
-Y29udHJvbC44IHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQu
-dHlwZSBJTlRFR0VSDQoJCWNvbW1lbnQuY291bnQgMQ0KCQljb21tZW50LnJhbmdlICcwIC0g
-MzEnDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ01pYyAyIFZvbHVtZScNCgkJdmFsdWUgMjMN
-Cgl9DQoJY29udHJvbC45IHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNv
-bW1lbnQudHlwZSBCT09MRUFODQoJCWNvbW1lbnQuY291bnQgMQ0KCQlpZmFjZSBNSVhFUg0K
-CQluYW1lICdNaWMgQm9vc3QgKCsyMGRCKSBTd2l0Y2gnDQoJCXZhbHVlIGZhbHNlDQoJfQ0K
-CWNvbnRyb2wuMTAgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVu
-dC50eXBlIElOVEVHRVINCgkJY29tbWVudC5jb3VudCAxDQoJCWNvbW1lbnQucmFuZ2UgJzAg
-LSA3Jw0KCQlpZmFjZSBNSVhFUg0KCQluYW1lICdNaWMgSGVhZHBob25lIE1peGVyIFZvbHVt
-ZScNCgkJdmFsdWUgNQ0KCX0NCgljb250cm9sLjExIHsNCgkJY29tbWVudC5hY2Nlc3MgJ3Jl
-YWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBCT09MRUFODQoJCWNvbW1lbnQuY291bnQgMQ0K
-CQlpZmFjZSBNSVhFUg0KCQluYW1lICdDYXB0dXJlIFN3aXRjaCcNCgkJdmFsdWUgdHJ1ZQ0K
-CX0NCgljb250cm9sLjEyIHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNv
-bW1lbnQudHlwZSBFTlVNRVJBVEVEDQoJCWNvbW1lbnQuY291bnQgMg0KCQljb21tZW50Lml0
-ZW0uMCAnKzEuNWRCIFN0ZXBzJw0KCQljb21tZW50Lml0ZW0uMSAnKzAuNzVkQiBTdGVwcycN
-CgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnQ2FwdHVyZSBWb2x1bWUgU3RlcHMnDQoJCXZhbHVl
-LjAgJysxLjVkQiBTdGVwcycNCgkJdmFsdWUuMSAnKzEuNWRCIFN0ZXBzJw0KCX0NCgljb250
-cm9sLjEzIHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlw
-ZSBJTlRFR0VSDQoJCWNvbW1lbnQuY291bnQgMQ0KCQljb21tZW50LnJhbmdlICcwIC0gMzEn
-DQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ0NhcHR1cmUgVm9sdW1lJw0KCQl2YWx1ZSAwDQoJ
-fQ0KCWNvbnRyb2wuMTQgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29t
-bWVudC50eXBlIEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlmYWNlIE1JWEVSDQoJ
-CW5hbWUgJ0NhcHR1cmUgWkMgU3dpdGNoJw0KCQl2YWx1ZSBmYWxzZQ0KCX0NCgljb250cm9s
-LjE1IHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBJ
-TlRFR0VSDQoJCWNvbW1lbnQuY291bnQgMQ0KCQljb21tZW50LnJhbmdlICcwIC0gNycNCgkJ
-aWZhY2UgTUlYRVINCgkJbmFtZSAnQ2FwdHVyZSB0byBIZWFkcGhvbmUgVm9sdW1lJw0KCQl2
-YWx1ZSA1DQoJfQ0KCWNvbnRyb2wuMTYgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0
-ZScNCgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlmYWNl
-IE1JWEVSDQoJCW5hbWUgJ0NhcHR1cmUgdG8gTW9ubyBCb29zdCAoKzIwZEIpIFN3aXRjaCcN
-CgkJdmFsdWUgZmFsc2UNCgl9DQoJY29udHJvbC4xNyB7DQoJCWNvbW1lbnQuYWNjZXNzICdy
-ZWFkIHdyaXRlJw0KCQljb21tZW50LnR5cGUgQk9PTEVBTg0KCQljb21tZW50LmNvdW50IDEN
-CgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnQ2FwdHVyZSBBREMgQm9vc3QgKCsyMGRCKSBTd2l0
-Y2gnDQoJCXZhbHVlIGZhbHNlDQoJfQ0KCWNvbnRyb2wuMTggew0KCQljb21tZW50LmFjY2Vz
-cyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIElOVEVHRVINCgkJY29tbWVudC5jb3Vu
-dCAxDQoJCWNvbW1lbnQucmFuZ2UgJzAgLSAxNScNCgkJaWZhY2UgTUlYRVINCgkJbmFtZSAn
-QUxDIFRhcmdldCBWb2x1bWUnDQoJCXZhbHVlIDExDQoJfQ0KCWNvbnRyb2wuMTkgew0KCQlj
-b21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIElOVEVHRVINCgkJ
-Y29tbWVudC5jb3VudCAxDQoJCWNvbW1lbnQucmFuZ2UgJzAgLSAxNScNCgkJaWZhY2UgTUlY
-RVINCgkJbmFtZSAnQUxDIEhvbGQgVGltZScNCgkJdmFsdWUgMA0KCX0NCgljb250cm9sLjIw
-IHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBJTlRF
-R0VSDQoJCWNvbW1lbnQuY291bnQgMQ0KCQljb21tZW50LnJhbmdlICcwIC0gMTUnDQoJCWlm
-YWNlIE1JWEVSDQoJCW5hbWUgJ0FMQyBEZWNheSBUaW1lICcNCgkJdmFsdWUgMw0KCX0NCglj
-b250cm9sLjIxIHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQu
-dHlwZSBJTlRFR0VSDQoJCWNvbW1lbnQuY291bnQgMQ0KCQljb21tZW50LnJhbmdlICcwIC0g
-MTUnDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ0FMQyBBdHRhY2sgVGltZScNCgkJdmFsdWUg
-Mg0KCX0NCgljb250cm9sLjIyIHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJ
-CWNvbW1lbnQudHlwZSBFTlVNRVJBVEVEDQoJCWNvbW1lbnQuY291bnQgMQ0KCQljb21tZW50
-Lml0ZW0uMCBOb25lDQoJCWNvbW1lbnQuaXRlbS4xIExlZnQNCgkJY29tbWVudC5pdGVtLjIg
-UmlnaHQNCgkJY29tbWVudC5pdGVtLjMgU3RlcmVvDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUg
-J0FMQyBGdW5jdGlvbicNCgkJdmFsdWUgTm9uZQ0KCX0NCgljb250cm9sLjIzIHsNCgkJY29t
-bWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBJTlRFR0VSDQoJCWNv
-bW1lbnQuY291bnQgMQ0KCQljb21tZW50LnJhbmdlICcwIC0gNycNCgkJaWZhY2UgTUlYRVIN
-CgkJbmFtZSAnQUxDIE1heCBWb2x1bWUnDQoJCXZhbHVlIDcNCgl9DQoJY29udHJvbC4yNCB7
-DQoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJw0KCQljb21tZW50LnR5cGUgSU5URUdF
-Ug0KCQljb21tZW50LmNvdW50IDENCgkJY29tbWVudC5yYW5nZSAnMCAtIDMnDQoJCWlmYWNl
-IE1JWEVSDQoJCW5hbWUgJ0FMQyBaQyBUaW1lb3V0Jw0KCQl2YWx1ZSAzDQoJfQ0KCWNvbnRy
-b2wuMjUgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBl
-IEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ0FM
-QyBaQyBTd2l0Y2gnDQoJCXZhbHVlIGZhbHNlDQoJfQ0KCWNvbnRyb2wuMjYgew0KCQljb21t
-ZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJY29t
-bWVudC5jb3VudCAxDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ0FMQyBORyBTd2l0Y2gnDQoJ
-CXZhbHVlIGZhbHNlDQoJfQ0KCWNvbnRyb2wuMjcgew0KCQljb21tZW50LmFjY2VzcyAncmVh
-ZCB3cml0ZScNCgkJY29tbWVudC50eXBlIEVOVU1FUkFURUQNCgkJY29tbWVudC5jb3VudCAx
-DQoJCWNvbW1lbnQuaXRlbS4wICdDb25zdGFudCBHYWluJw0KCQljb21tZW50Lml0ZW0uMSBN
-dXRlDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ0FMQyBORyBUeXBlJw0KCQl2YWx1ZSAnQ29u
-c3RhbnQgR2FpbicNCgl9DQoJY29udHJvbC4yOCB7DQoJCWNvbW1lbnQuYWNjZXNzICdyZWFk
-IHdyaXRlJw0KCQljb21tZW50LnR5cGUgSU5URUdFUg0KCQljb21tZW50LmNvdW50IDENCgkJ
-Y29tbWVudC5yYW5nZSAnMCAtIDMxJw0KCQlpZmFjZSBNSVhFUg0KCQluYW1lICdBTEMgTkcg
-VGhyZXNob2xkJw0KCQl2YWx1ZSAwDQoJfQ0KCWNvbnRyb2wuMjkgew0KCQljb21tZW50LmFj
-Y2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJY29tbWVudC5j
-b3VudCAyDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ1NwZWFrZXIgUGxheWJhY2sgWkMgU3dp
-dGNoJw0KCQl2YWx1ZS4wIGZhbHNlDQoJCXZhbHVlLjEgZmFsc2UNCgl9DQoJY29udHJvbC4z
-MCB7DQoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJw0KCQljb21tZW50LnR5cGUgQk9P
-TEVBTg0KCQljb21tZW50LmNvdW50IDINCgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnSGVhZHBo
-b25lIFBsYXliYWNrIFpDIFN3aXRjaCcNCgkJdmFsdWUuMCBmYWxzZQ0KCQl2YWx1ZS4xIGZh
-bHNlDQoJfQ0KCWNvbnRyb2wuMzEgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScN
-CgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlmYWNlIE1J
-WEVSDQoJCW5hbWUgJ091dDQgUGxheWJhY2sgU3dpdGNoJw0KCQl2YWx1ZSB0cnVlDQoJfQ0K
-CWNvbnRyb2wuMzIgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVu
-dC50eXBlIEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlmYWNlIE1JWEVSDQoJCW5h
-bWUgJ091dDQgUGxheWJhY2sgWkMgU3dpdGNoJw0KCQl2YWx1ZSBmYWxzZQ0KCX0NCgljb250
-cm9sLjMzIHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlw
-ZSBJTlRFR0VSDQoJCWNvbW1lbnQuY291bnQgMQ0KCQljb21tZW50LnJhbmdlICcwIC0gNjMn
-DQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ091dDQgUGxheWJhY2sgVm9sdW1lJw0KCQl2YWx1
-ZSA2Mw0KCX0NCgljb250cm9sLjM0IHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUn
-DQoJCWNvbW1lbnQudHlwZSBCT09MRUFODQoJCWNvbW1lbnQuY291bnQgMQ0KCQlpZmFjZSBN
-SVhFUg0KCQluYW1lICdPdXQzIFBsYXliYWNrIFN3aXRjaCcNCgkJdmFsdWUgZmFsc2UNCgl9
-DQoJY29udHJvbC4zNSB7DQoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJw0KCQljb21t
-ZW50LnR5cGUgQk9PTEVBTg0KCQljb21tZW50LmNvdW50IDENCgkJaWZhY2UgTUlYRVINCgkJ
-bmFtZSAnT3V0MyBQbGF5YmFjayBaQyBTd2l0Y2gnDQoJCXZhbHVlIGZhbHNlDQoJfQ0KCWNv
-bnRyb2wuMzYgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50
-eXBlIElOVEVHRVINCgkJY29tbWVudC5jb3VudCAxDQoJCWNvbW1lbnQucmFuZ2UgJzAgLSA2
-MycNCgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnT3V0MyBQbGF5YmFjayBWb2x1bWUnDQoJCXZh
-bHVlIDYyDQoJfQ0KCWNvbnRyb2wuMzcgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0
-ZScNCgkJY29tbWVudC50eXBlIElOVEVHRVINCgkJY29tbWVudC5jb3VudCAxDQoJCWNvbW1l
-bnQucmFuZ2UgJzAgLSAzMScNCgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnTW9ubyBDYXB0dXJl
-IFZvbHVtZScNCgkJdmFsdWUgMjMNCgl9DQoJY29udHJvbC4zOCB7DQoJCWNvbW1lbnQuYWNj
-ZXNzICdyZWFkIHdyaXRlJw0KCQljb21tZW50LnR5cGUgQk9PTEVBTg0KCQljb21tZW50LmNv
-dW50IDENCgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnTW9ubyBQbGF5YmFjayBTd2l0Y2gnDQoJ
-CXZhbHVlIGZhbHNlDQoJfQ0KCWNvbnRyb2wuMzkgew0KCQljb21tZW50LmFjY2VzcyAncmVh
-ZCB3cml0ZScNCgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJ
-CWlmYWNlIE1JWEVSDQoJCW5hbWUgJ01vbm8gUGxheWJhY2sgWkMgU3dpdGNoJw0KCQl2YWx1
-ZSBmYWxzZQ0KCX0NCgljb250cm9sLjQwIHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3Jp
-dGUnDQoJCWNvbW1lbnQudHlwZSBJTlRFR0VSDQoJCWNvbW1lbnQuY291bnQgMQ0KCQljb21t
-ZW50LnJhbmdlICcwIC0gMzEnDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ01vbm8gUGxheWJh
-Y2sgVm9sdW1lJw0KCQl2YWx1ZSAzMQ0KCX0NCgljb250cm9sLjQxIHsNCgkJY29tbWVudC5h
-Y2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBJTlRFR0VSDQoJCWNvbW1lbnQu
-Y291bnQgMQ0KCQljb21tZW50LnJhbmdlICcwIC0gNycNCgkJaWZhY2UgTUlYRVINCgkJbmFt
-ZSAnUEMgQmVlcCBQbGF5YmFjayBIZWFkcGhvbmUgVm9sdW1lJw0KCQl2YWx1ZSA1DQoJfQ0K
-CWNvbnRyb2wuNDIgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVu
-dC50eXBlIElOVEVHRVINCgkJY29tbWVudC5jb3VudCAxDQoJCWNvbW1lbnQucmFuZ2UgJzAg
-LSA3Jw0KCQlpZmFjZSBNSVhFUg0KCQluYW1lICdQQyBCZWVwIFBsYXliYWNrIFNwZWFrZXIg
-Vm9sdW1lJw0KCQl2YWx1ZSA1DQoJfQ0KCWNvbnRyb2wuNDMgew0KCQljb21tZW50LmFjY2Vz
-cyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIElOVEVHRVINCgkJY29tbWVudC5jb3Vu
-dCAxDQoJCWNvbW1lbnQucmFuZ2UgJzAgLSA3Jw0KCQlpZmFjZSBNSVhFUg0KCQluYW1lICdQ
-QyBCZWVwIFBsYXliYWNrIE1vbm8gVm9sdW1lJw0KCQl2YWx1ZSA1DQoJfQ0KCWNvbnRyb2wu
-NDQgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIElO
-VEVHRVINCgkJY29tbWVudC5jb3VudCAxDQoJCWNvbW1lbnQucmFuZ2UgJzAgLSA3Jw0KCQlp
-ZmFjZSBNSVhFUg0KCQluYW1lICdWb2ljZSBQbGF5YmFjayBIZWFkcGhvbmUgVm9sdW1lJw0K
-CQl2YWx1ZSA1DQoJfQ0KCWNvbnRyb2wuNDUgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3
-cml0ZScNCgkJY29tbWVudC50eXBlIElOVEVHRVINCgkJY29tbWVudC5jb3VudCAxDQoJCWNv
-bW1lbnQucmFuZ2UgJzAgLSA3Jw0KCQlpZmFjZSBNSVhFUg0KCQluYW1lICdWb2ljZSBQbGF5
-YmFjayBNYXN0ZXIgVm9sdW1lJw0KCQl2YWx1ZSA1DQoJfQ0KCWNvbnRyb2wuNDYgew0KCQlj
-b21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIElOVEVHRVINCgkJ
-Y29tbWVudC5jb3VudCAxDQoJCWNvbW1lbnQucmFuZ2UgJzAgLSA3Jw0KCQlpZmFjZSBNSVhF
-Ug0KCQluYW1lICdWb2ljZSBQbGF5YmFjayBNb25vIFZvbHVtZScNCgkJdmFsdWUgNQ0KCX0N
-Cgljb250cm9sLjQ3IHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1l
-bnQudHlwZSBJTlRFR0VSDQoJCWNvbW1lbnQuY291bnQgMQ0KCQljb21tZW50LnJhbmdlICcw
-IC0gNycNCgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnQXV4IFBsYXliYWNrIEhlYWRwaG9uZSBW
-b2x1bWUnDQoJCXZhbHVlIDUNCgl9DQoJY29udHJvbC40OCB7DQoJCWNvbW1lbnQuYWNjZXNz
-ICdyZWFkIHdyaXRlJw0KCQljb21tZW50LnR5cGUgSU5URUdFUg0KCQljb21tZW50LmNvdW50
-IDENCgkJY29tbWVudC5yYW5nZSAnMCAtIDcnDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ0F1
-eCBQbGF5YmFjayBNYXN0ZXIgVm9sdW1lJw0KCQl2YWx1ZSA1DQoJfQ0KCWNvbnRyb2wuNDkg
-ew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIElOVEVH
-RVINCgkJY29tbWVudC5jb3VudCAxDQoJCWNvbW1lbnQucmFuZ2UgJzAgLSA3Jw0KCQlpZmFj
-ZSBNSVhFUg0KCQluYW1lICdBdXggUGxheWJhY2sgTW9ubyBWb2x1bWUnDQoJCXZhbHVlIDUN
-Cgl9DQoJY29udHJvbC41MCB7DQoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJw0KCQlj
-b21tZW50LnR5cGUgRU5VTUVSQVRFRA0KCQljb21tZW50LmNvdW50IDENCgkJY29tbWVudC5p
-dGVtLjAgJ0xpbmVhciBDb250cm9sJw0KCQljb21tZW50Lml0ZW0uMSAnQWRhcHRpdmUgQm9v
-c3QnDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ0Jhc3MgQ29udHJvbCcNCgkJdmFsdWUgJ0xp
-bmVhciBDb250cm9sJw0KCX0NCgljb250cm9sLjUxIHsNCgkJY29tbWVudC5hY2Nlc3MgJ3Jl
-YWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBCT09MRUFODQoJCWNvbW1lbnQuY291bnQgMQ0K
-CQlpZmFjZSBNSVhFUg0KCQluYW1lICdCYXNzIEN1dC1vZmYgU3dpdGNoJw0KCQl2YWx1ZSB0
-cnVlDQoJfQ0KCWNvbnRyb2wuNTIgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScN
-CgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlmYWNlIE1J
-WEVSDQoJCW5hbWUgJ1RvbmUgQ3V0LW9mZiBTd2l0Y2gnDQoJCXZhbHVlIHRydWUNCgl9DQoJ
-Y29udHJvbC41MyB7DQoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJw0KCQljb21tZW50
-LnR5cGUgQk9PTEVBTg0KCQljb21tZW50LmNvdW50IDENCgkJaWZhY2UgTUlYRVINCgkJbmFt
-ZSAnUGxheWJhY2sgQXR0ZW51YXRlICgtNmRCKSBTd2l0Y2gnDQoJCXZhbHVlIGZhbHNlDQoJ
-fQ0KCWNvbnRyb2wuNTQgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29t
-bWVudC50eXBlIElOVEVHRVINCgkJY29tbWVudC5jb3VudCAxDQoJCWNvbW1lbnQucmFuZ2Ug
-JzAgLSAxNScNCgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnQmFzcyBWb2x1bWUnDQoJCXZhbHVl
-IDANCgl9DQoJY29udHJvbC41NSB7DQoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJw0K
-CQljb21tZW50LnR5cGUgSU5URUdFUg0KCQljb21tZW50LmNvdW50IDENCgkJY29tbWVudC5y
-YW5nZSAnMCAtIDE1Jw0KCQlpZmFjZSBNSVhFUg0KCQluYW1lICdUb25lIFZvbHVtZScNCgkJ
-dmFsdWUgMA0KCX0NCgljb250cm9sLjU2IHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3Jp
-dGUnDQoJCWNvbW1lbnQudHlwZSBCT09MRUFODQoJCWNvbW1lbnQuY291bnQgMQ0KCQlpZmFj
-ZSBNSVhFUg0KCQluYW1lICczRCBVcHBlciBDdXQtb2ZmIFN3aXRjaCcNCgkJdmFsdWUgZmFs
-c2UNCgl9DQoJY29udHJvbC41NyB7DQoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJw0K
-CQljb21tZW50LnR5cGUgQk9PTEVBTg0KCQljb21tZW50LmNvdW50IDENCgkJaWZhY2UgTUlY
-RVINCgkJbmFtZSAnM0QgTG93ZXIgQ3V0LW9mZiBTd2l0Y2gnDQoJCXZhbHVlIGZhbHNlDQoJ
-fQ0KCWNvbnRyb2wuNTggew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29t
-bWVudC50eXBlIElOVEVHRVINCgkJY29tbWVudC5jb3VudCAxDQoJCWNvbW1lbnQucmFuZ2Ug
-JzAgLSAxNScNCgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnM0QgRGVwdGgnDQoJCXZhbHVlIDE1
-DQoJfQ0KCWNvbnRyb2wuNTkgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJ
-Y29tbWVudC50eXBlIEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlmYWNlIE1JWEVS
-DQoJCW5hbWUgJ1NwZWFrZXIgTWl4ZXIgUEMgQmVlcCBQbGF5YmFjayAnDQoJCXZhbHVlIGZh
-bHNlDQoJfQ0KCWNvbnRyb2wuNjAgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScN
-CgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlmYWNlIE1J
-WEVSDQoJCW5hbWUgJ1NwZWFrZXIgTWl4ZXIgVm9pY2UgUGxheWJhY2sgU3cnDQoJCXZhbHVl
-IGZhbHNlDQoJfQ0KCWNvbnRyb2wuNjEgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0
-ZScNCgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlmYWNl
-IE1JWEVSDQoJCW5hbWUgJ1NwZWFrZXIgTWl4ZXIgQXV4IFBsYXliYWNrIFN3aXQnDQoJCXZh
-bHVlIGZhbHNlDQoJfQ0KCWNvbnRyb2wuNjIgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3
-cml0ZScNCgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlm
-YWNlIE1JWEVSDQoJCW5hbWUgJ1NwZWFrZXIgTWl4ZXIgUENNIFBsYXliYWNrIFN3aXQnDQoJ
-CXZhbHVlIHRydWUNCgl9DQoJY29udHJvbC42MyB7DQoJCWNvbW1lbnQuYWNjZXNzICdyZWFk
-IHdyaXRlJw0KCQljb21tZW50LnR5cGUgQk9PTEVBTg0KCQljb21tZW50LmNvdW50IDENCgkJ
-aWZhY2UgTUlYRVINCgkJbmFtZSAnU3BlYWtlciBNaXhlciBNb25vSW4gUGxheWJhY2sgUycN
-CgkJdmFsdWUgZmFsc2UNCgl9DQoJY29udHJvbC42NCB7DQoJCWNvbW1lbnQuYWNjZXNzICdy
-ZWFkIHdyaXRlJw0KCQljb21tZW50LnR5cGUgQk9PTEVBTg0KCQljb21tZW50LmNvdW50IDEN
-CgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnU3BlYWtlciBNaXhlciBCeXBhc3MgUGxheWJhY2sg
-UycNCgkJdmFsdWUgZmFsc2UNCgl9DQoJY29udHJvbC42NSB7DQoJCWNvbW1lbnQuYWNjZXNz
-ICdyZWFkIHdyaXRlJw0KCQljb21tZW50LnR5cGUgQk9PTEVBTg0KCQljb21tZW50LmNvdW50
-IDENCgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnTW9ubyBNaXhlciBQQyBCZWVwIFBsYXliYWNr
-IFN3aScNCgkJdmFsdWUgZmFsc2UNCgl9DQoJY29udHJvbC42NiB7DQoJCWNvbW1lbnQuYWNj
-ZXNzICdyZWFkIHdyaXRlJw0KCQljb21tZW50LnR5cGUgQk9PTEVBTg0KCQljb21tZW50LmNv
-dW50IDENCgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnTW9ubyBNaXhlciBWb2ljZSBQbGF5YmFj
-ayBTd2l0YycNCgkJdmFsdWUgZmFsc2UNCgl9DQoJY29udHJvbC42NyB7DQoJCWNvbW1lbnQu
-YWNjZXNzICdyZWFkIHdyaXRlJw0KCQljb21tZW50LnR5cGUgQk9PTEVBTg0KCQljb21tZW50
-LmNvdW50IDENCgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnTW9ubyBNaXhlciBBdXggUGxheWJh
-Y2sgU3dpdGNoJw0KCQl2YWx1ZSBmYWxzZQ0KCX0NCgljb250cm9sLjY4IHsNCgkJY29tbWVu
-dC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBCT09MRUFODQoJCWNvbW1l
-bnQuY291bnQgMQ0KCQlpZmFjZSBNSVhFUg0KCQluYW1lICdNb25vIE1peGVyIFBDTSBQbGF5
-YmFjayBTd2l0Y2gnDQoJCXZhbHVlIGZhbHNlDQoJfQ0KCWNvbnRyb2wuNjkgew0KCQljb21t
-ZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJY29t
-bWVudC5jb3VudCAxDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ01vbm8gTWl4ZXIgQnlwYXNz
-IFBsYXliYWNrIFN3aXQnDQoJCXZhbHVlIGZhbHNlDQoJfQ0KCWNvbnRyb2wuNzAgew0KCQlj
-b21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJ
-Y29tbWVudC5jb3VudCAxDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ01vbm8gTWl4ZXIgTWlj
-IDEgU2lkZXRvbmUgU3dpdGMnDQoJCXZhbHVlIGZhbHNlDQoJfQ0KCWNvbnRyb2wuNzEgew0K
-CQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIEJPT0xFQU4N
-CgkJY29tbWVudC5jb3VudCAxDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ01vbm8gTWl4ZXIg
-TWljIDIgU2lkZXRvbmUgU3dpdGMnDQoJCXZhbHVlIGZhbHNlDQoJfQ0KCWNvbnRyb2wuNzIg
-ew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIEJPT0xF
-QU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ1JpZ2h0IEhQ
-IE1peGVyIFBDIEJlZXAgUGxheWJhY2snDQoJCXZhbHVlIGZhbHNlDQoJfQ0KCWNvbnRyb2wu
-NzMgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIEJP
-T0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ1JpZ2h0
-IEhQIE1peGVyIFZvaWNlIFBsYXliYWNrIFMnDQoJCXZhbHVlIGZhbHNlDQoJfQ0KCWNvbnRy
-b2wuNzQgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBl
-IEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ1Jp
-Z2h0IEhQIE1peGVyIEF1eCBQbGF5YmFjayBTd2knDQoJCXZhbHVlIGZhbHNlDQoJfQ0KCWNv
-bnRyb2wuNzUgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50
-eXBlIEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUg
-J1JpZ2h0IEhQIE1peGVyIFBDTSBQbGF5YmFjayBTd2knDQoJCXZhbHVlIGZhbHNlDQoJfQ0K
-CWNvbnRyb2wuNzYgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVu
-dC50eXBlIEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlmYWNlIE1JWEVSDQoJCW5h
-bWUgJ1JpZ2h0IEhQIE1peGVyIE1vbm9JbiBQbGF5YmFjayAnDQoJCXZhbHVlIGZhbHNlDQoJ
-fQ0KCWNvbnRyb2wuNzcgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29t
-bWVudC50eXBlIEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlmYWNlIE1JWEVSDQoJ
-CW5hbWUgJ1JpZ2h0IEhQIE1peGVyIEJ5cGFzcyBQbGF5YmFjayAnDQoJCXZhbHVlIGZhbHNl
-DQoJfQ0KCWNvbnRyb2wuNzggew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJ
-Y29tbWVudC50eXBlIEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlmYWNlIE1JWEVS
-DQoJCW5hbWUgJ0xlZnQgSFAgTWl4ZXIgUEMgQmVlcCBQbGF5YmFjayAnDQoJCXZhbHVlIGZh
-bHNlDQoJfQ0KCWNvbnRyb2wuNzkgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScN
-CgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlmYWNlIE1J
-WEVSDQoJCW5hbWUgJ0xlZnQgSFAgTWl4ZXIgVm9pY2UgUGxheWJhY2sgU3cnDQoJCXZhbHVl
-IGZhbHNlDQoJfQ0KCWNvbnRyb2wuODAgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0
-ZScNCgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlmYWNl
-IE1JWEVSDQoJCW5hbWUgJ0xlZnQgSFAgTWl4ZXIgQXV4IFBsYXliYWNrIFN3aXQnDQoJCXZh
-bHVlIGZhbHNlDQoJfQ0KCWNvbnRyb2wuODEgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3
-cml0ZScNCgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJCWlm
-YWNlIE1JWEVSDQoJCW5hbWUgJ0xlZnQgSFAgTWl4ZXIgUENNIFBsYXliYWNrIFN3aXQnDQoJ
-CXZhbHVlIGZhbHNlDQoJfQ0KCWNvbnRyb2wuODIgew0KCQljb21tZW50LmFjY2VzcyAncmVh
-ZCB3cml0ZScNCgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAxDQoJ
-CWlmYWNlIE1JWEVSDQoJCW5hbWUgJ0xlZnQgSFAgTWl4ZXIgTW9ub0luIFBsYXliYWNrIFMn
-DQoJCXZhbHVlIGZhbHNlDQoJfQ0KCWNvbnRyb2wuODMgew0KCQljb21tZW50LmFjY2VzcyAn
-cmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJY29tbWVudC5jb3VudCAx
-DQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ0xlZnQgSFAgTWl4ZXIgQnlwYXNzIFBsYXliYWNr
-IFMnDQoJCXZhbHVlIGZhbHNlDQoJfQ0KCWNvbnRyb2wuODQgew0KCQljb21tZW50LmFjY2Vz
-cyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIEVOVU1FUkFURUQNCgkJY29tbWVudC5j
-b3VudCAxDQoJCWNvbW1lbnQuaXRlbS4wIE1QQg0KCQljb21tZW50Lml0ZW0uMSBNUEENCgkJ
-aWZhY2UgTUlYRVINCgkJbmFtZSAnTWljIEIgU291cmNlJw0KCQl2YWx1ZSBNUEINCgl9DQoJ
-Y29udHJvbC44NSB7DQoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJw0KCQljb21tZW50
-LnR5cGUgRU5VTUVSQVRFRA0KCQljb21tZW50LmNvdW50IDENCgkJY29tbWVudC5pdGVtLjAg
-J01pYyAxJw0KCQljb21tZW50Lml0ZW0uMSAnTWljIDIgQScNCgkJY29tbWVudC5pdGVtLjIg
-J01pYyAyIEInDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ01pYyBBIFNvdXJjZScNCgkJdmFs
-dWUgJ01pYyAxJw0KCX0NCgljb250cm9sLjg2IHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQg
-d3JpdGUnDQoJCWNvbW1lbnQudHlwZSBFTlVNRVJBVEVEDQoJCWNvbW1lbnQuY291bnQgMQ0K
-CQljb21tZW50Lml0ZW0uMCAnTWljIDEnDQoJCWNvbW1lbnQuaXRlbS4xICdNaWMgMicNCgkJ
-Y29tbWVudC5pdGVtLjIgTGluZQ0KCQljb21tZW50Lml0ZW0uMyAnTW9ubyBJbicNCgkJY29t
-bWVudC5pdGVtLjQgSGVhZHBob25lDQoJCWNvbW1lbnQuaXRlbS41IFNwZWFrZXINCgkJY29t
-bWVudC5pdGVtLjYgJ01vbm8gT3V0Jw0KCQljb21tZW50Lml0ZW0uNyBaaA0KCQlpZmFjZSBN
-SVhFUg0KCQluYW1lICdSaWdodCBDYXB0dXJlIFNvdXJjZScNCgkJdmFsdWUgJ01pYyAxJw0K
-CX0NCgljb250cm9sLjg3IHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNv
-bW1lbnQudHlwZSBFTlVNRVJBVEVEDQoJCWNvbW1lbnQuY291bnQgMQ0KCQljb21tZW50Lml0
-ZW0uMCAnTWljIDEnDQoJCWNvbW1lbnQuaXRlbS4xICdNaWMgMicNCgkJY29tbWVudC5pdGVt
-LjIgTGluZQ0KCQljb21tZW50Lml0ZW0uMyAnTW9ubyBJbicNCgkJY29tbWVudC5pdGVtLjQg
-SGVhZHBob25lDQoJCWNvbW1lbnQuaXRlbS41IFNwZWFrZXINCgkJY29tbWVudC5pdGVtLjYg
-J01vbm8gT3V0Jw0KCQljb21tZW50Lml0ZW0uNyBaaA0KCQlpZmFjZSBNSVhFUg0KCQluYW1l
-ICdMZWZ0IENhcHR1cmUgU291cmNlJw0KCQl2YWx1ZSAnTWljIDEnDQoJfQ0KCWNvbnRyb2wu
-ODggew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIEVO
-VU1FUkFURUQNCgkJY29tbWVudC5jb3VudCAxDQoJCWNvbW1lbnQuaXRlbS4wIE9mZg0KCQlj
-b21tZW50Lml0ZW0uMSBNb25vDQoJCWNvbW1lbnQuaXRlbS4yIFNwZWFrZXINCgkJY29tbWVu
-dC5pdGVtLjMgJ0xlZnQgSGVhZHBob25lJw0KCQljb21tZW50Lml0ZW0uNCAnUmlnaHQgSGVh
-ZHBob25lJw0KCQljb21tZW50Lml0ZW0uNSAnSGVhZHBob25lIE1vbm8nDQoJCWNvbW1lbnQu
-aXRlbS42IE5DDQoJCWNvbW1lbnQuaXRlbS43IFZtaWQNCgkJaWZhY2UgTUlYRVINCgkJbmFt
-ZSAnREFDIEludiBNdXggMicNCgkJdmFsdWUgU3BlYWtlcg0KCX0NCgljb250cm9sLjg5IHsN
-CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBFTlVNRVJB
-VEVEDQoJCWNvbW1lbnQuY291bnQgMQ0KCQljb21tZW50Lml0ZW0uMCBPZmYNCgkJY29tbWVu
-dC5pdGVtLjEgTW9ubw0KCQljb21tZW50Lml0ZW0uMiBTcGVha2VyDQoJCWNvbW1lbnQuaXRl
-bS4zICdMZWZ0IEhlYWRwaG9uZScNCgkJY29tbWVudC5pdGVtLjQgJ1JpZ2h0IEhlYWRwaG9u
-ZScNCgkJY29tbWVudC5pdGVtLjUgJ0hlYWRwaG9uZSBNb25vJw0KCQljb21tZW50Lml0ZW0u
-NiBOQw0KCQljb21tZW50Lml0ZW0uNyBWbWlkDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ0RB
-QyBJbnYgTXV4IDEnDQoJCXZhbHVlIE9mZg0KCX0NCgljb250cm9sLjkwIHsNCgkJY29tbWVu
-dC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBFTlVNRVJBVEVEDQoJCWNv
-bW1lbnQuY291bnQgMQ0KCQljb21tZW50Lml0ZW0uMCBWbWlkDQoJCWNvbW1lbnQuaXRlbS4x
-IFpoDQoJCWNvbW1lbnQuaXRlbS4yICdJbnYgMicNCgkJY29tbWVudC5pdGVtLjMgJ0ludiAy
-IFZtaWQnDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ091dCA0IE11eCcNCgkJdmFsdWUgJ0lu
-diAyJw0KCX0NCgljb250cm9sLjkxIHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUn
-DQoJCWNvbW1lbnQudHlwZSBFTlVNRVJBVEVEDQoJCWNvbW1lbnQuY291bnQgMQ0KCQljb21t
-ZW50Lml0ZW0uMCBWbWlkDQoJCWNvbW1lbnQuaXRlbS4xIFpoDQoJCWNvbW1lbnQuaXRlbS4y
-ICdJbnYgMScNCgkJY29tbWVudC5pdGVtLjMgJ0ludiAxIFZtaWQnDQoJCWlmYWNlIE1JWEVS
-DQoJCW5hbWUgJ091dCAzIE11eCcNCgkJdmFsdWUgVm1pZA0KCX0NCgljb250cm9sLjkyIHsN
-CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBFTlVNRVJB
-VEVEDQoJCWNvbW1lbnQuY291bnQgMQ0KCQljb21tZW50Lml0ZW0uMCBWbWlkDQoJCWNvbW1l
-bnQuaXRlbS4xIFpoDQoJCWNvbW1lbnQuaXRlbS4yIEhlYWRwaG9uZQ0KCQlpZmFjZSBNSVhF
-Ug0KCQluYW1lICdSaWdodCBIZWFkcGhvbmUgT3V0IE11eCcNCgkJdmFsdWUgVm1pZA0KCX0N
-Cgljb250cm9sLjkzIHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1l
-bnQudHlwZSBFTlVNRVJBVEVEDQoJCWNvbW1lbnQuY291bnQgMQ0KCQljb21tZW50Lml0ZW0u
-MCBWbWlkDQoJCWNvbW1lbnQuaXRlbS4xIFpoDQoJCWNvbW1lbnQuaXRlbS4yIEhlYWRwaG9u
-ZQ0KCQlpZmFjZSBNSVhFUg0KCQluYW1lICdMZWZ0IEhlYWRwaG9uZSBPdXQgTXV4Jw0KCQl2
-YWx1ZSBWbWlkDQoJfQ0KCWNvbnRyb2wuOTQgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3
-cml0ZScNCgkJY29tbWVudC50eXBlIEVOVU1FUkFURUQNCgkJY29tbWVudC5jb3VudCAxDQoJ
-CWNvbW1lbnQuaXRlbS4wIFZtaWQNCgkJY29tbWVudC5pdGVtLjEgWmgNCgkJY29tbWVudC5p
-dGVtLjIgSGVhZHBob25lDQoJCWNvbW1lbnQuaXRlbS4zIFNwZWFrZXINCgkJY29tbWVudC5p
-dGVtLjQgSW52DQoJCWNvbW1lbnQuaXRlbS41ICdIZWFkcGhvbmUgVm1pZCcNCgkJY29tbWVu
-dC5pdGVtLjYgJ1NwZWFrZXIgVm1pZCcNCgkJY29tbWVudC5pdGVtLjcgJ0ludiBWbWlkJw0K
-CQlpZmFjZSBNSVhFUg0KCQluYW1lICdSaWdodCBTcGVha2VyIE91dCBNdXgnDQoJCXZhbHVl
-IFZtaWQNCgl9DQoJY29udHJvbC45NSB7DQoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRl
-Jw0KCQljb21tZW50LnR5cGUgRU5VTUVSQVRFRA0KCQljb21tZW50LmNvdW50IDENCgkJY29t
-bWVudC5pdGVtLjAgVm1pZA0KCQljb21tZW50Lml0ZW0uMSBaaA0KCQljb21tZW50Lml0ZW0u
-MiBIZWFkcGhvbmUNCgkJY29tbWVudC5pdGVtLjMgU3BlYWtlcg0KCQljb21tZW50Lml0ZW0u
-NCBJbnYNCgkJY29tbWVudC5pdGVtLjUgJ0hlYWRwaG9uZSBWbWlkJw0KCQljb21tZW50Lml0
-ZW0uNiAnU3BlYWtlciBWbWlkJw0KCQljb21tZW50Lml0ZW0uNyAnSW52IFZtaWQnDQoJCWlm
-YWNlIE1JWEVSDQoJCW5hbWUgJ0xlZnQgU3BlYWtlciBPdXQgTXV4Jw0KCQl2YWx1ZSBTcGVh
-a2VyDQoJfQ0KCWNvbnRyb2wuOTYgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScN
-CgkJY29tbWVudC50eXBlIEVOVU1FUkFURUQNCgkJY29tbWVudC5jb3VudCAxDQoJCWNvbW1l
-bnQuaXRlbS4wIFZtaWQNCgkJY29tbWVudC5pdGVtLjEgWmgNCgkJY29tbWVudC5pdGVtLjIg
-TW9ubw0KCQljb21tZW50Lml0ZW0uMyBJbnYNCgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnTW9u
-byBPdXQgTXV4Jw0KCQl2YWx1ZSBWbWlkDQoJfQ0KCWNvbnRyb2wuOTcgew0KCQljb21tZW50
-LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIEVOVU1FUkFURUQNCgkJY29t
-bWVudC5jb3VudCAxDQoJCWNvbW1lbnQuaXRlbS4wIFN0ZXJlbw0KCQljb21tZW50Lml0ZW0u
-MSBMZWZ0DQoJCWNvbW1lbnQuaXRlbS4yIFJpZ2h0DQoJCWNvbW1lbnQuaXRlbS4zIE11dGUN
-CgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnQ2FwdHVyZSBNb25vIE11eCcNCgkJdmFsdWUgTXV0
-ZQ0KCX0NCgljb250cm9sLjk4IHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJ
-CWNvbW1lbnQudHlwZSBFTlVNRVJBVEVEDQoJCWNvbW1lbnQuY291bnQgMQ0KCQljb21tZW50
-Lml0ZW0uMCBTdGVyZW8NCgkJY29tbWVudC5pdGVtLjEgJ01pYyAxJw0KCQljb21tZW50Lml0
-ZW0uMiAnTWljIDInDQoJCWNvbW1lbnQuaXRlbS4zIE11dGUNCgkJaWZhY2UgTUlYRVINCgkJ
-bmFtZSAnU2lkZXRvbmUgTXV4Jw0KCQl2YWx1ZSBNdXRlDQoJfQ0KCWNvbnRyb2wuOTkgew0K
-CQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIEVOVU1FUkFU
-RUQNCgkJY29tbWVudC5jb3VudCAxDQoJCWNvbW1lbnQuaXRlbS4wIFN0ZXJlbw0KCQljb21t
-ZW50Lml0ZW0uMSBMZWZ0DQoJCWNvbW1lbnQuaXRlbS4yIFJpZ2h0DQoJCWNvbW1lbnQuaXRl
-bS4zIE11dGUNCgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnQ2FwdHVyZSBIZWFkcGhvbmUgTXV4
-Jw0KCQl2YWx1ZSBNdXRlDQoJfQ0KCWNvbnRyb2wuMTAwIHsNCgkJY29tbWVudC5hY2Nlc3Mg
-J3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBFTlVNRVJBVEVEDQoJCWNvbW1lbnQuY291
-bnQgMQ0KCQljb21tZW50Lml0ZW0uMCBIZWFkcGhvbmUNCgkJY29tbWVudC5pdGVtLjEgTWlj
-DQoJCWNvbW1lbnQuaXRlbS4yIExpbmUNCgkJY29tbWVudC5pdGVtLjMgSGVhZHNldA0KCQlj
-b21tZW50Lml0ZW0uNCBPZmYNCgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnSmFjayBGdW5jdGlv
-bicNCgkJdmFsdWUgSGVhZHBob25lDQoJfQ0KCWNvbnRyb2wuMTAxIHsNCgkJY29tbWVudC5h
-Y2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBFTlVNRVJBVEVEDQoJCWNvbW1l
-bnQuY291bnQgMQ0KCQljb21tZW50Lml0ZW0uMCBPbg0KCQljb21tZW50Lml0ZW0uMSBPZmYN
-CgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnU3BlYWtlciBGdW5jdGlvbicNCgkJdmFsdWUgT24N
-Cgl9DQp9
---------------070200050700030405010105
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+You will need some way to uniquely identify EACH headset, and force its slot 
+or index parameter to the required number.
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >>
+> >> to have ALSA clients play sound, by default, to the fourth sound
+> >> device that happened to be initialized.
+> >>
+> >>> I have usb headsets and usb audio devices and all users have there own
+> >>> usb hub. There are no internal audio cards in the multiseat server.
+> >>>
+> >>> How can we configure an system that the user can listen to audio only
+> >>> to the devices connected to his usb hub.
+> >>
+> >> Well, this is guaranteed by design, isn't it? Without physical access
+> >> to someone else's headset, how would I get access to the audio streams
+> >> being played to that headset? I don't think this really expresses what
+> >> your problem is.
+> >>
+> >> If we flip your question around, it might be a little more
+> >> interesting: "How can we configure a system so that each user's
+> >> applications will only play audio to that user's corresponding
+> >> headset?"
+> >>
+> >> You can interpret this question in two ways:
+> >> 1. "How can we _prevent_ users from playing sound to each other's
+> >> sound cards?" [mutually untrust[ed/ing] users]
+> >> or
+> >> 2. "How can we configure the default settings so that, if untampered
+> >> with, a user's applications will play sound to that user's own headset
+> >> and not anyone else's?" [mutually trust[ed/ing] users]
+> >>
+> >> The lack of hardware mixing actually comes back to being a security
+> >> benefit to user space control in this kind of situation. Recall that
+> >> if I run
+> >>
+> >> aplay --device=hw:0 /usr/share/sounds/pop.wav
 
---------------070200050700030405010105--
+Couldn't we allow dmix, but just append to the users UID to the ipc key, with:
+
+ipc_key 123456
+ipc_key_add_uid true
+
+in the dmix config stanza in .asoundrc for each user ?
+
+
+> >>
+> >> then as long as the aplay program is playing sound to hw:0, it is
+> >> *impossible* (short of some really devious hacking in alsa-lib or the
+> >> kernel) for another application -- from this user, or another -- to
+> >> also play sound to hw:0 at the same time. I'll call this claim "No
+> >> Native SW Mixing".
+> >>
+> >> Now, let's look at what is required to satisfy the question in each of
+> >> the two above cases.
+> >>
+> >> Trusted:
+> >> 1. We know that users aren't going to maliciously try and hurt one
+> >> another's ears by setting someone else's mixer really loud and playing
+> >> static to them.
+> >> 2. We know that users won't try to tamper with eachother's processes
+> >> or configuration files; once things are configured correctly, it'll
+> >> stay that way.
+> >> 3. By 'No Native SW Mixing', we know that users can *theoretically*
+> >> hog another user's sound device whenever that user has zero
+> >> applications currently using it.
+> >> 4. Since users trust each other, they won't do this.
+> >> 5. We can use something like dmix, or just use hw:0 if users don't
+> >> need simultaneous app output, and things will be fine.
+> >> 6. dmix is a viable option to implement software mixing.
+> >> 7. PulseAudio is also a viable option to implement software mixing.
+> >>
+> >> Untrusted:
+> >> 1. Users may want to maliciously try and hurt one another's ears by
+> >> setting someone else's mixer really loud and playing static to them.
+> >> 2. Users may try to tamper with eachother's processes or configuration
+> >> files; once things are configured correctly, it could get messed up
+> >> again. [There's not much you can do to prevent this ... at least not
+> >> based on existing open source tools.]
+> >> 3. By 'No Native SW Mixing', we know that users can *theoretically*
+> >> hog another user's sound device whenever that user has zero
+> >> applications currently using it.
+> >> 4. Since users do not trust each other, there is potential for 3 to
+> >> happen. 5. We must use 'No Native SW Mixing' to our advantage, to create
+> >> a walled garden around each user's sound experience. We need a process
+> >> that, once started by a user, will permanently "hog" the sound card that
+> >> user wants to use. This process should, ideally, allow other processes
+> >> run by that user (and by that user only) to access their USB headset for
+> >> output or input. We need a "gatekeeper" that is sensitive to the context
+> >> in which an app is being run.
+> >> 6. dmix is a NOT viable option to implement software mixing, because:
+> >> (a) Once all dmix applications close their streams, the audio device
+> >> hw:n is available, and some malicious user can decide to acquire it,
+> >> abuse it, and prevent its rightful user from accessing it with his own
+> >> applications.
+> >> (b) dmix does not restrict users from outputting sound based on their
+> >> UID or session. It is NOT a gatekeeper, just an open gate.
+> >> 7. PulseAudio is [perhaps the best] viable solution to implement
+> >> software mixing for each respective user. It is also a viable solution
+> >> to preventing users from taking control of one another's sound
+> >> devices.
+> >>
+> >> Configuring pulseaudio for a multi-soundcard multi-user system is out
+> >> of the scope of this mailing list, but suffice it to say that it can
+> >> be done. You will want to run one PulseAudio daemon per user, and each
+> >> daemon will hold exclusive control over exactly one USB headset. Each
+> >> daemon will only accept clients' requests for audio I/O from the user
+> >> who started the daemon. Do make sure that you disable
+> >> module-suspend-on-idle, or PulseAudio will actually give up the sound
+> >> device after a period of inactivity, making it insecure in an
+> >> untrusted environment.
+> >>
+> >> BTW, if this project is for a commercial interest, you usually pay
+> >> someone for this kind of in-depth analysis. If you're that someone,
+> >> you might want to read up on some of the underlying technologies so
+> >> that you can develop this sort of reasoning on your own. I can
+> >> envision a very real situation for both the trusted and the untrusted
+> >> environment, so there is definitely a demand for this kind of
+> >> specialist. Trusted environments are popular at workplaces, and
+> >> untrusted multi-seat boxes are popular at computer labs, public
+> >> libraries, etc.
+> >>
+> >>> Any help is really appreciated.
+> >>
+> >> Please let me know if this information was helpful -- it will help me
+> >> gauge, in turn, whether I should spend my time writing up these sorts
+> >> of answers on the ML. FWIW, I searched around for existing articles
+> >> touching this subject, but I couldn't find anyone who addresses this
+> >> specific issue accurately or in enough detail.
+> >>
+> >> Sean
+> >>
+> >> P.S. - I once spoke to a user on IRC who was having intermittent
+> >> problems with multiple USB headsets. It turns out that the USB
+> >> controllers in the computer didn't have enough bandwidth, or power (or
+> >> both) to allow all of the headsets to play at once. If, after
+> >> configuring, you run into issues where only so many users can play
+> >> sound at once, then you should invest in additional PCI or
+> >> (preferably) PCI-Express USB controllers. Note that adding hubs
+> >> upstream of a USB controller does absolutely nothing to lessen the
+> >> load on the USB controllers that are integrated into your motherboard.
+> >>
+> >>> Thank in advance,
+> >>>
+> >>> Jelle
+> >
+> > Thank you Sean, this is by far the most extensive response i received in
+> > months with an "open" question on an mailinglist, this really is a good
+> > character, that I will reward if you sent an paypal address :-p.
+>
+> Ha ha, I appreciate the offer :) Yes, it was a very open question;
+> that's why I didn't want to assume too much about your knowledge, and
+> to answer you with something that would point you in the right
+> direction if you were, in fact, ignorant of the basic situation here.
+>
+> > I have extensive experience configuring alsa and usb headset, little new
+> > info was delivered for me but i think others will really like your
+> > response too.
+> >
+> > My main issue is how to start alsa when there are no audio cards on the
+> > system using debian sid? so i can use bluetooth or hotplug usb audio
+> > devices...anybody?
+>
+> A "quick hack" would be to add 'snd' and 'soundcore' (and maybe other)
+> kernel modules to /etc/modules. That way, on boot, ALSA will be in the
+> kernel even if the initial probing routines don't find any sound
+> hardware. Then, as long as your bluetooth and USB modules are loading
+> correctly, the hotplug support should take over from there if your
+> ALSA is recent enough.
+>
+> > Then I think it will become an udev issue to regulate a fixed group and
+> > permissions for usb audio devices. I was kind of hoping somebody had
+> > done this kind of udev ruling for usb audio devices and can provide some
+> > examples this will save me time...anybody?
+>
+> Yes, definitely a udev issue if you want to restrict things at the
+> ALSA level. Otherwise the permissions on the raw character devices
+> /dev/snd/pcm* will be liberal by default.
+>
+> But if you're willing to move up into application space, I'm pretty
+> sure one of PulseAudio's advertised features is to handle just this
+> kind of ruling among different users and/or groups. You could
+> certainly set this up so that the PulseAudio daemons for all the users
+> are launched at boot time so that all of the audio devices are
+> [permanently] "hogged" by their appropriate users before anyone has a
+> chance to log in.
+>
+> And of course, PulseAudio is excellent with hotplug nowadays.
+>
+> > PS. I have also noticed usb audio problems (also posted them to irc
+> > maybe 1 year ago) in the past with usb hubs and other kinds of things,
+> > these things can brake an design or make it:-p
+>
+> Yes, the Win32 device manager has a nice little applet that shows the
+> current bandwidth usage/availability for USB controllers... I'm not
+> sure how accurate it is... but having something like this for Linux
+> would be immensely useful as you are setting up the topology of your
+> USB headsets. It would be nice not to have to empirically try and
+> break the sound by playing all of the headsets at once...
+>
+> > So thank you very much for this great response, and keep up doing this
+> > kind of work.
+>
+> Thanks for the encouragement!
+>
+> Sean
+>
+> > Kind regards,
+> >
+> > Jelle
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
