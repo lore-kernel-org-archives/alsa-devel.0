@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: ASOC on OMAP3+twl4030
-Date: Thu, 23 Oct 2008 11:22:18 +0100
-Message-ID: <20081023102217.GA10280@sirena.org.uk>
-References: <ef0d8a250810222341i54fe3d97mbc90003f2d07acb0@mail.gmail.com>
+Subject: Re: Select source support in alsa soc
+Date: Thu, 23 Oct 2008 11:29:46 +0100
+Message-ID: <20081023102943.GB10280@sirena.org.uk>
+References: <ef0d8a250810200024n1f1a4f90i41c7446241fdbb51@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8A3F510384E
+	by alsa0.perex.cz (Postfix) with ESMTP id E0D6E103824
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Oct 2008 12:22:37 +0200 (CEST)
+	Thu, 23 Oct 2008 12:30:04 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <ef0d8a250810222341i54fe3d97mbc90003f2d07acb0@mail.gmail.com>
+In-Reply-To: <ef0d8a250810200024n1f1a4f90i41c7446241fdbb51@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,44 +26,30 @@ To: naveen krishna ch <naveenkrishna.ch@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 23, 2008 at 12:11:37PM +0530, naveen krishna ch wrote:
+On Mon, Oct 20, 2008 at 12:54:00PM +0530, naveen krishna ch wrote:
 
-> I am reporting an issue for last 4 days and i am not getting enough response
-> fromt he mailing list.
+> I have a driver now at a palce where i can play back with stereo headset and
+> 
+> record through line in cable.
 
-...
+> I need some understanding of how can i give support for selecting output and
+> input sources.
 
-> I am getting very less replies against my issue am i posting to wrong people
-> or what
-> can any one tell me how can i make use of this mailing list to its fullest
+> I have understood the way it is done in ALSA but i feel the sane should not
+> be used in
+> ALSA SOC frame work.
 
-Just to emphasise what John said, you can't rely on any particular
-support level from the community - the responses will depend on a range
-of factors, including things like how busy the people involved are.
+Normally this would be done through the standard ALSA APIs from user
+space.  Depending on what exactly you wish to control in the hardware
+this would either be done using the standard controls provided by the
+codec driver or by defining additional controls for your machine in the
+machine driver.  Several existing machine drivers such as the tosa
+driver in sound/soc/pxa/tosa.c implement the second approach.
 
-You can normally help getting a response by providing as much
-information as possible about your problem and the steps you have taken
-to resolve it - this makes it very much easier for people to reply
-since, for example, it's more likely that something will jump out at
-them.  These web pages contain some suggestions on the sorts of thing to
-do in your e-mail to help get the best response (the second one is more
-targetted at end users than developers but is still useful):
+Often the software running on the device will have several standard
+usage scenarios and change between them by restoring ALSA state files
+with alsactl.  You may also find the scenario API here:
 
-	http://www.catb.org/~esr/faqs/smart-questions.html 
-	http://www.chiark.greenend.org.uk/~sgtatham/bugs.html
+	http://opensource.wolfsonmicro.com/node/14
 
-With the kernel community it can also help to send direct copies of your
-mail to people who have worked on the relevant code since people may
-either miss postings on mailing lists (there is often a lot of traffic)
-or in some cases not be subscribed to the lists at all.  This doesn't
-apply to all free software projects - you should check the normal
-standards for a given project before doing this.
-
-I also see that Jarkko has already suggested that in this particular
-case you contact the OMAP kernel developers - I'd suggest following up
-that route as well.
-
-If you need guaranteed responses or more detailed responses than you are
-able to obtain from the community the usual approach is to work with
-people with whom you have a commercial relationship - for example, your
-chip or software vendors, or consultants you have employed.
+useful.
