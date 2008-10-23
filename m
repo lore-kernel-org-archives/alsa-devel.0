@@ -1,15 +1,17 @@
 From: Bryan Wu <cooloney@kernel.org>
-Subject: [PATCH 0/4] ASoC: Blackfin updates
-Date: Thu, 23 Oct 2008 17:01:56 +0800
-Message-ID: <1224752520-25668-1-git-send-email-cooloney@kernel.org>
+Subject: [PATCH 1/4] ASoC: Blackfin: updates Kconfig for SPORT
+Date: Thu, 23 Oct 2008 17:01:57 +0800
+Message-ID: <1224752520-25668-2-git-send-email-cooloney@kernel.org>
+References: <1224752520-25668-1-git-send-email-cooloney@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from nwd2mail11.analog.com (nwd2mail11.analog.com [137.71.25.57])
-	by alsa0.perex.cz (Postfix) with ESMTP id CEBE8244B6
+	by alsa0.perex.cz (Postfix) with ESMTP id 7947C244B7
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Oct 2008 11:01:36 +0200 (CEST)
+	Thu, 23 Oct 2008 11:01:37 +0200 (CEST)
+In-Reply-To: <1224752520-25668-1-git-send-email-cooloney@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,15 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: broonie@sirena.org.uk, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Bryan Wu <cooloney@kernel.org>, Mike Frysinger <vapier.adi@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Mike Frysinger <vapier.adi@gmail.com>
 
-Hi Mark and Takashi:
+tweak SPORT range for non-BF54x so we get proper behavior for BF52x parts
 
-We updates the patchset:
- - split out AD1980 change to a seperated patch
- - coding style change
+Signed-off-by: Mike Frysinger <vapier.adi@gmail.com>
+Signed-off-by: Bryan Wu <cooloney@kernel.org>
+---
+ sound/soc/blackfin/Kconfig |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Thanks
--Bryan
+diff --git a/sound/soc/blackfin/Kconfig b/sound/soc/blackfin/Kconfig
+index dc00620..3fce187 100644
+--- a/sound/soc/blackfin/Kconfig
++++ b/sound/soc/blackfin/Kconfig
+@@ -80,7 +80,7 @@ config SND_BF5XX_SPORT_NUM
+ 	int "Set a SPORT for Sound chip"
+ 	depends on (SND_BF5XX_I2S || SND_BF5XX_AC97)
+ 	range 0 3 if BF54x
+-	range 0 1 if (BF53x || BF561)
++	range 0 1 if !BF54x
+ 	default 0
+ 	help
+ 	  Set the correct SPORT for sound chip.
+-- 
+1.5.6
