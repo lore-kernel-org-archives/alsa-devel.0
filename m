@@ -1,22 +1,33 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: Problem setting mixer switch with amixer/alsactl.
-Date: Fri, 24 Oct 2008 18:26:40 +0100
-Message-ID: <20081024172640.GB3328@sirena.org.uk>
-References: <48FF7538.3090000@oliford.co.uk>
-	<20081022205729.GD7537@sirena.org.uk>
-	<48FFAFB1.1090106@oliford.co.uk>
-	<20081023140015.GA17901@sirena.org.uk>
-	<4900851D.2050001@oliford.co.uk> <4900F6D2.6030305@oliford.co.uk>
+From: Jelle de Jong <jelledejong@powercraft.nl>
+Subject: volume scaling of usb audio class headset
+Date: Fri, 24 Oct 2008 19:35:28 +0200
+Message-ID: <49020760.9080900@powercraft.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id D84EE245B6
+Received: from node03.cambriumhosting.nl (node03.cambriumhosting.nl
+	[217.19.16.164]) by alsa0.perex.cz (Postfix) with ESMTP id D6A79245BA
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Oct 2008 19:27:04 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4900F6D2.6030305@oliford.co.uk>
+	Fri, 24 Oct 2008 19:35:48 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by node03.cambriumhosting.nl (Postfix) with ESMTP id 7FB32B0002EC
+	for <alsa-devel@alsa-project.org>;
+	Fri, 24 Oct 2008 19:35:30 +0200 (CEST)
+Received: from node03.cambriumhosting.nl ([127.0.0.1])
+	by localhost (node03.cambriumhosting.nl [127.0.0.1]) (amavisd-new,
+	port 10024)
+	with ESMTP id j6vMAhtcn1vQ for <alsa-devel@alsa-project.org>;
+	Fri, 24 Oct 2008 19:35:30 +0200 (CEST)
+Received: from ashley.powercraft.nl (84-245-3-195.dsl.cambrium.nl
+	[84.245.3.195])
+	by node03.cambriumhosting.nl (Postfix) with ESMTP id 00730B0002A7
+	for <alsa-devel@alsa-project.org>;
+	Fri, 24 Oct 2008 19:35:29 +0200 (CEST)
+Received: from [192.168.1.180] (unknown [192.168.1.180])
+	by ashley.powercraft.nl (Postfix) with ESMTPSA id CC92123BC65C
+	for <alsa-devel@alsa-project.org>;
+	Fri, 24 Oct 2008 19:35:29 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,22 +37,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Oliver Ford <oliford@oliford.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 23, 2008 at 11:12:34PM +0100, Oliver Ford wrote:
+Hello everybody,
 
-> Am I right in understanding that setting all the controls in amixer  
-> doesn't actually enable the control in the codec chip at that time but  
-> that the powering on/off is done by soc-dapm.c when the the DAC is  
-> actually enabled when playing some audio? This appears to be what is  
-> happening when it does work (looking at the log). I hadn't realised this.
+I got a question, I got a few usb headsets that seem to apply to the usb
+audio class and the volume scale is way to big with alsa. with the
+control on 10 of the 100 you are almost getting deaf. So my question is
+how does alsa make an scaling for such devices and how to fix it so that
+the full range can be used in a normal volume spectrum.
 
-Sort of.  The power control happens whenever any power-related control
-changes and whenever audio is started or stopped.
+Thank in advance,
 
-> I've put some debugging in pxa2xx-ac97-write and in dapm_power_widgets()  
-> and the log is attached (stripped of non-audio stuff).
-
-I'll have a look at these on Monday.
+Jelle
