@@ -1,20 +1,22 @@
-From: "Sean McNamara" <smcnam@gmail.com>
-Subject: Re: bluetooth alsa and software mixing
-Date: Fri, 24 Oct 2008 14:34:34 -0400
-Message-ID: <74eb1fe20810241134r238d21eatfdf130c6376d8fe9@mail.gmail.com>
-References: <49020841.5020802@powercraft.nl>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: Problem setting mixer switch with amixer/alsactl.
+Date: Fri, 24 Oct 2008 21:09:33 +0200
+Message-ID: <87ej25ero2.fsf@free.fr>
+References: <48FF7538.3090000@oliford.co.uk>
+	<20081023132705.GA20557@sirena.org.uk>
+	<4900829A.8000703@oliford.co.uk>
+	<20081023140116.GB17901@sirena.org.uk> <87mygvmci7.fsf@free.fr>
+	<20081024172533.GA3328@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8996E245E4
+Received: from smtp8-g19.free.fr (smtp8-g19.free.fr [212.27.42.65])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4034C245FD
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Oct 2008 20:34:53 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id l35so531360waf.16
-	for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2008 11:34:34 -0700 (PDT)
-In-Reply-To: <49020841.5020802@powercraft.nl>
-Content-Disposition: inline
+	Fri, 24 Oct 2008 21:09:53 +0200 (CEST)
+In-Reply-To: <20081024172533.GA3328@sirena.org.uk> (Mark Brown's message of
+	"Fri\, 24 Oct 2008 18\:25\:34 +0100")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,63 +26,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jelle de Jong <jelledejong@powercraft.nl>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org, Oliver Ford <ipaqlinux@oliford.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Is this another one of your open-ended questions where you already
-know of the problems with your question and the potential solutions,
-but you actually have a bug using one of the solutions? If so, can I
-have some more money? ;-)
+Mark Brown <broonie@sirena.org.uk> writes:
 
-Well, basically, only a very small subset of audio devices out there
-(some older Creative soundblaster cards, and some newer pro audio
-cards) have hardware mixing on-chip. ALSA's default raw interfaces do
-not provide any software mixing, so unless the hardware supports
-hardware mixing and the driver takes advantage of that, you won't have
-the ability to open multiple streams at once on *any* ALSA device.
+> On Thu, Oct 23, 2008 at 07:45:20PM +0200, Robert Jarzmik wrote:
+>> Mark Brown <broonie@sirena.org.uk> writes:
+> All this patch does is change the limit, there is still a limit on the
+> length of control names in ALSA but as I say it's purely a cosmetic issue.
 
-That's why we have:
+I don't quite agree on the "cosmetic".
 
-1. Dmix, and
-2. PulseAudio.
+If I recall correctly, that name is used in dapm path setup. If the name is
+incorrect (truncated), some dapm elements are not switched on. I'm speaking from
+memory, I'll try to browse my git repository to track it back. Notice that I'm
+really busy ATM, so I don't have enough manpower to test immediatly.
 
-There is ample documentation out there about how to set up and
-configure dmix and pulseaudio. To add dmix to your example, you would
-just have to define a dmix instance with a slave of your softvol PCM,
-and a dsnoop device with a slave of the softvol device. If softvol
-doesn't work this way, try making the slave the headset device.
+I'll try to revert my patch and see the effects at the end of the next week.
 
-Pulseaudio could also use the raw headset device in module-alsa-sink.
-
-Have you tried these with no success? If so, what sorts of issues are
-you getting?
-
-I just thought I'd point out that, with the configuration you posted,
-there is no expectation that you'll get any sort of mixing of streams
-at all; that's by design. But based on your previous posts I think you
-already know that...?
-
-Sean
-
-2008/10/24 Jelle de Jong <jelledejong@powercraft.nl>:
-> Hello everybody,
->
-> I have a bunch of bluetooth audio devices, and I can currently only play
-> one audio stream as once, and i would like to be able to listen to radio
-> and other sounds at the same time. So i think some sort of software
-> mixing is needed to get this working. I attached my .asound / also
-> configuration. How can I configure my bluetooth system so that I can
-> listen to different sources of audio at the same time?
->
-> Thank for any information in advance,
->
-> Kind regards,
->
-> Jelle
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
->
+--
+Robert
