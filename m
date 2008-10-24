@@ -1,22 +1,17 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: Problem setting mixer switch with amixer/alsactl.
-Date: Fri, 24 Oct 2008 21:32:54 +0100
-Message-ID: <20081024203254.GA2544@sirena.org.uk>
-References: <48FF7538.3090000@oliford.co.uk>
-	<20081023132705.GA20557@sirena.org.uk>
-	<4900829A.8000703@oliford.co.uk>
-	<20081023140116.GB17901@sirena.org.uk> <87mygvmci7.fsf@free.fr>
-	<20081024172533.GA3328@sirena.org.uk> <87ej25ero2.fsf@free.fr>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Only one element for multichannel mixer controls
+	please!
+Date: Sat, 25 Oct 2008 01:49:33 +0200
+Message-ID: <20081024234932.GA17812@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0D0001037EE
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7B1632432D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Oct 2008 22:33:15 +0200 (CEST)
+	Sat, 25 Oct 2008 01:49:51 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <87ej25ero2.fsf@free.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,21 +21,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: alsa-devel@alsa-project.org, Oliver Ford <ipaqlinux@oliford.co.uk>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 24, 2008 at 09:09:33PM +0200, Robert Jarzmik wrote:
+Heya!
 
-> If I recall correctly, that name is used in dapm path setup. If the name is
-> incorrect (truncated), some dapm elements are not switched on. I'm speaking from
-> memory, I'll try to browse my git repository to track it back. Notice that I'm
-> really busy ATM, so I don't have enough manpower to test immediatly.
+It seems that quite a few ALSA drivers for multichannel sound cards
+export three seperate stereo mixer controls to control front, rear and
+center/lfe independantly. That sucks because a client (such as
+PulseAudio) cannot make use of this. Instead they should export a
+single 6ch mixer control!
 
-Hrm, that's possible I suppose though I don't recall it being mentioned
-at the time and can't see any truncations that would make any difference
-for here.
+The "amixer scontents" output looks very strange for these drivers
+since it lists a "Rear" control that as a "Front Left" and a "Front
+Right" channel. So, what is it now: front or rear?
 
-> I'll try to revert my patch and see the effects at the end of the next week.
+Is there any reason for this current driver behaviour? I mean, the
+mixer knows channel ids like SND_MIXER_SCHN_REAR_LEFT perfectly
+well. Or is it that those devices have some devices joined and this
+cannot be expressd with a single boolean "joined" for each
+control?
 
-I should be able to look into this myself on Monday.
+Please enlighten me!
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
