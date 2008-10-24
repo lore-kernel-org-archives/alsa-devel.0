@@ -1,7 +1,7 @@
 From: "Nir Tzachar" <nir.tzachar@gmail.com>
 Subject: Re: Nvidia hdmi problems
-Date: Fri, 24 Oct 2008 13:32:01 +0200
-Message-ID: <9b2db90b0810240432m3c1ab10x98c07e62300af996@mail.gmail.com>
+Date: Fri, 24 Oct 2008 13:33:17 +0200
+Message-ID: <9b2db90b0810240433u8bd54d1x3ec2f09629aadc65@mail.gmail.com>
 References: <9b2db90b0810200735g61cad43dr538c3afc495398ec@mail.gmail.com>
 	<s5hy70hyx2j.wl%tiwai@suse.de>
 	<9b2db90b0810221009v36039a7eu4564c15d79433823@mail.gmail.com>
@@ -16,12 +16,12 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id BB065244B8
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.157])
+	by alsa0.perex.cz (Postfix) with ESMTP id 973AB244B8
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Oct 2008 13:32:20 +0200 (CEST)
-Received: by yx-out-1718.google.com with SMTP id 36so495799yxh.2
-	for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2008 04:32:02 -0700 (PDT)
+	Fri, 24 Oct 2008 13:33:35 +0200 (CEST)
+Received: by yx-out-1718.google.com with SMTP id 36so496070yxh.2
+	for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2008 04:33:17 -0700 (PDT)
 In-Reply-To: <s5h4p32s4qs.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -116,7 +116,10 @@ On Fri, Oct 24, 2008 at 11:48 AM, Takashi Iwai <tiwai@suse.de> wrote:
 >        % iecset -c0 -n1 pro off audio off
 > then run ac3dec
 >        % ac3dec -H -C foo.ac3
->
+
+I don't get any sound (at all, not even regular pcm) after doing this.
+Maybe my TV is not capable of ac3 input? Is this possible?
+
 >
 > thanks,
 >
