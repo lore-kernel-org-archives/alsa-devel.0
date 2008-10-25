@@ -1,19 +1,23 @@
-From: "Richard Zhao" <linuxzsc@gmail.com>
-Subject: ASOC: For SND_SOC_DAIFMT_IB_IF what is invert baseed
-	on?
-Date: Sun, 26 Oct 2008 00:31:03 +0800
-Message-ID: <4e090d470810250931k5e44a4cck3ad0186a2c47ec03@mail.gmail.com>
+From: Thomas Scheunemann <thomas.scheunemann@uni-duisburg-essen.de>
+Subject: Re: Backported sbxfi driver, possible fix
+Date: Sat, 25 Oct 2008 21:42:55 +0200
+Message-ID: <20081025194255.GA27872@rzle423.uni-duisburg.de>
+References: <4900A4FA.7020300@jasonline.co.uk> <s5h63njw2c0.wl%tiwai@suse.de>
+	<4900B523.3020801@jasonline.co.uk> <s5h8wsf3spl.wl%tiwai@suse.de>
+	<4900DBBD.2020806@jasonline.co.uk> <s5hljwee68t.wl%tiwai@suse.de>
+	<49017FBF.4030005@jasonline.co.uk> <s5hfxmm47kb.wl%tiwai@suse.de>
+	<20081025130652.GA27621@rzle423.uni-duisburg.de>
+	<s5hej24psn6.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 243281037EB
+Received: from rzle423.uni-duisburg.de (rzle423.uni-duisburg.de [134.91.2.25])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4249C2436C
 	for <alsa-devel@alsa-project.org>;
-	Sat, 25 Oct 2008 18:31:21 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id l35so730695waf.16
-	for <alsa-devel@alsa-project.org>; Sat, 25 Oct 2008 09:31:03 -0700 (PDT)
+	Sat, 25 Oct 2008 21:43:13 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <s5hej24psn6.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,23 +28,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+> My solution is to use roundup_pow_of_two() instead of the own
+> funciton.  This should work better in general.
 
-include/sound/soc.h
-/*
- * DAI hardware signal inversions
- */
-#define SND_SOC_DAIFMT_NB_NF            (0 << 8)        /* normal bclk + frm */
-#define SND_SOC_DAIFMT_NB_IF            (1 << 8)        /* normal bclk
-+ inv frm */
-#define SND_SOC_DAIFMT_IB_NF            (2 << 8)        /* invert bclk
-+ nor frm */
-#define SND_SOC_DAIFMT_IB_IF            (3 << 8)        /* invert bclk + frm */
+I certainly agree that it is better to use an already defined function
+instead of reinventing the wheel.
 
-What are frame cock and bit clock invert based on? I2S, PCM or some
-else bus protocols? Or just high level voltage or low level voltage?
+> Anyway, I updated the repo (and rebased, sorry), updated the snapshot,
+> too.
 
-Thanks
-Richard
+But this new version causes an immediate reboot on my machine even with
+the previously working speaker-test. If I interpret linux/log2.h correctly
+the desired function should be order_base_2 instead of roundup_pow_of_two.
+At least it works for me after that exchange.
