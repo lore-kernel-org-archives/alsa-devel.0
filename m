@@ -1,14 +1,22 @@
-From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: 2.6.26.[6|7] vs. rt11 vs. alsa (usb) midi
-Date: Sat, 25 Oct 2008 19:46:27 -0700
-Message-ID: <1224989187.3706.7.camel@localhost.localdomain>
+From: The Source <thesourcehim@gmail.com>
+Subject: Re: Backported sbxfi driver, possible fix
+Date: Sun, 26 Oct 2008 09:32:08 +0300
+Message-ID: <49040EE8.5030903@gmail.com>
+References: <4900A4FA.7020300@jasonline.co.uk>	<4900DBBD.2020806@jasonline.co.uk>
+	<s5hljwee68t.wl%tiwai@suse.de>	<49017FBF.4030005@jasonline.co.uk>
+	<s5hfxmm47kb.wl%tiwai@suse.de>	<20081025130652.GA27621@rzle423.uni-duisburg.de>	<s5hej24psn6.wl%tiwai@suse.de>	<20081025194255.GA27872@rzle423.uni-duisburg.de>	<s5hod18fntg.wl%tiwai@suse.de>
+	<49038448.3090704@jasonline.co.uk>
+	<5501535d0810251457k165cc4ceid2e34930a2bdc8ec@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2.stanford.edu (smtp2.Stanford.EDU [171.67.20.25])
-	by alsa0.perex.cz (Postfix) with ESMTP id CAAAA24413
-	for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2008 03:52:56 +0100 (CET)
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.169])
+	by alsa0.perex.cz (Postfix) with ESMTP id B63C21037EF
+	for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2008 07:33:28 +0100 (CET)
+Received: by ug-out-1314.google.com with SMTP id h2so17393ugf.24
+	for <alsa-devel@alsa-project.org>; Sat, 25 Oct 2008 23:33:10 -0700 (PDT)
+In-Reply-To: <5501535d0810251457k165cc4ceid2e34930a2bdc8ec@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,26 +26,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Ingo Molnar <mingo@elte.hu>
-Cc: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi... anyone out there also having problem with this combination?
-   2.6.26.7 or 2.6.26.6 with 2.6.26.6-rt11 and alsa MIDI
-It looks to me like alsa midi is broken. 
-
-Probably an interaction with the realtime kernel patch. A Fedora kernel
-based on 2.6.26.6 (2.6.26.6-49 on fc8) works fine, a very similarly
-patched kernel that includes the realtime patch does not. The
-configurations for both are almost the same (today I tried to change
-some of the most obvious differences and rebuild, with the same
-result). 
-
-No problems with 2.6.24.7-rt21. 
-
-Test: boot, login, plugin an external usb keyboard (Yamaha P250), it is
-recognized, use qjackctl alsa patchbay to connect it to kmidimon,
-kmidimon sees only _one_ midi message and that's it. Kmidimon can't be
-killed after that. 
-
--- Fernando
+QmpvZXJuIE9sYXVzc29uINC/0LjRiNC10YI6Cj4+IExhdGVzdCB1bnN0YWJsZSAoMjVPY3QgMTk6
+NTcpIHdvcmtzIGZyb20gY29tbWFuZCBsaW5lIHdpdGggbXBsYXllciwKPj4gd2l0aG91dCB0aGUg
+cHJvYyBvc3MgZml4Lgo+Pgo+PiAgICAgCj4gQ29uZmlybWVkLgo+IFRoZSBzdHV0dGVyaW5nIGdv
+dCBiZXR0ZXIsIGJ1dCBpcyBzdGlsbCBwcmVzZW50Lgo+Cj4gWGluZSB3b3JrcyBmbGF3bGVzcy4K
+Pgo+ICAgCj4+IGFwbGF5IHN0aWxsIHdvcmtzIGJ1dCBvbmx5IHdpdGggZG1peC4KPj4KPj4gICAg
+IAo+IFNhbXBsaW5ncmF0ZSAxMTAyNUh6IGFuZCA4MDAwSHogZG8gbm90IHBsYXkgYSBjbGVhciBz
+aW51cywgc291bmRzIGEKPiBiaXQgc2NyYXRjaHkuLgo+IEFsbCBvdGhlciBjb21tb24gc2FtcGxp
+bmdyYXRlcyB3b3JrIGZsYXdsZXNzLiBDb3VsZCBzb21lb25lIGNvbmZpcm0gdGhhdD8KPiBodHRw
+Oi8vdG1wLm9sYXVzc29uLmRlLzMwZGF5cy8wXzE2X3NfODAwMC53YXYKPiBodHRwOi8vdG1wLm9s
+YXVzc29uLmRlLzMwZGF5cy8wXzE2X3NfMTEwMjUud2F2Cj4gaHR0cDovL3RtcC5vbGF1c3Nvbi5k
+ZS8zMGRheXMvMF8xNl9zXzk2MDAwLndhdgo+Cj4gSnVzdCB1c2luZyAiYXBsYXkgZmlsZS53YXYi
+Cj4KPiBNb3JlIG5vdGljYWJsZSBpc3QgaXQgd2hlbiB1c2luZyBtcGxheWVyLiBDcmFja2xlcyBh
+IGxvdCB3aXRoIDgwMDBIeiBhbmQgMTEwMjVIego+ICJtcGxheWVyIGZpbGUud2F2Igo+Cj4gbW1o
+LCB4aW5lIGNyYWNrbGVzIHRvby4gUGxlYXNlIHNvbWVvbmUgY29uZmlybSwgb3RoZXJ3aXNlIHRo
+ZSBmaWxlcyBtYXkgYmUgYmFkLgo+Cj4gICAKPj4gTm93IGFsc28gYWxtb3N0IHdvcmtpbmcgaW4g
+Z25vbWUgd2l0aCBwdWxzZSwgc291bmQgaXMgcmVjb2duaXNhYmxlIGJ1dAo+PiB3aXRoIGxvdHMg
+b2YgaW50ZXJmZXJlbmNlL2NvcnJ1cHRpb24uCj4+Cj4+ICAgICAKPiBObyBwdWxzZWF1ZGlvIG9u
+IG15IG1hY2hpbmUuIFNyeS4KPgo+ICAgCj4+IE1hY2hpbmUgZGlkIG5vdCBjcmFzaCBhdCBhbnkg
+cG9pbnQhCj4+Cj4+ICAgICAKPiBKdXN0IG9ic2VydmVkIGEgWCBjcmFzaCB3aGVuIHVzaW5nIHNt
+cGxheWVyIHRvIHBsYXkgYSBhdmkuIFdoZW4gSQo+IGNsb3NlZCBzbXBsYXllciB3aGlsZSB0aGUg
+bW92aWUgd2FzIHBsYXlpbmcgWCBjcmFzaGVkLiAoQnV0IGNvdWxkIGJlCj4gdW5yZWxhdGVkIHRv
+IGF1ZGlvLCBJIGNvdWxkIG5vdCByZXByb2R1Y2UgaXQpCj4KPiBCdXQgbm8gY3Jhc2ggb3IgZnJl
+ZXogc28gZmFyLgo+Cj4gICAKPj4gVGhpcyB3YXMgcnVubmluZyBvbiAyLjYuMjYuLi4gaXMgdGhp
+cyBhIHByb2JsZW0/IFNVUFBPUlRFRF9LRVJORUxTIHNheXMKPj4gMi42LjI1IG9yIGVhcmxpZXI/
+Cj4+Cj4+ICAgICAKPiBJIGFtIHVzaW5nIHZhbmlsbGEgMi42LjI3LjMKPgo+IFRoYW5rcyBmb3Ig
+eW91IGF3ZXNvbWUgd29yayEKPgo+IEJ5IHRoZSB3YXksIHdoYXQncyBuZXh0IG9uIHlvdXIgcGxh
+biB3aGVuIHN0ZXJlbyBvdXRwdXQgYW5kIHJlY29yZGluZwo+IGlzIHdvcmtpbmcgZmxhd2xlc3M/
+Cj4KPgo+IGtpbmQgcmVnYXJkcwo+IEJqb2Vybgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+Cj4gICAKVHJpZWQgdGhlIGxhdGVzdCBkcml2ZXIu
+CkFsbCBpcyBmaW5lIChoYXZlbid0IHRlc3RlZCByZWNvcmRpbmcgaG93ZXZlcikgZXhjZXB0IHB1
+bHNlYXVkaW8gCihkb2Vzbid0IHdvcmspIGFuZCB3aW5lIChzb3VuZCBpcyBtZWdhLWdsaXRjaHks
+IHBvc3NpYmx5IGJlY2F1c2Ugb2YgCnN0cmFuZ2UgcGVyaW9kIGFuZCBidWZmZXIgc2l6ZXMgaXQg
+dXNlczogcGVyaW9kPTU0NCwgYnVmZmVyPTg3MDQpLiAKU3lzdGVtIGlzIHN0YWJsZS4gT1NTIHdv
+cmtzIGZpbmUuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
+Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
