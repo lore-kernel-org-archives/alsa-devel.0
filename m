@@ -1,17 +1,19 @@
-From: Jason Harvey <softdevice@jasonline.co.uk>
-Subject: Re: Backported sbxfi driver. Pulse works!
-Date: Sun, 26 Oct 2008 08:45:15 +0000
-Message-ID: <49042E1B.8080304@jasonline.co.uk>
-References: <4900A4FA.7020300@jasonline.co.uk>	<s5h63njw2c0.wl%tiwai@suse.de>	<4900B523.3020801@jasonline.co.uk>	<s5h8wsf3spl.wl%tiwai@suse.de>	<4900DBBD.2020806@jasonline.co.uk>	<s5hljwee68t.wl%tiwai@suse.de>	<49017FBF.4030005@jasonline.co.uk>	<s5hfxmm47kb.wl%tiwai@suse.de>	<20081025130652.GA27621@rzle423.uni-duisburg.de>	<s5hej24psn6.wl%tiwai@suse.de>	<20081025194255.GA27872@rzle423.uni-duisburg.de>	<s5hod18fntg.wl%tiwai@suse.de>	<49038448.3090704@jasonline.co.uk>
-	<s5h8wsb22le.wl%tiwai@suse.de>
+From: The Source <thesourcehim@gmail.com>
+Subject: Re: Backported sbxfi driver, possible fix
+Date: Sun, 26 Oct 2008 12:11:01 +0300
+Message-ID: <49043425.6050707@gmail.com>
+References: <4900A4FA.7020300@jasonline.co.uk>	<4900DBBD.2020806@jasonline.co.uk>	<s5hljwee68t.wl%tiwai@suse.de>	<49017FBF.4030005@jasonline.co.uk>	<s5hfxmm47kb.wl%tiwai@suse.de>	<20081025130652.GA27621@rzle423.uni-duisburg.de>	<s5hej24psn6.wl%tiwai@suse.de>	<20081025194255.GA27872@rzle423.uni-duisburg.de>	<s5hod18fntg.wl%tiwai@suse.de>	<49038448.3090704@jasonline.co.uk>	<5501535d0810251457k165cc4ceid2e34930a2bdc8ec@mail.gmail.com>	<49040EE8.5030903@gmail.com>
+	<s5h63nf22a9.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from homer.jasonline.co.uk (78-86-168-217.zone2.bethere.co.uk
-	[78.86.168.217]) by alsa0.perex.cz (Postfix) with ESMTP id 3AAF8244B2
-	for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2008 09:45:27 +0100 (CET)
-In-Reply-To: <s5h8wsb22le.wl%tiwai@suse.de>
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.149])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4A890244CB
+	for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2008 10:11:22 +0100 (CET)
+Received: by ey-out-1920.google.com with SMTP id 21so623966eyc.56
+	for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2008 02:11:04 -0700 (PDT)
+In-Reply-To: <s5h63nf22a9.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,38 +23,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Sat, 25 Oct 2008 21:40:40 +0100,
-> Jason Harvey wrote:
->   
->> Latest unstable (25Oct 19:57) works from command line with mplayer, 
->> without the proc oss fix.
->> aplay still works but only with dmix.
->>     
->
-> Do you have no sound quality problem with dmix like other people?
->   
-No dmix trouble when I run "aplay -Dplug:dmix:0 wn.wav" produces perfect 
-sound. Wav is three minutes long and it was 100% ok throughout.
-
->   
->> Now also almost working in gnome with pulse, sound is recognisable but 
->> with lots of interference/corruption.
->>     
->
-> What about base_rate=48000 option?
->   
-Genius! It is now working through pulse PERFECTLY.
-Have two instances of mplayer playing right this second.
-Can hear both tracks playing without any trouble.
-
-I just edited one line in /etc/pulse/daemon.conf not sure it is the 
-option you were talking about above but it works for me!
-
-Will put the card into my 64bit main machine in a minute and try it there :)
-
-Jason
+VGFrYXNoaSBJd2FpINC/0LjRiNC10YI6Cj4gQXQgU3VuLCAyNiBPY3QgMjAwOCAwOTozMjowOCAr
+MDMwMCwKPiBUaGUgU291cmNlIHdyb3RlOgo+ICAgCj4+IEJqb2VybiBPbGF1c3NvbiDQv9C40YjQ
+tdGCOgo+PiAgICAgCj4+Pj4gTGF0ZXN0IHVuc3RhYmxlICgyNU9jdCAxOTo1Nykgd29ya3MgZnJv
+bSBjb21tYW5kIGxpbmUgd2l0aCBtcGxheWVyLAo+Pj4+IHdpdGhvdXQgdGhlIHByb2Mgb3NzIGZp
+eC4KPj4+Pgo+Pj4+ICAgICAKPj4+PiAgICAgICAgIAo+Pj4gQ29uZmlybWVkLgo+Pj4gVGhlIHN0
+dXR0ZXJpbmcgZ290IGJldHRlciwgYnV0IGlzIHN0aWxsIHByZXNlbnQuCj4+Pgo+Pj4gWGluZSB3
+b3JrcyBmbGF3bGVzcy4KPj4+Cj4+PiAgIAo+Pj4gICAgICAgCj4+Pj4gYXBsYXkgc3RpbGwgd29y
+a3MgYnV0IG9ubHkgd2l0aCBkbWl4Lgo+Pj4+Cj4+Pj4gICAgIAo+Pj4+ICAgICAgICAgCj4+PiBT
+YW1wbGluZ3JhdGUgMTEwMjVIeiBhbmQgODAwMEh6IGRvIG5vdCBwbGF5IGEgY2xlYXIgc2ludXMs
+IHNvdW5kcyBhCj4+PiBiaXQgc2NyYXRjaHkuLgo+Pj4gQWxsIG90aGVyIGNvbW1vbiBzYW1wbGlu
+Z3JhdGVzIHdvcmsgZmxhd2xlc3MuIENvdWxkIHNvbWVvbmUgY29uZmlybSB0aGF0Pwo+Pj4gaHR0
+cDovL3RtcC5vbGF1c3Nvbi5kZS8zMGRheXMvMF8xNl9zXzgwMDAud2F2Cj4+PiBodHRwOi8vdG1w
+Lm9sYXVzc29uLmRlLzMwZGF5cy8wXzE2X3NfMTEwMjUud2F2Cj4+PiBodHRwOi8vdG1wLm9sYXVz
+c29uLmRlLzMwZGF5cy8wXzE2X3NfOTYwMDAud2F2Cj4+Pgo+Pj4gSnVzdCB1c2luZyAiYXBsYXkg
+ZmlsZS53YXYiCj4+Pgo+Pj4gTW9yZSBub3RpY2FibGUgaXN0IGl0IHdoZW4gdXNpbmcgbXBsYXll
+ci4gQ3JhY2tsZXMgYSBsb3Qgd2l0aCA4MDAwSHogYW5kIDExMDI1SHoKPj4+ICJtcGxheWVyIGZp
+bGUud2F2Igo+Pj4KPj4+IG1taCwgeGluZSBjcmFja2xlcyB0b28uIFBsZWFzZSBzb21lb25lIGNv
+bmZpcm0sIG90aGVyd2lzZSB0aGUgZmlsZXMgbWF5IGJlIGJhZC4KPj4+Cj4+PiAgIAo+Pj4gICAg
+ICAgCj4+Pj4gTm93IGFsc28gYWxtb3N0IHdvcmtpbmcgaW4gZ25vbWUgd2l0aCBwdWxzZSwgc291
+bmQgaXMgcmVjb2duaXNhYmxlIGJ1dAo+Pj4+IHdpdGggbG90cyBvZiBpbnRlcmZlcmVuY2UvY29y
+cnVwdGlvbi4KPj4+Pgo+Pj4+ICAgICAKPj4+PiAgICAgICAgIAo+Pj4gTm8gcHVsc2VhdWRpbyBv
+biBteSBtYWNoaW5lLiBTcnkuCj4+Pgo+Pj4gICAKPj4+ICAgICAgIAo+Pj4+IE1hY2hpbmUgZGlk
+IG5vdCBjcmFzaCBhdCBhbnkgcG9pbnQhCj4+Pj4KPj4+PiAgICAgCj4+Pj4gICAgICAgICAKPj4+
+IEp1c3Qgb2JzZXJ2ZWQgYSBYIGNyYXNoIHdoZW4gdXNpbmcgc21wbGF5ZXIgdG8gcGxheSBhIGF2
+aS4gV2hlbiBJCj4+PiBjbG9zZWQgc21wbGF5ZXIgd2hpbGUgdGhlIG1vdmllIHdhcyBwbGF5aW5n
+IFggY3Jhc2hlZC4gKEJ1dCBjb3VsZCBiZQo+Pj4gdW5yZWxhdGVkIHRvIGF1ZGlvLCBJIGNvdWxk
+IG5vdCByZXByb2R1Y2UgaXQpCj4+Pgo+Pj4gQnV0IG5vIGNyYXNoIG9yIGZyZWV6IHNvIGZhci4K
+Pj4+Cj4+PiAgIAo+Pj4gICAgICAgCj4+Pj4gVGhpcyB3YXMgcnVubmluZyBvbiAyLjYuMjYuLi4g
+aXMgdGhpcyBhIHByb2JsZW0/IFNVUFBPUlRFRF9LRVJORUxTIHNheXMKPj4+PiAyLjYuMjUgb3Ig
+ZWFybGllcj8KPj4+Pgo+Pj4+ICAgICAKPj4+PiAgICAgICAgIAo+Pj4gSSBhbSB1c2luZyB2YW5p
+bGxhIDIuNi4yNy4zCj4+Pgo+Pj4gVGhhbmtzIGZvciB5b3UgYXdlc29tZSB3b3JrIQo+Pj4KPj4+
+IEJ5IHRoZSB3YXksIHdoYXQncyBuZXh0IG9uIHlvdXIgcGxhbiB3aGVuIHN0ZXJlbyBvdXRwdXQg
+YW5kIHJlY29yZGluZwo+Pj4gaXMgd29ya2luZyBmbGF3bGVzcz8KPj4+Cj4+Pgo+Pj4ga2luZCBy
+ZWdhcmRzCj4+PiBCam9lcm4KPj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCj4+PiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+Pj4gQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCj4+PiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+Pj4KPj4+ICAgCj4+PiAgICAgICAKPj4gVHJpZWQgdGhl
+IGxhdGVzdCBkcml2ZXIuCj4+IEFsbCBpcyBmaW5lIChoYXZlbid0IHRlc3RlZCByZWNvcmRpbmcg
+aG93ZXZlcikgZXhjZXB0IHB1bHNlYXVkaW8gCj4+IChkb2Vzbid0IHdvcmspIGFuZCB3aW5lIChz
+b3VuZCBpcyBtZWdhLWdsaXRjaHksIHBvc3NpYmx5IGJlY2F1c2Ugb2YgCj4+IHN0cmFuZ2UgcGVy
+aW9kIGFuZCBidWZmZXIgc2l6ZXMgaXQgdXNlczogcGVyaW9kPTU0NCwgYnVmZmVyPTg3MDQpLiAK
+Pj4gICAgIAo+Cj4gTWF5YmUgZHVlIHRvIHRoZSBzYW1wbGUgcmF0ZT8gIEkgZ3Vlc3Mgd2l0aCA0
+OGtIeiBpdCB3b3VsZCBiZSBhIG1vcmUKPiBzYW5lIHBlcmlvZC9idWZmZXIgc2l6ZS4KPgo+Cj4g
+dGhhbmtzLAo+Cj4gVGFrYXNoaQo+Cj4gICAKV2l0aCB0aGF0IG9wdGlvbiBwdWxzZWF1ZGlvIHdv
+cmtzIGJldHRlciAoc3RpbGwgc29tZSBnbGl0Y2hlcywgYnV0IHZlcnkgCnNtYWxsKS4gQnV0IHdp
+bmUgc3RpbGwgY29ycnVwdHMgc291bmQuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
