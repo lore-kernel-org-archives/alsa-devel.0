@@ -1,7 +1,7 @@
 From: The Source <thesourcehim@gmail.com>
 Subject: Re: Backported sbxfi driver, possible fix
-Date: Sun, 26 Oct 2008 09:32:08 +0300
-Message-ID: <49040EE8.5030903@gmail.com>
+Date: Sun, 26 Oct 2008 09:45:18 +0300
+Message-ID: <490411FE.1060807@gmail.com>
 References: <4900A4FA.7020300@jasonline.co.uk>	<4900DBBD.2020806@jasonline.co.uk>
 	<s5hljwee68t.wl%tiwai@suse.de>	<49017FBF.4030005@jasonline.co.uk>
 	<s5hfxmm47kb.wl%tiwai@suse.de>	<20081025130652.GA27621@rzle423.uni-duisburg.de>	<s5hej24psn6.wl%tiwai@suse.de>	<20081025194255.GA27872@rzle423.uni-duisburg.de>	<s5hod18fntg.wl%tiwai@suse.de>
@@ -11,11 +11,11 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.169])
-	by alsa0.perex.cz (Postfix) with ESMTP id B63C21037EF
-	for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2008 07:33:28 +0100 (CET)
-Received: by ug-out-1314.google.com with SMTP id h2so17393ugf.24
-	for <alsa-devel@alsa-project.org>; Sat, 25 Oct 2008 23:33:10 -0700 (PDT)
+Received: from ik-out-1112.google.com (ik-out-1112.google.com [66.249.90.176])
+	by alsa0.perex.cz (Postfix) with ESMTP id 333261037F4
+	for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2008 07:45:39 +0100 (CET)
+Received: by ik-out-1112.google.com with SMTP id c28so6997ika.0
+	for <alsa-devel@alsa-project.org>; Sat, 25 Oct 2008 23:45:21 -0700 (PDT)
 In-Reply-To: <5501535d0810251457k165cc4ceid2e34930a2bdc8ec@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -60,11 +60,13 @@ biB3aGVuIHN0ZXJlbyBvdXRwdXQgYW5kIHJlY29yZGluZwo+IGlzIHdvcmtpbmcgZmxhd2xlc3M/
 Cj4KPgo+IGtpbmQgcmVnYXJkcwo+IEJqb2Vybgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19f
 X19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRl
 dmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+Cj4gICAKVHJpZWQgdGhlIGxhdGVzdCBkcml2ZXIu
-CkFsbCBpcyBmaW5lIChoYXZlbid0IHRlc3RlZCByZWNvcmRpbmcgaG93ZXZlcikgZXhjZXB0IHB1
-bHNlYXVkaW8gCihkb2Vzbid0IHdvcmspIGFuZCB3aW5lIChzb3VuZCBpcyBtZWdhLWdsaXRjaHks
-IHBvc3NpYmx5IGJlY2F1c2Ugb2YgCnN0cmFuZ2UgcGVyaW9kIGFuZCBidWZmZXIgc2l6ZXMgaXQg
-dXNlczogcGVyaW9kPTU0NCwgYnVmZmVyPTg3MDQpLiAKU3lzdGVtIGlzIHN0YWJsZS4gT1NTIHdv
-cmtzIGZpbmUuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
-Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+Cj4gICAKLS1UcmllZCB0aGUgbGF0ZXN0IGRyaXZl
+ci4KLS1BbGwgaXMgZmluZSAoaGF2ZW4ndCB0ZXN0ZWQgcmVjb3JkaW5nIGhvd2V2ZXIpIGV4Y2Vw
+dCBwdWxzZWF1ZGlvCi0tKGRvZXNuJ3Qgd29yaykgYW5kIHdpbmUgKHNvdW5kIGlzIG1lZ2EtZ2xp
+dGNoeSwgcG9zc2libHkgYmVjYXVzZSBvZgotLXN0cmFuZ2UgcGVyaW9kIGFuZCBidWZmZXIgc2l6
+ZXMgaXQgdXNlczogcGVyaW9kPTU0NCwgYnVmZmVyPTg3MDQpLgotLVN5c3RlbSBpcyBzdGFibGUu
+IE9TUyB3b3JrcyBmaW5lLgoKQWxzbyBkbWl4IGNhdXNlcyBob3JyaWJsZSBnbGl0Y2hlcyBldmVy
+eXdoZXJlLiBXYXMgYW55b25lIGFibGUgdG8gbWFrZSAKZ29vZCBkbWl4IGNvbmZpZz8KX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
