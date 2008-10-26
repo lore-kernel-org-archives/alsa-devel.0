@@ -1,17 +1,22 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: ASOC: For SND_SOC_DAIFMT_IB_IF what is
-	invert	baseed on?
-Date: Sun, 26 Oct 2008 16:05:26 +0000
-Message-ID: <1225037126.28382.85.camel@dell-desktop.example.com>
-References: <4e090d470810250931k5e44a4cck3ad0186a2c47ec03@mail.gmail.com>
+From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
+Subject: Re: Bug in sound-unstable-2.6 ice1724
+Date: Sun, 26 Oct 2008 17:31:02 +0100
+Message-ID: <fd3eb9bf0810260931g716855b6tf00181f39baf584e@mail.gmail.com>
+References: <fd3eb9bf0810190236r68dc5f0bvc948acd5c6904810@mail.gmail.com>
+	<s5hy70jpusp.wl%tiwai@suse.de>
+	<fd3eb9bf0810210149k4a4e90f5ya904821fa3ca79f7@mail.gmail.com>
+	<s5hprlugw5w.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from slimlogic.co.uk (slimlogic.co.uk [89.16.172.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 977FF243C7
-	for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2008 17:05:49 +0100 (CET)
-In-Reply-To: <4e090d470810250931k5e44a4cck3ad0186a2c47ec03@mail.gmail.com>
+Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.172])
+	by alsa0.perex.cz (Postfix) with ESMTP id D478E243CC
+	for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2008 17:31:20 +0100 (CET)
+Received: by wf-out-1314.google.com with SMTP id 24so1706718wfg.23
+	for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2008 09:31:02 -0700 (PDT)
+In-Reply-To: <s5hprlugw5w.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,29 +26,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Richard Zhao <linuxzsc@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2008-10-26 at 00:31 +0800, Richard Zhao wrote:
-> Hi,
-> 
-> include/sound/soc.h
-> /*
->  * DAI hardware signal inversions
->  */
-> #define SND_SOC_DAIFMT_NB_NF            (0 << 8)        /* normal bclk + frm */
-> #define SND_SOC_DAIFMT_NB_IF            (1 << 8)        /* normal bclk
-> + inv frm */
-> #define SND_SOC_DAIFMT_IB_NF            (2 << 8)        /* invert bclk
-> + nor frm */
-> #define SND_SOC_DAIFMT_IB_IF            (3 << 8)        /* invert bclk + frm */
-> 
-> What are frame cock and bit clock invert based on? I2S, PCM or some
-> else bus protocols? Or just high level voltage or low level voltage?
-> 
-
-Generic logic levels (high/low voltage) that can apply to I2S and PCM
-DAI's.
-
-Liam
+WWVhcCwgdGhhdCBvbmUgZG9lcyBpdC4gTm8gbmVlZCB0byByZXZlcnQgaXQgZnVsbHksIHRob3Vn
+aC4gSSBqdXN0CnVuY29tbWVudGVkIHRoZSB1bnNpZ25lZCBjaGFyIG1hc2sgbGluZSBhbmQgcmVt
+b3ZlZCB0aGF0ICNpZiAwIGFuZAojZW5kaWYuIE5vdyBpdCB3b3JrcyBwZXJmZWN0bHkuIFRoYW5r
+cyEgQ2FuIHlvdSBmaXggaXQgaW4geW91ciB0cmVlPwoKMjAwOC8xMC8yMSBUYWthc2hpIEl3YWkg
+PHRpd2FpQHN1c2UuZGU+Ogo+IEF0IFR1ZSwgMjEgT2N0IDIwMDggMTA6NDk6MTggKzAyMDAsCj4g
+PT9VVEYtOD9RP1ZlZHJhbl9NaWxldGk9QzQ9ODc/PSB3cm90ZToKPj4KPj4gTm8sIHRoYXQgZGlk
+bid0IGZpeCBpdC4gOi0oCj4+Cj4+IHZlZHJhbkBrYWxvcHNpYTp+L01lZGlhJCBtcGxheWVyIC1h
+byBhbHNhOmRldmljZT1odz0xLjAgLXNyYXRlIDIyMDUwCj4+IC1mb3JtYXQgczMybGUgZ2V0X3Zp
+ZGVvCj4+IE1QbGF5ZXIgMS4wcmMyLTQuMy4xLURGU0ctZnJlZSAoQykgMjAwMC0yMDA3IE1QbGF5
+ZXIgVGVhbQo+PiBDUFU6IEFNRCBBdGhsb24odG0pIER1YWwgQ29yZSBQcm9jZXNzb3IgNDQ1MGUg
+KEZhbWlseTogMTUsIE1vZGVsOiAxMDcsCj4+IFN0ZXBwaW5nOiAyKQo+PiBDUFVmbGFnczogIE1N
+WDogMSBNTVgyOiAxIDNETm93OiAxIDNETm93MjogMSBTU0U6IDEgU1NFMjogMQo+PiBDb21waWxl
+ZCB3aXRoIHJ1bnRpbWUgQ1BVIGRldGVjdGlvbi4KPj4gbXBsYXllcjogY291bGQgbm90IGNvbm5l
+Y3QgdG8gc29ja2V0Cj4+IG1wbGF5ZXI6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKPj4gRmFp
+bGVkIHRvIG9wZW4gTElSQyBzdXBwb3J0LiBZb3Ugd2lsbCBub3QgYmUgYWJsZSB0byB1c2UgeW91
+ciByZW1vdGUgY29udHJvbC4KPj4KPj4gUGxheWluZyBnZXRfdmlkZW8uCj4+IGxpYmF2Zm9ybWF0
+IGZpbGUgZm9ybWF0IGRldGVjdGVkLgo+PiBbbGF2Zl0gVmlkZW8gc3RyZWFtIGZvdW5kLCAtdmlk
+IDAKPj4gW2xhdmZdIEF1ZGlvIHN0cmVhbSBmb3VuZCwgLWFpZCAxCj4+IFZJREVPOiAgW0ZMVjFd
+ICAzMjB4MjQwICAwYnBwICAyOS45NzAgZnBzICAgIDAuMCBrYnBzICggMC4wIGtieXRlL3MpCj4+
+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09Cj4+IE9wZW5pbmcgdmlkZW8gZGVjb2RlcjogW2ZmbXBlZ10gRkZt
+cGVnJ3MgbGliYXZjb2RlYyBjb2RlYyBmYW1pbHkKPj4gU2VsZWN0ZWQgdmlkZW8gY29kZWM6IFtm
+ZmZsdl0gdmZtOiBmZm1wZWcgKEZGbXBlZyBGbGFzaCB2aWRlbykKPj4gPT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT0KPj4gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT0KPj4gT3BlbmluZyBhdWRpbyBkZWNvZGVyOiBbbXAzbGli
+XSBNUEVHIGxheWVyLTIsIGxheWVyLTMKPj4gQVVESU86IDIyMDUwIEh6LCAyIGNoLCBzMTZsZSwg
+OC4wIGtiaXQvMS4xMyUgKHJhdGlvOiAxMDAwLT44ODIwMCkKPj4gU2VsZWN0ZWQgYXVkaW8gY29k
+ZWM6IFttcDNdIGFmbTogbXAzbGliIChtcDNsaWIgTVBFRyBsYXllci0yLCBsYXllci0zKQo+PiA9
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PQo+PiBBTzogW2Fsc2FdIDIyMDUwSHogMmNoIHMzMmxlICg0IGJ5dGVz
+IHBlciBzYW1wbGUpCj4+IFN0YXJ0aW5nIHBsYXliYWNrLi4uCj4+IFZEZWM6IHZvIGNvbmZpZyBy
+ZXF1ZXN0IC0gMzIwIHggMjQwIChwcmVmZXJyZWQgY29sb3JzcGFjZTogUGxhbmFyIFlWMTIpCj4+
+IFZEZWM6IHVzaW5nIFBsYW5hciBZVjEyIGFzIG91dHB1dCBjc3AgKG5vIDApCj4+IE1vdmllLUFz
+cGVjdCBpcyB1bmRlZmluZWQgLSBubyBwcmVzY2FsaW5nIGFwcGxpZWQuCj4+IFZPOiBbeHZdIDMy
+MHgyNDAgPT4gMzIweDI0MCBQbGFuYXIgWVYxMgo+PiBBOiAyNDAuOCBWOiAyNDUuMyBBLVY6IC00
+LjUwMiBjdDogLTQuMzgyIDMzNTAvMzM1MCAgMCUgIDAlICAwLjQlIDAgMAo+PiBbQU9fQUxTQV0g
+YWxzYS1saWI6IHBjbV9ody5jOjQ4ODooc25kX3BjbV9od19kcmFpbikKPj4gU05EUlZfUENNX0lP
+Q1RMX0RSQUlOIGZhaWxlZDogSW5wdXQvb3V0cHV0IGVycm9yCj4KPiBEaWQgeW91IGJ1aWxkIHdp
+dGggQ09ORklHX1NORF9ERUJVRz15PyAgSSBndWVzcyB5b3UgZ2V0IGEga2VybmVsIGVycm9yCj4g
+bWVzc2FnZSBsaWtlICJwbGF5YmFjayBkcmFpbiBlcnJvciAoRE1BIG9yIElSUS4uLiIKPgo+IElm
+IHNvLCBhIHJlbGV2YW50IHBhdGNoIGlzIDEwODMyMDZmZjQ0YWY0YmFhMDM1NzNiNGE2YmFjNDMw
+ZDlkNzA0MDQsCj4gICAgQUxTQTogaWNlMTcyNCAtIEZpeCBUWCBJUlEgbG9ja3VwCj4KPiBUcnkg
+dG8gcmV2ZXJ0IGl0Lgo+Cj4KPiB0aGFua3MsCj4KPiBUYWthc2hpCj4KPj4KPj4gRXhpdGluZy4u
+LiAoRW5kIG9mIGZpbGUpCj4+Cj4+IDIwMDgvMTAvMjAgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNl
+LmRlPjoKPj4gPiBBdCBTdW4sIDE5IE9jdCAyMDA4IDExOjM2OjM1ICswMjAwLAo+PiA+ID0/VVRG
+LTg/UT9WZWRyYW5fTWlsZXRpPUM0PTg3Pz0gd3JvdGU6Cj4+ID4+Cj4+ID4+IEkgaGF2ZToKPj4g
+Pj4gMDE6MGEuMCBNdWx0aW1lZGlhIGF1ZGlvIGNvbnRyb2xsZXI6IFZJQSBUZWNobm9sb2dpZXMg
+SW5jLiBWVDE3MjAvMjQKPj4gPj4gW0VudnkyNFBUL0hUXSBQQ0kgTXVsdGktQ2hhbm5lbCBBdWRp
+byBDb250cm9sbGVyIChyZXYgMDEpCj4+ID4+ICAgICAgIFN1YnN5c3RlbTogVEVSUkFURUMgRWxl
+Y3Ryb25pYyBHbWJIIFBIQVNFIDIyCj4+ID4+ICAgICAgIEZsYWdzOiBidXMgbWFzdGVyLCBtZWRp
+dW0gZGV2c2VsLCBsYXRlbmN5IDY0LCBJUlEgMTYKPj4gPj4gICAgICAgSS9PIHBvcnRzIGF0IGM4
+ODAgW3NpemU9MzJdCj4+ID4+ICAgICAgIEkvTyBwb3J0cyBhdCBjODAwIFtzaXplPTEyOF0KPj4g
+Pj4gICAgICAgQ2FwYWJpbGl0aWVzOiBbODBdIFBvd2VyIE1hbmFnZW1lbnQgdmVyc2lvbiAxCj4+
+ID4+ICAgICAgIEtlcm5lbCBkcml2ZXIgaW4gdXNlOiBJQ0UxNzI0Cj4+ID4+ICAgICAgIEtlcm5l
+bCBtb2R1bGVzOiBzbmQtaWNlMTcyNAo+PiA+PiBJIGRvIHRoaXM6Cj4+ID4+IG1wbGF5ZXIgLWFv
+IGFsc2E6ZGV2aWNlPWh3PTEuMCAtc3JhdGUgNDQxMDAgLWZvcm1hdCBzMzJsZSBnZXRfdmlkZW8K
+Pj4gPj4gQmVmb3JlIHRoZSBzb25nIGVuZHMsIGxhc3Qgc2FtcGxlIGxvb3BzIGZvciBhYm91dCAy
+MC0zMCB0aW1lcywgYW5kCj4+ID4+IHRoZW4gbXBsYXllciBxdWl0cyB3aXRoIGVycm9yOgo+PiA+
+PiBhbHNhLWxpYjogcGNtX2h3LmM6NDg4OihzbmRfcGNtX2h3X2RyYWluKSBTTkRSVl9QQ01fSU9D
+VExfRFJBSU4KPj4gPj4gZmFpbGVkOiBJbnB1dC9vdXRwdXQgZXJyb3IKPj4gPj4KPj4gPj4gVGhp
+cyBkb2Vzbid0IGhhcHBlbiBvbiBzb3VuZC0yLjYgYW5kIGRvZXNuJ3QgaGFwcGVuIG9uCj4+ID4+
+IHNvdW5kLXVuc3RhYmxlLTIuNiB3aXRoIEUtbXUgMTIxMm0uCj4+ID4KPj4gPiBBIHN1c3BpY2lv
+dXMgY29tbWl0IGlzIHRoZSBvbmUgaW4gdG9waWMvdGVzdCBicmFuY2gsCj4+ID4KPj4gPiAgY29t
+bWl0IDQ0MmRhYzdlMDJhODM1OTQ0YmQ0ZDZlNDI5ZDBiNGEyNDQ2ZTAyMDQKPj4gPiAgQXV0aG9y
+OiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Cj4+ID4gIERhdGU6ICAgVHVlIEF1ZyAxMiAx
+MzozOTowMiAyMDA4ICswMjAwCj4+ID4KPj4gPiAgICBBTFNBOiBBbGxvdyBkcmFpbiBpb2N0bCBm
+b3Igbm9uLWJsb2NraW5nIG1vZGUKPj4gPgo+PiA+IENvdWxkIHlvdSB0cnkgdG8gcmV2ZXJ0IHRo
+aXMgY29tbWl0Pwo+PiA+Cj4+ID4KPj4gPiB0aGFua3MsCj4+ID4KPj4gPiBUYWthc2hpCj4+ID4K
+Pj4KPj4KPj4KPj4gLS0KPj4gVmVkcmFuIE1pbGV0acSHCj4KCgoKLS0gClZlZHJhbiBNaWxldGnE
+hwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
