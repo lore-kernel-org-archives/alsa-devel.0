@@ -1,26 +1,14 @@
-From: "Bjoern Olausson" <lkmlist@gmail.com>
-Subject: Re: Backported sbxfi driver, possible fix
-Date: Sat, 25 Oct 2008 23:57:53 +0200
-Message-ID: <5501535d0810251457k165cc4ceid2e34930a2bdc8ec@mail.gmail.com>
-References: <4900A4FA.7020300@jasonline.co.uk>
-	<4900DBBD.2020806@jasonline.co.uk> <s5hljwee68t.wl%tiwai@suse.de>
-	<49017FBF.4030005@jasonline.co.uk> <s5hfxmm47kb.wl%tiwai@suse.de>
-	<20081025130652.GA27621@rzle423.uni-duisburg.de>
-	<s5hej24psn6.wl%tiwai@suse.de>
-	<20081025194255.GA27872@rzle423.uni-duisburg.de>
-	<s5hod18fntg.wl%tiwai@suse.de> <49038448.3090704@jasonline.co.uk>
+From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: 2.6.26.[6|7] vs. rt11 vs. alsa (usb) midi
+Date: Sat, 25 Oct 2008 19:46:27 -0700
+Message-ID: <1224989187.3706.7.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id 351E324420
-	for <alsa-devel@alsa-project.org>;
-	Sat, 25 Oct 2008 23:58:12 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id f25so1313249rvb.32
-	for <alsa-devel@alsa-project.org>; Sat, 25 Oct 2008 14:57:53 -0700 (PDT)
-In-Reply-To: <49038448.3090704@jasonline.co.uk>
-Content-Disposition: inline
+Received: from smtp2.stanford.edu (smtp2.Stanford.EDU [171.67.20.25])
+	by alsa0.perex.cz (Postfix) with ESMTP id CAAAA24413
+	for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2008 03:52:56 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,57 +18,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jason Harvey <softdevice@jasonline.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Ingo Molnar <mingo@elte.hu>
+Cc: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
 List-Id: alsa-devel@alsa-project.org
 
-> Latest unstable (25Oct 19:57) works from command line with mplayer,
-> without the proc oss fix.
->
-Confirmed.
-The stuttering got better, but is still present.
+Hi... anyone out there also having problem with this combination?
+   2.6.26.7 or 2.6.26.6 with 2.6.26.6-rt11 and alsa MIDI
+It looks to me like alsa midi is broken. 
 
-Xine works flawless.
+Probably an interaction with the realtime kernel patch. A Fedora kernel
+based on 2.6.26.6 (2.6.26.6-49 on fc8) works fine, a very similarly
+patched kernel that includes the realtime patch does not. The
+configurations for both are almost the same (today I tried to change
+some of the most obvious differences and rebuild, with the same
+result). 
 
-> aplay still works but only with dmix.
->
-Samplingrate 11025Hz and 8000Hz do not play a clear sinus, sounds a
-bit scratchy..
-All other common samplingrates work flawless. Could someone confirm that?
-http://tmp.olausson.de/30days/0_16_s_8000.wav
-http://tmp.olausson.de/30days/0_16_s_11025.wav
-http://tmp.olausson.de/30days/0_16_s_96000.wav
+No problems with 2.6.24.7-rt21. 
 
-Just using "aplay file.wav"
+Test: boot, login, plugin an external usb keyboard (Yamaha P250), it is
+recognized, use qjackctl alsa patchbay to connect it to kmidimon,
+kmidimon sees only _one_ midi message and that's it. Kmidimon can't be
+killed after that. 
 
-More noticable ist it when using mplayer. Crackles a lot with 8000Hz and 11025Hz
-"mplayer file.wav"
-
-mmh, xine crackles too. Please someone confirm, otherwise the files may be bad.
-
-> Now also almost working in gnome with pulse, sound is recognisable but
-> with lots of interference/corruption.
->
-No pulseaudio on my machine. Sry.
-
-> Machine did not crash at any point!
->
-Just observed a X crash when using smplayer to play a avi. When I
-closed smplayer while the movie was playing X crashed. (But could be
-unrelated to audio, I could not reproduce it)
-
-But no crash or freez so far.
-
-> This was running on 2.6.26... is this a problem? SUPPORTED_KERNELS says
-> 2.6.25 or earlier?
->
-I am using vanilla 2.6.27.3
-
-Thanks for you awesome work!
-
-By the way, what's next on your plan when stereo output and recording
-is working flawless?
-
-
-kind regards
-Bjoern
+-- Fernando
