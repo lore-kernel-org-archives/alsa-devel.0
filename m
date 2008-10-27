@@ -1,20 +1,30 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Only one element for multichannel mixer controls
- please!
-Date: Mon, 27 Oct 2008 10:20:48 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0810271017350.12044@tm8103.perex-int.cz>
-References: <20081024234932.GA17812@tango.0pointer.de>
-	<s5hiqrezbyr.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0810270923280.12044@tm8103.perex-int.cz>
-	<s5hr662qu9n.wl%tiwai@suse.de>
+From: Jelle de Jong <jelledejong@powercraft.nl>
+Subject: using dshare plugin to create multiple independent
+ audio outputs for multiseat out of 7.1 internal audio card
+Date: Mon, 27 Oct 2008 10:37:53 +0100
+Message-ID: <49058BF1.3090705@powercraft.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id E9C02246AF
-	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 10:20:48 +0100 (CET)
-In-Reply-To: <s5hr662qu9n.wl%tiwai@suse.de>
+Received: from node02.cambriumhosting.nl (node02.cambriumhosting.nl
+	[217.19.16.163]) by alsa0.perex.cz (Postfix) with ESMTP id F2ABD246B7
+	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 10:37:56 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by node02.cambriumhosting.nl (Postfix) with ESMTP id 971FCB0000A7
+	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 10:37:55 +0100 (CET)
+Received: from node02.cambriumhosting.nl ([127.0.0.1])
+	by localhost (node02.cambriumhosting.nl [127.0.0.1]) (amavisd-new,
+	port 10024)
+	with ESMTP id ziM7XvUlaORT for <alsa-devel@alsa-project.org>;
+	Mon, 27 Oct 2008 10:37:55 +0100 (CET)
+Received: from ashley.powercraft.nl (84-245-3-195.dsl.cambrium.nl
+	[84.245.3.195])
+	by node02.cambriumhosting.nl (Postfix) with ESMTP id 41C79B00009A
+	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 10:37:55 +0100 (CET)
+Received: from [192.168.1.180] (unknown [192.168.1.180])
+	by ashley.powercraft.nl (Postfix) with ESMTPSA id 1B5F923BC575
+	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 10:37:55 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,30 +34,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Lennart Poettering <mznyfn@0pointer.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 27 Oct 2008, Takashi Iwai wrote:
+Hello everybody,
 
-> IMHO, a big part of the problem is its overly complex layers and
+I am looking for ways to get good cheap audio outputs per user for
+multiseat systems.
 
-I agree. Some layers should be merged and simplified.
+A nice good way would be to be able to use the available resources of
+motherboards than now come often with 8-channel audio cards with 6 or
+more audio outputs ... (6 users)
 
-> old-style mixer API (in addition to complete lack of documentation).
+I have seen something about dshare plugin that might be able to do this,
+but I have no idea how this works or how and if it is possible to
+configure this for multiple users?
 
-I don't understand what you mean old-style API. API inside alsa-lib or 
-smixer API for applications? If it's the second case, what you imagine as 
-right mixer API for apps?
+Would somebody be able to do some experimenting and maybe make some
+examples with some .asoundrc quotes?
 
-> The plugin solution doesn't work well because you are tring to graft
-> orange and apple.
+Chipset integrated by Realtekr ALC888/ALC888T
+- Flexible 8-channel audio with jack sensing
+- Compliant with Azalia 1.0 Spec
 
-Please, explain.
+Any ideas, solutions?
 
-					Jaroslav
+Thanks in advance,
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Jelle
