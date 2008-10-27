@@ -1,17 +1,21 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: Request for test (1.0.18 final)
-Date: Mon, 27 Oct 2008 20:41:10 +0000
-Message-ID: <200810272041.10885.gineera@aspect135.co.uk>
-References: <Pine.LNX.4.61.0810271449320.12044@tm8103.perex-int.cz>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: Problem setting mixer switch with amixer/alsactl.
+Date: Mon, 27 Oct 2008 20:44:41 +0000
+Message-ID: <20081027204440.GA4135@sirena.org.uk>
+References: <48FF7538.3090000@oliford.co.uk>
+	<20081022205729.GD7537@sirena.org.uk>
+	<48FFAFB1.1090106@oliford.co.uk>
+	<20081023140015.GA17901@sirena.org.uk>
+	<4900851D.2050001@oliford.co.uk> <490100C9.7030907@oliford.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.talktalk.net (smtp-out-4.talktalk.net [62.24.128.234])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA66C243F2
-	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 21:25:41 +0100 (CET)
-In-Reply-To: <Pine.LNX.4.61.0810271449320.12044@tm8103.perex-int.cz>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5585324400
+	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 21:44:44 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <490100C9.7030907@oliford.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,49 +25,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>
+To: Oliver Ford <ipaqlinux@oliford.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 27 October 2008 13:54, Jaroslav Kysela wrote:
-> Hello,
->
-> 	I would like to release 1.0.18 final packages (driver, lib,
-> utils, tools, plugins) in few days. Please, report compilation trouble
-> with the current ALSA code.
->
-> 			Thank you for testing,
-> 						Jaroslav
+On Thu, Oct 23, 2008 at 11:55:05PM +0100, Oliver Ford wrote:
 
-Here on the 2.4.21-99-Suse, make results in:
+> In terms of the control's direct effect, setting it in alsamixer gives:
+> pxa2xx_ac97_write: 0c = af08
 
-../../alsa-kernel/pci/ice1712/ice1712.c:50:22: linux/io.h: No such file or 
-directory
+> setting it in amixer:
+> pxa2xx_ac97_write: 0c = af09
 
-presumably caused as it is <asm/io.h> here?
+On the one hand, that's odd.  On the other hand, the low bit of register
+0xc is just a volume control for the right DAC so shouldn't make any
+odds really.
 
-I added temp symbolic link & continued to:
+> However, after running the offending amixer command this no longer 
+> happens. It seems that the dapm_power_widgets() function determines that 
+> the DAC is off and so doesn't power any widgets on at all.
 
-patching file maestro3.c
-Hunk #2 succeeded at 2596 (offset 4 lines).
-Hunk #3 succeeded at 2777 (offset 4 lines).
-gcc -D__KERNEL__ -DMODULE=1 -I/home/alan/Vault/Alsa/1.0.18/
-alsa-driver-1.0.18rc3.20.gcbea1.192.g2973f/include  -I/lib/
-modules/2.4.21-99-athlon/build/include -O2 -mpreferred-stack-boundary=2 
--march=athlon -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer 
--Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD 
--nostdinc -iwithprefix include -DMODVERSIONS -include /lib/
-modules/2.4.21-99-athlon/build/include/linux/modversions.h  
--DKBUILD_BASENAME=maestro3   -c -o maestro3.o maestro3.c
-maestro3.c: In function `snd_m3_create':
-maestro3.c:2604: warning: implicit declaration of function `pci_name'
-maestro3.c:2604: warning: passing arg 3 of `request_firmware_R38ce5074' makes 
-pointer from integer without a cast
-maestro3.c:2612: error: structure has no member named `dev'
-make[1]: *** [maestro3.o] Error 1
-make[1]: Leaving directory `/home/alan/Vault/Alsa/1.0.18/
-alsa-driver-1.0.18rc3.20.gcbea1.192.g2973f/pci'
-make: *** [compile] Error 1
-
-
-Alan
+Well, it determines that there's not a complete path so it doesn't
+bother powering anything up which isn't *quite* the same thing.  It does
+look like that's what's happening here - I can reproduce similar
+behaviour here, though it's not quite the same system.  I'll try to fix
+this tomorrow.
