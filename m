@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ASoC/pxa-ssp.c: fix build on pxa2xx
-Date: Mon, 27 Oct 2008 17:47:10 +0000
-Message-ID: <20081027174710.GK5896@sirena.org.uk>
-References: <1225129397.6519.49.camel@brutus>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Request for test (1.0.18 final)
+Date: Mon, 27 Oct 2008 19:18:10 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0810271917110.12044@tm8103.perex-int.cz>
+References: <Pine.LNX.4.61.0810271449320.12044@tm8103.perex-int.cz>
+	<4905F6EB.8080507@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 681C12434E
-	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 18:47:11 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1225129397.6519.49.camel@brutus>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id A6F0C24385
+	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 19:18:11 +0100 (CET)
+In-Reply-To: <4905F6EB.8080507@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,16 +21,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Ribeiro <drwyrm@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Chris Pemberton <cjpembo.mailing.lists@gmail.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 27, 2008 at 03:43:17PM -0200, Daniel Ribeiro wrote:
+On Mon, 27 Oct 2008, Chris Pemberton wrote:
 
-> ASoC/pxa-ssp.c: fix build on pxa2xx
-> 
-> SSACDD and SSACD_SCDX8 dont exist on pxa2xx.
-> 
-> Signed-off-by: Daniel Ribeiro <drwyrm@gmail.com>
+> /home/cjpembo/LatestALSA/alsa-driver-1.0.18rc3.17.gd338c.191.ge29c1/acore/../alsa-kernel/core/jack.c:108: 
+> error: 'SW_LINEOUT_INSERT' undeclared (first use in this function)
 
-Thanks, will apply both.
+Could you try again latest snapshot? I just included the patch which 
+should fix this issue.
+
+					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
