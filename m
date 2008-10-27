@@ -1,23 +1,28 @@
-From: "Richard Zhao" <linuxzsc@gmail.com>
-Subject: Re: ASOC: For SND_SOC_DAIFMT_IB_IF what is invert
-	baseed on?
-Date: Mon, 27 Oct 2008 21:24:48 +0800
-Message-ID: <4e090d470810270624l5587d382o78330f737d709b8a@mail.gmail.com>
-References: <4e090d470810250931k5e44a4cck3ad0186a2c47ec03@mail.gmail.com>
-	<1225037126.28382.85.camel@dell-desktop.example.com>
-	<4e090d470810262000t3d93538i3a71f5e5d042dd2f@mail.gmail.com>
-	<1225104379.28382.104.camel@dell-desktop.example.com>
+From: ext-jukka.hynninen@vaisala.com
+Subject: Re: ASoC: Merging at91 and avr32 dirs - test report
+Date: Mon, 27 Oct 2008 15:34:15 +0200
+Message-ID: <B9D3C48C98930741A166756A50C44A610F17B573@helx1.corp.vaisala.com>
+References: <B9D3C48C98930741A166756A50C44A610F17B561@helx1.corp.vaisala.com>
+	<20081010185312.GA10766@sirena.org.uk>
+	<B9D3C48C98930741A166756A50C44A610F17B562@helx1.corp.vaisala.com>
+	<B9D3C48C98930741A166756A50C44A610F17B564@helx1.corp.vaisala.com>
+	<20081014125835.GF14538@sirena.org.uk>
+	<B9D3C48C98930741A166756A50C44A610F17B565@helx1.corp.vaisala.com>
+	<49059097.5020309@atmel.com> <20081027104225.GA5896@sirena.org.uk>
+	<B9D3C48C98930741A166756A50C44A610F17B571@helx1.corp.vaisala.com>
+	<20081027112959.GB5896@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.174])
-	by alsa0.perex.cz (Postfix) with ESMTP id 768512474D
-	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 14:24:50 +0100 (CET)
-Received: by wf-out-1314.google.com with SMTP id 24so2107683wfg.23
-	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 06:24:49 -0700 (PDT)
-In-Reply-To: <1225104379.28382.104.camel@dell-desktop.example.com>
-Content-Disposition: inline
+Received: from mailgw.vaisala.com (mailgw.vaisala.com [192.81.123.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3978C24755
+	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 14:34:21 +0100 (CET)
+Received: from helsrv02.vaisala.com (helsrv02.vaisala.com [192.81.123.16])
+	by mailgw.vaisala.com (8.13.6/8.13.6) with SMTP id m9RDYKEe009786
+	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 15:34:20 +0200
+Content-class: urn:content-classes:message
+In-Reply-To: <20081027112959.GB5896@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,25 +32,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: broonie@sirena.org.uk
+Cc: sedji.gaouaou@atmel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> Not quite, the clock is simply inverted compared to it's normal level.
->
+Quoting Mark Brown:
 
-Well, what's the normal level? i2s LRCLK 's normal level is low for
-frame start, but pcm's normal level is high for frame start.
+>> Just wanted to remind on the change that was needed to avoid the SSC
+>> peripheral clock problem. I hope this will also be included.
+> Which change was this?  I suspect we need another round of patches
+from
+> Sedji and then a final check with that...
 
-Different chips may have different meaning of "invert", because
-"normal level" is not well defined. SND_SOC_DAIFMT_NB_NF is a common
-macro, so it cannot depend on any chip.  So, could you please explain
-in details what normal level and invert level of LRCLK/BCLK are in
-i2s, pcm, left/right justified?
+http://article.gmane.org/gmane.linux.alsa.devel/56742/
 
-Yes, wm8350 audio driver works. The problem is, when I write drivers
-from some cpu/codec DAIs, I'm often confused about the normal/invert
-levels.
 
-Thanks
-Richard
+-Jukka
