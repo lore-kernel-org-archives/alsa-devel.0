@@ -1,20 +1,23 @@
-From: Daniel Ribeiro <drwyrm@gmail.com>
-Subject: Re: ASoC: pxa2xx-ssp
-Date: Mon, 27 Oct 2008 11:19:34 -0200
-Message-ID: <1225113574.9922.10.camel@brutus>
-References: <1224809675.8330.4.camel@brutus>
-	<1224863678.28382.54.camel@dell-desktop.example.com>
-	<1224912767.5426.19.camel@brutus> <20081027124705.GE5896@sirena.org.uk>
+From: "Richard Zhao" <linuxzsc@gmail.com>
+Subject: Re: ASOC: For SND_SOC_DAIFMT_IB_IF what is invert
+	baseed on?
+Date: Mon, 27 Oct 2008 21:24:48 +0800
+Message-ID: <4e090d470810270624l5587d382o78330f737d709b8a@mail.gmail.com>
+References: <4e090d470810250931k5e44a4cck3ad0186a2c47ec03@mail.gmail.com>
+	<1225037126.28382.85.camel@dell-desktop.example.com>
+	<4e090d470810262000t3d93538i3a71f5e5d042dd2f@mail.gmail.com>
+	<1225104379.28382.104.camel@dell-desktop.example.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.148])
-	by alsa0.perex.cz (Postfix) with ESMTP id E368B2433C
-	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 14:19:40 +0100 (CET)
-Received: by qw-out-1920.google.com with SMTP id 9so787270qwj.56
-	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 06:19:39 -0700 (PDT)
-In-Reply-To: <20081027124705.GE5896@sirena.org.uk>
+Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.174])
+	by alsa0.perex.cz (Postfix) with ESMTP id 768512474D
+	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 14:24:50 +0100 (CET)
+Received: by wf-out-1314.google.com with SMTP id 24so2107683wfg.23
+	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 06:24:49 -0700 (PDT)
+In-Reply-To: <1225104379.28382.104.camel@dell-desktop.example.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,28 +27,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@kernel.org>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-RW0gU2VnLCAyMDA4LTEwLTI3IMOgcyAxMjo0NyArMDAwMCwgTWFyayBCcm93biBlc2NyZXZldToK
-PiBPbiBTYXQsIE9jdCAyNSwgMjAwOCBhdCAwMzozMjo0N0FNIC0wMjAwLCBEYW5pZWwgUmliZWly
-byB3cm90ZToKPiAKPiA+IAlUbyBlYXNlIHlvdXIgcmVhZGluZywgYXR0YWNoZWQgaXMgYSBkaWZm
-IGFnYWluc3QgWzBdLiBJdCBpcyB1cGRhdGVkIHRvCj4gPiBidWlsZCBvbiB0aGUgbGF0ZXN0IGxp
-bnVzIHRyZWUgYW5kIGhhbmRsZXMgREFJRk1UX0kyUyBhbmQgREFJRk1UX01TQgo+ID4gZGlmZmVy
-ZW50bHkuCj4gCj4gUGxlYXNlIHdvcmsgYWdhaW5zdCB0aGUgcHhhLXNzcCBkcml2ZXIsIG5vdCB0
-aGUgcHhhMnh4LXNzcCBkcml2ZXIuCj4gVGhlcmUgYXJlIG5vIHBsYW5zIHRvIG1lcmdlIHRoZSBw
-eGEyeHgtc3NwIGRyaXZlciAtIHRoZSBweGEtc3NwIHNob3VsZAo+IGJlIGFibGUgdG8gY292ZXIg
-ZXZlcnl0aGluZywgcGVyaGFwcyB3aXRoIGEgY291cGxlIG9mIGZ1bmN0aW9ucyBzZWxlY3RlZAo+
-IHBlci1DUFUsIGJ1dCBpdCdzIG5vdCBiZWVuIHRlc3RlZCBvbiBweGEyeHggeWV0LiAgSXQgc2hv
-dWxkIGhvcGVmdWxseSBiZQo+IG1ha2luZyBpdHMgd2F5IHVwc3RyZWFtIHRvZGF5IG9yIHRvbW9y
-cm93LgoKCU9rLCBpIHdpbGwgcmViYXNlIG15IHdvcmsgb24gcHhhLXNzcC5jLiBCdXQgYSBmaXJz
-dCBsb29rIHNob3dzIHRoYXQKcHhhX3NzcF9od19wYXJhbXMgc2V0cyB0aGUgc3NwIGZyYW1lIHNp
-emUgZGVwZW5kaW5nIG9uIHRoZSBhdWRpbyBzdHJlYW0KZm9ybWF0IGV2ZW4gZm9yIEkyUyBtb2Rl
-LiBJIHRoaW5rIGl0IHdpbGwgbm90IHdvcmssIGFzIEkyUyBuZWVkcyB0bwpzdGljayB0byAzMmJp
-dCBmcmFtZSBzaXplLgoJSXMgdGhlcmUgYW55Ym9keSB1c2luZyBTTkRfU09DX0RBSUZNVF9JMlMg
-d2l0aCB0aGlzIGRyaXZlcj8KCUkgd2lsbCBzZW5kIHlvdSBhIHBhdGNoIGxhdGVyIHRvZGF5LiBU
-aGFua3MgZm9yIHRoZSByZXBseSEgOikKCi0tIApEYW5pZWwgUmliZWlybwoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+> Not quite, the clock is simply inverted compared to it's normal level.
+>
+
+Well, what's the normal level? i2s LRCLK 's normal level is low for
+frame start, but pcm's normal level is high for frame start.
+
+Different chips may have different meaning of "invert", because
+"normal level" is not well defined. SND_SOC_DAIFMT_NB_NF is a common
+macro, so it cannot depend on any chip.  So, could you please explain
+in details what normal level and invert level of LRCLK/BCLK are in
+i2s, pcm, left/right justified?
+
+Yes, wm8350 audio driver works. The problem is, when I write drivers
+from some cpu/codec DAIs, I'm often confused about the normal/invert
+levels.
+
+Thanks
+Richard
