@@ -1,18 +1,17 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Backported sbxfi driver, possible fix
-Date: Mon, 27 Oct 2008 20:08:04 +0000
-Message-ID: <49061FA4.5010201@superbug.co.uk>
-References: <4900A4FA.7020300@jasonline.co.uk>	<4900DBBD.2020806@jasonline.co.uk>	<s5hljwee68t.wl%tiwai@suse.de>	<49017FBF.4030005@jasonline.co.uk>	<s5hfxmm47kb.wl%tiwai@suse.de>	<20081025130652.GA27621@rzle423.uni-duisburg.de>	<s5hej24psn6.wl%tiwai@suse.de>	<20081025194255.GA27872@rzle423.uni-duisburg.de>	<s5hod18fntg.wl%tiwai@suse.de>	<49038448.3090704@jasonline.co.uk>	<5501535d0810251457k165cc4ceid2e34930a2bdc8ec@mail.gmail.com>	<s5h7i7v22cl.wl%tiwai@suse.de>
-	<ge3irb$knf$1@ger.gmane.org>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: Request for test (1.0.18 final)
+Date: Mon, 27 Oct 2008 20:41:10 +0000
+Message-ID: <200810272041.10885.gineera@aspect135.co.uk>
+References: <Pine.LNX.4.61.0810271449320.12044@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from anchor-post-36.mail.demon.net (anchor-post-36.mail.demon.net
-	[194.217.242.86])
-	by alsa0.perex.cz (Postfix) with ESMTP id DC7DF2438F
-	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 21:08:11 +0100 (CET)
-In-Reply-To: <ge3irb$knf$1@ger.gmane.org>
+Received: from smtp.talktalk.net (smtp-out-4.talktalk.net [62.24.128.234])
+	by alsa0.perex.cz (Postfix) with ESMTP id BA66C243F2
+	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 21:25:41 +0100 (CET)
+In-Reply-To: <Pine.LNX.4.61.0810271449320.12044@tm8103.perex-int.cz>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,46 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Alexander E. Patrakov wrote:
-> Takashi Iwai wrote:
-> 
->> Note: 44.1kHz is possible, but is more complex because it uses a method
->> whereby the channel ring marks each sample in the channel ring as valid
->> or not, so to get 44.1kHz, some samples are simply tagged invalid. The
->> "channel ring" is not the ring buffer that is used to get sound samples
->> to the card. The "channel ring" is used to pass samples between
->> different processing modules on the card. One of these processing
->> modules is the SRC, another is the INs/OUTs, another is the hardware
->> mixer, and yet another is the DSP.
-> 
-> Do I understand correctly that the card internally resamples the sound 
-> to a different rate using the zero-order-hold method? If so, I'd rather 
-> not see this feature at all unless the "i_want_horrible_sound" parameter 
-> is passed, because software can do it better, and some program will 
-> surely default to using this hardware misfeature.
-> 
+On Monday 27 October 2008 13:54, Jaroslav Kysela wrote:
+> Hello,
+>
+> 	I would like to release 1.0.18 final packages (driver, lib,
+> utils, tools, plugins) in few days. Please, report compilation trouble
+> with the current ALSA code.
+>
+> 			Thank you for testing,
+> 						Jaroslav
+
+Here on the 2.4.21-99-Suse, make results in:
+
+../../alsa-kernel/pci/ice1712/ice1712.c:50:22: linux/io.h: No such file or 
+directory
+
+presumably caused as it is <asm/io.h> here?
+
+I added temp symbolic link & continued to:
+
+patching file maestro3.c
+Hunk #2 succeeded at 2596 (offset 4 lines).
+Hunk #3 succeeded at 2777 (offset 4 lines).
+gcc -D__KERNEL__ -DMODULE=1 -I/home/alan/Vault/Alsa/1.0.18/
+alsa-driver-1.0.18rc3.20.gcbea1.192.g2973f/include  -I/lib/
+modules/2.4.21-99-athlon/build/include -O2 -mpreferred-stack-boundary=2 
+-march=athlon -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer 
+-Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD 
+-nostdinc -iwithprefix include -DMODVERSIONS -include /lib/
+modules/2.4.21-99-athlon/build/include/linux/modversions.h  
+-DKBUILD_BASENAME=maestro3   -c -o maestro3.o maestro3.c
+maestro3.c: In function `snd_m3_create':
+maestro3.c:2604: warning: implicit declaration of function `pci_name'
+maestro3.c:2604: warning: passing arg 3 of `request_firmware_R38ce5074' makes 
+pointer from integer without a cast
+maestro3.c:2612: error: structure has no member named `dev'
+make[1]: *** [maestro3.o] Error 1
+make[1]: Leaving directory `/home/alan/Vault/Alsa/1.0.18/
+alsa-driver-1.0.18rc3.20.gcbea1.192.g2973f/pci'
+make: *** [compile] Error 1
 
 
-Alex,
-
-I added that comment (takashi cut and pasted my text). No resampling is
-done.
-Say you have a buffer that is running at 48kHz.
-So you have say 480 samples at the 48kHz rate.
-But if you want to transfer 44.1kHz rate samples over it, you only want
-441 samples to be there, so what to do with the left over 39 samples.
-What the xfi does is next to each sample it adds a "valid" tag.
-So, the xfi adds those 39 samples but marks them as "invalid".
-The xfi then drops the 39 "invalid" samples, leaving only the 441
-"valid" samples just before sending them at 44.1kHz to the DAC.
-Does this explain things a bit better.
-FYI, the xfi actually works internally at 384kHz, so it is actually
-marking a lot of samples as "invalid".
-
-Kind Regards
-
-James
+Alan
