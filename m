@@ -1,23 +1,19 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: ASoC: Merging at91 and avr32 dirs - test report
-Date: Mon, 27 Oct 2008 10:42:26 +0000
-Message-ID: <20081027104225.GA5896@sirena.org.uk>
-References: <B9D3C48C98930741A166756A50C44A610F17B561@helx1.corp.vaisala.com>
-	<20081010185312.GA10766@sirena.org.uk>
-	<B9D3C48C98930741A166756A50C44A610F17B562@helx1.corp.vaisala.com>
-	<B9D3C48C98930741A166756A50C44A610F17B564@helx1.corp.vaisala.com>
-	<20081014125835.GF14538@sirena.org.uk>
-	<B9D3C48C98930741A166756A50C44A610F17B565@helx1.corp.vaisala.com>
-	<49059097.5020309@atmel.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: ASOC: For SND_SOC_DAIFMT_IB_IF what is
+	invert	baseed on?
+Date: Mon, 27 Oct 2008 10:46:19 +0000
+Message-ID: <1225104379.28382.104.camel@dell-desktop.example.com>
+References: <4e090d470810250931k5e44a4cck3ad0186a2c47ec03@mail.gmail.com>
+	<1225037126.28382.85.camel@dell-desktop.example.com>
+	<4e090d470810262000t3d93538i3a71f5e5d042dd2f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 56B6C24522
-	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 11:42:31 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <49059097.5020309@atmel.com>
+Received: from slimlogic.co.uk (slimlogic.co.uk [89.16.172.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id ED358246DA
+	for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2008 11:46:33 +0100 (CET)
+In-Reply-To: <4e090d470810262000t3d93538i3a71f5e5d042dd2f@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,21 +23,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sedji Gaouaou <sedji.gaouaou@atmel.com>
-Cc: ext-jukka.hynninen@vaisala.com, alsa-devel@alsa-project.org
+To: Richard Zhao <linuxzsc@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 27, 2008 at 10:57:43AM +0100, Sedji Gaouaou wrote:
+On Mon, 2008-10-27 at 11:00 +0800, Richard Zhao wrote:
+> 2008/10/27 Liam Girdwood <lrg@slimlogic.co.uk>:
+> > On Sun, 2008-10-26 at 00:31 +0800, Richard Zhao wrote:
+> >> Hi,
+> >>
+> >> include/sound/soc.h
+> >> /*
+> >>  * DAI hardware signal inversions
+> >>  */
+> >> #define SND_SOC_DAIFMT_NB_NF            (0 << 8)        /* normal bclk + frm */
+> >> #define SND_SOC_DAIFMT_NB_IF            (1 << 8)        /* normal bclk
+> >> + inv frm */
+> >> #define SND_SOC_DAIFMT_IB_NF            (2 << 8)        /* invert bclk
+> >> + nor frm */
+> >> #define SND_SOC_DAIFMT_IB_IF            (3 << 8)        /* invert bclk + frm */
+> >>
+> >> What are frame cock and bit clock invert based on? I2S, PCM or some
+> >> else bus protocols? Or just high level voltage or low level voltage?
+> >>
+> >
+> > Generic logic levels (high/low voltage) that can apply to I2S and PCM
+> > DAI's.
+> >
+> > Liam
+> >
+> >
+> It's not bus protocol depended.
 
-> I am writing to know what is the current status about the at91/avr32 
-> merging?
-> Is there any progress concerning the testing?
-> What is required for the patch to be accepted?
+Correct, it does not depend on bus protocol. Although, it wont apply to
+well defined protocols like AC97.
 
-Jukka seemed happy but we've had no testing at all on AVR32 so far as
-far as I can see - Geoffrey had been going to test it but his hardware
-broke.  I'd say the best thing now -rc1 is out is to merge the patches
-as-is and then fix up any further issues that are identified later.
+> For frame start, LRCLK normal  is 1, invert is 0.
+> For data valid,  BCLK normal is 1, invert is 0
+> Is that what you meant?
 
-The playpaq support will need a small refresh for the current machine
-driver, though.
+Not quite, the clock is simply inverted compared to it's normal level.
+
+> 
+> But when wm8350 in i2s mode, it take SND_SOC_DAIFMT_NB_NF as LRCLK is
+> 0 for frame start.
+
+I2S frame start is the LRC going high (from low) to indicate left
+channel PCM data is available after the next bit clock.
+
+Do you have another issue that is causing you to check clock
+inversions ? Fwiw the wm8350 audio is mature and known to be working for
+some time.
+
+Liam
