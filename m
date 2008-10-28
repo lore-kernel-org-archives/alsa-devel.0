@@ -1,26 +1,14 @@
-From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
-Subject: Re: Backported sbxfi driver, possible fix
-Date: Tue, 28 Oct 2008 11:53:04 +0100
-Message-ID: <fd3eb9bf0810280353ha4e33a7j97da9ff7059680a0@mail.gmail.com>
-References: <4900A4FA.7020300@jasonline.co.uk>
-	<20081025130652.GA27621@rzle423.uni-duisburg.de>
-	<s5hej24psn6.wl%tiwai@suse.de>
-	<20081025194255.GA27872@rzle423.uni-duisburg.de>
-	<s5hod18fntg.wl%tiwai@suse.de> <49038448.3090704@jasonline.co.uk>
-	<5501535d0810251457k165cc4ceid2e34930a2bdc8ec@mail.gmail.com>
-	<s5h7i7v22cl.wl%tiwai@suse.de> <ge3irb$knf$1@ger.gmane.org>
-	<49061FA4.5010201@superbug.co.uk>
+From: Jason Harvey <softdevice@jasonline.co.uk>
+Subject: sbxfi - What works/doesn't summary
+Date: Tue, 28 Oct 2008 11:42:04 +0000
+Message-ID: <4906FA8C.4030501@jasonline.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.173])
-	by alsa0.perex.cz (Postfix) with ESMTP id BBA48243BA
-	for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2008 11:53:05 +0100 (CET)
-Received: by wf-out-1314.google.com with SMTP id 24so2612749wfg.23
-	for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2008 03:53:04 -0700 (PDT)
-In-Reply-To: <49061FA4.5010201@superbug.co.uk>
-Content-Disposition: inline
+Received: from homer.jasonline.co.uk (78-86-168-217.zone2.bethere.co.uk
+	[78.86.168.217]) by alsa0.perex.cz (Postfix) with ESMTP id 184B2243F4
+	for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2008 12:42:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,28 +18,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-QnV0IHRoYXQgc3VyZWx5IGlzbid0IGJpdHBlcmZlY3QsIHJpZ2h0PwoKMjAwOC8xMC8yNyBKYW1l
-cyBDb3VydGllci1EdXR0b24gPEphbWVzQHN1cGVyYnVnLmNvLnVrPgo+IEFsZXgsCj4KPiBJIGFk
-ZGVkIHRoYXQgY29tbWVudCAodGFrYXNoaSBjdXQgYW5kIHBhc3RlZCBteSB0ZXh0KS4gTm8gcmVz
-YW1wbGluZyBpcwo+IGRvbmUuCj4gU2F5IHlvdSBoYXZlIGEgYnVmZmVyIHRoYXQgaXMgcnVubmlu
-ZyBhdCA0OGtIei4KPiBTbyB5b3UgaGF2ZSBzYXkgNDgwIHNhbXBsZXMgYXQgdGhlIDQ4a0h6IHJh
-dGUuCj4gQnV0IGlmIHlvdSB3YW50IHRvIHRyYW5zZmVyIDQ0LjFrSHogcmF0ZSBzYW1wbGVzIG92
-ZXIgaXQsIHlvdSBvbmx5IHdhbnQKPiA0NDEgc2FtcGxlcyB0byBiZSB0aGVyZSwgc28gd2hhdCB0
-byBkbyB3aXRoIHRoZSBsZWZ0IG92ZXIgMzkgc2FtcGxlcy4KPiBXaGF0IHRoZSB4ZmkgZG9lcyBp
-cyBuZXh0IHRvIGVhY2ggc2FtcGxlIGl0IGFkZHMgYSAidmFsaWQiIHRhZy4KPiBTbywgdGhlIHhm
-aSBhZGRzIHRob3NlIDM5IHNhbXBsZXMgYnV0IG1hcmtzIHRoZW0gYXMgImludmFsaWQiLgo+IFRo
-ZSB4ZmkgdGhlbiBkcm9wcyB0aGUgMzkgImludmFsaWQiIHNhbXBsZXMsIGxlYXZpbmcgb25seSB0
-aGUgNDQxCj4gInZhbGlkIiBzYW1wbGVzIGp1c3QgYmVmb3JlIHNlbmRpbmcgdGhlbSBhdCA0NC4x
-a0h6IHRvIHRoZSBEQUMuCj4gRG9lcyB0aGlzIGV4cGxhaW4gdGhpbmdzIGEgYml0IGJldHRlci4K
-PiBGWUksIHRoZSB4ZmkgYWN0dWFsbHkgd29ya3MgaW50ZXJuYWxseSBhdCAzODRrSHosIHNvIGl0
-IGlzIGFjdHVhbGx5Cj4gbWFya2luZyBhIGxvdCBvZiBzYW1wbGVzIGFzICJpbnZhbGlkIi4KPgo+
-IEtpbmQgUmVnYXJkcwo+Cj4gSmFtZXMKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgoKCgotLSAKVmVkcmFuIE1pbGV0acSHCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Takashi Iwai wrote:
+
+> It'd be helpful if someone can summarize the working and non-working
+> cases.  For example,
+>
+> global info:
+> 0. SBXFI model (product name, PCI ID, PCI SSID, cat /proc/asound/cards
+> entry)
+> 1. sbxfi driver version (date & HEADs)
+> 2. base_rate value
+> 3. system details (x86-64, distro, kernel version, etc)
+>
+> for each app:
+> A. Application name / version
+> B. working or not-working, problem descriptions
+> C. ALSA or OSS (you can see it in /proc/asound/card*/pcm0/sub0/hw_params)
+> D. period_size and buffer_size (ditto, or in kernel message)
+> E. any special options
+>
+> Maybe also nice on Wiki...
+
+Hi,
+
+Here's my setup and what's currently working.
+
+0. [SB0550         ]: SBXFi - SB XFi (SB0550)
+                      SB XFi (SB0550) at 0x3040 irq 28
+
+1. sbxfi driver version (date & HEADs)
+    26 Oct 2008
+    ./HEAD - 8682b8b4ced855b01639d85098ca7de23db87c3d Merge branch 
+'topic/snd-hrtimer'
+    ./alsa-kernel/HEAD - 8f5d017c10e9da0b1e06f674bfc2c764192d090b Merge 
+branch 'topic/sbxfi'
+
+2. base_rate - 48000
+
+3. x86_64, Fedora 9, 2.6.26.6-79.fc9.x86_64
+
+APPS TESTED
+
+Mplayer -  dev-SVN-r27841-4.3.0
+
+    WORKING
+
+    cat /proc/asound/card0/pcm0p/sub0/hw_params
+
+    access: RW_INTERLEAVED
+    format: S16_LE
+    subformat: STD
+    channels: 2
+    rate: 48000 (48000/1)
+    period_size: 1024
+    buffer_size: 16384
+    OSS format: S16_LE
+    OSS channels: 2
+    OSS rate: 48000
+    OSS period bytes: 4096
+    OSS periods: 16
+    OSS period frames: 1024
+
+
+Firefox 3.0.2 flash-plugin-10.0.12.36-release.i386
+
+    WORKING
+
+    cat /proc/asound/card0/pcm0p/sub0/hw_params
+    access: MMAP_INTERLEAVED
+    format: S16_LE
+    subformat: STD
+    channels: 2
+    rate: 48000 (48000/1)
+    period_size: 1024
+    buffer_size: 16384
+
+Enemy Territory Quake Wars worked but crashed after a couple of minutes. 
+Graphics card is new so can't be sure what happened.
+
+If I set Gnome to use OSS I can get sound from Rhythmbox.
+
+
+Sorry to tag this on to the end of this message, the problems below are 
+likely of my own causing rather than the sbxfi driver...
+
+I'm investigating why when I select alsa or pulse in Gnome I get an 
+error on clicking the test button.
+"audiotestsrc wave=sine freq=512 ! audioconvert ! audioresample ! 
+gconfaudiosink: Could not open audio device for playback."
+Selecting OSS and clicking test I hear the sine wave.
+But I cannot hear any desktop effect noises or the system bell.
+Same issue with KDE. I hear the log on tune but nothing else from the 
+desktop itself.
+Possibly my machine is just too messed up and needs a re-install, it's 
+been upgraded continuously from around FC3 and could do with an overhaul.
+
+Regards, Jason
