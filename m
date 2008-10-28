@@ -1,21 +1,17 @@
-From: Chris Pemberton <cjpembo.mailing.lists@gmail.com>
-Subject: Re: Request for test (1.0.18 final)
-Date: Tue, 28 Oct 2008 16:10:39 -0500
-Message-ID: <49077FCF.1000801@gmail.com>
-References: <Pine.LNX.4.61.0810271449320.12044@tm8103.perex-int.cz>
-	<4905F6EB.8080507@gmail.com>
-	<Pine.LNX.4.61.0810271917110.12044@tm8103.perex-int.cz>
-	<490615B8.8070707@gmail.com>
+From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: 2.6.26.[6|7] vs. rt11 vs. alsa (usb) midi
+Date: Tue, 28 Oct 2008 14:35:55 -0700
+Message-ID: <1225229755.3750.1.camel@localhost.localdomain>
+References: <1224989187.3706.7.camel@localhost.localdomain>
+	<s5hljwazc9i.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.146])
-	by alsa0.perex.cz (Postfix) with ESMTP id 64EAC24528
-	for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2008 22:10:54 +0100 (CET)
-Received: by ey-out-1920.google.com with SMTP id 21so1067899eyc.56
-	for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2008 14:10:53 -0700 (PDT)
-In-Reply-To: <490615B8.8070707@gmail.com>
+Received: from smtp3.stanford.edu (smtp3.Stanford.EDU [171.67.20.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7569624540
+	for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2008 22:43:08 +0100 (CET)
+In-Reply-To: <s5hljwazc9i.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,71 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>, alsa-devel@alsa-project.org, Ingo Molnar <mingo@elte.hu>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Chris Pemberton wrote:
-> Jaroslav Kysela wrote:
->> On Mon, 27 Oct 2008, Chris Pemberton wrote:
->>
->>  
->>> /home/cjpembo/LatestALSA/alsa-driver-1.0.18rc3.17.gd338c.191.ge29c1/acore/../alsa-kernel/core/jack.c:108: 
->>> error: 'SW_LINEOUT_INSERT' undeclared (first use in this function)
->>>     
->>
->> Could you try again latest snapshot? I just included the patch which 
->> should fix this issue.
->>
->>                     Jaroslav
->>
->> -----
->> Jaroslav Kysela <perex@perex.cz>
->> Linux Kernel Sound Maintainer
->> ALSA Project, Red Hat, Inc.
->>
->>
->>   
-> Alsa-driver compiles fine now; as does alsa-lib.
-> I've moved on to testing alsa-utils and I'm getting the following error:
->
->
-> I/O error : Attempt to load network entity 
-> http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl
-> warning: failed to load external entity 
-> "http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl"
-> compilation error: file /tmp/xmlto-xsl.FIhlna line 4 element import
-> xsl:import : unable to load 
-> http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl
-> make[2]: *** [alsactl_init.7] Error 1
-> make[2]: Leaving directory 
-> `/home/cjpembo/LatestALSA/alsa-utils-1.0.18rc3.5.gd7f90/alsactl'
-> make[1]: *** [install-recursive] Error 1
-> make[1]: Leaving directory 
-> `/home/cjpembo/LatestALSA/alsa-utils-1.0.18rc3.5.gd7f90/alsactl'
-> make: *** [install-recursive] Error 1
->
-> I have internet connectivity, so that shouldn't be the problem.  In 
-> addition, I can download the file OK using wget:
->
-> wget 
-> http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl
->
-> Chris
->
->
-alsa-utils -> ok (just needed to install a docbook-xsl package)
-alsa-driver -> ok
-alsa-lib -> ok
-alsa-plugins -> ok. 
-alsa-tools -> fails
+On Mon, 2008-10-27 at 09:13 +0100, Takashi Iwai wrote:
+> At Sat, 25 Oct 2008 19:46:27 -0700,
+> Fernando Lopez-Lezcano wrote:
+> > 
+> > Hi... anyone out there also having problem with this combination?
+> >    2.6.26.7 or 2.6.26.6 with 2.6.26.6-rt11 and alsa MIDI
+> > It looks to me like alsa midi is broken. 
+> > 
+> > Probably an interaction with the realtime kernel patch. A Fedora kernel
+> > based on 2.6.26.6 (2.6.26.6-49 on fc8) works fine, a very similarly
+> > patched kernel that includes the realtime patch does not. The
+> > configurations for both are almost the same (today I tried to change
+> > some of the most obvious differences and rebuild, with the same
+> > result). 
+> > 
+> > No problems with 2.6.24.7-rt21. 
+> > 
+> > Test: boot, login, plugin an external usb keyboard (Yamaha P250), it is
+> > recognized, use qjackctl alsa patchbay to connect it to kmidimon,
+> > kmidimon sees only _one_ midi message and that's it. Kmidimon can't be
+> > killed after that. 
+> 
+> What about other MIDI devices on other bus, e.g. an MPU401 on a PCI
+> soundcard or so?  There is a possibility of breakage in the USB driver
+> side, too.
 
-1.  The qlo10k1 stuff fails; so I just comment-out "qlo10k1" in the 
-"SUBDIRS =" line of the Makefile and keep compiling.
-2.  It fails again later when compiling a ui with the QT toolkit.  It 
-needs an older version than I have installed.  I'm convinced it would 
-probably compile clean if I were to downgrade, but I'm not going to try.
+I just tested an RME PCMCIA card + Multiface interface and it shows the
+same problem. No MIDI messages get through (but the LED in the Multiface
+blinks). Same hardware booted into 2.6.24.7-rt21 works fine. 
 
-So I  can say all the packages compile fine in Archlinux with a 2.6.27 
-kernel, gcc version 4.3.2, in both 32 and 64-bit environments.
-
-Chris
+-- Fernando
