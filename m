@@ -1,14 +1,18 @@
-From: Jason Harvey <softdevice@jasonline.co.uk>
-Subject: sbxfi - What works/doesn't summary
-Date: Tue, 28 Oct 2008 11:42:04 +0000
-Message-ID: <4906FA8C.4030501@jasonline.co.uk>
+From: The Source <thesourcehim@gmail.com>
+Subject: Re: sbxfi - What works/doesn't summary
+Date: Tue, 28 Oct 2008 15:47:43 +0300
+Message-ID: <490709EF.7090803@gmail.com>
+References: <4906FA8C.4030501@jasonline.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from homer.jasonline.co.uk (78-86-168-217.zone2.bethere.co.uk
-	[78.86.168.217]) by alsa0.perex.cz (Postfix) with ESMTP id 184B2243F4
-	for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2008 12:42:02 +0100 (CET)
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.186])
+	by alsa0.perex.cz (Postfix) with ESMTP id 625E3243F5
+	for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2008 12:48:16 +0100 (CET)
+Received: by nf-out-0910.google.com with SMTP id e27so1433956nfd.32
+	for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2008 04:48:15 -0700 (PDT)
+In-Reply-To: <4906FA8C.4030501@jasonline.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,103 +22,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Jason Harvey <softdevice@jasonline.co.uk>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-
-> It'd be helpful if someone can summarize the working and non-working
-> cases.  For example,
->
-> global info:
-> 0. SBXFI model (product name, PCI ID, PCI SSID, cat /proc/asound/cards
-> entry)
-> 1. sbxfi driver version (date & HEADs)
-> 2. base_rate value
-> 3. system details (x86-64, distro, kernel version, etc)
->
-> for each app:
-> A. Application name / version
-> B. working or not-working, problem descriptions
-> C. ALSA or OSS (you can see it in /proc/asound/card*/pcm0/sub0/hw_params)
-> D. period_size and buffer_size (ditto, or in kernel message)
-> E. any special options
->
-> Maybe also nice on Wiki...
-
-Hi,
-
-Here's my setup and what's currently working.
-
-0. [SB0550         ]: SBXFi - SB XFi (SB0550)
-                      SB XFi (SB0550) at 0x3040 irq 28
-
-1. sbxfi driver version (date & HEADs)
-    26 Oct 2008
-    ./HEAD - 8682b8b4ced855b01639d85098ca7de23db87c3d Merge branch 
-'topic/snd-hrtimer'
-    ./alsa-kernel/HEAD - 8f5d017c10e9da0b1e06f674bfc2c764192d090b Merge 
-branch 'topic/sbxfi'
-
-2. base_rate - 48000
-
-3. x86_64, Fedora 9, 2.6.26.6-79.fc9.x86_64
-
-APPS TESTED
-
-Mplayer -  dev-SVN-r27841-4.3.0
-
-    WORKING
-
-    cat /proc/asound/card0/pcm0p/sub0/hw_params
-
-    access: RW_INTERLEAVED
-    format: S16_LE
-    subformat: STD
-    channels: 2
-    rate: 48000 (48000/1)
-    period_size: 1024
-    buffer_size: 16384
-    OSS format: S16_LE
-    OSS channels: 2
-    OSS rate: 48000
-    OSS period bytes: 4096
-    OSS periods: 16
-    OSS period frames: 1024
-
-
-Firefox 3.0.2 flash-plugin-10.0.12.36-release.i386
-
-    WORKING
-
-    cat /proc/asound/card0/pcm0p/sub0/hw_params
-    access: MMAP_INTERLEAVED
-    format: S16_LE
-    subformat: STD
-    channels: 2
-    rate: 48000 (48000/1)
-    period_size: 1024
-    buffer_size: 16384
-
-Enemy Territory Quake Wars worked but crashed after a couple of minutes. 
-Graphics card is new so can't be sure what happened.
-
-If I set Gnome to use OSS I can get sound from Rhythmbox.
-
-
-Sorry to tag this on to the end of this message, the problems below are 
-likely of my own causing rather than the sbxfi driver...
-
-I'm investigating why when I select alsa or pulse in Gnome I get an 
-error on clicking the test button.
-"audiotestsrc wave=sine freq=512 ! audioconvert ! audioresample ! 
-gconfaudiosink: Could not open audio device for playback."
-Selecting OSS and clicking test I hear the sine wave.
-But I cannot hear any desktop effect noises or the system bell.
-Same issue with KDE. I hear the log on tune but nothing else from the 
-desktop itself.
-Possibly my machine is just too messed up and needs a re-install, it's 
-been upgraded continuously from around FC3 and could do with an overhaul.
-
-Regards, Jason
+SmFzb24gSGFydmV5INC/0LjRiNC10YI6Cj4gVGFrYXNoaSBJd2FpIHdyb3RlOgo+Cj4gICAKPj4g
+SXQnZCBiZSBoZWxwZnVsIGlmIHNvbWVvbmUgY2FuIHN1bW1hcml6ZSB0aGUgd29ya2luZyBhbmQg
+bm9uLXdvcmtpbmcKPj4gY2FzZXMuICBGb3IgZXhhbXBsZSwKPj4KPj4gZ2xvYmFsIGluZm86Cj4+
+IDAuIFNCWEZJIG1vZGVsIChwcm9kdWN0IG5hbWUsIFBDSSBJRCwgUENJIFNTSUQsIGNhdCAvcHJv
+Yy9hc291bmQvY2FyZHMKPj4gZW50cnkpCj4+IDEuIHNieGZpIGRyaXZlciB2ZXJzaW9uIChkYXRl
+ICYgSEVBRHMpCj4+IDIuIGJhc2VfcmF0ZSB2YWx1ZQo+PiAzLiBzeXN0ZW0gZGV0YWlscyAoeDg2
+LTY0LCBkaXN0cm8sIGtlcm5lbCB2ZXJzaW9uLCBldGMpCj4+Cj4+IGZvciBlYWNoIGFwcDoKPj4g
+QS4gQXBwbGljYXRpb24gbmFtZSAvIHZlcnNpb24KPj4gQi4gd29ya2luZyBvciBub3Qtd29ya2lu
+ZywgcHJvYmxlbSBkZXNjcmlwdGlvbnMKPj4gQy4gQUxTQSBvciBPU1MgKHlvdSBjYW4gc2VlIGl0
+IGluIC9wcm9jL2Fzb3VuZC9jYXJkKi9wY20wL3N1YjAvaHdfcGFyYW1zKQo+PiBELiBwZXJpb2Rf
+c2l6ZSBhbmQgYnVmZmVyX3NpemUgKGRpdHRvLCBvciBpbiBrZXJuZWwgbWVzc2FnZSkKPj4gRS4g
+YW55IHNwZWNpYWwgb3B0aW9ucwo+Pgo+PiBNYXliZSBhbHNvIG5pY2Ugb24gV2lraS4uLgo+PiAg
+ICAgCj4KPiBIaSwKPgo+IEhlcmUncyBteSBzZXR1cCBhbmQgd2hhdCdzIGN1cnJlbnRseSB3b3Jr
+aW5nLgo+Cj4gMC4gW1NCMDU1MCAgICAgICAgIF06IFNCWEZpIC0gU0IgWEZpIChTQjA1NTApCj4g
+ICAgICAgICAgICAgICAgICAgICAgIFNCIFhGaSAoU0IwNTUwKSBhdCAweDMwNDAgaXJxIDI4Cj4K
+PiAxLiBzYnhmaSBkcml2ZXIgdmVyc2lvbiAoZGF0ZSAmIEhFQURzKQo+ICAgICAyNiBPY3QgMjAw
+OAo+ICAgICAuL0hFQUQgLSA4NjgyYjhiNGNlZDg1NWIwMTYzOWQ4NTA5OGNhN2RlMjNkYjg3YzNk
+IE1lcmdlIGJyYW5jaCAKPiAndG9waWMvc25kLWhydGltZXInCj4gICAgIC4vYWxzYS1rZXJuZWwv
+SEVBRCAtIDhmNWQwMTdjMTBlOWRhMGIxZTA2ZjY3NGJmYzJjNzY0MTkyZDA5MGIgTWVyZ2UgCj4g
+YnJhbmNoICd0b3BpYy9zYnhmaScKPgo+IDIuIGJhc2VfcmF0ZSAtIDQ4MDAwCj4KPiAzLiB4ODZf
+NjQsIEZlZG9yYSA5LCAyLjYuMjYuNi03OS5mYzkueDg2XzY0Cj4KPiBBUFBTIFRFU1RFRAo+Cj4g
+TXBsYXllciAtICBkZXYtU1ZOLXIyNzg0MS00LjMuMAo+Cj4gICAgIFdPUktJTkcKPgo+ICAgICBj
+YXQgL3Byb2MvYXNvdW5kL2NhcmQwL3BjbTBwL3N1YjAvaHdfcGFyYW1zCj4KPiAgICAgYWNjZXNz
+OiBSV19JTlRFUkxFQVZFRAo+ICAgICBmb3JtYXQ6IFMxNl9MRQo+ICAgICBzdWJmb3JtYXQ6IFNU
+RAo+ICAgICBjaGFubmVsczogMgo+ICAgICByYXRlOiA0ODAwMCAoNDgwMDAvMSkKPiAgICAgcGVy
+aW9kX3NpemU6IDEwMjQKPiAgICAgYnVmZmVyX3NpemU6IDE2Mzg0Cj4gICAgIE9TUyBmb3JtYXQ6
+IFMxNl9MRQo+ICAgICBPU1MgY2hhbm5lbHM6IDIKPiAgICAgT1NTIHJhdGU6IDQ4MDAwCj4gICAg
+IE9TUyBwZXJpb2QgYnl0ZXM6IDQwOTYKPiAgICAgT1NTIHBlcmlvZHM6IDE2Cj4gICAgIE9TUyBw
+ZXJpb2QgZnJhbWVzOiAxMDI0Cj4KPgo+IEZpcmVmb3ggMy4wLjIgZmxhc2gtcGx1Z2luLTEwLjAu
+MTIuMzYtcmVsZWFzZS5pMzg2Cj4KPiAgICAgV09SS0lORwo+Cj4gICAgIGNhdCAvcHJvYy9hc291
+bmQvY2FyZDAvcGNtMHAvc3ViMC9od19wYXJhbXMKPiAgICAgYWNjZXNzOiBNTUFQX0lOVEVSTEVB
+VkVECj4gICAgIGZvcm1hdDogUzE2X0xFCj4gICAgIHN1YmZvcm1hdDogU1RECj4gICAgIGNoYW5u
+ZWxzOiAyCj4gICAgIHJhdGU6IDQ4MDAwICg0ODAwMC8xKQo+ICAgICBwZXJpb2Rfc2l6ZTogMTAy
+NAo+ICAgICBidWZmZXJfc2l6ZTogMTYzODQKPgo+IEVuZW15IFRlcnJpdG9yeSBRdWFrZSBXYXJz
+IHdvcmtlZCBidXQgY3Jhc2hlZCBhZnRlciBhIGNvdXBsZSBvZiBtaW51dGVzLiAKPiBHcmFwaGlj
+cyBjYXJkIGlzIG5ldyBzbyBjYW4ndCBiZSBzdXJlIHdoYXQgaGFwcGVuZWQuCj4KPiBJZiBJIHNl
+dCBHbm9tZSB0byB1c2UgT1NTIEkgY2FuIGdldCBzb3VuZCBmcm9tIFJoeXRobWJveC4KPgo+Cj4g
+U29ycnkgdG8gdGFnIHRoaXMgb24gdG8gdGhlIGVuZCBvZiB0aGlzIG1lc3NhZ2UsIHRoZSBwcm9i
+bGVtcyBiZWxvdyBhcmUgCj4gbGlrZWx5IG9mIG15IG93biBjYXVzaW5nIHJhdGhlciB0aGFuIHRo
+ZSBzYnhmaSBkcml2ZXIuLi4KPgo+IEknbSBpbnZlc3RpZ2F0aW5nIHdoeSB3aGVuIEkgc2VsZWN0
+IGFsc2Egb3IgcHVsc2UgaW4gR25vbWUgSSBnZXQgYW4gCj4gZXJyb3Igb24gY2xpY2tpbmcgdGhl
+IHRlc3QgYnV0dG9uLgo+ICJhdWRpb3Rlc3RzcmMgd2F2ZT1zaW5lIGZyZXE9NTEyICEgYXVkaW9j
+b252ZXJ0ICEgYXVkaW9yZXNhbXBsZSAhIAo+IGdjb25mYXVkaW9zaW5rOiBDb3VsZCBub3Qgb3Bl
+biBhdWRpbyBkZXZpY2UgZm9yIHBsYXliYWNrLiIKPiBTZWxlY3RpbmcgT1NTIGFuZCBjbGlja2lu
+ZyB0ZXN0IEkgaGVhciB0aGUgc2luZSB3YXZlLgo+IEJ1dCBJIGNhbm5vdCBoZWFyIGFueSBkZXNr
+dG9wIGVmZmVjdCBub2lzZXMgb3IgdGhlIHN5c3RlbSBiZWxsLgo+IFNhbWUgaXNzdWUgd2l0aCBL
+REUuIEkgaGVhciB0aGUgbG9nIG9uIHR1bmUgYnV0IG5vdGhpbmcgZWxzZSBmcm9tIHRoZSAKPiBk
+ZXNrdG9wIGl0c2VsZi4KPiBQb3NzaWJseSBteSBtYWNoaW5lIGlzIGp1c3QgdG9vIG1lc3NlZCB1
+cCBhbmQgbmVlZHMgYSByZS1pbnN0YWxsLCBpdCdzIAo+IGJlZW4gdXBncmFkZWQgY29udGludW91
+c2x5IGZyb20gYXJvdW5kIEZDMyBhbmQgY291bGQgZG8gd2l0aCBhbiBvdmVyaGF1bC4KPgo+IFJl
+Z2FyZHMsIEphc29uCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCj4KPiAgIApZb3UgY2FuJ3QgaGVhciBkZXNrdG9wIHNvdW5kcyBiZWNhdXNlIHRo
+ZXkgYWx3YXlzIHVzZSBwdWxzZWF1ZGlvIG5vIAptYXR0ZXIgd2hhdCBzb3VuZCBzeXN0ZW0geW91
+IHNlbGVjdCBhcyBkZWZhdWx0LiBGb3IgbWUgcHVsc2VhdWRpbyBwbGF5cyAKZmlyc3Qgc291bmQg
+ZmluZSBhZnRlciBzdGFydCwgb3RoZXJzIGFyZSBjb3JydXB0IGFsb25nIHdpdGggc291bmQgZnJv
+bSAKYWxsIG90aGVyIGFwcHMuIEknbGwgcG9zdCBod19wYXJhbXMgbGF0ZXIuIEFsc28gcHVsc2Vh
+dWRpbyB0ZW5kcyB0byAKY3Jhc2ggb2Z0ZW4gd2l0aCB0aGlzIGRyaXZlciBzbyBJIHN1cHBvc2Ug
+eW91ciBwcm9ibGVtIGlzIHRoZSBzYW1lLgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
