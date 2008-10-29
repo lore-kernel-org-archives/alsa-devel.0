@@ -1,118 +1,65 @@
-From: "Luiz Fernando N. Capitulino" <lcapitulino@mandriva.com.br>
-Subject: Re: snd-hda-intel prevents machine to power off
-Date: Wed, 29 Oct 2008 13:12:07 -0200
-Message-ID: <20081029131207.01666623@doriath.conectiva>
-References: <20081028135933.36778d60@doriath.conectiva>
-	<s5hskqgbt4h.wl%tiwai@suse.de>
-	<20081028141916.610a2847@doriath.conectiva>
-	<s5hod14br3h.wl%tiwai@suse.de>
-	<20081028164433.2b2c6db4@doriath.conectiva>
-	<s5hzlkoh6uu.wl%tiwai@suse.de>
-	<s5hwsfrltnb.wl%tiwai@suse.de>
+From: Jason Harvey <softdevice@jasonline.co.uk>
+Subject: Re: sbxfi - What works/doesn't summary
+Date: Wed, 29 Oct 2008 15:55:46 +0000
+Message-ID: <49088782.4000709@jasonline.co.uk>
+References: <4906FA8C.4030501@jasonline.co.uk>	<490709EF.7090803@gmail.com>	<49074E98.7070506@jasonline.co.uk>	<s5h3aigilum.wl%tiwai@suse.de>	<490768FF.3020807@jasonline.co.uk>	<s5hy708h5r1.wl%tiwai@suse.de>	<490772FA.9060508@jasonline.co.uk>
+	<4907EA7F.4090402@gmail.com> <4907EEBE.5090604@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753851AbYJ2PLh@vger.kernel.org>
-In-Reply-To: <s5hwsfrltnb.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, herton@mandriva.com.br
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from homer.jasonline.co.uk (78-86-168-217.zone2.bethere.co.uk
+	[78.86.168.217]) by alsa0.perex.cz (Postfix) with ESMTP id 241DF24440
+	for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2008 16:55:42 +0100 (CET)
+In-Reply-To: <4907EEBE.5090604@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, The Source <thesourcehim@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Em Wed, 29 Oct 2008 08:58:32 +0100
-Takashi Iwai <tiwai@suse.de> escreveu:
-
-| At Tue, 28 Oct 2008 20:12:09 +0100,
-| I wrote:
-| > 
-| > At Tue, 28 Oct 2008 16:44:33 -0200,
-| > Luiz Fernando N. Capitulino wrote:
-| > > 
-| > > Em Tue, 28 Oct 2008 17:51:30 +0100
-| > > Takashi Iwai <tiwai@suse.de> escreveu:
-| > > 
-| > > | At Tue, 28 Oct 2008 14:19:16 -0200,
-| > > | Luiz Fernando N. Capitulino wrote:
-| > > | > 
-| > > | > Em Tue, 28 Oct 2008 17:07:42 +0100
-| > > | > Takashi Iwai <tiwai@suse.de> escreveu:
-| > > | > 
-| > > | > | >  Hi Takashi,
-| > > | > | > 
-| > > | > | >  If I have some process with the sound device opened in my eeepc
-| > > | > | > (say KDE's kmix) and try to power off the machine, for example with:
-| > > | > | > 
-| > > | > | > # echo o > /proc/sysrq-trigger
-| > > | > | > 
-| > > | > | >  The machine will not power off.
-| > > | > | 
-| > > | > | At which point does it stop?
-| > > | > | What shows alt-sysrq-t (or w) output?
-| > > | > 
-| > > | >  I'm wondering how to get that kind of output because everything
-| > > | > is disabled at that point (display inclusive).
-| > > | 
-| > > | OK, then it's hard to see.
-| > > | A good news is that it goes at least fairly end point, thus likely no
-| > > | hanging task, etc.
-| > > | 
-| > > | 
-| > > | > | >  But it does work if I remove the snd-hda-intel module before issuing
-| > > | > | > the echo above.
-| > > | > | > 
-| > > | > | >  This problem seems to be pretty popular among distros, I could find
-| > > | > | > it reported for Mandriva, Ubuntu and Fedora.
-| > > | > | 
-| > > | > | Hmm, I haven't heard of unfixed issues.
-| > > | > 
-| > > | >  Well, these are the tickets I've found:
-| > > | > 
-| > > | > https://bugzilla.redhat.com/show_bug.cgi?id=444115
-| > > | > https://bugs.launchpad.net/ubuntu/+source/linux-source-2.6.22/+bug/126140
-| > > | > https://qa.mandriva.com/show_bug.cgi?id=44752
-| > > | 
-| > > | Looking through the comments that the power-saving helps, the problem
-| > > | may disappear even without disabling the pci device.  The power-saving
-| > > | doesn't involve with pci_disable_device() or changing the power-state
-| > > | of the controler.  So, at least, the problem is either in the codec
-| > > | or the controller setup.
-| > > | 
-| > > | Suppose you already use the power-saving and it solves the shutdown
-| > > | problem, could you set power_save_controller=0 option for
-| > > | snd-hda-intel, and check whether the shutdown still works or not?
-| > > | If the shutdown doesn't work with this option, it means that
-| > > | azx_stop_chip() is what would be needed.
-| > > 
-| > >  Yes, power_save_controller=0 doesn't work while the power-saving
-| > > one works.
-| > 
-| > OK, then could you check which call in azx_stop_chip() is critical?
-| > You can comment out each and check the difference.
-| > 
-| > >  Where should I put a call to azx_stop_ship()? I'm not an alsa
-| > > hacker. :)
-| > 
-| > This is the problem.  If it's a fast call like azx_int_clear() or
-| > azx_int_enable(), it can be relatively easily done at each time.
-| > But, it's like freeing memories, it shouldn't be done at each
-| > operation.
-| 
-| On the second thought, we may just use a reboot notifier as a
-| workaround for this kind of problem.
-| Below is a quick fix.  Could you give it a try?
-
- Yeah, it fixes the problem for me.
-
-| Anyway, could you create a kernel bugzilla entry?  This will help
-| to keep records in a commit changelog greatly, why this ugly hack is
-| needed.
-| You can list the relevant URLs there as references, too.
-
- Here you are:
-
-http://bugzilla.kernel.org/show_bug.cgi?id=11889
-
- Takashi, Thank you very much for your help.
-
--- 
-Luiz Fernando N. Capitulino
+VGhlIFNvdXJjZSB3cm90ZToKPiBUaGUgU291cmNlINC/0LjRiNC10YI6Cj4gICAKPj4gSmFzb24g
+SGFydmV5INC/0LjRiNC10YI6Cj4+ICAgICAKPj4+IFRha2FzaGkgSXdhaSB3cm90ZToKPj4+ICAK
+Pj4+ICAgICAgIAo+Pj4+PiBTb3JyeSB0aGF0IHdhcyBhIGJpdCBhbWJpZ3VvdXMsIEknZCBuZXZl
+ciB0cmllZCA5NmtIei4KPj4+Pj4gSGF2ZSBqdXN0IGNoYW5nZWQgYmFzZV9yYXRlIHRvIDk2a0h6
+IGFuZCBpdCBwZXJmb3JtcyBpZGVudGljYWxseSB0byAKPj4+Pj4gNDhrSHouCj4+Pj4+IFB1bHNl
+IG1hbmdsZXMgdGhlIHNvdW5kIGluIGp1c3QgdGhlIHNhbWUgbWFubmVyIGF0IDQ4a0h6IG9yIDk2
+a0h6Lgo+Pj4+PiAgICAgICAgICAgCj4+Pj4+ICAgICAgICAgICAKPj4+PiBBaCwgc28geW91IG1l
+YW50IG1wbGF5ZXIvZmxhc2ggd2l0aCBQQSBiYWNrZW5kPwo+Pj4+ICAgICAgIAo+Pj4+ICAgICAg
+ICAgCj4+PiBZZXMuCj4+PiBJIGFsc28gdHJpZWQgbXBsYXllciB1c2luZyAtYW89YWxzYSBvciAt
+YW89b3NzIGFuZCB0aGUgc291bmQgaXMgc3RpbGwgCj4+PiBjb3JydXB0ZWQsIGV2ZW4gYWZ0ZXIg
+a2lsbGluZyB0aGUgcHVsc2UgZGFlbW9uLgo+Pj4KPj4+IElmIEkgZ2V0IHRoZSBjaGFuY2UgSSB3
+aWxsIHB1dCB0aGUgY2FyZCBpbnRvIGEgMzJiaXQgbWFjaGluZSB0b21vcnJvdyAKPj4+IGFuZCBz
+ZWUgaG93IGl0IHNvdW5kcyB0aGVyZS4KPj4+Cj4+PiBUaGFua3MsIEphc29uCj4+Pgo+Pj4KPj4+
+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+PiBBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdAo+Pj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4+PiBo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo+Pj4KPj4+ICAgCj4+PiAgICAgICAKPj4gT2ssIGxvb2tzIGxpa2Ugd2l0aCB0aGUgbGF0ZXN0
+IHNuYXBzaG90ICgyOC4xMC4yMDA4IDE1OjE5OjAwKSAKPj4gcHVsc2VhdWRpbyB3b3JrcyBmaW5l
+LiBCdXQgd2luZSBub3QuIFRoZSBiYWQgdGhpbmcgaXMgSSBjYW4ndCBnZXQgCj4+IGh3X3BhcmFt
+cyBzb21laG93LiBXaGVuIHB1bHNlYXVkaW8gaXMgc3RhcnRlZCBod19wYXJhbXMgYWx3YXlzIHNh
+eSAKPj4gJ2Nsb3NlZCcgZXZlbiBpZiBzb3VuZCBpcyBwbGF5ZWQgYXQgdGhpcyBtb21lbnQuIEkn
+bGwgdHJ5IHRvIHJlbW92ZSAKPj4gcHVsc2VhdWRpbyBhbmQgdGVzdCB3aW5lIGFnYWluLgo+Pgo+
+PiAgICAgCj4gV2VsbCwgSSB3YXNuJ3QgbHVja3kuIEV2ZW4gd2l0aG91dCBwdWxzZWF1ZGlvIGh3
+X3BhcmFtcyBhcmUgJ2Nsb3NlZCcgCj4gbm9tYXR0ZXIgd2hhdC4KCldpdGggdGhlIGxhdGVzdCB1
+bnN0YWJsZSBJIGdyYWJiZWQgdGhpcyBhZnRlcm5vb24gZXZlcnl0aGluZyBpcyBzb3VuZGluZwpw
+cmV0dHkgZ29vZCByaWdodCBub3chCgpwdWxzZWF1ZGlvIGlzIG5vdyB3b3JraW5nLgoKW2phc29u
+QHF1YWQgYWxzYS1rZXJuZWxdJCBjYXQgSEVBRAoyZjI4MDE4OWM3Nzc5ZTBlZmJlZWFkOGViMDNi
+MTc5ZDE0MWRkMTk2IE1lcmdlIGNvbW1pdCAnc3RhYmxlL21hc3RlcicKCkkgY2FuIGdldCBod19w
+YXJhbXMgd2hlbiB0aGVyZSBpcyBzb21ldGhpbmcgcGxheWluZy4KCmNhdCAvcHJvYy9hc291bmQv
+Y2FyZDAvcGNtMHAvc3ViMC9od19wYXJhbXMKCmFjY2VzczogTU1BUF9JTlRFUkxFQVZFRApmb3Jt
+YXQ6IFMxNl9MRQpzdWJmb3JtYXQ6IFNURApjaGFubmVsczogMgpyYXRlOiA5NjAwMCAoOTYwMDAv
+MSkKcGVyaW9kX3NpemU6IDIwNDgKYnVmZmVyX3NpemU6IDE2Mzg0CgpDYW4ndCBnZXQgbXBsYXll
+ciB0byBwbGF5IGF0IHRoZSBzYW1lIHRpbWUgYXMgZmxhc2ggaW4gZmlyZWZveCBidXQgSQpkb24n
+dCByZWFsbHkga25vdyBpZiBJJ3ZlIGV2ZXIgbWFuYWdlZCB0byBkbyB0aGF0IHVuZGVyIHB1bHNl
+Li4uCgpUaGFuayB5b3UgYWdhaW4gVGFrYXNoaSwKCkphc29uCgoKCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
