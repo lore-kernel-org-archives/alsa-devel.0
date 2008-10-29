@@ -1,20 +1,18 @@
-From: The Source <thesourcehim@gmail.com>
-Subject: Re: sbxfi - What works/doesn't summary
-Date: Wed, 29 Oct 2008 08:15:04 +0300
-Message-ID: <4907F158.3040608@gmail.com>
-References: <4906FA8C.4030501@jasonline.co.uk>	<490709EF.7090803@gmail.com>	<49074E98.7070506@jasonline.co.uk>	<s5h3aigilum.wl%tiwai@suse.de>	<490768FF.3020807@jasonline.co.uk>	<s5hy708h5r1.wl%tiwai@suse.de>
-	<490772FA.9060508@jasonline.co.uk> <4907EA7F.4090402@gmail.com>
-	<4907EEBE.5090604@gmail.com> <4907EF8C.5050502@gmail.com>
+From: "Wu, Fengguang" <fengguang.wu@intel.com>
+Subject: Re: [ANNOUNCE] patch for INTEL HDMI codec
+Date: Wed, 29 Oct 2008 14:07:55 +0800
+Message-ID: <1225260476.937351.9818@de>
+References: <1225181260.867710.21503@de> <s5hvdvd5c17.wl%tiwai@suse.de>
+	<1225187418.71863.24941@de> <s5hljw9m2oi.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1996D2442E
-	for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2008 06:15:07 +0100 (CET)
-Received: by nf-out-0910.google.com with SMTP id e27so1764723nfd.32
-	for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2008 22:15:06 -0700 (PDT)
-In-Reply-To: <4907EF8C.5050502@gmail.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id C245E24396
+	for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2008 07:07:59 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hljw9m2oi.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,58 +23,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIFNvdXJjZSDQv9C40YjQtdGCOgo+IFRoZSBTb3VyY2Ug0L/QuNGI0LXRgjoKPj4gVGhlIFNv
-dXJjZSDQv9C40YjQtdGCOgo+Pj4gSmFzb24gSGFydmV5INC/0LjRiNC10YI6Cj4+Pj4gVGFrYXNo
-aSBJd2FpIHdyb3RlOgo+Pj4+ICAKPj4+Pj4+IFNvcnJ5IHRoYXQgd2FzIGEgYml0IGFtYmlndW91
-cywgSSdkIG5ldmVyIHRyaWVkIDk2a0h6Lgo+Pj4+Pj4gSGF2ZSBqdXN0IGNoYW5nZWQgYmFzZV9y
-YXRlIHRvIDk2a0h6IGFuZCBpdCBwZXJmb3JtcyBpZGVudGljYWxseSAKPj4+Pj4+IHRvIDQ4a0h6
-Lgo+Pj4+Pj4gUHVsc2UgbWFuZ2xlcyB0aGUgc291bmQgaW4ganVzdCB0aGUgc2FtZSBtYW5uZXIg
-YXQgNDhrSHogb3IgOTZrSHouCj4+Pj4+PiAgICAgICAgICAgCj4+Pj4+IEFoLCBzbyB5b3UgbWVh
-bnQgbXBsYXllci9mbGFzaCB3aXRoIFBBIGJhY2tlbmQ/Cj4+Pj4+ICAgICAgIAo+Pj4+IFllcy4K
-Pj4+PiBJIGFsc28gdHJpZWQgbXBsYXllciB1c2luZyAtYW89YWxzYSBvciAtYW89b3NzIGFuZCB0
-aGUgc291bmQgaXMgCj4+Pj4gc3RpbGwgY29ycnVwdGVkLCBldmVuIGFmdGVyIGtpbGxpbmcgdGhl
-IHB1bHNlIGRhZW1vbi4KPj4+Pgo+Pj4+IElmIEkgZ2V0IHRoZSBjaGFuY2UgSSB3aWxsIHB1dCB0
-aGUgY2FyZCBpbnRvIGEgMzJiaXQgbWFjaGluZSAKPj4+PiB0b21vcnJvdyBhbmQgc2VlIGhvdyBp
-dCBzb3VuZHMgdGhlcmUuCj4+Pj4KPj4+PiBUaGFua3MsIEphc29uCj4+Pj4KPj4+Pgo+Pj4+IF9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+Pj4gQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKPj4+PiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPj4+PiBo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo+Pj4+Cj4+Pj4gICAKPj4+IE9rLCBsb29rcyBsaWtlIHdpdGggdGhlIGxhdGVzdCBzbmFwc2hv
-dCAoMjguMTAuMjAwOCAxNToxOTowMCkgCj4+PiBwdWxzZWF1ZGlvIHdvcmtzIGZpbmUuIEJ1dCB3
-aW5lIG5vdC4gVGhlIGJhZCB0aGluZyBpcyBJIGNhbid0IGdldCAKPj4+IGh3X3BhcmFtcyBzb21l
-aG93LiBXaGVuIHB1bHNlYXVkaW8gaXMgc3RhcnRlZCBod19wYXJhbXMgYWx3YXlzIHNheSAKPj4+
-ICdjbG9zZWQnIGV2ZW4gaWYgc291bmQgaXMgcGxheWVkIGF0IHRoaXMgbW9tZW50LiBJJ2xsIHRy
-eSB0byByZW1vdmUgCj4+PiBwdWxzZWF1ZGlvIGFuZCB0ZXN0IHdpbmUgYWdhaW4uCj4+Pgo+PiBX
-ZWxsLCBJIHdhc24ndCBsdWNreS4gRXZlbiB3aXRob3V0IHB1bHNlYXVkaW8gaHdfcGFyYW1zIGFy
-ZSAnY2xvc2VkJyAKPj4gbm9tYXR0ZXIgd2hhdC4KPj4KPiBPaCwgZm9yZ290LiBNeSBjYXJkIGlz
-Ogo+Cj4gMDU6MDAuMCBNdWx0aW1lZGlhIGF1ZGlvIGNvbnRyb2xsZXI6IENyZWF0aXZlIExhYnMg
-U0IgWC1GaQo+ICAgIFN1YnN5c3RlbTogQ3JlYXRpdmUgTGFicyBVbmtub3duIGRldmljZSAwMDJj
-Cj4gICAgQ29udHJvbDogSS9PKyBNZW0rIEJ1c01hc3RlcisgU3BlY0N5Y2xlLSBNZW1XSU5WLSBW
-R0FTbm9vcC0gUGFyRXJyLSAKPiBTdGVwcGluZy0gU0VSUi0gRmFzdEIyQi0gRGlzSU5UeC0KPiAg
-ICBTdGF0dXM6IENhcCsgNjZNSHotIFVERi0gRmFzdEIyQi0gUGFyRXJyLSBERVZTRUw9bWVkaXVt
-ID5UQWJvcnQtIAo+IDxUQWJvcnQtIDxNQWJvcnQtID5TRVJSLSA8UEVSUi0gSU5UeC0KPiAgICBM
-YXRlbmN5OiA2NCAoMTAwMG5zIG1pbiwgMTI1MG5zIG1heCksIENhY2hlIExpbmUgU2l6ZTogMzIg
-Ynl0ZXMKPiAgICBJbnRlcnJ1cHQ6IHBpbiBBIHJvdXRlZCB0byBJUlEgMTYKPiAgICBSZWdpb24g
-MDogSS9PIHBvcnRzIGF0IGVjMDAgW3NpemU9MzJdCj4gICAgUmVnaW9uIDE6IE1lbW9yeSBhdCBm
-ZWEwMDAwMCAoNjQtYml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0yTV0KPiAgICBSZWdpb24g
-MzogTWVtb3J5IGF0IGY4MDAwMDAwICg2NC1iaXQsIG5vbi1wcmVmZXRjaGFibGUpIFtzaXplPTY0
-TV0KPiAgICBDYXBhYmlsaXRpZXM6IFs0MF0gUG93ZXIgTWFuYWdlbWVudCB2ZXJzaW9uIDIKPiAg
-ICAgICAgRmxhZ3M6IFBNRUNsay0gRFNJKyBEMSsgRDIrIEF1eEN1cnJlbnQ9MG1BIAo+IFBNRShE
-MC0sRDEtLEQyLSxEM2hvdC0sRDNjb2xkLSkKPiAgICAgICAgU3RhdHVzOiBEMCBQTUUtRW5hYmxl
-LSBEU2VsPTAgRFNjYWxlPTAgUE1FLQo+ICAgIENhcGFiaWxpdGllczogWzUwXSBNZXNzYWdlIFNp
-Z25hbGxlZCBJbnRlcnJ1cHRzOiBNYXNrLSA2NGJpdCsgCj4gUXVldWU9MC8wIEVuYWJsZS0KPiAg
-ICAgICAgQWRkcmVzczogMDAwMDAwMDAwMDAwMDAwMCAgRGF0YTogMDAwMAo+ICAgIEtlcm5lbCBk
-cml2ZXIgaW4gdXNlOiBTQi1YRmkKPiAwMDogMDIgMTEgMDUgMDAgMDcgMDAgMTAgMDIgMDAgMDAg
-MDEgMDQgMDggNDAgMDAgMDAKPiAxMDogMDEgZWMgMDAgMDAgMDQgMDAgYTAgZmUgMDAgMDAgMDAg
-MDAgMDQgMDAgMDAgZjgKPiAyMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDIgMTEgMmMgMDAKPiAzMDogMDAgMDAgMDAgMDAgNDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMGIg
-MDEgMDQgMDUKPgo+Ck9rLCB3YXMgYWJsZSB0byBnZXQgaHdfcGFyYW1zOgphY2Nlc3M6IE1NQVBf
-SU5URVJMRUFWRUQKZm9ybWF0OiBTMTZfTEUKc3ViZm9ybWF0OiBTVEQKY2hhbm5lbHM6IDIKcmF0
-ZTogNDgwMDAgKDQ4MDAwLzEpCnBlcmlvZF9zaXplOiAxMDg4CmJ1ZmZlcl9zaXplOiA0MzUyCgpX
-aHkgc28gd2VpcmQgdmFsdWVzPwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+On Tue, Oct 28, 2008 at 06:31:09PM +0800, Takashi Iwai wrote:
+> > > Does the ALSA patch work alone without changes in x.org side?
+> > 
+> > - P5E-VM:   works in console, ALSA patch is enough
+> > - HP 2230s: needs intel video driver to produce sound at all
+> > 
+> > - DG45ID:   (if I remember it right)
+> >   - produces noise in console since booting(this is why I call
+> >     hdmi_disable_output() in intel_hdmi_init(), will comment this case)
+> >   - sound OK both with vesa/intel video drivers
+> 
+> Thanks for detailed information.
+> If the ALSA patch doesn't do anything harmful, I'd happily apply it :)
+
+Thank you!
+
+In the long term, there will be kernel mode-setting code that takes
+charge of the EDID information; it can also do audio enabling on the
+video part, so that HDMI audio is available to console users.
+
+> > > And, maybe we'll need to move EDID handling to the common place,
+> > > anyway.
+> > 
+> > Yes. But what if the intel driver evolve/expand fast enough to be the
+> > one real driver for HDMI/Display Port codecs? ;-)
+> 
+> Heh, my grand plan is to have a perfect generic codec-parser.
+> IOW, the codec-specific code should be merged into the generic parser
+> in future.
+
+That's a good direction. Can you point the right place for EDID code,
+or I can simply put them in patch_intelhdmi.c for now?
+
+> > > > PS: the patch can now produce the following ELD information:
+> > > > 
+> > > > [10340.656719] eldv = 1, pinp = 1
+> > > > [10340.660711] ELD buffer size  is 64
+> > > > [10340.660716] ELD baseline len is 10*4
+> > > > [10340.660720] vendor block len is 20
+> > > > [10340.660724] ELD version      is CEA-861D or below
+> > > > [10340.660728] CEA-EDID version is CEA-861-B, C or D
+> > > > [10340.660732] manufacture name is 0x4544
+> > > > [10340.660736] product code     is 0xa02c
+> > > > [10340.660740] port id          is 0x0
+> > > > [10340.660743] HDCP support     is 0
+> > > > [10340.660747] AI support       is 0
+> > > > [10340.660751] SAD count        is 0
+> > > > [10340.660754] audio sync delay is 0
+> > > > [10340.660758] connection type  is HDMI
+> > > > [10340.660763] speaker allocations:
+> > > > [10340.660766] monitor name     is DELL 2408WFP
+> > > 
+> > > Looks good.
+> > 
+> > I think those kernel messages would be valuable informations for both
+> > developers and end users. Such information are also good candidates
+> > for sysfs(or procfs) exports, I guess.
+> 
+> I thought of that, too.  If you need a sysfs entry for a specific
+> codec, you can easily attach to hwdep sysfs directory.  See
+> hda_hwdep.c:snd_hda_hwdep_add_sysfs().
+
+OK, I'll do it after sorting out the basic functions.
+
+> 
+> > > > --- /dev/null
+> > > > +++ sound-2.6/sound/pci/hda/patch_intelhdmi.c
+> > > (snip)
+> > > > +struct ELD_fixed_fields {
+> > > > +	__u8 rsv_0		:3;
+> > > > +	__u8 ELD_ver		:5;
+> > > 
+> > > We should avoid bitfields if it's used for communication with the
+> > > hardware in general for portability reason.  Simply take it as bytes,
+> > > and use normal bit shift ops.
+> > 
+> > This structure is for communication with intel's video driver.
+> > ie. intel video driver reuses that struct for filling the ELD buffer,
+> > so I think it should be OK.
+> 
+> Hm... Then this should work, although I don't agree fully with
+> bitfields for any communication protocols.
+> 
+> Anyway, it's no big problem.  This can be fixed if we see any
+> incompatibilities.
+
+OK. I'll remove bit fields from struct hdmi_audio_infoframe and keep
+struct ELD_fixed_fields for internal use only.
+
+Thank you,
+Fengguang
