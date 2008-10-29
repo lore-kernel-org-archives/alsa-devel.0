@@ -1,22 +1,19 @@
-From: Oliver Ford <ipaqlinux@oliford.co.uk>
-Subject: Re: Problem setting mixer switch with amixer/alsactl.
-Date: Tue, 28 Oct 2008 21:51:02 +0000
-Message-ID: <49078946.9030003@oliford.co.uk>
-References: <48FF7538.3090000@oliford.co.uk>
-	<20081023132705.GA20557@sirena.org.uk>
-	<4900829A.8000703@oliford.co.uk>
-	<20081023140116.GB17901@sirena.org.uk> <87mygvmci7.fsf@free.fr>
-	<20081024172533.GA3328@sirena.org.uk> <87ej25ero2.fsf@free.fr>
-	<20081028131031.GG9068@sirena.org.uk>
-	<20081028153435.GK9068@sirena.org.uk>
+From: The Source <thesourcehim@gmail.com>
+Subject: Re: sbxfi - What works/doesn't summary
+Date: Wed, 29 Oct 2008 07:28:41 +0300
+Message-ID: <4907E679.8080608@gmail.com>
+References: <4906FA8C.4030501@jasonline.co.uk>	<490709EF.7090803@gmail.com>	<49074E98.7070506@jasonline.co.uk>	<s5h3aigilum.wl%tiwai@suse.de>	<490768FF.3020807@jasonline.co.uk>	<s5hy708h5r1.wl%tiwai@suse.de>
+	<490772FA.9060508@jasonline.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0.thdo.woaf.net (dog.thdo.woaf.net [213.230.192.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id D6A3A24544
-	for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2008 22:51:06 +0100 (CET)
-In-Reply-To: <20081028153435.GK9068@sirena.org.uk>
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id CBD5A2441E
+	for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2008 05:28:43 +0100 (CET)
+Received: by ey-out-1920.google.com with SMTP id 21so1128310eyc.56
+	for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2008 21:28:43 -0700 (PDT)
+In-Reply-To: <490772FA.9060508@jasonline.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,101 +23,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org, Robert Jarzmik <robert.jarzmik@free.fr>
+To: Jason Harvey <softdevice@jasonline.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Tue, Oct 28, 2008 at 01:10:31PM +0000, Mark Brown wrote:
->
->   
->> It looks like you might've been right after all.  I still can't see
->> where this makes a difference to the speaker paths but the patch below
->> seems to resolve the issues I'm seeing here.
->>     
->
->   
->> Oliver, could you test the patch below please?
->>     
->
-> Gah, sorry - it doesn't help, I was masking the problem another way.
->   
-Ok, well I tried it anyway and it doesn't solve the problem.
-
-I've done a lot more tracing and think I may have found something 
-relevant. I'm not entirely sure what is supposed to be happening so 
-can't figure it out myself, but maybe you will know...
-
-When turning the PCM->Speaker mixer on and off in alsamixer (before its 
-broken) the mixer's widget->value seems to flick between 0x4000 and 
-0x0000. After breaking it with amixer it flicks between 0x4001 and 
-0x4000, both of which fire the lines:
-        if (val)
-            /* new connection */
-            path->connect = invert ? 0:1;
-in dapm_mixer_update_power().
-
-
-I've put some debugging to report whats happening to path->connect in 
-dapm_mixer_update_power() and this is what happens:
-
-
-ON in alsamixer when working:
-    +dapm_mixer_update_power(kcontrol=Speaker Mixer PCM Playback Switch, 
-reg=0000000c, val=00000000, val_mask=00004001, invert=00000001)
-        found path for kcontrol: name='PCM Playback Switch', 
-long_name='Speaker Mixer PCM Playback Switch'
-        val=false: path->connect: 0 --> 1
-    -dapm_mixer_update_power()
-
-OFF in alsamixer when working:
-    +dapm_mixer_update_power(kcontrol=Speaker Mixer PCM Playback Switch, 
-reg=0000000c, val=00004000, val_mask=00004001, invert=00000001)
-        found path for kcontrol: name='PCM Playback Switch', 
-long_name='Speaker Mixer PCM Playback Switch'
-        val=true: path->connect: 1 --> 0
-    -dapm_mixer_update_power()
-
-
-Leaving it on in alsamixer and running the amixer on command. This happens:
-    +dapm_mixer_update_power(kcontrol=Speaker Mixer PCM Playback Switch, 
-reg=0000000c, val=00000001, val_mask=00004001, invert=00000001)
-        found path for kcontrol: name='PCM Playback Switch', 
-long_name='Speaker Mixer PCM Playback Switch'
-        val=true: path->connect: 1 --> 0
-    +dapm_power_widgets()
-
-i.e it seems to turn it off?
-
-
- From then on, any further attempts to turn it on in amixer give:
-    +dapm_mixer_update_power(kcontrol=Speaker Mixer PCM Playback Switch, 
-reg=0000000c, val=00004001, val_mask=00004001, invert=00000001)
-        found path for kcontrol: name='PCM Playback Switch', 
-long_name='Speaker Mixer PCM Playback Switch'
-        val=true: path->connect: 0 --> 0
-    +dapm_power_widgets()
-
-Any further off/on toggling in alsamixer once broken just results in:
-    +dapm_mixer_update_power(kcontrol=Speaker Mixer PCM Playback Switch, 
-reg=0000000c, val=00004001, val_mask=00004001, invert=00000001)
-        found path for kcontrol: name='PCM Playback Switch', 
-long_name='Speaker Mixer PCM Playback Switch'
-        val=true: path->connect: 0 --> 0
-    +dapm_power_widgets()
-   
-    +dapm_mixer_update_power(kcontrol=Speaker Mixer PCM Playback Switch, 
-reg=0000000c, val=00000001, val_mask=00004001, invert=00000001)
-        found path for kcontrol: name='PCM Playback Switch', 
-long_name='Speaker Mixer PCM Playback Switch'
-        val=true: path->connect: 0 --> 0
-    +dapm_power_widgets()
-
-
-
-Does that give you any ideas of what happening on my system?
-
-
-Thanks,
-
-Oliver
+SmFzb24gSGFydmV5INC/0LjRiNC10YI6Cj4gVGFrYXNoaSBJd2FpIHdyb3RlOgo+ICAgCj4+PiBT
+b3JyeSB0aGF0IHdhcyBhIGJpdCBhbWJpZ3VvdXMsIEknZCBuZXZlciB0cmllZCA5NmtIei4KPj4+
+IEhhdmUganVzdCBjaGFuZ2VkIGJhc2VfcmF0ZSB0byA5NmtIeiBhbmQgaXQgcGVyZm9ybXMgaWRl
+bnRpY2FsbHkgdG8gNDhrSHouCj4+PiBQdWxzZSBtYW5nbGVzIHRoZSBzb3VuZCBpbiBqdXN0IHRo
+ZSBzYW1lIG1hbm5lciBhdCA0OGtIeiBvciA5NmtIei4KPj4+ICAgICAKPj4+ICAgICAgIAo+PiBB
+aCwgc28geW91IG1lYW50IG1wbGF5ZXIvZmxhc2ggd2l0aCBQQSBiYWNrZW5kPwo+PiAgIAo+PiAg
+ICAgCj4gWWVzLgo+IEkgYWxzbyB0cmllZCBtcGxheWVyIHVzaW5nIC1hbz1hbHNhIG9yIC1hbz1v
+c3MgYW5kIHRoZSBzb3VuZCBpcyBzdGlsbCAKPiBjb3JydXB0ZWQsIGV2ZW4gYWZ0ZXIga2lsbGlu
+ZyB0aGUgcHVsc2UgZGFlbW9uLgo+Cj4gSWYgSSBnZXQgdGhlIGNoYW5jZSBJIHdpbGwgcHV0IHRo
+ZSBjYXJkIGludG8gYSAzMmJpdCBtYWNoaW5lIHRvbW9ycm93IAo+IGFuZCBzZWUgaG93IGl0IHNv
+dW5kcyB0aGVyZS4KPgo+IFRoYW5rcywgSmFzb24KPgo+Cj4gX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4KPiAgIApUaGUgc291bmQgb25jZSBjb3Jy
+dXB0ZWQgd2lsbCByZW1haW4gc28gdW50aWwgZHJpdmVyIGlzIHJlc3RhcnRlZC4KX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
