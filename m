@@ -1,18 +1,17 @@
-From: "Wu, Fengguang" <fengguang.wu@intel.com>
-Subject: Re: [ANNOUNCE] patch for INTEL HDMI codec
-Date: Wed, 29 Oct 2008 14:07:55 +0800
-Message-ID: <1225260476.937351.9818@de>
-References: <1225181260.867710.21503@de> <s5hvdvd5c17.wl%tiwai@suse.de>
-	<1225187418.71863.24941@de> <s5hljw9m2oi.wl%tiwai@suse.de>
+From: "Bankim Bhavsar" <bankim.bhavsar@gmail.com>
+Subject: Definition of frame
+Date: Tue, 28 Oct 2008 23:19:44 -0700
+Message-ID: <4eccebac0810282319w15a5f81asbeee2c27fddcc534@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id C245E24396
-	for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2008 07:07:59 +0100 (CET)
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.246])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1600A243A7
+	for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2008 07:19:45 +0100 (CET)
+Received: by rv-out-0708.google.com with SMTP id f25so2829734rvb.32
+	for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2008 23:19:44 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <s5hljw9m2oi.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,98 +21,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 28, 2008 at 06:31:09PM +0800, Takashi Iwai wrote:
-> > > Does the ALSA patch work alone without changes in x.org side?
-> > 
-> > - P5E-VM:   works in console, ALSA patch is enough
-> > - HP 2230s: needs intel video driver to produce sound at all
-> > 
-> > - DG45ID:   (if I remember it right)
-> >   - produces noise in console since booting(this is why I call
-> >     hdmi_disable_output() in intel_hdmi_init(), will comment this case)
-> >   - sound OK both with vesa/intel video drivers
-> 
-> Thanks for detailed information.
-> If the ALSA patch doesn't do anything harmful, I'd happily apply it :)
+I want to clarify my understanding regarding the definition of frame
+in Alsa lingo.
 
-Thank you!
+For a "stereo" DAC channel with 16-bit samples, number of bytes per
+frame = 4 bytes, correct?
+basically L & R samples each 16 bit, 16 * 2 = 32 bits = 4 bytes.
 
-In the long term, there will be kernel mode-setting code that takes
-charge of the EDID information; it can also do audio enabling on the
-video part, so that HDMI audio is available to console users.
+Reason being alsa-lib APIs use number of frames instead of bytes and I
+want to make sure I compute right number of frames.
 
-> > > And, maybe we'll need to move EDID handling to the common place,
-> > > anyway.
-> > 
-> > Yes. But what if the intel driver evolve/expand fast enough to be the
-> > one real driver for HDMI/Display Port codecs? ;-)
-> 
-> Heh, my grand plan is to have a perfect generic codec-parser.
-> IOW, the codec-specific code should be merged into the generic parser
-> in future.
-
-That's a good direction. Can you point the right place for EDID code,
-or I can simply put them in patch_intelhdmi.c for now?
-
-> > > > PS: the patch can now produce the following ELD information:
-> > > > 
-> > > > [10340.656719] eldv = 1, pinp = 1
-> > > > [10340.660711] ELD buffer size  is 64
-> > > > [10340.660716] ELD baseline len is 10*4
-> > > > [10340.660720] vendor block len is 20
-> > > > [10340.660724] ELD version      is CEA-861D or below
-> > > > [10340.660728] CEA-EDID version is CEA-861-B, C or D
-> > > > [10340.660732] manufacture name is 0x4544
-> > > > [10340.660736] product code     is 0xa02c
-> > > > [10340.660740] port id          is 0x0
-> > > > [10340.660743] HDCP support     is 0
-> > > > [10340.660747] AI support       is 0
-> > > > [10340.660751] SAD count        is 0
-> > > > [10340.660754] audio sync delay is 0
-> > > > [10340.660758] connection type  is HDMI
-> > > > [10340.660763] speaker allocations:
-> > > > [10340.660766] monitor name     is DELL 2408WFP
-> > > 
-> > > Looks good.
-> > 
-> > I think those kernel messages would be valuable informations for both
-> > developers and end users. Such information are also good candidates
-> > for sysfs(or procfs) exports, I guess.
-> 
-> I thought of that, too.  If you need a sysfs entry for a specific
-> codec, you can easily attach to hwdep sysfs directory.  See
-> hda_hwdep.c:snd_hda_hwdep_add_sysfs().
-
-OK, I'll do it after sorting out the basic functions.
-
-> 
-> > > > --- /dev/null
-> > > > +++ sound-2.6/sound/pci/hda/patch_intelhdmi.c
-> > > (snip)
-> > > > +struct ELD_fixed_fields {
-> > > > +	__u8 rsv_0		:3;
-> > > > +	__u8 ELD_ver		:5;
-> > > 
-> > > We should avoid bitfields if it's used for communication with the
-> > > hardware in general for portability reason.  Simply take it as bytes,
-> > > and use normal bit shift ops.
-> > 
-> > This structure is for communication with intel's video driver.
-> > ie. intel video driver reuses that struct for filling the ELD buffer,
-> > so I think it should be OK.
-> 
-> Hm... Then this should work, although I don't agree fully with
-> bitfields for any communication protocols.
-> 
-> Anyway, it's no big problem.  This can be fixed if we see any
-> incompatibilities.
-
-OK. I'll remove bit fields from struct hdmi_audio_infoframe and keep
-struct ELD_fixed_fields for internal use only.
-
-Thank you,
-Fengguang
+Thanks,
+Bankim
