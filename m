@@ -1,17 +1,17 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: Backported sbxfi driver, possible fix
-Date: Wed, 29 Oct 2008 09:38:41 +0100
-Message-ID: <49082111.8070603@insite.cz>
-References: <4900A4FA.7020300@jasonline.co.uk>	<4900DBBD.2020806@jasonline.co.uk>	<s5hljwee68t.wl%tiwai@suse.de>	<49017FBF.4030005@jasonline.co.uk>	<s5hfxmm47kb.wl%tiwai@suse.de>	<20081025130652.GA27621@rzle423.uni-duisburg.de>	<s5hej24psn6.wl%tiwai@suse.de>	<20081025194255.GA27872@rzle423.uni-duisburg.de>	<s5hod18fntg.wl%tiwai@suse.de>	<49038448.3090704@jasonline.co.uk>	<5501535d0810251457k165cc4ceid2e34930a2bdc8ec@mail.gmail.com>	<s5h7i7v22cl.wl%tiwai@suse.de>	<ge3irb$knf$1@ger.gmane.org>
-	<49061FA4.5010201@superbug.co.uk>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Request for test (1.0.18 final)
+Date: Wed, 29 Oct 2008 09:48:55 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0810290945200.12044@tm8103.perex-int.cz>
+References: <Pine.LNX.4.61.0810271449320.12044@tm8103.perex-int.cz>
+	<200810272041.10885.gineera@aspect135.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.insite.cz (cable.insite.cz [84.242.84.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2A48F24157
-	for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2008 09:38:42 +0100 (CET)
-In-Reply-To: <49061FA4.5010201@superbug.co.uk>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1A8C224330
+	for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2008 09:48:57 +0100 (CET)
+In-Reply-To: <200810272041.10885.gineera@aspect135.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,38 +21,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: Alan Horstmann <gineera@aspect135.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
-> Alexander E. Patrakov wrote:
-> Alex,
+On Mon, 27 Oct 2008, Alan Horstmann wrote:
+
+> On Monday 27 October 2008 13:54, Jaroslav Kysela wrote:
+> > Hello,
+> >
+> > 	I would like to release 1.0.18 final packages (driver, lib,
+> > utils, tools, plugins) in few days. Please, report compilation trouble
+> > with the current ALSA code.
+> >
+> > 			Thank you for testing,
+> > 						Jaroslav
 > 
-> I added that comment (takashi cut and pasted my text). No resampling is
-> done.
-> Say you have a buffer that is running at 48kHz.
-> So you have say 480 samples at the 48kHz rate.
-> But if you want to transfer 44.1kHz rate samples over it, you only want
-> 441 samples to be there, so what to do with the left over 39 samples.
-> What the xfi does is next to each sample it adds a "valid" tag.
-> So, the xfi adds those 39 samples but marks them as "invalid".
-> The xfi then drops the 39 "invalid" samples, leaving only the 441
-> "valid" samples just before sending them at 44.1kHz to the DAC.
-> Does this explain things a bit better.
-> FYI, the xfi actually works internally at 384kHz, so it is actually
-> marking a lot of samples as "invalid".
+> Here on the 2.4.21-99-Suse, make results in:
+
+We do not support officially kernels bellow 2.4.31 (see 
+SUPPORTED_KERNELS).
+
+> ../../alsa-kernel/pci/ice1712/ice1712.c:50:22: linux/io.h: No such file or 
+> directory
 > 
-> Kind Regards
+> presumably caused as it is <asm/io.h> here?
+
+It should be handled in configure.in:
+
+CHECK_KERNEL_HEADER(linux/io.h, [#include <asm/io.h>
+])
+
+Not sure why linux/io.h in alsa-driver/include/linux/ directory is not 
+created for your kernel. You may investigate this yourself if you like.
+
+> I added temp symbolic link & continued to:
 > 
-> James
+> patching file maestro3.c
+> Hunk #2 succeeded at 2596 (offset 4 lines).
+> Hunk #3 succeeded at 2777 (offset 4 lines).
+> gcc -D__KERNEL__ -DMODULE=1 -I/home/alan/Vault/Alsa/1.0.18/
+> alsa-driver-1.0.18rc3.20.gcbea1.192.g2973f/include  -I/lib/
+> modules/2.4.21-99-athlon/build/include -O2 -mpreferred-stack-boundary=2 
+> -march=athlon -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer 
+> -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD 
+> -nostdinc -iwithprefix include -DMODVERSIONS -include /lib/
+> modules/2.4.21-99-athlon/build/include/linux/modversions.h  
+> -DKBUILD_BASENAME=maestro3   -c -o maestro3.o maestro3.c
+> maestro3.c: In function `snd_m3_create':
 
+....
 
-James,
+> maestro3.c:2612: error: structure has no member named `dev'
 
-Thanks a lot for the info. Does it mean that the core runs at 384kHz, 
-while codes are clocked by another clock signal PLL'd from the master 
-clock to the required frequency? Theoretically this could allow running 
-different outputs/channels at diferrent sample rates :)
+I fixed this one (it's reproducible with 2.4.31 kernel, too).
 
-Pavel.
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
