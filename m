@@ -1,18 +1,19 @@
-From: Edward Terry <eterry@openboxbuilder.com>
-Subject: supported sound cards
-Date: Thu, 30 Oct 2008 13:38:37 -0700
-Message-ID: <490A1B4D.4000507@openboxbuilder.com>
+From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
+Subject: Re: supported sound cards
+Date: Thu, 30 Oct 2008 23:19:02 +0100
+Message-ID: <fd3eb9bf0810301519n46717a54nca27445e17438829@mail.gmail.com>
+References: <490A1B4D.4000507@openboxbuilder.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vms173007pub.verizon.net (vms173007pub.verizon.net
-	[206.46.173.7]) by alsa0.perex.cz (Postfix) with ESMTP id E949224543
-	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 21:45:47 +0100 (CET)
-Received: from [192.168.1.47] ([71.111.33.171]) by vms173007.mailsrvcs.net
-	(Sun Java System Messaging Server 6.2-6.01 (built Apr  3 2006))
-	with ESMTPA id <0K9K0028OJYX8X52@vms173007.mailsrvcs.net> for
-	alsa-devel@alsa-project.org; Thu, 30 Oct 2008 15:37:46 -0500 (CDT)
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id 62F551037E3
+	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 23:19:04 +0100 (CET)
+Received: by yx-out-1718.google.com with SMTP id 36so602666yxh.2
+	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 15:19:03 -0700 (PDT)
+In-Reply-To: <490A1B4D.4000507@openboxbuilder.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +23,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Edward Terry <eterry@openboxbuilder.com>, alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I'm starting a business selling Linux-based computers, and I'm looking 
-for a high-end sound card that works well under Linux.  I don't have a 
-specific use in mind; this would be for a wide range of end-users, from 
-audiophiles to gamers.
-
-Is there a particular high-end sound card that stands out as working 
-well under Linux?  If not, what cards should I consider?
-
-I appreciate any information or suggestions.
-
-Edward
+SERBIHdvcmtzIG5pY2VseSBpZiBpdCB3b3Jrcy4gSWYgeW91IGNhbiB0ZXN0IGEgc3BlY2lmaWMg
+bW90aGVyYm9hcmQKdGhhdCB3b3JrcywgYW5kIHRoZW4gYnVpbGQgYSBzeXN0ZW0gYmFzZWQgb24g
+aXQsIGdyZWF0LgpFbnZ5MjQgKElDRTE3MTIpIGFuZCBFbnZ5MjRIVCgtUykgKElDRTE3MjQvSUNF
+MTcyMSkgY2FyZHMgd29yawpwYXJ0aWN1bGFyaWx5IHdlbGwgaW4gTGludXguIE1vc3Qgb2YgdGhl
+bSBhcmUgbGlzdGVkIGhlcmU6Cmh0dHA6Ly9lbnZ5MjQuc3ZvYm9kbm8uY29tLwpIb3dldmVyLCBu
+b3RlIHRoYXQgQUxTQSB1bmZvcnR1bmF0ZWx5IGRvZXNuJ3Qgc3VwcG9ydCBhbGwgb2YgdGhlbSAo
+Zm9yCmV4YW1wbGUsIEluZnJhc29uaWMgUXVhcnRldCBpc24ndCBzdXBwb3J0ZWQsIGFuZCBNYXlh
+IDQ0IGlzIHN1cHBvcnRlZApvbmx5IGluIFRha2FzaGkncyB1bnN0YWJsZSBnaXQgdHJlZSkuIE1v
+c3Qgb2YgdGhlbSBhcmUgc3VwcG9ydGVkLAp0aG91Z2guIFNvbWUgbmV3ZXIgbW9kZWxzIGFsc28g
+b2ZmZXIgZXh0cmVtZWx5IGhpZ2ggcXVhbGl0eSBEQUNzIGFuZApBRENzLgpPbiB0aGUgb3RoZXIg
+aGFuZCwgeW91IGhhdmUgRS1tdSBjYXJkcy4gVGhleSBhcmVuJ3QgZnVsbHkgc3VwcG9ydGVkLAp1
+bmZvcnR1bmF0ZWx5LCBidXQgdGhleSBkbyB3b3JrIGluIGRheS10by1kYXkgdXNhZ2UuIFRoZXkg
+YWxzbyBoYXZlCmhpZ2ggcXVhbGl0eSBEQUNzLgpIb3dldmVyLCBJJ20gbm90IHN1cmUgYWJvdXQg
+Z2FtaW5nIGNhcmRzLiBNYXliZSBBdXJlYWwgKDotUCkgb3IgU0IKTGl2ZSEgLyBTQiBBdWRpZ3kg
+d291bGQgcXVhbGlmeSBoZXJlLiBTb21lYm9keSBlbHNlIG1pZ2h0IGtub3cgdGhpcwpiZXR0ZXIu
+CgoyMDA4LzEwLzMwIEVkd2FyZCBUZXJyeSA8ZXRlcnJ5QG9wZW5ib3hidWlsZGVyLmNvbT46Cj4g
+SSdtIHN0YXJ0aW5nIGEgYnVzaW5lc3Mgc2VsbGluZyBMaW51eC1iYXNlZCBjb21wdXRlcnMsIGFu
+ZCBJJ20gbG9va2luZwo+IGZvciBhIGhpZ2gtZW5kIHNvdW5kIGNhcmQgdGhhdCB3b3JrcyB3ZWxs
+IHVuZGVyIExpbnV4LiAgSSBkb24ndCBoYXZlIGEKPiBzcGVjaWZpYyB1c2UgaW4gbWluZDsgdGhp
+cyB3b3VsZCBiZSBmb3IgYSB3aWRlIHJhbmdlIG9mIGVuZC11c2VycywgZnJvbQo+IGF1ZGlvcGhp
+bGVzIHRvIGdhbWVycy4KPgo+IElzIHRoZXJlIGEgcGFydGljdWxhciBoaWdoLWVuZCBzb3VuZCBj
+YXJkIHRoYXQgc3RhbmRzIG91dCBhcyB3b3JraW5nCj4gd2VsbCB1bmRlciBMaW51eD8gIElmIG5v
+dCwgd2hhdCBjYXJkcyBzaG91bGQgSSBjb25zaWRlcj8KPgo+IEkgYXBwcmVjaWF0ZSBhbnkgaW5m
+b3JtYXRpb24gb3Igc3VnZ2VzdGlvbnMuCj4KPiBFZHdhcmQKPiBfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4g
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgoKCgotLSAKVmVkcmFuIE1pbGV0acSH
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
