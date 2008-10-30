@@ -1,21 +1,24 @@
-From: Daniel Ribeiro <drwyrm@gmail.com>
-Subject: Re: ASoC: pxa2xx-ssp
-Date: Thu, 30 Oct 2008 09:40:17 -0200
-Message-ID: <1225366817.12583.28.camel@brutus>
-References: <1224809675.8330.4.camel@brutus>
-	<1224863678.28382.54.camel@dell-desktop.example.com>
-	<1224912767.5426.19.camel@brutus> <20081027124705.GE5896@sirena.org.uk>
-	<1225113574.9922.10.camel@brutus> <20081027134407.GF5896@sirena.org.uk>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: Problem setting mixer switch with amixer/alsactl.
+Date: Thu, 30 Oct 2008 11:40:57 +0000
+Message-ID: <20081030114057.GB5747@sirena.org.uk>
+References: <20081023132705.GA20557@sirena.org.uk>
+	<4900829A.8000703@oliford.co.uk>
+	<20081023140116.GB17901@sirena.org.uk> <87mygvmci7.fsf@free.fr>
+	<20081024172533.GA3328@sirena.org.uk> <87ej25ero2.fsf@free.fr>
+	<20081028131031.GG9068@sirena.org.uk>
+	<20081028153435.GK9068@sirena.org.uk>
+	<49078946.9030003@oliford.co.uk>
+	<20081029160451.GD14648@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.149])
-	by alsa0.perex.cz (Postfix) with ESMTP id 978E424363
-	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 12:40:25 +0100 (CET)
-Received: by qw-out-1920.google.com with SMTP id 9so239242qwj.56
-	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 04:40:24 -0700 (PDT)
-In-Reply-To: <20081027134407.GF5896@sirena.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6E51D24381
+	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 12:41:00 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20081029160451.GD14648@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,47 +28,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@kernel.org>
+To: Oliver Ford <ipaqlinux@oliford.co.uk>
+Cc: alsa-devel@alsa-project.org, Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: alsa-devel@alsa-project.org
 
-RW0gU2VnLCAyMDA4LTEwLTI3IMOgcyAxMzo0NCArMDAwMCwgTWFyayBCcm93biBlc2NyZXZldToK
-PiBPbiBNb24sIE9jdCAyNywgMjAwOCBhdCAxMToxOTozNEFNIC0wMjAwLCBEYW5pZWwgUmliZWly
-byB3cm90ZToKPiAKPiA+IAlPaywgaSB3aWxsIHJlYmFzZSBteSB3b3JrIG9uIHB4YS1zc3AuYy4g
-QnV0IGEgZmlyc3QgbG9vayBzaG93cyB0aGF0Cj4gPiBweGFfc3NwX2h3X3BhcmFtcyBzZXRzIHRo
-ZSBzc3AgZnJhbWUgc2l6ZSBkZXBlbmRpbmcgb24gdGhlIGF1ZGlvIHN0cmVhbQo+ID4gZm9ybWF0
-IGV2ZW4gZm9yIEkyUyBtb2RlLiBJIHRoaW5rIGl0IHdpbGwgbm90IHdvcmssIGFzIEkyUyBuZWVk
-cyB0bwo+ID4gc3RpY2sgdG8gMzJiaXQgZnJhbWUgc2l6ZS4KPiAKPiBUaGF0J3Mgbm90IGEgZ2Vu
-ZXJhbCByZXF1aXJlbWVudCBvZiBJMlMgLSBtYW55IGRldmljZXMgYXJlIE9LIHdpdGgKPiBzY2Fs
-aW5nIHRoZSBudW1iZXIgb2YgYml0IGNsb2NrcyB3aXRoIHRoZSBkYXRhLgo+IAo+ID4gCUlzIHRo
-ZXJlIGFueWJvZHkgdXNpbmcgU05EX1NPQ19EQUlGTVRfSTJTIHdpdGggdGhpcyBkcml2ZXI/Cj4g
-Cj4gSSdkIGdvIHNvIGZhciBhcyB0byBzYXkgdGhhdCBtb3N0IG9mIHRoZSB0ZXN0aW5nIGhhcyBi
-ZWVuIGluIEkyUyBtb2RlLgo+IE90aGVyIG1vZGVzIGhhdmUgYmVlbiB0ZXN0ZWQgYnV0IG1vc3Qg
-b2YgdGhlIHVzYWdlIGlzIHdpdGggSTJTLgo+IAo+IEkgc3VzcGVjdCB0aGF0IHdoYXQgeW91IG5l
-ZWQgdG8gZG8gaGVyZSB0byBpbnRlcm9wZXJhdGUgd2VsbCB3aXRoIHlvdXIKPiBjb2RlYyBpcyB0
-byBzZXQgdGhpbmdzIHVwIHRvIHVzZSBURE0gc28gdGhhdCB0aGUgZXh0cmEgY2xvY2tzIGFyZQo+
-IGdlbmVyYXRlZCBieSB3aGF0IHRoZSBDUFUgYmVsaWV2ZXMgYXJlIGlkbGUgVERNIHNsb3RzLgoK
-CUltIHRyeWluZyB0byBzZXR1cCBhcyB5b3Ugc2FpZC4KCglJIGdldCBjb3JyZWN0IGF1ZGlvIGlm
-IHVzZSBvbmUgdGRtX3Nsb3QgYW5kIG1vbm8gYXVkaW8sIGJ1dCBpIGNvdWxkbnQKZ2V0IHN0ZXJl
-byBhdWRpbyB3b3JraW5nIGNvcnJlY3RseSB3aXRob3V0IGNoYW5naW5nIHRoZSBzc3AgZnJhbWUg
-c2l6ZS4KCglIZXJlIGFyZSBteSB0ZXN0IHJlc3VsdHMgZm9yIHN0ZXJlbyBTMTZfTEUgYXVkaW86
-CgoJc2V0X3RkbV9zbG90KGNwdV9kYWksIDEsIDIpLCBTU0NSMF9EYXRhc2l6ZSgxNik6CglPbmx5
-IGxlZnQgY2hhbm5lbCB3b3Jrcy4KCglzZXRfdGRtX3Nsb3QoY3B1X2RhaSwgMiwgMiksIFNTQ1Iw
-X0RhdGFzaXplKDE2KToKCU5vIEkvTy4KCglzZXRfdGRtX3Nsb3QoY3B1X2RhaSwgMywgMiksIFNT
-Q1IwX0RhdGFzaXplKDE2KToKCU9ubHkgbGVmdCBjaGFubmVsIHdvcmtzLgoKCXNldF90ZG1fc2xv
-dChjcHVfZGFpLCAxLCAxKSwgU1NDUjBfRGF0YXNpemUoMTYpIHwgU1NDUjBfRURTUzoKCUJvdGgg
-Y2hhbm5lbHMgd29yay4KCglXaGF0IGNvdWxkIGJlIHdyb25nPyBDYW4geW91IHN1Z2dlc3QgbWUg
-aG93IHRvIHNldHVwIHRoZSB0ZG0gc2xvdHMgc28gaQpjYW4gZ2V0IGJvdGggY2hhbm5lbHM/CglP
-biBteSBib2FyZCBDTEsgYW5kIEZSTSBhcmUgZHJpdmVuIGJ5IHRoZSBjb2RlYywgcHhhIGlzIHNs
-YXZlLiBJIGhhdmUKbm8gc3BlY3MgZm9yIHRoZSBjb2RlYywgb25seSBhIDIuNCBrZXJuZWwgZHJp
-dmVyIHRoYXQgd29ya3Mgd2l0aAooU1NDUjBfRGF0YXNpemUoMTYpIHwgU1NDUjBfRURTUyB8IFNT
-Q1IwX1Nsb3RzUGVyRnJtKDEpKS4KCj4gCj4gPiAJSSB3aWxsIHNlbmQgeW91IGEgcGF0Y2ggbGF0
-ZXIgdG9kYXkuIFRoYW5rcyBmb3IgdGhlIHJlcGx5ISA6KQo+IAo+IFdoZW4gc3VibWl0dGluZyBw
-YXRjaGVzIHBsZWFzZSBkbyB0cnkgdG8gc3VibWl0IHNlcGFyYXRlIHBhdGNoZXMgZm9yCj4gc2Vw
-YXJhdGUgbG9naWNhbCBjaGFuZ2VzIC0gZm9yIGV4YW1wbGUsIHlvdXIgcHJldmlvdXMgcGF0Y2gg
-bWl4ZWQgaW4KPiBjaGFuZ2VzIGZvciByZWNlbnQgUFhBIEFQSXMgd2l0aCBjaGFuZ2VzIGluIHRo
-ZSBiZWhhdmlvdXIgb2YgdGhlIGNvZGUuCgoJVGhhdCB3YXMgbm90IGEgcGF0Y2ggc3VibWlzc2lv
-bi4gOikKCi0tIApEYW5pZWwgUmliZWlybwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+On Wed, Oct 29, 2008 at 04:04:51PM +0000, Mark Brown wrote:
+
+> I won't be able to fix it today since I have to go and get my eyes
+> examined (no wonder it took me so long to spot this!) but I expect I'll
+> have a patch tomorrow.
+
+Please try this, it resolves the problems I'm seeing here:
+
+commit 9fafa720f6dd4a7a9476bef0d78fee14af401c14
+Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Date:   Thu Oct 30 11:32:47 2008 +0000
+
+    ASoC: Fix mono controls after conversion to support full int masks
+    
+    When ASoC was converted to support full int width masks SOC_SINGLE_VALUE()
+    omitted the assignment of rshift, causing the control operatins to report
+    some mono controls as stereo. This happened to work some of the time due
+    to a confusion between shift and min in snd_soc_info_volsw().
+    
+    Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index d33825d..da0040b 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -28,7 +28,8 @@
+  */
+ #define SOC_SINGLE_VALUE(xreg, xshift, xmax, xinvert) \
+ 	((unsigned long)&(struct soc_mixer_control) \
+-	{.reg = xreg, .shift = xshift, .max = xmax, .invert = xinvert})
++	{.reg = xreg, .shift = xshift, .rshift = xshift, .max = xmax, \
++	.invert = xinvert})
+ #define SOC_SINGLE_VALUE_EXT(xreg, xmax, xinvert) \
+ 	((unsigned long)&(struct soc_mixer_control) \
+ 	{.reg = xreg, .max = xmax, .invert = xinvert})
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 0399fff..a17f864 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1563,7 +1563,7 @@ int snd_soc_info_volsw(struct snd_kcontrol *kcontrol,
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+ 	int max = mc->max;
+-	unsigned int shift = mc->min;
++	unsigned int shift = mc->shift;
+ 	unsigned int rshift = mc->rshift;
+ 
+ 	if (max == 1)
