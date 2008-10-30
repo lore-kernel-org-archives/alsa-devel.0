@@ -1,23 +1,18 @@
-From: Daniel Ribeiro <drwyrm@gmail.com>
-Subject: Re: ASoC: pxa2xx-ssp
-Date: Thu, 30 Oct 2008 10:24:14 -0200
-Message-ID: <1225369454.12583.38.camel@brutus>
-References: <1224809675.8330.4.camel@brutus>
-	<1224863678.28382.54.camel@dell-desktop.example.com>
-	<1224912767.5426.19.camel@brutus> <20081027124705.GE5896@sirena.org.uk>
-	<1225113574.9922.10.camel@brutus> <20081027134407.GF5896@sirena.org.uk>
-	<1225366817.12583.28.camel@brutus>
-	<20081030120634.GD5747@sirena.org.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/3] ASoC: Fix some minor errors in mpc5200 psc
+	i2s driver
+Date: Thu, 30 Oct 2008 12:37:09 +0000
+Message-ID: <1225370230-7829-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <20081030123649.GA7682@rakim.wolfsonmicro.main>
+	<1225370230-7829-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.154])
-	by alsa0.perex.cz (Postfix) with ESMTP id C7994243B8
-	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 13:27:14 +0100 (CET)
-Received: by yx-out-1718.google.com with SMTP id 36so306071yxh.2
-	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 05:27:13 -0700 (PDT)
-In-Reply-To: <20081030120634.GD5747@sirena.org.uk>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6257E243C8
+	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 13:37:11 +0100 (CET)
+In-Reply-To: <1225370230-7829-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,47 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-RW0gUXVpLCAyMDA4LTEwLTMwIMOgcyAxMjowNiArMDAwMCwgTWFyayBCcm93biBlc2NyZXZldToK
-PiBPbiBUaHUsIE9jdCAzMCwgMjAwOCBhdCAwOTo0MDoxN0FNIC0wMjAwLCBEYW5pZWwgUmliZWly
-byB3cm90ZToKPiAKPiA+IAlIZXJlIGFyZSBteSB0ZXN0IHJlc3VsdHMgZm9yIHN0ZXJlbyBTMTZf
-TEUgYXVkaW86Cj4gCj4gPiAJc2V0X3RkbV9zbG90KGNwdV9kYWksIDEsIDIpLCBTU0NSMF9EYXRh
-c2l6ZSgxNik6Cj4gPiAJT25seSBsZWZ0IGNoYW5uZWwgd29ya3MuCgorIFNpbGVudCBvdXRwdXQg
-b24gcmlnaHQgY2hhbm5lbC4KCj4gCj4gPiAJc2V0X3RkbV9zbG90KGNwdV9kYWksIDIsIDIpLCBT
-U0NSMF9EYXRhc2l6ZSgxNik6Cj4gPiAJTm8gSS9PLgo+IAo+IENvdWxkIHlvdSBleHBhbmQgb24g
-d2hhdCB5b3UgbWVhbiBieSAiTm8gSS9PIiBoZXJlIC0gZG8geW91IGdldCBzaWxlbnQKPiBvdXRw
-dXQgb3IgZG9lcyBETUEgbm90IHdvcmsgZWl0aGVyPwoKRE1BIGRvbnQgd29yay4KCj4gCj4gPiAJ
-c2V0X3RkbV9zbG90KGNwdV9kYWksIDMsIDIpLCBTU0NSMF9EYXRhc2l6ZSgxNik6Cj4gPiAJT25s
-eSBsZWZ0IGNoYW5uZWwgd29ya3MuCgorIFNpbGVudCBvdXRwdXQgb24gcmlnaHQgY2hhbm5lbC4K
-Cj4gCj4gPiAJc2V0X3RkbV9zbG90KGNwdV9kYWksIDEsIDEpLCBTU0NSMF9EYXRhc2l6ZSgxNikg
-fCBTU0NSMF9FRFNTOgo+ID4gCUJvdGggY2hhbm5lbHMgd29yay4KPiAKPiBKdXN0IGEgdGhvdWdo
-dCwgYnV0IHlvdSBzaG91bGQgYWxzbyBiZSBhYmxlIHRvIGdldCB0aGluZ3Mgd29ya2luZyBieQo+
-IGFkZGluZyBhIGNvbnN0cmFpbnQgb24gdGhlIGZvcm1hdCBpbiB5b3VyIG1hY2hpbmUgZHJpdmVy
-IHRvIGZvcmNlIHVzZSBvZgo+IDMyIGJpdCAtIHNlZSB0aGluZ3MgbGlrZSB0aGUgV004OTAzIGRy
-aXZlciBmb3IgZXhhbXBsZXMgb2YgaG93IHRvIHRoaXMuCj4gSWRlYWxseSB0aGF0IHNob3VsZG4n
-dCBiZSByZXF1aXJlZCwgdGhvdWdoLgoKSSBoYXZlbnQgdHJpZWQgdGhpcyB5ZXQsIGJ1dCBpZiBJ
-IHNldCB0aGUgY29kZWMgZHJpdmVyIHRvIFMzMl9MRQpzaG91bGRudCBpdCBjaGFuZ2UgdGhlIGF1
-ZGlvIGRhdGEgZm9ybWF0PyBBY2NvcmRpbmcgdG8gdGhlIGluZm9ybWF0aW9uIEkKaGF2ZSBvbiB0
-aGlzIGNvZGVjIGl0IG9ubHkgd29ya3Mgd2l0aCAxNiBiaXRzIGF1ZGlvIGZvcm1hdC4KCj4gCj4g
-PiAJT24gbXkgYm9hcmQgQ0xLIGFuZCBGUk0gYXJlIGRyaXZlbiBieSB0aGUgY29kZWMsIHB4YSBp
-cyBzbGF2ZS4gSSBoYXZlCj4gPiBubyBzcGVjcyBmb3IgdGhlIGNvZGVjLCBvbmx5IGEgMi40IGtl
-cm5lbCBkcml2ZXIgdGhhdCB3b3JrcyB3aXRoCj4gPiAoU1NDUjBfRGF0YXNpemUoMTYpIHwgU1ND
-UjBfRURTUyB8IFNTQ1IwX1Nsb3RzUGVyRnJtKDEpKS4KPiAKPiBXaGljaCBjb2RlYyBpcyB0aGlz
-PyAgQ291bGQgeW91IHBvc3QgdGhlIGRyaXZlcj8KCkl0cyBhIG1vdG9yb2xhIEFTSUMgY2FsbGVk
-IFBDQVAyLCBpdCBkb2VzIGEgbG90IG1vcmUgdGhhbiBzb3VuZCwgYW5kIGlzCnVzZWQgb24gYWxt
-b3N0IGFsbCBNb3Rvcm9sYSBwaG9uZXMgKGluY2x1ZGluZyBXaW5DRSBhbmQgUDJLIHBob25lcykg
-ZnJvbQoyMDA0fjIwMDcuCgpodHRwOi8vZ2l0Lm9wZW5lengub3JnLz9wPW9wZW5lenguZ2l0O2E9
-YmxvYjtmPXNvdW5kL3NvYy9jb2RlY3MvcGNhcDIuYztoPWQ1Y2Y3ZDJlMzRhODU2NWVkMGU5MTA5
-NGVlNjNmNDAyMzZiYjBiNzU7aGI9MThhZWI5ZDAzYzA5NjliNjhmYWRhMTkxM2I0ZDcyY2E4ZjQ3
-YTkxMgoKPiAKPiBCVFcsIHlvdXIgbWFpbCBjbGllbnQgaXMgZG9pbmcgc29tZSByZWFsbHkgc3Ry
-YW5nZSBpbmRlbnRhdGlvbiBoZXJlCj4gYW5kIGluZGVudGluZyB0aGUgZmlyc3QgbGluZSBvZiBl
-YWNoIHBhcmFncmFwaCBieSBhIHRhYiB3aGljaCBsb29rcyBsaWtlCj4gaG93IHNvbWUgb3RoZXIg
-Y2xpZW50cyBkbyBxdW90YXRpb24uCgpTb3JyeSwgaW0gdXNlZCB0byBpbmRlbnQgZWFjaCBwYXJh
-Z3JhcGggd2l0aCBhIHRhYiwgaXRzIG5vdCBteSBtYWlsCmNsaWVudCwgaXRzIG1lLiA6KQoKLS0g
-CkRhbmllbCBSaWJlaXJvCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+From: Jon Smirl <jonsmirl@gmail.com>
+
+Fix missing unsigned for irqsave flags in psc i2s driver
+Make attribute visiblity static
+Collect all sysfs errors before checking status
+
+[Word wrapped DEVICE_ATTR() lines for 80 columns -- broonie]
+
+Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
+Acked-by: Grant Likely <grant.likely@secretlab.ca>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/fsl/mpc5200_psc_i2s.c |   14 ++++++++------
+ 1 files changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/fsl/mpc5200_psc_i2s.c b/sound/soc/fsl/mpc5200_psc_i2s.c
+index 8692329..94a02ea 100644
+--- a/sound/soc/fsl/mpc5200_psc_i2s.c
++++ b/sound/soc/fsl/mpc5200_psc_i2s.c
+@@ -277,7 +277,7 @@ static int psc_i2s_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	struct mpc52xx_psc __iomem *regs = psc_i2s->psc_regs;
+ 	u16 imr;
+ 	u8 psc_cmd;
+-	long flags;
++	unsigned long flags;
+ 
+ 	if (substream->pstr->stream == SNDRV_PCM_STREAM_CAPTURE)
+ 		s = &psc_i2s->capture;
+@@ -699,9 +699,11 @@ static ssize_t psc_i2s_stat_store(struct device *dev,
+ 	return count;
+ }
+ 
+-DEVICE_ATTR(status, 0644, psc_i2s_status_show, NULL);
+-DEVICE_ATTR(playback_underrun, 0644, psc_i2s_stat_show, psc_i2s_stat_store);
+-DEVICE_ATTR(capture_overrun, 0644, psc_i2s_stat_show, psc_i2s_stat_store);
++static DEVICE_ATTR(status, 0644, psc_i2s_status_show, NULL);
++static DEVICE_ATTR(playback_underrun, 0644, psc_i2s_stat_show,
++			psc_i2s_stat_store);
++static DEVICE_ATTR(capture_overrun, 0644, psc_i2s_stat_show,
++			psc_i2s_stat_store);
+ 
+ /* ---------------------------------------------------------------------
+  * OF platform bus binding code:
+@@ -819,8 +821,8 @@ static int __devinit psc_i2s_of_probe(struct of_device *op,
+ 
+ 	/* Register the SYSFS files */
+ 	rc = device_create_file(psc_i2s->dev, &dev_attr_status);
+-	rc = device_create_file(psc_i2s->dev, &dev_attr_capture_overrun);
+-	rc = device_create_file(psc_i2s->dev, &dev_attr_playback_underrun);
++	rc |= device_create_file(psc_i2s->dev, &dev_attr_capture_overrun);
++	rc |= device_create_file(psc_i2s->dev, &dev_attr_playback_underrun);
+ 	if (rc)
+ 		dev_info(psc_i2s->dev, "error creating sysfs files\n");
+ 
+-- 
+1.5.6.5
