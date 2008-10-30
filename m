@@ -1,18 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/3] ASoC: Fix WM9713 ALC Decay Time name
-Date: Thu, 30 Oct 2008 12:37:10 +0000
-Message-ID: <1225370230-7829-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <20081030123649.GA7682@rakim.wolfsonmicro.main>
-	<1225370230-7829-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1225370230-7829-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: "Steve Sakoman" <sakoman@gmail.com>
+Subject: Re: [PATCH] alsa: add beagleboard SoC configuration.
+Date: Thu, 30 Oct 2008 06:14:51 -0700
+Message-ID: <5e088bd90810300614q6376a368oc159b45f70e1688d@mail.gmail.com>
+References: <1224692929-15108-1-git-send-email-felipe.contreras@gmail.com>
+	<20081022165300.GX7341@atomide.com>
+	<200810221236.38336.david-b@pacbell.net>
+	<5e088bd90810221330m7f40293du96897afb41f98169@mail.gmail.com>
+	<20081022204445.GC7537@sirena.org.uk>
+	<20081030114520.GC5747@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 69CF3243C9
-	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 13:37:11 +0100 (CET)
-In-Reply-To: <1225370230-7829-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from rn-out-0910.google.com (rn-out-0910.google.com [64.233.170.190])
+	by alsa0.perex.cz (Postfix) with ESMTP id D3703243F3
+	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 14:14:52 +0100 (CET)
+Received: by rn-out-0910.google.com with SMTP id j67so511346rne.21
+	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 06:14:52 -0700 (PDT)
+In-Reply-To: <20081030114520.GC5747@sirena.org.uk>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,29 +28,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: Tony Lindgren <tony@atomide.com>, David Brownell <david-b@pacbell.net>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Felipe Contreras <felipe.contreras@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The control had an extra space at the end of the name.
+On Thu, Oct 30, 2008 at 4:45 AM, Mark Brown <broonie@sirena.org.uk> wrote:
+> On Wed, Oct 22, 2008 at 09:44:48PM +0100, Mark Brown wrote:
+>> On Wed, Oct 22, 2008 at 01:30:26PM -0700, Steve Sakoman wrote:
+>
+>> > I am happy to resubmit the patches, if that is what folks want.  I'm
+>> > copying alsa-devel so they can weigh in on the decision.
+>
+>> Once mainline is merged up to the ASoC topic branch it should be fine to
+>> go via ALSA.  I've got some other stuff waiting for that to happen
+>> myself so if you want to send a patch queue I can queue that in there.
+>> I was going to wait for rc1 before asking Takashi to merge up to the
+>> ASoC branches.
+>
+> Ping?  I'd like to start pushing more ASoC v2 stuff soon - that means
+> more API churn so it'd be easier to get as much stuff merged as
+> possible.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm9713.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+OK, I will resubmit.  I will be out of the office for much of the day,
+so it will likely not be till this evening.
 
-diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
-index aba402b..945b32e 100644
---- a/sound/soc/codecs/wm9713.c
-+++ b/sound/soc/codecs/wm9713.c
-@@ -140,7 +140,7 @@ SOC_SINGLE("Capture ADC Boost (+20dB) Switch", AC97_VIDEO, 6, 1, 0),
- 
- SOC_SINGLE("ALC Target Volume", AC97_CODEC_CLASS_REV, 12, 15, 0),
- SOC_SINGLE("ALC Hold Time", AC97_CODEC_CLASS_REV, 8, 15, 0),
--SOC_SINGLE("ALC Decay Time ", AC97_CODEC_CLASS_REV, 4, 15, 0),
-+SOC_SINGLE("ALC Decay Time", AC97_CODEC_CLASS_REV, 4, 15, 0),
- SOC_SINGLE("ALC Attack Time", AC97_CODEC_CLASS_REV, 0, 15, 0),
- SOC_ENUM("ALC Function", wm9713_enum[6]),
- SOC_SINGLE("ALC Max Volume", AC97_PCI_SVID, 11, 7, 0),
--- 
-1.5.6.5
+Steve
