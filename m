@@ -1,23 +1,27 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: ASoC: pxa2xx-ssp
-Date: Thu, 30 Oct 2008 12:06:34 +0000
-Message-ID: <20081030120634.GD5747@sirena.org.uk>
-References: <1224809675.8330.4.camel@brutus>
-	<1224863678.28382.54.camel@dell-desktop.example.com>
-	<1224912767.5426.19.camel@brutus>
-	<20081027124705.GE5896@sirena.org.uk>
-	<1225113574.9922.10.camel@brutus>
-	<20081027134407.GF5896@sirena.org.uk>
-	<1225366817.12583.28.camel@brutus>
+From: "Bjoern Olausson" <lkmlist@gmail.com>
+Subject: Re: Backported sbxfi driver, possible fix
+Date: Thu, 30 Oct 2008 13:25:30 +0100
+Message-ID: <5501535d0810300525i61d0fa7cm574dd305bf42e0ec@mail.gmail.com>
+References: <4900A4FA.7020300@jasonline.co.uk> <49055255.8030102@gmail.com>
+	<s5h63ne1rh8.wl%tiwai@suse.de>
+	<5501535d0810271710y246926f2xdd8a3f31719c6af3@mail.gmail.com>
+	<s5h4p2x6vk2.wl%tiwai@suse.de>
+	<5501535d0810280648l7d83505bp3f980bc75da9201c@mail.gmail.com>
+	<s5h7i7sdd09.wl%tiwai@suse.de>
+	<5501535d0810300346m240fb9a2u206e90e6bb4c6b07@mail.gmail.com>
+	<5501535d0810300405y3e7decdey1ef8f857d2d04c30@mail.gmail.com>
+	<s5hd4hi1guk.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id C0D57243A4
-	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 13:06:36 +0100 (CET)
+Received: from rv-out-0506.google.com (rv-out-0506.google.com [209.85.198.228])
+	by alsa0.perex.cz (Postfix) with ESMTP id A34F3243B8
+	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 13:25:31 +0100 (CET)
+Received: by rv-out-0506.google.com with SMTP id g9so4013402rvb.7
+	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 05:25:30 -0700 (PDT)
+In-Reply-To: <s5hd4hi1guk.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <1225366817.12583.28.camel@brutus>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,40 +31,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Ribeiro <drwyrm@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 30, 2008 at 09:40:17AM -0200, Daniel Ribeiro wrote:
+On Thu, Oct 30, 2008 at 12:07, Takashi Iwai <tiwai@suse.de> wrote:
+> At Thu, 30 Oct 2008 12:05:12 +0100,
+> Bjoern Olausson wrote:
+>>
+>> On Thu, Oct 30, 2008 at 11:46, Bjoern Olausson <lkmlist@gmail.com> wrote:
+>> > On Tue, Oct 28, 2008 at 15:12, Takashi Iwai <tiwai@suse.de> wrote:
+>> >
+>> >
+>> > Now the bad:
+>> >
+>> > Xine does not work... crackles horrible on all sample rates when run from cmd:
+>> > xine 0_16_m_11025.wav
+>> >
+>> > access: MMAP_INTERLEAVED
+>> > format: S16_LE
+>> > subformat: STD
+>> > channels: 2
+>> > rate: 48000 (48000/1)
+>> > period_size: 2048
+>> > buffer_size: 16384
+>> >
+>> > kind regards
+>> > Bjoern
+>> >
+>>
+>> mmh, I recompiled xine-lib without mmap support but I still get
+>> access: MMAP_INTERLEAVED
+>
+> Maybe it's accessed via alsa-plugin.  What about let xine using
+> "hw" PCM device instead of "default"?  Then xine would play at 48kHz
+> natively without conversions in alsa-lib.
+>
 
-> 	Here are my test results for stereo S16_LE audio:
+mmh weird... xine works...
+Couldn't reproduce my previous report... thought I changed nothing...
+Please ignore the xine crackeling... seems not reproducable (If I can
+reproduce it, I'll let you know).
 
-> 	set_tdm_slot(cpu_dai, 1, 2), SSCR0_Datasize(16):
-> 	Only left channel works.
-
-> 	set_tdm_slot(cpu_dai, 2, 2), SSCR0_Datasize(16):
-> 	No I/O.
-
-Could you expand on what you mean by "No I/O" here - do you get silent
-output or does DMA not work either?
-
-> 	set_tdm_slot(cpu_dai, 3, 2), SSCR0_Datasize(16):
-> 	Only left channel works.
-
-> 	set_tdm_slot(cpu_dai, 1, 1), SSCR0_Datasize(16) | SSCR0_EDSS:
-> 	Both channels work.
-
-Just a thought, but you should also be able to get things working by
-adding a constraint on the format in your machine driver to force use of
-32 bit - see things like the WM8903 driver for examples of how to this.
-Ideally that shouldn't be required, though.
-
-> 	On my board CLK and FRM are driven by the codec, pxa is slave. I have
-> no specs for the codec, only a 2.4 kernel driver that works with
-> (SSCR0_Datasize(16) | SSCR0_EDSS | SSCR0_SlotsPerFrm(1)).
-
-Which codec is this?  Could you post the driver?
-
-BTW, your mail client is doing some really strange indentation here
-and indenting the first line of each paragraph by a tab which looks like
-how some other clients do quotation.
+Bjoern
