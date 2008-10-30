@@ -1,16 +1,14 @@
-From: "A. C. Censi" <accensi@gmail.com>
-Subject: ALSA bug-tracking
-Date: Thu, 30 Oct 2008 12:23:06 -0200
-Message-ID: <643ea2b10810300723y527196d0mbc6d6ac9800bcd70@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 0/8] ASoC updates for next
+Date: Thu, 30 Oct 2008 15:57:18 +0000
+Message-ID: <20081030155718.GA1418@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rn-out-0910.google.com (rn-out-0910.google.com [64.233.170.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0E28B2443B
-	for <Alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 15:23:07 +0100 (CET)
-Received: by rn-out-0910.google.com with SMTP id j67so563287rne.21
-	for <Alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 07:23:06 -0700 (PDT)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6B1D32448A
+	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 16:57:20 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,25 +20,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <Alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 30, 2008 at 9:25 AM, Takashi Iwai <tiwai@suse.de> wrote,
-on the reply to this message Re: [alsa-devel] Automatic
-assignment/configuration of model-id?:
+The following changes since commit 15ad9a531a64d46af54839ab13542a81ad4c82a5:
+  Takashi Iwai (1):
+        Merge branch 'topic/fix/asoc' into topic/asoc
 
-> The best way to inform the model addition is to post to alsa-devel
-> ML, and/or post to me or other developers.
->
-> A bad way is, unfortunately, to submit it on ALSA bug-tracking
-> system.  It's handled right now very badly, and you post would be
-> often ignored.
+are available in the git repository at:
 
-Why not shut down ALSA bug-tracking, or, at least, put this advice
-there (if not already, i've not checked)?
+  git://opensource.wolfsonmicro.com/linux-2.6-asoc for-tiwai
 
+Mark Brown (6):
+      ASoC: Fix handling of DAPM suspend work
+      ASoC: Convert core to use standard debug print macros
+      ASoC: Remove DAPM restriction on mixer control name lengths
+      ASoC: Add PXA SSP support
+      ASoC: Do a warm reset after cold when resetting the WM9713
+      ASoC: Use finer grained dependencies in SND_SOC_ALL_CODECS
 
--- 
-A. C. Censi
-accensi [em] gmail [ponto] com
-accensi [em] montreal [ponto] com [ponto] br
+Timur Tabi (1):
+      ASoC: Disable automatic volume control in the CS4270 sound driver
+
+Troy Kisky (1):
+      ASoC: Allow setting codec register with debugfs filesystem
+
+ include/sound/soc.h       |    4 +
+ sound/soc/codecs/Kconfig  |   44 ++-
+ sound/soc/codecs/cs4270.c |   13 +
+ sound/soc/codecs/wm9713.c |    2 +
+ sound/soc/pxa/Kconfig     |   13 +
+ sound/soc/pxa/Makefile    |    2 +
+ sound/soc/pxa/pxa-ssp.c   |  929 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/pxa/pxa-ssp.h   |   47 +++
+ sound/soc/soc-core.c      |  207 ++++++++---
+ sound/soc/soc-dapm.c      |   44 +--
+ 10 files changed, 1200 insertions(+), 105 deletions(-)
+ create mode 100644 sound/soc/pxa/pxa-ssp.c
+ create mode 100644 sound/soc/pxa/pxa-ssp.h
