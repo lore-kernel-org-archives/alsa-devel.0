@@ -1,27 +1,23 @@
-From: "Bjoern Olausson" <lkmlist@gmail.com>
-Subject: Re: Backported sbxfi driver, possible fix
-Date: Thu, 30 Oct 2008 13:25:30 +0100
-Message-ID: <5501535d0810300525i61d0fa7cm574dd305bf42e0ec@mail.gmail.com>
-References: <4900A4FA.7020300@jasonline.co.uk> <49055255.8030102@gmail.com>
-	<s5h63ne1rh8.wl%tiwai@suse.de>
-	<5501535d0810271710y246926f2xdd8a3f31719c6af3@mail.gmail.com>
-	<s5h4p2x6vk2.wl%tiwai@suse.de>
-	<5501535d0810280648l7d83505bp3f980bc75da9201c@mail.gmail.com>
-	<s5h7i7sdd09.wl%tiwai@suse.de>
-	<5501535d0810300346m240fb9a2u206e90e6bb4c6b07@mail.gmail.com>
-	<5501535d0810300405y3e7decdey1ef8f857d2d04c30@mail.gmail.com>
-	<s5hd4hi1guk.wl%tiwai@suse.de>
+From: Daniel Ribeiro <drwyrm@gmail.com>
+Subject: Re: ASoC: pxa2xx-ssp
+Date: Thu, 30 Oct 2008 10:24:14 -0200
+Message-ID: <1225369454.12583.38.camel@brutus>
+References: <1224809675.8330.4.camel@brutus>
+	<1224863678.28382.54.camel@dell-desktop.example.com>
+	<1224912767.5426.19.camel@brutus> <20081027124705.GE5896@sirena.org.uk>
+	<1225113574.9922.10.camel@brutus> <20081027134407.GF5896@sirena.org.uk>
+	<1225366817.12583.28.camel@brutus>
+	<20081030120634.GD5747@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0506.google.com (rv-out-0506.google.com [209.85.198.228])
-	by alsa0.perex.cz (Postfix) with ESMTP id A34F3243B8
-	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 13:25:31 +0100 (CET)
-Received: by rv-out-0506.google.com with SMTP id g9so4013402rvb.7
-	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 05:25:30 -0700 (PDT)
-In-Reply-To: <s5hd4hi1guk.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id C7994243B8
+	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 13:27:14 +0100 (CET)
+Received: by yx-out-1718.google.com with SMTP id 36so306071yxh.2
+	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 05:27:13 -0700 (PDT)
+In-Reply-To: <20081030120634.GD5747@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,46 +27,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 30, 2008 at 12:07, Takashi Iwai <tiwai@suse.de> wrote:
-> At Thu, 30 Oct 2008 12:05:12 +0100,
-> Bjoern Olausson wrote:
->>
->> On Thu, Oct 30, 2008 at 11:46, Bjoern Olausson <lkmlist@gmail.com> wrote:
->> > On Tue, Oct 28, 2008 at 15:12, Takashi Iwai <tiwai@suse.de> wrote:
->> >
->> >
->> > Now the bad:
->> >
->> > Xine does not work... crackles horrible on all sample rates when run from cmd:
->> > xine 0_16_m_11025.wav
->> >
->> > access: MMAP_INTERLEAVED
->> > format: S16_LE
->> > subformat: STD
->> > channels: 2
->> > rate: 48000 (48000/1)
->> > period_size: 2048
->> > buffer_size: 16384
->> >
->> > kind regards
->> > Bjoern
->> >
->>
->> mmh, I recompiled xine-lib without mmap support but I still get
->> access: MMAP_INTERLEAVED
->
-> Maybe it's accessed via alsa-plugin.  What about let xine using
-> "hw" PCM device instead of "default"?  Then xine would play at 48kHz
-> natively without conversions in alsa-lib.
->
-
-mmh weird... xine works...
-Couldn't reproduce my previous report... thought I changed nothing...
-Please ignore the xine crackeling... seems not reproducable (If I can
-reproduce it, I'll let you know).
-
-Bjoern
+RW0gUXVpLCAyMDA4LTEwLTMwIMOgcyAxMjowNiArMDAwMCwgTWFyayBCcm93biBlc2NyZXZldToK
+PiBPbiBUaHUsIE9jdCAzMCwgMjAwOCBhdCAwOTo0MDoxN0FNIC0wMjAwLCBEYW5pZWwgUmliZWly
+byB3cm90ZToKPiAKPiA+IAlIZXJlIGFyZSBteSB0ZXN0IHJlc3VsdHMgZm9yIHN0ZXJlbyBTMTZf
+TEUgYXVkaW86Cj4gCj4gPiAJc2V0X3RkbV9zbG90KGNwdV9kYWksIDEsIDIpLCBTU0NSMF9EYXRh
+c2l6ZSgxNik6Cj4gPiAJT25seSBsZWZ0IGNoYW5uZWwgd29ya3MuCgorIFNpbGVudCBvdXRwdXQg
+b24gcmlnaHQgY2hhbm5lbC4KCj4gCj4gPiAJc2V0X3RkbV9zbG90KGNwdV9kYWksIDIsIDIpLCBT
+U0NSMF9EYXRhc2l6ZSgxNik6Cj4gPiAJTm8gSS9PLgo+IAo+IENvdWxkIHlvdSBleHBhbmQgb24g
+d2hhdCB5b3UgbWVhbiBieSAiTm8gSS9PIiBoZXJlIC0gZG8geW91IGdldCBzaWxlbnQKPiBvdXRw
+dXQgb3IgZG9lcyBETUEgbm90IHdvcmsgZWl0aGVyPwoKRE1BIGRvbnQgd29yay4KCj4gCj4gPiAJ
+c2V0X3RkbV9zbG90KGNwdV9kYWksIDMsIDIpLCBTU0NSMF9EYXRhc2l6ZSgxNik6Cj4gPiAJT25s
+eSBsZWZ0IGNoYW5uZWwgd29ya3MuCgorIFNpbGVudCBvdXRwdXQgb24gcmlnaHQgY2hhbm5lbC4K
+Cj4gCj4gPiAJc2V0X3RkbV9zbG90KGNwdV9kYWksIDEsIDEpLCBTU0NSMF9EYXRhc2l6ZSgxNikg
+fCBTU0NSMF9FRFNTOgo+ID4gCUJvdGggY2hhbm5lbHMgd29yay4KPiAKPiBKdXN0IGEgdGhvdWdo
+dCwgYnV0IHlvdSBzaG91bGQgYWxzbyBiZSBhYmxlIHRvIGdldCB0aGluZ3Mgd29ya2luZyBieQo+
+IGFkZGluZyBhIGNvbnN0cmFpbnQgb24gdGhlIGZvcm1hdCBpbiB5b3VyIG1hY2hpbmUgZHJpdmVy
+IHRvIGZvcmNlIHVzZSBvZgo+IDMyIGJpdCAtIHNlZSB0aGluZ3MgbGlrZSB0aGUgV004OTAzIGRy
+aXZlciBmb3IgZXhhbXBsZXMgb2YgaG93IHRvIHRoaXMuCj4gSWRlYWxseSB0aGF0IHNob3VsZG4n
+dCBiZSByZXF1aXJlZCwgdGhvdWdoLgoKSSBoYXZlbnQgdHJpZWQgdGhpcyB5ZXQsIGJ1dCBpZiBJ
+IHNldCB0aGUgY29kZWMgZHJpdmVyIHRvIFMzMl9MRQpzaG91bGRudCBpdCBjaGFuZ2UgdGhlIGF1
+ZGlvIGRhdGEgZm9ybWF0PyBBY2NvcmRpbmcgdG8gdGhlIGluZm9ybWF0aW9uIEkKaGF2ZSBvbiB0
+aGlzIGNvZGVjIGl0IG9ubHkgd29ya3Mgd2l0aCAxNiBiaXRzIGF1ZGlvIGZvcm1hdC4KCj4gCj4g
+PiAJT24gbXkgYm9hcmQgQ0xLIGFuZCBGUk0gYXJlIGRyaXZlbiBieSB0aGUgY29kZWMsIHB4YSBp
+cyBzbGF2ZS4gSSBoYXZlCj4gPiBubyBzcGVjcyBmb3IgdGhlIGNvZGVjLCBvbmx5IGEgMi40IGtl
+cm5lbCBkcml2ZXIgdGhhdCB3b3JrcyB3aXRoCj4gPiAoU1NDUjBfRGF0YXNpemUoMTYpIHwgU1ND
+UjBfRURTUyB8IFNTQ1IwX1Nsb3RzUGVyRnJtKDEpKS4KPiAKPiBXaGljaCBjb2RlYyBpcyB0aGlz
+PyAgQ291bGQgeW91IHBvc3QgdGhlIGRyaXZlcj8KCkl0cyBhIG1vdG9yb2xhIEFTSUMgY2FsbGVk
+IFBDQVAyLCBpdCBkb2VzIGEgbG90IG1vcmUgdGhhbiBzb3VuZCwgYW5kIGlzCnVzZWQgb24gYWxt
+b3N0IGFsbCBNb3Rvcm9sYSBwaG9uZXMgKGluY2x1ZGluZyBXaW5DRSBhbmQgUDJLIHBob25lcykg
+ZnJvbQoyMDA0fjIwMDcuCgpodHRwOi8vZ2l0Lm9wZW5lengub3JnLz9wPW9wZW5lenguZ2l0O2E9
+YmxvYjtmPXNvdW5kL3NvYy9jb2RlY3MvcGNhcDIuYztoPWQ1Y2Y3ZDJlMzRhODU2NWVkMGU5MTA5
+NGVlNjNmNDAyMzZiYjBiNzU7aGI9MThhZWI5ZDAzYzA5NjliNjhmYWRhMTkxM2I0ZDcyY2E4ZjQ3
+YTkxMgoKPiAKPiBCVFcsIHlvdXIgbWFpbCBjbGllbnQgaXMgZG9pbmcgc29tZSByZWFsbHkgc3Ry
+YW5nZSBpbmRlbnRhdGlvbiBoZXJlCj4gYW5kIGluZGVudGluZyB0aGUgZmlyc3QgbGluZSBvZiBl
+YWNoIHBhcmFncmFwaCBieSBhIHRhYiB3aGljaCBsb29rcyBsaWtlCj4gaG93IHNvbWUgb3RoZXIg
+Y2xpZW50cyBkbyBxdW90YXRpb24uCgpTb3JyeSwgaW0gdXNlZCB0byBpbmRlbnQgZWFjaCBwYXJh
+Z3JhcGggd2l0aCBhIHRhYiwgaXRzIG5vdCBteSBtYWlsCmNsaWVudCwgaXRzIG1lLiA6KQoKLS0g
+CkRhbmllbCBSaWJlaXJvCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
