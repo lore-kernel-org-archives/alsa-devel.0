@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/3] ASoC: Fix mono controls after conversion
-	to support full int masks
-Date: Thu, 30 Oct 2008 12:37:08 +0000
-Message-ID: <1225370230-7829-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/3] ASoC: Fix WM9713 ALC Decay Time name
+Date: Thu, 30 Oct 2008 12:37:10 +0000
+Message-ID: <1225370230-7829-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20081030123649.GA7682@rakim.wolfsonmicro.main>
+	<1225370230-7829-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1225370230-7829-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 27580243C7
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 69CF3243C9
 	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 13:37:11 +0100 (CET)
-In-Reply-To: <20081030123649.GA7682@rakim.wolfsonmicro.main>
+In-Reply-To: <1225370230-7829-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,43 +26,25 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-When ASoC was converted to support full int width masks SOC_SINGLE_VALUE()
-omitted the assignment of rshift, causing the control operatins to report
-some mono controls as stereo. This happened to work some of the time due
-to a confusion between shift and min in snd_soc_info_volsw().
+The control had an extra space at the end of the name.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- include/sound/soc.h  |    3 ++-
- sound/soc/soc-core.c |    2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm9713.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index a1e0357..5e01898 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -28,7 +28,8 @@
-  */
- #define SOC_SINGLE_VALUE(xreg, xshift, xmax, xinvert) \
- 	((unsigned long)&(struct soc_mixer_control) \
--	{.reg = xreg, .shift = xshift, .max = xmax, .invert = xinvert})
-+	{.reg = xreg, .shift = xshift, .rshift = xshift, .max = xmax, \
-+	.invert = xinvert})
- #define SOC_SINGLE_VALUE_EXT(xreg, xmax, xinvert) \
- 	((unsigned long)&(struct soc_mixer_control) \
- 	{.reg = xreg, .max = xmax, .invert = xinvert})
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 462e635..a3adbf0 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1462,7 +1462,7 @@ int snd_soc_info_volsw(struct snd_kcontrol *kcontrol,
- 	struct soc_mixer_control *mc =
- 		(struct soc_mixer_control *)kcontrol->private_value;
- 	int max = mc->max;
--	unsigned int shift = mc->min;
-+	unsigned int shift = mc->shift;
- 	unsigned int rshift = mc->rshift;
+diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
+index aba402b..945b32e 100644
+--- a/sound/soc/codecs/wm9713.c
++++ b/sound/soc/codecs/wm9713.c
+@@ -140,7 +140,7 @@ SOC_SINGLE("Capture ADC Boost (+20dB) Switch", AC97_VIDEO, 6, 1, 0),
  
- 	if (max == 1)
+ SOC_SINGLE("ALC Target Volume", AC97_CODEC_CLASS_REV, 12, 15, 0),
+ SOC_SINGLE("ALC Hold Time", AC97_CODEC_CLASS_REV, 8, 15, 0),
+-SOC_SINGLE("ALC Decay Time ", AC97_CODEC_CLASS_REV, 4, 15, 0),
++SOC_SINGLE("ALC Decay Time", AC97_CODEC_CLASS_REV, 4, 15, 0),
+ SOC_SINGLE("ALC Attack Time", AC97_CODEC_CLASS_REV, 0, 15, 0),
+ SOC_ENUM("ALC Function", wm9713_enum[6]),
+ SOC_SINGLE("ALC Max Volume", AC97_PCI_SVID, 11, 7, 0),
 -- 
 1.5.6.5
