@@ -1,20 +1,24 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 4/8] ASoC: Remove DAPM restriction on mixer
-	control name lengths
-Date: Thu, 30 Oct 2008 15:58:25 +0000
-Message-ID: <1225382309-1827-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 8/8] ASoC: Disable automatic volume control in
+	the CS4270 sound driver
+Date: Thu, 30 Oct 2008 15:58:29 +0000
+Message-ID: <1225382309-1827-8-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20081030155718.GA1418@rakim.wolfsonmicro.main>
 	<1225382309-1827-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1225382309-1827-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1225382309-1827-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1225382309-1827-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1225382309-1827-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1225382309-1827-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1225382309-1827-7-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BDB4A24490
-	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 16:58:31 +0100 (CET)
-In-Reply-To: <1225382309-1827-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0CB672448A
+	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 16:58:32 +0100 (CET)
+In-Reply-To: <1225382309-1827-7-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,49 +29,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-As well as ensuring that UI-relevant parts of control names don't get
-truncated in the DAPM code this avoids conflicts in long control names
-that differ only at the end of a long string.
+From: Timur Tabi <timur@freescale.com>
 
+Disable the automatic volume control feature of the CS4270 audio codec.  This
+feature, which is enabled by default, causes volume change commands to be
+delayed.  Sometimes the volume change happens after playback is started.
+
+Signed-off-by: Timur Tabi <timur@freescale.com>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/soc-dapm.c |   11 ++++++++---
- 1 files changed, 8 insertions(+), 3 deletions(-)
+ sound/soc/codecs/cs4270.c |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index b51d822..407092c 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -289,7 +289,7 @@ static int dapm_new_mixer(struct snd_soc_codec *codec,
- 	struct snd_soc_dapm_widget *w)
- {
- 	int i, ret = 0;
--	char name[32];
-+	size_t name_len;
- 	struct snd_soc_dapm_path *path;
+diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
+index 0bbd945..0ff476d 100644
+--- a/sound/soc/codecs/cs4270.c
++++ b/sound/soc/codecs/cs4270.c
+@@ -450,6 +450,19 @@ static int cs4270_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
+ 	}
  
- 	/* add kcontrol */
-@@ -303,11 +303,16 @@ static int dapm_new_mixer(struct snd_soc_codec *codec,
- 				continue;
- 
- 			/* add dapm control with long name */
--			snprintf(name, 32, "%s %s", w->name, w->kcontrols[i].name);
--			path->long_name = kstrdup (name, GFP_KERNEL);
-+			name_len = 2 + strlen(w->name)
-+				+ strlen(w->kcontrols[i].name);
-+			path->long_name = kmalloc(name_len, GFP_KERNEL);
- 			if (path->long_name == NULL)
- 				return -ENOMEM;
- 
-+			snprintf(path->long_name, name_len, "%s %s",
-+				 w->name, w->kcontrols[i].name);
-+			path->long_name[name_len - 1] = '\0';
++	/* Disable automatic volume control.  It's enabled by default, and
++	 * it causes volume change commands to be delayed, sometimes until
++	 * after playback has started.
++	 */
 +
- 			path->kcontrol = snd_soc_cnew(&w->kcontrols[i], w,
- 				path->long_name);
- 			ret = snd_ctl_add(codec->card, path->kcontrol);
++	reg = cs4270_read_reg_cache(codec, CS4270_TRANS);
++	reg &= ~(CS4270_TRANS_SOFT | CS4270_TRANS_ZERO);
++	ret = cs4270_i2c_write(codec, CS4270_TRANS, reg);
++	if (ret < 0) {
++		printk(KERN_ERR "I2C write failed\n");
++		return ret;
++	}
++
+ 	/* Thaw and power-up the codec */
+ 
+ 	ret = snd_soc_write(codec, CS4270_PWRCTL, 0);
 -- 
 1.5.6.5
