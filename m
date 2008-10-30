@@ -1,16 +1,16 @@
 From: "Klaus Schulz" <kls.schlz@googlemail.com>
-Subject: Ubuntu - Alsa Installation Script
-Date: Thu, 30 Oct 2008 09:03:55 +0100
-Message-ID: <d9690f190810300103x31492740r9aa31830ea233f36@mail.gmail.com>
+Subject: Automatic assignment/configuration of model-id?
+Date: Thu, 30 Oct 2008 10:02:25 +0100
+Message-ID: <d9690f190810300202l2ba7588j91823da236d4b65d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3DB15246AE
-	for <Alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 09:03:56 +0100 (CET)
-Received: by yx-out-1718.google.com with SMTP id 36so247118yxh.2
-	for <Alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 01:03:55 -0700 (PDT)
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.155])
+	by alsa0.perex.cz (Postfix) with ESMTP id 84B2A246B0
+	for <Alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 10:02:27 +0100 (CET)
+Received: by yx-out-1718.google.com with SMTP id 36so258255yxh.2
+	for <Alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 02:02:26 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,32 +24,22 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi folks.
+Hi gents.
 
-I prepared an unofficial Alsa-Installation (now 1.0.18) script for the
-Ubuntu Community.
-The intention is mainly to be up2date on the drivers, since this - the lack
-or limited functionality
-of drivers (I am aware of the reasons behind it) is IMO still one of the
-biggest
-weaknesses within Linux. Therefore it is IMO crucial to have the latest
-driver available.
-As you know most of the distributions make things worse since these are
-usually one major release behind.
+To take full advantage of the driver I need to assign the right model option
+to the module
+- as far as I understand - manually.
 
-http://ubuntuforums.org/showthread.php?t=962695
+Is there a way to automatically assign the "model=" option to the driver
+module.
 
-For standard installations the script seems to work fine.
-Quite some people have been/are using it.
-And of course responding to it - mainly about problems on specific sound
-cards.
+If not, how is a "normal" user supposed to configure the proper model-id to
+be able to get
+access to the full feature-set of the particular soundcard?
 
-I am wondering if things can be improved in the script. I would appreciate
-if
-somebody of the designers around here could have a quick look at it.
-
-I am not so deep into Alsa that I can cover severe problems brought up over
-there. How would you recommend to handle this?
+Background: The manual configuration is not known to many people. And many
+people seem to get quite annoyed about the lack of functionality caused by a
+generic driver.
 
 THX.
 
