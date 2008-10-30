@@ -1,19 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/8] ASoC: Convert core to use standard debug
-	print macros
-Date: Thu, 30 Oct 2008 15:58:24 +0000
-Message-ID: <1225382309-1827-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <20081030155718.GA1418@rakim.wolfsonmicro.main>
-	<1225382309-1827-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1225382309-1827-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Travis Place <wishie@wishie.net>
+Subject: Re: Ubuntu - Alsa Installation Script
+Date: Fri, 31 Oct 2008 02:00:00 +1000
+Message-ID: <200810310200.00960.wishie@wishie.net>
+References: <d9690f190810300103x31492740r9aa31830ea233f36@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B07F62448F
-	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 16:58:31 +0100 (CET)
-In-Reply-To: <1225382309-1827-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from www.wishie.net (202-137-100-224.dial.usertools.net
+	[202.137.100.224])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2FF092448E
+	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 17:00:21 +0100 (CET)
+Received: from laptop.local (unknown [192.168.0.200])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by www.wishie.net (Postfix) with ESMTP id 392D2EC009
+	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 16:27:22 +1000 (EST)
+In-Reply-To: <d9690f190810300103x31492740r9aa31830ea233f36@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,88 +27,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-core.c |   36 ++++++++++++++----------------------
- 1 files changed, 14 insertions(+), 22 deletions(-)
+On Thursday 30 October 2008 6:03:55 pm Klaus Schulz wrote:
+> Hi folks.
+>
+> I prepared an unofficial Alsa-Installation (now 1.0.18) script for the
+> Ubuntu Community.
+> The intention is mainly to be up2date on the drivers, since this - the lack
+> or limited functionality
+> of drivers (I am aware of the reasons behind it) is IMO still one of the
+> biggest
+> weaknesses within Linux. Therefore it is IMO crucial to have the latest
+> driver available.
+> As you know most of the distributions make things worse since these are
+> usually one major release behind.
+>
+> http://ubuntuforums.org/showthread.php?t=962695
+>
+I will check this out, and see if i can make any suggestions.. also, you could 
+specify a seperate dir to hold the NEW modules, and update the depmod search 
+path (this is how i frequently tell ubuntu users to install alsa, from 
+source).
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 411fd3b..8f384df 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -35,14 +35,6 @@
- #include <sound/soc-dapm.h>
- #include <sound/initval.h>
- 
--/* debug */
--#define SOC_DEBUG 0
--#if SOC_DEBUG
--#define dbg(format, arg...) printk(format, ## arg)
--#else
--#define dbg(format, arg...)
--#endif
--
- static DEFINE_MUTEX(pcm_mutex);
- static DEFINE_MUTEX(io_mutex);
- static DECLARE_WAIT_QUEUE_HEAD(soc_pm_waitq);
-@@ -229,12 +221,12 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 		goto machine_err;
- 	}
- 
--	dbg("asoc: %s <-> %s info:\n", codec_dai->name, cpu_dai->name);
--	dbg("asoc: rate mask 0x%x\n", runtime->hw.rates);
--	dbg("asoc: min ch %d max ch %d\n", runtime->hw.channels_min,
--		runtime->hw.channels_max);
--	dbg("asoc: min rate %d max rate %d\n", runtime->hw.rate_min,
--		runtime->hw.rate_max);
-+	pr_debug("asoc: %s <-> %s info:\n", codec_dai->name, cpu_dai->name);
-+	pr_debug("asoc: rate mask 0x%x\n", runtime->hw.rates);
-+	pr_debug("asoc: min ch %d max ch %d\n", runtime->hw.channels_min,
-+		 runtime->hw.channels_max);
-+	pr_debug("asoc: min rate %d max rate %d\n", runtime->hw.rate_min,
-+		 runtime->hw.rate_max);
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		cpu_dai->playback.active = codec_dai->playback.active = 1;
-@@ -279,18 +271,18 @@ static void close_delayed_work(struct work_struct *work)
- 	for (i = 0; i < codec->num_dai; i++) {
- 		codec_dai = &codec->dai[i];
- 
--		dbg("pop wq checking: %s status: %s waiting: %s\n",
--			codec_dai->playback.stream_name,
--			codec_dai->playback.active ? "active" : "inactive",
--			codec_dai->pop_wait ? "yes" : "no");
-+		pr_debug("pop wq checking: %s status: %s waiting: %s\n",
-+			 codec_dai->playback.stream_name,
-+			 codec_dai->playback.active ? "active" : "inactive",
-+			 codec_dai->pop_wait ? "yes" : "no");
- 
- 		/* are we waiting on this codec DAI stream */
- 		if (codec_dai->pop_wait == 1) {
- 
- 			/* Reduce power if no longer active */
- 			if (codec->active == 0) {
--				dbg("pop wq D1 %s %s\n", codec->name,
--					codec_dai->playback.stream_name);
-+				pr_debug("pop wq D1 %s %s\n", codec->name,
-+					 codec_dai->playback.stream_name);
- 				snd_soc_dapm_set_bias_level(socdev,
- 					SND_SOC_BIAS_PREPARE);
- 			}
-@@ -302,8 +294,8 @@ static void close_delayed_work(struct work_struct *work)
- 
- 			/* Fall into standby if no longer active */
- 			if (codec->active == 0) {
--				dbg("pop wq D3 %s %s\n", codec->name,
--					codec_dai->playback.stream_name);
-+				pr_debug("pop wq D3 %s %s\n", codec->name,
-+					 codec_dai->playback.stream_name);
- 				snd_soc_dapm_set_bias_level(socdev,
- 					SND_SOC_BIAS_STANDBY);
- 			}
--- 
-1.5.6.5
+> For standard installations the script seems to work fine.
+
+We should be able to do a few tests, to determine things, and handle them 
+differently etc.. If you've ever looked at the alsa-info.sh script, you'll 
+know what i mean.. When originally writing that script, i wanted to take into 
+account what 'interface' (if any) to use to display the output.. what 
+information to collect (ac97/hda-intel) etc..
+
+> Quite some people have been/are using it.
+> And of course responding to it - mainly about problems on specific sound
+> cards.
+>
+> I am wondering if things can be improved in the script. I would appreciate
+> if
+> somebody of the designers around here could have a quick look at it.
+
+Im certainly no real expert, but it sounds like it would be a handy script, so 
+worth a look into.
+
+>
+> I am not so deep into Alsa that I can cover severe problems brought up over
+> there. How would you recommend to handle this?
+>
+> THX.
+>
+> Cheers
+> Klaus
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+Thanks,
+Travis Place (wishie)
