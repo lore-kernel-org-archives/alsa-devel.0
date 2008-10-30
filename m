@@ -1,17 +1,19 @@
-From: "Klaus Schulz" <kls.schlz@googlemail.com>
-Subject: Automatic assignment/configuration of model-id?
-Date: Thu, 30 Oct 2008 10:02:25 +0100
-Message-ID: <d9690f190810300202l2ba7588j91823da236d4b65d@mail.gmail.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH] Fix some minor errors in mpc5200 psc i2s
+	driver
+Date: Thu, 30 Oct 2008 09:09:26 +0000
+Message-ID: <20081030090925.GA5747@sirena.org.uk>
+References: <20081029212203.6940.61993.stgit@terra>
+	<fa686aa40810291447h7fdfd745w5da90459eee61846@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id 84B2A246B0
-	for <Alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 10:02:27 +0100 (CET)
-Received: by yx-out-1718.google.com with SMTP id 36so258255yxh.2
-	for <Alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 02:02:26 -0700 (PDT)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D03F246F7
+	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 10:09:29 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <fa686aa40810291447h7fdfd745w5da90459eee61846@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,27 +23,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi gents.
+On Wed, Oct 29, 2008 at 03:47:51PM -0600, Grant Likely wrote:
+> On Wed, Oct 29, 2008 at 3:22 PM, Jon Smirl <jonsmirl@gmail.com> wrote:
+> > Fix missing unsigned for irqsave flags in psc i2s driver
+> > Make attribute visiblity static
+> > Collect all sysfs errors before checking status
+> >
+> > Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
+> Acked-by: Grant Likely <grant.likely@secretlab.ca>
 
-To take full advantage of the driver I need to assign the right model option
-to the module
-- as far as I understand - manually.
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-Is there a way to automatically assign the "model=" option to the driver
-module.
-
-If not, how is a "normal" user supposed to configure the proper model-id to
-be able to get
-access to the full feature-set of the particular soundcard?
-
-Background: The manual configuration is not known to many people. And many
-people seem to get quite annoyed about the lack of functionality caused by a
-generic driver.
-
-THX.
-
-Cheers
-Klaus
+Takashi, I've got a batch of stuff I intend to push out to you today,
+I'll add this to it.
