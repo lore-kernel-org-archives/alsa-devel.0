@@ -1,19 +1,21 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: ASOC deprecated warning
-Date: Fri, 31 Oct 2008 10:41:42 +0000
-Message-ID: <20081031104142.GA7516@sirena.org.uk>
-References: <9e4733910810301222v360ecf8aqbbead50759a2b844@mail.gmail.com>
-	<20081030195107.GA13678@sirena.org.uk>
-	<9e4733910810301257t159c1b20t3a0414b55410dd7f@mail.gmail.com>
+Subject: Re: Ubuntu - Alsa Installation Script
+Date: Fri, 31 Oct 2008 11:17:04 +0000
+Message-ID: <20081031111703.GB7516@sirena.org.uk>
+References: <d9690f190810300103x31492740r9aa31830ea233f36@mail.gmail.com>
+	<200810310200.00960.wishie@wishie.net>
+	<d9690f190810300925v5f2480e9vc7342a343c4290b1@mail.gmail.com>
+	<20081030195509.GB13678@sirena.org.uk>
+	<490A151A.3090109@fungus.sh.nu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8270D2444C
-	for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2008 11:41:43 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 0C3F1244F5
+	for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2008 12:17:11 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <9e4733910810301257t159c1b20t3a0414b55410dd7f@mail.gmail.com>
+In-Reply-To: <490A151A.3090109@fungus.sh.nu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,23 +25,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: Daniel T Chen <crimsun@fungus.sh.nu>
+Cc: alsa-devel@alsa-project.org, Klaus Schulz <kls.schlz@googlemail.com>, Travis Place <wishie@wishie.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 30, 2008 at 03:57:33PM -0400, Jon Smirl wrote:
-> On Thu, Oct 30, 2008 at 3:51 PM, Mark Brown <broonie@sirena.org.uk> wrote:
+On Thu, Oct 30, 2008 at 04:12:10PM -0400, Daniel T Chen wrote:
 
-> > you want.  Otherwise I'd suggest taking it up with the people
-> > maintaining the compiler infrastructure - there's no way to warn on use
-> > of an API without also warning on the export of the API, which isn't
-> > ideal.
+> Luke Yelavich and I have briefly discussed using DKMS foralsa-driver in
+> modules are relevant (i.e., predicting the future is, uh, hard)?  Preparing
+> an integrated HDA codec is straightforward, but what for a USB audio
+> device?
 
-> sysfs has a config attribute for including legacy APIs. If it isn't
-> set they compile out.
-
-As I suggested, if you'd like to see a similar configuration option for
-deprecated APIs the best people to take it up with would probably be the
-people who maintain the compiler infrastructure which is used to
-generate the deprecation warning so we can have something central for
-this.
+USB audio is fairly straightforward for the most part since there's a
+standard class for it.  TBH I'd been more thinking of just installing
+the ALSA drivers wholesale rather than only trying to cherry pick the
+drivers when they're needed.
