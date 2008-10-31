@@ -1,20 +1,15 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: Questions about the changes introduced in alsa-utils
-	1.0.18
-Date: Fri, 31 Oct 2008 13:20:14 +0200
-Message-ID: <490AE9EE.6070808@pardus.org.tr>
+From: Philippe CARRIERE <philippe-f.carriere@wanadoo.fr>
+Subject: Re: TASCAM US122L
+Date: Fri, 31 Oct 2008 13:24:24 +0100 (CET)
+Message-ID: <150643.280926.1225455864724.JavaMail.www@wwinf1b28>
+Reply-To: Philippe CARRIERE <philippe-f.carriere@wanadoo.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id EE8BD244FA
-	for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2008 12:21:01 +0100 (CET)
-Received: from [192.168.1.2] (unknown [88.249.178.198])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by pardus.org.tr (Postfix) with ESMTP id 8CCED62EB475
-	for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2008 13:20:55 +0200 (EET)
+Received: from smtp1b.orange.fr (smtp1b.orange.fr [193.252.23.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id B350F1037E3
+	for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2008 13:24:25 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,39 +19,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: mfp.perfumo@ono.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpBRkFJSywgd2UgbWF5IG5vdyBoYXZlIHRoZSBwb3NzaWJpbGl0eSB0byBkcm9wIHNhbHNh
-IGhlbHBlciBhbmQgdXNlIAphbHNhY3RsIGluaXQgaW5zdGVhZCBvZiBpdCBpbiB0aGUgdWRldiBy
-dWxlcyBmaWxlIGZvciBhbHNhLiBJIHdvbmRlciBob3cgCm91ciBkaXN0cmlidXRpb24ncyBvbGQg
-cnVsZXMgZmlsZSBzaG91bGQgYmUgbW9kaWZpZWQgaW4gb3JkZXIgdG8gcmVmbGVjdCAKdGhpcyBj
-aGFuZ2UuIEkgbG9va2VkIGF0IHRoZSBydWxlcyBmaWxlIGZvdW5kIGluIGZlZG9yYSBidXQgd2Ug
-d2VyZSBhbHNvIApkb2luZyBzb21lIHJlbmFtaW5nIGFuZCBncm91cGluZyBpbiBvdXIgcnVsZXMg
-ZmlsZSBzbyBJIHRob3VnaHQgdGhhdCAKdGhpcyBsaXN0IHdvdWxkIGJlIGEgcmlnaHQgcGxhY2Ug
-dG8gZ2V0IHNvbWUgaWRlYXMuIEhlcmUncyBvdXIgcnVsZXMgCmZpbGUgdGhhdCB3ZSdyZSB1c2lu
-ZyB3aXRoIDEuMC4xNzoKClNVQlNZU1RFTT09InNvdW5kIiwgR1JPVVA9ImF1ZGlvIgpTVUJTWVNU
-RU09PSJzbmQiLCBHUk9VUD0iYXVkaW8iCgpLRVJORUw9PSJjb250cm9sQ1swLTldKiIsIE5BTUU9
-InNuZC8layIKS0VSTkVMPT0iaHdDW0QwLTldKiIsIE5BTUU9InNuZC8layIKS0VSTkVMPT0icGNt
-Q1tEMC05Y3BdKiIsIE5BTUU9InNuZC8layIKS0VSTkVMPT0ibWlkaUNbRDAtOV0qIiwgTkFNRT0i
-c25kLyVrIgpLRVJORUw9PSJ0aW1lciIsIE5BTUU9InNuZC8layIKS0VSTkVMPT0ic2VxIiwgTkFN
-RT0ic25kLyVrIgoKU1VCU1lTVEVNPT0ic291bmQiLCBLRVJORUw9PSJjb250cm9sQyoiIFJVTis9
-Ii91c3Ivc2Jpbi9zYWxzYSIKU1VCU1lTVEVNPT0ic291bmQiLCBLRVJORUw9PSJwY20qIiAgUlVO
-Kz0iL3Vzci9zYmluL3NhbHNhIgoKRmVkb3JhIHVzZXMgb25seSB0d28gcmVzdG9yZS9zdG9yZSBh
-Y3Rpb25zIGluIHRoZWlyIG5ldyBwYWNrYWdlOgoKQUNUSU9OPT0iYWRkIiwgU1VCU1lTVEVNPT0i
-c291bmQiLCBLRVJORUw9PSJjb250cm9sQyoiLCBcCiAgUlVOKz0iL3NiaW4vYWxzYWN0bCAtRSBB
-TFNBX0NPTkZJR19QQVRIPS9ldGMvYWxzYS9hbHNhY3RsLmNvbmYgLS1pbml0ZmlsZT0vbGliL2Fs
-c2EvaW5pdC8wMG1haW4gcmVzdG9yZSAvZGV2LyRuYW1lIgpBQ1RJT049PSJyZW1vdmUiLCBTVUJT
-WVNURU09PSJzb3VuZCIsIEtFUk5FTD09ImNvbnRyb2xDKiIsIFwKICBSVU4rPSIvc2Jpbi9hbHNh
-Y3RsIC1FIEFMU0FfQ09ORklHX1BBVEg9L2V0Yy9hbHNhL2Fsc2FjdGwuY29uZiBzdG9yZSAvZGV2
-LyRuYW1lIgoKCkFuZCBhbHNvIEFMU0FfQ09ORklHX1BBVEggd2FzIHBvaW50aW5nIHRvIC9ldGMv
-YXNvdW5kLnN0YXRlIGluIHNhbHNhLCBpcyAKaXQgc2FmZSBhbmQgc3VmZmljaWVudCB0byBjaGFu
-Z2UgaXQgdG8gL2V0Yy9hbHNhL2Fsc2FjdGwuY29uZiBpbiB0aGUgCnVkZXYgcnVsZXMgZmlsZSBv
-ciBkbyB3ZSBuZWVkIGFueSBvdGhlciBtb2RpZmljYXRpb25zIGluIHRoZSBjb2RlIGJhc2U/CgpB
-bmQgZmluYWxseSwgd2hhdCBhcmUgdGhlIHByb3MgYW5kIGNvbnMgb2YgY29tcGlsaW5nIGFsc2Et
-cGx1Z2lucyB3aXRoIApzcGVleCBzdXBwb3J0PyBXaGF0J3MgdGhlIHRyYWRlIG9mZiBpZiBpdCBp
-cyBkaXNhYmxlZD8KClRoYW5rcywKCi0tIAoKT3phbiDDh2HEn2xheWFuCgpodHRwOi8vd3d3LnBh
-cmR1cy5vcmcudHIvZW5nCjxvemFuX2F0X3BhcmR1cy5vcmcudHI+CgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+I discovered your previous email to alsa-devel recently. Had you a look to my further mail
+
+http://mailman.alsa-project.org/pipermail/alsa-devel/2008-October/011339.html
+
+which possibly answer part of your questions ?
+
+A patch is required for ehci-hcd module to access pcm emulation.
+
+Regards
+
+
+Phil
+
+>At Mon, 6 Oct 2008 13:11:48 +0200,
+>Fernando Perfumo wrote:
+>> 
+>> 
+>> Hello all,
+>> 
+>>     following is an extract of kern.log when connecting and disconecting a 
+>> TASCAM US122L :
+>> ( the pcm part of the us122L does not appear in /proc/asound/... but only 
+>> the midi part.
+>>   kernel : 2.6.27-rc5-git11, alsa-driver-1.0.18rc3 compiled separately of 
+>> the kernel sources, alsa-lib-1.0.18rc3 and  alsa-utils-1.0.18rc3 )
+>
+>Most messages are from snd_printdd(), so it's no bug but verbose messages.
+>
+>> I'd appreciate some ideas about the segfault in alsactl and the ausence of 
+>> the pcm functionality..
+>
+>alsactl segfault seems irrelevant.  Are you using the latest git version?
+>
+>thanks,
+>
+>Takashi
