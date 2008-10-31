@@ -1,24 +1,18 @@
-From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
-Subject: Re: Bug in sound-unstable-2.6 ice1724
-Date: Fri, 31 Oct 2008 20:30:00 +0100
-Message-ID: <fd3eb9bf0810311230v69c66c53v179e1d3252ad1c14@mail.gmail.com>
-References: <fd3eb9bf0810190236r68dc5f0bvc948acd5c6904810@mail.gmail.com>
-	<s5hy70jpusp.wl%tiwai@suse.de>
-	<fd3eb9bf0810210149k4a4e90f5ya904821fa3ca79f7@mail.gmail.com>
-	<s5hprlugw5w.wl%tiwai@suse.de>
-	<fd3eb9bf0810260931g716855b6tf00181f39baf584e@mail.gmail.com>
-	<s5hfxmjxbd6.wl%tiwai@suse.de>
+From: Troy Kisky <troy.kisky@boundarydevices.com>
+Subject: [PATCH 1/1] [ALSA]TLV320AIC23B: Support more sample
+	rates
+Date: Fri, 31 Oct 2008 14:20:34 -0700
+Message-ID: <1225488034-28557-1-git-send-email-troy.kisky@boundarydevices.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.154])
-	by alsa0.perex.cz (Postfix) with ESMTP id B7EB224640
-	for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2008 20:30:02 +0100 (CET)
-Received: by yx-out-1718.google.com with SMTP id 36so982544yxh.2
-	for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2008 12:30:01 -0700 (PDT)
-In-Reply-To: <s5hfxmjxbd6.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from mpls-qmqp-03.inet.qwest.net (mpls-qmqp-03.inet.qwest.net
+	[63.231.195.114])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1D6A82468E
+	for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2008 22:20:52 +0100 (CET)
+In-Reply-To: <>
+References: <>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,98 +22,318 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: arunks@mistralsolutions.com, broonie@sirena.org.uk, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-WWVzLCBpdCB3b3Jrcy4gSSByZXBsYWNlZCBtYXNrIHdpdGggMCBpbiB0aGF0IGxpbmUsIGFuZCBp
-dCB3b3JrcwpleGFjdGx5IHRoZSBzYW1lLiBJIGRpZG4ndCBjb21tZW50IG9yIHVuY29tbWVudCBh
-bnl0aGluZy4KCklzIHRoZXJlIHNvbWUgbW9yZSB0ZXN0aW5nIG5lZWRlZD8KCkJUVywgY2FuIHlv
-dSBleHBsYWluIGluIHNob3J0IHdoYXQgaXMgdGhlIGlzc3VlIGhlcmU/IEkgd291bGQgbGlrZSB0
-bwpsZWFybiBzb21ldGhpbmcgYWxvbmcgdGhlIHdheS4KCjIwMDgvMTAvMjYgVGFrYXNoaSBJd2Fp
-IDx0aXdhaUBzdXNlLmRlPjoKPiBBdCBTdW4sIDI2IE9jdCAyMDA4IDE3OjMxOjAyICswMTAwLAo+
-ID0/VVRGLTg/UT9WZWRyYW5fTWlsZXRpPUM0PTg3Pz0gd3JvdGU6Cj4+Cj4+IFllYXAsIHRoYXQg
-b25lIGRvZXMgaXQuIE5vIG5lZWQgdG8gcmV2ZXJ0IGl0IGZ1bGx5LCB0aG91Z2guIEkganVzdAo+
-PiB1bmNvbW1lbnRlZCB0aGUgdW5zaWduZWQgY2hhciBtYXNrIGxpbmUgYW5kIHJlbW92ZWQgdGhh
-dCAjaWYgMCBhbmQKPj4gI2VuZGlmLiBOb3cgaXQgd29ya3MgcGVyZmVjdGx5LiBUaGFua3MhIENh
-biB5b3UgZml4IGl0IGluIHlvdXIgdHJlZT8KPgo+IFdlbGwsIGJlZm9yZSBkb2luZyB0aGF0LCBJ
-J2QgbGlrZSB0byB1bmRlcnN0YW5kIHRoZSBwcm9ibGVtIG1vcmUuCj4KPiBJZiB0aGUgcHJvYmxl
-bSBpcyBhYm91dCB0aGUgaW5pdGlhbCBJUlEgbWFzayB2YWx1ZSwgc2V0dGluZyAwIHNob3VsZAo+
-IHdvcmsgYXMgd2VsbC4KPiBDb3VsZCB5b3UgY2hhbmdlIHRoZSBjb2RlIGp1c3QgdG8gZG8gbGlr
-ZSBiZWxvdywgYW5kIGNoZWNrIHdoZXRoZXIgaXQKPiB3b3Jrcz8KPiAgICAgICAgb3V0YigwLCBJ
-Q0VSRUcxNzI0KGljZSwgSVJRTUFTSykpOwo+Cj4KPiB0aGFua3MsCj4KPiBUYWthc2hpCj4KPj4g
-MjAwOC8xMC8yMSBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Ogo+PiA+IEF0IFR1ZSwgMjEg
-T2N0IDIwMDggMTA6NDk6MTggKzAyMDAsCj4+ID4gPT9VVEYtOD9RP1ZlZHJhbl9NaWxldGk9QzQ9
-ODc/PSB3cm90ZToKPj4gPj4KPj4gPj4gTm8sIHRoYXQgZGlkbid0IGZpeCBpdC4gOi0oCj4+ID4+
-Cj4+ID4+IHZlZHJhbkBrYWxvcHNpYTp+L01lZGlhJCBtcGxheWVyIC1hbyBhbHNhOmRldmljZT1o
-dz0xLjAgLXNyYXRlIDIyMDUwCj4+ID4+IC1mb3JtYXQgczMybGUgZ2V0X3ZpZGVvCj4+ID4+IE1Q
-bGF5ZXIgMS4wcmMyLTQuMy4xLURGU0ctZnJlZSAoQykgMjAwMC0yMDA3IE1QbGF5ZXIgVGVhbQo+
-PiA+PiBDUFU6IEFNRCBBdGhsb24odG0pIER1YWwgQ29yZSBQcm9jZXNzb3IgNDQ1MGUgKEZhbWls
-eTogMTUsIE1vZGVsOiAxMDcsCj4+ID4+IFN0ZXBwaW5nOiAyKQo+PiA+PiBDUFVmbGFnczogIE1N
-WDogMSBNTVgyOiAxIDNETm93OiAxIDNETm93MjogMSBTU0U6IDEgU1NFMjogMQo+PiA+PiBDb21w
-aWxlZCB3aXRoIHJ1bnRpbWUgQ1BVIGRldGVjdGlvbi4KPj4gPj4gbXBsYXllcjogY291bGQgbm90
-IGNvbm5lY3QgdG8gc29ja2V0Cj4+ID4+IG1wbGF5ZXI6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3Rv
-cnkKPj4gPj4gRmFpbGVkIHRvIG9wZW4gTElSQyBzdXBwb3J0LiBZb3Ugd2lsbCBub3QgYmUgYWJs
-ZSB0byB1c2UgeW91ciByZW1vdGUgY29udHJvbC4KPj4gPj4KPj4gPj4gUGxheWluZyBnZXRfdmlk
-ZW8uCj4+ID4+IGxpYmF2Zm9ybWF0IGZpbGUgZm9ybWF0IGRldGVjdGVkLgo+PiA+PiBbbGF2Zl0g
-VmlkZW8gc3RyZWFtIGZvdW5kLCAtdmlkIDAKPj4gPj4gW2xhdmZdIEF1ZGlvIHN0cmVhbSBmb3Vu
-ZCwgLWFpZCAxCj4+ID4+IFZJREVPOiAgW0ZMVjFdICAzMjB4MjQwICAwYnBwICAyOS45NzAgZnBz
-ICAgIDAuMCBrYnBzICggMC4wIGtieXRlL3MpCj4+ID4+ID09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cj4+ID4+
-IE9wZW5pbmcgdmlkZW8gZGVjb2RlcjogW2ZmbXBlZ10gRkZtcGVnJ3MgbGliYXZjb2RlYyBjb2Rl
-YyBmYW1pbHkKPj4gPj4gU2VsZWN0ZWQgdmlkZW8gY29kZWM6IFtmZmZsdl0gdmZtOiBmZm1wZWcg
-KEZGbXBlZyBGbGFzaCB2aWRlbykKPj4gPj4gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KPj4gPj4gPT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT0KPj4gPj4gT3BlbmluZyBhdWRpbyBkZWNvZGVyOiBbbXAzbGliXSBNUEVHIGxh
-eWVyLTIsIGxheWVyLTMKPj4gPj4gQVVESU86IDIyMDUwIEh6LCAyIGNoLCBzMTZsZSwgOC4wIGti
-aXQvMS4xMyUgKHJhdGlvOiAxMDAwLT44ODIwMCkKPj4gPj4gU2VsZWN0ZWQgYXVkaW8gY29kZWM6
-IFttcDNdIGFmbTogbXAzbGliIChtcDNsaWIgTVBFRyBsYXllci0yLCBsYXllci0zKQo+PiA+PiA9
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PQo+PiA+PiBBTzogW2Fsc2FdIDIyMDUwSHogMmNoIHMzMmxlICg0IGJ5
-dGVzIHBlciBzYW1wbGUpCj4+ID4+IFN0YXJ0aW5nIHBsYXliYWNrLi4uCj4+ID4+IFZEZWM6IHZv
-IGNvbmZpZyByZXF1ZXN0IC0gMzIwIHggMjQwIChwcmVmZXJyZWQgY29sb3JzcGFjZTogUGxhbmFy
-IFlWMTIpCj4+ID4+IFZEZWM6IHVzaW5nIFBsYW5hciBZVjEyIGFzIG91dHB1dCBjc3AgKG5vIDAp
-Cj4+ID4+IE1vdmllLUFzcGVjdCBpcyB1bmRlZmluZWQgLSBubyBwcmVzY2FsaW5nIGFwcGxpZWQu
-Cj4+ID4+IFZPOiBbeHZdIDMyMHgyNDAgPT4gMzIweDI0MCBQbGFuYXIgWVYxMgo+PiA+PiBBOiAy
-NDAuOCBWOiAyNDUuMyBBLVY6IC00LjUwMiBjdDogLTQuMzgyIDMzNTAvMzM1MCAgMCUgIDAlICAw
-LjQlIDAgMAo+PiA+PiBbQU9fQUxTQV0gYWxzYS1saWI6IHBjbV9ody5jOjQ4ODooc25kX3BjbV9o
-d19kcmFpbikKPj4gPj4gU05EUlZfUENNX0lPQ1RMX0RSQUlOIGZhaWxlZDogSW5wdXQvb3V0cHV0
-IGVycm9yCj4+ID4KPj4gPiBEaWQgeW91IGJ1aWxkIHdpdGggQ09ORklHX1NORF9ERUJVRz15PyAg
-SSBndWVzcyB5b3UgZ2V0IGEga2VybmVsIGVycm9yCj4+ID4gbWVzc2FnZSBsaWtlICJwbGF5YmFj
-ayBkcmFpbiBlcnJvciAoRE1BIG9yIElSUS4uLiIKPj4gPgo+PiA+IElmIHNvLCBhIHJlbGV2YW50
-IHBhdGNoIGlzIDEwODMyMDZmZjQ0YWY0YmFhMDM1NzNiNGE2YmFjNDMwZDlkNzA0MDQsCj4+ID4g
-ICAgQUxTQTogaWNlMTcyNCAtIEZpeCBUWCBJUlEgbG9ja3VwCj4+ID4KPj4gPiBUcnkgdG8gcmV2
-ZXJ0IGl0Lgo+PiA+Cj4+ID4KPj4gPiB0aGFua3MsCj4+ID4KPj4gPiBUYWthc2hpCj4+ID4KPj4g
-Pj4KPj4gPj4gRXhpdGluZy4uLiAoRW5kIG9mIGZpbGUpCj4+ID4+Cj4+ID4+IDIwMDgvMTAvMjAg
-VGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPjoKPj4gPj4gPiBBdCBTdW4sIDE5IE9jdCAyMDA4
-IDExOjM2OjM1ICswMjAwLAo+PiA+PiA+ID0/VVRGLTg/UT9WZWRyYW5fTWlsZXRpPUM0PTg3Pz0g
-d3JvdGU6Cj4+ID4+ID4+Cj4+ID4+ID4+IEkgaGF2ZToKPj4gPj4gPj4gMDE6MGEuMCBNdWx0aW1l
-ZGlhIGF1ZGlvIGNvbnRyb2xsZXI6IFZJQSBUZWNobm9sb2dpZXMgSW5jLiBWVDE3MjAvMjQKPj4g
-Pj4gPj4gW0VudnkyNFBUL0hUXSBQQ0kgTXVsdGktQ2hhbm5lbCBBdWRpbyBDb250cm9sbGVyIChy
-ZXYgMDEpCj4+ID4+ID4+ICAgICAgIFN1YnN5c3RlbTogVEVSUkFURUMgRWxlY3Ryb25pYyBHbWJI
-IFBIQVNFIDIyCj4+ID4+ID4+ICAgICAgIEZsYWdzOiBidXMgbWFzdGVyLCBtZWRpdW0gZGV2c2Vs
-LCBsYXRlbmN5IDY0LCBJUlEgMTYKPj4gPj4gPj4gICAgICAgSS9PIHBvcnRzIGF0IGM4ODAgW3Np
-emU9MzJdCj4+ID4+ID4+ICAgICAgIEkvTyBwb3J0cyBhdCBjODAwIFtzaXplPTEyOF0KPj4gPj4g
-Pj4gICAgICAgQ2FwYWJpbGl0aWVzOiBbODBdIFBvd2VyIE1hbmFnZW1lbnQgdmVyc2lvbiAxCj4+
-ID4+ID4+ICAgICAgIEtlcm5lbCBkcml2ZXIgaW4gdXNlOiBJQ0UxNzI0Cj4+ID4+ID4+ICAgICAg
-IEtlcm5lbCBtb2R1bGVzOiBzbmQtaWNlMTcyNAo+PiA+PiA+PiBJIGRvIHRoaXM6Cj4+ID4+ID4+
-IG1wbGF5ZXIgLWFvIGFsc2E6ZGV2aWNlPWh3PTEuMCAtc3JhdGUgNDQxMDAgLWZvcm1hdCBzMzJs
-ZSBnZXRfdmlkZW8KPj4gPj4gPj4gQmVmb3JlIHRoZSBzb25nIGVuZHMsIGxhc3Qgc2FtcGxlIGxv
-b3BzIGZvciBhYm91dCAyMC0zMCB0aW1lcywgYW5kCj4+ID4+ID4+IHRoZW4gbXBsYXllciBxdWl0
-cyB3aXRoIGVycm9yOgo+PiA+PiA+PiBhbHNhLWxpYjogcGNtX2h3LmM6NDg4OihzbmRfcGNtX2h3
-X2RyYWluKSBTTkRSVl9QQ01fSU9DVExfRFJBSU4KPj4gPj4gPj4gZmFpbGVkOiBJbnB1dC9vdXRw
-dXQgZXJyb3IKPj4gPj4gPj4KPj4gPj4gPj4gVGhpcyBkb2Vzbid0IGhhcHBlbiBvbiBzb3VuZC0y
-LjYgYW5kIGRvZXNuJ3QgaGFwcGVuIG9uCj4+ID4+ID4+IHNvdW5kLXVuc3RhYmxlLTIuNiB3aXRo
-IEUtbXUgMTIxMm0uCj4+ID4+ID4KPj4gPj4gPiBBIHN1c3BpY2lvdXMgY29tbWl0IGlzIHRoZSBv
-bmUgaW4gdG9waWMvdGVzdCBicmFuY2gsCj4+ID4+ID4KPj4gPj4gPiAgY29tbWl0IDQ0MmRhYzdl
-MDJhODM1OTQ0YmQ0ZDZlNDI5ZDBiNGEyNDQ2ZTAyMDQKPj4gPj4gPiAgQXV0aG9yOiBUYWthc2hp
-IEl3YWkgPHRpd2FpQHN1c2UuZGU+Cj4+ID4+ID4gIERhdGU6ICAgVHVlIEF1ZyAxMiAxMzozOTow
-MiAyMDA4ICswMjAwCj4+ID4+ID4KPj4gPj4gPiAgICBBTFNBOiBBbGxvdyBkcmFpbiBpb2N0bCBm
-b3Igbm9uLWJsb2NraW5nIG1vZGUKPj4gPj4gPgo+PiA+PiA+IENvdWxkIHlvdSB0cnkgdG8gcmV2
-ZXJ0IHRoaXMgY29tbWl0Pwo+PiA+PiA+Cj4+ID4+ID4KPj4gPj4gPiB0aGFua3MsCj4+ID4+ID4K
-Pj4gPj4gPiBUYWthc2hpCj4+ID4+ID4KPj4gPj4KPj4gPj4KPj4gPj4KPj4gPj4gLS0KPj4gPj4g
-VmVkcmFuIE1pbGV0acSHCj4+ID4KPj4KPj4KPj4KPj4gLS0KPj4gVmVkcmFuIE1pbGV0acSHCj4K
-CgoKLS0gClZlZHJhbiBNaWxldGnEhwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+Add support for more sample rates, different crystals
+and split playback/capture rates.
+
+Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
+Acked-by: Arun KS <arunks@mistralsolutions.com>
+
+diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
+index 44308da..c1b2060 100644
+--- a/sound/soc/codecs/tlv320aic23.c
++++ b/sound/soc/codecs/tlv320aic23.c
+@@ -37,12 +37,6 @@
+ 
+ #define AIC23_VERSION "0.1"
+ 
+-struct tlv320aic23_srate_reg_info {
+-	u32 sample_rate;
+-	u8 control;		/* SR3, SR2, SR1, SR0 and BOSR */
+-	u8 divider;		/* if 0 CLKIN = MCLK, if 1 CLKIN = MCLK/2 */
+-};
+-
+ /*
+  * AIC23 register cache
+  */
+@@ -261,19 +255,155 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 
+ };
+ 
+-/* tlv320aic23 related */
+-static const struct tlv320aic23_srate_reg_info srate_reg_info[] = {
+-	{4000, 0x06, 1},	/*  4000 */
+-	{8000, 0x06, 0},	/*  8000 */
+-	{16000, 0x0C, 1},	/* 16000 */
+-	{22050, 0x11, 1},	/* 22050 */
+-	{24000, 0x00, 1},	/* 24000 */
+-	{32000, 0x0C, 0},	/* 32000 */
+-	{44100, 0x11, 0},	/* 44100 */
+-	{48000, 0x00, 0},	/* 48000 */
+-	{88200, 0x1F, 0},	/* 88200 */
+-	{96000, 0x0E, 0},	/* 96000 */
++/* AIC23 driver data */
++struct aic23 {
++	struct snd_soc_codec codec;
++	int mclk;
++	int requested_adc;
++	int requested_dac;
++};
++
++/*
++ * Common Crystals used
++ * 11.2896 Mhz /128 = *88.2k  /192 = 58.8k
++ * 12.0000 Mhz /125 = *96k    /136 = 88.235K
++ * 12.2880 Mhz /128 = *96k    /192 = 64k
++ * 16.9344 Mhz /128 = 132.3k /192 = *88.2k
++ * 18.4320 Mhz /128 = 144k   /192 = *96k
++ */
++
++/*
++ * Normal BOSR 0-256/2 = 128, 1-384/2 = 192
++ * USB BOSR 0-250/2 = 125, 1-272/2 = 136
++ */
++static const int bosr_usb_divisor_table[] = {
++	128, 125, 192, 136
++};
++#define LOWER_GROUP ((1<<0) | (1<<1) | (1<<2) | (1<<3) | (1<<6) | (1<<7))
++#define UPPER_GROUP ((1<<8) | (1<<9) | (1<<10) | (1<<11)        | (1<<15))
++static const unsigned short sr_valid_mask[] = {
++	LOWER_GROUP|UPPER_GROUP,	/* Normal, bosr - 0*/
++	LOWER_GROUP|UPPER_GROUP,	/* Normal, bosr - 1*/
++	LOWER_GROUP,			/* Usb, bosr - 0*/
++	UPPER_GROUP,			/* Usb, bosr - 1*/
++};
++/*
++ * Every divisor is a factor of 11*12
++ */
++#define SR_MULT (11*12)
++#define A(x) (x) ? (SR_MULT/x) : 0
++static const unsigned char sr_adc_mult_table[] = {
++	A(2), A(2), A(12), A(12),  A(0), A(0), A(3), A(1),
++	A(2), A(2), A(11), A(11),  A(0), A(0), A(0), A(1)
+ };
++static const unsigned char sr_dac_mult_table[] = {
++	A(2), A(12), A(2), A(12),  A(0), A(0), A(3), A(1),
++	A(2), A(11), A(2), A(11),  A(0), A(0), A(0), A(1)
++};
++
++unsigned get_score(int adc, int adc_l, int adc_h, int need_adc,
++		int dac, int dac_l, int dac_h, int need_dac)
++{
++	if ((adc >= adc_l) && (adc <= adc_h) &&
++			(dac >= dac_l) && (dac <= dac_h)) {
++		unsigned diff_adc = need_adc - adc;
++		unsigned diff_dac = need_dac - dac;
++		unsigned score;
++		if (((int)diff_adc) < 0)
++			diff_adc = -diff_adc;
++		if (((int)diff_dac) < 0)
++			diff_dac = -diff_dac;
++		score = diff_adc + diff_dac;
++		return score;
++	}
++	return 0xffffffff;
++}
++int find_rate(int mclk, u32 need_adc, u32 need_dac)
++{
++	int i, j;
++	int best_i = -1;
++	int best_j = -1;
++	int best_div = 0;
++	unsigned best_score = 0xffffffff;
++	int adc_l, adc_h, dac_l, dac_h;
++
++	need_adc *= SR_MULT;
++	need_dac *= SR_MULT;
++	/*
++	 * rates given are +/- 1/32
++	 */
++	adc_l = need_adc - (need_adc >> 5);
++	adc_h = need_adc + (need_adc >> 5);
++	dac_l = need_dac - (need_dac >> 5);
++	dac_h = need_dac + (need_dac >> 5);
++	for (i = 0; i < 4; i++) {
++		int base = mclk / bosr_usb_divisor_table[i];
++		int mask = sr_valid_mask[i];
++		for (j = 0; j < 16; j++, mask >>= 1) {
++			int adc;
++			int dac;
++			int score;
++			if ((mask & 1) == 0)
++				continue;
++			adc = base * sr_adc_mult_table[j];
++			dac = base * sr_dac_mult_table[j];
++			score = get_score(adc, adc_l, adc_h, need_adc,
++					dac, dac_l, dac_h, need_dac);
++			if (best_score > score) {
++				best_score = score;
++				best_i = i;
++				best_j = j;
++				best_div = 0;
++			}
++			score = get_score((adc >> 1), adc_l, adc_h, need_adc,
++					(dac >> 1), dac_l, dac_h, need_dac);
++			/* prefer to have a /2 */
++			if ((score != 0xffffffff) && (best_score >= score)) {
++				best_score = score;
++				best_i = i;
++				best_j = j;
++				best_div = 1;
++			}
++		}
++	}
++	return (best_j << 2) | best_i | (best_div << TLV320AIC23_CLKIN_SHIFT);
++}
++
++static void get_current_sample_rates(struct snd_soc_codec *codec, int mclk,
++		u32 *sample_rate_adc, u32 *sample_rate_dac)
++{
++	int src = tlv320aic23_read_reg_cache(codec, TLV320AIC23_SRATE);
++	int sr = (src >> 2) & 0x0f;
++	int val = (mclk / bosr_usb_divisor_table[src & 3]);
++	int adc = (val * sr_adc_mult_table[sr]) / SR_MULT;
++	int dac = (val * sr_dac_mult_table[sr]) / SR_MULT;
++	if (src & TLV320AIC23_CLKIN_HALF) {
++		adc >>= 1;
++		dac >>= 1;
++	}
++	*sample_rate_adc = adc;
++	*sample_rate_dac = dac;
++}
++
++static int set_sample_rate_control(struct snd_soc_codec *codec, int mclk,
++		u32 sample_rate_adc, u32 sample_rate_dac)
++{
++	/* Search for the right sample rate */
++	int data = find_rate(mclk, sample_rate_adc, sample_rate_dac);
++	if (data < 0) {
++		printk(KERN_ERR "%s:Invalid rate %u,%u requested\n",
++				__func__, sample_rate_adc, sample_rate_dac);
++		return -EINVAL;
++	}
++	tlv320aic23_write(codec, TLV320AIC23_SRATE, data);
++	if (1) {
++		int adc, dac;
++		get_current_sample_rates(codec, mclk, &adc, &dac);
++		printk(KERN_DEBUG "actual samplerate = %u,%u reg=%x\n",
++			adc, dac, data);
++	}
++	return 0;
++}
+ 
+ static int tlv320aic23_add_widgets(struct snd_soc_codec *codec)
+ {
+@@ -293,27 +423,30 @@ static int tlv320aic23_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_device *socdev = rtd->socdev;
+ 	struct snd_soc_codec *codec = socdev->codec;
+-	u16 iface_reg, data;
+-	u8 count = 0;
++	u16 iface_reg;
++	int ret;
++	struct aic23 *aic23 = container_of(codec, struct aic23, codec);
++	u32 sample_rate_adc = aic23->requested_adc;
++	u32 sample_rate_dac = aic23->requested_dac;
++	u32 sample_rate = params_rate(params);
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		aic23->requested_dac = sample_rate_dac = sample_rate;
++		if (!sample_rate_adc)
++			sample_rate_adc = sample_rate;
++	} else {
++		aic23->requested_adc = sample_rate_adc = sample_rate;
++		if (!sample_rate_dac)
++			sample_rate_dac = sample_rate;
++	}
++	ret = set_sample_rate_control(codec, aic23->mclk, sample_rate_adc,
++			sample_rate_dac);
++	if (ret < 0)
++		return ret;
+ 
+ 	iface_reg =
+ 	    tlv320aic23_read_reg_cache(codec,
+ 				       TLV320AIC23_DIGT_FMT) & ~(0x03 << 2);
+-
+-	/* Search for the right sample rate */
+-	/* Verify what happens if the rate is not supported
+-	 * now it goes to 96Khz */
+-	while ((srate_reg_info[count].sample_rate != params_rate(params)) &&
+-	       (count < ARRAY_SIZE(srate_reg_info))) {
+-		count++;
+-	}
+-
+-	data =  (srate_reg_info[count].divider << TLV320AIC23_CLKIN_SHIFT) |
+-		(srate_reg_info[count]. control << TLV320AIC23_BOSR_SHIFT) |
+-		TLV320AIC23_USB_CLK_ON;
+-
+-	tlv320aic23_write(codec, TLV320AIC23_SRATE, data);
+-
+ 	switch (params_format(params)) {
+ 	case SNDRV_PCM_FORMAT_S16_LE:
+ 		break;
+@@ -349,12 +482,17 @@ static void tlv320aic23_shutdown(struct snd_pcm_substream *substream)
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_device *socdev = rtd->socdev;
+ 	struct snd_soc_codec *codec = socdev->codec;
++	struct aic23 *aic23 = container_of(codec, struct aic23, codec);
+ 
+ 	/* deactivate */
+ 	if (!codec->active) {
+ 		udelay(50);
+ 		tlv320aic23_write(codec, TLV320AIC23_ACTIVE, 0x0);
+ 	}
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		aic23->requested_dac = 0;
++	else
++		aic23->requested_adc = 0;
+ }
+ 
+ static int tlv320aic23_mute(struct snd_soc_dai *dai, int mute)
+@@ -422,12 +560,9 @@ static int tlv320aic23_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 				      int clk_id, unsigned int freq, int dir)
+ {
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+-
+-	switch (freq) {
+-	case 12000000:
+-		return 0;
+-	}
+-	return -EINVAL;
++	struct aic23 *aic23 = container_of(codec, struct aic23, codec);
++	aic23->mclk = freq;
++	return 0;
+ }
+ 
+ static int tlv320aic23_set_bias_level(struct snd_soc_codec *codec,
+@@ -659,14 +794,15 @@ static int tlv320aic23_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+ 	struct snd_soc_codec *codec;
++	struct aic23 *aic23;
+ 	int ret = 0;
+ 
+ 	printk(KERN_INFO "AIC23 Audio Codec %s\n", AIC23_VERSION);
+ 
+-	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
+-	if (codec == NULL)
++	aic23 = kzalloc(sizeof(struct aic23), GFP_KERNEL);
++	if (aic23 == NULL)
+ 		return -ENOMEM;
+-
++	codec = &aic23->codec;
+ 	socdev->codec = codec;
+ 	mutex_init(&codec->mutex);
+ 	INIT_LIST_HEAD(&codec->dapm_widgets);
+@@ -687,6 +823,7 @@ static int tlv320aic23_remove(struct platform_device *pdev)
+ {
+ 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+ 	struct snd_soc_codec *codec = socdev->codec;
++	struct aic23 *aic23 = container_of(codec, struct aic23, codec);
+ 
+ 	if (codec->control_data)
+ 		tlv320aic23_set_bias_level(codec, SND_SOC_BIAS_OFF);
+@@ -697,7 +834,7 @@ static int tlv320aic23_remove(struct platform_device *pdev)
+ 	i2c_del_driver(&tlv320aic23_i2c_driver);
+ #endif
+ 	kfree(codec->reg_cache);
+-	kfree(codec);
++	kfree(aic23);
+ 
+ 	return 0;
+ }
+-- 
+1.5.4.3
