@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/5] ASoC: Add support for Beagleboard
-Date: Fri, 31 Oct 2008 13:20:34 +0000
-Message-ID: <1225459236-8633-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/5] ASoC: Add support for Gumstix Overo
+Date: Fri, 31 Oct 2008 13:20:33 +0000
+Message-ID: <1225459236-8633-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20081031131828.GA8253@rakim.wolfsonmicro.main>
 	<1225459236-8633-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1225459236-8633-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8BB2824526
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A373324528
 	for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2008 14:20:38 +0100 (CET)
-In-Reply-To: <1225459236-8633-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <1225459236-8633-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,18 +30,52 @@ From: Steve Sakoman <steve@sakoman.com>
 Signed-off-by: Steve Sakoman <steve@sakoman.com>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/omap/omap3beagle.c |  149 ++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 149 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/omap/omap3beagle.c
+ sound/soc/omap/Kconfig  |   10 +++
+ sound/soc/omap/Makefile |    3 +
+ sound/soc/omap/overo.c  |  148 +++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 161 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/omap/overo.c
 
-diff --git a/sound/soc/omap/omap3beagle.c b/sound/soc/omap/omap3beagle.c
+diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+index 8b7766b..cf40e42 100644
+--- a/sound/soc/omap/Kconfig
++++ b/sound/soc/omap/Kconfig
+@@ -21,3 +21,13 @@ config SND_OMAP_SOC_OSK5912
+ 	select SND_SOC_TLV320AIC23
+ 	help
+ 	  Say Y if you want to add support for SoC audio on osk5912.
++
++config SND_OMAP_SOC_OVERO
++	tristate "SoC Audio support for Gumstix Overo"
++	depends on SND_OMAP_SOC && MACH_OVERO
++	select SND_OMAP_SOC_MCBSP
++	select SND_SOC_TWL4030
++	help
++	  Say Y if you want to add support for SoC audio on the Gumstix Overo.
++
++
+diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
+index e09d1f2..fefc9be 100644
+--- a/sound/soc/omap/Makefile
++++ b/sound/soc/omap/Makefile
+@@ -8,6 +8,9 @@ obj-$(CONFIG_SND_OMAP_SOC_MCBSP) += snd-soc-omap-mcbsp.o
+ # OMAP Machine Support
+ snd-soc-n810-objs := n810.o
+ snd-soc-osk5912-objs := osk5912.o
++snd-soc-overo-objs := overo.o
+ 
+ obj-$(CONFIG_SND_OMAP_SOC_N810) += snd-soc-n810.o
+ obj-$(CONFIG_SND_OMAP_SOC_OSK5912) += snd-soc-osk5912.o
++obj-$(CONFIG_SND_OMAP_SOC_OVERO) += snd-soc-overo.o
++
+diff --git a/sound/soc/omap/overo.c b/sound/soc/omap/overo.c
 new file mode 100644
-index 0000000..ec84a9b
+index 0000000..c26d1de
 --- /dev/null
-+++ b/sound/soc/omap/omap3beagle.c
-@@ -0,0 +1,149 @@
++++ b/sound/soc/omap/overo.c
+@@ -0,0 +1,148 @@
 +/*
-+ * omap3beagle.c  --  SoC audio for OMAP3 Beagle
++ * overo.c  --  SoC audio for Gumstix Overo
 + *
 + * Author: Steve Sakoman <steve@sakoman.com>
 + *
@@ -78,7 +111,7 @@ index 0000000..ec84a9b
 +#include "omap-pcm.h"
 +#include "../codecs/twl4030.h"
 +
-+static int omap3beagle_hw_params(struct snd_pcm_substream *substream,
++static int overo_hw_params(struct snd_pcm_substream *substream,
 +	struct snd_pcm_hw_params *params)
 +{
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
@@ -108,7 +141,7 @@ index 0000000..ec84a9b
 +
 +	/* Set the codec system clock for DAC and ADC */
 +	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
-+				     SND_SOC_CLOCK_IN);
++					    SND_SOC_CLOCK_IN);
 +	if (ret < 0) {
 +		printk(KERN_ERR "can't set codec system clock\n");
 +		return ret;
@@ -117,56 +150,56 @@ index 0000000..ec84a9b
 +	return 0;
 +}
 +
-+static struct snd_soc_ops omap3beagle_ops = {
-+	.hw_params = omap3beagle_hw_params,
++static struct snd_soc_ops overo_ops = {
++	.hw_params = overo_hw_params,
 +};
 +
 +/* Digital audio interface glue - connects codec <--> CPU */
-+static struct snd_soc_dai_link omap3beagle_dai = {
++static struct snd_soc_dai_link overo_dai = {
 +	.name = "TWL4030",
 +	.stream_name = "TWL4030",
 +	.cpu_dai = &omap_mcbsp_dai[0],
 +	.codec_dai = &twl4030_dai,
-+	.ops = &omap3beagle_ops,
++	.ops = &overo_ops,
 +};
 +
 +/* Audio machine driver */
-+static struct snd_soc_machine snd_soc_machine_omap3beagle = {
-+	.name = "omap3beagle",
-+	.dai_link = &omap3beagle_dai,
++static struct snd_soc_machine snd_soc_machine_overo = {
++	.name = "overo",
++	.dai_link = &overo_dai,
 +	.num_links = 1,
 +};
 +
 +/* Audio subsystem */
-+static struct snd_soc_device omap3beagle_snd_devdata = {
-+	.machine = &snd_soc_machine_omap3beagle,
++static struct snd_soc_device overo_snd_devdata = {
++	.machine = &snd_soc_machine_overo,
 +	.platform = &omap_soc_platform,
 +	.codec_dev = &soc_codec_dev_twl4030,
 +};
 +
-+static struct platform_device *omap3beagle_snd_device;
++static struct platform_device *overo_snd_device;
 +
-+static int __init omap3beagle_soc_init(void)
++static int __init overo_soc_init(void)
 +{
 +	int ret;
 +
-+	if (!machine_is_omap3_beagle()) {
-+		pr_debug("Not OMAP3 Beagle!\n");
++	if (!machine_is_overo()) {
++		pr_debug("Not Overo!\n");
 +		return -ENODEV;
 +	}
-+	pr_info("OMAP3 Beagle SoC init\n");
++	printk(KERN_INFO "overo SoC init\n");
 +
-+	omap3beagle_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!omap3beagle_snd_device) {
++	overo_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!overo_snd_device) {
 +		printk(KERN_ERR "Platform device allocation failed\n");
 +		return -ENOMEM;
 +	}
 +
-+	platform_set_drvdata(omap3beagle_snd_device, &omap3beagle_snd_devdata);
-+	omap3beagle_snd_devdata.dev = &omap3beagle_snd_device->dev;
-+	*(unsigned int *)omap3beagle_dai.cpu_dai->private_data = 1; /* McBSP2 */
++	platform_set_drvdata(overo_snd_device, &overo_snd_devdata);
++	overo_snd_devdata.dev = &overo_snd_device->dev;
++	*(unsigned int *)overo_dai.cpu_dai->private_data = 1; /* McBSP2 */
 +
-+	ret = platform_device_add(omap3beagle_snd_device);
++	ret = platform_device_add(overo_snd_device);
 +	if (ret)
 +		goto err1;
 +
@@ -174,21 +207,20 @@ index 0000000..ec84a9b
 +
 +err1:
 +	printk(KERN_ERR "Unable to add platform device\n");
-+	platform_device_put(omap3beagle_snd_device);
++	platform_device_put(overo_snd_device);
 +
 +	return ret;
 +}
++module_init(overo_soc_init);
 +
-+static void __exit omap3beagle_soc_exit(void)
++static void __exit overo_soc_exit(void)
 +{
-+	platform_device_unregister(omap3beagle_snd_device);
++	platform_device_unregister(overo_snd_device);
 +}
-+
-+module_init(omap3beagle_soc_init);
-+module_exit(omap3beagle_soc_exit);
++module_exit(overo_soc_exit);
 +
 +MODULE_AUTHOR("Steve Sakoman <steve@sakoman.com>");
-+MODULE_DESCRIPTION("ALSA SoC OMAP3 Beagle");
++MODULE_DESCRIPTION("ALSA SoC overo");
 +MODULE_LICENSE("GPL");
 -- 
 1.5.6.5
