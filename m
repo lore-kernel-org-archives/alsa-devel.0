@@ -1,17 +1,20 @@
-From: "Andreas Hartmetz" <ahartmetz@gmail.com>
-Subject: ICE1724 / Revolution 7.1 recognized but no sound
-Date: Thu, 30 Oct 2008 15:18:08 +0100
-Message-ID: <f3642e6b0810300718hee2c311m2e9c93021200ccc6@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 4/5] ASoC: Merge AT91 and AVR32 support into a
+	single atmel architecture
+Date: Fri, 31 Oct 2008 13:20:35 +0000
+Message-ID: <1225459236-8633-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <20081031131828.GA8253@rakim.wolfsonmicro.main>
+	<1225459236-8633-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1225459236-8633-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1225459236-8633-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.241])
-	by alsa0.perex.cz (Postfix) with ESMTP id AB73B2443A
-	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 15:18:10 +0100 (CET)
-Received: by rv-out-0708.google.com with SMTP id f25so583371rvb.32
-	for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2008 07:18:09 -0700 (PDT)
-Content-Disposition: inline
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CDEB12452A
+	for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2008 14:20:39 +0100 (CET)
+In-Reply-To: <1225459236-8633-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,3594 +24,4273 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Sedji Gaouaou <sedji.gaouaou@atmel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi guys,
+From: Sedji Gaouaou <sedji.gaouaou@atmel.com>
 
-[this is a slightly modified resend of a message to LKML]
-I have a problem with my sound card. It is the only regular PCI device in my
-system.
-alsamixer works fine but any application trying to play sound will either
-hang when trying to play the first sample (mplayer, aplay) or report an error
-(amarok with xine backend).
+The Ateml AT91 and AVR32 SoC share common IP for audio and can share the
+same driver code using the atmel-ssc API provided for both architectures.
+Do this, creating a new unified atmel ASoC architecture to replace the
+previous at32 and at91 ones.
 
-mplayer, for example, hangs in an endless loop of this:
+[This was contributed as a patch series for reviewability but has been
+squashed down to a single commit to help preserve both the history and
+bisectability.  A small bugfix from Jukka is included.]
 
-nanosleep({0, 10000000}, NULL)          = 0
-ioctl(5, 0x4122, 0)                     = 0
-ioctl(5, 0x4122, 0)                     = 0
+Tested-by: Jukka Hynninen <ext-jukka.hynninen@vaisala.com>
+Signed-off-by: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/Kconfig                                |    3 +-
+ sound/soc/Makefile                               |    2 +-
+ sound/soc/at32/Kconfig                           |   34 -
+ sound/soc/at32/Makefile                          |   11 -
+ sound/soc/at32/at32-pcm.h                        |   79 --
+ sound/soc/at32/at32-ssc.c                        |  849 ----------------------
+ sound/soc/at32/at32-ssc.h                        |   59 --
+ sound/soc/at91/Kconfig                           |   10 -
+ sound/soc/at91/Makefile                          |    6 -
+ sound/soc/at91/at91-pcm.c                        |  434 -----------
+ sound/soc/at91/at91-pcm.h                        |   72 --
+ sound/soc/at91/at91-ssc.c                        |  791 --------------------
+ sound/soc/at91/at91-ssc.h                        |   27 -
+ sound/soc/atmel/Kconfig                          |   43 ++
+ sound/soc/atmel/Makefile                         |   15 +
+ sound/soc/{at32/at32-pcm.c => atmel/atmel-pcm.c} |  376 +++++-----
+ sound/soc/atmel/atmel-pcm.h                      |   86 +++
+ sound/soc/atmel/atmel_ssc_dai.c                  |  782 ++++++++++++++++++++
+ sound/soc/atmel/atmel_ssc_dai.h                  |  121 +++
+ sound/soc/{at32 => atmel}/playpaq_wm8510.c       |    4 +-
+ 20 files changed, 1235 insertions(+), 2569 deletions(-)
+ delete mode 100644 sound/soc/at32/Kconfig
+ delete mode 100644 sound/soc/at32/Makefile
+ delete mode 100644 sound/soc/at32/at32-pcm.h
+ delete mode 100644 sound/soc/at32/at32-ssc.c
+ delete mode 100644 sound/soc/at32/at32-ssc.h
+ delete mode 100644 sound/soc/at91/Kconfig
+ delete mode 100644 sound/soc/at91/Makefile
+ delete mode 100644 sound/soc/at91/at91-pcm.c
+ delete mode 100644 sound/soc/at91/at91-pcm.h
+ delete mode 100644 sound/soc/at91/at91-ssc.c
+ delete mode 100644 sound/soc/at91/at91-ssc.h
+ create mode 100644 sound/soc/atmel/Kconfig
+ create mode 100644 sound/soc/atmel/Makefile
+ rename sound/soc/{at32/at32-pcm.c => atmel/atmel-pcm.c} (50%)
+ create mode 100644 sound/soc/atmel/atmel-pcm.h
+ create mode 100644 sound/soc/atmel/atmel_ssc_dai.c
+ create mode 100644 sound/soc/atmel/atmel_ssc_dai.h
+ rename sound/soc/{at32 => atmel}/playpaq_wm8510.c (99%)
 
-Hardware:
-Gigabyte GA-MA78G-DS3H mainboard, AMD 780G chipset
-2 GB memory
-Phenom quad-core CPU in AMD64 mode
-2 SATA harddisks
-1 PATA cdrom
-on-board graphics
-PCI sound card M-Audio Revolution 7.1 (ice1724)
-
-Software:
-Kubuntu 8.10, kernel 2.6.27
-Software RAID1 (aka md-raid (?))
-[the rest is probably not interesting]
-
-When I boot a live CD of the same distro with the same kernel the soundcard
-works fine (and no, it's not a matter of some process blocking the card).
-The diff of loaded modules looks like this:
-
-- snip -
-
-diff -u modlist.live modlist.inst
---- modlist.live        2008-10-30 03:32:59.000000000 +0100
-+++ modlist.inst        2008-10-30 03:48:38.000000000 +0100
-@@ -1,30 +1,34 @@
- ac                     13448  0
- ac97_bus               10368  1 snd_ac97_codec
--af_packet              29568  2
--ahci                   43148  2
-+ahci                   43148  4
-+async_memcpy           10752  1 raid456
-+async_tx               16764  3 raid456,async_xor,async_memcpy
-+async_xor              12032  1 raid456
- ata_generic            14212  0
--aufs                  196968  1
- battery                21128  0
- bitblit                14592  1 fbcon
--bluetooth              70820  6 bnep,rfcomm,sco,l2cap
-+bluetooth              70820  6 rfcomm,bnep,sco,l2cap
- bnep                   23168  2
- bridge                 64544  0
- button                 15904  0
- cdrom                  47784  1 sr_mod
- container              12288  0
- cpufreq_conservative    16392  0
--cpufreq_ondemand       16400  4
-+cpufreq_ondemand       16400  0
- cpufreq_powersave      10368  0
- cpufreq_stats          14468  0
--cpufreq_userspace      12420  0
-+cpufreq_userspace      12420  4
- crc_t10dif             10240  1 sd_mod
-+crypto_blkcipher       27780  1 dm_crypt
-+dm_crypt               22792  0
-+dm_mod                 72944  1 dm_crypt
- dock                   18464  1 libata
- ehci_hcd               48908  0
--evdev                  20512  7
--exportfs               13568  1 aufs
-+evdev                  20512  3
- ext3                  150544  1
- fan                    13576  0
- fbcon                  51200  0
-+fglrx                2082944  28
- font                   17152  1 fbcon
- freq_table             13568  3
-powernow_k8,cpufreq_stats,cpufreq_ondemand
- fuse                   68288  1
-@@ -33,22 +37,23 @@
- i2c_piix4              17936  0
- iptable_filter         11520  0
- ip_tables              28176  1 iptable_filter
--isofs                  44072  1
-+ipv6                  314312  18
- jbd                    66472  1 ext3
- joydev                 20736  0
--l2cap                  33280  6 bnep,rfcomm
--libata                200160  4
-pata_atiixp,pata_acpi,ata_generic,ahci
--loop                   26380  2
-+l2cap                  33280  6 rfcomm,bnep
-+libata                200160  4
-pata_atiixp,pata_acpi,ahci,ata_generic
-+linear                 13440  0
- lp                     19588  0
- mbcache                17924  1 ext3
-+md_mod                102948  7
-raid10,raid456,raid1,raid0,multipath,linear
- Module                  Size  Used by
--nls_cp437              15232  1
-+multipath              16512  0
- ohci_hcd               34972  0
- output                 11776  1 video
- parport                50096  3 ppdev,parport_pc,lp
- parport_pc             44200  0
- pata_acpi              13568  0
--pata_atiixp            14208  1
-+pata_atiixp            14208  0
- pci_hotplug            39472  1 shpchp
- pci_slot               13704  0
- pcspkr                 11136  0
-@@ -56,25 +61,28 @@
- ppdev                  16904  0
- processor              47800  2 powernow_k8,thermal
- r8169                  40196  0
-+raid0                  15488  0
-+raid10                 32000  0
-+raid1                  32640  1
-+raid456               139552  0
- rfcomm                 51104  0
- sbs                    22288  0
- sbshc                  14592  1 sbs
- sco                    20612  2
- scsi_mod              183160  4 sr_mod,sd_mod,sg,libata
--sd_mod                 45864  4
-+sd_mod                 45864  6
- sg                     45408  0
- shpchp                 42140  0
--snd                    79432  19
-snd_hda_intel,snd_ice1724,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_ak4xxx_adda,snd_ak4114,snd_pt2258,snd_pcm,snd_i2c,snd_seq_oss,snd_rawmidi,snd_seq,snd_timer,snd_seq_device
-+snd                    79432  14
-snd_ice1724,snd_ac97_codec,snd_ak4xxx_adda,snd_ak4114,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_pt2258,snd_i2c,snd_seq_oss,snd_rawmidi,snd_seq,snd_timer,snd_seq_device
- snd_ac97_codec        133080  1 snd_ice1724
- snd_ak4114             19328  1 snd_ice1724
- snd_ak4xxx_adda        17792  2 snd_ice1724,snd_ice17xx_ak4xxx
--snd_hda_intel         489264  1
- snd_i2c                14720  2 snd_ice1724,snd_pt2258
--snd_ice1724           119912  1
-+snd_ice1724           119912  0
- snd_ice17xx_ak4xxx     12416  1 snd_ice1724
- snd_mixer_oss          25088  1 snd_pcm_oss
--snd_page_alloc         17680  2 snd_hda_intel,snd_pcm
--snd_pcm                99208  5
-snd_hda_intel,snd_ice1724,snd_ac97_codec,snd_pcm_oss,snd_ak4114
-+snd_page_alloc         17680  1 snd_pcm
-+snd_pcm                99208  4
-snd_ice1724,snd_ac97_codec,snd_ak4114,snd_pcm_oss
- snd_pcm_oss            52608  0
- snd_pt2258             12800  1 snd_ice1724
- snd_rawmidi            34176  2 snd_ice1724,snd_seq_midi
-@@ -87,13 +95,15 @@
- snd_timer              34320  2 snd_pcm,snd_seq
- softcursor             10496  1 bitblit
- soundcore              16800  1 snd
--squashfs               48912  1
--sr_mod                 24644  1
-+sr_mod                 24644  0
- stp                    11268  1 bridge
- thermal                27424  0
- tileblit               11264  1 fbcon
--usbcore               175376  4 usbhid,ehci_hcd,ohci_hcd
-+tun                    20996  0
-+usbcore               175376  4 usbhid,ohci_hcd,ehci_hcd
- usbhid                 39776  0
- video                  28948  0
- wmi                    15808  0
-+xfs                   575376  1
-+xor                    14096  2 raid456,async_xor
- x_tables               31752  1 ip_tables
-- snip -
-
-Note that fglrx or no fglrx, as well as Intel HDA driver or no HDA driver,
-don't make any difference for my problem - I tested that.
-/var/log/syslog (from installed system and live CD) and lspci -vv
-(only installed system)
-output are appended for further information.
-I can test bugfix and diagnostic patches as well.
-
-Cheers,
-Andreas
-
-INSTALLED /var/log/syslog:
-
-Oct 30 09:59:18 rechenplan syslogd 1.5.0#2ubuntu6: restart.
-Oct 30 09:59:18 rechenplan kernel: Inspecting /boot/System.map-2.6.27-7-generic
-Oct 30 09:59:18 rechenplan kernel: Cannot find map file.
-Oct 30 09:59:18 rechenplan kernel: Loaded 59100 symbols from 107 modules.
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] Initializing cgroup
-subsys cpuset
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] Initializing cgroup subsys cpu
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] Linux version
-2.6.27-7-generic (buildd@yellow) (gcc version 4.3.2 (Ubuntu
-4.3.2-1ubuntu10) ) #1 SMP Fri Oct 24 06:40:41 UTC 2008 (Ubuntu
-2.6.27-7.14-generic)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] Command line:
-root=/dev/md0 ro
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] KERNEL supported cpus:
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]   Intel GenuineIntel
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]   AMD AuthenticAMD
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]   Centaur CentaurHauls
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] BIOS-provided
-physical RAM map:
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]  BIOS-e820:
-0000000000000000 - 000000000009f800 (usable)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]  BIOS-e820:
-000000000009f800 - 00000000000a0000 (reserved)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]  BIOS-e820:
-00000000000f0000 - 0000000000100000 (reserved)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]  BIOS-e820:
-0000000000100000 - 0000000077de0000 (usable)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]  BIOS-e820:
-0000000077de0000 - 0000000077de3000 (ACPI NVS)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]  BIOS-e820:
-0000000077de3000 - 0000000077df0000 (ACPI data)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]  BIOS-e820:
-0000000077df0000 - 0000000077e00000 (reserved)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]  BIOS-e820:
-00000000e0000000 - 00000000f0000000 (reserved)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]  BIOS-e820:
-00000000fec00000 - 0000000100000000 (reserved)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] last_pfn = 0x77de0
-max_arch_pfn = 0x3ffffffff
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] init_memory_mapping
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]  0000000000 -
-0077c00000 page 2M
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]  0077c00000 -
-0077de0000 page 4k
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] kernel direct
-mapping tables up to 77de0000 @ 8000-c000
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] last_map_addr:
-77de0000 end: 77de0000
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] RAMDISK: 3771b000 - 37fef549
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] DMI 2.4 present.
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: RSDP 000F71C0,
-0014 (r0 GBT   )
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: RSDT 77DE3000,
-0038 (r1 GBT    GBTUACPI 42302E31 GBTU  1010101)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: FACP 77DE3040,
-0074 (r1 GBT    GBTUACPI 42302E31 GBTU  1010101)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: DSDT 77DE30C0,
-6550 (r1 GBT    GBTUACPI     1000 MSFT  3000000)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: FACS 77DE0000, 0040
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: SSDT 77DE9700,
-0544 (r1 PTLTD  POWERNOW        1  LTP        1)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: HPET 77DE9C80,
-0038 (r1 GBT    GBTUACPI 42302E31 GBTU       98)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: MCFG 77DE9CC0,
-003C (r1 GBT    GBTUACPI 42302E31 GBTU  1010101)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: APIC 77DE9640,
-0084 (r1 GBT    GBTUACPI 42302E31 GBTU  1010101)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] Scanning NUMA
-topology in Northbridge 24
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] No NUMA configuration found
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] Faking a node at
-0000000000000000-0000000077de0000
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] Bootmem setup node 0
-0000000000000000-0000000077de0000
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]   NODE_DATA
-[0000000000001000 - 0000000000005fff]
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]   bootmap
-[000000000000a000 -  0000000000018fbf] pages f
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] (6 early
-reservations) ==> bootmem [0000000000 - 0077de0000]
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]   #0 [0000000000 -
-0000001000]   BIOS data page ==> [0000000000 - 0000001000]
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]   #1 [0000006000 -
-0000008000]       TRAMPOLINE ==> [0000006000 - 0000008000]
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]   #2 [0000200000 -
-00008b8f9c]    TEXT DATA BSS ==> [0000200000 - 00008b8f9c]
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]   #3 [003771b000 -
-0037fef549]          RAMDISK ==> [003771b000 - 0037fef549]
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]   #4 [000009f800 -
-0000100000]    BIOS reserved ==> [000009f800 - 0000100000]
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]   #5 [0000008000 -
-000000a000]          PGTABLE ==> [0000008000 - 000000a000]
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] found SMP MP-table
-at [ffff8800000f5840] 000f5840
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]
-[ffffe20000000000-ffffe20001dfffff] PMD ->
-[ffff880001200000-ffff880002ffffff] on node 0
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] Zone PFN ranges:
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]   DMA
-0x00000000 -> 0x00001000
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]   DMA32
-0x00001000 -> 0x00100000
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]   Normal
-0x00100000 -> 0x00100000
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] Movable zone start
-PFN for each node
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] early_node_map[2]
-active PFN ranges
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]     0: 0x00000000 ->
-0x0000009f
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]     0: 0x00000100 ->
-0x00077de0
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] On node 0 totalpages: 490879
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]   DMA zone: 2112
-pages, LIFO batch:0
-Oct 30 09:59:18 rechenplan kernel: [    0.000000]   DMA32 zone: 479272
-pages, LIFO batch:31
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: PM-Timer IO Port: 0x4008
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: Local APIC
-address 0xfee00000
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: LAPIC
-(acpi_id[0x00] lapic_id[0x00] enabled)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: LAPIC
-(acpi_id[0x01] lapic_id[0x01] enabled)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: LAPIC
-(acpi_id[0x02] lapic_id[0x02] enabled)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: LAPIC
-(acpi_id[0x03] lapic_id[0x03] enabled)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: LAPIC_NMI
-(acpi_id[0x00] dfl dfl lint[0x1])
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: LAPIC_NMI
-(acpi_id[0x01] dfl dfl lint[0x1])
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: LAPIC_NMI
-(acpi_id[0x02] dfl dfl lint[0x1])
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: LAPIC_NMI
-(acpi_id[0x03] dfl dfl lint[0x1])
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: IOAPIC
-(id[0x02] address[0xfec00000] gsi_base[0])
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] IOAPIC[0]: apic_id
-2, version 0, address 0xfec00000, GSI 0-23
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: INT_SRC_OVR
-(bus 0 bus_irq 0 global_irq 2 dfl dfl)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: INT_SRC_OVR
-(bus 0 bus_irq 9 global_irq 9 low level)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: IRQ0 used by override.
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: IRQ2 used by override.
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: IRQ9 used by override.
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] Setting APIC routing to flat
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] ACPI: HPET id:
-0x10b9a201 base: 0xfed00000
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] Using ACPI (MADT)
-for SMP configuration information
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] SMP: Allowing 4
-CPUs, 0 hotplug CPUs
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] PM: Registered
-nosave memory: 000000000009f000 - 00000000000a0000
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] PM: Registered
-nosave memory: 00000000000a0000 - 00000000000f0000
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] PM: Registered
-nosave memory: 00000000000f0000 - 0000000000100000
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] Allocating PCI
-resources starting at 78000000 (gap: 77e00000:68200000)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] PERCPU: Allocating
-64928 bytes of per cpu data
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] NR_CPUS: 64,
-nr_cpu_ids: 4, nr_node_ids 1
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] Built 1 zonelists in
-Node order, mobility grouping on.  Total pages: 481384
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] Policy zone: DMA32
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] Kernel command line:
-root=/dev/md0 ro
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] Initializing CPU#0
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] PID hash table
-entries: 4096 (order: 12, 32768 bytes)
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] TSC: PIT calibration
-confirmed by PMTIMER.
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] TSC: using PMTIMER
-calibration value
-Oct 30 09:59:18 rechenplan kernel: [    0.000000] Detected 2004.258
-MHz processor.
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] Console: colour VGA+ 80x25
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] console [tty0] enabled
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] Checking aperture...
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] No AGP bridge found
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] Node 0: aperture @
-5086000000 size 32 MB
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] Aperture beyond 4GB. Ignoring.
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] Memory:
-1916440k/1963904k available (3112k kernel code, 47076k reserved, 1575k
-data, 536k init)
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] CPA: page pool
-initialized 1 of 1 pages preallocated
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] SLUB: Genslabs=13,
-HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] hpet clockevent registered
-Oct 30 09:59:18 rechenplan kernel: [    0.004007] Calibrating delay
-loop (skipped), value calculated using timer frequency.. 4008.51
-BogoMIPS (lpj=8017020)
-Oct 30 09:59:18 rechenplan kernel: [    0.004092] Security Framework initialized
-Oct 30 09:59:18 rechenplan kernel: [    0.004129] SELinux:  Disabled at boot.
-Oct 30 09:59:18 rechenplan kernel: [    0.004172] AppArmor: AppArmor initialized
-Oct 30 09:59:18 rechenplan kernel: [    0.004386] Dentry cache hash
-table entries: 262144 (order: 9, 2097152 bytes)
-Oct 30 09:59:18 rechenplan kernel: [    0.005237] Inode-cache hash
-table entries: 131072 (order: 8, 1048576 bytes)
-Oct 30 09:59:18 rechenplan kernel: [    0.005616] Mount-cache hash
-table entries: 256
-Oct 30 09:59:18 rechenplan kernel: [    0.005793] Initializing cgroup subsys ns
-Oct 30 09:59:18 rechenplan kernel: [    0.005827] Initializing cgroup
-subsys cpuacct
-Oct 30 09:59:18 rechenplan kernel: [    0.005861] Initializing cgroup
-subsys memory
-Oct 30 09:59:18 rechenplan kernel: [    0.005905] CPU: L1 I Cache: 64K
-(64 bytes/line), D cache 64K (64 bytes/line)
-Oct 30 09:59:18 rechenplan kernel: [    0.005939] CPU: L2 Cache: 512K
-(64 bytes/line)
-Oct 30 09:59:18 rechenplan kernel: [    0.005973] CPU 0/0 -> Node 0
-Oct 30 09:59:18 rechenplan kernel: [    0.006006] tseg: 0077e00000
-Oct 30 09:59:18 rechenplan kernel: [    0.006008] CPU: Physical Processor ID: 0
-Oct 30 09:59:18 rechenplan kernel: [    0.006040] CPU: Processor Core ID: 0
-Oct 30 09:59:18 rechenplan kernel: [    0.006078] using C1E aware idle routine
-Oct 30 09:59:18 rechenplan kernel: [    0.007533] ACPI: Core revision 20080609
-Oct 30 09:59:18 rechenplan kernel: [    0.009676] ACPI: Checking
-initramfs for custom DSDT
-Oct 30 09:59:18 rechenplan kernel: [    0.356633] ..TIMER: vector=0x30
-apic1=0 pin1=2 apic2=-1 pin2=-1
-Oct 30 09:59:18 rechenplan kernel: [    0.397509] CPU0: AMD Phenom(tm)
-9350e Quad-Core Processor stepping 03
-Oct 30 09:59:18 rechenplan kernel: [    0.397600] Using local APIC
-timer interrupts.
-Oct 30 09:59:18 rechenplan kernel: [    0.400026] APIC timer
-calibration result 12526611
-Oct 30 09:59:18 rechenplan kernel: [    0.400028] Detected 12.526 MHz
-APIC timer.
-Oct 30 09:59:18 rechenplan kernel: [    0.400181] Booting processor 1/1 ip 6000
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] Initializing CPU#1
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] Calibrating delay
-using timer specific routine.. 4008.74 BogoMIPS (lpj=8017489)
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] CPU: L1 I Cache: 64K
-(64 bytes/line), D cache 64K (64 bytes/line)
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] CPU: L2 Cache: 512K
-(64 bytes/line)
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] CPU 1/1 -> Node 0
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] CPU: Physical Processor ID: 0
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] CPU: Processor Core ID: 2
-Oct 30 09:59:18 rechenplan kernel: [    0.488398] CPU1: AMD Phenom(tm)
-9350e Quad-Core Processor stepping 03
-Oct 30 09:59:18 rechenplan kernel: [    0.488713] checking TSC
-synchronization [CPU#0 -> CPU#1]: passed.
-Oct 30 09:59:18 rechenplan kernel: [    0.492108] Booting processor 2/2 ip 6000
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] Initializing CPU#2
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] Calibrating delay
-using timer specific routine.. 4008.62 BogoMIPS (lpj=8017247)
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] CPU: L1 I Cache: 64K
-(64 bytes/line), D cache 64K (64 bytes/line)
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] CPU: L2 Cache: 512K
-(64 bytes/line)
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] CPU 2/2 -> Node 0
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] CPU: Physical Processor ID: 0
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] CPU: Processor Core ID: 1
-Oct 30 09:59:18 rechenplan kernel: [    0.580406] CPU2: AMD Phenom(tm)
-9350e Quad-Core Processor stepping 03
-Oct 30 09:59:18 rechenplan kernel: [    0.580720] checking TSC
-synchronization [CPU#0 -> CPU#2]: passed.
-Oct 30 09:59:18 rechenplan kernel: [    0.584110] Booting processor 3/3 ip 6000
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] Initializing CPU#3
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] Calibrating delay
-using timer specific routine.. 4008.63 BogoMIPS (lpj=8017277)
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] CPU: L1 I Cache: 64K
-(64 bytes/line), D cache 64K (64 bytes/line)
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] CPU: L2 Cache: 512K
-(64 bytes/line)
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] CPU 3/3 -> Node 0
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] CPU: Physical Processor ID: 0
-Oct 30 09:59:18 rechenplan kernel: [    0.004000] CPU: Processor Core ID: 3
-Oct 30 09:59:18 rechenplan kernel: [    0.672418] CPU3: AMD Phenom(tm)
-9350e Quad-Core Processor stepping 03
-Oct 30 09:59:18 rechenplan kernel: [    0.672733] checking TSC
-synchronization [CPU#0 -> CPU#3]: passed.
-Oct 30 09:59:18 rechenplan kernel: [    0.676054] Brought up 4 CPUs
-Oct 30 09:59:18 rechenplan kernel: [    0.676087] Total of 4
-processors activated (16034.51 BogoMIPS).
-Oct 30 09:59:18 rechenplan kernel: [    0.676207] CPU0 attaching sched-domain:
-Oct 30 09:59:18 rechenplan kernel: [    0.676209]  domain 0: span 0-3 level CPU
-Oct 30 09:59:18 rechenplan kernel: [    0.676211]   groups: 0 1 2 3
-Oct 30 09:59:18 rechenplan kernel: [    0.676216]   domain 1: span 0-3
-level NODE
-Oct 30 09:59:18 rechenplan kernel: [    0.676218]    groups: 0-3
-Oct 30 09:59:18 rechenplan kernel: [    0.676222] CPU1 attaching sched-domain:
-Oct 30 09:59:18 rechenplan kernel: [    0.676224]  domain 0: span 0-3 level CPU
-Oct 30 09:59:18 rechenplan kernel: [    0.676225]   groups: 1 2 3 0
-Oct 30 09:59:18 rechenplan kernel: [    0.676229]   domain 1: span 0-3
-level NODE
-Oct 30 09:59:18 rechenplan kernel: [    0.676231]    groups: 0-3
-Oct 30 09:59:18 rechenplan kernel: [    0.676234] CPU2 attaching sched-domain:
-Oct 30 09:59:18 rechenplan kernel: [    0.676235]  domain 0: span 0-3 level CPU
-Oct 30 09:59:18 rechenplan kernel: [    0.676237]   groups: 2 3 0 1
-Oct 30 09:59:18 rechenplan kernel: [    0.676240]   domain 1: span 0-3
-level NODE
-Oct 30 09:59:18 rechenplan kernel: [    0.676241]    groups: 0-3
-Oct 30 09:59:18 rechenplan kernel: [    0.676244] CPU3 attaching sched-domain:
-Oct 30 09:59:18 rechenplan kernel: [    0.676246]  domain 0: span 0-3 level CPU
-Oct 30 09:59:18 rechenplan kernel: [    0.676247]   groups: 3 0 1 2
-Oct 30 09:59:18 rechenplan kernel: [    0.676250]   domain 1: span 0-3
-level NODE
-Oct 30 09:59:18 rechenplan kernel: [    0.676252]    groups: 0-3
-Oct 30 09:59:18 rechenplan kernel: [    0.676376] net_namespace: 1552 bytes
-Oct 30 09:59:18 rechenplan kernel: [    0.676376] Booting
-paravirtualized kernel on bare hardware
-Oct 30 09:59:18 rechenplan kernel: [    0.676376] Time:  9:58:44  Date: 10/30/08
-Oct 30 09:59:18 rechenplan kernel: [    0.676425] NET: Registered
-protocol family 16
-Oct 30 09:59:18 rechenplan kernel: [    0.676475] node 0 link 0: io
-port [c000, ffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.676475] TOM:
-0000000080000000 aka 2048M
-Oct 30 09:59:18 rechenplan kernel: [    0.676475] Fam 10h mmconf
-[e0000000, e00fffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.676475] node 0 link 0: mmio
-[a0000, bffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.676475] node 0 link 0: mmio
-[80000000, fe02ffff] ==> [80000000, dfffffff] and [e0100000, fe02ffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.676475] node 0 link 0: mmio
-[e0000000, efffffff] ==> [e0100000, efffffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.676475] bus: [00,03] on node 0 link 0
-Oct 30 09:59:18 rechenplan kernel: [    0.676475] bus: 00 index 0 io
-port: [0, ffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.676475] bus: 00 index 1
-mmio: [a0000, bffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.676475] bus: 00 index 2
-mmio: [80000000, dfffffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.676475] bus: 00 index 3
-mmio: [e0100000, fcffffffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.676475] ACPI: bus type pci registered
-Oct 30 09:59:18 rechenplan kernel: [    0.676475] PCI: MCFG
-configuration 0: base e0000000 segment 0 buses 0 - 255
-Oct 30 09:59:18 rechenplan kernel: [    0.676475] PCI: MCFG area at
-e0000000 reserved in E820
-Oct 30 09:59:18 rechenplan kernel: [    0.690506] PCI: Using MMCONFIG
-at e0000000 - efffffff
-Oct 30 09:59:18 rechenplan kernel: [    0.690540] PCI: Using
-configuration type 1 for base access
-Oct 30 09:59:18 rechenplan kernel: [    0.692355] ACPI: EC: Look up EC in DSDT
-Oct 30 09:59:18 rechenplan kernel: [    0.702136] ACPI: Interpreter enabled
-Oct 30 09:59:18 rechenplan kernel: [    0.702175] ACPI: (supports S0 S3 S4 S5)
-Oct 30 09:59:18 rechenplan kernel: [    0.702334] ACPI: Using IOAPIC
-for interrupt routing
-Oct 30 09:59:18 rechenplan kernel: [    0.708374] ACPI: PCI Root
-Bridge [PCI0] (0000:00)
-Oct 30 09:59:18 rechenplan kernel: [    0.708374] PCI: 0000:00:00.0
-reg 1c 64bit mmio: [e0000000, ffffffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.708374] pci 0000:00:0a.0:
-PME# supported from D0 D3hot D3cold
-Oct 30 09:59:18 rechenplan kernel: [    0.708374] pci 0000:00:0a.0:
-PME# disabled
-Oct 30 09:59:18 rechenplan kernel: [    0.708374] PCI: 0000:00:11.0
-reg 10 io port: [ff00, ff07]
-Oct 30 09:59:18 rechenplan kernel: [    0.708374] PCI: 0000:00:11.0
-reg 14 io port: [fe00, fe03]
-Oct 30 09:59:18 rechenplan kernel: [    0.708374] PCI: 0000:00:11.0
-reg 18 io port: [fd00, fd07]
-Oct 30 09:59:18 rechenplan kernel: [    0.708374] PCI: 0000:00:11.0
-reg 1c io port: [fc00, fc03]
-Oct 30 09:59:18 rechenplan kernel: [    0.708374] PCI: 0000:00:11.0
-reg 20 io port: [fb00, fb0f]
-Oct 30 09:59:18 rechenplan kernel: [    0.708374] PCI: 0000:00:11.0
-reg 24 32bit mmio: [fe02f000, fe02f3ff]
-Oct 30 09:59:18 rechenplan kernel: [    0.708374] PCI: 0000:00:12.0
-reg 10 32bit mmio: [fe02e000, fe02efff]
-Oct 30 09:59:18 rechenplan kernel: [    0.708374] PCI: 0000:00:12.1
-reg 10 32bit mmio: [fe02d000, fe02dfff]
-Oct 30 09:59:18 rechenplan kernel: [    0.708441] PCI: 0000:00:12.2
-reg 10 32bit mmio: [fe02c000, fe02c0ff]
-Oct 30 09:59:18 rechenplan kernel: [    0.708485] pci 0000:00:12.2: supports D1
-Oct 30 09:59:18 rechenplan kernel: [    0.708487] pci 0000:00:12.2: supports D2
-Oct 30 09:59:18 rechenplan kernel: [    0.708488] pci 0000:00:12.2:
-PME# supported from D0 D1 D2 D3hot
-Oct 30 09:59:18 rechenplan kernel: [    0.708524] pci 0000:00:12.2:
-PME# disabled
-Oct 30 09:59:18 rechenplan kernel: [    0.708578] PCI: 0000:00:13.0
-reg 10 32bit mmio: [fe02b000, fe02bfff]
-Oct 30 09:59:18 rechenplan kernel: [    0.708628] PCI: 0000:00:13.1
-reg 10 32bit mmio: [fe02a000, fe02afff]
-Oct 30 09:59:18 rechenplan kernel: [    0.708700] PCI: 0000:00:13.2
-reg 10 32bit mmio: [fe029000, fe0290ff]
-Oct 30 09:59:18 rechenplan kernel: [    0.708744] pci 0000:00:13.2: supports D1
-Oct 30 09:59:18 rechenplan kernel: [    0.708746] pci 0000:00:13.2: supports D2
-Oct 30 09:59:18 rechenplan kernel: [    0.708747] pci 0000:00:13.2:
-PME# supported from D0 D1 D2 D3hot
-Oct 30 09:59:18 rechenplan kernel: [    0.708783] pci 0000:00:13.2:
-PME# disabled
-Oct 30 09:59:18 rechenplan kernel: [    0.708915] PCI: 0000:00:14.1
-reg 10 io port: [0, 7]
-Oct 30 09:59:18 rechenplan kernel: [    0.708921] PCI: 0000:00:14.1
-reg 14 io port: [0, 3]
-Oct 30 09:59:18 rechenplan kernel: [    0.708927] PCI: 0000:00:14.1
-reg 18 io port: [0, 7]
-Oct 30 09:59:18 rechenplan kernel: [    0.708934] PCI: 0000:00:14.1
-reg 1c io port: [0, 3]
-Oct 30 09:59:18 rechenplan kernel: [    0.708940] PCI: 0000:00:14.1
-reg 20 io port: [fa00, fa0f]
-Oct 30 09:59:18 rechenplan kernel: [    0.709054] PCI: 0000:00:14.5
-reg 10 32bit mmio: [fe028000, fe028fff]
-Oct 30 09:59:18 rechenplan kernel: [    0.709185] PCI: 0000:01:05.0
-reg 10 32bit mmio: [d8000000, dfffffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.709189] PCI: 0000:01:05.0
-reg 14 io port: [ee00, eeff]
-Oct 30 09:59:18 rechenplan kernel: [    0.709192] PCI: 0000:01:05.0
-reg 18 32bit mmio: [fdee0000, fdeeffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.709199] PCI: 0000:01:05.0
-reg 24 32bit mmio: [fdd00000, fddfffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.709208] pci 0000:01:05.0: supports D1
-Oct 30 09:59:18 rechenplan kernel: [    0.709209] pci 0000:01:05.0: supports D2
-Oct 30 09:59:18 rechenplan kernel: [    0.709223] PCI: 0000:01:05.1
-reg 10 32bit mmio: [fdefc000, fdefffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.709240] pci 0000:01:05.1: supports D1
-Oct 30 09:59:18 rechenplan kernel: [    0.709241] pci 0000:01:05.1: supports D2
-Oct 30 09:59:18 rechenplan kernel: [    0.709278] PCI: bridge
-0000:00:01.0 io port: [e000, efff]
-Oct 30 09:59:18 rechenplan kernel: [    0.709281] PCI: bridge
-0000:00:01.0 32bit mmio: [fdd00000, fdefffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.709285] PCI: bridge
-0000:00:01.0 64bit mmio pref: [d8000000, dfffffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.709317] PCI: 0000:02:00.0
-reg 10 io port: [de00, deff]
-Oct 30 09:59:18 rechenplan kernel: [    0.709327] PCI: 0000:02:00.0
-reg 18 32bit mmio: [fdfff000, fdffffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.709338] PCI: 0000:02:00.0
-reg 20 32bit mmio: [fdfe0000, fdfeffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.709348] PCI: 0000:02:00.0
-reg 30 32bit mmio: [0, ffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.709369] pci 0000:02:00.0: supports D1
-Oct 30 09:59:18 rechenplan kernel: [    0.709370] pci 0000:02:00.0: supports D2
-Oct 30 09:59:18 rechenplan kernel: [    0.709371] pci 0000:02:00.0:
-PME# supported from D0 D1 D2 D3hot D3cold
-Oct 30 09:59:18 rechenplan kernel: [    0.709407] pci 0000:02:00.0:
-PME# disabled
-Oct 30 09:59:18 rechenplan kernel: [    0.709478] PCI: bridge
-0000:00:0a.0 io port: [d000, dfff]
-Oct 30 09:59:18 rechenplan kernel: [    0.709481] PCI: bridge
-0000:00:0a.0 32bit mmio: [fda00000, fdafffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.709484] PCI: bridge
-0000:00:0a.0 64bit mmio pref: [fdf00000, fdffffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.709535] PCI: 0000:03:07.0
-reg 10 io port: [cf00, cf1f]
-Oct 30 09:59:18 rechenplan kernel: [    0.709543] PCI: 0000:03:07.0
-reg 14 io port: [ce00, ce7f]
-Oct 30 09:59:18 rechenplan kernel: [    0.709592] pci 0000:03:07.0: supports D2
-Oct 30 09:59:18 rechenplan kernel: [    0.709630] pci 0000:00:14.4:
-transparent bridge
-Oct 30 09:59:18 rechenplan kernel: [    0.709665] PCI: bridge
-0000:00:14.4 io port: [c000, cfff]
-Oct 30 09:59:18 rechenplan kernel: [    0.709669] PCI: bridge
-0000:00:14.4 32bit mmio: [fdc00000, fdcfffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.709673] PCI: bridge
-0000:00:14.4 32bit mmio pref: [fdb00000, fdbfffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.709689] ACPI: PCI Interrupt
-Routing Table [\_SB_.PCI0._PRT]
-Oct 30 09:59:18 rechenplan kernel: [    0.710205] ACPI: PCI Interrupt
-Routing Table [\_SB_.PCI0.P2P_._PRT]
-Oct 30 09:59:18 rechenplan kernel: [    0.710404] ACPI: PCI Interrupt
-Routing Table [\_SB_.PCI0.PCEA._PRT]
-Oct 30 09:59:18 rechenplan kernel: [    0.710538] ACPI: PCI Interrupt
-Routing Table [\_SB_.PCI0.AGP_._PRT]
-Oct 30 09:59:18 rechenplan kernel: [    0.741546] ACPI: PCI Interrupt
-Link [LNKA] (IRQs 3 4 5 6 7 10 11) *0, disabled.
-Oct 30 09:59:18 rechenplan kernel: [    0.741546] ACPI: PCI Interrupt
-Link [LNKB] (IRQs 3 4 5 6 7 10 11) *0, disabled.
-Oct 30 09:59:18 rechenplan kernel: [    0.741546] ACPI: PCI Interrupt
-Link [LNKC] (IRQs 3 4 5 6 7 10 11) *0, disabled.
-Oct 30 09:59:18 rechenplan kernel: [    0.744400] ACPI: PCI Interrupt
-Link [LNKD] (IRQs 3 4 5 6 7 10 11) *0, disabled.
-Oct 30 09:59:18 rechenplan kernel: [    0.744887] ACPI: PCI Interrupt
-Link [LNKE] (IRQs 3 4 5 6 7 10 11) *0, disabled.
-Oct 30 09:59:18 rechenplan kernel: [    0.745380] ACPI: PCI Interrupt
-Link [LNKF] (IRQs 3 4 5 6 7 10 11) *0, disabled.
-Oct 30 09:59:18 rechenplan kernel: [    0.746354] ACPI: PCI Interrupt
-Link [LNK0] (IRQs 3 4 5 6 7 10 11) *0, disabled.
-Oct 30 09:59:18 rechenplan kernel: [    0.746845] ACPI: PCI Interrupt
-Link [LNK1] (IRQs 3 4 5 6 7 10 11) *0, disabled.
-Oct 30 09:59:18 rechenplan kernel: [    0.747256] Linux Plug and Play
-Support v0.97 (c) Adam Belay
-Oct 30 09:59:18 rechenplan kernel: [    0.747256] pnp: PnP ACPI init
-Oct 30 09:59:18 rechenplan kernel: [    0.747256] ACPI: bus type pnp registered
-Oct 30 09:59:18 rechenplan kernel: [    0.749043] pnp 00:09: mem
-resource (0xe0000000-0xefffffff) overlaps 0000:00:00.0 BAR 3
-(0xe0000000-0xffffffff), disabling
-Oct 30 09:59:18 rechenplan kernel: [    0.749043] pnp 00:0a: mem
-resource (0xffff0000-0xffffffff) overlaps 0000:00:00.0 BAR 3
-(0xe0000000-0xffffffff), disabling
-Oct 30 09:59:18 rechenplan kernel: [    0.749043] pnp 00:0a: mem
-resource (0xfec00000-0xfec00fff) overlaps 0000:00:00.0 BAR 3
-(0xe0000000-0xffffffff), disabling
-Oct 30 09:59:18 rechenplan kernel: [    0.749043] pnp 00:0a: mem
-resource (0xfee00000-0xfee00fff) overlaps 0000:00:00.0 BAR 3
-(0xe0000000-0xffffffff), disabling
-Oct 30 09:59:18 rechenplan kernel: [    0.749043] pnp 00:0a: mem
-resource (0xfff80000-0xfffeffff) overlaps 0000:00:00.0 BAR 3
-(0xe0000000-0xffffffff), disabling
-Oct 30 09:59:18 rechenplan kernel: [    0.749043] pnp: PnP ACPI: found
-11 devices
-Oct 30 09:59:18 rechenplan kernel: [    0.749043] ACPI: ACPI bus type
-pnp unregistered
-Oct 30 09:59:18 rechenplan kernel: [    0.749043] PCI: Using ACPI for
-IRQ routing
-Oct 30 09:59:18 rechenplan kernel: [    0.749043] pci 0000:00:00.0:
-BAR 3: can't allocate resource
-Oct 30 09:59:18 rechenplan kernel: [    0.768040] NET: Registered
-protocol family 8
-Oct 30 09:59:18 rechenplan kernel: [    0.768073] NET: Registered
-protocol family 20
-Oct 30 09:59:18 rechenplan kernel: [    0.768117] NetLabel: Initializing
-Oct 30 09:59:18 rechenplan kernel: [    0.768117] NetLabel:  domain
-hash size = 128
-Oct 30 09:59:18 rechenplan kernel: [    0.768117] NetLabel:  protocols
-= UNLABELED CIPSOv4
-Oct 30 09:59:18 rechenplan kernel: [    0.768141] NetLabel:  unlabeled
-traffic allowed by default
-Oct 30 09:59:18 rechenplan kernel: [    0.768236] hpet0: at MMIO
-0xfed00000, IRQs 2, 8, 0, 0
-Oct 30 09:59:18 rechenplan kernel: [    0.768310] hpet0: 4 32-bit
-timers, 14318180 Hz
-Oct 30 09:59:18 rechenplan kernel: [    0.772041] Switched to high
-resolution mode on CPU 0
-Oct 30 09:59:18 rechenplan kernel: [    0.772754] tracer: 1286 pages
-allocated for 65536 entries of 80 bytes
-Oct 30 09:59:18 rechenplan kernel: [    0.772788]    actual entries 65586
-Oct 30 09:59:18 rechenplan kernel: [    0.772804] Switched to high
-resolution mode on CPU 1
-Oct 30 09:59:18 rechenplan kernel: [    0.772812] Switched to high
-resolution mode on CPU 2
-Oct 30 09:59:18 rechenplan kernel: [    0.772824] Switched to high
-resolution mode on CPU 3
-Oct 30 09:59:18 rechenplan kernel: [    0.772910] AppArmor: AppArmor
-Filesystem Enabled
-Oct 30 09:59:18 rechenplan kernel: [    0.772961] ACPI: RTC can wake from S4
-Oct 30 09:59:18 rechenplan kernel: [    0.792020] system 00:01: ioport
-range 0x4d0-0x4d1 has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792055] system 00:01: ioport
-range 0x220-0x225 has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792089] system 00:01: ioport
-range 0x290-0x294 has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792125] system 00:02: ioport
-range 0x4100-0x411f has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792160] system 00:02: ioport
-range 0x228-0x22f has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792194] system 00:02: ioport
-range 0x238-0x23f has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792228] system 00:02: ioport
-range 0x40b-0x40b has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792262] system 00:02: ioport
-range 0x4d6-0x4d6 has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792296] system 00:02: ioport
-range 0xc00-0xc01 has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792330] system 00:02: ioport
-range 0xc14-0xc14 has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792364] system 00:02: ioport
-range 0xc50-0xc52 has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792398] system 00:02: ioport
-range 0xc6c-0xc6d has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792432] system 00:02: ioport
-range 0xc6f-0xc6f has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792466] system 00:02: ioport
-range 0xcd0-0xcd1 has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792500] system 00:02: ioport
-range 0xcd2-0xcd3 has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792534] system 00:02: ioport
-range 0xcd4-0xcdf has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792567] system 00:02: ioport
-range 0x4000-0x40fe has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792601] system 00:02: ioport
-range 0x4210-0x4217 has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792636] system 00:02: ioport
-range 0xb00-0xb0f has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792670] system 00:02: ioport
-range 0xb10-0xb1f has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792704] system 00:02: ioport
-range 0xb20-0xb3f has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792751] system 00:0a: iomem
-range 0xd1a00-0xd3fff has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792785] system 00:0a: iomem
-range 0xf0000-0xf7fff could not be reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792820] system 00:0a: iomem
-range 0xf8000-0xfbfff could not be reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792854] system 00:0a: iomem
-range 0xfc000-0xfffff could not be reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792888] system 00:0a: iomem
-range 0x77de0000-0x77dfffff could not be reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792925] system 00:0a: iomem
-range 0x0-0x9ffff could not be reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792959] system 00:0a: iomem
-range 0x100000-0x77ddffff could not be reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.792996] system 00:0a: iomem
-range 0x77ef0000-0x7feeffff has been reserved
-Oct 30 09:59:18 rechenplan kernel: [    0.798143] pci 0000:00:01.0:
-PCI bridge, secondary bus 0000:01
-Oct 30 09:59:18 rechenplan kernel: [    0.798178] pci 0000:00:01.0:
-IO window: 0xe000-0xefff
-Oct 30 09:59:18 rechenplan kernel: [    0.798213] pci 0000:00:01.0:
-MEM window: 0xfdd00000-0xfdefffff
-Oct 30 09:59:18 rechenplan kernel: [    0.798247] pci 0000:00:01.0:
-PREFETCH window: 0x000000d8000000-0x000000dfffffff
-Oct 30 09:59:18 rechenplan kernel: [    0.798287] pci 0000:00:0a.0:
-PCI bridge, secondary bus 0000:02
-Oct 30 09:59:18 rechenplan kernel: [    0.798321] pci 0000:00:0a.0:
-IO window: 0xd000-0xdfff
-Oct 30 09:59:18 rechenplan kernel: [    0.798355] pci 0000:00:0a.0:
-MEM window: 0xfda00000-0xfdafffff
-Oct 30 09:59:18 rechenplan kernel: [    0.798390] pci 0000:00:0a.0:
-PREFETCH window: 0x000000fdf00000-0x000000fdffffff
-Oct 30 09:59:18 rechenplan kernel: [    0.798428] pci 0000:00:14.4:
-PCI bridge, secondary bus 0000:03
-Oct 30 09:59:18 rechenplan kernel: [    0.798463] pci 0000:00:14.4:
-IO window: 0xc000-0xcfff
-Oct 30 09:59:18 rechenplan kernel: [    0.798500] pci 0000:00:14.4:
-MEM window: 0xfdc00000-0xfdcfffff
-Oct 30 09:59:18 rechenplan kernel: [    0.798536] pci 0000:00:14.4:
-PREFETCH window: 0x000000fdb00000-0x000000fdbfffff
-Oct 30 09:59:18 rechenplan kernel: [    0.798591] pci 0000:00:0a.0:
-PCI INT A -> GSI 18 (level, low) -> IRQ 18
-Oct 30 09:59:18 rechenplan kernel: [    0.798626] pci 0000:00:0a.0:
-setting latency timer to 64
-Oct 30 09:59:18 rechenplan kernel: [    0.798633] bus: 00 index 0 io
-port: [0, ffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.798666] bus: 00 index 1
-mmio: [0, ffffffffffffffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.798699] bus: 01 index 0 io
-port: [e000, efff]
-Oct 30 09:59:18 rechenplan kernel: [    0.798732] bus: 01 index 1
-mmio: [fdd00000, fdefffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.798765] bus: 01 index 2
-mmio: [d8000000, dfffffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.798798] bus: 01 index 3 mmio: [0, 0]
-Oct 30 09:59:18 rechenplan kernel: [    0.798831] bus: 02 index 0 io
-port: [d000, dfff]
-Oct 30 09:59:18 rechenplan kernel: [    0.798863] bus: 02 index 1
-mmio: [fda00000, fdafffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.798896] bus: 02 index 2
-mmio: [fdf00000, fdffffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.798930] bus: 02 index 3 mmio: [0, 0]
-Oct 30 09:59:18 rechenplan kernel: [    0.798962] bus: 03 index 0 io
-port: [c000, cfff]
-Oct 30 09:59:18 rechenplan kernel: [    0.798995] bus: 03 index 1
-mmio: [fdc00000, fdcfffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.799028] bus: 03 index 2
-mmio: [fdb00000, fdbfffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.799061] bus: 03 index 3 io
-port: [0, ffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.799093] bus: 03 index 4
-mmio: [0, ffffffffffffffff]
-Oct 30 09:59:18 rechenplan kernel: [    0.799136] NET: Registered
-protocol family 2
-Oct 30 09:59:18 rechenplan kernel: [    0.840125] IP route cache hash
-table entries: 65536 (order: 7, 524288 bytes)
-Oct 30 09:59:18 rechenplan kernel: [    0.840941] TCP established hash
-table entries: 262144 (order: 10, 4194304 bytes)
-Oct 30 09:59:18 rechenplan kernel: [    0.842401] TCP bind hash table
-entries: 65536 (order: 8, 1048576 bytes)
-Oct 30 09:59:18 rechenplan kernel: [    0.842771] TCP: Hash tables
-configured (established 262144 bind 65536)
-Oct 30 09:59:18 rechenplan kernel: [    0.842806] TCP reno registered
-Oct 30 09:59:18 rechenplan kernel: [    0.852108] NET: Registered
-protocol family 1
-Oct 30 09:59:18 rechenplan kernel: [    0.852256] checking if image is
-initramfs... it is
-Oct 30 09:59:18 rechenplan kernel: [    1.554403] Freeing initrd
-memory: 9041k freed
-Oct 30 09:59:18 rechenplan kernel: [    1.559325] audit: initializing
-netlink socket (disabled)
-Oct 30 09:59:18 rechenplan kernel: [    1.559371] type=2000
-audit(1225360724.556:1): initialized
-Oct 30 09:59:18 rechenplan kernel: [    1.564690] HugeTLB registered 2
-MB page size, pre-allocated 0 pages
-Oct 30 09:59:18 rechenplan kernel: [    1.567424] VFS: Disk quotas dquot_6.5.1
-Oct 30 09:59:18 rechenplan kernel: [    1.567537] Dquot-cache hash
-table entries: 512 (order 0, 4096 bytes)
-Oct 30 09:59:18 rechenplan kernel: [    1.567672] msgmni has been set to 3760
-Oct 30 09:59:18 rechenplan kernel: [    1.567832] io scheduler noop registered
-Oct 30 09:59:18 rechenplan kernel: [    1.567865] io scheduler
-anticipatory registered
-Oct 30 09:59:18 rechenplan kernel: [    1.567898] io scheduler
-deadline registered
-Oct 30 09:59:18 rechenplan kernel: [    1.568063] io scheduler cfq
-registered (default)
-Oct 30 09:59:18 rechenplan kernel: [    1.708053] pci 0000:01:05.0:
-Boot video device
-Oct 30 09:59:18 rechenplan kernel: [    1.708194] pcieport-driver
-0000:00:0a.0: setting latency timer to 64
-Oct 30 09:59:18 rechenplan kernel: [    1.708215] pcieport-driver
-0000:00:0a.0: found MSI capability
-Oct 30 09:59:18 rechenplan kernel: [    1.708274] pci_express
-0000:00:0a.0:pcie00: allocate port service
-Oct 30 09:59:18 rechenplan kernel: [    1.744417] hpet_resources:
-0xfed00000 is busy
-Oct 30 09:59:18 rechenplan kernel: [    1.744487] Linux agpgart interface v0.103
-Oct 30 09:59:18 rechenplan kernel: [    1.744526] Serial: 8250/16550
-driver4 ports, IRQ sharing enabled
-Oct 30 09:59:18 rechenplan kernel: [    1.746694] brd: module loaded
-Oct 30 09:59:18 rechenplan kernel: [    1.746799] input: Macintosh
-mouse button emulation as /devices/virtual/input/input0
-Oct 30 09:59:18 rechenplan kernel: [    1.746949] PNP: PS/2 Controller
-[PNP0303:PS2K] at 0x60,0x64 irq 1
-Oct 30 09:59:18 rechenplan kernel: [    1.746983] PNP: PS/2 appears to
-have AUX port disabled, if this is incorrect please boot with
-i8042.nopnp
-Oct 30 09:59:18 rechenplan kernel: [    1.747146] serio: i8042 KBD
-port at 0x60,0x64 irq 1
-Oct 30 09:59:18 rechenplan kernel: [    1.760135] mice: PS/2 mouse
-device common for all mice
-Oct 30 09:59:18 rechenplan kernel: [    1.760298] rtc_cmos 00:05: rtc
-core: registered rtc_cmos as rtc0
-Oct 30 09:59:18 rechenplan kernel: [    1.760361] rtc0: alarms up to
-one month, hpet irqs
-Oct 30 09:59:18 rechenplan kernel: [    1.760432] cpuidle: using governor ladder
-Oct 30 09:59:18 rechenplan kernel: [    1.760466] cpuidle: using governor menu
-Oct 30 09:59:18 rechenplan kernel: [    1.760876] TCP cubic registered
-Oct 30 09:59:18 rechenplan kernel: [    1.761116] registered taskstats version 1
-Oct 30 09:59:18 rechenplan kernel: [    1.761274]   Magic number: 12:674:981
-Oct 30 09:59:18 rechenplan kernel: [    1.761314] tty ttyc8: hash matches
-Oct 30 09:59:18 rechenplan kernel: [    1.761445] rtc_cmos 00:05:
-setting system clock to 2008-10-30 09:58:45 UTC (1225360725)
-Oct 30 09:59:18 rechenplan kernel: [    1.761482] BIOS EDD facility
-v0.16 2004-Jun-25, 0 devices found
-Oct 30 09:59:18 rechenplan kernel: [    1.761516] EDD information not available.
-Oct 30 09:59:18 rechenplan kernel: [    1.761579] Freeing unused
-kernel memory: 536k freed
-Oct 30 09:59:18 rechenplan kernel: [    1.761807] Write protecting the
-kernel read-only data: 4348k
-Oct 30 09:59:18 rechenplan kernel: [    1.778231] input: AT Translated
-Set 2 keyboard as /devices/platform/i8042/serio0/input/input1
-Oct 30 09:59:18 rechenplan kernel: [    1.854573] fuse init (API version 7.9)
-Oct 30 09:59:18 rechenplan kernel: [    1.874605] processor
-ACPI0007:00: registered as cooling_device0
-Oct 30 09:59:18 rechenplan kernel: [    1.874704] processor
-ACPI0007:01: registered as cooling_device1
-Oct 30 09:59:18 rechenplan kernel: [    1.874796] processor
-ACPI0007:02: registered as cooling_device2
-Oct 30 09:59:18 rechenplan kernel: [    1.874889] processor
-ACPI0007:03: registered as cooling_device3
-Oct 30 09:59:18 rechenplan kernel: [    1.892667] md: linear
-personality registered for level -1
-Oct 30 09:59:18 rechenplan kernel: [    1.896718] md: multipath
-personality registered for level -4
-Oct 30 09:59:18 rechenplan kernel: [    1.900389] md: raid0
-personality registered for level 0
-Oct 30 09:59:18 rechenplan kernel: [    1.905358] md: raid1
-personality registered for level 1
-Oct 30 09:59:18 rechenplan kernel: [    1.908731] xor: automatically
-using best checksumming function: generic_sse
-Oct 30 09:59:18 rechenplan kernel: [    1.925004]    generic_sse:
-8234.000 MB/sec
-Oct 30 09:59:18 rechenplan kernel: [    1.925037] xor: using function:
-generic_sse (8234.000 MB/sec)
-Oct 30 09:59:18 rechenplan kernel: [    1.926305] async_tx: api
-initialized (async)
-Oct 30 09:59:18 rechenplan kernel: [    1.997011] raid6: int64x1   2098 MB/s
-Oct 30 09:59:18 rechenplan kernel: [    2.065020] raid6: int64x2   2791 MB/s
-Oct 30 09:59:18 rechenplan kernel: [    2.133032] raid6: int64x4   2409 MB/s
-Oct 30 09:59:18 rechenplan kernel: [    2.201041] raid6: int64x8   1825 MB/s
-Oct 30 09:59:18 rechenplan kernel: [    2.269012] raid6: sse2x1    2884 MB/s
-Oct 30 09:59:18 rechenplan kernel: [    2.337002] raid6: sse2x2    4736 MB/s
-Oct 30 09:59:18 rechenplan kernel: [    2.405005] raid6: sse2x4    5703 MB/s
-Oct 30 09:59:18 rechenplan kernel: [    2.405037] raid6: using
-algorithm sse2x4 (5703 MB/s)
-Oct 30 09:59:18 rechenplan kernel: [    2.405072] md: raid6
-personality registered for level 6
-Oct 30 09:59:18 rechenplan kernel: [    2.405105] md: raid5
-personality registered for level 5
-Oct 30 09:59:18 rechenplan kernel: [    2.405138] md: raid4
-personality registered for level 4
-Oct 30 09:59:18 rechenplan kernel: [    2.425850] md: raid10
-personality registered for level 10
-Oct 30 09:59:18 rechenplan kernel: [    2.573052] r8169 Gigabit
-Ethernet driver 2.3LK-NAPI loaded
-Oct 30 09:59:18 rechenplan kernel: [    2.573108] r8169 0000:02:00.0:
-PCI INT A -> GSI 18 (level, low) -> IRQ 18
-Oct 30 09:59:18 rechenplan kernel: [    2.573158] r8169 0000:02:00.0:
-setting latency timer to 64
-Oct 30 09:59:18 rechenplan kernel: [    2.573452] eth0: RTL8168c/8111c
-at 0xffffc2000032a000, 00:1f:d0:56:5e:a0, XID 3c4000c0 IRQ 2302
-Oct 30 09:59:18 rechenplan kernel: [    2.589619] usbcore: registered
-new interface driver usbfs
-Oct 30 09:59:18 rechenplan kernel: [    2.589907] usbcore: registered
-new interface driver hub
-Oct 30 09:59:18 rechenplan kernel: [    2.589982] usbcore: registered
-new device driver usb
-Oct 30 09:59:18 rechenplan kernel: [    2.591081] No dock devices found.
-Oct 30 09:59:18 rechenplan kernel: [    2.592723] ohci_hcd: 2006
-August 04 USB 1.1 'Open' Host Controller (OHCI) Driver
-Oct 30 09:59:18 rechenplan kernel: [    2.592761] ohci_hcd
-0000:00:12.0: PCI INT A -> GSI 16 (level, low) -> IRQ 16
-Oct 30 09:59:18 rechenplan kernel: [    2.592811] ohci_hcd
-0000:00:12.0: OHCI Host Controller
-Oct 30 09:59:18 rechenplan kernel: [    2.592890] ohci_hcd
-0000:00:12.0: new USB bus registered, assigned bus number 1
-Oct 30 09:59:18 rechenplan kernel: [    2.592958] ohci_hcd
-0000:00:12.0: irq 16, io mem 0xfe02e000
-Oct 30 09:59:18 rechenplan kernel: [    2.604234] SCSI subsystem initialized
-Oct 30 09:59:18 rechenplan kernel: [    2.623793] libata version 3.00 loaded.
-Oct 30 09:59:18 rechenplan kernel: [    2.652185] usb usb1:
-configuration #1 chosen from 1 choice
-Oct 30 09:59:18 rechenplan kernel: [    2.652247] hub 1-0:1.0: USB hub found
-Oct 30 09:59:18 rechenplan kernel: [    2.652288] hub 1-0:1.0: 3 ports detected
-Oct 30 09:59:18 rechenplan kernel: [    2.860253] ohci_hcd
-0000:00:12.1: PCI INT A -> GSI 16 (level, low) -> IRQ 16
-Oct 30 09:59:18 rechenplan kernel: [    2.860305] ohci_hcd
-0000:00:12.1: OHCI Host Controller
-Oct 30 09:59:18 rechenplan kernel: [    2.860364] ohci_hcd
-0000:00:12.1: new USB bus registered, assigned bus number 2
-Oct 30 09:59:18 rechenplan kernel: [    2.860417] ohci_hcd
-0000:00:12.1: irq 16, io mem 0xfe02d000
-Oct 30 09:59:18 rechenplan kernel: [    2.920193] usb usb2:
-configuration #1 chosen from 1 choice
-Oct 30 09:59:18 rechenplan kernel: [    2.920255] hub 2-0:1.0: USB hub found
-Oct 30 09:59:18 rechenplan kernel: [    2.920296] hub 2-0:1.0: 3 ports detected
-Oct 30 09:59:18 rechenplan kernel: [    3.000025] usb 1-2: new low
-speed USB device using ohci_hcd and address 2
-Oct 30 09:59:18 rechenplan kernel: [    3.030352] ohci_hcd
-0000:00:13.0: PCI INT A -> GSI 18 (level, low) -> IRQ 18
-Oct 30 09:59:18 rechenplan kernel: [    3.030402] ohci_hcd
-0000:00:13.0: OHCI Host Controller
-Oct 30 09:59:18 rechenplan kernel: [    3.030457] ohci_hcd
-0000:00:13.0: new USB bus registered, assigned bus number 3
-Oct 30 09:59:18 rechenplan kernel: [    3.030523] ohci_hcd
-0000:00:13.0: irq 18, io mem 0xfe02b000
-Oct 30 09:59:18 rechenplan kernel: [    3.088082] usb usb3:
-configuration #1 chosen from 1 choice
-Oct 30 09:59:18 rechenplan kernel: [    3.088138] hub 3-0:1.0: USB hub found
-Oct 30 09:59:18 rechenplan kernel: [    3.088177] hub 3-0:1.0: 3 ports detected
-Oct 30 09:59:18 rechenplan kernel: [    3.173344] usb 1-2:
-configuration #1 chosen from 1 choice
-Oct 30 09:59:18 rechenplan kernel: [    3.188151] ahci 0000:00:11.0: version 3.0
-Oct 30 09:59:18 rechenplan kernel: [    3.188169] ahci 0000:00:11.0:
-PCI INT A -> GSI 22 (level, low) -> IRQ 22
-Oct 30 09:59:18 rechenplan kernel: [    3.188349] ahci 0000:00:11.0:
-AHCI 0001.0100 32 slots 6 ports 3 Gbps 0x3f impl SATA mode
-Oct 30 09:59:18 rechenplan kernel: [    3.188389] ahci 0000:00:11.0:
-flags: 64bit ncq sntf ilck pm led clo pmp pio slum part
-Oct 30 09:59:18 rechenplan kernel: [    3.188834] scsi0 : ahci
-Oct 30 09:59:18 rechenplan kernel: [    3.188967] scsi1 : ahci
-Oct 30 09:59:18 rechenplan kernel: [    3.189056] scsi2 : ahci
-Oct 30 09:59:18 rechenplan kernel: [    3.189155] scsi3 : ahci
-Oct 30 09:59:18 rechenplan kernel: [    3.189249] scsi4 : ahci
-Oct 30 09:59:18 rechenplan kernel: [    3.189348] scsi5 : ahci
-Oct 30 09:59:18 rechenplan kernel: [    3.189499] ata1: SATA max
-UDMA/133 abar m1024@0xfe02f000 port 0xfe02f100 irq 2301
-Oct 30 09:59:18 rechenplan kernel: [    3.189537] ata2: SATA max
-UDMA/133 abar m1024@0xfe02f000 port 0xfe02f180 irq 2301
-Oct 30 09:59:18 rechenplan kernel: [    3.189575] ata3: SATA max
-UDMA/133 abar m1024@0xfe02f000 port 0xfe02f200 irq 2301
-Oct 30 09:59:18 rechenplan kernel: [    3.189613] ata4: SATA max
-UDMA/133 abar m1024@0xfe02f000 port 0xfe02f280 irq 2301
-Oct 30 09:59:18 rechenplan kernel: [    3.189651] ata5: SATA max
-UDMA/133 abar m1024@0xfe02f000 port 0xfe02f300 irq 2301
-Oct 30 09:59:18 rechenplan kernel: [    3.189689] ata6: SATA max
-UDMA/133 abar m1024@0xfe02f000 port 0xfe02f380 irq 2301
-Oct 30 09:59:18 rechenplan kernel: [    3.672022] ata1: softreset
-failed (device not ready)
-Oct 30 09:59:18 rechenplan kernel: [    3.672059] ata1: failed due to
-HW bug, retry pmp=0
-Oct 30 09:59:18 rechenplan kernel: [    3.836031] ata1: SATA link up
-3.0 Gbps (SStatus 123 SControl 300)
-Oct 30 09:59:18 rechenplan kernel: [    3.842397] ata1.00: ATA-7:
-SAMSUNG HD642JJ, 1AA01112, max UDMA7
-Oct 30 09:59:18 rechenplan kernel: [    3.842435] ata1.00: 1250263728
-sectors, multi 0: LBA48 NCQ (depth 31/32)
-Oct 30 09:59:18 rechenplan kernel: [    3.848862] ata1.00: configured
-for UDMA/133
-Oct 30 09:59:18 rechenplan kernel: [    4.184537] ata2: SATA link down
-(SStatus 0 SControl 300)
-Oct 30 09:59:18 rechenplan kernel: [    4.524032] ata3: SATA link down
-(SStatus 0 SControl 300)
-Oct 30 09:59:18 rechenplan kernel: [    4.860032] ata4: SATA link down
-(SStatus 0 SControl 300)
-Oct 30 09:59:18 rechenplan kernel: [    5.360019] ata5: softreset
-failed (device not ready)
-Oct 30 09:59:18 rechenplan kernel: [    5.360059] ata5: failed due to
-HW bug, retry pmp=0
-Oct 30 09:59:18 rechenplan kernel: [    5.524031] ata5: SATA link up
-3.0 Gbps (SStatus 123 SControl 300)
-Oct 30 09:59:18 rechenplan kernel: [    5.536698] ata5.00: HPA
-unlocked: 1250261615 -> 1250263728, native 1250263728
-Oct 30 09:59:18 rechenplan kernel: [    5.536739] ata5.00: ATA-7:
-SAMSUNG HD642JJ, 1AA01112, max UDMA7
-Oct 30 09:59:18 rechenplan kernel: [    5.536773] ata5.00: 1250263728
-sectors, multi 0: LBA48 NCQ (depth 31/32)
-Oct 30 09:59:18 rechenplan kernel: [    5.543194] ata5.00: configured
-for UDMA/133
-Oct 30 09:59:18 rechenplan kernel: [    5.876032] ata6: SATA link down
-(SStatus 0 SControl 300)
-Oct 30 09:59:18 rechenplan kernel: [    5.892616] scsi 0:0:0:0:
-Direct-Access     ATA      SAMSUNG HD642JJ  1AA0 PQ: 0 ANSI: 5
-Oct 30 09:59:18 rechenplan kernel: [    5.892768] scsi 4:0:0:0:
-Direct-Access     ATA      SAMSUNG HD642JJ  1AA0 PQ: 0 ANSI: 5
-Oct 30 09:59:18 rechenplan kernel: [    5.892886] ohci_hcd
-0000:00:13.1: PCI INT A -> GSI 18 (level, low) -> IRQ 18
-Oct 30 09:59:18 rechenplan kernel: [    5.892930] ohci_hcd
-0000:00:13.1: OHCI Host Controller
-Oct 30 09:59:18 rechenplan kernel: [    5.892986] ohci_hcd
-0000:00:13.1: new USB bus registered, assigned bus number 4
-Oct 30 09:59:18 rechenplan kernel: [    5.893036] ohci_hcd
-0000:00:13.1: irq 18, io mem 0xfe02a000
-Oct 30 09:59:18 rechenplan kernel: [    5.952099] usb usb4:
-configuration #1 chosen from 1 choice
-Oct 30 09:59:18 rechenplan kernel: [    5.952155] hub 4-0:1.0: USB hub found
-Oct 30 09:59:18 rechenplan kernel: [    5.952196] hub 4-0:1.0: 3 ports detected
-Oct 30 09:59:18 rechenplan kernel: [    6.161400] ehci_hcd
-0000:00:12.2: PCI INT B -> GSI 17 (level, low) -> IRQ 17
-Oct 30 09:59:18 rechenplan kernel: [    6.161447] ehci_hcd
-0000:00:12.2: EHCI Host Controller
-Oct 30 09:59:18 rechenplan kernel: [    6.161514] ehci_hcd
-0000:00:12.2: new USB bus registered, assigned bus number 5
-Oct 30 09:59:18 rechenplan kernel: [    6.161582] ehci_hcd
-0000:00:12.2: debug port 1
-Oct 30 09:59:18 rechenplan kernel: [    6.161636] ehci_hcd
-0000:00:12.2: irq 17, io mem 0xfe02c000
-Oct 30 09:59:18 rechenplan kernel: [    6.296026] usb 4-3: new low
-speed USB device using ohci_hcd and address 2
-Oct 30 09:59:18 rechenplan kernel: [    6.308022] ehci_hcd
-0000:00:12.2: USB 2.0 started, EHCI 1.00, driver 10 Dec 2004
-Oct 30 09:59:18 rechenplan kernel: [    6.308163] usb usb5:
-configuration #1 chosen from 1 choice
-Oct 30 09:59:18 rechenplan kernel: [    6.308219] hub 5-0:1.0: USB hub found
-Oct 30 09:59:18 rechenplan kernel: [    6.308256] hub 5-0:1.0: 6 ports detected
-Oct 30 09:59:18 rechenplan kernel: [    6.492870] usb 4-3:
-configuration #1 chosen from 1 choice
-Oct 30 09:59:18 rechenplan kernel: [    6.497194] usb 1-2: USB
-disconnect, address 2
-Oct 30 09:59:18 rechenplan kernel: [    6.518562] ehci_hcd
-0000:00:13.2: PCI INT B -> GSI 19 (level, low) -> IRQ 19
-Oct 30 09:59:18 rechenplan kernel: [    6.518605] ehci_hcd
-0000:00:13.2: EHCI Host Controller
-Oct 30 09:59:18 rechenplan kernel: [    6.518663] ehci_hcd
-0000:00:13.2: new USB bus registered, assigned bus number 6
-Oct 30 09:59:18 rechenplan kernel: [    6.518729] ehci_hcd
-0000:00:13.2: debug port 1
-Oct 30 09:59:18 rechenplan kernel: [    6.518782] ehci_hcd
-0000:00:13.2: irq 19, io mem 0xfe029000
-Oct 30 09:59:18 rechenplan kernel: [    6.529022] ehci_hcd
-0000:00:13.2: USB 2.0 started, EHCI 1.00, driver 10 Dec 2004
-Oct 30 09:59:18 rechenplan kernel: [    6.529147] usb usb6:
-configuration #1 chosen from 1 choice
-Oct 30 09:59:18 rechenplan kernel: [    6.529207] hub 6-0:1.0: USB hub found
-Oct 30 09:59:18 rechenplan kernel: [    6.529245] hub 6-0:1.0: 6 ports detected
-Oct 30 09:59:18 rechenplan kernel: [    6.684049] usb 4-3: USB
-disconnect, address 2
-Oct 30 09:59:18 rechenplan kernel: [    6.736146] ohci_hcd
-0000:00:14.5: PCI INT C -> GSI 18 (level, low) -> IRQ 18
-Oct 30 09:59:18 rechenplan kernel: [    6.736190] ohci_hcd
-0000:00:14.5: OHCI Host Controller
-Oct 30 09:59:18 rechenplan kernel: [    6.736247] ohci_hcd
-0000:00:14.5: new USB bus registered, assigned bus number 7
-Oct 30 09:59:18 rechenplan kernel: [    6.736297] ohci_hcd
-0000:00:14.5: irq 18, io mem 0xfe028000
-Oct 30 09:59:18 rechenplan kernel: [    6.796938] usb usb7:
-configuration #1 chosen from 1 choice
-Oct 30 09:59:18 rechenplan kernel: [    6.797747] hub 7-0:1.0: USB hub found
-Oct 30 09:59:18 rechenplan kernel: [    6.797788] hub 7-0:1.0: 2 ports detected
-Oct 30 09:59:18 rechenplan kernel: [    6.910877] pata_acpi
-0000:00:14.1: PCI INT A -> GSI 16 (level, low) -> IRQ 16
-Oct 30 09:59:18 rechenplan kernel: [    6.915107] scsi6 : pata_atiixp
-Oct 30 09:59:18 rechenplan kernel: [    6.917366] scsi7 : pata_atiixp
-Oct 30 09:59:18 rechenplan kernel: [    6.918629] ata7: PATA max
-UDMA/100 cmd 0x1f0 ctl 0x3f6 bmdma 0xfa00 irq 14
-Oct 30 09:59:18 rechenplan kernel: [    6.918664] ata8: PATA max
-UDMA/100 cmd 0x170 ctl 0x376 bmdma 0xfa08 irq 15
-Oct 30 09:59:18 rechenplan kernel: [    6.919126] scsi 0:0:0:0:
-Attached scsi generic sg0 type 0
-Oct 30 09:59:18 rechenplan kernel: [    6.919196] scsi 4:0:0:0:
-Attached scsi generic sg1 type 0
-Oct 30 09:59:18 rechenplan kernel: [    6.939979] Driver 'sd' needs
-updating - please use bus_type methods
-Oct 30 09:59:18 rechenplan kernel: [    6.940147] sd 0:0:0:0: [sda]
-1250263728 512-byte hardware sectors (640135 MB)
-Oct 30 09:59:18 rechenplan kernel: [    6.940198] sd 0:0:0:0: [sda]
-Write Protect is off
-Oct 30 09:59:18 rechenplan kernel: [    6.940233] sd 0:0:0:0: [sda]
-Mode Sense: 00 3a 00 00
-Oct 30 09:59:18 rechenplan kernel: [    6.940255] sd 0:0:0:0: [sda]
-Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
-Oct 30 09:59:18 rechenplan kernel: [    6.940348] sd 0:0:0:0: [sda]
-1250263728 512-byte hardware sectors (640135 MB)
-Oct 30 09:59:18 rechenplan kernel: [    6.940394] sd 0:0:0:0: [sda]
-Write Protect is off
-Oct 30 09:59:18 rechenplan kernel: [    6.940428] sd 0:0:0:0: [sda]
-Mode Sense: 00 3a 00 00
-Oct 30 09:59:18 rechenplan kernel: [    6.940448] sd 0:0:0:0: [sda]
-Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
-Oct 30 09:59:18 rechenplan kernel: [    6.940487]  sda: sda1 sda2
-Oct 30 09:59:18 rechenplan kernel: [    6.944710] sd 0:0:0:0: [sda]
-Attached SCSI disk
-Oct 30 09:59:18 rechenplan kernel: [    6.944835] sd 4:0:0:0: [sdb]
-1250263728 512-byte hardware sectors (640135 MB)
-Oct 30 09:59:18 rechenplan kernel: [    6.944888] sd 4:0:0:0: [sdb]
-Write Protect is off
-Oct 30 09:59:18 rechenplan kernel: [    6.944923] sd 4:0:0:0: [sdb]
-Mode Sense: 00 3a 00 00
-Oct 30 09:59:18 rechenplan kernel: [    6.944947] sd 4:0:0:0: [sdb]
-Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
-Oct 30 09:59:18 rechenplan kernel: [    6.945035] sd 4:0:0:0: [sdb]
-1250263728 512-byte hardware sectors (640135 MB)
-Oct 30 09:59:18 rechenplan kernel: [    6.945083] sd 4:0:0:0: [sdb]
-Write Protect is off
-Oct 30 09:59:18 rechenplan kernel: [    6.945117] sd 4:0:0:0: [sdb]
-Mode Sense: 00 3a 00 00
-Oct 30 09:59:18 rechenplan kernel: [    6.945140] sd 4:0:0:0: [sdb]
-Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
-Oct 30 09:59:18 rechenplan kernel: [    6.945180]  sdb: sdb1 sdb2
-Oct 30 09:59:18 rechenplan kernel: [    6.948684] sd 4:0:0:0: [sdb]
-Attached SCSI disk
-Oct 30 09:59:18 rechenplan kernel: [    7.080585] ata7.00: ATAPI:
-TOSHIBA DVD-ROM SD-M1612, 1004, max UDMA/33
-Oct 30 09:59:18 rechenplan kernel: [    7.096517] ata7.00: configured
-for UDMA/33
-Oct 30 09:59:18 rechenplan kernel: [    7.132023] usb 1-2: new low
-speed USB device using ohci_hcd and address 3
-Oct 30 09:59:18 rechenplan kernel: [    7.252103] isa bounce pool size: 16 pages
-Oct 30 09:59:18 rechenplan kernel: [    7.257620] scsi 6:0:0:0: CD-ROM
-          TOSHIBA  DVD-ROM SD-M1612 1004 PQ: 0 ANSI: 5
-Oct 30 09:59:18 rechenplan kernel: [    7.257797] scsi 6:0:0:0:
-Attached scsi generic sg2 type 5
-Oct 30 09:59:18 rechenplan kernel: [    7.277127] Driver 'sr' needs
-updating - please use bus_type methods
-Oct 30 09:59:18 rechenplan kernel: [    7.284828] sr0: scsi3-mmc
-drive: 48x/48x cd/rw xa/form2 cdda tray
-Oct 30 09:59:18 rechenplan kernel: [    7.284868] Uniform CD-ROM
-driver Revision: 3.20
-Oct 30 09:59:18 rechenplan kernel: [    7.284995] sr 6:0:0:0: Attached
-scsi CD-ROM sr0
-Oct 30 09:59:18 rechenplan kernel: [    7.303440] usb 1-2:
-configuration #1 chosen from 1 choice
-Oct 30 09:59:18 rechenplan kernel: [    7.377208] md: md0 stopped.
-Oct 30 09:59:18 rechenplan kernel: [    7.381827] md: bind<sdb2>
-Oct 30 09:59:18 rechenplan kernel: [    7.394854] md: md0 stopped.
-Oct 30 09:59:18 rechenplan kernel: [    7.394902] md: unbind<sdb2>
-Oct 30 09:59:18 rechenplan kernel: [    7.416197] md: export_rdev(sdb2)
-Oct 30 09:59:18 rechenplan kernel: [    7.418654] md: bind<sdb2>
-Oct 30 09:59:18 rechenplan kernel: [    7.418821] md: bind<sda2>
-Oct 30 09:59:18 rechenplan kernel: [    7.426029] raid1: raid set md0
-active with 2 out of 2 mirrors
-Oct 30 09:59:18 rechenplan kernel: [    7.568023] usb 4-3: new low
-speed USB device using ohci_hcd and address 3
-Oct 30 09:59:18 rechenplan kernel: [    7.749242] usb 4-3:
-configuration #1 chosen from 1 choice
-Oct 30 09:59:18 rechenplan kernel: [    7.753653] usbcore: registered
-new interface driver hiddev
-Oct 30 09:59:18 rechenplan kernel: [    7.758570] input: Logitech
-USB-PS/2 Optical Mouse as
-/devices/pci0000:00/0000:00:12.0/usb1/1-2/1-2:1.0/input/input2
-Oct 30 09:59:18 rechenplan kernel: [    7.781627] input,hidraw0: USB
-HID v1.10 Mouse [Logitech USB-PS/2 Optical Mouse] on
-usb-0000:00:12.0-2
-Oct 30 09:59:18 rechenplan kernel: [   17.796536]
-/build/buildd/linux-2.6.27/drivers/hid/usbhid/hid-core.c:
-usb_submit_urb(ctrl) failed
-Oct 30 09:59:18 rechenplan kernel: [   17.797076] usbhid: timeout
-initializing reports
-Oct 30 09:59:18 rechenplan kernel: [   17.797169] input: Logitech
-Logitech Attack 3 as
-/devices/pci0000:00/0000:00:13.1/usb4/4-3/4-3:1.0/input/input3
-Oct 30 09:59:18 rechenplan kernel: [   17.797274] input,hidraw1: USB
-HID v1.10 Joystick [Logitech Logitech Attack 3] on usb-0000:00:13.1-3
-Oct 30 09:59:18 rechenplan kernel: [   17.797437] usbcore: registered
-new interface driver usbhid
-Oct 30 09:59:18 rechenplan kernel: [   17.797472] usbhid: v2.6:USB HID
-core driver
-Oct 30 09:59:18 rechenplan kernel: [   17.862660] PM: Starting manual
-resume from disk
-Oct 30 09:59:18 rechenplan kernel: [   17.862696] PM: Resume from partition 8:17
-Oct 30 09:59:18 rechenplan kernel: [   17.862698] PM: Checking
-hibernation image.
-Oct 30 09:59:18 rechenplan kernel: [   17.862817] PM: Resume from disk failed.
-Oct 30 09:59:18 rechenplan kernel: [   17.871663] SGI XFS with ACLs,
-security attributes, realtime, large block/inode numbers, no debug
-enabled
-Oct 30 09:59:18 rechenplan kernel: [   17.877140] SGI XFS Quota
-Management subsystem
-Oct 30 09:59:18 rechenplan kernel: [   17.947568] XFS mounting filesystem md0
-Oct 30 09:59:18 rechenplan kernel: [   18.036737] Ending clean XFS
-mount for filesystem: md0
-Oct 30 09:59:18 rechenplan kernel: [   26.634365] udevd version 124 started
-Oct 30 09:59:18 rechenplan kernel: [   27.055605] input: Power Button
-(FF) as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input4
-Oct 30 09:59:18 rechenplan kernel: [   27.073535] ACPI: Power Button (FF) [PWRF]
-Oct 30 09:59:18 rechenplan kernel: [   27.073666] input: Power Button
-(CM) as /devices/LNXSYSTM:00/device:00/PNP0C0C:00/input/input5
-Oct 30 09:59:18 rechenplan kernel: [   27.105522] ACPI: Power Button (CM) [PWRB]
-Oct 30 09:59:18 rechenplan kernel: [   27.170920] ACPI: WMI: Mapper loaded
-Oct 30 09:59:18 rechenplan kernel: [   27.256025] ACPI: I/O resource
-piix4_smbus [0xb00-0xb07] conflicts with ACPI region SOR1
-[0xb00-0xb0f]
-Oct 30 09:59:18 rechenplan kernel: [   27.256068] ACPI: Device needs
-an ACPI driver
-Oct 30 09:59:18 rechenplan kernel: [   27.256107] piix4_smbus
-0000:00:14.0: SMBus Host Controller at 0xb00, revision 0
-Oct 30 09:59:18 rechenplan kernel: [   27.288376] pci_hotplug: PCI Hot
-Plug PCI Core version: 0.5
-Oct 30 09:59:18 rechenplan kernel: [   27.302660] shpchp: HPC
-vendor_id 1022 device_id 9602 ss_vid 0 ss_did 0
-Oct 30 09:59:18 rechenplan kernel: [   27.302702] shpchp: shpc_init:
-cannot reserve MMIO region
-Oct 30 09:59:18 rechenplan kernel: [   27.302776] shpchp: Standard Hot
-Plug PCI Controller Driver version: 0.4
-Oct 30 09:59:18 rechenplan kernel: [   27.310265] input: PC Speaker as
-/devices/platform/pcspkr/input/input6
-Oct 30 09:59:18 rechenplan kernel: [   27.503835] fglrx: module
-license 'Proprietary. (C) 2002 - ATI Technologies, Starnberg, GERMANY'
-taints kernel.
-Oct 30 09:59:18 rechenplan kernel: [   27.524434] [fglrx] Maximum main
-memory to use for locked dma buffers: 1759 MBytes.
-Oct 30 09:59:18 rechenplan kernel: [   27.524538] [fglrx]   vendor:
-1002 device: 9610 count: 1
-Oct 30 09:59:18 rechenplan kernel: [   27.526761] [fglrx] ioport: bar
-1, base 0xee00, size: 0x100
-Oct 30 09:59:18 rechenplan kernel: [   27.526815] pci 0000:01:05.0:
-PCI INT A -> GSI 18 (level, low) -> IRQ 18
-Oct 30 09:59:18 rechenplan kernel: [   27.526852] pci 0000:01:05.0:
-setting latency timer to 64
-Oct 30 09:59:18 rechenplan kernel: [   27.528519] [fglrx] PAT is
-enabled successfully!
-Oct 30 09:59:18 rechenplan kernel: [   27.528591] [fglrx] module
-loaded - fglrx 8.54.3 [Oct 10 2008] with 1 minors
-Oct 30 09:59:18 rechenplan kernel: [   28.279472] ICE1724
-0000:03:07.0: PCI INT A -> GSI 21 (level, low) -> IRQ 21
-Oct 30 09:59:18 rechenplan kernel: [   29.380356] Adding 979924k swap
-on /dev/sdb1.  Priority:-1 extents:1 across:979924k
-Oct 30 09:59:18 rechenplan kernel: [   30.017533] device-mapper:
-uevent: version 1.0.3
-Oct 30 09:59:18 rechenplan kernel: [   30.018371] device-mapper:
-ioctl: 4.14.0-ioctl (2008-04-23) initialised: dm-devel@redhat.com
-Oct 30 09:59:18 rechenplan kernel: [   30.807506] kjournald starting.
-Commit interval 5 seconds
-Oct 30 09:59:18 rechenplan kernel: [   30.807728] EXT3 FS on sda1,
-internal journal
-Oct 30 09:59:18 rechenplan kernel: [   30.807734] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 09:59:18 rechenplan kernel: [   31.531932] type=1505
-audit(1225357155.404:2): operation="profile_load"
-name="/usr/lib/cups/backend/cups-pdf" name2="default" pid=4422
-Oct 30 09:59:18 rechenplan kernel: [   31.532103] type=1505
-audit(1225357155.407:3): operation="profile_load"
-name="/usr/sbin/cupsd" name2="default" pid=4422
-Oct 30 09:59:18 rechenplan kernel: [   31.877829] ip_tables: (C)
-2000-2006 Netfilter Core Team
-Oct 30 09:59:18 rechenplan kernel: [   31.917731] r8169: eth0: link up
-Oct 30 09:59:18 rechenplan kernel: [   31.917739] r8169: eth0: link up
-Oct 30 09:59:18 rechenplan kernel: [   32.654387] NET: Registered
-protocol family 10
-Oct 30 09:59:18 rechenplan kernel: [   32.655034] lo: Disabled Privacy
-Extensions
-Oct 30 09:59:18 rechenplan kernel: [   32.974671] warning: `ntpd' uses
-32-bit capabilities (legacy support in use)
-Oct 30 09:59:18 rechenplan kernel: [   34.203212] powernow-k8: Found 1
-AMD Phenom(tm) 9350e Quad-Core Processor processors (4 cpu cores)
-(version 2.20.00)
-Oct 30 09:59:18 rechenplan kernel: [   34.203745] powernow-k8:    0 :
-pstate 0 (2000 MHz)
-Oct 30 09:59:18 rechenplan kernel: [   34.203749] powernow-k8:    1 :
-pstate 1 (1000 MHz)
-Oct 30 09:59:18 rechenplan avahi-daemon[5278]: Found user 'avahi' (UID
-107) and group 'avahi' (GID 116).
-Oct 30 09:59:18 rechenplan avahi-daemon[5278]: Successfully dropped
-root privileges.
-Oct 30 09:59:18 rechenplan avahi-daemon[5278]: avahi-daemon 0.6.23 starting up.
-Oct 30 09:59:18 rechenplan avahi-daemon[5278]: Successfully called chroot().
-Oct 30 09:59:18 rechenplan avahi-daemon[5278]: Successfully dropped
-remaining capabilities.
-Oct 30 09:59:18 rechenplan avahi-daemon[5278]: No service file found
-in /etc/avahi/services.
-Oct 30 09:59:18 rechenplan avahi-daemon[5278]: Joining mDNS multicast
-group on interface eth0.IPv4 with address 192.168.1.14.
-Oct 30 09:59:18 rechenplan avahi-daemon[5278]: New relevant interface
-eth0.IPv4 for mDNS.
-Oct 30 09:59:18 rechenplan avahi-daemon[5278]: Network interface
-enumeration completed.
-Oct 30 09:59:18 rechenplan avahi-daemon[5278]: Registering new address
-record for fe80::21f:d0ff:fe56:5ea0 on eth0.*.
-Oct 30 09:59:18 rechenplan avahi-daemon[5278]: Registering new address
-record for 192.168.1.14 on eth0.IPv4.
-Oct 30 09:59:18 rechenplan avahi-daemon[5278]: Registering HINFO
-record with values 'X86_64'/'LINUX'.
-Oct 30 09:59:19 rechenplan atieventsd[5318]: ATI External Events
-Daemon started...
-Oct 30 09:59:19 rechenplan atieventsd[5318]: Event daemon control
-socket created
-Oct 30 09:59:19 rechenplan acpid: client connected from 5318[0:0]
-Oct 30 09:59:19 rechenplan atieventsd[5318]: acpid connection established
-Oct 30 09:59:19 rechenplan kernel: [   35.806245] lp: driver loaded
-but no devices found
-Oct 30 09:59:19 rechenplan avahi-daemon[5278]: Server startup
-complete. Host name is rechenplan.local. Local service cookie is
-282689542.
-Oct 30 09:59:19 rechenplan kernel: [   35.849742] ppdev: user-space
-parallel port driver
-Oct 30 09:59:21 rechenplan powernowd: PowerNow Daemon v1.00, (c)
-2003-2008 John Clemens
-Oct 30 09:59:21 rechenplan powernowd: Found 4 scalable units:  -- 1
-'CPU' per scalable unit
-Oct 30 09:59:21 rechenplan powernowd:   cpu0: 1000Mhz - 2000Mhz (6 steps)
-Oct 30 09:59:21 rechenplan powernowd:   cpu1: 1000Mhz - 2000Mhz (6 steps)
-Oct 30 09:59:21 rechenplan powernowd:   cpu2: 1000Mhz - 2000Mhz (6 steps)
-Oct 30 09:59:21 rechenplan powernowd:   cpu3: 1000Mhz - 2000Mhz (6 steps)
-Oct 30 09:59:27 rechenplan kernel: [   43.501520] eth0: no IPv6 routers present
-Oct 30 09:59:28 rechenplan kernel: [   44.453547] tun: Universal
-TUN/TAP device driver, 1.6
-Oct 30 09:59:28 rechenplan kernel: [   44.453560] tun: (C) 1999-2004
-Max Krasnyansky <maxk@qualcomm.com>
-Oct 30 09:59:29 rechenplan acpid: client connected from 5891[109:119]
-Oct 30 09:59:30 rechenplan bluetoothd[5939]: Bluetooth daemon
-Oct 30 09:59:30 rechenplan kernel: [   46.216918] Bluetooth: Core ver 2.13
-Oct 30 09:59:30 rechenplan kernel: [   46.218171] NET: Registered
-protocol family 31
-Oct 30 09:59:30 rechenplan kernel: [   46.218177] Bluetooth: HCI
-device and connection manager initialized
-Oct 30 09:59:30 rechenplan kernel: [   46.218182] Bluetooth: HCI
-socket layer initialized
-Oct 30 09:59:30 rechenplan bluetoothd[5939]: Starting SDP server
-Oct 30 09:59:30 rechenplan kernel: [   46.236585] Bluetooth: L2CAP ver 2.11
-Oct 30 09:59:30 rechenplan kernel: [   46.236598] Bluetooth: L2CAP
-socket layer initialized
-Oct 30 09:59:30 rechenplan kernel: [   46.285880] Bluetooth: SCO
-(Voice Link) ver 0.6
-Oct 30 09:59:30 rechenplan kernel: [   46.285889] Bluetooth: SCO
-socket layer initialized
-Oct 30 09:59:30 rechenplan bluetoothd[5939]: Starting experimental
-netlink support
-Oct 30 09:59:30 rechenplan bluetoothd[5939]: Failed to find Bluetooth
-netlink family
-Oct 30 09:59:30 rechenplan bluetoothd[5939]: Can't init plugin
-/usr/lib/bluetooth/plugins/netlink.so
-Oct 30 09:59:30 rechenplan kernel: [   46.312952] Bluetooth: BNEP
-(Ethernet Emulation) ver 1.3
-Oct 30 09:59:30 rechenplan kernel: [   46.312962] Bluetooth: BNEP
-filters: protocol multicast
-Oct 30 09:59:30 rechenplan kernel: [   46.366717] Bridge firewalling registered
-Oct 30 09:59:30 rechenplan kernel: [   46.367092] pan0: Dropping
-NETIF_F_UFO since no NETIF_F_HW_CSUM feature.
-Oct 30 09:59:30 rechenplan bluetoothd[5939]: bridge pan0 created
-Oct 30 09:59:30 rechenplan kernel: [   46.609104] Bluetooth: RFCOMM
-socket layer initialized
-Oct 30 09:59:30 rechenplan kernel: [   46.609133] Bluetooth: RFCOMM
-TTY layer initialized
-Oct 30 09:59:30 rechenplan kernel: [   46.609136] Bluetooth: RFCOMM ver 1.10
-Oct 30 09:59:30 rechenplan NetworkManager: <info>  starting...
-Oct 30 09:59:30 rechenplan NetworkManager: <info>  eth0: driver is 'r8169'.
-Oct 30 09:59:30 rechenplan NetworkManager: <info>  Found new Ethernet
-device 'eth0'.
-Oct 30 09:59:30 rechenplan NetworkManager: <info>  (eth0): exported as
-/org/freedesktop/Hal/devices/net_00_1f_d0_56_5e_a0
-Oct 30 09:59:30 rechenplan NetworkManager: <info>  Trying to start the
-supplicant...
-Oct 30 09:59:30 rechenplan NetworkManager: <info>  Trying to start the
-system settings daemon...
-Oct 30 09:59:30 rechenplan NetworkManager: <info>  (eth0): carrier now
-ON (device state 1)
-Oct 30 09:59:30 rechenplan nm-system-settings:    SCPlugin-Ifupdown: init!
-Oct 30 09:59:30 rechenplan nm-system-settings:    SCPlugin-Ifupdown:
-update_system_hostname
-Oct 30 09:59:30 rechenplan nm-system-settings:    SCPluginIfupdown:
-guessed connection type (eth0) = 802-3-ethernet
-Oct 30 09:59:30 rechenplan nm-system-settings:    SCPlugin-Ifupdown:
-update_connection_setting_from_if_block: name:eth0,
-type:802-3-ethernet, autoconnect:0, id:Ifupdown (eth0), uuid:
-681b428f-beaf-8932-0000-000000000000
-Oct 30 09:59:30 rechenplan nm-system-settings:    SCPlugin-Ifupdown:
-addresses count: 1
-Oct 30 09:59:30 rechenplan nm-system-settings:    SCPlugin-Ifupdown: autoconnect
-Oct 30 09:59:30 rechenplan nm-system-settings:    SCPluginIfupdown:
-management mode: unmanaged
-Oct 30 09:59:30 rechenplan nm-system-settings:    SCPlugin-Ifupdown:
-devices added (udi:
-/org/freedesktop/Hal/devices/net_00_1f_d0_56_5e_a0, iface: eth0)
-Oct 30 09:59:30 rechenplan nm-system-settings:    Ifupdown: get
-unmanaged devices count: 1
-Oct 30 09:59:30 rechenplan nm-system-settings:    SCPlugin-Ifupdown:
-(7865536) ... get_connections.
-Oct 30 09:59:30 rechenplan nm-system-settings:    SCPlugin-Ifupdown:
-(7865536) connections count: 1
-Oct 30 09:59:30 rechenplan nm-system-settings:    Ifupdown: get
-unmanaged devices count: 1
-Oct 30 09:59:30 rechenplan nm-system-settings:    SCPlugin-Ifupdown: end _init.
-Oct 30 09:59:30 rechenplan nm-system-settings: Loaded plugin ifupdown:
-(C) 2008 Canonical Ltd.  To report bugs please use the NetworkManager
-mailing list.
-Oct 30 09:59:30 rechenplan nm-system-settings: Loaded plugin keyfile:
-(c) 2007 - 2008 Red Hat, Inc.  To report bugs please use the
-NetworkManager mailing list.
-Oct 30 09:59:30 rechenplan NetworkManager: <info>  (eth0): now unmanaged
-Oct 30 09:59:30 rechenplan anacron[6056]: Anacron 2.3 started on 2008-10-30
-Oct 30 09:59:30 rechenplan anacron[6056]: Normal exit (0 jobs run)
-Oct 30 09:59:31 rechenplan /usr/sbin/cron[6100]: (CRON) INFO (pidfile fd = 3)
-Oct 30 09:59:31 rechenplan /usr/sbin/cron[6101]: (CRON) STARTUP (fork ok)
-Oct 30 09:59:31 rechenplan /usr/sbin/cron[6101]: (CRON) INFO (Running
-@reboot jobs)
-Oct 30 09:59:31 rechenplan acpid: client connected from 6061[0:0]
-Oct 30 09:59:33 rechenplan kernel: [   49.534607] [fglrx] GART Table
-is not in FRAME_BUFFER range
-Oct 30 09:59:33 rechenplan kernel: [   49.605431] [fglrx] Reserved FB
-block: Shared offset:0, size:1000000
-Oct 30 09:59:33 rechenplan kernel: [   49.605451] [fglrx] Reserved FB
-block: Unshared offset:7ffc000, size:4000
-Oct 30 09:59:43 rechenplan kdm_greet[6181]: Cannot open default user face
-Oct 30 10:00:01 rechenplan /USR/SBIN/CRON[6206]: (horst) CMD
-(/home/horst/ksvn/hg/upall)
-Oct 30 10:00:01 rechenplan /USR/SBIN/CRON[6207]: (root) CMD ([ -x
-/usr/sbin/update-motd ] && /usr/sbin/update-motd 2>/dev/null)
-Oct 30 10:00:22 rechenplan anacron[6521]: Anacron 2.3 started on 2008-10-30
-Oct 30 10:00:22 rechenplan anacron[6521]: Normal exit (0 jobs run)
-Oct 30 10:00:22 rechenplan kernel: [   98.608169] CPU0 attaching NULL
-sched-domain.
-Oct 30 10:00:22 rechenplan kernel: [   98.608189] CPU1 attaching NULL
-sched-domain.
-Oct 30 10:00:22 rechenplan kernel: [   98.608193] CPU2 attaching NULL
-sched-domain.
-Oct 30 10:00:22 rechenplan kernel: [   98.608198] CPU3 attaching NULL
-sched-domain.
-Oct 30 10:00:22 rechenplan kernel: [   98.624635] CPU0 attaching sched-domain:
-Oct 30 10:00:22 rechenplan kernel: [   98.624643]  domain 0: span 0-3 level CPU
-Oct 30 10:00:22 rechenplan kernel: [   98.624648]   groups: 0 1 2 3
-Oct 30 10:00:22 rechenplan kernel: [   98.624657]   domain 1: span 0-3
-level NODE
-Oct 30 10:00:22 rechenplan kernel: [   98.624661]    groups: 0-3
-Oct 30 10:00:22 rechenplan kernel: [   98.624668] CPU1 attaching sched-domain:
-Oct 30 10:00:22 rechenplan kernel: [   98.624671]  domain 0: span 0-3 level CPU
-Oct 30 10:00:22 rechenplan kernel: [   98.624675]   groups: 1 2 3 0
-Oct 30 10:00:22 rechenplan kernel: [   98.624681]   domain 1: span 0-3
-level NODE
-Oct 30 10:00:22 rechenplan kernel: [   98.624691]    groups: 0-3
-Oct 30 10:00:22 rechenplan kernel: [   98.624701] CPU2 attaching sched-domain:
-Oct 30 10:00:22 rechenplan kernel: [   98.624704]  domain 0: span 0-3 level CPU
-Oct 30 10:00:22 rechenplan kernel: [   98.624707]   groups: 2 3 0 1
-Oct 30 10:00:22 rechenplan kernel: [   98.624714]   domain 1: span 0-3
-level NODE
-Oct 30 10:00:22 rechenplan kernel: [   98.624722]    groups: 0-3
-Oct 30 10:00:22 rechenplan kernel: [   98.624728] CPU3 attaching sched-domain:
-Oct 30 10:00:22 rechenplan kernel: [   98.624731]  domain 0: span 0-3 level CPU
-Oct 30 10:00:22 rechenplan kernel: [   98.624734]   groups: 3 0 1 2
-Oct 30 10:00:22 rechenplan kernel: [   98.624740]   domain 1: span 0-3
-level NODE
-Oct 30 10:00:22 rechenplan kernel: [   98.624747]    groups: 0-3
-Oct 30 10:00:36 rechenplan NetworkManager: <info>  Unmanaged Device
-found; state CONNECTED forced. (see
-http://bugs.launchpad.net/bugs/191889)
-Oct 30 10:00:36 rechenplan NetworkManager: <info>  Unmanaged Device
-found; state CONNECTED forced. (see
-http://bugs.launchpad.net/bugs/191889)
-Oct 30 10:00:39 rechenplan python: hp-systray(init)[6663]: warning: No
-hp: or hpfax: devices found in any installed CUPS queue. Exiting.
-Oct 30 10:01:49 rechenplan kernel: [  185.871728] type=1503
-audit(1225357309.806:4): operation="inode_permission"
-requested_mask="r::" denied_mask="r::" fsuid=7 name="/proc/6821/net/"
-pid=6821 profile="/usr/sbin/cupsd"
-Oct 30 10:01:50 rechenplan kernel: [  186.957497] type=1503
-audit(1225357310.892:5): operation="inode_permission"
-requested_mask="r::" denied_mask="r::" fsuid=7 name="/proc/6825/net/"
-pid=6825 profile="/usr/sbin/cupsd"
-Oct 30 10:01:50 rechenplan kernel: [  186.957549] type=1503
-audit(1225357310.892:6): operation="socket_create" family="ax25"
-sock_type="dgram" protocol=0 pid=6825 profile="/usr/sbin/cupsd"
-Oct 30 10:01:50 rechenplan kernel: [  186.957560] type=1503
-audit(1225357310.892:7): operation="socket_create" family="netrom"
-sock_type="seqpacket" protocol=0 pid=6825 profile="/usr/sbin/cupsd"
-Oct 30 10:01:50 rechenplan kernel: [  186.957571] type=1503
-audit(1225357310.892:8): operation="socket_create" family="rose"
-sock_type="dgram" protocol=0 pid=6825 profile="/usr/sbin/cupsd"
-Oct 30 10:01:50 rechenplan kernel: [  186.957580] type=1503
-audit(1225357310.892:9): operation="socket_create" family="ipx"
-sock_type="dgram" protocol=0 pid=6825 profile="/usr/sbin/cupsd"
-Oct 30 10:01:50 rechenplan kernel: [  186.957589] type=1503
-audit(1225357310.892:10): operation="socket_create" family="appletalk"
-sock_type="dgram" protocol=0 pid=6825 profile="/usr/sbin/cupsd"
-Oct 30 10:01:50 rechenplan kernel: [  186.957600] type=1503
-audit(1225357310.892:11): operation="socket_create" family="econet"
-sock_type="dgram" protocol=0 pid=6825 profile="/usr/sbin/cupsd"
-Oct 30 10:01:50 rechenplan kernel: [  186.957610] type=1503
-audit(1225357310.892:12): operation="socket_create" family="ash"
-sock_type="dgram" protocol=0 pid=6825 profile="/usr/sbin/cupsd"
-Oct 30 10:01:50 rechenplan kernel: [  186.957619] type=1503
-audit(1225357310.892:13): operation="socket_create" family="x25"
-sock_type="seqpacket" protocol=0 pid=6825 profile="/usr/sbin/cupsd"
-Oct 30 10:03:35 rechenplan ntpd[4670]: synchronized to 91.189.94.4, stratum 2
-Oct 30 10:03:35 rechenplan ntpd[4670]: kernel time sync status change 0001
-Oct 30 10:10:01 rechenplan /USR/SBIN/CRON[6842]: (root) CMD ([ -x
-/usr/sbin/update-motd ] && /usr/sbin/update-motd 2>/dev/null)
-Oct 30 10:17:01 rechenplan /USR/SBIN/CRON[6933]: (root) CMD (   cd /
-&& run-parts --report /etc/cron.hourly)
-Oct 30 10:20:01 rechenplan /USR/SBIN/CRON[6995]: (root) CMD ([ -x
-/usr/sbin/update-motd ] && /usr/sbin/update-motd 2>/dev/null)
-Oct 30 10:20:01 rechenplan /USR/SBIN/CRON[7008]: (horst) CMD
-(/home/horst/ksvn/hg/upall)
-Oct 30 10:30:02 rechenplan /USR/SBIN/CRON[7205]: (root) CMD ([ -x
-/usr/sbin/update-motd ] && /usr/sbin/update-motd 2>/dev/null)
-Oct 30 10:40:02 rechenplan /USR/SBIN/CRON[7398]: (horst) CMD
-(/home/horst/ksvn/hg/upall)
-Oct 30 10:40:02 rechenplan /USR/SBIN/CRON[7407]: (root) CMD ([ -x
-/usr/sbin/update-motd ] && /usr/sbin/update-motd 2>/dev/null)
-Oct 30 10:50:01 rechenplan /USR/SBIN/CRON[7627]: (root) CMD ([ -x
-/usr/sbin/update-motd ] && /usr/sbin/update-motd 2>/dev/null)
-
-
-LIVE CD /var/log/syslog:
-Oct 30 11:56:21 ubuntu syslogd 1.5.0#2ubuntu6: restart.
-Oct 30 11:56:21 ubuntu kernel: Inspecting /boot/System.map-2.6.27-7-generic
-Oct 30 11:56:21 ubuntu kernel: Cannot find map file.
-Oct 30 11:56:22 ubuntu kernel: Loaded 50972 symbols from 87 modules.
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] Initializing cgroup subsys cpuset
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] Initializing cgroup subsys cpu
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] Linux version
-2.6.27-7-generic (buildd@yellow) (gcc version 4.3.2 (Ubuntu
-4.3.2-1ubuntu10) ) #1 SMP Fri Oct 24 06:40:41 UTC 2008 (Ubuntu
-2.6.27-7.14-generic)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] Command line:
-BOOT_IMAGE=/casper/vmlinuz file=/cdrom/preseed/kubuntu.seed
-boot=casper initrd=/casper/initrd.gz nosplash --
-debian-installer/language=de console-setup/layoutcode?=de
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] KERNEL supported cpus:
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]   Intel GenuineIntel
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]   AMD AuthenticAMD
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]   Centaur CentaurHauls
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] BIOS-provided physical RAM map:
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]  BIOS-e820:
-0000000000000000 - 000000000009f800 (usable)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]  BIOS-e820:
-000000000009f800 - 00000000000a0000 (reserved)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]  BIOS-e820:
-00000000000f0000 - 0000000000100000 (reserved)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]  BIOS-e820:
-0000000000100000 - 0000000077de0000 (usable)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]  BIOS-e820:
-0000000077de0000 - 0000000077de3000 (ACPI NVS)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]  BIOS-e820:
-0000000077de3000 - 0000000077df0000 (ACPI data)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]  BIOS-e820:
-0000000077df0000 - 0000000077e00000 (reserved)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]  BIOS-e820:
-00000000e0000000 - 00000000f0000000 (reserved)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]  BIOS-e820:
-00000000fec00000 - 0000000100000000 (reserved)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] last_pfn = 0x77de0
-max_arch_pfn = 0x3ffffffff
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] init_memory_mapping
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]  0000000000 - 0077c00000 page 2M
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]  0077c00000 - 0077de0000 page 4k
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] kernel direct mapping
-tables up to 77de0000 @ 8000-c000
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] last_map_addr: 77de0000
-end: 77de0000
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] RAMDISK: 774e8000 - 77daf3c0
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] DMI 2.4 present.
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: RSDP 000F71C0,
-0014 (r0 GBT   )
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: RSDT 77DE3000,
-0038 (r1 GBT    GBTUACPI 42302E31 GBTU  1010101)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: FACP 77DE3040,
-0074 (r1 GBT    GBTUACPI 42302E31 GBTU  1010101)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: DSDT 77DE30C0,
-6550 (r1 GBT    GBTUACPI     1000 MSFT  3000000)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: FACS 77DE0000, 0040
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: SSDT 77DE9700,
-0544 (r1 PTLTD  POWERNOW        1  LTP        1)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: HPET 77DE9C80,
-0038 (r1 GBT    GBTUACPI 42302E31 GBTU       98)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: MCFG 77DE9CC0,
-003C (r1 GBT    GBTUACPI 42302E31 GBTU  1010101)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: APIC 77DE9640,
-0084 (r1 GBT    GBTUACPI 42302E31 GBTU  1010101)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] Scanning NUMA topology
-in Northbridge 24
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] No NUMA configuration found
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] Faking a node at
-0000000000000000-0000000077de0000
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] Bootmem setup node 0
-0000000000000000-0000000077de0000
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]   NODE_DATA
-[0000000000001000 - 0000000000005fff]
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]   bootmap
-[000000000000a000 -  0000000000018fbf] pages f
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] (6 early reservations)
-==> bootmem [0000000000 - 0077de0000]
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]   #0 [0000000000 -
-0000001000]   BIOS data page ==> [0000000000 - 0000001000]
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]   #1 [0000006000 -
-0000008000]       TRAMPOLINE ==> [0000006000 - 0000008000]
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]   #2 [0000200000 -
-00008b8f9c]    TEXT DATA BSS ==> [0000200000 - 00008b8f9c]
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]   #3 [00774e8000 -
-0077daf3c0]          RAMDISK ==> [00774e8000 - 0077daf3c0]
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]   #4 [000009f800 -
-0000100000]    BIOS reserved ==> [000009f800 - 0000100000]
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]   #5 [0000008000 -
-000000a000]          PGTABLE ==> [0000008000 - 000000a000]
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] found SMP MP-table at
-[ffff8800000f5840] 000f5840
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]
-[ffffe20000000000-ffffe20001dfffff] PMD ->
-[ffff880001200000-ffff880002ffffff] on node 0
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] Zone PFN ranges:
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]   DMA      0x00000000 ->
-0x00001000
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]   DMA32    0x00001000 ->
-0x00100000
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]   Normal   0x00100000 ->
-0x00100000
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] Movable zone start PFN
-for each node
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] early_node_map[2] active
-PFN ranges
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]     0: 0x00000000 -> 0x0000009f
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]     0: 0x00000100 -> 0x00077de0
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] On node 0 totalpages: 490879
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]   DMA zone: 2112 pages,
-LIFO batch:0
-Oct 30 11:56:22 ubuntu kernel: [    0.000000]   DMA32 zone: 479272
-pages, LIFO batch:31
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: PM-Timer IO Port: 0x4008
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: Local APIC address
-0xfee00000
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: LAPIC
-(acpi_id[0x00] lapic_id[0x00] enabled)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: LAPIC
-(acpi_id[0x01] lapic_id[0x01] enabled)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: LAPIC
-(acpi_id[0x02] lapic_id[0x02] enabled)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: LAPIC
-(acpi_id[0x03] lapic_id[0x03] enabled)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: LAPIC_NMI
-(acpi_id[0x00] dfl dfl lint[0x1])
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: LAPIC_NMI
-(acpi_id[0x01] dfl dfl lint[0x1])
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: LAPIC_NMI
-(acpi_id[0x02] dfl dfl lint[0x1])
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: LAPIC_NMI
-(acpi_id[0x03] dfl dfl lint[0x1])
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: IOAPIC (id[0x02]
-address[0xfec00000] gsi_base[0])
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] IOAPIC[0]: apic_id 2,
-version 0, address 0xfec00000, GSI 0-23
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: INT_SRC_OVR (bus 0
-bus_irq 0 global_irq 2 dfl dfl)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: INT_SRC_OVR (bus 0
-bus_irq 9 global_irq 9 low level)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: IRQ0 used by override.
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: IRQ2 used by override.
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: IRQ9 used by override.
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] Setting APIC routing to flat
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] ACPI: HPET id:
-0x10b9a201 base: 0xfed00000
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] Using ACPI (MADT) for
-SMP configuration information
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] SMP: Allowing 4 CPUs, 0
-hotplug CPUs
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] PM: Registered nosave
-memory: 000000000009f000 - 00000000000a0000
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] PM: Registered nosave
-memory: 00000000000a0000 - 00000000000f0000
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] PM: Registered nosave
-memory: 00000000000f0000 - 0000000000100000
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] Allocating PCI resources
-starting at 78000000 (gap: 77e00000:68200000)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] PERCPU: Allocating 64928
-bytes of per cpu data
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] NR_CPUS: 64, nr_cpu_ids:
-4, nr_node_ids 1
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] Built 1 zonelists in
-Node order, mobility grouping on.  Total pages: 481384
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] Policy zone: DMA32
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] Kernel command line:
-BOOT_IMAGE=/casper/vmlinuz file=/cdrom/preseed/kubuntu.seed
-boot=casper initrd=/casper/initrd.gz nosplash --
-debian-installer/language=de console-setup/layoutcode?=de
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] Initializing CPU#0
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] PID hash table entries:
-4096 (order: 12, 32768 bytes)
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] TSC: PIT calibration
-confirmed by PMTIMER.
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] TSC: using PIT calibration value
-Oct 30 11:56:22 ubuntu kernel: [    0.000000] Detected 2004.255 MHz processor.
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] Console: colour VGA+ 80x25
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] console [tty0] enabled
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] Checking aperture...
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] No AGP bridge found
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] Node 0: aperture @
-5086000000 size 32 MB
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] Aperture beyond 4GB. Ignoring.
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] Memory:
-1916492k/1963904k available (3112k kernel code, 47024k reserved, 1575k
-data, 536k init)
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] CPA: page pool
-initialized 1 of 1 pages preallocated
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] SLUB: Genslabs=13,
-HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] hpet clockevent registered
-Oct 30 11:56:22 ubuntu kernel: [    0.004008] Calibrating delay loop
-(skipped), value calculated using timer frequency.. 4008.50 BogoMIPS
-(lpj=8017008)
-Oct 30 11:56:22 ubuntu kernel: [    0.004092] Security Framework initialized
-Oct 30 11:56:22 ubuntu kernel: [    0.004129] SELinux:  Disabled at boot.
-Oct 30 11:56:22 ubuntu kernel: [    0.004172] AppArmor: AppArmor initialized
-Oct 30 11:56:22 ubuntu kernel: [    0.004388] Dentry cache hash table
-entries: 262144 (order: 9, 2097152 bytes)
-Oct 30 11:56:22 ubuntu kernel: [    0.005248] Inode-cache hash table
-entries: 131072 (order: 8, 1048576 bytes)
-Oct 30 11:56:22 ubuntu kernel: [    0.005625] Mount-cache hash table
-entries: 256
-Oct 30 11:56:22 ubuntu kernel: [    0.005803] Initializing cgroup subsys ns
-Oct 30 11:56:22 ubuntu kernel: [    0.005838] Initializing cgroup subsys cpuacct
-Oct 30 11:56:22 ubuntu kernel: [    0.005872] Initializing cgroup subsys memory
-Oct 30 11:56:22 ubuntu kernel: [    0.005916] CPU: L1 I Cache: 64K (64
-bytes/line), D cache 64K (64 bytes/line)
-Oct 30 11:56:22 ubuntu kernel: [    0.005951] CPU: L2 Cache: 512K (64
-bytes/line)
-Oct 30 11:56:22 ubuntu kernel: [    0.005984] CPU 0/0 -> Node 0
-Oct 30 11:56:22 ubuntu kernel: [    0.006017] tseg: 0077e00000
-Oct 30 11:56:22 ubuntu kernel: [    0.006019] CPU: Physical Processor ID: 0
-Oct 30 11:56:22 ubuntu kernel: [    0.006051] CPU: Processor Core ID: 0
-Oct 30 11:56:22 ubuntu kernel: [    0.006090] using C1E aware idle routine
-Oct 30 11:56:22 ubuntu kernel: [    0.007542] ACPI: Core revision 20080609
-Oct 30 11:56:22 ubuntu kernel: [    0.009685] ACPI: Checking initramfs
-for custom DSDT
-Oct 30 11:56:22 ubuntu kernel: [    0.356629] ..TIMER: vector=0x30
-apic1=0 pin1=2 apic2=-1 pin2=-1
-Oct 30 11:56:22 ubuntu kernel: [    0.398941] CPU0: AMD Phenom(tm)
-9350e Quad-Core Processor stepping 03
-Oct 30 11:56:22 ubuntu kernel: [    0.399032] Using local APIC timer interrupts.
-Oct 30 11:56:22 ubuntu kernel: [    0.400026] APIC timer calibration
-result 12526593
-Oct 30 11:56:22 ubuntu kernel: [    0.400028] Detected 12.526 MHz APIC timer.
-Oct 30 11:56:22 ubuntu kernel: [    0.400180] Booting processor 1/1 ip 6000
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] Initializing CPU#1
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] Calibrating delay using
-timer specific routine.. 4008.74 BogoMIPS (lpj=8017489)
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] CPU: L1 I Cache: 64K (64
-bytes/line), D cache 64K (64 bytes/line)
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] CPU: L2 Cache: 512K (64
-bytes/line)
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] CPU 1/1 -> Node 0
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] CPU: Physical Processor ID: 0
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] CPU: Processor Core ID: 1
-Oct 30 11:56:22 ubuntu kernel: [    0.488393] CPU1: AMD Phenom(tm)
-9350e Quad-Core Processor stepping 03
-Oct 30 11:56:22 ubuntu kernel: [    0.488708] checking TSC
-synchronization [CPU#0 -> CPU#1]: passed.
-Oct 30 11:56:22 ubuntu kernel: [    0.492107] Booting processor 2/2 ip 6000
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] Initializing CPU#2
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] Calibrating delay using
-timer specific routine.. 4008.64 BogoMIPS (lpj=8017291)
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] CPU: L1 I Cache: 64K (64
-bytes/line), D cache 64K (64 bytes/line)
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] CPU: L2 Cache: 512K (64
-bytes/line)
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] CPU 2/2 -> Node 0
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] CPU: Physical Processor ID: 0
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] CPU: Processor Core ID: 2
-Oct 30 11:56:22 ubuntu kernel: [    0.580405] CPU2: AMD Phenom(tm)
-9350e Quad-Core Processor stepping 03
-Oct 30 11:56:22 ubuntu kernel: [    0.580720] checking TSC
-synchronization [CPU#0 -> CPU#2]: passed.
-Oct 30 11:56:22 ubuntu kernel: [    0.584109] Booting processor 3/3 ip 6000
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] Initializing CPU#3
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] Calibrating delay using
-timer specific routine.. 4008.63 BogoMIPS (lpj=8017262)
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] CPU: L1 I Cache: 64K (64
-bytes/line), D cache 64K (64 bytes/line)
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] CPU: L2 Cache: 512K (64
-bytes/line)
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] CPU 3/3 -> Node 0
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] CPU: Physical Processor ID: 0
-Oct 30 11:56:22 ubuntu kernel: [    0.004000] CPU: Processor Core ID: 3
-Oct 30 11:56:22 ubuntu kernel: [    0.672413] CPU3: AMD Phenom(tm)
-9350e Quad-Core Processor stepping 03
-Oct 30 11:56:22 ubuntu kernel: [    0.672729] checking TSC
-synchronization [CPU#0 -> CPU#3]: passed.
-Oct 30 11:56:22 ubuntu kernel: [    0.676054] Brought up 4 CPUs
-Oct 30 11:56:22 ubuntu kernel: [    0.676087] Total of 4 processors
-activated (16034.52 BogoMIPS).
-Oct 30 11:56:22 ubuntu kernel: [    0.676206] CPU0 attaching sched-domain:
-Oct 30 11:56:22 ubuntu kernel: [    0.676208]  domain 0: span 0-3 level CPU
-Oct 30 11:56:22 ubuntu kernel: [    0.676211]   groups: 0 1 2 3
-Oct 30 11:56:22 ubuntu kernel: [    0.676215]   domain 1: span 0-3 level NODE
-Oct 30 11:56:22 ubuntu kernel: [    0.676217]    groups: 0-3
-Oct 30 11:56:22 ubuntu kernel: [    0.676221] CPU1 attaching sched-domain:
-Oct 30 11:56:22 ubuntu kernel: [    0.676223]  domain 0: span 0-3 level CPU
-Oct 30 11:56:22 ubuntu kernel: [    0.676224]   groups: 1 2 3 0
-Oct 30 11:56:22 ubuntu kernel: [    0.676228]   domain 1: span 0-3 level NODE
-Oct 30 11:56:22 ubuntu kernel: [    0.676230]    groups: 0-3
-Oct 30 11:56:22 ubuntu kernel: [    0.676233] CPU2 attaching sched-domain:
-Oct 30 11:56:22 ubuntu kernel: [    0.676234]  domain 0: span 0-3 level CPU
-Oct 30 11:56:22 ubuntu kernel: [    0.676236]   groups: 2 3 0 1
-Oct 30 11:56:22 ubuntu kernel: [    0.676239]   domain 1: span 0-3 level NODE
-Oct 30 11:56:22 ubuntu kernel: [    0.676241]    groups: 0-3
-Oct 30 11:56:22 ubuntu kernel: [    0.676243] CPU3 attaching sched-domain:
-Oct 30 11:56:22 ubuntu kernel: [    0.676245]  domain 0: span 0-3 level CPU
-Oct 30 11:56:22 ubuntu kernel: [    0.676246]   groups: 3 0 1 2
-Oct 30 11:56:22 ubuntu kernel: [    0.676250]   domain 1: span 0-3 level NODE
-Oct 30 11:56:22 ubuntu kernel: [    0.676251]    groups: 0-3
-Oct 30 11:56:22 ubuntu kernel: [    0.676375] net_namespace: 1552 bytes
-Oct 30 11:56:22 ubuntu kernel: [    0.676375] Booting paravirtualized
-kernel on bare hardware
-Oct 30 11:56:22 ubuntu kernel: [    0.676375] Time: 11:54:24  Date: 10/30/08
-Oct 30 11:56:22 ubuntu kernel: [    0.676420] NET: Registered protocol family 16
-Oct 30 11:56:22 ubuntu kernel: [    0.676470] node 0 link 0: io port
-[c000, ffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.676470] TOM: 0000000080000000 aka 2048M
-Oct 30 11:56:22 ubuntu kernel: [    0.676470] Fam 10h mmconf
-[e0000000, e00fffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.676470] node 0 link 0: mmio [a0000, bffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.676470] node 0 link 0: mmio
-[80000000, fe02ffff] ==> [80000000, dfffffff] and [e0100000, fe02ffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.676470] node 0 link 0: mmio
-[e0000000, efffffff] ==> [e0100000, efffffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.676470] bus: [00,03] on node 0 link 0
-Oct 30 11:56:22 ubuntu kernel: [    0.676470] bus: 00 index 0 io port: [0, ffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.676470] bus: 00 index 1 mmio:
-[a0000, bffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.676470] bus: 00 index 2 mmio:
-[80000000, dfffffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.676470] bus: 00 index 3 mmio:
-[e0100000, fcffffffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.676470] ACPI: bus type pci registered
-Oct 30 11:56:22 ubuntu kernel: [    0.676470] PCI: MCFG configuration
-0: base e0000000 segment 0 buses 0 - 255
-Oct 30 11:56:22 ubuntu kernel: [    0.676470] PCI: MCFG area at
-e0000000 reserved in E820
-Oct 30 11:56:22 ubuntu kernel: [    0.691475] PCI: Using MMCONFIG at
-e0000000 - efffffff
-Oct 30 11:56:22 ubuntu kernel: [    0.691509] PCI: Using configuration
-type 1 for base access
-Oct 30 11:56:22 ubuntu kernel: [    0.692633] ACPI: EC: Look up EC in DSDT
-Oct 30 11:56:22 ubuntu kernel: [    0.703086] ACPI: Interpreter enabled
-Oct 30 11:56:22 ubuntu kernel: [    0.703125] ACPI: (supports S0 S3 S4 S5)
-Oct 30 11:56:22 ubuntu kernel: [    0.703284] ACPI: Using IOAPIC for
-interrupt routing
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] ACPI: PCI Root Bridge
-[PCI0] (0000:00)
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:00:00.0 reg 1c
-64bit mmio: [e0000000, ffffffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] pci 0000:00:0a.0: PME#
-supported from D0 D3hot D3cold
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] pci 0000:00:0a.0: PME# disabled
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:00:11.0 reg 10
-io port: [ff00, ff07]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:00:11.0 reg 14
-io port: [fe00, fe03]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:00:11.0 reg 18
-io port: [fd00, fd07]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:00:11.0 reg 1c
-io port: [fc00, fc03]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:00:11.0 reg 20
-io port: [fb00, fb0f]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:00:11.0 reg 24
-32bit mmio: [fe02f000, fe02f3ff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:00:12.0 reg 10
-32bit mmio: [fe02e000, fe02efff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:00:12.1 reg 10
-32bit mmio: [fe02d000, fe02dfff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:00:12.2 reg 10
-32bit mmio: [fe02c000, fe02c0ff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] pci 0000:00:12.2: supports D1
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] pci 0000:00:12.2: supports D2
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] pci 0000:00:12.2: PME#
-supported from D0 D1 D2 D3hot
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] pci 0000:00:12.2: PME# disabled
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:00:13.0 reg 10
-32bit mmio: [fe02b000, fe02bfff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:00:13.1 reg 10
-32bit mmio: [fe02a000, fe02afff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:00:13.2 reg 10
-32bit mmio: [fe029000, fe0290ff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] pci 0000:00:13.2: supports D1
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] pci 0000:00:13.2: supports D2
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] pci 0000:00:13.2: PME#
-supported from D0 D1 D2 D3hot
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] pci 0000:00:13.2: PME# disabled
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:00:14.1 reg 10
-io port: [0, 7]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:00:14.1 reg 14
-io port: [0, 3]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:00:14.1 reg 18
-io port: [0, 7]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:00:14.1 reg 1c
-io port: [0, 3]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:00:14.1 reg 20
-io port: [fa00, fa0f]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:00:14.5 reg 10
-32bit mmio: [fe028000, fe028fff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:01:05.0 reg 10
-32bit mmio: [d8000000, dfffffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:01:05.0 reg 14
-io port: [ee00, eeff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:01:05.0 reg 18
-32bit mmio: [fdee0000, fdeeffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:01:05.0 reg 24
-32bit mmio: [fdd00000, fddfffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] pci 0000:01:05.0: supports D1
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] pci 0000:01:05.0: supports D2
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:01:05.1 reg 10
-32bit mmio: [fdefc000, fdefffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] pci 0000:01:05.1: supports D1
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] pci 0000:01:05.1: supports D2
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: bridge 0000:00:01.0
-io port: [e000, efff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: bridge 0000:00:01.0
-32bit mmio: [fdd00000, fdefffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: bridge 0000:00:01.0
-64bit mmio pref: [d8000000, dfffffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:02:00.0 reg 10
-io port: [de00, deff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:02:00.0 reg 18
-32bit mmio: [fdfff000, fdffffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709336] PCI: 0000:02:00.0 reg 20
-32bit mmio: [fdfe0000, fdfeffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709342] PCI: 0000:02:00.0 reg 30
-32bit mmio: [0, ffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709362] pci 0000:02:00.0: supports D1
-Oct 30 11:56:22 ubuntu kernel: [    0.709364] pci 0000:02:00.0: supports D2
-Oct 30 11:56:22 ubuntu kernel: [    0.709365] pci 0000:02:00.0: PME#
-supported from D0 D1 D2 D3hot D3cold
-Oct 30 11:56:22 ubuntu kernel: [    0.709401] pci 0000:02:00.0: PME# disabled
-Oct 30 11:56:22 ubuntu kernel: [    0.709472] PCI: bridge 0000:00:0a.0
-io port: [d000, dfff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709474] PCI: bridge 0000:00:0a.0
-32bit mmio: [fda00000, fdafffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709478] PCI: bridge 0000:00:0a.0
-64bit mmio pref: [fdf00000, fdffffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709529] PCI: 0000:03:07.0 reg 10
-io port: [cf00, cf1f]
-Oct 30 11:56:22 ubuntu kernel: [    0.709537] PCI: 0000:03:07.0 reg 14
-io port: [ce00, ce7f]
-Oct 30 11:56:22 ubuntu kernel: [    0.709585] pci 0000:03:07.0: supports D2
-Oct 30 11:56:22 ubuntu kernel: [    0.709623] pci 0000:00:14.4:
-transparent bridge
-Oct 30 11:56:22 ubuntu kernel: [    0.709658] PCI: bridge 0000:00:14.4
-io port: [c000, cfff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709662] PCI: bridge 0000:00:14.4
-32bit mmio: [fdc00000, fdcfffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709666] PCI: bridge 0000:00:14.4
-32bit mmio pref: [fdb00000, fdbfffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.709683] ACPI: PCI Interrupt
-Routing Table [\_SB_.PCI0._PRT]
-Oct 30 11:56:22 ubuntu kernel: [    0.712159] ACPI: PCI Interrupt
-Routing Table [\_SB_.PCI0.P2P_._PRT]
-Oct 30 11:56:22 ubuntu kernel: [    0.712356] ACPI: PCI Interrupt
-Routing Table [\_SB_.PCI0.PCEA._PRT]
-Oct 30 11:56:22 ubuntu kernel: [    0.712489] ACPI: PCI Interrupt
-Routing Table [\_SB_.PCI0.AGP_._PRT]
-Oct 30 11:56:22 ubuntu kernel: [    0.741524] ACPI: PCI Interrupt Link
-[LNKA] (IRQs 3 4 5 6 7 10 11) *0, disabled.
-Oct 30 11:56:22 ubuntu kernel: [    0.741524] ACPI: PCI Interrupt Link
-[LNKB] (IRQs 3 4 5 6 7 10 11) *0, disabled.
-Oct 30 11:56:22 ubuntu kernel: [    0.744485] ACPI: PCI Interrupt Link
-[LNKC] (IRQs 3 4 5 6 7 10 11) *0, disabled.
-Oct 30 11:56:22 ubuntu kernel: [    0.744971] ACPI: PCI Interrupt Link
-[LNKD] (IRQs 3 4 5 6 7 10 11) *0, disabled.
-Oct 30 11:56:22 ubuntu kernel: [    0.745951] ACPI: PCI Interrupt Link
-[LNKE] (IRQs 3 4 5 6 7 10 11) *0, disabled.
-Oct 30 11:56:22 ubuntu kernel: [    0.746445] ACPI: PCI Interrupt Link
-[LNKF] (IRQs 3 4 5 6 7 10 11) *0, disabled.
-Oct 30 11:56:22 ubuntu kernel: [    0.746925] ACPI: PCI Interrupt Link
-[LNK0] (IRQs 3 4 5 6 7 10 11) *0, disabled.
-Oct 30 11:56:22 ubuntu kernel: [    0.747414] ACPI: PCI Interrupt Link
-[LNK1] (IRQs 3 4 5 6 7 10 11) *0, disabled.
-Oct 30 11:56:22 ubuntu kernel: [    0.747826] Linux Plug and Play
-Support v0.97 (c) Adam Belay
-Oct 30 11:56:22 ubuntu kernel: [    0.748037] pnp: PnP ACPI init
-Oct 30 11:56:22 ubuntu kernel: [    0.748074] ACPI: bus type pnp registered
-Oct 30 11:56:22 ubuntu kernel: [    0.749045] pnp 00:09: mem resource
-(0xe0000000-0xefffffff) overlaps 0000:00:00.0 BAR 3
-(0xe0000000-0xffffffff), disabling
-Oct 30 11:56:22 ubuntu kernel: [    0.749045] pnp 00:0a: mem resource
-(0xffff0000-0xffffffff) overlaps 0000:00:00.0 BAR 3
-(0xe0000000-0xffffffff), disabling
-Oct 30 11:56:22 ubuntu kernel: [    0.749045] pnp 00:0a: mem resource
-(0xfec00000-0xfec00fff) overlaps 0000:00:00.0 BAR 3
-(0xe0000000-0xffffffff), disabling
-Oct 30 11:56:22 ubuntu kernel: [    0.749045] pnp 00:0a: mem resource
-(0xfee00000-0xfee00fff) overlaps 0000:00:00.0 BAR 3
-(0xe0000000-0xffffffff), disabling
-Oct 30 11:56:22 ubuntu kernel: [    0.749045] pnp 00:0a: mem resource
-(0xfff80000-0xfffeffff) overlaps 0000:00:00.0 BAR 3
-(0xe0000000-0xffffffff), disabling
-Oct 30 11:56:22 ubuntu kernel: [    0.749045] pnp: PnP ACPI: found 11 devices
-Oct 30 11:56:22 ubuntu kernel: [    0.749045] ACPI: ACPI bus type pnp
-unregistered
-Oct 30 11:56:22 ubuntu kernel: [    0.752046] PCI: Using ACPI for IRQ routing
-Oct 30 11:56:22 ubuntu kernel: [    0.752073] pci 0000:00:00.0: BAR 3:
-can't allocate resource
-Oct 30 11:56:22 ubuntu kernel: [    0.772041] NET: Registered protocol family 8
-Oct 30 11:56:22 ubuntu kernel: [    0.772075] NET: Registered protocol family 20
-Oct 30 11:56:22 ubuntu kernel: [    0.772119] NetLabel: Initializing
-Oct 30 11:56:22 ubuntu kernel: [    0.772119] NetLabel:  domain hash size = 128
-Oct 30 11:56:22 ubuntu kernel: [    0.772119] NetLabel:  protocols =
-UNLABELED CIPSOv4
-Oct 30 11:56:22 ubuntu kernel: [    0.772142] NetLabel:  unlabeled
-traffic allowed by default
-Oct 30 11:56:22 ubuntu kernel: [    0.772233] hpet0: at MMIO
-0xfed00000, IRQs 2, 8, 0, 0
-Oct 30 11:56:22 ubuntu kernel: [    0.772310] hpet0: 4 32-bit timers,
-14318180 Hz
-Oct 30 11:56:22 ubuntu kernel: [    0.776041] Switched to high
-resolution mode on CPU 0
-Oct 30 11:56:22 ubuntu kernel: [    0.776748] tracer: 1286 pages
-allocated for 65536 entries of 80 bytes
-Oct 30 11:56:22 ubuntu kernel: [    0.776782]    actual entries 65586
-Oct 30 11:56:22 ubuntu kernel: [    0.776802] Switched to high
-resolution mode on CPU 1
-Oct 30 11:56:22 ubuntu kernel: [    0.776812] Switched to high
-resolution mode on CPU 2
-Oct 30 11:56:22 ubuntu kernel: [    0.776822] Switched to high
-resolution mode on CPU 3
-Oct 30 11:56:22 ubuntu kernel: [    0.776898] AppArmor: AppArmor
-Filesystem Enabled
-Oct 30 11:56:22 ubuntu kernel: [    0.776949] ACPI: RTC can wake from S4
-Oct 30 11:56:22 ubuntu kernel: [    0.792028] system 00:01: ioport
-range 0x4d0-0x4d1 has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792064] system 00:01: ioport
-range 0x220-0x225 has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792098] system 00:01: ioport
-range 0x290-0x294 has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792135] system 00:02: ioport
-range 0x4100-0x411f has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792171] system 00:02: ioport
-range 0x228-0x22f has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792205] system 00:02: ioport
-range 0x238-0x23f has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792239] system 00:02: ioport
-range 0x40b-0x40b has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792273] system 00:02: ioport
-range 0x4d6-0x4d6 has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792308] system 00:02: ioport
-range 0xc00-0xc01 has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792343] system 00:02: ioport
-range 0xc14-0xc14 has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792377] system 00:02: ioport
-range 0xc50-0xc52 has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792412] system 00:02: ioport
-range 0xc6c-0xc6d has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792446] system 00:02: ioport
-range 0xc6f-0xc6f has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792481] system 00:02: ioport
-range 0xcd0-0xcd1 has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792516] system 00:02: ioport
-range 0xcd2-0xcd3 has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792550] system 00:02: ioport
-range 0xcd4-0xcdf has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792584] system 00:02: ioport
-range 0x4000-0x40fe has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792619] system 00:02: ioport
-range 0x4210-0x4217 has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792653] system 00:02: ioport
-range 0xb00-0xb0f has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792688] system 00:02: ioport
-range 0xb10-0xb1f has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792722] system 00:02: ioport
-range 0xb20-0xb3f has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792770] system 00:0a: iomem
-range 0xd1a00-0xd3fff has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792805] system 00:0a: iomem
-range 0xf0000-0xf7fff could not be reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792840] system 00:0a: iomem
-range 0xf8000-0xfbfff could not be reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792875] system 00:0a: iomem
-range 0xfc000-0xfffff could not be reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792909] system 00:0a: iomem
-range 0x77de0000-0x77dfffff could not be reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792947] system 00:0a: iomem
-range 0x0-0x9ffff could not be reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.792982] system 00:0a: iomem
-range 0x100000-0x77ddffff could not be reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.793019] system 00:0a: iomem
-range 0x77ef0000-0x7feeffff has been reserved
-Oct 30 11:56:22 ubuntu kernel: [    0.798179] pci 0000:00:01.0: PCI
-bridge, secondary bus 0000:01
-Oct 30 11:56:22 ubuntu kernel: [    0.798214] pci 0000:00:01.0:   IO
-window: 0xe000-0xefff
-Oct 30 11:56:22 ubuntu kernel: [    0.798249] pci 0000:00:01.0:   MEM
-window: 0xfdd00000-0xfdefffff
-Oct 30 11:56:22 ubuntu kernel: [    0.798285] pci 0000:00:01.0:
-PREFETCH window: 0x000000d8000000-0x000000dfffffff
-Oct 30 11:56:22 ubuntu kernel: [    0.798324] pci 0000:00:0a.0: PCI
-bridge, secondary bus 0000:02
-Oct 30 11:56:22 ubuntu kernel: [    0.798359] pci 0000:00:0a.0:   IO
-window: 0xd000-0xdfff
-Oct 30 11:56:22 ubuntu kernel: [    0.798393] pci 0000:00:0a.0:   MEM
-window: 0xfda00000-0xfdafffff
-Oct 30 11:56:22 ubuntu kernel: [    0.798428] pci 0000:00:0a.0:
-PREFETCH window: 0x000000fdf00000-0x000000fdffffff
-Oct 30 11:56:22 ubuntu kernel: [    0.798466] pci 0000:00:14.4: PCI
-bridge, secondary bus 0000:03
-Oct 30 11:56:22 ubuntu kernel: [    0.798502] pci 0000:00:14.4:   IO
-window: 0xc000-0xcfff
-Oct 30 11:56:22 ubuntu kernel: [    0.798538] pci 0000:00:14.4:   MEM
-window: 0xfdc00000-0xfdcfffff
-Oct 30 11:56:22 ubuntu kernel: [    0.798574] pci 0000:00:14.4:
-PREFETCH window: 0x000000fdb00000-0x000000fdbfffff
-Oct 30 11:56:22 ubuntu kernel: [    0.798630] pci 0000:00:0a.0: PCI
-INT A -> GSI 18 (level, low) -> IRQ 18
-Oct 30 11:56:22 ubuntu kernel: [    0.798665] pci 0000:00:0a.0:
-setting latency timer to 64
-Oct 30 11:56:22 ubuntu kernel: [    0.798672] bus: 00 index 0 io port: [0, ffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.798705] bus: 00 index 1 mmio:
-[0, ffffffffffffffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.798739] bus: 01 index 0 io port:
-[e000, efff]
-Oct 30 11:56:22 ubuntu kernel: [    0.798772] bus: 01 index 1 mmio:
-[fdd00000, fdefffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.798806] bus: 01 index 2 mmio:
-[d8000000, dfffffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.798839] bus: 01 index 3 mmio: [0, 0]
-Oct 30 11:56:22 ubuntu kernel: [    0.798871] bus: 02 index 0 io port:
-[d000, dfff]
-Oct 30 11:56:22 ubuntu kernel: [    0.798904] bus: 02 index 1 mmio:
-[fda00000, fdafffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.798938] bus: 02 index 2 mmio:
-[fdf00000, fdffffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.798971] bus: 02 index 3 mmio: [0, 0]
-Oct 30 11:56:22 ubuntu kernel: [    0.799003] bus: 03 index 0 io port:
-[c000, cfff]
-Oct 30 11:56:22 ubuntu kernel: [    0.799036] bus: 03 index 1 mmio:
-[fdc00000, fdcfffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.799070] bus: 03 index 2 mmio:
-[fdb00000, fdbfffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.799103] bus: 03 index 3 io port: [0, ffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.799136] bus: 03 index 4 mmio:
-[0, ffffffffffffffff]
-Oct 30 11:56:22 ubuntu kernel: [    0.799179] NET: Registered protocol family 2
-Oct 30 11:56:22 ubuntu kernel: [    0.840129] IP route cache hash
-table entries: 65536 (order: 7, 524288 bytes)
-Oct 30 11:56:22 ubuntu kernel: [    0.840957] TCP established hash
-table entries: 262144 (order: 10, 4194304 bytes)
-Oct 30 11:56:22 ubuntu kernel: [    0.842421] TCP bind hash table
-entries: 65536 (order: 8, 1048576 bytes)
-Oct 30 11:56:22 ubuntu kernel: [    0.842792] TCP: Hash tables
-configured (established 262144 bind 65536)
-Oct 30 11:56:22 ubuntu kernel: [    0.842826] TCP reno registered
-Oct 30 11:56:22 ubuntu kernel: [    0.852108] NET: Registered protocol family 1
-Oct 30 11:56:22 ubuntu kernel: [    0.852252] checking if image is
-initramfs... it is
-Oct 30 11:56:22 ubuntu kernel: [    1.549062] Freeing initrd memory: 8988k freed
-Oct 30 11:56:22 ubuntu kernel: [    1.554035] audit: initializing
-netlink socket (disabled)
-Oct 30 11:56:22 ubuntu kernel: [    1.554082] type=2000
-audit(1225367664.552:1): initialized
-Oct 30 11:56:22 ubuntu kernel: [    1.559396] HugeTLB registered 2 MB
-page size, pre-allocated 0 pages
-Oct 30 11:56:22 ubuntu kernel: [    1.562162] VFS: Disk quotas dquot_6.5.1
-Oct 30 11:56:22 ubuntu kernel: [    1.562278] Dquot-cache hash table
-entries: 512 (order 0, 4096 bytes)
-Oct 30 11:56:22 ubuntu kernel: [    1.562413] msgmni has been set to 3760
-Oct 30 11:56:22 ubuntu kernel: [    1.562571] io scheduler noop registered
-Oct 30 11:56:22 ubuntu kernel: [    1.562604] io scheduler
-anticipatory registered
-Oct 30 11:56:22 ubuntu kernel: [    1.562638] io scheduler deadline registered
-Oct 30 11:56:22 ubuntu kernel: [    1.562795] io scheduler cfq
-registered (default)
-Oct 30 11:56:22 ubuntu kernel: [    1.684050] pci 0000:01:05.0: Boot
-video device
-Oct 30 11:56:22 ubuntu kernel: [    1.684183] pcieport-driver
-0000:00:0a.0: setting latency timer to 64
-Oct 30 11:56:22 ubuntu kernel: [    1.684204] pcieport-driver
-0000:00:0a.0: found MSI capability
-Oct 30 11:56:22 ubuntu kernel: [    1.684263] pci_express
-0000:00:0a.0:pcie00: allocate port service
-Oct 30 11:56:22 ubuntu kernel: [    1.720860] hpet_resources: 0xfed00000 is busy
-Oct 30 11:56:22 ubuntu kernel: [    1.720928] Linux agpgart interface v0.103
-Oct 30 11:56:22 ubuntu kernel: [    1.720966] Serial: 8250/16550
-driver4 ports, IRQ sharing enabled
-Oct 30 11:56:22 ubuntu kernel: [    1.723146] brd: module loaded
-Oct 30 11:56:22 ubuntu kernel: [    1.723247] input: Macintosh mouse
-button emulation as /devices/virtual/input/input0
-Oct 30 11:56:22 ubuntu kernel: [    1.723390] PNP: PS/2 Controller
-[PNP0303:PS2K] at 0x60,0x64 irq 1
-Oct 30 11:56:22 ubuntu kernel: [    1.723424] PNP: PS/2 appears to
-have AUX port disabled, if this is incorrect please boot with
-i8042.nopnp
-Oct 30 11:56:22 ubuntu kernel: [    1.723587] serio: i8042 KBD port at
-0x60,0x64 irq 1
-Oct 30 11:56:22 ubuntu kernel: [    1.740136] mice: PS/2 mouse device
-common for all mice
-Oct 30 11:56:22 ubuntu kernel: [    1.740298] rtc_cmos 00:05: rtc
-core: registered rtc_cmos as rtc0
-Oct 30 11:56:22 ubuntu kernel: [    1.740361] rtc0: alarms up to one
-month, hpet irqs
-Oct 30 11:56:22 ubuntu kernel: [    1.740431] cpuidle: using governor ladder
-Oct 30 11:56:22 ubuntu kernel: [    1.740465] cpuidle: using governor menu
-Oct 30 11:56:22 ubuntu kernel: [    1.740875] TCP cubic registered
-Oct 30 11:56:22 ubuntu kernel: [    1.741117] registered taskstats version 1
-Oct 30 11:56:22 ubuntu kernel: [    1.741275]   Magic number: 12:336:935
-Oct 30 11:56:22 ubuntu kernel: [    1.741412] rtc_cmos 00:05: setting
-system clock to 2008-10-30 11:54:25 UTC (1225367665)
-Oct 30 11:56:22 ubuntu kernel: [    1.741450] BIOS EDD facility v0.16
-2004-Jun-25, 0 devices found
-Oct 30 11:56:22 ubuntu kernel: [    1.741484] EDD information not available.
-Oct 30 11:56:22 ubuntu kernel: [    1.741547] Freeing unused kernel
-memory: 536k freed
-Oct 30 11:56:22 ubuntu kernel: [    1.741775] Write protecting the
-kernel read-only data: 4348k
-Oct 30 11:56:22 ubuntu kernel: [    1.757365] input: AT Translated Set
-2 keyboard as /devices/platform/i8042/serio0/input/input1
-Oct 30 11:56:22 ubuntu kernel: [    1.832998] fuse init (API version 7.9)
-Oct 30 11:56:22 ubuntu kernel: [    1.853066] processor ACPI0007:00:
-registered as cooling_device0
-Oct 30 11:56:22 ubuntu kernel: [    1.853166] processor ACPI0007:01:
-registered as cooling_device1
-Oct 30 11:56:22 ubuntu kernel: [    1.853263] processor ACPI0007:02:
-registered as cooling_device2
-Oct 30 11:56:22 ubuntu kernel: [    1.853359] processor ACPI0007:03:
-registered as cooling_device3
-Oct 30 11:56:22 ubuntu kernel: [    2.004582] No dock devices found.
-Oct 30 11:56:22 ubuntu kernel: [    2.015361] SCSI subsystem initialized
-Oct 30 11:56:22 ubuntu kernel: [    2.017298] r8169 Gigabit Ethernet
-driver 2.3LK-NAPI loaded
-Oct 30 11:56:22 ubuntu kernel: [    2.017354] r8169 0000:02:00.0: PCI
-INT A -> GSI 18 (level, low) -> IRQ 18
-Oct 30 11:56:22 ubuntu kernel: [    2.017404] r8169 0000:02:00.0:
-setting latency timer to 64
-Oct 30 11:56:22 ubuntu kernel: [    2.017697] eth0: RTL8168c/8111c at
-0xffffc20000372000, 00:1f:d0:56:5e:a0, XID 3c4000c0 IRQ 2302
-Oct 30 11:56:22 ubuntu kernel: [    2.035130] libata version 3.00 loaded.
-Oct 30 11:56:22 ubuntu kernel: [    2.047195] usbcore: registered new
-interface driver usbfs
-Oct 30 11:56:22 ubuntu kernel: [    2.047280] usbcore: registered new
-interface driver hub
-Oct 30 11:56:22 ubuntu kernel: [    2.050234] usbcore: registered new
-device driver usb
-Oct 30 11:56:22 ubuntu kernel: [    2.050365] ahci 0000:00:11.0: version 3.0
-Oct 30 11:56:22 ubuntu kernel: [    2.050391] ahci 0000:00:11.0: PCI
-INT A -> GSI 22 (level, low) -> IRQ 22
-Oct 30 11:56:22 ubuntu kernel: [    2.050582] ahci 0000:00:11.0: AHCI
-0001.0100 32 slots 6 ports 3 Gbps 0x3f impl SATA mode
-Oct 30 11:56:22 ubuntu kernel: [    2.050621] ahci 0000:00:11.0:
-flags: 64bit ncq sntf ilck pm led clo pmp pio slum part
-Oct 30 11:56:22 ubuntu kernel: [    2.051655] scsi0 : ahci
-Oct 30 11:56:22 ubuntu kernel: [    2.051793] scsi1 : ahci
-Oct 30 11:56:22 ubuntu kernel: [    2.051872] scsi2 : ahci
-Oct 30 11:56:22 ubuntu kernel: [    2.051951] scsi3 : ahci
-Oct 30 11:56:22 ubuntu kernel: [    2.052029] scsi4 : ahci
-Oct 30 11:56:22 ubuntu kernel: [    2.052108] scsi5 : ahci
-Oct 30 11:56:22 ubuntu kernel: [    2.052243] ata1: SATA max UDMA/133
-abar m1024@0xfe02f000 port 0xfe02f100 irq 2301
-Oct 30 11:56:22 ubuntu kernel: [    2.052281] ata2: SATA max UDMA/133
-abar m1024@0xfe02f000 port 0xfe02f180 irq 2301
-Oct 30 11:56:22 ubuntu kernel: [    2.052808] ata3: SATA max UDMA/133
-abar m1024@0xfe02f000 port 0xfe02f200 irq 2301
-Oct 30 11:56:22 ubuntu kernel: [    2.052845] ata4: SATA max UDMA/133
-abar m1024@0xfe02f000 port 0xfe02f280 irq 2301
-Oct 30 11:56:22 ubuntu kernel: [    2.052882] ata5: SATA max UDMA/133
-abar m1024@0xfe02f000 port 0xfe02f300 irq 2301
-Oct 30 11:56:22 ubuntu kernel: [    2.052920] ata6: SATA max UDMA/133
-abar m1024@0xfe02f000 port 0xfe02f380 irq 2301
-Oct 30 11:56:22 ubuntu kernel: [    2.060096] ohci_hcd: 2006 August 04
-USB 1.1 'Open' Host Controller (OHCI) Driver
-Oct 30 11:56:22 ubuntu kernel: [    2.536026] ata1: softreset failed
-(device not ready)
-Oct 30 11:56:22 ubuntu kernel: [    2.536067] ata1: failed due to HW
-bug, retry pmp=0
-Oct 30 11:56:22 ubuntu kernel: [    2.700039] ata1: SATA link up 3.0
-Gbps (SStatus 123 SControl 300)
-Oct 30 11:56:22 ubuntu kernel: [    2.706414] ata1.00: ATA-7: SAMSUNG
-HD642JJ, 1AA01112, max UDMA7
-Oct 30 11:56:22 ubuntu kernel: [    2.706454] ata1.00: 1250263728
-sectors, multi 0: LBA48 NCQ (depth 31/32)
-Oct 30 11:56:22 ubuntu kernel: [    2.712880] ata1.00: configured for UDMA/133
-Oct 30 11:56:22 ubuntu kernel: [    3.048034] ata2: SATA link down
-(SStatus 0 SControl 300)
-Oct 30 11:56:22 ubuntu kernel: [    3.384034] ata3: SATA link down
-(SStatus 0 SControl 300)
-Oct 30 11:56:22 ubuntu kernel: [    3.720025] ata4: SATA link down
-(SStatus 0 SControl 300)
-Oct 30 11:56:22 ubuntu kernel: [    4.220023] ata5: softreset failed
-(device not ready)
-Oct 30 11:56:22 ubuntu kernel: [    4.220060] ata5: failed due to HW
-bug, retry pmp=0
-Oct 30 11:56:22 ubuntu kernel: [    4.384029] ata5: SATA link up 3.0
-Gbps (SStatus 123 SControl 300)
-Oct 30 11:56:22 ubuntu kernel: [    4.390388] ata5.00: ATA-7: SAMSUNG
-HD642JJ, 1AA01112, max UDMA7
-Oct 30 11:56:22 ubuntu kernel: [    4.390422] ata5.00: 1250263728
-sectors, multi 0: LBA48 NCQ (depth 31/32)
-Oct 30 11:56:22 ubuntu kernel: [    4.396842] ata5.00: configured for UDMA/133
-Oct 30 11:56:22 ubuntu kernel: [    4.732032] ata6: SATA link down
-(SStatus 0 SControl 300)
-Oct 30 11:56:22 ubuntu kernel: [    4.748117] scsi 0:0:0:0:
-Direct-Access     ATA      SAMSUNG HD642JJ  1AA0 PQ: 0 ANSI: 5
-Oct 30 11:56:22 ubuntu kernel: [    4.748265] scsi 4:0:0:0:
-Direct-Access     ATA      SAMSUNG HD642JJ  1AA0 PQ: 0 ANSI: 5
-Oct 30 11:56:22 ubuntu kernel: [    4.748754] ohci_hcd 0000:00:12.0:
-PCI INT A -> GSI 16 (level, low) -> IRQ 16
-Oct 30 11:56:22 ubuntu kernel: [    4.748805] ohci_hcd 0000:00:12.0:
-OHCI Host Controller
-Oct 30 11:56:22 ubuntu kernel: [    4.748886] ohci_hcd 0000:00:12.0:
-new USB bus registered, assigned bus number 1
-Oct 30 11:56:22 ubuntu kernel: [    4.748957] ohci_hcd 0000:00:12.0:
-irq 16, io mem 0xfe02e000
-Oct 30 11:56:22 ubuntu kernel: [    4.808118] usb usb1: configuration
-#1 chosen from 1 choice
-Oct 30 11:56:22 ubuntu kernel: [    4.808181] hub 1-0:1.0: USB hub found
-Oct 30 11:56:22 ubuntu kernel: [    4.808221] hub 1-0:1.0: 3 ports detected
-Oct 30 11:56:22 ubuntu kernel: [    5.013760] ohci_hcd 0000:00:12.1:
-PCI INT A -> GSI 16 (level, low) -> IRQ 16
-Oct 30 11:56:22 ubuntu kernel: [    5.013809] ohci_hcd 0000:00:12.1:
-OHCI Host Controller
-Oct 30 11:56:22 ubuntu kernel: [    5.013874] ohci_hcd 0000:00:12.1:
-new USB bus registered, assigned bus number 2
-Oct 30 11:56:22 ubuntu kernel: [    5.013926] ohci_hcd 0000:00:12.1:
-irq 16, io mem 0xfe02d000
-Oct 30 11:56:22 ubuntu kernel: [    5.073198] usb usb2: configuration
-#1 chosen from 1 choice
-Oct 30 11:56:22 ubuntu kernel: [    5.073756] hub 2-0:1.0: USB hub found
-Oct 30 11:56:22 ubuntu kernel: [    5.073798] hub 2-0:1.0: 3 ports detected
-Oct 30 11:56:22 ubuntu kernel: [    5.176019] usb 1-2: new low speed
-USB device using ohci_hcd and address 2
-Oct 30 11:56:22 ubuntu kernel: [    5.177215] ehci_hcd 0000:00:12.2:
-PCI INT B -> GSI 17 (level, low) -> IRQ 17
-Oct 30 11:56:22 ubuntu kernel: [    5.177262] ehci_hcd 0000:00:12.2:
-EHCI Host Controller
-Oct 30 11:56:22 ubuntu kernel: [    5.177334] ehci_hcd 0000:00:12.2:
-new USB bus registered, assigned bus number 3
-Oct 30 11:56:22 ubuntu kernel: [    5.177401] ehci_hcd 0000:00:12.2:
-debug port 1
-Oct 30 11:56:22 ubuntu kernel: [    5.177459] ehci_hcd 0000:00:12.2:
-irq 17, io mem 0xfe02c000
-Oct 30 11:56:22 ubuntu kernel: [    5.324020] ehci_hcd 0000:00:12.2:
-USB 2.0 started, EHCI 1.00, driver 10 Dec 2004
-Oct 30 11:56:22 ubuntu kernel: [    5.324169] usb usb3: configuration
-#1 chosen from 1 choice
-Oct 30 11:56:22 ubuntu kernel: [    5.324225] hub 3-0:1.0: USB hub found
-Oct 30 11:56:22 ubuntu kernel: [    5.324264] hub 3-0:1.0: 6 ports detected
-Oct 30 11:56:22 ubuntu kernel: [    5.533207] ohci_hcd 0000:00:13.0:
-PCI INT A -> GSI 18 (level, low) -> IRQ 18
-Oct 30 11:56:22 ubuntu kernel: [    5.533250] ohci_hcd 0000:00:13.0:
-OHCI Host Controller
-Oct 30 11:56:22 ubuntu kernel: [    5.533309] ohci_hcd 0000:00:13.0:
-new USB bus registered, assigned bus number 4
-Oct 30 11:56:22 ubuntu kernel: [    5.533370] ohci_hcd 0000:00:13.0:
-irq 18, io mem 0xfe02b000
-Oct 30 11:56:22 ubuntu kernel: [    5.592087] usb usb4: configuration
-#1 chosen from 1 choice
-Oct 30 11:56:22 ubuntu kernel: [    5.592143] hub 4-0:1.0: USB hub found
-Oct 30 11:56:22 ubuntu kernel: [    5.592182] hub 4-0:1.0: 3 ports detected
-Oct 30 11:56:22 ubuntu kernel: [    5.693291] ohci_hcd 0000:00:13.1:
-PCI INT A -> GSI 18 (level, low) -> IRQ 18
-Oct 30 11:56:22 ubuntu kernel: [    5.693334] ohci_hcd 0000:00:13.1:
-OHCI Host Controller
-Oct 30 11:56:22 ubuntu kernel: [    5.693390] ohci_hcd 0000:00:13.1:
-new USB bus registered, assigned bus number 5
-Oct 30 11:56:22 ubuntu kernel: [    5.693439] ohci_hcd 0000:00:13.1:
-irq 18, io mem 0xfe02a000
-Oct 30 11:56:22 ubuntu kernel: [    5.720020] usb 1-2: device not
-accepting address 2, error -62
-Oct 30 11:56:22 ubuntu kernel: [    5.752083] usb usb5: configuration
-#1 chosen from 1 choice
-Oct 30 11:56:22 ubuntu kernel: [    5.752138] hub 5-0:1.0: USB hub found
-Oct 30 11:56:22 ubuntu kernel: [    5.752177] hub 5-0:1.0: 3 ports detected
-Oct 30 11:56:22 ubuntu kernel: [    5.776030] hub 1-0:1.0: unable to
-enumerate USB device on port 2
-Oct 30 11:56:22 ubuntu kernel: [    5.956175] ehci_hcd 0000:00:13.2:
-PCI INT B -> GSI 19 (level, low) -> IRQ 19
-Oct 30 11:56:22 ubuntu kernel: [    5.956218] ehci_hcd 0000:00:13.2:
-EHCI Host Controller
-Oct 30 11:56:22 ubuntu kernel: [    5.956277] ehci_hcd 0000:00:13.2:
-new USB bus registered, assigned bus number 6
-Oct 30 11:56:22 ubuntu kernel: [    5.956343] ehci_hcd 0000:00:13.2:
-debug port 1
-Oct 30 11:56:22 ubuntu kernel: [    5.956396] ehci_hcd 0000:00:13.2:
-irq 19, io mem 0xfe029000
-Oct 30 11:56:22 ubuntu kernel: [    5.976019] ehci_hcd 0000:00:13.2:
-USB 2.0 started, EHCI 1.00, driver 10 Dec 2004
-Oct 30 11:56:22 ubuntu kernel: [    5.976144] usb usb6: configuration
-#1 chosen from 1 choice
-Oct 30 11:56:22 ubuntu kernel: [    5.976201] hub 6-0:1.0: USB hub found
-Oct 30 11:56:22 ubuntu kernel: [    5.976238] hub 6-0:1.0: 6 ports detected
-Oct 30 11:56:22 ubuntu kernel: [    6.185520] pata_acpi 0000:00:14.1:
-PCI INT A -> GSI 16 (level, low) -> IRQ 16
-Oct 30 11:56:22 ubuntu kernel: [    6.185659] ohci_hcd 0000:00:14.5:
-PCI INT C -> GSI 18 (level, low) -> IRQ 18
-Oct 30 11:56:22 ubuntu kernel: [    6.185704] ohci_hcd 0000:00:14.5:
-OHCI Host Controller
-Oct 30 11:56:22 ubuntu kernel: [    6.185771] ohci_hcd 0000:00:14.5:
-new USB bus registered, assigned bus number 7
-Oct 30 11:56:22 ubuntu kernel: [    6.185821] ohci_hcd 0000:00:14.5:
-irq 18, io mem 0xfe028000
-Oct 30 11:56:22 ubuntu kernel: [    6.244801] usb usb7: configuration
-#1 chosen from 1 choice
-Oct 30 11:56:22 ubuntu kernel: [    6.244864] hub 7-0:1.0: USB hub found
-Oct 30 11:56:22 ubuntu kernel: [    6.244903] hub 7-0:1.0: 2 ports detected
-Oct 30 11:56:22 ubuntu kernel: [    6.357707] scsi6 : pata_atiixp
-Oct 30 11:56:22 ubuntu kernel: [    6.357807] scsi7 : pata_atiixp
-Oct 30 11:56:22 ubuntu kernel: [    6.359019] ata7: PATA max UDMA/100
-cmd 0x1f0 ctl 0x3f6 bmdma 0xfa00 irq 14
-Oct 30 11:56:22 ubuntu kernel: [    6.359054] ata8: PATA max UDMA/100
-cmd 0x170 ctl 0x376 bmdma 0xfa08 irq 15
-Oct 30 11:56:22 ubuntu kernel: [    6.360814] scsi 0:0:0:0: Attached
-scsi generic sg0 type 0
-Oct 30 11:56:22 ubuntu kernel: [    6.360887] scsi 4:0:0:0: Attached
-scsi generic sg1 type 0
-Oct 30 11:56:22 ubuntu kernel: [    6.369529] usb 1-2: new low speed
-USB device using ohci_hcd and address 4
-Oct 30 11:56:22 ubuntu kernel: [    6.378333] Driver 'sd' needs
-updating - please use bus_type methods
-Oct 30 11:56:22 ubuntu kernel: [    6.378478] sd 0:0:0:0: [sda]
-1250263728 512-byte hardware sectors (640135 MB)
-Oct 30 11:56:22 ubuntu kernel: [    6.378527] sd 0:0:0:0: [sda] Write
-Protect is off
-Oct 30 11:56:22 ubuntu kernel: [    6.378561] sd 0:0:0:0: [sda] Mode
-Sense: 00 3a 00 00
-Oct 30 11:56:22 ubuntu kernel: [    6.378583] sd 0:0:0:0: [sda] Write
-cache: enabled, read cache: enabled, doesn't support DPO or FUA
-Oct 30 11:56:22 ubuntu kernel: [    6.378682] sd 0:0:0:0: [sda]
-1250263728 512-byte hardware sectors (640135 MB)
-Oct 30 11:56:22 ubuntu kernel: [    6.378730] sd 0:0:0:0: [sda] Write
-Protect is off
-Oct 30 11:56:22 ubuntu kernel: [    6.378764] sd 0:0:0:0: [sda] Mode
-Sense: 00 3a 00 00
-Oct 30 11:56:22 ubuntu kernel: [    6.378785] sd 0:0:0:0: [sda] Write
-cache: enabled, read cache: enabled, doesn't support DPO or FUA
-Oct 30 11:56:22 ubuntu kernel: [    6.378826]  sda: sda1 sda2
-Oct 30 11:56:22 ubuntu kernel: [    6.396744] sd 0:0:0:0: [sda]
-Attached SCSI disk
-Oct 30 11:56:22 ubuntu kernel: [    6.396859] sd 4:0:0:0: [sdb]
-1250263728 512-byte hardware sectors (640135 MB)
-Oct 30 11:56:22 ubuntu kernel: [    6.396912] sd 4:0:0:0: [sdb] Write
-Protect is off
-Oct 30 11:56:22 ubuntu kernel: [    6.396946] sd 4:0:0:0: [sdb] Mode
-Sense: 00 3a 00 00
-Oct 30 11:56:22 ubuntu kernel: [    6.396978] sd 4:0:0:0: [sdb] Write
-cache: enabled, read cache: enabled, doesn't support DPO or FUA
-Oct 30 11:56:22 ubuntu kernel: [    6.397062] sd 4:0:0:0: [sdb]
-1250263728 512-byte hardware sectors (640135 MB)
-Oct 30 11:56:22 ubuntu kernel: [    6.397111] sd 4:0:0:0: [sdb] Write
-Protect is off
-Oct 30 11:56:22 ubuntu kernel: [    6.397144] sd 4:0:0:0: [sdb] Mode
-Sense: 00 3a 00 00
-Oct 30 11:56:22 ubuntu kernel: [    6.397167] sd 4:0:0:0: [sdb] Write
-cache: enabled, read cache: enabled, doesn't support DPO or FUA
-Oct 30 11:56:22 ubuntu kernel: [    6.397213]  sdb: sdb1 sdb2
-Oct 30 11:56:22 ubuntu kernel: [    6.411444] sd 4:0:0:0: [sdb]
-Attached SCSI disk
-Oct 30 11:56:22 ubuntu kernel: [    6.520501] ata7.00: ATAPI: TOSHIBA
-DVD-ROM SD-M1612, 1004, max UDMA/33
-Oct 30 11:56:22 ubuntu kernel: [    6.536460] ata7.00: configured for UDMA/33
-Oct 30 11:56:22 ubuntu kernel: [    6.537237] usb 1-2: configuration
-#1 chosen from 1 choice
-Oct 30 11:56:22 ubuntu kernel: [    6.592082] usbcore: registered new
-interface driver hiddev
-Oct 30 11:56:22 ubuntu kernel: [    6.598919] input: Logitech USB-PS/2
-Optical Mouse as
-/devices/pci0000:00/0000:00:12.0/usb1/1-2/1-2:1.0/input/input2
-Oct 30 11:56:22 ubuntu kernel: [    6.626670] input,hidraw0: USB HID
-v1.10 Mouse [Logitech USB-PS/2 Optical Mouse] on usb-0000:00:12.0-2
-Oct 30 11:56:22 ubuntu kernel: [    6.626846] usbcore: registered new
-interface driver usbhid
-Oct 30 11:56:22 ubuntu kernel: [    6.628416] usbhid: v2.6:USB HID core driver
-Oct 30 11:56:22 ubuntu kernel: [    6.692121] isa bounce pool size: 16 pages
-Oct 30 11:56:22 ubuntu kernel: [    6.693579] scsi 6:0:0:0: CD-ROM
-      TOSHIBA  DVD-ROM SD-M1612 1004 PQ: 0 ANSI: 5
-Oct 30 11:56:22 ubuntu kernel: [    6.693760] scsi 6:0:0:0: Attached
-scsi generic sg2 type 5
-Oct 30 11:56:22 ubuntu kernel: [    6.711730] Driver 'sr' needs
-updating - please use bus_type methods
-Oct 30 11:56:22 ubuntu kernel: [    6.713140] sr0: scsi3-mmc drive:
-48x/48x cd/rw xa/form2 cdda tray
-Oct 30 11:56:22 ubuntu kernel: [    6.713181] Uniform CD-ROM driver
-Revision: 3.20
-Oct 30 11:56:22 ubuntu kernel: [    6.713309] sr 6:0:0:0: Attached
-scsi CD-ROM sr0
-Oct 30 11:56:22 ubuntu kernel: [    6.865525] usb 5-3: new low speed
-USB device using ohci_hcd and address 2
-Oct 30 11:56:22 ubuntu kernel: [    7.048232] usb 5-3: configuration
-#1 chosen from 1 choice
-Oct 30 11:56:22 ubuntu kernel: [    7.129318] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [    7.129325] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [    8.206526] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [    8.206533] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [    9.261160] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [    9.261169] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   10.316918] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   10.316926] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   11.368748] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   11.368757] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   12.424444] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   12.424453] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   13.480339] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   13.480347] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   14.536525] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   14.536533] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   15.592624] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   15.592632] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   16.387170] sr 6:0:0:0: [sr0]
-Result: hostbyte=DID_OK driverbyte=DRIVER_SENSE,SUGGEST_OK
-Oct 30 11:56:22 ubuntu kernel: [   16.387241] sr 6:0:0:0: [sr0] Sense
-Key : Medium Error [current]
-Oct 30 11:56:22 ubuntu kernel: [   16.387359] Info fld=0x56f36
-Oct 30 11:56:22 ubuntu kernel: [   16.387391] sr 6:0:0:0: [sr0] Add.
-Sense: CIRC unrecovered error
-Oct 30 11:56:22 ubuntu kernel: [   16.387482] end_request: I/O error,
-dev sr0, sector 1424600
-Oct 30 11:56:22 ubuntu kernel: [   16.387518] Buffer I/O error on
-device sr0, logical block 356150
-Oct 30 11:56:22 ubuntu kernel: [   16.648494] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   16.648502] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   17.060535]
-/build/buildd/linux-2.6.27/drivers/hid/usbhid/hid-core.c:
-usb_submit_urb(ctrl) failed
-Oct 30 11:56:22 ubuntu kernel: [   17.060586] usbhid: timeout
-initializing reports
-Oct 30 11:56:22 ubuntu kernel: [   17.061269] input: Logitech Logitech
-Attack 3 as /devices/pci0000:00/0000:00:13.1/usb5/5-3/5-3:1.0/input/input3
-Oct 30 11:56:22 ubuntu kernel: [   17.061950] input,hidraw1: USB HID
-v1.10 Joystick [Logitech Logitech Attack 3] on usb-0000:00:13.1-3
-Oct 30 11:56:22 ubuntu kernel: [   17.700562] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   17.700570] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   17.910616] sr 6:0:0:0: [sr0]
-Result: hostbyte=DID_OK driverbyte=DRIVER_SENSE,SUGGEST_OK
-Oct 30 11:56:22 ubuntu kernel: [   17.910686] sr 6:0:0:0: [sr0] Sense
-Key : Medium Error [current]
-Oct 30 11:56:22 ubuntu kernel: [   17.910805] Info fld=0x56f36
-Oct 30 11:56:22 ubuntu kernel: [   17.910837] sr 6:0:0:0: [sr0] Add.
-Sense: CIRC unrecovered error
-Oct 30 11:56:22 ubuntu kernel: [   17.910928] end_request: I/O error,
-dev sr0, sector 1424600
-Oct 30 11:56:22 ubuntu kernel: [   17.910963] Buffer I/O error on
-device sr0, logical block 356150
-Oct 30 11:56:22 ubuntu kernel: [   18.752665] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   18.752673] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   19.434168] sr 6:0:0:0: [sr0]
-Result: hostbyte=DID_OK driverbyte=DRIVER_SENSE,SUGGEST_OK
-Oct 30 11:56:22 ubuntu kernel: [   19.434239] sr 6:0:0:0: [sr0] Sense
-Key : Medium Error [current]
-Oct 30 11:56:22 ubuntu kernel: [   19.434357] Info fld=0x56f36
-Oct 30 11:56:22 ubuntu kernel: [   19.434389] sr 6:0:0:0: [sr0] Add.
-Sense: CIRC unrecovered error
-Oct 30 11:56:22 ubuntu kernel: [   19.434480] end_request: I/O error,
-dev sr0, sector 1424600
-Oct 30 11:56:22 ubuntu kernel: [   19.434515] Buffer I/O error on
-device sr0, logical block 356150
-Oct 30 11:56:22 ubuntu kernel: [   19.808525] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   19.808534] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   20.864630] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   20.864638] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   20.957442] sr 6:0:0:0: [sr0]
-Result: hostbyte=DID_OK driverbyte=DRIVER_SENSE,SUGGEST_OK
-Oct 30 11:56:22 ubuntu kernel: [   20.957517] sr 6:0:0:0: [sr0] Sense
-Key : Medium Error [current]
-Oct 30 11:56:22 ubuntu kernel: [   20.957636] Info fld=0x56f36
-Oct 30 11:56:22 ubuntu kernel: [   20.957668] sr 6:0:0:0: [sr0] Add.
-Sense: CIRC unrecovered error
-Oct 30 11:56:22 ubuntu kernel: [   20.957760] end_request: I/O error,
-dev sr0, sector 1424600
-Oct 30 11:56:22 ubuntu kernel: [   20.957795] Buffer I/O error on
-device sr0, logical block 356150
-Oct 30 11:56:22 ubuntu kernel: [   21.920705] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   21.920713] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   22.480778] sr 6:0:0:0: [sr0]
-Result: hostbyte=DID_OK driverbyte=DRIVER_SENSE,SUGGEST_OK
-Oct 30 11:56:22 ubuntu kernel: [   22.480848] sr 6:0:0:0: [sr0] Sense
-Key : Medium Error [current]
-Oct 30 11:56:22 ubuntu kernel: [   22.480967] Info fld=0x56f36
-Oct 30 11:56:22 ubuntu kernel: [   22.480999] sr 6:0:0:0: [sr0] Add.
-Sense: CIRC unrecovered error
-Oct 30 11:56:22 ubuntu kernel: [   22.481090] end_request: I/O error,
-dev sr0, sector 1424600
-Oct 30 11:56:22 ubuntu kernel: [   22.481125] Buffer I/O error on
-device sr0, logical block 356150
-Oct 30 11:56:22 ubuntu kernel: [   22.976578] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   22.976586] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   24.004493] sr 6:0:0:0: [sr0]
-Result: hostbyte=DID_OK driverbyte=DRIVER_SENSE,SUGGEST_OK
-Oct 30 11:56:22 ubuntu kernel: [   24.004564] sr 6:0:0:0: [sr0] Sense
-Key : Medium Error [current]
-Oct 30 11:56:22 ubuntu kernel: [   24.004683] Info fld=0x56f36
-Oct 30 11:56:22 ubuntu kernel: [   24.004715] sr 6:0:0:0: [sr0] Add.
-Sense: CIRC unrecovered error
-Oct 30 11:56:22 ubuntu kernel: [   24.004806] end_request: I/O error,
-dev sr0, sector 1424600
-Oct 30 11:56:22 ubuntu kernel: [   24.004841] Buffer I/O error on
-device sr0, logical block 356150
-Oct 30 11:56:22 ubuntu kernel: [   24.032594] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   24.032602] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   25.084631] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   25.084639] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   25.527861] sr 6:0:0:0: [sr0]
-Result: hostbyte=DID_OK driverbyte=DRIVER_SENSE,SUGGEST_OK
-Oct 30 11:56:22 ubuntu kernel: [   25.527931] sr 6:0:0:0: [sr0] Sense
-Key : Medium Error [current]
-Oct 30 11:56:22 ubuntu kernel: [   25.528050] Info fld=0x56f36
-Oct 30 11:56:22 ubuntu kernel: [   25.528082] sr 6:0:0:0: [sr0] Add.
-Sense: CIRC unrecovered error
-Oct 30 11:56:22 ubuntu kernel: [   25.528173] end_request: I/O error,
-dev sr0, sector 1424600
-Oct 30 11:56:22 ubuntu kernel: [   25.528208] Buffer I/O error on
-device sr0, logical block 356150
-Oct 30 11:56:22 ubuntu kernel: [   26.140655] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   26.140662] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   26.971326] end_request: I/O error,
-dev sr0, sector 1424596
-Oct 30 11:56:22 ubuntu kernel: [   26.971366] Buffer I/O error on
-device sr0, logical block 356149
-Oct 30 11:56:22 ubuntu kernel: [   27.196639] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   27.196646] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   28.252556] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   28.252564] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   28.498584] sr 6:0:0:0: [sr0]
-Result: hostbyte=DID_OK driverbyte=DRIVER_SENSE,SUGGEST_OK
-Oct 30 11:56:22 ubuntu kernel: [   28.498654] sr 6:0:0:0: [sr0] Sense
-Key : Medium Error [current]
-Oct 30 11:56:22 ubuntu kernel: [   28.498773] Info fld=0x56f36
-Oct 30 11:56:22 ubuntu kernel: [   28.498805] sr 6:0:0:0: [sr0] Add.
-Sense: CIRC unrecovered error
-Oct 30 11:56:22 ubuntu kernel: [   28.498896] end_request: I/O error,
-dev sr0, sector 1424600
-Oct 30 11:56:22 ubuntu kernel: [   28.498931] Buffer I/O error on
-device sr0, logical block 356150
-Oct 30 11:56:22 ubuntu kernel: [   29.308761] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   29.308768] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   30.021792] sr 6:0:0:0: [sr0]
-Result: hostbyte=DID_OK driverbyte=DRIVER_SENSE,SUGGEST_OK
-Oct 30 11:56:22 ubuntu kernel: [   30.021863] sr 6:0:0:0: [sr0] Sense
-Key : Medium Error [current]
-Oct 30 11:56:22 ubuntu kernel: [   30.021981] Info fld=0x56f36
-Oct 30 11:56:22 ubuntu kernel: [   30.022013] sr 6:0:0:0: [sr0] Add.
-Sense: CIRC unrecovered error
-Oct 30 11:56:22 ubuntu kernel: [   30.022104] end_request: I/O error,
-dev sr0, sector 1424600
-Oct 30 11:56:22 ubuntu kernel: [   30.022139] Buffer I/O error on
-device sr0, logical block 356150
-Oct 30 11:56:22 ubuntu kernel: [   30.364639] kjournald starting.
-Commit interval 5 seconds
-Oct 30 11:56:22 ubuntu kernel: [   30.364647] EXT3-fs: mounted
-filesystem with ordered data mode.
-Oct 30 11:56:22 ubuntu kernel: [   32.370277] end_request: I/O error,
-dev sr0, sector 1424592
-Oct 30 11:56:22 ubuntu kernel: [   32.370316] Buffer I/O error on
-device sr0, logical block 178074
-Oct 30 11:56:22 ubuntu kernel: [   33.512916] end_request: I/O error,
-dev sr0, sector 1424592
-Oct 30 11:56:22 ubuntu kernel: [   33.512950] Buffer I/O error on
-device sr0, logical block 178074
-Oct 30 11:56:22 ubuntu kernel: [   34.655424] end_request: I/O error,
-dev sr0, sector 1424592
-Oct 30 11:56:22 ubuntu kernel: [   34.655464] Buffer I/O error on
-device sr0, logical block 178074
-Oct 30 11:56:22 ubuntu kernel: [   36.266407] end_request: I/O error,
-dev sr0, sector 1424592
-Oct 30 11:56:22 ubuntu kernel: [   36.266445] Buffer I/O error on
-device sr0, logical block 178074
-Oct 30 11:56:22 ubuntu kernel: [   37.408952] end_request: I/O error,
-dev sr0, sector 1424592
-Oct 30 11:56:22 ubuntu kernel: [   37.408986] Buffer I/O error on
-device sr0, logical block 178074
-Oct 30 11:56:22 ubuntu kernel: [   38.551605] end_request: I/O error,
-dev sr0, sector 1424592
-Oct 30 11:56:22 ubuntu kernel: [   38.551639] Buffer I/O error on
-device sr0, logical block 178074
-Oct 30 11:56:22 ubuntu kernel: [   39.694090] end_request: I/O error,
-dev sr0, sector 1424592
-Oct 30 11:56:22 ubuntu kernel: [   39.694125] Buffer I/O error on
-device sr0, logical block 178074
-Oct 30 11:56:22 ubuntu kernel: [   41.065373] end_request: I/O error,
-dev sr0, sector 1424592
-Oct 30 11:56:22 ubuntu kernel: [   41.065412] Buffer I/O error on
-device sr0, logical block 178074
-Oct 30 11:56:22 ubuntu kernel: [   42.207776] end_request: I/O error,
-dev sr0, sector 1424592
-Oct 30 11:56:22 ubuntu kernel: [   42.207813] Buffer I/O error on
-device sr0, logical block 178074
-Oct 30 11:56:22 ubuntu kernel: [   42.634991] ISO 9660 Extensions:
-Microsoft Joliet Level 3
-Oct 30 11:56:22 ubuntu kernel: [   42.726718] ISO 9660 Extensions: RRIP_1991A
-Oct 30 11:56:22 ubuntu kernel: [   43.064635] aufs 20080922
-Oct 30 11:56:22 ubuntu kernel: [   43.080066] loop: module loaded
-Oct 30 11:56:22 ubuntu kernel: [   43.353926] squashfs: version 3.3
-(2007/10/31) Phillip Lougher
-Oct 30 11:56:22 ubuntu kernel: [   78.281197] end_request: I/O error,
-dev sr0, sector 1424592
-Oct 30 11:56:22 ubuntu kernel: [   78.281236] Buffer I/O error on
-device sr0, logical block 356148
-Oct 30 11:56:22 ubuntu kernel: [   78.281272] Buffer I/O error on
-device sr0, logical block 356149
-Oct 30 11:56:22 ubuntu kernel: [   79.330520] end_request: I/O error,
-dev sr0, sector 1424592
-Oct 30 11:56:22 ubuntu kernel: [   79.330554] Buffer I/O error on
-device sr0, logical block 356148
-Oct 30 11:56:22 ubuntu kernel: [   79.330589] Buffer I/O error on
-device sr0, logical block 356149
-Oct 30 11:56:22 ubuntu kernel: [   80.386837] end_request: I/O error,
-dev sr0, sector 1424596
-Oct 30 11:56:22 ubuntu kernel: [   80.386871] Buffer I/O error on
-device sr0, logical block 356149
-Oct 30 11:56:22 ubuntu kernel: [   81.445971] end_request: I/O error,
-dev sr0, sector 1424596
-Oct 30 11:56:22 ubuntu kernel: [   81.446005] Buffer I/O error on
-device sr0, logical block 356149
-Oct 30 11:56:22 ubuntu kernel: [   82.501106] end_request: I/O error,
-dev sr0, sector 1424596
-Oct 30 11:56:22 ubuntu kernel: [   82.501140] Buffer I/O error on
-device sr0, logical block 356149
-Oct 30 11:56:22 ubuntu kernel: [   83.555735] end_request: I/O error,
-dev sr0, sector 1424596
-Oct 30 11:56:22 ubuntu kernel: [   83.555770] Buffer I/O error on
-device sr0, logical block 356149
-Oct 30 11:56:22 ubuntu kernel: [   84.610329] end_request: I/O error,
-dev sr0, sector 1424596
-Oct 30 11:56:22 ubuntu kernel: [   84.610364] Buffer I/O error on
-device sr0, logical block 356149
-Oct 30 11:56:22 ubuntu kernel: [   85.709070] end_request: I/O error,
-dev sr0, sector 1424596
-Oct 30 11:56:22 ubuntu kernel: [   85.709104] Buffer I/O error on
-device sr0, logical block 356149
-Oct 30 11:56:22 ubuntu kernel: [   86.764132] end_request: I/O error,
-dev sr0, sector 1424596
-Oct 30 11:56:22 ubuntu kernel: [   86.764166] Buffer I/O error on
-device sr0, logical block 356149
-Oct 30 11:56:22 ubuntu kernel: [  101.409558] udevd version 124 started
-Oct 30 11:56:22 ubuntu kernel: [  101.620362] pci_hotplug: PCI Hot
-Plug PCI Core version: 0.5
-Oct 30 11:56:22 ubuntu kernel: [  101.640155] shpchp: HPC vendor_id
-1022 device_id 9602 ss_vid 0 ss_did 0
-Oct 30 11:56:22 ubuntu kernel: [  101.640198] shpchp: shpc_init:
-cannot reserve MMIO region
-Oct 30 11:56:22 ubuntu kernel: [  101.640267] shpchp: Standard Hot
-Plug PCI Controller Driver version: 0.4
-Oct 30 11:56:22 ubuntu kernel: [  102.258483] input: Power Button (FF)
-as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input4
-Oct 30 11:56:22 ubuntu kernel: [  102.286271] ACPI: Power Button (FF) [PWRF]
-Oct 30 11:56:22 ubuntu kernel: [  102.286396] input: Power Button (CM)
-as /devices/LNXSYSTM:00/device:00/PNP0C0C:00/input/input5
-Oct 30 11:56:22 ubuntu kernel: [  102.317518] ACPI: Power Button (CM) [PWRB]
-Oct 30 11:56:22 ubuntu kernel: [  102.430904] ACPI: WMI: Mapper loaded
-Oct 30 11:56:22 ubuntu kernel: [  102.560073] ACPI: I/O resource
-piix4_smbus [0xb00-0xb07] conflicts with ACPI region SOR1
-[0xb00-0xb0f]
-Oct 30 11:56:22 ubuntu kernel: [  102.560118] ACPI: Device needs an ACPI driver
-Oct 30 11:56:22 ubuntu kernel: [  102.560157] piix4_smbus
-0000:00:14.0: SMBus Host Controller at 0xb00, revision 0
-Oct 30 11:56:22 ubuntu kernel: [  102.632996] input: PC Speaker as
-/devices/platform/pcspkr/input/input6
-Oct 30 11:56:22 ubuntu kernel: [  103.087266] HDA Intel 0000:01:05.1:
-PCI INT B -> GSI 19 (level, low) -> IRQ 19
-Oct 30 11:56:22 ubuntu kernel: [  103.087322] HDA Intel 0000:01:05.1:
-setting latency timer to 64
-Oct 30 11:56:22 ubuntu kernel: [  103.168020] ICE1724 0000:03:07.0:
-PCI INT A -> GSI 21 (level, low) -> IRQ 21
-Oct 30 11:56:22 ubuntu kernel: [  105.036098] end_request: I/O error,
-dev sr0, sector 1424596
-Oct 30 11:56:22 ubuntu kernel: [  105.036138] Buffer I/O error on
-device sr0, logical block 356149
-Oct 30 11:56:22 ubuntu kernel: [  106.082883] end_request: I/O error,
-dev sr0, sector 1424596
-Oct 30 11:56:22 ubuntu kernel: [  106.082918] Buffer I/O error on
-device sr0, logical block 356149
-Oct 30 11:56:22 ubuntu kernel: [  107.129050] end_request: I/O error,
-dev sr0, sector 1424596
-Oct 30 11:56:22 ubuntu kernel: [  107.129084] Buffer I/O error on
-device sr0, logical block 356149
-Oct 30 11:56:22 ubuntu kernel: [  108.184385] end_request: I/O error,
-dev sr0, sector 1424596
-Oct 30 11:56:22 ubuntu kernel: [  108.184426] Buffer I/O error on
-device sr0, logical block 356149
-Oct 30 11:56:22 ubuntu kernel: [  109.238009] end_request: I/O error,
-dev sr0, sector 1424596
-Oct 30 11:56:22 ubuntu kernel: [  109.238048] Buffer I/O error on
-device sr0, logical block 356149
-Oct 30 11:56:22 ubuntu kernel: [  110.294095] end_request: I/O error,
-dev sr0, sector 1424596
-Oct 30 11:56:22 ubuntu kernel: [  110.294134] Buffer I/O error on
-device sr0, logical block 356149
-Oct 30 11:56:22 ubuntu kernel: [  111.346913] end_request: I/O error,
-dev sr0, sector 1424596
-Oct 30 11:56:22 ubuntu kernel: [  111.346952] Buffer I/O error on
-device sr0, logical block 356149
-Oct 30 11:56:22 ubuntu kernel: [  112.403820] end_request: I/O error,
-dev sr0, sector 1424596
-Oct 30 11:56:22 ubuntu kernel: [  112.403855] Buffer I/O error on
-device sr0, logical block 356149
-Oct 30 11:56:22 ubuntu kernel: [  113.845253] Adding 979924k swap on
-/dev/sdb1.  Priority:-1 extents:1 across:979924k
-Oct 30 11:56:22 ubuntu kernel: [  114.448536] ip_tables: (C) 2000-2006
-Netfilter Core Team
-Oct 30 11:56:22 ubuntu kernel: [  117.704475] powernow-k8: Found 1 AMD
-Phenom(tm) 9350e Quad-Core Processor processors (4 cpu cores) (version
-2.20.00)
-Oct 30 11:56:22 ubuntu kernel: [  117.704517] powernow-k8:    0 :
-pstate 0 (2000 MHz)
-Oct 30 11:56:22 ubuntu kernel: [  117.704520] powernow-k8:    1 :
-pstate 1 (1000 MHz)
-Oct 30 11:56:22 ubuntu avahi-daemon[8891]: Found user 'avahi' (UID
-106) and group 'avahi' (GID 116).
-Oct 30 11:56:22 ubuntu avahi-daemon[8891]: Successfully dropped root privileges.
-Oct 30 11:56:22 ubuntu kernel: [  119.105230] warning: `avahi-daemon'
-uses 32-bit capabilities (legacy support in use)
-Oct 30 11:56:22 ubuntu avahi-daemon[8891]: avahi-daemon 0.6.23 starting up.
-Oct 30 11:56:22 ubuntu avahi-daemon[8891]: Successfully called chroot().
-Oct 30 11:56:22 ubuntu avahi-daemon[8891]: Successfully dropped
-remaining capabilities.
-Oct 30 11:56:22 ubuntu avahi-daemon[8892]: chroot.c: open() failed: No
-such file or directory
-Oct 30 11:56:22 ubuntu avahi-daemon[8891]: Failed to open
-/etc/resolv.conf: Invalid argument
-Oct 30 11:56:22 ubuntu avahi-daemon[8891]: No service file found in
-/etc/avahi/services.
-Oct 30 11:56:22 ubuntu avahi-daemon[8891]: Network interface
-enumeration completed.
-Oct 30 11:56:22 ubuntu avahi-daemon[8891]: Registering HINFO record
-with values 'X86_64'/'LINUX'.
-Oct 30 11:56:22 ubuntu avahi-daemon[8891]: Server startup complete.
-Host name is ubuntu.local. Local service cookie is 3354321440.
-Oct 30 11:56:23 ubuntu kernel: [  119.265599] lp: driver loaded but no
-devices found
-Oct 30 11:56:23 ubuntu kernel: [  119.421542] ppdev: user-space
-parallel port driver
-Oct 30 11:56:29 ubuntu acpid: client connected from 9102[108:118]
-Oct 30 11:56:30 ubuntu bluetoothd[9151]: Bluetooth daemon
-Oct 30 11:56:30 ubuntu kernel: [  127.010844] Bluetooth: Core ver 2.13
-Oct 30 11:56:30 ubuntu kernel: [  127.010972] NET: Registered protocol family 31
-Oct 30 11:56:30 ubuntu kernel: [  127.010977] Bluetooth: HCI device
-and connection manager initialized
-Oct 30 11:56:30 ubuntu kernel: [  127.010982] Bluetooth: HCI socket
-layer initialized
-Oct 30 11:56:30 ubuntu bluetoothd[9151]: Starting SDP server
-Oct 30 11:56:30 ubuntu kernel: [  127.072205] Bluetooth: L2CAP ver 2.11
-Oct 30 11:56:30 ubuntu kernel: [  127.072215] Bluetooth: L2CAP socket
-layer initialized
-Oct 30 11:56:31 ubuntu kernel: [  127.271473] Bluetooth: SCO (Voice
-Link) ver 0.6
-Oct 30 11:56:31 ubuntu kernel: [  127.271486] Bluetooth: SCO socket
-layer initialized
-Oct 30 11:56:31 ubuntu bluetoothd[9151]: Starting experimental netlink support
-Oct 30 11:56:31 ubuntu bluetoothd[9151]: Failed to find Bluetooth netlink family
-Oct 30 11:56:31 ubuntu bluetoothd[9151]: Can't init plugin
-/usr/lib/bluetooth/plugins/netlink.so
-Oct 30 11:56:31 ubuntu kernel: [  127.611788] Bluetooth: BNEP
-(Ethernet Emulation) ver 1.3
-Oct 30 11:56:31 ubuntu kernel: [  127.611799] Bluetooth: BNEP filters:
-protocol multicast
-Oct 30 11:56:31 ubuntu kernel: [  127.619449] Bluetooth: RFCOMM socket
-layer initialized
-Oct 30 11:56:31 ubuntu kernel: [  127.619477] Bluetooth: RFCOMM TTY
-layer initialized
-Oct 30 11:56:31 ubuntu kernel: [  127.619480] Bluetooth: RFCOMM ver 1.10
-Oct 30 11:56:31 ubuntu kernel: [  127.741941] Bridge firewalling registered
-Oct 30 11:56:31 ubuntu bluetoothd[9151]: bridge pan0 created
-Oct 30 11:56:31 ubuntu kernel: [  127.742246] pan0: Dropping
-NETIF_F_UFO since no NETIF_F_HW_CSUM feature.
-Oct 30 11:56:32 ubuntu NetworkManager: <info>  starting...
-Oct 30 11:56:32 ubuntu NetworkManager: <info>  eth0: driver is 'r8169'.
-Oct 30 11:56:32 ubuntu NetworkManager: <info>  Found new Ethernet
-device 'eth0'.
-Oct 30 11:56:32 ubuntu NetworkManager: <info>  (eth0): exported as
-/org/freedesktop/Hal/devices/net_00_1f_d0_56_5e_a0
-Oct 30 11:56:32 ubuntu NetworkManager: <info>  Trying to start the
-supplicant...
-Oct 30 11:56:32 ubuntu NetworkManager: <info>  Trying to start the
-system settings daemon...
-Oct 30 11:56:32 ubuntu nm-system-settings:    SCPlugin-Ifupdown: init!
-Oct 30 11:56:32 ubuntu nm-system-settings:    SCPlugin-Ifupdown:
-update_system_hostname
-Oct 30 11:56:32 ubuntu nm-system-settings:    SCPluginIfupdown:
-management mode: unmanaged
-Oct 30 11:56:32 ubuntu nm-system-settings:    SCPlugin-Ifupdown:
-devices added (udi:
-/org/freedesktop/Hal/devices/net_00_1f_d0_56_5e_a0, iface: eth0)
-Oct 30 11:56:32 ubuntu nm-system-settings:    SCPlugin-Ifupdown: end _init.
-Oct 30 11:56:32 ubuntu nm-system-settings: Loaded plugin ifupdown: (C)
-2008 Canonical Ltd.  To report bugs please use the NetworkManager
-mailing list.
-Oct 30 11:56:33 ubuntu nm-system-settings: Loaded plugin keyfile: (c)
-2007 - 2008 Red Hat, Inc.  To report bugs please use the
-NetworkManager mailing list.
-Oct 30 11:56:33 ubuntu nm-system-settings:    SCPlugin-Ifupdown:
-(16266432) ... get_connections.
-Oct 30 11:56:33 ubuntu nm-system-settings:    SCPlugin-Ifupdown:
-(16266432) connections count: 0
-Oct 30 11:56:33 ubuntu nm-system-settings:    Ifupdown: get unmanaged
-devices count: 0
-Oct 30 11:56:34 ubuntu /usr/sbin/cron[9282]: (CRON) INFO (pidfile fd = 3)
-Oct 30 11:56:34 ubuntu /usr/sbin/cron[9283]: (CRON) STARTUP (fork ok)
-Oct 30 11:56:34 ubuntu /usr/sbin/cron[9283]: (CRON) INFO (Running @reboot jobs)
-Oct 30 11:56:34 ubuntu acpid: client connected from 9242[0:0]
-Oct 30 11:56:35 ubuntu kernel: [  132.041826] pci 0000:01:05.0: PCI
-INT A -> GSI 18 (level, low) -> IRQ 18
-Oct 30 11:56:36 ubuntu NetworkManager: <info>  (eth0): device state
-change: 1 -> 2
-Oct 30 11:56:36 ubuntu NetworkManager: <info>  (eth0): bringing up device.
-Oct 30 11:56:36 ubuntu kernel: [  132.328550] r8169: eth0: link up
-Oct 30 11:56:36 ubuntu kernel: [  132.328569] r8169: eth0: link up
-Oct 30 11:56:36 ubuntu NetworkManager: <info>  (eth0): preparing device.
-Oct 30 11:56:36 ubuntu NetworkManager: <info>  (eth0): deactivating
-device (reason: 2).
-Oct 30 11:56:36 ubuntu NetworkManager: <info>  (eth0): carrier now ON
-(device state 2)
-Oct 30 11:56:36 ubuntu NetworkManager: <info>  (eth0): device state
-change: 2 -> 3
-Oct 30 11:56:37 ubuntu nm-system-settings: Adding default connection
-'Auto eth0' for /org/freedesktop/Hal/devices/net_00_1f_d0_56_5e_a0
-Oct 30 11:56:37 ubuntu NetworkManager: <info>  Activation (eth0)
-starting connection 'Auto eth0'
-Oct 30 11:56:37 ubuntu NetworkManager: <info>  (eth0): device state
-change: 3 -> 4
-Oct 30 11:56:37 ubuntu NetworkManager: <info>  Activation (eth0) Stage
-1 of 5 (Device Prepare) scheduled...
-Oct 30 11:56:37 ubuntu NetworkManager: <info>  Activation (eth0) Stage
-1 of 5 (Device Prepare) started...
-Oct 30 11:56:37 ubuntu NetworkManager: <info>  Activation (eth0) Stage
-2 of 5 (Device Configure) scheduled...
-Oct 30 11:56:37 ubuntu NetworkManager: <info>  Activation (eth0) Stage
-1 of 5 (Device Prepare) complete.
-Oct 30 11:56:37 ubuntu NetworkManager: <info>  Activation (eth0) Stage
-2 of 5 (Device Configure) starting...
-Oct 30 11:56:37 ubuntu NetworkManager: <info>  (eth0): device state
-change: 4 -> 5
-Oct 30 11:56:37 ubuntu NetworkManager: <info>  Activation (eth0) Stage
-2 of 5 (Device Configure) successful.
-Oct 30 11:56:37 ubuntu NetworkManager: <info>  Activation (eth0) Stage
-3 of 5 (IP Configure Start) scheduled.
-Oct 30 11:56:37 ubuntu NetworkManager: <info>  Activation (eth0) Stage
-2 of 5 (Device Configure) complete.
-Oct 30 11:56:37 ubuntu NetworkManager: <info>  Activation (eth0) Stage
-3 of 5 (IP Configure Start) started...
-Oct 30 11:56:37 ubuntu NetworkManager: <info>  (eth0): device state
-change: 5 -> 7
-Oct 30 11:56:37 ubuntu NetworkManager: <info>  Activation (eth0)
-Beginning DHCP transaction.
-Oct 30 11:56:37 ubuntu NetworkManager: <info>  dhclient started with pid 9385
-Oct 30 11:56:37 ubuntu NetworkManager: <info>  Activation (eth0) Stage
-3 of 5 (IP Configure Start) complete.
-Oct 30 11:56:37 ubuntu dhclient: Internet Systems Consortium DHCP Client V3.1.1
-Oct 30 11:56:37 ubuntu dhclient: Copyright 2004-2008 Internet Systems
-Consortium.
-Oct 30 11:56:37 ubuntu dhclient: All rights reserved.
-Oct 30 11:56:37 ubuntu dhclient: For info, please visit
-http://www.isc.org/sw/dhcp/
-Oct 30 11:56:37 ubuntu dhclient:
-Oct 30 11:56:37 ubuntu NetworkManager: <info>  DHCP: device eth0 state
-changed (null) -> preinit
-Oct 30 11:56:37 ubuntu kernel: [  133.897082] NET: Registered protocol family 17
-Oct 30 11:56:37 ubuntu dhclient: Listening on LPF/eth0/00:1f:d0:56:5e:a0
-Oct 30 11:56:37 ubuntu dhclient: Sending on   LPF/eth0/00:1f:d0:56:5e:a0
-Oct 30 11:56:37 ubuntu dhclient: Sending on   Socket/fallback
-Oct 30 11:56:38 ubuntu dhclient: DHCPDISCOVER on eth0 to
-255.255.255.255 port 67 interval 5
-Oct 30 11:56:38 ubuntu dhclient: DHCPOFFER of 192.168.1.186 from 192.168.1.1
-Oct 30 11:56:38 ubuntu dhclient: DHCPREQUEST of 192.168.1.186 on eth0
-to 255.255.255.255 port 67
-Oct 30 11:56:38 ubuntu dhclient: DHCPACK of 192.168.1.186 from 192.168.1.1
-Oct 30 11:56:38 ubuntu NetworkManager: <info>  DHCP: device eth0 state
-changed preinit -> bound
-Oct 30 11:56:38 ubuntu NetworkManager: <info>  Activation (eth0) Stage
-4 of 5 (IP Configure Get) scheduled...
-Oct 30 11:56:38 ubuntu dhclient: bound to 192.168.1.186 -- renewal in
-41357 seconds.
-Oct 30 11:56:38 ubuntu NetworkManager: <info>  Activation (eth0) Stage
-4 of 5 (IP Configure Get) started...
-Oct 30 11:56:38 ubuntu NetworkManager: <info>    address 192.168.1.186
-Oct 30 11:56:38 ubuntu NetworkManager: <info>    prefix 24 (255.255.255.0)
-Oct 30 11:56:38 ubuntu NetworkManager: <info>    gateway 192.168.1.1
-Oct 30 11:56:38 ubuntu NetworkManager: <info>    nameserver '192.168.1.1'
-Oct 30 11:56:38 ubuntu NetworkManager: <info>    domain name 'netz'
-Oct 30 11:56:38 ubuntu NetworkManager: <info>  Activation (eth0) Stage
-5 of 5 (IP Configure Commit) scheduled...
-Oct 30 11:56:38 ubuntu NetworkManager: <info>  Activation (eth0) Stage
-4 of 5 (IP Configure Get) complete.
-Oct 30 11:56:38 ubuntu NetworkManager: <info>  Activation (eth0) Stage
-5 of 5 (IP Configure Commit) started...
-Oct 30 11:56:38 ubuntu avahi-daemon[8891]: Joining mDNS multicast
-group on interface eth0.IPv4 with address 192.168.1.186.
-Oct 30 11:56:38 ubuntu avahi-daemon[8891]: New relevant interface
-eth0.IPv4 for mDNS.
-Oct 30 11:56:38 ubuntu avahi-daemon[8891]: Registering new address
-record for 192.168.1.186 on eth0.IPv4.
-Oct 30 11:56:39 ubuntu NetworkManager: <info>  (eth0): device state
-change: 7 -> 8
-Oct 30 11:56:39 ubuntu NetworkManager: <info>  Policy set 'Auto eth0'
-(eth0) as default for routing and DNS.
-Oct 30 11:56:39 ubuntu NetworkManager: <info>  Activation (eth0)
-successful, device activated.
-Oct 30 11:56:39 ubuntu NetworkManager: <info>  Activation (eth0) Stage
-5 of 5 (IP Configure Commit) complete.
-Oct 30 10:56:41 ubuntu ntpdate[9488]: step time server 91.189.94.4
-offset -3599.930487 sec
-Oct 30 10:57:45 ubuntu python: hp-systray(init)[9904]: warning: No hp:
-or hpfax: devices found in any installed CUPS queue. Exiting.
-Oct 30 10:58:26 ubuntu NetworkManager: <WARN>  list_connections_cb():
-Couldn't retrieve connections: Did not receive a reply. Possible
-causes include: the remote application did not send a reply, the
-message bus security policy blocked the reply, the reply timeout
-expired, or the network connection was broken..
-Oct 30 10:59:22 ubuntu kernel: [  298.928588] kjournald starting.
-Commit interval 5 seconds
-Oct 30 10:59:22 ubuntu kernel: [  298.928754] EXT3 FS on sda1, internal journal
-Oct 30 10:59:22 ubuntu kernel: [  298.928766] EXT3-fs: mounted
-filesystem with ordered data mode.
-
-
-lspci -vv:
-00:00.0 Host bridge: Advanced Micro Devices [AMD] RS780 Host Bridge
-       Subsystem: Advanced Micro Devices [AMD] RS780 Host Bridge
-       Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap+ 66MHz+ UDF- FastB2B- ParErr- DEVSEL=medium
->TAbort- <TAbort- <MAbort+ >SERR- <PERR- INTx-
-       Latency: 32
-       Region 3: Memory at <ignored> (64-bit, non-prefetchable)
-       Capabilities: [c4] HyperTransport: Slave or Primary Interface
-               Command: BaseUnitID=0 UnitCnt=12 MastHost- DefDir-
-DUL-
-               Link Control 0: CFlE- CST- CFE- <LkFail- Init+ EOC-
-TXO- <CRCErr=0 IsocEn- LSEn- ExtCTL- 64b-
-               Link Config 0: MLWI=16bit DwFcIn- MLWO=16bit DwFcOut-
-LWI=16bit DwFcInEn- LWO=16bit DwFcOutEn-
-               Link Control 1: CFlE- CST- CFE- <LkFail+ Init- EOC+
-TXO+ <CRCErr=0 IsocEn- LSEn- ExtCTL- 64b-
-               Link Config 1: MLWI=8bit DwFcIn- MLWO=8bit DwFcOut-
-LWI=8bit DwFcInEn- LWO=8bit DwFcOutEn-
-               Revision ID: 3.00
-               Link Frequency 0: [a]
-               Link Error 0: <Prot- <Ovfl- <EOC- CTLTm-
-               Link Frequency Capability 0: 200MHz+ 300MHz- 400MHz+
-500MHz- 600MHz+ 800MHz+ 1.0GHz+ 1.2GHz- 1.4GHz- 1.6GHz- Vend-
-               Feature Capability: IsocFC- LDTSTOP+ CRCTM- ECTLT-
-64bA- UIDRD-
-               Link Frequency 1: 200MHz
-               Link Error 1: <Prot- <Ovfl- <EOC- CTLTm-
-               Link Frequency Capability 1: 200MHz- 300MHz- 400MHz-
-500MHz- 600MHz- 800MHz- 1.0GHz- 1.2GHz- 1.4GHz- 1.6GHz- Vend-
-               Error Handling: PFlE- OFlE- PFE- OFE- EOCFE- RFE-
-CRCFE- SERRFE- CF- RE- PNFE- ONFE- EOCNFE- RNFE- CRCNFE- SERRNFE-
-               Prefetchable memory behind bridge Upper: 00-00
-               Bus Number: 00
-       Capabilities: [54] HyperTransport: UnitID Clumping
-       Capabilities: [40] HyperTransport: Retry Mode
-       Capabilities: [9c] HyperTransport: #1a
-       Capabilities: [f8] HyperTransport: #1c
-
-00:01.0 PCI bridge: Advanced Micro Devices [AMD] RS780 PCI to PCI
-bridge (int gfx)
-       Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap+ 66MHz+ UDF- FastB2B- ParErr- DEVSEL=medium
->TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-       Latency: 99
-       Bus: primary=00, secondary=01, subordinate=01, sec-latency=68
-       I/O behind bridge: 0000e000-0000efff
-       Memory behind bridge: fdd00000-fdefffff
-       Prefetchable memory behind bridge:
-00000000d8000000-00000000dfffffff
-       Secondary status: 66MHz+ FastB2B- ParErr- DEVSEL=medium
->TAbort- <TAbort- <MAbort- <SERR- <PERR-
-       BridgeCtl: Parity- SERR- NoISA- VGA+ MAbort- >Reset- FastB2B-
-               PriDiscTmr- SecDiscTmr- DiscTmrStat- DiscTmrSERREn-
-       Capabilities: [44] HyperTransport: MSI Mapping Enable+ Fixed+
-       Capabilities: [b0] Subsystem: Advanced Micro Devices [AMD]
-RS780 PCI to PCI bridge (int gfx)
-       Kernel modules: shpchp
-00:0a.0 PCI bridge: Advanced Micro Devices [AMD] RS780 PCI to PCI
-bridge (PCIE port 5)
-       Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx+
-       Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-       Latency: 0, Cache Line Size: 4 bytes
-       Bus: primary=00, secondary=02, subordinate=02, sec-latency=0
-       I/O behind bridge: 0000d000-0000dfff
-       Memory behind bridge: fda00000-fdafffff
-       Prefetchable memory behind bridge:
-00000000fdf00000-00000000fdffffff
-       Secondary status: 66MHz- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- <SERR- <PERR-
-       BridgeCtl: Parity- SERR- NoISA- VGA- MAbort- >Reset- FastB2B-
-               PriDiscTmr- SecDiscTmr- DiscTmrStat- DiscTmrSERREn-
-       Capabilities: [50] Power Management version 3
-               Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-               Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-       Capabilities: [58] Express (v2) Root Port (Slot+), MSI 00
-               DevCap: MaxPayload 128 bytes, PhantFunc 0, Latency L0s
-<64ns, L1 <1us
-                       ExtTag+ RBE+ FLReset-
-               DevCtl: Report errors: Correctable+ Non-Fatal+ Fatal+
-Unsupported+
-                       RlxdOrd+ ExtTag- PhantFunc- AuxPwr- NoSnoop+
-                       MaxPayload 128 bytes, MaxReadReq 128 bytes
-               DevSta: CorrErr- UncorrErr- FatalErr- UnsuppReq-
-AuxPwr- TransPend-
-               LnkCap: Port #1, Speed 5GT/s, Width x1, ASPM L0s L1,
-Latency L0 <64ns, L1 <1us
-                       ClockPM- Suprise- LLActRep+ BwNot+
-               LnkCtl: ASPM Disabled; RCB 64 bytes Disabled- Retrain-
-CommClk+
-                       ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-               LnkSta: Speed 2.5GT/s, Width x1, TrErr- Train-
-SlotClk+ DLActive+ BWMgmt+ ABWMgmt-
-               SltCap: AttnBtn- PwrCtrl- MRL- AttnInd- PwrInd-
-HotPlug- Surpise-
-                       Slot #  a, PowerLimit 25.000000; Interlock-
-NoCompl+
-               SltCtl: Enable: AttnBtn- PwrFlt- MRL- PresDet-
-CmdCplt- HPIrq- LinkChg-
-                       Control: AttnInd Unknown, PwrInd Unknown,
-Power- Interlock-
-               SltSta: Status: AttnBtn- PowerFlt- MRL- CmdCplt-
-PresDet+ Interlock-
-                       Changed: MRL- PresDet+ LinkState+
-               RootCtl: ErrCorrectable- ErrNon-Fatal- ErrFatal-
-PMEIntEna- CRSVisible-
-               RootCap: CRSVisible-
-               RootSta: PME ReqID 0000, PMEStatus- PMEPending-
-       Capabilities: [a0] Message Signalled Interrupts: Mask- 64bit-
-Queue=0/0 Enable+
-               Address: fee0f00c  Data: 4151
-       Capabilities: [b0] Subsystem: Advanced Micro Devices [AMD]
-Device 9600
-       Capabilities: [b8] HyperTransport: MSI Mapping Enable+ Fixed+
-       Capabilities: [100] Vendor Specific Information <?>
-       Capabilities: [110] Virtual Channel <?>
-       Kernel driver in use: pcieport-driver
-       Kernel modules: shpchp
-00:11.0 SATA controller: ATI Technologies Inc SB700/SB800 SATA
-Controller [AHCI mode] (prog-if 01)
-       Subsystem: Giga-byte Technology Device b002
-       Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap+ 66MHz+ UDF- FastB2B- ParErr- DEVSEL=medium
->TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-       Latency: 32
-       Interrupt: pin A routed to IRQ 2301
-       Region 0: I/O ports at ff00 [size=8]
-       Region 1: I/O ports at fe00 [size=4]
-       Region 2: I/O ports at fd00 [size=8]
-       Region 3: I/O ports at fc00 [size=4]
-       Region 4: I/O ports at fb00 [size=16]
-       Region 5: Memory at fe02f000 (32-bit, non-prefetchable)
-[size=1K]
-       Capabilities: [60] Power Management version 2
-               Flags: PMEClk- DSI+ D1- D2- AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-               Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-       Capabilities: [50] Message Signalled Interrupts: Mask- 64bit+
-Queue=0/2 Enable+
-               Address: 00000000fee0f00c  Data: 4171
-       Capabilities: [70] SATA HBA <?>
-       Kernel driver in use: ahci
-       Kernel modules: ahci
-00:12.0 USB Controller: ATI Technologies Inc SB700/SB800 USB OHCI0
-Controller (prog-if 10)
-       Subsystem: Giga-byte Technology Device 5004
-       Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap- 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=medium
->TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-       Latency: 32, Cache Line Size: 4 bytes
-       Interrupt: pin A routed to IRQ 16
-       Region 0: Memory at fe02e000 (32-bit, non-prefetchable)
-[size=4K]
-       Kernel driver in use: ohci_hcd
-       Kernel modules: ohci-hcd
-
-00:12.1 USB Controller: ATI Technologies Inc SB700 USB OHCI1
-Controller (prog-if 10)
-       Subsystem: Giga-byte Technology Device 5004
-       Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap- 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=medium
->TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-       Latency: 32, Cache Line Size: 4 bytes
-       Interrupt: pin A routed to IRQ 16
-       Region 0: Memory at fe02d000 (32-bit, non-prefetchable)
-[size=4K]
-       Kernel driver in use: ohci_hcd
-       Kernel modules: ohci-hcd
-
-00:12.2 USB Controller: ATI Technologies Inc SB700/SB800 USB EHCI
-Controller (prog-if 20)
-       Subsystem: Giga-byte Technology Device 5004
-       Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=medium
->TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-       Latency: 32, Cache Line Size: 64 bytes
-       Interrupt: pin B routed to IRQ 17
-       Region 0: Memory at fe02c000 (32-bit, non-prefetchable)
-[size=256]
-       Capabilities: [c0] Power Management version 2
-               Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0+,D1+,D2+,D3hot+,D3cold-)
-               Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-               Bridge: PM- B3+
-       Capabilities: [e4] Debug port: BAR=1 offset=00e0
-       Kernel driver in use: ehci_hcd
-       Kernel modules: ehci-hcd
-
-00:13.0 USB Controller: ATI Technologies Inc SB700/SB800 USB OHCI0
-Controller (prog-if 10)
-       Subsystem: Giga-byte Technology Device 5004
-       Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap- 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=medium
->TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-       Latency: 32, Cache Line Size: 4 bytes
-       Interrupt: pin A routed to IRQ 18
-       Region 0: Memory at fe02b000 (32-bit, non-prefetchable)
-[size=4K]
-       Kernel driver in use: ohci_hcd
-       Kernel modules: ohci-hcd
-
-00:13.1 USB Controller: ATI Technologies Inc SB700 USB OHCI1
-Controller (prog-if 10)
-       Subsystem: Giga-byte Technology Device 5004
-       Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap- 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=medium
->TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-       Latency: 32, Cache Line Size: 4 bytes
-       Interrupt: pin A routed to IRQ 18
-       Region 0: Memory at fe02a000 (32-bit, non-prefetchable)
-[size=4K]
-       Kernel driver in use: ohci_hcd
-       Kernel modules: ohci-hcd
-
-00:13.2 USB Controller: ATI Technologies Inc SB700/SB800 USB EHCI
-Controller (prog-if 20)
-       Subsystem: Giga-byte Technology Device 5004
-       Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=medium
->TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-       Latency: 32, Cache Line Size: 64 bytes
-       Interrupt: pin B routed to IRQ 19
-       Region 0: Memory at fe029000 (32-bit, non-prefetchable)
-[size=256]
-       Capabilities: [c0] Power Management version 2
-               Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0+,D1+,D2+,D3hot+,D3cold-)
-               Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-               Bridge: PM- B3+
-       Capabilities: [e4] Debug port: BAR=1 offset=00e0
-       Kernel driver in use: ehci_hcd
-       Kernel modules: ehci-hcd
-
-00:14.0 SMBus: ATI Technologies Inc SBx00 SMBus Controller (rev 3a)
-       Subsystem: Giga-byte Technology Device 4385
-       Control: I/O+ Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx+
-       Status: Cap+ 66MHz+ UDF- FastB2B- ParErr- DEVSEL=medium
->TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-       Capabilities: [b0] HyperTransport: MSI Mapping Enable- Fixed+
-       Kernel driver in use: piix4_smbus
-       Kernel modules: i2c-piix4
-
-00:14.1 IDE interface: ATI Technologies Inc SB700/SB800 IDE Controller
-(prog-if 8a [Master SecP PriP])
-       Subsystem: Giga-byte Technology Device 5002
-       Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap+ 66MHz+ UDF- FastB2B- ParErr- DEVSEL=medium
->TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-       Latency: 32
-       Interrupt: pin A routed to IRQ 16
-       Region 0: I/O ports at 01f0 [size=8]
-       Region 1: I/O ports at 03f4 [size=1]
-       Region 2: I/O ports at 0170 [size=8]
-       Region 3: I/O ports at 0374 [size=1]
-       Region 4: I/O ports at fa00 [size=16]
-       Capabilities: [70] Message Signalled Interrupts: Mask- 64bit-
-Queue=0/0 Enable-
-               Address: 00000000  Data: 0000
-       Kernel driver in use: pata_atiixp
-       Kernel modules: ata_generic, pata_acpi, pata_atiixp
-00:14.3 ISA bridge: ATI Technologies Inc SB700/SB800 LPC host controller
-       Subsystem: ATI Technologies Inc Device 4383
-       Control: I/O+ Mem+ BusMaster+ SpecCycle+ MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap- 66MHz+ UDF- FastB2B- ParErr- DEVSEL=medium
->TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-       Latency: 0
-
-00:14.4 PCI bridge: ATI Technologies Inc SBx00 PCI to PCI Bridge (prog-if 01)
-       Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop+
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap- 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=medium
->TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-       Latency: 64
-       Bus: primary=00, secondary=03, subordinate=03, sec-latency=64
-       I/O behind bridge: 0000c000-0000cfff
-       Memory behind bridge: fdc00000-fdcfffff
-       Prefetchable memory behind bridge: fdb00000-fdbfffff
-       Secondary status: 66MHz- FastB2B+ ParErr- DEVSEL=medium
->TAbort- <TAbort- <MAbort+ <SERR- <PERR-
-       BridgeCtl: Parity- SERR- NoISA- VGA- MAbort- >Reset- FastB2B-
-               PriDiscTmr- SecDiscTmr- DiscTmrStat- DiscTmrSERREn-
-00:14.5 USB Controller: ATI Technologies Inc SB700/SB800 USB OHCI2
-Controller (prog-if 10)
-       Subsystem: Giga-byte Technology Device 5004
-       Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap- 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=medium
->TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-       Latency: 32, Cache Line Size: 4 bytes
-       Interrupt: pin C routed to IRQ 18
-       Region 0: Memory at fe028000 (32-bit, non-prefetchable)
-[size=4K]
-       Kernel driver in use: ohci_hcd
-       Kernel modules: ohci-hcd
-
-00:18.0 Host bridge: Advanced Micro Devices [AMD] Family 10h [Opteron,
-Athlon64, Sempron] HyperTransport Configuration
-       Control: I/O- Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-       Capabilities: [80] HyperTransport: Host or Secondary Interface
-               Command: WarmRst+ DblEnd- DevNum=0 ChainSide-
-HostHide+ Slave- <EOCErr- DUL-
-               Link Control: CFlE- CST- CFE- <LkFail- Init+ EOC- TXO-
-<CRCErr=0 IsocEn- LSEn+ ExtCTL- 64b-
-               Link Config: MLWI=16bit DwFcIn- MLWO=16bit DwFcOut-
-LWI=16bit DwFcInEn- LWO=16bit DwFcOutEn-
-               Revision ID: 3.00
-               Link Frequency: [a]
-               Link Error: <Prot- <Ovfl- <EOC- CTLTm-
-               Link Frequency Capability: 200MHz+ 300MHz- 400MHz+
-500MHz- 600MHz+ 800MHz+ 1.0GHz+ 1.2GHz+ 1.4GHz- 1.6GHz- Vend-
-               Feature Capability: IsocFC+ LDTSTOP+ CRCTM- ECTLT-
-64bA+ UIDRD- ExtRS- UCnfE-
-
-00:18.1 Host bridge: Advanced Micro Devices [AMD] Family 10h [Opteron,
-Athlon64, Sempron] Address Map
-       Control: I/O- Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap- 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-
-00:18.2 Host bridge: Advanced Micro Devices [AMD] Family 10h [Opteron,
-Athlon64, Sempron] DRAM Controller
-       Control: I/O- Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap- 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-
-00:18.3 Host bridge: Advanced Micro Devices [AMD] Family 10h [Opteron,
-Athlon64, Sempron] Miscellaneous Control
-       Control: I/O- Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-       Capabilities: [f0] Secure device <?>
-
-00:18.4 Host bridge: Advanced Micro Devices [AMD] Family 10h [Opteron,
-Athlon64, Sempron] Link Control
-       Control: I/O- Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap- 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-
-01:05.0 VGA compatible controller: ATI Technologies Inc Radeon HD 3200 Graphics
-       Subsystem: Giga-byte Technology Device d000
-       Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-       Latency: 0, Cache Line Size: 4 bytes
-       Interrupt: pin A routed to IRQ 18
-       Region 0: Memory at d8000000 (32-bit, prefetchable)
-[size=128M]
-       Region 1: I/O ports at ee00 [size=256]
-       Region 2: Memory at fdee0000 (32-bit, non-prefetchable)
-[size=64K]
-       Region 5: Memory at fdd00000 (32-bit, non-prefetchable)
-[size=1M]
-       Capabilities: [50] Power Management version 3
-               Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-               Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-       Capabilities: [a0] Message Signalled Interrupts: Mask- 64bit+
-Queue=0/0 Enable-
-               Address: 0000000000000000  Data: 0000
-       Kernel driver in use: fglrx_pci
-       Kernel modules: fglrx
-01:05.1 Audio device: ATI Technologies Inc RS780 Azalia controller
-       Subsystem: ATI Technologies Inc RS780 Azalia controller
-       Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-       Latency: 0, Cache Line Size: 4 bytes
-       Interrupt: pin B routed to IRQ 5
-       Region 0: Memory at fdefc000 (32-bit, non-prefetchable)
-[size=16K]
-       Capabilities: [50] Power Management version 3
-               Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-               Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-       Capabilities: [a0] Message Signalled Interrupts: Mask- 64bit+
-Queue=0/0 Enable-
-               Address: 0000000000000000  Data: 0000
-02:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
-RTL8111/8168B PCI Express Gigabit Ethernet controller (rev 02)
-       Subsystem: Giga-byte Technology Device e000
-       Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx+
-       Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-       Latency: 0, Cache Line Size: 64 bytes
-       Interrupt: pin A routed to IRQ 2302
-       Region 0: I/O ports at de00 [size=256]
-       Region 2: Memory at fdfff000 (64-bit, prefetchable) [size=4K]
-       Region 4: Memory at fdfe0000 (64-bit, prefetchable) [size=64K]
-       [virtual] Expansion ROM at fdf00000 [disabled] [size=64K]
-       Capabilities: [40] Power Management version 3
-               Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=375mA
-PME(D0+,D1+,D2+,D3hot+,D3cold+)
-               Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-       Capabilities: [50] Message Signalled Interrupts: Mask- 64bit+
-Queue=0/1 Enable+
-               Address: 00000000fee0f00c  Data: 4159
-       Capabilities: [70] Express (v1) Endpoint, MSI 01
-               DevCap: MaxPayload 256 bytes, PhantFunc 0, Latency L0s
-<512ns, L1 <8us
-                       ExtTag- AttnBtn- AttnInd- PwrInd- RBE+ FLReset-
-               DevCtl: Report errors: Correctable- Non-Fatal- Fatal-
-Unsupported-
-                       RlxdOrd+ ExtTag- PhantFunc- AuxPwr- NoSnoop-
-                       MaxPayload 128 bytes, MaxReadReq 512 bytes
-               DevSta: CorrErr+ UncorrErr- FatalErr- UnsuppReq+
-AuxPwr+ TransPend-
-               LnkCap: Port #0, Speed 2.5GT/s, Width x1, ASPM L0s L1,
-Latency L0 <512ns, L1 <64us
-                       ClockPM+ Suprise- LLActRep- BwNot-
-               LnkCtl: ASPM Disabled; RCB 64 bytes Disabled- Retrain- CommClk+
-                       ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-               LnkSta: Speed 2.5GT/s, Width x1, TrErr- Train-
-SlotClk+ DLActive- BWMgmt- ABWMgmt-
-       Capabilities: [b0] MSI-X: Enable- Mask- TabSize=2
-               Vector table: BAR=4 offset=00000000
-               PBA: BAR=4 offset=00000800
-       Capabilities: [d0] Vital Product Data <?>
-       Capabilities: [100] Advanced Error Reporting <?>
-       Capabilities: [140] Virtual Channel <?>
-       Capabilities: [160] Device Serial Number 78-56-34-12-78-56-34-12
-       Kernel driver in use: r8169
-       Kernel modules: r8169
-03:07.0 Multimedia audio controller: VIA Technologies Inc. VT1720/24
-[Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
-       Subsystem: VIA Technologies Inc. Device 3630
-       Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-       Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium
->TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-       Latency: 32
-       Interrupt: pin A routed to IRQ 21
-       Region 0: I/O ports at cf00 [size=32]
-       Region 1: I/O ports at ce00 [size=128]
-       Capabilities: [80] Power Management version 1
-               Flags: PMEClk- DSI- D1- D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-               Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-       Kernel driver in use: ICE1724
-       Kernel modules: snd-ice1724
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 4dfda66..615ebf0 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -23,8 +23,7 @@ config SND_SOC_AC97_BUS
+ 	bool
+ 
+ # All the supported Soc's
+-source "sound/soc/at32/Kconfig"
+-source "sound/soc/at91/Kconfig"
++source "sound/soc/atmel/Kconfig"
+ source "sound/soc/au1x/Kconfig"
+ source "sound/soc/pxa/Kconfig"
+ source "sound/soc/s3c24xx/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index d849349..4d475c3 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -1,5 +1,5 @@
+ snd-soc-core-objs := soc-core.o soc-dapm.o
+ 
+ obj-$(CONFIG_SND_SOC)	+= snd-soc-core.o
+-obj-$(CONFIG_SND_SOC)	+= codecs/ at32/ at91/ pxa/ s3c24xx/ sh/ fsl/ davinci/
++obj-$(CONFIG_SND_SOC)	+= codecs/ atmel/ pxa/ s3c24xx/ sh/ fsl/ davinci/
+ obj-$(CONFIG_SND_SOC)	+= omap/ au1x/ blackfin/
+diff --git a/sound/soc/at32/Kconfig b/sound/soc/at32/Kconfig
+deleted file mode 100644
+index b0765e8..0000000
+--- a/sound/soc/at32/Kconfig
++++ /dev/null
+@@ -1,34 +0,0 @@
+-config SND_AT32_SOC
+-        tristate "SoC Audio for the Atmel AT32 System-on-a-Chip"
+-        depends on AVR32 && SND_SOC
+-        help
+-          Say Y or M if you want to add support for codecs attached to 
+-          the AT32 SSC interface.  You will also need to
+-          to select the audio interfaces to support below.
+-
+-
+-config SND_AT32_SOC_SSC
+-        tristate
+-
+-
+-
+-config SND_AT32_SOC_PLAYPAQ
+-        tristate "SoC Audio support for PlayPaq with WM8510"
+-        depends on SND_AT32_SOC && BOARD_PLAYPAQ
+-        select SND_AT32_SOC_SSC
+-        select SND_SOC_WM8510
+-        help
+-          Say Y or M here if you want to add support for SoC audio
+-          on the LRS PlayPaq.
+-
+-
+-
+-config SND_AT32_SOC_PLAYPAQ_SLAVE
+-        bool "Run CODEC on PlayPaq in slave mode"
+-        depends on SND_AT32_SOC_PLAYPAQ
+-        default n
+-        help
+-          Say Y if you want to run with the AT32 SSC generating the BCLK
+-          and FRAME signals on the PlayPaq.  Unless you want to play
+-          with the AT32 as the SSC master, you probably want to say N here,
+-          as this will give you better sound quality.
+diff --git a/sound/soc/at32/Makefile b/sound/soc/at32/Makefile
+deleted file mode 100644
+index c03e55e..0000000
+--- a/sound/soc/at32/Makefile
++++ /dev/null
+@@ -1,11 +0,0 @@
+-# AT32 Platform Support
+-snd-soc-at32-objs := at32-pcm.o
+-snd-soc-at32-ssc-objs := at32-ssc.o
+-
+-obj-$(CONFIG_SND_AT32_SOC) += snd-soc-at32.o
+-obj-$(CONFIG_SND_AT32_SOC_SSC) += snd-soc-at32-ssc.o
+-
+-# AT32 Machine Support
+-snd-soc-playpaq-objs := playpaq_wm8510.o
+-
+-obj-$(CONFIG_SND_AT32_SOC_PLAYPAQ) += snd-soc-playpaq.o
+diff --git a/sound/soc/at32/at32-pcm.h b/sound/soc/at32/at32-pcm.h
+deleted file mode 100644
+index 2a52430..0000000
+--- a/sound/soc/at32/at32-pcm.h
++++ /dev/null
+@@ -1,79 +0,0 @@
+-/* sound/soc/at32/at32-pcm.h
+- * ASoC PCM interface for Atmel AT32 SoC
+- *
+- * Copyright (C) 2008 Long Range Systems
+- *    Geoffrey Wossum <gwossum@acm.org>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- */
+-
+-#ifndef __SOUND_SOC_AT32_AT32_PCM_H
+-#define __SOUND_SOC_AT32_AT32_PCM_H __FILE__
+-
+-#include <linux/atmel-ssc.h>
+-
+-
+-/*
+- * Registers and status bits that are required by the PCM driver
+- * TODO: Is ptcr really used?
+- */
+-struct at32_pdc_regs {
+-	u32 xpr;		/* PDC RX/TX pointer */
+-	u32 xcr;		/* PDC RX/TX counter */
+-	u32 xnpr;		/* PDC next RX/TX pointer */
+-	u32 xncr;		/* PDC next RX/TX counter */
+-	u32 ptcr;		/* PDC transfer control */
+-};
+-
+-
+-
+-/*
+- * SSC mask info
+- */
+-struct at32_ssc_mask {
+-	u32 ssc_enable;		/* SSC RX/TX enable */
+-	u32 ssc_disable;	/* SSC RX/TX disable */
+-	u32 ssc_endx;		/* SSC ENDTX or ENDRX */
+-	u32 ssc_endbuf;		/* SSC TXBUFF or RXBUFF */
+-	u32 pdc_enable;		/* PDC RX/TX enable */
+-	u32 pdc_disable;	/* PDC RX/TX disable */
+-};
+-
+-
+-
+-/*
+- * This structure, shared between the PCM driver and the interface,
+- * contains all information required by the PCM driver to perform the
+- * PDC DMA operation.  All fields except dma_intr_handler() are initialized
+- * by the interface.  The dms_intr_handler() pointer is set by the PCM
+- * driver and called by the interface SSC interrupt handler if it is
+- * non-NULL.
+- */
+-struct at32_pcm_dma_params {
+-	char *name;		/* stream identifier */
+-	int pdc_xfer_size;	/* PDC counter increment in bytes */
+-	struct ssc_device *ssc;	/* SSC device for stream */
+-	struct at32_pdc_regs *pdc;	/* PDC register info */
+-	struct at32_ssc_mask *mask;	/* SSC mask info */
+-	struct snd_pcm_substream *substream;
+-	void (*dma_intr_handler) (u32, struct snd_pcm_substream *);
+-};
+-
+-
+-
+-/*
+- * The AT32 ASoC platform driver
+- */
+-extern struct snd_soc_platform at32_soc_platform;
+-
+-
+-
+-/*
+- * SSC register access (since ssc_writel() / ssc_readl() require literal name)
+- */
+-#define ssc_readx(base, reg)            (__raw_readl((base) + (reg)))
+-#define ssc_writex(base, reg, value)    __raw_writel((value), (base) + (reg))
+-
+-#endif /* __SOUND_SOC_AT32_AT32_PCM_H */
+diff --git a/sound/soc/at32/at32-ssc.c b/sound/soc/at32/at32-ssc.c
+deleted file mode 100644
+index 4ef6492..0000000
+--- a/sound/soc/at32/at32-ssc.c
++++ /dev/null
+@@ -1,849 +0,0 @@
+-/* sound/soc/at32/at32-ssc.c
+- * ASoC platform driver for AT32 using SSC as DAI
+- *
+- * Copyright (C) 2008 Long Range Systems
+- *    Geoffrey Wossum <gwossum@acm.org>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- *
+- * Note that this is basically a port of the sound/soc/at91-ssc.c to
+- * the AVR32 kernel.  Thanks to Frank Mandarino for that code.
+- */
+-
+-/* #define DEBUG */
+-
+-#include <linux/init.h>
+-#include <linux/module.h>
+-#include <linux/interrupt.h>
+-#include <linux/device.h>
+-#include <linux/delay.h>
+-#include <linux/clk.h>
+-#include <linux/io.h>
+-#include <linux/atmel_pdc.h>
+-#include <linux/atmel-ssc.h>
+-
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+-#include <sound/initval.h>
+-#include <sound/soc.h>
+-
+-#include "at32-pcm.h"
+-#include "at32-ssc.h"
+-
+-
+-
+-/*-------------------------------------------------------------------------*\
+- * Constants
+-\*-------------------------------------------------------------------------*/
+-#define NUM_SSC_DEVICES		3
+-
+-/*
+- * SSC direction masks
+- */
+-#define SSC_DIR_MASK_UNUSED	0
+-#define SSC_DIR_MASK_PLAYBACK	1
+-#define SSC_DIR_MASK_CAPTURE	2
+-
+-/*
+- * SSC register values that Atmel left out of <linux/atmel-ssc.h>.  These
+- * are expected to be used with SSC_BF
+- */
+-/* START bit field values */
+-#define SSC_START_CONTINUOUS	0
+-#define SSC_START_TX_RX		1
+-#define SSC_START_LOW_RF	2
+-#define SSC_START_HIGH_RF	3
+-#define SSC_START_FALLING_RF	4
+-#define SSC_START_RISING_RF	5
+-#define SSC_START_LEVEL_RF	6
+-#define SSC_START_EDGE_RF	7
+-#define SSS_START_COMPARE_0	8
+-
+-/* CKI bit field values */
+-#define SSC_CKI_FALLING		0
+-#define SSC_CKI_RISING		1
+-
+-/* CKO bit field values */
+-#define SSC_CKO_NONE		0
+-#define SSC_CKO_CONTINUOUS	1
+-#define SSC_CKO_TRANSFER	2
+-
+-/* CKS bit field values */
+-#define SSC_CKS_DIV		0
+-#define SSC_CKS_CLOCK		1
+-#define SSC_CKS_PIN		2
+-
+-/* FSEDGE bit field values */
+-#define SSC_FSEDGE_POSITIVE	0
+-#define SSC_FSEDGE_NEGATIVE	1
+-
+-/* FSOS bit field values */
+-#define SSC_FSOS_NONE		0
+-#define SSC_FSOS_NEGATIVE	1
+-#define SSC_FSOS_POSITIVE	2
+-#define SSC_FSOS_LOW		3
+-#define SSC_FSOS_HIGH		4
+-#define SSC_FSOS_TOGGLE		5
+-
+-#define START_DELAY		1
+-
+-
+-
+-/*-------------------------------------------------------------------------*\
+- * Module data
+-\*-------------------------------------------------------------------------*/
+-/*
+- * SSC PDC registered required by the PCM DMA engine
+- */
+-static struct at32_pdc_regs pdc_tx_reg = {
+-	.xpr = SSC_PDC_TPR,
+-	.xcr = SSC_PDC_TCR,
+-	.xnpr = SSC_PDC_TNPR,
+-	.xncr = SSC_PDC_TNCR,
+-};
+-
+-
+-
+-static struct at32_pdc_regs pdc_rx_reg = {
+-	.xpr = SSC_PDC_RPR,
+-	.xcr = SSC_PDC_RCR,
+-	.xnpr = SSC_PDC_RNPR,
+-	.xncr = SSC_PDC_RNCR,
+-};
+-
+-
+-
+-/*
+- * SSC and PDC status bits for transmit and receive
+- */
+-static struct at32_ssc_mask ssc_tx_mask = {
+-	.ssc_enable = SSC_BIT(CR_TXEN),
+-	.ssc_disable = SSC_BIT(CR_TXDIS),
+-	.ssc_endx = SSC_BIT(SR_ENDTX),
+-	.ssc_endbuf = SSC_BIT(SR_TXBUFE),
+-	.pdc_enable = SSC_BIT(PDC_PTCR_TXTEN),
+-	.pdc_disable = SSC_BIT(PDC_PTCR_TXTDIS),
+-};
+-
+-
+-
+-static struct at32_ssc_mask ssc_rx_mask = {
+-	.ssc_enable = SSC_BIT(CR_RXEN),
+-	.ssc_disable = SSC_BIT(CR_RXDIS),
+-	.ssc_endx = SSC_BIT(SR_ENDRX),
+-	.ssc_endbuf = SSC_BIT(SR_RXBUFF),
+-	.pdc_enable = SSC_BIT(PDC_PTCR_RXTEN),
+-	.pdc_disable = SSC_BIT(PDC_PTCR_RXTDIS),
+-};
+-
+-
+-
+-/*
+- * DMA parameters for each SSC
+- */
+-static struct at32_pcm_dma_params ssc_dma_params[NUM_SSC_DEVICES][2] = {
+-	{
+-	 {
+-	  .name = "SSC0 PCM out",
+-	  .pdc = &pdc_tx_reg,
+-	  .mask = &ssc_tx_mask,
+-	  },
+-	 {
+-	  .name = "SSC0 PCM in",
+-	  .pdc = &pdc_rx_reg,
+-	  .mask = &ssc_rx_mask,
+-	  },
+-	 },
+-	{
+-	 {
+-	  .name = "SSC1 PCM out",
+-	  .pdc = &pdc_tx_reg,
+-	  .mask = &ssc_tx_mask,
+-	  },
+-	 {
+-	  .name = "SSC1 PCM in",
+-	  .pdc = &pdc_rx_reg,
+-	  .mask = &ssc_rx_mask,
+-	  },
+-	 },
+-	{
+-	 {
+-	  .name = "SSC2 PCM out",
+-	  .pdc = &pdc_tx_reg,
+-	  .mask = &ssc_tx_mask,
+-	  },
+-	 {
+-	  .name = "SSC2 PCM in",
+-	  .pdc = &pdc_rx_reg,
+-	  .mask = &ssc_rx_mask,
+-	  },
+-	 },
+-};
+-
+-
+-
+-static struct at32_ssc_info ssc_info[NUM_SSC_DEVICES] = {
+-	{
+-	 .name = "ssc0",
+-	 .lock = __SPIN_LOCK_UNLOCKED(ssc_info[0].lock),
+-	 .dir_mask = SSC_DIR_MASK_UNUSED,
+-	 .initialized = 0,
+-	 },
+-	{
+-	 .name = "ssc1",
+-	 .lock = __SPIN_LOCK_UNLOCKED(ssc_info[1].lock),
+-	 .dir_mask = SSC_DIR_MASK_UNUSED,
+-	 .initialized = 0,
+-	 },
+-	{
+-	 .name = "ssc2",
+-	 .lock = __SPIN_LOCK_UNLOCKED(ssc_info[2].lock),
+-	 .dir_mask = SSC_DIR_MASK_UNUSED,
+-	 .initialized = 0,
+-	 },
+-};
+-
+-
+-
+-
+-/*-------------------------------------------------------------------------*\
+- * ISR
+-\*-------------------------------------------------------------------------*/
+-/*
+- * SSC interrupt handler.  Passes PDC interrupts to the DMA interrupt
+- * handler in the PCM driver.
+- */
+-static irqreturn_t at32_ssc_interrupt(int irq, void *dev_id)
+-{
+-	struct at32_ssc_info *ssc_p = dev_id;
+-	struct at32_pcm_dma_params *dma_params;
+-	u32 ssc_sr;
+-	u32 ssc_substream_mask;
+-	int i;
+-
+-	ssc_sr = (ssc_readl(ssc_p->ssc->regs, SR) &
+-		  ssc_readl(ssc_p->ssc->regs, IMR));
+-
+-	/*
+-	 * Loop through substreams attached to this SSC.  If a DMA-related
+-	 * interrupt occured on that substream, call the DMA interrupt
+-	 * handler function, if one has been registered in the dma_param
+-	 * structure by the PCM driver.
+-	 */
+-	for (i = 0; i < ARRAY_SIZE(ssc_p->dma_params); i++) {
+-		dma_params = ssc_p->dma_params[i];
+-
+-		if ((dma_params != NULL) &&
+-		    (dma_params->dma_intr_handler != NULL)) {
+-			ssc_substream_mask = (dma_params->mask->ssc_endx |
+-					      dma_params->mask->ssc_endbuf);
+-			if (ssc_sr & ssc_substream_mask) {
+-				dma_params->dma_intr_handler(ssc_sr,
+-							     dma_params->
+-							     substream);
+-			}
+-		}
+-	}
+-
+-
+-	return IRQ_HANDLED;
+-}
+-
+-/*-------------------------------------------------------------------------*\
+- * DAI functions
+-\*-------------------------------------------------------------------------*/
+-/*
+- * Startup.  Only that one substream allowed in each direction.
+- */
+-static int at32_ssc_startup(struct snd_pcm_substream *substream)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct at32_ssc_info *ssc_p = &ssc_info[rtd->dai->cpu_dai->id];
+-	int dir_mask;
+-
+-	dir_mask = ((substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
+-		    SSC_DIR_MASK_PLAYBACK : SSC_DIR_MASK_CAPTURE);
+-
+-	spin_lock_irq(&ssc_p->lock);
+-	if (ssc_p->dir_mask & dir_mask) {
+-		spin_unlock_irq(&ssc_p->lock);
+-		return -EBUSY;
+-	}
+-	ssc_p->dir_mask |= dir_mask;
+-	spin_unlock_irq(&ssc_p->lock);
+-
+-	return 0;
+-}
+-
+-
+-
+-/*
+- * Shutdown.  Clear DMA parameters and shutdown the SSC if there
+- * are no other substreams open.
+- */
+-static void at32_ssc_shutdown(struct snd_pcm_substream *substream)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct at32_ssc_info *ssc_p = &ssc_info[rtd->dai->cpu_dai->id];
+-	struct at32_pcm_dma_params *dma_params;
+-	int dir_mask;
+-
+-	dma_params = ssc_p->dma_params[substream->stream];
+-
+-	if (dma_params != NULL) {
+-		ssc_writel(dma_params->ssc->regs, CR,
+-			   dma_params->mask->ssc_disable);
+-		pr_debug("%s disabled SSC_SR=0x%08x\n",
+-			 (substream->stream ? "receiver" : "transmit"),
+-			 ssc_readl(ssc_p->ssc->regs, SR));
+-
+-		dma_params->ssc = NULL;
+-		dma_params->substream = NULL;
+-		ssc_p->dma_params[substream->stream] = NULL;
+-	}
+-
+-
+-	dir_mask = 1 << substream->stream;
+-	spin_lock_irq(&ssc_p->lock);
+-	ssc_p->dir_mask &= ~dir_mask;
+-	if (!ssc_p->dir_mask) {
+-		/* Shutdown the SSC clock */
+-		pr_debug("at32-ssc: Stopping user %d clock\n",
+-			 ssc_p->ssc->user);
+-		clk_disable(ssc_p->ssc->clk);
+-
+-		if (ssc_p->initialized) {
+-			free_irq(ssc_p->ssc->irq, ssc_p);
+-			ssc_p->initialized = 0;
+-		}
+-
+-		/* Reset the SSC */
+-		ssc_writel(ssc_p->ssc->regs, CR, SSC_BIT(CR_SWRST));
+-
+-		/* clear the SSC dividers */
+-		ssc_p->cmr_div = 0;
+-		ssc_p->tcmr_period = 0;
+-		ssc_p->rcmr_period = 0;
+-	}
+-	spin_unlock_irq(&ssc_p->lock);
+-}
+-
+-
+-
+-/*
+- * Set the SSC system clock rate
+- */
+-static int at32_ssc_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+-				   int clk_id, unsigned int freq, int dir)
+-{
+-	/* TODO: What the heck do I do here? */
+-	return 0;
+-}
+-
+-
+-
+-/*
+- * Record DAI format for use by hw_params()
+- */
+-static int at32_ssc_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+-				unsigned int fmt)
+-{
+-	struct at32_ssc_info *ssc_p = &ssc_info[cpu_dai->id];
+-
+-	ssc_p->daifmt = fmt;
+-	return 0;
+-}
+-
+-
+-
+-/*
+- * Record SSC clock dividers for use in hw_params()
+- */
+-static int at32_ssc_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
+-				   int div_id, int div)
+-{
+-	struct at32_ssc_info *ssc_p = &ssc_info[cpu_dai->id];
+-
+-	switch (div_id) {
+-	case AT32_SSC_CMR_DIV:
+-		/*
+-		 * The same master clock divider is used for both
+-		 * transmit and receive, so if a value has already
+-		 * been set, it must match this value
+-		 */
+-		if (ssc_p->cmr_div == 0)
+-			ssc_p->cmr_div = div;
+-		else if (div != ssc_p->cmr_div)
+-			return -EBUSY;
+-		break;
+-
+-	case AT32_SSC_TCMR_PERIOD:
+-		ssc_p->tcmr_period = div;
+-		break;
+-
+-	case AT32_SSC_RCMR_PERIOD:
+-		ssc_p->rcmr_period = div;
+-		break;
+-
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	return 0;
+-}
+-
+-
+-
+-/*
+- * Configure the SSC
+- */
+-static int at32_ssc_hw_params(struct snd_pcm_substream *substream,
+-			      struct snd_pcm_hw_params *params)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	int id = rtd->dai->cpu_dai->id;
+-	struct at32_ssc_info *ssc_p = &ssc_info[id];
+-	struct at32_pcm_dma_params *dma_params;
+-	int channels, bits;
+-	u32 tfmr, rfmr, tcmr, rcmr;
+-	int start_event;
+-	int ret;
+-
+-
+-	/*
+-	 * Currently, there is only one set of dma_params for each direction.
+-	 * If more are added, this code will have to be changed to select
+-	 * the proper set
+-	 */
+-	dma_params = &ssc_dma_params[id][substream->stream];
+-	dma_params->ssc = ssc_p->ssc;
+-	dma_params->substream = substream;
+-
+-	ssc_p->dma_params[substream->stream] = dma_params;
+-
+-
+-	/*
+-	 * The cpu_dai->dma_data field is only used to communicate the
+-	 * appropriate DMA parameters to the PCM driver's hw_params()
+-	 * function.  It should not be used for other purposes as it
+-	 * is common to all substreams.
+-	 */
+-	rtd->dai->cpu_dai->dma_data = dma_params;
+-
+-	channels = params_channels(params);
+-
+-
+-	/*
+-	 * Determine sample size in bits and the PDC increment
+-	 */
+-	switch (params_format(params)) {
+-	case SNDRV_PCM_FORMAT_S8:
+-		bits = 8;
+-		dma_params->pdc_xfer_size = 1;
+-		break;
+-
+-	case SNDRV_PCM_FORMAT_S16:
+-		bits = 16;
+-		dma_params->pdc_xfer_size = 2;
+-		break;
+-
+-	case SNDRV_PCM_FORMAT_S24:
+-		bits = 24;
+-		dma_params->pdc_xfer_size = 4;
+-		break;
+-
+-	case SNDRV_PCM_FORMAT_S32:
+-		bits = 32;
+-		dma_params->pdc_xfer_size = 4;
+-		break;
+-
+-	default:
+-		pr_warning("at32-ssc: Unsupported PCM format %d",
+-			   params_format(params));
+-		return -EINVAL;
+-	}
+-	pr_debug("at32-ssc: bits = %d, pdc_xfer_size = %d, channels = %d\n",
+-		 bits, dma_params->pdc_xfer_size, channels);
+-
+-
+-	/*
+-	 * The SSC only supports up to 16-bit samples in I2S format, due
+-	 * to the size of the Frame Mode Register FSLEN field.
+-	 */
+-	if ((ssc_p->daifmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_I2S)
+-		if (bits > 16) {
+-			pr_warning("at32-ssc: "
+-				   "sample size %d is too large for I2S\n",
+-				   bits);
+-			return -EINVAL;
+-		}
+-
+-
+-	/*
+-	 * Compute the SSC register settings
+-	 */
+-	switch (ssc_p->daifmt & (SND_SOC_DAIFMT_FORMAT_MASK |
+-				 SND_SOC_DAIFMT_MASTER_MASK)) {
+-	case SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS:
+-		/*
+-		 * I2S format, SSC provides BCLK and LRS clocks.
+-		 *
+-		 * The SSC transmit and receive clocks are generated from the
+-		 * MCK divider, and the BCLK signal is output on the SSC TK line
+-		 */
+-		pr_debug("at32-ssc: SSC mode is I2S BCLK / FRAME master\n");
+-		rcmr = (SSC_BF(RCMR_PERIOD, ssc_p->rcmr_period) |
+-			SSC_BF(RCMR_STTDLY, START_DELAY) |
+-			SSC_BF(RCMR_START, SSC_START_FALLING_RF) |
+-			SSC_BF(RCMR_CKI, SSC_CKI_RISING) |
+-			SSC_BF(RCMR_CKO, SSC_CKO_NONE) |
+-			SSC_BF(RCMR_CKS, SSC_CKS_DIV));
+-
+-		rfmr = (SSC_BF(RFMR_FSEDGE, SSC_FSEDGE_POSITIVE) |
+-			SSC_BF(RFMR_FSOS, SSC_FSOS_NEGATIVE) |
+-			SSC_BF(RFMR_FSLEN, bits - 1) |
+-			SSC_BF(RFMR_DATNB, channels - 1) |
+-			SSC_BIT(RFMR_MSBF) | SSC_BF(RFMR_DATLEN, bits - 1));
+-
+-		tcmr = (SSC_BF(TCMR_PERIOD, ssc_p->tcmr_period) |
+-			SSC_BF(TCMR_STTDLY, START_DELAY) |
+-			SSC_BF(TCMR_START, SSC_START_FALLING_RF) |
+-			SSC_BF(TCMR_CKI, SSC_CKI_FALLING) |
+-			SSC_BF(TCMR_CKO, SSC_CKO_CONTINUOUS) |
+-			SSC_BF(TCMR_CKS, SSC_CKS_DIV));
+-
+-		tfmr = (SSC_BF(TFMR_FSEDGE, SSC_FSEDGE_POSITIVE) |
+-			SSC_BF(TFMR_FSOS, SSC_FSOS_NEGATIVE) |
+-			SSC_BF(TFMR_FSLEN, bits - 1) |
+-			SSC_BF(TFMR_DATNB, channels - 1) | SSC_BIT(TFMR_MSBF) |
+-			SSC_BF(TFMR_DATLEN, bits - 1));
+-		break;
+-
+-
+-	case SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM:
+-		/*
+-		 * I2S format, CODEC supplies BCLK and LRC clock.
+-		 *
+-		 * The SSC transmit clock is obtained from the BCLK signal
+-		 * on the TK line, and the SSC receive clock is generated from
+-		 * the transmit clock.
+-		 *
+-		 * For single channel data, one sample is transferred on the
+-		 * falling edge of the LRC clock.  For two channel data, one
+-		 * sample is transferred on both edges of the LRC clock.
+-		 */
+-		pr_debug("at32-ssc: SSC mode is I2S BCLK / FRAME slave\n");
+-		start_event = ((channels == 1) ?
+-			       SSC_START_FALLING_RF : SSC_START_EDGE_RF);
+-
+-		rcmr = (SSC_BF(RCMR_STTDLY, START_DELAY) |
+-			SSC_BF(RCMR_START, start_event) |
+-			SSC_BF(RCMR_CKI, SSC_CKI_RISING) |
+-			SSC_BF(RCMR_CKO, SSC_CKO_NONE) |
+-			SSC_BF(RCMR_CKS, SSC_CKS_CLOCK));
+-
+-		rfmr = (SSC_BF(RFMR_FSEDGE, SSC_FSEDGE_POSITIVE) |
+-			SSC_BF(RFMR_FSOS, SSC_FSOS_NONE) |
+-			SSC_BIT(RFMR_MSBF) | SSC_BF(RFMR_DATLEN, bits - 1));
+-
+-		tcmr = (SSC_BF(TCMR_STTDLY, START_DELAY) |
+-			SSC_BF(TCMR_START, start_event) |
+-			SSC_BF(TCMR_CKI, SSC_CKI_FALLING) |
+-			SSC_BF(TCMR_CKO, SSC_CKO_NONE) |
+-			SSC_BF(TCMR_CKS, SSC_CKS_PIN));
+-
+-		tfmr = (SSC_BF(TFMR_FSEDGE, SSC_FSEDGE_POSITIVE) |
+-			SSC_BF(TFMR_FSOS, SSC_FSOS_NONE) |
+-			SSC_BIT(TFMR_MSBF) | SSC_BF(TFMR_DATLEN, bits - 1));
+-		break;
+-
+-
+-	case SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_CBS_CFS:
+-		/*
+-		 * DSP/PCM Mode A format, SSC provides BCLK and LRC clocks.
+-		 *
+-		 * The SSC transmit and receive clocks are generated from the
+-		 * MCK divider, and the BCLK signal is output on the SSC TK line
+-		 */
+-		pr_debug("at32-ssc: SSC mode is DSP A BCLK / FRAME master\n");
+-		rcmr = (SSC_BF(RCMR_PERIOD, ssc_p->rcmr_period) |
+-			SSC_BF(RCMR_STTDLY, 1) |
+-			SSC_BF(RCMR_START, SSC_START_RISING_RF) |
+-			SSC_BF(RCMR_CKI, SSC_CKI_RISING) |
+-			SSC_BF(RCMR_CKO, SSC_CKO_NONE) |
+-			SSC_BF(RCMR_CKS, SSC_CKS_DIV));
+-
+-		rfmr = (SSC_BF(RFMR_FSEDGE, SSC_FSEDGE_POSITIVE) |
+-			SSC_BF(RFMR_FSOS, SSC_FSOS_POSITIVE) |
+-			SSC_BF(RFMR_DATNB, channels - 1) |
+-			SSC_BIT(RFMR_MSBF) | SSC_BF(RFMR_DATLEN, bits - 1));
+-
+-		tcmr = (SSC_BF(TCMR_PERIOD, ssc_p->tcmr_period) |
+-			SSC_BF(TCMR_STTDLY, 1) |
+-			SSC_BF(TCMR_START, SSC_START_RISING_RF) |
+-			SSC_BF(TCMR_CKI, SSC_CKI_RISING) |
+-			SSC_BF(TCMR_CKO, SSC_CKO_CONTINUOUS) |
+-			SSC_BF(TCMR_CKS, SSC_CKS_DIV));
+-
+-		tfmr = (SSC_BF(TFMR_FSEDGE, SSC_FSEDGE_POSITIVE) |
+-			SSC_BF(TFMR_FSOS, SSC_FSOS_POSITIVE) |
+-			SSC_BF(TFMR_DATNB, channels - 1) |
+-			SSC_BIT(TFMR_MSBF) | SSC_BF(TFMR_DATLEN, bits - 1));
+-		break;
+-
+-
+-	case SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_CBM_CFM:
+-	default:
+-		pr_warning("at32-ssc: unsupported DAI format 0x%x\n",
+-			   ssc_p->daifmt);
+-		return -EINVAL;
+-		break;
+-	}
+-	pr_debug("at32-ssc: RCMR=%08x RFMR=%08x TCMR=%08x TFMR=%08x\n",
+-		 rcmr, rfmr, tcmr, tfmr);
+-
+-
+-	if (!ssc_p->initialized) {
+-		/* enable peripheral clock */
+-		pr_debug("at32-ssc: Starting clock\n");
+-		clk_enable(ssc_p->ssc->clk);
+-
+-		/* Reset the SSC and its PDC registers */
+-		ssc_writel(ssc_p->ssc->regs, CR, SSC_BIT(CR_SWRST));
+-
+-		ssc_writel(ssc_p->ssc->regs, PDC_RPR, 0);
+-		ssc_writel(ssc_p->ssc->regs, PDC_RCR, 0);
+-		ssc_writel(ssc_p->ssc->regs, PDC_RNPR, 0);
+-		ssc_writel(ssc_p->ssc->regs, PDC_RNCR, 0);
+-
+-		ssc_writel(ssc_p->ssc->regs, PDC_TPR, 0);
+-		ssc_writel(ssc_p->ssc->regs, PDC_TCR, 0);
+-		ssc_writel(ssc_p->ssc->regs, PDC_TNPR, 0);
+-		ssc_writel(ssc_p->ssc->regs, PDC_TNCR, 0);
+-
+-		ret = request_irq(ssc_p->ssc->irq, at32_ssc_interrupt, 0,
+-				  ssc_p->name, ssc_p);
+-		if (ret < 0) {
+-			pr_warning("at32-ssc: request irq failed (%d)\n", ret);
+-			pr_debug("at32-ssc: Stopping clock\n");
+-			clk_disable(ssc_p->ssc->clk);
+-			return ret;
+-		}
+-
+-		ssc_p->initialized = 1;
+-	}
+-
+-	/* Set SSC clock mode register */
+-	ssc_writel(ssc_p->ssc->regs, CMR, ssc_p->cmr_div);
+-
+-	/* set receive clock mode and format */
+-	ssc_writel(ssc_p->ssc->regs, RCMR, rcmr);
+-	ssc_writel(ssc_p->ssc->regs, RFMR, rfmr);
+-
+-	/* set transmit clock mode and format */
+-	ssc_writel(ssc_p->ssc->regs, TCMR, tcmr);
+-	ssc_writel(ssc_p->ssc->regs, TFMR, tfmr);
+-
+-	pr_debug("at32-ssc: SSC initialized\n");
+-	return 0;
+-}
+-
+-
+-
+-static int at32_ssc_prepare(struct snd_pcm_substream *substream)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct at32_ssc_info *ssc_p = &ssc_info[rtd->dai->cpu_dai->id];
+-	struct at32_pcm_dma_params *dma_params;
+-
+-	dma_params = ssc_p->dma_params[substream->stream];
+-
+-	ssc_writel(dma_params->ssc->regs, CR, dma_params->mask->ssc_enable);
+-
+-	return 0;
+-}
+-
+-
+-
+-#ifdef CONFIG_PM
+-static int at32_ssc_suspend(struct platform_device *pdev,
+-			    struct snd_soc_dai *cpu_dai)
+-{
+-	struct at32_ssc_info *ssc_p;
+-
+-	if (!cpu_dai->active)
+-		return 0;
+-
+-	ssc_p = &ssc_info[cpu_dai->id];
+-
+-	/* Save the status register before disabling transmit and receive */
+-	ssc_p->ssc_state.ssc_sr = ssc_readl(ssc_p->ssc->regs, SR);
+-	ssc_writel(ssc_p->ssc->regs, CR, SSC_BIT(CR_TXDIS) | SSC_BIT(CR_RXDIS));
+-
+-	/* Save the current interrupt mask, then disable unmasked interrupts */
+-	ssc_p->ssc_state.ssc_imr = ssc_readl(ssc_p->ssc->regs, IMR);
+-	ssc_writel(ssc_p->ssc->regs, IDR, ssc_p->ssc_state.ssc_imr);
+-
+-	ssc_p->ssc_state.ssc_cmr = ssc_readl(ssc_p->ssc->regs, CMR);
+-	ssc_p->ssc_state.ssc_rcmr = ssc_readl(ssc_p->ssc->regs, RCMR);
+-	ssc_p->ssc_state.ssc_rfmr = ssc_readl(ssc_p->ssc->regs, RFMR);
+-	ssc_p->ssc_state.ssc_tcmr = ssc_readl(ssc_p->ssc->regs, TCMR);
+-	ssc_p->ssc_state.ssc_tfmr = ssc_readl(ssc_p->ssc->regs, TFMR);
+-
+-	return 0;
+-}
+-
+-
+-
+-static int at32_ssc_resume(struct platform_device *pdev,
+-			   struct snd_soc_dai *cpu_dai)
+-{
+-	struct at32_ssc_info *ssc_p;
+-	u32 cr;
+-
+-	if (!cpu_dai->active)
+-		return 0;
+-
+-	ssc_p = &ssc_info[cpu_dai->id];
+-
+-	/* restore SSC register settings */
+-	ssc_writel(ssc_p->ssc->regs, TFMR, ssc_p->ssc_state.ssc_tfmr);
+-	ssc_writel(ssc_p->ssc->regs, TCMR, ssc_p->ssc_state.ssc_tcmr);
+-	ssc_writel(ssc_p->ssc->regs, RFMR, ssc_p->ssc_state.ssc_rfmr);
+-	ssc_writel(ssc_p->ssc->regs, RCMR, ssc_p->ssc_state.ssc_rcmr);
+-	ssc_writel(ssc_p->ssc->regs, CMR, ssc_p->ssc_state.ssc_cmr);
+-
+-	/* re-enable interrupts */
+-	ssc_writel(ssc_p->ssc->regs, IER, ssc_p->ssc_state.ssc_imr);
+-
+-	/* Re-enable recieve and transmit as appropriate */
+-	cr = 0;
+-	cr |=
+-	    (ssc_p->ssc_state.ssc_sr & SSC_BIT(SR_RXEN)) ? SSC_BIT(CR_RXEN) : 0;
+-	cr |=
+-	    (ssc_p->ssc_state.ssc_sr & SSC_BIT(SR_TXEN)) ? SSC_BIT(CR_TXEN) : 0;
+-	ssc_writel(ssc_p->ssc->regs, CR, cr);
+-
+-	return 0;
+-}
+-#else /* CONFIG_PM */
+-#  define at32_ssc_suspend	NULL
+-#  define at32_ssc_resume	NULL
+-#endif /* CONFIG_PM */
+-
+-
+-#define AT32_SSC_RATES \
+-    (SNDRV_PCM_RATE_8000  | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
+-     SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
+-     SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
+-
+-
+-#define AT32_SSC_FORMATS \
+-    (SNDRV_PCM_FMTBIT_S8  | SNDRV_PCM_FMTBIT_S16 | \
+-     SNDRV_PCM_FMTBIT_S24 | SNDRV_PCM_FMTBIT_S32)
+-
+-
+-struct snd_soc_dai at32_ssc_dai[NUM_SSC_DEVICES] = {
+-	{
+-	 .name = "at32-ssc0",
+-	 .id = 0,
+-	 .type = SND_SOC_DAI_PCM,
+-	 .suspend = at32_ssc_suspend,
+-	 .resume = at32_ssc_resume,
+-	 .playback = {
+-		      .channels_min = 1,
+-		      .channels_max = 2,
+-		      .rates = AT32_SSC_RATES,
+-		      .formats = AT32_SSC_FORMATS,
+-		      },
+-	 .capture = {
+-		     .channels_min = 1,
+-		     .channels_max = 2,
+-		     .rates = AT32_SSC_RATES,
+-		     .formats = AT32_SSC_FORMATS,
+-		     },
+-	 .ops = {
+-		 .startup = at32_ssc_startup,
+-		 .shutdown = at32_ssc_shutdown,
+-		 .prepare = at32_ssc_prepare,
+-		 .hw_params = at32_ssc_hw_params,
+-		 },
+-	 .dai_ops = {
+-		     .set_sysclk = at32_ssc_set_dai_sysclk,
+-		     .set_fmt = at32_ssc_set_dai_fmt,
+-		     .set_clkdiv = at32_ssc_set_dai_clkdiv,
+-		     },
+-	 .private_data = &ssc_info[0],
+-	 },
+-	{
+-	 .name = "at32-ssc1",
+-	 .id = 1,
+-	 .type = SND_SOC_DAI_PCM,
+-	 .suspend = at32_ssc_suspend,
+-	 .resume = at32_ssc_resume,
+-	 .playback = {
+-		      .channels_min = 1,
+-		      .channels_max = 2,
+-		      .rates = AT32_SSC_RATES,
+-		      .formats = AT32_SSC_FORMATS,
+-		      },
+-	 .capture = {
+-		     .channels_min = 1,
+-		     .channels_max = 2,
+-		     .rates = AT32_SSC_RATES,
+-		     .formats = AT32_SSC_FORMATS,
+-		     },
+-	 .ops = {
+-		 .startup = at32_ssc_startup,
+-		 .shutdown = at32_ssc_shutdown,
+-		 .prepare = at32_ssc_prepare,
+-		 .hw_params = at32_ssc_hw_params,
+-		 },
+-	 .dai_ops = {
+-		     .set_sysclk = at32_ssc_set_dai_sysclk,
+-		     .set_fmt = at32_ssc_set_dai_fmt,
+-		     .set_clkdiv = at32_ssc_set_dai_clkdiv,
+-		     },
+-	 .private_data = &ssc_info[1],
+-	 },
+-	{
+-	 .name = "at32-ssc2",
+-	 .id = 2,
+-	 .type = SND_SOC_DAI_PCM,
+-	 .suspend = at32_ssc_suspend,
+-	 .resume = at32_ssc_resume,
+-	 .playback = {
+-		      .channels_min = 1,
+-		      .channels_max = 2,
+-		      .rates = AT32_SSC_RATES,
+-		      .formats = AT32_SSC_FORMATS,
+-		      },
+-	 .capture = {
+-		     .channels_min = 1,
+-		     .channels_max = 2,
+-		     .rates = AT32_SSC_RATES,
+-		     .formats = AT32_SSC_FORMATS,
+-		     },
+-	 .ops = {
+-		 .startup = at32_ssc_startup,
+-		 .shutdown = at32_ssc_shutdown,
+-		 .prepare = at32_ssc_prepare,
+-		 .hw_params = at32_ssc_hw_params,
+-		 },
+-	 .dai_ops = {
+-		     .set_sysclk = at32_ssc_set_dai_sysclk,
+-		     .set_fmt = at32_ssc_set_dai_fmt,
+-		     .set_clkdiv = at32_ssc_set_dai_clkdiv,
+-		     },
+-	 .private_data = &ssc_info[2],
+-	 },
+-};
+-EXPORT_SYMBOL_GPL(at32_ssc_dai);
+-
+-
+-MODULE_AUTHOR("Geoffrey Wossum <gwossum@acm.org>");
+-MODULE_DESCRIPTION("AT32 SSC ASoC Interface");
+-MODULE_LICENSE("GPL");
+diff --git a/sound/soc/at32/at32-ssc.h b/sound/soc/at32/at32-ssc.h
+deleted file mode 100644
+index 3c052db..0000000
+--- a/sound/soc/at32/at32-ssc.h
++++ /dev/null
+@@ -1,59 +0,0 @@
+-/* sound/soc/at32/at32-ssc.h
+- * ASoC SSC interface for Atmel AT32 SoC
+- *
+- * Copyright (C) 2008 Long Range Systems
+- *    Geoffrey Wossum <gwossum@acm.org>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- */
+-
+-#ifndef __SOUND_SOC_AT32_AT32_SSC_H
+-#define __SOUND_SOC_AT32_AT32_SSC_H __FILE__
+-
+-#include <linux/types.h>
+-#include <linux/atmel-ssc.h>
+-
+-#include "at32-pcm.h"
+-
+-
+-
+-struct at32_ssc_state {
+-	u32 ssc_cmr;
+-	u32 ssc_rcmr;
+-	u32 ssc_rfmr;
+-	u32 ssc_tcmr;
+-	u32 ssc_tfmr;
+-	u32 ssc_sr;
+-	u32 ssc_imr;
+-};
+-
+-
+-
+-struct at32_ssc_info {
+-	char *name;
+-	struct ssc_device *ssc;
+-	spinlock_t lock;	/* lock for dir_mask */
+-	unsigned short dir_mask;	/* 0=unused, 1=playback, 2=capture */
+-	unsigned short initialized;	/* true if SSC has been initialized */
+-	unsigned short daifmt;
+-	unsigned short cmr_div;
+-	unsigned short tcmr_period;
+-	unsigned short rcmr_period;
+-	struct at32_pcm_dma_params *dma_params[2];
+-	struct at32_ssc_state ssc_state;
+-};
+-
+-
+-/* SSC divider ids */
+-#define AT32_SSC_CMR_DIV        0	/* MCK divider for BCLK */
+-#define AT32_SSC_TCMR_PERIOD    1	/* BCLK divider for transmit FS */
+-#define AT32_SSC_RCMR_PERIOD    2	/* BCLK divider for receive FS */
+-
+-
+-extern struct snd_soc_dai at32_ssc_dai[];
+-
+-
+-
+-#endif /* __SOUND_SOC_AT32_AT32_SSC_H */
+diff --git a/sound/soc/at91/Kconfig b/sound/soc/at91/Kconfig
+deleted file mode 100644
+index 85a8832..0000000
+--- a/sound/soc/at91/Kconfig
++++ /dev/null
+@@ -1,10 +0,0 @@
+-config SND_AT91_SOC
+-	tristate "SoC Audio for the Atmel AT91 System-on-Chip"
+-	depends on ARCH_AT91
+-	help
+-	  Say Y or M if you want to add support for codecs attached to
+-	  the AT91 SSC interface. You will also need
+-	  to select the audio interfaces to support below.
+-
+-config SND_AT91_SOC_SSC
+-	tristate
+diff --git a/sound/soc/at91/Makefile b/sound/soc/at91/Makefile
+deleted file mode 100644
+index b817f11..0000000
+--- a/sound/soc/at91/Makefile
++++ /dev/null
+@@ -1,6 +0,0 @@
+-# AT91 Platform Support
+-snd-soc-at91-objs := at91-pcm.o
+-snd-soc-at91-ssc-objs := at91-ssc.o
+-
+-obj-$(CONFIG_SND_AT91_SOC) += snd-soc-at91.o
+-obj-$(CONFIG_SND_AT91_SOC_SSC) += snd-soc-at91-ssc.o
+diff --git a/sound/soc/at91/at91-pcm.c b/sound/soc/at91/at91-pcm.c
+deleted file mode 100644
+index 7ab48bd..0000000
+--- a/sound/soc/at91/at91-pcm.c
++++ /dev/null
+@@ -1,434 +0,0 @@
+-/*
+- * at91-pcm.c -- ALSA PCM interface for the Atmel AT91 SoC
+- *
+- * Author:	Frank Mandarino <fmandarino@endrelia.com>
+- *		Endrelia Technologies Inc.
+- * Created:	Mar 3, 2006
+- *
+- * Based on pxa2xx-pcm.c by:
+- *
+- * Author:	Nicolas Pitre
+- * Created:	Nov 30, 2004
+- * Copyright:	(C) 2004 MontaVista Software, Inc.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- */
+-
+-#include <linux/module.h>
+-#include <linux/init.h>
+-#include <linux/platform_device.h>
+-#include <linux/slab.h>
+-#include <linux/dma-mapping.h>
+-#include <linux/atmel_pdc.h>
+-
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+-#include <sound/soc.h>
+-
+-#include <mach/hardware.h>
+-#include <mach/at91_ssc.h>
+-
+-#include "at91-pcm.h"
+-
+-#if 0
+-#define	DBG(x...)	printk(KERN_INFO "at91-pcm: " x)
+-#else
+-#define	DBG(x...)
+-#endif
+-
+-static const struct snd_pcm_hardware at91_pcm_hardware = {
+-	.info			= SNDRV_PCM_INFO_MMAP |
+-				  SNDRV_PCM_INFO_MMAP_VALID |
+-				  SNDRV_PCM_INFO_INTERLEAVED |
+-				  SNDRV_PCM_INFO_PAUSE,
+-	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
+-	.period_bytes_min	= 32,
+-	.period_bytes_max	= 8192,
+-	.periods_min		= 2,
+-	.periods_max		= 1024,
+-	.buffer_bytes_max	= 32 * 1024,
+-};
+-
+-struct at91_runtime_data {
+-	struct at91_pcm_dma_params *params;
+-	dma_addr_t dma_buffer;			/* physical address of dma buffer */
+-	dma_addr_t dma_buffer_end;		/* first address beyond DMA buffer */
+-	size_t period_size;
+-	dma_addr_t period_ptr;			/* physical address of next period */
+-	u32 pdc_xpr_save;			/* PDC register save */
+-	u32 pdc_xcr_save;
+-	u32 pdc_xnpr_save;
+-	u32 pdc_xncr_save;
+-};
+-
+-static void at91_pcm_dma_irq(u32 ssc_sr,
+-	struct snd_pcm_substream *substream)
+-{
+-	struct at91_runtime_data *prtd = substream->runtime->private_data;
+-	struct at91_pcm_dma_params *params = prtd->params;
+-	static int count = 0;
+-
+-	count++;
+-
+-	if (ssc_sr & params->mask->ssc_endbuf) {
+-
+-		printk(KERN_WARNING
+-			"at91-pcm: buffer %s on %s (SSC_SR=%#x, count=%d)\n",
+-			substream->stream == SNDRV_PCM_STREAM_PLAYBACK
+-				? "underrun" : "overrun",
+-			params->name, ssc_sr, count);
+-
+-		/* re-start the PDC */
+-		at91_ssc_write(params->ssc_base + ATMEL_PDC_PTCR, params->mask->pdc_disable);
+-
+-		prtd->period_ptr += prtd->period_size;
+-		if (prtd->period_ptr >= prtd->dma_buffer_end) {
+-			prtd->period_ptr = prtd->dma_buffer;
+-		}
+-
+-		at91_ssc_write(params->ssc_base + params->pdc->xpr, prtd->period_ptr);
+-		at91_ssc_write(params->ssc_base + params->pdc->xcr,
+-				prtd->period_size / params->pdc_xfer_size);
+-
+-		at91_ssc_write(params->ssc_base + ATMEL_PDC_PTCR, params->mask->pdc_enable);
+-	}
+-
+-	if (ssc_sr & params->mask->ssc_endx) {
+-
+-		/* Load the PDC next pointer and counter registers */
+-		prtd->period_ptr += prtd->period_size;
+-		if (prtd->period_ptr >= prtd->dma_buffer_end) {
+-			prtd->period_ptr = prtd->dma_buffer;
+-		}
+-		at91_ssc_write(params->ssc_base + params->pdc->xnpr,
+-			       prtd->period_ptr);
+-		at91_ssc_write(params->ssc_base + params->pdc->xncr,
+-				prtd->period_size / params->pdc_xfer_size);
+-	}
+-
+-	snd_pcm_period_elapsed(substream);
+-}
+-
+-static int at91_pcm_hw_params(struct snd_pcm_substream *substream,
+-	struct snd_pcm_hw_params *params)
+-{
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct at91_runtime_data *prtd = runtime->private_data;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-
+-	/* this may get called several times by oss emulation
+-	 * with different params */
+-
+-	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
+-	runtime->dma_bytes = params_buffer_bytes(params);
+-
+-	prtd->params = rtd->dai->cpu_dai->dma_data;
+-	prtd->params->dma_intr_handler = at91_pcm_dma_irq;
+-
+-	prtd->dma_buffer = runtime->dma_addr;
+-	prtd->dma_buffer_end = runtime->dma_addr + runtime->dma_bytes;
+-	prtd->period_size = params_period_bytes(params);
+-
+-	DBG("hw_params: DMA for %s initialized (dma_bytes=%d, period_size=%d)\n",
+-		prtd->params->name, runtime->dma_bytes, prtd->period_size);
+-	return 0;
+-}
+-
+-static int at91_pcm_hw_free(struct snd_pcm_substream *substream)
+-{
+-	struct at91_runtime_data *prtd = substream->runtime->private_data;
+-	struct at91_pcm_dma_params *params = prtd->params;
+-
+-	if (params != NULL) {
+-		at91_ssc_write(params->ssc_base + ATMEL_PDC_PTCR, params->mask->pdc_disable);
+-		prtd->params->dma_intr_handler = NULL;
+-	}
+-
+-	return 0;
+-}
+-
+-static int at91_pcm_prepare(struct snd_pcm_substream *substream)
+-{
+-	struct at91_runtime_data *prtd = substream->runtime->private_data;
+-	struct at91_pcm_dma_params *params = prtd->params;
+-
+-	at91_ssc_write(params->ssc_base + AT91_SSC_IDR,
+-			params->mask->ssc_endx | params->mask->ssc_endbuf);
+-
+-	at91_ssc_write(params->ssc_base + ATMEL_PDC_PTCR, params->mask->pdc_disable);
+-	return 0;
+-}
+-
+-static int at91_pcm_trigger(struct snd_pcm_substream *substream,
+-	int cmd)
+-{
+-	struct at91_runtime_data *prtd = substream->runtime->private_data;
+-	struct at91_pcm_dma_params *params = prtd->params;
+-	int ret = 0;
+-
+-	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+-		prtd->period_ptr = prtd->dma_buffer;
+-
+-		at91_ssc_write(params->ssc_base + params->pdc->xpr, prtd->period_ptr);
+-		at91_ssc_write(params->ssc_base + params->pdc->xcr,
+-				prtd->period_size / params->pdc_xfer_size);
+-
+-		prtd->period_ptr += prtd->period_size;
+-		at91_ssc_write(params->ssc_base + params->pdc->xnpr, prtd->period_ptr);
+-		at91_ssc_write(params->ssc_base + params->pdc->xncr,
+-				prtd->period_size / params->pdc_xfer_size);
+-
+-		DBG("trigger: period_ptr=%lx, xpr=%lx, xcr=%ld, xnpr=%lx, xncr=%ld\n",
+-			(unsigned long) prtd->period_ptr,
+-			at91_ssc_read(params->ssc_base + params->pdc->xpr),
+-			at91_ssc_read(params->ssc_base + params->pdc->xcr),
+-			at91_ssc_read(params->ssc_base + params->pdc->xnpr),
+-			at91_ssc_read(params->ssc_base + params->pdc->xncr));
+-
+-		at91_ssc_write(params->ssc_base + AT91_SSC_IER,
+-			params->mask->ssc_endx | params->mask->ssc_endbuf);
+-
+-		at91_ssc_write(params->ssc_base + ATMEL_PDC_PTCR,
+-			params->mask->pdc_enable);
+-
+-		DBG("sr=%lx imr=%lx\n",
+-		    at91_ssc_read(params->ssc_base + AT91_SSC_SR),
+-		    at91_ssc_read(params->ssc_base + AT91_SSC_IMR));
+-		break;
+-
+-	case SNDRV_PCM_TRIGGER_STOP:
+-	case SNDRV_PCM_TRIGGER_SUSPEND:
+-	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		at91_ssc_write(params->ssc_base + ATMEL_PDC_PTCR, params->mask->pdc_disable);
+-		break;
+-
+-	case SNDRV_PCM_TRIGGER_RESUME:
+-	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		at91_ssc_write(params->ssc_base + ATMEL_PDC_PTCR, params->mask->pdc_enable);
+-		break;
+-
+-	default:
+-		ret = -EINVAL;
+-	}
+-
+-	return ret;
+-}
+-
+-static snd_pcm_uframes_t at91_pcm_pointer(
+-	struct snd_pcm_substream *substream)
+-{
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct at91_runtime_data *prtd = runtime->private_data;
+-	struct at91_pcm_dma_params *params = prtd->params;
+-	dma_addr_t ptr;
+-	snd_pcm_uframes_t x;
+-
+-	ptr = (dma_addr_t) at91_ssc_read(params->ssc_base + params->pdc->xpr);
+-	x = bytes_to_frames(runtime, ptr - prtd->dma_buffer);
+-
+-	if (x == runtime->buffer_size)
+-		x = 0;
+-	return x;
+-}
+-
+-static int at91_pcm_open(struct snd_pcm_substream *substream)
+-{
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct at91_runtime_data *prtd;
+-	int ret = 0;
+-
+-	snd_soc_set_runtime_hwparams(substream, &at91_pcm_hardware);
+-
+-	/* ensure that buffer size is a multiple of period size */
+-	ret = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
+-	if (ret < 0)
+-		goto out;
+-
+-	prtd = kzalloc(sizeof(struct at91_runtime_data), GFP_KERNEL);
+-	if (prtd == NULL) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
+-	runtime->private_data = prtd;
+-
+- out:
+-	return ret;
+-}
+-
+-static int at91_pcm_close(struct snd_pcm_substream *substream)
+-{
+-	struct at91_runtime_data *prtd = substream->runtime->private_data;
+-
+-	kfree(prtd);
+-	return 0;
+-}
+-
+-static int at91_pcm_mmap(struct snd_pcm_substream *substream,
+-	struct vm_area_struct *vma)
+-{
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-
+-	return dma_mmap_writecombine(substream->pcm->card->dev, vma,
+-				     runtime->dma_area,
+-				     runtime->dma_addr,
+-				     runtime->dma_bytes);
+-}
+-
+-struct snd_pcm_ops at91_pcm_ops = {
+-	.open		= at91_pcm_open,
+-	.close		= at91_pcm_close,
+-	.ioctl		= snd_pcm_lib_ioctl,
+-	.hw_params	= at91_pcm_hw_params,
+-	.hw_free	= at91_pcm_hw_free,
+-	.prepare	= at91_pcm_prepare,
+-	.trigger	= at91_pcm_trigger,
+-	.pointer	= at91_pcm_pointer,
+-	.mmap		= at91_pcm_mmap,
+-};
+-
+-static int at91_pcm_preallocate_dma_buffer(struct snd_pcm *pcm,
+-	int stream)
+-{
+-	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
+-	struct snd_dma_buffer *buf = &substream->dma_buffer;
+-	size_t size = at91_pcm_hardware.buffer_bytes_max;
+-
+-	buf->dev.type = SNDRV_DMA_TYPE_DEV;
+-	buf->dev.dev = pcm->card->dev;
+-	buf->private_data = NULL;
+-	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
+-					   &buf->addr, GFP_KERNEL);
+-
+-	DBG("preallocate_dma_buffer: area=%p, addr=%p, size=%d\n",
+-		(void *) buf->area,
+-		(void *) buf->addr,
+-		size);
+-
+-	if (!buf->area)
+-		return -ENOMEM;
+-
+-	buf->bytes = size;
+-	return 0;
+-}
+-
+-static u64 at91_pcm_dmamask = 0xffffffff;
+-
+-static int at91_pcm_new(struct snd_card *card,
+-	struct snd_soc_dai *dai, struct snd_pcm *pcm)
+-{
+-	int ret = 0;
+-
+-	if (!card->dev->dma_mask)
+-		card->dev->dma_mask = &at91_pcm_dmamask;
+-	if (!card->dev->coherent_dma_mask)
+-		card->dev->coherent_dma_mask = 0xffffffff;
+-
+-	if (dai->playback.channels_min) {
+-		ret = at91_pcm_preallocate_dma_buffer(pcm,
+-			SNDRV_PCM_STREAM_PLAYBACK);
+-		if (ret)
+-			goto out;
+-	}
+-
+-	if (dai->capture.channels_min) {
+-		ret = at91_pcm_preallocate_dma_buffer(pcm,
+-			SNDRV_PCM_STREAM_CAPTURE);
+-		if (ret)
+-			goto out;
+-	}
+- out:
+-	return ret;
+-}
+-
+-static void at91_pcm_free_dma_buffers(struct snd_pcm *pcm)
+-{
+-	struct snd_pcm_substream *substream;
+-	struct snd_dma_buffer *buf;
+-	int stream;
+-
+-	for (stream = 0; stream < 2; stream++) {
+-		substream = pcm->streams[stream].substream;
+-		if (!substream)
+-			continue;
+-
+-		buf = &substream->dma_buffer;
+-		if (!buf->area)
+-			continue;
+-
+-		dma_free_writecombine(pcm->card->dev, buf->bytes,
+-				      buf->area, buf->addr);
+-		buf->area = NULL;
+-	}
+-}
+-
+-#ifdef CONFIG_PM
+-static int at91_pcm_suspend(struct platform_device *pdev,
+-	struct snd_soc_dai *dai)
+-{
+-	struct snd_pcm_runtime *runtime = dai->runtime;
+-	struct at91_runtime_data *prtd;
+-	struct at91_pcm_dma_params *params;
+-
+-	if (!runtime)
+-		return 0;
+-
+-	prtd = runtime->private_data;
+-	params = prtd->params;
+-
+-	/* disable the PDC and save the PDC registers */
+-
+-	at91_ssc_write(params->ssc_base + ATMEL_PDC_PTCR, params->mask->pdc_disable);
+-
+-	prtd->pdc_xpr_save  = at91_ssc_read(params->ssc_base + params->pdc->xpr);
+-	prtd->pdc_xcr_save  = at91_ssc_read(params->ssc_base + params->pdc->xcr);
+-	prtd->pdc_xnpr_save = at91_ssc_read(params->ssc_base + params->pdc->xnpr);
+-	prtd->pdc_xncr_save = at91_ssc_read(params->ssc_base + params->pdc->xncr);
+-
+-	return 0;
+-}
+-
+-static int at91_pcm_resume(struct platform_device *pdev,
+-	struct snd_soc_dai *dai)
+-{
+-	struct snd_pcm_runtime *runtime = dai->runtime;
+-	struct at91_runtime_data *prtd;
+-	struct at91_pcm_dma_params *params;
+-
+-	if (!runtime)
+-		return 0;
+-
+-	prtd = runtime->private_data;
+-	params = prtd->params;
+-
+-	/* restore the PDC registers and enable the PDC */
+-	at91_ssc_write(params->ssc_base + params->pdc->xpr,  prtd->pdc_xpr_save);
+-	at91_ssc_write(params->ssc_base + params->pdc->xcr,  prtd->pdc_xcr_save);
+-	at91_ssc_write(params->ssc_base + params->pdc->xnpr, prtd->pdc_xnpr_save);
+-	at91_ssc_write(params->ssc_base + params->pdc->xncr, prtd->pdc_xncr_save);
+-
+-	at91_ssc_write(params->ssc_base + ATMEL_PDC_PTCR, params->mask->pdc_enable);
+-	return 0;
+-}
+-#else
+-#define at91_pcm_suspend	NULL
+-#define at91_pcm_resume		NULL
+-#endif
+-
+-struct snd_soc_platform at91_soc_platform = {
+-	.name		= "at91-audio",
+-	.pcm_ops 	= &at91_pcm_ops,
+-	.pcm_new	= at91_pcm_new,
+-	.pcm_free	= at91_pcm_free_dma_buffers,
+-	.suspend	= at91_pcm_suspend,
+-	.resume		= at91_pcm_resume,
+-};
+-
+-EXPORT_SYMBOL_GPL(at91_soc_platform);
+-
+-MODULE_AUTHOR("Frank Mandarino <fmandarino@endrelia.com>");
+-MODULE_DESCRIPTION("Atmel AT91 PCM module");
+-MODULE_LICENSE("GPL");
+diff --git a/sound/soc/at91/at91-pcm.h b/sound/soc/at91/at91-pcm.h
+deleted file mode 100644
+index e5aada2..0000000
+--- a/sound/soc/at91/at91-pcm.h
++++ /dev/null
+@@ -1,72 +0,0 @@
+-/*
+- * at91-pcm.h - ALSA PCM interface for the Atmel AT91 SoC
+- *
+- * Author:	Frank Mandarino <fmandarino@endrelia.com>
+- *		Endrelia Technologies Inc.
+- * Created:	Mar 3, 2006
+- *
+- * Based on pxa2xx-pcm.h by:
+- *
+- * Author:	Nicolas Pitre
+- * Created:	Nov 30, 2004
+- * Copyright:	MontaVista Software, Inc.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- */
+-
+-#ifndef _AT91_PCM_H
+-#define _AT91_PCM_H
+-
+-#include <mach/hardware.h>
+-
+-struct at91_ssc_periph {
+-	void __iomem	*base;
+-	u32		pid;
+-};
+-
+-/*
+- * Registers and status bits that are required by the PCM driver.
+- */
+-struct at91_pdc_regs {
+-	unsigned int	xpr;		/* PDC recv/trans pointer */
+-	unsigned int	xcr;		/* PDC recv/trans counter */
+-	unsigned int	xnpr;		/* PDC next recv/trans pointer */
+-	unsigned int	xncr;		/* PDC next recv/trans counter */
+-	unsigned int	ptcr;		/* PDC transfer control */
+-};
+-
+-struct at91_ssc_mask {
+-	u32	ssc_enable;		/* SSC recv/trans enable */
+-	u32	ssc_disable;		/* SSC recv/trans disable */
+-	u32	ssc_endx;		/* SSC ENDTX or ENDRX */
+-	u32	ssc_endbuf;		/* SSC TXBUFE or RXBUFF */
+-	u32	pdc_enable;		/* PDC recv/trans enable */
+-	u32	pdc_disable;		/* PDC recv/trans disable */
+-};
+-
+-/*
+- * This structure, shared between the PCM driver and the interface,
+- * contains all information required by the PCM driver to perform the
+- * PDC DMA operation.  All fields except dma_intr_handler() are initialized
+- * by the interface.  The dms_intr_handler() pointer is set by the PCM
+- * driver and called by the interface SSC interrupt handler if it is
+- * non-NULL.
+- */
+-struct at91_pcm_dma_params {
+-	char *name;			/* stream identifier */
+-	int pdc_xfer_size;		/* PDC counter increment in bytes */
+-	void __iomem *ssc_base;		/* SSC base address */
+-	struct at91_pdc_regs *pdc; /* PDC receive or transmit registers */
+-	struct at91_ssc_mask *mask;/* SSC & PDC status bits */
+-	struct snd_pcm_substream *substream;
+-	void (*dma_intr_handler)(u32, struct snd_pcm_substream *);
+-};
+-
+-extern struct snd_soc_platform at91_soc_platform;
+-
+-#define at91_ssc_read(a)	((unsigned long) __raw_readl(a))
+-#define at91_ssc_write(a,v)	__raw_writel((v),(a))
+-
+-#endif /* _AT91_PCM_H */
+diff --git a/sound/soc/at91/at91-ssc.c b/sound/soc/at91/at91-ssc.c
+deleted file mode 100644
+index 1b61cc4..0000000
+--- a/sound/soc/at91/at91-ssc.c
++++ /dev/null
+@@ -1,791 +0,0 @@
+-/*
+- * at91-ssc.c  --  ALSA SoC AT91 SSC Audio Layer Platform driver
+- *
+- * Author: Frank Mandarino <fmandarino@endrelia.com>
+- *         Endrelia Technologies Inc.
+- *
+- * Based on pxa2xx Platform drivers by
+- * Liam Girdwood <lrg@slimlogic.co.uk>
+- *
+- *  This program is free software; you can redistribute  it and/or modify it
+- *  under  the terms of  the GNU General  Public License as published by the
+- *  Free Software Foundation;  either version 2 of the  License, or (at your
+- *  option) any later version.
+- *
+- */
+-
+-#include <linux/init.h>
+-#include <linux/module.h>
+-#include <linux/interrupt.h>
+-#include <linux/device.h>
+-#include <linux/delay.h>
+-#include <linux/clk.h>
+-#include <linux/atmel_pdc.h>
+-
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+-#include <sound/initval.h>
+-#include <sound/soc.h>
+-
+-#include <mach/hardware.h>
+-#include <mach/at91_pmc.h>
+-#include <mach/at91_ssc.h>
+-
+-#include "at91-pcm.h"
+-#include "at91-ssc.h"
+-
+-#if 0
+-#define	DBG(x...)	printk(KERN_DEBUG "at91-ssc:" x)
+-#else
+-#define	DBG(x...)
+-#endif
+-
+-#if defined(CONFIG_ARCH_AT91SAM9260) || defined(CONFIG_ARCH_AT91SAM9G20)
+-#define NUM_SSC_DEVICES		1
+-#else
+-#define NUM_SSC_DEVICES		3
+-#endif
+-
+-
+-/*
+- * SSC PDC registers required by the PCM DMA engine.
+- */
+-static struct at91_pdc_regs pdc_tx_reg = {
+-	.xpr		= ATMEL_PDC_TPR,
+-	.xcr		= ATMEL_PDC_TCR,
+-	.xnpr		= ATMEL_PDC_TNPR,
+-	.xncr		= ATMEL_PDC_TNCR,
+-};
+-
+-static struct at91_pdc_regs pdc_rx_reg = {
+-	.xpr		= ATMEL_PDC_RPR,
+-	.xcr		= ATMEL_PDC_RCR,
+-	.xnpr		= ATMEL_PDC_RNPR,
+-	.xncr		= ATMEL_PDC_RNCR,
+-};
+-
+-/*
+- * SSC & PDC status bits for transmit and receive.
+- */
+-static struct at91_ssc_mask ssc_tx_mask = {
+-	.ssc_enable	= AT91_SSC_TXEN,
+-	.ssc_disable	= AT91_SSC_TXDIS,
+-	.ssc_endx	= AT91_SSC_ENDTX,
+-	.ssc_endbuf	= AT91_SSC_TXBUFE,
+-	.pdc_enable	= ATMEL_PDC_TXTEN,
+-	.pdc_disable	= ATMEL_PDC_TXTDIS,
+-};
+-
+-static struct at91_ssc_mask ssc_rx_mask = {
+-	.ssc_enable	= AT91_SSC_RXEN,
+-	.ssc_disable	= AT91_SSC_RXDIS,
+-	.ssc_endx	= AT91_SSC_ENDRX,
+-	.ssc_endbuf	= AT91_SSC_RXBUFF,
+-	.pdc_enable	= ATMEL_PDC_RXTEN,
+-	.pdc_disable	= ATMEL_PDC_RXTDIS,
+-};
+-
+-
+-/*
+- * DMA parameters.
+- */
+-static struct at91_pcm_dma_params ssc_dma_params[NUM_SSC_DEVICES][2] = {
+-	{{
+-	.name		= "SSC0 PCM out",
+-	.pdc		= &pdc_tx_reg,
+-	.mask		= &ssc_tx_mask,
+-	},
+-	{
+-	.name		= "SSC0 PCM in",
+-	.pdc		= &pdc_rx_reg,
+-	.mask		= &ssc_rx_mask,
+-	}},
+-#if NUM_SSC_DEVICES == 3
+-	{{
+-	.name		= "SSC1 PCM out",
+-	.pdc		= &pdc_tx_reg,
+-	.mask		= &ssc_tx_mask,
+-	},
+-	{
+-	.name		= "SSC1 PCM in",
+-	.pdc		= &pdc_rx_reg,
+-	.mask		= &ssc_rx_mask,
+-	}},
+-	{{
+-	.name		= "SSC2 PCM out",
+-	.pdc		= &pdc_tx_reg,
+-	.mask		= &ssc_tx_mask,
+-	},
+-	{
+-	.name		= "SSC2 PCM in",
+-	.pdc		= &pdc_rx_reg,
+-	.mask		= &ssc_rx_mask,
+-	}},
+-#endif
+-};
+-
+-struct at91_ssc_state {
+-	u32	ssc_cmr;
+-	u32	ssc_rcmr;
+-	u32	ssc_rfmr;
+-	u32	ssc_tcmr;
+-	u32	ssc_tfmr;
+-	u32	ssc_sr;
+-	u32	ssc_imr;
+-};
+-
+-static struct at91_ssc_info {
+-	char		*name;
+-	struct at91_ssc_periph ssc;
+-	spinlock_t 	lock;		/* lock for dir_mask */
+-	unsigned short	dir_mask;	/* 0=unused, 1=playback, 2=capture */
+-	unsigned short	initialized;	/* 1=SSC has been initialized */
+-	unsigned short	daifmt;
+-	unsigned short	cmr_div;
+-	unsigned short	tcmr_period;
+-	unsigned short	rcmr_period;
+-	struct at91_pcm_dma_params *dma_params[2];
+-	struct at91_ssc_state ssc_state;
+-
+-} ssc_info[NUM_SSC_DEVICES] = {
+-	{
+-	.name		= "ssc0",
+-	.lock		= __SPIN_LOCK_UNLOCKED(ssc_info[0].lock),
+-	.dir_mask	= 0,
+-	.initialized	= 0,
+-	},
+-#if NUM_SSC_DEVICES == 3
+-	{
+-	.name		= "ssc1",
+-	.lock		= __SPIN_LOCK_UNLOCKED(ssc_info[1].lock),
+-	.dir_mask	= 0,
+-	.initialized	= 0,
+-	},
+-	{
+-	.name		= "ssc2",
+-	.lock		= __SPIN_LOCK_UNLOCKED(ssc_info[2].lock),
+-	.dir_mask	= 0,
+-	.initialized	= 0,
+-	},
+-#endif
+-};
+-
+-static unsigned int at91_ssc_sysclk;
+-
+-/*
+- * SSC interrupt handler.  Passes PDC interrupts to the DMA
+- * interrupt handler in the PCM driver.
+- */
+-static irqreturn_t at91_ssc_interrupt(int irq, void *dev_id)
+-{
+-	struct at91_ssc_info *ssc_p = dev_id;
+-	struct at91_pcm_dma_params *dma_params;
+-	u32 ssc_sr;
+-	int i;
+-
+-	ssc_sr = at91_ssc_read(ssc_p->ssc.base + AT91_SSC_SR)
+-			& at91_ssc_read(ssc_p->ssc.base + AT91_SSC_IMR);
+-
+-	/*
+-	 * Loop through the substreams attached to this SSC.  If
+-	 * a DMA-related interrupt occurred on that substream, call
+-	 * the DMA interrupt handler function, if one has been
+-	 * registered in the dma_params structure by the PCM driver.
+-	 */
+-	for (i = 0; i < ARRAY_SIZE(ssc_p->dma_params); i++) {
+-		dma_params = ssc_p->dma_params[i];
+-
+-		if (dma_params != NULL && dma_params->dma_intr_handler != NULL &&
+-			(ssc_sr &
+-			(dma_params->mask->ssc_endx | dma_params->mask->ssc_endbuf)))
+-
+-			dma_params->dma_intr_handler(ssc_sr, dma_params->substream);
+-	}
+-
+-	return IRQ_HANDLED;
+-}
+-
+-/*
+- * Startup.  Only that one substream allowed in each direction.
+- */
+-static int at91_ssc_startup(struct snd_pcm_substream *substream)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct at91_ssc_info *ssc_p = &ssc_info[rtd->dai->cpu_dai->id];
+-	int dir_mask;
+-
+-	DBG("ssc_startup: SSC_SR=0x%08lx\n",
+-			at91_ssc_read(ssc_p->ssc.base + AT91_SSC_SR));
+-	dir_mask = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0x1 : 0x2;
+-
+-	spin_lock_irq(&ssc_p->lock);
+-	if (ssc_p->dir_mask & dir_mask) {
+-		spin_unlock_irq(&ssc_p->lock);
+-		return -EBUSY;
+-	}
+-	ssc_p->dir_mask |= dir_mask;
+-	spin_unlock_irq(&ssc_p->lock);
+-
+-	return 0;
+-}
+-
+-/*
+- * Shutdown.  Clear DMA parameters and shutdown the SSC if there
+- * are no other substreams open.
+- */
+-static void at91_ssc_shutdown(struct snd_pcm_substream *substream)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct at91_ssc_info *ssc_p = &ssc_info[rtd->dai->cpu_dai->id];
+-	struct at91_pcm_dma_params *dma_params;
+-	int dir, dir_mask;
+-
+-	dir = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0 : 1;
+-	dma_params = ssc_p->dma_params[dir];
+-
+-	if (dma_params != NULL) {
+-		at91_ssc_write(dma_params->ssc_base + AT91_SSC_CR,
+-				dma_params->mask->ssc_disable);
+-		DBG("%s disabled SSC_SR=0x%08lx\n", (dir ? "receive" : "transmit"),
+-			at91_ssc_read(ssc_p->ssc.base + AT91_SSC_SR));
+-
+-		dma_params->ssc_base = NULL;
+-		dma_params->substream = NULL;
+-		ssc_p->dma_params[dir] = NULL;
+-	}
+-
+-	dir_mask = 1 << dir;
+-
+-	spin_lock_irq(&ssc_p->lock);
+-	ssc_p->dir_mask &= ~dir_mask;
+-	if (!ssc_p->dir_mask) {
+-		/* Shutdown the SSC clock. */
+-		DBG("Stopping pid %d clock\n", ssc_p->ssc.pid);
+-		at91_sys_write(AT91_PMC_PCDR, 1<<ssc_p->ssc.pid);
+-
+-		if (ssc_p->initialized) {
+-			free_irq(ssc_p->ssc.pid, ssc_p);
+-			ssc_p->initialized = 0;
+-		}
+-
+-		/* Reset the SSC */
+-		at91_ssc_write(ssc_p->ssc.base + AT91_SSC_CR, AT91_SSC_SWRST);
+-
+-		/* Clear the SSC dividers */
+-		ssc_p->cmr_div = ssc_p->tcmr_period = ssc_p->rcmr_period = 0;
+-	}
+-	spin_unlock_irq(&ssc_p->lock);
+-}
+-
+-/*
+- * Record the SSC system clock rate.
+- */
+-static int at91_ssc_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+-		int clk_id, unsigned int freq, int dir)
+-{
+-	/*
+-	 * The only clock supplied to the SSC is the AT91 master clock,
+-	 * which is only used if the SSC is generating BCLK and/or
+-	 * LRC clocks.
+-	 */
+-	switch (clk_id) {
+-	case AT91_SYSCLK_MCK:
+-		at91_ssc_sysclk = freq;
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	return 0;
+-}
+-
+-/*
+- * Record the DAI format for use in hw_params().
+- */
+-static int at91_ssc_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+-		unsigned int fmt)
+-{
+-	struct at91_ssc_info *ssc_p = &ssc_info[cpu_dai->id];
+-
+-	ssc_p->daifmt = fmt;
+-	return 0;
+-}
+-
+-/*
+- * Record SSC clock dividers for use in hw_params().
+- */
+-static int at91_ssc_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
+-	int div_id, int div)
+-{
+-	struct at91_ssc_info *ssc_p = &ssc_info[cpu_dai->id];
+-
+-	switch (div_id) {
+-	case AT91SSC_CMR_DIV:
+-		/*
+-		 * The same master clock divider is used for both
+-		 * transmit and receive, so if a value has already
+-		 * been set, it must match this value.
+-		 */
+-		if (ssc_p->cmr_div == 0)
+-			ssc_p->cmr_div = div;
+-		else
+-			if (div != ssc_p->cmr_div)
+-				return -EBUSY;
+-		break;
+-
+-	case AT91SSC_TCMR_PERIOD:
+-		ssc_p->tcmr_period = div;
+-		break;
+-
+-	case AT91SSC_RCMR_PERIOD:
+-		ssc_p->rcmr_period = div;
+-		break;
+-
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	return 0;
+-}
+-
+-/*
+- * Configure the SSC.
+- */
+-static int at91_ssc_hw_params(struct snd_pcm_substream *substream,
+-	struct snd_pcm_hw_params *params)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	int id = rtd->dai->cpu_dai->id;
+-	struct at91_ssc_info *ssc_p = &ssc_info[id];
+-	struct at91_pcm_dma_params *dma_params;
+-	int dir, channels, bits;
+-	u32 tfmr, rfmr, tcmr, rcmr;
+-	int start_event;
+-	int ret;
+-
+-	/*
+-	 * Currently, there is only one set of dma params for
+-	 * each direction.  If more are added, this code will
+-	 * have to be changed to select the proper set.
+-	 */
+-	dir = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0 : 1;
+-
+-	dma_params = &ssc_dma_params[id][dir];
+-	dma_params->ssc_base = ssc_p->ssc.base;
+-	dma_params->substream = substream;
+-
+-	ssc_p->dma_params[dir] = dma_params;
+-
+-	/*
+-	 * The cpu_dai->dma_data field is only used to communicate the
+-	 * appropriate DMA parameters to the pcm driver hw_params()
+-	 * function.  It should not be used for other purposes
+-	 * as it is common to all substreams.
+-	 */
+-	rtd->dai->cpu_dai->dma_data = dma_params;
+-
+-	channels = params_channels(params);
+-
+-	/*
+-	 * Determine sample size in bits and the PDC increment.
+-	 */
+-	switch(params_format(params)) {
+-	case SNDRV_PCM_FORMAT_S8:
+-		bits = 8;
+-		dma_params->pdc_xfer_size = 1;
+-		break;
+-	case SNDRV_PCM_FORMAT_S16_LE:
+-		bits = 16;
+-		dma_params->pdc_xfer_size = 2;
+-		break;
+-	case SNDRV_PCM_FORMAT_S24_LE:
+-		bits = 24;
+-		dma_params->pdc_xfer_size = 4;
+-		break;
+-	case SNDRV_PCM_FORMAT_S32_LE:
+-		bits = 32;
+-		dma_params->pdc_xfer_size = 4;
+-		break;
+-	default:
+-		printk(KERN_WARNING "at91-ssc: unsupported PCM format\n");
+-		return -EINVAL;
+-	}
+-
+-	/*
+-	 * The SSC only supports up to 16-bit samples in I2S format, due
+-	 * to the size of the Frame Mode Register FSLEN field.
+-	 */
+-	if ((ssc_p->daifmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_I2S
+-		&& bits > 16) {
+-		printk(KERN_WARNING
+-			"at91-ssc: sample size %d is too large for I2S\n", bits);
+-		return -EINVAL;
+-	}
+-
+-	/*
+-	 * Compute SSC register settings.
+-	 */
+-	switch (ssc_p->daifmt
+-		& (SND_SOC_DAIFMT_FORMAT_MASK | SND_SOC_DAIFMT_MASTER_MASK)) {
+-
+-	case SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS:
+-		/*
+-		 * I2S format, SSC provides BCLK and LRC clocks.
+-		 *
+-		 * The SSC transmit and receive clocks are generated from the
+-		 * MCK divider, and the BCLK signal is output on the SSC TK line.
+-		 */
+-		rcmr =	  (( ssc_p->rcmr_period		<< 24) & AT91_SSC_PERIOD)
+-			| (( 1				<< 16) & AT91_SSC_STTDLY)
+-			| (( AT91_SSC_START_FALLING_RF	     ) & AT91_SSC_START)
+-			| (( AT91_SSC_CK_RISING		     ) & AT91_SSC_CKI)
+-			| (( AT91_SSC_CKO_NONE		     ) & AT91_SSC_CKO)
+-			| (( AT91_SSC_CKS_DIV		     ) & AT91_SSC_CKS);
+-
+-		rfmr =	  (( AT91_SSC_FSEDGE_POSITIVE	     ) & AT91_SSC_FSEDGE)
+-			| (( AT91_SSC_FSOS_NEGATIVE	     ) & AT91_SSC_FSOS)
+-			| (((bits - 1)			<< 16) & AT91_SSC_FSLEN)
+-			| (((channels - 1)		<<  8) & AT91_SSC_DATNB)
+-			| (( 1				<<  7) & AT91_SSC_MSBF)
+-			| (( 0				<<  5) & AT91_SSC_LOOP)
+-			| (((bits - 1)			<<  0) & AT91_SSC_DATALEN);
+-
+-		tcmr =	  (( ssc_p->tcmr_period		<< 24) & AT91_SSC_PERIOD)
+-			| (( 1				<< 16) & AT91_SSC_STTDLY)
+-			| (( AT91_SSC_START_FALLING_RF       ) & AT91_SSC_START)
+-			| (( AT91_SSC_CKI_FALLING	     ) & AT91_SSC_CKI)
+-			| (( AT91_SSC_CKO_CONTINUOUS	     ) & AT91_SSC_CKO)
+-			| (( AT91_SSC_CKS_DIV		     ) & AT91_SSC_CKS);
+-
+-		tfmr =	  (( AT91_SSC_FSEDGE_POSITIVE	     ) & AT91_SSC_FSEDGE)
+-			| (( 0				<< 23) & AT91_SSC_FSDEN)
+-			| (( AT91_SSC_FSOS_NEGATIVE	     ) & AT91_SSC_FSOS)
+-			| (((bits - 1)			<< 16) & AT91_SSC_FSLEN)
+-			| (((channels - 1)		<<  8) & AT91_SSC_DATNB)
+-			| (( 1				<<  7) & AT91_SSC_MSBF)
+-			| (( 0				<<  5) & AT91_SSC_DATDEF)
+-			| (((bits - 1)			<<  0) & AT91_SSC_DATALEN);
+-		break;
+-
+-	case SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM:
+-		/*
+-		 * I2S format, CODEC supplies BCLK and LRC clocks.
+-		 *
+-		 * The SSC transmit clock is obtained from the BCLK signal on
+-		 * on the TK line, and the SSC receive clock is generated from the
+-		 * transmit clock.
+-		 *
+-		 * For single channel data, one sample is transferred on the falling
+-		 * edge of the LRC clock.  For two channel data, one sample is
+-		 * transferred on both edges of the LRC clock.
+-		 */
+-		start_event = channels == 1
+-				? AT91_SSC_START_FALLING_RF
+-				: AT91_SSC_START_EDGE_RF;
+-
+-		rcmr =	  (( 0				<< 24) & AT91_SSC_PERIOD)
+-			| (( 1				<< 16) & AT91_SSC_STTDLY)
+-			| (( start_event		     ) & AT91_SSC_START)
+-			| (( AT91_SSC_CK_RISING		     ) & AT91_SSC_CKI)
+-			| (( AT91_SSC_CKO_NONE		     ) & AT91_SSC_CKO)
+-			| (( AT91_SSC_CKS_CLOCK		     ) & AT91_SSC_CKS);
+-
+-		rfmr =	  (( AT91_SSC_FSEDGE_POSITIVE	     ) & AT91_SSC_FSEDGE)
+-			| (( AT91_SSC_FSOS_NONE		     ) & AT91_SSC_FSOS)
+-			| (( 0				<< 16) & AT91_SSC_FSLEN)
+-			| (( 0				<<  8) & AT91_SSC_DATNB)
+-			| (( 1				<<  7) & AT91_SSC_MSBF)
+-			| (( 0				<<  5) & AT91_SSC_LOOP)
+-			| (((bits - 1)			<<  0) & AT91_SSC_DATALEN);
+-
+-		tcmr =	  (( 0				<< 24) & AT91_SSC_PERIOD)
+-			| (( 1				<< 16) & AT91_SSC_STTDLY)
+-			| (( start_event		     ) & AT91_SSC_START)
+-			| (( AT91_SSC_CKI_FALLING	     ) & AT91_SSC_CKI)
+-			| (( AT91_SSC_CKO_NONE		     ) & AT91_SSC_CKO)
+-			| (( AT91_SSC_CKS_PIN		     ) & AT91_SSC_CKS);
+-
+-		tfmr =	  (( AT91_SSC_FSEDGE_POSITIVE	     ) & AT91_SSC_FSEDGE)
+-			| (( 0				<< 23) & AT91_SSC_FSDEN)
+-			| (( AT91_SSC_FSOS_NONE		     ) & AT91_SSC_FSOS)
+-			| (( 0				<< 16) & AT91_SSC_FSLEN)
+-			| (( 0				<<  8) & AT91_SSC_DATNB)
+-			| (( 1				<<  7) & AT91_SSC_MSBF)
+-			| (( 0				<<  5) & AT91_SSC_DATDEF)
+-			| (((bits - 1)			<<  0) & AT91_SSC_DATALEN);
+-		break;
+-
+-	case SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_CBS_CFS:
+-		/*
+-		 * DSP/PCM Mode A format, SSC provides BCLK and LRC clocks.
+-		 *
+-		 * The SSC transmit and receive clocks are generated from the
+-		 * MCK divider, and the BCLK signal is output on the SSC TK line.
+-		 */
+-		rcmr =	  (( ssc_p->rcmr_period		<< 24) & AT91_SSC_PERIOD)
+-			| (( 1				<< 16) & AT91_SSC_STTDLY)
+-			| (( AT91_SSC_START_RISING_RF	     ) & AT91_SSC_START)
+-			| (( AT91_SSC_CK_RISING		     ) & AT91_SSC_CKI)
+-			| (( AT91_SSC_CKO_NONE		     ) & AT91_SSC_CKO)
+-			| (( AT91_SSC_CKS_DIV		     ) & AT91_SSC_CKS);
+-
+-		rfmr =	  (( AT91_SSC_FSEDGE_POSITIVE	     ) & AT91_SSC_FSEDGE)
+-			| (( AT91_SSC_FSOS_POSITIVE	     ) & AT91_SSC_FSOS)
+-			| (( 0				<< 16) & AT91_SSC_FSLEN)
+-			| (((channels - 1)		<<  8) & AT91_SSC_DATNB)
+-			| (( 1				<<  7) & AT91_SSC_MSBF)
+-			| (( 0				<<  5) & AT91_SSC_LOOP)
+-			| (((bits - 1)			<<  0) & AT91_SSC_DATALEN);
+-
+-		tcmr =	  (( ssc_p->tcmr_period		<< 24) & AT91_SSC_PERIOD)
+-			| (( 1				<< 16) & AT91_SSC_STTDLY)
+-			| (( AT91_SSC_START_RISING_RF        ) & AT91_SSC_START)
+-			| (( AT91_SSC_CK_RISING		     ) & AT91_SSC_CKI)
+-			| (( AT91_SSC_CKO_CONTINUOUS	     ) & AT91_SSC_CKO)
+-			| (( AT91_SSC_CKS_DIV		     ) & AT91_SSC_CKS);
+-
+-		tfmr =	  (( AT91_SSC_FSEDGE_POSITIVE	     ) & AT91_SSC_FSEDGE)
+-			| (( 0				<< 23) & AT91_SSC_FSDEN)
+-			| (( AT91_SSC_FSOS_POSITIVE	     ) & AT91_SSC_FSOS)
+-			| (( 0				<< 16) & AT91_SSC_FSLEN)
+-			| (((channels - 1)		<<  8) & AT91_SSC_DATNB)
+-			| (( 1				<<  7) & AT91_SSC_MSBF)
+-			| (( 0				<<  5) & AT91_SSC_DATDEF)
+-			| (((bits - 1)			<<  0) & AT91_SSC_DATALEN);
+-
+-
+-
+-			break;
+-
+-	case SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_CBM_CFM:
+-	default:
+-		printk(KERN_WARNING "at91-ssc: unsupported DAI format 0x%x.\n",
+-			ssc_p->daifmt);
+-		return -EINVAL;
+-		break;
+-	}
+-	DBG("RCMR=%08x RFMR=%08x TCMR=%08x TFMR=%08x\n", rcmr, rfmr, tcmr, tfmr);
+-
+-	if (!ssc_p->initialized) {
+-
+-		/* Enable PMC peripheral clock for this SSC */
+-		DBG("Starting pid %d clock\n", ssc_p->ssc.pid);
+-		at91_sys_write(AT91_PMC_PCER, 1<<ssc_p->ssc.pid);
+-
+-		/* Reset the SSC and its PDC registers */
+-		at91_ssc_write(ssc_p->ssc.base + AT91_SSC_CR, AT91_SSC_SWRST);
+-
+-		at91_ssc_write(ssc_p->ssc.base + ATMEL_PDC_RPR, 0);
+-		at91_ssc_write(ssc_p->ssc.base + ATMEL_PDC_RCR, 0);
+-		at91_ssc_write(ssc_p->ssc.base + ATMEL_PDC_RNPR, 0);
+-		at91_ssc_write(ssc_p->ssc.base + ATMEL_PDC_RNCR, 0);
+-		at91_ssc_write(ssc_p->ssc.base + ATMEL_PDC_TPR, 0);
+-		at91_ssc_write(ssc_p->ssc.base + ATMEL_PDC_TCR, 0);
+-		at91_ssc_write(ssc_p->ssc.base + ATMEL_PDC_TNPR, 0);
+-		at91_ssc_write(ssc_p->ssc.base + ATMEL_PDC_TNCR, 0);
+-
+-		if ((ret = request_irq(ssc_p->ssc.pid, at91_ssc_interrupt,
+-					0, ssc_p->name, ssc_p)) < 0) {
+-			printk(KERN_WARNING "at91-ssc: request_irq failure\n");
+-
+-			DBG("Stopping pid %d clock\n", ssc_p->ssc.pid);
+-			at91_sys_write(AT91_PMC_PCDR, 1<<ssc_p->ssc.pid);
+-			return ret;
+-		}
+-
+-		ssc_p->initialized = 1;
+-	}
+-
+-	/* set SSC clock mode register */
+-	at91_ssc_write(ssc_p->ssc.base + AT91_SSC_CMR, ssc_p->cmr_div);
+-
+-	/* set receive clock mode and format */
+-	at91_ssc_write(ssc_p->ssc.base + AT91_SSC_RCMR, rcmr);
+-	at91_ssc_write(ssc_p->ssc.base + AT91_SSC_RFMR, rfmr);
+-
+-	/* set transmit clock mode and format */
+-	at91_ssc_write(ssc_p->ssc.base + AT91_SSC_TCMR, tcmr);
+-	at91_ssc_write(ssc_p->ssc.base + AT91_SSC_TFMR, tfmr);
+-
+-	DBG("hw_params: SSC initialized\n");
+-	return 0;
+-}
+-
+-
+-static int at91_ssc_prepare(struct snd_pcm_substream *substream)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct at91_ssc_info *ssc_p = &ssc_info[rtd->dai->cpu_dai->id];
+-	struct at91_pcm_dma_params *dma_params;
+-	int dir;
+-
+-	dir = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0 : 1;
+-	dma_params = ssc_p->dma_params[dir];
+-
+-	at91_ssc_write(dma_params->ssc_base + AT91_SSC_CR,
+-			dma_params->mask->ssc_enable);
+-
+-	DBG("%s enabled SSC_SR=0x%08lx\n", dir ? "receive" : "transmit",
+-		at91_ssc_read(dma_params->ssc_base + AT91_SSC_SR));
+-	return 0;
+-}
+-
+-
+-#ifdef CONFIG_PM
+-static int at91_ssc_suspend(struct platform_device *pdev,
+-	struct snd_soc_dai *cpu_dai)
+-{
+-	struct at91_ssc_info *ssc_p;
+-
+-	if(!cpu_dai->active)
+-		return 0;
+-
+-	ssc_p = &ssc_info[cpu_dai->id];
+-
+-	/* Save the status register before disabling transmit and receive. */
+-	ssc_p->ssc_state.ssc_sr = at91_ssc_read(ssc_p->ssc.base + AT91_SSC_SR);
+-	at91_ssc_write(ssc_p->ssc.base + AT91_SSC_CR,
+-			AT91_SSC_TXDIS | AT91_SSC_RXDIS);
+-
+-	/* Save the current interrupt mask, then disable unmasked interrupts. */
+-	ssc_p->ssc_state.ssc_imr = at91_ssc_read(ssc_p->ssc.base + AT91_SSC_IMR);
+-	at91_ssc_write(ssc_p->ssc.base + AT91_SSC_IDR, ssc_p->ssc_state.ssc_imr);
+-
+-	ssc_p->ssc_state.ssc_cmr  = at91_ssc_read(ssc_p->ssc.base + AT91_SSC_CMR);
+-	ssc_p->ssc_state.ssc_rcmr = at91_ssc_read(ssc_p->ssc.base + AT91_SSC_RCMR);
+-	ssc_p->ssc_state.ssc_rfmr = at91_ssc_read(ssc_p->ssc.base + AT91_SSC_RFMR);
+-	ssc_p->ssc_state.ssc_tcmr = at91_ssc_read(ssc_p->ssc.base + AT91_SSC_TCMR);
+-	ssc_p->ssc_state.ssc_tfmr = at91_ssc_read(ssc_p->ssc.base + AT91_SSC_TFMR);
+-
+-	return 0;
+-}
+-
+-static int at91_ssc_resume(struct platform_device *pdev,
+-	struct snd_soc_dai *cpu_dai)
+-{
+-	struct at91_ssc_info *ssc_p;
+-
+-	if(!cpu_dai->active)
+-		return 0;
+-
+-	ssc_p = &ssc_info[cpu_dai->id];
+-
+-	at91_ssc_write(ssc_p->ssc.base + AT91_SSC_TFMR, ssc_p->ssc_state.ssc_tfmr);
+-	at91_ssc_write(ssc_p->ssc.base + AT91_SSC_TCMR, ssc_p->ssc_state.ssc_tcmr);
+-	at91_ssc_write(ssc_p->ssc.base + AT91_SSC_RFMR, ssc_p->ssc_state.ssc_rfmr);
+-	at91_ssc_write(ssc_p->ssc.base + AT91_SSC_RCMR, ssc_p->ssc_state.ssc_rcmr);
+-	at91_ssc_write(ssc_p->ssc.base + AT91_SSC_CMR,  ssc_p->ssc_state.ssc_cmr);
+-
+-	at91_ssc_write(ssc_p->ssc.base + AT91_SSC_IER,  ssc_p->ssc_state.ssc_imr);
+-
+-	at91_ssc_write(ssc_p->ssc.base + AT91_SSC_CR,
+-		((ssc_p->ssc_state.ssc_sr & AT91_SSC_RXENA) ? AT91_SSC_RXEN : 0) |
+-		((ssc_p->ssc_state.ssc_sr & AT91_SSC_TXENA) ? AT91_SSC_TXEN : 0));
+-
+-	return 0;
+-}
+-
+-#else
+-#define at91_ssc_suspend	NULL
+-#define at91_ssc_resume		NULL
+-#endif
+-
+-#define AT91_SSC_RATES (SNDRV_PCM_RATE_8000  | SNDRV_PCM_RATE_11025 |\
+-			SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |\
+-			SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
+-			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |\
+-			SNDRV_PCM_RATE_96000)
+-
+-#define AT91_SSC_FORMATS (SNDRV_PCM_FMTBIT_S8     | SNDRV_PCM_FMTBIT_S16_LE |\
+-			  SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
+-
+-struct snd_soc_dai at91_ssc_dai[NUM_SSC_DEVICES] = {
+-	{	.name = "at91-ssc0",
+-		.id = 0,
+-		.type = SND_SOC_DAI_PCM,
+-		.suspend = at91_ssc_suspend,
+-		.resume = at91_ssc_resume,
+-		.playback = {
+-			.channels_min = 1,
+-			.channels_max = 2,
+-			.rates = AT91_SSC_RATES,
+-			.formats = AT91_SSC_FORMATS,},
+-		.capture = {
+-			.channels_min = 1,
+-			.channels_max = 2,
+-			.rates = AT91_SSC_RATES,
+-			.formats = AT91_SSC_FORMATS,},
+-		.ops = {
+-			.startup = at91_ssc_startup,
+-			.shutdown = at91_ssc_shutdown,
+-			.prepare = at91_ssc_prepare,
+-			.hw_params = at91_ssc_hw_params,},
+-		.dai_ops = {
+-			.set_sysclk = at91_ssc_set_dai_sysclk,
+-			.set_fmt = at91_ssc_set_dai_fmt,
+-			.set_clkdiv = at91_ssc_set_dai_clkdiv,},
+-		.private_data = &ssc_info[0].ssc,
+-	},
+-#if NUM_SSC_DEVICES == 3
+-	{	.name = "at91-ssc1",
+-		.id = 1,
+-		.type = SND_SOC_DAI_PCM,
+-		.suspend = at91_ssc_suspend,
+-		.resume = at91_ssc_resume,
+-		.playback = {
+-			.channels_min = 1,
+-			.channels_max = 2,
+-			.rates = AT91_SSC_RATES,
+-			.formats = AT91_SSC_FORMATS,},
+-		.capture = {
+-			.channels_min = 1,
+-			.channels_max = 2,
+-			.rates = AT91_SSC_RATES,
+-			.formats = AT91_SSC_FORMATS,},
+-		.ops = {
+-			.startup = at91_ssc_startup,
+-			.shutdown = at91_ssc_shutdown,
+-			.prepare = at91_ssc_prepare,
+-			.hw_params = at91_ssc_hw_params,},
+-		.dai_ops = {
+-			.set_sysclk = at91_ssc_set_dai_sysclk,
+-			.set_fmt = at91_ssc_set_dai_fmt,
+-			.set_clkdiv = at91_ssc_set_dai_clkdiv,},
+-		.private_data = &ssc_info[1].ssc,
+-	},
+-	{	.name = "at91-ssc2",
+-		.id = 2,
+-		.type = SND_SOC_DAI_PCM,
+-		.suspend = at91_ssc_suspend,
+-		.resume = at91_ssc_resume,
+-		.playback = {
+-			.channels_min = 1,
+-			.channels_max = 2,
+-			.rates = AT91_SSC_RATES,
+-			.formats = AT91_SSC_FORMATS,},
+-		.capture = {
+-			.channels_min = 1,
+-			.channels_max = 2,
+-			.rates = AT91_SSC_RATES,
+-			.formats = AT91_SSC_FORMATS,},
+-		.ops = {
+-			.startup = at91_ssc_startup,
+-			.shutdown = at91_ssc_shutdown,
+-			.prepare = at91_ssc_prepare,
+-			.hw_params = at91_ssc_hw_params,},
+-		.dai_ops = {
+-			.set_sysclk = at91_ssc_set_dai_sysclk,
+-			.set_fmt = at91_ssc_set_dai_fmt,
+-			.set_clkdiv = at91_ssc_set_dai_clkdiv,},
+-		.private_data = &ssc_info[2].ssc,
+-	},
+-#endif
+-};
+-
+-EXPORT_SYMBOL_GPL(at91_ssc_dai);
+-
+-/* Module information */
+-MODULE_AUTHOR("Frank Mandarino, fmandarino@endrelia.com, www.endrelia.com");
+-MODULE_DESCRIPTION("AT91 SSC ASoC Interface");
+-MODULE_LICENSE("GPL");
+diff --git a/sound/soc/at91/at91-ssc.h b/sound/soc/at91/at91-ssc.h
+deleted file mode 100644
+index 6b7bf38..0000000
+--- a/sound/soc/at91/at91-ssc.h
++++ /dev/null
+@@ -1,27 +0,0 @@
+-/*
+- * at91-ssc.h - ALSA SSC interface for the Atmel AT91 SoC
+- *
+- * Author:	Frank Mandarino <fmandarino@endrelia.com>
+- *		Endrelia Technologies Inc.
+- * Created:	Jan 9, 2007
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- */
+-
+-#ifndef _AT91_SSC_H
+-#define _AT91_SSC_H
+-
+-/* SSC system clock ids */
+-#define AT91_SYSCLK_MCK		0 /* SSC uses AT91 MCK as system clock */
+-
+-/* SSC divider ids */
+-#define AT91SSC_CMR_DIV		0 /* MCK divider for BCLK */
+-#define AT91SSC_TCMR_PERIOD	1 /* BCLK divider for transmit FS */
+-#define AT91SSC_RCMR_PERIOD	2 /* BCLK divider for receive FS */
+-
+-extern struct snd_soc_dai at91_ssc_dai[];
+-
+-#endif /* _AT91_SSC_H */
+-
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+new file mode 100644
+index 0000000..a608d70
+--- /dev/null
++++ b/sound/soc/atmel/Kconfig
+@@ -0,0 +1,43 @@
++config SND_ATMEL_SOC
++	tristate "SoC Audio for the Atmel System-on-Chip"
++	depends on ARCH_AT91 || AVR32
++	help
++	  Say Y or M if you want to add support for codecs attached to
++	  the ATMEL SSC interface. You will also need
++	  to select the audio interfaces to support below.
++
++config SND_ATMEL_SOC_SSC
++	tristate
++	depends on SND_ATMEL_SOC
++	help
++	  Say Y or M if you want to add support for codecs the
++	  ATMEL SSC interface. You will also needs to select the individual
++	  machine drivers to support below.
++
++config SND_AT91_SOC_SAM9G20_WM8731
++	tristate "SoC Audio support for WM8731-based At91sam9g20 evaluation board"
++	depends on ATMEL_SSC && ARCH_AT91SAM9G20 && SND_ATMEL_SOC
++	select SND_ATMEL_SOC_SSC
++	select SND_SOC_WM8731
++	help
++	  Say Y if you want to add support for SoC audio on WM8731-based
++	  AT91sam9g20 evaluation board.
++
++config SND_AT32_SOC_PLAYPAQ
++        tristate "SoC Audio support for PlayPaq with WM8510"
++        depends on SND_ATMEL_SOC && BOARD_PLAYPAQ
++        select SND_ATMEL_SOC_SSC
++        select SND_SOC_WM8510
++        help
++          Say Y or M here if you want to add support for SoC audio
++          on the LRS PlayPaq.
++
++config SND_AT32_SOC_PLAYPAQ_SLAVE
++        bool "Run CODEC on PlayPaq in slave mode"
++        depends on SND_AT32_SOC_PLAYPAQ
++        default n
++        help
++          Say Y if you want to run with the AT32 SSC generating the BCLK
++          and FRAME signals on the PlayPaq.  Unless you want to play
++          with the AT32 as the SSC master, you probably want to say N here,
++          as this will give you better sound quality.
+diff --git a/sound/soc/atmel/Makefile b/sound/soc/atmel/Makefile
+new file mode 100644
+index 0000000..f54a7cc
+--- /dev/null
++++ b/sound/soc/atmel/Makefile
+@@ -0,0 +1,15 @@
++# AT91 Platform Support
++snd-soc-atmel-pcm-objs := atmel-pcm.o
++snd-soc-atmel_ssc_dai-objs := atmel_ssc_dai.o
++
++obj-$(CONFIG_SND_ATMEL_SOC) += snd-soc-atmel-pcm.o
++obj-$(CONFIG_SND_ATMEL_SOC_SSC) += snd-soc-atmel_ssc_dai.o
++
++# AT91 Machine Support
++snd-soc-sam9g20-wm8731-objs := sam9g20_wm8731.o
++
++# AT32 Machine Support
++snd-soc-playpaq-objs := playpaq_wm8510.o
++
++obj-$(CONFIG_SND_AT91_SOC_SAM9G20_WM8731) += snd-soc-sam9g20-wm8731.o
++obj-$(CONFIG_SND_AT32_SOC_PLAYPAQ) += snd-soc-playpaq.o
+diff --git a/sound/soc/at32/at32-pcm.c b/sound/soc/atmel/atmel-pcm.c
+similarity index 50%
+rename from sound/soc/at32/at32-pcm.c
+rename to sound/soc/atmel/atmel-pcm.c
+index c83584f..394412f 100644
+--- a/sound/soc/at32/at32-pcm.c
++++ b/sound/soc/atmel/atmel-pcm.c
+@@ -1,15 +1,34 @@
+-/* sound/soc/at32/at32-pcm.c
+- * ASoC PCM interface for Atmel AT32 SoC
++/*
++ * atmel-pcm.c  --  ALSA PCM interface for the Atmel atmel SoC.
+  *
+- * Copyright (C) 2008 Long Range Systems
+- *    Geoffrey Wossum <gwossum@acm.org>
++ *  Copyright (C) 2005 SAN People
++ *  Copyright (C) 2008 Atmel
++ *
++ * Authors: Sedji Gaouaou <sedji.gaouaou@atmel.com>
++ *
++ * Based on at91-pcm. by:
++ * Frank Mandarino <fmandarino@endrelia.com>
++ * Copyright 2006 Endrelia Technologies Inc.
++ *
++ * Based on pxa2xx-pcm.c by:
++ *
++ * Author:	Nicolas Pitre
++ * Created:	Nov 30, 2004
++ * Copyright:	(C) 2004 MontaVista Software, Inc.
+  *
+  * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
+  *
+- * Note that this is basically a port of the sound/soc/at91-pcm.c to
+- * the AVR32 kernel.  Thanks to Frank Mandarino for that code.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  */
+ 
+ #include <linux/module.h>
+@@ -18,14 +37,16 @@
+ #include <linux/slab.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/atmel_pdc.h>
++#include <linux/atmel-ssc.h>
+ 
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ 
+-#include "at32-pcm.h"
++#include <mach/hardware.h>
+ 
++#include "atmel-pcm.h"
+ 
+ 
+ /*--------------------------------------------------------------------------*\
+@@ -34,36 +55,33 @@
+ /* TODO: These values were taken from the AT91 platform driver, check
+  *	 them against real values for AT32
+  */
+-static const struct snd_pcm_hardware at32_pcm_hardware = {
+-	.info = (SNDRV_PCM_INFO_MMAP |
+-		 SNDRV_PCM_INFO_MMAP_VALID |
+-		 SNDRV_PCM_INFO_INTERLEAVED |
+-		 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+-		 SNDRV_PCM_INFO_PAUSE),
+-
+-	.formats = SNDRV_PCM_FMTBIT_S16,
+-	.period_bytes_min = 32,
+-	.period_bytes_max = 8192,	/* 512 frames * 16 bytes / frame */
+-	.periods_min = 2,
+-	.periods_max = 1024,
+-	.buffer_bytes_max = 32 * 1024,
++static const struct snd_pcm_hardware atmel_pcm_hardware = {
++	.info			= SNDRV_PCM_INFO_MMAP |
++				  SNDRV_PCM_INFO_MMAP_VALID |
++				  SNDRV_PCM_INFO_INTERLEAVED |
++				  SNDRV_PCM_INFO_PAUSE,
++	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
++	.period_bytes_min	= 32,
++	.period_bytes_max	= 8192,
++	.periods_min		= 2,
++	.periods_max		= 1024,
++	.buffer_bytes_max	= 32 * 1024,
+ };
+ 
+ 
+-
+ /*--------------------------------------------------------------------------*\
+  * Data types
+ \*--------------------------------------------------------------------------*/
+-struct at32_runtime_data {
+-	struct at32_pcm_dma_params *params;
+-	dma_addr_t dma_buffer;	/* physical address of DMA buffer */
+-	dma_addr_t dma_buffer_end; /* first address beyond DMA buffer */
++struct atmel_runtime_data {
++	struct atmel_pcm_dma_params *params;
++	dma_addr_t dma_buffer;		/* physical address of dma buffer */
++	dma_addr_t dma_buffer_end;	/* first address beyond DMA buffer */
+ 	size_t period_size;
+ 
+-	dma_addr_t period_ptr;	/* physical address of next period */
+-	int periods;		/* period index of period_ptr */
++	dma_addr_t period_ptr;		/* physical address of next period */
++	int periods;			/* period index of period_ptr */
+ 
+-	/* Save PDC registers (for power management) */
++	/* PDC register save */
+ 	u32 pdc_xpr_save;
+ 	u32 pdc_xcr_save;
+ 	u32 pdc_xnpr_save;
+@@ -71,49 +89,51 @@ struct at32_runtime_data {
+ };
+ 
+ 
+-
+ /*--------------------------------------------------------------------------*\
+  * Helper functions
+ \*--------------------------------------------------------------------------*/
+-static int at32_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
++static int atmel_pcm_preallocate_dma_buffer(struct snd_pcm *pcm,
++	int stream)
+ {
+ 	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
+-	struct snd_dma_buffer *dmabuf = &substream->dma_buffer;
+-	size_t size = at32_pcm_hardware.buffer_bytes_max;
+-
+-	dmabuf->dev.type = SNDRV_DMA_TYPE_DEV;
+-	dmabuf->dev.dev = pcm->card->dev;
+-	dmabuf->private_data = NULL;
+-	dmabuf->area = dma_alloc_coherent(pcm->card->dev, size,
+-					  &dmabuf->addr, GFP_KERNEL);
+-	pr_debug("at32_pcm: preallocate_dma_buffer: "
+-		 "area=%p, addr=%p, size=%ld\n",
+-		 (void *)dmabuf->area, (void *)dmabuf->addr, size);
+-
+-	if (!dmabuf->area)
++	struct snd_dma_buffer *buf = &substream->dma_buffer;
++	size_t size = atmel_pcm_hardware.buffer_bytes_max;
++
++	buf->dev.type = SNDRV_DMA_TYPE_DEV;
++	buf->dev.dev = pcm->card->dev;
++	buf->private_data = NULL;
++	buf->area = dma_alloc_coherent(pcm->card->dev, size,
++					  &buf->addr, GFP_KERNEL);
++	pr_debug("atmel-pcm:"
++		"preallocate_dma_buffer: area=%p, addr=%p, size=%d\n",
++		(void *) buf->area,
++		(void *) buf->addr,
++		size);
++
++	if (!buf->area)
+ 		return -ENOMEM;
+ 
+-	dmabuf->bytes = size;
++	buf->bytes = size;
+ 	return 0;
+ }
+-
+-
+-
+ /*--------------------------------------------------------------------------*\
+  * ISR
+ \*--------------------------------------------------------------------------*/
+-static void at32_pcm_dma_irq(u32 ssc_sr, struct snd_pcm_substream *substream)
++static void atmel_pcm_dma_irq(u32 ssc_sr,
++	struct snd_pcm_substream *substream)
+ {
+-	struct snd_pcm_runtime *rtd = substream->runtime;
+-	struct at32_runtime_data *prtd = rtd->private_data;
+-	struct at32_pcm_dma_params *params = prtd->params;
++	struct atmel_runtime_data *prtd = substream->runtime->private_data;
++	struct atmel_pcm_dma_params *params = prtd->params;
+ 	static int count;
+ 
+ 	count++;
++
+ 	if (ssc_sr & params->mask->ssc_endbuf) {
+-		pr_warning("at32-pcm: buffer %s on %s (SSC_SR=%#x, count=%d)\n",
+-			   substream->stream == SNDRV_PCM_STREAM_PLAYBACK ?
+-			   "underrun" : "overrun", params->name, ssc_sr, count);
++		pr_warning("atmel-pcm: buffer %s on %s"
++				" (SSC_SR=%#x, count=%d)\n",
++				substream->stream == SNDRV_PCM_STREAM_PLAYBACK
++				? "underrun" : "overrun",
++				params->name, ssc_sr, count);
+ 
+ 		/* re-start the PDC */
+ 		ssc_writex(params->ssc->regs, ATMEL_PDC_PTCR,
+@@ -122,7 +142,6 @@ static void at32_pcm_dma_irq(u32 ssc_sr, struct snd_pcm_substream *substream)
+ 		if (prtd->period_ptr >= prtd->dma_buffer_end)
+ 			prtd->period_ptr = prtd->dma_buffer;
+ 
+-
+ 		ssc_writex(params->ssc->regs, params->pdc->xpr,
+ 			   prtd->period_ptr);
+ 		ssc_writex(params->ssc->regs, params->pdc->xcr,
+@@ -131,60 +150,58 @@ static void at32_pcm_dma_irq(u32 ssc_sr, struct snd_pcm_substream *substream)
+ 			   params->mask->pdc_enable);
+ 	}
+ 
+-
+ 	if (ssc_sr & params->mask->ssc_endx) {
+ 		/* Load the PDC next pointer and counter registers */
+ 		prtd->period_ptr += prtd->period_size;
+ 		if (prtd->period_ptr >= prtd->dma_buffer_end)
+ 			prtd->period_ptr = prtd->dma_buffer;
++
+ 		ssc_writex(params->ssc->regs, params->pdc->xnpr,
+ 			   prtd->period_ptr);
+ 		ssc_writex(params->ssc->regs, params->pdc->xncr,
+ 			   prtd->period_size / params->pdc_xfer_size);
+ 	}
+ 
+-
+ 	snd_pcm_period_elapsed(substream);
+ }
+ 
+ 
+-
+ /*--------------------------------------------------------------------------*\
+  * PCM operations
+ \*--------------------------------------------------------------------------*/
+-static int at32_pcm_hw_params(struct snd_pcm_substream *substream,
+-			      struct snd_pcm_hw_params *params)
++static int atmel_pcm_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct at32_runtime_data *prtd = runtime->private_data;
++	struct atmel_runtime_data *prtd = runtime->private_data;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 
+ 	/* this may get called several times by oss emulation
+-	 * with different params
+-	 */
++	 * with different params */
++
+ 	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
+ 	runtime->dma_bytes = params_buffer_bytes(params);
+ 
+ 	prtd->params = rtd->dai->cpu_dai->dma_data;
+-	prtd->params->dma_intr_handler = at32_pcm_dma_irq;
++	prtd->params->dma_intr_handler = atmel_pcm_dma_irq;
+ 
+ 	prtd->dma_buffer = runtime->dma_addr;
+ 	prtd->dma_buffer_end = runtime->dma_addr + runtime->dma_bytes;
+ 	prtd->period_size = params_period_bytes(params);
+ 
+-	pr_debug("hw_params: DMA for %s initialized "
+-		 "(dma_bytes=%ld, period_size=%ld)\n",
+-		 prtd->params->name, runtime->dma_bytes, prtd->period_size);
+-
++	pr_debug("atmel-pcm: "
++		"hw_params: DMA for %s initialized "
++		"(dma_bytes=%u, period_size=%u)\n",
++		prtd->params->name,
++		runtime->dma_bytes,
++		prtd->period_size);
+ 	return 0;
+ }
+ 
+-
+-
+-static int at32_pcm_hw_free(struct snd_pcm_substream *substream)
++static int atmel_pcm_hw_free(struct snd_pcm_substream *substream)
+ {
+-	struct at32_runtime_data *prtd = substream->runtime->private_data;
+-	struct at32_pcm_dma_params *params = prtd->params;
++	struct atmel_runtime_data *prtd = substream->runtime->private_data;
++	struct atmel_pcm_dma_params *params = prtd->params;
+ 
+ 	if (params != NULL) {
+ 		ssc_writex(params->ssc->regs, SSC_PDC_PTCR,
+@@ -195,32 +212,29 @@ static int at32_pcm_hw_free(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
+-
+-
+-static int at32_pcm_prepare(struct snd_pcm_substream *substream)
++static int atmel_pcm_prepare(struct snd_pcm_substream *substream)
+ {
+-	struct at32_runtime_data *prtd = substream->runtime->private_data;
+-	struct at32_pcm_dma_params *params = prtd->params;
++	struct atmel_runtime_data *prtd = substream->runtime->private_data;
++	struct atmel_pcm_dma_params *params = prtd->params;
+ 
+ 	ssc_writex(params->ssc->regs, SSC_IDR,
+ 		   params->mask->ssc_endx | params->mask->ssc_endbuf);
+ 	ssc_writex(params->ssc->regs, ATMEL_PDC_PTCR,
+ 		   params->mask->pdc_disable);
+-
+ 	return 0;
+ }
+ 
+-
+-static int at32_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++static int atmel_pcm_trigger(struct snd_pcm_substream *substream,
++	int cmd)
+ {
+ 	struct snd_pcm_runtime *rtd = substream->runtime;
+-	struct at32_runtime_data *prtd = rtd->private_data;
+-	struct at32_pcm_dma_params *params = prtd->params;
++	struct atmel_runtime_data *prtd = rtd->private_data;
++	struct atmel_pcm_dma_params *params = prtd->params;
+ 	int ret = 0;
+ 
+-	pr_debug("at32_pcm_trigger: buffer_size = %ld, "
+-		 "dma_area = %p, dma_bytes = %ld\n",
+-		 rtd->buffer_size, rtd->dma_area, rtd->dma_bytes);
++	pr_debug("atmel-pcm:buffer_size = %ld,"
++		"dma_area = %p, dma_bytes = %u\n",
++		rtd->buffer_size, rtd->dma_area, rtd->dma_bytes);
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+@@ -237,26 +251,25 @@ static int at32_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		ssc_writex(params->ssc->regs, params->pdc->xncr,
+ 			   prtd->period_size / params->pdc_xfer_size);
+ 
+-		pr_debug("trigger: period_ptr=%lx, xpr=%x, "
+-			 "xcr=%d, xnpr=%x, xncr=%d\n",
+-			 (unsigned long)prtd->period_ptr,
+-			 ssc_readx(params->ssc->regs, params->pdc->xpr),
+-			 ssc_readx(params->ssc->regs, params->pdc->xcr),
+-			 ssc_readx(params->ssc->regs, params->pdc->xnpr),
+-			 ssc_readx(params->ssc->regs, params->pdc->xncr));
++		pr_debug("atmel-pcm: trigger: "
++			"period_ptr=%lx, xpr=%u, "
++			"xcr=%u, xnpr=%u, xncr=%u\n",
++			(unsigned long)prtd->period_ptr,
++			ssc_readx(params->ssc->regs, params->pdc->xpr),
++			ssc_readx(params->ssc->regs, params->pdc->xcr),
++			ssc_readx(params->ssc->regs, params->pdc->xnpr),
++			ssc_readx(params->ssc->regs, params->pdc->xncr));
+ 
+ 		ssc_writex(params->ssc->regs, SSC_IER,
+ 			   params->mask->ssc_endx | params->mask->ssc_endbuf);
+ 		ssc_writex(params->ssc->regs, SSC_PDC_PTCR,
+ 			   params->mask->pdc_enable);
+ 
+-		pr_debug("sr=%x, imr=%x\n",
+-			 ssc_readx(params->ssc->regs, SSC_SR),
+-			 ssc_readx(params->ssc->regs, SSC_IER));
++		pr_debug("sr=%u imr=%u\n",
++			ssc_readx(params->ssc->regs, SSC_SR),
++			ssc_readx(params->ssc->regs, SSC_IER));
+ 		break;		/* SNDRV_PCM_TRIGGER_START */
+ 
+-
+-
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+@@ -264,7 +277,6 @@ static int at32_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 			   params->mask->pdc_disable);
+ 		break;
+ 
+-
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		ssc_writex(params->ssc->regs, ATMEL_PDC_PTCR,
+@@ -278,13 +290,12 @@ static int at32_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	return ret;
+ }
+ 
+-
+-
+-static snd_pcm_uframes_t at32_pcm_pointer(struct snd_pcm_substream *substream)
++static snd_pcm_uframes_t atmel_pcm_pointer(
++	struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct at32_runtime_data *prtd = runtime->private_data;
+-	struct at32_pcm_dma_params *params = prtd->params;
++	struct atmel_runtime_data *prtd = runtime->private_data;
++	struct atmel_pcm_dma_params *params = prtd->params;
+ 	dma_addr_t ptr;
+ 	snd_pcm_uframes_t x;
+ 
+@@ -297,108 +308,95 @@ static snd_pcm_uframes_t at32_pcm_pointer(struct snd_pcm_substream *substream)
+ 	return x;
+ }
+ 
+-
+-
+-static int at32_pcm_open(struct snd_pcm_substream *substream)
++static int atmel_pcm_open(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct at32_runtime_data *prtd;
++	struct atmel_runtime_data *prtd;
+ 	int ret = 0;
+ 
+-	snd_soc_set_runtime_hwparams(substream, &at32_pcm_hardware);
++	snd_soc_set_runtime_hwparams(substream, &atmel_pcm_hardware);
+ 
+ 	/* ensure that buffer size is a multiple of period size */
+ 	ret = snd_pcm_hw_constraint_integer(runtime,
+-					    SNDRV_PCM_HW_PARAM_PERIODS);
++						SNDRV_PCM_HW_PARAM_PERIODS);
+ 	if (ret < 0)
+ 		goto out;
+ 
+-	prtd = kzalloc(sizeof(*prtd), GFP_KERNEL);
++	prtd = kzalloc(sizeof(struct atmel_runtime_data), GFP_KERNEL);
+ 	if (prtd == NULL) {
+ 		ret = -ENOMEM;
+ 		goto out;
+ 	}
+ 	runtime->private_data = prtd;
+ 
+-
+-out:
++ out:
+ 	return ret;
+ }
+ 
+-
+-
+-static int at32_pcm_close(struct snd_pcm_substream *substream)
++static int atmel_pcm_close(struct snd_pcm_substream *substream)
+ {
+-	struct at32_runtime_data *prtd = substream->runtime->private_data;
++	struct atmel_runtime_data *prtd = substream->runtime->private_data;
+ 
+ 	kfree(prtd);
+ 	return 0;
+ }
+ 
+-
+-static int at32_pcm_mmap(struct snd_pcm_substream *substream,
+-			 struct vm_area_struct *vma)
++static int atmel_pcm_mmap(struct snd_pcm_substream *substream,
++	struct vm_area_struct *vma)
+ {
+ 	return remap_pfn_range(vma, vma->vm_start,
+-			       substream->dma_buffer.addr >> PAGE_SHIFT,
+-			       vma->vm_end - vma->vm_start, vma->vm_page_prot);
++		       substream->dma_buffer.addr >> PAGE_SHIFT,
++		       vma->vm_end - vma->vm_start, vma->vm_page_prot);
+ }
+ 
+-
+-
+-static struct snd_pcm_ops at32_pcm_ops = {
+-	.open = at32_pcm_open,
+-	.close = at32_pcm_close,
+-	.ioctl = snd_pcm_lib_ioctl,
+-	.hw_params = at32_pcm_hw_params,
+-	.hw_free = at32_pcm_hw_free,
+-	.prepare = at32_pcm_prepare,
+-	.trigger = at32_pcm_trigger,
+-	.pointer = at32_pcm_pointer,
+-	.mmap = at32_pcm_mmap,
++struct snd_pcm_ops atmel_pcm_ops = {
++	.open		= atmel_pcm_open,
++	.close		= atmel_pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= atmel_pcm_hw_params,
++	.hw_free	= atmel_pcm_hw_free,
++	.prepare	= atmel_pcm_prepare,
++	.trigger	= atmel_pcm_trigger,
++	.pointer	= atmel_pcm_pointer,
++	.mmap		= atmel_pcm_mmap,
+ };
+ 
+ 
+-
+ /*--------------------------------------------------------------------------*\
+  * ASoC platform driver
+ \*--------------------------------------------------------------------------*/
+-static u64 at32_pcm_dmamask = 0xffffffff;
++static u64 atmel_pcm_dmamask = 0xffffffff;
+ 
+-static int at32_pcm_new(struct snd_card *card,
+-			struct snd_soc_dai *dai,
+-			struct snd_pcm *pcm)
++static int atmel_pcm_new(struct snd_card *card,
++	struct snd_soc_dai *dai, struct snd_pcm *pcm)
+ {
+ 	int ret = 0;
+ 
+ 	if (!card->dev->dma_mask)
+-		card->dev->dma_mask = &at32_pcm_dmamask;
++		card->dev->dma_mask = &atmel_pcm_dmamask;
+ 	if (!card->dev->coherent_dma_mask)
+ 		card->dev->coherent_dma_mask = 0xffffffff;
+ 
+ 	if (dai->playback.channels_min) {
+-		ret = at32_pcm_preallocate_dma_buffer(
+-			  pcm, SNDRV_PCM_STREAM_PLAYBACK);
++		ret = atmel_pcm_preallocate_dma_buffer(pcm,
++			SNDRV_PCM_STREAM_PLAYBACK);
+ 		if (ret)
+ 			goto out;
+ 	}
+ 
+ 	if (dai->capture.channels_min) {
+-		pr_debug("at32-pcm: Allocating PCM capture DMA buffer\n");
+-		ret = at32_pcm_preallocate_dma_buffer(
+-			  pcm, SNDRV_PCM_STREAM_CAPTURE);
++		pr_debug("at32-pcm:"
++				"Allocating PCM capture DMA buffer\n");
++		ret = atmel_pcm_preallocate_dma_buffer(pcm,
++			SNDRV_PCM_STREAM_CAPTURE);
+ 		if (ret)
+ 			goto out;
+ 	}
+-
+-
+-out:
++ out:
+ 	return ret;
+ }
+ 
+-
+-
+-static void at32_pcm_free_dma_buffers(struct snd_pcm *pcm)
++static void atmel_pcm_free_dma_buffers(struct snd_pcm *pcm)
+ {
+ 	struct snd_pcm_substream *substream;
+ 	struct snd_dma_buffer *buf;
+@@ -406,7 +404,7 @@ static void at32_pcm_free_dma_buffers(struct snd_pcm *pcm)
+ 
+ 	for (stream = 0; stream < 2; stream++) {
+ 		substream = pcm->streams[stream].substream;
+-		if (substream == NULL)
++		if (!substream)
+ 			continue;
+ 
+ 		buf = &substream->dma_buffer;
+@@ -418,24 +416,23 @@ static void at32_pcm_free_dma_buffers(struct snd_pcm *pcm)
+ 	}
+ }
+ 
+-
+-
+ #ifdef CONFIG_PM
+-static int at32_pcm_suspend(struct platform_device *pdev,
+-			    struct snd_soc_dai *dai)
++static int atmel_pcm_suspend(struct platform_device *pdev,
++	struct snd_soc_dai *dai)
+ {
+ 	struct snd_pcm_runtime *runtime = dai->runtime;
+-	struct at32_runtime_data *prtd;
+-	struct at32_pcm_dma_params *params;
++	struct atmel_runtime_data *prtd;
++	struct atmel_pcm_dma_params *params;
+ 
+-	if (runtime == NULL)
++	if (!runtime)
+ 		return 0;
++
+ 	prtd = runtime->private_data;
+ 	params = prtd->params;
+ 
+-	/* Disable the PDC and save the PDC registers */
+-	ssc_writex(params->ssc->regs, ATMEL_PDC_PTCR,
+-		   params->mask->pdc_disable);
++	/* disable the PDC and save the PDC registers */
++
++	ssc_writel(params->ssc->regs, PDC_PTCR, params->mask->pdc_disable);
+ 
+ 	prtd->pdc_xpr_save = ssc_readx(params->ssc->regs, params->pdc->xpr);
+ 	prtd->pdc_xcr_save = ssc_readx(params->ssc->regs, params->pdc->xcr);
+@@ -445,48 +442,43 @@ static int at32_pcm_suspend(struct platform_device *pdev,
+ 	return 0;
+ }
+ 
+-
+-
+-static int at32_pcm_resume(struct platform_device *pdev,
+-			   struct snd_soc_dai *dai)
++static int atmel_pcm_resume(struct platform_device *pdev,
++	struct snd_soc_dai *dai)
+ {
+ 	struct snd_pcm_runtime *runtime = dai->runtime;
+-	struct at32_runtime_data *prtd;
+-	struct at32_pcm_dma_params *params;
++	struct atmel_runtime_data *prtd;
++	struct atmel_pcm_dma_params *params;
+ 
+-	if (runtime == NULL)
++	if (!runtime)
+ 		return 0;
++
+ 	prtd = runtime->private_data;
+ 	params = prtd->params;
+ 
+-	/* Restore the PDC registers and enable the PDC */
++	/* restore the PDC registers and enable the PDC */
+ 	ssc_writex(params->ssc->regs, params->pdc->xpr, prtd->pdc_xpr_save);
+ 	ssc_writex(params->ssc->regs, params->pdc->xcr, prtd->pdc_xcr_save);
+ 	ssc_writex(params->ssc->regs, params->pdc->xnpr, prtd->pdc_xnpr_save);
+ 	ssc_writex(params->ssc->regs, params->pdc->xncr, prtd->pdc_xncr_save);
+ 
+-	ssc_writex(params->ssc->regs, ATMEL_PDC_PTCR, params->mask->pdc_enable);
++	ssc_writel(params->ssc->regs, PDC_PTCR, params->mask->pdc_enable);
+ 	return 0;
+ }
+-#else /* CONFIG_PM */
+-#  define at32_pcm_suspend	NULL
+-#  define at32_pcm_resume	NULL
+-#endif /* CONFIG_PM */
+-
+-
+-
+-struct snd_soc_platform at32_soc_platform = {
+-	.name = "at32-audio",
+-	.pcm_ops = &at32_pcm_ops,
+-	.pcm_new = at32_pcm_new,
+-	.pcm_free = at32_pcm_free_dma_buffers,
+-	.suspend = at32_pcm_suspend,
+-	.resume = at32_pcm_resume,
++#else
++#define atmel_pcm_suspend	NULL
++#define atmel_pcm_resume	NULL
++#endif
++
++struct snd_soc_platform atmel_soc_platform = {
++	.name		= "atmel-audio",
++	.pcm_ops 	= &atmel_pcm_ops,
++	.pcm_new	= atmel_pcm_new,
++	.pcm_free	= atmel_pcm_free_dma_buffers,
++	.suspend	= atmel_pcm_suspend,
++	.resume		= atmel_pcm_resume,
+ };
+-EXPORT_SYMBOL_GPL(at32_soc_platform);
+-
+-
++EXPORT_SYMBOL_GPL(atmel_soc_platform);
+ 
+-MODULE_AUTHOR("Geoffrey Wossum <gwossum@acm.org>");
+-MODULE_DESCRIPTION("Atmel AT32 PCM module");
++MODULE_AUTHOR("Sedji Gaouaou <sedji.gaouaou@atmel.com>");
++MODULE_DESCRIPTION("Atmel PCM module");
+ MODULE_LICENSE("GPL");
+diff --git a/sound/soc/atmel/atmel-pcm.h b/sound/soc/atmel/atmel-pcm.h
+new file mode 100644
+index 0000000..ec9b282
+--- /dev/null
++++ b/sound/soc/atmel/atmel-pcm.h
+@@ -0,0 +1,86 @@
++/*
++ * at91-pcm.h - ALSA PCM interface for the Atmel AT91 SoC.
++ *
++ *  Copyright (C) 2005 SAN People
++ *  Copyright (C) 2008 Atmel
++ *
++ * Authors: Sedji Gaouaou <sedji.gaouaou@atmel.com>
++ *
++ * Based on at91-pcm. by:
++ * Frank Mandarino <fmandarino@endrelia.com>
++ * Copyright 2006 Endrelia Technologies Inc.
++ *
++ * Based on pxa2xx-pcm.c by:
++ *
++ * Author:	Nicolas Pitre
++ * Created:	Nov 30, 2004
++ * Copyright:	(C) 2004 MontaVista Software, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#ifndef _ATMEL_PCM_H
++#define _ATMEL_PCM_H
++
++#include <linux/atmel-ssc.h>
++
++/*
++ * Registers and status bits that are required by the PCM driver.
++ */
++struct atmel_pdc_regs {
++	unsigned int	xpr;		/* PDC recv/trans pointer */
++	unsigned int	xcr;		/* PDC recv/trans counter */
++	unsigned int	xnpr;		/* PDC next recv/trans pointer */
++	unsigned int	xncr;		/* PDC next recv/trans counter */
++	unsigned int	ptcr;		/* PDC transfer control */
++};
++
++struct atmel_ssc_mask {
++	u32	ssc_enable;		/* SSC recv/trans enable */
++	u32	ssc_disable;		/* SSC recv/trans disable */
++	u32	ssc_endx;		/* SSC ENDTX or ENDRX */
++	u32	ssc_endbuf;		/* SSC TXBUFE or RXBUFF */
++	u32	pdc_enable;		/* PDC recv/trans enable */
++	u32	pdc_disable;		/* PDC recv/trans disable */
++};
++
++/*
++ * This structure, shared between the PCM driver and the interface,
++ * contains all information required by the PCM driver to perform the
++ * PDC DMA operation.  All fields except dma_intr_handler() are initialized
++ * by the interface.  The dms_intr_handler() pointer is set by the PCM
++ * driver and called by the interface SSC interrupt handler if it is
++ * non-NULL.
++ */
++struct atmel_pcm_dma_params {
++	char *name;			/* stream identifier */
++	int pdc_xfer_size;		/* PDC counter increment in bytes */
++	struct ssc_device *ssc;		/* SSC device for stream */
++	struct atmel_pdc_regs *pdc;	/* PDC receive or transmit registers */
++	struct atmel_ssc_mask *mask;	/* SSC & PDC status bits */
++	struct snd_pcm_substream *substream;
++	void (*dma_intr_handler)(u32, struct snd_pcm_substream *);
++};
++
++extern struct snd_soc_platform atmel_soc_platform;
++
++
++/*
++ * SSC register access (since ssc_writel() / ssc_readl() require literal name)
++ */
++#define ssc_readx(base, reg)            (__raw_readl((base) + (reg)))
++#define ssc_writex(base, reg, value)    __raw_writel((value), (base) + (reg))
++
++#endif /* _ATMEL_PCM_H */
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+new file mode 100644
+index 0000000..d290b78
+--- /dev/null
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -0,0 +1,782 @@
++/*
++ * atmel_ssc_dai.c  --  ALSA SoC ATMEL SSC Audio Layer Platform driver
++ *
++ * Copyright (C) 2005 SAN People
++ * Copyright (C) 2008 Atmel
++ *
++ * Author: Sedji Gaouaou <sedji.gaouaou@atmel.com>
++ *         ATMEL CORP.
++ *
++ * Based on at91-ssc.c by
++ * Frank Mandarino <fmandarino@endrelia.com>
++ * Based on pxa2xx Platform drivers by
++ * Liam Girdwood <liam.girdwood@wolfsonmicro.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/interrupt.h>
++#include <linux/device.h>
++#include <linux/delay.h>
++#include <linux/clk.h>
++#include <linux/atmel_pdc.h>
++
++#include <linux/atmel-ssc.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/initval.h>
++#include <sound/soc.h>
++
++#include <mach/hardware.h>
++
++#include "atmel-pcm.h"
++#include "atmel_ssc_dai.h"
++
++
++#if defined(CONFIG_ARCH_AT91SAM9260) || defined(CONFIG_ARCH_AT91SAM9G20)
++#define NUM_SSC_DEVICES		1
++#else
++#define NUM_SSC_DEVICES		3
++#endif
++
++/*
++ * SSC PDC registers required by the PCM DMA engine.
++ */
++static struct atmel_pdc_regs pdc_tx_reg = {
++	.xpr		= ATMEL_PDC_TPR,
++	.xcr		= ATMEL_PDC_TCR,
++	.xnpr		= ATMEL_PDC_TNPR,
++	.xncr		= ATMEL_PDC_TNCR,
++};
++
++static struct atmel_pdc_regs pdc_rx_reg = {
++	.xpr		= ATMEL_PDC_RPR,
++	.xcr		= ATMEL_PDC_RCR,
++	.xnpr		= ATMEL_PDC_RNPR,
++	.xncr		= ATMEL_PDC_RNCR,
++};
++
++/*
++ * SSC & PDC status bits for transmit and receive.
++ */
++static struct atmel_ssc_mask ssc_tx_mask = {
++	.ssc_enable	= SSC_BIT(CR_TXEN),
++	.ssc_disable	= SSC_BIT(CR_TXDIS),
++	.ssc_endx	= SSC_BIT(SR_ENDTX),
++	.ssc_endbuf	= SSC_BIT(SR_TXBUFE),
++	.pdc_enable	= ATMEL_PDC_TXTEN,
++	.pdc_disable	= ATMEL_PDC_TXTDIS,
++};
++
++static struct atmel_ssc_mask ssc_rx_mask = {
++	.ssc_enable	= SSC_BIT(CR_RXEN),
++	.ssc_disable	= SSC_BIT(CR_RXDIS),
++	.ssc_endx	= SSC_BIT(SR_ENDRX),
++	.ssc_endbuf	= SSC_BIT(SR_RXBUFF),
++	.pdc_enable	= ATMEL_PDC_RXTEN,
++	.pdc_disable	= ATMEL_PDC_RXTDIS,
++};
++
++
++/*
++ * DMA parameters.
++ */
++static struct atmel_pcm_dma_params ssc_dma_params[NUM_SSC_DEVICES][2] = {
++	{{
++	.name		= "SSC0 PCM out",
++	.pdc		= &pdc_tx_reg,
++	.mask		= &ssc_tx_mask,
++	},
++	{
++	.name		= "SSC0 PCM in",
++	.pdc		= &pdc_rx_reg,
++	.mask		= &ssc_rx_mask,
++	} },
++#if NUM_SSC_DEVICES == 3
++	{{
++	.name		= "SSC1 PCM out",
++	.pdc		= &pdc_tx_reg,
++	.mask		= &ssc_tx_mask,
++	},
++	{
++	.name		= "SSC1 PCM in",
++	.pdc		= &pdc_rx_reg,
++	.mask		= &ssc_rx_mask,
++	} },
++	{{
++	.name		= "SSC2 PCM out",
++	.pdc		= &pdc_tx_reg,
++	.mask		= &ssc_tx_mask,
++	},
++	{
++	.name		= "SSC2 PCM in",
++	.pdc		= &pdc_rx_reg,
++	.mask		= &ssc_rx_mask,
++	} },
++#endif
++};
++
++
++static struct atmel_ssc_info ssc_info[NUM_SSC_DEVICES] = {
++	{
++	.name		= "ssc0",
++	.lock		= __SPIN_LOCK_UNLOCKED(ssc_info[0].lock),
++	.dir_mask	= SSC_DIR_MASK_UNUSED,
++	.initialized	= 0,
++	},
++#if NUM_SSC_DEVICES == 3
++	{
++	.name		= "ssc1",
++	.lock		= __SPIN_LOCK_UNLOCKED(ssc_info[1].lock),
++	.dir_mask	= SSC_DIR_MASK_UNUSED,
++	.initialized	= 0,
++	},
++	{
++	.name		= "ssc2",
++	.lock		= __SPIN_LOCK_UNLOCKED(ssc_info[2].lock),
++	.dir_mask	= SSC_DIR_MASK_UNUSED,
++	.initialized	= 0,
++	},
++#endif
++};
++
++
++/*
++ * SSC interrupt handler.  Passes PDC interrupts to the DMA
++ * interrupt handler in the PCM driver.
++ */
++static irqreturn_t atmel_ssc_interrupt(int irq, void *dev_id)
++{
++	struct atmel_ssc_info *ssc_p = dev_id;
++	struct atmel_pcm_dma_params *dma_params;
++	u32 ssc_sr;
++	u32 ssc_substream_mask;
++	int i;
++
++	ssc_sr = (unsigned long)ssc_readl(ssc_p->ssc->regs, SR)
++			& (unsigned long)ssc_readl(ssc_p->ssc->regs, IMR);
++
++	/*
++	 * Loop through the substreams attached to this SSC.  If
++	 * a DMA-related interrupt occurred on that substream, call
++	 * the DMA interrupt handler function, if one has been
++	 * registered in the dma_params structure by the PCM driver.
++	 */
++	for (i = 0; i < ARRAY_SIZE(ssc_p->dma_params); i++) {
++		dma_params = ssc_p->dma_params[i];
++
++		if ((dma_params != NULL) &&
++			(dma_params->dma_intr_handler != NULL)) {
++			ssc_substream_mask = (dma_params->mask->ssc_endx |
++					dma_params->mask->ssc_endbuf);
++			if (ssc_sr & ssc_substream_mask) {
++				dma_params->dma_intr_handler(ssc_sr,
++						dma_params->
++						substream);
++			}
++		}
++	}
++
++	return IRQ_HANDLED;
++}
++
++
++/*-------------------------------------------------------------------------*\
++ * DAI functions
++\*-------------------------------------------------------------------------*/
++/*
++ * Startup.  Only that one substream allowed in each direction.
++ */
++static int atmel_ssc_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
++	struct atmel_ssc_info *ssc_p = &ssc_info[rtd->dai->cpu_dai->id];
++	int dir_mask;
++
++	pr_debug("atmel_ssc_startup: SSC_SR=0x%u\n",
++		ssc_readl(ssc_p->ssc->regs, SR));
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		dir_mask = SSC_DIR_MASK_PLAYBACK;
++	else
++		dir_mask = SSC_DIR_MASK_CAPTURE;
++
++	spin_lock_irq(&ssc_p->lock);
++	if (ssc_p->dir_mask & dir_mask) {
++		spin_unlock_irq(&ssc_p->lock);
++		return -EBUSY;
++	}
++	ssc_p->dir_mask |= dir_mask;
++	spin_unlock_irq(&ssc_p->lock);
++
++	return 0;
++}
++
++/*
++ * Shutdown.  Clear DMA parameters and shutdown the SSC if there
++ * are no other substreams open.
++ */
++static void atmel_ssc_shutdown(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
++	struct atmel_ssc_info *ssc_p = &ssc_info[rtd->dai->cpu_dai->id];
++	struct atmel_pcm_dma_params *dma_params;
++	int dir, dir_mask;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		dir = 0;
++	else
++		dir = 1;
++
++	dma_params = ssc_p->dma_params[dir];
++
++	if (dma_params != NULL) {
++		ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_disable);
++		pr_debug("atmel_ssc_shutdown: %s disabled SSC_SR=0x%08x\n",
++			(dir ? "receive" : "transmit"),
++			ssc_readl(ssc_p->ssc->regs, SR));
++
++		dma_params->ssc = NULL;
++		dma_params->substream = NULL;
++		ssc_p->dma_params[dir] = NULL;
++	}
++
++	dir_mask = 1 << dir;
++
++	spin_lock_irq(&ssc_p->lock);
++	ssc_p->dir_mask &= ~dir_mask;
++	if (!ssc_p->dir_mask) {
++		if (ssc_p->initialized) {
++			/* Shutdown the SSC clock. */
++			pr_debug("atmel_ssc_dau: Stopping clock\n");
++			clk_disable(ssc_p->ssc->clk);
++
++			free_irq(ssc_p->ssc->irq, ssc_p);
++			ssc_p->initialized = 0;
++		}
++
++		/* Reset the SSC */
++		ssc_writel(ssc_p->ssc->regs, CR, SSC_BIT(CR_SWRST));
++		/* Clear the SSC dividers */
++		ssc_p->cmr_div = ssc_p->tcmr_period = ssc_p->rcmr_period = 0;
++	}
++	spin_unlock_irq(&ssc_p->lock);
++}
++
++
++/*
++ * Record the DAI format for use in hw_params().
++ */
++static int atmel_ssc_set_dai_fmt(struct snd_soc_dai *cpu_dai,
++		unsigned int fmt)
++{
++	struct atmel_ssc_info *ssc_p = &ssc_info[cpu_dai->id];
++
++	ssc_p->daifmt = fmt;
++	return 0;
++}
++
++/*
++ * Record SSC clock dividers for use in hw_params().
++ */
++static int atmel_ssc_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
++	int div_id, int div)
++{
++	struct atmel_ssc_info *ssc_p = &ssc_info[cpu_dai->id];
++
++	switch (div_id) {
++	case ATMEL_SSC_CMR_DIV:
++		/*
++		 * The same master clock divider is used for both
++		 * transmit and receive, so if a value has already
++		 * been set, it must match this value.
++		 */
++		if (ssc_p->cmr_div == 0)
++			ssc_p->cmr_div = div;
++		else
++			if (div != ssc_p->cmr_div)
++				return -EBUSY;
++		break;
++
++	case ATMEL_SSC_TCMR_PERIOD:
++		ssc_p->tcmr_period = div;
++		break;
++
++	case ATMEL_SSC_RCMR_PERIOD:
++		ssc_p->rcmr_period = div;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++/*
++ * Configure the SSC.
++ */
++static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
++	int id = rtd->dai->cpu_dai->id;
++	struct atmel_ssc_info *ssc_p = &ssc_info[id];
++	struct atmel_pcm_dma_params *dma_params;
++	int dir, channels, bits;
++	u32 tfmr, rfmr, tcmr, rcmr;
++	int start_event;
++	int ret;
++
++	/*
++	 * Currently, there is only one set of dma params for
++	 * each direction.  If more are added, this code will
++	 * have to be changed to select the proper set.
++	 */
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		dir = 0;
++	else
++		dir = 1;
++
++	dma_params = &ssc_dma_params[id][dir];
++	dma_params->ssc = ssc_p->ssc;
++	dma_params->substream = substream;
++
++	ssc_p->dma_params[dir] = dma_params;
++
++	/*
++	 * The cpu_dai->dma_data field is only used to communicate the
++	 * appropriate DMA parameters to the pcm driver hw_params()
++	 * function.  It should not be used for other purposes
++	 * as it is common to all substreams.
++	 */
++	rtd->dai->cpu_dai->dma_data = dma_params;
++
++	channels = params_channels(params);
++
++	/*
++	 * Determine sample size in bits and the PDC increment.
++	 */
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S8:
++		bits = 8;
++		dma_params->pdc_xfer_size = 1;
++		break;
++	case SNDRV_PCM_FORMAT_S16_LE:
++		bits = 16;
++		dma_params->pdc_xfer_size = 2;
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		bits = 24;
++		dma_params->pdc_xfer_size = 4;
++		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		bits = 32;
++		dma_params->pdc_xfer_size = 4;
++		break;
++	default:
++		printk(KERN_WARNING "atmel_ssc_dai: unsupported PCM format");
++		return -EINVAL;
++	}
++
++	/*
++	 * The SSC only supports up to 16-bit samples in I2S format, due
++	 * to the size of the Frame Mode Register FSLEN field.
++	 */
++	if ((ssc_p->daifmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_I2S
++		&& bits > 16) {
++		printk(KERN_WARNING
++				"atmel_ssc_dai: sample size %d"
++				"is too large for I2S\n", bits);
++		return -EINVAL;
++	}
++
++	/*
++	 * Compute SSC register settings.
++	 */
++	switch (ssc_p->daifmt
++		& (SND_SOC_DAIFMT_FORMAT_MASK | SND_SOC_DAIFMT_MASTER_MASK)) {
++
++	case SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS:
++		/*
++		 * I2S format, SSC provides BCLK and LRC clocks.
++		 *
++		 * The SSC transmit and receive clocks are generated
++		 * from the MCK divider, and the BCLK signal
++		 * is output on the SSC TK line.
++		 */
++		rcmr =	  SSC_BF(RCMR_PERIOD, ssc_p->rcmr_period)
++			| SSC_BF(RCMR_STTDLY, START_DELAY)
++			| SSC_BF(RCMR_START, SSC_START_FALLING_RF)
++			| SSC_BF(RCMR_CKI, SSC_CKI_RISING)
++			| SSC_BF(RCMR_CKO, SSC_CKO_NONE)
++			| SSC_BF(RCMR_CKS, SSC_CKS_DIV);
++
++		rfmr =	  SSC_BF(RFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
++			| SSC_BF(RFMR_FSOS, SSC_FSOS_NEGATIVE)
++			| SSC_BF(RFMR_FSLEN, (bits - 1))
++			| SSC_BF(RFMR_DATNB, (channels - 1))
++			| SSC_BIT(RFMR_MSBF)
++			| SSC_BF(RFMR_LOOP, 0)
++			| SSC_BF(RFMR_DATLEN, (bits - 1));
++
++		tcmr =	  SSC_BF(TCMR_PERIOD, ssc_p->tcmr_period)
++			| SSC_BF(TCMR_STTDLY, START_DELAY)
++			| SSC_BF(TCMR_START, SSC_START_FALLING_RF)
++			| SSC_BF(TCMR_CKI, SSC_CKI_FALLING)
++			| SSC_BF(TCMR_CKO, SSC_CKO_CONTINUOUS)
++			| SSC_BF(TCMR_CKS, SSC_CKS_DIV);
++
++		tfmr =	  SSC_BF(TFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
++			| SSC_BF(TFMR_FSDEN, 0)
++			| SSC_BF(TFMR_FSOS, SSC_FSOS_NEGATIVE)
++			| SSC_BF(TFMR_FSLEN, (bits - 1))
++			| SSC_BF(TFMR_DATNB, (channels - 1))
++			| SSC_BIT(TFMR_MSBF)
++			| SSC_BF(TFMR_DATDEF, 0)
++			| SSC_BF(TFMR_DATLEN, (bits - 1));
++		break;
++
++	case SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM:
++		/*
++		 * I2S format, CODEC supplies BCLK and LRC clocks.
++		 *
++		 * The SSC transmit clock is obtained from the BCLK signal on
++		 * on the TK line, and the SSC receive clock is
++		 * generated from the transmit clock.
++		 *
++		 *  For single channel data, one sample is transferred
++		 * on the falling edge of the LRC clock.
++		 * For two channel data, one sample is
++		 * transferred on both edges of the LRC clock.
++		 */
++		start_event = ((channels == 1)
++				? SSC_START_FALLING_RF
++				: SSC_START_EDGE_RF);
++
++		rcmr =	  SSC_BF(RCMR_PERIOD, 0)
++			| SSC_BF(RCMR_STTDLY, START_DELAY)
++			| SSC_BF(RCMR_START, start_event)
++			| SSC_BF(RCMR_CKI, SSC_CKI_RISING)
++			| SSC_BF(RCMR_CKO, SSC_CKO_NONE)
++			| SSC_BF(RCMR_CKS, SSC_CKS_CLOCK);
++
++		rfmr =	  SSC_BF(RFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
++			| SSC_BF(RFMR_FSOS, SSC_FSOS_NONE)
++			| SSC_BF(RFMR_FSLEN, 0)
++			| SSC_BF(RFMR_DATNB, 0)
++			| SSC_BIT(RFMR_MSBF)
++			| SSC_BF(RFMR_LOOP, 0)
++			| SSC_BF(RFMR_DATLEN, (bits - 1));
++
++		tcmr =	  SSC_BF(TCMR_PERIOD, 0)
++			| SSC_BF(TCMR_STTDLY, START_DELAY)
++			| SSC_BF(TCMR_START, start_event)
++			| SSC_BF(TCMR_CKI, SSC_CKI_FALLING)
++			| SSC_BF(TCMR_CKO, SSC_CKO_NONE)
++			| SSC_BF(TCMR_CKS, SSC_CKS_PIN);
++
++		tfmr =	  SSC_BF(TFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
++			| SSC_BF(TFMR_FSDEN, 0)
++			| SSC_BF(TFMR_FSOS, SSC_FSOS_NONE)
++			| SSC_BF(TFMR_FSLEN, 0)
++			| SSC_BF(TFMR_DATNB, 0)
++			| SSC_BIT(TFMR_MSBF)
++			| SSC_BF(TFMR_DATDEF, 0)
++			| SSC_BF(TFMR_DATLEN, (bits - 1));
++		break;
++
++	case SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_CBS_CFS:
++		/*
++		 * DSP/PCM Mode A format, SSC provides BCLK and LRC clocks.
++		 *
++		 * The SSC transmit and receive clocks are generated from the
++		 * MCK divider, and the BCLK signal is output
++		 * on the SSC TK line.
++		 */
++		rcmr =	  SSC_BF(RCMR_PERIOD, ssc_p->rcmr_period)
++			| SSC_BF(RCMR_STTDLY, 1)
++			| SSC_BF(RCMR_START, SSC_START_RISING_RF)
++			| SSC_BF(RCMR_CKI, SSC_CKI_RISING)
++			| SSC_BF(RCMR_CKO, SSC_CKO_NONE)
++			| SSC_BF(RCMR_CKS, SSC_CKS_DIV);
++
++		rfmr =	  SSC_BF(RFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
++			| SSC_BF(RFMR_FSOS, SSC_FSOS_POSITIVE)
++			| SSC_BF(RFMR_FSLEN, 0)
++			| SSC_BF(RFMR_DATNB, (channels - 1))
++			| SSC_BIT(RFMR_MSBF)
++			| SSC_BF(RFMR_LOOP, 0)
++			| SSC_BF(RFMR_DATLEN, (bits - 1));
++
++		tcmr =	  SSC_BF(TCMR_PERIOD, ssc_p->tcmr_period)
++			| SSC_BF(TCMR_STTDLY, 1)
++			| SSC_BF(TCMR_START, SSC_START_RISING_RF)
++			| SSC_BF(TCMR_CKI, SSC_CKI_RISING)
++			| SSC_BF(TCMR_CKO, SSC_CKO_CONTINUOUS)
++			| SSC_BF(TCMR_CKS, SSC_CKS_DIV);
++
++		tfmr =	  SSC_BF(TFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
++			| SSC_BF(TFMR_FSDEN, 0)
++			| SSC_BF(TFMR_FSOS, SSC_FSOS_POSITIVE)
++			| SSC_BF(TFMR_FSLEN, 0)
++			| SSC_BF(TFMR_DATNB, (channels - 1))
++			| SSC_BIT(TFMR_MSBF)
++			| SSC_BF(TFMR_DATDEF, 0)
++			| SSC_BF(TFMR_DATLEN, (bits - 1));
++		break;
++
++	case SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_CBM_CFM:
++	default:
++		printk(KERN_WARNING "atmel_ssc_dai: unsupported DAI format 0x%x\n",
++			ssc_p->daifmt);
++		return -EINVAL;
++		break;
++	}
++	pr_debug("atmel_ssc_hw_params: "
++			"RCMR=%08x RFMR=%08x TCMR=%08x TFMR=%08x\n",
++			rcmr, rfmr, tcmr, tfmr);
++
++	if (!ssc_p->initialized) {
++
++		/* Enable PMC peripheral clock for this SSC */
++		pr_debug("atmel_ssc_dai: Starting clock\n");
++		clk_enable(ssc_p->ssc->clk);
++
++		/* Reset the SSC and its PDC registers */
++		ssc_writel(ssc_p->ssc->regs, CR, SSC_BIT(CR_SWRST));
++
++		ssc_writel(ssc_p->ssc->regs, PDC_RPR, 0);
++		ssc_writel(ssc_p->ssc->regs, PDC_RCR, 0);
++		ssc_writel(ssc_p->ssc->regs, PDC_RNPR, 0);
++		ssc_writel(ssc_p->ssc->regs, PDC_RNCR, 0);
++
++		ssc_writel(ssc_p->ssc->regs, PDC_TPR, 0);
++		ssc_writel(ssc_p->ssc->regs, PDC_TCR, 0);
++		ssc_writel(ssc_p->ssc->regs, PDC_TNPR, 0);
++		ssc_writel(ssc_p->ssc->regs, PDC_TNCR, 0);
++
++		ret = request_irq(ssc_p->ssc->irq, atmel_ssc_interrupt, 0,
++				ssc_p->name, ssc_p);
++		if (ret < 0) {
++			printk(KERN_WARNING
++					"atmel_ssc_dai: request_irq failure\n");
++			pr_debug("Atmel_ssc_dai: Stoping clock\n");
++			clk_disable(ssc_p->ssc->clk);
++			return ret;
++		}
++
++		ssc_p->initialized = 1;
++	}
++
++	/* set SSC clock mode register */
++	ssc_writel(ssc_p->ssc->regs, CMR, ssc_p->cmr_div);
++
++	/* set receive clock mode and format */
++	ssc_writel(ssc_p->ssc->regs, RCMR, rcmr);
++	ssc_writel(ssc_p->ssc->regs, RFMR, rfmr);
++
++	/* set transmit clock mode and format */
++	ssc_writel(ssc_p->ssc->regs, TCMR, tcmr);
++	ssc_writel(ssc_p->ssc->regs, TFMR, tfmr);
++
++	pr_debug("atmel_ssc_dai,hw_params: SSC initialized\n");
++	return 0;
++}
++
++
++static int atmel_ssc_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
++	struct atmel_ssc_info *ssc_p = &ssc_info[rtd->dai->cpu_dai->id];
++	struct atmel_pcm_dma_params *dma_params;
++	int dir;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		dir = 0;
++	else
++		dir = 1;
++
++	dma_params = ssc_p->dma_params[dir];
++
++	ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_enable);
++
++	pr_debug("%s enabled SSC_SR=0x%08x\n",
++			dir ? "receive" : "transmit",
++			ssc_readl(ssc_p->ssc->regs, SR));
++	return 0;
++}
++
++
++#ifdef CONFIG_PM
++static int atmel_ssc_suspend(struct platform_device *pdev,
++			    struct snd_soc_dai *cpu_dai)
++{
++	struct atmel_ssc_info *ssc_p;
++
++	if (!cpu_dai->active)
++		return 0;
++
++	ssc_p = &ssc_info[cpu_dai->id];
++
++	/* Save the status register before disabling transmit and receive */
++	ssc_p->ssc_state.ssc_sr = ssc_readl(ssc_p->ssc->regs, SR);
++	ssc_writel(ssc_p->ssc->regs, CR, SSC_BIT(CR_TXDIS) | SSC_BIT(CR_RXDIS));
++
++	/* Save the current interrupt mask, then disable unmasked interrupts */
++	ssc_p->ssc_state.ssc_imr = ssc_readl(ssc_p->ssc->regs, IMR);
++	ssc_writel(ssc_p->ssc->regs, IDR, ssc_p->ssc_state.ssc_imr);
++
++	ssc_p->ssc_state.ssc_cmr = ssc_readl(ssc_p->ssc->regs, CMR);
++	ssc_p->ssc_state.ssc_rcmr = ssc_readl(ssc_p->ssc->regs, RCMR);
++	ssc_p->ssc_state.ssc_rfmr = ssc_readl(ssc_p->ssc->regs, RFMR);
++	ssc_p->ssc_state.ssc_tcmr = ssc_readl(ssc_p->ssc->regs, TCMR);
++	ssc_p->ssc_state.ssc_tfmr = ssc_readl(ssc_p->ssc->regs, TFMR);
++
++	return 0;
++}
++
++
++
++static int atmel_ssc_resume(struct platform_device *pdev,
++			   struct snd_soc_dai *cpu_dai)
++{
++	struct atmel_ssc_info *ssc_p;
++	u32 cr;
++
++	if (!cpu_dai->active)
++		return 0;
++
++	ssc_p = &ssc_info[cpu_dai->id];
++
++	/* restore SSC register settings */
++	ssc_writel(ssc_p->ssc->regs, TFMR, ssc_p->ssc_state.ssc_tfmr);
++	ssc_writel(ssc_p->ssc->regs, TCMR, ssc_p->ssc_state.ssc_tcmr);
++	ssc_writel(ssc_p->ssc->regs, RFMR, ssc_p->ssc_state.ssc_rfmr);
++	ssc_writel(ssc_p->ssc->regs, RCMR, ssc_p->ssc_state.ssc_rcmr);
++	ssc_writel(ssc_p->ssc->regs, CMR, ssc_p->ssc_state.ssc_cmr);
++
++	/* re-enable interrupts */
++	ssc_writel(ssc_p->ssc->regs, IER, ssc_p->ssc_state.ssc_imr);
++
++	/* Re-enable recieve and transmit as appropriate */
++	cr = 0;
++	cr |=
++	    (ssc_p->ssc_state.ssc_sr & SSC_BIT(SR_RXEN)) ? SSC_BIT(CR_RXEN) : 0;
++	cr |=
++	    (ssc_p->ssc_state.ssc_sr & SSC_BIT(SR_TXEN)) ? SSC_BIT(CR_TXEN) : 0;
++	ssc_writel(ssc_p->ssc->regs, CR, cr);
++
++	return 0;
++}
++#else /* CONFIG_PM */
++#  define atmel_ssc_suspend	NULL
++#  define atmel_ssc_resume	NULL
++#endif /* CONFIG_PM */
++
++
++#define ATMEL_SSC_RATES (SNDRV_PCM_RATE_8000_96000)
++
++#define ATMEL_SSC_FORMATS (SNDRV_PCM_FMTBIT_S8     | SNDRV_PCM_FMTBIT_S16_LE |\
++			  SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
++
++struct snd_soc_dai atmel_ssc_dai[NUM_SSC_DEVICES] = {
++	{	.name = "atmel-ssc0",
++		.id = 0,
++		.type = SND_SOC_DAI_PCM,
++		.suspend = atmel_ssc_suspend,
++		.resume = atmel_ssc_resume,
++		.playback = {
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = ATMEL_SSC_RATES,
++			.formats = ATMEL_SSC_FORMATS,},
++		.capture = {
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = ATMEL_SSC_RATES,
++			.formats = ATMEL_SSC_FORMATS,},
++		.ops = {
++			.startup = atmel_ssc_startup,
++			.shutdown = atmel_ssc_shutdown,
++			.prepare = atmel_ssc_prepare,
++			.hw_params = atmel_ssc_hw_params,},
++		.dai_ops = {
++			.set_fmt = atmel_ssc_set_dai_fmt,
++			.set_clkdiv = atmel_ssc_set_dai_clkdiv,},
++		.private_data = &ssc_info[0],
++	},
++#if NUM_SSC_DEVICES == 3
++	{	.name = "atmel-ssc1",
++		.id = 1,
++		.type = SND_SOC_DAI_PCM,
++		.suspend = atmel_ssc_suspend,
++		.resume = atmel_ssc_resume,
++		.playback = {
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = ATMEL_SSC_RATES,
++			.formats = ATMEL_SSC_FORMATS,},
++		.capture = {
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = ATMEL_SSC_RATES,
++			.formats = ATMEL_SSC_FORMATS,},
++		.ops = {
++			.startup = atmel_ssc_startup,
++			.shutdown = atmel_ssc_shutdown,
++			.prepare = atmel_ssc_prepare,
++			.hw_params = atmel_ssc_hw_params,},
++		.dai_ops = {
++			.set_fmt = atmel_ssc_set_dai_fmt,
++			.set_clkdiv = atmel_ssc_set_dai_clkdiv,},
++		.private_data = &ssc_info[1],
++	},
++	{	.name = "atmel-ssc2",
++		.id = 2,
++		.type = SND_SOC_DAI_PCM,
++		.suspend = atmel_ssc_suspend,
++		.resume = atmel_ssc_resume,
++		.playback = {
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = ATMEL_SSC_RATES,
++			.formats = ATMEL_SSC_FORMATS,},
++		.capture = {
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = ATMEL_SSC_RATES,
++			.formats = ATMEL_SSC_FORMATS,},
++		.ops = {
++			.startup = atmel_ssc_startup,
++			.shutdown = atmel_ssc_shutdown,
++			.prepare = atmel_ssc_prepare,
++			.hw_params = atmel_ssc_hw_params,},
++		.dai_ops = {
++			.set_fmt = atmel_ssc_set_dai_fmt,
++			.set_clkdiv = atmel_ssc_set_dai_clkdiv,},
++		.private_data = &ssc_info[2],
++	},
++#endif
++};
++EXPORT_SYMBOL_GPL(atmel_ssc_dai);
++
++/* Module information */
++MODULE_AUTHOR("Sedji Gaouaou, sedji.gaouaou@atmel.com, www.atmel.com");
++MODULE_DESCRIPTION("ATMEL SSC ASoC Interface");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/atmel/atmel_ssc_dai.h b/sound/soc/atmel/atmel_ssc_dai.h
+new file mode 100644
+index 0000000..a828746
+--- /dev/null
++++ b/sound/soc/atmel/atmel_ssc_dai.h
+@@ -0,0 +1,121 @@
++/*
++ * atmel_ssc_dai.h - ALSA SSC interface for the Atmel  SoC
++ *
++ * Copyright (C) 2005 SAN People
++ * Copyright (C) 2008 Atmel
++ *
++ * Author: Sedji Gaouaou <sedji.gaouaou@atmel.com>
++ *         ATMEL CORP.
++ *
++ * Based on at91-ssc.c by
++ * Frank Mandarino <fmandarino@endrelia.com>
++ * Based on pxa2xx Platform drivers by
++ * Liam Girdwood <liam.girdwood@wolfsonmicro.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#ifndef _ATMEL_SSC_DAI_H
++#define _ATMEL_SSC_DAI_H
++
++#include <linux/types.h>
++#include <linux/atmel-ssc.h>
++
++#include "atmel-pcm.h"
++
++/* SSC system clock ids */
++#define ATMEL_SYSCLK_MCK	0 /* SSC uses AT91 MCK as system clock */
++
++/* SSC divider ids */
++#define ATMEL_SSC_CMR_DIV	0 /* MCK divider for BCLK */
++#define ATMEL_SSC_TCMR_PERIOD	1 /* BCLK divider for transmit FS */
++#define ATMEL_SSC_RCMR_PERIOD	2 /* BCLK divider for receive FS */
++/*
++ * SSC direction masks
++ */
++#define SSC_DIR_MASK_UNUSED	0
++#define SSC_DIR_MASK_PLAYBACK	1
++#define SSC_DIR_MASK_CAPTURE	2
++
++/*
++ * SSC register values that Atmel left out of <linux/atmel-ssc.h>.  These
++ * are expected to be used with SSC_BF
++ */
++/* START bit field values */
++#define SSC_START_CONTINUOUS	0
++#define SSC_START_TX_RX		1
++#define SSC_START_LOW_RF	2
++#define SSC_START_HIGH_RF	3
++#define SSC_START_FALLING_RF	4
++#define SSC_START_RISING_RF	5
++#define SSC_START_LEVEL_RF	6
++#define SSC_START_EDGE_RF	7
++#define SSS_START_COMPARE_0	8
++
++/* CKI bit field values */
++#define SSC_CKI_FALLING		0
++#define SSC_CKI_RISING		1
++
++/* CKO bit field values */
++#define SSC_CKO_NONE		0
++#define SSC_CKO_CONTINUOUS	1
++#define SSC_CKO_TRANSFER	2
++
++/* CKS bit field values */
++#define SSC_CKS_DIV		0
++#define SSC_CKS_CLOCK		1
++#define SSC_CKS_PIN		2
++
++/* FSEDGE bit field values */
++#define SSC_FSEDGE_POSITIVE	0
++#define SSC_FSEDGE_NEGATIVE	1
++
++/* FSOS bit field values */
++#define SSC_FSOS_NONE		0
++#define SSC_FSOS_NEGATIVE	1
++#define SSC_FSOS_POSITIVE	2
++#define SSC_FSOS_LOW		3
++#define SSC_FSOS_HIGH		4
++#define SSC_FSOS_TOGGLE		5
++
++#define START_DELAY		1
++
++struct atmel_ssc_state {
++	u32 ssc_cmr;
++	u32 ssc_rcmr;
++	u32 ssc_rfmr;
++	u32 ssc_tcmr;
++	u32 ssc_tfmr;
++	u32 ssc_sr;
++	u32 ssc_imr;
++};
++
++
++struct atmel_ssc_info {
++	char *name;
++	struct ssc_device *ssc;
++	spinlock_t lock;	/* lock for dir_mask */
++	unsigned short dir_mask;	/* 0=unused, 1=playback, 2=capture */
++	unsigned short initialized;	/* true if SSC has been initialized */
++	unsigned short daifmt;
++	unsigned short cmr_div;
++	unsigned short tcmr_period;
++	unsigned short rcmr_period;
++	struct atmel_pcm_dma_params *dma_params[2];
++	struct atmel_ssc_state ssc_state;
++};
++extern struct snd_soc_dai atmel_ssc_dai[];
++
++#endif /* _AT91_SSC_DAI_H */
+diff --git a/sound/soc/at32/playpaq_wm8510.c b/sound/soc/atmel/playpaq_wm8510.c
+similarity index 99%
+rename from sound/soc/at32/playpaq_wm8510.c
+rename to sound/soc/atmel/playpaq_wm8510.c
+index b1966e4..5b07cf7 100644
+--- a/sound/soc/at32/playpaq_wm8510.c
++++ b/sound/soc/atmel/playpaq_wm8510.c
+@@ -40,8 +40,8 @@
+ #include <mach/portmux.h>
+ 
+ #include "../codecs/wm8510.h"
+-#include "at32-pcm.h"
+-#include "at32-ssc.h"
++#include "atmel-pcm.h"
++#include "atmel_ssc_dai.h"
+ 
+ 
+ /*-------------------------------------------------------------------------*\
+-- 
+1.5.6.5
