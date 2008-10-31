@@ -1,15 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 0/5] ASoC driver updates
-Date: Fri, 31 Oct 2008 13:18:28 +0000
-Message-ID: <20081031131828.GA8253@rakim.wolfsonmicro.main>
+Subject: [PATCH 3/5] ASoC: Add support for Beagleboard
+Date: Fri, 31 Oct 2008 13:20:34 +0000
+Message-ID: <1225459236-8633-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <20081031131828.GA8253@rakim.wolfsonmicro.main>
+	<1225459236-8633-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1225459236-8633-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8496D24526
-	for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2008 14:18:29 +0100 (CET)
-Content-Disposition: inline
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8BB2824526
+	for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2008 14:20:38 +0100 (CET)
+In-Reply-To: <1225459236-8633-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,79 +23,172 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Steve Sakoman <steve@sakoman.com>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 57b41898c2ecd13a9d338b66ef23f66caab5c4e9:
-  Stephen Rothwell (1):
-        ALSA: ASoC - restore removed variable declaration
+From: Steve Sakoman <steve@sakoman.com>
 
-are available in the git repository at:
-
-  git://opensource.wolfsonmicro.com/linux-2.6-asoc for-tiwai
-
-Note that this series was generated with git format-patch -M and so
-won't apply with ordianary diff.
-
-Sedji Gaouaou (2):
-      ASoC: Merge AT91 and AVR32 support into a single atmel architecture
-      ASoC: Add audio support for the Atmel AT91SAM9G20ek board(uing wolfson 8731).
-
-Steve Sakoman (3):
-      ASoC: Add support for TWL4030 audio codec
-      ASoC: Add support for Gumstix Overo
-      ASoC: Add support for Beagleboard
-
- sound/soc/Kconfig                                |    3 +-
- sound/soc/Makefile                               |    2 +-
- sound/soc/at32/Kconfig                           |   34 -
- sound/soc/at32/Makefile                          |   11 -
- sound/soc/at32/at32-pcm.h                        |   79 --
- sound/soc/at32/at32-ssc.c                        |  849 ----------------------
- sound/soc/at32/at32-ssc.h                        |   59 --
- sound/soc/at91/Kconfig                           |   10 -
- sound/soc/at91/Makefile                          |    6 -
- sound/soc/at91/at91-pcm.c                        |  434 -----------
- sound/soc/at91/at91-pcm.h                        |   72 --
- sound/soc/at91/at91-ssc.c                        |  791 --------------------
- sound/soc/at91/at91-ssc.h                        |   27 -
- sound/soc/atmel/Kconfig                          |   43 ++
- sound/soc/atmel/Makefile                         |   15 +
- sound/soc/{at32/at32-pcm.c => atmel/atmel-pcm.c} |  376 +++++-----
- sound/soc/atmel/atmel-pcm.h                      |   86 +++
- sound/soc/atmel/atmel_ssc_dai.c                  |  782 ++++++++++++++++++++
- sound/soc/atmel/atmel_ssc_dai.h                  |  121 +++
- sound/soc/{at32 => atmel}/playpaq_wm8510.c       |    4 +-
- sound/soc/atmel/sam9g20_wm8731.c                 |  329 +++++++++
- sound/soc/codecs/Kconfig                         |    5 +
- sound/soc/codecs/Makefile                        |    2 +
- sound/soc/codecs/twl4030.c                       |  653 +++++++++++++++++
- sound/soc/codecs/twl4030.h                       |  197 +++++
- sound/soc/omap/Kconfig                           |   10 +
- sound/soc/omap/Makefile                          |    3 +
- sound/soc/omap/omap3beagle.c                     |  149 ++++
- sound/soc/omap/overo.c                           |  148 ++++
- 29 files changed, 2731 insertions(+), 2569 deletions(-)
- delete mode 100644 sound/soc/at32/Kconfig
- delete mode 100644 sound/soc/at32/Makefile
- delete mode 100644 sound/soc/at32/at32-pcm.h
- delete mode 100644 sound/soc/at32/at32-ssc.c
- delete mode 100644 sound/soc/at32/at32-ssc.h
- delete mode 100644 sound/soc/at91/Kconfig
- delete mode 100644 sound/soc/at91/Makefile
- delete mode 100644 sound/soc/at91/at91-pcm.c
- delete mode 100644 sound/soc/at91/at91-pcm.h
- delete mode 100644 sound/soc/at91/at91-ssc.c
- delete mode 100644 sound/soc/at91/at91-ssc.h
- create mode 100644 sound/soc/atmel/Kconfig
- create mode 100644 sound/soc/atmel/Makefile
- rename sound/soc/{at32/at32-pcm.c => atmel/atmel-pcm.c} (50%)
- create mode 100644 sound/soc/atmel/atmel-pcm.h
- create mode 100644 sound/soc/atmel/atmel_ssc_dai.c
- create mode 100644 sound/soc/atmel/atmel_ssc_dai.h
- rename sound/soc/{at32 => atmel}/playpaq_wm8510.c (99%)
- create mode 100644 sound/soc/atmel/sam9g20_wm8731.c
- create mode 100644 sound/soc/codecs/twl4030.c
- create mode 100644 sound/soc/codecs/twl4030.h
+Signed-off-by: Steve Sakoman <steve@sakoman.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/omap/omap3beagle.c |  149 ++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 149 insertions(+), 0 deletions(-)
  create mode 100644 sound/soc/omap/omap3beagle.c
- create mode 100644 sound/soc/omap/overo.c
+
+diff --git a/sound/soc/omap/omap3beagle.c b/sound/soc/omap/omap3beagle.c
+new file mode 100644
+index 0000000..ec84a9b
+--- /dev/null
++++ b/sound/soc/omap/omap3beagle.c
+@@ -0,0 +1,149 @@
++/*
++ * omap3beagle.c  --  SoC audio for OMAP3 Beagle
++ *
++ * Author: Steve Sakoman <steve@sakoman.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
++ * 02110-1301 USA
++ *
++ */
++
++#include <linux/clk.h>
++#include <linux/platform_device.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++
++#include <asm/mach-types.h>
++#include <mach/hardware.h>
++#include <mach/gpio.h>
++#include <mach/mcbsp.h>
++
++#include "omap-mcbsp.h"
++#include "omap-pcm.h"
++#include "../codecs/twl4030.h"
++
++static int omap3beagle_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	int ret;
++
++	/* Set codec DAI configuration */
++	ret = snd_soc_dai_set_fmt(codec_dai,
++				  SND_SOC_DAIFMT_I2S |
++				  SND_SOC_DAIFMT_NB_NF |
++				  SND_SOC_DAIFMT_CBM_CFM);
++	if (ret < 0) {
++		printk(KERN_ERR "can't set codec DAI configuration\n");
++		return ret;
++	}
++
++	/* Set cpu DAI configuration */
++	ret = snd_soc_dai_set_fmt(cpu_dai,
++				  SND_SOC_DAIFMT_I2S |
++				  SND_SOC_DAIFMT_NB_NF |
++				  SND_SOC_DAIFMT_CBM_CFM);
++	if (ret < 0) {
++		printk(KERN_ERR "can't set cpu DAI configuration\n");
++		return ret;
++	}
++
++	/* Set the codec system clock for DAC and ADC */
++	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
++				     SND_SOC_CLOCK_IN);
++	if (ret < 0) {
++		printk(KERN_ERR "can't set codec system clock\n");
++		return ret;
++	}
++
++	return 0;
++}
++
++static struct snd_soc_ops omap3beagle_ops = {
++	.hw_params = omap3beagle_hw_params,
++};
++
++/* Digital audio interface glue - connects codec <--> CPU */
++static struct snd_soc_dai_link omap3beagle_dai = {
++	.name = "TWL4030",
++	.stream_name = "TWL4030",
++	.cpu_dai = &omap_mcbsp_dai[0],
++	.codec_dai = &twl4030_dai,
++	.ops = &omap3beagle_ops,
++};
++
++/* Audio machine driver */
++static struct snd_soc_machine snd_soc_machine_omap3beagle = {
++	.name = "omap3beagle",
++	.dai_link = &omap3beagle_dai,
++	.num_links = 1,
++};
++
++/* Audio subsystem */
++static struct snd_soc_device omap3beagle_snd_devdata = {
++	.machine = &snd_soc_machine_omap3beagle,
++	.platform = &omap_soc_platform,
++	.codec_dev = &soc_codec_dev_twl4030,
++};
++
++static struct platform_device *omap3beagle_snd_device;
++
++static int __init omap3beagle_soc_init(void)
++{
++	int ret;
++
++	if (!machine_is_omap3_beagle()) {
++		pr_debug("Not OMAP3 Beagle!\n");
++		return -ENODEV;
++	}
++	pr_info("OMAP3 Beagle SoC init\n");
++
++	omap3beagle_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!omap3beagle_snd_device) {
++		printk(KERN_ERR "Platform device allocation failed\n");
++		return -ENOMEM;
++	}
++
++	platform_set_drvdata(omap3beagle_snd_device, &omap3beagle_snd_devdata);
++	omap3beagle_snd_devdata.dev = &omap3beagle_snd_device->dev;
++	*(unsigned int *)omap3beagle_dai.cpu_dai->private_data = 1; /* McBSP2 */
++
++	ret = platform_device_add(omap3beagle_snd_device);
++	if (ret)
++		goto err1;
++
++	return 0;
++
++err1:
++	printk(KERN_ERR "Unable to add platform device\n");
++	platform_device_put(omap3beagle_snd_device);
++
++	return ret;
++}
++
++static void __exit omap3beagle_soc_exit(void)
++{
++	platform_device_unregister(omap3beagle_snd_device);
++}
++
++module_init(omap3beagle_soc_init);
++module_exit(omap3beagle_soc_exit);
++
++MODULE_AUTHOR("Steve Sakoman <steve@sakoman.com>");
++MODULE_DESCRIPTION("ALSA SoC OMAP3 Beagle");
++MODULE_LICENSE("GPL");
+-- 
+1.5.6.5
