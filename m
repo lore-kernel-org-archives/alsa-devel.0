@@ -1,37 +1,45 @@
-From: Jean Delvare <khali-PUYAD+kWke1g9hUCZPvPmw@public.gmane.org>
-Subject: [PATCH] i2c: Drop I2C_CLASS_CAM_ANALOG and I2C_CLASS_SOUND
-Date: Fri, 31 Oct 2008 10:34:16 +0100
-Message-ID: <20081031103416.17d809b7@hyperion.delvare>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: ASOC deprecated warning
+Date: Fri, 31 Oct 2008 10:41:42 +0000
+Message-ID: <20081031104142.GA7516@sirena.org.uk>
+References: <9e4733910810301222v360ecf8aqbbead50759a2b844@mail.gmail.com>
+	<20081030195107.GA13678@sirena.org.uk>
+	<9e4733910810301257t159c1b20t3a0414b55410dd7f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Linux I2C <linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, video4linux-list-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8270D2444C
+	for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2008 11:41:43 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <9e4733910810301257t159c1b20t3a0414b55410dd7f@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-There are no users left of these two i2c probe class flags so we can
-drop the now.
+On Thu, Oct 30, 2008 at 03:57:33PM -0400, Jon Smirl wrote:
+> On Thu, Oct 30, 2008 at 3:51 PM, Mark Brown <broonie@sirena.org.uk> wrote:
 
-Signed-off-by: Jean Delvare <khali-PUYAD+kWke1g9hUCZPvPmw@public.gmane.org>
----
- include/linux/i2c.h |    2 --
- 1 file changed, 2 deletions(-)
+> > you want.  Otherwise I'd suggest taking it up with the people
+> > maintaining the compiler infrastructure - there's no way to warn on use
+> > of an API without also warning on the export of the API, which isn't
+> > ideal.
 
---- linux-2.6.28-rc2.orig/include/linux/i2c.h	2008-10-31 09:14:39.000000000 +0100
-+++ linux-2.6.28-rc2/include/linux/i2c.h	2008-10-31 09:49:27.000000000 +0100
-@@ -393,9 +393,7 @@ static inline void i2c_set_adapdata(stru
- #define I2C_CLASS_TV_ANALOG	(1<<1)	/* bttv + friends */
- #define I2C_CLASS_TV_DIGITAL	(1<<2)	/* dvb cards */
- #define I2C_CLASS_DDC		(1<<3)	/* DDC bus on graphics adapters */
--#define I2C_CLASS_CAM_ANALOG	(1<<4)	/* camera with analog CCD */
- #define I2C_CLASS_CAM_DIGITAL	(1<<5)	/* most webcams */
--#define I2C_CLASS_SOUND		(1<<6)	/* sound devices */
- #define I2C_CLASS_SPD		(1<<7)	/* SPD EEPROMs and similar */
- 
- /* i2c_client_address_data is the struct for holding default client
+> sysfs has a config attribute for including legacy APIs. If it isn't
+> set they compile out.
 
-
--- 
-Jean Delvare
+As I suggested, if you'd like to see a similar configuration option for
+deprecated APIs the best people to take it up with would probably be the
+people who maintain the compiler infrastructure which is used to
+generate the deprecation warning so we can have something central for
+this.
