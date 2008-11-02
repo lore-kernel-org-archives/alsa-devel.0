@@ -1,20 +1,19 @@
-From: Travis Place <wishie@wishie.net>
-Subject: Issues with  Fujitsu Siemens Amilo PA 1510 laptop
-Date: Mon, 3 Nov 2008 01:12:46 +1000
-Message-ID: <200811030112.47407.wishie@wishie.net>
+From: "Michael Gruber" <lists.mg@googlemail.com>
+Subject: Re: hda-intel - Add digout to ALC880 F1734 model
+Date: Sun, 2 Nov 2008 17:02:51 +0100
+Message-ID: <74d457500811020802j3354abeepebbe2cac1d799d76@mail.gmail.com>
+References: <74d457500811010543x42103855n5f68136fd564b1bf@mail.gmail.com>
+	<s5hwsfmid6f.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www.wishie.net (202-137-100-224.dial.usertools.net
-	[202.137.100.224])
-	by alsa0.perex.cz (Postfix) with ESMTP id F285B243A2
-	for <alsa-devel@alsa-project.org>; Sun,  2 Nov 2008 16:12:51 +0100 (CET)
-Received: from laptop.local (unknown [192.168.0.200])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by www.wishie.net (Postfix) with ESMTP id D3F8CEBF65
-	for <alsa-devel@alsa-project.org>; Sun,  2 Nov 2008 15:39:58 +1000 (EST)
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.249])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7D6E324340
+	for <alsa-devel@alsa-project.org>; Sun,  2 Nov 2008 17:02:52 +0100 (CET)
+Received: by rv-out-0708.google.com with SMTP id f25so1987793rvb.32
+	for <alsa-devel@alsa-project.org>; Sun, 02 Nov 2008 08:02:51 -0800 (PST)
+In-Reply-To: <s5hwsfmid6f.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,37 +24,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-So, ive been attempting to sort out a mixer issue on the above mentioned 
-laptop..with no success as yet.
+On Sun, Nov 2, 2008 at 12:23, Takashi Iwai <tiwai@suse.de> wrote:
+> At Sat, 1 Nov 2008 13:43:25 +0100,
+> Michael Gruber wrote:
+>>
+>> Backstory:
+>> The patch "ALSA: hda - Add infrastructure for dynamic stream allocation"
+>> http://git.alsa-project.org/?p=alsa-kmirror.git;a=commit;h=ae32c9fe811fed22715342494c08a11fabc87762
+>> broke the detection of my card. With this patch applied the dmesg output is:
+>>
+>> [ 3761.464838] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level,
+>> low) -> IRQ 16
+>> [ 3761.464863] PCI: Setting latency timer of device 0000:00:1b.0 to 64
+>> [ 3761.499927] ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+>> [ 3761.499945] HDA Intel: probe of 0000:00:1b.0 failed with error -22
+>
+> Could you check whether you get any other error messages with
+> CONFIG_SND_DEBUG=y?
+>
+>> When I loaded the module with model=... then it would work only for some
+>> models, but not for others. I found out that the ones which worked were the
+>> ones with a digout. I added the digout to the F1734 model and now it is
+>> working again.
+>>
+>> I can't test if the digout is really working because I lack the hardware, but
+>> when I turn on the IEC958 control in the mixer then red light is emitted from
+>> my headphone port.
+>>
+>> I will attach a patch that adds digout to this model because this seems the
+>> right thing to do, but I don't know whether there is something wrong with the
+>> aforementioned patch that caused my problem in the first place.
+>
+> Yeah, it shouldn't break the existing thing, at least.
+>
+>
+> thanks,
+>
+> Takashi
+>
 
-Ive had the user try EVERY available model option for the codec, and have all 
-the results, as follows:
+[  261.045920] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level,
+low) -> IRQ 16
+[  261.045945] PCI: Setting latency timer of device 0000:00:1b.0 to 64
+[  261.045949] ALSA
+/home/*/Desktop/test-alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:2130:
+chipset global capabilities = 0x4401
+[  261.076055] ALSA
+/home/*/Desktop/test-alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:771:
+codec_mask = 0x3
+[  261.079523] ALSA
+/home/*/Desktop/test-alsa/alsa-driver/pci/hda/hda_codec.c:2579:
+hda_codec: model 'F1734' is selected for config 1734:107c (FSC F1734)
+[  261.079920] ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+[  261.079933] HDA Intel: probe of 0000:00:1b.0 failed with error -22
 
-Auto : 
-http://www.alsa-project.org/db/?f=3dc4963fb40162839fe2fd146c53840bc7314a3d
-3stack : 
-http://www.alsa-project.org/db/?f=46db2332be5d3b777ac708d06b6b482ec3b28e43
-3stack-dig: 
-http://www.alsa-project.org/db/?f=19978f10ea154ee6128d19a9a143707599801e5c
-6stack-dig: 
-http://www.alsa-project.org/db/?f=42868b55b89e389429e179c9852bfc3f34a7d876
-3stack-660: 
-http://www.alsa-project.org/db/?f=5f5afa0c7fe7f3c1332c3f3404633358c5df4908
-uniwill-m31: 
-http://www.alsa-project.org/db/?f=2f0f61b27ad98c34af66004b3acfa5e3b612d0ab
-toshiba: 
-http://www.alsa-project.org/db/?f=9562a93866a6fd06745ae33144afa1b8b24b0247
-asus: 
-http://www.alsa-project.org/db/?f=4fef0678d79fd9a0baf78d22feeb63c79f0e82f2
-asus-laptop: 
-http://www.alsa-project.org/db/?f=12f855ae5692a5dd173795469a88b2ed4b07750e
-
-
-Still, the mixer seems dead, and no sound is heard from the card.. Please 
-advise any specific thing i should be looking for in order to fix this.. Im 
-running out of ideas...
-
-Travis Place (wishie).
+That is all.
