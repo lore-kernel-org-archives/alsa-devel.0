@@ -1,17 +1,18 @@
-From: Toby <dryfter@gmail.com>
+From: The Source <thesourcehim@gmail.com>
 Subject: Re: State of the XFi driver on x86_64
-Date: Mon, 3 Nov 2008 10:42:55 +1100
-Message-ID: <8fe68c970811021542j172985a5hd0a8d554f6cffb26@mail.gmail.com>
+Date: Mon, 03 Nov 2008 08:44:47 +0300
+Message-ID: <490E8FCF.1070403@gmail.com>
+References: <8fe68c970811021542j172985a5hd0a8d554f6cffb26@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.168])
-	by alsa0.perex.cz (Postfix) with ESMTP id EE5F21037EE
-	for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2008 00:42:56 +0100 (CET)
-Received: by wf-out-1314.google.com with SMTP id 24so2323165wfg.23
-	for <alsa-devel@alsa-project.org>; Sun, 02 Nov 2008 15:42:55 -0800 (PST)
-Content-Disposition: inline
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.150])
+	by alsa0.perex.cz (Postfix) with ESMTP id 124571037EE
+	for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2008 06:44:51 +0100 (CET)
+Received: by ey-out-1920.google.com with SMTP id 21so717480eyc.56
+	for <alsa-devel@alsa-project.org>; Sun, 02 Nov 2008 21:44:50 -0800 (PST)
+In-Reply-To: <8fe68c970811021542j172985a5hd0a8d554f6cffb26@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,33 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Toby <dryfter@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2008/11/2 WILMES Andreas <administrator@webspace.ms>:
-> Hello everbody,
->
-> Can someone give the current state of the driver? What are his features,
-> what is working?
-
-I've been watching this thread for a while, and occasionally trying
-out new builds, as I have an original PCI X-Fi emu20k1.
-Everyone else seems to be reporting decent successes, but I have never
-managed it myself.
-
-Playing back sound files at any sample-rate results in a repeating
-burst of static. Adjusting the period/buffer parameters to aplay will
-cause the pitch/tone of the static burst to change, but never turn
-into anything remotely like the desired sound.
-
-I'm running this on a 64-bit system (Ubuntu 8.04 with a custom
-compiled kernel). Is anyone else having success on this platform?
-
-Thanks,
-Toby
-
--- 
-Turning and turning in the widening gyre
-The falcon cannot hear the falconer
-Things fall apart; the center cannot hold
-Mere anarchy is loosed upon the world
+VG9ieSDQv9C40YjQtdGCOgo+IDIwMDgvMTEvMiBXSUxNRVMgQW5kcmVhcyA8YWRtaW5pc3RyYXRv
+ckB3ZWJzcGFjZS5tcz46Cj4gICAKPj4gSGVsbG8gZXZlcmJvZHksCj4+Cj4+IENhbiBzb21lb25l
+IGdpdmUgdGhlIGN1cnJlbnQgc3RhdGUgb2YgdGhlIGRyaXZlcj8gV2hhdCBhcmUgaGlzIGZlYXR1
+cmVzLAo+PiB3aGF0IGlzIHdvcmtpbmc/Cj4+ICAgICAKPgo+IEkndmUgYmVlbiB3YXRjaGluZyB0
+aGlzIHRocmVhZCBmb3IgYSB3aGlsZSwgYW5kIG9jY2FzaW9uYWxseSB0cnlpbmcKPiBvdXQgbmV3
+IGJ1aWxkcywgYXMgSSBoYXZlIGFuIG9yaWdpbmFsIFBDSSBYLUZpIGVtdTIwazEuCj4gRXZlcnlv
+bmUgZWxzZSBzZWVtcyB0byBiZSByZXBvcnRpbmcgZGVjZW50IHN1Y2Nlc3NlcywgYnV0IEkgaGF2
+ZSBuZXZlcgo+IG1hbmFnZWQgaXQgbXlzZWxmLgo+Cj4gUGxheWluZyBiYWNrIHNvdW5kIGZpbGVz
+IGF0IGFueSBzYW1wbGUtcmF0ZSByZXN1bHRzIGluIGEgcmVwZWF0aW5nCj4gYnVyc3Qgb2Ygc3Rh
+dGljLiBBZGp1c3RpbmcgdGhlIHBlcmlvZC9idWZmZXIgcGFyYW1ldGVycyB0byBhcGxheSB3aWxs
+Cj4gY2F1c2UgdGhlIHBpdGNoL3RvbmUgb2YgdGhlIHN0YXRpYyBidXJzdCB0byBjaGFuZ2UsIGJ1
+dCBuZXZlciB0dXJuCj4gaW50byBhbnl0aGluZyByZW1vdGVseSBsaWtlIHRoZSBkZXNpcmVkIHNv
+dW5kLgo+Cj4gSSdtIHJ1bm5pbmcgdGhpcyBvbiBhIDY0LWJpdCBzeXN0ZW0gKFVidW50dSA4LjA0
+IHdpdGggYSBjdXN0b20KPiBjb21waWxlZCBrZXJuZWwpLiBJcyBhbnlvbmUgZWxzZSBoYXZpbmcg
+c3VjY2VzcyBvbiB0aGlzIHBsYXRmb3JtPwo+Cj4gVGhhbmtzLAo+IFRvYnkKPgo+ICAgCkknbSBy
+dW5uaW5nIHRoaXMgZHJpdmVyIG9uIEZlZG9yYSA5IHg4Ni02NC4gR2l2ZXMgbWUgc29tZSB0cm91
+YmxlLCBidXQgCmFzIGJpZyBhcyB5b3Vycy4gTW9zdCBhcHBzIHdvcmsgZmluZS4gVGhlIHByb2Js
+ZW1zIGFyZToKMS4gV2luZSwgaWYgdXNlcyBhbHNhIGRpcmVjdGx5LCBjYXVzZXMgc291bmQgdG8g
+YmUgY29ycnVwdGVkIGV2ZXJ5d2hlcmUgCnVudGlsIGRyaXZlciByZXN0YXJ0LiBTbyBJIGhhdmUg
+dG8gdXNlIGVTb3VuZCBlbXVsYXRpb24gb2YgcHVsc2VhdWRpbyAKZm9yIHdpbmUuCjIuIE9ubHkg
+b25lIGFwcGxpY2F0aW9uIGF0IGEgdGltZSBjYW4gdXNlIHNvdW5kLCBzbyBJIHVzZSBwdWxzZWF1
+ZGlvIGZvciAKbXVsdGlwbGUgc291bmQgdGhyZWFkcyBtaXhpbmcuCjMuIFNvbWUgZ2FtZXMgbGlr
+ZSBkb29tMyBjYW4gb25seSB1c2UgYWxzYSBhbmQgb3NzLCBzbyB0byByZWRpcmVjdCB0aGVtIAp0
+byBwdWxzZWF1ZGlvIEkgdXNlIGFsc2EtcGx1Z2lucy1wdWxzZWF1ZGlvLCBidXQgdGhhdCBjYXVz
+ZXMgMi1zZWNvbmQgCnNvdW5kIGRlbGF5IGluIHRob3NlIGdhbWVzLgo0LiBBYm91dCAwLjUgc2Vj
+b25kIHNvdW5kIGRlbGF5IGlzIHByZXNlbnQgaW4gZ2FtZXMgdGhhdCB1c2Ugb3BlbmFsIAood2hp
+Y2ggdXNlcyBwdWxzZWF1ZGlvIHRocm91Z2ggc2RsIG9yIGVzZCkuCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
