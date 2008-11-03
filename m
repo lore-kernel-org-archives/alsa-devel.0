@@ -1,20 +1,21 @@
-From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
-Subject: Re: Intel G45 8-Channel LPCM over HDMI
-Date: Mon, 3 Nov 2008 18:12:34 +0100
-Message-ID: <fd3eb9bf0811030912s1eb317bxcef4ae202400cf2f@mail.gmail.com>
-References: <8D978A35-5424-4BB5-980A-8F74EE529876@lambda-audiosystems.de>
-	<fd3eb9bf0811021209h36a44288lec01aeddfed2fc91@mail.gmail.com>
-	<498C21C3-FCD1-4C15-B6B4-EAA14744ABC3@lambda-audiosystems.de>
+From: "Michael Gruber" <lists.mg@googlemail.com>
+Subject: Re: hda-intel - Add digout to ALC880 F1734 model
+Date: Tue, 4 Nov 2008 00:50:37 +0100
+Message-ID: <74d457500811031550p1ccc2df4o937697bc0071c468@mail.gmail.com>
+References: <74d457500811010543x42103855n5f68136fd564b1bf@mail.gmail.com>
+	<s5hwsfmid6f.wl%tiwai@suse.de>
+	<74d457500811020802j3354abeepebbe2cac1d799d76@mail.gmail.com>
+	<s5hljw17xqt.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.173])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7A89B2447A
-	for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2008 18:12:35 +0100 (CET)
-Received: by wf-out-1314.google.com with SMTP id 24so2738466wfg.23
-	for <alsa-devel@alsa-project.org>; Mon, 03 Nov 2008 09:12:34 -0800 (PST)
-In-Reply-To: <498C21C3-FCD1-4C15-B6B4-EAA14744ABC3@lambda-audiosystems.de>
+Received: from el-out-1112.google.com (el-out-1112.google.com [209.85.162.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4E926244B8
+	for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2008 00:50:39 +0100 (CET)
+Received: by el-out-1112.google.com with SMTP id z25so1341724ele.7
+	for <alsa-devel@alsa-project.org>; Mon, 03 Nov 2008 15:50:38 -0800 (PST)
+In-Reply-To: <s5hljw17xqt.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,31 +26,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alexander Werner <alexander.werner@lambda-audiosystems.de>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SG93IGFib3V0IEdlRm9yY2UgODIwMCBhbmQgblZJRElBIEhETUkgYXMgYW4gYWx0ZXJuYXRpdmU/
-IChQZXJoYXBzCmV2ZW4gbmV3IDkzMDAgb3Igc29tZXRoaW5nIGZvciBJbnRlbC4gRG9uJ3Qga25v
-dyBtdWNoIGFib3V0IHRoYXQsCnNvcnJ5LikgVGhlcmUgaXMgZXZlbiBvbmUgSVRYIChtYWRlIGJ5
-IEpldHdheSksIGFuZCBsb3RzIG9mIG1BVFguIE11Y2gKY2hlYXBlciB0aGFuIEc0NSwgYW5kIEkg
-YmVsaWV2ZSB0aGF0IGl0IHN1cHBvcnRzIDhjaCBMUENNLiBOb3Qgc3VyZSBpZgppdCBzdXBwb3J0
-cyB0aGF0IG9uIExpbnV4LCBidXQgdGhlcmUgd2FzIGEgbG90IG9mIHdvcmsgb24gdGhhdCB0b3Bp
-YwpyZWNlbnRseS4KCjIwMDgvMTEvMiBBbGV4YW5kZXIgV2VybmVyIDxhbGV4YW5kZXIud2VybmVy
-QGxhbWJkYS1hdWRpb3N5c3RlbXMuZGU+Ogo+PiBJJ20gcHJldHR5IGNvbmZpZGVudCBpdCBkb2Vz
-bid0IHdvcmsgeWV0LCBidXQgaXQncyBiZWluZyBkZXZlbG9wZWQgYXMKPj4gd2Ugc3BlYWsuIExv
-b2sgYXQgdGhyZWFkczoKPj4gKiBJbnRlbCBkZzQ1aWQgbW90aGVyYm9hcmQgLSBJQ0gxMCBIRCBh
-dWRpbyBpc3N1ZXMgLS0+IG1BVFgsIGJ1dCB2ZXJ5Cj4+IHNpbWlsYXIgYm9hcmQKPj4gKiBbQU5O
-T1VOQ0VdIHBhdGNoIGZvciBJTlRFTCBIRE1JIGNvZGVjIC0tPiB1bmZvcnR1bmF0ZWx5LCBJIGRv
-bid0Cj4+IGJlbGlldmUgaXQgd2FzIGNoZWNrZWQgaW4geWV0Cj4KPiBPb3BzLCBpIG1pc3NlZCB0
-aGVzZSB0aHJlYWRzIGNvbXBsZXRlbHkuIExvb2tzIGdyZWF0LCB0aG91Z2ggOikKPiBJJ2xsIHRy
-eSB0byB0ZXN0IHRoZSBwYXRjaCBhcyBzb29uIGFzIEkgY2FuLCB3aGF0IG1heSB0YWtlIHNvbWUg
-dGltZSwgYXMgSQo+IGJyaWNrZWQgbXkgYm9hcmQgdG9kYXkgYW5kIGhhdmUgdG8gd2FpdCBmb3Ig
-YSByZXBsYWNlbWVudCA6KAo+Cj4+IEJUVywgdGhvc2UgRzQ1IGJvYXJkcyBhcmUgc3dlZXQgOikg
-QnV0IHdheSBvdmVycHJpY2VkIElNSE8gOigKPgo+IEplcHAsIHRoZXkgYXJlIHN3ZWV0IGFuZCBv
-dmVycHJpY2VkLCBidXQgdGhlIGFsdGVybmF0aXZlIHNvbHV0aW9uIG5lZWRzIGFuCj4gZXh0ZXJu
-YWwgc291bmRjYXJkIGFuZC9vciBncmFwaGljcyBjYXJkLiBUaGlzIHdvdWxkIGNvbnN1bWUgbW9y
-ZSBzcGFjZSBhbmQKPiBtb25leS4KPgoKCgotLSAKVmVkcmFuIE1pbGV0acSHCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Mon, Nov 3, 2008 at 14:19, Takashi Iwai <tiwai@suse.de> wrote:
+> At Sun, 2 Nov 2008 17:02:51 +0100,
+> Michael Gruber wrote:
+>>
+>> On Sun, Nov 2, 2008 at 12:23, Takashi Iwai <tiwai@suse.de> wrote:
+>> > At Sat, 1 Nov 2008 13:43:25 +0100,
+>> > Michael Gruber wrote:
+>> >>
+>> >> Backstory:
+>> >> The patch "ALSA: hda - Add infrastructure for dynamic stream allocation"
+>> >> http://git.alsa-project.org/?p=alsa-kmirror.git;a=commit;h=ae32c9fe811fed22715342494c08a11fabc87762
+>> >> broke the detection of my card. With this patch applied the dmesg output is:
+>> >>
+>> >> [ 3761.464838] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level,
+>> >> low) -> IRQ 16
+>> >> [ 3761.464863] PCI: Setting latency timer of device 0000:00:1b.0 to 64
+>> >> [ 3761.499927] ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+>> >> [ 3761.499945] HDA Intel: probe of 0000:00:1b.0 failed with error -22
+>> >
+>> > Could you check whether you get any other error messages with
+>> > CONFIG_SND_DEBUG=y?
+>> >
+>> >> When I loaded the module with model=... then it would work only for some
+>> >> models, but not for others. I found out that the ones which worked were the
+>> >> ones with a digout. I added the digout to the F1734 model and now it is
+>> >> working again.
+>> >>
+>> >> I can't test if the digout is really working because I lack the hardware, but
+>> >> when I turn on the IEC958 control in the mixer then red light is emitted from
+>> >> my headphone port.
+>> >>
+>> >> I will attach a patch that adds digout to this model because this seems the
+>> >> right thing to do, but I don't know whether there is something wrong with the
+>> >> aforementioned patch that caused my problem in the first place.
+>> >
+>> > Yeah, it shouldn't break the existing thing, at least.
+>> >
+>> >
+>> > thanks,
+>> >
+>> > Takashi
+>> >
+>>
+>> [  261.045920] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level,
+>> low) -> IRQ 16
+>> [  261.045945] PCI: Setting latency timer of device 0000:00:1b.0 to 64
+>> [  261.045949] ALSA
+>> /home/*/Desktop/test-alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:2130:
+>> chipset global capabilities = 0x4401
+>> [  261.076055] ALSA
+>> /home/*/Desktop/test-alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:771:
+>> codec_mask = 0x3
+>> [  261.079523] ALSA
+>> /home/*/Desktop/test-alsa/alsa-driver/pci/hda/hda_codec.c:2579:
+>> hda_codec: model 'F1734' is selected for config 1734:107c (FSC F1734)
+>> [  261.079920] ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+>> [  261.079933] HDA Intel: probe of 0000:00:1b.0 failed with error -22
+>
+> So, you're building from alsa-driver tree, not directly the kernel git?
+> Then try the latest snapshot below first,
+>    ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
+> Then build with --with-debug=detect configure option.
+> This will give you more information, I guess.
+>
+>
+> thanks,
+>
+> Takashi
+>
+
+I just tried that. I also tried compiling a kernel from the
+alsa-kernel git tree where I enabled all alsa-related debug options
+but dmesg didn't give me any more information that what I already had.
