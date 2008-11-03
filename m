@@ -1,19 +1,19 @@
-From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: 2.6.26.[6|7] vs. rt11 vs. alsa (usb) midi
-Date: Sun, 02 Nov 2008 22:52:11 -0800
-Message-ID: <1225695131.3772.12.camel@localhost.localdomain>
-References: <1224989187.3706.7.camel@localhost.localdomain>
-	<s5hljwazc9i.wl%tiwai@suse.de>
-	<1225229755.3750.1.camel@localhost.localdomain>
-	<s5hr65zejxv.wl%tiwai@suse.de>
+From: The Source <thesourcehim@gmail.com>
+Subject: Re: State of the XFi driver on x86_64
+Date: Mon, 03 Nov 2008 09:10:28 +0300
+Message-ID: <490E95D4.50301@gmail.com>
+References: <8fe68c970811021542j172985a5hd0a8d554f6cffb26@mail.gmail.com>
+	<490E8FCF.1070403@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5.stanford.edu (smtp5.Stanford.EDU [171.67.219.85])
-	by alsa0.perex.cz (Postfix) with ESMTP id 55BC1244B1
-	for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2008 06:52:37 +0100 (CET)
-In-Reply-To: <s5hr65zejxv.wl%tiwai@suse.de>
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id 13B621037F2
+	for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2008 07:10:35 +0100 (CET)
+Received: by nf-out-0910.google.com with SMTP id e27so1331184nfd.32
+	for <alsa-devel@alsa-project.org>; Sun, 02 Nov 2008 22:10:34 -0800 (PST)
+In-Reply-To: <490E8FCF.1070403@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,132 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Ingo Molnar <mingo@elte.hu>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Toby <dryfter@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2008-10-29 at 12:10 +0100, Takashi Iwai wrote:
-> At Tue, 28 Oct 2008 14:35:55 -0700,
-> Fernando Lopez-Lezcano wrote:
-> > 
-> > On Mon, 2008-10-27 at 09:13 +0100, Takashi Iwai wrote:
-> > > At Sat, 25 Oct 2008 19:46:27 -0700,
-> > > Fernando Lopez-Lezcano wrote:
-> > > > 
-> > > > Hi... anyone out there also having problem with this combination?
-> > > >    2.6.26.7 or 2.6.26.6 with 2.6.26.6-rt11 and alsa MIDI
-> > > > It looks to me like alsa midi is broken. 
-> > > > 
-> > > > Probably an interaction with the realtime kernel patch. A Fedora kernel
-> > > > based on 2.6.26.6 (2.6.26.6-49 on fc8) works fine, a very similarly
-> > > > patched kernel that includes the realtime patch does not. The
-> > > > configurations for both are almost the same (today I tried to change
-> > > > some of the most obvious differences and rebuild, with the same
-> > > > result). 
-> > > > 
-> > > > No problems with 2.6.24.7-rt21. 
-
-(but on Fedora 9 I get X segfaults with it... so not really usable
-either)
-
-> > > > Test: boot, login, plugin an external usb keyboard (Yamaha P250), it is
-> > > > recognized, use qjackctl alsa patchbay to connect it to kmidimon,
-> > > > kmidimon sees only _one_ midi message and that's it. Kmidimon can't be
-> > > > killed after that. 
-> > > 
-> > > What about other MIDI devices on other bus, e.g. an MPU401 on a PCI
-> > > soundcard or so?  There is a possibility of breakage in the USB driver
-> > > side, too.
-> > 
-> > I just tested an RME PCMCIA card + Multiface interface and it shows the
-> > same problem. No MIDI messages get through (but the LED in the Multiface
-> > blinks). Same hardware booted into 2.6.24.7-rt21 works fine. 
-> 
-> Then this should be in RT side.  There is no fundamental change
-> regarding rawmidi since some time ago...
-
-Hmm, why do you say rawmidi? This is happening with the sequencer
-interface, AFAIK. 
-
-I just tested this with the rawmidi.c test program that comes with alsa
-and the rawmidi interface _is_ working ("rawmidi -v -i hw:1,0" outputs
-the raw bytes being received). 
-
-Now I start qjackctl to patch the sequencer output of the P250 to
-kmidimon and I get just one "active sensing" message in the messages
-window of kmidimon. This is what I see in the proc/asound/seq/clients
-file:
-
-----
-$ cat /proc/asound/seq/clients 
-Client info
-  cur  clients : 6
-  peak clients : 6
-  max  clients : 192
-
-Client   0 : "System" [Kernel]
-  Port   0 : "Timer" (Rwe-)
-  Port   1 : "Announce" (R-e-)
-    Connecting To: 15:0, 128:0, 129:0
-Client  14 : "Midi Through" [Kernel]
-  Port   0 : "Midi Through Port-0" (RWe-)
-Client  15 : "OSS sequencer" [Kernel]
-  Port   0 : "Receiver" (-we-)
-    Connected From: 0:1
-Client  20 : "P-250" [Kernel]
-  Port   0 : "P-250 MIDI 1" (RWeX)
-    Connecting To: 129:0
-  Port   1 : "P-250 MIDI 2" (-We-)
-Client 128 : "Client-128" [User]
-  Port   0 : "qjackctl" (-W--)
-    Connected From: 0:1
-  Input pool :
-    Pool size          : 200
-    Cells in use       : 0
-    Peak cells in use  : 3
-    Alloc success      : 5
-    Alloc failures     : 0
-Client 129 : "KMidimon" [User]
-  Port   0 : "input" (-We-)
-    Connected From: 0:1, 20:0
-  Output pool :
-    Pool size          : 500
-    Cells in use       : 0
-    Peak cells in use  : 0
-    Alloc success      : 0
-    Alloc failures     : 0
-  Input pool :
-    Pool size          : 200
-    Cells in use       : 0
-    Peak cells in use  : 2
-    Alloc success      : 4
-    Alloc failures     : 0
-----
-
-Now I quit kmidimon...
-
-----
-$ cat /proc/asound/seq/clients
-----
-
-Hangs!
-Can't ctrl-c out of it. 
-Kmidimon is (sort of) still around:
-
-----
-nando     7696  0.3  0.0      0     0 ?        Zl   22:41   0:01
-[kmidimon] <defunct>
-----
-
-Rawmidi does not work anymore, of course, hangs and can't be ctrl'c'ed
-either. Everything that touches midi seems to hang waiting for something
-that is never going to happen. And this only appears to happen when I
-try to use the sequencer api. Before that the rawmidi program happily
-prints midi bytes as they arrive. 
-
-Maybe this points to a possible culprit?
-Any more data I could provide that would be useful?
-Any help in debugging this would be appreciated. At this point no
-realtime kernel is usable for the tasks I need it for. 
-
--- Fernando
+VGhlIFNvdXJjZSDQv9C40YjQtdGCOgo+IFRvYnkg0L/QuNGI0LXRgjoKPj4gMjAwOC8xMS8yIFdJ
+TE1FUyBBbmRyZWFzIDxhZG1pbmlzdHJhdG9yQHdlYnNwYWNlLm1zPjoKPj4gIAo+Pj4gSGVsbG8g
+ZXZlcmJvZHksCj4+Pgo+Pj4gQ2FuIHNvbWVvbmUgZ2l2ZSB0aGUgY3VycmVudCBzdGF0ZSBvZiB0
+aGUgZHJpdmVyPyBXaGF0IGFyZSBoaXMgCj4+PiBmZWF0dXJlcywKPj4+IHdoYXQgaXMgd29ya2lu
+Zz8KPj4+ICAgICAKPj4KPj4gSSd2ZSBiZWVuIHdhdGNoaW5nIHRoaXMgdGhyZWFkIGZvciBhIHdo
+aWxlLCBhbmQgb2NjYXNpb25hbGx5IHRyeWluZwo+PiBvdXQgbmV3IGJ1aWxkcywgYXMgSSBoYXZl
+IGFuIG9yaWdpbmFsIFBDSSBYLUZpIGVtdTIwazEuCj4+IEV2ZXJ5b25lIGVsc2Ugc2VlbXMgdG8g
+YmUgcmVwb3J0aW5nIGRlY2VudCBzdWNjZXNzZXMsIGJ1dCBJIGhhdmUgbmV2ZXIKPj4gbWFuYWdl
+ZCBpdCBteXNlbGYuCj4+Cj4+IFBsYXlpbmcgYmFjayBzb3VuZCBmaWxlcyBhdCBhbnkgc2FtcGxl
+LXJhdGUgcmVzdWx0cyBpbiBhIHJlcGVhdGluZwo+PiBidXJzdCBvZiBzdGF0aWMuIEFkanVzdGlu
+ZyB0aGUgcGVyaW9kL2J1ZmZlciBwYXJhbWV0ZXJzIHRvIGFwbGF5IHdpbGwKPj4gY2F1c2UgdGhl
+IHBpdGNoL3RvbmUgb2YgdGhlIHN0YXRpYyBidXJzdCB0byBjaGFuZ2UsIGJ1dCBuZXZlciB0dXJu
+Cj4+IGludG8gYW55dGhpbmcgcmVtb3RlbHkgbGlrZSB0aGUgZGVzaXJlZCBzb3VuZC4KPj4KPj4g
+SSdtIHJ1bm5pbmcgdGhpcyBvbiBhIDY0LWJpdCBzeXN0ZW0gKFVidW50dSA4LjA0IHdpdGggYSBj
+dXN0b20KPj4gY29tcGlsZWQga2VybmVsKS4gSXMgYW55b25lIGVsc2UgaGF2aW5nIHN1Y2Nlc3Mg
+b24gdGhpcyBwbGF0Zm9ybT8KPj4KPj4gVGhhbmtzLAo+PiBUb2J5Cj4+Cj4+ICAgCj4gSSdtIHJ1
+bm5pbmcgdGhpcyBkcml2ZXIgb24gRmVkb3JhIDkgeDg2LTY0LiBHaXZlcyBtZSBzb21lIHRyb3Vi
+bGUsIGJ1dCAKPiBhcyBiaWcgYXMgeW91cnMuIE1vc3QgYXBwcyB3b3JrIGZpbmUuIFRoZSBwcm9i
+bGVtcyBhcmU6Cj4gMS4gV2luZSwgaWYgdXNlcyBhbHNhIGRpcmVjdGx5LCBjYXVzZXMgc291bmQg
+dG8gYmUgY29ycnVwdGVkIAo+IGV2ZXJ5d2hlcmUgdW50aWwgZHJpdmVyIHJlc3RhcnQuIFNvIEkg
+aGF2ZSB0byB1c2UgZVNvdW5kIGVtdWxhdGlvbiBvZiAKPiBwdWxzZWF1ZGlvIGZvciB3aW5lLgo+
+IDIuIE9ubHkgb25lIGFwcGxpY2F0aW9uIGF0IGEgdGltZSBjYW4gdXNlIHNvdW5kLCBzbyBJIHVz
+ZSBwdWxzZWF1ZGlvIAo+IGZvciBtdWx0aXBsZSBzb3VuZCB0aHJlYWRzIG1peGluZy4KPiAzLiBT
+b21lIGdhbWVzIGxpa2UgZG9vbTMgY2FuIG9ubHkgdXNlIGFsc2EgYW5kIG9zcywgc28gdG8gcmVk
+aXJlY3QgCj4gdGhlbSB0byBwdWxzZWF1ZGlvIEkgdXNlIGFsc2EtcGx1Z2lucy1wdWxzZWF1ZGlv
+LCBidXQgdGhhdCBjYXVzZXMgCj4gMi1zZWNvbmQgc291bmQgZGVsYXkgaW4gdGhvc2UgZ2FtZXMu
+Cj4gNC4gQWJvdXQgMC41IHNlY29uZCBzb3VuZCBkZWxheSBpcyBwcmVzZW50IGluIGdhbWVzIHRo
+YXQgdXNlIG9wZW5hbCAKPiAod2hpY2ggdXNlcyBwdWxzZWF1ZGlvIHRocm91Z2ggc2RsIG9yIGVz
+ZCkuCj4KVXNpbmcgZG1peCBhcHBlYXJlZCB0byBiZSBtdWNoIGJldHRlciBpZGVhLiBObyBzb3Vu
+ZCBkZWxheSBpbiBnYW1lcyBub3cuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
