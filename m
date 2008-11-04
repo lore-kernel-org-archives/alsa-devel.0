@@ -1,26 +1,22 @@
-From: "Michael Gruber" <lists.mg@googlemail.com>
-Subject: Re: hda-intel - Add digout to ALC880 F1734 model
-Date: Tue, 4 Nov 2008 23:18:48 +0100
-Message-ID: <74d457500811041418l24e68343hef0b97efd76b0100@mail.gmail.com>
-References: <74d457500811010543x42103855n5f68136fd564b1bf@mail.gmail.com>
-	<s5hwsfmid6f.wl%tiwai@suse.de>
-	<74d457500811020802j3354abeepebbe2cac1d799d76@mail.gmail.com>
-	<s5hljw17xqt.wl%tiwai@suse.de>
-	<74d457500811031550p1ccc2df4o937697bc0071c468@mail.gmail.com>
-	<s5hr65srld8.wl%tiwai@suse.de>
-	<74d457500811040836w6bb87e1chbdf9de49900c4e5a@mail.gmail.com>
-	<s5hljvzqvkh.wl%tiwai@suse.de>
+From: Elimar Riesebieter <riesebie@lxtec.de>
+Subject: Re: alsa-driver 1.0.18 doesn't built on PPC 2.6.27	and
+	2.6.28
+Date: Tue, 4 Nov 2008 23:40:01 +0100
+Message-ID: <20081104224001.GC4122@bilbo.home.lxtec.de>
+References: <20081104134434.GA4122@bilbo.home.lxtec.de>
+	<s5hr65rqwu6.wl%tiwai@suse.de>
+	<20081104172711.GB8872@bilbo.home.lxtec.de>
+	<s5hhc6nz8fh.wl%tiwai@suse.de>
+	<20081104195114.GC8872@bilbo.home.lxtec.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hs-out-0708.google.com (hs-out-0708.google.com [64.233.178.250])
-	by alsa0.perex.cz (Postfix) with ESMTP id 110422414C
-	for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2008 23:18:49 +0100 (CET)
-Received: by hs-out-0708.google.com with SMTP id x43so1424260hsb.0
-	for <alsa-devel@alsa-project.org>; Tue, 04 Nov 2008 14:18:48 -0800 (PST)
-In-Reply-To: <s5hljvzqvkh.wl%tiwai@suse.de>
+Received: from smtpout.hostsharing.net (smtpout.hostsharing.net [83.223.95.99])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2EDD72415F
+	for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2008 23:40:11 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <20081104195114.GC8872@bilbo.home.lxtec.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,141 +26,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>, pkg-alsa-devel <pkg-alsa-devel@lists.alioth.debian.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 4, 2008 at 17:56, Takashi Iwai <tiwai@suse.de> wrote:
-> At Tue, 4 Nov 2008 17:36:44 +0100,
-> Michael Gruber wrote:
->>
->> [1  <text/plain; UTF-8 (7bit)>]
->> On Tue, Nov 4, 2008 at 08:38, Takashi Iwai <tiwai@suse.de> wrote:
->> > At Tue, 4 Nov 2008 00:50:37 +0100,
->> > Michael Gruber wrote:
->> >>
->> >> On Mon, Nov 3, 2008 at 14:19, Takashi Iwai <tiwai@suse.de> wrote:
->> >> > At Sun, 2 Nov 2008 17:02:51 +0100,
->> >> > Michael Gruber wrote:
->> >> >>
->> >> >> On Sun, Nov 2, 2008 at 12:23, Takashi Iwai <tiwai@suse.de> wrote:
->> >> >> > At Sat, 1 Nov 2008 13:43:25 +0100,
->> >> >> > Michael Gruber wrote:
->> >> >> >>
->> >> >> >> Backstory:
->> >> >> >> The patch "ALSA: hda - Add infrastructure for dynamic stream allocation"
->> >> >> >> http://git.alsa-project.org/?p=alsa-kmirror.git;a=commit;h=ae32c9fe811fed22715342494c08a11fabc87762
->> >> >> >> broke the detection of my card. With this patch applied the dmesg output is:
->> >> >> >>
->> >> >> >> [ 3761.464838] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level,
->> >> >> >> low) -> IRQ 16
->> >> >> >> [ 3761.464863] PCI: Setting latency timer of device 0000:00:1b.0 to 64
->> >> >> >> [ 3761.499927] ACPI: PCI interrupt for device 0000:00:1b.0 disabled
->> >> >> >> [ 3761.499945] HDA Intel: probe of 0000:00:1b.0 failed with error -22
->> >> >> >
->> >> >> > Could you check whether you get any other error messages with
->> >> >> > CONFIG_SND_DEBUG=y?
->> >> >> >
->> >> >> >> When I loaded the module with model=... then it would work only for some
->> >> >> >> models, but not for others. I found out that the ones which worked were the
->> >> >> >> ones with a digout. I added the digout to the F1734 model and now it is
->> >> >> >> working again.
->> >> >> >>
->> >> >> >> I can't test if the digout is really working because I lack the hardware, but
->> >> >> >> when I turn on the IEC958 control in the mixer then red light is emitted from
->> >> >> >> my headphone port.
->> >> >> >>
->> >> >> >> I will attach a patch that adds digout to this model because this seems the
->> >> >> >> right thing to do, but I don't know whether there is something wrong with the
->> >> >> >> aforementioned patch that caused my problem in the first place.
->> >> >> >
->> >> >> > Yeah, it shouldn't break the existing thing, at least.
->> >> >> >
->> >> >> >
->> >> >> > thanks,
->> >> >> >
->> >> >> > Takashi
->> >> >> >
->> >> >>
->> >> >> [  261.045920] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level,
->> >> >> low) -> IRQ 16
->> >> >> [  261.045945] PCI: Setting latency timer of device 0000:00:1b.0 to 64
->> >> >> [  261.045949] ALSA
->> >> >> /home/*/Desktop/test-alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:2130:
->> >> >> chipset global capabilities = 0x4401
->> >> >> [  261.076055] ALSA
->> >> >> /home/*/Desktop/test-alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:771:
->> >> >> codec_mask = 0x3
->> >> >> [  261.079523] ALSA
->> >> >> /home/*/Desktop/test-alsa/alsa-driver/pci/hda/hda_codec.c:2579:
->> >> >> hda_codec: model 'F1734' is selected for config 1734:107c (FSC F1734)
->> >> >> [  261.079920] ACPI: PCI interrupt for device 0000:00:1b.0 disabled
->> >> >> [  261.079933] HDA Intel: probe of 0000:00:1b.0 failed with error -22
->> >> >
->> >> > So, you're building from alsa-driver tree, not directly the kernel git?
->> >> > Then try the latest snapshot below first,
->> >> >    ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
->> >> > Then build with --with-debug=detect configure option.
->> >> > This will give you more information, I guess.
->> >> >
->> >> >
->> >> > thanks,
->> >> >
->> >> > Takashi
->> >> >
->> >>
->> >> I just tried that.
->> >
->> > Weird.  Could you attach alsa-info.sh output file with --no-upload
->> > option?
->> >
->> > Anyway, the output must be different from the above if you use the
->> > latest snapshot from kernel.org, at least, the line numbers were
->> > changed.
->> >
->> >> I also tried compiling a kernel from the
->> >> alsa-kernel git tree where I enabled all alsa-related debug options
->> >> but dmesg didn't give me any more information that what I already had.
->> >
->> > Try sound-2.6.git instead.  alsa-kernel.git is behind the latest
->> > development.
->> >
->> >    git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
->> >
->> >
->> > thanks,
->> >
->> > Takashi
->> >
->>
->> Thanks, now I got some extra information.
->> I will attach alsa-info.txt and the relevant section from the dmesg output.
->
-> Thanks, this helped a lot for debugging.
-> Could you try the patch below?  I already added it to my git tree
-> (and snapshot) now, but just to be sure...
->
->
-> Takashi
->
-> ---
-> diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-> index aa9cd14..3e7cda9 100644
-> --- a/sound/pci/hda/hda_codec.c
-> +++ b/sound/pci/hda/hda_codec.c
-> @@ -2485,6 +2485,11 @@ int snd_hda_build_pcms(struct hda_bus *bus)
->                        struct hda_pcm *cpcm = &codec->pcm_info[pcm];
->                        int type = cpcm->pcm_type;
->                        int dev;
-> +
-> +                       if (!cpcm->stream[0].substreams &&
-> +                           !cpcm->stream[1].substreams)
-> +                               continue; /* no substreams assigned */
-> +
->                        switch (type) {
->                        case HDA_PCM_TYPE_AUDIO:
->                                if (num_devs[type] >= ARRAY_SIZE(audio_idx)) {
->
+* Elimar Riesebieter [081104 21:00 +0100]
+> * Takashi Iwai [081104 19:00 +0100]
+> [...] 
+> > Does sound-2.6.git tree work with 2.6.28-rc3?
+> >     git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+> > 
+> > Pull master branch on 2.6.28-rc3 git.
+> > If so, possibly it's a missing include path for asm/*.h or so...
+> 
+> Building 2.6.28-rc3 inline drivers works.
+> 
+> > Or, just try to add #include <linux/kernel.h> before the inclusion of
+> > linux/module.h in alsa-driver/include/adriver.h.
+> 
+> That doesn't work either.
+> 
+> In 2.6.27, 2.6.28-rc? and sound-2.6.git we are missing
+> include/asm-powerpc which configure is looking for:
+> 
+> checking for kernel linux/devfs_fs_kernel.h... no
+> Creating a dummy <linux/devfs_fs_kernel.h>...
+> --
+> checking for kernel asm/hw_irq.h... no
+> Creating a dummy <asm/hw_irq.h>...
+> --
+> checking for kernel asm/irq_regs.h... no
+> Creating a dummy <asm/irq_regs.h>...
+> 
+> configure links include/asm-arch to asm, though.
+> hw_irq.h and irq_regs.h, where local_irq_save and local_irq_restore
+> is defined, I found in /arch/powerpc/include/asm.
 
-Yes, is is working now.
-Thank you for your great support.
+My temporaire solution:
+
+1. put #include <linux/mm.h> in alsa-driver/include/adriver.h
+2. copy arch/powerpc/include/asm/* into include asm-powerpc
+3. build suceeded
+
+At this moment I need an idea how to patch configure script to do
+that.
+
+> But devfs_fs_kernel.h I found in none of 2.6.2[6-8]?
+We don't use devfs anymore ;)
+
+Thanks
+Elimar
+
+-- 
+  Planung:
+  Ersatz des Zufalls durch den Irrtum.
+                                -unknown-
