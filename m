@@ -1,22 +1,22 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Any issues with GETOSPACE OSS ioctl?
-Date: Wed, 05 Nov 2008 09:41:16 -0600
-Message-ID: <4911BE9C.8010607@freescale.com>
+From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
+Subject: Re: [PATCH] Intel HDMI audio support
+Date: Wed, 5 Nov 2008 16:42:20 +0100
+Message-ID: <fd3eb9bf0811050742i1ff01381lca64c5ba1b30c2da@mail.gmail.com>
+References: <1225791520.847299.30896@de> <s5hskq71zg8.wl%tiwai@suse.de>
+	<1225855017.228491.10000@de> <s5hbpwumyoq.wl%tiwai@suse.de>
+	<1225870878.74177.2018@de>
+	<fd3eb9bf0811050734h71ce9033v969856449f75eb1e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw02.freescale.net (az33egw02.freescale.net
-	[192.88.158.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id A88F010382F
-	for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2008 16:41:20 +0100 (CET)
-Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
-	by az33egw02.freescale.net (8.12.11/az33egw02) with ESMTP id
-	mA5FfHaj025520
-	for <alsa-devel@alsa-project.org>; Wed, 5 Nov 2008 08:41:18 -0700 (MST)
-Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
-	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP id mA5FfGWg003966
-	for <alsa-devel@alsa-project.org>; Wed, 5 Nov 2008 09:41:17 -0600 (CST)
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.147])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2C987103829
+	for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2008 16:42:22 +0100 (CET)
+Received: by qw-out-1920.google.com with SMTP id 9so28227qwj.56
+	for <alsa-devel@alsa-project.org>; Wed, 05 Nov 2008 07:42:21 -0800 (PST)
+In-Reply-To: <fd3eb9bf0811050734h71ce9033v969856449f75eb1e@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,20 +26,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: "Wu, Fengguang" <fengguang.wu@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I have a customer who reports that when his OSS application makes several
-write() followed by SNDCTL_DSP_GETOSPACE, the returned value is not decreasing,
-which implies that the write() commands are not going through.
-
-I've looked at the OSS documentation for this ioctl
-(http://manuals.opensound.com/developer/SNDCTL_DSP_GETOSPACE.html), and it
-implies that it is not reliable.  But since the customer is using ALSA (i.e.
-ALSA's OSS emulation), I don't know if that applies.
-
-So I'd like to know how the 'bytes' return value is calculate in ALSA.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+T0ssIHRoYXQgd2FzIGFuIGVhc3kgb25lLiBBZGRpbmcgcGF0Y2hfaW50ZWxoZG1pLmMgdG8gcGNp
+L2hkYS8gd2l0aCBjb250ZW50OgojZGVmaW5lIF9fTk9fVkVSU0lPTl9fCiNpbmNsdWRlICJhZHJp
+dmVyLmgiCiNpbmNsdWRlICIuLi8uLi9hbHNhLWtlcm5lbC9wY2kvaGRhL3BhdGNoX2ludGVsaGRt
+aS5jIgpmaXhlZCBpdC4KCjIwMDgvMTEvNSBWZWRyYW4gTWlsZXRpxIcgPHJpdmFudnhAZ21haWwu
+Y29tPjoKPiBUaGlzIGhhcyBicm9rZW4gY29tcGlsYXRpb24gb2Ygc291bmQtdW5zdGFibGUtMi42
+LiBJdCBjb21wbGFpbnMgYWJvdXQKPiBNYWtlZmlsZSBvZiBpbnRlbGhkbWksIG5vdCBzdXJlIGV4
+YWN0bHkgd2hhdCBpcyB0aGUgcHJvYmxlbS4KPgo+IDIwMDgvMTEvNSBXdSwgRmVuZ2d1YW5nIDxm
+ZW5nZ3Vhbmcud3VAaW50ZWwuY29tPjoKPj4gT24gV2VkLCBOb3YgMDUsIDIwMDggYXQgMDM6MTQ6
+NDVQTSArMDgwMCwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pj4gQXQgV2VkLCA1IE5vdiAyMDA4IDEx
+OjE2OjU2ICswODAwLAo+Pj4gV3UsIEZlbmdndWFuZyB3cm90ZToKPj4+ID4KPj4+ID4gQWRkIHN1
+cHBvcnQgZm9yIEludGVsIEc0NSBpbnRlZ3JhdGVkIEhETUkgYXVkaW8gY29kZWNzLgo+Pj4gPgo+
+Pj4gPiBUaGlzIGluaXRpYWwgcmVsZWFzZSBzdXBwb3J0czoKPj4+ID4gICAgIC0gMiBjaGFubmVs
+IHN0ZXJlbyBzb3VuZCBvdXRwdXQKPj4+ID4gICAgIC0gcmVwb3J0IG1vbml0b3IncyBFTEQgaW5m
+b3JtYXRpb24KPj4+ID4KPj4+ID4gU2lnbmVkLW9mZi1ieTogV3UgRmVuZ2d1YW5nIDx3ZmdAbGlu
+dXguaW50ZWwuY29tPgo+Pj4KPj4+IEFwcGxpZWQgbm93LiAgVGhhbmtzIGZvciB5b3VyIHF1aWNr
+IGZpeGVzIQo+Pgo+PiBUaGFuayB5b3UgOi0pCj4+Cj4+IEZlbmdndWFuZwo+Pgo+PiBfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+PiBBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdAo+PiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPj4gaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPj4KPgo+Cj4K
+PiAtLQo+IFZlZHJhbiBNaWxldGnEhwo+CgoKCi0tIApWZWRyYW4gTWlsZXRpxIcKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
