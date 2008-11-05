@@ -1,18 +1,21 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
-Subject: Re: alsa-driver 1.0.18 doesn't built on PPC 2.6.27	and
-	2.6.28
-Date: Wed, 5 Nov 2008 21:45:14 +0100
-Message-ID: <20081105204514.GA3574@aragorn.home.lxtec.de>
-References: <s5hfxm6kuci.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/4] ASoC: Add Palm/PXA27x unified ASoC
+	audio driver
+Date: Wed, 5 Nov 2008 21:54:56 +0000
+Message-ID: <20081105215456.GA11921@opensource.wolfsonmicro.com>
+References: <20081105185220.GA10816@rakim.wolfsonmicro.main>
+	<1225911211-22474-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1225911211-22474-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<s5hhc6lhpw6.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpout.hostsharing.net (smtpout.hostsharing.net [83.223.95.99])
-	by alsa0.perex.cz (Postfix) with ESMTP id 50F3B244E0
-	for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2008 21:45:21 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EC772244FB
+	for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2008 22:54:57 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5hfxm6kuci.wl%tiwai@suse.de>
+In-Reply-To: <s5hhc6lhpw6.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,32 +26,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, pkg-alsa-devel <pkg-alsa-devel@lists.alioth.debian.org>
+Cc: Marek Vasut <marek.vasut@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-* Takashi Iwai [081105 17:40 +0100]
-> At Wed, 05 Nov 2008 08:56:33 +0100,
-> I wrote:
-[...]
-> > How about the patch below?
-> 
-> Apparently not enough.
-> I fixed now my git tree, so that it works at least for 2.6.28 x86*.
-> Hopefully this also fixes PPC issues.
+On Wed, Nov 05, 2008 at 09:35:53PM +0100, Takashi Iwai wrote:
 
-Thanks a lot Takashi. I've testet the latest snapshot (081105) on
-x86|powerpc 2.6.2[6-8]. Builds fine. So are you going to release a
-alsa-driver-1.0.18a? This is because we want to distribute that
-package in DEBIAN. A patch against your latest snapshot is too much,
-though. Please notice, that the actual release buils only on <=
-2.6.26 and on >2.6.26 only at arch x86. Else should your snapshot
-hopefully built on all arch/$ARCH/include. Isn't that reasonable?
+> > +#ifdef CONFIG_SND_PXA2XX_SOC_PALM27X
+> > +void __init palm27x_asoc_set_pdata(struct palm27x_asoc_info *data);
 
-Many thanks for cooperation.
+> I wonder whether it's really __init.
 
-For the DEBIAN ALSA maintainers:
-Elimar
+Yes.  This will be set up by the machine init code which has to be built
+in.  It should be platform data but we can't support that yet.
 
--- 
-  It's a good thing we don't get all 
-  the government we pay for.
+> Note that the driver can be a module in theory.
+
+Yeah, that practice won't actually build so should probably be masked
+out in Kconfig.
