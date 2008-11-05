@@ -1,22 +1,23 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
-Subject: Re: alsa-driver 1.0.18 doesn't built on PPC 2.6.27	and
-	2.6.28
-Date: Tue, 4 Nov 2008 23:40:01 +0100
-Message-ID: <20081104224001.GC4122@bilbo.home.lxtec.de>
-References: <20081104134434.GA4122@bilbo.home.lxtec.de>
-	<s5hr65rqwu6.wl%tiwai@suse.de>
-	<20081104172711.GB8872@bilbo.home.lxtec.de>
-	<s5hhc6nz8fh.wl%tiwai@suse.de>
-	<20081104195114.GC8872@bilbo.home.lxtec.de>
+From: "OrazioPirataDelloSpazio (Lorenzo)" <ziducaixao@autistici.org>
+Subject: Mic threshold trigger
+Date: Wed, 05 Nov 2008 01:09:47 +0100
+Message-ID: <4910E44B.60103@autistici.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpout.hostsharing.net (smtpout.hostsharing.net [83.223.95.99])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2EDD72415F
-	for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2008 23:40:11 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20081104195114.GC8872@bilbo.home.lxtec.de>
+Received: from smtp.uniroma2.it (smtp.uniroma2.it [160.80.6.22])
+	by alsa0.perex.cz (Postfix) with ESMTP id DAEC024332
+	for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2008 01:09:52 +0100 (CET)
+Received: from lists.uniroma2.it (lists.uniroma2.it [160.80.1.182])
+	by smtp.uniroma2.it (8.13.6/8.13.6) with ESMTP id mA50oj8K013869
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <alsa-devel@alsa-project.org>; Wed, 5 Nov 2008 01:50:47 +0100
+Received: from apple-juice.local (adsl-ull-165-101.50-151.net24.it
+	[151.50.101.165]) (authenticated bits=0)
+	by lists.uniroma2.it (8.13.1/8.13.1) with ESMTP id mA509mGn003865
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <alsa-devel@alsa-project.org>; Wed, 5 Nov 2008 01:09:49 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,57 +27,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>, pkg-alsa-devel <pkg-alsa-devel@lists.alioth.debian.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-* Elimar Riesebieter [081104 21:00 +0100]
-> * Takashi Iwai [081104 19:00 +0100]
-> [...] 
-> > Does sound-2.6.git tree work with 2.6.28-rc3?
-> >     git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
-> > 
-> > Pull master branch on 2.6.28-rc3 git.
-> > If so, possibly it's a missing include path for asm/*.h or so...
-> 
-> Building 2.6.28-rc3 inline drivers works.
-> 
-> > Or, just try to add #include <linux/kernel.h> before the inclusion of
-> > linux/module.h in alsa-driver/include/adriver.h.
-> 
-> That doesn't work either.
-> 
-> In 2.6.27, 2.6.28-rc? and sound-2.6.git we are missing
-> include/asm-powerpc which configure is looking for:
-> 
-> checking for kernel linux/devfs_fs_kernel.h... no
-> Creating a dummy <linux/devfs_fs_kernel.h>...
-> --
-> checking for kernel asm/hw_irq.h... no
-> Creating a dummy <asm/hw_irq.h>...
-> --
-> checking for kernel asm/irq_regs.h... no
-> Creating a dummy <asm/irq_regs.h>...
-> 
-> configure links include/asm-arch to asm, though.
-> hw_irq.h and irq_regs.h, where local_irq_save and local_irq_restore
-> is defined, I found in /arch/powerpc/include/asm.
+Hello,
+I would like to create a simple trigger from a microphone input, using alsa.
+For example I would like that every time I short-circuit a jack inserted 
+in the "mic hole", my program say "Hello World".
+I would like that this application will be lightweight (I don't need 
+audio quality, just a trigger!) and that cohexists with other apps that 
+should keep using the output of the same sound card.
 
-My temporaire solution:
+My idea was to simply code a raw "snd_pcm_readi" call and after compare 
+each sample of the captured block with a threshold. For instance, if the 
+90% of sample are above the given threshold, the trigger must act.
 
-1. put #include <linux/mm.h> in alsa-driver/include/adriver.h
-2. copy arch/powerpc/include/asm/* into include asm-powerpc
-3. build suceeded
+Of course it doesn't work :-)
 
-At this moment I need an idea how to patch configure script to do
-that.
+I plug a simple jack in the mic, and open or short-circuit the poles. In 
+the captured block, I can find only samples between 0xFFE0 and 0xFFFF 
+(and some sporadic 0x0000).
 
-> But devfs_fs_kernel.h I found in none of 2.6.2[6-8]?
-We don't use devfs anymore ;)
+Any hits? Thanks
 
-Thanks
-Elimar
-
--- 
-  Planung:
-  Ersatz des Zufalls durch den Irrtum.
-                                -unknown-
+Lorenzo
