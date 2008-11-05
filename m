@@ -1,21 +1,16 @@
-From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
-Subject: Re: [PATCH] Intel HDMI audio support
-Date: Wed, 5 Nov 2008 16:34:32 +0100
-Message-ID: <fd3eb9bf0811050734h71ce9033v969856449f75eb1e@mail.gmail.com>
-References: <1225791520.847299.30896@de> <s5hskq71zg8.wl%tiwai@suse.de>
-	<1225855017.228491.10000@de> <s5hbpwumyoq.wl%tiwai@suse.de>
-	<1225870878.74177.2018@de>
+From: David Anders <dave123_aml@yahoo.com>
+Subject: [PATCH] ASoC: Add new parameter to s3c24xx_pcm_enqueue
+Date: Wed, 5 Nov 2008 07:39:47 -0800 (PST)
+Message-ID: <744601.10057.qm@web54402.mail.yahoo.com>
+Reply-To: dave123_aml@yahoo.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.173])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3B18A103822
-	for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2008 16:34:33 +0100 (CET)
-Received: by wf-out-1314.google.com with SMTP id 24so46703wfg.23
-	for <alsa-devel@alsa-project.org>; Wed, 05 Nov 2008 07:34:32 -0800 (PST)
-In-Reply-To: <1225870878.74177.2018@de>
-Content-Disposition: inline
+Received: from web54402.mail.yahoo.com (web54402.mail.yahoo.com
+	[206.190.49.132])
+	by alsa0.perex.cz (Postfix) with SMTP id 956231037FD
+	for <Alsa-devel@alsa-project.org>; Wed,  5 Nov 2008 16:39:53 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,25 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Wu, Fengguang" <fengguang.wu@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>
+To: Alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBoYXMgYnJva2VuIGNvbXBpbGF0aW9uIG9mIHNvdW5kLXVuc3RhYmxlLTIuNi4gSXQgY29t
-cGxhaW5zIGFib3V0Ck1ha2VmaWxlIG9mIGludGVsaGRtaSwgbm90IHN1cmUgZXhhY3RseSB3aGF0
-IGlzIHRoZSBwcm9ibGVtLgoKMjAwOC8xMS81IFd1LCBGZW5nZ3VhbmcgPGZlbmdndWFuZy53dUBp
-bnRlbC5jb20+Ogo+IE9uIFdlZCwgTm92IDA1LCAyMDA4IGF0IDAzOjE0OjQ1UE0gKzA4MDAsIFRh
-a2FzaGkgSXdhaSB3cm90ZToKPj4gQXQgV2VkLCA1IE5vdiAyMDA4IDExOjE2OjU2ICswODAwLAo+
-PiBXdSwgRmVuZ2d1YW5nIHdyb3RlOgo+PiA+Cj4+ID4gQWRkIHN1cHBvcnQgZm9yIEludGVsIEc0
-NSBpbnRlZ3JhdGVkIEhETUkgYXVkaW8gY29kZWNzLgo+PiA+Cj4+ID4gVGhpcyBpbml0aWFsIHJl
-bGVhc2Ugc3VwcG9ydHM6Cj4+ID4gICAgIC0gMiBjaGFubmVsIHN0ZXJlbyBzb3VuZCBvdXRwdXQK
-Pj4gPiAgICAgLSByZXBvcnQgbW9uaXRvcidzIEVMRCBpbmZvcm1hdGlvbgo+PiA+Cj4+ID4gU2ln
-bmVkLW9mZi1ieTogV3UgRmVuZ2d1YW5nIDx3ZmdAbGludXguaW50ZWwuY29tPgo+Pgo+PiBBcHBs
-aWVkIG5vdy4gIFRoYW5rcyBmb3IgeW91ciBxdWljayBmaXhlcyEKPgo+IFRoYW5rIHlvdSA6LSkK
-Pgo+IEZlbmdndWFuZwo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hbHNhLWRldmVsCj4KCgoKLS0gClZlZHJhbiBNaWxldGnEhwpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+The S3C24xx dma does not allow more than one buffer to be enqueue prior to
+the dma transfers starting. This patch adds an additional parameter to
+s3c24xx_pcm_enqueue() to allow for passing an initial dma maximum load
+value.
+
+Signed-off-by: David Anders <danders at amltd.com>
+
+diff -urN linux-2.6.27-clean/sound/soc/s3c24xx/s3c24xx-pcm.c linux-2.6.27/sound/soc/s3c24xx/s3c24xx-pcm.c
+--- linux-2.6.27-clean/sound/soc/s3c24xx/s3c24xx-pcm.c	2008-11-05 08:27:23.000000000 -0600
++++ linux-2.6.27/sound/soc/s3c24xx/s3c24xx-pcm.c	2008-11-05 09:14:27.000000000 -0600
+@@ -78,7 +78,8 @@
+  * place a dma buffer onto the queue for the dma system
+  * to handle.
+ */
+-static void s3c24xx_pcm_enqueue(struct snd_pcm_substream *substream)
++static void s3c24xx_pcm_enqueue(struct snd_pcm_substream *substream,
++				int dma_max)
+ {
+ 	struct s3c24xx_runtime_data *prtd = substream->runtime->private_data;
+ 	dma_addr_t pos = prtd->dma_pos;
+@@ -86,7 +87,10 @@
+ 
+ 	DBG("Entered %s\n", __func__);
+ 
+-	while (prtd->dma_loaded < prtd->dma_limit) {
++	if (!dma_max)
++		dma_max = prtd->dma_limit;
++
++	while (prtd->dma_loaded < dma_max) {
+ 		unsigned long len = prtd->dma_period;
+ 
+ 		DBG("dma_loaded: %d\n", prtd->dma_loaded);
+@@ -132,7 +136,7 @@
+ 	spin_lock(&prtd->lock);
+ 	if (prtd->state & ST_RUNNING) {
+ 		prtd->dma_loaded--;
+-		s3c24xx_pcm_enqueue(substream);
++		s3c24xx_pcm_enqueue(substream, 0);
+ 	}
+ 
+ 	spin_unlock(&prtd->lock);
+@@ -249,7 +253,7 @@
+ 	prtd->dma_pos = prtd->dma_start;
+ 
+ 	/* enqueue dma buffers */
+-	s3c24xx_pcm_enqueue(substream);
++	s3c24xx_pcm_enqueue(substream, 1);
+ 
+ 	return ret;
+ }
