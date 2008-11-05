@@ -1,16 +1,22 @@
-From: David Anders <dave123_aml@yahoo.com>
-Subject: [PATCH] ASoC: Add new parameter to s3c24xx_pcm_enqueue
-Date: Wed, 5 Nov 2008 07:39:47 -0800 (PST)
-Message-ID: <744601.10057.qm@web54402.mail.yahoo.com>
-Reply-To: dave123_aml@yahoo.com
+From: Timur Tabi <timur@freescale.com>
+Subject: Any issues with GETOSPACE OSS ioctl?
+Date: Wed, 05 Nov 2008 09:41:16 -0600
+Message-ID: <4911BE9C.8010607@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web54402.mail.yahoo.com (web54402.mail.yahoo.com
-	[206.190.49.132])
-	by alsa0.perex.cz (Postfix) with SMTP id 956231037FD
-	for <Alsa-devel@alsa-project.org>; Wed,  5 Nov 2008 16:39:53 +0100 (CET)
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id A88F010382F
+	for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2008 16:41:20 +0100 (CET)
+Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
+	by az33egw02.freescale.net (8.12.11/az33egw02) with ESMTP id
+	mA5FfHaj025520
+	for <alsa-devel@alsa-project.org>; Wed, 5 Nov 2008 08:41:18 -0700 (MST)
+Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
+	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP id mA5FfGWg003966
+	for <alsa-devel@alsa-project.org>; Wed, 5 Nov 2008 09:41:17 -0600 (CST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,57 +26,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The S3C24xx dma does not allow more than one buffer to be enqueue prior to
-the dma transfers starting. This patch adds an additional parameter to
-s3c24xx_pcm_enqueue() to allow for passing an initial dma maximum load
-value.
+I have a customer who reports that when his OSS application makes several
+write() followed by SNDCTL_DSP_GETOSPACE, the returned value is not decreasing,
+which implies that the write() commands are not going through.
 
-Signed-off-by: David Anders <danders at amltd.com>
+I've looked at the OSS documentation for this ioctl
+(http://manuals.opensound.com/developer/SNDCTL_DSP_GETOSPACE.html), and it
+implies that it is not reliable.  But since the customer is using ALSA (i.e.
+ALSA's OSS emulation), I don't know if that applies.
 
-diff -urN linux-2.6.27-clean/sound/soc/s3c24xx/s3c24xx-pcm.c linux-2.6.27/sound/soc/s3c24xx/s3c24xx-pcm.c
---- linux-2.6.27-clean/sound/soc/s3c24xx/s3c24xx-pcm.c	2008-11-05 08:27:23.000000000 -0600
-+++ linux-2.6.27/sound/soc/s3c24xx/s3c24xx-pcm.c	2008-11-05 09:14:27.000000000 -0600
-@@ -78,7 +78,8 @@
-  * place a dma buffer onto the queue for the dma system
-  * to handle.
- */
--static void s3c24xx_pcm_enqueue(struct snd_pcm_substream *substream)
-+static void s3c24xx_pcm_enqueue(struct snd_pcm_substream *substream,
-+				int dma_max)
- {
- 	struct s3c24xx_runtime_data *prtd = substream->runtime->private_data;
- 	dma_addr_t pos = prtd->dma_pos;
-@@ -86,7 +87,10 @@
- 
- 	DBG("Entered %s\n", __func__);
- 
--	while (prtd->dma_loaded < prtd->dma_limit) {
-+	if (!dma_max)
-+		dma_max = prtd->dma_limit;
-+
-+	while (prtd->dma_loaded < dma_max) {
- 		unsigned long len = prtd->dma_period;
- 
- 		DBG("dma_loaded: %d\n", prtd->dma_loaded);
-@@ -132,7 +136,7 @@
- 	spin_lock(&prtd->lock);
- 	if (prtd->state & ST_RUNNING) {
- 		prtd->dma_loaded--;
--		s3c24xx_pcm_enqueue(substream);
-+		s3c24xx_pcm_enqueue(substream, 0);
- 	}
- 
- 	spin_unlock(&prtd->lock);
-@@ -249,7 +253,7 @@
- 	prtd->dma_pos = prtd->dma_start;
- 
- 	/* enqueue dma buffers */
--	s3c24xx_pcm_enqueue(substream);
-+	s3c24xx_pcm_enqueue(substream, 1);
- 
- 	return ret;
- }
+So I'd like to know how the 'bytes' return value is calculate in ALSA.
+
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
