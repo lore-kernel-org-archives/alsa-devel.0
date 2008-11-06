@@ -1,19 +1,19 @@
 From: Edward Terry <eterry@openboxbuilder.com>
 Subject: Re: supported sound cards
-Date: Thu, 06 Nov 2008 11:29:23 -0800
-Message-ID: <49134593.1060205@openboxbuilder.com>
+Date: Thu, 06 Nov 2008 11:28:42 -0800
+Message-ID: <4913456A.5040506@openboxbuilder.com>
 References: <mailman.11.1225989357.1965.alsa-devel@alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from vms173007pub.verizon.net (vms173007pub.verizon.net
-	[206.46.173.7]) by alsa0.perex.cz (Postfix) with ESMTP id A700D24342
-	for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2008 20:37:16 +0100 (CET)
+	[206.46.173.7]) by alsa0.perex.cz (Postfix) with ESMTP id 6944624385
+	for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2008 21:19:46 +0100 (CET)
 Received: from [192.168.1.47] ([71.111.37.5]) by vms173007.mailsrvcs.net
 	(Sun Java System Messaging Server 6.2-6.01 (built Apr  3 2006))
-	with ESMTPA id <0K9X00I3PFFHH000@vms173007.mailsrvcs.net> for
-	alsa-devel@alsa-project.org; Thu, 06 Nov 2008 13:28:30 -0600 (CST)
+	with ESMTPA id <0K9X00I14FEBGJ00@vms173007.mailsrvcs.net> for
+	alsa-devel@alsa-project.org; Thu, 06 Nov 2008 13:27:47 -0600 (CST)
 In-reply-to: <mailman.11.1225989357.1965.alsa-devel@alsa-project.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
