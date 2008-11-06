@@ -1,18 +1,21 @@
-From: Brendan Pike <spike@spykes.net>
+From: "Bjoern Olausson" <lkmlist@gmail.com>
 Subject: Re: Creative Sound Blaster X-Fi and X-Fi Titanium
- Series Linux 32bit/64bit Driver Source released
-Date: Thu, 6 Nov 2008 12:56:36 -0500
-Message-ID: <20081106125636.668744e4@darius>
+	Series Linux 32bit/64bit Driver Source released
+Date: Thu, 6 Nov 2008 20:34:21 +0100
+Message-ID: <5501535d0811061134i37601862p1aafaf6bd4ebf8ba@mail.gmail.com>
 References: <5501535d0811060746y60d18e6boc8c5ad34a63fb92b@mail.gmail.com>
 	<49132749.4040908@gmail.com> <s5hskq4sr4d.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.spykes.net (dsl.spykes.net [76.10.173.13])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6BDE310384A
-	for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2008 18:56:37 +0100 (CET)
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.248])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5F7682433B
+	for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2008 20:34:22 +0100 (CET)
+Received: by rv-out-0708.google.com with SMTP id f25so763362rvb.32
+	for <alsa-devel@alsa-project.org>; Thu, 06 Nov 2008 11:34:21 -0800 (PST)
 In-Reply-To: <s5hskq4sr4d.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,47 +26,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Bjoern@alsa-project.org, alsa-devel@alsa-project.org, The Source <thesourcehim@gmail.com>, Olausson <lkmlist@gmail.com>
+Cc: alsa-devel@alsa-project.org, The Source <thesourcehim@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGFrYXNoaSwgeW91ciBlZmZvcnRzIGhhdmUgbm90IGdvbmUgdW5ub3RpY2VkLgpWZXJ5IGFwcHJl
-Y2lhdGVkIG9mIHdoYXQgeW91IGFjY29tcGxpc2hlZCBpbiBzdWNoIGEgc21hbGwgdGltZWZyYW1l
-LgoKSSBmaW5hbGx5IHN0dWZmZWQgdGhlIFgtRmkgaW4gbXkgd29ya3N0YXRpb24gdG9kYXkgYXMg
-SSBoYWQgdG8gaW5zdGFsbAphIEhpRm4gY3J5cHRvIGFjY2VsZXJhdG9yIGNhcmQgYW55d2F5cy4K
-ClRoZSBDcmVhdGl2ZSBwcm92aWRlZCBzb3VyY2UgY29tcGlsZXMgaW50byBhIHNpbmdsZSBrZXJu
-ZWwgbW9kdWxlLAp1bmxpa2UgdGhlIGh1Z2UgYmluYXJ5IG1lc3MgQ3JlYXRpdmUgcmVsZWFzZWQg
-YmFjayBpbiBBcHJpbC4KCgoKT24gVGh1LCAwNiBOb3YgMjAwOCAxODoyNjoxMCArMDEwMCBUYWth
-c2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+IHdyb3RlOgoKPiBBdCBUaHUsIDA2IE5vdiAyMDA4IDIw
-OjIwOjA5ICswMzAwLAo+IFRoZSBTb3VyY2Ugd3JvdGU6Cj4gPiAKPiA+IEJqb2VybiBPbGF1c3Nv
-biDQv9C40YjQtdGCOgo+ID4gPiBDcmVhdGl2ZSByZWxlYXNlZCBhIGRyaXZlciB0b2RheS4uLi4K
-PiA+ID4gSSBhbSBoYXNpdGF0aW5nIHRvIGluc3RhbGwgaXQuLiB0aGUgbGFzdCBvbmUgd2FzIHNv
-IGNyYXBweSBhbmQgSSBqdXN0Cj4gPiA+IGluc3RhbGxlZCBteSBnZW50b28gbmV3IDstKQo+ID4g
-Pgo+ID4gPiBCdXQgaXQgbG9va3MgcmVhbGx5IGxpa2UgdGhlIFNPVVJDRSwgc28gbWF5YmUgaXQg
-d2lsbCBoZWxwIHRvIHBpbXAgdGhlCj4gPiA+IEFMU0EgZHJpdmVyICh3b3VsZCByYXRoZXIgc2Vl
-IGFuIGltcGxlbWVudGF0aW9uIGluIGFsc2EgdGhlbiBhbiBkcml2ZXIKPiA+ID4gZnJvbSBDcmVh
-dGl2ZSkKPiA+ID4KPiA+ID4gaHR0cDovL2ZvcnVtcy5jcmVhdGl2ZS5jb20vY3JlYXRpdmVsYWJz
-L2JvYXJkL21lc3NhZ2U/Ym9hcmQuaWQ9c291bmRibGFzdGVyJnRocmVhZC5pZD0xMzIyODgKPiA+
-ID4KPiA+ID4gaHR0cDovL3N1cHBvcnQuY3JlYXRpdmUuY29tL2Rvd25sb2Fkcy9kb3dubG9hZC5h
-c3B4P25Eb3dubG9hZElkPTEwNzkyCj4gPiA+Cj4gPiA+IEtpbmQgcmVnYXJkcwo+ID4gPiBCam9l
-cm4KPiA+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-PiA+ID4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiA+ID4gQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCj4gPiA+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCj4gPiA+Cj4gPiA+ICAgCj4gPiBUcmllZCB0aGF0IGRyaXZlci4gSXQg
-b29wc2VzIGZvciBteSBzeXN0ZW0gKDIuNi4yNi42LTc5LmZjOS54ODZfNjQpLiBJIAo+ID4gYXR0
-YWNoZWQgZG1lc2cgb3V0cHV0IHdpdGggb29wcyB0cmFjZSBsb2cuIFNpbmNlIHRoYXQgZHJpdmVy
-IGlzIG9wZW4gCj4gPiBzb3VyY2UsIHRoaXMgbG9nIG1pZ2h0IGJlIGludGVyZXN0aW5nIGZvciB5
-b3UuIFBlcmdhcHMgeW91IGNhbiBnZXQgdGhlIAo+ID4gZHJpdmVyIHRvIHdvcmtpbmcgc3RhdGU/
-Cj4gCj4gUGVyaGFwcywgYnV0IEkgZG9uJ3Qgd2FudCB0byBnaXZlIHN1Y2ggYSBmdW5ueSBnYW1l
-IGxpa2UgZGVidWdnaW5nCj4gYXdheSBmcm9tIHlvdSA7KQo+IAo+IFllYWgsIEknbSBnb2luZyB0
-byBjaGVjayB0aGVpciBkcml2ZXIgbGF0ZXIsIG1heWJlIHRvbW9ycm93IG9yIHdlZWtlbmQKPiAo
-SSd2ZSBiZWVuIHByZXR0eSBidXN5IGluIHRoZXNlIHdlZWtzIGZvciBvdGhlciBzdHVmZikuCj4g
-Cj4gQW55d2F5IGl0J3MgYSBncmVhdCBuZXdzIGlmIHRoZXkgcmVhbGx5IG9wZW5lZCB0aGUgc291
-cmNlIGNvZGVzLgo+IEhvcGVmdWxseSBteSB3b3JrIHdhc24ndCBhIHdhc3RlLi4uIGF0IGxlYXN0
-IHRvIG1vdGl2YXRlIHRoZW0gdG93YXJkCj4gdGhlIHJpZ2h0IGRpcmVjdGlvbi4KPiAKPiAKPiB0
-aGFua3MsCj4gCj4gVGFrYXNoaQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+On Thu, Nov 6, 2008 at 18:26, Takashi Iwai <tiwai@suse.de> wrote:
+
+>
+> Anyway it's a great news if they really opened the source codes.
+> Hopefully my work wasn't a waste... at least to motivate them toward
+> the right direction.
+>
+>
+> thanks,
+>
+> Takashi
+>
+
+I guess your work finally made creative to take that step. They can't
+leave the fact uncommented, that someone (you) wrote a working drivers
+without even having the hardware.... This makes the whole X-Fi
+disaster more embarrassing for Creative....
+
+Thanks for you work Takashi
+
+kind regards
+blubbi
