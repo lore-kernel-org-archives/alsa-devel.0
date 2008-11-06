@@ -1,17 +1,17 @@
-From: Tony Vroon <tony@linx.net>
-Subject: Re: [PATCH] Add fujitsu model for Realtek ALC269
-Date: Thu, 06 Nov 2008 13:44:44 +0000
-Message-ID: <1225979084.12866.5.camel@localhost>
-References: <20081105204426.86C5710078@gold.linx.net>
-	<s5hwsfhpd63.wl%tiwai@suse.de>
-Reply-To: tony@linx.net
+From: John Rigg <aldev@sound-man.co.uk>
+Subject: Re: supported sound cards
+Date: Thu, 6 Nov 2008 14:27:12 +0000
+Message-ID: <20081106142711.GA2469@localhost>
+References: <490A1B4D.4000507@openboxbuilder.com> <4912DFC9.8030704@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5395578675581346045=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gold.linx.net (gold.linx.net [195.66.232.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2981224581
-	for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2008 14:44:03 +0100 (CET)
-In-Reply-To: <s5hwsfhpd63.wl%tiwai@suse.de>
+Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id E355F1037EF
+	for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2008 15:14:40 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4912DFC9.8030704@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,60 +21,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Edward Terry <eterry@openboxbuilder.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Nov 06, 2008 at 01:15:05PM +0100, Clemens Ladisch wrote:
+> Other supported chips are ICE1724 (M-Audio Delta 1010(LT), DiO 2496, 66,
+> 44, 410, Audiophile 24/96; Digigram VX442; TerraTec EWX 24/96,
+> EWS 88MT/D, DMX 6Fire, Phase 88; Hoontech SoundTrack DSP 24/Value/
+> Media7.1; Event EZ8; Lionstracs Mediastation, Terrasoniq TS 88) and
+> VT1720/24 (AMP AUDIO2000; M-Audio Revolution 5.1, 7.1, Audiophile 192;
+> TerraTec Aureon 5.1 Sky, 7.1 Space/Universe, Phase 22/28;
+> Onkyo SE-90PCI, SE-200PCI; AudioTrak Prodigy 192, 7.1 (HIFI/LT/XT), HD2;
+> Hercules Fortissimo IV; ESI Juli@; Pontis MS300; EGO-SYS WaveTerminal
+> 192M).
 
---===============5395578675581346045==
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-o99QCQN+9pO79PjMS1v2"
+Many of the above are ICE1712 (Delta 1010(LT), Audiophile 2496 etc.)
+not ICE1724.
+ 
+> The most high-end supported cards are probably the Asus Xonar cards.
 
+`High end' means different things in different situations of course.
+RME HDSP series are probably the `highest end' cards supported, but they
+need external converters, so they're probably unsuitable here.
 
---=-o99QCQN+9pO79PjMS1v2
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, 2008-11-06 at 07:43 +0100, Takashi Iwai wrote:
-> Thanks for the patch.  But I already have added a fujitsu model for
-> ALC269 recently for another Fujitsu machine.  Thus your patch obviously
-> conflicts.
-
-Duly noted. Could you share a codecgraph/codec file for that Amilo
-please? Just to see how much overlap there is.
-But based on the digital mic I might just have to rename mine.
-ALC269_FUJITSU_LIFEBOOK, ALC269_LIFEBOOK or ALC269_ICH9?
-
-> Could you re-create a patch based on the latest sound tree?
-
-Assuming sound-2.6; have git-cloned this.
-
-Regards,
-Tony V.
-
---=-o99QCQN+9pO79PjMS1v2
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-
-iEYEABECAAYFAkkS9MwACgkQp5vW4rUFj5rHTQCfZ0bcWMXMmlSYvyd7REK6pYlI
-DlEAn2FWTjAqJ/MYq44KK+XWWeqshcdE
-=MAQ+
------END PGP SIGNATURE-----
-
---=-o99QCQN+9pO79PjMS1v2--
-
-
---===============5395578675581346045==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============5395578675581346045==--
+John
