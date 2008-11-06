@@ -1,20 +1,20 @@
-From: Edward Terry <eterry@openboxbuilder.com>
+From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
 Subject: Re: supported sound cards
-Date: Thu, 06 Nov 2008 11:33:09 -0800
-Message-ID: <49134675.9060707@openboxbuilder.com>
+Date: Thu, 6 Nov 2008 22:02:37 +0100
+Message-ID: <fd3eb9bf0811061302y6e19f197w8ddf382a0a789499@mail.gmail.com>
 References: <mailman.11.1225989357.1965.alsa-devel@alsa-project.org>
+	<49134593.1060205@openboxbuilder.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vms173001pub.verizon.net (vms173001pub.verizon.net
-	[206.46.173.1]) by alsa0.perex.cz (Postfix) with ESMTP id DF203243A5
-	for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2008 21:45:21 +0100 (CET)
-Received: from [192.168.1.47] ([71.111.37.5]) by vms173001.mailsrvcs.net
-	(Sun Java System Messaging Server 6.2-6.01 (built Apr  3 2006))
-	with ESMTPA id <0K9X008BFFN9ID80@vms173001.mailsrvcs.net> for
-	alsa-devel@alsa-project.org; Thu, 06 Nov 2008 13:33:10 -0600 (CST)
-In-reply-to: <mailman.11.1225989357.1965.alsa-devel@alsa-project.org>
+Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 67099243B6
+	for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2008 22:02:39 +0100 (CET)
+Received: by wf-out-1314.google.com with SMTP id 24so874763wfg.23
+	for <alsa-devel@alsa-project.org>; Thu, 06 Nov 2008 13:02:37 -0800 (PST)
+In-Reply-To: <49134593.1060205@openboxbuilder.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,48 +24,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Edward Terry <eterry@openboxbuilder.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> The only chip where hardware mixing is supported is Creative's Emu10k1
-> (snd-emu10k1 driver), used on the SB Live!, most Audigy and certain
-> low-end X-Fi cards.  (Cards with the 'real' X-Fi chip do _not_ work
-> well in Linux.)
->
-> Other supported chips are ICE1724 (M-Audio Delta 1010(LT), DiO 2496,
-> 66, 44, 410, Audiophile 24/96; Digigram VX442; TerraTec EWX 24/96,
-> EWS 88MT/D, DMX 6Fire, Phase 88; Hoontech SoundTrack DSP 24/Value/
-> Media7.1; Event EZ8; Lionstracs Mediastation, Terrasoniq TS 88) and
-> VT1720/24 (AMP AUDIO2000; M-Audio Revolution 5.1, 7.1, Audiophile 192;
-> TerraTec Aureon 5.1 Sky, 7.1 Space/Universe, Phase 22/28;
-> Onkyo SE-90PCI, SE-200PCI; AudioTrak Prodigy 192, 7.1 (HIFI/LT/XT),
-> HD2; Hercules Fortissimo IV; ESI Juli@; Pontis MS300; EGO-SYS
-> WaveTerminal 192M).
-
-Thanks.  I'll look over these cards.
-
-> The most high-end supported cards are probably the Asus Xonar cards.
-> The D2/D2X have even slightly better audio quality than the best X-Fi,
-> and, as the obviously most important feature, colorfully illuminated
-> jacks.  The various Dolby features are done in software in the Windows
-> driver and are not supported in Linux.  If you need a PCI-E card, the
-> Xonar DX or D2X are your only choice.
-
-What about the Asus Xonar HDAV1.3?
-
-John Rigg wrote:
->> The most high-end supported cards are probably the Asus Xonar cards.
->
-> `High end' means different things in different situations of course.
-> RME HDSP series are probably the `highest end' cards supported, but
-> they need external converters, so they're probably unsuitable here.
-
-The Xonar cards do look interesting, but I'd also like to carry one
-higher-end card.  I'm looking for a single-slot PCI Express solution
-that works as a standalone sound card, i.e. without any mandatory
-external devices (though optional ones are fine).
-
-Thanks for the information.
-
-Edward
+MjAwOC8xMS82IEVkd2FyZCBUZXJyeSA8ZXRlcnJ5QG9wZW5ib3hidWlsZGVyLmNvbT46Cj4gQ2xl
+bWVucyBMYWRpc2NoIHdyb3RlOgo+PiBUaGUgb25seSBjaGlwIHdoZXJlIGhhcmR3YXJlIG1peGlu
+ZyBpcyBzdXBwb3J0ZWQgaXMgQ3JlYXRpdmUncyBFbXUxMGsxCj4+IChzbmQtZW11MTBrMSBkcml2
+ZXIpLCB1c2VkIG9uIHRoZSBTQiBMaXZlISwgbW9zdCBBdWRpZ3kgYW5kIGNlcnRhaW4KPj4gbG93
+LWVuZCBYLUZpIGNhcmRzLiAgKENhcmRzIHdpdGggdGhlICdyZWFsJyBYLUZpIGNoaXAgZG8gX25v
+dF8gd29yawo+PiB3ZWxsIGluIExpbnV4LikKPj4KPj4gT3RoZXIgc3VwcG9ydGVkIGNoaXBzIGFy
+ZSBJQ0UxNzI0IChNLUF1ZGlvIERlbHRhIDEwMTAoTFQpLCBEaU8gMjQ5NiwKPj4gNjYsIDQ0LCA0
+MTAsIEF1ZGlvcGhpbGUgMjQvOTY7IERpZ2lncmFtIFZYNDQyOyBUZXJyYVRlYyBFV1ggMjQvOTYs
+Cj4+IEVXUyA4OE1UL0QsIERNWCA2RmlyZSwgUGhhc2UgODg7IEhvb250ZWNoIFNvdW5kVHJhY2sg
+RFNQIDI0L1ZhbHVlLwo+PiBNZWRpYTcuMTsgRXZlbnQgRVo4OyBMaW9uc3RyYWNzIE1lZGlhc3Rh
+dGlvbiwgVGVycmFzb25pcSBUUyA4OCkgYW5kCj4+IFZUMTcyMC8yNCAoQU1QIEFVRElPMjAwMDsg
+TS1BdWRpbyBSZXZvbHV0aW9uIDUuMSwgNy4xLCBBdWRpb3BoaWxlIDE5MjsKPj4gVGVycmFUZWMg
+QXVyZW9uIDUuMSBTa3ksIDcuMSBTcGFjZS9Vbml2ZXJzZSwgUGhhc2UgMjIvMjg7Cj4+IE9ua3lv
+IFNFLTkwUENJLCBTRS0yMDBQQ0k7IEF1ZGlvVHJhayBQcm9kaWd5IDE5MiwgNy4xIChISUZJL0xU
+L1hUKSwKPj4gSEQyOyBIZXJjdWxlcyBGb3J0aXNzaW1vIElWOyBFU0kgSnVsaUA7IFBvbnRpcyBN
+UzMwMDsgRUdPLVNZUwo+PiBXYXZlVGVybWluYWwgMTkyTSkuCj4KPiBUaGFua3MuICBJJ2xsIGxv
+b2sgb3ZlciB0aGVzZSBjYXJkcy4KPgo+PiBUaGUgbW9zdCBoaWdoLWVuZCBzdXBwb3J0ZWQgY2Fy
+ZHMgYXJlIHByb2JhYmx5IHRoZSBBc3VzIFhvbmFyIGNhcmRzLgo+PiBUaGUgRDIvRDJYIGhhdmUg
+ZXZlbiBzbGlnaHRseSBiZXR0ZXIgYXVkaW8gcXVhbGl0eSB0aGFuIHRoZSBiZXN0IFgtRmksCj4+
+IGFuZCwgYXMgdGhlIG9idmlvdXNseSBtb3N0IGltcG9ydGFudCBmZWF0dXJlLCBjb2xvcmZ1bGx5
+IGlsbHVtaW5hdGVkCj4+IGphY2tzLiAgVGhlIHZhcmlvdXMgRG9sYnkgZmVhdHVyZXMgYXJlIGRv
+bmUgaW4gc29mdHdhcmUgaW4gdGhlIFdpbmRvd3MKPj4gZHJpdmVyIGFuZCBhcmUgbm90IHN1cHBv
+cnRlZCBpbiBMaW51eC4gIElmIHlvdSBuZWVkIGEgUENJLUUgY2FyZCwgdGhlCj4+IFhvbmFyIERY
+IG9yIEQyWCBhcmUgeW91ciBvbmx5IGNob2ljZS4KPgo+IFdoYXQgYWJvdXQgdGhlIEFzdXMgWG9u
+YXIgSERBVjEuMz8KPgo+IEpvaG4gUmlnZyB3cm90ZToKPj4+IFRoZSBtb3N0IGhpZ2gtZW5kIHN1
+cHBvcnRlZCBjYXJkcyBhcmUgcHJvYmFibHkgdGhlIEFzdXMgWG9uYXIgY2FyZHMuCj4+Cj4+IGBI
+aWdoIGVuZCcgbWVhbnMgZGlmZmVyZW50IHRoaW5ncyBpbiBkaWZmZXJlbnQgc2l0dWF0aW9ucyBv
+ZiBjb3Vyc2UuCj4+IFJNRSBIRFNQIHNlcmllcyBhcmUgcHJvYmFibHkgdGhlIGBoaWdoZXN0IGVu
+ZCcgY2FyZHMgc3VwcG9ydGVkLCBidXQKPj4gdGhleSBuZWVkIGV4dGVybmFsIGNvbnZlcnRlcnMs
+IHNvIHRoZXkncmUgcHJvYmFibHkgdW5zdWl0YWJsZSBoZXJlLgo+Cj4gVGhlIFhvbmFyIGNhcmRz
+IGRvIGxvb2sgaW50ZXJlc3RpbmcsIGJ1dCBJJ2QgYWxzbyBsaWtlIHRvIGNhcnJ5IG9uZQo+IGhp
+Z2hlci1lbmQgY2FyZC4gIEknbSBsb29raW5nIGZvciBhIHNpbmdsZS1zbG90IFBDSSBFeHByZXNz
+IHNvbHV0aW9uCj4gdGhhdCB3b3JrcyBhcyBhIHN0YW5kYWxvbmUgc291bmQgY2FyZCwgaS5lLiB3
+aXRob3V0IGFueSBtYW5kYXRvcnkKPiBleHRlcm5hbCBkZXZpY2VzICh0aG91Z2ggb3B0aW9uYWwg
+b25lcyBhcmUgZmluZSkuCj4KPiBUaGFua3MgZm9yIHRoZSBpbmZvcm1hdGlvbi4KPgo+IEVkd2Fy
+ZAo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cj4KClhvbmFyIEhEQVYgMS4zIGlzIHN1cHBvcnRlZCwgYnV0IG5vdCBmdWxseSAoeWV0KS4KCgot
+LSAKVmVkcmFuIE1pbGV0acSHCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbAo=
