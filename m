@@ -1,19 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: alsa-driver 1.0.18 doesn't built on PPC 2.6.27 and
- 2.6.28
-Date: Thu, 6 Nov 2008 08:36:44 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0811060834590.12044@tm8103.perex-int.cz>
-References: <s5hfxm6kuci.wl%tiwai@suse.de>
-	<20081105204514.GA3574@aragorn.home.lxtec.de>
-	<s5hy6zxpday.wl%tiwai@suse.de>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 1/4] ASoC: TLV320AIC23B Support more sample
+	rates
+Date: Thu, 6 Nov 2008 10:49:06 +0000
+Message-ID: <20081106104905.GA26469@sirena.org.uk>
+References: <20081105185220.GA10816@rakim.wolfsonmicro.main>
+	<1225911211-22474-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<s5hiqr1hpxm.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id B6BA52443E
-	for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2008 08:36:44 +0100 (CET)
-In-Reply-To: <s5hy6zxpday.wl%tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 88E4A244DE
+	for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2008 11:49:07 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hiqr1hpxm.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,27 +24,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Elimar Riesebieter <riesebie@lxtec.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, pkg-alsa-devel <pkg-alsa-devel@lists.alioth.debian.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 6 Nov 2008, Takashi Iwai wrote:
+On Wed, Nov 05, 2008 at 09:35:01PM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-> At Wed, 5 Nov 2008 21:45:14 +0100,
-> Elimar Riesebieter wrote:
+> > +		return score;
 
-> > So are you going to release a
-> > alsa-driver-1.0.18a?
-> 
-> I don't know -- it's Jaroslav's take.
+> > +	return 0xffffffff;
 
-Elimar, could you test snapsnot from http://www.alsa-project.org/snapshot ?
+> -1 would be simpler and safer (for possible missing f's).
 
-I'll tag it as 1.0.18a if your compilation tests passes.
-
-					Thanks,
-						Jaroslav
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+I'm not sure that'd add to the clarity - the goal isn't to have all bits
+set, the goal is to have a much larger score than could ever otherwise
+be achieved so putting in a very large constant expresses that much more
+directly.
