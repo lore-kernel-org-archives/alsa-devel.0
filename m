@@ -1,15 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 0/4] ASoC updates
-Date: Thu, 6 Nov 2008 11:38:32 +0000
-Message-ID: <20081106113832.GA26733@rakim.wolfsonmicro.main>
+Subject: [PATCH 3/4] ASoC: Add new parameter to
+	s3c24xx_pcm_enqueue
+Date: Thu,  6 Nov 2008 11:40:58 +0000
+Message-ID: <1225971659-26887-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <20081106113832.GA26733@rakim.wolfsonmicro.main>
+	<1225971659-26887-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1225971659-26887-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 30A6F2450A
-	for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2008 12:38:33 +0100 (CET)
-Content-Disposition: inline
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3F7A02450B
+	for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2008 12:41:01 +0100 (CET)
+In-Reply-To: <1225971659-26887-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,41 +24,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: David Anders <dave123_aml@yahoo.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 0ee4663617fb0f78cec4cc6558a096ccbd8c3ffc:
-  Takashi Iwai (1):
-        ALSA: ASoC - Remove unnecessary inclusion of linux/version.h
+From: David Anders <dave123_aml@yahoo.com>
 
-are available in the git repository at:
+The S3C24xx dma does not allow more than one buffer to be enqueue prior to
+the dma transfers starting. This patch adds an additional parameter to
+s3c24xx_pcm_enqueue() to allow for passing an initial dma maximum load
+value.
 
-  git://opensource.wolfsonmicro.com/linux-2.6-asoc for-tiwai
+Signed-off-by: David Anders <danders at amltd.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/s3c24xx/s3c24xx-pcm.c |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
 
-This series drops the TLV320AIC23 patch for now and makes the Palm
-driver non-modular for the time being due to the platform data dodge
-being used.
-
-David Anders (1):
-      ASoC: Add new parameter to s3c24xx_pcm_enqueue
-
-Grazvydas Ignotas (1):
-      ALSA: ASoC: TWL4030 codec - fix 256*Fs clock
-
-Marek Vasut (1):
-      ASoC: Add Palm/PXA27x unified ASoC audio driver
-
-Mark Brown (1):
-      ASoC: Remove core version number
-
- arch/arm/mach-pxa/include/mach/palmasoc.h |   13 ++
- include/sound/soc.h                       |    2 -
- sound/soc/codecs/twl4030.c                |    4 +-
- sound/soc/pxa/Kconfig                     |    9 +
- sound/soc/pxa/Makefile                    |    2 +
- sound/soc/pxa/palm27x.c                   |  269 +++++++++++++++++++++++++++++
- sound/soc/s3c24xx/s3c24xx-pcm.c           |   12 +-
- sound/soc/soc-core.c                      |    1 -
- 8 files changed, 303 insertions(+), 9 deletions(-)
- create mode 100644 arch/arm/mach-pxa/include/mach/palmasoc.h
- create mode 100644 sound/soc/pxa/palm27x.c
+diff --git a/sound/soc/s3c24xx/s3c24xx-pcm.c b/sound/soc/s3c24xx/s3c24xx-pcm.c
+index e13e614..341198b 100644
+--- a/sound/soc/s3c24xx/s3c24xx-pcm.c
++++ b/sound/soc/s3c24xx/s3c24xx-pcm.c
+@@ -78,7 +78,8 @@ struct s3c24xx_runtime_data {
+  * place a dma buffer onto the queue for the dma system
+  * to handle.
+ */
+-static void s3c24xx_pcm_enqueue(struct snd_pcm_substream *substream)
++static void s3c24xx_pcm_enqueue(struct snd_pcm_substream *substream,
++				int dma_max)
+ {
+ 	struct s3c24xx_runtime_data *prtd = substream->runtime->private_data;
+ 	dma_addr_t pos = prtd->dma_pos;
+@@ -86,7 +87,10 @@ static void s3c24xx_pcm_enqueue(struct snd_pcm_substream *substream)
+ 
+ 	DBG("Entered %s\n", __func__);
+ 
+-	while (prtd->dma_loaded < prtd->dma_limit) {
++	if (!dma_max)
++		dma_max = prtd->dma_limit;
++
++	while (prtd->dma_loaded < dma_max) {
+ 		unsigned long len = prtd->dma_period;
+ 
+ 		DBG("dma_loaded: %d\n", prtd->dma_loaded);
+@@ -132,7 +136,7 @@ static void s3c24xx_audio_buffdone(struct s3c2410_dma_chan *channel,
+ 	spin_lock(&prtd->lock);
+ 	if (prtd->state & ST_RUNNING) {
+ 		prtd->dma_loaded--;
+-		s3c24xx_pcm_enqueue(substream);
++		s3c24xx_pcm_enqueue(substream, 0);
+ 	}
+ 
+ 	spin_unlock(&prtd->lock);
+@@ -249,7 +253,7 @@ static int s3c24xx_pcm_prepare(struct snd_pcm_substream *substream)
+ 	prtd->dma_pos = prtd->dma_start;
+ 
+ 	/* enqueue dma buffers */
+-	s3c24xx_pcm_enqueue(substream);
++	s3c24xx_pcm_enqueue(substream, 1);
+ 
+ 	return ret;
+ }
+-- 
+1.5.6.5
