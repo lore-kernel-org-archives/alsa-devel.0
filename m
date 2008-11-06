@@ -1,17 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/4] ASoC: Remove core version number
-Date: Thu,  6 Nov 2008 11:40:57 +0000
-Message-ID: <1225971659-26887-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 4/4] ALSA: ASoC: TWL4030 codec - fix 256*Fs
+	clock
+Date: Thu,  6 Nov 2008 11:40:59 +0000
+Message-ID: <1225971659-26887-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20081106113832.GA26733@rakim.wolfsonmicro.main>
 	<1225971659-26887-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1225971659-26887-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1225971659-26887-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5F9AD24509
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8B7AF2450C
 	for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2008 12:41:01 +0100 (CET)
-In-Reply-To: <1225971659-26887-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <1225971659-26887-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,43 +25,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Grazvydas Ignotas <notasas@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Rather than try to remember to keep the core version number updated
-(which hasn't been happening) just remove it.  It was much more useful
-when ASoC was out of tree.
+From: Grazvydas Ignotas <notasas@gmail.com>
 
-Signed-off-by: Mark brown <broonie@opensource.wolfsonmicro.com>
+According to TRM, 256*Fs clock output should be enabled
+when TWL4030 is in slave mode, not master.
+This allows sound to work on OMAP3 Pandora, which uses
+256*Fs clock.
+
+Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
+Acked-by: Steve Sakoman <steve@sakoman.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- include/sound/soc.h  |    2 --
- sound/soc/soc-core.c |    1 -
- 2 files changed, 0 insertions(+), 3 deletions(-)
+ sound/soc/codecs/twl4030.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index da0040b..fa1b99b 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -21,8 +21,6 @@
- #include <sound/control.h>
- #include <sound/ac97_codec.h>
- 
--#define SND_SOC_VERSION "0.13.2"
--
- /*
-  * Convenience kcontrol builders
-  */
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 1a17368..9feaa7b 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1965,7 +1965,6 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_digital_mute);
- 
- static int __devinit snd_soc_init(void)
- {
--	printk(KERN_INFO "ASoC version %s\n", SND_SOC_VERSION);
- 	return platform_driver_register(&soc_driver);
- }
- 
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index ee2f0d3..90f3b4d 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -469,11 +469,11 @@ static int twl4030_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+ 		format &= ~(TWL4030_AIF_SLAVE_EN);
+-		format |= TWL4030_CLK256FS_EN;
++		format &= ~(TWL4030_CLK256FS_EN);
+ 		break;
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+-		format &= ~(TWL4030_CLK256FS_EN);
+ 		format |= TWL4030_AIF_SLAVE_EN;
++		format |= TWL4030_CLK256FS_EN;
+ 		break;
+ 	default:
+ 		return -EINVAL;
 -- 
 1.5.6.5
