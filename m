@@ -1,19 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/4] ASoC: Add new parameter to
-	s3c24xx_pcm_enqueue
-Date: Thu,  6 Nov 2008 11:40:58 +0000
-Message-ID: <1225971659-26887-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/4] ASoC: Remove core version number
+Date: Thu,  6 Nov 2008 11:40:57 +0000
+Message-ID: <1225971659-26887-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20081106113832.GA26733@rakim.wolfsonmicro.main>
 	<1225971659-26887-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1225971659-26887-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3F7A02450B
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5F9AD24509
 	for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2008 12:41:01 +0100 (CET)
-In-Reply-To: <1225971659-26887-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <1225971659-26887-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,65 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: David Anders <dave123_aml@yahoo.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: David Anders <dave123_aml@yahoo.com>
+Rather than try to remember to keep the core version number updated
+(which hasn't been happening) just remove it.  It was much more useful
+when ASoC was out of tree.
 
-The S3C24xx dma does not allow more than one buffer to be enqueue prior to
-the dma transfers starting. This patch adds an additional parameter to
-s3c24xx_pcm_enqueue() to allow for passing an initial dma maximum load
-value.
-
-Signed-off-by: David Anders <danders at amltd.com>
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Signed-off-by: Mark brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/s3c24xx/s3c24xx-pcm.c |   12 ++++++++----
- 1 files changed, 8 insertions(+), 4 deletions(-)
+ include/sound/soc.h  |    2 --
+ sound/soc/soc-core.c |    1 -
+ 2 files changed, 0 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/s3c24xx/s3c24xx-pcm.c b/sound/soc/s3c24xx/s3c24xx-pcm.c
-index e13e614..341198b 100644
---- a/sound/soc/s3c24xx/s3c24xx-pcm.c
-+++ b/sound/soc/s3c24xx/s3c24xx-pcm.c
-@@ -78,7 +78,8 @@ struct s3c24xx_runtime_data {
-  * place a dma buffer onto the queue for the dma system
-  * to handle.
- */
--static void s3c24xx_pcm_enqueue(struct snd_pcm_substream *substream)
-+static void s3c24xx_pcm_enqueue(struct snd_pcm_substream *substream,
-+				int dma_max)
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index da0040b..fa1b99b 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -21,8 +21,6 @@
+ #include <sound/control.h>
+ #include <sound/ac97_codec.h>
+ 
+-#define SND_SOC_VERSION "0.13.2"
+-
+ /*
+  * Convenience kcontrol builders
+  */
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 1a17368..9feaa7b 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1965,7 +1965,6 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_digital_mute);
+ 
+ static int __devinit snd_soc_init(void)
  {
- 	struct s3c24xx_runtime_data *prtd = substream->runtime->private_data;
- 	dma_addr_t pos = prtd->dma_pos;
-@@ -86,7 +87,10 @@ static void s3c24xx_pcm_enqueue(struct snd_pcm_substream *substream)
- 
- 	DBG("Entered %s\n", __func__);
- 
--	while (prtd->dma_loaded < prtd->dma_limit) {
-+	if (!dma_max)
-+		dma_max = prtd->dma_limit;
-+
-+	while (prtd->dma_loaded < dma_max) {
- 		unsigned long len = prtd->dma_period;
- 
- 		DBG("dma_loaded: %d\n", prtd->dma_loaded);
-@@ -132,7 +136,7 @@ static void s3c24xx_audio_buffdone(struct s3c2410_dma_chan *channel,
- 	spin_lock(&prtd->lock);
- 	if (prtd->state & ST_RUNNING) {
- 		prtd->dma_loaded--;
--		s3c24xx_pcm_enqueue(substream);
-+		s3c24xx_pcm_enqueue(substream, 0);
- 	}
- 
- 	spin_unlock(&prtd->lock);
-@@ -249,7 +253,7 @@ static int s3c24xx_pcm_prepare(struct snd_pcm_substream *substream)
- 	prtd->dma_pos = prtd->dma_start;
- 
- 	/* enqueue dma buffers */
--	s3c24xx_pcm_enqueue(substream);
-+	s3c24xx_pcm_enqueue(substream, 1);
- 
- 	return ret;
+-	printk(KERN_INFO "ASoC version %s\n", SND_SOC_VERSION);
+ 	return platform_driver_register(&soc_driver);
  }
+ 
 -- 
 1.5.6.5
