@@ -1,19 +1,24 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: snd_ctl compiler warnings
-Date: Fri, 7 Nov 2008 11:27:14 +0000
-Message-ID: <200811071127.14677.gineera@aspect135.co.uk>
-References: <200811070852.43936.gineera@aspect135.co.uk>
-	<200811071032.22917.gineera@aspect135.co.uk>
-	<s5hmygbvl5f.wl%tiwai@suse.de>
+From: Richard Spindler <richard.spindler@gmail.com>
+Subject: Intel HDA Headphones vs. Speaker Mute
+Date: Fri, 7 Nov 2008 12:43:22 +0000 (UTC)
+Message-ID: <loom.20081107T123030-119@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.talktalk.net (smtp-out-4.talktalk.net [62.24.128.234])
-	by alsa0.perex.cz (Postfix) with ESMTP id 727E3243C8
-	for <alsa-devel@alsa-project.org>; Fri,  7 Nov 2008 13:08:59 +0100 (CET)
-In-Reply-To: <s5hmygbvl5f.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 56E4624408
+	for <alsa-devel@alsa-project.org>; Fri,  7 Nov 2008 13:45:10 +0100 (CET)
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1KyQhy-00069j-VC
+	for alsa-devel@alsa-project.org; Fri, 07 Nov 2008 12:45:03 +0000
+Received: from 091-141-073-028.dyn.orange.at ([91.141.73.28])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 07 Nov 2008 12:45:02 +0000
+Received: from richard.spindler by 091-141-073-028.dyn.orange.at with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 07 Nov 2008 12:45:02 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,59 +28,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 07 November 2008 11:19, you wrote:
-> At Fri, 7 Nov 2008 10:32:22 +0000,
->
-> Alan Horstmann wrote:
-> > On Friday 07 November 2008 09:58, you wrote:
-> > > At Fri, 7 Nov 2008 08:52:43 +0000,
-> > >
-> > > Alan Horstmann wrote:
-> > > > The code I am working with at present includes unremarkable lines
-> > > > such as:
-> > > >
-> > > > 		snd_ctl_elem_value_t *line_in_vol;
-> > > > 		snd_ctl_elem_value_alloca(&line_in_vol);
-> > > >
-> > > > Building this with a cross compiler for arm based on gcc 4.2.1 gives
-> > > > this
-> > > >
-> > > > warning for the 2nd line:
-> > > > : warning: the address of 'line_in_vol' will always evaluate as
-> > > > : 'true'
-> > > >
-> > > > but an older compiler on the desktop does not show this.  Would this
-> > > > warning be expected in these circumstances, or is the compiler being
-> > > > over zealous? Am I missing something or is there a straightforward
-> > > > way to avoid such warnings?  (Code runs OK).
-> > >
-> > > Try the later version of alsa-lib.
-> > > This should have been already fixed.
-> >
-> > Thanks very much.  You presumably refer to:
-> >
-> > http://
-> > git.alsa-project.org/?p=alsa-lib.git;a=commit;h=68e5771a6f7a2aae2dbd02a09
-> >7719bcd25c6f307
-> >
-> > Right now a rebuild of the working environment would be a bit tricky.  At
-> > the next opportunity I'll see if we can apply that patch to alsa-lib (I
-> > think it is 1.0.15 -based) and rebuild.  In the meantime the warnings are
-> > presumably fairly harmless?
->
-> Yes.  It's just a noise and can be safely ignored.
+Hi,
 
-Sorry if I'm making unnecesssary noise also!
+the builtin sound card in my laptop does not behave as it should, when running
+it with the ALSA system. While there are separate mixer controls for headphones
+and speakers, the Master control levels both, speakers and headphones
+simultaneously, while the headphone control does not act at all. Also in my
+opinion the speakers should mute automatically as soon as I plug in the
+headphones, this does not happen too.
 
-Actually, on reflection I realised that as they are just macros in the header 
-files, and are therefore not part of the embedded alsa-lib (which I cannot 
-change straight away) I hand edited the include/alsa/control.h, adding the 
-helper function locally & substituting the _alloca(..) macros...
+I am running Ubuntu 8.04.1:
 
-...compiler now silent.  Much thanks for your assistance.
 
-Alan
+$ uname -a
+Linux monostatos 2.6.24-19-generic #1 SMP Wed Aug 20 22:56:21 UTC 2008 i686
+GNU/Linux
+
+$ lspci -nn |grep Audio
+00:1b.0 Audio device [0403]: Intel Corporation 82801G (ICH7 Family) High
+Definition Audio Controller [8086:27d8] (rev 02)
+
+If you need any more information about that machine, or if there is anything I
+can do to help fix that problem, do not hesitate to ask.
+
+Cheers
+-Richard
+
+PS.: I also published a lengthy rant, and some ideas about that problem at
+http://propirate.net/oracle/archives/2008/11/05/alsa-headaches-erm-headphones/
