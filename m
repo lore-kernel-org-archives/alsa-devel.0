@@ -1,73 +1,50 @@
-From: Wu Fengguang <wfg@linux.intel.com>
-Subject: [PATCH 3/3] enable Intel G35 SDVO HDMI audio output
-Date: Fri, 07 Nov 2008 14:23:41 +0800
-Message-ID: <20081107062413.275249223@linux.intel.com>
-References: <20081107062338.158523355@linux.intel.com>
+From: "Mike Frysinger" <vapier.adi@gmail.com>
+Subject: Re: [PATCH] ALSA: have snd_BUG_ON() always refer to
+	arguments
+Date: Fri, 7 Nov 2008 02:09:04 -0500
+Message-ID: <8bd0f97a0811062309m4029f612k4d3fe380e6d124df@mail.gmail.com>
+References: <1226023521-10037-1-git-send-email-vapier@gentoo.org>
+	<s5hod0sqcmt.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <xorg-bounces@lists.freedesktop.org>
-Content-Disposition: inline; filename=a
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/listinfo/xorg>,
-	<mailto:xorg-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/xorg>
-List-Post: <mailto:xorg@lists.freedesktop.org>
-List-Help: <mailto:xorg-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/xorg>,
-	<mailto:xorg-request@lists.freedesktop.org?subject=subscribe>
-Sender: xorg-bounces@lists.freedesktop.org
-Errors-To: xorg-bounces@lists.freedesktop.org
-To: Wang Zhenyu <zhenyu.z.wang@intel.com>
-Cc: Ma Ling <ling.ma@intel.com>, alsa-devel@alsa-project.org, linux-gfx@linux.intel.com, xorg@lists.freedesktop.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-gx0-f19.google.com (mail-gx0-f19.google.com
+	[209.85.217.19])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4E74C10388F
+	for <alsa-devel@alsa-project.org>; Fri,  7 Nov 2008 08:09:06 +0100 (CET)
+Received: by gxk12 with SMTP id 12so1022232gxk.8
+	for <alsa-devel@alsa-project.org>; Thu, 06 Nov 2008 23:09:05 -0800 (PST)
+In-Reply-To: <s5hod0sqcmt.wl%tiwai@suse.de>
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mike Frysinger <vapier@gentoo.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Ma Ling <ling.ma@intel.com>
+On Fri, Nov 7, 2008 at 01:22, Takashi Iwai wrote:
+> At Thu,  6 Nov 2008 21:05:21 -0500,
+> Mike Frysinger wrote:
+>> The snd_BUG_ON() macro should always expand its argument even if we're
+>> forcing it to false.  This kills off unused warnings that did not exist
+>> before the snd_assert() -> snd_BUG_ON() conversion.
+>
+> Andrew already change this differently.  Check with the latest version.
 
-Set the SDVO_AUDIO_ENABLE bit to enable SDVO HDMI audio output of the
-Intel G35 chipset.                                                                                                     
+what are you defining as "latest version" ?  i'm looking in torvalds
+linux-2.6.git.
 
-Signed-off-by: Ma Ling <ling.ma@intel.com>
-Signed-off-by: Wu Fengguang <wfg@linux.intel.com>
----
- src/i830_sdvo.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+> And which warning did you get actually?
 
---- xf86-video-intel.orig/src/i830_sdvo.c
-+++ xf86-video-intel/src/i830_sdvo.c
-@@ -1019,7 +1019,7 @@ i830_sdvo_mode_set(xf86OutputPtr output,
-     struct i830_sdvo_priv   *dev_priv = intel_output->dev_priv;
-     xf86CrtcPtr	    crtc = output->crtc;
-     I830CrtcPrivatePtr	    intel_crtc = crtc->driver_private;
--    uint32_t sdvox;
-+    uint32_t sdvox = 0;
-     int sdvo_pixel_multiply;
-     struct i830_sdvo_in_out_map in_out;
-     struct i830_sdvo_dtd input_dtd;
-@@ -1041,8 +1041,10 @@ i830_sdvo_mode_set(xf86OutputPtr output,
- 			&in_out, sizeof(in_out));
-     status = i830_sdvo_read_response(output, NULL, 0);
- 
--    if (dev_priv->is_hdmi)
-+    if (dev_priv->is_hdmi) {
- 	i830_sdvo_set_avi_infoframe(output, mode);
-+	sdvox |= SDVO_AUDIO_ENABLE;
-+    }
- 
-     i830_sdvo_get_dtd_from_mode(&input_dtd, mode);
- 
-@@ -1090,11 +1092,11 @@ i830_sdvo_mode_set(xf86OutputPtr output,
- 
-     /* Set the SDVO control regs. */
-     if (IS_I965G(pI830)) {
--	sdvox = SDVO_BORDER_ENABLE |
-+	sdvox |= SDVO_BORDER_ENABLE |
- 		SDVO_VSYNC_ACTIVE_HIGH |
- 		SDVO_HSYNC_ACTIVE_HIGH;
-     } else {
--	sdvox = INREG(dev_priv->output_device);
-+	sdvox |= INREG(dev_priv->output_device);
- 	switch (dev_priv->output_device) {
- 	case SDVOB:
- 	    sdvox &= SDVOB_PRESERVE_MASK;
-
--- 
+a few codecs define local vars which only get used in snd_BUG_ON() ...
+so if snd_BUG_ON() doesnt utilize cond, gcc whines that the var is
+unused.
+-mike
