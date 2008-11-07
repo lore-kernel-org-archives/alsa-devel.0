@@ -1,16 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: S24_BLE does not play using aplay.
-Date: Fri, 07 Nov 2008 15:08:18 +0100
-Message-ID: <49144BD2.3070400@ladisch.de>
-References: <aceb60a00811061659o11eec5f4s6c5b6c4ba470b873@mail.gmail.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 1/1] [ALSA] ASoC: TLV320AIC23B Support more
+	sample rates
+Date: Fri, 7 Nov 2008 14:10:30 +0000
+Message-ID: <20081107141029.GC23069@sirena.org.uk>
+References: <20081105220550.GA29007@sirena.org.uk>
+	<1226013068-22508-1-git-send-email-troy.kisky@boundarydevices.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id DB75F24413
-	for <alsa-devel@alsa-project.org>; Fri,  7 Nov 2008 15:08:08 +0100 (CET)
-In-Reply-To: <aceb60a00811061659o11eec5f4s6c5b6c4ba470b873@mail.gmail.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9730124413
+	for <alsa-devel@alsa-project.org>; Fri,  7 Nov 2008 15:10:31 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1226013068-22508-1-git-send-email-troy.kisky@boundarydevices.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,21 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Baek Chang <baeksan@ccrma.stanford.edu>
-Cc: alsa-devel@alsa-project.org
+To: Troy Kisky <troy.kisky@boundarydevices.com>
+Cc: alsa-devel@alsa-project.org, arunks@mistralsolutions.com
 List-Id: alsa-devel@alsa-project.org
 
-Baek Chang wrote:
-> Playing WAVE 'sine_24_48k.wav' : Signed 24 bit Little Endian in 3bytes, Rate 48000 Hz, Stereo
-> aplay: set_params:961: Sample format non available
+On Thu, Nov 06, 2008 at 04:11:08PM -0700, Troy Kisky wrote:
+> Add support for more sample rates, different crystals
+> and split playback/capture rates.
+> 
+> Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
 
-This error message indicates that the device does not support the sample
-format.
+> Mark, this is an incremental patch to the #ifdef DEBUG version
 
-You didn't show the aplay command line, but I'd guess that you used a
-"hw" device.  Try "plughw" or "default" to get automatic sample format
-conversion.
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-
-HTH
-Clemens
+I'll squash this down and push it today or Monday.
