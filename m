@@ -1,19 +1,16 @@
-From: Toby <dryfter@gmail.com>
-Subject: Re: Creative Sound Blaster X-Fi and X-Fi Titanium
-	Series Linux 32bit/64bit Driver Source released
-Date: Fri, 7 Nov 2008 10:36:09 +1100
-Message-ID: <8fe68c970811061536n52c6c819v58145401002555be@mail.gmail.com>
-References: <5501535d0811060746y60d18e6boc8c5ad34a63fb92b@mail.gmail.com>
+From: "Baek Chang" <baeksan@ccrma.stanford.edu>
+Subject: S24_BLE does not play using aplay.
+Date: Thu, 6 Nov 2008 16:59:31 -0800
+Message-ID: <aceb60a00811061659o11eec5f4s6c5b6c4ba470b873@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rn-out-0910.google.com (rn-out-0910.google.com [64.233.170.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id 02023103860
-	for <alsa-devel@alsa-project.org>; Fri,  7 Nov 2008 00:36:10 +0100 (CET)
-Received: by rn-out-0910.google.com with SMTP id j67so880736rne.21
-	for <alsa-devel@alsa-project.org>; Thu, 06 Nov 2008 15:36:09 -0800 (PST)
-In-Reply-To: <5501535d0811060746y60d18e6boc8c5ad34a63fb92b@mail.gmail.com>
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id D2108103860
+	for <alsa-devel@alsa-project.org>; Fri,  7 Nov 2008 01:59:32 +0100 (CET)
+Received: by nf-out-0910.google.com with SMTP id e27so614842nfd.32
+	for <alsa-devel@alsa-project.org>; Thu, 06 Nov 2008 16:59:31 -0800 (PST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,32 +24,20 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2008/11/7 Bjoern Olausson <lkmlist@gmail.com>:
-> Creative released a driver today....
-> I am hasitating to install it.. the last one was so crappy and I just
-> installed my gentoo new ;-)
->
-> But it looks really like the SOURCE, so maybe it will help to pimp the
-> ALSA driver (would rather see an implementation in alsa then an driver
-> from Creative)
+Hi,
 
-Is the new driver providing an ALSA device, or an OSS-style /dev/dsp one?
+I am testing some things with aplay and I am trying to play a stereo Signed
+24-bit 3 byte, 48kHz PCM file.
 
-Personally I'd rather see an open-source driver make it into ALSA to
-support the X-Fi, rather than relying upon Creative's terrible quality
-and dreadful timeliness.
+I get the following error:
 
-I'll try out the Creative driver on the weekend, and see if it works
-where the ALSA one doesn't. (I just get loops of static from the
-experimental ALSA driver.. it's like a memory ring buffer somewhere is
-*meant* to be getting filled with an audio stream, but isn't - but the
-card is still playing from it.)
+Playing WAVE 'sine_24_48k.wav' : Signed 24 bit Little Endian in 3bytes, Rate
+48000 Hz, Stereo
+aplay: set_params:961: Sample format non available
 
-Cheers.
-Toby
 
--- 
-Turning and turning in the widening gyre
-The falcon cannot hear the falconer
-Things fall apart; the center cannot hold
-Mere anarchy is loosed upon the world
+Does aplay only work for S24_LE in 4 bytes?
+
+Thanks in advance
+
+Baek
