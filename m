@@ -1,16 +1,18 @@
-From: hugo.villeneuve@lyrtech.com
-Subject: [PATCH] ARM DaVinci: Add Right-Justified mode and
-	Codec clock master to davinci-i2s
-Date: Sat,  8 Nov 2008 13:26:09 -0500
-Message-ID: <1226168769-17776-1-git-send-email-hugo.villeneuve@lyrtech.com>
+From: Shane W <shane-alsa@csy.ca>
+Subject: Intel G45 HDMI audio - missing samples
+Date: Sat, 8 Nov 2008 11:51:52 -0800
+Message-ID: <20081108195152.GA9858@csy.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.hugovil.com (201-217-static-ppp.3menatwork.com
-	[64.235.217.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 17850103815
-	for <alsa-devel@alsa-project.org>; Sat,  8 Nov 2008 19:26:10 +0100 (CET)
+Received: from idcmail-mo1so.shaw.ca (idcmail-mo1so.shaw.ca [24.71.223.10])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6C950103813
+	for <alsa-devel@alsa-project.org>; Sat,  8 Nov 2008 20:51:54 +0100 (CET)
+Received: from shane by continuum.csy.ca with local (Exim 4.69)
+	(envelope-from <shane-alsa@csy.ca>) id 1Kytqa-0002Zv-VX
+	for alsa-devel@alsa-project.org; Sat, 08 Nov 2008 11:51:53 -0800
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,90 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: davinci-linux-open-source@linux.davincidsp.com, Hugo Villeneuve <hugo.villeneuve@lyrtech.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Hugo Villeneuve <hugo.villeneuve@lyrtech.com>
+Hi,
 
-ARM DaVinci: Add Right-Justified mode and Codec clock master to davinci-i2s
+One issue with Intel audio over HDMI on a DG45-ID
+motherboard.  When playing a short sample via HDMI, it
+misses the first quarter second or so of the audio.  This
+is particularly noticable when using text to speech as the
+first word is lost.  I can get around this by having a
+seperate program hold the audio device open while using
+text to speech, that seems to get the whole sample but it's
+a cludgy workaround.  The same issue does not exist on the
+optical port.
 
-The TI DVEVM board uses the SND_SOC_DAIFMT_CBM_CFM & I2S formats, but the
-Lyrtech SFFSDR board uses the SND_SOC_DAIFMT_CBM_CFS & RIGHT-JUSTIFIED formats.
-
-Signed-off-by: Hugo Villeneuve <hugo.villeneuve@lyrtech.com>
----
- sound/soc/davinci/davinci-i2s.c |   40 ++++++++++++++++++++++++++++++++------
- 1 files changed, 33 insertions(+), 7 deletions(-)
-
-diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
-index abb5fed..d814ec8 100644
---- a/sound/soc/davinci/davinci-i2s.c
-+++ b/sound/soc/davinci/davinci-i2s.c
-@@ -59,6 +59,7 @@
- #define DAVINCI_MCBSP_PCR_CLKXP		(1 << 1)
- #define DAVINCI_MCBSP_PCR_FSRP		(1 << 2)
- #define DAVINCI_MCBSP_PCR_FSXP		(1 << 3)
-+#define DAVINCI_MCBSP_PCR_SCLKME	(1 << 7)
- #define DAVINCI_MCBSP_PCR_CLKRM		(1 << 8)
- #define DAVINCI_MCBSP_PCR_CLKXM		(1 << 9)
- #define DAVINCI_MCBSP_PCR_FSRM		(1 << 10)
-@@ -171,6 +172,16 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SRGR_REG,
- 					DAVINCI_MCBSP_SRGR_FSGM);
- 		break;
-+	case SND_SOC_DAIFMT_CBM_CFS:
-+		/* McBSP CLKR pin is the input for the Sample Rate Generator.
-+		 * McBSP FSR and FSX are driven by the Sample Rate Generator. */
-+		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_PCR_REG,
-+					DAVINCI_MCBSP_PCR_SCLKME |
-+					DAVINCI_MCBSP_PCR_FSXM |
-+					DAVINCI_MCBSP_PCR_FSRM);
-+		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SRGR_REG,
-+					DAVINCI_MCBSP_SRGR_FSGM);
-+		break;
- 	case SND_SOC_DAIFMT_CBM_CFM:
- 		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_PCR_REG, 0);
- 		break;
-@@ -205,6 +216,28 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		return -EINVAL;
- 	}
- 
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_RCR_REG,
-+					DAVINCI_MCBSP_RCR_RFRLEN1(1) |
-+					DAVINCI_MCBSP_RCR_RDATDLY(0));
-+		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_XCR_REG,
-+					DAVINCI_MCBSP_XCR_XFRLEN1(1) |
-+					DAVINCI_MCBSP_XCR_XDATDLY(0) |
-+					DAVINCI_MCBSP_XCR_XFIG);
-+		break;
-+	case SND_SOC_DAIFMT_I2S:
-+	default:
-+		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_RCR_REG,
-+					DAVINCI_MCBSP_RCR_RFRLEN1(1) |
-+					DAVINCI_MCBSP_RCR_RDATDLY(1));
-+		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_XCR_REG,
-+					DAVINCI_MCBSP_XCR_XFRLEN1(1) |
-+					DAVINCI_MCBSP_XCR_XDATDLY(1) |
-+					DAVINCI_MCBSP_XCR_XFIG);
-+		break;
-+	}
-+
- 	return 0;
- }
- 
-@@ -223,13 +256,6 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
- 				DAVINCI_MCBSP_SPCR_RINTM(3) |
- 				DAVINCI_MCBSP_SPCR_XINTM(3) |
- 				DAVINCI_MCBSP_SPCR_FREE);
--	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_RCR_REG,
--				DAVINCI_MCBSP_RCR_RFRLEN1(1) |
--				DAVINCI_MCBSP_RCR_RDATDLY(1));
--	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_XCR_REG,
--				DAVINCI_MCBSP_XCR_XFRLEN1(1) |
--				DAVINCI_MCBSP_XCR_XDATDLY(1) |
--				DAVINCI_MCBSP_XCR_XFIG);
- 
- 	i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS);
- 	w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SRGR_REG);
+Best,
+Shane
