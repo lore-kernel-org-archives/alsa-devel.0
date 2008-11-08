@@ -1,16 +1,22 @@
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: Bugs on aspire one A150
-Date: Sat, 08 Nov 2008 05:26:19 +0200
-Message-ID: <491506DB.1070000@gmail.com>
+From: The Source <thesourcehim@gmail.com>
+Subject: Re: Creative Sound Blaster X-Fi and X-Fi Titanium
+ Series Linux 32bit/64bit Driver Source released
+Date: Sat, 08 Nov 2008 08:32:31 +0300
+Message-ID: <4915246F.9040606@gmail.com>
+References: <5501535d0811060746y60d18e6boc8c5ad34a63fb92b@mail.gmail.com>	
+	<8fe68c970811061536n52c6c819v58145401002555be@mail.gmail.com>	
+	<4913C742.9040107@gmail.com>
+	<5501535d0811071108u7e922704h97408525e670741@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id 15A31243B2
-	for <alsa-devel@alsa-project.org>; Sat,  8 Nov 2008 04:26:27 +0100 (CET)
-Received: by mu-out-0910.google.com with SMTP id w1so1777462mue.2
-	for <alsa-devel@alsa-project.org>; Fri, 07 Nov 2008 19:26:26 -0800 (PST)
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 280C51037F5
+	for <alsa-devel@alsa-project.org>; Sat,  8 Nov 2008 06:32:33 +0100 (CET)
+Received: by ug-out-1314.google.com with SMTP id h2so23590ugf.24
+	for <alsa-devel@alsa-project.org>; Fri, 07 Nov 2008 21:32:32 -0800 (PST)
+In-Reply-To: <5501535d0811071108u7e922704h97408525e670741@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,80 +26,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org, linux-pm@lists.linux-foundation.org, ath5k-devel@lists.ath5k.org
+To: Bjoern Olausson <lkmlist@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I have just bought an Aspire one A150, XP version,
-as it was the only available here, and installed ubuntu on it.
-
-Bugs I discovered so far:
-
-
-** 1 - embedded controler works in polling mode, due to this:
-
-[    0.708571] ACPI: EC: non-query interrupt received, switching to interrupt mode
-[    1.224043] ACPI: EC: missing confirmations, switch off interrupt mode.
-
-
-Maybe this is the reason for the fact that gnome power manager freezes when I unplug
-the AC, and freezes often when I try to see battery status.
-
-
-(Note: same is seen on my acer aspire 5720)
-
-
-** 2 - wireless: not to mention the fact that ath5k wasn't installed by default in ubuntu...
-wireless more or less works, but kernel log is full of backtraces.
-Was able to connect to my WPA2 access point.
-Sometimes wireless fails completely, especially after suspend to ram.
-Advanced features like monitor/injection work, but when I changed the card's
-mac address it stopped working.
-I also noticed that if I then start airodump, then wireless works with new mac.
-
-
-
-** 3 - internal mic doesn't work.
-tried model=acer, model=auto.
-Overall it seems that alsa misprograms O/B realteck
-codec.
-I talk about this later.
-Have same issue on my acer 5720
-
-
-
-** 4 - wireless led doesn't work.
-ath5k devs, can you fix this?
-
-
-** 5 - coretemp doesn't show cpu temperature,
-I have seen somewhere that atom support same thermal diode as core2
-and only patch to detect it is needed.
-Please include such path in 2.6.28 if exists.
-
-
-** 6 - both card readers are missing from lspci, is this normal?
-
-** 7 - opengl is broken, I tried running neverball in fullscreen, but it shows wrong/corrupted
-textures (compiz is running, and working well thought)
- 
-Now I installed 2.6.28-rc3 (actually latest -git)
-
-
-Sadly nothing improved.
-I only found few regressions:
-
-
-
-* Wireless now drops connection from my WPA2 access point after few minutes.
-I changed temporarily its wireless protection to WEP and open mode, and both work
-fine, maybe this is related to periodic key exchange WPA does?
-
-* System doesn't reboot/shutdown, just hangs.
-
-
-
-
-
-Best regards,
-	Maxim Levitsky.
+QmpvZXJuIE9sYXVzc29uINC/0LjRiNC10YI6Cj4gT24gRnJpLCBOb3YgNywgMjAwOCBhdCAwNTo0
+MiwgVGhlIFNvdXJjZSA8dGhlc291cmNlaGltQGdtYWlsLmNvbT4gd3JvdGU6Cj4KPiAgIAo+PiBJ
+dCB3YXMgaW5jb21wYXRpYmlsaXR5IHdpdGggb2xkZXIga2VybmVscy4gVXBkYXRlZCB0byAyLjYu
+MjcgYW5kIGRyaXZlcgo+PiB3b3JrcyBub3cuIEJ1dCBubyA1LjEgc3VwcG9ydCBhZ2FpbiA6KAo+
+Pgo+PiAgICAgCj4KPiBzcGVha2VyLXRlc3QgLWMgNiBhdCBsZWFzdCBwbGF5cyBzb3VuZCBvbiBG
+cm9udC1MZWZ0LCBDZW50ZXIgYW5kIEZyb250LVJpZ2h0Lgo+Cj4gTm8gc291bmQgb24gdGhlIHJl
+YXIgc3BlYWtlcnMgb3Igb24gdGhlIFN1Yndvb2Zlci4uLi4KPgo+IEJ1dCBoZXksIGl0J3MgaGFs
+ZiB0aGUgd2F5Li4uCj4KPiBraW5kIHJlZ2FyZHMKPiBCam9lcm4KPgo+ICAgCkNlbnRlciBkb2Vz
+bid0IHBsYXkgZm9yIG1lLiBPbmx5IEZyb250IGxlZnQgYW5kIHJpZ2h0LgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
