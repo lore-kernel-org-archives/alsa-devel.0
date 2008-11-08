@@ -1,112 +1,123 @@
-From: Alan Jenkins <alan-jenkins-cCz0Lq7MMjm9FHfhHBbuYA@public.gmane.org>
-Subject: Re: Bugs on aspire one A150
-Date: Sat, 08 Nov 2008 11:57:11 +0000
-Message-ID: <49157E97.60503@tuffmail.co.uk>
-References: <491506DB.1070000@gmail.com>
+From: Tim Blechmann <tim@klingt.org>
+Subject: [PATCH] ALSA: hdsp: check for iobox and upload
+ firmware during ioctl
+Date: Sat, 08 Nov 2008 14:42:18 +0100
+Message-ID: <1226151738.6872.4.camel@thinkpad>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <kernel-testers-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <491506DB.1070000-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Sender: kernel-testers-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Maxim Levitsky <maximlevitsky-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-pm-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, ath5k-devel-xDcbHBWguxEUs3QNXV6qNA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Kernel Testers List <kernel-testers-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============4928281946038401092=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from klingt.org (mail.klingt.org [86.59.21.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id 19A2D2443E
+	for <alsa-devel@alsa-project.org>; Sat,  8 Nov 2008 14:42:18 +0100 (CET)
+Received: from [10.9.3.234] (localhost [127.0.0.1]) (authenticated bits=0)
+	by klingt.org (8.14.3/8.14.3/Debian-5) with ESMTP id mA8DgHW3018216
+	for <alsa-devel@alsa-project.org>; Sat, 8 Nov 2008 14:42:17 +0100
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Maxim Levitsky wrote:
-> I have just bought an Aspire one A150, XP version,
-> as it was the only available here, and installed ubuntu on it.
-> 
-> Bugs I discovered so far:
-> 
-> 
-> ** 1 - embedded controler works in polling mode, due to this:
-> 
-> [    0.708571] ACPI: EC: non-query interrupt received, switching to interrupt mode
-> [    1.224043] ACPI: EC: missing confirmations, switch off interrupt mode.
-> 
-> 
-> Maybe this is the reason for the fact that gnome power manager freezes when I unplug
-> the AC, and freezes often when I try to see battery status.
-> 
-> 
-> (Note: same is seen on my acer aspire 5720)
 
-That sounds like a known issue.  It has been resolved by "ACPI: EC: revert msleep patch".  Happily Len submitted it for mainline this week.  You will also find it if you try the acpi-test git tree.  We're all hoping 2.6.28 will be much improved in terms of reliable operation of different ECs :).
+--===============4928281946038401092==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-NGXHNQkWRtIJXVMb766+"
 
-> ** 2 - wireless: not to mention the fact that ath5k wasn't installed by default in ubuntu...
-> wireless more or less works, but kernel log is full of backtraces.
 
-Well, that doesn't tell us much.  Did they still happen after upgrading to 2.6.28-rc3?  Can we see them?
+--=-NGXHNQkWRtIJXVMb766+
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-> Was able to connect to my WPA2 access point.
-> Sometimes wireless fails completely, especially after suspend to ram.
-> Advanced features like monitor/injection work, but when I changed the card's
-> mac address it stopped working.
-> I also noticed that if I then start airodump, then wireless works with new mac.
-> 
-> 
-> 
-> ** 3 - internal mic doesn't work.
-> tried model=acer, model=auto.
-> Overall it seems that alsa misprograms O/B realteck
-> codec.
-> I talk about this later.
-> Have same issue on my acer 5720
-> 
-> 
-> 
-> ** 4 - wireless led doesn't work.
-> ath5k devs, can you fix this?
-> 
-> 
-> ** 5 - coretemp doesn't show cpu temperature,
-> I have seen somewhere that atom support same thermal diode as core2
-> and only patch to detect it is needed.
-> Please include such path in 2.6.28 if exists.
-> 
-> 
-> ** 6 - both card readers are missing from lspci, is this normal?
+currently, the error message when trying to run hdspmixer or hdspconf
+if the breakout box is not connected is somehow misleading, since it
+asks the user to upload the firmware.
 
-A similar bug has been reported as a regression:
+this patch adds a test, whether the breakout box is connected and
+tries to upload the firmware in the case, that it is not present, e.g.
+because of power failures of the breakout box.
 
-<http://bugzilla.kernel.org/show_bug.cgi?id=11828>
+Signed-off-by: Tim Blechmann <tim@klingt.org>
+---
+ sound/pci/rme9652/hdsp.c |   17 +++++++++++++----
+ 1 files changed, 13 insertions(+), 4 deletions(-)
 
-so one assumes that it worked on the machines with linux pre-installed.  Hopefully without requiring any hacks.
+diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
+index cf9eb41..5bd0be6 100644
+--- a/sound/pci/rme9652/hdsp.c
++++ b/sound/pci/rme9652/hdsp.c
+@@ -4548,11 +4548,18 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *h=
+w, struct file *file, unsigne
+ {
+ 	struct hdsp *hdsp =3D (struct hdsp *)hw->private_data;=09
+ 	void __user *argp =3D (void __user *)arg;
++	int err;
+=20
+ 	switch (cmd) {
+ 	case SNDRV_HDSP_IOCTL_GET_PEAK_RMS: {
+ 		struct hdsp_peak_rms __user *peak_rms =3D (struct hdsp_peak_rms __user *=
+)arg;
+=20
++		if ((err =3D hdsp_check_for_iobox (hdsp)) < 0)
++			return err;
++
++		if ((err =3D hdsp_check_for_firmware(hdsp, 1)) < 0)
++			return err;
++
+ 		if (!(hdsp->state & HDSP_FirmwareLoaded)) {
+ 			snd_printk(KERN_ERR "Hammerfall-DSP: firmware needs to be uploaded to t=
+he card.\n");
+ 			return -EINVAL;
+@@ -4572,10 +4579,12 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *h=
+w, struct file *file, unsigne
+ 		unsigned long flags;
+ 		int i;
+ 	=09
+-		if (!(hdsp->state & HDSP_FirmwareLoaded)) {
+-			snd_printk(KERN_ERR "Hammerfall-DSP: Firmware needs to be uploaded to t=
+he card.\n");=09
+-			return -EINVAL;
+-		}
++		if ((err =3D hdsp_check_for_iobox (hdsp)) < 0)
++			return err;
++
++		if ((err =3D hdsp_check_for_firmware(hdsp, 1)) < 0)
++			return err;
++
+ 		spin_lock_irqsave(&hdsp->lock, flags);
+ 		info.pref_sync_ref =3D (unsigned char)hdsp_pref_sync_ref(hdsp);
+ 		info.wordclock_sync_check =3D (unsigned char)hdsp_wc_sync_check(hdsp);
+--=20
+1.5.6.3
 
-It seems that for now a workaround may be to pass the option debug_quirks=1 to the sdhci module...
+--=-NGXHNQkWRtIJXVMb766+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
 
-<http://marc.info/?l=linux-kernel&m=122509648027303&w=2>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
 
-...or that it may help if you insert an SD card before booting.
+iEYEABECAAYFAkkVlzgACgkQFz+XezW6HD65lQCfTMiaxMSEcABgmI4BnMbERcdg
+2+UAnA5WTp/sZ9xyB/XQ8/p4k83m7bp9
+=fGWD
+-----END PGP SIGNATURE-----
 
-Apparently the reporter also investigated pcie hotplug.  Probably the BIOS doesn't provide the normal support.  You can try "modprobe pciehp pciehp_force=1", maybe it helps the kernel discover the devices.  It worked for something else on my EeePC.  But then it will reportedly disappear the ethernet controller.
+--=-NGXHNQkWRtIJXVMb766+--
 
-However, at the moment pciehp can cause delays of 10s of seconds during resume.
- 
-> ** 7 - opengl is broken, I tried running neverball in fullscreen, but it shows wrong/corrupted
-> textures (compiz is running, and working well thought)
->  
-> Now I installed 2.6.28-rc3 (actually latest -git)
-> 
-> 
-> Sadly nothing improved.
-> I only found few regressions:
-> 
-> 
-> 
-> * Wireless now drops connection from my WPA2 access point after few minutes.
-> I changed temporarily its wireless protection to WEP and open mode, and both work
-> fine, maybe this is related to periodic key exchange WPA does?
-> 
-> * System doesn't reboot/shutdown, just hangs.
 
-Could be this:
+--===============4928281946038401092==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-<http://bugzilla.kernel.org/show_bug.cgi?id=11942>
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-As a fix, 8fd145917fb62368a9b80db59562c20576238f5a was reverted from the acpi tree.  This has also been submitted to mainline.
-
-Thanks for your work!  If you continue with this, I suggest CC'ing <kernel-testers-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>.  That will help Rafael the regression hunter pick it up.
-
-Alan
+--===============4928281946038401092==--
