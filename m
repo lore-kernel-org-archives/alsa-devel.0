@@ -1,17 +1,16 @@
-From: Tim Blechmann <tim@klingt.org>
-Subject: [PATCH] ALSA: hdsp: check for iobox and upload
- firmware during ioctl
-Date: Sat, 08 Nov 2008 14:42:18 +0100
-Message-ID: <1226151738.6872.4.camel@thinkpad>
+From: hugo.villeneuve@lyrtech.com
+Subject: [PATCH] ARM DaVinci: Add Right-Justified mode and
+	Codec clock master to davinci-i2s
+Date: Sat,  8 Nov 2008 13:26:09 -0500
+Message-ID: <1226168769-17776-1-git-send-email-hugo.villeneuve@lyrtech.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4928281946038401092=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from klingt.org (mail.klingt.org [86.59.21.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 19A2D2443E
-	for <alsa-devel@alsa-project.org>; Sat,  8 Nov 2008 14:42:18 +0100 (CET)
-Received: from [10.9.3.234] (localhost [127.0.0.1]) (authenticated bits=0)
-	by klingt.org (8.14.3/8.14.3/Debian-5) with ESMTP id mA8DgHW3018216
-	for <alsa-devel@alsa-project.org>; Sat, 8 Nov 2008 14:42:17 +0100
+Received: from server.hugovil.com (201-217-static-ppp.3menatwork.com
+	[64.235.217.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 17850103815
+	for <alsa-devel@alsa-project.org>; Sat,  8 Nov 2008 19:26:10 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,102 +21,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: davinci-linux-open-source@linux.davincidsp.com, Hugo Villeneuve <hugo.villeneuve@lyrtech.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Hugo Villeneuve <hugo.villeneuve@lyrtech.com>
 
---===============4928281946038401092==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-NGXHNQkWRtIJXVMb766+"
+ARM DaVinci: Add Right-Justified mode and Codec clock master to davinci-i2s
 
+The TI DVEVM board uses the SND_SOC_DAIFMT_CBM_CFM & I2S formats, but the
+Lyrtech SFFSDR board uses the SND_SOC_DAIFMT_CBM_CFS & RIGHT-JUSTIFIED formats.
 
---=-NGXHNQkWRtIJXVMb766+
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-currently, the error message when trying to run hdspmixer or hdspconf
-if the breakout box is not connected is somehow misleading, since it
-asks the user to upload the firmware.
-
-this patch adds a test, whether the breakout box is connected and
-tries to upload the firmware in the case, that it is not present, e.g.
-because of power failures of the breakout box.
-
-Signed-off-by: Tim Blechmann <tim@klingt.org>
+Signed-off-by: Hugo Villeneuve <hugo.villeneuve@lyrtech.com>
 ---
- sound/pci/rme9652/hdsp.c |   17 +++++++++++++----
- 1 files changed, 13 insertions(+), 4 deletions(-)
+ sound/soc/davinci/davinci-i2s.c |   40 ++++++++++++++++++++++++++++++++------
+ 1 files changed, 33 insertions(+), 7 deletions(-)
 
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index cf9eb41..5bd0be6 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -4548,11 +4548,18 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *h=
-w, struct file *file, unsigne
- {
- 	struct hdsp *hdsp =3D (struct hdsp *)hw->private_data;=09
- 	void __user *argp =3D (void __user *)arg;
-+	int err;
-=20
- 	switch (cmd) {
- 	case SNDRV_HDSP_IOCTL_GET_PEAK_RMS: {
- 		struct hdsp_peak_rms __user *peak_rms =3D (struct hdsp_peak_rms __user *=
-)arg;
-=20
-+		if ((err =3D hdsp_check_for_iobox (hdsp)) < 0)
-+			return err;
+diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
+index abb5fed..d814ec8 100644
+--- a/sound/soc/davinci/davinci-i2s.c
++++ b/sound/soc/davinci/davinci-i2s.c
+@@ -59,6 +59,7 @@
+ #define DAVINCI_MCBSP_PCR_CLKXP		(1 << 1)
+ #define DAVINCI_MCBSP_PCR_FSRP		(1 << 2)
+ #define DAVINCI_MCBSP_PCR_FSXP		(1 << 3)
++#define DAVINCI_MCBSP_PCR_SCLKME	(1 << 7)
+ #define DAVINCI_MCBSP_PCR_CLKRM		(1 << 8)
+ #define DAVINCI_MCBSP_PCR_CLKXM		(1 << 9)
+ #define DAVINCI_MCBSP_PCR_FSRM		(1 << 10)
+@@ -171,6 +172,16 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SRGR_REG,
+ 					DAVINCI_MCBSP_SRGR_FSGM);
+ 		break;
++	case SND_SOC_DAIFMT_CBM_CFS:
++		/* McBSP CLKR pin is the input for the Sample Rate Generator.
++		 * McBSP FSR and FSX are driven by the Sample Rate Generator. */
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_PCR_REG,
++					DAVINCI_MCBSP_PCR_SCLKME |
++					DAVINCI_MCBSP_PCR_FSXM |
++					DAVINCI_MCBSP_PCR_FSRM);
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SRGR_REG,
++					DAVINCI_MCBSP_SRGR_FSGM);
++		break;
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+ 		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_PCR_REG, 0);
+ 		break;
+@@ -205,6 +216,28 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		return -EINVAL;
+ 	}
+ 
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_RIGHT_J:
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_RCR_REG,
++					DAVINCI_MCBSP_RCR_RFRLEN1(1) |
++					DAVINCI_MCBSP_RCR_RDATDLY(0));
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_XCR_REG,
++					DAVINCI_MCBSP_XCR_XFRLEN1(1) |
++					DAVINCI_MCBSP_XCR_XDATDLY(0) |
++					DAVINCI_MCBSP_XCR_XFIG);
++		break;
++	case SND_SOC_DAIFMT_I2S:
++	default:
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_RCR_REG,
++					DAVINCI_MCBSP_RCR_RFRLEN1(1) |
++					DAVINCI_MCBSP_RCR_RDATDLY(1));
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_XCR_REG,
++					DAVINCI_MCBSP_XCR_XFRLEN1(1) |
++					DAVINCI_MCBSP_XCR_XDATDLY(1) |
++					DAVINCI_MCBSP_XCR_XFIG);
++		break;
++	}
 +
-+		if ((err =3D hdsp_check_for_firmware(hdsp, 1)) < 0)
-+			return err;
-+
- 		if (!(hdsp->state & HDSP_FirmwareLoaded)) {
- 			snd_printk(KERN_ERR "Hammerfall-DSP: firmware needs to be uploaded to t=
-he card.\n");
- 			return -EINVAL;
-@@ -4572,10 +4579,12 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *h=
-w, struct file *file, unsigne
- 		unsigned long flags;
- 		int i;
- 	=09
--		if (!(hdsp->state & HDSP_FirmwareLoaded)) {
--			snd_printk(KERN_ERR "Hammerfall-DSP: Firmware needs to be uploaded to t=
-he card.\n");=09
--			return -EINVAL;
--		}
-+		if ((err =3D hdsp_check_for_iobox (hdsp)) < 0)
-+			return err;
-+
-+		if ((err =3D hdsp_check_for_firmware(hdsp, 1)) < 0)
-+			return err;
-+
- 		spin_lock_irqsave(&hdsp->lock, flags);
- 		info.pref_sync_ref =3D (unsigned char)hdsp_pref_sync_ref(hdsp);
- 		info.wordclock_sync_check =3D (unsigned char)hdsp_wc_sync_check(hdsp);
---=20
-1.5.6.3
-
---=-NGXHNQkWRtIJXVMb766+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEABECAAYFAkkVlzgACgkQFz+XezW6HD65lQCfTMiaxMSEcABgmI4BnMbERcdg
-2+UAnA5WTp/sZ9xyB/XQ8/p4k83m7bp9
-=fGWD
------END PGP SIGNATURE-----
-
---=-NGXHNQkWRtIJXVMb766+--
-
-
---===============4928281946038401092==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============4928281946038401092==--
+ 	return 0;
+ }
+ 
+@@ -223,13 +256,6 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+ 				DAVINCI_MCBSP_SPCR_RINTM(3) |
+ 				DAVINCI_MCBSP_SPCR_XINTM(3) |
+ 				DAVINCI_MCBSP_SPCR_FREE);
+-	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_RCR_REG,
+-				DAVINCI_MCBSP_RCR_RFRLEN1(1) |
+-				DAVINCI_MCBSP_RCR_RDATDLY(1));
+-	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_XCR_REG,
+-				DAVINCI_MCBSP_XCR_XFRLEN1(1) |
+-				DAVINCI_MCBSP_XCR_XDATDLY(1) |
+-				DAVINCI_MCBSP_XCR_XFIG);
+ 
+ 	i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS);
+ 	w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SRGR_REG);
