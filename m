@@ -1,31 +1,18 @@
-From: Jelle de Jong <jelledejong@powercraft.nl>
-Subject: Stuttering 100mA and 500mA MaxPower usb audio
- investigation on bus powered and external powererd usb hubs
-Date: Sat, 08 Nov 2008 21:56:24 +0100
-Message-ID: <4915FCF8.9040703@powercraft.nl>
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: Re: Bugs on aspire one A150
+Date: Sun, 09 Nov 2008 02:52:05 +0200
+Message-ID: <49163435.20301@gmail.com>
+References: <491506DB.1070000@gmail.com> <49157E97.60503@tuffmail.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from node02.cambriumhosting.nl (node02.cambriumhosting.nl
-	[217.19.16.163])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4DFCB10381E
-	for <alsa-devel@alsa-project.org>; Sat,  8 Nov 2008 21:55:25 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by node02.cambriumhosting.nl (Postfix) with ESMTP id 1411EB00017D
-	for <alsa-devel@alsa-project.org>; Sat,  8 Nov 2008 21:55:24 +0100 (CET)
-Received: from node02.cambriumhosting.nl ([127.0.0.1])
-	by localhost (node02.cambriumhosting.nl [127.0.0.1]) (amavisd-new,
-	port 10024)
-	with ESMTP id djEr6PltSu3y for <alsa-devel@alsa-project.org>;
-	Sat,  8 Nov 2008 21:55:23 +0100 (CET)
-Received: from ashley.powercraft.nl (84-245-3-195.dsl.cambrium.nl
-	[84.245.3.195])
-	by node02.cambriumhosting.nl (Postfix) with ESMTP id 850DFB000115
-	for <alsa-devel@alsa-project.org>; Sat,  8 Nov 2008 21:55:23 +0100 (CET)
-Received: from [192.168.1.213] (unknown [192.168.1.213])
-	by ashley.powercraft.nl (Postfix) with ESMTPSA id CE18423BC331
-	for <alsa-devel@alsa-project.org>; Sat,  8 Nov 2008 20:20:24 +0100 (CET)
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id 34551103821
+	for <alsa-devel@alsa-project.org>; Sun,  9 Nov 2008 01:52:11 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id 16so1770055fgg.44
+	for <alsa-devel@alsa-project.org>; Sat, 08 Nov 2008 16:52:10 -0800 (PST)
+In-Reply-To: <49157E97.60503@tuffmail.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,50 +22,163 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alan Jenkins <alan-jenkins@tuffmail.co.uk>
+Cc: linux-pm@lists.linux-foundation.org, ath5k-devel@lists.ath5k.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Kernel Testers List <kernel-testers@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello everybody,
+Alan Jenkins wrote:
+> Maxim Levitsky wrote:
+>> I have just bought an Aspire one A150, XP version,
+>> as it was the only available here, and installed ubuntu on it.
+>>
+>> Bugs I discovered so far:
+>>
+>>
+>> ** 1 - embedded controler works in polling mode, due to this:
+>>
+>> [    0.708571] ACPI: EC: non-query interrupt received, switching to interrupt mode
+>> [    1.224043] ACPI: EC: missing confirmations, switch off interrupt mode.
+>>
+>>
+>> Maybe this is the reason for the fact that gnome power manager freezes when I unplug
+>> the AC, and freezes often when I try to see battery status.
+>>
+>>
+>> (Note: same is seen on my acer aspire 5720)
+> 
+> That sounds like a known issue.  It has been resolved by "ACPI: EC: revert msleep patch".  Happily Len submitted it for mainline this week.  You will also find it if you try the acpi-test git tree.  We're all hoping 2.6.28 will be much improved in terms of reliable operation of different ECs :).
+> 
+Yes, this almost fixes all issues with that.
+Almost because, it looks like the EC changes screen brightness on his own when battery is plugged/unplugged,
+but so does the gnome-power-manager, and thus it still hangs as before on battery removal (but doesn't hang otherwise)
+I disabled that behaver in gnome-power-manager and now no more hangs.
 
-I have been testing several scenarios to find some glues why some usb
-audio devices did not fully work and gave stuttering sounds I found the
-following:
+I see that this fix fixes the polled mode. Any chance to make irq mode work?
 
-usb devices define a max power attribute during there enumeration
-process. I have some usb devices that have this at 500mA and some that
-have this on 100mA.
 
-I also have some usb hubs that have external extra power supply and some
-that are only a hub with bus power.
 
-Here it comes:
+>> ** 2 - wireless: not to mention the fact that ath5k wasn't installed by default in ubuntu...
+>> wireless more or less works, but kernel log is full of backtraces.
+> 
+> Well, that doesn't tell us much.  Did they still happen after upgrading to 2.6.28-rc3?  Can we see them?
+Fixed completely, looking through the git log I have seen a commit that fixes exactly same backtrace I had.
+No more errors in kernel log.
 
-Make sure the 4 port usb hub is full with for example:
-- usb keyboard (100mA)
-- usb mouse (100mA)
-- usb audio (100mA or 500mA)
-- usb stick (200mA/500mA)
 
-- usb hub with external power (500mA MaxPower) (AC adapter delivers 1A)
-- usb hub without external power (100mA MaxPower)
+> 
+>> Was able to connect to my WPA2 access point.
+>> Sometimes wireless fails completely, especially after suspend to ram.
+>> Advanced features like monitor/injection work, but when I changed the card's
+>> mac address it stopped working.
+>> I also noticed that if I then start airodump, then wireless works with new mac.
+This still not fixed, I ask about this again in separate mail.
+>>
+>>
+>>
+>> ** 3 - internal mic doesn't work.
+>> tried model=acer, model=auto.
+>> Overall it seems that alsa misprograms O/B realteck
+>> codec.
+>> I talk about this later.
+Surprisingly, this is almost fixed.
+I can record from both internal mic and external mic
+(Quality is not so good, but is the same as in windows)
 
-Make sure to use audio with several tones low tones (most dvds will do)
+Almost, is that to increase capture level, I have to set "one" channel of it.
+Eg: if I set 100% left and 100% right then capture level is very low.
+But when I set 100% left and 0% right or vice versa it works fine.
 
-When connecting a 100mA usb audio devices on a hub with external power
-it will give stuttering sound!! (most usb audo devices are 100mA and
-most hubs are external powered due to more then one usb stick)
+Also the "mic boost" doesn't change capture volume for internal mic.
+also the "mic boost" if set to high value works like analog loopback
+(I hear what I say in mic in headphones, same happens on my main notebook acer 5720)
 
-When connecting a 500mA usb audio device on a hub with external power it
-will work perfectly.
 
-When connecting a 100mA or a 500mA usb audio device on a hub without
-external power it will work perfectly.
+>> Have same issue on my acer 5720
+>>
+>>
+>>
+>> ** 4 - wireless led doesn't work.
+>> ath5k devs, can you fix this?
+>>
+>>
+>> ** 5 - coretemp doesn't show cpu temperature,
+>> I have seen somewhere that atom support same thermal diode as core2
+>> and only patch to detect it is needed.
+>> Please include such path in 2.6.28 if exists.
+>>
+>>
+>> ** 6 - both card readers are missing from lspci, is this normal?
+> 
+> A similar bug has been reported as a regression:
+> 
+> <http://bugzilla.kernel.org/show_bug.cgi?id=11828>
+> 
+> so one assumes that it worked on the machines with linux pre-installed.  Hopefully without requiring any hacks.
+> 
+> It seems that for now a workaround may be to pass the option debug_quirks=1 to the sdhci module...
+> 
+> <http://marc.info/?l=linux-kernel&m=122509648027303&w=2>
+> 
+> ...or that it may help if you insert an SD card before booting.
+> 
+> Apparently the reporter also investigated pcie hotplug.  Probably the BIOS doesn't provide the normal support.  You can try "modprobe pciehp pciehp_force=1", maybe it helps the kernel discover the devices.  It worked for something else on my EeePC.  But then it will reportedly disappear the ethernet controller.
+> 
+> However, at the moment pciehp can cause delays of 10s of seconds during resume.
+I am aware of this, but don't yet have a SD card to test.
 
-I have the idea there is something wrong with the power distribution
-system when using external powered usb hubs...
 
-Any ideas how to correctly address this problem/bug?
+>  
+>> ** 7 - opengl is broken, I tried running neverball in fullscreen, but it shows wrong/corrupted
+>> textures (compiz is running, and working well thought)
+Without compiz neveball works fine (slow, but this is very slow hardware)
+
+>>  
+>> Now I installed 2.6.28-rc3 (actually latest -git)
+>>
+>>
+>> Sadly nothing improved.
+>> I only found few regressions:
+>>
+>>
+>>
+>> * Wireless now drops connection from my WPA2 access point after few minutes.
+>> I changed temporarily its wireless protection to WEP and open mode, and both work
+>> fine, maybe this is related to periodic key exchange WPA does?
+Now fixed, big thanks.
+
+>>
+>> * System doesn't reboot/shutdown, just hangs.
+> 
+> Could be this:
+> 
+> <http://bugzilla.kernel.org/show_bug.cgi?id=11942>
+> 
+> As a fix, 8fd145917fb62368a9b80db59562c20576238f5a was reverted from the acpi tree.  This has also been submitted to mainline.
+Also fixed big thanks.
+
+
+
+
+Also noticed another bug:
+
+
+If I suspend/resume with compiz running, on resume I see wallpaper and mouse cursor, everything hangs for 
+minute or two, and sometimes forever.
+
+2.6.27 worked fine.
+
+
+
+
+Also hibernate doesn't work on my main notebook, but it is probably fixed, I update kernel to really latest -git
+and tell you.
+
+
+Big thanks for bugfixes, you saved me a lot of work and bisecting.
+
+Biggest solvable problem now is sound support now I think, datasheets are there, and
+I take a look at them.
+
 
 Best regards,
-
-Jelle
+	Maxim Levitsky
