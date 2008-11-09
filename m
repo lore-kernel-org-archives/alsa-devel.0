@@ -1,19 +1,24 @@
-From: Andreas Mohr <andi@lisas.de>
-Subject: Re: Bugs on aspire one A150
-Date: Sun, 9 Nov 2008 21:09:29 +0100
-Message-ID: <20081109200929.GA29333@rhlx01.hs-esslingen.de>
-References: <s5h3ai11dpt.wl%tiwai@suse.de>
-	<20081109151323.GA18705@rhlx01.hs-esslingen.de>
-	<s5h7i7c916e.wl%tiwai@suse.de>
+From: "Bjoern Olausson" <lkmlist@gmail.com>
+Subject: Re: Creative Sound Blaster X-Fi and X-Fi Titanium
+	Series Linux 32bit/64bit Driver Source released
+Date: Mon, 10 Nov 2008 00:32:07 +0100
+Message-ID: <5501535d0811091532t7bdd2f7co5be765c8f0d67725@mail.gmail.com>
+References: <5501535d0811060746y60d18e6boc8c5ad34a63fb92b@mail.gmail.com>
+	<8fe68c970811061536n52c6c819v58145401002555be@mail.gmail.com>
+	<4913C742.9040107@gmail.com>
+	<5501535d0811071108u7e922704h97408525e670741@mail.gmail.com>
+	<4915246F.9040606@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id 680622432F
-	for <alsa-devel@alsa-project.org>; Sun,  9 Nov 2008 21:09:30 +0100 (CET)
+Received: from rv-out-0506.google.com (rv-out-0506.google.com [209.85.198.229])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7DE7A103810
+	for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2008 00:32:08 +0100 (CET)
+Received: by rv-out-0506.google.com with SMTP id g9so483332rvb.2
+	for <alsa-devel@alsa-project.org>; Sun, 09 Nov 2008 15:32:07 -0800 (PST)
+In-Reply-To: <4915246F.9040606@gmail.com>
 Content-Disposition: inline
-In-Reply-To: <s5h7i7c916e.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,54 +28,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Kernel Testers List <kernel-testers@vger.kernel.org>, linux-kernel@vger.kernel.org, Andreas Mohr <andi@lisas.de>, Maxim Levitsky <maximlevitsky@gmail.com>
+To: The Source <thesourcehim@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Nov 09, 2008 at 07:58:17PM +0100, Takashi Iwai wrote:
-> At Sun, 9 Nov 2008 16:13:23 +0100,
-> Andreas Mohr wrote:
-> > OK, _THIS_ time I actually did get the correct model (last time I tried
-> > modprobe with model=acer-aspire, but apparently it then used the
-> > /etc/modprobe.d/ model=toshiba setting, since this time gamix showed
-> > entirely different controls with i-Mic etc.) - all the more reason to
-> > log the model name chosen/selected by the driver!!
-> 
-> Build with the debug option (why turned off even if you *are*
-> debugging?).  Then the driver will show you details.
-
-Hmm, right, that would have been an (very useful) option, but not for the
-majority of users OTOH.
-Especially since this is a user-visible module parameter which should thus
-be confirmed in mainstream user code, via logging.
-Admittedly not many modules log their settings during startup,
-but for snd_hda_intel with its two myriads of codec/machine variants
-and a resulting quarter myriad of issues that would be very useful.
-
-> > --> I have to admit that usability sucks^Hcould be a lot better.
-> 
-> One would call it rather debuggability than usability.
-> These are completely different things.
-
-See above ;)
-
-> > i-Mic on Ekiga with lotsa mixer fiddling didn't work either this time.
-> 
-> OK, then something is missing.  But you should test by arecord first
-> than any complicated applications as a primary test.
-
-Good point, will do.
-
-Oh, and is there a way to manually alter codec registers?
-
-> Anyway, the acer-aspire support code was written by Realtek guys, so
-> it'd be best to ask them...
-
-Indeed, and far too late (they have submitted it in September I think)
-for guaranteeing non-problematic hardware behaviour...
-(I'd guesstimate the Realtek submission to be based on Acer activity)
-Anyway, still very nice to see that companies do submit patches after all.
-
-Thanks,
-
-Andreas
+T24gU2F0LCBOb3YgOCwgMjAwOCBhdCAwNjozMiwgVGhlIFNvdXJjZSA8dGhlc291cmNlaGltQGdt
+YWlsLmNvbT4gd3JvdGU6Cj4gQmpvZXJuIE9sYXVzc29uINC/0LjRiNC10YI6Cj4+Cj4+IE9uIEZy
+aSwgTm92IDcsIDIwMDggYXQgMDU6NDIsIFRoZSBTb3VyY2UgPHRoZXNvdXJjZWhpbUBnbWFpbC5j
+b20+IHdyb3RlOgo+Pgo+Pgo+Pj4KPj4+IEl0IHdhcyBpbmNvbXBhdGliaWxpdHkgd2l0aCBvbGRl
+ciBrZXJuZWxzLiBVcGRhdGVkIHRvIDIuNi4yNyBhbmQgZHJpdmVyCj4+PiB3b3JrcyBub3cuIEJ1
+dCBubyA1LjEgc3VwcG9ydCBhZ2FpbiA6KAo+Pj4KPj4+Cj4+Cj4+IHNwZWFrZXItdGVzdCAtYyA2
+IGF0IGxlYXN0IHBsYXlzIHNvdW5kIG9uIEZyb250LUxlZnQsIENlbnRlciBhbmQKPj4gRnJvbnQt
+UmlnaHQuCj4+Cj4+IE5vIHNvdW5kIG9uIHRoZSByZWFyIHNwZWFrZXJzIG9yIG9uIHRoZSBTdWJ3
+b29mZXIuLi4uCj4+Cj4+IEJ1dCBoZXksIGl0J3MgaGFsZiB0aGUgd2F5Li4uCj4+Cj4+IGtpbmQg
+cmVnYXJkcwo+PiBCam9lcm4KPj4KPj4KPgo+IENlbnRlciBkb2Vzbid0IHBsYXkgZm9yIG1lLiBP
+bmx5IEZyb250IGxlZnQgYW5kIHJpZ2h0Lgo+CgptbWggYW5kIHRoZSBzdHJveSBjb250aW51ZXMu
+Li4gQ3JlYXRpdmUgd291bGQgaGF2ZSBiZWVuIGJldHRlciBvZmYgaXQKdGhleSB3b3VsZCBub3Qg
+aGF2ZSBhbm5vbmNlZCBMaW51eCBkcml2ZXIuLi4gaHJyaHJyCgpJIGd1ZXNzIHRoZSBiZXN0IHNv
+bGx1dGlvbiB3b3VsZCBiZSB0byB0YWtlIHRoZSByZXF1aXJlZCBwYXJ0cyBmcm9tdAp0aGUgY3Jl
+YXRpdmUgZHJpdmVyIGFuZCBzdGFydCB3cml0aW5nIG9yIGNvbXBsZXRpbmcgdGhlIGN1cnJlbnQg
+YWxzYQpkcml2ZXIuLi4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCg==
