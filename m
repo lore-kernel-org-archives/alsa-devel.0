@@ -1,17 +1,29 @@
-From: Andreas Mohr <andi@lisas.de>
-Subject: Re: Bugs on aspire one A150
-Date: Sun, 9 Nov 2008 14:31:12 +0100
-Message-ID: <20081109133112.GA4968@rhlx01.hs-esslingen.de>
-References: <s5h3ai11dpt.wl%tiwai@suse.de>
+From: Jelle de Jong <jelledejong@powercraft.nl>
+Subject: my udev rules are breaking my dmixer setup why?
+Date: Sun, 09 Nov 2008 15:59:03 +0100
+Message-ID: <4916FAB7.7050206@powercraft.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------090200080204060602040308"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0A74524330
-	for <alsa-devel@alsa-project.org>; Sun,  9 Nov 2008 14:31:12 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5h3ai11dpt.wl%tiwai@suse.de>
+Received: from node04.cambriumhosting.nl (node04.cambriumhosting.nl
+	[217.19.16.165])
+	by alsa0.perex.cz (Postfix) with ESMTP id F0D05103815
+	for <alsa-devel@alsa-project.org>; Sun,  9 Nov 2008 15:59:08 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by node04.cambriumhosting.nl (Postfix) with ESMTP id 8FD55B0000B0
+	for <alsa-devel@alsa-project.org>; Sun,  9 Nov 2008 15:59:07 +0100 (CET)
+Received: from node04.cambriumhosting.nl ([127.0.0.1])
+	by localhost (node04.cambriumhosting.nl [127.0.0.1]) (amavisd-new,
+	port 10024)
+	with ESMTP id DUFD3tH1M07b for <alsa-devel@alsa-project.org>;
+	Sun,  9 Nov 2008 15:59:06 +0100 (CET)
+Received: from ashley.powercraft.nl (84-245-3-195.dsl.cambrium.nl
+	[84.245.3.195])
+	by node04.cambriumhosting.nl (Postfix) with ESMTP id BA4BFB000074
+	for <alsa-devel@alsa-project.org>; Sun,  9 Nov 2008 15:59:06 +0100 (CET)
+Received: from [192.168.1.213] (unknown [192.168.1.213])
+	by ashley.powercraft.nl (Postfix) with ESMTPSA id 572D923BC3D2
+	for <alsa-devel@alsa-project.org>; Sun,  9 Nov 2008 14:24:06 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,56 +33,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Kernel Testers List <kernel-testers@vger.kernel.org>, linux-kernel@vger.kernel.org, Maxim Levitsky <maximlevitsky@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This is a multi-part message in MIME format.
+--------------090200080204060602040308
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-[Takashi]:
-> Interesting.  Is it with or without model option?  There is a model
-> option specific for aspire one (acer-aspire).  Doesn't it work better?
+Hello everybody,
 
-I had already tried 2.6.28-rc3 on A110L (also plus hand-patched digital-mic patch of
-patch_realtek.c) and it still didn't work for me.
-I didn't use the acer one model parameter, though.
+I am trying to use udev to get fixed device names depending on the
+location of the device on the usb bus. The udev rules seems to be
+working fine, however i cant get dmix to work with the udev rules using
+only hw dies work. If i remove the udev rules the dmixer works fine.
 
-Well, now I just did use it, and it didn't work either AFAICT, with lots
-of mixer fumbling again.
+Can somebody look at the attachment, and maybe do some testing, i would
+highly appreciate it.
 
-And I'm not sure whether the model name should be "acer-aspire" instead
-of "acer-aspireone" since Aspire is the name of an entire series
-which might possibly have incompatible requirements.
-Also, I'm not really happy with the fact that snd_hda_intel doesn't even
-log the model name chosen/selected on module initialisation.
+I am also on chat.freenode.org and #alsa as tuxcrafter
 
-Frankly I've had so much snd_hda_intel codec-specific trouble on pretty much all of the
-few notebooks/machines that I touched in the last year (that's not an
-understatement!) that I think it would be a very nice idea to write a _very_ visible
-HOWTO (search words: intel-hda alsa HOWTO codec etc.) detailling how to improve
-codec-specific support for snd_hda_intel (this should best be done by explaining
-how one arrived at a particular patch for a certain codec, e.g. take the
-recent ALC268 work, i.e. check /proc/asound/Intel/codec#0 and look at which part
-is not supported by the snd_hda_intel patch file yet and then explain how to add stuff
-to it, in very verbose and generic words to let layman people know how to do
-this).
+Thanks in advance,
 
-As already said, I've (and certainly not only me!) been bitten
-again and again and AGAIN by incomplete codec support in snd_hda_intel, thus
-we need to make damn sure people can help themselves as well as remotely
-possible, to ensure sufficiently fast and sufficiently complete support
-for new HDA codecs (which seem to appear each new month or week even,
-unfortunately!).
-If people don't even know how to tackle this easily, then patch submissions for new
-codecs aren't too likely...
+Jelle
 
-And the A110L has been on the shelves for 4 or 5 months already (with 5 to 6
-million units sold, they say!!), a time where full support would have been in order.
-But it's certainly a major fault of Acer to not have provided full ALSA
-support for this (note that I'm not sure about Mic support in its
-pre-installed Linpus installation), the ALSA people certainly don't have
-any responsibility for this.
+--------------090200080204060602040308
+Content-Type: text/plain;
+ name="udev-alsa-setup.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="udev-alsa-setup.txt"
 
-Thanks,
+bHMgLWhhbCAvZGV2L3NuZC8KICAgIHRvdGFsIDAKICAgIGRyd3hyLXhyLXggIDIgcm9vdCBy
+b290ICAgICAgIDMyMCAyMDA4LTExLTA5IDE1OjQ0IC4KICAgIGRyd3hyLXhyLXggMTIgcm9v
+dCByb290ICAgICAgNC44SyAyMDA4LTExLTA5IDE1OjUwIC4uCiAgICBjcnctcnctLS0tICAx
+IHJvb3QgdXNlcjAgMTE2LCAgIDAgMjAwOC0xMS0wOSAxNTo0NCBjb250cm9sQzAKICAgIGNy
+dy1ydy0tLS0gIDEgcm9vdCB1c2VyMSAxMTYsICAzMiAyMDA4LTExLTA5IDE1OjQ0IGNvbnRy
+b2xDMQogICAgY3J3LXJ3LS0tLSAgMSByb290IHVzZXIyIDExNiwgIDY0IDIwMDgtMTEtMDkg
+MTU6NDQgY29udHJvbEMyCiAgICBjcnctcnctLS0tICAxIHJvb3QgdXNlcjMgMTE2LCAgOTYg
+MjAwOC0xMS0wOSAxNTo0NCBjb250cm9sQzMKICAgIGNydy1ydy0tLS0gIDEgcm9vdCB1c2Vy
+MCAxMTYsICAyNCAyMDA4LTExLTA5IDE1OjQ0IHBjbUMwRDBjCiAgICBjcnctcnctLS0tICAx
+IHJvb3QgdXNlcjAgMTE2LCAgMTYgMjAwOC0xMS0wOSAxNTo0OSBwY21DMEQwcAogICAgY3J3
+LXJ3LS0tLSAgMSByb290IHVzZXIxIDExNiwgIDU2IDIwMDgtMTEtMDkgMTU6NDQgcGNtQzFE
+MGMKICAgIGNydy1ydy0tLS0gIDEgcm9vdCB1c2VyMSAxMTYsICA0OCAyMDA4LTExLTA5IDE1
+OjQ0IHBjbUMxRDBwCiAgICBjcnctcnctLS0tICAxIHJvb3QgdXNlcjIgMTE2LCAgODggMjAw
+OC0xMS0wOSAxNTo0NCBwY21DMkQwYwogICAgY3J3LXJ3LS0tLSAgMSByb290IHVzZXIyIDEx
+NiwgIDgwIDIwMDgtMTEtMDkgMTU6NDQgcGNtQzJEMHAKICAgIGNydy1ydy0tLS0gIDEgcm9v
+dCB1c2VyMyAxMTYsIDEyMCAyMDA4LTExLTA5IDE1OjQ0IHBjbUMzRDBjCiAgICBjcnctcnct
+LS0tICAxIHJvb3QgdXNlcjMgMTE2LCAxMTIgMjAwOC0xMS0wOSAxNTo0NCBwY21DM0QwcAog
+ICAgY3J3LXJ3LS0tLSAgMSByb290IGF1ZGlvIDExNiwgICAxIDIwMDgtMTEtMDkgMTU6NDQg
+c2VxCiAgICBjcnctcnctLS0tICAxIHJvb3QgYXVkaW8gMTE2LCAgMzMgMjAwOC0xMS0wOSAx
+NTo0NCB0aW1lcgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgp1ZGV2aW5mbyBpbmZvIC0tYXR0cmli
+dXRlLXdhbGsgLS1uYW1lPS9kZXYvc25kL2NvbnRyb2xDMAoKLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+CgplY2hvICdTVUJTWVNURU09PSJzb3VuZCIsIEtFUk5FTFM9PSIzLTEiLCBLRVJORUw9PSJj
+b250cm9sQ1swLTldKiIsIE5BTUU9InNuZC9jb250cm9sQzQiClNVQlNZU1RFTT09InNvdW5k
+IiwgS0VSTkVMUz09IjMtMiIsIEtFUk5FTD09ImNvbnRyb2xDWzAtOV0iLCBOQU1FPSJzbmQv
+Y29udHJvbEM1IgpTVUJTWVNURU09PSJzb3VuZCIsIEtFUk5FTFM9PSI0LTEiLCBLRVJORUw9
+PSJjb250cm9sQ1swLTldIiwgTkFNRT0ic25kL2NvbnRyb2xDNiIKU1VCU1lTVEVNPT0ic291
+bmQiLCBLRVJORUxTPT0iNC0yIiwgS0VSTkVMPT0iY29udHJvbENbMC05XSIsIE5BTUU9InNu
+ZC9jb250cm9sQzciCgpTVUJTWVNURU09PSJzb3VuZCIsIEtFUk5FTFM9PSIzLTEiLCBLRVJO
+RUw9PSJod0NbMC05XUQwYyIsIE5BTUU9InNuZC9od0M0RDBjIgpTVUJTWVNURU09PSJzb3Vu
+ZCIsIEtFUk5FTFM9PSIzLTIiLCBLRVJORUw9PSJod0NbMC05XUQwYyIsIE5BTUU9InNuZC9o
+d0M1RDBjIgpTVUJTWVNURU09PSJzb3VuZCIsIEtFUk5FTFM9PSI0LTEiLCBLRVJORUw9PSJo
+d0NbMC05XUQwYyIsIE5BTUU9InNuZC9od0M2RDBjIgpTVUJTWVNURU09PSJzb3VuZCIsIEtF
+Uk5FTFM9PSI0LTIiLCBLRVJORUw9PSJod0NbMC05XUQwYyIsIE5BTUU9InNuZC9od0M3RDBj
+IgoKU1VCU1lTVEVNPT0ic291bmQiLCBLRVJORUxTPT0iMy0xIiwgS0VSTkVMPT0icGNtQ1sw
+LTldRDBjIiwgTkFNRT0ic25kL3BjbUM0RDBjIgpTVUJTWVNURU09PSJzb3VuZCIsIEtFUk5F
+TFM9PSIzLTIiLCBLRVJORUw9PSJwY21DWzAtOV1EMGMiLCBOQU1FPSJzbmQvcGNtQzVEMGMi
+ClNVQlNZU1RFTT09InNvdW5kIiwgS0VSTkVMUz09IjQtMSIsIEtFUk5FTD09InBjbUNbMC05
+XUQwYyIsIE5BTUU9InNuZC9wY21DNkQwYyIKU1VCU1lTVEVNPT0ic291bmQiLCBLRVJORUxT
+PT0iNC0yIiwgS0VSTkVMPT0icGNtQ1swLTldRDBjIiwgTkFNRT0ic25kL3BjbUM3RDBjIgoK
+U1VCU1lTVEVNPT0ic291bmQiLCBLRVJORUxTPT0iMy0xIiwgS0VSTkVMPT0icGNtQ1swLTld
+RDBwIiwgTkFNRT0ic25kL3BjbUM0RDBwIgpTVUJTWVNURU09PSJzb3VuZCIsIEtFUk5FTFM9
+PSIzLTIiLCBLRVJORUw9PSJwY21DWzAtOV1EMHAiLCBOQU1FPSJzbmQvcGNtQzVEMHAiClNV
+QlNZU1RFTT09InNvdW5kIiwgS0VSTkVMUz09IjQtMSIsIEtFUk5FTD09InBjbUNbMC05XUQw
+cCIsIE5BTUU9InNuZC9wY21DNkQwcCIKU1VCU1lTVEVNPT0ic291bmQiLCBLRVJORUxTPT0i
+NC0yIiwgS0VSTkVMPT0icGNtQ1swLTldRDBwIiwgTkFNRT0ic25kL3BjbUM3RDBwIicgfCB0
+ZWUgL2V0Yy91ZGV2L3J1bGVzLmQvMTAtcGVyc2lzdGVudC1zb3VuZC5ydWxlcwpjaG1vZCA2
+MDAgL2V0Yy91ZGV2L3J1bGVzLmQvMTAtcGVyc2lzdGVudC1zb3VuZC5ydWxlcwoKLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tCiMgd2l0aG91dCBkbWl4ZXIgIyB0aGlzIHdvcmtzIC4uLi4KCmVjaG8g
+J3BjbS5zb2Z0dm9sIHsKICAgIHR5cGUgc29mdHZvbAogICAgc2xhdmUucGNtIGh3OjEKICAg
+IGNvbnRyb2wubmFtZSBNYXN0ZXIKICAgIGNvbnRyb2wuY2FyZCAxCn0KCnBjbS4hZGVmYXVs
+dCB7CiAgICB0eXBlIHBsdWcKICAgIHNsYXZlLnBjbSBzb2Z0dm9sCn0KCmN0bC4hZGVmYXVs
+dCB7CiAgICB0eXBlIGh3CiAgICBjYXJkIDEKfScgfCB0ZWUgL2hvbWUvdXNlcjEvLmFzb3Vu
+ZHJjCmNobW9kIDYwMCAvaG9tZS91c2VyMS8uYXNvdW5kcmMKY2hvd24gdXNlcjE6dXNlcjEg
+L2hvbWUvdXNlcjEvLmFzb3VuZHJjCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIyB3aXRoIGRtaXhl
+ciAjIHRoaXMgZG9lcyBub3Qgd29yawoKZWNobyAncGNtLnNvZnR2b2wgewogICAgdHlwZSBz
+b2Z0dm9sCiAgICBzbGF2ZS5wY20gZG1peDoxCiAgICBjb250cm9sLm5hbWUgTWFzdGVyCiAg
+ICBjb250cm9sLmNhcmQgMQp9CgpwY20uIWRlZmF1bHQgewogICAgdHlwZSBwbHVnCiAgICBz
+bGF2ZS5wY20gc29mdHZvbAp9CgpjdGwuIWRlZmF1bHQgewogICAgdHlwZSBodwogICAgY2Fy
+ZCAxCn0nIHwgdGVlIC9ob21lL3VzZXIxLy5hc291bmRyYwpjaG1vZCA2MDAgL2hvbWUvdXNl
+cjEvLmFzb3VuZHJjCmNob3duIHVzZXIxOnVzZXIxIC9ob21lL3VzZXIxLy5hc291bmRyYwoK
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tCiMgd2l0aCBkbWl4ZXIgIyB0aGlzIGRvZXMgbm90IHdvcmsK
+CmVjaG8gJ3BjbS4hZGVmYXVsdCB7CiAgIHR5cGUgcGx1ZwogICBzbGF2ZS5wY20gZG1peGVy
+Cn0KcGNtLmRtaXhlciB7CiAgIHR5cGUgZG1peAogICBpcGNfa2V5IDIwNDgKICAgc2xhdmUu
+cGNtIGh3OjEKfQpjdGwuZG1peGVyIHsKICAgdHlwZSBodwogICBjYXJkIDEKfQpwY20uZHNw
+IHsKICAgIHR5cGUgcGx1ZwogICAgc2xhdmUucGNtIGRtaXhlcgp9CmN0bC5taXhlciB7CiAg
+ICB0eXBlIGh3CiAgICBjYXJkIDEKfScgfCB0ZWUgL2hvbWUvdXNlcjEvLmFzb3VuZHJjCmNo
+bW9kIDYwMCAvaG9tZS91c2VyMS8uYXNvdW5kcmMKY2hvd24gdXNlcjE6dXNlcjEgL2hvbWUv
+dXNlcjEvLmFzb3VuZHJjCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
+--------------090200080204060602040308
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Andreas Mohr
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------090200080204060602040308--
