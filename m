@@ -1,29 +1,17 @@
-From: Jelle de Jong <jelledejong@powercraft.nl>
-Subject: my udev rules are breaking my dmixer setup why?
-Date: Sun, 09 Nov 2008 15:59:03 +0100
-Message-ID: <4916FAB7.7050206@powercraft.nl>
+From: Andreas Mohr <andi@lisas.de>
+Subject: Re: Bugs on aspire one A150
+Date: Sun, 9 Nov 2008 16:13:23 +0100
+Message-ID: <20081109151323.GA18705@rhlx01.hs-esslingen.de>
+References: <s5h3ai11dpt.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------090200080204060602040308"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from node04.cambriumhosting.nl (node04.cambriumhosting.nl
-	[217.19.16.165])
-	by alsa0.perex.cz (Postfix) with ESMTP id F0D05103815
-	for <alsa-devel@alsa-project.org>; Sun,  9 Nov 2008 15:59:08 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by node04.cambriumhosting.nl (Postfix) with ESMTP id 8FD55B0000B0
-	for <alsa-devel@alsa-project.org>; Sun,  9 Nov 2008 15:59:07 +0100 (CET)
-Received: from node04.cambriumhosting.nl ([127.0.0.1])
-	by localhost (node04.cambriumhosting.nl [127.0.0.1]) (amavisd-new,
-	port 10024)
-	with ESMTP id DUFD3tH1M07b for <alsa-devel@alsa-project.org>;
-	Sun,  9 Nov 2008 15:59:06 +0100 (CET)
-Received: from ashley.powercraft.nl (84-245-3-195.dsl.cambrium.nl
-	[84.245.3.195])
-	by node04.cambriumhosting.nl (Postfix) with ESMTP id BA4BFB000074
-	for <alsa-devel@alsa-project.org>; Sun,  9 Nov 2008 15:59:06 +0100 (CET)
-Received: from [192.168.1.213] (unknown [192.168.1.213])
-	by ashley.powercraft.nl (Postfix) with ESMTPSA id 572D923BC3D2
-	for <alsa-devel@alsa-project.org>; Sun,  9 Nov 2008 14:24:06 +0100 (CET)
+Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0972A103815
+	for <alsa-devel@alsa-project.org>; Sun,  9 Nov 2008 16:13:24 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5h3ai11dpt.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,120 +21,624 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Kernel Testers List <kernel-testers@vger.kernel.org>, linux-kernel@vger.kernel.org, Maxim Levitsky <maximlevitsky@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------090200080204060602040308
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Hi,
 
-Hello everybody,
+[Takashi]:
+> Interesting.  Is it with or without model option?  There is a model
+> option specific for aspire one (acer-aspire).  Doesn't it work better?
 
-I am trying to use udev to get fixed device names depending on the
-location of the device on the usb bus. The udev rules seems to be
-working fine, however i cant get dmix to work with the udev rules using
-only hw dies work. If i remove the udev rules the dmixer works fine.
+OK, _THIS_ time I actually did get the correct model (last time I tried
+modprobe with model=acer-aspire, but apparently it then used the
+/etc/modprobe.d/ model=toshiba setting, since this time gamix showed
+entirely different controls with i-Mic etc.) - all the more reason to
+log the model name chosen/selected by the driver!!
+--> I have to admit that usability sucks^Hcould be a lot better.
+It's perfectly fine for ALSA to not have support for newish codecs or newish
+machines with weird setups, but basic usability and or documentation
+should thus be as good as can be to make sure that weaknesses can get detected
+and fixed in no time, even by "interested parties".
 
-Can somebody look at the attachment, and maybe do some testing, i would
-highly appreciate it.
+i-Mic on Ekiga with lotsa mixer fiddling didn't work either this time.
 
-I am also on chat.freenode.org and #alsa as tuxcrafter
+> For comparing the hardware setting, please you run alsa-info.sh with
+> --no-upload option, and attach the generated file at each state.  This
+> shows the real codec register values.
 
-Thanks in advance,
+OK, here it is (-rc3 with model=acer-aspire):
 
-Jelle
 
---------------090200080204060602040308
-Content-Type: text/plain;
- name="udev-alsa-setup.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: inline;
- filename="udev-alsa-setup.txt"
+name=root&type=33&description=/tmp/alsa-info.txt&expiry=&s=Submit+Post&content=
+!!################################
+!!ALSA Information Script v 0.4.48
+!!################################
 
-bHMgLWhhbCAvZGV2L3NuZC8KICAgIHRvdGFsIDAKICAgIGRyd3hyLXhyLXggIDIgcm9vdCBy
-b290ICAgICAgIDMyMCAyMDA4LTExLTA5IDE1OjQ0IC4KICAgIGRyd3hyLXhyLXggMTIgcm9v
-dCByb290ICAgICAgNC44SyAyMDA4LTExLTA5IDE1OjUwIC4uCiAgICBjcnctcnctLS0tICAx
-IHJvb3QgdXNlcjAgMTE2LCAgIDAgMjAwOC0xMS0wOSAxNTo0NCBjb250cm9sQzAKICAgIGNy
-dy1ydy0tLS0gIDEgcm9vdCB1c2VyMSAxMTYsICAzMiAyMDA4LTExLTA5IDE1OjQ0IGNvbnRy
-b2xDMQogICAgY3J3LXJ3LS0tLSAgMSByb290IHVzZXIyIDExNiwgIDY0IDIwMDgtMTEtMDkg
-MTU6NDQgY29udHJvbEMyCiAgICBjcnctcnctLS0tICAxIHJvb3QgdXNlcjMgMTE2LCAgOTYg
-MjAwOC0xMS0wOSAxNTo0NCBjb250cm9sQzMKICAgIGNydy1ydy0tLS0gIDEgcm9vdCB1c2Vy
-MCAxMTYsICAyNCAyMDA4LTExLTA5IDE1OjQ0IHBjbUMwRDBjCiAgICBjcnctcnctLS0tICAx
-IHJvb3QgdXNlcjAgMTE2LCAgMTYgMjAwOC0xMS0wOSAxNTo0OSBwY21DMEQwcAogICAgY3J3
-LXJ3LS0tLSAgMSByb290IHVzZXIxIDExNiwgIDU2IDIwMDgtMTEtMDkgMTU6NDQgcGNtQzFE
-MGMKICAgIGNydy1ydy0tLS0gIDEgcm9vdCB1c2VyMSAxMTYsICA0OCAyMDA4LTExLTA5IDE1
-OjQ0IHBjbUMxRDBwCiAgICBjcnctcnctLS0tICAxIHJvb3QgdXNlcjIgMTE2LCAgODggMjAw
-OC0xMS0wOSAxNTo0NCBwY21DMkQwYwogICAgY3J3LXJ3LS0tLSAgMSByb290IHVzZXIyIDEx
-NiwgIDgwIDIwMDgtMTEtMDkgMTU6NDQgcGNtQzJEMHAKICAgIGNydy1ydy0tLS0gIDEgcm9v
-dCB1c2VyMyAxMTYsIDEyMCAyMDA4LTExLTA5IDE1OjQ0IHBjbUMzRDBjCiAgICBjcnctcnct
-LS0tICAxIHJvb3QgdXNlcjMgMTE2LCAxMTIgMjAwOC0xMS0wOSAxNTo0NCBwY21DM0QwcAog
-ICAgY3J3LXJ3LS0tLSAgMSByb290IGF1ZGlvIDExNiwgICAxIDIwMDgtMTEtMDkgMTU6NDQg
-c2VxCiAgICBjcnctcnctLS0tICAxIHJvb3QgYXVkaW8gMTE2LCAgMzMgMjAwOC0xMS0wOSAx
-NTo0NCB0aW1lcgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgp1ZGV2aW5mbyBpbmZvIC0tYXR0cmli
-dXRlLXdhbGsgLS1uYW1lPS9kZXYvc25kL2NvbnRyb2xDMAoKLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-CgplY2hvICdTVUJTWVNURU09PSJzb3VuZCIsIEtFUk5FTFM9PSIzLTEiLCBLRVJORUw9PSJj
-b250cm9sQ1swLTldKiIsIE5BTUU9InNuZC9jb250cm9sQzQiClNVQlNZU1RFTT09InNvdW5k
-IiwgS0VSTkVMUz09IjMtMiIsIEtFUk5FTD09ImNvbnRyb2xDWzAtOV0iLCBOQU1FPSJzbmQv
-Y29udHJvbEM1IgpTVUJTWVNURU09PSJzb3VuZCIsIEtFUk5FTFM9PSI0LTEiLCBLRVJORUw9
-PSJjb250cm9sQ1swLTldIiwgTkFNRT0ic25kL2NvbnRyb2xDNiIKU1VCU1lTVEVNPT0ic291
-bmQiLCBLRVJORUxTPT0iNC0yIiwgS0VSTkVMPT0iY29udHJvbENbMC05XSIsIE5BTUU9InNu
-ZC9jb250cm9sQzciCgpTVUJTWVNURU09PSJzb3VuZCIsIEtFUk5FTFM9PSIzLTEiLCBLRVJO
-RUw9PSJod0NbMC05XUQwYyIsIE5BTUU9InNuZC9od0M0RDBjIgpTVUJTWVNURU09PSJzb3Vu
-ZCIsIEtFUk5FTFM9PSIzLTIiLCBLRVJORUw9PSJod0NbMC05XUQwYyIsIE5BTUU9InNuZC9o
-d0M1RDBjIgpTVUJTWVNURU09PSJzb3VuZCIsIEtFUk5FTFM9PSI0LTEiLCBLRVJORUw9PSJo
-d0NbMC05XUQwYyIsIE5BTUU9InNuZC9od0M2RDBjIgpTVUJTWVNURU09PSJzb3VuZCIsIEtF
-Uk5FTFM9PSI0LTIiLCBLRVJORUw9PSJod0NbMC05XUQwYyIsIE5BTUU9InNuZC9od0M3RDBj
-IgoKU1VCU1lTVEVNPT0ic291bmQiLCBLRVJORUxTPT0iMy0xIiwgS0VSTkVMPT0icGNtQ1sw
-LTldRDBjIiwgTkFNRT0ic25kL3BjbUM0RDBjIgpTVUJTWVNURU09PSJzb3VuZCIsIEtFUk5F
-TFM9PSIzLTIiLCBLRVJORUw9PSJwY21DWzAtOV1EMGMiLCBOQU1FPSJzbmQvcGNtQzVEMGMi
-ClNVQlNZU1RFTT09InNvdW5kIiwgS0VSTkVMUz09IjQtMSIsIEtFUk5FTD09InBjbUNbMC05
-XUQwYyIsIE5BTUU9InNuZC9wY21DNkQwYyIKU1VCU1lTVEVNPT0ic291bmQiLCBLRVJORUxT
-PT0iNC0yIiwgS0VSTkVMPT0icGNtQ1swLTldRDBjIiwgTkFNRT0ic25kL3BjbUM3RDBjIgoK
-U1VCU1lTVEVNPT0ic291bmQiLCBLRVJORUxTPT0iMy0xIiwgS0VSTkVMPT0icGNtQ1swLTld
-RDBwIiwgTkFNRT0ic25kL3BjbUM0RDBwIgpTVUJTWVNURU09PSJzb3VuZCIsIEtFUk5FTFM9
-PSIzLTIiLCBLRVJORUw9PSJwY21DWzAtOV1EMHAiLCBOQU1FPSJzbmQvcGNtQzVEMHAiClNV
-QlNZU1RFTT09InNvdW5kIiwgS0VSTkVMUz09IjQtMSIsIEtFUk5FTD09InBjbUNbMC05XUQw
-cCIsIE5BTUU9InNuZC9wY21DNkQwcCIKU1VCU1lTVEVNPT0ic291bmQiLCBLRVJORUxTPT0i
-NC0yIiwgS0VSTkVMPT0icGNtQ1swLTldRDBwIiwgTkFNRT0ic25kL3BjbUM3RDBwIicgfCB0
-ZWUgL2V0Yy91ZGV2L3J1bGVzLmQvMTAtcGVyc2lzdGVudC1zb3VuZC5ydWxlcwpjaG1vZCA2
-MDAgL2V0Yy91ZGV2L3J1bGVzLmQvMTAtcGVyc2lzdGVudC1zb3VuZC5ydWxlcwoKLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tCiMgd2l0aG91dCBkbWl4ZXIgIyB0aGlzIHdvcmtzIC4uLi4KCmVjaG8g
-J3BjbS5zb2Z0dm9sIHsKICAgIHR5cGUgc29mdHZvbAogICAgc2xhdmUucGNtIGh3OjEKICAg
-IGNvbnRyb2wubmFtZSBNYXN0ZXIKICAgIGNvbnRyb2wuY2FyZCAxCn0KCnBjbS4hZGVmYXVs
-dCB7CiAgICB0eXBlIHBsdWcKICAgIHNsYXZlLnBjbSBzb2Z0dm9sCn0KCmN0bC4hZGVmYXVs
-dCB7CiAgICB0eXBlIGh3CiAgICBjYXJkIDEKfScgfCB0ZWUgL2hvbWUvdXNlcjEvLmFzb3Vu
-ZHJjCmNobW9kIDYwMCAvaG9tZS91c2VyMS8uYXNvdW5kcmMKY2hvd24gdXNlcjE6dXNlcjEg
-L2hvbWUvdXNlcjEvLmFzb3VuZHJjCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIyB3aXRoIGRtaXhl
-ciAjIHRoaXMgZG9lcyBub3Qgd29yawoKZWNobyAncGNtLnNvZnR2b2wgewogICAgdHlwZSBz
-b2Z0dm9sCiAgICBzbGF2ZS5wY20gZG1peDoxCiAgICBjb250cm9sLm5hbWUgTWFzdGVyCiAg
-ICBjb250cm9sLmNhcmQgMQp9CgpwY20uIWRlZmF1bHQgewogICAgdHlwZSBwbHVnCiAgICBz
-bGF2ZS5wY20gc29mdHZvbAp9CgpjdGwuIWRlZmF1bHQgewogICAgdHlwZSBodwogICAgY2Fy
-ZCAxCn0nIHwgdGVlIC9ob21lL3VzZXIxLy5hc291bmRyYwpjaG1vZCA2MDAgL2hvbWUvdXNl
-cjEvLmFzb3VuZHJjCmNob3duIHVzZXIxOnVzZXIxIC9ob21lL3VzZXIxLy5hc291bmRyYwoK
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tCiMgd2l0aCBkbWl4ZXIgIyB0aGlzIGRvZXMgbm90IHdvcmsK
-CmVjaG8gJ3BjbS4hZGVmYXVsdCB7CiAgIHR5cGUgcGx1ZwogICBzbGF2ZS5wY20gZG1peGVy
-Cn0KcGNtLmRtaXhlciB7CiAgIHR5cGUgZG1peAogICBpcGNfa2V5IDIwNDgKICAgc2xhdmUu
-cGNtIGh3OjEKfQpjdGwuZG1peGVyIHsKICAgdHlwZSBodwogICBjYXJkIDEKfQpwY20uZHNw
-IHsKICAgIHR5cGUgcGx1ZwogICAgc2xhdmUucGNtIGRtaXhlcgp9CmN0bC5taXhlciB7CiAg
-ICB0eXBlIGh3CiAgICBjYXJkIDEKfScgfCB0ZWUgL2hvbWUvdXNlcjEvLmFzb3VuZHJjCmNo
-bW9kIDYwMCAvaG9tZS91c2VyMS8uYXNvdW5kcmMKY2hvd24gdXNlcjE6dXNlcjEgL2hvbWUv
-dXNlcjEvLmFzb3VuZHJjCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
---------------090200080204060602040308
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+!!Script ran on: Sun Nov  9 16:00:38 CET 2008
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---------------090200080204060602040308--
+!!Linux Distribution
+!!------------------
+
+Ubuntu 8.10 \n \l DISTRIB_ID=Ubuntu DISTRIB_DESCRIPTION="Ubuntu 8.10"
+
+
+!!Kernel Information
+!!------------------
+
+Kernel release:    2.6.28-rc3
+Operating System:  GNU/Linux
+Architecture:      i686
+Processor:         unknown
+SMP Enabled:       Yes
+
+
+!!ALSA Version
+!!------------
+
+Driver version:     1.0.18rc3
+Library version:    
+Utilities version:  1.0.17
+
+
+!!Loaded ALSA modules
+!!-------------------
+
+snd_hda_intel
+
+
+!!Soundcards recognised by ALSA
+!!-----------------------------
+
+ 0 [Intel          ]: HDA-Intel - HDA Intel
+                      HDA Intel at 0x38540000 irq 16
+
+
+!!PCI Soundcards installed in the system
+!!--------------------------------------
+
+00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller (rev 02)
+
+
+!!Advanced information - PCI Vendor/Device/Susbsystem ID's
+!!--------------------------------------------------------
+
+00:1b.0 0403: 8086:27d8 (rev 02)
+	Subsystem: 1025:015b
+
+
+!!Modprobe options (Sound related)
+!!--------------------------------
+
+snd-hda-intel: model=acer-aspire
+snd-atiixp-modem: index=-2
+snd-intel8x0m: index=-2
+snd-via82xx-modem: index=-2
+snd-usb-audio: index=-2
+snd-usb-usx2y: index=-2
+snd-usb-caiaq: index=-2
+snd-cmipci: mpu_port=0x330 fm_port=0x388
+snd-pcsp: index=-2
+
+
+!!Loaded sound module options
+!!--------------------------
+
+!!Module: snd_hda_intel
+bdl_pos_adj : 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
+enable : Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y
+enable_msi : 0
+id : <NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
+index : -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
+model : acer-aspire,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
+position_fix : 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+power_save : 10
+power_save_controller : Y
+probe_mask : -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
+single_cmd : N
+
+
+!!HDA-Intel Codec information
+!!---------------------------
+--startcollapse--
+
+Codec: Realtek ALC268
+Address: 0
+Vendor Id: 0x10ec0268
+Subsystem Id: 0x1025015b
+Revision Id: 0x100101
+No Modem Function Group found
+Default PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+GPIO: io=4, o=0, i=0, unsolicited=1, wake=0
+  IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0
+  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0
+  IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0
+  IO[3]: enable=0, dir=0, wake=0, sticky=0, data=0
+Node 0x02 [Audio Output] wcaps 0x1d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+  Amp-Out vals:  [0x3a 0x3a]
+  Converter: stream=0, channel=0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Node 0x03 [Audio Output] wcaps 0x1d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+  Amp-Out vals:  [0x3a 0x3a]
+  Converter: stream=0, channel=0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Node 0x04 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x05 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
+  Converter: stream=0, channel=0
+  Digital:
+  Digital category: 0x0
+  PCM:
+    rates [0x5e0]: 44100 48000 88200 96000 192000
+    bits [0x1e]: 16 20 24 32
+    formats [0x1]: PCM
+Node 0x07 [Audio Input] wcaps 0x100111: Stereo
+  Converter: stream=0, channel=0
+  SDI-Select: 0
+  PCM:
+    rates [0x160]: 44100 48000 96000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Connection: 1
+     0x24
+Node 0x08 [Audio Input] wcaps 0x100111: Stereo
+  Converter: stream=0, channel=0
+  SDI-Select: 0
+  PCM:
+    rates [0x160]: 44100 48000 96000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Connection: 1
+     0x23
+Node 0x09 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0a [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0b [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0c [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0d [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0e [Audio Mixer] wcaps 0x20010a: Mono Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00]
+  Connection: 1
+     0x02
+Node 0x0f [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Connection: 2
+     0x02 0x1d
+Node 0x10 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x80 0x80]
+  Connection: 3
+     0x03 0x1d 0x02
+Node 0x11 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x12 [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x00000020: IN
+  Pin Default 0x99a30920: [Fixed] Mic at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+    DefAssociation = 0x2, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x20: IN
+Node 0x13 [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x00000020: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x00:
+Node 0x14 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x0001003c: IN OUT HP EAPD Detect
+  EAPD 0x2: EAPD
+  Pin Default 0x99130110: [Fixed] Speaker at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+    DefAssociation = 0x1, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=00, enabled=0
+  Connection: 1
+     0x0f
+Node 0x15 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x0001003c: IN OUT HP EAPD Detect
+  EAPD 0x2: EAPD
+  Pin Default 0x0321401f: [Jack] HP Out at Ext Left
+    Conn = 1/8, Color = Green
+    DefAssociation = 0x1, Sequence = 0xf
+  Pin-ctls: 0xc0: OUT HP
+  Unsolicited: tag=04, enabled=1
+  Connection: 1
+     0x10
+Node 0x16 [Pin Complex] wcaps 0x40010c: Mono Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80]
+  Pincap 0x00000010: OUT
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x0e
+Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x02, stepsize=0x4f, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x00003734: IN OUT Detect
+    Vref caps: HIZ 50 GRD 80 100
+  Pin Default 0x03a19830: [Jack] Mic at Ext Left
+    Conn = 1/8, Color = Pink
+    DefAssociation = 0x3, Sequence = 0x0
+  Pin-ctls: 0x24: IN VREF_80
+  Unsolicited: tag=08, enabled=1
+  Connection: 1
+     0x02
+Node 0x19 [Pin Complex] wcaps 0x40008b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x02, stepsize=0x4f, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Pincap 0x00003724: IN Detect
+    Vref caps: HIZ 50 GRD 80 100
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x24: IN VREF_80
+  Unsolicited: tag=00, enabled=0
+Node 0x1a [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x02, stepsize=0x4f, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x00003734: IN OUT Detect
+    Vref caps: HIZ 50 GRD 80 100
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x20: IN VREF_HIZ
+  Unsolicited: tag=00, enabled=0
+  Connection: 1
+     0x02
+Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x00000020: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x20: IN
+Node 0x1d [Pin Complex] wcaps 0x400000: Mono
+  Pincap 0x00000020: IN
+  Pin Default 0x4015812d: [N/A] Speaker at Ext N/A
+    Conn = Optical, Color = Purple
+    DefAssociation = 0x2, Sequence = 0xd
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x20: IN
+Node 0x1e [Pin Complex] wcaps 0x400380: Mono Digital
+  Pincap 0x00000010: OUT
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=00, enabled=0
+  Connection: 1
+     0x06
+Node 0x1f [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
+  Processing caps: benign=0, ncoeff=10
+Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x22 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x23 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x0a, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1f 0x1f]
+  Connection: 7
+     0x18 0x19 0x1a 0x1c 0x14 0x15 0x12*
+Node 0x24 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x0a, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 7
+     0x18* 0x19 0x1a 0x1c 0x14 0x15 0x13
+--endcollapse--
+
+
+!!ALSA Device nodes
+!!-----------------
+
+crw-rw----+ 1 root audio 116, 6 2008-11-09 15:59 /dev/snd/controlC0
+crw-rw----+ 1 root audio 116, 5 2008-11-09 15:59 /dev/snd/pcmC0D0c
+crw-rw----+ 1 root audio 116, 4 2008-11-09 15:59 /dev/snd/pcmC0D0p
+crw-rw----+ 1 root audio 116, 3 2008-11-09 15:58 /dev/snd/seq
+crw-rw----+ 1 root audio 116, 2 2008-11-09 15:58 /dev/snd/timer
+
+
+!!Aplay/Arecord output
+!!------------
+
+APLAY
+
+**** List of PLAYBACK Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: ALC268 Analog [ALC268 Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+ARECORD
+
+**** List of CAPTURE Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: ALC268 Analog [ALC268 Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+!!Amixer output
+!!-------------
+
+!!-------Mixer controls for card 0 [Intel]
+
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 64
+  Mono:
+  Front Left: Playback 58 [91%] [-6.00dB] [on]
+  Front Right: Playback 58 [91%] [-6.00dB] [on]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 255
+  Mono:
+  Front Left: Playback 255 [100%] [0.00dB]
+  Front Right: Playback 255 [100%] [0.00dB]
+Simple mixer control 'Mic Boost',0
+  Capabilities: cvolume
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 2
+  Front Left: Capture 0 [0%] [0.00dB]
+  Front Right: Capture 0 [0%] [0.00dB]
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 31
+  Front Left: Capture 31 [100%] [31.50dB] [on]
+  Front Right: Capture 31 [100%] [31.50dB] [on]
+Simple mixer control 'Digital',0
+  Capabilities: cvolume
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 120
+  Front Left: Capture 120 [100%] [30.00dB]
+  Front Right: Capture 120 [100%] [30.00dB]
+Simple mixer control 'Input Source',0
+  Capabilities: cenum
+  Items: 'i-Mic' 'E-Mic'
+  Item0: 'i-Mic'
+
+
+!!Alsactl output
+!!-------------
+
+--startcollapse--
+state.Intel {
+	control.1 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 64'
+		comment.dbmin -6400
+		comment.dbmax 0
+		iface MIXER
+		name 'Master Playback Volume'
+		value.0 58
+		value.1 58
+	}
+	control.2 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'Master Playback Switch'
+		value.0 true
+		value.1 true
+	}
+	control.3 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 2'
+		comment.dbmin 0
+		comment.dbmax 4000
+		iface MIXER
+		name 'Mic Boost Capture Volume'
+		value.0 0
+		value.1 0
+	}
+	control.4 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		comment.dbmin -1500
+		comment.dbmax 3150
+		iface MIXER
+		name 'Capture Volume'
+		value.0 31
+		value.1 31
+	}
+	control.5 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'Capture Switch'
+		value.0 true
+		value.1 true
+	}
+	control.6 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 i-Mic
+		comment.item.1 E-Mic
+		iface MIXER
+		name 'Input Source'
+		value i-Mic
+	}
+	control.7 {
+		comment.access 'read write user'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 255'
+		comment.tlv '0000000100000008ffffec1400000014'
+		comment.dbmin -5100
+		comment.dbmax 0
+		iface MIXER
+		name 'PCM Playback Volume'
+		value.0 255
+		value.1 255
+	}
+	control.8 {
+		comment.access 'read write user'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 120'
+		comment.tlv '0000000100000008fffff44800000032'
+		comment.dbmin -3000
+		comment.dbmax 3000
+		iface MIXER
+		name 'Digital Capture Volume'
+		value.0 120
+		value.1 120
+	}
+}
+--endcollapse--
+
+
+!!All Loaded Modules
+!!------------------
+
+Module
+af_packet
+i915
+drm
+binfmt_misc
+sco
+bridge
+stp
+llc
+rfcomm
+bnep
+l2cap
+bluetooth
+ppdev
+acpi_cpufreq
+cpufreq_stats
+pci_slot
+cpufreq_ondemand
+freq_table
+container
+cpufreq_userspace
+cpufreq_conservative
+sbs
+sbshc
+cpufreq_powersave
+microcode
+iptable_filter
+ip_tables
+x_tables
+parport_pc
+lp
+parport
+loop
+joydev
+ipv6
+mmc_block
+snd_hda_intel
+snd_pcm_oss
+snd_mixer_oss
+acer_wmi
+rfkill
+snd_pcm
+evdev
+uvcvideo
+compat_ioctl32
+videodev
+v4l1_compat
+snd_seq_dummy
+psmouse
+serio_raw
+arc4
+ecb
+video
+output
+sdhci_pci
+sdhci
+wmi
+snd_seq_oss
+snd_seq_midi
+snd_rawmidi
+ath5k
+snd_seq_midi_event
+mac80211
+mmc_core
+led_class
+cfg80211
+snd_seq
+battery
+ac
+button
+snd_timer
+snd_seq_device
+pcspkr
+snd
+iTCO_wdt
+iTCO_vendor_support
+soundcore
+snd_page_alloc
+intel_agp
+agpgart
+shpchp
+pci_hotplug
+ext3
+jbd
+mbcache
+sd_mod
+crc_t10dif
+sg
+pata_acpi
+ata_generic
+ata_piix
+libata
+ehci_hcd
+uhci_hcd
+scsi_mod
+usbcore
+r8169
+mii
+thermal
+processor
+fan
+fuse
+
+
+
+
+
+Thanks,
+
+Andreas Mohr
