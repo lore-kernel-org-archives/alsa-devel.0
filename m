@@ -1,18 +1,20 @@
-From: Dmitry Baryshkov <dbaryshkov@gmail.com>
-Subject: [RFC][PATCH] pxa2xx-ac97: switch AC unit to correct
-	state before	probing
-Date: Mon, 10 Nov 2008 22:11:24 +0300
-Message-ID: <20081110191124.GA2140@doriath.ww600.siemens.net>
+From: Kristoffer Ericson <kristoffer.ericson@gmail.com>
+Subject: Re: [PATCH] ALSA SOC driver for s3c24xx with uda1341
+Date: Mon, 10 Nov 2008 21:22:33 +0100
+Message-ID: <20081110212233.3d3bcc7c.kristoffer.ericson@gmail.com>
+References: <12261302352402-git-send-email-chripell@gmail.com>
+	<20081110133451.GD12804@sirena.org.uk>
+	<20081110185800.42b6c198.kristoffer.ericson@gmail.com>
+	<cabda6420811101108od6fe848qc291135a2ba9d819@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1279077486228997697=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1A4632438D
-	for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2008 20:12:09 +0100 (CET)
-Received: by ey-out-1920.google.com with SMTP id 21so936820eyc.56
-	for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2008 11:12:09 -0800 (PST)
-Content-Disposition: inline
+Received: from ik-out-1112.google.com (ik-out-1112.google.com [66.249.90.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9788A243A5
+	for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2008 20:22:27 +0100 (CET)
+Received: by ik-out-1112.google.com with SMTP id c28so2036613ika.0
+	for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2008 11:22:24 -0800 (PST)
+In-Reply-To: <cabda6420811101108od6fe848qc291135a2ba9d819@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,93 +24,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.miao@marvell.com>
+To: chri <chripell@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>, zdevai@gmail.com, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+--===============1279077486228997697==
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA1";
+ boundary="Signature=_Mon__10_Nov_2008_21_22_33_+0100_rhC3lRYNRQ5DuDjz"
 
-I've stumbled upon a problem with my tosa unit. The bootloader leaves
-ac97 in some partially enabled state, so when request_irq enables the
-AC97 irq, I see a unending storm of irq requests. I've come with the
-following patch (against 2.6.27, if the idea is OK, I'll rebase against
-2.6.28-rc).
+--Signature=_Mon__10_Nov_2008_21_22_33_+0100_rhC3lRYNRQ5DuDjz
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+On Mon, 10 Nov 2008 20:08:00 +0100
+chri <chripell@gmail.com> wrote:
 
-If AC97 unit is in partially enabled state, early request_irq can trigger
-IRQ storm or even full hang up. Workaround this by forcibly switching ACLINK off
-at the start of the probe.
+> On Mon, Nov 10, 2008 at 6:58 PM, Kristoffer Ericson
+> <kristoffer.ericson@gmail.com> wrote:
+> > On Mon, 10 Nov 2008 13:34:52 +0000
+>=20
+> > I'm equally interested in this patch, seeing as I
+> > got an hp jornada 7xx with uda1344 waiting.
+> >
+> > Have you any plans on creating an 134x seeing as there
+> > is very little difference between chipsets?
+> >
+>=20
+> Hi,
+>=20
+> I had a quick look at the UDA1344 data sheet. When operated in L3-mode
+> it's basically a subset of the UDA1341 so I can do the changes. Anyway
+> I'm not able to test them so could you give me a hand testing? Anyway
+> if you won't use special mixer settings the patch I sent should work
+> since the important configuration registers and the volume are the
+> same for both chips.
 
-Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
----
- sound/soc/pxa/pxa2xx-ac97.c |   30 +++++++++++++++++-------------
- 1 files changed, 17 insertions(+), 13 deletions(-)
+It would be good if the driver could be used for both 1341/1344.
+Some minor ifdef's should sort it out.=20
+Please drop me a mail with the patches (missed the old one) and I'll start
+testing them them out.
 
-diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
-index d94a495..259c6e1 100644
---- a/sound/soc/pxa/pxa2xx-ac97.c
-+++ b/sound/soc/pxa/pxa2xx-ac97.c
-@@ -315,10 +315,6 @@ static int pxa2xx_ac97_probe(struct platform_device *pdev,
- {
- 	int ret;
- 
--	ret = request_irq(IRQ_AC97, pxa2xx_ac97_irq, IRQF_DISABLED, "AC97", NULL);
--	if (ret < 0)
--		goto err;
--
- 	pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
- 	pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
- 	pxa_gpio_mode(GPIO28_BITCLK_AC97_MD);
-@@ -331,28 +327,36 @@ static int pxa2xx_ac97_probe(struct platform_device *pdev,
- 	if (IS_ERR(ac97conf_clk)) {
- 		ret = PTR_ERR(ac97conf_clk);
- 		ac97conf_clk = NULL;
--		goto err_irq;
-+		goto err_conf;
- 	}
- #endif
-+	GCR = GCR_ACLINK_OFF;
-+
- 	ac97_clk = clk_get(&pdev->dev, "AC97CLK");
- 	if (IS_ERR(ac97_clk)) {
- 		ret = PTR_ERR(ac97_clk);
- 		ac97_clk = NULL;
--		goto err_irq;
-+		goto err_clk;
- 	}
- 	clk_enable(ac97_clk);
-+
-+	ret = request_irq(IRQ_AC97, pxa2xx_ac97_irq, IRQF_DISABLED, "AC97", NULL);
-+	if (ret < 0)
-+		goto err_irq;
-+
- 	return 0;
- 
-- err_irq:
-+err_irq:
- 	GCR |= GCR_ACLINK_OFF;
-+	clk_disable(ac97_clk);
-+	clk_put(ac97_clk);
-+	ac97_clk = NULL;
-+err_clk:
- #ifdef CONFIG_PXA27x
--	if (ac97conf_clk) {
--		clk_put(ac97conf_clk);
--		ac97conf_clk = NULL;
--	}
-+	clk_put(ac97conf_clk);
-+	ac97conf_clk = NULL;
-+err_conf:
- #endif
--	free_irq(IRQ_AC97, NULL);
-- err:
- 	return ret;
- }
- 
--- 
-1.5.6.5
+>=20
+> --=20
+> Christian Pellegrin, see http://www.evolware.org/chri/
+> "Real Programmers don't play tennis, or any other sport which requires
+> you to change clothes. Mountain climbing is OK, and Real Programmers
+> wear their climbing boots to work in case a mountain should suddenly
+> spring up in the middle of the computer room."
 
 
--- 
-With best wishes
-Dmitry
+--=20
+Kristoffer Ericson <kristoffer.ericson@gmail.com>
+
+--Signature=_Mon__10_Nov_2008_21_22_33_+0100_rhC3lRYNRQ5DuDjz
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkkYmAkACgkQPQls10ERAGfFDgCbBC678QlJqKM0OhaeXhlsQDO5
+yAEAoIn/imrWW9Ag93w+pX+fWX9SBX1U
+=m/M9
+-----END PGP SIGNATURE-----
+
+--Signature=_Mon__10_Nov_2008_21_22_33_+0100_rhC3lRYNRQ5DuDjz--
+
+--===============1279077486228997697==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============1279077486228997697==--
