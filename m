@@ -1,24 +1,25 @@
-From: "Bjoern Olausson" <lkmlist@gmail.com>
-Subject: Re: Creative Sound Blaster X-Fi and X-Fi Titanium
-	Series Linux 32bit/64bit Driver Source released
-Date: Mon, 10 Nov 2008 00:32:07 +0100
-Message-ID: <5501535d0811091532t7bdd2f7co5be765c8f0d67725@mail.gmail.com>
-References: <5501535d0811060746y60d18e6boc8c5ad34a63fb92b@mail.gmail.com>
-	<8fe68c970811061536n52c6c819v58145401002555be@mail.gmail.com>
-	<4913C742.9040107@gmail.com>
-	<5501535d0811071108u7e922704h97408525e670741@mail.gmail.com>
-	<4915246F.9040606@gmail.com>
+From: =?ISO-8859-1?Q?Lasse_K=E4rkk=E4inen?= <tronic+8nhy@trn.iki.fi>
+Subject: Re: Roland/Edirol M-16DX
+Date: Mon, 10 Nov 2008 05:53:13 +0200
+Message-ID: <4917B029.7010809@trn.iki.fi>
+References: <487F10EE.6030405@trn.iki.fi> <48883AAC.6060101@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0506.google.com (rv-out-0506.google.com [209.85.198.229])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7DE7A103810
-	for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2008 00:32:08 +0100 (CET)
-Received: by rv-out-0506.google.com with SMTP id g9so483332rvb.2
-	for <alsa-devel@alsa-project.org>; Sun, 09 Nov 2008 15:32:07 -0800 (PST)
-In-Reply-To: <4915246F.9040606@gmail.com>
-Content-Disposition: inline
+Received: from kirsi1.inet.fi (mta-out.inet.fi [195.156.147.13])
+	by alsa0.perex.cz (Postfix) with ESMTP id F08E2103815
+	for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2008 04:53:17 +0100 (CET)
+Received: from trn.iki.fi (88.195.48.158) by kirsi1.inet.fi (8.5.014)
+	id 48FC5AC9010BC178 for alsa-devel@alsa-project.org;
+	Mon, 10 Nov 2008 05:53:17 +0200
+Received: from trn.iki.fi (localhost [127.0.0.1])
+	by trn.iki.fi (Postfix) with ESMTP id 7F7BC45B7BE0D
+	for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2008 05:53:16 +0200 (EET)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	by trn.iki.fi (Postfix) with ESMTP
+	for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2008 05:53:16 +0200 (EET)
+In-Reply-To: <48883AAC.6060101@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,26 +29,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: The Source <thesourcehim@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBOb3YgOCwgMjAwOCBhdCAwNjozMiwgVGhlIFNvdXJjZSA8dGhlc291cmNlaGltQGdt
-YWlsLmNvbT4gd3JvdGU6Cj4gQmpvZXJuIE9sYXVzc29uINC/0LjRiNC10YI6Cj4+Cj4+IE9uIEZy
-aSwgTm92IDcsIDIwMDggYXQgMDU6NDIsIFRoZSBTb3VyY2UgPHRoZXNvdXJjZWhpbUBnbWFpbC5j
-b20+IHdyb3RlOgo+Pgo+Pgo+Pj4KPj4+IEl0IHdhcyBpbmNvbXBhdGliaWxpdHkgd2l0aCBvbGRl
-ciBrZXJuZWxzLiBVcGRhdGVkIHRvIDIuNi4yNyBhbmQgZHJpdmVyCj4+PiB3b3JrcyBub3cuIEJ1
-dCBubyA1LjEgc3VwcG9ydCBhZ2FpbiA6KAo+Pj4KPj4+Cj4+Cj4+IHNwZWFrZXItdGVzdCAtYyA2
-IGF0IGxlYXN0IHBsYXlzIHNvdW5kIG9uIEZyb250LUxlZnQsIENlbnRlciBhbmQKPj4gRnJvbnQt
-UmlnaHQuCj4+Cj4+IE5vIHNvdW5kIG9uIHRoZSByZWFyIHNwZWFrZXJzIG9yIG9uIHRoZSBTdWJ3
-b29mZXIuLi4uCj4+Cj4+IEJ1dCBoZXksIGl0J3MgaGFsZiB0aGUgd2F5Li4uCj4+Cj4+IGtpbmQg
-cmVnYXJkcwo+PiBCam9lcm4KPj4KPj4KPgo+IENlbnRlciBkb2Vzbid0IHBsYXkgZm9yIG1lLiBP
-bmx5IEZyb250IGxlZnQgYW5kIHJpZ2h0Lgo+CgptbWggYW5kIHRoZSBzdHJveSBjb250aW51ZXMu
-Li4gQ3JlYXRpdmUgd291bGQgaGF2ZSBiZWVuIGJldHRlciBvZmYgaXQKdGhleSB3b3VsZCBub3Qg
-aGF2ZSBhbm5vbmNlZCBMaW51eCBkcml2ZXIuLi4gaHJyaHJyCgpJIGd1ZXNzIHRoZSBiZXN0IHNv
-bGx1dGlvbiB3b3VsZCBiZSB0byB0YWtlIHRoZSByZXF1aXJlZCBwYXJ0cyBmcm9tdAp0aGUgY3Jl
-YXRpdmUgZHJpdmVyIGFuZCBzdGFydCB3cml0aW5nIG9yIGNvbXBsZXRpbmcgdGhlIGN1cnJlbnQg
-YWxzYQpkcml2ZXIuLi4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+Sorry about late reply.
+
+> It appears to have most of the audio class descriptors, so it should be
+> possible to tell the driver to just use it.
+> 
+> Please try to add the following entry somewhere in sound/usb/usbquirks.h
+> and to recompile the driver:
+> 
+> 
+> {
+> 	/* Edirol M-16DX */
+> 	USB_DEVICE(0x0582, 0x00c4),
+> 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+> 		.ifnum = QUIRK_ANY_INTERFACE,
+> 		.type = QUIRK_COMPOSITE,
+> 		.data = (const struct snd_usb_audio_quirk[]) {
+> 			{
+> 				.ifnum = 0,
+> 				.type = QUIRK_AUDIO_STANDARD_INTERFACE
+> 			},
+> 			{
+> 				.ifnum = 1,
+> 				.type = QUIRK_AUDIO_STANDARD_INTERFACE
+> 			},
+> 			{
+> 				.ifnum = 2,
+> 				.type = QUIRK_MIDI_FIXED_ENDPOINT,
+> 				.data = & (const struct snd_usb_midi_endpoint_info) {
+> 					.out_cables = 0x0001,
+> 					.in_cables  = 0x0001
+> 				}
+> 			},
+> 			{
+> 				.ifnum = -1
+> 			}
+> 		}
+> 	}
+> },
+
+This allows the device to be detected correctly and capture seems to be 
+working flawlessly. Playback also works, but there is a severe three 
+second distortion in audio once every 30 seconds, at 48 kHz. This seems 
+to be related to the device sampling rate, as the cycle is only 15 
+seconds when the device is running at 96 kHz.
