@@ -1,18 +1,20 @@
-From: Jelle de Jong <jelledejong@powercraft.nl>
-Subject: Re: Non-functional Altec Lansing FX5051 USB-soundcard
- +	speakers
-Date: Mon, 10 Nov 2008 11:45:03 +0100
-Message-ID: <491810AF.7020804@powercraft.nl>
-References: <20081110040933.GA29870@katran.rifetech.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH] Renamed the struct soc_enum field .mask to
+	.count. The field refers to the number of enumerable entries
+	instead of being a bit mask. This change makes the interface
+	a more clear.
+Date: Mon, 10 Nov 2008 11:32:13 +0000
+Message-ID: <20081110113150.GA12804@sirena.org.uk>
+References: <20081107230655.GA30750@friendly.synapse.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from node01.cambriumhosting.nl (node01.cambriumhosting.nl
-	[217.19.16.162])
-	by alsa0.perex.cz (Postfix) with ESMTP id 076741037F2
-	for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2008 11:45:12 +0100 (CET)
-In-Reply-To: <20081110040933.GA29870@katran.rifetech.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id A760B1037FF
+	for <Alsa-devel@alsa-project.org>; Mon, 10 Nov 2008 12:32:45 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20081107230655.GA30750@friendly.synapse.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,63 +24,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jeremy Nickurak <alsa-devel@atrus.rifetech.com>
-Cc: alsa-devel@alsa-project.org
+To: Marc Singer <elf@synapse.com>
+Cc: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jeremy Nickurak wrote:
-> About 14 months ago I purchased a nice new ~$300 set of altec lansing 
-> 5.1 speakers, which include a USB-sound card. Since that time they've 
-> largely gone unused, or at least not properly used. I brought this up on 
-> the mailing list at the time, but didn't get much response, so I thought 
-> I'd poke my head up again and see if anybody has any insight.
-> 
-> First off, the set works correctly, out-of-the-box under windows, 
-> without having to install any special drivers or software at all.
-> 
-> Under linux, plugging them in instantly freezes the usb sound card up, 
-> and locks it at 100% volume, in such a way that there's absolutely no 
-> way to turn the volume down: not from alsamixer, and not from the 
-> speaker's hardware control dial. Sound does play, but again, it's 
-> unbearably loud, to the point where I don't do it for risk of damaging 
-> my speakers and/or ears.
-> 
-> I filed the bug away on the bug-tracker, but haven't heard much out of 
-> it since. The bug contains my lsusb -v information, the "contents" 
-> output from amixer for this card, and some preliminary results showing 
-> some ability to tweak the volume with amixer, but not reliably.
-> 
-> Any suggestions are welcome. I'm happy to experiment with this set more 
-> if it can help, run experimental code, etc. Heck, I'd go at the thing 
-> with a screwdriver for chipset information if I know what I was looking 
-> for or thought it could help.
+On Fri, Nov 07, 2008 at 03:06:56PM -0800, Marc Singer wrote:
+> Signed-off-by: Marc Singer <elf@buici.com>
 
-I also have some volume issues with some of my usb audio devices, it
-might be related tot the dB0 scaling issues that where discussed on the
-list. There may be a good usable workaround for you, that will be a
-software volume control.
+Your commit should have a subject line of less than 80 characters.  More
+lengthy descriptions of the patch should then be included in the body of
+the e-mail, word-wrapped to 80 characters.
 
-change all the zeros to your hardware id and set the correct user
+> ---
+>  include/sound/soc-codec.h |   14 +++++++-------
 
-echo 'pcm.softvol {
-    type softvol
-    slave.pcm dmix:0
-    control.name Master
-    control.card 0
-}
-
-pcm.!default {
-    type plug
-    slave.pcm softvol
-}
-
-ctl.!default {
-    type hw
-    card 0
-}' | tee /home/user0/.asoundrc
-chmod 600 /home/user0/.asoundrc
-chown user0:user0 /home/user0/.asoundrc
-
-Best regards,
-
-Jelle
+Ah, this is an ASoC v2 patch.  In mainline the datastructure doesn't
+have a mask field at all; I'd rather not introduce any further
+divergences between mainline and v2.
