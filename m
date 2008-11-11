@@ -1,48 +1,73 @@
-From: Valdis.Kletnieks@vt.edu
-Subject: Re: 2.6.28-rc2-mm1 - sound semi-busted on Dell Latitude D820
-Date: Tue, 11 Nov 2008 13:25:56 -0500
-Message-ID: <5241.1226427956@turing-police.cc.vt.edu>
-References: <4411.1226345758@turing-police.cc.vt.edu> <s5hljvqzot1.wl%tiwai@suse.de> <s5hprl2yz39.wl%tiwai@suse.de>
-            <s5hmyg6yz0n.wl%tiwai@suse.de>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Creative Sound Blaster X-Fi and X-Fi
+ Titanium	Series Linux 32bit/64bit Driver Source released
+Date: Tue, 11 Nov 2008 18:33:18 +0000
+Message-ID: <4919CFEE.4060604@superbug.co.uk>
+References: <5501535d0811060746y60d18e6boc8c5ad34a63fb92b@mail.gmail.com>	<49132749.4040908@gmail.com>
+	<s5hskq4sr4d.wl%tiwai@suse.de>	<s5hy6zshvmu.wl%tiwai@suse.de>	<5501535d0811102114l68063e25g13376c0b8fa94dd5@mail.gmail.com>	<5501535d0811102355j4b450341j2fb3c9bbaffcc0c8@mail.gmail.com>
+	<s5hfxlyzns4.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1226427956_3887P";
-	 micalg=pgp-sha1; protocol="application/pgp-signature"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755473AbYKKS0r@vger.kernel.org>
-In-Reply-To: Your message of "Tue, 11 Nov 2008 18:04:56 +0100."
-             <s5hmyg6yz0n.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lon1-post-1.mail.demon.net (lon1-post-1.mail.demon.net
+	[195.173.77.148])
+	by alsa0.perex.cz (Postfix) with ESMTP id 994E824445
+	for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2008 19:33:21 +0100 (CET)
+In-Reply-To: <s5hfxlyzns4.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Andrew Morton <akpm@linux-foundation.org>, perex@perex.cz, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Bjoern Olausson <lkmlist@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
---==_Exmh_1226427956_3887P
-Content-Type: text/plain; charset=us-ascii
-
-On Tue, 11 Nov 2008 18:04:56 +0100, Takashi Iwai said:
-
-> > Could you try the patch below?
-
-> > There is another patch for a missing capture mux control, but in your
-> > case, it doesn't matter because you didn't change the value.
-> > I'll post that patch later, too.
+Takashi Iwai wrote:
+> At Tue, 11 Nov 2008 08:55:04 +0100,
+> Bjoern Olausson wrote:
+>> On Tue, Nov 11, 2008 at 06:14, Bjoern Olausson <lkmlist@gmail.com> wrote:
+>>>> Did take a quick glance through their code now.
+>>>> A good news is that it's much better than I was concerned.
+>>>> There are a few things to be fixed / discussed, but basically it
+>>>> shouldn't be that difficult.
+>>>>
+>>>> Can anyone have a contact with them?  If they are interested in the
+>>>> upstream merging, please give my name and address as the contact
+>>>> person.
+>>>>
+>>> I posted in the driver feedback forum and asked them to get in contact
+>>> with you or me, so lets see what happens.
+>>>
+>>> http://forums.creative.com/creativelabs/board/message?board.id=soundblaster&view=by_date_ascending&message.id=132606#M132606
+>>>
+>> Seems there is no way to get in contact with the Devs directly, no
+>> bugtracker, nothing... just that forum... (but I guess no dev is
+>> ?allowed/willing? to write in this forum) I don't really understand
+>> the way creative communicates with it's customers... so lets see if
+>> someone will contact you... my guess is no...
 > 
-> Here is another fix.
+> Well, let's hope it.
+> 
+> 
+> thanks,
+> 
+> Takashi
 
-Thanks for the fast reply for admittedly not-major problem.  I'll give
-these patches a try tonight and report back tomorrow how things went...
+All the good contacts I had at Creative have left the company.
+>From what I understand of how the company works internally, is that the
+only reason they have this open source driver is because some large
+customer of theirs required it. They have no interest in what happens to
+the driver over and above supporting the one customer that requested it.
+I therefore doubt that they will make any contact with us regarding
+getting the driver into the kernel. If that was the case, they would
+have approached us earlier.
 
+Kind Regards
 
---==_Exmh_1226427956_3887P
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-Comment: Exmh version 2.5 07/13/2001
-
-iD8DBQFJGc40cC3lWbTT17ARAvDlAJ9qUzwgQTseaMyTaw5b+uu0scbexACcDhDV
-i8z8uxjPs/ABTc9DaADlGEQ=
-=wYS5
------END PGP SIGNATURE-----
-
---==_Exmh_1226427956_3887P--
+James
