@@ -1,19 +1,23 @@
 From: chri <chripell@gmail.com>
 Subject: Re: [PATCH] ALSA SOC driver for s3c24xx with uda1341
-Date: Tue, 11 Nov 2008 15:14:04 +0100
-Message-ID: <cabda6420811110614k73d97d4are33f5471044e86a4@mail.gmail.com>
+Date: Tue, 11 Nov 2008 15:15:11 +0100
+Message-ID: <cabda6420811110615tdb3b294yd4de2ad5239af654@mail.gmail.com>
 References: <12261302352402-git-send-email-chripell@gmail.com>
-	<20081110220959.GH22835@trinity.fluff.org>
+	<20081110133451.GD12804@sirena.org.uk>
+	<20081110185800.42b6c198.kristoffer.ericson@gmail.com>
+	<cabda6420811101108od6fe848qc291135a2ba9d819@mail.gmail.com>
+	<20081110212233.3d3bcc7c.kristoffer.ericson@gmail.com>
+	<20081110221044.GI22835@trinity.fluff.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.147])
-	by alsa0.perex.cz (Postfix) with ESMTP id 935AE24149
-	for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2008 15:14:05 +0100 (CET)
-Received: by ey-out-1920.google.com with SMTP id 21so1101502eyc.56
-	for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2008 06:14:04 -0800 (PST)
-In-Reply-To: <20081110220959.GH22835@trinity.fluff.org>
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.191])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D7FB2414D
+	for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2008 15:15:12 +0100 (CET)
+Received: by nf-out-0910.google.com with SMTP id e27so1825661nfd.32
+	for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2008 06:15:11 -0800 (PST)
+In-Reply-To: <20081110221044.GI22835@trinity.fluff.org>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,79 +29,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Ben Dooks <ben-linux@fluff.org>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.arm.linux.org.uk, zdevai@gmail.com
+Cc: alsa-devel@alsa-project.org, Kristoffer Ericson <kristoffer.ericson@gmail.com>, Mark Brown <broonie@sirena.org.uk>, zdevai@gmail.com, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 10, 2008 at 11:09 PM, Ben Dooks <ben-linux@fluff.org> wrote:
+On Mon, Nov 10, 2008 at 11:10 PM, Ben Dooks <ben-linux@fluff.org> wrote:
 
+>>
+>> It would be good if the driver could be used for both 1341/1344.
+>> Some minor ifdef's should sort it out.
+>> Please drop me a mail with the patches (missed the old one) and I'll start
+>> testing them them out.
 >
-> example into a doc file please, or point at an implementation of
-> this.
->
-
-ack
-
->> +#define setdat(adap, val)    (adap->setdat(adap, val))
->> +#define setclk(adap, val)    (adap->setclk(adap, val))
->> +#define setmode(adap, val)   (adap->setmode(adap, val))
->
-> inline functions are better than #define.
+> eww, ifdefs...
 >
 
-ack
-
->> +#include "uda1341_platform_data.h"
->
-> please find as better name for that file.
->
-
-I always have problems as far as platform data is concerned because it
-should be separated from the private data structures of the driver; so
-it's rather common to just have a small ad-hoc file for them. In
-socketcan a decision was made to put all the platform data in a
-subdirectory so the name can be short and one knows where to look. Do
-you have any suggestion where is the best place to put this file and
-for a consistent naming convention?
-
->> +}
->
-> do you really want to be busy-waiting the cpu for that long? how
-> about msleep?
->
-
-ack, I'll use msleep
-
->> +     void (*setmode) (struct uda1341_platform_data *, int);
-> no spaces              ^
->
-
-ack. It's strange that checkpatch.pl didn't catch this
-
->
-> find somewhere for these to live that can be included without
-> resorting to knowing the directory layout.
->
-
-ack, I'll try include/sound
-
->> +}
->
-> please use the generic gpio layer, the s3c24xx functions are going
-> to be deprecated and removed as soon as possible, probably after
-> 2.6.28.
->
-
-ack.
-
->> +     pclk = clk_get(NULL, "pclk");
->
-> check for errors. really you should be passing a device for pclk.
->
-
-ack
-
-Thanks,
-
+I'll try to put the common code in a uda_common.c and the do 2 small drivers.
 
 -- 
 Christian Pellegrin, see http://www.evolware.org/chri/
