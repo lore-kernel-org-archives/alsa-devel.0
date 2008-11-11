@@ -1,90 +1,94 @@
-From: Ben Dooks <ben-linux@fluff.org>
-Subject: Re: [alsa-devel] [PATCH] ALSA SOC driver for s3c24xx with uda1341
-Date: Mon, 10 Nov 2008 22:10:44 +0000
-Message-ID: <20081110221044.GI22835@trinity.fluff.org>
-References: <12261302352402-git-send-email-chripell@gmail.com>
-	<20081110133451.GD12804@sirena.org.uk>
-	<20081110185800.42b6c198.kristoffer.ericson@gmail.com>
-	<cabda6420811101108od6fe848qc291135a2ba9d819@mail.gmail.com>
-	<20081110212233.3d3bcc7c.kristoffer.ericson@gmail.com>
+From: "Yang, Libin" <Libin.Yang@amd.com>
+Subject: (no subject)
+Date: Tue, 11 Nov 2008 10:43:12 +0800
+Message-ID: <6077B97E85E7374DAE87B42B5AA9979707B88A@sshaexmb1.amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.arm.linux.org.uk>
-Content-Disposition: inline
-In-Reply-To: <20081110212233.3d3bcc7c.kristoffer.ericson@gmail.com>
-List-Unsubscribe: <http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=unsubscribe>
-List-Archive: <http://lists.arm.linux.org.uk/lurker/list/linux-arm-kernel.html>
-List-Post: <mailto:linux-arm-kernel@lists.arm.linux.org.uk>
-List-Help: <mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=help>
-List-Subscribe: <http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.arm.linux.org.uk
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org+linux-arm-kernel=m.gmane.org@lists.arm.linux.org.uk
-To: Kristoffer Ericson <kristoffer.ericson@gmail.com>
-Cc: chri <chripell@gmail.com>, Mark Brown <broonie@sirena.org.uk>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.arm.linux.org.uk, zdevai@gmail.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from IE1EHSOBE005.bigfish.com (outbound-dub.frontbridge.com
+	[213.199.154.16])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7AC332445E
+	for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2008 03:43:27 +0100 (CET)
+Content-Class: urn:content-classes:message
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 10, 2008 at 09:22:33PM +0100, Kristoffer Ericson wrote:
-> On Mon, 10 Nov 2008 20:08:00 +0100
-> chri <chripell@gmail.com> wrote:
-> 
-> > On Mon, Nov 10, 2008 at 6:58 PM, Kristoffer Ericson
-> > <kristoffer.ericson@gmail.com> wrote:
-> > > On Mon, 10 Nov 2008 13:34:52 +0000
-> > 
-> > > I'm equally interested in this patch, seeing as I
-> > > got an hp jornada 7xx with uda1344 waiting.
-> > >
-> > > Have you any plans on creating an 134x seeing as there
-> > > is very little difference between chipsets?
-> > >
-> > 
-> > Hi,
-> > 
-> > I had a quick look at the UDA1344 data sheet. When operated in L3-mode
-> > it's basically a subset of the UDA1341 so I can do the changes. Anyway
-> > I'm not able to test them so could you give me a hand testing? Anyway
-> > if you won't use special mixer settings the patch I sent should work
-> > since the important configuration registers and the volume are the
-> > same for both chips.
-> 
-> It would be good if the driver could be used for both 1341/1344.
-> Some minor ifdef's should sort it out. 
-> Please drop me a mail with the patches (missed the old one) and I'll start
-> testing them them out.
+Hi Takashi,
 
-eww, ifdefs... 
+This patch is to support detecting new AMD HD Audio devices with HDA PCI
+class code. Would you please review it? Thanks a lot!
+--------------------------------------------------------------------
+
+Signed-off-by: Libin Yang <libin.yang@amd.com>
+
+--- alsa-driver-1.0.18.orig/alsa-kernel/pci/hda/hda_intel.c
+2008-10-29 20:41:35.000000000 +0800
++++ alsa-driver-1.0.18/alsa-kernel/pci/hda/hda_intel.c	2008-11-11
+18:33:14.000000000 +0800
+@@ -291,6 +291,7 @@
+ /* Define VIA HD Audio Device ID*/
+ #define VIA_HDAC_DEVICE_ID		0x3288
  
-> > 
-> > -- 
-> > Christian Pellegrin, see http://www.evolware.org/chri/
-> > "Real Programmers don't play tennis, or any other sport which requires
-> > you to change clothes. Mountain climbing is OK, and Real Programmers
-> > wear their climbing boots to work in case a mountain should suddenly
-> > spring up in the middle of the computer room."
-> 
-> 
-> -- 
-> Kristoffer Ericson <kristoffer.ericson@gmail.com>
++#define PCI_CLASS_MULTIMEDIA_HDA	0x040300
+ 
+ /*
+  */
+@@ -410,6 +411,7 @@
+ 	AZX_DRIVER_ULI,
+ 	AZX_DRIVER_NVIDIA,
+ 	AZX_DRIVER_TERA,
++	AZX_DRIVER_AMD_AUTO,
+ 	AZX_NUM_DRIVERS, /* keep this as last entry */
+ };
+ 
+@@ -423,6 +425,7 @@
+ 	[AZX_DRIVER_ULI] = "HDA ULI M5461",
+ 	[AZX_DRIVER_NVIDIA] = "HDA NVidia",
+ 	[AZX_DRIVER_TERA] = "HDA Teradici", 
++	[AZX_DRIVER_AMD_AUTO] = "HDA AMD",
+ };
+ 
+ /*
+@@ -1198,6 +1201,7 @@
+ static unsigned int azx_default_codecs[AZX_NUM_DRIVERS] __devinitdata =
+{
+ 	[AZX_DRIVER_ICH] = 3,
+ 	[AZX_DRIVER_ATI] = 3,
++	[AZX_DRIVER_AMD_AUTO] = 3,
+ };
+ 
+ static int __devinit azx_codec_create(struct azx *chip, const char
+*model,
+@@ -2146,6 +2150,7 @@
+ 			chip->playback_streams = ULI_NUM_PLAYBACK;
+ 			chip->capture_streams = ULI_NUM_CAPTURE;
+ 			break;
++		case AZX_DRIVER_AMD_AUTO:
+ 		case AZX_DRIVER_ATIHDMI:
+ 			chip->playback_streams = ATIHDMI_NUM_PLAYBACK;
+ 			chip->capture_streams = ATIHDMI_NUM_CAPTURE;
+@@ -2373,6 +2378,9 @@
+ 	{ PCI_DEVICE(0x10de, 0x0bd7), .driver_data = AZX_DRIVER_NVIDIA
+},
+ 	/* Teradici */
+ 	{ PCI_DEVICE(0x6549, 0x1200), .driver_data = AZX_DRIVER_TERA },
++	/* AMD Generic, PCI class code and Vendor ID for HD Audio */
++	{ PCI_VENDOR_ID_ATI, PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID,
++	  PCI_CLASS_MULTIMEDIA_HDA, 0xffffff, AZX_DRIVER_AMD_AUTO },
+ 	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, azx_ids);
 
-
-
-> -------------------------------------------------------------------
-> List admin: http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel
-> FAQ:        http://www.arm.linux.org.uk/mailinglists/faq.php
-> Etiquette:  http://www.arm.linux.org.uk/mailinglists/etiquette.php
-
--- 
--- 
-Ben
-
-Q:      What's a light-year?
-A:      One-third less calories than a regular year.
-
-
--------------------------------------------------------------------
-List admin: http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel
-FAQ:        http://www.arm.linux.org.uk/mailinglists/faq.php
-Etiquette:  http://www.arm.linux.org.uk/mailinglists/etiquette.php
+Thanks & Regards,
+Libin
