@@ -1,23 +1,21 @@
 From: chri <chripell@gmail.com>
 Subject: Re: [PATCH] ALSA SOC driver for s3c24xx with uda1341
-Date: Tue, 11 Nov 2008 15:15:11 +0100
-Message-ID: <cabda6420811110615tdb3b294yd4de2ad5239af654@mail.gmail.com>
+Date: Tue, 11 Nov 2008 15:16:54 +0100
+Message-ID: <cabda6420811110616h6d6cc44fn99d7e549d970fc11@mail.gmail.com>
 References: <12261302352402-git-send-email-chripell@gmail.com>
 	<20081110133451.GD12804@sirena.org.uk>
-	<20081110185800.42b6c198.kristoffer.ericson@gmail.com>
-	<cabda6420811101108od6fe848qc291135a2ba9d819@mail.gmail.com>
-	<20081110212233.3d3bcc7c.kristoffer.ericson@gmail.com>
-	<20081110221044.GI22835@trinity.fluff.org>
+	<cabda6420811101104l823d519i8dca6feac86cfa@mail.gmail.com>
+	<20081111103931.GA7019@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8D7FB2414D
-	for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2008 15:15:12 +0100 (CET)
-Received: by nf-out-0910.google.com with SMTP id e27so1825661nfd.32
-	for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2008 06:15:11 -0800 (PST)
-In-Reply-To: <20081110221044.GI22835@trinity.fluff.org>
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id BC4CB2414D
+	for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2008 15:16:54 +0100 (CET)
+Received: by nf-out-0910.google.com with SMTP id e27so1826127nfd.32
+	for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2008 06:16:54 -0800 (PST)
+In-Reply-To: <20081111103931.GA7019@sirena.org.uk>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,22 +26,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ben Dooks <ben-linux@fluff.org>
-Cc: alsa-devel@alsa-project.org, Kristoffer Ericson <kristoffer.ericson@gmail.com>, Mark Brown <broonie@sirena.org.uk>, zdevai@gmail.com, linux-arm-kernel@lists.arm.linux.org.uk
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.arm.linux.org.uk, zdevai@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 10, 2008 at 11:10 PM, Ben Dooks <ben-linux@fluff.org> wrote:
-
->>
->> It would be good if the driver could be used for both 1341/1344.
->> Some minor ifdef's should sort it out.
->> Please drop me a mail with the patches (missed the old one) and I'll start
->> testing them them out.
+On Tue, Nov 11, 2008 at 11:39 AM, Mark Brown <broonie@sirena.org.uk> wrote:
 >
-> eww, ifdefs...
+> If you work with current git you'll see that the other drivers have been
+> converted to pr_debug().
 >
 
-I'll try to put the common code in a uda_common.c and the do 2 small drivers.
+I see, I'm cloning git repository *now*.
+
+>
+>> they turn on/off an amplifier with 6db gain in the record and playback
+>> respectively.
+>
+> Should be "ADC +6dB Switch" or similar then.
+>
+
+ack
+
+>
+> A pointer to a table of dividers would handle it.  In any case, it needs
+> more comments.
+>
+
+ack,
+
+>> > You want to run this through scripts/checkpatch.pl.
+>
+>> I already did it
+>
+> I'd have expected checkpatch to catch the extra space you've got after
+> clk_source there...
+>
+
+I agree
+
+>
+> This function is going to be used in a vtable where IIRC it can be
+> optional but it needs to check the value of power in s3c24xx_uda1341_l3_pins.
+> It feels like you've got too many layers of indirection here and that,
+> for example, the l3_pins power should be assignable directly to the
+> vtable.
+>
+
+ack
+
+Thanks,
+
 
 -- 
 Christian Pellegrin, see http://www.evolware.org/chri/
