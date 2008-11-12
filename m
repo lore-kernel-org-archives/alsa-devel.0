@@ -1,51 +1,76 @@
-From: Stephen Clark <sclark46@earthlink.net>
-Subject: Re: 2.6.27.2 hda-intel weak sound from speakers
-Date: Wed, 12 Nov 2008 15:17:19 -0500
-Message-ID: <491B39CF.5050201@earthlink.net>
-References: <491B1409.9040705@earthlink.net> <s5h7i78ixu1.wl%tiwai@suse.de>
-Reply-To: sclark46@earthlink.net
+From: Pavel Hofman <pavel.hofman@insite.cz>
+Subject: Re: Infrasonic Quartet
+Date: Wed, 12 Nov 2008 22:06:12 +0100
+Message-ID: <491B4544.3050506@insite.cz>
+References: <fd3eb9bf0811100930n11c6d07anc7c9145b829ac628@mail.gmail.com>	
+	<491AAD96.8010008@insite.cz>
+	<fd3eb9bf0811121016p3b4558fvf465a4a6f7439c1a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755134AbYKLURk@vger.kernel.org>
-In-Reply-To: <s5h7i78ixu1.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3FC4C2437A
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 22:06:18 +0100 (CET)
+In-Reply-To: <fd3eb9bf0811121016p3b4558fvf465a4a6f7439c1a@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?B?VmVkcmFuIE1pbGV0acSH?= <rivanvx@gmail.com>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Wed, 12 Nov 2008 12:36:09 -0500,
-> Stephen Clark wrote:
->> Hi,
->>
->> I am running linux 2.6.27.2 ontop of a Fedora 8 distro. The sound from the 
->> speakers is barely audible with all the mixer settings at max, this includes
->> the pulseaudio settings. This is on an ASUS laptop with intel-hda.
-> 
-> Try to pass either model=asus-a7j or model=asus-a7m.  One of them may
-> give a bit better result.
-> 
-> 
-> Takashi
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
-> 
-Thanks Takashi, I'll give it a try and report the result - OBTW this is an
-ASUS S96F - which was a build to order (Verified By Intel - VBI) laptop - which 
-corresponds to ASUS Z96F
-laptop.
-
-Regards,
-Steve
-
--- 
-
-"They that give up essential liberty to obtain temporary safety,
-deserve neither liberty nor safety."  (Ben Franklin)
-
-"The course of history shows that as a government grows, liberty
-decreases."  (Thomas Jefferson)
+VmVkcmFuIE1pbGV0acSHIG5hcHNhbChhKToKPiAyMDA4LzExLzEyIFBhdmVsIEhvZm1hbiA8cGF2
+ZWwuaG9mbWFuQGluc2l0ZS5jej46Cj4+IFZlZHJhbiBNaWxldGnEhyB3cm90ZToKPj4+IEF1emVu
+IHN0YXJ0ZWQgdG8gZGlzdHJpYnV0ZSBvbmUgY29vbCBuZXcgRW52eTI0SFQtUyBjYXJkLCBhbmQg
+aXQgbG9va3MKPj4+IHJlYWxseSBpbnRlcmVzdGluZyB0byBtZS4gU3BlY3MgYXJlIGF3ZXNvbWUs
+IGFuZCBpdCBhbHNvIGhhcyB3b3JkCj4+PiBjbG9jayBvbiBjYXJkIQo+Pj4gaHR0cDovL3d3dy5h
+dXplbnRlY2guY29tL3NpdGUvcHJvZHVjdHMvaW5mcmFfcXVhcnRldC5waHAKPj4+IGh0dHA6Ly93
+d3cuaW5mcmEtc29uaWMuY29tL3NpdGUvcF9QQ0lfcXVhcnRldC5waHAKPj4+IGh0dHA6Ly93d3cu
+bmV3ZWdnLmNvbS9Qcm9kdWN0L1Byb2R1Y3QuYXNweD9JdGVtPU44MkUxNjgyOTE1NjAwNwo+Pj4K
+Pj4+IEFjY29yZGluZyB0byBlbnZ5MjQuc3ZvYm9kbm8uY29tLCBpdCBoYXM6Cj4+PiBJbmZyYXNv
+bmljIFF1YXJ0ZXQgICAgICAweDMwMzAgIDB4NDk1Mwo+Pj4gRW52eTI0SFQtUyAtIHN1cHBvcnRl
+ZCBieSBBTFNBCj4+PiBBSzQ2MjBCIChBREMgLyBEQUMpIC0gbm90IHN1cmUsIHByb2JhYmx5IG5v
+dCBzdXBwb3J0ZWQ/Cj4+PiBBSzQxMTIgLSBub3Qgc3VyZSBlaXRoZXI/Cj4+Pgo+Pj4gSG93ZXZl
+ciBpdCBoYXMgWGlsaW54IG9uIGNhcmQgaW4gc2ltaWxhciB3YXkgYXMgRVNJIEp1bGlAIGRvZXMs
+IHNvCj4+PiBpdCdzIHByb2JhYmx5IG5vdCBhIHN0YW5kYXJkIEVudnkyNEhULVMgY2FyZC4KPj4+
+IEFueSBpZGVhcyBpZiB0aGlzIGNhcmQgY291bGQgYmUgc3VwcG9ydGVkPwo+Pj4KPj4gQWNjb3Jk
+aW5nIHRvIHRoZSBibG9jayBkaWFncmFtIGluIHRoZSBVc2VyJ3MgTWFudWFsIHRoZSBYaWxpbngg
+cGxheXMgYSBtYWpvcgo+PiByb2xlLiBUaGUgRlBHQSBwcm92aWRlcyBldmVuIG1vcmUgZnVuY3Rp
+b25zIHRoYW4gaW4gSnVsaS4KPj4KPj4gV2l0aG91dCBzb21lIGluZm9ybWF0aW9uIGZyb20gdGhl
+IG1hbnVmYWN0dXJlciAoZXZlbiBpZiB1bmRlciBOREEpIHRoZQo+PiBkcml2ZXIgd2lsbCBiZSBy
+YXRoZXIgZGlmZmljdWx0IHRvIHdyaXRlLiBUaGUgRlBHQSBpcyBjb250cm9sbGVkIGJ5IEVudnkn
+cwo+PiBHUElPcyBhbmQgdGhlaXIgc2lnbmFscyB3b3VsZCBoYXZlIHRvIGJlIGVsZWN0cmljYWxs
+eSBhbmFseXplZCB1bmRlciBXaW5kb3dzCj4+IGRyaXZlciAtIGEgcHJldHR5IGNvbXBsaWNhdGVk
+IHRhc2suIEl0IGlzIHZlcnkgZGlmZmVyZW50IGZyb20gYSByZWd1bGFyIGNhcmQKPj4gd2l0aCB3
+ZWxsLWRvY3VtZW50ZWQgY29kZWNzIG9ubHkgd2hlcmUgeW91IGp1c3QgbmVlZCB0byB0cmFjZSBj
+b2RlYyBwaW5zIHRvCj4+IGNvcnJlc3BvbmRpbmcgR1BJT3MuCj4+Cj4+IFBhdmVsLgo+Pgo+IAo+
+IEZpcnN0IG9mZiwgdGhhbmtzIGZvciBhbnN3ZXJpbmcuIEkgZGlkbid0IGV4cGVjdCBhbnlvbmUg
+dG8gYW5zd2VyLAo+IHNpbmNlIHRoaXMgY2FyZCBpc24ndCB0aGlzIGNvbW1vbiB5ZXQsIHNvIGl0
+IHN1cnByaXNlZCBtZSB0aGF0IGl0Cj4gY2F1Z2h0IHNvbWVvbmUncyBpbnRlcmVzdC4gR29vZCA6
+KQo+IAo+IFdlbGwsIElNSE8sIHRoaXMgY2FyZCBpcyBhcyBmYXIgYXMgRW52eTI0SFQtUyBjYW4g
+Z28uIFN1cmUgeW91IGNhbgo+IGhhdmUgbW9yZSBpbnB1dHMvb3V0cHV0cywgYnV0IGF0IDR4NCBh
+bmQgd2l0aG91dCBicmVha291dCBib3ggdGhhdCdzCj4gaXQsIGluIHRlcm1zIG9mIGZlYXR1cmVz
+LiBTbywgSSBkaWRuJ3QgZXhwZWN0IHRoZSBkZXNpZ24gdG8gYmUgc2ltcGxlCj4gYXQgYWxsLiBO
+b3QgdG8gbWVudGlvbiB1bnN1cHBvcnRlZCBEQUMvQURDIGFuZCBESVQuCj4gCj4gWWV0LCBhc3N1
+bWluZyB3ZSBnZXQgdGhlIHNwZWNpZmljYXRpb25zIGZyb20gSW5mcmFzb25pYy9BdXplbiwgd291
+bGQKPiB5b3Ugb3IgYW55b25lIGVsc2UgYmUgaW50ZXJlc3RlZCBpbiBjb2RpbmcgYSBkcml2ZXI/
+CgpXZWxsLCBJIGNvdWxkIHdvcmsgb24gdGhlIGRyaXZlciwgaXQgd291bGQgYmUgc2ltaWxhciB0
+byBKdWxpLiBpY2UxNzI0LmMgCmlzIG1vc3RseSByZWFkeSBmb3IgdGhlIHByb3ByaWV0YXJ5IGNs
+b2NrIG1vZGVsLiBUaGUgYWZvcmVtZW50aW9uZWQgCmNoaXBzIGhhdmUgY29tcGxldGUgZG9jdW1l
+bnRhdGlvbiBwdWJsaWNseSBhdmFpbGFibGUuIElmIEkgaGFkIHRoZSBjYXJkIApwaHlzaWNhbGx5
+IHRvIHRyYWNlIGNvbm5lY3Rpb24gYW5kIHRlc3QgKEkgYW0gbm8gVGFrYXNoaSB0aGUgd2l6YXJk
+IDopICkgCmFuZCBzb21lIGRvY3VtZW50YXRpb24gYXZhaWxhYmxlLCBpdCBzaG91bGQgYmUgdmlh
+YmxlLgoKSG9uZXN0bHkgSSBhbSBub3QgZ29pbmcgdG8gcHVyY2hhc2UgaXQgbXlzZWxmLCBJIGhh
+dmUgbm8gb3RoZXIgdXNlIGZvciAKaXQgcGx1cyBQQ0kgaXMgYWxtb3N0IGhpc3Rvcnkgbm93LiBV
+bmZvcnR1bmF0ZWx5IEkgaGF2ZSBub3QgbWV0IGFueSAKUENJLWV4cHJlc3MgY2FyZCB3aXRoIHF1
+YWxpdHkgNDQuMWtIeiBwbGF5YmFjayAoaS5lLiBkZWRpY2F0ZWQgY3J5c3RhbCAKY2xvY2spLgoK
+UGF2ZWwuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
