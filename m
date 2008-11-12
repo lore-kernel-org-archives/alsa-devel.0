@@ -1,15 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 0/4] ASoC updates
-Date: Wed, 12 Nov 2008 11:55:07 +0000
-Message-ID: <20081112115507.GA22288@rakim.wolfsonmicro.main>
+Subject: [PATCH 2/4] ASoC: s3c24xx 8 bit sound fix
+Date: Wed, 12 Nov 2008 11:55:47 +0000
+Message-ID: <1226490949-22360-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <20081112115507.GA22288@rakim.wolfsonmicro.main>
+	<1226490949-22360-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7A9C9243B3
-	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 12:55:08 +0100 (CET)
-Content-Disposition: inline
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C07B7243D9
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 12:55:50 +0100 (CET)
+In-Reply-To: <1226490949-22360-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,30 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Christian Pellegrin <chripell@gmail.com>, Christian Pellegrin <chripell@fsfe.org>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit e18c94d20224f3df584531a48d944d8cccfda46d:
-  Grazvydas Ignotas (1):
-        ALSA: ASoC: TWL4030 codec - fix 256*Fs clock
+From: Christian Pellegrin <chripell@gmail.com>
 
-are available in the git repository at:
+fixes playing/recording of 8 bit audio files.
 
-  git://opensource.wolfsonmicro.com/linux-2.6-asoc for-tiwai
+Generated on  20081108  against v2.6.27
 
-Christian Pellegrin (1):
-      ASoC: s3c24xx 8 bit sound fix
+Signed-off-by: Christian Pellegrin <chripell@fsfe.org>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/s3c24xx/s3c24xx-i2s.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
 
-Hugo Villeneuve (1):
-      ASoC: Add Right-Justified mode and Codec clock master to davinci-i2s
-
-Naresh Medisetty (1):
-      ASoC: DaVinci: Audio: Fix swapping of channels at start of stereo playback
-
-Troy Kisky (1):
-      ASoC: TLV320AIC23B Support more sample rates
-
- sound/soc/codecs/tlv320aic23.c  |  222 +++++++++++++++++++++++++++++++--------
- sound/soc/davinci/davinci-i2s.c |   89 ++++++++++++++--
- sound/soc/s3c24xx/s3c24xx-i2s.c |    7 ++
- 3 files changed, 263 insertions(+), 55 deletions(-)
+diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.c b/sound/soc/s3c24xx/s3c24xx-i2s.c
+index ba4476b..c18977b 100644
+--- a/sound/soc/s3c24xx/s3c24xx-i2s.c
++++ b/sound/soc/s3c24xx/s3c24xx-i2s.c
+@@ -261,10 +261,17 @@ static int s3c24xx_i2s_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	switch (params_format(params)) {
+ 	case SNDRV_PCM_FORMAT_S8:
++		iismod &= ~S3C2410_IISMOD_16BIT;
++		((struct s3c24xx_pcm_dma_params *)
++		  rtd->dai->cpu_dai->dma_data)->dma_size = 1;
+ 		break;
+ 	case SNDRV_PCM_FORMAT_S16_LE:
+ 		iismod |= S3C2410_IISMOD_16BIT;
++		((struct s3c24xx_pcm_dma_params *)
++		  rtd->dai->cpu_dai->dma_data)->dma_size = 2;
+ 		break;
++	default:
++		return -EINVAL;
+ 	}
+ 
+ 	writel(iismod, s3c24xx_i2s.regs + S3C2410_IISMOD);
+-- 
+1.5.6.5
