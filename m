@@ -1,16 +1,22 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: Infrasonic Quartet
-Date: Wed, 12 Nov 2008 11:19:02 +0100
-Message-ID: <491AAD96.8010008@insite.cz>
-References: <fd3eb9bf0811100930n11c6d07anc7c9145b829ac628@mail.gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: alsa-driver 1.0.18a is out
+Date: Wed, 12 Nov 2008 11:23:09 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0811121120470.13649@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.insite.cz (cable.insite.cz [84.242.84.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id BC1FD24394
-	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 11:19:02 +0100 (CET)
-In-Reply-To: <fd3eb9bf0811100930n11c6d07anc7c9145b829ac628@mail.gmail.com>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0CFC6243AC
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 11:23:10 +0100 (CET)
+Received: from server.perex.cz (server.perex.cz [172.16.0.20])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	ED65B149C7D
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 11:23:09 +0100 (CET)
+Received: from tm8103.perex-int.cz (localhost [127.0.0.1])
+	by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	DCBA484355
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 11:23:09 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,33 +26,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?VmVkcmFuIE1pbGV0acSH?= <rivanvx@gmail.com>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-VmVkcmFuIE1pbGV0acSHIHdyb3RlOgo+IEF1emVuIHN0YXJ0ZWQgdG8gZGlzdHJpYnV0ZSBvbmUg
-Y29vbCBuZXcgRW52eTI0SFQtUyBjYXJkLCBhbmQgaXQgbG9va3MKPiByZWFsbHkgaW50ZXJlc3Rp
-bmcgdG8gbWUuIFNwZWNzIGFyZSBhd2Vzb21lLCBhbmQgaXQgYWxzbyBoYXMgd29yZAo+IGNsb2Nr
-IG9uIGNhcmQhCj4gaHR0cDovL3d3dy5hdXplbnRlY2guY29tL3NpdGUvcHJvZHVjdHMvaW5mcmFf
-cXVhcnRldC5waHAKPiBodHRwOi8vd3d3LmluZnJhLXNvbmljLmNvbS9zaXRlL3BfUENJX3F1YXJ0
-ZXQucGhwCj4gaHR0cDovL3d3dy5uZXdlZ2cuY29tL1Byb2R1Y3QvUHJvZHVjdC5hc3B4P0l0ZW09
-TjgyRTE2ODI5MTU2MDA3Cj4gCj4gQWNjb3JkaW5nIHRvIGVudnkyNC5zdm9ib2Ruby5jb20sIGl0
-IGhhczoKPiBJbmZyYXNvbmljIFF1YXJ0ZXQJMHgzMDMwCTB4NDk1MwkKPiBFbnZ5MjRIVC1TIC0g
-c3VwcG9ydGVkIGJ5IEFMU0EKPiBBSzQ2MjBCIChBREMgLyBEQUMpIC0gbm90IHN1cmUsIHByb2Jh
-Ymx5IG5vdCBzdXBwb3J0ZWQ/Cj4gQUs0MTEyIC0gbm90IHN1cmUgZWl0aGVyPwo+IAo+IEhvd2V2
-ZXIgaXQgaGFzIFhpbGlueCBvbiBjYXJkIGluIHNpbWlsYXIgd2F5IGFzIEVTSSBKdWxpQCBkb2Vz
-LCBzbwo+IGl0J3MgcHJvYmFibHkgbm90IGEgc3RhbmRhcmQgRW52eTI0SFQtUyBjYXJkLgo+IEFu
-eSBpZGVhcyBpZiB0aGlzIGNhcmQgY291bGQgYmUgc3VwcG9ydGVkPwo+IAoKQWNjb3JkaW5nIHRv
-IHRoZSBibG9jayBkaWFncmFtIGluIHRoZSBVc2VyJ3MgTWFudWFsIHRoZSBYaWxpbnggcGxheXMg
-YSAKbWFqb3Igcm9sZS4gVGhlIEZQR0EgcHJvdmlkZXMgZXZlbiBtb3JlIGZ1bmN0aW9ucyB0aGFu
-IGluIEp1bGkuCgpXaXRob3V0IHNvbWUgaW5mb3JtYXRpb24gZnJvbSB0aGUgbWFudWZhY3R1cmVy
-IChldmVuIGlmIHVuZGVyIE5EQSkgdGhlIApkcml2ZXIgd2lsbCBiZSByYXRoZXIgZGlmZmljdWx0
-IHRvIHdyaXRlLiBUaGUgRlBHQSBpcyBjb250cm9sbGVkIGJ5IApFbnZ5J3MgR1BJT3MgYW5kIHRo
-ZWlyIHNpZ25hbHMgd291bGQgaGF2ZSB0byBiZSBlbGVjdHJpY2FsbHkgYW5hbHl6ZWQgCnVuZGVy
-IFdpbmRvd3MgZHJpdmVyIC0gYSBwcmV0dHkgY29tcGxpY2F0ZWQgdGFzay4gSXQgaXMgdmVyeSBk
-aWZmZXJlbnQgCmZyb20gYSByZWd1bGFyIGNhcmQgd2l0aCB3ZWxsLWRvY3VtZW50ZWQgY29kZWNz
-IG9ubHkgd2hlcmUgeW91IGp1c3QgbmVlZCAKdG8gdHJhY2UgY29kZWMgcGlucyB0byBjb3JyZXNw
-b25kaW5nIEdQSU9zLgoKUGF2ZWwuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+Hi all,
+
+	I released alsa-driver package 1.0.18a. The changelog is here:
+
+http://www.alsa-project.org/main/index.php/Changes_v1.0.18_v1.0.18a
+
+					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
