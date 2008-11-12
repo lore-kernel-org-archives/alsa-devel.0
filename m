@@ -1,59 +1,67 @@
-From: Andreas Mohr <andi-5+Cda9B46AM@public.gmane.org>
-Subject: Re: [alsa-devel] Bugs on aspire one A150
-Date: Wed, 12 Nov 2008 19:05:19 +0100
-Message-ID: <20081112180519.GA21919@rhlx01.hs-esslingen.de>
-References: <s5h3ai11dpt.wl%tiwai@suse.de> <20081109151323.GA18705@rhlx01.hs-esslingen.de> <s5h7i7c916e.wl%tiwai@suse.de> <20081109200929.GA29333@rhlx01.hs-esslingen.de> <s5hiqqtkxqr.wl%tiwai@suse.de> <491B0D38.1050207@gmail.com>
+From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
+Subject: Re: Infrasonic Quartet
+Date: Wed, 12 Nov 2008 19:16:32 +0100
+Message-ID: <fd3eb9bf0811121016p3b4558fvf465a4a6f7439c1a@mail.gmail.com>
+References: <fd3eb9bf0811100930n11c6d07anc7c9145b829ac628@mail.gmail.com>
+	<491AAD96.8010008@insite.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <kernel-testers-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from el-out-1112.google.com (el-out-1112.google.com [209.85.162.181])
+	by alsa0.perex.cz (Postfix) with ESMTP id 853A81037F1
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 19:16:35 +0100 (CET)
+Received: by el-out-1112.google.com with SMTP id o28so369972ele.2
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 10:16:34 -0800 (PST)
+In-Reply-To: <491AAD96.8010008@insite.cz>
 Content-Disposition: inline
-In-Reply-To: <491B0D38.1050207-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Sender: kernel-testers-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Maxim Levitsky <maximlevitsky-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Andreas Mohr <andi-5+Cda9B46AM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Kernel Testers List <kernel-testers-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Pavel Hofman <pavel.hofman@insite.cz>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Wed, Nov 12, 2008 at 07:07:04PM +0200, Maxim Levitsky wrote:
-> I pretty much studied the datasheet and driver, and this is what I found:
-> btw, my acer 5720 and aspire one share same ALC268.
-> Some stuff is trivially fixable, some seems to be unfixable at all:
-
-Wow, what an extremely in-depth analysis!
-I just intended to dive into getting mic routing corrected myself,
-thus you saved me a lot of time!
-
-> model=acer is used on my regular laptop.
-> model-acer-aspire is used on aspire one laptop, and it needs to be renamed, as both are aspire.
-
-+1 (your analysis of both being rather different - as already pondered -
-confirms this necessity)
-
-> And now for unfixable problems:
->
-> 1) There is strong DC offset on all inputs.
-> it is even different on left/right and depends on capture volume.
-> I tried to change the VREF only param that could help, but it doesn't.
-> I feel that this is hardware flaw.
-> (It is possible that voltage on inputs is created by circuit made by acer, and then ALC268 amplifies it.)
-
-Sounds like really bad circuit design then.
-One would think that the Intel HDA architecture might have builtin
-measures to compensate for this if needed? DC offset issues on
-soundcards aren't exactly a new phenomenon after all...
-
-> Lastly I noticed that datasheet mentions so called 'coefficients':
-> the codecs exposes lots of internal and undocumented registers using set address/ get/set value scheme.
-> maybe some of above bugs are fixable there, but ether realtek has to provide data for that or reverse engineering of
-> windows driver is required.
-
-I've actually had a peek at the .inf files since I thought that it would
-already contain register values in those registry keys that it creates on
-install, but yeah, that's all in-driver it seems.
-Probably time to ask Acer about specifics, especially since I didn't spot
-any hda-intel changes in their linux-2.6.23.9lw source.
-
-Thank you very much,
-
-Andreas Mohr
+MjAwOC8xMS8xMiBQYXZlbCBIb2ZtYW4gPHBhdmVsLmhvZm1hbkBpbnNpdGUuY3o+Ogo+IFZlZHJh
+biBNaWxldGnEhyB3cm90ZToKPj4KPj4gQXV6ZW4gc3RhcnRlZCB0byBkaXN0cmlidXRlIG9uZSBj
+b29sIG5ldyBFbnZ5MjRIVC1TIGNhcmQsIGFuZCBpdCBsb29rcwo+PiByZWFsbHkgaW50ZXJlc3Rp
+bmcgdG8gbWUuIFNwZWNzIGFyZSBhd2Vzb21lLCBhbmQgaXQgYWxzbyBoYXMgd29yZAo+PiBjbG9j
+ayBvbiBjYXJkIQo+PiBodHRwOi8vd3d3LmF1emVudGVjaC5jb20vc2l0ZS9wcm9kdWN0cy9pbmZy
+YV9xdWFydGV0LnBocAo+PiBodHRwOi8vd3d3LmluZnJhLXNvbmljLmNvbS9zaXRlL3BfUENJX3F1
+YXJ0ZXQucGhwCj4+IGh0dHA6Ly93d3cubmV3ZWdnLmNvbS9Qcm9kdWN0L1Byb2R1Y3QuYXNweD9J
+dGVtPU44MkUxNjgyOTE1NjAwNwo+Pgo+PiBBY2NvcmRpbmcgdG8gZW52eTI0LnN2b2JvZG5vLmNv
+bSwgaXQgaGFzOgo+PiBJbmZyYXNvbmljIFF1YXJ0ZXQgICAgICAweDMwMzAgIDB4NDk1Mwo+PiBF
+bnZ5MjRIVC1TIC0gc3VwcG9ydGVkIGJ5IEFMU0EKPj4gQUs0NjIwQiAoQURDIC8gREFDKSAtIG5v
+dCBzdXJlLCBwcm9iYWJseSBub3Qgc3VwcG9ydGVkPwo+PiBBSzQxMTIgLSBub3Qgc3VyZSBlaXRo
+ZXI/Cj4+Cj4+IEhvd2V2ZXIgaXQgaGFzIFhpbGlueCBvbiBjYXJkIGluIHNpbWlsYXIgd2F5IGFz
+IEVTSSBKdWxpQCBkb2VzLCBzbwo+PiBpdCdzIHByb2JhYmx5IG5vdCBhIHN0YW5kYXJkIEVudnky
+NEhULVMgY2FyZC4KPj4gQW55IGlkZWFzIGlmIHRoaXMgY2FyZCBjb3VsZCBiZSBzdXBwb3J0ZWQ/
+Cj4+Cj4KPiBBY2NvcmRpbmcgdG8gdGhlIGJsb2NrIGRpYWdyYW0gaW4gdGhlIFVzZXIncyBNYW51
+YWwgdGhlIFhpbGlueCBwbGF5cyBhIG1ham9yCj4gcm9sZS4gVGhlIEZQR0EgcHJvdmlkZXMgZXZl
+biBtb3JlIGZ1bmN0aW9ucyB0aGFuIGluIEp1bGkuCj4KPiBXaXRob3V0IHNvbWUgaW5mb3JtYXRp
+b24gZnJvbSB0aGUgbWFudWZhY3R1cmVyIChldmVuIGlmIHVuZGVyIE5EQSkgdGhlCj4gZHJpdmVy
+IHdpbGwgYmUgcmF0aGVyIGRpZmZpY3VsdCB0byB3cml0ZS4gVGhlIEZQR0EgaXMgY29udHJvbGxl
+ZCBieSBFbnZ5J3MKPiBHUElPcyBhbmQgdGhlaXIgc2lnbmFscyB3b3VsZCBoYXZlIHRvIGJlIGVs
+ZWN0cmljYWxseSBhbmFseXplZCB1bmRlciBXaW5kb3dzCj4gZHJpdmVyIC0gYSBwcmV0dHkgY29t
+cGxpY2F0ZWQgdGFzay4gSXQgaXMgdmVyeSBkaWZmZXJlbnQgZnJvbSBhIHJlZ3VsYXIgY2FyZAo+
+IHdpdGggd2VsbC1kb2N1bWVudGVkIGNvZGVjcyBvbmx5IHdoZXJlIHlvdSBqdXN0IG5lZWQgdG8g
+dHJhY2UgY29kZWMgcGlucyB0bwo+IGNvcnJlc3BvbmRpbmcgR1BJT3MuCj4KPiBQYXZlbC4KPgoK
+Rmlyc3Qgb2ZmLCB0aGFua3MgZm9yIGFuc3dlcmluZy4gSSBkaWRuJ3QgZXhwZWN0IGFueW9uZSB0
+byBhbnN3ZXIsCnNpbmNlIHRoaXMgY2FyZCBpc24ndCB0aGlzIGNvbW1vbiB5ZXQsIHNvIGl0IHN1
+cnByaXNlZCBtZSB0aGF0IGl0CmNhdWdodCBzb21lb25lJ3MgaW50ZXJlc3QuIEdvb2QgOikKCldl
+bGwsIElNSE8sIHRoaXMgY2FyZCBpcyBhcyBmYXIgYXMgRW52eTI0SFQtUyBjYW4gZ28uIFN1cmUg
+eW91IGNhbgpoYXZlIG1vcmUgaW5wdXRzL291dHB1dHMsIGJ1dCBhdCA0eDQgYW5kIHdpdGhvdXQg
+YnJlYWtvdXQgYm94IHRoYXQncwppdCwgaW4gdGVybXMgb2YgZmVhdHVyZXMuIFNvLCBJIGRpZG4n
+dCBleHBlY3QgdGhlIGRlc2lnbiB0byBiZSBzaW1wbGUKYXQgYWxsLiBOb3QgdG8gbWVudGlvbiB1
+bnN1cHBvcnRlZCBEQUMvQURDIGFuZCBESVQuCgpZZXQsIGFzc3VtaW5nIHdlIGdldCB0aGUgc3Bl
+Y2lmaWNhdGlvbnMgZnJvbSBJbmZyYXNvbmljL0F1emVuLCB3b3VsZAp5b3Ugb3IgYW55b25lIGVs
+c2UgYmUgaW50ZXJlc3RlZCBpbiBjb2RpbmcgYSBkcml2ZXI/CgotLSAKVmVkcmFuIE1pbGV0acSH
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
