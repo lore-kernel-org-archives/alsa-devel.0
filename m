@@ -1,19 +1,19 @@
-From: Wu Fengguang <wfg@linux.intel.com>
-Subject: Re: [PATCH 1/3] introduce i830_hdmi_priv.has_hdmi_sink
-Date: Wed, 12 Nov 2008 16:16:03 +0800
-Message-ID: <1226477768.297868.8785@de>
-References: <20081107062338.158523355@linux.intel.com>
-	<20081107062410.013520150@linux.intel.com>
-	<20081112072747.GD14627@zhen-devel.sh.intel.com>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: amixer error
+Date: Wed, 12 Nov 2008 08:57:54 +0000
+Message-ID: <200811120857.54214.gineera@aspect135.co.uk>
+References: <dfeb90390811110225m8e77523pd9cccccbae7ea1ec@mail.gmail.com>
+	<s5h63muqxtz.wl%tiwai@suse.de>
+	<dfeb90390811112131y6a70f59aj3b02347303517ca1@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from azsmga101.ch.intel.com (mga07.intel.com [143.182.124.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5350624179
-	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 09:16:12 +0100 (CET)
+Received: from smtp.talktalk.net (smtp-out-2.talktalk.net [62.24.128.232])
+	by alsa0.perex.cz (Postfix) with ESMTP id 602D924391
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 10:38:26 +0100 (CET)
+In-Reply-To: <dfeb90390811112131y6a70f59aj3b02347303517ca1@mail.gmail.com>
 Content-Disposition: inline
-In-Reply-To: <20081112072747.GD14627@zhen-devel.sh.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,30 +23,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Wang, Zhenyu Z" <zhenyu.z.wang@intel.com>, "linux-gfx@linux.intel.com" <linux-gfx@linux.intel.com>, "xorg@lists.freedesktop.org" <xorg@lists.freedesktop.org>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Arun KS <getarunks@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 12, 2008 at 03:27:47PM +0800, Wang, Zhenyu Z wrote:
-> On 2008.11.07 14:23:39 +0800, Wu Fengguang wrote:
-> > HDMI is compatible with DVI, and we've seen many boards that
-> > use HDMI port for DVI output.
-> > 
-> > So Zhenyu proposed this flag: i830_hdmi_priv.has_hdmi_sink
-> > to indicate the presence of HDMI capable monitors.
-> > 
-> > Signed-off-by: Wu Fengguang <wfg@linux.intel.com>
+On Wednesday 12 November 2008 05:31, Arun KS wrote:
+> On Tue, Nov 11, 2008 at 5:27 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> > At Tue, 11 Nov 2008 17:15:15 +0530,
+> >
+> > Arun KS wrote:
+> >> On Tue, Nov 11, 2008 at 4:08 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> >> > At Tue, 11 Nov 2008 15:55:38 +0530,
+> >> >
+> >> > Arun KS wrote:
+> >> >> Hi,
+> >> >>
+> >> >> I am getting an error for amixer, but my amixer controls works fine.
+> >> >>
+> >> >> Here is the log:
+> >> >>
+> >> >> [root@OMAP2530EVM ~]#
+> >> >> [root@OMAP2530EVM ~]#
+> >> >> [root@OMAP2530EVM ~]#
+> >> >> [root@OMAP2530EVM ~]# amixer
+> >> >> amixer: Mixer default load error: Operation not permitted
+> >> >
+> >> > How about checking via strace?
+> >>
+> >> Below is the strace output:
+> >
+> > ...
+> >
+> >> open("/dev/snd/controlC0", O_RDWR)      = 3
+> >> ioctl(3, USBDEVFS_CONTROL, 0xbea498fc)  = 0
+> >> fcntl64(3, F_GETFL)                     = 0x2 (flags O_RDWR)
+> >> fcntl64(3, F_SETFL, O_RDWR|O_NONBLOCK)  = 0
+> >> ioctl(3, USBDEVFS_RELEASEINTERFACE, 0xbea49980) = 0
+> >> ioctl(3, USBDEVFS_RELEASEINTERFACE, 0xbea49980) = 0
+> >> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
+> >> ioctl(3, USBDEVFS_IOCTL, 0xbea492c0)    = 0
+> >> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
+> >> ioctl(3, USBDEVFS_IOCTL, 0xbea492e0)    = 0
+> >> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
+> >> ioctl(3, USBDEVFS_IOCTL, 0xbea492e0)    = 0
+> >> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
+> >> ioctl(3, USBDEVFS_IOCTL, 0xbea492e0)    = 0
+> >> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
+> >> ioctl(3, USBDEVFS_IOCTL, 0xbea492e0)    = 0
+> >> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
+> >> ioctl(3, USBDEVFS_IOCTL, 0xbea492d8)    = 0
+> >> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
+> >> ioctl(3, USBDEVFS_IOCTL, 0xbea492c0)    = 0
+> >> ioctl(3, USBDEVFS_IOCTL, 0xbea492c0)    = 0
+> >> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
+> >> ioctl(3, USBDEVFS_IOCTL, 0xbea492c0)    = -1 EPERM (Operation not
+> >> permitted)
+> >
+> > Weird.  USBDEVFS_IOCTL corresponds to SNDRV_IOCTL_ELEM_REPLACE,
+> > and USBDEVFS_CONNECTINFO to SNDRV_IOCTL_ELEM_ADD.
+> > [some strace versions don't show SNDRV_* ioctls because they are defined
+> >  via enum instead of #define in asound.h...]
+> > These are for user-defined control elements.
+> > And, strace shows that you don't use any ~/.asound or /etc/asound.conf...
+>
+> But when i use a different kernel and different codec with the same
+> file system, amixer is working.
+>
+> So the filesytem is fine. AM I Rite?
+>
+> Is it kernel dependent?
 
-> We should check if the symbol is available for xserver compatiblity.
-> So below is updated patch for check this. 
+This is embedded, on ARM -right?  I'll just throw in a couple of suggestions 
+we went through as 'newbie-at-embedded's.  The build environment can cause 
+havoc! (which are you using?) and throw up spurious errors.
 
-> +
-> +    if (xf86LoaderCheckSymbol("xf86MonitorIsHDMI") &&
-> +	    xf86MonitorIsHDMI(edid_mon))
-> +	dev_priv->has_hdmi_sink = TRUE;
+The filesystem contains Alsa-lib, whereas the kernel image is usually 
+separate.  However the Alsa-lib is really a user abstraction of the kernel 
+driver, and as such it's version needs to correspond to the particular 
+Alsa-driver in the kernel (Takashi correct me if I understand wrong).  Thus 
+our build environment's habit of allowing you to select a specific kernel 
+source by number and then getting either a fixed old Alsa-lib (the same one 
+as always) or just getting the latest release, but in either case with no 
+reference to the kernel, causes potential problems in the driver<->lib 
+interface.  (Been there).
 
-I'm OK with the backward compatibility check.
-The side effect is that audio output won't be enabled for old xservers.
+Also we experienced unpredictable errors with versioned symbols and UClibc 
+(which I have posted about previously).  Other build parameters such as the 
+setting of -mabi can cause incompatibilities between parts.
 
-Thanks,
-Fengguang
+Just ideas, HTH,
+
+Alan
