@@ -1,25 +1,16 @@
-From: "christian pellegrin" <chripell@gmail.com>
-Subject: Re: [PATCH] ALSA SOC driver for s3c24xx with uda1341
-Date: Wed, 12 Nov 2008 07:31:46 +0100
-Message-ID: <cabda6420811112231q4c6e4ec1vec7626f11f59fe62@mail.gmail.com>
-References: <12261302352402-git-send-email-chripell@gmail.com>
-	<20081110133451.GD12804@sirena.org.uk>
-	<20081110185800.42b6c198.kristoffer.ericson@gmail.com>
-	<cabda6420811101108od6fe848qc291135a2ba9d819@mail.gmail.com>
-	<20081110212233.3d3bcc7c.kristoffer.ericson@gmail.com>
-	<20081110221044.GI22835@trinity.fluff.org>
-	<cabda6420811110615tdb3b294yd4de2ad5239af654@mail.gmail.com>
-	<20081111215317.091d870d.kristoffer.ericson@gmail.com>
+From: "Tim Uckun" <timuckun@gmail.com>
+Subject: Dell Vostro 1710 laptop
+Date: Wed, 12 Nov 2008 20:13:23 +1300
+Message-ID: <855e4dcf0811112313v4211809r80caab5a881c0203@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.186])
-	by alsa0.perex.cz (Postfix) with ESMTP id A22A22433D
-	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 07:31:46 +0100 (CET)
-Received: by nf-out-0910.google.com with SMTP id e27so182327nfd.32
-	for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2008 22:31:46 -0800 (PST)
-In-Reply-To: <20081111215317.091d870d.kristoffer.ericson@gmail.com>
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.146])
+	by alsa0.perex.cz (Postfix) with ESMTP id B0F5824359
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 08:13:24 +0100 (CET)
+Received: by qw-out-1920.google.com with SMTP id 9so155817qwj.56
+	for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2008 23:13:23 -0800 (PST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,24 +21,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kristoffer Ericson <kristoffer.ericson@gmail.com>
-Cc: zdevai@gmail.com, alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>, Ben Dooks <ben-linux@fluff.org>, linux-arm-kernel@lists.arm.linux.org.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 11, 2008 at 9:53 PM, Kristoffer Ericson
-<kristoffer.ericson@gmail.com> wrote:
-> On Tue, 11 Nov 2008 15:15:11 +0100
+Hey all.
 
->
-> Oh, just wanted to ask, is the L3 code platform specific
-> or universally crunchable?
->
+I have a dell vostro 1710 laptop running hardy. The sound has never
+worked perfectly on this model. The built in mic doesn't work but a
+mic plugged into the jack works.  The speakers sound terrible and they
+are not loud enough.
 
-In the patch that is coming it will be more reusable.
+The sound also dies frequently especially I am on youtube a lot (could
+be due to a flash/firefox problem too). I have to restart the alsa
+service in order to get it going again.
 
--- 
-Christian Pellegrin, see http://www.evolware.org/chri/
-"Real Programmers don't play tennis, or any other sport which requires
-you to change clothes. Mountain climbing is OK, and Real Programmers
-wear their climbing boots to work in case a mountain should suddenly
-spring up in the middle of the computer room."
+Until recently I was running the option model=dell-m42 but a recent
+kernel upgrade broke that.  I fiddled with some more options and
+settled on model=dell.
+
+I don't know if any of these problems will be solved by upgrading
+ubuntu but I wanted to report the problems anyway.  I have been
+googling around I can't see anybody else using a vostro 1710 with
+linux.
+
+The alsa information is here.
+
+ http://www.alsa-project.org/db/?f=a27b1377d3d2f472364ead7a04a1db7360affecd
