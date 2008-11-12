@@ -1,18 +1,26 @@
-From: naresh@ti.com
-Subject: [PATCH] ASoC: DaVinci: Audio: Fix swapping of channels
-	at start of stereo playback
-Date: Wed, 12 Nov 2008 10:26:31 +0530
-Message-ID: <1226465791-14725-1-git-send-email-naresh@ti.com>
+From: "christian pellegrin" <chripell@gmail.com>
+Subject: Re: [PATCH] ALSA SOC driver for s3c24xx with uda1341
+Date: Wed, 12 Nov 2008 07:31:46 +0100
+Message-ID: <cabda6420811112231q4c6e4ec1vec7626f11f59fe62@mail.gmail.com>
+References: <12261302352402-git-send-email-chripell@gmail.com>
+	<20081110133451.GD12804@sirena.org.uk>
+	<20081110185800.42b6c198.kristoffer.ericson@gmail.com>
+	<cabda6420811101108od6fe848qc291135a2ba9d819@mail.gmail.com>
+	<20081110212233.3d3bcc7c.kristoffer.ericson@gmail.com>
+	<20081110221044.GI22835@trinity.fluff.org>
+	<cabda6420811110615tdb3b294yd4de2ad5239af654@mail.gmail.com>
+	<20081111215317.091d870d.kristoffer.ericson@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id E755024153
-	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 06:54:58 +0100 (CET)
-Received: from dbdp31.itg.ti.com ([172.24.170.98])
-	by bear.ext.ti.com (8.13.7/8.13.7) with ESMTP id mAC5soE9000497
-	for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2008 23:54:56 -0600
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.186])
+	by alsa0.perex.cz (Postfix) with ESMTP id A22A22433D
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 07:31:46 +0100 (CET)
+Received: by nf-out-0910.google.com with SMTP id e27so182327nfd.32
+	for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2008 22:31:46 -0800 (PST)
+In-Reply-To: <20081111215317.091d870d.kristoffer.ericson@gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,88 +30,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: davinci-linux-open-source@linux.davincidsp.com, Naresh Medisetty <naresh@ti.com>
+To: Kristoffer Ericson <kristoffer.ericson@gmail.com>
+Cc: zdevai@gmail.com, alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>, Ben Dooks <ben-linux@fluff.org>, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-From: Naresh Medisetty <naresh@ti.com>
+On Tue, Nov 11, 2008 at 9:53 PM, Kristoffer Ericson
+<kristoffer.ericson@gmail.com> wrote:
+> On Tue, 11 Nov 2008 15:15:11 +0100
 
-Fixes swapping of channels at start of stereo playback.
+>
+> Oh, just wanted to ask, is the L3 code platform specific
+> or universally crunchable?
+>
 
-Channel swap can be observed while playing left-only or right-only audio data. The channel 
-swap is fixed by handling the XSYNCERR condition.
+In the patch that is coming it will be more reusable.
 
-Signed-off-by: Naresh Medisetty <naresh@ti.com>
----
- sound/soc/davinci/davinci-i2s.c |   49 ++++++++++++++++++++++++++++++++++++--
- 1 files changed, 46 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
-index 5ebf1ff..d8279ad 100644
---- a/sound/soc/davinci/davinci-i2s.c
-+++ b/sound/soc/davinci/davinci-i2s.c
-@@ -110,16 +110,59 @@ static void davinci_mcbsp_start(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct davinci_mcbsp_dev *dev = rtd->dai->cpu_dai->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_platform *platform = socdev->platform;
- 	u32 w;
-+	int ret;
- 
- 	/* Start the sample generator and enable transmitter/receiver */
- 	w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
- 	MOD_REG_BIT(w, DAVINCI_MCBSP_SPCR_GRST, 1);
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, w);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		/* Stop the DMA to avoid data loss */
-+		/* while the transmitter is out of reset to handle XSYNCERR */
-+		if (platform->pcm_ops->trigger) {
-+			ret = platform->pcm_ops->trigger(substream,
-+				SNDRV_PCM_TRIGGER_STOP);
-+			if (ret < 0)
-+				printk(KERN_DEBUG "Playback DMA stop failed\n");
-+		}
-+
-+		/* Enable the transmitter */
-+		w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
- 		MOD_REG_BIT(w, DAVINCI_MCBSP_SPCR_XRST, 1);
--	else
-+		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, w);
-+
-+		/* wait for any unexpected frame sync error to occur */
-+		udelay(100);
-+
-+		/* Disable the transmitter to clear any outstanding XSYNCERR */
-+		w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
-+		MOD_REG_BIT(w, DAVINCI_MCBSP_SPCR_XRST, 0);
-+		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, w);
-+
-+		/* Restart the DMA */
-+		if (platform->pcm_ops->trigger) {
-+			ret = platform->pcm_ops->trigger(substream,
-+				SNDRV_PCM_TRIGGER_START);
-+			if (ret < 0)
-+				printk(KERN_DEBUG "Playback DMA start failed\n");
-+		}
-+		/* Enable the transmitter */
-+		w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
-+		MOD_REG_BIT(w, DAVINCI_MCBSP_SPCR_XRST, 1);
-+		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, w);
-+
-+	} else {
-+
-+		/* Enable the reciever */
-+		w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
- 		MOD_REG_BIT(w, DAVINCI_MCBSP_SPCR_RRST, 1);
--	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, w);
-+		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, w);
-+	}
-+
- 
- 	/* Start frame sync */
- 	w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
 -- 
-1.5.4.1
+Christian Pellegrin, see http://www.evolware.org/chri/
+"Real Programmers don't play tennis, or any other sport which requires
+you to change clothes. Mountain climbing is OK, and Real Programmers
+wear their climbing boots to work in case a mountain should suddenly
+spring up in the middle of the computer room."
