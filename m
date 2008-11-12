@@ -1,20 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] ASoC: s3c24xx 8 bit sound fix
-Date: Wed, 12 Nov 2008 14:59:53 +0000
-Message-ID: <20081112145952.GA28971@rakim.wolfsonmicro.main>
-References: <20081112115507.GA22288@rakim.wolfsonmicro.main>
-	<1226490949-22360-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1226490949-22360-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<20081112141902.GA15238@trinity.fluff.org>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Regression on alsa-driver-1.0.18a on HDA for Dell
+ Inspiron 1521
+Date: Wed, 12 Nov 2008 16:04:24 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0811121603350.13649@tm8103.perex-int.cz>
+References: <a10be5a00811120606s12672837secdda91b80659ac8@mail.gmail.com>
+	<491AE402.3030507@aircable.net> <s5hk5b9jaim.wl%tiwai@suse.de>
+	<491AE7F3.2040203@aircable.net> <s5h7i79j8k8.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 22E752447E
-	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 15:59:54 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20081112141902.GA15238@trinity.fluff.org>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id B6F5E2447F
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 16:04:24 +0100 (CET)
+In-Reply-To: <s5h7i79j8k8.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,30 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ben Dooks <ben-linux@fluff.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Christian Pellegrin <chripell@gmail.com>, Christian Pellegrin <chripell@fsfe.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Manuel Naranjo <manuel@aircable.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 12, 2008 at 02:19:02PM +0000, Ben Dooks wrote:
-> On Wed, Nov 12, 2008 at 11:55:47AM +0000, Mark Brown wrote:
+On Wed, 12 Nov 2008, Takashi Iwai wrote:
 
-> >  	case SNDRV_PCM_FORMAT_S8:
-> > +		iismod &= ~S3C2410_IISMOD_16BIT;
-> > +		((struct s3c24xx_pcm_dma_params *)
-> > +		  rtd->dai->cpu_dai->dma_data)->dma_size = 1;
-> >  		break;
-> >  	case SNDRV_PCM_FORMAT_S16_LE:
-> >  		iismod |= S3C2410_IISMOD_16BIT;
-> > +		((struct s3c24xx_pcm_dma_params *)
-> > +		  rtd->dai->cpu_dai->dma_data)->dma_size = 2;
-> >  		break;
+> +	.name = "PC Bepp Playback Switch",
 
-> Is playing with the dma parameters like that the correct way?
+Typo here.
 
-It makes the DMA size match the input data size which doesn't seem
-totally unreasonable.
+			Jaroslav
 
-This is all internal to the s3c24xx I2S driver - what this does is
-change the parameter passed by the DMA driver to s3c2410_dma_config()
-for the I2S DMA channels which is just read blindly.  This parameter is
-not exposed to user space.
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
