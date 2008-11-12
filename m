@@ -1,21 +1,20 @@
 From: "christian pellegrin" <chripell@gmail.com>
-Subject: Re: [PATCH 2/4] ASoC: s3c24xx 8 bit sound fix
-Date: Wed, 12 Nov 2008 18:29:47 +0100
-Message-ID: <cabda6420811120929w203186fas8ae52d5966480bc3@mail.gmail.com>
-References: <20081112115507.GA22288@rakim.wolfsonmicro.main>
-	<1226490949-22360-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1226490949-22360-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<20081112141902.GA15238@trinity.fluff.org>
+Subject: Re: maximum tolerable sampling frequency difference
+	for a driver
+Date: Wed, 12 Nov 2008 18:36:49 +0100
+Message-ID: <cabda6420811120936v9617445k273e07e3098fc43@mail.gmail.com>
+References: <cabda6420811110817u42eafc74wfde36de113c98df1@mail.gmail.com>
+	<491AF7D0.40806@ladisch.de> <20081112154607.GI8767@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id C0EAF1037F1
-	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 18:29:48 +0100 (CET)
-Received: by rv-out-0708.google.com with SMTP id f25so478387rvb.32
-	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 09:29:47 -0800 (PST)
-In-Reply-To: <20081112141902.GA15238@trinity.fluff.org>
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.248])
+	by alsa0.perex.cz (Postfix) with ESMTP id 25DF81037F1
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 18:36:50 +0100 (CET)
+Received: by rv-out-0708.google.com with SMTP id f25so480768rvb.32
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 09:36:49 -0800 (PST)
+In-Reply-To: <20081112154607.GI8767@sirena.org.uk>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,25 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ben Dooks <ben-linux@fluff.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 12, 2008 at 3:19 PM, Ben Dooks <ben-linux@fluff.org> wrote:
-
+On Wed, Nov 12, 2008 at 4:46 PM, Mark Brown <broonie@sirena.org.uk> wrote:
+> On Wed, Nov 12, 2008 at 04:35:44PM +0100, Clemens Ladisch wrote:
 >
-> Is playing with the dma parameters like that the correct way?
+>> When an application requests a frequency that is not supported by the
+>> device, it is the application that must decide whether the actual
+>> frequency is acceptable.
+>
+> In theory.  In practice few applications have substantial tolerance for
+> this and in many situations the cost of dealing with it (such as doing
+> soft conversion) is worse than a small error.
 >
 
-Well this worked for me. I'm opened to better solutions and to resend
-a patch but it's no clear to me how to proceed.
-
-Out of curiosity I did a search in Openmoko if someone noticed the
-same problem and found some people that had 8 bit ringtones sounding
-awful on the neo/forerunner. But they just resampled them to 16bit
-44khz and lived happy. Unfortunately for consultants there is always
-the customer that wants to play that old 8-bit 11khz wav with the
-vocal announcement from 10 year ago.
+I see, thank you both for the answer.
 
 -- 
 Christian Pellegrin, see http://www.evolware.org/chri/
