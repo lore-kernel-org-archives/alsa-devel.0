@@ -1,14 +1,19 @@
-From: Wayne <shhuango@hotmail.com>
-Subject: to get the detail information of a codec
-Date: Wed, 12 Nov 2008 07:17:06 +0000
-Message-ID: <BAY107-W168CB3AE4BEA6D898AB65BCE140@phx.gbl>
+From: Wu Fengguang <wfg@linux.intel.com>
+Subject: Re: [PATCH 1/3] introduce i830_hdmi_priv.has_hdmi_sink
+Date: Wed, 12 Nov 2008 16:16:03 +0800
+Message-ID: <1226477768.297868.8785@de>
+References: <20081107062338.158523355@linux.intel.com>
+	<20081107062410.013520150@linux.intel.com>
+	<20081112072747.GD14627@zhen-devel.sh.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bay0-omc2-s41.bay0.hotmail.com (bay0-omc2-s41.bay0.hotmail.com
-	[65.54.246.177]) by alsa0.perex.cz (Postfix) with ESMTP id BC9002435F
-	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 08:17:09 +0100 (CET)
+Received: from azsmga101.ch.intel.com (mga07.intel.com [143.182.124.22])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5350624179
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 09:16:12 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20081112072747.GD14627@zhen-devel.sh.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,28 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Wang, Zhenyu Z" <zhenyu.z.wang@intel.com>, "linux-gfx@linux.intel.com" <linux-gfx@linux.intel.com>, "xorg@lists.freedesktop.org" <xorg@lists.freedesktop.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Nov 12, 2008 at 03:27:47PM +0800, Wang, Zhenyu Z wrote:
+> On 2008.11.07 14:23:39 +0800, Wu Fengguang wrote:
+> > HDMI is compatible with DVI, and we've seen many boards that
+> > use HDMI port for DVI output.
+> > 
+> > So Zhenyu proposed this flag: i830_hdmi_priv.has_hdmi_sink
+> > to indicate the presence of HDMI capable monitors.
+> > 
+> > Signed-off-by: Wu Fengguang <wfg@linux.intel.com>
 
-Hi all,
- 
-Now I'm writing a program which can list some capabilities of my
-codec, such as what rates and formats my codec supports.
-By typing 'cat /proc/asound/card0/codec#0', you can see the
-detail of your card. I want to write a program which can show
-these information by alsa-lib. However, I couldn't find a function
-in alsa-lib which can tell me the formats and rates. Is there a
-way to get this detail?
-By the way, my card is intel-hda and the codec is alc268.
- 
-Another question is I've seen the word "element" in many
-function, such as snd_ctl_event_elem_get_device. What
-"element" means in alsa world? I couldn't find any artile
-mentioning it!!!
- 
-Thanks all!!!
-Wayne
-_________________________________________________________________
-Discover the new Windows Vista
-http://search.msn.com/results.aspx?q=windows+vista&mkt=en-US&form=QBRE
+> We should check if the symbol is available for xserver compatiblity.
+> So below is updated patch for check this. 
+
+> +
+> +    if (xf86LoaderCheckSymbol("xf86MonitorIsHDMI") &&
+> +	    xf86MonitorIsHDMI(edid_mon))
+> +	dev_priv->has_hdmi_sink = TRUE;
+
+I'm OK with the backward compatibility check.
+The side effect is that audio output won't be enabled for old xservers.
+
+Thanks,
+Fengguang
