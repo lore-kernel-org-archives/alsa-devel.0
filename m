@@ -1,15 +1,15 @@
 From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: [topic/asoc][PATCH] ASoC: OMAP: Add more supported
-	sample rates into McBSP DAI driver
-Date: Wed, 12 Nov 2008 17:05:51 +0200
-Message-ID: <1226502351-21838-1-git-send-email-jarkko.nikula@nokia.com>
+Subject: [topic/asoc][PATCH] ASoC: Fix supported sample rates
+	of TWL4030 audio codec
+Date: Wed, 12 Nov 2008 17:05:41 +0200
+Message-ID: <1226502341-21815-1-git-send-email-jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 264751037EF
-	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 16:06:18 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id C59BC24482
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 16:06:29 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,37 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Arun KS <arunks@mistralsolutions.com>, Jarkko Nikula <jarkko.nikula@nokia.com>, Steve Sakoman <steve@sakoman.com>
+Cc: Jarkko Nikula <jarkko.nikula@nokia.com>, Steve Sakoman <steve@sakoman.com>
 List-Id: alsa-devel@alsa-project.org
 
-Originally it was put too tight limits to support only 44.1 kHz and 48 kHz
-sample rates in McBSP DAI driver. Extend it now to 8 kHz - 96 kHz. With
-96 kHz and 2*16 bits, bit clock is 3.072 MHz < 3.125 MHz (I2S max?).
-
-Tested on Nokia N810 with TVL320AIC33 from rates 8 - 96 kHz and on Texas
-Instruments Beagle with TWL4030 from rates 8 - 48 kHz.
+TWL4030 currently supports rates between 8 kHz and 48 kHz and sets the codec
+mode register accordingly in twl4030_hw_params. Expose this info so that
+ASoC can match other rates than 44.1 kHz or 48 kHz as well.
 
 Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
 Cc: Steve Sakoman <steve@sakoman.com>
-Cc: Arun KS <arunks@mistralsolutions.com>
 ---
- sound/soc/omap/omap-mcbsp.c |    4 +---
- 1 files changed, 1 insertions(+), 3 deletions(-)
+ sound/soc/codecs/twl4030.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 8485a8a..3d4060b 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -36,9 +36,7 @@
- #include "omap-mcbsp.h"
- #include "omap-pcm.h"
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 90f3b4d..c1893d2 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -504,7 +504,7 @@ static int twl4030_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	return 0;
+ }
  
--#define OMAP_MCBSP_RATES	(SNDRV_PCM_RATE_44100 | \
--				 SNDRV_PCM_RATE_48000 | \
--				 SNDRV_PCM_RATE_KNOT)
-+#define OMAP_MCBSP_RATES	(SNDRV_PCM_RATE_8000_96000)
+-#define TWL4030_RATES	 (SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000)
++#define TWL4030_RATES	 (SNDRV_PCM_RATE_8000_48000)
+ #define TWL4030_FORMATS	 (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FORMAT_S24_LE)
  
- struct omap_mcbsp_data {
- 	unsigned int			bus_id;
+ struct snd_soc_dai twl4030_dai = {
 -- 
 1.5.6.5
