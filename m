@@ -1,20 +1,22 @@
-From: Wu Fengguang <wfg@linux.intel.com>
-Subject: Re: [Intel-gfx] G45 user experience
-Date: Wed, 12 Nov 2008 13:14:37 +0800
-Message-ID: <1226466882.987885.7160@de>
-References: <20081107173215.GA4272@csy.ca>
-	<1226109130.31821.1.camel@aiko.keithp.com>
-	<20081108061035.GA6041@csy.ca> <4918EEC8.1060907@linux.intel.com>
-	<20081111041500.GA15161@csy.ca> <49194D62.3080401@linux.intel.com>
+From: "Arun KS" <getarunks@gmail.com>
+Subject: Re: amixer error
+Date: Wed, 12 Nov 2008 11:01:07 +0530
+Message-ID: <dfeb90390811112131y6a70f59aj3b02347303517ca1@mail.gmail.com>
+References: <dfeb90390811110225m8e77523pd9cccccbae7ea1ec@mail.gmail.com>
+	<s5hk5bar1if.wl%tiwai@suse.de>
+	<dfeb90390811110345t4bee5c67l28fe807ad9de7667@mail.gmail.com>
+	<s5h63muqxtz.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from orsmga101.jf.intel.com (mga06.intel.com [134.134.136.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6E7CF1037FC
-	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 06:14:46 +0100 (CET)
+Received: from po-out-1718.google.com (po-out-1718.google.com [72.14.252.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3BE4D1037FC
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 06:31:09 +0100 (CET)
+Received: by po-out-1718.google.com with SMTP id b23so348901poe.2
+	for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2008 21:31:08 -0800 (PST)
+In-Reply-To: <s5h63muqxtz.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <49194D62.3080401@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,28 +26,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Fu Michael <michael_fu@linux.intel.com>
-Cc: "Ma, Ling" <ling.ma@intel.com>, intel-gfx@lists.freedesktop.org, alsa-devel <alsa-devel@alsa-project.org>, Shane W <shane-freevo@csy.ca>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 11, 2008 at 05:16:18PM +0800, Fu Michael wrote:
-> Shane W wrote:
->> On Tue, Nov 11, 2008 at 10:32:40AM +0800, Fu Michael wrote:
->>   
->>> Do you have any HDMI sink device that can support 5.1 or 7.1 audio?  
->>> I'm  looking for those kind of devices as well...
->>>     
+On Tue, Nov 11, 2008 at 5:27 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Tue, 11 Nov 2008 17:15:15 +0530,
+> Arun KS wrote:
 >>
->> I'm not really sure what you mean by HDMI sink but my
->> receiver which connects to the G45 does support 5.1 and 7.1
->> HDMI decoding along with TRUEHD, DTSHD and DSD so I can
->> certainly test anything that comes down the pipe as far as
->> patches go.
->>   
-> Shane, would you please tell me the model of this HDMI receiver?
+>> On Tue, Nov 11, 2008 at 4:08 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > At Tue, 11 Nov 2008 15:55:38 +0530,
+>> > Arun KS wrote:
+>> >>
+>> >> Hi,
+>> >>
+>> >> I am getting an error for amixer, but my amixer controls works fine.
+>> >>
+>> >> Here is the log:
+>> >>
+>> >> [root@OMAP2530EVM ~]#
+>> >> [root@OMAP2530EVM ~]#
+>> >> [root@OMAP2530EVM ~]#
+>> >> [root@OMAP2530EVM ~]# amixer
+>> >> amixer: Mixer default load error: Operation not permitted
+>> >
+>> > How about checking via strace?
+>>
+>> Below is the strace output:
+> ...
+>> open("/dev/snd/controlC0", O_RDWR)      = 3
+>> ioctl(3, USBDEVFS_CONTROL, 0xbea498fc)  = 0
+>> fcntl64(3, F_GETFL)                     = 0x2 (flags O_RDWR)
+>> fcntl64(3, F_SETFL, O_RDWR|O_NONBLOCK)  = 0
+>> ioctl(3, USBDEVFS_RELEASEINTERFACE, 0xbea49980) = 0
+>> ioctl(3, USBDEVFS_RELEASEINTERFACE, 0xbea49980) = 0
+>> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
+>> ioctl(3, USBDEVFS_IOCTL, 0xbea492c0)    = 0
+>> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
+>> ioctl(3, USBDEVFS_IOCTL, 0xbea492e0)    = 0
+>> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
+>> ioctl(3, USBDEVFS_IOCTL, 0xbea492e0)    = 0
+>> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
+>> ioctl(3, USBDEVFS_IOCTL, 0xbea492e0)    = 0
+>> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
+>> ioctl(3, USBDEVFS_IOCTL, 0xbea492e0)    = 0
+>> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
+>> ioctl(3, USBDEVFS_IOCTL, 0xbea492d8)    = 0
+>> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
+>> ioctl(3, USBDEVFS_IOCTL, 0xbea492c0)    = 0
+>> ioctl(3, USBDEVFS_IOCTL, 0xbea492c0)    = 0
+>> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
+>> ioctl(3, USBDEVFS_IOCTL, 0xbea492c0)    = -1 EPERM (Operation not permitted)
+>
+> Weird.  USBDEVFS_IOCTL corresponds to SNDRV_IOCTL_ELEM_REPLACE,
+> and USBDEVFS_CONNECTINFO to SNDRV_IOCTL_ELEM_ADD.
+> [some strace versions don't show SNDRV_* ioctls because they are defined
+>  via enum instead of #define in asound.h...]
+> These are for user-defined control elements.
+> And, strace shows that you don't use any ~/.asound or /etc/asound.conf...
 
-Or preferably, could you send us your dmesg? I'm particularly
-interested in the ELD information inside it.
+But when i use a different kernel and different codec with the same
+file system, amixer is working.
 
-Thanks,
-Fengguang
+So the filesytem is fine. AM I Rite?
+
+Is it kernel dependent?
+
+Regards,
+Arun
+
+
+
+> Takashi
+>
