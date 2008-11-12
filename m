@@ -1,22 +1,18 @@
-From: "Arun KS" <getarunks@gmail.com>
-Subject: Re: amixer error
-Date: Wed, 12 Nov 2008 11:01:07 +0530
-Message-ID: <dfeb90390811112131y6a70f59aj3b02347303517ca1@mail.gmail.com>
-References: <dfeb90390811110225m8e77523pd9cccccbae7ea1ec@mail.gmail.com>
-	<s5hk5bar1if.wl%tiwai@suse.de>
-	<dfeb90390811110345t4bee5c67l28fe807ad9de7667@mail.gmail.com>
-	<s5h63muqxtz.wl%tiwai@suse.de>
+From: naresh@ti.com
+Subject: [PATCH] ASoC: DaVinci: Audio: Fix swapping of channels
+	at start of stereo playback
+Date: Wed, 12 Nov 2008 10:26:31 +0530
+Message-ID: <1226465791-14725-1-git-send-email-naresh@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from po-out-1718.google.com (po-out-1718.google.com [72.14.252.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3BE4D1037FC
-	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 06:31:09 +0100 (CET)
-Received: by po-out-1718.google.com with SMTP id b23so348901poe.2
-	for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2008 21:31:08 -0800 (PST)
-In-Reply-To: <s5h63muqxtz.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id E755024153
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 06:54:58 +0100 (CET)
+Received: from dbdp31.itg.ti.com ([172.24.170.98])
+	by bear.ext.ti.com (8.13.7/8.13.7) with ESMTP id mAC5soE9000497
+	for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2008 23:54:56 -0600
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,76 +22,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: davinci-linux-open-source@linux.davincidsp.com, Naresh Medisetty <naresh@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 11, 2008 at 5:27 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Tue, 11 Nov 2008 17:15:15 +0530,
-> Arun KS wrote:
->>
->> On Tue, Nov 11, 2008 at 4:08 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> > At Tue, 11 Nov 2008 15:55:38 +0530,
->> > Arun KS wrote:
->> >>
->> >> Hi,
->> >>
->> >> I am getting an error for amixer, but my amixer controls works fine.
->> >>
->> >> Here is the log:
->> >>
->> >> [root@OMAP2530EVM ~]#
->> >> [root@OMAP2530EVM ~]#
->> >> [root@OMAP2530EVM ~]#
->> >> [root@OMAP2530EVM ~]# amixer
->> >> amixer: Mixer default load error: Operation not permitted
->> >
->> > How about checking via strace?
->>
->> Below is the strace output:
-> ...
->> open("/dev/snd/controlC0", O_RDWR)      = 3
->> ioctl(3, USBDEVFS_CONTROL, 0xbea498fc)  = 0
->> fcntl64(3, F_GETFL)                     = 0x2 (flags O_RDWR)
->> fcntl64(3, F_SETFL, O_RDWR|O_NONBLOCK)  = 0
->> ioctl(3, USBDEVFS_RELEASEINTERFACE, 0xbea49980) = 0
->> ioctl(3, USBDEVFS_RELEASEINTERFACE, 0xbea49980) = 0
->> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
->> ioctl(3, USBDEVFS_IOCTL, 0xbea492c0)    = 0
->> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
->> ioctl(3, USBDEVFS_IOCTL, 0xbea492e0)    = 0
->> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
->> ioctl(3, USBDEVFS_IOCTL, 0xbea492e0)    = 0
->> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
->> ioctl(3, USBDEVFS_IOCTL, 0xbea492e0)    = 0
->> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
->> ioctl(3, USBDEVFS_IOCTL, 0xbea492e0)    = 0
->> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
->> ioctl(3, USBDEVFS_IOCTL, 0xbea492d8)    = 0
->> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
->> ioctl(3, USBDEVFS_IOCTL, 0xbea492c0)    = 0
->> ioctl(3, USBDEVFS_IOCTL, 0xbea492c0)    = 0
->> ioctl(3, USBDEVFS_CONNECTINFO, 0xbea49718) = 0
->> ioctl(3, USBDEVFS_IOCTL, 0xbea492c0)    = -1 EPERM (Operation not permitted)
->
-> Weird.  USBDEVFS_IOCTL corresponds to SNDRV_IOCTL_ELEM_REPLACE,
-> and USBDEVFS_CONNECTINFO to SNDRV_IOCTL_ELEM_ADD.
-> [some strace versions don't show SNDRV_* ioctls because they are defined
->  via enum instead of #define in asound.h...]
-> These are for user-defined control elements.
-> And, strace shows that you don't use any ~/.asound or /etc/asound.conf...
+From: Naresh Medisetty <naresh@ti.com>
 
-But when i use a different kernel and different codec with the same
-file system, amixer is working.
+Fixes swapping of channels at start of stereo playback.
 
-So the filesytem is fine. AM I Rite?
+Channel swap can be observed while playing left-only or right-only audio data. The channel 
+swap is fixed by handling the XSYNCERR condition.
 
-Is it kernel dependent?
+Signed-off-by: Naresh Medisetty <naresh@ti.com>
+---
+ sound/soc/davinci/davinci-i2s.c |   49 ++++++++++++++++++++++++++++++++++++--
+ 1 files changed, 46 insertions(+), 3 deletions(-)
 
-Regards,
-Arun
-
-
-
-> Takashi
->
+diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
+index 5ebf1ff..d8279ad 100644
+--- a/sound/soc/davinci/davinci-i2s.c
++++ b/sound/soc/davinci/davinci-i2s.c
+@@ -110,16 +110,59 @@ static void davinci_mcbsp_start(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct davinci_mcbsp_dev *dev = rtd->dai->cpu_dai->private_data;
++	struct snd_soc_device *socdev = rtd->socdev;
++	struct snd_soc_platform *platform = socdev->platform;
+ 	u32 w;
++	int ret;
+ 
+ 	/* Start the sample generator and enable transmitter/receiver */
+ 	w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
+ 	MOD_REG_BIT(w, DAVINCI_MCBSP_SPCR_GRST, 1);
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, w);
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		/* Stop the DMA to avoid data loss */
++		/* while the transmitter is out of reset to handle XSYNCERR */
++		if (platform->pcm_ops->trigger) {
++			ret = platform->pcm_ops->trigger(substream,
++				SNDRV_PCM_TRIGGER_STOP);
++			if (ret < 0)
++				printk(KERN_DEBUG "Playback DMA stop failed\n");
++		}
++
++		/* Enable the transmitter */
++		w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
+ 		MOD_REG_BIT(w, DAVINCI_MCBSP_SPCR_XRST, 1);
+-	else
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, w);
++
++		/* wait for any unexpected frame sync error to occur */
++		udelay(100);
++
++		/* Disable the transmitter to clear any outstanding XSYNCERR */
++		w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
++		MOD_REG_BIT(w, DAVINCI_MCBSP_SPCR_XRST, 0);
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, w);
++
++		/* Restart the DMA */
++		if (platform->pcm_ops->trigger) {
++			ret = platform->pcm_ops->trigger(substream,
++				SNDRV_PCM_TRIGGER_START);
++			if (ret < 0)
++				printk(KERN_DEBUG "Playback DMA start failed\n");
++		}
++		/* Enable the transmitter */
++		w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
++		MOD_REG_BIT(w, DAVINCI_MCBSP_SPCR_XRST, 1);
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, w);
++
++	} else {
++
++		/* Enable the reciever */
++		w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
+ 		MOD_REG_BIT(w, DAVINCI_MCBSP_SPCR_RRST, 1);
+-	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, w);
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, w);
++	}
++
+ 
+ 	/* Start frame sync */
+ 	w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
+-- 
+1.5.4.1
