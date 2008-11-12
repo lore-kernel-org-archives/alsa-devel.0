@@ -1,76 +1,60 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: Infrasonic Quartet
-Date: Wed, 12 Nov 2008 22:06:12 +0100
-Message-ID: <491B4544.3050506@insite.cz>
-References: <fd3eb9bf0811100930n11c6d07anc7c9145b829ac628@mail.gmail.com>	
-	<491AAD96.8010008@insite.cz>
-	<fd3eb9bf0811121016p3b4558fvf465a4a6f7439c1a@mail.gmail.com>
+From: Valdis.Kletnieks@vt.edu
+Subject: Re: 2.6.28-rc2-mm1 - sound semi-busted on Dell Latitude D820
+Date: Wed, 12 Nov 2008 16:09:37 -0500
+Message-ID: <29372.1226524177@turing-police.cc.vt.edu>
+References: <4411.1226345758@turing-police.cc.vt.edu> <s5hljvqzot1.wl%tiwai@suse.de> <s5hprl2yz39.wl%tiwai@suse.de>
+            <s5hmyg6yz0n.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3FC4C2437A
-	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 22:06:18 +0100 (CET)
-In-Reply-To: <fd3eb9bf0811121016p3b4558fvf465a4a6f7439c1a@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?VmVkcmFuIE1pbGV0acSH?= <rivanvx@gmail.com>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; boundary="==_Exmh_1226524177_3381P";
+	 micalg=pgp-sha1; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755144AbYKLVJ7@vger.kernel.org>
+In-Reply-To: Your message of "Tue, 11 Nov 2008 18:04:56 +0100."
+             <s5hmyg6yz0n.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>, perex@perex.cz, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VmVkcmFuIE1pbGV0acSHIG5hcHNhbChhKToKPiAyMDA4LzExLzEyIFBhdmVsIEhvZm1hbiA8cGF2
-ZWwuaG9mbWFuQGluc2l0ZS5jej46Cj4+IFZlZHJhbiBNaWxldGnEhyB3cm90ZToKPj4+IEF1emVu
-IHN0YXJ0ZWQgdG8gZGlzdHJpYnV0ZSBvbmUgY29vbCBuZXcgRW52eTI0SFQtUyBjYXJkLCBhbmQg
-aXQgbG9va3MKPj4+IHJlYWxseSBpbnRlcmVzdGluZyB0byBtZS4gU3BlY3MgYXJlIGF3ZXNvbWUs
-IGFuZCBpdCBhbHNvIGhhcyB3b3JkCj4+PiBjbG9jayBvbiBjYXJkIQo+Pj4gaHR0cDovL3d3dy5h
-dXplbnRlY2guY29tL3NpdGUvcHJvZHVjdHMvaW5mcmFfcXVhcnRldC5waHAKPj4+IGh0dHA6Ly93
-d3cuaW5mcmEtc29uaWMuY29tL3NpdGUvcF9QQ0lfcXVhcnRldC5waHAKPj4+IGh0dHA6Ly93d3cu
-bmV3ZWdnLmNvbS9Qcm9kdWN0L1Byb2R1Y3QuYXNweD9JdGVtPU44MkUxNjgyOTE1NjAwNwo+Pj4K
-Pj4+IEFjY29yZGluZyB0byBlbnZ5MjQuc3ZvYm9kbm8uY29tLCBpdCBoYXM6Cj4+PiBJbmZyYXNv
-bmljIFF1YXJ0ZXQgICAgICAweDMwMzAgIDB4NDk1Mwo+Pj4gRW52eTI0SFQtUyAtIHN1cHBvcnRl
-ZCBieSBBTFNBCj4+PiBBSzQ2MjBCIChBREMgLyBEQUMpIC0gbm90IHN1cmUsIHByb2JhYmx5IG5v
-dCBzdXBwb3J0ZWQ/Cj4+PiBBSzQxMTIgLSBub3Qgc3VyZSBlaXRoZXI/Cj4+Pgo+Pj4gSG93ZXZl
-ciBpdCBoYXMgWGlsaW54IG9uIGNhcmQgaW4gc2ltaWxhciB3YXkgYXMgRVNJIEp1bGlAIGRvZXMs
-IHNvCj4+PiBpdCdzIHByb2JhYmx5IG5vdCBhIHN0YW5kYXJkIEVudnkyNEhULVMgY2FyZC4KPj4+
-IEFueSBpZGVhcyBpZiB0aGlzIGNhcmQgY291bGQgYmUgc3VwcG9ydGVkPwo+Pj4KPj4gQWNjb3Jk
-aW5nIHRvIHRoZSBibG9jayBkaWFncmFtIGluIHRoZSBVc2VyJ3MgTWFudWFsIHRoZSBYaWxpbngg
-cGxheXMgYSBtYWpvcgo+PiByb2xlLiBUaGUgRlBHQSBwcm92aWRlcyBldmVuIG1vcmUgZnVuY3Rp
-b25zIHRoYW4gaW4gSnVsaS4KPj4KPj4gV2l0aG91dCBzb21lIGluZm9ybWF0aW9uIGZyb20gdGhl
-IG1hbnVmYWN0dXJlciAoZXZlbiBpZiB1bmRlciBOREEpIHRoZQo+PiBkcml2ZXIgd2lsbCBiZSBy
-YXRoZXIgZGlmZmljdWx0IHRvIHdyaXRlLiBUaGUgRlBHQSBpcyBjb250cm9sbGVkIGJ5IEVudnkn
-cwo+PiBHUElPcyBhbmQgdGhlaXIgc2lnbmFscyB3b3VsZCBoYXZlIHRvIGJlIGVsZWN0cmljYWxs
-eSBhbmFseXplZCB1bmRlciBXaW5kb3dzCj4+IGRyaXZlciAtIGEgcHJldHR5IGNvbXBsaWNhdGVk
-IHRhc2suIEl0IGlzIHZlcnkgZGlmZmVyZW50IGZyb20gYSByZWd1bGFyIGNhcmQKPj4gd2l0aCB3
-ZWxsLWRvY3VtZW50ZWQgY29kZWNzIG9ubHkgd2hlcmUgeW91IGp1c3QgbmVlZCB0byB0cmFjZSBj
-b2RlYyBwaW5zIHRvCj4+IGNvcnJlc3BvbmRpbmcgR1BJT3MuCj4+Cj4+IFBhdmVsLgo+Pgo+IAo+
-IEZpcnN0IG9mZiwgdGhhbmtzIGZvciBhbnN3ZXJpbmcuIEkgZGlkbid0IGV4cGVjdCBhbnlvbmUg
-dG8gYW5zd2VyLAo+IHNpbmNlIHRoaXMgY2FyZCBpc24ndCB0aGlzIGNvbW1vbiB5ZXQsIHNvIGl0
-IHN1cnByaXNlZCBtZSB0aGF0IGl0Cj4gY2F1Z2h0IHNvbWVvbmUncyBpbnRlcmVzdC4gR29vZCA6
-KQo+IAo+IFdlbGwsIElNSE8sIHRoaXMgY2FyZCBpcyBhcyBmYXIgYXMgRW52eTI0SFQtUyBjYW4g
-Z28uIFN1cmUgeW91IGNhbgo+IGhhdmUgbW9yZSBpbnB1dHMvb3V0cHV0cywgYnV0IGF0IDR4NCBh
-bmQgd2l0aG91dCBicmVha291dCBib3ggdGhhdCdzCj4gaXQsIGluIHRlcm1zIG9mIGZlYXR1cmVz
-LiBTbywgSSBkaWRuJ3QgZXhwZWN0IHRoZSBkZXNpZ24gdG8gYmUgc2ltcGxlCj4gYXQgYWxsLiBO
-b3QgdG8gbWVudGlvbiB1bnN1cHBvcnRlZCBEQUMvQURDIGFuZCBESVQuCj4gCj4gWWV0LCBhc3N1
-bWluZyB3ZSBnZXQgdGhlIHNwZWNpZmljYXRpb25zIGZyb20gSW5mcmFzb25pYy9BdXplbiwgd291
-bGQKPiB5b3Ugb3IgYW55b25lIGVsc2UgYmUgaW50ZXJlc3RlZCBpbiBjb2RpbmcgYSBkcml2ZXI/
-CgpXZWxsLCBJIGNvdWxkIHdvcmsgb24gdGhlIGRyaXZlciwgaXQgd291bGQgYmUgc2ltaWxhciB0
-byBKdWxpLiBpY2UxNzI0LmMgCmlzIG1vc3RseSByZWFkeSBmb3IgdGhlIHByb3ByaWV0YXJ5IGNs
-b2NrIG1vZGVsLiBUaGUgYWZvcmVtZW50aW9uZWQgCmNoaXBzIGhhdmUgY29tcGxldGUgZG9jdW1l
-bnRhdGlvbiBwdWJsaWNseSBhdmFpbGFibGUuIElmIEkgaGFkIHRoZSBjYXJkIApwaHlzaWNhbGx5
-IHRvIHRyYWNlIGNvbm5lY3Rpb24gYW5kIHRlc3QgKEkgYW0gbm8gVGFrYXNoaSB0aGUgd2l6YXJk
-IDopICkgCmFuZCBzb21lIGRvY3VtZW50YXRpb24gYXZhaWxhYmxlLCBpdCBzaG91bGQgYmUgdmlh
-YmxlLgoKSG9uZXN0bHkgSSBhbSBub3QgZ29pbmcgdG8gcHVyY2hhc2UgaXQgbXlzZWxmLCBJIGhh
-dmUgbm8gb3RoZXIgdXNlIGZvciAKaXQgcGx1cyBQQ0kgaXMgYWxtb3N0IGhpc3Rvcnkgbm93LiBV
-bmZvcnR1bmF0ZWx5IEkgaGF2ZSBub3QgbWV0IGFueSAKUENJLWV4cHJlc3MgY2FyZCB3aXRoIHF1
-YWxpdHkgNDQuMWtIeiBwbGF5YmFjayAoaS5lLiBkZWRpY2F0ZWQgY3J5c3RhbCAKY2xvY2spLgoK
-UGF2ZWwuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+--==_Exmh_1226524177_3381P
+Content-Type: text/plain; charset=us-ascii
+
+On Tue, 11 Nov 2008 18:04:56 +0100, Takashi Iwai said:
+
+Following up...
+
+> > > To confirm a regression, could you copy sound/pci/hda/patch_sigmatel.c
+> > > from 2.6.27 kernel and check the driver works?  Does the same problem
+> > > exist in 2.6.28-rc kernel?
+
+Yes, it was a regression - using the older patch_sigmatel.c in the -rc4-mm
+kernel worked fine.
+
+> > Could you try the patch below?
+
+> > There is another patch for a missing capture mux control, but in your
+> > case, it doesn't matter because you didn't change the value.
+> > I'll post that patch later, too.
+> 
+> Here is another fix.
+
+> Subject: [PATCH] ALSA: hda - Add missing analog-mux mixer creation for STAC9200
+
+Running with a current patch_sigmatel.c plus the two patches also works fine,
+so feel free to stick a Tested-By: on it if you wish...
+
+Thanks for the speedy patches..
+
+--==_Exmh_1226524177_3381P
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+Comment: Exmh version 2.5 07/13/2001
+
+iD8DBQFJG0YRcC3lWbTT17ARAkTSAJ9P5GDgz4fdCZylYWleNGq3Pn7eJwCfQ0ZU
+Dz4eEFYKRo368aOVFRo7DcY=
+=oGJ4
+-----END PGP SIGNATURE-----
+
+--==_Exmh_1226524177_3381P--
