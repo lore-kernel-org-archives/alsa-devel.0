@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ASoC: DaVinci: Audio: Fix swapping of
-	channels at start of stereo playback
-Date: Wed, 12 Nov 2008 11:50:02 +0000
-Message-ID: <20081112115001.GC8767@sirena.org.uk>
-References: <1226465791-14725-1-git-send-email-naresh@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 0/4] ASoC updates
+Date: Wed, 12 Nov 2008 11:55:07 +0000
+Message-ID: <20081112115507.GA22288@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9886B243CD
-	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 12:50:03 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7A9C9243B3
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 12:55:08 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1226465791-14725-1-git-send-email-naresh@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,20 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: naresh@ti.com
-Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 12, 2008 at 10:26:31AM +0530, naresh@ti.com wrote:
+The following changes since commit e18c94d20224f3df584531a48d944d8cccfda46d:
+  Grazvydas Ignotas (1):
+        ALSA: ASoC: TWL4030 codec - fix 256*Fs clock
 
-> Fixes swapping of channels at start of stereo playback.
-> 
-> Channel swap can be observed while playing left-only or right-only audio data. The channel 
-> swap is fixed by handling the XSYNCERR condition.
-> 
-> Signed-off-by: Naresh Medisetty <naresh@ti.com>
+are available in the git repository at:
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+  git://opensource.wolfsonmicro.com/linux-2.6-asoc for-tiwai
 
-Do you know what the status is on merging the DMA API that the ASoC
-DaVinci driver uses into mainline?
+Christian Pellegrin (1):
+      ASoC: s3c24xx 8 bit sound fix
+
+Hugo Villeneuve (1):
+      ASoC: Add Right-Justified mode and Codec clock master to davinci-i2s
+
+Naresh Medisetty (1):
+      ASoC: DaVinci: Audio: Fix swapping of channels at start of stereo playback
+
+Troy Kisky (1):
+      ASoC: TLV320AIC23B Support more sample rates
+
+ sound/soc/codecs/tlv320aic23.c  |  222 +++++++++++++++++++++++++++++++--------
+ sound/soc/davinci/davinci-i2s.c |   89 ++++++++++++++--
+ sound/soc/s3c24xx/s3c24xx-i2s.c |    7 ++
+ 3 files changed, 263 insertions(+), 55 deletions(-)
