@@ -1,18 +1,22 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [topic/asoc][PATCH] ASoC: OMAP: Add more supported
-	sample rates into McBSP DAI driver
-Date: Wed, 12 Nov 2008 15:20:52 +0000
-Message-ID: <20081112152050.GG8767@sirena.org.uk>
-References: <1226502351-21838-1-git-send-email-jarkko.nikula@nokia.com>
+Subject: Re: [PATCH 2/4] ASoC: s3c24xx 8 bit sound fix
+Date: Wed, 12 Nov 2008 15:25:50 +0000
+Message-ID: <20081112152549.GH8767@sirena.org.uk>
+References: <20081112115507.GA22288@rakim.wolfsonmicro.main>
+	<1226490949-22360-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1226490949-22360-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<s5hzlk5jf8h.wl%tiwai@suse.de>
+	<20081112151036.GE8767@sirena.org.uk>
+	<s5hvdutht53.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0E6EE24493
-	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 16:20:53 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 1143724493
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 16:25:51 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1226502351-21838-1-git-send-email-jarkko.nikula@nokia.com>
+In-Reply-To: <s5hvdutht53.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,20 +26,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@nokia.com>
-Cc: alsa-devel@alsa-project.org, Arun KS <arunks@mistralsolutions.com>, Steve Sakoman <steve@sakoman.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Christian Pellegrin <chripell@gmail.com>, Christian Pellegrin <chripell@fsfe.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 12, 2008 at 05:05:51PM +0200, Jarkko Nikula wrote:
-> Originally it was put too tight limits to support only 44.1 kHz and 48 kHz
-> sample rates in McBSP DAI driver. Extend it now to 8 kHz - 96 kHz. With
-> 96 kHz and 2*16 bits, bit clock is 3.072 MHz < 3.125 MHz (I2S max?).
-> 
-> Tested on Nokia N810 with TVL320AIC33 from rates 8 - 96 kHz and on Texas
-> Instruments Beagle with TWL4030 from rates 8 - 48 kHz.
-> 
-> Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
-> Cc: Steve Sakoman <steve@sakoman.com>
-> Cc: Arun KS <arunks@mistralsolutions.com>
+On Wed, Nov 12, 2008 at 04:16:08PM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> > The global variable is used to tell the DMA driver how to set the
+> > hardware up for the port.  Since the variable is tied to the underlying
+> > hardware channel it's used for there's no real win from duplicating it
+> > into a variable - the hardware it is used to configure can't be shared.
+
+> I know it, but it's still uncomfortable that such secret mythes and
+> legends are underlying without explanation.  Could you add some more
+> comments around that code to avoid misunderstanding by readers?
+
+Hrm, that's a fairly standard idiom for ASoC DMA/DAI driver interaction
+so probably more of a Documentation/ thing but doing it there is not too
+helpful for addressing your concern.  I'll have a think.
