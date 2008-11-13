@@ -1,22 +1,23 @@
-From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
-Subject: Re: Infrasonic Quartet
-Date: Thu, 13 Nov 2008 18:24:13 +0100
-Message-ID: <fd3eb9bf0811130924j1d72b0d3nde5442cfc7eaffb6@mail.gmail.com>
-References: <fd3eb9bf0811100930n11c6d07anc7c9145b829ac628@mail.gmail.com>
-	<491AAD96.8010008@insite.cz>
-	<fd3eb9bf0811121016p3b4558fvf465a4a6f7439c1a@mail.gmail.com>
-	<491B4544.3050506@insite.cz>
+From: Andrei Tanas <andrei@tanas.ca>
+Subject: Re:
+ =?utf-8?q?Asus_P5QL-EM_motherboard_=28ALC1200_codec?=
+ =?utf-8?q?=29_-=09no=09sound_through_S/PDIF?=
+Date: Thu, 13 Nov 2008 13:23:11 -0500
+Message-ID: <dac2d6bdab05085f114d23dd5c8bfe63@localhost>
+References: <668af2a1e877d41c059f6c84fa462476@localhost>
+	<1226564212.605116.29828@de> <s5htzacqbg8.wl%tiwai@suse.de>
+	<45906fd26f62412a3c5030b12fead9dd@localhost>
+	<s5habc3hcyy.wl%tiwai@suse.de>
+	<cd166d9b036685894baef8cc5eb86b8d@localhost>
+	<s5hzlk3fwc7.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id AD9D5103817
-	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 18:24:15 +0100 (CET)
-Received: by yx-out-1718.google.com with SMTP id 36so737429yxh.2
-	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 09:24:14 -0800 (PST)
-In-Reply-To: <491B4544.3050506@insite.cz>
-Content-Disposition: inline
+Received: from tanas.ca (tanas.ca [206.248.136.31])
+	by alsa0.perex.cz (Postfix) with ESMTP id D8FA710381C
+	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 19:23:13 +0100 (CET)
+In-Reply-To: <s5hzlk3fwc7.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,78 +27,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pavel Hofman <pavel.hofman@insite.cz>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Wu Fengguang <wfg@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-MjAwOC8xMS8xMiBQYXZlbCBIb2ZtYW4gPHBhdmVsLmhvZm1hbkBpbnNpdGUuY3o+Ogo+IFZlZHJh
-biBNaWxldGnEhyBuYXBzYWwoYSk6Cj4+Cj4+IDIwMDgvMTEvMTIgUGF2ZWwgSG9mbWFuIDxwYXZl
-bC5ob2ZtYW5AaW5zaXRlLmN6PjoKPj4+Cj4+PiBWZWRyYW4gTWlsZXRpxIcgd3JvdGU6Cj4+Pj4K
-Pj4+PiBBdXplbiBzdGFydGVkIHRvIGRpc3RyaWJ1dGUgb25lIGNvb2wgbmV3IEVudnkyNEhULVMg
-Y2FyZCwgYW5kIGl0IGxvb2tzCj4+Pj4gcmVhbGx5IGludGVyZXN0aW5nIHRvIG1lLiBTcGVjcyBh
-cmUgYXdlc29tZSwgYW5kIGl0IGFsc28gaGFzIHdvcmQKPj4+PiBjbG9jayBvbiBjYXJkIQo+Pj4+
-IGh0dHA6Ly93d3cuYXV6ZW50ZWNoLmNvbS9zaXRlL3Byb2R1Y3RzL2luZnJhX3F1YXJ0ZXQucGhw
-Cj4+Pj4gaHR0cDovL3d3dy5pbmZyYS1zb25pYy5jb20vc2l0ZS9wX1BDSV9xdWFydGV0LnBocAo+
-Pj4+IGh0dHA6Ly93d3cubmV3ZWdnLmNvbS9Qcm9kdWN0L1Byb2R1Y3QuYXNweD9JdGVtPU44MkUx
-NjgyOTE1NjAwNwo+Pj4+Cj4+Pj4gQWNjb3JkaW5nIHRvIGVudnkyNC5zdm9ib2Ruby5jb20sIGl0
-IGhhczoKPj4+PiBJbmZyYXNvbmljIFF1YXJ0ZXQgICAgICAweDMwMzAgIDB4NDk1Mwo+Pj4+IEVu
-dnkyNEhULVMgLSBzdXBwb3J0ZWQgYnkgQUxTQQo+Pj4+IEFLNDYyMEIgKEFEQyAvIERBQykgLSBu
-b3Qgc3VyZSwgcHJvYmFibHkgbm90IHN1cHBvcnRlZD8KPj4+PiBBSzQxMTIgLSBub3Qgc3VyZSBl
-aXRoZXI/Cj4+Pj4KPj4+PiBIb3dldmVyIGl0IGhhcyBYaWxpbnggb24gY2FyZCBpbiBzaW1pbGFy
-IHdheSBhcyBFU0kgSnVsaUAgZG9lcywgc28KPj4+PiBpdCdzIHByb2JhYmx5IG5vdCBhIHN0YW5k
-YXJkIEVudnkyNEhULVMgY2FyZC4KPj4+PiBBbnkgaWRlYXMgaWYgdGhpcyBjYXJkIGNvdWxkIGJl
-IHN1cHBvcnRlZD8KPj4+Pgo+Pj4gQWNjb3JkaW5nIHRvIHRoZSBibG9jayBkaWFncmFtIGluIHRo
-ZSBVc2VyJ3MgTWFudWFsIHRoZSBYaWxpbnggcGxheXMgYQo+Pj4gbWFqb3IKPj4+IHJvbGUuIFRo
-ZSBGUEdBIHByb3ZpZGVzIGV2ZW4gbW9yZSBmdW5jdGlvbnMgdGhhbiBpbiBKdWxpLgo+Pj4KPj4+
-IFdpdGhvdXQgc29tZSBpbmZvcm1hdGlvbiBmcm9tIHRoZSBtYW51ZmFjdHVyZXIgKGV2ZW4gaWYg
-dW5kZXIgTkRBKSB0aGUKPj4+IGRyaXZlciB3aWxsIGJlIHJhdGhlciBkaWZmaWN1bHQgdG8gd3Jp
-dGUuIFRoZSBGUEdBIGlzIGNvbnRyb2xsZWQgYnkKPj4+IEVudnkncwo+Pj4gR1BJT3MgYW5kIHRo
-ZWlyIHNpZ25hbHMgd291bGQgaGF2ZSB0byBiZSBlbGVjdHJpY2FsbHkgYW5hbHl6ZWQgdW5kZXIK
-Pj4+IFdpbmRvd3MKPj4+IGRyaXZlciAtIGEgcHJldHR5IGNvbXBsaWNhdGVkIHRhc2suIEl0IGlz
-IHZlcnkgZGlmZmVyZW50IGZyb20gYSByZWd1bGFyCj4+PiBjYXJkCj4+PiB3aXRoIHdlbGwtZG9j
-dW1lbnRlZCBjb2RlY3Mgb25seSB3aGVyZSB5b3UganVzdCBuZWVkIHRvIHRyYWNlIGNvZGVjIHBp
-bnMKPj4+IHRvCj4+PiBjb3JyZXNwb25kaW5nIEdQSU9zLgo+Pj4KPj4+IFBhdmVsLgo+Pj4KPj4K
-Pj4gRmlyc3Qgb2ZmLCB0aGFua3MgZm9yIGFuc3dlcmluZy4gSSBkaWRuJ3QgZXhwZWN0IGFueW9u
-ZSB0byBhbnN3ZXIsCj4+IHNpbmNlIHRoaXMgY2FyZCBpc24ndCB0aGlzIGNvbW1vbiB5ZXQsIHNv
-IGl0IHN1cnByaXNlZCBtZSB0aGF0IGl0Cj4+IGNhdWdodCBzb21lb25lJ3MgaW50ZXJlc3QuIEdv
-b2QgOikKPj4KPj4gV2VsbCwgSU1ITywgdGhpcyBjYXJkIGlzIGFzIGZhciBhcyBFbnZ5MjRIVC1T
-IGNhbiBnby4gU3VyZSB5b3UgY2FuCj4+IGhhdmUgbW9yZSBpbnB1dHMvb3V0cHV0cywgYnV0IGF0
-IDR4NCBhbmQgd2l0aG91dCBicmVha291dCBib3ggdGhhdCdzCj4+IGl0LCBpbiB0ZXJtcyBvZiBm
-ZWF0dXJlcy4gU28sIEkgZGlkbid0IGV4cGVjdCB0aGUgZGVzaWduIHRvIGJlIHNpbXBsZQo+PiBh
-dCBhbGwuIE5vdCB0byBtZW50aW9uIHVuc3VwcG9ydGVkIERBQy9BREMgYW5kIERJVC4KPj4KPj4g
-WWV0LCBhc3N1bWluZyB3ZSBnZXQgdGhlIHNwZWNpZmljYXRpb25zIGZyb20gSW5mcmFzb25pYy9B
-dXplbiwgd291bGQKPj4geW91IG9yIGFueW9uZSBlbHNlIGJlIGludGVyZXN0ZWQgaW4gY29kaW5n
-IGEgZHJpdmVyPwo+Cj4gV2VsbCwgSSBjb3VsZCB3b3JrIG9uIHRoZSBkcml2ZXIsIGl0IHdvdWxk
-IGJlIHNpbWlsYXIgdG8gSnVsaS4gaWNlMTcyNC5jIGlzCj4gbW9zdGx5IHJlYWR5IGZvciB0aGUg
-cHJvcHJpZXRhcnkgY2xvY2sgbW9kZWwuIFRoZSBhZm9yZW1lbnRpb25lZCBjaGlwcyBoYXZlCj4g
-Y29tcGxldGUgZG9jdW1lbnRhdGlvbiBwdWJsaWNseSBhdmFpbGFibGUuIElmIEkgaGFkIHRoZSBj
-YXJkIHBoeXNpY2FsbHkgdG8KPiB0cmFjZSBjb25uZWN0aW9uIGFuZCB0ZXN0IChJIGFtIG5vIFRh
-a2FzaGkgdGhlIHdpemFyZCA6KSApIGFuZCBzb21lCj4gZG9jdW1lbnRhdGlvbiBhdmFpbGFibGUs
-IGl0IHNob3VsZCBiZSB2aWFibGUuCj4KPiBIb25lc3RseSBJIGFtIG5vdCBnb2luZyB0byBwdXJj
-aGFzZSBpdCBteXNlbGYsIEkgaGF2ZSBubyBvdGhlciB1c2UgZm9yIGl0Cj4gcGx1cyBQQ0kgaXMg
-YWxtb3N0IGhpc3Rvcnkgbm93LiBVbmZvcnR1bmF0ZWx5IEkgaGF2ZSBub3QgbWV0IGFueSBQQ0kt
-ZXhwcmVzcwo+IGNhcmQgd2l0aCBxdWFsaXR5IDQ0LjFrSHogcGxheWJhY2sgKGkuZS4gZGVkaWNh
-dGVkIGNyeXN0YWwgY2xvY2spLgo+Cj4gUGF2ZWwuCj4KCkkgZG8gYWdyZWUgdGhhdCBQQ0kgaXMg
-YWxtb3N0IGhpc3Rvcnkgbm93YWRheXMuIEJldHRlciBzYWlkLCBpdCBzaG91bGQKYmUuIEhvd2V2
-ZXIsIEkgc2VlIG5vIHZpYWJsZSByZXBsYWNlbWVudCBmb3IgRW52eTI0IGNhcmRzIG9uIFBDSS1F
-LgpPeHlnZW4gYW5kIFgtRmkganVzdCBkb24ndCBjdXQgaXQuIEFueXRoaW5nIGVsc2U/CgpPZiBj
-b3Vyc2UsIHdoZW4gaXQgY29tZXMgdG8gRW52eSBvbiBQQ0ktRSB0aGVyZSBpcyBUb2t5byBTdHls
-ZSBTMDEwCkRDUy1TRVYyNCwgaG93ZXZlciB0aGF0IGNhcmQgZG9lc24ndCBzdXBwb3J0IEFTSU8g
-YW5kIHNpbmNlIGl0IHVzZXMKUENJIDwtLT4gUENJLUUgYnJpZGdlIGl0J3MgcGVyZm9ybWFuY2Ug
-KGluIGxvdyBsYXRlbmN5IG9wZXJhdGlvbikgd2lsbApwcm9iYWJseSBzdWNrLiBBbmQgYWxzbyBp
-dCdzIG5vdCBhaW1lZCBhdCBwcm9kdWNlcnMsIGFuZCBpdCBkb2Vzbid0CmV2ZW4gc3VwcG9ydCBB
-U0lPIGluIFdpbmRvd3MuIEkgYmVsaWV2ZSB0aGVyZSBhcmUgbm8gTUlESSBwb3J0cwplaXRoZXIu
-CgpUaGVyZWZvcmUsIG91dCBvZiBhbGwgdGhvc2UgIm5ldyIgRW52eTI0LWJhc2VkIGNhcmRzIChz
-aW5jZSB0aGF0J3MKYmFzaWNhbGx5IHdoYXQncyBhdmFpbGFibGUgaW4gdGhpcyBwcmljZSByYW5n
-ZSksIFF1YXJ0ZXQgc3RhbmRzIG91dCBhcwpiYXNpY2FsbHkgdGhlIGJlc3QgcHJvZHVjZXItb3Jp
-ZW50ZWQgc29sdXRpb24gb3V0IHRoZXJlLiBFdmVuIG1vcmUKdGhhbiB0aGF0IC0gdGhpcyBpcyBi
-eSBmYXIgdGhlIGJlc3QgRW52eTI0IGNhcmQgSSBoYXZlIHNlZW4gc28gZmFyLgpBbG1vc3QgbGlr
-ZSB0aGVyZSBpcyBub3RoaW5nIHRvIGFkZCA6LSkgSXQncyBub3QgYXZhaWxhYmxlIHdoZXJlIEkK
-bGl2ZSAoQ3JvYXRpYSksIGJ1dCBpdCBtaWdodCBiZSBpbiB0aGUgZnV0dXJlIHNpbmNlIEF1emVu
-IHN0YXJ0ZWQgdG8KZGlzdHJpYnV0ZSBpdCwgdGhhdCdzIHdoeSBJIHdhcyBpbnRlcmVzdGVkIGlu
-IHBvc3NpYmlsaXR5IG9mIEFMU0EKZHJpdmVyIGZvciBpdCBhcHBlYXJpbmcuCgpXZWxsLCBJIHdp
-bGwgY29udGFjdCBJbmZyYXNvbmljIGluIHRoZSBjb21pbmcgZGF5cyBhbmQgbGV0IHlvdSBrbm93
-CmhvdyBpdCB3ZW50LiBGaW5nZXJzIGNyb3NzZWQuCgotLSAKVmVkcmFuIE1pbGV0acSHCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Thu, 13 Nov 2008 17:02:16 +0100, Takashi Iwai <tiwai@suse.de> wrote:
+>> My /dev/snd only has these:
+>> controlC0  pcmC0D0c  pcmC0D0p  pcmC0D1c  pcmC0D1p  pcmC0D2c  timer
+>> Should there be hw* nodes?
+> 
+> Build with CONFIG_SND_HDA_HWDEP=y.
+
+Ok, I can see them now.
+So, as far as I understand I should be able to use hda-verb to manually
+control the codec. Can you suggest what I should read to understand how to
+do this, what commands are available etc. (I have ALC883 datasheet).
