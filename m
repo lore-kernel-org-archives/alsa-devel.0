@@ -1,23 +1,20 @@
-From: Andrei Tanas <andrei@tanas.ca>
-Subject: Re:
- =?utf-8?q?Asus_P5QL-EM_motherboard_=28ALC1200_codec?=
- =?utf-8?q?=29_-=09no=09sound_through_S/PDIF?=
-Date: Thu, 13 Nov 2008 13:23:11 -0500
-Message-ID: <dac2d6bdab05085f114d23dd5c8bfe63@localhost>
-References: <668af2a1e877d41c059f6c84fa462476@localhost>
-	<1226564212.605116.29828@de> <s5htzacqbg8.wl%tiwai@suse.de>
-	<45906fd26f62412a3c5030b12fead9dd@localhost>
-	<s5habc3hcyy.wl%tiwai@suse.de>
-	<cd166d9b036685894baef8cc5eb86b8d@localhost>
-	<s5hzlk3fwc7.wl%tiwai@suse.de>
+From: "Baek Chang" <baeksan@ccrma.stanford.edu>
+Subject: Re: S24_BLE does not play using aplay.
+Date: Thu, 13 Nov 2008 10:44:49 -0800
+Message-ID: <aceb60a00811131044o47c6c616ndf79ae68082aeeb@mail.gmail.com>
+References: <aceb60a00811061659o11eec5f4s6c5b6c4ba470b873@mail.gmail.com>
+	<49144BD2.3070400@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tanas.ca (tanas.ca [206.248.136.31])
-	by alsa0.perex.cz (Postfix) with ESMTP id D8FA710381C
-	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 19:23:13 +0100 (CET)
-In-Reply-To: <s5hzlk3fwc7.wl%tiwai@suse.de>
+Received: from gv-out-0910.google.com (gv-out-0910.google.com [216.239.58.191])
+	by alsa0.perex.cz (Postfix) with ESMTP id BF19A10380E
+	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 19:44:50 +0100 (CET)
+Received: by gv-out-0910.google.com with SMTP id i36so214824gve.24
+	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 10:44:50 -0800 (PST)
+In-Reply-To: <49144BD2.3070400@ladisch.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,18 +24,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Wu Fengguang <wfg@linux.intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 13 Nov 2008 17:02:16 +0100, Takashi Iwai <tiwai@suse.de> wrote:
->> My /dev/snd only has these:
->> controlC0  pcmC0D0c  pcmC0D0p  pcmC0D1c  pcmC0D1p  pcmC0D2c  timer
->> Should there be hw* nodes?
-> 
-> Build with CONFIG_SND_HDA_HWDEP=y.
+I am using pulseaudio as the sound server in conjunction with alsa.  My alsa
+sinks are mapped to pulseaudio in asound.conf.  Using paplay with a 24 bit
+file seems to work fine, because pulseaudio just converts the S24 bit data
+to 32 bit float.  Is there a way to bypass using plughw with alsa, so that
+alsa can just send the 24 bit pcm data to pulseaudio, then have pulseaudio
+do the neccessary conversion?
 
-Ok, I can see them now.
-So, as far as I understand I should be able to use hda-verb to manually
-control the codec. Can you suggest what I should read to understand how to
-do this, what commands are available etc. (I have ALC883 datasheet).
+Thanks
+Baek
+
+On Fri, Nov 7, 2008 at 6:08 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+
+> Baek Chang wrote:
+> > Playing WAVE 'sine_24_48k.wav' : Signed 24 bit Little Endian in 3bytes,
+> Rate 48000 Hz, Stereo
+> > aplay: set_params:961: Sample format non available
+>
+> This error message indicates that the device does not support the sample
+> format.
+>
+> You didn't show the aplay command line, but I'd guess that you used a
+> "hw" device.  Try "plughw" or "default" to get automatic sample format
+> conversion.
+>
+>
+> HTH
+> Clemens
+>
+>
+
+
+-- 
+Baek Chang
+baeksan@ccrma.stanford.edu
+407-267-6701
