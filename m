@@ -1,218 +1,549 @@
-From: "Sean McNamara" <smcnam@gmail.com>
-Subject: Re: S24_BLE does not play using aplay.
-Date: Thu, 13 Nov 2008 15:54:06 -0500
-Message-ID: <74eb1fe20811131254o1000b7bci859676e43cfb6d2e@mail.gmail.com>
-References: <aceb60a00811061659o11eec5f4s6c5b6c4ba470b873@mail.gmail.com>
-	<49144BD2.3070400@ladisch.de>
-	<aceb60a00811131044o47c6c616ndf79ae68082aeeb@mail.gmail.com>
-	<74eb1fe20811131104t4b3e5b37uc75f94973449f39a@mail.gmail.com>
-	<aceb60a00811131107g10a46012v1220b66218546ca4@mail.gmail.com>
-	<74eb1fe20811131110p650ca56fj84ef5049f379f7ff@mail.gmail.com>
-	<aceb60a00811131113o2493ec85n8822fc66506f3a55@mail.gmail.com>
-	<aceb60a00811131114q75f8a42dv8a2069cd17b9340@mail.gmail.com>
+From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: 2.6.26.[6|7]-rt11, alsa rawmidi, seq hang
+Date: Thu, 13 Nov 2008 13:01:15 -0800
+Message-ID: <1226610075.23485.20.camel@localhost.localdomain>
+References: <1226019485.3135.31.camel@localhost.localdomain>
+	 <49140683.9040008@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id 80D232435F
-	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 21:54:08 +0100 (CET)
-Received: by wa-out-1112.google.com with SMTP id l35so553238waf.16
-	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 12:54:06 -0800 (PST)
-In-Reply-To: <aceb60a00811131114q75f8a42dv8a2069cd17b9340@mail.gmail.com>
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Baek Chang <baeksan@ccrma.stanford.edu>, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="=-54ehgJSXKoe7Ahji+A6X"
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754979AbYKMVBj@vger.kernel.org>
+In-Reply-To: <49140683.9040008@ladisch.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Ingo Molnar <mingo@elte.hu>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
->>> On Thu, Nov 13, 2008 at 2:07 PM, Baek Chang <baeksan@ccrma.stanford.edu>
->>> wrote:
->>> > Thanks for the reply.  I get the following error when trying your
->>> > suggestion
->>> >
->>> > aplay --device=plug:pulse LPCM_48khz_ST_24bit.wav
->>> >
->>> > Playing WAVE 'LPCM_48khz_ST_24bit.wav' : Signed 24 bit Little Endian in
->>> > 3bytes, Rate 48000 Hz, Stereo
->>> > aplay: set_params:1022: Unable to install hw params:
->>> > ACCESS:  RW_INTERLEAVED
->>> > FORMAT:  S24_3LE
->>> > SUBFORMAT:  STD
->>> > SAMPLE_BITS: 24
->>> > FRAME_BITS: 48
->>> > CHANNELS: 2
->>> > RATE: 48000
->>> > PERIOD_TIME: 125000
->>> > PERIOD_SIZE: 6000
->>> > PERIOD_BYTES: 36000
->>> > PERIODS: 4
->>> > BUFFER_TIME: 500000
->>> > BUFFER_SIZE: 24000
->>> > BUFFER_BYTES: 144000
->>> > TICK_TIME: 0
->>> >
->>> >
->>> > Any ideas?
->>> >
->>> > Thanks
->>> > Baek
->>> >
+--=-54ehgJSXKoe7Ahji+A6X
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Some initial debugging shows:
+On Fri, 2008-11-07 at 10:12 +0100, Clemens Ladisch wrote:
+> Fernando Lopez-Lezcano wrote:
+> > I'm seeing a realtime patch related hard hang in the kernel alsa
+> > subsystem (MIDI input/output). In a nutshell:
+> >
+> > - alsa rawmidi works (ie: "rawmidi -v -i hw:0" outputs a stream of
+> > messages when pointed to a midi capable card that has an external
+> > keyboard connected).
+> >
+> > - the alsa sequencer interface works (ie: aplaymidi connected to
+> > aseqdump transfers data just fine).
+> >
+> > - BOTH combined do NOT work (ie: use aconnect to connect the port that
+> > corresponds to the external midi interface to aseqdump: aseqdump hangs
+> > forever after transferring the first message and the only way out is a
+> > reboot).
+> 
+> > ... including the output of a "echo t >/proc/sysrq-trigger" that
+> > should show where aseqdump currently hangs (or so I think).
+> 
+> It hangs in tasklet_kill(), which gets called while it tries to close
+> the rawmidi port.
+> 
+> The rawmidi framework uses this tasklet to notify the sequencer that new
+> MIDI data is available.  The handler function is
+> snd_rawmidi_input_event_tasklet() in sound/core/rawmidi.c; the sequencer
+> callback that gets called from there is snd_midi_input_event() in
+> core/seq/seq_midi.c.
+> 
+> You say that the first event gets delivered, so it might be possible
+> that the tasklet never finishes executing.  Please check whether the
+> call to snd_seq_kernel_client_dispatch() in snd_midi_input_event()
+> ever returns.
 
-1. It's not in alsa-plugins/pulse, because if you send it 24-bit
-anything, it won't recognize that format and error out with a
-different message (rather than just throwing error back at aplay).
-Things fall down before pcm_pulse.c ever evaluates the sample format.
-2. It's not in alsa-lib/pcm/pcm_plug.c, because plug intelligently
-works with other (non-pulse) devices:
+Going back to this in the hope of a bit more data helping solve the
+problem...
 
-Works:
-aplay --device=plug:hw:0 LPCM_48khz_ST_24bit.wav
-and
-aplay --device=plug:dmix:0 LPCM_48khz_ST_24bit.wav
+I don't understand what is going on (of course! :-)
 
-In theory, these statements should be both true:
-My hw doesn't support S24_3LE, but plug converts it for me.
-My pulse doesn't support S24_3LE, but plug converts it for me.
+Cards look like this:
 
-But there is one more layer between plug and the actual pulse plugin
-code: ioplug!
+$ cat /proc/asound/cards
+ 0 [Gina3G         ]: Echo_Echo3G - Gina3G
+                      Gina3G rev.0 (DSP56361) at 0xfeb00000 irq 18
+ 1 [Intel          ]: HDA-Intel - HDA Intel
+                      HDA Intel at 0xfe7f8000 irq 22
+ 2 [PCR            ]: USB-Audio - PCR
+                      EDIROL PCR at usb-0000:00:1d.0-1, full speed
 
-It's non-trivial to figure out the guts of functions such as
-snd_pcm_ioplug_hw_refine when you have refine math going on. The
-refine code goes through a lot of contortions trying to get ioplug to
-accept a conversion, but no joy.... it appears pcm_extplug.c, the
-"External Filter Plugin SDK" is unhappy.
+Here's what I do:
+  - start aseqdump
+  - aconnect 16:0 128:0
+  - aseqdump receives one midi message (one byte active sensing msg)
+  - aseqdump hangs forever (reboot needed)
 
-So basically, the problem occurs before alsa-plugins/pulse even gets a
-chance to detect and deal with the problem. pcm_ioplug.c does
-something similar to what pcm_plug.c does with refines, just more
-cryptically. Since it was developed so long ago, it may not have been
-tested with S24_3LE, or with S24 at all.
+This is what dmesg prints (patch attached which shows where the printk's
+are located in the source for rawmidi.c and seq_midi.c):
 
-One possible ugliness is that there is no cmpxchg instruction for
-24-bit values, so you'd have to do something else for synchronization.
-Maybe that's why it's not supported?
+== this starts happening as soon as I run aconnect:
+rawmidi: before input ops trigger
+rawmidi: after input ops trigger
+rawmidi: before input ops trigger
+rawmidi: after input ops trigger
+== hmmm, after it is actually subscribed?
+rawmidi: before receive spinlock
+rawmidi: after receive spinlock
+rawmidi: about to run receive tasklet
+rawmidi: run receive tasklet
+rawmidi: before receive spin unlock
+rawmidi: after receive spin unlock
+rawmidi: about to run input tasklet
+seq: snd_midi_input_event called
+seq: seq_midi_input_event loop begin
+rawmidi: before input ops trigger
+rawmidi: after input ops trigger
+seq: snd_seq_kernel_client_dispatch called
+seq: snd_seq_kernel_client_dispatch returned
+seq: snd_midi_input_event exiting
+rawmidi: after running input tasklet
+rawmidi: before receive spinlock
+rawmidi: after receive spinlock
+rawmidi: about to run receive tasklet
+rawmidi: run receive tasklet
+rawmidi: before receive spin unlock
+rawmidi: after receive spin unlock
+rawmidi: before receive spinlock
+rawmidi: after receive spinlock
+rawmidi: about to run receive tasklet
+rawmidi: run receive tasklet
+rawmidi: before receive spin unlock
+rawmidi: after receive spin unlock
+rawmidi: before receive spinlock
+rawmidi: after receive spinlock
+rawmidi: about to run receive tasklet
+rawmidi: run receive tasklet
+rawmidi: before receive spin unlock
+rawmidi: after receive spin unlock
+rawmidi: before receive spinlock
+rawmidi: after receive spinlock
 
-It sounds like pulse (or any ioplug-user, in general) is not going to
-support S24_3LE until someone really digs in and finds out why this is
-erroring out.
+So, snd_midi_input_event runs once but never gets called back. 
 
-Keep in mind that there are two code paths that both hit the same
-problem, namely plug:pulse and pulse alone. The error returned is
-different, and it seems simpler to figure out why you get an error
-with plain pulse, rather than complicating things with plug.
+Something else is deadlocking, what can it be? (ie: where can I put more
+printk's to try to see what is going on??)
 
-HTH,
+This is where I think aseqdujmp hangs:
 
-Sean
+Nov 13 11:36:53 host kernel: =======================
+Nov 13 11:36:53 host kernel: aseqdump      S [f3505170] f7960f30     0
+5580   5515
+Nov 13 11:36:53 host kernel:       f567bbd4 00200082 00000001 f7960f30
+00200246 f3505170 f3505404 c485d700 
+Nov 13 11:36:53 host kernel:       00000003 c485d700 9a5d89b4 000000bc
+f567bba4 f567bba4 0007c8c8 00200246 
+Nov 13 11:36:53 host kernel:       f35a7af4 00000000 00000000 00000000
+ffffffff 00000000 7fffffff f567be98 
+Nov 13 11:36:53 host kernel: Call Trace:
+Nov 13 11:36:53 host kernel: [<c0643ba5>] schedule+0xbf/0xd8
+Nov 13 11:36:53 host kernel: [<c0643c72>] schedule_timeout+0x17/0xbc
+Nov 13 11:36:53 host kernel: [<c0496c8f>] ? __pollwait+0xad/0xb6
+Nov 13 11:36:53 host kernel: [<f8968b34>] ? snd_seq_fifo_poll_wait
++0x18/0x25 [snd_seq]
+Nov 13 11:36:53 host kernel: [<f8965fad>] ? snd_seq_poll+0x4d/0x9f
+[snd_seq]
+Nov 13 11:36:53 host kernel: [<c0495d92>] do_sys_poll+0x292/0x348
+Nov 13 11:36:53 host kernel: [<c0496be2>] ? __pollwait+0x0/0xb6
+Nov 13 11:36:53 host kernel: [<c0425c81>] ? default_wake_function
++0x0/0x12
+Nov 13 11:36:53 host kernel: [<c0645736>] ? rt_spin_lock+0x38/0x3b
+Nov 13 11:36:53 host kernel: [<c04752f7>] ? page_address+0x88/0xaa
+Nov 13 11:36:53 host kernel: [<c047596d>] ? kmap_high+0x421/0x42a
+Nov 13 11:36:53 host kernel: [<c04ff574>] ? radix_valid_always+0x0/0xa
+Nov 13 11:36:53 host kernel: [<c046430b>] ? __rcu_read_unlock+0x6d/0x72
+Nov 13 11:36:53 host kernel: [<c04699ec>] ? find_get_page+0xfa/0x120
+Nov 13 11:36:53 host kernel: [<c06456c1>] ? __rt_spin_lock+0x24/0x61
+Nov 13 11:36:53 host kernel: [<c0645736>] ? rt_spin_lock+0x38/0x3b
+Nov 13 11:36:53 host kernel: [<c0420afc>] ? __enqueue_entity+0xe3/0xeb
+Nov 13 11:36:53 host kernel: [<c041f87b>] ? task_rq_lock+0x44/0x6e
+Nov 13 11:36:53 host kernel: [<c0425c76>] ? try_to_wake_up+0x212/0x21d
+Nov 13 11:36:53 host kernel: [<c0425c91>] ? default_wake_function
++0x10/0x12
+Nov 13 11:36:53 host kernel: [<c041ddd8>] ? __wake_up_common+0x35/0x5b
+Nov 13 11:36:53 host kernel: [<c0423172>] ? __wake_up+0x28/0x32
+Nov 13 11:36:53 host kernel: [<c0554f2e>] ? n_tty_receive_buf
++0xfa9/0xff7
+Nov 13 11:36:53 host kernel: [<c0554f2e>] ? n_tty_receive_buf
++0xfa9/0xff7
+Nov 13 11:36:53 host kernel: [<c0447cef>] ? rt_mutex_up_read+0x1b7/0x25d
+Nov 13 11:36:53 host kernel: [<c0448f40>] ? rt_up_read+0x8/0xa
+Nov 13 11:36:53 host kernel: [<c0647c26>] ? do_page_fault+0x45f/0x7d8
+Nov 13 11:36:53 host kernel: [<c0502f6c>] ? copy_to_user+0x36/0x106
+Nov 13 11:36:53 host kernel: [<c06456c1>] ? __rt_spin_lock+0x24/0x61
+Nov 13 11:36:53 host kernel: [<c0645736>] ? rt_spin_lock+0x38/0x3b
+Nov 13 11:36:53 host kernel: [<f8968c46>] ? snd_seq_fifo_cell_out
++0x47/0xee [snd_seq]
+Nov 13 11:36:53 host kernel: [<c0425c81>] ? default_wake_function
++0x0/0x12
+Nov 13 11:36:53 host kernel: [<f8966041>] ? snd_seq_read+0x0/0x1d8
+[snd_seq]
+Nov 13 11:36:53 host kernel: [<f896611e>] ? snd_seq_read+0xdd/0x1d8
+[snd_seq]
+Nov 13 11:36:53 host kernel: [<c04d73d3>] ? security_file_permission
++0xf/0x11
+Nov 13 11:36:53 host kernel: [<c045e231>] ? audit_syscall_entry
++0xf9/0x123
+Nov 13 11:36:53 host kernel: [<c049606a>] sys_poll+0x3a/0x6a
+Nov 13 11:36:53 host kernel: [<c0404be6>] syscall_call+0x7/0xb
+Nov 13 11:36:53 host kernel: =======================
+
+Looks like it is a poll...
+
+Then, when I try to actually kill aseqdump I get this in the log:
+
+Nov 13 11:39:02 host kernel: rawmidi: about to kill input tasklet
+
+And the trace:
+
+Nov 13 11:39:13 host kernel: aseqdump      D [f3505170] f786c0b0     0
+5580   5515
+Nov 13 11:39:13 host kernel:       f567be0c 00200082 00000000 f786c0b0
+00200246 f3505170 f3505404 c483c700 
+Nov 13 11:39:13 host kernel:       00000000 c483c700 5618b41d 00000121
+f567bdf4 000e6262 f567bdf4 c04320f3 
+Nov 13 11:39:13 host kernel:       f567be1c f567be1c f567be14 c0432918
+000e6263 000e6263 f567be1c f567be48 
+Nov 13 11:39:13 host kernel: Call Trace:
+Nov 13 11:39:13 host kernel: [<c04320f3>] ? internal_add_timer+0x88/0x8c
+Nov 13 11:39:13 host kernel: [<c0432918>] ? __mod_timer+0xc8/0xd3
+Nov 13 11:39:13 host kernel: [<c0643ba5>] schedule+0xbf/0xd8
+Nov 13 11:39:13 host kernel: [<c0643cf8>] schedule_timeout+0x9d/0xbc
+Nov 13 11:39:13 host kernel: [<c0431da2>] ? process_timeout+0x0/0xa
+Nov 13 11:39:13 host kernel: [<c0643cf3>] ? schedule_timeout+0x98/0xbc
+Nov 13 11:39:13 host kernel: [<c0643d2c>]
+schedule_timeout_uninterruptible+0x15/0x17
+Nov 13 11:39:13 host kernel: [<c0432a1b>] msleep+0x10/0x16
+Nov 13 11:39:13 host kernel: [<c042eaef>] tasklet_kill+0x2e/0x58
+Nov 13 11:39:13 host kernel: [<f89bb755>] snd_rawmidi_input_trigger
++0x31/0x44 [snd_rawmidi]
+Nov 13 11:39:13 host kernel: [<f89bceeb>] snd_rawmidi_kernel_release
++0x37/0x105 [snd_rawmidi]
+Nov 13 11:39:13 host kernel: [<f8f28633>] midisynth_unsubscribe+0xb/0xd
+[snd_seq_midi]
+Nov 13 11:39:13 host kernel: [<f8969cb9>] unsubscribe_port+0x3c/0x71
+[snd_seq]
+Nov 13 11:39:13 host kernel: [<f896a510>] clear_subscriber_list
++0xae/0xdb [snd_seq]
+Nov 13 11:39:13 host kernel: [<f896a57e>] port_delete+0x41/0x65
+[snd_seq]
+Nov 13 11:39:13 host kernel: [<f896a63c>] snd_seq_delete_all_ports
++0x9a/0xba [snd_seq]
+Nov 13 11:39:13 host kernel: [<f8965175>] seq_free_client1+0xb/0x90
+[snd_seq]
+Nov 13 11:39:13 host kernel: [<f8965232>] seq_free_client+0x38/0x6f
+[snd_seq]
+Nov 13 11:39:13 host kernel: [<f896527e>] snd_seq_release+0x15/0x35
+[snd_seq]
+Nov 13 11:39:13 host kernel: [<c048b5a2>] __fput+0xae/0x158
+Nov 13 11:39:13 host kernel: [<c048b663>] fput+0x17/0x19
+Nov 13 11:39:13 host kernel: [<c0488b95>] filp_close+0x50/0x5a
+Nov 13 11:39:13 host kernel: [<c0488c12>] sys_close+0x73/0xad
+Nov 13 11:39:13 host kernel: [<c0404be6>] syscall_call+0x7/0xb
+Nov 13 11:39:13 host kernel: =======================
+
+-- Fernando
 
 
+--=-54ehgJSXKoe7Ahji+A6X
+Content-Disposition: attachment; filename=patch
+Content-Type: text/x-patch; name=patch; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
->>> >
->>> > On Thu, Nov 13, 2008 at 11:04 AM, Sean McNamara <smcnam@gmail.com>
->>> > wrote:
->>> >>
->>> >> Hmm, sounds like the ALSA<->Pulse bindings don't support this sample
->>> >> format. Have you tried
->>> >>
->>> >> aplay --device=plug:pulse foo.wav
->>> >>
->>> >> Maybe the ALSA plug layer can convert it to a sample format that the
->>> >> pulse plugin will accept. I don't have a file like this so I can't
->>> >> test.
->>> >>
->>> >> Sean
->>> >>
->>> >> On Thu, Nov 13, 2008 at 1:44 PM, Baek Chang
->>> >> <baeksan@ccrma.stanford.edu>
->>> >> wrote:
->>> >> > I am using pulseaudio as the sound server in conjunction with alsa.
->>> >> >  My
->>> >> > alsa
->>> >> > sinks are mapped to pulseaudio in asound.conf.  Using paplay with a
->>> >> > 24
->>> >> > bit
->>> >> > file seems to work fine, because pulseaudio just converts the S24
->>> >> > bit
->>> >> > data
->>> >> > to 32 bit float.  Is there a way to bypass using plughw with alsa,
->>> >> > so
->>> >> > that
->>> >> > alsa can just send the 24 bit pcm data to pulseaudio, then have
->>> >> > pulseaudio
->>> >> > do the neccessary conversion?
->>> >> >
->>> >> > Thanks
->>> >> > Baek
->>> >> >
->>> >> > On Fri, Nov 7, 2008 at 6:08 AM, Clemens Ladisch <clemens@ladisch.de>
->>> >> > wrote:
->>> >> >
->>> >> >> Baek Chang wrote:
->>> >> >> > Playing WAVE 'sine_24_48k.wav' : Signed 24 bit Little Endian in
->>> >> >> > 3bytes,
->>> >> >> Rate 48000 Hz, Stereo
->>> >> >> > aplay: set_params:961: Sample format non available
->>> >> >>
->>> >> >> This error message indicates that the device does not support the
->>> >> >> sample
->>> >> >> format.
->>> >> >>
->>> >> >> You didn't show the aplay command line, but I'd guess that you used
->>> >> >> a
->>> >> >> "hw" device.  Try "plughw" or "default" to get automatic sample
->>> >> >> format
->>> >> >> conversion.
->>> >> >>
->>> >> >>
->>> >> >> HTH
->>> >> >> Clemens
->>> >> >>
->>> >> >>
->>> >> >
->>> >> >
->>> >> > --
->>> >> > Baek Chang
->>> >> > baeksan@ccrma.stanford.edu
->>> >> > 407-267-6701
->>> >> > _______________________________________________
->>> >> > Alsa-devel mailing list
->>> >> > Alsa-devel@alsa-project.org
->>> >> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>> >> >
->>> >>
->>> >
->>> >
->>> >
->>> > --
->>> > Baek Chang
->>> > baeksan@ccrma.stanford.edu
->>> > 407-267-6701
->>> >
->>
->>
->>
->> --
->> Baek Chang
->> baeksan@ccrma.stanford.edu
->> 407-267-6701
->
->
->
-> --
-> Baek Chang
-> baeksan@ccrma.stanford.edu
-> 407-267-6701
->
+--- ./sound/core/rawmidi.c.orig	2008-11-06 15:26:03.000000000 -0800
++++ ./sound/core/rawmidi.c	2008-11-13 12:31:23.000000000 -0800
+@@ -95,7 +95,10 @@
+ static void snd_rawmidi_input_event_tasklet(unsigned long data)
+ {
+ 	struct snd_rawmidi_substream *substream = (struct snd_rawmidi_substream *)data;
++	printk(KERN_ERR "rawmidi: about to run input tasklet\n");
+ 	substream->runtime->event(substream);
++	printk(KERN_ERR "rawmidi: after running input tasklet\n");
++
+ }
+ 
+ static void snd_rawmidi_output_trigger_tasklet(unsigned long data)
+@@ -149,18 +152,28 @@
+ static inline void snd_rawmidi_output_trigger(struct snd_rawmidi_substream *substream,int up)
+ {
+ 	if (up) {
++	        printk(KERN_ERR "rawmidi: about to run output tasklet\n");
+ 		tasklet_hi_schedule(&substream->runtime->tasklet);
++	        printk(KERN_ERR "rawmidi: run output tasklet\n");
+ 	} else {
++	        printk(KERN_ERR "rawmidi: about to kill output tasklet\n");
+ 		tasklet_kill(&substream->runtime->tasklet);
+ 		substream->ops->trigger(substream, 0);
++		printk(KERN_ERR "rawmidi: killed output tasklet\n");
+ 	}
+ }
+ 
+ static void snd_rawmidi_input_trigger(struct snd_rawmidi_substream *substream, int up)
+ {
++        printk(KERN_ERR "rawmidi: before input ops trigger\n");
+ 	substream->ops->trigger(substream, up);
+-	if (!up && substream->runtime->event)
++        printk(KERN_ERR "rawmidi: after input ops trigger\n");
++	if (!up && substream->runtime->event) {
++
++	        printk(KERN_ERR "rawmidi: about to kill input tasklet\n");
+ 		tasklet_kill(&substream->runtime->tasklet);
++		printk(KERN_ERR "rawmidi: killed input tasklet\n");
++	}
+ }
+ 
+ int snd_rawmidi_drop_output(struct snd_rawmidi_substream *substream)
+@@ -861,7 +874,9 @@
+ 		snd_printd("snd_rawmidi_receive: input is not active!!!\n");
+ 		return -EINVAL;
+ 	}
++	printk(KERN_ERR "rawmidi: before receive spinlock\n");
+ 	spin_lock_irqsave(&runtime->lock, flags);
++	printk(KERN_ERR "rawmidi: after receive spinlock\n");
+ 	if (count == 1) {	/* special case, faster code */
+ 		substream->bytes++;
+ 		if (runtime->avail < runtime->buffer_size) {
+@@ -901,12 +916,17 @@
+ 		}
+ 	}
+ 	if (result > 0) {
+-		if (runtime->event)
+-			tasklet_hi_schedule(&runtime->tasklet);
++	  if (runtime->event) {
++	    printk(KERN_ERR "rawmidi: about to run receive tasklet\n");
++	    tasklet_hi_schedule(&runtime->tasklet);
++	    printk(KERN_ERR "rawmidi: run receive tasklet\n");
++	  }
+ 		else if (snd_rawmidi_ready(substream))
+ 			wake_up(&runtime->sleep);
+ 	}
++	printk(KERN_ERR "rawmidi: before receive spin unlock\n");
+ 	spin_unlock_irqrestore(&runtime->lock, flags);
++	printk(KERN_ERR "rawmidi: after receive spin unlock\n");
+ 	return result;
+ }
+ 
+--- ./sound/core/seq/seq_midi.c.orig	2008-11-07 09:53:31.000000000 -0800
++++ ./sound/core/seq/seq_midi.c	2008-11-07 10:21:31.000000000 -0800
+@@ -80,6 +80,8 @@
+ 	char buf[16], *pbuf;
+ 	long res, count;
+ 
++	printk(KERN_ERR "seq: snd_midi_input_event called\n");
++
+ 	if (substream == NULL)
+ 		return;
+ 	runtime = substream->runtime;
+@@ -88,6 +90,9 @@
+ 		return;
+ 	memset(&ev, 0, sizeof(ev));
+ 	while (runtime->avail > 0) {
++
++	        printk(KERN_ERR "seq: seq_midi_input_event loop begin\n");
++
+ 		res = snd_rawmidi_kernel_read(substream, buf, sizeof(buf));
+ 		if (res <= 0)
+ 			continue;
+@@ -115,6 +120,9 @@
+ 			}
+ 		}
+ 	}
++
++	printk(KERN_ERR "seq: snd_midi_input_event exiting\n");
++
+ }
+ 
+ static int dump_midi(struct snd_rawmidi_substream *substream, const char *buf, int count)
+--- ./sound/core/rawmidi.c.orig	2008-11-06 15:26:03.000000000 -0800
++++ ./sound/core/rawmidi.c	2008-11-13 11:41:46.000000000 -0800
+@@ -151,16 +151,22 @@
+ 	if (up) {
+ 		tasklet_hi_schedule(&substream->runtime->tasklet);
+ 	} else {
++	        printk(KERN_ERR "rawmidi: about to kill output tasklet\n");
+ 		tasklet_kill(&substream->runtime->tasklet);
+ 		substream->ops->trigger(substream, 0);
++		printk(KERN_ERR "rawmidi: killed output tasklet\n");
+ 	}
+ }
+ 
+ static void snd_rawmidi_input_trigger(struct snd_rawmidi_substream *substream, int up)
+ {
+ 	substream->ops->trigger(substream, up);
+-	if (!up && substream->runtime->event)
++	if (!up && substream->runtime->event) {
++
++	        printk(KERN_ERR "rawmidi: about to kill input tasklet\n");
+ 		tasklet_kill(&substream->runtime->tasklet);
++		printk(KERN_ERR "rawmidi: killed input tasklet\n");
++	}
+ }
+ 
+ int snd_rawmidi_drop_output(struct snd_rawmidi_substream *substream)
+@@ -861,7 +867,9 @@
+ 		snd_printd("snd_rawmidi_receive: input is not active!!!\n");
+ 		return -EINVAL;
+ 	}
++	printk(KERN_ERR "rawmidi: before receive spinlock\n");
+ 	spin_lock_irqsave(&runtime->lock, flags);
++	printk(KERN_ERR "rawmidi: after receive spinlock\n");
+ 	if (count == 1) {	/* special case, faster code */
+ 		substream->bytes++;
+ 		if (runtime->avail < runtime->buffer_size) {
+@@ -901,12 +909,17 @@
+ 		}
+ 	}
+ 	if (result > 0) {
+-		if (runtime->event)
+-			tasklet_hi_schedule(&runtime->tasklet);
++	  if (runtime->event) {
++	    printk(KERN_ERR "rawmidi: about to run tasklet\n");
++	    tasklet_hi_schedule(&runtime->tasklet);
++	    printk(KERN_ERR "rawmidi: run tasklet\n");
++	  }
+ 		else if (snd_rawmidi_ready(substream))
+ 			wake_up(&runtime->sleep);
+ 	}
++	printk(KERN_ERR "rawmidi: before receive spin unlock\n");
+ 	spin_unlock_irqrestore(&runtime->lock, flags);
++	printk(KERN_ERR "rawmidi: after receive spin unlock\n");
+ 	return result;
+ }
+ 
+--- ./sound/core/seq/seq_midi.c.orig	2008-11-07 09:53:31.000000000 -0800
++++ ./sound/core/seq/seq_midi.c	2008-11-07 10:21:31.000000000 -0800
+@@ -80,6 +80,8 @@
+ 	char buf[16], *pbuf;
+ 	long res, count;
+ 
++	printk(KERN_ERR "seq: snd_midi_input_event called\n");
++
+ 	if (substream == NULL)
+ 		return;
+ 	runtime = substream->runtime;
+@@ -88,6 +90,9 @@
+ 		return;
+ 	memset(&ev, 0, sizeof(ev));
+ 	while (runtime->avail > 0) {
++
++	        printk(KERN_ERR "seq: seq_midi_input_event loop begin\n");
++
+ 		res = snd_rawmidi_kernel_read(substream, buf, sizeof(buf));
+ 		if (res <= 0)
+ 			continue;
+@@ -115,6 +120,9 @@
+ 			}
+ 		}
+ 	}
++
++	printk(KERN_ERR "seq: snd_midi_input_event exiting\n");
++
+ }
+ 
+ static int dump_midi(struct snd_rawmidi_substream *substream, const char *buf, int count)
+
+--- ./sound/core/rawmidi.c.orig	2008-11-06 15:26:03.000000000 -0800
++++ ./sound/core/rawmidi.c	2008-11-13 12:31:23.000000000 -0800
+@@ -95,7 +95,10 @@
+ static void snd_rawmidi_input_event_tasklet(unsigned long data)
+ {
+ 	struct snd_rawmidi_substream *substream = (struct snd_rawmidi_substream *)data;
++	printk(KERN_ERR "rawmidi: about to run input tasklet\n");
+ 	substream->runtime->event(substream);
++	printk(KERN_ERR "rawmidi: after running input tasklet\n");
++
+ }
+ 
+ static void snd_rawmidi_output_trigger_tasklet(unsigned long data)
+@@ -149,18 +152,28 @@
+ static inline void snd_rawmidi_output_trigger(struct snd_rawmidi_substream *substream,int up)
+ {
+ 	if (up) {
++	        printk(KERN_ERR "rawmidi: about to run output tasklet\n");
+ 		tasklet_hi_schedule(&substream->runtime->tasklet);
++	        printk(KERN_ERR "rawmidi: run output tasklet\n");
+ 	} else {
++	        printk(KERN_ERR "rawmidi: about to kill output tasklet\n");
+ 		tasklet_kill(&substream->runtime->tasklet);
+ 		substream->ops->trigger(substream, 0);
++		printk(KERN_ERR "rawmidi: killed output tasklet\n");
+ 	}
+ }
+ 
+ static void snd_rawmidi_input_trigger(struct snd_rawmidi_substream *substream, int up)
+ {
++        printk(KERN_ERR "rawmidi: before input ops trigger\n");
+ 	substream->ops->trigger(substream, up);
+-	if (!up && substream->runtime->event)
++        printk(KERN_ERR "rawmidi: after input ops trigger\n");
++	if (!up && substream->runtime->event) {
++
++	        printk(KERN_ERR "rawmidi: about to kill input tasklet\n");
+ 		tasklet_kill(&substream->runtime->tasklet);
++		printk(KERN_ERR "rawmidi: killed input tasklet\n");
++	}
+ }
+ 
+ int snd_rawmidi_drop_output(struct snd_rawmidi_substream *substream)
+@@ -861,7 +874,9 @@
+ 		snd_printd("snd_rawmidi_receive: input is not active!!!\n");
+ 		return -EINVAL;
+ 	}
++	printk(KERN_ERR "rawmidi: before receive spinlock\n");
+ 	spin_lock_irqsave(&runtime->lock, flags);
++	printk(KERN_ERR "rawmidi: after receive spinlock\n");
+ 	if (count == 1) {	/* special case, faster code */
+ 		substream->bytes++;
+ 		if (runtime->avail < runtime->buffer_size) {
+@@ -901,12 +916,17 @@
+ 		}
+ 	}
+ 	if (result > 0) {
+-		if (runtime->event)
+-			tasklet_hi_schedule(&runtime->tasklet);
++	  if (runtime->event) {
++	    printk(KERN_ERR "rawmidi: about to run receive tasklet\n");
++	    tasklet_hi_schedule(&runtime->tasklet);
++	    printk(KERN_ERR "rawmidi: run receive tasklet\n");
++	  }
+ 		else if (snd_rawmidi_ready(substream))
+ 			wake_up(&runtime->sleep);
+ 	}
++	printk(KERN_ERR "rawmidi: before receive spin unlock\n");
+ 	spin_unlock_irqrestore(&runtime->lock, flags);
++	printk(KERN_ERR "rawmidi: after receive spin unlock\n");
+ 	return result;
+ }
+ 
+--- ./sound/core/seq/seq_midi.c.orig	2008-11-07 09:53:31.000000000 -0800
++++ ./sound/core/seq/seq_midi.c	2008-11-07 10:21:31.000000000 -0800
+@@ -80,6 +80,8 @@
+ 	char buf[16], *pbuf;
+ 	long res, count;
+ 
++	printk(KERN_ERR "seq: snd_midi_input_event called\n");
++
+ 	if (substream == NULL)
+ 		return;
+ 	runtime = substream->runtime;
+@@ -88,6 +90,9 @@
+ 		return;
+ 	memset(&ev, 0, sizeof(ev));
+ 	while (runtime->avail > 0) {
++
++	        printk(KERN_ERR "seq: seq_midi_input_event loop begin\n");
++
+ 		res = snd_rawmidi_kernel_read(substream, buf, sizeof(buf));
+ 		if (res <= 0)
+ 			continue;
+@@ -115,6 +120,9 @@
+ 			}
+ 		}
+ 	}
++
++	printk(KERN_ERR "seq: snd_midi_input_event exiting\n");
++
+ }
+ 
+ static int dump_midi(struct snd_rawmidi_substream *substream, const char *buf, int count)
+
+--=-54ehgJSXKoe7Ahji+A6X--
