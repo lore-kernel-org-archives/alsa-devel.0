@@ -1,17 +1,21 @@
-From: Wu Fengguang <wfg@linux.intel.com>
-Subject: Re: [RFC][PATCH] ELD routines and proc interface
-Date: Thu, 13 Nov 2008 10:36:52 +0800
-Message-ID: <1226543817.892186.26155@de>
-References: <20081113022153.GB6844@mail.ustc.edu.cn>
+From: Andrei Tanas <andrei@tanas.ca>
+Subject: Asus P5QL-EM motherboard (ALC1200 codec) - no sound
+	through S/PDIF
+Date: Wed, 12 Nov 2008 21:51:15 -0500
+Message-ID: <668af2a1e877d41c059f6c84fa462476@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from azsmga101.ch.intel.com (mga07.intel.com [143.182.124.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id 15CC524131
-	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 03:37:00 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20081113022153.GB6844@mail.ustc.edu.cn>
+Received: from tanas.ca (tanas.ca [206.248.136.31])
+	by alsa0.perex.cz (Postfix) with ESMTP id 002A22414C
+	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 03:51:17 +0100 (CET)
+Received: from tanas.ca (localhost [127.0.0.1])
+	by tanas.ca (Postfix) with ESMTP id 732D51C68471
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 21:51:15 -0500 (EST)
+Received: from mail.unchanged.net (localhost [127.0.0.1])
+	by tanas.ca (Postfix) with ESMTP id 4028D1C68470
+	for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2008 21:51:15 -0500 (EST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,26 +25,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 13, 2008 at 10:21:53AM +0800, Wu Fengguang wrote:
-> Create hda_eld.c for ELD routines and proc interface.
-
-Here is a simple example of the proc interface, in which the ELD data
-structure has not been populated yet:
-
-# cat /proc/asound/card0/eld\#3
-monitor name
-connection_type         HDMI
-eld_version             0:reserved
-edid_version            0:no CEA EDID Timing Extension block present
-manufacture_id          0x0
-product_id              0x0
-port_id                 0x0
-support_hdcp            0
-support_ai              0
-audio_sync_delay        0
-speakers
-sad_count               0
+SGVsbG8sCkkgY2FuJ3QgZ2V0IHRoZSBTL1BESUYgb3V0IHRvIHdvcmsgb24gUDVRTC1FTSBtb3Ro
+ZXJib2FyZC4gCgpGaXJzdCBvZiBhbGwsIGl0IGRvZXNuJ3QgZGV0ZWN0IHRoZSBib2FyZCBjb25m
+aWd1cmF0aW9uIGNvcnJlY3RseSwgdGhlCm1vdGhlcmJvYXJkIGhhcyBhbiBIRE1JIG91dHB1dCBh
+bmQgYW4gUy9QRElGIGhlYWRlciAoSSBoYXZlIGEgVFYKY29ubmVjdGVkIHRvIG9uZSBhbmQgYW4g
+YW1wbGlmaWVyIHRvIHRoZSBvdGhlciwgaW4gY2FzZSBvbmUgb3V0cHV0CndpbGwgImdvIGxpdmUi
+KS4gCgphcGxheSAtTCBub3JtYWxseSBvbmx5IHNob3dzIHRoIEhETUkgcG9ydCwgaG93ZXZlciBp
+ZiBJIGFkZCB0aGlzIApvcHRpb25zIHNuZC1oZGEtaW50ZWwgbW9kZWw9NnN0YWNrLWRpZyBwcm9i
+ZV9tYXNrPTEgCnRvwqAvZXRjL21vZHByb2JlLmQvYWxzYS1iYXNlLCBpdCB3aWxsIHNob3cgYm90
+aC4gCgpQcm9ibGVtIGlzLCB0aGVyZSBzZWVtcyB0byBiZSBubyBzaWduYWwgY29taW5nIG91dCBv
+ZiBhbnkgb2YgdGhlIHR3bwpkaWdpdGFsIHBvcnRzICh0aGV5IGFyZSBub3QgbXV0ZWQgaW4gbWl4
+ZXIpIGluIGVpdGhlciBQQ00gb3IgQUMzCnBhc3MtdGhyb3VnaCBtb2RlLgoKSSBjb21waWxlZCB0
+aGUgImFsc2Eta2VybmVsIiBob3BpbmcgdGhhdCB0aGUgbGF0ZXN0IGNvbW1pdHMgcmVsYXRlZCB0
+bwpBTEMxMjAwIHdvdWxkIGhlbHAsIGJ1dMKgaXQgaGFzbid0IGhlbHBlZC4KCkhlcmUncyB0aGUg
+b3V0cHV0IG9mIGFsc2EtaW5mby5zaDoKaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9m
+PWI2MmI1NmM1Y2UwYWEzODNmZWYxYmUwZjU1Yjg3YjRlMjdlOGFiNjMKQWdhaW4sIGl0J3MgcnVu
+bmluZyAiYWxzYS1rZXJuZWwiLCBjaGVja2VkIGluIGp1c3QgMTIgaG91cnMgYWdvLgoKTGV0IG1l
+IGtub3cgd2hhdCBJIGNhbiBkbyB0byBoZWxwLCBJIGFtIGEgZGV2ZWxvcGVyIGJ1dCBBbHNhIGlz
+IG5vdApteSB0ZXJyaXRvcnkuCgpUaGFua3MKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
