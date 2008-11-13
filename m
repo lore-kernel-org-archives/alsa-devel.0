@@ -1,24 +1,23 @@
-From: flameeyes@gmail.com (Diego 'Flameeyes' =?utf-8?Q?Petten=C3=B2?=)
+From: Travis Place <wishie@wishie.net>
 Subject: Re: Git branches with Gentoo fixes
-Date: Thu, 13 Nov 2008 01:28:22 +0100
-Message-ID: <m2wsf84ggp.fsf@gmail.com>
-References: <m263ms5vno.fsf@gmail.com>
+Date: Thu, 13 Nov 2008 11:02:32 +1000
+Message-ID: <200811131102.32837.wishie@wishie.net>
+References: <m263ms5vno.fsf@gmail.com> <m2wsf84ggp.fsf@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5281582590134420186=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0F279244A0
-	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 01:30:03 +0100 (CET)
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1L0Q5y-0005Um-N1
-	for alsa-devel@alsa-project.org; Thu, 13 Nov 2008 00:30:02 +0000
-Received: from ppp-13-236.21-151.libero.it ([151.21.236.13])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 00:30:02 +0000
-Received: from flameeyes by ppp-13-236.21-151.libero.it with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 00:30:02 +0000
+Received: from www.wishie.net (202-137-100-224.dial.usertools.net
+	[202.137.100.224])
+	by alsa0.perex.cz (Postfix) with ESMTP id AC4412434D
+	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 02:02:28 +0100 (CET)
+Received: from laptop.local (unknown [192.168.0.200])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by www.wishie.net (Postfix) with ESMTP id 6FA8BEC268
+	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 01:24:39 +1000 (EST)
+In-Reply-To: <m2wsf84ggp.fsf@gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,50 +30,13 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============5281582590134420186==
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha1; protocol="application/pgp-signature"
-
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-flameeyes@gmail.com (Diego 'Flameeyes' Petten=C3=B2) writes:
-
-> git://git.flameeyes.eu/others/alsa/alsa-tools.git
-> git://git.flameeyes.eu/others/alsa/alsa-utils.git
-
-Add to this also
-
-git://git.flameeyes.eu/others/alsa/alsa-plugins.git
-
-
-=2D-=20
-Diego "Flameeyes" Petten=C3=B2
-http://blog.flameeyes.eu/
-
---=-=-=
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-
-iEYEARECAAYFAkkbdKYACgkQe2h1+2mHVWOVxACfcpkjhPcf2bHpYfoLNrASeUee
-lqEAoIhdZbw63Zu5ae561yAnm4DPpAlw
-=qB7y
------END PGP SIGNATURE-----
---=-=-=--
-
-
---===============5281582590134420186==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============5281582590134420186==--
+T24gVGh1cnNkYXkgMTMgTm92ZW1iZXIgMjAwOCAxMDoyODoyMiBhbSBEaWVnbyAnRmxhbWVleWVz
+JyBQZXR0ZW7DsiB3cm90ZToKPiBmbGFtZWV5ZXNAZ21haWwuY29tIChEaWVnbyAnRmxhbWVleWVz
+JyBQZXR0ZW7Dsikgd3JpdGVzOgo+ID4gZ2l0Oi8vZ2l0LmZsYW1lZXllcy5ldS9vdGhlcnMvYWxz
+YS9hbHNhLXRvb2xzLmdpdAo+ID4gZ2l0Oi8vZ2l0LmZsYW1lZXllcy5ldS9vdGhlcnMvYWxzYS9h
+bHNhLXV0aWxzLmdpdAo+Cj4gQWRkIHRvIHRoaXMgYWxzbwo+Cj4gZ2l0Oi8vZ2l0LmZsYW1lZXll
+cy5ldS9vdGhlcnMvYWxzYS9hbHNhLXBsdWdpbnMuZ2l0CgpBcmUgdGhlIC05OTk5IGVidWlsZHMg
+aW4gcG9ydGFnZSBzdGlsbCBwb2ludGluZyB0byB0aGUgSEcgcmVwbyA/CgpUcmF2aXMuCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
