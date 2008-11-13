@@ -1,51 +1,66 @@
-From: Kevin Hilman <khilman-1D3HCaltpLuhEniVeURVKkEOCMrvLtNR@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: DaVinci: Audio: Fix swapping of
-	channels at start of stereo playback
-Date: Thu, 13 Nov 2008 06:32:34 -0800
-Message-ID: <87prkzk871.fsf@deeprootsystems.com>
-References: <1226465791-14725-1-git-send-email-naresh@ti.com>
-	<20081112115001.GC8767@sirena.org.uk>
+From: Andrei Tanas <andrei@tanas.ca>
+Subject: Re: Asus P5QL-EM motherboard (ALC1200 codec) - no
+ sound through S/PDIF
+Date: Thu, 13 Nov 2008 09:35:42 -0500
+Message-ID: <c9f2936074ce510b2b140aa3a1efde33@localhost>
+References: <668af2a1e877d41c059f6c84fa462476@localhost>
+	<1226564212.605116.29828@de>
+	<9b7acddf9b27fdc3fea4444c2db912cf@localhost>
+	<dfbb90e1b88698b6b74f8d59fa20600c@localhost>
+	<s5hljvnhfde.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <20081112115001.GC8767-GFdadSzt00ze9xe1eoZjHA@public.gmane.org> (Mark Brown's message of
-	"Wed\, 12 Nov 2008 11\:50\:02 +0000")
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.omap.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: Mark Brown <broonie-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Cc: davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, naresh-l0cyMroinI0@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from tanas.ca (tanas.ca [206.248.136.31])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8B61824572
+	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 15:35:44 +0100 (CET)
+Received: from tanas.ca (localhost [127.0.0.1])
+	by tanas.ca (Postfix) with ESMTP id 073461C68472
+	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 09:35:43 -0500 (EST)
+Received: from mail.unchanged.net (localhost [127.0.0.1])
+	by tanas.ca (Postfix) with ESMTP id DF51B1C68471
+	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 09:35:42 -0500 (EST)
+In-Reply-To: <s5hljvnhfde.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown <broonie-GFdadSzt00ze9xe1eoZjHA@public.gmane.org> writes:
+On Thu, 13 Nov 2008 15:25:49 +0100, Takashi Iwai <tiwai@suse.de> wrote:
+> This should be a bug of alsa-lib.  The latest version shouldn't show
+> this entry any more.
 
-> On Wed, Nov 12, 2008 at 10:26:31AM +0530, naresh-l0cyMroinI0@public.gmane.org wrote:
->
->> Fixes swapping of channels at start of stereo playback.
->> 
->> Channel swap can be observed while playing left-only or right-only audio data. The channel 
->> swap is fixed by handling the XSYNCERR condition.
->> 
->> Signed-off-by: Naresh Medisetty <naresh-l0cyMroinI0@public.gmane.org>
->
-> Acked-by: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
->
-> Do you know what the status is on merging the DMA API that the ASoC
-> DaVinci driver uses into mainline?
-
-Hi Mark,
-
-I'm the current maintainer of the DaVinci git kernel[1].  I am working
-on syncing the core code (including DMA) with mainline. I may have
-things ready for the next merge window, but if not, I'll definitely
-have it sync'd for the next one.
-
-Kevin
-
-[1] git://source.mvista.com/git/linux-davinci-2.6.git
+Yes, you're right. This is "aplay -L" with alsa-lib 1.0.18
+default:CARD=Intel
+    HDA Intel, ALC1200 Analog
+    Default Audio Device
+front:CARD=Intel,DEV=0
+    HDA Intel, ALC1200 Analog
+    Front speakers
+surround40:CARD=Intel,DEV=0
+    HDA Intel, ALC1200 Analog
+    4.0 Surround output to Front and Rear speakers
+surround41:CARD=Intel,DEV=0
+    HDA Intel, ALC1200 Analog
+    4.1 Surround output to Front, Rear and Subwoofer speakers
+surround50:CARD=Intel,DEV=0
+    HDA Intel, ALC1200 Analog
+    5.0 Surround output to Front, Center and Rear speakers
+surround51:CARD=Intel,DEV=0
+    HDA Intel, ALC1200 Analog
+    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
+surround71:CARD=Intel,DEV=0
+    HDA Intel, ALC1200 Analog
+    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
+iec958:CARD=Intel,DEV=0
+    HDA Intel, ALC1200 Digital
+    IEC958 (S/PDIF) Digital Audio Output
+null
