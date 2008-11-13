@@ -1,20 +1,22 @@
-From: "Baek Chang" <baeksan@ccrma.stanford.edu>
-Subject: Re: S24_BLE does not play using aplay.
-Date: Thu, 13 Nov 2008 10:44:49 -0800
-Message-ID: <aceb60a00811131044o47c6c616ndf79ae68082aeeb@mail.gmail.com>
-References: <aceb60a00811061659o11eec5f4s6c5b6c4ba470b873@mail.gmail.com>
-	<49144BD2.3070400@ladisch.de>
+From: "Sebastian Schneider" <Sebastian.Brian@gmx.de>
+Subject: Re: Creative Sound Blaster X-Fi and X-Fi
+ Titanium	Series Linux 32bit/64bit Driver Source released
+Date: Thu, 13 Nov 2008 21:09:59 +0100
+Message-ID: <20081113200959.60190@gmx.net>
+References: <5501535d0811060746y60d18e6boc8c5ad34a63fb92b@mail.gmail.com>
+	<8fe68c970811061536n52c6c819v58145401002555be@mail.gmail.com>
+	<4913C742.9040107@gmail.com>
+	<5501535d0811071108u7e922704h97408525e670741@mail.gmail.com>
+	<4915246F.9040606@gmail.com>
+	<5501535d0811091532t7bdd2f7co5be765c8f0d67725@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gv-out-0910.google.com (gv-out-0910.google.com [216.239.58.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id BF19A10380E
-	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 19:44:50 +0100 (CET)
-Received: by gv-out-0910.google.com with SMTP id i36so214824gve.24
-	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 10:44:50 -0800 (PST)
-In-Reply-To: <49144BD2.3070400@ladisch.de>
-Content-Disposition: inline
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 7E1A124333
+	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2008 21:10:01 +0100 (CET)
+In-Reply-To: <5501535d0811091532t7bdd2f7co5be765c8f0d67725@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,38 +29,16 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I am using pulseaudio as the sound server in conjunction with alsa.  My alsa
-sinks are mapped to pulseaudio in asound.conf.  Using paplay with a 24 bit
-file seems to work fine, because pulseaudio just converts the S24 bit data
-to 32 bit float.  Is there a way to bypass using plughw with alsa, so that
-alsa can just send the 24 bit pcm data to pulseaudio, then have pulseaudio
-do the neccessary conversion?
+Did someone start to do some work on the driver and do some bugfixing? Or d=
+oes Creative forbid to work on the driver and bring up some patches/fixes a=
+nd new Features. And what about the Control Panel? Can someone manage it to=
+ bring support for the driver?
 
-Thanks
-Baek
+I would do it by myself, but I'm in game developing and have no clue how to=
+ work on a driver.
 
-On Fri, Nov 7, 2008 at 6:08 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+-- =
 
-> Baek Chang wrote:
-> > Playing WAVE 'sine_24_48k.wav' : Signed 24 bit Little Endian in 3bytes,
-> Rate 48000 Hz, Stereo
-> > aplay: set_params:961: Sample format non available
->
-> This error message indicates that the device does not support the sample
-> format.
->
-> You didn't show the aplay command line, but I'd guess that you used a
-> "hw" device.  Try "plughw" or "default" to get automatic sample format
-> conversion.
->
->
-> HTH
-> Clemens
->
->
+Sensationsangebot nur bis 30.11: GMX FreeDSL - Telefonanschluss + DSL =
 
-
--- 
-Baek Chang
-baeksan@ccrma.stanford.edu
-407-267-6701
+f=FCr nur 16,37 Euro/mtl.!* http://dsl.gmx.de/?ac=3DOM.AD.PD003K11308T4569a
