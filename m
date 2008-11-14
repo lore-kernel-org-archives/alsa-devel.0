@@ -1,17 +1,14 @@
-From: "Bankim Bhavsar" <bankim.bhavsar@gmail.com>
-Subject: Using period events
-Date: Fri, 14 Nov 2008 13:35:08 -0800
-Message-ID: <4eccebac0811141335p6e26b633iadb0c3418e6d0a2f@mail.gmail.com>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: STAC_VREF_EVENT value change
+Date: Fri, 14 Nov 2008 17:46:22 -0500
+Message-ID: <491DFFBE.3060909@embeddedalley.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f16.google.com (mail-gx0-f16.google.com
-	[209.85.217.16]) by alsa0.perex.cz (Postfix) with ESMTP id 1EAFF243CF
-	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 22:35:09 +0100 (CET)
-Received: by gxk9 with SMTP id 9so846802gxk.8
-	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 13:35:08 -0800 (PST)
-Content-Disposition: inline
+Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
+	by alsa0.perex.cz (Postfix) with SMTP id 161DC103817
+	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 23:46:32 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,24 +19,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: mzjro@0pointer.net, bbhavsar@vmware.com
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I used async notification mechanism provided by alsa-lib. Since they
-use signals I ran into all sorts of issues. I should have read this
-post before http://mailman.alsa-project.org/pipermail/alsa-devel/2008-May/008030.html
-Definitely not the way to go ahead. I second the argument to remove
-that feature from alsa-lib altogether.
+Changed value for STAC_VREF_EVENT from 0x40 to 0x00 because the
+unsol response value is only 6-bits width and the former value
+was 1<<6 which is an overrun.
 
-We need a mechanism wherein the alsa subsystem notifies a polling
-thread that a "period" of sound bytes has been completed.
-Using snd_pcm_sw_params_set_period_event() will suffice?
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+---
+diff --git a/pci/hda/patch_sigmatel.c b/pci/hda/patch_sigmatel.c
+index ec8f5ab..86e5cd9 100644
+--- a/pci/hda/patch_sigmatel.c
++++ b/pci/hda/patch_sigmatel.c
+@@ -36,10 +36,10 @@
+ #include "hda_patch.h"
+ #include "hda_beep.h"
 
-I took a cursory look at the alsa-lib and it seems a timer is used for
-this purpose. Is this well supported on majority of sound cards out
-there (alsa version 1.0.17+)?
-I want to make sure before I use this alternative approach.
++#define STAC_VREF_EVENT		0x00
+ #define STAC_INSERT_EVENT	0x10
+ #define STAC_PWR_EVENT		0x20
+ #define STAC_HP_EVENT		0x30
+-#define STAC_VREF_EVENT		0x40
 
-Thanks,
-Bankim.
+ enum {
+ 	STAC_REF,
