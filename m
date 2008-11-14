@@ -1,21 +1,24 @@
-From: Andrei Tanas <andrei@tanas.ca>
-Subject: Re: Asus P5QL-EM motherboard (ALC1200 codec) - no
- sound through S/PDIF
-Date: Fri, 14 Nov 2008 11:06:40 -0500
-Message-ID: <0e1c691b3c35afdbd5b2d56810b6f3a8@localhost>
-References: <668af2a1e877d41c059f6c84fa462476@localhost>
-	<1226564212.605116.29828@de>
-	<9b7acddf9b27fdc3fea4444c2db912cf@localhost>
-	<dfbb90e1b88698b6b74f8d59fa20600c@localhost>
-	<1226638730.458905.27492@de>
+From: "christian pellegrin" <chripell@gmail.com>
+Subject: Re: possible problem in s3c24xx-pcm.c in git-devel
+	branch
+Date: Fri, 14 Nov 2008 17:20:35 +0100
+Message-ID: <cabda6420811140820y23de807fwbc064ce82c011f2c@mail.gmail.com>
+References: <cabda6420811130657k4079884cge643c1b33b319b14@mail.gmail.com>
+	<20081113151701.GG31592@sirena.org.uk>
+	<cabda6420811130740u325cf60bse8401af768fb7340@mail.gmail.com>
+	<20081113160936.GH31592@sirena.org.uk>
+	<20081114124640.GB25307@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tanas.ca (tanas.ca [206.248.136.31])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9929824333
-	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 17:06:42 +0100 (CET)
-In-Reply-To: <1226638730.458905.27492@de>
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5D20924149
+	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 17:20:37 +0100 (CET)
+Received: by rv-out-0708.google.com with SMTP id f25so1549495rvb.32
+	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 08:20:35 -0800 (PST)
+In-Reply-To: <20081114124640.GB25307@sirena.org.uk>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,39 +28,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wu Fengguang <wfg@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: David Anders <dave123_aml@yahoo.com>, alsa-devel@alsa-project.org, Ben Dooks <ben-linux@fluff.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 14 Nov 2008 12:58:44 +0800, Wu Fengguang <wfg@linux.intel.com>
-wrote:
-> On Thu, Nov 13, 2008 at 09:22:10AM -0500, Andrei Tanas wrote:
->> Here's "aplay -L" with autodetection
-> 
-> Thank you. What's the output of 'aplay -l' ?
+On Fri, Nov 14, 2008 at 1:46 PM, Mark Brown <broonie@sirena.org.uk> wrote:
+>
+> More info provided by Dave on IRC:
+>
+> 15:46 < prpplague> now the big difference between the 2410 and 2440 is ofcourse
+>                   the primary clock, the 2410 generally running 200mhz whereas
+>                   the 2440 is at 400mhz
+>
+>
 
-I don't have access to the machine now. From memory, it was showing two
-items: one device with two subdevices.
-I'll provide you exact details later.
+Hi,
 
->> And here's "cat /proc/asound/card0/codec#0"
-> 
-> This is the regular codec.
-> Are there /proc/asound/card0/codec#{1,2,3}?
+to say the truth I never saw problems on the S3c2440 custom board @
+400Mhz I worked with initially:
 
-There was only one.
+CPU S3C2440A (id 0x32440001)
+S3C244X: core 399.651 MHz, memory 133.217 MHz, peripheral 66.608 MHz
 
-> The HDMI codec would look like this one:
-> % cat /proc/asound/card0/codec\#3                                        
- 
+Right now I cannot do much complete audio testing with it (the audio
+part after the codec is crippled) but I can test if dma starts and if
+audio playing last the right number of seconds. My initial patch was
+against 2.6.27 so without the limitation on the maximum period
+initially loading but I remembered that there were only 2 buffers
+loaded because the lower level dma enqueue function returned error
+after that. I never saw problems with aplay and madplay.
 
-I saw nothing like that.
+I will try to do some changes in that code but my worry is how to know
+how many periods are filled with data for sure by the upper ALSA
+layers (I'm not an expert in ASLA as you can see).
 
-I got an SB Audigy card and had all set up in minutes, so it's not as
-important for me to get this running, but I'd like to help resolve this
-anyway - there seems to be a lot of uncertainty among other Asus P5Q users.
 
-Will it help to enable SND_VERBOSE_PRINTK and SND_DEBUG?
-
-Thanks,
-Andrei.
+-- 
+Christian Pellegrin, see http://www.evolware.org/chri/
+"Real Programmers don't play tennis, or any other sport which requires
+you to change clothes. Mountain climbing is OK, and Real Programmers
+wear their climbing boots to work in case a mountain should suddenly
+spring up in the middle of the computer room."
