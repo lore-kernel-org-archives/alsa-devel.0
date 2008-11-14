@@ -1,20 +1,18 @@
-From: Wu Fengguang <wfg@linux.intel.com>
-Subject: Re: [RFC][PATCH] ELD routines and proc interface
-Date: Fri, 14 Nov 2008 16:02:53 +0800
-Message-ID: <1226649778.604128.24856@de>
-References: <1226542918.126598.6912@de> <s5h4p2crsqv.wl%tiwai@suse.de>
-	<1226626476.943818.9357@de> <s5h3ahulqf4.wl%tiwai@suse.de>
-	<1226648341.561038.5360@de> <s5hzlk2kb0g.wl%tiwai@suse.de>
-	<1226648862.781771.5644@de> <s5hwsf6kap7.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Roland/Edirol M-16DX
+Date: Fri, 14 Nov 2008 09:12:48 +0100
+Message-ID: <491D3300.5050405@ladisch.de>
+References: <487F10EE.6030405@trn.iki.fi> <48883AAC.6060101@ladisch.de>	
+	<4917B029.7010809@trn.iki.fi> <491C6E10.7090308@trn.iki.fi>
+	<1226624101.4836.95.camel@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id D7F1F243D9
-	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 09:03:01 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hwsf6kap7.wl%tiwai@suse.de>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 839D62434D
+	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 09:12:39 +0100 (CET)
+In-Reply-To: <1226624101.4836.95.camel@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,68 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: James Trevelyan <james@jamestrev.com>
+Cc: =?ISO-8859-1?Q?Lasse_K=E4rkk=E4inen?= <tronic+cv5n@trn.iki.fi>, james@jamestrevelyan.com, alsa-devel@alsa-project.org, timc@wnsp.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 14, 2008 at 08:50:44AM +0100, Takashi Iwai wrote:
-> At Fri, 14 Nov 2008 15:47:37 +0800,
-> Wu Fengguang wrote:
-> > 
-> > On Fri, Nov 14, 2008 at 08:43:59AM +0100, Takashi Iwai wrote:
-> > > At Fri, 14 Nov 2008 15:38:56 +0800,
-> > > Wu Fengguang wrote:
-> > > > 
-> > > > > > > > --- /dev/null
-> > > > > > > > +++ sound-2.6/sound/pci/hda/hda_eld.c
-> > > > > > > > +static inline unsigned char grab_bits(const unsigned char *buf,
-> > > > > > > > +						int byte, int lowbit, int bits)
-> > > > > > > > +{
-> > > > > > > > +	BUG_ON(lowbit > 7);
-> > > > > > > > +	BUG_ON(bits > 8);
-> > > > > > > > +	BUG_ON(bits <= 0);
-> > > > > > > 
-> > > > > > > Can it be rather BUILD_BUG_ON(), BTW?
-> > > > > > > Or, hmm, doesn't work if it's an inline function?
-> > > > > > 
-> > > > > > Yes, converted to BUILD_BUG_ON() and it compiles OK.
-> > > > > 
-> > > > > The question is whether this really triggers the build error
-> > > > > properly.  Could you check it, simply by changing the caller of
-> > > > > grab_bits() with some invalid values?  Then you should get a compile
-> > > > > error.
-> > > > 
-> > > > BUILD_BUG_ON() won't emit errors! So use BUG_ON()?
-> > > 
-> > > Try to make grab_bits() a macro and check whether BUILD_BUG_ON()
-> > > works.  I think it won't be too bad to use a macro for such a pretty
-> > > simple case.  If the resultant code looks too ugly, we should switch
-> > > back to BUG_ON().
-> > 
-> > OK, I'm fine with a macro.
-> > 
-> > > The difference is that BUILD_BUG_ON() would add no real code while
-> > > BUG_ON() is a pure run-time check.
-> > 
-> > But the code should be optimize away by gcc when the constant
-> > expression is false? 
-> 
-> Well, I think BUG_ON() code remains in this case because it's no
-> constant check as it's in a function (although inlined).  Otherwise
-> BUILD_BUG_ON() should have worked.
+James Trevelyan wrote:
+> ...
+> However, what I did notice is that in all circumstances the windows
+> driver was capturing at the same time as playback, even when I was not
+> asking it to record.  This suggests to me that the comment in the driver
+> source about synchronising playback to capture has some relevance ...
+
+Indeed.  The driver would have to send the data at the exact speed of
+the device's internal clock, and the only way to determine that clock's
+speed is to capture data.
+
+So far I haven't found the time to rewrite the driver to support this
+synchronization mechanism.
 
 
-Hehe, not so ugly as a macro:
-
-#define GRAB_BITS(buf, byte, lowbit, bits)              \
-({                                                      \
-        BUILD_BUG_ON(lowbit > 7);                       \
-        BUILD_BUG_ON(bits > 8);                         \
-        BUILD_BUG_ON(bits <= 0);                        \
-                                                        \
-        (buf[byte] >> (lowbit)) & ((1 << (bits)) - 1);  \
-})
-
-
-Cheers,
-Fengguang
+Best regards,
+Clemens
