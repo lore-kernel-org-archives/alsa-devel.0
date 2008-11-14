@@ -1,73 +1,43 @@
-From: Maxim Levitsky <maximlevitsky-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [alsa-devel] Bugs on aspire one A150
-Date: Fri, 14 Nov 2008 20:05:30 +0200
-Message-ID: <491DBDEA.9010104@gmail.com>
-References: <s5h3ai11dpt.wl%tiwai@suse.de> <20081109151323.GA18705@rhlx01.hs-esslingen.de> <s5h7i7c916e.wl%tiwai@suse.de> <20081109200929.GA29333@rhlx01.hs-esslingen.de> <s5hiqqtkxqr.wl%tiwai@suse.de> <491B0D38.1050207@gmail.com> <20081112180519.GA21919@rhlx01.hs-esslingen.de>
+From: "Dmitri Seletski" <drjoms@gmail.com>
+Subject: xfi fatality pro gamer
+Date: Fri, 14 Nov 2008 18:57:19 +0000
+Message-ID: <f3ebadea0811141057h11638b09m3e5cd38ee56fb912@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <kernel-testers-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20081112180519.GA21919-p/qQFhXj4MHA4IYVXhSI5GHfThorsUsI@public.gmane.org>
-Sender: kernel-testers-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Andreas Mohr <andi-5+Cda9B46AM@public.gmane.org>
-Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Kernel Testers List <kernel-testers-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hs-out-0708.google.com (hs-out-0708.google.com [64.233.178.241])
+	by alsa0.perex.cz (Postfix) with ESMTP id A0318103817
+	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 19:57:21 +0100 (CET)
+Received: by hs-out-0708.google.com with SMTP id x43so786549hsb.0
+	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 10:57:20 -0800 (PST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Andreas Mohr wrote:
-> Hi,
-> 
-> On Wed, Nov 12, 2008 at 07:07:04PM +0200, Maxim Levitsky wrote:
->> I pretty much studied the datasheet and driver, and this is what I found:
->> btw, my acer 5720 and aspire one share same ALC268.
->> Some stuff is trivially fixable, some seems to be unfixable at all:
-> 
-> Wow, what an extremely in-depth analysis!
-> I just intended to dive into getting mic routing corrected myself,
-> thus you saved me a lot of time!
-> 
->> model=acer is used on my regular laptop.
->> model-acer-aspire is used on aspire one laptop, and it needs to be renamed, as both are aspire.
-> 
-> +1 (your analysis of both being rather different - as already pondered -
-> confirms this necessity)
-> 
->> And now for unfixable problems:
->>
->> 1) There is strong DC offset on all inputs.
->> it is even different on left/right and depends on capture volume.
->> I tried to change the VREF only param that could help, but it doesn't.
->> I feel that this is hardware flaw.
->> (It is possible that voltage on inputs is created by circuit made by acer, and then ALC268 amplifies it.)
-> 
-> Sounds like really bad circuit design then.
-> One would think that the Intel HDA architecture might have builtin
-> measures to compensate for this if needed? DC offset issues on
-> soundcards aren't exactly a new phenomenon after all...
-> 
->> Lastly I noticed that datasheet mentions so called 'coefficients':
->> the codecs exposes lots of internal and undocumented registers using set address/ get/set value scheme.
->> maybe some of above bugs are fixable there, but ether realtek has to provide data for that or reverse engineering of
->> windows driver is required.
-> 
-> I've actually had a peek at the .inf files since I thought that it would
-> already contain register values in those registry keys that it creates on
-> install, but yeah, that's all in-driver it seems.
-> Probably time to ask Acer about specifics, especially since I didn't spot
-> any hda-intel changes in their linux-2.6.23.9lw source.
-> 
-> Thank you very much,
-> 
-> Andreas Mohr
-
-Small update:
-
-1) The dc offset isn't present on aspire one, really is a circuit design bug I guess 
-2) Internal mic works perfectly on aspire one, can reproduce the strange behaver at all,
-Probably this was mixer bug.
-
-So aspire one support is almost, only need to add support to restore beep volume
-after resume.
-
-
-Best regards,
-	Maxim Levitsky
+Hello boys and girls.
+I have a card (actually 3 of them, hda-intel, that doesn't work properly,
+usb-audio, that doesn't work properly and xfi fatality gamer pro, which you
+guessed by now doesn't work properly). I may test things from any of those
+cards if you have any interest.
+I know my fatality card is rather new on the market(not exactly, but...) and
+not very well supported. I would like to test it if you need more testers. I
+have got driver released on 6th of November 2008. I tryed OSS with it, it
+sucked badly, but at least proved that card is in working conditions. With
+this driver that creative released i am getting my sound applications failed
+miserably. I know it's crap, so instead of complaining I decided to do
+something about it this time.
+I can provide dmesg output.
+Anyway, let me know if you need a guinea pig(I know how to load a distro
+from live cd, worst case scenario, chrootig or something).
+Restecpa me brothers and sistas.
+Dmitri
