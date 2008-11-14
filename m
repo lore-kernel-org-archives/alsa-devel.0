@@ -1,253 +1,225 @@
-From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: [alsa-devel] 2.6.26.[6|7]-rt11, alsa rawmidi, seq hang
-	(tasklet_hi_schedule?)
-Date: Thu, 13 Nov 2008 16:12:49 -0800
-Message-ID: <1226621569.23485.44.camel@localhost.localdomain>
-References: <1226019485.3135.31.camel@localhost.localdomain>
-	 <49140683.9040008@ladisch.de>
-	 <1226610075.23485.20.camel@localhost.localdomain>
-	 <1226616962.23485.28.camel@localhost.localdomain>
+From: Wu Fengguang <wfg@linux.intel.com>
+Subject: Re: [RFC][PATCH] ELD routines and proc interface
+Date: Fri, 14 Nov 2008 09:34:32 +0800
+Message-ID: <1226626476.943818.9357@de>
+References: <1226542918.126598.6912@de> <s5h4p2crsqv.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755608AbYKNANR@vger.kernel.org>
-In-Reply-To: <1226616962.23485.28.camel@localhost.localdomain>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, Ingo Molnar <mingo@elte.hu>, alsa-devel@alsa-project.org, Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from orsmga101.jf.intel.com (mga06.intel.com [134.134.136.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7A779244A9
+	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 02:34:40 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5h4p2crsqv.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2008-11-13 at 14:56 -0800, Fernando Lopez-Lezcano wrote:
-> On Thu, 2008-11-13 at 13:01 -0800, Fernando Lopez-Lezcano wrote:
-> > On Fri, 2008-11-07 at 10:12 +0100, Clemens Ladisch wrote:
-> > > Fernando Lopez-Lezcano wrote:
-> > > > I'm seeing a realtime patch related hard hang in the kernel alsa
-> > > > subsystem (MIDI input/output). In a nutshell:
-> > > >
-> > > > - alsa rawmidi works (ie: "rawmidi -v -i hw:0" outputs a stream of
-> > > > messages when pointed to a midi capable card that has an external
-> > > > keyboard connected).
-> > > >
-> > > > - the alsa sequencer interface works (ie: aplaymidi connected to
-> > > > aseqdump transfers data just fine).
-> > > >
-> > > > - BOTH combined do NOT work (ie: use aconnect to connect the port that
-> > > > corresponds to the external midi interface to aseqdump: aseqdump hangs
-> > > > forever after transferring the first message and the only way out is a
-> > > > reboot).
-> > > 
-> > > > ... including the output of a "echo t >/proc/sysrq-trigger" that
-> > > > should show where aseqdump currently hangs (or so I think).
-> > > 
-> > > It hangs in tasklet_kill(), which gets called while it tries to close
-> > > the rawmidi port.
-> > > 
-> > > The rawmidi framework uses this tasklet to notify the sequencer that new
-> > > MIDI data is available.  The handler function is
-> > > snd_rawmidi_input_event_tasklet() in sound/core/rawmidi.c; the sequencer
-> > > callback that gets called from there is snd_midi_input_event() in
-> > > core/seq/seq_midi.c.
-> > > 
-> > > You say that the first event gets delivered, so it might be possible
-> > > that the tasklet never finishes executing.  Please check whether the
-> > > call to snd_seq_kernel_client_dispatch() in snd_midi_input_event()
-> > > ever returns.
+On Thu, Nov 13, 2008 at 08:26:48AM +0100, Takashi Iwai wrote:
+> At Thu, 13 Nov 2008 10:21:53 +0800,
+> Wu Fengguang wrote:
 > > 
-> > Going back to this in the hope of a bit more data helping solve the
-> > problem...
+> > Create hda_eld.c for ELD routines and proc interface.
+> 
+> Thanks for the patch!
+
+I take it as my responsibility :)
+
+> > ELD handling routines can be shared by all HDMI codecs,
+> > and they are large enough to make a standalone source file.
 > > 
-> > I don't understand what is going on (of course! :-)
+> > Some notes on the code:
 > > 
-> > Cards look like this:
+> > - Shall we show an empty file if the ELD content is not valid?
+> >   Well it's not that simple. There could be partially populated ELD,
+> >   and there may be malformed ELD provided by buggy drivers/monitors.
+> >   So I tend to expose ELD as it is. 
+> 
+> Fair enough.
+> 
+> > - hdmi_show_eld() and hdmi_print_eld_info() are somehow duplicated
+> >   The plan is to shrink hdmi_show_eld()/hdmi_show_short_audio_desc(), and to
+> >   show a compact message at monitor hotplug and driver initialization time.
+> 
+> You can create a common print function to accept the callback, such
+> as,
+> 
+> static void hdmi_print(void (*print)(void *, const char *line), void *data,
+> 			   const char *fmt, ...)
+> {
+> 	char line[80];
+> 	va_list ap;
+> 	va_start(fp, fmt);
+> 	vsnprintf(line, sizeof(line), fmt, ap);
+> 	va_end(ap);
+> 	print(data, line);
+> }
+> 
+> static void hdmi_print_eld(void (*print)(void *, const char *), void *data,
+> 				struct sink_eld *e)
+> {
+> 	hdmi_print(print, data, "monitor name\t\t%s\n", e->monitor_name);
+> 	...
+> }
+> 				
+> static void print_proc(void *data, const char *line)
+> {
+> 	snd_iprintf(data, "%s", line);
+> }
+> 
+> static void hdmi_print_eld_info(struct snd_info_entry *entry,
+> 				struct snd_info_buffer *buffer)
+> {
+> 	hdmi_print_eld(print_proc, buffer, entry->private_data);
+> }
+> 
+> static void print_console(void *data, const char *line)
+> {
+> 	printk(KERN_DEBUG "%s", line);
+> }
+> 
+> void snd_hdmi_show_eld(struct sink_eld *e)
+> {
+> 	hdmi_print_eld(print_console, NULL, e);
+> }
+> 
+> Just an idea, though.
+ 
+Wow, it would be really nice trick for a big project!
+But in this case, it seems to create more code than it can reduce...
+
+Anyway my point is that, there seems to pointless to show full
+detailed ELD info in dmesg.
+
+> > - The ELD retrieval routines rely on the Intel HDA interface,
+> >   others are/could be universal and independent ones.
 > > 
-> > $ cat /proc/asound/cards
-> >  0 [Gina3G         ]: Echo_Echo3G - Gina3G
-> >                       Gina3G rev.0 (DSP56361) at 0xfeb00000 irq 18
-> >  1 [Intel          ]: HDA-Intel - HDA Intel
-> >                       HDA Intel at 0xfe7f8000 irq 22
-> >  2 [PCR            ]: USB-Audio - PCR
-> >                       EDIROL PCR at usb-0000:00:1d.0-1, full speed
-> > 
-> > Here's what I do:
-> >   - start aseqdump
-> >   - aconnect 16:0 128:0
-> >   - aseqdump receives one midi message (one byte active sensing msg)
-> >   - aseqdump hangs forever (reboot needed)
-> > 
-> > This is what dmesg prints (patch attached which shows where the printk's
-> > are located in the source for rawmidi.c and seq_midi.c):
+> > - The ELD proc interface code could be moved to hda_proc.c if necessary.
 > 
-> More info with some more printk's (see attached patch for location):
+> > - How do we name the proc file?
+> >   If there are going to be two HDMI pins per codec, then the current naming
+> >   scheme (eld#<codec no>) will fail.
+> 
+> In theory, yes, but I don't think this would happen.
+> If this is needed, the currently existing codec#* proc must be fixed,
+> too.  So, we can use eld#codec as the simplest way.
 
-I've been trying to follow the printk crumbs without much success.
-AFAICT it all points to tasklet_hi_schedule ... the handling code is
-being scheduled but never executes, right? (well, it executes _once_ and
-then never again). And that leads to tasklet_common_schedule - as
-Clemens pointed at the beginning of the thread this is eerily similar to
-what happened before in 2006:
+I mean one HDMI codec equipped with two output converters and two HDMI pins.
+In this case there could be two HDMI sinks mapped to one single codec.
 
-  http://lkml.org/lkml/2006/3/7/256
+Or it would be trivial to do the rename in the future anyway?
 
-So, is tasklet_common_schedule just going through the "goto again;" loop
-forever?:
+> Some review comments below:
+> 
+> > --- sound-2.6.orig/sound/pci/hda/patch_intelhdmi.c
+> > +++ sound-2.6/sound/pci/hda/patch_intelhdmi.c
+> ...
+> > @@ -880,6 +410,11 @@ static int intel_hdmi_build_controls(str
+> >  
+> >  static int intel_hdmi_init(struct hda_codec *codec)
+> >  {
+> > +	struct intel_hdmi_spec *spec = codec->spec;
+> > +	struct sink_eld *eld = &spec->sink;
+> > +
+> > +	snd_hda_eld_proc_new(codec, eld);
+> 
+> The proc creation should be rather in patch_intelhdmi().
+> The init callback is called also at suspend/resume usually.
 
-   tasklet_trylock(t) is true
-again:
--> test_bit(TASKLET_STATE_SCHED, &t->state) is false
--> !tasklet_tryunlock(t) is true
--> goto again
+OK, fixed.
 
-I don't know what it all _means_, I'm just trying to point a finger to
-something in the hope that somebody will understand and say "aha!" (and
-email a nice patch! :-)
+> >  	/* disable audio output as early as possible */
+> >  	hdmi_disable_output(codec);
+> >  
+> > @@ -927,3 +462,4 @@ struct hda_codec_preset snd_hda_preset_i
+> >  	{ .id = 0x10951392, .name = "SiI1392 HDMI",     .patch = patch_intel_hdmi },
+> >  	{} /* terminator */
+> >  };
+> > +
+> 
+> Useless space addition.
 
-As the code says, "this is subtle"...
+Fixed, wondering how it slipped in.
 
--- Fernando
+> 
+> > --- /dev/null
+> > +++ sound-2.6/sound/pci/hda/hda_eld.c
+> > +static inline unsigned char grab_bits(const unsigned char *buf,
+> > +						int byte, int lowbit, int bits)
+> > +{
+> > +	BUG_ON(lowbit > 7);
+> > +	BUG_ON(bits > 8);
+> > +	BUG_ON(bits <= 0);
+> 
+> Can it be rather BUILD_BUG_ON(), BTW?
+> Or, hmm, doesn't work if it's an inline function?
 
-> after aseqdump startup:
+Yes, converted to BUILD_BUG_ON() and it compiles OK.
+
+> > +int hdmi_get_eld_size(struct hda_codec *codec, hda_nid_t nid)
 > 
-> snd_seq_fifo: before init
-> snd_seq_fifo: after init
-> snd_seq_fifo_poll_wait: before poll_wait
-> snd_seq_fifo_poll_wait: after poll_wait
+> I prefer snd_ prefix for global functions to avoid any potential name
+> crashes.
+
+OK.
+
+> > +int hdmi_get_eld(struct sink_eld *eld,
+> > +		 struct hda_codec *codec, hda_nid_t nid)
 > 
-> after aconnect:
+> Ditto.
 > 
-> snd_seq_fifo: before init
-> snd_seq_fifo: after init
-> rawmidi: before input ops trigger
-> rawmidi: after input ops trigger
-> rawmidi: before input ops trigger
-> rawmidi: after input ops trigger
-> snd_seq_fifo_event_in: before wake_up
-> snd_seq_fifo_event_in: after wake_up
-> snd_seq_fifo_poll_wait: before poll_wait
-> snd_seq_fifo_poll_wait: after poll_wait
-> snd_seq_fifo_cell_out: before spin_unlock
-> snd_seq_fifo_cell_out: after spin_unlock
-> snd_seq_fifo_poll_wait: before poll_wait
-> snd_seq_fifo_poll_wait: after poll_wait
-> rawmidi: before receive spinlock
-> rawmidi: after receive spinlock
-> rawmidi: about to run receive tasklet
-> rawmidi: run receive tasklet
-> rawmidi: before receive spin unlock
-> rawmidi: after receive spin unlock
-> rawmidi: about to run input tasklet
-> seq: snd_midi_input_event called
-> seq: seq_midi_input_event loop begin
-> rawmidi: before input ops trigger
-> rawmidi: after input ops trigger
-> seq: snd_seq_kernel_client_dispatch called
-> snd_seq_fifo_event_in: before wake_up
-> snd_seq_fifo_event_in: after wake_up
-> seq: snd_seq_kernel_client_dispatch returned
-> snd_seq_fifo_poll_wait: before poll_wait
-> snd_seq_fifo_poll_wait: after poll_wait
-> seq: snd_midi_input_event exiting
-> rawmidi: after running input tasklet
-> snd_seq_fifo_cell_out: before spin_unlock
-> snd_seq_fifo_cell_out: after spin_unlock
-> snd_seq_fifo_poll_wait: before poll_wait
-> snd_seq_fifo_poll_wait: after poll_wait
-> rawmidi: before receive spinlock
-> rawmidi: after receive spinlock
-> rawmidi: about to run receive tasklet
-> rawmidi: run receive tasklet
-> rawmidi: before receive spin unlock
-> rawmidi: after receive spin unlock
-> rawmidi: before receive spinlock
-> rawmidi: after receive spinlock
-> rawmidi: about to run receive tasklet
-> rawmidi: run receive tasklet
-> rawmidi: before receive spin unlock
-> rawmidi: after receive spin unlock
-> rawmidi: before receive spinlock
-> rawmidi: after receive spinlock
-> rawmidi: about to run receive tasklet
+> > +void hdmi_show_eld(struct sink_eld *e)
 > 
-> Hangs here:
+> Ditto.
+
+Three renames done.
+
+> > --- sound-2.6.orig/sound/pci/hda/Makefile
+> > +++ sound-2.6/sound/pci/hda/Makefile
+> > @@ -4,6 +4,7 @@ snd-hda-intel-y := hda_intel.o
+> >  # designed to be individual modules
+> >  snd-hda-intel-y += hda_codec.o
+> >  snd-hda-intel-$(CONFIG_PROC_FS) += hda_proc.o
+> > +snd-hda-intel-$(CONFIG_SND_HDA_ELD) += hda_eld.o
+> >  snd-hda-intel-$(CONFIG_SND_HDA_HWDEP) += hda_hwdep.o
+> >  snd-hda-intel-$(CONFIG_SND_HDA_INPUT_BEEP) += hda_beep.o
+> >  snd-hda-intel-$(CONFIG_SND_HDA_GENERIC) += hda_generic.o
+> > --- sound-2.6.orig/sound/pci/hda/hda_local.h
+> > +++ sound-2.6/sound/pci/hda/hda_local.h
+> > @@ -276,15 +276,6 @@ static inline int snd_hda_parse_generic_
+> >  #endif
+> >  
+> >  /*
+> > - * generic proc interface
+> > - */
+> > -#ifdef CONFIG_PROC_FS
+> > -int snd_hda_codec_proc_new(struct hda_codec *codec);
+> > -#else
+> > -static inline int snd_hda_codec_proc_new(struct hda_codec *codec) { return 0; }
+> > -#endif
+> ...
+> > +/*
+> > + * generic proc interface
+> > + */
+> > +#ifdef CONFIG_PROC_FS
+> > +int snd_hda_codec_proc_new(struct hda_codec *codec);
+> > +int snd_hda_eld_proc_new(struct hda_codec *codec, struct sink_eld *eld);
 > 
-> Nov 13 14:39:57 host kernel: aseqdump      S [f55762f0] f714dbe0     0
-> 5360   5318
-> Nov 13 14:39:57 host kernel:       f714dbd4 00200082 f628edc0 f714dbe0
-> c042ab6d f55762f0 f5576584 c4847700 
-> Nov 13 14:39:57 host kernel:       00000001 c4847700 098b418d 0000003d
-> 00000000 00000000 00200246 f63980f4 
-> Nov 13 14:39:57 host kernel:       f714dbc0 c06456c1 f63980f4 f714dc5c
-> f714dbcc 00000000 7fffffff f714de98 
-> Nov 13 14:39:57 host kernel: Call Trace:
-> Nov 13 14:39:57 host kernel: [<c042ab6d>] ? vprintk+0x30e/0x331
-> Nov 13 14:39:57 host kernel: [<c06456c1>] ? __rt_spin_lock+0x24/0x61
-> Nov 13 14:39:57 host kernel: [<c0643ba5>] schedule+0xbf/0xd8
-> Nov 13 14:39:57 host kernel: [<c0643c72>] schedule_timeout+0x17/0xbc
-> Nov 13 14:39:57 host kernel: [<c0642de5>] ? printk+0xf/0x12
-> Nov 13 14:39:57 host kernel: [<f8967c0c>] ? snd_seq_fifo_poll_wait
-> +0x32/0x44 [snd_seq]
-> Nov 13 14:39:57 host kernel: [<f8964fad>] ? snd_seq_poll+0x4d/0x9f
-> [snd_seq]
-> Nov 13 14:39:57 host kernel: [<c0495d92>] do_sys_poll+0x292/0x348
-> Nov 13 14:39:57 host kernel: [<c0496be2>] ? __pollwait+0x0/0xb6
-> Nov 13 14:39:57 host kernel: [<c0425c81>] ? default_wake_function
-> +0x0/0x12
-> Nov 13 14:39:57 host kernel: [<c0645736>] ? rt_spin_lock+0x38/0x3b
-> Nov 13 14:39:57 host kernel: [<c04752f7>] ? page_address+0x88/0xaa
-> Nov 13 14:39:57 host kernel: [<c047596d>] ? kmap_high+0x421/0x42a
-> Nov 13 14:39:57 host kernel: [<c04ff574>] ? radix_valid_always+0x0/0xa
-> Nov 13 14:39:57 host kernel: [<c046430b>] ? __rcu_read_unlock+0x6d/0x72
-> Nov 13 14:39:57 host kernel: [<c04699ec>] ? find_get_page+0xfa/0x120
-> Nov 13 14:39:57 host kernel: [<c0440314>] ? getnstimeofday+0x3c/0xd6
-> Nov 13 14:39:57 host kernel: [<c043e653>] ? ktime_get_ts+0x4a/0x4e
-> Nov 13 14:39:57 host kernel: [<c043e66a>] ? ktime_get+0x13/0x2f
-> Nov 13 14:39:57 host kernel: [<c0424060>] ? hrtick_start_fair
-> +0x140/0x148
-> Nov 13 14:39:57 host kernel: [<c041f87b>] ? task_rq_lock+0x44/0x6e
-> Nov 13 14:39:57 host kernel: [<c0425c76>] ? try_to_wake_up+0x212/0x21d
-> Nov 13 14:39:57 host kernel: [<c0425c91>] ? default_wake_function
-> +0x10/0x12
-> Nov 13 14:39:57 host kernel: [<c041ddd8>] ? __wake_up_common+0x35/0x5b
-> Nov 13 14:39:57 host kernel: [<c0423172>] ? __wake_up+0x28/0x32
-> Nov 13 14:39:57 host kernel: [<c0554f2e>] ? n_tty_receive_buf
-> +0xfa9/0xff7
-> Nov 13 14:39:57 host kernel: [<c0554f2e>] ? n_tty_receive_buf
-> +0xfa9/0xff7
-> Nov 13 14:39:57 host kernel: [<c05009a6>] ? rb_insert_color+0x56/0xc0
-> Nov 13 14:39:57 host kernel: [<c043dbab>] ? enqueue_hrtimer+0x112/0x11e
-> Nov 13 14:39:57 host kernel: [<c043e441>] ? hrtimer_start+0x133/0x162
-> Nov 13 14:39:57 host kernel: [<c04249d0>] ? hrtick_set+0x97/0xe5
-> Nov 13 14:39:57 host kernel: [<c06456c1>] ? __rt_spin_lock+0x24/0x61
-> Nov 13 14:39:57 host kernel: [<c0645736>] ? rt_spin_lock+0x38/0x3b
-> Nov 13 14:39:57 host kernel: [<f8967c68>] ? snd_seq_fifo_cell_out
-> +0x4a/0x146 [snd_seq]
-> Nov 13 14:39:57 host kernel: [<c0425c81>] ? default_wake_function
-> +0x0/0x12
-> Nov 13 14:39:57 host kernel: [<f8965041>] ? snd_seq_read+0x0/0x1d8
-> [snd_seq]
-> Nov 13 14:39:57 host kernel: [<f896511e>] ? snd_seq_read+0xdd/0x1d8
-> [snd_seq]
-> Nov 13 14:39:57 host kernel: [<c04d73d3>] ? security_file_permission
-> +0xf/0x11
-> Nov 13 14:39:57 host kernel: [<c045e231>] ? audit_syscall_entry
-> +0xf9/0x123
-> Nov 13 14:39:57 host kernel: [<c049606a>] sys_poll+0x3a/0x6a
-> Nov 13 14:39:57 host kernel: [<c0404be6>] syscall_call+0x7/0xb
-> Nov 13 14:39:57 host kernel: =======================
-> 
-> After I try to kill aseqdump:
-> 
-> snd_seq_fifo_poll_wait: before poll_wait
-> snd_seq_fifo_poll_wait: after poll_wait
-> rawmidi: before input ops trigger
-> rawmidi: after input ops trigger
-> rawmidi: about to kill input tasklet
-> (definitely hangs there as well, never kills tasklet)
-> 
-> Help!
-> What can I try next??
-> -- Fernando
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> I'd put these two declarations rather separately, since
+> snd_hda_proc_new() has nothing to do with ELD.  Keep it in the
+> original place.
+
+OK.
+
+Thank you,
+Fengguang
