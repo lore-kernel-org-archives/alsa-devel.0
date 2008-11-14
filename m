@@ -1,20 +1,21 @@
-From: Manuel Naranjo <manuel@aircable.net>
-Subject: Re: Mute Beep (was Regression on alsa-driver-1.0.18a
- on HDA for Dell Inspiron 1521)
-Date: Fri, 14 Nov 2008 10:34:16 -0200
-Message-ID: <491D7048.9070401@aircable.net>
-References: <a10be5a00811120606s12672837secdda91b80659ac8@mail.gmail.com>	<491AE402.3030507@aircable.net>	<s5hk5b9jaim.wl%tiwai@suse.de>	<491AE7F3.2040203@aircable.net>	<s5h7i79j8k8.wl%tiwai@suse.de>	<Pine.LNX.4.61.0811121603350.13649@tm8103.perex-int.cz>	<s5hzlk5htlu.wl%tiwai@suse.de>	<491B2603.9070802@aircable.net>	<s5hwsf7hlyz.wl%tiwai@suse.de>	<s5hfxlvheio.wl%tiwai@suse.de>	<491CDF89.4030907@aircable.net>
-	<s5hiqqqk895.wl%tiwai@suse.de>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: possible problem in s3c24xx-pcm.c in git-devel
+	branch
+Date: Fri, 14 Nov 2008 12:46:41 +0000
+Message-ID: <20081114124640.GB25307@sirena.org.uk>
+References: <cabda6420811130657k4079884cge643c1b33b319b14@mail.gmail.com>
+	<20081113151701.GG31592@sirena.org.uk>
+	<cabda6420811130740u325cf60bse8401af768fb7340@mail.gmail.com>
+	<20081113160936.GH31592@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id D73101037F3
-	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 13:33:52 +0100 (CET)
-Received: by rv-out-0708.google.com with SMTP id f25so1463807rvb.32
-	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 04:33:51 -0800 (PST)
-In-Reply-To: <s5hiqqqk895.wl%tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id A79141037F3
+	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 13:46:45 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20081113160936.GH31592@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,54 +25,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: christian pellegrin <chripell@gmail.com>
+Cc: David Anders <dave123_aml@yahoo.com>, alsa-devel@alsa-project.org, Ben Dooks <ben-linux@fluff.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Nov 13, 2008 at 04:09:36PM +0000, Mark Brown wrote:
 
-> Could you check the debug messages with the patch below?
->
->
-> thanks,
->
-> Takash
-Sure no problem. I'm not getting any GENERATE BEEP, or BEEP EVENT on 
-dmesg, just the enable disable when I press the enable disable button. 
-The switch reflects the correct state.
+> AIUI it's a bootstrapping issue: the problem is what happens when the
+> first DMA buffer completes if there isn't a new buffer ready.  Once
+> there's a loaded buffer ready things are happy.
 
-I've gone through the patch over and over, but I can't figure out why 
-would it stop working. Shouldn't the switch alert the beep part about 
-changes?
+More info provided by Dave on IRC:
 
-Also how should I test? I tried with 'echo -e "\\a"', beep and the old 
-way that was driving me crazy (pressing del in pidgin when there's no 
-more text).
+15:46 < prpplague> now the big difference between the 2410 and 2440 is ofcourse 
+                   the primary clock, the 2410 generally running 200mhz whereas 
+                   the 2440 is at 400mhz
 
-Anyway here's the log just in case:
-snd: Not freed snd_alloc_kmalloc = 18
-snd: kmalloc(9) from f8ed1d9a not freed
-snd: kmalloc(9) from f8ed1d9a not freed
-HDA Intel 0000:00:14.2: PCI INT A -> GSI 16 (level, low) -> IRQ 16
-ALSA /home/manuel/tmp/alsa/alsa-driver/pci/hda/hda_codec.c:2596: 
-hda_codec: model 'dell-m42' is selected
-ALSA /home/manuel/tmp/alsa/alsa-driver/pci/hda/hda_codec.c:3312: 
-autoconfig: line_outs=1 (0xd/0x0/0x0/0x0/0x0)
-ALSA /home/manuel/tmp/alsa/alsa-driver/pci/hda/hda_codec.c:3316:    
-speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-ALSA /home/manuel/tmp/alsa/alsa-driver/pci/hda/hda_codec.c:3320:    
-hp_outs=1 (0xa/0x0/0x0/0x0/0x0)
-ALSA /home/manuel/tmp/alsa/alsa-driver/pci/hda/hda_codec.c:3321:    
-mono: mono_out=0x0
-ALSA /home/manuel/tmp/alsa/alsa-driver/pci/hda/hda_codec.c:3329:    
-inputs: mic=0xb, fmic=0x0, line=0x0, fline=0x0, cd=0x0, aux=0x0
-ALSA 
-/home/manuel/tmp/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_sigmatel.c:2786: 
-dac_nids=1 (0x10/0x0/0x0/0x0/0x0)
-input: HDA Digital PCBeep as /class/input/input18
-input: HDA ATI SB at 0xfebfc000 irq 16 Mic at Ext Left Jack as 
-/class/input/input19
-input: HDA ATI SB at 0xfebfc000 irq 16 HP Out at Ext Left Jack as 
-/class/input/input20
-hda-intel: Invalid position buffer, using LPIB read method instead.
-XXX BEEP SW 0
-XXX BEEP SW 1
+...
+
+15:49 < prpplague> i'm wondering if that when on a 200mhz s3c2410 that the 
+                   second dma enqueued buffer is done, that it has been long 
+                   enough for the dma channel to have started, but on the 2440 
+                   running at 400mhz it hasn't had time to start
+
+...
+
+16:38 < prpplague> broonie: i wonder if i clock the my s3c2440 board at 200mhz 
+                   and retested if i would see the issue
+16:41 < prpplague> broonie: yep, i can recreate christians problem when using 
+                   the s3c2440 at 200mhz
+16:42 < prpplague> broonie: and also if i use the stock code, i.e. without the 
+                   enqueue limit being 1, and running at 200mhz the audio issue 
+                   goes away
