@@ -1,17 +1,22 @@
-From: "Dmitri Seletski" <drjoms@gmail.com>
-Subject: xfi fatality pro gamer
-Date: Fri, 14 Nov 2008 18:57:19 +0000
-Message-ID: <f3ebadea0811141057h11638b09m3e5cd38ee56fb912@mail.gmail.com>
+From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: 2.6.26.[6|7]-rt11, alsa rawmidi,
+	seq hang	(tasklet_hi_schedule?)
+Date: Fri, 14 Nov 2008 10:57:10 -0800
+Message-ID: <1226689030.17495.11.camel@localhost.localdomain>
+References: <1226019485.3135.31.camel@localhost.localdomain>
+	<49140683.9040008@ladisch.de>
+	<1226610075.23485.20.camel@localhost.localdomain>
+	<1226616962.23485.28.camel@localhost.localdomain>
+	<1226621569.23485.44.camel@localhost.localdomain>
+	<491D33B9.5030308@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hs-out-0708.google.com (hs-out-0708.google.com [64.233.178.241])
-	by alsa0.perex.cz (Postfix) with ESMTP id A0318103817
-	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 19:57:21 +0100 (CET)
-Received: by hs-out-0708.google.com with SMTP id x43so786549hsb.0
-	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 10:57:20 -0800 (PST)
-Content-Disposition: inline
+Received: from smtp1.stanford.edu (smtp1.Stanford.EDU [171.67.219.81])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0941710381B
+	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 19:57:22 +0100 (CET)
+In-Reply-To: <491D33B9.5030308@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,23 +26,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Ingo Molnar <mingo@elte.hu>, alsa-devel@alsa-project.org, Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello boys and girls.
-I have a card (actually 3 of them, hda-intel, that doesn't work properly,
-usb-audio, that doesn't work properly and xfi fatality gamer pro, which you
-guessed by now doesn't work properly). I may test things from any of those
-cards if you have any interest.
-I know my fatality card is rather new on the market(not exactly, but...) and
-not very well supported. I would like to test it if you need more testers. I
-have got driver released on 6th of November 2008. I tryed OSS with it, it
-sucked badly, but at least proved that card is in working conditions. With
-this driver that creative released i am getting my sound applications failed
-miserably. I know it's crap, so instead of complaining I decided to do
-something about it this time.
-I can provide dmesg output.
-Anyway, let me know if you need a guinea pig(I know how to load a distro
-from live cd, worst case scenario, chrootig or something).
-Restecpa me brothers and sistas.
-Dmitri
+On Fri, 2008-11-14 at 09:15 +0100, Clemens Ladisch wrote:
+> Fernando Lopez-Lezcano wrote:
+> > I've been trying to follow the printk crumbs without much success.
+> > AFAICT it all points to tasklet_hi_schedule ...
+> 
+> I don't have -rt, but if the error is similar to the old one you might
+> try replacing tasklet_hi_schedule with tasklet_schedule.
+
+YES YES!! __Thanks__ for the suggestion, it WORKED!!
+
+Maybe the kernel rt gurus should look around and see _why_ the problem
+was happening in the first place. There are not that many uses of
+tasklet_hi_schedule in the kernel tree I'm working with:
+
+./drivers/char/drm/drm_irq.c
+./drivers/infiniband/hw/ehca/ehca_irq.c
+./drivers/infiniband/hw/ipath/ipath_cq.c
+./drivers/infiniband/hw/ipath/ipath_driver.c
+./drivers/infiniband/hw/ipath/ipath_intr.c
+./drivers/infiniband/hw/ipath/ipath_sdma.c
+./drivers/media/video/vino.c
+./drivers/mmc/host/omap.c
+./drivers/mmc/host/wbsd.c
+./drivers/net/chelsio/sge.c
+./drivers/net/ehea/ehea_main.c
+./drivers/net/smc91x.c
+./drivers/s390/block/dasd.c
+./drivers/s390/cio/qdio.c
+./drivers/s390/net/ctcm_fsms.c
+./drivers/s390/net/ctcm_mpc.c
+./drivers/usb/c67x00/c67x00-sched.c
+./drivers/usb/gadget/gmidi.c
+./kernel/softirq.c
+./sound/core/rtctimer.c
+./sound/core/timer.c
+./sound/drivers/vx/vx_core.c
+./sound/drivers/vx/vx_pcm.c
+./sound/pci/es1968.c
+./sound/pci/maestro3.c
+./sound/pci/mixart/mixart_core.c
+./sound/pci/pcxhr/pcxhr.c
+./sound/pci/pcxhr/pcxhr_core.c
+./sound/pci/riptide/riptide.c
+./sound/pci/rme9652/hdsp.c
+./sound/pci/rme9652/hdspm.c
+./sound/pcmcia/pdaudiocf/pdaudiocf_irq.c
+./sound/usb/usbmidi.c
+
+Maybe other drivers are affected as well by the rt patch. 
+What is the difference between tasklet_hi_schedule and tasklet_schedule?
+
+Thanks again...
+-- Fernando
