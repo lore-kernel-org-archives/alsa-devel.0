@@ -1,18 +1,16 @@
-From: cocala <syy.wxd@gmail.com>
-Subject: Re: Why no Marco definitions for rate 24000 and 12000?
-Date: Fri, 14 Nov 2008 17:01:08 +0800
-Message-ID: <458a17f90811140101q7d030c69k39c25552e87d1224@mail.gmail.com>
-References: <458a17f90811140032v55c958bfiec1bf69bfb022873@mail.gmail.com>
+From: "John Kacur" <jkacur@gmail.com>
+Subject: snd_pcm_ops
+Date: Fri, 14 Nov 2008 10:08:01 +0100
+Message-ID: <520f0cf10811140108v305639f3x11fdfcbd10c44dac@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ti-out-0910.google.com (ti-out-0910.google.com [209.85.142.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id 11FCD2443F
-	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 10:01:09 +0100 (CET)
-Received: by ti-out-0910.google.com with SMTP id j3so826259tid.8
-	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 01:01:08 -0800 (PST)
-In-Reply-To: <458a17f90811140032v55c958bfiec1bf69bfb022873@mail.gmail.com>
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id 45A8B243C2
+	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 10:08:02 +0100 (CET)
+Received: by rv-out-0708.google.com with SMTP id f25so1391010rvb.32
+	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 01:08:01 -0800 (PST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,37 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Yes, that can add supported sample rates.
+As a newcomer to alsa, I have a few more probably simple questions. I
+noticed in the SOC drivers, that when the struct snd_pcm_ops is filled
+in, .copy is omitted, for example in file s3c24xx-pcm.c, you see the
+following initialization.
 
-but the macro definitions are still needed, actually 12000 and 24000 are
-supported by most audio codecs.
-
-in soc-core.c
-
-runtime->hw.rates =
-   codec_dai->capture->rates & cpu_dai->capture->rates;
-
-in wm8350.c
-#define WM8350_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | \
-  SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 | \
-        SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_32000 | \
-        SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | \
-        SNDRV_PCM_RATE_96000)
-
-static const struct snd_soc_pcm_stream wm8350_hifi_dai_playback = {
- .stream_name = "Playback",
- .channels_min = 2,
- .channels_max = 2,
- .rates  = WM8350_RATES,
- .formats = WM8350_FORMATS,
+static struct snd_pcm_ops s3c24xx_pcm_ops = {
+	.open		= s3c24xx_pcm_open,
+	.close		= s3c24xx_pcm_close,
+	.ioctl		= snd_pcm_lib_ioctl,
+	.hw_params	= s3c24xx_pcm_hw_params,
+	.hw_free	= s3c24xx_pcm_hw_free,
+	.prepare	= s3c24xx_pcm_prepare,
+	.trigger	= s3c24xx_pcm_trigger,
+	.pointer	= s3c24xx_pcm_pointer,
+	.mmap		= s3c24xx_pcm_mmap,
 };
-Without the mcaro defintions, it is hard to handle the 12000 and 24000
-sample rates.
 
+How is this supposed to work if somewhere down the line
+substream->ops->copy is called?
 
-2008/11/14 cocala <syy.wxd@gmail.com>
-
-> Who can tell me why not define add SNDRV_PCM_RATE_24000 and
-> SNDRV_PCM_RATE_12000?
+Thanks in advance for any pointers.
