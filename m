@@ -1,187 +1,50 @@
-From: Kusanagi Kouichi <slash@ma.neweb.ne.jp>
-Subject: [PATCH] ALSA: hda - Add digital BEEP generator support for Realtek
-	codecs.
-Date: Sat, 15 Nov 2008 15:20:14 +0900
-Message-ID: <200811150620143407540006MAE0@nm06mta.auone-net.jp>
+From: "christian pellegrin" <chripell@gmail.com>
+Subject: [PATCH RESEND 0/3] ALSA SOC driver for s3c24xx with
+	uda134x
+Date: Sat, 15 Nov 2008 08:57:59 +0100
+Message-ID: <cabda6420811142357w5d60707avaf459b1691489739@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755216AbYKOGfc@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.241])
+	by alsa0.perex.cz (Postfix) with ESMTP id 02D441037F3
+	for <alsa-devel@alsa-project.org>; Sat, 15 Nov 2008 08:58:00 +0100 (CET)
+Received: by rv-out-0708.google.com with SMTP id f25so1819814rvb.32
+	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 23:57:59 -0800 (PST)
 Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Add digital BEEP generator support for Realtek codecs.
+This patch adds support for the UDA134X codec and a sound card
+definition for one of these UDAs connected to the s3c24xx. It is
+*heavily* based on the one made by Zoltan Devai but:
 
-Signed-off-by: Kusanagi Kouichi <slash@ma.neweb.ne.jp>
----
- sound/pci/hda/hda_beep.h      |    2 +-
- sound/pci/hda/patch_realtek.c |   62 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 63 insertions(+), 1 deletions(-)
+1 since the UDA is the only use of the L3 protocol I can find I just
+embedded a stripped-down L3 bit-banging algorithm from the original
+RMK work. It is really small.
 
-diff --git a/sound/pci/hda/hda_beep.h b/sound/pci/hda/hda_beep.h
-index de4036e..b483779 100644
---- a/sound/pci/hda/hda_beep.h
-+++ b/sound/pci/hda/hda_beep.h
-@@ -38,7 +38,7 @@ struct hda_beep {
- int snd_hda_attach_beep_device(struct hda_codec *codec, int nid);
- void snd_hda_detach_beep_device(struct hda_codec *codec);
- #else
--#define snd_hda_attach_beep_device(...)
-+#define snd_hda_attach_beep_device(...)		0
- #define snd_hda_detach_beep_device(...)
- #endif
- #endif
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index a378c01..d586600 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -31,6 +31,7 @@
- #include "hda_codec.h"
- #include "hda_local.h"
- #include "hda_patch.h"
-+#include "hda_beep.h"
- 
- #define ALC880_FRONT_EVENT		0x01
- #define ALC880_DCVOL_EVENT		0x02
-@@ -2788,6 +2789,7 @@ static void alc_free(struct hda_codec *codec)
- 		kfree(spec->kctl_alloc);
- 	}
- 	kfree(spec);
-+	snd_hda_detach_beep_device(codec);
- 	codec->spec = NULL; /* to be sure */
- }
- 
-@@ -3960,6 +3962,12 @@ static int patch_alc880(struct hda_codec *codec)
- 		}
- 	}
- 
-+	err = snd_hda_attach_beep_device(codec, 0x1);
-+	if (err < 0) {
-+		alc_free(codec);
-+		return err;
-+	}
-+
- 	if (board_config != ALC880_AUTO)
- 		setup_preset(spec, &alc880_presets[board_config]);
- 
-@@ -5558,6 +5566,12 @@ static int patch_alc260(struct hda_codec *codec)
- 		}
- 	}
- 
-+	err = snd_hda_attach_beep_device(codec, 0x1);
-+	if (err < 0) {
-+		alc_free(codec);
-+		return err;
-+	}
-+
- 	if (board_config != ALC260_AUTO)
- 		setup_preset(spec, &alc260_presets[board_config]);
- 
-@@ -6811,6 +6825,12 @@ static int patch_alc882(struct hda_codec *codec)
- 		}
- 	}
- 
-+	err = snd_hda_attach_beep_device(codec, 0x1);
-+	if (err < 0) {
-+		alc_free(codec);
-+		return err;
-+	}
-+
- 	if (board_config != ALC882_AUTO)
- 		setup_preset(spec, &alc882_presets[board_config]);
- 
-@@ -8916,6 +8936,12 @@ static int patch_alc883(struct hda_codec *codec)
- 		}
- 	}
- 
-+	err = snd_hda_attach_beep_device(codec, 0x1);
-+	if (err < 0) {
-+		alc_free(codec);
-+		return err;
-+	}
-+
- 	if (board_config != ALC883_AUTO)
- 		setup_preset(spec, &alc883_presets[board_config]);
- 
-@@ -10739,6 +10765,12 @@ static int patch_alc262(struct hda_codec *codec)
- 		}
- 	}
- 
-+	err = snd_hda_attach_beep_device(codec, 0x1);
-+	if (err < 0) {
-+		alc_free(codec);
-+		return err;
-+	}
-+
- 	if (board_config != ALC262_AUTO)
- 		setup_preset(spec, &alc262_presets[board_config]);
- 
-@@ -11752,6 +11784,12 @@ static int patch_alc268(struct hda_codec *codec)
- 		}
- 	}
- 
-+	err = snd_hda_attach_beep_device(codec, 0x1);
-+	if (err < 0) {
-+		alc_free(codec);
-+		return err;
-+	}
-+
- 	if (board_config != ALC268_AUTO)
- 		setup_preset(spec, &alc268_presets[board_config]);
- 
-@@ -12458,6 +12496,12 @@ static int patch_alc269(struct hda_codec *codec)
- 		}
- 	}
- 
-+	err = snd_hda_attach_beep_device(codec, 0x1);
-+	if (err < 0) {
-+		alc_free(codec);
-+		return err;
-+	}
-+
- 	if (board_config != ALC269_AUTO)
- 		setup_preset(spec, &alc269_presets[board_config]);
- 
-@@ -13624,6 +13668,12 @@ static int patch_alc861(struct hda_codec *codec)
- 		}
- 	}
- 
-+	err = snd_hda_attach_beep_device(codec, 0x23);
-+	if (err < 0) {
-+		alc_free(codec);
-+		return err;
-+	}
-+
- 	if (board_config != ALC861_AUTO)
- 		setup_preset(spec, &alc861_presets[board_config]);
- 
-@@ -14578,6 +14628,12 @@ static int patch_alc861vd(struct hda_codec *codec)
- 		}
- 	}
- 
-+	err = snd_hda_attach_beep_device(codec, 0x23);
-+	if (err < 0) {
-+		alc_free(codec);
-+		return err;
-+	}
-+
- 	if (board_config != ALC861VD_AUTO)
- 		setup_preset(spec, &alc861vd_presets[board_config]);
- 
-@@ -16412,6 +16468,12 @@ static int patch_alc662(struct hda_codec *codec)
- 		}
- 	}
- 
-+	err = snd_hda_attach_beep_device(codec, 0x1);
-+	if (err < 0) {
-+		alc_free(codec);
-+		return err;
-+	}
-+
- 	if (board_config != ALC662_AUTO)
- 		setup_preset(spec, &alc662_presets[board_config]);
- 
+2 the driver has the possibility to specify the pins used by codec
+via platform data so it can work on SMDK2410, SMDK2440 or any custom
+design.
+
+3 it tries to guess the right clock source and divider so it is not tied
+to a particular crystal used.
+
+4 it fixes some bugs.
+
 -- 
-1.5.6.5
+Christian Pellegrin, see http://www.evolware.org/chri/
+"Real Programmers don't play tennis, or any other sport which requires
+you to change clothes. Mountain climbing is OK, and Real Programmers
+wear their climbing boots to work in case a mountain should suddenly
+spring up in the middle of the computer room."
