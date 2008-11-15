@@ -1,17 +1,17 @@
 From: Christian Pellegrin <chripell@gmail.com>
-Subject: [PATCH RESEND 1/3] ALSA SOC driver for s3c24xx with
-	uda1341
-Date: Sat, 15 Nov 2008 08:58:16 +0100
-Message-ID: <12267358962868-git-send-email-chripell@gmail.com>
+Subject: [PATCH RESEND 2/3] ALSA SOC driver for s3c24xx with
+	uda134x
+Date: Sat, 15 Nov 2008 08:58:32 +0100
+Message-ID: <12267359123772-git-send-email-chripell@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.154])
-	by alsa0.perex.cz (Postfix) with ESMTP id 11E1A103817
-	for <alsa-devel@alsa-project.org>; Sat, 15 Nov 2008 08:58:27 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 75F7B10385F
+	for <alsa-devel@alsa-project.org>; Sat, 15 Nov 2008 08:58:41 +0100 (CET)
 Received: by fg-out-1718.google.com with SMTP id 16so1420926fgg.44
-	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 23:58:26 -0800 (PST)
+	for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2008 23:58:41 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,942 +26,444 @@ Cc: linux-arm-kernel@lists.arm.linux.org.uk, Christian Pellegrin <chripell@fsfe.
 List-Id: alsa-devel@alsa-project.org
 
 
-UDA134x codec driver
+Sound card definition for for s3c24xx with uda134x
 
 Signed-off-by: Christian Pellegrin <chripell@fsfe.org>
 ---
- include/sound/l3.h               |   18 +
- include/sound/uda134x.h          |   26 ++
- sound/soc/codecs/Kconfig         |    8 +
- sound/soc/codecs/Makefile        |    4 +
- sound/soc/codecs/l3.c            |   91 ++++++
- sound/soc/codecs/uda134x.c       |  656 ++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/uda134x_codec.h |   36 ++
- 7 files changed, 839 insertions(+), 0 deletions(-)
+ include/sound/s3c24xx_uda134x.h     |   14 ++
+ sound/soc/s3c24xx/Kconfig           |    5 +
+ sound/soc/s3c24xx/Makefile          |    2 +
+ sound/soc/s3c24xx/s3c24xx_uda134x.c |  374 +++++++++++++++++++++++++++++++++++
+ 4 files changed, 395 insertions(+), 0 deletions(-)
 --
 Generated on  20081115  against f7e1798a78a30bae1cf3ebc3e1b6f7c1bac57756
 --
-diff --git a/include/sound/l3.h b/include/sound/l3.h
+diff --git a/include/sound/s3c24xx_uda134x.h b/include/sound/s3c24xx_uda134x.h
 new file mode 100644
-index 0000000..423a08f
+index 0000000..33df4cb
 --- /dev/null
-+++ b/include/sound/l3.h
-@@ -0,0 +1,18 @@
-+#ifndef _L3_H_
-+#define _L3_H_ 1
++++ b/include/sound/s3c24xx_uda134x.h
+@@ -0,0 +1,14 @@
++#ifndef _S3C24XX_UDA134X_H_
++#define _S3C24XX_UDA134X_H_ 1
 +
-+struct l3_pins {
-+	void (*setdat)(int);
-+	void (*setclk)(int);
-+	void (*setmode)(int);
-+	int data_hold;
-+	int data_setup;
-+	int clock_high;
-+	int mode_hold;
-+	int mode;
-+	int mode_setup;
-+};
++#include <sound/uda134x.h>
 +
-+int l3_write(struct l3_pins *adap, u8 addr, u8 *data, int len);
-+
-+#endif
-diff --git a/include/sound/uda134x.h b/include/sound/uda134x.h
-new file mode 100644
-index 0000000..475ef8b
---- /dev/null
-+++ b/include/sound/uda134x.h
-@@ -0,0 +1,26 @@
-+/*
-+ * uda134x.h  --  UDA134x ALSA SoC Codec driver
-+ *
-+ * Copyright 2007 Dension Audio Systems Ltd.
-+ * Author: Zoltan Devai
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef _UDA134X_H
-+#define _UDA134X_H
-+
-+#include <sound/l3.h>
-+
-+struct uda134x_platform_data {
-+	struct l3_pins l3;
++struct s3c24xx_uda134x_platform_data {
++	int l3_clk;
++	int l3_mode;
++	int l3_data;
 +	void (*power) (int);
 +	int model;
-+#define UDA134X_UDA1340 1
-+#define UDA134X_UDA1341 2
-+#define UDA134X_UDA1344 3
 +};
 +
-+#endif /* _UDA134X_H */
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index b73c36a..27badab 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -10,6 +10,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_TLV320AIC26 if SPI_MASTER
- 	select SND_SOC_TLV320AIC3X if I2C
- 	select SND_SOC_TWL4030 if TWL4030_CORE
-+	select SND_SOC_UDA134X
- 	select SND_SOC_UDA1380 if I2C
- 	select SND_SOC_WM8510 if (I2C || SPI_MASTER)
- 	select SND_SOC_WM8580 if I2C
-@@ -65,6 +66,9 @@ config SND_SOC_CS4270_VD33_ERRATA
- 	bool
- 	depends on SND_SOC_CS4270
++#endif
+diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
+index b9f2353..fcd03ac 100644
+--- a/sound/soc/s3c24xx/Kconfig
++++ b/sound/soc/s3c24xx/Kconfig
+@@ -44,3 +44,8 @@ config SND_S3C24XX_SOC_LN2440SBC_ALC650
+ 	  Say Y if you want to add support for SoC audio on ln2440sbc
+ 	  with the ALC650.
  
-+config SND_SOC_L3
-+       tristate
-+
- config SND_SOC_SSM2602
- 	tristate
++config SND_S3C24XX_SOC_S3C24XX_UDA134X
++	tristate "SoC I2S Audio support UDA134X wired to a S3C24XX"
++       	depends on SND_S3C24XX_SOC
++       	select SND_S3C24XX_SOC_I2S
++       	select SND_SOC_UDA134X
+diff --git a/sound/soc/s3c24xx/Makefile b/sound/soc/s3c24xx/Makefile
+index 0aa5fb0..96b3f3f 100644
+--- a/sound/soc/s3c24xx/Makefile
++++ b/sound/soc/s3c24xx/Makefile
+@@ -13,7 +13,9 @@ obj-$(CONFIG_SND_S3C2412_SOC_I2S) += snd-soc-s3c2412-i2s.o
+ snd-soc-neo1973-wm8753-objs := neo1973_wm8753.o
+ snd-soc-smdk2443-wm9710-objs := smdk2443_wm9710.o
+ snd-soc-ln2440sbc-alc650-objs := ln2440sbc_alc650.o
++snd-soc-s3c24xx-uda134x-objs := s3c24xx_uda134x.o
  
-@@ -84,6 +88,10 @@ config SND_SOC_TWL4030
- 	tristate
- 	depends on TWL4030_CORE
- 
-+config SND_SOC_UDA134X
-+       tristate
-+       select SND_SOC_L3
-+
- config SND_SOC_UDA1380
-         tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 3b9b58a..3246b51 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -3,11 +3,13 @@ snd-soc-ad1980-objs := ad1980.o
- snd-soc-ad73311-objs := ad73311.o
- snd-soc-ak4535-objs := ak4535.o
- snd-soc-cs4270-objs := cs4270.o
-+snd-soc-l3-objs := l3.o
- snd-soc-ssm2602-objs := ssm2602.o
- snd-soc-tlv320aic23-objs := tlv320aic23.o
- snd-soc-tlv320aic26-objs := tlv320aic26.o
- snd-soc-tlv320aic3x-objs := tlv320aic3x.o
- snd-soc-twl4030-objs := twl4030.o
-+snd-soc-uda134x-objs := uda134x.o
- snd-soc-uda1380-objs := uda1380.o
- snd-soc-wm8510-objs := wm8510.o
- snd-soc-wm8580-objs := wm8580.o
-@@ -26,11 +28,13 @@ obj-$(CONFIG_SND_SOC_AD1980)	+= snd-soc-ad1980.o
- obj-$(CONFIG_SND_SOC_AD73311) += snd-soc-ad73311.o
- obj-$(CONFIG_SND_SOC_AK4535)	+= snd-soc-ak4535.o
- obj-$(CONFIG_SND_SOC_CS4270)	+= snd-soc-cs4270.o
-+obj-$(CONFIG_SND_SOC_L3)	+= snd-soc-l3.o
- obj-$(CONFIG_SND_SOC_SSM2602)	+= snd-soc-ssm2602.o
- obj-$(CONFIG_SND_SOC_TLV320AIC23)	+= snd-soc-tlv320aic23.o
- obj-$(CONFIG_SND_SOC_TLV320AIC26)	+= snd-soc-tlv320aic26.o
- obj-$(CONFIG_SND_SOC_TLV320AIC3X)	+= snd-soc-tlv320aic3x.o
- obj-$(CONFIG_SND_SOC_TWL4030)	+= snd-soc-twl4030.o
-+obj-$(CONFIG_SND_SOC_UDA134X)	+= snd-soc-uda134x.o
- obj-$(CONFIG_SND_SOC_UDA1380)	+= snd-soc-uda1380.o
- obj-$(CONFIG_SND_SOC_WM8510)	+= snd-soc-wm8510.o
- obj-$(CONFIG_SND_SOC_WM8580)	+= snd-soc-wm8580.o
-diff --git a/sound/soc/codecs/l3.c b/sound/soc/codecs/l3.c
+ obj-$(CONFIG_SND_S3C24XX_SOC_NEO1973_WM8753) += snd-soc-neo1973-wm8753.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_SMDK2443_WM9710) += snd-soc-smdk2443-wm9710.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_LN2440SBC_ALC650) += snd-soc-ln2440sbc-alc650.o
++obj-$(CONFIG_SND_S3C24XX_SOC_S3C24XX_UDA134X) += snd-soc-s3c24xx-uda134x.o
+diff --git a/sound/soc/s3c24xx/s3c24xx_uda134x.c b/sound/soc/s3c24xx/s3c24xx_uda134x.c
 new file mode 100644
-index 0000000..5353af5
+index 0000000..29a6813
 --- /dev/null
-+++ b/sound/soc/codecs/l3.c
-@@ -0,0 +1,91 @@
++++ b/sound/soc/s3c24xx/s3c24xx_uda134x.c
+@@ -0,0 +1,374 @@
 +/*
-+ * L3 code
-+ *
-+ *  Copyright (C) 2008, Christian Pellegrin <chripell@evolware.org>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ *
-+ * based on:
-+ *
-+ * L3 bus algorithm module.
-+ *
-+ *  Copyright (C) 2001 Russell King, All Rights Reserved.
-+ *
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/kernel.h>
-+#include <linux/delay.h>
-+
-+#include <sound/l3.h>
-+
-+/*
-+ * Send one byte of data to the chip.  Data is latched into the chip on
-+ * the rising edge of the clock.
-+ */
-+static void sendbyte(struct l3_pins *adap, unsigned int byte)
-+{
-+	int i;
-+
-+	for (i = 0; i < 8; i++) {
-+		adap->setclk(0);
-+		udelay(adap->data_hold);
-+		adap->setdat(byte & 1);
-+		udelay(adap->data_setup);
-+		adap->setclk(1);
-+		udelay(adap->clock_high);
-+		byte >>= 1;
-+	}
-+}
-+
-+/*
-+ * Send a set of bytes to the chip.  We need to pulse the MODE line
-+ * between each byte, but never at the start nor at the end of the
-+ * transfer.
-+ */
-+static void sendbytes(struct l3_pins *adap, const u8 *buf,
-+		      int len)
-+{
-+	int i;
-+
-+	for (i = 0; i < len; i++) {
-+		if (i) {
-+			udelay(adap->mode_hold);
-+			adap->setmode(0);
-+			udelay(adap->mode);
-+		}
-+		adap->setmode(1);
-+		udelay(adap->mode_setup);
-+		sendbyte(adap, buf[i]);
-+	}
-+}
-+
-+int l3_write(struct l3_pins *adap, u8 addr, u8 *data, int len)
-+{
-+	adap->setclk(1);
-+	adap->setdat(1);
-+	adap->setmode(1);
-+	udelay(adap->mode);
-+
-+	adap->setmode(0);
-+	udelay(adap->mode_setup);
-+	sendbyte(adap, addr);
-+	udelay(adap->mode_hold);
-+
-+	sendbytes(adap, data, len);
-+
-+	adap->setclk(1);
-+	adap->setdat(1);
-+	adap->setmode(0);
-+
-+	return len;
-+}
-+EXPORT_SYMBOL_GPL(l3_write);
-+
-+MODULE_DESCRIPTION("L3 bit-banging driver");
-+MODULE_AUTHOR("Christian Pellegrin <chripell@evolware.org>");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/uda134x.c b/sound/soc/codecs/uda134x.c
-new file mode 100644
-index 0000000..04b30da
---- /dev/null
-+++ b/sound/soc/codecs/uda134x.c
-@@ -0,0 +1,656 @@
-+/*
-+ * uda134x.c  --  UDA134X ALSA SoC Codec driver
-+ *
 + * Modifications by Christian Pellegrin <chripell@evolware.org>
++ *
++ * s3c24xx_uda134x.c  --  S3C24XX_UDA134X ALSA SoC Audio board driver
 + *
 + * Copyright 2007 Dension Audio Systems Ltd.
 + * Author: Zoltan Devai
 + *
-+ * Based on the WM87xx drivers by Liam Girdwood and Richard Purdie
-+ *
 + * This program is free software; you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License version 2 as
 + * published by the Free Software Foundation.
 + */
 +
 +#include <linux/module.h>
-+#include <linux/delay.h>
++#include <linux/clk.h>
++#include <linux/mutex.h>
++#include <linux/gpio.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
 +#include <sound/soc.h>
 +#include <sound/soc-dapm.h>
-+#include <sound/initval.h>
-+
++#include <sound/s3c24xx_uda134x.h>
 +#include <sound/uda134x.h>
-+#include <sound/l3.h>
 +
-+#include "uda134x_codec.h"
++#include <asm/plat-s3c24xx/regs-iis.h>
++
++#include "s3c24xx-pcm.h"
++#include "s3c24xx-i2s.h"
++#include "../codecs/uda134x_codec.h"
 +
 +
-+#define POWER_OFF_ON_STANDBY 1
++/* #define ENFORCE_RATES 1 */
 +/*
-+  ALSA SOC usually puts the device in standby mode when it's not used
-+  for sometime. If you define POWER_OFF_ON_STANDBY the driver will
-+  turn off the ADC/DAC when this callback is invoked and turn it back
-+  on when needed. Unfortunately this will result in a very light bump
-+  (it can be audible only with good earphones). If this bothers you
-+  just comment this line, you will have slightly higher power
-+  consumption . Please note that sending the L3 command for ADC is
-+  enough to make the bump, so it doesn't make difference if you
-+  completely take off power from the codec.
-+ */
++  Unfortunately the S3C24XX in master mode has a limited capacity of
++  generating the clock for the codec. If you define this only rates
++  that are really available will be enforced. But be careful, most
++  user level application just want the usual sampling frequencies (8,
++  11.025, 22.050, 44.1 kHz) and anyway resampling is a costly
++  operation for embedded systems. So if you aren't very lucky or your
++  hardware engineer wasn't very forward-looking it's better to leave
++  this undefined. If you do so an approximate value for the requested
++  sampling rate in the range -/+ 5% will be chosen. If this in not
++  possible an error will be returned.
++*/
 +
-+#define UDA134X_RATES SNDRV_PCM_RATE_8000_48000
-+#define UDA134X_FORMATS (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE | \
-+		SNDRV_PCM_FMTBIT_S18_3LE | SNDRV_PCM_FMTBIT_S20_3LE)
++static struct clk *xtal;
++static struct clk *pclk;
++/* this is need because we don't have a place where to keep the
++ * pointers to the clocks in each substream. We get the clocks only
++ * when we are actually using them so we don't block stuff like
++ * frequency change or oscillator power-off */
++static int clk_users;
++static DEFINE_MUTEX(clk_lock);
 +
-+struct uda134x_priv {
-+	int sysclk;
-+	int dai_fmt;
-+
-+	struct snd_pcm_substream *master_substream;
-+	struct snd_pcm_substream *slave_substream;
++static unsigned int rates[33 * 2];
++#ifdef ENFORCE_RATES
++static struct snd_pcm_hw_constraint_list hw_constraints_rates = {
++	.count	= ARRAY_SIZE(rates),
++	.list	= rates,
++	.mask	= 0,
 +};
-+
-+/* In-data addresses are hard-coded into the reg-cache values */
-+static const char uda134x_reg[UDA134X_REGS_NUM] = {
-+	/* Extended address registers */
-+	0x04, 0x04, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00,
-+	/* Status, data regs */
-+	0x00, 0x83, 0x00, 0x40, 0x80, 0x00,
-+};
-+
-+/*
-+ * The codec has no support for reading its registers except for peak level...
-+ */
-+static inline unsigned int uda134x_read_reg_cache(struct snd_soc_codec *codec,
-+	unsigned int reg)
-+{
-+	u8 *cache = codec->reg_cache;
-+
-+	if (reg >= UDA134X_REGS_NUM)
-+		return -1;
-+	return cache[reg];
-+}
-+
-+/*
-+ * Write the register cache
-+ */
-+static inline void uda134x_write_reg_cache(struct snd_soc_codec *codec,
-+	u8 reg, unsigned int value)
-+{
-+	u8 *cache = codec->reg_cache;
-+
-+	if (reg >= UDA134X_REGS_NUM)
-+		return;
-+	cache[reg] = value;
-+}
-+
-+/*
-+ * Write to the uda134x registers
-+ *
-+ */
-+static int uda134x_write(struct snd_soc_codec *codec, unsigned int reg,
-+	unsigned int value)
-+{
-+	int ret;
-+	u8 addr;
-+	u8 data = value;
-+	struct uda134x_platform_data *pd = codec->control_data;
-+
-+	pr_debug("%s reg: %02X, value:%02X\n", __func__, reg, value);
-+
-+	if (reg >= UDA134X_REGS_NUM) {
-+		printk(KERN_ERR "%s unkown register: reg: %d",
-+		       __func__, reg);
-+		return -EINVAL;
-+	}
-+
-+	uda134x_write_reg_cache(codec, reg, value);
-+
-+	switch (reg) {
-+	case UDA134X_STATUS0:
-+	case UDA134X_STATUS1:
-+		addr = UDA134X_STATUS_ADDR;
-+		break;
-+	case UDA134X_DATA000:
-+	case UDA134X_DATA001:
-+	case UDA134X_DATA010:
-+		addr = UDA134X_DATA0_ADDR;
-+		break;
-+	case UDA134X_DATA1:
-+		addr = UDA134X_DATA1_ADDR;
-+		break;
-+	default:
-+		/* It's an extended address register */
-+		addr =  (reg | UDA134X_EXTADDR_PREFIX);
-+
-+		ret = l3_write(&pd->l3,
-+			       UDA134X_DATA0_ADDR, &addr, 1);
-+		if (ret != 1)
-+			return -EIO;
-+
-+		addr = UDA134X_DATA0_ADDR;
-+		data = (value | UDA134X_EXTDATA_PREFIX);
-+		break;
-+	}
-+
-+	ret = l3_write(&pd->l3,
-+		       addr, &data, 1);
-+	if (ret != 1)
-+		return -EIO;
-+
-+	return 0;
-+}
-+
-+static inline void uda134x_reset(struct snd_soc_codec *codec)
-+{
-+	u8 reset_reg = uda134x_read_reg_cache(codec, UDA134X_STATUS0);
-+	uda134x_write(codec, UDA134X_STATUS0, reset_reg | (1<<6));
-+	msleep(1);
-+	uda134x_write(codec, UDA134X_STATUS0, reset_reg & ~(1<<6));
-+}
-+
-+static int uda134x_mute(struct snd_soc_dai *dai, int mute)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	u8 mute_reg = uda134x_read_reg_cache(codec, UDA134X_DATA010);
-+
-+	pr_debug("%s mute: %d\n", __func__, mute);
-+
-+	if (mute)
-+		mute_reg |= (1<<2);
-+	else
-+		mute_reg &= ~(1<<2);
-+
-+	uda134x_write(codec, UDA134X_DATA010, mute_reg & ~(1<<2));
-+
-+	return 0;
-+}
-+
-+static int uda134x_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_codec *codec = socdev->codec;
-+	struct uda134x_priv *uda134x = codec->private_data;
-+	struct snd_pcm_runtime *master_runtime;
-+
-+	if (uda134x->master_substream) {
-+		master_runtime = uda134x->master_substream->runtime;
-+
-+		pr_debug("%s constraining to %d bits at %d\n", __func__,
-+			 master_runtime->sample_bits,
-+			 master_runtime->rate);
-+
-+		snd_pcm_hw_constraint_minmax(substream->runtime,
-+					     SNDRV_PCM_HW_PARAM_RATE,
-+					     master_runtime->rate,
-+					     master_runtime->rate);
-+
-+		snd_pcm_hw_constraint_minmax(substream->runtime,
-+					     SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
-+					     master_runtime->sample_bits,
-+					     master_runtime->sample_bits);
-+
-+		uda134x->slave_substream = substream;
-+	} else
-+		uda134x->master_substream = substream;
-+
-+	return 0;
-+}
-+
-+static void uda134x_shutdown(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_codec *codec = socdev->codec;
-+	struct uda134x_priv *uda134x = codec->private_data;
-+
-+	if (uda134x->master_substream == substream)
-+		uda134x->master_substream = uda134x->slave_substream;
-+
-+	uda134x->slave_substream = NULL;
-+}
-+
-+static int uda134x_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_codec *codec = socdev->codec;
-+	struct uda134x_priv *uda134x = codec->private_data;
-+	u8 hw_params;
-+
-+	if (substream == uda134x->slave_substream) {
-+		pr_debug("%s ignoring hw_params for slave substream\n",
-+			 __func__);
-+		return 0;
-+	}
-+
-+	hw_params = uda134x_read_reg_cache(codec, UDA134X_STATUS0);
-+	hw_params &= STATUS0_SYSCLK_MASK;
-+	hw_params &= STATUS0_DAIFMT_MASK;
-+
-+	pr_debug("%s sysclk: %d, rate:%d\n", __func__,
-+		 uda134x->sysclk, params_rate(params));
-+
-+	/* set SYSCLK / fs ratio */
-+	switch (uda134x->sysclk / params_rate(params)) {
-+	case 512:
-+		break;
-+	case 384:
-+		hw_params |= (1<<4);
-+		break;
-+	case 256:
-+		hw_params |= (1<<5);
-+		break;
-+	default:
-+		printk(KERN_ERR "%s unsupported fs\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	pr_debug("%s dai_fmt: %d, params_format:%d\n", __func__,
-+		 uda134x->dai_fmt, params_format(params));
-+
-+	/* set DAI format and word length */
-+	switch (uda134x->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		switch (params_format(params)) {
-+		case SNDRV_PCM_FORMAT_S16_LE:
-+			hw_params |= (1<<1);
-+			break;
-+		case SNDRV_PCM_FORMAT_S18_3LE:
-+			hw_params |= (1<<2);
-+			break;
-+		case SNDRV_PCM_FORMAT_S20_3LE:
-+			hw_params |= ((1<<2) | (1<<1));
-+			break;
-+		default:
-+			printk(KERN_ERR "%s unsupported format (right)\n",
-+			       __func__);
-+			return -EINVAL;
-+		}
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		hw_params |= (1<<3);
-+		break;
-+	default:
-+		printk(KERN_ERR "%s unsupported format\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	uda134x_write(codec, UDA134X_STATUS0, hw_params);
-+
-+	return 0;
-+}
-+
-+static int uda134x_set_dai_sysclk(struct snd_soc_dai *codec_dai,
-+				  int clk_id, unsigned int freq, int dir)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct uda134x_priv *uda134x = codec->private_data;
-+
-+	pr_debug("%s clk_id: %d, freq: %d, dir: %d\n", __func__,
-+		 clk_id, freq, dir);
-+
-+	/* Anything between 256fs*8Khz and 512fs*48Khz should be acceptable
-+	   because the codec is slave. Of course limitations of the clock
-+	   master (the IIS controller) apply.
-+	   We'll error out on set_hw_params if it's not OK */
-+	if ((freq >= (256 * 8000)) && (freq <= (512 * 48000))) {
-+		uda134x->sysclk = freq;
-+		return 0;
-+	}
-+
-+	printk(KERN_ERR "%s unsupported sysclk\n", __func__);
-+	return -EINVAL;
-+}
-+
-+static int uda134x_set_dai_fmt(struct snd_soc_dai *codec_dai,
-+			       unsigned int fmt)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct uda134x_priv *uda134x = codec->private_data;
-+
-+	pr_debug("%s fmt: %08X\n", __func__, fmt);
-+
-+	/* codec supports only full slave mode */
-+	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS) {
-+		printk(KERN_ERR "%s unsupported slave mode\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	/* no support for clock inversion */
-+	if ((fmt & SND_SOC_DAIFMT_INV_MASK) != SND_SOC_DAIFMT_NB_NF) {
-+		printk(KERN_ERR "%s unsupported clock inversion\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	/* We can't setup DAI format here as it depends on the word bit num */
-+	/* so let's just store the value for later */
-+	uda134x->dai_fmt = fmt;
-+
-+	return 0;
-+}
-+
-+static int uda134x_set_bias_level(struct snd_soc_codec *codec,
-+				  enum snd_soc_bias_level level)
-+{
-+	u8 reg;
-+	struct uda134x_platform_data *pd = codec->control_data;
-+	int i;
-+	u8 *cache = codec->reg_cache;
-+
-+	pr_debug("%s bias level %d\n", __func__, level);
-+
-+	switch (level) {
-+	case SND_SOC_BIAS_ON:
-+		/* ADC, DAC on */
-+		reg = uda134x_read_reg_cache(codec, UDA134X_STATUS1);
-+		uda134x_write(codec, UDA134X_STATUS1, reg | 0x03);
-+		break;
-+	case SND_SOC_BIAS_PREPARE:
-+		/* power on */
-+		if (pd->power) {
-+			pd->power(1);
-+			/* Sync reg_cache with the hardware */
-+			for (i = 0; i < ARRAY_SIZE(uda134x_reg); i++)
-+				codec->write(codec, i, *cache++);
-+		}
-+		break;
-+	case SND_SOC_BIAS_STANDBY:
-+		/* ADC, DAC power off */
-+		reg = uda134x_read_reg_cache(codec, UDA134X_STATUS1);
-+		uda134x_write(codec, UDA134X_STATUS1, reg & ~(0x03));
-+		break;
-+	case SND_SOC_BIAS_OFF:
-+		/* power off */
-+		if (pd->power)
-+			pd->power(0);
-+		break;
-+	}
-+	codec->bias_level = level;
-+	return 0;
-+}
-+
-+static const char *uda134x_dsp_setting[] = {"Flat", "Minimum1",
-+					    "Minimum2", "Maximum"};
-+static const char *uda134x_deemph[] = {"None", "32Khz", "44.1Khz", "48Khz"};
-+static const char *uda134x_mixmode[] = {"Differential", "Analog1",
-+					"Analog2", "Both"};
-+
-+static const struct soc_enum uda134x_mixer_enum[] = {
-+SOC_ENUM_SINGLE(UDA134X_DATA010, 0, 0x04, uda134x_dsp_setting),
-+SOC_ENUM_SINGLE(UDA134X_DATA010, 3, 0x04, uda134x_deemph),
-+SOC_ENUM_SINGLE(UDA134X_EA010, 0, 0x04, uda134x_mixmode),
-+};
-+
-+static const struct snd_kcontrol_new uda1341_snd_controls[] = {
-+SOC_SINGLE("Master Playback Volume", UDA134X_DATA000, 0, 0x3F, 1),
-+SOC_SINGLE("Capture Volume", UDA134X_EA010, 2, 0x07, 0),
-+SOC_SINGLE("Analog1 Volume", UDA134X_EA000, 0, 0x1F, 1),
-+SOC_SINGLE("Analog2 Volume", UDA134X_EA001, 0, 0x1F, 1),
-+
-+SOC_SINGLE("Mic Sensitivity", UDA134X_EA010, 2, 7, 0),
-+SOC_SINGLE("Mic Volume", UDA134X_EA101, 0, 0x1F, 0),
-+
-+SOC_SINGLE("Tone Control - Bass", UDA134X_DATA001, 2, 0xF, 0),
-+SOC_SINGLE("Tone Control - Treble", UDA134X_DATA001, 0, 3, 0),
-+
-+SOC_ENUM("Sound Processing Filter", uda134x_mixer_enum[0]),
-+SOC_ENUM("PCM Playback De-emphasis", uda134x_mixer_enum[1]),
-+SOC_ENUM("Input Mux", uda134x_mixer_enum[2]),
-+
-+SOC_SINGLE("AGC Switch", UDA134X_EA100, 4, 1, 0),
-+SOC_SINGLE("AGC Target Volume", UDA134X_EA110, 0, 0x03, 1),
-+SOC_SINGLE("AGC Timing", UDA134X_EA110, 2, 0x07, 0),
-+
-+SOC_SINGLE("DAC +6dB Switch", UDA134X_STATUS1, 6, 1, 0),
-+SOC_SINGLE("ADC +6dB Switch", UDA134X_STATUS1, 5, 1, 0),
-+SOC_SINGLE("ADC Polarity Switch", UDA134X_STATUS1, 4, 1, 0),
-+SOC_SINGLE("DAC Polarity Switch", UDA134X_STATUS1, 3, 1, 0),
-+SOC_SINGLE("Double Speed Playback Switch", UDA134X_STATUS1, 2, 1, 0),
-+SOC_SINGLE("DC Filter Enable Switch", UDA134X_STATUS0, 0, 1, 0),
-+};
-+
-+static const struct snd_kcontrol_new uda1340_snd_controls[] = {
-+SOC_SINGLE("Master Playback Volume", UDA134X_DATA000, 0, 0x3F, 1),
-+
-+SOC_SINGLE("Tone Control - Bass", UDA134X_DATA001, 2, 0xF, 0),
-+SOC_SINGLE("Tone Control - Treble", UDA134X_DATA001, 0, 3, 0),
-+
-+SOC_ENUM("Sound Processing Filter", uda134x_mixer_enum[0]),
-+SOC_ENUM("PCM Playback De-emphasis", uda134x_mixer_enum[1]),
-+
-+SOC_SINGLE("DC Filter Enable Switch", UDA134X_STATUS0, 0, 1, 0),
-+};
-+
-+static int uda134x_add_controls(struct snd_soc_codec *codec)
-+{
-+	int err, i, n;
-+	const struct snd_kcontrol_new *ctrls;
-+	struct uda134x_platform_data *pd = codec->control_data;
-+
-+	switch (pd->model) {
-+	case UDA134X_UDA1340:
-+	case UDA134X_UDA1344:
-+		n = ARRAY_SIZE(uda1340_snd_controls);
-+		ctrls = uda1340_snd_controls;
-+		break;
-+	case UDA134X_UDA1341:
-+		n = ARRAY_SIZE(uda1341_snd_controls);
-+		ctrls = uda1341_snd_controls;
-+		break;
-+	default:
-+		printk(KERN_ERR "%s unkown codec type: %d",
-+		       __func__, pd->model);
-+		return -EINVAL;
-+	}
-+
-+	for (i = 0; i < n; i++) {
-+		err = snd_ctl_add(codec->card,
-+				  snd_soc_cnew(&ctrls[i],
-+					       codec, NULL));
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+struct snd_soc_dai uda134x_dai = {
-+	.name = "UDA134X",
-+	/* playback capabilities */
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = UDA134X_RATES,
-+		.formats = UDA134X_FORMATS,
-+	},
-+	/* capture capabilities */
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = UDA134X_RATES,
-+		.formats = UDA134X_FORMATS,
-+	},
-+	/* pcm operations */
-+	.ops = {
-+		.startup = uda134x_startup,
-+		.shutdown = uda134x_shutdown,
-+		.hw_params = uda134x_hw_params,
-+	},
-+	/* DAI operations */
-+	.dai_ops = {
-+		.digital_mute = uda134x_mute,
-+		.set_sysclk = uda134x_set_dai_sysclk,
-+		.set_fmt = uda134x_set_dai_fmt,
-+	}
-+};
-+EXPORT_SYMBOL(uda134x_dai);
-+
-+
-+static int uda134x_soc_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec *codec;
-+	struct uda134x_priv *uda134x;
-+	void *codec_setup_data = socdev->codec_data;
-+	int ret = -ENOMEM;
-+	struct uda134x_platform_data *pd;
-+
-+	printk(KERN_INFO "UDA134X SoC Audio Codec\n");
-+
-+	if (!codec_setup_data) {
-+		printk(KERN_ERR "UDA134X SoC codec: "
-+		       "missing L3 bitbang function\n");
-+		return -ENODEV;
-+	}
-+
-+	pd = codec_setup_data;
-+	switch (pd->model) {
-+	case UDA134X_UDA1340:
-+	case UDA134X_UDA1341:
-+	case UDA134X_UDA1344:
-+		break;
-+	default:
-+		printk(KERN_ERR "UDA134X SoC codec: "
-+		       "unsupported model %d\n",
-+			pd->model);
-+		return -EINVAL;
-+	}
-+
-+	socdev->codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
-+	if (socdev->codec == NULL)
-+		return ret;
-+
-+	codec = socdev->codec;
-+
-+	uda134x = kzalloc(sizeof(struct uda134x_priv), GFP_KERNEL);
-+	if (uda134x == NULL)
-+		goto priv_err;
-+	codec->private_data = uda134x;
-+
-+	codec->reg_cache = kmemdup(uda134x_reg, sizeof(uda134x_reg),
-+				   GFP_KERNEL);
-+	if (codec->reg_cache == NULL)
-+		goto reg_err;
-+
-+	mutex_init(&codec->mutex);
-+
-+	codec->reg_cache_size = sizeof(uda134x_reg);
-+	codec->reg_cache_step = 1;
-+
-+	codec->name = "UDA134X";
-+	codec->owner = THIS_MODULE;
-+	codec->dai = &uda134x_dai;
-+	codec->num_dai = 1;
-+	codec->read = uda134x_read_reg_cache;
-+	codec->write = uda134x_write;
-+#ifdef POWER_OFF_ON_STANDBY
-+	codec->set_bias_level = uda134x_set_bias_level;
 +#endif
-+	INIT_LIST_HEAD(&codec->dapm_widgets);
-+	INIT_LIST_HEAD(&codec->dapm_paths);
 +
-+	codec->control_data = codec_setup_data;
++static struct platform_device *s3c24xx_uda134x_snd_device;
 +
-+	if (pd->power)
-+		pd->power(1);
++int s3c24xx_uda134x_startup(struct snd_pcm_substream *substream)
++{
++	int ret = 0;
++#ifdef ENFORCE_RATES
++	struct snd_pcm_runtime *runtime = substream->runtime;;
++#endif
 +
-+	uda134x_reset(codec);
++	mutex_lock(&clk_lock);
++	pr_debug("%s %d\n", __func__, clk_users);
++	if (clk_users == 0) {
++		xtal = clk_get(&s3c24xx_uda134x_snd_device->dev, "xtal");
++		if (!xtal) {
++			printk(KERN_ERR "%s cannot get xtal\n", __func__);
++			ret = -EBUSY;
++		} else {
++			pclk = clk_get(&s3c24xx_uda134x_snd_device->dev,
++				       "pclk");
++			if (!pclk) {
++				printk(KERN_ERR "%s cannot get pclk\n",
++				       __func__);
++				clk_put(xtal);
++				ret = -EBUSY;
++			}
++		}
++		if (!ret) {
++			int i, j;
 +
-+	/* register pcms */
-+	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
-+	if (ret < 0) {
-+		printk(KERN_ERR "UDA134X: failed to register pcms\n");
-+		goto pcm_err;
++			for (i = 0; i < 2; i++) {
++				int fs = i ? 256 : 384;
++
++				rates[i*33] = clk_get_rate(xtal) / fs;
++				for (j = 1; j < 33; j++)
++					rates[i*33 + j] = clk_get_rate(pclk) /
++						(j * fs);
++			}
++		}
 +	}
-+
-+	ret = uda134x_add_controls(codec);
-+	if (ret < 0) {
-+		printk(KERN_ERR "UDA134X: failed to register controls\n");
-+		goto pcm_err;
++	clk_users += 1;
++	mutex_unlock(&clk_lock);
++	if (!ret) {
++#ifdef ENFORCE_RATES
++		ret = snd_pcm_hw_constraint_list(runtime, 0,
++						 SNDRV_PCM_HW_PARAM_RATE,
++						 &hw_constraints_rates);
++		if (ret < 0)
++			printk(KERN_ERR "%s cannot set constraints\n",
++			       __func__);
++#endif
 +	}
-+
-+	ret = snd_soc_register_card(socdev);
-+	if (ret < 0) {
-+		printk(KERN_ERR "UDA134X: failed to register card\n");
-+		goto card_err;
-+	}
-+
-+	return 0;
-+
-+card_err:
-+	snd_soc_free_pcms(socdev);
-+	snd_soc_dapm_free(socdev);
-+pcm_err:
-+	kfree(codec->reg_cache);
-+reg_err:
-+	kfree(codec->private_data);
-+priv_err:
-+	kfree(codec);
 +	return ret;
 +}
 +
-+/* power down chip */
-+static int uda134x_soc_remove(struct platform_device *pdev)
++void s3c24xx_uda134x_shutdown(struct snd_pcm_substream *substream)
 +{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec *codec = socdev->codec;
++	mutex_lock(&clk_lock);
++	pr_debug("%s %d\n", __func__, clk_users);
++	clk_users -= 1;
++	if (clk_users == 0) {
++		clk_put(xtal);
++		xtal = NULL;
++		clk_put(pclk);
++		pclk = NULL;
++	}
++	mutex_unlock(&clk_lock);
++}
 +
-+	uda134x_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	uda134x_set_bias_level(codec, SND_SOC_BIAS_OFF);
++static int s3c24xx_uda134x_hw_params(struct snd_pcm_substream *substream,
++					struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	unsigned int clk = 0;
++	int ret = 0;
++	int clk_source, fs_mode;
++	unsigned long rate = params_rate(params);
++	long err, cerr;
++	unsigned int div;
++	int i, bi;
 +
-+	snd_soc_free_pcms(socdev);
-+	snd_soc_dapm_free(socdev);
++	err = 999999;
++	bi = 0;
++	for (i = 0; i < 2*33; i++) {
++		cerr = rates[i] - rate;
++		if (cerr < 0)
++			cerr = -cerr;
++		if (cerr < err) {
++			err = cerr;
++			bi = i;
++		}
++	}
++	if (bi / 33 == 1)
++		fs_mode = S3C2410_IISMOD_256FS;
++	else
++		fs_mode = S3C2410_IISMOD_384FS;
++	if (bi % 33 == 0) {
++		clk_source = S3C24XX_CLKSRC_MPLL;
++		div = 1;
++	} else {
++		clk_source = S3C24XX_CLKSRC_PCLK;
++		div = bi % 33;
++	}
++	pr_debug("%s desired rate %lu, %d\n", __func__, rate, bi);
 +
-+	kfree(codec->private_data);
-+	kfree(codec->reg_cache);
-+	kfree(codec);
++	clk = (fs_mode == S3C2410_IISMOD_384FS ? 384 : 256) * rate;
++	pr_debug("%s will use: %s %s %d sysclk %d err %ld\n", __func__,
++		 fs_mode == S3C2410_IISMOD_384FS ? "384FS" : "256FS",
++		 clk_source == S3C24XX_CLKSRC_MPLL ? "MPLLin" : "PCLK",
++		 div, clk, err);
++
++	if ((err * 100 / rate) > 5) {
++		printk(KERN_ERR "S3C24XX_UDA134X: effective frequency "
++		       "too different from desired (%ld%%)\n",
++		       err * 100 / rate);
++		return -EINVAL;
++	}
++
++	ret = codec_dai->dai_ops.set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
++			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
++	if (ret < 0)
++		return ret;
++
++	ret = cpu_dai->dai_ops.set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
++			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
++	if (ret < 0)
++		return ret;
++
++	ret = cpu_dai->dai_ops.set_sysclk(cpu_dai, clk_source , clk,
++						SND_SOC_CLOCK_IN);
++	if (ret < 0)
++		return ret;
++
++	ret = cpu_dai->dai_ops.set_clkdiv(cpu_dai, S3C24XX_DIV_MCLK,
++						fs_mode);
++	if (ret < 0)
++		return ret;
++
++	ret = cpu_dai->dai_ops.set_clkdiv(cpu_dai, S3C24XX_DIV_BCLK,
++						S3C2410_IISMOD_32FS);
++	if (ret < 0)
++		return ret;
++
++	ret = cpu_dai->dai_ops.set_clkdiv(cpu_dai, S3C24XX_DIV_PRESCALER,
++					  S3C24XX_PRESCALE(div, div));
++	if (ret < 0)
++		return ret;
++
++	/* set the codec system clock for DAC and ADC */
++	ret = codec_dai->dai_ops.set_sysclk(codec_dai, 0, clk,
++						SND_SOC_CLOCK_OUT);
++	if (ret < 0)
++		return ret;
 +
 +	return 0;
 +}
 +
-+#if defined(CONFIG_PM)
-+static int uda134x_soc_suspend(struct platform_device *pdev,
-+						pm_message_t state)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec *codec = socdev->codec;
-+
-+	uda134x_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	uda134x_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+	return 0;
-+}
-+
-+static int uda134x_soc_resume(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec *codec = socdev->codec;
-+
-+	uda134x_set_bias_level(codec, SND_SOC_BIAS_PREPARE);
-+	uda134x_set_bias_level(codec, SND_SOC_BIAS_ON);
-+	return 0;
-+}
-+#else
-+#define uda134x_soc_suspend NULL
-+#define uda134x_soc_resume NULL
-+#endif /* CONFIG_PM */
-+
-+struct snd_soc_codec_device soc_codec_dev_uda134x = {
-+	.probe =        uda134x_soc_probe,
-+	.remove =       uda134x_soc_remove,
-+	.suspend =      uda134x_soc_suspend,
-+	.resume =       uda134x_soc_resume,
++static struct snd_soc_ops s3c24xx_uda134x_ops = {
++	.startup = s3c24xx_uda134x_startup,
++	.shutdown = s3c24xx_uda134x_shutdown,
++	.hw_params = s3c24xx_uda134x_hw_params,
 +};
-+EXPORT_SYMBOL_GPL(soc_codec_dev_uda134x);
 +
-+MODULE_DESCRIPTION("UDA134X ALSA soc codec driver");
++static struct snd_soc_dai_link s3c24xx_uda134x_dai_link = {
++	.name = "UDA134X",
++	.stream_name = "UDA134X",
++	.codec_dai = &uda134x_dai,
++	.cpu_dai = &s3c24xx_i2s_dai,
++	.ops = &s3c24xx_uda134x_ops,
++};
++
++static struct snd_soc_machine snd_soc_machine_s3c24xx_uda134x = {
++	.name = "S3C24XX_UDA134X",
++	.dai_link = &s3c24xx_uda134x_dai_link,
++	.num_links = 1,
++};
++
++static struct s3c24xx_uda134x_platform_data *s3c24xx_uda134x_l3_pins;
++
++static void setdat(int v)
++{
++	gpio_set_value(s3c24xx_uda134x_l3_pins->l3_data, v > 0);
++}
++
++static void setclk(int v)
++{
++	gpio_set_value(s3c24xx_uda134x_l3_pins->l3_clk, v > 0);
++}
++
++static void setmode(int v)
++{
++	gpio_set_value(s3c24xx_uda134x_l3_pins->l3_mode, v > 0);
++}
++
++static struct uda134x_platform_data s3c24xx_uda134x = {
++	.l3 = {
++		.setdat = setdat,
++		.setclk = setclk,
++		.setmode = setmode,
++		.data_hold = 1,
++		.data_setup = 1,
++		.clock_high = 1,
++		.mode_hold = 1,
++		.mode = 1,
++		.mode_setup = 1,
++	},
++};
++
++static struct snd_soc_device s3c24xx_uda134x_snd_devdata = {
++	.machine = &snd_soc_machine_s3c24xx_uda134x,
++	.platform = &s3c24xx_soc_platform,
++	.codec_dev = &soc_codec_dev_uda134x,
++	.codec_data = &s3c24xx_uda134x,
++};
++
++static int s3c24xx_uda134x_setup_pin(int pin, char *fun)
++{
++	if (gpio_request(pin, "s3c24xx_uda134x") < 0) {
++		printk(KERN_ERR "S3C24XX_UDA134X SoC Audio: "
++		       "l3 %s pin already in use", fun);
++		return -EBUSY;
++	}
++	gpio_direction_output(pin, 0);
++	return 0;
++}
++
++static int s3c24xx_uda134x_probe(struct platform_device *pdev)
++{
++	int ret;
++
++	printk(KERN_INFO "S3C24XX_UDA134X SoC Audio driver\n");
++
++	s3c24xx_uda134x_l3_pins = pdev->dev.platform_data;
++	if (s3c24xx_uda134x_l3_pins == NULL) {
++		printk(KERN_ERR "S3C24XX_UDA134X SoC Audio: "
++		       "unable to find platform data\n");
++		return -ENODEV;
++	}
++	s3c24xx_uda134x.power = s3c24xx_uda134x_l3_pins->power;
++	s3c24xx_uda134x.model = s3c24xx_uda134x_l3_pins->model;
++
++	if (s3c24xx_uda134x_setup_pin(s3c24xx_uda134x_l3_pins->l3_data,
++				      "data") < 0)
++		return -EBUSY;
++	if (s3c24xx_uda134x_setup_pin(s3c24xx_uda134x_l3_pins->l3_clk,
++				      "clk") < 0) {
++		gpio_free(s3c24xx_uda134x_l3_pins->l3_data);
++		return -EBUSY;
++	}
++	if (s3c24xx_uda134x_setup_pin(s3c24xx_uda134x_l3_pins->l3_mode,
++				      "mode") < 0) {
++		gpio_free(s3c24xx_uda134x_l3_pins->l3_data);
++		gpio_free(s3c24xx_uda134x_l3_pins->l3_clk);
++		return -EBUSY;
++	}
++
++	s3c24xx_uda134x_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!s3c24xx_uda134x_snd_device) {
++		printk(KERN_ERR "S3C24XX_UDA134X SoC Audio: "
++		       "Unable to register\n");
++		return -ENOMEM;
++	}
++
++	platform_set_drvdata(s3c24xx_uda134x_snd_device,
++			     &s3c24xx_uda134x_snd_devdata);
++	s3c24xx_uda134x_snd_devdata.dev = &s3c24xx_uda134x_snd_device->dev;
++	ret = platform_device_add(s3c24xx_uda134x_snd_device);
++	if (ret) {
++		printk(KERN_ERR "S3C24XX_UDA134X SoC Audio: Unable to add\n");
++		platform_device_put(s3c24xx_uda134x_snd_device);
++	}
++
++	return ret;
++}
++
++static int s3c24xx_uda134x_remove(struct platform_device *pdev)
++{
++	platform_device_unregister(s3c24xx_uda134x_snd_device);
++	gpio_free(s3c24xx_uda134x_l3_pins->l3_data);
++	gpio_free(s3c24xx_uda134x_l3_pins->l3_clk);
++	gpio_free(s3c24xx_uda134x_l3_pins->l3_mode);
++	return 0;
++}
++
++static struct platform_driver s3c24xx_uda134x_driver = {
++	.probe  = s3c24xx_uda134x_probe,
++	.remove = s3c24xx_uda134x_remove,
++	.driver = {
++		.name = "s3c24xx_uda134x",
++		.owner = THIS_MODULE,
++	},
++};
++
++static int __init s3c24xx_uda134x_init(void)
++{
++	return platform_driver_register(&s3c24xx_uda134x_driver);
++}
++
++static void __exit s3c24xx_uda134x_exit(void)
++{
++	platform_driver_unregister(&s3c24xx_uda134x_driver);
++}
++
++
++module_init(s3c24xx_uda134x_init);
++module_exit(s3c24xx_uda134x_exit);
++
 +MODULE_AUTHOR("Zoltan Devai, Christian Pellegrin <chripell@evolware.org>");
++MODULE_DESCRIPTION("S3C24XX_UDA134X ALSA SoC audio driver");
 +MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/uda134x_codec.h b/sound/soc/codecs/uda134x_codec.h
-new file mode 100644
-index 0000000..94f4404
---- /dev/null
-+++ b/sound/soc/codecs/uda134x_codec.h
-@@ -0,0 +1,36 @@
-+#ifndef _UDA134X_CODEC_H
-+#define _UDA134X_CODEC_H
-+
-+#define UDA134X_L3ADDR	5
-+#define UDA134X_DATA0_ADDR	((UDA134X_L3ADDR << 2) | 0)
-+#define UDA134X_DATA1_ADDR	((UDA134X_L3ADDR << 2) | 1)
-+#define UDA134X_STATUS_ADDR	((UDA134X_L3ADDR << 2) | 2)
-+
-+#define UDA134X_EXTADDR_PREFIX	0xC0
-+#define UDA134X_EXTDATA_PREFIX	0xE0
-+
-+/* UDA134X registers */
-+#define UDA134X_EA000	0
-+#define UDA134X_EA001	1
-+#define UDA134X_EA010	2
-+#define UDA134X_EA011	3
-+#define UDA134X_EA100	4
-+#define UDA134X_EA101	5
-+#define UDA134X_EA110	6
-+#define UDA134X_EA111	7
-+#define UDA134X_STATUS0 8
-+#define UDA134X_STATUS1 9
-+#define UDA134X_DATA000 10
-+#define UDA134X_DATA001 11
-+#define UDA134X_DATA010 12
-+#define UDA134X_DATA1	13
-+
-+#define UDA134X_REGS_NUM 14
-+
-+#define STATUS0_DAIFMT_MASK (~(7<<1))
-+#define STATUS0_SYSCLK_MASK (~(3<<4))
-+
-+extern struct snd_soc_dai uda134x_dai;
-+extern struct snd_soc_codec_device soc_codec_dev_uda134x;
-+
-+#endif
 --
 1.4.4.4
