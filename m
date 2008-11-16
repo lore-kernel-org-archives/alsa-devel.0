@@ -1,18 +1,14 @@
-From: "Klaus Schulz" <kls.schlz@googlemail.com>
-Subject: Alsa driver won't compile on Ubuntu kernel
-	2.6.24-16-generic
-Date: Sun, 16 Nov 2008 10:18:48 +0100
-Message-ID: <d9690f190811160118g2bab039ap76c85f725fab7a2e@mail.gmail.com>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: STAC_DELL_M6 EAPD
+Date: Sun, 16 Nov 2008 11:42:34 -0500
+Message-ID: <49204D7A.6050507@embeddedalley.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rn-out-0910.google.com (rn-out-0910.google.com [64.233.170.190])
-	by alsa0.perex.cz (Postfix) with ESMTP id CBB1B24560
-	for <Alsa-devel@alsa-project.org>; Sun, 16 Nov 2008 10:18:49 +0100 (CET)
-Received: by rn-out-0910.google.com with SMTP id j67so2191514rne.21
-	for <Alsa-devel@alsa-project.org>; Sun, 16 Nov 2008 01:18:48 -0800 (PST)
-Content-Disposition: inline
+Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
+	by alsa0.perex.cz (Postfix) with SMTP id 30184243B9
+	for <alsa-devel@alsa-project.org>; Sun, 16 Nov 2008 17:42:48 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,54 +18,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, "Tellman, Steven" <Steven.Tellman@idt.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi folks.
+Add support for EAPD on system suspend and disabling EAPD on headphone jack
+detection for STAC_DELL_M6 laptops.
 
-As you know I am maintaining an Alsa-Installation script over
-at Ubuntu forums:
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+---
 
-http://ubuntuforums.org/showthread.php?t=3D962695
+diff --git a/pci/hda/patch_sigmatel.c b/pci/hda/patch_sigmatel.c
+index ec8f5ab..e0298df 100644
+--- a/pci/hda/patch_sigmatel.c
++++ b/pci/hda/patch_sigmatel.c
+@@ -147,6 +147,7 @@ struct sigmatel_spec {
+ 	unsigned int num_mixers;
 
+ 	int board_config;
++	unsigned int eapd_switch: 1;
+ 	unsigned int surr_switch: 1;
+ 	unsigned int line_switch: 1;
+ 	unsigned int mic_switch: 1;
+@@ -3944,7 +3945,7 @@ static void stac92xx_hp_detect(struct hda_codec *codec,
+unsigned int res)
+ 		for (i = 0; i < cfg->speaker_outs; i++)
+ 			stac92xx_reset_pinctl(codec, cfg->speaker_pins[i],
+ 						AC_PINCTL_OUT_EN);
+-		if (spec->eapd_mask)
++		if (spec->eapd_mask && spec->eapd_switch)
+ 			stac_gpio_set(codec, spec->gpio_mask,
+ 				spec->gpio_dir, spec->gpio_data &
+ 				~spec->eapd_mask);
+@@ -3959,7 +3960,7 @@ static void stac92xx_hp_detect(struct hda_codec *codec,
+unsigned int res)
+ 		for (i = 0; i < cfg->speaker_outs; i++)
+ 			stac92xx_set_pinctl(codec, cfg->speaker_pins[i],
+ 						AC_PINCTL_OUT_EN);
+-		if (spec->eapd_mask)
++		if (spec->eapd_mask && spec->eapd_switch)
+ 			stac_gpio_set(codec, spec->gpio_mask,
+ 				spec->gpio_dir, spec->gpio_data |
+ 				spec->eapd_mask);
+@@ -4319,6 +4320,7 @@ again:
+ 		spec->num_smuxes = 0;
+ 		spec->mixer = &stac92hd73xx_6ch_mixer[DELL_M6_MIXER];
+ 		spec->amp_nids = &stac92hd73xx_amp_nids[DELL_M6_AMP];
++		spec->eapd_switch = 0;
+ 		spec->num_amps = 1;
 
-Admin:
-I intend to post problems over here if they're mentioned more than once, if
-you don't
-mind. I ask people to upload the Alsa log file.
-Perhaps you can give me hint how to set this process up properly.
+ 		if (!spec->init)
+@@ -4350,6 +4352,7 @@ again:
+ 	default:
+ 		spec->num_dmics = STAC92HD73XX_NUM_DMICS;
+ 		spec->num_smuxes = ARRAY_SIZE(stac92hd73xx_smux_nids);
++		spec->eapd_switch = 1;
+ 	}
+ 	if (spec->board_config > STAC_92HD73XX_REF) {
+ 		/* GPIO0 High = Enable EAPD */
+@@ -4495,7 +4498,13 @@ static int stac92hd71xx_resume(struct hda_codec *codec)
 
-!These are not my problems. I just try to channel at least some of them.
+ static int stac92hd71xx_suspend(struct hda_codec *codec, pm_message_t state)
+ {
++	struct sigmatel_spec *spec = codec->spec;
++
+ 	stac92hd71xx_set_power_state(codec, AC_PWRST_D3);
++	if (spec->eapd_mask)
++		stac_gpio_set(codec, spec->gpio_mask,
++				spec->gpio_dir, spec->gpio_data &
++				~spec->eapd_mask);
+ 	return 0;
+ };
 
+@@ -4885,6 +4894,7 @@ static int patch_stac927x(struct hda_codec *codec)
+ 	spec->num_pwrs = 0;
+ 	spec->aloopback_mask = 0x40;
+ 	spec->aloopback_shift = 0;
++	spec->eapd_switch = 1;
 
+ 	err = stac92xx_parse_auto_config(codec, 0x1e, 0x20);
+ 	if (!err) {
+@@ -4965,6 +4975,7 @@ static int patch_stac9205(struct hda_codec *codec)
 
-Here is the first problem:
-
-Alsa driver won't compile on Ubuntu kernel 2.6.24-16-generic
-
-make -C /lib/modules/2.6.24-16-generic/build
-SUBDIRS=3D/usr/src/Alsa-1.0.18a/alsa-driver-1.0.18a  CPP=3D"gcc -E"
-CC=3D"gcc" modules
-make[1]: Entering directory `/usr/src/linux-headers-2.6.24-16-generic'
-  CC [M]  /usr/src/Alsa-1.0.18a/alsa-driver-1.0.18a/acore/hrtimer.o
-In file included from
-/usr/src/Alsa-1.0.18a/alsa-driver-1.0.18a/acore/hrtimer.c:2:
-/usr/src/Alsa-1.0.18a/alsa-driver-1.0.18a/acore/../alsa-kernel/core/hrtimer=
-.c:
-In function =E2snd_hrtimer_callback=E2:
-/usr/src/Alsa-1.0.18a/alsa-driver-1.0.18a/acore/../alsa-kernel/core/hrtimer=
-.c:29:
-error: implicit declaration of function =E2hrtimer_forward_now=E2
-make[3]: *** [/usr/src/Alsa-1.0.18a/alsa-driver-1.0.18a/acore/hrtimer.o] Er=
-ror 1
-make[2]: *** [/usr/src/Alsa-1.0.18a/alsa-driver-1.0.18a/acore] Error 2
-make[1]: *** [_module_/usr/src/Alsa-1.0.18a/alsa-driver-1.0.18a] Error 2
-make[1]: Leaving directory `/usr/src/linux-headers-2.6.24-16-generic'
-make: *** [compile] Error
-
-
-
-Any ideas?
-
-Cheers
-Klaus
+ 	spec->aloopback_mask = 0x40;
+ 	spec->aloopback_shift = 0;
++	spec->eapd_switch = 1;
+ 	spec->multiout.dac_nids = spec->dac_nids;
+ 	
+ 	switch (spec->board_config){
