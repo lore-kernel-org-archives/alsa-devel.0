@@ -1,17 +1,15 @@
-From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: [PATCH 1/1] [ALSA] ASoc: TLV320AIC23B Cleanup
-Date: Mon, 17 Nov 2008 17:30:44 -0700
-Message-ID: <1226968244-13796-1-git-send-email-troy.kisky@boundarydevices.com>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: [PATCH] hda: remove redundant get_amp_nid()
+Date: Mon, 17 Nov 2008 21:55:02 +0800
+Message-ID: <20081117135502.GA15838@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mpls-qmqp-05.inet.qwest.net (mpls-qmqp-05.inet.qwest.net
-	[63.231.195.116])
-	by alsa0.perex.cz (Postfix) with ESMTP id C3DCF243BD
-	for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2008 01:31:01 +0100 (CET)
-In-Reply-To: <>
-References: <>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id BEF49243D8
+	for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2008 02:04:04 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,76 +19,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@sirena.org.uk, Troy Kisky <troy.kisky@boundarydevices.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Use #ifdef DEBUG to print actual sample rates.
+Remove get_amp_nid(): it duplicates the one defined in hda_local.h
 
-Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
+Signed-off-by: Wu Fengguang <wfg@linux.intel.com>
+---
+ sound/pci/hda/patch_via.c |    2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
-index a95b538..8a9ef21 100644
---- a/sound/soc/codecs/tlv320aic23.c
-+++ b/sound/soc/codecs/tlv320aic23.c
-@@ -331,10 +331,11 @@ static int find_rate(int mclk, u32 need_adc, u32 need_dac)
- 	adc_h = need_adc + (need_adc >> 5);
- 	dac_l = need_dac - (need_dac >> 5);
- 	dac_h = need_dac + (need_dac >> 5);
--	for (i = 0; i < 4; i++) {
-+	for (i = 0; i < ARRAY_SIZE(bosr_usb_divisor_table); i++) {
- 		int base = mclk / bosr_usb_divisor_table[i];
- 		int mask = sr_valid_mask[i];
--		for (j = 0; j < 16; j++, mask >>= 1) {
-+		for (j = 0; j < ARRAY_SIZE(sr_adc_mult_table);
-+				j++, mask >>= 1) {
- 			int adc;
- 			int dac;
- 			int score;
-@@ -364,21 +365,22 @@ static int find_rate(int mclk, u32 need_adc, u32 need_dac)
- 	return (best_j << 2) | best_i | (best_div << TLV320AIC23_CLKIN_SHIFT);
- }
+--- sound-2.6.orig/sound/pci/hda/patch_via.c
++++ sound-2.6/sound/pci/hda/patch_via.c
+@@ -142,8 +142,6 @@ enum {
+ 	AUTO_SEQ_SIDE
+ };
  
--static void get_current_sample_rates(struct snd_soc_codec *codec, int mclk,
-+#ifdef DEBUG
-+static void get_current_sample_rates(int sample_rate_control, int mclk,
- 		u32 *sample_rate_adc, u32 *sample_rate_dac)
- {
--	int src = tlv320aic23_read_reg_cache(codec, TLV320AIC23_SRATE);
--	int sr = (src >> 2) & 0x0f;
--	int val = (mclk / bosr_usb_divisor_table[src & 3]);
-+	int sr = (sample_rate_control >> 2) & 0x0f;
-+	int val = (mclk / bosr_usb_divisor_table[sample_rate_control & 3]);
- 	int adc = (val * sr_adc_mult_table[sr]) / SR_MULT;
- 	int dac = (val * sr_dac_mult_table[sr]) / SR_MULT;
--	if (src & TLV320AIC23_CLKIN_HALF) {
-+	if (sample_rate_control & TLV320AIC23_CLKIN_HALF) {
- 		adc >>= 1;
- 		dac >>= 1;
- 	}
- 	*sample_rate_adc = adc;
- 	*sample_rate_dac = dac;
- }
-+#endif
- 
- static int set_sample_rate_control(struct snd_soc_codec *codec, int mclk,
- 		u32 sample_rate_adc, u32 sample_rate_dac)
-@@ -391,12 +393,14 @@ static int set_sample_rate_control(struct snd_soc_codec *codec, int mclk,
- 		return -EINVAL;
- 	}
- 	tlv320aic23_write(codec, TLV320AIC23_SRATE, data);
--	if (1) {
-+#ifdef DEBUG
-+	{
- 		int adc, dac;
--		get_current_sample_rates(codec, mclk, &adc, &dac);
-+		get_current_sample_rates(data, mclk, &adc, &dac);
- 		printk(KERN_DEBUG "actual samplerate = %u,%u reg=%x\n",
- 			adc, dac, data);
- 	}
-+#endif
- 	return 0;
- }
- 
--- 
-1.5.4.3
+-#define get_amp_nid(kc)	((kc)->private_value & 0xffff)
+-
+ /* Some VT1708S based boards gets the micboost setting wrong, so we have
+  * to apply some brute-force and re-write the TLV's by software. */
+ static int mic_boost_tlv(struct snd_kcontrol *kcontrol, int op_flag,
