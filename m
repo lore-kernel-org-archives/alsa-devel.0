@@ -1,14 +1,15 @@
-From: Fernando Moro <fer_moritorey@hotmail.com>
-Subject: (no subject)
-Date: Tue, 18 Nov 2008 00:24:43 +0100
-Message-ID: <BAY118-W49C010FE5D6E86B12DECBC8D130@phx.gbl>
+From: Daniel Drake <dsd@gentoo.org>
+Subject: 5d5d5f43f (Samsung hda-intel auto-sensing) causes
+	input regression
+Date: Mon, 17 Nov 2008 23:31:44 +0000
+Message-ID: <4921FEE0.2030308@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bay0-omc2-s21.bay0.hotmail.com (bay0-omc2-s21.bay0.hotmail.com
-	[65.54.246.157]) by alsa0.perex.cz (Postfix) with ESMTP id 5E8A12438E
-	for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2008 00:24:45 +0100 (CET)
+Received: from mtaout01-winn.ispmail.ntl.com (mtaout01-winn.ispmail.ntl.com
+	[81.103.221.47]) by alsa0.perex.cz (Postfix) with ESMTP id A050324390
+	for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2008 00:33:42 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,28 +19,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+Cc: tommaso.pasini@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-Dear member of the alsa time,
- =
+Just wanted to bring to your attention:
+Commit 5d5d5f43f1b835c375de9bd270cce030d16e2871 causes a regression on 
+some laptops: input no longer works for some users.
 
-I am not sure if this is the email addres in which it is possible to talk a=
-bout a problem with the Alsa plugins, but it is the unique address that I h=
-ave found.
- =
+> Author: Takashi Iwai <tiwai@suse.de>
+> Date: Tue Feb 12 12:11:36 2008 +0100
+> 
+>     [ALSA] hda-codec - Implement auto-mic jack sensing on Samsung laptops
+>     
+>     Implemented the auto-mic jack sensing for Samsung laptops with AD1986A
+>     codec chip (model=laptop-eapd).
+>     
+>     The hardware uses pin 0x1d and 0x1f for the internal and external
+>     mics, respectively.
+>     
+>     Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-I am writing to tell you about the compatibility of the alsa plugins. There=
- are lots of users (like me) who have the Lexicon lambda soundcard and the =
-lexicon alpha soundcard, but alsa plugins only support the Lexicon Omega!, =
-and it is impossible to connect our soundcards to the computer. I think tha=
-t it is a problem for the Ubuntu Studio, Musix or Studio64 users, who use t=
-his devices to record and play midi songs, and I think that linux can be be=
-tter than windows making audio. I would be grateful if alsa team could help=
- us with this problem somehow. I look forward to your response. Thank you f=
-or your attention. Your faithfully, Fernando.
-Sorry for my bad English, I am Spanish.
-_________________________________________________________________
-Los m=E1s de lo m=E1s, Especial Rankings
-http://events.es.msn.com/dinero/listas/default.aspx
+Reported at:
+https://bugs.gentoo.org/show_bug.cgi?id=235732
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4228
+
+The discussion around this patch appears to be here:
+http://thread.gmane.org/gmane.linux.alsa.devel/50989/focus=51457
+
+Anything we can do to help solve this problem?
+
+Thanks,
+Daniel
