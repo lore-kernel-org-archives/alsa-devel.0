@@ -1,23 +1,19 @@
-From: Wu Fengguang <wfg@linux.intel.com>
-Subject: [PATCH] hda: alc883 model for ASUS P5Q-EM boards
-Date: Mon, 17 Nov 2008 08:50:38 +0800
-Message-ID: <20081117005038.GA5683@localhost>
-References: <6d799ca1be9af898f664f82ade06d669@localhost>
-	<20081115002724.GA5073@mail.ustc.edu.cn>
-	<002f01c94770$adeba2a0$09c2e7e0$@ca>
-	<20081116021525.GA7795@localhost>
-	<003801c947b4$b857ffb0$2907ff10$@ca>
-	<20081116082733.GA20129@localhost>
-	<006001c94813$134a8880$39df9980$@ca>
+From: "Yang, Libin" <Libin.Yang@amd.com>
+Subject: Re: HDA-Intel - Patch to support detecting HD Audio
+	devices with PCI class code
+Date: Mon, 17 Nov 2008 11:44:32 +0800
+Message-ID: <6077B97E85E7374DAE87B42B5AA997970D04B5@sshaexmb1.amd.com>
+References: <6077B97E85E7374DAE87B42B5AA9979707B88A@sshaexmb1.amd.com><s5hej1iznfu.wl%tiwai@suse.de><6077B97E85E7374DAE87B42B5AA9979707BA28@sshaexmb1.amd.com><s5h7i7azm8r.wl%tiwai@suse.de><6077B97E85E7374DAE87B42B5AA9979709C0C2@sshaexmb1.amd.com>
+	<s5h63msq6mk.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C94866.CDD819CE"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from azsmga101.ch.intel.com (mga07.intel.com [143.182.124.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id DE7351037EE
-	for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2008 01:50:49 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <006001c94813$134a8880$39df9980$@ca>
+Received: from VA3EHSOBE006.bigfish.com (outbound-va3.frontbridge.com
+	[216.32.180.16])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1669C1037EE
+	for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2008 04:45:01 +0100 (CET)
+Content-Class: urn:content-classes:message
+In-Reply-To: <s5h63msq6mk.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,110 +23,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Andrei Tanas <andrei@tanas.ca>
-Cc: 'Takashi Iwai' <tiwai@suse.de>, alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Nov 16, 2008 at 12:45:12PM -0500, Andrei Tanas wrote:
-> > > How did you find out that it's 0x10 instead of 0x06? Has
-> > documentation on
-> > > ALC1200 become available?
-> > 
-> > It's easy:
-> > grep -i -C6 spdif /proc/asound/card0/codec\#0
-> > grep -i -C6 'stereo digital' /proc/asound/card0/codec\#0
-> > 
-> > And check the connectivity between pin complex and audio output nodes.
-> That's the kind of stuff that would be great to know for somebody who wants
-> to troubleshoot something for the first time. Thanks.
+------_=_NextPart_001_01C94866.CDD819CE
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-You are welcome.
+> >
+> > The patch uses HD Audio PCI class code to detect AMD HD Audio cards.
+> >
+> > Signed-off-by: Libin Yang <libin.yang@amd.com>
+>=20
+> Thanks, applied now.
+>=20
+> (BTW, your embedded patch seems broken likely by MUA.  Please fix
+>  the setting or use attachments if it's difficult.)
 
-> > Now you can do a 'cat /proc/asound/card0/codec\#1' and read about the
-> > HDMI codec. For it to work, you may need the bleeding edge Xorg
-> > drivers.
-> That will be for somebody else to test I guess, I don't have the hardware -
-> it turns out my TV does not take digital audio through its HDMI port.
+OK. Thank you for your suggestion. Use the attachment this time.
 
-That's fine.
+Thanks & Regards,
+Libin
 
-The G45 HDMI has worked on our boards, so chances are good for others.
 
-> > So let's create a new model?
-> I should have gave it a shot myself I guess.
-> 
-> > +#define ALC883_DIGOUT_NID_ASUS_P5Q	0x10
-> Why not ALC1200_DIGOUT_NID? Or is it really specific to Asus P5Q?
 
-I'm not really sure, but ALC1200_DIGOUT_NID does look like a better name :-)
+------_=_NextPart_001_01C94866.CDD819CE
+Content-Type: application/octet-stream; name="HDA_class_AMD.patch"
+Content-Transfer-Encoding: base64
+Content-Description: HDA_class_AMD.patch
+Content-Disposition: attachment; filename="HDA_class_AMD.patch"
 
-> The patch worked perfectly.
+VGhlIHBhdGNoIHVzZXMgSEQgQXVkaW8gUENJIGNsYXNzIGNvZGUgdG8gZGV0ZWN0IEFNRCBIRCBB
+dWRpbyBjYXJkcy4KClNpZ25lZC1vZmYtYnk6IExpYmluIFlhbmcgPGxpYmluLnlhbmdAYW1kLmNv
+bT4KCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jIGIvc291bmQvcGNpL2hk
+YS9oZGFfaW50ZWwuYwppbmRleCA4ZjZjMWRmLi44Y2E0NDFjIDEwMDY0NAotLS0gYS9zb3VuZC9w
+Y2kvaGRhL2hkYV9pbnRlbC5jCisrKyBiL3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMKQEAgLTI5
+Miw2ICsyOTIsOCBAQCBlbnVtIHsKIC8qIERlZmluZSBWSUEgSEQgQXVkaW8gRGV2aWNlIElEKi8K
+ICNkZWZpbmUgVklBX0hEQUNfREVWSUNFX0lECQkweDMyODgKIAorLyogSEQgQXVkaW8gY2xhc3Mg
+Y29kZSAqLworI2RlZmluZSBQQ0lfQ0xBU1NfTVVMVElNRURJQV9IRF9BVURJTwkweDA0MDMKIAog
+LyoKICAqLwpAQCAtNDE1LDYgKzQxNyw3IEBAIGVudW0gewogCUFaWF9EUklWRVJfVUxJLAogCUFa
+WF9EUklWRVJfTlZJRElBLAogCUFaWF9EUklWRVJfVEVSQSwKKwlBWlhfRFJJVkVSX0dFTkVSSUMs
+CiAJQVpYX05VTV9EUklWRVJTLCAvKiBrZWVwIHRoaXMgYXMgbGFzdCBlbnRyeSAqLwogfTsKIApA
+QCAtNDI4LDYgKzQzMSw3IEBAIHN0YXRpYyBjaGFyICpkcml2ZXJfc2hvcnRfbmFtZXNbXSBfX2Rl
+dmluaXRkYXRhID0gewogCVtBWlhfRFJJVkVSX1VMSV0gPSAiSERBIFVMSSBNNTQ2MSIsCiAJW0Fa
+WF9EUklWRVJfTlZJRElBXSA9ICJIREEgTlZpZGlhIiwKIAlbQVpYX0RSSVZFUl9URVJBXSA9ICJI
+REEgVGVyYWRpY2kiLCAKKwlbQVpYX0RSSVZFUl9HRU5FUklDXSA9ICJIRC1BdWRpbyBHZW5lcmlj
+IiwKIH07CiAKIC8qCkBAIC0yMjAzLDYgKzIyMDcsNyBAQCBzdGF0aWMgaW50IF9fZGV2aW5pdCBh
+enhfY3JlYXRlKHN0cnVjdCBzbmRfY2FyZCAqY2FyZCwgc3RydWN0IHBjaV9kZXYgKnBjaSwKIAkJ
+CWNoaXAtPnBsYXliYWNrX3N0cmVhbXMgPSBBVElIRE1JX05VTV9QTEFZQkFDSzsKIAkJCWNoaXAt
+PmNhcHR1cmVfc3RyZWFtcyA9IEFUSUhETUlfTlVNX0NBUFRVUkU7CiAJCQlicmVhazsKKwkJY2Fz
+ZSBBWlhfRFJJVkVSX0dFTkVSSUM6CiAJCWRlZmF1bHQ6CiAJCQljaGlwLT5wbGF5YmFja19zdHJl
+YW1zID0gSUNINl9OVU1fUExBWUJBQ0s7CiAJCQljaGlwLT5jYXB0dXJlX3N0cmVhbXMgPSBJQ0g2
+X05VTV9DQVBUVVJFOwpAQCAtMjQyNyw2ICsyNDMyLDExIEBAIHN0YXRpYyBzdHJ1Y3QgcGNpX2Rl
+dmljZV9pZCBhenhfaWRzW10gPSB7CiAJeyBQQ0lfREVWSUNFKDB4MTBkZSwgMHgwYmQ3KSwgLmRy
+aXZlcl9kYXRhID0gQVpYX0RSSVZFUl9OVklESUEgfSwKIAkvKiBUZXJhZGljaSAqLwogCXsgUENJ
+X0RFVklDRSgweDY1NDksIDB4MTIwMCksIC5kcml2ZXJfZGF0YSA9IEFaWF9EUklWRVJfVEVSQSB9
+LAorCS8qIEFNRCBHZW5lcmljLCBQQ0kgY2xhc3MgY29kZSBhbmQgVmVuZG9yIElEIGZvciBIRCBB
+dWRpbyAqLworCXsgUENJX0RFVklDRShQQ0lfVkVORE9SX0lEX0FUSSwgUENJX0FOWV9JRCksCisJ
+ICAuY2xhc3MgPSBQQ0lfQ0xBU1NfTVVMVElNRURJQV9IRF9BVURJTyA8PCA4LAorCSAgLmNsYXNz
+X21hc2sgPSAweGZmZmZmZiwKKwkgIC5kcml2ZXJfZGF0YSA9IEFaWF9EUklWRVJfR0VORVJJQyB9
+LAogCXsgMCwgfQogfTsKIE1PRFVMRV9ERVZJQ0VfVEFCTEUocGNpLCBhenhfaWRzKTsK
 
-Thank you.
+------_=_NextPart_001_01C94866.CDD819CE
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Fengguang
----
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-hda: alc883 model for ASUS P5Q-EM boards
-
-Add a new alc883 model ALC1200_ASUS_P5Q for ASUS P5Q-EM boards.
-It is the same as ALC883_6ST_DIG except that the SPDIF digital
-output nid is 0x10.
-
-Tested-by: Andrei Tanas <andrei@tanas.ca>
-Signed-off-by: Wu Fengguang <wfg@linux.intel.com>
----
- sound/pci/hda/patch_realtek.c |   16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
---- sound-2.6.orig/sound/pci/hda/patch_realtek.c
-+++ sound-2.6/sound/pci/hda/patch_realtek.c
-@@ -232,6 +232,7 @@ enum {
- 	ALC883_3ST_6ch_INTEL,
- 	ALC888_ASUS_M90V,
- 	ALC888_ASUS_EEE1601,
-+	ALC1200_ASUS_P5Q,
- 	ALC883_AUTO,
- 	ALC883_MODEL_LAST,
- };
-@@ -6868,6 +6869,8 @@ static int patch_alc882(struct hda_codec
- #define ALC883_DIGOUT_NID	0x06
- #define ALC883_DIGIN_NID	0x0a
- 
-+#define ALC1200_DIGOUT_NID	0x10
-+
- static hda_nid_t alc883_dac_nids[4] = {
- 	/* front, rear, clfe, rear_surr */
- 	0x02, 0x03, 0x04, 0x05
-@@ -8190,6 +8193,7 @@ static const char *alc883_models[ALC883_
- 	[ALC883_CLEVO_M720]	= "clevo-m720",
- 	[ALC883_FUJITSU_PI2515] = "fujitsu-pi2515",
- 	[ALC883_3ST_6ch_INTEL]	= "3stack-6ch-intel",
-+	[ALC1200_ASUS_P5Q]	= "asus-p5q",
- 	[ALC883_AUTO]		= "auto",
- };
- 
-@@ -8208,6 +8212,7 @@ static struct snd_pci_quirk alc883_cfg_t
- 	SND_PCI_QUIRK(0x103c, 0x2a61, "HP Nettle", ALC883_6ST_DIG),
- 	SND_PCI_QUIRK(0x1043, 0x1873, "Asus M90V", ALC888_ASUS_M90V),
- 	SND_PCI_QUIRK(0x1043, 0x8249, "Asus M2A-VM HDMI", ALC883_3ST_6ch_DIG),
-+	SND_PCI_QUIRK(0x1043, 0x82fe, "Asus P5Q-EM HDMI", ALC1200_ASUS_P5Q),
- 	SND_PCI_QUIRK(0x1043, 0x835f, "Asus Eee 1601", ALC888_ASUS_EEE1601),
- 	SND_PCI_QUIRK(0x105b, 0x0ce8, "Foxconn P35AX-S", ALC883_6ST_DIG),
- 	SND_PCI_QUIRK(0x105b, 0x6668, "Foxconn", ALC883_6ST_DIG),
-@@ -8555,6 +8560,17 @@ static struct alc_config_preset alc883_p
- 		.unsol_event = alc883_eee1601_unsol_event,
- 		.init_hook = alc883_eee1601_inithook,
- 	},
-+	[ALC1200_ASUS_P5Q] = {
-+		.mixers = { alc883_base_mixer, alc883_chmode_mixer },
-+		.init_verbs = { alc883_init_verbs },
-+		.num_dacs = ARRAY_SIZE(alc883_dac_nids),
-+		.dac_nids = alc883_dac_nids,
-+		.dig_out_nid = ALC1200_DIGOUT_NID,
-+		.dig_in_nid = ALC883_DIGIN_NID,
-+		.num_channel_mode = ARRAY_SIZE(alc883_sixstack_modes),
-+		.channel_mode = alc883_sixstack_modes,
-+		.input_mux = &alc883_capture_source,
-+	},
- };
+------_=_NextPart_001_01C94866.CDD819CE--
