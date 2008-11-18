@@ -1,14 +1,14 @@
 From: Wu Fengguang <fengguang.wu@intel.com>
 Subject: [PATCH] hda: remove redundant get_amp_nid()
-Date: Mon, 17 Nov 2008 21:55:02 +0800
-Message-ID: <20081117135502.GA15838@localhost>
+Date: Tue, 18 Nov 2008 10:21:55 +0800
+Message-ID: <20081118022155.GA8746@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id BEF49243D8
-	for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2008 02:04:04 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7E79F2441C
+	for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2008 03:22:06 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
