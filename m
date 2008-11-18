@@ -1,12 +1,17 @@
 From: Wu Fengguang <wfg@linux.intel.com>
-Subject: [PATCH 0/3] HDMI ELD routines and proc interface
-Date: Tue, 18 Nov 2008 11:47:50 +0800
-Message-ID: <20081118034750.445933681@linux.intel.com>
-Content-Type: multipart/mixed; boundary="===============3202015516683135062=="
+Subject: [PATCH 2/3] create hda_eld.c for ELD routines and proc
+	interface
+Date: Tue, 18 Nov 2008 11:47:52 +0800
+Message-ID: <20081118042642.449461642@linux.intel.com>
+References: <20081118034750.445933681@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from azsmga102.ch.intel.com (mga12.intel.com [143.182.124.36])
-	by alsa0.perex.cz (Postfix) with ESMTP id DEAE324465
+	by alsa0.perex.cz (Postfix) with ESMTP id 2776324466
 	for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2008 05:26:55 +0100 (CET)
+Content-Disposition: inline; filename=alsa-hdmi-eld.patch
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,204 +25,1068 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============3202015516683135062==
+ELD handling routines can be shared by all HDMI codecs,
+and they are large enough to make a standalone source file.
 
-Hi Takashi,
-
-Here are the patches for separated HDMI ELD routines and proc interface.
-They have undergone basic tests on a G45 board and stress test with the
-patch below.
-
-	[PATCH 1/3] introduce snd_print_pcm_rates()
-	[PATCH 2/3] create hda_eld.c for ELD routines and proc interface
-	[PATCH 3/3] ELD proc interface for HDMI sinks
-
-Here are two sample outputs from the stress testing:
-
-	monitor name
-	connection_type         2-reserved
-	eld_version             [0x0] reserved
-	edid_version            [0x0] no CEA EDID Timing Extension block present
-	manufacture_id          0x3c93
-	product_id              0xc5ac
-	port_id                 0x486d85d5a3bfe049
-	support_hdcp            1
-	support_ai              0
-	audio_sync_delay        152
-	speakers                [0x6f] FL/FR LFE FC RL/RR FLC/FRC RLC/RRC
-	sad_count               8
-	sad0_coding_type        [0x0] undefined
-	sad0_channels           0
-	sad0_sampling_rates     [0x0]
-	sad1_coding_type        [0x0] undefined
-	sad1_channels           0
-	sad1_sampling_rates     [0x0]
-	sad2_coding_type        [0x0] undefined
-	sad2_channels           0
-	sad2_sampling_rates     [0x0]
-	sad3_coding_type        [0x0] undefined
-	sad3_channels           0
-	sad3_sampling_rates     [0x0]
-	sad4_coding_type        [0x0] undefined
-	sad4_channels           0
-	sad4_sampling_rates     [0x0]
-	sad5_coding_type        [0x0] undefined
-	sad5_channels           0
-	sad5_sampling_rates     [0x0]
-	sad6_coding_type        [0x0] undefined
-	sad6_channels           0
-	sad6_sampling_rates     [0x0]
-	sad7_coding_type        [0x0] undefined
-	sad7_channels           0
-	sad7_sampling_rates     [0x0]
-
-	monitor name            �����p
-	connection_type         Display Port
-	eld_version             [0x0] reserved
-	edid_version            [0x7] reserved
-	manufacture_id          0x59c7
-	product_id              0x3c72
-	port_id                 0x323d7444a5fcbdba
-	support_hdcp            0
-	support_ai              1
-	audio_sync_delay        268
-	speakers                [0x33] FL/FR LFE RC FLC/FRC
-	sad_count               14
-	sad0_coding_type        [0x9] DSD (1-bit audio)
-	sad0_channels           5
-	sad0_sampling_rates     [0xe40] 48000 176400 192000 384000
-	sad1_coding_type        [0x6] AAC-LC
-	sad1_channels           2
-	sad1_sampling_rates     [0x18a0] 44100 88200 384000
-	sad1_max_bitrate        1024000
-	sad2_coding_type        [0xc] MLP (Dolby TrueHD)
-	sad2_channels           8
-	sad2_sampling_rates     [0x1ec0] 48000 88200 176400 192000 384000
-	sad3_coding_type        [0x8] ATRAC
-	sad3_channels           3
-	sad3_sampling_rates     [0x1220] 44100 176400
-	sad3_max_bitrate        944000
-	sad4_coding_type        [0xd] DST
-	sad4_channels           3
-	sad4_sampling_rates     [0xac0] 48000 88200 176400 384000
-	sad5_coding_type        [0x2] AC-3
-	sad5_channels           3
-	sad5_sampling_rates     [0x1a60] 44100 48000 176400 384000
-	sad5_max_bitrate        592000
-	sad6_coding_type        [0xc] MLP (Dolby TrueHD)
-	sad6_channels           3
-	sad6_sampling_rates     [0xc40] 48000 192000 384000
-	sad7_coding_type        [0x9] DSD (1-bit audio)
-	sad7_channels           6
-	sad7_sampling_rates     [0xc20] 44100 192000 384000
-	sad8_coding_type        [0x5] MPEG2
-	sad8_channels           1
-	sad8_sampling_rates     [0x1ac0] 48000 88200 176400 384000
-	sad8_max_bitrate        544000
-	sad9_coding_type        [0xc] MLP (Dolby TrueHD)
-	sad9_channels           7
-	sad9_sampling_rates     [0x460] 44100 48000 192000
-	sad10_coding_type       [0x1] LPCM
-	sad10_channels          4
-	sad10_sampling_rates    [0x1260] 44100 48000 176400
-	sad10_sample_bits       0x40000
-	sad11_coding_type       [0x6] AAC-LC
-	sad11_channels          7
-	sad11_sampling_rates    [0x1240] 48000 176400
-	sad11_max_bitrate       408000
-	sad12_coding_type       [0x0] undefined
-	sad12_channels          0
-	sad12_sampling_rates    [0x0]
-	sad13_coding_type       [0x0] undefined
-	sad13_channels          0
-	sad13_sampling_rates    [0x0]
-
-Thank you,
-Fengguang
+Signed-off-by: Wu Fengguang <wfg@linux.intel.com>
 ---
+ sound/pci/Kconfig               |    4 
+ sound/pci/hda/Makefile          |    1 
+ sound/pci/hda/hda_eld.c         |  454 ++++++++++++++++++++++++++++
+ sound/pci/hda/hda_local.h       |   41 ++
+ sound/pci/hda/patch_intelhdmi.c |  480 ------------------------------
+ 5 files changed, 505 insertions(+), 475 deletions(-)
 
-stress testing patch for ELD routines
-
- sound/pci/hda/hda_eld.c         |   30 ++++++++++++++++++++----------
- sound/pci/hda/patch_intelhdmi.c |    2 ++
- 2 files changed, 22 insertions(+), 10 deletions(-)
-
---- sound-2.6.orig/sound/pci/hda/hda_eld.c
-+++ sound-2.6/sound/pci/hda/hda_eld.c
-@@ -27,6 +27,15 @@
- #include "hda_codec.h"
- #include "hda_local.h"
-
-+static unsigned long rand;
-+
-+static inline unsigned char random(void)
-+{
-+	/* See "Numerical Recipes in C", second edition, p. 284 */
-+	rand = rand * 1664525L + 1013904223L;
-+	return (unsigned char) (rand >> 24);
-+}
-+
- enum eld_versions {
- 	ELD_VER_CEA_861D	= 2,
- 	ELD_VER_PARTIAL		= 31,
-@@ -167,6 +176,8 @@ static unsigned char hdmi_get_eld_byte(s
- 	val = snd_hda_codec_read(codec, nid, 0,
- 					AC_VERB_GET_HDMI_ELDD, byte_index);
-
-+	val = AC_ELDD_ELD_VALID | random();
-+
- #ifdef BE_PARANOID
- 	printk(KERN_INFO "ELD data byte %d: 0x%x\n", byte_index, val);
- #endif
-@@ -277,7 +288,6 @@ static int hdmi_update_sink_eld(struct s
- 	if (e->eld_ver != ELD_VER_CEA_861D &&
- 	    e->eld_ver != ELD_VER_PARTIAL) {
- 		snd_printd(KERN_INFO "Unknown ELD version %d\n", e->eld_ver);
--		goto out_fail;
- 	}
-
- 	e->eld_size = size;
-@@ -359,9 +369,6 @@ int snd_hdmi_get_eld(struct sink_eld *el
- 	int size;
- 	unsigned char *buf;
-
--	if (!hdmi_eld_valid(codec, nid))
--		return -ENOENT;
--
- 	size = snd_hdmi_get_eld_size(codec, nid);
- 	if (size == 0) {
- 		/* wfg: workaround for ASUS P5E-VM HDMI board */
-@@ -516,6 +523,9 @@ int snd_hda_eld_proc_new(struct hda_code
- 	struct snd_info_entry *entry;
- 	int err;
-
-+	/* Initialize random number generator */
-+	rand = jiffies;
-+
- 	snprintf(name, sizeof(name), "eld#%d", codec->addr);
- 	err = snd_card_proc_new(codec->bus->card, name, &entry);
- 	if (err < 0)
 --- sound-2.6.orig/sound/pci/hda/patch_intelhdmi.c
 +++ sound-2.6/sound/pci/hda/patch_intelhdmi.c
-@@ -635,6 +635,8 @@ static int patch_intel_hdmi(struct hda_c
-
- 	init_channel_allocations();
-
-+	hdmi_parse_eld(codec);
-+
- 	return 0;
+@@ -30,7 +30,6 @@
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+ #include <sound/core.h>
+-#include <asm/unaligned.h>
+ #include "hda_codec.h"
+ #include "hda_local.h"
+ #include "hda_patch.h"
+@@ -40,43 +39,6 @@
+ 
+ #define INTEL_HDMI_EVENT_TAG		0x08
+ 
+-/*
+- * CEA Short Audio Descriptor data
+- */
+-struct cea_sad {
+-	int	channels;
+-	int	format;		/* (format == 0) indicates invalid SAD */
+-	int	rates;
+-	int	sample_bits;	/* for LPCM */
+-	int	max_bitrate;	/* for AC3...ATRAC */
+-	int	profile;	/* for WMAPRO */
+-};
+-
+-#define ELD_FIXED_BYTES	20
+-#define ELD_MAX_MNL	16
+-#define ELD_MAX_SAD	16
+-
+-/*
+- * ELD: EDID Like Data
+- */
+-struct sink_eld {
+-	int	eld_size;
+-	int	baseline_len;
+-	int	eld_ver;	/* (eld_ver == 0) indicates invalid ELD */
+-	int	cea_edid_ver;
+-	char	monitor_name[ELD_MAX_MNL + 1];
+-	int	manufacture_id;
+-	int	product_id;
+-	u64	port_id;
+-	int	support_hdcp;
+-	int	support_ai;
+-	int	conn_type;
+-	int	aud_synch_delay;
+-	int	spk_alloc;
+-	int	sad_count;
+-	struct cea_sad sad[ELD_MAX_SAD];
+-};
+-
+ struct intel_hdmi_spec {
+ 	struct hda_multi_out multiout;
+ 	struct hda_pcm pcm_rec;
+@@ -127,160 +89,9 @@ struct hdmi_audio_infoframe {
+ };
+ 
+ /*
+- * SS1:SS0 index => sample size
+- */
+-static int cea_sample_sizes[4] = {
+-	0,	 		/* 0: Refer to Stream Header */
+-	AC_SUPPCM_BITS_16,	/* 1: 16 bits */
+-	AC_SUPPCM_BITS_20,	/* 2: 20 bits */
+-	AC_SUPPCM_BITS_24,	/* 3: 24 bits */
+-};
+-
+-/*
+- * SF2:SF1:SF0 index => sampling frequency
+- */
+-static int cea_sampling_frequencies[8] = {
+-	0,			/* 0: Refer to Stream Header */
+-	SNDRV_PCM_RATE_32000,	/* 1:  32000Hz */
+-	SNDRV_PCM_RATE_44100,	/* 2:  44100Hz */
+-	SNDRV_PCM_RATE_48000,	/* 3:  48000Hz */
+-	SNDRV_PCM_RATE_88200,	/* 4:  88200Hz */
+-	SNDRV_PCM_RATE_96000,	/* 5:  96000Hz */
+-	SNDRV_PCM_RATE_176400,	/* 6: 176400Hz */
+-	SNDRV_PCM_RATE_192000,	/* 7: 192000Hz */
+-};
+-
+-enum eld_versions {
+-	ELD_VER_CEA_861D	= 2,
+-	ELD_VER_PARTIAL		= 31,
+-};
+-
+-static char *eld_versoin_names[32] = {
+-	"0-reserved",
+-	"1-reserved",
+-	"CEA-861D or below",
+-	"3-reserved",
+-	[4 ... 30] = "reserved",
+-	[31] = "partial"
+-};
+-
+-enum cea_edid_versions {
+-	CEA_EDID_VER_NONE	= 0,
+-	CEA_EDID_VER_CEA861	= 1,
+-	CEA_EDID_VER_CEA861A	= 2,
+-	CEA_EDID_VER_CEA861BCD	= 3,
+-	CEA_EDID_VER_RESERVED	= 4,
+-};
+-
+-static char *cea_edid_version_names[8] = {
+-	"no CEA EDID Timing Extension block present",
+-	"CEA-861",
+-	"CEA-861-A",
+-	"CEA-861-B, C or D",
+-	"4-reserved",
+-	[5 ... 7] = "reserved"
+-};
+-
+-/*
+- * CEA Speaker Allocation data block bits
+- */
+-#define CEA_SA_FLR	(0 << 0)
+-#define CEA_SA_LFE	(1 << 1)
+-#define CEA_SA_FC	(1 << 2)
+-#define CEA_SA_RLR	(1 << 3)
+-#define CEA_SA_RC	(1 << 4)
+-#define CEA_SA_FLRC	(1 << 5)
+-#define CEA_SA_RLRC	(1 << 6)
+-/* the following are not defined in ELD yet */
+-#define CEA_SA_FLRW	(1 << 7)
+-#define CEA_SA_FLRH	(1 << 8)
+-#define CEA_SA_TC	(1 << 9)
+-#define CEA_SA_FCH	(1 << 10)
+-
+-static char *cea_speaker_allocation_names[] = {
+-	/*  0 */ "FL/FR",
+-	/*  1 */ "LFE",
+-	/*  2 */ "FC",
+-	/*  3 */ "RL/RR",
+-	/*  4 */ "RC",
+-	/*  5 */ "FLC/FRC",
+-	/*  6 */ "RLC/RRC",
+-	/*  7 */ "FLW/FRW",
+-	/*  8 */ "FLH/FRH",
+-	/*  9 */ "TC",
+-	/* 10 */ "FCH",
+-};
+-
+-static char *eld_connection_type_names[4] = {
+-	"HDMI",
+-	"Display Port",
+-	"2-reserved",
+-	"3-reserved"
+-};
+-
+-enum cea_audio_coding_types {
+-	AUDIO_CODING_TYPE_REF_STREAM_HEADER	=  0,
+-	AUDIO_CODING_TYPE_LPCM			=  1,
+-	AUDIO_CODING_TYPE_AC3			=  2,
+-	AUDIO_CODING_TYPE_MPEG1			=  3,
+-	AUDIO_CODING_TYPE_MP3			=  4,
+-	AUDIO_CODING_TYPE_MPEG2			=  5,
+-	AUDIO_CODING_TYPE_AACLC			=  6,
+-	AUDIO_CODING_TYPE_DTS			=  7,
+-	AUDIO_CODING_TYPE_ATRAC			=  8,
+-	AUDIO_CODING_TYPE_SACD			=  9,
+-	AUDIO_CODING_TYPE_EAC3			= 10,
+-	AUDIO_CODING_TYPE_DTS_HD		= 11,
+-	AUDIO_CODING_TYPE_MLP			= 12,
+-	AUDIO_CODING_TYPE_DST			= 13,
+-	AUDIO_CODING_TYPE_WMAPRO		= 14,
+-	AUDIO_CODING_TYPE_REF_CXT		= 15,
+-	/* also include valid xtypes below */
+-	AUDIO_CODING_TYPE_HE_AAC		= 15,
+-	AUDIO_CODING_TYPE_HE_AAC2		= 16,
+-	AUDIO_CODING_TYPE_MPEG_SURROUND		= 17,
+-};
+-
+-enum cea_audio_coding_xtypes {
+-	AUDIO_CODING_XTYPE_HE_REF_CT		= 0,
+-	AUDIO_CODING_XTYPE_HE_AAC		= 1,
+-	AUDIO_CODING_XTYPE_HE_AAC2		= 2,
+-	AUDIO_CODING_XTYPE_MPEG_SURROUND	= 3,
+-	AUDIO_CODING_XTYPE_FIRST_RESERVED	= 4,
+-};
+-
+-static char *cea_audio_coding_type_names[] = {
+-	/*  0 */ "undefined",
+-	/*  1 */ "LPCM",
+-	/*  2 */ "AC-3",
+-	/*  3 */ "MPEG1",
+-	/*  4 */ "MP3",
+-	/*  5 */ "MPEG2",
+-	/*  6 */ "AAC-LC",
+-	/*  7 */ "DTS",
+-	/*  8 */ "ATRAC",
+-	/*  9 */ "DSD(1-bit audio)",
+-	/* 10 */ "Dolby Digital Plus(E-AC-3/DD+)",
+-	/* 11 */ "DTS-HD",
+-	/* 12 */ "Dolby TrueHD(MLP)",
+-	/* 13 */ "DST",
+-	/* 14 */ "WMAPro",
+-	/* 15 */ "HE-AAC",
+-	/* 16 */ "HE-AACv2",
+-	/* 17 */ "MPEG Surround",
+-};
+-
+-
+-/*
+  * HDMI routines
+  */
+ 
+-static int hdmi_get_eld_size(struct hda_codec *codec, hda_nid_t nid)
+-{
+-	return snd_hda_codec_read(codec, nid, 0, AC_VERB_GET_HDMI_DIP_SIZE,
+-						 AC_DIPSIZE_ELD_BUF);
+-}
+-
+ #ifdef BE_PARANOID
+ static void hdmi_get_dip_index(struct hda_codec *codec, hda_nid_t nid,
+ 				int *packet_index, int *byte_index)
+@@ -375,294 +186,13 @@ static void hdmi_setup_channel_mapping(s
  }
+ 
+ 
+-/*
+- * ELD(EDID Like Data) routines
+- */
+-
+-static int hdmi_present_sense(struct hda_codec *codec, hda_nid_t nid)
+-{
+-	return snd_hda_codec_read(codec, nid, 0, AC_VERB_GET_PIN_SENSE, 0);
+-}
+-
+-static void hdmi_debug_present_sense(struct hda_codec *codec)
+-{
+-#ifdef CONFIG_SND_DEBUG_VERBOSE
+-	int eldv;
+-	int present;
+-
+-	present = hdmi_present_sense(codec, PIN_NID);
+-	eldv    = (present & AC_PINSENSE_ELDV);
+-	present = (present & AC_PINSENSE_PRESENCE);
+-
+-	printk(KERN_INFO "pinp = %d, eldv = %d\n", !!present, !!eldv);
+-#endif
+-}
+-
+-static unsigned char hdmi_get_eld_byte(struct hda_codec *codec, int byte_index)
+-{
+-	unsigned int val;
+-
+-	val = snd_hda_codec_read(codec, PIN_NID, 0,
+-					AC_VERB_GET_HDMI_ELDD, byte_index);
+-
+-#ifdef BE_PARANOID
+-	printk(KERN_INFO "ELD data byte %d: 0x%x\n", byte_index, val);
+-#endif
+-
+-	if ((val & AC_ELDD_ELD_VALID) == 0) {
+-		snd_printd(KERN_INFO "Invalid ELD data byte %d\n",
+-								byte_index);
+-		val = 0;
+-	}
+-
+-	return val & AC_ELDD_ELD_DATA;
+-}
+-
+-static inline unsigned char grab_bits(const unsigned char *buf,
+-						int byte, int lowbit, int bits)
+-{
+-	BUG_ON(lowbit > 7);
+-	BUG_ON(bits > 8);
+-	BUG_ON(bits <= 0);
+-
+-	return (buf[byte] >> lowbit) & ((1 << bits) - 1);
+-}
+-
+-static void hdmi_update_short_audio_desc(struct cea_sad *a,
+-					 const unsigned char *buf)
+-{
+-	int i;
+-	int val;
+-
+-	val = grab_bits(buf, 1, 0, 7);
+-	a->rates = 0;
+-	for (i = 0; i < 7; i++)
+-		if (val & (1 << i))
+-			a->rates |= cea_sampling_frequencies[i + 1];
+-
+-	a->channels = grab_bits(buf, 0, 0, 3);
+-	a->channels++;
+-
+-	a->format = grab_bits(buf, 0, 3, 4);
+-	switch (a->format) {
+-	case AUDIO_CODING_TYPE_REF_STREAM_HEADER:
+-		snd_printd(KERN_INFO
+-				"audio coding type 0 not expected in ELD\n");
+-		break;
+-
+-	case AUDIO_CODING_TYPE_LPCM:
+-		val = grab_bits(buf, 2, 0, 3);
+-		a->sample_bits = 0;
+-		for (i = 0; i < 3; i++)
+-			if (val & (1 << i))
+-				a->sample_bits |= cea_sample_sizes[i + 1];
+-		break;
+-
+-	case AUDIO_CODING_TYPE_AC3:
+-	case AUDIO_CODING_TYPE_MPEG1:
+-	case AUDIO_CODING_TYPE_MP3:
+-	case AUDIO_CODING_TYPE_MPEG2:
+-	case AUDIO_CODING_TYPE_AACLC:
+-	case AUDIO_CODING_TYPE_DTS:
+-	case AUDIO_CODING_TYPE_ATRAC:
+-		a->max_bitrate = grab_bits(buf, 2, 0, 8);
+-		a->max_bitrate *= 8000;
+-		break;
+-
+-	case AUDIO_CODING_TYPE_SACD:
+-		break;
+-
+-	case AUDIO_CODING_TYPE_EAC3:
+-		break;
+-
+-	case AUDIO_CODING_TYPE_DTS_HD:
+-		break;
+-
+-	case AUDIO_CODING_TYPE_MLP:
+-		break;
+-
+-	case AUDIO_CODING_TYPE_DST:
+-		break;
+-
+-	case AUDIO_CODING_TYPE_WMAPRO:
+-		a->profile = grab_bits(buf, 2, 0, 3);
+-		break;
+-
+-	case AUDIO_CODING_TYPE_REF_CXT:
+-		a->format = grab_bits(buf, 2, 3, 5);
+-		if (a->format == AUDIO_CODING_XTYPE_HE_REF_CT ||
+-		    a->format >= AUDIO_CODING_XTYPE_FIRST_RESERVED) {
+-			snd_printd(KERN_INFO
+-				"audio coding xtype %d not expected in ELD\n",
+-				a->format);
+-			a->format = 0;
+-		} else
+-			a->format += AUDIO_CODING_TYPE_HE_AAC -
+-				     AUDIO_CODING_XTYPE_HE_AAC;
+-		break;
+-	}
+-}
+-
+-static int hdmi_update_sink_eld(struct hda_codec *codec,
+-				const unsigned char *buf, int size)
+-{
+-	struct intel_hdmi_spec *spec = codec->spec;
+-	struct sink_eld *e = &spec->sink;
+-	int mnl;
+-	int i;
+-
+-	e->eld_ver = grab_bits(buf, 0, 3, 5);
+-	if (e->eld_ver != ELD_VER_CEA_861D &&
+-	    e->eld_ver != ELD_VER_PARTIAL) {
+-		snd_printd(KERN_INFO "Unknown ELD version %d\n", e->eld_ver);
+-		goto out_fail;
+-	}
+-
+-	e->eld_size = size;
+-	e->baseline_len = grab_bits(buf, 2, 0, 8);
+-	mnl		= grab_bits(buf, 4, 0, 5);
+-	e->cea_edid_ver	= grab_bits(buf, 4, 5, 3);
+-
+-	e->support_hdcp	= grab_bits(buf, 5, 0, 1);
+-	e->support_ai	= grab_bits(buf, 5, 1, 1);
+-	e->conn_type	= grab_bits(buf, 5, 2, 2);
+-	e->sad_count	= grab_bits(buf, 5, 4, 4);
+-
+-	e->aud_synch_delay = grab_bits(buf, 6, 0, 8);
+-	e->spk_alloc	= grab_bits(buf, 7, 0, 7);
+-
+-	e->port_id	  = get_unaligned_le64(buf + 8);
+-
+-	/* not specified, but the spec's tendency is little endian */
+-	e->manufacture_id = get_unaligned_le16(buf + 16);
+-	e->product_id	  = get_unaligned_le16(buf + 18);
+-
+-	if (mnl > ELD_MAX_MNL) {
+-		snd_printd(KERN_INFO "MNL is reserved value %d\n", mnl);
+-		goto out_fail;
+-	} else if (ELD_FIXED_BYTES + mnl > size) {
+-		snd_printd(KERN_INFO "out of range MNL %d\n", mnl);
+-		goto out_fail;
+-	} else
+-		strlcpy(e->monitor_name, buf + ELD_FIXED_BYTES, mnl);
+-
+-	for (i = 0; i < e->sad_count; i++) {
+-		if (ELD_FIXED_BYTES + mnl + 3 * (i + 1) > size) {
+-			snd_printd(KERN_INFO "out of range SAD %d\n", i);
+-			goto out_fail;
+-		}
+-		hdmi_update_short_audio_desc(e->sad + i,
+-					buf + ELD_FIXED_BYTES + mnl + 3 * i);
+-	}
+-
+-	return 0;
+-
+-out_fail:
+-	e->eld_ver = 0;
+-	return -EINVAL;
+-}
+-
+-static int hdmi_get_eld(struct hda_codec *codec)
+-{
+-	int i;
+-	int ret;
+-	int size;
+-	unsigned char *buf;
+-
+-	i = hdmi_present_sense(codec, PIN_NID) & AC_PINSENSE_ELDV;
+-	if (!i)
+-		return -ENOENT;
+-
+-	size = hdmi_get_eld_size(codec, PIN_NID);
+-	if (size == 0) {
+-		/* wfg: workaround for ASUS P5E-VM HDMI board */
+-		snd_printd(KERN_INFO "ELD buf size is 0, force 128\n");
+-		size = 128;
+-	}
+-	if (size < ELD_FIXED_BYTES || size > PAGE_SIZE) {
+-		snd_printd(KERN_INFO "Invalid ELD buf size %d\n", size);
+-		return -ERANGE;
+-	}
+-
+-	buf = kmalloc(size, GFP_KERNEL);
+-	if (!buf)
+-		return -ENOMEM;
+-
+-	for (i = 0; i < size; i++)
+-		buf[i] = hdmi_get_eld_byte(codec, i);
+-
+-	ret = hdmi_update_sink_eld(codec, buf, size);
+-
+-	kfree(buf);
+-	return ret;
+-}
+-
+-static void hdmi_show_short_audio_desc(struct cea_sad *a)
+-{
+-	printk(KERN_INFO "coding type: %s\n",
+-					cea_audio_coding_type_names[a->format]);
+-	printk(KERN_INFO "channels: %d\n", a->channels);
+-	printk(KERN_INFO "sampling frequencies: 0x%x\n", a->rates);
+-
+-	if (a->format == AUDIO_CODING_TYPE_LPCM)
+-		printk(KERN_INFO "sample bits: 0x%x\n", a->sample_bits);
+-
+-	if (a->max_bitrate)
+-		printk(KERN_INFO "max bitrate: %d HZ\n", a->max_bitrate);
+-
+-	if (a->profile)
+-		printk(KERN_INFO "profile: %d\n", a->profile);
+-}
+-
+-static void hdmi_show_eld(struct hda_codec *codec)
+-{
+-	int i;
+-	int j;
+-	struct intel_hdmi_spec *spec = codec->spec;
+-	struct sink_eld *e = &spec->sink;
+-	char buf[80];
+-
+-	printk(KERN_INFO "ELD buffer size  is %d\n", e->eld_size);
+-	printk(KERN_INFO "ELD baseline len is %d*4\n", e->baseline_len);
+-	printk(KERN_INFO "vendor block len is %d\n",
+-					e->eld_size - e->baseline_len * 4 - 4);
+-	printk(KERN_INFO "ELD version      is %s\n",
+-					eld_versoin_names[e->eld_ver]);
+-	printk(KERN_INFO "CEA EDID version is %s\n",
+-				cea_edid_version_names[e->cea_edid_ver]);
+-	printk(KERN_INFO "manufacture id   is 0x%x\n", e->manufacture_id);
+-	printk(KERN_INFO "product id       is 0x%x\n", e->product_id);
+-	printk(KERN_INFO "port id          is 0x%llx\n", (long long)e->port_id);
+-	printk(KERN_INFO "HDCP support     is %d\n", e->support_hdcp);
+-	printk(KERN_INFO "AI support       is %d\n", e->support_ai);
+-	printk(KERN_INFO "SAD count        is %d\n", e->sad_count);
+-	printk(KERN_INFO "audio sync delay is %x\n", e->aud_synch_delay);
+-	printk(KERN_INFO "connection type  is %s\n",
+-				eld_connection_type_names[e->conn_type]);
+-	printk(KERN_INFO "monitor name     is %s\n", e->monitor_name);
+-
+-	j = 0;
+-	for (i = 0; i < ARRAY_SIZE(cea_speaker_allocation_names); i++) {
+-		if (e->spk_alloc & (1 << i))
+-			j += snprintf(buf + j, sizeof(buf) - j,  " %s",
+-					cea_speaker_allocation_names[i]);
+-	}
+-	buf[j] = '\0'; /* necessary when j == 0 */
+-	printk(KERN_INFO "speaker allocations: (0x%x)%s\n", e->spk_alloc, buf);
+-
+-	for (i = 0; i < e->sad_count; i++)
+-		hdmi_show_short_audio_desc(e->sad + i);
+-}
+-
+-/*
+- * Be careful, ELD buf could be totally rubbish!
+- */
+ static void hdmi_parse_eld(struct hda_codec *codec)
+ {
+-	hdmi_debug_present_sense(codec);
++	struct intel_hdmi_spec *spec = codec->spec;
++	struct sink_eld *eld = &spec->sink;
+ 
+-	if (!hdmi_get_eld(codec))
+-		hdmi_show_eld(codec);
++	if (!snd_hdmi_get_eld(eld, codec, PIN_NID))
++		snd_hdmi_show_eld(eld);
+ }
+ 
+ 
+@@ -676,7 +206,7 @@ static void hdmi_debug_dip_size(struct h
+ 	int i;
+ 	int size;
+ 
+-	size = hdmi_get_eld_size(codec, PIN_NID);
++	size = snd_hdmi_get_eld_size(codec, PIN_NID);
+ 	printk(KERN_DEBUG "ELD buf size is %d\n", size);
+ 
+ 	for (i = 0; i < 8; i++) {
+--- /dev/null
++++ sound-2.6/sound/pci/hda/hda_eld.c
+@@ -0,0 +1,454 @@
++/*
++ * Generic routines and proc interface for ELD(EDID Like Data) information
++ *
++ * Copyright(c) 2008 Intel Corporation.
++ *
++ * Authors:
++ * 		Wu Fengguang <wfg@linux.intel.com>
++ *
++ *  This driver is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This driver is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
++ */
++
++#include <linux/init.h>
++#include <sound/core.h>
++#include <asm/unaligned.h>
++#include "hda_codec.h"
++#include "hda_local.h"
++
++enum eld_versions {
++	ELD_VER_CEA_861D	= 2,
++	ELD_VER_PARTIAL		= 31,
++};
++
++static char *eld_versoin_names[32] = {
++	"reserved",
++	"reserved",
++	"CEA-861D or below",
++	[3 ... 30] = "reserved",
++	[31] = "partial"
++};
++
++enum cea_edid_versions {
++	CEA_EDID_VER_NONE	= 0,
++	CEA_EDID_VER_CEA861	= 1,
++	CEA_EDID_VER_CEA861A	= 2,
++	CEA_EDID_VER_CEA861BCD	= 3,
++	CEA_EDID_VER_RESERVED	= 4,
++};
++
++static char *cea_edid_version_names[8] = {
++	"no CEA EDID Timing Extension block present",
++	"CEA-861",
++	"CEA-861-A",
++	"CEA-861-B, C or D",
++	[4 ... 7] = "reserved"
++};
++
++static char *cea_speaker_allocation_names[] = {
++	/*  0 */ "FL/FR",
++	/*  1 */ "LFE",
++	/*  2 */ "FC",
++	/*  3 */ "RL/RR",
++	/*  4 */ "RC",
++	/*  5 */ "FLC/FRC",
++	/*  6 */ "RLC/RRC",
++	/*  7 */ "FLW/FRW",
++	/*  8 */ "FLH/FRH",
++	/*  9 */ "TC",
++	/* 10 */ "FCH",
++};
++
++static char *eld_connection_type_names[4] = {
++	"HDMI",
++	"Display Port",
++	"2-reserved",
++	"3-reserved"
++};
++
++enum cea_audio_coding_types {
++	AUDIO_CODING_TYPE_REF_STREAM_HEADER	=  0,
++	AUDIO_CODING_TYPE_LPCM			=  1,
++	AUDIO_CODING_TYPE_AC3			=  2,
++	AUDIO_CODING_TYPE_MPEG1			=  3,
++	AUDIO_CODING_TYPE_MP3			=  4,
++	AUDIO_CODING_TYPE_MPEG2			=  5,
++	AUDIO_CODING_TYPE_AACLC			=  6,
++	AUDIO_CODING_TYPE_DTS			=  7,
++	AUDIO_CODING_TYPE_ATRAC			=  8,
++	AUDIO_CODING_TYPE_SACD			=  9,
++	AUDIO_CODING_TYPE_EAC3			= 10,
++	AUDIO_CODING_TYPE_DTS_HD		= 11,
++	AUDIO_CODING_TYPE_MLP			= 12,
++	AUDIO_CODING_TYPE_DST			= 13,
++	AUDIO_CODING_TYPE_WMAPRO		= 14,
++	AUDIO_CODING_TYPE_REF_CXT		= 15,
++	/* also include valid xtypes below */
++	AUDIO_CODING_TYPE_HE_AAC		= 15,
++	AUDIO_CODING_TYPE_HE_AAC2		= 16,
++	AUDIO_CODING_TYPE_MPEG_SURROUND		= 17,
++};
++
++enum cea_audio_coding_xtypes {
++	AUDIO_CODING_XTYPE_HE_REF_CT		= 0,
++	AUDIO_CODING_XTYPE_HE_AAC		= 1,
++	AUDIO_CODING_XTYPE_HE_AAC2		= 2,
++	AUDIO_CODING_XTYPE_MPEG_SURROUND	= 3,
++	AUDIO_CODING_XTYPE_FIRST_RESERVED	= 4,
++};
++
++static char *cea_audio_coding_type_names[] = {
++	/*  0 */ "undefined",
++	/*  1 */ "LPCM",
++	/*  2 */ "AC-3",
++	/*  3 */ "MPEG1",
++	/*  4 */ "MP3",
++	/*  5 */ "MPEG2",
++	/*  6 */ "AAC-LC",
++	/*  7 */ "DTS",
++	/*  8 */ "ATRAC",
++	/*  9 */ "DSD (1-bit audio)",
++	/* 10 */ "E-AC-3/DD+ (Dolby Digital Plus)",
++	/* 11 */ "DTS-HD",
++	/* 12 */ "MLP (Dolby TrueHD)",
++	/* 13 */ "DST",
++	/* 14 */ "WMAPro",
++	/* 15 */ "HE-AAC",
++	/* 16 */ "HE-AACv2",
++	/* 17 */ "MPEG Surround",
++};
++
++/*
++ * The following two lists are shared between
++ * 	- HDMI audio InfoFrame (source to sink)
++ * 	- CEA E-EDID extension (sink to source)
++ */
++
++/*
++ * SS1:SS0 index => sample size
++ */
++static int cea_sample_sizes[4] = {
++	0,	 		/* 0: Refer to Stream Header */
++	AC_SUPPCM_BITS_16,	/* 1: 16 bits */
++	AC_SUPPCM_BITS_20,	/* 2: 20 bits */
++	AC_SUPPCM_BITS_24,	/* 3: 24 bits */
++};
++
++/*
++ * SF2:SF1:SF0 index => sampling frequency
++ */
++static int cea_sampling_frequencies[8] = {
++	0,			/* 0: Refer to Stream Header */
++	SNDRV_PCM_RATE_32000,	/* 1:  32000Hz */
++	SNDRV_PCM_RATE_44100,	/* 2:  44100Hz */
++	SNDRV_PCM_RATE_48000,	/* 3:  48000Hz */
++	SNDRV_PCM_RATE_88200,	/* 4:  88200Hz */
++	SNDRV_PCM_RATE_96000,	/* 5:  96000Hz */
++	SNDRV_PCM_RATE_176400,	/* 6: 176400Hz */
++	SNDRV_PCM_RATE_192000,	/* 7: 192000Hz */
++};
++
++static unsigned char hdmi_get_eld_byte(struct hda_codec *codec, hda_nid_t nid,
++					int byte_index)
++{
++	unsigned int val;
++
++	val = snd_hda_codec_read(codec, nid, 0,
++					AC_VERB_GET_HDMI_ELDD, byte_index);
++
++#ifdef BE_PARANOID
++	printk(KERN_INFO "ELD data byte %d: 0x%x\n", byte_index, val);
++#endif
++
++	if ((val & AC_ELDD_ELD_VALID) == 0) {
++		snd_printd(KERN_INFO "Invalid ELD data byte %d\n",
++								byte_index);
++		val = 0;
++	}
++
++	return val & AC_ELDD_ELD_DATA;
++}
++
++#define GRAB_BITS(buf, byte, lowbit, bits) 		\
++({							\
++	BUILD_BUG_ON(lowbit > 7);			\
++	BUILD_BUG_ON(bits > 8);				\
++	BUILD_BUG_ON(bits <= 0);			\
++							\
++	(buf[byte] >> (lowbit)) & ((1 << (bits)) - 1);	\
++})
++
++static void hdmi_update_short_audio_desc(struct cea_sad *a,
++					 const unsigned char *buf)
++{
++	int i;
++	int val;
++
++	val = GRAB_BITS(buf, 1, 0, 7);
++	a->rates = 0;
++	for (i = 0; i < 7; i++)
++		if (val & (1 << i))
++			a->rates |= cea_sampling_frequencies[i + 1];
++
++	a->channels = GRAB_BITS(buf, 0, 0, 3);
++	a->channels++;
++
++	a->format = GRAB_BITS(buf, 0, 3, 4);
++	switch (a->format) {
++	case AUDIO_CODING_TYPE_REF_STREAM_HEADER:
++		snd_printd(KERN_INFO
++				"audio coding type 0 not expected in ELD\n");
++		break;
++
++	case AUDIO_CODING_TYPE_LPCM:
++		val = GRAB_BITS(buf, 2, 0, 3);
++		a->sample_bits = 0;
++		for (i = 0; i < 3; i++)
++			if (val & (1 << i))
++				a->sample_bits |= cea_sample_sizes[i + 1];
++		break;
++
++	case AUDIO_CODING_TYPE_AC3:
++	case AUDIO_CODING_TYPE_MPEG1:
++	case AUDIO_CODING_TYPE_MP3:
++	case AUDIO_CODING_TYPE_MPEG2:
++	case AUDIO_CODING_TYPE_AACLC:
++	case AUDIO_CODING_TYPE_DTS:
++	case AUDIO_CODING_TYPE_ATRAC:
++		a->max_bitrate = GRAB_BITS(buf, 2, 0, 8);
++		a->max_bitrate *= 8000;
++		break;
++
++	case AUDIO_CODING_TYPE_SACD:
++		break;
++
++	case AUDIO_CODING_TYPE_EAC3:
++		break;
++
++	case AUDIO_CODING_TYPE_DTS_HD:
++		break;
++
++	case AUDIO_CODING_TYPE_MLP:
++		break;
++
++	case AUDIO_CODING_TYPE_DST:
++		break;
++
++	case AUDIO_CODING_TYPE_WMAPRO:
++		a->profile = GRAB_BITS(buf, 2, 0, 3);
++		break;
++
++	case AUDIO_CODING_TYPE_REF_CXT:
++		a->format = GRAB_BITS(buf, 2, 3, 5);
++		if (a->format == AUDIO_CODING_XTYPE_HE_REF_CT ||
++		    a->format >= AUDIO_CODING_XTYPE_FIRST_RESERVED) {
++			snd_printd(KERN_INFO
++				"audio coding xtype %d not expected in ELD\n",
++				a->format);
++			a->format = 0;
++		} else
++			a->format += AUDIO_CODING_TYPE_HE_AAC -
++				     AUDIO_CODING_XTYPE_HE_AAC;
++		break;
++	}
++}
++
++/*
++ * Be careful, ELD buf could be totally rubbish!
++ */
++static int hdmi_update_sink_eld(struct sink_eld *e,
++				const unsigned char *buf, int size)
++{
++	int mnl;
++	int i;
++
++	e->eld_ver = GRAB_BITS(buf, 0, 3, 5);
++	if (e->eld_ver != ELD_VER_CEA_861D &&
++	    e->eld_ver != ELD_VER_PARTIAL) {
++		snd_printd(KERN_INFO "Unknown ELD version %d\n", e->eld_ver);
++		goto out_fail;
++	}
++
++	e->eld_size = size;
++	e->baseline_len = GRAB_BITS(buf, 2, 0, 8);
++	mnl		= GRAB_BITS(buf, 4, 0, 5);
++	e->cea_edid_ver	= GRAB_BITS(buf, 4, 5, 3);
++
++	e->support_hdcp	= GRAB_BITS(buf, 5, 0, 1);
++	e->support_ai	= GRAB_BITS(buf, 5, 1, 1);
++	e->conn_type	= GRAB_BITS(buf, 5, 2, 2);
++	e->sad_count	= GRAB_BITS(buf, 5, 4, 4);
++
++	e->aud_synch_delay = GRAB_BITS(buf, 6, 0, 8) * 2;
++	e->spk_alloc	= GRAB_BITS(buf, 7, 0, 7);
++
++	e->port_id	  = get_unaligned_le64(buf + 8);
++
++	/* not specified, but the spec's tendency is little endian */
++	e->manufacture_id = get_unaligned_le16(buf + 16);
++	e->product_id	  = get_unaligned_le16(buf + 18);
++
++	if (mnl > ELD_MAX_MNL) {
++		snd_printd(KERN_INFO "MNL is reserved value %d\n", mnl);
++		goto out_fail;
++	} else if (ELD_FIXED_BYTES + mnl > size) {
++		snd_printd(KERN_INFO "out of range MNL %d\n", mnl);
++		goto out_fail;
++	} else
++		strlcpy(e->monitor_name, buf + ELD_FIXED_BYTES, mnl);
++
++	for (i = 0; i < e->sad_count; i++) {
++		if (ELD_FIXED_BYTES + mnl + 3 * (i + 1) > size) {
++			snd_printd(KERN_INFO "out of range SAD %d\n", i);
++			goto out_fail;
++		}
++		hdmi_update_short_audio_desc(e->sad + i,
++					buf + ELD_FIXED_BYTES + mnl + 3 * i);
++	}
++
++	return 0;
++
++out_fail:
++	e->eld_ver = 0;
++	return -EINVAL;
++}
++
++static int hdmi_present_sense(struct hda_codec *codec, hda_nid_t nid)
++{
++	return snd_hda_codec_read(codec, nid, 0, AC_VERB_GET_PIN_SENSE, 0);
++}
++
++static int hdmi_eld_valid(struct hda_codec *codec, hda_nid_t nid)
++{
++	int eldv;
++	int present;
++
++	present = hdmi_present_sense(codec, nid);
++	eldv    = (present & AC_PINSENSE_ELDV);
++	present = (present & AC_PINSENSE_PRESENCE);
++
++#ifdef CONFIG_SND_DEBUG_VERBOSE
++	printk(KERN_INFO "pinp = %d, eldv = %d\n", !!present, !!eldv);
++#endif
++
++	return eldv && present;
++}
++
++int snd_hdmi_get_eld_size(struct hda_codec *codec, hda_nid_t nid)
++{
++	return snd_hda_codec_read(codec, nid, 0, AC_VERB_GET_HDMI_DIP_SIZE,
++						 AC_DIPSIZE_ELD_BUF);
++}
++
++int snd_hdmi_get_eld(struct sink_eld *eld,
++		     struct hda_codec *codec, hda_nid_t nid)
++{
++	int i;
++	int ret;
++	int size;
++	unsigned char *buf;
++
++	if (!hdmi_eld_valid(codec, nid))
++		return -ENOENT;
++
++	size = snd_hdmi_get_eld_size(codec, nid);
++	if (size == 0) {
++		/* wfg: workaround for ASUS P5E-VM HDMI board */
++		snd_printd(KERN_INFO "ELD buf size is 0, force 128\n");
++		size = 128;
++	}
++	if (size < ELD_FIXED_BYTES || size > PAGE_SIZE) {
++		snd_printd(KERN_INFO "Invalid ELD buf size %d\n", size);
++		return -ERANGE;
++	}
++
++	buf = kmalloc(size, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	for (i = 0; i < size; i++)
++		buf[i] = hdmi_get_eld_byte(codec, nid, i);
++
++	ret = hdmi_update_sink_eld(eld, buf, size);
++
++	kfree(buf);
++	return ret;
++}
++
++static void hdmi_show_short_audio_desc(struct cea_sad *a)
++{
++	char buf[SND_PRINT_RATES_ADVISED_BUFSIZE];
++
++	printk(KERN_INFO "coding type: %s\n",
++					cea_audio_coding_type_names[a->format]);
++	printk(KERN_INFO "channels: %d\n", a->channels);
++
++	snd_print_pcm_rates(a->rates, buf, sizeof(buf));
++	printk(KERN_INFO "sampling frequencies: %s\n", buf);
++
++	if (a->format == AUDIO_CODING_TYPE_LPCM)
++		printk(KERN_INFO "sample bits: 0x%x\n", a->sample_bits);
++
++	if (a->max_bitrate)
++		printk(KERN_INFO "max bitrate: %d\n", a->max_bitrate);
++
++	if (a->profile)
++		printk(KERN_INFO "profile: %d\n", a->profile);
++}
++
++#define HDMI_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE 80
++static void hdmi_print_channel_allocation(int spk_alloc, char *buf, int buflen)
++{
++	int i, j;
++
++	for (i = 0, j = 0; i < ARRAY_SIZE(cea_speaker_allocation_names); i++) {
++		if (spk_alloc & (1 << i))
++			j += snprintf(buf + j, buflen - j,  "%s ",
++					cea_speaker_allocation_names[i]);
++	}
++	if (j)
++		j--;	/* skip last space */
++	buf[j] = '\0';	/* necessary when j == 0 */
++}
++
++void snd_hdmi_show_eld(struct sink_eld *e)
++{
++	int i;
++	char buf[HDMI_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE];
++
++	printk(KERN_INFO "ELD buffer size  is %d\n", e->eld_size);
++	printk(KERN_INFO "ELD baseline len is %d*4\n", e->baseline_len);
++	printk(KERN_INFO "vendor block len is %d\n",
++					e->eld_size - e->baseline_len * 4 - 4);
++	printk(KERN_INFO "ELD version      is %s\n",
++					eld_versoin_names[e->eld_ver]);
++	printk(KERN_INFO "CEA EDID version is %s\n",
++				cea_edid_version_names[e->cea_edid_ver]);
++	printk(KERN_INFO "manufacture id   is 0x%x\n", e->manufacture_id);
++	printk(KERN_INFO "product id       is 0x%x\n", e->product_id);
++	printk(KERN_INFO "port id          is 0x%llx\n", (long long)e->port_id);
++	printk(KERN_INFO "HDCP support     is %d\n", e->support_hdcp);
++	printk(KERN_INFO "AI support       is %d\n", e->support_ai);
++	printk(KERN_INFO "SAD count        is %d\n", e->sad_count);
++	printk(KERN_INFO "audio sync delay is %x\n", e->aud_synch_delay);
++	printk(KERN_INFO "connection type  is %s\n",
++				eld_connection_type_names[e->conn_type]);
++	printk(KERN_INFO "monitor name     is %s\n", e->monitor_name);
++
++	hdmi_print_channel_allocation(e->spk_alloc, buf, sizeof(buf));
++	printk(KERN_INFO "speaker allocations: (0x%x)%s\n", e->spk_alloc, buf);
++
++	for (i = 0; i < e->sad_count; i++)
++		hdmi_show_short_audio_desc(e->sad + i);
++}
+--- sound-2.6.orig/sound/pci/Kconfig
++++ sound-2.6/sound/pci/Kconfig
+@@ -582,6 +582,10 @@ config SND_HDA_CODEC_INTELHDMI
+ 	  Say Y here to include INTEL HDMI HD-audio codec support in
+ 	  snd-hda-intel driver, such as Eaglelake integrated HDMI.
+ 
++config SND_HDA_ELD
++	def_bool y
++	depends on SND_HDA_CODEC_INTELHDMI
++
+ config SND_HDA_CODEC_CONEXANT
+ 	bool "Build Conexant HD-audio codec support"
+ 	depends on SND_HDA_INTEL
+--- sound-2.6.orig/sound/pci/hda/Makefile
++++ sound-2.6/sound/pci/hda/Makefile
+@@ -4,6 +4,7 @@ snd-hda-intel-y := hda_intel.o
+ # designed to be individual modules
+ snd-hda-intel-y += hda_codec.o
+ snd-hda-intel-$(CONFIG_PROC_FS) += hda_proc.o
++snd-hda-intel-$(CONFIG_SND_HDA_ELD) += hda_eld.o
+ snd-hda-intel-$(CONFIG_SND_HDA_HWDEP) += hda_hwdep.o
+ snd-hda-intel-$(CONFIG_SND_HDA_INPUT_BEEP) += hda_beep.o
+ snd-hda-intel-$(CONFIG_SND_HDA_GENERIC) += hda_generic.o
+--- sound-2.6.orig/sound/pci/hda/hda_local.h
++++ sound-2.6/sound/pci/hda/hda_local.h
+@@ -443,4 +443,45 @@ int snd_hda_check_amp_list_power(struct 
+ #define get_amp_direction(kc)	(((kc)->private_value >> 18) & 0x1)
+ #define get_amp_index(kc)	(((kc)->private_value >> 19) & 0xf)
+ 
++/*
++ * CEA Short Audio Descriptor data
++ */
++struct cea_sad {
++	int	channels;
++	int	format;		/* (format == 0) indicates invalid SAD */
++	int	rates;
++	int	sample_bits;	/* for LPCM */
++	int	max_bitrate;	/* for AC3...ATRAC */
++	int	profile;	/* for WMAPRO */
++};
++
++#define ELD_FIXED_BYTES	20
++#define ELD_MAX_MNL	16
++#define ELD_MAX_SAD	16
++
++/*
++ * ELD: EDID Like Data
++ */
++struct sink_eld {
++	int	eld_size;
++	int	baseline_len;
++	int	eld_ver;	/* (eld_ver == 0) indicates invalid ELD */
++	int	cea_edid_ver;
++	char	monitor_name[ELD_MAX_MNL + 1];
++	int	manufacture_id;
++	int	product_id;
++	u64	port_id;
++	int	support_hdcp;
++	int	support_ai;
++	int	conn_type;
++	int	aud_synch_delay;
++	int	spk_alloc;
++	int	sad_count;
++	struct cea_sad sad[ELD_MAX_SAD];
++};
++
++int snd_hdmi_get_eld_size(struct hda_codec *codec, hda_nid_t nid);
++int snd_hdmi_get_eld(struct sink_eld *, struct hda_codec *, hda_nid_t);
++void snd_hdmi_show_eld(struct sink_eld *eld);
++
+ #endif /* __SOUND_HDA_LOCAL_H */
 
-
---===============3202015516683135062==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============3202015516683135062==--
+-- 
