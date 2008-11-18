@@ -1,19 +1,20 @@
 From: "naveen krishna ch" <naveenkrishna.ch@gmail.com>
 Subject: Re: Jack insertion
-Date: Tue, 18 Nov 2008 19:07:41 +0530
-Message-ID: <ef0d8a250811180537j31c6e59bp56dc82fd9fd3d483@mail.gmail.com>
+Date: Tue, 18 Nov 2008 19:18:56 +0530
+Message-ID: <ef0d8a250811180548w45ee12a9r190cad7183e65a04@mail.gmail.com>
 References: <ef0d8a250811172246i411bd978h7d252b6d536e6de7@mail.gmail.com>
 	<20081118110341.GA23217@sirena.org.uk>
+	<ef0d8a250811180537j31c6e59bp56dc82fd9fd3d483@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qb-out-1314.google.com (qb-out-1314.google.com [72.14.204.172])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1E21E2455B
-	for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2008 14:37:42 +0100 (CET)
-Received: by qb-out-1314.google.com with SMTP id q15so2861229qbq.44
-	for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2008 05:37:42 -0800 (PST)
-In-Reply-To: <20081118110341.GA23217@sirena.org.uk>
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.157])
+	by alsa0.perex.cz (Postfix) with ESMTP id 860692455D
+	for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2008 14:48:58 +0100 (CET)
+Received: by yx-out-1718.google.com with SMTP id 36so2068308yxh.2
+	for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2008 05:48:57 -0800 (PST)
+In-Reply-To: <ef0d8a250811180537j31c6e59bp56dc82fd9fd3d483@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,32 +29,26 @@ To: Mark Brown <broonie@sirena.org.uk>
 Cc: alsa-devel@alsa-project.org, linux-omap-open-source@linux.omap.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 18, 2008 at 4:33 PM, Mark Brown <broonie@sirena.org.uk> wrote:
+On Tue, Nov 18, 2008 at 7:07 PM, naveen krishna ch <
+naveenkrishna.ch@gmail.com> wrote:
 
-> On Tue, Nov 18, 2008 at 12:16:18PM +0530, naveen krishna ch wrote:
 >
-> > Now my issue is is there any work regarding the Headset JACK
-> > insertion/detection.
 >
-> > Earlier there was a proposal for a jack insertion layer.
+> On Tue, Nov 18, 2008 at 4:33 PM, Mark Brown <broonie@sirena.org.uk> wrote:
 >
-> > Can anyone suggest me in this regard.
+>> On Tue, Nov 18, 2008 at 12:16:18PM +0530, naveen krishna ch wrote:
+>>
+>> > Now my issue is is there any work regarding the Headset JACK
+>> > insertion/detection.
+>>
+>> > Earlier there was a proposal for a jack insertion layer.
+>>
+>> > Can anyone suggest me in this regard.
+>>
+>> The generic ALSA part of the API has been merged already - see
+>> include/sound/jack.h.
+>>
 >
-> The generic ALSA part of the API has been merged already - see
-> include/sound/jack.h.
->
-> For ASoC drivers you need to implement the actual detection in your
-> machine driver.  Normally this would just hook into a GPIO.  You can
-> then update the DAPM widget for the jack to mark it as in use or not in
-> use (some existing drivers do this) and also hook into the generic
-> userspace API (that's not been implemented by anyone yet).  Plan is to
-> get something more generic into 2.6.30.
-
-
-Thanks for  your early reply. I am a new to this SOC i started developing
-the driver taking the  Gumsitcs OVERO  + TWL4030 ASOC codec driver as
-reference.
-
 But, i see the jack layer uses the structure
 
 struct snd_device {
@@ -82,6 +77,30 @@ in this case what shall i do to make use of the jack abstraction layer.
 If cant use the jack abstraction layer, can any one suggest me the other way
 out
 
+>
+>> For ASoC drivers you need to implement the actual detection in your
+>> machine driver.  Normally this would just hook into a GPIO.  You can
+>> then update the DAPM widget for the jack to mark it as in use or not in
+>> use (some existing drivers do this) and also hook into the generic
+>> userspace API (that's not been implemented by anyone yet).  Plan is to
+>> get something more generic into 2.6.30.
+>
+>
+> Thanks for  your early reply. I am a new to this SOC i started developing
+> the driver taking the  Gumsitcs OVERO  + TWL4030 ASOC codec driver as
+> reference.
+>
+> In my case the Headset detect gpio is not from the machine (OMAP3) but from
+> the CODEC(TWL4030) itself. Is there any previous case liek this
+>
+> --
+> Thanks,
+> (: Naveen Krishna Ch :)
+>
+
+
+
 -- 
 Thanks,
+
 (: Naveen Krishna Ch :)
