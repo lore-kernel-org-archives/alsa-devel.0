@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: Jack insertion
-Date: Tue, 18 Nov 2008 11:03:43 +0000
-Message-ID: <20081118110341.GA23217@sirena.org.uk>
-References: <ef0d8a250811172246i411bd978h7d252b6d536e6de7@mail.gmail.com>
+From: Wu Fengguang <wfg@linux.intel.com>
+Subject: Re: [PATCH 3/4] hda: HDMI channel allocations for
+	audio infoframe
+Date: Tue, 18 Nov 2008 19:08:18 +0800
+Message-ID: <20081118110817.GA24476@localhost>
+References: <20081118085713.252457834@linux.intel.com>
+	<20081118085809.151205160@linux.intel.com>
+	<s5hmyfxfgjf.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 077A224512
-	for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2008 12:03:45 +0100 (CET)
+Received: from azsmga102.ch.intel.com (mga12.intel.com [143.182.124.36])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7B24C24514
+	for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2008 12:08:31 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <ef0d8a250811172246i411bd978h7d252b6d536e6de7@mail.gmail.com>
+In-Reply-To: <s5hmyfxfgjf.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,25 +24,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: naveen krishna ch <naveenkrishna.ch@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-omap-open-source@linux.omap.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 18, 2008 at 12:16:18PM +0530, naveen krishna ch wrote:
+On Tue, Nov 18, 2008 at 11:57:08AM +0100, Takashi Iwai wrote:
+> At Tue, 18 Nov 2008 16:57:16 +0800,
+> Wu Fengguang wrote:
+> > 
+> > To play a 3+ channels LPCM/DSD stream via HDMI,
+> > 
+> > 	- HDMI sink must tell HDMI source about its speaker placements
+> > 	  (via ELD, speaker-allocation field)
+> > 	- HDMI source must tell the HDMI sink about channel allocation
+> > 	  (via audio infoframe, channel-allocation field)
+> > 
+> > (related docs: HDMI 1.3a spec section 7.4, CEA-861-D section 7.5.3 and 6.6)
+> > 
+> > This patch attempts to set the CA(channel-allocation) byte in the audio infoframe
+> > according to
+> > 	- the number of channels in the current stream
+> > 	- the speakers attached to the HDMI sink
+> > 
+> > A channel_allocations[] line must meet the following two criterions to be
+> > considered as a valid candidate for CA:
+> > 	1) its number of allocated channels = substream->runtime->channels
+> > 	2) its speakers are a subset of the available ones on the sink side
+> > 
+> > If there are multiple candidates, the first one is selected.  This simple
+> > policy shall cheat the sink into playing music, but may direct data to the
+> > wrong speakers.
+> > 
+> > Sorry, this last step is not obvious to me. Any domain experts, please?
+> 
+> The problem is that the speaker positioning isn't defined in the ALSA
+> API yet.  I think your implementation will work in practice.
 
-> Now my issue is is there any work regarding the Headset JACK
-> insertion/detection.
+OK. Let's forget it until (possibly) some one complains ;-)
 
-> Earlier there was a proposal for a jack insertion layer.
+> > +static struct cea_channel_speaker_allocation channel_allocations[] = {
+> > +/* channel number:  8      7     6     5     4      3     2     1 */
+> 
+> Do we need to set ca_index explicitly?
+> Any case ca_index != array index?
 
-> Can anyone suggest me in this regard.
+Yes, since we stop at the first matching item, the lines could be
+reordered somewhere to give priority to some popular ones.
 
-The generic ALSA part of the API has been merged already - see
-include/sound/jack.h.
+> > +static void init_channel_allocations(void)
+> > +{
+> > +	int i, j;
+> > +	struct cea_channel_speaker_allocation *p;
+> > +
+> > +	for (i = 0; i < ARRAY_SIZE(channel_allocations); i++) {
+> > +		p = channel_allocations + i;
+> 
+> You should zero-initialize p->channels and p->spk_mask here...
+> 
+> > +		for (j = 0; j < ARRAY_SIZE(p->speakers); j++)
+> > +			if (p->speakers[j]) {
+> > +				p->channels++;
+> > +				p->spk_mask |= p->speakers[j];
+> > +			}
+> > +	}
+> 
+> ... because patch_intel_hdmi() may be called multiple times (either
+> multiple codecs or reconfiguration via hwdep) as below.
 
-For ASoC drivers you need to implement the actual detection in your
-machine driver.  Normally this would just hook into a GPIO.  You can
-then update the DAPM widget for the jack to mark it as in use or not in
-use (some existing drivers do this) and also hook into the generic
-userspace API (that's not been implemented by anyone yet).  Plan is to
-get something more generic into 2.6.30.
+Got it, thanks.
+
+> > @@ -455,6 +642,8 @@ static int patch_intel_hdmi(struct hda_c
+> >  
+> >  	snd_hda_eld_proc_new(codec, &spec->sink);
+> >  
+> > +	init_channel_allocations();
+> > +
+> >  	return 0;
+> >  }
+
+Thank you,
+Fengguang
