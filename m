@@ -1,21 +1,18 @@
-From: Wu Fengguang <wfg@linux.intel.com>
-Subject: Re: [PATCH 3/4] hda: HDMI channel allocations for
-	audio infoframe
-Date: Tue, 18 Nov 2008 19:30:07 +0800
-Message-ID: <20081118113007.GA25180@localhost>
-References: <20081118085713.252457834@linux.intel.com>
-	<20081118085809.151205160@linux.intel.com>
-	<s5hmyfxfgjf.wl%tiwai@suse.de> <20081118110817.GA24476@localhost>
-	<s5hfxlpffuk.wl%tiwai@suse.de>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH] ARM DaVinci: Add PCM3008 ALSA SoC driver
+	for the Lyrtech SFFSDR board
+Date: Tue, 18 Nov 2008 11:31:51 +0000
+Message-ID: <20081118113150.GC23217@sirena.org.uk>
+References: <1226968079-1624-1-git-send-email-hugo@hugovil.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from azsmga102.ch.intel.com (mga12.intel.com [143.182.124.36])
-	by alsa0.perex.cz (Postfix) with ESMTP id 49C772450C
-	for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2008 12:30:31 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7D59B24516
+	for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2008 12:31:52 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5hfxlpffuk.wl%tiwai@suse.de>
+In-Reply-To: <1226968079-1624-1-git-send-email-hugo@hugovil.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,94 +22,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Hugo Villeneuve <hugo@hugovil.com>
+Cc: alsa-devel@alsa-project.org, Hugo Villeneuve <hugo.villeneuve@lyrtech.com>, davinci-linux-open-source@linux.davincidsp.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 18, 2008 at 12:12:03PM +0100, Takashi Iwai wrote:
-> At Tue, 18 Nov 2008 19:08:18 +0800,
-> Wu Fengguang wrote:
-> > 
-> > On Tue, Nov 18, 2008 at 11:57:08AM +0100, Takashi Iwai wrote:
-> > > At Tue, 18 Nov 2008 16:57:16 +0800,
-> > > Wu Fengguang wrote:
-> > > > 
-> > > > To play a 3+ channels LPCM/DSD stream via HDMI,
-> > > > 
-> > > > 	- HDMI sink must tell HDMI source about its speaker placements
-> > > > 	  (via ELD, speaker-allocation field)
-> > > > 	- HDMI source must tell the HDMI sink about channel allocation
-> > > > 	  (via audio infoframe, channel-allocation field)
-> > > > 
-> > > > (related docs: HDMI 1.3a spec section 7.4, CEA-861-D section 7.5.3 and 6.6)
-> > > > 
-> > > > This patch attempts to set the CA(channel-allocation) byte in the audio infoframe
-> > > > according to
-> > > > 	- the number of channels in the current stream
-> > > > 	- the speakers attached to the HDMI sink
-> > > > 
-> > > > A channel_allocations[] line must meet the following two criterions to be
-> > > > considered as a valid candidate for CA:
-> > > > 	1) its number of allocated channels = substream->runtime->channels
-> > > > 	2) its speakers are a subset of the available ones on the sink side
-> > > > 
-> > > > If there are multiple candidates, the first one is selected.  This simple
-> > > > policy shall cheat the sink into playing music, but may direct data to the
-> > > > wrong speakers.
-> > > > 
-> > > > Sorry, this last step is not obvious to me. Any domain experts, please?
-> > > 
-> > > The problem is that the speaker positioning isn't defined in the ALSA
-> > > API yet.  I think your implementation will work in practice.
-> > 
-> > OK. Let's forget it until (possibly) some one complains ;-)
-> > 
-> > > > +static struct cea_channel_speaker_allocation channel_allocations[] = {
-> > > > +/* channel number:  8      7     6     5     4      3     2     1 */
-> > > 
-> > > Do we need to set ca_index explicitly?
-> > > Any case ca_index != array index?
-> > 
-> > Yes, since we stop at the first matching item, the lines could be
-> > reordered somewhere to give priority to some popular ones.
-> 
-> Fair enough.  One thing I forgot is the initialization style.
-> Try to initialize in C99 style, something like
-> 
-> static struct cea_channel_speaker_allocation channel_allocations[] = {
-> 	{ .ca_index = 0x00,
-> 	  .speakers = { ..... } },   
-> 	{ .ca_index = 0x01,
-> 	  .speakers = { ..... } },   
-> 	...
-> };
-> 
-> You can indent as you like, though.
+On Mon, Nov 17, 2008 at 07:27:59PM -0500, Hugo Villeneuve wrote:
+> The PCM3008 is used on the Lyrtech SFFSDR board, in conjunction with an
+> FPGA that generates the bit clock and the master clock
 
-OK, they still fits nicely into one line :-)
+Looks fairly good overall.
 
-        { .ca_index = 0x10, .speakers = { RRC, RLC, RR, RL,  0,   0, FR, FL } },
-        { .ca_index = 0x11, .speakers = { RRC, RLC, RR, RL,  0, LFE, FR, FL } },
-        { .ca_index = 0x12, .speakers = { RRC, RLC, RR, RL, FC,   0, FR, FL } },
-        { .ca_index = 0x13, .speakers = { RRC, RLC, RR, RL, FC, LFE, FR, FL } },
-        { .ca_index = 0x14, .speakers = { FRC, FLC,  0,  0,  0,   0, FR, FL } },
-        { .ca_index = 0x15, .speakers = { FRC, FLC,  0,  0,  0, LFE, FR, FL } },
-        { .ca_index = 0x16, .speakers = { FRC, FLC,  0,  0, FC,   0, FR, FL } },
-        { .ca_index = 0x17, .speakers = { FRC, FLC,  0,  0, FC, LFE, FR, FL } },
-        { .ca_index = 0x18, .speakers = { FRC, FLC,  0, RC,  0,   0, FR, FL } },
-        { .ca_index = 0x19, .speakers = { FRC, FLC,  0, RC,  0, LFE, FR, FL } },
-        { .ca_index = 0x1a, .speakers = { FRC, FLC,  0, RC, FC,   0, FR, FL } },
-        { .ca_index = 0x1b, .speakers = { FRC, FLC,  0, RC, FC, LFE, FR, FL } },
+> Signed-off-by: Hugo Villeneuve <hugo.villeneuve@lyrtech.com>
 
-But it's a bit too crowded, and I feel better with this one:
+Normally codec drivers and machine drivers should be submitted as
+separate patches, though it's not critical.
 
-{ .ca_index = 0x14,  .speakers = { FRC,  FLC,   0,   0,   0,    0,  FR,  FL } },
-{ .ca_index = 0x15,  .speakers = { FRC,  FLC,   0,   0,   0,  LFE,  FR,  FL } },
-{ .ca_index = 0x16,  .speakers = { FRC,  FLC,   0,   0,  FC,    0,  FR,  FL } },
-{ .ca_index = 0x17,  .speakers = { FRC,  FLC,   0,   0,  FC,  LFE,  FR,  FL } },
-{ .ca_index = 0x18,  .speakers = { FRC,  FLC,   0,  RC,   0,    0,  FR,  FL } },
-{ .ca_index = 0x19,  .speakers = { FRC,  FLC,   0,  RC,   0,  LFE,  FR,  FL } },
-{ .ca_index = 0x1a,  .speakers = { FRC,  FLC,   0,  RC,  FC,    0,  FR,  FL } },
-{ .ca_index = 0x1b,  .speakers = { FRC,  FLC,   0,  RC,  FC,  LFE,  FR,  FL } },
-{ .ca_index = 0x1c,  .speakers = { FRC,  FLC,  RR,  RL,   0,    0,  FR,  FL } },
-{ .ca_index = 0x1d,  .speakers = { FRC,  FLC,  RR,  RL,   0,  LFE,  FR,  FL } },
+> index 5df7402..dc58ce2 100644
+> --- a/sound/soc/codecs/Kconfig
+> +++ b/sound/soc/codecs/Kconfig
+> @@ -80,6 +80,10 @@ config SND_SOC_TWL4030
+>  	tristate
+>  	depends on TWL4030_CORE
+>  
+> +config SND_SOC_PCM3008
+> +	tristate
+> +	depends on SFFSDR_FPGA
+
+The codec driver shouldn't depend on the FPGA driver.  Once that
+dependency has been removed the codec should be added to
+SND_SOC_ALL_CODECS.
+
+> +static int pcm3008_hw_params(struct snd_pcm_substream *substream,
+> +			     struct snd_pcm_hw_params *params)
+> +{
+> +	int fs;
+> +
+> +	/* Fsref can be 32000, 44100 or 48000. */
+> +	fs = params_rate(params);
+> +
+> +	printk(KERN_INFO "pcm3008_hw_params: rate = %d Hz\n", fs);
+> +
+> +	return sffsdr_fpga_set_codec_fs(fs);
+> +}
+
+This should be being done by the machine driver rather than by the codec
+driver - this will allow the codec driver to be used on another machine
+that has some other method for generating the clocks.  As far as I can
+see that's the only dependency on the sffsdr?
+
+> +	/* DEM1  DEM0  DE-EMPHASIS_MODE
+> +	 * Low   Low   De-emphasis 44.1 kHz ON
+> +	 * Low   High  De-emphasis OFF
+> +	 * High  Low   De-emphasis 48 kHz ON
+> +	 * High  High  De-emphasis 32 kHz ON
+> +	 */
+
+Looks like this should be exported as a control?  It's not important for
+merging but it'd be nice.
+
+> +static int pcm3008_soc_suspend(struct platform_device *pdev, pm_message_t msg)
+> +{
+> +	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+> +	struct pcm3008_setup_data *setup = socdev->codec_data;
+> +
+> +	printk(KERN_INFO "pcm3008_soc_suspend(): TODO\n");
+
+This should be a comment, though it looks like you may actually have
+implemented this already?
+
+> +struct pcm3008_setup_data {
+> +	u8 dem0_pin;
+> +	u8 dem1_pin;
+> +	u8 pdad_pin;
+> +	u8 pdda_pin;
+> +};
+
+GPIO numbers should be unsigned to match the gpiolib API (some systems
+do support an awful lot of GPIOs).
+
+Also, ideally pdad and pdad would be used to implement DAPM controls so
+that they can be powered down when not in use but again that's not
+essential for merging - so long as they're passed in someone could do
+that later.
+
+> +config SND_DAVINCI_SOC_SFFSDR
+> +	tristate "SoC Audio support for SFFSDR"
+> +	depends on SND_DAVINCI_SOC && MACH_DAVINCI_SFFSDR
+> +	select SND_DAVINCI_SOC_I2S
+> +	select SND_SOC_PCM3008
+> +	help
+> +	  Say Y if you want to add support for SoC audio on
+> +	  Lyrtech SFFSDR board.
+
+This should also select SSFDR_FPGA - select ignores dependencies so the
+select from the codec driver won't be picked up (though the codec driver
+ought not to be selecting it in the first place).
+
+> --- /dev/null
+> +++ b/sound/soc/davinci/davinci-sffsdr.c
+> @@ -0,0 +1,145 @@
+> +/*
+> + * ASoC driver for Lyrtech SFFSDR board.
+> + *
+> + * Author:      Vladimir Barinov, <vbarinov@ru.mvista.com>
+> + * Copyright:   (C) 2007 MontaVista Software, Inc., <source@mvista.com>
+
+Are you sure?  Looks like cut'n'paste - MODULE_AUTHOR() claims you wrote
+this driver.
