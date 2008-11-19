@@ -1,16 +1,18 @@
 From: Wu Fengguang <wfg@linux.intel.com>
-Subject: [PATCH 4/5] hda: make global snd_print_pcm_bits()
-Date: Wed, 19 Nov 2008 15:14:02 +0800
-Message-ID: <20081119072203.739082953@linux.intel.com>
-References: <20081119071358.231716724@linux.intel.com>
+Subject: Re: [RFC][PATCH] ELD routines and proc interface
+Date: Wed, 19 Nov 2008 16:08:00 +0800
+Message-ID: <20081119080800.GA522@localhost>
+References: <1226542918.126598.6912@de> <20081119071135.GA17733@csy.ca>
+	<20081119071757.GA32376@localhost> <20081119075545.GA19833@csy.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from azsmga101.ch.intel.com (mga07.intel.com [143.182.124.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5B154245C1
-	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 08:26:03 +0100 (CET)
-Content-Disposition: inline; filename=alsa-print-sample-bits.patch
+Received: from azsmga102.ch.intel.com (mga12.intel.com [143.182.124.36])
+	by alsa0.perex.cz (Postfix) with ESMTP id EE7A4245CD
+	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 09:08:11 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20081119075545.GA19833@csy.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,98 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Shane W <shane-alsa@csy.ca>
 Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Introduce a global function snd_print_pcm_bits() and use it in the ELD code.
+On Tue, Nov 18, 2008 at 11:55:45PM -0800, Shane W wrote:
+> On Wed, Nov 19, 2008 at 03:17:57PM +0800, Wu Fengguang wrote:
+> > On Tue, Nov 18, 2008 at 11:11:35PM -0800, Shane W wrote:
+> > > On Thu, Nov 13, 2008 at 10:21:53AM +0800, Wu Fengguang wrote:
+> > > > Create hda_eld.c for ELD routines and proc interface.
+> > 
+> > > Just testing this and your multichannel HDMI code over here
+> > > but it doesn't seem to get ELD data for my setup.  Intel
+> > > g45-id board with an Yamaha RX-v1800 receiver which is HDMI
+> > > 1.3 capable.
+> > 
+> > Do you run the latest xorg intel driver?  Also dmesg should tell us
+> > something if anything goes wrong with ELD retrieving/parsing.
+> 
+> Yes though Xorg wasn't running when I was doing the audio
+> tests.  Pure console at that point but I fired up Xorg
+> which is latest git as of today but still no ELD
 
-Signed-off-by: Wu Fengguang <wfg@linux.intel.com>
----
- sound/pci/hda/hda_eld.c   |   10 ++++++----
- sound/pci/hda/hda_local.h |    3 +++
- sound/pci/hda/hda_proc.c  |   22 ++++++++++++++++------
- 3 files changed, 25 insertions(+), 10 deletions(-)
+Yeah sorry I missed one note. The xorg git tree only contains the
+audio output enabling patches, but not yet ELD transferring patches.
+(the ELD data flow is monitor => video driver => audio driver)
+I called for the Xorg ELD enabling patches from Ma Ling just after
+replying to your email. He should send the patches soon.
 
---- sound-2.6.orig/sound/pci/hda/hda_proc.c
-+++ sound-2.6/sound/pci/hda/hda_proc.c
-@@ -107,23 +107,33 @@ void snd_print_pcm_rates(int pcm, char *
- static void print_pcm_rates(struct snd_info_buffer *buffer, unsigned int pcm)
- {
- 	char buf[SND_PRINT_RATES_ADVISED_BUFSIZE];
-+
- 	pcm &= AC_SUPPCM_RATES;
- 	snd_iprintf(buffer, "    rates [0x%x]:", pcm);
- 	snd_print_pcm_rates(pcm, buf, sizeof(buf));
- 	snd_iprintf(buffer, "%s\n", buf);
- }
- 
--static void print_pcm_bits(struct snd_info_buffer *buffer, unsigned int pcm)
-+void snd_print_pcm_bits(int pcm, char *buf, int buflen)
- {
- 	static unsigned int bits[] = { 8, 16, 20, 24, 32 };
--	int i;
-+	int i, j;
-+
-+	for (i = 0, j = 0; i < ARRAY_SIZE(bits); i++)
-+		if (pcm & (1 << i))
-+			j += snprintf(buf + j, buflen - j,  " %d", bits[i]);
-+
-+	buf[j] = '\0'; /* necessary when j == 0 */
-+}
-+
-+static void print_pcm_bits(struct snd_info_buffer *buffer, unsigned int pcm)
-+{
-+	char buf[SND_PRINT_BITS_ADVISED_BUFSIZE];
- 
- 	pcm = (pcm >> 16) & 0xff;
- 	snd_iprintf(buffer, "    bits [0x%x]:", pcm);
--	for (i = 0; i < ARRAY_SIZE(bits); i++)
--		if (pcm & (1 << i))
--			snd_iprintf(buffer, " %d", bits[i]);
--	snd_iprintf(buffer, "\n");
-+	snd_print_pcm_bits(pcm, buf, sizeof(buf));
-+	snd_iprintf(buffer, "%s\n", buf);
- }
- 
- static void print_pcm_formats(struct snd_info_buffer *buffer,
---- sound-2.6.orig/sound/pci/hda/hda_eld.c
-+++ sound-2.6/sound/pci/hda/hda_eld.c
-@@ -455,7 +455,7 @@ void snd_hdmi_show_eld(struct hdmi_eld *
- static void hdmi_print_sad_info(int i, struct cea_sad *a,
- 				struct snd_info_buffer *buffer)
- {
--	char buf[80];
-+	char buf[SND_PRINT_RATES_ADVISED_BUFSIZE];
- 
- 	snd_iprintf(buffer, "sad%d_coding_type\t[0x%x] %s\n",
- 			i, a->format, cea_audio_coding_type_names[a->format]);
-@@ -464,9 +464,11 @@ static void hdmi_print_sad_info(int i, s
- 	snd_print_pcm_rates(a->rates, buf, sizeof(buf));
- 	snd_iprintf(buffer, "sad%d_rates\t\t[0x%x]%s\n", i, a->rates, buf);
- 
--	if (a->format == AUDIO_CODING_TYPE_LPCM)
--		snd_iprintf(buffer, "sad%d_bits\t\t0x%x\n",
--							i, a->sample_bits);
-+	if (a->format == AUDIO_CODING_TYPE_LPCM) {
-+		snd_print_pcm_bits(a->sample_bits, buf, sizeof(buf));
-+		snd_iprintf(buffer, "sad%d_bits\t\t[0x%x]%s\n",
-+							i, a->sample_bits, buf);
-+	}
- 
- 	if (a->max_bitrate)
- 		snd_iprintf(buffer, "sad%d_max_bitrate\t%d\n",
---- sound-2.6.orig/sound/pci/hda/hda_local.h
-+++ sound-2.6/sound/pci/hda/hda_local.h
-@@ -287,6 +287,9 @@ static inline int snd_hda_codec_proc_new
- #define SND_PRINT_RATES_ADVISED_BUFSIZE	80
- void snd_print_pcm_rates(int pcm, char *buf, int buflen);
- 
-+#define SND_PRINT_BITS_ADVISED_BUFSIZE	16
-+void snd_print_pcm_bits(int pcm, char *buf, int buflen);
-+
- /*
-  * Misc
-  */
+> population.  When Xorg starts, I get this in dmesg:
+> [drm] Initialized i915 1.6.0 20080730 on minor 0
+> [drm:i915_gem_object_bind_to_gtt] *ERROR* GTT full, but LRU
+> list empty
+> [drm:i915_gem_object_pin] *ERROR* Failure to bind:
 
--- 
+> -12<6>HDMI intrinsic event: PD=1 ELDV=1
+
+This last dmesg line is funny. The ELDV(i.e. ELD Valid) is true,
+but the video driver obviously has no ELD data prepared for us.
+
+Thanks,
+Fengguang
