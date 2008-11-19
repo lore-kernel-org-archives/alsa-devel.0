@@ -1,16 +1,17 @@
 From: Wu Fengguang <wfg@linux.intel.com>
-Subject: [PATCH 4/4] hda: HDMI channel mapping cleanups
-Date: Wed, 19 Nov 2008 08:56:18 +0800
-Message-ID: <20081119013904.977235568@linux.intel.com>
+Subject: [PATCH 2/4] hda: make global
+	snd_print_channel_allocation()
+Date: Wed, 19 Nov 2008 08:56:16 +0800
+Message-ID: <20081119013904.776125861@linux.intel.com>
 References: <20081119005614.431653658@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from azsmga101.ch.intel.com (mga07.intel.com [143.182.124.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id 54BC1244E9
+	by alsa0.perex.cz (Postfix) with ESMTP id 8F41D244EA
 	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 02:41:28 +0100 (CET)
-Content-Disposition: inline; filename=alsa-speakers2.patch
+Content-Disposition: inline; filename=alsa-global-print-ca.patch
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,79 +25,71 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Refactor the channel mapping code for consistent naming
-and make it more informed about channel allocations.
+code refactor: make a global function snd_print_channel_allocation().
 
 Signed-off-by: Wu Fengguang <wfg@linux.intel.com>
 ---
- sound/pci/hda/patch_intelhdmi.c |   29 ++++++++++++++++++-----------
- 1 file changed, 18 insertions(+), 11 deletions(-)
+ sound/pci/hda/hda_eld.c   |   11 +++++------
+ sound/pci/hda/hda_local.h |    3 +++
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
---- sound-2.6.orig/sound/pci/hda/patch_intelhdmi.c
-+++ sound-2.6/sound/pci/hda/patch_intelhdmi.c
-@@ -290,7 +290,7 @@ static void hdmi_set_channel_count(struc
- 				chs, hdmi_get_channel_count(codec));
+--- sound-2.6.orig/sound/pci/hda/hda_eld.c
++++ sound-2.6/sound/pci/hda/hda_eld.c
+@@ -407,8 +407,7 @@ static void hdmi_show_short_audio_desc(s
+ 		printk(KERN_INFO "profile: %d\n", a->profile);
  }
  
--static void hdmi_debug_slot_mapping(struct hda_codec *codec)
-+static void hdmi_debug_channel_mapping(struct hda_codec *codec)
+-#define HDMI_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE 80
+-static void hdmi_print_channel_allocation(int spk_alloc, char *buf, int buflen)
++void snd_print_channel_allocation(int spk_alloc, char *buf, int buflen)
  {
- #ifdef CONFIG_SND_DEBUG_VERBOSE
+ 	int i, j;
+ 
+@@ -425,7 +424,7 @@ static void hdmi_print_channel_allocatio
+ void snd_hdmi_show_eld(struct sink_eld *e)
+ {
  	int i;
-@@ -305,13 +305,6 @@ static void hdmi_debug_slot_mapping(stru
+-	char buf[HDMI_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE];
++	char buf[SND_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE];
+ 
+ 	printk(KERN_INFO "ELD buffer size  is %d\n", e->eld_size);
+ 	printk(KERN_INFO "ELD baseline len is %d*4\n", e->baseline_len);
+@@ -446,7 +445,7 @@ void snd_hdmi_show_eld(struct sink_eld *
+ 				eld_connection_type_names[e->conn_type]);
+ 	printk(KERN_INFO "monitor name     is %s\n", e->monitor_name);
+ 
+-	hdmi_print_channel_allocation(e->spk_alloc, buf, sizeof(buf));
++	snd_print_channel_allocation(e->spk_alloc, buf, sizeof(buf));
+ 	printk(KERN_INFO "speaker allocations: (0x%x)%s\n", e->spk_alloc, buf);
+ 
+ 	for (i = 0; i < e->sad_count; i++)
+@@ -484,7 +483,7 @@ static void hdmi_print_eld_info(struct s
+ 				struct snd_info_buffer *buffer)
+ {
+ 	struct sink_eld *e = entry->private_data;
+-	char buf[HDMI_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE];
++	char buf[SND_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE];
+ 	int i;
+ 
+ 	snd_iprintf(buffer, "monitor name\t\t%s\n", e->monitor_name);
+@@ -501,7 +500,7 @@ static void hdmi_print_eld_info(struct s
+ 	snd_iprintf(buffer, "support_ai\t\t%d\n", e->support_ai);
+ 	snd_iprintf(buffer, "audio_sync_delay\t%d\n", e->aud_synch_delay);
+ 
+-	hdmi_print_channel_allocation(e->spk_alloc, buf, sizeof(buf));
++	snd_print_channel_allocation(e->spk_alloc, buf, sizeof(buf));
+ 	snd_iprintf(buffer, "speakers\t\t[0x%x] %s\n", e->spk_alloc, buf);
+ 
+ 	snd_iprintf(buffer, "sad_count\t\t%d\n", e->sad_count);
+--- sound-2.6.orig/sound/pci/hda/hda_local.h
++++ sound-2.6/sound/pci/hda/hda_local.h
+@@ -493,4 +493,7 @@ inline int snd_hda_eld_proc_new(struct h
+ }
  #endif
- }
  
--static void hdmi_setup_channel_mapping(struct hda_codec *codec)
--{
--	snd_hda_sequence_write(codec, def_chan_map);
--	hdmi_debug_slot_mapping(codec);
--}
--
--
- static void hdmi_parse_eld(struct hda_codec *codec)
- {
- 	struct intel_hdmi_spec *spec = codec->spec;
-@@ -461,6 +454,22 @@ static int hdmi_setup_channel_allocation
- 	return -1;
- }
- 
-+static void hdmi_setup_channel_mapping(struct hda_codec *codec,
-+					struct hdmi_audio_infoframe *ai)
-+{
-+	if (!ai->CA)
-+		return;
++#define SND_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE 80
++void snd_print_channel_allocation(int spk_alloc, char *buf, int buflen);
 +
-+	/*
-+	 * TODO: adjust channel mapping if necessary
-+	 * ALSA sequence is front/surr/clfe/side?
-+	 */
-+
-+	snd_hda_sequence_write(codec, def_chan_map);
-+	hdmi_debug_channel_mapping(codec);
-+}
-+
-+
- static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
- 					struct snd_pcm_substream *substream)
- {
-@@ -472,6 +481,7 @@ static void hdmi_setup_audio_infoframe(s
- 	};
- 
- 	hdmi_setup_channel_allocation(codec, &ai);
-+	hdmi_setup_channel_mapping(codec, &ai);
- 
- 	hdmi_fill_audio_infoframe(codec, &ai);
- }
-@@ -569,9 +579,6 @@ static int intel_hdmi_playback_pcm_prepa
- 
- 	hdmi_set_channel_count(codec, substream->runtime->channels);
- 
--	/* wfg: channel mapping not supported by DEVCTG */
--	hdmi_setup_channel_mapping(codec);
--
- 	hdmi_setup_audio_infoframe(codec, substream);
- 
- 	hdmi_enable_output(codec);
+ #endif /* __SOUND_HDA_LOCAL_H */
 
 -- 
