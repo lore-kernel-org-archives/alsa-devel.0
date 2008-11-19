@@ -1,14 +1,16 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: [PATCH] hda: EAPD mute on suspend
-Date: Tue, 18 Nov 2008 20:54:17 -0500
-Message-ID: <492371C9.2010407@embeddedalley.com>
+From: Hugo Villeneuve <hugo@hugovil.com>
+Subject: PCM3008 ALSA Soc driver and Lyrtech SFFSDR board audio
+	support (v2)
+Date: Wed, 19 Nov 2008 01:37:30 -0500
+Message-ID: <1227076652-23370-1-git-send-email-hugo@hugovil.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
-	by alsa0.perex.cz (Postfix) with SMTP id 21068244EF
-	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 02:54:32 +0100 (CET)
+Received: from server.hugovil.com (201-217-static-ppp.3menatwork.com
+	[64.235.217.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2DEE42457C
+	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 07:37:33 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,60 +21,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+Cc: davinci-linux-open-source@linux.davincidsp.com
 List-Id: alsa-devel@alsa-project.org
 
-Moved support for EAPD mute on suspend from stac92hd71xx_suspend
-to the generic stac92xx_suspend function.
+Reworked and splitted patch based on Mark Brown comments.
 
-Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
----
+Mark, thank-you for your comments. I implemented almost all of
+your suggestions, except for the de-emphasis control because I
+don't really know how I can export (and test) that interface.
+Like you said, maybe we or someone else can do it later.
 
-diff --git a/pci/hda/patch_sigmatel.c b/pci/hda/patch_sigmatel.c
-index e0298df..900d99f 100644
---- a/pci/hda/patch_sigmatel.c
-+++ b/pci/hda/patch_sigmatel.c
-@@ -4077,7 +4077,17 @@ static int stac92xx_resume(struct hda_codec *codec)
- 		codec->patch_ops.unsol_event(codec, STAC_HP_EVENT << 26);
- 	return 0;
- }
--#endif
-+
-+static int stac92xx_suspend(struct hda_codec *codec, pm_message_t state)
-+{
-+	struct sigmatel_spec *spec = codec->spec;
-+	if (spec->eapd_mask)
-+		stac_gpio_set(codec, spec->gpio_mask,
-+				spec->gpio_dir, spec->gpio_data &
-+				~spec->eapd_mask);
-+	return 0;
-+}
-+#endif
-
- static struct hda_codec_ops stac92xx_patch_ops = {
- 	.build_controls = stac92xx_build_controls,
-@@ -4087,6 +4097,7 @@ static struct hda_codec_ops stac92xx_patch_ops = {
- 	.unsol_event = stac92xx_unsol_event,
- #ifdef SND_HDA_NEEDS_RESUME
- 	.resume = stac92xx_resume,
-+	.suspend = stac92xx_suspend,
- #endif
- };
-
-@@ -4498,14 +4509,8 @@ static int stac92hd71xx_resume(struct hda_codec *codec)
-
- static int stac92hd71xx_suspend(struct hda_codec *codec, pm_message_t state)
- {
--	struct sigmatel_spec *spec = codec->spec;
--
--	stac92hd71xx_set_power_state(codec, AC_PWRST_D3);
--	if (spec->eapd_mask)
--		stac_gpio_set(codec, spec->gpio_mask,
--				spec->gpio_dir, spec->gpio_data &
--				~spec->eapd_mask);
--	return 0;
-+	stac92hd71xx_set_power_state(codec, AC_PWRST_D3);	
-+	return stac92xx_suspend(codec, state);
- };
-
- #endif
+Hugo Villeneuve
