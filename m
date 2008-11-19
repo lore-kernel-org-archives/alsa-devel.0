@@ -1,16 +1,16 @@
 From: Wu Fengguang <wfg@linux.intel.com>
-Subject: [PATCH 5/5] hda: compact ELD output messages
-Date: Wed, 19 Nov 2008 15:14:03 +0800
-Message-ID: <20081119072203.838628426@linux.intel.com>
+Subject: [PATCH 4/5] hda: make global snd_print_pcm_bits()
+Date: Wed, 19 Nov 2008 15:14:02 +0800
+Message-ID: <20081119072203.739082953@linux.intel.com>
 References: <20081119071358.231716724@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from azsmga101.ch.intel.com (mga07.intel.com [143.182.124.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1F35B245C8
-	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 08:26:01 +0100 (CET)
-Content-Disposition: inline; filename=alsa-compact-eld-dmesg.patch
+	by alsa0.perex.cz (Postfix) with ESMTP id 5B154245C1
+	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 08:26:03 +0100 (CET)
+Content-Disposition: inline; filename=alsa-print-sample-bits.patch
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,93 +24,94 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Strip out some ELD printk messages that end user won't care,
-and make the output compact.
+Introduce a global function snd_print_pcm_bits() and use it in the ELD code.
 
 Signed-off-by: Wu Fengguang <wfg@linux.intel.com>
 ---
- sound/pci/hda/hda_eld.c |   58 ++++++++++++++++----------------------
- 1 file changed, 25 insertions(+), 33 deletions(-)
+ sound/pci/hda/hda_eld.c   |   10 ++++++----
+ sound/pci/hda/hda_local.h |    3 +++
+ sound/pci/hda/hda_proc.c  |   22 ++++++++++++++++------
+ 3 files changed, 25 insertions(+), 10 deletions(-)
 
---- sound-2.6.orig/sound/pci/hda/hda_eld.c
-+++ sound-2.6/sound/pci/hda/hda_eld.c
-@@ -389,22 +389,27 @@ int snd_hdmi_get_eld(struct hdmi_eld *el
- static void hdmi_show_short_audio_desc(struct cea_sad *a)
+--- sound-2.6.orig/sound/pci/hda/hda_proc.c
++++ sound-2.6/sound/pci/hda/hda_proc.c
+@@ -107,23 +107,33 @@ void snd_print_pcm_rates(int pcm, char *
+ static void print_pcm_rates(struct snd_info_buffer *buffer, unsigned int pcm)
  {
  	char buf[SND_PRINT_RATES_ADVISED_BUFSIZE];
-+	char buf2[8 + SND_PRINT_BITS_ADVISED_BUFSIZE] = ", bits =";
- 
--	printk(KERN_INFO "coding type: %s\n",
--					cea_audio_coding_type_names[a->format]);
--	printk(KERN_INFO "channels: %d\n", a->channels);
-+	if (!a->format)
-+		return;
- 
- 	snd_print_pcm_rates(a->rates, buf, sizeof(buf));
--	printk(KERN_INFO "sampling rates: %s\n", buf);
- 
- 	if (a->format == AUDIO_CODING_TYPE_LPCM)
--		printk(KERN_INFO "sample bits: 0x%x\n", a->sample_bits);
--
--	if (a->max_bitrate)
--		printk(KERN_INFO "max bitrate: %d\n", a->max_bitrate);
--
--	if (a->profile)
--		printk(KERN_INFO "profile: %d\n", a->profile);
-+		snd_print_pcm_rates(a->sample_bits, buf2 + 8, sizeof(buf2 - 8));
-+	else if (a->max_bitrate)
-+		snprintf(buf2, sizeof(buf2),
-+				", max bitrate = %d", a->max_bitrate);
-+	else
-+		buf2[0] = '\0';
 +
-+	printk(KERN_INFO "supports coding type %s:"
-+			" channels = %d, rates =%s%s\n",
-+			cea_audio_coding_type_names[a->format],
-+			a->channels,
-+			buf,
-+			buf2);
+ 	pcm &= AC_SUPPCM_RATES;
+ 	snd_iprintf(buffer, "    rates [0x%x]:", pcm);
+ 	snd_print_pcm_rates(pcm, buf, sizeof(buf));
+ 	snd_iprintf(buffer, "%s\n", buf);
  }
  
- void snd_print_channel_allocation(int spk_alloc, char *buf, int buflen)
-@@ -422,29 +427,16 @@ void snd_print_channel_allocation(int sp
- void snd_hdmi_show_eld(struct hdmi_eld *e)
+-static void print_pcm_bits(struct snd_info_buffer *buffer, unsigned int pcm)
++void snd_print_pcm_bits(int pcm, char *buf, int buflen)
  {
- 	int i;
--	char buf[SND_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE];
- 
--	printk(KERN_INFO "ELD buffer size  is %d\n", e->eld_size);
--	printk(KERN_INFO "ELD baseline len is %d*4\n", e->baseline_len);
--	printk(KERN_INFO "vendor block len is %d\n",
--					e->eld_size - e->baseline_len * 4 - 4);
--	printk(KERN_INFO "ELD version      is %s\n",
--					eld_versoin_names[e->eld_ver]);
--	printk(KERN_INFO "CEA EDID version is %s\n",
--				cea_edid_version_names[e->cea_edid_ver]);
--	printk(KERN_INFO "manufacture id   is 0x%x\n", e->manufacture_id);
--	printk(KERN_INFO "product id       is 0x%x\n", e->product_id);
--	printk(KERN_INFO "port id          is 0x%llx\n", (long long)e->port_id);
--	printk(KERN_INFO "HDCP support     is %d\n", e->support_hdcp);
--	printk(KERN_INFO "AI support       is %d\n", e->support_ai);
--	printk(KERN_INFO "SAD count        is %d\n", e->sad_count);
--	printk(KERN_INFO "audio sync delay is %x\n", e->aud_synch_delay);
--	printk(KERN_INFO "connection type  is %s\n",
--				eld_connection_type_names[e->conn_type]);
--	printk(KERN_INFO "monitor name     is %s\n", e->monitor_name);
--
--	snd_print_channel_allocation(e->spk_alloc, buf, sizeof(buf));
--	printk(KERN_INFO "speaker allocations: (0x%x)%s\n", e->spk_alloc, buf);
-+	printk(KERN_INFO "detected monitor %s at connection type %s\n",
-+			e->monitor_name,
-+			eld_connection_type_names[e->conn_type]);
+ 	static unsigned int bits[] = { 8, 16, 20, 24, 32 };
+-	int i;
++	int i, j;
 +
-+	if (e->spk_alloc) {
-+		char buf[SND_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE];
-+		snd_print_channel_allocation(e->spk_alloc, buf, sizeof(buf));
-+		printk(KERN_INFO "available speakers:%s\n", buf);
++	for (i = 0, j = 0; i < ARRAY_SIZE(bits); i++)
++		if (pcm & (1 << i))
++			j += snprintf(buf + j, buflen - j,  " %d", bits[i]);
++
++	buf[j] = '\0'; /* necessary when j == 0 */
++}
++
++static void print_pcm_bits(struct snd_info_buffer *buffer, unsigned int pcm)
++{
++	char buf[SND_PRINT_BITS_ADVISED_BUFSIZE];
+ 
+ 	pcm = (pcm >> 16) & 0xff;
+ 	snd_iprintf(buffer, "    bits [0x%x]:", pcm);
+-	for (i = 0; i < ARRAY_SIZE(bits); i++)
+-		if (pcm & (1 << i))
+-			snd_iprintf(buffer, " %d", bits[i]);
+-	snd_iprintf(buffer, "\n");
++	snd_print_pcm_bits(pcm, buf, sizeof(buf));
++	snd_iprintf(buffer, "%s\n", buf);
+ }
+ 
+ static void print_pcm_formats(struct snd_info_buffer *buffer,
+--- sound-2.6.orig/sound/pci/hda/hda_eld.c
++++ sound-2.6/sound/pci/hda/hda_eld.c
+@@ -455,7 +455,7 @@ void snd_hdmi_show_eld(struct hdmi_eld *
+ static void hdmi_print_sad_info(int i, struct cea_sad *a,
+ 				struct snd_info_buffer *buffer)
+ {
+-	char buf[80];
++	char buf[SND_PRINT_RATES_ADVISED_BUFSIZE];
+ 
+ 	snd_iprintf(buffer, "sad%d_coding_type\t[0x%x] %s\n",
+ 			i, a->format, cea_audio_coding_type_names[a->format]);
+@@ -464,9 +464,11 @@ static void hdmi_print_sad_info(int i, s
+ 	snd_print_pcm_rates(a->rates, buf, sizeof(buf));
+ 	snd_iprintf(buffer, "sad%d_rates\t\t[0x%x]%s\n", i, a->rates, buf);
+ 
+-	if (a->format == AUDIO_CODING_TYPE_LPCM)
+-		snd_iprintf(buffer, "sad%d_bits\t\t0x%x\n",
+-							i, a->sample_bits);
++	if (a->format == AUDIO_CODING_TYPE_LPCM) {
++		snd_print_pcm_bits(a->sample_bits, buf, sizeof(buf));
++		snd_iprintf(buffer, "sad%d_bits\t\t[0x%x]%s\n",
++							i, a->sample_bits, buf);
 +	}
  
- 	for (i = 0; i < e->sad_count; i++)
- 		hdmi_show_short_audio_desc(e->sad + i);
+ 	if (a->max_bitrate)
+ 		snd_iprintf(buffer, "sad%d_max_bitrate\t%d\n",
+--- sound-2.6.orig/sound/pci/hda/hda_local.h
++++ sound-2.6/sound/pci/hda/hda_local.h
+@@ -287,6 +287,9 @@ static inline int snd_hda_codec_proc_new
+ #define SND_PRINT_RATES_ADVISED_BUFSIZE	80
+ void snd_print_pcm_rates(int pcm, char *buf, int buflen);
+ 
++#define SND_PRINT_BITS_ADVISED_BUFSIZE	16
++void snd_print_pcm_bits(int pcm, char *buf, int buflen);
++
+ /*
+  * Misc
+  */
 
 -- 
