@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 4/6] ASoC: Add support for omap2evm board
-Date: Wed, 19 Nov 2008 13:36:31 +0000
-Message-ID: <1227101793-3768-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/6] ASoC: Add driver for the Lyrtech SFFSDR
+	board
+Date: Wed, 19 Nov 2008 13:36:30 +0000
+Message-ID: <1227101793-3768-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20081119133427.GA3687@rakim.wolfsonmicro.main>
 	<1227101793-3768-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1227101793-3768-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1227101793-3768-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 31B41103822
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 442682461C
 	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 14:36:35 +0100 (CET)
-In-Reply-To: <1227101793-3768-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <1227101793-3768-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,210 +24,217 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Arun KS <arunks@mistralsolutions.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Hugo Villeneuve <hugo@hugovil.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Arun KS <arunks@mistralsolutions.com>
+From: Hugo Villeneuve <hugo@hugovil.com>
 
-This patch adds twl4030 audio support on omap2evm
+The PCM3008 is used on the Lyrtech SFFSDR board, in conjunction with an
+FPGA that generates the bit clock and the master clock
 
-Signed-off-by: Arun KS <arunks@mistralsolutions.com>
+[Downgraded the rate debug print to pr_debug() in hw_params, converted
+asm/gpio.h to linux/gpio.h -- broonie]
+
+Signed-off-by: Hugo Villeneuve <hugo@hugovil.com>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/omap/Kconfig    |    9 +++
- sound/soc/omap/Makefile   |    2 +
- sound/soc/omap/omap2evm.c |  150 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 161 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/omap/omap2evm.c
+ sound/soc/davinci/Kconfig          |   10 +++
+ sound/soc/davinci/Makefile         |    2 +
+ sound/soc/davinci/davinci-sffsdr.c |  156 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 168 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/davinci/davinci-sffsdr.c
 
-diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
-index cf40e42..6c56277 100644
---- a/sound/soc/omap/Kconfig
-+++ b/sound/soc/omap/Kconfig
-@@ -30,4 +30,13 @@ config SND_OMAP_SOC_OVERO
+diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
+index 8f7e338..b502741 100644
+--- a/sound/soc/davinci/Kconfig
++++ b/sound/soc/davinci/Kconfig
+@@ -17,3 +17,13 @@ config SND_DAVINCI_SOC_EVM
  	help
- 	  Say Y if you want to add support for SoC audio on the Gumstix Overo.
- 
-+config SND_OMAP_SOC_OMAP2EVM
-+	tristate "SoC Audio support for OMAP2EVM board"
-+	depends on SND_OMAP_SOC && MACH_OMAP2EVM
-+	select SND_OMAP_SOC_MCBSP
-+	select SND_SOC_TWL4030
+ 	  Say Y if you want to add support for SoC audio on TI
+ 	  DaVinci EVM platform.
++
++config SND_DAVINCI_SOC_SFFSDR
++	tristate "SoC Audio support for SFFSDR"
++	depends on SND_DAVINCI_SOC && MACH_DAVINCI_SFFSDR
++	select SND_DAVINCI_SOC_I2S
++	select SND_SOC_PCM3008
++	select SFFSDR_FPGA
 +	help
-+	  Say Y if you want to add support for SoC audio on the omap2evm board.
-+
-+
++	  Say Y if you want to add support for SoC audio on
++	  Lyrtech SFFSDR board.
+diff --git a/sound/soc/davinci/Makefile b/sound/soc/davinci/Makefile
+index ca772e5..ca8bae1 100644
+--- a/sound/soc/davinci/Makefile
++++ b/sound/soc/davinci/Makefile
+@@ -7,5 +7,7 @@ obj-$(CONFIG_SND_DAVINCI_SOC_I2S) += snd-soc-davinci-i2s.o
  
-diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
-index fefc9be..f5da3cc 100644
---- a/sound/soc/omap/Makefile
-+++ b/sound/soc/omap/Makefile
-@@ -9,8 +9,10 @@ obj-$(CONFIG_SND_OMAP_SOC_MCBSP) += snd-soc-omap-mcbsp.o
- snd-soc-n810-objs := n810.o
- snd-soc-osk5912-objs := osk5912.o
- snd-soc-overo-objs := overo.o
-+snd-soc-omap2evm-objs := omap2evm.o
+ # DAVINCI Machine Support
+ snd-soc-evm-objs := davinci-evm.o
++snd-soc-sffsdr-objs := davinci-sffsdr.o
  
- obj-$(CONFIG_SND_OMAP_SOC_N810) += snd-soc-n810.o
- obj-$(CONFIG_SND_OMAP_SOC_OSK5912) += snd-soc-osk5912.o
- obj-$(CONFIG_SND_OMAP_SOC_OVERO) += snd-soc-overo.o
-+obj-$(CONFIG_MACH_OMAP2EVM) += snd-soc-omap2evm.o
- 
-diff --git a/sound/soc/omap/omap2evm.c b/sound/soc/omap/omap2evm.c
+ obj-$(CONFIG_SND_DAVINCI_SOC_EVM) += snd-soc-evm.o
++obj-$(CONFIG_SND_DAVINCI_SOC_SFFSDR) += snd-soc-sffsdr.o
+diff --git a/sound/soc/davinci/davinci-sffsdr.c b/sound/soc/davinci/davinci-sffsdr.c
 new file mode 100644
-index 0000000..c376213
+index 0000000..69a8a76
 --- /dev/null
-+++ b/sound/soc/omap/omap2evm.c
-@@ -0,0 +1,150 @@
++++ b/sound/soc/davinci/davinci-sffsdr.c
+@@ -0,0 +1,156 @@
 +/*
-+ * omap2evm.c  --  SoC audio machine driver for omap2evm board
++ * ASoC driver for Lyrtech SFFSDR board.
 + *
-+ * Author: Arun KS <arunks@mistralsolutions.com>
++ * Author:	Hugo Villeneuve
++ * Copyright (C) 2008 Lyrtech inc
 + *
-+ * Based on sound/soc/omap/overo.c by Steve Sakoman
++ * Based on ASoC driver for TI DAVINCI EVM platform, original copyright follow:
++ * Copyright:   (C) 2007 MontaVista Software, Inc., <source@mvista.com>
 + *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-+ * 02110-1301 USA
-+ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
 + */
 +
-+#include <linux/clk.h>
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/timer.h>
++#include <linux/interrupt.h>
 +#include <linux/platform_device.h>
++#include <linux/gpio.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
 +#include <sound/soc.h>
 +#include <sound/soc-dapm.h>
 +
-+#include <asm/mach-types.h>
-+#include <mach/hardware.h>
-+#include <mach/gpio.h>
++#include <asm/dma.h>
++#include <asm/plat-sffsdr/sffsdr-fpga.h>
++
 +#include <mach/mcbsp.h>
++#include <mach/edma.h>
 +
-+#include "omap-mcbsp.h"
-+#include "omap-pcm.h"
-+#include "../codecs/twl4030.h"
++#include "../codecs/pcm3008.h"
++#include "davinci-pcm.h"
++#include "davinci-i2s.h"
 +
-+static int omap2evm_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
++static int sffsdr_hw_params(struct snd_pcm_substream *substream,
++			    struct snd_pcm_hw_params *params)
 +{
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
 +	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	int ret;
++	int fs;
++	int ret = 0;
 +
-+	/* Set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai,
-+				  SND_SOC_DAIFMT_I2S |
-+				  SND_SOC_DAIFMT_NB_NF |
-+				  SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0) {
-+		printk(KERN_ERR "can't set codec DAI configuration\n");
-+		return ret;
-+	}
-+
-+	/* Set cpu DAI configuration */
++	/* Set cpu DAI configuration:
++	 * CLKX and CLKR are the inputs for the Sample Rate Generator.
++	 * FSX and FSR are outputs, driven by the sample Rate Generator. */
 +	ret = snd_soc_dai_set_fmt(cpu_dai,
-+				  SND_SOC_DAIFMT_I2S |
-+				  SND_SOC_DAIFMT_NB_NF |
-+				  SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0) {
-+		printk(KERN_ERR "can't set cpu DAI configuration\n");
++				  SND_SOC_DAIFMT_RIGHT_J |
++				  SND_SOC_DAIFMT_CBM_CFS |
++				  SND_SOC_DAIFMT_IB_NF);
++	if (ret < 0)
 +		return ret;
-+	}
 +
-+	/* Set the codec system clock for DAC and ADC */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
-+					    SND_SOC_CLOCK_IN);
-+	if (ret < 0) {
-+		printk(KERN_ERR "can't set codec system clock\n");
-+		return ret;
-+	}
++	/* Fsref can be 32000, 44100 or 48000. */
++	fs = params_rate(params);
 +
-+	return 0;
++	pr_debug("sffsdr_hw_params: rate = %d Hz\n", fs);
++
++	return sffsdr_fpga_set_codec_fs(fs);
 +}
 +
-+static struct snd_soc_ops omap2evm_ops = {
-+	.hw_params = omap2evm_hw_params,
++static struct snd_soc_ops sffsdr_ops = {
++	.hw_params = sffsdr_hw_params,
 +};
 +
-+/* Digital audio interface glue - connects codec <--> CPU */
-+static struct snd_soc_dai_link omap2evm_dai = {
-+	.name = "TWL4030",
-+	.stream_name = "TWL4030",
-+	.cpu_dai = &omap_mcbsp_dai[0],
-+	.codec_dai = &twl4030_dai,
-+	.ops = &omap2evm_ops,
++/* davinci-sffsdr digital audio interface glue - connects codec <--> CPU */
++static struct snd_soc_dai_link sffsdr_dai = {
++	.name = "PCM3008", /* Codec name */
++	.stream_name = "PCM3008 HiFi",
++	.cpu_dai = &davinci_i2s_dai,
++	.codec_dai = &pcm3008_dai,
++	.ops = &sffsdr_ops,
 +};
 +
-+/* Audio machine driver */
-+static struct snd_soc_machine snd_soc_machine_omap2evm = {
-+	.name = "omap2evm",
-+	.dai_link = &omap2evm_dai,
++/* davinci-sffsdr audio machine driver */
++static struct snd_soc_machine snd_soc_machine_sffsdr = {
++	.name = "DaVinci SFFSDR",
++	.dai_link = &sffsdr_dai,
 +	.num_links = 1,
 +};
 +
-+/* Audio subsystem */
-+static struct snd_soc_device omap2evm_snd_devdata = {
-+	.machine = &snd_soc_machine_omap2evm,
-+	.platform = &omap_soc_platform,
-+	.codec_dev = &soc_codec_dev_twl4030,
++/* sffsdr audio private data */
++static struct pcm3008_setup_data sffsdr_pcm3008_setup = {
++	.dem0_pin = GPIO(45),
++	.dem1_pin = GPIO(46),
++	.pdad_pin = GPIO(47),
++	.pdda_pin = GPIO(38),
 +};
 +
-+static struct platform_device *omap2evm_snd_device;
++/* sffsdr audio subsystem */
++static struct snd_soc_device sffsdr_snd_devdata = {
++	.machine = &snd_soc_machine_sffsdr,
++	.platform = &davinci_soc_platform,
++	.codec_dev = &soc_codec_dev_pcm3008,
++	.codec_data = &sffsdr_pcm3008_setup,
++};
 +
-+static int __init omap2evm_soc_init(void)
++static struct resource sffsdr_snd_resources[] = {
++	{
++		.start = DAVINCI_MCBSP_BASE,
++		.end = DAVINCI_MCBSP_BASE + SZ_8K - 1,
++		.flags = IORESOURCE_MEM,
++	},
++};
++
++static struct evm_snd_platform_data sffsdr_snd_data = {
++	.tx_dma_ch	= DAVINCI_DMA_MCBSP_TX,
++	.rx_dma_ch	= DAVINCI_DMA_MCBSP_RX,
++};
++
++static struct platform_device *sffsdr_snd_device;
++
++static int __init sffsdr_init(void)
 +{
 +	int ret;
 +
-+	if (!machine_is_omap2evm()) {
-+		pr_debug("Not omap2evm!\n");
-+		return -ENODEV;
-+	}
-+	printk(KERN_INFO "omap2evm SoC init\n");
-+
-+	omap2evm_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!omap2evm_snd_device) {
-+		printk(KERN_ERR "Platform device allocation failed\n");
++	sffsdr_snd_device = platform_device_alloc("soc-audio", 0);
++	if (!sffsdr_snd_device) {
++		printk(KERN_ERR "platform device allocation failed\n");
 +		return -ENOMEM;
 +	}
 +
-+	platform_set_drvdata(omap2evm_snd_device, &omap2evm_snd_devdata);
-+	omap2evm_snd_devdata.dev = &omap2evm_snd_device->dev;
-+	*(unsigned int *)omap2evm_dai.cpu_dai->private_data = 1; /* McBSP2 */
++	platform_set_drvdata(sffsdr_snd_device, &sffsdr_snd_devdata);
++	sffsdr_snd_devdata.dev = &sffsdr_snd_device->dev;
++	sffsdr_snd_device->dev.platform_data = &sffsdr_snd_data;
 +
-+	ret = platform_device_add(omap2evm_snd_device);
++	ret = platform_device_add_resources(sffsdr_snd_device,
++					    sffsdr_snd_resources,
++					    ARRAY_SIZE(sffsdr_snd_resources));
++	if (ret) {
++		printk(KERN_ERR "platform device add ressources failed\n");
++		goto error;
++	}
++
++	ret = platform_device_add(sffsdr_snd_device);
 +	if (ret)
-+		goto err1;
-+
-+	return 0;
-+
-+err1:
-+	printk(KERN_ERR "Unable to add platform device\n");
-+	platform_device_put(omap2evm_snd_device);
++		goto error;
 +
 +	return ret;
-+}
-+module_init(omap2evm_soc_init);
 +
-+static void __exit omap2evm_soc_exit(void)
++error:
++	platform_device_put(sffsdr_snd_device);
++	return ret;
++}
++
++static void __exit sffsdr_exit(void)
 +{
-+	platform_device_unregister(omap2evm_snd_device);
++	platform_device_unregister(sffsdr_snd_device);
 +}
-+module_exit(omap2evm_soc_exit);
 +
-+MODULE_AUTHOR("Arun KS <arunks@mistralsolutions.com>");
-+MODULE_DESCRIPTION("ALSA SoC omap2evm");
++module_init(sffsdr_init);
++module_exit(sffsdr_exit);
++
++MODULE_AUTHOR("Hugo Villeneuve");
++MODULE_DESCRIPTION("Lyrtech SFFSDR ASoC driver");
 +MODULE_LICENSE("GPL");
 -- 
 1.5.6.5
