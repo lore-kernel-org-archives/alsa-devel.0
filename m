@@ -1,17 +1,17 @@
-From: "naveen krishna ch" <naveenkrishna.ch@gmail.com>
-Subject: omap3evm asoc
-Date: Wed, 19 Nov 2008 17:57:55 +0530
-Message-ID: <ef0d8a250811190427s4fe35bd2o8e6dd28c725fd665@mail.gmail.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 1/1] ASoC: Add support for omap2evm board
+Date: Wed, 19 Nov 2008 12:31:32 +0000
+Message-ID: <20081119123129.GC13250@sirena.org.uk>
+References: <dfeb90390811190415t5a1c7f9cj4f7ddc1cdb887370@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 94B0E1037F1
-	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 13:27:56 +0100 (CET)
-Received: by yw-out-1718.google.com with SMTP id 9so2395624ywk.2
-	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 04:27:55 -0800 (PST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3C9ED103800
+	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 13:31:33 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <dfeb90390811190415t5a1c7f9cj4f7ddc1cdb887370@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,16 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Arun KS <arunks@mistralsolutions.com>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org List" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Alsa devels,
+On Wed, Nov 19, 2008 at 05:45:19PM +0530, Arun KS wrote:
+> This patch adds twl4030 audio support on omap2evm
+> 
+> Signed-off-by: Arun KS <arunks@mistralsolutions.com>
 
-Is there any previous work on audio ASOC for OMAP3EVM.
-I have started working on OMAP3EVM + TWL4030 combination and audio is
-working.
-
--- 
-Thanks,
-
-(: Naveen Krishna Ch :)
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
