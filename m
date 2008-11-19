@@ -1,20 +1,25 @@
-From: "John Kacur" <jkacur@gmail.com>
-Subject: Re: Old OMAP mailing list
-Date: Wed, 19 Nov 2008 09:18:49 +0100
-Message-ID: <520f0cf10811190018r42732ab7g7e6450d19d50daed@mail.gmail.com>
-References: <mailman.266.1227016675.2121.linux-omap-open-source@linux.omap.com>
-	<20081118141906.GB29982@sirena.org.uk>
+From: Gregoire ETIENNE <gregoire.etienne@parrot.com>
+Subject: Listing up to 8 PCM devices
+Date: Wed, 19 Nov 2008 08:19:21 +0000 (UTC)
+Message-ID: <loom.20081119T075927-0@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id C3626245D3
-	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 09:18:50 +0100 (CET)
-Received: by rv-out-0708.google.com with SMTP id f25so3474402rvb.32
-	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 00:18:49 -0800 (PST)
-In-Reply-To: <20081118141906.GB29982@sirena.org.uk>
-Content-Disposition: inline
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6B7E3245D4
+	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 09:20:04 +0100 (CET)
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1L2iI7-0004zu-1k
+	for alsa-devel@alsa-project.org; Wed, 19 Nov 2008 08:20:03 +0000
+Received: from ASt-Lambert-152-1-44-55.w82-124.abo.wanadoo.fr ([82.124.170.55])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 08:20:03 +0000
+Received: from gregoire.etienne by
+	ASt-Lambert-152-1-44-55.w82-124.abo.wanadoo.fr with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 08:20:03 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,16 +29,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 18, 2008 at 3:19 PM, Mark Brown <broonie@sirena.org.uk> wrote:
-> Please don't CC any ASoC patches to the linux-omap-open-source list -
-> my understanding is that it should no longer be used, having been
-> replaced by linux-omap@vger.kernel.org
+Hi,
 
-Is there a wiki page with a list of current ASoC related mailing
-lists? (not just for omap) I for one would find that useful.
+I'm currently writting a driver with up to 8 pcm devices, so I turned on
+"Dynamic device file minor numbers" option. But when I try to list devices
+through aplay or a record (which are calling ioctl with cmd
+SNDRV_CTL_IOCTL_PCM_NEXT_DEVICE) I can only list devices from 0 to 7. This is
+due to this code :
 
-Thanks
+linux/sound/core/pcm.c l.64
+------------------------------
+	case SNDRV_CTL_IOCTL_PCM_NEXT_DEVICE:
+		{
+			int device;
+
+			if (get_user(device, (int __user *)arg))
+				return -EFAULT;
+			mutex_lock(&register_mutex);
+			device = device < 0 ? 0 : device + 1;
+			while (device < SNDRV_PCM_DEVICES) {
+				if (snd_pcm_search(card, device))
+					break;
+				device++;
+			}
+			if (device == SNDRV_PCM_DEVICES)
+				device = -1;
+			mutex_unlock(&register_mutex);
+			if (put_user(device, (int __user *)arg))
+				return -EFAULT;
+			return 0;
+		}
+------------------------------
+because SNDRV_PCM_DEVICES is defined to 8 and do not change even if I selected
+"Dynamic device file minor numbers" option.
+
+Is there anything I missed ?
