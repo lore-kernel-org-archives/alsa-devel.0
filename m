@@ -1,18 +1,15 @@
-From: Wu Fengguang <wfg@linux.intel.com>
-Subject: Re: [PATCH 0/4] multi-channel HDMI audio support
-Date: Wed, 19 Nov 2008 14:42:16 +0800
-Message-ID: <20081119064216.GA16545@localhost>
-References: <20081119005614.431653658@linux.intel.com>
-	<s5hk5b0w76z.wl%tiwai@suse.de>
+From: Arun KS <getarunks@gmail.com>
+Subject: Invitation to connect on LinkedIn
+Date: Tue, 18 Nov 2008 23:10:54 -0800 (PST)
+Message-ID: <1612570686.2291324.1227078654059.JavaMail.app@esv4-com09.prod>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from azsmga102.ch.intel.com (mga12.intel.com [143.182.124.36])
-	by alsa0.perex.cz (Postfix) with ESMTP id ABD142457E
-	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 07:42:26 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hk5b0w76z.wl%tiwai@suse.de>
+Received: from mail13-a-aa.linkedin.com (mail13-a-aa.linkedin.com
+	[208.111.172.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 18A0B24599
+	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 08:10:55 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,37 +19,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 19, 2008 at 07:39:16AM +0100, Takashi Iwai wrote:
-> At Wed, 19 Nov 2008 08:56:14 +0800,
-> Wu Fengguang wrote:
-> > 
-> > Hi Takashi,
-> > 
-> > This patchset attempts to support multi-channel HDMI audio.
-> > 
-> > It contains two basic operations:
-> > 
-> > - setup the CA(channel-allocation) byte in the audio infoframe
-> > - setup the converter channel to HDMI slot mapping
-> > 
-> > Please read patch 3 for more detailed descriptions:
-> > 
-> > 	[PATCH 1/4] hda: make standalone hdmi_fill_audio_infoframe()                               
-> > 	[PATCH 2/4] hda: make global snd_print_channel_allocation()                       
-> > 	[PATCH 3/4] hda: HDMI channel allocations for audio infoframe                               
-> > 	[PATCH 4/4] hda: HDMI channel mapping cleanups                                               
-> > 
-> > The current implementation only does minimal works that ensure multi-channel
-> > audio playing out. However the wrong speakers may be selected. We could
-> > elaborate the framework/policy if it proves to be a problem.
-> 
-> Thanks, applied all patches now.
+LinkedIn
+------------
 
-Thank you, I'll post more cleanups after a while :-)
 
-Regards,
-Fengguang
+
+   
+ALSA,
+
+I'd like to add you to my professional network on LinkedIn.
+
+- Arun
+
+Learn more:
+https://www.linkedin.com/e/isd/409983693/itycjb3I/
+
+------------------------------------------
+
+What is LinkedIn and why should you join?
+http://learn.linkedin.com/what-is-linkedin/
+
+ 
+------
+(c) 2008, LinkedIn Corporation
