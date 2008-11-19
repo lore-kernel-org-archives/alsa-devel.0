@@ -1,19 +1,12 @@
-From: "Arun KS" <getarunks@gmail.com>
-Subject: Re: Invitation to connect on LinkedIn
-Date: Wed, 19 Nov 2008 12:48:46 +0530
-Message-ID: <dfeb90390811182318o31e09c1fn9ab7008dc4969c2@mail.gmail.com>
-References: <1612570686.2291324.1227078654059.JavaMail.app@esv4-com09.prod>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Wu Fengguang <wfg@linux.intel.com>
+Subject: [PATCH 0/5] assorted HDMI cleanups
+Date: Wed, 19 Nov 2008 15:13:58 +0800
+Message-ID: <20081119071358.231716724@linux.intel.com>
+Content-Type: multipart/mixed; boundary="===============4203606613362849021=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0506.google.com (rv-out-0506.google.com [209.85.198.229])
-	by alsa0.perex.cz (Postfix) with ESMTP id 167D9245BE
-	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 08:18:47 +0100 (CET)
-Received: by rv-out-0506.google.com with SMTP id f9so468907rvb.7
-	for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2008 23:18:46 -0800 (PST)
-In-Reply-To: <1612570686.2291324.1227078654059.JavaMail.app@esv4-com09.prod>
-Content-Disposition: inline
+Received: from azsmga101.ch.intel.com (mga07.intel.com [143.182.124.22])
+	by alsa0.perex.cz (Postfix) with ESMTP id 24CAA245C1
+	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 08:25:58 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,48 +16,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
+--===============4203606613362849021==
 
-Please ignore the previous email.
-It was send out to the group by mistake.
+Hi Takashi,
 
-I am sorry for the noise.
+Here are 5 HDMI cleanup patches, some renames the code and others renames the
+user visible output messages. The new output goes like:
 
-Regards,
-Arun KS.
+dmesg
+
+	[ 5742.169578] detected monitor <9d><80>t connection type Display Port
+	[ 5742.169580] available speakers: FL/FR LFE FLC/FRC
+	[ 5742.169582] supports coding type MLP (Dolby TrueHD): channels = 7, rates = 48000 176400
+	[ 5742.169585] supports coding type AC-3: channels = 1, rates = 48000 88200 192000, max bitrate = 1208000
+	[ 5742.169588] supports coding type AC-3: channels = 2, rates = 48000 384000, max bitrate = 960000
+	[ 5742.169591] supports coding type ATRAC: channels = 5, rates = 48000 88200 384000, max bitrate = 224000
 
 
+/proc/asound/card0/eld\#3
 
-On Wed, Nov 19, 2008 at 12:40 PM, Arun KS <getarunks@gmail.com> wrote:
-> LinkedIn
-> ------------
->
->
->
->
-> ALSA,
->
-> I'd like to add you to my professional network on LinkedIn.
->
-> - Arun
->
-> Learn more:
-> https://www.linkedin.com/e/isd/409983693/itycjb3I/
->
-> ------------------------------------------
->
-> What is LinkedIn and why should you join?
-> http://learn.linkedin.com/what-is-linkedin/
->
->
-> ------
-> (c) 2008, LinkedIn Corporation
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+	monitor name            ���
+	connection_type         Display Port
+	eld_version             [0xb] reserved
+	edid_version            [0x3] CEA-861-B, C or D
+	manufacture_id          0xee5a
+	product_id              0x923c
+	port_id                 0x18b263a03e17d1b5
+	support_hdcp            1
+	support_ai              1
+	audio_sync_delay        216
+	speakers                [0x23] FL/FR LFE FLC/FRC
+	sad_count               4
+	sad0_coding_type        [0xc] MLP (Dolby TrueHD)
+	sad0_channels           7
+	sad0_rates              [0x240] 48000 176400
+	sad1_coding_type        [0x2] AC-3
+	sad1_channels           1
+	sad1_rates              [0x4c0] 48000 88200 192000
+	sad1_max_bitrate        1208000
+	sad2_coding_type        [0x2] AC-3
+	sad2_channels           2
+	sad2_rates              [0x1840] 48000 384000
+	sad2_max_bitrate        960000
+	sad3_coding_type        [0x8] ATRAC
+	sad3_channels           5
+	sad3_rates              [0x8c0] 48000 88200 384000
+	sad3_max_bitrate        224000
+
+Thanks,
+Fengguang
+-- 
+
+
+--===============4203606613362849021==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============4203606613362849021==--
