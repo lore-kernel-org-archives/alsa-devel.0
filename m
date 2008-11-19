@@ -1,16 +1,16 @@
 From: Wu Fengguang <wfg@linux.intel.com>
-Subject: [PATCH 2/5] hda: rename sink_eld to hdmi_eld
-Date: Wed, 19 Nov 2008 15:14:00 +0800
-Message-ID: <20081119072203.496858382@linux.intel.com>
+Subject: [PATCH 5/5] hda: compact ELD output messages
+Date: Wed, 19 Nov 2008 15:14:03 +0800
+Message-ID: <20081119072203.838628426@linux.intel.com>
 References: <20081119071358.231716724@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from azsmga101.ch.intel.com (mga07.intel.com [143.182.124.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id 81A6C245C4
+	by alsa0.perex.cz (Postfix) with ESMTP id 1F35B245C8
 	for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2008 08:26:01 +0100 (CET)
-Content-Disposition: inline; filename=alsa-rename-sink-eld.patch
+Content-Disposition: inline; filename=alsa-compact-eld-dmesg.patch
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,139 +24,93 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Rename struct sink_eld to hdmi_eld.
+Strip out some ELD printk messages that end user won't care,
+and make the output compact.
 
 Signed-off-by: Wu Fengguang <wfg@linux.intel.com>
 ---
- sound/pci/hda/hda_eld.c         |   14 +++++++-------
- sound/pci/hda/hda_local.h       |   10 +++++-----
- sound/pci/hda/patch_intelhdmi.c |    8 ++++----
- 3 files changed, 16 insertions(+), 16 deletions(-)
+ sound/pci/hda/hda_eld.c |   58 ++++++++++++++++----------------------
+ 1 file changed, 25 insertions(+), 33 deletions(-)
 
 --- sound-2.6.orig/sound/pci/hda/hda_eld.c
 +++ sound-2.6/sound/pci/hda/hda_eld.c
-@@ -267,8 +267,8 @@ static void hdmi_update_short_audio_desc
- /*
-  * Be careful, ELD buf could be totally rubbish!
-  */
--static int hdmi_update_sink_eld(struct sink_eld *e,
--				const unsigned char *buf, int size)
-+static int hdmi_update_eld(struct hdmi_eld *e,
-+			   const unsigned char *buf, int size)
+@@ -389,22 +389,27 @@ int snd_hdmi_get_eld(struct hdmi_eld *el
+ static void hdmi_show_short_audio_desc(struct cea_sad *a)
  {
- 	int mnl;
- 	int i;
-@@ -351,7 +351,7 @@ int snd_hdmi_get_eld_size(struct hda_cod
- 						 AC_DIPSIZE_ELD_BUF);
+ 	char buf[SND_PRINT_RATES_ADVISED_BUFSIZE];
++	char buf2[8 + SND_PRINT_BITS_ADVISED_BUFSIZE] = ", bits =";
+ 
+-	printk(KERN_INFO "coding type: %s\n",
+-					cea_audio_coding_type_names[a->format]);
+-	printk(KERN_INFO "channels: %d\n", a->channels);
++	if (!a->format)
++		return;
+ 
+ 	snd_print_pcm_rates(a->rates, buf, sizeof(buf));
+-	printk(KERN_INFO "sampling rates: %s\n", buf);
+ 
+ 	if (a->format == AUDIO_CODING_TYPE_LPCM)
+-		printk(KERN_INFO "sample bits: 0x%x\n", a->sample_bits);
+-
+-	if (a->max_bitrate)
+-		printk(KERN_INFO "max bitrate: %d\n", a->max_bitrate);
+-
+-	if (a->profile)
+-		printk(KERN_INFO "profile: %d\n", a->profile);
++		snd_print_pcm_rates(a->sample_bits, buf2 + 8, sizeof(buf2 - 8));
++	else if (a->max_bitrate)
++		snprintf(buf2, sizeof(buf2),
++				", max bitrate = %d", a->max_bitrate);
++	else
++		buf2[0] = '\0';
++
++	printk(KERN_INFO "supports coding type %s:"
++			" channels = %d, rates =%s%s\n",
++			cea_audio_coding_type_names[a->format],
++			a->channels,
++			buf,
++			buf2);
  }
  
--int snd_hdmi_get_eld(struct sink_eld *eld,
-+int snd_hdmi_get_eld(struct hdmi_eld *eld,
- 		     struct hda_codec *codec, hda_nid_t nid)
+ void snd_print_channel_allocation(int spk_alloc, char *buf, int buflen)
+@@ -422,29 +427,16 @@ void snd_print_channel_allocation(int sp
+ void snd_hdmi_show_eld(struct hdmi_eld *e)
  {
  	int i;
-@@ -380,7 +380,7 @@ int snd_hdmi_get_eld(struct sink_eld *el
- 	for (i = 0; i < size; i++)
- 		buf[i] = hdmi_get_eld_byte(codec, nid, i);
+-	char buf[SND_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE];
  
--	ret = hdmi_update_sink_eld(eld, buf, size);
-+	ret = hdmi_update_eld(eld, buf, size);
+-	printk(KERN_INFO "ELD buffer size  is %d\n", e->eld_size);
+-	printk(KERN_INFO "ELD baseline len is %d*4\n", e->baseline_len);
+-	printk(KERN_INFO "vendor block len is %d\n",
+-					e->eld_size - e->baseline_len * 4 - 4);
+-	printk(KERN_INFO "ELD version      is %s\n",
+-					eld_versoin_names[e->eld_ver]);
+-	printk(KERN_INFO "CEA EDID version is %s\n",
+-				cea_edid_version_names[e->cea_edid_ver]);
+-	printk(KERN_INFO "manufacture id   is 0x%x\n", e->manufacture_id);
+-	printk(KERN_INFO "product id       is 0x%x\n", e->product_id);
+-	printk(KERN_INFO "port id          is 0x%llx\n", (long long)e->port_id);
+-	printk(KERN_INFO "HDCP support     is %d\n", e->support_hdcp);
+-	printk(KERN_INFO "AI support       is %d\n", e->support_ai);
+-	printk(KERN_INFO "SAD count        is %d\n", e->sad_count);
+-	printk(KERN_INFO "audio sync delay is %x\n", e->aud_synch_delay);
+-	printk(KERN_INFO "connection type  is %s\n",
+-				eld_connection_type_names[e->conn_type]);
+-	printk(KERN_INFO "monitor name     is %s\n", e->monitor_name);
+-
+-	snd_print_channel_allocation(e->spk_alloc, buf, sizeof(buf));
+-	printk(KERN_INFO "speaker allocations: (0x%x)%s\n", e->spk_alloc, buf);
++	printk(KERN_INFO "detected monitor %s at connection type %s\n",
++			e->monitor_name,
++			eld_connection_type_names[e->conn_type]);
++
++	if (e->spk_alloc) {
++		char buf[SND_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE];
++		snd_print_channel_allocation(e->spk_alloc, buf, sizeof(buf));
++		printk(KERN_INFO "available speakers:%s\n", buf);
++	}
  
- 	kfree(buf);
- 	return ret;
-@@ -421,7 +421,7 @@ void snd_print_channel_allocation(int sp
- 	buf[j] = '\0';	/* necessary when j == 0 */
- }
- 
--void snd_hdmi_show_eld(struct sink_eld *e)
-+void snd_hdmi_show_eld(struct hdmi_eld *e)
- {
- 	int i;
- 	char buf[SND_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE];
-@@ -482,7 +482,7 @@ static void hdmi_print_sad_info(int i, s
- static void hdmi_print_eld_info(struct snd_info_entry *entry,
- 				struct snd_info_buffer *buffer)
- {
--	struct sink_eld *e = entry->private_data;
-+	struct hdmi_eld *e = entry->private_data;
- 	char buf[SND_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE];
- 	int i;
- 
-@@ -509,7 +509,7 @@ static void hdmi_print_eld_info(struct s
- 		hdmi_print_sad_info(i, e->sad + i, buffer);
- }
- 
--int snd_hda_eld_proc_new(struct hda_codec *codec, struct sink_eld *eld)
-+int snd_hda_eld_proc_new(struct hda_codec *codec, struct hdmi_eld *eld)
- {
- 	char name[32];
- 	struct snd_info_entry *entry;
---- sound-2.6.orig/sound/pci/hda/hda_local.h
-+++ sound-2.6/sound/pci/hda/hda_local.h
-@@ -462,7 +462,7 @@ struct cea_sad {
- /*
-  * ELD: EDID Like Data
-  */
--struct sink_eld {
-+struct hdmi_eld {
- 	int	eld_size;
- 	int	baseline_len;
- 	int	eld_ver;	/* (eld_ver == 0) indicates invalid ELD */
-@@ -481,13 +481,13 @@ struct sink_eld {
- };
- 
- int snd_hdmi_get_eld_size(struct hda_codec *codec, hda_nid_t nid);
--int snd_hdmi_get_eld(struct sink_eld *, struct hda_codec *, hda_nid_t);
--void snd_hdmi_show_eld(struct sink_eld *eld);
-+int snd_hdmi_get_eld(struct hdmi_eld *, struct hda_codec *, hda_nid_t);
-+void snd_hdmi_show_eld(struct hdmi_eld *eld);
- 
- #ifdef CONFIG_PROC_FS
--int snd_hda_eld_proc_new(struct hda_codec *codec, struct sink_eld *eld);
-+int snd_hda_eld_proc_new(struct hda_codec *codec, struct hdmi_eld *eld);
- #else
--inline int snd_hda_eld_proc_new(struct hda_codec *codec, struct sink_eld *eld)
-+inline int snd_hda_eld_proc_new(struct hda_codec *codec, struct hdmi_eld *eld)
- {
- 	return 0;
- }
---- sound-2.6.orig/sound/pci/hda/patch_intelhdmi.c
-+++ sound-2.6/sound/pci/hda/patch_intelhdmi.c
-@@ -42,7 +42,7 @@
- struct intel_hdmi_spec {
- 	struct hda_multi_out multiout;
- 	struct hda_pcm pcm_rec;
--	struct sink_eld sink;
-+	struct hdmi_eld sink_eld;
- };
- 
- static struct hda_verb pinout_enable_verb[] = {
-@@ -308,7 +308,7 @@ static void hdmi_debug_channel_mapping(s
- static void hdmi_parse_eld(struct hda_codec *codec)
- {
- 	struct intel_hdmi_spec *spec = codec->spec;
--	struct sink_eld *eld = &spec->sink;
-+	struct hdmi_eld *eld = &spec->sink_eld;
- 
- 	if (!snd_hdmi_get_eld(eld, codec, PIN_NID))
- 		snd_hdmi_show_eld(eld);
-@@ -411,7 +411,7 @@ static int hdmi_setup_channel_allocation
- 					 struct hdmi_audio_infoframe *ai)
- {
- 	struct intel_hdmi_spec *spec = codec->spec;
--	struct sink_eld *eld = &spec->sink;
-+	struct hdmi_eld *eld = &spec->sink_eld;
- 	int i;
- 	int spk_mask = 0;
- 	int channels = 1 + (ai->CC02_CT47 & 0x7);
-@@ -663,7 +663,7 @@ static int patch_intel_hdmi(struct hda_c
- 	codec->spec = spec;
- 	codec->patch_ops = intel_hdmi_patch_ops;
- 
--	snd_hda_eld_proc_new(codec, &spec->sink);
-+	snd_hda_eld_proc_new(codec, &spec->sink_eld);
- 
- 	init_channel_allocations();
- 
+ 	for (i = 0; i < e->sad_count; i++)
+ 		hdmi_show_short_audio_desc(e->sad + i);
 
 -- 
