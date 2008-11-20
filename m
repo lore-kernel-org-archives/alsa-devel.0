@@ -1,15 +1,14 @@
-From: Wu Fengguang <wfg@linux.intel.com>
-Subject: [PATCH] azx_probe() cleanup
-Date: Thu, 20 Nov 2008 09:24:52 +0800
-Message-ID: <20081120012452.GA26665@localhost>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: Add STAC_DELL_M4_3 quirk
+Date: Wed, 19 Nov 2008 21:48:51 -0500
+Message-ID: <4924D013.2020107@embeddedalley.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from azsmga101.ch.intel.com (mga07.intel.com [143.182.124.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id 873032438D
-	for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2008 02:25:04 +0100 (CET)
-Content-Disposition: inline
+Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
+	by alsa0.perex.cz (Postfix) with SMTP id 0E0E3243C3
+	for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2008 03:49:06 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,78 +18,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, "Tellman, Steven" <Steven.Tellman@idt.com>
 List-Id: alsa-devel@alsa-project.org
 
-Replace 5 free-and-return-err blocks with goto-out-free ones.
-This makes the main logic more outstanding.
+Add PCI quirk STAC_DELL_M4_3 for 92hd71bxx based laptops.
 
-Signed-off-by: Wu Fengguang <wfg@linux.intel.com>
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
 ---
- sound/pci/hda/hda_intel.c |   33 +++++++++++++--------------------
- 1 file changed, 13 insertions(+), 20 deletions(-)
 
---- sound-2.6.orig/sound/pci/hda/hda_intel.c
-+++ sound-2.6/sound/pci/hda/hda_intel.c
-@@ -2317,40 +2317,30 @@ static int __devinit azx_probe(struct pc
- 	}
- 
- 	err = azx_create(card, pci, dev, pci_id->driver_data, &chip);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	if (err < 0)
-+		goto out_free;
- 	card->private_data = chip;
- 
- 	/* create codec instances */
- 	err = azx_codec_create(chip, model[dev], probe_mask[dev]);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	if (err < 0)
-+		goto out_free;
- 
- 	/* create PCM streams */
- 	err = snd_hda_build_pcms(chip->bus);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	if (err < 0)
-+		goto out_free;
- 
- 	/* create mixer controls */
- 	err = azx_mixer_create(chip);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	if (err < 0)
-+		goto out_free;
- 
- 	snd_card_set_dev(card, &pci->dev);
- 
- 	err = snd_card_register(card);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	if (err < 0)
-+		goto out_free;
- 
- 	pci_set_drvdata(pci, card);
- 	chip->running = 1;
-@@ -2359,6 +2349,9 @@ static int __devinit azx_probe(struct pc
- 
- 	dev++;
- 	return err;
-+out_free:
-+	snd_card_free(card);
-+	return err;
- }
- 
- static void __devexit azx_remove(struct pci_dev *pci)
+diff --git a/pci/hda/patch_sigmatel.c b/pci/hda/patch_sigmatel.c
+index e0298df..dab6013 100644
+--- a/pci/hda/patch_sigmatel.c
++++ b/pci/hda/patch_sigmatel.c
+@@ -83,6 +83,7 @@ enum {
+ 	STAC_92HD71BXX_REF,
+ 	STAC_DELL_M4_1,
+ 	STAC_DELL_M4_2,
++	STAC_DELL_M4_3,
+ 	STAC_HP_M4,
+ 	STAC_92HD71BXX_MODELS
+ };
+@@ -1689,10 +1690,17 @@ static unsigned int dell_m4_2_pin_configs[11] = {
+ 	0x40f000f0, 0x044413b0, 0x044413b0,
+ };
+
++static unsigned int dell_m4_3_pin_configs[11] = {
++	0x0421101f, 0x04a11221, 0x90a70330, 0x90170110,
++	0x40f000f0, 0x40f000f0, 0x40f000f0, 0x90a000f0,
++	0x40f000f0, 0x044413b0, 0x044413b0,
++};
++
+ static unsigned int *stac92hd71bxx_brd_tbl[STAC_92HD71BXX_MODELS] = {
+ 	[STAC_92HD71BXX_REF] = ref92hd71bxx_pin_configs,
+ 	[STAC_DELL_M4_1]	= dell_m4_1_pin_configs,
+ 	[STAC_DELL_M4_2]	= dell_m4_2_pin_configs,
++	[STAC_DELL_M4_3]	= dell_m4_3_pin_configs,
+ 	[STAC_HP_M4]		= NULL,
+ };
+
+@@ -1700,6 +1708,7 @@ static const char
+*stac92hd71bxx_models[STAC_92HD71BXX_MODELS] = {
+ 	[STAC_92HD71BXX_REF] = "ref",
+ 	[STAC_DELL_M4_1] = "dell-m4-1",
+ 	[STAC_DELL_M4_2] = "dell-m4-2",
++	[STAC_DELL_M4_3] = "dell-m4-3",
+ 	[STAC_HP_M4] = "hp-m4",
+ };
+
+@@ -1731,6 +1740,8 @@ static struct snd_pci_quirk stac92hd71bxx_cfg_tbl[] = {
+ 				"unknown Dell", STAC_DELL_M4_2),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0264,
+ 				"unknown Dell", STAC_DELL_M4_2),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x02aa,
++				"unknown Dell", STAC_DELL_M4_3),
+ 	{} /* terminator */
+ };
+
+@@ -4650,14 +4661,20 @@ again:
+
+ 	switch (spec->board_config) {
+ 	case STAC_HP_M4:
+-		spec->num_dmics = 0;
+-		spec->num_smuxes = 0;
+-		spec->num_dmuxes = 0;
+-
+ 		/* enable internal microphone */
+ 		stac92xx_set_config_reg(codec, 0x0e, 0x01813040);
+ 		stac92xx_auto_set_pinctl(codec, 0x0e,
+ 			AC_PINCTL_IN_EN | AC_PINCTL_VREF_80);
++	case STAC_DELL_M4_2:
++		spec->num_dmics = 0;
++		spec->num_smuxes = 0;
++		spec->num_dmuxes = 0;
++		break;
++	case STAC_DELL_M4_1:
++	case STAC_DELL_M4_3:
++		spec->num_dmics = 1;
++		spec->num_smuxes = 0;
++		spec->num_dmuxes = 0;
+ 		break;
+ 	default:
+ 		spec->num_dmics = STAC92HD71BXX_NUM_DMICS;
