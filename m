@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: Kcontrols for ASoC TWL4030 CODEC
-Date: Thu, 20 Nov 2008 14:04:06 +0000
-Message-ID: <20081120140405.GF4539@sirena.org.uk>
-References: <ef0d8a250811200442j3146441cgc4650153974e62d6@mail.gmail.com>
-	<20081120133644.GE4539@sirena.org.uk>
-	<ef0d8a250811200601n5bcede89xb442dc26cb05fe8a@mail.gmail.com>
+Subject: Re: twl4030 asoc kcontrols and widgets
+Date: Thu, 20 Nov 2008 14:14:01 +0000
+Message-ID: <20081120141401.GG4539@sirena.org.uk>
+References: <ef0d8a250811200138y36fc840dn9978dd862214dec4@mail.gmail.com>
+	<200811201602.44035.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3133124391
-	for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2008 15:04:07 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 9FC08243A8
+	for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2008 15:14:02 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <ef0d8a250811200601n5bcede89xb442dc26cb05fe8a@mail.gmail.com>
+In-Reply-To: <200811201602.44035.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,19 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: naveen krishna ch <naveenkrishna.ch@gmail.com>
-Cc: alsa-devel@alsa-project.org, Steve Sakoman <steve@sakoman.com>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: ext naveen krishna ch <naveenkrishna.ch@gmail.com>, alsa-devel@alsa-project.org, Steve Sakoman <steve@sakoman.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 20, 2008 at 07:31:15PM +0530, naveen krishna ch wrote:
-> On Thu, Nov 20, 2008 at 7:06 PM, Mark Brown <broonie@sirena.org.uk> wrote:
+On Thu, Nov 20, 2008 at 04:02:43PM +0200, Peter Ujfalusi wrote:
 
-> >        Documentation/sound/alsa/ControlNames.txt
+> My plan is to add _all_ (ok, almost all) the features we can get with
+> TWLx030...
+> So instead of having 'only' one possible route from DACl2/DACR2, I have
+> implemented in a reverse order:
 
-> The standard names in the documentation does not gives the exact details of
-> the CODEC's feature so i used a part of the CODEC pin name to avoid
-> confusion at later stages.
+...
 
-You'll not be able to get all the control names entirely from the spec
-but you should still do things like use "Volume" for gain and
-attenuation controls as I said.
+> With this mode one can enable whatever combination of routing he/she
+> needs from TWL.
+
+> Since these channels are really 'independent' inside of TWL, making the
+> routing/mixing flexible (you might say extremely flexible) could make
+> sense.
+
+This is good - an ASoC codec driver should expose as much functionality
+of the codec as possible and let user space configure it at runtime.
+See for example the WM8900 or WM8990 drivers for examples of codecs with
+fairly complex audio routing.
+
+> CCing: Steve Sakoman who actually wrote the driver - could cc Mark Brown
+> as well, but it seams that he is reading alsa-devel quite frequently ;)
+
+It's still useful to keep people in CCs - it's not so bad with
+alsa-devel but it does help to ensure that things don't get missed on
+high volume mailing lists.
