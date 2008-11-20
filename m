@@ -1,19 +1,14 @@
-From: Forest Bond <forest@alittletooquiet.net>
-Subject: via82xx: unreliable audio, strange mixer behavior
-Date: Thu, 20 Nov 2008 12:04:09 -0500
-Message-ID: <20081120170409.GG17813@storm.local.network>
+From: Pierre Vanhoucke <pierre.vanhoucke@skynet.be>
+Subject: Alsa "short read" questions
+Date: Thu, 20 Nov 2008 19:38:18 +0100
+Message-ID: <1227206298.7258.1.camel@pierre-desktop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3.webfaction.com (mail3.webfaction.com [70.85.44.146])
-	by alsa0.perex.cz (Postfix) with ESMTP id 50E562414E
-	for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2008 18:04:16 +0100 (CET)
-Received: from storm (pool-64-223-124-145.burl.east.verizon.net
-	[64.223.124.145]) (authenticated bits=0)
-	by mail3.webfaction.com (8.13.1/8.13.3) with ESMTP id mAKH4E88031001
-	for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2008 11:04:15 -0600
-Content-Disposition: inline
+Received: from mailrelay005.isp.belgacom.be (mailrelay005.isp.belgacom.be
+	[195.238.6.171]) by alsa0.perex.cz (Postfix) with ESMTP id 750AD24468
+	for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2008 19:38:19 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,40 +21,65 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi All,
 
-I'm using snd-via82xx on an Ubuntu 8.04 system.  alsa-info.sh output is here:
+Is there anybody out there who can help me to answer the following
+questions:
 
-http://www.alsa-project.org/db/?f=1c3d5570e7b57d4d2f79b964a323dd7b4efd7e78
+I have converted an application called Linrad
+( http://www.nitehawk.com/sm5bsz/linuxdsp/linrad.htm ) from OSS to ALSA.
+Linrad is a remarkable DSP application used worldwide by many
+radio-hams.
 
-Here are the symptoms:
+I am facing hereby a problem with a "short read" :
 
-Audio goes away after a semi-random interval.  Sometimes it returns after
-`modprobe -r snd-via82xx' followed by `modprobe snd-via82xx', but sometimes it
-seems to take a full reboot.
+An ALSA device is opened in blocking mode:
 
-This looks similar to:
+*********************************************
+err=snd_pcm_open(&rx_ad_handle, 
+                 rx_sndin_plughw_pcm_name,
+                 SND_PCM_STREAM_CAPTURE,
+                 0);
+*********************************************
+When I subsequently read the device with following statement I sometimes
+get a "short read":
+********************************************
+      err=snd_pcm_readi(rx_ad_handle,rxin_isho, rxad.block_frames);
+      if((unsigned int)err != rxad.block_frames)
+        {
+        if(err == -EPIPE)           // EPIPE, try recovery  
+          { 
+          err= snd_pcm_recover(rx_ad_handle, err, 0);
+          if(err < 0)lirerr(1108);  // recovery failed
+          }
+        else 
+          {
+          if(err < 0)             
+            {
+            lirerr(1113);           // catch all
+            }
+          else
+            {
+            lirerr(1116);            // short read
+            }
+          }
+        }
+      }
+**************************************************
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D3194
+Here are my questions:
 
-Some folks think that this kind of issue is triggered by audio volume being
-above a certain level.  I'm not entirely sure if this is true, but I think it
-is.  One time, I apparently triggered the issue by unplugging and replugging the
-audio cable from the mainboard during playback.
+1. How is it possible to get a "short read" in blocking mode ?
+I would think that in blocking mode the control is only returned after
+the read is completed.
 
-Audio can be heard even when the PCM volume level is 0 (as told by alsamixer).
-The volume does get louder when I turn up that mixer control, but it never goes
-away entirely when I turn the volume to zero.  Mute works as expected.
+2. What are the possible causes for a "short read" ?
 
-This issue is impacting a significant project for me and my company.  I'm
-willing to spend as much time as it takes to debug, and I'm fairly technical.  I
-can also offer a bounty of some sort, if that interests anyone.
+3. What can be done to  avoid a "short read" ?
 
-Can anyone offer any input?
+4. How am I supposed to recover from a "short read"?
 
-Thanks,
-Forest
---
-Forest Bond
-http://www.alittletooquiet.net
-http://www.pytagsfs.org
+
+Best regards,
+
+Pierre Vanhoucke/ ON5GN
