@@ -1,15 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 0/10] ASoC updates
-Date: Fri, 21 Nov 2008 14:47:34 +0000
-Message-ID: <20081121144734.GA25238@rakim.wolfsonmicro.main>
+Subject: [PATCH 03/10] ASoC: ssm2602: Fix priv substreams refs
+Date: Fri, 21 Nov 2008 14:48:26 +0000
+Message-ID: <1227278913-25313-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <20081121144734.GA25238@rakim.wolfsonmicro.main>
+	<1227278913-25313-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1227278913-25313-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F2706244DD
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 15:47:35 +0100 (CET)
-Content-Disposition: inline
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9921E244DE
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 15:48:35 +0100 (CET)
+In-Reply-To: <1227278913-25313-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,109 +23,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: Karl Beldan <karl.beldan@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 9b0db7e7fd20d5a38844e9435f7d4246ea44978a:
-  Mark Brown (1):
-        ASoC: Convert blackfin machines to use DAI accessor functions
+From: Karl Beldan <karl.beldan@gmail.com>
 
-are available in the git repository at:
+Clean up our record of the active streams in shutdown(), fixing
+subsequent failures of snd_pcm_hw_constraints_complete after closure of
+a stream.
 
-  git://opensource.wolfsonmicro.com/linux-2.6-asoc for-tiwai
+NOTE:
+- The ssm2602 allows pairs of non-matching PB/REC rates.
+- This is a fix for less evil:
+  The logic is flawed (e.g. the slave might startup before the
+  master's rate and sample_bits are set).
 
-Jarkko Nikula (1):
-      ASoC: OMAP: Fix preprocessor filled DAI name in McBSP DAI
+Signed-off-by: Karl Beldan <karl.beldan@gmail.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/ssm2602.c |   18 ++++++++++++++++++
+ 1 files changed, 18 insertions(+), 0 deletions(-)
 
-Karl Beldan (2):
-      ASoC: ssm2602: Fix priv substreams refs
-      ASoC: ssm2602: Update supported stream formats
-
-Mark Brown (7):
-      ASoC: Rename snd_soc_card to snd_soc_machine
-      ASoC: Add abbreviation to maintainers for searchability
-      ASoC: Move DAI structure definitions into new soc-dai.h
-      ASoC: Merge snd_soc_ops into snd_soc_dai_ops
-      ASoC: Add Marvell Zylonite machine support
-      ASoC: Staticise pxa2xx_pcm_ops
-      ASoC: Improve error reporting for AC97 reset failures
-
- Documentation/sound/alsa/soc/machine.txt |    8 +-
- MAINTAINERS                              |    2 +-
- include/sound/soc-dai.h                  |  225 ++++++++++++++++++++++++++++++
- include/sound/soc.h                      |  156 +--------------------
- sound/soc/atmel/atmel_ssc_dai.c          |   21 ++--
- sound/soc/atmel/playpaq_wm8510.c         |    4 +-
- sound/soc/atmel/sam9g20_wm8731.c         |    4 +-
- sound/soc/au1x/psc-ac97.c                |    5 +-
- sound/soc/au1x/psc-i2s.c                 |    8 +-
- sound/soc/au1x/sample-ac97.c             |    4 +-
- sound/soc/blackfin/bf5xx-ad1980.c        |    6 +-
- sound/soc/blackfin/bf5xx-ad73311.c       |    6 +-
- sound/soc/blackfin/bf5xx-i2s.c           |   12 +-
- sound/soc/blackfin/bf5xx-ssm2602.c       |    6 +-
- sound/soc/codecs/ac97.c                  |    3 +-
- sound/soc/codecs/ad1980.c                |    2 +-
- sound/soc/codecs/ak4535.c                |    5 +-
- sound/soc/codecs/cs4270.c                |   11 +-
- sound/soc/codecs/ssm2602.c               |   39 ++++-
- sound/soc/codecs/tlv320aic23.c           |   19 ++--
- sound/soc/codecs/tlv320aic26.c           |    5 +-
- sound/soc/codecs/tlv320aic3x.c           |    5 +-
- sound/soc/codecs/twl4030.c               |    5 +-
- sound/soc/codecs/uda134x.c               |   12 +-
- sound/soc/codecs/uda1380.c               |   15 +--
- sound/soc/codecs/wm8510.c                |    5 +-
- sound/soc/codecs/wm8580.c                |   12 +-
- sound/soc/codecs/wm8728.c                |    5 +-
- sound/soc/codecs/wm8731.c                |   11 +-
- sound/soc/codecs/wm8750.c                |    5 +-
- sound/soc/codecs/wm8753.c                |   25 ++--
- sound/soc/codecs/wm8900.c                |    5 +-
- sound/soc/codecs/wm8903.c                |   11 +-
- sound/soc/codecs/wm8971.c                |    5 +-
- sound/soc/codecs/wm8990.c                |    6 +-
- sound/soc/codecs/wm9712.c                |    8 +-
- sound/soc/codecs/wm9713.c                |   23 ++--
- sound/soc/davinci/davinci-evm.c          |    4 +-
- sound/soc/davinci/davinci-i2s.c          |   20 ++--
- sound/soc/davinci/davinci-sffsdr.c       |    7 +-
- sound/soc/fsl/fsl_dma.c                  |    2 +-
- sound/soc/fsl/fsl_ssi.c                  |   14 +-
- sound/soc/fsl/mpc5200_psc_i2s.c          |   17 ++-
- sound/soc/fsl/mpc8610_hpcd.c             |    6 +-
- sound/soc/fsl/soc-of-simple.c            |   10 +-
- sound/soc/omap/n810.c                    |    4 +-
- sound/soc/omap/omap-mcbsp.c              |   16 ++-
- sound/soc/omap/omap2evm.c                |    7 +-
- sound/soc/omap/omap3beagle.c             |    4 +-
- sound/soc/omap/osk5912.c                 |    4 +-
- sound/soc/omap/overo.c                   |    4 +-
- sound/soc/pxa/Makefile                   |    2 +
- sound/soc/pxa/corgi.c                    |    4 +-
- sound/soc/pxa/e800_wm9712.c              |    6 +-
- sound/soc/pxa/em-x270.c                  |    4 +-
- sound/soc/pxa/palm27x.c                  |    4 +-
- sound/soc/pxa/poodle.c                   |    4 +-
- sound/soc/pxa/pxa-ssp.c                  |   20 +--
- sound/soc/pxa/pxa2xx-ac97.c              |    9 +-
- sound/soc/pxa/pxa2xx-i2s.c               |   15 ++-
- sound/soc/pxa/pxa2xx-pcm.c               |    2 +-
- sound/soc/pxa/spitz.c                    |    4 +-
- sound/soc/pxa/tosa.c                     |    6 +-
- sound/soc/pxa/zylonite.c                 |  219 +++++++++++++++++++++++++++++
- sound/soc/s3c24xx/ln2440sbc_alc650.c     |    6 +-
- sound/soc/s3c24xx/neo1973_wm8753.c       |    6 +-
- sound/soc/s3c24xx/s3c2412-i2s.c          |    8 +-
- sound/soc/s3c24xx/s3c2443-ac97.c         |    8 +-
- sound/soc/s3c24xx/s3c24xx-i2s.c          |    9 +-
- sound/soc/s3c24xx/s3c24xx_uda134x.c      |    4 +-
- sound/soc/s3c24xx/smdk2443_wm9710.c      |    6 +-
- sound/soc/sh/hac.c                       |    3 +-
- sound/soc/sh/sh7760-ac97.c               |    4 +-
- sound/soc/sh/ssi.c                       |   16 +-
- sound/soc/soc-core.c                     |  164 +++++++++++-----------
- sound/soc/soc-dapm.c                     |    6 +-
- 76 files changed, 851 insertions(+), 516 deletions(-)
- create mode 100644 include/sound/soc-dai.h
- create mode 100644 sound/soc/pxa/zylonite.c
+diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+index 44ef0da..0e522e7 100644
+--- a/sound/soc/codecs/ssm2602.c
++++ b/sound/soc/codecs/ssm2602.c
+@@ -292,9 +292,15 @@ static int ssm2602_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_device *socdev = rtd->socdev;
+ 	struct snd_soc_codec *codec = socdev->codec;
+ 	struct ssm2602_priv *ssm2602 = codec->private_data;
++	struct i2c_client *i2c = codec->control_data;
+ 	u16 iface = ssm2602_read_reg_cache(codec, SSM2602_IFACE) & 0xfff3;
+ 	int i = get_coeff(ssm2602->sysclk, params_rate(params));
+ 
++	if (substream == ssm2602->slave_substream) {
++		dev_dbg(&i2c->dev, "Ignoring hw_params for slave substream\n");
++		return 0;
++	}
++
+ 	/*no match is found*/
+ 	if (i == ARRAY_SIZE(coeff_div))
+ 		return -EINVAL;
+@@ -330,13 +336,19 @@ static int ssm2602_startup(struct snd_pcm_substream *substream)
+ 	struct snd_soc_device *socdev = rtd->socdev;
+ 	struct snd_soc_codec *codec = socdev->codec;
+ 	struct ssm2602_priv *ssm2602 = codec->private_data;
++	struct i2c_client *i2c = codec->control_data;
+ 	struct snd_pcm_runtime *master_runtime;
+ 
+ 	/* The DAI has shared clocks so if we already have a playback or
+ 	 * capture going then constrain this substream to match it.
++	 * TODO: the ssm2602 allows pairs of non-matching PB/REC rates
+ 	 */
+ 	if (ssm2602->master_substream) {
+ 		master_runtime = ssm2602->master_substream->runtime;
++		dev_dbg(&i2c->dev, "Constraining to %d bits at %dHz\n",
++			master_runtime->sample_bits,
++			master_runtime->rate);
++
+ 		snd_pcm_hw_constraint_minmax(substream->runtime,
+ 					     SNDRV_PCM_HW_PARAM_RATE,
+ 					     master_runtime->rate,
+@@ -370,9 +382,15 @@ static void ssm2602_shutdown(struct snd_pcm_substream *substream)
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_device *socdev = rtd->socdev;
+ 	struct snd_soc_codec *codec = socdev->codec;
++	struct ssm2602_priv *ssm2602 = codec->private_data;
+ 	/* deactivate */
+ 	if (!codec->active)
+ 		ssm2602_write(codec, SSM2602_ACTIVE, 0);
++
++	if (ssm2602->master_substream == substream)
++		ssm2602->master_substream = ssm2602->slave_substream;
++
++	ssm2602->slave_substream = NULL;
+ }
+ 
+ static int ssm2602_mute(struct snd_soc_dai *dai, int mute)
+-- 
+1.5.6.5
