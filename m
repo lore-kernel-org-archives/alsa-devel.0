@@ -1,22 +1,16 @@
 From: Wu Fengguang <wfg@linux.intel.com>
-Subject: Re: [Intel-gfx] [RFC][PATCH] ELD routines and proc
-	interface
-Date: Fri, 21 Nov 2008 11:41:50 +0800
-Message-ID: <20081121034150.GA11242@localhost>
-References: <20081119071135.GA17733@csy.ca> <20081119071757.GA32376@localhost>
-	<20081119075545.GA19833@csy.ca> <20081119080800.GA522@localhost>
-	<20081119093940.GA17245@localhost> <20081119200201.GA23246@csy.ca>
-	<20081120010204.GA25454@localhost> <20081120200606.GA4164@csy.ca>
-	<20081121013655.GA8992@localhost> <20081121014649.GA12072@csy.ca>
+Subject: [PATCH] hda: modify monitor name to be consistent with
+	other ELD	proc items
+Date: Fri, 21 Nov 2008 12:34:05 +0800
+Message-ID: <20081121043405.GA14876@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from azsmga102.ch.intel.com (mga12.intel.com [143.182.124.36])
-	by alsa0.perex.cz (Postfix) with ESMTP id 30CB024431
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 04:42:02 +0100 (CET)
+Received: from azsmga101.ch.intel.com (mga07.intel.com [143.182.124.22])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4F1202444F
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 05:34:16 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20081121014649.GA12072@csy.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,106 +20,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shane W <shane-intel@csy.ca>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, "Ma, Ling" <ling.ma@intel.com>, intel-gfx@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>, xorg@lists.freedesktop.org, "Fu, Michael" <michael.fu@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 20, 2008 at 05:46:49PM -0800, Shane W wrote:
-> On Fri, Nov 21, 2008 at 09:36:55AM +0800, Wu Fengguang wrote:
-
-> > Yes it's unexpected. Do you know its real speaker numbers and
-> > allocations? Does it provide some number of line-out ports?
-> 
-> There are six speakers connected, fl, ct, fr, rl, rr and lfe.
-
-Hi Shane,
-
-Apply this patch and run "echo speakers f > /proc/asound/card0/eld\#3".
-That will make the ELD "speakers" field right.
-
-Thanks,
-Fengguang
----
-support writing to the ELD proc file
-
-Allow users to fix quicks of ELD ROMs by writing new values to the ELD proc
-interface. The format is one or more lines of "name hex_value".
-
-Users can add/remove/modify up to 32 SAD(Short Audio Descriptor) entries.
+Rename "monitor name" to "monitor_name" to conform with the keyword style.
 
 Signed-off-by: Wu Fengguang <wfg@linux.intel.com>
 ---
- sound/pci/hda/hda_eld.c |   56 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 56 insertions(+)
+ sound/pci/hda/hda_eld.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- sound-2.6.orig/sound/pci/hda/hda_eld.c
 +++ sound-2.6/sound/pci/hda/hda_eld.c
-@@ -500,6 +500,59 @@ static void hdmi_print_eld_info(struct s
- 		hdmi_print_sad_info(i, e->sad + i, buffer);
- }
+@@ -477,7 +477,7 @@ static void hdmi_print_eld_info(struct s
+ 	char buf[SND_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE];
+ 	int i;
  
-+static void hdmi_write_eld_item(struct snd_info_entry *entry,
-+				struct snd_info_buffer *buffer)
-+{
-+	struct hdmi_eld *e = entry->private_data;
-+	char line[64];
-+	char name[64];
-+	char *sname;
-+	long long val;
-+	int n;
-+
-+	while (!snd_info_get_line(buffer, line, sizeof(line))) {
-+		if (sscanf(line, "%s %llx", name, &val) != 2)
-+			continue;
-+		if (!strcmp(name, "connection_type"))
-+			e->conn_type = val;
-+		else if (!strcmp(name, "port_id"))
-+			e->port_id = val;
-+		else if (!strcmp(name, "support_hdcp"))
-+			e->support_hdcp = val;
-+		else if (!strcmp(name, "support_ai"))
-+			e->support_ai = val;
-+		else if (!strcmp(name, "audio_sync_delay"))
-+			e->aud_synch_delay = val;
-+		else if (!strcmp(name, "speakers"))
-+			e->spk_alloc = val;
-+		else if (!strcmp(name, "sad_count"))
-+			e->sad_count = val;
-+		else if (!strncmp(name, "sad", 3)) {
-+			sname = name + 4;
-+			n = name[3] - '0';
-+			if (name[4] >= '0' && name[4] <= '9') {
-+				sname++;
-+				n = 10 * n + name[4] - '0';
-+			}
-+			if (n < 0 || n > 31) /* double the CEA limit */
-+				continue;
-+			if (!strcmp(sname, "_coding_type"))
-+				e->sad[n].format = val;
-+			else if (!strcmp(sname, "_channels"))
-+				e->sad[n].channels = val;
-+			else if (!strcmp(sname, "_rates"))
-+				e->sad[n].rates = val;
-+			else if (!strcmp(sname, "_bits"))
-+				e->sad[n].sample_bits = val;
-+			else if (!strcmp(sname, "_max_bitrate"))
-+				e->sad[n].max_bitrate = val;
-+			if (n >= e->sad_count)
-+				e->sad_count = n + 1;
-+		}
-+	}
-+}
-+
-+
- int snd_hda_eld_proc_new(struct hda_codec *codec, struct hdmi_eld *eld)
- {
- 	char name[32];
-@@ -512,6 +565,9 @@ int snd_hda_eld_proc_new(struct hda_code
- 		return err;
- 
- 	snd_info_set_text_ops(entry, eld, hdmi_print_eld_info);
-+	entry->c.text.write = hdmi_write_eld_item;
-+	entry->mode |= S_IWUSR;
-+
- 	return 0;
- }
+-	snd_iprintf(buffer, "monitor name\t\t%s\n", e->monitor_name);
++	snd_iprintf(buffer, "monitor_name\t\t%s\n", e->monitor_name);
+ 	snd_iprintf(buffer, "connection_type\t\t%s\n",
+ 				eld_connection_type_names[e->conn_type]);
+ 	snd_iprintf(buffer, "eld_version\t\t[0x%x] %s\n", e->eld_ver,
