@@ -1,21 +1,25 @@
 From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: [topic/asoc][PATCH 1/1] ASoC: OMAP: Fix preprocessor
-	filled DAI name in McBSP DAI
-Date: Fri, 21 Nov 2008 14:31:33 +0200
-Message-ID: <1227270693-14227-2-git-send-email-jarkko.nikula@nokia.com>
-References: <1227270693-14227-1-git-send-email-jarkko.nikula@nokia.com>
+Subject: [PATCH 0/1] ASoC: OMAP: Fix preprocessor filled DAI
+	name in McBSP DAI
+Date: Fri, 21 Nov 2008 14:31:32 +0200
+Message-ID: <1227270693-14227-1-git-send-email-jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id BBF7F24490
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 13:31:57 +0100 (CET)
-Received: from esebh107.NOE.Nokia.com (esebh107.ntc.nokia.com [172.21.143.143])
-	by mgw-mx03.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
-	mALCVe41014865
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 14:31:56 +0200
-In-Reply-To: <1227270693-14227-1-git-send-email-jarkko.nikula@nokia.com>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0B28724490
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 13:31:56 +0100 (CET)
+Received: from vaebh105.NOE.Nokia.com (vaebh105.europe.nokia.com
+	[10.160.244.31])
+	by mgw-mx06.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
+	mALCVr4J001784
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 14:31:55 +0200
+Received: from localhost.localdomain (esdhcp042162.research.nokia.com
+	[172.21.42.162])
+	by mgw-int01.ntc.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
+	mALCVmvQ023023
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 14:31:49 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,26 +30,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Jarkko Nikula <jarkko.nikula@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
----
- sound/soc/omap/omap-mcbsp.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+IMO, this is a minor fix, so generated on top of topic/asoc.
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 3d4060b..ba61c9e 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -450,7 +450,7 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 
- #define OMAP_MCBSP_DAI_BUILDER(link_id)				\
- {								\
--	.name = "omap-mcbsp-dai-(link_id)",			\
-+	.name = "omap-mcbsp-dai-"#link_id,			\
- 	.id = (link_id),					\
- 	.type = SND_SOC_DAI_I2S,				\
- 	.playback = {						\
+
 -- 
-1.5.6.5
+Jarkko
