@@ -1,22 +1,17 @@
-From: Wu Fengguang <wfg@linux.intel.com>
-Subject: Re: [Intel-gfx] [RFC][PATCH] ELD routines and proc
-	interface
-Date: Fri, 21 Nov 2008 09:59:10 +0800
-Message-ID: <20081121015910.GB10734@localhost>
-References: <20081119071135.GA17733@csy.ca> <20081119071757.GA32376@localhost>
-	<20081119075545.GA19833@csy.ca> <20081119080800.GA522@localhost>
-	<20081119093940.GA17245@localhost> <20081119200201.GA23246@csy.ca>
-	<20081120010204.GA25454@localhost> <20081120200606.GA4164@csy.ca>
-	<20081121013655.GA8992@localhost> <20081121014649.GA12072@csy.ca>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: Re: [PATCH] hda: Add STAC_DELL_M4_3 quirk
+Date: Thu, 20 Nov 2008 21:02:04 -0500
+Message-ID: <4926169C.1080709@embeddedalley.com>
+References: <4924D013.2020107@embeddedalley.com>	<s5h8wreooic.wl%tiwai@suse.de>	<49260F64.5040303@embeddedalley.com>
+	<s5hk5ax2745.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from azsmga102.ch.intel.com (mga12.intel.com [143.182.124.36])
-	by alsa0.perex.cz (Postfix) with ESMTP id B6805243BF
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 02:59:21 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20081121014649.GA12072@csy.ca>
+Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
+	by alsa0.perex.cz (Postfix) with SMTP id 87741243BF
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 03:02:12 +0100 (CET)
+In-Reply-To: <s5hk5ax2745.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,49 +21,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shane W <shane-intel@csy.ca>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, "Ma, Ling" <ling.ma@intel.com>, intel-gfx@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>, xorg@lists.freedesktop.org, "Fu, Michael" <michael.fu@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBOb3YgMjAsIDIwMDggYXQgMDU6NDY6NDlQTSAtMDgwMCwgU2hhbmUgVyB3cm90ZToK
-PiBPbiBGcmksIE5vdiAyMSwgMjAwOCBhdCAwOTozNjo1NUFNICswODAwLCBXdSBGZW5nZ3Vhbmcg
-d3JvdGU6Cj4gPiAKPiA+ID4gc3VwcG9ydHMgY29kaW5nIHR5cGUgQUMtMzogY2hhbm5lbHMgPSA2
-LCByYXRlcyA9IDQ0MTAwCj4gPiA+IDQ4MDAwIDg4MjAwLCBtYXggYml0cmF0ZSA9IDY0MDAwMAo+
-ID4gPiBzdXBwb3J0cyBjb2RpbmcgdHlwZSBEVFM6IGNoYW5uZWxzID0gNywgcmF0ZXMgPSA0NDEw
-MCA0ODAwMAo+ID4gPiA4ODIwMCAxNzY0MDAgMTkyMDAwLCBtYXggYml0cmF0ZSA9IDE1MzYwMDAK
-PiA+ID4gc3VwcG9ydHMgY29kaW5nIHR5cGUgRFNEIChPbmUgQml0IEF1ZGlvKTogY2hhbm5lbHMg
-PSA2LAo+ID4gPiByYXRlcyA9IDQ4MDAwCj4gPiAKPiA+IEl0J3Mgd2VpcmQgdGhhdCBEVFMgc3Vw
-cG9ydHMgNyBjaGFubmVscyB3aGlsZSBEU0Qgc3VwcG9ydHMgNi4KPiA+IERUUyBpcyBzaW1wbGUg
-dGhlIGNvbXByZXNzZWQgZm9ybSBvZiBEU0QuCj4gCj4gSG1tLCBJIHRob3VnaHQgRFRTIHdhcyBq
-dXN0IGFub3RoZXIgd2F5IG9mIGNvbXByZXNzaW5nIFBDTQo+IHdoZXJlYXMgRFNEIGlzIHRoZSBm
-b3JtYXQgdXNlZCBvbiBTQUNEIGRpc2tzLCBJRSA2IGNoYW5uZWwuCj4gaHR0cDovL2VuLndpa2lw
-ZWRpYS5vcmcvd2lraS9EaXJlY3RfU3RyZWFtX0RpZ2l0YWwKCldlbGwgbXkgc291cmNlIGlzIGEg
-Yml0IGRpZmZlcmVudCA7LSkKCmh0dHA6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvU3VwZXJfQXVk
-aW9fQ0QKCkRTVAoKVG8gcmVkdWNlIHRoZSBzcGFjZSBhbmQgYmFuZHdpZHRoIHJlcXVpcmVtZW50
-cyBvZiBEU0QgKDIuOCBNYml0L3MgcGVyCmNoYW5uZWwpLCBhIGxvc3NsZXNzIGRhdGEgY29tcHJl
-c3Npb24gbWV0aG9kIGNhbGxlZCBEaXJlY3QgU3RyZWFtClRyYW5zZmVyIChEU1QpIGlzIHVzZWQg
-4oCUIERTVCBjb21wcmVzc2lvbiBpcyBjb21wdWxzb3J5IGZvcgptdWx0aS1jaGFubmVsIHJlZ2lv
-bnMgYW5kIG9wdGlvbmFsIGZvciBzdGVyZW8gcmVnaW9ucy4gVGhpcyB0eXBpY2FsbHkKY29tcHJl
-c3NlcyBieSBhIGZhY3RvciBvZiBiZXR3ZWVuIHR3byBhbmQgdGhyZWUsIGFsbG93aW5nIGEgZGlz
-YyB0bwpjb250YWluIDgwIG1pbnV0ZXMgb2YgYm90aCAyLWNoYW5uZWwgYW5kIDUuMS1jaGFubmVs
-IHNvdW5kLgoKPiA+ID4gVGhlIHNwZWFrZXJzIDAgbGluZSBpcyBhIGJpdCBjb25mdXNpbmcsIG5v
-dCBzdXJlIGlmIHRoYXQncwo+ID4gCj4gPiBZZXMgaXQncyB1bmV4cGVjdGVkLiBEbyB5b3Uga25v
-dyBpdHMgcmVhbCBzcGVha2VyIG51bWJlcnMgYW5kCj4gPiBhbGxvY2F0aW9ucz8gRG9lcyBpdCBw
-cm92aWRlIHNvbWUgbnVtYmVyIG9mIGxpbmUtb3V0IHBvcnRzPwo+IAo+IFRoZXJlIGFyZSBzaXgg
-c3BlYWtlcnMgY29ubmVjdGVkLCBmbCwgY3QsIGZyLCBybCwgcnIgYW5kCj4gbGZlLgoKVGFrYXNo
-aSwgSSdkIHN1Z2dlc3QgdG8gc3VwcG9ydCB3cml0aW5nIHRvIHRoZSBFTEQgcHJvYyBpbnRlcmZh
-Y2UgdG8KYWx0ZXIgdGhlIGludGVybmFsIEVMRCBzdHJ1Y3QuIFRoaXMgY291bGQgbGV0IHVzZXJz
-IGRlYnVnL2ZpeCBxdWlja3MKY29udmVuaWVudGx5LiBCdXQgc3VyZSB0aGVzZSBmaXhlcyBzaG91
-bGQgZXZlbnR1YWxseSBiZSBpbmNvcnBvcmF0ZWQKaW50byB0aGUga2VybmVsIHNvIHRoYXQgaXQg
-anVzdCB3b3Jrcy4KCj4gPiA+IHdoYXQncyBkb2luZyBpdC4gIEkgYW0gdXNpbmc6Cj4gPiA+IGFw
-bGF5IDUxdGVzdC53YXYKPiA+ID4gCj4gPiA+IHdoaWNoIEkgaGF2ZSBwdXQgaGVyZToKPiA+ID4g
-aHR0cDovL3d3dy5jc3kuY2EvfnNoYW5lLzUxdGVzdC53YXYKPiA+IAo+ID4gSSBoZWFyIG9ubHkg
-ImZyb250IGxlZnQiIGFuZCAiZnJvbnQgcmlnaHQiIGluIG15IFQ2MSA6LSkKPiAKPiBZZWFoLCB5
-b3Ugc2hvdWxkIGdldDoKPiBGcm9udCBsZWZ0Cj4gQ2VudGVyCj4gUmVhciBsZWZ0Cj4gUmVhciBy
-aWdodAo+IGFuZCBhIGxpdHRsZSBib29tIGZyb20gdGhlIHN1Ygo+IAo+IElmIHlvdSBlbmNvZGUg
-NTF0ZXN0LndhdiB0byBhYzMgYW5kIHN0cmVhbSB0aHJvdWdoIGhkbWkKPiBkaXJlY3RseSwgaXQg
-ZG9lcyB0aGlzIHByb3Blcmx5LgoKT0ssIHNvIDUuMSBBQzMgYXVkaW8gcGxheXMgcHJvcGVybHkg
-b24gSERNST8KClRoYW5rcywKRmVuZ2d1YW5nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+Takashi Iwai wrote:
+> At Thu, 20 Nov 2008 20:31:16 -0500,
+> Matthew Ranostay wrote:
+>> Takashi Iwai wrote:
+>>> At Wed, 19 Nov 2008 21:48:51 -0500,
+>>> Matthew Ranostay wrote:
+>>>> Add PCI quirk STAC_DELL_M4_3 for 92hd71bxx based laptops.
+>>> Which laptops, more exactly?  Recently I received bug reports about
+>>> Dell Studio laptops, and wondering whether it's for such models.
+>>>
+>>>
+>>>> @@ -4650,14 +4661,20 @@ again:
+>>>>
+>>>>  	switch (spec->board_config) {
+>>>>  	case STAC_HP_M4:
+>>>> -		spec->num_dmics = 0;
+>>>> -		spec->num_smuxes = 0;
+>>>> -		spec->num_dmuxes = 0;
+>>>> -
+>>>>  		/* enable internal microphone */
+>>>>  		stac92xx_set_config_reg(codec, 0x0e, 0x01813040);
+>>>>  		stac92xx_auto_set_pinctl(codec, 0x0e,
+>>>>  			AC_PINCTL_IN_EN | AC_PINCTL_VREF_80);
+>>> Please add a comment about fall-through here.
+>>>
+>>> Also, update Documentation/*/ALSA-Configuration.txt as well.
+>>>
+>>>
+>>> thanks,
+>>>
+>>> Takashi
+>>>
+>> Add PCI quirk STAC_DELL_M4_3 for 92hd71bxx based laptops and desktops.
+>>
+>> Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+> 
+> Thanks.  Now another questions about the patch.
+> 
+>> @@ -4650,14 +4661,21 @@ again:
+>>
+>>  	switch (spec->board_config) {
+>>  	case STAC_HP_M4:
+>> -		spec->num_dmics = 0;
+>> -		spec->num_smuxes = 0;
+>> -		spec->num_dmuxes = 0;
+>> -
+> 
+> Any reason to remove these....
+> 
+Because it falls through below.
+
+>>  		/* enable internal microphone */
+>>  		stac92xx_set_config_reg(codec, 0x0e, 0x01813040);
+>>  		stac92xx_auto_set_pinctl(codec, 0x0e,
+>>  			AC_PINCTL_IN_EN | AC_PINCTL_VREF_80);
+>> +		/* fallthru */
+>> +	case STAC_DELL_M4_2:
+>> +		spec->num_dmics = 0;
+>> +		spec->num_smuxes = 0;
+>> +		spec->num_dmuxes = 0;
+>> +		break;
+>> +	case STAC_DELL_M4_1:
+>> +	case STAC_DELL_M4_3:
+>> +		spec->num_dmics = 1;
+>> +		spec->num_smuxes = 0;
+>> +		spec->num_dmuxes = 0;
+> 
+> ... and adding these?
+> 
+> That is, the patch introduces more changes than its description.
+> If you change or fix the behavior of other models, please split, or
+> at least give a proper changelog.
+> 
+> 
+I'll give a more descriptive changelog.
+
+> thanks,
+> 
+> Takashi
+> 
