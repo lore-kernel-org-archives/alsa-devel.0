@@ -1,25 +1,21 @@
-From: flameeyes@gmail.com (Diego E. 'Flameeyes' =?utf-8?Q?Petten=C3=B2?=)
-Subject: Re: Fixes and misc improvements for alsa-lib,
-	alsa-plugins, alsa-utils
-Date: Fri, 21 Nov 2008 13:12:14 +0100
-Message-ID: <m24p21nuqp.fsf@gmail.com>
-References: <m2ej15okqv.fsf@gmail.com> <s5hljvd8fea.wl%tiwai@suse.de>
+From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Subject: [topic/asoc][PATCH 1/1] ASoC: OMAP: Fix preprocessor
+	filled DAI name in McBSP DAI
+Date: Fri, 21 Nov 2008 14:31:33 +0200
+Message-ID: <1227270693-14227-2-git-send-email-jarkko.nikula@nokia.com>
+References: <1227270693-14227-1-git-send-email-jarkko.nikula@nokia.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0338024554469084228=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9F43A24475
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 13:12:27 +0100 (CET)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1L3Us2-00068X-Jz
-	for alsa-devel@alsa-project.org; Fri, 21 Nov 2008 12:12:22 +0000
-Received: from ppp-13-236.21-151.libero.it ([151.21.236.13])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 12:12:22 +0000
-Received: from flameeyes by ppp-13-236.21-151.libero.it with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 12:12:22 +0000
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id BBF7F24490
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 13:31:57 +0100 (CET)
+Received: from esebh107.NOE.Nokia.com (esebh107.ntc.nokia.com [172.21.143.143])
+	by mgw-mx03.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
+	mALCVe41014865
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 14:31:56 +0200
+In-Reply-To: <1227270693-14227-1-git-send-email-jarkko.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,49 +26,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Jarkko Nikula <jarkko.nikula@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============0338024554469084228==
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha1; protocol="application/pgp-signature"
+Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
+---
+ sound/soc/omap/omap-mcbsp.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-Takashi Iwai <tiwai@suse.de> writes:
-
-> These changes look OK, but could you add your sign-off to each commit?
-
-All commits have sign-off now and the indentation problem is fixed, and
-pushed (forced update/history rewritten).
-
-=2D-=20
-Diego "Flameeyes" Petten=C3=B2
-http://blog.flameeyes.eu/
-
---=-=-=
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-
-iEYEARECAAYFAkkmpZ4ACgkQe2h1+2mHVWNBjgCePpyegjU9JCOaj7zQp4HnJGMh
-KVEAnA2xIDVGV2Yy2k+pMlfdqjdOvWeT
-=xzLu
------END PGP SIGNATURE-----
---=-=-=--
-
-
---===============0338024554469084228==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============0338024554469084228==--
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index 3d4060b..ba61c9e 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -450,7 +450,7 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 
+ #define OMAP_MCBSP_DAI_BUILDER(link_id)				\
+ {								\
+-	.name = "omap-mcbsp-dai-(link_id)",			\
++	.name = "omap-mcbsp-dai-"#link_id,			\
+ 	.id = (link_id),					\
+ 	.type = SND_SOC_DAI_I2S,				\
+ 	.playback = {						\
+-- 
+1.5.6.5
