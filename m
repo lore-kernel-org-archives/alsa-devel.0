@@ -1,22 +1,15 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 01/10] ASoC: Rename snd_soc_card to
-	snd_soc_machine
-Date: Fri, 21 Nov 2008 15:05:44 +0000
-Message-ID: <20081121150540.GF31866@sirena.org.uk>
-References: <20081121144734.GA25238@rakim.wolfsonmicro.main>
-	<1227278913-25313-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<s5hod09ku1p.wl%tiwai@suse.de>
-	<20081121150217.GE31866@sirena.org.uk>
-	<s5hmyftktn6.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/1] ASoC: Fix typo in snd_soc_card update
+	documentation
+Date: Fri, 21 Nov 2008 15:08:23 +0000
+Message-ID: <1227280103-25997-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5691A24542
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 16:05:49 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hmyftktn6.wl%tiwai@suse.de>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8EA5924542
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 16:08:24 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,14 +20,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 21, 2008 at 04:04:13PM +0100, Takashi Iwai wrote:
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ Documentation/sound/alsa/soc/machine.txt |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-> Oops, I already pulled and pushed out right now...
-
-No worries - I'll send an incremental fix just now.
-
+diff --git a/Documentation/sound/alsa/soc/machine.txt b/Documentation/sound/alsa/soc/machine.txt
+index 4a9f51e..bab7711 100644
+--- a/Documentation/sound/alsa/soc/machine.txt
++++ b/Documentation/sound/alsa/soc/machine.txt
+@@ -9,7 +9,7 @@ the audio subsystem with the kernel as a platform device and is represented by
+ the following struct:-
+ 
+ /* SoC machine */
+-struct snd_soc_card {_
++struct snd_soc_card {
+ 	char *name;
+ 
+ 	int (*probe)(struct platform_device *pdev);
 -- 
-"You grabbed my hand and we fell into it, like a daydream - or a fever."
+1.5.6.5
