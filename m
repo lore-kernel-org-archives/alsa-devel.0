@@ -1,21 +1,16 @@
-From: Kevin Hilman <khilman@deeprootsystems.com>
-Subject: Re: [PATCH] ARM DaVinci: Add PCM3008 ALSA SoC driver
-	for the Lyrtech SFFSDR board
-Date: Thu, 20 Nov 2008 15:44:20 -0800
-Message-ID: <87fxlm7yjv.fsf@deeprootsystems.com>
-References: <1226968079-1624-1-git-send-email-hugo@hugovil.com>
-	<20081118113150.GC23217@sirena.org.uk>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: Re: [PATCH] hda: Add STAC_DELL_M4_3 quirk
+Date: Thu, 20 Nov 2008 20:31:16 -0500
+Message-ID: <49260F64.5040303@embeddedalley.com>
+References: <4924D013.2020107@embeddedalley.com> <s5h8wreooic.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE2B124348
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 00:44:28 +0100 (CET)
-Received: by nf-out-0910.google.com with SMTP id e27so472297nfd.32
-	for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2008 15:44:27 -0800 (PST)
-In-Reply-To: <20081118113150.GC23217@sirena.org.uk> (Mark Brown's message of
-	"Tue\, 18 Nov 2008 11\:31\:51 +0000")
+Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
+	by alsa0.perex.cz (Postfix) with SMTP id 7A518243A0
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 02:31:29 +0100 (CET)
+In-Reply-To: <s5h8wreooic.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,122 +20,132 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org, Hugo Villeneuve <hugo.villeneuve@lyrtech.com>, davinci-linux-open-source@linux.davincidsp.com, Hugo Villeneuve <hugo@hugovil.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown <broonie@sirena.org.uk> writes:
+Takashi Iwai wrote:
+> At Wed, 19 Nov 2008 21:48:51 -0500,
+> Matthew Ranostay wrote:
+>> Add PCI quirk STAC_DELL_M4_3 for 92hd71bxx based laptops.
+> 
+> Which laptops, more exactly?  Recently I received bug reports about
+> Dell Studio laptops, and wondering whether it's for such models.
+> 
+> 
+>> @@ -4650,14 +4661,20 @@ again:
+>>
+>>  	switch (spec->board_config) {
+>>  	case STAC_HP_M4:
+>> -		spec->num_dmics = 0;
+>> -		spec->num_smuxes = 0;
+>> -		spec->num_dmuxes = 0;
+>> -
+>>  		/* enable internal microphone */
+>>  		stac92xx_set_config_reg(codec, 0x0e, 0x01813040);
+>>  		stac92xx_auto_set_pinctl(codec, 0x0e,
+>>  			AC_PINCTL_IN_EN | AC_PINCTL_VREF_80);
+> 
+> Please add a comment about fall-through here.
+> 
+> Also, update Documentation/*/ALSA-Configuration.txt as well.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
 
-> On Mon, Nov 17, 2008 at 07:27:59PM -0500, Hugo Villeneuve wrote:
->> The PCM3008 is used on the Lyrtech SFFSDR board, in conjunction with an
->> FPGA that generates the bit clock and the master clock
->
-> Looks fairly good overall.
->
->> Signed-off-by: Hugo Villeneuve <hugo.villeneuve@lyrtech.com>
->
-> Normally codec drivers and machine drivers should be submitted as
-> separate patches, though it's not critical.
+Add PCI quirk STAC_DELL_M4_3 for 92hd71bxx based laptops and desktops.
 
-I agree.  In addition, I believe the board-specific init
-(sound/soc/davinci/davinci-sffsdr.c) should not be under sound/*, but
-rather belongs in the board init code in arch/arm/mach-davinci/board*.
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+---
 
-Kevin
+diff --git a/Documentation/ALSA-Configuration.txt
+b/Documentation/ALSA-Configuration.txt
+index 3ab5fb1..8b99a22 100644
+--- a/Documentation/ALSA-Configuration.txt
++++ b/Documentation/ALSA-Configuration.txt
+@@ -1076,6 +1076,7 @@ Prior to version 0.9.0rc4 options had a 'snd_' prefix.
+This was removed.
+ 	  ref		Reference board
+ 	  dell-m4-1	Dell desktops
+ 	  dell-m4-2	Dell desktops
++	  dell-m4-3	Dell desktops
 
->> index 5df7402..dc58ce2 100644
->> --- a/sound/soc/codecs/Kconfig
->> +++ b/sound/soc/codecs/Kconfig
->> @@ -80,6 +80,10 @@ config SND_SOC_TWL4030
->>  	tristate
->>  	depends on TWL4030_CORE
->>  
->> +config SND_SOC_PCM3008
->> +	tristate
->> +	depends on SFFSDR_FPGA
->
-> The codec driver shouldn't depend on the FPGA driver.  Once that
-> dependency has been removed the codec should be added to
-> SND_SOC_ALL_CODECS.
->
->> +static int pcm3008_hw_params(struct snd_pcm_substream *substream,
->> +			     struct snd_pcm_hw_params *params)
->> +{
->> +	int fs;
->> +
->> +	/* Fsref can be 32000, 44100 or 48000. */
->> +	fs = params_rate(params);
->> +
->> +	printk(KERN_INFO "pcm3008_hw_params: rate = %d Hz\n", fs);
->> +
->> +	return sffsdr_fpga_set_codec_fs(fs);
->> +}
->
-> This should be being done by the machine driver rather than by the codec
-> driver - this will allow the codec driver to be used on another machine
-> that has some other method for generating the clocks.  As far as I can
-> see that's the only dependency on the sffsdr?
->
->> +	/* DEM1  DEM0  DE-EMPHASIS_MODE
->> +	 * Low   Low   De-emphasis 44.1 kHz ON
->> +	 * Low   High  De-emphasis OFF
->> +	 * High  Low   De-emphasis 48 kHz ON
->> +	 * High  High  De-emphasis 32 kHz ON
->> +	 */
->
-> Looks like this should be exported as a control?  It's not important for
-> merging but it'd be nice.
->
->> +static int pcm3008_soc_suspend(struct platform_device *pdev, pm_message_t msg)
->> +{
->> +	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
->> +	struct pcm3008_setup_data *setup = socdev->codec_data;
->> +
->> +	printk(KERN_INFO "pcm3008_soc_suspend(): TODO\n");
->
-> This should be a comment, though it looks like you may actually have
-> implemented this already?
->
->> +struct pcm3008_setup_data {
->> +	u8 dem0_pin;
->> +	u8 dem1_pin;
->> +	u8 pdad_pin;
->> +	u8 pdda_pin;
->> +};
->
-> GPIO numbers should be unsigned to match the gpiolib API (some systems
-> do support an awful lot of GPIOs).
->
-> Also, ideally pdad and pdad would be used to implement DAPM controls so
-> that they can be powered down when not in use but again that's not
-> essential for merging - so long as they're passed in someone could do
-> that later.
->
->> +config SND_DAVINCI_SOC_SFFSDR
->> +	tristate "SoC Audio support for SFFSDR"
->> +	depends on SND_DAVINCI_SOC && MACH_DAVINCI_SFFSDR
->> +	select SND_DAVINCI_SOC_I2S
->> +	select SND_SOC_PCM3008
->> +	help
->> +	  Say Y if you want to add support for SoC audio on
->> +	  Lyrtech SFFSDR board.
->
-> This should also select SSFDR_FPGA - select ignores dependencies so the
-> select from the codec driver won't be picked up (though the codec driver
-> ought not to be selecting it in the first place).
->
->> --- /dev/null
->> +++ b/sound/soc/davinci/davinci-sffsdr.c
->> @@ -0,0 +1,145 @@
->> +/*
->> + * ASoC driver for Lyrtech SFFSDR board.
->> + *
->> + * Author:      Vladimir Barinov, <vbarinov@ru.mvista.com>
->> + * Copyright:   (C) 2007 MontaVista Software, Inc., <source@mvista.com>
->
-> Are you sure?  Looks like cut'n'paste - MODULE_AUTHOR() claims you wrote
-> this driver.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+ 	STAC92HD73*
+ 	  ref		Reference board
+diff --git a/pci/hda/patch_sigmatel.c b/pci/hda/patch_sigmatel.c
+index e0298df..f1a0f13 100644
+--- a/pci/hda/patch_sigmatel.c
++++ b/pci/hda/patch_sigmatel.c
+@@ -83,6 +83,7 @@ enum {
+ 	STAC_92HD71BXX_REF,
+ 	STAC_DELL_M4_1,
+ 	STAC_DELL_M4_2,
++	STAC_DELL_M4_3,
+ 	STAC_HP_M4,
+ 	STAC_92HD71BXX_MODELS
+ };
+@@ -1689,10 +1690,17 @@ static unsigned int dell_m4_2_pin_configs[11] = {
+ 	0x40f000f0, 0x044413b0, 0x044413b0,
+ };
+
++static unsigned int dell_m4_3_pin_configs[11] = {
++	0x0421101f, 0x04a11221, 0x90a70330, 0x90170110,
++	0x40f000f0, 0x40f000f0, 0x40f000f0, 0x90a000f0,
++	0x40f000f0, 0x044413b0, 0x044413b0,
++};
++
+ static unsigned int *stac92hd71bxx_brd_tbl[STAC_92HD71BXX_MODELS] = {
+ 	[STAC_92HD71BXX_REF] = ref92hd71bxx_pin_configs,
+ 	[STAC_DELL_M4_1]	= dell_m4_1_pin_configs,
+ 	[STAC_DELL_M4_2]	= dell_m4_2_pin_configs,
++	[STAC_DELL_M4_3]	= dell_m4_3_pin_configs,
+ 	[STAC_HP_M4]		= NULL,
+ };
+
+@@ -1700,6 +1708,7 @@ static const char
+*stac92hd71bxx_models[STAC_92HD71BXX_MODELS] = {
+ 	[STAC_92HD71BXX_REF] = "ref",
+ 	[STAC_DELL_M4_1] = "dell-m4-1",
+ 	[STAC_DELL_M4_2] = "dell-m4-2",
++	[STAC_DELL_M4_3] = "dell-m4-3",
+ 	[STAC_HP_M4] = "hp-m4",
+ };
+
+@@ -1731,6 +1740,8 @@ static struct snd_pci_quirk stac92hd71bxx_cfg_tbl[] = {
+ 				"unknown Dell", STAC_DELL_M4_2),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0264,
+ 				"unknown Dell", STAC_DELL_M4_2),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x02aa,
++				"unknown Dell", STAC_DELL_M4_3),
+ 	{} /* terminator */
+ };
+
+@@ -4650,14 +4661,21 @@ again:
+
+ 	switch (spec->board_config) {
+ 	case STAC_HP_M4:
+-		spec->num_dmics = 0;
+-		spec->num_smuxes = 0;
+-		spec->num_dmuxes = 0;
+-
+ 		/* enable internal microphone */
+ 		stac92xx_set_config_reg(codec, 0x0e, 0x01813040);
+ 		stac92xx_auto_set_pinctl(codec, 0x0e,
+ 			AC_PINCTL_IN_EN | AC_PINCTL_VREF_80);
++		/* fallthru */
++	case STAC_DELL_M4_2:
++		spec->num_dmics = 0;
++		spec->num_smuxes = 0;
++		spec->num_dmuxes = 0;
++		break;
++	case STAC_DELL_M4_1:
++	case STAC_DELL_M4_3:
++		spec->num_dmics = 1;
++		spec->num_smuxes = 0;
++		spec->num_dmuxes = 0;
+ 		break;
+ 	default:
+ 		spec->num_dmics = STAC92HD71BXX_NUM_DMICS;
