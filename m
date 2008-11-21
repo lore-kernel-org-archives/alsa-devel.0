@@ -1,24 +1,22 @@
-From: flameeyes@gmail.com (Diego E. 'Flameeyes' =?utf-8?Q?Petten=C3=B2?=)
-Subject: Fixes and misc improvements for alsa-lib, alsa-plugins,
-	alsa-utils
-Date: Fri, 21 Nov 2008 03:50:32 +0100
-Message-ID: <m2ej15okqv.fsf@gmail.com>
+From: Wu Fengguang <wfg@linux.intel.com>
+Subject: Re: [Intel-gfx] [RFC][PATCH] ELD routines and proc
+	interface
+Date: Fri, 21 Nov 2008 11:41:50 +0800
+Message-ID: <20081121034150.GA11242@localhost>
+References: <20081119071135.GA17733@csy.ca> <20081119071757.GA32376@localhost>
+	<20081119075545.GA19833@csy.ca> <20081119080800.GA522@localhost>
+	<20081119093940.GA17245@localhost> <20081119200201.GA23246@csy.ca>
+	<20081120010204.GA25454@localhost> <20081120200606.GA4164@csy.ca>
+	<20081121013655.GA8992@localhost> <20081121014649.GA12072@csy.ca>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9182549441387627456=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 270E424402
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 03:50:50 +0100 (CET)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1L3M6Y-0005SL-Gt
-	for alsa-devel@alsa-project.org; Fri, 21 Nov 2008 02:50:46 +0000
-Received: from ppp-13-236.21-151.libero.it ([151.21.236.13])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 02:50:46 +0000
-Received: from flameeyes by ppp-13-236.21-151.libero.it with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 02:50:46 +0000
+Received: from azsmga102.ch.intel.com (mga12.intel.com [143.182.124.36])
+	by alsa0.perex.cz (Postfix) with ESMTP id 30CB024431
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 04:42:02 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20081121014649.GA12072@csy.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,76 +26,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Shane W <shane-intel@csy.ca>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, "Ma, Ling" <ling.ma@intel.com>, intel-gfx@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>, xorg@lists.freedesktop.org, "Fu, Michael" <michael.fu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============9182549441387627456==
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha1; protocol="application/pgp-signature"
+On Thu, Nov 20, 2008 at 05:46:49PM -0800, Shane W wrote:
+> On Fri, Nov 21, 2008 at 09:36:55AM +0800, Wu Fengguang wrote:
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+> > Yes it's unexpected. Do you know its real speaker numbers and
+> > allocations? Does it provide some number of line-out ports?
+> 
+> There are six speakers connected, fl, ct, fr, rl, rr and lfe.
 
+Hi Shane,
 
-I've taken some time to fix some autotools nitpicks and some generic
-optimisations, I hope they can be useful:
+Apply this patch and run "echo speakers f > /proc/asound/card0/eld\#3".
+That will make the ELD "speakers" field right.
 
-git://git.flameeyes.eu/others/alsa/alsa-lib.git flameeyes
+Thanks,
+Fengguang
+---
+support writing to the ELD proc file
 
-Diego E. 'Flameeyes' Petten=C3=B2 (5):
-      Don't use AC_CANONICAL_SYSTEM, only use AC_CANONICAL_HOST.
-      Add the attributes.m4 macro file from xine/lscube.
-      Check for --no-undefined linker flag and use it.
-      Make sure that python libraries are passed through LIBADD.
-      Make some static tables and strings constants.
+Allow users to fix quicks of ELD ROMs by writing new values to the ELD proc
+interface. The format is one or more lines of "name hex_value".
 
-git://git.flameeyes.eu/others/alsa/alsa-plugins.git flameeyes
+Users can add/remove/modify up to 32 SAD(Short Audio Descriptor) entries.
 
-Diego E. 'Flameeyes' Petten=C3=B2 (6):
-      Add the attributes.m4 macro file from xine/lscube.
-      Check for --no-undefined linker flag and use it.
-      Cleanup flags in maemo/Makefile.am
-      [RFC] Don't use pow() for calculating a power of 2, use shift instead.
-      Make some static tables and strings constants.
-      Mark as static the functions not used outside their unit.
+Signed-off-by: Wu Fengguang <wfg@linux.intel.com>
+---
+ sound/pci/hda/hda_eld.c |   56 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
 
-git://git.flameeyes.eu/others/alsa/alsa-utils.git flameeyes
-
-Diego E. 'Flameeyes' Petten=C3=B2 (4):
-      Remove some dead code (comparisons between 0 and unsigned integers).
-      Remove some unused variables.
-      Mark static the functions not used outside their unit.
-      Make some static tables and strings constants.
-
-
-=2D-=20
-Diego "Flameeyes" Petten=C3=B2
-http://blog.flameeyes.eu/
-
-
---=-=-=
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-
-iEYEARECAAYFAkkmIfgACgkQe2h1+2mHVWOYzgCgvJSt6nTstMk11ZnQItVeM2Rz
-oykAn3HR64/bl9thpMDK/+WAVw20ANAp
-=8xfX
------END PGP SIGNATURE-----
---=-=-=--
-
-
---===============9182549441387627456==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============9182549441387627456==--
+--- sound-2.6.orig/sound/pci/hda/hda_eld.c
++++ sound-2.6/sound/pci/hda/hda_eld.c
+@@ -500,6 +500,59 @@ static void hdmi_print_eld_info(struct s
+ 		hdmi_print_sad_info(i, e->sad + i, buffer);
+ }
+ 
++static void hdmi_write_eld_item(struct snd_info_entry *entry,
++				struct snd_info_buffer *buffer)
++{
++	struct hdmi_eld *e = entry->private_data;
++	char line[64];
++	char name[64];
++	char *sname;
++	long long val;
++	int n;
++
++	while (!snd_info_get_line(buffer, line, sizeof(line))) {
++		if (sscanf(line, "%s %llx", name, &val) != 2)
++			continue;
++		if (!strcmp(name, "connection_type"))
++			e->conn_type = val;
++		else if (!strcmp(name, "port_id"))
++			e->port_id = val;
++		else if (!strcmp(name, "support_hdcp"))
++			e->support_hdcp = val;
++		else if (!strcmp(name, "support_ai"))
++			e->support_ai = val;
++		else if (!strcmp(name, "audio_sync_delay"))
++			e->aud_synch_delay = val;
++		else if (!strcmp(name, "speakers"))
++			e->spk_alloc = val;
++		else if (!strcmp(name, "sad_count"))
++			e->sad_count = val;
++		else if (!strncmp(name, "sad", 3)) {
++			sname = name + 4;
++			n = name[3] - '0';
++			if (name[4] >= '0' && name[4] <= '9') {
++				sname++;
++				n = 10 * n + name[4] - '0';
++			}
++			if (n < 0 || n > 31) /* double the CEA limit */
++				continue;
++			if (!strcmp(sname, "_coding_type"))
++				e->sad[n].format = val;
++			else if (!strcmp(sname, "_channels"))
++				e->sad[n].channels = val;
++			else if (!strcmp(sname, "_rates"))
++				e->sad[n].rates = val;
++			else if (!strcmp(sname, "_bits"))
++				e->sad[n].sample_bits = val;
++			else if (!strcmp(sname, "_max_bitrate"))
++				e->sad[n].max_bitrate = val;
++			if (n >= e->sad_count)
++				e->sad_count = n + 1;
++		}
++	}
++}
++
++
+ int snd_hda_eld_proc_new(struct hda_codec *codec, struct hdmi_eld *eld)
+ {
+ 	char name[32];
+@@ -512,6 +565,9 @@ int snd_hda_eld_proc_new(struct hda_code
+ 		return err;
+ 
+ 	snd_info_set_text_ops(entry, eld, hdmi_print_eld_info);
++	entry->c.text.write = hdmi_write_eld_item;
++	entry->mode |= S_IWUSR;
++
+ 	return 0;
+ }
