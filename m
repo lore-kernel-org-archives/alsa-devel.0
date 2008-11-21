@@ -1,17 +1,16 @@
-From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: Re: [PATCH 1/1] [ALSA] ASoc: TLV320AIC23B Cleanup
-Date: Thu, 20 Nov 2008 21:48:14 -0700
-Message-ID: <49263D8E.5020601@boundarydevices.com>
-References: <1226968244-13796-1-git-send-email-troy.kisky@boundarydevices.com>
-	<20081118110946.GB23217@sirena.org.uk>
+From: The Source <thesourcehim@gmail.com>
+Subject: Creative X-Fi driver integration
+Date: Fri, 21 Nov 2008 09:43:41 +0300
+Message-ID: <4926589D.2020100@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fed1rmmtao104.cox.net (fed1rmmtao104.cox.net [68.230.241.42])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7450824455
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 05:48:22 +0100 (CET)
-In-Reply-To: <20081118110946.GB23217@sirena.org.uk>
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id 64A88103806
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 07:43:40 +0100 (CET)
+Received: by nf-out-0910.google.com with SMTP id e27so517963nfd.32
+	for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2008 22:43:39 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,30 +20,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Mon, Nov 17, 2008 at 05:30:44PM -0700, Troy Kisky wrote:
->> Use #ifdef DEBUG to print actual sample rates.
->>
->> Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
-> 
-> Excellent timing - I did a patch doing pretty much the same thing and
-> also fixing some build warnings last night.  Could you please check
-> against the for-tiwai branch of:
-> 
-> 	git://opensource.wolfsonmicro.con/linux-2.6-asoc
-> 
-> and see if I've missed anything?
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
-
-Sorry for the late response. Your version looks fine.
-
-Thanks
-Troy
+Hi, is it possible to include Creative driver into alsa drivers package, 
+so it will be available right after kernel installation without 
+additional compiling? Besides, you can react faster to kernel changes 
+and make driver compatible with latest kernels when necessary, if you 
+include it.
