@@ -1,63 +1,55 @@
-From: Wu Fengguang <wfg@linux.intel.com>
-Subject: Re: [Intel-gfx] [RFC][PATCH] ELD routines and proc interface
-Date: Fri, 21 Nov 2008 15:47:49 +0800
-Message-ID: <20081121074749.GA16937@localhost>
-References: <20081119075545.GA19833@csy.ca> <20081119080800.GA522@localhost>
-	<20081119093940.GA17245@localhost> <20081119200201.GA23246@csy.ca>
-	<20081120010204.GA25454@localhost> <20081120200606.GA4164@csy.ca>
-	<20081121013655.GA8992@localhost> <20081121014649.GA12072@csy.ca>
-	<20081121034150.GA11242@localhost> <s5hod09o759.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Alsa "short read" questions
+Date: Fri, 21 Nov 2008 09:30:24 +0100
+Message-ID: <492671A0.9000907@ladisch.de>
+References: <1227206298.7258.1.camel@pierre-desktop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <xorg-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <s5hod09o759.wl%tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/listinfo/xorg>,
-	<mailto:xorg-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/xorg>
-List-Post: <mailto:xorg@lists.freedesktop.org>
-List-Help: <mailto:xorg-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/xorg>,
-	<mailto:xorg-request@lists.freedesktop.org?subject=subscribe>
-Sender: xorg-bounces@lists.freedesktop.org
-Errors-To: xorg-bounces@lists.freedesktop.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, "Ma, Ling" <ling.ma@intel.com>, intel-gfx@lists.freedesktop.org, Shane W <shane-intel@csy.ca>, xorg@lists.freedesktop.org, "Fu, Michael" <michael.fu@intel.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id C6E6C24368
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 09:30:13 +0100 (CET)
+In-Reply-To: <1227206298.7258.1.camel@pierre-desktop>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Pierre Vanhoucke <pierre.vanhoucke@skynet.be>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 21, 2008 at 08:44:18AM +0100, Takashi Iwai wrote:
-> At Fri, 21 Nov 2008 11:41:50 +0800,
-> Wu Fengguang wrote:
-> > 
-> > On Thu, Nov 20, 2008 at 05:46:49PM -0800, Shane W wrote:
-> > > On Fri, Nov 21, 2008 at 09:36:55AM +0800, Wu Fengguang wrote:
-> > 
-> > > > Yes it's unexpected. Do you know its real speaker numbers and
-> > > > allocations? Does it provide some number of line-out ports?
-> > > 
-> > > There are six speakers connected, fl, ct, fr, rl, rr and lfe.
-> > 
-> > Hi Shane,
-> > 
-> > Apply this patch and run "echo speakers f > /proc/asound/card0/eld\#3".
-> > That will make the ELD "speakers" field right.
-> > 
-> > Thanks,
-> > Fengguang
-> > ---
-> > support writing to the ELD proc file
-> > 
-> > Allow users to fix quicks of ELD ROMs by writing new values to the ELD proc
-> > interface. The format is one or more lines of "name hex_value".
-> > 
-> > Users can add/remove/modify up to 32 SAD(Short Audio Descriptor) entries.
-> > 
-> > Signed-off-by: Wu Fengguang <wfg@linux.intel.com>
-> 
-> This is a nice feature, so I applied now as is.
-> Please give an incremental patch if you need more fixes.
+Pierre Vanhoucke wrote:
+> 1. How is it possible to get a "short read" in blocking mode ?
+> I would think that in blocking mode the control is only returned after
+> the read is completed.
 
-OK, thank you!
+When an error occurs, you get the data that was read successfully before
+the error.  We wouldn't want to throw away this data just because an
+error happened later.  (This behaviour is for consistency with other
+uses of read(); in the case of audio, throwing away some data wouldn't
+actually hurt that much.)
 
-Fengguang
+> 2. What are the possible causes for a "short read" ?
+
+Buffer overrun, USB device or SPDIF source unplugged, other errors.
+
+> 3. What can be done to  avoid a "short read" ?
+
+You cannot prevent the user from unplugging a USB device, or the
+administrator from suspending your program until the buffer overruns.
+
+> 4. How am I supposed to recover from a "short read"?
+
+Try to read the rest of that data that you wanted to read originally,
+then you'll get the error code.  (Or you'll get some data if the error
+has vanished, but that is very unlikely.)
+
+
+Best regards,
+Clemens
