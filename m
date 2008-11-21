@@ -1,20 +1,17 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ARM DaVinci: Add PCM3008 ALSA SoC driver
-	for the Lyrtech SFFSDR board
-Date: Fri, 21 Nov 2008 10:55:35 +0000
-Message-ID: <20081121105534.GA31866@sirena.org.uk>
-References: <1226968079-1624-1-git-send-email-hugo@hugovil.com>
-	<20081118113150.GC23217@sirena.org.uk>
-	<87fxlm7yjv.fsf@deeprootsystems.com>
+Subject: Re: Where are dma interrupts handled in ASoC code?
+Date: Fri, 21 Nov 2008 11:01:07 +0000
+Message-ID: <20081121110106.GB31866@sirena.org.uk>
+References: <520f0cf10811210145i20dec91ax9508b9268136bd5c@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4570D24405
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 11:55:38 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id D21ED2440F
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 12:01:07 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <87fxlm7yjv.fsf@deeprootsystems.com>
+In-Reply-To: <520f0cf10811210145i20dec91ax9508b9268136bd5c@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,16 +21,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kevin Hilman <khilman@deeprootsystems.com>
-Cc: alsa-devel@alsa-project.org, Hugo Villeneuve <hugo.villeneuve@lyrtech.com>, davinci-linux-open-source@linux.davincidsp.com, Hugo Villeneuve <hugo@hugovil.com>
+To: John Kacur <jkacur@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 20, 2008 at 03:44:20PM -0800, Kevin Hilman wrote:
+On Fri, Nov 21, 2008 at 10:45:46AM +0100, John Kacur wrote:
 
-> I agree.  In addition, I believe the board-specific init
-> (sound/soc/davinci/davinci-sffsdr.c) should not be under sound/*, but
-> rather belongs in the board init code in arch/arm/mach-davinci/board*.
+> Where are dma overflow interrupts handled? For example I don't see
+> this in sound/soc/s3c24xx-i2s.c
 
-If you want to do that please do something like what's been done for the
-s3c24xx-uda134x or soc-of-simple drivers which keeps the ASoC code in
-sound/soc and has the per-board configuration in the platform directory.
+The s3c24xx ASoC code doesn't interact with the DMA controller directly,
+it uses the DMA API exported by the arch/arm code to do that.
