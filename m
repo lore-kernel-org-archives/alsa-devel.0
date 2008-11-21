@@ -1,66 +1,74 @@
 From: Wu Fengguang <wfg@linux.intel.com>
-Subject: [PATCH] properly print ELD sample bits
-Date: Fri, 21 Nov 2008 09:42:59 +0800
-Message-ID: <20081121014259.GA10607@localhost>
-References: <1226542918.126598.6912@de> <20081119071135.GA17733@csy.ca>
-	<20081119071757.GA32376@localhost> <20081119075545.GA19833@csy.ca>
-	<20081119080800.GA522@localhost> <20081119093940.GA17245@localhost>
-	<20081119200201.GA23246@csy.ca> <20081120010204.GA25454@localhost>
-	<20081120200606.GA4164@csy.ca> <20081121013655.GA8992@localhost>
+Subject: Re: [Intel-gfx] [RFC][PATCH] ELD routines and proc
+	interface
+Date: Fri, 21 Nov 2008 09:59:10 +0800
+Message-ID: <20081121015910.GB10734@localhost>
+References: <20081119071135.GA17733@csy.ca> <20081119071757.GA32376@localhost>
+	<20081119075545.GA19833@csy.ca> <20081119080800.GA522@localhost>
+	<20081119093940.GA17245@localhost> <20081119200201.GA23246@csy.ca>
+	<20081120010204.GA25454@localhost> <20081120200606.GA4164@csy.ca>
+	<20081121013655.GA8992@localhost> <20081121014649.GA12072@csy.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <xorg-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from azsmga102.ch.intel.com (mga12.intel.com [143.182.124.36])
+	by alsa0.perex.cz (Postfix) with ESMTP id B6805243BF
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 02:59:21 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20081121013655.GA8992@localhost>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/listinfo/xorg>,
-	<mailto:xorg-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/xorg>
-List-Post: <mailto:xorg@lists.freedesktop.org>
-List-Help: <mailto:xorg-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/xorg>,
-	<mailto:xorg-request@lists.freedesktop.org?subject=subscribe>
-Sender: xorg-bounces@lists.freedesktop.org
-Errors-To: xorg-bounces@lists.freedesktop.org
-To: Shane W <shane-intel@csy.ca>, Takashi Iwai <tiwai@suse.de>
-Cc: "Ma, Ling" <ling.ma@intel.com>, "Fu, Michael" <michael.fu@intel.com>, alsa-devel <alsa-devel@alsa-project.org>, intel-gfx@lists.freedesktop.org, xorg@lists.freedesktop.org
+In-Reply-To: <20081121014649.GA12072@csy.ca>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Shane W <shane-intel@csy.ca>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, "Ma, Ling" <ling.ma@intel.com>, intel-gfx@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>, xorg@lists.freedesktop.org, "Fu, Michael" <michael.fu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fix bugs on printing the ELD sample bits.
-
-Signed-off-by: Wu Fengguang <wfg@linux.intel.com>
----
- sound/pci/hda/hda_eld.c  |    2 +-
- sound/pci/hda/hda_proc.c |    3 +--
- 2 files changed, 2 insertions(+), 3 deletions(-)
-
---- sound-2.6.orig/sound/pci/hda/hda_eld.c
-+++ sound-2.6/sound/pci/hda/hda_eld.c
-@@ -397,7 +397,7 @@ static void hdmi_show_short_audio_desc(s
- 	snd_print_pcm_rates(a->rates, buf, sizeof(buf));
- 
- 	if (a->format == AUDIO_CODING_TYPE_LPCM)
--		snd_print_pcm_rates(a->sample_bits, buf2 + 8, sizeof(buf2 - 8));
-+		snd_print_pcm_bits(a->sample_bits, buf2 + 8, sizeof(buf2 - 8));
- 	else if (a->max_bitrate)
- 		snprintf(buf2, sizeof(buf2),
- 				", max bitrate = %d", a->max_bitrate);
---- sound-2.6.orig/sound/pci/hda/hda_proc.c
-+++ sound-2.6/sound/pci/hda/hda_proc.c
-@@ -120,7 +120,7 @@ void snd_print_pcm_bits(int pcm, char *b
- 	int i, j;
- 
- 	for (i = 0, j = 0; i < ARRAY_SIZE(bits); i++)
--		if (pcm & (1 << i))
-+		if (pcm & (AC_SUPPCM_BITS_8 << i))
- 			j += snprintf(buf + j, buflen - j,  " %d", bits[i]);
- 
- 	buf[j] = '\0'; /* necessary when j == 0 */
-@@ -130,7 +130,6 @@ static void print_pcm_bits(struct snd_in
- {
- 	char buf[SND_PRINT_BITS_ADVISED_BUFSIZE];
- 
--	pcm = (pcm >> 16) & 0xff;
- 	snd_iprintf(buffer, "    bits [0x%x]:", pcm);
- 	snd_print_pcm_bits(pcm, buf, sizeof(buf));
- 	snd_iprintf(buffer, "%s\n", buf);
+T24gVGh1LCBOb3YgMjAsIDIwMDggYXQgMDU6NDY6NDlQTSAtMDgwMCwgU2hhbmUgVyB3cm90ZToK
+PiBPbiBGcmksIE5vdiAyMSwgMjAwOCBhdCAwOTozNjo1NUFNICswODAwLCBXdSBGZW5nZ3Vhbmcg
+d3JvdGU6Cj4gPiAKPiA+ID4gc3VwcG9ydHMgY29kaW5nIHR5cGUgQUMtMzogY2hhbm5lbHMgPSA2
+LCByYXRlcyA9IDQ0MTAwCj4gPiA+IDQ4MDAwIDg4MjAwLCBtYXggYml0cmF0ZSA9IDY0MDAwMAo+
+ID4gPiBzdXBwb3J0cyBjb2RpbmcgdHlwZSBEVFM6IGNoYW5uZWxzID0gNywgcmF0ZXMgPSA0NDEw
+MCA0ODAwMAo+ID4gPiA4ODIwMCAxNzY0MDAgMTkyMDAwLCBtYXggYml0cmF0ZSA9IDE1MzYwMDAK
+PiA+ID4gc3VwcG9ydHMgY29kaW5nIHR5cGUgRFNEIChPbmUgQml0IEF1ZGlvKTogY2hhbm5lbHMg
+PSA2LAo+ID4gPiByYXRlcyA9IDQ4MDAwCj4gPiAKPiA+IEl0J3Mgd2VpcmQgdGhhdCBEVFMgc3Vw
+cG9ydHMgNyBjaGFubmVscyB3aGlsZSBEU0Qgc3VwcG9ydHMgNi4KPiA+IERUUyBpcyBzaW1wbGUg
+dGhlIGNvbXByZXNzZWQgZm9ybSBvZiBEU0QuCj4gCj4gSG1tLCBJIHRob3VnaHQgRFRTIHdhcyBq
+dXN0IGFub3RoZXIgd2F5IG9mIGNvbXByZXNzaW5nIFBDTQo+IHdoZXJlYXMgRFNEIGlzIHRoZSBm
+b3JtYXQgdXNlZCBvbiBTQUNEIGRpc2tzLCBJRSA2IGNoYW5uZWwuCj4gaHR0cDovL2VuLndpa2lw
+ZWRpYS5vcmcvd2lraS9EaXJlY3RfU3RyZWFtX0RpZ2l0YWwKCldlbGwgbXkgc291cmNlIGlzIGEg
+Yml0IGRpZmZlcmVudCA7LSkKCmh0dHA6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvU3VwZXJfQXVk
+aW9fQ0QKCkRTVAoKVG8gcmVkdWNlIHRoZSBzcGFjZSBhbmQgYmFuZHdpZHRoIHJlcXVpcmVtZW50
+cyBvZiBEU0QgKDIuOCBNYml0L3MgcGVyCmNoYW5uZWwpLCBhIGxvc3NsZXNzIGRhdGEgY29tcHJl
+c3Npb24gbWV0aG9kIGNhbGxlZCBEaXJlY3QgU3RyZWFtClRyYW5zZmVyIChEU1QpIGlzIHVzZWQg
+4oCUIERTVCBjb21wcmVzc2lvbiBpcyBjb21wdWxzb3J5IGZvcgptdWx0aS1jaGFubmVsIHJlZ2lv
+bnMgYW5kIG9wdGlvbmFsIGZvciBzdGVyZW8gcmVnaW9ucy4gVGhpcyB0eXBpY2FsbHkKY29tcHJl
+c3NlcyBieSBhIGZhY3RvciBvZiBiZXR3ZWVuIHR3byBhbmQgdGhyZWUsIGFsbG93aW5nIGEgZGlz
+YyB0bwpjb250YWluIDgwIG1pbnV0ZXMgb2YgYm90aCAyLWNoYW5uZWwgYW5kIDUuMS1jaGFubmVs
+IHNvdW5kLgoKPiA+ID4gVGhlIHNwZWFrZXJzIDAgbGluZSBpcyBhIGJpdCBjb25mdXNpbmcsIG5v
+dCBzdXJlIGlmIHRoYXQncwo+ID4gCj4gPiBZZXMgaXQncyB1bmV4cGVjdGVkLiBEbyB5b3Uga25v
+dyBpdHMgcmVhbCBzcGVha2VyIG51bWJlcnMgYW5kCj4gPiBhbGxvY2F0aW9ucz8gRG9lcyBpdCBw
+cm92aWRlIHNvbWUgbnVtYmVyIG9mIGxpbmUtb3V0IHBvcnRzPwo+IAo+IFRoZXJlIGFyZSBzaXgg
+c3BlYWtlcnMgY29ubmVjdGVkLCBmbCwgY3QsIGZyLCBybCwgcnIgYW5kCj4gbGZlLgoKVGFrYXNo
+aSwgSSdkIHN1Z2dlc3QgdG8gc3VwcG9ydCB3cml0aW5nIHRvIHRoZSBFTEQgcHJvYyBpbnRlcmZh
+Y2UgdG8KYWx0ZXIgdGhlIGludGVybmFsIEVMRCBzdHJ1Y3QuIFRoaXMgY291bGQgbGV0IHVzZXJz
+IGRlYnVnL2ZpeCBxdWlja3MKY29udmVuaWVudGx5LiBCdXQgc3VyZSB0aGVzZSBmaXhlcyBzaG91
+bGQgZXZlbnR1YWxseSBiZSBpbmNvcnBvcmF0ZWQKaW50byB0aGUga2VybmVsIHNvIHRoYXQgaXQg
+anVzdCB3b3Jrcy4KCj4gPiA+IHdoYXQncyBkb2luZyBpdC4gIEkgYW0gdXNpbmc6Cj4gPiA+IGFw
+bGF5IDUxdGVzdC53YXYKPiA+ID4gCj4gPiA+IHdoaWNoIEkgaGF2ZSBwdXQgaGVyZToKPiA+ID4g
+aHR0cDovL3d3dy5jc3kuY2EvfnNoYW5lLzUxdGVzdC53YXYKPiA+IAo+ID4gSSBoZWFyIG9ubHkg
+ImZyb250IGxlZnQiIGFuZCAiZnJvbnQgcmlnaHQiIGluIG15IFQ2MSA6LSkKPiAKPiBZZWFoLCB5
+b3Ugc2hvdWxkIGdldDoKPiBGcm9udCBsZWZ0Cj4gQ2VudGVyCj4gUmVhciBsZWZ0Cj4gUmVhciBy
+aWdodAo+IGFuZCBhIGxpdHRsZSBib29tIGZyb20gdGhlIHN1Ygo+IAo+IElmIHlvdSBlbmNvZGUg
+NTF0ZXN0LndhdiB0byBhYzMgYW5kIHN0cmVhbSB0aHJvdWdoIGhkbWkKPiBkaXJlY3RseSwgaXQg
+ZG9lcyB0aGlzIHByb3Blcmx5LgoKT0ssIHNvIDUuMSBBQzMgYXVkaW8gcGxheXMgcHJvcGVybHkg
+b24gSERNST8KClRoYW5rcywKRmVuZ2d1YW5nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
