@@ -1,21 +1,23 @@
-From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
-Subject: Re: Creative X-Fi Xtreme Audio (CA0110 chip)
-Date: Fri, 21 Nov 2008 19:36:30 +0100
-Message-ID: <fd3eb9bf0811211036i50a35b7bw58d42dac8ac3c809@mail.gmail.com>
-References: <1227091595.32213.22.camel@ekerazha-desktop>
-	<fd3eb9bf0811200551v3fe0c167yd672be80dbc7e8b0@mail.gmail.com>
-	<f3ebadea0811210503v17a7a717mc69dfa783e2a3ee7@mail.gmail.com>
+From: flameeyes@gmail.com (Diego E. 'Flameeyes' =?utf-8?Q?Petten=C3=B2?=)
+Subject: More constants for alsa-lib
+Date: Fri, 21 Nov 2008 22:55:49 +0100
+Message-ID: <m2y6zcn3q2.fsf@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0389949076495158256=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gv-out-0910.google.com (gv-out-0910.google.com [216.239.58.190])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4B4E7245E0
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 19:36:31 +0100 (CET)
-Received: by gv-out-0910.google.com with SMTP id i36so275030gve.24
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 10:36:30 -0800 (PST)
-In-Reply-To: <f3ebadea0811210503v17a7a717mc69dfa783e2a3ee7@mail.gmail.com>
-Content-Disposition: inline
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4B4511037F6
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 22:56:02 +0100 (CET)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1L3dyp-0001tj-CV
+	for alsa-devel@alsa-project.org; Fri, 21 Nov 2008 21:55:59 +0000
+Received: from ppp-13-236.21-151.libero.it ([151.21.236.13])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 21:55:59 +0000
+Received: from flameeyes by ppp-13-236.21-151.libero.it with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 21:55:59 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,42 +27,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dmitri Seletski <drjoms@gmail.com>, alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-MjAwOC8xMS8yMSBEbWl0cmkgU2VsZXRza2kgPGRyam9tc0BnbWFpbC5jb20+Ogo+IEhpIFZlZHJh
-biwgb25jZSBhZ2FpbiwgY291bGQgSSBnZXQgZXhwZXJpbWVudGFsIGRyaXZlcnMgZm9yIENyZWF0
-aXZlIFhGSSBwcm8KPiBnYW1lciBkcml2ZXJzPyhsaW5rIHNlbnQgdG8gbWFudWVsIHNlZW1lZCB0
-byBiZSBicm9rZW4pCj4gUmVnYXJkcwo+Cj4gT24gVGh1LCBOb3YgMjAsIDIwMDggYXQgMTo1MSBQ
-TSwgVmVkcmFuIE1pbGV0acSHIDxyaXZhbnZ4QGdtYWlsLmNvbT4gd3JvdGU6Cj4+Cj4+IENBMDEx
-MCBIREEgbW9kZSBpcyBzdXBwb3J0ZWQgaW4gdGhpcyB0cmVlOgo+Pgo+PiBodHRwOi8vZ2l0Lmtl
-cm5lbC5vcmcvP3A9bGludXgva2VybmVsL2dpdC90aXdhaS9zb3VuZC11bnN0YWJsZS0yLjYuZ2l0
-O2E9c3VtbWFyeQo+PiBDQTAxMTEgKFBDSSB2ZXJzaW9uKSBpcyBzdXBwb3J0ZWQgYnkgc25kLWNh
-MDEwNiwgbm90IHN1cmUgaWYgQ0EwMTA2Cj4+IG1vZGUgY2FuIGJlIHN1cHBvcnRlZCB0aGF0IHdh
-eSB0b28uCj4+Cj4+IDIwMDgvMTEvMTkgTWFudWVsIEMuIDxtYW51ZWxAZWtlcmF6aGEuY29tPjoK
-Pj4gPiBIaSwKPj4gPiBJIHdhbnQgdG8gYnJpbmcgdG8geW91ciBhdHRlbnRpb24gdGhlIENyZWF0
-aXZlIFgtRmkgWHRyZW1lIEF1ZGlvIGNhcmQKPj4gPiB3aXRoIENBMDExMCBjaGlwLCBpdCBpcyBh
-bHNvIGJ1bmRsZWQgd2l0aCBzb21lIE1TSSBtb3RoZXJib2FyZHMuCj4+ID4KPj4gPiBDQTAxMTAg
-d2ViIHBhZ2U6IGh0dHA6Ly93d3cuY3JlYXRpdmUuY29tL29lbS9wcm9kdWN0cy9jaGlwcy9DQTAx
-MTAuYXNwCj4+ID4KPj4gPiA+RnJvbSB0aGF0IHdlYiBwYWdlOgo+PiA+ICJDQTAxMTAgaXMgYSBQ
-Q0kgRXhwcmVzcyBhdWRpbyBjaGlwIHVzaW5nIHRoZSBDQTAxMTEgYXVkaW8gbW9kZSBvciBIaWdo
-Cj4+ID4gRGVmaW5pdGlvbiBBdWRpbyBtb2RlLgo+PiA+Cj4+ID4gWy4uLl0KPj4gPgo+PiA+IENB
-MDEwNiBtb2RlCj4+ID4gLSBTYW1lIGFzIG9yaWdpbmFsIENBMDExMS4iCj4+ID4KPj4gPiBTbyBp
-dCBzaG91bGQgYmUgYSBQQ0kgRXhwcmVzcyB2ZXJzaW9uIG9mIHRoZSBDQTAxMTEgY2hpcCAoYW5k
-IENBMDExMQo+PiA+IGNvdWxkIGJlIHNpbWlsYXIgdG8gdGhlIENBMDEwNiBjaGlwKS4KPj4gPgo+
-PiA+IFRoZSBDQTAxMTAgY2hpcCBpc24ndCBldmVuIGxpc3RlZCBpbiB0aGUgQ3JlYXRpdmUgcHJv
-ZHVjdHMgbWF0cml4IG9uIHRoZQo+PiA+IHdpa2kuIElzIGEgQ0EwMTEwIGRyaXZlciB1bmRlciBk
-ZXZlbG9wbWVudD8gVGhhbmsgeW91Lgo+PiA+Cj4+ID4gX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KPj4gPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+PiA+
-IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+PiA+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4+ID4KPj4KPj4KPj4KPj4gLS0K
-Pj4gVmVkcmFuIE1pbGV0acSHCj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCj4+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4+IEFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwo+PiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAo+Cj4KCk5vdyBJIG5vdGljZWQgdGhhdCBmb3Igc29tZSByZWFz
-b24gbGluayBnb3QgYnJva2VuLgoKQW55d2F5LCB0aGUgY29ycmVjdCBsaW5rIGlzOgpodHRwOi8v
-Z2l0Lmtlcm5lbC5vcmcvP3A9bGludXgva2VybmVsL2dpdC90aXdhaS9zb3VuZC11bnN0YWJsZS0y
-LjYuZ2l0O2E9c3VtbWFyeQoKLS0gClZlZHJhbiBNaWxldGnEhwpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+--===============0389949076495158256==
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha1; protocol="application/pgp-signature"
+
+--=-=-=
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+
+git://git.flameeyes.eu/others/alsa/alsa-lib.git flameeyes
+
+Diego E. 'Flameeyes' Petten=C3=B2 (6):
+      Make seq, rawmidi and control operation structures static const.
+      Make snd_pcm_hw_params_names static to pcm_params.c .
+      Make all the PCM plugins ops structure constant.
+      Make all the remaining ops structure constants.
+      Make string arrays as constant as possible.
+      Mark static tables as constant when possible.
+
+(This time, signed off right away ;))
+
+=2D-=20
+Diego "Flameeyes" Petten=C3=B2
+http://blog.flameeyes.eu/
+
+
+--=-=-=
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.9 (GNU/Linux)
+
+iEYEARECAAYFAkknLmUACgkQe2h1+2mHVWMG2ACfcbRcImh4NwirnI0K821aNWOD
+8oYAoLRKHP6l19cs6JD3zLZxDFIF1V26
+=Ae6R
+-----END PGP SIGNATURE-----
+--=-=-=--
+
+
+--===============0389949076495158256==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============0389949076495158256==--
