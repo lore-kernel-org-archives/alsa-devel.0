@@ -1,14 +1,24 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: PATCH] hda: Add STAC_DELL_M4_3 quirk
-Date: Thu, 20 Nov 2008 21:21:43 -0500
-Message-ID: <49261B37.8040700@embeddedalley.com>
+From: flameeyes@gmail.com (Diego E. 'Flameeyes' =?utf-8?Q?Petten=C3=B2?=)
+Subject: Fixes and misc improvements for alsa-lib, alsa-plugins,
+	alsa-utils
+Date: Fri, 21 Nov 2008 03:50:32 +0100
+Message-ID: <m2ej15okqv.fsf@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9182549441387627456=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
-	by alsa0.perex.cz (Postfix) with SMTP id 6D4DE243E1
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 03:21:52 +0100 (CET)
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 270E424402
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 03:50:50 +0100 (CET)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1L3M6Y-0005SL-Gt
+	for alsa-devel@alsa-project.org; Fri, 21 Nov 2008 02:50:46 +0000
+Received: from ppp-13-236.21-151.libero.it ([151.21.236.13])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 02:50:46 +0000
+Received: from flameeyes by ppp-13-236.21-151.libero.it with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 02:50:46 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,101 +29,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Added STAC_DELL_M4_3 quirk for Dell systems, also reorganized the
-board config switch to assign number of digital muxes, microphones,
-and SPDIF muxes via the PCI quirk defined.
+--===============9182549441387627456==
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha1; protocol="application/pgp-signature"
 
-Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
----
+--=-=-=
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/ALSA-Configuration.txt
-b/Documentation/ALSA-Configuration.txt
-index 3ab5fb1..8b99a22 100644
---- a/Documentation/ALSA-Configuration.txt
-+++ b/Documentation/ALSA-Configuration.txt
-@@ -1076,6 +1076,7 @@ Prior to version 0.9.0rc4 options had a 'snd_' prefix.
-This was removed.
- 	  ref		Reference board
- 	  dell-m4-1	Dell desktops
- 	  dell-m4-2	Dell desktops
-+	  dell-m4-3	Dell desktops
 
- 	STAC92HD73*
- 	  ref		Reference board
-diff --git a/pci/hda/patch_sigmatel.c b/pci/hda/patch_sigmatel.c
-index e0298df..f1a0f13 100644
---- a/pci/hda/patch_sigmatel.c
-+++ b/pci/hda/patch_sigmatel.c
-@@ -83,6 +83,7 @@ enum {
- 	STAC_92HD71BXX_REF,
- 	STAC_DELL_M4_1,
- 	STAC_DELL_M4_2,
-+	STAC_DELL_M4_3,
- 	STAC_HP_M4,
- 	STAC_92HD71BXX_MODELS
- };
-@@ -1689,10 +1690,17 @@ static unsigned int dell_m4_2_pin_configs[11] = {
- 	0x40f000f0, 0x044413b0, 0x044413b0,
- };
+I've taken some time to fix some autotools nitpicks and some generic
+optimisations, I hope they can be useful:
 
-+static unsigned int dell_m4_3_pin_configs[11] = {
-+	0x0421101f, 0x04a11221, 0x90a70330, 0x90170110,
-+	0x40f000f0, 0x40f000f0, 0x40f000f0, 0x90a000f0,
-+	0x40f000f0, 0x044413b0, 0x044413b0,
-+};
-+
- static unsigned int *stac92hd71bxx_brd_tbl[STAC_92HD71BXX_MODELS] = {
- 	[STAC_92HD71BXX_REF] = ref92hd71bxx_pin_configs,
- 	[STAC_DELL_M4_1]	= dell_m4_1_pin_configs,
- 	[STAC_DELL_M4_2]	= dell_m4_2_pin_configs,
-+	[STAC_DELL_M4_3]	= dell_m4_3_pin_configs,
- 	[STAC_HP_M4]		= NULL,
- };
+git://git.flameeyes.eu/others/alsa/alsa-lib.git flameeyes
 
-@@ -1700,6 +1708,7 @@ static const char
-*stac92hd71bxx_models[STAC_92HD71BXX_MODELS] = {
- 	[STAC_92HD71BXX_REF] = "ref",
- 	[STAC_DELL_M4_1] = "dell-m4-1",
- 	[STAC_DELL_M4_2] = "dell-m4-2",
-+	[STAC_DELL_M4_3] = "dell-m4-3",
- 	[STAC_HP_M4] = "hp-m4",
- };
+Diego E. 'Flameeyes' Petten=C3=B2 (5):
+      Don't use AC_CANONICAL_SYSTEM, only use AC_CANONICAL_HOST.
+      Add the attributes.m4 macro file from xine/lscube.
+      Check for --no-undefined linker flag and use it.
+      Make sure that python libraries are passed through LIBADD.
+      Make some static tables and strings constants.
 
-@@ -1731,6 +1740,8 @@ static struct snd_pci_quirk stac92hd71bxx_cfg_tbl[] = {
- 				"unknown Dell", STAC_DELL_M4_2),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0264,
- 				"unknown Dell", STAC_DELL_M4_2),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x02aa,
-+				"unknown Dell", STAC_DELL_M4_3),
- 	{} /* terminator */
- };
+git://git.flameeyes.eu/others/alsa/alsa-plugins.git flameeyes
 
-@@ -4650,14 +4661,21 @@ again:
+Diego E. 'Flameeyes' Petten=C3=B2 (6):
+      Add the attributes.m4 macro file from xine/lscube.
+      Check for --no-undefined linker flag and use it.
+      Cleanup flags in maemo/Makefile.am
+      [RFC] Don't use pow() for calculating a power of 2, use shift instead.
+      Make some static tables and strings constants.
+      Mark as static the functions not used outside their unit.
 
- 	switch (spec->board_config) {
- 	case STAC_HP_M4:
--		spec->num_dmics = 0;
--		spec->num_smuxes = 0;
--		spec->num_dmuxes = 0;
--
- 		/* enable internal microphone */
- 		stac92xx_set_config_reg(codec, 0x0e, 0x01813040);
- 		stac92xx_auto_set_pinctl(codec, 0x0e,
- 			AC_PINCTL_IN_EN | AC_PINCTL_VREF_80);
-+		/* fallthru */
-+	case STAC_DELL_M4_2:
-+		spec->num_dmics = 0;
-+		spec->num_smuxes = 0;
-+		spec->num_dmuxes = 0;
-+		break;
-+	case STAC_DELL_M4_1:
-+	case STAC_DELL_M4_3:
-+		spec->num_dmics = 1;
-+		spec->num_smuxes = 0;
-+		spec->num_dmuxes = 0;
- 		break;
- 	default:
- 		spec->num_dmics = STAC92HD71BXX_NUM_DMICS;
+git://git.flameeyes.eu/others/alsa/alsa-utils.git flameeyes
+
+Diego E. 'Flameeyes' Petten=C3=B2 (4):
+      Remove some dead code (comparisons between 0 and unsigned integers).
+      Remove some unused variables.
+      Mark static the functions not used outside their unit.
+      Make some static tables and strings constants.
+
+
+=2D-=20
+Diego "Flameeyes" Petten=C3=B2
+http://blog.flameeyes.eu/
+
+
+--=-=-=
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.9 (GNU/Linux)
+
+iEYEARECAAYFAkkmIfgACgkQe2h1+2mHVWOYzgCgvJSt6nTstMk11ZnQItVeM2Rz
+oykAn3HR64/bl9thpMDK/+WAVw20ANAp
+=8xfX
+-----END PGP SIGNATURE-----
+--=-=-=--
+
+
+--===============9182549441387627456==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============9182549441387627456==--
