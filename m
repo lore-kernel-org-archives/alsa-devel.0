@@ -1,49 +1,101 @@
-From: Vincent Petry <PVince81@yahoo.fr>
-Subject: Problem: different volumes for different jacks in
-	ALC888
-Date: Sun, 23 Nov 2008 01:24:50 +0800
-Message-ID: <49284062.3060609@yahoo.fr>
+From: Maxim Levitsky <maximlevitsky-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [alsa-devel] Bugs on aspire one A150
+Date: Sat, 22 Nov 2008 21:00:18 +0200
+Message-ID: <492856C2.8000707@gmail.com>
+References: <s5h3ai11dpt.wl%tiwai@suse.de> <20081109151323.GA18705@rhlx01.hs-esslingen.de> <s5h7i7c916e.wl%tiwai@suse.de> <20081109200929.GA29333@rhlx01.hs-esslingen.de> <s5hiqqtkxqr.wl%tiwai@suse.de> <491B0D38.1050207@gmail.com> <20081112180519.GA21919@rhlx01.hs-esslingen.de> <491DBDEA.9010104@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from n13.bullet.mail.mud.yahoo.com (n13.bullet.mail.mud.yahoo.com
-	[68.142.206.40]) by alsa0.perex.cz (Postfix) with SMTP id 9C7242414F
-	for <alsa-devel@alsa-project.org>; Sat, 22 Nov 2008 18:24:35 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: manu@frogged.de
+Return-path: <kernel-testers-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <491DBDEA.9010104-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: kernel-testers-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Andreas Mohr <andi-5+Cda9B46AM@public.gmane.org>
+Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Kernel Testers List <kernel-testers-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Maxim Levitsky wrote:
+> Andreas Mohr wrote:
+>> Hi,
+>>
+>> On Wed, Nov 12, 2008 at 07:07:04PM +0200, Maxim Levitsky wrote:
+>>> I pretty much studied the datasheet and driver, and this is what I 
+>>> found:
+>>> btw, my acer 5720 and aspire one share same ALC268.
+>>> Some stuff is trivially fixable, some seems to be unfixable at all:
+>>
+>> Wow, what an extremely in-depth analysis!
+>> I just intended to dive into getting mic routing corrected myself,
+>> thus you saved me a lot of time!
+>>
+>>> model=acer is used on my regular laptop.
+>>> model-acer-aspire is used on aspire one laptop, and it needs to be 
+>>> renamed, as both are aspire.
+>>
+>> +1 (your analysis of both being rather different - as already pondered -
+>> confirms this necessity)
+>>
+>>> And now for unfixable problems:
+>>>
+>>> 1) There is strong DC offset on all inputs.
+>>> it is even different on left/right and depends on capture volume.
+>>> I tried to change the VREF only param that could help, but it doesn't.
+>>> I feel that this is hardware flaw.
+>>> (It is possible that voltage on inputs is created by circuit made by 
+>>> acer, and then ALC268 amplifies it.)
+>>
+>> Sounds like really bad circuit design then.
+>> One would think that the Intel HDA architecture might have builtin
+>> measures to compensate for this if needed? DC offset issues on
+>> soundcards aren't exactly a new phenomenon after all...
+>>
+>>> Lastly I noticed that datasheet mentions so called 'coefficients':
+>>> the codecs exposes lots of internal and undocumented registers using 
+>>> set address/ get/set value scheme.
+>>> maybe some of above bugs are fixable there, but ether realtek has to 
+>>> provide data for that or reverse engineering of
+>>> windows driver is required.
+>>
+>> I've actually had a peek at the .inf files since I thought that it would
+>> already contain register values in those registry keys that it creates on
+>> install, but yeah, that's all in-driver it seems.
+>> Probably time to ask Acer about specifics, especially since I didn't spot
+>> any hda-intel changes in their linux-2.6.23.9lw source.
+>>
+>> Thank you very much,
+>>
+>> Andreas Mohr
+> 
+> Small update:
+> 
+> 1) The dc offset isn't present on aspire one, really is a circuit design 
+> bug I guess 2) Internal mic works perfectly on aspire one, can reproduce 
+> the strange behaver at all,
+> Probably this was mixer bug.
+Finally, I found how to reproduce that bug,
+I mean to get normal volume on internal mic, I have to increase volume
+only on left or right channel.
 
-We have designed a new model for the following laptop: Amilo Xa3530 from
-Fujitsu Siemens (see bug report 0004240 for alsa-info).
+So, this happens always, and _only_ when recording _mono_ sound from internal
+mic.
 
-The chipset is Realtek ALC888.
+Since hardware doesn't support hardware mono input, tested with -D hw:0
+I suspect this to be alsa-lib bug, any ideas?
+Happens with arecord -D plughw:0 -c1 .
 
-When using channel mode with 6ch or 8ch, the mic-in jack (0x18) is
-converted to an output (PIN_OUT 0x40).
-The problem is that the CLFE channel (0x0e) on the mic-in jack (0x18) is
-not loud enough. When reassigning the CLFE (0x0e) to the line-out jack
-(0x17), the volume is at a normal level.
+Best regards,
+	Maxim Levitsky
 
-But in the codec there is no volume difference between the connection
-paths from mic-in and side path.
 
-I saw that the Mic-in also has a VREF value, but changing it doesn't
-affect the volume. AFAIK the VREF value only affects
 
-Has someone met this kind of issue before?
 
-Thanks,
 
-Vincent Petry
+> 
+> So aspire one support is almost, only need to add support to restore 
+> beep volume
+> after resume.
+> 
+> 
+> Best regards,
+>     Maxim Levitsky
+> 
+> 
