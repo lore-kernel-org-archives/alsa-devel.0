@@ -1,23 +1,14 @@
-From: flameeyes@gmail.com (Diego E. 'Flameeyes' =?utf-8?Q?Petten=C3=B2?=)
-Subject: More constants for alsa-lib
-Date: Fri, 21 Nov 2008 22:55:49 +0100
-Message-ID: <m2y6zcn3q2.fsf@gmail.com>
+From: Wu Fengguang <wfg@linux.intel.com>
+Subject: [PATCH 0/7] minor HDMI cleanups and fixes
+Date: Sat, 22 Nov 2008 09:40:50 +0800
+Message-ID: <20081122014050.348491872@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0389949076495158256=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4B4511037F6
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 22:56:02 +0100 (CET)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1L3dyp-0001tj-CV
-	for alsa-devel@alsa-project.org; Fri, 21 Nov 2008 21:55:59 +0000
-Received: from ppp-13-236.21-151.libero.it ([151.21.236.13])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 21:55:59 +0000
-Received: from flameeyes by ppp-13-236.21-151.libero.it with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2008 21:55:59 +0000
+Received: from azsmga102.ch.intel.com (mga12.intel.com [143.182.124.36])
+	by alsa0.perex.cz (Postfix) with ESMTP id A87A51037F6
+	for <alsa-devel@alsa-project.org>; Sat, 22 Nov 2008 04:08:59 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,57 +18,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============0389949076495158256==
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha1; protocol="application/pgp-signature"
+Takashi,
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Here are another set of HDMI cleanups and fixes.
 
-
-git://git.flameeyes.eu/others/alsa/alsa-lib.git flameeyes
-
-Diego E. 'Flameeyes' Petten=C3=B2 (6):
-      Make seq, rawmidi and control operation structures static const.
-      Make snd_pcm_hw_params_names static to pcm_params.c .
-      Make all the PCM plugins ops structure constant.
-      Make all the remaining ops structure constants.
-      Make string arrays as constant as possible.
-      Mark static tables as constant when possible.
-
-(This time, signed off right away ;))
-
-=2D-=20
-Diego "Flameeyes" Petten=C3=B2
-http://blog.flameeyes.eu/
+        [PATCH 1/7] hda - minor HDMI code cleanups
+        [PATCH 2/7] hda - report selected CA index for Audio InfoFrame
+        [PATCH 3/7] hda - make HDMI messages more user friendly
+        [PATCH 4/7] hda - ELD proc interface write updates
+        [PATCH 5/7] hda - document the ELD proc interface
+        [PATCH 6/7] hda - fix DisplayPort naming
+        [PATCH 7/7] hda - fix build warning when CONFIG_PROC_FS=n
 
 
---=-=-=
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-
-iEYEARECAAYFAkknLmUACgkQe2h1+2mHVWMG2ACfcbRcImh4NwirnI0K821aNWOD
-8oYAoLRKHP6l19cs6JD3zLZxDFIF1V26
-=Ae6R
------END PGP SIGNATURE-----
---=-=-=--
-
-
---===============0389949076495158256==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============0389949076495158256==--
+Thanks,
+Fengguang
+-- 
