@@ -1,16 +1,16 @@
 From: Vincent Petry <PVince81@yahoo.fr>
-Subject: [PATCH] hda: Added an ALC888 model entry for
+Subject: [PATCH] [resend] hda: Added an ALC888 model entry for
  Fujitsu-Siemens Amilo Xa3530
-Date: Sun, 23 Nov 2008 11:31:41 +0800
-Message-ID: <4928CE9D.1090606@yahoo.fr>
+Date: Sun, 23 Nov 2008 13:27:45 +0800
+Message-ID: <4928E9D1.1090907@yahoo.fr>
 References: <4922A549.3070808@yahoo.fr>	<s5h8wrhfehv.wl%tiwai@suse.de>	<4922BF91.2030704@yahoo.fr>	<s5hvduldve6.wl%tiwai@suse.de>	<4922C95D.8080201@yahoo.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from n14.bullet.mail.mud.yahoo.com (n14.bullet.mail.mud.yahoo.com
-	[68.142.206.41]) by alsa0.perex.cz (Postfix) with SMTP id 6E853243FF
-	for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2008 04:31:26 +0100 (CET)
+Received: from n30.bullet.mail.mud.yahoo.com (n30.bullet.mail.mud.yahoo.com
+	[68.142.207.49]) by alsa0.perex.cz (Postfix) with SMTP id 910862445D
+	for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2008 06:27:30 +0100 (CET)
 In-Reply-To: <4922C95D.8080201@yahoo.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,7 +22,6 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: manu@frogged.de
 List-Id: alsa-devel@alsa-project.org
 
 This patch fixes the bug 0004240: ALC888 - Intel HDA - Headphone Controlling.
@@ -52,12 +51,9 @@ Signed-off-by: Vincent Petry <PVince81@yahoo.fr>
 +++++++++++++++++++++++++++++++++--
  2 files changed, 168 insertions(+), 9 deletions(-)
 
-diff -Nur alsa-kernel//Documentation/ALSA-Configuration.txt
-alsa-kernel-new//Documentation/ALSA-Configuration.txt
---- alsa-kernel//Documentation/ALSA-Configuration.txt	2008-11-23
-07:05:01.000000000 +0800
-+++ alsa-kernel-new//Documentation/ALSA-Configuration.txt	2008-11-23
-10:58:28.000000000 +0800
+diff -Nur alsa-kernel//Documentation/ALSA-Configuration.txt alsa-kernel-new//Documentation/ALSA-Configuration.txt
+--- alsa-kernel//Documentation/ALSA-Configuration.txt	2008-11-23 07:05:01.000000000 +0800
++++ alsa-kernel-new//Documentation/ALSA-Configuration.txt	2008-11-23 10:58:28.000000000 +0800
 @@ -919,6 +919,7 @@
  	  mitac		Mitac 8252D
  	  clevo-m720	Clevo M720 laptop series
@@ -65,12 +61,10 @@ alsa-kernel-new//Documentation/ALSA-Configuration.txt
 +	  fujitsu-xa3530 Fujitsu AMILO XA3530
  	  3stack-6ch-intel Intel DG33* boards
  	  auto		auto-config reading BIOS (default)
-
-diff -Nur alsa-kernel//pci/hda/patch_realtek.c
-alsa-kernel-new//pci/hda/patch_realtek.c
+ 
+diff -Nur alsa-kernel//pci/hda/patch_realtek.c alsa-kernel-new//pci/hda/patch_realtek.c
 --- alsa-kernel//pci/hda/patch_realtek.c	2008-11-23 07:05:02.000000000 +0800
-+++ alsa-kernel-new//pci/hda/patch_realtek.c	2008-11-23
-10:39:59.000000000 +0800
++++ alsa-kernel-new//pci/hda/patch_realtek.c	2008-11-23 10:39:59.000000000 +0800
 @@ -230,6 +230,7 @@
  	ALC883_MITAC,
  	ALC883_CLEVO_M720,
@@ -81,7 +75,7 @@ alsa-kernel-new//pci/hda/patch_realtek.c
  	ALC888_ASUS_EEE1601,
 @@ -1156,6 +1157,141 @@
  }
-
+ 
  /*
 + * ALC888
 + */
@@ -220,7 +214,7 @@ alsa-kernel-new//pci/hda/patch_realtek.c
 +/*
   * ALC888 Acer Aspire 4930G model
   */
-
+ 
 @@ -1164,7 +1300,7 @@
  	{0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
  /* Unselect Front Mic by default in input mixer 3 */
@@ -233,7 +227,7 @@ alsa-kernel-new//pci/hda/patch_realtek.c
 @@ -1177,7 +1313,7 @@
  	{ }
  };
-
+ 
 -static struct hda_input_mux alc888_acer_aspire_4930g_capture_source[2] = {
 +static struct hda_input_mux alc888_2_capture_sources[2] = {
  	/* Front mic only available on one ADC */
@@ -242,7 +236,7 @@ alsa-kernel-new//pci/hda/patch_realtek.c
 @@ -1198,7 +1334,7 @@
  	}
  };
-
+ 
 -static struct snd_kcontrol_new alc888_acer_aspire_4930g_mixer[] = {
 +static struct snd_kcontrol_new alc888_base_mixer[] = {
  	HDA_CODEC_VOLUME("Front Playback Volume", 0x0c, 0x0, HDA_OUTPUT),
@@ -262,7 +256,7 @@ alsa-kernel-new//pci/hda/patch_realtek.c
 +	snd_hda_codec_amp_stereo(codec, 0x14, HDA_OUTPUT, 0,
 +				 HDA_AMP_MUTE, bits);
  }
-
+ 
  static void alc888_acer_aspire_4930g_unsol_event(struct hda_codec *codec,
 @@ -8286,6 +8423,7 @@
  	[ALC883_MITAC]		= "mitac",
@@ -275,8 +269,7 @@ alsa-kernel-new//pci/hda/patch_realtek.c
 @@ -8346,6 +8484,8 @@
  	SND_PCI_QUIRK(0x15d9, 0x8780, "Supermicro PDSBA", ALC883_3ST_6ch),
  	SND_PCI_QUIRK(0x161f, 0x2054, "Medion laptop", ALC883_MEDION),
- 	SND_PCI_QUIRK(0x1734, 0x1108, "Fujitsu AMILO Pi2515",
-ALC883_FUJITSU_PI2515),
+ 	SND_PCI_QUIRK(0x1734, 0x1108, "Fujitsu AMILO Pi2515", ALC883_FUJITSU_PI2515),
 +	SND_PCI_QUIRK(0x1734, 0x113d, "Fujitsu AMILO Xa3530",
 +		ALC888_FUJITSU_XA3530),
  	SND_PCI_QUIRK(0x17aa, 0x101e, "Lenovo 101e", ALC883_LENOVO_101E_2ch),
