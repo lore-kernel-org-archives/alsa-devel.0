@@ -1,18 +1,23 @@
-From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: Re: [topic/asoc][RFC 0/1] ASoC: OMAP: Add support for
- mono link configuration to McBSP DAI
-Date: Mon, 24 Nov 2008 15:45:33 +0200
-Message-ID: <20081124154533.4a722b03.jarkko.nikula@nokia.com>
-References: <1227532164-2612-1-git-send-email-jarkko.nikula@nokia.com>
-	<20081124132850.GA22394@sirena.org.uk>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 5/9] ASoC: TWL4030: Add PreDriv outupt mux
+	and volume controls
+Date: Mon, 24 Nov 2008 13:48:09 +0000
+Message-ID: <20081124134808.GB22394@sirena.org.uk>
+References: <1227527383-22516-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1227527383-22516-2-git-send-email-peter.ujfalusi@nokia.com>
+	<1227527383-22516-3-git-send-email-peter.ujfalusi@nokia.com>
+	<1227527383-22516-4-git-send-email-peter.ujfalusi@nokia.com>
+	<1227527383-22516-5-git-send-email-peter.ujfalusi@nokia.com>
+	<1227527383-22516-6-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 984012440F
-	for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2008 14:46:08 +0100 (CET)
-In-Reply-To: <20081124132850.GA22394@sirena.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id DA3B324415
+	for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2008 14:48:09 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1227527383-22516-6-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,39 +27,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: sakoman@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 24 Nov 2008 13:28:57 +0000
-"ext Mark Brown" <broonie@sirena.org.uk> wrote:
+On Mon, Nov 24, 2008 at 01:49:39PM +0200, Peter Ujfalusi wrote:
 
-> > +struct snd_soc_dai omap_mcbsp_dai_mono[] = {
-> > +	OMAP_MCBSP_DAI_BUILDER(0, 1, 1),
-> > +	OMAP_MCBSP_DAI_BUILDER(1, 1, 1),
-> 
-> Is it not possible to have the DAI switch between mono and stereo at
-> runtime rather than having a DAI for each?  That's the normal approach.
-> The core should constrain things based on the capabilities of the
-> connected device.
->
-OMAP McBSP DAI can do almost anything :-)
+> +static const char *twl4030_predrivl_mix[] = {"Off", "Voice", "DACL1",
+> +					    "DACL2", "DACR2"};
+> +static const char *twl4030_predrivr_mix[] = {"Off", "Voice", "DACR1",
+> +					    "DACR2", "DACL2"};
 
-My problem was this kind of switching correct to do in machine driver?
+> +static const struct soc_enum twl4030_enum[] = {
 
-	cpu_dai->playback.channels_min = 1;
-	cpu_dai->playback.channels_max = 1;
-	cpu_dai->capture.channels_min = 1;
-	cpu_dai->capture.channels_max = 1;
+I know quite a few existing drivers use an array of enums but please
+don't do this for new code - it doesn't help legibility to have to find
+the enums in the table.
 
-Defining channels_min = 1 in omap_mcbsp_dai initializer would cause that
-link is then switching between mono/stereo depending what user space is
-asking.
+> +	SOC_ENUM_SINGLE(TWL4030_REG_PREDL_CTL, 0, 5, twl4030_predrivl_mix),
+> +	SOC_ENUM_SINGLE(TWL4030_REG_PREDR_CTL, 0, 5, twl4030_predrivr_mix),
+> +};
 
-Like "aplay -c 1 /dev/urandom" causes that all machines having codec
-with "channels_min = 1" and "channels_max = 2" would cause incorrect
-mono link configuration where alsalib should do the mono->stereo
-conversion instead and vice versa for pure mono link.
+Is this really an enum?  The fact that it's described as a mixer and
+it's got a series of individual bits for selecting the inputs make it
+sound like it should be possible to enable multiple inputs at once in
+which case this should be a series of switches - see SND_SOC_DAPM_MIXERs
+in other drivers for examples.  If it's really an enum then calling it a
+mux is probably better.
 
+Another issue is that it might be better to add these as DAPM controls
+now rather than have to move them to be DAPM controls later.  If you use
+SND_SOC_NOPM for the power bit then DAPM won't actually do any power
+control, it'll just expose the control.
 
-Jarkko
+These comments apply to the other patches in the series.
