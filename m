@@ -1,17 +1,20 @@
-From: =?UTF-8?B?0KHRgtGA0LDRhdC40ZrQsCDQoNCw0LTQuNGb?=
- <vilinkamen@mail.ru>
-Subject: MSI 7260 patch
-Date: Mon, 24 Nov 2008 18:29:59 +0100
-Message-ID: <492AE497.9000601@mail.ru>
+From: Forest Bond <forest@alittletooquiet.net>
+Subject: Re: via82xx: unreliable audio, strange mixer behavior
+Date: Mon, 24 Nov 2008 15:03:06 -0500
+Message-ID: <20081124200306.GA14292@storm.local.network>
+References: <20081120170409.GG17813@storm.local.network>
+	<s5hk5ax8f3l.wl%tiwai@suse.de>
+	<20081121120823.GD3899@storm.local.network>
+	<s5hfxll8cj0.wl%tiwai@suse.de>
+	<20081121163256.GE3899@storm.local.network>
+	<s5h4p21kpcu.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050802050603060206000908"
+Content-Type: multipart/mixed; boundary="===============4382401342590355104=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx27.mail.ru (mx27.mail.ru [194.67.23.23])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4A819243B4
-	for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2008 18:39:04 +0100 (CET)
-Received: from [213.244.194.230] (port=46235 helo=[213.244.194.230])
-	by mx27.mail.ru with asmtp id 1L4fOP-0005xR-00
-	for alsa-devel@alsa-project.org; Mon, 24 Nov 2008 20:39:02 +0300
+Received: from mail3.webfaction.com (mail3.webfaction.com [70.85.44.146])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0D85C24444
+	for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2008 21:03:16 +0100 (CET)
+In-Reply-To: <s5h4p21kpcu.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,71 +24,125 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------050802050603060206000908
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-	Hi,
+--===============4382401342590355104==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="u3/rZRmxL6MmkK24"
+Content-Disposition: inline
 
-	I submitted an issue with alsa-driver 1.0.18rc3 (see 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4229). Raymond 
-advised me to send the patch, so everybody with the same motherboard 
-could get automatic recognition of sound card model. And here it is.
 
-	I just don't know if I got it right. Are the hexadecimal values ok?
+--u3/rZRmxL6MmkK24
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-SND_PCI_QUIRK(0x1462, 0x7260, "MSI 7260", ALC883_TARGA_DIG),
+Hi,
 
-I got this from alsainfo:
+On Fri, Nov 21, 2008 at 05:36:49PM +0100, Takashi Iwai wrote:
+> At Fri, 21 Nov 2008 11:32:56 -0500,
+> Forest Bond wrote:
+> >=20
+> > On Fri, Nov 21, 2008 at 01:54:43PM +0100, Takashi Iwai wrote:
+> > > At Fri, 21 Nov 2008 07:08:23 -0500,
+> > > Forest Bond wrote:
+> > > > On Fri, Nov 21, 2008 at 12:59:10PM +0100, Takashi Iwai wrote:
+> > > > > At Thu, 20 Nov 2008 12:04:09 -0500,
+> > > > > Forest Bond wrote:
+> > > > >>=20
+> > > > >> Hi,
+> > > > >>=20
+> > > > >> I'm using snd-via82xx on an Ubuntu 8.04 system.  alsa-info.sh ou=
+tput is here:
+> > > > >>=20
+> > > > >> http://www.alsa-project.org/db/?f=3D1c3d5570e7b57d4d2f79b964a323=
+dd7b4efd7e78
+> > > > >>=20
+> > > > >> Here are the symptoms:
+> > > > >>=20
+> > > > >> Audio goes away after a semi-random interval.  Sometimes it retu=
+rns after
+> > > > >> `modprobe -r snd-via82xx' followed by `modprobe snd-via82xx', bu=
+t sometimes it
+> > > > >> seems to take a full reboot.
+> > > > >>=20
+> > > > >> This looks similar to:
+> > > > >>=20
+> > > > >> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D3D3194
+> > > > >>=20
+> > > > >> Some folks think that this kind of issue is triggered by audio v=
+olume being
+> > > > >> above a certain level.  I'm not entirely sure if this is true, b=
+ut I think it
+> > > > >> is.  One time, I apparently triggered the issue by unplugging an=
+d replugging the
+> > > > >> audio cable from the mainboard during playback.
+> > > > >>=20
+> > > > >> Audio can be heard even when the PCM volume level is 0 (as told =
+by alsamixer).
+> > > > >> The volume does get louder when I turn up that mixer control, bu=
+t it never goes
+> > > > >> away entirely when I turn the volume to zero.  Mute works as exp=
+ected.
+> > > > >=20
+> > > > > The volume 0 doesn't always mean the mute on several hardwares.
+> > > > > So this can be irrelevant if it happens always.
+> > > > >=20
+> > > > > I vaguely remember about the low-power mode of some codec chips.
+> > > > > Which codec chip does your system have?  Please run alsa-info.sh =
+with
+> > > > > --no-upload option, and attach the output file.
+> > > >=20
+> > > > The output would be the same as what was already uploaded, right?  =
+I've attached
+> > > > that output here for your convenience.
+> > >=20
+> > > Thanks, it's always better to post the content than a URL.
+> > >=20
+> > > Any chance to try the later version of alsa-driver?
+> > > Yours looks pretty old.
+> >=20
+> > I can try this a bit later today.  I'll report the results ASAP.
+>=20
+> BTW, try the one from the URL below instead of 1.0.18a.
+> This contains the newest  alsa-driver snapshot:
+>     ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driv=
+er-snapshot.tar.gz
 
-!!HDA-Intel Codec information
-!!---------------------------
---startcollapse--
+Brief testing indicates that 1.0.18a seems to fix the issue, actually.  Sor=
+ry, I
+forgot that you had asked me to test the snapshot.
 
-Codec: Realtek ALC883
-Address: 0
-Vendor Id: 0x10ec0883
-Subsystem Id: 0x14627260
-Revision Id: 0x100002
-No Modem Function Group found
+Would it be helpful for you for me to try the snapshot as well (maybe to ch=
+eck
+for a regression)?  Any idea as to what change may have fixed this?
 
-So, I guess 0x1462 0x7260 is ok, right? If that is so, I have attached 
-the diff with this message.
+Thanks,
+Forest
+--=20
+Forest Bond
+http://www.alittletooquiet.net
+http://www.pytagsfs.org
 
-	Cheers,
-	Strahinya
+--u3/rZRmxL6MmkK24
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
--- 
-   _     _   ______________________________________________________
-  /(_____)\ | ____ __  __ __ __                                    |
-  \_/~ ~\_/ |/ __// /_/ // // /  http://www.gnu.org/home.sr.html   |
-   (\'_'/)  / /  / __  /_\ ' /  http://www.stallman.org            |
-    (o_o)  /_/  /_/ /_//____/  http://alas.matf.bg.ac.yu/~mr99164  |
-            |______________________________________________________|
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
 
---------------050802050603060206000908
-Content-Type: text/plain;
- name="alsa-driver-MS-7260.diff"
-Content-Transfer-Encoding: base64
-Content-Disposition: inline;
- filename="alsa-driver-MS-7260.diff"
+iD8DBQFJKwh6RO4fQQdv5AwRAjD8AJ0c7nSSkMpPTkKNqU05DFh56CDXCACfX0Tr
+O7tkdeef2JHgRyRgk8jp/AE=
+=lbfB
+-----END PGP SIGNATURE-----
 
-LS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMJMjAwOC0wOS0wOSAxODo1NToy
-NS4wMDAwMDAwMDAgKzAyMDAKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMJ
-MjAwOC0xMS0yNCAxNzo1NjozMS4wMDAwMDAwMDAgKzAxMDAKQEAgLTgzMjAsNiArODMyMCw3
-IEBACiAJU05EX1BDSV9RVUlSSygweDE0NjIsIDB4MzcyOSwgIk1TSSBTNDIwIiwgQUxDODgz
-X1RBUkdBX0RJRyksCiAJU05EX1BDSV9RVUlSSygweDE0NjIsIDB4Mzc4MywgIk5FQyBTOTcw
-IiwgQUxDODgzX1RBUkdBX0RJRyksCiAJU05EX1BDSV9RVUlSSygweDE0NjIsIDB4M2I3Ziwg
-Ik1TSSIsIEFMQzg4M19UQVJHQV8yY2hfRElHKSwKKwlTTkRfUENJX1FVSVJLKDB4MTQ2Miwg
-MHg3MjYwLCAiTVNJIDcyNjAiLCBBTEM4ODNfVEFSR0FfRElHKSwKIAlTTkRfUENJX1FVSVJL
-KDB4MTQ2MiwgMHgzZWY5LCAiTVNJIiwgQUxDODgzX1RBUkdBX0RJRyksCiAJU05EX1BDSV9R
-VUlSSygweDE0NjIsIDB4M2ZjMSwgIk1TSSIsIEFMQzg4M19UQVJHQV9ESUcpLAogCVNORF9Q
-Q0lfUVVJUksoMHgxNDYyLCAweDNmYzMsICJNU0kiLCBBTEM4ODNfVEFSR0FfRElHKSwK
---------------050802050603060206000908
+--u3/rZRmxL6MmkK24--
+
+--===============4382401342590355104==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -96,4 +153,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---------------050802050603060206000908--
+--===============4382401342590355104==--
