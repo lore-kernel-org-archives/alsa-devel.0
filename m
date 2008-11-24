@@ -1,19 +1,15 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 3/9] ASoC: TWL4030: Add helper function for mux
-	handling.
-Date: Mon, 24 Nov 2008 13:49:37 +0200
-Message-ID: <1227527383-22516-4-git-send-email-peter.ujfalusi@nokia.com>
-References: <1227527383-22516-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1227527383-22516-2-git-send-email-peter.ujfalusi@nokia.com>
-	<1227527383-22516-3-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 0/9] ASoC: TWL4030: Add mixer controls for
+	outputs
+Date: Mon, 24 Nov 2008 13:49:34 +0200
+Message-ID: <1227527383-22516-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0C4952435D
-	for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2008 12:49:53 +0100 (CET)
-In-Reply-To: <1227527383-22516-3-git-send-email-peter.ujfalusi@nokia.com>
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5B6B924362
+	for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2008 12:49:54 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,83 +20,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: sakoman@gmail.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: sakoman@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Some of TWL4030's input selection are in bitfield, which
-needs special helper function to deal with.
-For example: PREDL_CTL register:
- bit 0 (0x1): voice_en
- bit 1 (0x2): Audio L1 enable (DACL1)
- bit 2 (0x4): Audio L2 enable (DACL2)
- bit 3 (0x8): Audio R2 enable (DACR2)
+Hello,
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+I have tried to clean up the changes that I have at the momnent.
+After the series you will have 'ultimate' control on how the
+audio is routed to the outputs of TWL.
+One can select the possible inputs (for the output) on all cahnnels.
+Also I have added gain (volume) controls, wherever it is possible,
+but they are working for both channels in case of stereo outputs.
+
+I tried to name the controls to match with the output's name, so
+you can easily tell which pin(s) the control will touch.
+
+The capture part is not touched, yet.
+
+I have not included the changes regarding to the
+SND_SOC_DAPM_OUTPUT() things.
+So you have one (actually two) outputs and you can use the mixer
+interface to select where the audio actually routed.
+
+The next step is to make correct dapm mapping for the TWL, but
+that will take some time.
+
+Please comment, if I'm doing something that I should not.
+
 ---
- sound/soc/codecs/twl4030.c |   51 ++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 51 insertions(+), 0 deletions(-)
+Peter Ujfalusi (9):
+ ASoC: TWL4030: Change the Master volume control to TLV
+ ASoC: TWL4030: Add CGAIN volume control
+ ASoC: TWL4030: Add helper function for mux handling.
+ ASoC: TWL4030: Add helper function for output gain controls
+ ASoC: TWL4030: Add PreDriv outupt mux and volume controls
+ ASoC: TWL4030: Add Headset outupt mux and volume controls
+ ASoC: TWL4030: Add Carkit outupt mux and volume controls
+ ASoC: TWL4030: Add Hands-free outupt mux control
+ ASoC: TWL4030: Add Earpiece outupt mux and volume controls
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 91effd3..17f2b51 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -191,6 +191,57 @@ static void twl4030_init_chip(struct snd_soc_codec *codec)
- }
- 
- /*
-+ * Some of TWL's input selection are in bitfield.
-+ * Dealing with those need special function
-+ * For example: PREDL_CTL register:
-+ * bit 0 (0x1): voice_en
-+ * bit 1 (0x2): Audio L1 enable (DACL1)
-+ * bit 2 (0x4): Audio L2 enable (DACL2)
-+ * bit 3 (0x8): Audio R2 enable (DACR2)
-+ */
-+static int snd_soc_get_enum_twl4030(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	int val_mask = 0;
-+	int i;
-+	int val = twl4030_read_reg_cache(codec, e->reg);
-+
-+	for (i = 0; i < e->max - 1; i++)
-+		val_mask |= (1 << i);
-+
-+	val = (val >> e->shift_l) & val_mask;
-+	i = 0;
-+	while (val && i++ < e->max)
-+		val >>= 1;
-+
-+	ucontrol->value.integer.value[0] = i;
-+	return 0;
-+}
-+
-+static int snd_soc_put_enum_twl4030(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	int val_mask = 0;
-+	int val = 0;
-+	int i;
-+
-+	for (i = 0; i < e->max - 1; i++)
-+		val_mask |= (1 << i);
-+	val_mask <<= e->shift_l;
-+
-+	if (ucontrol->value.integer.value[0]) {
-+		val = (1 << (ucontrol->value.integer.value[0] - 1));
-+		val <<= e->shift_l;
-+	}
-+
-+	return snd_soc_update_bits(codec, e->reg, val_mask, val);
-+}
-+
-+/*
-  * FGAIN volume control:
-  * from -62 to 0 dB in 1 dB steps (mute instead of -63 dB)
-  */
--- 
-1.6.0.3
+ sound/soc/codecs/twl4030.c |  298 +++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 296 insertions(+), 2 deletions(-)
