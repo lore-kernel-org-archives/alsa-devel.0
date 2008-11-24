@@ -1,21 +1,18 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 5/9] ASoC: TWL4030: Add PreDriv outupt mux
-	and volume controls
-Date: Mon, 24 Nov 2008 14:50:31 +0000
-Message-ID: <20081124145031.GH22394@sirena.org.uk>
-References: <1227527383-22516-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1227527383-22516-6-git-send-email-peter.ujfalusi@nokia.com>
-	<20081124134808.GB22394@sirena.org.uk>
-	<200811241619.18786.peter.ujfalusi@nokia.com>
+From: Nigel Henry <cave.dnb2m97pp@aliceadsl.fr>
+Subject: Medion MD96420. ALC883/ALC268 conflicts
+Date: Mon, 24 Nov 2008 16:58:04 +0100
+Message-ID: <200811241658.04771.cave.dnb2m97pp@aliceadsl.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id C5A99103816
-	for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2008 15:50:33 +0100 (CET)
+Received: from mail.libertysurf.net (mx-out.libertysurf.net [213.36.80.91])
+	by alsa0.perex.cz (Postfix) with ESMTP id 33B1E103827
+	for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2008 16:58:31 +0100 (CET)
+Received: from [192.168.0.230] (213.36.0.26) by mail.libertysurf.net
+	(7.3.118.8) id 492560CA0011AC38 for alsa-devel@alsa-project.org;
+	Mon, 24 Nov 2008 17:56:45 +0100
 Content-Disposition: inline
-In-Reply-To: <200811241619.18786.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,68 +22,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: sakoman@gmail.com, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 24, 2008 at 04:19:18PM +0200, Peter Ujfalusi wrote:
-> On Monday 24 November 2008 15:48:09 ext Mark Brown wrote:
+I've been helping GN out on the user list, to get his sound working. The sound 
+is now working, but only by using the options line below.
+options snd-hda-intel probe_mask=1. I see on the changelog for 1.0.18 > 
+1.0.18a that Takashi added a quirk for a Medion MD96630 as below.
 
-> > I know quite a few existing drivers use an array of enums but please
-> > don't do this for new code - it doesn't help legibility to have to find
-> > the enums in the table.
+<quote>
+- ALSA: hda - Add a quirk for MEDION MD96630 
+Use model=lenovo-ms7195-dig for MEDION MD96630 laptop (17c0:4085) 
+with ALC888 codec. 
+Reference: Novell bnc#412548 
+https://bugzilla.novell.com/show_bug.cgi?id=412528 
+Signed-off-by: Takashi Iwai <tiwai@suse.de> 
+Signed-off-by: Jaroslav Kysela <perex@perex.cz> 
 
-> I have seen this approach in several codec code, so I have also implemented
-> in a same way.
-> I will change it.
-> Do you have a pointer, where should I look for existing code?
+<end quote>
 
-At least WM8990 and WM8903 do this with separate controls.  Most of the
-drivers should be fine to look at for examples, it's just that this was
-done for some of the older drivers and it's never been worth changing
-them.
+Some details of his machine, OS, and other output below.
 
-> > Is this really an enum?  The fact that it's described as a mixer and
+Medion MD96420. Model MIM 2300 Notebook PC
 
-...
+OS: Fedora 9, with alsadriver 1.0.16 upgraded to 1.0.18a
 
-> > in other drivers for examples.  If it's really an enum then calling it a
-> > mux is probably better.
-> 
-> Hmmm, the situation is kind of both...
-> The selection is done in a bitfield.
-> Let's take the PREDL, as I used that in the helper function comment:
->  bit 0 (0x1): voice_en
->  bit 1 (0x2): Audio L1 enable (DACL1)
->  bit 2 (0x4): Audio L2 enable (DACL2)
->  bit 3 (0x8): Audio R2 enable (DACR2)
-> The voice path can be enabled/disabled independently from the digital
-> paths, but only _one_ of the DACL1, DACL2 or DACR2 can be selected at
-> the time.
+Desktop:  KDE 4.1
 
-Oh, ick.  There's a couple of ways I can think of to represent that to
-DAPM.  One would be to have a simple mixer with switches for everything
-and an extended event on the mixer which returns an error if multiple
-DAC inputs are enabled.  The other is to have the DAC selection be a
-custom mux like you've got and feed that into the mixer unconditionally.
-The voice input should certainly be a separate control here.
+/sbin/lspci  (soundcard part)
+00:1b.0 Audio device: Intel Corporation 82801H (ICH8 Family) HD Audio 
+Controller (rev 03)
+ Subsystem: Mitac Unknown device 8227
+ Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- 
+SERR+ FastB2B- DisINTx-
+ Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- 
+<MAbort- >SERR- <PERR- INTx-
+ Latency: 0, Cache Line Size: 64 bytes
+ Interrupt: pin A routed to IRQ 22
+ Region 0: Memory at fc200000 (64-bit, non-prefetchable) [size=16K]
+ Capabilities: <access denied>
+ Kernel driver in use: HDA Intel
+ Kernel modules: snd-hda-intel
 
-> On top of that the mute can be performed by setting all four bits to 0.
-> I don't know actually what that means, but probably than the PreDriv
-> path will be effectively turned off.
+[graeme@flintstone ~]$ cat /proc/asound/cards
+  0 [Intel          ]: HDA-Intel - HDA Intel
+                       HDA Intel at 0xfc200000 irq 22
 
-That's just equivalent to turning off all the inputs so sounds like it
-shouldn't need any special handling.
+[graeme@flintstone ~]$ grep ^Codec /proc/asound/card?/codec*
+/proc/asound/card0/codec#0:Codec: Realtek ALC883
+/proc/asound/card0/codec#1:Codec: LSI ID 1040
+/proc/asound/card0/codec#2:Codec: Realtek ALC268
 
-> On the side not: the voice path at the moment not in use -> the codec has
-> to be in different mode to have the voice path enabled. But then lot's of
-> things will behave differently.
+A bit of info from Graeme (aka GN), after asking him to try probe_mask=1.
 
-Could you go into more detail about these modes?  Sounds like it could
-get tricky...
+<quote>
+I tried the different probe-mask=?. Probe-mask=1 works OK but not the
+others. model=lenovo-ms7195-dig doesn't work. Kmix shows varying
+channels depending on the 'model' or 'probe-mask' used. probe-mask=1
+gives the most channels. alsamixer now loads up OK but still no sound.
+Shows as ALC883 with 'probe-mask=1' Starting Amarok elicits the xine
+error dialogue window with  "xine was unable to initialize any audio
+drivers"
 
-> Initially I did not wanted to spread these controls - to make it simple
-> for myself, but I might separate the voice and DAC mux selections (separated
-> enable for voice and mux the DACL/Rs selection).
+UPDATE:
 
-Yes, that does sound like the best approach.
+With 'probe-mask=1 and using Rhythmbox I can get sound out of the
+speakers and the front headphone jack. Volume not very high out of the
+speakers but is good from the headphones. Too much system activity or
+keyboard activity (I'm writing this listening to Tchaikovsky and I can
+hear interruptions from the keyboard at times) seems to interfere with
+the audio stream. Also there is a lot of noise from the CD drive coming
+through the earphones. Don't know how that is happening. Pulseaudio Vol
+Cntl can be used as can the panel Vol. Cntl. and also alsamixer.
+<end quote>
+
+The last things I asked him to try, were to disable Pulseaudio, by removing 
+the package alsa-plugins-pulseaudio, and to try the latest snapshot for the 
+alsa driver.
+
+Disabling pulseaudio has resulted in good sound levels from the speakers, but 
+as he is away for a few days, he hasn't yet tried the latest snapshot of the 
+alsa driver.
+
+A few extra details. Without a model option all snd modules were loaded, but 
+no card was detected. Using the option model=medion, resulted in the card 
+being detected, but problems with alsamixer as below. model=mitac gives same 
+results as below.
+
+<quote from Graeme's reply on user list>
+[graeme@flintstone ~]$ amixer
+ALSA lib simple_none.c:1491:(simple_add1) helem (MIXER,'Headphone 
+Playback Switch',0,2,0) appears twice or more
+amixer: Mixer default load error: Invalid argument
+[graeme@flintstone ~]$ alsamixer
+ALSA lib simple_none.c:1491:(simple_add1) helem (MIXER,'Headphone 
+Playback Switch',0,2,0) appears twice or more
+
+alsamixer: function snd_mixer_load failed: Invalid argument
+<end quote>
+
+Then I searched through the changelog, found the bug report about the codec 
+conflicts, and suggested probe_mask=1, which has got the sound working.
+
+I think I've gone about as far as I can now, which is why I'm posting this to 
+the devel list.
+
+Nigel.
