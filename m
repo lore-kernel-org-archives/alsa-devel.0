@@ -1,27 +1,46 @@
-From: Qinghuang Feng <qhfeng.kernel@gmail.com>
-Subject: [PATCH 2/2] sound/soc/soc-core.c: cleanup kernel-doc
-Date: Tue, 25 Nov 2008 23:24:54 +0800
-Message-ID: <492c18cb.0c636e0a.1c1a.ffffb2b3@mx.google.com>
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754092AbYKYPZk@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Jaroslav Kysela <perex@perex.cz>, Randy Dunlap <rdunlap@xenotime.net>, alsa-devel@alsa-project.org
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: Fix TW4030 Kconfig dependency
+Date: Tue, 25 Nov 2008 15:30:14 +0000
+Message-ID: <20081125153013.GH12414@sirena.org.uk>
+References: <1227587172-9523-1-git-send-email-arunks@mistralsolutions.com>
+	<200811242044.13438.david-b@pacbell.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3AA8724480
+	for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2008 16:30:21 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <200811242044.13438.david-b@pacbell.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: David Brownell <david-b@pacbell.net>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, arunks@mistralsolutions.com, steve@sakoman.com
 List-Id: alsa-devel@alsa-project.org
 
-There is no argument named @clk_id in snd_soc_dai_set_fmt,
-remove its' comment.
+On Mon, Nov 24, 2008 at 08:44:13PM -0800, David Brownell wrote:
+> On Monday 24 November 2008, arunks@mistralsolutions.com wrote:
 
-Signed-off-by: Qinghuang Feng <qhfeng.kernel@gmail.com>
----
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 16c7453..81ee4ba 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1805,7 +1805,6 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_pll);
- /**
-  * snd_soc_dai_set_fmt - configure DAI hardware audio format.
-  * @dai: DAI
-- * @clk_id: DAI specific clock ID
-  * @fmt: SND_SOC_DAIFMT_ format value.
-  *
-  * Configures the DAI hardware format and clocking.
+> > Fixes Kconfig dependency of TWL4030 audio codec driver
+> > with TWL4030 core driver on both overo and omap2evm
+> > boards
+
+> > Signed-off-by: Arun KS <arunks@mistralsolutions.com>
+
+> Good idea.  :)
+
+> Acked-by: David Brownell <dbrownell@users.sourceforge.net>
+
+Applied.
+
+Might it be an idea to have the relevant machine drivers select the
+TWL4030 support?  This would prevent them disabling it but the chip is
+such a basic part of these systems that that doesn't seem unreasonable.
