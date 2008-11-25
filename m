@@ -1,11 +1,25 @@
 From: Misael Lopez Cruz <mesak82@gmail.com>
 Subject: [PATCH] ALSA: SoC: Add support for TI SDP3430
-Date: Mon, 24 Nov 2008 21:49:55 -0600
-Message-ID: <1227584995-29348-1-git-send-email-mesak82@gmail.com>
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: Alsa-devel@alsa-project.org
-Cc: linux-omap@vger.kernel.org, Misael Lopez Cruz <mesak82@gmail.com>
+Date: Mon, 24 Nov 2008 22:21:23 -0600
+Message-ID: <1227586883-31937-1-git-send-email-mesak82@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id B0C84245C1
+	for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2008 05:21:31 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Misael Lopez Cruz <mesak82@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 This patch add ASoC support for TI SDP3430. It's based on Gumstix
@@ -211,4 +225,3 @@ index 0000000..85fd160
 +
 -- 
 1.5.6.3
-
