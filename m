@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ASoC: Fix TW4030 Kconfig dependency
-Date: Tue, 25 Nov 2008 15:30:14 +0000
-Message-ID: <20081125153013.GH12414@sirena.org.uk>
-References: <1227587172-9523-1-git-send-email-arunks@mistralsolutions.com>
-	<200811242044.13438.david-b@pacbell.net>
+Subject: Re: [PATCH] [ASOC] tosa: move gpio probing to machine
+	callbacks
+Date: Tue, 25 Nov 2008 15:38:27 +0000
+Message-ID: <20081125153826.GI12414@sirena.org.uk>
+References: <1227594921-13390-1-git-send-email-dbaryshkov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3AA8724480
-	for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2008 16:30:21 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id BF35624482
+	for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2008 16:38:27 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <200811242044.13438.david-b@pacbell.net>
+In-Reply-To: <1227594921-13390-1-git-send-email-dbaryshkov@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,25 +22,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Brownell <david-b@pacbell.net>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, arunks@mistralsolutions.com, steve@sakoman.com
+To: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 24, 2008 at 08:44:13PM -0800, David Brownell wrote:
-> On Monday 24 November 2008, arunks@mistralsolutions.com wrote:
+On Tue, Nov 25, 2008 at 09:35:21AM +0300, Dmitry Baryshkov wrote:
+> Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
 
-> > Fixes Kconfig dependency of TWL4030 audio codec driver
-> > with TWL4030 core driver on both overo and omap2evm
-> > boards
-
-> > Signed-off-by: Arun KS <arunks@mistralsolutions.com>
-
-> Good idea.  :)
-
-> Acked-by: David Brownell <dbrownell@users.sourceforge.net>
-
-Applied.
-
-Might it be an idea to have the relevant machine drivers select the
-TWL4030 support?  This would prevent them disabling it but the chip is
-such a basic part of these systems that that doesn't seem unreasonable.
+Applied (with a tiny bit of manual munging for current git).
