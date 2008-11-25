@@ -1,209 +1,99 @@
-From: Anuj Aggarwal <anuj.aggarwal@ti.com>
-Subject: [PATCH] ASoC: Add support for OMAP3 EVM
-Date: Tue, 25 Nov 2008 11:09:37 +0530
-Message-ID: <1227591577-23414-1-git-send-email-anuj.aggarwal@ti.com>
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
-Cc: Anuj Aggarwal <anuj.aggarwal@ti.com>
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Subject: [PATCH] [ASOC] tosa: move gpio probing to machine
+	callbacks
+Date: Tue, 25 Nov 2008 09:35:21 +0300
+Message-ID: <1227594921-13390-1-git-send-email-dbaryshkov@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id CD0C41037EB
+	for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2008 07:35:57 +0100 (CET)
+Received: by ey-out-1920.google.com with SMTP id 21so922519eyc.56
+	for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2008 22:35:57 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Dmitry Baryshkov <dbaryshkov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds ALSA SoC support for OMAP3 EVM using TWL4030 audio codec.
-
-Signed-off-by: Anuj Aggarwal <anuj.aggarwal@ti.com>
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
 ---
- sound/soc/omap/Kconfig    |    7 ++
- sound/soc/omap/Makefile   |    2 +
- sound/soc/omap/omap3evm.c |  147 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 156 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/omap/omap3evm.c
+ sound/soc/pxa/tosa.c |   30 ++++++++++++++++++++++--------
+ 1 files changed, 22 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
-index 6c56277..c465139 100644
---- a/sound/soc/omap/Kconfig
-+++ b/sound/soc/omap/Kconfig
-@@ -38,5 +38,12 @@ config SND_OMAP_SOC_OMAP2EVM
- 	help
- 	  Say Y if you want to add support for SoC audio on the omap2evm board.
+diff --git a/sound/soc/pxa/tosa.c b/sound/soc/pxa/tosa.c
+index afefe41..69ca79b 100644
+--- a/sound/soc/pxa/tosa.c
++++ b/sound/soc/pxa/tosa.c
+@@ -230,10 +230,32 @@ static struct snd_soc_dai_link tosa_dai[] = {
+ },
+ };
  
-+config SND_OMAP_SOC_OMAP3EVM
-+	tristate "SoC Audio support for OMAP3EVM board"
-+	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP3EVM
-+	select SND_OMAP_SOC_MCBSP
-+	select SND_SOC_TWL4030
-+	help
-+	  Say Y if you want to add support for SoC audio on the omap3evm board.
- 
- 
-diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
-index f5da3cc..bbb3a77 100644
---- a/sound/soc/omap/Makefile
-+++ b/sound/soc/omap/Makefile
-@@ -10,9 +10,11 @@ snd-soc-n810-objs := n810.o
- snd-soc-osk5912-objs := osk5912.o
- snd-soc-overo-objs := overo.o
- snd-soc-omap2evm-objs := omap2evm.o
-+snd-soc-omap3evm-objs := omap3evm.o
- 
- obj-$(CONFIG_SND_OMAP_SOC_N810) += snd-soc-n810.o
- obj-$(CONFIG_SND_OMAP_SOC_OSK5912) += snd-soc-osk5912.o
- obj-$(CONFIG_SND_OMAP_SOC_OVERO) += snd-soc-overo.o
- obj-$(CONFIG_MACH_OMAP2EVM) += snd-soc-omap2evm.o
-+obj-$(CONFIG_MACH_OMAP3EVM) += snd-soc-omap3evm.o
- 
-diff --git a/sound/soc/omap/omap3evm.c b/sound/soc/omap/omap3evm.c
-new file mode 100644
-index 0000000..570af55
---- /dev/null
-+++ b/sound/soc/omap/omap3evm.c
-@@ -0,0 +1,147 @@
-+/*
-+ * omap3evm.c  -- ALSA SoC support for OMAP3 EVM
-+ *
-+ * Author: Anuj Aggarwal <anuj.aggarwal@ti.com>
-+ *
-+ * Based on sound/soc/omap/beagle.c by Steve Sakoman
-+ *
-+ * Copyright (C) 2008 Texas Instruments, Incorporated
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License as published by the
-+ * Free Software Foundation version 2.
-+ *
-+ * This program is distributed "as is" WITHOUT ANY WARRANTY of any kind,
-+ * whether express or implied; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-+ * General Public License for more details.
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+#include <asm/mach-types.h>
-+#include <mach/hardware.h>
-+#include <mach/gpio.h>
-+#include <mach/mcbsp.h>
-+
-+#include "omap-mcbsp.h"
-+#include "omap-pcm.h"
-+#include "../codecs/twl4030.h"
-+
-+static int omap3evm_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	int ret;
-+
-+	/* Set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai,
-+				  SND_SOC_DAIFMT_I2S |
-+				  SND_SOC_DAIFMT_NB_NF |
-+				  SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0) {
-+		printk(KERN_ERR "can't set codec DAI configuration\n");
-+		return ret;
-+	}
-+
-+	/* Set cpu DAI configuration */
-+	ret = snd_soc_dai_set_fmt(cpu_dai,
-+				  SND_SOC_DAIFMT_I2S |
-+				  SND_SOC_DAIFMT_NB_NF |
-+				  SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0) {
-+		printk(KERN_ERR "can't set cpu DAI configuration\n");
-+		return ret;
-+	}
-+
-+	/* Set the codec system clock for DAC and ADC */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
-+				     SND_SOC_CLOCK_IN);
-+	if (ret < 0) {
-+		printk(KERN_ERR "can't set codec system clock\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops omap3evm_ops = {
-+	.hw_params = omap3evm_hw_params,
-+};
-+
-+/* Digital audio interface glue - connects codec <--> CPU */
-+static struct snd_soc_dai_link omap3evm_dai = {
-+	.name = "TWL4030",
-+	.stream_name = "TWL4030",
-+	.cpu_dai = &omap_mcbsp_dai[0],
-+	.codec_dai = &twl4030_dai,
-+	.ops = &omap3evm_ops,
-+};
-+
-+/* Audio machine driver */
-+static struct snd_soc_machine snd_soc_machine_omap3evm = {
-+	.name = "omap3evm",
-+	.dai_link = &omap3evm_dai,
-+	.num_links = 1,
-+};
-+
-+/* Audio subsystem */
-+static struct snd_soc_device omap3evm_snd_devdata = {
-+	.machine = &snd_soc_machine_omap3evm,
-+	.platform = &omap_soc_platform,
-+	.codec_dev = &soc_codec_dev_twl4030,
-+};
-+
-+static struct platform_device *omap3evm_snd_device;
-+
-+static int __init omap3evm_soc_init(void)
++static int tosa_probe(struct platform_device *dev)
 +{
 +	int ret;
 +
-+	if (!machine_is_omap3evm()) {
-+		pr_debug("Not OMAP3 EVM!\n");
-+		return -ENODEV;
-+	}
-+	pr_info("OMAP3 EVM SoC init\n");
-+
-+	omap3evm_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!omap3evm_snd_device) {
-+		printk(KERN_ERR "Platform device allocation failed\n");
-+		return -ENOMEM;
-+	}
-+
-+	platform_set_drvdata(omap3evm_snd_device, &omap3evm_snd_devdata);
-+	omap3evm_snd_devdata.dev = &omap3evm_snd_device->dev;
-+	*(unsigned int *)omap3evm_dai.cpu_dai->private_data = 1; /* McBSP2 */
-+
-+	ret = platform_device_add(omap3evm_snd_device);
++	ret = gpio_request(TOSA_GPIO_L_MUTE, "Headphone Jack");
 +	if (ret)
-+		goto err1;
-+
-+	return 0;
-+
-+err1:
-+	printk(KERN_ERR "Unable to add platform device\n");
-+	platform_device_put(omap3evm_snd_device);
++		return ret;
++	ret = gpio_direction_output(TOSA_GPIO_L_MUTE, 0);
++	if (ret)
++		gpio_free(TOSA_GPIO_L_MUTE);
 +
 +	return ret;
 +}
 +
-+static void __exit omap3evm_soc_exit(void)
++static int tosa_remove(struct platform_device *dev)
 +{
-+	platform_device_unregister(omap3evm_snd_device);
++	gpio_free(TOSA_GPIO_L_MUTE);
++	return 0;
 +}
 +
-+module_init(omap3evm_soc_init);
-+module_exit(omap3evm_soc_exit);
-+
-+MODULE_AUTHOR("Anuj Aggarwal <anuj.aggarwal@ti.com>");
-+MODULE_DESCRIPTION("ALSA SoC OMAP3 EVM");
-+MODULE_LICENSE("GPL");
+ static struct snd_soc_machine tosa = {
+ 	.name = "Tosa",
+ 	.dai_link = tosa_dai,
+ 	.num_links = ARRAY_SIZE(tosa_dai),
++	.probe = tosa_probe,
++	.remove = tosa_remove,
+ };
+ 
+ static struct snd_soc_device tosa_snd_devdata = {
+@@ -251,11 +273,6 @@ static int __init tosa_init(void)
+ 	if (!machine_is_tosa())
+ 		return -ENODEV;
+ 
+-	ret = gpio_request(TOSA_GPIO_L_MUTE, "Headphone Jack");
+-	if (ret)
+-		return ret;
+-	gpio_direction_output(TOSA_GPIO_L_MUTE, 0);
+-
+ 	tosa_snd_device = platform_device_alloc("soc-audio", -1);
+ 	if (!tosa_snd_device) {
+ 		ret = -ENOMEM;
+@@ -272,15 +289,12 @@ static int __init tosa_init(void)
+ 	platform_device_put(tosa_snd_device);
+ 
+ err_alloc:
+-	gpio_free(TOSA_GPIO_L_MUTE);
+-
+ 	return ret;
+ }
+ 
+ static void __exit tosa_exit(void)
+ {
+ 	platform_device_unregister(tosa_snd_device);
+-	gpio_free(TOSA_GPIO_L_MUTE);
+ }
+ 
+ module_init(tosa_init);
 -- 
-1.5.6
-
+1.5.6.5
