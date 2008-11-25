@@ -1,35 +1,27 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ALSA: SoC: Add support for TI SDP3430
-Date: Tue, 25 Nov 2008 15:15:12 +0000
-Message-ID: <20081125151510.GG12414@sirena.org.uk>
-References: <1227586883-31937-1-git-send-email-mesak82@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E37A724475
-	for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2008 16:15:14 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1227586883-31937-1-git-send-email-mesak82@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Misael Lopez Cruz <mesak82@gmail.com>
-Cc: alsa-devel@alsa-project.org
+From: Qinghuang Feng <qhfeng.kernel@gmail.com>
+Subject: [PATCH 1/2] sound/pci/hda/hda_codec.c: cleanup kernel-doc
+Date: Tue, 25 Nov 2008 23:24:49 +0800
+Message-ID: <492c18c6.011e6e0a.0d83.7b0b@mx.google.com>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753932AbYKYPZT@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Jaroslav Kysela <perex@perex.cz>, Randy Dunlap <rdunlap@xenotime.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 24, 2008 at 10:21:23PM -0600, Misael Lopez Cruz wrote:
-> This patch add ASoC support for TI SDP3430. It's based on Gumstix
-> Overo SoC code by Steve Sakoman.
+There is no argument named @state in snd_hda_resume,
+remove its' comment.
 
-> Signed-off-by: Misael Lopez Cruz <mesak82@gmail.com>
-
-Applied, but it would be really good to see a shared driver for all the
-various OMAP+TWL4030 combinations.
+Signed-off-by: Qinghuang Feng <qhfeng.kernel@gmail.com>
+---
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index ba1ab73..979f34a 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3109,7 +3109,6 @@ int snd_hda_suspend(struct hda_bus *bus, pm_message_t state)
+ /**
+  * snd_hda_resume - resume the codecs
+  * @bus: the HDA bus
+- * @state: resume state
+  *
+  * Returns 0 if successful.
+  *
