@@ -1,24 +1,22 @@
 From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: [topic/asoc][PATCH 0/2] ASoC: OMAP: Add support for
-	mono audio links in McBSP DAI (take #2)
-Date: Tue, 25 Nov 2008 12:45:07 +0200
-Message-ID: <1227609909-25273-1-git-send-email-jarkko.nikula@nokia.com>
+Subject: [topic/asoc][PATCH 1/2] ASoC: OMAP: Apply channel
+	constrains to N810 machine driver
+Date: Tue, 25 Nov 2008 12:45:08 +0200
+Message-ID: <1227609909-25273-2-git-send-email-jarkko.nikula@nokia.com>
+References: <1227609909-25273-1-git-send-email-jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id C49BA243A6
-	for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2008 11:45:48 +0100 (CET)
-Received: from esebh107.NOE.Nokia.com (esebh107.ntc.nokia.com [172.21.143.143])
-	by mgw-mx03.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
-	mAPAjclA006809
-	for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2008 12:45:47 +0200
-Received: from localhost.localdomain (esdhcp042162.research.nokia.com
-	[172.21.42.162])
-	by mgw-int02.ntc.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
-	mAPAjNFf020780
-	for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2008 12:45:24 +0200
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id A369224399
+	for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2008 11:46:01 +0100 (CET)
+Received: from vaebh105.NOE.Nokia.com (vaebh105.europe.nokia.com
+	[10.160.244.31])
+	by mgw-mx09.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
+	mAPAjb7W009924
+	for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2008 04:45:58 -0600
+In-Reply-To: <1227609909-25273-1-git-send-email-jarkko.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,20 +27,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Jarkko Nikula <jarkko.nikula@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Prepare for upcoming McBSP DAI update adding support for mono links by
+restricting number of channels to 2 in N810. This is due tlv320aic3x which
+claims channels_min = 1 and playing pure mono audio over I2S would cause
+it to be played only from left channel if both cpu and codec DAI's claim to
+support mono.
 
-Second version adding support for mono audio links in OMAP McBSP DAI. At this
-time, the channels_min is defined to 1 in omap-mcbsp.c and no hacks in
-machine drivers wanting to use mono link are required.
+Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
+---
+ sound/soc/omap/n810.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-If channel restrictions are required, then machine driver can use
-snd_pcm_hw_constraint_minmax. Now only N810 machine driver is affected since
-all other OMAP machine drivers are using TWL4030 or TLV320AIC23 codecs which
-all claim to support only 2 channels so the link remains always stereo even
-playing mono audio.
-
-
+diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
+index d216b4f..18e2062 100644
+--- a/sound/soc/omap/n810.c
++++ b/sound/soc/omap/n810.c
+@@ -70,9 +70,13 @@ static void n810_ext_control(struct snd_soc_codec *codec)
+ 
+ static int n810_startup(struct snd_pcm_substream *substream)
+ {
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_codec *codec = rtd->socdev->codec;
+ 
++	snd_pcm_hw_constraint_minmax(runtime,
++				     SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
++
+ 	n810_ext_control(codec);
+ 	return clk_enable(sys_clkout2);
+ }
 -- 
-Jarkko
+1.5.6.5
