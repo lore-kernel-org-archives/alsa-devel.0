@@ -1,17 +1,20 @@
-From: Daniel Mack <daniel@caiaq.org>
-Subject: Re: [PATCH] cleanup controllers in snd-usb-caiaq
-Date: Wed, 26 Nov 2008 19:57:20 +0100
-Message-ID: <20081126185720.GA22925@buzzloop.caiaq.de>
-References: <20081126151901.GB20061@buzzloop.caiaq.de>
-	<s5habbmqypj.wl%tiwai@suse.de>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH] OMAP general SOC driver.
+Date: Wed, 26 Nov 2008 20:07:52 +0000
+Message-ID: <20081126200750.GK6234@sirena.org.uk>
+References: <1227696478-8354-1-git-send-email-stanley.miao@windriver.com>
+	<20081126110854.GA6234@sirena.org.uk>
+	<20081126134028.b3c6aa46.jarkko.nikula@nokia.com>
+	<200811261034.42356.david-b@pacbell.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="UugvWAfsgieZRqgk"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4906A247AC
-	for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2008 19:57:24 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2DFA52414E
+	for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2008 21:08:01 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5habbmqypj.wl%tiwai@suse.de>
+In-Reply-To: <200811261034.42356.david-b@pacbell.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,169 +24,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: David Brownell <david-b@pacbell.net>
+Cc: "Stanley.Miao" <stanley.miao@windriver.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Nov 26, 2008 at 10:34:41AM -0800, David Brownell wrote:
 
---UugvWAfsgieZRqgk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Re TWL4030 codec configuration ... I count three microphone
+> input channels not used on Beagle, plus a speaker output
+> and some other stuff.  So it's obvious that something which
+> works on Beagle won't handle more interesting configurations
+> of that audio support.  
 
-Hi Takashi,
+Can someone post an overview of what the hardware configurations of
+these boards are, please?  It's starting to sound like they're not very
+similar at all.
 
-On Wed, Nov 26, 2008 at 04:44:08PM +0100, Takashi Iwai wrote:
-> > this patch does some code cleanup in snd-usb-caiaq. No functional change
-> > whatsoever. Version number bumped to 1.3.9.
-> 
-> A macro for such is ugly and potentially dangerous, IMO.
-> Make a function instead.
-> 
-> Also, please add an error check of the return value from
-> snd_ctl_add().
+> I'm told that the ASoC stuff "should" go in a separate ASoC
+> area for some reason.  That still makes no good sense to me,
+> so if there's a brief explanation as to why it's done that
+> way, please fling me a URL.  :)
 
-Ok, agreed and done. However, I considered it a good idea as it avoided
-writing the array's name more than once.
+The move is in the direction you want but we're not there yet.  The fact
+that things are now decomposed enough for us to be able to think about
+it is a good sign here.
 
-Daniel
+The biggest part of it is that the degree of coupling between the
+various ASoC components is high - this is particularly obvious with v1
+where the entire card is probed at once.  This includes coupling between
+the drivers and the core where the degree of churn is very high right
+now due to v2 merging.  It doesn't feel right to give architectures an
+API that they can't rely on from one merge window to the next yet,
+partly from the point of view of isolating the code for review purposes
+and also due to the merge issues which would doubtless crop up.
 
+Another part of it is that some machine drivers can get involved enough
+to sit on or cross the boundary from platform data to being drivers for
+substantial distinct hardware but that's very much not the case for
+everything.
 
---UugvWAfsgieZRqgk
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment; filename="caiaq-controls-cleanup.diff"
-
-snd-usb-caiaq: clean up the control adding code by moving dulpicate code
-to a function.
-
-Signed-off-by: Daniel Mack <daniel@caiaq.de>
-
-diff --git a/sound/usb/caiaq/caiaq-control.c b/sound/usb/caiaq/caiaq-control.c
-index 798ca12..ccd763d 100644
---- a/sound/usb/caiaq/caiaq-control.c
-+++ b/sound/usb/caiaq/caiaq-control.c
-@@ -247,69 +247,56 @@ static struct caiaq_controller a8dj_controller[] = {
- 	{ "Software lock", 			40 		}
- };
- 
--int __devinit snd_usb_caiaq_control_init(struct snd_usb_caiaqdev *dev)
-+static int __devinit add_controls(struct caiaq_controller *c, int num,
-+				  struct snd_usb_caiaqdev *dev)
- {
--	int i;
-+	int i, ret;
- 	struct snd_kcontrol *kc;
- 
-+	for (i = 0; i < num; i++, c++) {
-+		kcontrol_template.name = c->name;
-+		kcontrol_template.private_value = c->index;
-+		kc = snd_ctl_new1(&kcontrol_template, dev);
-+		ret = snd_ctl_add(dev->chip.card, kc);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+int __devinit snd_usb_caiaq_control_init(struct snd_usb_caiaqdev *dev)
-+{
-+	int ret = 0;
-+
- 	switch (dev->chip.usb_id) {
- 	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_AK1):
--		for (i = 0; i < ARRAY_SIZE(ak1_controller); i++) {
--			struct caiaq_controller *c = ak1_controller + i;
--			kcontrol_template.name = c->name;
--			kcontrol_template.private_value = c->index;
--			kc = snd_ctl_new1(&kcontrol_template, dev);
--			snd_ctl_add(dev->chip.card, kc);
--		}
--
-+		ret = add_controls(ak1_controller,
-+			ARRAY_SIZE(ak1_controller), dev);
- 		break;
- 
- 	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_RIGKONTROL2):
--		for (i = 0; i < ARRAY_SIZE(rk2_controller); i++) {
--			struct caiaq_controller *c = rk2_controller + i;
--			kcontrol_template.name = c->name;
--			kcontrol_template.private_value = c->index;
--			kc = snd_ctl_new1(&kcontrol_template, dev);
--			snd_ctl_add(dev->chip.card, kc);
--		}
--
-+		ret = add_controls(rk2_controller,
-+			ARRAY_SIZE(rk2_controller), dev);
- 		break;
- 
- 	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_RIGKONTROL3):
--		for (i = 0; i < ARRAY_SIZE(rk3_controller); i++) {
--			struct caiaq_controller *c = rk3_controller + i;
--			kcontrol_template.name = c->name;
--			kcontrol_template.private_value = c->index;
--			kc = snd_ctl_new1(&kcontrol_template, dev);
--			snd_ctl_add(dev->chip.card, kc);
--		}
--
-+		ret = add_controls(rk3_controller,
-+			ARRAY_SIZE(rk3_controller), dev);
- 		break;
- 
- 	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_KORECONTROLLER):
- 	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_KORECONTROLLER2):
--		for (i = 0; i < ARRAY_SIZE(kore_controller); i++) {
--			struct caiaq_controller *c = kore_controller + i;
--			kcontrol_template.name = c->name;
--			kcontrol_template.private_value = c->index;
--			kc = snd_ctl_new1(&kcontrol_template, dev);
--			snd_ctl_add(dev->chip.card, kc);
--		}
--
-+		ret = add_controls(kore_controller,
-+			ARRAY_SIZE(kore_controller), dev);
- 		break;
- 
- 	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_AUDIO8DJ):
--		for (i = 0; i < ARRAY_SIZE(a8dj_controller); i++) {
--			struct caiaq_controller *c = a8dj_controller + i;
--			kcontrol_template.name = c->name;
--			kcontrol_template.private_value = c->index;
--			kc = snd_ctl_new1(&kcontrol_template, dev);
--			snd_ctl_add(dev->chip.card, kc);
--		}
--
-+		ret = add_controls(a8dj_controller,
-+			ARRAY_SIZE(a8dj_controller), dev);
- 		break;
- 	}
- 
--	return 0;
-+	return ret;
- }
- 
-diff --git a/sound/usb/caiaq/caiaq-device.c b/sound/usb/caiaq/caiaq-device.c
-index 8317508..b143ef7 100644
---- a/sound/usb/caiaq/caiaq-device.c
-+++ b/sound/usb/caiaq/caiaq-device.c
-@@ -42,7 +42,7 @@
- #endif
- 
- MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
--MODULE_DESCRIPTION("caiaq USB audio, version 1.3.8");
-+MODULE_DESCRIPTION("caiaq USB audio, version 1.3.9");
- MODULE_LICENSE("GPL");
- MODULE_SUPPORTED_DEVICE("{{Native Instruments, RigKontrol2},"
- 			 "{Native Instruments, RigKontrol3},"
-
---UugvWAfsgieZRqgk
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---UugvWAfsgieZRqgk--
+I've been spending time this week working on getting the ability to load
+platform and codec drivers independantly merged.  That will at least
+allow the instantiation of the ASoC drivers for those to be pushed out
+into the architecture code, which is a start and should substantially
+reduce the size of most machine drivers.  At the point where that's been
+done it's probably worth looking again at the simpler machine drivers.
