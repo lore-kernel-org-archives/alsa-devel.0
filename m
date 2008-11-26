@@ -1,17 +1,17 @@
 From: Daniel Mack <daniel@caiaq.org>
 Subject: Re: [PATCH] Allow more routing features for	tlv320aic3x
-Date: Wed, 26 Nov 2008 17:37:15 +0100
-Message-ID: <20081126163715.GB20913@buzzloop.caiaq.de>
+Date: Wed, 26 Nov 2008 17:47:36 +0100
+Message-ID: <20081126164736.GC20913@buzzloop.caiaq.de>
 References: <20081126144854.GA20061@buzzloop.caiaq.de>
 	<20081126150404.GE6234@sirena.org.uk>
 	<20081126155645.GA20913@buzzloop.caiaq.de>
 	<20081126162810.GF6234@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="lEGEL1/lMxI0MVQ2"
+Content-Type: multipart/mixed; boundary="9Ek0hoCL9XbhcSqy"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE20124736
-	for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2008 17:37:19 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 437CC2474C
+	for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2008 17:47:41 +0100 (CET)
 Content-Disposition: inline
 In-Reply-To: <20081126162810.GF6234@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -28,7 +28,7 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---lEGEL1/lMxI0MVQ2
+--9Ek0hoCL9XbhcSqy
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -39,10 +39,13 @@ On Wed, Nov 26, 2008 at 04:28:11PM +0000, Mark Brown wrote:
 > 
 > Meh, sorry - I meant SOC_SINGLE here.  My mistake.
 
-Ok, here we go :)
+Sorry, once more. I was a little too quick with my last submission.
+
+Best regards,
+Daniel
 
 
---lEGEL1/lMxI0MVQ2
+--9Ek0hoCL9XbhcSqy
 Content-Type: text/x-diff; charset=us-ascii
 Content-Disposition: attachment; filename="tlv320aic3x-routing.diff"
 
@@ -61,31 +64,35 @@ It is now possible to
 Signed-off-by: Daniel Mack <daniel@caiaq.de>
 
 diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index cff276e..d49107f 100644
+index cff276e..2047c66 100644
 --- a/sound/soc/codecs/tlv320aic3x.c
 +++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -272,7 +272,9 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
+@@ -272,8 +272,10 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
  		     DACR1_2_HPROUT_VOL, 0, 0x7f, 1),
  	SOC_DOUBLE_R("HP DAC Playback Switch", HPLOUT_CTRL, HPROUT_CTRL, 3,
  		     0x01, 0),
 -	SOC_DOUBLE_R("HP PGA Bypass Playback Volume", PGAL_2_HPLOUT_VOL,
+-		     PGAR_2_HPROUT_VOL, 0, 0x7f, 1),
 +	SOC_SINGLE("HPL PGA Bypass Playback Volume", PGAL_2_HPLOUT_VOL,
-+		     PGAR_2_HPLOUT_VOL, 0, 0x7f, 1),
++		     0, 0x7f, 1),
 +	SOC_SINGLE("HPR PGA Bypass Playback Volume", PGAL_2_HPROUT_VOL,
- 		     PGAR_2_HPROUT_VOL, 0, 0x7f, 1),
++		     0, 0x7f, 1),
  	SOC_DOUBLE_R("HP Line2 Bypass Playback Volume", LINE2L_2_HPLOUT_VOL,
  		     LINE2R_2_HPROUT_VOL, 0, 0x7f, 1),
-@@ -281,7 +283,9 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
+ 
+@@ -281,8 +283,10 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
  		     DACR1_2_HPRCOM_VOL, 0, 0x7f, 1),
  	SOC_DOUBLE_R("HPCOM DAC Playback Switch", HPLCOM_CTRL, HPRCOM_CTRL, 3,
  		     0x01, 0),
 -	SOC_DOUBLE_R("HPCOM PGA Bypass Playback Volume", PGAL_2_HPLCOM_VOL,
+-		     PGAR_2_HPRCOM_VOL, 0, 0x7f, 1),
 +	SOC_SINGLE("HPLCOM PGA Bypass Playback Volume", PGAL_2_HPLCOM_VOL,
-+		     PGAR_2_HPLCOM_VOL, 0, 0x7f, 1),
++		     0, 0x7f, 1),
 +	SOC_SINGLE("HPRCOM PGA Bypass Playback Volume", PGAL_2_HPRCOM_VOL,
- 		     PGAR_2_HPRCOM_VOL, 0, 0x7f, 1),
++		     0, 0x7f, 1),
  	SOC_DOUBLE_R("HPCOM Line2 Bypass Playback Volume", LINE2L_2_HPLCOM_VOL,
  		     LINE2R_2_HPRCOM_VOL, 0, 0x7f, 1),
+ 
 @@ -333,7 +337,8 @@ SOC_DAPM_ENUM("Route", aic3x_enum[RHPCOM_ENUM]);
  
  /* Left DAC_L1 Mixer */
@@ -361,7 +368,7 @@ index 00a195a..7e982ac 100644
  #define RLOPM_CTRL			93
  /* GPIO/IRQ registers */
 
---lEGEL1/lMxI0MVQ2
+--9Ek0hoCL9XbhcSqy
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -372,4 +379,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---lEGEL1/lMxI0MVQ2--
+--9Ek0hoCL9XbhcSqy--
