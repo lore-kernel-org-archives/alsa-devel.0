@@ -1,51 +1,25 @@
-From: "Steve Sakoman" <sakoman@gmail.com>
-Subject: Re: [PATCH] OMAP general SOC driver.
-Date: Wed, 26 Nov 2008 09:24:03 -0800
-Message-ID: <5e088bd90811260924u28a081bej62689470551b6982@mail.gmail.com>
-References: <1227696478-8354-1-git-send-email-stanley.miao@windriver.com>
-	<20081126110854.GA6234@sirena.org.uk>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [alsa-devel] [PATCH] OMAP general SOC driver.
+Date: Wed, 26 Nov 2008 17:29:47 +0000
+Message-ID: <20081126172946.GG6234@sirena.org.uk>
+References: <1227696478-8354-1-git-send-email-stanley.miao@windriver.com> <20081126110854.GA6234@sirena.org.uk> <5e088bd90811260924u28a081bej62689470551b6982@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f16.google.com (mail-gx0-f16.google.com
-	[209.85.217.16]) by alsa0.perex.cz (Postfix) with ESMTP id DEA9924760
-	for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2008 18:28:35 +0100 (CET)
-Received: by gxk9 with SMTP id 9so690656gxk.8
-	for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2008 09:28:34 -0800 (PST)
-In-Reply-To: <20081126110854.GA6234@sirena.org.uk>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
+In-Reply-To: <5e088bd90811260924u28a081bej62689470551b6982@mail.gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Steve Sakoman <sakoman@gmail.com>
 Cc: "Stanley.Miao" <stanley.miao@windriver.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 26, 2008 at 3:08 AM, Mark Brown <broonie@sirena.org.uk> wrote:
-> On Wed, Nov 26, 2008 at 06:47:58PM +0800, Stanley.Miao wrote:
->> Add a shared omap SoC driver to avoid reduplicate code among omap soc drivers.
->
-> It's really good to see work on this but I've got some concerns with the
-> approach being taken here.
+On Wed, Nov 26, 2008 at 09:24:03AM -0800, Steve Sakoman wrote:
 
-I too have concerns.
+> I'm all for factoring out common code, but I think that this approach
+> will become a maintenance nightmare over time.
 
-The SoC drivers are very much alike at the moment because only the
-minimum subset of twl4030 functionality is supported.
-
-As we flesh out the twl4030 features (see the other twl4030 codec
-driver threads on this list) I expect the machine specific drivers to
-begin to diverge (radically in some cases) based upon the hardware
-features of each.
-
-I'm all for factoring out common code, but I think that this approach
-will become a maintenance nightmare over time.
-
-Steve
+I had formed the impression that an awful lot of the boards had very
+similar audio subsystems and that even with DAPM support it'd be fairly
+straightforward to do standard drivers for certain classes of system.
+If that's not the case then doing this sort of shared machine driver
+probably isn't worth it at all.
