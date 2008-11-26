@@ -1,86 +1,49 @@
-From: David Brownell <david-b@pacbell.net>
+From: Mark Brown <broonie@sirena.org.uk>
 Subject: Re: [PATCH] OMAP general SOC driver.
-Date: Wed, 26 Nov 2008 12:44:33 -0800
-Message-ID: <200811261244.33631.david-b@pacbell.net>
-References: <1227696478-8354-1-git-send-email-stanley.miao@windriver.com> <200811261034.42356.david-b@pacbell.net> <20081126200750.GK6234@sirena.org.uk>
+Date: Wed, 26 Nov 2008 21:16:15 +0000
+Message-ID: <20081126211614.GA6514@sirena.org.uk>
+References: <1227696478-8354-1-git-send-email-stanley.miao@windriver.com>
+	<200811261034.42356.david-b@pacbell.net>
+	<20081126200750.GK6234@sirena.org.uk>
+	<200811261233.13259.david-b@pacbell.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20081126200750.GK6234@sirena.org.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id DE38424368
+	for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2008 22:16:33 +0100 (CET)
 Content-Disposition: inline
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: Jarkko Nikula <jarkko.nikula@nokia.com>, "Stanley.Miao" <stanley.miao@windriver.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+In-Reply-To: <200811261233.13259.david-b@pacbell.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: David Brownell <david-b@pacbell.net>
+Cc: "Stanley.Miao" <stanley.miao@windriver.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 26 November 2008, Mark Brown wrote:
-> > I'm told that the ASoC stuff "should" go in a separate ASoC
-> > area for some reason. =A0That still makes no good sense to me,
-> > so if there's a brief explanation as to why it's done that
-> > way, please fling me a URL. =A0:)
->=20
-> The move is in the direction you want but we're not there yet. =A0The=
- fact
-> that things are now decomposed enough for us to be able to think abou=
-t
-> it is a good sign here.
->=20
-> The biggest part of it is that the degree of coupling between the
-> various ASoC components is high - this is particularly obvious with v=
-1
-> where the entire card is probed at once. =A0This includes coupling be=
-tween
-> the drivers and the core where the degree of churn is very high right
-> now due to v2 merging. =A0It doesn't feel right to give architectures=
- an
-> API that they can't rely on from one merge window to the next yet,
+On Wed, Nov 26, 2008 at 12:33:12PM -0800, David Brownell wrote:
 
-OK, that seems to be the key point.  And it makes a lot of sense;
-I wouldn't call the driver structure here "simple", so it deserves
-some iteration on multiple disparate hardware platforms just to make
-sure the interfaces is adequate to the problem.
+> And maybe more; that's just me summarizing unconnected pins,
+> not the datasheet.  There are also cost-reduced parts with
+> less audio capability.
 
-Let me insert a minor plug from the PM perspective that it would be
-good to find a way that the codecs can sit in the proper places in
-the driver model tree.  Example with twl4030:  it's an I2C device
-and thus should be a child of something like
+...
 
-   /sys/devices/platform/i2c_omap.1/i2c-adapter/i2c-1/1-0049
+> I make no claim about audio expertise -- the nearest I come
+> to it is observing a few years back that there was a huge
+> framework hole, which ASoC seems to fill -- but I wonder if
+> it shouldn't suffice just to provide a mask of capabilities
+> that are wired up on a given board.
 
-to guarantee that for example nothing touches that codec after its
-parent I2C controller gets suspended.
-
-- Dave
-
-
-> partly from the point of view of isolating the code for review purpos=
-es
-> and also due to the merge issues which would doubtless crop up.
->=20
-> Another part of it is that some machine drivers can get involved enou=
-gh
-> to sit on or cross the boundary from platform data to being drivers f=
-or
-> substantial distinct hardware but that's very much not the case for
-> everything.
->=20
-> I've been spending time this week working on getting the ability to l=
-oad
-> platform and codec drivers independantly merged. =A0That will at leas=
-t
-> allow the instantiation of the ASoC drivers for those to be pushed ou=
-t
-> into the architecture code, which is a start and should substantially
-> reduce the size of most machine drivers. =A0At the point where that's=
- been
-> done it's probably worth looking again at the simpler machine drivers=
-=2E
->=20
-
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+It's possible - if the differences can be handled by marking some pins
+as connected or disconnected and possible specifying a different system
+clock rate to the chip then that approach was what I was expecting.
+If there is more substantial differences such as having the clocking
+arranged differently then separate drivers start to make more sense.
