@@ -1,52 +1,44 @@
-From: David Brownell <david-b@pacbell.net>
-Subject: Re: [PATCH] OMAP general SOC driver.
-Date: Wed, 26 Nov 2008 10:34:41 -0800
-Message-ID: <200811261034.42356.david-b@pacbell.net>
-References: <1227696478-8354-1-git-send-email-stanley.miao@windriver.com> <20081126110854.GA6234@sirena.org.uk> <20081126134028.b3c6aa46.jarkko.nikula@nokia.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH] Allow more routing features for	tlv320aic3x
+Date: Wed, 26 Nov 2008 18:34:53 +0000
+Message-ID: <20081126183452.GJ6234@sirena.org.uk>
+References: <20081126144854.GA20061@buzzloop.caiaq.de>
+	<20081126150404.GE6234@sirena.org.uk>
+	<20081126155645.GA20913@buzzloop.caiaq.de>
+	<20081126162810.GF6234@sirena.org.uk>
+	<20081126164736.GC20913@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20081126134028.b3c6aa46.jarkko.nikula@nokia.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 70FEC24796
+	for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2008 19:34:54 +0100 (CET)
 Content-Disposition: inline
-Sender: linux-omap-owner@vger.kernel.org
-To: Jarkko Nikula <jarkko.nikula@nokia.com>, "Stanley.Miao" <stanley.miao@windriver.com>
-Cc: ext Mark Brown <broonie@sirena.org.uk>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+In-Reply-To: <20081126164736.GC20913@buzzloop.caiaq.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <daniel@caiaq.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 26 November 2008, Jarkko Nikula wrote:
-> And as a first step, I recommend to start merging only those EVM & SDP
-> boards with Beagle since they seems to be most close to each other.
-> 
-> Even the Overo seems to be close also, it was discussed earlier to keep
-> it separated now since Steve was going to send some new features into
-> it.
+On Wed, Nov 26, 2008 at 05:47:36PM +0100, Daniel Mack wrote:
 
-This seems to focus on just the McBSP channel out of the OMAP ...
-except that it hides (in that nasty #ifdeffery) the codec data.
+> Sorry, once more. I was a little too quick with my last submission.
 
-The fact that it doesn't allow EAC or a McBSP successor says
-to me it's not really "general".  Heck ... it even hard-wires
-McBSP2, preventing another channel from being used.  So IMO
-a different name would be appropriate...
+Applied, thanks.  BTW...
 
-Re TWL4030 codec configuration ... I count three microphone
-input channels not used on Beagle, plus a speaker output
-and some other stuff.  So it's obvious that something which
-works on Beagle won't handle more interesting configurations
-of that audio support.  
+>  - control the volume of the PGA bypass path for the HPL, HPR, HPLCOM
+>    and HPRCOM outputs individually
 
-
-Plus, if there's going to be a board-specific platform device
-created, and stuffed with data like codec descriptions and
-configuration data ... that's what arch/arm/mach-*/board-*.c
-files are for.
-
-I'm told that the ASoC stuff "should" go in a separate ASoC
-area for some reason.  That still makes no good sense to me,
-so if there's a brief explanation as to why it's done that
-way, please fling me a URL.  :)
-
-- Dave
-
+...that's not quite true; ALSA does allow left and right channels to be
+controlled independently for stereo controls, it's just not the default
+thing in UIs (and not always idiomatic when the left and right paths are
+sufficiently independent so the change is OK).
