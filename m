@@ -1,47 +1,52 @@
-From: Daniel Mack <daniel@caiaq.org>
-Subject: Re: [PATCH] cleanup controllers in snd-usb-caiaq
-Date: Wed, 26 Nov 2008 21:31:59 +0100
-Message-ID: <4F8A1F19-C8D2-4DEF-BD2B-D00E39631A8E@caiaq.org>
-References: <20081126151901.GB20061@buzzloop.caiaq.de>
-	<s5habbmqypj.wl%tiwai@suse.de>
-	<20081126185720.GA22925@buzzloop.caiaq.de>
-	<s5hbpw2cjvx.wl%tiwai@suse.de>
-Mime-Version: 1.0 (Apple Message framework v929.2)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 936412433A
-	for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2008 21:32:09 +0100 (CET)
-In-Reply-To: <s5hbpw2cjvx.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+From: David Brownell <david-b@pacbell.net>
+Subject: Re: [PATCH] OMAP general SOC driver.
+Date: Wed, 26 Nov 2008 12:33:12 -0800
+Message-ID: <200811261233.13259.david-b@pacbell.net>
+References: <1227696478-8354-1-git-send-email-stanley.miao@windriver.com> <200811261034.42356.david-b@pacbell.net> <20081126200750.GK6234@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20081126200750.GK6234@sirena.org.uk>
+Content-Disposition: inline
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: Jarkko Nikula <jarkko.nikula@nokia.com>, "Stanley.Miao" <stanley.miao@windriver.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wednesday 26 November 2008, Mark Brown wrote:
+> Can someone post an overview of what the hardware configurations of
+> these boards are, please? =A0It's starting to sound like they're not =
+very
+> similar at all.
 
-On 26.11.2008, at 21:28, Takashi Iwai wrote:
+I only have schematics for Beagle ... which makes VERY minimal
+use of the twl4030 audio capabilities:
 
->> Ok, agreed and done. However, I considered it a good idea as it  
->> avoided
->> writing the array's name more than once.
->
-> In that case, you can use a macro, such as,
->
-> #define ADD_CTRLS(c, list) add_controls(c, ARRAY_SIZE(list), (list))
->
-> But, don't make a too complex block as a macro.  A function often
-> gives a better code (in this case it'll get smaller) in addition to a
-> better readability than a big macro.
+ - stereo "headset" output, without its mic
+ - stereo aux-in
 
-Ok. Do you want me to do this or are you fine with the code as-is?
+Other twl4030 family boards *could* have:
 
-Daniel
+ - microphone input for that headset
+ - stereo "hands-off" speakers
+ - mono earpiece output
+ - two other microphone input channels
+
+And maybe more; that's just me summarizing unconnected pins,
+not the datasheet.  There are also cost-reduced parts with
+less audio capability.
+
+I make no claim about audio expertise -- the nearest I come
+to it is observing a few years back that there was a huge
+framework hole, which ASoC seems to fill -- but I wonder if
+it shouldn't suffice just to provide a mask of capabilities
+that are wired up on a given board.
+
+- Dave
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
