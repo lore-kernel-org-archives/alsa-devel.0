@@ -1,17 +1,21 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] tlv320aic3x: headset/button press support
-Date: Thu, 27 Nov 2008 11:50:21 +0000
-Message-ID: <20081127114951.GA3933@sirena.org.uk>
-References: <20081126220742.GA24648@buzzloop.caiaq.de>
+From: "stanley.miao" <stanley.miao@windriver.com>
+Subject: Re: [PATCH] OMAP general SOC driver.
+Date: Thu, 27 Nov 2008 20:39:32 +0800
+Message-ID: <1227789572.14497.117.camel@localhost>
+References: <1227696478-8354-1-git-send-email-stanley.miao@windriver.com>
+	<200811261034.42356.david-b@pacbell.net>
+	<20081126200750.GK6234@sirena.org.uk>
+	<200811261233.13259.david-b@pacbell.net>
+	<20081126211614.GA6514@sirena.org.uk>
+Reply-To: stanley.miao@windriver.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3599624540
-	for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2008 13:32:42 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20081126220742.GA24648@buzzloop.caiaq.de>
+Received: from mail.wrs.com (mail.windriver.com [147.11.1.11])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8518A24541
+	for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2008 13:33:12 +0100 (CET)
+In-Reply-To: <20081126211614.GA6514@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,53 +25,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.org>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: David Brownell <david-b@pacbell.net>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 26, 2008 at 11:07:42PM +0100, Daniel Mack wrote:
+On Wed, 2008-11-26 at 21:16 +0000, Mark Brown wrote:
+> On Wed, Nov 26, 2008 at 12:33:12PM -0800, David Brownell wrote:
+> 
+> > And maybe more; that's just me summarizing unconnected pins,
+> > not the datasheet.  There are also cost-reduced parts with
+> > less audio capability.
+> 
+> ...
+> 
+> > I make no claim about audio expertise -- the nearest I come
+> > to it is observing a few years back that there was a huge
+> > framework hole, which ASoC seems to fill -- but I wonder if
+> > it shouldn't suffice just to provide a mask of capabilities
+> > that are wired up on a given board.
+> 
+> It's possible - if the differences can be handled by marking some pins
+> as connected or disconnected and possible specifying a different system
+> clock rate to the chip then that approach was what I was expecting.
+> If there is more substantial differences such as having the clocking
+> arranged differently then separate drivers start to make more sense.
 
-> Hi,
+I had considered the differences among every boards. If you want add
+some board specific dapm widgets or other features, you can use the
+extended interface to add them. If a board has too much differences, you
+can separate it from this driver and implement it independently.
 
-As previously mentioned it'd be really helpful if you could submit
-patches in the standard format in Documentation/SubmittingPatches.
-Even if you need to use an attachment for the code pleasee don't submit
-two separate changelogs as you currently do.
+Now there are four same driver files in alsa-devel tree and there are
+another three same drives waiting to be pushed. So I think this shared
+diver is needed. 
 
-> +void aic3x_set_headset_detection(struct snd_soc_codec *codec, int val)
-> +{
-> +	u8 reg_a = val & 0xff;
-> +	if (reg_a & (3 << 5))
-> +		reg_a |= 0x80;
+After reading all of the suggestions, I reworked the driver and will
+send it again. This new version has a better difference-tolerance
+ability.
 
-This is a little obscure...  Why are you munging the set value like
-this?  Replacing (3 << 5) with the constants from the header may help.
-Looking at the defines below I can't help but think that it'd be clearer
-to pass in three parameters - what to detect and the two debounce times.
-
->  int aic3x_headset_detected(struct snd_soc_codec *codec)
->  {
->  	u8 val;
-> -	aic3x_read(codec, AIC3X_RT_IRQ_FLAGS_REG, &val);
-> -	return (val >> 2) & 1;
-> +	aic3x_read(codec, AIC3X_HEADSET_DETECT_CTRL_B, &val);
-> +	return (val >> 4) & 1;
->  }
->  EXPORT_SYMBOL_GPL(aic3x_headset_detected);
-
-How is the interrupt deasserted?  Are you sure that the interrupt will
-be cleared if you don't read the interrupt flags register?  May be worth
-splitting out, it's not directly part of the rest of the patch.
-
-> +
-> +/* headset detection / button API, logically OR the values
-> + * on calls to aic3x_set_headset_detection(). */
-
-This could go in kerneldoc for the function as well.
-
-> +#define AIC3X_HEADSET_DETECT_OFF	(0 << 5)
-> +#define AIC3X_HEADSET_DETECT_STEREO	(1 << 5)
-> +#define AIC3X_HEADSET_DETECT_CELLULAR	(2 << 5)
-> +#define AIC3X_HEADSET_DETECT_BOTH	(3 << 5)
-
-What exactly is CELLULAR?  A headset?
+Stanley.
