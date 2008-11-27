@@ -1,23 +1,20 @@
-From: "Arun KS" <getarunks@gmail.com>
-Subject: Re: [PATCH] OMAP general SOC driver.
-Date: Thu, 27 Nov 2008 10:31:18 +0530
-Message-ID: <dfeb90390811262101ge24d63fie91e47b72738d4a2@mail.gmail.com>
-References: <1227696478-8354-1-git-send-email-stanley.miao@windriver.com>
-	<20081126110854.GA6234@sirena.org.uk>
-	<20081126134028.b3c6aa46.jarkko.nikula@nokia.com>
-	<200811261034.42356.david-b@pacbell.net>
-	<20081126200750.GK6234@sirena.org.uk>
-	<40134428-B064-4C6A-9229-FBEC8918B296@student.utwente.nl>
+From: "Klaus Schulz" <kls.schlz@googlemail.com>
+Subject: Re: Alsa driver won't compile on Ubuntu kernel
+	2.6.24-16-generic
+Date: Thu, 27 Nov 2008 07:50:20 +0100
+Message-ID: <d9690f190811262250p546e8fb0kf361c6482229104a@mail.gmail.com>
+References: <d9690f190811250546y7944082at6f3fa9f37f60c9a8@mail.gmail.com>
+	<s5h8wr7x081.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ti-out-0910.google.com (ti-out-0910.google.com [209.85.142.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4F33F24497
-	for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2008 06:01:20 +0100 (CET)
-Received: by ti-out-0910.google.com with SMTP id j3so522004tid.8
-	for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2008 21:01:18 -0800 (PST)
-In-Reply-To: <40134428-B064-4C6A-9229-FBEC8918B296@student.utwente.nl>
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id E4294244E4
+	for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2008 07:50:23 +0100 (CET)
+Received: by yx-out-1718.google.com with SMTP id 36so397770yxh.2
+	for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2008 22:50:22 -0800 (PST)
+In-Reply-To: <s5h8wr7x081.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,41 +25,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Koen Kooi <k.kooi@student.utwente.nl>
-Cc: alsa-devel@alsa-project.org, Jarkko Nikula <jarkko.nikula@nokia.com>, David Brownell <david-b@pacbell.net>, "Stanley.Miao" <stanley.miao@windriver.com>, Mark Brown <broonie@sirena.org.uk>, linux-omap@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 27, 2008 at 1:50 AM, Koen Kooi <k.kooi@student.utwente.nl> wrote:
->
-> Op 26 nov 2008, om 21:07 heeft Mark Brown het volgende geschreven:
->
->> On Wed, Nov 26, 2008 at 10:34:41AM -0800, David Brownell wrote:
->>
->>> Re TWL4030 codec configuration ... I count three microphone
->>> input channels not used on Beagle, plus a speaker output
->>> and some other stuff.  So it's obvious that something which
->>> works on Beagle won't handle more interesting configurations
->>> of that audio support.
->>
->> Can someone post an overview of what the hardware configurations of
->> these boards are, please?  It's starting to sound like they're not very
->> similar at all.
->
-> On the codec level all these board use a variant of the TWL4030. The
-> variants differ slightly in what kind of extra goodies they provide. On the
-> board level not every feature of the TWL familiy is used, the beagle only
-> analog in and analog out, the overo exposes more interfaces, etc.
->
-> Other people can fill in the details, but these are the differences I can
-> think of.
+Takishi.
 
-omap2evm and omap3evm uses only auxiliary input(AUXR/AUXL)  and
-Headset stereo output (HSOR/HSOL)
+I got positive feedback, from some Ubuntu folks. The problem seems to be
+solved.
 
-Regards,
-Arun
+When can we expect an official package update including the fix?
+
+THX again.
+
+Klaus
+
+
+
+On Tue, Nov 25, 2008 at 5:02 PM, Takashi Iwai <tiwai@suse.de> wrote:
+
+> At Tue, 25 Nov 2008 14:46:54 +0100,
+> Klaus Schulz wrote:
+> >
+> > Hi there.
+> >
+> > I issued this TT some time ago.
+> >
+> > Could anybody have a look into it - please!
+> >
+> > There a quite some people running Ubuntu and still 2.6.24 kernels, who'd
+> > love to get an ALSA upgrade in place
 >
-> regards,
+> The latest snapshot should work.  Give it a try.
 >
-> Koen
+> ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
+>
+>
+> Takashi
 >
