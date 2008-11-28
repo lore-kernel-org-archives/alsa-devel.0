@@ -1,17 +1,18 @@
-From: James Pearson <james-p@moving-picture.com>
-Subject: Help with Creative's X-Fi drivers
-Date: Fri, 28 Nov 2008 17:17:58 +0000
-Message-ID: <493027C6.3090905@moving-picture.com>
+From: The Source <thesourcehim@gmail.com>
+Subject: Re: Help with Creative's X-Fi drivers
+Date: Fri, 28 Nov 2008 20:39:36 +0300
+Message-ID: <49302CD8.2050606@gmail.com>
+References: <493027C6.3090905@moving-picture.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moving-picture.com (mpc-26.sohonet.co.uk [193.203.82.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8742C1037E3
-	for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2008 18:17:59 +0100 (CET)
-Received: from minion.mpc.local ([172.16.11.112] helo=moving-picture.com)
-	by moving-picture.com with esmtp (Exim 4.43) id 1L66yc-0007bc-Va
-	for alsa-devel@alsa-project.org; Fri, 28 Nov 2008 17:17:59 +0000
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1DA7E1037E3
+	for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2008 18:39:40 +0100 (CET)
+Received: by nf-out-0910.google.com with SMTP id e27so968248nfd.32
+	for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2008 09:39:39 -0800 (PST)
+In-Reply-To: <493027C6.3090905@moving-picture.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,39 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: James Pearson <james-p@moving-picture.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I know the ALSA team don't support Creative's X-Fi drivers, but maybe 
-someone could help with this issue:
-
-I've managed to 'backport' Creative's recently GPL'd drivers to run on a 
-CentOS4 kernel with ALSA 1.0.15 - the changes to the code were minor, 
-but one thing I'm not sure about is, in ctpcm.c it has:
-
-static int ct_pcm_timer_stop(struct ct_atc_pcm *apcm)
-{
-         unsigned long flags;
-
-         CTDPF("%s is called\n", __func__);
-
-         spin_lock_irqsave(&apcm->timer_lock, flags);
-         apcm->stop_timer = 1;
-         del_timer(&apcm->timer);
-         spin_unlock_irqrestore(&apcm->timer_lock, flags);
-
-         try_to_del_timer_sync(&apcm->timer);
-
-         return 0;
-}
-
-
-The CentOS4/RHEL4 2.6.9 kernel doesn't have try_to_del_timer_sync() - 
-so, should I replace it with del_timer() or del_timer_sync() ?
-
-I'm currently using del_timer_sync() - and the driver works (I get sound 
-out the head phone jack) - is this OK?
-
-Thanks
-
-James Pearson
+SmFtZXMgUGVhcnNvbiDQv9C40YjQtdGCOgo+IEkga25vdyB0aGUgQUxTQSB0ZWFtIGRvbid0IHN1
+cHBvcnQgQ3JlYXRpdmUncyBYLUZpIGRyaXZlcnMsIGJ1dCBtYXliZSAKPiBzb21lb25lIGNvdWxk
+IGhlbHAgd2l0aCB0aGlzIGlzc3VlOgo+Cj4gSSd2ZSBtYW5hZ2VkIHRvICdiYWNrcG9ydCcgQ3Jl
+YXRpdmUncyByZWNlbnRseSBHUEwnZCBkcml2ZXJzIHRvIHJ1biBvbiBhIAo+IENlbnRPUzQga2Vy
+bmVsIHdpdGggQUxTQSAxLjAuMTUgLSB0aGUgY2hhbmdlcyB0byB0aGUgY29kZSB3ZXJlIG1pbm9y
+LCAKPiBidXQgb25lIHRoaW5nIEknbSBub3Qgc3VyZSBhYm91dCBpcywgaW4gY3RwY20uYyBpdCBo
+YXM6Cj4KPiBzdGF0aWMgaW50IGN0X3BjbV90aW1lcl9zdG9wKHN0cnVjdCBjdF9hdGNfcGNtICph
+cGNtKQo+IHsKPiAgICAgICAgICB1bnNpZ25lZCBsb25nIGZsYWdzOwo+Cj4gICAgICAgICAgQ1RE
+UEYoIiVzIGlzIGNhbGxlZFxuIiwgX19mdW5jX18pOwo+Cj4gICAgICAgICAgc3Bpbl9sb2NrX2ly
+cXNhdmUoJmFwY20tPnRpbWVyX2xvY2ssIGZsYWdzKTsKPiAgICAgICAgICBhcGNtLT5zdG9wX3Rp
+bWVyID0gMTsKPiAgICAgICAgICBkZWxfdGltZXIoJmFwY20tPnRpbWVyKTsKPiAgICAgICAgICBz
+cGluX3VubG9ja19pcnFyZXN0b3JlKCZhcGNtLT50aW1lcl9sb2NrLCBmbGFncyk7Cj4KPiAgICAg
+ICAgICB0cnlfdG9fZGVsX3RpbWVyX3N5bmMoJmFwY20tPnRpbWVyKTsKPgo+ICAgICAgICAgIHJl
+dHVybiAwOwo+IH0KPgo+Cj4gVGhlIENlbnRPUzQvUkhFTDQgMi42Ljkga2VybmVsIGRvZXNuJ3Qg
+aGF2ZSB0cnlfdG9fZGVsX3RpbWVyX3N5bmMoKSAtIAo+IHNvLCBzaG91bGQgSSByZXBsYWNlIGl0
+IHdpdGggZGVsX3RpbWVyKCkgb3IgZGVsX3RpbWVyX3N5bmMoKSA/Cj4KPiBJJ20gY3VycmVudGx5
+IHVzaW5nIGRlbF90aW1lcl9zeW5jKCkgLSBhbmQgdGhlIGRyaXZlciB3b3JrcyAoSSBnZXQgc291
+bmQgCj4gb3V0IHRoZSBoZWFkIHBob25lIGphY2spIC0gaXMgdGhpcyBPSz8KPgo+IFRoYW5rcwo+
+Cj4gSmFtZXMgUGVhcnNvbgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYWxzYS1kZXZlbAo+Cj4gICAKSXQgc2hvdWxkIGJlIG9rLCBteSBmcmllbmQgdXNlZCB0aGUg
+c2ltaWxhciBjaGFuZ2UgdG8gY29tcGxpbGUgZHJpdmVyIApmb3IgaGlzIGtlcm5lbCBhbmQgaXQg
+d29ya3Mgc28gZmFyLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
