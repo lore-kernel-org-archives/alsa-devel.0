@@ -1,21 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 5/7] ASoC: TWL4030: Change the common playback
-	volume controls
-Date: Mon,  1 Dec 2008 20:07:39 +0000
-Message-ID: <1228162061-14769-5-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <20081201200703.GA14376@rakim.wolfsonmicro.main>
-	<1228162061-14769-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228162061-14769-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228162061-14769-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228162061-14769-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Haiping Wang <wswhp@hotmail.com>
+Subject: =?utf-8?q?problem_in_set_frames_and_buffer_size?=
+	=?utf-8?b?4oCP?=
+Date: Mon, 1 Dec 2008 21:09:01 +0100
+Message-ID: <BAY124-W549C761C7158A962D0CFD7A4010@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EF3341037F7
-	for <alsa-devel@alsa-project.org>; Mon,  1 Dec 2008 21:07:43 +0100 (CET)
-In-Reply-To: <1228162061-14769-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from bay0-omc2-s18.bay0.hotmail.com (bay0-omc2-s18.bay0.hotmail.com
+	[65.54.246.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id E22F41037ED
+	for <alsa-devel@alsa-project.org>; Mon,  1 Dec 2008 21:09:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,88 +20,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-
-Add Playback volume controls for all four DACs.
-All four paths has three levels of volume controls:
-Digital Fine gain, Digital Coarse gain, Analog gain.
-
-The controls are named to reflect their connection to the DACs.
-Per DAC volume can be performed, if needed:
-amixer sset 'DAC1 Analog'  5,10
-DACL1 analog gain to 5
-DACR1 analog gain to 10
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/twl4030.c |   37 +++++++++++++++++++++++++++++--------
- 1 files changed, 29 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 4b7a2d1..1dae73a 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -351,14 +351,20 @@ static int snd_soc_put_volsw_r2_twl4030(struct snd_kcontrol *kcontrol,
-  * FGAIN volume control:
-  * from -62 to 0 dB in 1 dB steps (mute instead of -63 dB)
-  */
--static DECLARE_TLV_DB_SCALE(master_tlv, -6300, 100, 1);
-+static DECLARE_TLV_DB_SCALE(digital_fine_tlv, -6300, 100, 1);
- 
- /*
-  * CGAIN volume control:
-  * 0 dB to 12 dB in 6 dB steps
-  * value 2 and 3 means 12 dB
-  */
--static DECLARE_TLV_DB_SCALE(master_coarse_tlv, 0, 600, 0);
-+static DECLARE_TLV_DB_SCALE(digital_coarse_tlv, 0, 600, 0);
-+
-+/*
-+ * Analog playback gain
-+ * -24 dB to 12 dB in 2 dB steps
-+ */
-+static DECLARE_TLV_DB_SCALE(analog_tlv, -2400, 200, 0);
- 
- /*
-  * Capture gain after the ADCs
-@@ -367,12 +373,27 @@ static DECLARE_TLV_DB_SCALE(master_coarse_tlv, 0, 600, 0);
- static DECLARE_TLV_DB_SCALE(digital_capture_tlv, 0, 100, 0);
- 
- static const struct snd_kcontrol_new twl4030_snd_controls[] = {
--	SOC_DOUBLE_R_TLV("Master Playback Volume",
--		 TWL4030_REG_ARXL2PGA, TWL4030_REG_ARXR2PGA,
--		0, 0x3f, 0, master_tlv),
--	SOC_DOUBLE_R_TLV("Master PCM Playback Volume",
--		 TWL4030_REG_ARXL2PGA, TWL4030_REG_ARXR2PGA,
--		6, 0x2, 0, master_coarse_tlv),
-+	/* Common playback gain controls */
-+	SOC_DOUBLE_R_TLV("DAC1 Digital Fine Playback Volume",
-+		TWL4030_REG_ARXL1PGA, TWL4030_REG_ARXR1PGA,
-+		0, 0x3f, 0, digital_fine_tlv),
-+	SOC_DOUBLE_R_TLV("DAC2 Digital Fine Playback Volume",
-+		TWL4030_REG_ARXL2PGA, TWL4030_REG_ARXR2PGA,
-+		0, 0x3f, 0, digital_fine_tlv),
-+
-+	SOC_DOUBLE_R_TLV("DAC1 Digital Coarse Playback Volume",
-+		TWL4030_REG_ARXL1PGA, TWL4030_REG_ARXR1PGA,
-+		6, 0x2, 0, digital_coarse_tlv),
-+	SOC_DOUBLE_R_TLV("DAC2 Digital Coarse Playback Volume",
-+		TWL4030_REG_ARXL2PGA, TWL4030_REG_ARXR2PGA,
-+		6, 0x2, 0, digital_coarse_tlv),
-+
-+	SOC_DOUBLE_R_TLV("DAC1 Analog Playback Volume",
-+		TWL4030_REG_ARXL1_APGA_CTL, TWL4030_REG_ARXR1_APGA_CTL,
-+		3, 0x12, 1, analog_tlv),
-+	SOC_DOUBLE_R_TLV("DAC2 Analog Playback Volume",
-+		TWL4030_REG_ARXL2_APGA_CTL, TWL4030_REG_ARXR2_APGA_CTL,
-+		3, 0x12, 1, analog_tlv),
- 
- 	/* Common capture gain controls */
- 	SOC_DOUBLE_R_TLV("Capture Volume",
--- 
-1.5.6.5
+DQpoZWxsbyBhbGwsSSBoYXZlIHdyaXRlIGEgYWxzYSBhcHAgZnJvbSBhIGV4YW1wbGUgZnJvbSBp
+bnRlcm5ldC5UaGUgb3JpZ2luYWwgY29kZSBpcyBnb29kIHJ1bm5pbmcuIGZvcm1hdCAxNmJpdGNo
+YW5uZWwgMnJhdGUgNDQxMDAvKiAgVGhpcyBleGFtcGxlIHJlYWRzIGZyb20gdGhlIGRlZmF1bHQg
+UENNIGRldmljZSBhbmQgd3JpdGVzIHRvIHN0YW5kYXJkIG91dHB1dCBmb3IgNSBzZWNvbmRzIG9m
+IGRhdGEuICAqLyAgLyogVXNlIHRoZSBuZXdlciBBTFNBIEFQSSAqLyAjZGVmaW5lIEFMU0FfUENN
+X05FV19IV19QQVJBTVNfQVBJICAjaW5jbHVkZSA8YWxzYS9hc291bmRsaWIuaD4gIGludCBtYWlu
+KCkgeyAgIGxvbmcgbG9vcHM7ICAgaW50IHJjOyAgIGludCBzaXplOyAgIHNuZF9wY21fdCAqaGFu
+ZGxlOyAgIHNuZF9wY21faHdfcGFyYW1zX3QgKnBhcmFtczsgICB1bnNpZ25lZCBpbnQgdmFsOyAg
+IGludCBkaXI7ICAgc25kX3BjbV91ZnJhbWVzX3QgZnJhbWVzOyAgIGNoYXIgKmJ1ZmZlcjsgICAg
+LyogT3BlbiBQQ00gZGV2aWNlIGZvciByZWNvcmRpbmcgKGNhcHR1cmUpLiAqLyAgIHJjID0gc25k
+X3BjbV9vcGVuKCZoYW5kbGUsICJkZWZhdWx0IiwgICAgICAgICAgICAgICAgICAgICBTTkRfUENN
+X1NUUkVBTV9DQVBUVVJFLCAwKTsgICBpZiAocmMgPCAwKSB7ICAgICBmcHJpbnRmKHN0ZGVyciwg
+ICAgICAgICAgICAgInVuYWJsZSB0byBvcGVuIHBjbSBkZXZpY2U6ICVzXG4iLCAgICAgICAgICAg
+ICBzbmRfc3RyZXJyb3IocmMpKTsgICAgIGV4aXQoMSk7ICAgfSAgICAvKiBBbGxvY2F0ZSBhIGhh
+cmR3YXJlIHBhcmFtZXRlcnMgb2JqZWN0LiAqLyAgIHNuZF9wY21faHdfcGFyYW1zX2FsbG9jYSgm
+cGFyYW1zKTsgICAgLyogRmlsbCBpdCBpbiB3aXRoIGRlZmF1bHQgdmFsdWVzLiAqLyAgIHNuZF9w
+Y21faHdfcGFyYW1zX2FueShoYW5kbGUsIHBhcmFtcyk7ICAgIC8qIFNldCB0aGUgZGVzaXJlZCBo
+YXJkd2FyZSBwYXJhbWV0ZXJzLiAqLyAgICAvKiBJbnRlcmxlYXZlZCBtb2RlICovICAgc25kX3Bj
+bV9od19wYXJhbXNfc2V0X2FjY2VzcyhoYW5kbGUsIHBhcmFtcywgICAgICAgICAgICAgICAgICAg
+ICAgIFNORF9QQ01fQUNDRVNTX1JXX0lOVEVSTEVBVkVEKTsgICAgLyogU2lnbmVkIDE2LWJpdCBs
+aXR0bGUtZW5kaWFuIGZvcm1hdCAqLyAgIHNuZF9wY21faHdfcGFyYW1zX3NldF9mb3JtYXQoaGFu
+ZGxlLCBwYXJhbXMsICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFNORF9QQ01fRk9STUFU
+X1MxNl9MRSk7ICAgIC8qIFR3byBjaGFubmVscyAoc3RlcmVvKSAqLyAgIHNuZF9wY21faHdfcGFy
+YW1zX3NldF9jaGFubmVscyhoYW5kbGUsIHBhcmFtcywgMik7ICAgIC8qIDQ0MTAwIGJpdHMvc2Vj
+b25kIHNhbXBsaW5nIHJhdGUgKENEIHF1YWxpdHkpICovICAgdmFsID0gNDQxMDA7ICAgc25kX3Bj
+bV9od19wYXJhbXNfc2V0X3JhdGVfbmVhcihoYW5kbGUsIHBhcmFtcywgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICZ2YWwsICZkaXIpOyAgICAvKiBTZXQgcGVyaW9kIHNpemUgdG8g
+MzIgZnJhbWVzLiAqLyAgIGZyYW1lcyA9IDMyOyAgIHNuZF9wY21faHdfcGFyYW1zX3NldF9wZXJp
+b2Rfc2l6ZV9uZWFyKGhhbmRsZSwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcGFyYW1z
+LCAmZnJhbWVzLCAmZGlyKTsgICAgLyogV3JpdGUgdGhlIHBhcmFtZXRlcnMgdG8gdGhlIGRyaXZl
+ciAqLyAgIHJjID0gc25kX3BjbV9od19wYXJhbXMoaGFuZGxlLCBwYXJhbXMpOyAgIGlmIChyYyA8
+IDApIHsgICAgIGZwcmludGYoc3RkZXJyLCAgICAgICAgICAgICAidW5hYmxlIHRvIHNldCBodyBw
+YXJhbWV0ZXJzOiAlc1xuIiwgICAgICAgICAgICAgc25kX3N0cmVycm9yKHJjKSk7ICAgICBleGl0
+KDEpOyAgIH0gICAgLyogVXNlIGEgYnVmZmVyIGxhcmdlIGVub3VnaCB0byBob2xkIG9uZSBwZXJp
+b2QgKi8gICBzbmRfcGNtX2h3X3BhcmFtc19nZXRfcGVyaW9kX3NpemUocGFyYW1zLCAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICZmcmFtZXMsICZkaXIpOyAgIHNpemUgPSBm
+cmFtZXMgKiA0OyAvKiAyIGJ5dGVzL3NhbXBsZSwgMiBjaGFubmVscyAqLyAgIGJ1ZmZlciA9IChj
+aGFyICopIG1hbGxvYyhzaXplKTsgICAgLyogV2Ugd2FudCB0byBsb29wIGZvciA1IHNlY29uZHMg
+Ki8gICBzbmRfcGNtX2h3X3BhcmFtc19nZXRfcGVyaW9kX3RpbWUocGFyYW1zLCAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICZ2YWwsICZkaXIpOyAgIGxvb3BzID0gNTAw
+MDAwMCAvIHZhbDsgICAgd2hpbGUgKGxvb3BzID4gMCkgeyAgICAgbG9vcHMtLTsgICAgIHJjID0g
+c25kX3BjbV9yZWFkaShoYW5kbGUsIGJ1ZmZlciwgZnJhbWVzKTsgICAgIGlmIChyYyA9PSAtRVBJ
+UEUpIHsgICAgICAgLyogRVBJUEUgbWVhbnMgb3ZlcnJ1biAqLyAgICAgICBmcHJpbnRmKHN0ZGVy
+ciwgIm92ZXJydW4gb2NjdXJyZWRcbiIpOyAgICAgICBzbmRfcGNtX3ByZXBhcmUoaGFuZGxlKTsg
+ICAgIH0gZWxzZSBpZiAocmMgPCAwKSB7ICAgICAgIGZwcmludGYoc3RkZXJyLCAgICAgICAgICAg
+ICAgICJlcnJvciBmcm9tIHJlYWQ6ICVzXG4iLCAgICAgICAgICAgICAgIHNuZF9zdHJlcnJvcihy
+YykpOyAgICAgfSBlbHNlIGlmIChyYyAhPSAoaW50KWZyYW1lcykgeyAgICAgICBmcHJpbnRmKHN0
+ZGVyciwgInNob3J0IHJlYWQsIHJlYWQgJWQgZnJhbWVzXG4iLCByYyk7ICAgICB9ICAgICByYyA9
+IHdyaXRlKDEsIGJ1ZmZlciwgc2l6ZSk7ICAgICBpZiAocmMgIT0gc2l6ZSkgICAgICAgZnByaW50
+ZihzdGRlcnIsICAgICAgICAgICAgICAgInNob3J0IHdyaXRlOiB3cm90ZSAlZCBieXRlc1xuIiwg
+cmMpOyAgIH0gICAgc25kX3BjbV9kcmFpbihoYW5kbGUpOyAgIHNuZF9wY21fY2xvc2UoaGFuZGxl
+KTsgICBmcmVlKGJ1ZmZlcik7ICAgIHJldHVybiAwOyB9IG5vdyBJIHdhbnQgdG8gY2hhbmdlIGNo
+YW5uZWwgYW5kIGZvcm1hdCB0byB3cml0ZSBteSBvd24gcHJvZ3JhbW0uZm9ybWF0ID0gOGJpdCwg
+MjRiaXQgYW5kIDMyYml0Y2hhbm5lbCA9IDEgb3IgMmhvdyBjYW4gaSBjaGFuZ2UgdGhlIHBhcmFt
+ZXRlcnMgaW4gIGZyYW1lcyBhbmQgYnVmZmVyIHNpemUuZm9yIGVhY2ggZm9ybWF0IDgvMTYvMjQv
+MzJiaXQgaG93IHRvIHNldCAgZnJhbWVzID0gP2FuZCBhbHNhIGNoYW5uZWwgMS8yICBob3cgdG8g
+c2V0IGJ1ZmZlcnNpemU/Pz8gSSB0cnkgbWFueSB0aW1lcyAgYW5kIGZhaWxlZCAuSSB3YW50IHlv
+dXIgaGVscC4gdGhhbmtzISEgDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KU3BpZWxzcGHDnyBmw7xyIEplZGVybWFubiEg
+TWl0IHRhdXNlbmRlbiB2b24gU3BpZWxlbiBmw7xyIFdpbmRvd3MgVmlzdGEhDQpodHRwOi8vcmVk
+aXJlY3QuZ2ltYXMubmV0Lz9uPU0wODEyeFNwaWVsZVZpc3RhREUKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
