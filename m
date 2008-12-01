@@ -1,21 +1,20 @@
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: Re: [ath5k-devel] Bugs on aspire one A150
-Date: Mon, 01 Dec 2008 17:33:15 +0200
-Message-ID: <1228145595.16647.6.camel@maxim-laptop>
-References: <491506DB.1070000@gmail.com>
-	<b6c5339f0811100851t1fd9a180pfe24312081885467@mail.gmail.com>
-	<4918A8C5.3050607@gmail.com>
-	<40f31dec0811101412n1a4faf86sf4b1f37bb41caef9@mail.gmail.com>
+From: "Timur Tabi" <timur@freescale.com>
+Subject: Re: (SoC) Does i.MX27's SSI work as I2S clock master?
+Date: Mon, 1 Dec 2008 10:52:34 -0600
+Message-ID: <ed82fe3e0812010852g2e3fa8fbnf669a2cf62642732@mail.gmail.com>
+References: <D66C4C05-340D-4A6E-98FC-7B36F4059C36@drvlabo.jp>
+	<4933181A.9010003@drvlabo.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1FC6A244BA
-	for <alsa-devel@alsa-project.org>; Mon,  1 Dec 2008 16:33:23 +0100 (CET)
-Received: by yw-out-1718.google.com with SMTP id 9so964353ywk.2
-	for <alsa-devel@alsa-project.org>; Mon, 01 Dec 2008 07:33:22 -0800 (PST)
-In-Reply-To: <40f31dec0811101412n1a4faf86sf4b1f37bb41caef9@mail.gmail.com>
+Received: from rn-out-0910.google.com (rn-out-0910.google.com [64.233.170.191])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1DD4D24538
+	for <alsa-devel@alsa-project.org>; Mon,  1 Dec 2008 17:52:35 +0100 (CET)
+Received: by rn-out-0910.google.com with SMTP id j67so2590836rne.21
+	for <alsa-devel@alsa-project.org>; Mon, 01 Dec 2008 08:52:35 -0800 (PST)
+In-Reply-To: <4933181A.9010003@drvlabo.jp>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,63 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Nick Kossifidis <mickflemm@gmail.com>
-Cc: linux-pm@lists.linux-foundation.org, ath5k-devel@lists.ath5k.org, Bob Copeland <me@bobcopeland.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: ngc <ngc@drvlabo.jp>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2008-11-11 at 00:12 +0200, Nick Kossifidis wrote:
-> 2008/11/10 Maxim Levitsky <maximlevitsky@gmail.com>:
-> > Bob Copeland wrote:
-> >> On Fri, Nov 7, 2008 at 10:26 PM, Maxim Levitsky <maximlevitsky@gmail.com> wrote:
-> >>> ** 2 - wireless: not to mention the fact that ath5k wasn't installed by
-> >>> default in ubuntu...
-> >>> wireless more or less works, but kernel log is full of backtraces.
-> >>
-> >> As you've seen, these should at least be gone now...
-> >>
-> >>> Was able to connect to my WPA2 access point.
-> >>> Sometimes wireless fails completely, especially after suspend to ram.
-> >>
-> >> Did you get noise calibration failures in dmesg at this point?  Felix posted
-> >> a patch recently that handles them better.
-> > Yep, but they seems to be gone in latest -git too.
-> > Wireless work fine now, it seems like my iwl3945.
-> >
-> >>
-> >>> Advanced features like monitor/injection work, but when I changed the card's
-> >>> mac address it stopped working.
-> >>> I also noticed that if I then start airodump, then wireless works with new
-> >>> mac.
-> > Why it doesn't accept new mac?, can this be fixed?
-> >
-> >
-> >>
-> >>> ** 4 - wireless led doesn't work.
-> >>> ath5k devs, can you fix this?
-> >>
-> >> Currently all the LED code we have in there is for setting a particular gpio
-> >> for particular laptops (and they differ between models).  We only have quirks
-> >> for IBM and HP, none for Acer.  Also, the legacy-hal seems to have a different
-> >> strategy for 2425 chips.  I can try to hack up some code for you to test.
-> >>
-> >
-> > I have seen on the web that madwifi did support the led with some gpio settings
-> >
-> > sysctl -w dev.wifi0.ledpin=3
-> > sysctl -w dev.wifi0.softled=1
-> >
-> > from https://help.ubuntu.com/community/AspireOne
-> >
-> > Best regards,
-> >        Maxim Levitsky
-> 
-> i think that some led settings are stored on EEPROM, let me check it out...
-Hi,
-Any update on that?
+On Sun, Nov 30, 2008 at 4:47 PM, ngc <ngc@drvlabo.jp> wrote:
 
-Best regards,
-	Maxim Levitsky
+> Though I want to provide an oversampling clock with MCLK to the codec
+> device,
+> now the frequency of MCLK is same as SSI_CLK.
+> Can't the MCLK provide the oversampling frequency?
 
+I wrote the SSI driver for the MPC8610.  It's the same circuitry, so I
+presume the same rules apply.
 
-> 
-> 
+The main SSI clock must be 64 times the sample rate.  This is because
+the SSI uses a clock pulse to send out one bit of sample.  Each sample
+is normally 32 bits, of which only the most significant 24 have any
+real value.  Since I2S is always stereo, 32 * 2 = 64 pulses per
+sample.
+
+Does that answer your question?
+
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
