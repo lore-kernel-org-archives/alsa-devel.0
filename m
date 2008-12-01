@@ -1,20 +1,22 @@
-From: James Pearson <james-p@moving-picture.com>
-Subject: Re: Help with Creative's X-Fi drivers
-Date: Mon, 01 Dec 2008 11:31:08 +0000
-Message-ID: <4933CAFC.5050807@moving-picture.com>
-References: <493027C6.3090905@moving-picture.com>
-	<1227948181.30808.87.camel@petrie>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 4/4] ASoC: TWL4030: Add pre-DAC digital mux
+	controls
+Date: Mon, 1 Dec 2008 11:43:48 +0000
+Message-ID: <20081201114348.GD13758@sirena.org.uk>
+References: <1228118628-22856-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1228118628-22856-2-git-send-email-peter.ujfalusi@nokia.com>
+	<1228118628-22856-3-git-send-email-peter.ujfalusi@nokia.com>
+	<1228118628-22856-4-git-send-email-peter.ujfalusi@nokia.com>
+	<1228118628-22856-5-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moving-picture.com (mpc-26.sohonet.co.uk [193.203.82.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id 02EAA24443
-	for <alsa-devel@alsa-project.org>; Mon,  1 Dec 2008 12:31:08 +0100 (CET)
-Received: from minion.mpc.local ([172.16.11.112] helo=moving-picture.com)
-	by moving-picture.com with esmtp (Exim 4.43) id 1L76zc-0001cf-EX
-	for alsa-devel@alsa-project.org; Mon, 01 Dec 2008 11:31:08 +0000
-In-Reply-To: <1227948181.30808.87.camel@petrie>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7B3C72444A
+	for <alsa-devel@alsa-project.org>; Mon,  1 Dec 2008 12:43:49 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1228118628-22856-5-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,18 +26,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: sakoman@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-William Pitcock wrote:
-> On Fri, 2008-11-28 at 17:17 +0000, James Pearson wrote:
-> 
->>I'm currently using del_timer_sync() - and the driver works (I get
->>sound out the head phone jack) - is this OK?
-> 
-> 
-> Yes.
+On Mon, Dec 01, 2008 at 10:03:48AM +0200, Peter Ujfalusi wrote:
 
-Thanks
+> Controls for selecting the digital inputs for the four
+> DAC.
 
-James Pearson
+How often is this feature used at the minute?  While I've got no problem
+with the code per se there's currently no framework in ASoC for handling
+digital routing which means that having the flexibility creates problems
+with DAPM (which isn't implemented yet for this codec).  There's no real
+issue merging it, but it might make life easier to leave it for now.
+
+Implementing digial routing support is on my radar but it's firmly below
+the V2 merge.
