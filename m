@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ASoC: TWL4030: Add input selection
-	and	gain controls
-Date: Tue, 2 Dec 2008 20:38:01 +0000
-Message-ID: <20081202203800.GB6972@sirena.org.uk>
-References: <1228243738-9561-1-git-send-email-notasas@gmail.com>
+From: "kordex -" <kordex@gmail.com>
+Subject: alsa-driver-1.0.18rc3 fails to compile against
+	linux-2.6.27.7/arch/powerpc
+Date: Wed, 3 Dec 2008 00:44:22 +0200
+Message-ID: <8b8dd87a0812021444y3a6b737g865387d748a5b309@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5D7191037EB
-	for <alsa-devel@alsa-project.org>; Tue,  2 Dec 2008 21:38:08 +0100 (CET)
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id BC83D1037EC
+	for <alsa-devel@alsa-project.org>; Tue,  2 Dec 2008 23:44:23 +0100 (CET)
+Received: by fk-out-0910.google.com with SMTP id b27so2760650fka.0
+	for <alsa-devel@alsa-project.org>; Tue, 02 Dec 2008 14:44:23 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <1228243738-9561-1-git-send-email-notasas@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,60 +22,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grazvydas Ignotas <notasas@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 02, 2008 at 08:48:58PM +0200, Grazvydas Ignotas wrote:
-
-Applied, thanks.
-
-> as it might still be useful for weak sources. "Capture" was
-> also changed to "Input", as inputs can be also routed to outputs,
-> not only recorded.
-
-This is true, however "Caputure" has special meaning in ALSA control
-names - see Documentation/sound/alsa/ControlNames.txt.  I've applied the
-patch anyway since the main capture volume is still called that and the
-control names normally end up getting a bit lost for ASoC but it may be
-worth checking how this is presented in the UIs.
-
-Also, if there are bypass paths then the set_bias_level() function is
-probably going to need fixing since it powers the chip down when there's
-no active playback/record.  Not an issue for this patch, though.
-
-> @@ -46,9 +46,9 @@ static const u8 twl4030_reg[TWL4030_CACHEREGNUM] = {
->  	0xc3, /* REG_OPTION		(0x2)	*/
->  	0x00, /* REG_UNKNOWN		(0x3)	*/
->  	0x00, /* REG_MICBIAS_CTL	(0x4)	*/
-> -	0x24, /* REG_ANAMICL		(0x5)	*/
-> -	0x04, /* REG_ANAMICR		(0x6)	*/
-> -	0x0a, /* REG_AVADC_CTL		(0x7)	*/
-> +	0x20, /* REG_ANAMICL		(0x5)	*/
-> +	0x00, /* REG_ANAMICR		(0x6)	*/
-> +	0x00, /* REG_AVADC_CTL		(0x7)	*/
->  	0x00, /* REG_ADCMICSEL		(0x8)	*/
->  	0x00, /* REG_DIGMIXING		(0x9)	*/
->  	0x0c, /* REG_ATXL1PGA		(0xA)	*/
-
-Hrm.  This is getting to be quite a common thing.  It might be better to
-change the driver to just use whatever state the chip has by default
-rather than having a set of defaults hard coded into it (normally the
-defaults in the drivers are the power on defaults of the chip).  Also
-not a problem for this patch, though.
-
-> +static int twl4030_put_left_input(struct snd_kcontrol *kcontrol,
-> +	struct snd_ctl_elem_value *ucontrol)
-
-...
-
-> +	switch (value) {
-
-...
-
-> +	default:
-> +		break;
-
-I'd expect to see an error being flagged if this is out of bounds.  Not
-that the core does that for its puts and anyway there should be
-validation further up the stack.
+bWFrZSAtQyAvbGliL21vZHVsZXMvMi42LjI3Ljcvc291cmNlU1VCRElSUz0vcm9vdC9hbHNhL2Fs
+c2EtZHJpdmVyLTEuMC4xOHJjMwogQ1BQPSJnY2MgLUUiIENDPSJnY2MiIG1vZHVsZXMKbWFrZVsx
+XTogU2lpcnJ5dMOkw6RuIGhha2VtaXN0b29uICIvdXNyL3NyYy9saW51eC0yLjYuMjcuNyIKICBD
+QyBbTV0gIC9yb290L2Fsc2EvYWxzYS1kcml2ZXItMS4wLjE4cmMzL2Fjb3JlL2h3ZGVwLm8KSW4g
+ZmlsZSBpbmNsdWRlZCBmcm9tCi91c3Ivc3JjL2xpbnV4LTIuNi4yNy43L2FyY2gvcG93ZXJwYy9p
+bmNsdWRlL2FzbS9zeXN0ZW0uaDo1MjgsCiAgICAgICAgICAgICAgICAgZnJvbSBpbmNsdWRlL2xp
+bnV4L2xpc3QuaDo3LAogICAgICAgICAgICAgICAgIGZyb20gaW5jbHVkZS9saW51eC9tb2R1bGUu
+aDo5LAogICAgICAgICAgICAgICAgIGZyb20gL3Jvb3QvYWxzYS9hbHNhLWRyaXZlci0xLjAuMThy
+YzMvaW5jbHVkZS9hZHJpdmVyLmg6MjYsCiAgICAgICAgICAgICAgICAgZnJvbSAvcm9vdC9hbHNh
+L2Fsc2EtZHJpdmVyLTEuMC4xOHJjMy9hY29yZS9od2RlcC5jOjE6CmluY2x1ZGUvYXNtLWdlbmVy
+aWMvY21weGNoZy1sb2NhbC5oOiBJbiBmdW5jdGlvbiAnX19jbXB4Y2hnX2xvY2FsX2dlbmVyaWMn
+OgppbmNsdWRlL2FzbS1nZW5lcmljL2NtcHhjaGctbG9jYWwuaDoyMzogZXJyb3I6IGltcGxpY2l0
+IGRlY2xhcmF0aW9uIG9mCmZ1bmN0aW9uICdsb2NhbF9pcnFfc2F2ZScKaW5jbHVkZS9hc20tZ2Vu
+ZXJpYy9jbXB4Y2hnLWxvY2FsLmg6NDQ6IGVycm9yOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZgpm
+dW5jdGlvbiAnbG9jYWxfaXJxX3Jlc3RvcmUnCm1ha2VbM106ICoqKiBbL3Jvb3QvYWxzYS9hbHNh
+LWRyaXZlci0xLjAuMThyYzMvYWNvcmUvaHdkZXAub10gVmlyaGUgMQptYWtlWzJdOiAqKiogWy9y
+b290L2Fsc2EvYWxzYS1kcml2ZXItMS4wLjE4cmMzL2Fjb3JlXSBWaXJoZSAyCm1ha2VbMV06ICoq
+KiBbX21vZHVsZV8vcm9vdC9hbHNhL2Fsc2EtZHJpdmVyLTEuMC4xOHJjM10gVmlyaGUgMgptYWtl
+WzFdOiBQb2lzdHV0YWFuIGhha2VtaXN0b3N0YSAiL3Vzci9zcmMvbGludXgtMi42LjI3LjciCm1h
+a2U6ICoqKiBbY29tcGlsZV0gVmlyaGUgMgpyb290QHBvd2VybGluZTovcm9vdC9hbHNhL2Fsc2Et
+ZHJpdmVyLTEuMC4xOHJjMyMKcm9vdEBwb3dlcmxpbmU6L3Jvb3QvYWxzYS9hbHNhLWRyaXZlci0x
+LjAuMThyYzMjCgpJIHVzZWQgdGhpcyBjb25maWd1cmUgbGluZSAoY29tcGlsaW5nIGZvciBlbXUg
+MTIxMm0pOgouL2NvbmZpZ3VyZSAtLXdpdGgtY2FyZHM9ZW11MTBrMSAtLXdpdGgtc2VxdWVuY2Vy
+PXllcyAtLXdpdGgtb3NzPXllcwoKR2NjIHZlcnNpb246CnJvb3RAcG93ZXJsaW5lOi9yb290L2Fs
+c2EvYWxzYS1kcml2ZXItMS4wLjE4cmMzIyBnY2MgLXYKVXNpbmcgYnVpbHQtaW4gc3BlY3MuClRh
+cmdldDogcG93ZXJwYy1saW51eC1nbnUKQ29uZmlndXJlZCB3aXRoOiAuLi9zcmMvY29uZmlndXJl
+IC12IC0td2l0aC1wa2d2ZXJzaW9uPSdEZWJpYW4gNC4zLjItMScKLS13aXRoLWJ1Z3VybD1maWxl
+Oi8vL3Vzci9zaGFyZS9kb2MvZ2NjLTQuMy9SRUFETUUuQnVncwotLWVuYWJsZS1sYW5ndWFnZXM9
+YyxjKyssZm9ydHJhbixvYmpjLG9iai1jKysgLS1wcmVmaXg9L3VzciAtLWVuYWJsZS1zaGFyZWQK
+LS13aXRoLXN5c3RlbS16bGliIC0tbGliZXhlY2Rpcj0vdXNyL2xpYiAtLXdpdGhvdXQtaW5jbHVk
+ZWQtZ2V0dGV4dAotLWVuYWJsZS10aHJlYWRzPXBvc2l4IC0tZW5hYmxlLW5scwotLXdpdGgtZ3h4
+LWluY2x1ZGUtZGlyPS91c3IvaW5jbHVkZS9jKysvNC4zIC0tcHJvZ3JhbS1zdWZmaXg9LTQuMwot
+LWVuYWJsZS1jbG9jYWxlPWdudSAtLWVuYWJsZS1saWJzdGRjeHgtZGVidWcgLS1lbmFibGUtb2Jq
+Yy1nYyAtLWVuYWJsZS1tcGZyCi0tZGlzYWJsZS1zb2Z0ZmxvYXQgLS1lbmFibGUtc2VjdXJlcGx0
+Ci0tZW5hYmxlLXRhcmdldHM9cG93ZXJwYy1saW51eCxwb3dlcnBjNjQtbGludXggLS13aXRoLWNw
+dT1kZWZhdWx0MzIKLS13aXRoLWxvbmctZG91YmxlLTEyOCAtLWVuYWJsZS1jaGVja2luZz1yZWxl
+YXNlIC0tYnVpbGQ9cG93ZXJwYy1saW51eC1nbnUKLS1ob3N0PXBvd2VycGMtbGludXgtZ251IC0t
+dGFyZ2V0PXBvd2VycGMtbGludXgtZ251ClRocmVhZCBtb2RlbDogcG9zaXgKZ2NjIHZlcnNpb24g
+NC4zLjIgKERlYmlhbiA0LjMuMi0xKQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwK
