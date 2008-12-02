@@ -1,20 +1,15 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ASoC: TWL4030: Add capture source
-	selection and mic gain control
-Date: Tue, 2 Dec 2008 10:27:18 +0000
-Message-ID: <20081202102717.GA7940@sirena.org.uk>
-References: <1228172848-5221-1-git-send-email-notasas@gmail.com>
-	<20081201232652.GA10702@sirena.org.uk>
-	<6ed0b2680812020215l3072dee8wc47e69b5bebb6b77@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: ASoC: TWL4030 codec: Multiple DAC nameing
+Date: Tue, 2 Dec 2008 12:33:07 +0200
+Message-ID: <200812021233.08255.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E5301245A5
-	for <alsa-devel@alsa-project.org>; Tue,  2 Dec 2008 11:27:18 +0100 (CET)
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id D8196245A5
+	for <alsa-devel@alsa-project.org>; Tue,  2 Dec 2008 11:33:15 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <6ed0b2680812020215l3072dee8wc47e69b5bebb6b77@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,39 +19,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grazvydas Ignotas <notasas@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: ext Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 02, 2008 at 12:15:51PM +0200, Grazvydas Ignotas wrote:
-> On Tue, Dec 2, 2008 at 1:26 AM, Mark Brown <broonie@sirena.org.uk> wrote:
+Hello,
 
-> > Hrm.  Disabling the gain like this is likely to cause trouble for jack
-> > detect.  However, that's not implemented yet so not a problem currently.
+Now I have some working prototype for the TWL4030 codec DAPM playback routi=
+ng.
+But before I send the patches I want to clear out something:
+Since the TWL has four DACs and I want to map all of them, what would be th=
+e =
 
-> Well the TRM doesn't mention jack detect at all (except headset detect
-> using separate switch connected to GPIO). Or is that some software
-> feature?
+correct SND_SOC_DAPM_DAC naming for them?
 
-Hardware normally.
+At the moment I have these:
 
-> >> +     SOC_DOUBLE_TLV("Microphone Boost", TWL4030_REG_ANAMIC_GAIN,
-> >> +             0, 3, 5, 0, microphone_gain_tlv),
+/* DACs */
+SND_SOC_DAPM_DAC("DACR1", "Right Front Playback",
+		TWL4030_REG_AVDAC_CTL, 0, 0),
+SND_SOC_DAPM_DAC("DACL1", "Left Front Playback",
+		TWL4030_REG_AVDAC_CTL, 1, 0),
+SND_SOC_DAPM_DAC("DACR2", "Right Rear Playback",
+		TWL4030_REG_AVDAC_CTL, 2, 0),
+SND_SOC_DAPM_DAC("DACL2", "Left Rear Playback",
+		TWL4030_REG_AVDAC_CTL, 3, 0),
 
-> > Should be "Microphone Boost Volume" or possibly just "Microphone Volume".
+Are these are OK, or should I just use "Right Playback" for both DACR1 and =
 
-> Setting this to 0 still records from MICs, but the signal is rather
-> weak, so it looks more like boost to me. This control also affects
-> aux/line inputs if they are selected, and causes rather bad
+DACR2?
 
-So Microphone Boost Volume then (the addition of Volume is the important
-bit here).
+Btw: the 'dynamic' routing and switching now works (no user visible power =
 
-> distortions for them if control is not set to 0. Perhaps this control
-> could be disabled (or at least automatically set to 0) while aux/line
-> inputs are selected? Can that be done?
+control for the DACs and APGAs) in a way, that if the output is configured =
+to =
 
-Yes, have your custom control update it and use snd_ctl_notify() to kick
-applications if you update the user visible value.  Even better would be
-to do something more fancy and use a custom control to present a
-shadowed control to user space so they don't see the adjustment.
+take the audio from one of the DAC, than the corresponding chain (APGA, DAC=
+) =
+
+will be powered on only.
+
+Thanks,
+P=E9ter
