@@ -1,23 +1,16 @@
-From: "Dan Nicholson" <dbn.lists@gmail.com>
-Subject: Re: Restore state around suspend/resume
-Date: Sun, 30 Nov 2008 12:54:15 -0800
-Message-ID: <91705d080811301254q3a8c5333hbec81428b4d8b8fe__35517.5498677001$1228287962$gmane$org@mail.gmail.com>
-References: <91705d080811291240m506b4f7fj54f021411c5bd055@mail.gmail.com>
-	<s5h1vwtk2o1.wl%tiwai@suse.de>
-	<91705d080811300822u6d899fe7pea8ac1f340fee51a@mail.gmail.com>
-	<s5hfxl96t49.wl%tiwai@suse.de>
-	<91705d080811300910u6f52ae9anec91f9727fe2e164@mail.gmail.com>
-	<s5hd4gd6sdn.wl%tiwai@suse.de>
-	<91705d080811300930h3679cc83j715b881519915fda@mail.gmail.com>
-	<s5hvdu56pba.wl%tiwai@suse.de>
-	<91705d080811301038s17bd2264tfbe218a9156dbd59@mail.gmail.com>
-	<s5hfxl9m01d.wl%tiwai@suse.de>
+From: scott@waye.co.uk
+Subject: [PATCH - patch_nvhdmi.c 1/1] Added id for MCP67.
+	Please note that I'm not really sure what I'm doing but this
+	works for me :-)
+Date: Tue,  2 Dec 2008 20:35:37 +0000
+Message-ID: <1228250137-4780-1-git-send-email-scott@waye.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <s5hfxl9m01d.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from giradot.waye.co.uk (mail.waye.co.uk [213.152.36.33])
+	by alsa0.perex.cz (Postfix) with SMTP id D6DF81037EB
+	for <alsa-devel@alsa-project.org>; Tue,  2 Dec 2008 21:35:40 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,60 +20,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: pm-utils <pm-utils@lists.freedesktop.org>, alsa-devel@vger.kernel.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, root <scott@waye.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Nov 30, 2008 at 12:27 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Sun, 30 Nov 2008 10:38:27 -0800,
-> Dan Nicholson wrote:
->>
->> On Sun, Nov 30, 2008 at 10:28 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> > At Sun, 30 Nov 2008 09:30:37 -0800,
->> > Dan Nicholson wrote:
->> >>
->> >> On Sun, Nov 30, 2008 at 9:22 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> >> > At Sun, 30 Nov 2008 09:10:32 -0800,
->> >> > Dan Nicholson wrote:
->> >> >>
->> >> >> On Sun, Nov 30, 2008 at 9:06 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> >> >> > At Sun, 30 Nov 2008 08:22:49 -0800,
->> >> >> > Dan Nicholson wrote:
->> >> >> >>
->> >> >> >> On Sun, Nov 30, 2008 at 1:01 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> >> >> >> > I don't know who introduced it, but maybe it was a workaround...
->> >> >> >>
->> >> >> >> Yeah, I'm sure it was a workaround, but we're trying to get rid of the
->> >> >> >> unnecessary ones now.
->> >> >> >
->> >> >> > Even for drivers without PM support, alsactl alone is useless.
->> >> >> > So I suggest you to remove it.
->> >> >>
->> >> >> I'm sorry, but why useless? It seems that it would be useful to
->> >> >> restore state from userspace if the driver isn't doing that on its
->> >> >> own.
->> >> >
->> >> > Read alsactl "alone".  Without the combination of module unloading and
->> >> > reloading, it's useless.
->> >>
->> >> So, are you saying that all drivers will maintain their state until
->> >> they are unloaded?
->> >
->> > The drivers supporting PM do it, yes.
->>
->> Then, for drivers that don't support PM, won't they lose their state
->> across suspend? Shouldn't we save and restore it from userspace for
->> those drivers?
->
-> They may lose the state.  They need anyway unloading and reloading the
-> driver at suspend/resume.  That's why I wrote alsactl "alone" doesn't
-> help.  It must be always coupled with unloading/reloading if it's
-> really needed.  Putting only alsactl is thus useless and misleading.
+From: root <scott@waye.co.uk>
 
-Ah, thank you. Then we can drop the alsactl hook and suggest that
-anyone who has a non-PM-aware sound driver needs to add it to
-SUSPEND_MODULES, which unloads and reloads the driver at suspend time.
-Then, hopefully, udev or modprobe is setup to save/restore the state.
 
---
-Dan
+Signed-off-by: root <scott@waye.co.uk>
+
+diff --git a/pci/hda/patch_nvhdmi.c b/pci/hda/patch_nvhdmi.c
+index 1360d54..b78c8f2 100644
+--- a/pci/hda/patch_nvhdmi.c
++++ b/pci/hda/patch_nvhdmi.c
+@@ -162,5 +162,6 @@ static int patch_nvhdmi(struct hda_codec *codec)
+ struct hda_codec_preset snd_hda_preset_nvhdmi[] = {
+ 	{ .id = 0x10de0002, .name = "NVIDIA MCP78 HDMI", .patch = patch_nvhdmi },
+ 	{ .id = 0x10de0007, .name = "NVIDIA MCP7A HDMI", .patch = patch_nvhdmi },
++	{ .id = 0x10de0067, .name = "NVIDIA MCP67 HDMI", .patch = patch_nvhdmi },
+ 	{} /* terminator */
+ };
+-- 
+1.5.6
