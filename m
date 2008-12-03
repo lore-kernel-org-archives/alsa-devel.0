@@ -1,20 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/5] ASoC: TWL4030: Add input selection and
-	gain controls
-Date: Wed,  3 Dec 2008 13:24:52 +0000
-Message-ID: <1228310694-6082-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] leds: Add WM8350 LED driver
+Date: Wed,  3 Dec 2008 13:24:50 +0000
+Message-ID: <1228310694-6082-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20081203132005.GA5943@rakim.wolfsonmicro.main>
 	<1228310694-6082-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228310694-6082-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228310694-6082-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CBC6E1037F8
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 065C61037F1
 	for <alsa-devel@alsa-project.org>; Wed,  3 Dec 2008 14:24:56 +0100 (CET)
-In-Reply-To: <1228310694-6082-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <1228310694-6082-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,279 +22,583 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Grazvydas Ignotas <notasas@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Grazvydas Ignotas <notasas@gmail.com>
+The voltage and current regulators on the WM8350 AudioPlus PMIC can be
+used in concert to provide a power efficient LED driver.  This driver
+implements support for this within the standard LED class.
 
-The TWL4030 codec device has two ADCs. Both of them can have
-several inputs routed to them, but TRM says that only one source
-can be selected for every ADC, even though every source has a
-dedicated bit in the registers.
+Platform initialisation code should configure the LED hardware in the
+init callback provided by the WM8350 core driver.  The callback should
+use wm8350_isink_set_flash(), wm8350_dcdc25_set_mode() and
+wm8350_dcdc_set_slot() to configure the operating parameters of the
+regulators for their hardware and then then use wm8350_register_led() to
+instantiate the LED driver.
 
-This patch adds input source controls. It modifies default register
-values to have no inputs selected and ADCs disabled. When some
-input is selected, control handlers enable apropriate input
-amplifier and ADC. If a microphone is selected, bias power is
-automatically enabled. When some input is deselected, unused
-chip parts are disabled.
+This driver was originally written by Liam Girdwood, though it has been
+extensively modified since then.
 
-Microphone and line input recording tested on OMAP3 pandora board.
-
-Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/twl4030.c |  177 +++++++++++++++++++++++++++++++++++++++++++-
- sound/soc/codecs/twl4030.h |   16 ++++
- 2 files changed, 190 insertions(+), 3 deletions(-)
+ drivers/leds/Kconfig                 |    7 +
+ drivers/leds/Makefile                |    1 +
+ drivers/leds/leds-wm8350.c           |  333 ++++++++++++++++++++++++++++++++++
+ drivers/mfd/wm8350-core.c            |    3 +
+ drivers/regulator/wm8350-regulator.c |   91 +++++++++
+ include/linux/mfd/wm8350/pmic.h      |   36 ++++
+ 6 files changed, 471 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/leds/leds-wm8350.c
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index ffd5120..3c9fdf2 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -46,9 +46,9 @@ static const u8 twl4030_reg[TWL4030_CACHEREGNUM] = {
- 	0xc3, /* REG_OPTION		(0x2)	*/
- 	0x00, /* REG_UNKNOWN		(0x3)	*/
- 	0x00, /* REG_MICBIAS_CTL	(0x4)	*/
--	0x24, /* REG_ANAMICL		(0x5)	*/
--	0x04, /* REG_ANAMICR		(0x6)	*/
--	0x0a, /* REG_AVADC_CTL		(0x7)	*/
-+	0x20, /* REG_ANAMICL		(0x5)	*/
-+	0x00, /* REG_ANAMICR		(0x6)	*/
-+	0x00, /* REG_AVADC_CTL		(0x7)	*/
- 	0x00, /* REG_ADCMICSEL		(0x8)	*/
- 	0x00, /* REG_DIGMIXING		(0x9)	*/
- 	0x0c, /* REG_ATXL1PGA		(0xA)	*/
-@@ -347,6 +347,162 @@ static int snd_soc_put_volsw_r2_twl4030(struct snd_kcontrol *kcontrol,
- 	return err;
- }
+diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+index e7fb7d2..6a66ee8 100644
+--- a/drivers/leds/Kconfig
++++ b/drivers/leds/Kconfig
+@@ -158,6 +158,13 @@ config LEDS_PCA955X
+ 	  LED driver chips accessed via the I2C bus.  Supported
+ 	  devices include PCA9550, PCA9551, PCA9552, and PCA9553.
  
-+static int twl4030_get_left_input(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = kcontrol->private_data;
-+	u8 reg = twl4030_read_reg_cache(codec, TWL4030_REG_ANAMICL);
-+	int result = 0;
++config LEDS_WM8350
++	tristate "LED Support for WM8350 AudioPlus PMIC"
++	depends on LEDS_CLASS && MFD_WM8350
++	help
++	  This option enables support for LEDs driven by the Wolfson
++	  Microelectronics WM8350 AudioPlus PMIC.
 +
-+	/* one bit must be set a time */
-+	reg &= TWL4030_CKMIC_EN | TWL4030_AUXL_EN | TWL4030_HSMIC_EN
-+			| TWL4030_MAINMIC_EN;
-+	if (reg != 0) {
-+		result++;
-+		while ((reg & 1) == 0) {
-+			result++;
-+			reg >>= 1;
-+		}
+ config LEDS_DA903X
+ 	tristate "LED Support for DA9030/DA9034 PMIC"
+ 	depends on LEDS_CLASS && PMIC_DA903X
+diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+index e1967a2..d93f220 100644
+--- a/drivers/leds/Makefile
++++ b/drivers/leds/Makefile
+@@ -23,6 +23,7 @@ obj-$(CONFIG_LEDS_FSG)			+= leds-fsg.o
+ obj-$(CONFIG_LEDS_PCA955X)		+= leds-pca955x.o
+ obj-$(CONFIG_LEDS_DA903X)		+= leds-da903x.o
+ obj-$(CONFIG_LEDS_HP_DISK)		+= leds-hp-disk.o
++obj-$(CONFIG_LEDS_WM8350)		+= leds-wm8350.o
+ 
+ # LED Triggers
+ obj-$(CONFIG_LEDS_TRIGGER_TIMER)	+= ledtrig-timer.o
+diff --git a/drivers/leds/leds-wm8350.c b/drivers/leds/leds-wm8350.c
+new file mode 100644
+index 0000000..846ed97
+--- /dev/null
++++ b/drivers/leds/leds-wm8350.c
+@@ -0,0 +1,333 @@
++/*
++ * LED driver for WM8350 driven LEDS.
++ *
++ * Copyright(C) 2007, 2008 Wolfson Microelectronics PLC.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/leds.h>
++#include <linux/err.h>
++#include <linux/mfd/wm8350/pmic.h>
++#include <linux/regulator/consumer.h>
++
++/* Microamps */
++static const int isink_cur[] = {
++	4,
++	5,
++	6,
++	7,
++	8,
++	10,
++	11,
++	14,
++	16,
++	19,
++	23,
++	27,
++	32,
++	39,
++	46,
++	54,
++	65,
++	77,
++	92,
++	109,
++	130,
++	154,
++	183,
++	218,
++	259,
++	308,
++	367,
++	436,
++	518,
++	616,
++	733,
++	872,
++	1037,
++	1233,
++	1466,
++	1744,
++	2073,
++	2466,
++	2933,
++	3487,
++	4147,
++	4932,
++	5865,
++	6975,
++	8294,
++	9864,
++	11730,
++	13949,
++	16589,
++	19728,
++	23460,
++	27899,
++	33178,
++	39455,
++	46920,
++	55798,
++	66355,
++	78910,
++	93840,
++	111596,
++	132710,
++	157820,
++	187681,
++	223191
++};
++
++#define to_wm8350_led(led_cdev) \
++	container_of(led_cdev, struct wm8350_led, cdev)
++
++static void wm8350_led_enable(struct wm8350_led *led)
++{
++	int ret;
++
++	if (led->enabled)
++		return;
++
++	ret = regulator_enable(led->isink);
++	if (ret != 0) {
++		dev_err(led->cdev.dev, "Failed to enable ISINK: %d\n", ret);
++		return;
 +	}
 +
-+	ucontrol->value.integer.value[0] = result;
++	ret = regulator_enable(led->dcdc);
++	if (ret != 0) {
++		dev_err(led->cdev.dev, "Failed to enable DCDC: %d\n", ret);
++		regulator_disable(led->isink);
++		return;
++	}
++
++	led->enabled = 1;
++}
++
++static void wm8350_led_disable(struct wm8350_led *led)
++{
++	int ret;
++
++	if (!led->enabled)
++		return;
++
++	ret = regulator_disable(led->dcdc);
++	if (ret != 0) {
++		dev_err(led->cdev.dev, "Failed to disable DCDC: %d\n", ret);
++		return;
++	}
++
++	ret = regulator_disable(led->isink);
++	if (ret != 0) {
++		dev_err(led->cdev.dev, "Failed to disable ISINK: %d\n", ret);
++		regulator_enable(led->dcdc);
++		return;
++	}
++
++	led->enabled = 0;
++}
++
++static void led_work(struct work_struct *work)
++{
++	struct wm8350_led *led = container_of(work, struct wm8350_led, work);
++	int ret;
++	int uA;
++	unsigned long flags;
++
++	mutex_lock(&led->mutex);
++
++	spin_lock_irqsave(&led->value_lock, flags);
++
++	if (led->value == LED_OFF) {
++		spin_unlock_irqrestore(&led->value_lock, flags);
++		wm8350_led_disable(led);
++		goto out;
++	}
++
++	/* This scales linearly into the index of valid current
++	 * settings which results in a linear scaling of perceived
++	 * brightness due to the non-linear current settings provided
++	 * by the hardware.
++	 */
++	uA = (led->max_uA_index * led->value) / LED_FULL;
++	spin_unlock_irqrestore(&led->value_lock, flags);
++	BUG_ON(uA >= ARRAY_SIZE(isink_cur));
++
++	ret = regulator_set_current_limit(led->isink, isink_cur[uA],
++					  isink_cur[uA]);
++	if (ret != 0)
++		dev_err(led->cdev.dev, "Failed to set %duA: %d\n",
++			isink_cur[uA], ret);
++
++	wm8350_led_enable(led);
++
++out:
++	mutex_unlock(&led->mutex);
++}
++
++static void wm8350_led_set(struct led_classdev *led_cdev,
++			   enum led_brightness value)
++{
++	struct wm8350_led *led = to_wm8350_led(led_cdev);
++	unsigned long flags;
++
++	spin_lock_irqsave(&led->value_lock, flags);
++	led->value = value;
++	schedule_work(&led->work);
++	spin_unlock_irqrestore(&led->value_lock, flags);
++}
++
++#ifdef CONFIG_PM
++static int wm8350_led_suspend(struct platform_device *pdev, pm_message_t state)
++{
++	struct wm8350_led *led = platform_get_drvdata(pdev);
++
++	led_classdev_suspend(&led->cdev);
 +	return 0;
 +}
 +
-+static int twl4030_put_left_input(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
++static int wm8350_led_resume(struct platform_device *pdev)
 +{
-+	struct snd_soc_codec *codec = kcontrol->private_data;
-+	int value = ucontrol->value.integer.value[0];
-+	u8 anamicl, micbias, avadc_ctl;
++	struct wm8350_led *led = platform_get_drvdata(pdev);
 +
-+	anamicl = twl4030_read_reg_cache(codec, TWL4030_REG_ANAMICL);
-+	anamicl &= ~(TWL4030_CKMIC_EN | TWL4030_AUXL_EN | TWL4030_HSMIC_EN
-+			| TWL4030_MAINMIC_EN);
-+	micbias = twl4030_read_reg_cache(codec, TWL4030_REG_MICBIAS_CTL);
-+	micbias &= ~(TWL4030_HSMICBIAS_EN | TWL4030_MICBIAS1_EN);
-+	avadc_ctl = twl4030_read_reg_cache(codec, TWL4030_REG_AVADC_CTL);
++	led_classdev_resume(&led->cdev);
++	return 0;
++}
++#else
++#define wm8350_led_suspend NULL
++#define wm8350_led_resume NULL
++#endif
 +
-+	switch (value) {
-+	case 1:
-+		anamicl |= TWL4030_MAINMIC_EN;
-+		micbias |= TWL4030_MICBIAS1_EN;
-+		break;
-+	case 2:
-+		anamicl |= TWL4030_HSMIC_EN;
-+		micbias |= TWL4030_HSMICBIAS_EN;
-+		break;
-+	case 3:
-+		anamicl |= TWL4030_AUXL_EN;
-+		break;
-+	case 4:
-+		anamicl |= TWL4030_CKMIC_EN;
-+		break;
-+	default:
-+		break;
-+	}
++static void wm8350_led_shutdown(struct platform_device *pdev)
++{
++	struct wm8350_led *led = platform_get_drvdata(pdev);
 +
-+	/* If some input is selected, enable amp and ADC */
-+	if (value != 0) {
-+		anamicl |= TWL4030_MICAMPL_EN;
-+		avadc_ctl |= TWL4030_ADCL_EN;
-+	} else {
-+		anamicl &= ~TWL4030_MICAMPL_EN;
-+		avadc_ctl &= ~TWL4030_ADCL_EN;
-+	}
-+
-+	twl4030_write(codec, TWL4030_REG_ANAMICL, anamicl);
-+	twl4030_write(codec, TWL4030_REG_MICBIAS_CTL, micbias);
-+	twl4030_write(codec, TWL4030_REG_AVADC_CTL, avadc_ctl);
-+
-+	return 1;
++	mutex_lock(&led->mutex);
++	led->value = LED_OFF;
++	wm8350_led_disable(led);
++	mutex_unlock(&led->mutex);
 +}
 +
-+static int twl4030_get_right_input(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
++static int wm8350_led_probe(struct platform_device *pdev)
 +{
-+	struct snd_soc_codec *codec = kcontrol->private_data;
-+	u8 reg = twl4030_read_reg_cache(codec, TWL4030_REG_ANAMICR);
-+	int value = 0;
++	struct regulator *isink, *dcdc;
++	struct wm8350_led *led;
++	struct wm8350_led_platform_data *pdata = pdev->dev.platform_data;
++	int ret, i;
 +
-+	reg &= TWL4030_SUBMIC_EN|TWL4030_AUXR_EN;
-+	switch (reg) {
-+	case TWL4030_SUBMIC_EN:
-+		value = 1;
-+		break;
-+	case TWL4030_AUXR_EN:
-+		value = 2;
-+		break;
-+	default:
-+		break;
++	if (pdata == NULL) {
++		dev_err(&pdev->dev, "no platform data\n");
++		return -ENODEV;
 +	}
 +
-+	ucontrol->value.integer.value[0] = value;
++	if (pdata->max_uA < isink_cur[0]) {
++		dev_err(&pdev->dev, "Invalid maximum current %duA\n",
++			pdata->max_uA);
++		return -EINVAL;
++	}
++
++	isink = regulator_get(&pdev->dev, "led_isink");
++	if (IS_ERR(isink)) {
++		printk(KERN_ERR "%s: cant get ISINK\n", __func__);
++		return PTR_ERR(isink);
++	}
++
++	dcdc = regulator_get(&pdev->dev, "led_vcc");
++	if (IS_ERR(dcdc)) {
++		printk(KERN_ERR "%s: cant get DCDC\n", __func__);
++		ret = PTR_ERR(dcdc);
++		goto err_isink;
++	}
++
++	led = kzalloc(sizeof(*led), GFP_KERNEL);
++	if (led == NULL) {
++		ret = -ENOMEM;
++		goto err_dcdc;
++	}
++
++	led->cdev.brightness_set = wm8350_led_set;
++	led->cdev.default_trigger = pdata->default_trigger;
++	led->cdev.name = pdata->name;
++	led->enabled = regulator_is_enabled(isink);
++	led->isink = isink;
++	led->dcdc = dcdc;
++
++	for (i = 0; i < ARRAY_SIZE(isink_cur) - 1; i++)
++		if (isink_cur[i] >= pdata->max_uA)
++			break;
++	led->max_uA_index = i;
++	if (pdata->max_uA != isink_cur[i])
++		dev_warn(&pdev->dev,
++			 "Maximum current %duA is not directly supported,"
++			 " check platform data\n",
++			 pdata->max_uA);
++
++	spin_lock_init(&led->value_lock);
++	mutex_init(&led->mutex);
++	INIT_WORK(&led->work, led_work);
++	led->value = LED_OFF;
++	platform_set_drvdata(pdev, led);
++
++	ret = led_classdev_register(&pdev->dev, &led->cdev);
++	if (ret < 0)
++		goto err_led;
++
++	return 0;
++
++ err_led:
++	kfree(led);
++ err_dcdc:
++	regulator_put(dcdc);
++ err_isink:
++	regulator_put(isink);
++	return ret;
++}
++
++static int wm8350_led_remove(struct platform_device *pdev)
++{
++	struct wm8350_led *led = platform_get_drvdata(pdev);
++
++	led_classdev_unregister(&led->cdev);
++	flush_scheduled_work();
++	wm8350_led_disable(led);
++	regulator_put(led->dcdc);
++	regulator_put(led->isink);
++	kfree(led);
 +	return 0;
 +}
 +
-+static int twl4030_put_right_input(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
++static struct platform_driver wm8350_led_driver = {
++	.driver = {
++		   .name = "wm8350-led",
++		   .owner = THIS_MODULE,
++		   },
++	.probe = wm8350_led_probe,
++	.remove = wm8350_led_remove,
++	.shutdown = wm8350_led_shutdown,
++	.suspend = wm8350_led_suspend,
++	.resume = wm8350_led_resume,
++};
++
++static int __devinit wm8350_led_init(void)
 +{
-+	struct snd_soc_codec *codec = kcontrol->private_data;
-+	int value = ucontrol->value.integer.value[0];
-+	u8 anamicr, micbias, avadc_ctl;
-+
-+	anamicr = twl4030_read_reg_cache(codec, TWL4030_REG_ANAMICR);
-+	anamicr &= ~(TWL4030_SUBMIC_EN|TWL4030_AUXR_EN);
-+	micbias = twl4030_read_reg_cache(codec, TWL4030_REG_MICBIAS_CTL);
-+	micbias &= ~TWL4030_MICBIAS2_EN;
-+	avadc_ctl = twl4030_read_reg_cache(codec, TWL4030_REG_AVADC_CTL);
-+
-+	switch (value) {
-+	case 1:
-+		anamicr |= TWL4030_SUBMIC_EN;
-+		micbias |= TWL4030_MICBIAS2_EN;
-+		break;
-+	case 2:
-+		anamicr |= TWL4030_AUXR_EN;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	if (value != 0) {
-+		anamicr |= TWL4030_MICAMPR_EN;
-+		avadc_ctl |= TWL4030_ADCR_EN;
-+	} else {
-+		anamicr &= ~TWL4030_MICAMPR_EN;
-+		avadc_ctl &= ~TWL4030_ADCR_EN;
-+	}
-+
-+	twl4030_write(codec, TWL4030_REG_ANAMICR, anamicr);
-+	twl4030_write(codec, TWL4030_REG_MICBIAS_CTL, micbias);
-+	twl4030_write(codec, TWL4030_REG_AVADC_CTL, avadc_ctl);
-+
-+	return 1;
++	return platform_driver_register(&wm8350_led_driver);
 +}
++module_init(wm8350_led_init);
 +
-+static const char *twl4030_left_in_sel[] = {
-+	"None",
-+	"Main Mic",
-+	"Headset Mic",
-+	"Line In",
-+	"Carkit Mic",
-+};
++static void wm8350_led_exit(void)
++{
++	platform_driver_unregister(&wm8350_led_driver);
++}
++module_exit(wm8350_led_exit);
 +
-+static const char *twl4030_right_in_sel[] = {
-+	"None",
-+	"Sub Mic",
-+	"Line In",
-+};
++MODULE_AUTHOR("Mark Brown");
++MODULE_DESCRIPTION("WM8350 LED driver");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:wm8350-led");
+diff --git a/drivers/mfd/wm8350-core.c b/drivers/mfd/wm8350-core.c
+index 0d47fb9..6004ff8 100644
+--- a/drivers/mfd/wm8350-core.c
++++ b/drivers/mfd/wm8350-core.c
+@@ -1257,6 +1257,9 @@ void wm8350_device_exit(struct wm8350 *wm8350)
+ {
+ 	int i;
+ 
++	for (i = 0; i < ARRAY_SIZE(wm8350->pmic.led); i++)
++		platform_device_unregister(wm8350->pmic.led[i].pdev);
 +
-+static const struct soc_enum twl4030_left_input_mux =
-+	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(twl4030_left_in_sel),
-+		twl4030_left_in_sel);
+ 	for (i = 0; i < ARRAY_SIZE(wm8350->pmic.pdev); i++)
+ 		platform_device_unregister(wm8350->pmic.pdev[i]);
+ 
+diff --git a/drivers/regulator/wm8350-regulator.c b/drivers/regulator/wm8350-regulator.c
+index 1f44b17..de9a8ee 100644
+--- a/drivers/regulator/wm8350-regulator.c
++++ b/drivers/regulator/wm8350-regulator.c
+@@ -1405,6 +1405,97 @@ int wm8350_register_regulator(struct wm8350 *wm8350, int reg,
+ }
+ EXPORT_SYMBOL_GPL(wm8350_register_regulator);
+ 
++/**
++ * wm8350_register_led - Register a WM8350 LED output
++ *
++ * @param wm8350 The WM8350 device to configure.
++ * @param lednum LED device index to create.
++ * @param dcdc The DCDC to use for the LED.
++ * @param isink The ISINK to use for the LED.
++ * @param pdata Configuration for the LED.
++ *
++ * The WM8350 supports the use of an ISINK together with a DCDC to
++ * provide a power-efficient LED driver.  This function registers the
++ * regulators and instantiates the platform device for a LED.  The
++ * operating modes for the LED regulators must be configured using
++ * wm8350_isink_set_flash(), wm8350_dcdc25_set_mode() and
++ * wm8350_dcdc_set_slot() prior to calling this function.
++ */
++int wm8350_register_led(struct wm8350 *wm8350, int lednum, int dcdc, int isink,
++			struct wm8350_led_platform_data *pdata)
++{
++	struct wm8350_led *led;
++	struct platform_device *pdev;
++	int ret;
 +
-+static const struct soc_enum twl4030_right_input_mux =
-+	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(twl4030_right_in_sel),
-+		twl4030_right_in_sel);
++	if (lednum > ARRAY_SIZE(wm8350->pmic.led) || lednum < 0) {
++		dev_err(wm8350->dev, "Invalid LED index %d\n", lednum);
++		return -ENODEV;
++	}
++
++	led = &wm8350->pmic.led[lednum];
++
++	if (led->pdev) {
++		dev_err(wm8350->dev, "LED %d already allocated\n", lednum);
++		return -EINVAL;
++	}
++
++	pdev = platform_device_alloc("wm8350-led", lednum);
++	if (pdev == NULL) {
++		dev_err(wm8350->dev, "Failed to allocate LED %d\n", lednum);
++		return -ENOMEM;
++	}
++
++	led->isink_consumer.dev = &pdev->dev;
++	led->isink_consumer.supply = "led_isink";
++	led->isink_init.num_consumer_supplies = 1;
++	led->isink_init.consumer_supplies = &led->isink_consumer;
++	led->isink_init.constraints.min_uA = 0;
++	led->isink_init.constraints.max_uA = pdata->max_uA;
++	led->isink_init.constraints.valid_ops_mask = REGULATOR_CHANGE_CURRENT;
++	led->isink_init.constraints.valid_modes_mask = REGULATOR_MODE_NORMAL;
++	ret = wm8350_register_regulator(wm8350, isink, &led->isink_init);
++	if (ret != 0) {
++		platform_device_put(pdev);
++		return ret;
++	}
++
++	led->dcdc_consumer.dev = &pdev->dev;
++	led->dcdc_consumer.supply = "led_vcc";
++	led->dcdc_init.num_consumer_supplies = 1;
++	led->dcdc_init.consumer_supplies = &led->dcdc_consumer;
++	led->dcdc_init.constraints.valid_modes_mask = REGULATOR_MODE_NORMAL;
++	ret = wm8350_register_regulator(wm8350, dcdc, &led->dcdc_init);
++	if (ret != 0) {
++		platform_device_put(pdev);
++		return ret;
++	}
++
++	switch (isink) {
++	case WM8350_ISINK_A:
++		wm8350->pmic.isink_A_dcdc = dcdc;
++		break;
++	case WM8350_ISINK_B:
++		wm8350->pmic.isink_B_dcdc = dcdc;
++		break;
++	}
++
++	pdev->dev.platform_data = pdata;
++	pdev->dev.parent = wm8350->dev;
++	ret = platform_device_add(pdev);
++	if (ret != 0) {
++		dev_err(wm8350->dev, "Failed to register LED %d: %d\n",
++			lednum, ret);
++		platform_device_put(pdev);
++		return ret;
++	}
++
++	led->pdev = pdev;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(wm8350_register_led);
++
+ static struct platform_driver wm8350_regulator_driver = {
+ 	.probe = wm8350_regulator_probe,
+ 	.remove = wm8350_regulator_remove,
+diff --git a/include/linux/mfd/wm8350/pmic.h b/include/linux/mfd/wm8350/pmic.h
+index 69b69e0..2e19c7a 100644
+--- a/include/linux/mfd/wm8350/pmic.h
++++ b/include/linux/mfd/wm8350/pmic.h
+@@ -13,6 +13,10 @@
+ #ifndef __LINUX_MFD_WM8350_PMIC_H
+ #define __LINUX_MFD_WM8350_PMIC_H
+ 
++#include <linux/platform_device.h>
++#include <linux/leds.h>
++#include <linux/regulator/machine.h>
 +
  /*
-  * FGAIN volume control:
-  * from -62 to 0 dB in 1 dB steps (mute instead of -63 dB)
-@@ -378,6 +534,12 @@ static DECLARE_TLV_DB_SCALE(output_tvl, -1200, 600, 1);
+  * Register values.
   */
- static DECLARE_TLV_DB_SCALE(digital_capture_tlv, 0, 100, 0);
+@@ -700,6 +704,33 @@ struct wm8350;
+ struct platform_device;
+ struct regulator_init_data;
  
 +/*
-+ * Gain control for input amplifiers
-+ * 0 dB to 30 dB in 6 dB steps
++ * WM8350 LED platform data
 + */
-+static DECLARE_TLV_DB_SCALE(input_gain_tlv, 0, 600, 0);
++struct wm8350_led_platform_data {
++	const char *name;
++	const char *default_trigger;
++	int max_uA;
++};
 +
- static const struct snd_kcontrol_new twl4030_snd_controls[] = {
- 	/* Common playback gain controls */
- 	SOC_DOUBLE_R_TLV("DAC1 Digital Fine Playback Volume",
-@@ -420,6 +582,15 @@ static const struct snd_kcontrol_new twl4030_snd_controls[] = {
- 	SOC_DOUBLE_R_TLV("Capture Volume",
- 		TWL4030_REG_ATXL1PGA, TWL4030_REG_ATXR1PGA,
- 		0, 0x1f, 0, digital_capture_tlv),
++struct wm8350_led {
++	struct platform_device *pdev;
++	struct mutex mutex;
++	struct work_struct work;
++	spinlock_t value_lock;
++	enum led_brightness value;
++	struct led_classdev cdev;
++	int max_uA_index;
++	int enabled;
 +
-+	SOC_DOUBLE_TLV("Input Boost Volume", TWL4030_REG_ANAMIC_GAIN,
-+		0, 3, 5, 0, input_gain_tlv),
++	struct regulator *isink;
++	struct regulator_consumer_supply isink_consumer;
++	struct regulator_init_data isink_init;
++	struct regulator *dcdc;
++	struct regulator_consumer_supply dcdc_consumer;
++	struct regulator_init_data dcdc_init;
++};
 +
-+	/* Input source controls */
-+	SOC_ENUM_EXT("Left Input Source", twl4030_left_input_mux,
-+		twl4030_get_left_input, twl4030_put_left_input),
-+	SOC_ENUM_EXT("Right Input Source", twl4030_right_input_mux,
-+		twl4030_get_right_input, twl4030_put_right_input),
+ struct wm8350_pmic {
+ 	/* ISINK to DCDC mapping */
+ 	int isink_A_dcdc;
+@@ -713,10 +744,15 @@ struct wm8350_pmic {
+ 
+ 	/* regulator devices */
+ 	struct platform_device *pdev[NUM_WM8350_REGULATORS];
++
++	/* LED devices */
++	struct wm8350_led led[2];
  };
  
- /* add non dapm controls */
-diff --git a/sound/soc/codecs/twl4030.h b/sound/soc/codecs/twl4030.h
-index 09865d9..a2065d4 100644
---- a/sound/soc/codecs/twl4030.h
-+++ b/sound/soc/codecs/twl4030.h
-@@ -113,7 +113,16 @@
- #define TWL4030_CODECPDZ		0x02
- #define TWL4030_OPT_MODE		0x01
+ int wm8350_register_regulator(struct wm8350 *wm8350, int reg,
+ 			      struct regulator_init_data *initdata);
++int wm8350_register_led(struct wm8350 *wm8350, int lednum, int dcdc, int isink,
++			struct wm8350_led_platform_data *pdata);
  
-+/* TWL4030_REG_MICBIAS_CTL (0x04) Fields */
-+
-+#define TWL4030_MICBIAS2_CTL		0x40
-+#define TWL4030_MICBIAS1_CTL		0x20
-+#define TWL4030_HSMICBIAS_EN		0x04
-+#define TWL4030_MICBIAS2_EN		0x02
-+#define TWL4030_MICBIAS1_EN		0x01
-+
- /* ANAMICL (0x05) Fields */
-+
- #define TWL4030_CNCL_OFFSET_START	0x80
- #define TWL4030_OFFSET_CNCL_SEL		0x60
- #define TWL4030_OFFSET_CNCL_SEL_ARX1	0x00
-@@ -127,10 +136,17 @@
- #define TWL4030_MAINMIC_EN		0x01
- 
- /* ANAMICR (0x06) Fields */
-+
- #define TWL4030_MICAMPR_EN		0x10
- #define TWL4030_AUXR_EN			0x04
- #define TWL4030_SUBMIC_EN		0x01
- 
-+/* AVADC_CTL (0x07) Fields */
-+
-+#define TWL4030_ADCL_EN			0x08
-+#define TWL4030_AVADC_CLK_PRIORITY	0x04
-+#define TWL4030_ADCR_EN			0x02
-+
- /* AUDIO_IF (0x0E) Fields */
- 
- #define TWL4030_AIF_SLAVE_EN		0x80
+ /*
+  * Additional DCDC control not supported via regulator API
 -- 
 1.5.6.5
