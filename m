@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] tlv320aic3x: control additions and	cleanups
-Date: Thu, 4 Dec 2008 18:53:43 +0000
-Message-ID: <20081204185342.GE6628@sirena.org.uk>
+From: Daniel Mack <daniel@caiaq.org>
+Subject: [PATCH] tlv320aic3x.c: split and add some mixer
+	controls
+Date: Thu, 4 Dec 2008 20:40:48 +0100
+Message-ID: <20081204194048.GF21010@buzzloop.caiaq.de>
 References: <20081204175121.GD21010@buzzloop.caiaq.de>
-	<20081204183746.GB6628@sirena.org.uk>
-	<20081204184751.GE21010@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9B63E1037F6
-	for <alsa-devel@alsa-project.org>; Thu,  4 Dec 2008 19:53:50 +0100 (CET)
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 71A87103801
+	for <alsa-devel@alsa-project.org>; Thu,  4 Dec 2008 20:40:51 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20081204184751.GE21010@buzzloop.caiaq.de>
+In-Reply-To: <20081204175121.GD21010@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,20 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.org>
-Cc: alsa-devel@alsa-project.org, u.luckas@road.de
+To: alsa-devel@alsa-project.org
+Cc: u.luckas@road.de
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 04, 2008 at 07:47:51PM +0100, Daniel Mack wrote:
+- split "Line Playback Switch" into "LineL Playback Switch" and "LineR
+  Playback Switch"
+- split "Line PGA Bypass Playback Volume" into "LineL Left PGA Bypass
+  Playback Volume" and "LineR Right PGA Bypass Playback Volume"
+- split "Line Line2 Bypass Playback Volume" into "LineL Line2 Bypass
+  Playback Volume" and "LineR Line2 Bypass Playback Volume"
+- Added "HP Right PGA Bypass Playback Volume"
 
-> We're working on it together and share a git repository. I commited the
-> patch, sent it over to Uli to double-check it and he signed off on it
-> after I did it in the first place.
+This patch was colaboratively created with Uli Luckas.
 
-> I thought in such cases, two Signed-off-by: lines coming right after the
-> other is the way to go, but I can also change it to an 'Acked-by' if you
-> like.
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
+---
 
-No, that sounds sensible.  Normally for cases like that you'd mention
-what Uli's involvement in the patch was in the body of the commit
-message.
+I split the patches now - this one omits the removal of misleading
+"DAC"s in some widget names.
+
+ sound/soc/codecs/tlv320aic3x.c |   18 +++++++++++++-----
+ 1 files changed, 13 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 537bbbf..6a12dc3 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -253,11 +253,17 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
+ 
+ 	SOC_DOUBLE_R("Line DAC Playback Volume", DACL1_2_LLOPM_VOL,
+ 		     DACR1_2_RLOPM_VOL, 0, 0x7f, 1),
+-	SOC_DOUBLE_R("Line DAC Playback Switch", LLOPM_CTRL, RLOPM_CTRL, 3,
+-		     0x01, 0),
+-	SOC_DOUBLE_R("Line PGA Bypass Playback Volume", PGAL_2_LLOPM_VOL,
+-		     PGAR_2_RLOPM_VOL, 0, 0x7f, 1),
+-	SOC_DOUBLE_R("Line Line2 Bypass Playback Volume", LINE2L_2_LLOPM_VOL,
++	SOC_SINGLE("LineL Playback Switch", LLOPM_CTRL, 3, 0x01, 0),
++	SOC_SINGLE("LineR Playback Switch", RLOPM_CTRL, 3, 0x01, 0),
++	SOC_DOUBLE_R("LineL DAC Playback Volume", DACL1_2_LLOPM_VOL,
++		     DACR1_2_LLOPM_VOL, 0, 0x7f, 1),
++	SOC_SINGLE("LineL Left PGA Bypass Playback Volume", PGAL_2_LLOPM_VOL,
++		     0, 0x7f, 1),
++	SOC_SINGLE("LineR Right PGA Bypass Playback Volume", PGAR_2_RLOPM_VOL,
++		     0, 0x7f, 1),
++	SOC_DOUBLE_R("LineL Line2 Bypass Playback Volume", LINE2L_2_LLOPM_VOL,
++		     LINE2R_2_LLOPM_VOL, 0, 0x7f, 1),
++	SOC_DOUBLE_R("LineR Line2 Bypass Playback Volume", LINE2L_2_RLOPM_VOL,
+ 		     LINE2R_2_RLOPM_VOL, 0, 0x7f, 1),
+ 
+ 	SOC_DOUBLE_R("Mono DAC Playback Volume", DACL1_2_MONOLOPM_VOL,
+@@ -272,6 +278,8 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
+ 		     DACR1_2_HPROUT_VOL, 0, 0x7f, 1),
+ 	SOC_DOUBLE_R("HP DAC Playback Switch", HPLOUT_CTRL, HPROUT_CTRL, 3,
+ 		     0x01, 0),
++	SOC_DOUBLE_R("HP Right PGA Bypass Playback Volume", PGAR_2_HPLOUT_VOL,
++		     PGAR_2_HPROUT_VOL, 0, 0x7f, 1),
+ 	SOC_SINGLE("HPL PGA Bypass Playback Volume", PGAL_2_HPLOUT_VOL,
+ 		     0, 0x7f, 1),
+ 	SOC_SINGLE("HPR PGA Bypass Playback Volume", PGAL_2_HPROUT_VOL,
+-- 
+1.5.6.5
