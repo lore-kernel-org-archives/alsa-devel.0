@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/4] ASoC: Remove device from platform suspend
-	and resume operations
-Date: Thu,  4 Dec 2008 11:26:44 +0000
-Message-ID: <1228390006-30338-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/4] ASoC: Push debugfs files out of the
+	snd_soc_device structure
+Date: Thu,  4 Dec 2008 11:26:43 +0000
+Message-ID: <1228390006-30338-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20081204112542.GA30250@rakim.wolfsonmicro.main>
-	<1228390006-30338-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AE93324152
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 753422414F
 	for <alsa-devel@alsa-project.org>; Thu,  4 Dec 2008 12:26:47 +0100 (CET)
-In-Reply-To: <1228390006-30338-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <20081204112542.GA30250@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,78 +25,185 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-None of the platforms are actually using the SoC device so remove it
-(only atmel actually has a suspend method).
+This is in preparation for the removal of struct snd_soc_device.
+
+The pop time configuration should really be a property of the card not
+the codec but since DAPM currently uses the codec rather than the card
+using the codec is fine for now.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- include/sound/soc.h         |    6 ++----
- sound/soc/atmel/atmel-pcm.c |    6 ++----
- sound/soc/soc-core.c        |    4 ++--
- 3 files changed, 6 insertions(+), 10 deletions(-)
+ include/sound/soc.h  |    8 +++--
+ sound/soc/soc-core.c |   73 ++++++++++++++++++++++++++++----------------------
+ 2 files changed, 46 insertions(+), 35 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 3ee608d..8ec63c0 100644
+index ad8141a..3ee608d 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -300,10 +300,8 @@ struct snd_soc_platform {
+@@ -279,6 +279,11 @@ struct snd_soc_codec {
+ 	/* codec DAI's */
+ 	struct snd_soc_dai *dai;
+ 	unsigned int num_dai;
++
++#ifdef CONFIG_DEBUG_FS
++	struct dentry *debugfs_reg;
++	struct dentry *debugfs_pop_time;
++#endif
+ };
  
- 	int (*probe)(struct platform_device *pdev);
- 	int (*remove)(struct platform_device *pdev);
--	int (*suspend)(struct platform_device *pdev,
--		struct snd_soc_dai *dai);
--	int (*resume)(struct platform_device *pdev,
--		struct snd_soc_dai *dai);
-+	int (*suspend)(struct snd_soc_dai *dai);
-+	int (*resume)(struct snd_soc_dai *dai);
+ /* codec device */
+@@ -364,9 +369,6 @@ struct snd_soc_device {
+ 	struct snd_soc_codec *codec;
+ 	struct snd_soc_codec_device *codec_dev;
+ 	void *codec_data;
+-#ifdef CONFIG_DEBUG_FS
+-	struct dentry	*debugfs_root;
+-#endif
+ };
  
- 	/* pcm creation and destruction */
- 	int (*pcm_new)(struct snd_card *, struct snd_soc_dai *,
-diff --git a/sound/soc/atmel/atmel-pcm.c b/sound/soc/atmel/atmel-pcm.c
-index 394412f..8507aa1 100644
---- a/sound/soc/atmel/atmel-pcm.c
-+++ b/sound/soc/atmel/atmel-pcm.c
-@@ -417,8 +417,7 @@ static void atmel_pcm_free_dma_buffers(struct snd_pcm *pcm)
- }
- 
- #ifdef CONFIG_PM
--static int atmel_pcm_suspend(struct platform_device *pdev,
--	struct snd_soc_dai *dai)
-+static int atmel_pcm_suspend(struct snd_soc_dai *dai)
- {
- 	struct snd_pcm_runtime *runtime = dai->runtime;
- 	struct atmel_runtime_data *prtd;
-@@ -442,8 +441,7 @@ static int atmel_pcm_suspend(struct platform_device *pdev,
- 	return 0;
- }
- 
--static int atmel_pcm_resume(struct platform_device *pdev,
--	struct snd_soc_dai *dai)
-+static int atmel_pcm_resume(struct snd_soc_dai *dai)
- {
- 	struct snd_pcm_runtime *runtime = dai->runtime;
- 	struct atmel_runtime_data *prtd;
+ /* runtime channel data */
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 3411439..f83852f 100644
+index fe89260..3411439 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -652,7 +652,7 @@ static int soc_suspend(struct platform_device *pdev, pm_message_t state)
- 		if (cpu_dai->suspend && !cpu_dai->ac97_control)
- 			cpu_dai->suspend(pdev, cpu_dai);
- 		if (platform->suspend)
--			platform->suspend(pdev, cpu_dai);
-+			platform->suspend(cpu_dai);
- 	}
+@@ -39,6 +39,10 @@ static DEFINE_MUTEX(pcm_mutex);
+ static DEFINE_MUTEX(io_mutex);
+ static DECLARE_WAIT_QUEUE_HEAD(soc_pm_waitq);
  
- 	/* close any waiting streams and save state */
-@@ -741,7 +741,7 @@ static void soc_resume_deferred(struct work_struct *work)
- 		if (cpu_dai->resume && !cpu_dai->ac97_control)
- 			cpu_dai->resume(pdev, cpu_dai);
- 		if (platform->resume)
--			platform->resume(pdev, cpu_dai);
-+			platform->resume(cpu_dai);
- 	}
++#ifdef CONFIG_DEBUG_FS
++static struct dentry *debugfs_root;
++#endif
++
+ /*
+  * This is a timeout to do a DAPM powerdown after a stream is closed().
+  * It can be used to eliminate pops between different playback streams, e.g.
+@@ -1002,7 +1006,9 @@ static ssize_t codec_reg_read_file(struct file *file, char __user *user_buf,
+ 			       size_t count, loff_t *ppos)
+ {
+ 	ssize_t ret;
+-	struct snd_soc_device *devdata = file->private_data;
++	struct snd_soc_codec *codec = file->private_data;
++	struct device *card_dev = codec->card->dev;
++	struct snd_soc_device *devdata = card_dev->driver_data;
+ 	char *buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
+ 	if (!buf)
+ 		return -ENOMEM;
+@@ -1021,8 +1027,7 @@ static ssize_t codec_reg_write_file(struct file *file,
+ 	char *start = buf;
+ 	unsigned long reg, value;
+ 	int step = 1;
+-	struct snd_soc_device *devdata = file->private_data;
+-	struct snd_soc_codec *codec = devdata->codec;
++	struct snd_soc_codec *codec = file->private_data;
  
- 	if (card->resume_post)
+ 	buf_size = min(count, (sizeof(buf)-1));
+ 	if (copy_from_user(buf, user_buf, buf_size))
+@@ -1051,44 +1056,36 @@ static const struct file_operations codec_reg_fops = {
+ 	.write = codec_reg_write_file,
+ };
+ 
+-static void soc_init_debugfs(struct snd_soc_device *socdev)
++static void soc_init_codec_debugfs(struct snd_soc_codec *codec)
+ {
+-	struct dentry *root, *file;
+-	struct snd_soc_codec *codec = socdev->codec;
+-	root = debugfs_create_dir(dev_name(socdev->dev), NULL);
+-	if (IS_ERR(root) || !root)
+-		goto exit1;
+-
+-	file = debugfs_create_file("codec_reg", 0644,
+-			root, socdev, &codec_reg_fops);
+-	if (!file)
+-		goto exit2;
+-
+-	file = debugfs_create_u32("dapm_pop_time", 0744,
+-			root, &codec->pop_time);
+-	if (!file)
+-		goto exit2;
+-	socdev->debugfs_root = root;
+-	return;
+-exit2:
+-	debugfs_remove_recursive(root);
+-exit1:
+-	dev_err(socdev->dev, "debugfs is not available\n");
++	codec->debugfs_reg = debugfs_create_file("codec_reg", 0644,
++						 debugfs_root, codec,
++						 &codec_reg_fops);
++	if (!codec->debugfs_reg)
++		printk(KERN_WARNING
++		       "ASoC: Failed to create codec register debugfs file\n");
++
++	codec->debugfs_pop_time = debugfs_create_u32("dapm_pop_time", 0744,
++						     debugfs_root,
++						     &codec->pop_time);
++	if (!codec->debugfs_pop_time)
++		printk(KERN_WARNING
++		       "Failed to create pop time debugfs file\n");
+ }
+ 
+-static void soc_cleanup_debugfs(struct snd_soc_device *socdev)
++static void soc_cleanup_codec_debugfs(struct snd_soc_codec *codec)
+ {
+-	debugfs_remove_recursive(socdev->debugfs_root);
+-	socdev->debugfs_root = NULL;
++	debugfs_remove(codec->debugfs_pop_time);
++	debugfs_remove(codec->debugfs_reg);
+ }
+ 
+ #else
+ 
+-static inline void soc_init_debugfs(struct snd_soc_device *socdev)
++static inline void soc_init_codec_debugfs(struct snd_soc_codec *codec)
+ {
+ }
+ 
+-static inline void soc_cleanup_debugfs(struct snd_soc_device *socdev)
++static inline void soc_cleanup_codec_debugfs(struct snd_soc_codec *codec)
+ {
+ }
+ #endif
+@@ -1305,7 +1302,7 @@ int snd_soc_init_card(struct snd_soc_device *socdev)
+ 	if (err < 0)
+ 		printk(KERN_WARNING "asoc: failed to add codec sysfs files\n");
+ 
+-	soc_init_debugfs(socdev);
++	soc_init_codec_debugfs(socdev->codec);
+ 	mutex_unlock(&codec->mutex);
+ 
+ out:
+@@ -1329,7 +1326,7 @@ void snd_soc_free_pcms(struct snd_soc_device *socdev)
+ #endif
+ 
+ 	mutex_lock(&codec->mutex);
+-	soc_cleanup_debugfs(socdev);
++	soc_cleanup_codec_debugfs(socdev->codec);
+ #ifdef CONFIG_SND_SOC_AC97_BUS
+ 	for (i = 0; i < codec->num_dai; i++) {
+ 		codec_dai = &codec->dai[i];
+@@ -1962,11 +1959,23 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_digital_mute);
+ 
+ static int __devinit snd_soc_init(void)
+ {
++#ifdef CONFIG_DEBUG_FS
++	debugfs_root = debugfs_create_dir("asoc", NULL);
++	if (IS_ERR(debugfs_root) || !debugfs_root) {
++		printk(KERN_WARNING
++		       "ASoC: Failed to create debugfs directory\n");
++		debugfs_root = NULL;
++	}
++#endif
++
+ 	return platform_driver_register(&soc_driver);
+ }
+ 
+ static void __exit snd_soc_exit(void)
+ {
++#ifdef CONFIG_DEBUG_FS
++	debugfs_remove_recursive(debugfs_root);
++#endif
+ 	platform_driver_unregister(&soc_driver);
+ }
+ 
 -- 
 1.5.6.5
