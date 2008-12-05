@@ -1,25 +1,18 @@
-From: "naveen krishna ch" <naveenkrishna.ch@gmail.com>
-Subject: Re: [PATCH 6/7] ASoC: TWL4030: Add volume controls for
-	outputs
-Date: Fri, 5 Dec 2008 10:14:35 +0530
-Message-ID: <ef0d8a250812042044n3968719r6eb996897ce90ade@mail.gmail.com>
-References: <20081201200703.GA14376@rakim.wolfsonmicro.main>
-	<1228162061-14769-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228162061-14769-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228162061-14769-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228162061-14769-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228162061-14769-5-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228162061-14769-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: "Jarkko Nikula" <jhnikula@gmail.com>
+Subject: Re: [PATCH] ASoC: Add support for OMAP3 Pandora
+Date: Fri, 5 Dec 2008 09:48:24 +0200
+Message-ID: <bd7b27490812042348t6593afa8saafb3a42bd346ad7@mail.gmail.com>
+References: <1228423194-19567-1-git-send-email-notasas@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.243])
-	by alsa0.perex.cz (Postfix) with ESMTP id 12ED424449
-	for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2008 05:44:36 +0100 (CET)
-Received: by rv-out-0708.google.com with SMTP id k29so5192084rvb.0
-	for <alsa-devel@alsa-project.org>; Thu, 04 Dec 2008 20:44:35 -0800 (PST)
-In-Reply-To: <1228162061-14769-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.169])
+	by alsa0.perex.cz (Postfix) with ESMTP id ED1231037E3
+	for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2008 08:48:24 +0100 (CET)
+Received: by ug-out-1314.google.com with SMTP id h2so4695448ugf.24
+	for <alsa-devel@alsa-project.org>; Thu, 04 Dec 2008 23:48:24 -0800 (PST)
+In-Reply-To: <1228423194-19567-1-git-send-email-notasas@gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,96 +23,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: Grazvydas Ignotas <notasas@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 2, 2008 at 1:37 AM, Mark Brown <
-broonie@opensource.wolfsonmicro.com> wrote:
+2008/12/4 Grazvydas Ignotas <notasas@gmail.com>
 
-> From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> This patch adds basic support for OMAP3 Pandora.
 >
-> All outputs have dedicated gain controls except the
-> HandsFree output.
->
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
 > ---
->  sound/soc/codecs/twl4030.c |   21 +++++++++++++++++++++
->  1 files changed, 21 insertions(+), 0 deletions(-)
->
-> diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-> index 1dae73a..ffd5120 100644
-> --- a/sound/soc/codecs/twl4030.c
-> +++ b/sound/soc/codecs/twl4030.c
-> @@ -367,6 +367,12 @@ static DECLARE_TLV_DB_SCALE(digital_coarse_tlv, 0,
-> 600, 0);
->  static DECLARE_TLV_DB_SCALE(analog_tlv, -2400, 200, 0);
->
->  /*
-> + * Gain controls tied to outputs
-> + * -6 dB to 6 dB in 6 dB steps (mute instead of -12)
-> + */
-> +static DECLARE_TLV_DB_SCALE(output_tvl, -1200, 600, 1);
+>  sound/soc/omap/Kconfig        |    8 +
+>  sound/soc/omap/Makefile       |    2 +
+>  sound/soc/omap/omap3pandora.c |  311
+> +++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 321 insertions(+), 0 deletions(-)
+>  create mode 100644 sound/soc/omap/omap3pandora.c
+
+
+Hi
+
+I like this board file! It definetely deserves a place in sound/soc/omap.
+
+
+> +       /* Set McBSP clock to external */
+> +       ret = snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_SYSCLK_CLKS_EXT,
+> 0,
+> +                                           SND_SOC_CLOCK_IN);
+
+
+I'm glad to see external clocking using with McBSP. Never tested feature :-)
+
++/* Digital audio interface glue - connects codec <--> CPU */
+> +static struct snd_soc_dai_link omap3pandora_dai[] = {
+> +       {
+> +               .name = "PCM1773",
+> +               .stream_name = "HiFi Out",
+> +               .cpu_dai = &omap_mcbsp_dai[0],
+> +               .codec_dai = &twl4030_dai,
+> +               .ops = &omap3pandora_out_ops,
+> +               .init = omap3pandora_out_init,
+> +       }, {
+> +               .name = "TWL4030",
+> +               .stream_name = "Line/Mic In",
+> +               .cpu_dai = &omap_mcbsp_dai[1],
+> +               .codec_dai = &twl4030_dai,
+> +               .ops = &omap3pandora_in_ops,
+> +               .init = omap3pandora_in_init,
+> +       }
+> +};
+
+
+Nice, first OMAP machine driver using McBSP in multilink configuration.
+
+
+> +       if (!machine_is_omap3_pandora()) {
+> +               pr_debug(PREFIX "Not OMAP3 Pandora\n");
+> +               return -ENODEV;
+> +       }
+> +       pr_info("OMAP3 Pandora SoC init\n");
 > +
-> +/*
->  * Capture gain after the ADCs
->  * from 0 dB to 31 dB in 1 dB steps
->  */
-> @@ -395,6 +401,21 @@ static const struct snd_kcontrol_new
-> twl4030_snd_controls[] = {
->                TWL4030_REG_ARXL2_APGA_CTL, TWL4030_REG_ARXR2_APGA_CTL,
->                3, 0x12, 1, analog_tlv),
->
-> +       /* Separate output gain controls */
-> +       SOC_DOUBLE_R_TLV_TWL4030("",
-> +               TWL4030_REG_PREDL_CTL, TWL4030_REG_PREDR_CTL,
-> +               4, 3, 0, output_tvl),
-
-With this implementation the
-#amixer cset numid=16 3
-numid=16,iface=MIXER,name='PreDriv Playback Volume'
-  ; type=INTEGER,access=rw---R--,values=2,min=0,max=209,step=0
-  : values=3,3
-  | dBscale-min=-12.00dB,step=6.00dB,mute=1
-The min and max values are from 0 to 209 and they r repeating for every 4
-steps
-Can any one explain this
 
 
->
-> +
-> +       SOC_DOUBLE_TLV_TWL4030("Headset Playback Volume",
-> +               TWL4030_REG_HS_GAIN_SET, 0, 2, 3, 0, output_tvl),
-
-With this implementation the min and max values seems to be shown like 0 to
-60 instead of 0 to 3
-and  the range is repeatring between 0 to 60
-Means 4 again 0 and 7 a bit max, its repeating..
-
->
-> +
-> +       SOC_DOUBLE_R_TLV_TWL4030("Carkit Playback Volume",
-> +               TWL4030_REG_PRECKL_CTL, TWL4030_REG_PRECKR_CTL,
-> +               4, 3, 0, output_tvl),
-> +
-> +       SOC_SINGLE_TLV_TWL4030("Earpiece Playback Volume",
-> +               TWL4030_REG_EAR_CTL, 4, 3, 0, output_tvl),
-> +
->        /* Common capture gain controls */
->        SOC_DOUBLE_R_TLV("Capture Volume",
->                TWL4030_REG_ATXL1PGA, TWL4030_REG_ATXR1PGA,
-> --
-> 1.5.6.5
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+Minor muttering, but I don't see very much use for these debug prints.
 
 
-
-Thanks ,,
-
-(: Naveen Krishna Ch :)
+Jarkko
