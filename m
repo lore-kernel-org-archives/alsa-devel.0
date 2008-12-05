@@ -1,18 +1,19 @@
-From: "Jarkko Nikula" <jhnikula@gmail.com>
+From: "Grazvydas Ignotas" <notasas@gmail.com>
 Subject: Re: [PATCH] ASoC: Add support for OMAP3 Pandora
-Date: Fri, 5 Dec 2008 09:48:24 +0200
-Message-ID: <bd7b27490812042348t6593afa8saafb3a42bd346ad7@mail.gmail.com>
+Date: Fri, 5 Dec 2008 11:15:04 +0200
+Message-ID: <6ed0b2680812050115v635095f8p336a6825654a205f@mail.gmail.com>
 References: <1228423194-19567-1-git-send-email-notasas@gmail.com>
+	<bd7b27490812042348t6593afa8saafb3a42bd346ad7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.169])
-	by alsa0.perex.cz (Postfix) with ESMTP id ED1231037E3
-	for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2008 08:48:24 +0100 (CET)
-Received: by ug-out-1314.google.com with SMTP id h2so4695448ugf.24
-	for <alsa-devel@alsa-project.org>; Thu, 04 Dec 2008 23:48:24 -0800 (PST)
-In-Reply-To: <1228423194-19567-1-git-send-email-notasas@gmail.com>
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.243])
+	by alsa0.perex.cz (Postfix) with ESMTP id B47761037ED
+	for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2008 10:15:05 +0100 (CET)
+Received: by rv-out-0708.google.com with SMTP id f25so4167312rvb.32
+	for <alsa-devel@alsa-project.org>; Fri, 05 Dec 2008 01:15:04 -0800 (PST)
+In-Reply-To: <bd7b27490812042348t6593afa8saafb3a42bd346ad7@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,69 +24,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grazvydas Ignotas <notasas@gmail.com>
+To: Jarkko Nikula <jhnikula@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2008/12/4 Grazvydas Ignotas <notasas@gmail.com>
-
-> This patch adds basic support for OMAP3 Pandora.
+On Fri, Dec 5, 2008 at 9:48 AM, Jarkko Nikula <jhnikula@gmail.com> wrote:
+> 2008/12/4 Grazvydas Ignotas <notasas@gmail.com>
+>>
+>> +       /* Set McBSP clock to external */
+>> +       ret = snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_SYSCLK_CLKS_EXT,
+>> 0,
+>> +                                           SND_SOC_CLOCK_IN);
 >
-> Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
-> ---
->  sound/soc/omap/Kconfig        |    8 +
->  sound/soc/omap/Makefile       |    2 +
->  sound/soc/omap/omap3pandora.c |  311
-> +++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 321 insertions(+), 0 deletions(-)
->  create mode 100644 sound/soc/omap/omap3pandora.c
+> I'm glad to see external clocking using with McBSP. Never tested feature :-)
 
+Yup, and in works fine. Thanks for adding support for that!.
 
-Hi
+>
+>> +/* Digital audio interface glue - connects codec <--> CPU */
+>> +static struct snd_soc_dai_link omap3pandora_dai[] = {
+>> +       {
+>> +               .name = "PCM1773",
+>> +               .stream_name = "HiFi Out",
+>> +               .cpu_dai = &omap_mcbsp_dai[0],
+>> +               .codec_dai = &twl4030_dai,
+>> +               .ops = &omap3pandora_out_ops,
+>> +               .init = omap3pandora_out_init,
+>> +       }, {
+>> +               .name = "TWL4030",
+>> +               .stream_name = "Line/Mic In",
+>> +               .cpu_dai = &omap_mcbsp_dai[1],
+>> +               .codec_dai = &twl4030_dai,
+>> +               .ops = &omap3pandora_in_ops,
+>> +               .init = omap3pandora_in_init,
+>> +       }
+>> +};
+>
+> Nice, first OMAP machine driver using McBSP in multilink configuration.
 
-I like this board file! It definetely deserves a place in sound/soc/omap.
+We also have bluetooth path, but I've left that for another time.
 
+>> +       if (!machine_is_omap3_pandora()) {
+>> +               pr_debug(PREFIX "Not OMAP3 Pandora\n");
+>> +               return -ENODEV;
+>> +       }
+>> +       pr_info("OMAP3 Pandora SoC init\n");
+>> +
+>
+> Minor muttering, but I don't see very much use for these debug prints.
 
-> +       /* Set McBSP clock to external */
-> +       ret = snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_SYSCLK_CLKS_EXT,
-> 0,
-> +                                           SND_SOC_CLOCK_IN);
-
-
-I'm glad to see external clocking using with McBSP. Never tested feature :-)
-
-+/* Digital audio interface glue - connects codec <--> CPU */
-> +static struct snd_soc_dai_link omap3pandora_dai[] = {
-> +       {
-> +               .name = "PCM1773",
-> +               .stream_name = "HiFi Out",
-> +               .cpu_dai = &omap_mcbsp_dai[0],
-> +               .codec_dai = &twl4030_dai,
-> +               .ops = &omap3pandora_out_ops,
-> +               .init = omap3pandora_out_init,
-> +       }, {
-> +               .name = "TWL4030",
-> +               .stream_name = "Line/Mic In",
-> +               .cpu_dai = &omap_mcbsp_dai[1],
-> +               .codec_dai = &twl4030_dai,
-> +               .ops = &omap3pandora_in_ops,
-> +               .init = omap3pandora_in_init,
-> +       }
-> +};
-
-
-Nice, first OMAP machine driver using McBSP in multilink configuration.
-
-
-> +       if (!machine_is_omap3_pandora()) {
-> +               pr_debug(PREFIX "Not OMAP3 Pandora\n");
-> +               return -ENODEV;
-> +       }
-> +       pr_info("OMAP3 Pandora SoC init\n");
-> +
-
-
-Minor muttering, but I don't see very much use for these debug prints.
-
-
-Jarkko
+Well, every other OMAP3 board file has this. Do I need to resend?
