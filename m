@@ -1,25 +1,18 @@
-From: "Jarkko Nikula" <jhnikula@gmail.com>
-Subject: Re: [PATCH] tlv320aic3x: control additions and cleanups
-Date: Fri, 5 Dec 2008 17:37:47 +0200
-Message-ID: <bd7b27490812050737k3a3efe92mefdbbd6083ba73e7@mail.gmail.com>
-References: <20081204175121.GD21010@buzzloop.caiaq.de>
-	<20081204183746.GB6628@sirena.org.uk>
-	<bd7b27490812050445l6e94ccfbx9339d87b51d518c6@mail.gmail.com>
-	<20081205130001.GB10489@sirena.org.uk>
-	<bd7b27490812050521j735b088i874f3f7f3b476f66@mail.gmail.com>
-	<20081205134257.GD10489@sirena.org.uk>
-	<20081205151103.GC1821@buzzloop.caiaq.de>
+From: John Rigg <aldev@sound-man.co.uk>
+Subject: Re: Xrun stack trace for 1010LT
+Date: Fri, 5 Dec 2008 16:02:15 +0000
+Message-ID: <20081205160215.GA3295@localhost>
+References: <227999.32830.qm@web65402.mail.ac4.yahoo.com>
+	<737104.16616.qm@web65414.mail.ac4.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id AF559103802
-	for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2008 16:37:48 +0100 (CET)
-Received: by wa-out-1112.google.com with SMTP id l35so25658waf.16
-	for <alsa-devel@alsa-project.org>; Fri, 05 Dec 2008 07:37:47 -0800 (PST)
-In-Reply-To: <20081205151103.GC1821@buzzloop.caiaq.de>
+Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id 01515103805
+	for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2008 16:49:26 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <737104.16616.qm@web65414.mail.ac4.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,19 +22,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.org>
-Cc: alsa-devel@alsa-project.org, u.luckas@road.de, Mark Brown <broonie@sirena.org.uk>
+To: Pete <peterpion@yahoo.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 5, 2008 at 5:11 PM, Daniel Mack <daniel@caiaq.org> wrote:
+On Fri, Dec 05, 2008 at 07:23:00AM -0800, Pete wrote:
+> Is there likely to be any disadvantage to running arecord rather
+> than say Jack to capture? Does (say) Jack read the card in a 'better' 
+> way?
 
->
-> As this is commited already, I'd like to make the naming cleanup part of
-> the patch with the "DAC" string removals. Is that ok for you?
->
-> Apart from that, can the other one be applied?
->
-> Yep, I think this fair move forward. It saves my ass as well ;-)
+jackd runs with realtime priority if -R option is specified
+when starting it. Running it without -R produces xruns fairly 
+often, but with -R they almost never happen on a properly configured
+system. I don't know if arecord can run with realtime priority.
 
-
-Jarkko
+John
