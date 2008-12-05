@@ -1,22 +1,16 @@
-From: Daniel Mack <daniel@caiaq.org>
-Subject: Re: [PATCH] tlv320aic3x: control additions and	cleanups
-Date: Fri, 5 Dec 2008 16:11:03 +0100
-Message-ID: <20081205151103.GC1821@buzzloop.caiaq.de>
-References: <20081204175121.GD21010@buzzloop.caiaq.de>
-	<20081204183746.GB6628@sirena.org.uk>
-	<bd7b27490812050445l6e94ccfbx9339d87b51d518c6@mail.gmail.com>
-	<20081205130001.GB10489@sirena.org.uk>
-	<bd7b27490812050521j735b088i874f3f7f3b476f66@mail.gmail.com>
-	<20081205134257.GD10489@sirena.org.uk>
+From: Pete <peterpion@yahoo.com>
+Subject: Re: Xrun stack trace for 1010LT
+Date: Fri, 5 Dec 2008 07:20:27 -0800 (PST)
+Message-ID: <227999.32830.qm@web65402.mail.ac4.yahoo.com>
+References: <20081205151709.GA3160@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id C7F2924529
-	for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2008 16:11:06 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20081205134257.GD10489@sirena.org.uk>
+Received: from web65402.mail.ac4.yahoo.com (web65402.mail.ac4.yahoo.com
+	[76.13.9.22]) by alsa0.perex.cz (Postfix) with SMTP id 7E16E24531
+	for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2008 16:20:28 +0100 (CET)
+In-Reply-To: <20081205151709.GA3160@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,29 +20,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org, u.luckas@road.de
+To: John Rigg <aldev@sound-man.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+John thanks,
 
-On Fri, Dec 05, 2008 at 01:42:58PM +0000, Mark Brown wrote:
-> Hrm.  This looks like it just substitutes two single controls for one
-> stereo control, which seems reasonable and shouldn't loose any control:
-> 
-> > -       SOC_DOUBLE_R("HP PGA Bypass Playback Volume", PGAL_2_HPLOUT_VOL,
-> > -                    PGAR_2_HPROUT_VOL, 0, 0x7f, 1),
-> > +       SOC_SINGLE("HPL PGA Bypass Playback Volume", PGAL_2_HPLOUT_VOL,
-> > +                    0, 0x7f, 1),
-> > +       SOC_SINGLE("HPR PGA Bypass Playback Volume", PGAL_2_HPROUT_VOL,
-> > +                    0, 0x7f, 1),
-> 
-> Possibly the controls are mislabeled?
+I spoke to you about 2 weeks ago about this and have been trying the various tweaks you suggested. But so far I have found no configs which have worked flawlessly, although one config had it down to about one xrun every 20 mins or so average.
 
-As this is commited already, I'd like to make the naming cleanup part of
-the patch with the "DAC" string removals. Is that ok for you?
+Thing is I am after capturing live gigs, which you dont get a second chance with. Although I suspect a small xrun would be easy to disguise but its not ideal. So I am trying to hunt down the elusive 'perfection' config.
 
-Apart from that, can the other one be applied?
+Its interesting that when I comment out the actual write call in arecord, there are no xruns. Tonight I will try the exact config you mention below. I suspect that the problem I am getting might be related to the hardware I am on though, which does not have much in the way of configurable bios. Perhaps something should be turned off which I can not access through this basic bios.
 
-Best regards,
-Daniel
+Anyway on discovering the stack trace system it was obvious that I must get it working so if it works under a non RT kernel thats where I will go next. Although it would be nice if someone could tell me a tool which would work with the RT kernel as it does interest me what could be screwing up this supposedly real time system, just from a technical interest point of view.
+
+John Rigg <aldev@sound-man.co.uk> wrote: On Fri, Dec 05, 2008 at 06:48:43AM -0800, Pete cat wrote:
+> I understand. Im only a fairly basic C coder and such, so could you
+> recommend a tool which is fairly easy to use? Or would it be better
+> to revert to a non RT kernel (there did not seem to be much improvement
+> when I moved to the RT kernel)?
+
+FWIW I've never been able to run an RT-patched kernel with pcm_multi.
+I've been using a non-rt preempt SMP kernel with three Delta 1010s for
+about three years now without too many problems, currently with
+alsa-lib-1.0.16 and 2.6.25.x kernel.
+
+John
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
