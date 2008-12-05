@@ -1,27 +1,19 @@
-From: "naveen krishna ch" <naveenkrishna.ch@gmail.com>
-Subject: Re: [PATCH 6/7] ASoC: TWL4030: Add volume controls for
-	outputs
-Date: Fri, 5 Dec 2008 16:47:36 +0530
-Message-ID: <ef0d8a250812050317p400157d0if469811c19bb4fe9@mail.gmail.com>
-References: <20081201200703.GA14376@rakim.wolfsonmicro.main>
-	<1228162061-14769-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228162061-14769-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228162061-14769-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228162061-14769-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228162061-14769-5-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228162061-14769-6-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<ef0d8a250812042044n3968719r6eb996897ce90ade@mail.gmail.com>
-	<20081205104453.GA308@rakim.wolfsonmicro.main>
+From: "Jarkko Nikula" <jhnikula@gmail.com>
+Subject: Re: [PATCH] tlv320aic3x: control additions and cleanups
+Date: Fri, 5 Dec 2008 14:45:04 +0200
+Message-ID: <bd7b27490812050445l6e94ccfbx9339d87b51d518c6@mail.gmail.com>
+References: <20081204175121.GD21010@buzzloop.caiaq.de>
+	<20081204183746.GB6628@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.249])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1B0C7103800
-	for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2008 12:17:37 +0100 (CET)
-Received: by rv-out-0708.google.com with SMTP id f25so4205081rvb.32
-	for <alsa-devel@alsa-project.org>; Fri, 05 Dec 2008 03:17:36 -0800 (PST)
-In-Reply-To: <20081205104453.GA308@rakim.wolfsonmicro.main>
+Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.175])
+	by alsa0.perex.cz (Postfix) with ESMTP id BF36910380F
+	for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2008 13:45:06 +0100 (CET)
+Received: by wf-out-1314.google.com with SMTP id 24so4675354wfg.23
+	for <alsa-devel@alsa-project.org>; Fri, 05 Dec 2008 04:45:05 -0800 (PST)
+In-Reply-To: <20081204183746.GB6628@sirena.org.uk>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,43 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: Daniel Mack <daniel@caiaq.org>, alsa-devel@alsa-project.org, u.luckas@road.de
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 5, 2008 at 4:14 PM, Mark Brown <
-broonie@opensource.wolfsonmicro.com> wrote:
+On Thu, Dec 4, 2008 at 8:37 PM, Mark Brown <broonie@sirena.org.uk> wrote:
 
-> On Fri, Dec 05, 2008 at 10:14:35AM +0530, naveen krishna ch wrote:
+> On Thu, Dec 04, 2008 at 06:51:21PM +0100, Daniel Mack wrote:
 >
-> > The min and max values are from 0 to 209 and they r repeating for every 4
-> > steps
-> > Can any one explain this
+> > - split "Line Playback Switch" into "LineL Playback Switch" and "LineR
+> >   Playback Switch"
+> > - split "Line PGA Bypass Playback Volume" into "LineL Left PGA Bypass
+> >   Playback Volume" and "LineR Right PGA Bypass Playback Volume"
 >
-> Does this patch help?
+> I can't help thinking that it'd be easier to just use "Left Line" and
+> "Right Line" but that's an existing issue in the driver.
 >
-> diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-> index 3c9fdf2..afda2fc 100644
-> --- a/sound/soc/codecs/twl4030.c
-> +++ b/sound/soc/codecs/twl4030.c
-> @@ -223,7 +223,7 @@ static void twl4030_init_chip(struct snd_soc_codec
-> *codec)
->        .put = snd_soc_put_volsw_r2_twl4030, \
->        .private_value = (unsigned long)&(struct soc_mixer_control) \
->                {.reg = reg_left, .rreg = reg_right, .shift = xshift, \
-> -               .max = xmax, .invert = xinvert} }
-> +                .rshift = xshift, .max = xmax, .invert = xinvert} }
->  #define SOC_SINGLE_TLV_TWL4030(xname, xreg, xshift, xmax, xinvert,
-> tlv_array) \
->        SOC_DOUBLE_TLV_TWL4030(xname, xreg, xshift, xshift, xmax, \
->                               xinvert, tlv_array)
 
-I am afraid But it dint help.
-The desired affect is repeating itself between 0 to 60 range.
+Yeah, same thoughts. Started to look only now, but what's the idea to
+separate stereo control into two mono control in commit
+54f01916297bafc18bd7df4e2300a0544a84fce3? Change like
+
+-       SOC_DOUBLE_R("HP PGA Bypass Playback Volume", PGAL_2_HPLOUT_VOL,
+-                    PGAR_2_HPROUT_VOL, 0, 0x7f, 1),
++       SOC_SINGLE("HPL PGA Bypass Playback Volume", PGAL_2_HPLOUT_VOL,
++                    0, 0x7f, 1),
++       SOC_SINGLE("HPR PGA Bypass Playback Volume", PGAL_2_HPROUT_VOL,
++                    0, 0x7f, 1),
 
 
-
--- 
-Thanks,
-
-(: Naveen Krishna Ch :)
+Jarkko
