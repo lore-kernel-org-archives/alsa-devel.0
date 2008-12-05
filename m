@@ -1,16 +1,24 @@
-From: Pete <peterpion@yahoo.com>
-Subject: Re: Xrun stack trace for 1010LT
-Date: Fri, 5 Dec 2008 08:11:36 -0800 (PST)
-Message-ID: <434768.7988.qm@web65408.mail.ac4.yahoo.com>
-References: <20081205160215.GA3295@localhost>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH] tlv320aic3x: control additions and cleanups
+Date: Fri, 5 Dec 2008 16:24:31 +0000
+Message-ID: <20081205162430.GE10489@sirena.org.uk>
+References: <20081204175121.GD21010@buzzloop.caiaq.de>
+	<20081204183746.GB6628@sirena.org.uk>
+	<bd7b27490812050445l6e94ccfbx9339d87b51d518c6@mail.gmail.com>
+	<20081205130001.GB10489@sirena.org.uk>
+	<bd7b27490812050521j735b088i874f3f7f3b476f66@mail.gmail.com>
+	<20081205134257.GD10489@sirena.org.uk>
+	<20081205151103.GC1821@buzzloop.caiaq.de>
+	<bd7b27490812050737k3a3efe92mefdbbd6083ba73e7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web65408.mail.ac4.yahoo.com (web65408.mail.ac4.yahoo.com
-	[76.13.9.28]) by alsa0.perex.cz (Postfix) with SMTP id 44C9510380B
-	for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2008 17:11:37 +0100 (CET)
-In-Reply-To: <20081205160215.GA3295@localhost>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3C04C1037E3
+	for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2008 17:24:33 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <bd7b27490812050737k3a3efe92mefdbbd6083ba73e7@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,28 +28,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John Rigg <aldev@sound-man.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: u.luckas@road.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-So even if the kernel is not a RT kernel, processes can run with real time priority? How is this so? From what ive read about the RT kernel it sounds like the kernel has to cooperate with the processes running on the system to allow a process to awaken (on an interrupt for instance). Otherwise the kernel will be stuck in some non interruptable state for some time, blocking the interrupt from being serviced - is that wrong?
+On Fri, Dec 05, 2008 at 05:37:47PM +0200, Jarkko Nikula wrote:
+> On Fri, Dec 5, 2008 at 5:11 PM, Daniel Mack <daniel@caiaq.org> wrote:
 
-If Jack has a way to grab higher priority through some other mechanisim, could I build this into arecord I wonder. I have of course tried nicing the process to very unnice.
+> > Apart from that, can the other one be applied?
 
+> Yep, I think this fair move forward. It saves my ass as well ;-)
 
-
-John Rigg <aldev@sound-man.co.uk> wrote: On Fri, Dec 05, 2008 at 07:23:00AM -0800, Pete wrote:
-> Is there likely to be any disadvantage to running arecord rather
-> than say Jack to capture? Does (say) Jack read the card in a 'better' 
-> way?
-
-jackd runs with realtime priority if -R option is specified
-when starting it. Running it without -R produces xruns fairly 
-often, but with -R they almost never happen on a properly configured
-system. I don't know if arecord can run with realtime priority.
-
-John
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Could you resend the exact patch that was agreed on, just to make sure?
