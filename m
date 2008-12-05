@@ -1,18 +1,22 @@
-From: John Rigg <aldev@sound-man.co.uk>
-Subject: Re: Xrun stack trace for 1010LT
-Date: Fri, 5 Dec 2008 15:17:10 +0000
-Message-ID: <20081205151709.GA3160@localhost>
-References: <s5hr64mitp9.wl%tiwai@suse.de>
-	<21718.84876.qm@web65413.mail.ac4.yahoo.com>
+From: Daniel Mack <daniel@caiaq.org>
+Subject: Re: [PATCH] tlv320aic3x: control additions and	cleanups
+Date: Fri, 5 Dec 2008 16:11:03 +0100
+Message-ID: <20081205151103.GC1821@buzzloop.caiaq.de>
+References: <20081204175121.GD21010@buzzloop.caiaq.de>
+	<20081204183746.GB6628@sirena.org.uk>
+	<bd7b27490812050445l6e94ccfbx9339d87b51d518c6@mail.gmail.com>
+	<20081205130001.GB10489@sirena.org.uk>
+	<bd7b27490812050521j735b088i874f3f7f3b476f66@mail.gmail.com>
+	<20081205134257.GD10489@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5467024523
-	for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2008 16:04:20 +0100 (CET)
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id C7F2924529
+	for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2008 16:11:06 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <21718.84876.qm@web65413.mail.ac4.yahoo.com>
+In-Reply-To: <20081205134257.GD10489@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,19 +26,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pete cat <peterpion@yahoo.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org, u.luckas@road.de
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 05, 2008 at 06:48:43AM -0800, Pete cat wrote:
-> I understand. Im only a fairly basic C coder and such, so could you
-> recommend a tool which is fairly easy to use? Or would it be better
-> to revert to a non RT kernel (there did not seem to be much improvement
-> when I moved to the RT kernel)?
+Hi,
 
-FWIW I've never been able to run an RT-patched kernel with pcm_multi.
-I've been using a non-rt preempt SMP kernel with three Delta 1010s for
-about three years now without too many problems, currently with
-alsa-lib-1.0.16 and 2.6.25.x kernel.
+On Fri, Dec 05, 2008 at 01:42:58PM +0000, Mark Brown wrote:
+> Hrm.  This looks like it just substitutes two single controls for one
+> stereo control, which seems reasonable and shouldn't loose any control:
+> 
+> > -       SOC_DOUBLE_R("HP PGA Bypass Playback Volume", PGAL_2_HPLOUT_VOL,
+> > -                    PGAR_2_HPROUT_VOL, 0, 0x7f, 1),
+> > +       SOC_SINGLE("HPL PGA Bypass Playback Volume", PGAL_2_HPLOUT_VOL,
+> > +                    0, 0x7f, 1),
+> > +       SOC_SINGLE("HPR PGA Bypass Playback Volume", PGAL_2_HPROUT_VOL,
+> > +                    0, 0x7f, 1),
+> 
+> Possibly the controls are mislabeled?
 
-John
+As this is commited already, I'd like to make the naming cleanup part of
+the patch with the "DAC" string removals. Is that ok for you?
+
+Apart from that, can the other one be applied?
+
+Best regards,
+Daniel
