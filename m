@@ -1,17 +1,15 @@
-From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-Subject: Re: [patch] alsa-utils check if __USE_BSD is defined
- before compiling "BSD functions"
-Date: Mon, 8 Dec 2008 08:48:48 +0100
-Message-ID: <20081208084848.51dd7906@hcegtvedt>
-References: <20081208072602.3b20cb50@hcegtvedt> <s5hfxkzp1b4.wl%tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH 0/8] ASoC: TWL4030: DAPM implementation for
+	outputs (playback)
+Date: Mon,  8 Dec 2008 10:09:00 +0200
+Message-ID: <1228723748-22911-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay.atmel.no (nat-132.atmel.no [80.232.32.132])
-	by alsa0.perex.cz (Postfix) with ESMTP id 75A2410381B
-	for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2008 08:48:50 +0100 (CET)
-In-Reply-To: <s5hfxkzp1b4.wl%tiwai@suse.de>
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id CFC2C103811
+	for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2008 09:09:14 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,35 +19,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: sakoman@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 08 Dec 2008 08:34:55 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
+Hello,
 
-> At Mon, 8 Dec 2008 07:26:02 +0100,
-> Hans-Christian Egtvedt wrote:
-> > 
-> > Hi,
-> > 
-> > Another bug/issue I tripped over when compiling alsa-utils in an
-> > environment using uClibc to supply the C library functions. Here I
-> > have enabled some old BSD style functions. The attached patch will
-> > honor them if they are enabled.
-> > 
-> > Without this patch I get a redefined error during compile.
-> 
-> Hmm, but with this patch, I get undefined reference errors :)
->     alsactl/init_sysfs.c:39: undefined reference to `strlcpy'
->     ....
-> 
-> Checking __USB_BSD seems insufficient, unfortunately.
-> 
+This series of patches adds DAPM implementation for all outputs
+found on TWL.
 
-Perhaps it should be UCLIBC specific? Something like
-"&& !(defined(__UCLIBC__) && defined(__USE_BSD))"
+The design allows one to configure all outputs independently from
+each other, since the internal routing of TWL actually treats them
+individually.
 
--- 
-Best regards,
-Hans-Christian Egtvedt
+The pre-DAC routings can be configured in the board specific files
+of needed. I have sent a patch which has added this to the codec driver.
+
+Based on the output routing selections all the corresponding DAC and
+analog PGA on the chain will be powered on.
+
+---
+Peter Ujfalusi (8):
+ ASoC: TWL4030: Correct DAPM_DAC with power control
+ ASoC: TWL4030: Add Analog PGA control switch to DAPM
+ ASoC: TWL4030: Add DAPM event handler for output MUX selection
+ ASoC: TWL4030: DAPM mapping of the Earpiece output
+ ASoC: TWL4030: DAPM mapping of the PreDriv outputs
+ ASoC: TWL4030: DAPM mapping of the Headset outputs
+ ASoC: TWL4030: DAPM mapping of the Carkit outputs
+ ASoC: TWL4030: DAPM mapping of the Handsfree outputs
+
+ sound/soc/codecs/twl4030.c |  248 +++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 243 insertions(+), 5 deletions(-)
