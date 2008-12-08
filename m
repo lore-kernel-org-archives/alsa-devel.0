@@ -1,17 +1,23 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 1/8] ASoC: TWL4030: Correct DAPM_DAC with power
-	control
-Date: Mon,  8 Dec 2008 10:09:01 +0200
-Message-ID: <1228723748-22911-2-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 7/8] ASoC: TWL4030: DAPM mapping of the Carkit
+	outputs
+Date: Mon,  8 Dec 2008 10:09:07 +0200
+Message-ID: <1228723748-22911-8-git-send-email-peter.ujfalusi@nokia.com>
 References: <1228723748-22911-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1228723748-22911-2-git-send-email-peter.ujfalusi@nokia.com>
+	<1228723748-22911-3-git-send-email-peter.ujfalusi@nokia.com>
+	<1228723748-22911-4-git-send-email-peter.ujfalusi@nokia.com>
+	<1228723748-22911-5-git-send-email-peter.ujfalusi@nokia.com>
+	<1228723748-22911-6-git-send-email-peter.ujfalusi@nokia.com>
+	<1228723748-22911-7-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id F4143103811
-	for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2008 09:09:15 +0100 (CET)
-In-Reply-To: <1228723748-22911-1-git-send-email-peter.ujfalusi@nokia.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id 180D310381D
+	for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2008 09:09:23 +0100 (CET)
+In-Reply-To: <1228723748-22911-7-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,43 +31,79 @@ To: alsa-devel@alsa-project.org
 Cc: sakoman@gmail.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add all four DACs to dapm_widgets with power switch.
+Adds DAPM muxing, routing for the Carkit outputs.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
- sound/soc/codecs/twl4030.c |   15 +++++++++++----
- 1 files changed, 11 insertions(+), 4 deletions(-)
+ sound/soc/codecs/twl4030.c |   37 +++++++++++++++++++++++++++++++++++++
+ 1 files changed, 37 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 3c9fdf2..3543bf6 100644
+index 4aab5a2..4fb16ec 100644
 --- a/sound/soc/codecs/twl4030.c
 +++ b/sound/soc/codecs/twl4030.c
-@@ -616,8 +616,15 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("OUTL"),
- 	SND_SOC_DAPM_OUTPUT("OUTR"),
+@@ -253,6 +253,30 @@ static const struct soc_enum twl4030_hsor_enum =
+ static const struct snd_kcontrol_new twl4030_dapm_hsor_controls =
+ SOC_DAPM_ENUM("Route", twl4030_hsor_enum);
  
--	SND_SOC_DAPM_DAC("DACL", "Left Playback", SND_SOC_NOPM, 0, 0),
--	SND_SOC_DAPM_DAC("DACR", "Right Playback", SND_SOC_NOPM, 0, 0),
-+	/* DACs */
-+	SND_SOC_DAPM_DAC("DACR1", "Right Front Playback",
-+			TWL4030_REG_AVDAC_CTL, 0, 0),
-+	SND_SOC_DAPM_DAC("DACL1", "Left Front Playback",
-+			TWL4030_REG_AVDAC_CTL, 1, 0),
-+	SND_SOC_DAPM_DAC("DACR2", "Right Rear Playback",
-+			TWL4030_REG_AVDAC_CTL, 2, 0),
-+	SND_SOC_DAPM_DAC("DACL2", "Left Rear Playback",
-+			TWL4030_REG_AVDAC_CTL, 3, 0),
++/* Carkit Left */
++static const char *twl4030_carkitl_texts[] =
++		{"Off", "DACL1 Switch", "DACL2 Switch"};
++
++static const struct soc_enum twl4030_carkitl_enum =
++	SOC_ENUM_SINGLE(TWL4030_REG_PRECKL_CTL, 1,
++			ARRAY_SIZE(twl4030_carkitl_texts),
++			twl4030_carkitl_texts);
++
++static const struct snd_kcontrol_new twl4030_dapm_carkitl_controls =
++SOC_DAPM_ENUM("Route", twl4030_carkitl_enum);
++
++/* Carkit Right */
++static const char *twl4030_carkitr_texts[] =
++		{"Off", "DACR1 Switch", "DACR2 Switch"};
++
++static const struct soc_enum twl4030_carkitr_enum =
++	SOC_ENUM_SINGLE(TWL4030_REG_PRECKR_CTL, 1,
++			ARRAY_SIZE(twl4030_carkitr_texts),
++			twl4030_carkitr_texts);
++
++static const struct snd_kcontrol_new twl4030_dapm_carkitr_controls =
++SOC_DAPM_ENUM("Route", twl4030_carkitr_enum);
++
+ static int outmixer_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
+ {
+@@ -748,6 +772,11 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 		&twl4030_dapm_hsol_controls),
+ 	SND_SOC_DAPM_MUX("HeadsetR Mux", SND_SOC_NOPM, 0, 0,
+ 		&twl4030_dapm_hsor_controls),
++	/* CarkitL/R */
++	SND_SOC_DAPM_MUX("CarkitL Mux", SND_SOC_NOPM, 0, 0,
++		&twl4030_dapm_carkitl_controls),
++	SND_SOC_DAPM_MUX("CarkitR Mux", SND_SOC_NOPM, 0, 0,
++		&twl4030_dapm_carkitr_controls),
  
  	SND_SOC_DAPM_ADC("ADCL", "Left Capture", SND_SOC_NOPM, 0, 0),
  	SND_SOC_DAPM_ADC("ADCR", "Right Capture", SND_SOC_NOPM, 0, 0),
-@@ -625,8 +632,8 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+@@ -778,6 +807,12 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	/* HeadsetR */
+ 	{"HeadsetR Mux", "DACR1 Switch", "ARXR1_APGA"},
+ 	{"HeadsetR Mux", "DACR2 Switch", "ARXR2_APGA"},
++	/* CarkitL */
++	{"CarkitL Mux", "DACL1 Switch", "ARXL1_APGA"},
++	{"CarkitL Mux", "DACL2 Switch", "ARXL2_APGA"},
++	/* CarkitR */
++	{"CarkitR Mux", "DACR1 Switch", "ARXR1_APGA"},
++	{"CarkitR Mux", "DACR2 Switch", "ARXR2_APGA"},
  
- static const struct snd_soc_dapm_route intercon[] = {
  	/* outputs */
--	{"OUTL", NULL, "DACL"},
--	{"OUTR", NULL, "DACR"},
-+	{"OUTL", NULL, "DACL2"},
-+	{"OUTR", NULL, "DACR2"},
+ 	{"OUTL", NULL, "ARXL2_APGA"},
+@@ -787,6 +822,8 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	{"PREDRIVER", NULL, "PredriveR Mux"},
+ 	{"HSOL", NULL, "HeadsetL Mux"},
+ 	{"HSOR", NULL, "HeadsetR Mux"},
++	{"CARKITL", NULL, "CarkitL Mux"},
++	{"CARKITR", NULL, "CarkitR Mux"},
  
  	/* inputs */
  	{"ADCL", NULL, "INL"},
