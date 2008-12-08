@@ -1,18 +1,24 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 0/8] ASoC: TWL4030: DAPM implementation for
-	outputs (playback)
-Date: Mon, 8 Dec 2008 11:31:39 +0000
-Message-ID: <20081208113138.GF5159@sirena.org.uk>
-References: <1228723748-22911-1-git-send-email-peter.ujfalusi@nokia.com>
+From: "Jarkko Nikula" <jhnikula@gmail.com>
+Subject: Re: ASoC: hook for codec control updates and clock
+	controls
+Date: Mon, 8 Dec 2008 13:40:28 +0200
+Message-ID: <bd7b27490812080340h166962d1gca1c103f7148f1ad@mail.gmail.com>
+References: <20081207173825.GB26551@buzzloop.caiaq.de>
+	<20081207190239.GA4457@sirena.org.uk>
+	<20081208000450.GA30181@buzzloop.caiaq.de>
+	<bd7b27490812080149m6de590cn176a317cf49bf4b3@mail.gmail.com>
+	<20081208111138.GB5159@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id EEFD6103824
-	for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2008 12:31:39 +0100 (CET)
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5271E10382F
+	for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2008 12:40:29 +0100 (CET)
+Received: by nf-out-0910.google.com with SMTP id e27so650590nfd.32
+	for <alsa-devel@alsa-project.org>; Mon, 08 Dec 2008 03:40:28 -0800 (PST)
+In-Reply-To: <20081208111138.GB5159@sirena.org.uk>
 Content-Disposition: inline
-In-Reply-To: <1228723748-22911-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +28,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: sakoman@gmail.com, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 08, 2008 at 10:09:00AM +0200, Peter Ujfalusi wrote:
+On Mon, Dec 8, 2008 at 1:11 PM, Mark Brown <broonie@sirena.org.uk> wrote:
 
-> Peter Ujfalusi (8):
->  ASoC: TWL4030: Correct DAPM_DAC with power control
->  ASoC: TWL4030: Add Analog PGA control switch to DAPM
->  ASoC: TWL4030: Add DAPM event handler for output MUX selection
->  ASoC: TWL4030: DAPM mapping of the Earpiece output
->  ASoC: TWL4030: DAPM mapping of the PreDriv outputs
->  ASoC: TWL4030: DAPM mapping of the Headset outputs
->  ASoC: TWL4030: DAPM mapping of the Carkit outputs
->  ASoC: TWL4030: DAPM mapping of the Handsfree outputs
+>
+> [You might want to check your MUA - most of your recent mails have done
+> the above and marked the first line of your reply as part of the quote.]
+>
 
-This series looks basically good - I've commented on a few issues in the
-individual patches and I'd also note that you seem to be using
-"controls" to refer to the single control for muxes in most of the
-patches, which is a little confusing.
+
+Grrr. It's gmail & iceweacel.
+
+
+>
+> > Would it work if there is some set_mclk(int enable) callback in struct
+> > aic3x_setup_data, then codec->write in aic3x_init points to higher level
+> > aic3x_write_xxx which takes care of calling set_mclk(1) when needed and
+> call
+> > aic3x_write? Also delayed set_mclk(0) can be put into aic3x driver.
+>
+> TBH I don't really see any benefit from doing this in the codec driver
+> to doing it in the core.
+>
+
+Agree. Also other codecs might use mclk for their internal state machine.
+IRCC, TSC2301 had some weird internal states and timeouts when mclk was
+required to be on and when it can be shutdown.
+
+
+Jarkko
