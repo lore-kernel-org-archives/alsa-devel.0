@@ -1,15 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 0/8] ASoC: TWL4030: DAPM implementation for
-	outputs (playback)
-Date: Mon,  8 Dec 2008 10:09:00 +0200
-Message-ID: <1228723748-22911-1-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 1/8] ASoC: TWL4030: Correct DAPM_DAC with power
+	control
+Date: Mon,  8 Dec 2008 10:09:01 +0200
+Message-ID: <1228723748-22911-2-git-send-email-peter.ujfalusi@nokia.com>
+References: <1228723748-22911-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id CFC2C103811
-	for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2008 09:09:14 +0100 (CET)
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id F4143103811
+	for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2008 09:09:15 +0100 (CET)
+In-Reply-To: <1228723748-22911-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,34 +22,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: sakoman@gmail.com
+Cc: sakoman@gmail.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Add all four DACs to dapm_widgets with power switch.
 
-This series of patches adds DAPM implementation for all outputs
-found on TWL.
-
-The design allows one to configure all outputs independently from
-each other, since the internal routing of TWL actually treats them
-individually.
-
-The pre-DAC routings can be configured in the board specific files
-of needed. I have sent a patch which has added this to the codec driver.
-
-Based on the output routing selections all the corresponding DAC and
-analog PGA on the chain will be powered on.
-
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
-Peter Ujfalusi (8):
- ASoC: TWL4030: Correct DAPM_DAC with power control
- ASoC: TWL4030: Add Analog PGA control switch to DAPM
- ASoC: TWL4030: Add DAPM event handler for output MUX selection
- ASoC: TWL4030: DAPM mapping of the Earpiece output
- ASoC: TWL4030: DAPM mapping of the PreDriv outputs
- ASoC: TWL4030: DAPM mapping of the Headset outputs
- ASoC: TWL4030: DAPM mapping of the Carkit outputs
- ASoC: TWL4030: DAPM mapping of the Handsfree outputs
+ sound/soc/codecs/twl4030.c |   15 +++++++++++----
+ 1 files changed, 11 insertions(+), 4 deletions(-)
 
- sound/soc/codecs/twl4030.c |  248 +++++++++++++++++++++++++++++++++++++++++++-
- 1 files changed, 243 insertions(+), 5 deletions(-)
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 3c9fdf2..3543bf6 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -616,8 +616,15 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 	SND_SOC_DAPM_OUTPUT("OUTL"),
+ 	SND_SOC_DAPM_OUTPUT("OUTR"),
+ 
+-	SND_SOC_DAPM_DAC("DACL", "Left Playback", SND_SOC_NOPM, 0, 0),
+-	SND_SOC_DAPM_DAC("DACR", "Right Playback", SND_SOC_NOPM, 0, 0),
++	/* DACs */
++	SND_SOC_DAPM_DAC("DACR1", "Right Front Playback",
++			TWL4030_REG_AVDAC_CTL, 0, 0),
++	SND_SOC_DAPM_DAC("DACL1", "Left Front Playback",
++			TWL4030_REG_AVDAC_CTL, 1, 0),
++	SND_SOC_DAPM_DAC("DACR2", "Right Rear Playback",
++			TWL4030_REG_AVDAC_CTL, 2, 0),
++	SND_SOC_DAPM_DAC("DACL2", "Left Rear Playback",
++			TWL4030_REG_AVDAC_CTL, 3, 0),
+ 
+ 	SND_SOC_DAPM_ADC("ADCL", "Left Capture", SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_ADC("ADCR", "Right Capture", SND_SOC_NOPM, 0, 0),
+@@ -625,8 +632,8 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 
+ static const struct snd_soc_dapm_route intercon[] = {
+ 	/* outputs */
+-	{"OUTL", NULL, "DACL"},
+-	{"OUTR", NULL, "DACR"},
++	{"OUTL", NULL, "DACL2"},
++	{"OUTR", NULL, "DACR2"},
+ 
+ 	/* inputs */
+ 	{"ADCL", NULL, "INL"},
+-- 
+1.6.0.3
