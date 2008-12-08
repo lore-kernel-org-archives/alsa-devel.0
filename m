@@ -1,18 +1,20 @@
-From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-Subject: [patch] alsa-utils check if __USE_BSD is defined
- before compiling "BSD functions"
-Date: Mon, 8 Dec 2008 07:26:02 +0100
-Message-ID: <20081208072602.3b20cb50@hcegtvedt>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 6/7] ASoC: TWL4030: Add volume controls for
+	outputs
+Date: Mon, 8 Dec 2008 09:13:56 +0200
+Message-ID: <200812080913.56256.peter.ujfalusi@nokia.com>
+References: <20081201200703.GA14376@rakim.wolfsonmicro.main>
+	<1228162061-14769-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<ef0d8a250812042044n3968719r6eb996897ce90ade@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/=.SduQjuWdlki29/aP+2saF"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay.atmel.no (nat-132.atmel.no [80.232.32.132])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9A77C1037F8
-	for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2008 07:26:02 +0100 (CET)
-Received: from hcegtvedt (dhcp-252-160.norway.atmel.com [10.191.252.160])
-	by relay.atmel.no (8.13.4/8.13.4) with ESMTP id mB86Om5s098278
-	for <alsa-devel@alsa-project.org>; Mon, 8 Dec 2008 07:24:48 +0100 (CET)
-	(envelope-from hans-christian.egtvedt@atmel.com)
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7871D103800
+	for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2008 08:14:05 +0100 (CET)
+In-Reply-To: <ef0d8a250812042044n3968719r6eb996897ce90ade@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,57 +24,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ext naveen krishna ch <naveenkrishna.ch@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
---MP_/=.SduQjuWdlki29/aP+2saF
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Hello,
 
-Hi,
+interesting...
 
-Another bug/issue I tripped over when compiling alsa-utils in an
-environment using uClibc to supply the C library functions. Here I have
-enabled some old BSD style functions. The attached patch will honor
-them if they are enabled.
+On Friday 05 December 2008 06:44:35 ext naveen krishna ch wrote:
+> On Tue, Dec 2, 2008 at 1:37 AM, Mark Brown
+> <broonie@opensource.wolfsonmicro.com> wrote:
+>
+>
+> With this implementation the
+> #amixer cset numid=3D16 3
+> numid=3D16,iface=3DMIXER,name=3D'PreDriv Playback Volume'
+>   ; type=3DINTEGER,access=3Drw---R--,values=3D2,min=3D0,max=3D209,step=3D0
+>
+>   : values=3D3,3
+>   :
+>   | dBscale-min=3D-12.00dB,step=3D6.00dB,mute=3D1
+>
+> Thanks ,,
+>
+> (: Naveen Krishna Ch :)
 
-Without this patch I get a redefined error during compile.
+I have other patches on top of that, so the numid is different, but it give=
+s:
+# amixer cset numid=3D7 3
+numid=3D7,iface=3DMIXER,name=3D'PreDriv Playback Volume'
+  ; type=3DINTEGER,access=3Drw---R--,values=3D2,min=3D0,max=3D3,step=3D0
+  : values=3D3,3
+  | dBscale-min=3D-12.00dB,step=3D6.00dB,mute=3D1
 
--- 
-Best regards,
-Hans-Christian Egtvedt
 
---MP_/=.SduQjuWdlki29/aP+2saF
-Content-Type: text/x-patch;
- name=alsa-utils-1.0.18-check-if-__use_bsd-is-defined.patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename=alsa-utils-1.0.18-check-if-__use_bsd-is-defined.patch
+-- =
 
-Index: alsa-utils-1.0.18/alsactl/init_sysdeps.c
-===================================================================
---- alsa-utils-1.0.18.orig/alsactl/init_sysdeps.c	2008-12-01 08:27:16.000000000 +0100
-+++ alsa-utils-1.0.18/alsactl/init_sysdeps.c	2008-12-01 08:27:22.000000000 +0100
-@@ -17,7 +17,7 @@
-  *
-  */
- 
--#ifdef __GLIBC__
-+#if defined(__GLIBC__) && !defined(__USE_BSD)
- static size_t strlcpy(char *dst, const char *src, size_t size)
- {
- 	size_t bytes = 0;
-
---MP_/=.SduQjuWdlki29/aP+2saF
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---MP_/=.SduQjuWdlki29/aP+2saF--
+P=E9ter
