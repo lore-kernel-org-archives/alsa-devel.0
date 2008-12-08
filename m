@@ -1,8 +1,8 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: ASoC: hook for codec control updates and
-	clock	controls
-Date: Mon, 8 Dec 2008 09:48:43 +0000
-Message-ID: <20081208094843.GA7094@sirena.org.uk>
+From: "Jarkko Nikula" <jhnikula@gmail.com>
+Subject: Re: ASoC: hook for codec control updates and clock
+	controls
+Date: Mon, 8 Dec 2008 11:49:46 +0200
+Message-ID: <bd7b27490812080149m6de590cn176a317cf49bf4b3@mail.gmail.com>
 References: <20081207173825.GB26551@buzzloop.caiaq.de>
 	<20081207190239.GA4457@sirena.org.uk>
 	<20081208000450.GA30181@buzzloop.caiaq.de>
@@ -10,11 +10,13 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 963AF103811
-	for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2008 10:48:50 +0100 (CET)
-Content-Disposition: inline
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.173])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2E0C4103811
+	for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2008 10:49:47 +0100 (CET)
+Received: by ug-out-1314.google.com with SMTP id h2so1033978ugf.24
+	for <alsa-devel@alsa-project.org>; Mon, 08 Dec 2008 01:49:46 -0800 (PST)
 In-Reply-To: <20081208000450.GA30181@buzzloop.caiaq.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,41 +27,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Daniel Mack <daniel@caiaq.org>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 08, 2008 at 01:04:50AM +0100, Daniel Mack wrote:
-> On Sun, Dec 07, 2008 at 07:02:40PM +0000, Mark Brown wrote:
+On Mon, Dec 8, 2008 at 2:04 AM, Daniel Mack <daniel@caiaq.org> wrote:
 
-> > The clocking is the responsibility of the board driver - often the
-> > clocks are disabled while the link is inctive but this up to the board
-> > driver (and ultimately the hardware design).
-
-> That makes sense. However, there is this special case I'm facing here -
-> the codec's volume settings are updated and the board driver doesn't
-> notice that, so it can't react and switch on the clock for some time.
-
-The normal thing would be to never turn off the master clock.  This is a
-very common setup - many systems will have a dedicated crystal for the
-codec which can never be disabled.  Do you actually need to turn off the
-clock (and are you sure that the codec is happy about that)?
-
+>
+> Sorry for not being precise enough here. In our case, the codec is slave
+> and all clocks are provided by the I2S master, which is a PXA processor.
+>
 > The idea is to provide a way for codecs to signal the need for the
 > master clock (or whatever clock) to be applied externally. And it's
 > actually not important what it takes to actually do that - a generic way
 > the board support code can use would be good.
+>
+> Is such an aproach feasible?
+>
+> My two cents. However, aic3x specific only.
 
-This would need to at least specify the clock that needs to be turned
-on and how many cycles it needs to be turned on for.  I'm having a hard
-time getting enthusiastic about that, it seems like too much software
-especially since we can't use the clock API for any of this due to the
-inconsistent implementations.
+Would it work if there is some set_mclk(int enable) callback in struct
+aic3x_setup_data, then codec->write in aic3x_init points to higher level
+aic3x_write_xxx which takes care of calling set_mclk(1) when needed and call
+aic3x_write? Also delayed set_mclk(0) can be put into aic3x driver.
 
-In what circumstances does the codec need the clock?  What are the
-negative consequences of it not being enabled?  If it only needs the
-clock when bypass paths are active then we should just fix the bias
-level control to set bias on when only analogue paths are active (this
-ought to be done anyway) and the machine driver can use the bias level
-callback to enable the clocks.  If it needs it at other times are you
-sure that the device is supposed to tolerate being used with the MCLK
-removed?
+Machine driver can then decide will it provide the callback.
+
+
+Jarkko
