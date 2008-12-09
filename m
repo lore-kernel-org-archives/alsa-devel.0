@@ -1,7 +1,7 @@
 From: "Harsha, Priya" <priya.harsha@intel.com>
 Subject: Re: question on hardware mixing
-Date: Tue, 9 Dec 2008 08:54:14 +0530
-Message-ID: <98769532B4BB14429434178695419EAE268A8273@bgsmsx501.gar.corp.intel.com>
+Date: Tue, 9 Dec 2008 08:56:22 +0530
+Message-ID: <98769532B4BB14429434178695419EAE268A8280@bgsmsx501.gar.corp.intel.com>
 References: <20081205165341.GA21294@rakim.wolfsonmicro.main>
 	<1228496062-21379-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<98769532B4BB14429434178695419EAE26861315@bgsmsx501.gar.corp.intel.com>
@@ -12,10 +12,9 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 296B31037EC
-	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 04:24:45 +0100 (CET)
-In-Reply-To: <75b66ecd0812081915w1f718d7dp605ea2bbc6c099d9@mail.gmail.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id EEFC11037FC
+	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 04:26:38 +0100 (CET)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,6 +28,15 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: Lee Revell <rlrevell@joe-job.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
+
+I was thinking to pass this information from snd_pcm_t->private_data. This gets copied to substream->private_data internally which would reach the driver. Am I right here?
+
+-----Original Message-----
+From: Harsha, Priya 
+Sent: Tuesday, December 09, 2008 8:54 AM
+To: 'Lee Revell'
+Cc: alsa-devel@alsa-project.org
+Subject: RE: [alsa-devel] question on hardware mixing
 
 I have a DSP engine with FW. I need to pass this information to the FW which does some processing for voice and music differently.
 
