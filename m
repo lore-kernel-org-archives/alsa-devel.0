@@ -1,17 +1,19 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 1/9] ASoC: TWL4030: Correct DAPM_DAC with power
-	control
-Date: Tue,  9 Dec 2008 08:45:43 +0200
-Message-ID: <1228805151-29385-2-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 3/9] ASoC: TWL4030: Add DAPM event handler for
+	output MUX selection
+Date: Tue,  9 Dec 2008 08:45:45 +0200
+Message-ID: <1228805151-29385-4-git-send-email-peter.ujfalusi@nokia.com>
 References: <1228805151-29385-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1228805151-29385-2-git-send-email-peter.ujfalusi@nokia.com>
+	<1228805151-29385-3-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id B85901037F1
-	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 07:46:03 +0100 (CET)
-In-Reply-To: <1228805151-29385-1-git-send-email-peter.ujfalusi@nokia.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id D2F86103820
+	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 07:46:07 +0100 (CET)
+In-Reply-To: <1228805151-29385-3-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,45 +27,61 @@ To: alsa-devel@alsa-project.org
 Cc: sakoman@gmail.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add all four DACs to dapm_widgets with power switch.
+DAPM event handler is set to filter out invalid MUX settings
+for certain outputs.
+Earpiece:
+ - 0 = Off
+ - 1 = DACL1
+ - 2 = DACL2
+ - 3 = *** Invalid ***
+ - 4 = DACR1
+
+PreDriveL/R:
+ - 0 = Off/Off
+ - 1 = DACL1/DACR1
+ - 2 = DACL2/DACR2
+ - 3 = *** Invalid/Invalid ***
+ - 4 = DACR2/DACL2
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
- sound/soc/codecs/twl4030.c |   15 +++++++++++----
- 1 files changed, 11 insertions(+), 4 deletions(-)
+ sound/soc/codecs/twl4030.c |   24 ++++++++++++++++++++++++
+ 1 files changed, 24 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 3c9fdf2..3543bf6 100644
+index 4293ec7..9d10783 100644
 --- a/sound/soc/codecs/twl4030.c
 +++ b/sound/soc/codecs/twl4030.c
-@@ -616,8 +616,15 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("OUTL"),
- 	SND_SOC_DAPM_OUTPUT("OUTR"),
+@@ -190,6 +190,30 @@ static void twl4030_init_chip(struct snd_soc_codec *codec)
  
--	SND_SOC_DAPM_DAC("DACL", "Left Playback", SND_SOC_NOPM, 0, 0),
--	SND_SOC_DAPM_DAC("DACR", "Right Playback", SND_SOC_NOPM, 0, 0),
-+	/* DACs */
-+	SND_SOC_DAPM_DAC("DACR1", "Right Front Playback",
-+			TWL4030_REG_AVDAC_CTL, 0, 0),
-+	SND_SOC_DAPM_DAC("DACL1", "Left Front Playback",
-+			TWL4030_REG_AVDAC_CTL, 1, 0),
-+	SND_SOC_DAPM_DAC("DACR2", "Right Rear Playback",
-+			TWL4030_REG_AVDAC_CTL, 2, 0),
-+	SND_SOC_DAPM_DAC("DACL2", "Left Rear Playback",
-+			TWL4030_REG_AVDAC_CTL, 3, 0),
+ }
  
- 	SND_SOC_DAPM_ADC("ADCL", "Left Capture", SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_ADC("ADCR", "Right Capture", SND_SOC_NOPM, 0, 0),
-@@ -625,8 +632,8 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 
- static const struct snd_soc_dapm_route intercon[] = {
- 	/* outputs */
--	{"OUTL", NULL, "DACL"},
--	{"OUTR", NULL, "DACR"},
-+	{"OUTL", NULL, "DACL2"},
-+	{"OUTR", NULL, "DACR2"},
- 
- 	/* inputs */
- 	{"ADCL", NULL, "INL"},
++static int outmixer_event(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
++	int ret = 0;
++	int val;
++
++	switch (e->reg) {
++	case TWL4030_REG_PREDL_CTL:
++	case TWL4030_REG_PREDR_CTL:
++	case TWL4030_REG_EAR_CTL:
++		val = w->value >> e->shift_l;
++		if (val == 3) {
++			printk(KERN_WARNING
++			"Invalid MUX setting for register 0x%02x (%d)\n",
++			      e->reg, val);
++			ret = -1;
++		}
++		break;
++	}
++
++	return ret;
++}
++
+ /*
+  * Some of the gain controls in TWL (mostly those which are associated with
+  * the outputs) are implemented in an interesting way:
 -- 
 1.6.0.3
