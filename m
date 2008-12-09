@@ -1,20 +1,25 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 4/9] ASoC: TWL4030: DAPM mapping of the
-	Earpiece output
-Date: Tue,  9 Dec 2008 12:35:47 +0200
-Message-ID: <1228818952-31082-5-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 9/9] ASoC: TWL4030: Do not alter the Headset
+	output volume on power-up/down
+Date: Tue,  9 Dec 2008 12:35:52 +0200
+Message-ID: <1228818952-31082-10-git-send-email-peter.ujfalusi@nokia.com>
 References: <1228818952-31082-1-git-send-email-peter.ujfalusi@nokia.com>
 	<1228818952-31082-2-git-send-email-peter.ujfalusi@nokia.com>
 	<1228818952-31082-3-git-send-email-peter.ujfalusi@nokia.com>
 	<1228818952-31082-4-git-send-email-peter.ujfalusi@nokia.com>
+	<1228818952-31082-5-git-send-email-peter.ujfalusi@nokia.com>
+	<1228818952-31082-6-git-send-email-peter.ujfalusi@nokia.com>
+	<1228818952-31082-7-git-send-email-peter.ujfalusi@nokia.com>
+	<1228818952-31082-8-git-send-email-peter.ujfalusi@nokia.com>
+	<1228818952-31082-9-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 77E83103868
-	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 11:36:08 +0100 (CET)
-In-Reply-To: <1228818952-31082-4-git-send-email-peter.ujfalusi@nokia.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id 9722C10386C
+	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 11:36:13 +0100 (CET)
+In-Reply-To: <1228818952-31082-9-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,74 +33,59 @@ To: alsa-devel@alsa-project.org
 Cc: sakoman@gmail.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Adds DAPM muxing, routing for the Earpiece output.
+There is a separate gain control for the Headset output already.
+Do not reset the gain to 0 dB at power up.
+In power-down, there is no need to set the Headset output gain
+to power-down mode, since if the CODECPDZ is in powered off this
+setting has no effect.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
- sound/soc/codecs/twl4030.c |   27 +++++++++++++++++++++++++++
- 1 files changed, 27 insertions(+), 0 deletions(-)
+ sound/soc/codecs/twl4030.c |   12 ++----------
+ 1 files changed, 2 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 9d10783..1da4617 100644
+index d0612a4..358aa2b 100644
 --- a/sound/soc/codecs/twl4030.c
 +++ b/sound/soc/codecs/twl4030.c
-@@ -190,6 +190,19 @@ static void twl4030_init_chip(struct snd_soc_codec *codec)
+@@ -887,7 +887,7 @@ static int twl4030_add_widgets(struct snd_soc_codec *codec)
  
- }
- 
-+/* Earpiece */
-+static const char *twl4030_earpiece_texts[] =
-+		{"Off", "DACL1", "DACL2", "Invalid",
-+		"DACR1"};
-+
-+static const struct soc_enum twl4030_earpiece_enum =
-+	SOC_ENUM_SINGLE(TWL4030_REG_EAR_CTL, 1,
-+			ARRAY_SIZE(twl4030_earpiece_texts),
-+			twl4030_earpiece_texts);
-+
-+static const struct snd_kcontrol_new twl4030_dapm_earpiece_control =
-+SOC_DAPM_ENUM("Route", twl4030_earpiece_enum);
-+
- static int outmixer_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
+ static void twl4030_power_up(struct snd_soc_codec *codec)
  {
-@@ -645,6 +658,7 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+-	u8 anamicl, regmisc1, byte, popn, hsgain;
++	u8 anamicl, regmisc1, byte, popn;
+ 	int i = 0;
  
- 	SND_SOC_DAPM_OUTPUT("OUTL"),
- 	SND_SOC_DAPM_OUTPUT("OUTR"),
-+	SND_SOC_DAPM_OUTPUT("EARPIECE"),
+ 	/* set CODECPDZ to turn on codec */
+@@ -925,10 +925,6 @@ static void twl4030_power_up(struct snd_soc_codec *codec)
+ 	popn |=	TWL4030_VMID_EN;
+ 	twl4030_write(codec, TWL4030_REG_HS_POPN_SET, popn);
  
- 	/* DACs */
- 	SND_SOC_DAPM_DAC("DACR1", "Right Front Playback",
-@@ -666,6 +680,12 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 	SND_SOC_DAPM_PGA("ARXL2_APGA", TWL4030_REG_ARXL2_APGA_CTL,
- 			0, 0, NULL, 0),
+-	/* enable output stage and gain setting */
+-	hsgain = TWL4030_HSR_GAIN_0DB | TWL4030_HSL_GAIN_0DB;
+-	twl4030_write(codec, TWL4030_REG_HS_GAIN_SET, hsgain);
+-
+ 	/* enable anti-pop ramp */
+ 	popn |= TWL4030_RAMP_EN;
+ 	twl4030_write(codec, TWL4030_REG_HS_POPN_SET, popn);
+@@ -936,17 +932,13 @@ static void twl4030_power_up(struct snd_soc_codec *codec)
  
-+	/* Output MUX controls */
-+	/* Earpiece */
-+	SND_SOC_DAPM_MUX_E("Earpiece Mux", SND_SOC_NOPM, 0, 0,
-+		&twl4030_dapm_earpiece_control, outmixer_event,
-+		SND_SOC_DAPM_PRE_REG),
-+
- 	SND_SOC_DAPM_ADC("ADCL", "Left Capture", SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_ADC("ADCR", "Right Capture", SND_SOC_NOPM, 0, 0),
- };
-@@ -676,9 +696,16 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{"ARXL2_APGA", NULL, "DACL2"},
- 	{"ARXR2_APGA", NULL, "DACR2"},
+ static void twl4030_power_down(struct snd_soc_codec *codec)
+ {
+-	u8 popn, hsgain;
++	u8 popn;
  
-+	/* Internal playback routings */
-+	/* Earpiece */
-+	{"Earpiece Mux", "DACL1", "ARXL1_APGA"},
-+	{"Earpiece Mux", "DACL2", "ARXL2_APGA"},
-+	{"Earpiece Mux", "DACR1", "ARXR1_APGA"},
-+
- 	/* outputs */
- 	{"OUTL", NULL, "ARXL2_APGA"},
- 	{"OUTR", NULL, "ARXR2_APGA"},
-+	{"EARPIECE", NULL, "Earpiece Mux"},
+ 	/* disable anti-pop ramp */
+ 	popn = twl4030_read_reg_cache(codec, TWL4030_REG_HS_POPN_SET);
+ 	popn &= ~TWL4030_RAMP_EN;
+ 	twl4030_write(codec, TWL4030_REG_HS_POPN_SET, popn);
  
- 	/* inputs */
- 	{"ADCL", NULL, "INL"},
+-	/* disable output stage and gain setting */
+-	hsgain = TWL4030_HSR_GAIN_PWR_DOWN | TWL4030_HSL_GAIN_PWR_DOWN;
+-	twl4030_write(codec, TWL4030_REG_HS_GAIN_SET, hsgain);
+-
+ 	/* disable bias out */
+ 	popn &= ~TWL4030_VMID_EN;
+ 	twl4030_write(codec, TWL4030_REG_HS_POPN_SET, popn);
 -- 
 1.6.0.3
