@@ -1,8 +1,8 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 9/9] ASoC: TWL4030: Do not alter the Headset
-	output volume on power-up/down
-Date: Tue,  9 Dec 2008 12:35:52 +0200
-Message-ID: <1228818952-31082-10-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 7/9] ASoC: TWL4030: DAPM mapping of the Carkit
+	outputs
+Date: Tue,  9 Dec 2008 12:35:50 +0200
+Message-ID: <1228818952-31082-8-git-send-email-peter.ujfalusi@nokia.com>
 References: <1228818952-31082-1-git-send-email-peter.ujfalusi@nokia.com>
 	<1228818952-31082-2-git-send-email-peter.ujfalusi@nokia.com>
 	<1228818952-31082-3-git-send-email-peter.ujfalusi@nokia.com>
@@ -10,16 +10,14 @@ References: <1228818952-31082-1-git-send-email-peter.ujfalusi@nokia.com>
 	<1228818952-31082-5-git-send-email-peter.ujfalusi@nokia.com>
 	<1228818952-31082-6-git-send-email-peter.ujfalusi@nokia.com>
 	<1228818952-31082-7-git-send-email-peter.ujfalusi@nokia.com>
-	<1228818952-31082-8-git-send-email-peter.ujfalusi@nokia.com>
-	<1228818952-31082-9-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9722C10386C
-	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 11:36:13 +0100 (CET)
-In-Reply-To: <1228818952-31082-9-git-send-email-peter.ujfalusi@nokia.com>
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id E871610389C
+	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 11:36:21 +0100 (CET)
+In-Reply-To: <1228818952-31082-7-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,59 +31,81 @@ To: alsa-devel@alsa-project.org
 Cc: sakoman@gmail.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-There is a separate gain control for the Headset output already.
-Do not reset the gain to 0 dB at power up.
-In power-down, there is no need to set the Headset output gain
-to power-down mode, since if the CODECPDZ is in powered off this
-setting has no effect.
+Adds DAPM muxing, routing for the Carkit outputs.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
- sound/soc/codecs/twl4030.c |   12 ++----------
- 1 files changed, 2 insertions(+), 10 deletions(-)
+ sound/soc/codecs/twl4030.c |   37 +++++++++++++++++++++++++++++++++++++
+ 1 files changed, 37 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index d0612a4..358aa2b 100644
+index 86ff5a9..08c33e9 100644
 --- a/sound/soc/codecs/twl4030.c
 +++ b/sound/soc/codecs/twl4030.c
-@@ -887,7 +887,7 @@ static int twl4030_add_widgets(struct snd_soc_codec *codec)
+@@ -253,6 +253,30 @@ static const struct soc_enum twl4030_hsor_enum =
+ static const struct snd_kcontrol_new twl4030_dapm_hsor_control =
+ SOC_DAPM_ENUM("Route", twl4030_hsor_enum);
  
- static void twl4030_power_up(struct snd_soc_codec *codec)
++/* Carkit Left */
++static const char *twl4030_carkitl_texts[] =
++		{"Off", "DACL1", "DACL2"};
++
++static const struct soc_enum twl4030_carkitl_enum =
++	SOC_ENUM_SINGLE(TWL4030_REG_PRECKL_CTL, 1,
++			ARRAY_SIZE(twl4030_carkitl_texts),
++			twl4030_carkitl_texts);
++
++static const struct snd_kcontrol_new twl4030_dapm_carkitl_control =
++SOC_DAPM_ENUM("Route", twl4030_carkitl_enum);
++
++/* Carkit Right */
++static const char *twl4030_carkitr_texts[] =
++		{"Off", "DACR1", "DACR2"};
++
++static const struct soc_enum twl4030_carkitr_enum =
++	SOC_ENUM_SINGLE(TWL4030_REG_PRECKR_CTL, 1,
++			ARRAY_SIZE(twl4030_carkitr_texts),
++			twl4030_carkitr_texts);
++
++static const struct snd_kcontrol_new twl4030_dapm_carkitr_control =
++SOC_DAPM_ENUM("Route", twl4030_carkitr_enum);
++
+ static int outmixer_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
  {
--	u8 anamicl, regmisc1, byte, popn, hsgain;
-+	u8 anamicl, regmisc1, byte, popn;
- 	int i = 0;
+@@ -751,6 +775,11 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 		&twl4030_dapm_hsol_control),
+ 	SND_SOC_DAPM_MUX("HeadsetR Mux", SND_SOC_NOPM, 0, 0,
+ 		&twl4030_dapm_hsor_control),
++	/* CarkitL/R */
++	SND_SOC_DAPM_MUX("CarkitL Mux", SND_SOC_NOPM, 0, 0,
++		&twl4030_dapm_carkitl_control),
++	SND_SOC_DAPM_MUX("CarkitR Mux", SND_SOC_NOPM, 0, 0,
++		&twl4030_dapm_carkitr_control),
  
- 	/* set CODECPDZ to turn on codec */
-@@ -925,10 +925,6 @@ static void twl4030_power_up(struct snd_soc_codec *codec)
- 	popn |=	TWL4030_VMID_EN;
- 	twl4030_write(codec, TWL4030_REG_HS_POPN_SET, popn);
+ 	SND_SOC_DAPM_ADC("ADCL", "Left Capture", SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_ADC("ADCR", "Right Capture", SND_SOC_NOPM, 0, 0),
+@@ -781,6 +810,12 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	/* HeadsetR */
+ 	{"HeadsetR Mux", "DACR1", "ARXR1_APGA"},
+ 	{"HeadsetR Mux", "DACR2", "ARXR2_APGA"},
++	/* CarkitL */
++	{"CarkitL Mux", "DACL1", "ARXL1_APGA"},
++	{"CarkitL Mux", "DACL2", "ARXL2_APGA"},
++	/* CarkitR */
++	{"CarkitR Mux", "DACR1", "ARXR1_APGA"},
++	{"CarkitR Mux", "DACR2", "ARXR2_APGA"},
  
--	/* enable output stage and gain setting */
--	hsgain = TWL4030_HSR_GAIN_0DB | TWL4030_HSL_GAIN_0DB;
--	twl4030_write(codec, TWL4030_REG_HS_GAIN_SET, hsgain);
--
- 	/* enable anti-pop ramp */
- 	popn |= TWL4030_RAMP_EN;
- 	twl4030_write(codec, TWL4030_REG_HS_POPN_SET, popn);
-@@ -936,17 +932,13 @@ static void twl4030_power_up(struct snd_soc_codec *codec)
+ 	/* outputs */
+ 	{"OUTL", NULL, "ARXL2_APGA"},
+@@ -790,6 +825,8 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	{"PREDRIVER", NULL, "PredriveR Mux"},
+ 	{"HSOL", NULL, "HeadsetL Mux"},
+ 	{"HSOR", NULL, "HeadsetR Mux"},
++	{"CARKITL", NULL, "CarkitL Mux"},
++	{"CARKITR", NULL, "CarkitR Mux"},
  
- static void twl4030_power_down(struct snd_soc_codec *codec)
- {
--	u8 popn, hsgain;
-+	u8 popn;
- 
- 	/* disable anti-pop ramp */
- 	popn = twl4030_read_reg_cache(codec, TWL4030_REG_HS_POPN_SET);
- 	popn &= ~TWL4030_RAMP_EN;
- 	twl4030_write(codec, TWL4030_REG_HS_POPN_SET, popn);
- 
--	/* disable output stage and gain setting */
--	hsgain = TWL4030_HSR_GAIN_PWR_DOWN | TWL4030_HSL_GAIN_PWR_DOWN;
--	twl4030_write(codec, TWL4030_REG_HS_GAIN_SET, hsgain);
--
- 	/* disable bias out */
- 	popn &= ~TWL4030_VMID_EN;
- 	twl4030_write(codec, TWL4030_REG_HS_POPN_SET, popn);
+ 	/* inputs */
+ 	{"ADCL", NULL, "INL"},
 -- 
 1.6.0.3
