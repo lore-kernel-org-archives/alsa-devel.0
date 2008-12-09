@@ -1,24 +1,20 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 8/9] ASoC: TWL4030: DAPM mapping of the
-	Handsfree outputs
-Date: Tue,  9 Dec 2008 08:45:50 +0200
-Message-ID: <1228805151-29385-9-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 4/9] ASoC: TWL4030: DAPM mapping of the
+	Earpiece output
+Date: Tue,  9 Dec 2008 08:45:46 +0200
+Message-ID: <1228805151-29385-5-git-send-email-peter.ujfalusi@nokia.com>
 References: <1228805151-29385-1-git-send-email-peter.ujfalusi@nokia.com>
 	<1228805151-29385-2-git-send-email-peter.ujfalusi@nokia.com>
 	<1228805151-29385-3-git-send-email-peter.ujfalusi@nokia.com>
 	<1228805151-29385-4-git-send-email-peter.ujfalusi@nokia.com>
-	<1228805151-29385-5-git-send-email-peter.ujfalusi@nokia.com>
-	<1228805151-29385-6-git-send-email-peter.ujfalusi@nokia.com>
-	<1228805151-29385-7-git-send-email-peter.ujfalusi@nokia.com>
-	<1228805151-29385-8-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3E651103837
-	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 07:46:10 +0100 (CET)
-In-Reply-To: <1228805151-29385-8-git-send-email-peter.ujfalusi@nokia.com>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id CA28D103820
+	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 07:46:11 +0100 (CET)
+In-Reply-To: <1228805151-29385-4-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,90 +28,72 @@ To: alsa-devel@alsa-project.org
 Cc: sakoman@gmail.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Adds DAPM muxing, routing for the Handsfree outputs.
+Adds DAPM muxing, routing for the Earpiece output.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
- sound/soc/codecs/twl4030.c |   41 +++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 41 insertions(+), 0 deletions(-)
+ sound/soc/codecs/twl4030.c |   27 +++++++++++++++++++++++++++
+ 1 files changed, 27 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index fd4f23e..9ddf521 100644
+index 9d10783..66a0965 100644
 --- a/sound/soc/codecs/twl4030.c
 +++ b/sound/soc/codecs/twl4030.c
-@@ -277,6 +277,30 @@ static const struct soc_enum twl4030_carkitr_enum =
- static const struct snd_kcontrol_new twl4030_dapm_carkitr_control =
- SOC_DAPM_ENUM("Route", twl4030_carkitr_enum);
+@@ -190,6 +190,19 @@ static void twl4030_init_chip(struct snd_soc_codec *codec)
  
-+/* Handsfree Left */
-+static const char *twl4030_handsfreel_texts[] =
-+		{"Voice", "DACL1", "DACL2", "DACR2"};
+ }
+ 
++/* Earpiece */
++static const char *twl4030_earpiece_texts[] =
++		{"Off", "DACL1", "DACL2", "Invalid",
++		"DACR1"};
 +
-+static const struct soc_enum twl4030_handsfreel_enum =
-+	SOC_ENUM_SINGLE(TWL4030_REG_HFL_CTL, 0,
-+			ARRAY_SIZE(twl4030_handsfreel_texts),
-+			twl4030_handsfreel_texts);
++static const struct soc_enum twl4030_earpiece_enum =
++	SOC_ENUM_SINGLE(TWL4030_REG_EAR_CTL, 1,
++			ARRAY_SIZE(twl4030_earpiece_texts),
++			twl4030_earpiece_texts);
 +
-+static const struct snd_kcontrol_new twl4030_dapm_handsfreel_control =
-+SOC_DAPM_ENUM("Route", twl4030_handsfreel_enum);
-+
-+/* Handsfree Right */
-+static const char *twl4030_handsfreer_texts[] =
-+		{"Voice", "DACR1", "DACR2", "DACL2"};
-+
-+static const struct soc_enum twl4030_handsfreer_enum =
-+	SOC_ENUM_SINGLE(TWL4030_REG_HFR_CTL, 0,
-+			ARRAY_SIZE(twl4030_handsfreer_texts),
-+			twl4030_handsfreer_texts);
-+
-+static const struct snd_kcontrol_new twl4030_dapm_handsfreer_control =
-+SOC_DAPM_ENUM("Route", twl4030_handsfreer_enum);
++static const struct snd_kcontrol_new twl4030_dapm_earpiece_control =
++SOC_DAPM_ENUM("Route", twl4030_earpiece_enum);
 +
  static int outmixer_event(struct snd_soc_dapm_widget *w,
  	struct snd_kcontrol *kcontrol, int event)
  {
-@@ -737,6 +761,8 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("PREDRIVER"),
- 	SND_SOC_DAPM_OUTPUT("HSOL"),
- 	SND_SOC_DAPM_OUTPUT("HSOR"),
-+	SND_SOC_DAPM_OUTPUT("HFL"),
-+	SND_SOC_DAPM_OUTPUT("HFR"),
+@@ -645,6 +658,7 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 
+ 	SND_SOC_DAPM_OUTPUT("OUTL"),
+ 	SND_SOC_DAPM_OUTPUT("OUTR"),
++	SND_SOC_DAPM_OUTPUT("EARPIECE"),
  
  	/* DACs */
  	SND_SOC_DAPM_DAC("DACR1", "Right Front Playback",
-@@ -780,6 +806,11 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 		&twl4030_dapm_carkitl_control),
- 	SND_SOC_DAPM_MUX("CarkitR Mux", SND_SOC_NOPM, 0, 0,
- 		&twl4030_dapm_carkitr_control),
-+	/* HandsfreeL/R */
-+	SND_SOC_DAPM_MUX("HandsfreeL Mux", TWL4030_REG_HFL_CTL, 5, 0,
-+		&twl4030_dapm_handsfreel_control),
-+	SND_SOC_DAPM_MUX("HandsfreeR Mux", TWL4030_REG_HFR_CTL, 5, 0,
-+		&twl4030_dapm_handsfreer_control),
+@@ -666,6 +680,12 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 	SND_SOC_DAPM_PGA("ARXL2_APGA", TWL4030_REG_ARXL2_APGA_CTL,
+ 			0, 0, NULL, 0),
  
++	/* Output MUX controls */
++	/* Earpiece */
++	SND_SOC_DAPM_MUX_E("Earpiece Mux", SND_SOC_NOPM, 0, 0,
++		&twl4030_dapm_earpiece_control, outmixer_event,
++		SND_SOC_DAPM_PRE_REG),
++
  	SND_SOC_DAPM_ADC("ADCL", "Left Capture", SND_SOC_NOPM, 0, 0),
  	SND_SOC_DAPM_ADC("ADCR", "Right Capture", SND_SOC_NOPM, 0, 0),
-@@ -816,6 +847,14 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	/* CarkitR */
- 	{"CarkitR Mux", "DACR1 Switch", "ARXR1_APGA"},
- 	{"CarkitR Mux", "DACR2 Switch", "ARXR2_APGA"},
-+	/* HandsfreeL */
-+	{"HandsfreeL Mux", "DACL1 Switch", "ARXL1_APGA"},
-+	{"HandsfreeL Mux", "DACL2 Switch", "ARXL2_APGA"},
-+	{"HandsfreeL Mux", "DACR2 Switch", "ARXR2_APGA"},
-+	/* HandsfreeR */
-+	{"HandsfreeR Mux", "DACR1 Switch", "ARXR1_APGA"},
-+	{"HandsfreeR Mux", "DACR2 Switch", "ARXR2_APGA"},
-+	{"HandsfreeR Mux", "DACL2 Switch", "ARXL2_APGA"},
+ };
+@@ -676,9 +696,16 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	{"ARXL2_APGA", NULL, "DACL2"},
+ 	{"ARXR2_APGA", NULL, "DACR2"},
  
++	/* Internal playback routings */
++	/* Earpiece */
++	{"Earpiece Mux", "DACL1 Switch", "ARXL1_APGA"},
++	{"Earpiece Mux", "DACL2 Switch", "ARXL2_APGA"},
++	{"Earpiece Mux", "DACR1 Switch", "ARXR1_APGA"},
++
  	/* outputs */
  	{"OUTL", NULL, "ARXL2_APGA"},
-@@ -827,6 +866,8 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{"HSOR", NULL, "HeadsetR Mux"},
- 	{"CARKITL", NULL, "CarkitL Mux"},
- 	{"CARKITR", NULL, "CarkitR Mux"},
-+	{"HFL", NULL, "HandsfreeL Mux"},
-+	{"HFR", NULL, "HandsfreeR Mux"},
+ 	{"OUTR", NULL, "ARXR2_APGA"},
++	{"EARPIECE", NULL, "Earpiece Mux"},
  
  	/* inputs */
  	{"ADCL", NULL, "INL"},
