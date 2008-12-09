@@ -1,25 +1,19 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 9/9] ASoC: TWL4030: Do not alter the Headset
-	output volume on power-up/down
-Date: Tue,  9 Dec 2008 08:45:51 +0200
-Message-ID: <1228805151-29385-10-git-send-email-peter.ujfalusi@nokia.com>
-References: <1228805151-29385-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1228805151-29385-2-git-send-email-peter.ujfalusi@nokia.com>
-	<1228805151-29385-3-git-send-email-peter.ujfalusi@nokia.com>
-	<1228805151-29385-4-git-send-email-peter.ujfalusi@nokia.com>
-	<1228805151-29385-5-git-send-email-peter.ujfalusi@nokia.com>
-	<1228805151-29385-6-git-send-email-peter.ujfalusi@nokia.com>
-	<1228805151-29385-7-git-send-email-peter.ujfalusi@nokia.com>
-	<1228805151-29385-8-git-send-email-peter.ujfalusi@nokia.com>
-	<1228805151-29385-9-git-send-email-peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 0/8] ASoC: TWL4030: DAPM implementation for
+	outputs (playback)
+Date: Tue, 9 Dec 2008 08:51:58 +0200
+Message-ID: <200812090851.58378.peter.ujfalusi@nokia.com>
+References: <1228723748-22911-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20081208132040.GJ5159@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0050A103837
-	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 07:46:14 +0100 (CET)
-In-Reply-To: <1228805151-29385-9-git-send-email-peter.ujfalusi@nokia.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id A41791037F1
+	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 07:52:05 +0100 (CET)
+In-Reply-To: <20081208132040.GJ5159@sirena.org.uk>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,63 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: sakoman@gmail.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: ext Mark Brown <broonie@sirena.org.uk>
+Cc: sakoman@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-There is a separate gain control for the Headset output already.
-Do not reset the gain to 0 dB at power up.
-In power-down, there is no need to set the Headset output gain
-to power-down mode, since if the CODECPDZ is in powered off this
-setting has no effect.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
----
- sound/soc/codecs/twl4030.c |   12 ++----------
- 1 files changed, 2 insertions(+), 10 deletions(-)
+On Monday 08 December 2008 15:20:41 ext Mark Brown wrote:
+> On Mon, Dec 08, 2008 at 10:09:00AM +0200, Peter Ujfalusi wrote:
+> > Based on the output routing selections all the corresponding DAC and
+> > analog PGA on the chain will be powered on.
+>
+> One other question: how does this all interact with the existing power
+> control in set_bias_level()?
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 9ddf521..51a47de 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -887,7 +887,7 @@ static int twl4030_add_widgets(struct snd_soc_codec *codec)
- 
- static void twl4030_power_up(struct snd_soc_codec *codec)
- {
--	u8 anamicl, regmisc1, byte, popn, hsgain;
-+	u8 anamicl, regmisc1, byte, popn;
- 	int i = 0;
- 
- 	/* set CODECPDZ to turn on codec */
-@@ -925,10 +925,6 @@ static void twl4030_power_up(struct snd_soc_codec *codec)
- 	popn |=	TWL4030_VMID_EN;
- 	twl4030_write(codec, TWL4030_REG_HS_POPN_SET, popn);
- 
--	/* enable output stage and gain setting */
--	hsgain = TWL4030_HSR_GAIN_0DB | TWL4030_HSL_GAIN_0DB;
--	twl4030_write(codec, TWL4030_REG_HS_GAIN_SET, hsgain);
--
- 	/* enable anti-pop ramp */
- 	popn |= TWL4030_RAMP_EN;
- 	twl4030_write(codec, TWL4030_REG_HS_POPN_SET, popn);
-@@ -936,17 +932,13 @@ static void twl4030_power_up(struct snd_soc_codec *codec)
- 
- static void twl4030_power_down(struct snd_soc_codec *codec)
- {
--	u8 popn, hsgain;
-+	u8 popn;
- 
- 	/* disable anti-pop ramp */
- 	popn = twl4030_read_reg_cache(codec, TWL4030_REG_HS_POPN_SET);
- 	popn &= ~TWL4030_RAMP_EN;
- 	twl4030_write(codec, TWL4030_REG_HS_POPN_SET, popn);
- 
--	/* disable output stage and gain setting */
--	hsgain = TWL4030_HSR_GAIN_PWR_DOWN | TWL4030_HSL_GAIN_PWR_DOWN;
--	twl4030_write(codec, TWL4030_REG_HS_GAIN_SET, hsgain);
--
- 	/* disable bias out */
- 	popn &= ~TWL4030_VMID_EN;
- 	twl4030_write(codec, TWL4030_REG_HS_POPN_SET, popn);
--- 
-1.6.0.3
+This is a good question.
+As I see: when the twl4030_power_down is called from the =
+
+twl4030_set_bias_level (SND_SOC_BIAS_STANDBY, SND_SOC_BIAS_OFF) it sets the =
+
+codec to power-off state (CODEC_MODE:CODECPDZ =3D 0), which effectively tur=
+ns =
+
+off the digital filter, analog section, so basically everything.
+When the CODECPDZ is 0, APGA, DAC, analog output settings have no effect (t=
+hey =
+
+are powered off)
+
+-- =
+
+P=E9ter
