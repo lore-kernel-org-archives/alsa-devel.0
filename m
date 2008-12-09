@@ -1,20 +1,19 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 4/9] ASoC: TWL4030: DAPM mapping of the
-	Earpiece output
-Date: Tue, 9 Dec 2008 12:08:48 +0200
-Message-ID: <200812091208.49048.peter.ujfalusi@nokia.com>
-References: <1228805151-29385-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1228805151-29385-5-git-send-email-peter.ujfalusi@nokia.com>
-	<20081209100307.GC1630@sirena.org.uk>
+Subject: [PATCH 3/9] ASoC: TWL4030: Add DAPM event handler for
+	output MUX selection
+Date: Tue,  9 Dec 2008 12:35:46 +0200
+Message-ID: <1228818952-31082-4-git-send-email-peter.ujfalusi@nokia.com>
+References: <1228818952-31082-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1228818952-31082-2-git-send-email-peter.ujfalusi@nokia.com>
+	<1228818952-31082-3-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2378610383C
-	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 11:08:57 +0100 (CET)
-In-Reply-To: <20081209100307.GC1630@sirena.org.uk>
-Content-Disposition: inline
+	by alsa0.perex.cz (Postfix) with ESMTP id EA674103858
+	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 11:36:03 +0100 (CET)
+In-Reply-To: <1228818952-31082-3-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,29 +23,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@sirena.org.uk>
-Cc: sakoman@gmail.com, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: sakoman@gmail.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
+DAPM event handler is set to filter out invalid MUX settings
+for certain outputs.
+Earpiece:
+ - 0 = Off
+ - 1 = DACL1
+ - 2 = DACL2
+ - 3 = *** Invalid ***
+ - 4 = DACR1
 
-On Tuesday 09 December 2008 12:03:07 ext Mark Brown wrote:
-> On Tue, Dec 09, 2008 at 08:45:46AM +0200, Peter Ujfalusi wrote:
-> > +static const char *twl4030_earpiece_texts[] =3D
-> > +		{"Off", "DACL1", "DACL2", "Invalid",
-> > +		"DACR1"};
->
-> ...
->
-> > +	/* Internal playback routings */
-> > +	/* Earpiece */
-> > +	{"Earpiece Mux", "DACL1 Switch", "ARXL1_APGA"},
-> > +	{"Earpiece Mux", "DACL2 Switch", "ARXL2_APGA"},
-> > +	{"Earpiece Mux", "DACR1 Switch", "ARXR1_APGA"},
->
-> These are now out of sync with each other.
+PreDriveL/R:
+ - 0 = Off/Off
+ - 1 = DACL1/DACR1
+ - 2 = DACL2/DACR2
+ - 3 = *** Invalid/Invalid ***
+ - 4 = DACR2/DACL2
 
-Aargh...
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+ sound/soc/codecs/twl4030.c |   24 ++++++++++++++++++++++++
+ 1 files changed, 24 insertions(+), 0 deletions(-)
 
--- =
-
-P=E9ter
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 4293ec7..9d10783 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -190,6 +190,30 @@ static void twl4030_init_chip(struct snd_soc_codec *codec)
+ 
+ }
+ 
++static int outmixer_event(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
++	int ret = 0;
++	int val;
++
++	switch (e->reg) {
++	case TWL4030_REG_PREDL_CTL:
++	case TWL4030_REG_PREDR_CTL:
++	case TWL4030_REG_EAR_CTL:
++		val = w->value >> e->shift_l;
++		if (val == 3) {
++			printk(KERN_WARNING
++			"Invalid MUX setting for register 0x%02x (%d)\n",
++			      e->reg, val);
++			ret = -1;
++		}
++		break;
++	}
++
++	return ret;
++}
++
+ /*
+  * Some of the gain controls in TWL (mostly those which are associated with
+  * the outputs) are implemented in an interesting way:
+-- 
+1.6.0.3
