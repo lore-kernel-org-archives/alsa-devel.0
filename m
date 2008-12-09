@@ -1,8 +1,7 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 07/18] ASoC: TWL4030: DAPM mapping of the
-	Carkit outputs
-Date: Tue,  9 Dec 2008 14:01:31 +0000
-Message-ID: <1228831302-17605-7-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 10/18] ASoC: Add card registration API
+Date: Tue,  9 Dec 2008 14:01:34 +0000
+Message-ID: <1228831302-17605-10-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20081209140101.GA17558@rakim.wolfsonmicro.main>
 	<1228831302-17605-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1228831302-17605-2-git-send-email-broonie@opensource.wolfsonmicro.com>
@@ -10,14 +9,17 @@ References: <20081209140101.GA17558@rakim.wolfsonmicro.main>
 	<1228831302-17605-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1228831302-17605-5-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1228831302-17605-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1228831302-17605-7-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1228831302-17605-8-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1228831302-17605-9-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 87C80103848
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 029DA10384D
 	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 15:01:46 +0100 (CET)
-In-Reply-To: <1228831302-17605-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <1228831302-17605-9-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,87 +30,133 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+ASoC v2 allows cards, codecs and platforms to instantiate separately,
+with the overall ASoC device only being instantiated once all the
+required components have registered. As part of backporting Liam's work
+introduce an initial version of the card registration functions. At
+present these do nothing active and are internal only, they will be
+exposed to machine drivers after further backporting.  Adding this now
+allows the datastructures used for dynamic card instantiation to be
+built up gradually.
 
-Adds DAPM muxing, routing for the Carkit outputs.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/twl4030.c |   37 +++++++++++++++++++++++++++++++++++++
- 1 files changed, 37 insertions(+), 0 deletions(-)
+ include/sound/soc.h  |    5 ++++
+ sound/soc/soc-core.c |   62 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 67 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 86ff5a9..08c33e9 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -253,6 +253,30 @@ static const struct soc_enum twl4030_hsor_enum =
- static const struct snd_kcontrol_new twl4030_dapm_hsor_control =
- SOC_DAPM_ENUM("Route", twl4030_hsor_enum);
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 79d855d..4a578b5 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -333,6 +333,11 @@ struct snd_soc_dai_link  {
+ /* SoC card */
+ struct snd_soc_card {
+ 	char *name;
++	struct device *dev;
++
++	struct list_head list;
++
++	int instantiated;
  
-+/* Carkit Left */
-+static const char *twl4030_carkitl_texts[] =
-+		{"Off", "DACL1", "DACL2"};
+ 	int (*probe)(struct platform_device *pdev);
+ 	int (*remove)(struct platform_device *pdev);
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 2f2a8d9..44fbd71 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -43,6 +43,12 @@ static DECLARE_WAIT_QUEUE_HEAD(soc_pm_waitq);
+ static struct dentry *debugfs_root;
+ #endif
+ 
++static DEFINE_MUTEX(client_mutex);
++static LIST_HEAD(card_list);
 +
-+static const struct soc_enum twl4030_carkitl_enum =
-+	SOC_ENUM_SINGLE(TWL4030_REG_PRECKL_CTL, 1,
-+			ARRAY_SIZE(twl4030_carkitl_texts),
-+			twl4030_carkitl_texts);
++static int snd_soc_register_card(struct snd_soc_card *card);
++static int snd_soc_unregister_card(struct snd_soc_card *card);
 +
-+static const struct snd_kcontrol_new twl4030_dapm_carkitl_control =
-+SOC_DAPM_ENUM("Route", twl4030_carkitl_enum);
+ /*
+  * This is a timeout to do a DAPM powerdown after a stream is closed().
+  * It can be used to eliminate pops between different playback streams, e.g.
+@@ -784,6 +790,14 @@ static int soc_probe(struct platform_device *pdev)
+ 	/* Bodge while we push things out of socdev */
+ 	card->socdev = socdev;
+ 
++	/* Bodge while we unpick instantiation */
++	card->dev = &pdev->dev;
++	ret = snd_soc_register_card(card);
++	if (ret != 0) {
++		dev_err(&pdev->dev, "Failed to register card\n");
++		return ret;
++	}
 +
-+/* Carkit Right */
-+static const char *twl4030_carkitr_texts[] =
-+		{"Off", "DACR1", "DACR2"};
+ 	if (card->probe) {
+ 		ret = card->probe(pdev);
+ 		if (ret < 0)
+@@ -863,6 +877,8 @@ static int soc_remove(struct platform_device *pdev)
+ 	if (card->remove)
+ 		card->remove(pdev);
+ 
++	snd_soc_unregister_card(card);
 +
-+static const struct soc_enum twl4030_carkitr_enum =
-+	SOC_ENUM_SINGLE(TWL4030_REG_PRECKR_CTL, 1,
-+			ARRAY_SIZE(twl4030_carkitr_texts),
-+			twl4030_carkitr_texts);
+ 	return 0;
+ }
+ 
+@@ -1957,6 +1973,52 @@ int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute)
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dai_digital_mute);
+ 
++/**
++ * snd_soc_register_card - Register a card with the ASoC core
++ *
++ * @param card Card to register
++ *
++ * Note that currently this is an internal only function: it will be
++ * exposed to machine drivers after further backporting of ASoC v2
++ * registration APIs.
++ */
++static int snd_soc_register_card(struct snd_soc_card *card)
++{
++	if (!card->name || !card->dev)
++		return -EINVAL;
 +
-+static const struct snd_kcontrol_new twl4030_dapm_carkitr_control =
-+SOC_DAPM_ENUM("Route", twl4030_carkitr_enum);
++	INIT_LIST_HEAD(&card->list);
++	card->instantiated = 0;
 +
- static int outmixer_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
++	mutex_lock(&client_mutex);
++	list_add(&card->list, &card_list);
++	mutex_unlock(&client_mutex);
++
++	dev_dbg(card->dev, "Registered card '%s'\n", card->name);
++
++	return 0;
++}
++
++/**
++ * snd_soc_unregister_card - Unregister a card with the ASoC core
++ *
++ * @param card Card to unregister
++ *
++ * Note that currently this is an internal only function: it will be
++ * exposed to machine drivers after further backporting of ASoC v2
++ * registration APIs.
++ */
++static int snd_soc_unregister_card(struct snd_soc_card *card)
++{
++	mutex_lock(&client_mutex);
++	list_del(&card->list);
++	mutex_unlock(&client_mutex);
++
++	dev_dbg(card->dev, "Unregistered card '%s'\n", card->name);
++
++	return 0;
++}
++
+ static int __devinit snd_soc_init(void)
  {
-@@ -751,6 +775,11 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 		&twl4030_dapm_hsol_control),
- 	SND_SOC_DAPM_MUX("HeadsetR Mux", SND_SOC_NOPM, 0, 0,
- 		&twl4030_dapm_hsor_control),
-+	/* CarkitL/R */
-+	SND_SOC_DAPM_MUX("CarkitL Mux", SND_SOC_NOPM, 0, 0,
-+		&twl4030_dapm_carkitl_control),
-+	SND_SOC_DAPM_MUX("CarkitR Mux", SND_SOC_NOPM, 0, 0,
-+		&twl4030_dapm_carkitr_control),
- 
- 	SND_SOC_DAPM_ADC("ADCL", "Left Capture", SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_ADC("ADCR", "Right Capture", SND_SOC_NOPM, 0, 0),
-@@ -781,6 +810,12 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	/* HeadsetR */
- 	{"HeadsetR Mux", "DACR1", "ARXR1_APGA"},
- 	{"HeadsetR Mux", "DACR2", "ARXR2_APGA"},
-+	/* CarkitL */
-+	{"CarkitL Mux", "DACL1", "ARXL1_APGA"},
-+	{"CarkitL Mux", "DACL2", "ARXL2_APGA"},
-+	/* CarkitR */
-+	{"CarkitR Mux", "DACR1", "ARXR1_APGA"},
-+	{"CarkitR Mux", "DACR2", "ARXR2_APGA"},
- 
- 	/* outputs */
- 	{"OUTL", NULL, "ARXL2_APGA"},
-@@ -790,6 +825,8 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{"PREDRIVER", NULL, "PredriveR Mux"},
- 	{"HSOL", NULL, "HeadsetL Mux"},
- 	{"HSOR", NULL, "HeadsetR Mux"},
-+	{"CARKITL", NULL, "CarkitL Mux"},
-+	{"CARKITR", NULL, "CarkitR Mux"},
- 
- 	/* inputs */
- 	{"ADCL", NULL, "INL"},
+ #ifdef CONFIG_DEBUG_FS
 -- 
 1.5.6.5
