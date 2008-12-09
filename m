@@ -1,19 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 0/8] ASoC: TWL4030: DAPM implementation for
-	outputs (playback)
-Date: Tue, 9 Dec 2008 08:51:58 +0200
-Message-ID: <200812090851.58378.peter.ujfalusi@nokia.com>
-References: <1228723748-22911-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20081208132040.GJ5159@sirena.org.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: question on hardware mixing
+Date: Tue, 09 Dec 2008 09:52:51 +0100
+Message-ID: <493E31E3.2080504@ladisch.de>
+References: <20081205165341.GA21294@rakim.wolfsonmicro.main>	<1228496062-21379-1-git-send-email-broonie@opensource.wolfsonmicro.com>	<98769532B4BB14429434178695419EAE26861315@bgsmsx501.gar.corp.intel.com>	<75b66ecd0812052058r36ed20fdo3dc6e40ac23339bf@mail.gmail.com>
+	<98769532B4BB14429434178695419EAE268614A1@bgsmsx501.gar.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id A41791037F1
-	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 07:52:05 +0100 (CET)
-In-Reply-To: <20081208132040.GJ5159@sirena.org.uk>
-Content-Disposition: inline
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 3B44D1037F4
+	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 09:52:56 +0100 (CET)
+In-Reply-To: <98769532B4BB14429434178695419EAE268614A1@bgsmsx501.gar.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,33 +21,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@sirena.org.uk>
-Cc: sakoman@gmail.com, alsa-devel@alsa-project.org
+To: "Harsha, Priya" <priya.harsha@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lee Revell <rlrevell@joe-job.com>
 List-Id: alsa-devel@alsa-project.org
 
+Harsha, Priya wrote:
+> In the trigger function - I see that from substream->runtime->private_data,
+> voice specific parameters are extracted. How and can somehow user space
+> fill in some private data to the driver so that driver can process voice
+> in a different way and music in a different way?
 
-On Monday 08 December 2008 15:20:41 ext Mark Brown wrote:
-> On Mon, Dec 08, 2008 at 10:09:00AM +0200, Peter Ujfalusi wrote:
-> > Based on the output routing selections all the corresponding DAC and
-> > analog PGA on the chain will be powered on.
->
-> One other question: how does this all interact with the existing power
-> control in set_bias_level()?
+On the Emu10k1 chip, the hardware voices are used for both PCM playback
+and wavetable (MIDI) playback.  Voice-specific parameters are set for
+MIDI data; the parameters come from the soundfont that was loaded to
+specify how the instruments sound.  (Here, the term "voice" has no
+relation to the sound of a human voice.)
 
-This is a good question.
-As I see: when the twl4030_power_down is called from the =
+As far as PCM playback is concerned, ALSA does not have any predefined
+mechanism to differentiate between voice and music audio streams.  It
+would be possible to define mixer controls to switch between these
+settings for each substream.
 
-twl4030_set_bias_level (SND_SOC_BIAS_STANDBY, SND_SOC_BIAS_OFF) it sets the =
 
-codec to power-off state (CODEC_MODE:CODECPDZ =3D 0), which effectively tur=
-ns =
-
-off the digital filter, analog section, so basically everything.
-When the CODECPDZ is 0, APGA, DAC, analog output settings have no effect (t=
-hey =
-
-are powered off)
-
--- =
-
-P=E9ter
+HTH
+Clemens
