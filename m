@@ -1,17 +1,22 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: How to write a PXA CPU
-Date: Tue, 9 Dec 2008 09:53:17 +0000
-Message-ID: <20081209095314.GB1630@sirena.org.uk>
-References: <fd90355f0812081916u34058f77pa0ead68a1ab93aae@mail.gmail.com>
+Subject: Re: [PATCH 4/9] ASoC: TWL4030: DAPM mapping of the
+	Earpiece output
+Date: Tue, 9 Dec 2008 10:03:07 +0000
+Message-ID: <20081209100307.GC1630@sirena.org.uk>
+References: <1228805151-29385-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1228805151-29385-2-git-send-email-peter.ujfalusi@nokia.com>
+	<1228805151-29385-3-git-send-email-peter.ujfalusi@nokia.com>
+	<1228805151-29385-4-git-send-email-peter.ujfalusi@nokia.com>
+	<1228805151-29385-5-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 26430103807
-	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 10:53:19 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id B895F10380E
+	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 11:03:08 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <fd90355f0812081916u34058f77pa0ead68a1ab93aae@mail.gmail.com>
+In-Reply-To: <1228805151-29385-5-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,15 +26,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Juan Pablo G?mez <juanwalker@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: sakoman@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 09, 2008 at 04:16:07AM +0100, Juan Pablo G?mez  wrote:
+On Tue, Dec 09, 2008 at 08:45:46AM +0200, Peter Ujfalusi wrote:
 
-> Hi, I'm looking for documentation that explains me how to write a PXA
-> document. It's for a NIOS 2 processor in an altera De2 board.
+> +static const char *twl4030_earpiece_texts[] =
+> +		{"Off", "DACL1", "DACL2", "Invalid",
+> +		"DACR1"};
 
-What do you mean by a "PXA document"?  There is support for the AC97 and
-SSP and I2S interfaces of the PXA CPUs in sound/soc/pxa if that's what
-you're looking for.
+...
+
+> +	/* Internal playback routings */
+> +	/* Earpiece */
+> +	{"Earpiece Mux", "DACL1 Switch", "ARXL1_APGA"},
+> +	{"Earpiece Mux", "DACL2 Switch", "ARXL2_APGA"},
+> +	{"Earpiece Mux", "DACR1 Switch", "ARXR1_APGA"},
+
+These are now out of sync with each other.
