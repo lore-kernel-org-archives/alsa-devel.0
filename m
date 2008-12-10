@@ -1,20 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 06/18] ASoC: TWL4030: DAPM mapping of the
-	Headset outputs
-Date: Wed, 10 Dec 2008 11:19:47 +0200
-Message-ID: <200812101119.47742.peter.ujfalusi@nokia.com>
-References: <20081209140101.GA17558@rakim.wolfsonmicro.main>
-	<1228831302-17605-6-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228897664.6799.3.camel@localhost>
+Subject: [PATCH 1/3] ASoC: TWL4030: Add missing Carkit output
+Date: Wed, 10 Dec 2008 12:51:46 +0200
+Message-ID: <1228906308-17374-2-git-send-email-peter.ujfalusi@nokia.com>
+References: <1228906308-17374-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4F9E8243A3
-	for <alsa-devel@alsa-project.org>; Wed, 10 Dec 2008 10:20:17 +0100 (CET)
-In-Reply-To: <1228897664.6799.3.camel@localhost>
-Content-Disposition: inline
+	by alsa0.perex.cz (Postfix) with ESMTP id 413602440E
+	for <alsa-devel@alsa-project.org>; Wed, 10 Dec 2008 11:51:58 +0100 (CET)
+In-Reply-To: <1228906308-17374-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,72 +20,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: stanley.miao@windriver.com
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
+Cc: sakoman@gmail.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 10 December 2008 10:27:44 ext stanley.miao wrote:
-> On Tue, 2008-12-09 at 14:01 +0000, Mark Brown wrote:
-> > From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> >
-> > Adds DAPM muxing, routing for the Headset outputs.
-> >
-> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> > Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> > ---
-> >  sound/soc/codecs/twl4030.c |   39
-> > +++++++++++++++++++++++++++++++++++++++ 1 files changed, 39
-> > insertions(+), 0 deletions(-)
->
-> <snip>
->
-> >  	SND_SOC_DAPM_ADC("ADCL", "Left Capture", SND_SOC_NOPM, 0, 0),
-> >  	SND_SOC_DAPM_ADC("ADCR", "Right Capture", SND_SOC_NOPM, 0, 0),
-> > @@ -744,6 +775,12 @@ static const struct snd_soc_dapm_route intercon[] =
-=3D
-> > { {"PredriveR Mux", "DACR1", "ARXR1_APGA"},
-> >  	{"PredriveR Mux", "DACR2", "ARXR2_APGA"},
-> >  	{"PredriveR Mux", "DACL2", "ARXL2_APGA"},
-> > +	/* HeadsetL */
-> > +	{"HeadsetL Mux", "DACL1", "ARXL1_APGA"},
-> > +	{"HeadsetL Mux", "DACL2", "ARXL2_APGA"},
->
-> The control names "DACR1","DACR2","DACL1","DACL2" have the same name
-> with the widgets in the first patch. I suggest you change a different
-> name to avoid confusion.
+SND_SOC_DAPM_OUTPUT definition for carkitL/R was missing.
 
-Yes, this can be confusing... I'm thinking of changing either the control =
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+ sound/soc/codecs/twl4030.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-names like this:
-"DACR1" -> "DAC Right1" or "Audio Out R1" or "Out R1"
-"DACR2" -> "DAC Right2" or "Audio Out R2" or "Out R1"
-...
-I think the "DAC Right1" type reflects better the functionality of the mux.=
-..
-
-or make the same name change, but with the SND_SOC_DAPM_DAC
-
->
-> Stanley.
-
--- =
-
-P=E9ter
-
->
-> > +	/* HeadsetR */
-> > +	{"HeadsetR Mux", "DACR1", "ARXR1_APGA"},
-> > +	{"HeadsetR Mux", "DACR2", "ARXR2_APGA"},
-> >
-> >  	/* outputs */
-> >  	{"OUTL", NULL, "ARXL2_APGA"},
-> > @@ -751,6 +788,8 @@ static const struct snd_soc_dapm_route intercon[] =
-=3D {
-> >  	{"EARPIECE", NULL, "Earpiece Mux"},
-> >  	{"PREDRIVEL", NULL, "PredriveL Mux"},
-> >  	{"PREDRIVER", NULL, "PredriveR Mux"},
-> > +	{"HSOL", NULL, "HeadsetL Mux"},
-> > +	{"HSOR", NULL, "HeadsetR Mux"},
-> >
-> >  	/* inputs */
-> >  	{"ADCL", NULL, "INL"},
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 373daa4..df9f2ce 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -761,6 +761,8 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 	SND_SOC_DAPM_OUTPUT("PREDRIVER"),
+ 	SND_SOC_DAPM_OUTPUT("HSOL"),
+ 	SND_SOC_DAPM_OUTPUT("HSOR"),
++	SND_SOC_DAPM_OUTPUT("CARKITL"),
++	SND_SOC_DAPM_OUTPUT("CARKITR"),
+ 	SND_SOC_DAPM_OUTPUT("HFL"),
+ 	SND_SOC_DAPM_OUTPUT("HFR"),
+ 
+-- 
+1.6.0.4
