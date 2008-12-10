@@ -1,24 +1,17 @@
-From: "Harsha, Priya" <priya.harsha@intel.com>
-Subject: Re: question on hardware mixing
-Date: Tue, 9 Dec 2008 22:34:27 +0530
-Message-ID: <98769532B4BB14429434178695419EAE268E1595@bgsmsx501.gar.corp.intel.com>
-References: <20081205165341.GA21294@rakim.wolfsonmicro.main>
-	<1228496062-21379-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<98769532B4BB14429434178695419EAE26861315@bgsmsx501.gar.corp.intel.com>
-	<75b66ecd0812052058r36ed20fdo3dc6e40ac23339bf@mail.gmail.com>
-	<98769532B4BB14429434178695419EAE268614A1@bgsmsx501.gar.corp.intel.com>
-	<493E31E3.2080504@ladisch.de>
-	<98769532B4BB14429434178695419EAE268E0FA6@bgsmsx501.gar.corp.intel.com>
-	<493E7B51.3030307@ladisch.de>
+From: "Manilal K M" <libregeek@gmail.com>
+Subject: No sound from laptop speakers (Resolved)
+Date: Wed, 10 Dec 2008 11:20:54 +0530
+Message-ID: <2315046d0812092150p360dcde1k92bcab8b5148f963@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id 02D8F103807
-	for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2008 18:04:39 +0100 (CET)
-In-Reply-To: <493E7B51.3030307@ladisch.de>
-Content-Language: en-US
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id B68821037F6
+	for <alsa-devel@alsa-project.org>; Wed, 10 Dec 2008 06:50:55 +0100 (CET)
+Received: by yw-out-1718.google.com with SMTP id 9so163639ywk.2
+	for <alsa-devel@alsa-project.org>; Tue, 09 Dec 2008 21:50:54 -0800 (PST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,36 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lee Revell <rlrevell@joe-job.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
------Original Message-----
-From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Clemens Ladisch
-Sent: Tuesday, December 09, 2008 7:36 PM
-To: Harsha, Priya
-Cc: alsa-devel@alsa-project.org; Lee Revell
-Subject: Re: [alsa-devel] question on hardware mixing
-
-Harsha, Priya wrote:
-> If I define mixer controls to switch between each substream,
-
-I wrote "mixer controls to switch between these settings for each
-substream", i.e., each substream would have its own flag.
-[Harsha] I am still not comfortable how to do this... I guess EMU10K1 handle this kind of mixer controls for switching... I shall look into this driver to learn more
-
-> can I use snd_pcm_t->private_data to communicate if it's a voice or
-> audio
-
-ALSA does not have a predefined mechanism to set it from userspace.
-Your driver can initialize it when it is probed, or it can change it
-when opening the substream.
-[Harsha] Thanks.... so can I assume that when I open a substream, I can set a private_data to communicate to the driver if its voice/music?
-
-HTH
-Clemens
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+SGVsbG8gZXZlcnlib2R5LAogIFJlY2VudGx5IEkgaGF2ZSBpbnN0YWxsZWQgRmVkb3JhIDEwIG9u
+IG15IENvbXBhcSBDUTQ1IGxhcHRvcC4gQnV0CnVuZm9ydHVuYXRlbHkgdGhlcmUgd2FzIG5vIHNv
+dW5kIGZyb20gdGhlIGxhcHRvcCBzcGVha2VycyBldmVuIHRob3VnaAp0aGUgaGVhZHBob25lcyB3
+b3JrZWQgcGVyZmVjdGx5LiBJIGRpZCBzb21lIGdvb2dsZSBzZWFyY2ggYnV0IGl0CmRpZG4ndCBo
+ZWxwZWQuIExhdGVyLCBvbiBhIGRpc2N1c3Npb24gYXQgI2Fsc2EoZnJlZW5vZGUubmV0KSwgb25l
+IG9mCnRoZSBJUkMgbWVtYmVyKG5pY2tuYW1lOiBjb3BwZXIpIGdhdmUgc29tZSBjbHVlIGFuZCBm
+aW5hbGx5IGZvdW5kIHRoYXQKSSBoYXZlIHRvIHVwZ3JhZGUgdGhlIGFsc2EgZHJpdmVyIGFuZCBw
+YXNzIHRoZSBtb2RlbCBpZChkZWxsLW00LTEpIGFzCmEgcGFyYW1ldGVyIGluIG1vZHByb2JlLmNv
+bmYuIEhlcmUgYXJlIHRoZSByZXN1bHRzIGdlbmVyYXRlZCBieQphbHNhLWluZm8uc2ggYmVmb3Jl
+IGFuZCBhZnRlciB1cGdyYWRpbmcgdG8gdGhlIGxhdGVzdCBhbHNhKDEuMC4xOGEpLgoKaHR0cDov
+L3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9mPTlhMjllYWMyNzMxYjNkZTFjMTcxODNkNmM0M2Fh
+YzNmYTExOTQyYzkKaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9mPTlhMjllYWMyNzMx
+YjNkZTFjMTcxODNkNmM0M2FhYzNmYTExOTQyYzkKClRoZSBvcHRpb24gSSBoYXZlIHBhc3NlZCB0
+byAvZXRjL21vZHByb2JlLmNvbmYvYWxzYS1iYXNlIGlzIDoKb3B0aW9ucyBzbmQtaGRhLWludGVs
+IG1vZGVsPWRlbGwtbTQtMQoKQWZ0ZXIgcmVib290LCBJIHdhcyBhYmxlIHRvIGhlYXIgc291bmQg
+ZnJvbSBsYXB0b3Agc3BlYWtlcnMuCgotLSAKTWFuaWxhbCBLIE0gOiDgtK7gtKPgtL/gtLLgtL7g
+tLLgtY3igI0g4LSV4LWGIOC0juC0gi4KaHR0cDovL2xpYnJlZ2Vlay5ibG9nc3BvdC5jb20KX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
+YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
