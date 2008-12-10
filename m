@@ -1,18 +1,23 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 3/3] ASoC: TWL4030: Change the name for the DACs
-Date: Wed, 10 Dec 2008 12:51:48 +0200
-Message-ID: <1228906308-17374-4-git-send-email-peter.ujfalusi@nokia.com>
-References: <1228906308-17374-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1228906308-17374-2-git-send-email-peter.ujfalusi@nokia.com>
-	<1228906308-17374-3-git-send-email-peter.ujfalusi@nokia.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: Warnings in wm8903.c (Re: Merged upstream to
+	topic/asoc branch)
+Date: Wed, 10 Dec 2008 11:25:59 +0000
+Message-ID: <20081210112558.GD31542@sirena.org.uk>
+References: <s5h8wqzzv8r.wl%tiwai@suse.de>
+	<20081201170633.GI13758@sirena.org.uk>
+	<s5h3ah7zul7.wl%tiwai@suse.de>
+	<20081201172454.GJ13758@sirena.org.uk>
+	<s5hvdu3yf6c.wl%tiwai@suse.de> <s5hmyffiuco.wl%tiwai@suse.de>
+	<s5hy6yojxrz.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id C448324413
-	for <alsa-devel@alsa-project.org>; Wed, 10 Dec 2008 11:52:50 +0100 (CET)
-In-Reply-To: <1228906308-17374-3-git-send-email-peter.ujfalusi@nokia.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 90EF624432
+	for <alsa-devel@alsa-project.org>; Wed, 10 Dec 2008 12:25:59 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hy6yojxrz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,55 +27,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: sakoman@gmail.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-To avoid confusion the names for the DACs changed:
-DACL1 -> DAC Left1
-...
+On Wed, Dec 10, 2008 at 08:26:56AM +0100, Takashi Iwai wrote:
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
----
- sound/soc/codecs/twl4030.c |   16 ++++++++--------
- 1 files changed, 8 insertions(+), 8 deletions(-)
+> Hmm, I got the warnings again on a x86-64 with gcc-4.3.2 randconfig
+> test build again.
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index e3a7115..aa9f855 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -764,13 +764,13 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("HFR"),
- 
- 	/* DACs */
--	SND_SOC_DAPM_DAC("DACR1", "Right Front Playback",
-+	SND_SOC_DAPM_DAC("DAC Right1", "Right Front Playback",
- 			TWL4030_REG_AVDAC_CTL, 0, 0),
--	SND_SOC_DAPM_DAC("DACL1", "Left Front Playback",
-+	SND_SOC_DAPM_DAC("DAC Left1", "Left Front Playback",
- 			TWL4030_REG_AVDAC_CTL, 1, 0),
--	SND_SOC_DAPM_DAC("DACR2", "Right Rear Playback",
-+	SND_SOC_DAPM_DAC("DAC Right2", "Right Rear Playback",
- 			TWL4030_REG_AVDAC_CTL, 2, 0),
--	SND_SOC_DAPM_DAC("DACL2", "Left Rear Playback",
-+	SND_SOC_DAPM_DAC("DAC Left2", "Left Rear Playback",
- 			TWL4030_REG_AVDAC_CTL, 3, 0),
- 
- 	/* Analog PGAs */
-@@ -816,10 +816,10 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- };
- 
- static const struct snd_soc_dapm_route intercon[] = {
--	{"ARXL1_APGA", NULL, "DACL1"},
--	{"ARXR1_APGA", NULL, "DACR1"},
--	{"ARXL2_APGA", NULL, "DACL2"},
--	{"ARXR2_APGA", NULL, "DACR2"},
-+	{"ARXL1_APGA", NULL, "DAC Left1"},
-+	{"ARXR1_APGA", NULL, "DAC Right1"},
-+	{"ARXL2_APGA", NULL, "DAC Left2"},
-+	{"ARXR2_APGA", NULL, "DAC Right2"},
- 
- 	/* Internal playback routings */
- 	/* Earpiece */
--- 
-1.6.0.4
+> The config is attached below.
+
+OK, I've managed to reproduce this with that .config.  I'll push a patch
+later today which adds return statements to silence the warning, meaning
+that any genuine issues won't be suppressed.
