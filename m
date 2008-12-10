@@ -1,24 +1,20 @@
-From: "stanley.miao" <stanley.miao@windriver.com>
-Subject: Re: [PATCH 06/18] ASoC: TWL4030: DAPM mapping of
-	the	Headset outputs
-Date: Wed, 10 Dec 2008 16:27:44 +0800
-Message-ID: <1228897664.6799.3.camel@localhost>
-References: <20081209140101.GA17558@rakim.wolfsonmicro.main>
-	<1228831302-17605-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228831302-17605-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228831302-17605-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228831302-17605-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228831302-17605-5-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1228831302-17605-6-git-send-email-broonie@opensource.wolfsonmicro.com>
-Reply-To: stanley.miao@windriver.com
+From: "Manilal K M" <libregeek@gmail.com>
+Subject: Re: No sound from laptop speakers (Resolved)
+Date: Wed, 10 Dec 2008 14:22:29 +0530
+Message-ID: <2315046d0812100052l326bd438p704945f7e27ae8db@mail.gmail.com>
+References: <2315046d0812092150p360dcde1k92bcab8b5148f963@mail.gmail.com>
+	<s5h1vwgldby.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.wrs.com (mail.windriver.com [147.11.1.11])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4A2DC24354
-	for <alsa-devel@alsa-project.org>; Wed, 10 Dec 2008 09:21:04 +0100 (CET)
-In-Reply-To: <1228831302-17605-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.247])
+	by alsa0.perex.cz (Postfix) with ESMTP id A7DE12436C
+	for <alsa-devel@alsa-project.org>; Wed, 10 Dec 2008 09:52:31 +0100 (CET)
+Received: by rv-out-0708.google.com with SMTP id f25so308548rvb.32
+	for <alsa-devel@alsa-project.org>; Wed, 10 Dec 2008 00:52:30 -0800 (PST)
+In-Reply-To: <s5h1vwgldby.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,51 +24,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2008-12-09 at 14:01 +0000, Mark Brown wrote:
-> From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> 
-> Adds DAPM muxing, routing for the Headset outputs.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/codecs/twl4030.c |   39 +++++++++++++++++++++++++++++++++++++++
->  1 files changed, 39 insertions(+), 0 deletions(-)
-> 
-<snip>
->  
->  	SND_SOC_DAPM_ADC("ADCL", "Left Capture", SND_SOC_NOPM, 0, 0),
->  	SND_SOC_DAPM_ADC("ADCR", "Right Capture", SND_SOC_NOPM, 0, 0),
-> @@ -744,6 +775,12 @@ static const struct snd_soc_dapm_route intercon[] = {
->  	{"PredriveR Mux", "DACR1", "ARXR1_APGA"},
->  	{"PredriveR Mux", "DACR2", "ARXR2_APGA"},
->  	{"PredriveR Mux", "DACL2", "ARXL2_APGA"},
-> +	/* HeadsetL */
-> +	{"HeadsetL Mux", "DACL1", "ARXL1_APGA"},
-> +	{"HeadsetL Mux", "DACL2", "ARXL2_APGA"},
-
-The control names "DACR1","DACR2","DACL1","DACL2" have the same name
-with the widgets in the first patch. I suggest you change a different
-name to avoid confusion.
-
-Stanley.
-
-> +	/* HeadsetR */
-> +	{"HeadsetR Mux", "DACR1", "ARXR1_APGA"},
-> +	{"HeadsetR Mux", "DACR2", "ARXR2_APGA"},
->  
->  	/* outputs */
->  	{"OUTL", NULL, "ARXL2_APGA"},
-> @@ -751,6 +788,8 @@ static const struct snd_soc_dapm_route intercon[] = {
->  	{"EARPIECE", NULL, "Earpiece Mux"},
->  	{"PREDRIVEL", NULL, "PredriveL Mux"},
->  	{"PREDRIVER", NULL, "PredriveR Mux"},
-> +	{"HSOL", NULL, "HeadsetL Mux"},
-> +	{"HSOR", NULL, "HeadsetR Mux"},
->  
->  	/* inputs */
->  	{"ADCL", NULL, "INL"},
+MjAwOC8xMi8xMCBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Ogo+IEF0IFdlZCwgMTAgRGVj
+IDIwMDggMTE6MjA6NTQgKzA1MzAsCj4gTWFuaWxhbCBLIE0gd3JvdGU6Cj4+Cj4+IEhlbGxvIGV2
+ZXJ5Ym9keSwKPj4gICBSZWNlbnRseSBJIGhhdmUgaW5zdGFsbGVkIEZlZG9yYSAxMCBvbiBteSBD
+b21wYXEgQ1E0NSBsYXB0b3AuIEJ1dAo+PiB1bmZvcnR1bmF0ZWx5IHRoZXJlIHdhcyBubyBzb3Vu
+ZCBmcm9tIHRoZSBsYXB0b3Agc3BlYWtlcnMgZXZlbiB0aG91Z2gKPj4gdGhlIGhlYWRwaG9uZXMg
+d29ya2VkIHBlcmZlY3RseS4gSSBkaWQgc29tZSBnb29nbGUgc2VhcmNoIGJ1dCBpdAo+PiBkaWRu
+J3QgaGVscGVkLiBMYXRlciwgb24gYSBkaXNjdXNzaW9uIGF0ICNhbHNhKGZyZWVub2RlLm5ldCks
+IG9uZSBvZgo+PiB0aGUgSVJDIG1lbWJlcihuaWNrbmFtZTogY29wcGVyKSBnYXZlIHNvbWUgY2x1
+ZSBhbmQgZmluYWxseSBmb3VuZCB0aGF0Cj4+IEkgaGF2ZSB0byB1cGdyYWRlIHRoZSBhbHNhIGRy
+aXZlciBhbmQgcGFzcyB0aGUgbW9kZWwgaWQoZGVsbC1tNC0xKSBhcwo+PiBhIHBhcmFtZXRlciBp
+biBtb2Rwcm9iZS5jb25mLiBIZXJlIGFyZSB0aGUgcmVzdWx0cyBnZW5lcmF0ZWQgYnkKPj4gYWxz
+YS1pbmZvLnNoIGJlZm9yZSBhbmQgYWZ0ZXIgdXBncmFkaW5nIHRvIHRoZSBsYXRlc3QgYWxzYSgx
+LjAuMThhKS4KPj4KPj4gaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9mPTlhMjllYWMy
+NzMxYjNkZTFjMTcxODNkNmM0M2FhYzNmYTExOTQyYzkKPj4gaHR0cDovL3d3dy5hbHNhLXByb2pl
+Y3Qub3JnL2RiLz9mPTlhMjllYWMyNzMxYjNkZTFjMTcxODNkNmM0M2FhYzNmYTExOTQyYzkKPj4K
+Pj4gVGhlIG9wdGlvbiBJIGhhdmUgcGFzc2VkIHRvIC9ldGMvbW9kcHJvYmUuY29uZi9hbHNhLWJh
+c2UgaXMgOgo+PiBvcHRpb25zIHNuZC1oZGEtaW50ZWwgbW9kZWw9ZGVsbC1tNC0xCj4+Cj4+IEFm
+dGVyIHJlYm9vdCwgSSB3YXMgYWJsZSB0byBoZWFyIHNvdW5kIGZyb20gbGFwdG9wIHNwZWFrZXJz
+Lgo+Cj4gVGhhbmtzIGZvciByZXBvcnRpbmcuCj4KPiBDb3VsZCB5b3UgdHJ5IHRoZSBsYXRlc3Qg
+c25hcHNob3QgYmVsb3cgYW5kIGNoZWNrIHdoZXRoZXIgdGhlIHByb2JsZW0KPiBzdGlsbCBleGlz
+dHMgYW5kIG1vZGVsPWRlbGwtbTQtMSB3b3Jrcz8KPiAgICBmdHA6Ly9mdHAua2VybmVsLm9yZy9w
+dWIvbGludXgva2VybmVsL3Blb3BsZS90aXdhaS9zbmFwc2hvdC9hbHNhLWRyaXZlci1zbmFwc2hv
+dC50YXIuZ3oKPgo+IElmIHRoZSBtb2RlbCBvcHRpb24gaXMgc3RpbGwgbmVlZGVkLCBJJ2xsIGFk
+ZCB0aGUgcXVpcmsgZW50cnkuCj4KPiBOb3RlIHRoYXQgeW91IHNob3VsZCByZWJvb3QgYWZ0ZXIg
+Y2hhbmdpbmcgdGhlIG1vZGVsIG9wdGlvbiBmb3IKPiBTVEFDL0lEVCBjb2RlYywganVzdCB0byBi
+ZSBzdXJlLiAgV2hlbiBhIG1vZGVsIG9wdGlvbiBpcyBzcGVjaWZpZWQsCj4gdGhlIGRyaXZlciBt
+YXkgb3ZlcnJpZGUgdGhlIEJJT1Mgc2V0dGluZy4KPgo+Cj4gdGhhbmtzLAo+Cj4gVGFrYXNoaQo+
+CgpUaGFua3MgZm9yIHlvdXIgY29uc2lkZXJhdGlvbi4gUmlnaHQgbm93IEkgZG9uJ3QgaGF2ZSBh
+Y2Nlc3MgdG8gbXkKbGFwdG9wLiBJIHdpbGxzIHN1cmVseSB0ZXN0IGl0ICB0aGlzIHdlZWtlbmQg
+YW5kIGxldCB5b3Uga25vdyB0aGUKc3RhdHVzLgoKcmVnYXJkcwoKLS0gCk1hbmlsYWwgSyBNIDog
+4LSu4LSj4LS/4LSy4LS+4LSy4LWN4oCNIOC0leC1hiDgtI7gtIIuCmh0dHA6Ly9saWJyZWdlZWsu
+YmxvZ3Nwb3QuY29tCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
