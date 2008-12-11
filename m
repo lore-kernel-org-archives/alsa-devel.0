@@ -1,19 +1,18 @@
-From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
-Subject: Re: More notes on HD-audio driver
-Date: Thu, 11 Dec 2008 00:20:13 +0100
-Message-ID: <fd3eb9bf0812101520o51ef8cccx5dabcb91c075ad89@mail.gmail.com>
-References: <s5hmyf4cei7.wl%tiwai@suse.de>
+From: "Stanley.Miao" <stanley.miao@windriver.com>
+Subject: [PATCH] TWL4030: Add event callback to enable
+	hands-free.
+Date: Thu, 11 Dec 2008 09:52:01 +0800
+Message-ID: <1228960321-27827-1-git-send-email-stanley.miao@windriver.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.244])
-	by alsa0.perex.cz (Postfix) with ESMTP id 955B624405
-	for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2008 00:20:15 +0100 (CET)
-Received: by an-out-0708.google.com with SMTP id b2so318213ana.2
-	for <alsa-devel@alsa-project.org>; Wed, 10 Dec 2008 15:20:14 -0800 (PST)
-In-Reply-To: <s5hmyf4cei7.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from mail.wrs.com (mail.windriver.com [147.11.1.11])
+	by alsa0.perex.cz (Postfix) with ESMTP id C9D162446B
+	for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2008 02:45:18 +0100 (CET)
+Received: from ALA-MAIL03.corp.ad.wrs.com (ala-mail03 [147.11.57.144])
+	by mail.wrs.com (8.13.6/8.13.6) with ESMTP id mBB1jCqm023531
+	for <alsa-devel@alsa-project.org>; Wed, 10 Dec 2008 17:45:14 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,35 +22,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-MjAwOC8xMi8xMCBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Ogo+IEhpLAo+Cj4gcGVyIHBv
-cHVsYXIgZGVtYW5kLCBJIHdyb3RlIGEgYnJpZWYgZG9jdW1lbnQgbW9yZSBhYm91dCBIRC1hdWRp
-byBkcml2ZXIuCj4gSXQncyBub3cgZm91bmQgaW4gc291bmQgZ2l0IHRyZWUgYXMgRG9jdW1lbnRh
-dGlvbi9zb3VuZC9hbHNhL0hELUF1ZGlvLnR4dC4KPiBUaGUgZ2l0IHRyZWUgaXM6Cj4gIGdpdDov
-L2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90aXdhaS9zb3VuZC0yLjYu
-Z2l0Cj4KPiBZb3UgY2FuIGdldCB0aGUgdGV4dCBmcm9tIHdlYjoKPiAgaHR0cDovL2dpdC5rZXJu
-ZWwub3JnLz9wPWxpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQtMi42LmdpdDthPWJsb2JfcGxh
-aW47Zj1Eb2N1bWVudGF0aW9uL3NvdW5kL2Fsc2EvSEQtQXVkaW8udHh0O2hiPUhFQUQKPgo+IEEg
-UERGIGZpbGUgaXMgZm91bmQgYXQ6Cj4gIGh0dHA6Ly9mdHAua2VybmVsLm9yZy9wdWIvbGludXgv
-a2VybmVsL3Blb3BsZS90aXdhaS9kb2NzL0hELUF1ZGlvLnBkZgo+Cj4gQ29tbWVudHMsIGNvcnJl
-Y3Rpb25zIGFuZCBhZGRpdGlvbnMgYXJlIGFwcHJlY2lhdGVkLgo+Cj4gdGhhbmtzLAo+Cj4gVGFr
-YXNoaQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4g
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo+CgpOaWNlLiByZWFsbHkgaW50ZXJlc3RpbmcsIGFuZCBob3BlIGl0IHdpbGwgYmUgaGVscGZ1
-bCB0byBib3RoIHVzZXJzCmFuZCBkZXZlbG9wZXJzLgoKRmV3IHN1Z2dlc3Rpb25zOgoqIElmIG5v
-IG1vZGVsIG9wdGlvbiBnaXZlcyB5b3UgYSBiZXR0ZXIgcmVzdWx0LCBhbmQgeW91IGFyZSBhIHRv
-dWNoCmd1eSB0byBmaWdodCBhZ2FpbiB0aGUgZXZpbCAtLSBncmFtbWFyL3NwZWxsaW5nIGVycm9y
-cywgSSB3b3VsZApyZXN0YXRlIGl0IGFzICJJZiBubyBtb2RlbCBvcHRpb24gZ2l2ZXMgeW91IGEg
-YmV0dGVyIHJlc3VsdCwgYW5kIHlvdQphcmUgYSB0b3VnaCBndXkgYW5kIHdhbnQgdG8gZmlnaHQg
-YWdhaW5zdCBldmlsIgoqIE1heWJlIHlvdSBzaG91bGQgYWRkIGNvZGVjZ3JhcGggdG8gdGhlIHV0
-aWxzIGxpc3QgLQpodHRwOi8vaGVsbGxhYnMub3JnL2NvZGVjZ3JhcGgvCiogQWRkIGxpbmtzIHRv
-IGNvZGVjIG1hbmFmYWN0dXJlcnMgKHBlcmhhcHMgZXZlbiB0aGVpciBkb2N1bWVudGF0aW9uCmZv
-ciBIREEgY29kZWNzKSwgbGlrZSBSZWFsdGVrLCBJRFQsIEFuYWxvZyBEZXZpY2VzIGV0Yy4KCktl
-ZXAgdXAgdGhlIGdyZWF0IHdvcmshCgotLSAKVmVkcmFuIE1pbGV0acSHCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+A special sequence is required to enable hands-free on TWL4030.
+
+Signed-off-by: Stanley.Miao <stanley.miao@windriver.com>
+---
+ sound/soc/codecs/twl4030.c |   33 +++++++++++++++++++++++++++++----
+ sound/soc/codecs/twl4030.h |    6 ++++++
+ 2 files changed, 35 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 71ab534..86d6553 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -325,6 +325,29 @@ static int outmixer_event(struct snd_soc_dapm_widget *w,
+ 	return ret;
+ }
+ 
++static int handsfree_event(struct snd_soc_dapm_widget *w,
++		struct snd_kcontrol *kcontrol, int event)
++{
++	struct soc_enum *e = (struct soc_enum *)w->kcontrols->private_value;
++	unsigned char hs_ctl;
++
++
++	hs_ctl = twl4030_read_reg_cache(w->codec, e->reg);
++
++	if (hs_ctl & TWL4030_HF_CTL_REF_EN) {
++		hs_ctl |= TWL4030_HF_CTL_RAMP_EN;
++		twl4030_write(w->codec, e->reg, hs_ctl);
++		hs_ctl |= TWL4030_HF_CTL_LOOP_EN;
++		twl4030_write(w->codec, e->reg, hs_ctl);
++		hs_ctl |= TWL4030_HF_CTL_HB_EN;
++		twl4030_write(w->codec, e->reg, hs_ctl);
++	} else {
++		twl4030_write(w->codec, e->reg, 0x0);
++	}
++
++	return 0;
++}
++
+ /*
+  * Some of the gain controls in TWL (mostly those which are associated with
+  * the outputs) are implemented in an interesting way:
+@@ -807,10 +830,12 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MUX("CarkitR Mux", SND_SOC_NOPM, 0, 0,
+ 		&twl4030_dapm_carkitr_control),
+ 	/* HandsfreeL/R */
+-	SND_SOC_DAPM_MUX("HandsfreeL Mux", TWL4030_REG_HFL_CTL, 5, 0,
+-		&twl4030_dapm_handsfreel_control),
+-	SND_SOC_DAPM_MUX("HandsfreeR Mux", TWL4030_REG_HFR_CTL, 5, 0,
+-		&twl4030_dapm_handsfreer_control),
++	SND_SOC_DAPM_MUX_E("HandsfreeL Mux", TWL4030_REG_HFL_CTL, 5, 0,
++		&twl4030_dapm_handsfreel_control, handsfree_event,
++		SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MUX_E("HandsfreeR Mux", TWL4030_REG_HFR_CTL, 5, 0,
++		&twl4030_dapm_handsfreer_control, handsfree_event,
++		SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
+ 
+ 	SND_SOC_DAPM_ADC("ADCL", "Left Capture", SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_ADC("ADCR", "Right Capture", SND_SOC_NOPM, 0, 0),
+diff --git a/sound/soc/codecs/twl4030.h b/sound/soc/codecs/twl4030.h
+index a2065d4..54615c7 100644
+--- a/sound/soc/codecs/twl4030.h
++++ b/sound/soc/codecs/twl4030.h
+@@ -191,6 +191,12 @@
+ #define TWL4030_RAMP_DELAY_2581MS	0x1C
+ #define TWL4030_RAMP_EN			0x02
+ 
++/* HFL_CTL (0x29, 0x2A) Fields */
++#define TWL4030_HF_CTL_HB_EN		0x04
++#define TWL4030_HF_CTL_LOOP_EN		0x08
++#define TWL4030_HF_CTL_RAMP_EN		0x10
++#define TWL4030_HF_CTL_REF_EN		0x20
++
+ /* APLL_CTL (0x3A) Fields */
+ 
+ #define TWL4030_APLL_EN			0x10
+-- 
+1.5.6.3
