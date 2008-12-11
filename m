@@ -1,18 +1,25 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] TWL4030: Add event callback to enable
-	hands-free.
-Date: Thu, 11 Dec 2008 12:53:48 +0000
-Message-ID: <20081211125347.GC30808@sirena.org.uk>
-References: <1228960321-27827-1-git-send-email-stanley.miao@windriver.com>
+From: "Bryan Wu" <cooloney@kernel.org>
+Subject: Re: [Question] Can I open a substream in kernel space
+	without attach to a file pointer?
+Date: Thu, 11 Dec 2008 21:19:21 +0800
+Message-ID: <386072610812110519j78aa8971ga37635658741b021@mail.gmail.com>
+References: <386072610811190200l576d7735rb0188ab53f5185fa@mail.gmail.com>
+	<s5h63mjddvj.wl%tiwai@suse.de>
+	<386072610811190742ycab0dbasc585376dc6ac47db@mail.gmail.com>
+	<s5hljvfbt8h.wl%tiwai@suse.de>
+	<386072610812110240l7af568f9h40c672036abe49f6@mail.gmail.com>
+	<s5hoczidimg.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id A3ABB103802
-	for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2008 13:53:54 +0100 (CET)
+Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.174])
+	by alsa0.perex.cz (Postfix) with ESMTP id 22663244AE
+	for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2008 14:19:22 +0100 (CET)
+Received: by wf-out-1314.google.com with SMTP id 24so670689wfg.23
+	for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2008 05:19:22 -0800 (PST)
+In-Reply-To: <s5hoczidimg.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <1228960321-27827-1-git-send-email-stanley.miao@windriver.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,21 +29,162 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Stanley.Miao" <stanley.miao@windriver.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 11, 2008 at 09:52:01AM +0800, Stanley.Miao wrote:
-> A special sequence is required to enable hands-free on TWL4030.
-> 
-> Signed-off-by: Stanley.Miao <stanley.miao@windriver.com>
+On Thu, Dec 11, 2008 at 8:03 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Thu, 11 Dec 2008 18:40:38 +0800,
+> Bryan Wu wrote:
+>>
+>> Hi Takashi,
+>>
+>> I just made some progress about this USB audio gadget driver. But I
+>> still got some questions about the audio playback.
+>> Please kindly help me to work out here, as you're the best one to ask, -:)
+>>
+>> I can receive ISO transfer packets from PC host. The packet includes
+>> 192 bytes audio data.
+>> So I tried to use vfs_write() function to write this 192 bytes to the
+>> opened snd card.
+>> There is no sound.
+>>
+>> Then I create a buffer which is 6K bytes size and a workqueue. I will
+>> fill the 6K buffer with the ISO packets data.
+>> When the 6K buffer is full, in the workqueue handler I will call
+>> vfs_write() function to write these 6K bytes data to the sound card.
+>> This time, sound played and it works although it is not very smooth.
+>>
+>> So I guess the audio buffer I great is very important to playback audio.
+>> How to choose the buffer size? If the size < 6K, there is no sound.
+>> I guess it depends on the sound card hardware, but I failed to find
+>> any info from hw_params and sw_params.
+>
+> Well, this pretty much depends on the "sound card" you are accessing.
+> You mentioned about AD1980 but the question is rather what
+> controller is used.  The codec chip is basically independent from the
+> DMA transfer parameter.
+>
 
-I've applied this but I'm a bit nervous about this:
+Right, currently I'm trying AD1980 which using DMA transfer by
+Blackfin BF54x processor.
 
-> +	} else {
-> +		twl4030_write(w->codec, e->reg, 0x0);
-> +	}
+>> Actually, I want to remove the audio buffer here, just write the 192
+>> audio data to sound card directly. Is that possible?
+>
+> Also depends on the hardware.  If the audio chip requires the DMA
+> transfer, you'd need anyway a buffer.
+>
 
-since that's clearing bits other than those which were enabled.  It
-looks like there aren't any other bits in the register but it'd be good
-to be more explicit about this.
+So how to determine the buffer size based on the DMA hardware configuration?
+I tried to change the period_size and buffer_size of the runtime struct.
+It also didn't work.
+
+Thanks a lot
+-Bryan
+
+>
+> Takashi
+>
+>>
+>> Thanks a lot.
+>> -Bryan
+>>
+>>
+>> On Thu, Nov 20, 2008 at 12:01 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > At Wed, 19 Nov 2008 23:42:48 +0800,
+>> > Bryan Wu wrote:
+>> >>
+>> >> On Wed, Nov 19, 2008 at 9:49 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> >> > At Wed, 19 Nov 2008 18:00:36 +0800,
+>> >> > Bryan Wu wrote:
+>> >> >>
+>> >> >> Hi Takashi,
+>> >> >>
+>> >> >> I am developing a USB gadget driver compliant to USB Audio Class Spec 2.0.
+>> >> >> So I want to open a PCM substream and do some playback of capture,
+>> >> >> then close them?
+>> >> >>
+>> >> >> I found snd_pcm_open_substream() is for opening a substream and attach
+>> >> >> it to a file.
+>> >> >> But in my application, there is no need to open a file before opening
+>> >> >> a substream.
+>> >> >>
+>> >> >> - Is there any interface for me to open a substream in kernel space
+>> >> >> without attach to a file?
+>> >> >> - How to playback and capture in kernel space, use snd_pcm_lib_write
+>> >> >> and snd_pcm_lib_read?
+>> >> >> - How to get the snd_pcm_hardware struct from low level driver,
+>> >> >> because I have to get the hardware configuration of the snd pcm
+>> >> >> device?
+>> >> >>
+>> >> >> And I am reading the code of OSS emulator in ALSA. It provides some
+>> >> >> info about the kernel space sound card programming.
+>> >> >
+>> >> > Yes, OSS emulation code handles the PCM in the kernel.
+>> >> > But, basically I don't recommend you to do this -- it's not the job of
+>> >> > the sound card driver.  The whole PCM stuff is handled by the PCM
+>> >> > middle layer, not the driver itself.
+>> >>
+>> >> No, my plan is not a sound card driver. It is an USB gadget audio driver.
+>> >> When an embedded system for example Blackfin board connects to a USB host (PC),
+>> >> PC will recognize this USB device as a USB Audio Class device.
+>> >>
+>> >> Generally, there should be a sound card on the embedded system. Our
+>> >> Blackfin board
+>> >> has an AD1980 ALSA sound card. The USB gadget audio driver will open this sound
+>> >> card and export this device to USB host PC by some USB audio class specific
+>> >> descriptors. Then the PC can playback some audio stream by USB cable, USB gadget
+>> >> audio driver will receive this stream and playback the data by AD1980
+>> >> ALSA playback
+>> >> substream. Capture is the similar.
+>> >>
+>> >> > Any reason why you handle the PCM stuff completely in your driver
+>> >> > code?
+>> >> >
+>> >>
+>> >> There is USB gadget MIDI driver in kernel. But it asked the user to
+>> >> use aconnect tool to
+>> >> connect the virtual MIDI card to a real one. I don't want travel to
+>> >> user space and it should
+>> >> be more efficient in kernel space to handle all things including PCM
+>> >> open/release/read/write
+>> >> and Mixer control.
+>> >>
+>> >> Any hints about this? I really need some help from ALSA guru, cause
+>> >> I'm not familiar the internal
+>> >> things here.
+>> >
+>> > Well, the access in the kernel space is fairly similar as in the user
+>> > space.  It opens, issues ioctls, reads and writes.  The difference is
+>> > that you access via dedicated function calls instead of syscalls.
+>> > There is no way to poke the driver internal from other drivers.
+>> > To answer your questions...
+>> >
+>> >> >> - Is there any interface for me to open a substream in kernel space
+>> >> >> without attach to a file?
+>> >
+>> > No.
+>> >
+>> >> >> - How to playback and capture in kernel space, use snd_pcm_lib_write
+>> >> >> and snd_pcm_lib_read?
+>> >
+>> > Yes.  But for the kernel space buffer, you'd need to fake the
+>> > user-space pointer by snd_enter_user() and snd_leave_user().  See
+>> > snd_pcm_oss_write3().
+>> >
+>> >> >> - How to get the snd_pcm_hardware struct from low level driver,
+>> >> >> because I have to get the hardware configuration of the snd pcm
+>> >> >> device?
+>> >
+>> > Not way to peek/poke the driver internals from the outside.
+>> > You'll need to negotiate via snd_pcm_kernel_ioctl() like user-space
+>> > programs.
+>> >
+>> >
+>> > HTH,
+>> >
+>> > Takashi
+>> >
+>>
+>
