@@ -1,16 +1,24 @@
-From: Daniel T Chen <crimsun@fungus.sh.nu>
-Subject: Re: More notes on HD-audio driver
-Date: Wed, 10 Dec 2008 18:44:17 -0800
-Message-ID: <49407E81.7060905@fungus.sh.nu>
-References: <s5hmyf4cei7.wl%tiwai@suse.de>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: Idea about the laptop speakers
+Date: Thu, 11 Dec 2008 09:40:01 +0500
+Message-ID: <ghq5l5$4ms$1@ger.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ns1.mcdownloads.com (ns1.mcdownloads.com [216.239.132.98])
-	by alsa0.perex.cz (Postfix) with ESMTP id CF0462449A
-	for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2008 03:44:23 +0100 (CET)
-In-Reply-To: <s5hmyf4cei7.wl%tiwai@suse.de>
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 42179244C2
+	for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2008 05:41:24 +0100 (CET)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1LAdMT-00049U-4X
+	for alsa-devel@alsa-project.org; Thu, 11 Dec 2008 04:41:21 +0000
+Received: from 90.151.141.177 ([90.151.141.177])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2008 04:41:17 +0000
+Received: from patrakov by 90.151.141.177 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2008 04:41:17 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,15 +28,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/10/2008 06:05 AM, Takashi Iwai wrote:
->
-> Comments, corrections and additions are appreciated.
+Hello developers,
 
-Thanks for this document!  In the Power-Saving section, the path
-/sys/modules/snd_hda_intel/parameters/power_save seems actually to be 
-/sys/module/snd_hda_intel/parameters/power_save in 2.6.28-rc7 (no s in 
-module).
+some time ago, people complained that the sound came out from both the 
+laptop speakers and headphones. While in many cases this is not 
+desirable, I think this effect (when configurable via opening a 
+different PCM) can be useful in the following situation.
+
+Suppose that you have a laptop as your main working machine. The headset 
+is always connected, but you are not always near the laptop (e.g., think 
+better if you walk in the room). Then, you configure (by telling it to 
+open different devices) your SIP softphone to play voice through 
+headphones only, but play ringtones through both headphones and 
+speakers. Thus, you can walk in the room without being afraid to miss a 
+call.
+
+Is the above proposal implementable?
+
+-- 
+Alexander E. Patrakov
