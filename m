@@ -1,16 +1,16 @@
 From: "Klaus Schulz" <kls.schlz@googlemail.com>
-Subject: Macbook Air 2.1 - No sound on main speakers
-Date: Thu, 11 Dec 2008 18:02:59 +0100
-Message-ID: <d9690f190812110902p74ed5b9dwf5f5f30d96362e9e@mail.gmail.com>
+Subject: HP Pavillion TX2000z - Headphonejack not working
+Date: Thu, 11 Dec 2008 18:07:49 +0100
+Message-ID: <d9690f190812110907w7fe7c0d4w4a71b4e0c36f3300@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f16.google.com (mail-gx0-f16.google.com
-	[209.85.217.16]) by alsa0.perex.cz (Postfix) with ESMTP id 0DFD524615
-	for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2008 18:04:32 +0100 (CET)
-Received: by gxk9 with SMTP id 9so1244640gxk.8
-	for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2008 09:04:32 -0800 (PST)
+Received: from rn-out-0910.google.com (rn-out-0910.google.com [64.233.170.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2DBDA1037FD
+	for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2008 18:07:51 +0100 (CET)
+Received: by rn-out-0910.google.com with SMTP id j67so1138460rne.21
+	for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2008 09:07:50 -0800 (PST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,34 +24,65 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi there.
+Hi folks.
 
-Fowarded from my "Ubuntu manual upgrade thread":
+Another problem now with HP and realtek AC861VD.
 
-Another problem with  Realtek.
+The headphone-jack is not working.
 
-No sound on mainspeakers on MACBOOK Air 2.1.
+Known issue?
 
-A known issue??
+THX
 
-See also the different aplay and codec IDs!
+\Klaus
 
-Klaus
 
-Quote:
+QUOTE:
 
------------------------
+--------------------------
 
-No sound on main internal speaker. Headphones do work fine.
-Macbook Air 2,1
-Ubuntu Intrepid server Kernel 2.6.27-9
-Alsa Driver version 1.0.18a GIT snapshot from 12/4/08
-Sound card nVidia MCP79 (device id 10de:0ac0)
-aplay -l: ALC885
-/proc/asound/card0/codec#0 CODEC ALC889a
+drivers 1.0.18a
 
-lspci -nv
-00:08.0 0403: 10de:0ac0 (rev b1)
-Subsystem: 10de:cb79
+HP Pavillion tx2000z,
+Realtek AC861VD,
+Alsa version 1.0.18a.
+Running Ubuntu Studio Intrepid 8.10
+Kernel 2.6.27-9-generic
 
-------------------------
+options snd-hda-intel model=hp
+
+kqian@kkqian:~$ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: NVidia [HDA NVidia], device 0: ALC861VD Analog [ALC861VD Analog]
+Subdevices: 1/1
+Subdevice #0: subdevice #0
+card 0: NVidia [HDA NVidia], device 1: ALC861VD Digital [ALC861VD Digital]
+Subdevices: 1/1
+Subdevice #0: subdevice #0
+card 0: NVidia [HDA NVidia], device 6: Si3054 Modem [Si3054 Modem]
+Subdevices: 1/1
+Subdevice #0: subdevice #0
+kqian@kkqian:~$ cat /proc/asound/card0/codec#* | grep Codec
+Codec: Realtek ALC861-VD
+Codec: Motorola Si3054
+
+Oh, I should also add, headphones do not show up in volume control.
+I have checked the switches, as well as the main interface. The only things
+that are there are:
+
+Master,
+PCM,
+Front,
+Front Mic,
+Front Mic Boost,
+Microphone,
+Mic Boost,
+Speaker,
+Capture,
+IEC958,
+IEC958 Default PCM,
+Caller ID,
+Off-hook,
+Input Source,
+
+All of them are checked, and none of them are muted.
