@@ -1,16 +1,16 @@
 From: "naveen krishna ch" <naveenkrishna.ch@gmail.com>
 Subject: ASoC: asound.conf
-Date: Thu, 11 Dec 2008 19:25:07 +0530
-Message-ID: <ef0d8a250812110555r7d9bf0e5m21318ab4e51848c@mail.gmail.com>
+Date: Thu, 11 Dec 2008 19:27:47 +0530
+Message-ID: <ef0d8a250812110557h1ad33c86iadd3b359493af663@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f16.google.com (mail-gx0-f16.google.com
-	[209.85.217.16]) by alsa0.perex.cz (Postfix) with ESMTP id 00545245DE
-	for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2008 14:55:08 +0100 (CET)
-Received: by gxk9 with SMTP id 9so1133213gxk.8
-	for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2008 05:55:07 -0800 (PST)
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.242])
+	by alsa0.perex.cz (Postfix) with ESMTP id 03AED245E2
+	for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2008 14:57:48 +0100 (CET)
+Received: by an-out-0708.google.com with SMTP id b2so402181ana.2
+	for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2008 05:57:48 -0800 (PST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
