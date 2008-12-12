@@ -1,20 +1,28 @@
-From: "Klaus Schulz" <kls.schlz@googlemail.com>
-Subject: Re: EMU releases 0404/0202 MAC driver stack as open
-	source!!
-Date: Fri, 12 Dec 2008 08:16:11 +0100
-Message-ID: <d9690f190812112316w5e9f4a38ne4b4c396cfba304@mail.gmail.com>
-References: <d9690f190812110828g35976c34v5ce64255c662280b@mail.gmail.com>
-	<s5hhc59dgvj.wl%tiwai@suse.de>
+From: "Bryan Wu" <cooloney@kernel.org>
+Subject: Re: [Question] Can I open a substream in kernel space
+	without attach to a file pointer?
+Date: Fri, 12 Dec 2008 16:49:30 +0800
+Message-ID: <386072610812120049n4483b892j2e26ab4a8ece23c@mail.gmail.com>
+References: <386072610811190200l576d7735rb0188ab53f5185fa@mail.gmail.com>
+	<s5h63mjddvj.wl%tiwai@suse.de>
+	<386072610811190742ycab0dbasc585376dc6ac47db@mail.gmail.com>
+	<s5hljvfbt8h.wl%tiwai@suse.de>
+	<386072610812110240l7af568f9h40c672036abe49f6@mail.gmail.com>
+	<s5hoczidimg.wl%tiwai@suse.de>
+	<386072610812110519j78aa8971ga37635658741b021@mail.gmail.com>
+	<s5hiqpqdeuw.wl%tiwai@suse.de>
+	<386072610812110612u6eed650bpe302b663a692b3bf@mail.gmail.com>
+	<s5hej0ddgk5.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f16.google.com (mail-gx0-f16.google.com
-	[209.85.217.16]) by alsa0.perex.cz (Postfix) with ESMTP id D9DD824131
-	for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2008 08:16:12 +0100 (CET)
-Received: by gxk9 with SMTP id 9so1548087gxk.8
-	for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2008 23:16:11 -0800 (PST)
-In-Reply-To: <s5hhc59dgvj.wl%tiwai@suse.de>
+Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.174])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1F62C24342
+	for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2008 09:49:31 +0100 (CET)
+Received: by wf-out-1314.google.com with SMTP id 24so1119525wfg.23
+	for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2008 00:49:31 -0800 (PST)
+In-Reply-To: <s5hej0ddgk5.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,83 +34,111 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: ALSA devel <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-I would love ( and quite some other people I know - too) to get this driver
-developed.
-The 0404 is one of the best sounding USB boxes around
-
-There are not very many cards around which run in USB async mode (Benchmark
-DAC 1?)
-
-If  they open up the driver stack, perhaps the ALSA guys who're sitting on
-the data sheets for quite some time and signed
-an NDA for that, could check if they are allowed to spread the datasheet
-now.
-
-If this case I would try to involve myself to see how far I get.
-
-THX
-
-
-
-On Fri, Dec 12, 2008 at 7:53 AM, Takashi Iwai <tiwai@suse.de> wrote:
-
-> At Thu, 11 Dec 2008 17:28:09 +0100,
-> Klaus Schulz wrote:
-> >
-> > Hi folks.
-> >
-> > FYI - see below.
-> >
-> > Does this makes live easier to get the ALSA driver developed.
+On Fri, Dec 12, 2008 at 2:59 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Thu, 11 Dec 2008 22:12:56 +0800,
+> Bryan Wu wrote:
+>>
+>> On Thu, Dec 11, 2008 at 9:24 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > At Thu, 11 Dec 2008 21:19:21 +0800,
+>> > Bryan Wu wrote:
+>> >>
+>> >> On Thu, Dec 11, 2008 at 8:03 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> >> > At Thu, 11 Dec 2008 18:40:38 +0800,
+>> >> > Bryan Wu wrote:
+>> >> >>
+>> >> >> Hi Takashi,
+>> >> >>
+>> >> >> I just made some progress about this USB audio gadget driver. But I
+>> >> >> still got some questions about the audio playback.
+>> >> >> Please kindly help me to work out here, as you're the best one to ask, -:)
+>> >> >>
+>> >> >> I can receive ISO transfer packets from PC host. The packet includes
+>> >> >> 192 bytes audio data.
+>> >> >> So I tried to use vfs_write() function to write this 192 bytes to the
+>> >> >> opened snd card.
+>> >> >> There is no sound.
+>> >> >>
+>> >> >> Then I create a buffer which is 6K bytes size and a workqueue. I will
+>> >> >> fill the 6K buffer with the ISO packets data.
+>> >> >> When the 6K buffer is full, in the workqueue handler I will call
+>> >> >> vfs_write() function to write these 6K bytes data to the sound card.
+>> >> >> This time, sound played and it works although it is not very smooth.
+>> >> >>
+>> >> >> So I guess the audio buffer I great is very important to playback audio.
+>> >> >> How to choose the buffer size? If the size < 6K, there is no sound.
+>> >> >> I guess it depends on the sound card hardware, but I failed to find
+>> >> >> any info from hw_params and sw_params.
+>> >> >
+>> >> > Well, this pretty much depends on the "sound card" you are accessing.
+>> >> > You mentioned about AD1980 but the question is rather what
+>> >> > controller is used.  The codec chip is basically independent from the
+>> >> > DMA transfer parameter.
+>> >> >
+>> >>
+>> >> Right, currently I'm trying AD1980 which using DMA transfer by
+>> >> Blackfin BF54x processor.
+>> >
+>> > Is it an ASoC one?
+>> >
+>>
+>> Yes, it's.
 >
-> Thanks.
-> I don't know whether anyone is working on this device, but this could
-> be used as a reference, at least.
+> Then another possibility is to create a sort of machine driver
+> communicates with ASoC codec driver instead of accessing to the
+> generic ALSA PCM core.
 >
-> Takashi
+
+I hope this driver independents on low level ALSA card implementation.
+Because on some embedded machine, they don't use ASoC.
+And I want to push this driver to upstream mainline finally.
+
+>> >> >> Actually, I want to remove the audio buffer here, just write the 192
+>> >> >> audio data to sound card directly. Is that possible?
+>> >> >
+>> >> > Also depends on the hardware.  If the audio chip requires the DMA
+>> >> > transfer, you'd need anyway a buffer.
+>> >> >
+>> >>
+>> >> So how to determine the buffer size based on the DMA hardware configuration?
+>> >
+>> > This should be done via usual hw_refine / hw_params ioctls.
+>> >
+>>
+>> in struct snd_pcm_hw_params, I guess only fifo_size is useful for me
+>> to choose my buffer size, right?
 >
-> >
-> > THX Klaus
-> >
-> >
-> >
-> > ---Quote---
-> > SCOTTS VALLEY, CA - December 1, 2008 - E-MU Systems today announced that
-> for
-> > the first time it will release as open source the Macintosh driver stack
-> for
-> > its award winning USB 2.0 audio interface products - the 0202USB,
-> 0404USB,
-> > and TrackerPre. The Software Developer Kit will be available on the
-> > SourceForge developer's website in early December and can be found at:
-> > https://sourceforge.net/projects/zaudiodrivermac/. The software will be
-> > released under the GNU Lesser General Public License or LGPL v3, which
-> > enables developers to commercially redistribute products derived from
-> this
-> > code base.
-> >
-> > The Software Developer Kit will include the E-MU USB 2.0 driver interface
-> > specification and necessary source code for adding new features,
-> enhancing
-> > performance, or porting to other Operating Systems.
-> >
-> > "We are releasing this code to the public to enable programming
-> enthusiasts
-> > the ability to experiment with and to extend the capabilities of our
-> > products, which we find being used in a variety of applications outside
-> of
-> > the MI space proper. I'm convinced that our clever user base will come up
-> > with innovative variations not addressed by our mainstream activities,"
-> said
-> > Michael Lee, marketing manager for E-MU Systems. "I'm excited to see the
-> > results generated by the OpenSource community."
-> > ---End Quote---
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >
+> No, fifo_size is just a place holder, existing only for historical
+> reasons as now.
 >
+>> If the fifo_size == 1K, so how big is OK for my buffer size?
+>>
+>> The buffer size is so tricky here, I try to make my driver is
+>> independent with the lower card hardware.
+>> So I need to find a algorithm to choose the buffer size here.
+>>
+>> >> I tried to change the period_size and buffer_size of the runtime struct.
+>> >> It also didn't work.
+>> >
+>> > Well, the constraint is rather the "slave" sound card.  You are
+>> > actually creating a tunnel driver.  The period size and buffer size
+>> > are issues of the controller, thus you cannot change the parameters of
+>> > the tunnel driver freely.
+>> >
+>>
+>> Exactly. And another question is whether is it possible using
+>> nonblocking writing in my driver?
+>
+> Why your driver needs to care about non-blocking write?  Usually PCM
+> core stuff cares the writing mode and other tasks.
+>
+
+Currently, because this sound playback is not very smooth. I guess
+there some underrun when I write the USB audio data chuck to the card.
+So maybe we need 2 buffers as a pingpang buffer  to do data buffering.
+You know, vfs_write() is blocking operation and before it returns we
+can not fill the buffer if you just have one buffer.
+
+-Bryan
