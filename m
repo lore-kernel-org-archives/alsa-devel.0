@@ -1,21 +1,22 @@
-From: "James Courtier-Dutton" <james.dutton@gmail.com>
+From: "Klaus Schulz" <kls.schlz@googlemail.com>
 Subject: Re: EMU releases 0404/0202 MAC driver stack as open
 	source!!
-Date: Fri, 12 Dec 2008 12:36:41 +0000
-Message-ID: <ad2655cb0812120436g5ec477edoc1353d4a47be41ea@mail.gmail.com>
+Date: Fri, 12 Dec 2008 18:12:53 +0100
+Message-ID: <d9690f190812120912x7070b42bk5647d8a00c42c2a@mail.gmail.com>
 References: <d9690f190812110828g35976c34v5ce64255c662280b@mail.gmail.com>
 	<s5hhc59dgvj.wl%tiwai@suse.de>
 	<d9690f190812112316w5e9f4a38ne4b4c396cfba304@mail.gmail.com>
+	<ad2655cb0812120436g5ec477edoc1353d4a47be41ea@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id B623124412
-	for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2008 13:36:41 +0100 (CET)
-Received: by fg-out-1718.google.com with SMTP id 16so737877fgg.44
-	for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2008 04:36:41 -0800 (PST)
-In-Reply-To: <d9690f190812112316w5e9f4a38ne4b4c396cfba304@mail.gmail.com>
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1DDFA2446C
+	for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2008 18:12:54 +0100 (CET)
+Received: by an-out-0708.google.com with SMTP id b2so644149ana.2
+	for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2008 09:12:53 -0800 (PST)
+In-Reply-To: <ad2655cb0812120436g5ec477edoc1353d4a47be41ea@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,100 +27,123 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Klaus Schulz <kls.schlz@googlemail.com>
+To: James Courtier-Dutton <james.dutton@gmail.com>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Unfortunately, I cannot release the datasheets for the EMU. Even if I
-had had time to implement a fully working alsa driver for the EMU, I
-still would not be allowed to release the datasheets.
+James.
 
-But, a good start would be if someone implemented support for
-extension units in the current alsa usb-audio driver.
-A good start would be implementing support for getting and setting the
-clock rate.
-Referred to in the apple code as "kClockRate".
+THX for the hint.
 
-2008/12/12 Klaus Schulz <kls.schlz@googlemail.com>:
-> I would love ( and quite some other people I know - too) to get this driver
-> developed.
-> The 0404 is one of the best sounding USB boxes around
+I'll check it out. I'll see how far I get with this.
+
+\Klaus
+
+On Fri, Dec 12, 2008 at 1:36 PM, James Courtier-Dutton <
+james.dutton@gmail.com> wrote:
+
+> Unfortunately, I cannot release the datasheets for the EMU. Even if I
+> had had time to implement a fully working alsa driver for the EMU, I
+> still would not be allowed to release the datasheets.
 >
-> There are not very many cards around which run in USB async mode (Benchmark
-> DAC 1?)
+> But, a good start would be if someone implemented support for
+> extension units in the current alsa usb-audio driver.
+> A good start would be implementing support for getting and setting the
+> clock rate.
+> Referred to in the apple code as "kClockRate".
 >
-> If  they open up the driver stack, perhaps the ALSA guys who're sitting on
-> the data sheets for quite some time and signed
-> an NDA for that, could check if they are allowed to spread the datasheet
-> now.
->
-> If this case I would try to involve myself to see how far I get.
->
-> THX
->
->
->
-> On Fri, Dec 12, 2008 at 7:53 AM, Takashi Iwai <tiwai@suse.de> wrote:
->
->> At Thu, 11 Dec 2008 17:28:09 +0100,
->> Klaus Schulz wrote:
->> >
->> > Hi folks.
->> >
->> > FYI - see below.
->> >
->> > Does this makes live easier to get the ALSA driver developed.
->>
->> Thanks.
->> I don't know whether anyone is working on this device, but this could
->> be used as a reference, at least.
->>
->> Takashi
->>
->> >
->> > THX Klaus
->> >
->> >
->> >
->> > ---Quote---
->> > SCOTTS VALLEY, CA - December 1, 2008 - E-MU Systems today announced that
->> for
->> > the first time it will release as open source the Macintosh driver stack
->> for
->> > its award winning USB 2.0 audio interface products - the 0202USB,
->> 0404USB,
->> > and TrackerPre. The Software Developer Kit will be available on the
->> > SourceForge developer's website in early December and can be found at:
->> > https://sourceforge.net/projects/zaudiodrivermac/. The software will be
->> > released under the GNU Lesser General Public License or LGPL v3, which
->> > enables developers to commercially redistribute products derived from
->> this
->> > code base.
->> >
->> > The Software Developer Kit will include the E-MU USB 2.0 driver interface
->> > specification and necessary source code for adding new features,
->> enhancing
->> > performance, or porting to other Operating Systems.
->> >
->> > "We are releasing this code to the public to enable programming
->> enthusiasts
->> > the ability to experiment with and to extend the capabilities of our
->> > products, which we find being used in a variety of applications outside
->> of
->> > the MI space proper. I'm convinced that our clever user base will come up
->> > with innovative variations not addressed by our mainstream activities,"
->> said
->> > Michael Lee, marketing manager for E-MU Systems. "I'm excited to see the
->> > results generated by the OpenSource community."
->> > ---End Quote---
->> > _______________________________________________
->> > Alsa-devel mailing list
->> > Alsa-devel@alsa-project.org
->> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->> >
->>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 2008/12/12 Klaus Schulz <kls.schlz@googlemail.com>:
+> > I would love ( and quite some other people I know - too) to get this
+> driver
+> > developed.
+> > The 0404 is one of the best sounding USB boxes around
+> >
+> > There are not very many cards around which run in USB async mode
+> (Benchmark
+> > DAC 1?)
+> >
+> > If  they open up the driver stack, perhaps the ALSA guys who're sitting
+> on
+> > the data sheets for quite some time and signed
+> > an NDA for that, could check if they are allowed to spread the datasheet
+> > now.
+> >
+> > If this case I would try to involve myself to see how far I get.
+> >
+> > THX
+> >
+> >
+> >
+> > On Fri, Dec 12, 2008 at 7:53 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> >> At Thu, 11 Dec 2008 17:28:09 +0100,
+> >> Klaus Schulz wrote:
+> >> >
+> >> > Hi folks.
+> >> >
+> >> > FYI - see below.
+> >> >
+> >> > Does this makes live easier to get the ALSA driver developed.
+> >>
+> >> Thanks.
+> >> I don't know whether anyone is working on this device, but this could
+> >> be used as a reference, at least.
+> >>
+> >> Takashi
+> >>
+> >> >
+> >> > THX Klaus
+> >> >
+> >> >
+> >> >
+> >> > ---Quote---
+> >> > SCOTTS VALLEY, CA - December 1, 2008 - E-MU Systems today announced
+> that
+> >> for
+> >> > the first time it will release as open source the Macintosh driver
+> stack
+> >> for
+> >> > its award winning USB 2.0 audio interface products - the 0202USB,
+> >> 0404USB,
+> >> > and TrackerPre. The Software Developer Kit will be available on the
+> >> > SourceForge developer's website in early December and can be found at:
+> >> > https://sourceforge.net/projects/zaudiodrivermac/. The software will
+> be
+> >> > released under the GNU Lesser General Public License or LGPL v3, which
+> >> > enables developers to commercially redistribute products derived from
+> >> this
+> >> > code base.
+> >> >
+> >> > The Software Developer Kit will include the E-MU USB 2.0 driver
+> interface
+> >> > specification and necessary source code for adding new features,
+> >> enhancing
+> >> > performance, or porting to other Operating Systems.
+> >> >
+> >> > "We are releasing this code to the public to enable programming
+> >> enthusiasts
+> >> > the ability to experiment with and to extend the capabilities of our
+> >> > products, which we find being used in a variety of applications
+> outside
+> >> of
+> >> > the MI space proper. I'm convinced that our clever user base will come
+> up
+> >> > with innovative variations not addressed by our mainstream
+> activities,"
+> >> said
+> >> > Michael Lee, marketing manager for E-MU Systems. "I'm excited to see
+> the
+> >> > results generated by the OpenSource community."
+> >> > ---End Quote---
+> >> > _______________________________________________
+> >> > Alsa-devel mailing list
+> >> > Alsa-devel@alsa-project.org
+> >> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >> >
+> >>
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >
 >
