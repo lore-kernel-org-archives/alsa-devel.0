@@ -1,64 +1,71 @@
-From: "Paulo Cavalcanti" <promac@gmail.com>
-Subject: Re: alsa 1.0.18 does not work for Intel onboard cards
-Date: Sat, 13 Dec 2008 13:52:24 -0200
-Message-ID: <68720af30812130752t6a396948jec7062a7a1aa9092@mail.gmail.com>
-References: <68720af30812130723k785e5b4di12b4a3e72c633e2b@mail.gmail.com>
+From: "Rafael J. Wysocki" <rjw@sisk.pl>
+Subject: Re: Bugs on aspire one A150
+Date: Sat, 13 Dec 2008 18:42:27 +0100
+Message-ID: <200812131842.28420.rjw@sisk.pl>
+References: <491506DB.1070000@gmail.com> <200812131435.34072.rjw@sisk.pl> <1229178097.4936.1.camel@maxim-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.154])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2A2DF24470
-	for <alsa-devel@alsa-project.org>; Sat, 13 Dec 2008 16:52:25 +0100 (CET)
-Received: by yx-out-1718.google.com with SMTP id 36so822073yxh.2
-	for <alsa-devel@alsa-project.org>; Sat, 13 Dec 2008 07:52:24 -0800 (PST)
-In-Reply-To: <68720af30812130723k785e5b4di12b4a3e72c633e2b@mail.gmail.com>
+Return-path: <linux-acpi-owner@vger.kernel.org>
+In-Reply-To: <1229178097.4936.1.camel@maxim-laptop>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Sender: linux-acpi-owner@vger.kernel.org
+To: Maxim Levitsky <maximlevitsky@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-pm@lists.linux-foundation.org, ath5k-devel@lists.ath5k.org, alsa-devel@alsa-project.org, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Jesse Barnes <jbarnes@virtuousgeek.org>, Matthew Garrett <mjg59@srcf.ucam.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Dec 13, 2008 at 1:23 PM, Paulo Cavalcanti <promac@gmail.com> wrote:
+On Saturday, 13 of December 2008, Maxim Levitsky wrote:
+> On Sat, 2008-12-13 at 14:35 +0100, Rafael J. Wysocki wrote:
+> > On Saturday, 13 of December 2008, Maxim Levitsky wrote:
+> > > 
+> > > So, big thanks for everything.
+> > > 
+> > > Now aspire one linux support is very close to perfect,
+> > > (only problem left is that wireless is limited to 18Mbits/s raw rate,
+> > > but at some point I or developers of ath5k will get to the bottom of
+> > > this)
+> > > 
+> > > I also noticed, that now the SD only card reader is always enabled
+> > > regardless of card been there while booting, and same happens in
+> > > windows, I suspect that this is permanent hardware change, which worries
+> > > me, but this reader works fine otherwise.
+> > > (This is another reason why binary bioses are evil, go and find out why
+> > > it enables it)
+> > > 
+> > > 
+> > > Also forgot to mention that both readers ignore write protect tab on SD
+> > > card, and I will report this to correct mailing list soon.
+> > > Everything else works fine
+> > > 
+> > > please include acpiphp fix in 2.6.28.
+> > 
+> > Which one is this?
+> 
+> 
+> 
+> acpiphp: Identify more removable slots
+>     
+>     According to section 6.3.6 of the ACPI spec, the presence of an _RMV
+>     method that evaluates to 1 is sufficient to indicate that a slot is
+>     removable without needing an eject method. This patch refactors the
+>     ejectable slot detection code a little in order to flag these slots as
+>     ejectable and register them. Acpihp therefore binds to the expresscard
+>     slot on my HP test machine.
+>     
+>     Signed-off-by: Matthew Garrett <mjg@redhat.com>
+> 
+> 
+> this makes acpiphp handle hotplug of (now one, sd reader is somehow
+> always present) card reader.
 
-> Hi,
->
-> alsa driver 1.0.18 has been a nightmare for me.
->
-> I had a perfectly working sound for my Intel D975XBX2 when using
-> alsa driver 1.017. Going to 1.0.18 just muted my front sound.
-> Well, maybe not everybody needs a front sound output, but I just
-> stick with the 1.01.17 driver.
->
->
-Then, I tried an Intel DG45ID mobo, which does not have
-any sound at all, with the later alsa driver 1.0.18a (detected as a Generic
-DG45).
+This is
+http://git.kernel.org/?p=linux/kernel/git/jbarnes/pci-2.6.git;a=commit;h=db9fe9a7230d65916c9938c4f91c75f9c5e00cb7
+in the PCI tree.
 
-Going back to alsa driver 1.0.17, from the stock Fedora 10 kernel
-(my card is then detected as an IDT 92HD73E1X5),
-I have an analogic sound working, but Master, Headphones, and PCM
-channels have to be above 90%, for anyone being able to hear anything.
-Therefore, the volume is compressed in the upper 10% of the scale.
+It's scheduled for 2.6.29 and may be included into 2.6.28 -stable, but please
+remember to notify the stable team as soon as this patch gets merged into the
+mainline.
 
-Furthermore, I have no mic, and no input working (I would like to feed the
-output
-of my capture card to the input source of the sound card) .
-It seems to me that the input (blue jack)  is configured as output,
-in the 1.0.17 alsa driver.
-
-I do not know what else I can try, maybe some alsa snapshot,
-to fix some of these issues.
-
-Thanks.
-
--- 
-Paulo Roma Cavalcanti
-LCG - UFRJ
+Thanks,
+Rafael
