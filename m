@@ -1,18 +1,17 @@
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: Re: Bugs on aspire one A150
-Date: Sat, 13 Dec 2008 15:15:38 +0200
-Message-ID: <1229174138.24940.9.camel@maxim-laptop>
-References: <491506DB.1070000@gmail.com>
+From: Alexander Beregalov <a.beregalov@gmail.com>
+Subject: [PATCH] SOC/davinci: switch DPRINTK to pr_debug()
+Date: Sat, 13 Dec 2008 16:25:27 +0300
+Message-ID: <20081213132527.GA20635@orion>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f20.google.com (mail-bw0-f20.google.com
-	[209.85.218.20]) by alsa0.perex.cz (Postfix) with ESMTP id 536B724438
-	for <alsa-devel@alsa-project.org>; Sat, 13 Dec 2008 14:15:47 +0100 (CET)
-Received: by bwz13 with SMTP id 13so6621367bwz.8
-	for <alsa-devel@alsa-project.org>; Sat, 13 Dec 2008 05:15:46 -0800 (PST)
-In-Reply-To: <491506DB.1070000@gmail.com>
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.155])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3E74A1037F3
+	for <alsa-devel@alsa-project.org>; Sat, 13 Dec 2008 14:25:38 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id 16so912957fgg.44
+	for <alsa-devel@alsa-project.org>; Sat, 13 Dec 2008 05:25:37 -0800 (PST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,32 +21,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: linux-pm@lists.linux-foundation.org, ath5k-devel@lists.ath5k.org, alsa-devel@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-So, big thanks for everything.
 
-Now aspire one linux support is very close to perfect,
-(only problem left is that wireless is limited to 18Mbits/s raw rate,
-but at some point I or developers of ath5k will get to the bottom of
-this)
+Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
+---
 
-I also noticed, that now the SD only card reader is always enabled
-regardless of card been there while booting, and same happens in
-windows, I suspect that this is permanent hardware change, which worries
-me, but this reader works fine otherwise.
-(This is another reason why binary bioses are evil, go and find out why
-it enables it)
+ sound/soc/davinci/davinci-pcm.c |   18 ++++++------------
+ 1 files changed, 6 insertions(+), 12 deletions(-)
 
-
-Also forgot to mention that both readers ignore write protect tab on SD
-card, and I will report this to correct mailing list soon.
-Everything else works fine
-
-please include acpiphp fix in 2.6.28.
-Also I applied patch to coretemp to make it show cpu temperature.
-
-Thanks again,
-	Maxim Levitsky
+diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
+index bc83e1c..74abc9b 100644
+--- a/sound/soc/davinci/davinci-pcm.c
++++ b/sound/soc/davinci/davinci-pcm.c
+@@ -14,6 +14,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <linux/dma-mapping.h>
++#include <linux/kernel.h>
+ 
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -24,13 +25,6 @@
+ 
+ #include "davinci-pcm.h"
+ 
+-#define DAVINCI_PCM_DEBUG 0
+-#if DAVINCI_PCM_DEBUG
+-#define DPRINTK(x...) printk(KERN_DEBUG x)
+-#else
+-#define DPRINTK(x...)
+-#endif
+-
+ static struct snd_pcm_hardware davinci_pcm_hardware = {
+ 	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+@@ -78,8 +72,8 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
+ 	dma_offset = prtd->period * period_size;
+ 	dma_pos = runtime->dma_addr + dma_offset;
+ 
+-	DPRINTK("audio_set_dma_params_play channel = %d dma_ptr = %x "
+-		"period_size=%x\n", lch, dma_pos, period_size);
++	pr_debug("davinci_pcm: audio_set_dma_params_play channel = %d "
++		"dma_ptr = %x period_size=%x\n", lch, dma_pos, period_size);
+ 
+ 	data_type = prtd->params->data_type;
+ 	count = period_size / data_type;
+@@ -112,7 +106,7 @@ static void davinci_pcm_dma_irq(int lch, u16 ch_status, void *data)
+ 	struct snd_pcm_substream *substream = data;
+ 	struct davinci_runtime_data *prtd = substream->runtime->private_data;
+ 
+-	DPRINTK("lch=%d, status=0x%x\n", lch, ch_status);
++	pr_debug("davinci_pcm: lch=%d, status=0x%x\n", lch, ch_status);
+ 
+ 	if (unlikely(ch_status != DMA_COMPLETE))
+ 		return;
+@@ -316,8 +310,8 @@ static int davinci_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
+ 	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
+ 					   &buf->addr, GFP_KERNEL);
+ 
+-	DPRINTK("preallocate_dma_buffer: area=%p, addr=%p, size=%d\n",
+-		(void *) buf->area, (void *) buf->addr, size);
++	pr_debug("davinci_pcm: preallocate_dma_buffer: area=%p, addr=%p, "
++		"size=%d\n", (void *) buf->area, (void *) buf->addr, size);
+ 
+ 	if (!buf->area)
+ 		return -ENOMEM;
