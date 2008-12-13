@@ -1,17 +1,21 @@
-From: Alexander Beregalov <a.beregalov@gmail.com>
-Subject: [PATCH] SOC/davinci: switch DPRINTK to pr_debug()
-Date: Sat, 13 Dec 2008 16:25:27 +0300
-Message-ID: <20081213132527.GA20635@orion>
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: Re: [ath5k-devel] Bugs on aspire one A150
+Date: Sat, 13 Dec 2008 15:28:24 +0200
+Message-ID: <1229174904.4964.5.camel@maxim-laptop>
+References: <491506DB.1070000@gmail.com>
+	<b6c5339f0811100851t1fd9a180pfe24312081885467@mail.gmail.com>
+	<4918A8C5.3050607@gmail.com>
+	<40f31dec0811101412n1a4faf86sf4b1f37bb41caef9@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3E74A1037F3
-	for <alsa-devel@alsa-project.org>; Sat, 13 Dec 2008 14:25:38 +0100 (CET)
-Received: by fg-out-1718.google.com with SMTP id 16so912957fgg.44
-	for <alsa-devel@alsa-project.org>; Sat, 13 Dec 2008 05:25:37 -0800 (PST)
-Content-Disposition: inline
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4FEA21037F3
+	for <alsa-devel@alsa-project.org>; Sat, 13 Dec 2008 14:28:37 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id 16so913271fgg.44
+	for <alsa-devel@alsa-project.org>; Sat, 13 Dec 2008 05:28:37 -0800 (PST)
+In-Reply-To: <40f31dec0811101412n1a4faf86sf4b1f37bb41caef9@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,71 +25,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
+To: Nick Kossifidis <mickflemm@gmail.com>
+Cc: linux-pm@lists.linux-foundation.org, ath5k-devel@lists.ath5k.org, Bob Copeland <me@bobcopeland.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2008-11-11 at 00:12 +0200, Nick Kossifidis wrote:
+> 2008/11/10 Maxim Levitsky <maximlevitsky@gmail.com>:
+> > Bob Copeland wrote:
+> >> On Fri, Nov 7, 2008 at 10:26 PM, Maxim Levitsky <maximlevitsky@gmail.com> wrote:
+> >>> ** 2 - wireless: not to mention the fact that ath5k wasn't installed by
+> >>> default in ubuntu...
+> >>> wireless more or less works, but kernel log is full of backtraces.
+> >>
+> >> As you've seen, these should at least be gone now...
+> >>
+> >>> Was able to connect to my WPA2 access point.
+> >>> Sometimes wireless fails completely, especially after suspend to ram.
+> >>
+> >> Did you get noise calibration failures in dmesg at this point?  Felix posted
+> >> a patch recently that handles them better.
+> > Yep, but they seems to be gone in latest -git too.
+> > Wireless work fine now, it seems like my iwl3945.
+> >
+> >>
+> >>> Advanced features like monitor/injection work, but when I changed the card's
+> >>> mac address it stopped working.
+> >>> I also noticed that if I then start airodump, then wireless works with new
+> >>> mac.
+> > Why it doesn't accept new mac?, can this be fixed?
+> >
+> >
+> >>
+> >>> ** 4 - wireless led doesn't work.
+> >>> ath5k devs, can you fix this?
+> >>
+> >> Currently all the LED code we have in there is for setting a particular gpio
+> >> for particular laptops (and they differ between models).  We only have quirks
+> >> for IBM and HP, none for Acer.  Also, the legacy-hal seems to have a different
+> >> strategy for 2425 chips.  I can try to hack up some code for you to test.
+> >>
+> >
+> > I have seen on the web that madwifi did support the led with some gpio settings
+> >
+> > sysctl -w dev.wifi0.ledpin=3
+> > sysctl -w dev.wifi0.softled=1
+> >
+> > from https://help.ubuntu.com/community/AspireOne
+> >
+> > Best regards,
+> >        Maxim Levitsky
+> 
+> i think that some led settings are stored on EEPROM, let me check it out...
 
 
-Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
----
+Hi,
 
- sound/soc/davinci/davinci-pcm.c |   18 ++++++------------
- 1 files changed, 6 insertions(+), 12 deletions(-)
+Indeed gpio #3 controls the led.
+I patched ath5k to use it, and led works now fine.
 
-diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
-index bc83e1c..74abc9b 100644
---- a/sound/soc/davinci/davinci-pcm.c
-+++ b/sound/soc/davinci/davinci-pcm.c
-@@ -14,6 +14,7 @@
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/dma-mapping.h>
-+#include <linux/kernel.h>
- 
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -24,13 +25,6 @@
- 
- #include "davinci-pcm.h"
- 
--#define DAVINCI_PCM_DEBUG 0
--#if DAVINCI_PCM_DEBUG
--#define DPRINTK(x...) printk(KERN_DEBUG x)
--#else
--#define DPRINTK(x...)
--#endif
--
- static struct snd_pcm_hardware davinci_pcm_hardware = {
- 	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
-@@ -78,8 +72,8 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
- 	dma_offset = prtd->period * period_size;
- 	dma_pos = runtime->dma_addr + dma_offset;
- 
--	DPRINTK("audio_set_dma_params_play channel = %d dma_ptr = %x "
--		"period_size=%x\n", lch, dma_pos, period_size);
-+	pr_debug("davinci_pcm: audio_set_dma_params_play channel = %d "
-+		"dma_ptr = %x period_size=%x\n", lch, dma_pos, period_size);
- 
- 	data_type = prtd->params->data_type;
- 	count = period_size / data_type;
-@@ -112,7 +106,7 @@ static void davinci_pcm_dma_irq(int lch, u16 ch_status, void *data)
- 	struct snd_pcm_substream *substream = data;
- 	struct davinci_runtime_data *prtd = substream->runtime->private_data;
- 
--	DPRINTK("lch=%d, status=0x%x\n", lch, ch_status);
-+	pr_debug("davinci_pcm: lch=%d, status=0x%x\n", lch, ch_status);
- 
- 	if (unlikely(ch_status != DMA_COMPLETE))
- 		return;
-@@ -316,8 +310,8 @@ static int davinci_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
- 	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
- 					   &buf->addr, GFP_KERNEL);
- 
--	DPRINTK("preallocate_dma_buffer: area=%p, addr=%p, size=%d\n",
--		(void *) buf->area, (void *) buf->addr, size);
-+	pr_debug("davinci_pcm: preallocate_dma_buffer: area=%p, addr=%p, "
-+		"size=%d\n", (void *) buf->area, (void *) buf->addr, size);
- 
- 	if (!buf->area)
- 		return -ENOMEM;
+
+What I dislike is the way led blinks:
+
+While nether I like constant rate blinking implemented in windows
+driver, I don't like the fact that led blinks too fast, sometimes the
+blink time is so short that led doesn't show full brightness.
+
+I think there should be a minimal interval for blinking.
+
+Also I don't know what is assumed better, when led is always on, but
+turns off when active of vise versa?
+(Due to short intervals, when I set it for first option, it is almost
+always on, and I almost don't see the interval when it is off)
+
+
+Best regards,
+	Maxim Levitsky
