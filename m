@@ -1,23 +1,22 @@
-From: "Klaus Schulz" <kls.schlz@googlemail.com>
-Subject: Re: EMU releases 0404/0202 MAC driver stack as open
-	source!!
-Date: Fri, 12 Dec 2008 18:12:53 +0100
-Message-ID: <d9690f190812120912x7070b42bk5647d8a00c42c2a@mail.gmail.com>
-References: <d9690f190812110828g35976c34v5ce64255c662280b@mail.gmail.com>
-	<s5hhc59dgvj.wl%tiwai@suse.de>
-	<d9690f190812112316w5e9f4a38ne4b4c396cfba304@mail.gmail.com>
-	<ad2655cb0812120436g5ec477edoc1353d4a47be41ea@mail.gmail.com>
+From: Jean-Pierre ANDRE <jean-pierre.andre@wanadoo.fr>
+Subject: Intel 82801I (ICH9 Family) HD Audio Controller on a HP
+	dv4 computer
+Date: Sat, 13 Dec 2008 12:41:23 +0100 (CET)
+Message-ID: <7342920.39901.1229168483619.JavaMail.www@wwinf1b34>
+Reply-To: Jean-Pierre ANDRE <jean-pierre.andre@wanadoo.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1DDFA2446C
-	for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2008 18:12:54 +0100 (CET)
-Received: by an-out-0708.google.com with SMTP id b2so644149ana.2
-	for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2008 09:12:53 -0800 (PST)
-In-Reply-To: <ad2655cb0812120436g5ec477edoc1353d4a47be41ea@mail.gmail.com>
-Content-Disposition: inline
+Received: from smtp1b.orange.fr (smtp1b.orange.fr [193.252.23.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id 689DE1037E3
+	for <alsa-devel@alsa-project.org>; Sat, 13 Dec 2008 12:41:24 +0100 (CET)
+Received: from me-wanadoo.net (localhost [127.0.0.1])
+	by mwinf1b03.orange.fr (SMTP Server) with ESMTP id A9630700029F
+	for <alsa-devel@alsa-project.org>; Sat, 13 Dec 2008 12:41:23 +0100 (CET)
+Received: from wwinf1b34 (wwinf1b34 [10.232.19.108])
+	by mwinf1b03.orange.fr (SMTP Server) with ESMTP id 9F86B700029A
+	for <alsa-devel@alsa-project.org>; Sat, 13 Dec 2008 12:41:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,123 +26,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: James Courtier-Dutton <james.dutton@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-James.
+Hi,
 
-THX for the hint.
+I am getting difficulty setting up ALSA for my new HP portable computer.
+lspci displays the audio chip as :
+Audio device: Intel Corporation 82801I (ICH9 Family) HD Audio Controller (rev 03)
+and /proc/asound displays the codec as IDT 92HD71B7X
 
-I'll check it out. I'll see how far I get with this.
+I have uploaded the detailed hardware and configuration parameters to
+http://pagesperso-orange.fr/b.andre/visits.html/92HD71B7X
 
-\Klaus
+I am using Fedora 10 x86_64 without pulseaudio and with the latest alsa-driver :
+alsa-driver-1.0.18a.16.g4012f.139.g6e583.tar.bz2
 
-On Fri, Dec 12, 2008 at 1:36 PM, James Courtier-Dutton <
-james.dutton@gmail.com> wrote:
+I have googled for a similar problem, but did not get to an actual fix,
+the following thread appears to deal with a most similar situation :
+http://forums.opensuse.org/pre-release-beta/399731-beta-5-no-sound.html
 
-> Unfortunately, I cannot release the datasheets for the EMU. Even if I
-> had had time to implement a fully working alsa driver for the EMU, I
-> still would not be allowed to release the datasheets.
->
-> But, a good start would be if someone implemented support for
-> extension units in the current alsa usb-audio driver.
-> A good start would be implementing support for getting and setting the
-> clock rate.
-> Referred to in the apple code as "kClockRate".
->
-> 2008/12/12 Klaus Schulz <kls.schlz@googlemail.com>:
-> > I would love ( and quite some other people I know - too) to get this
-> driver
-> > developed.
-> > The 0404 is one of the best sounding USB boxes around
-> >
-> > There are not very many cards around which run in USB async mode
-> (Benchmark
-> > DAC 1?)
-> >
-> > If  they open up the driver stack, perhaps the ALSA guys who're sitting
-> on
-> > the data sheets for quite some time and signed
-> > an NDA for that, could check if they are allowed to spread the datasheet
-> > now.
-> >
-> > If this case I would try to involve myself to see how far I get.
-> >
-> > THX
-> >
-> >
-> >
-> > On Fri, Dec 12, 2008 at 7:53 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> >> At Thu, 11 Dec 2008 17:28:09 +0100,
-> >> Klaus Schulz wrote:
-> >> >
-> >> > Hi folks.
-> >> >
-> >> > FYI - see below.
-> >> >
-> >> > Does this makes live easier to get the ALSA driver developed.
-> >>
-> >> Thanks.
-> >> I don't know whether anyone is working on this device, but this could
-> >> be used as a reference, at least.
-> >>
-> >> Takashi
-> >>
-> >> >
-> >> > THX Klaus
-> >> >
-> >> >
-> >> >
-> >> > ---Quote---
-> >> > SCOTTS VALLEY, CA - December 1, 2008 - E-MU Systems today announced
-> that
-> >> for
-> >> > the first time it will release as open source the Macintosh driver
-> stack
-> >> for
-> >> > its award winning USB 2.0 audio interface products - the 0202USB,
-> >> 0404USB,
-> >> > and TrackerPre. The Software Developer Kit will be available on the
-> >> > SourceForge developer's website in early December and can be found at:
-> >> > https://sourceforge.net/projects/zaudiodrivermac/. The software will
-> be
-> >> > released under the GNU Lesser General Public License or LGPL v3, which
-> >> > enables developers to commercially redistribute products derived from
-> >> this
-> >> > code base.
-> >> >
-> >> > The Software Developer Kit will include the E-MU USB 2.0 driver
-> interface
-> >> > specification and necessary source code for adding new features,
-> >> enhancing
-> >> > performance, or porting to other Operating Systems.
-> >> >
-> >> > "We are releasing this code to the public to enable programming
-> >> enthusiasts
-> >> > the ability to experiment with and to extend the capabilities of our
-> >> > products, which we find being used in a variety of applications
-> outside
-> >> of
-> >> > the MI space proper. I'm convinced that our clever user base will come
-> up
-> >> > with innovative variations not addressed by our mainstream
-> activities,"
-> >> said
-> >> > Michael Lee, marketing manager for E-MU Systems. "I'm excited to see
-> the
-> >> > results generated by the OpenSource community."
-> >> > ---End Quote---
-> >> > _______________________________________________
-> >> > Alsa-devel mailing list
-> >> > Alsa-devel@alsa-project.org
-> >> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >> >
-> >>
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >
->
+After several tries, I have set modprobe.conf as
+alias snd-card-0 snd-hda-intel
+options sound slots=snd-hda-intel
+options snd-hda-intel model=hp-m4 single_cmd=1 enable_msi=1
+
+Results :
+
+aplay freezes, with some sound output which is the continual repeat  
+of the initial expected sound (some fraction of a second repeated).
+However if I boot with pci=noacpi the output is correct (I do not
+understand the relation of power management to sound, there must be
+one as I see :
+HDA Intel 0000:00:1b.0: power state changed by ACPI to D0
+when I unload/reload alsa)
+
+WITHOUT the pci=noacpi option :
+
+- mplayer outputs the sound correctly (does mplayer bypass alsa ?)
+- xine outputs a chopped sound (some 100ms OK, some 100ms silent,
+  some 100ms OK, etc, with a period which could be 200..500ms)
+- most players (eg Real player) just freeze.
+
+I would say that when some sound buffer gets empty, the driver does
+not get the information, so it does not fill the buffer again.   
+
+I have done some digging into the code. I see that this 92HD71B7X chip
+is supported for HP dv5 and dv7 computers (subsystem ID 103c30f2 and
+103C30f4), but mine is a HP dv4 showing a subsystem ID 103c30f7,
+so it must be somewhat different and not supported yet.
+
+Can anybody suggest some fix ?
+
+If needed I can apply patches to the code and do some testing so 
+that my configuration gets supported in subsequent versions.  
+
+Regards
+
+Jean-Pierre
