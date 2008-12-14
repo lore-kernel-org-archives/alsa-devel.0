@@ -1,25 +1,22 @@
-From: =?ISO-8859-1?Q?Jean-Pierre_Andr=E9?= <jean-pierre.andre@wanadoo.fr>
-Subject: Re: Intel 82801I (ICH9 Family) HD Audio Controller on
- a HP	dv4 computer
-Date: Sun, 14 Dec 2008 11:52:29 +0100
-Message-ID: <4944E56D.9020505@wanadoo.fr>
-References: <7342920.39901.1229168483619.JavaMail.www@wwinf1b34>
-	<s5hvdtn15ps.wl%tiwai@suse.de>
+From: "Paulo Cavalcanti" <promac@gmail.com>
+Subject: Re: alsa 1.0.18 does not work for Intel onboard cards
+Date: Sun, 14 Dec 2008 09:29:03 -0200
+Message-ID: <68720af30812140329w1dc0d166j2ddc07da866d875b@mail.gmail.com>
+References: <68720af30812130723k785e5b4di12b4a3e72c633e2b@mail.gmail.com>
+	<68720af30812130752t6a396948jec7062a7a1aa9092@mail.gmail.com>
+	<s5htz9715oi.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2f.orange.fr (smtp2f.orange.fr [80.12.242.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3D8401037F1
-	for <alsa-devel@alsa-project.org>; Sun, 14 Dec 2008 11:52:31 +0100 (CET)
-Received: from me-wanadoo.net (localhost [127.0.0.1])
-	by mwinf2f26.orange.fr (SMTP Server) with ESMTP id B38FB700008B
-	for <alsa-devel@alsa-project.org>; Sun, 14 Dec 2008 11:52:30 +0100 (CET)
-Received: from [10.0.0.10] (ASt-Lambert-153-1-110-188.w90-2.abo.wanadoo.fr
-	[90.2.97.188])
-	by mwinf2f26.orange.fr (SMTP Server) with ESMTP id 27134700008A
-	for <alsa-devel@alsa-project.org>; Sun, 14 Dec 2008 11:52:30 +0100 (CET)
-In-Reply-To: <s5hvdtn15ps.wl%tiwai@suse.de>
+Received: from mail-gx0-f16.google.com (mail-gx0-f16.google.com
+	[209.85.217.16])
+	by alsa0.perex.cz (Postfix) with ESMTP id 86E241037EC
+	for <alsa-devel@alsa-project.org>; Sun, 14 Dec 2008 12:29:04 +0100 (CET)
+Received: by gxk9 with SMTP id 9so2302462gxk.8
+	for <alsa-devel@alsa-project.org>; Sun, 14 Dec 2008 03:29:03 -0800 (PST)
+In-Reply-To: <s5htz9715oi.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,192 +26,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On Sun, Dec 14, 2008 at 7:12 AM, Takashi Iwai <tiwai@suse.de> wrote:
 
-Takashi Iwai wrote:
-> At Sat, 13 Dec 2008 12:41:23 +0100 (CET),
-> Jean-Pierre ANDRE wrote:
->   
->> Hi,
->>
->> I am getting difficulty setting up ALSA for my new HP portable computer.
->> lspci displays the audio chip as :
->> Audio device: Intel Corporation 82801I (ICH9 Family) HD Audio Controller (rev 03)
->> and /proc/asound displays the codec as IDT 92HD71B7X
->>
->> I have uploaded the detailed hardware and configuration parameters to
->> http://pagesperso-orange.fr/b.andre/visits.html/92HD71B7X
->>
->> I am using Fedora 10 x86_64 without pulseaudio and with the latest alsa-driver :
->> alsa-driver-1.0.18a.16.g4012f.139.g6e583.tar.bz2
->>
->> I have googled for a similar problem, but did not get to an actual fix,
->> the following thread appears to deal with a most similar situation :
->> http://forums.opensuse.org/pre-release-beta/399731-beta-5-no-sound.html
->>
->> After several tries, I have set modprobe.conf as
->> alias snd-card-0 snd-hda-intel
->> options sound slots=snd-hda-intel
->> options snd-hda-intel model=hp-m4 single_cmd=1 enable_msi=1
->>     
+> At Sat, 13 Dec 2008 13:52:24 -0200,
+> Paulo Cavalcanti wrote:
+> >
+> > On Sat, Dec 13, 2008 at 1:23 PM, Paulo Cavalcanti <promac@gmail.com>
+> wrote:
+> >
+> > > Hi,
+> > >
+> > > alsa driver 1.0.18 has been a nightmare for me.
+> > >
+> > > I had a perfectly working sound for my Intel D975XBX2 when using
+> > > alsa driver 1.017. Going to 1.0.18 just muted my front sound.
+> > > Well, maybe not everybody needs a front sound output, but I just
+> > > stick with the 1.01.17 driver.
+> > >
+> > >
+> > Then, I tried an Intel DG45ID mobo, which does not have
+> > any sound at all, with the later alsa driver 1.0.18a (detected as a
+> Generic
+> > DG45).
+> >
+> > Going back to alsa driver 1.0.17, from the stock Fedora 10 kernel
+> > (my card is then detected as an IDT 92HD73E1X5),
+> > I have an analogic sound working, but Master, Headphones, and PCM
+> > channels have to be above 90%, for anyone being able to hear anything.
+> > Therefore, the volume is compressed in the upper 10% of the scale.
+> >
+> > Furthermore, I have no mic, and no input working (I would like to feed
+> the
+> > output
+> > of my capture card to the input source of the sound card) .
+> > It seems to me that the input (blue jack)  is configured as output,
+> > in the 1.0.17 alsa driver.
+> >
+> > I do not know what else I can try, maybe some alsa snapshot,
+> > to fix some of these issues.
 >
-> Don't use single_cmd=1 option.  If this is needed, it's already
-> something very wrong, most likely a deeper problem like ACPI.
+> Try the snapshot on
+>
+> ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
 >
 >
-> Takashi
->   
-Thank you for your help.
+>
+Thanks, Takashi
 
-I had already tested without the single_cmd=1 option, and
-the only difference I see is the " azx_get_response timeout,
-switching to polling mode" warning. Probably related is the
-fact that I have never seen an IRQ 22. 
+but it did not change anything for the Intel DG45ID.
+This is a Genuine Intel mother board.
 
-from proc/interrupts :
+The sound card is detected as "Generic 8086 Intel G45 Develk",
+but I do not hear anything, even with all mixer channel at the maximum
+volumes.
 
- 22:          0          0   IO-APIC-fasteoi   uhci_hcd:usb6, HDA Intel
+This is a  Fedora 10, with the latest alsa packages, and
+everything seems OK, the applications work, but I do no hear anything.
 
-For your information, the initial log shows the following :
+With the alsa driver from the latest Fedora kernel
 
-<-------
-HDA Intel 0000:00:1b.0: power state changed by ACPI to D0
-HDA Intel 0000:00:1b.0: PCI INT B -> GSI 22 (level, low) -> IRQ 22
-HDA Intel 0000:00:1b.0: setting latency timer to 64
-ALSA /home/linux/rpmbuild/BUILD/alsa-driver-1.0.18a17/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:627: hda_intel: azx_get_response timeout, switching to polling mode: last cmd=0x000f0000
-input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/input/input17
-input: HDA Intel at 0xdf300000 irq 22 Line In at Ext Rear Jack as /devices/pci0000:00/0000:00:1b.0/input/input18
-input: HDA Intel at 0xdf300000 irq 22 Mic at Ext Front Jack as /devices/pci0000:00/0000:00:1b.0/input/input19
-input: HDA Intel at 0xdf300000 irq 22 Line In at Ext Rear Jack as /devices/pci0000:00/0000:00:1b.0/input/input20
-input: HDA Intel at 0xdf300000 irq 22 HP Out at Ext Front Jack as /devices/pci0000:00/0000:00:1b.0/input/input21
--------->
+Linux version 2.6.27.7-134.fc10.x86_64
 
-As i said, mplayer outputs the sound correctly, this is what
-it logs :
+the card is detected as IDT 92HD73E1X5 and,
 
-<------
-Playing try.wav.
-Audio only file format detected.
-==========================================================================
-Opening audio decoder: [pcm] Uncompressed PCM audio decoder
-AUDIO: 44100 Hz, 2 ch, s16le, 1411.2 kbit/100.00% (ratio: 176400->176400)
-Selected audio codec: [pcm] afm: pcm (Uncompressed PCM)
-==========================================================================
-E: context.c: waitpid(): No child processes
-AO: [pulse] Init failed: Internal error
-Failed to initialize audio driver 'pulse'
-AO: [alsa] 48000Hz 2ch s16le (2 bytes per sample)
-Video: no video
-Starting playback...
------>
+although I have to put all the mixer channels at the maximum, the sound
+output works fine, even mid emulation.
 
-whereas aplay gets stuck, and repeats the first sound
-samples (so do most players) :
+During the snapshot compilation, I got dozens of this warning:
 
-<-----
-Playing WAVE '/shared/audio/try.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
-Plug PCM: Rate conversion PCM (48000, sformat=S32_LE)
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 44100
-  exact rate   : 44100 (44100/1)
-  msbits       : 16
-  buffer_size  : 7526
-  period_size  : 940
-  period_time  : 21333
-  tstamp_mode  : NONE
-  period_step  : 1
-  avail_min    : 940
-  period_event : 0
-  start_threshold  : 7526
-  stop_threshold   : 7526
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 4236761349448794112
-Slave: Soft volume PCM
-Control: PCM Playback Volume
-min_dB: -51
-max_dB: 0
-resolution: 256
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S32_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 32
-  buffer_size  : 8192
-  period_size  : 1024
-  period_time  : 21333
-  tstamp_mode  : NONE
-  period_step  : 1
-  avail_min    : 1024
-  period_event : 0
-  start_threshold  : 8192
-  stop_threshold   : 8192
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 4611686018427387904
-Slave: Direct Stream Mixing PCM
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S32_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 32
-  buffer_size  : 8192
-  period_size  : 1024
-  period_time  : 21333
-  tstamp_mode  : NONE
-  period_step  : 1
-  avail_min    : 1024
-  period_event : 0
-  start_threshold  : 8192
-  stop_threshold   : 8192
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 4611686018427387904
-Hardware PCM card 0 'HDA Intel' device 0 subdevice 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S32_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 32
-  buffer_size  : 8192
-  period_size  : 1024
-  period_time  : 21333
-  tstamp_mode  : ENABLE
-  period_step  : 1
-  avail_min    : 1024
-  period_event : 0
-  start_threshold  : 1
-  stop_threshold   : 4611686018427387904
-  silence_threshold: 0
-  silence_size : 4611686018427387904
-  boundary     : 4611686018427387904
-###### +                                           | 13%^C
-Aborted by signal Interrupt...
-------->
+----------------------------------------------------------------------------------
+/home/roma/redhat/BUILD/alsa-driver/include/config1.h:65:1: warning:
+"CONFIG_SND_AC97_POWER_SAVE_DEFAULT" redefined
+In file included from <command-line>:0:
+./include/linux/autoconf.h:260:1: warning: this is the location of the
+previous definition
+  CC [M]  /home/roma/redhat/BUILD/alsa-driver/misc/ac97_bus.o
+In file included from
+/home/roma/redhat/BUILD/alsa-driver/include/config.h:6,
+                 from
+/home/roma/redhat/BUILD/alsa-driver/include/adriver.h:25,
+                 from /home/roma/redhat/BUILD/alsa-driver/misc/ac97_bus.c:1:
+-----------------------------------------------------------------------------------
 
-I am at a loss about what to try, do not hesitate
-making suggestions.
 
-Regards
+This is the output of alsa-info, with the stock driver (1.0.17):
 
-Jean-Pierre
+http://www.alsa-project.org/db/?f=36ac819b3ef4391335caf7c5be3a97bd3a300b93
+
+
+
+-- 
+Paulo Roma Cavalcanti
+LCG - UFRJ
