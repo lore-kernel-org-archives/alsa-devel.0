@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: ASoC: help needed for capture DAPM (twl4030)
-Date: Tue, 16 Dec 2008 09:43:33 +0000
-Message-ID: <20081216094332.GA24405@sirena.org.uk>
-References: <200812161117.49928.peter.ujfalusi@nokia.com>
+From: "Klaus Schulz" <kls.schlz@googlemail.com>
+Subject: alsa-utils: alsactl restore not working after system
+	restart
+Date: Tue, 16 Dec 2008 13:58:02 +0100
+Message-ID: <d9690f190812160458t79cef08dt56ad7bd68e174d8d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2E94B2459F
-	for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2008 10:43:35 +0100 (CET)
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9607C24345
+	for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2008 13:58:03 +0100 (CET)
+Received: by yw-out-1718.google.com with SMTP id 9so1263217ywk.2
+	for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2008 04:58:02 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <200812161117.49928.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,23 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 16, 2008 at 11:17:49AM +0200, Peter Ujfalusi wrote:
+Hi there.
 
-> I'm thinking of creating a new type for soc based on the soc_enum. This new 
-> type would store the valid enum texts and the corresponding value in the 
-> register (with mask). This could be used in very flexible way. It can be also 
-> be used instead of the normal enum types (altrough it does not make sense).
-> But this can wait for now.
+I am running Ubuntu 8.10 - and latest ALSA.
 
-That's possibly worthwhile.
+After restart amixer defaults to default settings.
 
-> I have been thinking to create four 'ghost ADC' for the four channel. Than 
-> when building the route the real ADCs can receive switches to handle the 
-> power management. 
+I am not really sure if this is Ubuntu/Debian specific or an
+Alsa issue.
 
-That should work, or creating virtual ADCs for the digimic paths might
-do the job too (not a million miles from what's going on, either).
+It seems that either a link  /var/lib/alsa/asound.state to /etc/asound.state
+is needed
+or that /etc/init.d/alsa-utils needs to be updated within the restore
+section accordingly.
+
+With the link workaround I managed to get it working.
+
+Cheers
+Klaus
