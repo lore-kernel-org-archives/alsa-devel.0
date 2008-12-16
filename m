@@ -1,17 +1,16 @@
-From: "Mark Jenks" <mjenks1968@gmail.com>
-Subject: HDMI problem, more info.
-Date: Mon, 15 Dec 2008 18:46:54 -0600
-Message-ID: <e5df86c90812151646q4953063cud03e10f5536f883c@mail.gmail.com>
+From: Luke Yelavich <themuso@ubuntu.com>
+Subject: [PATCH] ALSA: hda - Add automatic model setting for
+	Samsung Q45
+Date: Tue, 16 Dec 2008 12:37:47 +1100
+Message-ID: <1229391467-13639-1-git-send-email-themuso@ubuntu.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id A6D661037F2
-	for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2008 01:46:56 +0100 (CET)
-Received: by yw-out-1718.google.com with SMTP id 9so1195689ywk.2
-	for <alsa-devel@alsa-project.org>; Mon, 15 Dec 2008 16:46:55 -0800 (PST)
-Content-Disposition: inline
+Received: from ipmail05.adl2.internode.on.net (ipmail05.adl2.internode.on.net
+	[203.16.214.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id E0D4F1037F2
+	for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2008 02:37:57 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,223 +21,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Luke Yelavich <themuso@ubuntu.com>
 List-Id: alsa-devel@alsa-project.org
 
-More info about the M3n78 Pro motherboard that I am having problems with it
-showing properly in 'aplay -L'.
+Have the Samsung Q45 (144d:c510) select ALC262_HIPPO by default
 
-I turned on ./configure -with-debug=verbose
+Signed-off-by: Luke Yelavich <themuso@ubuntu.com>
+---
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_intel.c:1469:
-azx_pcm_prepare: bufsize=0x4400, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x6, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x2, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x3, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x4, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x5, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_intel.c:1469:
-azx_pcm_prepare: bufsize=0x4400, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x6, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x2, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x3, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x4, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x5, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_intel.c:1469:
-azx_pcm_prepare: bufsize=0x4400, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x8, stream=0x1, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_intel.c:1469:
-azx_pcm_prepare: bufsize=0x4400, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x8, stream=0x1, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x8
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x8
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x2
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x3
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x4
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x5
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x6
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x2
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x3
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x4
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x5
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_intel.c:1469:
-azx_pcm_prepare: bufsize=0x4400, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x6, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x2, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x3, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x4, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x5, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_intel.c:1469:
-azx_pcm_prepare: bufsize=0x4400, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x6, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x2, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x3, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x4, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x5, stream=0x5, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_intel.c:1469:
-azx_pcm_prepare: bufsize=0x4400, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x8, stream=0x1, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_intel.c:1469:
-azx_pcm_prepare: bufsize=0x4400, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:874:
-hda_codec_setup_stream: NID=0x8, stream=0x1, channel=0, format=0x4011
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x2
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x3
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x4
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x5
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x6
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x2
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x3
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x4
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x5
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x8
-ALSA /data2/installs/alsa/temp/alsa-driver/pci/hda/hda_codec.c:887:
-hda_codec_cleanup_stream: NID=0x8
-
-# cat /proc/asound/card0/codec#3
-Codec: Generic 10de NVIDIA MCP78 HDMI
-Address: 3
-Vendor Id: 0x10de0002
-Subsystem Id: 0x10de0101
-Revision Id: 0x100000
-No Modem Function Group found
-Default PCM:
-    rates [0x0]:
-    bits [0x0]:
-    formats [0x0]:
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-GPIO: io=0, o=0, i=0, unsolicited=0, wake=0
-Node 0x04 [Audio Output] wcaps 0x211: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital: Enabled
-  Digital category: 0x0
-  PCM:
-    rates [0xc0]: 48000 88200
-    bits [0xf]: 8 16 20 24
-    formats [0x1]: PCM
-Node 0x05 [Pin Complex] wcaps 0x400381: Stereo Digital
-  Pincap 0x00000014: OUT Detect
-  Pin Default 0x18560110: [Jack] Digital Out at Int HDMI
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x04
-Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0xc0]: 48000 88200
-    bits [0xf]: 8 16 20 24
-    formats [0x1]: PCM
-Node 0x07 [Pin Complex] wcaps 0x400381: Stereo Digital
-  Pincap 0x00000014: OUT Detect
-  Pin Default 0x58560121: [N/A] Digital Out at Int HDMI
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0x2, Sequence = 0x1
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x06
-Node 0x08 [Audio Output] wcaps 0x211: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0xc0]: 48000 88200
-    bits [0xf]: 8 16 20 24
-    formats [0x1]: PCM
-Node 0x09 [Pin Complex] wcaps 0x400381: Stereo Digital
-  Pincap 0x00000014: OUT Detect
-  Pin Default 0x58560122: [N/A] Digital Out at Int HDMI
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0x2, Sequence = 0x2
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x08
-Node 0x0a [Audio Output] wcaps 0x211: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0xc0]: 48000 88200
-    bits [0xf]: 8 16 20 24
-    formats [0x1]: PCM
-Node 0x0b [Pin Complex] wcaps 0x400381: Stereo Digital
-  Pincap 0x00000014: OUT Detect
-  Pin Default 0x58560123: [N/A] Digital Out at Int HDMI
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0x2, Sequence = 0x3
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x0a
-Node 0x0c [Audio Output] wcaps 0x211: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0xc0]: 48000 88200
-    bits [0xf]: 8 16 20 24
-    formats [0x1]: PCM
-Node 0x0d [Pin Complex] wcaps 0x400381: Stereo Digital
-  Pincap 0x00000014: OUT Detect
-  Pin Default 0x58560124: [N/A] Digital Out at Int HDMI
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0x2, Sequence = 0x4
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x0c
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 4afa0c9..3b2a793 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -10541,6 +10541,7 @@ static struct snd_pci_quirk alc262_cfg_tbl[] = {
+ 	SND_PCI_QUIRK(0x10cf, 0x142d, "Fujitsu Lifebook E8410", ALC262_FUJITSU),
+ 	SND_PCI_QUIRK(0x144d, 0xc032, "Samsung Q1 Ultra", ALC262_ULTRA),
+ 	SND_PCI_QUIRK(0x144d, 0xc039, "Samsung Q1U EL", ALC262_ULTRA),
++	SND_PCI_QUIRK(0x144d, 0xc510, "Samsung Q45", ALC262_HIPPO),
+ 	SND_PCI_QUIRK(0x17aa, 0x384e, "Lenovo 3000 y410", ALC262_LENOVO_3000),
+ 	SND_PCI_QUIRK(0x17ff, 0x0560, "Benq ED8", ALC262_BENQ_ED8),
+ 	SND_PCI_QUIRK(0x17ff, 0x058d, "Benq T31-16", ALC262_BENQ_T31),
+-- 
+1.5.6.3
