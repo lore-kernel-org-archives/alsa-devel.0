@@ -1,27 +1,19 @@
-From: Daniel T Chen <crimsunkg@yahoo.com>
-Subject: Re:
-	=?utf-8?q?alsa-utils=3A_alsactl_restore_not_working_?=
-	=?utf-8?q?after_system=09restart?=
-Date: Tue, 16 Dec 2008 15:50:02 +0000 (UTC)
-Message-ID: <loom.20081216T154437-656@post.gmane.org>
-References: <d9690f190812160458t79cef08dt56ad7bd68e174d8d@mail.gmail.com>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: Unknown symbols in snd-fm801.ko
+Date: Tue, 16 Dec 2008 21:12:58 +0200
+Message-ID: <4947FDBA.2080505@pardus.org.tr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id D15D12433B
-	for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2008 16:55:05 +0100 (CET)
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1LCcGG-0005lX-Er
-	for alsa-devel@alsa-project.org; Tue, 16 Dec 2008 15:55:04 +0000
-Received: from smith.missi.ncsc.mil ([144.51.50.70])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2008 15:55:04 +0000
-Received: from crimsunkg by smith.missi.ncsc.mil with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2008 15:55:04 +0000
+Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 471EE24356
+	for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2008 20:14:13 +0100 (CET)
+Received: from [192.168.1.2] (unknown [88.249.178.198])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested) (Authenticated sender: ozan)
+	by pardus.org.tr (Postfix) with ESMTP id 121C3631E663
+	for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2008 21:14:03 +0200 (EET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,13 +26,50 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Klaus Schulz <kls.schlz <at> googlemail.com> writes:
-> It seems that either a link  /var/lib/alsa/asound.state to /etc/asound.state
-> is needed
-> or that /etc/init.d/alsa-utils needs to be updated within the restore
-> section accordingly.
-
-Please note that the Debian (and all its derivatives) source package of
-alsa-utils does, in fact, patch for the former link:
-
-http://svn.debian.org/wsvn/pkg-alsa/trunk/alsa-utils/debian/patches/move_asound_state_to_var.patch?op=file&rev=0&sc=0
+SGksCgpZZXN0ZXJkYXkgSSB3YXMgdHJ5aW5nIHRvIGNvbXBpbGUgdGhlIGxhdGVzdCBzbmFwc2hv
+dCBvZiBhbHNhLWRyaXZlciBvbiAKdG9wIG9mIGtlcm5lbCAyLjYuMjhfcmM4LiBXaGVuIGxvb2tp
+bmcgdGhyb3VnaCB0aGUgY29uc29sZSBvdXRwdXQgb2YgCm1ha2UsIEkgc2F3IHR3byB3YXJuaW5n
+cyBnaXZlbiBieSBMRCByZXBvcnRpbmcgdHdvIHVua25vd24gc3ltYm9scyBpbiAKc25kLWZtODAx
+LmtvKGRyaXZlciBmb3IgYSBGb3J0ZU1lZGlhIHNvdW5kIGNhcmQpOgoKQnVpbGRpbmcgbW9kdWxl
+cywgc3RhZ2UgMi4KICBNT0RQT1NUIDE3MCBtb2R1bGVzCldBUk5JTkc6ICJzbmRfdGVhNTc1eF9p
+bml0IiAKWy92YXIvcGlzaS9hbHNhLWRyaXZlci0xLjAuMThhXzIwMDgxMjE0LTM5L3dvcmsvYWxz
+YS1kcml2ZXIvcGNpL3NuZC1mbTgwMS5rb10gCnVuZGVmaW5lZCEKV0FSTklORzogInNuZF90ZWE1
+NzV4X2V4aXQiIApbL3Zhci9waXNpL2Fsc2EtZHJpdmVyLTEuMC4xOGFfMjAwODEyMTQtMzkvd29y
+ay9hbHNhLWRyaXZlci9wY2kvc25kLWZtODAxLmtvXSAKdW5kZWZpbmVkIQoKbGFwdG9wIGFsc2Et
+ZHJpdmVyICMgZ3JlcCAtckhJbiAic25kX3RlYTU3NXhfaW5pdCIgKgphbHNhLWtlcm5lbC9pMmMv
+b3RoZXIvdGVhNTc1eC10dW5lci5jOjE5NTp2b2lkIHNuZF90ZWE1NzV4X2luaXQoc3RydWN0IHNu
+ZF90ZWE1NzV4ICp0ZWEpCmFsc2Eta2VybmVsL2kyYy9vdGhlci90ZWE1NzV4LXR1bmVyLmM6MjUx
+OkVYUE9SVF9TWU1CT0woc25kX3RlYTU3NXhfaW5pdCk7CmFsc2Eta2VybmVsL2luY2x1ZGUvdGVh
+NTc1eC10dW5lci5oOjUxOnZvaWQgc25kX3RlYTU3NXhfaW5pdChzdHJ1Y3Qgc25kX3RlYTU3NXgg
+KnRlYSk7CmFsc2Eta2VybmVsL3BjaS9mbTgwMS5jOjE0NDc6ICAgICAgICAgICBzbmRfdGVhNTc1
+eF9pbml0KCZjaGlwLT50ZWEpOwppMmMvb3RoZXIvdGVhNTc1eC10dW5lci5jOjIzNjp2b2lkIHNu
+ZF90ZWE1NzV4X2luaXQoc3RydWN0IHNuZF90ZWE1NzV4ICp0ZWEpCmkyYy9vdGhlci90ZWE1NzV4
+LXR1bmVyLmM6MzA5OkVYUE9SVF9TWU1CT0woc25kX3RlYTU3NXhfaW5pdCk7CmluY2x1ZGUvc291
+bmQvdGVhNTc1eC10dW5lci5oOjUxOnZvaWQgc25kX3RlYTU3NXhfaW5pdChzdHJ1Y3Qgc25kX3Rl
+YTU3NXggKnRlYSk7CnBjaS9mbTgwMS5jOjE0NDg6ICAgICAgICAgICAgICAgc25kX3RlYTU3NXhf
+aW5pdCgmY2hpcC0+dGVhKTsKcGNpL2ZtODAxLmMub3JpZzoxNDQ3OiAgICAgICAgICBzbmRfdGVh
+NTc1eF9pbml0KCZjaGlwLT50ZWEpOwpzb3VuZC9pMmMvb3RoZXIvdGVhNTc1eC10dW5lci5jOjE5
+NTp2b2lkIHNuZF90ZWE1NzV4X2luaXQoc3RydWN0IHNuZF90ZWE1NzV4ICp0ZWEpCnNvdW5kL2ky
+Yy9vdGhlci90ZWE1NzV4LXR1bmVyLmM6MjUxOkVYUE9SVF9TWU1CT0woc25kX3RlYTU3NXhfaW5p
+dCk7CnNvdW5kL2luY2x1ZGUvdGVhNTc1eC10dW5lci5oOjUxOnZvaWQgc25kX3RlYTU3NXhfaW5p
+dChzdHJ1Y3Qgc25kX3RlYTU3NXggKnRlYSk7CnNvdW5kL3BjaS9mbTgwMS5jOjE0NDc6ICAgICAg
+ICAgc25kX3RlYTU3NXhfaW5pdCgmY2hpcC0+dGVhKTsKClNvIHRoaXMgc3ltYm9scyBhcmUgZXhw
+b3J0ZWQgYnkgdGVhNTc1eC10dW5lci5jLiBUaGVyZSdzIGEgY2FyZCBvcHRpb24gcGFyYW1ldGVy
+CmluIGNvbmZpZ3VyYXRpb24gb2YgYWxzYS1kcml2ZXIgY2FsbGVkICdmbTgwMS10ZWE1NzV4LWJv
+b2wnLkJ1dCBldmVudGhvdWdoLCBJJ20gY29uZmlndXJpbmcKdGhlIHBhY2thZ2Ugd2l0aCwgIi0t
+d2l0aC1jYXJkLW9wdGlvbnM9YWxsIiwgSSdtIGdldHRpbmcgdGhpcyB3YXJuaW5ncy4gQXMgYSBj
+b25zZXF1ZW5jZQppdCdzIGltcG9zc2libGUgdG8gbG9hZCB0aGUgbW9kdWxlIHNuZC1mbTgwMS4K
+CkkgdGhpbmsgdGhhdCBpdCdzIGEgcHJvYmxlbSB3aXRoIEtjb25maWcgc3R1ZmYgYnV0IEkgcmVh
+bGx5IGRvbid0IGdldCBob3cgYWxzYS1kcml2ZXIgcGFja2FnZQptYW5hZ2VzIHRoZSB3aG9sZSB0
+aGluZyB3aXRoIGFsc2Eta2VybmVsIGRpcmVjdG9yeSwgcGF0Y2hzZXRzIGV0Yy4oQlRXLCBpcyB0
+aGVyZSBhbnkgZG9jdW1lbnRhdGlvbiBhYm91dAp0aGUgbWVjaGFuaXNtIGluIGFsc2EtZHJpdmVy
+LCBhbmQgdGhlIGZ1bmN0aW9ucyBvZiBzZXBhcmF0ZSBnaXQgcmVwb3MgYWxzYS1kcml2ZXIsIGFs
+c2Eta2VybmVsLCBzdHViLCBldGMuPykKCkknbSBoYXZpbmcgdGhlIGlzc3VlIHdpdGgKMi42LjI1
+LnggJiYgKDEuMC4xNyB8fCAxLjAuMTgpLAoyLjYuMjhfcmM4ICYmICgxLjAuMTgpCgpzbyB0aGUg
+cHJvYmxlbSBtYXkgbm90IGJlIGNhdWdodCB1bnRpbCB0aGlzIHRpbWUgYmVjYXVzZSB0aGVyZSBl
+eGlzdHMgYSBmZXcgZGlzdHJpYnV0aW9ucyB3aGljaCBzaGlwcwphbHNhLWRyaXZlcihhbmQgb3Ro
+ZXIga2VybmVsIG1vZHVsZXMpIHNlcGFyYXRlbHkuCgpSZWdhcmRzLAoKLS0gCgpPemFuIMOHYcSf
+bGF5YW4KPG96YW5fYXRfcGFyZHVzLm9yZy50cj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
+bGlzdGluZm8vYWxzYS1kZXZlbAo=
