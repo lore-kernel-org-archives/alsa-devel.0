@@ -1,19 +1,20 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: Unknown symbols in snd-fm801.ko
-Date: Tue, 16 Dec 2008 21:12:58 +0200
-Message-ID: <4947FDBA.2080505@pardus.org.tr>
+From: Troy Kisky <troy.kisky@boundarydevices.com>
+Subject: SND_SOC_DAIFMT_NB_NF meaning
+Date: Tue, 16 Dec 2008 19:27:30 -0700
+Message-ID: <49486392.4080001@boundarydevices.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 471EE24356
-	for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2008 20:14:13 +0100 (CET)
-Received: from [192.168.1.2] (unknown [88.249.178.198])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested) (Authenticated sender: ozan)
-	by pardus.org.tr (Postfix) with ESMTP id 121C3631E663
-	for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2008 21:14:03 +0200 (EET)
+Received: from smtpauth03.csee.onr.siteprotect.com
+	(smtpauth03.csee.onr.siteprotect.com [64.26.60.137])
+	by alsa0.perex.cz (Postfix) with ESMTP id C0A622435F
+	for <alsa-devel@alsa-project.org>; Wed, 17 Dec 2008 03:27:36 +0100 (CET)
+Received: from [192.168.0.251] (unknown [67.42.45.38])
+	(Authenticated sender: troy.kisky@boundarydevices.com)
+	by smtpauth03.csee.onr.siteprotect.com (Postfix) with ESMTP id
+	743F61038007
+	for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2008 20:27:34 -0600 (CST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,50 +27,15 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpZZXN0ZXJkYXkgSSB3YXMgdHJ5aW5nIHRvIGNvbXBpbGUgdGhlIGxhdGVzdCBzbmFwc2hv
-dCBvZiBhbHNhLWRyaXZlciBvbiAKdG9wIG9mIGtlcm5lbCAyLjYuMjhfcmM4LiBXaGVuIGxvb2tp
-bmcgdGhyb3VnaCB0aGUgY29uc29sZSBvdXRwdXQgb2YgCm1ha2UsIEkgc2F3IHR3byB3YXJuaW5n
-cyBnaXZlbiBieSBMRCByZXBvcnRpbmcgdHdvIHVua25vd24gc3ltYm9scyBpbiAKc25kLWZtODAx
-LmtvKGRyaXZlciBmb3IgYSBGb3J0ZU1lZGlhIHNvdW5kIGNhcmQpOgoKQnVpbGRpbmcgbW9kdWxl
-cywgc3RhZ2UgMi4KICBNT0RQT1NUIDE3MCBtb2R1bGVzCldBUk5JTkc6ICJzbmRfdGVhNTc1eF9p
-bml0IiAKWy92YXIvcGlzaS9hbHNhLWRyaXZlci0xLjAuMThhXzIwMDgxMjE0LTM5L3dvcmsvYWxz
-YS1kcml2ZXIvcGNpL3NuZC1mbTgwMS5rb10gCnVuZGVmaW5lZCEKV0FSTklORzogInNuZF90ZWE1
-NzV4X2V4aXQiIApbL3Zhci9waXNpL2Fsc2EtZHJpdmVyLTEuMC4xOGFfMjAwODEyMTQtMzkvd29y
-ay9hbHNhLWRyaXZlci9wY2kvc25kLWZtODAxLmtvXSAKdW5kZWZpbmVkIQoKbGFwdG9wIGFsc2Et
-ZHJpdmVyICMgZ3JlcCAtckhJbiAic25kX3RlYTU3NXhfaW5pdCIgKgphbHNhLWtlcm5lbC9pMmMv
-b3RoZXIvdGVhNTc1eC10dW5lci5jOjE5NTp2b2lkIHNuZF90ZWE1NzV4X2luaXQoc3RydWN0IHNu
-ZF90ZWE1NzV4ICp0ZWEpCmFsc2Eta2VybmVsL2kyYy9vdGhlci90ZWE1NzV4LXR1bmVyLmM6MjUx
-OkVYUE9SVF9TWU1CT0woc25kX3RlYTU3NXhfaW5pdCk7CmFsc2Eta2VybmVsL2luY2x1ZGUvdGVh
-NTc1eC10dW5lci5oOjUxOnZvaWQgc25kX3RlYTU3NXhfaW5pdChzdHJ1Y3Qgc25kX3RlYTU3NXgg
-KnRlYSk7CmFsc2Eta2VybmVsL3BjaS9mbTgwMS5jOjE0NDc6ICAgICAgICAgICBzbmRfdGVhNTc1
-eF9pbml0KCZjaGlwLT50ZWEpOwppMmMvb3RoZXIvdGVhNTc1eC10dW5lci5jOjIzNjp2b2lkIHNu
-ZF90ZWE1NzV4X2luaXQoc3RydWN0IHNuZF90ZWE1NzV4ICp0ZWEpCmkyYy9vdGhlci90ZWE1NzV4
-LXR1bmVyLmM6MzA5OkVYUE9SVF9TWU1CT0woc25kX3RlYTU3NXhfaW5pdCk7CmluY2x1ZGUvc291
-bmQvdGVhNTc1eC10dW5lci5oOjUxOnZvaWQgc25kX3RlYTU3NXhfaW5pdChzdHJ1Y3Qgc25kX3Rl
-YTU3NXggKnRlYSk7CnBjaS9mbTgwMS5jOjE0NDg6ICAgICAgICAgICAgICAgc25kX3RlYTU3NXhf
-aW5pdCgmY2hpcC0+dGVhKTsKcGNpL2ZtODAxLmMub3JpZzoxNDQ3OiAgICAgICAgICBzbmRfdGVh
-NTc1eF9pbml0KCZjaGlwLT50ZWEpOwpzb3VuZC9pMmMvb3RoZXIvdGVhNTc1eC10dW5lci5jOjE5
-NTp2b2lkIHNuZF90ZWE1NzV4X2luaXQoc3RydWN0IHNuZF90ZWE1NzV4ICp0ZWEpCnNvdW5kL2ky
-Yy9vdGhlci90ZWE1NzV4LXR1bmVyLmM6MjUxOkVYUE9SVF9TWU1CT0woc25kX3RlYTU3NXhfaW5p
-dCk7CnNvdW5kL2luY2x1ZGUvdGVhNTc1eC10dW5lci5oOjUxOnZvaWQgc25kX3RlYTU3NXhfaW5p
-dChzdHJ1Y3Qgc25kX3RlYTU3NXggKnRlYSk7CnNvdW5kL3BjaS9mbTgwMS5jOjE0NDc6ICAgICAg
-ICAgc25kX3RlYTU3NXhfaW5pdCgmY2hpcC0+dGVhKTsKClNvIHRoaXMgc3ltYm9scyBhcmUgZXhw
-b3J0ZWQgYnkgdGVhNTc1eC10dW5lci5jLiBUaGVyZSdzIGEgY2FyZCBvcHRpb24gcGFyYW1ldGVy
-CmluIGNvbmZpZ3VyYXRpb24gb2YgYWxzYS1kcml2ZXIgY2FsbGVkICdmbTgwMS10ZWE1NzV4LWJv
-b2wnLkJ1dCBldmVudGhvdWdoLCBJJ20gY29uZmlndXJpbmcKdGhlIHBhY2thZ2Ugd2l0aCwgIi0t
-d2l0aC1jYXJkLW9wdGlvbnM9YWxsIiwgSSdtIGdldHRpbmcgdGhpcyB3YXJuaW5ncy4gQXMgYSBj
-b25zZXF1ZW5jZQppdCdzIGltcG9zc2libGUgdG8gbG9hZCB0aGUgbW9kdWxlIHNuZC1mbTgwMS4K
-CkkgdGhpbmsgdGhhdCBpdCdzIGEgcHJvYmxlbSB3aXRoIEtjb25maWcgc3R1ZmYgYnV0IEkgcmVh
-bGx5IGRvbid0IGdldCBob3cgYWxzYS1kcml2ZXIgcGFja2FnZQptYW5hZ2VzIHRoZSB3aG9sZSB0
-aGluZyB3aXRoIGFsc2Eta2VybmVsIGRpcmVjdG9yeSwgcGF0Y2hzZXRzIGV0Yy4oQlRXLCBpcyB0
-aGVyZSBhbnkgZG9jdW1lbnRhdGlvbiBhYm91dAp0aGUgbWVjaGFuaXNtIGluIGFsc2EtZHJpdmVy
-LCBhbmQgdGhlIGZ1bmN0aW9ucyBvZiBzZXBhcmF0ZSBnaXQgcmVwb3MgYWxzYS1kcml2ZXIsIGFs
-c2Eta2VybmVsLCBzdHViLCBldGMuPykKCkknbSBoYXZpbmcgdGhlIGlzc3VlIHdpdGgKMi42LjI1
-LnggJiYgKDEuMC4xNyB8fCAxLjAuMTgpLAoyLjYuMjhfcmM4ICYmICgxLjAuMTgpCgpzbyB0aGUg
-cHJvYmxlbSBtYXkgbm90IGJlIGNhdWdodCB1bnRpbCB0aGlzIHRpbWUgYmVjYXVzZSB0aGVyZSBl
-eGlzdHMgYSBmZXcgZGlzdHJpYnV0aW9ucyB3aGljaCBzaGlwcwphbHNhLWRyaXZlcihhbmQgb3Ro
-ZXIga2VybmVsIG1vZHVsZXMpIHNlcGFyYXRlbHkuCgpSZWdhcmRzLAoKLS0gCgpPemFuIMOHYcSf
-bGF5YW4KPG96YW5fYXRfcGFyZHVzLm9yZy50cj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+
+A quick question here. Does SND_SOC_DAIFMT_NB_NF have a standard meaning
+or does it depend on what mode your in (I2S, DSP_A, right just). From
+looking at the sources, SND_SOC_DAIFMT_NB_NF usually means that data is
+valid on the rising BCLK and start of frame is rising edge if DSP mode.
+The reason I ask, is that I'd like to pass the same flags to the codec and
+the cpu_dai and have them agree with the interpretation.
+
+
+Thanks
+Troy
