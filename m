@@ -1,19 +1,18 @@
-From: "naveen krishna ch" <naveenkrishna.ch@gmail.com>
-Subject: Re: aplay..no sound..no error..
-Date: Wed, 17 Dec 2008 13:15:58 +0530
-Message-ID: <ef0d8a250812162345p6bd611dcwe5ec3293ea0e91e1@mail.gmail.com>
-References: <eeb9eca50812162338k2bf33772w32333fa55e842be@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Trying to figure out what went wrong with my HDMI.
+Date: Wed, 17 Dec 2008 09:03:35 +0100
+Message-ID: <4948B257.9080606@ladisch.de>
+References: <e5df86c90812150742l71fcdccdp6c8b4ce51a02155d@mail.gmail.com>	
+	<4947ABFE.5080603@ladisch.de>
+	<e5df86c90812160653v1e3ed11fl1c485a4634e106c1@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.249])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5E5002440F
-	for <alsa-devel@alsa-project.org>; Wed, 17 Dec 2008 08:45:59 +0100 (CET)
-Received: by an-out-0708.google.com with SMTP id b2so1332323ana.2
-	for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2008 23:45:58 -0800 (PST)
-In-Reply-To: <eeb9eca50812162338k2bf33772w32333fa55e842be@mail.gmail.com>
-Content-Disposition: inline
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id D36BF1037EB
+	for <alsa-devel@alsa-project.org>; Wed, 17 Dec 2008 09:03:38 +0100 (CET)
+In-Reply-To: <e5df86c90812160653v1e3ed11fl1c485a4634e106c1@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,41 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: vasudha rao <vasudha.jrao@gmail.com>
+To: Mark Jenks <mjenks1968@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 17, 2008 at 1:08 PM, vasudha rao <vasudha.jrao@gmail.com> wrote:
+Mark Jenks wrote:
+> On Tue, Dec 16, 2008 at 7:24 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+> > Use "plughw:0,3" instead of "hw:0,3".
+>
+> What is the difference?
 
-> Hi all..
->
-> I have installed alsa for my embedded board..(at91sam9263)
-> when I use aplay utility I got,
->
-> $ aplay a.wav
-> Playing WAVE 'a.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
->
-> I am not getting any error message.. But no sound from speaker also..
->
-> What else I can try to listen sound from speaker..??
+Plughw automatically converts to a sample format that the device
+supports.
 
-Have u seen the amixer settings for speaker (enabled or not)
+> And why did hw:0,3 work before?
 
->
->
->
-> Thanks,
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+Probably your old hardware did support mono playback.
+
+> If I want to use it in Myth, would it be ALSA:plughw:0,3 then?
+
+Yes.  (It is possible that Myth can do resampling and channel rerouting
+by itself; in this case, hw would also work.)
 
 
-
--- 
-Thanks,
-keep smiling...
-keep winning...
-
-(: Naveen Krishna Ch :)
+HTH
+Clemens
