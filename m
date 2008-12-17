@@ -1,16 +1,18 @@
-From: "vasudha rao" <vasudha.jrao@gmail.com>
-Subject: aplay..no sound..no error..
-Date: Wed, 17 Dec 2008 13:08:47 +0530
-Message-ID: <eeb9eca50812162338k2bf33772w32333fa55e842be@mail.gmail.com>
+From: "naveen krishna ch" <naveenkrishna.ch@gmail.com>
+Subject: Re: aplay..no sound..no error..
+Date: Wed, 17 Dec 2008 13:15:58 +0530
+Message-ID: <ef0d8a250812162345p6bd611dcwe5ec3293ea0e91e1@mail.gmail.com>
+References: <eeb9eca50812162338k2bf33772w32333fa55e842be@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f20.google.com (mail-ew0-f20.google.com
-	[209.85.219.20]) by alsa0.perex.cz (Postfix) with ESMTP id 245F12440C
-	for <alsa-devel@alsa-project.org>; Wed, 17 Dec 2008 08:38:49 +0100 (CET)
-Received: by ewy13 with SMTP id 13so4053028ewy.8
-	for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2008 23:38:48 -0800 (PST)
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.249])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5E5002440F
+	for <alsa-devel@alsa-project.org>; Wed, 17 Dec 2008 08:45:59 +0100 (CET)
+Received: by an-out-0708.google.com with SMTP id b2so1332323ana.2
+	for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2008 23:45:58 -0800 (PST)
+In-Reply-To: <eeb9eca50812162338k2bf33772w32333fa55e842be@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,20 +23,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: vasudha rao <vasudha.jrao@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all..
+On Wed, Dec 17, 2008 at 1:08 PM, vasudha rao <vasudha.jrao@gmail.com> wrote:
 
-I have installed alsa for my embedded board..(at91sam9263)
-when I use aplay utility I got,
+> Hi all..
+>
+> I have installed alsa for my embedded board..(at91sam9263)
+> when I use aplay utility I got,
+>
+> $ aplay a.wav
+> Playing WAVE 'a.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
+>
+> I am not getting any error message.. But no sound from speaker also..
+>
+> What else I can try to listen sound from speaker..??
 
-$ aplay a.wav
-Playing WAVE 'a.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
+Have u seen the amixer settings for speaker (enabled or not)
 
-I am not getting any error message.. But no sound from speaker also..
+>
+>
+>
+> Thanks,
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
 
-What else I can try to listen sound from speaker..??
 
 
+-- 
 Thanks,
+keep smiling...
+keep winning...
+
+(: Naveen Krishna Ch :)
