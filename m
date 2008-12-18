@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/4] ASoC: switch davinci DPRINTK to pr_debug()
-Date: Thu, 18 Dec 2008 17:30:55 +0000
-Message-ID: <1229621458-2144-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/4] ASoC: Ease merge difficulties from new
+	architectures
+Date: Thu, 18 Dec 2008 17:30:56 +0000
+Message-ID: <1229621458-2144-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20081218173021.GA25332@rakim.wolfsonmicro.main>
+	<1229621458-2144-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3EB3024481
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 708C21037E3
 	for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2008 18:30:59 +0100 (CET)
-In-Reply-To: <20081218173021.GA25332@rakim.wolfsonmicro.main>
+In-Reply-To: <1229621458-2144-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,73 +23,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Alexander Beregalov <a.beregalov@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Alexander Beregalov <a.beregalov@gmail.com>
+Rather than listing lots of architectures per line in Kconfig and
+Makefile, causing merge conflicts all the time, have one per line
+in alphabetical order.
 
-Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/davinci/davinci-pcm.c |   18 ++++++------------
- 1 files changed, 6 insertions(+), 12 deletions(-)
+ sound/soc/Kconfig  |   10 +++++-----
+ sound/soc/Makefile |   12 ++++++++++--
+ 2 files changed, 15 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
-index bc83e1c..74abc9b 100644
---- a/sound/soc/davinci/davinci-pcm.c
-+++ b/sound/soc/davinci/davinci-pcm.c
-@@ -14,6 +14,7 @@
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/dma-mapping.h>
-+#include <linux/kernel.h>
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 615ebf0..ef025c6 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -22,16 +22,16 @@ if SND_SOC
+ config SND_SOC_AC97_BUS
+ 	bool
  
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -24,13 +25,6 @@
+-# All the supported Soc's
++# All the supported SoCs
+ source "sound/soc/atmel/Kconfig"
+ source "sound/soc/au1x/Kconfig"
++source "sound/soc/blackfin/Kconfig"
++source "sound/soc/davinci/Kconfig"
++source "sound/soc/fsl/Kconfig"
++source "sound/soc/omap/Kconfig"
+ source "sound/soc/pxa/Kconfig"
+ source "sound/soc/s3c24xx/Kconfig"
+ source "sound/soc/sh/Kconfig"
+-source "sound/soc/fsl/Kconfig"
+-source "sound/soc/davinci/Kconfig"
+-source "sound/soc/omap/Kconfig"
+-source "sound/soc/blackfin/Kconfig"
  
- #include "davinci-pcm.h"
+ # Supported codecs
+ source "sound/soc/codecs/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 4d475c3..86a9b1f 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -1,5 +1,13 @@
+ snd-soc-core-objs := soc-core.o soc-dapm.o
  
--#define DAVINCI_PCM_DEBUG 0
--#if DAVINCI_PCM_DEBUG
--#define DPRINTK(x...) printk(KERN_DEBUG x)
--#else
--#define DPRINTK(x...)
--#endif
--
- static struct snd_pcm_hardware davinci_pcm_hardware = {
- 	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
-@@ -78,8 +72,8 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
- 	dma_offset = prtd->period * period_size;
- 	dma_pos = runtime->dma_addr + dma_offset;
- 
--	DPRINTK("audio_set_dma_params_play channel = %d dma_ptr = %x "
--		"period_size=%x\n", lch, dma_pos, period_size);
-+	pr_debug("davinci_pcm: audio_set_dma_params_play channel = %d "
-+		"dma_ptr = %x period_size=%x\n", lch, dma_pos, period_size);
- 
- 	data_type = prtd->params->data_type;
- 	count = period_size / data_type;
-@@ -112,7 +106,7 @@ static void davinci_pcm_dma_irq(int lch, u16 ch_status, void *data)
- 	struct snd_pcm_substream *substream = data;
- 	struct davinci_runtime_data *prtd = substream->runtime->private_data;
- 
--	DPRINTK("lch=%d, status=0x%x\n", lch, ch_status);
-+	pr_debug("davinci_pcm: lch=%d, status=0x%x\n", lch, ch_status);
- 
- 	if (unlikely(ch_status != DMA_COMPLETE))
- 		return;
-@@ -316,8 +310,8 @@ static int davinci_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
- 	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
- 					   &buf->addr, GFP_KERNEL);
- 
--	DPRINTK("preallocate_dma_buffer: area=%p, addr=%p, size=%d\n",
--		(void *) buf->area, (void *) buf->addr, size);
-+	pr_debug("davinci_pcm: preallocate_dma_buffer: area=%p, addr=%p, "
-+		"size=%d\n", (void *) buf->area, (void *) buf->addr, size);
- 
- 	if (!buf->area)
- 		return -ENOMEM;
+ obj-$(CONFIG_SND_SOC)	+= snd-soc-core.o
+-obj-$(CONFIG_SND_SOC)	+= codecs/ atmel/ pxa/ s3c24xx/ sh/ fsl/ davinci/
+-obj-$(CONFIG_SND_SOC)	+= omap/ au1x/ blackfin/
++obj-$(CONFIG_SND_SOC)	+= codecs/
++obj-$(CONFIG_SND_SOC)	+= atmel/
++obj-$(CONFIG_SND_SOC)	+= au1x/
++obj-$(CONFIG_SND_SOC)	+= blackfin/
++obj-$(CONFIG_SND_SOC)	+= davinci/
++obj-$(CONFIG_SND_SOC)	+= fsl/
++obj-$(CONFIG_SND_SOC)	+= omap/
++obj-$(CONFIG_SND_SOC)	+= pxa/
++obj-$(CONFIG_SND_SOC)	+= s3c24xx/
++obj-$(CONFIG_SND_SOC)	+= sh/
 -- 
 1.5.6.5
