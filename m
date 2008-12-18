@@ -1,18 +1,17 @@
 From: Jani Nikula <ext-jani.1.nikula@nokia.com>
-Subject: Re: [PATCH] ALSA: Add support for TV-out to the
-	jack	reporting API
-Date: Thu, 18 Dec 2008 10:16:30 +0200
-Message-ID: <1229588190.5895.405.camel@jani-desktop>
-References: <1229515473-24289-1-git-send-email-ext-jani.1.nikula@nokia.com>
-	<s5hd4fr2bcx.wl%tiwai@suse.de> <20081217143358.GC22204@sirena.org.uk>
+Subject: [PATCH] ALSA: Add support for video out to the jack
+	reporting API
+Date: Thu, 18 Dec 2008 10:17:58 +0200
+Message-ID: <1229588278-21116-1-git-send-email-ext-jani.1.nikula@nokia.com>
+References: <1229588190.5895.405.camel@jani-desktop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id E2F83243B3
-	for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2008 09:16:20 +0100 (CET)
-In-Reply-To: <20081217143358.GC22204@sirena.org.uk>
+	by alsa0.perex.cz (Postfix) with ESMTP id 81B9D243B3
+	for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2008 09:17:43 +0100 (CET)
+In-Reply-To: <1229588190.5895.405.camel@jani-desktop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,15 +21,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@sirena.org.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, dmitry.torokhov@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@opensource.wolfsonmicro.com, dmitry.torokhov@gmail.com, ext-jani.1.nikula@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2008-12-17 at 14:34 +0000, ext Mark Brown wrote:
+Add support for reporting new jack types SND_JACK_VIDEOOUT and
+SND_JACK_AVOUT (a combination of LINEOUT and VIDEOOUT) to the jack
+reporting API.
 
-> This might be better as "video" rather than "TV", identifying the type
-> of video with the descriptive text in the label.
+Also add the corresponding SW_VIDEOOUT_INSERT switch to the input system
+header.
 
-Will resend with s/TVOUT/VIDEOOUT/g.
+Signed-off-by: Jani Nikula <ext-jani.1.nikula@nokia.com>
+---
+ include/linux/input.h |    1 +
+ include/sound/jack.h  |    2 ++
+ sound/core/jack.c     |    6 ++++++
+ 3 files changed, 9 insertions(+), 0 deletions(-)
 
-Jani.
+diff --git a/include/linux/input.h b/include/linux/input.h
+index 9a6355f..adc1332 100644
+--- a/include/linux/input.h
++++ b/include/linux/input.h
+@@ -661,6 +661,7 @@ struct input_absinfo {
+ #define SW_DOCK			0x05  /* set = plugged into dock */
+ #define SW_LINEOUT_INSERT	0x06  /* set = inserted */
+ #define SW_JACK_PHYSICAL_INSERT 0x07  /* set = mechanical switch set */
++#define SW_VIDEOOUT_INSERT	0x08  /* set = inserted */
+ #define SW_MAX			0x0f
+ #define SW_CNT			(SW_MAX+1)
+ 
+diff --git a/include/sound/jack.h b/include/sound/jack.h
+index 2e0315c..283c975 100644
+--- a/include/sound/jack.h
++++ b/include/sound/jack.h
+@@ -37,6 +37,8 @@ enum snd_jack_types {
+ 	SND_JACK_HEADSET	= SND_JACK_HEADPHONE | SND_JACK_MICROPHONE,
+ 	SND_JACK_LINEOUT	= 0x0004,
+ 	SND_JACK_MECHANICAL	= 0x0008, /* If detected separately */
++	SND_JACK_VIDEOOUT	= 0x0010,
++	SND_JACK_AVOUT		= SND_JACK_LINEOUT | SND_JACK_VIDEOOUT,
+ };
+ 
+ struct snd_jack {
+diff --git a/sound/core/jack.c b/sound/core/jack.c
+index dd4a12d..e1de195 100644
+--- a/sound/core/jack.c
++++ b/sound/core/jack.c
+@@ -106,6 +106,9 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
+ 	if (type & SND_JACK_LINEOUT)
+ 		input_set_capability(jack->input_dev, EV_SW,
+ 				     SW_LINEOUT_INSERT);
++	if (type & SND_JACK_VIDEOOUT)
++		input_set_capability(jack->input_dev, EV_SW,
++				     SW_VIDEOOUT_INSERT);
+ 	if (type & SND_JACK_MICROPHONE)
+ 		input_set_capability(jack->input_dev, EV_SW,
+ 				     SW_MICROPHONE_INSERT);
+@@ -163,6 +166,9 @@ void snd_jack_report(struct snd_jack *jack, int status)
+ 	if (jack->type & SND_JACK_LINEOUT)
+ 		input_report_switch(jack->input_dev, SW_LINEOUT_INSERT,
+ 				    status & SND_JACK_LINEOUT);
++	if (jack->type & SND_JACK_VIDEOOUT)
++		input_report_switch(jack->input_dev, SW_VIDEOOUT_INSERT,
++				    status & SND_JACK_VIDEOOUT);
+ 	if (jack->type & SND_JACK_MICROPHONE)
+ 		input_report_switch(jack->input_dev, SW_MICROPHONE_INSERT,
+ 				    status & SND_JACK_MICROPHONE);
+-- 
+1.6.0.4
