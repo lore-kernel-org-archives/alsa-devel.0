@@ -1,19 +1,21 @@
 From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: [PATCH 1/8] ALSA: ASoC: tlv320aic3x add dsp_a,
-	fix dsp_b
-Date: Thu, 18 Dec 2008 12:36:39 -0700
-Message-ID: <1229629006-4261-2-git-send-email-troy.kisky@boundarydevices.com>
+Subject: [PATCH 3/8] ALSA: ASoC: DaVinci: davinci-i2s add
+	comments to explain polarity
+Date: Thu, 18 Dec 2008 12:36:41 -0700
+Message-ID: <1229629006-4261-4-git-send-email-troy.kisky@boundarydevices.com>
 References: <>
 	<1229629006-4261-1-git-send-email-troy.kisky@boundarydevices.com>
+	<1229629006-4261-2-git-send-email-troy.kisky@boundarydevices.com>
+	<1229629006-4261-3-git-send-email-troy.kisky@boundarydevices.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mpls-qmqp-02.inet.qwest.net (mpls-qmqp-02.inet.qwest.net
-	[63.231.195.113])
-	by alsa0.perex.cz (Postfix) with ESMTP id DB73E244BF
+Received: from mpls-qmqp-04.inet.qwest.net (mpls-qmqp-04.inet.qwest.net
+	[63.231.195.115])
+	by alsa0.perex.cz (Postfix) with ESMTP id 05754244C1
 	for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2008 20:36:53 +0100 (CET)
-In-Reply-To: <1229629006-4261-1-git-send-email-troy.kisky@boundarydevices.com>
+In-Reply-To: <1229629006-4261-3-git-send-email-troy.kisky@boundarydevices.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,52 +29,75 @@ To: alsa-devel@alsa-project.org
 Cc: davinci-linux-open-source@linux.davincidsp.com, broonie@sirena.org.uk, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add SND_SOC_DAIFMT_DSP_A and fix SND_SOC_DAIFMT_DSP_B
-mode. Before dsp_b was really being initialized as dsp_a.
+Document the current polarity choices.
 
 Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index b76bcc3..ad19661 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -847,6 +847,7 @@ static int aic3x_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	struct snd_soc_codec *codec = codec_dai->codec;
- 	struct aic3x_priv *aic3x = codec->private_data;
- 	u8 iface_areg, iface_breg;
-+	int delay = 0;
+diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
+index cf31b3b..ecb5e83 100644
+--- a/sound/soc/davinci/davinci-i2s.c
++++ b/sound/soc/davinci/davinci-i2s.c
+@@ -235,18 +235,45 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
  
- 	iface_areg = aic3x_read_reg_cache(codec, AIC3X_ASD_INTF_CTRLA) & 0x3f;
- 	iface_breg = aic3x_read_reg_cache(codec, AIC3X_ASD_INTF_CTRLB) & 0x3f;
-@@ -873,6 +874,8 @@ static int aic3x_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	case (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF):
+ 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+ 	case SND_SOC_DAIFMT_IB_NF:
++		/* CLKRP Receive clock polarity,
++		 *	1 - sampled on rising edge of CLKR
++		 *	valid on rising edge
++		 * CLKXP Transmit clock polarity,
++		 *	1 - clocked on falling edge of CLKX
++		 *	valid on rising edge
++		 * FSRP  Receive frame sync pol, 0 - active high
++		 * FSXP  Transmit frame sync pol, 0 - active high
++		 */
+ 		w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_PCR_REG);
+ 		MOD_REG_BIT(w, DAVINCI_MCBSP_PCR_CLKXP |
+ 			       DAVINCI_MCBSP_PCR_CLKRP, 1);
+ 		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_PCR_REG, w);
  		break;
- 	case (SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_IB_NF):
-+		delay = 1;
-+	case (SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_IB_NF):
- 		iface_breg |= (0x01 << 6);
+ 	case SND_SOC_DAIFMT_NB_IF:
++		/* CLKRP Receive clock polarity,
++		 *	0 - sampled on falling edge of CLKR
++		 *	valid on falling edge
++		 * CLKXP Transmit clock polarity,
++		 *	0 - clocked on rising edge of CLKX
++		 *	valid on falling edge
++		 * FSRP  Receive frame sync pol, 1 - active low
++		 * FSXP  Transmit frame sync pol, 1 - active low
++		 */
+ 		w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_PCR_REG);
+ 		MOD_REG_BIT(w, DAVINCI_MCBSP_PCR_FSXP |
+ 			       DAVINCI_MCBSP_PCR_FSRP, 1);
+ 		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_PCR_REG, w);
  		break;
- 	case (SND_SOC_DAIFMT_RIGHT_J | SND_SOC_DAIFMT_NB_NF):
-@@ -888,6 +891,7 @@ static int aic3x_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	/* set iface */
- 	aic3x_write(codec, AIC3X_ASD_INTF_CTRLA, iface_areg);
- 	aic3x_write(codec, AIC3X_ASD_INTF_CTRLB, iface_breg);
-+	aic3x_write(codec, AIC3X_ASD_INTF_CTRLC, delay);
- 
- 	return 0;
- }
-diff --git a/sound/soc/codecs/tlv320aic3x.h b/sound/soc/codecs/tlv320aic3x.h
-index 00a195a..40a6c2a 100644
---- a/sound/soc/codecs/tlv320aic3x.h
-+++ b/sound/soc/codecs/tlv320aic3x.h
-@@ -35,6 +35,8 @@
- #define AIC3X_ASD_INTF_CTRLA		8
- /* Audio serial data interface control register B */
- #define AIC3X_ASD_INTF_CTRLB		9
-+/* Audio serial data interface control register C */
-+#define AIC3X_ASD_INTF_CTRLC		10
- /* Audio overflow status and PLL R value programming register */
- #define AIC3X_OVRF_STATUS_AND_PLLR_REG	11
- /* Audio codec digital filter control register */
+ 	case SND_SOC_DAIFMT_IB_IF:
++		/* CLKRP Receive clock polarity,
++		 *	1 - sampled on rising edge of CLKR
++		 *	valid on rising edge
++		 * CLKXP Transmit clock polarity,
++		 *	1 - clocked on falling edge of CLKX
++		 *	valid on rising edge
++		 * FSRP  Receive frame sync pol, 1 - active low
++		 * FSXP  Transmit frame sync pol, 1 - active low
++		 */
+ 		w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_PCR_REG);
+ 		MOD_REG_BIT(w, DAVINCI_MCBSP_PCR_CLKXP |
+ 			       DAVINCI_MCBSP_PCR_CLKRP |
+@@ -255,6 +282,15 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_PCR_REG, w);
+ 		break;
+ 	case SND_SOC_DAIFMT_NB_NF:
++		/* CLKRP Receive clock polarity,
++		 *	0 - sampled on falling edge of CLKR
++		 *	valid on falling edge
++		 * CLKXP Transmit clock polarity,
++		 *	0 - clocked on rising edge of CLKX
++		 *	valid on falling edge
++		 * FSRP  Receive frame sync pol, 0 - active high
++		 * FSXP  Transmit frame sync pol, 0 - active high
++		 */
+ 		break;
+ 	default:
+ 		return -EINVAL;
 -- 
 1.5.4.3
