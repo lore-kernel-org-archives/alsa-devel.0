@@ -1,23 +1,17 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ALSA: Add support for TV-out to the
-	jack	reporting API
-Date: Wed, 17 Dec 2008 15:59:17 +0000
-Message-ID: <20081217155915.GE22204@sirena.org.uk>
-References: <1229515473-24289-1-git-send-email-ext-jani.1.nikula@nokia.com>
-	<s5hd4fr2bcx.wl%tiwai@suse.de>
-	<20081217143358.GC22204@sirena.org.uk>
-	<s5hhc5226yh.wl%tiwai@suse.de>
-	<20081217150634.GD22204@sirena.org.uk>
-	<s5h63li25vc.wl%tiwai@suse.de>
+From: naveenkrishna.ch <naveenkrishna.ch@gmail.com>
+Subject: [ASoC] TWL4030 underrun error
+Date: Thu, 18 Dec 2008 10:49:30 +0530
+Message-ID: <ef0d8a250812172119t4364194bw839d643c69fc5f3e@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8C84A243D9
-	for <alsa-devel@alsa-project.org>; Wed, 17 Dec 2008 16:59:18 +0100 (CET)
+Received: from mail-gx0-f19.google.com (mail-gx0-f19.google.com
+	[209.85.217.19]) by alsa0.perex.cz (Postfix) with ESMTP id 6891424365
+	for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2008 06:19:32 +0100 (CET)
+Received: by gxk12 with SMTP id 12so281130gxk.8
+	for <alsa-devel@alsa-project.org>; Wed, 17 Dec 2008 21:19:31 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <s5h63li25vc.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,16 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, dmitry.torokhov@gmail.com, Jani Nikula <ext-jani.1.nikula@nokia.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 17, 2008 at 04:12:07PM +0100, Takashi Iwai wrote:
+Hello,
 
-> If we need to change SND_JACK_* values, then we should do it now
-> since 2.6.29 will be the first kernel that uses this API (it exists in
-> 2.6.28 but not used).
+I am working on OMAP3 + TWL4030 combination for ASoC codec
 
-Ideally, though since this ABI isn't exposed to user space it's not so
-critical.  I'm not coming up with any better ideas than yours, though,
-so at the minute no change anyway.
+The omap generic omap-pcm.c file has
+
+static const struct snd_pcm_hardware omap_pcm_hardware = {
+        .info                   = SNDRV_PCM_INFO_MMAP |
+                                  SNDRV_PCM_INFO_MMAP_VALID |
+                                  SNDRV_PCM_INFO_INTERLEAVED |
+                                  SNDRV_PCM_INFO_BLOCK_TRANSFER |
+                                  SNDRV_PCM_INFO_PAUSE |
+                                  SNDRV_PCM_INFO_RESUME,
+        .formats                = SNDRV_PCM_FMTBIT_S16_LE,
+        .rates                  = SNDRV_PCM_RATE_8000_96000,
+        .period_bytes_min       = 32,
+        .period_bytes_max       = 64 * 1024,
+        .periods_min            = 2,
+        .periods_max            = 255,
+        .buffer_bytes_max       = 128 * 1024,
+};
+
+following structure,
+
+When i play with
+aplay XXX.wav
+
+Rare but i used to get some underrun messages
+ i found thses message are coming from aplay.
+
+underrun!!! (at least 10271.545 ms long)
+underrun!!! (at least 904.663 ms long)
+underrun!!! (at least 771.790 ms long)
+underrun!!! (at least 3393.433 ms long)
+underrun!!! (at least 777.314 ms long)
+
+I dint found much info about this in net too.
+How can i solve this, can any one help me out
+
+-- 
+Thanks,
+
+(: Naveen Krishna Ch :)
