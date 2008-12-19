@@ -1,19 +1,17 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: Patch to /sound/soc/pxa/pxa2xx_pcm.c,
-	WHO IS INTERESTED?
-Date: Fri, 19 Dec 2008 12:32:13 +0000
-Message-ID: <20081219123212.GK24129@sirena.org.uk>
-References: <494A97CD.7070909@gmail.com> <20081219115737.GI24129@sirena.org.uk>
-	<s5hljucwevk.wl%tiwai@suse.de>
+From: "vasudha rao" <vasudha.jrao@gmail.com>
+Subject: arecord ..xrun!!!!
+Date: Fri, 19 Dec 2008 18:34:08 +0530
+Message-ID: <eeb9eca50812190504g6701afe8i2f6517179b72b74d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id A49CF243C8
-	for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2008 13:32:14 +0100 (CET)
+Received: from mail-ew0-f20.google.com (mail-ew0-f20.google.com
+	[209.85.219.20]) by alsa0.perex.cz (Postfix) with ESMTP id 2F288243D4
+	for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2008 14:04:10 +0100 (CET)
+Received: by ewy13 with SMTP id 13so1010814ewy.8
+	for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2008 05:04:09 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <s5hljucwevk.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,19 +21,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: nicolas pitre <nico@cam.org>, ALSA project mailing list <alsa-devel@alsa-project.org>, sware <microcontrolfreak@gmail.com>, liam girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 19, 2008 at 01:03:59PM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
+Hi ..
 
-> > >  	kfree(prtd);
-> > > +	runtime->private_data = NULL;
-> > > +
+I am trying to record .wav files..
 
-> This looks superfluous.  The runtime instance will be anyway freed
-> soon after the close callback.
+I did like,
+$arecord -D copy test.wav
+Recording WAVE 'test.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
+xrun!!! (at least 0.251 ms long)
+xrun!!! (at least 0.071 ms long)
+xrun!!! (at least 0.072 ms long)
+.
+.
+.
 
-Even if it wasn't the driver will overwrite it on open().  OTOH it
-doesn't do any harm either.
+When I run this test.wav, no sound!!!!
+
+Am I doing wrong anywhere??
+
+Thanks:-)
