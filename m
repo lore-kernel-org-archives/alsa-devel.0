@@ -1,21 +1,17 @@
-From: "Jarkko Nikula" <jhnikula@gmail.com>
-Subject: Re: [PATCH 1/8] ALSA: ASoC: tlv320aic3x add dsp_a,
-	fix dsp_b
-Date: Fri, 19 Dec 2008 12:04:25 +0200
-Message-ID: <bd7b27490812190204p11bd383bmb64bf62c166f4476@mail.gmail.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 0/8]ALSA: ASoc: DaVinci: cleanup
+Date: Fri, 19 Dec 2008 10:13:26 +0000
+Message-ID: <20081219101321.GA24129@sirena.org.uk>
 References: <1229629006-4261-1-git-send-email-troy.kisky@boundarydevices.com>
-	<1229629006-4261-2-git-send-email-troy.kisky@boundarydevices.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f20.google.com (mail-bw0-f20.google.com
-	[209.85.218.20]) by alsa0.perex.cz (Postfix) with ESMTP id D4ABE24373
-	for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2008 11:04:26 +0100 (CET)
-Received: by bwz13 with SMTP id 13so2659642bwz.8
-	for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2008 02:04:26 -0800 (PST)
-In-Reply-To: <1229629006-4261-2-git-send-email-troy.kisky@boundarydevices.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id B0A6224385
+	for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2008 11:13:29 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <1229629006-4261-1-git-send-email-troy.kisky@boundarydevices.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,34 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Troy Kisky <troy.kisky@boundarydevices.com>
-Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com, broonie@sirena.org.uk
+Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 18, 2008 at 9:36 PM, Troy Kisky
-<troy.kisky@boundarydevices.com>wrote:
+On Thu, Dec 18, 2008 at 12:36:38PM -0700, Troy Kisky wrote:
 
-> Add SND_SOC_DAIFMT_DSP_A and fix SND_SOC_DAIFMT_DSP_B
-> mode. Before dsp_b was really being initialized as dsp_a.
->
-> Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
->
+> Sorry, for the long series to do something so simple, but there were
+> unresolved objections when I first posted this to the davinci list.
 
+What were the issues people had?
 
-> @@ -873,6 +874,8 @@ static int aic3x_set_dai_fmt(struct snd_soc_dai
-> *codec_dai,
->        case (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF):
->                break;
->        case (SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_IB_NF):
-> +               delay = 1;
-> +       case (SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_IB_NF):
->                iface_breg |= (0x01 << 6);
->                break;
->
+> Hopefully, having this split into tiny pieces will make resolving
+> those differences easier.
 
-Is this correct? I'm looking the WM9713 spec and there DSP_A has the 1-bit
-delay.
-
-But I like this idea to add another DSP format.
-
-
-Jarkko
+It certainly makes review easier.
