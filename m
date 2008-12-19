@@ -1,19 +1,16 @@
-From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: [PATCH 2/4] ALSA: ASoC: DaVinci: i2s, evm,
-	pass same value to codec and cpu_dai
-Date: Fri, 19 Dec 2008 13:05:23 -0700
-Message-ID: <1229717125-9859-2-git-send-email-troy.kisky@boundarydevices.com>
-References: <>
-	<1229717125-9859-1-git-send-email-troy.kisky@boundarydevices.com>
+From: Ronald <raalst@gmail.com>
+Subject: somebody ever see ALSA applied in robotics ?
+Date: Fri, 19 Dec 2008 21:50:39 +0100
+Message-ID: <494C091F.1070405@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mpls-qmqp-04.inet.qwest.net (mpls-qmqp-04.inet.qwest.net
-	[63.231.195.115])
-	by alsa0.perex.cz (Postfix) with ESMTP id A06B71037F4
-	for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2008 21:05:33 +0100 (CET)
-In-Reply-To: <1229717125-9859-1-git-send-email-troy.kisky@boundarydevices.com>
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id 201471037EB
+	for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2008 21:50:47 +0100 (CET)
+Received: by nf-out-0910.google.com with SMTP id e27so185285nfd.32
+	for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2008 12:50:46 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,86 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: naresh@ti.com, broonie@sirena.org.uk, Troy Kisky <troy.kisky@boundarydevices.com>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Fix the meaning of SND_SOC_DAIFMT_NB_NF to match that
-used in the codec.
+Hi, all,
 
-Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
+I'm trying to develop a system which can determine the direction(s)
+sound comes from.
+In the end, it will be put in an R/c submarine, on a gumstix linux board 
+(see  http://www.subcommittee.com for my hobby)
 
-diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
-index 555ecb2..a78ff59 100644
---- a/sound/soc/davinci/davinci-evm.c
-+++ b/sound/soc/davinci/davinci-evm.c
-@@ -28,6 +28,8 @@
- 
- #define EVM_CODEC_CLOCK 22579200
- 
-+#define AUDIO_FORMAT (SND_SOC_DAIFMT_I2S | \
-+		SND_SOC_DAIFMT_CBM_CFM | SND_SOC_DAIFMT_NB_NF)
- static int evm_hw_params(struct snd_pcm_substream *substream,
- 			 struct snd_pcm_hw_params *params)
- {
-@@ -37,16 +39,12 @@ static int evm_hw_params(struct snd_pcm_substream *substream,
- 	int ret = 0;
- 
- 	/* set codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
--					SND_SOC_DAIFMT_CBM_CFM |
--					SND_SOC_DAIFMT_NB_NF);
-+	ret = snd_soc_dai_set_fmt(codec_dai, AUDIO_FORMAT);
- 	if (ret < 0)
- 		return ret;
- 
- 	/* set cpu DAI configuration */
--	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
--					SND_SOC_DAIFMT_CBM_CFM |
--				       SND_SOC_DAIFMT_IB_NF);
-+	ret = snd_soc_dai_set_fmt(cpu_dai, AUDIO_FORMAT);
- 	if (ret < 0)
- 		return ret;
- 
-diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
-index fa8b57d..c425c86 100644
---- a/sound/soc/davinci/davinci-i2s.c
-+++ b/sound/soc/davinci/davinci-i2s.c
-@@ -254,7 +254,7 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 	}
- 
- 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
--	case SND_SOC_DAIFMT_IB_NF:
-+	case SND_SOC_DAIFMT_NB_NF:
- 		/* CLKRP Receive clock polarity,
- 		 *	1 - sampled on rising edge of CLKR
- 		 *	valid on rising edge
-@@ -266,7 +266,7 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		 */
- 		pcr |= (DAVINCI_MCBSP_PCR_CLKXP | DAVINCI_MCBSP_PCR_CLKRP);
- 		break;
--	case SND_SOC_DAIFMT_NB_IF:
-+	case SND_SOC_DAIFMT_IB_IF:
- 		/* CLKRP Receive clock polarity,
- 		 *	0 - sampled on falling edge of CLKR
- 		 *	valid on falling edge
-@@ -278,7 +278,7 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		 */
- 		pcr |= (DAVINCI_MCBSP_PCR_FSXP | DAVINCI_MCBSP_PCR_FSRP);
- 		break;
--	case SND_SOC_DAIFMT_IB_IF:
-+	case SND_SOC_DAIFMT_NB_IF:
- 		/* CLKRP Receive clock polarity,
- 		 *	1 - sampled on rising edge of CLKR
- 		 *	valid on rising edge
-@@ -291,7 +291,7 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		pcr |= (DAVINCI_MCBSP_PCR_CLKXP | DAVINCI_MCBSP_PCR_CLKRP |
- 			DAVINCI_MCBSP_PCR_FSXP | DAVINCI_MCBSP_PCR_FSRP);
- 		break;
--	case SND_SOC_DAIFMT_NB_NF:
-+	case SND_SOC_DAIFMT_IB_NF:
- 		/* CLKRP Receive clock polarity,
- 		 *	0 - sampled on falling edge of CLKR
- 		 *	valid on falling edge
--- 
-1.5.4.3
+But for now, I develop in air, with ubuntu.
+all I want is to record using both the mic channel and the  line in
+(where another 2 mics are attached with a small preamp),
+and I want to record while emitting a chirp, analyzing echo's.
+the concept has been shown to work. see for instance
+http://eddiem.com/projects/chirp/chirp.htm
+
+I am assuming that since all this goes via the same sound card, the same 
+crystal is used, and samples from mic and line in are
+essentially synchronized (I only need it to be sync-ish for < 0,1 sec..)
+
+Now I have read a lot of ALSA tutorials and such like, but I'm lost.
+a lot is about humans consuming nice harmonics, sharing and mixing,
+which is not applicable to my case.
+I have the nagging feeling OSS is a better fit for my case, but OSS is 
+apparently on a 60 day licence now.
+
+And, I am a newbie coder. no surprise there ;-)
+
+So, these are my questions :
+
+- Do I need to combine mic and line-in into one device using the
+config file ? do I get a 3 channel device then ? does a plug-in add 
+latency ?
+
+- can I sync the transmission of a short chirp with the start of the 
+recording on these 3 channels ? is starting them close after each other 
+in the program OK, or is there possibly large latency caused *after* I 
+call the API ? the "real" sync'ing will be the (first) recording of the 
+chirp once it leaves the speaker, so it isn't critical, but I would like 
+to know because it might save a few bytes useless samples.
+
+- Does anybody out there have any links, code snippets or general 
+published info on how to apply ALSA to the robotics field ?
+
+Ps I have read the el-cheapo hack with multiple soundcards, and while a 
+very good idea, I cannot use it in the boat later on..
+
+thanks for any input you might have.
+
+Regards,
+Ronald van Aalst
