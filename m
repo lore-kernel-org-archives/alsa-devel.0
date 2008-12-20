@@ -1,14 +1,15 @@
 From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: [PATCH] hda: dinput_mux check
-Date: Sat, 20 Dec 2008 17:36:28 -0500
-Message-ID: <494D736C.3000503@embeddedalley.com>
+Subject: [PATCH] hda: fix incorrect mixer index values for
+	92hd83xx
+Date: Sat, 20 Dec 2008 17:47:24 -0500
+Message-ID: <494D75FC.1030904@embeddedalley.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
-	by alsa0.perex.cz (Postfix) with SMTP id C12951037E3
-	for <alsa-devel@alsa-project.org>; Sat, 20 Dec 2008 23:36:42 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with SMTP id 98B621037EC
+	for <alsa-devel@alsa-project.org>; Sat, 20 Dec 2008 23:47:31 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,25 +20,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: takashi Iwai <tiwai@suse.de>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Add check to determine if dinput_mux is set by any of patch_stac*() functions,
-otherwise a invalid pointer my be referenced causing gibberish to mixer values.
+Fixed incorrect mixer index values for 92hd83xx codec's audio
+input mixer.
 
 Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
 ---
+
 diff --git a/pci/hda/patch_sigmatel.c b/pci/hda/patch_sigmatel.c
-index 70181d5..fa87893 100644
+index 70181d5..efa1fb0 100644
 --- a/pci/hda/patch_sigmatel.c
 +++ b/pci/hda/patch_sigmatel.c
-@@ -3601,7 +3601,8 @@ static int stac92xx_parse_auto_config(struct hda_codec *codec, hda_nid_t dig_out
- 		spec->mixers[spec->num_mixers++] = spec->kctls.list;
+@@ -1101,21 +1101,21 @@ static struct snd_kcontrol_new stac92hd83xxx_mixer[] = {
+ 	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x1, 0x18, 0x0, HDA_OUTPUT),
+ 	HDA_CODEC_MUTE_IDX("Capture Switch", 0x1, 0x18, 0x0, HDA_OUTPUT),
  
- 	spec->input_mux = &spec->private_imux;
--	spec->dinput_mux = &spec->private_dimux;
-+	if (!spec->dinput_mux)
-+		spec->dinput_mux = &spec->private_dimux;
- 	spec->sinput_mux = &spec->private_smux;
- 	spec->mono_mux = &spec->private_mono_mux;
- 	spec->amp_mux = &spec->private_amp_mux;
+-	HDA_CODEC_VOLUME("DAC0 Capture Volume", 0x1b, 0, HDA_INPUT),
+-	HDA_CODEC_MUTE("DAC0 Capture Switch", 0x1b, 0, HDA_INPUT),
++	HDA_CODEC_VOLUME("DAC0 Capture Volume", 0x1b, 0x3, HDA_INPUT),
++	HDA_CODEC_MUTE("DAC0 Capture Switch", 0x1b, 0x3, HDA_INPUT),
+ 
+-	HDA_CODEC_VOLUME("DAC1 Capture Volume", 0x1b, 0x1, HDA_INPUT),
+-	HDA_CODEC_MUTE("DAC1 Capture Switch", 0x1b, 0x1, HDA_INPUT),
++	HDA_CODEC_VOLUME("DAC1 Capture Volume", 0x1b, 0x4, HDA_INPUT),
++	HDA_CODEC_MUTE("DAC1 Capture Switch", 0x1b, 0x4, HDA_INPUT),
+ 
+-	HDA_CODEC_VOLUME("Front Mic Capture Volume", 0x1b, 0x2, HDA_INPUT),
+-	HDA_CODEC_MUTE("Front Mic Capture Switch", 0x1b, 0x2, HDA_INPUT),
++	HDA_CODEC_VOLUME("Front Mic Capture Volume", 0x1b, 0x0, HDA_INPUT),
++	HDA_CODEC_MUTE("Front Mic Capture Switch", 0x1b, 0x0, HDA_INPUT),
+ 
+-	HDA_CODEC_VOLUME("Line In Capture Volume", 0x1b, 0x3, HDA_INPUT),
+-	HDA_CODEC_MUTE("Line In Capture Switch", 0x1b, 0x3, HDA_INPUT),
++	HDA_CODEC_VOLUME("Line In Capture Volume", 0x1b, 0x2, HDA_INPUT),
++	HDA_CODEC_MUTE("Line In Capture Switch", 0x1b, 0x2, HDA_INPUT),
+ 
+ 	/*
+-	HDA_CODEC_VOLUME("Mic Capture Volume", 0x1b, 0x4, HDA_INPUT),
+-	HDA_CODEC_MUTE("Mic Capture Switch", 0x1b 0x4, HDA_INPUT),
++	HDA_CODEC_VOLUME("Mic Capture Volume", 0x1b, 0x1, HDA_INPUT),
++	HDA_CODEC_MUTE("Mic Capture Switch", 0x1b 0x1, HDA_INPUT),
+ 	*/
+ 	{ } /* end */
+ };
