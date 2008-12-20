@@ -1,17 +1,18 @@
-From: Udo van den Heuvel <udovdh@xs4all.nl>
-Subject: Re: ice1712 error
-Date: Sat, 20 Dec 2008 13:56:08 +0100
-Message-ID: <494CEB68.1050702@xs4all.nl>
-References: <494BC00A.9080202@xs4all.nl>	<s5hocz8uq0t.wl%tiwai@suse.de>	<494BC52B.8020605@xs4all.nl>	<s5hljucuouu.wl%tiwai@suse.de>	<494BCA18.3080508@xs4all.nl>	<s5h8wqcumjn.wl%tiwai@suse.de>	<494BD77D.4000401@xs4all.nl>	<s5hr643cked.wl%tiwai@suse.de>
-	<494CD2DD.3040703@xs4all.nl>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 01/01] alsa: sound/soc/pxa/pxa2xx_pcm.c,
+	check and set	invalid dma_ch to be <= to 0 in pxa2xx_pcm_hw_free()
+Date: Sat, 20 Dec 2008 13:10:20 +0000
+Message-ID: <20081220131019.GB6859@sirena.org.uk>
+References: <494C8816.20802@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-vbr19.xs4all.nl (smtp-vbr19.xs4all.nl [194.109.24.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id D426E1037ED
-	for <alsa-devel@alsa-project.org>; Sat, 20 Dec 2008 13:56:10 +0100 (CET)
-In-Reply-To: <494CD2DD.3040703@xs4all.nl>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 67A6F1037E3
+	for <alsa-devel@alsa-project.org>; Sat, 20 Dec 2008 14:10:35 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <494C8816.20802@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,74 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: sware <microcontrolfreak@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, stephen.ware@eqware.net, ALSA project mailing list <alsa-devel@alsa-project.org>, Dennis O'Brien <dennis.obrien@eqware.net>
 List-Id: alsa-devel@alsa-project.org
 
-Udo van den Heuvel wrote:
-> Takashi Iwai wrote:
->>> snd_card_new gives me the error.
->>> (I put some printk's at the right spots.)
->>>
->>> So what's the next step?
->> Check that function.  Did you build with the debug option?
-> 
-> Yes.
-> For hda-intel it gives some extra messages but none for ice1712:
-> 
-> ALSA sound/core/init.c:183: cannot find the slot for index 1 (range 
-> 0-7), error: -16
-> NULLcardinit............ (my own debugging)
-> ICE1712: probe of 0000:01:09.0 failed with error -12
-> ALSA sound/core/init.c:183: cannot find the slot for index 1 (range 
-> 0-7), error: -16
-> NULLcardinit............ (my own debugging)
-> ICE1712: probe of 0000:01:09.0 failed with error -12
-> 
-It appears that in init.c, in snd_card_new this part of code is causing 
-the error:
+On Fri, Dec 19, 2008 at 09:52:22PM -0800, sware wrote:
 
-        else if (idx < snd_ecards_limit) {
-                 if (snd_cards_lock & (1 << idx))
-                         err = -EBUSY;   /* invalid */
-                 printk(KERN_WARNING "busy............\n"); /*my debug */
-         }
+> From: Stephen Ware <stephen.ware@eqware.net>, Dennis O'Brien <dennis.obrien@eqware.net>
 
-So it is my card?
-Repeatedly rmmodding and modprobing snd_ice1712 now only gives me -12
+...
 
-Please advise.
+> Signed-off-by: Dennis O'Brien <dennis.obrien@eqware.net>
 
-Udo
+The patch itself is good but could you please clarify what's going on
+with the author and signoff lines (apart from anything else the multiple
+authors appears to be confusing git, it's ignoring Dennis).
 
-cdrom: This disc doesn't have any tracks I recognize!
-busy............
-ALSA sound/core/init.c:193: cannot find the slot for index 1 (range 
-0-7), error: -16
-NULLcardinit............
-ICE1712: probe of 0000:01:09.0 failed with error -12
-busy............
-ALSA sound/core/init.c:193: cannot find the slot for index 1 (range 
-0-7), error: -16
-NULLcardinit............
-ICE1712: probe of 0000:01:09.0 failed with error -12
-busy............
-ALSA sound/core/init.c:193: cannot find the slot for index 1 (range 
-0-7), error: -16
-NULLcardinit............
-ICE1712: probe of 0000:01:09.0 failed with error -12
-busy............
-ALSA sound/core/init.c:193: cannot find the slot for index 1 (range 
-0-7), error: -16
-NULLcardinit............
-ICE1712: probe of 0000:01:09.0 failed with error -12
-busy............
-ALSA sound/core/init.c:193: cannot find the slot for index 1 (range 
-0-7), error: -16
-NULLcardinit............
-ICE1712: probe of 0000:01:09.0 failed with error -12
-busy............
-ALSA sound/core/init.c:193: cannot find the slot for index 1 (range 
-0-7), error: -16
-NULLcardinit............
-ICE1712: probe of 0000:01:09.0 failed with error -12
+The combination of git format-patch and send-email is handy for
+generating something that applies easily.
