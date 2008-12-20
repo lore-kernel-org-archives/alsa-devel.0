@@ -1,20 +1,17 @@
-From: Udo van den Heuvel <udovdh@xs4all.nl>
-Subject: Re: ice1712 error
-Date: Sat, 20 Dec 2008 12:11:25 +0100
-Message-ID: <494CD2DD.3040703@xs4all.nl>
-References: <494BC00A.9080202@xs4all.nl>
-	<s5hocz8uq0t.wl%tiwai@suse.de>	<494BC52B.8020605@xs4all.nl>
-	<s5hljucuouu.wl%tiwai@suse.de>	<494BCA18.3080508@xs4all.nl>
-	<s5h8wqcumjn.wl%tiwai@suse.de>	<494BD77D.4000401@xs4all.nl>
-	<s5hr643cked.wl%tiwai@suse.de>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 1/4] ALSA: ASoC: tlv320aic3x add dsp_a
+Date: Sat, 20 Dec 2008 12:55:33 +0000
+Message-ID: <20081220125532.GA6859@sirena.org.uk>
+References: <1229717125-9859-1-git-send-email-troy.kisky@boundarydevices.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-vbr19.xs4all.nl (smtp-vbr19.xs4all.nl [194.109.24.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id B3E4A1037E3
-	for <alsa-devel@alsa-project.org>; Sat, 20 Dec 2008 12:11:26 +0100 (CET)
-In-Reply-To: <s5hr643cked.wl%tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 16D711037E3
+	for <alsa-devel@alsa-project.org>; Sat, 20 Dec 2008 13:55:46 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1229717125-9859-1-git-send-email-troy.kisky@boundarydevices.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,31 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Troy Kisky <troy.kisky@boundarydevices.com>
+Cc: alsa-devel@alsa-project.org, naresh@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
->> snd_card_new gives me the error.
->> (I put some printk's at the right spots.)
->>
->> So what's the next step?
+On Fri, Dec 19, 2008 at 01:05:22PM -0700, Troy Kisky wrote:
+> Add SND_SOC_DAIFMT_DSP_A mode option.
 > 
-> Check that function.  Did you build with the debug option?
+> Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
 
-Yes.
-For hda-intel it gives some extra messages but none for ice1712:
-
-ALSA sound/core/init.c:183: cannot find the slot for index 1 (range 
-0-7), error: -16
-NULLcardinit............ (my own debugging)
-ICE1712: probe of 0000:01:09.0 failed with error -12
-ALSA sound/core/init.c:183: cannot find the slot for index 1 (range 
-0-7), error: -16
-NULLcardinit............ (my own debugging)
-ICE1712: probe of 0000:01:09.0 failed with error -12
-
-So I really need help.
-
-Kind regards,
-Udo
+Applied, thanks.
