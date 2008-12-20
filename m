@@ -1,17 +1,19 @@
-From: Udo van den Heuvel <udovdh@xs4all.nl>
-Subject: Re: ice1712 error
-Date: Sat, 20 Dec 2008 17:22:04 +0100
-Message-ID: <494D1BAC.6080608@xs4all.nl>
-References: <494BC00A.9080202@xs4all.nl>	<s5hocz8uq0t.wl%tiwai@suse.de>	<494BC52B.8020605@xs4all.nl>	<s5hljucuouu.wl%tiwai@suse.de>	<494BCA18.3080508@xs4all.nl>	<s5h8wqcumjn.wl%tiwai@suse.de>	<494BD77D.4000401@xs4all.nl>	<s5hr643cked.wl%tiwai@suse.de>	<494CD2DD.3040703@xs4all.nl>	<494CEB68.1050702@xs4all.nl>
-	<s5hzliqua66.wl%tiwai@suse.de>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: Re: Unknown symbols in snd-fm801.ko
+Date: Sat, 20 Dec 2008 18:45:29 +0200
+Message-ID: <494D2129.9020007@pardus.org.tr>
+References: <4947FDBA.2080505@pardus.org.tr>
+	<s5hskondvyn.wl%tiwai@suse.de>	<4948E574.9030500@pardus.org.tr>
+	<s5hvdtjc9dz.wl%tiwai@suse.de>	<49490D65.4040109@pardus.org.tr>
+	<s5h1vw62448.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-vbr19.xs4all.nl (smtp-vbr19.xs4all.nl [194.109.24.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id D6CC11037E3
-	for <alsa-devel@alsa-project.org>; Sat, 20 Dec 2008 17:22:05 +0100 (CET)
-In-Reply-To: <s5hzliqua66.wl%tiwai@suse.de>
+Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 72FF81037EC
+	for <alsa-devel@alsa-project.org>; Sat, 20 Dec 2008 17:46:45 +0100 (CET)
+In-Reply-To: <s5h1vw62448.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,36 +27,10 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
->> It appears that in init.c, in snd_card_new this part of code is causing 
->> the error:
->>
->>         else if (idx < snd_ecards_limit) {
->>                  if (snd_cards_lock & (1 << idx))
->>                          err = -EBUSY;   /* invalid */
->>                  printk(KERN_WARNING "busy............\n"); /*my debug */
->>          }
->>
->> So it is my card?
->> Repeatedly rmmodding and modprobing snd_ice1712 now only gives me -12
->>
->> Please advise.
-> 
-> It means that the given slot is already occupied, or so.  Unlikely a
-> driver error but a user-setup problem.
-
-Ok, that is good news!
-
-> Check index options of all sound cards.  For example, try to remove
-> index options once, and let the system load all devices.
-
-I #'ed out all index lines in /etc/modprobe.conf and then the card 
-immediately worked when I used rmmopd/modprobe.
-
-> In general, using slots option of snd module is recommended.  Read
-> ALSA-Configuration.txt for details.
-
-Will have a look and give it a try.
-Thanks!
-
-Udo
+VGFrYXNoaSBJd2FpIHdyb3RlOgo+IFBhcnRseSB5ZXMuICBNb3JlIGV4YWN0bHksIGl0J3MgYSBw
+cm9ibGVtIG9mIG1vZC1kZXBzLmMgdGhhdCBnZW5lcmF0ZXMKPiBhIGhlbHBlciBzY3JpcHQuCj4g
+ICAKSXQgbm93IHdvcmtzIGFzIGV4cGVjdGVkLiBUaGFuayB5b3UgZm9yIHlvdXIgZmFzdCByZW1l
+ZHkgOikKClJlZ2FyZHMsCgotLSAKCk96YW4gw4dhxJ9sYXlhbgo8b3phbl9hdF9wYXJkdXMub3Jn
+LnRyPgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
