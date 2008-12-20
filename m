@@ -1,23 +1,17 @@
-From: "Jarkko Nikula" <jhnikula@gmail.com>
-Subject: Re: [PATCH 1/8] ALSA: ASoC: tlv320aic3x add dsp_a,
-	fix dsp_b
-Date: Sat, 20 Dec 2008 18:02:33 +0200
-Message-ID: <bd7b27490812200802o39072b3dj37df269ae1e288a0@mail.gmail.com>
-References: <1229629006-4261-1-git-send-email-troy.kisky@boundarydevices.com>
-	<1229629006-4261-2-git-send-email-troy.kisky@boundarydevices.com>
-	<bd7b27490812190204p11bd383bmb64bf62c166f4476@mail.gmail.com>
-	<494BE237.7020204@boundarydevices.com>
+From: Udo van den Heuvel <udovdh@xs4all.nl>
+Subject: Re: ice1712 error
+Date: Sat, 20 Dec 2008 17:22:04 +0100
+Message-ID: <494D1BAC.6080608@xs4all.nl>
+References: <494BC00A.9080202@xs4all.nl>	<s5hocz8uq0t.wl%tiwai@suse.de>	<494BC52B.8020605@xs4all.nl>	<s5hljucuouu.wl%tiwai@suse.de>	<494BCA18.3080508@xs4all.nl>	<s5h8wqcumjn.wl%tiwai@suse.de>	<494BD77D.4000401@xs4all.nl>	<s5hr643cked.wl%tiwai@suse.de>	<494CD2DD.3040703@xs4all.nl>	<494CEB68.1050702@xs4all.nl>
+	<s5hzliqua66.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id 951CB1037E3
-	for <alsa-devel@alsa-project.org>; Sat, 20 Dec 2008 17:02:34 +0100 (CET)
-Received: by mu-out-0910.google.com with SMTP id w1so729203mue.2
-	for <alsa-devel@alsa-project.org>; Sat, 20 Dec 2008 08:02:33 -0800 (PST)
-In-Reply-To: <494BE237.7020204@boundarydevices.com>
-Content-Disposition: inline
+Received: from smtp-vbr19.xs4all.nl (smtp-vbr19.xs4all.nl [194.109.24.39])
+	by alsa0.perex.cz (Postfix) with ESMTP id D6CC11037E3
+	for <alsa-devel@alsa-project.org>; Sat, 20 Dec 2008 17:22:05 +0100 (CET)
+In-Reply-To: <s5hzliqua66.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,34 +21,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Troy Kisky <troy.kisky@boundarydevices.com>
-Cc: cliff.cai@analog.com, alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com, broonie@sirena.org.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 19, 2008 at 8:04 PM, Troy Kisky
-<troy.kisky@boundarydevices.com>wrote:
+Takashi Iwai wrote:
+>> It appears that in init.c, in snd_card_new this part of code is causing 
+>> the error:
+>>
+>>         else if (idx < snd_ecards_limit) {
+>>                  if (snd_cards_lock & (1 << idx))
+>>                          err = -EBUSY;   /* invalid */
+>>                  printk(KERN_WARNING "busy............\n"); /*my debug */
+>>          }
+>>
+>> So it is my card?
+>> Repeatedly rmmodding and modprobing snd_ice1712 now only gives me -12
+>>
+>> Please advise.
+> 
+> It means that the given slot is already occupied, or so.  Unlikely a
+> driver error but a user-setup problem.
 
-> Jarkko Nikula wrote:
-> > Is this correct? I'm looking the WM9713 spec and there DSP_A has the
-> 1-bit
-> > delay.
-> >
-> > But I like this idea to add another DSP format.
-> >
-> >
-> > Jarkko
->
-> I think you are correct. Thanks.
->
-> But, the AIC23 and SSM2602 would then be backwards too.
->
->
-And obviously omap-mcbsp.c too... grr, looks like I forgot to send a fix to
-it when fixing aic3x (commit 4b7d283150b35db6e5e10f72606f603ff424c92a). Will
-send a fix to omap-mcbsp, aic23 and osk5912 next week.
+Ok, that is good news!
 
-Yep, seems that SSM2602 should set the submode1 for DSP_B and submode2 for
-DSP_A, not vice versa. Worth to check then bf5xx-i2s.c as well.
+> Check index options of all sound cards.  For example, try to remove
+> index options once, and let the system load all devices.
 
+I #'ed out all index lines in /etc/modprobe.conf and then the card 
+immediately worked when I used rmmopd/modprobe.
 
-Jarkko
+> In general, using slots option of snd module is recommended.  Read
+> ALSA-Configuration.txt for details.
+
+Will have a look and give it a try.
+Thanks!
+
+Udo
