@@ -1,21 +1,18 @@
-From: "Arun KS" <arunks@mistralsolutions.com>
-Subject: Re: [topic/asoc][PATCH 1/1] ASoC: Fix incorrect DSP
-	format in OMAP McBSP DAI and affected drivers
-Date: Mon, 22 Dec 2008 14:30:03 +0530
-Message-ID: <dfeb90390812220100y3f7d93b7t49e298c4c46e387b@mail.gmail.com>
-References: <1229934096-4715-1-git-send-email-jarkko.nikula@nokia.com>
-	<1229934096-4715-2-git-send-email-jarkko.nikula@nokia.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 0/8]ALSA: ASoc: DaVinci: cleanup
+Date: Mon, 22 Dec 2008 11:25:01 +0000
+Message-ID: <20081222112500.GA3322@sirena.org.uk>
+References: <1229629006-4261-1-git-send-email-troy.kisky@boundarydevices.com>
+	<FF55437E1F14DA4BAEB721A458B670170622FF42E1@dbde02.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ti-out-0910.google.com (ti-out-0910.google.com [209.85.142.187])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3C7571037E3
-	for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2008 10:00:04 +0100 (CET)
-Received: by ti-out-0910.google.com with SMTP id j3so1328154tid.8
-	for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2008 01:00:03 -0800 (PST)
-In-Reply-To: <1229934096-4715-2-git-send-email-jarkko.nikula@nokia.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 746F91037F0
+	for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2008 12:25:09 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <FF55437E1F14DA4BAEB721A458B670170622FF42E1@dbde02.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,18 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@nokia.com>
-Cc: alsa-devel@alsa-project.org
+To: "Medisetty, Naresh" <naresh@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 22, 2008 at 1:51 PM, Jarkko Nikula <jarkko.nikula@nokia.com> wrote:
-> - OMAP McBSP DAI driver claims to support DSP_A format which has 1-bit data
->  delay but configures link for 0-bit data delay which is in fact DSP_B
-> - Fix this by changing format from DSP_A to DSP_B
-> - Fix also TLV320AIC23 codec and OSK5912 machine drivers since the same
->  error is populated also there
->
-> Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
-> Cc: Arun KS <arunks@mistralsolutions.com>
+On Mon, Dec 22, 2008 at 12:06:05PM +0530, Medisetty, Naresh wrote:
 
-Acked-by: Arun KS <arunks@mistralsolutions.com>
+> Still I find difficulty to agree with Troy regarding the meaning change of
+> SND_SOC_DAIFMT_NB_NF, since the existing meaning is correct w.r.t davinci
+> McBSP.
+
+Could you expand on that a bit - what are you referring to as the
+standard here?  This could just be a case of different hardware
+manufacturers implementing slightly different things and giving them the
+same name.
