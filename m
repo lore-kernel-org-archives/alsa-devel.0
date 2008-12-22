@@ -1,17 +1,15 @@
 From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: [topic/asoc][PATCH 1/1] ASoC: Fix incorrect DSP format
-	in OMAP McBSP DAI and affected drivers
-Date: Mon, 22 Dec 2008 10:21:36 +0200
-Message-ID: <1229934096-4715-2-git-send-email-jarkko.nikula@nokia.com>
-References: <1229934096-4715-1-git-send-email-jarkko.nikula@nokia.com>
+Subject: [topic/asoc][PATCH] ASoC: Fix DSP formats in SSM2602
+	audio codec
+Date: Mon, 22 Dec 2008 10:57:33 +0200
+Message-ID: <1229936253-5115-1-git-send-email-jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 73E7E1037EF
-	for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2008 09:21:55 +0100 (CET)
-In-Reply-To: <1229934096-4715-1-git-send-email-jarkko.nikula@nokia.com>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 83D861037E3
+	for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2008 09:57:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,79 +20,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Arun KS <arunks@mistralsolutions.com>, Jarkko Nikula <jarkko.nikula@nokia.com>
+Cc: Cliff Cai <cliff.cai@analog.com>, Jarkko Nikula <jarkko.nikula@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-- OMAP McBSP DAI driver claims to support DSP_A format which has 1-bit data
-  delay but configures link for 0-bit data delay which is in fact DSP_B
-- Fix this by changing format from DSP_A to DSP_B
-- Fix also TLV320AIC23 codec and OSK5912 machine drivers since the same
-  error is populated also there
+Thanks to Troy Kisky <troy.kisky@boundarydevices.com> for noticing.
+
+- DSP_A format has 1-bit data delay which corresponds to SSM6202 submode 2
+- DSP_B has 0-bit data delay which corresponds to submode 1
+- Currently driver sets them opposite so swap the submode setting
 
 Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
-Cc: Arun KS <arunks@mistralsolutions.com>
+Cc: Cliff Cai <cliff.cai@analog.com>
 ---
- sound/soc/codecs/tlv320aic23.c |    2 +-
- sound/soc/omap/omap-mcbsp.c    |    4 ++--
- sound/soc/omap/osk5912.c       |    4 ++--
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/codecs/ssm2602.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
-index 39f5b98..cfdea00 100644
---- a/sound/soc/codecs/tlv320aic23.c
-+++ b/sound/soc/codecs/tlv320aic23.c
-@@ -541,7 +541,7 @@ static int tlv320aic23_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	case SND_SOC_DAIFMT_I2S:
- 		iface_reg |= TLV320AIC23_FOR_I2S;
+diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+index 2325aef..cac3736 100644
+--- a/sound/soc/codecs/ssm2602.c
++++ b/sound/soc/codecs/ssm2602.c
+@@ -454,10 +454,10 @@ static int ssm2602_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		iface |= 0x0001;
  		break;
--	case SND_SOC_DAIFMT_DSP_A:
-+	case SND_SOC_DAIFMT_DSP_B:
- 		iface_reg |= TLV320AIC23_FOR_DSP;
+ 	case SND_SOC_DAIFMT_DSP_A:
+-		iface |= 0x0003;
++		iface |= 0x0013;
  		break;
- 	case SND_SOC_DAIFMT_RIGHT_J:
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 7b86373..ec5e18a 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -270,7 +270,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 		regs->srgr2	|= FPER(wlen * 2 - 1);
- 		regs->srgr1	|= FWID(wlen - 1);
+ 	case SND_SOC_DAIFMT_DSP_B:
+-		iface |= 0x0013;
++		iface |= 0x0003;
  		break;
--	case SND_SOC_DAIFMT_DSP_A:
-+	case SND_SOC_DAIFMT_DSP_B:
- 		regs->srgr2	|= FPER(wlen * channels - 1);
- 		regs->srgr1	|= FWID(wlen * channels - 2);
- 		break;
-@@ -309,7 +309,7 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		regs->rcr2	|= RDATDLY(1);
- 		regs->xcr2	|= XDATDLY(1);
- 		break;
--	case SND_SOC_DAIFMT_DSP_A:
-+	case SND_SOC_DAIFMT_DSP_B:
- 		/* 0-bit data delay */
- 		regs->rcr2      |= RDATDLY(0);
- 		regs->xcr2      |= XDATDLY(0);
-diff --git a/sound/soc/omap/osk5912.c b/sound/soc/omap/osk5912.c
-index 845bf41..cd41a94 100644
---- a/sound/soc/omap/osk5912.c
-+++ b/sound/soc/omap/osk5912.c
-@@ -61,7 +61,7 @@ static int osk_hw_params(struct snd_pcm_substream *substream,
- 
- 	/* Set codec DAI configuration */
- 	err = snd_soc_dai_set_fmt(codec_dai,
--				  SND_SOC_DAIFMT_DSP_A |
-+				  SND_SOC_DAIFMT_DSP_B |
- 				  SND_SOC_DAIFMT_NB_IF |
- 				  SND_SOC_DAIFMT_CBM_CFM);
- 	if (err < 0) {
-@@ -71,7 +71,7 @@ static int osk_hw_params(struct snd_pcm_substream *substream,
- 
- 	/* Set cpu DAI configuration */
- 	err = snd_soc_dai_set_fmt(cpu_dai,
--				  SND_SOC_DAIFMT_DSP_A |
-+				  SND_SOC_DAIFMT_DSP_B |
- 				  SND_SOC_DAIFMT_NB_IF |
- 				  SND_SOC_DAIFMT_CBM_CFM);
- 	if (err < 0) {
+ 	default:
+ 		return -EINVAL;
 -- 
 1.5.6.5
