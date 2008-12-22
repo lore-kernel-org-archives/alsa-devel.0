@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 0/8]ALSA: ASoc: DaVinci: cleanup
-Date: Mon, 22 Dec 2008 11:25:01 +0000
-Message-ID: <20081222112500.GA3322@sirena.org.uk>
-References: <1229629006-4261-1-git-send-email-troy.kisky@boundarydevices.com>
-	<FF55437E1F14DA4BAEB721A458B670170622FF42E1@dbde02.ent.ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [topic/asoc][PATCH] ASoC: Fix DSP formats
+	in	SSM2602 audio codec
+Date: Mon, 22 Dec 2008 14:45:52 +0000
+Message-ID: <20081222144551.GA30743@rakim.wolfsonmicro.main>
+References: <1229936253-5115-1-git-send-email-jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 746F91037F0
-	for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2008 12:25:09 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C7E021037E3
+	for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2008 15:45:53 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <FF55437E1F14DA4BAEB721A458B670170622FF42E1@dbde02.ent.ti.com>
+In-Reply-To: <1229936253-5115-1-git-send-email-jarkko.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Medisetty, Naresh" <naresh@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, Troy Kisky <troy.kisky@boundarydevices.com>
+To: Jarkko Nikula <jarkko.nikula@nokia.com>
+Cc: alsa-devel@alsa-project.org, Cliff Cai <cliff.cai@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 22, 2008 at 12:06:05PM +0530, Medisetty, Naresh wrote:
+On Mon, Dec 22, 2008 at 10:57:33AM +0200, Jarkko Nikula wrote:
+> Thanks to Troy Kisky <troy.kisky@boundarydevices.com> for noticing.
 
-> Still I find difficulty to agree with Troy regarding the meaning change of
-> SND_SOC_DAIFMT_NB_NF, since the existing meaning is correct w.r.t davinci
-> McBSP.
+> - DSP_A format has 1-bit data delay which corresponds to SSM6202 submode 2
+> - DSP_B has 0-bit data delay which corresponds to submode 1
+> - Currently driver sets them opposite so swap the submode setting
 
-Could you expand on that a bit - what are you referring to as the
-standard here?  This could just be a case of different hardware
-manufacturers implementing slightly different things and giving them the
-same name.
+> Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
+> Cc: Cliff Cai <cliff.cai@analog.com>
+
+Presumably this means that the Blackfin I2S driver also needs to be
+updated (probably just replacing DSP_A with DSP_B by the looks of it)?
+Though since the SSM6206 machine driver uses I2S it shouldn't matter too
+much if they're out of sync temporarily.
