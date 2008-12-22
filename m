@@ -1,15 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updaets
-Date: Mon, 22 Dec 2008 16:36:47 +0000
-Message-ID: <20081222163646.GA20181@rakim.wolfsonmicro.main>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: typo
+Date: Mon, 22 Dec 2008 17:05:59 +0000
+Message-ID: <1229965559.11643.35.camel@vega.slimlogic.co.uk>
+References: <494FC30D.8060909@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 324C21037FA
-	for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2008 17:36:48 +0100 (CET)
-Content-Disposition: inline
+Received: from slimlogic.co.uk (slimlogic.co.uk [89.16.172.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id E6429103811
+	for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2008 18:06:00 +0100 (CET)
+In-Reply-To: <494FC30D.8060909@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,24 +20,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Roel Kluin <roel.kluin@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit a31501d1041c9d0a6c3f520736ae2b2fa081493a:
-  Takashi Iwai (1):
-        ALSA: ASoC - Add missing __devexit annotation to wm8350.c
+On Mon, 2008-12-22 at 17:40 +0100, Roel Kluin wrote:
+> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+> ---
+> diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
+> index acd68ef..227c865 100644
+> --- a/sound/soc/omap/omap-pcm.c
+> +++ b/sound/soc/omap/omap-pcm.c
+> @@ -97,7 +97,7 @@ static int omap_pcm_hw_params(struct snd_pcm_substream *substream,
+>  	prtd->dma_data = dma_data;
+>  	err = omap_request_dma(dma_data->dma_req, dma_data->name,
+>  			       omap_pcm_dma_irq, substream, &prtd->dma_ch);
+> -	if (!err & !cpu_is_omap1510()) {
+> +	if (!err && !cpu_is_omap1510()) {
+>  		/*
+>  		 * Link channel with itself so DMA doesn't need any
+>  		 * reprogramming while looping the buffer
 
-are available in the git repository at:
+Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-tiwai
-
-Jarkko Nikula (2):
-      ASoC: Fix incorrect DSP format in OMAP McBSP DAI and affected drivers
-      ASoC: Fix DSP formats in SSM2602 audio codec
-
- sound/soc/codecs/ssm2602.c     |    4 ++--
- sound/soc/codecs/tlv320aic23.c |    2 +-
- sound/soc/omap/omap-mcbsp.c    |    4 ++--
- sound/soc/omap/osk5912.c       |    4 ++--
- 4 files changed, 7 insertions(+), 7 deletions(-)
+Liam
