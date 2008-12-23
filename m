@@ -1,19 +1,18 @@
-From: "Medisetty, Naresh" <naresh@ti.com>
-Subject: Re: [PATCH 0/8]ALSA: ASoc: DaVinci: cleanup
-Date: Tue, 23 Dec 2008 14:05:33 +0530
-Message-ID: <FF55437E1F14DA4BAEB721A458B670170622FF42E7@dbde02.ent.ti.com>
-References: <1229629006-4261-1-git-send-email-troy.kisky@boundarydevices.com>
-	<FF55437E1F14DA4BAEB721A458B670170622FF42E1@dbde02.ent.ti.com>,
-	<20081222112500.GA3322@sirena.org.uk>
+From: Grazvydas Ignotas <notasas@gmail.com>
+Subject: [PATCH] ASoC: Mark non-connected TWL4030 pins for
+	pandora
+Date: Tue, 23 Dec 2008 12:04:48 +0200
+Message-ID: <1230026688-7342-1-git-send-email-notasas@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 93B64103818
-	for <alsa-devel@alsa-project.org>; Tue, 23 Dec 2008 09:36:47 +0100 (CET)
-In-Reply-To: <20081222112500.GA3322@sirena.org.uk>
-Content-Language: en-US
+Received: from mail-bw0-f20.google.com (mail-bw0-f20.google.com
+	[209.85.218.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id 83C47103817
+	for <alsa-devel@alsa-project.org>; Tue, 23 Dec 2008 11:04:52 +0100 (CET)
+Received: by bwz13 with SMTP id 13so6904172bwz.8
+	for <alsa-devel@alsa-project.org>; Tue, 23 Dec 2008 02:04:51 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,40 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, Troy Kisky <troy.kisky@boundarydevices.com>
+To: alsa-devel@alsa-project.org
+Cc: Grazvydas Ignotas <notasas@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
+Pandora has all TWL4030 output pins floating, it uses
+external DAC for playback. Mark those outputs as not
+connected using DAPM calls.
 
-> On Mon, Dec 22, 2008 at 12:06:05PM +0530, Medisetty, Naresh wrote:
-> 
-> > Still I find difficulty to agree with Troy regarding the meaning
-> change of
-> > SND_SOC_DAIFMT_NB_NF, since the existing meaning is correct w.r.t
-> davinci
-> > McBSP.
-> 
-> Could you expand on that a bit - what are you referring to as the 
-> standard here?  This could just be a case of different hardware 
-> manufacturers implementing slightly different things and giving them 
-> the same name.
+Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
+---
+ sound/soc/omap/omap3pandora.c |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
 
-Yes, Exactly it's just a case of different manufacturers implementing the same thing in different way.
-
-I am referring the davinci ASP default polarities (without inversion) of FS and BCLK as standard.
-In davinci ASP Frame sync signals internal to the ASP are active high. 
-The Frame sync clock (either FSX or FSR) is XORed with Frame sync polarity bit (FSXP or FSRP).
-So if the requirement is for frame sync active low FSXP and FSRP bits in PCR register should be set.
-
-Similarly the BCLK (CLKX and CLKR) is XORed with BCLK polarity bit (CLKXP and CLKRP).
-Internally the transmit data driven on rising edge of CLKX and receive data sampled on falling edge of CLKR.
-To inverse this CLKXP and CLKRP should be set.
-
-According to this the existing code is proper since it is not setting any polarity bits in _SOC_DAIFMT_NB_NF (Normal bit and Normal Frame )case.
-
-And also in AIC33 codec there is no question of polarities since it is directly configurable through modes (either I2S or DSP).
-
-
-Regards
-Naresh
+diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
+index bd91594..0ffb3de 100644
+--- a/sound/soc/omap/omap3pandora.c
++++ b/sound/soc/omap/omap3pandora.c
+@@ -180,6 +180,19 @@ static int omap3pandora_in_init(struct snd_soc_codec *codec)
+ {
+ 	int ret;
+ 
++	/* All TWL4030 output pins are floating */
++	snd_soc_dapm_nc_pin(codec, "OUTL"),
++	snd_soc_dapm_nc_pin(codec, "OUTR"),
++	snd_soc_dapm_nc_pin(codec, "EARPIECE"),
++	snd_soc_dapm_nc_pin(codec, "PREDRIVEL"),
++	snd_soc_dapm_nc_pin(codec, "PREDRIVER"),
++	snd_soc_dapm_nc_pin(codec, "HSOL"),
++	snd_soc_dapm_nc_pin(codec, "HSOR"),
++	snd_soc_dapm_nc_pin(codec, "CARKITL"),
++	snd_soc_dapm_nc_pin(codec, "CARKITR"),
++	snd_soc_dapm_nc_pin(codec, "HFL"),
++	snd_soc_dapm_nc_pin(codec, "HFR"),
++
+ 	ret = snd_soc_dapm_new_controls(codec, omap3pandora_in_dapm_widgets,
+ 				ARRAY_SIZE(omap3pandora_in_dapm_widgets));
+ 	if (ret < 0)
+-- 
+1.5.4.3
