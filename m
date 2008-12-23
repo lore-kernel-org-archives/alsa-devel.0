@@ -1,14 +1,18 @@
-From: Thomas Schneider <nailstudio@gmx.net>
-Subject: S/PDIF-Out on Asus M3A-H/HDMI with ALC1200
-Date: Tue, 23 Dec 2008 12:22:29 +0100
-Message-ID: <4950C9F5.3030803@gmx.net>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 0/8]ALSA: ASoc: DaVinci: cleanup
+Date: Tue, 23 Dec 2008 12:18:50 +0000
+Message-ID: <20081223121849.GC3197@sirena.org.uk>
+References: <1229629006-4261-1-git-send-email-troy.kisky@boundarydevices.com>
+	<FF55437E1F14DA4BAEB721A458B670170622FF42E7@dbde02.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 42DFE103822
-	for <alsa-devel@alsa-project.org>; Tue, 23 Dec 2008 12:22:41 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 46F39103831
+	for <alsa-devel@alsa-project.org>; Tue, 23 Dec 2008 13:19:00 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <FF55437E1F14DA4BAEB721A458B670170622FF42E7@dbde02.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,44 +22,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Medisetty, Naresh" <naresh@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgppIGFtIGxvb2tpbmcgZm9yIGEgd2F5IHRvIG1ha2UgRGlnaXRhbC1BdWRpbyB3b3JrIHdp
-dGggdGhlIGV4dGVybmFsCmFuZCBpbnRlcm5hbCBTL1BESUYtT3V0cHV0IG9mIG15IE1vdGhlcmJv
-YXJkIEFzdXMgTTNBLUgvSERNSSB3aXRoCkFMQzEyMDAgU291bmRhcmQuIEkgdXNlIHRoZSBsYXRl
-c3QgdW5zdGFibGUgc25hcHNob3QgYW5kIGkgY2FuwrR0Cm1ha2UgaXQgd29yayBhdCB0aGUgc2Ft
-ZSB0aW1lLgoKT24gdGhlIGV4dGVybmFsIFMvUERJRi1PdXRwdXQgaXMgbXkgRGlnaXRhbCBSZWNl
-aXZlciBjb25uZWN0ZWQsCm9uIHRoZSBpbnRlcm5hbCBvbmUgbXkgR2VGb3JjZSA4NTAwR1QgdG8g
-Z2V0IHNvdW5kIG92ZXIgSERNSQpvbiBteSBMQ1QtVFYuCgpXaGVuIGkgbG9hZCB0aGUgZHJpdmVy
-IHdpdGhvdXQgYW55IG1vZGVsLW9wdGlvbnMgbXkgU291bmRjYXJkIGlzCmRldGVjdGVkIGFzIEFz
-dXMgUDVRLUVNIEhETUkKCkFMU0EgL3Vzci9sb2NhbC9zcmMvYWxzYS1kcml2ZXItdW5zdGFibGUv
-cGNpL2hkYS9oZGFfY29kZWMuYzoyNzE2OiAKaGRhX2NvZGVjOiBtb2RlbCAnYXN1cy1wNXEnIGlz
-IHNlbGVjdGVkIGZvciBjb25maWcgMTA0Mzo4MmZlIChBc3VzIApQNVEtRU0gSERNSSkKWyA2Ljcy
-MTcwMF0gQUxTQSAKL3Vzci9sb2NhbC9zcmMvYWxzYS1kcml2ZXItdW5zdGFibGUvcGNpL2hkYS9o
-ZGFfY29kZWMuYzoxMzM5OiBDYW5ub3QgCmZpbmQgc2xhdmUgSGVhZHBob25lIFBsYXliYWNrIFZv
-bHVtZSwgc2tpcHBlZApbIDYuNzIxNzE0XSBBTFNBIAovdXNyL2xvY2FsL3NyYy9hbHNhLWRyaXZl
-ci11bnN0YWJsZS9wY2kvaGRhL2hkYV9jb2RlYy5jOjEzMzk6IENhbm5vdCAKZmluZCBzbGF2ZSBT
-cGVha2VyIFBsYXliYWNrIFZvbHVtZSwgc2tpcHBlZApbIDYuNzIxNzE2XSBBTFNBIAovdXNyL2xv
-Y2FsL3NyYy9hbHNhLWRyaXZlci11bnN0YWJsZS9wY2kvaGRhL2hkYV9jb2RlYy5jOjEzMzk6IENh
-bm5vdCAKZmluZCBzbGF2ZSBNb25vIFBsYXliYWNrIFZvbHVtZSwgc2tpcHBlZApbIDYuNzIxNzE5
-XSBBTFNBIAovdXNyL2xvY2FsL3NyYy9hbHNhLWRyaXZlci11bnN0YWJsZS9wY2kvaGRhL2hkYV9j
-b2RlYy5jOjEzMzk6IENhbm5vdCAKZmluZCBzbGF2ZSBMaW5lLU91dCBQbGF5YmFjayBWb2x1bWUs
-IHNraXBwZWQKWyA2LjcyMTcyMV0gQUxTQSAKL3Vzci9sb2NhbC9zcmMvYWxzYS1kcml2ZXItdW5z
-dGFibGUvcGNpL2hkYS9oZGFfY29kZWMuYzoxMzM5OiBDYW5ub3QgCmZpbmQgc2xhdmUgUENNIFBs
-YXliYWNrIFZvbHVtZSwgc2tpcHBlZApbIDYuNzIxNzI5XSBBTFNBIAovdXNyL2xvY2FsL3NyYy9h
-bHNhLWRyaXZlci11bnN0YWJsZS9wY2kvaGRhL2hkYV9jb2RlYy5jOjEzMzk6IENhbm5vdCAKZmlu
-ZCBzbGF2ZSBTcGVha2VyIFBsYXliYWNrIFN3aXRjaCwgc2tpcHBlZApbIDYuNzIxNzMxXSBBTFNB
-IAovdXNyL2xvY2FsL3NyYy9hbHNhLWRyaXZlci11bnN0YWJsZS9wY2kvaGRhL2hkYV9jb2RlYy5j
-OjEzMzk6IENhbm5vdCAKZmluZCBzbGF2ZSBNb25vIFBsYXliYWNrIFN3aXRjaCwgc2tpcHBlZAoK
-Tm93IGkgaGF2ZSBzb3VuZCBvbiBteSBMQ0QtVFYgb3ZlciBIRE1JIChpbnRlcm5hbCBTL1BESUYt
-T3V0KQoKV2hlbiBpIGxvYWQgdGhlIGRyaXZlciB3aXRoIG1vZGVsPTZzdGFjay1kaWcgaSBoYXZl
-IHNvdW5kIG9uIG15CkRpZ2l0YWwtUmVjZWl2ZXIgKGV4dGVybmFsIFMvUERJRi1PdXQpLgoKSW4g
-dGhlIG1haWxpbmdsaXN0LWFyY2hpdmUgb3IgaW4gdGhlIGRva3UgaSBoYXZlIHNlZW4sIHRoYXQg
-dGhlIG9ubHkgCmRpZmZlcmVuY2UKYmV0d2VlbiB0aGlzIG1vZGVscyBpcyB0aGUgRElHT1VUX05J
-RAoKYXN1cy1wNXEgPSAweDEwCjZzdGFjay1kaWcgPSAweDA2CgpJIHRoZXJlIGEgd2F5IHRvIGdl
-dCBib3RoIG91dHB1dCB0byB3b3JrIGF0IHRoZSBzYW1lIHRpbWUgc28gaSBoYXZlIApzb3VuZCBv
-biBteSBMQ0QtVFYgYW5kIG15IERpZ2l0YWwtUmVjZWl2ZXIgPwoKClJlZ2FyZHMKClRob21hcwpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Tue, Dec 23, 2008 at 02:05:33PM +0530, Medisetty, Naresh wrote:
+> Mark,
+
+> > Could you expand on that a bit - what are you referring to as the 
+> > standard here?  This could just be a case of different hardware 
+> > manufacturers implementing slightly different things and giving them 
+> > the same name.
+
+> Yes, Exactly it's just a case of different manufacturers implementing the same thing in different way.
+
+The idea in ASoC is to follow a consistent naming scheme within ASoC
+rather than implement the APIs in a per-manufacturer fashion.  A given
+DAI mode should always produce the same effect in hardware no matter
+which device is being configured.  This makes the code much easier to
+work with since otherwise you'd not be able to tell from the code if the
+devices that are being connected are configured compatibly simply by
+looking at the set_dai_fmt() calls.
+
+For most newer SoC CPUs (like the DaVinci) the drivers have to simulate
+the various clocking modes by configuring the chip rather than by having
+native support for the modes in the chip.
+
+> I am referring the davinci ASP default polarities (without inversion) of FS and BCLK as standard.
+
+Like I say, the DaVinci chip defaults don't matter here - what matters
+is the mode the DAI is supposed to be operating in.
+
+> In davinci ASP Frame sync signals internal to the ASP are active high. 
+> The Frame sync clock (either FSX or FSR) is XORed with Frame sync polarity bit (FSXP or FSRP).
+> So if the requirement is for frame sync active low FSXP and FSRP bits in PCR register should be set.
+
+Troy left the frame clock settings alone so I'll assume you've no
+concerns there?
+
+> Similarly the BCLK (CLKX and CLKR) is XORed with BCLK polarity bit (CLKXP and CLKRP).
+> Internally the transmit data driven on rising edge of CLKX and receive data sampled on falling edge of CLKR.
+> To inverse this CLKXP and CLKRP should be set.
+
+> According to this the existing code is proper since it is not setting any polarity bits in _SOC_DAIFMT_NB_NF (Normal bit and Normal Frame )case.
+
+The DaVinci driver is configuring the clocks to match DSP mode (when
+using I2S mode it flips the inversion bits in the format before using
+them).  For DSP mode data is available on the first rising edge of BCLK
+so sampling should be done on the rising edge.  This means that the data
+has to be driven out on the falling edge to ensure that it is ready to
+be sampled on the rising edge.  Troy's changes implement this so they
+look correct to me.
+
+> And also in AIC33 codec there is no question of polarities since it is directly configurable through modes (either I2S or DSP).
+
+The inversions apply to the standard clocking for a given mode.  For
+example, with I2S LRCLK clock inversion is essentially equivalent to
+swapping left and right channels.  This facility is implemented by a
+reasonable number of codecs and made available through the API since
+it improves interoperability.  Some CPUs (especially those with hand
+configured ports rather than native support for the clocking modes)
+have trouble doing some of the standard modes but can deal with inverted
+versions of one or both of the clocks.
+
+[BTW, your MUA appears to be generating lines ~90-100 characters long -
+it'd help if it were to go for something less than 80 characters since
+it makes your messages easier to read and reply to with standard mail
+clients.]
