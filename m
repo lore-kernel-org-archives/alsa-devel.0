@@ -1,18 +1,14 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ASoC: Mark non-connected TWL4030 pins
-	for	pandora
-Date: Tue, 23 Dec 2008 11:13:47 +0000
-Message-ID: <20081223111340.GB3197@sirena.org.uk>
-References: <1230026688-7342-1-git-send-email-notasas@gmail.com>
+From: Thomas Schneider <nailstudio@gmx.net>
+Subject: S/PDIF-Out on Asus M3A-H/HDMI with ALC1200
+Date: Tue, 23 Dec 2008 12:22:29 +0100
+Message-ID: <4950C9F5.3030803@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 16F2D10383C
-	for <alsa-devel@alsa-project.org>; Tue, 23 Dec 2008 12:14:06 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1230026688-7342-1-git-send-email-notasas@gmail.com>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 42DFE103822
+	for <alsa-devel@alsa-project.org>; Tue, 23 Dec 2008 12:22:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,15 +18,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grazvydas Ignotas <notasas@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 23, 2008 at 12:04:48PM +0200, Grazvydas Ignotas wrote:
-> Pandora has all TWL4030 output pins floating, it uses
-> external DAC for playback. Mark those outputs as not
-> connected using DAPM calls.
-
-> Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
-
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+SGksCgppIGFtIGxvb2tpbmcgZm9yIGEgd2F5IHRvIG1ha2UgRGlnaXRhbC1BdWRpbyB3b3JrIHdp
+dGggdGhlIGV4dGVybmFsCmFuZCBpbnRlcm5hbCBTL1BESUYtT3V0cHV0IG9mIG15IE1vdGhlcmJv
+YXJkIEFzdXMgTTNBLUgvSERNSSB3aXRoCkFMQzEyMDAgU291bmRhcmQuIEkgdXNlIHRoZSBsYXRl
+c3QgdW5zdGFibGUgc25hcHNob3QgYW5kIGkgY2FuwrR0Cm1ha2UgaXQgd29yayBhdCB0aGUgc2Ft
+ZSB0aW1lLgoKT24gdGhlIGV4dGVybmFsIFMvUERJRi1PdXRwdXQgaXMgbXkgRGlnaXRhbCBSZWNl
+aXZlciBjb25uZWN0ZWQsCm9uIHRoZSBpbnRlcm5hbCBvbmUgbXkgR2VGb3JjZSA4NTAwR1QgdG8g
+Z2V0IHNvdW5kIG92ZXIgSERNSQpvbiBteSBMQ1QtVFYuCgpXaGVuIGkgbG9hZCB0aGUgZHJpdmVy
+IHdpdGhvdXQgYW55IG1vZGVsLW9wdGlvbnMgbXkgU291bmRjYXJkIGlzCmRldGVjdGVkIGFzIEFz
+dXMgUDVRLUVNIEhETUkKCkFMU0EgL3Vzci9sb2NhbC9zcmMvYWxzYS1kcml2ZXItdW5zdGFibGUv
+cGNpL2hkYS9oZGFfY29kZWMuYzoyNzE2OiAKaGRhX2NvZGVjOiBtb2RlbCAnYXN1cy1wNXEnIGlz
+IHNlbGVjdGVkIGZvciBjb25maWcgMTA0Mzo4MmZlIChBc3VzIApQNVEtRU0gSERNSSkKWyA2Ljcy
+MTcwMF0gQUxTQSAKL3Vzci9sb2NhbC9zcmMvYWxzYS1kcml2ZXItdW5zdGFibGUvcGNpL2hkYS9o
+ZGFfY29kZWMuYzoxMzM5OiBDYW5ub3QgCmZpbmQgc2xhdmUgSGVhZHBob25lIFBsYXliYWNrIFZv
+bHVtZSwgc2tpcHBlZApbIDYuNzIxNzE0XSBBTFNBIAovdXNyL2xvY2FsL3NyYy9hbHNhLWRyaXZl
+ci11bnN0YWJsZS9wY2kvaGRhL2hkYV9jb2RlYy5jOjEzMzk6IENhbm5vdCAKZmluZCBzbGF2ZSBT
+cGVha2VyIFBsYXliYWNrIFZvbHVtZSwgc2tpcHBlZApbIDYuNzIxNzE2XSBBTFNBIAovdXNyL2xv
+Y2FsL3NyYy9hbHNhLWRyaXZlci11bnN0YWJsZS9wY2kvaGRhL2hkYV9jb2RlYy5jOjEzMzk6IENh
+bm5vdCAKZmluZCBzbGF2ZSBNb25vIFBsYXliYWNrIFZvbHVtZSwgc2tpcHBlZApbIDYuNzIxNzE5
+XSBBTFNBIAovdXNyL2xvY2FsL3NyYy9hbHNhLWRyaXZlci11bnN0YWJsZS9wY2kvaGRhL2hkYV9j
+b2RlYy5jOjEzMzk6IENhbm5vdCAKZmluZCBzbGF2ZSBMaW5lLU91dCBQbGF5YmFjayBWb2x1bWUs
+IHNraXBwZWQKWyA2LjcyMTcyMV0gQUxTQSAKL3Vzci9sb2NhbC9zcmMvYWxzYS1kcml2ZXItdW5z
+dGFibGUvcGNpL2hkYS9oZGFfY29kZWMuYzoxMzM5OiBDYW5ub3QgCmZpbmQgc2xhdmUgUENNIFBs
+YXliYWNrIFZvbHVtZSwgc2tpcHBlZApbIDYuNzIxNzI5XSBBTFNBIAovdXNyL2xvY2FsL3NyYy9h
+bHNhLWRyaXZlci11bnN0YWJsZS9wY2kvaGRhL2hkYV9jb2RlYy5jOjEzMzk6IENhbm5vdCAKZmlu
+ZCBzbGF2ZSBTcGVha2VyIFBsYXliYWNrIFN3aXRjaCwgc2tpcHBlZApbIDYuNzIxNzMxXSBBTFNB
+IAovdXNyL2xvY2FsL3NyYy9hbHNhLWRyaXZlci11bnN0YWJsZS9wY2kvaGRhL2hkYV9jb2RlYy5j
+OjEzMzk6IENhbm5vdCAKZmluZCBzbGF2ZSBNb25vIFBsYXliYWNrIFN3aXRjaCwgc2tpcHBlZAoK
+Tm93IGkgaGF2ZSBzb3VuZCBvbiBteSBMQ0QtVFYgb3ZlciBIRE1JIChpbnRlcm5hbCBTL1BESUYt
+T3V0KQoKV2hlbiBpIGxvYWQgdGhlIGRyaXZlciB3aXRoIG1vZGVsPTZzdGFjay1kaWcgaSBoYXZl
+IHNvdW5kIG9uIG15CkRpZ2l0YWwtUmVjZWl2ZXIgKGV4dGVybmFsIFMvUERJRi1PdXQpLgoKSW4g
+dGhlIG1haWxpbmdsaXN0LWFyY2hpdmUgb3IgaW4gdGhlIGRva3UgaSBoYXZlIHNlZW4sIHRoYXQg
+dGhlIG9ubHkgCmRpZmZlcmVuY2UKYmV0d2VlbiB0aGlzIG1vZGVscyBpcyB0aGUgRElHT1VUX05J
+RAoKYXN1cy1wNXEgPSAweDEwCjZzdGFjay1kaWcgPSAweDA2CgpJIHRoZXJlIGEgd2F5IHRvIGdl
+dCBib3RoIG91dHB1dCB0byB3b3JrIGF0IHRoZSBzYW1lIHRpbWUgc28gaSBoYXZlIApzb3VuZCBv
+biBteSBMQ0QtVFYgYW5kIG15IERpZ2l0YWwtUmVjZWl2ZXIgPwoKClJlZ2FyZHMKClRob21hcwpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
