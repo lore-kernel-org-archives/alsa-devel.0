@@ -1,16 +1,19 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: Urgent Help Needed:ALsa Querries
-Date: Tue, 23 Dec 2008 22:39:38 +0100
-Message-ID: <20081223223938.b040ead2.pochini@shiny.it>
-References: <35fa40850812200614q4bafd136xd31397116e1d28a7@mail.gmail.com>
+From: "Medisetty, Naresh" <naresh@ti.com>
+Subject: Re: [PATCH 0/8]ALSA: ASoc: DaVinci: cleanup
+Date: Wed, 24 Dec 2008 12:06:56 +0530
+Message-ID: <FF55437E1F14DA4BAEB721A458B670170622FF42ED@dbde02.ent.ti.com>
+References: <1229629006-4261-1-git-send-email-troy.kisky@boundarydevices.com>
+	<FF55437E1F14DA4BAEB721A458B670170622FF42E7@dbde02.ent.ti.com>,
+	<20081223121849.GC3197@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out25.alice.it (smtp-out25.alice.it [85.33.2.25])
-	by alsa0.perex.cz (Postfix) with ESMTP id A43AB1037F4
-	for <alsa-devel@alsa-project.org>; Tue, 23 Dec 2008 22:44:01 +0100 (CET)
-In-Reply-To: <35fa40850812200614q4bafd136xd31397116e1d28a7@mail.gmail.com>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id DDAD9243E9
+	for <alsa-devel@alsa-project.org>; Wed, 24 Dec 2008 07:37:11 +0100 (CET)
+In-Reply-To: <20081223121849.GC3197@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,73 +23,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: SUBHRANIL CHOUDHURY <subhra85@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 20 Dec 2008 19:44:33 +0530
-"SUBHRANIL CHOUDHURY" <subhra85@gmail.com> wrote:
 
-> I have some doubts on the ALSA programming,
-> 1)My ALSA driver supports minimum Period Bytes size as 32 bytes, but when i
-> set the period size as 512 bytes it is always setting to 1024 bytes.I am
-> using the function "snd_pcm_hw_params_set_period_size_near()" . What might
-> be wrong here?Is the function what i am using correct?
+Mark,
 
-pcm.h:int snd_pcm_hw_params_set_period_size_near(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, snd_pcm_uframes_t *val, int *dir);
-
-That function gets the number of *frames*, not bytes. If you are setting up
-a pcm device to play a 1 channel, 16 bits sound, then 512 frames are 1024
-bytes long. Note that even if the hardware supports a feature, the driver
-may not.
-
-
-> 2)How the Library functions and the Driver functions interact, what is the
-> interface between the library functions and driver functions?Is there any
-> document which explains this. I got a document which explains how to write
-> ALSA driver.But it does not mention the interface with the library.
-
-You shouldn't care on how alsa-lib and alsa-kernel interact, unless you are
-writing some low-level stuff. In that case, I guess you have to dig into
-the sources :)
-If you find good docs on alsa-lib let me know...
-
-
-> 3)How Can we achive MIC and LINEIN switching using the mixer?What library
-> function do i need to use to achive this?
-
-You have to use the control interface. Each card is different, but naming
-conventions usually make easy to locate the right switch. For example:
-
- $ amixer contents
-[...]
-numid=146,iface=CARD,name='Digital mode Switch'
-  ; type=ENUMERATED,access=rw------,values=1,items=3
-  ; Item #0 'S/PDIF Coaxial'
-  ; Item #1 'S/PDIF Optical'
-  ; Item #2 'ADAT Optical'
-  : values=0
-numid=149,iface=CARD,name='Phantom power Switch'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=off
-[...]
-
-
-> 4)If i want to get the Timestamp for each buffer captured, what library
-> function should be used?
 > 
-> 5)I am trying to capture and play the same audio (ALSA duplex). When i
-> capture and store it in a file and play from the file i am able to hear the
-> sound properly. If i capture in a buffer and play the same buffer directly
-> it says Broken PIPE ERROR in the playout.
->  I tried the capture and playout in two different threads, i am able to hear
-> the sound and i am not getting any Broken PIPE error. But along with the
-> audio i am hearing some noise.
-> Do we need to use some kind of synchronisation between the threads for
-> capture and playout?
+> > > Could you expand on that a bit - what are you referring to as the 
+> > > standard here?  This could just be a case of different hardware 
+> > > manufacturers implementing slightly different things and giving
+> them
+> > > the same name.
+> 
+> > Yes, Exactly it's just a case of different manufacturers 
+> > implementing
+> the same thing in different way.
+> 
+> The idea in ASoC is to follow a consistent naming scheme within ASoC 
+> rather than implement the APIs in a per-manufacturer fashion.  A given 
+> DAI mode should always produce the same effect in hardware no matter 
+> which device is being configured.  This makes the code much easier to 
+> work with since otherwise you'd not be able to tell from the code if 
+> the devices that are being connected are configured compatibly simply 
+> by looking at the set_dai_fmt() calls.
+> 
 
-I can't help here.
+>From this I came to conclusion in ASoC Normal FS means active high
+
+and Normal BCLK means receive data sampled on rising edge and transmit 
+
+data driven on falling edge. Correct me if I am wrong here.
+
+> For most newer SoC CPUs (like the DaVinci) the drivers have to 
+> simulate the various clocking modes by configuring the chip rather 
+> than by having native support for the modes in the chip.
+> 
+> > I am referring the davinci ASP default polarities (without 
+> > inversion)
+> of FS and BCLK as standard.
+> 
+> Like I say, the DaVinci chip defaults don't matter here - what matters 
+> is the mode the DAI is supposed to be operating in.
+> 
+> > In davinci ASP Frame sync signals internal to the ASP are active
+> high.
+> > The Frame sync clock (either FSX or FSR) is XORed with Frame sync
+> polarity bit (FSXP or FSRP).
+> > So if the requirement is for frame sync active low FSXP and FSRP 
+> > bits
+> in PCR register should be set.
+> 
+> Troy left the frame clock settings alone so I'll assume you've no 
+> concerns there?
+
+Yes, No concerns here
+
+> 
+> > Similarly the BCLK (CLKX and CLKR) is XORed with BCLK polarity bit
+> (CLKXP and CLKRP).
+> > Internally the transmit data driven on rising edge of CLKX and
+> receive data sampled on falling edge of CLKR.
+> > To inverse this CLKXP and CLKRP should be set.
+> 
+> > According to this the existing code is proper since it is not 
+> > setting
+> any polarity bits in _SOC_DAIFMT_NB_NF (Normal bit and Normal Frame 
+> )case.
+> 
+> The DaVinci driver is configuring the clocks to match DSP mode (when 
+> using I2S mode it flips the inversion bits in the format before using 
+> them).  For DSP mode data is available on the first rising edge of 
+> BCLK so sampling should be done on the rising edge.  This means that 
+> the data has to be driven out on the falling edge to ensure that it is 
+> ready to be sampled on the rising edge.  Troy's changes implement this 
+> so they look correct to me.
+> 
+
+Yes, its correct according to ASoC polarity standards
+
+> > And also in AIC33 codec there is no question of polarities since it
+> is directly configurable through modes (either I2S or DSP).
+> 
+> The inversions apply to the standard clocking for a given mode.  For 
+> example, with I2S LRCLK clock inversion is essentially equivalent to 
+> swapping left and right channels.  This facility is implemented by a 
+> reasonable number of codecs and made available through the API since 
+> it improves interoperability.  Some CPUs (especially those with hand 
+> configured ports rather than native support for the clocking modes) 
+> have trouble doing some of the standard modes but can deal with 
+> inverted versions of one or both of the clocks.
+
+Thanks  
+
+> 
+> [BTW, your MUA appears to be generating lines ~90-100 characters long 
+> - it'd help if it were to go for something less than 80 characters 
+> since it makes your messages easier to read and reply to with standard 
+> mail clients.]
+
+Sorry, I will take care of this 
 
 
---
-Giuliano.
+Regards
+Naresh
