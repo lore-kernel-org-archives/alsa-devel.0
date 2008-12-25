@@ -1,18 +1,17 @@
-From: Nigel Henry <cave.dnb2m97pp@aliceadsl.fr>
-Subject: What exactly is module snd-hdsnd-hda-intel
-Date: Wed, 24 Dec 2008 18:16:12 +0100
-Message-ID: <200812241816.12765.cave.dnb2m97pp@aliceadsl.fr>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: S/PDIF-Out on Asus M3A-H/HDMI with ALC1200
+Date: Thu, 25 Dec 2008 12:31:02 +0800
+Message-ID: <20081225043102.GB7519@localhost>
+References: <4950C9F5.3030803@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.libertysurf.net (mx-out.libertysurf.net [213.36.80.91])
-	by alsa0.perex.cz (Postfix) with ESMTP id 96673243BE
-	for <alsa-devel@alsa-project.org>; Wed, 24 Dec 2008 18:16:39 +0100 (CET)
-Received: from [192.168.0.230] (213.36.148.109) by mail.libertysurf.net
-	(7.3.118.8) id 493FA978003877F7 for alsa-devel@alsa-project.org;
-	Wed, 24 Dec 2008 19:26:41 +0100
+Received: from azsmga101.ch.intel.com (mga07.intel.com [143.182.124.22])
+	by alsa0.perex.cz (Postfix) with ESMTP id 392FF243EB
+	for <alsa-devel@alsa-project.org>; Thu, 25 Dec 2008 05:31:13 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <4950C9F5.3030803@gmx.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,38 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Thomas Schneider <nailstudio@gmx.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I see someone that had sounds working on a Thinkpad T61, but sounds have 
-recently stopped working. The module snd-hdsnd-hda-intel is listed on his 
-lsmod output as below. I've never seen such a module before. Any info on what 
-this module is?
-
-lsmod | grep snd_hda_intel returns:
-
-snd_hdsnd_hda_intel         324248  2
-snd_pcm                62596  2 snd_pcm_oss,snd_hda_intel
-snd                    45604  12
-snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_pcm,snd_seq_oss,snd_seq,snd_timer,snd_seq_device
-snd_page_alloc          7816  2 snd_hda_intel,snd_pcm
-a_intel         324248  2
-snd_pcm                62596  2 snd_pcm_oss,snd_hda_intel
-snd                    45604  12
-snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_pcm,snd_seq_oss,snd_seq,snd_timer,snd_seq_device
-snd_page_alloc          7816  2 snd_hda_intel,snd_pcm
-
-
-This is on a Debian Lenny install, using kernel 2.6.26-1-686, and alsa driver 
-version 1.0.16. Codec is AD1984.
-
-His soundcard is detected ok, as below.
-
-$ cat /proc/asound/cards
-0 [Intel          ]: HDA-Intel - HDA Intel
-                     HDA Intel at 0xfe020000 irq 17
-
-This is only out of academic interest, but as modinfo shows no such module, 
-I'm really puzzled how a non existing module can be loaded.
-
-Nigel.
+SGkgVGhvbWFzLAoKQ291bGQgeW91IHByb3ZpZGUgbW9yZSBpbmZvcm1hdGlvbiBieSBydW5uaW5n
+CiAgICAgICAgaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2Fsc2EtaW5mby5zaAoKSSdtIHBh
+cnRpY3VsYXJpdHkgaW50ZXJlc3RlZCBpbiB0aGUgZnVsbCBkbWVzZyBhbmQgY29udGVudHMgb2YK
+ICAgICAgICAvcHJvYy9hc291bmQvY2FyZD8vKlwjPwoKVGhhbmtzLApGZW5nZ3VhbmcKCk9uIFR1
+ZSwgRGVjIDIzLCAyMDA4IGF0IDEyOjIyOjI5UE0gKzAxMDAsIFRob21hcyBTY2huZWlkZXIgd3Jv
+dGU6Cj4gSGksCj4gCj4gaSBhbSBsb29raW5nIGZvciBhIHdheSB0byBtYWtlIERpZ2l0YWwtQXVk
+aW8gd29yayB3aXRoIHRoZSBleHRlcm5hbAo+IGFuZCBpbnRlcm5hbCBTL1BESUYtT3V0cHV0IG9m
+IG15IE1vdGhlcmJvYXJkIEFzdXMgTTNBLUgvSERNSSB3aXRoCj4gQUxDMTIwMCBTb3VuZGFyZC4g
+SSB1c2UgdGhlIGxhdGVzdCB1bnN0YWJsZSBzbmFwc2hvdCBhbmQgaSBjYW7CtHQKPiBtYWtlIGl0
+IHdvcmsgYXQgdGhlIHNhbWUgdGltZS4KPiAKPiBPbiB0aGUgZXh0ZXJuYWwgUy9QRElGLU91dHB1
+dCBpcyBteSBEaWdpdGFsIFJlY2VpdmVyIGNvbm5lY3RlZCwKPiBvbiB0aGUgaW50ZXJuYWwgb25l
+IG15IEdlRm9yY2UgODUwMEdUIHRvIGdldCBzb3VuZCBvdmVyIEhETUkKPiBvbiBteSBMQ1QtVFYu
+Cj4gCj4gV2hlbiBpIGxvYWQgdGhlIGRyaXZlciB3aXRob3V0IGFueSBtb2RlbC1vcHRpb25zIG15
+IFNvdW5kY2FyZCBpcwo+IGRldGVjdGVkIGFzIEFzdXMgUDVRLUVNIEhETUkKPiAKPiBBTFNBIC91
+c3IvbG9jYWwvc3JjL2Fsc2EtZHJpdmVyLXVuc3RhYmxlL3BjaS9oZGEvaGRhX2NvZGVjLmM6Mjcx
+NjogCj4gaGRhX2NvZGVjOiBtb2RlbCAnYXN1cy1wNXEnIGlzIHNlbGVjdGVkIGZvciBjb25maWcg
+MTA0Mzo4MmZlIChBc3VzIAo+IFA1US1FTSBIRE1JKQo+IFsgNi43MjE3MDBdIEFMU0EgCj4gL3Vz
+ci9sb2NhbC9zcmMvYWxzYS1kcml2ZXItdW5zdGFibGUvcGNpL2hkYS9oZGFfY29kZWMuYzoxMzM5
+OiBDYW5ub3QgCj4gZmluZCBzbGF2ZSBIZWFkcGhvbmUgUGxheWJhY2sgVm9sdW1lLCBza2lwcGVk
+Cj4gWyA2LjcyMTcxNF0gQUxTQSAKPiAvdXNyL2xvY2FsL3NyYy9hbHNhLWRyaXZlci11bnN0YWJs
+ZS9wY2kvaGRhL2hkYV9jb2RlYy5jOjEzMzk6IENhbm5vdCAKPiBmaW5kIHNsYXZlIFNwZWFrZXIg
+UGxheWJhY2sgVm9sdW1lLCBza2lwcGVkCj4gWyA2LjcyMTcxNl0gQUxTQSAKPiAvdXNyL2xvY2Fs
+L3NyYy9hbHNhLWRyaXZlci11bnN0YWJsZS9wY2kvaGRhL2hkYV9jb2RlYy5jOjEzMzk6IENhbm5v
+dCAKPiBmaW5kIHNsYXZlIE1vbm8gUGxheWJhY2sgVm9sdW1lLCBza2lwcGVkCj4gWyA2LjcyMTcx
+OV0gQUxTQSAKPiAvdXNyL2xvY2FsL3NyYy9hbHNhLWRyaXZlci11bnN0YWJsZS9wY2kvaGRhL2hk
+YV9jb2RlYy5jOjEzMzk6IENhbm5vdCAKPiBmaW5kIHNsYXZlIExpbmUtT3V0IFBsYXliYWNrIFZv
+bHVtZSwgc2tpcHBlZAo+IFsgNi43MjE3MjFdIEFMU0EgCj4gL3Vzci9sb2NhbC9zcmMvYWxzYS1k
+cml2ZXItdW5zdGFibGUvcGNpL2hkYS9oZGFfY29kZWMuYzoxMzM5OiBDYW5ub3QgCj4gZmluZCBz
+bGF2ZSBQQ00gUGxheWJhY2sgVm9sdW1lLCBza2lwcGVkCj4gWyA2LjcyMTcyOV0gQUxTQSAKPiAv
+dXNyL2xvY2FsL3NyYy9hbHNhLWRyaXZlci11bnN0YWJsZS9wY2kvaGRhL2hkYV9jb2RlYy5jOjEz
+Mzk6IENhbm5vdCAKPiBmaW5kIHNsYXZlIFNwZWFrZXIgUGxheWJhY2sgU3dpdGNoLCBza2lwcGVk
+Cj4gWyA2LjcyMTczMV0gQUxTQSAKPiAvdXNyL2xvY2FsL3NyYy9hbHNhLWRyaXZlci11bnN0YWJs
+ZS9wY2kvaGRhL2hkYV9jb2RlYy5jOjEzMzk6IENhbm5vdCAKPiBmaW5kIHNsYXZlIE1vbm8gUGxh
+eWJhY2sgU3dpdGNoLCBza2lwcGVkCj4gCj4gTm93IGkgaGF2ZSBzb3VuZCBvbiBteSBMQ0QtVFYg
+b3ZlciBIRE1JIChpbnRlcm5hbCBTL1BESUYtT3V0KQo+IAo+IFdoZW4gaSBsb2FkIHRoZSBkcml2
+ZXIgd2l0aCBtb2RlbD02c3RhY2stZGlnIGkgaGF2ZSBzb3VuZCBvbiBteQo+IERpZ2l0YWwtUmVj
+ZWl2ZXIgKGV4dGVybmFsIFMvUERJRi1PdXQpLgo+IAo+IEluIHRoZSBtYWlsaW5nbGlzdC1hcmNo
+aXZlIG9yIGluIHRoZSBkb2t1IGkgaGF2ZSBzZWVuLCB0aGF0IHRoZSBvbmx5IAo+IGRpZmZlcmVu
+Y2UKPiBiZXR3ZWVuIHRoaXMgbW9kZWxzIGlzIHRoZSBESUdPVVRfTklECj4gCj4gYXN1cy1wNXEg
+PSAweDEwCj4gNnN0YWNrLWRpZyA9IDB4MDYKPiAKPiBJIHRoZXJlIGEgd2F5IHRvIGdldCBib3Ro
+IG91dHB1dCB0byB3b3JrIGF0IHRoZSBzYW1lIHRpbWUgc28gaSBoYXZlIAo+IHNvdW5kIG9uIG15
+IExDRC1UViBhbmQgbXkgRGlnaXRhbC1SZWNlaXZlciA/Cj4gCj4gCj4gUmVnYXJkcwo+IAo+IFRo
+b21hcwo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4g
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
