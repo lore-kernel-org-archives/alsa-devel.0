@@ -1,18 +1,25 @@
-From: "Adrian McMenamin" <lkmladrian@gmail.com>
-Subject: Fixing the AICA driver
-Date: Mon, 29 Dec 2008 19:20:16 +0000
-Message-ID: <8b67d60812291120i58473762i679f5783b651f803@mail.gmail.com>
+From: mike start <mike.start@ntlworld.com>
+Subject: ice1712 and jack
+Date: Mon, 29 Dec 2008 23:22:54 +0000
+Message-ID: <49595BCE.9050603@ntlworld.com>
+Reply-To: mike.start@ntlworld.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f20.google.com (mail-bw0-f20.google.com
-	[209.85.218.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6AECD1037EC
-	for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2008 20:20:17 +0100 (CET)
-Received: by bwz13 with SMTP id 13so12780401bwz.8
-	for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2008 11:20:16 -0800 (PST)
-Content-Disposition: inline
+Received: from mtaout02-winn.ispmail.ntl.com (mtaout02-winn.ispmail.ntl.com
+	[81.103.221.48]) by alsa0.perex.cz (Postfix) with ESMTP id 1953024134
+	for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2008 00:12:56 +0100 (CET)
+Received: from aamtaout03-winn.ispmail.ntl.com ([81.103.221.35])
+	by mtaout02-winn.ispmail.ntl.com
+	(InterMail vM.7.08.04.00 201-2186-134-20080326) with ESMTP id
+	<20081229231255.YZII4080.mtaout02-winn.ispmail.ntl.com@aamtaout03-winn.ispmail.ntl.com>
+	for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2008 23:12:55 +0000
+Received: from [192.168.0.9] (really [82.24.254.70])
+	by aamtaout03-winn.ispmail.ntl.com
+	(InterMail vG.2.02.00.01 201-2161-120-102-20060912) with ESMTP id
+	<20081229231255.QINI2093.aamtaout03-winn.ispmail.ntl.com@[192.168.0.9]>
+	for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2008 23:12:55 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,36 +29,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: Adrian McMenamin <adrian@newgolddream.dyndns.info>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-It's about a year since I last mentioned this so I thought I'd give it
-another go...
-
-But the AICA sound driver I wrote for the Dreamcast still won't work
-properly with a pure ALSA setup and I don't know why.
-
-It works when OSS emulation is on so it appears to be some sort of
-interaction with the ALSA lib layer.
-
-The snd-summy driver also appears to work well with a 'pure' ALSA setup,
-but when (for instance) I try to replay an MP3 track without OSS
-emulation on I get this:
-
-Playing MPEG stream from ms.mp3 ...
-MPEG 1.0, Layer: III, Freq: 44100, mode: Joint-Stereo, modext: 2, BPF :
-2560
-Channels: 2, copyright: No, original: Yes, CRC: No, emphasis: 0.
-Bitrate: 128 Kbits/s, Extension value: 2
-Audio: 1:1 conversion, rate: 44100, encoding: signed 16 bit, channels: 2
-ALSA lib pcm_plug.c:773:(snd_pcm_plug_hw_refine_schange) Unable to find
-an usable access for 'default'
-ALSA snd_pcm_hw_params_set_access error: Invalid argument
-Can't find a suitable libao driver. (Is device in use?)
-
-Any clues anyone?
-
-Best wishes for 2009 and thanks for all help,
-
-Adrian
+I've been having difficulty getting an ews88MT (ice1712 chipset) to work 
+in full duplex using the jack audio server (jackd).  Capture only mode 
+works fine, even down to 64 samples latency, Playback only mode works 
+fine down to 64 samples latency.  Duplex mode causes 'xruns' at even 
+2048 samples latency.  Looking at the interrupt handler, if I add some 
+diagnostics to tell me the difference between the capture and playback 
+DMA counters timing out I see what appears to be clock drift between the 
+  playback and capture halves of the ice1712.  I also added some debug 
+messages to show what sample rate the alsa driver was setting the 
+hardware to and it agrees with the rate set in my jackd invocation 
+(jackd -R -d alsa -n 2 -p 1024 - r 48000 -d hw:0,0)
+Also adding diagnostics to jackd to show the time spent in poll waiting 
+for the capture and playback interrupts shows that they start in sync 
+and gradually drift until an 'xrun' occurs when they are '-p' samples 
+apart.  According to the ice1712 data sheet the 'professional' 
+multitrack part of this chip (the part my soundcard is using) runs its 
+inputs and outputs from the same master clock so I'm puzzled as to why 
+they are drifting.  Does anybody have any more information relating to 
+the ews88mt?  - I think the drivers are working fine but the problems 
+are being caused by the capture and playback not being quite in sync 
+which renders it almost useless for professional recording.  Anyone have 
+any suggestions?
