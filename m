@@ -1,17 +1,17 @@
-From: Sailesh Tammannagari <Sailesh_Tammannagari@phoenix.com>
-Subject: Seeking help for ALC269 with ALSA-Driver-1.0.15
-Date: Mon, 29 Dec 2008 22:54:38 +0530
-Message-ID: <58DCD2E93E87C9489E59B83FC70D44777337011540@hdb-exch2k7.phoenix.com>
-References: <9c73ddb90812290648i15a72642v749cbdd834e84425@mail.gmail.com>
+From: Nigel Henry <cave.dnb2m97pp@aliceadsl.fr>
+Subject: Re: Asus w5f. ALC660-VD codec not detected
+Date: Mon, 29 Dec 2008 19:45:25 +0100
+Message-ID: <200812291945.25821.cave.dnb2m97pp@aliceadsl.fr>
+References: <200812222348.48698.cave.dnb2m97pp@aliceadsl.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="_003_58DCD2E93E87C9489E59B83FC70D44777337011540hdbexch2k7pho_"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hdb-exch2k3.phoenix.com (unknown [202.62.85.210])
-	by alsa0.perex.cz (Postfix) with ESMTP id 307F11037EC
-	for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2008 18:24:46 +0100 (CET)
-In-Reply-To: <9c73ddb90812290648i15a72642v749cbdd834e84425@mail.gmail.com>
-Content-Language: en-US
+Received: from mail.libertysurf.net (mx-out.libertysurf.net [213.36.80.91])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2E761243BC
+	for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2008 19:45:36 +0100 (CET)
+In-Reply-To: <200812222348.48698.cave.dnb2m97pp@aliceadsl.fr>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,216 +21,429 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Salvatore Filippone <filippone.salvatore@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+UPDATE: Salvatore has found a workaround, so that both codecs are detected 
+correctly. Any help from alsa developers for a permanent fix would be 
+appreciated. See workaround at bottom of post.
 
---_003_58DCD2E93E87C9489E59B83FC70D44777337011540hdbexch2k7pho_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Monday 22 December 2008 23:48, Nigel Henry wrote:
+> The person I've been trying to help has fedora Core 7 on this Asus w5f
+> laptop. FC7 has sounds. there are 2 codecs detected, one for the soundcard,
+> and one for the sounds on the onboard modem. Link below for output from
+> alsa-info.sh, and a bit of pasted output.
+>
+>  http://www.alsa-project.org/db/?f=93964b2ec68d1f912509bb1ac2ee02a5163ec4a1
+>
+>
+> !!################################
+> !!ALSA Information Script v 0.4.52
+> !!################################
+>
+> !!Script ran on: Fri Dec 12 11:07:58 CET 2008
+>
+>
+> !!Linux Distribution
+> !!------------------
+>
+> Fedora release 7 (Moonshine) Fedora release 7 (Moonshine) Fedora release 7
+> (Moonshine)
+>
+>
+> !!Kernel Information
+> !!------------------
+>
+> Kernel release:    2.6.23.17-88.fc7
+> Operating System:  GNU/Linux
+> Architecture:      i686
+> Processor:         i686
+> SMP Enabled:       Yes
+>
+>
+> !!ALSA Version
+> !!------------
+>
+> Driver version:     1.0.14
+> Library version:    1.0.14a
+> Utilities version:  1.0.14
+>
+>
+> !!Loaded ALSA modules
+> !!-------------------
+>
+> snd_hda_intel
+>
+>
+> !!Soundcards recognised by ALSA
+> !!-----------------------------
+>
+>  0 [Intel          ]: HDA-Intel - HDA Intel
+>                       HDA Intel at 0xfeb38000 irq 16
+>
+>
+> !!PCI Soundcards installed in the system
+> !!--------------------------------------
+>
+> 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+> Definition Audio Controller (rev 02)
+>
+>
+> !!Advanced information - PCI Vendor/Device/Susbsystem ID's
+> !!--------------------------------------------------------
+>
+> 00:1b.0 0403: 8086:27d8 (rev 02)
+>  Subsystem: 1043:1262
+>
+>
+> !!Modprobe options (Sound related)
+> !!--------------------------------
+>
+> snd-card-0: index=0
+> snd-hda-intel: index=0
+>
+>
+> !!Loaded sound module options
+> !!--------------------------
+>
+> !!Module: snd_hda_intel
+> enable : N
+> id : <NULL>
+> index : 0
+> model : <NULL>
+> position_fix : 0
+> probe_mask : -1
+> single_cmd : N
+>
+>
+> !!HDA-Intel Codec information
+> !!---------------------------
+> --startcollapse--
+>
+> Codec: Realtek ALC660-VD
+> Address: 0
+> Vendor Id: 0x10ec0660
+> Subsystem Id: 0x10430000
+> Revision Id: 0x100001
+> No Modem Function Group found
+>
+> <skip>
+>
+> Codec: Motorola Si3054
+> Address: 1
+> Vendor Id: 0x10573055
+> Subsystem Id: 0x10431316
+> Revision Id: 0x100700
+> Modem Function Group: 0x1
+>
+> Moving on to his other install.
+>
+> He also has Fedora 10 installed on this machine, but the only codec
+> detected is the modem one (Motorola Si3054), and no sounds. Link below for
+> alsa-info.sh output, and output pasted also below.
+>
+> http://www.alsa-project.org/db/?f=552b7c6386f59813a04150545ab79f92d4af2e8a
+>
+>
+> !!################################
+> !!ALSA Information Script v 0.4.52
+> !!################################
+>
+> !!Script ran on: Fri Dec 12 11:16:40 CET 2008
+>
+>
+> !!Linux Distribution
+> !!------------------
+>
+> Fedora release 10 (Cambridge) Fedora release 10 (Cambridge) Fedora release
+> 10 (Cambridge) Fedora release 10 (Cambridge)
+>
+>
+> !!Kernel Information
+> !!------------------
+>
+> Kernel release:    2.6.27.5-117.fc10.i686
+> Operating System:  GNU/Linux
+> Architecture:      i686
+> Processor:         i686
+> SMP Enabled:       Yes
+>
+>
+> !!ALSA Version
+> !!------------
+>
+> Driver version:     1.0.17
+> Library version:
+> Utilities version:  1.0.18rc3
+>
+>
+> !!Loaded ALSA modules
+> !!-------------------
+>
+> snd_hda_intel
+>
+>
+> !!Soundcards recognised by ALSA
+> !!-----------------------------
+>
+>  0 [Intel          ]: HDA-Intel - HDA Intel
+>                       HDA Intel at 0xfeb38000 irq 16
+>
+>
+> !!PCI Soundcards installed in the system
+> !!--------------------------------------
+>
+> 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+> Definition Audio Controller (rev 02)
+>
+>
+> !!Advanced information - PCI Vendor/Device/Susbsystem ID's
+> !!--------------------------------------------------------
+>
+> 00:1b.0 0403: 8086:27d8 (rev 02)
+>  Subsystem: 1043:1262
+>
+>
+> !!Loaded sound module options
+> !!--------------------------
+>
+> !!Module: snd_hda_intel
+> bdl_pos_adj :
+> 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-
+>1,-1,-1,-1,-1,-1,-1 enable :
+> Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y enable_msi
+> : 0
+> id :
+> <NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL
+>>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NUL
+>L>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
+> index :
+> -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+>-1,-1,-1,-1,-1,-1,-1 model :
+> <NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL
+>>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NUL
+>L>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
+> position_fix :
+> 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 power_save
+> : 0
+> power_save_controller : Y
+> probe_mask :
+> -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+>-1,-1,-1,-1,-1,-1,-1 single_cmd : N
+>
+>
+> !!HDA-Intel Codec information
+> !!---------------------------
+> --startcollapse--
+>
+> Codec: Motorola Si3054
+> Address: 1
+> Vendor Id: 0x10573055
+> Subsystem Id: 0x10431316
+> Revision Id: 0x100700
+> Modem Function Group: 0x1
+> --endcollapse--
+>
+>
+> !!ALSA Device nodes
+> !!-----------------
+>
+> crw-rw----  1 root root 116, 7 2008-12-12 11:13 /dev/snd/controlC0
+> crw-rw----  1 root root 116, 6 2008-12-12 11:13 /dev/snd/hwC0D1
+> crw-rw----  1 root root 116, 5 2008-12-12 11:13 /dev/snd/pcmC0D6c
+> crw-rw----  1 root root 116, 4 2008-12-12 11:13 /dev/snd/pcmC0D6p
+> crw-rw----  1 root root 116, 3 2008-12-12 11:13 /dev/snd/seq
+> crw-rw----  1 root root 116, 2 2008-12-12 11:13 /dev/snd/timer
+>
+>
+> !!ALSA configuration files
+> !!------------------------
+>
+> !!System wide config file (/etc/asound.conf)
+>
+> #
+> # Place your global alsa-lib configuration here...
+> #
+>
+> @hooks [
+>  {
+>   func load
+>   files [
+>    "/etc/alsa/pulse-default.conf"
+>   ]
+>   errors false
+>  }
+> ]
+>
+>
+> !!Aplay/Arecord output
+> !!------------
+>
+> APLAY
+>
+> **** List of PLAYBACK Hardware Devices ****
+> card 0: Intel [HDA Intel], device 6: Si3054 Modem [Si3054 Modem]
+>   Subdevices: 1/1
+>   Subdevice #0: subdevice #0
+>
+> ARECORD
+>
+> **** List of CAPTURE Hardware Devices ****
+> card 0: Intel [HDA Intel], device 6: Si3054 Modem [Si3054 Modem]
+>   Subdevices: 1/1
+>   Subdevice #0: subdevice #0
+>
+> !!Amixer output
+> !!-------------
+>
+> !!-------Mixer controls for card 0 [Intel]
+>
+> Card hw:0 'Intel'/'HDA Intel at 0xfeb38000 irq 16'
+>   Mixer name : 'Motorola Si3054'
+>   Components : 'HDA:10573055'
+>   Controls      : 2
+>   Simple ctrls  : 2
+> Simple mixer control 'Caller ID',0
+>   Capabilities: pswitch pswitch-joined
+>   Playback channels: Mono
+>   Mono: Playback [off]
+> Simple mixer control 'Off-hook',0
+>   Capabilities: pswitch pswitch-joined
+>   Playback channels: Mono
+>   Mono: Playback [off]
+>
+>
+> !!Alsactl output
+> !!-------------
+>
+> --startcollapse--
+> state.Intel {
+>  control.1 {
+>   comment.access 'read write'
+>   comment.type BOOLEAN
+>   comment.count 1
+>   iface MIXER
+>   name 'Off-hook Switch'
+>   value false
+>  }
+>  control.2 {
+>   comment.access 'read write'
+>   comment.type BOOLEAN
+>   comment.count 1
+>   iface MIXER
+>   name 'Caller ID Switch'
+>   value false
+>  }
+> }
+> --endcollapse--
+>
+>
+> !!All Loaded Modules
+> !!------------------
+>
+> Module
+> fuse
+> i915
+> drm
+> i2c_core
+> rfcomm
+> sco
+> bridge
+> stp
+> bnep
+> l2cap
+> sunrpc
+> ip6t_REJECT
+> nf_conntrack_ipv6
+> ip6table_filter
+> ip6_tables
+> ipv6
+> cpufreq_ondemand
+> acpi_cpufreq
+> dm_multipath
+> uinput
+> snd_hda_intel
+> snd_seq_dummy
+> snd_seq_oss
+> snd_seq_midi_event
+> snd_seq
+> snd_seq_device
+> snd_pcm_oss
+> snd_mixer_oss
+> snd_pcm
+> snd_timer
+> snd_page_alloc
+> snd_hwdep
+> btusb
+> snd
+> bluetooth
+> firewire_ohci
+> 8139cp
+> firewire_core
+> arc4
+> ecb
+> crypto_blkcipher
+> crc_itu_t
+> sdhci_pci
+> sdhci
+> mmc_core
+> 8139too
+> gspca_vc032x
+> soundcore
+> iwl3945
+> mii
+> rfkill
+> iTCO_wdt
+> iTCO_vendor_support
+> gspca_main
+> videodev
+> v4l1_compat
+> usb_storage
+> serio_raw
+> mac80211
+> cfg80211
+> joydev
+> video
+> output
+> asus_laptop
+> pcspkr
+> ata_generic
+> pata_acpi
+>
 
-        I have recently started working on ALSA. I have gone through few do=
-cuments from ww.alsa-project.org and managed to fix few bugs that I came ac=
-ross in the recent past.
-Now I have ASUS NETBOOK EEE PC 1000H with realtek codec ALC269. My base ker=
-nel version is 2.6.18 and alsa driver version is alsa-driver-1.0.15. The pr=
-oblem I am facing is
+<Quoting Salvatore>
+Saturday 16:05:58
 
-1. when I play aplay <filename.wav> the audio quality is very low.
-2. when I use amixer -c 0 I get the dump please refer the attached amixer-d=
-ump-asus.txt.
-3. I have attached asus-proc-dump.txt from     #cat /proc/asound/card0/code=
-c#0.
+Ok,  I finally found a workaround.
+According to the thread starting at
+http://thread.gmane.org/gmane.linux.alsa.devel/58849
+I grabbed the latest source code alsa-driver-1.0.18a.17.g27a32.139.g6e583/
+compiled with --with-debug=verbose and got the message
+Dec 27 15:13:06 localhost kernel: ALSA
+/mnt/travel/ALSA/alsa-driver-1.0.18a.17.g27a32.139.g6e583/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:779:
+codec_mask = 0x2
 
-Attached are the files for your reference. I tried running alsa-info.sh but=
- it was not getting executed on my NETbook.
+I then figure out that the sound device was at codec#0 when it worked,
+therefore I changed snd_hda_intel.c by forcing codec_mask
+        if (!chip->codec_mask) {
+                chip->codec_mask = azx_readw(chip, STATESTS);
+                chip->codec_mask=0x03;
+                snd_printdd("codec_mask = 0x%x\n", chip->codec_mask);
+        }
 
-I tried changing sound/pci/had/patch_realtek.c but could not see much impro=
-vement. I am seeking your help in resolving such issues. Please also let me=
- know if I can change the settings on the fly and check if the volume is in=
-creasing or not.
+And now the sound works correctly.
+Of course this opens the question of why azx_readw  does not return a
+correct mask; maybe the developers will be interested and/or will suggest a
+fix that is a little more elegant/widely applicable? And why did the base
+code work just once, for no clear reason ? (I did not have debug=verbose at
+that time, so I don't have detailed messages in the system log).
 
-Regards
-SKT.
+CHeers
+Salvatore
+<end quote>
 
---_003_58DCD2E93E87C9489E59B83FC70D44777337011540hdbexch2k7pho_
-Content-Type: text/plain; name="asus-proc-dump.txt"
-Content-Description: asus-proc-dump.txt
-Content-Disposition: attachment; filename="asus-proc-dump.txt"; size=7053;
-	creation-date="Mon, 29 Dec 2008 19:37:02 GMT";
-	modification-date="Mon, 29 Dec 2008 19:37:42 GMT"
-Content-Transfer-Encoding: base64
+Thanks for any help with this problem.
 
-DQpzaC0yLjA1YiMgY2F0IC9wcm9jL2Fzb3VuZC9jYXJkMC9jb2RlYyMwDQpDb2RlYzogUmVhbHRl
-ayBBTEMyNjkNCkFkZHJlc3M6IDANClZlbmRvciBJZDogMHgxMGVjMDI2OQ0KU3Vic3lzdGVtIElk
-OiAweDEwNDM4MzFhDQpSZXZpc2lvbiBJZDogMHgxMDAwMDQNCk5vIE1vZGVtIEZ1bmN0aW9uIEdy
-b3VwIGZvdW5kDQpEZWZhdWx0IFBDTToNCiAgICByYXRlcyBbMHg1ZjBdOiAzMjAwMCA0NDEwMCA0
-ODAwMCA4ODIwMCA5NjAwMCAxOTIwMDANCiAgICBiaXRzIFsweGVdOiAxNiAyMCAyNA0KICAgIGZv
-cm1hdHMgWzB4MV06IFBDTQ0KRGVmYXVsdCBBbXAtSW4gY2FwczogTi9BDQpEZWZhdWx0IEFtcC1P
-dXQgY2FwczogTi9BDQpOb2RlIDB4MDIgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHgxZDogU3RlcmVv
-IEFtcC1PdXQNCiAgQW1wLU91dCBjYXBzOiBvZnM9MHgzZiwgbnN0ZXBzPTB4NDAsIHN0ZXBzaXpl
-PTB4MDMsIG11dGU9MA0KICBBbXAtT3V0IHZhbHM6ICBbMHgyNiAweDI2XQ0KICBQQ006DQogICAg
-cmF0ZXMgWzB4NTYwXTogNDQxMDAgNDgwMDAgOTYwMDAgMTkyMDAwDQogICAgYml0cyBbMHhlXTog
-MTYgMjAgMjQNCiAgICBmb3JtYXRzIFsweDFdOiBQQ00NCk5vZGUgMHgwMyBbQXVkaW8gT3V0cHV0
-XSB3Y2FwcyAweDFkOiBTdGVyZW8gQW1wLU91dA0KICBBbXAtT3V0IGNhcHM6IG9mcz0weDNmLCBu
-c3RlcHM9MHg0MCwgc3RlcHNpemU9MHgwMywgbXV0ZT0wDQogIEFtcC1PdXQgdmFsczogIFsweDAw
-IDB4MDBdDQogIFBDTToNCiAgICByYXRlcyBbMHg1NjBdOiA0NDEwMCA0ODAwMCA5NjAwMCAxOTIw
-MDANCiAgICBiaXRzIFsweGVdOiAxNiAyMCAyNA0KICAgIGZvcm1hdHMgWzB4MV06IFBDTQ0KTm9k
-ZSAweDA0IFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDAwOiBNb25vDQpOb2Rl
-IDB4MDUgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8NCk5vZGUg
-MHgwNiBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDIxMTogU3RlcmVvIERpZ2l0YWwNCiAgUENNOg0K
-ICAgIHJhdGVzIFsweDVmMF06IDMyMDAwIDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE5MjAwMA0K
-ICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0DQogICAgZm9ybWF0cyBbMHgxXTogUENNDQpOb2RlIDB4
-MDcgW0F1ZGlvIElucHV0XSB3Y2FwcyAweDEwMDExYjogU3RlcmVvIEFtcC1Jbg0KICBBbXAtSW4g
-Y2Fwczogb2ZzPTB4MTEsIG5zdGVwcz0weDJlLCBzdGVwc2l6ZT0weDAzLCBtdXRlPTENCiAgQW1w
-LUluIHZhbHM6ICBbMHg5MCAweDkwXQ0KICBQQ006DQogICAgcmF0ZXMgWzB4MTYwXTogNDQxMDAg
-NDgwMDAgOTYwMDANCiAgICBiaXRzIFsweGVdOiAxNiAyMCAyNA0KICAgIGZvcm1hdHMgWzB4MV06
-IFBDTQ0KICBDb25uZWN0aW9uOiAxDQogICAgIDB4MjQNCk5vZGUgMHgwOCBbQXVkaW8gSW5wdXRd
-IHdjYXBzIDB4MTAwMTFiOiBTdGVyZW8gQW1wLUluDQogIEFtcC1JbiBjYXBzOiBvZnM9MHgxMSwg
-bnN0ZXBzPTB4MmUsIHN0ZXBzaXplPTB4MDMsIG11dGU9MQ0KICBBbXAtSW4gdmFsczogIFsweDE5
-IDB4MTldDQogIFBDTToNCiAgICByYXRlcyBbMHgxNjBdOiA0NDEwMCA0ODAwMCA5NjAwMA0KICAg
-IGJpdHMgWzB4ZV06IDE2IDIwIDI0DQogICAgZm9ybWF0cyBbMHgxXTogUENNDQogIENvbm5lY3Rp
-b246IDENCiAgICAgMHgyMw0KTm9kZSAweDA5IFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBz
-IDB4ZjAwMDAwOiBNb25vDQpOb2RlIDB4MGEgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMg
-MHhmMDAwMDA6IE1vbm8NCk5vZGUgMHgwYiBbQXVkaW8gTWl4ZXJdIHdjYXBzIDB4MjAwMTBiOiBT
-dGVyZW8gQW1wLUluDQogIEFtcC1JbiBjYXBzOiBvZnM9MHgxNywgbnN0ZXBzPTB4MWYsIHN0ZXBz
-aXplPTB4MDUsIG11dGU9MQ0KICBBbXAtSW4gdmFsczogIFsweDgwIDB4ODBdIFsweDgwIDB4ODBd
-IFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdDQogIENvbm5lY3Rpb246IDUNCiAg
-ICAgMHgxOCAweDE5IDB4MWEgMHgxYiAweDFkDQpOb2RlIDB4MGMgW0F1ZGlvIE1peGVyXSB3Y2Fw
-cyAweDIwMDEwYjogU3RlcmVvIEFtcC1Jbg0KICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVw
-cz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTENCiAgQW1wLUluIHZhbHM6ICBbMHgwMCAweDAw
-XSBbMHgwMCAweDAwXQ0KICBDb25uZWN0aW9uOiAyDQogICAgIDB4MDIgMHgwYg0KTm9kZSAweDBk
-IFtBdWRpbyBNaXhlcl0gd2NhcHMgMHgyMDAxMGI6IFN0ZXJlbyBBbXAtSW4NCiAgQW1wLUluIGNh
-cHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0xDQogIEFtcC1J
-biB2YWxzOiAgWzB4MDAgMHgwMF0gWzB4MDAgMHgwMF0NCiAgQ29ubmVjdGlvbjogMg0KICAgICAw
-eDAzIDB4MGINCk5vZGUgMHgwZSBbQXVkaW8gTWl4ZXJdIHdjYXBzIDB4MjAwMTBhOiBNb25vIEFt
-cC1Jbg0KICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAw
-LCBtdXRlPTENCiAgQW1wLUluIHZhbHM6ICBbMHgwMF0gWzB4MDBdDQogIENvbm5lY3Rpb246IDIN
-CiAgICAgMHgwYyAweDBkDQpOb2RlIDB4MGYgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMg
-MHhmMDAwMDA6IE1vbm8NCk5vZGUgMHgxMCBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDIxMTogU3Rl
-cmVvIERpZ2l0YWwNCiAgUENNOg0KICAgIHJhdGVzIFsweDVmMF06IDMyMDAwIDQ0MTAwIDQ4MDAw
-IDg4MjAwIDk2MDAwIDE5MjAwMA0KICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0DQogICAgZm9ybWF0
-cyBbMHgxXTogUENNDQpOb2RlIDB4MTEgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDM4MDogTW9u
-byBEaWdpdGFsDQogIFBpbmNhcCAweDA4MTQ6IE9VVCBEZXRlY3QNCiAgUGluIERlZmF1bHQgMHg0
-MTExMTFmMDogW04vQV0gU3BlYWtlciBhdCBFeHQgUmVhcg0KICAgIENvbm4gPSAxLzgsIENvbG9y
-ID0gQmxhY2sNCiAgUGluLWN0bHM6IDB4NDA6IE9VVA0KICBDb25uZWN0aW9uOiAxDQogICAgIDB4
-MTANCk5vZGUgMHgxMiBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwMDAxOiBTdGVyZW8NCiAgUGlu
-Y2FwIDB4MDgyMDogSU4NCiAgUGluIERlZmF1bHQgMHg5OWEzMDkyMDogW0ZpeGVkXSBNaWMgYXQg
-SW50IEFUQVBJDQogICAgQ29ubiA9IEFUQVBJLCBDb2xvciA9IFVua25vd24NCiAgUGluLWN0bHM6
-IDB4MjA6IElODQpOb2RlIDB4MTMgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAw
-MDA6IE1vbm8NCk5vZGUgMHgxNCBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwMTBkOiBTdGVyZW8g
-QW1wLU91dA0KICBBbXAtT3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9
-MHgwMCwgbXV0ZT0xDQogIEFtcC1PdXQgdmFsczogIFsweDAwIDB4MDBdDQogIFBpbmNhcCAweDA4
-MTAwNTA6IE9VVCBFQVBEDQogIFBpbiBEZWZhdWx0IDB4OTkxMzAxMTA6IFtGaXhlZF0gU3BlYWtl
-ciBhdCBJbnQgQVRBUEkNCiAgICBDb25uID0gQVRBUEksIENvbG9yID0gVW5rbm93bg0KICBQaW4t
-Y3RsczogMHg0MDogT1VUDQogIENvbm5lY3Rpb246IDINCiAgICAgMHgwYyogMHgwZA0KTm9kZSAw
-eDE1IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDAxOGQ6IFN0ZXJlbyBBbXAtT3V0DQogIEFtcC1P
-dXQgY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTENCiAg
-QW1wLU91dCB2YWxzOiAgWzB4MDAgMHgwMF0NCiAgUGluY2FwIDB4MDgxMDAxYzogT1VUIEhQIEVB
-UEQgRGV0ZWN0DQogIFBpbiBEZWZhdWx0IDB4MDEyMTQwMWY6IFtKYWNrXSBIUCBPdXQgYXQgRXh0
-IFJlYXINCiAgICBDb25uID0gMS84LCBDb2xvciA9IEdyZWVuDQogIFBpbi1jdGxzOiAweGMwOiBP
-VVQgSFANCiAgQ29ubmVjdGlvbjogMg0KICAgICAweDBjIDB4MGQqDQpOb2RlIDB4MTYgW1BpbiBD
-b21wbGV4XSB3Y2FwcyAweDQwMDEwYzogTW9ubyBBbXAtT3V0DQogIEFtcC1PdXQgY2Fwczogb2Zz
-PTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTENCiAgQW1wLU91dCB2YWxz
-OiAgWzB4ODBdDQogIFBpbmNhcCAweDA4MTA6IE9VVA0KICBQaW4gRGVmYXVsdCAweDQxMTExMWYw
-OiBbTi9BXSBTcGVha2VyIGF0IEV4dCBSZWFyDQogICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFj
-aw0KICBQaW4tY3RsczogMHg0MDogT1VUDQogIENvbm5lY3Rpb246IDENCiAgICAgMHgwZQ0KTm9k
-ZSAweDE3IFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDAwOiBNb25vDQpOb2Rl
-IDB4MTggW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDE4ZjogU3RlcmVvIEFtcC1JbiBBbXAtT3V0
-DQogIEFtcC1JbiBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDMsIHN0ZXBzaXplPTB4MjcsIG11
-dGU9MA0KICBBbXAtSW4gdmFsczogIFsweDAwIDB4MDBdIFsweDAwIDB4MDBdDQogIEFtcC1PdXQg
-Y2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTENCiAgQW1w
-LU91dCB2YWxzOiAgWzB4ODAgMHg4MF0NCiAgUGluY2FwIDB4MDgzNzM0OiBJTiBPVVQgRGV0ZWN0
-DQogIFBpbiBEZWZhdWx0IDB4MDFhMTk4MzA6IFtKYWNrXSBNaWMgYXQgRXh0IFJlYXINCiAgICBD
-b25uID0gMS84LCBDb2xvciA9IFBpbmsNCiAgUGluLWN0bHM6IDB4MjQ6IElODQogIENvbm5lY3Rp
-b246IDINCiAgICAgMHgwYyogMHgwZA0KTm9kZSAweDE5IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0
-MDAxOGY6IFN0ZXJlbyBBbXAtSW4gQW1wLU91dA0KICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5z
-dGVwcz0weDAzLCBzdGVwc2l6ZT0weDI3LCBtdXRlPTANCiAgQW1wLUluIHZhbHM6ICBbMHgwMCAw
-eDAwXSBbMHgwMCAweDAwXQ0KICBBbXAtT3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwg
-c3RlcHNpemU9MHgwMCwgbXV0ZT0xDQogIEFtcC1PdXQgdmFsczogIFsweDgwIDB4ODBdDQogIFBp
-bmNhcCAweDA4MzczNDogSU4gT1VUIERldGVjdA0KICBQaW4gRGVmYXVsdCAweDQxMTExMWYwOiBb
-Ti9BXSBTcGVha2VyIGF0IEV4dCBSZWFyDQogICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFjaw0K
-ICBQaW4tY3RsczogMHgyNDogSU4NCiAgQ29ubmVjdGlvbjogMg0KICAgICAweDBjKiAweDBkDQpO
-b2RlIDB4MWEgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDE4ZjogU3RlcmVvIEFtcC1JbiBBbXAt
-T3V0DQogIEFtcC1JbiBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDMsIHN0ZXBzaXplPTB4Mjcs
-IG11dGU9MA0KICBBbXAtSW4gdmFsczogIFsweDAwIDB4MDBdIFsweDAwIDB4MDBdDQogIEFtcC1P
-dXQgY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTENCiAg
-QW1wLU91dCB2YWxzOiAgWzB4ODAgMHg4MF0NCiAgUGluY2FwIDB4MDgzNzNjOiBJTiBPVVQgSFAg
-RGV0ZWN0DQogIFBpbiBEZWZhdWx0IDB4NDExMTExZjA6IFtOL0FdIFNwZWFrZXIgYXQgRXh0IFJl
-YXINCiAgICBDb25uID0gMS84LCBDb2xvciA9IEJsYWNrDQogIFBpbi1jdGxzOiAweDIwOiBJTg0K
-ICBDb25uZWN0aW9uOiAyDQogICAgIDB4MGMqIDB4MGQNCk5vZGUgMHgxYiBbUGluIENvbXBsZXhd
-IHdjYXBzIDB4NDAwMThmOiBTdGVyZW8gQW1wLUluIEFtcC1PdXQNCiAgQW1wLUluIGNhcHM6IG9m
-cz0weDAwLCBuc3RlcHM9MHgwMywgc3RlcHNpemU9MHgyNywgbXV0ZT0wDQogIEFtcC1JbiB2YWxz
-OiAgWzB4MDAgMHgwMF0gWzB4MDAgMHgwMF0NCiAgQW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0
-ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQ0KICBBbXAtT3V0IHZhbHM6ICBbMHg4MCAw
-eDgwXQ0KICBQaW5jYXAgMHgwODM3MzQ6IElOIE9VVCBEZXRlY3QNCiAgUGluIERlZmF1bHQgMHg0
-MTExMTFmMDogW04vQV0gU3BlYWtlciBhdCBFeHQgUmVhcg0KICAgIENvbm4gPSAxLzgsIENvbG9y
-ID0gQmxhY2sNCiAgUGluLWN0bHM6IDB4MjA6IElODQogIENvbm5lY3Rpb246IDINCiAgICAgMHgw
-YyogMHgwZA0KTm9kZSAweDFjIFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDAw
-OiBNb25vDQpOb2RlIDB4MWQgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDAwMDogTW9ubw0KICBQ
-aW5jYXAgMHgwODIwOiBJTg0KICBQaW4gRGVmYXVsdCAweDQwMDU4MjJkOiBbTi9BXSBMaW5lIE91
-dCBhdCBFeHQgTi9BDQogICAgQ29ubiA9IE9wdGljYWwsIENvbG9yID0gUHVycGxlDQogIFBpbi1j
-dGxzOiAweDIwOiBJTg0KTm9kZSAweDFlIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDAzODA6IE1v
-bm8gRGlnaXRhbA0KICBQaW5jYXAgMHgwODE0OiBPVVQgRGV0ZWN0DQogIFBpbiBEZWZhdWx0IDB4
-NDExMTExZjA6IFtOL0FdIFNwZWFrZXIgYXQgRXh0IFJlYXINCiAgICBDb25uID0gMS84LCBDb2xv
-ciA9IEJsYWNrDQogIFBpbi1jdGxzOiAweDQwOiBPVVQNCiAgQ29ubmVjdGlvbjogMQ0KICAgICAw
-eDA2DQpOb2RlIDB4MWYgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1v
-bm8NCk5vZGUgMHgyMCBbVmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDA0MDogTW9u
-bw0KTm9kZSAweDIxIFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDAwOiBNb25v
-DQpOb2RlIDB4MjIgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8N
-Ck5vZGUgMHgyMyBbQXVkaW8gU2VsZWN0b3JdIHdjYXBzIDB4MzAwMTAxOiBTdGVyZW8NCiAgQ29u
-bmVjdGlvbjogNw0KICAgICAweDE4IDB4MTkgMHgxYSAweDFiIDB4MWQgMHgxMiogMHgwYg0KTm9k
-ZSAweDI0IFtBdWRpbyBNaXhlcl0gd2NhcHMgMHgyMDAxMGI6IFN0ZXJlbyBBbXAtSW4NCiAgQW1w
-LUluIGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0xDQog
-IEFtcC1JbiB2YWxzOiAgWzB4MDAgMHgwMF0gWzB4ODAgMHg4MF0gWzB4ODAgMHg4MF0gWzB4ODAg
-MHg4MF0gWzB4ODAgMHg4MF0gWzB4OA0KMCAweDgwXQ0KICBDb25uZWN0aW9uOiA2DQogICAgIDB4
-MTggMHgxOSAweDFhIDB4MWIgMHgxZCAweDBiDQpzaC0yLjA1YiMNCg0K
-
---_003_58DCD2E93E87C9489E59B83FC70D44777337011540hdbexch2k7pho_
-Content-Type: text/plain; name="amixer-dump-asus.txt"
-Content-Description: amixer-dump-asus.txt
-Content-Disposition: attachment; filename="amixer-dump-asus.txt"; size=1381;
-	creation-date="Mon, 29 Dec 2008 19:16:43 GMT";
-	modification-date="Mon, 29 Dec 2008 19:16:43 GMT"
-Content-Transfer-Encoding: base64
-
-DQpzaC0yLjA1YiMgYW1peGVyIC1jIDANClNpbXBsZSBtaXhlciBjb250cm9sICdMaW5lT3V0Jyww
-DQogIENhcGFiaWxpdGllczogcHZvbHVtZSBwc3dpdGNoDQogIFBsYXliYWNrIGNoYW5uZWxzOiBG
-cm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQNCiAgTGltaXRzOiBQbGF5YmFjayAwIC0gNjQNCiAgTW9u
-bzoNCiAgRnJvbnQgTGVmdDogUGxheWJhY2sgMzggWzU5JV0gWy0yNS4wMGRCXSBbb25dDQogIEZy
-b250IFJpZ2h0OiBQbGF5YmFjayAzOCBbNTklXSBbLTI1LjAwZEJdIFtvbl0NClNpbXBsZSBtaXhl
-ciBjb250cm9sICdDYXB0dXJlJywwDQogIENhcGFiaWxpdGllczogY3ZvbHVtZSBjc3dpdGNoDQog
-IENhcHR1cmUgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodA0KICBMaW1pdHM6IENh
-cHR1cmUgMCAtIDQ2DQogIEZyb250IExlZnQ6IENhcHR1cmUgMjUgWzU0JV0gWzguMDBkQl0gW29u
-XQ0KICBGcm9udCBSaWdodDogQ2FwdHVyZSAyNSBbNTQlXSBbOC4wMGRCXSBbb25dDQpTaW1wbGUg
-bWl4ZXIgY29udHJvbCAnaVNwZWFrZXInLDANCiAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoDQogIFBs
-YXliYWNrIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQNCiAgTW9ubzoNCiAgRnJv
-bnQgTGVmdDogUGxheWJhY2sgW29uXQ0KICBGcm9udCBSaWdodDogUGxheWJhY2sgW29uXQ0Kc2gt
-Mi4wNWIjDQoNCnNoLTIuMDViIyBhbWl4ZXINClNpbXBsZSBtaXhlciBjb250cm9sICdMaW5lT3V0
-JywwDQogIENhcGFiaWxpdGllczogcHZvbHVtZSBwc3dpdGNoDQogIFBsYXliYWNrIGNoYW5uZWxz
-OiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQNCiAgTGltaXRzOiBQbGF5YmFjayAwIC0gNjQNCiAg
-TW9ubzoNCiAgRnJvbnQgTGVmdDogUGxheWJhY2sgMzggWzU5JV0gWy0yNS4wMGRCXSBbb25dDQog
-IEZyb250IFJpZ2h0OiBQbGF5YmFjayAzOCBbNTklXSBbLTI1LjAwZEJdIFtvbl0NClNpbXBsZSBt
-aXhlciBjb250cm9sICdDYXB0dXJlJywwDQogIENhcGFiaWxpdGllczogY3ZvbHVtZSBjc3dpdGNo
-DQogIENhcHR1cmUgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodA0KICBMaW1pdHM6
-IENhcHR1cmUgMCAtIDQ2DQogIEZyb250IExlZnQ6IENhcHR1cmUgMjUgWzU0JV0gWzguMDBkQl0g
-W29uXQ0KICBGcm9udCBSaWdodDogQ2FwdHVyZSAyNSBbNTQlXSBbOC4wMGRCXSBbb25dDQpTaW1w
-bGUgbWl4ZXIgY29udHJvbCAnaVNwZWFrZXInLDANCiAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoDQog
-IFBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQNCiAgTW9ubzoNCiAg
-RnJvbnQgTGVmdDogUGxheWJhY2sgW29uXQ0KICBGcm9udCBSaWdodDogUGxheWJhY2sgW29uXQ0K
-c2gtMi4wNWIjDQoNCg==
-
---_003_58DCD2E93E87C9489E59B83FC70D44777337011540hdbexch2k7pho_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---_003_58DCD2E93E87C9489E59B83FC70D44777337011540hdbexch2k7pho_--
+Nigel.
