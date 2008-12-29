@@ -1,16 +1,17 @@
-From: Nigel Henry <cave.dnb2m97pp@aliceadsl.fr>
-Subject: Re: Asus w5f. ALC660-VD codec not detected
-Date: Mon, 29 Dec 2008 19:45:25 +0100
-Message-ID: <200812291945.25821.cave.dnb2m97pp@aliceadsl.fr>
-References: <200812222348.48698.cave.dnb2m97pp@aliceadsl.fr>
+From: "Adrian McMenamin" <lkmladrian@gmail.com>
+Subject: Fixing the AICA driver
+Date: Mon, 29 Dec 2008 19:20:16 +0000
+Message-ID: <8b67d60812291120i58473762i679f5783b651f803@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.libertysurf.net (mx-out.libertysurf.net [213.36.80.91])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2E761243BC
-	for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2008 19:45:36 +0100 (CET)
-In-Reply-To: <200812222348.48698.cave.dnb2m97pp@aliceadsl.fr>
+Received: from mail-bw0-f20.google.com (mail-bw0-f20.google.com
+	[209.85.218.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6AECD1037EC
+	for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2008 20:20:17 +0100 (CET)
+Received: by bwz13 with SMTP id 13so12780401bwz.8
+	for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2008 11:20:16 -0800 (PST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,429 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Salvatore Filippone <filippone.salvatore@gmail.com>
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Adrian McMenamin <adrian@newgolddream.dyndns.info>
 List-Id: alsa-devel@alsa-project.org
 
-UPDATE: Salvatore has found a workaround, so that both codecs are detected 
-correctly. Any help from alsa developers for a permanent fix would be 
-appreciated. See workaround at bottom of post.
+It's about a year since I last mentioned this so I thought I'd give it
+another go...
 
+But the AICA sound driver I wrote for the Dreamcast still won't work
+properly with a pure ALSA setup and I don't know why.
 
-On Monday 22 December 2008 23:48, Nigel Henry wrote:
-> The person I've been trying to help has fedora Core 7 on this Asus w5f
-> laptop. FC7 has sounds. there are 2 codecs detected, one for the soundcard,
-> and one for the sounds on the onboard modem. Link below for output from
-> alsa-info.sh, and a bit of pasted output.
->
->  http://www.alsa-project.org/db/?f=93964b2ec68d1f912509bb1ac2ee02a5163ec4a1
->
->
-> !!################################
-> !!ALSA Information Script v 0.4.52
-> !!################################
->
-> !!Script ran on: Fri Dec 12 11:07:58 CET 2008
->
->
-> !!Linux Distribution
-> !!------------------
->
-> Fedora release 7 (Moonshine) Fedora release 7 (Moonshine) Fedora release 7
-> (Moonshine)
->
->
-> !!Kernel Information
-> !!------------------
->
-> Kernel release:    2.6.23.17-88.fc7
-> Operating System:  GNU/Linux
-> Architecture:      i686
-> Processor:         i686
-> SMP Enabled:       Yes
->
->
-> !!ALSA Version
-> !!------------
->
-> Driver version:     1.0.14
-> Library version:    1.0.14a
-> Utilities version:  1.0.14
->
->
-> !!Loaded ALSA modules
-> !!-------------------
->
-> snd_hda_intel
->
->
-> !!Soundcards recognised by ALSA
-> !!-----------------------------
->
->  0 [Intel          ]: HDA-Intel - HDA Intel
->                       HDA Intel at 0xfeb38000 irq 16
->
->
-> !!PCI Soundcards installed in the system
-> !!--------------------------------------
->
-> 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
-> Definition Audio Controller (rev 02)
->
->
-> !!Advanced information - PCI Vendor/Device/Susbsystem ID's
-> !!--------------------------------------------------------
->
-> 00:1b.0 0403: 8086:27d8 (rev 02)
->  Subsystem: 1043:1262
->
->
-> !!Modprobe options (Sound related)
-> !!--------------------------------
->
-> snd-card-0: index=0
-> snd-hda-intel: index=0
->
->
-> !!Loaded sound module options
-> !!--------------------------
->
-> !!Module: snd_hda_intel
-> enable : N
-> id : <NULL>
-> index : 0
-> model : <NULL>
-> position_fix : 0
-> probe_mask : -1
-> single_cmd : N
->
->
-> !!HDA-Intel Codec information
-> !!---------------------------
-> --startcollapse--
->
-> Codec: Realtek ALC660-VD
-> Address: 0
-> Vendor Id: 0x10ec0660
-> Subsystem Id: 0x10430000
-> Revision Id: 0x100001
-> No Modem Function Group found
->
-> <skip>
->
-> Codec: Motorola Si3054
-> Address: 1
-> Vendor Id: 0x10573055
-> Subsystem Id: 0x10431316
-> Revision Id: 0x100700
-> Modem Function Group: 0x1
->
-> Moving on to his other install.
->
-> He also has Fedora 10 installed on this machine, but the only codec
-> detected is the modem one (Motorola Si3054), and no sounds. Link below for
-> alsa-info.sh output, and output pasted also below.
->
-> http://www.alsa-project.org/db/?f=552b7c6386f59813a04150545ab79f92d4af2e8a
->
->
-> !!################################
-> !!ALSA Information Script v 0.4.52
-> !!################################
->
-> !!Script ran on: Fri Dec 12 11:16:40 CET 2008
->
->
-> !!Linux Distribution
-> !!------------------
->
-> Fedora release 10 (Cambridge) Fedora release 10 (Cambridge) Fedora release
-> 10 (Cambridge) Fedora release 10 (Cambridge)
->
->
-> !!Kernel Information
-> !!------------------
->
-> Kernel release:    2.6.27.5-117.fc10.i686
-> Operating System:  GNU/Linux
-> Architecture:      i686
-> Processor:         i686
-> SMP Enabled:       Yes
->
->
-> !!ALSA Version
-> !!------------
->
-> Driver version:     1.0.17
-> Library version:
-> Utilities version:  1.0.18rc3
->
->
-> !!Loaded ALSA modules
-> !!-------------------
->
-> snd_hda_intel
->
->
-> !!Soundcards recognised by ALSA
-> !!-----------------------------
->
->  0 [Intel          ]: HDA-Intel - HDA Intel
->                       HDA Intel at 0xfeb38000 irq 16
->
->
-> !!PCI Soundcards installed in the system
-> !!--------------------------------------
->
-> 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
-> Definition Audio Controller (rev 02)
->
->
-> !!Advanced information - PCI Vendor/Device/Susbsystem ID's
-> !!--------------------------------------------------------
->
-> 00:1b.0 0403: 8086:27d8 (rev 02)
->  Subsystem: 1043:1262
->
->
-> !!Loaded sound module options
-> !!--------------------------
->
-> !!Module: snd_hda_intel
-> bdl_pos_adj :
-> 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-
->1,-1,-1,-1,-1,-1,-1 enable :
-> Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y enable_msi
-> : 0
-> id :
-> <NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL
->>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NUL
->L>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
-> index :
-> -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
->-1,-1,-1,-1,-1,-1,-1 model :
-> <NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL
->>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NUL
->L>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
-> position_fix :
-> 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 power_save
-> : 0
-> power_save_controller : Y
-> probe_mask :
-> -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
->-1,-1,-1,-1,-1,-1,-1 single_cmd : N
->
->
-> !!HDA-Intel Codec information
-> !!---------------------------
-> --startcollapse--
->
-> Codec: Motorola Si3054
-> Address: 1
-> Vendor Id: 0x10573055
-> Subsystem Id: 0x10431316
-> Revision Id: 0x100700
-> Modem Function Group: 0x1
-> --endcollapse--
->
->
-> !!ALSA Device nodes
-> !!-----------------
->
-> crw-rw----  1 root root 116, 7 2008-12-12 11:13 /dev/snd/controlC0
-> crw-rw----  1 root root 116, 6 2008-12-12 11:13 /dev/snd/hwC0D1
-> crw-rw----  1 root root 116, 5 2008-12-12 11:13 /dev/snd/pcmC0D6c
-> crw-rw----  1 root root 116, 4 2008-12-12 11:13 /dev/snd/pcmC0D6p
-> crw-rw----  1 root root 116, 3 2008-12-12 11:13 /dev/snd/seq
-> crw-rw----  1 root root 116, 2 2008-12-12 11:13 /dev/snd/timer
->
->
-> !!ALSA configuration files
-> !!------------------------
->
-> !!System wide config file (/etc/asound.conf)
->
-> #
-> # Place your global alsa-lib configuration here...
-> #
->
-> @hooks [
->  {
->   func load
->   files [
->    "/etc/alsa/pulse-default.conf"
->   ]
->   errors false
->  }
-> ]
->
->
-> !!Aplay/Arecord output
-> !!------------
->
-> APLAY
->
-> **** List of PLAYBACK Hardware Devices ****
-> card 0: Intel [HDA Intel], device 6: Si3054 Modem [Si3054 Modem]
->   Subdevices: 1/1
->   Subdevice #0: subdevice #0
->
-> ARECORD
->
-> **** List of CAPTURE Hardware Devices ****
-> card 0: Intel [HDA Intel], device 6: Si3054 Modem [Si3054 Modem]
->   Subdevices: 1/1
->   Subdevice #0: subdevice #0
->
-> !!Amixer output
-> !!-------------
->
-> !!-------Mixer controls for card 0 [Intel]
->
-> Card hw:0 'Intel'/'HDA Intel at 0xfeb38000 irq 16'
->   Mixer name : 'Motorola Si3054'
->   Components : 'HDA:10573055'
->   Controls      : 2
->   Simple ctrls  : 2
-> Simple mixer control 'Caller ID',0
->   Capabilities: pswitch pswitch-joined
->   Playback channels: Mono
->   Mono: Playback [off]
-> Simple mixer control 'Off-hook',0
->   Capabilities: pswitch pswitch-joined
->   Playback channels: Mono
->   Mono: Playback [off]
->
->
-> !!Alsactl output
-> !!-------------
->
-> --startcollapse--
-> state.Intel {
->  control.1 {
->   comment.access 'read write'
->   comment.type BOOLEAN
->   comment.count 1
->   iface MIXER
->   name 'Off-hook Switch'
->   value false
->  }
->  control.2 {
->   comment.access 'read write'
->   comment.type BOOLEAN
->   comment.count 1
->   iface MIXER
->   name 'Caller ID Switch'
->   value false
->  }
-> }
-> --endcollapse--
->
->
-> !!All Loaded Modules
-> !!------------------
->
-> Module
-> fuse
-> i915
-> drm
-> i2c_core
-> rfcomm
-> sco
-> bridge
-> stp
-> bnep
-> l2cap
-> sunrpc
-> ip6t_REJECT
-> nf_conntrack_ipv6
-> ip6table_filter
-> ip6_tables
-> ipv6
-> cpufreq_ondemand
-> acpi_cpufreq
-> dm_multipath
-> uinput
-> snd_hda_intel
-> snd_seq_dummy
-> snd_seq_oss
-> snd_seq_midi_event
-> snd_seq
-> snd_seq_device
-> snd_pcm_oss
-> snd_mixer_oss
-> snd_pcm
-> snd_timer
-> snd_page_alloc
-> snd_hwdep
-> btusb
-> snd
-> bluetooth
-> firewire_ohci
-> 8139cp
-> firewire_core
-> arc4
-> ecb
-> crypto_blkcipher
-> crc_itu_t
-> sdhci_pci
-> sdhci
-> mmc_core
-> 8139too
-> gspca_vc032x
-> soundcore
-> iwl3945
-> mii
-> rfkill
-> iTCO_wdt
-> iTCO_vendor_support
-> gspca_main
-> videodev
-> v4l1_compat
-> usb_storage
-> serio_raw
-> mac80211
-> cfg80211
-> joydev
-> video
-> output
-> asus_laptop
-> pcspkr
-> ata_generic
-> pata_acpi
->
+It works when OSS emulation is on so it appears to be some sort of
+interaction with the ALSA lib layer.
 
-<Quoting Salvatore>
-Saturday 16:05:58
+The snd-summy driver also appears to work well with a 'pure' ALSA setup,
+but when (for instance) I try to replay an MP3 track without OSS
+emulation on I get this:
 
-Ok,  I finally found a workaround.
-According to the thread starting at
-http://thread.gmane.org/gmane.linux.alsa.devel/58849
-I grabbed the latest source code alsa-driver-1.0.18a.17.g27a32.139.g6e583/
-compiled with --with-debug=verbose and got the message
-Dec 27 15:13:06 localhost kernel: ALSA
-/mnt/travel/ALSA/alsa-driver-1.0.18a.17.g27a32.139.g6e583/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:779:
-codec_mask = 0x2
+Playing MPEG stream from ms.mp3 ...
+MPEG 1.0, Layer: III, Freq: 44100, mode: Joint-Stereo, modext: 2, BPF :
+2560
+Channels: 2, copyright: No, original: Yes, CRC: No, emphasis: 0.
+Bitrate: 128 Kbits/s, Extension value: 2
+Audio: 1:1 conversion, rate: 44100, encoding: signed 16 bit, channels: 2
+ALSA lib pcm_plug.c:773:(snd_pcm_plug_hw_refine_schange) Unable to find
+an usable access for 'default'
+ALSA snd_pcm_hw_params_set_access error: Invalid argument
+Can't find a suitable libao driver. (Is device in use?)
 
-I then figure out that the sound device was at codec#0 when it worked,
-therefore I changed snd_hda_intel.c by forcing codec_mask
-        if (!chip->codec_mask) {
-                chip->codec_mask = azx_readw(chip, STATESTS);
-                chip->codec_mask=0x03;
-                snd_printdd("codec_mask = 0x%x\n", chip->codec_mask);
-        }
+Any clues anyone?
 
-And now the sound works correctly.
-Of course this opens the question of why azx_readw  does not return a
-correct mask; maybe the developers will be interested and/or will suggest a
-fix that is a little more elegant/widely applicable? And why did the base
-code work just once, for no clear reason ? (I did not have debug=verbose at
-that time, so I don't have detailed messages in the system log).
+Best wishes for 2009 and thanks for all help,
 
-CHeers
-Salvatore
-<end quote>
-
-Thanks for any help with this problem.
-
-Nigel.
+Adrian
