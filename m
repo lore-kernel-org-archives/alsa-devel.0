@@ -1,18 +1,17 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: S/PDIF-Out on Asus M3A-H/HDMI with ALC1200]
-Date: Tue, 30 Dec 2008 17:54:14 +0800
-Message-ID: <20081230095414.GA1206@localhost>
-References: <49538A00.3070009@gmx.net> <20081226024838.GA13302@localhost>
-	<4954CE2A.2040309@gmx.net>
+From: cocala <syy.wxd@gmail.com>
+Subject: How to handle multiple sound cards?
+Date: Tue, 30 Dec 2008 18:53:25 +0800
+Message-ID: <458a17f90812300253k565435e6mfdb0c4d14360fc02@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7AC621037EC
-	for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2008 10:54:18 +0100 (CET)
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.246])
+	by alsa0.perex.cz (Postfix) with ESMTP id F19A22412E
+	for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2008 11:53:26 +0100 (CET)
+Received: by rv-out-0708.google.com with SMTP id f25so4663454rvb.32
+	for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2008 02:53:25 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <4954CE2A.2040309@gmx.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,91 +21,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Thomas Schneider <nailstudio@gmx.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 26, 2008 at 01:29:30PM +0100, Thomas Schneider wrote:
-> Hi,
-> 
-> sorry, i get a kernel oops with this changes when i activate iec958 in 
-> the mixer !
-> 
-> 
-> [ 1435.041914] BUG: unable to handle kernel NULL pointer dereference at 
-> 0000000000000006
-> [ 1435.041914] IP: [<ffffffff880d0223>] :snd_hda_codec:set_dig_out+0x47/0x57
-> [ 1435.041914] PGD 6b5c3067 PUD 781ba067 PMD 0
-> [ 1435.041914] Oops: 0000 [1] SMP
+Hi,
 
-Sorry, does this new patch fixed the oops?
+Our platform has multiple sound cards: Stereo, Surround51, spdif and
+Bluetooth PCM.
 
-Thanks,
-Fengguang
----
- sound/pci/hda/hda_local.h     |    1 +
- sound/pci/hda/patch_realtek.c |    9 ++++++++-
- 2 files changed, 9 insertions(+), 1 deletion(-)
+These sound cards are registered in random order as some sound card are
+registered as module or not registered sometimes. So the application can't
+use directly use the card number for specific sound card. If using alias,
+the asound.conf also should be changed according to the registered sound
+card after boot up.
 
---- sound-2.6.orig/sound/pci/hda/hda_local.h
-+++ sound-2.6/sound/pci/hda/hda_local.h
-@@ -227,6 +227,7 @@ struct hda_multi_out {
- 	hda_nid_t hp_nid;	/* optional DAC for HP, 0 when not exists */
- 	hda_nid_t extra_out_nid[3];	/* optional DACs, 0 when not exists */
- 	hda_nid_t dig_out_nid;	/* digital out audio widget */
-+	hda_nid_t *slave_dig_outs;
- 	int max_channels;	/* currently supported analog channels */
- 	int dig_out_used;	/* current usage of digital out (HDA_DIG_XXX) */
- 	int no_share_stream;	/* don't share a stream with multiple pins */
---- sound-2.6.orig/sound/pci/hda/patch_realtek.c
-+++ sound-2.6/sound/pci/hda/patch_realtek.c
-@@ -336,6 +336,7 @@ struct alc_config_preset {
- 	hda_nid_t *dac_nids;
- 	hda_nid_t dig_out_nid;		/* optional */
- 	hda_nid_t hp_nid;		/* optional */
-+	hda_nid_t *slave_dig_outs;
- 	unsigned int num_adc_nids;
- 	hda_nid_t *adc_nids;
- 	hda_nid_t *capsrc_nids;
-@@ -810,6 +811,7 @@ static void setup_preset(struct alc_spec
- 	spec->multiout.num_dacs = preset->num_dacs;
- 	spec->multiout.dac_nids = preset->dac_nids;
- 	spec->multiout.dig_out_nid = preset->dig_out_nid;
-+	spec->multiout.slave_dig_outs = preset->slave_dig_outs;
- 	spec->multiout.hp_nid = preset->hp_nid;
- 
- 	spec->num_mux_defs = preset->num_mux_defs;
-@@ -3085,6 +3087,7 @@ static int alc_build_pcms(struct hda_cod
- 	/* SPDIF for stream index #1 */
- 	if (spec->multiout.dig_out_nid || spec->dig_in_nid) {
- 		codec->num_pcms = 2;
-+	        codec->slave_dig_outs = spec->multiout.slave_dig_outs;
- 		info = spec->pcm_rec + 1;
- 		info->name = spec->stream_name_digital;
- 		info->pcm_type = HDA_PCM_TYPE_SPDIF;
-@@ -8525,6 +8528,10 @@ static struct snd_pci_quirk alc883_cfg_t
- 	{}
- };
- 
-+static hda_nid_t alc1200_slave_dig_outs[] = {
-+	ALC883_DIGOUT_NID, 0,
-+};
-+
- static struct alc_config_preset alc883_presets[] = {
- 	[ALC883_3ST_2ch_DIG] = {
- 		.mixers = { alc883_3ST_2ch_mixer },
-@@ -8865,13 +8872,13 @@ static struct alc_config_preset alc883_p
- 		.dac_nids = alc883_dac_nids,
- 		.dig_out_nid = ALC1200_DIGOUT_NID,
- 		.dig_in_nid = ALC883_DIGIN_NID,
-+		.slave_dig_outs = alc1200_slave_dig_outs,
- 		.num_channel_mode = ARRAY_SIZE(alc883_sixstack_modes),
- 		.channel_mode = alc883_sixstack_modes,
- 		.input_mux = &alc883_capture_source,
- 	},
- };
- 
--
- /*
-  * BIOS auto configuration
-  */
+What's the best way to handle multiple sound cards?
