@@ -1,17 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 1/2] ASoC: TWL4030: Make the enum filter
-	generic for twl4030
-Date: Wed, 31 Dec 2008 10:08:37 +0200
-Message-ID: <1230710918-2741-2-git-send-email-peter.ujfalusi@nokia.com>
-References: <1230710918-2741-1-git-send-email-peter.ujfalusi@nokia.com>
+From: "Xuesong Yang" <xsyang@pixelworks.com>
+Subject: Re: Is Asoc suitable for my device?
+Date: Wed, 31 Dec 2008 16:35:05 +0800
+Message-ID: <848F9F9C4983184C9D6E2429A016640C020847AB@pvgwin06.pixelworks.com>
+References: <1230629122.21485.10.camel@star-sea>
+	<20081230132530.GB13369@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 236BC1037FF
-	for <alsa-devel@alsa-project.org>; Wed, 31 Dec 2008 09:08:54 +0100 (CET)
-In-Reply-To: <1230710918-2741-1-git-send-email-peter.ujfalusi@nokia.com>
+Received: from smtp2.pixelworks.com (smtp2.pixelworks.com [207.179.28.190])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6BF051037EB
+	for <alsa-devel@alsa-project.org>; Wed, 31 Dec 2008 09:35:29 +0100 (CET)
+Content-class: urn:content-classes:message
+In-Reply-To: <20081230132530.GB13369@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,77 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: sakoman@gmail.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Modify the enum filter to more generic that it will filter
-out the enums with text "Invalid".
-The enum filter also required for the capture path.
+Hi Mark:
+	Thanks for you suggestion. I'll have a look at the codec part of
+code.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
----
- sound/soc/codecs/twl4030.c |   30 ++++++++++++++----------------
- 1 files changed, 14 insertions(+), 16 deletions(-)
+-----Original Message-----
+From: Mark Brown [mailto:broonie@sirena.org.uk] 
+Sent: Tuesday, December 30, 2008 9:26 PM
+To: Xuesong Yang
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Is Asoc suitable for my device?
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 5184888..2c279cd 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -298,25 +298,23 @@ static const struct soc_enum twl4030_handsfreer_enum =
- static const struct snd_kcontrol_new twl4030_dapm_handsfreer_control =
- SOC_DAPM_ENUM("Route", twl4030_handsfreer_enum);
- 
--static int outmixer_event(struct snd_soc_dapm_widget *w,
-+/*
-+ * This function filters out the non valid mux settings, named as "Invalid"
-+ * in the enum texts.
-+ * Just refuse to set an invalid mux mode.
-+ */
-+static int twl4030_enum_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
- 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
- 	int ret = 0;
- 	int val;
- 
--	switch (e->reg) {
--	case TWL4030_REG_PREDL_CTL:
--	case TWL4030_REG_PREDR_CTL:
--	case TWL4030_REG_EAR_CTL:
--		val = w->value >> e->shift_l;
--		if (val == 3) {
--			printk(KERN_WARNING
--			"Invalid MUX setting for register 0x%02x (%d)\n",
--			      e->reg, val);
--			ret = -1;
--		}
--		break;
-+	val = w->value >> e->shift_l;
-+	if (!strcmp("Invalid", e->texts[val])) {
-+		printk(KERN_WARNING "Invalid MUX setting on 0x%02x (%d)\n",
-+			e->reg, val);
-+		ret = -1;
- 	}
- 
- 	return ret;
-@@ -810,14 +808,14 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 	/* Output MUX controls */
- 	/* Earpiece */
- 	SND_SOC_DAPM_MUX_E("Earpiece Mux", SND_SOC_NOPM, 0, 0,
--		&twl4030_dapm_earpiece_control, outmixer_event,
-+		&twl4030_dapm_earpiece_control, twl4030_enum_event,
- 		SND_SOC_DAPM_PRE_REG),
- 	/* PreDrivL/R */
- 	SND_SOC_DAPM_MUX_E("PredriveL Mux", SND_SOC_NOPM, 0, 0,
--		&twl4030_dapm_predrivel_control, outmixer_event,
-+		&twl4030_dapm_predrivel_control, twl4030_enum_event,
- 		SND_SOC_DAPM_PRE_REG),
- 	SND_SOC_DAPM_MUX_E("PredriveR Mux", SND_SOC_NOPM, 0, 0,
--		&twl4030_dapm_predriver_control, outmixer_event,
-+		&twl4030_dapm_predriver_control, twl4030_enum_event,
- 		SND_SOC_DAPM_PRE_REG),
- 	/* HeadsetL/R */
- 	SND_SOC_DAPM_MUX("HeadsetL Mux", SND_SOC_NOPM, 0, 0,
--- 
-1.6.0.6
+On Tue, Dec 30, 2008 at 05:25:22PM +0800, Xuesong Yang wrote:
+
+> 	My problem is I don't know if it suitable for my device use
+Asoc.
+> 	In my platform, there is only a I2S bypass module, It has a
+route,
+> select one of the I2S source as input,(from HDMI or cpu data) delay
+the
+> data for some time and then output it to the backend.
+> 	In theory, this device is very sample, but I find I can't get a
+easy
+> way to implement it in ALSA, I'm lost in ALSA.
+> 	Any suggestion will be greatly appreciated.
+
+ASoC sounds like a good fit here: it'd allow you to reuse the I2S and
+DMA drivers for the CPU and what you're doing is very similar to what a
+codec with analogue bypass can do so it's not really even unusual from
+an ASoC point of view.  The only difference is that all your signals are
+digital but nothing outside the bypass module will be able to tell.
+
+I'd suggest writing a codec driver for your bypass module - it fits into
+the system in the same place and from what you say it sounds like it
+could be viewed as a codec that happens to deal in digital formats only.
