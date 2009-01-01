@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: Control interconnection information API?
-Date: Thu, 1 Jan 2009 11:43:44 +0000
-Message-ID: <20090101114343.GB6888@sirena.org.uk>
-References: <495BF9DB.2060202@audioscience.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 0/4] ASoC updates for next
+Date: Thu, 1 Jan 2009 15:31:14 +0000
+Message-ID: <20090101153113.GA5966@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 52E8C10381B
-	for <alsa-devel@alsa-project.org>; Thu,  1 Jan 2009 12:43:51 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 3E6D32434A
+	for <alsa-devel@alsa-project.org>; Thu,  1 Jan 2009 16:31:22 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <495BF9DB.2060202@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,41 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eliot Blennerhassett <linux@audioscience.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 01, 2009 at 12:01:47PM +1300, Eliot Blennerhassett wrote:
+The following changes since commit 6a94cb73064c952255336cc57731904174b2c58f:
+  Linus Torvalds (1):
+        Merge branch 'for-linus' of git://oss.sgi.com/xfs/xfs
 
-> * ASoC DAPM (which I (not being an ASoC developer or user) have mostly
-> been skimming over in this list).
+are available in the git repository at:
 
-> Reading this
-> http://www.mjmwired.net/kernel/Documentation/sound/alsa/soc/dapm.txt
-> 3. Codec Widget Interconnections. I can see that there are lists of
-> connections.  I'm not sure if these are visible to userspace via any API?
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-tiwai
 
-These are not visible to user space and the information provided is not
-at all complete - as well as DAPM controls (used for power management)
-most devices will also have a number of regular ALSA controls which
-aren't tied in with the path information yet.  It's been at the back of
-my mind to let drivers do that but it's not particularly near the top of
-my list.
+If merging these patches just now is going to cause hassle then let me
+know.
 
-> Can either of these schemes be generalised to all ALSA drivers?
-> Is there some other way to reveal the information (Connections TLV, new
-> API etc?)
+Mark Brown (1):
+      ASoC: Clean up kerneldoc warnings
 
-Anything that works for ASoC should be able to work for all ALSA
-drivers, though since there's nothing there yet it's probably not
-particularly useful for you right now.
+Peter Ujfalusi (2):
+      ASoC: TWL4030: Make the enum filter generic for twl4030
+      ASoC: TWL4030: DAPM based capture implementation
 
-> Does anybody else thing this is worth pursuing, or is it just me?
+Stephen Ware (1):
+      ASoC: Fix pxa2xx-pcm checks for invalid DMA channels
 
-Yes, it'd definitely be useful for ASoC.  One of the issues with ASoC at
-the minute is that embedded codecs (especially audio hub codecs) can
-have a very large number of controls and having the interconnection
-information availiable in mixer user interfaces would help users work
-with them.
-
-Even with just the existing power information it'd still be a win.
+ sound/soc/codecs/twl4030.c |  377 ++++++++++++++++++++++----------------------
+ sound/soc/codecs/twl4030.h |    7 +
+ sound/soc/pxa/pxa2xx-pcm.c |    4 +-
+ sound/soc/soc-core.c       |   46 +++---
+ sound/soc/soc-dapm.c       |   10 +-
+ 5 files changed, 227 insertions(+), 217 deletions(-)
