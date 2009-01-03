@@ -1,24 +1,24 @@
 From: Peter Stokes <linux@dadeos.co.uk>
-Subject: [PATCH 0/2] New Control Plugin - arcam-av
-Date: Sat, 3 Jan 2009 20:56:25 +0000
-Message-ID: <200901032056.25598.linux@dadeos.co.uk>
+Subject: [PATCH 1/2] New Control Plugin - arcam-av
+Date: Sat, 3 Jan 2009 20:56:35 +0000
+Message-ID: <200901032056.35982.linux@dadeos.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6.freeserve.com (unknown [193.252.22.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id EA4231037E3
-	for <alsa-devel@alsa-project.org>; Sat,  3 Jan 2009 21:56:37 +0100 (CET)
+Received: from smtp3.freeserve.com (smtp3.wanadoo.co.uk [193.252.22.156])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9517F1037E3
+	for <alsa-devel@alsa-project.org>; Sat,  3 Jan 2009 21:56:38 +0100 (CET)
 Received: from me-wanadoo.net (localhost [127.0.0.1])
-	by mwinf3606.me.freeserve.com (SMTP Server) with ESMTP id 4E9D47000084
+	by mwinf3207.me.freeserve.com (SMTP Server) with ESMTP id DCFB37000086
 	for <alsa-devel@alsa-project.org>; Sat,  3 Jan 2009 21:56:37 +0100 (CET)
 Received: from RedDwarf.dadeos.co.uk (unknown [91.111.88.68])
-	by mwinf3606.me.freeserve.com (SMTP Server) with ESMTP id 21E607000083
+	by mwinf3207.me.freeserve.com (SMTP Server) with ESMTP id 637847000085
 	for <alsa-devel@alsa-project.org>; Sat,  3 Jan 2009 21:56:37 +0100 (CET)
 Received: from tuscan.dadeos.co.uk (tuscan.dadeos.co.uk [10.0.1.252])
-	by RedDwarf.dadeos.co.uk (8.14.3/8.14.2) with ESMTP id n03KuPmt031800
+	by RedDwarf.dadeos.co.uk (8.14.3/8.14.2) with ESMTP id n03KuaqG031803
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <alsa-devel@alsa-project.org>; Sat, 3 Jan 2009 20:56:26 GMT
+	for <alsa-devel@alsa-project.org>; Sat, 3 Jan 2009 20:56:36 GMT
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,16 +32,596 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Signed-off-by: Peter Stokes <linux@dadeos.co.uk>
 
-I have developed a new ALSA control plugin that I would like to be considered 
-for inclusion into the alsa-plugins package.
-
-The plugin is for exposing the controls of an Arcam AV amplifier attached to a 
-PC via an RS-232 null-modem cable.
-
-These patches are against the release source for alsa-plugins-1.0.18.
-
-Best regards
-
-Peter Stokes
+diff -Nrup alsa-plugins-1.0.18-orig/Makefile.am 
+alsa-plugins-1.0.18/Makefile.am
+--- alsa-plugins-1.0.18-orig/Makefile.am	2008-10-29 12:42:13.000000000 +0000
++++ alsa-plugins-1.0.18/Makefile.am	2009-01-02 22:22:26.000000000 +0000
+@@ -18,7 +18,7 @@ if HAVE_PPH
+ PPHDIR = pph
+ endif
+ 
+-SUBDIRS = oss mix $(PPHDIR) $(JACKDIR) $(PULSEDIR) $(SAMPLERATEDIR) $(A52DIR) 
+$(LAVCRATEDIR) $(MAEMODIR) usb_stream doc
++SUBDIRS = oss mix $(PPHDIR) $(JACKDIR) $(PULSEDIR) $(SAMPLERATEDIR) $(A52DIR) 
+$(LAVCRATEDIR) $(MAEMODIR) usb_stream arcam-av doc
+ EXTRA_DIST = gitcompile version COPYING.GPL
+ AUTOMAKE_OPTIONS = foreign
+ 
+diff -Nrup alsa-plugins-1.0.18-orig/Makefile.in 
+alsa-plugins-1.0.18/Makefile.in
+--- alsa-plugins-1.0.18-orig/Makefile.in	2008-10-29 12:47:44.000000000 +0000
++++ alsa-plugins-1.0.18/Makefile.in	2009-01-02 22:22:47.000000000 +0000
+@@ -61,7 +61,7 @@ RECURSIVE_TARGETS = all-recursive check-
+ ETAGS = etags
+ CTAGS = ctags
+ DIST_SUBDIRS = oss mix pph jack pulse rate a52 rate-lavc maemo \
+-	usb_stream doc
++	usb_stream arcam-av doc
+ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+ distdir = $(PACKAGE)-$(VERSION)
+ top_distdir = $(distdir)
+@@ -212,7 +212,7 @@ target_alias = @target_alias@
+ @HAVE_AVCODEC_TRUE@LAVCRATEDIR = rate-lavc
+ @HAVE_MAEMO_PLUGIN_TRUE@MAEMODIR = maemo
+ @HAVE_PPH_TRUE@PPHDIR = pph
+-SUBDIRS = oss mix $(PPHDIR) $(JACKDIR) $(PULSEDIR) $(SAMPLERATEDIR) $(A52DIR) 
+$(LAVCRATEDIR) $(MAEMODIR) usb_stream doc
++SUBDIRS = oss mix $(PPHDIR) $(JACKDIR) $(PULSEDIR) $(SAMPLERATEDIR) $(A52DIR) 
+$(LAVCRATEDIR) $(MAEMODIR) usb_stream arcam-av doc
+ EXTRA_DIST = gitcompile version COPYING.GPL
+ AUTOMAKE_OPTIONS = foreign
+ all: config.h
+diff -Nrup alsa-plugins-1.0.18-orig/arcam-av/Makefile.am 
+alsa-plugins-1.0.18/arcam-av/Makefile.am
+--- alsa-plugins-1.0.18-orig/arcam-av/Makefile.am	1970-01-01 
+01:00:00.000000000 +0100
++++ alsa-plugins-1.0.18/arcam-av/Makefile.am	2009-01-02 22:31:03.000000000 
++0000
+@@ -0,0 +1,9 @@
++asound_module_ctl_arcam_av_LTLIBRARIES = libasound_module_ctl_arcam_av.la
++
++asound_module_ctl_arcam_avdir = @ALSA_PLUGIN_DIR@
++
++AM_CFLAGS = -Wall -g @ALSA_CFLAGS@
++AM_LDFLAGS = -module -avoid-version -export-dynamic -no-undefined
++
++libasound_module_ctl_arcam_av_la_SOURCES = ctl_arcam_av.c arcam_av.c 
+arcam_av.h
++libasound_module_ctl_arcam_av_la_LIBADD = @ALSA_LIBS@
+diff -Nrup alsa-plugins-1.0.18-orig/arcam-av/Makefile.in 
+alsa-plugins-1.0.18/arcam-av/Makefile.in
+--- alsa-plugins-1.0.18-orig/arcam-av/Makefile.in	1970-01-01 
+01:00:00.000000000 +0100
++++ alsa-plugins-1.0.18/arcam-av/Makefile.in	2009-01-02 22:31:03.000000000 
++0000
+@@ -0,0 +1,495 @@
++# Makefile.in generated by automake 1.9.6 from Makefile.am.
++# @configure_input@
++
++# Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
++# 2003, 2004, 2005  Free Software Foundation, Inc.
++# This Makefile.in is free software; the Free Software Foundation
++# gives unlimited permission to copy and/or distribute it,
++# with or without modifications, as long as this notice is preserved.
++
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
++# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
++# PARTICULAR PURPOSE.
++
++@SET_MAKE@
++
++srcdir = @srcdir@
++top_srcdir = @top_srcdir@
++VPATH = @srcdir@
++pkgdatadir = $(datadir)/@PACKAGE@
++pkglibdir = $(libdir)/@PACKAGE@
++pkgincludedir = $(includedir)/@PACKAGE@
++top_builddir = ..
++am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
++INSTALL = @INSTALL@
++install_sh_DATA = $(install_sh) -c -m 644
++install_sh_PROGRAM = $(install_sh) -c
++install_sh_SCRIPT = $(install_sh) -c
++INSTALL_HEADER = $(INSTALL_DATA)
++transform = $(program_transform_name)
++NORMAL_INSTALL = :
++PRE_INSTALL = :
++POST_INSTALL = :
++NORMAL_UNINSTALL = :
++PRE_UNINSTALL = :
++POST_UNINSTALL = :
++build_triplet = @build@
++host_triplet = @host@
++subdir = arcam-av
++DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
++ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
++am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
++	$(top_srcdir)/configure.in
++am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
++	$(ACLOCAL_M4)
++mkinstalldirs = $(install_sh) -d
++CONFIG_HEADER = $(top_builddir)/config.h
++CONFIG_CLEAN_FILES =
++am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
++am__vpath_adj = case $$p in \
++    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
++    *) f=$$p;; \
++  esac;
++am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
++am__installdirs = "$(DESTDIR)$(asound_module_ctl_arcam_avdir)"
++asound_module_ctl_arcam_avLTLIBRARIES_INSTALL = $(INSTALL)
++LTLIBRARIES = $(asound_module_ctl_arcam_av_LTLIBRARIES)
++libasound_module_ctl_arcam_av_la_DEPENDENCIES =
++am_libasound_module_ctl_arcam_av_la_OBJECTS = ctl_arcam_av.lo \
++	arcam_av.lo
++libasound_module_ctl_arcam_av_la_OBJECTS =  \
++	$(am_libasound_module_ctl_arcam_av_la_OBJECTS)
++DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
++depcomp = $(SHELL) $(top_srcdir)/depcomp
++am__depfiles_maybe = depfiles
++COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
++	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
++LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
++	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
++	$(AM_CFLAGS) $(CFLAGS)
++CCLD = $(CC)
++LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
++	$(AM_LDFLAGS) $(LDFLAGS) -o $@
++SOURCES = $(libasound_module_ctl_arcam_av_la_SOURCES)
++DIST_SOURCES = $(libasound_module_ctl_arcam_av_la_SOURCES)
++ETAGS = etags
++CTAGS = ctags
++DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
++ACLOCAL = @ACLOCAL@
++ALSA_CFLAGS = @ALSA_CFLAGS@
++ALSA_LIBS = @ALSA_LIBS@
++ALSA_PLUGIN_DIR = @ALSA_PLUGIN_DIR@
++AMDEP_FALSE = @AMDEP_FALSE@
++AMDEP_TRUE = @AMDEP_TRUE@
++AMTAR = @AMTAR@
++AR = @AR@
++AUTOCONF = @AUTOCONF@
++AUTOHEADER = @AUTOHEADER@
++AUTOMAKE = @AUTOMAKE@
++AVCODEC_CFLAGS = @AVCODEC_CFLAGS@
++AVCODEC_LIBS = @AVCODEC_LIBS@
++AWK = @AWK@
++CC = @CC@
++CCDEPMODE = @CCDEPMODE@
++CFLAGS = @CFLAGS@
++CPP = @CPP@
++CPPFLAGS = @CPPFLAGS@
++CXX = @CXX@
++CXXCPP = @CXXCPP@
++CXXDEPMODE = @CXXDEPMODE@
++CXXFLAGS = @CXXFLAGS@
++CYGPATH_W = @CYGPATH_W@
++DBUS_CFLAGS = @DBUS_CFLAGS@
++DBUS_LIBS = @DBUS_LIBS@
++DEFS = @DEFS@
++DEPDIR = @DEPDIR@
++ECHO = @ECHO@
++ECHO_C = @ECHO_C@
++ECHO_N = @ECHO_N@
++ECHO_T = @ECHO_T@
++EGREP = @EGREP@
++EXEEXT = @EXEEXT@
++F77 = @F77@
++FFLAGS = @FFLAGS@
++GREP = @GREP@
++HAVE_AVCODEC_FALSE = @HAVE_AVCODEC_FALSE@
++HAVE_AVCODEC_TRUE = @HAVE_AVCODEC_TRUE@
++HAVE_JACK_FALSE = @HAVE_JACK_FALSE@
++HAVE_JACK_TRUE = @HAVE_JACK_TRUE@
++HAVE_MAEMO_PLUGIN_FALSE = @HAVE_MAEMO_PLUGIN_FALSE@
++HAVE_MAEMO_PLUGIN_TRUE = @HAVE_MAEMO_PLUGIN_TRUE@
++HAVE_PPH_FALSE = @HAVE_PPH_FALSE@
++HAVE_PPH_TRUE = @HAVE_PPH_TRUE@
++HAVE_PULSE_FALSE = @HAVE_PULSE_FALSE@
++HAVE_PULSE_TRUE = @HAVE_PULSE_TRUE@
++HAVE_SAMPLERATE_FALSE = @HAVE_SAMPLERATE_FALSE@
++HAVE_SAMPLERATE_TRUE = @HAVE_SAMPLERATE_TRUE@
++INSTALL_DATA = @INSTALL_DATA@
++INSTALL_PROGRAM = @INSTALL_PROGRAM@
++INSTALL_SCRIPT = @INSTALL_SCRIPT@
++INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
++JACK_CFLAGS = @JACK_CFLAGS@
++JACK_LIBS = @JACK_LIBS@
++LDFLAGS = @LDFLAGS@
++LIBOBJS = @LIBOBJS@
++LIBS = @LIBS@
++LIBTOOL = @LIBTOOL@
++LN_S = @LN_S@
++LTLIBOBJS = @LTLIBOBJS@
++MAKEINFO = @MAKEINFO@
++OBJEXT = @OBJEXT@
++PACKAGE = @PACKAGE@
++PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
++PACKAGE_NAME = @PACKAGE_NAME@
++PACKAGE_STRING = @PACKAGE_STRING@
++PACKAGE_TARNAME = @PACKAGE_TARNAME@
++PACKAGE_VERSION = @PACKAGE_VERSION@
++PATH_SEPARATOR = @PATH_SEPARATOR@
++PKG_CONFIG = @PKG_CONFIG@
++RANLIB = @RANLIB@
++SED = @SED@
++SET_MAKE = @SET_MAKE@
++SHELL = @SHELL@
++STRIP = @STRIP@
++USE_LIBSPEEX_FALSE = @USE_LIBSPEEX_FALSE@
++USE_LIBSPEEX_TRUE = @USE_LIBSPEEX_TRUE@
++VERSION = @VERSION@
++ac_ct_CC = @ac_ct_CC@
++ac_ct_CXX = @ac_ct_CXX@
++ac_ct_F77 = @ac_ct_F77@
++am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
++am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
++am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
++am__fastdepCXX_TRUE = @am__fastdepCXX_TRUE@
++am__include = @am__include@
++am__leading_dot = @am__leading_dot@
++am__quote = @am__quote@
++am__tar = @am__tar@
++am__untar = @am__untar@
++bindir = @bindir@
++build = @build@
++build_alias = @build_alias@
++build_cpu = @build_cpu@
++build_os = @build_os@
++build_vendor = @build_vendor@
++datadir = @datadir@
++datarootdir = @datarootdir@
++docdir = @docdir@
++dvidir = @dvidir@
++exec_prefix = @exec_prefix@
++host = @host@
++host_alias = @host_alias@
++host_cpu = @host_cpu@
++host_os = @host_os@
++host_vendor = @host_vendor@
++htmldir = @htmldir@
++includedir = @includedir@
++infodir = @infodir@
++install_sh = @install_sh@
++libdir = @libdir@
++libexecdir = @libexecdir@
++localedir = @localedir@
++localstatedir = @localstatedir@
++mandir = @mandir@
++mkdir_p = @mkdir_p@
++oldincludedir = @oldincludedir@
++pdfdir = @pdfdir@
++prefix = @prefix@
++program_transform_name = @program_transform_name@
++psdir = @psdir@
++pulseaudio_CFLAGS = @pulseaudio_CFLAGS@
++pulseaudio_LIBS = @pulseaudio_LIBS@
++samplerate_CFLAGS = @samplerate_CFLAGS@
++samplerate_LIBS = @samplerate_LIBS@
++sbindir = @sbindir@
++sharedstatedir = @sharedstatedir@
++speex_CFLAGS = @speex_CFLAGS@
++speex_LIBS = @speex_LIBS@
++sysconfdir = @sysconfdir@
++target_alias = @target_alias@
++asound_module_ctl_arcam_av_LTLIBRARIES = libasound_module_ctl_arcam_av.la
++asound_module_ctl_arcam_avdir = @ALSA_PLUGIN_DIR@
++AM_CFLAGS = -Wall -g @ALSA_CFLAGS@
++AM_LDFLAGS = -module -avoid-version -export-dynamic -no-undefined
++libasound_module_ctl_arcam_av_la_SOURCES = ctl_arcam_av.c arcam_av.c 
+arcam_av.h
++libasound_module_ctl_arcam_av_la_LIBADD = @ALSA_LIBS@
++all: all-am
++
++.SUFFIXES:
++.SUFFIXES: .c .lo .o .obj
++$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++	@for dep in $?; do \
++	  case '$(am__configure_deps)' in \
++	    *$$dep*) \
++	      cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh \
++		&& exit 0; \
++	      exit 1;; \
++	  esac; \
++	done; \
++	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  arcam-av/Makefile'; \
++	cd $(top_srcdir) && \
++	  $(AUTOMAKE) --foreign  arcam-av/Makefile
++.PRECIOUS: Makefile
++Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
++	@case '$?' in \
++	  *config.status*) \
++	    cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh;; \
++	  *) \
++	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ 
+$(am__depfiles_maybe)'; \
++	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ 
+$(am__depfiles_maybe);; \
++	esac;
++
++$(top_builddir)/config.status: $(top_srcdir)/configure 
+$(CONFIG_STATUS_DEPENDENCIES)
++	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
++
++$(top_srcdir)/configure:  $(am__configure_deps)
++	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
++$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
++install-asound_module_ctl_arcam_avLTLIBRARIES: 
+$(asound_module_ctl_arcam_av_LTLIBRARIES)
++	@$(NORMAL_INSTALL)
++	test -z "$(asound_module_ctl_arcam_avdir)" || 
+$(mkdir_p) "$(DESTDIR)$(asound_module_ctl_arcam_avdir)"
++	@list='$(asound_module_ctl_arcam_av_LTLIBRARIES)'; for p in $$list; do \
++	  if test -f $$p; then \
++	    f=$(am__strip_dir) \
++	    echo " $(LIBTOOL) --mode=install 
+$(asound_module_ctl_arcam_avLTLIBRARIES_INSTALL) 
+$(INSTALL_STRIP_FLAG) '$$p' '$(DESTDIR)$(asound_module_ctl_arcam_avdir)/$$f'"; 
+\
++	    $(LIBTOOL) --mode=install 
+$(asound_module_ctl_arcam_avLTLIBRARIES_INSTALL) 
+$(INSTALL_STRIP_FLAG) "$$p" "$(DESTDIR)$(asound_module_ctl_arcam_avdir)/$$f"; 
+\
++	  else :; fi; \
++	done
++
++uninstall-asound_module_ctl_arcam_avLTLIBRARIES:
++	@$(NORMAL_UNINSTALL)
++	@set -x; list='$(asound_module_ctl_arcam_av_LTLIBRARIES)'; for p in $$list; 
+do \
++	  p=$(am__strip_dir) \
++	  echo " $(LIBTOOL) --mode=uninstall 
+rm -f '$(DESTDIR)$(asound_module_ctl_arcam_avdir)/$$p'"; \
++	  $(LIBTOOL) --mode=uninstall 
+rm -f "$(DESTDIR)$(asound_module_ctl_arcam_avdir)/$$p"; \
++	done
++
++clean-asound_module_ctl_arcam_avLTLIBRARIES:
++	-test -z "$(asound_module_ctl_arcam_av_LTLIBRARIES)" || rm -f 
+$(asound_module_ctl_arcam_av_LTLIBRARIES)
++	@list='$(asound_module_ctl_arcam_av_LTLIBRARIES)'; for p in $$list; do \
++	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
++	  test "$$dir" != "$$p" || dir=.; \
++	  echo "rm -f \"$${dir}/so_locations\""; \
++	  rm -f "$${dir}/so_locations"; \
++	done
++libasound_module_ctl_arcam_av.la: $(libasound_module_ctl_arcam_av_la_OBJECTS) 
+$(libasound_module_ctl_arcam_av_la_DEPENDENCIES) 
++	$(LINK) -rpath $(asound_module_ctl_arcam_avdir) 
+$(libasound_module_ctl_arcam_av_la_LDFLAGS) 
+$(libasound_module_ctl_arcam_av_la_OBJECTS) 
+$(libasound_module_ctl_arcam_av_la_LIBADD) $(LIBS)
++
++mostlyclean-compile:
++	-rm -f *.$(OBJEXT)
++
++distclean-compile:
++	-rm -f *.tab.c
++
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arcam_av.Plo@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ctl_arcam_av.Plo@am__quote@
++
++.c.o:
++@am__fastdepCC_TRUE@	if $(COMPILE) -MT 
+$@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else 
+rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no 
+@AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+@AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(COMPILE) -c $<
++
++.c.obj:
++@am__fastdepCC_TRUE@	if $(COMPILE) -MT 
+$@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ `$(CYGPATH_W) '$<'`; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else 
+rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no 
+@AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+@AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
++
++.c.lo:
++@am__fastdepCC_TRUE@	if $(LTCOMPILE) -MT 
+$@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
++@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Plo"; else 
+rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes 
+@AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+@AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
++
++mostlyclean-libtool:
++	-rm -f *.lo
++
++clean-libtool:
++	-rm -rf .libs _libs
++
++distclean-libtool:
++	-rm -f libtool
++uninstall-info-am:
++
++ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
++	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
++	unique=`for i in $$list; do \
++	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
++	  done | \
++	  $(AWK) '    { files[$$0] = 1; } \
++	       END { for (i in files) print i; }'`; \
++	mkid -fID $$unique
++tags: TAGS
++
++TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
++		$(TAGS_FILES) $(LISP)
++	tags=; \
++	here=`pwd`; \
++	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
++	unique=`for i in $$list; do \
++	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
++	  done | \
++	  $(AWK) '    { files[$$0] = 1; } \
++	       END { for (i in files) print i; }'`; \
++	if test -z "$(ETAGS_ARGS)$$tags$$unique"; then :; else \
++	  test -n "$$unique" || unique=$$empty_fix; \
++	  $(ETAGS) $(ETAGSFLAGS) $(AM_ETAGSFLAGS) $(ETAGS_ARGS) \
++	    $$tags $$unique; \
++	fi
++ctags: CTAGS
++CTAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
++		$(TAGS_FILES) $(LISP)
++	tags=; \
++	here=`pwd`; \
++	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
++	unique=`for i in $$list; do \
++	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
++	  done | \
++	  $(AWK) '    { files[$$0] = 1; } \
++	       END { for (i in files) print i; }'`; \
++	test -z "$(CTAGS_ARGS)$$tags$$unique" \
++	  || $(CTAGS) $(CTAGSFLAGS) $(AM_CTAGSFLAGS) $(CTAGS_ARGS) \
++	     $$tags $$unique
++
++GTAGS:
++	here=`$(am__cd) $(top_builddir) && pwd` \
++	  && cd $(top_srcdir) \
++	  && gtags -i $(GTAGS_ARGS) $$here
++
++distclean-tags:
++	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
++
++distdir: $(DISTFILES)
++	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
++	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
++	list='$(DISTFILES)'; for file in $$list; do \
++	  case $$file in \
++	    $(srcdir)/*) file=`echo "$$file" | sed "s|^$$srcdirstrip/||"`;; \
++	    $(top_srcdir)/*) file=`echo "$$file" | sed "s|^$$topsrcdirstrip/|
+$(top_builddir)/|"`;; \
++	  esac; \
++	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
++	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
++	  if test "$$dir" != "$$file" && test "$$dir" != "."; then \
++	    dir="/$$dir"; \
++	    $(mkdir_p) "$(distdir)$$dir"; \
++	  else \
++	    dir=''; \
++	  fi; \
++	  if test -d $$d/$$file; then \
++	    if test -d $(srcdir)/$$file && test $$d != $(srcdir); then \
++	      cp -pR $(srcdir)/$$file $(distdir)$$dir || exit 1; \
++	    fi; \
++	    cp -pR $$d/$$file $(distdir)$$dir || exit 1; \
++	  else \
++	    test -f $(distdir)/$$file \
++	    || cp -p $$d/$$file $(distdir)/$$file \
++	    || exit 1; \
++	  fi; \
++	done
++check-am: all-am
++check: check-am
++all-am: Makefile $(LTLIBRARIES)
++installdirs:
++	for dir in "$(DESTDIR)$(asound_module_ctl_arcam_avdir)"; do \
++	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
++	done
++install: install-am
++install-exec: install-exec-am
++install-data: install-data-am
++uninstall: uninstall-am
++
++install-am: all-am
++	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
++
++installcheck: installcheck-am
++install-strip:
++	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
++	  install_sh_PROGRAM="$(INSTALL_STRIP_PROGRAM)" INSTALL_STRIP_FLAG=-s \
++	  `test -z '$(STRIP)' || \
++	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
++mostlyclean-generic:
++
++clean-generic:
++
++distclean-generic:
++	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
++
++maintainer-clean-generic:
++	@echo "This command is intended for maintainers to use"
++	@echo "it deletes files that may require special tools to rebuild."
++clean: clean-am
++
++clean-am: clean-asound_module_ctl_arcam_avLTLIBRARIES clean-generic \
++	clean-libtool mostlyclean-am
++
++distclean: distclean-am
++	-rm -rf ./$(DEPDIR)
++	-rm -f Makefile
++distclean-am: clean-am distclean-compile distclean-generic \
++	distclean-libtool distclean-tags
++
++dvi: dvi-am
++
++dvi-am:
++
++html: html-am
++
++info: info-am
++
++info-am:
++
++install-data-am: install-asound_module_ctl_arcam_avLTLIBRARIES
++
++install-exec-am:
++
++install-info: install-info-am
++
++install-man:
++
++installcheck-am:
++
++maintainer-clean: maintainer-clean-am
++	-rm -rf ./$(DEPDIR)
++	-rm -f Makefile
++maintainer-clean-am: distclean-am maintainer-clean-generic
++
++mostlyclean: mostlyclean-am
++
++mostlyclean-am: mostlyclean-compile mostlyclean-generic \
++	mostlyclean-libtool
++
++pdf: pdf-am
++
++pdf-am:
++
++ps: ps-am
++
++ps-am:
++
++uninstall-am: uninstall-asound_module_ctl_arcam_avLTLIBRARIES \
++	uninstall-info-am
++
++.PHONY: CTAGS GTAGS all all-am check check-am clean \
++	clean-asound_module_ctl_arcam_avLTLIBRARIES clean-generic \
++	clean-libtool ctags distclean distclean-compile \
++	distclean-generic distclean-libtool distclean-tags distdir dvi \
++	dvi-am html html-am info info-am install install-am \
++	install-asound_module_ctl_arcam_avLTLIBRARIES install-data \
++	install-data-am install-exec install-exec-am install-info \
++	install-info-am install-man install-strip installcheck \
++	installcheck-am installdirs maintainer-clean \
++	maintainer-clean-generic mostlyclean mostlyclean-compile \
++	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
++	tags uninstall uninstall-am \
++	uninstall-asound_module_ctl_arcam_avLTLIBRARIES \
++	uninstall-info-am
++
++# Tell versions [3.59,3.63) of GNU make to not export all variables.
++# Otherwise a system limit (for SysV at least) may be exceeded.
++.NOEXPORT:
