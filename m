@@ -1,114 +1,47 @@
-From: Julia Lawall <julia@diku.dk>
-Subject: [PATCH 2/2] sound/usb: Use negated usb_endpoint_xfer_control, etc
-Date: Sat, 3 Jan 2009 17:54:53 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0901031753120.9811@pc-004.diku.dk>
+From: Peter Stokes <linux@dadeos.co.uk>
+Subject: [PATCH 0/2] New Control Plugin - arcam-av
+Date: Sat, 3 Jan 2009 20:56:25 +0000
+Message-ID: <200901032056.25598.linux@dadeos.co.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S932601AbZACQzN@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, gregkh@suse.de, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp6.freeserve.com (unknown [193.252.22.191])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA4231037E3
+	for <alsa-devel@alsa-project.org>; Sat,  3 Jan 2009 21:56:37 +0100 (CET)
+Received: from me-wanadoo.net (localhost [127.0.0.1])
+	by mwinf3606.me.freeserve.com (SMTP Server) with ESMTP id 4E9D47000084
+	for <alsa-devel@alsa-project.org>; Sat,  3 Jan 2009 21:56:37 +0100 (CET)
+Received: from RedDwarf.dadeos.co.uk (unknown [91.111.88.68])
+	by mwinf3606.me.freeserve.com (SMTP Server) with ESMTP id 21E607000083
+	for <alsa-devel@alsa-project.org>; Sat,  3 Jan 2009 21:56:37 +0100 (CET)
+Received: from tuscan.dadeos.co.uk (tuscan.dadeos.co.uk [10.0.1.252])
+	by RedDwarf.dadeos.co.uk (8.14.3/8.14.2) with ESMTP id n03KuPmt031800
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <alsa-devel@alsa-project.org>; Sat, 3 Jan 2009 20:56:26 GMT
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Julia Lawall <julia@diku.dk>
+Hi,
 
-This patch extends 42a6e66f1e40a930d093c33ba0bb9d8d8e4555ed by using
-usb_endpoint_xfer_control, usb_endpoint_xfer_isoc, usb_endpoint_xfer_bulk,
-and usb_endpoint_xfer_int in the negated case as well.
+I have developed a new ALSA control plugin that I would like to be considered 
+for inclusion into the alsa-plugins package.
 
-This patch also rewrites some calls to usb_endpoint_dir_in as negated calls
-to !usb_endpoint_dir_out, and vice versa, to better correspond to the
-intent of the original code.
+The plugin is for exposing the controls of an Arcam AV amplifier attached to a 
+PC via an RS-232 null-modem cable.
 
-The semantic patch that makes this change is as follows:
-(http://www.emn.fr/x-info/coccinelle/)
+These patches are against the release source for alsa-plugins-1.0.18.
 
-// <smpl>
-@@ struct usb_endpoint_descriptor *epd; @@
+Best regards
 
-- (usb_endpoint_type(epd) != \(USB_ENDPOINT_XFER_CONTROL\|0\))
-+ !usb_endpoint_xfer_control(epd)
-
-@@ struct usb_endpoint_descriptor *epd; @@
-
-- (usb_endpoint_type(epd) != \(USB_ENDPOINT_XFER_ISOC\|1\))
-+ !usb_endpoint_xfer_isoc(epd)
-
-@@ struct usb_endpoint_descriptor *epd; @@
-
-- (usb_endpoint_type(epd) != \(USB_ENDPOINT_XFER_BULK\|2\))
-+ !usb_endpoint_xfer_bulk(epd)
-
-@@ struct usb_endpoint_descriptor *epd; @@
-
-- (usb_endpoint_type(epd) != \(USB_ENDPOINT_XFER_INT\|3\))
-+ !usb_endpoint_xfer_int(epd)
-// </smpl>
-
-Signed-off-by: Julia Lawall <julia@diku.dk>
-
----
-diff --git a/sound/usb/usbmidi.c b/sound/usb/usbmidi.c
-index 3a9a9fe..320641a 100644
---- a/sound/usb/usbmidi.c
-+++ b/sound/usb/usbmidi.c
-@@ -1392,8 +1392,7 @@ static int snd_usbmidi_get_ms_info(struct snd_usb_midi* umidi,
- 	for (i = 0; i < intfd->bNumEndpoints; ++i) {
- 		hostep = &hostif->endpoint[i];
- 		ep = get_ep_desc(hostep);
--		if (usb_endpoint_type(ep) != USB_ENDPOINT_XFER_BULK &&
--		    usb_endpoint_type(ep) != USB_ENDPOINT_XFER_INT)
-+		if (!usb_endpoint_xfer_bulk(ep) && !usb_endpoint_xfer_int(ep))
- 			continue;
- 		ms_ep = (struct usb_ms_endpoint_descriptor*)hostep->extra;
- 		if (hostep->extralen < 4 ||
-@@ -1495,8 +1494,8 @@ static int snd_usbmidi_detect_endpoints(struct snd_usb_midi* umidi,
- 
- 	for (i = 0; i < intfd->bNumEndpoints; ++i) {
- 		epd = get_endpoint(hostif, i);
--		if (usb_endpoint_type(epd) != USB_ENDPOINT_XFER_BULK &&
--		    usb_endpoint_type(epd) != USB_ENDPOINT_XFER_INT)
-+		if (!usb_endpoint_xfer_bulk(epd) &&
-+		    !usb_endpoint_xfer_int(epd))
- 			continue;
- 		if (out_eps < max_endpoints &&
- 		    usb_endpoint_dir_out(epd)) {
-@@ -1607,21 +1606,19 @@ static int snd_usbmidi_create_endpoints_midiman(struct snd_usb_midi* umidi,
- 	}
- 
- 	epd = get_endpoint(hostif, 0);
--	if (usb_endpoint_dir_out(epd) ||
--	    usb_endpoint_type(epd) != USB_ENDPOINT_XFER_INT) {
-+	if (!usb_endpoint_dir_in(epd) || !usb_endpoint_xfer_int(epd)) {
- 		snd_printdd(KERN_ERR "endpoint[0] isn't interrupt\n");
- 		return -ENXIO;
- 	}
- 	epd = get_endpoint(hostif, 2);
--	if (usb_endpoint_dir_in(epd) ||
--	    usb_endpoint_type(epd) != USB_ENDPOINT_XFER_BULK) {
-+	if (!usb_endpoint_dir_out(epd) || !usb_endpoint_xfer_bulk(epd)) {
- 		snd_printdd(KERN_ERR "endpoint[2] isn't bulk output\n");
- 		return -ENXIO;
- 	}
- 	if (endpoint->out_cables > 0x0001) {
- 		epd = get_endpoint(hostif, 4);
--		if (usb_endpoint_dir_in(epd) ||
--		    usb_endpoint_type(epd) != USB_ENDPOINT_XFER_BULK) {
-+		if (!usb_endpoint_dir_out(epd) ||
-+		    !usb_endpoint_xfer_bulk(epd)) {
- 			snd_printdd(KERN_ERR "endpoint[4] isn't bulk output\n");
- 			return -ENXIO;
- 		}
-diff --git a/sound/usb/usbmixer.c b/sound/usb/usbmixer.c
-index 9ce626f..00397c8 100644
---- a/sound/usb/usbmixer.c
-+++ b/sound/usb/usbmixer.c
-@@ -1755,8 +1755,7 @@ static int snd_usb_mixer_status_create(struct usb_mixer_interface *mixer)
- 	if (get_iface_desc(hostif)->bNumEndpoints < 1)
- 		return 0;
- 	ep = get_endpoint(hostif, 0);
--	if (usb_endpoint_dir_out(ep) ||
--	    usb_endpoint_type(ep) != USB_ENDPOINT_XFER_INT)
-+	if (!usb_endpoint_dir_in(ep) || !usb_endpoint_xfer_int(ep))
- 		return 0;
- 
- 	epnum = usb_endpoint_num(ep);
+Peter Stokes
