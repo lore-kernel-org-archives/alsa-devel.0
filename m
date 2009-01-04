@@ -1,21 +1,17 @@
-From: Andrea Borgia <andrea@borgia.bo.it>
-Subject: added support for remote in Toshiba SB0500
-Date: Sun, 04 Jan 2009 23:24:43 +0100
-Message-ID: <4961372B.1010905@borgia.bo.it>
+From: "Calad Sigilon" <calad.sigilon@gmail.com>
+Subject: Crackling instead of Audio
+Date: Sun, 4 Jan 2009 18:10:20 -0500
+Message-ID: <9ca3b4870901041510q7264fefv4aa05f7d62c836b2@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vsmtp4.tin.it (vsmtp4.tin.it [212.216.176.224])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1F3F21037F1
-	for <alsa-devel@alsa-project.org>; Sun,  4 Jan 2009 23:24:45 +0100 (CET)
-Received: from mononoke.chateaunet (79.2.57.216) by vsmtp4.tin.it (8.0.022)
-	id 48BEAB7B0744FC97 for alsa-devel@alsa-project.org;
-	Sun, 4 Jan 2009 23:24:43 +0100
-Received: from localhost.chateaunet ([127.0.0.1])
-	by mononoke with esmtp (Exim 4.69)
-	(envelope-from <andrea@borgia.bo.it>) id 1LJbOl-0002qQ-84
-	for alsa-devel@alsa-project.org; Sun, 04 Jan 2009 23:24:43 +0100
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id ACF3E1037F1
+	for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2009 00:10:21 +0100 (CET)
+Received: by yw-out-1718.google.com with SMTP id 9so2177957ywk.2
+	for <alsa-devel@alsa-project.org>; Sun, 04 Jan 2009 15:10:20 -0800 (PST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,21 +24,24 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+Got a bit of an interesting problem that #alsa wasn't able to help me
+solve - though gnubien did get me through a rigorous amount of
+debugging!
 
-I have a Toshiba SB-0500 (041e:3048), which is basically a USB hub plus
-ethernet card plus sound card with remote. As of alsa 1.0.18a / linux
-2.6.28 this beast is only partially supported by snd-usb-audio and, most
-importantly for me, the remote does not work (hub and ethernet are ok).
+No audio output - just crackling.  Using position_fix=1 seemed to work
+for one boot, but then never worked again.
 
-Considering the similarities with the SB 24 Live External and with the
-Audigy, I tried patching usbmixer.c and usbmixer_maps.c until I got it
-working with lirc's alsa_usb module. Please note that I didn't test
-mixer functionality and I have not much interest in that part for my use.
+Tried position_fix=1, position_fix=2, mode=vaio, no mode=vaio. No effect.
 
-What should I do to get my patches reviewed and possibly incorporated
-into the next version? The changes are rather trivial imho but still
-this is my first serious attempt at kernel hacking.
+Tried pci=nolapic, pci=noacpi, pci=irqpoll, pci=routeirq on the grub
+boot line. No effect.
 
-Thanks for your help,
-Andrea.
+Firewire is the only other thing on interrupt 21, and I don't use it.
+Tried blacklisting all modules so HDA Intel was the only thing on
+interrupt 21 - no effect.
+
+It is filed as Bug #4311, which has the alsa-info attached
+(https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=2818&type=bug)
+
+--
+CaladSigilon
