@@ -1,24 +1,18 @@
-From: Andrea Borgia <andrea@borgia.bo.it>
-Subject: Re: [PATCH - SB-0500 1/1] preliminary support
- for	Toshiba SB-0500 (remote works)
-Date: Mon, 05 Jan 2009 22:04:33 +0100
-Message-ID: <496275E1.5020409@borgia.bo.it>
-References: <s5hmye5pj7d.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC updates
+Date: Mon, 5 Jan 2009 21:09:18 +0000
+Message-ID: <20090105210918.GA21839@opensource.wolfsonmicro.com>
+References: <20090105175633.GA24696@rakim.wolfsonmicro.main>
+	<s5hocylpj9a.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vsmtp1.tin.it (vsmtp1.tin.it [212.216.176.141])
-	by alsa0.perex.cz (Postfix) with ESMTP id 03ABE103832
-	for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2009 22:04:34 +0100 (CET)
-Received: from mononoke.chateaunet (79.2.57.216) by vsmtp1.tin.it (8.0.022)
-	id 49467434012E3A5B for alsa-devel@alsa-project.org;
-	Mon, 5 Jan 2009 22:04:33 +0100
-Received: from localhost.chateaunet ([127.0.0.1])
-	by mononoke with esmtp (Exim 4.69)
-	(envelope-from <andrea@borgia.bo.it>) id 1LJwcj-0007vM-8j
-	for alsa-devel@alsa-project.org; Mon, 05 Jan 2009 22:04:33 +0100
-In-Reply-To: <s5hmye5pj7d.wl%tiwai@suse.de>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E6C02103835
+	for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2009 22:09:18 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hocylpj9a.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,24 +22,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+On Mon, Jan 05, 2009 at 09:53:21PM +0100, Takashi Iwai wrote:
 
-> Could you provide a bit description of the patch?
-> Otherwise the changes look good and trivial enough.
+> Are all these 2.6.30 material or for 2.6.29?
 
-The Toshiba SB-0500 is a rebranded version of the Creative Live24!
-External: it shares the same chipset and only has minor "cosmetic"
-differences.
+They're a bit on the edge, I'd expect them to be safe for 2.6.29 but the
+conservative thing would be to punt to 2.6.30.  None of them are
+critical.
 
-I have tested the remote (which was my main goal) and basic audio output
-seem to be ok. I am not at all certain that I got the mixer correctly
-figured out, that's why I am badging it "preliminary".
+> For 2.6.30, I'll create another branch.  It won't be included in
+> linux-next, too, until rc1 is reached (Stephen requested so), but we
+> can keep it in our main branch, of course.
 
-A more concise version for logging:
-"initial support for Toshiba SB-0500, a clone of Creative Live24!"
-
-BR,
-Andrea.
+How about branching off a fixes branch for 2.6.29 rather than a -next
+branch?  That way we can keep using the same branch for further fixes
+through the -rc series.  Doesn't make much difference either way,
+though.
