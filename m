@@ -1,15 +1,18 @@
-From: David Brownell <david-b@pacbell.net>
-Subject: [patch 2.6.28-git] ASoC: fix davinci-sffsdr buglet
-Date: Mon, 5 Jan 2009 02:08:30 -0800
-Message-ID: <200901050208.30918.david-b@pacbell.net>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ALSA: Add support for video out to the
+	jack reporting	API
+Date: Mon, 5 Jan 2009 10:40:45 +0000
+Message-ID: <20090105104044.GA13436@rakim.wolfsonmicro.main>
+References: <1231144642-7689-1-git-send-email-ext-jani.1.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp117.sbc.mail.sp1.yahoo.com (smtp117.sbc.mail.sp1.yahoo.com
-	[69.147.64.90]) by alsa0.perex.cz (Postfix) with SMTP id E53A01037FF
-	for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2009 11:08:34 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9E42C1037EE
+	for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2009 11:40:46 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <1231144642-7689-1-git-send-email-ext-jani.1.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,44 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
-Cc: Kevin Hilman <khilman@deeprootsystems.com>
+To: Jani Nikula <ext-jani.1.nikula@nokia.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, dmitry.torokhov@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-From: David Brownell <dbrownell@users.sourceforge.net>
+On Mon, Jan 05, 2009 at 10:37:22AM +0200, Jani Nikula wrote:
+> Add support for reporting new jack types SND_JACK_VIDEOOUT and
+> SND_JACK_AVOUT (a combination of LINEOUT and VIDEOOUT) to the jack
+> reporting API.
 
-DaVinci ASoC: fix multiboard buglet
+> Also add the corresponding SW_VIDEOOUT_INSERT switch to the input system
+> header.
 
-Minor bugfix:  now that DaVinci kernels can support multiple
-boards, board-specific ASoC components need to verify they're
-running on the right board before initializing.
+> Signed-off-by: Jani Nikula <ext-jani.1.nikula@nokia.com>
 
-Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
-Signed-off-by: Kevin Hilman <khilman@deeprootsystems.com>
----
->From the DaVinci tree ... didn't realize davinci-sffsdr.c
-was already queued for mainline.
-
- sound/soc/davinci/davinci-sffsdr.c |    4 ++++
- 1 file changed, 4 insertions(+)
-
---- a/sound/soc/davinci/davinci-sffsdr.c
-+++ b/sound/soc/davinci/davinci-sffsdr.c
-@@ -24,6 +24,7 @@
- #include <sound/soc-dapm.h>
- 
- #include <asm/dma.h>
-+#include <asm/mach-types.h>
- #include <asm/plat-sffsdr/sffsdr-fpga.h>
- 
- #include <mach/mcbsp.h>
-@@ -115,6 +116,9 @@ static int __init sffsdr_init(void)
- {
- 	int ret;
- 
-+	if (!machine_is_sffsdr())
-+		return -EINVAL;
-+
- 	sffsdr_snd_device = platform_device_alloc("soc-audio", 0);
- 	if (!sffsdr_snd_device) {
- 		printk(KERN_ERR "platform device allocation failed\n");
+Could you please regenerate this against the topic/jack-core branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git?
+I've redone the way the ALSA idea of jacks is mapped to the input layer.
