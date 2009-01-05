@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] pxa2xx-ac97: switch AC unit to
-	correct	state before probing
-Date: Mon, 5 Jan 2009 10:58:05 +0000
-Message-ID: <20090105105805.GA22459@rakim.wolfsonmicro.main>
-References: <1231149486-32377-1-git-send-email-dbaryshkov@gmail.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [patch 2.6.28-git] ASoC: fix davinci-sffsdr buglet
+Date: Mon, 5 Jan 2009 11:04:12 +0000
+Message-ID: <20090105110359.GA28006@sirena.org.uk>
+References: <200901050208.30918.david-b@pacbell.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8F7A21037EE
-	for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2009 11:58:06 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id A5CA61037EE
+	for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2009 12:04:15 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1231149486-32377-1-git-send-email-dbaryshkov@gmail.com>
+In-Reply-To: <200901050208.30918.david-b@pacbell.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,18 +21,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: David Brownell <david-b@pacbell.net>
+Cc: Kevin Hilman <khilman@deeprootsystems.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 05, 2009 at 12:58:06PM +0300, Dmitry Eremin-Solenikov wrote:
-> From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+On Mon, Jan 05, 2009 at 02:08:30AM -0800, David Brownell wrote:
+> From: David Brownell <dbrownell@users.sourceforge.net>
 
-> If AC97 unit is in partially enabled state, early request_irq can trigger
-> IRQ storm or even full hang up. Workaround this by forcibly switching ACLINK off
-> at the start of the probe.
+> DaVinci ASoC: fix multiboard buglet
 
-> Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+> Minor bugfix:  now that DaVinci kernels can support multiple
+> boards, board-specific ASoC components need to verify they're
+> running on the right board before initializing.
 
-Applied, thanks.  I guess some of your scripts need updating for your
-name change after your wedding, though?
+Applied, thanks (note that you seem to have multiple subject lines in
+there, BTW).
