@@ -1,18 +1,24 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: PCM parameters in file plugin
-Date: Mon, 05 Jan 2009 21:54:45 +0100
-Message-ID: <49627395.1090506@insite.cz>
+From: Andrea Borgia <andrea@borgia.bo.it>
+Subject: Re: [PATCH - SB-0500 1/1] preliminary support
+ for	Toshiba SB-0500 (remote works)
+Date: Mon, 05 Jan 2009 22:04:33 +0100
+Message-ID: <496275E1.5020409@borgia.bo.it>
+References: <s5hmye5pj7d.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9466E103841
-	for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2009 21:54:51 +0100 (CET)
-Received: from [192.168.105.213] (ap-dustin.bobrnet.cz [10.109.8.38])
-	by mailserver.bobrnet.net (8.13.8/8.13.8/Debian-3) with ESMTP id
-	n05Kso4u010378
-	for <alsa-devel@alsa-project.org>; Mon, 5 Jan 2009 21:54:50 +0100
+Received: from vsmtp1.tin.it (vsmtp1.tin.it [212.216.176.141])
+	by alsa0.perex.cz (Postfix) with ESMTP id 03ABE103832
+	for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2009 22:04:34 +0100 (CET)
+Received: from mononoke.chateaunet (79.2.57.216) by vsmtp1.tin.it (8.0.022)
+	id 49467434012E3A5B for alsa-devel@alsa-project.org;
+	Mon, 5 Jan 2009 22:04:33 +0100
+Received: from localhost.chateaunet ([127.0.0.1])
+	by mononoke with esmtp (Exim 4.69)
+	(envelope-from <andrea@borgia.bo.it>) id 1LJwcj-0007vM-8j
+	for alsa-devel@alsa-project.org; Mon, 05 Jan 2009 22:04:33 +0100
+In-Reply-To: <s5hmye5pj7d.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,15 +31,21 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Takashi Iwai wrote:
 
-I am working on a file plugin patch to allow adding PCM parameters 
-(rate, format) to  the name of the file created (plus the ability to run 
-an external command via popen, such as upsampling with sox). I got stuck 
-in trying to obtain these parameters in pcm_file.c:_snd_pcm_file_open(). 
-Is it actually possible or the information is not available at the time 
-of opening the file (and the whole patch is thus nonsense)?
+> Could you provide a bit description of the patch?
+> Otherwise the changes look good and trivial enough.
 
-Thanks a lot for help.
+The Toshiba SB-0500 is a rebranded version of the Creative Live24!
+External: it shares the same chipset and only has minor "cosmetic"
+differences.
 
-Pavel.
+I have tested the remote (which was my main goal) and basic audio output
+seem to be ok. I am not at all certain that I got the mixer correctly
+figured out, that's why I am badging it "preliminary".
+
+A more concise version for logging:
+"initial support for Toshiba SB-0500, a clone of Creative Live24!"
+
+BR,
+Andrea.
