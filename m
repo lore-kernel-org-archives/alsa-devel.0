@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] Add AC'97 driver for AT91SAM9263ek atmel
-	board.
-Date: Mon, 5 Jan 2009 17:39:19 +0000
-Message-ID: <20090105173918.GD29853@sirena.org.uk>
-References: <48E3A42C.6090202@atmel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates
+Date: Mon, 5 Jan 2009 17:56:34 +0000
+Message-ID: <20090105175633.GA24696@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2DC461037FD
-	for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2009 18:39:20 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EEF4E10380B
+	for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2009 18:56:34 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <48E3A42C.6090202@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,43 +19,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 01, 2008 at 06:24:12PM +0200, Sedji Gaouaou wrote:
+The following changes since commit cad9d90ec3f6c497dce2b163046436b6ab5cf6b6:
+  Takashi Iwai (1):
+        Merge branch 'fixes' of git://git.kernel.org/.../broonie/sound-2.6 into topic/asoc
 
-> Add AC'97 driver for AT91SAM9263ek atmel board.
-> The driver includes the playback and the capture.
+are available in the git repository at:
 
-Could this be written so that it'd also work with the AT32 CPUs?  It
-certainly has some similarities to the out of tree AC97 driver in the
-AVR32 kernels.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-tiwai
 
-> +static void snd_at91_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
-> +				 unsigned short val)
-> +{
-> +	do {
-> +		if (ac97c_readl(chip, COSR) & AT91C_AC97C_TXRDY) {
-> +			ac97c_writel(chip, COTHR, word);
-> +			return;
-> +		}
-> +		udelay(1);
-> +	} while (--timeout);
+David Brownell (1):
+      ASoC: Clocking fixes for davinci-evm.c
 
-Using udelay() might get rather expensive if you end up with a lot of
-AC97 register access going on.  It's not common for plain audio stuff
-but there are AC97 codecs with additional functionality such as
-touchscreen interfaces which do a lot more register I/O.  A similar
-issue affected the AVR32 driver, I've no idea if it was fixed there (I
-know there was code to fix it, but I don't know if it was merged).
+Dmitry Baryshkov (1):
+      pxa2xx-ac97: switch AC unit to correct state before probing
 
-> +#define ac97c_writel(chip, reg, val)			\
-> +	writel((val), (chip)->regs + AC97C_##reg)
-> +
-> +#define ac97c_readl(chip, reg)				\
-> +	readl((chip)->regs + AC97C_##reg)
+Grazvydas Ignotas (1):
+      ASoC: Mark non-connected TWL4030 pins for pandora
 
-There's a bit of a namespacing issue here - might be better to give them
-a more at91-specific name.  It'd also be nicer to use inline functions
-rather than macros.
+Jarkko Nikula (1):
+      ASoC: OMAP: Select OMAP pin multiplexing when using Nokia N810 ASoC drivers
+
+Peter Ujfalusi (2):
+      ASoC: New enum type: value_enum
+      ASoC: TWL4030: Convert the bitfield enums to VALUE_ENUM type
+
+ include/sound/soc-dapm.h        |   15 +++
+ include/sound/soc.h             |   30 ++++++
+ sound/arm/pxa2xx-ac97-lib.c     |   25 +++--
+ sound/soc/codecs/twl4030.c      |  118 +++++++++++-------------
+ sound/soc/davinci/davinci-evm.c |   19 +++-
+ sound/soc/omap/Kconfig          |    1 +
+ sound/soc/omap/omap3pandora.c   |   13 +++
+ sound/soc/soc-core.c            |  107 +++++++++++++++++++++
+ sound/soc/soc-dapm.c            |  197 ++++++++++++++++++++++++++++++++++++++-
+ 9 files changed, 447 insertions(+), 78 deletions(-)
