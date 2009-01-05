@@ -1,16 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Bug 3312 -DSP2000 MIDI In
-Date: Mon, 5 Jan 2009 12:56:53 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0901051256370.8273@tm8103.perex-int.cz>
-References: <200901051157.15688.gineera@aspect135.co.uk>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 0/2] ASoC: New enum type for bitfield coded
+	enums
+Date: Mon, 5 Jan 2009 14:17:13 +0000
+Message-ID: <20090105141712.GA29853@sirena.org.uk>
+References: <1231142098-16886-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id AB51810380F
-	for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2009 12:56:53 +0100 (CET)
-In-Reply-To: <200901051157.15688.gineera@aspect135.co.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 91A6C1037FD
+	for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2009 15:17:14 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1231142098-16886-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,20 +22,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 5 Jan 2009, Alan Horstmann wrote:
+On Mon, Jan 05, 2009 at 09:54:56AM +0200, Peter Ujfalusi wrote:
 
-> This is the 4th bug on the same issue (which is fixed) -see 0055, 1161, 1846.  
-> I've added a note; perhaps it could be set resolved or closed?
+> Technically it could be possible to add the new members (mask, *values) to the
+> existing soc_enum structure, which could reduce the amount of new code needed to
+> handle this new type. At least the snd_soc_info_value_enum_double,
+> dapm_connect_value_mux, dapm_value_mux_update_power functions can be removed if
+> I modify the soc_enum instead of introducing the new soc_value_enum.
 
-Marked as duplicate now. Thanks.
-
-					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Appled both, thanks.  It'd be good to merge the implementation of the
+new type as you say above but that doesn't affect the external interface
+so can easily be done as a later patch.
