@@ -1,18 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 2/2] ASoC: TWL4030: Convert the bitfield enums
-	to VALUE_ENUM type
-Date: Mon,  5 Jan 2009 09:54:58 +0200
-Message-ID: <1231142098-16886-3-git-send-email-peter.ujfalusi@nokia.com>
-References: <1231142098-16886-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1231142098-16886-2-git-send-email-peter.ujfalusi@nokia.com>
+From: Jani Nikula <ext-jani.1.nikula@nokia.com>
+Subject: [PATCH] ALSA: Add support for video out to the jack
+	reporting API
+Date: Mon,  5 Jan 2009 10:37:22 +0200
+Message-ID: <1231144642-7689-1-git-send-email-ext-jani.1.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4D0452415D
-	for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2009 08:55:14 +0100 (CET)
-In-Reply-To: <1231142098-16886-2-git-send-email-peter.ujfalusi@nokia.com>
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 64B5424341
+	for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2009 09:37:05 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,204 +20,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>, broonie@sirena.org.uk, lrg@slimlogic.co.uk
+Cc: tiwai@suse.de, broonie@opensource.wolfsonmicro.com, dmitry.torokhov@gmail.com, ext-jani.1.nikula@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-Convert the bitfield coded enums to the new VALUE_ENUM type.
-Remove the enum check, since the VALUE_ENUM type can handle
-the bitfield coding and also handles the 'holes' in the bitfield.
+Add support for reporting new jack types SND_JACK_VIDEOOUT and
+SND_JACK_AVOUT (a combination of LINEOUT and VIDEOOUT) to the jack
+reporting API.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Also add the corresponding SW_VIDEOOUT_INSERT switch to the input system
+header.
+
+Signed-off-by: Jani Nikula <ext-jani.1.nikula@nokia.com>
 ---
- sound/soc/codecs/twl4030.c |  118 ++++++++++++++++++++-----------------------
- 1 files changed, 55 insertions(+), 63 deletions(-)
+ include/linux/input.h |    1 +
+ include/sound/jack.h  |    2 ++
+ sound/core/jack.c     |    6 ++++++
+ 3 files changed, 9 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 31e44e3..fd0f338 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -192,39 +192,51 @@ static void twl4030_init_chip(struct snd_soc_codec *codec)
+diff --git a/include/linux/input.h b/include/linux/input.h
+index 9a6355f..adc1332 100644
+--- a/include/linux/input.h
++++ b/include/linux/input.h
+@@ -661,6 +661,7 @@ struct input_absinfo {
+ #define SW_DOCK			0x05  /* set = plugged into dock */
+ #define SW_LINEOUT_INSERT	0x06  /* set = inserted */
+ #define SW_JACK_PHYSICAL_INSERT 0x07  /* set = mechanical switch set */
++#define SW_VIDEOOUT_INSERT	0x08  /* set = inserted */
+ #define SW_MAX			0x0f
+ #define SW_CNT			(SW_MAX+1)
  
- /* Earpiece */
- static const char *twl4030_earpiece_texts[] =
--		{"Off", "DACL1", "DACL2", "Invalid", "DACR1"};
-+		{"Off", "DACL1", "DACL2", "DACR1"};
+diff --git a/include/sound/jack.h b/include/sound/jack.h
+index 2e0315c..283c975 100644
+--- a/include/sound/jack.h
++++ b/include/sound/jack.h
+@@ -37,6 +37,8 @@ enum snd_jack_types {
+ 	SND_JACK_HEADSET	= SND_JACK_HEADPHONE | SND_JACK_MICROPHONE,
+ 	SND_JACK_LINEOUT	= 0x0004,
+ 	SND_JACK_MECHANICAL	= 0x0008, /* If detected separately */
++	SND_JACK_VIDEOOUT	= 0x0010,
++	SND_JACK_AVOUT		= SND_JACK_LINEOUT | SND_JACK_VIDEOOUT,
+ };
  
--static const struct soc_enum twl4030_earpiece_enum =
--	SOC_ENUM_SINGLE(TWL4030_REG_EAR_CTL, 1,
-+static const unsigned int twl4030_earpiece_values[] =
-+		{0x0, 0x1, 0x2, 0x4};
-+
-+static const struct soc_value_enum twl4030_earpiece_enum =
-+	SOC_VALUE_ENUM_SINGLE(TWL4030_REG_EAR_CTL, 1, 0x7,
- 			ARRAY_SIZE(twl4030_earpiece_texts),
--			twl4030_earpiece_texts);
-+			twl4030_earpiece_texts,
-+			twl4030_earpiece_values);
- 
- static const struct snd_kcontrol_new twl4030_dapm_earpiece_control =
--SOC_DAPM_ENUM("Route", twl4030_earpiece_enum);
-+SOC_DAPM_VALUE_ENUM("Route", twl4030_earpiece_enum);
- 
- /* PreDrive Left */
- static const char *twl4030_predrivel_texts[] =
--		{"Off", "DACL1", "DACL2", "Invalid", "DACR2"};
-+		{"Off", "DACL1", "DACL2", "DACR2"};
-+
-+static const unsigned int twl4030_predrivel_values[] =
-+		{0x0, 0x1, 0x2, 0x4};
- 
--static const struct soc_enum twl4030_predrivel_enum =
--	SOC_ENUM_SINGLE(TWL4030_REG_PREDL_CTL, 1,
-+static const struct soc_value_enum twl4030_predrivel_enum =
-+	SOC_VALUE_ENUM_SINGLE(TWL4030_REG_PREDL_CTL, 1, 0x7,
- 			ARRAY_SIZE(twl4030_predrivel_texts),
--			twl4030_predrivel_texts);
-+			twl4030_predrivel_texts,
-+			twl4030_predrivel_values);
- 
- static const struct snd_kcontrol_new twl4030_dapm_predrivel_control =
--SOC_DAPM_ENUM("Route", twl4030_predrivel_enum);
-+SOC_DAPM_VALUE_ENUM("Route", twl4030_predrivel_enum);
- 
- /* PreDrive Right */
- static const char *twl4030_predriver_texts[] =
--		{"Off", "DACR1", "DACR2", "Invalid", "DACL2"};
-+		{"Off", "DACR1", "DACR2", "DACL2"};
- 
--static const struct soc_enum twl4030_predriver_enum =
--	SOC_ENUM_SINGLE(TWL4030_REG_PREDR_CTL, 1,
-+static const unsigned int twl4030_predriver_values[] =
-+		{0x0, 0x1, 0x2, 0x4};
-+
-+static const struct soc_value_enum twl4030_predriver_enum =
-+	SOC_VALUE_ENUM_SINGLE(TWL4030_REG_PREDR_CTL, 1, 0x7,
- 			ARRAY_SIZE(twl4030_predriver_texts),
--			twl4030_predriver_texts);
-+			twl4030_predriver_texts,
-+			twl4030_predriver_values);
- 
- static const struct snd_kcontrol_new twl4030_dapm_predriver_control =
--SOC_DAPM_ENUM("Route", twl4030_predriver_enum);
-+SOC_DAPM_VALUE_ENUM("Route", twl4030_predriver_enum);
- 
- /* Headset Left */
- static const char *twl4030_hsol_texts[] =
-@@ -300,28 +312,35 @@ SOC_DAPM_ENUM("Route", twl4030_handsfreer_enum);
- 
- /* Left analog microphone selection */
- static const char *twl4030_analoglmic_texts[] =
--		{"Off", "Main mic", "Headset mic", "Invalid", "AUXL",
--		 "Invalid", "Invalid", "Invalid", "Carkit mic"};
-+		{"Off", "Main mic", "Headset mic", "AUXL", "Carkit mic"};
-+
-+static const unsigned int twl4030_analoglmic_values[] =
-+		{0x0, 0x1, 0x2, 0x4, 0x8};
- 
--static const struct soc_enum twl4030_analoglmic_enum =
--	SOC_ENUM_SINGLE(TWL4030_REG_ANAMICL, 0,
-+static const struct soc_value_enum twl4030_analoglmic_enum =
-+	SOC_VALUE_ENUM_SINGLE(TWL4030_REG_ANAMICL, 0, 0xf,
- 			ARRAY_SIZE(twl4030_analoglmic_texts),
--			twl4030_analoglmic_texts);
-+			twl4030_analoglmic_texts,
-+			twl4030_analoglmic_values);
- 
- static const struct snd_kcontrol_new twl4030_dapm_analoglmic_control =
--SOC_DAPM_ENUM("Route", twl4030_analoglmic_enum);
-+SOC_DAPM_VALUE_ENUM("Route", twl4030_analoglmic_enum);
- 
- /* Right analog microphone selection */
- static const char *twl4030_analogrmic_texts[] =
--		{"Off", "Sub mic", "Invalid", "Invalid", "AUXR"};
-+		{"Off", "Sub mic", "AUXR"};
- 
--static const struct soc_enum twl4030_analogrmic_enum =
--	SOC_ENUM_SINGLE(TWL4030_REG_ANAMICR, 0,
-+static const unsigned int twl4030_analogrmic_values[] =
-+		{0x0, 0x1, 0x4};
-+
-+static const struct soc_value_enum twl4030_analogrmic_enum =
-+	SOC_VALUE_ENUM_SINGLE(TWL4030_REG_ANAMICR, 0, 0x5,
- 			ARRAY_SIZE(twl4030_analogrmic_texts),
--			twl4030_analogrmic_texts);
-+			twl4030_analogrmic_texts,
-+			twl4030_analogrmic_values);
- 
- static const struct snd_kcontrol_new twl4030_dapm_analogrmic_control =
--SOC_DAPM_ENUM("Route", twl4030_analogrmic_enum);
-+SOC_DAPM_VALUE_ENUM("Route", twl4030_analogrmic_enum);
- 
- /* TX1 L/R Analog/Digital microphone selection */
- static const char *twl4030_micpathtx1_texts[] =
-@@ -347,28 +366,6 @@ static const struct soc_enum twl4030_micpathtx2_enum =
- static const struct snd_kcontrol_new twl4030_dapm_micpathtx2_control =
- SOC_DAPM_ENUM("Route", twl4030_micpathtx2_enum);
- 
--/*
-- * This function filters out the non valid mux settings, named as "Invalid"
-- * in the enum texts.
-- * Just refuse to set an invalid mux mode.
-- */
--static int twl4030_enum_event(struct snd_soc_dapm_widget *w,
--	struct snd_kcontrol *kcontrol, int event)
--{
--	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
--	int ret = 0;
--	int val;
--
--	val = w->value >> e->shift_l;
--	if (!strcmp("Invalid", e->texts[val])) {
--		printk(KERN_WARNING "Invalid MUX setting on 0x%02x (%d)\n",
--			e->reg, val);
--		ret = -1;
--	}
--
--	return ret;
--}
--
- static int micpath_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
-@@ -737,16 +734,13 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 
- 	/* Output MUX controls */
- 	/* Earpiece */
--	SND_SOC_DAPM_MUX_E("Earpiece Mux", SND_SOC_NOPM, 0, 0,
--		&twl4030_dapm_earpiece_control, twl4030_enum_event,
--		SND_SOC_DAPM_PRE_REG),
-+	SND_SOC_DAPM_VALUE_MUX("Earpiece Mux", SND_SOC_NOPM, 0, 0,
-+		&twl4030_dapm_earpiece_control),
- 	/* PreDrivL/R */
--	SND_SOC_DAPM_MUX_E("PredriveL Mux", SND_SOC_NOPM, 0, 0,
--		&twl4030_dapm_predrivel_control, twl4030_enum_event,
--		SND_SOC_DAPM_PRE_REG),
--	SND_SOC_DAPM_MUX_E("PredriveR Mux", SND_SOC_NOPM, 0, 0,
--		&twl4030_dapm_predriver_control, twl4030_enum_event,
--		SND_SOC_DAPM_PRE_REG),
-+	SND_SOC_DAPM_VALUE_MUX("PredriveL Mux", SND_SOC_NOPM, 0, 0,
-+		&twl4030_dapm_predrivel_control),
-+	SND_SOC_DAPM_VALUE_MUX("PredriveR Mux", SND_SOC_NOPM, 0, 0,
-+		&twl4030_dapm_predriver_control),
- 	/* HeadsetL/R */
- 	SND_SOC_DAPM_MUX("HeadsetL Mux", SND_SOC_NOPM, 0, 0,
- 		&twl4030_dapm_hsol_control),
-@@ -789,12 +783,10 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 		SND_SOC_DAPM_POST_REG),
- 
- 	/* Analog input muxes with power switch for the physical ADCL/R */
--	SND_SOC_DAPM_MUX_E("Analog Left Capture Route",
--		TWL4030_REG_AVADC_CTL, 3, 0, &twl4030_dapm_analoglmic_control,
--		twl4030_enum_event, SND_SOC_DAPM_PRE_REG),
--	SND_SOC_DAPM_MUX_E("Analog Right Capture Route",
--		TWL4030_REG_AVADC_CTL, 1, 0, &twl4030_dapm_analogrmic_control,
--		twl4030_enum_event, SND_SOC_DAPM_PRE_REG),
-+	SND_SOC_DAPM_VALUE_MUX("Analog Left Capture Route",
-+		TWL4030_REG_AVADC_CTL, 3, 0, &twl4030_dapm_analoglmic_control),
-+	SND_SOC_DAPM_VALUE_MUX("Analog Right Capture Route",
-+		TWL4030_REG_AVADC_CTL, 1, 0, &twl4030_dapm_analogrmic_control),
- 
- 	SND_SOC_DAPM_PGA("Analog Left Amplifier",
- 		TWL4030_REG_ANAMICL, 4, 0, NULL, 0),
+ struct snd_jack {
+diff --git a/sound/core/jack.c b/sound/core/jack.c
+index dd4a12d..e1de195 100644
+--- a/sound/core/jack.c
++++ b/sound/core/jack.c
+@@ -106,6 +106,9 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
+ 	if (type & SND_JACK_LINEOUT)
+ 		input_set_capability(jack->input_dev, EV_SW,
+ 				     SW_LINEOUT_INSERT);
++	if (type & SND_JACK_VIDEOOUT)
++		input_set_capability(jack->input_dev, EV_SW,
++				     SW_VIDEOOUT_INSERT);
+ 	if (type & SND_JACK_MICROPHONE)
+ 		input_set_capability(jack->input_dev, EV_SW,
+ 				     SW_MICROPHONE_INSERT);
+@@ -163,6 +166,9 @@ void snd_jack_report(struct snd_jack *jack, int status)
+ 	if (jack->type & SND_JACK_LINEOUT)
+ 		input_report_switch(jack->input_dev, SW_LINEOUT_INSERT,
+ 				    status & SND_JACK_LINEOUT);
++	if (jack->type & SND_JACK_VIDEOOUT)
++		input_report_switch(jack->input_dev, SW_VIDEOOUT_INSERT,
++				    status & SND_JACK_VIDEOOUT);
+ 	if (jack->type & SND_JACK_MICROPHONE)
+ 		input_report_switch(jack->input_dev, SW_MICROPHONE_INSERT,
+ 				    status & SND_JACK_MICROPHONE);
 -- 
-1.6.0.6
+1.6.0.4
