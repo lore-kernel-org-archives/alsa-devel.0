@@ -1,14 +1,21 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Bug 2552 typo in ice1724.c
-Date: Mon, 5 Jan 2009 11:29:21 +0000
-Message-ID: <200901051129.21564.gineera@aspect135.co.uk>
+From: "Dmitry Eremin-Solenikov" <dbaryshkov@gmail.com>
+Subject: Re: [PATCH] pxa2xx-ac97: switch AC unit to correct
+	state before probing
+Date: Mon, 5 Jan 2009 14:26:43 +0300
+Message-ID: <bc64b4640901050326l6dfb7331q1538c05bf3dd5d9b@mail.gmail.com>
+References: <1231149486-32377-1-git-send-email-dbaryshkov@gmail.com>
+	<20090105105805.GA22459@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_R8eYJBzeO9xZPnk"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.talktalk.net (smtp-out-3.talktalk.net [62.24.128.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 35D0C103801
-	for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2009 12:16:40 +0100 (CET)
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.250])
+	by alsa0.perex.cz (Postfix) with ESMTP id 49F8C1037FD
+	for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2009 12:26:44 +0100 (CET)
+Received: by an-out-0708.google.com with SMTP id b2so2096296ana.2
+	for <alsa-devel@alsa-project.org>; Mon, 05 Jan 2009 03:26:43 -0800 (PST)
+In-Reply-To: <20090105105805.GA22459@rakim.wolfsonmicro.main>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,75 +25,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+2009/1/5 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+> On Mon, Jan 05, 2009 at 12:58:06PM +0300, Dmitry Eremin-Solenikov wrote:
+>> From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+>
+>> If AC97 unit is in partially enabled state, early request_irq can trigger
+>> IRQ storm or even full hang up. Workaround this by forcibly switching ACLINK off
+>> at the start of the probe.
+>
+>> Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+>
+> Applied, thanks.  I guess some of your scripts need updating for your
+> name change after your wedding, though?
+>
 
---Boundary-00=_R8eYJBzeO9xZPnk
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Nah, I just didn't resign/recommit all old patches, so they still bear
+my old surname.
 
-Hi,
-
-I noticed this trivial typo report on bugtrack, -no 2552 and thought it may as 
-well be fixed, and the bug closed.  Patch inline & attached.  Not sure if it 
-needs a sign-off?
-
-Alan
-
-ice1724.c-name-typo-fix.diff
-
-Fix trivial name string typo as reported in bug 2552
-
-Signed-off-by: Alan Horstmann <gineera@aspect135.co.uk>
-
---- alsa-kernel/pci/ice1712/ice1724-orig.c	2008-06-27 09:11:58.000000000 +0100
-+++ alsa-kernel/pci/ice1712/ice1724.c	2009-01-05 11:11:33.000000000 +0000
-@@ -1239,7 +1239,7 @@
- 	if (ice->force_pdma4 || ice->force_rdma1)
- 		name = "ICE1724 Secondary";
- 	else
--		name = "IEC1724 IEC958";
-+		name = "ICE1724 IEC958";
- 	err = snd_pcm_new(ice->card, name, device, play, capt, &pcm);
- 	if (err < 0)
- 		return err;
-
-
-
-
---Boundary-00=_R8eYJBzeO9xZPnk
-Content-Type: text/x-diff;
-  charset="us-ascii";
-  name="ice1724.c-bug2552-name-typo-fix.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="ice1724.c-bug2552-name-typo-fix.diff"
-
---- alsa-kernel/pci/ice1712/ice1724-orig.c	2008-06-27 09:11:58.000000000 +0100
-+++ alsa-kernel/pci/ice1712/ice1724.c	2009-01-05 11:11:33.000000000 +0000
-@@ -1239,7 +1239,7 @@
- 	if (ice->force_pdma4 || ice->force_rdma1)
- 		name = "ICE1724 Secondary";
- 	else
--		name = "IEC1724 IEC958";
-+		name = "ICE1724 IEC958";
- 	err = snd_pcm_new(ice->card, name, device, play, capt, &pcm);
- 	if (err < 0)
- 		return err;
-
---Boundary-00=_R8eYJBzeO9xZPnk
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---Boundary-00=_R8eYJBzeO9xZPnk--
+-- 
+With best wishes
+Dmitry
