@@ -1,20 +1,15 @@
-From: Sedji Gaouaou <sedji.gaouaou@atmel.com>
-Subject: AC'97 driver for AT91SAM9263ek atmel board.
-Date: Mon, 05 Jan 2009 15:52:25 +0100
-Message-ID: <49621EA9.8060808@atmel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.29
+Date: Mon, 5 Jan 2009 17:09:58 +0000
+Message-ID: <20090105170958.GA12611@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atmel-es2.atmel.fr (mail.atmel.fr [81.80.104.162])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9C4531037FD
-	for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2009 15:52:28 +0100 (CET)
-Received: from meyreuil.atmel.fr (meyreuil [10.159.254.132])
-	by atmel-es2.atmel.fr (8.11.6+Sun/8.11.6) with ESMTP id n05Eo4L19095
-	for <alsa-devel@alsa-project.org>; Mon, 5 Jan 2009 15:50:05 +0100 (MET)
-Received: from [127.0.0.1] ([10.159.245.197])
-	by meyreuil.atmel.fr (8.11.7p1+Sun/8.11.7) with ESMTP id n05EqPS24597
-	for <alsa-devel@alsa-project.org>; Mon, 5 Jan 2009 15:52:25 +0100 (MET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 56D641037FD
+	for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2009 18:10:00 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,16 +19,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The following changes since commit 1d13bdaa9610e8f7e53f514f429d81b766db101c:
+  Takashi Iwai (1):
+        Merge branch 'topic/hda' into for-next
 
-I am writing because I have no feedbacks concerning a patch that I have 
-sent on the 1st of october: 
-http://mailman.alsa-project.org/pipermail/alsa-devel/2008-October/011049.html.
+are available in the git repository at:
 
-Has anybody tested it? Is there any problem with it?
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git fixes
 
-Regards,
-Sedji
+David Brownell (1):
+      ASoC: fix davinci-sffsdr buglet
+
+ sound/soc/davinci/davinci-sffsdr.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
