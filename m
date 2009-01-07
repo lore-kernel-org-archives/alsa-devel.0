@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: add new DAPM control
-Date: Wed, 7 Jan 2009 13:57:58 +0000
-Message-ID: <20090107135757.GA12359@rakim.wolfsonmicro.main>
-References: <49641588.7050703@mnementh.co.uk>
+From: "Marco Santamaria" <marco.santamaria@gmail.com>
+Subject: Re: snd_usb_caiaq bug?
+Date: Wed, 7 Jan 2009 16:41:21 +0100
+Message-ID: <31e66c9e0901070741i2f6f363l9dc023223954ce2@mail.gmail.com>
+References: <31e66c9e0901040829y4bedc1ebgcf91afe10d80341a@mail.gmail.com>
+	<s5hprizv0yh.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 100F12436B
-	for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2009 14:57:59 +0100 (CET)
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.247])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0B6B8243B7
+	for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2009 16:41:24 +0100 (CET)
+Received: by rv-out-0708.google.com with SMTP id f25so7821894rvb.32
+	for <alsa-devel@alsa-project.org>; Wed, 07 Jan 2009 07:41:23 -0800 (PST)
+In-Reply-To: <s5hprizv0yh.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <49641588.7050703@mnementh.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,19 +24,135 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ian Molton <ian@mnementh.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Daniel Mack <daniel@caiaq.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 07, 2009 at 02:38:00AM +0000, Ian Molton wrote:
+I applied the patch (or I think so...). I just removed the line:
 
-> The attached patch adds a new mixer control that allows cleaner support
-> for the wm9705 codec Im working on. I think it probably has wider uses
-> though.
+dev->midi_out_substream = NULL;
 
-Applied, thanks.
+from the function snd_usb_caiaq_midi_output_done in the file caiaq-midi.c.
+Then I recompiled the driver.
 
-It'd be handy if you could post patches in the format suggested by
-Documentation/SubmittingPatches (unless your e-mail client would mangle
-them) with descriptive text after the ---.  This helps with automated
-tools like git am.
+The main issue is sorted out: I can start and shut down jackd without big
+problems.
+
+But with dmesg I still have the following message:
+
+ALSA
+/home/marco/build/linux-2.6.24-19-rt/alsa-1.0.17/driver-patched/alsa-driver-1.0.17/acore/rawmidi.c:196:
+rawmidi drain error (avail = 4095, buffer_size = 4096)
+
+Not sure if it is safe to ignore it.
+
+Marco
+
+2009/1/7 Takashi Iwai <tiwai@suse.de>
+
+> At Sun, 4 Jan 2009 17:29:47 +0100,
+> Marco Santamaria wrote:
+> >
+> > Hi,
+> >
+> > it's about one year that I'm using my Native Instruments Audio Kontrol 1
+> > (USB2 audio/MIDI interface) only with audio applications and it has been
+> > working well so far.
+> > Now I'm trying to use it with Rosegarden (MIDI) and, as soon as I start
+> > Rosegarden, JACK crashes, the process jackd becomes "uninterruptible" and
+> > with the command dmesg I find the following new lines
+> >
+> > [ 1935.173876] BUG: unable to handle kernel NULL pointer dereference at
+> > virtual address 00000044
+> > [ 1935.173885] printing eip: f8a5f6fd *pde = 00000000
+> > [ 1935.173891] Oops: 0000 [#1] PREEMPT SMP
+> > [ 1935.173896] Modules linked in: isofs udf ipv6 af_packet i915 drm
+> rfcomm
+> > l2cap bluetooth ppdev acpi_cpufreq cpufreq_ondemand cpufreq_conservative
+> > cpufreq_stats freq_table cpufreq_userspace cpufreq_powersave dock
+> container
+> > sbs sbshc iptable_filter ip_tables x_tables sbp2 parport_pc lp parport
+> > snd_hda_intel snd_usb_caiaq snd_hwdep snd_pcm_oss snd_mixer_oss arc4
+> > snd_seq_oss snd_pcm ecb blkcipher snd_seq_midi snd_page_alloc joydev
+> > snd_rawmidi snd_seq_midi_event snd_seq iwl3945 sdhci serio_raw mmc_core
+> > iwlwifi_mac80211 video output cfg80211 battery led_class ac snd_timer
+> > snd_seq_device wmi_acer button snd evdev dcdbas iTCO_wdt
+> iTCO_vendor_support
+> > intel_agp shpchp pci_hotplug pcspkr soundcore agpgart psmouse ext3 jbd
+> > mbcache sg sr_mod cdrom sd_mod b44 ata_generic ssb mii ohci1394 ieee1394
+> > ata_piix pata_acpi libata scsi_mod ehci_hcd uhci_hcd usbcore thermal
+> > processor fan fuse
+> > [ 1935.173964]
+> > [ 1935.173967] Pid: 1421, comm: IRQ-18 Not tainted (2.6.24-19-rt #1)
+> > [ 1935.173970] EIP: 0060:[<f8a5f6fd>] EFLAGS: 00010292 CPU: 1
+> > [ 1935.173979] EIP is at snd_rawmidi_transmit_peek+0x1d/0x100
+> [snd_rawmidi]
+> > [ 1935.173982] EAX: 00000000 EBX: f7106264 ECX: 0000003d EDX: f7106407
+> > [ 1935.173985] ESI: ffffffea EDI: 00000000 EBP: f7106407 ESP: df85be38
+> > [ 1935.173988]  DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068
+> > preempt:00000001
+> > [ 1935.173991] Process IRQ-18 (pid: 1421, ti=df85a000 task=f7d45320
+> > task.ti=df85a000)
+> > [ 1935.173993] Stack: 0000003d 00000000 f7106264 00000000 00000000
+> df83fc00
+> > f8b8cc09 00000000
+> > [ 1935.174000]        f7106264 f710630c 00000000 df83fc00 df83fc00
+> f710630c
+> > f888c888 00000008
+> > [ 1935.174007]        df83fd08 00000000 f710630c f8870770 f728a0c0
+> f728a0c0
+> > ffffff8d f721e180
+> > [ 1935.174014] Call Trace:
+> > [ 1935.174021]  [<f8b8cc09>] snd_usb_caiaq_midi_send+0x29/0x80
+> > [snd_usb_caiaq]
+> > [ 1935.174034]  [<f888c888>] usb_hcd_giveback_urb+0x48/0xc0 [usbcore]
+> > [ 1935.174064]  [<f8870770>] ehci_urb_done+0x70/0xb0 [ehci_hcd]
+> > [ 1935.174075]  [<f887153f>] qh_completions+0x24f/0x430 [ehci_hcd]
+> > [ 1935.174087]  [<f8870770>] ehci_urb_done+0x70/0xb0 [ehci_hcd]
+> > [ 1935.174096]  [<f887293e>] ehci_work+0x51e/0x810 [ehci_hcd]
+> > [ 1935.174103]  [<c010b1e3>] sched_clock+0x13/0x40
+> > [ 1935.174116]  [<c0129199>] dequeue_task_rt+0xb9/0x1c0
+> > [ 1935.174129]  [<f8875498>] ehci_irq+0x158/0x1c0 [ehci_hcd]
+> > [ 1935.174142]  [<f888cb7b>] usb_hcd_irq+0x2b/0x60 [usbcore]
+> > [ 1935.174166]  [<c016a9cc>] handle_IRQ_event+0x5c/0x100
+> > [ 1935.174178]  [<c016b00a>] thread_simple_irq+0x4a/0x90
+> > [ 1935.174185]  [<c016b959>] do_irqd+0x229/0x290
+> > [ 1935.174194]  [<c016b730>] do_irqd+0x0/0x290
+> > [ 1935.174199]  [<c0141fc2>] kthread+0x42/0x70
+> > [ 1935.174203]  [<c0141f80>] kthread+0x0/0x70
+> > [ 1935.174209]  [<c0105857>] kernel_thread_helper+0x7/0x10
+> > [ 1935.174217]  =======================
+> > [ 1935.174219] Code: 24 10 83 c4 14 c3 bf ea ff ff ff eb e3 90 83 ec 18
+> 89
+> > 74 24 0c be ea ff ff ff 89 6c 24 14 89 d5 89 5c 24 08 89 7c 24 10 89 0c
+> 24
+> > <8b> 58 44 8b 7b 04 85 ff 0f 84 8e 00 00 00 8d 43 20 31 f6 89 44
+> > [ 1935.174256] EIP: [<f8a5f6fd>] snd_rawmidi_transmit_peek+0x1d/0x100
+> > [snd_rawmidi] SS:ESP 0068:df85be38
+> > [ 1935.174265] ---[ end trace 9090d02b798b5496 ]---
+> >
+> > I already asked to the Rosegarden and JACK people, but they couldn't help
+> > me: it seems to be a driver related problem,  as I can happily use
+> > Rosegarden if I run JACK with the internal Intel sound card.
+>
+> How about the patch below?
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/usb/caiaq/caiaq-midi.c b/sound/usb/caiaq/caiaq-midi.c
+> index 30b57f9..89a29f0 100644
+> --- a/sound/usb/caiaq/caiaq-midi.c
+> +++ b/sound/usb/caiaq/caiaq-midi.c
+> @@ -170,7 +170,6 @@ void snd_usb_caiaq_midi_output_done(struct urb* urb)
+>                return;
+>
+>        snd_rawmidi_transmit_ack(dev->midi_out_substream, buf[2]);
+> -       dev->midi_out_substream = NULL;
+>        snd_usb_caiaq_midi_send(dev, dev->midi_out_substream);
+>  }
+>
+>
