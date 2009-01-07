@@ -1,15 +1,16 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: alsa-info security/privacy concerns
-Date: Wed, 7 Jan 2009 15:53:33 +0800
-Message-ID: <20090107075333.GA806@localhost>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: alsa-info security/privacy concerns
+Date: Wed, 7 Jan 2009 09:22:13 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0901070920060.8273@tm8103.perex-int.cz>
+References: <20090107075333.GA806@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9B6481037E3
-	for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2009 08:54:00 +0100 (CET)
-Content-Disposition: inline
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id B97CA1037E3
+	for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2009 09:22:14 +0100 (CET)
+In-Reply-To: <20090107075333.GA806@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,23 +20,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Wu Fengguang <fengguang.wu@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Greetings,
+On Wed, 7 Jan 2009, Wu Fengguang wrote:
 
-The auto-uploading behavior of http://www.alsa-project.org/alsa-info.sh
-makes it act like a spyware. This makes some users - including me in
-the first try - astonishing and uncomfortable.
+> Greetings,
+> 
+> The auto-uploading behavior of http://www.alsa-project.org/alsa-info.sh
+> makes it act like a spyware.
 
-I'd like to fix it by
-        1) adding user prompt
-        2) defaulting to --no-upload and introduce --upload
+The script always prompts before the upload action, so user can break it. 
+Just read the first dialog.
 
-Before going for the code, I'd like to ask for your opinions,
-especially on (2).
+					Jaroslav
 
-Thank you.
-
-Fengguang
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
