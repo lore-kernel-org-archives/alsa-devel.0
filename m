@@ -1,28 +1,19 @@
-From: "Marco Santamaria" <marco.santamaria@gmail.com>
-Subject: Re: snd_usb_caiaq bug?
-Date: Thu, 8 Jan 2009 21:06:52 +0100
-Message-ID: <31e66c9e0901081206h55304767va12ec7a1da2cbab5@mail.gmail.com>
-References: <31e66c9e0901040829y4bedc1ebgcf91afe10d80341a@mail.gmail.com>
-	<s5hk597t6pm.wl%tiwai@suse.de>
-	<31e66c9e0901071046v36112db7s757788bcf5beaeeb@mail.gmail.com>
-	<907c05c70901071206y4bba38bej47f3eba51e6106d3@mail.gmail.com>
-	<s5hy6xmhgp3.wl%tiwai@suse.de>
-	<31e66c9e0901071659p63219af1wb392f50541cda7a0@mail.gmail.com>
-	<31e66c9e0901071734t70c980a8t87f668f973b54635@mail.gmail.com>
-	<s5h4p0at563.wl%tiwai@suse.de>
-	<907c05c70901080626x83c3e2fn158d2938c4c8cbfd@mail.gmail.com>
-	<s5h7i559845.wl%tiwai@suse.de>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 1/2] Add initial support of Mitac
+	mioa701	device SoC.
+Date: Thu, 8 Jan 2009 20:33:25 +0000
+Message-ID: <20090108203324.GB29183@sirena.org.uk>
+References: <1231440146-6669-1-git-send-email-robert.jarzmik@free.fr>
+	<1231440146-6669-2-git-send-email-robert.jarzmik@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f20.google.com (mail-bw0-f20.google.com
-	[209.85.218.20]) by alsa0.perex.cz (Postfix) with ESMTP id 1D37824398
-	for <alsa-devel@alsa-project.org>; Thu,  8 Jan 2009 21:06:53 +0100 (CET)
-Received: by bwz13 with SMTP id 13so24145732bwz.8
-	for <alsa-devel@alsa-project.org>; Thu, 08 Jan 2009 12:06:52 -0800 (PST)
-In-Reply-To: <s5h7i559845.wl%tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5EF1224365
+	for <alsa-devel@alsa-project.org>; Thu,  8 Jan 2009 21:33:29 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <1231440146-6669-2-git-send-email-robert.jarzmik@free.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,152 +23,162 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Daniel Mack <daniel@caiaq.de>, Mysth-R <mysthr21@gmail.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I can confirm, after another load test with midi applications (that caused
-rosegarden and jack to crash several times...), that the last patch works
-without error messages.
+On Thu, Jan 08, 2009 at 07:42:25PM +0100, Robert Jarzmik wrote:
 
-Which version of alsa corresponds to kernel 2.6.29?
+> This machine driver enables sound functions on Mitac mio
+> a701 smartphone. Build upon ASoC v1, it handles :
 
-Thanks again,
+It'd probably be easier to split this up still further, with one patch
+providing a standard ASoC machine and another adding the scenario stuff
+after that.
 
-Marco
+As well as easing review I have to say that I'm a bit unenthusiastic
+about having the scenario stuff in here.  The general plan was to do
+this in user space, partly because experience with things like OpenMoko
+suggests that some users are going to come up with new and exciting
+scenarios and that having to rebuild the kernel is too high a barrier.
+I know Graeme has said he regrets doing the in-kernel scenarios there.
 
-2009/1/8 Takashi Iwai <tiwai@suse.de>
+Liam's ALSA scenario API was intended to do what's needed in user space:
 
-> At Thu, 8 Jan 2009 15:26:39 +0100,
-> Mysth-R wrote:
-> >
-> > Hi,
-> >
-> > I tried the last patch, and I think we got it. I made some few tests, and
-> > every thing is Ok for me now. No more crash, no more messages in dmesg.
-> > I just had a warning during compilation, but I think this is not really
-> > important :
-> >
-> > sound/usb/caiaq/caiaq-midi.c: In function
-> \u2018snd_usb_caiaq_midi_output_done
-> > \u2019:
-> > sound/usb/caiaq/caiaq-midi.c:170: attention : unused variable
-> \u2018buf\u2019
-> >
-> > Perhaps this is not the same line (170) as you but, in my file, it
-> concerns
-> > the last function.
->
-> OK, it's simple to fix.
-> The below is the latest version I committed now to sound git tree.
-> It'll be pushed to 2.6.29 (and stable kernels) later.
->
-> Please let me know if you still encounter relevant problems.
->
->
-> thanks,
->
-> Takashi
->
-> ---
-> diff --git a/sound/usb/caiaq/caiaq-device.h
-> b/sound/usb/caiaq/caiaq-device.h
-> index f9fbdba..ab56e73 100644
-> --- a/sound/usb/caiaq/caiaq-device.h
-> +++ b/sound/usb/caiaq/caiaq-device.h
-> @@ -75,6 +75,7 @@ struct snd_usb_caiaqdev {
->        wait_queue_head_t ep1_wait_queue;
->        wait_queue_head_t prepare_wait_queue;
->        int spec_received, audio_parm_answer;
-> +       int midi_out_active;
->
->        char vendor_name[CAIAQ_USB_STR_LEN];
->        char product_name[CAIAQ_USB_STR_LEN];
-> diff --git a/sound/usb/caiaq/caiaq-midi.c b/sound/usb/caiaq/caiaq-midi.c
-> index 30b57f9..f19fd36 100644
-> --- a/sound/usb/caiaq/caiaq-midi.c
-> +++ b/sound/usb/caiaq/caiaq-midi.c
-> @@ -59,6 +59,11 @@ static int snd_usb_caiaq_midi_output_open(struct
-> snd_rawmidi_substream *substrea
->
->  static int snd_usb_caiaq_midi_output_close(struct snd_rawmidi_substream
-> *substream)
->  {
-> +       struct snd_usb_caiaqdev *dev = substream->rmidi->private_data;
-> +       if (dev->midi_out_active) {
-> +               usb_kill_urb(&dev->midi_out_urb);
-> +               dev->midi_out_active = 0;
-> +       }
->        return 0;
->  }
->
-> @@ -69,7 +74,8 @@ static void snd_usb_caiaq_midi_send(struct
-> snd_usb_caiaqdev *dev,
->
->        dev->midi_out_buf[0] = EP1_CMD_MIDI_WRITE;
->        dev->midi_out_buf[1] = 0; /* port */
-> -       len = snd_rawmidi_transmit_peek(substream, dev->midi_out_buf+3,
-> EP1_BUFSIZE-3);
-> +       len = snd_rawmidi_transmit(substream, dev->midi_out_buf + 3,
-> +                                  EP1_BUFSIZE - 3);
->
->        if (len <= 0)
->                return;
-> @@ -79,24 +85,24 @@ static void snd_usb_caiaq_midi_send(struct
-> snd_usb_caiaqdev *dev,
->
->        ret = usb_submit_urb(&dev->midi_out_urb, GFP_ATOMIC);
->        if (ret < 0)
-> -               log("snd_usb_caiaq_midi_send(%p): usb_submit_urb() failed,
-> %d\n",
-> -                               substream, ret);
-> +               log("snd_usb_caiaq_midi_send(%p): usb_submit_urb() failed,"
-> +                   "ret=%d, len=%d\n",
-> +                   substream, ret, len);
-> +       else
-> +               dev->midi_out_active = 1;
->  }
->
->  static void snd_usb_caiaq_midi_output_trigger(struct snd_rawmidi_substream
-> *substream, int up)
->  {
->        struct snd_usb_caiaqdev *dev = substream->rmidi->private_data;
->
-> -       if (dev->midi_out_substream != NULL)
-> -               return;
-> -
-> -       if (!up) {
-> +       if (up) {
-> +               dev->midi_out_substream = substream;
-> +               if (!dev->midi_out_active)
-> +                       snd_usb_caiaq_midi_send(dev, substream);
-> +       } else {
->                dev->midi_out_substream = NULL;
-> -               return;
->        }
-> -
-> -       dev->midi_out_substream = substream;
-> -       snd_usb_caiaq_midi_send(dev, substream);
->  }
->
->
-> @@ -161,16 +167,14 @@ int snd_usb_caiaq_midi_init(struct snd_usb_caiaqdev
-> *device)
->  void snd_usb_caiaq_midi_output_done(struct urb* urb)
->  {
->        struct snd_usb_caiaqdev *dev = urb->context;
-> -       char *buf = urb->transfer_buffer;
->
-> +       dev->midi_out_active = 0;
->        if (urb->status != 0)
->                return;
->
->        if (!dev->midi_out_substream)
->                return;
->
-> -       snd_rawmidi_transmit_ack(dev->midi_out_substream, buf[2]);
-> -       dev->midi_out_substream = NULL;
->        snd_usb_caiaq_midi_send(dev, dev->midi_out_substream);
->  }
->
->
+	http://opensource.wolfsonmicro.com/node/14
+
+though it's still a work in progress.  I'm not 100% against doing this
+like you have since we don't have a clear solution right now but I'd
+like to stop and think about it.
+
+If we are going to do it in kernel space then it'd be better to lift at
+least some of it out of your driver since the mechanics of what you've
+got aren't very specific to this machine, just the lists of endpoints.
+I'd also suggest masking off the controls you're controlling via the
+scenario stuff from user space - Takashi has commit
+03ad1d710ea51a51dfbe62caa2bc9a9437ae3fed in his sound-unstable-2.6.git
+which adds snd_ctl_activate_id(), allowing drivers to do this.
+
+More comments below, mostly very nitpicky:
+
+> It doesn't cope with :
+>  - headset jack (will be integrade after jack support has
+>    hit ASoC v2)
+
+I just pushed an implementation of that just now, enjoy :)
+
+> +#define ARRAY_AND_SIZE(x)	(x), ARRAY_SIZE(x)
+
+This is also defined somewhere or other in the PXA or ARM architecture
+code - there's a danger of multiple definitions of the macro appearing.
+checkpatch wants extra () too, I kind of agree with it.
+
+> +void setup_muxers(struct snd_soc_codec *codec, const struct mio_mixes_t mixes[])
+> +{
+> +	int pos = 0;
+> +	struct snd_kcontrol *kctl;
+> +	struct snd_ctl_elem_value ucontrol;
+> +	char mname[44];
+> +
+> +	while (mixes[pos].mixname) {
+
+A for loop over the ARRAY_SIZE() might be more idiomatic here...
+
+> +		memset(mname, 0, 44);
+> +		strncpy(mname, mixes[pos].mixname, 43);
+
+It's bikesheding but strcpy plus termination would do the job, wouldn't
+it?
+
+> +               if (kctl) {
+
+Shouldn't we at least warn if this is false, it's an error in the static
+data for the maps.
+
+> +                       kctl->get(kctl, &ucontrol);
+> +                       ucontrol.value.enumerated.item[0] = mixes[pos].val;
+> +                       kctl->put(kctl, &ucontrol);
+> +               }
+
+Does an open application (eg, alsamixer) notice these changes without
+the driver telling it?  snd_ctl_notify() is the API call, IIRC though
+there's a reasonable chance I am misremembering.  Though if you do mask
+them from user space it shoudn't matter anyway, I expect.
+
+> +		{ 0, 0, 1, 1, 1, 0, 1 }, /* MIO_GSM_AUDIO_HEADSET	*/
+> +		{ 0, 1, 1, 1, 0, 1, 0 }, /* MIO_GSM_AUDIO_HANDSFREE*/
+> +		{ 0, 0, 1, 1, 0, 0, 0 }, /* MIO_GSM_AUDIO_BLUETOOTH*/
+
+Interesting indentation?
+
+> +static int isPhoneMode(int scenario)
+> +{
+> +	int onPhone = 0;
+
+The kernel doesn't generally go in for mixedCaseNames except when
+following standards that use them.
+
+> +	switch (scenario) {
+> +	case MIO_GSM_AUDIO_HANDSET:
+> +	case MIO_GSM_AUDIO_HEADSET:
+> +	case MIO_GSM_AUDIO_BLUETOOTH:
+> +	case MIO_GSM_AUDIO_HANDSFREE:
+> +		onPhone = 1;
+
+Setting 0 in a default would be slightly easier to read (or you could
+just use return statements and not bother with the assignments).
+
+> +	}
+> +
+> +	return onPhone;
+> +}
+
+> +static int phone_stream_start(struct snd_soc_codec *codec)
+> +{
+> +       snd_soc_dapm_stream_event(codec, "AC97 HiFi",
+> +                                 SND_SOC_DAPM_STREAM_START);
+> +       return 0;
+> +}
+
+Hrm.  What are these needed for?  I'd have expected that DAPM would
+power active bypass paths up without this (I test that case frequently)
+and this isn't coordinated with what the core is doing at all.
+
+> +/* Use GPIO8 for rear speaker amplificator */
+
+Amplifier.
+
+> +static int rear_amp_event(struct snd_soc_dapm_widget *widget,
+> +			  struct snd_kcontrol *kctl, int event)
+> +{
+> +	struct snd_soc_codec *codec = widget->codec;
+> +	int rc;
+> +
+> +	if (SND_SOC_DAPM_EVENT_ON(event))
+> +		rc = rear_amp_power(codec, 1);
+> +	else
+> +		rc = rear_amp_power(codec, 0);
+> +
+> +	return rc;
+> +}
+
+May as well just collapse rear_amp_power() in here, it's got the same if
+statement in it anyway.
+
+> +#define mioa701_wm9713_suspend NULL
+> +#define mioa701_wm9713_resume  NULL
+
+These can just be dropped until they're implemented (they may never need
+to be).
+
+> +static int mioa701_wm9713_probe(struct platform_device *pdev)
+> +{
+> +	int ret;
+> +
+> +	if (!machine_is_mioa701())
+> +		return -ENODEV;
+
+Seems redundant to check this when you're using a platform device to
+probe - a system should only be defining that device if it can
+supported.  It's needed for most drivers which register the ASoC driver
+directly on probe.
