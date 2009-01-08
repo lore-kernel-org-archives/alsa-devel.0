@@ -1,22 +1,16 @@
-From: Susan Cragin <susancragin@earthlink.net>
-Subject: =?utf-8?q?1/7_unstable_does_not_compile=3A__error=3A?=
- =?utf-8?b?IOKAmFNXX1ZJREVPT1VUX0lOU0VSVOKAmSB1bmRlY2xhcmVkIGhlcmUgKG5v?=
- =?utf-8?q?t_in_a_function=29?=
-Date: Wed, 7 Jan 2009 21:56:49 -0500 (GMT-05:00)
-Message-ID: <14224622.1231383410167.JavaMail.root@elwamui-cypress.atl.sa.earthlink.net>
-Reply-To: Susan Cragin <susancragin@earthlink.net>
+From: =?UTF-8?Q?=C5=81ukasz_Wojni=C5=82owicz?= <lukasz.wojnilowicz@gmail.com>
+Subject: Autodetection for Acer Aspire 5930G and 6930G
+Date: Thu, 08 Jan 2009 11:13:23 +0100
+Message-ID: <1231409603.4324.0.camel@nslw.hstl2.put.poznan.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from elasmtp-dupuy.atl.sa.earthlink.net
-	(elasmtp-dupuy.atl.sa.earthlink.net [209.86.89.62])
-	by alsa0.perex.cz (Postfix) with ESMTP id A69C41037F0
-	for <alsa-devel@alsa-project.org>; Thu,  8 Jan 2009 03:56:51 +0100 (CET)
-Received: from [209.86.224.32] (helo=elwamui-cypress.atl.sa.earthlink.net)
-	by elasmtp-dupuy.atl.sa.earthlink.net with esmtpa (Exim 4.67)
-	(envelope-from <susancragin@earthlink.net>) id 1LKl4k-0004Qo-9M
-	for alsa-devel@alsa-project.org; Wed, 07 Jan 2009 21:56:50 -0500
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id F295F1037E3
+	for <alsa-devel@alsa-project.org>; Thu,  8 Jan 2009 11:13:30 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id 16so3310516fgg.44
+	for <alsa-devel@alsa-project.org>; Thu, 08 Jan 2009 02:13:30 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,57 +23,40 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVyZSBpcyBsYXN0IGZldyBsaW5lcyBvZiBvdXRwdXQuIAoKbWFrZVsxXTogTGVhdmluZyBkaXJl
-Y3RvcnkgYC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5zdGFibGUnCm1ha2UgLUMg
-L2xpYi9tb2R1bGVzLzIuNi4yOC00LWdlbmVyaWMvYnVpbGQgU1VCRElSUz0vaG9tZS9zdXNhbi9E
-ZXNrdG9wL2Fsc2EtZHJpdmVyLXVuc3RhYmxlICBDUFA9ImdjYyAtRSIgQ0M9ImdjYyIgbW9kdWxl
-cwptYWtlWzFdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC91c3Ivc3JjL2xpbnV4LWhlYWRlcnMtMi42
-LjI4LTQtZ2VuZXJpYycKICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXIt
-dW5zdGFibGUvYWNvcmUvaHJ0aW1lci5vCiAgQ0MgW01dICAvaG9tZS9zdXNhbi9EZXNrdG9wL2Fs
-c2EtZHJpdmVyLXVuc3RhYmxlL2Fjb3JlL2h3ZGVwLm8KICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rl
-c2t0b3AvYWxzYS1kcml2ZXItdW5zdGFibGUvYWNvcmUvbWVtb3J5X3dyYXBwZXIubwogIENDIFtN
-XSAgL2hvbWUvc3VzYW4vRGVza3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZS9hY29yZS9tZW1hbGxv
-Yy5vCiAgQ0MgW01dICAvaG9tZS9zdXNhbi9EZXNrdG9wL2Fsc2EtZHJpdmVyLXVuc3RhYmxlL2Fj
-b3JlL3NnYnVmLm8KICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5z
-dGFibGUvYWNvcmUvcGNtLm8KICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2
-ZXItdW5zdGFibGUvYWNvcmUvcGNtX25hdGl2ZS5vCiAgQ0MgW01dICAvaG9tZS9zdXNhbi9EZXNr
-dG9wL2Fsc2EtZHJpdmVyLXVuc3RhYmxlL2Fjb3JlL3BjbV9saWIubwogIENDIFtNXSAgL2hvbWUv
-c3VzYW4vRGVza3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZS9hY29yZS9wY21fdGltZXIubwogIEND
-IFtNXSAgL2hvbWUvc3VzYW4vRGVza3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZS9hY29yZS9wY21f
-bWlzYy5vCiAgQ0MgW01dICAvaG9tZS9zdXNhbi9EZXNrdG9wL2Fsc2EtZHJpdmVyLXVuc3RhYmxl
-L2Fjb3JlL3BjbV9tZW1vcnkubwogIENDIFtNXSAgL2hvbWUvc3VzYW4vRGVza3RvcC9hbHNhLWRy
-aXZlci11bnN0YWJsZS9hY29yZS9yYXdtaWRpLm8KICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rlc2t0
-b3AvYWxzYS1kcml2ZXItdW5zdGFibGUvYWNvcmUvdGltZXIubwogIENDIFtNXSAgL2hvbWUvc3Vz
-YW4vRGVza3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZS9hY29yZS93cmFwcGVycy5vCiAgQ0MgW01d
-ICAvaG9tZS9zdXNhbi9EZXNrdG9wL2Fsc2EtZHJpdmVyLXVuc3RhYmxlL2Fjb3JlL21pc2NfZHJp
-dmVyLm8KICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5zdGFibGUv
-YWNvcmUvc291bmQubwovaG9tZS9zdXNhbi9EZXNrdG9wL2Fsc2EtZHJpdmVyLXVuc3RhYmxlL2Fj
-b3JlL3NvdW5kLmM6IEluIGZ1bmN0aW9uIOKAmHNuZF9yZXF1ZXN0X290aGVy4oCZOgovaG9tZS9z
-dXNhbi9EZXNrdG9wL2Fsc2EtZHJpdmVyLXVuc3RhYmxlL2Fjb3JlL3NvdW5kLmM6OTk6IHdhcm5p
-bmc6IGZvcm1hdCBub3QgYSBzdHJpbmcgbGl0ZXJhbCBhbmQgbm8gZm9ybWF0IGFyZ3VtZW50cwog
-IENDIFtNXSAgL2hvbWUvc3VzYW4vRGVza3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZS9hY29yZS9p
-bml0Lm8KICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5zdGFibGUv
-YWNvcmUvbWVtb3J5Lm8KICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXIt
-dW5zdGFibGUvYWNvcmUvaW5mby5vCiAgQ0MgW01dICAvaG9tZS9zdXNhbi9EZXNrdG9wL2Fsc2Et
-ZHJpdmVyLXVuc3RhYmxlL2Fjb3JlL2NvbnRyb2wubwogIENDIFtNXSAgL2hvbWUvc3VzYW4vRGVz
-a3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZS9hY29yZS9taXNjLm8KICBDQyBbTV0gIC9ob21lL3N1
-c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5zdGFibGUvYWNvcmUvZGV2aWNlLm8KICBDQyBbTV0g
-IC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5zdGFibGUvYWNvcmUvaXNhZG1hLm8K
-ICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5zdGFibGUvYWNvcmUv
-c291bmRfb3NzLm8KICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5z
-dGFibGUvYWNvcmUvaW5mb19vc3MubwogIENDIFtNXSAgL2hvbWUvc3VzYW4vRGVza3RvcC9hbHNh
-LWRyaXZlci11bnN0YWJsZS9hY29yZS92bWFzdGVyLm8KICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rl
-c2t0b3AvYWxzYS1kcml2ZXItdW5zdGFibGUvYWNvcmUvamFjay5vCkluIGZpbGUgaW5jbHVkZWQg
-ZnJvbSAvaG9tZS9zdXNhbi9EZXNrdG9wL2Fsc2EtZHJpdmVyLXVuc3RhYmxlL2Fjb3JlL2phY2su
-YzoxMzoKL2hvbWUvc3VzYW4vRGVza3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZS9hY29yZS8uLi9h
-bHNhLWtlcm5lbC9jb3JlL2phY2suYzozMTogZXJyb3I6IOKAmFNXX1ZJREVPT1VUX0lOU0VSVOKA
-mSB1bmRlY2xhcmVkIGhlcmUgKG5vdCBpbiBhIGZ1bmN0aW9uKQptYWtlWzNdOiAqKiogWy9ob21l
-L3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5zdGFibGUvYWNvcmUvamFjay5vXSBFcnJvciAx
-Cm1ha2VbMl06ICoqKiBbL2hvbWUvc3VzYW4vRGVza3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZS9h
-Y29yZV0gRXJyb3IgMgptYWtlWzFdOiAqKiogW19tb2R1bGVfL2hvbWUvc3VzYW4vRGVza3RvcC9h
-bHNhLWRyaXZlci11bnN0YWJsZV0gRXJyb3IgMgptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9yeSBg
-L3Vzci9zcmMvbGludXgtaGVhZGVycy0yLjYuMjgtNC1nZW5lcmljJwptYWtlOiAqKiogW2NvbXBp
-bGVdIEVycm9yIDIKc3VzYW5AdWJ1bnR1On4vRGVza3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZSQg
-CgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+This is a patch which adds correct auto detection of model for
+snd-hda-intel for Acer Aspire 5930G and 6930G. Tested on my 5930G. It
+finally adds hp jack sense and 5.1 speaker system sliders.
+
+Information about 5930G
+Codec: Realtek ALC888
+Address: 0
+Vendor Id: 0x10ec0888
+Subsystem Id: 0x1025013f
+Revision Id: 0x100202
+
+Information about 6930G
+Codec: Realtek ALC888
+Address: 0
+Vendor Id: 0x10ec0888
+Subsystem Id: 0x1025015e
+Revision Id: 0x100202
+
+It is first patch prepared by me and it is against commit
+daead538e9d8efe61d7d2bd12993c8d961b0abd6 from
+"http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=daead538e9d8efe61d7d2bd12993c8d961b0abd6"
+
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8461,5 +8461,6 @@ static struct snd_pci_quirk alc883_cfg_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x0112, "Acer Aspire 9303", ALC883_ACER_ASPIRE),
+	SND_PCI_QUIRK(0x1025, 0x0121, "Acer Aspire 5920G", ALC883_ACER_ASPIRE),
+-	SND_PCI_QUIRK(0x1025, 0x013e, "Acer Aspire 4930G",
+-		ALC888_ACER_ASPIRE_4930G),
++	SND_PCI_QUIRK(0x1025, 0x013e, "Acer Aspire 4930G",
+ALC888_ACER_ASPIRE_4930G),
++	SND_PCI_QUIRK(0x1025, 0x013f, "Acer Aspire 5930G",
+ALC888_ACER_ASPIRE_4930G),
++	SND_PCI_QUIRK(0x1025, 0x015e, "Acer Aspire 6930G",
+ALC888_ACER_ASPIRE_4930G),
+	SND_PCI_QUIRK(0x1025, 0, "Acer laptop", ALC883_ACER), /* default Acer
+*/
