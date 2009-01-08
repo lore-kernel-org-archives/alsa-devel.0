@@ -1,14 +1,19 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 3/3] ASoC: TWL4030: Module unloading fix
-Date: Thu,  8 Jan 2009 15:52:43 +0200
-Message-ID: <1231422763-13659-1-git-send-email-peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 1/2] ASoC: Merge the soc_value_enum to
+	soc_enum struct
+Date: Thu, 8 Jan 2009 15:55:06 +0200
+Message-ID: <200901081555.06758.peter.ujfalusi@nokia.com>
+References: <1231414470-24690-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20090108134850.GC25876@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id DC7732443E
-	for <alsa-devel@alsa-project.org>; Thu,  8 Jan 2009 14:52:49 +0100 (CET)
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id EF1E924442
+	for <alsa-devel@alsa-project.org>; Thu,  8 Jan 2009 14:55:10 +0100 (CET)
+In-Reply-To: <20090108134850.GC25876@sirena.org.uk>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,30 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: sakoman@gmail.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: ext Mark Brown <broonie@sirena.org.uk>
+Cc: sakoman@gmail.com, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Call the snd_soc_free_pcm and snd_soc_dapm_free when the
-codec driver is unloaded.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
----
- sound/soc/codecs/twl4030.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+On Thursday 08 January 2009 15:48:51 ext Mark Brown wrote:
+> This looks good, thanks for doing the cleanup.  Applied both.
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index db24f83..ea370a4 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -1280,6 +1280,8 @@ static int twl4030_remove(struct platform_device *pdev)
- 	struct snd_soc_codec *codec = socdev->codec;
- 
- 	printk(KERN_INFO "TWL4030 Audio Codec remove\n");
-+	snd_soc_free_pcms(socdev);
-+	snd_soc_dapm_free(socdev);
- 	kfree(codec);
- 
- 	return 0;
--- 
-1.6.1
+It was my mess to begin with...
+
+Thanks,
+P=E9ter
