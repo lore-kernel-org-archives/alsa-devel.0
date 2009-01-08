@@ -1,27 +1,22 @@
-From: "Marco Santamaria" <marco.santamaria@gmail.com>
-Subject: Re: snd_usb_caiaq bug?
-Date: Thu, 8 Jan 2009 02:34:46 +0100
-Message-ID: <31e66c9e0901071734t70c980a8t87f668f973b54635@mail.gmail.com>
-References: <31e66c9e0901040829y4bedc1ebgcf91afe10d80341a@mail.gmail.com>
-	<s5hprizv0yh.wl%tiwai@suse.de>
-	<31e66c9e0901070741i2f6f363l9dc023223954ce2@mail.gmail.com>
-	<s5hk597t6pm.wl%tiwai@suse.de>
-	<31e66c9e0901071046v36112db7s757788bcf5beaeeb@mail.gmail.com>
-	<907c05c70901071206y4bba38bej47f3eba51e6106d3@mail.gmail.com>
-	<s5hy6xmhgp3.wl%tiwai@suse.de>
-	<31e66c9e0901071659p63219af1wb392f50541cda7a0@mail.gmail.com>
+From: Susan Cragin <susancragin@earthlink.net>
+Subject: =?utf-8?q?1/7_unstable_does_not_compile=3A__error=3A?=
+ =?utf-8?b?IOKAmFNXX1ZJREVPT1VUX0lOU0VSVOKAmSB1bmRlY2xhcmVkIGhlcmUgKG5v?=
+ =?utf-8?q?t_in_a_function=29?=
+Date: Wed, 7 Jan 2009 21:56:49 -0500 (GMT-05:00)
+Message-ID: <14224622.1231383410167.JavaMail.root@elwamui-cypress.atl.sa.earthlink.net>
+Reply-To: Susan Cragin <susancragin@earthlink.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f20.google.com (mail-bw0-f20.google.com
-	[209.85.218.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 00BA31037E3
-	for <alsa-devel@alsa-project.org>; Thu,  8 Jan 2009 02:34:47 +0100 (CET)
-Received: by bwz13 with SMTP id 13so22891812bwz.8
-	for <alsa-devel@alsa-project.org>; Wed, 07 Jan 2009 17:34:47 -0800 (PST)
-In-Reply-To: <31e66c9e0901071659p63219af1wb392f50541cda7a0@mail.gmail.com>
-Content-Disposition: inline
+Received: from elasmtp-dupuy.atl.sa.earthlink.net
+	(elasmtp-dupuy.atl.sa.earthlink.net [209.86.89.62])
+	by alsa0.perex.cz (Postfix) with ESMTP id A69C41037F0
+	for <alsa-devel@alsa-project.org>; Thu,  8 Jan 2009 03:56:51 +0100 (CET)
+Received: from [209.86.224.32] (helo=elwamui-cypress.atl.sa.earthlink.net)
+	by elasmtp-dupuy.atl.sa.earthlink.net with esmtpa (Exim 4.67)
+	(envelope-from <susancragin@earthlink.net>) id 1LKl4k-0004Qo-9M
+	for alsa-devel@alsa-project.org; Wed, 07 Jan 2009 21:56:50 -0500
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,179 +26,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Daniel Mack <daniel@caiaq.de>, Mysth-R <mysthr21@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Unfortunately I have to correct my previous message.
-
-After a load test with jack + qsynth + rosegarden (sample rate=88200,
-frames/period=256,  periods/buffer=3), using a 16 tracks midi file and a
-29MB sound font, the following message appeared:
-
-[ 1098.445807] ALSA
-/home/marco/build/linux-2.6.24-19-rt/alsa-1.0.17/driver-patched/alsa-driver-1.0.17/usb/caiaq/../../alsa-kernel/usb/caiaq/caiaq-midi.c:84:
-snd-usb-caiaq log: snd_usb_caiaq_midi_send(f64c66c0): usb_submit_urb()
-failed, -22
-
-Cheers,
-Marco
-
-2009/1/8 Marco Santamaria <marco.santamaria@gmail.com>
-
-> No more errors in dmesg this time. Tomorrow I will apply the patch to the
-> latest stable version of the alsa-driver (1.0.18).
->
-> Please let me know if there are more tests I can do with JACK, Rosegarden,
-> Ardour or something else.
->
-> Do you think that this patch will go in the next version of the
-> alsa-driver?
->
-> Thank you very much for your help,
-> Marco
->
->
-> 2009/1/7 Takashi Iwai <tiwai@suse.de>
->
->> At Wed, 7 Jan 2009 21:06:23 +0100,
->>
->> Mysth-R wrote:
->> >
->> > Hi Takashi,
->> >
->> > I have almost the same problem as Marco. (that is why Marco forwarded me
->> this
->> > message).
->> >
->> > Well, Now it seems to be almost perfect. Just to explain to you :
->> >
->> > I had a problem with Pure data, each time I wanted to enable the alsa
->> midi (in
->> > pure data). Then I had some problem opening some of my patch, making pd
->> > zombified and Jack output tons of "delay of 1666.000 usecs exceeds
->> estimated
->> > spare time of 1140.000; restart ..." until I stop it and run it again.
->> >
->> > Now pd works perfectly. I made some others jackd settings, and the
->> "xruns"
->> > messages seems to gone away.
->> >
->> > But like Marco I got this message in the output of dmesg :
->> >
->> > [ 20.269196] Adding 530136k swap on /dev/sda3. Priority:-1 extents:1
->> > across:530136k
->> > [ 445.142031] snd-usb-caiaq log:
->> snd_usb_caiaq_midi_send(ffff81007f9380c0):
->> > usb_submit_urb() failed, -22
->> > [ 445.393030] snd-usb-caiaq log:
->> snd_usb_caiaq_midi_send(ffff81007f9380c0):
->> > usb_submit_urb() failed, -22
->> > [ 445.640986] snd-usb-caiaq log:
->> snd_usb_caiaq_midi_send(ffff81007f9380c0):
->> > usb_submit_urb() failed, -22
->> > [ 445.892008] snd-usb-caiaq log:
->> snd_usb_caiaq_midi_send(ffff81007f9380c0):
->> > usb_submit_urb() failed, -22
->> > [ 446.141982] snd-usb-caiaq log:
->> snd_usb_caiaq_midi_send(ffff81007f9380c0):
->> > usb_submit_urb() failed, -22
->> > [ 446.392962] snd-usb-caiaq log:
->> snd_usb_caiaq_midi_send(ffff81007f9380c0):
->> > usb_submit_urb() failed, -22
->> > [ 446.640967] snd-usb-caiaq log:
->> snd_usb_caiaq_midi_send(ffff81007f9380c0):
->> > usb_submit_urb() failed, -22
->> > [ 446.891986] snd-usb-caiaq log:
->> snd_usb_caiaq_midi_send(ffff81007f9380c0):
->> > usb_submit_urb() failed, -22
->>
->> OK, what about this patch?  Now it checks the URB existence before
->> submission.
->>
->>
->> thanks,
->>
->> Takashi
->>
->> ---
->> diff --git a/sound/usb/caiaq/caiaq-device.h
->> b/sound/usb/caiaq/caiaq-device.h
->> index f9fbdba..ab56e73 100644
->> --- a/sound/usb/caiaq/caiaq-device.h
->> +++ b/sound/usb/caiaq/caiaq-device.h
->> @@ -75,6 +75,7 @@ struct snd_usb_caiaqdev {
->>        wait_queue_head_t ep1_wait_queue;
->>        wait_queue_head_t prepare_wait_queue;
->>        int spec_received, audio_parm_answer;
->> +       int midi_out_active;
->>
->>        char vendor_name[CAIAQ_USB_STR_LEN];
->>        char product_name[CAIAQ_USB_STR_LEN];
->> diff --git a/sound/usb/caiaq/caiaq-midi.c b/sound/usb/caiaq/caiaq-midi.c
->> index 30b57f9..6b76f7f 100644
->> --- a/sound/usb/caiaq/caiaq-midi.c
->> +++ b/sound/usb/caiaq/caiaq-midi.c
->> @@ -69,7 +69,8 @@ static void snd_usb_caiaq_midi_send(struct
->> snd_usb_caiaqdev *dev,
->>
->>        dev->midi_out_buf[0] = EP1_CMD_MIDI_WRITE;
->>        dev->midi_out_buf[1] = 0; /* port */
->> -       len = snd_rawmidi_transmit_peek(substream, dev->midi_out_buf+3,
->> EP1_BUFSIZE-3);
->> +       len = snd_rawmidi_transmit(substream, dev->midi_out_buf + 3,
->> +                                  EP1_BUFSIZE - 3);
->>
->>        if (len <= 0)
->>                return;
->> @@ -81,22 +82,21 @@ static void snd_usb_caiaq_midi_send(struct
->> snd_usb_caiaqdev *dev,
->>        if (ret < 0)
->>                log("snd_usb_caiaq_midi_send(%p): usb_submit_urb() failed,
->> %d\n",
->>                                substream, ret);
->> +       else
->> +               dev->midi_out_active = 1;
->>  }
->>
->>  static void snd_usb_caiaq_midi_output_trigger(struct
->> snd_rawmidi_substream *substream, int up)
->>  {
->>        struct snd_usb_caiaqdev *dev = substream->rmidi->private_data;
->>
->> -       if (dev->midi_out_substream != NULL)
->> -               return;
->> -
->> -       if (!up) {
->> +       if (up) {
->> +               dev->midi_out_substream = substream;
->> +               if (!dev->midi_out_active)
->> +                       snd_usb_caiaq_midi_send(dev, substream);
->> +       } else {
->>                dev->midi_out_substream = NULL;
->> -               return;
->>        }
->> -
->> -       dev->midi_out_substream = substream;
->> -       snd_usb_caiaq_midi_send(dev, substream);
->>  }
->>
->>
->> @@ -163,14 +163,13 @@ void snd_usb_caiaq_midi_output_done(struct urb* urb)
->>        struct snd_usb_caiaqdev *dev = urb->context;
->>        char *buf = urb->transfer_buffer;
->>
->> +       dev->midi_out_active = 0;
->>        if (urb->status != 0)
->>                return;
->>
->>        if (!dev->midi_out_substream)
->>                return;
->>
->> -       snd_rawmidi_transmit_ack(dev->midi_out_substream, buf[2]);
->> -       dev->midi_out_substream = NULL;
->>        snd_usb_caiaq_midi_send(dev, dev->midi_out_substream);
->>  }
->>
->>
->
+SGVyZSBpcyBsYXN0IGZldyBsaW5lcyBvZiBvdXRwdXQuIAoKbWFrZVsxXTogTGVhdmluZyBkaXJl
+Y3RvcnkgYC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5zdGFibGUnCm1ha2UgLUMg
+L2xpYi9tb2R1bGVzLzIuNi4yOC00LWdlbmVyaWMvYnVpbGQgU1VCRElSUz0vaG9tZS9zdXNhbi9E
+ZXNrdG9wL2Fsc2EtZHJpdmVyLXVuc3RhYmxlICBDUFA9ImdjYyAtRSIgQ0M9ImdjYyIgbW9kdWxl
+cwptYWtlWzFdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC91c3Ivc3JjL2xpbnV4LWhlYWRlcnMtMi42
+LjI4LTQtZ2VuZXJpYycKICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXIt
+dW5zdGFibGUvYWNvcmUvaHJ0aW1lci5vCiAgQ0MgW01dICAvaG9tZS9zdXNhbi9EZXNrdG9wL2Fs
+c2EtZHJpdmVyLXVuc3RhYmxlL2Fjb3JlL2h3ZGVwLm8KICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rl
+c2t0b3AvYWxzYS1kcml2ZXItdW5zdGFibGUvYWNvcmUvbWVtb3J5X3dyYXBwZXIubwogIENDIFtN
+XSAgL2hvbWUvc3VzYW4vRGVza3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZS9hY29yZS9tZW1hbGxv
+Yy5vCiAgQ0MgW01dICAvaG9tZS9zdXNhbi9EZXNrdG9wL2Fsc2EtZHJpdmVyLXVuc3RhYmxlL2Fj
+b3JlL3NnYnVmLm8KICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5z
+dGFibGUvYWNvcmUvcGNtLm8KICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2
+ZXItdW5zdGFibGUvYWNvcmUvcGNtX25hdGl2ZS5vCiAgQ0MgW01dICAvaG9tZS9zdXNhbi9EZXNr
+dG9wL2Fsc2EtZHJpdmVyLXVuc3RhYmxlL2Fjb3JlL3BjbV9saWIubwogIENDIFtNXSAgL2hvbWUv
+c3VzYW4vRGVza3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZS9hY29yZS9wY21fdGltZXIubwogIEND
+IFtNXSAgL2hvbWUvc3VzYW4vRGVza3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZS9hY29yZS9wY21f
+bWlzYy5vCiAgQ0MgW01dICAvaG9tZS9zdXNhbi9EZXNrdG9wL2Fsc2EtZHJpdmVyLXVuc3RhYmxl
+L2Fjb3JlL3BjbV9tZW1vcnkubwogIENDIFtNXSAgL2hvbWUvc3VzYW4vRGVza3RvcC9hbHNhLWRy
+aXZlci11bnN0YWJsZS9hY29yZS9yYXdtaWRpLm8KICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rlc2t0
+b3AvYWxzYS1kcml2ZXItdW5zdGFibGUvYWNvcmUvdGltZXIubwogIENDIFtNXSAgL2hvbWUvc3Vz
+YW4vRGVza3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZS9hY29yZS93cmFwcGVycy5vCiAgQ0MgW01d
+ICAvaG9tZS9zdXNhbi9EZXNrdG9wL2Fsc2EtZHJpdmVyLXVuc3RhYmxlL2Fjb3JlL21pc2NfZHJp
+dmVyLm8KICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5zdGFibGUv
+YWNvcmUvc291bmQubwovaG9tZS9zdXNhbi9EZXNrdG9wL2Fsc2EtZHJpdmVyLXVuc3RhYmxlL2Fj
+b3JlL3NvdW5kLmM6IEluIGZ1bmN0aW9uIOKAmHNuZF9yZXF1ZXN0X290aGVy4oCZOgovaG9tZS9z
+dXNhbi9EZXNrdG9wL2Fsc2EtZHJpdmVyLXVuc3RhYmxlL2Fjb3JlL3NvdW5kLmM6OTk6IHdhcm5p
+bmc6IGZvcm1hdCBub3QgYSBzdHJpbmcgbGl0ZXJhbCBhbmQgbm8gZm9ybWF0IGFyZ3VtZW50cwog
+IENDIFtNXSAgL2hvbWUvc3VzYW4vRGVza3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZS9hY29yZS9p
+bml0Lm8KICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5zdGFibGUv
+YWNvcmUvbWVtb3J5Lm8KICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXIt
+dW5zdGFibGUvYWNvcmUvaW5mby5vCiAgQ0MgW01dICAvaG9tZS9zdXNhbi9EZXNrdG9wL2Fsc2Et
+ZHJpdmVyLXVuc3RhYmxlL2Fjb3JlL2NvbnRyb2wubwogIENDIFtNXSAgL2hvbWUvc3VzYW4vRGVz
+a3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZS9hY29yZS9taXNjLm8KICBDQyBbTV0gIC9ob21lL3N1
+c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5zdGFibGUvYWNvcmUvZGV2aWNlLm8KICBDQyBbTV0g
+IC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5zdGFibGUvYWNvcmUvaXNhZG1hLm8K
+ICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5zdGFibGUvYWNvcmUv
+c291bmRfb3NzLm8KICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5z
+dGFibGUvYWNvcmUvaW5mb19vc3MubwogIENDIFtNXSAgL2hvbWUvc3VzYW4vRGVza3RvcC9hbHNh
+LWRyaXZlci11bnN0YWJsZS9hY29yZS92bWFzdGVyLm8KICBDQyBbTV0gIC9ob21lL3N1c2FuL0Rl
+c2t0b3AvYWxzYS1kcml2ZXItdW5zdGFibGUvYWNvcmUvamFjay5vCkluIGZpbGUgaW5jbHVkZWQg
+ZnJvbSAvaG9tZS9zdXNhbi9EZXNrdG9wL2Fsc2EtZHJpdmVyLXVuc3RhYmxlL2Fjb3JlL2phY2su
+YzoxMzoKL2hvbWUvc3VzYW4vRGVza3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZS9hY29yZS8uLi9h
+bHNhLWtlcm5lbC9jb3JlL2phY2suYzozMTogZXJyb3I6IOKAmFNXX1ZJREVPT1VUX0lOU0VSVOKA
+mSB1bmRlY2xhcmVkIGhlcmUgKG5vdCBpbiBhIGZ1bmN0aW9uKQptYWtlWzNdOiAqKiogWy9ob21l
+L3N1c2FuL0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5zdGFibGUvYWNvcmUvamFjay5vXSBFcnJvciAx
+Cm1ha2VbMl06ICoqKiBbL2hvbWUvc3VzYW4vRGVza3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZS9h
+Y29yZV0gRXJyb3IgMgptYWtlWzFdOiAqKiogW19tb2R1bGVfL2hvbWUvc3VzYW4vRGVza3RvcC9h
+bHNhLWRyaXZlci11bnN0YWJsZV0gRXJyb3IgMgptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9yeSBg
+L3Vzci9zcmMvbGludXgtaGVhZGVycy0yLjYuMjgtNC1nZW5lcmljJwptYWtlOiAqKiogW2NvbXBp
+bGVdIEVycm9yIDIKc3VzYW5AdWJ1bnR1On4vRGVza3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZSQg
+CgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
