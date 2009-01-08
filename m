@@ -1,17 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/7] ASoC: dapm: Allow explictly named mixer
-	controls
-Date: Thu,  8 Jan 2009 19:37:55 +0000
-Message-ID: <1231443481-29352-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <20090108193718.GA29183@sirena.org.uk>
+From: "Marco Santamaria" <marco.santamaria@gmail.com>
+Subject: Re: snd_usb_caiaq bug?
+Date: Thu, 8 Jan 2009 21:06:52 +0100
+Message-ID: <31e66c9e0901081206h55304767va12ec7a1da2cbab5@mail.gmail.com>
+References: <31e66c9e0901040829y4bedc1ebgcf91afe10d80341a@mail.gmail.com>
+	<s5hk597t6pm.wl%tiwai@suse.de>
+	<31e66c9e0901071046v36112db7s757788bcf5beaeeb@mail.gmail.com>
+	<907c05c70901071206y4bba38bej47f3eba51e6106d3@mail.gmail.com>
+	<s5hy6xmhgp3.wl%tiwai@suse.de>
+	<31e66c9e0901071659p63219af1wb392f50541cda7a0@mail.gmail.com>
+	<31e66c9e0901071734t70c980a8t87f668f973b54635@mail.gmail.com>
+	<s5h4p0at563.wl%tiwai@suse.de>
+	<907c05c70901080626x83c3e2fn158d2938c4c8cbfd@mail.gmail.com>
+	<s5h7i559845.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8C7D32438F
-	for <alsa-devel@alsa-project.org>; Thu,  8 Jan 2009 20:38:11 +0100 (CET)
-In-Reply-To: <20090108193718.GA29183@sirena.org.uk>
+Received: from mail-bw0-f20.google.com (mail-bw0-f20.google.com
+	[209.85.218.20]) by alsa0.perex.cz (Postfix) with ESMTP id 1D37824398
+	for <alsa-devel@alsa-project.org>; Thu,  8 Jan 2009 21:06:53 +0100 (CET)
+Received: by bwz13 with SMTP id 13so24145732bwz.8
+	for <alsa-devel@alsa-project.org>; Thu, 08 Jan 2009 12:06:52 -0800 (PST)
+In-Reply-To: <s5h7i559845.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,187 +33,151 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Ian Molton <ian@mnementh.co.uk>
+Cc: alsa-devel@alsa-project.org, Daniel Mack <daniel@caiaq.de>, Mysth-R <mysthr21@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Ian Molton <ian@mnementh.co.uk>
+I can confirm, after another load test with midi applications (that caused
+rosegarden and jack to crash several times...), that the last patch works
+without error messages.
 
-This patch allows you to define the mixer paths as having the same name as the
-paths they represent.
+Which version of alsa corresponds to kernel 2.6.29?
 
-This is required to support codecs such as the wm9705 neatly without extra
-controls in the alsa mixer.
+Thanks again,
 
-Signed-off-by: Ian Molton <ian@mnementh.co.uk>
----
- Documentation/sound/alsa/soc/dapm.txt |    3 ++
- include/sound/soc-dapm.h              |   11 +++++++
- sound/soc/soc-dapm.c                  |   47 +++++++++++++++++++++++++-------
- 3 files changed, 50 insertions(+), 11 deletions(-)
+Marco
 
-diff --git a/Documentation/sound/alsa/soc/dapm.txt b/Documentation/sound/alsa/soc/dapm.txt
-index 46f9684..9e67632 100644
---- a/Documentation/sound/alsa/soc/dapm.txt
-+++ b/Documentation/sound/alsa/soc/dapm.txt
-@@ -116,6 +116,9 @@ SOC_DAPM_SINGLE("HiFi Playback Switch", WM8731_APANA, 4, 1, 0),
- SND_SOC_DAPM_MIXER("Output Mixer", WM8731_PWR, 4, 1, wm8731_output_mixer_controls,
- 	ARRAY_SIZE(wm8731_output_mixer_controls)),
- 
-+If you dont want the mixer elements prefixed with the name of the mixer widget,
-+you can use SND_SOC_DAPM_MIXER_NAMED_CTL instead. the parameters are the same
-+as for SND_SOC_DAPM_MIXER.
- 
- 2.3 Platform/Machine domain Widgets
- -----------------------------------
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 4af1083..cc99dd4 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -76,6 +76,11 @@
- 	 wcontrols, wncontrols)\
- {	.id = snd_soc_dapm_mixer, .name = wname, .reg = wreg, .shift = wshift, \
- 	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = wncontrols}
-+#define SND_SOC_DAPM_MIXER_NAMED_CTL(wname, wreg, wshift, winvert, \
-+	 wcontrols, wncontrols)\
-+{       .id = snd_soc_dapm_mixer_named_ctl, .name = wname, .reg = wreg, \
-+	.shift = wshift, .invert = winvert, .kcontrols = wcontrols, \
-+	.num_kcontrols = wncontrols}
- #define SND_SOC_DAPM_MICBIAS(wname, wreg, wshift, winvert) \
- {	.id = snd_soc_dapm_micbias, .name = wname, .reg = wreg, .shift = wshift, \
- 	.invert = winvert, .kcontrols = NULL, .num_kcontrols = 0}
-@@ -101,6 +106,11 @@
- {	.id = snd_soc_dapm_mixer, .name = wname, .reg = wreg, .shift = wshift, \
- 	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = wncontrols, \
- 	.event = wevent, .event_flags = wflags}
-+#define SND_SOC_DAPM_MIXER_NAMED_CTL_E(wname, wreg, wshift, winvert, \
-+	wcontrols, wncontrols, wevent, wflags) \
-+{       .id = snd_soc_dapm_mixer, .name = wname, .reg = wreg, .shift = wshift, \
-+	.invert = winvert, .kcontrols = wcontrols, \
-+	.num_kcontrols = wncontrols, .event = wevent, .event_flags = wflags}
- #define SND_SOC_DAPM_MICBIAS_E(wname, wreg, wshift, winvert, wevent, wflags) \
- {	.id = snd_soc_dapm_micbias, .name = wname, .reg = wreg, .shift = wshift, \
- 	.invert = winvert, .kcontrols = NULL, .num_kcontrols = 0, \
-@@ -263,6 +273,7 @@ enum snd_soc_dapm_type {
- 	snd_soc_dapm_mux,			/* selects 1 analog signal from many inputs */
- 	snd_soc_dapm_value_mux,			/* selects 1 analog signal from many inputs */
- 	snd_soc_dapm_mixer,			/* mixes several analog signals together */
-+	snd_soc_dapm_mixer_named_ctl,		/* mixer with named controls */
- 	snd_soc_dapm_pga,			/* programmable gain/attenuation (volume) */
- 	snd_soc_dapm_adc,			/* analog to digital converter */
- 	snd_soc_dapm_dac,			/* digital to analog converter */
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index ad0d801..6362c76 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -54,14 +54,15 @@
- static int dapm_up_seq[] = {
- 	snd_soc_dapm_pre, snd_soc_dapm_micbias, snd_soc_dapm_mic,
- 	snd_soc_dapm_mux, snd_soc_dapm_value_mux, snd_soc_dapm_dac,
--	snd_soc_dapm_mixer, snd_soc_dapm_pga, snd_soc_dapm_adc, snd_soc_dapm_hp,
--	snd_soc_dapm_spk, snd_soc_dapm_post
-+	snd_soc_dapm_mixer, snd_soc_dapm_mixer_named_ctl, snd_soc_dapm_pga,
-+	snd_soc_dapm_adc, snd_soc_dapm_hp, snd_soc_dapm_spk, snd_soc_dapm_post
- };
-+
- static int dapm_down_seq[] = {
- 	snd_soc_dapm_pre, snd_soc_dapm_adc, snd_soc_dapm_hp, snd_soc_dapm_spk,
--	snd_soc_dapm_pga, snd_soc_dapm_mixer, snd_soc_dapm_dac, snd_soc_dapm_mic,
--	snd_soc_dapm_micbias, snd_soc_dapm_mux, snd_soc_dapm_value_mux,
--	snd_soc_dapm_post
-+	snd_soc_dapm_pga, snd_soc_dapm_mixer_named_ctl, snd_soc_dapm_mixer,
-+	snd_soc_dapm_dac, snd_soc_dapm_mic, snd_soc_dapm_micbias,
-+	snd_soc_dapm_mux, snd_soc_dapm_value_mux, snd_soc_dapm_post
- };
- 
- static int dapm_status = 1;
-@@ -101,7 +102,8 @@ static void dapm_set_path_status(struct snd_soc_dapm_widget *w,
- {
- 	switch (w->id) {
- 	case snd_soc_dapm_switch:
--	case snd_soc_dapm_mixer: {
-+	case snd_soc_dapm_mixer:
-+	case snd_soc_dapm_mixer_named_ctl: {
- 		int val;
- 		struct soc_mixer_control *mc = (struct soc_mixer_control *)
- 			w->kcontrols[i].private_value;
-@@ -347,15 +349,33 @@ static int dapm_new_mixer(struct snd_soc_codec *codec,
- 			if (path->name != (char*)w->kcontrols[i].name)
- 				continue;
- 
--			/* add dapm control with long name */
--			name_len = 2 + strlen(w->name)
--				+ strlen(w->kcontrols[i].name);
-+			/* add dapm control with long name.
-+			 * for dapm_mixer this is the concatenation of the
-+			 * mixer and kcontrol name.
-+			 * for dapm_mixer_named_ctl this is simply the
-+			 * kcontrol name.
-+			 */
-+			name_len = strlen(w->kcontrols[i].name) + 1;
-+			if (w->id == snd_soc_dapm_mixer)
-+				name_len += 1 + strlen(w->name);
-+
- 			path->long_name = kmalloc(name_len, GFP_KERNEL);
-+
- 			if (path->long_name == NULL)
- 				return -ENOMEM;
- 
--			snprintf(path->long_name, name_len, "%s %s",
--				 w->name, w->kcontrols[i].name);
-+			switch (w->id) {
-+			case snd_soc_dapm_mixer:
-+			default:
-+				snprintf(path->long_name, name_len, "%s %s",
-+					 w->name, w->kcontrols[i].name);
-+			break;
-+			case snd_soc_dapm_mixer_named_ctl:
-+				snprintf(path->long_name, name_len, "%s",
-+					 w->kcontrols[i].name);
-+			break;
-+			}
-+
- 			path->long_name[name_len - 1] = '\0';
- 
- 			path->kcontrol = snd_soc_cnew(&w->kcontrols[i], w,
-@@ -711,6 +731,7 @@ static void dbg_dump_dapm(struct snd_soc_codec* codec, const char *action)
- 		case snd_soc_dapm_adc:
- 		case snd_soc_dapm_pga:
- 		case snd_soc_dapm_mixer:
-+		case snd_soc_dapm_mixer_named_ctl:
- 			if (w->name) {
- 				in = is_connected_input_ep(w);
- 				dapm_clear_walk(w->codec);
-@@ -822,6 +843,7 @@ static int dapm_mixer_update_power(struct snd_soc_dapm_widget *widget,
- 	int found = 0;
- 
- 	if (widget->id != snd_soc_dapm_mixer &&
-+	    widget->id != snd_soc_dapm_mixer_named_ctl &&
- 	    widget->id != snd_soc_dapm_switch)
- 		return -ENODEV;
- 
-@@ -875,6 +897,7 @@ static ssize_t dapm_widget_show(struct device *dev,
- 		case snd_soc_dapm_adc:
- 		case snd_soc_dapm_pga:
- 		case snd_soc_dapm_mixer:
-+		case snd_soc_dapm_mixer_named_ctl:
- 			if (w->name)
- 				count += sprintf(buf + count, "%s: %s\n",
- 					w->name, w->power ? "On":"Off");
-@@ -1058,6 +1081,7 @@ static int snd_soc_dapm_add_route(struct snd_soc_codec *codec,
- 		break;
- 	case snd_soc_dapm_switch:
- 	case snd_soc_dapm_mixer:
-+	case snd_soc_dapm_mixer_named_ctl:
- 		ret = dapm_connect_mixer(codec, wsource, wsink, path, control);
- 		if (ret != 0)
- 			goto err;
-@@ -1135,6 +1159,7 @@ int snd_soc_dapm_new_widgets(struct snd_soc_codec *codec)
- 		switch(w->id) {
- 		case snd_soc_dapm_switch:
- 		case snd_soc_dapm_mixer:
-+		case snd_soc_dapm_mixer_named_ctl:
- 			dapm_new_mixer(codec, w);
- 			break;
- 		case snd_soc_dapm_mux:
--- 
-1.5.6.5
+2009/1/8 Takashi Iwai <tiwai@suse.de>
+
+> At Thu, 8 Jan 2009 15:26:39 +0100,
+> Mysth-R wrote:
+> >
+> > Hi,
+> >
+> > I tried the last patch, and I think we got it. I made some few tests, and
+> > every thing is Ok for me now. No more crash, no more messages in dmesg.
+> > I just had a warning during compilation, but I think this is not really
+> > important :
+> >
+> > sound/usb/caiaq/caiaq-midi.c: In function
+> \u2018snd_usb_caiaq_midi_output_done
+> > \u2019:
+> > sound/usb/caiaq/caiaq-midi.c:170: attention : unused variable
+> \u2018buf\u2019
+> >
+> > Perhaps this is not the same line (170) as you but, in my file, it
+> concerns
+> > the last function.
+>
+> OK, it's simple to fix.
+> The below is the latest version I committed now to sound git tree.
+> It'll be pushed to 2.6.29 (and stable kernels) later.
+>
+> Please let me know if you still encounter relevant problems.
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/usb/caiaq/caiaq-device.h
+> b/sound/usb/caiaq/caiaq-device.h
+> index f9fbdba..ab56e73 100644
+> --- a/sound/usb/caiaq/caiaq-device.h
+> +++ b/sound/usb/caiaq/caiaq-device.h
+> @@ -75,6 +75,7 @@ struct snd_usb_caiaqdev {
+>        wait_queue_head_t ep1_wait_queue;
+>        wait_queue_head_t prepare_wait_queue;
+>        int spec_received, audio_parm_answer;
+> +       int midi_out_active;
+>
+>        char vendor_name[CAIAQ_USB_STR_LEN];
+>        char product_name[CAIAQ_USB_STR_LEN];
+> diff --git a/sound/usb/caiaq/caiaq-midi.c b/sound/usb/caiaq/caiaq-midi.c
+> index 30b57f9..f19fd36 100644
+> --- a/sound/usb/caiaq/caiaq-midi.c
+> +++ b/sound/usb/caiaq/caiaq-midi.c
+> @@ -59,6 +59,11 @@ static int snd_usb_caiaq_midi_output_open(struct
+> snd_rawmidi_substream *substrea
+>
+>  static int snd_usb_caiaq_midi_output_close(struct snd_rawmidi_substream
+> *substream)
+>  {
+> +       struct snd_usb_caiaqdev *dev = substream->rmidi->private_data;
+> +       if (dev->midi_out_active) {
+> +               usb_kill_urb(&dev->midi_out_urb);
+> +               dev->midi_out_active = 0;
+> +       }
+>        return 0;
+>  }
+>
+> @@ -69,7 +74,8 @@ static void snd_usb_caiaq_midi_send(struct
+> snd_usb_caiaqdev *dev,
+>
+>        dev->midi_out_buf[0] = EP1_CMD_MIDI_WRITE;
+>        dev->midi_out_buf[1] = 0; /* port */
+> -       len = snd_rawmidi_transmit_peek(substream, dev->midi_out_buf+3,
+> EP1_BUFSIZE-3);
+> +       len = snd_rawmidi_transmit(substream, dev->midi_out_buf + 3,
+> +                                  EP1_BUFSIZE - 3);
+>
+>        if (len <= 0)
+>                return;
+> @@ -79,24 +85,24 @@ static void snd_usb_caiaq_midi_send(struct
+> snd_usb_caiaqdev *dev,
+>
+>        ret = usb_submit_urb(&dev->midi_out_urb, GFP_ATOMIC);
+>        if (ret < 0)
+> -               log("snd_usb_caiaq_midi_send(%p): usb_submit_urb() failed,
+> %d\n",
+> -                               substream, ret);
+> +               log("snd_usb_caiaq_midi_send(%p): usb_submit_urb() failed,"
+> +                   "ret=%d, len=%d\n",
+> +                   substream, ret, len);
+> +       else
+> +               dev->midi_out_active = 1;
+>  }
+>
+>  static void snd_usb_caiaq_midi_output_trigger(struct snd_rawmidi_substream
+> *substream, int up)
+>  {
+>        struct snd_usb_caiaqdev *dev = substream->rmidi->private_data;
+>
+> -       if (dev->midi_out_substream != NULL)
+> -               return;
+> -
+> -       if (!up) {
+> +       if (up) {
+> +               dev->midi_out_substream = substream;
+> +               if (!dev->midi_out_active)
+> +                       snd_usb_caiaq_midi_send(dev, substream);
+> +       } else {
+>                dev->midi_out_substream = NULL;
+> -               return;
+>        }
+> -
+> -       dev->midi_out_substream = substream;
+> -       snd_usb_caiaq_midi_send(dev, substream);
+>  }
+>
+>
+> @@ -161,16 +167,14 @@ int snd_usb_caiaq_midi_init(struct snd_usb_caiaqdev
+> *device)
+>  void snd_usb_caiaq_midi_output_done(struct urb* urb)
+>  {
+>        struct snd_usb_caiaqdev *dev = urb->context;
+> -       char *buf = urb->transfer_buffer;
+>
+> +       dev->midi_out_active = 0;
+>        if (urb->status != 0)
+>                return;
+>
+>        if (!dev->midi_out_substream)
+>                return;
+>
+> -       snd_rawmidi_transmit_ack(dev->midi_out_substream, buf[2]);
+> -       dev->midi_out_substream = NULL;
+>        snd_usb_caiaq_midi_send(dev, dev->midi_out_substream);
+>  }
+>
+>
