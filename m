@@ -1,18 +1,14 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 1/2] ASoC: Merge the soc_value_enum to
-	soc_enum struct
-Date: Thu, 8 Jan 2009 13:48:51 +0000
-Message-ID: <20090108134850.GC25876@sirena.org.uk>
-References: <1231414470-24690-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH 3/3] ASoC: TWL4030: Module unloading fix
+Date: Thu,  8 Jan 2009 15:52:43 +0200
+Message-ID: <1231422763-13659-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9C26B2443A
-	for <alsa-devel@alsa-project.org>; Thu,  8 Jan 2009 14:48:52 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1231414470-24690-1-git-send-email-peter.ujfalusi@nokia.com>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id DC7732443E
+	for <alsa-devel@alsa-project.org>; Thu,  8 Jan 2009 14:52:49 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +18,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: sakoman@gmail.com, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
+Cc: sakoman@gmail.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 08, 2009 at 01:34:29PM +0200, Peter Ujfalusi wrote:
+Call the snd_soc_free_pcm and snd_soc_dapm_free when the
+codec driver is unloaded.
 
-> Merge the recently introduced soc_value_enum structure to the soc_enum.
-> The value based enums are still handled separately from the normal enum types,
-> but with the merge some of the newly introduced functions can be removed.
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+ sound/soc/codecs/twl4030.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-
-This looks good, thanks for doing the cleanup.  Applied both.
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index db24f83..ea370a4 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -1280,6 +1280,8 @@ static int twl4030_remove(struct platform_device *pdev)
+ 	struct snd_soc_codec *codec = socdev->codec;
+ 
+ 	printk(KERN_INFO "TWL4030 Audio Codec remove\n");
++	snd_soc_free_pcms(socdev);
++	snd_soc_dapm_free(socdev);
+ 	kfree(codec);
+ 
+ 	return 0;
+-- 
+1.6.1
