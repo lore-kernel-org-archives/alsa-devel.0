@@ -1,16 +1,29 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: [PATCH] wss-lib: move AD1845 frequency setting into
-	wss-lib
-Date: Fri, 9 Jan 2009 23:10:52 +0100
-Message-ID: <20090109231052.606a5497.krzysztof.h1@poczta.fm>
+From: "Marco Santamaria" <marco.santamaria@gmail.com>
+Subject: Re: snd_usb_caiaq bug?
+Date: Sat, 10 Jan 2009 13:53:24 +0100
+Message-ID: <31e66c9e0901100453v326e585dx73b9079662a73006@mail.gmail.com>
+References: <31e66c9e0901070741i2f6f363l9dc023223954ce2@mail.gmail.com>
+	<907c05c70901071206y4bba38bej47f3eba51e6106d3@mail.gmail.com>
+	<s5hy6xmhgp3.wl%tiwai@suse.de>
+	<31e66c9e0901071659p63219af1wb392f50541cda7a0@mail.gmail.com>
+	<31e66c9e0901071734t70c980a8t87f668f973b54635@mail.gmail.com>
+	<s5h4p0at563.wl%tiwai@suse.de>
+	<907c05c70901080626x83c3e2fn158d2938c4c8cbfd@mail.gmail.com>
+	<s5h7i559845.wl%tiwai@suse.de>
+	<20090108221153.GB31383@buzzloop.caiaq.de>
+	<s5h8wpl3r6y.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
-	[217.74.64.239])
-	by alsa0.perex.cz (Postfix) with ESMTP id B528E1037EB
-	for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2009 23:08:24 +0100 (CET)
+Received: from mail-bw0-f20.google.com (mail-bw0-f20.google.com
+	[209.85.218.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id 771C11037EB
+	for <alsa-devel@alsa-project.org>; Sat, 10 Jan 2009 13:53:26 +0100 (CET)
+Received: by bwz13 with SMTP id 13so26341611bwz.8
+	for <alsa-devel@alsa-project.org>; Sat, 10 Jan 2009 04:53:25 -0800 (PST)
+In-Reply-To: <s5h8wpl3r6y.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,269 +33,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>, "Theodore J. Allen" <tjallen@hws.edu>
-Cc: Takashi Iwai <tiwai@suse.de>, Rene Herman <rene.herman@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>, Daniel Mack <daniel@caiaq.org>, alsa-devel@alsa-project.org
+Cc: Mysth-R <mysthr21@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
+During a Rosegarden session a qsampler crash caused the following output in
+dmesg:
 
-This is required to allow the sscape driver
-to autodetect installed codec.
+[11530.642970] qsampler[22794]: segfault at 00000008 eip b73f52c5 esp
+bfe77e20 error 4
+[13278.161113] ALSA
+/home/marco/build/alsa-1.0.17/linux-2.6.24-23-rt/driver/alsa-driver-1.0.17/usb/caiaq/../../alsa-kernel/usb/caiaq/caiaq-midi.c:90:
+snd-usb-caiaq log: snd_usb_caiaq_midi_send(f6d52b40): usb_submit_urb()
+failed,ret=-22, len=61
+[13720.859888] qjackctl.bin[22273]: segfault at 00000314 eip b7b07a7f esp
+bfbe8f54 error 4
 
-Also, do not create a timer if detected codec
-has no hardware timer (e.g. AD1848).
+There are segmentation fault errors from qsampler and qjackctl, but perhaps
+there's also a problem in caiaq-midi.c .
 
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
-Cc: Rene Herman
----
+Regards,
+Marco
 
-Ted, please test if the patch helps to make your Soundscape Elite
-card working. If not the patch is required anyway as your last feedback
-showed that frequency setting is incorrect in the sscape driver if
-the codec is not the AD1845.
+2009/1/9 Takashi Iwai <tiwai@suse.de>
 
- sound/isa/sscape.c      |  113 +++-------------------------------------------
- sound/isa/wss/wss_lib.c |   40 +++++++++++++++++
- 2 files changed, 48 insertions(+), 105 deletions(-)
-
-diff --git a/sound/isa/sscape.c b/sound/isa/sscape.c
-index 48a16d8..bc44916 100644
---- a/sound/isa/sscape.c
-+++ b/sound/isa/sscape.c
-@@ -129,9 +129,6 @@ enum GA_REG {
- #define DMA_8BIT  0x80
- 
- 
--#define AD1845_FREQ_SEL_MSB    0x16
--#define AD1845_FREQ_SEL_LSB    0x17
--
- enum card_type {
- 	SSCAPE,
- 	SSCAPE_PNP,
-@@ -955,82 +952,6 @@ static int __devinit create_mpu401(struct snd_card *card, int devnum, unsigned l
- 
- 
- /*
-- * Override for the CS4231 playback format function.
-- * The AD1845 has much simpler format and rate selection.
-- */
--static void ad1845_playback_format(struct snd_wss *chip,
--				   struct snd_pcm_hw_params *params,
--				   unsigned char format)
--{
--	unsigned long flags;
--	unsigned rate = params_rate(params);
--
--	/*
--	 * The AD1845 can't handle sample frequencies
--	 * outside of 4 kHZ to 50 kHZ
--	 */
--	if (rate > 50000)
--		rate = 50000;
--	else if (rate < 4000)
--		rate = 4000;
--
--	spin_lock_irqsave(&chip->reg_lock, flags);
--
--	/*
--	 * Program the AD1845 correctly for the playback stream.
--	 * Note that we do NOT need to toggle the MCE bit because
--	 * the PLAYBACK_ENABLE bit of the Interface Configuration
--	 * register is set.
--	 * 
--	 * NOTE: We seem to need to write to the MSB before the LSB
--	 *       to get the correct sample frequency.
--	 */
--	snd_wss_out(chip, CS4231_PLAYBK_FORMAT, (format & 0xf0));
--	snd_wss_out(chip, AD1845_FREQ_SEL_MSB, (unsigned char) (rate >> 8));
--	snd_wss_out(chip, AD1845_FREQ_SEL_LSB, (unsigned char) rate);
--
--	spin_unlock_irqrestore(&chip->reg_lock, flags);
--}
--
--/*
-- * Override for the CS4231 capture format function. 
-- * The AD1845 has much simpler format and rate selection.
-- */
--static void ad1845_capture_format(struct snd_wss *chip,
--				  struct snd_pcm_hw_params *params,
--				  unsigned char format)
--{
--	unsigned long flags;
--	unsigned rate = params_rate(params);
--
--	/*
--	 * The AD1845 can't handle sample frequencies 
--	 * outside of 4 kHZ to 50 kHZ
--	 */
--	if (rate > 50000)
--		rate = 50000;
--	else if (rate < 4000)
--		rate = 4000;
--
--	spin_lock_irqsave(&chip->reg_lock, flags);
--
--	/*
--	 * Program the AD1845 correctly for the playback stream.
--	 * Note that we do NOT need to toggle the MCE bit because
--	 * the CAPTURE_ENABLE bit of the Interface Configuration
--	 * register is set.
--	 *
--	 * NOTE: We seem to need to write to the MSB before the LSB
--	 *       to get the correct sample frequency.
--	 */
--	snd_wss_out(chip, CS4231_REC_FORMAT, (format & 0xf0));
--	snd_wss_out(chip, AD1845_FREQ_SEL_MSB, (unsigned char) (rate >> 8));
--	snd_wss_out(chip, AD1845_FREQ_SEL_LSB, (unsigned char) rate);
--
--	spin_unlock_irqrestore(&chip->reg_lock, flags);
--}
--
--/*
-  * Create an AD1845 PCM subdevice on the SoundScape. The AD1845
-  * is very much like a CS4231, with a few extra bits. We will
-  * try to support at least some of the extra bits by overriding
-@@ -1055,11 +976,6 @@ static int __devinit create_ad1845(struct snd_card *card, unsigned port,
- 		unsigned long flags;
- 		struct snd_pcm *pcm;
- 
--#define AD1845_FREQ_SEL_ENABLE  0x08
--
--#define AD1845_PWR_DOWN_CTRL   0x1b
--#define AD1845_CRYS_CLOCK_SEL  0x1d
--
- /*
-  * It turns out that the PLAYBACK_ENABLE bit is set
-  * by the lowlevel driver ...
-@@ -1074,7 +990,6 @@ static int __devinit create_ad1845(struct snd_card *card, unsigned port,
-  */
- 
- 		if (sscape->type != SSCAPE_VIVO) {
--			int val;
- 			/*
- 			 * The input clock frequency on the SoundScape must
- 			 * be 14.31818 MHz, because we must set this register
-@@ -1082,22 +997,10 @@ static int __devinit create_ad1845(struct snd_card *card, unsigned port,
- 			 */
- 			snd_wss_mce_up(chip);
- 			spin_lock_irqsave(&chip->reg_lock, flags);
--			snd_wss_out(chip, AD1845_CRYS_CLOCK_SEL, 0x20);
-+			snd_wss_out(chip, AD1845_CLOCK, 0x20);
- 			spin_unlock_irqrestore(&chip->reg_lock, flags);
- 			snd_wss_mce_down(chip);
- 
--			/*
--			 * More custom configuration:
--			 * a) select "mode 2" and provide a current drive of 8mA
--			 * b) enable frequency selection (for capture/playback)
--			 */
--			spin_lock_irqsave(&chip->reg_lock, flags);
--			snd_wss_out(chip, CS4231_MISC_INFO,
--				    CS4231_MODE2 | 0x10);
--			val = snd_wss_in(chip, AD1845_PWR_DOWN_CTRL);
--			snd_wss_out(chip, AD1845_PWR_DOWN_CTRL,
--				    val | AD1845_FREQ_SEL_ENABLE);
--			spin_unlock_irqrestore(&chip->reg_lock, flags);
- 		}
- 
- 		err = snd_wss_pcm(chip, 0, &pcm);
-@@ -1113,11 +1016,13 @@ static int __devinit create_ad1845(struct snd_card *card, unsigned port,
- 					    "for AD1845 chip\n");
- 			goto _error;
- 		}
--		err = snd_wss_timer(chip, 0, NULL);
--		if (err < 0) {
--			snd_printk(KERN_ERR "sscape: No timer device "
--					    "for AD1845 chip\n");
--			goto _error;
-+		if (chip->hardware != WSS_HW_AD1848) {
-+			err = snd_wss_timer(chip, 0, NULL);
-+			if (err < 0) {
-+				snd_printk(KERN_ERR "sscape: No timer device "
-+						    "for AD1845 chip\n");
-+				goto _error;
-+			}
- 		}
- 
- 		if (sscape->type != SSCAPE_VIVO) {
-@@ -1128,8 +1033,6 @@ static int __devinit create_ad1845(struct snd_card *card, unsigned port,
- 						    "MIDI mixer control\n");
- 				goto _error;
- 			}
--			chip->set_playback_format = ad1845_playback_format;
--			chip->set_capture_format = ad1845_capture_format;
- 		}
- 
- 		strcpy(card->driver, "SoundScape");
-diff --git a/sound/isa/wss/wss_lib.c b/sound/isa/wss/wss_lib.c
-index 3d6c5f2..13299ae 100644
---- a/sound/isa/wss/wss_lib.c
-+++ b/sound/isa/wss/wss_lib.c
-@@ -646,6 +646,24 @@ static void snd_wss_playback_format(struct snd_wss *chip,
- 			full_calib = 0;
- 		}
- 		spin_unlock_irqrestore(&chip->reg_lock, flags);
-+	} else if (chip->hardware == WSS_HW_AD1845) {
-+		unsigned rate = params_rate(params);
-+
-+		/*
-+		 * Program the AD1845 correctly for the playback stream.
-+		 * Note that we do NOT need to toggle the MCE bit because
-+		 * the PLAYBACK_ENABLE bit of the Interface Configuration
-+		 * register is set.
-+		 *
-+		 * NOTE: We seem to need to write to the MSB before the LSB
-+		 *       to get the correct sample frequency.
-+		 */
-+		spin_lock_irqsave(&chip->reg_lock, flags);
-+		snd_wss_out(chip, CS4231_PLAYBK_FORMAT, (pdfr & 0xf0));
-+		snd_wss_out(chip, AD1845_UPR_FREQ_SEL, (rate >> 8) & 0xff);
-+		snd_wss_out(chip, AD1845_LWR_FREQ_SEL, rate & 0xff);
-+		full_calib = 0;
-+		spin_unlock_irqrestore(&chip->reg_lock, flags);
- 	}
- 	if (full_calib) {
- 		snd_wss_mce_up(chip);
-@@ -690,6 +708,24 @@ static void snd_wss_capture_format(struct snd_wss *chip,
- 			full_calib = 0;
- 		}
- 		spin_unlock_irqrestore(&chip->reg_lock, flags);
-+	} else if (chip->hardware == WSS_HW_AD1845) {
-+		unsigned rate = params_rate(params);
-+
-+		/*
-+		 * Program the AD1845 correctly for the capture stream.
-+		 * Note that we do NOT need to toggle the MCE bit because
-+		 * the PLAYBACK_ENABLE bit of the Interface Configuration
-+		 * register is set.
-+		 *
-+		 * NOTE: We seem to need to write to the MSB before the LSB
-+		 *       to get the correct sample frequency.
-+		 */
-+		spin_lock_irqsave(&chip->reg_lock, flags);
-+		snd_wss_out(chip, CS4231_REC_FORMAT, (cdfr & 0xf0));
-+		snd_wss_out(chip, AD1845_UPR_FREQ_SEL, (rate >> 8) & 0xff);
-+		snd_wss_out(chip, AD1845_LWR_FREQ_SEL, rate & 0xff);
-+		full_calib = 0;
-+		spin_unlock_irqrestore(&chip->reg_lock, flags);
- 	}
- 	if (full_calib) {
- 		snd_wss_mce_up(chip);
-@@ -1314,6 +1350,10 @@ static int snd_wss_probe(struct snd_wss *chip)
- 		chip->image[CS4231_ALT_FEATURE_2] =
- 			chip->hardware == WSS_HW_INTERWAVE ? 0xc2 : 0x01;
- 	}
-+	/* enable fine grained frequency selection */
-+	if (chip->hardware == WSS_HW_AD1845)
-+		chip->image[AD1845_PWR_DOWN] = 8;
-+
- 	ptr = (unsigned char *) &chip->image;
- 	regnum = (chip->hardware & WSS_HW_AD1848_MASK) ? 16 : 32;
- 	snd_wss_mce_down(chip);
--- 
-1.5.2.2
-
-
-----------------------------------------------------------------------
-Promocja w Speak Up. 3 miesiace angielskiego gratis.
-Sprawdz teraz i wypelnij formularz! >> http://link.interia.pl/f2019
+> At Thu, 8 Jan 2009 23:11:53 +0100,
+> Daniel Mack wrote:
+> >
+> > Hi Takashi,
+> >
+> > On Thu, Jan 08, 2009 at 03:37:30PM +0100, Takashi Iwai wrote:
+> > > > every thing is Ok for me now. No more crash, no more messages in
+> dmesg.
+> > > > I just had a warning during compilation, but I think this is not
+> really
+> > > > important :
+> > > >
+> > > > sound/usb/caiaq/caiaq-midi.c: In function
+> \u2018snd_usb_caiaq_midi_output_done
+> > > > \u2019:
+> > > > sound/usb/caiaq/caiaq-midi.c:170: attention : unused variable
+> \u2018buf\u2019
+> > > >
+> > > > Perhaps this is not the same line (170) as you but, in my file, it
+> concerns
+> > > > the last function.
+> > >
+> > > OK, it's simple to fix.
+> > > The below is the latest version I committed now to sound git tree.
+> > > It'll be pushed to 2.6.29 (and stable kernels) later.
+> >
+> > Thanks a lot for your help - I was on vacation until now and had very
+> > limited ways to follow that thread. I would, however, apprectiate the
+> > driver version number would be increased for this change, as it makes
+> > tracking of user error reports better trackable.
+> >
+> > Do you want me to send in a patch for that or is it easier if you do
+> > it yourself?
+>
+> I increased the version to 1.3.10 now.
+>
+>
+> thanks,
+>
+> Takashi
+>
