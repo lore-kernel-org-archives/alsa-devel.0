@@ -1,16 +1,16 @@
 From: Andrea Borgia <andrea@borgia.bo.it>
 Subject: Re: [PATCH - SB-0500 1/1] preliminary support for
 	Toshiba SB-0500
-Date: Sun, 11 Jan 2009 13:52:59 +0100
-Message-ID: <4969EBAB.4070302@borgia.bo.it>
+Date: Sun, 11 Jan 2009 13:44:03 +0100
+Message-ID: <4969E993.3020303@borgia.bo.it>
 References: <s5h3afuivsl.wl%tiwai@suse.de>	<49695750.3020802@borgia.bo.it>
 	<s5hocye2glr.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------070101060804060300050008"
+Content-Type: multipart/mixed; boundary="------------000203070707000003060705"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from vsmtp21.tin.it (vsmtp21.tin.it [212.216.176.109])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5BD04103811
-	for <alsa-devel@alsa-project.org>; Sun, 11 Jan 2009 13:53:16 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id CE452103817
+	for <alsa-devel@alsa-project.org>; Sun, 11 Jan 2009 13:55:57 +0100 (CET)
 In-Reply-To: <s5hocye2glr.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,7 +26,7 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------070101060804060300050008
+--------------000203070707000003060705
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
@@ -48,7 +48,7 @@ follow your advice and add a quirk.
 
 Andrea.
 
---------------070101060804060300050008
+--------------000203070707000003060705
 Content-Type: text/plain;
  name="sb0500.txt"
 Content-Transfer-Encoding: 7bit
@@ -1449,7 +1449,7 @@ Device Status:     0x0003
   Self Powered
   Remote Wakeup Enabled
 
---------------070101060804060300050008
+--------------000203070707000003060705
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -1460,4 +1460,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---------------070101060804060300050008--
+--------------000203070707000003060705--
