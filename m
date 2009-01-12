@@ -1,18 +1,14 @@
 From: Andrea Borgia <andrea@borgia.bo.it>
-Subject: Re: [PATCH - SB-0500 1/1] preliminary support for
-	Toshiba SB-0500
-Date: Mon, 12 Jan 2009 23:09:03 +0100
-Message-ID: <496BBF7F.1070505@borgia.bo.it>
-References: <s5h3afuivsl.wl%tiwai@suse.de>	<49695750.3020802@borgia.bo.it>	<s5hocye2glr.wl%tiwai@suse.de>	<4969E993.3020303@borgia.bo.it>
-	<s5hy6xgdart.wl%tiwai@suse.de>
+Subject: [PATCH - SB0500 2/2] rename "Device" to "Toshiba
+	SB-0500" via quirks
+Date: Mon, 12 Jan 2009 23:17:47 +0100
+Message-ID: <1231798667-8870-1-git-send-email-andrea@borgia.bo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vsmtp3.tin.it (vsmtp3.tin.it [212.216.176.223])
-	by alsa0.perex.cz (Postfix) with ESMTP id 743B21037ED
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2009 23:09:05 +0100 (CET)
-In-Reply-To: <s5hy6xgdart.wl%tiwai@suse.de>
+In-Reply-To: <>
+References: <>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,15 +18,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Andrea Borgia <andrea@borgia.bo.it>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
 
-> 		.product_name = "SB-0500",
+Signed-off-by: Andrea Borgia <andrea@borgia.bo.it>
 
-I suppose the fact that the name becomes "SB0500" (sans hyphen) in
-/proc/asound/cards is the expected behaviour, right?
-
-Andrea.
+diff --git a/usb/usbquirks.h b/usb/usbquirks.h
+index 9211575..d59323e 100644
+--- a/usb/usbquirks.h
++++ b/usb/usbquirks.h
+@@ -39,6 +39,16 @@
+ 	.idProduct = prod, \
+ 	.bInterfaceClass = USB_CLASS_VENDOR_SPEC
+ 
++/* Creative/Toshiba Multimedia Center SB-0500 */
++{
++	USB_DEVICE(0x041e, 0x3048),
++	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++		.vendor_name = "Toshiba",
++		.product_name = "SB-0500",
++		.ifnum = QUIRK_NO_INTERFACE
++	}
++},
++
+ /* Creative/E-Mu devices */
+ {
+ 	USB_DEVICE(0x041e, 0x3010),
+-- 
+1.5.4.3
