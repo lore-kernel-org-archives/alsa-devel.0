@@ -1,19 +1,18 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: [PATCH] sscape: fix incorrect timeout after microcode
-	upload
-Date: Mon, 12 Jan 2009 21:25:04 +0100
-Message-ID: <20090112212504.dea47a49.krzysztof.h1@poczta.fm>
-References: <20090112175416.482cdc60.krzysztof.h1@poczta.fm>
-	<s5h63kkbgro.wl%tiwai@suse.de>
+From: Andrea Borgia <andrea@borgia.bo.it>
+Subject: Re: [PATCH - SB-0500 1/1] preliminary support for
+	Toshiba SB-0500
+Date: Mon, 12 Jan 2009 23:09:03 +0100
+Message-ID: <496BBF7F.1070505@borgia.bo.it>
+References: <s5h3afuivsl.wl%tiwai@suse.de>	<49695750.3020802@borgia.bo.it>	<s5hocye2glr.wl%tiwai@suse.de>	<4969E993.3020303@borgia.bo.it>
+	<s5hy6xgdart.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
-	[217.74.64.239])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7361F1037EC
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2009 21:29:21 +0100 (CET)
-In-Reply-To: <s5h63kkbgro.wl%tiwai@suse.de>
+Received: from vsmtp3.tin.it (vsmtp3.tin.it [212.216.176.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 743B21037ED
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2009 23:09:05 +0100 (CET)
+In-Reply-To: <s5hy6xgdart.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,93 +23,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Theodore Allen <allen@hws.edu>, Alsa-devel <alsa-devel@alsa-project.org>, Rene Herman <rene.herman@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
+Takashi Iwai wrote:
 
-A comment states that one should wait up to 5 secs
-while a waiting loop waits only 5 system ticks.
----
-This is a second version of the patch with while loops
-changed to do-while ones.
+> 		.product_name = "SB-0500",
 
- sound/isa/sscape.c |   24 ++++++++++++------------
- 1 files changed, 12 insertions(+), 12 deletions(-)
+I suppose the fact that the name becomes "SB0500" (sans hyphen) in
+/proc/asound/cards is the expected behaviour, right?
 
-diff --git a/sound/isa/sscape.c b/sound/isa/sscape.c
-index bc44916..6a7f842 100644
---- a/sound/isa/sscape.c
-+++ b/sound/isa/sscape.c
-@@ -393,20 +393,20 @@ static int sscape_wait_dma_unsafe(unsigned io_base, enum GA_REG reg, unsigned ti
-  */
- static int obp_startup_ack(struct soundscape *s, unsigned timeout)
- {
--	while (timeout != 0) {
-+	unsigned long end_time = jiffies + msecs_to_jiffies(timeout);
-+
-+	do {
- 		unsigned long flags;
- 		unsigned char x;
- 
--		schedule_timeout_uninterruptible(1);
--
- 		spin_lock_irqsave(&s->lock, flags);
- 		x = inb(HOST_DATA_IO(s->io_base));
- 		spin_unlock_irqrestore(&s->lock, flags);
- 		if ((x & 0xfe) == 0xfe)
- 			return 1;
- 
--		--timeout;
--	} /* while */
-+		msleep(10);
-+	} while (time_before(jiffies, end_time));
- 
- 	return 0;
- }
-@@ -420,20 +420,20 @@ static int obp_startup_ack(struct soundscape *s, unsigned timeout)
-  */
- static int host_startup_ack(struct soundscape *s, unsigned timeout)
- {
--	while (timeout != 0) {
-+	unsigned long end_time = jiffies + msecs_to_jiffies(timeout);
-+
-+	do {
- 		unsigned long flags;
- 		unsigned char x;
- 
--		schedule_timeout_uninterruptible(1);
--
- 		spin_lock_irqsave(&s->lock, flags);
- 		x = inb(HOST_DATA_IO(s->io_base));
- 		spin_unlock_irqrestore(&s->lock, flags);
- 		if (x == 0xfe)
- 			return 1;
- 
--		--timeout;
--	} /* while */
-+		msleep(10);
-+	} while (time_before(jiffies, end_time));
- 
- 	return 0;
- }
-@@ -529,10 +529,10 @@ static int upload_dma_data(struct soundscape *s,
- 	 * give it 5 seconds (max) ...
- 	 */
- 	ret = 0;
--	if (!obp_startup_ack(s, 5)) {
-+	if (!obp_startup_ack(s, 5000)) {
- 		snd_printk(KERN_ERR "sscape: No response from on-board processor after upload\n");
- 		ret = -EAGAIN;
--	} else if (!host_startup_ack(s, 5)) {
-+	} else if (!host_startup_ack(s, 5000)) {
- 		snd_printk(KERN_ERR "sscape: SoundScape failed to initialise\n");
- 		ret = -EAGAIN;
- 	}
--- 
-1.5.2.2
-
-
-----------------------------------------------------------------------
-Speak Up. Angielski szybko i skutecznie. 3 miesiace nauki gratis.
-Sprawdz. >> http://link.interia.pl/f2019
+Andrea.
