@@ -1,25 +1,29 @@
-From: Eric <ejaouen@ponctey.fr>
-Subject: Re: intel DP35DP adat supported (STAC927x codec) ?
-Date: Mon, 12 Jan 2009 13:46:47 +0100
-Message-ID: <496B3BB7.1020203@ponctey.fr>
-References: <4969FBA0.1030008@ponctey.fr> <s5hvdskdah9.wl%tiwai@suse.de>
+From: "Marco Santamaria" <marco.santamaria@gmail.com>
+Subject: Re: snd_usb_caiaq bug?
+Date: Mon, 12 Jan 2009 15:30:55 +0100
+Message-ID: <31e66c9e0901120630s7ac06b5g81fda9fafeb35e48@mail.gmail.com>
+References: <31e66c9e0901070741i2f6f363l9dc023223954ce2@mail.gmail.com>
+	<31e66c9e0901071659p63219af1wb392f50541cda7a0@mail.gmail.com>
+	<31e66c9e0901071734t70c980a8t87f668f973b54635@mail.gmail.com>
+	<s5h4p0at563.wl%tiwai@suse.de>
+	<907c05c70901080626x83c3e2fn158d2938c4c8cbfd@mail.gmail.com>
+	<s5h7i559845.wl%tiwai@suse.de>
+	<20090108221153.GB31383@buzzloop.caiaq.de>
+	<s5h8wpl3r6y.wl%tiwai@suse.de>
+	<31e66c9e0901100453v326e585dx73b9079662a73006@mail.gmail.com>
+	<s5hpriu2goe.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp20.orange.fr (smtp20.orange.fr [193.252.22.31])
-	by alsa0.perex.cz (Postfix) with ESMTP id B2A291037ED
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2009 13:46:52 +0100 (CET)
-Received: from anita.2sapins.ponctey.fr
-	(LRouen-151-72-65-95.w193-251.abo.wanadoo.fr [193.251.41.95])
-	by mwinf2021.orange.fr (SMTP Server) with ESMTP id 374B01C000C5
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2009 13:46:52 +0100 (CET)
-Received: from [192.168.100.3] (unknown [192.168.100.3])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client did not present a certificate)
-	by anita.2sapins.ponctey.fr (Postfix) with ESMTPS id 58B7B51615
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2009 13:46:51 +0100 (CET)
-In-Reply-To: <s5hvdskdah9.wl%tiwai@suse.de>
+Received: from mail-bw0-f20.google.com (mail-bw0-f20.google.com
+	[209.85.218.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id 03C851037EC
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2009 15:30:56 +0100 (CET)
+Received: by bwz13 with SMTP id 13so28465275bwz.8
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2009 06:30:56 -0800 (PST)
+In-Reply-To: <s5hpriu2goe.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,32 +33,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mysth-R <mysthr21@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-In their handbook, motherboard intel DP35DP and others with STAC927x (in
-the codec datasheet also ADAT output is featured on older sigmatel
-STAC9271 and now IDT STAC9274 only) advertise ADAT output possible on
-their toslink.
-DP35DP and other intel boards are proven to have the ADAT output working
-under windows.
-Is it working in Alsa ? Many HTPC users would love that... I would !
+I wanted to report this, just in case it was related to the patch you made
+to solve our problem.
 
-Anybody from intel or IDT/sigmatel to confirm (by checking the sigmatel
-STAC927x hda codec driver) that it will work ?
-I want these intel motherboards only for this ADAT output feature and I
-am a linux only user so I would like to know before buying...
-I want to be sure someone would make the necessary changes to the hda
-sigmatel codec alsa driver so it would work.
-Thank you everybody
+Thank you very much,
 
+Marco
 
->> Is the ADAT output of the IDT (sigmatel) STAC927x HDA codec supported in
->> alsa ?
->> If not could someone please try to add this incredibly nice feature in
->> the existing alsa driver ?
+2009/1/11 Takashi Iwai <tiwai@suse.de>
 
-
-> Do you have any HD-audio device with ADAT?
-> IIRC, there is no specific verbs for ADAT on STAC927x...
+> At Sat, 10 Jan 2009 13:53:24 +0100,
+> Marco Santamaria wrote:
+> >
+> > During a Rosegarden session a qsampler crash caused the following output
+> in
+> > dmesg:
+> >
+> > [11530.642970] qsampler[22794]: segfault at 00000008 eip b73f52c5 esp
+> bfe77e20
+> > error 4
+> > [13278.161113] ALSA
+> /home/marco/build/alsa-1.0.17/linux-2.6.24-23-rt/driver/
+> > alsa-driver-1.0.17/usb/caiaq/../../alsa-kernel/usb/caiaq/caiaq-midi.c:90:
+> > snd-usb-caiaq log: snd_usb_caiaq_midi_send(f6d52b40): usb_submit_urb()
+> > failed,ret=-22, len=61
+> > [13720.859888] qjackctl.bin[22273]: segfault at 00000314 eip b7b07a7f esp
+> > bfbe8f54 error 4
+> >
+> > There are segmentation fault errors from qsampler and qjackctl, but
+> perhaps
+> > there's also a problem in caiaq-midi.c .
+>
+> Might be, but difficult to judge as now since the error seems
+> happening after qsampler, and the urb error itself seems
+> non-critical.
+>
+>
 > Takashi
+>
+> >
+> > Regards,
+> > Marco
+> >
+> > 2009/1/9 Takashi Iwai <tiwai@suse.de>
+> >
+> >     At Thu, 8 Jan 2009 23:11:53 +0100,
+> >     Daniel Mack wrote:
+> >     >
+> >     > Hi Takashi,
+> >     >
+> >     > On Thu, Jan 08, 2009 at 03:37:30PM +0100, Takashi Iwai wrote:
+> >     > > > every thing is Ok for me now. No more crash, no more messages
+> in
+> >     dmesg.
+> >     > > > I just had a warning during compilation, but I think this is
+> not
+> >     really
+> >     > > > important :
+> >     > > >
+> >     > > > sound/usb/caiaq/caiaq-midi.c: In function \
+> >     u2018snd_usb_caiaq_midi_output_done
+> >     > > > \u2019:
+> >     > > > sound/usb/caiaq/caiaq-midi.c:170: attention : unused variable \
+> >     u2018buf\u2019
+> >     > > >
+> >     > > > Perhaps this is not the same line (170) as you but, in my file,
+> it
+> >     concerns
+> >     > > > the last function.
+> >     > >
+> >     > > OK, it's simple to fix.
+> >     > > The below is the latest version I committed now to sound git
+> tree.
+> >     > > It'll be pushed to 2.6.29 (and stable kernels) later.
+> >     >
+> >     > Thanks a lot for your help - I was on vacation until now and had
+> very
+> >     > limited ways to follow that thread. I would, however, apprectiate
+> the
+> >     > driver version number would be increased for this change, as it
+> makes
+> >     > tracking of user error reports better trackable.
+> >     >
+> >     > Do you want me to send in a patch for that or is it easier if you
+> do
+> >     > it yourself?
+> >
+> >     I increased the version to 1.3.10 now.
+> >
+> >     thanks,
+> >
+> >     Takashi
+> >
+> >
+>
