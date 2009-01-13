@@ -1,18 +1,22 @@
-From: "Edwin van der Horst" <edwinvdh@gmail.com>
-Subject: Recorded frames sign 'error' after switchign to EABI
-	kernel?
-Date: Tue, 13 Jan 2009 10:35:28 +0100
-Message-ID: <faeb2d2e0901130135n4a5f557esfdf5743da0e00f11@mail.gmail.com>
+From: Adrian McMenamin <lkmladrian@gmail.com>
+Subject: Re: Fixing the AICA driver
+Date: Tue, 13 Jan 2009 09:57:25 +0000
+Message-ID: <8b67d60901130157o5afb1920n3ef1d9bef746550e@mail.gmail.com>
+References: <8b67d60812291120i58473762i679f5783b651f803@mail.gmail.com>
+	<s5hocyjv0ou.wl%tiwai@suse.de>
+	<1231440646.6620.1.camel@localhost.localdomain>
+	<s5h63kp3q12.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.154])
-	by alsa0.perex.cz (Postfix) with ESMTP id 83BD21037F1
-	for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2009 10:35:28 +0100 (CET)
-Received: by fg-out-1718.google.com with SMTP id 16so4286516fgg.44
-	for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2009 01:35:28 -0800 (PST)
-Content-Disposition: inline
+Received: from mail-bw0-f20.google.com (mail-bw0-f20.google.com
+	[209.85.218.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id A686D1037EF
+	for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2009 10:57:26 +0100 (CET)
+Received: by bwz13 with SMTP id 13so29861453bwz.8
+	for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2009 01:57:25 -0800 (PST)
+In-Reply-To: <s5h63kp3q12.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,44 +26,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Adrian McMenamin <adrian@newgolddream.dyndns.info>
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
+2009/1/9 Takashi Iwai <tiwai@suse.de>:
+> At Thu, 08 Jan 2009 18:50:46 +0000,
+> Adrian McMenamin wrote:
+>>
+>> On Wed, 2009-01-07 at 12:02 +0100, Takashi Iwai wrote:
+>>
+>> >
+>> > Could you try the git version?  I thought I fixed the relevant bug recently.
+>> >
+>> >
+>> > Takashi
+>>
+>> Hi Takashi - I assume you mean in the alssa-driver git, as I am using
+>> the bleeding edge kernel stuff already?
+>
+> No, I mean alsa-lib.  There is mmap_emul plugin in alsa-lib but it
+> didn't work well.
+>
 
-I'm using the ALSA API for quite some time now in my application,
-all worked fine until I switched to EABI kernel/compiler.
+There is a special part of hell where the damned spend eternity cross
+compiling alsa-lib.
 
-My application reads signed 16 bit frames (S16_LE) using readi call:
-
-long FCAudio::readRecordedPCM(char * dest,int len)
-{
-    ....
-    frames  = snd_pcm_readi(recHandle, dest, (len / asRec.bytesPS));
-//read data hw
-     ....
-     ....
-}
-
-This worked fine on the non EABi kernel.
-After I switched to the EABI enabled kernel and compiler, I heard
-massive 'hiss/noise' on recorded audio.
-I took a dump of the recorded frames, and this came out:
-
-sample data:
-| ff |  58 |  ff | e1 | ff | e2 | 0 | 0 | 0 | 48 | ff | e0 | ff | e3 |
-ff | e1 | 0 | 13 | ff | ca | ff | ae | 0 | 3 | ff | ee | ff | be|
-
-at first this seemed like correct data to me , but on a closer look
-the MSB(yte) is always 0x00 or 0xff
-I can't figure out why this is: I'm expecting 2 bytes of sample data,
-and in the current case I get 1 byte of correct data, and the other
-byte is only used for sign indication (0x00 or 0xFF).
-
-I can't figure out why this is, can anyone point me in the right direction?
-It's worth noting that arecord and aplay both work correctly, and
-using snd_pcm_dump(); I get settings as expedted and are correct.
-
-Thanks in advance...
-
-Edwin van der Horst
+But I'll have a go when I get the time in the enxt week or so.
