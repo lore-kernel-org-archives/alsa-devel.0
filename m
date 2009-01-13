@@ -1,17 +1,18 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
+From: Mark Brown <broonie@sirena.org.uk>
 Subject: Re: SoC scenarii API
-Date: Tue, 13 Jan 2009 23:31:27 +0100
-Message-ID: <87tz82yh1c.fsf@free.fr>
+Date: Tue, 13 Jan 2009 23:14:29 +0000
+Message-ID: <20090113231425.GA20748@sirena.org.uk>
 References: <87iqojqvyq.fsf@free.fr> <20090113155602.GD11651@sirena.org.uk>
+	<87tz82yh1c.fsf@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id 88E071037EC
-	for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2009 23:31:35 +0100 (CET)
-In-Reply-To: <20090113155602.GD11651@sirena.org.uk> (Mark Brown's message of
-	"Tue\, 13 Jan 2009 15\:56\:04 +0000")
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 75B531037EE
+	for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2009 00:16:17 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <87tz82yh1c.fsf@free.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,154 +22,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
 Cc: alsa-devel@alsa-project.org, lrg@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown <broonie@sirena.org.uk> writes:
+On Tue, Jan 13, 2009 at 11:31:27PM +0100, Robert Jarzmik wrote:
+> Mark Brown <broonie@sirena.org.uk> writes:
 
-> On Tue, Jan 13, 2009 at 12:36:13PM +0100, Robert Jarzmik wrote:
->
->> As mioa701 submission was stopped due to the need of a generic scenarii API,
->> this a first attempt to design such an API in order to unblock mioa701
->> submission.
->
-> You can still carry on submitting the core machine support and then
-> patch it to add the scenario stuff later.  That'd probably make review
-> slightly easier too since it'd identify the new stuff explicitly.
+> > You can still carry on submitting the core machine support and then
+> > patch it to add the scenario stuff later.  That'd probably make review
+> > slightly easier too since it'd identify the new stuff explicitly.
 
-Mmm ... at the risk of having another hardware incident ... why not ? Let's take
-chances and see if another mio overheats.
+> Mmm ... at the risk of having another hardware incident ... why not ? Let's take
+> chances and see if another mio overheats.
 
-> In general I'd like to see more exploration of the use cases that this
-> is intended to satisfy, including in terms of the mioa701 itself.  The
-> documentation should make it clear that this is not intended to be a
-> scalable solution and is only intended to be useful for hardware that is
-> very limited.  
-More comments then ? You know how poor my english is, you'll have to cope with
-it, sorry ... I'll add some information at the beginning.
+As said elsewhere in the thread you should be able to prevent this by
+preventing the affected outputs being simultaneously enabled (or
+whatever the configuration was that caused the trouble - output
+amplifiers are the things most likely to produce heat).
 
-> What are you using for user space - is it one of the standard stacks
-> like FSO?  Looking at the features you've got I'm a bit concerned that
-No. Userspace is Trolltech's Qtopia over alsa-lib.
+> > In general I'd like to see more exploration of the use cases that this
+> > is intended to satisfy, including in terms of the mioa701 itself.  The
+> > documentation should make it clear that this is not intended to be a
+> > scalable solution and is only intended to be useful for hardware that is
+> > very limited.  
 
-> the scenarios may get limiting in future: with both bluetooth and GSM
-> things are already pretty complex.  The only thing it's missing compared
-> to OpenMoko is WiFi.  For example, with your current scenarios I'm not
-> sure if it'd be possible to record a call or do simultaneous record and
-> playback?
-You're right. That functionnality is not available. That's the price to pay,
-somehow.
+> More comments then ? You know how poor my english is, you'll have to cope with
 
->  For dealing with overheating I *expect* that you only need to
-> have the machine driver prevent particular combinations of outputs being
-> simultaneously enabled.
-Ah, I feel you're right. The problem is, we don't have the specification, so we
-cannot be sure what creates the overheating.
+Your standards for what good English is are very high :) .
 
-> That said, this looks mostly reasonable as a scenario API.  I assume
-> that it creates new controls for the master volume and for selecting the
-> scenario?
-Yes, namely "SoC Volume" and "SoC Mode".
+What I mean is that we need to make sure that the case for in-kernel
+support has been made before it goes in and we also need to make sure
+that if it does go in it's made clear that this shouldn't be the
+standard way of doing scenarios.
 
-> The main issues I can see are with how state transitions are
-> managed and with how machine drivers interact with this if they need to
-> update the configuration at run time.
-Ah, the missing pre_scenario() and post_scenario() handlers in snd_soc_scenario
-I guess. I thought about these and forgot them. Will these deal with your
-concern ?
+> > What are you using for user space - is it one of the standard stacks
+> > like FSO?  Looking at the features you've got I'm a bit concerned that
 
->
->> struct setup_mixmux {
->> 	char *mixname;		/* Codec Mixer or Muxer name */
->> 	int  val;		/* Codec Mixer or Muxer value to enforce */
->> };
->
-> This structure needs namespacing.  Also, "Mux" not "Muxer".
-Right, I'll amend that.
+> No. Userspace is Trolltech's Qtopia over alsa-lib.
 
->
->> /**
->>  * struct soc_scenario - describes one sound usecase
->
-> snd_soc_scenario.
->
->>  * @name: Scenario name, value as will be seen in alsa "SoC Mode" alsa control
->>  * @pin_setup: Pin configuration to perform on scenario activation
->>  *	Table of all pins, as they should be configured. Each elements is a
->>  *	pin_change value, describing how to handle a specific pin.
->>  *      Table size must be the same as in snd_soc_scenario_init().
->
-> The table size ought to be specified in only one place.
->
->>  * @mixer_cleanup: Mixers/muxes to set up in phase (b)
->>  *	Table of all mixers/muxes to modify, NULL terminated.
->>  * @mixer_setup: Mixers/muxers to set up in phase (c)
->>  *	Table of all mixers/muxes to modify, NULL terminated
->
-> Hrm.  This all feels either too flexible or too inflexible WRT state
-> transitions.  If you do need to impose ordering beyond what DAPM can
-> figure out for itself then I'd expect to see any number of steps being
-> allowed.  If that isn't required then the intermediate step could just
-> be dropped.  If there were going to be some sort of "idle" state to
-> transition through I'd expect to just see that identified and then the
-> switchover to do a state->idle->state transition.
-As you wish. mixer_cleanup can be removed, as a state->idle->state will do the
-same thing.
+Hrm.  That's what OpenMoko used for their initial GTA02 release - they
+were using user space scenarios for that.
 
-> This might also be better with snd_ctl_elem_values so that it can cope
-> with any control - there's definitely a need for configuring PGAs
-> per-scenario, for example.
-Right, I'll amend that.
+> > to OpenMoko is WiFi.  For example, with your current scenarios I'm not
+> > sure if it'd be possible to record a call or do simultaneous record and
+> > playback?
 
->  Please also use a number of elements parameter for consistency with the rest
-> of the API (both here and ASoC wide).
-OK.
+> You're right. That functionnality is not available. That's the price to pay,
+> somehow.
 
->
->> struct soc_scenario {
->> 	const char *name;				/* scenario name */
->> 	const unsigned char pin_setup[];		/* pin_change for pins */
->> 	const struct setup_mixmux mixes_cleanup[];	/* mix cleanup */
->> 	const struct setup_mixmux mixes_setup[];	/* mix setup */
->
-> More natural would be pointers to arrays...
-Maybe. I was thinking of some macro magic to define each soc_scenario (thus the
-const). Let me activate thing a bit about it.
->
->> int snd_soc_scenario_init(struct snd_soc_codec *codec,
->> 			  struct soc_scenario *scenario, int nb_scenarii,
->
-> Please make this take a snd_soc_card rather than a snd_soc_codec.  Most
-> of the card-wide APIs currently take a codec but this is in the process
-> of being fixed.  Also, scenarios is the more usual plural in English.
-> For consistency with the rest of the API it'd be nice to use num rather
-> than nb.
-OK.
+This was the major part of the push to keep this out of kernel: it's
+difficult to impossible to figure out all the scenarios that users might
+want to run in and express them in a clean fashion.  How the audio is
+routed ends up being a runtime policy decision since so much of it is
+about the needs of the user space applications at any given moment
+rather than on the properties of the hardware.
 
-> Some of the documentation about the situations where this API should be
-> used should go with this function.
->
->> 			  char *pin_names[], int nb_pins);
->
-> I'm not sure why the pin names are specified separately here?  Would it
-> not be better to just use the pin lists in the scenarios.
-There are _no_ pin lists in scenarios. The scenarios only define a transition
-for each pin index. The actual pins are initialized once in the init function
-(ie. pin_names[0] = "Rear Speaker" for example). Then, in each scenario,
-pin_setup[0] will tell what to do to "Rear Speaker" : leave it, activate it or
-deactivate it.
+The other part was that it makes scenario development much easier (since
+you can use standard UIs and don't need to rebuild the kernel).
 
->> /**
->>  * snd_soc_scenario_init - initialize soc scenarii
->>  * @codec: codec used for the init
->>  */
->> void snd_soc_scenario_release(struct snd_soc_codec *code);
->
-> I sense bitrot :)
-Yes ...
+> >  For dealing with overheating I *expect* that you only need to
+> > have the machine driver prevent particular combinations of outputs being
+> > simultaneously enabled.
 
-I'll send an update soon.
+> Ah, I feel you're right. The problem is, we don't have the specification, so we
+> cannot be sure what creates the overheating.
 
---
-Robert
+Oh, I see.  If you're not sure restricting it to one output from the
+device (ie, only those that make the device itself make noise) at once
+would *probably* cover it.  There may be some interaction with the heat
+output from the RF stuff, though that'd be an issue anyway since the
+scenario stuff has no knowledge of that.
+
+> > The main issues I can see are with how state transitions are
+> > managed and with how machine drivers interact with this if they need to
+> > update the configuration at run time.
+
+> Ah, the missing pre_scenario() and post_scenario() handlers in snd_soc_scenario
+> I guess. I thought about these and forgot them. Will these deal with your
+> concern ?
+
+That doesn't give the machine drivers any way to do stuff other than on
+a user-initiated change.
+
+> >> 			  char *pin_names[], int nb_pins);
+
+> > I'm not sure why the pin names are specified separately here?  Would it
+> > not be better to just use the pin lists in the scenarios.
+
+> There are _no_ pin lists in scenarios. The scenarios only define a transition
+> for each pin index. The actual pins are initialized once in the init function
+> (ie. pin_names[0] = "Rear Speaker" for example). Then, in each scenario,
+> pin_setup[0] will tell what to do to "Rear Speaker" : leave it, activate it or
+> deactivate it.
+
+Ah, ouch.  That does become hard to read...
