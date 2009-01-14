@@ -1,17 +1,14 @@
-From: "James Courtier-Dutton" <james.dutton@gmail.com>
-Subject: usb-audio extension unit
-Date: Wed, 14 Jan 2009 17:45:52 +0000
-Message-ID: <ad2655cb0901140945q50b5760fv587943dc2ff6b0e@mail.gmail.com>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: fixed invalid value for SND_PCI_QUIRK
+Date: Wed, 14 Jan 2009 13:37:43 -0500
+Message-ID: <496E30F7.8090205@embeddedalley.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2B963103816
-	for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2009 18:45:53 +0100 (CET)
-Received: by fg-out-1718.google.com with SMTP id 16so344524fgg.44
-	for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2009 09:45:52 -0800 (PST)
-Content-Disposition: inline
+Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
+	by alsa0.perex.cz (Postfix) with SMTP id 976D9103843
+	for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2009 19:37:55 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,15 +19,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Changed invalid STAC_92HD71BXX_REF value for reference board SND_PCI_QUIRK to
+correct STAC_92HD83XXX_REF.
 
-Is there any chance that someone could add get/set functions for usb
-audio "extension units".
-This would make adding support for usb devices such as the emu usb
-products a lot easier to do.
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+---
 
-Kind Regards
-
-James
+diff --git a/pci/hda/patch_sigmatel.c b/pci/hda/patch_sigmatel.c
+index 35b83dc..a4e2d8f 100644
+--- a/pci/hda/patch_sigmatel.c
++++ b/pci/hda/patch_sigmatel.c
+@@ -1682,7 +1682,7 @@ static const char *stac92hd83xxx_models[STAC_92HD83XXX_MODELS] = {
+ static struct snd_pci_quirk stac92hd83xxx_cfg_tbl[] = {
+ 	/* SigmaTel reference board */
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x2668,
+-		      "DFI LanParty", STAC_92HD71BXX_REF),
++		      "DFI LanParty", STAC_92HD83XXX_REF),
+ 	{} /* terminator */
+ };
