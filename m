@@ -1,19 +1,23 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 1/1] ALSA: ASoC: DaVinci: Fix SFFSDR
-	compilation error.
-Date: Thu, 15 Jan 2009 21:10:07 +0000
-Message-ID: <20090115211005.GL12768@sirena.org.uk>
-References: <20090108121613.1ef53112.hugo@hugovil.com>
-	<1232052035-31846-1-git-send-email-hugo@hugovil.com>
+From: Daniel Mack <daniel@caiaq.org>
+Subject: [PATCH] snd-usb-caiaq: support for two more audio
+	devices
+Date: Thu, 15 Jan 2009 22:11:33 +0100
+Message-ID: <20090115211133.GA26612@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 77F92103890
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2009 22:10:07 +0100 (CET)
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id B9CB6103890
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2009 22:11:36 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by buzzloop.caiaq.de (Postfix) with ESMTP id 1974A7F404F
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2009 22:11:36 +0100 (CET)
+Received: from buzzloop.caiaq.de ([127.0.0.1])
+	by localhost (buzzloop.caiaq.de [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id JU37SbBDNmLD for <alsa-devel@alsa-project.org>;
+	Thu, 15 Jan 2009 22:11:33 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1232052035-31846-1-git-send-email-hugo@hugovil.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,14 +27,154 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Hugo Villeneuve <hugo@hugovil.com>
-Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 15, 2009 at 03:40:35PM -0500, Hugo Villeneuve wrote:
-> Remove dependency on sffsdr_fpga_set_codec_fs() when the
-> SFFSDR FPGA module is not selected.
+- Added support for two new audio devices from Native Instuments,
+  'Audio4DJ' and 'GuitarRig mobile'
+- Version number bumped to 1.3.11
 
-> Signed-off-by: Hugo Villeneuve <hugo@hugovil.com>
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
+---
+ sound/usb/Kconfig               |    2 ++
+ sound/usb/caiaq/caiaq-audio.c   |    5 +++--
+ sound/usb/caiaq/caiaq-control.c |   15 ++++++++++++---
+ sound/usb/caiaq/caiaq-device.c  |   16 ++++++++++++++--
+ sound/usb/caiaq/caiaq-device.h  |    2 ++
+ 5 files changed, 33 insertions(+), 7 deletions(-)
 
-Looks good, applied.
+diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
+index 5905c2b..523aec1 100644
+--- a/sound/usb/Kconfig
++++ b/sound/usb/Kconfig
+@@ -48,8 +48,10 @@ config SND_USB_CAIAQ
+ 	    * Native Instruments Kore Controller
+ 	    * Native Instruments Kore Controller 2
+ 	    * Native Instruments Audio Kontrol 1
++	    * Native Instruments Audio 4 DJ
+ 	    * Native Instruments Audio 8 DJ
+ 	    * Native Instruments Guitar Rig Session I/O
++	    * Native Instruments Guitar Rig mobile
+ 
+ 	   To compile this driver as a module, choose M here: the module
+ 	   will be called snd-usb-caiaq.
+diff --git a/sound/usb/caiaq/caiaq-audio.c b/sound/usb/caiaq/caiaq-audio.c
+index b3a6033..fc6d571 100644
+--- a/sound/usb/caiaq/caiaq-audio.c
++++ b/sound/usb/caiaq/caiaq-audio.c
+@@ -638,9 +638,10 @@ int snd_usb_caiaq_audio_init(struct snd_usb_caiaqdev *dev)
+ 	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_AK1):
+ 	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_RIGKONTROL3):
+ 	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_SESSIONIO):
+-		dev->samplerates |= SNDRV_PCM_RATE_88200;
++	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_GUITARRIGMOBILE):
+ 		dev->samplerates |= SNDRV_PCM_RATE_192000;
+-		break;
++		/* fall thru */
++	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_AUDIO4DJ):
+ 	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_AUDIO8DJ):
+ 		dev->samplerates |= SNDRV_PCM_RATE_88200;
+ 		break;
+diff --git a/sound/usb/caiaq/caiaq-control.c b/sound/usb/caiaq/caiaq-control.c
+index ccd763d..6ac5489 100644
+--- a/sound/usb/caiaq/caiaq-control.c
++++ b/sound/usb/caiaq/caiaq-control.c
+@@ -39,14 +39,15 @@ static int control_info(struct snd_kcontrol *kcontrol,
+ 	struct snd_usb_caiaqdev *dev = caiaqdev(chip->card);
+ 	int pos = kcontrol->private_value;
+ 	int is_intval = pos & CNT_INTVAL;
++	unsigned int id = dev->chip.usb_id;
+ 
+ 	uinfo->count = 1;
+ 	pos &= ~CNT_INTVAL;
+ 
+-	if (dev->chip.usb_id ==
+-		USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_AUDIO8DJ)
++	if (((id == USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_AUDIO8DJ)) ||
++	     (id == USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_AUDIO4DJ)))
+ 		&& (pos == 0)) {
+-		/* current input mode of A8DJ */
++		/* current input mode of A8DJ and A4DJ */
+ 		uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+ 		uinfo->value.integer.min = 0;
+ 		uinfo->value.integer.max = 2;
+@@ -247,6 +248,10 @@ static struct caiaq_controller a8dj_controller[] = {
+ 	{ "Software lock", 			40 		}
+ };
+ 
++static struct caiaq_controller a4dj_controller[] = {
++	{ "Current input mode",	0 | CNT_INTVAL 	}
++};
++
+ static int __devinit add_controls(struct caiaq_controller *c, int num,
+ 				  struct snd_usb_caiaqdev *dev)
+ {
+@@ -295,6 +300,10 @@ int __devinit snd_usb_caiaq_control_init(struct snd_usb_caiaqdev *dev)
+ 		ret = add_controls(a8dj_controller,
+ 			ARRAY_SIZE(a8dj_controller), dev);
+ 		break;
++	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_AUDIO4DJ):
++		ret = add_controls(a4dj_controller,
++			ARRAY_SIZE(a4dj_controller), dev);
++		break;
+ 	}
+ 
+ 	return ret;
+diff --git a/sound/usb/caiaq/caiaq-device.c b/sound/usb/caiaq/caiaq-device.c
+index 41c36b0..d09fc2a 100644
+--- a/sound/usb/caiaq/caiaq-device.c
++++ b/sound/usb/caiaq/caiaq-device.c
+@@ -42,15 +42,17 @@
+ #endif
+ 
+ MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
+-MODULE_DESCRIPTION("caiaq USB audio, version 1.3.10");
++MODULE_DESCRIPTION("caiaq USB audio, version 1.3.11");
+ MODULE_LICENSE("GPL");
+ MODULE_SUPPORTED_DEVICE("{{Native Instruments, RigKontrol2},"
+ 			 "{Native Instruments, RigKontrol3},"
+ 			 "{Native Instruments, Kore Controller},"
+ 			 "{Native Instruments, Kore Controller 2},"
+ 			 "{Native Instruments, Audio Kontrol 1},"
++			 "{Native Instruments, Audio 4 DJ},"
+ 			 "{Native Instruments, Audio 8 DJ},"
+-			 "{Native Instruments, Session I/O}}");
++			 "{Native Instruments, Session I/O},"
++			 "{Native Instruments, GuitarRig mobile}");
+ 
+ static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX; /* Index 0-max */
+ static char* id[SNDRV_CARDS] = SNDRV_DEFAULT_STR; /* Id for this card */
+@@ -116,6 +118,16 @@ static struct usb_device_id snd_usb_id_table[] = {
+ 		.idVendor =     USB_VID_NATIVEINSTRUMENTS,
+ 		.idProduct =    USB_PID_SESSIONIO
+ 	},
++	{
++		.match_flags =  USB_DEVICE_ID_MATCH_DEVICE,
++		.idVendor =     USB_VID_NATIVEINSTRUMENTS,
++		.idProduct =    USB_PID_GUITARRIGMOBILE
++	},
++	{
++		.match_flags =  USB_DEVICE_ID_MATCH_DEVICE,
++		.idVendor =     USB_VID_NATIVEINSTRUMENTS,
++		.idProduct =    USB_PID_AUDIO4DJ
++	},
+ 	{ /* terminator */ }
+ };
+ 
+diff --git a/sound/usb/caiaq/caiaq-device.h b/sound/usb/caiaq/caiaq-device.h
+index 9fb91af..7010651 100644
+--- a/sound/usb/caiaq/caiaq-device.h
++++ b/sound/usb/caiaq/caiaq-device.h
+@@ -10,8 +10,10 @@
+ #define USB_PID_KORECONTROLLER	0x4711
+ #define USB_PID_KORECONTROLLER2	0x4712
+ #define USB_PID_AK1		0x0815
++#define USB_PID_AUDIO4DJ	0x0839
+ #define USB_PID_AUDIO8DJ	0x1978
+ #define USB_PID_SESSIONIO	0x1915
++#define USB_PID_GUITARRIGMOBILE	0x0d8d
+ 
+ #define EP1_BUFSIZE 64
+ #define CAIAQ_USB_STR_LEN 0xff
+-- 
+1.5.6.5
