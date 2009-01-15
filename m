@@ -1,19 +1,21 @@
-From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: Re: [PATCH 1/1] ASoC: Fix compilation error with
- davinci-sffsdr module
-Date: Thu, 15 Jan 2009 15:50:52 -0700
-Message-ID: <496FBDCC.7030604@boundarydevices.com>
-References: <1231277025-2100-1-git-send-email-hugo@hugovil.com>	<20090106213116.GA3549@sirena.org.uk>	<20090106164120.bd2fb16b.hugo@hugovil.com>	<20090106220005.GB3549@sirena.org.uk>	<20090114155406.a086c6ef.hugo@hugovil.com>	<20090115111806.GB2147@sirena.org.uk>	<20090115145454.17178d53.hugo@hugovil.com>	<20090115200121.GH12768@sirena.org.uk>	<496FB439.1090900@boundarydevices.com>
-	<20090115172818.8a216670.hugo@hugovil.com>
+From: Ian Molton <ian@mnementh.co.uk>
+Subject: Re: [Pull request] Support for wm9705 codec and two
+ machines that use it.
+Date: Thu, 15 Jan 2009 23:58:36 +0000
+Message-ID: <496FCDAC.70900@mnementh.co.uk>
+References: <496E8DD0.4090006@mnementh.co.uk> <s5hfxjl3v6s.wl%tiwai@suse.de>
+	<496F0ABD.4080207@mnementh.co.uk>
+	<20090115172057.GC12768@sirena.org.uk>
+	<496FB5AA.1030205@mnementh.co.uk>
+	<20090115222228.GA8806@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpauth00.csee.onr.siteprotect.com
-	(smtpauth00.csee.onr.siteprotect.com [64.26.60.144])
-	by alsa0.perex.cz (Postfix) with ESMTP id 753291038B7
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2009 23:50:59 +0100 (CET)
-In-Reply-To: <20090115172818.8a216670.hugo@hugovil.com>
+Received: from mnementh.co.uk (mail.mnementh.co.uk [173.45.232.4])
+	by alsa0.perex.cz (Postfix) with ESMTP id EF4C61038B7
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2009 00:58:10 +0100 (CET)
+In-Reply-To: <20090115222228.GA8806@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,43 +25,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Hugo Villeneuve <hugo@hugovil.com>
-Cc: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hugo Villeneuve wrote:
-> On Thu, 15 Jan 2009 15:10:01 -0700
-> Troy Kisky <troy.kisky@boundarydevices.com> wrote:
+Mark Brown wrote:
+> On Thu, Jan 15, 2009 at 10:16:10PM +0000, Ian Molton wrote:
+>> Mark Brown wrote:
 > 
->>> Hopefully a comparison of the mainline and DaVinci trees will show
->>> something...
->> In davinci-sffsdr.c I see
->>
->> 	ret = snd_soc_dai_set_fmt(cpu_dai,
->> 				  SND_SOC_DAIFMT_RIGHT_J |
->> 				  SND_SOC_DAIFMT_CBM_CFS |
->> 				  SND_SOC_DAIFMT_IB_NF);
->>
->> When I changed the evm board flags passed, I didn't change this file.
->> So, you'll need something like
->>
->> 	ret = snd_soc_dai_set_fmt(cpu_dai,
->> 				  SND_SOC_DAIFMT_DSP_A |
->> 				  SND_SOC_DAIFMT_CBM_CFS |
->> 				  SND_SOC_DAIFMT_NB_NF);
+>>>> +	soc_ac97_ops.reset(codec->ac97);
 > 
+>>> This should check the return value, resets can and do fail.
+> 
+>> This call returns void. So no.
+> 
+> Oh, sorry - thinko.  You should read back the ID register and verify the
+> value.
 
+Implemented, tested, checkpatch passed.
 
+Pushed out and available at:
 
-Actually, that should be
+git://git.mnementh.co.uk/linux-2.6-im.git asoc
 
- 	ret = snd_soc_dai_set_fmt(cpu_dai,
- 				  SND_SOC_DAIFMT_DSP_B |
- 				  SND_SOC_DAIFMT_CBM_CFS |
- 				  SND_SOC_DAIFMT_NB_NF);
+gitweb at:
 
+http://git.mnementh.co.uk/cgi-bin/gitweb.cgi?p=linux-2.6-im.git;a=shortlog;h=refs/heads/asoc
 
-I had dsp_a and dsp_b backwards again.
+Thanks for the review,
 
-
-Troy
+-Ian
