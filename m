@@ -1,7 +1,8 @@
 From: Hugo Villeneuve <hugo@hugovil.com>
-Subject: [PATCH 1/1] ALSA: ASoC: DaVinci: Fix SFFSDR init bug.
-Date: Thu, 15 Jan 2009 15:39:52 -0500
-Message-ID: <1232051992-31817-1-git-send-email-hugo@hugovil.com>
+Subject: [PATCH 1/1] ALSA: ASoC: DaVinci: Fix SFFSDR
+	compilation error.
+Date: Thu, 15 Jan 2009 15:40:35 -0500
+Message-ID: <1232052035-31846-1-git-send-email-hugo@hugovil.com>
 References: <20090108121613.1ef53112.hugo@hugovil.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from server.hugovil.com (201-217-static-ppp.3menatwork.com
 	[64.235.217.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8441B10388B
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2009 21:39:49 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 486C410388D
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2009 21:40:32 +0100 (CET)
 In-Reply-To: <20090108121613.1ef53112.hugo@hugovil.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,28 +26,62 @@ To: alsa-devel@alsa-project.org
 Cc: davinci-linux-open-source@linux.davincidsp.com
 List-Id: alsa-devel@alsa-project.org
 
-Removed call to machine_is_sffsdr() in module init
-function because it always returns zero and causes
-GCC to optimise and remove all functions of the module.
+Remove dependency on sffsdr_fpga_set_codec_fs() when the
+SFFSDR FPGA module is not selected.
 
 Signed-off-by: Hugo Villeneuve <hugo@hugovil.com>
 ---
- sound/soc/davinci/davinci-sffsdr.c |    3 ---
- 1 files changed, 0 insertions(+), 3 deletions(-)
+ sound/soc/davinci/davinci-sffsdr.c |   20 +++++++++++++++++---
+ 1 files changed, 17 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/davinci/davinci-sffsdr.c b/sound/soc/davinci/davinci-sffsdr.c
-index 1bbde3e..3e8e6cd 100644
+index 3e8e6cd..e3ea07a 100644
 --- a/sound/soc/davinci/davinci-sffsdr.c
 +++ b/sound/soc/davinci/davinci-sffsdr.c
-@@ -115,9 +115,6 @@ static int __init sffsdr_init(void)
- {
- 	int ret;
+@@ -25,7 +25,9 @@
+ #include <asm/gpio.h>
+ #include <asm/dma.h>
+ #include <asm/mach-types.h>
++#ifdef CONFIG_SFFSDR_FPGA
+ #include <asm/plat-sffsdr/sffsdr-fpga.h>
++#endif
  
--	if (!machine_is_sffsdr())
--		return -EINVAL;
+ #include <mach/asp.h>
+ #include <mach/edma.h>
+@@ -42,6 +44,17 @@ static int sffsdr_hw_params(struct snd_pcm_substream *substream,
+ 	int fs;
+ 	int ret = 0;
+ 
++	/* Fsref can be 32000, 44100 or 48000. */
++	fs = params_rate(params);
++
++#ifndef CONFIG_SFFSDR_FPGA
++	/* Without the FPGA module, the Fs is fixed at 44100 Hz */
++	if (fs != 44100) {
++		pr_debug("warning: only 44.1 kHz is supported without SFFSDR FPGA module\n");
++		return -EINVAL;
++	}
++#endif
++
+ 	/* Set cpu DAI configuration:
+ 	 * CLKX and CLKR are the inputs for the Sample Rate Generator.
+ 	 * FSX and FSR are outputs, driven by the sample Rate Generator. */
+@@ -52,12 +65,13 @@ static int sffsdr_hw_params(struct snd_pcm_substream *substream,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	/* Fsref can be 32000, 44100 or 48000. */
+-	fs = params_rate(params);
 -
- 	sffsdr_snd_device = platform_device_alloc("soc-audio", 0);
- 	if (!sffsdr_snd_device) {
- 		printk(KERN_ERR "platform device allocation failed\n");
+ 	pr_debug("sffsdr_hw_params: rate = %d Hz\n", fs);
+ 
++#ifndef CONFIG_SFFSDR_FPGA
++	return 0;
++#else
+ 	return sffsdr_fpga_set_codec_fs(fs);
++#endif
+ }
+ 
+ static struct snd_soc_ops sffsdr_ops = {
 -- 
 1.5.4.5
