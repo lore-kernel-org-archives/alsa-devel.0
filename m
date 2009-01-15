@@ -1,15 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 0/1] ASoC: fix the dapm_mux_update_power
-	function for value_mux
-Date: Thu, 15 Jan 2009 14:40:46 +0200
-Message-ID: <1232023247-21480-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 1/1] ASoC: Fix the power update function
+	for snd_soc_dapm_value_mux
+Date: Thu, 15 Jan 2009 12:52:17 +0000
+Message-ID: <20090115125216.GE2147@sirena.org.uk>
+References: <1232023247-21480-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1232023247-21480-2-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id D19CB103872
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2009 13:41:01 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 059D810385F
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2009 13:52:18 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1232023247-21480-2-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,21 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>, broonie@sirena.org.uk, lrg@slimlogic.co.uk
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+")
+Fcc: +sent-mail
 
-To be honest I don't know how I have missed this from the previous series with
-the cleanup for the value_mux type.
+On Thu, Jan 15, 2009 at 02:40:47PM +0200, Peter Ujfalusi wrote:
+> Modify the check for the mux type to also handle the
+> snd_soc_dapm_value_mux type in a same way as the snd_soc_dapm_mux.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 
-the dapm_mux_update_power function needs to check for both snd_soc_dapm_mux and
-snd_soc_dapm_value_mux.
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
----
-Peter Ujfalusi (1):
-  ASoC: Fix the power update function for snd_soc_dapm_value_mux
-
- sound/soc/soc-dapm.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+This should go to 2.6.29, I'll send to Takashi later.
