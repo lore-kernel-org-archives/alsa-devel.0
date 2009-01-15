@@ -1,18 +1,19 @@
-From: Hugo Villeneuve <hugo@hugovil.com>
-Subject: [PATCH 1/1] ALSA: ASoC: DaVinci: Fix SFFSDR
-	compilation error.
-Date: Thu, 15 Jan 2009 15:40:35 -0500
-Message-ID: <1232052035-31846-1-git-send-email-hugo@hugovil.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 1/1] ALSA: ASoC: DaVinci: Fix SFFSDR init
+	bug.
+Date: Thu, 15 Jan 2009 20:57:53 +0000
+Message-ID: <20090115205748.GJ12768@sirena.org.uk>
 References: <20090108121613.1ef53112.hugo@hugovil.com>
+	<1232051992-31817-1-git-send-email-hugo@hugovil.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.hugovil.com (201-217-static-ppp.3menatwork.com
-	[64.235.217.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 486C410388D
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2009 21:40:32 +0100 (CET)
-In-Reply-To: <20090108121613.1ef53112.hugo@hugovil.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 065FB103884
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2009 21:57:55 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1232051992-31817-1-git-send-email-hugo@hugovil.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,66 +23,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: davinci-linux-open-source@linux.davincidsp.com
+To: Hugo Villeneuve <hugo@hugovil.com>
+Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com
 List-Id: alsa-devel@alsa-project.org
 
-Remove dependency on sffsdr_fpga_set_codec_fs() when the
-SFFSDR FPGA module is not selected.
+On Thu, Jan 15, 2009 at 03:39:52PM -0500, Hugo Villeneuve wrote:
+> Removed call to machine_is_sffsdr() in module init
+> function because it always returns zero and causes
+> GCC to optimise and remove all functions of the module.
 
-Signed-off-by: Hugo Villeneuve <hugo@hugovil.com>
----
- sound/soc/davinci/davinci-sffsdr.c |   20 +++++++++++++++++---
- 1 files changed, 17 insertions(+), 3 deletions(-)
+> Signed-off-by: Hugo Villeneuve <hugo@hugovil.com>
 
-diff --git a/sound/soc/davinci/davinci-sffsdr.c b/sound/soc/davinci/davinci-sffsdr.c
-index 3e8e6cd..e3ea07a 100644
---- a/sound/soc/davinci/davinci-sffsdr.c
-+++ b/sound/soc/davinci/davinci-sffsdr.c
-@@ -25,7 +25,9 @@
- #include <asm/gpio.h>
- #include <asm/dma.h>
- #include <asm/mach-types.h>
-+#ifdef CONFIG_SFFSDR_FPGA
- #include <asm/plat-sffsdr/sffsdr-fpga.h>
-+#endif
- 
- #include <mach/asp.h>
- #include <mach/edma.h>
-@@ -42,6 +44,17 @@ static int sffsdr_hw_params(struct snd_pcm_substream *substream,
- 	int fs;
- 	int ret = 0;
- 
-+	/* Fsref can be 32000, 44100 or 48000. */
-+	fs = params_rate(params);
-+
-+#ifndef CONFIG_SFFSDR_FPGA
-+	/* Without the FPGA module, the Fs is fixed at 44100 Hz */
-+	if (fs != 44100) {
-+		pr_debug("warning: only 44.1 kHz is supported without SFFSDR FPGA module\n");
-+		return -EINVAL;
-+	}
-+#endif
-+
- 	/* Set cpu DAI configuration:
- 	 * CLKX and CLKR are the inputs for the Sample Rate Generator.
- 	 * FSX and FSR are outputs, driven by the sample Rate Generator. */
-@@ -52,12 +65,13 @@ static int sffsdr_hw_params(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		return ret;
- 
--	/* Fsref can be 32000, 44100 or 48000. */
--	fs = params_rate(params);
--
- 	pr_debug("sffsdr_hw_params: rate = %d Hz\n", fs);
- 
-+#ifndef CONFIG_SFFSDR_FPGA
-+	return 0;
-+#else
- 	return sffsdr_fpga_set_codec_fs(fs);
-+#endif
- }
- 
- static struct snd_soc_ops sffsdr_ops = {
--- 
-1.5.4.5
+This should be replaced with the appropriate machine_is_() call for the
+system.
