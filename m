@@ -1,28 +1,15 @@
-From: Hugo Villeneuve <hugo@hugovil.com>
-Subject: Re: [PATCH 1/1] ASoC: Fix compilation error with
- davinci-sffsdr module
-Date: Fri, 16 Jan 2009 12:05:38 -0500
-Message-ID: <20090116120538.7ec3f3d8.hugo@hugovil.com>
-References: <1231277025-2100-1-git-send-email-hugo@hugovil.com>
-	<20090106213116.GA3549@sirena.org.uk>
-	<20090106164120.bd2fb16b.hugo@hugovil.com>
-	<20090106220005.GB3549@sirena.org.uk>
-	<20090114155406.a086c6ef.hugo@hugovil.com>
-	<20090115111806.GB2147@sirena.org.uk>
-	<20090115145454.17178d53.hugo@hugovil.com>
-	<20090115200121.GH12768@sirena.org.uk>
-	<496FB439.1090900@boundarydevices.com>
-	<20090115172818.8a216670.hugo@hugovil.com>
-	<496FBDCC.7030604@boundarydevices.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC update for 2.6.29
+Date: Fri, 16 Jan 2009 17:09:17 +0000
+Message-ID: <20090116170916.GA1832@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.hugovil.com (201-217-static-ppp.3menatwork.com
-	[64.235.217.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 67BBE24386
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2009 18:05:41 +0100 (CET)
-In-Reply-To: <496FBDCC.7030604@boundarydevices.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 33D6C2438F
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2009 18:09:18 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,62 +19,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Troy Kisky <troy.kisky@boundarydevices.com>
-Cc: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 15 Jan 2009 15:50:52 -0700
-Troy Kisky <troy.kisky@boundarydevices.com> wrote:
+The following changes since commit eff317d0834ad1ff03f747f6bc2d76b9a9c95160:
+  Peter Ujfalusi (1):
+        ASoC: Fix the power update function for snd_soc_dapm_value_mux
 
-> Hugo Villeneuve wrote:
-> > On Thu, 15 Jan 2009 15:10:01 -0700
-> > Troy Kisky <troy.kisky@boundarydevices.com> wrote:
-> > 
-> >>> Hopefully a comparison of the mainline and DaVinci trees will show
-> >>> something...
-> >> In davinci-sffsdr.c I see
-> >>
-> >> 	ret = snd_soc_dai_set_fmt(cpu_dai,
-> >> 				  SND_SOC_DAIFMT_RIGHT_J |
-> >> 				  SND_SOC_DAIFMT_CBM_CFS |
-> >> 				  SND_SOC_DAIFMT_IB_NF);
-> >>
-> >> When I changed the evm board flags passed, I didn't change this
-> >> file. So, you'll need something like
-> >>
-> >> 	ret = snd_soc_dai_set_fmt(cpu_dai,
-> >> 				  SND_SOC_DAIFMT_DSP_A |
-> >> 				  SND_SOC_DAIFMT_CBM_CFS |
-> >> 				  SND_SOC_DAIFMT_NB_NF);
-> > 
-> 
-> 
-> 
-> Actually, that should be
-> 
->  	ret = snd_soc_dai_set_fmt(cpu_dai,
->  				  SND_SOC_DAIFMT_DSP_B |
->  				  SND_SOC_DAIFMT_CBM_CFS |
->  				  SND_SOC_DAIFMT_NB_NF);
-> 
-> 
-> I had dsp_a and dsp_b backwards again.
+are available in the git repository at:
 
-Hi Troy,
-Finally the problem was hardware related. The PLL feeding the clocks
-to the ASP was dead, so that is why the DMA were never triggered. I
-replaced it and everything is working fine now, using my original
-config:
-   SND_SOC_DAIFMT_RIGHT_J |
-   SND_SOC_DAIFMT_CBM_CFS |
-   SND_SOC_DAIFMT_IB_NF);
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.29
 
-Mark: this also means that the latest davinci git tree has
-working audio support (without needing any DMA patch) :)
+Ben Nizette (1):
+      ASoC: atmel_pcm: Remove non-existant header
 
-Thank-you all, Hugo.
-
----------------
-Hugo Villeneuve
-www.hugovil.com
----------------
+ sound/soc/atmel/atmel-pcm.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
