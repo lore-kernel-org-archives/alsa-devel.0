@@ -1,23 +1,18 @@
-From: Mark Brown <broonie@sirena.org.uk>
+From: Ian Molton <ian@mnementh.co.uk>
 Subject: Re: [Pull request] Support for wm9705 codec and two
-	machines that use it.
-Date: Fri, 16 Jan 2009 11:21:53 +0000
-Message-ID: <20090116112145.GA7554@sirena.org.uk>
-References: <496E8DD0.4090006@mnementh.co.uk> <s5hfxjl3v6s.wl%tiwai@suse.de>
-	<496F0ABD.4080207@mnementh.co.uk>
-	<20090115172057.GC12768@sirena.org.uk>
-	<496FB5AA.1030205@mnementh.co.uk>
-	<20090115222228.GA8806@sirena.org.uk>
-	<496FCDAC.70900@mnementh.co.uk>
+ machines that use it.
+Date: Fri, 16 Jan 2009 11:34:41 +0000
+Message-ID: <497070D1.50301@mnementh.co.uk>
+References: <496E8DD0.4090006@mnementh.co.uk>	<s5hfxjl3v6s.wl%tiwai@suse.de>	<496F0ABD.4080207@mnementh.co.uk>
+	<s5hk58v4inq.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id A244E1038C8
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2009 12:21:54 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <496FCDAC.70900@mnementh.co.uk>
+Received: from mnementh.co.uk (mail.mnementh.co.uk [173.45.232.4])
+	by alsa0.perex.cz (Postfix) with ESMTP id BBD421038E1
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2009 12:34:12 +0100 (CET)
+In-Reply-To: <s5hk58v4inq.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,23 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ian Molton <ian@mnementh.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 15, 2009 at 11:58:36PM +0000, Ian Molton wrote:
+Takashi Iwai wrote:
+> At Thu, 15 Jan 2009 10:06:53 +0000,
+> Ian Molton wrote:
 
-> Pushed out and available at:
+> Shouldn't be this "reg >= ARRAY_SIZE(wm9705_reg)" ?
 
-> git://git.mnementh.co.uk/linux-2.6-im.git asoc
+Looks that way. Will fix.
 
-Err... that branch is based off the ASoC dev branch so can't be pulled
-for mainline.  I've cherry picked the patches over since the conflicts
-were trivial but if you are going to send pull requests please base
-things for upstream off the ASoC branch of Takashi's repository at:
+I've spotted the same error in a couple of other drivers too.
 
-	git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+It looks like register caching is a very common thing, would you be 
+interested in a patch that consolidates the cache handling in soc-core, 
+rather than having multiple possibly broken implementations around?
 
-As previously mentioned you really should post patches rather than just
-pull requests (pull requests are fine but you should post the patches as
-well) - it really is much easier to work with.
+Also, I could be wrong, but wm8980 caching looks completely broken 
+(array is type u16 but there is no register shift applied, AFAICT)
+
+fixed in wm9705 for now anyway.
+
+> Ditto, should be "reg < ARRAY_SIZE(wm9705_reg)".
+
+Fixed.
+
+> You can use kmemdup() here.
+
+Changed.
+
+TTFN,
+
+-Ian
