@@ -1,15 +1,15 @@
 From: Mandar Joshi <emailmandar@yahoo.com>
 Subject: Creative X-Fi USB Driver Status
-Date: Fri, 16 Jan 2009 02:49:06 -0800 (PST)
-Message-ID: <178396.65724.qm@web35602.mail.mud.yahoo.com>
+Date: Fri, 16 Jan 2009 02:59:53 -0800 (PST)
+Message-ID: <263232.53999.qm@web35605.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web35602.mail.mud.yahoo.com (web35602.mail.mud.yahoo.com
-	[66.163.179.141])
-	by alsa0.perex.cz (Postfix) with SMTP id 9A1A51038DF
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2009 11:49:07 +0100 (CET)
+Received: from web35605.mail.mud.yahoo.com (web35605.mail.mud.yahoo.com
+	[66.163.179.144])
+	by alsa0.perex.cz (Postfix) with SMTP id 612121038DF
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2009 11:59:54 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
