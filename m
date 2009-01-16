@@ -1,22 +1,24 @@
-From: Ian Molton <ian@mnementh.co.uk>
+From: Mark Brown <broonie@sirena.org.uk>
 Subject: Re: [Pull request] Support for wm9705 codec and two
- machines that use it.
-Date: Fri, 16 Jan 2009 15:46:19 +0000
-Message-ID: <4970ABCB.5050300@mnementh.co.uk>
+	machines that use it.
+Date: Fri, 16 Jan 2009 16:00:46 +0000
+Message-ID: <20090116160045.GI7554@sirena.org.uk>
 References: <496E8DD0.4090006@mnementh.co.uk> <s5hfxjl3v6s.wl%tiwai@suse.de>
 	<496F0ABD.4080207@mnementh.co.uk>
 	<s5hk58v4inq.wl%tiwai@suse.de> <497070D1.50301@mnementh.co.uk>
 	<20090116115408.GB7554@sirena.org.uk>
 	<49708E21.1060800@mnementh.co.uk>
 	<20090116143135.GG7554@sirena.org.uk>
+	<4970A113.3060800@mnementh.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mnementh.co.uk (mail.mnementh.co.uk [173.45.232.4])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8EB1024151
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2009 16:45:51 +0100 (CET)
-In-Reply-To: <20090116143135.GG7554@sirena.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D6D424151
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2009 17:00:47 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4970A113.3060800@mnementh.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,304 +28,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
+To: Ian Molton <ian@mnementh.co.uk>
 Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jan 16, 2009 at 03:00:35PM +0000, Ian Molton wrote:
+> Mark Brown wrote:
+> >On Fri, Jan 16, 2009 at 01:39:45PM +0000, Ian Molton wrote:
 
-Hi,
+> >Oh, there's a lot of stuff that could be factored out but the whole
+> >register access area needs a good looking at.
 
-Mark, the changes requested are implemented below. There are two 
-patchsets, one for wm9705 and one for the other codec issues I found.
+> I dont mind consolidating the cache handling code if its worth the 
+> effort (IOW its not scheduled to get totally re-written)
 
-also available at:
+It's not likely to be rewritten dramatically, like I say it's more about
+the effort taken to do it - I know there's a bunch of people who really
+want multiple cards.
 
-git://git.mnementh.co.uk/linux-2.6-im.git asoc-pu
+> some of the core code for dumping the codecs reg_cache looks quite 
+> broken... at least its only debug code, but broken debug code is worse 
+> than useless...
 
+Could you be more specific, please?  The read interface is in rather
+active use.  The only thing I'm aware of is that only things marked as
+cached are visible.  The read interface certainly gets a lot of use, the
+write interface less so but still.
 
- From 8e89f1f1a94bc697d1ce1c07ab8426d372b0d6fe Mon Sep 17 00:00:00 2001
-From: Ian Molton <ian@mnementh.co.uk>
-Date: Fri, 16 Jan 2009 15:37:22 +0000
-Subject: [PATCH] ASoC: codec: wm9705 misc cleanup
+> > The AC97 parts are special because AC97 only
+> >has even numbered registers so they're saving a bit of memory by only
+> >having cache space for registers that actually exist and cutting down on
+> >noise by only showing those registers in the debug output.  It's not a
+> >big saving but it's there.
 
-This patch fixes an off-by-one error in the wm9705 reg_cache 
-implementation and
-replaces a kzalloc/copy with kmemdup().
+> Actually they arent. the regs are 16 bit anyway for the most part so 
+> there is no saving - Just confusion over the meaning of the 'reg' parameter.
 
-Signed-off-by: Ian Molton <ian@mnementh.co.uk>
----
-  sound/soc/codecs/wm9705.c |   11 ++++-------
-  1 files changed, 4 insertions(+), 7 deletions(-)
+There is.  The natural layout would be to just have an array of u16s
+which gives us an array of 16 bit register slots like this:
 
-diff --git a/sound/soc/codecs/wm9705.c b/sound/soc/codecs/wm9705.c
-index c6b7dc2..cb26b6a 100644
---- a/sound/soc/codecs/wm9705.c
-+++ b/sound/soc/codecs/wm9705.c
-@@ -221,7 +221,7 @@ static unsigned int ac97_read(struct snd_soc_codec 
-*codec, unsigned int reg)
-  	default:
-  		reg = reg >> 1;
+  [0][1][2][3][4][5]..
 
--		if (reg > (ARRAY_SIZE(wm9705_reg)))
-+		if (reg >= (ARRAY_SIZE(wm9705_reg)))
-  			return -EIO;
+but we're actually storing:
 
-  		return cache[reg];
-@@ -235,7 +235,7 @@ static int ac97_write(struct snd_soc_codec *codec, 
-unsigned int reg,
+  [0][2][4]...
 
-  	soc_ac97_ops.write(codec->ac97, reg, val);
-  	reg = reg >> 1;
--	if (reg <= (ARRAY_SIZE(wm9705_reg)))
-+	if (reg < (ARRAY_SIZE(wm9705_reg)))
-  		cache[reg] = val;
+since we know that the odd numbered registers don't exist.
 
-  	return 0;
-@@ -327,15 +327,12 @@ static int wm9705_soc_probe(struct platform_device 
-*pdev)
-  	codec = socdev->codec;
-  	mutex_init(&codec->mutex);
+> Basically we've got two codec types. BOTH have 16 bit regs, but on some 
+> the 'reg' parameter is a register address, and on some its the register 
+> number.
 
--	codec->reg_cache =
--		kzalloc(sizeof(u16) * ARRAY_SIZE(wm9705_reg), GFP_KERNEL);
-+	codec->reg_cache = kmemdup(wm9705_reg, sizeof(wm9705_reg), GFP_KERNEL);
-  	if (codec->reg_cache == NULL) {
-  		ret = -ENOMEM;
-  		goto cache_err;
-  	}
--	memcpy(codec->reg_cache, wm9705_reg,
--		sizeof(u16) * ARRAY_SIZE(wm9705_reg));
--	codec->reg_cache_size = sizeof(u16) * ARRAY_SIZE(wm9705_reg);
-+	codec->reg_cache_size = sizeof(wm9705_reg);
-  	codec->reg_cache_step = 2;
+The registers referred to by ASoC are *always* register numbers as you'd
+see in the chip documentation; the storage method used for any register
+cache is entirely up to the codec drivers and is not something that the
+core concerns itself with.  The core is also unaware of the actual width
+of the registers.
 
-  	codec->name = "WM9705";
--- 
-1.5.6.5
+You're confusing yourself here by thinking of these things memory mapped
+devices - they aren't.  How software chooses to lay out any view it has
+of the registers in memory has no meaning in hardware since there is, in
+general, no way to interact with the hardware with a resolution less
+than a full register.
 
- From 7ff27c9c1f7a7b7c86d3138060b1b406ad5dd6af Mon Sep 17 00:00:00 2001
-From: Ian Molton <ian@mnementh.co.uk>
-Date: Fri, 16 Jan 2009 15:03:19 +0000
-Subject: [PATCH] ASoC: fixes to caching implementations
+> This is fine I supppose if the semantics for the underlying bus are the 
+> same, eg. the PXA AC97 bus takes reg as an address.
 
-This patch takes fixes a number of bugs in the caching code used by
-several ASoC codec drivers. Mostly off-by-one fixes.
+For marshalling purposes all the I2C and SPI codecs are their own "bus
+driver" - the only external thing that cares is the hardware itself, the
+I2C and SPI bus drivers just deal in byte streams.  AC97 is the only
+actual bus in use here and it has the same register number interface
+that ASoC uses.
 
-Signed-off-by: Ian Molton <ian@mnementh.co.uk>
----
-  sound/soc/codecs/ac97.c    |    2 --
-  sound/soc/codecs/ad1980.c  |    4 ++--
-  sound/soc/codecs/twl4030.c |    3 +++
-  sound/soc/codecs/wm8580.c  |    4 ++--
-  sound/soc/codecs/wm8728.c  |    4 ++--
-  sound/soc/codecs/wm8753.c  |    4 ++--
-  sound/soc/codecs/wm8990.c  |    4 ++--
-  sound/soc/codecs/wm9712.c  |    4 ++--
-  sound/soc/codecs/wm9713.c  |    4 ++--
-  9 files changed, 17 insertions(+), 16 deletions(-)
+> I havent checked to see if any AC97 codecs are passing reg as a register 
+> number - if they are then thats a clear bug as its not what the AC97 bus 
+> driver expects.
 
-diff --git a/sound/soc/codecs/ac97.c b/sound/soc/codecs/ac97.c
-index fb53e65..89d4127 100644
---- a/sound/soc/codecs/ac97.c
-+++ b/sound/soc/codecs/ac97.c
-@@ -123,7 +123,6 @@ bus_err:
-  	snd_soc_free_pcms(socdev);
+All the AC97 codecs are using reg as a register number because that is
+what both ASoC and the AC97 bus drivers expect.  Note that the AC97 bus
+drivers have no idea that the codecs have caches, they just work with
+register/value pairs.
 
-  err:
--	kfree(socdev->codec->reg_cache);
-  	kfree(socdev->codec);
-  	socdev->codec = NULL;
-  	return ret;
-@@ -138,7 +137,6 @@ static int ac97_soc_remove(struct platform_device *pdev)
-  		return 0;
+> >the WM9705 changes only together with your signoff I can push the queue
+> >I'm sitting on to Takashi?
 
-  	snd_soc_free_pcms(socdev);
--	kfree(socdev->codec->reg_cache);
-  	kfree(socdev->codec);
+> Sure, but I really think the other changes noted below need to  go in 
+> ASAP as AFAICT they are clearly bogus.
 
-  	return 0;
-diff --git a/sound/soc/codecs/ad1980.c b/sound/soc/codecs/ad1980.c
-index c3c5d0e..faf3587 100644
---- a/sound/soc/codecs/ad1980.c
-+++ b/sound/soc/codecs/ad1980.c
-@@ -109,7 +109,7 @@ static unsigned int ac97_read(struct snd_soc_codec 
-*codec,
-  	default:
-  		reg = reg >> 1;
+They're not *that* urgent given how long they've been there - it's a
+nice cleanup not something I'd push to Linus unless they fixed issues on
+live systems (in which case I'd really expect to see patches to fix the
+callers as well).  The risk/reward doesn't seem worth it.
 
--		if (reg >= (ARRAY_SIZE(ad1980_reg)))
-+		if (reg >= ARRAY_SIZE(ad1980_reg))
-  			return -EINVAL;
+> >Having the cache there may not be safe
+> >depending on the behaviour of the undocumented registers.
 
-  		return cache[reg];
-@@ -123,7 +123,7 @@ static int ac97_write(struct snd_soc_codec *codec, 
-unsigned int reg,
+> Of course, but drivers calling ac97_write need to get clear errors back, 
+> IMHO.
 
-  	soc_ac97_ops.write(codec->ac97, reg, val);
-  	reg = reg >> 1;
--	if (reg < (ARRAY_SIZE(ad1980_reg)))
-+	if (reg < ARRAY_SIZE(ad1980_reg))
-  		cache[reg] = val;
-
-  	return 0;
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index ddc9f37..f530c1e 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -125,6 +125,9 @@ static inline unsigned int 
-twl4030_read_reg_cache(struct snd_soc_codec *codec,
-  {
-  	u8 *cache = codec->reg_cache;
-
-+	if (reg >= TWL4030_CACHEREGNUM)
-+		return -EIO;
-+
-  	return cache[reg];
-  }
-
-diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
-index 9b75a37..3faf0e7 100644
---- a/sound/soc/codecs/wm8580.c
-+++ b/sound/soc/codecs/wm8580.c
-@@ -200,7 +200,7 @@ static inline unsigned int 
-wm8580_read_reg_cache(struct snd_soc_codec *codec,
-  	unsigned int reg)
-  {
-  	u16 *cache = codec->reg_cache;
--	BUG_ON(reg > ARRAY_SIZE(wm8580_reg));
-+	BUG_ON(reg >= ARRAY_SIZE(wm8580_reg));
-  	return cache[reg];
-  }
-
-@@ -223,7 +223,7 @@ static int wm8580_write(struct snd_soc_codec *codec, 
-unsigned int reg,
-  {
-  	u8 data[2];
-
--	BUG_ON(reg > ARRAY_SIZE(wm8580_reg));
-+	BUG_ON(reg >= ARRAY_SIZE(wm8580_reg));
-
-  	/* Registers are 9 bits wide */
-  	value &= 0x1ff;
-diff --git a/sound/soc/codecs/wm8728.c b/sound/soc/codecs/wm8728.c
-index defa310..f90dc52 100644
---- a/sound/soc/codecs/wm8728.c
-+++ b/sound/soc/codecs/wm8728.c
-@@ -47,7 +47,7 @@ static inline unsigned int 
-wm8728_read_reg_cache(struct snd_soc_codec *codec,
-  	unsigned int reg)
-  {
-  	u16 *cache = codec->reg_cache;
--	BUG_ON(reg > ARRAY_SIZE(wm8728_reg_defaults));
-+	BUG_ON(reg >= ARRAY_SIZE(wm8728_reg_defaults));
-  	return cache[reg];
-  }
-
-@@ -55,7 +55,7 @@ static inline void wm8728_write_reg_cache(struct 
-snd_soc_codec *codec,
-  	u16 reg, unsigned int value)
-  {
-  	u16 *cache = codec->reg_cache;
--	BUG_ON(reg > ARRAY_SIZE(wm8728_reg_defaults));
-+	BUG_ON(reg >= ARRAY_SIZE(wm8728_reg_defaults));
-  	cache[reg] = value;
-  }
-
-diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index 7283178..5a1c1fc 100644
---- a/sound/soc/codecs/wm8753.c
-+++ b/sound/soc/codecs/wm8753.c
-@@ -97,7 +97,7 @@ static inline unsigned int 
-wm8753_read_reg_cache(struct snd_soc_codec *codec,
-  	unsigned int reg)
-  {
-  	u16 *cache = codec->reg_cache;
--	if (reg < 1 || reg > (ARRAY_SIZE(wm8753_reg) + 1))
-+	if (reg < 1 || reg >= (ARRAY_SIZE(wm8753_reg) + 1))
-  		return -1;
-  	return cache[reg - 1];
-  }
-@@ -109,7 +109,7 @@ static inline void wm8753_write_reg_cache(struct 
-snd_soc_codec *codec,
-  	unsigned int reg, unsigned int value)
-  {
-  	u16 *cache = codec->reg_cache;
--	if (reg < 1 || reg > 0x3f)
-+	if (reg < 1 || reg >= (ARRAY_SIZE(wm8753_reg) + 1))
-  		return;
-  	cache[reg - 1] = value;
-  }
-diff --git a/sound/soc/codecs/wm8990.c b/sound/soc/codecs/wm8990.c
-index 6b27786..f93c095 100644
---- a/sound/soc/codecs/wm8990.c
-+++ b/sound/soc/codecs/wm8990.c
-@@ -116,7 +116,7 @@ static inline unsigned int 
-wm8990_read_reg_cache(struct snd_soc_codec *codec,
-  	unsigned int reg)
-  {
-  	u16 *cache = codec->reg_cache;
--	BUG_ON(reg > (ARRAY_SIZE(wm8990_reg)) - 1);
-+	BUG_ON(reg >= ARRAY_SIZE(wm8990_reg));
-  	return cache[reg];
-  }
-
-@@ -129,7 +129,7 @@ static inline void wm8990_write_reg_cache(struct 
-snd_soc_codec *codec,
-  	u16 *cache = codec->reg_cache;
-
-  	/* Reset register and reserved registers are uncached */
--	if (reg == 0 || reg > ARRAY_SIZE(wm8990_reg) - 1)
-+	if (reg == 0 || reg >= ARRAY_SIZE(wm8990_reg))
-  		return;
-
-  	cache[reg] = value;
-diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index 1b0ace0..4dc90d6 100644
---- a/sound/soc/codecs/wm9712.c
-+++ b/sound/soc/codecs/wm9712.c
-@@ -452,7 +452,7 @@ static unsigned int ac97_read(struct snd_soc_codec 
-*codec,
-  	else {
-  		reg = reg >> 1;
-
--		if (reg > (ARRAY_SIZE(wm9712_reg)))
-+		if (reg >= (ARRAY_SIZE(wm9712_reg)))
-  			return -EIO;
-
-  		return cache[reg];
-@@ -466,7 +466,7 @@ static int ac97_write(struct snd_soc_codec *codec, 
-unsigned int reg,
-
-  	soc_ac97_ops.write(codec->ac97, reg, val);
-  	reg = reg >> 1;
--	if (reg <= (ARRAY_SIZE(wm9712_reg)))
-+	if (reg < (ARRAY_SIZE(wm9712_reg)))
-  		cache[reg] = val;
-
-  	return 0;
-diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
-index a456226..d8ddca9 100644
---- a/sound/soc/codecs/wm9713.c
-+++ b/sound/soc/codecs/wm9713.c
-@@ -621,7 +621,7 @@ static unsigned int ac97_read(struct snd_soc_codec 
-*codec,
-  	else {
-  		reg = reg >> 1;
-
--		if (reg > (ARRAY_SIZE(wm9713_reg)))
-+		if (reg >= (ARRAY_SIZE(wm9713_reg)))
-  			return -EIO;
-
-  		return cache[reg];
-@@ -635,7 +635,7 @@ static int ac97_write(struct snd_soc_codec *codec, 
-unsigned int reg,
-  	if (reg < 0x7c)
-  		soc_ac97_ops.write(codec->ac97, reg, val);
-  	reg = reg >> 1;
--	if (reg <= (ARRAY_SIZE(wm9713_reg)))
-+	if (reg < (ARRAY_SIZE(wm9713_reg)))
-  		cache[reg] = val;
-
-  	return 0;
--- 
-1.5.6.5
+Hardware I/O is a different matter - the error codes there are more
+interesting since that could realistically go wrong at runtime.
+Accessing invalid registers is a clear coding error, but it's possible
+that something is relying on the fact that errors aren't reported
+(probably by completely ignoring the return values) so it needs a bit of
+care to actually change anything.
