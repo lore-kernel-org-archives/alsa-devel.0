@@ -1,24 +1,28 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [Pull request] Support for wm9705 codec and two
-	machines that use it.
-Date: Fri, 16 Jan 2009 16:16:33 +0000
-Message-ID: <20090116161633.GJ7554@sirena.org.uk>
-References: <496E8DD0.4090006@mnementh.co.uk> <s5hfxjl3v6s.wl%tiwai@suse.de>
-	<496F0ABD.4080207@mnementh.co.uk>
-	<s5hk58v4inq.wl%tiwai@suse.de> <497070D1.50301@mnementh.co.uk>
-	<20090116115408.GB7554@sirena.org.uk>
-	<49708E21.1060800@mnementh.co.uk>
-	<20090116143135.GG7554@sirena.org.uk>
-	<4970ABCB.5050300@mnementh.co.uk>
+From: Hugo Villeneuve <hugo@hugovil.com>
+Subject: Re: [PATCH 1/1] ASoC: Fix compilation error with
+ davinci-sffsdr module
+Date: Fri, 16 Jan 2009 12:05:38 -0500
+Message-ID: <20090116120538.7ec3f3d8.hugo@hugovil.com>
+References: <1231277025-2100-1-git-send-email-hugo@hugovil.com>
+	<20090106213116.GA3549@sirena.org.uk>
+	<20090106164120.bd2fb16b.hugo@hugovil.com>
+	<20090106220005.GB3549@sirena.org.uk>
+	<20090114155406.a086c6ef.hugo@hugovil.com>
+	<20090115111806.GB2147@sirena.org.uk>
+	<20090115145454.17178d53.hugo@hugovil.com>
+	<20090115200121.GH12768@sirena.org.uk>
+	<496FB439.1090900@boundarydevices.com>
+	<20090115172818.8a216670.hugo@hugovil.com>
+	<496FBDCC.7030604@boundarydevices.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id ED1F224353
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2009 17:16:34 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4970ABCB.5050300@mnementh.co.uk>
+Received: from server.hugovil.com (201-217-static-ppp.3menatwork.com
+	[64.235.217.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 67BBE24386
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2009 18:05:41 +0100 (CET)
+In-Reply-To: <496FBDCC.7030604@boundarydevices.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,22 +32,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ian Molton <ian@mnementh.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: Troy Kisky <troy.kisky@boundarydevices.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 16, 2009 at 03:46:19PM +0000, Ian Molton wrote:
+On Thu, 15 Jan 2009 15:50:52 -0700
+Troy Kisky <troy.kisky@boundarydevices.com> wrote:
 
-> Mark, the changes requested are implemented below. There are two 
-> patchsets, one for wm9705 and one for the other codec issues I found.
+> Hugo Villeneuve wrote:
+> > On Thu, 15 Jan 2009 15:10:01 -0700
+> > Troy Kisky <troy.kisky@boundarydevices.com> wrote:
+> > 
+> >>> Hopefully a comparison of the mainline and DaVinci trees will show
+> >>> something...
+> >> In davinci-sffsdr.c I see
+> >>
+> >> 	ret = snd_soc_dai_set_fmt(cpu_dai,
+> >> 				  SND_SOC_DAIFMT_RIGHT_J |
+> >> 				  SND_SOC_DAIFMT_CBM_CFS |
+> >> 				  SND_SOC_DAIFMT_IB_NF);
+> >>
+> >> When I changed the evm board flags passed, I didn't change this
+> >> file. So, you'll need something like
+> >>
+> >> 	ret = snd_soc_dai_set_fmt(cpu_dai,
+> >> 				  SND_SOC_DAIFMT_DSP_A |
+> >> 				  SND_SOC_DAIFMT_CBM_CFS |
+> >> 				  SND_SOC_DAIFMT_NB_NF);
+> > 
+> 
+> 
+> 
+> Actually, that should be
+> 
+>  	ret = snd_soc_dai_set_fmt(cpu_dai,
+>  				  SND_SOC_DAIFMT_DSP_B |
+>  				  SND_SOC_DAIFMT_CBM_CFS |
+>  				  SND_SOC_DAIFMT_NB_NF);
+> 
+> 
+> I had dsp_a and dsp_b backwards again.
 
-> also available at:
+Hi Troy,
+Finally the problem was hardware related. The PLL feeding the clocks
+to the ASP was dead, so that is why the DMA were never triggered. I
+replaced it and everything is working fine now, using my original
+config:
+   SND_SOC_DAIFMT_RIGHT_J |
+   SND_SOC_DAIFMT_CBM_CFS |
+   SND_SOC_DAIFMT_IB_NF);
 
-> git://git.mnementh.co.uk/linux-2.6-im.git asoc-pu
+Mark: this also means that the latest davinci git tree has
+working audio support (without needing any DMA patch) :)
 
-Thanks, I've applied the first and squashed it down, will look at the
-second one later.
+Thank-you all, Hugo.
 
-It looks like your MUA has badly whitespace damaged the patches - it's
-word wrapped them and it looks like tabs and spaces have been confused.
-Might be worth using git send-email to send patches.
+---------------
+Hugo Villeneuve
+www.hugovil.com
+---------------
