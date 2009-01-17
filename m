@@ -1,16 +1,20 @@
-From: Will Wagner <will_wagner@carallon.com>
-Subject: Cross compile issues with alsa-utils
-Date: Thu, 15 Jan 2009 11:11:38 +0000
-Message-ID: <496F19EA.6000001@carallon.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080705070704080400070201"
+From: "Theodore J. Allen" <tjallen@hws.edu>
+Subject: Re: [PATCH] wss-lib: remove "pops" before each played
+	sound
+Date: Fri, 16 Jan 2009 22:55:43 -0500
+Message-ID: <97774FA4-0C95-47C1-9C9F-6E7F816FCB25@hws.edu>
+References: <20090116224730.fe9d786a.krzysztof.h1@poczta.fm>
+Mime-Version: 1.0 (Apple Message framework v753.1)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from carallon.f9.co.uk (carallon.force9.co.uk [80.229.37.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 88886243E5
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2009 12:11:44 +0100 (CET)
-Received: from [127.0.0.1] by carallon.f9.co.uk (MDaemon PRO v9.6.5)
-	with ESMTP id md50000334863.msg
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2009 11:11:42 +0000
+Received: from smtp.hws.edu (smtp.hws.edu [64.89.144.5])
+	by alsa0.perex.cz (Postfix) with ESMTP id 224CA1037F8
+	for <alsa-devel@alsa-project.org>; Sat, 17 Jan 2009 04:55:46 +0100 (CET)
+Received: from smtp.hws.edu (127.0.0.1) by smtp.hws.edu (MlfMTA v3.2r9) id
+	he5bc60171s0 for <alsa-devel@alsa-project.org>;
+	Fri, 16 Jan 2009 22:55:45 -0500 (envelope-from <tjallen@hws.edu>)
+In-Reply-To: <20090116224730.fe9d786a.krzysztof.h1@poczta.fm>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,74 +24,209 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>, Rene Herman <rene.herman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------080705070704080400070201
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Krzysztof,
 
-Hi All,
+I figured out the problem with the patches -- no need
+to send me the patched wss_lib.c file.
 
-I have been cross compiling alsa-utils with buildroot (www.buildroot.org) and have run 
-into two issues.
+It turns out that the patches are getting corrupted
+by our institution's Microsoft Exchange mail system.
+In addition to using our Exchange Server, I also have
+my email forwarded to my home ISP (just in case) and
+THAT copy of your message gave a patch file that works.
+The funny thing is that, as far as I can tell, the two
+different copies look identical in my mail client,
+but they aren't.
 
-The first is that alsactl is using index & rindex which are legacy functions not supported 
-with all cross compile toolchains. Attached is a patch to replace the calls with strchr 
-and strrchr.
+The patched wss_lib.c does indeed get rid of the
+"pops" for programs that use the ALSA interface.
+Xmms, which uses the OSS compatibility interface,
+still has a series of three clicks as it begins
+playing, for some reason.  That's unfortunate.
 
-The second issue is again with alsactl. It is trying to generate the alsactl_init.7 man 
-page but I do not have xmlto to convert it to a man page. Could a configure option be 
-added to not build any docs - similar to alsa-lib configure.
+I thank you for the fix for the "pops"!
 
-Thanks,
+Best,
 
-Will.
--- 
-------------------------------------------------------------------------
-Will Wagner                                     will_wagner@carallon.com
-Development Manager                      Office Tel: +44 (0)20 7371 2032
-Carallon Ltd, Studio G20, Shepherds Building, Rockley Rd, London W14 0DA
-------------------------------------------------------------------------
+	Ted
 
---------------080705070704080400070201
-Content-Type: text/plain;
- name="alsa-utils-1.0.18-fix_sysv_legacy.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa-utils-1.0.18-fix_sysv_legacy.patch"
+P.S. I still cannot get any MIDI out of the card, but
+because it seems to load the microcode correctly (and
+I made sure to use the same microcode that works correctly
+on the other OSes), I must not be doing something that
+I need to do to get the MIDI to work.  I've loaded the
+microcode, loaded the snd-seq-midi module, and run
+alsamixer, but still no success.  I must be missing
+something.
 
---- a/alsactl/init_parse.c	2009-01-15 10:44:48.000000000 +0000
-+++ b/alsactl/init_parse.c	2009-01-15 10:46:41.000000000 +0000
-@@ -381,7 +381,7 @@ static int set_ctl_value(struct space *s
- 				snd_ctl_elem_value_set_integer(space->ctl_value, idx, val);
- 			} else if (items > 2 && value[items-2] == 'd' && value[items-1] == 'B') {
- 				val = strtol(value, NULL, 0) * 100;
--				if ((pos2 = index(value, '.')) != NULL) {
-+				if ((pos2 = strchr(value, '.')) != NULL) {
- 					if (isdigit(*(pos2-1)) && isdigit(*(pos2-2))) {
- 						if (val < 0)
- 							val -= strtol(pos2 + 1, NULL, 0);
-@@ -1253,7 +1253,7 @@ static char *new_root_dir(const char *fi
- 
- 	res = strdup(filename);
- 	if (res) {
--		tmp = rindex(res, '/');
-+		tmp = strrchr(res, '/');
- 		if (tmp)
- 			*tmp = '\0';
- 	}
 
---------------080705070704080400070201
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On Jan 16, 2009, at 4:47 PM, Krzysztof Helt wrote:
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------080705070704080400070201--
+> From: Krzysztof Helt <krzysztof.h1@wp.pl>
+>
+> A WSS codec is autocalibrated each time before
+> playing sound. Do only one calibration during
+> codec initialization.
+>
+> Complete snd_wss_calibrate_mute to mute loopback
+> volume as well.
+>
+> Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+> ---
+>  sound/isa/wss/wss_lib.c |   41 ++++++++++++ 
+> +----------------------------
+>  1 files changed, 13 insertions(+), 28 deletions(-)
+>
+> diff --git a/sound/isa/wss/wss_lib.c b/sound/isa/wss/wss_lib.c
+> index 13299ae..f0c0be5 100644
+> --- a/sound/isa/wss/wss_lib.c
+> +++ b/sound/isa/wss/wss_lib.c
+> @@ -181,25 +181,6 @@ static void snd_wss_wait(struct snd_wss *chip)
+>                 udelay(100);
+>  }
+>
+> -static void snd_wss_outm(struct snd_wss *chip, unsigned char reg,
+> -                           unsigned char mask, unsigned char value)
+> -{
+> -       unsigned char tmp = (chip->image[reg] & mask) | value;
+> -
+> -       snd_wss_wait(chip);
+> -#ifdef CONFIG_SND_DEBUG
+> -       if (wss_inb(chip, CS4231P(REGSEL)) & CS4231_INIT)
+> -               snd_printk("outm: auto calibration time out - reg =  
+> 0x%x, value = 0x%x\n", reg, value);
+> -#endif
+> -       chip->image[reg] = tmp;
+> -       if (!chip->calibrate_mute) {
+> -               wss_outb(chip, CS4231P(REGSEL), chip->mce_bit | reg);
+> -               wmb();
+> -               wss_outb(chip, CS4231P(REG), tmp);
+> -               mb();
+> -       }
+> -}
+> -
+>  static void snd_wss_dout(struct snd_wss *chip, unsigned char reg,
+>                          unsigned char value)
+>  {
+> @@ -587,7 +568,15 @@ static void snd_wss_calibrate_mute(struct  
+> snd_wss *chip, int mute)
+>                              chip->image[CS4231_RIGHT_INPUT]);
+>                 snd_wss_dout(chip, CS4231_LOOPBACK,
+>                              chip->image[CS4231_LOOPBACK]);
+> +       } else {
+> +               snd_wss_dout(chip, CS4231_LEFT_INPUT,
+> +                            0);
+> +               snd_wss_dout(chip, CS4231_RIGHT_INPUT,
+> +                            0);
+> +               snd_wss_dout(chip, CS4231_LOOPBACK,
+> +                            0xfd);
+>         }
+> +
+>         snd_wss_dout(chip, CS4231_AUX1_LEFT_INPUT,
+>                      mute | chip->image[CS4231_AUX1_LEFT_INPUT]);
+>         snd_wss_dout(chip, CS4231_AUX1_RIGHT_INPUT,
+> @@ -630,7 +619,6 @@ static void snd_wss_playback_format(struct  
+> snd_wss *chip,
+>         int full_calib = 1;
+>
+>         mutex_lock(&chip->mce_mutex);
+> -       snd_wss_calibrate_mute(chip, 1);
+>         if (chip->hardware == WSS_HW_CS4231A ||
+>             (chip->hardware & WSS_HW_CS4232_MASK)) {
+>                 spin_lock_irqsave(&chip->reg_lock, flags);
+> @@ -681,7 +669,6 @@ static void snd_wss_playback_format(struct  
+> snd_wss *chip,
+>                         udelay(100);    /* this seems to help */
+>                 snd_wss_mce_down(chip);
+>         }
+> -       snd_wss_calibrate_mute(chip, 0);
+>         mutex_unlock(&chip->mce_mutex);
+>  }
+>
+> @@ -693,7 +680,6 @@ static void snd_wss_capture_format(struct  
+> snd_wss *chip,
+>         int full_calib = 1;
+>
+>         mutex_lock(&chip->mce_mutex);
+> -       snd_wss_calibrate_mute(chip, 1);
+>         if (chip->hardware == WSS_HW_CS4231A ||
+>             (chip->hardware & WSS_HW_CS4232_MASK)) {
+>                 spin_lock_irqsave(&chip->reg_lock, flags);
+> @@ -750,7 +736,6 @@ static void snd_wss_capture_format(struct  
+> snd_wss *chip,
+>                 spin_unlock_irqrestore(&chip->reg_lock, flags);
+>                 snd_wss_mce_down(chip);
+>         }
+> -       snd_wss_calibrate_mute(chip, 0);
+>         mutex_unlock(&chip->mce_mutex);
+>  }
+>
+> @@ -807,6 +792,7 @@ static void snd_wss_init(struct snd_wss *chip)
+>  {
+>         unsigned long flags;
+>
+> +       snd_wss_calibrate_mute(chip, 1);
+>         snd_wss_mce_down(chip);
+>
+>  #ifdef SNDRV_DEBUG_MCE
+> @@ -830,6 +816,8 @@ static void snd_wss_init(struct snd_wss *chip)
+>
+>         snd_wss_mce_up(chip);
+>         spin_lock_irqsave(&chip->reg_lock, flags);
+> +       chip->image[CS4231_IFACE_CTRL] &= ~CS4231_AUTOCALIB;
+> +       snd_wss_out(chip, CS4231_IFACE_CTRL, chip->image 
+> [CS4231_IFACE_CTRL]);
+>         snd_wss_out(chip,
+>                     CS4231_ALT_FEATURE_1, chip->image 
+> [CS4231_ALT_FEATURE_1]);
+>         spin_unlock_irqrestore(&chip->reg_lock, flags);
+> @@ -863,6 +851,7 @@ static void snd_wss_init(struct snd_wss *chip)
+>                             chip->image[CS4231_REC_FORMAT]);
+>         spin_unlock_irqrestore(&chip->reg_lock, flags);
+>         snd_wss_mce_down(chip);
+> +       snd_wss_calibrate_mute(chip, 0);
+>
+>  #ifdef SNDRV_DEBUG_MCE
+>         snd_printk("init: (5)\n");
+> @@ -921,8 +910,6 @@ static void snd_wss_close(struct snd_wss *chip,  
+> unsigned int mode)
+>                 mutex_unlock(&chip->open_mutex);
+>                 return;
+>         }
+> -       snd_wss_calibrate_mute(chip, 1);
+> -
+>         /* disable IRQ */
+>         spin_lock_irqsave(&chip->reg_lock, flags);
+>         if (!(chip->hardware & WSS_HW_AD1848_MASK))
+> @@ -955,8 +942,6 @@ static void snd_wss_close(struct snd_wss *chip,  
+> unsigned int mode)
+>         wss_outb(chip, CS4231P(STATUS), 0);     /* clear IRQ */
+>         spin_unlock_irqrestore(&chip->reg_lock, flags);
+>
+> -       snd_wss_calibrate_mute(chip, 0);
+> -
+>         chip->mode = 0;
+>         mutex_unlock(&chip->open_mutex);
+>  }
+> @@ -1149,7 +1134,7 @@ irqreturn_t snd_wss_interrupt(int irq, void  
+> *dev_id)
+>         if (chip->hardware & WSS_HW_AD1848_MASK)
+>                 wss_outb(chip, CS4231P(STATUS), 0);
+>         else
+> -               snd_wss_outm(chip, CS4231_IRQ_STATUS, status, 0);
+> +               snd_wss_out(chip, CS4231_IRQ_STATUS, status);
+>         spin_unlock(&chip->reg_lock);
+>         return IRQ_HANDLED;
+>  }
+> --
+> 1.5.2.2
+>
+>
+> ----------------------------------------------------------------------
+> Speak Up. Angielski szybko i skutecznie. 3 miesiace nauki gratis.
+> Sprawdz. >> http://link.interia.pl/f2019
+>
