@@ -1,21 +1,18 @@
-From: Vincent <zakora@gmail.com>
-Subject: Re: Cannot record from front pluggable mic on 82801H
-	(ICH8 Family) sound card
-Date: Sat, 17 Jan 2009 17:49:19 +0100
-Message-ID: <ef2423ab0901170849v7c768afy8c88b1e82fb80f11@mail.gmail.com>
-References: <ef2423ab0901090857l1b592e34yd340f69c5c65fb92@mail.gmail.com>
-	<s5htz84da4g.wl%tiwai@suse.de>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [Pull request] ASoC: machine support for Toshiba
+	e740 PDA
+Date: Sat, 17 Jan 2009 17:05:53 +0000
+Message-ID: <20090117170553.GD7210@sirena.org.uk>
+References: <4971F740.3050204@mnementh.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5E9C524377
-	for <alsa-devel@alsa-project.org>; Sat, 17 Jan 2009 17:49:21 +0100 (CET)
-Received: by wf-out-1314.google.com with SMTP id 24so2177923wfg.23
-	for <alsa-devel@alsa-project.org>; Sat, 17 Jan 2009 08:49:20 -0800 (PST)
-In-Reply-To: <s5htz84da4g.wl%tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id ECC1124387
+	for <alsa-devel@alsa-project.org>; Sat, 17 Jan 2009 18:06:00 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <4971F740.3050204@mnementh.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,45 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Ian Molton <ian@mnementh.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sat, Jan 17, 2009 at 03:20:32PM +0000, Ian Molton wrote:
 
-I tried to install alsa-driver snapshot but I think I'm not enough skilled :
-I first uninstall alsa-lib, then I install the alsa-driver snapshot. When I
-try to (re)start alsa, I get this error:
-"/usr/sbin/alsactl: error while loading shared libraries: libasound.so.2:
-cannot open shared object file: No such file or directory"
-and a "sudo find / -name 'libasound*'" didn't return any result.
+> Mark, if you want the pull request minus the other patchset in my tree  
+> (caching stuff) then I can redo. Otherwise, feel free to cherrypick.
 
-Did I do the right installation processus? What else can I try to help?
-
-Thanks
-
-On Mon, Jan 12, 2009 at 12:41 PM, Takashi Iwai <tiwai@suse.de> wrote:
-
-> At Fri, 9 Jan 2009 17:57:45 +0100,
-> Vincent wrote:
-> >
-> > Hi,
-> >
-> > I'm working on a Dell 1525 and I want to plug a mic into the front mic
-> port
-> > in order to have a "clean" record. But when it doesn't record anything,
-> all
-> > I can have is the noise from the external mic.
-> > Is there any specific actions I forgot to do?
-> >
-> > Here is my alsa-info output :
-> >
-> http://www.alsa-project.org/db/?f=a9066fcfe52fa0dd7d9bcd65214855c84592bd25
->
-> Could you first try the latest alsa-driver snapshot (or sound git tree)?
->
-> ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
->
->
-> Takashi
->
+Applied, thanks.  If you could avoid mixing patches up so much that'd be
+helpful.
