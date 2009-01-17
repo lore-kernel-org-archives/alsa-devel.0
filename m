@@ -1,23 +1,23 @@
-From: Stefanie <21_halfthetruth@web.de>
-Subject: Re: hda_codec: Unknown model for ALC268
-Date: Sat, 17 Jan 2009 22:39:45 +0100
-Message-ID: <49725021.5050708@web.de>
-References: <49691579.2070600@web.de> <20090112020424.GB7505@localhost>
+From: Vincent <zakora@gmail.com>
+Subject: Re: Cannot record from front pluggable mic on 82801H
+	(ICH8 Family) sound card
+Date: Sun, 18 Jan 2009 00:37:37 +0100
+Message-ID: <ef2423ab0901171537s40d6d25ie2b44f875b62fab9@mail.gmail.com>
+References: <ef2423ab0901090857l1b592e34yd340f69c5c65fb92@mail.gmail.com>
+	<s5htz84da4g.wl%tiwai@suse.de>
+	<ef2423ab0901170849v7c768afy8c88b1e82fb80f11@mail.gmail.com>
+	<200901171906.27473.cave.dnb2m97pp@aliceadsl.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fmmailgate03.web.de (fmmailgate03.web.de [217.72.192.234])
-	by alsa0.perex.cz (Postfix) with ESMTP id EEE061037FD
-	for <alsa-devel@alsa-project.org>; Sat, 17 Jan 2009 22:37:37 +0100 (CET)
-Received: from smtp07.web.de (fmsmtp07.dlan.cinetic.de [172.20.5.215])
-	by fmmailgate03.web.de (Postfix) with ESMTP id 528E9F6AB2FC
-	for <alsa-devel@alsa-project.org>; Sat, 17 Jan 2009 22:37:37 +0100 (CET)
-Received: from [80.142.253.233] (helo=Mescalin.local)
-	by smtp07.web.de with asmtp (TLSv1:AES256-SHA:256)
-	(WEB.DE 4.110 #277) id 1LOIrJ-00070W-00
-	for alsa-devel@alsa-project.org; Sat, 17 Jan 2009 22:37:37 +0100
-In-Reply-To: <20090112020424.GB7505@localhost>
+Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.175])
+	by alsa0.perex.cz (Postfix) with ESMTP id 39A911037F4
+	for <alsa-devel@alsa-project.org>; Sun, 18 Jan 2009 00:37:38 +0100 (CET)
+Received: by wf-out-1314.google.com with SMTP id 24so2276762wfg.23
+	for <alsa-devel@alsa-project.org>; Sat, 17 Jan 2009 15:37:37 -0800 (PST)
+In-Reply-To: <200901171906.27473.cave.dnb2m97pp@aliceadsl.fr>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,90 +27,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Nigel Henry <cave.dnb2m97pp@aliceadsl.fr>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Fengguang,
+Hi again,
 
-thanks for your answer.
+I have now installed the alsa-driver snapshot in a right way.
+Here is my /proc/asound/version:
+"Advanced Linux Sound Architecture Driver Version 1.0.18a.
+Compiled on Jan 17 2009 for kernel 2.6.27-ARCH (SMP)."
+But I still can't record directly from the front plug. How do you configure
+alsa to do that? (I use alsamixer or the gnome volume controler)
 
-Wu Fengguang wrote:
-> Hi Stefanie,
+Thanks
+
+On Sat, Jan 17, 2009 at 7:06 PM, Nigel Henry <cave.dnb2m97pp@aliceadsl.fr>wrote:
+
+> On Saturday 17 January 2009 17:49, Vincent wrote:
+> > Hi,
+> >
+> > I tried to install alsa-driver snapshot but I think I'm not enough
+> skilled
+> > : I first uninstall alsa-lib, then I install the alsa-driver snapshot.
+> When
+> > I try to (re)start alsa, I get this error:
+> > "/usr/sbin/alsactl: error while loading shared libraries: libasound.so.2:
+> > cannot open shared object file: No such file or directory"
+> > and a "sudo find / -name 'libasound*'" didn't return any result.
+> >
+> > Did I do the right installation processus? What else can I try to help?
+> >
+> > Thanks
 >
-> There are some pre-defined models for ALC268:
+> Hi Vincent.
 >
-> static const char *alc268_models[ALC268_MODEL_LAST] = {
->         [ALC267_QUANTA_IL1]     = "quanta-il1",
->         [ALC268_3ST]            = "3stack",
->         [ALC268_TOSHIBA]        = "toshiba",
->         [ALC268_ACER]           = "acer",
->         [ALC268_ACER_DMIC]      = "acer-dmic",
->         [ALC268_ACER_ASPIRE_ONE]        = "acer-aspire",
->         [ALC268_DELL]           = "dell",
->         [ALC268_ZEPTO]          = "zepto",
-> #ifdef CONFIG_SND_DEBUG
->         [ALC268_TEST]           = "test",
-> #endif  
->         [ALC268_AUTO]           = "auto",
-> };      
+> You don't have to uninstall alsa lib to upgrade the alsa driver. First
+> reinstall the alsa-lib package, reboot, or restart alsa, and see if it's
+> working now.
 >
-> You can try them with commands like
+> Post the output of cat /proc/asound/version, which will verify if the alsa
+> driver is now the latest version (1.0.18a)
 >
->         modprobe snd-hda-intel model=3stack
+> I also have an Archlinux install (Don't Panic). My hda intel card works ok
+> with the 1.0.17 alsa driver. (ALC662 codec).
 >
-> and report the one works for you, so that we integrate this knowledge
-> into future kernel versions.
->   
-
-I've loaded the module with different model parameters. Afterwards, I
-tried alsamixer. As this didn't work, I used aumix to maximize all
-levels. Finally, I used aplay to play some audio files.
-
-"quanta-il1", "toshiba":
-
-from alsamixer:
-  ALSA lib simple_none.c:1520:(simple_add1) helem (MIXER,'Headphone
-Playback Switch',0,2,0) appears twice or more
-  alsamixer: function snd_mixer_load failed: Invalid argument
-
--works, but hardly audible
-
-
-"dell":
-
-Too many audio devices
-
-from alsamixer:
-  ALSA lib simple_none.c:1520:(simple_add1) helem (MIXER,'Headphone
-Playback Switch',0,2,0) appears twice or more
-  alsamixer: function snd_mixer_load failed: Invalid argument
-
--works, but hardly audible
-
-
-"acer", "acer-aspire":
-
-from alsamixer:
-  ALSA lib simple_none.c:1520:(simple_add1) helem (MIXER,'Master
-Playback Switch',0,2,0) appears twice or more
-  alsamixer: function snd_mixer_load failed: Invalid argument
-
--nothing audible
-
-
-"3stack", "acer-dmic", "zepto", "test", and "auto":
-
-  HDA Intel: probe of 0000:00:1b.0 failed with error -16
-
-
-
-> You are also welcome to provide your hardware information by running 
->         http://www.alsa-project.org/alsa-info.sh
-> and upload the data collected by it.
->   
-
-http://www.alsa-project.org/db/?f=1db7143668062f92f8cab7c2c214744743b96d44
-
-
-Yours,
-Stefanie
+> All the best.
+>
+> Nigel.
+> >
+> > On Mon, Jan 12, 2009 at 12:41 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> > > At Fri, 9 Jan 2009 17:57:45 +0100,
+> > >
+> > > Vincent wrote:
+> > > > Hi,
+> > > >
+> > > > I'm working on a Dell 1525 and I want to plug a mic into the front
+> mic
+> > >
+> > > port
+> > >
+> > > > in order to have a "clean" record. But when it doesn't record
+> anything,
+> > >
+> > > all
+> > >
+> > > > I can have is the noise from the external mic.
+> > > > Is there any specific actions I forgot to do?
+> > > >
+> > > > Here is my alsa-info output :
+> > >
+> > >
+> http://www.alsa-project.org/db/?f=a9066fcfe52fa0dd7d9bcd65214855c84592bd2
+> > >5
+> > >
+> > > Could you first try the latest alsa-driver snapshot (or sound git
+> tree)?
+> > >
+> > >
+> ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-s
+> > >napshot.tar.gz
+> > >
+> > >
+> > > Takashi
+> >
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
