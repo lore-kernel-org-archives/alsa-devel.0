@@ -1,22 +1,15 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: ALSA 1.0.19 release
-Date: Mon, 19 Jan 2009 13:01:14 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0901191256400.8466@tm8103.perex-int.cz>
+From: =?utf-8?q?Ozan=20=C3=87a=C4=9Flayan?= <ozan@pardus.org.tr>
+Subject: [PATCH] alsa-info: Use pgrep with -f for matching
+	against the process' cmdline.
+Date: Mon, 19 Jan 2009 14:52:30 +0200
+Message-ID: <1232369550-27239-1-git-send-email-ozan@pardus.org.tr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 17CD71037E3
-	for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2009 13:01:15 +0100 (CET)
-Received: from server.perex.cz (server.perex.cz [172.16.0.20])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	086B6129A88
-	for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2009 13:01:15 +0100 (CET)
-Received: from tm8103.perex-int.cz (localhost [127.0.0.1])
-	by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	F1EA58435D
-	for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2009 13:01:14 +0100 (CET)
+Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8A5AB1037EA
+	for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2009 13:52:28 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,19 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: =?utf-8?q?Ozan=20=C3=87a=C4=9Flayan?= <ozan@pardus.org.tr>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-	I released ALSA 1.0.19 packages (except alsa-oss and alsa-python 
-- no changes). Description of changes is available at URL bellow:
-
-http://www.alsa-project.org/main/index.php/Changes_v1.0.18_v1.0.19
-
-					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+TGF0ZXN0IGFsc2EtaW5mby5zaCBoYXMgYSBzb3VuZCBkYWVtb24gZGV0ZWN0aW9uIHNuaXBwZXQg
+d2hpY2ggdXNlcyBwZ3JlcCB0byBmaW5kCm91dCBpZiBhbnkgc291bmQgZGFlbW9uIGlzIGxvYWRl
+ZCBvciBub3QuIFRoZSBmdWxsIHBhdGhzIHRvIHRoZSBiaW5hcmllcyBhcmUKZ2l2ZW4gdG8gcGdy
+ZXAgYnV0IHBncmVwIG1hdGNoZXMgaXRzIGZpcnN0IHBhcmFtZXRlciBhZ2FpbnN0IHRoZSAicHJv
+Y2VzcyBuYW1lIgpieSBkZWZhdWx0LgoKQ2FsbCBwZ3JlcCB3aXRoIC1mIHRvIG1hdGNoIGFnYWlu
+c3QgdGhlIHByb2Nlc3MnIGNvbW1hbmQgbGluZSB0byBmaXggdGhlIGRldGVjdGlvbgpjb2RlLgoK
+U2lnbmVkLW9mZi1ieTogT3phbiDDh2HEn2xheWFuIDxvemFuQHBhcmR1cy5vcmcudHI+Ci0tLQog
+dXRpbHMvYWxzYS1pbmZvLnNoIHwgICAgNiArKystLS0KIDEgZmlsZXMgY2hhbmdlZCwgMyBpbnNl
+cnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3V0aWxzL2Fsc2EtaW5mby5z
+aCBiL3V0aWxzL2Fsc2EtaW5mby5zaAppbmRleCAxYmUxNDdmLi5iZTEwMzYyIDEwMDc1NQotLS0g
+YS91dGlscy9hbHNhLWluZm8uc2gKKysrIGIvdXRpbHMvYWxzYS1pbmZvLnNoCkBAIC0zNzUsMjEg
+KzM3NSwyMSBAQCBlY2hvICIhIVNvdW5kIFNlcnZlcnMgb24gdGhpcyBzeXN0ZW0iID4+ICRGSUxF
+CiBlY2hvICIhIS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0iID4+ICRGSUxFCiBlY2hvICIi
+ID4+ICRGSUxFCiBpZiBbWyAtbiAkUEFJTlNUIF1dO3RoZW4KLVtbIGBwZ3JlcCAkUEFJTlNUYCBd
+XSAmJiBQQVJVTk5JTkc9IlllcyIgfHwgUEFSVU5OSU5HPSJObyIKK1tbIGBwZ3JlcCAtZiAkUEFJ
+TlNUYCBdXSAmJiBQQVJVTk5JTkc9IlllcyIgfHwgUEFSVU5OSU5HPSJObyIKIGVjaG8gIlB1bHNl
+YXVkaW86IiA+PiAkRklMRQogZWNobyAiICAgICAgSW5zdGFsbGVkIC0gWWVzICgkUEFJTlNUKSIg
+Pj4gJEZJTEUKIGVjaG8gIiAgICAgIFJ1bm5pbmcgLSAkUEFSVU5OSU5HIiA+PiAkRklMRQogZWNo
+byAiIiA+PiAkRklMRQogZmkKIGlmIFtbIC1uICRFU0RJTlNUIF1dO3RoZW4KLVtbIGBwZ3JlcCAk
+RVNESU5TVGAgXV0gJiYgRVNEUlVOTklORz0iWWVzIiB8fCBFU0RSVU5OSU5HPSJObyIKK1tbIGBw
+Z3JlcCAtZiAkRVNESU5TVGAgXV0gJiYgRVNEUlVOTklORz0iWWVzIiB8fCBFU0RSVU5OSU5HPSJO
+byIKIGVjaG8gIkVTb3VuZCBEYWVtb246IiA+PiAkRklMRQogZWNobyAiICAgICAgSW5zdGFsbGVk
+IC0gWWVzICgkRVNESU5TVCkiID4+ICRGSUxFCiBlY2hvICIgICAgICBSdW5uaW5nIC0gJEVTRFJV
+Tk5JTkciID4+ICRGSUxFCiBlY2hvICIiID4+ICRGSUxFCiBmaQogaWYgW1sgLW4gJEFSVFNJTlNU
+IF1dO3RoZW4KLVtbIGBwZ3JlcCAkQVJUU0lOU1RgIF1dICYmIEFSVFNSVU5OSU5HPSJZZXMiIHx8
+IEFSVFNSVU5OSU5HPSJObyIKK1tbIGBwZ3JlcCAtZiAkQVJUU0lOU1RgIF1dICYmIEFSVFNSVU5O
+SU5HPSJZZXMiIHx8IEFSVFNSVU5OSU5HPSJObyIKIGVjaG8gImFSdHM6IiA+PiAkRklMRQogZWNo
+byAiICAgICAgSW5zdGFsbGVkIC0gWWVzICgkQVJUU0lOU1QpIiA+PiAkRklMRQogZWNobyAiICAg
+ICAgUnVubmluZyAtICRBUlRTUlVOTklORyIgPj4gJEZJTEUKLS0gCjEuNi4xCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
