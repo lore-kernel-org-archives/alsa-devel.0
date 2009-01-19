@@ -1,17 +1,16 @@
-From: "S. Aguinaga" <sa_jr@yahoo.com>
-Subject: {Q}simple selection of analog ports other than the
-	headphones
-Date: Mon, 19 Jan 2009 09:55:52 -0800 (PST)
-Message-ID: <755002.27626.qm@web65616.mail.ac4.yahoo.com>
-References: <mailman.1424.1231103612.1965.alsa-devel@alsa-project.org>
-Reply-To: "S. Aguinaga" <sa_jr@yahoo.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: [PATCH 2.6.29] ASoC: Allow Freescale MPC8610 audio
+	drivers to be compiled as modules
+Date: Mon, 19 Jan 2009 11:57:46 -0600
+Message-ID: <1232387866-14365-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web65616.mail.ac4.yahoo.com (web65616.mail.ac4.yahoo.com
-	[76.13.9.84]) by alsa0.perex.cz (Postfix) with SMTP id 105A9103802
-	for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2009 18:55:53 +0100 (CET)
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id E0065103802
+	for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2009 18:58:10 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,30 +20,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
+Change the Kconfig and Makefile options for Freescale MPC8610 audio drivers
+so that they can be compiled as modules, and simplify the Kconfig choices
+so that only the platform is selected.
 
-Dear Colleagues,
+Also fix the naming of the driver files to conform to ALSA standards.
 
-I have installed a fresh Fedora 9, and I have an Echo Layla3G (pci) card.  All I had to do was install the firmware, and it to playback out of Layla headphones.  This device has other Outputs, how I can I easily select the other channels for playback? 
+Signed-off-by: Timur Tabi <timur@freescale.com>
+---
+ sound/soc/fsl/Kconfig  |   16 ++++++++--------
+ sound/soc/fsl/Makefile |    7 +++++--
+ 2 files changed, 13 insertions(+), 10 deletions(-)
 
-aplay -l show these (along withthe Intel HDA for the built-in audio device):
-card 1: Layla3G [Layla3G], device 0: Analog PCM [Layla3G]
-  Subdevices: 8/8
-  Subdevice #0: subdevice #0
-  Subdevice #1: subdevice #1
-  Subdevice #2: subdevice #2
-  Subdevice #3: subdevice #3
-  Subdevice #4: subdevice #4
-  Subdevice #5: subdevice #5
-  Subdevice #6: subdevice #6
-  Subdevice #7: subdevice #7
-
-so is it possible to type: aplay -D hw:1,0  thewavefile.wav and specify the subdevice?
-Or do I need to specify in my .asoundrc file an alias?  with -D hw:1,0 I get sound out of Layla's headphone port only.
-
-If you have links to useful howtos or documentation, please let me know.
-
-// Sal Aguinaga
-// Northwestern University
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 95c12b2..bd6974e 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -1,17 +1,17 @@
+ config SND_SOC_OF_SIMPLE
+ 	tristate
+ 
++# ASoC platform support for the Freescale MPC8610 SOC.  This compiles drivers
++# for the SSI and the Elo DMA controller.  You will still need to select
++# a platform driver and a codec driver.
+ config SND_SOC_MPC8610
+-	bool "ALSA SoC support for the MPC8610 SOC"
+-	depends on MPC8610_HPCD
+-	default y if MPC8610
+-	help
+-	  Say Y if you want to add support for codecs attached to the SSI
+-          device on an MPC8610.
++	tristate
++	depends on MPC8610
+ 
+ config SND_SOC_MPC8610_HPCD
+-	bool "ALSA SoC support for the Freescale MPC8610 HPCD board"
+-	depends on SND_SOC_MPC8610
++	tristate "ALSA SoC support for the Freescale MPC8610 HPCD board"
++	depends on SND_SOC && MPC8610_HPCD
++	select SND_SOC_MPC8610
+ 	select SND_SOC_CS4270
+ 	select SND_SOC_CS4270_VD33_ERRATA
+ 	default y if MPC8610_HPCD
+diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
+index 035da4a..f85134c 100644
+--- a/sound/soc/fsl/Makefile
++++ b/sound/soc/fsl/Makefile
+@@ -2,10 +2,13 @@
+ obj-$(CONFIG_SND_SOC_OF_SIMPLE) += soc-of-simple.o
+ 
+ # MPC8610 HPCD Machine Support
+-obj-$(CONFIG_SND_SOC_MPC8610_HPCD) += mpc8610_hpcd.o
++snd-soc-mpc8610-hpcd-objs := mpc8610_hpcd.o
++obj-$(CONFIG_SND_SOC_MPC8610_HPCD) += snd-soc-mpc8610-hpcd.o
+ 
+ # MPC8610 Platform Support
+-obj-$(CONFIG_SND_SOC_MPC8610) += fsl_ssi.o fsl_dma.o
++snd-soc-fsl-ssi-objs := fsl_ssi.o
++snd-soc-fsl-dma-objs := fsl_dma.o
++obj-$(CONFIG_SND_SOC_MPC8610) += snd-soc-fsl-ssi.o snd-soc-fsl-dma.o
+ 
+ obj-$(CONFIG_SND_SOC_MPC5200_I2S) += mpc5200_psc_i2s.o
+ 
+-- 
+1.5.5
