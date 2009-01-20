@@ -1,18 +1,15 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 2.6.29] ASoC: fix registration of the
-	SOC	card in the Freescale MPC8610 drivers
-Date: Tue, 20 Jan 2009 20:32:28 +0000
-Message-ID: <20090120203227.GD6864@sirena.org.uk>
-References: <1232406864-25421-1-git-send-email-timur@freescale.com>
+Subject: ASoC update for 2.6.29
+Date: Tue, 20 Jan 2009 20:58:03 +0000
+Message-ID: <20090120205802.GA7686@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id EA72D103856
-	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 21:32:36 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 48B181037E3
+	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 21:58:14 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1232406864-25421-1-git-send-email-timur@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,14 +19,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 19, 2009 at 05:14:24PM -0600, Timur Tabi wrote:
-> The Freescale MPC8610 driver was defining two SOC card (snd_soc_card) structures,
-> partially initializing each one, but registering only one of them with ASoC.
+The following changes since commit 591046cfc5f1b452db0a4557850ad7f394e38231:
+  Ben Nizette (1):
+        ASoC: atmel_pcm: Remove non-existant header
 
-> Signed-off-by: Timur Tabi <timur@freescale.com>
+are available in the git repository at:
 
-Applied, thanks.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.29
+
+Timur Tabi (1):
+      ASoC: fix registration of the SoC card in the Freescale MPC8610 drivers
+
+ sound/soc/fsl/mpc8610_hpcd.c |   18 ++++++------------
+ 1 files changed, 6 insertions(+), 12 deletions(-)
