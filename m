@@ -1,15 +1,14 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: ASoC updates for 2.6.30
-Date: Tue, 20 Jan 2009 21:00:19 +0000
-Message-ID: <20090120210018.GB7686@sirena.org.uk>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: 83xxx port 0xe DAC selection
+Date: Tue, 20 Jan 2009 16:50:25 -0500
+Message-ID: <49764721.5040903@embeddedalley.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id CB0141037E3
-	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 22:00:26 +0100 (CET)
-Content-Disposition: inline
+Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
+	by alsa0.perex.cz (Postfix) with SMTP id 857AE1037E3
+	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 22:50:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,30 +18,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit b2a19d02396c92294abcddee5bd9bd49cc4e4d1c:
-  Mark Brown (1):
-        ASoC: Staticise PCM operations tables
+On the 92hd8xxx codecs port 0xe needs the connection selected to be the
+last DAC in the list.
 
-are available in the git repository at:
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+---
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.30
-
-Ian Molton (1):
-      ASoC: Fix WM9705 capture switch name
-
-Mark Brown (1):
-      Merge branch 'for-2.6.29' into for-2.6.30
-
-Timur Tabi (2):
-      ASoC: fix registration of the SoC card in the Freescale MPC8610 drivers
-      ASoC: Allow Freescale MPC8610 audio drivers to be compiled as modules
-
- sound/soc/codecs/wm9705.c    |    4 ++--
- sound/soc/fsl/Kconfig        |   16 ++++++++--------
- sound/soc/fsl/Makefile       |    7 +++++--
- sound/soc/fsl/mpc8610_hpcd.c |   18 ++++++------------
- 4 files changed, 21 insertions(+), 24 deletions(-)
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index a4d4afe..7badec0 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -841,10 +841,6 @@ static struct hda_verb stac92hd73xx_10ch_core_init[] = {
+ };
+ 
+ static struct hda_verb stac92hd83xxx_core_init[] = {
+-	/* start of config #1 */
+-	{ 0xe, AC_VERB_SET_CONNECT_SEL, 0x3},
+-
+-	/* start of config #2 */
+ 	{ 0xa, AC_VERB_SET_CONNECT_SEL, 0x0},
+ 	{ 0xb, AC_VERB_SET_CONNECT_SEL, 0x0},
+ 	{ 0xd, AC_VERB_SET_CONNECT_SEL, 0x1},
+@@ -4754,7 +4750,9 @@ static struct hda_input_mux stac92hd83xxx_dmux = {
+ static int patch_stac92hd83xxx(struct hda_codec *codec)
+ {
+ 	struct sigmatel_spec *spec;
++	hda_nid_t conn[STAC92HD83_DAC_COUNT + 1];
+ 	int err;
++	int num_dacs;
+ 
+ 	spec  = kzalloc(sizeof(*spec), GFP_KERNEL);
+ 	if (spec == NULL)
+@@ -4773,13 +4771,21 @@ static int patch_stac92hd83xxx(struct hda_codec *codec)
+ 	spec->num_pwrs = ARRAY_SIZE(stac92hd83xxx_pwr_nids);
+ 	spec->multiout.dac_nids = spec->dac_nids;
+ 
++
++	/* set port 0xe to select the last DAC
++ 	 */
++	num_dacs = snd_hda_get_connections(codec, 0x0e,
++		conn, STAC92HD83_DAC_COUNT + 1) - 1;
++
++	snd_hda_codec_write_cache(codec, 0xe, 0,
++		AC_VERB_SET_CONNECT_SEL, num_dacs);
++
+ 	spec->init = stac92hd83xxx_core_init;
+ 	switch (codec->vendor_id) {
+ 	case 0x111d7605:
+ 		break;
+ 	default:
+ 		spec->num_pwrs--;
+-		spec->init++; /* switch to config #2 */
+ 	}
+ 
+ 	spec->mixer = stac92hd83xxx_mixer;
