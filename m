@@ -1,17 +1,29 @@
-From: "John L. Utz III" <jutz@dmx.com>
-Subject: Re: Any CMedia CMI8788 "Oxygen" and ASUS Xonar D1
- "virtuoso" documentation available?
-Date: Tue, 20 Jan 2009 08:30:26 -0800
-Message-ID: <4975FC22.3060306@dmx.com>
-References: <497121FE.6000906@dmx.com> <49743B02.90506@ladisch.de>
+From: flameeyes@gmail.com (Diego E. 'Flameeyes' =?utf-8?Q?Petten=C3=B2?=)
+Subject: Re: [PATCH 1/2] Remove definition for surround sound
+	devices on ICE1712.
+Date: Tue, 20 Jan 2009 17:33:24 +0100
+Message-ID: <m2d4ei9bu3.fsf@gmail.com>
+References: <1232455075-27712-1-git-send-email-flameeyes@gmail.com>
+	<Pine.LNX.4.61.0901201434500.8466@tm8103.perex-int.cz>
+	<m2iqoa9jem.fsf@gmail.com>
+	<200901201526.51060.gineera@aspect135.co.uk>
+	<Pine.LNX.4.61.0901201718390.8466@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5124561192712040297=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id A477D1037E3
-	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 17:31:49 +0100 (CET)
-In-Reply-To: <49743B02.90506@ladisch.de>
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 434C410381B
+	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 17:32:14 +0100 (CET)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1LPJWN-0004hv-Us
+	for alsa-devel@alsa-project.org; Tue, 20 Jan 2009 16:32:11 +0000
+Received: from ppp-196-234.21-151.libero.it ([151.21.234.196])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 16:32:11 +0000
+Received: from flameeyes by ppp-196-234.21-151.libero.it with local (Gmexim
+	0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 16:32:11 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,63 +33,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: ALSA Developers <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens;
+--===============5124561192712040297==
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha1; protocol="application/pgp-signature"
 
-thankyou for the response.
+--=-=-=
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Clemens Ladisch wrote:
-> John L. Utz III wrote:
->> I just tried to find the docs for the CMI8788 on www.cmedia.com.tw and i
->> was not successful.
-> 
-> That website has a datasheet which doesn't contain much of interest.
+Jaroslav Kysela <perex@perex.cz> writes:
 
-yah, i read that. :-(
+> Note that front and surround devices does not support automatic sample=20
+> conversion. Use plug:front, plug:surround40 etc. devices.
 
-> There is a datasheet with register specifications, but it is only
-> available under NDA.
-> 
->> Nor have i been able to find any virtuoso docs at www.asus.com.
-> 
-> The only difference between the CMI8787/CMI8788/AV100/AV200 chips is the
-> label on top of the chip.
+Using the correct format, front:IDX should work with two channels sound
+files, and it doesn't, nor surround40:IDX works with four channels or
+surround71:IDX with eight channels.
 
-Oh, thankyou!
+[I'm using IDX because I have it on :1 rather than :0]
 
->> I know that Clemens wrote the driver, but I dont know if it was written
->> from scratch with docs or ported from a 4front driver.
-> 
-> I started with an ALSA driver that was written by someone at C-Media,
-> but it was so incomplete and buggy that I started over from scratch.
-> I never signed an NDA.
+=2D-=20
+Diego "Flameeyes" Petten=C3=B2
+http://blog.flameeyes.eu/
 
-ok, understood.
+--=-=-=
+Content-Type: application/pgp-signature
 
->> currently, there are some bugs with channel mapping on the rear channel
->> in Surround40 mode that i would like to fix
-> 
-> In 4.0 mode, the "rear" channels go to the "surround" jack.  The
-> "surround" and "back" jacks behave like described in the manual.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.9 (GNU/Linux)
 
-yup, that works.
+iEYEARECAAYFAkl1/NgACgkQe2h1+2mHVWOIigCaA6iXWprEy2clWsvD1wvdVcYz
+Q+sAni6S/lUWF02IO9MqyqjhoyvIfq5Z
+=yhdD
+-----END PGP SIGNATURE-----
+--=-=-=--
 
-> The PCM data from the computer is organized as (up to) four two-channel
-> pairs.  There are four DACs that each play a two-channel pair of PCM
-> data.  The "play routing" register contains four two-bit fields that
-> specify, for each DAC, the number of the channel pair that is to be
-> played on this DAC.  This allows rerouting (by exchanging some fields)
-> or duplicating of channels pairs (by having the same source for multiple
-> DACs).  All this is handled in the oxygen_update_dac_routing() function.
 
-thankyou for the huge fat hint. :-)
+--===============5124561192712040297==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-we have some transposed channels when we run our app, i can probably fix 
-this.....
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-> HTH
-> Clemens
-> 
+--===============5124561192712040297==--
