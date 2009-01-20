@@ -1,15 +1,15 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Misusing snd_pcm_avail_update()
-Date: Tue, 20 Jan 2009 03:57:28 +0100
-Message-ID: <20090120025727.GA30499@tango.0pointer.de>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: default dmuxes to first entry in
+	dinput_mux
+Date: Mon, 19 Jan 2009 22:41:56 -0500
+Message-ID: <49754804.8060508@embeddedalley.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id DAF672435D
-	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 03:57:29 +0100 (CET)
-Content-Disposition: inline
+Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
+	by alsa0.perex.cz (Postfix) with SMTP id 2437A24399
+	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 04:42:20 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,47 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Heya!
+When using a custom spec->dinput_mux sometimes the value selected is
+incorrect due to not have a previously selected default. To remedy this
+patch selects the first items index in spec->dinput_mux and sets all the
+dmuxes thusly to it. 
 
-Currently in the 'glitch-free' logic of PulseAudio I use
-snd_pcm_avail_update() to estimate how I need to program my system
-timers for the next wake-up for the next buffer fill-up. For that I
-assume that the current fill level of the hardware buffer is the
-hardware buffer size minus what s_p_a_u() returns. I then convert that
-fill level from sample units to time units, and fix it up by the
-deviation of the sound card time from the system time. Finally I
-substract some extra margin just to make sure.
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+---
 
-This I assumed would tell me how much time will pass until an underrun
-happens if I don't write anything. 
-
-Mostly this logic works fine. But on some setups and cases it
-doesn't. ALSA will signal an underrun much much earlier than what I
-estimated like this.
-
-I am now wondering why? One possibility of course is that s_p_a_u() is
-not reliable, due to driver issues (there were problems in the HDA
-driver about this, right?). Also, s_p_a_u() might simply lag behind
-quite a bit, or -- what I think is most likely -- because samples are
-popped in larger blocks form the hw playback buffer we reach the
-underrun much earlier than expected.
-
-I do acknowledge that the way i use s_p_a_u() is probably a misuse of
-the API. I make asssumptions I probably shouldn't make.
-
-Now, considering all this I'd like to ask for a new API function that
-tells me how much time I really have before the next underrun. It
-probably should just return a value in sample units, leaving it for
-the application to deal with system/sound card clock deviations.
-
-Any opinions on this?
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index e2b673a..3f5dc1b 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -3663,7 +3663,17 @@ static int stac92xx_parse_auto_config(struct hda_codec *codec, hda_nid_t dig_out
+ 		spec->mixers[spec->num_mixers++] = spec->kctls.list;
+ 
+ 	spec->input_mux = &spec->private_imux;
+-	if (!spec->dinput_mux)
++	if (spec->dinput_mux) {
++		int idx = spec->dinput_mux->items[0].index;
++		int i;
++
++		/* sometimes using a custom dinput_mux causes the incorrect
++ 		 * value to selected on startup, but sure a valid one is
++ 		 * selected by default */
++		for (i = 0; i < spec->num_dmuxes; i++)
++			snd_hda_codec_write_cache(codec, spec->dmux_nids[i], 0,
++				 AC_VERB_SET_CONNECT_SEL, idx);
++	} else
+ 		spec->dinput_mux = &spec->private_dimux;
+ 	spec->sinput_mux = &spec->private_smux;
+ 	spec->mono_mux = &spec->private_mono_mux;
