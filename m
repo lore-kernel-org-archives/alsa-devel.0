@@ -1,29 +1,16 @@
-From: flameeyes@gmail.com (Diego E. 'Flameeyes' =?utf-8?Q?Petten=C3=B2?=)
-Subject: Re: [PATCH 1/2] Remove definition for surround sound
-	devices on ICE1712.
-Date: Tue, 20 Jan 2009 17:33:24 +0100
-Message-ID: <m2d4ei9bu3.fsf@gmail.com>
-References: <1232455075-27712-1-git-send-email-flameeyes@gmail.com>
-	<Pine.LNX.4.61.0901201434500.8466@tm8103.perex-int.cz>
-	<m2iqoa9jem.fsf@gmail.com>
-	<200901201526.51060.gineera@aspect135.co.uk>
-	<Pine.LNX.4.61.0901201718390.8466@tm8103.perex-int.cz>
+From: Brian Rhodes <bgr@acdstar.com>
+Subject: Re: ASoC: pxa2xx-i2s
+Date: Tue, 20 Jan 2009 11:04:43 -0600
+Message-ID: <4976042B.6060604@acdstar.com>
+References: <4975E030.5080905@acdstar.com> <4975F160.8040001@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5124561192712040297=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 434C410381B
-	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 17:32:14 +0100 (CET)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1LPJWN-0004hv-Us
-	for alsa-devel@alsa-project.org; Tue, 20 Jan 2009 16:32:11 +0000
-Received: from ppp-196-234.21-151.libero.it ([151.21.234.196])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 16:32:11 +0000
-Received: from flameeyes by ppp-196-234.21-151.libero.it with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 16:32:11 +0000
+Received: from manowar.linespeed.net (linespeed.net [75.146.159.141])
+	by alsa0.perex.cz (Postfix) with ESMTP id E515F1037E3
+	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 18:05:00 +0100 (CET)
+In-Reply-To: <4975F160.8040001@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,54 +20,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Karl Beldan <karl.beldan@gmail.com>
+Cc: alsa-devel@alsa-project.org, Brian Rhodes <bgr@acdstar.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============5124561192712040297==
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha1; protocol="application/pgp-signature"
+Karl Beldan wrote:
+> Brian Rhodes wrote:
+>   
+>> i2s replay is not being enabled properly on occasion on my pxa270 
+>> board.  Current code is touching SACR1 in hw_params which I believe is 
+>> not correct.  That should be configured in trigger before enabling i2s.  
+>> Record is not disabled for playback mode.  Any invalid data in the 
+>> transmit fifo causes deadlock and replay is being disabled.
+>>
+>> I have been able to reproduce it in kernel 2.6.26 as well as Linus' git 
+>> tree using speaker-test.  (repeatedly starting and stopping).  I've 
+>> verified that this fix prevents (at least) this condition.
+>>
+>> Please review this patch and let me know if there is anything I have 
+>> overlooked.
+>>
+>> Thanks
+>>
+>> diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
+>> index 517991f..6cda7f1 100644
+>> --- a/sound/soc/pxa/pxa2xx-i2s.c
+>> +++ b/sound/soc/pxa/pxa2xx-i2s.c
+>> @@ -211,12 +211,10 @@ static int pxa2xx_i2s_hw_params(struct snd_pcm_substream *substream,
+>>  	if (!(SACR0 & SACR0_ENB)) {
+>>  
+>>  		SACR0 = 0;
+>> -		SACR1 = 0;
+>>  		if (pxa_i2s.master)
+>>  			SACR0 |= SACR0_BCKD;
+>>  
+>>  		SACR0 |= SACR0_RFTH(14) | SACR0_TFTH(1);
+>> -		SACR1 |= pxa_i2s.fmt;
+>>  	}
+>>  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+>>  		SAIMR |= SAIMR_TFS;
+>> @@ -257,6 +255,12 @@ static int pxa2xx_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+>>  
+>>  	switch (cmd) {
+>>  	case SNDRV_PCM_TRIGGER_START:
+>> +		SACR1 = pxa_i2s.fmt | SACR1_DRPL | SACR1_DREC;
+>>     
+>
+> Here you are stopping any ongoing stream - removing SACR1 reset in
+> hw_params should be enough.
+>
+>   
+In that case, replay would still be disabled is i2s was shutdown.
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Value at address 0x40400004 (0x4001e004): 0x10
+Value at address 0x40400000 (0x4001e000): 0xE104
 
-Jaroslav Kysela <perex@perex.cz> writes:
+I am using normal i2s mode, so in the original code it is basically 
+enabling replay twice in hw_params, then enabling i2s in trigger.  Then 
+disabling replay and i2s in shutdown.  I'm trying to understand what the 
+real problem is here.  Is something failing that is causing replay to be 
+disabled by the i2s controller?  The condition is intermittent.  The 
+only difference could be timing, or the data in the transmit FIFO.  When 
+it gets in this state I can clear DRPL using devmem2 and it audio will 
+start playing.
 
-> Note that front and surround devices does not support automatic sample=20
-> conversion. Use plug:front, plug:surround40 etc. devices.
-
-Using the correct format, front:IDX should work with two channels sound
-files, and it doesn't, nor surround40:IDX works with four channels or
-surround71:IDX with eight channels.
-
-[I'm using IDX because I have it on :1 rather than :0]
-
-=2D-=20
-Diego "Flameeyes" Petten=C3=B2
-http://blog.flameeyes.eu/
-
---=-=-=
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-
-iEYEARECAAYFAkl1/NgACgkQe2h1+2mHVWOIigCaA6iXWprEy2clWsvD1wvdVcYz
-Q+sAni6S/lUWF02IO9MqyqjhoyvIfq5Z
-=yhdD
------END PGP SIGNATURE-----
---=-=-=--
-
-
---===============5124561192712040297==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============5124561192712040297==--
+>> +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>> +			SACR1 &= ~SACR1_DRPL;
+>> +		} else {
+>> +			SACR1 &= ~SACR1_DREC;
+>> +		}
+>>  		SACR0 |= SACR0_ENB;
+>>  		break;
+>>  	case SNDRV_PCM_TRIGGER_RESUME:
+>>
+>>     
+>
+> If - I can - I will post my changes, unless you are finished by then ;)
+>
+>   
