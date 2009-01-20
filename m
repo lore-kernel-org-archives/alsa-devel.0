@@ -1,23 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Misusing snd_pcm_avail_update()
-Date: Tue, 20 Jan 2009 09:32:57 +0100
-Message-ID: <49758C39.2060607@ladisch.de>
-References: <20090120025727.GA30499@tango.0pointer.de>
-	<49758B71.8090605@ladisch.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Could we get the card name in
+	/sys/clas/sound/card0/name?
+Date: Tue, 20 Jan 2009 10:03:03 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0901200959530.8466@tm8103.perex-int.cz>
+References: <20090120024123.GA30218@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 41E51103800
-	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 09:32:58 +0100 (CET)
-Received: from compute1.internal (compute1.internal [10.202.2.41])
-	by out1.messagingengine.com (Postfix) with ESMTP id B5DE222FB07
-	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 03:32:57 -0500 (EST)
-Received: from [10.1.2.151] (srv004.schk01.int.dmc-one.com [85.232.8.141])
-	by mail.messagingengine.com (Postfix) with ESMTPSA id 461DC1ADFB
-	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 03:32:57 -0500 (EST)
-In-Reply-To: <49758B71.8090605@ladisch.de>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id B62ED103800
+	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 10:03:03 +0100 (CET)
+In-Reply-To: <20090120024123.GA30218@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,18 +21,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Lennart Poettering <mznyfn@0pointer.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I wrote:
-> After choosing hardware parameters, you can call
-> snd_pcm_hw_params_is_block_transfer() to determine if the device
-> transfers samples in comparatively large blocks.  (The wavetable and
-> USB drivers set this flag.)
+On Tue, 20 Jan 2009, Lennart Poettering wrote:
 
-A quick grep over the kernel source shows that this flag is also set by
-many drivers that shouldn't, so it isn't very reliable.
+> Heya!
+> 
+> Hmm, it would be nifty if we could get the alsa card name (i.e. the
+> one shown in [] in /proc/pcm/cards) as an attribute file in
+> /sys/class/sound/cardX/name. Even more useful would be if this
+> property would be writable so that the cards may be renamed during
+> runtime.
+> 
+> This could be very useful to establish stable card names via udev
+> rules, similar to what is already done to network interface names
+> ("eth0", ...).
+> 
+> Would such a change be acceptable?
 
+It's already implemented in our recent repositories (the change will be 
+in 2.6.29):
 
-Best regards,
-Clemens
+Author: Jaroslav Kysela <perex@perex.cz>
+Date:   Tue Nov 11 16:51:02 2008 +0100
+
+    ALSA: add /sys/class/sound/card#/id (r/w) and card#/number (r/o) files
+
+    For udev, we need a way to rename soundcard names. The soundcard numbers
+    (indexes) are hardwired but we have a text identification which can be
+    changed at run-time. The ALSA user space tools already allow using of
+    this text identification.
+
+    Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+    Signed-off-by: Takashi Iwai <tiwai@suse.de>
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
