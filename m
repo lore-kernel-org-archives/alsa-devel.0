@@ -1,20 +1,18 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: [PATCH 1/2] Remove definition for surround sound
-	devices on ICE1712.
-Date: Tue, 20 Jan 2009 15:26:51 +0000
-Message-ID: <200901201526.51060.gineera@aspect135.co.uk>
-References: <1232455075-27712-1-git-send-email-flameeyes@gmail.com>
-	<Pine.LNX.4.61.0901201434500.8466@tm8103.perex-int.cz>
-	<m2iqoa9jem.fsf@gmail.com>
+From: Karl Beldan <karl.beldan@gmail.com>
+Subject: Re: ASoC: pxa2xx-i2s
+Date: Tue, 20 Jan 2009 16:44:32 +0100
+Message-ID: <4975F160.8040001@gmail.com>
+References: <4975E030.5080905@acdstar.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.talktalk.net (smtp-out-2.talktalk.net [62.24.128.232])
-	by alsa0.perex.cz (Postfix) with ESMTP id D8C5F1037E3
-	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 16:10:12 +0100 (CET)
-In-Reply-To: <m2iqoa9jem.fsf@gmail.com>
-Content-Disposition: inline
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id 65ED41037E3
+	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 16:43:43 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id 16so1600062fgg.44
+	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 07:43:43 -0800 (PST)
+In-Reply-To: <4975E030.5080905@acdstar.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,38 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: flameeyes@gmail.com
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Brian Rhodes <bgr@acdstar.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 20 January 2009 13:49, Diego E. 'Flameeyes' Petten=F2 wrote:
-> Jaroslav Kysela <perex@perex.cz> writes:
-> > Do you have seen M-Audio Delta 1010 ?
+Brian Rhodes wrote:
+> i2s replay is not being enabled properly on occasion on my pxa270 
+> board.  Current code is touching SACR1 in hw_params which I believe is 
+> not correct.  That should be configured in trigger before enabling i2s.  
+> Record is not disabled for playback mode.  Any invalid data in the 
+> transmit fifo causes deadlock and replay is being disabled.
+> 
+> I have been able to reproduce it in kernel 2.6.26 as well as Linus' git 
+> tree using speaker-test.  (repeatedly starting and stopping).  I've 
+> verified that this fix prevents (at least) this condition.
+> 
+> Please review this patch and let me know if there is anything I have 
+> overlooked.
+> 
+> Thanks
+> 
+> diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
+> index 517991f..6cda7f1 100644
+> --- a/sound/soc/pxa/pxa2xx-i2s.c
+> +++ b/sound/soc/pxa/pxa2xx-i2s.c
+> @@ -211,12 +211,10 @@ static int pxa2xx_i2s_hw_params(struct snd_pcm_substream *substream,
+>  	if (!(SACR0 & SACR0_ENB)) {
+>  
+>  		SACR0 = 0;
+> -		SACR1 = 0;
+>  		if (pxa_i2s.master)
+>  			SACR0 |= SACR0_BCKD;
+>  
+>  		SACR0 |= SACR0_RFTH(14) | SACR0_TFTH(1);
+> -		SACR1 |= pxa_i2s.fmt;
+>  	}
+>  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+>  		SAIMR |= SAIMR_TFS;
+> @@ -257,6 +255,12 @@ static int pxa2xx_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+>  
+>  	switch (cmd) {
+>  	case SNDRV_PCM_TRIGGER_START:
+> +		SACR1 = pxa_i2s.fmt | SACR1_DRPL | SACR1_DREC;
 
-Or DMX6fire, or Hoontech/ST.Audio dsp2000, or rest of a list... It seems to=
- me =
+Here you are stopping any ongoing stream - removing SACR1 reset in
+hw_params should be enough.
 
-that only a few cut-down card versions have only 2 analogue in/out.
+> +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> +			SACR1 &= ~SACR1_DRPL;
+> +		} else {
+> +			SACR1 &= ~SACR1_DREC;
+> +		}
+>  		SACR0 |= SACR0_ENB;
+>  		break;
+>  	case SNDRV_PCM_TRIGGER_RESUME:
+> 
 
-> Still, as they are the devices are non-functional at least on my card,
-> and I'm ready to bet that the same would happen on the Delta 1010 given
-> that the number of channels is not coherent (you try to open surround71
-> as 8-channels and it'll fail because this minimal card has 10; if the
-> 1010 has the same amount of channels, it'll still fail).
+If - I can - I will post my changes, unless you are finished by then ;)
 
-Here (on a rather old Alsa version)  on DMX6fire:
-
-aplay -Dfront try1.wav
-
-does fail unless try1.wav is a 10-channel file, whereupon just the first 2 =
-
-channels play out.  A standard stereo wav file fails with a sample format =
-
-error.  So there is something not quite right with the config files.
-
-Does the surround and front both need the asym slave.format & slave.channel=
-s =
-
-definitions?  Right now I can't do further testing; maybe later.
-
-Alan
+-- 
+Karl
