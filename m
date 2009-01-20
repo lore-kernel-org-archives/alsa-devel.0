@@ -1,20 +1,17 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 1/2] Remove definition for surround sound
- devices on ICE1712.
-Date: Tue, 20 Jan 2009 17:19:40 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0901201718390.8466@tm8103.perex-int.cz>
-References: <1232455075-27712-1-git-send-email-flameeyes@gmail.com>
-	<Pine.LNX.4.61.0901201434500.8466@tm8103.perex-int.cz>
-	<m2iqoa9jem.fsf@gmail.com>
-	<200901201526.51060.gineera@aspect135.co.uk>
+From: "John L. Utz III" <jutz@dmx.com>
+Subject: Re: Any CMedia CMI8788 "Oxygen" and ASUS Xonar D1
+ "virtuoso" documentation available?
+Date: Tue, 20 Jan 2009 08:30:26 -0800
+Message-ID: <4975FC22.3060306@dmx.com>
+References: <497121FE.6000906@dmx.com> <49743B02.90506@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id B38151037E3
-	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 17:19:40 +0100 (CET)
-In-Reply-To: <200901201526.51060.gineera@aspect135.co.uk>
+Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id A477D1037E3
+	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2009 17:31:49 +0100 (CET)
+In-Reply-To: <49743B02.90506@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,39 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, flameeyes@gmail.com
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 20 Jan 2009, Alan Horstmann wrote:
+Hi Clemens;
 
-> On Tuesday 20 January 2009 13:49, Diego E. 'Flameeyes' Petten? wrote:
-> > Jaroslav Kysela <perex@perex.cz> writes:
-> > > Do you have seen M-Audio Delta 1010 ?
-> 
-> Or DMX6fire, or Hoontech/ST.Audio dsp2000, or rest of a list... It seems to me 
-> that only a few cut-down card versions have only 2 analogue in/out.
-> 
-> > Still, as they are the devices are non-functional at least on my card,
-> > and I'm ready to bet that the same would happen on the Delta 1010 given
-> > that the number of channels is not coherent (you try to open surround71
-> > as 8-channels and it'll fail because this minimal card has 10; if the
-> > 1010 has the same amount of channels, it'll still fail).
-> 
-> Here (on a rather old Alsa version)  on DMX6fire:
-> 
-> aplay -Dfront try1.wav
-> 
-> does fail unless try1.wav is a 10-channel file, whereupon just the first 2 
-> channels play out.  A standard stereo wav file fails with a sample format 
-> error.  So there is something not quite right with the config files.
+thankyou for the response.
 
-Note that front and surround devices does not support automatic sample 
-conversion. Use plug:front, plug:surround40 etc. devices.
+Clemens Ladisch wrote:
+> John L. Utz III wrote:
+>> I just tried to find the docs for the CMI8788 on www.cmedia.com.tw and i
+>> was not successful.
+> 
+> That website has a datasheet which doesn't contain much of interest.
 
-					Jaroslav
+yah, i read that. :-(
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+> There is a datasheet with register specifications, but it is only
+> available under NDA.
+> 
+>> Nor have i been able to find any virtuoso docs at www.asus.com.
+> 
+> The only difference between the CMI8787/CMI8788/AV100/AV200 chips is the
+> label on top of the chip.
+
+Oh, thankyou!
+
+>> I know that Clemens wrote the driver, but I dont know if it was written
+>> from scratch with docs or ported from a 4front driver.
+> 
+> I started with an ALSA driver that was written by someone at C-Media,
+> but it was so incomplete and buggy that I started over from scratch.
+> I never signed an NDA.
+
+ok, understood.
+
+>> currently, there are some bugs with channel mapping on the rear channel
+>> in Surround40 mode that i would like to fix
+> 
+> In 4.0 mode, the "rear" channels go to the "surround" jack.  The
+> "surround" and "back" jacks behave like described in the manual.
+
+yup, that works.
+
+> The PCM data from the computer is organized as (up to) four two-channel
+> pairs.  There are four DACs that each play a two-channel pair of PCM
+> data.  The "play routing" register contains four two-bit fields that
+> specify, for each DAC, the number of the channel pair that is to be
+> played on this DAC.  This allows rerouting (by exchanging some fields)
+> or duplicating of channels pairs (by having the same source for multiple
+> DACs).  All this is handled in the oxygen_update_dac_routing() function.
+
+thankyou for the huge fat hint. :-)
+
+we have some transposed channels when we run our app, i can probably fix 
+this.....
+
+> HTH
+> Clemens
+> 
