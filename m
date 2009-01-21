@@ -1,17 +1,29 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <syrjala@sci.fi>
-Subject: Re: gusclassic alsa configuration
-Date: Wed, 21 Jan 2009 23:50:37 +0200
-Message-ID: <20090121215037.GC4996@sci.fi>
-References: <20090121223507.778f954d.krzysztof.h1@poczta.fm>
+From: John Rigg <aldev@sound-man.co.uk>
+Subject: Re: [PATCH 1/2] Remove definition for surround sound
+	devices on ICE1712.
+Date: Wed, 21 Jan 2009 22:24:39 +0000
+Message-ID: <20090121222439.GA3993@localhost>
+References: <1232455075-27712-1-git-send-email-flameeyes@gmail.com>
+	<1232455075-27712-2-git-send-email-flameeyes@gmail.com>
+	<Pine.LNX.4.61.0901201339310.8466@tm8103.perex-int.cz>
+	<m2ocy29lyw.fsf@gmail.com>
+	<Pine.LNX.4.61.0901201434500.8466@tm8103.perex-int.cz>
+	<m2iqoa9jem.fsf@gmail.com> <20090121141610.GC2839@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6.welho.com (smtp6.welho.com [213.243.153.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2EAA31037E3
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2009 22:50:40 +0100 (CET)
+Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7AF25103873
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2009 23:11:09 +0100 (CET)
+Received: from localhost (unknown [78.32.150.178])
+	by mail3.uklinux.net (Postfix) with ESMTP id 9D3881F663E
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2009 22:11:08 +0000 (GMT)
+Received: from anon by localhost with local (Exim 4.63)
+	(envelope-from <john@sound-man.co.uk>) id 1LPlV1-00012y-OL
+	for alsa-devel@alsa-project.org; Wed, 21 Jan 2009 22:24:39 +0000
 Content-Disposition: inline
-In-Reply-To: <20090121223507.778f954d.krzysztof.h1@poczta.fm>
+In-Reply-To: <20090121141610.GC2839@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,43 +33,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel <alsa-devel@alsa-project.org>, Rene Herman <rene.herman@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 21, 2009 at 10:35:07PM +0100, Krzysztof Helt wrote:
-> Hi,
-> =
+ On Tue, Jan 20, 2009 at 02:49:53PM +0100, Diego E. 'Flameeyes' Petten=F2 w=
+rote:
+ > Jaroslav Kysela <perex@perex.cz> writes:
+ > =
 
-> I have given another go to fix Gravis Ultrasound configuration for ALSA =
+ > > Do you have seen M-Audio Delta 1010 ? The problem is that we have hard=
+ware =
 
-> and I have found a working configuration. The Gravis Classic card uses
-> non-mmap and non-interleaved sound format so aplay fails with standard
-> configuration. Even worse, no default pcm device is defined so someone
-> who wants just install Linux on old computer won't get any sound.
-> =
+ > > that can be used for surround output, but alsa-lib configuration files =
 
-> I have modified the GUS.conf from the /usr/share/alsa/cards and the
-> GUS card now works with alsa and oss. My changes to the GUS.conf
-> are below (as a diff).
-> =
+ > > cannot describe the restrictions in detail now.
+ > =
 
-> Does anybody know how to upload MIDI instruments into the GUS card
-> under ALSA? (like with awesfx for SB AWE)
+ > I thought that was an ICE1724, rather than 1712; I was mistaken, sorry.
+ > =
 
-I think some of the related code was never brought over from the ultra
-sound project driver. MIDI emulation is at least missing. There was/is
-some support for loading at least simple instruments (eg. mod samples).
-I was trying to get mikmod to work with ALSA sequencer + GUS PNP at some
-point. I managed to get decent playback but I never got the timing
-related stuff working correctly. That was many years ago though. At the
-moment all of my GUS cards are gathering dust on the shelf but if you're
-going to hack around with this stuff I can at least volunteer as a tester.
+ > Still, as they are the devices are non-functional at least on my card,
+ > and I'm ready to bet that the same would happen on the Delta 1010 given
+ > that the number of channels is not coherent (you try to open surround71
+ > as 8-channels and it'll fail because this minimal card has 10; if the
+ > 1010 has the same amount of channels, it'll still fail).
+ =
 
-My mikmod patch is still @ http://www.sci.fi/~syrjala/alsa/
+ The ice1712 has 12 inputs and 10 outputs, regardless of how
+ many physical in/outs your card has.
+ =
 
--- =
+ Most of the ice1712 interfaces I've seen have 8 analogue in/outs
+ along with S/PDIF in/out. I can't think of many stereo-only
+ ice1712 cards (apart from the Audiophile 2496).
+ =
 
-Ville Syrj=E4l=E4
-syrjala@sci.fi
-http://www.sci.fi/~syrjala/
+ John
