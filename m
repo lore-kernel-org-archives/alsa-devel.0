@@ -1,30 +1,62 @@
-From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: Re: [PATCH] ASoC: Complete Beagleboard support
-Date: Wed, 21 Jan 2009 10:09:46 +0200
-Message-ID: <20090121100946.cef76a2a.jarkko.nikula@nokia.com>
-References: <5e088bd90901202305m26900888jcaa2b0ec57d3fab1@mail.gmail.com>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: Re: [PATCH] cmi8330: add OPL3 support
+Date: Wed, 21 Jan 2009 10:43:20 +0100
+Message-ID: <20090121104320.4bfe9db6.krzysztof.h1@poczta.fm>
+References: <20090121081816.b3d1246b.krzysztof.h1@poczta.fm>
+	<4976D3A2.70608@ladisch.de> <s5hljt52iqo.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <5e088bd90901202305m26900888jcaa2b0ec57d3fab1@mail.gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: ext Steve Sakoman <sakoman@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-omap <linux-omap@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
+	[217.74.64.239])
+	by alsa0.perex.cz (Postfix) with ESMTP id 05E541037E3
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2009 10:40:25 +0100 (CET)
+In-Reply-To: <s5hljt52iqo.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>, Rene Herman <rene.herman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 20 Jan 2009 23:05:27 -0800
-"ext Steve Sakoman" <sakoman@gmail.com> wrote:
+On Wed, 21 Jan 2009 08:58:23 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
 
-> Commit dc06102a0c8b5aa0dd7f9a40ce241e793c252a87 in the asoc tree
-> did not include the necessary Kconfig and Makefile changes.  This patch
-> completes the support for Beagleboard
+> At Wed, 21 Jan 2009 08:49:54 +0100,
+> Clemens Ladisch wrote:
+> > 
+> > Krzysztof Helt wrote:
+> > > +		err = snd_opl3_timer_new(opl3, 0, 1);
+> > > +		if (err < 0)
+> > > +			return err;
+> > 
+> > Does this chip really have a working timer implementation?
+> > (There is a timer test program in alsa-lib/test/.)
 > 
-> Signed-off-by: Steve Sakoman <steve@sakoman.com>
+> A good question.  Krzysztof, could you check alsa-lib/test/timer
+> program?  First run "./timer list" and then run like
+> 	./timer class 1 card 0 device 2
+> or so...
 > 
-Acked-by: Jarkko Nikula <jarkko.nikula@nokia.com>
+> BTW, your patches were already applied now, so please send fixes as
+> additional patches if any.
+> 
+> 
 
-Not tested but definitely a way to go forward :-)
+The test returns: "Timer time out!!". However, it returns the same
+for the SC-6000 board which has the Yamaha YMF 262-M chip which is 
+supposed to have the Adlib timers.
 
+Regards,
+Krzysztof
 
-Jarkko
+-----------------------------------------------------------------------
+Promocja w Speak Up. Kwartal angielskiego za darmo. 
+3 miesiace nauki gratis. Sprawdz teraz! >> http://link.interia.pl/f2019
