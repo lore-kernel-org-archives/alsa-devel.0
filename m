@@ -1,62 +1,60 @@
-From: Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: usr/include/linux/soundcard.h warnings for 'make
-	headers_check'
-Date: Wed, 21 Jan 2009 06:41:38 +0100
-Message-ID: <20090121054138.GA26551@uranus.ravnborg.org>
-References: <1232465902.3088.31.camel@localhost.localdomain>
-	<s5h7i4psepm.wl%tiwai@suse.de>
+From: Steve Sakoman <sakoman@gmail.com>
+Subject: [PATCH] ASoC: Complete Beagleboard support
+Date: Tue, 20 Jan 2009 23:05:27 -0800
+Message-ID: <5e088bd90901202305m26900888jcaa2b0ec57d3fab1@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pfepa.post.tele.dk (pfepa.post.tele.dk [195.41.46.235])
-	by alsa0.perex.cz (Postfix) with ESMTP id 910A1103858
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2009 06:39:53 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5h7i4psepm.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Jaswinder Singh Rajput <jaswinder@kernel.org>, Ingo Molnar <mingo@elte.hu>, LKML <linux-kernel@vger.kernel.org>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-omap <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 21, 2009 at 01:08:37AM +0100, Takashi Iwai wrote:
-> At Tue, 20 Jan 2009 21:08:22 +0530,
-> Jaswinder Singh Rajput wrote:
-> > 
-> > usr/include/linux/soundcard.h is giving following warnings for 'make headers_check':
-> >  usr/include/linux/soundcard.h:1047: extern's make no sense in userspace
-> >  usr/include/linux/soundcard.h:1048: extern's make no sense in userspace
-> >  usr/include/linux/soundcard.h:1049: extern's make no sense in userspace
-> >  usr/include/linux/soundcard.h:1050: extern's make no sense in userspace
-> >  usr/include/linux/soundcard.h:1051: extern's make no sense in userspace
-> >  usr/include/linux/soundcard.h:1053: extern's make no sense in userspace
-> >  usr/include/linux/soundcard.h:1055: extern's make no sense in userspace
-> >  usr/include/linux/soundcard.h:1056: extern's make no sense in userspace
-> >  usr/include/linux/soundcard.h:1061: extern's make no sense in userspace
-> >  usr/include/linux/soundcard.h:1062: extern's make no sense in userspace
-> >  usr/include/linux/soundcard.h:1078: extern's make no sense in userspace
-> >  usr/include/linux/soundcard.h:1079: extern's make no sense in userspace
-> > 
-> > Do we need to fix these warnings.
-> 
-> No, these are declarations for OSS-lib.
-> It doesn't belong to kernel, but it's better to keep it for
-> compatibility in some way.
+Commit dc06102a0c8b5aa0dd7f9a40ce241e793c252a87 in the asoc tree
+did not include the necessary Kconfig and Makefile changes.  This patch
+completes the support for Beagleboard
 
-But not in the kernel for sure.
-I just checked and for example: OSS_init is not used anywhere in the kernel.
-The kernel headers are not a "dump all your stuff" ground anymore.
+Signed-off-by: Steve Sakoman <steve@sakoman.com>
 
-So I encourage you to find a better home for the user space library definitons.
-We can let the definiton stay for a while - but eventually they have to
-be dropped from the kernel.
+---
+ sound/soc/omap/Kconfig  |   10 ++++++++++
+ sound/soc/omap/Makefile |    2 ++
+ 2 files changed, 12 insertions(+), 0 deletions(-)
 
-	Sam
+diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+index 4f7f040..ccd8973 100644
+--- a/sound/soc/omap/Kconfig
++++ b/sound/soc/omap/Kconfig
+@@ -55,3 +55,13 @@ config SND_OMAP_SOC_OMAP3_PANDORA
+ 	select SND_SOC_TWL4030
+ 	help
+ 	  Say Y if you want to add support for SoC audio on the OMAP3 Pandora.
++
++config SND_OMAP_SOC_OMAP3_BEAGLE
++	tristate "SoC Audio support for OMAP3 Beagle"
++	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP3_BEAGLE
++	select SND_OMAP_SOC_MCBSP
++	select SND_SOC_TWL4030
++	help
++	  Say Y if you want to add support for SoC audio on the Beagleboard.
++
++
+diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
+index 76fedd9..0c9e4ac 100644
+--- a/sound/soc/omap/Makefile
++++ b/sound/soc/omap/Makefile
+@@ -12,6 +12,7 @@ snd-soc-overo-objs := overo.o
+ snd-soc-omap2evm-objs := omap2evm.o
+ snd-soc-sdp3430-objs := sdp3430.o
+ snd-soc-omap3pandora-objs := omap3pandora.o
++snd-soc-omap3beagle-objs := omap3beagle.o
+
+ obj-$(CONFIG_SND_OMAP_SOC_N810) += snd-soc-n810.o
+ obj-$(CONFIG_SND_OMAP_SOC_OSK5912) += snd-soc-osk5912.o
+@@ -19,3 +20,4 @@ obj-$(CONFIG_SND_OMAP_SOC_OVERO) += snd-soc-overo.o
+ obj-$(CONFIG_MACH_OMAP2EVM) += snd-soc-omap2evm.o
+ obj-$(CONFIG_SND_OMAP_SOC_SDP3430) += snd-soc-sdp3430.o
+ obj-$(CONFIG_SND_OMAP_SOC_OMAP3_PANDORA) += snd-soc-omap3pandora.o
++obj-$(CONFIG_SND_OMAP_SOC_OMAP3_BEAGLE) += snd-soc-omap3beagle.o
+-- 
+1.5.6.3
