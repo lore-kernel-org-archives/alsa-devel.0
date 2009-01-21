@@ -1,17 +1,14 @@
-From: Hector Martin <hector@marcansoft.com>
-Subject: Re: Acer Aspire 8920g / snd-hda-intel /
- ALC889	/	surround sound
-Date: Wed, 21 Jan 2009 23:31:30 +0100
-Message-ID: <4977A242.3080504@marcansoft.com>
-References: <20081225192456.GA16788@deadlock.dhs.org>	<20090105201722.GA23503@deadlock.dhs.org>
-	<20090114141402.GA14581@deadlock.dhs.org>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: Add STAC92HD83XXX_PWR_REF quirk
+Date: Wed, 21 Jan 2009 17:39:43 -0500
+Message-ID: <4977A42F.5030903@embeddedalley.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------060204020609000202040409"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.marcansoft.com (marcansoft.com [80.68.93.119])
-	by alsa0.perex.cz (Postfix) with ESMTP id D2658103873
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2009 23:31:38 +0100 (CET)
-In-Reply-To: <20090114141402.GA14581@deadlock.dhs.org>
+Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
+	by alsa0.perex.cz (Postfix) with SMTP id 07D58103873
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2009 23:40:03 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,124 +18,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sergey 'Jin' Bostandzhyan <jin@deadlock.dhs.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------060204020609000202040409
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Some revisions of the 92hd8xxx codec's not supporting port power
+downs in which the using of it causes capture and also randomly playback streams
+to not function at all. Thus by disabling it by default and adding a
+option to enable it manually will fix all issue on current and future revisions.
 
-I was able to get audio to work on an Aspire 8930G using the attached
-patch, including routing all speakers. However, I could never get any
-DACs other than the first two to work. I've been holding off on making a
-real patch to add full support properly until I fix this issue.
+Signed-by-off: Matthew Ranostay <mranostay@embeddedalley.com>
+---
 
-Can you test the patch? For me, only Front and Rear work, not Center/Sub.
-
-I'm currently using a nasty hack which routes DAC 0 to both Front and
-Rear and DAC 1 to CLFE and some asound.conf magic to make it sound
-decent, but it's 3.1 sound, not 5.1.
-
-I managed to get hda-analyzer to work and confirmed that the audio does
-get to the DACs (if I configure the Rear DAC to the CLFE stream
-dynamically it does work), but "something" is making all but the first
-to DACs not work. It could also be the mixers attached to the DACs - the
-actual audio outputs are okay because I can route them to the working
-DACs and get output. I've tried tweaking everything and ensured that
-everything was turned up and unmuted, but I've run out of ideas.
-
-Recently I've also tested the three audio jacks in 5.1 output mode. Same
-problem - the CLFE *output* works but I get no sound unless I hack the
-routing to connect it to the other DACs.
-
-I'm starting to suspect that there's some proprietary Realtek init
-missing - maybe some tables or something related to the "encryption module".
-
-Here's a little render that I made of the codec routing:
-http://marcansoft.com/transf/codec.png
-
-
--- 
-Hector Martin (hector@marcansoft.com)
-Public Key: http://www.marcansoft.com/marcan.asc
-
-
---------------060204020609000202040409
-Content-Type: text/plain;
- name="0001-Add-partial-8930G-support.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="0001-Add-partial-8930G-support.patch"
-
->From 8aaa46dfda9b7c0ab19021532750adb03ded877e Mon Sep 17 00:00:00 2001
-From: Hector Martin <hector@marcansoft.com>
-Date: Wed, 3 Dec 2008 01:50:49 +0100
-Subject: [PATCH - snd-intel-hda 1/1] Add partial 8930G support
-
-
-Signed-off-by: Hector Martin <hector@marcansoft.com>
-
-diff --git a/pci/hda/patch_realtek.c b/pci/hda/patch_realtek.c
-index 4afa0c9..6d6e06a 100644
---- a/pci/hda/patch_realtek.c
-+++ b/pci/hda/patch_realtek.c
-@@ -1302,7 +1302,7 @@ static struct hda_verb alc888_acer_aspire_4930g_verbs[] = {
- 	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0xb)},
- /* Enable unsolicited event for HP jack */
- 	{0x15, AC_VERB_SET_UNSOLICITED_ENABLE, ALC880_HP_EVENT | AC_USRSP_EN},
--/* Connect Internal HP to front */
-+/* Connect Front speakers to front */
- 	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
- 	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
- 	{0x14, AC_VERB_SET_CONNECT_SEL, 0x00},
-@@ -1310,6 +1310,16 @@ static struct hda_verb alc888_acer_aspire_4930g_verbs[] = {
- 	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
- 	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
- 	{0x15, AC_VERB_SET_CONNECT_SEL, 0x00},
-+/* Connect Rear speakers to rear */
-+	{0x1b, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-+	{0x1b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+	{0x1b, AC_VERB_SET_CONNECT_SEL, 0x01},
-+/* Connect CLFE speakers to CLFE */
-+	{0x16, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-+	{0x16, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+	{0x16, AC_VERB_SET_CONNECT_SEL, 0x02},
-+/* Set EAPD to enable speakers */
-+	{0x15, AC_VERB_SET_EAPD_BTLENABLE, 0x02},
- 	{ }
+diff --git a/Documentation/sound/alsa/HD-Audio-Models.txt b/Documentation/sound/alsa/HD-Audio-Models.txt
+index 75914bc..2119175 100644
+--- a/Documentation/sound/alsa/HD-Audio-Models.txt
++++ b/Documentation/sound/alsa/HD-Audio-Models.txt
+@@ -349,6 +349,7 @@ STAC92HD73*
+ STAC92HD83*
+ ===========
+   ref		Reference board
++  mic-ref	Reference board with power managment for ports
+ 
+ STAC9872
+ ========
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index dbe8b12..a961c51 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -81,6 +81,7 @@ enum {
+ 
+ enum {
+ 	STAC_92HD83XXX_REF,
++	STAC_92HD83XXX_PWR_REF,
+ 	STAC_92HD83XXX_MODELS
  };
  
-@@ -1365,8 +1375,15 @@ static void alc888_acer_aspire_4930g_automute(struct hda_codec *codec)
- 	present = snd_hda_codec_read(codec, 0x15, 0,
- 				     AC_VERB_GET_PIN_SENSE, 0) & 0x80000000;
- 	bits = present ? HDA_AMP_MUTE : 0;
-+	/* Front */
- 	snd_hda_codec_amp_stereo(codec, 0x14, HDA_OUTPUT, 0,
- 				 HDA_AMP_MUTE, bits);
-+	/* CLFE */
-+	snd_hda_codec_amp_stereo(codec, 0x16, HDA_OUTPUT, 0,
-+				 HDA_AMP_MUTE, bits);
-+	/* Rear */
-+	snd_hda_codec_amp_stereo(codec, 0x1b, HDA_OUTPUT, 0,
-+				 HDA_AMP_MUTE, bits);
- }
+@@ -334,7 +335,7 @@ static hda_nid_t stac92hd83xxx_slave_dig_outs[2] = {
+ };
  
- static void alc888_acer_aspire_4930g_unsol_event(struct hda_codec *codec,
--- 
-1.5.6.4
-
-
---------------060204020609000202040409
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------060204020609000202040409--
+ static unsigned int stac92hd83xxx_pwr_mapping[4] = {
+-	0x03, 0x0c, 0x20, 0x80,
++	0x03, 0x0c, 0x20, 0x40,
+ };
+ 
+ static hda_nid_t stac92hd83xxx_amp_nids[1] = {
+@@ -1734,10 +1735,12 @@ static unsigned int ref92hd83xxx_pin_configs[14] = {
+ 
+ static unsigned int *stac92hd83xxx_brd_tbl[STAC_92HD83XXX_MODELS] = {
+ 	[STAC_92HD83XXX_REF] = ref92hd83xxx_pin_configs,
++	[STAC_92HD83XXX_PWR_REF] = ref92hd83xxx_pin_configs,
+ };
+ 
+ static const char *stac92hd83xxx_models[STAC_92HD83XXX_MODELS] = {
+ 	[STAC_92HD83XXX_REF] = "ref",
++	[STAC_92HD83XXX_PWR_REF] = "mic-ref",
+ };
+ 
+ static struct snd_pci_quirk stac92hd83xxx_cfg_tbl[] = {
+@@ -4781,13 +4784,6 @@ static int patch_stac92hd83xxx(struct hda_codec *codec)
+ 		AC_VERB_SET_CONNECT_SEL, num_dacs);
+ 
+ 	spec->init = stac92hd83xxx_core_init;
+-	switch (codec->vendor_id) {
+-	case 0x111d7605:
+-		break;
+-	default:
+-		spec->num_pwrs--;
+-	}
+-
+ 	spec->mixer = stac92hd83xxx_mixer;
+ 	spec->num_pins = ARRAY_SIZE(stac92hd83xxx_pin_nids);
+ 	spec->num_dmuxes = ARRAY_SIZE(stac92hd83xxx_dmux_nids);
+@@ -4813,6 +4809,15 @@ again:
+ 		return err;
+ 	}
+ 
++	switch (codec->vendor_id) {
++	case 0x111d7604:
++	case 0x111d7605:
++		if (spec->board_config == STAC_92HD83XXX_PWR_REF)
++			break;
++		spec->num_pwrs = 0;
++		break;
++	}
++
+ 	err = stac92xx_parse_auto_config(codec, 0x1d, 0);
+ 	if (!err) {
+ 		if (spec->board_config < 0) {
