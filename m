@@ -1,29 +1,21 @@
-From: John Rigg <aldev@sound-man.co.uk>
-Subject: Re: [PATCH 1/2] Remove definition for surround sound
-	devices on ICE1712.
-Date: Wed, 21 Jan 2009 22:24:39 +0000
-Message-ID: <20090121222439.GA3993@localhost>
-References: <1232455075-27712-1-git-send-email-flameeyes@gmail.com>
-	<1232455075-27712-2-git-send-email-flameeyes@gmail.com>
-	<Pine.LNX.4.61.0901201339310.8466@tm8103.perex-int.cz>
-	<m2ocy29lyw.fsf@gmail.com>
-	<Pine.LNX.4.61.0901201434500.8466@tm8103.perex-int.cz>
-	<m2iqoa9jem.fsf@gmail.com> <20090121141610.GC2839@localhost>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: ASoC: pxa2xx-i2s
+Date: Wed, 21 Jan 2009 22:27:18 +0000
+Message-ID: <20090121222718.GA23539@sirena.org.uk>
+References: <4975E030.5080905@acdstar.com> <4975F160.8040001@gmail.com>
+	<4976042B.6060604@acdstar.com> <49764F15.6080008@acdstar.com>
+	<20090121132313.GA29953@sirena.org.uk>
+	<49775159.7070708@linespeed.net>
+	<20090121193230.GA15911@sirena.org.uk> <497781D8.50003@acdstar.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7AF25103873
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2009 23:11:09 +0100 (CET)
-Received: from localhost (unknown [78.32.150.178])
-	by mail3.uklinux.net (Postfix) with ESMTP id 9D3881F663E
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2009 22:11:08 +0000 (GMT)
-Received: from anon by localhost with local (Exim 4.63)
-	(envelope-from <john@sound-man.co.uk>) id 1LPlV1-00012y-OL
-	for alsa-devel@alsa-project.org; Wed, 21 Jan 2009 22:24:39 +0000
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2590D103821
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2009 23:27:20 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20090121141610.GC2839@localhost>
+In-Reply-To: <497781D8.50003@acdstar.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,39 +25,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Brian Rhodes <bgr@acdstar.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
- On Tue, Jan 20, 2009 at 02:49:53PM +0100, Diego E. 'Flameeyes' Petten=F2 w=
-rote:
- > Jaroslav Kysela <perex@perex.cz> writes:
- > =
+On Wed, Jan 21, 2009 at 02:13:12PM -0600, Brian Rhodes wrote:
 
- > > Do you have seen M-Audio Delta 1010 ? The problem is that we have hard=
-ware =
+> No, the 270 is the clock master on the I2S bus.  The codec is sourcing 
+> the clock input using the PLL.  I apologize for being unclear.
 
- > > that can be used for surround output, but alsa-lib configuration files =
-
- > > cannot describe the restrictions in detail now.
- > =
-
- > I thought that was an ICE1724, rather than 1712; I was mistaken, sorry.
- > =
-
- > Still, as they are the devices are non-functional at least on my card,
- > and I'm ready to bet that the same would happen on the Delta 1010 given
- > that the number of channels is not coherent (you try to open surround71
- > as 8-channels and it'll fail because this minimal card has 10; if the
- > 1010 has the same amount of channels, it'll still fail).
- =
-
- The ice1712 has 12 inputs and 10 outputs, regardless of how
- many physical in/outs your card has.
- =
-
- Most of the ice1712 interfaces I've seen have 8 analogue in/outs
- along with S/PDIF in/out. I can't think of many stereo-only
- ice1712 cards (apart from the Audiophile 2496).
- =
-
- John
+I think it's me that's not being clear, sorry - I'm trying to find out
+is if the LRCLK and BCLK signals on the I2S bus itself are being driven
+by the codec or by the I2S controller.  If the codec driver is the clock
+master then your earlier speculation that your problems with the I2S
+controller may be due to some interaction with the codec driver are more
+likely to be true.
