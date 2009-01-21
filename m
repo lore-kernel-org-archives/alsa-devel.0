@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ASoC: Complete Beagleboard support
-Date: Wed, 21 Jan 2009 11:35:51 +0000
-Message-ID: <20090121113535.GB22213@sirena.org.uk>
-References: <5e088bd90901202305m26900888jcaa2b0ec57d3fab1@mail.gmail.com>
-	<200901210953.36630.peter.ujfalusi@nokia.com>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: Re: [PATCH] cmi8330: add OPL3 support
+Date: Wed, 21 Jan 2009 12:49:16 +0100
+Message-ID: <20090121124916.5260bde3.krzysztof.h1@poczta.fm>
+References: <20090121081816.b3d1246b.krzysztof.h1@poczta.fm>
+	<4976D3A2.70608@ladisch.de> <s5hljt52iqo.wl%tiwai@suse.de>
+	<20090121104320.4bfe9db6.krzysztof.h1@poczta.fm>
+	<497703AF.7000703@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id D5F6D2433D
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2009 12:35:53 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <200901210953.36630.peter.ujfalusi@nokia.com>
+Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
+	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id C193B24362
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2009 12:46:17 +0100 (CET)
+In-Reply-To: <497703AF.7000703@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,19 +23,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: ext Steve Sakoman <sakoman@gmail.com>, alsa-devel@alsa-project.org, linux-omap <linux-omap@vger.kernel.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel <alsa-devel@alsa-project.org>, Rene Herman <rene.herman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 21, 2009 at 09:53:36AM +0200, Peter Ujfalusi wrote:
+On Wed, 21 Jan 2009 12:14:55 +0100
+Clemens Ladisch <clemens@ladisch.de> wrote:
 
-> for ure now you can build it, but does it actually works?
-> I mean there has been quite a bit of change in the twl4030
-> codec driver... The DAPM routing implementation might require
-> some change in the board file also (SND_SOC_DAPM_HP,
-> SND_SOC_DAPM_LINE, etc).
+> Krzysztof Helt wrote:
+> > The test returns: "Timer time out!!". However, it returns the same
+> > for the SC-6000 board which has the Yamaha YMF 262-M chip which is
+> > supposed to have the Adlib timers.
+> 
+> Then that chip does not forward the timer interrupt to the computer,
+> and its driver should not create a timer device either.
+> 
 
-The DAPM default is that all the endpoints are on so it should work fine
-but possibly won't be optimal so further tuning patches may be required.
+I checked the status word and it changed after the timeout elapsed.
 
-I'll apply the patch since it's going to be needed whatever the case.
+However, the IRQ is not forwarded as you wrote. The same seems true
+for more drivers and they should be checked:
+
+ad1816a
+als100
+azt2320
+dt019x
+opti92x-ad1848
+sc6000
+
+All of them create the OPL3 timers but none of them
+calls the snd_opl3_interrupt (do acknowledge timer
+interrupt). The only driver which does it is the opl3sa2.
+
+I will test the ad1816a, opti93x and the sc6000. If the
+interrupt is not received I will prepare patches to
+remove the OPL3 timers.
+
+Regards,
+Krzysztof
+
+-----------------------------------------------------------------------
+Promocja w Speak Up. Kwartal angielskiego za darmo. 
+3 miesiace nauki gratis. Sprawdz teraz! >> http://link.interia.pl/f2019
