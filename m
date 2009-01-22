@@ -1,48 +1,94 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Complete Beagleboard support
-Date: Thu, 22 Jan 2009 09:53:23 +0200
-Message-ID: <200901220953.23657.peter.ujfalusi@nokia.com>
-References: <5e088bd90901202305m26900888jcaa2b0ec57d3fab1@mail.gmail.com> <5e088bd90901210640v4ce21f8clae9469b60226a6f0@mail.gmail.com> <5e088bd90901210835neb0d8f1s309d4668cf444cc0@mail.gmail.com>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: Re: Turtle Beach Multisound Pinnacle alsa driver
+Date: Thu, 22 Jan 2009 09:29:59 +0100
+Message-ID: <20090122092959.d96bee5a.krzysztof.h1@poczta.fm>
+References: <20081122164829.39c90558.krzysztof.h1@poczta.fm>
+	<20090119140748.2557cced.krzysztof.h1@poczta.fm>
+	<s5h7i4re8z0.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <5e088bd90901210835neb0d8f1s309d4668cf444cc0@mail.gmail.com>
-Content-Disposition: inline
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: ext Steve Sakoman <sakoman@gmail.com>, linux-omap <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
+	[217.74.64.239])
+	by alsa0.perex.cz (Postfix) with ESMTP id 113F2103880
+	for <alsa-devel@alsa-project.org>; Thu, 22 Jan 2009 09:27:17 +0100 (CET)
+In-Reply-To: <s5h7i4re8z0.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 19 Jan 2009 14:11:47 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
 
-On Wednesday 21 January 2009 18:35:54 ext Steve Sakoman wrote:
-> I did a quick mplayer test and was able to play an mp3 with this patc=
-h
-> applied to linux-omap top of tree.
+> At Mon, 19 Jan 2009 14:07:48 +0100,
+> Krzysztof Helt wrote:
+> > 
+> > Hi Takashi,
+> > 
+> > I have posted the second version of this driver on 6 December
+> > but it has still been waiting for moderator approval as it was 
+> > to big (about 90KB).
+> 
+> Oh thats' bad.  Possible to split and repost?
+> 
 
-That's great!
-Not that I had any objections to the patch itself, but I was not sure i=
-f it is=20
-working. As Mark pointed out - and I was not aware off - that all endpo=
-ints=20
-are on by default and has to be explicitely marked as not connected if =
-they=20
-are not in use.
+I can repost it but a split would be very hard. I prepared a patch to 
+just add a new driver inside alsa-kernel. The old one from the
+alsa-driver could be removed then. The diff between the new and 
+the old driver is over 140KB - only headers are not changed much.
 
-> Hardware was Beagle Rev C1D
->
-> Steve
+> > Is there any chances to replace an old experimental driver
+> > in the alsa-driver package to this new one?
+> > A long term target is to remove old OSS driver for the card
+> > and use the new one for ALSA.
+> 
+> Sure, I didn't merge your patch just because it seems not much tested
+> (as I remembered in your patch description).
+> 
 
---=20
-P=E9ter
+I have tested audio (PCM) playback and recording (hence
+pcm format bugfixes). I have tested MIDI playback (through
+built in wavetable). I have not fixed more exotic features like
+digital output/input and external MIDI handling (no device
+to test). I think that the basic support (pcm playback/recording
+and midi playback) is enough to add the driver.
 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > The summary of major changes are:
+> > 1. New driver uses PnP framework
+> > 2. It uses MPU401 framework instead of raw midi (so less code)
+> > 3. It has fixed handling of 8-bit audio formats (bug in the old driver)
+> > 4. It has fixed audio capture formats (bug in the old driver)
+> > 5. It has fixed requesting shared memory region (bug in the old driver)
+> > 6. ioremap memory region once instead before each access (improvement)
+> > 7. Removed common module as it is very small (improvement)
+> > 8. Code conforms to the Linux kernel CS.
+> > 9. It is shorter by at list 10KB of source and few KB of binary.
+> > 10. Few smaller bugs fixed (e.g. digital output option in mixer).
+> > 
+> > I tested this driver on a borrowed card. It has digital output add-on card. 
+> > If anybody can tell me how to test a digital input/output (e.g. by using
+> > another sound card) I can do this as well.
+> 
+> As long as you tested, certainly it's fine to replace.
+> Or, we could disable only the old driver's Kconfig and put yours.
+> 
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Can I repost as a single patch?
+
+Regards,
+Krzysztof
+
+
+----------------------------------------------------------------------
+Zobacz program TV na dzis!
+sprawdz >>>http://link.interia.pl/f202a
