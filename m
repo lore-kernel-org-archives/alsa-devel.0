@@ -1,20 +1,22 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: Re: gusclassic alsa configuration
-Date: Thu, 22 Jan 2009 23:11:05 +0100
-Message-ID: <20090122231105.3ff437c2.krzysztof.h1@poczta.fm>
-References: <20090121223507.778f954d.krzysztof.h1@poczta.fm>
-	<20090121215037.GC4996@sci.fi> <s5h8wp37glk.wl%tiwai@suse.de>
-	<20090122173332.a5b8f459.krzysztof.h1@poczta.fm>
-	<s5h8wp35mg9.wl%tiwai@suse.de>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: Misusing snd_pcm_avail_update()
+Date: Thu, 22 Jan 2009 23:20:15 +0100
+Message-ID: <20090122222015.GB9379@tango.0pointer.de>
+References: <20090120025727.GA30499@tango.0pointer.de>
+	<49758B71.8090605@ladisch.de>
+	<20090120142614.GA27494@tango.0pointer.de>
+	<49761C79.8060605@ladisch.de>
+	<20090120202933.GA17626@tango.0pointer.de>
+	<s5hwscpqypo.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
-	[217.74.64.239])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4E6CA10380A
-	for <alsa-devel@alsa-project.org>; Thu, 22 Jan 2009 23:08:03 +0100 (CET)
-In-Reply-To: <s5h8wp35mg9.wl%tiwai@suse.de>
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 395D21037E3
+	for <alsa-devel@alsa-project.org>; Thu, 22 Jan 2009 23:20:16 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hwscpqypo.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,39 +26,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>, Rene Herman <rene.herman@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 22 Jan 2009 17:34:30 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
+On Wed, 21.01.09 01:39, Takashi Iwai (tiwai@suse.de) wrote:
 
-> At Thu, 22 Jan 2009 17:33:32 +0100,
-> Krzysztof Helt wrote:
+> > The function should look like this:
 > > 
-> > Hi Takashi,
+> >     snd_pcm_sframes_t snd_pcm_busy_for(snd_pcm_t *pcm);
 > > 
-> > Any chance that this GUS.conf get into the alsa-lib
-> > so a non-ALSA-savvy Linux user would have at least working
-> > stereo playback "out of the box"?
+> > I called the prototype "busy for" since effectively the value I am
+> > looking for is the time the card will be busy with the data it already
+> > has, and doesn't need any new data.
 > 
-> Yes, sure, it should be fixed.
-> But before applying it -- I wonder whether you can simply use "type
-> plug" instead of route plugin.  Could you check it?
-> 
+> Isn't it snd_pcm_delay() that was originally designed for?
 
-It works. The "plug" is even better as it allows conversion for u-law PCM
-and does not require to define the ttable.
+No. Let me summarize the meaning of snd_pcm_update_avail(),
+snd_pcm_delay() and my snd_pcm_busy_for() to opefully make clear where
+the differences are:
 
-> Or, can't you simply remove these pcm.hw and pcm.default definitions
-> and use the system-default one?
-> 
+snd_pcm_update_avail() -- returns how many samples can be written
+                          right now without blocking.
 
-aplay returns error: "unable to install hw params".
+snd_pcm_delay() -- returns how many samples will be played before the
+                   samples that are written now can be heard.
 
-Regards,
-Krzysztof
+snd_pcm_busy_for() -- returns how many samples will be played before
+                      ALSA would enter an underrun situation if no
+                      further samples are written.
 
-----------------------------------------------------------------------
-Speak Up. Angielski szybko i skutecznie. 3 miesiace nauki gratis.
-Sprawdz. >> http://link.interia.pl/f2019
+snd_pcm_update_avail() and snd_pcm_busy_for() return metrics that are
+solely dependant on the size and metrics of the hardware buffer and
+its current indexes. snd_pcm_delay() also includes information about
+any extra latency that comes after the playback buffer.
+
+Onle snd_pcm_update_avail()/snd_pcm_busy_for() are influenced by "fast
+starts" as done by the USB driver's double buffering and by
+block-based transfer.
+
+Hmm, I am trying my best to explain why I want this function and what
+exactly it should do. Any chance I can convince you guys that this
+function really matters for timer-based audio scheduling?
+
+> Did you check my previous patch?
+
+You mean the one that makes snd_pcm_delay() for USB devices actually
+include the extra latency that comes after the playback buffer? No, I
+didn't check that one yet. It takes so much time to patch the kernel
+and test things... I'll try too finally do it this WE.
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
