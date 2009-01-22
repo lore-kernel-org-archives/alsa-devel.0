@@ -1,22 +1,15 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Misusing snd_pcm_avail_update()
-Date: Thu, 22 Jan 2009 23:20:15 +0100
-Message-ID: <20090122222015.GB9379@tango.0pointer.de>
-References: <20090120025727.GA30499@tango.0pointer.de>
-	<49758B71.8090605@ladisch.de>
-	<20090120142614.GA27494@tango.0pointer.de>
-	<49761C79.8060605@ladisch.de>
-	<20090120202933.GA17626@tango.0pointer.de>
-	<s5hwscpqypo.wl%tiwai@suse.de>
+From: "John L. Utz III" <jutz@dmx.com>
+Subject: CMI8788/AV200/Oxygen Volume Controls in alsamixer
+ (oxygen_mixer.c:dac_volume_get())
+Date: Thu, 22 Jan 2009 15:36:52 -0800
+Message-ID: <49790314.10607@dmx.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 395D21037E3
-	for <alsa-devel@alsa-project.org>; Thu, 22 Jan 2009 23:20:16 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hwscpqypo.wl%tiwai@suse.de>
+Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2D82F103804
+	for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2009 00:38:20 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,58 +19,128 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 21.01.09 01:39, Takashi Iwai (tiwai@suse.de) wrote:
+Hi Clemens and all;
 
-> > The function should look like this:
-> > 
-> >     snd_pcm_sframes_t snd_pcm_busy_for(snd_pcm_t *pcm);
-> > 
-> > I called the prototype "busy for" since effectively the value I am
-> > looking for is the time the card will be busy with the data it already
-> > has, and doesn't need any new data.
-> 
-> Isn't it snd_pcm_delay() that was originally designed for?
+( To those following along at home, kindly open
+alsa-driver-1.0.18a/alsa-kernel/pci/oxygen/oxygen_mixer.c and look at 
+dac_volume_get() and dac_volume_put() )
 
-No. Let me summarize the meaning of snd_pcm_update_avail(),
-snd_pcm_delay() and my snd_pcm_busy_for() to opefully make clear where
-the differences are:
 
-snd_pcm_update_avail() -- returns how many samples can be written
-                          right now without blocking.
+It appears to me that these functions are attempting to work on all of 
+the channels at once instead of just choosing Master, Front, Rear, 
+Surround, or what have you:
 
-snd_pcm_delay() -- returns how many samples will be played before the
-                   samples that are written now can be heard.
+static int dac_volume_get(struct snd_kcontrol *ctl,
+			  struct snd_ctl_elem_value *value)
+{
+	struct oxygen *chip = ctl->private_data;
+	unsigned int i;
 
-snd_pcm_busy_for() -- returns how many samples will be played before
-                      ALSA would enter an underrun situation if no
-                      further samples are written.
+	mutex_lock(&chip->mutex);
+	for (i = 0; i < chip->model.dac_channels; ++i)
+		value->value.integer.value[i] = chip->dac_volume[i];
+	mutex_unlock(&chip->mutex);
+	return 0;
+}
 
-snd_pcm_update_avail() and snd_pcm_busy_for() return metrics that are
-solely dependant on the size and metrics of the hardware buffer and
-its current indexes. snd_pcm_delay() also includes information about
-any extra latency that comes after the playback buffer.
 
-Onle snd_pcm_update_avail()/snd_pcm_busy_for() are influenced by "fast
-starts" as done by the USB driver's double buffering and by
-block-based transfer.
+This is then surfaced to userland thusly in the controls array:
 
-Hmm, I am trying my best to explain why I want this function and what
-exactly it should do. Any chance I can convince you guys that this
-function really matters for timer-based audio scheduling?
+static const struct snd_kcontrol_new controls[] = {
+	{
+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+		.name = "Master Playback Volume",
+		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
+		.info = dac_volume_info,
+		.get = dac_volume_get,
+		.put = dac_volume_put,
+	},
+	{
+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+		.name = "Master Playback Switch",
+		.info = snd_ctl_boolean_mono_info,
+		.get = dac_mute_get,
+		.put = dac_mute_put,
+	},
+	{
+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+		.name = "Stereo Upmixing",
+		.info = upmix_info,
+		.get = upmix_get,
+		.put = upmix_put,
+	},
+         { blah },
+	{ blah },
+         { blah }
+};
 
-> Did you check my previous patch?
 
-You mean the one that makes snd_pcm_delay() for USB devices actually
-include the extra latency that comes after the playback buffer? No, I
-didn't check that one yet. It takes so much time to patch the kernel
-and test things... I'll try too finally do it this WE.
+this leads to a rather awkward result in alsamixer where there are 5 
+volume controls called "Master":
 
-Lennart
 
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+< Master >  Master    Master    Master    Master
+
+
+IMHO, it would be more desirable for them to say:
+
+
+< Master >  Front     C/LFE     Surround  Rear Surr
+
+
+Our app would certainly be much happier :-)
+
+So, i *think* that i can fix this thusly:
+
+static const struct snd_kcontrol_new controls[] = {
+	{
+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+		.name = "Master Playback Volume",
+		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
+		.info = dac_volume_info,
+		.get = dac_volume_get,
+		.put = dac_volume_put,
+		.private_value = 0
+	},
+	{
+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+		.name = "Master Playback Switch",
+		.info = snd_ctl_boolean_mono_info,
+		.get = dac_mute_get,
+		.put = dac_mute_put,
+		.private_value = 0
+	},
+         {
+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+		.name = "Front Playback Volume",
+		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
+		.info = dac_volume_info,
+		.get = dac_volume_get,
+		.put = dac_volume_put,
+		.private_value = 1
+	},
+	{
+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+		.name = "Front Playback Switch",
+		.info = snd_ctl_boolean_mono_info,
+		.get = dac_mute_get,
+		.put = dac_mute_put,
+		.private_value = 1
+	},
+
+
+and alter dac_volume_*() to not use a for() loop and just work off the 
+private_value.
+
+anybody have any opinions?
+
+i'll probably have tried this already before anybody responds but it 
+seemed reasonable to surface the idea.
+
+tnx!
+
+johnu
