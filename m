@@ -1,17 +1,16 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: Re: CS4232 Playback bug on Tecra 500
-Date: Thu, 22 Jan 2009 13:41:50 +0100
-Message-ID: <20090122134150.f6d0e192.krzysztof.h1@poczta.fm>
-References: <405205790901212040s79ce94a4if4ff742a9c18bc67@mail.gmail.com>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: Re: [PATCH] hda: Add STAC92HD83XXX_PWR_REF quirk
+Date: Thu, 22 Jan 2009 08:23:03 -0500
+Message-ID: <49787337.3030406@embeddedalley.com>
+References: <4977A42F.5030903@embeddedalley.com> <s5h7i4nx2mf.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
-	[217.74.64.239])
-	by alsa0.perex.cz (Postfix) with ESMTP id B10EF1038CA
-	for <alsa-devel@alsa-project.org>; Thu, 22 Jan 2009 13:38:45 +0100 (CET)
-In-Reply-To: <405205790901212040s79ce94a4if4ff742a9c18bc67@mail.gmail.com>
+Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
+	by alsa0.perex.cz (Postfix) with SMTP id 6B326243FE
+	for <alsa-devel@alsa-project.org>; Thu, 22 Jan 2009 14:23:31 +0100 (CET)
+In-Reply-To: <s5h7i4nx2mf.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,17 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stanley Pinchak <stanley.pinchak@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Stanley,
+Takashi Iwai wrote:
+> At Wed, 21 Jan 2009 17:39:43 -0500,
+> Matthew Ranostay wrote:
+>> @@ -334,7 +335,7 @@ static hda_nid_t stac92hd83xxx_slave_dig_outs[2] = {
+>>  };
+>>  
+>>  static unsigned int stac92hd83xxx_pwr_mapping[4] = {
+>> -	0x03, 0x0c, 0x20, 0x80,
+>> +	0x03, 0x0c, 0x20, 0x40,
+>>  };
+> 
+> What is this change?
+> 
+>
+>From my patch before I made a mistake, somehow I thought port 0xe was 0xf in that
+change. Sorry for the inconvenience.
 
-Could you post a dmesg output for this laptop?
+Thanks,
 
-Regards,
-Krzysztof
-
-----------------------------------------------------------------------
-Speak Up. Angielski szybko i skutecznie. 3 miesiace nauki gratis.
-Sprawdz. >> http://link.interia.pl/f2019
+Matt
+ 
+> thanks,
+> 
+> Takashi
+> 
