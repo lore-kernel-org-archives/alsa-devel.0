@@ -1,16 +1,16 @@
 From: Timur Tabi <timur@freescale.com>
-Subject: [PATCH 2.6.30] ASoC: remove stand-alone mode support
-	from CS4270 codec driver
-Date: Thu, 22 Jan 2009 18:17:53 -0600
-Message-ID: <1232669873-15751-1-git-send-email-timur@freescale.com>
+Subject: [PATCH v2 2.6.30] ASoC: remove stand-alone mode
+	support from CS4270 codec driver
+Date: Thu, 22 Jan 2009 18:23:39 -0600
+Message-ID: <1232670219-16780-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from az33egw02.freescale.net (az33egw02.freescale.net
 	[192.88.158.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id E6E62103804
-	for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2009 01:18:21 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 8229C103804
+	for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2009 01:23:42 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,9 +31,26 @@ the rest of the code more complicated than necessary.
 
 Signed-off-by: Timur Tabi <timur@freescale.com>
 ---
- sound/soc/codecs/cs4270.c |   92 +++++++++++++-------------------------------
- 1 files changed, 27 insertions(+), 65 deletions(-)
 
+v2: Added Kconfig changes
+
+ sound/soc/codecs/Kconfig  |    1 +
+ sound/soc/codecs/cs4270.c |   92 +++++++++++++-------------------------------
+ sound/soc/fsl/Kconfig     |    3 +-
+ 3 files changed, 30 insertions(+), 66 deletions(-)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index cb5fcd6..136e1bc 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -65,6 +65,7 @@ config SND_SOC_AK4535
+ # Cirrus Logic CS4270 Codec
+ config SND_SOC_CS4270
+ 	tristate
++	depends on I2C
+ 
+ # Cirrus Logic CS4270 Codec Hardware Mute Support
+ # Select if you have external muting circuitry attached to your CS4270.
 diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
 index f1aa0c3..2e4ce04 100644
 --- a/sound/soc/codecs/cs4270.c
@@ -219,5 +236,19 @@ index f1aa0c3..2e4ce04 100644
  
  	kfree(socdev->codec);
  	socdev->codec = NULL;
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index c7c78c3..9fc9082 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -10,7 +10,8 @@ config SND_SOC_MPC8610
+ 
+ config SND_SOC_MPC8610_HPCD
+ 	tristate "ALSA SoC support for the Freescale MPC8610 HPCD board"
+-	depends on MPC8610_HPCD
++	# I2C is necessary for the CS4270 driver
++	depends on MPC8610_HPCD && I2C
+ 	select SND_SOC_MPC8610
+ 	select SND_SOC_CS4270
+ 	select SND_SOC_CS4270_VD33_ERRATA
 -- 
 1.5.5
