@@ -1,18 +1,25 @@
 From: Cristian Morales Vega <cmorve69@yahoo.es>
-Subject: Re: snd_pcm_set_params() bug?
-Date: Sat, 24 Jan 2009 11:53:14 +0100
-Message-ID: <8235e6f40901240253h17774341s9dd21d6c0b7b9ac0@mail.gmail.com>
-References: <8235e6f40806020930t42e9b62brff93c5e23b59eac5@mail.gmail.com>
+Subject: Re: snd_pcm_avail_update() needed before
+	snd_pcm_delay() with hda-intel
+Date: Sat, 24 Jan 2009 12:03:40 +0100
+Message-ID: <8235e6f40901240303h2c0d337dvf2a8f7a09c48f6f@mail.gmail.com>
+References: <8235e6f40806061254v41604524l4e43647482602098@mail.gmail.com>
+	<75b66ecd0806061746r1f542ed2i6c966465c1475152@mail.gmail.com>
+	<s5hprqn0xv6.wl%tiwai@suse.de>
+	<8235e6f40806121132h4dd900f1u250ddeac318f659e@mail.gmail.com>
+	<s5hd4mg9shc.wl%tiwai@suse.de>
+	<8235e6f40806171227y4141c6ceqa0e8269810c88b9e@mail.gmail.com>
+	<8235e6f40901230414s18fc6042se7f79075a1f3a51d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.250])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0511A2436E
-	for <alsa-devel@alsa-project.org>; Sat, 24 Jan 2009 11:53:15 +0100 (CET)
-Received: by rv-out-0708.google.com with SMTP id f25so4951267rvb.32
-	for <alsa-devel@alsa-project.org>; Sat, 24 Jan 2009 02:53:14 -0800 (PST)
-In-Reply-To: <8235e6f40806020930t42e9b62brff93c5e23b59eac5@mail.gmail.com>
+Received: from rv-out-0506.google.com (rv-out-0506.google.com [209.85.198.238])
+	by alsa0.perex.cz (Postfix) with ESMTP id BF8142438D
+	for <alsa-devel@alsa-project.org>; Sat, 24 Jan 2009 12:03:41 +0100 (CET)
+Received: by rv-out-0506.google.com with SMTP id f9so867895rvb.0
+	for <alsa-devel@alsa-project.org>; Sat, 24 Jan 2009 03:03:40 -0800 (PST)
+In-Reply-To: <8235e6f40901230414s18fc6042se7f79075a1f3a51d@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,53 +32,123 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2008/6/2 Christian Morales Vega <cmorve69@yahoo.es>:
-> This code:
+2009/1/23 Cristian Morales Vega <cmorve69@yahoo.es>:
+> 2008/6/17 Christian Morales Vega <cmorve69@yahoo.es>:
+>> 2008/6/17 Takashi Iwai <tiwai@suse.de>:
+>>> At Thu, 12 Jun 2008 20:32:51 +0200,
+>>> Christian Morales Vega wrote:
+>>>>
+>>>> 2008/6/12 Takashi Iwai <tiwai@suse.de>:
+>>>> > It's unlikely a driver issue but an incompatibility of dmix, I guess.
+>>>> > But still I don't figure out why this happens.  The hwsync is done at
+>>>> > each snd_pcm_dmix_delay() call (as long as slowptr is set, and it's so
+>>>> > as default).  So, there shouldn't be any difference...
+>>>> >
+>>>> > What happens if you use "hw" or "plughw"?
+>>>> With both plughw and hw works fine.
+>>>>
+>>>> If helps, I have simplified the problematic bsnes code into this:
+>>>
+>>> The program looks running fine on my machine with another HD-audio
+>>> codec.  What is expected in the output and how wrong on yours?
+>>
+>> I knew I should not put it under the code :-p
+>> "The listened effect is that when fails you listen the noise for just
+>> buffer_time, and when works the noise never ends."
+>>
+>> So the output with the SB Live! is:
+>> State: 2
+>> Delay: 0
+>> Passed
+>> State: 2
+>> Delay: 882
+>> Passed
+>> State: 2
+>> Delay: 1764
+>> Passed
+>> State: 2
+>> Delay: 2646
+>> Passed
+>> State: 2
+>> Delay: 3528
+>> Passed
+>> State: 3
+>> Delay: 4410
+>> Delay/Goal: 4410/3528
+>> State: 3
+>> Delay: 4410
+>> Delay/Goal: 4410/3528
+>> State: 3
+>> Delay: 4410
+>> Delay/Goal: 4410/3528
+>> State: 3
+>> Delay: 4410
+>> Delay/Goal: 4410/3528
+>> State: 3
+>> Delay: 4409
+>> Delay/Goal: 4409/3528
+>>
+>> and so until delay reaches 3528, when a new snd_pcm_writei() is done.
+>>
+>> With the AD1988 the buffer is fulled one time. After that never again
+>> reaches snd_pcm_writei(). The output is:
+>> State: 2
+>> Delay: 0
+>> Passed
+>> State: 2
+>> Delay: 940
+>> Passed
+>> State: 2
+>> Delay: 1880
+>> Passed
+>> State: 2
+>> Delay: 2820
+>> Passed
+>> State: 2
+>> Delay: 3760
+>> Passed
+>> State: 3
+>> Delay: 4700
+>> Delay/Goal: 4700/3764
+>> State: 3
+>> Delay: 4700
+>> Delay/Goal: 4700/3764
+>> State: 3
+>> Delay: 4700
+>> Delay/Goal: 4700/3764
+>>
+>> and so. Delay never decreases. But after some time you see.
+>> State: 4
+>> Delay: 4700
+>> Delay/Goal: 4700/3764
+>>
+>> There has been an underrun even if appl_ptr is 4700 frames ahead of hw_ptr???
+>> If you uncomment snd_pcm_avail_update() delay decreases and everything is ok.
+>>
 >
-> #include <alsa/asoundlib.h>
+> I still have the same problem with alsa-1.0.19.git20090122-1.1 and
+> alsa-driver-kmp-default-1.0.19.20090123_2.6.27.7_9.1-3.1 on openSUSE
+> 11.1. Exactly same behavior: works with emu10k1, works with plughw...
+> only doesn't works when using AD1988 and "default:1" device.
 >
-> int main(){
->    snd_pcm_t *handle;
->    if(snd_pcm_open(&handle, "default:1", SND_PCM_STREAM_PLAYBACK, 0) < 0) {
->      exit(1);
->    }
->
->    if(snd_pcm_set_params(handle, SND_PCM_FORMAT_S16_LE,
-> SND_PCM_ACCESS_RW_INTERLEAVED,
->       2, 24000, 1, 100000) < 0) {
->      exit(2);
->    }
-> }
->
-> fails with error "ALSA lib pcm.c:7193:(snd_pcm_set_params) Unable to
-> get period size for PLAYBACK: Invalid argument"
-> Disable resampling and you get "ALSA lib
-> pcm.c:7142:(snd_pcm_set_params) Rate doesn't match (requested 24000Hz,
-> get 0Hz)" (normal, I suppose). With other samplerates works fine.
->
-> I'm using alsa-driver-kmp-default-1.0.16.20080602 and
-> alsa-1.0.16.hg20080510 RPM packages from multimedia:audio openSUSE
-> Build Service repository (from Takashi Iwai) and an AD1988 (hda-intel)
-> codec. A XUbuntu user also has the same problem with an hda-intel
-> codec (that I suppose uses stable 1.0.16).
-> With a SB Live! in the same computer there are no problems.
->
->
-> This was discovered with bsnes ( http://byuu.cinnamonpirate.com/bsnes/
-> - http://board.zsnes.com/phpBB2/viewtopic.php?t=11584 ) that can use
-> openal, libao or alsa directly. The problem just happens when using
-> 24KHz with alsa. So I suppose the problem is in the
-> snd_pcm_set_params() itself, since openal and libao have not the
-> problem but they set parameters "manually", not with
-> snd_pcm_set_params().
+> Also reading Lennart Poettering discussion about snd_pcm_avail_update,
+> snd_pcm_delay, etc I see bsnes is wrongly using snd_pcm_delay(). But I
+> don't understand the snd_pcm_avail() vs snd_pcm_avail_update(). If
+> snd_pcm_avail_update() doesn't calls hwsync the info it will return
+> will be outdated/unuseful, will not? And how it is a call to
+> snd_pcm_avail_update() fixes the problem I'm having here with
+> snd_pcm_delay()? My problem isn't precisely the lack of a hwsync in
+> snd_pcm_delay()?
+> In snd_pcm_avail_update() doc: "The position is not synced with
+> hardware (driver) position in the sound ring buffer in this function."
+> isn't a contradiction with "Also this function might be called after
+> snd_pcm_delay() or snd_pcm_hwsync() functions to move private ring
+> buffer pointers in alsa-lib (the internal plugin chain)."? Probably
+> I'm missunderstanding something. If snd_pcm_avail_update() isn't
+> updating the same thing that snd_pcm_hwsync(), what it is updating?
 >
 
-The problem persists with alsa-1.0.19.git20090122-1.1 and
-alsa-driver-kmp-default-1.0.19.20090124_2.6.27.7_9.1-1.1 from openSUSE
-11.1 multimedia:audio(:kmp) Build Service repository.
+Forget the last part. I suppose I just need to use snd_pcm_avail()
+instead of snd_pcm_avail_update() if using mmap, true?
 
-Note that the problem only happens with snd_pcm_set_params(). Using
-snd_pcm_hw_params_set_* functions works fine (and I really get 24KHz):
-http://board.zsnes.com/phpBB2/viewtopic.php?p=170478#170478
-
-The problem happens with default, plughw and hw.
+Only the "snd_pcm_delay() return value isn't updated" part is important.
