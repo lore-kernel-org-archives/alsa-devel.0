@@ -1,86 +1,65 @@
-From: Jaswinder Singh Rajput <jaswinderlinux@gmail.com>
-Subject: Re: usr/include/linux/soundcard.h warnings for 'make headers_check'
-Date: Sat, 24 Jan 2009 12:20:03 +0530
-Message-ID: <3f9a31f40901232250i27a673a9r8b0620f968e351e1@mail.gmail.com>
-References: <1232465902.3088.31.camel@localhost.localdomain>
-	 <s5h7i4psepm.wl%tiwai@suse.de>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: Re: CS4232 Playback bug on Tecra 500
+Date: Sat, 24 Jan 2009 09:26:06 +0100
+Message-ID: <20090124092606.11f3660e.krzysztof.h1@poczta.fm>
+References: <405205790901212040s79ce94a4if4ff742a9c18bc67@mail.gmail.com>
+	<20090122134150.f6d0e192.krzysztof.h1@poczta.fm>
+	<405205790901220743k32d76edeh733b2dacfbf0497e@mail.gmail.com>
+	<20090122172856.e39ae951.krzysztof.h1@poczta.fm>
+	<s5h7i4n5mar.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751822AbZAXGuW@vger.kernel.org>
-In-Reply-To: <s5h7i4psepm.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
+	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id 03AFE24398
+	for <alsa-devel@alsa-project.org>; Sat, 24 Jan 2009 09:22:59 +0100 (CET)
+In-Reply-To: <s5h7i4n5mar.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaswinder Singh Rajput <jaswinder@kernel.org>, alsa-devel@alsa-project.org, Sam Ravnborg <sam@ravnborg.org>, Ingo Molnar <mingo@elte.hu>, LKML <linux-kernel@vger.kernel.org>
+Cc: alsa-devel@alsa-project.org, Stanley Pinchak <stanley.pinchak@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 21, 2009 at 5:38 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Tue, 20 Jan 2009 21:08:22 +0530,
-> Jaswinder Singh Rajput wrote:
->>
->> usr/include/linux/soundcard.h is giving following warnings for 'make headers_check':
->>  usr/include/linux/soundcard.h:1047: extern's make no sense in userspace
->>  usr/include/linux/soundcard.h:1048: extern's make no sense in userspace
->>  usr/include/linux/soundcard.h:1049: extern's make no sense in userspace
->>  usr/include/linux/soundcard.h:1050: extern's make no sense in userspace
->>  usr/include/linux/soundcard.h:1051: extern's make no sense in userspace
->>  usr/include/linux/soundcard.h:1053: extern's make no sense in userspace
->>  usr/include/linux/soundcard.h:1055: extern's make no sense in userspace
->>  usr/include/linux/soundcard.h:1056: extern's make no sense in userspace
->>  usr/include/linux/soundcard.h:1061: extern's make no sense in userspace
->>  usr/include/linux/soundcard.h:1062: extern's make no sense in userspace
->>  usr/include/linux/soundcard.h:1078: extern's make no sense in userspace
->>  usr/include/linux/soundcard.h:1079: extern's make no sense in userspace
->>
->> Do we need to fix these warnings.
->
-> No, these are declarations for OSS-lib.
-> It doesn't belong to kernel, but it's better to keep it for
-> compatibility in some way.
->
+On Thu, 22 Jan 2009 17:37:48 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
 
-Do you find some better place for:
+> At Thu, 22 Jan 2009 17:28:56 +0100,
+> Krzysztof Helt wrote:
+> > Next thing is that your have a second driver loaded: 
+> > the snd-cs4236. Do not load this driver. AFAIR, the 
+> > snd-cs4236 driver should be blacklisted or removed
+> > on laptop with the cs4232 chip and PNP BIOS. The 
+> > cs4236 and cs4232 have the same PNP BIOS id-s.
+> > The snd-cs4236 was incorrectly loaded instead of 
+> > the snd-cs4232 at least on my laptop (old Dell).
+> 
+> Isn't there any way to check this conflict between CS4232 and CS4236?
+> If we can know that the particular card is for snd-cs4232, snd-cs4236
+> could give a warning and quit...
+> 
 
-void seqbuf_dump(void); /* This function must be provided by programs */
+I have opened my laptop and it has the CS4237B chipset (the one
+the Dell states for this model). 
+A problem is with ALSA drivers. The snd-cs4232 is the only driver
+which supports pnpbios. The snd-cs4236 does not so it does not
+recognize the card. 
 
-extern int OSS_init(int seqfd, int buflen);
-extern void OSS_seqbuf_dump(int fd, unsigned char *buf, int buflen);
-extern void OSS_seq_advbuf(int len, int fd, unsigned char *buf, int buflen);
-extern void OSS_seq_needbuf(int len, int fd, unsigned char *buf, int buflen);
-extern void OSS_patch_caching(int dev, int chn, int patch,
-                              int fd, unsigned char *buf, int buflen);
-extern void OSS_drum_caching(int dev, int chn, int patch,
-                              int fd, unsigned char *buf, int buflen);
-extern void OSS_write_patch(int fd, unsigned char *buf, int len);
-extern int OSS_write_patch2(int fd, unsigned char *buf, int len);
-..
+An ultimate solution would be to merge the snd-cs4236-lib into
+the wss-lib (as Rene Herman proposed some time ago) then
+prepare a single driver for all cs423x cards.
 
-#ifdef OSSLIB
-#  define SEQ_USE_EXTBUF() \
-                extern unsigned char *_seqbuf; \
-                extern int _seqbuflen;extern int _seqbufptr
-#  define SEQ_DEFINEBUF(len) SEQ_USE_EXTBUF();static int
-_requested_seqbuflen=len
-#  define _SEQ_ADVBUF(len) OSS_seq_advbuf(len, seqfd, _seqbuf, _seqbuflen)
-#  define _SEQ_NEEDBUF(len) OSS_seq_needbuf(len, seqfd, _seqbuf, _seqbuflen)
-#  define SEQ_DUMPBUF() OSS_seqbuf_dump(seqfd, _seqbuf, _seqbuflen)
+Regards,
+Krzysztof
 
-#  define SEQ_LOAD_GMINSTR(dev, instr) \
-                OSS_patch_caching(dev, -1, instr, seqfd, _seqbuf, _seqbuflen)
-#  define SEQ_LOAD_GMDRUM(dev, drum) \
-                OSS_drum_caching(dev, -1, drum, seqfd, _seqbuf, _seqbuflen)
-#else /* !OSSLIB */
 
-#  define SEQ_LOAD_GMINSTR(dev, instr)
-#  define SEQ_LOAD_GMDRUM(dev, drum)
-
-#  define SEQ_USE_EXTBUF() \
-                extern unsigned char _seqbuf[]; \
-                extern int _seqbuflen;extern int _seqbufptr
-
-..
-
-what are your plans.
-
---
-JSR
+----------------------------------------------------------------------
+Zobacz program TV na dzis!
+sprawdz >>>http://link.interia.pl/f202a
