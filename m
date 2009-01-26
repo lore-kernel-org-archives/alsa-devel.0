@@ -1,16 +1,19 @@
-From: Bankim Bhavsar <bankim.bhavsar@gmail.com>
-Subject: Enumerating PCM devices
-Date: Sun, 25 Jan 2009 19:57:23 -0800
-Message-ID: <4eccebac0901251957i3b876ee1ne8c8c8ce59c03371@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: CMI8788/AV200/Oxygen Volume Controls in alsamixer
+ (oxygen_mixer.c:dac_volume_get())
+Date: Mon, 26 Jan 2009 09:51:31 +0100
+Message-ID: <497D7993.8070009@ladisch.de>
+References: <49790314.10607@dmx.com> <4979CB63.9030205@ladisch.de>
+	<s5h3afa86sw.wl%tiwai@suse.de> <4979D08B.3090103@ladisch.de>
+	<F8FB97052F1BEF409F7842E960E49B5A02143CE2@sea-exch-01.na.corp.dmxmusic.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id BBE171037EE
-	for <alsa-devel@alsa-project.org>; Mon, 26 Jan 2009 04:57:23 +0100 (CET)
-Received: by fg-out-1718.google.com with SMTP id 16so3412864fgg.44
-	for <alsa-devel@alsa-project.org>; Sun, 25 Jan 2009 19:57:23 -0800 (PST)
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 3EA4824332
+	for <alsa-devel@alsa-project.org>; Mon, 26 Jan 2009 09:51:37 +0100 (CET)
+In-Reply-To: <F8FB97052F1BEF409F7842E960E49B5A02143CE2@sea-exch-01.na.corp.dmxmusic.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,22 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: John Utz <John.Utz@dmx.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Alsa developers/users,
+John Utz wrote:
+> if my employer decides that we will use the card
 
-For some reason my message got truncated earlier. So here I go again.
+If you're thinking about the Xonar D2/D2X: please note that I removed
+the "Master" control in the latest kernel in the hope of fixing some
+unexplained bug where the card's EEPROM would be deleted.  (I think that
+I may be able to prove that the Master control isn't related to this
+bug, and revert that change.)
 
-I'm using snd_device_name_hint("pcm"..) and then
-snd_device_name_get_hint(.."NAME") to get the NAME parameter of pcm
-devices.
-Is it true that all sound cards that support Alsa will *always* have
-"default" pcm device? I'm more inclined towards using
-"default:CARD=<vendor>" as the parameter to snd_pcm_open(). This way
-if the program configures
-hardware params for any number of channels then the appropriate PCM
-device will be selected on the sound card, correct?
+> (not entirely clear, it's expensive and IMHO the sound quality isnt
+> worth the money)
 
-Thanks,
-Bankim.
+The Xonar D1/DX has almost the same capabilities as the D2/D2X (in Linux)
+and is more reasonably priced.
+
+What are your requirements?
+
+
+Best regards,
+Clemens
