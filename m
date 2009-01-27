@@ -1,20 +1,15 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: asoc: s3c24xx+uda1380 - some questions
-Date: Tue, 27 Jan 2009 20:00:52 +0000
-Message-ID: <20090127200051.GA6424@sirena.org.uk>
-References: <200901271519.47119.anarsoul@gmail.com>
-	<200901271749.38788.anarsoul@gmail.com>
-	<74d0deb30901270806s166f5336g3086e42477913e1d@mail.gmail.com>
-	<200901271822.32537.anarsoul@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates
+Date: Tue, 27 Jan 2009 20:03:11 +0000
+Message-ID: <20090127200309.GB6424@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8B2F824390
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2009 21:00:59 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 109B324390
+	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2009 21:03:20 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <200901271822.32537.anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,53 +19,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: alsa-devel@alsa-project.org, pHilipp Zabel <philipp.zabel@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 27, 2009 at 06:22:25PM +0200, Vasily Khoruzhick wrote:
+The following changes since commit 070504ade7a95a0f4395673717f3bb7d41793ca8:
+  Mark Brown (1):
+        ASoC: Fix L3 bus handling in Kconfig
 
-> Btw, on rx1950 there're 4 gpio pins involved:
-> GPJ0 controls codec power
-> GPA1 controls amplifier power
-> GPG12 is jack sense pin, it's value depends whether headphone jack is inserted 
-You might want to have a look at the jack reporting API that was
-recently added, it should save you a bit of code:
+are available in the git repository at:
 
-	http://git.kernel.org/?p=linux/kernel/git/broonie/sound-2.6.git;a=commit;h=8a2cd6180f8fa00111843c2f4a4f4361995358e0
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.30
 
-It'll need a little helper for GPIOs adding to the core but that should
-be reusable.
+Mark Brown (1):
+      ASoC: Push the codec runtime storage into the card structure
 
-> 	down(&rx1950_power_mutex);
-> 	printk("%s: enable == %d\n", __func__, enable);
-> 	if (enable) {
-> 		if (s3c2410_gpio_getpin(S3C2440_GPJ0))
-> 			goto done;
-> 		//spin_lock(&cmpl_lock);
-> 		//waiting_for_completion = 1;
-> 		//spin_unlock(&cmpl_lock);
-> 		s3c2410_gpio_setpin(S3C2410_GPD0, 0);
-> 		s3c2410_gpio_setpin(S3C2440_GPJ0, 0);
-> 		s3c2410_gpio_setpin(S3C2440_GPJ0, 1);
-> 
-> 		/* Wait for EINT20 irq to ensure uda1380 is powered */
-> 		//printk("%s: waiting for compeltion...\n", __func__);
-> 		//wait_for_completion(&rx1950_sound_completion);
-> 		//printk("%s: completed\n", __func__);
-> 		//printk("%s: GPG12: %d\n", __func__,
-> 		//	s3c2410_gpio_getpin(S3C2410_GPG12));
-> 		mdelay(50);
-> 		s3c2410_gpio_setpin(S3C2410_GPD0, 1);
-> 		s3c2410_gpio_setpin(S3C2410_GPD0, 0);
+Peter Ujfalusi (5):
+      ASoC: TWL4030: Syncronize the reg_cache for ANAMICL after the offset cancelation
+      ASoC: TWL4030: Code clean up for codec power up and down
+      ASoC: TWL4030: Enable Headset Left anti-pop/bias ramp only if the Headset Left is in use
+      ASoC: TWL4030: Physical ADC and amplifier power switch change
+      ASoC: TWL4030: Move the twl4030_power_up and _power_down function
 
-Hrm.  The completion makes this look more like it could use a full blown
-regulator - it's certainly a pattern that will get reused often enough.
+Timur Tabi (1):
+      ASoC: improve I2C initialization code in CS4270 driver
 
-> 	/* configure some gpios */
-> 	s3c2410_gpio_cfgpin(S3C2410_GPD0, S3C2410_GPIO_OUTPUT);
-> 	s3c2410_gpio_cfgpin(S3C2410_GPG12, S3C2410_GPIO_IRQ);
-> 	s3c2410_gpio_cfgpin(S3C2440_GPJ0, S3C2410_GPIO_OUTPUT);
-
-The S3C24xx now supports gpiolib so you should be able to use that - the
-platform specific GPIO API will probably get killed at some point.
+ include/sound/soc.h            |    3 +-
+ sound/soc/codecs/ac97.c        |   20 ++--
+ sound/soc/codecs/ad1980.c      |   12 +-
+ sound/soc/codecs/ad73311.c     |    8 +-
+ sound/soc/codecs/ak4535.c      |   14 +-
+ sound/soc/codecs/cs4270.c      |  254 ++++++++++++++++++----------------------
+ sound/soc/codecs/pcm3008.c     |   12 +-
+ sound/soc/codecs/ssm2602.c     |   20 ++--
+ sound/soc/codecs/tlv320aic23.c |   18 ++--
+ sound/soc/codecs/tlv320aic26.c |    4 +-
+ sound/soc/codecs/tlv320aic3x.c |   14 +-
+ sound/soc/codecs/twl4030.c     |  224 +++++++++++++++++++-----------------
+ sound/soc/codecs/uda134x.c     |   18 ++--
+ sound/soc/codecs/uda1380.c     |   18 ++--
+ sound/soc/codecs/wm8350.c      |   10 +-
+ sound/soc/codecs/wm8510.c      |   16 ++--
+ sound/soc/codecs/wm8580.c      |   10 +-
+ sound/soc/codecs/wm8728.c      |   16 ++--
+ sound/soc/codecs/wm8731.c      |   20 ++--
+ sound/soc/codecs/wm8750.c      |   16 ++--
+ sound/soc/codecs/wm8753.c      |   18 ++--
+ sound/soc/codecs/wm8900.c      |    8 +-
+ sound/soc/codecs/wm8903.c      |   18 ++--
+ sound/soc/codecs/wm8971.c      |   14 +-
+ sound/soc/codecs/wm8990.c      |   14 +-
+ sound/soc/codecs/wm9705.c      |   15 ++-
+ sound/soc/codecs/wm9712.c      |   21 ++--
+ sound/soc/codecs/wm9713.c      |   17 ++--
+ sound/soc/soc-core.c           |   37 +++---
+ sound/soc/soc-dapm.c           |    6 +-
+ sound/soc/soc-jack.c           |    4 +-
+ 31 files changed, 443 insertions(+), 456 deletions(-)
