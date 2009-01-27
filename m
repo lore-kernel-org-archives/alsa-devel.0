@@ -1,15 +1,23 @@
-From: Matteo Canella <matteo.canella@mta.it>
-Subject: handle an external PWM amplifier via alsa interface
-Date: Tue, 27 Jan 2009 11:15:48 +0100
-Message-ID: <39618.2692064487$1233051450@news.gmane.org>
+From: "Keith A. Milner" <maillist@superlative.org>
+Subject: Re: Help with Behringer UCG102 Quirks
+Date: Tue, 27 Jan 2009 11:10:58 +0000
+Message-ID: <200901271110.58339.maillist@superlative.org>
+References: <200901261844.03194.maillist@superlative.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dig-mailtc.digitek.int (mail-dgt.mta.it [93.63.228.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id E892F1037EA
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2009 11:15:48 +0100 (CET)
-Content-Language: it
+Received: from mercury.safeukdns.net (mercury.safeukdns.net [77.92.84.1])
+	by alsa0.perex.cz (Postfix) with ESMTP id 12C931037EA
+	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2009 12:11:03 +0100 (CET)
+Received: from grenville.superlative.org ([82.152.152.239]
+	helo=asmodeus.superlative.org)
+	by mercury.safeukdns.net with esmtpsa (TLSv1:AES128-SHA:128)
+	(Exim 4.69) (envelope-from <maillist@superlative.org>)
+	id 1LRlqM-00076P-Nm
+	for alsa-devel@alsa-project.org; Tue, 27 Jan 2009 11:10:59 +0000
+In-Reply-To: <200901261844.03194.maillist@superlative.org>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,29 +30,32 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I'm a newbie in ALSA development.
-I'm trying to implement an alsa interface for the audio section of my board.
-I have an mpc5200 that control via i2s a pcm1774 stereo DAC and I also have
-an amplifier between the DAC and the speakers.
-At the moment I have the pcm1774 driver properly working, but I have a few
-ideas on how to integrate the control of the external amplifier in the alsa
-structure. I need to set the amplifier level with a PWM input to it.
+On Monday 26 January 2009 18:44:02 Keith A. Milner wrote:
+> Hi,
+> I'm new to alsa development work so I would appreciate some advice.
+>
+> I'm trying to add specific support for the Behringer UCG102 Guitar Link USB
+> interface. This is a simple device based on a TI codec. The aim is twofold:
+>
+> a) To provide a more descriptive name, as it currently describes itself as
+> the generic TI device
+>
+> This was easy... I've included the following in usbquirks.h:
+>
+> /* Behringer UCG102 Guitar Link */
+> {
+> 	USB_DEVICE(0x08bb, 0x2902),
+> 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+> 		.vendor_name = "Behringer",
+> 		.product_name = "Guitar Link UCG102",
+> 		.ifnum = QUIRK_ANY_INTERFACE,
+> 		.type = QUIRK_COMPOSITE,
+> 	}
+> },
 
-Now I'm trying to use "non dapm" controls, adding the PWM settings into this
-structure...
-
-What do you guys think about this?
-Am I completely wrong or could this be a good way?
-
-Thanks a lot
+OK, I've just worked out this is a generic vid/pid which applies to multiple 
+cards, so this is out of the window.
 
 
-=A0 Ing. Matteo Canella
-=A0 Firmware Engineer
-=A0 Digitek - MTA SpA
-=A0 Via L. Romagnoli, 24
-=A0 41033 Concordia s.S. (MO) - Italy
-=A0 T. +39 0535 57732
-=A0 F. +39 0535 54550
-=A0 email: matteo.canella@mta.it
+-- 
+Keith A. Milner
