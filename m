@@ -1,19 +1,25 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: asoc: s3c24xx+uda1380 - some questions
-Date: Tue, 27 Jan 2009 22:32:11 +0200
-Message-ID: <200901272232.17752.anarsoul@gmail.com>
-References: <200901271519.47119.anarsoul@gmail.com>
-	<200901271822.32537.anarsoul@gmail.com>
-	<74d0deb30901271149g40ac1842wfc28828377c27794@mail.gmail.com>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: Re: gusclassic alsa configuration
+Date: Tue, 27 Jan 2009 21:41:31 +0100
+Message-ID: <20090127214131.24ee00c8.krzysztof.h1@poczta.fm>
+References: <20090121223507.778f954d.krzysztof.h1@poczta.fm>
+	<20090121215037.GC4996@sci.fi> <s5h8wp37glk.wl%tiwai@suse.de>
+	<20090122173332.a5b8f459.krzysztof.h1@poczta.fm>
+	<s5h8wp35mg9.wl%tiwai@suse.de>
+	<20090122231105.3ff437c2.krzysztof.h1@poczta.fm>
+	<s5h1vuujze5.wl%tiwai@suse.de>
+	<20090123130922.83218e8e.krzysztof.h1@poczta.fm>
+	<s5h7i4m87fu.wl%tiwai@suse.de>
+	<20090125091923.432dfbd5.krzysztof.h1@poczta.fm>
+	<s5hpri8ww1o.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7751811008167857821=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f11.google.com (mail-ew0-f11.google.com
-	[209.85.219.11]) by alsa0.perex.cz (Postfix) with ESMTP id 517BF243B8
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2009 21:36:46 +0100 (CET)
-Received: by ewy4 with SMTP id 4so3961888ewy.8
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2009 12:36:45 -0800 (PST)
-In-Reply-To: <74d0deb30901271149g40ac1842wfc28828377c27794@mail.gmail.com>
+Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
+	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id D6B03243B9
+	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2009 21:38:08 +0100 (CET)
+In-Reply-To: <s5hpri8ww1o.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,59 +29,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: pHilipp Zabel <philipp.zabel@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>, Rene Herman <rene.herman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============7751811008167857821==
-Content-Type: multipart/signed;
-  boundary="nextPart1890061.m4D20Z2vN1";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+On Tue, 27 Jan 2009 17:30:59 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
 
---nextPart1890061.m4D20Z2vN1
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+> 
+> BTW, I fixed the plug issue right now on GIT tree.
+> Could you try it and check whether it works even without GUS.conf file?
+> 
 
-On 27 January 2009 21:49:01 pHilipp Zabel wrote:
+Now it works without the GUS.conf file.
 
-> The uda1380 data sheet says that the reset time should be at least 1
-> =B5s - could that be a problem?
->
-> regards
-> Philipp
+Regards,
+Krzysztof
 
-Nope, added mdelay(10) in reset sequence, but it didn't help.
-
-Regards
-Vasily
-
---nextPart1890061.m4D20Z2vN1
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-
-iEYEABECAAYFAkl/b1EACgkQRM6pQpltKE5r4wCg2HRQNPXErx7ARcEyZdMG97o+
-nE8An2vrw2l9oMawPBDQ4ZaLstvV+omV
-=gon4
------END PGP SIGNATURE-----
-
---nextPart1890061.m4D20Z2vN1--
-
---===============7751811008167857821==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============7751811008167857821==--
+----------------------------------------------------------------------
+Konkurs Walentynkowy! Wybierz nagrode i wygraj!
+Sprawdz >>  http://link.interia.pl/f2039 
