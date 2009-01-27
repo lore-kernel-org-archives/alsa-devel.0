@@ -1,18 +1,20 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 2/6] ASoC: TWL4030: Code clean up for codec
-	power up and down
-Date: Tue, 27 Jan 2009 11:29:40 +0200
-Message-ID: <1233048584-29662-3-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 4/6] ASoC: TWL4030: Physical ADC and amplifier
+	power switch change
+Date: Tue, 27 Jan 2009 11:29:42 +0200
+Message-ID: <1233048584-29662-5-git-send-email-peter.ujfalusi@nokia.com>
 References: <1233048584-29662-1-git-send-email-peter.ujfalusi@nokia.com>
 	<1233048584-29662-2-git-send-email-peter.ujfalusi@nokia.com>
+	<1233048584-29662-3-git-send-email-peter.ujfalusi@nokia.com>
+	<1233048584-29662-4-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id BC6E71037EA
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2009 10:29:59 +0100 (CET)
-In-Reply-To: <1233048584-29662-2-git-send-email-peter.ujfalusi@nokia.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id 609391037EA
+	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2009 10:30:00 +0100 (CET)
+In-Reply-To: <1233048584-29662-4-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,138 +28,72 @@ To: alsa-devel@alsa-project.org
 Cc: sakoman@gmail.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Merge the codec up and down functions to a simple one.
-Codec is powered down by default (reg_cache change).
+Change the power switches for the physical ADC and for the
+amplifiers for the analog capture path to map more closely
+the actual path inside of the codec.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
- sound/soc/codecs/twl4030.c |   43 +++++++++++++++++--------------------------
- 1 files changed, 17 insertions(+), 26 deletions(-)
+ sound/soc/codecs/twl4030.c |   26 +++++++++++++-------------
+ 1 files changed, 13 insertions(+), 13 deletions(-)
 
 diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index df72a21..7d35cd4 100644
+index 0e3198f..651be7f 100644
 --- a/sound/soc/codecs/twl4030.c
 +++ b/sound/soc/codecs/twl4030.c
-@@ -42,7 +42,7 @@
-  */
- static const u8 twl4030_reg[TWL4030_CACHEREGNUM] = {
- 	0x00, /* this register not used		*/
--	0x93, /* REG_CODEC_MODE		(0x1)	*/
-+	0x91, /* REG_CODEC_MODE		(0x1)	*/
- 	0xc3, /* REG_OPTION		(0x2)	*/
- 	0x00, /* REG_UNKNOWN		(0x3)	*/
- 	0x00, /* REG_MICBIAS_CTL	(0x4)	*/
-@@ -154,26 +154,17 @@ static int twl4030_write(struct snd_soc_codec *codec,
- 	return twl4030_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE, value, reg);
- }
+@@ -802,16 +802,16 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 		SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD|
+ 		SND_SOC_DAPM_POST_REG),
  
--static void twl4030_clear_codecpdz(struct snd_soc_codec *codec)
-+static void twl4030_codec_enable(struct snd_soc_codec *codec, int enable)
- {
- 	u8 mode;
+-	/* Analog input muxes with power switch for the physical ADCL/R */
++	/* Analog input muxes with switch for the capture amplifiers */
+ 	SND_SOC_DAPM_VALUE_MUX("Analog Left Capture Route",
+-		TWL4030_REG_AVADC_CTL, 3, 0, &twl4030_dapm_analoglmic_control),
++		TWL4030_REG_ANAMICL, 4, 0, &twl4030_dapm_analoglmic_control),
+ 	SND_SOC_DAPM_VALUE_MUX("Analog Right Capture Route",
+-		TWL4030_REG_AVADC_CTL, 1, 0, &twl4030_dapm_analogrmic_control),
++		TWL4030_REG_ANAMICR, 4, 0, &twl4030_dapm_analogrmic_control),
  
- 	mode = twl4030_read_reg_cache(codec, TWL4030_REG_CODEC_MODE);
--	twl4030_write(codec, TWL4030_REG_CODEC_MODE,
--		mode & ~TWL4030_CODECPDZ);
-+	if (enable)
-+		mode |= TWL4030_CODECPDZ;
-+	else
-+		mode &= ~TWL4030_CODECPDZ;
+-	SND_SOC_DAPM_PGA("Analog Left Amplifier",
+-		TWL4030_REG_ANAMICL, 4, 0, NULL, 0),
+-	SND_SOC_DAPM_PGA("Analog Right Amplifier",
+-		TWL4030_REG_ANAMICR, 4, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("ADC Physical Left",
++		TWL4030_REG_AVADC_CTL, 3, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("ADC Physical Right",
++		TWL4030_REG_AVADC_CTL, 1, 0, NULL, 0),
  
--	/* REVISIT: this delay is present in TI sample drivers */
--	/* but there seems to be no TRM requirement for it     */
--	udelay(10);
--}
--
--static void twl4030_set_codecpdz(struct snd_soc_codec *codec)
--{
--	u8 mode;
--
--	mode = twl4030_read_reg_cache(codec, TWL4030_REG_CODEC_MODE);
--	twl4030_write(codec, TWL4030_REG_CODEC_MODE,
--		mode | TWL4030_CODECPDZ);
-+	twl4030_write(codec, TWL4030_REG_CODEC_MODE, mode);
+ 	SND_SOC_DAPM_PGA("Digimic0 Enable",
+ 		TWL4030_REG_ADCMICSEL, 1, 0, NULL, 0),
+@@ -885,23 +885,23 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	{"Analog Right Capture Route", "Sub mic", "SUBMIC"},
+ 	{"Analog Right Capture Route", "AUXR", "AUXR"},
  
- 	/* REVISIT: this delay is present in TI sample drivers */
- 	/* but there seems to be no TRM requirement for it     */
-@@ -185,7 +176,7 @@ static void twl4030_init_chip(struct snd_soc_codec *codec)
- 	int i;
+-	{"Analog Left Amplifier", NULL, "Analog Left Capture Route"},
+-	{"Analog Right Amplifier", NULL, "Analog Right Capture Route"},
++	{"ADC Physical Left", NULL, "Analog Left Capture Route"},
++	{"ADC Physical Right", NULL, "Analog Right Capture Route"},
  
- 	/* clear CODECPDZ prior to setting register defaults */
--	twl4030_clear_codecpdz(codec);
-+	twl4030_codec_enable(codec, 0);
+ 	{"Digimic0 Enable", NULL, "DIGIMIC0"},
+ 	{"Digimic1 Enable", NULL, "DIGIMIC1"},
  
- 	/* set all audio section registers to reasonable defaults */
- 	for (i = TWL4030_REG_OPTION; i <= TWL4030_REG_MISC_SET_2; i++)
-@@ -895,7 +886,7 @@ static void twl4030_power_up(struct snd_soc_codec *codec)
- 	int i = 0;
+ 	/* TX1 Left capture path */
+-	{"TX1 Capture Route", "Analog", "Analog Left Amplifier"},
++	{"TX1 Capture Route", "Analog", "ADC Physical Left"},
+ 	{"TX1 Capture Route", "Digimic0", "Digimic0 Enable"},
+ 	/* TX1 Right capture path */
+-	{"TX1 Capture Route", "Analog", "Analog Right Amplifier"},
++	{"TX1 Capture Route", "Analog", "ADC Physical Right"},
+ 	{"TX1 Capture Route", "Digimic0", "Digimic0 Enable"},
+ 	/* TX2 Left capture path */
+-	{"TX2 Capture Route", "Analog", "Analog Left Amplifier"},
++	{"TX2 Capture Route", "Analog", "ADC Physical Left"},
+ 	{"TX2 Capture Route", "Digimic1", "Digimic1 Enable"},
+ 	/* TX2 Right capture path */
+-	{"TX2 Capture Route", "Analog", "Analog Right Amplifier"},
++	{"TX2 Capture Route", "Analog", "ADC Physical Right"},
+ 	{"TX2 Capture Route", "Digimic1", "Digimic1 Enable"},
  
- 	/* set CODECPDZ to turn on codec */
--	twl4030_set_codecpdz(codec);
-+	twl4030_codec_enable(codec, 1);
- 
- 	/* initiate offset cancellation */
- 	anamicl = twl4030_read_reg_cache(codec, TWL4030_REG_ANAMICL);
-@@ -922,8 +913,8 @@ static void twl4030_power_up(struct snd_soc_codec *codec)
- 		regmisc1 | TWL4030_SMOOTH_ANAVOL_EN);
- 
- 	/* toggle CODECPDZ as per TRM */
--	twl4030_clear_codecpdz(codec);
--	twl4030_set_codecpdz(codec);
-+	twl4030_codec_enable(codec, 0);
-+	twl4030_codec_enable(codec, 1);
- 
- 	/* program anti-pop with bias ramp delay */
- 	popn = twl4030_read_reg_cache(codec, TWL4030_REG_HS_POPN_SET);
-@@ -952,7 +943,7 @@ static void twl4030_power_down(struct snd_soc_codec *codec)
- 	twl4030_write(codec, TWL4030_REG_HS_POPN_SET, popn);
- 
- 	/* power down */
--	twl4030_clear_codecpdz(codec);
-+	twl4030_codec_enable(codec, 0);
- }
- 
- static int twl4030_set_bias_level(struct snd_soc_codec *codec,
-@@ -1030,7 +1021,7 @@ static int twl4030_hw_params(struct snd_pcm_substream *substream,
- 	if (mode != old_mode) {
- 		/* change rate and set CODECPDZ */
- 		twl4030_write(codec, TWL4030_REG_CODEC_MODE, mode);
--		twl4030_set_codecpdz(codec);
-+		twl4030_codec_enable(codec, 1);
- 	}
- 
- 	/* sample size */
-@@ -1053,13 +1044,13 @@ static int twl4030_hw_params(struct snd_pcm_substream *substream,
- 	if (format != old_format) {
- 
- 		/* clear CODECPDZ before changing format (codec requirement) */
--		twl4030_clear_codecpdz(codec);
-+		twl4030_codec_enable(codec, 0);
- 
- 		/* change format */
- 		twl4030_write(codec, TWL4030_REG_AUDIO_IF, format);
- 
- 		/* set CODECPDZ afterwards */
--		twl4030_set_codecpdz(codec);
-+		twl4030_codec_enable(codec, 1);
- 	}
- 	return 0;
- }
-@@ -1129,13 +1120,13 @@ static int twl4030_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	if (format != old_format) {
- 
- 		/* clear CODECPDZ before changing format (codec requirement) */
--		twl4030_clear_codecpdz(codec);
-+		twl4030_codec_enable(codec, 0);
- 
- 		/* change format */
- 		twl4030_write(codec, TWL4030_REG_AUDIO_IF, format);
- 
- 		/* set CODECPDZ afterwards */
--		twl4030_set_codecpdz(codec);
-+		twl4030_codec_enable(codec, 1);
- 	}
- 
- 	return 0;
+ 	{"ADC Virtual Left1", NULL, "TX1 Capture Route"},
 -- 
 1.6.1
