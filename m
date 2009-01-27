@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@sirena.org.uk>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
 Subject: Re: asoc: s3c24xx+uda1380 - some questions
-Date: Tue, 27 Jan 2009 15:00:41 +0000
-Message-ID: <20090127150040.GD11870@sirena.org.uk>
+Date: Tue, 27 Jan 2009 17:19:53 +0200
+Message-ID: <200901271720.03880.anarsoul@gmail.com>
 References: <200901271519.47119.anarsoul@gmail.com>
+	<20090127150040.GD11870@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8980562050097815150=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 41F231037F0
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2009 16:00:42 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <200901271519.47119.anarsoul@gmail.com>
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id D787D1037F0
+	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2009 16:20:13 +0100 (CET)
+Received: by ug-out-1314.google.com with SMTP id m2so481298uge.24
+	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2009 07:20:13 -0800 (PST)
+In-Reply-To: <20090127150040.GD11870@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,36 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>
+To: Mark Brown <broonie@sirena.org.uk>
 Cc: alsa-devel@alsa-project.org, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 27, 2009 at 03:19:39PM +0200, Vasily Khoruzhick wrote:
+--===============8980562050097815150==
+Content-Type: multipart/signed;
+  boundary="nextPart14875850.hkmWoLh8a2";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-> I'm trying to develop asoc driver for hp ipaq rx1950 (s3c24xx + uda1380).
-> 
-> 1st question: where I can enable/disable uda1380 codec power? I need to 
-> control codec power for powersave reasons.
+--nextPart14875850.hkmWoLh8a2
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-CCing in Philipp Zabel who wrote the UDA1380 driver.  Assuming you mean
-control to cut the power to the chip the most standard way of doing it
-would be with the regulator API but if the chip isn't being used much in
-new designs it might not be worth it.
+On Tuesday 27 January 2009 17:00:41 Mark Brown wrote:
 
-> I tried to add custom power function call to uda1380_set_bias_level in 
-> uda1380.c (pointer to power function is stored in codec->private_data), as it 
-> done for uda134x codec, but after enable-disable-enable cycle (for example, 
-> after resuming from suspend) driver cannot communicate with codec anymore 
-> (i2c bus is always busy), only reloading i2c driver helps.
+> CCing in Philipp Zabel who wrote the UDA1380 driver.  Assuming you mean
+> control to cut the power to the chip the most standard way of doing it
+> would be with the regulator API but if the chip isn't being used much in
+> new designs it might not be worth it.
 
-The UDA134x is a bit of a special case since it needs the machine driver
-to provide bitbanging functions for the L3 interface.
+Uh-oh, I didn't thought that it will be so complicated to decide when turn =
+one=20
+gpio line to 0 or 1 :) Btw, I'm thinking about using own write- and read-=20
+wrappers for uda1380, in this way I can check on each read/write whether=20
+codec power is enabled.
 
-> 2nd question: for some reason, driver does not produce any sound during first 
-> aplay invocation, only second and later aplay invocation driver produces 
-> sound. What can be the reason of this problem?
+> That sounds like something in the teardown path should be done on
+> startup as well.  Can't think of any obvious gotchas there, though I'd
+> be looking at the codec and machine drivers since the CPU driver for the
+> S3C24xx is used in quite a few designs.
 
-That sounds like something in the teardown path should be done on
-startup as well.  Can't think of any obvious gotchas there, though I'd
-be looking at the codec and machine drivers since the CPU driver for the
-S3C24xx is used in quite a few designs.
+Sorry, but what is "teardown path"?
+
+Regards
+Vasily
+
+--nextPart14875850.hkmWoLh8a2
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQBJfyYjRM6pQpltKE4RAvR8AJ0QAVtBTr+QoVMfd4A2j04vNfWKTQCfe0x1
+wu/HvsO5WKTrLAIZ6y+EW/w=
+=h9+p
+-----END PGP SIGNATURE-----
+
+--nextPart14875850.hkmWoLh8a2--
+
+--===============8980562050097815150==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============8980562050097815150==--
