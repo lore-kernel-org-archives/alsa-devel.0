@@ -1,17 +1,17 @@
 From: Will Wagner <will_wagner@carallon.com>
-Subject: alsa-lib failing at runtime
-Date: Wed, 28 Jan 2009 13:43:51 +0000
-Message-ID: <49806117.8090205@carallon.com>
+Subject: alsa-utils compile issues
+Date: Wed, 28 Jan 2009 13:43:44 +0000
+Message-ID: <49806110.6010502@carallon.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from carallon.f9.co.uk (carallon.force9.co.uk [80.229.37.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 55F9F243F9
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2009 14:43:49 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id A252B10383C
+	for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2009 14:44:08 +0100 (CET)
 Received: from [127.0.0.1] by carallon.f9.co.uk (MDaemon PRO v9.6.5)
-	with ESMTP id md50000339308.msg
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2009 13:43:43 +0000
+	with ESMTP id md50000339307.msg
+	for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2009 13:43:38 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,40 +26,38 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi All,
 
-I have found a problem with alsa-lib 1.0.19 running on an embedded arm board. It all
-compiles ok but aplay fails to play a .wav file and the kernel reports this error:
+I have configured alsa-lib 1.0.19 to remove the components I do not want for my embedded
+arm target. I do this with the configure options:
 
-ALSA sound/core/pcm_native.c:2587: unknown ioctl = 0x80184132
+	--disable-docs \
+	--disable-aload \
+	--disable-rawmidi \
+	--disable-hwdep \
+	--disable-seq \
+	--disable-alisp \
+	--disable-old-symbols \
+	--disable-python \
+  	--with-alsa-devdir=/dev \
+	--with-pcm-plugins="copy linear adpcm rate plug dmix softvol" \
+	--with-ctl-plugins="" \
+	--with-versioned="no" \
 
-Decoding this ioctl it is SNDRV_PCM_IOCTL_CHANNEL_INFO defined in asound.h.
+This builds a much reduced in size alsa-lib
 
-The reason it is not working is that the kernel and alsa-lib think that the
-sndrv_pcm_channel_info struct is different sizes.
+However when I then try to build alsa-utils this fails because amidi and seq will not
+compile with the reduced alsa-lib
 
-The definition in asound.h is:
+It seems to be there should be configure options in alsa-utils to disable more of its
+components than just alsamixer and alsatest.
 
-struct sndrv_pcm_channel_info {
-	unsigned int channel;
-	off_t offset;			/* mmap offset */
-	unsigned int first;		/* offset to first sample in bits */
-	unsigned int step;		/* samples distance in bits */
-};
-
-The problem is that when compiling linux it thinks off_t is 4 bytes but when compiling
-alsa-lib it thought it was 8 bytes.
-
-After discussion on the buildroot mailing list (see
-http://lists.busybox.net/pipermail/buildroot/2009-January/025458.html) it seems like for
-the kernel off_t is always 4 bytes but for user space it can be either 4 or 8 bytes
-depending on whether large file support is enabled.
-
-It appears that the fix is that the type of offset should be changed to long.
-
-Hope this all makes sense.
+I have worked around this by just removing amidi and seq from the SUBDIRS variable in
+Makefile.in but perhaps there is a better way of doing this?
 
 Thanks,
 
-Will.
+Will
+
+
 -- 
 ------------------------------------------------------------------------
 Will Wagner                                     will_wagner@carallon.com
