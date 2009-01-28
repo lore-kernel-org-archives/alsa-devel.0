@@ -1,34 +1,24 @@
-From: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
-Subject: Re: [PATCH] ALSA: hda - Consider additional capture
-	source/selector in ALC889
-Date: Wed, 28 Jan 2009 15:56:49 -0200
-Message-ID: <200901281556.50512.herton@mandriva.com.br>
-References: <200901280916.37234.herton@mandriva.com.br>
-	<s5hmydbv471.wl%tiwai@suse.de>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: Misusing snd_pcm_avail_update()
+Date: Wed, 28 Jan 2009 19:26:08 +0100
+Message-ID: <20090128182608.GF11770@tango.0pointer.de>
+References: <20090120025727.GA30499@tango.0pointer.de>
+	<49758B71.8090605@ladisch.de>
+	<20090120142614.GA27494@tango.0pointer.de>
+	<49761C79.8060605@ladisch.de>
+	<20090120202933.GA17626@tango.0pointer.de>
+	<s5hwscpqypo.wl%tiwai@suse.de>
+	<20090122222015.GB9379@tango.0pointer.de>
+	<s5htz7q54k3.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perninha.conectiva.com.br (perninha.conectiva.com.br
-	[200.140.247.100])
-	by alsa0.perex.cz (Postfix) with ESMTP id 11C6D103804
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2009 18:56:40 +0100 (CET)
-Received: from localhost (perninha.conectiva.com.br [127.0.0.1])
-	by perninha.conectiva.com.br (Postfix) with ESMTP id 32F693EBE
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2009 12:56:54 -0500 (EST)
-Received: from perninha.conectiva.com.br ([127.0.0.1])
-	by localhost (perninha.conectiva.com.br [127.0.0.1]) (amavisd-new,
-	port 10025)
-	with LMTP id c1iybXV4lgvG for <alsa-devel@alsa-project.org>;
-	Wed, 28 Jan 2009 12:56:53 -0500 (EST)
-Received: from fox.conectiva (fox.conectiva [10.0.2.195])
-	by perninha.conectiva.com.br (Postfix) with ESMTP id 865603EA6
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2009 12:56:53 -0500 (EST)
-Received: from gotham.conectiva (gotham.conectiva [10.0.2.23])
-	by fox.conectiva (Postfix) with ESMTP id 1A9EF2F487
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2009 14:56:35 -0300 (BRT)
-In-Reply-To: <s5hmydbv471.wl%tiwai@suse.de>
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id AFC101037E3
+	for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2009 19:26:08 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <s5htz7q54k3.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -41,183 +31,79 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Em Quarta-feira 28 Janeiro 2009, =E0s 13:30:10, Takashi Iwai escreveu:
-> At Wed, 28 Jan 2009 09:16:33 -0200,
-> Herton Ronaldo Krzesinski wrote:
-> > =
+On Fri, 23.01.09 18:13, Takashi Iwai (tiwai@suse.de) wrote:
 
-> > Currently code for capture source support in ALC889 only considers
-> > capture mixers. This change adds aditional support for ADC+selector
-> > present in ALC889, taking into account also the presence of an
-> > additional DMIC connection item in the selector.
-> > =
+> > snd_pcm_update_avail() -- returns how many samples can be written
+> >                           right now without blocking.
+> > 
+> > snd_pcm_delay() -- returns how many samples will be played before the
+> >                    samples that are written now can be heard.
+> > 
+> > snd_pcm_busy_for() -- returns how many samples will be played before
+> >                       ALSA would enter an underrun situation if no
+> >                       further samples are written.
+> 
+> Well, in a ring-buffer model,
+> 
+>     snd_pcm_busy_for = buffer_size - snd_pcm_update_avail
 
-> > Signed-off-by: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
-> > ---
-> >  sound/pci/hda/patch_realtek.c |  105 ++++++++++++++++++++++++++++++---=
---------
-> >  1 files changed, 77 insertions(+), 28 deletions(-)
-> > =
+That is what I currently use in PA and which turns out not to work so
+well. Due to granularity and due to "fast starts" such as done by the
+USB driver.
 
-> > Note: I did this patch without hardware to test on, just based on alsa-=
-info.txt
-> > from one machine with ALC889 plus the ALC889 datasheet available from
-> > Realtek website, so this is just build tested.
-> =
+> If a granularity matters (e.g. no accurate sample position update can
+> be done), it would be
+> 
+>     snd_pcm_busy_for = max{0, buffer_size - s_p_u_a - granularity}
+> 
+> The granularity is between 0 and period_size.  The batch-mode is
+> granularity = period_size.
 
-> Could you post that alsa-info output?  Then I can test it with
-> hda-emu, too.
+It would be good to have something to query the current
+granularity. (as Clemens suggested)
 
-Ops, it's the /proc/asound/card0/codec#0 (not full alsa-info, just confused
-myself) in this ticket: https://qa.mandriva.com/show_bug.cgi?id=3D45838
-I have yet to check hda-emu, will test with it next time.
+> > snd_pcm_update_avail() and snd_pcm_busy_for() return metrics that are
+> > solely dependant on the size and metrics of the hardware buffer and
+> > its current indexes. snd_pcm_delay() also includes information about
+> > any extra latency that comes after the playback buffer.
+> > 
+> > Onle snd_pcm_update_avail()/snd_pcm_busy_for() are influenced by "fast
+> > starts" as done by the USB driver's double buffering and by
+> > block-based transfer.
+> > 
+> > Hmm, I am trying my best to explain why I want this function and what
+> > exactly it should do. Any chance I can convince you guys that this
+> > function really matters for timer-based audio scheduling?
+> 
+> I don't care much about the user-space API at this moment.  My main
+> concern is what kernel <-> user API is needed in addition or needed
+> to be changed.
+> 
+> If it's a question how to pass the granularity to user-space, usually
+> it's a constant value, and thus it can be put somewhere in the
+> existing struct, or add a single ioctl. 
+> 
+> OTOH, if it has to be implemented as a form of snd_pcm_busy_for(),
+> the kernel needs the compuation like the above.  That's my concern.
 
-I did a patch for alsa 1.0.18 for the bug report, now I was converting it to
-sound tree, by first adding this capture ADC+selector support and later to =
-add
-an additional model for acer 8930. Just didn't submit the patch with model
-addition yet as it looks like the laptop has speakers for rear/clfe etc. and
-I'm now waiting from feedback about this on the bug report, but for now the
-patch with addition is this:
+Hmm, maybe there could be a default implementation that works as you
+suggested above? And only drivers that have a different buffer model
+(such as 'fast starts') or a granularity that is >1 sample would need
+to overwrite that default implementation.
 
-ALSA: hda - Add acer-aspire-alc889 model for ALC889 codecs
+The reason why I'd prefer having snd_pcm_busy_for() instead of
+seperate APIs to query the granularity and 'fast starts' is that this
+forces the underlying drivers into a specific buffer model. However
+especially with userspace drivers the buffering used might be very
+complex and very different from how current hardware drivers do
+it. Hence I'd prefer a high-level API that leaves room to different
+buffering models including those which might come in the future than
+breaking down buffering into primitive parameters that userspace has to
+make sense of in a very specific scheme.
 
-This adds a new model to handle Acer Aspire 8930, that slightly differs
-from other ALC883/889 models. Currently it doesn't work as reported on
-https://qa.mandriva.com/show_bug.cgi?id=3D45838
+Lennart
 
-Signed-off-by: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
----
- sound/pci/hda/patch_realtek.c |   61 +++++++++++++++++++++++++++++++++++++=
-++++
- 1 files changed, 61 insertions(+), 0 deletions(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index d81cb5e..8c0bd7e 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -216,6 +216,7 @@ enum {
- 	ALC883_ACER,
- 	ALC883_ACER_ASPIRE,
- 	ALC888_ACER_ASPIRE_4930G,
-+	ALC889_ACER_ASPIRE,
- 	ALC883_MEDION,
- 	ALC883_MEDION_MD2,
- 	ALC883_LAPTOP_EAPD,
-@@ -7237,6 +7238,34 @@ static struct hda_input_mux alc883_asus_eee1601_capt=
-ure_source =3D {
- 	},
- };
- =
-
-+static struct hda_input_mux alc889_acer_aspire_capture_source[3] =3D {
-+	{
-+		.num_items =3D 4,
-+		.items =3D {
-+			{ "Mic", 0x0 },
-+			{ "Line", 0x02 },
-+			{ "Mixer", 0x0a },
-+			{ "Int DMic", 0x0b },
-+		},
-+	},
-+	{
-+		.num_items =3D 3,
-+		.items =3D {
-+			{ "Mic", 0x0 },
-+			{ "Line", 0x02 },
-+			{ "Mixer", 0x0a },
-+		},
-+	},
-+	{
-+		.num_items =3D 3,
-+		.items =3D {
-+			{ "Mic", 0x0 },
-+			{ "Line", 0x02 },
-+			{ "Mixer", 0x0a },
-+		},
-+	},
-+};
-+
- /*
-  * 2ch mode
-  */
-@@ -8439,6 +8468,22 @@ static void alc883_eee1601_inithook(struct hda_codec=
- *codec)
- 	alc883_eee1601_speaker_automute(codec);
- }
- =
-
-+static struct hda_verb alc889_acer_aspire_verbs[] =3D {
-+	{0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
-+	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(5)},
-+	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(6)},
-+	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(7)},
-+	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(8)},
-+	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(9)},
-+	{0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
-+	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
-+	{0x15, AC_VERB_SET_EAPD_BTLENABLE, 0x02},
-+	/* This is Speaker Out, not Rear, so connect to Front */
-+	{0x15, AC_VERB_SET_CONNECT_SEL, 0x00},
-+	{0x24, AC_VERB_SET_CONNECT_SEL, 0x0b},
-+	{ } /* end */
-+};
-+
- #ifdef CONFIG_SND_HDA_POWER_SAVE
- #define alc883_loopbacks	alc880_loopbacks
- #endif
-@@ -8463,6 +8508,7 @@ static const char *alc883_models[ALC883_MODEL_LAST] =
-=3D {
- 	[ALC883_ACER]		=3D "acer",
- 	[ALC883_ACER_ASPIRE]	=3D "acer-aspire",
- 	[ALC888_ACER_ASPIRE_4930G]	=3D "acer-aspire-4930g",
-+	[ALC889_ACER_ASPIRE]	=3D "acer-aspire-alc889",
- 	[ALC883_MEDION]		=3D "medion",
- 	[ALC883_MEDION_MD2]	=3D "medion-md2",
- 	[ALC883_LAPTOP_EAPD]	=3D "laptop-eapd",
-@@ -8493,6 +8539,7 @@ static struct snd_pci_quirk alc883_cfg_tbl[] =3D {
- 		ALC888_ACER_ASPIRE_4930G),
- 	SND_PCI_QUIRK(0x1025, 0x013f, "Acer Aspire 5930G",
- 		ALC888_ACER_ASPIRE_4930G),
-+	SND_PCI_QUIRK(0x1025, 0x0145, "Acer Aspire 8930", ALC889_ACER_ASPIRE),
- 	SND_PCI_QUIRK(0x1025, 0x015e, "Acer Aspire 6930G",
- 		ALC888_ACER_ASPIRE_4930G),
- 	SND_PCI_QUIRK(0x1025, 0, "Acer laptop", ALC883_ACER), /* default Acer */
-@@ -8693,6 +8740,20 @@ static struct alc_config_preset alc883_presets[] =3D=
- {
- 		.unsol_event =3D alc888_acer_aspire_4930g_unsol_event,
- 		.init_hook =3D alc888_acer_aspire_4930g_automute,
- 	},
-+	[ALC889_ACER_ASPIRE] =3D {
-+		.mixers =3D { alc883_acer_aspire_mixer },
-+		.init_verbs =3D { alc883_init_verbs, alc880_gpio1_init_verbs,
-+				alc889_acer_aspire_verbs },
-+		.num_dacs =3D ARRAY_SIZE(alc883_dac_nids),
-+		.dac_nids =3D alc883_dac_nids,
-+		.dig_out_nid =3D ALC883_DIGOUT_NID,
-+		.num_channel_mode =3D ARRAY_SIZE(alc883_3ST_2ch_modes),
-+		.channel_mode =3D alc883_3ST_2ch_modes,
-+		.num_mux_defs =3D ARRAY_SIZE(alc889_acer_aspire_capture_source),
-+		.input_mux =3D alc889_acer_aspire_capture_source,
-+		.unsol_event =3D alc888_acer_aspire_4930g_unsol_event,
-+		.init_hook =3D alc888_acer_aspire_4930g_automute,
-+	},
- 	[ALC883_MEDION] =3D {
- 		.mixers =3D { alc883_fivestack_mixer,
- 			    alc883_chmode_mixer },
--- =
-
-1.6.1
-
-> =
-
-> Anyway, the patch is applied now.  Thanks!
-> =
-
-> =
-
-> Takashi
-
---
-[]'s
-Herton
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
