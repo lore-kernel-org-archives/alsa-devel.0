@@ -1,19 +1,20 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [2.6.29-rc3][PATCH 1/1] ASoC: OMAP:
-	Initialize	XCCR and RCCR registers in McBSP DAI driver
-Date: Thu, 29 Jan 2009 13:23:54 +0000
-Message-ID: <20090129132352.GA12179@sirena.org.uk>
-References: <1233228586-8894-1-git-send-email-jarkko.nikula@nokia.com>
-	<1233228586-8894-2-git-send-email-jarkko.nikula@nokia.com>
+From: Laurent Pinchart <laurent.pinchart@skynet.be>
+Subject: Re: Very faint sound on Dell Latitude E6500
+Date: Thu, 29 Jan 2009 14:27:49 +0100
+Message-ID: <200901291427.50098.laurent.pinchart@skynet.be>
+References: <200901271651.56181.laurent.pinchart@skynet.be>
+	<200901290247.45669.laurent.pinchart@skynet.be>
+	<s5hk58ea4ti.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 421AB24435
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2009 14:24:01 +0100 (CET)
+Received: from mailrelay005.isp.belgacom.be (mailrelay005.isp.belgacom.be
+	[195.238.6.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3AA0210386B
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2009 14:27:58 +0100 (CET)
+In-Reply-To: <s5hk58ea4ti.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <1233228586-8894-2-git-send-email-jarkko.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,18 +24,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@nokia.com>
-Cc: alsa-devel@alsa-project.org, "ext Lopez Cruz, Misael" <x0052729@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 29, 2009 at 01:29:46PM +0200, Jarkko Nikula wrote:
+Hi Takashi,
 
-> This patch requires a counterpart in OMAP McBSP driver before
-> to apply it. The required changes in McBSP were sent and approved
-> in linux-omap mailing list and patch is going upstream
-> (commit 3127f8f8595a064b3f1a1837fea2177902589ac3 from linux-omap-2.6
-> tree).
+On Thursday 29 January 2009, Takashi Iwai wrote:
+> At Thu, 29 Jan 2009 02:47:45 +0100, Laurent Pinchart wrote:
+> > On Wednesday 28 January 2009, Takashi Iwai wrote:
+> > > At Tue, 27 Jan 2009 16:51:56 +0100, Laurent Pinchart wrote:
+> > > > Hi everybody,
+> > > >
+> > > > I've received a brand new Dell Latitude E6500 and found out that the
+> > > > sound card wasn't exactly well supported by ALSA.
+> > > >
+> > > > Sound is barely audible (so faint that I'm not even sure if the
+> > > > proper sound is output or if I just get garbage), with some loud
+> > > > noise here and there that seem to correspond to the saturated audio
+> > > > data  parts.
+> > > >
+> > > > The sound card is an HDA-Intel with an IDT 92HD71B7X codec. Hardware
+> > > > information can be found at
+> > > > http://www.alsa-project.org/db/?f=30cac30e5b1ddd9c842481a830c250cc3e5
+> > > >93b0 d. A
+> > >
+> > > Please run with --no-upload and included the result in the post.
+> >
+> > Done, output included in this e-mail.
+> >
+> > > Anyway, this problem might be related with the volume-knob.
+> > > Install hda-verb and try the following
+> > >
+> > > 	hda-verb /dev/snd/hwC0D0 0x28 SET_VOLUME_KNOB 0xff
+> > > or
+> > > 	hda-verb /dev/snd/hwC0D0 0x28 SET_VOLUME_KNOB 0
+> >
+> > Unfortunately none of those make a difference.
+>
+> After doing this, check /proc/asound/card0/codec* whether this node
+> 0x28 is really changed.
+>
+> Then, try the latest alsa-driver snapshot from
+>    
+> ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-sna
+>pshot.tar.gz
+>
+> This contains more fixes since 1.0.19.  It's generated from the GIT
+> tree below:
+>     git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+>    
+> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/alsa-driver-build.git
 
-That is now in Linus' tree so applied, thanks.  I've corrected Misael's
-name since it had had the Nokia 'ext' added to it - might be worth
-checking that when using git am.
+I will test the snapshot this evening.
+
+> Also, check the headphone output at first.  The speaker output needs
+> more work than the headphone in general.
+
+The headphone output works properly with the stock 2.6.28 kernel without 
+having to mess with volume-knob. I haven't tested it with alsa-driver 1.0.19 
+yet.
+
+> You can also try to change the power-map by
+> 	hda-verb /dev/snd/hwC0D0 1 0x7ec 0
+> This is pretty specific to IDT codecs.
+
+Thanks for your help.
+
+Best regards,
+
+Laurent Pinchart
