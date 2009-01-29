@@ -1,16 +1,19 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: [PATCH] PCM parameters in file plugin
-Date: Thu, 29 Jan 2009 00:00:08 +0100
-Message-ID: <4980E378.7050506@insite.cz>
-References: <49627395.1090506@insite.cz>	<49632995.9000109@insite.cz>	<Pine.LNX.4.61.0901061128300.8273@tm8103.perex-int.cz>	<49634196.1070500@insite.cz>	<4974FCC1.70907@insite.cz>
-	<s5hk58fv3nl.wl%tiwai@suse.de>
+From: Laurent Pinchart <laurent.pinchart@skynet.be>
+Subject: Re: Very faint sound on Dell Latitude E6500
+Date: Thu, 29 Jan 2009 02:47:45 +0100
+Message-ID: <200901290247.45669.laurent.pinchart@skynet.be>
+References: <200901271651.56181.laurent.pinchart@skynet.be>
+	<s5hljsvv45k.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------020100020107030803010802"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id A5D921037E3
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2009 00:00:14 +0100 (CET)
-In-Reply-To: <s5hk58fv3nl.wl%tiwai@suse.de>
+Received: from mailrelay012.isp.belgacom.be (mailrelay012.isp.belgacom.be
+	[195.238.6.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 54BEE1037E3
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2009 02:47:54 +0100 (CET)
+In-Reply-To: <s5hljsvv45k.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,473 +23,849 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
-
-This is a multi-part message in MIME format.
---------------020100020107030803010802
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Takashi Iwai wrote:
-> At Mon, 19 Jan 2009 23:20:49 +0100,
-> Pavel Hofman wrote:
->> @@ -84,6 +106,211 @@ typedef struct {
->>  #define TO_LE16(x)	bswap_16(x)
->>  #endif
->>  
->> +/* old_string MUST contain the key! */
->> +int snd_pcm_file_replace_key(char *old_string, char *key, char *value,
->> +		char **newstring_p)
-> 
-> Make this static.
-> 
->> +{
->> +	int str_index, newstr_index, key_index, end, new_len, old_len, cpy_len,
->> +	    first_key_index;
->> +	char *c, *first_c, *newstring;
->> +	int keys_count;
->> +
->> +	first_c = c = (char *) strstr(old_string, key);
-> 
-> I guess this parser doesn't handle '%%' properly like printf()?
-> 
->> +int snd_pcm_file_replace_fname(snd_pcm_file_t *file, char **new_fname_p)
-> 
-> Make it static.
-> 
->> +int snd_pcm_file_has_keys(char *string)
-> 
-> Ditto.
-> 
->> +int snd_pcm_file_open_output_file(snd_pcm_file_t *file)
-> 
-> Ditto.
-> 
->> +	if (file->final_fname[0] == '|') {
->> +		/* pipe mode */
->> +		FILE *pipe;
->> +		/* clearing */
->> +		file->final_fname[0] = ' ';
->> +		pipe = popen(file->final_fname, "w");
-> 
-> Pass "file->final_fname + 1", and you don't have to replace the pipe
-> with a space.
-> 
-> 
-> thanks,
-> 
-> Takashi
 
 Hi Takashi,
 
-Thanks a lot for your comments.
+On Wednesday 28 January 2009, Takashi Iwai wrote:
+> At Tue, 27 Jan 2009 16:51:56 +0100, Laurent Pinchart wrote:
+> > Hi everybody,
+> >
+> > I've received a brand new Dell Latitude E6500 and found out that the
+> > sound card wasn't exactly well supported by ALSA.
+> >
+> > Sound is barely audible (so faint that I'm not even sure if the proper
+> > sound is output or if I just get garbage), with some loud noise here and
+> > there that seem to correspond to the saturated audio data  parts.
+> >
+> > The sound card is an HDA-Intel with an IDT 92HD71B7X codec. Hardware
+> > information can be found at
+> > http://www.alsa-project.org/db/?f=30cac30e5b1ddd9c842481a830c250cc3e593b0
+> >d. A
+>
+> Please run with --no-upload and included the result in the post.
 
-Please find enclosed a reworked patch which reflects your requests 
-including the %% functionality.
+Done, output included in this e-mail.
 
-Thanks,
+> Anyway, this problem might be related with the volume-knob.
+> Install hda-verb and try the following
+>
+> 	hda-verb /dev/snd/hwC0D0 0x28 SET_VOLUME_KNOB 0xff
+> or
+> 	hda-verb /dev/snd/hwC0D0 0x28 SET_VOLUME_KNOB 0
 
-Pavel.
+Unfortunately none of those make a difference.
 
---------------020100020107030803010802
-Content-Type: text/x-patch;
- name="pcm_file.c.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="pcm_file.c.patch"
+Best regards,
 
-diff --git a/src/pcm/pcm_file.c b/src/pcm/pcm_file.c
-index 82823a0..8e0f2dc 100644
---- a/src/pcm/pcm_file.c
-+++ b/src/pcm/pcm_file.c
-@@ -29,6 +29,7 @@
- #include <endian.h>
- #include <byteswap.h>
- #include <ctype.h>
-+#include <string.h>
- #include "pcm_local.h"
- #include "pcm_plugin.h"
- 
-@@ -39,6 +40,16 @@ const char *_snd_module_pcm_file = "";
- 
- #ifndef DOC_HIDDEN
- 
-+/* keys to be replaced by real values in the filename */
-+#define LEADING_KEY	'%'	/* i.e. %r, %c, %b ... */
-+#define RATE_KEY	'r'
-+#define CHANNELS_KEY	'c'
-+#define BWIDTH_KEY	'b'
-+#define FORMAT_KEY	'f'
-+
-+/* maximum length of a value */
-+#define VALUE_MAXLEN	10
-+
- typedef enum _snd_pcm_file_format {
- 	SND_PCM_FILE_FORMAT_RAW,
- 	SND_PCM_FILE_FORMAT_WAV
-@@ -57,6 +68,9 @@ struct wav_fmt {
- typedef struct {
- 	snd_pcm_generic_t gen;
- 	char *fname;
-+	char *final_fname;
-+	int trunc;
-+	int perm;
- 	int fd;
- 	char *ifname;
- 	int ifd;
-@@ -84,6 +98,183 @@ typedef struct {
- #define TO_LE16(x)	bswap_16(x)
- #endif
- 
-+static int snd_pcm_file_replace_key(char format, const void *value_p,
-+		char **string_p, char **index_ch_p, int *len_p)
-+{
-+	char *value_str, *string, *index_ch;
-+	int index, len;
-+	/* input pointer values */
-+	len = *(len_p);
-+	string = *(string_p);
-+	index_ch = *(index_ch_p);
-+
-+	/* converting general-type value to its string representation */
-+	value_str = malloc(VALUE_MAXLEN + 1);
-+	if (!value_str)
-+		return -ENOMEM;
-+	switch (format) {
-+	case 'd':
-+		snprintf(value_str, VALUE_MAXLEN, "%d",	*((int *) value_p));
-+		break;
-+	case 's':
-+		snprintf(value_str, VALUE_MAXLEN, "%s",	(char *) value_p);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	/* reallocation to accommodate the value */
-+	index = index_ch - string;
-+	len += VALUE_MAXLEN;
-+	string = realloc(string, len + 1);
-+	if (!string) {
-+		free(value_str);
-+		return -ENOMEM;
-+	}
-+	index_ch = string + index;
-+	/* concatenating the new value */
-+	strcpy(index_ch, value_str);
-+	index_ch += strlen(value_str);
-+	free(value_str);
-+	/* return values */
-+	*(len_p) = len;
-+	*(string_p) = string;
-+	*(index_ch_p) = index_ch;
-+	return 0;
-+}
-+
-+static int snd_pcm_file_replace_fname(snd_pcm_file_t *file, char **new_fname_p)
-+{
-+	char *fname = file->fname;
-+	char *new_fname = NULL;
-+	char *old_last_ch, *old_index_ch, *new_index_ch;
-+	int old_len, new_len, width, err;
-+
-+	snd_pcm_t *pcm = file->gen.slave;
-+
-+	/* we want to keep fname, const */
-+	old_len = new_len = strlen(fname);
-+	old_last_ch = fname + old_len;
-+	new_fname = malloc(new_len + 1);
-+	if (!new_fname)
-+		return -ENOMEM;
-+
-+	old_index_ch = fname;	/* first character of the old name */
-+	new_index_ch = new_fname;	/* first char of the new name */
-+
-+	while (old_index_ch <= old_last_ch) {
-+		/* char by char */
-+		if (*(old_index_ch) != '%') {
-+			/* plain copying */
-+			*(new_index_ch++) = *(old_index_ch++);
-+			continue;
-+		}
-+		/* is %, skipping and checking next letter */
-+		switch (*(++old_index_ch)) {
-+		case RATE_KEY:
-+			err = snd_pcm_file_replace_key('d', &(pcm->rate),
-+					&new_fname, &new_index_ch, &new_len);
-+			if (err < 0)
-+				return err;
-+			break;
-+
-+		case CHANNELS_KEY:
-+			err = snd_pcm_file_replace_key('d', &(pcm->channels),
-+					&new_fname, &new_index_ch, &new_len);
-+			if (err < 0)
-+				return err;
-+			break;
-+
-+		case BWIDTH_KEY:
-+			width = pcm->frame_bits/(8 * pcm->channels);
-+			err = snd_pcm_file_replace_key('d', &width, &new_fname,
-+					&new_index_ch, &new_len);
-+			if (err < 0)
-+				return err;
-+			break;
-+
-+		case FORMAT_KEY:
-+			err = snd_pcm_file_replace_key('s',
-+					snd_pcm_format_name(pcm->format),
-+					&new_fname, &new_index_ch, &new_len);
-+			if (err < 0)
-+				return err;
-+			break;
-+
-+		default:
-+			*(new_index_ch++) = *(old_index_ch);
-+		}
-+		/* next old letter */
-+		old_index_ch++;
-+	}
-+	*(new_index_ch) = '\0';
-+	*(new_fname_p) = new_fname;
-+	return 0;
-+
-+}
-+
-+static int snd_pcm_file_open_output_file(snd_pcm_file_t *file)
-+{
-+	int err, fd;
-+
-+	/* fname can contain keys, generating final_fname */
-+	err = snd_pcm_file_replace_fname(file, &(file->final_fname));
-+	if (err < 0)
-+		return err;
-+	/*printf("DEBUG - original fname: %s, final fname: %s\n",
-+	  file->fname, file->final_fname);*/
-+
-+	if (file->final_fname[0] == '|') {
-+		/* pipe mode */
-+		FILE *pipe;
-+		/* clearing */
-+		pipe = popen(file->final_fname + 1, "w");
-+		if (!pipe) {
-+			SYSERR("running %s for writing failed",
-+					file->final_fname);
-+			return -errno;
-+		}
-+		fd = fileno(pipe);
-+	} else {
-+		if (file->trunc)
-+			fd = open(file->final_fname, O_WRONLY|O_CREAT|O_TRUNC,
-+					file->perm);
-+		else {
-+			fd = open(file->final_fname, O_WRONLY|O_CREAT|O_EXCL,
-+					file->perm);
-+			if (fd < 0) {
-+				char *tmpfname = NULL;
-+				int idx, len;
-+				len = strlen(file->final_fname) + 6;
-+				tmpfname = malloc(len);
-+				if (!tmpfname)
-+					return -ENOMEM;
-+				for (idx = 1; idx < 10000; idx++) {
-+					snprintf(tmpfname, len,
-+						"%s.%04d", file->final_fname,
-+						idx);
-+					fd = open(tmpfname,
-+							O_WRONLY|O_CREAT|O_EXCL,
-+							file->perm);
-+					if (fd >= 0) {
-+						free(file->final_fname);
-+						file->final_fname = tmpfname;
-+						break;
-+					}
-+				}
-+				if (fd < 0) {
-+					SYSERR("open %s for writing failed",
-+							file->final_fname);
-+					free(tmpfname);
-+					return -errno;
-+				}
-+			}
-+		}
-+	}
-+	file->fd = fd;
-+	return 0;
-+}
-+
- static void setup_wav_header(snd_pcm_t *pcm, struct wav_fmt *fmt)
- {
- 	fmt->fmt = TO_LE16(0x01);
-@@ -152,6 +343,8 @@ static void fixup_wav_header(snd_pcm_t *pcm)
- }
- #endif /* DOC_HIDDEN */
- 
-+
-+
- static void snd_pcm_file_write_bytes(snd_pcm_t *pcm, size_t bytes)
- {
- 	snd_pcm_file_t *file = pcm->private_data;
-@@ -442,6 +635,13 @@ static int snd_pcm_file_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t * params)
- 		a->first = slave->sample_bits * channel;
- 		a->step = slave->frame_bits;
- 	}
-+	if (file->fd < 0) {
-+		err = snd_pcm_file_open_output_file(file);
-+		if (err < 0) {
-+			SYSERR("failed opening output file %s", file->fname);
-+			return err;
-+		}
-+	}
- 	return 0;
- }
- 
-@@ -452,6 +652,10 @@ static void snd_pcm_file_dump(snd_pcm_t *pcm, snd_output_t *out)
- 		snd_output_printf(out, "File PCM (file=%s)\n", file->fname);
- 	else
- 		snd_output_printf(out, "File PCM (fd=%d)\n", file->fd);
-+	if (file->final_fname)
-+		snd_output_printf(out, "Final file PCM (file=%s)\n",
-+				file->final_fname);
-+
- 	if (pcm->setup) {
- 		snd_output_printf(out, "Its setup is:\n");
- 		snd_pcm_dump_setup(pcm, out);
-@@ -533,7 +737,6 @@ int snd_pcm_file_open(snd_pcm_t **pcmp, const char *name,
- 	snd_pcm_file_t *file;
- 	snd_pcm_file_format_t format;
- 	struct timespec timespec;
--	char *tmpname = NULL;
- 	int err;
- 
- 	assert(pcmp);
-@@ -546,58 +749,27 @@ int snd_pcm_file_open(snd_pcm_t **pcmp, const char *name,
- 		SNDERR("file format %s is unknown", fmt);
- 		return -EINVAL;
- 	}
--	if (fname) {
--		if (trunc)
--			fd = open(fname, O_WRONLY|O_CREAT|O_TRUNC, perm);
--		else {
--			fd = open(fname, O_WRONLY|O_CREAT|O_EXCL, perm);
--			if (fd < 0) {
--				int idx, len;
--				len = strlen(fname) + 6;
--				tmpname = malloc(len);
--				if (!tmpname)
--					return -ENOMEM;
--				for (idx = 1; idx < 10000; idx++) {
--					snprintf(tmpname, len,
--						 "%s.%04d", fname, idx);
--					fd = open(tmpname, O_WRONLY|O_CREAT|O_EXCL, perm);
--					if (fd >= 0) {
--						fname = tmpname;
--						break;
--					}
--				}
--			}
--		}
--		if (fd < 0) {
--			SYSERR("open %s for writing failed", fname);
--			free(tmpname);
--			return -errno;
--		}
--	}
- 	file = calloc(1, sizeof(snd_pcm_file_t));
- 	if (!file) {
--		if (fname)
--			close(fd);
--		free(tmpname);
- 		return -ENOMEM;
- 	}
- 
-+	/* opening output fname is delayed until writing,
-+	 when PCM params are known */
-+	if (fname)
-+		file->fname = strdup(fname);
-+	file->trunc = trunc;
-+	file->perm = perm;
-+
- 	if (ifname) {
- 		ifd = open(ifname, O_RDONLY);	/* TODO: mind blocking mode */
- 		if (ifd < 0) {
- 			SYSERR("open %s for reading failed", ifname);
--			if (fname)
--				close(fd);
- 			free(file);
--			free(tmpname);
- 			return -errno;
- 		}
--	}
--
--	if (fname)
--		file->fname = strdup(fname);
--	if (ifname)
- 		file->ifname = strdup(ifname);
-+	}
- 	file->fd = fd;
- 	file->ifd = ifd;
- 	file->format = format;
-@@ -608,7 +780,6 @@ int snd_pcm_file_open(snd_pcm_t **pcmp, const char *name,
- 	if (err < 0) {
- 		free(file->fname);
- 		free(file);
--		free(tmpname);
- 		return err;
- 	}
- 	pcm->ops = &snd_pcm_file_ops;
-@@ -625,8 +796,6 @@ int snd_pcm_file_open(snd_pcm_t **pcmp, const char *name,
- 	snd_pcm_link_hw_ptr(pcm, slave);
- 	snd_pcm_link_appl_ptr(pcm, slave);
- 	*pcmp = pcm;
--
--	free(tmpname);
- 	return 0;
- }
- 
-@@ -634,8 +803,9 @@ int snd_pcm_file_open(snd_pcm_t **pcmp, const char *name,
- 
- \section pcm_plugins_file Plugin: File
- 
--This plugin stores contents of a PCM stream to file, and optionally
--uses an existing file as an input data source (i.e., "virtual mic")
-+This plugin stores contents of a PCM stream to file or pipes the stream
-+to a command, and optionally uses an existing file as an input data source
-+(i.e., "virtual mic")
- 
- \code
- pcm.name {
-@@ -647,7 +817,17 @@ pcm.name {
-                 # or
-                 pcm { }         # Slave PCM definition
-         }
--	file STR		# Output filename
-+	file STR		# Output filename (or shell command the stream
-+				# will be piped to if STR starts with the pipe
-+				# char).
-+				# STR can contain format keys, replaced by
-+				# real values corresponding to the stream:
-+				# %r	rate (replaced with: 48000)
-+				# %c	channels (replaced with: 2)
-+				# %b	bytes per sample (replaced with: 2)
-+				# %f	sample format string
-+				#			(replaced with: S16_LE)
-+				# %%	replaced with %
- 	or
- 	file INT		# Output file descriptor number
- 	infile STR		# Input filename - only raw format
+Laurent Pinchart
 
---------------020100020107030803010802
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+--------------- alsa-info.txt -----------------
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+upload=true&script=true&cardinfo=
+!!################################
+!!ALSA Information Script v 0.4.52
+!!################################
 
---------------020100020107030803010802--
+!!Script ran on: Thu Jan 29 02:46:40 CET 2009
+
+
+!!Linux Distribution
+!!------------------
+
+Gentoo Base System release 1.12.11.1
+
+
+!!Kernel Information
+!!------------------
+
+Kernel release:    2.6.28
+Operating System:  GNU/Linux
+Architecture:      x86_64
+Processor:         Intel(R) Core(TM)2 Duo CPU P8400 @ 2.26GHz
+SMP Enabled:       Yes
+
+
+!!ALSA Version
+!!------------
+
+Driver version:     1.0.19
+Library version:    1.0.17a
+Utilities version:  1.0.17
+
+
+!!Loaded ALSA modules
+!!-------------------
+
+snd_hda_intel
+
+
+!!Soundcards recognised by ALSA
+!!-----------------------------
+
+ 0 [Intel          ]: HDA-Intel - HDA Intel
+                      HDA Intel at 0xf6adc000 irq 21
+
+
+!!PCI Soundcards installed in the system
+!!--------------------------------------
+
+00:1b.0 Audio device: Intel Corporation HD Audio Controller (rev 03)
+
+
+!!Advanced information - PCI Vendor/Device/Susbsystem ID's
+!!--------------------------------------------------------
+
+00:1b.0 0403: 8086:293e (rev 03)
+	Subsystem: 1028:024f
+
+
+!!Loaded sound module options
+!!--------------------------
+
+!!Module: snd_hda_intel
+bdl_pos_adj : 1,-1,-1,-1,-1,-1,-1,-1
+enable : Y,Y,Y,Y,Y,Y,Y,Y
+enable_msi : 0
+id : <NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
+index : -1,-1,-1,-1,-1,-1,-1,-1
+model : <NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
+position_fix : 0,0,0,0,0,0,0,0
+power_save : 0
+power_save_controller : Y
+probe_mask : -1,-1,-1,-1,-1,-1,-1,-1
+probe_only : N,N,N,N,N,N,N,N
+single_cmd : N
+
+
+!!HDA-Intel Codec information
+!!---------------------------
+--startcollapse--
+
+Codec: IDT 92HD71B7X
+Address: 0
+Vendor Id: 0x111d76b2
+Subsystem Id: 0x1028024f
+Revision Id: 0x100302
+No Modem Function Group found
+Default PCM:
+    rates [0x7e0]: 44100 48000 88200 96000 176400 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Default Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+Default Amp-Out caps: ofs=0x7f, nsteps=0x7f, stepsize=0x02, mute=1
+GPIO: io=8, o=0, i=0, unsolicited=1, wake=1
+  IO[0]: enable=1, dir=1, wake=0, sticky=0, data=1, unsol=0
+  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+  IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+  IO[3]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+  IO[4]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+  IO[5]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+  IO[6]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+  IO[7]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+Power-Map: 0x05
+Analog Loopback: 0x00
+Node 0x0a [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x0000001c: OUT HP Detect
+  Pin Default 0x0421101f: [Jack] HP Out at Ext Right
+    Conn = 1/8, Color = Black
+    DefAssociation = 0x1, Sequence = 0xf
+  Pin-ctls: 0x00:
+  Unsolicited: tag=01, enabled=1
+  Connection: 3
+     0x10 0x11* 0x17
+Node 0x0b [Pin Complex] wcaps 0x400081: Stereo
+  Pincap 0x00001724: IN Detect
+    Vref caps: HIZ 50 GRD 80
+  Pin Default 0x04a11221: [Jack] Mic at Ext Right
+    Conn = 1/8, Color = Black
+    DefAssociation = 0x2, Sequence = 0x1
+  Pin-ctls: 0x24: IN VREF_80
+  Unsolicited: tag=02, enabled=1
+Node 0x0c [Pin Complex] wcaps 0x400081: Stereo
+  Pincap 0x00001724: IN Detect
+    Vref caps: HIZ 50 GRD 80
+  Pin Default 0x40f000f0: [N/A] Other at Ext N/A
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x00: VREF_HIZ
+  Unsolicited: tag=00, enabled=0
+Node 0x0d [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x00000014: OUT Detect
+  Pin Default 0x90170110: [Fixed] Speaker at Int N/A
+    Conn = Analog, Color = Unknown
+    DefAssociation = 0x1, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=00, enabled=0
+  Connection: 3
+     0x10* 0x11 0x17
+Node 0x0e [Pin Complex] wcaps 0x400081: Stereo
+  Pincap 0x00001724: IN Detect
+    Vref caps: HIZ 50 GRD 80
+  Pin Default 0x23a1902e: [Jack] Mic at Sep Left
+    Conn = 1/8, Color = Pink
+    DefAssociation = 0x2, Sequence = 0xe
+  Pin-ctls: 0x24: IN VREF_80
+  Unsolicited: tag=03, enabled=1
+Node 0x0f [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x00000014: OUT Detect
+  Pin Default 0x23014250: [Jack] Line Out at Sep Left
+    Conn = 1/8, Color = Green
+    DefAssociation = 0x5, Sequence = 0x0
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=04, enabled=1
+  Connection: 3
+     0x10 0x11 0x17*
+Node 0x10 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0x7f 0x7f]
+  Converter: stream=0, channel=0
+  Power: setting=D0, actual=D0
+  Delay: 13 samples
+Node 0x11 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0x7f 0x7f]
+  Converter: stream=0, channel=0
+  Power: setting=D0, actual=D0
+  Delay: 13 samples
+Node 0x12 [Audio Input] wcaps 0x1d0541: Stereo
+  Converter: stream=0, channel=0
+  SDI-Select: 0
+  Power: setting=D3, actual=D3
+  Delay: 13 samples
+  Connection: 1
+     0x1c
+  Processing caps: benign=0, ncoeff=0
+Node 0x13 [Audio Input] wcaps 0x1d0541: Stereo
+  Converter: stream=0, channel=0
+  SDI-Select: 0
+  Power: setting=D3, actual=D3
+  Delay: 13 samples
+  Connection: 1
+     0x1d
+  Processing caps: benign=0, ncoeff=0
+Node 0x14 [Pin Complex] wcaps 0x400100: Mono
+  Pincap 0x00000010: OUT
+  Pin Default 0x40f000f0: [N/A] Other at Ext N/A
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x16
+Node 0x15 [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 3
+     0x10* 0x11 0x17
+Node 0x16 [Audio Mixer] wcaps 0x200100: Mono
+  Connection: 1
+     0x15
+Node 0x17 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x97 0x97] [0x97 0x97] [0x97 0x97] [0x97 0x97] [0x97 0x97]
+  Connection: 5
+     0x10 0x11 0x27 0x1a 0x1b
+Node 0x18 [Pin Complex] wcaps 0x40000d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x00000020: IN
+  Pin Default 0x90a000f0: [Fixed] Mic at Int N/A
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x20: IN
+Node 0x19 [Pin Complex] wcaps 0x40000d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x00000020: IN
+  Pin Default 0x40f000f0: [N/A] Other at Ext N/A
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x00:
+Node 0x1a [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 3
+     0x0b* 0x0c 0x0e
+Node 0x1b [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 3
+     0x0b* 0x0c 0x0e
+Node 0x1c [Audio Selector] wcaps 0x30090d: Stereo Amp-Out R/L
+  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Connection: 4
+     0x1a* 0x17 0x18 0x19
+Node 0x1d [Audio Selector] wcaps 0x30090d: Stereo Amp-Out R/L
+  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Connection: 4
+     0x1b* 0x17 0x18 0x19
+Node 0x1e [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x00000010: OUT
+  Pin Default 0x4f0000f0: [N/A] Line Out at Ext UNKNOWN
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x24
+Node 0x1f [Pin Complex] wcaps 0x400701: Stereo Digital
+  Pincap 0x00010010: OUT EAPD
+  EAPD 0x0:
+  Pin Default 0x4f0000f0: [N/A] Line Out at Ext UNKNOWN
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x00:
+  Power: setting=D0, actual=D0
+  Connection: 2
+     0x24* 0x25
+Node 0x20 [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x00000010: OUT
+  Pin Default 0x40f000f7: [N/A] Other at Ext N/A
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x7
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x25
+Node 0x21 [Audio Output] wcaps 0x40211: Stereo Digital
+  Converter: stream=0, channel=0
+  Digital:
+  Digital category: 0x0
+  PCM:
+    rates [0x7e0]: 44100 48000 88200 96000 176400 192000
+    bits [0xe]: 16 20 24
+    formats [0x5]: PCM AC3
+  Delay: 4 samples
+Node 0x22 [Audio Output] wcaps 0x40211: Stereo Digital
+  Converter: stream=0, channel=0
+  Digital:
+  Digital category: 0x0
+  PCM:
+    rates [0x7e0]: 44100 48000 88200 96000 176400 192000
+    bits [0xe]: 16 20 24
+    formats [0x5]: PCM AC3
+  Delay: 4 samples
+Node 0x23 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x24 [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 3
+     0x21* 0x1c 0x1d
+Node 0x25 [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 3
+     0x22* 0x1c 0x1d
+Node 0x26 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
+  Amp-Out caps: ofs=0x03, nsteps=0x03, stepsize=0x17, mute=1
+  Amp-Out vals:  [0x00]
+Node 0x27 [Pin Complex] wcaps 0x400000: Mono
+  Pincap 0x00000020: IN
+  Pin Default 0x40f000f0: [N/A] Other at Ext N/A
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x00:
+Node 0x28 [Volume Knob Widget] wcaps 0x600000: Mono
+  Volume-Knob: delta=1, steps=127, direct=1, val=127
+  Connection: 2
+     0x10* 0x11
+Codec: Intel G45 DEVCTG
+Address: 2
+Vendor Id: 0x80862802
+Subsystem Id: 0x80860101
+Revision Id: 0x100000
+No Modem Function Group found
+Default PCM:
+    rates [0x0]:
+    bits [0x0]:
+    formats [0x0]:
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+GPIO: io=0, o=0, i=0, unsolicited=0, wake=0
+Node 0x02 [Audio Output] wcaps 0x6211: 8-Channels Digital
+  Converter: stream=0, channel=0
+  Digital: Enabled
+  Digital category: 0x0
+  PCM:
+    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
+    bits [0x1e]: 16 20 24 32
+    formats [0x5]: PCM AC3
+Node 0x03 [Pin Complex] wcaps 0x40739d: 8-Channels Digital Amp-Out CP
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x80]
+  Pincap 0x00000094: OUT Detect HDMI
+  Pin Default 0x18560010: [Jack] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0x1, Sequence = 0x0
+  Pin-ctls: 0x00:
+  Unsolicited: tag=08, enabled=1
+  Connection: 1
+     0x02
+--endcollapse--
+
+
+!!ALSA Device nodes
+!!-----------------
+
+crw-rw---- 1 root audio 116,  0 2009-01-29 02:39 /dev/snd/controlC0
+crw-rw---- 1 root audio 116,  4 2009-01-29 02:39 /dev/snd/hwC0D0
+crw-rw---- 1 root audio 116,  6 2009-01-29 02:39 /dev/snd/hwC0D2
+crw-rw---- 1 root audio 116, 24 2009-01-29 02:39 /dev/snd/pcmC0D0c
+crw-rw---- 1 root audio 116, 16 2009-01-29 02:45 /dev/snd/pcmC0D0p
+crw-rw---- 1 root audio 116, 19 2009-01-29 02:39 /dev/snd/pcmC0D3p
+crw-rw---- 1 root audio 116,  1 2009-01-29 02:39 /dev/snd/seq
+crw-rw---- 1 root audio 116, 33 2009-01-29 02:39 /dev/snd/timer
+
+
+!!Aplay/Arecord output
+!!------------
+
+APLAY
+
+**** List of PLAYBACK Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: STAC92xx Analog [STAC92xx Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: Intel [HDA Intel], device 3: INTEL HDMI [INTEL HDMI]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+ARECORD
+
+**** List of CAPTURE Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: STAC92xx Analog [STAC92xx Analog]
+  Subdevices: 2/2
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+
+!!Amixer output
+!!-------------
+
+!!-------Mixer controls for card 0 [Intel]
+
+Card hw:0 'Intel'/'HDA Intel at 0xf6adc000 irq 21'
+  Mixer name	: 'Intel G45 DEVCTG'
+  Components	: 'HDA:111d76b2,1028024f,00100302 HDA:80862802,80860101,00100000'
+  Controls      : 30
+  Simple ctrls  : 17
+Simple mixer control 'Master',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 127
+  Mono: Playback 127 [100%] [0.00dB] [on]
+Simple mixer control 'Headphone',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 127
+  Mono:
+  Front Left: Playback 127 [100%] [0.00dB] [on]
+  Front Right: Playback 127 [100%] [0.00dB] [on]
+Simple mixer control 'Front',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 127
+  Mono:
+  Front Left: Playback 127 [100%] [0.00dB] [on]
+  Front Right: Playback 127 [100%] [0.00dB] [on]
+Simple mixer control 'IEC958',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 15
+  Front Left: Capture 0 [0%] [0.00dB] [off]
+  Front Right: Capture 0 [0%] [0.00dB] [off]
+Simple mixer control 'Capture',1
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 15
+  Front Left: Capture 0 [0%] [0.00dB] [off]
+  Front Right: Capture 0 [0%] [0.00dB] [off]
+Simple mixer control 'Analog Loopback',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Analog Loopback',1
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'DAC0',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 31
+  Front Left: Capture 23 [74%] [0.00dB] [off]
+  Front Right: Capture 23 [74%] [0.00dB] [off]
+Simple mixer control 'DAC1',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 31
+  Front Left: Capture 23 [74%] [0.00dB] [off]
+  Front Right: Capture 23 [74%] [0.00dB] [off]
+Simple mixer control 'Import0 Mux',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 31
+  Front Left: Capture 23 [74%] [0.00dB] [off]
+  Front Right: Capture 23 [74%] [0.00dB] [off]
+Simple mixer control 'Import1 Mux',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 31
+  Front Left: Capture 23 [74%] [0.00dB] [off]
+  Front Right: Capture 23 [74%] [0.00dB] [off]
+Simple mixer control 'Input Source',0
+  Capabilities: cenum
+  Items: 'Mic' 'Front Mic'
+  Item0: 'Mic'
+Simple mixer control 'Input Source',1
+  Capabilities: cenum
+  Items: 'Mic' 'Front Mic'
+  Item0: 'Mic'
+Simple mixer control 'Mux',0
+  Capabilities: cvolume
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 3
+  Front Left: Capture 0 [0%] [0.00dB]
+  Front Right: Capture 0 [0%] [0.00dB]
+Simple mixer control 'Mux',1
+  Capabilities: cvolume
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 3
+  Front Left: Capture 0 [0%] [0.00dB]
+  Front Right: Capture 0 [0%] [0.00dB]
+Simple mixer control 'PC Beep',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 3
+  Mono: Playback 0 [0%] [-18.00dB] [on]
+
+
+!!Alsactl output
+!!-------------
+
+--startcollapse--
+state.Intel {
+	control.1 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Mic
+		comment.item.1 'Front Mic'
+		iface MIXER
+		name 'Input Source'
+		value Mic
+	}
+	control.2 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Mic
+		comment.item.1 'Front Mic'
+		iface MIXER
+		name 'Input Source'
+		index 1
+		value Mic
+	}
+	control.3 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Analog Loopback'
+		value false
+	}
+	control.4 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Analog Loopback'
+		index 1
+		value false
+	}
+	control.5 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 15'
+		comment.dbmin 0
+		comment.dbmax 2250
+		iface MIXER
+		name 'Capture Volume'
+		value.0 0
+		value.1 0
+	}
+	control.6 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'Capture Switch'
+		value.0 false
+		value.1 false
+	}
+	control.7 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 15'
+		comment.dbmin 0
+		comment.dbmax 2250
+		iface MIXER
+		name 'Capture Volume'
+		index 1
+		value.0 0
+		value.1 0
+	}
+	control.8 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'Capture Switch'
+		index 1
+		value.0 false
+		value.1 false
+	}
+	control.9 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'Import0 Mux Capture Switch'
+		value.0 false
+		value.1 false
+	}
+	control.10 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		comment.dbmin -3450
+		comment.dbmax 1200
+		iface MIXER
+		name 'Import0 Mux Capture Volume'
+		value.0 23
+		value.1 23
+	}
+	control.11 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'Import1 Mux Capture Switch'
+		value.0 false
+		value.1 false
+	}
+	control.12 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		comment.dbmin -3450
+		comment.dbmax 1200
+		iface MIXER
+		name 'Import1 Mux Capture Volume'
+		value.0 23
+		value.1 23
+	}
+	control.13 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'DAC0 Capture Switch'
+		value.0 false
+		value.1 false
+	}
+	control.14 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		comment.dbmin -3450
+		comment.dbmax 1200
+		iface MIXER
+		name 'DAC0 Capture Volume'
+		value.0 23
+		value.1 23
+	}
+	control.15 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'DAC1 Capture Switch'
+		value.0 false
+		value.1 false
+	}
+	control.16 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		comment.dbmin -3450
+		comment.dbmax 1200
+		iface MIXER
+		name 'DAC1 Capture Volume'
+		value.0 23
+		value.1 23
+	}
+	control.17 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 127'
+		comment.dbmin -9525
+		comment.dbmax 0
+		iface MIXER
+		name 'Front Playback Volume'
+		value.0 127
+		value.1 127
+	}
+	control.18 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'Front Playback Switch'
+		value.0 true
+		value.1 true
+	}
+	control.19 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'PC Beep Playback Switch'
+		value true
+	}
+	control.20 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 3'
+		comment.dbmin -1800
+		comment.dbmax 0
+		iface MIXER
+		name 'PC Beep Playback Volume'
+		value 0
+	}
+	control.21 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 127'
+		comment.dbmin -9525
+		comment.dbmax 0
+		iface MIXER
+		name 'Headphone Playback Volume'
+		value.0 127
+		value.1 127
+	}
+	control.22 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'Headphone Playback Switch'
+		value.0 true
+		value.1 true
+	}
+	control.23 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 3'
+		comment.dbmin 0
+		comment.dbmax 3000
+		iface MIXER
+		name 'Mux Capture Volume'
+		value.0 0
+		value.1 0
+	}
+	control.24 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 3'
+		comment.dbmin 0
+		comment.dbmax 3000
+		iface MIXER
+		name 'Mux Capture Volume'
+		index 1
+		value.0 0
+		value.1 0
+	}
+	control.25 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 127'
+		comment.dbmin -9525
+		comment.dbmax 0
+		iface MIXER
+		name 'Master Playback Volume'
+		value 127
+	}
+	control.26 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Master Playback Switch'
+		value true
+	}
+	control.27 {
+		comment.access read
+		comment.type IEC958
+		comment.count 1
+		iface MIXER
+		name 'IEC958 Playback Con Mask'
+		
+value '0fff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+	}
+	control.28 {
+		comment.access read
+		comment.type IEC958
+		comment.count 1
+		iface MIXER
+		name 'IEC958 Playback Pro Mask'
+		
+value '0f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+	}
+	control.29 {
+		comment.access 'read write'
+		comment.type IEC958
+		comment.count 1
+		iface MIXER
+		name 'IEC958 Playback Default'
+		
+value '0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+	}
+	control.30 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'IEC958 Playback Switch'
+		value true
+	}
+}
+--endcollapse--
+
+
+!!All Loaded Modules
+!!------------------
+
+Module
+snd_seq
+snd_seq_device
+snd_hda_codec_intelhdmi
+snd_hda_codec_idt
+snd_hda_intel
+snd_hda_codec
+snd_hwdep
+snd_pcm
+snd_timer
+snd
+snd_page_alloc
