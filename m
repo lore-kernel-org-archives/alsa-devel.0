@@ -1,19 +1,24 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 0/1] ASoC: TWL4030: Analog bypass
-	implementation - try2
-Date: Thu, 29 Jan 2009 16:47:44 +0200
-Message-ID: <200901291647.44780.peter.ujfalusi@nokia.com>
-References: <1233233870-22700-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20090129135310.GE12179@sirena.org.uk>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: Re: CS4232 Playback bug on Tecra 500
+Date: Thu, 29 Jan 2009 16:02:13 +0100
+Message-ID: <20090129160213.dacde87d.krzysztof.h1@poczta.fm>
+References: <405205790901212040s79ce94a4if4ff742a9c18bc67@mail.gmail.com>
+	<20090122134150.f6d0e192.krzysztof.h1@poczta.fm>
+	<405205790901220743k32d76edeh733b2dacfbf0497e@mail.gmail.com>
+	<20090122172856.e39ae951.krzysztof.h1@poczta.fm>
+	<s5h7i4n5mar.wl%tiwai@suse.de>
+	<20090124092606.11f3660e.krzysztof.h1@poczta.fm>
+	<s5hab9e5rky.wl%tiwai@suse.de>
+	<20090126183315.68772c4d.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4DA331038A1
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2009 15:54:28 +0100 (CET)
-In-Reply-To: <20090129135310.GE12179@sirena.org.uk>
-Content-Disposition: inline
+Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
+	[217.74.64.239])
+	by alsa0.perex.cz (Postfix) with ESMTP id A981E103897
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2009 15:58:50 +0100 (CET)
+In-Reply-To: <20090126183315.68772c4d.krzysztof.h1@poczta.fm>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,39 +28,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@sirena.org.uk>
-Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Stanley Pinchak <stanley.pinchak@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 29 January 2009 15:54:34 ext Mark Brown wrote:
-> On Thu, Jan 29, 2009 at 02:57:49PM +0200, Peter Ujfalusi wrote:
-> > With the this implementation, there is no visible difference in power
-> > consumption compared to the previous, codec off way.
-> > So when the codec is in SND_SOC_BIAS_STANDBY mode and all of the bypass=
-es
-> > are disabled, the additional power consumption is minimal, if any.
->
-> It isn't ideal since what should happen is that the bias is kept on
-> while any paths are active (not just digital ones) but it shouldn't
-> cause any problems since all that should happen is that the checks
-> for bypass paths being active will just always return false.  I'll
-> the patch - when the core becomes more capable the patch can always be
-> revisited.
+On Mon, 26 Jan 2009 18:33:15 +0100
+Krzysztof Helt <krzysztof.h1@poczta.fm> wrote:
 
-You mean, that if one of the bypass is active, and the core wants to set th=
-e =
+> The problem is more complicated. The cs4236+ cards have two
+> separate PNP bios ids! The problem here is that Linux kernel
+> allows only one id per device. The ids are CS0010* for the CS0000*
+> device and CS0110* for the CS0100* devices. The second device
+> has only control port range (one io range).
+> 
+> I have prepared the patch which I tested on my Dell Latitude CPi
+> laptop and now it properly discovers the CS4237B codec. Stanley,
+> please test it as well.
+> 
 
-codec to SND_SOC_BIAS_STANDBY, that the twl4030_set_bias_level should retur=
-n =
+Takashi,
 
-with false?
+Please take a look at the patch which unifies the cs4232 and the cs4236+
+driver code. It should solve all problems with the Crystal PnP BIOS chip
+detection. At least, it solves this at my Dell laptop.
 
-Also, if the codec was in SND_SOC_BIAS_STANDBY and one of the bypass gots =
+Regards,
+Krzysztof
 
-enabled, than it should set the codec bias_state to SND_SOC_BIAS_ON?
-
-So the STANDBY state is really STANDBY?
-
--- =
-
-P=E9ter
+----------------------------------------------------------------------
+Promocja w Speak Up. 3 miesiace angielskiego gratis.
+Sprawdz teraz i wypelnij formularz! >> http://link.interia.pl/f2019
