@@ -1,20 +1,20 @@
-From: Laurent Pinchart <laurent.pinchart@skynet.be>
-Subject: Re: Very faint sound on Dell Latitude E6500
-Date: Thu, 29 Jan 2009 22:33:19 +0100
-Message-ID: <200901292233.19219.laurent.pinchart@skynet.be>
-References: <200901271651.56181.laurent.pinchart@skynet.be>
-	<200901290247.45669.laurent.pinchart@skynet.be>
-	<s5hk58ea4ti.wl%tiwai@suse.de>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: Can DMA address, periods, buffer size,
+	etc change 	after hw_params is called?
+Date: Thu, 29 Jan 2009 16:30:11 -0600
+Message-ID: <ed82fe3e0901291430x1186e9b7h836a743daadbb772@mail.gmail.com>
+References: <20090129081825.241be9e4@hcegtvedt>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailrelay012.isp.belgacom.be (mailrelay012.isp.belgacom.be
-	[195.238.6.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id C51B3103884
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2009 22:33:26 +0100 (CET)
-In-Reply-To: <s5hk58ea4ti.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from mail-qy0-f20.google.com (mail-qy0-f20.google.com
+	[209.85.221.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id 77E09103884
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2009 23:30:12 +0100 (CET)
+Received: by qyk13 with SMTP id 13so271276qyk.8
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2009 14:30:11 -0800 (PST)
+In-Reply-To: <20090129081825.241be9e4@hcegtvedt>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,78 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 29 January 2009, Takashi Iwai wrote:
-> At Thu, 29 Jan 2009 02:47:45 +0100,
->
-> Laurent Pinchart wrote:
-> > Hi Takashi,
-> >
-> > On Wednesday 28 January 2009, Takashi Iwai wrote:
-> > > At Tue, 27 Jan 2009 16:51:56 +0100, Laurent Pinchart wrote:
-> > > > Hi everybody,
-> > > >
-> > > > I've received a brand new Dell Latitude E6500 and found out that the
-> > > > sound card wasn't exactly well supported by ALSA.
-> > > >
-> > > > Sound is barely audible (so faint that I'm not even sure if the
-> > > > proper sound is output or if I just get garbage), with some loud
-> > > > noise here and there that seem to correspond to the saturated audio
-> > > > data  parts.
-> > > >
-> > > > The sound card is an HDA-Intel with an IDT 92HD71B7X codec. Hardware
-> > > > information can be found at
-> > > > http://www.alsa-project.org/db/?f=30cac30e5b1ddd9c842481a830c250cc3e5
-> > > >93b0 d. A
-> > >
-> > > Please run with --no-upload and included the result in the post.
-> >
-> > Done, output included in this e-mail.
-> >
-> > > Anyway, this problem might be related with the volume-knob.
-> > > Install hda-verb and try the following
-> > >
-> > > 	hda-verb /dev/snd/hwC0D0 0x28 SET_VOLUME_KNOB 0xff
-> > > or
-> > > 	hda-verb /dev/snd/hwC0D0 0x28 SET_VOLUME_KNOB 0
-> >
-> > Unfortunately none of those make a difference.
->
-> After doing this, check /proc/asound/card0/codec* whether this node
-> 0x28 is really changed.
+On Thu, Jan 29, 2009 at 1:18 AM, Hans-Christian Egtvedt
+<hans-christian.egtvedt@atmel.com> wrote:
 
-Yes it does (the range is 0x00-0x7f and not 0x00-0xff).
+> Should I after the open and hw_params calls be ready to handle any
+> change at all regarding DMA buffer address, periods and/or number of
+> periods?
 
-> Then, try the latest alsa-driver snapshot from
->    
-> ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-sna
->pshot.tar.gz
->
-> This contains more fixes since 1.0.19.  It's generated from the GIT
-> tree below:
->     git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
->    
-> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/alsa-driver-build.git
+You would need to do this, if you allocate your DMA buffer in the
+hw_params function.  However, I recommend that you allocate it in the
+_new/_open function instead (I can't remember what it's called) for
+the maximum size possible, and in _hw_params, just remember what the
+size is supposed to be.  That way, you won't need to free/realloc your
+DMA buffer.  Trust me, it's a lot easier this way.
 
-I've downloaded, installed and tested the latest alsa-driver snapshot. No 
-change was visible (or rather audible) in the internal speakers behaviour.
+Take a look at commit bf9c8c9ddef7ef761ae9747349175adad0ef16ce, where
+I modify my driver to move the DMA allocation from _hw_params to
+_open.
 
-> Also, check the headphone output at first.  The speaker output needs
-> more work than the headphone in general.
-
-As stated in my previous e-mail, headphones work properly. Only the internal 
-speakers cause trouble.
-
-> You can also try to change the power-map by
-> 	hda-verb /dev/snd/hwC0D0 1 0x7ec 0
-> This is pretty specific to IDT codecs.
-
-Changing power-map with the above command doesn't seem to have any effect 
-either.
-
-Best regards,
-
-Laurent Pinchart
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
