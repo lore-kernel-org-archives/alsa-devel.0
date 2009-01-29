@@ -1,20 +1,16 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: Can DMA address, periods, buffer size,
-	etc change 	after hw_params is called?
-Date: Thu, 29 Jan 2009 16:30:11 -0600
-Message-ID: <ed82fe3e0901291430x1186e9b7h836a743daadbb772@mail.gmail.com>
-References: <20090129081825.241be9e4@hcegtvedt>
+From: maarten van es <maarten.h.van.es@gmail.com>
+Subject: set_params:1073: not enough memory
+Date: Thu, 29 Jan 2009 22:43:05 +0000
+Message-ID: <bca65b460901291443h4bbcbd36p683614a7d9770f45@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f20.google.com (mail-qy0-f20.google.com
-	[209.85.221.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 77E09103884
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2009 23:30:12 +0100 (CET)
-Received: by qyk13 with SMTP id 13so271276qyk.8
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2009 14:30:11 -0800 (PST)
-In-Reply-To: <20090129081825.241be9e4@hcegtvedt>
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.190])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3AD71103890
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2009 23:43:06 +0100 (CET)
+Received: by fk-out-0910.google.com with SMTP id 26so148911fkx.0
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2009 14:43:05 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,28 +20,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 29, 2009 at 1:18 AM, Hans-Christian Egtvedt
-<hans-christian.egtvedt@atmel.com> wrote:
+Hello all,
 
-> Should I after the open and hw_params calls be ready to handle any
-> change at all regarding DMA buffer address, periods and/or number of
-> periods?
+I am trying to get alsa to work using buildroot to crosscompile to
+i686-linux-uclibc. I am using the latest git version of alsa-lib and a
+recent git version of alsa-util. I am stuck with the same error as in
+the message included below when using aplay. So far I have been able
+to narrow this down to the function set_params in aplay.c, lines 1070,
+1071:
 
-You would need to do this, if you allocate your DMA buffer in the
-hw_params function.  However, I recommend that you allocate it in the
-_new/_open function instead (I can't remember what it's called) for
-the maximum size possible, and in _hw_params, just remember what the
-size is supposed to be.  That way, you won't need to free/realloc your
-DMA buffer.  Trust me, it's a lot easier this way.
+chunk_bytes = chunk_size * bits_per_frame / 8;
+audiobuf = realloc(audiobuf, chunk_bytes);
 
-Take a look at commit bf9c8c9ddef7ef761ae9747349175adad0ef16ce, where
-I modify my driver to move the DMA allocation from _hw_params to
-_open.
+chunk_size is 0 here and obviously the realloc fails.
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+Any ideas on what's going on here?
+
+For the record, "aplay -L" lists the correct devices, "aplay -D null
+test.wav" works ok and the card works correctly using alsa version
+1.0.16 on standard suse 11.0.
+
+Best regards
+Maarten van Es
+
+
+
+
+Hello all,
+
+I'm trying to get alsa 1.0.18 working on a ARM PXA processor and I'm
+stuck with the following error message:
+
+aplay /Sinus.raw -fcd
+Playing raw data '/Sinus.raw' : Signed 16 bit Little Endian, Rate 44100
+Hz, Stereo
+aplay: set_params:1073: not enough memory
+
+alsa kernel was compiled with alsa 1.0.16, alsa.conf, located in
+/usr/share/alsa is the basic:
+
+pcm.!default {
+	type hw
+	card 0
+	}
+
+	ctl.!default {
+	type hw
+	card 0
+         }
+
+also aplay -l and alsaconf store show the message:
+
+ALSA lib control.c:909:(snd_ctl_open_noupdate) Invalid CTL hw:0
+
+However the card shows up /proc/asound/cards and alsamixer is able to
+access it.
+
+Any ideas?
+
+Best regards
+
+Michael
