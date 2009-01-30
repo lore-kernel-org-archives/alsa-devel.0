@@ -1,21 +1,16 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH 2.6.30] ASoC: fix initialization order of
-	the CS4270 codec driver
-Date: Fri, 30 Jan 2009 06:37:35 -0600
-Message-ID: <ed82fe3e0901300437k2e58cf63k7024fbfd2f5c9e51@mail.gmail.com>
-References: <1233260917-525-1-git-send-email-timur@freescale.com>
-	<20090130105224.GA22201@rakim.wolfsonmicro.main>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Edirol UA-20 in advanced mode
+Date: Fri, 30 Jan 2009 14:10:13 +0100
+Message-ID: <4982FC35.3090601@ladisch.de>
+References: <ed82be370901291008h57b88039s950f64e5d228150b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f20.google.com (mail-qy0-f20.google.com
-	[209.85.221.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 827F51037EF
-	for <alsa-devel@alsa-project.org>; Fri, 30 Jan 2009 13:37:36 +0100 (CET)
-Received: by qyk13 with SMTP id 13so583335qyk.8
-	for <alsa-devel@alsa-project.org>; Fri, 30 Jan 2009 04:37:35 -0800 (PST)
-In-Reply-To: <20090130105224.GA22201@rakim.wolfsonmicro.main>
+Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id F40912438F
+	for <alsa-devel@alsa-project.org>; Fri, 30 Jan 2009 14:10:18 +0100 (CET)
+In-Reply-To: <ed82be370901291008h57b88039s950f64e5d228150b@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,20 +20,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: nick83ola <nick83ola@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 30, 2009 at 4:52 AM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
+nick83ola wrote:
+> I have an old edirol UA-20 that not work with advanced driver, or perhaps I
+> see it, i can send midi in and out from it but audio don't work.
+> ...
+> damnick@damnick-nb:~$ dmesg|tail
+> [ 1287.914930] cannot submit datapipe for urb 0, error -90: internal error
 
-> Typo (DAIe)?  Ideally you should also use dev_ printk variants where
-> possible.
+This is a bug in the USB audio driver; it uses packets that are too big
+for the device (the code for the AUDIO_FIXED_ENDPOINT quirk doesn't look
+at wMaxPacketSize).  I'll need to change the driver.
 
-Yes, that is a typo.
 
-I was planning on converting all the printks to dev_ in a separate patch.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+Best regards,
+Clemens
