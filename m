@@ -1,16 +1,14 @@
-From: Jens Jorgensen <jbj1@ultraemail.net>
-Subject: No digital output on HP Pavilion dv6936us (intel_hda
- ALC268), also volume low--help me hack?
-Date: Fri, 30 Jan 2009 11:32:26 +0800
-Message-ID: <498274CA.8010304@ultraemail.net>
+From: Mandar Joshi <emailmandar@yahoo.com>
+Subject: Creative X-Fi USB 5.1 Driver
+Date: Thu, 29 Jan 2009 21:30:28 -0800 (PST)
+Message-ID: <673583.88732.qm@web35608.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from QMTA10.emeryville.ca.mail.comcast.net
-	(qmta10.emeryville.ca.mail.comcast.net [76.96.30.17])
-	by alsa0.perex.cz (Postfix) with ESMTP id 38BC42434D
-	for <alsa-devel@alsa-project.org>; Fri, 30 Jan 2009 04:33:36 +0100 (CET)
+Received: from web35608.mail.mud.yahoo.com (web35608.mail.mud.yahoo.com
+	[66.163.179.147]) by alsa0.perex.cz (Postfix) with SMTP id 3C30D243DD
+	for <alsa-devel@alsa-project.org>; Fri, 30 Jan 2009 06:30:30 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,25 +18,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 Hello,
+   I walked through the code for snd-usb-audio and have a fair idea about the structure of the driver. I also
+went through the &quot;writing-an-alsa-driver&quot; article on http://www.alsa-project.org
+   Here is the stuff I&#39;ve done so far http://mndar.phpnet.us/usbxfi/ .The link contains the &quot;lsusb -v&quot; output for the Creative USB X-Fi 5.1 . 
+The xfi-0.0.0.0.tar.bz2 has the basic structure of an alsa driver (copied from the caiaq usb driver). It presently just loads the module when the card is connected.
+Output in /var/log/messages
+-------------------------------------------
+Jan 30 10:46:29 mandar Found Creative USB X-Fi 5.1!!
+Jan 30 10:46:29 mandar 0 041e:3042
+Jan 30 10:46:29 mandar Found Creative USB X-Fi 5.1!!
+Jan 30 10:46:29 mandar 0 041e:3042
+Jan 30 10:46:29 mandar Found Creative USB X-Fi 5.1!!
+Jan 30 10:46:29 mandar 0 041e:3042
+Jan 30 10:46:29 mandar usbcore: registered new interface driver snd-usb-xfi
+--------------------------------------------------------------------------------
+As you can see, the probe is being called 3 times. Can someone please go through the source and let me know if I&#39;m headed in the right direction?
+I&#39;m a newbie to alsa driver development and would really appreciate any input from you guys.
+Also, please have a look the creative.txt file in the link. Its the &#39;lsusb -v&#39; output for the card. How exactly do I interpret and use this information?
 
-I've got sound working on my laptop but there are two problems I'd like
-to solve. One is the volume is kind of low. Not so low I'm positive
-something is wrong, but it seems like it isn't right. Second, and more
-interesting, is this laptop seems to digital audio output that goes over
-the HDMI connector. Or, I should say, in Windows XP (installing that was
-another adventure I would have preferred not to have done) The mixer has
-a control to enable S/PDIF output. I'm a (non-kernel) c++ developer by
-trade and I've got a local kernel tree from git and should be able to
-manage pulling the alsa git as well, so if some alsa person could guide
-me along in hacking the driver to help me try to get this working that
-would be great. I ran alsa-info.sh on my box, here's the URL:
-
-http://www.alsa-project.org/db/?f=1b5a45d1336cee176dbd99e725a56f7ad4e20b42
-
--- 
-Jens B. Jorgensen
-jbj1@ultraemail.net
+Regards
+Mandar Joshi
