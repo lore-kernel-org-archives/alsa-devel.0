@@ -1,16 +1,19 @@
-From: nick83ola <nick83ola@gmail.com>
-Subject: Usb driver debug
-Date: Fri, 30 Jan 2009 12:31:55 +0100
-Message-ID: <ed82be370901300331t328d0bd2g5978d2d927d240de@mail.gmail.com>
+From: Laurent Pinchart <laurent.pinchart@skynet.be>
+Subject: Re: Very faint sound on Dell Latitude E6500
+Date: Fri, 30 Jan 2009 12:38:57 +0100
+Message-ID: <200901301238.57737.laurent.pinchart@skynet.be>
+References: <200901271651.56181.laurent.pinchart@skynet.be>
+	<200901292233.19219.laurent.pinchart@skynet.be>
+	<s5hljstl2kp.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0800D24403
-	for <alsa-devel@alsa-project.org>; Fri, 30 Jan 2009 12:31:57 +0100 (CET)
-Received: by yx-out-1718.google.com with SMTP id 36so165911yxh.2
-	for <alsa-devel@alsa-project.org>; Fri, 30 Jan 2009 03:31:57 -0800 (PST)
+Received: from mailrelay010.isp.belgacom.be (mailrelay010.isp.belgacom.be
+	[195.238.6.177]) by alsa0.perex.cz (Postfix) with ESMTP id 1A0C02440D
+	for <alsa-devel@alsa-project.org>; Fri, 30 Jan 2009 12:39:06 +0100 (CET)
+In-Reply-To: <s5hljstl2kp.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,34 +23,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, linux-audio-user@lists.linuxaudio.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-anyone can give me information about how i can debug the driver for my
-usb edirol ua-20 ?(that not works in advanced mode...sigh sob)
-i have downloaded the kernel source and locked in sound/usb
+On Friday 30 January 2009, Takashi Iwai wrote:
+> At Thu, 29 Jan 2009 22:33:19 +0100, Laurent Pinchart wrote:
+> > On Thursday 29 January 2009, Takashi Iwai wrote:
+> > > At Thu, 29 Jan 2009 02:47:45 +0100, Laurent Pinchart wrote:
+> > > > On Wednesday 28 January 2009, Takashi Iwai wrote:
+> > > > > At Tue, 27 Jan 2009 16:51:56 +0100, Laurent Pinchart wrote:
+> > > > > > Hi everybody,
+> > > > > >
+> > > > > > I've received a brand new Dell Latitude E6500 and found out that
+> > > > > > the sound card wasn't exactly well supported by ALSA.
+> > > > > >
+> > > > > > Sound is barely audible (so faint that I'm not even sure if the
+> > > > > > proper sound is output or if I just get garbage), with some loud
+> > > > > > noise here and there that seem to correspond to the saturated
+> > > > > > audio data  parts.
+> > > > > >
+> > > > > > The sound card is an HDA-Intel with an IDT 92HD71B7X codec.
+> > > > > > Hardware information can be found at
+> > > > > > http://www.alsa-project.org/db/?f=30cac30e5b1ddd9c842481a830c250c
+> > > > > >c3e5 93b0 d. A
+> > > > >
+> > > > > Please run with --no-upload and included the result in the post.
+> > > >
+> > > > Done, output included in this e-mail.
+> > > >
+> > > > > Anyway, this problem might be related with the volume-knob.
+> > > > > Install hda-verb and try the following
+> > > > >
+> > > > > 	hda-verb /dev/snd/hwC0D0 0x28 SET_VOLUME_KNOB 0xff
+> > > > > or
+> > > > > 	hda-verb /dev/snd/hwC0D0 0x28 SET_VOLUME_KNOB 0
+> > > >
+> > > > Unfortunately none of those make a difference.
+> > >
+> > > After doing this, check /proc/asound/card0/codec* whether this node
+> > > 0x28 is really changed.
+> >
+> > Yes it does (the range is 0x00-0x7f and not 0x00-0xff).
+>
+> The bit 7 is to specify the direct mode.
+> Maybe we need to select the input of the widget beforehand:
+>
+> 	% hda-verb /dev/snd/hwC0D0 0x28 SET_CONN 1
+> 	% hda-verb /dev/snd/hwC0D0 0x28 SET_VOLUME_KNOB 0xff
 
-any examples about how to debug/develop usb linux drivers???
+I'm afraid it doesn't make any difference either.
 
-Please I need it!!!!!
+What sounds really odd to me is that I get extremely faint sound on both 
+speakers, with some loud noise on the right speaker that seems to correspond 
+to the T in "fronT righT" (played by speaker-test).
 
-Nicola Lunghi
+Best regards,
 
--- 
-www.nicolalunghi.it
-http://www.cerchiopisa3.netsons.org
-
-P.S. Le informazioni trasmesse attraverso la presente comunicazione
-sono di sclusiva
-spettanza dell'effettivo destinatario. Nel caso in cui le stesse
-raggiungessero, per
-qualunque motivo, soggetti non interessati, questi ultimi vorranno
-darne immediata
-notizia al mittente. In ogni caso, eventuali soggetti diversi dai
-legittimi destinatari
-della presente comunicazione e dei dati contenuti negli allegati, possono essere
-sanzionati ai sensi del T.U. sul trattamento dei dati personali d.lgs.
-196/2003, sia ai
-sensi dell'art. 616 del Codice Penale che disciplina la violazione del
-segreto sulla
-corrispondenza.
+Laurent Pinchart
