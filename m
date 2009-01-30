@@ -1,16 +1,16 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Edirol UA-20 in advanced mode
-Date: Fri, 30 Jan 2009 14:10:13 +0100
-Message-ID: <4982FC35.3090601@ladisch.de>
-References: <ed82be370901291008h57b88039s950f64e5d228150b@mail.gmail.com>
+Subject: Re: Firmware
+Date: Fri, 30 Jan 2009 14:18:12 +0100
+Message-ID: <4982FE14.4080005@ladisch.de>
+References: <00032557558a00941e0461a4cdc3@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id F40912438F
-	for <alsa-devel@alsa-project.org>; Fri, 30 Jan 2009 14:10:18 +0100 (CET)
-In-Reply-To: <ed82be370901291008h57b88039s950f64e5d228150b@mail.gmail.com>
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 8BB0B24422
+	for <alsa-devel@alsa-project.org>; Fri, 30 Jan 2009 14:18:14 +0100 (CET)
+In-Reply-To: <00032557558a00941e0461a4cdc3@google.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,21 +20,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: nick83ola <nick83ola@gmail.com>
+To: soundprizm@gmail.com
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-nick83ola wrote:
-> I have an old edirol UA-20 that not work with advanced driver, or perhaps I
-> see it, i can send midi in and out from it but audio don't work.
-> ...
-> damnick@damnick-nb:~$ dmesg|tail
-> [ 1287.914930] cannot submit datapipe for urb 0, error -90: internal error
+soundprizm@gmail.com wrote:
+> Is ALSA Firmware written by alsa developers or obtained from the
+> hardware's manufacturer?
 
-This is a bug in the USB audio driver; it uses packets that are too big
-for the device (the code for the AUDIO_FIXED_ENDPOINT quirk doesn't look
-at wMaxPacketSize).  I'll need to change the driver.
+Yes.
+
+> If it is obtained from the manufacturer, what is exactly required to
+> have the .ihx files created ...?
+
+objcopy -I binary -O ihex something.bin something.ihx
 
 
-Best regards,
+HTH
 Clemens
