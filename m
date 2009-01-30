@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: kerneldoc for sound drivers?
-Date: Fri, 30 Jan 2009 12:01:09 +0000
-Message-ID: <20090130120108.GC18825@sirena.org.uk>
-References: <ed82fe3e0901291447i14a04c54q24525bddfaa2048d@mail.gmail.com>
+From: Laurent Pinchart <laurent.pinchart@skynet.be>
+Subject: Re: Very faint sound on Dell Latitude E6500
+Date: Fri, 30 Jan 2009 13:12:22 +0100
+Message-ID: <200901301312.22243.laurent.pinchart@skynet.be>
+References: <200901271651.56181.laurent.pinchart@skynet.be>
+	<200901301238.57737.laurent.pinchart@skynet.be>
+	<s5hbptprosk.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id C957D1037FA
-	for <alsa-devel@alsa-project.org>; Fri, 30 Jan 2009 13:01:09 +0100 (CET)
+Received: from mailrelay010.isp.belgacom.be (mailrelay010.isp.belgacom.be
+	[195.238.6.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id 892831037FA
+	for <alsa-devel@alsa-project.org>; Fri, 30 Jan 2009 13:12:30 +0100 (CET)
+In-Reply-To: <s5hbptprosk.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <ed82fe3e0901291447i14a04c54q24525bddfaa2048d@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,15 +24,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 29, 2009 at 04:47:22PM -0600, Timur Tabi wrote:
-> I'm fixing the comments in my driver (sound/soc/codecs/cs4270.c) to
-> conform to kerneldoc standards.  However, when I build "make
-> htmldocs", my comments aren't processed.  I presume the make rules
-> don't know to look into the sound/soc/codecs directory.  How do I fix
-> this?
+On Friday 30 January 2009, Takashi Iwai wrote:
+> At Fri, 30 Jan 2009 12:38:57 +0100,
+>
+> Laurent Pinchart wrote:
+> > On Friday 30 January 2009, Takashi Iwai wrote:
+> > > At Thu, 29 Jan 2009 22:33:19 +0100, Laurent Pinchart wrote:
+> > > > On Thursday 29 January 2009, Takashi Iwai wrote:
+> > > > > At Thu, 29 Jan 2009 02:47:45 +0100, Laurent Pinchart wrote:
+> > > > > > On Wednesday 28 January 2009, Takashi Iwai wrote:
+> > > > > > > At Tue, 27 Jan 2009 16:51:56 +0100, Laurent Pinchart wrote:
+> > > > > > > > Hi everybody,
+> > > > > > > >
+> > > > > > > > I've received a brand new Dell Latitude E6500 and found out
+> > > > > > > > that the sound card wasn't exactly well supported by ALSA.
+> > > > > > > >
+> > > > > > > > Sound is barely audible (so faint that I'm not even sure if
+> > > > > > > > the proper sound is output or if I just get garbage), with
+> > > > > > > > some loud noise here and there that seem to correspond to the
+> > > > > > > > saturated audio data  parts.
+> > > > > > > >
+> > > > > > > > The sound card is an HDA-Intel with an IDT 92HD71B7X codec.
+> > > > > > > > Hardware information can be found at
+> > > > > > > > http://www.alsa-project.org/db/?f=30cac30e5b1ddd9c842481a830c
+> > > > > > > >250c c3e5 93b0 d. A
+> > > > > > >
+> > > > > > > Please run with --no-upload and included the result in the
+> > > > > > > post.
+> > > > > >
+> > > > > > Done, output included in this e-mail.
+> > > > > >
+> > > > > > > Anyway, this problem might be related with the volume-knob.
+> > > > > > > Install hda-verb and try the following
+> > > > > > >
+> > > > > > > 	hda-verb /dev/snd/hwC0D0 0x28 SET_VOLUME_KNOB 0xff
+> > > > > > > or
+> > > > > > > 	hda-verb /dev/snd/hwC0D0 0x28 SET_VOLUME_KNOB 0
+> > > > > >
+> > > > > > Unfortunately none of those make a difference.
+> > > > >
+> > > > > After doing this, check /proc/asound/card0/codec* whether this node
+> > > > > 0x28 is really changed.
+> > > >
+> > > > Yes it does (the range is 0x00-0x7f and not 0x00-0xff).
+> > >
+> > > The bit 7 is to specify the direct mode.
+> > > Maybe we need to select the input of the widget beforehand:
+> > >
+> > > 	% hda-verb /dev/snd/hwC0D0 0x28 SET_CONN 1
+> > > 	% hda-verb /dev/snd/hwC0D0 0x28 SET_VOLUME_KNOB 0xff
+> >
+> > I'm afraid it doesn't make any difference either.
+>
+> Did you check proc output and see any difference at all?
 
-make htmldocs builds the manuals in Documentation/DocBook into HTML.
+SET_VOLUME_KNOB changes the Volume Knob Widget's 'direct' and 'value' fields, 
+but SET_CONN doesn't seem to have any effect.
+
+Best regards,
+
+Laurent Pinchart
