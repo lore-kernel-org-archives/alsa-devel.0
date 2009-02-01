@@ -1,15 +1,19 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: [PATCH 2/2] [EXPERIMENTAL] Add support for the latest
- IndigoIOx and IndigoDJx cards
-Date: Sun, 1 Feb 2009 23:03:32 +0100
-Message-ID: <20090201230332.06894937.pochini@shiny.it>
+From: Tim Barnette <tim.barnette@gmail.com>
+Subject: Re: [Fwd: HP DV4 1155 SE - No Sound through
+	speakers...]
+Date: Sun, 1 Feb 2009 17:34:41 -0500
+Message-ID: <b71cdde20902011434x690860d7jf9e1fc762ff2d3a9@mail.gmail.com>
+References: <4983FE7A.1040201@wanadoo.fr> <49840333.2080303@wanadoo.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out25.alice.it (smtp-out25.alice.it [85.33.2.25])
-	by alsa0.perex.cz (Postfix) with ESMTP id 782F91037F6
-	for <alsa-devel@alsa-project.org>; Sun,  1 Feb 2009 23:03:29 +0100 (CET)
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0FE331037F0
+	for <alsa-devel@alsa-project.org>; Sun,  1 Feb 2009 23:34:45 +0100 (CET)
+Received: by wa-out-1112.google.com with SMTP id v27so609642wah.16
+	for <alsa-devel@alsa-project.org>; Sun, 01 Feb 2009 14:34:44 -0800 (PST)
+In-Reply-To: <49840333.2080303@wanadoo.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,52 +23,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
-Cc: carmen <_@whats-your.name>
+To: =?ISO-8859-1?Q?Jean=2DPierre_Andr=E9?= <jean-pierre.andre@wanadoo.fr>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Jean-Pierre, thank you for the suggestions.
 
-This patch adds to alsa-firmware the firmware needed by the IndigoIOx and
-IndigoDJx cards. It's too long to post here inline. Please download the
-compressed patch at this url:
+Unfortunately, I have tried the boot options irqpoll, noapic with no luck.
+Additionally, I installed mplayer and it produced no sound through the
+speakers.  Finally, I added option snd-hda-intel model=3Dhp-m4 and hp-m5 in
+alsa-base with no luck.
 
-http://www.webalice.it/g_pochini/alsa-firmware_indigox.patch.bz2
+The whole time, if I plugged my headphones in, they would continue to work.
 
-The patch contains two c-coded blobs and the following patch:
+I did just notice one more thing. Although Linux shows my sounds as volume
+all the way up, and not muted.  The speaker mute button on the laptop
+appears in red with the mute symbol (meaning it's muted).  Any idea why that
+is?  Possible that it's the wrong driver?  This is bizarre as the headhpones
+work fine.
 
-diff -duNrp alsa-firmware__orig/echoaudio/Makefile.am alsa-firmware/echoaudio/Makefile.am
---- alsa-firmware__orig/echoaudio/Makefile.am	2008-06-07 22:18:23.000000000 +0200
-+++ alsa-firmware/echoaudio/Makefile.am	2009-02-01 22:15:02.000000000 +0100
-@@ -26,7 +26,9 @@ firmware_files =	\
- 		3g_asic.fw \
- 		indigo_dsp.fw \
- 		indigo_io_dsp.fw \
--		indigo_dj_dsp.fw
-+		indigo_iox_dsp.fw \
-+		indigo_dj_dsp.fw \
-+		indigo_djx_dsp.fw
- 
- noinst_PROGRAMS = fw_writer
- fw_writer_SOURCES = fw_writer.c
-@@ -57,7 +59,9 @@ EXTRA_DIST = 	DSP/LoaderDSP.c \
- 		ASIC/3G_ASIC.c \
- 		DSP/IndigoDSP.c \
- 		DSP/IndigoIODSP.c \
-+		DSP/IndigoIOxDSP.c \
- 		DSP/IndigoDJDSP.c \
-+		DSP/IndigoDJxDSP.c \
- 		fw_writer.c
- 
- CLEANFILES = $(firmware_files) fw_writer
-@@ -97,4 +101,6 @@ $(firmware_files): fw_writer
- 	./fw_writer ASIC/3G_ASIC.c 3g_asic.fw
- 	./fw_writer DSP/IndigoDSP.c indigo_dsp.fw
- 	./fw_writer DSP/IndigoIODSP.c indigo_io_dsp.fw
-+	./fw_writer DSP/IndigoIOxDSP.c indigo_iox_dsp.fw
- 	./fw_writer DSP/IndigoDJDSP.c indigo_dj_dsp.fw
-+	./fw_writer DSP/IndigoDJxDSP.c indigo_djx_dsp.fw
+Any ideas?
 
+On Sat, Jan 31, 2009 at 2:52 AM, Jean-Pierre Andr=E9 <
+jean-pierre.andre@wanadoo.fr> wrote:
 
-
---
-Giuliano.
+>
+> Hi,
+>
+> > Hi all, I have an HP DV4 1155-SE, I've been unable to get sound working
+> > through the speakers, although it does work through the headhpones. I r=
+an
+> > alsa-.upgrade which downloaded compiled, and installed 1.0.19 - still no
+> > luck.
+> >
+>
+> I have the same IDT codec 92HD71B7X on another
+> HP DV4 model, and I have tracked the problem to be
+> the kernel configuring IRQ 22 through the APIC, but
+> interrupts triggerring IRQ 20 (on kernel 2.6.27 and
+> alsa 1.0.19). It would be interesting if you could
+> confirm this by analyzing /proc/interrupts.
+>
+> The workarounds I know of are :
+> - adding irqpoll to the boot options,
+> - or adding noapic to the boot options,
+> - using mplayer to play music.
+>
+> There are with option "snd-hda-intel model=3Dhp-m4"
+> (this option is for HP DV5/DV7, but HP DV4
+> is probably different)
+>
+> I have not enough knowledge to tell where the problem
+> lies : kernel, apic, alsa.
+>
+> Regards
+>
+> Jean-Pierre
+>
+>
+> > I ran alsa-info, output here:
+> >
+> http://www.alsa-project.org/db/?f=3D844b7ee6468067460e17b7fc694e49052072a=
+26f
+> >
+> > I filed a bug, here:
+> > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D4374
+> >
+> > Any ideas?
+> >
+>
+>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
