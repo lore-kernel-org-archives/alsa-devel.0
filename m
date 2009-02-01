@@ -1,16 +1,14 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: [PATCH] msnd: add module description and license for
- the snd-msnd-lib
-Date: Sun, 1 Feb 2009 21:13:15 +0100
-Message-ID: <20090201211315.1b948350.krzysztof.h1@poczta.fm>
+From: Fernando Moro <fer_moritorey@hotmail.com>
+Subject: Write an alsa driver for the Lexicon Omega
+Date: Sun, 1 Feb 2009 21:35:52 +0100
+Message-ID: <BAY131-W2058F11B3ACB966220E0618DC40@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
-	[217.74.64.239])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1ADF51037F3
-	for <alsa-devel@alsa-project.org>; Sun,  1 Feb 2009 21:09:43 +0100 (CET)
+Received: from bay0-omc2-s4.bay0.hotmail.com (bay0-omc2-s4.bay0.hotmail.com
+	[65.54.246.140]) by alsa0.perex.cz (Postfix) with ESMTP id 66965243FB
+	for <alsa-devel@alsa-project.org>; Sun,  1 Feb 2009 21:35:54 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,35 +18,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-The missing module license generates warning
-during module loading.
+I would be very gratefull if someone could write an alsa driver for the Lex=
+icon lambda soundcard. I think there are a lot of people with the same prob=
+lem, but I don't have the necessary knowledge. I can provide the drivers fo=
+r windows.
+ =
 
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
----
- sound/isa/msnd/msnd.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+ =
 
-diff --git a/sound/isa/msnd/msnd.c b/sound/isa/msnd/msnd.c
-index 264e082..9064544 100644
---- a/sound/isa/msnd/msnd.c
-+++ b/sound/isa/msnd/msnd.c
-@@ -700,3 +700,6 @@ int snd_msnd_pcm(struct snd_card *card, int device,
- }
- EXPORT_SYMBOL(snd_msnd_pcm);
- 
-+MODULE_DESCRIPTION("Common routines for Turtle Beach Multisound drivers");
-+MODULE_LICENSE("GPL");
-+
--- 
-1.5.2.2
+I hope you can help me, and I hope your news about this device.
+ =
 
+Thank you.
+ =
 
-----------------------------------------------------------------------
-Konkurs Walentynkowy! Wybierz nagrode i wygraj!
-Sprawdz >>  http://link.interia.pl/f2039 
+Fernando.
+
+_________________________________________________________________
+Descubre c=F3mo compartir tus fotos con Windows Live. =A1Pru=E9balo ya! =
+
+http://home.live.com/
