@@ -1,16 +1,19 @@
-From: Tim Blechmann <tim@klingt.org>
+From: Florian Faber <faber@faberman.de>
 Subject: Re: RME HDSP rev 37 does not work on 64-bit linux
-Date: Sun, 01 Feb 2009 17:56:34 +0100
-Message-ID: <4985D442.50509@klingt.org>
-References: <70a871c80902010708s2a10ff8bobe79622949da62fe@mail.gmail.com>	<70a871c80902010713p2b49c7cbj98356d56bdb4ed62@mail.gmail.com>	<200902011616.49454.faber@faberman.de>
+Date: Sun, 1 Feb 2009 18:03:10 +0100
+Message-ID: <200902011803.10924.faber@faberman.de>
+References: <70a871c80902010708s2a10ff8bobe79622949da62fe@mail.gmail.com>
 	<70a871c80902010846i1059ab26t63c1d7e530126caf@mail.gmail.com>
+	<4985D442.50509@klingt.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3288087818792681767=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from klingt.org (mail.klingt.org [86.59.21.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id D67A22437C
-	for <alsa-devel@alsa-project.org>; Sun,  1 Feb 2009 17:56:34 +0100 (CET)
-In-Reply-To: <70a871c80902010846i1059ab26t63c1d7e530126caf@mail.gmail.com>
+Received: from india820.server4you.de (india820.server4you.de [85.25.152.101])
+	by alsa0.perex.cz (Postfix) with ESMTP id D5D0A24395
+	for <alsa-devel@alsa-project.org>; Sun,  1 Feb 2009 18:03:11 +0100 (CET)
+In-Reply-To: <4985D442.50509@klingt.org>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,79 +23,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dmitry Baikov <dsbaikov@gmail.com>
-Cc: Florian Faber <faber@faberman.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============3288087818792681767==
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigBC02FFF4F52E989BC80893E7"
+On Sunday 01 February 2009 17:56:34 Tim Blechmann wrote:
+> >>> under 32-bit ubuntu 8.10 with the same kernel 2.6.27-11-generic and
+> >>> the same version of alsa-*: 1.0.17-0ubuntu1,
+> >>> everything works fine both with cold boot + hdsploader and winxp ->
+> >>> reboot-> no hdsploader.
+> >>
+> >> It works fine with 64 bit linux, I have pure 64 bit machines and all
+> >> hdsp(e) cards work as they should. Must be something else then.
+> >
+> > Which distribution/kernel(s) do you use?
+> >
+> > I just revived my 64-bit Gentoo partition, and vanilla 2.6.28.2 says
+> > No Multiface or Digiface found, disabling the card.
+>
+> i have the same issue with my hdsp on a 64-bit kernel, using the
+> standard firmware (whatever is shipped with alsa). once i tried to debug
+> this issue, finding, that the card actually has the register value that
+> the card is not connected, although it is.
+>
+> usually, unloading/reloading the kernel module should resolve it,
+> though. maybe the hardware is not initialized correctly? are there some
+> more detailed information about the hdsp hardware available or did the
+> developers of the kernel module receive some specification under nda
+> restrictions?
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigBC02FFF4F52E989BC80893E7
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Ok, you two, please mail me the relevant contents of dmesg and the contents 
+of /proc/asound/cardX/hdsp together with a 'uname -a'.
 
->>> under 32-bit ubuntu 8.10 with the same kernel 2.6.27-11-generic and
->>> the same version of alsa-*: 1.0.17-0ubuntu1,
->>> everything works fine both with cold boot + hdsploader and winxp ->
->>> reboot-> no hdsploader.
->> It works fine with 64 bit linux, I have pure 64 bit machines and all h=
-dsp(e)
->> cards work as they should. Must be something else then.
->=20
-> Which distribution/kernel(s) do you use?
->=20
-> I just revived my 64-bit Gentoo partition, and vanilla 2.6.28.2 says
-> No Multiface or Digiface found, disabling the card.
-
-i have the same issue with my hdsp on a 64-bit kernel, using the
-standard firmware (whatever is shipped with alsa). once i tried to debug
-this issue, finding, that the card actually has the register value that
-the card is not connected, although it is.
-
-usually, unloading/reloading the kernel module should resolve it,
-though. maybe the hardware is not initialized correctly? are there some
-more detailed information about the hdsp hardware available or did the
-developers of the kernel module receive some specification under nda
-restrictions?
-
-tim
-
---=20
-tim@klingt.org
-http://tim.klingt.org
-
-You can play a shoestring if you're sincere
-  John Coltrane
+All I can say is that it works fine with all 2.6 kernels so far and I have 
+never used anything else but 64bit.
 
 
---------------enigBC02FFF4F52E989BC80893E7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkmF1EUACgkQdL+4qsZfVstobgCgjel/e11BZFUyrD1kL4kaIB1o
-iKgAoJGNluLp6Eb5gHrDvZHd0Op3iryW
-=B+9l
------END PGP SIGNATURE-----
-
---------------enigBC02FFF4F52E989BC80893E7--
-
---===============3288087818792681767==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============3288087818792681767==--
+Flo
+-- 
+Machines can do the work, so people have time to think.
+public key 6C002249          x-hkp://wwwkeys.eu.pgp.net
