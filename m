@@ -1,21 +1,16 @@
-From: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
-Subject: Re: [Fwd: HP DV4 1155 SE - No Sound through
-	speakers...]
-Date: Mon, 2 Feb 2009 17:48:32 -0200
-Message-ID: <200902021748.33859.herton@mandriva.com.br>
-References: <4983FE7A.1040201@wanadoo.fr>
-	<200902021620.52104.herton@mandriva.com.br>
-	<b71cdde20902021119v48c1c6cdo8a6983f8e165102a@mail.gmail.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: [PATCH 2.6.30] ASoC: fix build break in CS4270 codec
+	driver
+Date: Mon,  2 Feb 2009 14:50:45 -0600
+Message-ID: <1233607845-7354-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perninha.conectiva.com.br (perninha.conectiva.com.br
-	[200.140.247.100])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5935B243BC
-	for <alsa-devel@alsa-project.org>; Mon,  2 Feb 2009 20:48:21 +0100 (CET)
-In-Reply-To: <b71cdde20902021119v48c1c6cdo8a6983f8e165102a@mail.gmail.com>
-Content-Disposition: inline
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6815510380A
+	for <alsa-devel@alsa-project.org>; Mon,  2 Feb 2009 21:51:06 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,35 +20,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tim Barnette <tim.barnette@gmail.com>
-Cc: alsa-devel@alsa-project.org, Jean-Pierre =?iso-8859-15?q?Andr=E9?= <jean-pierre.andre@wanadoo.fr>
+To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Em Segunda-feira 02 Fevereiro 2009, =E0s 17:19:13, Tim Barnette escreveu:
-> Herton, I downloaded the patches. What do I do with them?  Will these
-> address MSI PCI enable and config mentioned in your email?
+Fix a oversight in the CS4270 codec driver that caused a build break.
 
-You can try/apply them and build with 2.6.28.2 kernel. It'll not set =
+Signed-off-by: Timur Tabi <timur@freescale.com>
+---
+ sound/soc/codecs/cs4270.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-enable_msi=3D1 by default as the subvendor/subdevice ids are not on the lis=
-t =
-
-(103c:30fb), just add them to sound/pci/hda/hda_intel.c at msi_list
-(see sound-alsa-hda-add-msi-quirk-list.patch) and make sure CONFIG_PCI_MSI =
-is =
-
-enabled on kernel config, or just load snd-hda-intel with option enable_msi=
-=3D1 =
-
-(and in this case you don't need to apply msi patch). But test before witho=
-ut =
-
-enabling msi, it may be not needed.
-
->
-> Thank You,
-> Tim Barnette
-
---
-[]'s
-Herton
+diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
+index e5f5afd..7962874 100644
+--- a/sound/soc/codecs/cs4270.c
++++ b/sound/soc/codecs/cs4270.c
+@@ -149,7 +149,7 @@ struct cs4270_mode_ratios {
+ 	u8 mclk;
+ };
+ 
+-static struct cs4270_mode_ratios[] = {
++static struct cs4270_mode_ratios cs4270_mode_ratios[] = {
+ 	{64, CS4270_MODE_4X, CS4270_MODE_DIV1},
+ #ifndef CONFIG_SND_SOC_CS4270_VD33_ERRATA
+ 	{96, CS4270_MODE_4X, CS4270_MODE_DIV15},
+-- 
+1.5.5
