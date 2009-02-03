@@ -1,85 +1,57 @@
-From: Philipp Zabel <philipp.zabel@gmail.com>
-Subject: [PATCH] ASoC: pxa-ssp: fix SSP port request
-Date: Tue,  3 Feb 2009 21:18:26 +0100
-Message-ID: <1233692306-13211-1-git-send-email-philipp.zabel@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: usr/include/linux/soundcard.h warnings for 'make headers_check'
+Date: Tue, 3 Feb 2009 21:27:23 +0100
+Message-ID: <200902032127.24526.arnd@arndb.de>
+References: <1232465902.3088.31.camel@localhost.localdomain> <s5h7i4psepm.wl%tiwai@suse.de> <20090121054138.GA26551@uranus.ravnborg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id DD9F6103861
-	for <alsa-devel@alsa-project.org>; Tue,  3 Feb 2009 21:18:30 +0100 (CET)
-Received: by ey-out-1920.google.com with SMTP id 3so232688eyh.56
-	for <alsa-devel@alsa-project.org>; Tue, 03 Feb 2009 12:18:30 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Eric Miao <eric.miao@marvell.com>, Mark Brown <broonie@sirena.org.uk>, Philipp Zabel <philipp.zabel@gmail.com>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1752637AbZBCU2I@vger.kernel.org>
+In-Reply-To: <20090121054138.GA26551@uranus.ravnborg.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sam Ravnborg <sam@ravnborg.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Jaswinder Singh Rajput <jaswinder@kernel.org>, alsa-devel@alsa-project.org, Ingo Molnar <mingo@elte.hu>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-PXA2xx/3xx SSP ports start from 1, not 0. Thus, the probe function
-requested the wrong SSP port. Correcting this unveiled another bug
-where ssp_init tries to request the already-requested SSP port again.
-So this patch replaces the ssp_init/exit calls with their internals
-from mach-pxa/ssp.c, leaving out the redundant ssp_request and the
-unneeded IRQ request. Effectively, that leaves us with not much more
-than enabling/disabling the SSP clock.
+On Wednesday 21 January 2009, Sam Ravnborg wrote:
+> 
+> > No, these are declarations for OSS-lib.
+> > It doesn't belong to kernel, but it's better to keep it for
+> > compatibility in some way.
+> 
+> But not in the kernel for sure.
+> I just checked and for example: OSS_init is not used anywhere in the kernel.
+> The kernel headers are not a "dump all your stuff" ground anymore.
+> 
+> So I encourage you to find a better home for the user space library definitons.
+> We can let the definiton stay for a while - but eventually they have to
+> be dropped from the kernel.
 
-Signed-off-by: Philipp Zabel <philipp.zabel@gmail.com>
----
- sound/soc/pxa/pxa-ssp.c |   15 ++++++++++-----
- 1 files changed, 10 insertions(+), 5 deletions(-)
+The last free version of OSSlib that matches this header is from ~1997, and
+no current distro appears to be shipping it. All new OSSlib versions (the
+oldest I found was from ~2003) contain in their documentation:
 
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index 73cb6b4..f9c6de5 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -21,6 +21,8 @@
- #include <linux/clk.h>
- #include <linux/io.h>
- 
-+#include <asm/irq.h>
-+
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/initval.h>
-@@ -221,9 +223,9 @@ static int pxa_ssp_startup(struct snd_pcm_substream *substream,
- 	int ret = 0;
- 
- 	if (!cpu_dai->active) {
--		ret = ssp_init(&priv->dev, cpu_dai->id + 1, SSP_NO_IRQ);
--		if (ret < 0)
--			return ret;
-+		priv->dev.port = cpu_dai->id + 1;
-+		priv->dev.irq = NO_IRQ;
-+		clk_enable(priv->dev.ssp->clk);
- 		ssp_disable(&priv->dev);
- 	}
- 	return ret;
-@@ -238,7 +240,7 @@ static void pxa_ssp_shutdown(struct snd_pcm_substream *substream,
- 
- 	if (!cpu_dai->active) {
- 		ssp_disable(&priv->dev);
--		ssp_exit(&priv->dev);
-+		clk_disable(priv->dev.ssp->clk);
- 	}
- }
- 
-@@ -751,7 +753,7 @@ static int pxa_ssp_probe(struct platform_device *pdev,
- 	if (!priv)
- 		return -ENOMEM;
- 
--	priv->dev.ssp = ssp_request(dai->id, "SoC audio");
-+	priv->dev.ssp = ssp_request(dai->id + 1, "SoC audio");
- 	if (priv->dev.ssp == NULL) {
- 		ret = -ENODEV;
- 		goto err_priv;
--- 
-1.5.6.5
+"Older versions of some OSS include files are distributed
+ with various operating systems. There is no danger in
+ using them but applications written for more recent OSS
+ versions will not compile with older header files.
+
+ The latest versions of these include files (such as
+ soundcard.h) are distributed in ../include/sys. Use
+ the -I/usr/lib/oss/include switch when compiling
+ programs. Alternatively copy these files to /usr/include/sys
+ so that they replace the original ones."
+
+I think it's safe enough to assume that everyone that builds against
+OSSlib by now also has the correct version of the header installed.
+Consequently, we should just drop the #ifndef __KERNEL__ section
+of soundcard.h (all the macros in there depend on the extern
+declarations), and maybe add an
+
+#ifdef OSSLIB
+#error need to use <sys/soundcard.h> from libOSSlib
+#endif
+
+	Arnd <><
