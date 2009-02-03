@@ -1,21 +1,20 @@
 From: pHilipp Zabel <philipp.zabel@gmail.com>
-Subject: Re: [PATCH 2/4] ASoC: pxa-ssp: PXA2xx/3xx SSP ports
-	start from 1, not 	0
-Date: Tue, 3 Feb 2009 18:13:22 +0100
-Message-ID: <74d0deb30902030913u581debd1pa31eda017a49524c@mail.gmail.com>
+Subject: Re: [PATCH 4/4] ASoC: pxa-ssp: select PXA_SSP
+Date: Tue, 3 Feb 2009 18:15:16 +0100
+Message-ID: <74d0deb30902030915x55d36e10yd293cf9da2a27172@mail.gmail.com>
 References: <1233677983-23710-1-git-send-email-philipp.zabel@gmail.com>
-	<1233677983-23710-3-git-send-email-philipp.zabel@gmail.com>
-	<20090203164715.GH23827@sirena.org.uk>
+	<1233677983-23710-5-git-send-email-philipp.zabel@gmail.com>
+	<20090203163549.GF23827@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5DB7D103881
-	for <alsa-devel@alsa-project.org>; Tue,  3 Feb 2009 18:13:23 +0100 (CET)
-Received: by yw-out-1718.google.com with SMTP id 9so886521ywk.2
-	for <alsa-devel@alsa-project.org>; Tue, 03 Feb 2009 09:13:22 -0800 (PST)
-In-Reply-To: <20090203164715.GH23827@sirena.org.uk>
+Received: from rn-out-0910.google.com (rn-out-0910.google.com [64.233.170.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id 366DA103891
+	for <alsa-devel@alsa-project.org>; Tue,  3 Feb 2009 18:15:17 +0100 (CET)
+Received: by rn-out-0910.google.com with SMTP id j78so1967025rne.21
+	for <alsa-devel@alsa-project.org>; Tue, 03 Feb 2009 09:15:16 -0800 (PST)
+In-Reply-To: <20090203163549.GF23827@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,37 +28,17 @@ To: Mark Brown <broonie@sirena.org.uk>
 Cc: Vasily Khoruzhick <anarsoul@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 3, 2009 at 5:47 PM, Mark Brown <broonie@sirena.org.uk> wrote:
-> On Tue, Feb 03, 2009 at 05:19:41PM +0100, Philipp Zabel wrote:
+On Tue, Feb 3, 2009 at 5:35 PM, Mark Brown <broonie@sirena.org.uk> wrote:
+> On Tue, Feb 03, 2009 at 05:19:43PM +0100, Philipp Zabel wrote:
+>> snd-soc-pxa-ssp depends on PXA_SSP being enabled.
+>> Let SND_PXA_SOC_SSP select it, like SPI_PXA2XX does.
+>
 >> Signed-off-by: Philipp Zabel <philipp.zabel@gmail.com>
 >
-> Meh, all the display names use the documentation names and the id is
-> used for indexing into arrays (which may well be why you're not getting
-> any audio out...).  I'd be more inclined to leave this as-is but if not
-> it needs to adjust all the array usages.
+> Unfortunately Kconfig ignores selects from things that are themselves
+> selected so this won't do anything.
 
-Meh, indeed. Jumping between pxa2xx-ssp and pxa-ssp must have confused
-me. A lot.
-The only thing wrong with pxa-ssp is that it requests the wrong SSP port, then:
-
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index 73cb6b4..7f7c23e 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -751,7 +751,7 @@ static int pxa_ssp_probe(struct platform_device *pdev,
-        if (!priv)
-                return -ENOMEM;
-
--       priv->dev.ssp = ssp_request(dai->id, "SoC audio");
-+       priv->dev.ssp = ssp_request(dai->id + 1, "SoC audio");
-        if (priv->dev.ssp == NULL) {
-                ret = -ENODEV;
-                goto err_priv;
-
-But this isn't right either. Because if we request the correct SSP
-port here, the subsequent request of the same SSP port in ssp_init
-(called from ops->startup) fails.
-How to fix?
+Ok. I guess I'll just select it from MACH_MAGICIAN then.
 
 regards
 Philipp
