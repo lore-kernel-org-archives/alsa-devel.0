@@ -1,22 +1,20 @@
-From: Dmitry Baikov <dsbaikov@gmail.com>
-Subject: Re: RME HDSP rev 37 does not work on 64-bit linux
-Date: Tue, 3 Feb 2009 14:58:41 +0300
-Message-ID: <70a871c80902030358x469723c4t9eb4af574370d289@mail.gmail.com>
-References: <70a871c80902010708s2a10ff8bobe79622949da62fe@mail.gmail.com>
-	<200902011616.49454.faber@faberman.de>
-	<70a871c80902010846i1059ab26t63c1d7e530126caf@mail.gmail.com>
-	<200902020935.35530.faber@faberman.de>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: asoc: s3c24xx+uda1380 - some questions
+Date: Tue, 3 Feb 2009 12:05:08 +0000
+Message-ID: <20090203120504.GC23827@sirena.org.uk>
+References: <200901271519.47119.anarsoul@gmail.com>
+	<200902030146.38863.anarsoul@gmail.com>
+	<20090203114136.GA23827@sirena.org.uk>
+	<200902031357.12297.anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f19.google.com (mail-fx0-f19.google.com
-	[209.85.220.19])
-	by alsa0.perex.cz (Postfix) with ESMTP id D7612103830
-	for <alsa-devel@alsa-project.org>; Tue,  3 Feb 2009 12:59:58 +0100 (CET)
-Received: by fxm12 with SMTP id 12so2005919fxm.8
-	for <alsa-devel@alsa-project.org>; Tue, 03 Feb 2009 03:59:58 -0800 (PST)
-In-Reply-To: <200902020935.35530.faber@faberman.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA6E8103830
+	for <alsa-devel@alsa-project.org>; Tue,  3 Feb 2009 13:05:08 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <200902031357.12297.anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,43 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Florian Faber <faber@faberman.de>
-Cc: alsa-devel@alsa-project.org
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: alsa-devel@alsa-project.org, pHilipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 2, 2009 at 11:35 AM, Florian Faber <faber@faberman.de> wrote:
-> Dmitry,
->
->> I just revived my 64-bit Gentoo partition, and vanilla 2.6.28.2 says
->> No Multiface or Digiface found, disabling the card.
->
-> Ok, you are using a notebook. I have seen problems with notebooks when the
-> period between powering up the cardbus socket and trying to access the card
-> wasn't long enough, the interface card isn't initialized fast enough.
-Actually, this is desktop with pci-pcmcia adapter card.
-I just tried it in my laptop with 64-bit Ubuntu 8.10 and everything
-works perfectly.
+On Tue, Feb 03, 2009 at 01:57:12PM +0200, Vasily Khoruzhick wrote:
 
-> Please try the following: Go to line 5059 in /sound/pci/rme9652/hdsp.c and
-> change the line
->        ssleep(2);
-> to
->        ssleep(5);
->
-> Compile it and try again.
+> Yep, I'm pretty sure. It will restore WSPLL bit if it was set before. It only 
+> changes behavior of driver if SYSCLK was chosen. It seems that FIXMEs can be 
+> removed, I can resubmit patch if you want.
 
-It waits for 5 seconds according to dmesg, but the result is the same:
-card disabled.
-
-The summary of my experiments so far:
-everywhere Ubuntu is 8.10, kernel 2.6.27-11
-
-laptop + cardbus + 64-bit ubuntu: WORKS
-
-desktop + pci-pcmcia adapter:
-ubuntu 32: WORKS
-ubuntu 64: can't upload firmware
-gentoo 64 + vanilla kernel 2.6.28.2: can't recognize external box,
-disables the card.
-
-Dmitry.
+Please do.  You should at least include some text in the patch
+description explaining what you're doing.
