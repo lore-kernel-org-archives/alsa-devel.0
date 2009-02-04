@@ -1,82 +1,97 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: [PATCH 1/4] ASoC: uda1380: split set_dai_fmt into
-	_both, _playback and _capture variants
-Date: Wed, 4 Feb 2009 09:19:26 +0200
-Message-ID: <200902040919.32728.anarsoul@gmail.com>
-References: <1233677983-23710-1-git-send-email-philipp.zabel@gmail.com>
-	<20090203164132.GG23827@sirena.org.uk>
-	<74d0deb30902030845h2320deafj7f66921b22f91069@mail.gmail.com>
+From: Jaswinder Singh Rajput <jaswinder@kernel.org>
+Subject: Re: usr/include/linux/soundcard.h warnings for 'make headers_check'
+Date: Wed, 04 Feb 2009 14:04:54 +0530
+Message-ID: <1233736494.3198.15.camel@localhost.localdomain>
+References: <1232465902.3088.31.camel@localhost.localdomain>
+	 <s5h7i4psepm.wl%tiwai@suse.de> <20090121054138.GA26551@uranus.ravnborg.org>
+	 <200902032127.24526.arnd@arndb.de>
+	 <1233720252.3595.5.camel@localhost.localdomain>
+	 <s5hhc3ak8ns.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0323633284430623675=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f16.google.com (mail-ew0-f16.google.com
-	[209.85.219.16]) by alsa0.perex.cz (Postfix) with ESMTP id E3A8F24432
-	for <alsa-devel@alsa-project.org>; Wed,  4 Feb 2009 08:20:02 +0100 (CET)
-Received: by ewy9 with SMTP id 9so449432ewy.8
-	for <alsa-devel@alsa-project.org>; Tue, 03 Feb 2009 23:20:02 -0800 (PST)
-In-Reply-To: <74d0deb30902030845h2320deafj7f66921b22f91069@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: pHilipp Zabel <philipp.zabel@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753236AbZBDIgA@vger.kernel.org>
+In-Reply-To: <s5hhc3ak8ns.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Arnd Bergmann <arnd@arndb.de>, Sam Ravnborg <sam@ravnborg.org>, alsa-devel@alsa-project.org, Ingo Molnar <mingo@elte.hu>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============0323633284430623675==
-Content-Type: multipart/signed;
-  boundary="nextPart1481909.3vLaKPRf7W";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+On Wed, 2009-02-04 at 07:39 +0100, Takashi Iwai wrote:
+> At Wed, 04 Feb 2009 09:34:12 +0530,
+> Jaswinder Singh Rajput wrote:
+> > 
+> > On Tue, 2009-02-03 at 21:27 +0100, Arnd Bergmann wrote:
+> > > On Wednesday 21 January 2009, Sam Ravnborg wrote:
+> > > > 
+> > > > > No, these are declarations for OSS-lib.
+> > > > > It doesn't belong to kernel, but it's better to keep it for
+> > > > > compatibility in some way.
+> > > > 
+> > > > But not in the kernel for sure.
+> > > > I just checked and for example: OSS_init is not used anywhere in the kernel.
+> > > > The kernel headers are not a "dump all your stuff" ground anymore.
+> > > > 
+> > > > So I encourage you to find a better home for the user space library definitons.
+> > > > We can let the definiton stay for a while - but eventually they have to
+> > > > be dropped from the kernel.
+> > > 
+> > > The last free version of OSSlib that matches this header is from ~1997, and
+> > > no current distro appears to be shipping it. All new OSSlib versions (the
+> > > oldest I found was from ~2003) contain in their documentation:
+> > > 
+> > > "Older versions of some OSS include files are distributed
+> > >  with various operating systems. There is no danger in
+> > >  using them but applications written for more recent OSS
+> > >  versions will not compile with older header files.
+> > > 
+> > >  The latest versions of these include files (such as
+> > >  soundcard.h) are distributed in ../include/sys. Use
+> > >  the -I/usr/lib/oss/include switch when compiling
+> > >  programs. Alternatively copy these files to /usr/include/sys
+> > >  so that they replace the original ones."
+> > > 
+> > > I think it's safe enough to assume that everyone that builds against
+> > > OSSlib by now also has the correct version of the header installed.
+> > > Consequently, we should just drop the #ifndef __KERNEL__ section
+> > > of soundcard.h (all the macros in there depend on the extern
+> > > declarations), and maybe add an
+> > > 
+> > > #ifdef OSSLIB
+> > > #error need to use <sys/soundcard.h> from libOSSlib
+> > > #endif
+> > > 
+> > 
+> > sys/soundcard.h is also pointing to linux/soundcard.h, we need to move
+> > all this stuff to sys/soundcard.h.
+> 
+> All which stuff?
+> If you are referring to OSS-lib stuff in soundcard.h, then I'm for
+> it.
+> 
 
---nextPart1481909.3vLaKPRf7W
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+We need to fix things in such a way that we can replace:
+#if (!defined(__KERNEL__) && !defined(KERNEL) && !defined(INKERNEL) && !defined(_KERNEL)) || defined(USE_SEQ_MACROS)
+with
+#ifdef __KERNEL__
+and only keep those things in this file which we need in kernel and move
+userspace declarations which are not required for kernel to
+sys/soundcard.h
 
-On Tuesday 03 February 2009 18:45:10 pHilipp Zabel wrote:
-> Not that I am aware of. Maybe Vasily can test this patch first.
-> (I can only test the dual interface case.)
->
-> regards
-> Philipp
 
-This patch breaks nothing for me, uda1380_set_dai_fmt_both was used in my=20
-configuration.
+> Also giving an error with an ifdef OSSLIB like Arnd suggested would be
+> nice, too.  But maybe we need one more ifdef such as
+> 
+> #ifdef OSSLIB
+> #ifndef _SYS_SOUNDCARD_H
+> #error ...
+> #endif
+> #endif
+> 
 
-Regards
-Vasily
+hmm, so you want to confirm that we only come through sys/soundcard.h
+for OSSLIB
 
---nextPart1481909.3vLaKPRf7W
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-
-iEYEABECAAYFAkmJQYQACgkQRM6pQpltKE4v6wCghxe1HehLr04ruVgcG7n1Ba5I
-xxQAoIyJz41SjFZyiMKssQMNQP3qnUzr
-=L9oJ
------END PGP SIGNATURE-----
-
---nextPart1481909.3vLaKPRf7W--
-
---===============0323633284430623675==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============0323633284430623675==--
+Thanks,
+--
+JSR
