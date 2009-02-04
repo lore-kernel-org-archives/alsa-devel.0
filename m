@@ -1,67 +1,35 @@
-From: Jaswinder Singh Rajput <jaswinder@kernel.org>
-Subject: Re: usr/include/linux/soundcard.h warnings for 'make headers_check'
-Date: Wed, 04 Feb 2009 09:34:12 +0530
-Message-ID: <1233720252.3595.5.camel@localhost.localdomain>
-References: <1232465902.3088.31.camel@localhost.localdomain>
-	 <s5h7i4psepm.wl%tiwai@suse.de> <20090121054138.GA26551@uranus.ravnborg.org>
-	 <200902032127.24526.arnd@arndb.de>
+From: Mandar Joshi <emailmandar@yahoo.com>
+Subject: Creative X-Fi USB 5.1 Driver
+Date: Tue, 3 Feb 2009 20:36:15 -0800 (PST)
+Message-ID: <531396.7445.qm@web35601.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755449AbZBDEFS@vger.kernel.org>
-In-Reply-To: <200902032127.24526.arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Sam Ravnborg <sam@ravnborg.org>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Ingo Molnar <mingo@elte.hu>, LKML <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from web35601.mail.mud.yahoo.com (web35601.mail.mud.yahoo.com
+	[66.163.179.140])
+	by alsa0.perex.cz (Postfix) with SMTP id 1846A103875
+	for <alsa-devel@alsa-project.org>; Wed,  4 Feb 2009 05:36:16 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2009-02-03 at 21:27 +0100, Arnd Bergmann wrote:
-> On Wednesday 21 January 2009, Sam Ravnborg wrote:
-> > 
-> > > No, these are declarations for OSS-lib.
-> > > It doesn't belong to kernel, but it's better to keep it for
-> > > compatibility in some way.
-> > 
-> > But not in the kernel for sure.
-> > I just checked and for example: OSS_init is not used anywhere in the kernel.
-> > The kernel headers are not a "dump all your stuff" ground anymore.
-> > 
-> > So I encourage you to find a better home for the user space library definitons.
-> > We can let the definiton stay for a while - but eventually they have to
-> > be dropped from the kernel.
-> 
-> The last free version of OSSlib that matches this header is from ~1997, and
-> no current distro appears to be shipping it. All new OSSlib versions (the
-> oldest I found was from ~2003) contain in their documentation:
-> 
-> "Older versions of some OSS include files are distributed
->  with various operating systems. There is no danger in
->  using them but applications written for more recent OSS
->  versions will not compile with older header files.
-> 
->  The latest versions of these include files (such as
->  soundcard.h) are distributed in ../include/sys. Use
->  the -I/usr/lib/oss/include switch when compiling
->  programs. Alternatively copy these files to /usr/include/sys
->  so that they replace the original ones."
-> 
-> I think it's safe enough to assume that everyone that builds against
-> OSSlib by now also has the correct version of the header installed.
-> Consequently, we should just drop the #ifndef __KERNEL__ section
-> of soundcard.h (all the macros in there depend on the extern
-> declarations), and maybe add an
-> 
-> #ifdef OSSLIB
-> #error need to use <sys/soundcard.h> from libOSSlib
-> #endif
-> 
+Hello,
 
-sys/soundcard.h is also pointing to linux/soundcard.h, we need to move
-all this stuff to sys/soundcard.h.
+I was reading the USB Audio Specs from http://www.usb.org/developers/devclass_docs
+The document talks about Effect Unit Descriptors and few other descriptors.There is no mention of such descriptors in the &#39;lsusb -v&#39; output for the USB X-Fi 5.1
+Does this mean thet the X-Fi,Crystalizer features of the USB X-Fi are implemented purely in software?
+Here is a link to the lsusb output http://mndar.phpnet.us/usbxfi/files/creative.txt
 
-Sam also requested to move this stuff to other place.
+The document &quot;Audio20 final.pdf&quot; also mentions that bDeviceClass, bDeviceSubClass and bDeviceProtocol should have values 0xEF, 0x02, and 0x01 respectively but in the &#39;lsusb -v&#39; output all three values are 0. Any idea why it is so?
 
-We are waiting for Takashi reply.
-
---
-JSR
+Regards
+Mandar Joshi
