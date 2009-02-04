@@ -1,21 +1,20 @@
 From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-Subject: Re: [PATCH 3/3] Add ALSA driver for Atmel AC97
- controller
-Date: Wed, 4 Feb 2009 13:16:42 +0100
-Message-ID: <20090204131642.73cc2085@hcegtvedt>
+Subject: Re: [PATCH 2/3] Add ALSA driver for Atmel Audio
+ Bitstream	DAC
+Date: Wed, 4 Feb 2009 13:18:35 +0100
+Message-ID: <20090204131835.522552c3@hcegtvedt>
 References: <1233748114-6353-1-git-send-email-hans-christian.egtvedt@atmel.com>
 	<1233748114-6353-2-git-send-email-hans-christian.egtvedt@atmel.com>
 	<1233748114-6353-3-git-send-email-hans-christian.egtvedt@atmel.com>
-	<1233748114-6353-4-git-send-email-hans-christian.egtvedt@atmel.com>
-	<s5hd4dy9zem.wl%tiwai@suse.de>
+	<s5hfxiu9zth.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from relay.atmel.no (relay.atmel.no [80.232.32.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 00DFF24385
-	for <alsa-devel@alsa-project.org>; Wed,  4 Feb 2009 13:16:43 +0100 (CET)
-In-Reply-To: <s5hd4dy9zem.wl%tiwai@suse.de>
+	by alsa0.perex.cz (Postfix) with ESMTP id 2E3AD24385
+	for <alsa-devel@alsa-project.org>; Wed,  4 Feb 2009 13:18:37 +0100 (CET)
+In-Reply-To: <s5hfxiu9zth.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,89 +28,72 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 04 Feb 2009 13:09:37 +0100
+On Wed, 04 Feb 2009 13:00:42 +0100
 Takashi Iwai <tiwai@suse.de> wrote:
 
-> At Wed,  4 Feb 2009 12:48:34 +0100,
+> At Wed,  4 Feb 2009 12:48:33 +0100,
 > Hans-Christian Egtvedt wrote:
-
-<snipp>
-
-> > diff --git a/include/sound/atmel-ac97c.h
-> > b/include/sound/atmel-ac97c.h new file mode 100644
-> > index 0000000..d5daddd
-> > --- /dev/null
-> > +++ b/include/sound/atmel-ac97c.h
-> 
-> Is it needed to be in include/sound directory?
-> If it's just for a local driver, better to put in the local directory.
-> 
-
-Yes, the header must be available for the boards so they can see the
-platform data struct. This is how the DMA slave and GPIO for reset line
-is passed to the AC97C driver.
-
-> > diff --git a/sound/avr32/ac97c.c b/sound/avr32/ac97c.c
-> > new file mode 100644
-> > index 0000000..218d666
-> > --- /dev/null
-> > +++ b/sound/avr32/ac97c.c
-> > @@ -0,0 +1,994 @@
-> ...
-> > +static int atmel_ac97c_playback_hw_params(struct snd_pcm_substream
+> > 
+> > +static int at32_abdac_hw_params(struct snd_pcm_substream
 > > *substream,
 > > +		struct snd_pcm_hw_params *hw_params)
 > > +{
-> > +	struct atmel_ac97c *chip =
-> > snd_pcm_substream_chip(substream);
+> > +	struct at32_abdac *dac = snd_pcm_substream_chip(substream);
 > > +	int retval;
 > > +
 > > +	retval = snd_pcm_lib_malloc_pages(substream,
-> > +
-> > params_buffer_bytes(hw_params));
+> > +			params_buffer_bytes(hw_params));
 > > +	if (retval)
 > > +		return retval;
 > 
-> Should be a negative-check.
+> snd_pcm_lib_malloc_pages() returns 1 if the buffer is changed
+> (e.g. reallocation).  So, this check should be if (retval < 0).
 > 
 
-OK
+Ah, okay, I'll fix this.
 
-> > +static int atmel_ac97c_capture_hw_params(struct snd_pcm_substream
-> > *substream,
-> > +		struct snd_pcm_hw_params *hw_params)
-> > +{
-> > +	struct atmel_ac97c *chip =
-> > snd_pcm_substream_chip(substream);
-> > +	int retval;
+> > +static int at32_abdac_trigger(struct snd_pcm_substream *substream,
+> > int cmd) +{
+> > +	struct at32_abdac *dac = snd_pcm_substream_chip(substream);
+> > +	int retval = -EINVAL;
 > > +
-> > +	retval = snd_pcm_lib_malloc_pages(substream,
-> > +
-> > params_buffer_bytes(hw_params));
-> > +	if (retval)
-> > +		return retval;
+> > +	switch (cmd) {
+> > +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE: /* fall through */
+> > +	case SNDRV_PCM_TRIGGER_RESUME: /* fall through */
+> > +	case SNDRV_PCM_TRIGGER_START:
+> > +		clk_enable(dac->sample_clk);
+> > +		retval = dw_dma_cyclic_start(dac->dma.chan);
+> > +		if (retval)
+> > +			goto out;
+> > +		dac_writel(dac, CTRL, DAC_BIT(EN));
+> > +		break;
+> > +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH: /* fall through */
+> > +	case SNDRV_PCM_TRIGGER_SUSPEND: /* fall through */
+> > +	case SNDRV_PCM_TRIGGER_STOP:
+> > +		set_bit(DMA_STOP, &dac->flags);
+> > +		dw_dma_cyclic_stop(dac->dma.chan);
+> > +		dac_writel(dac, DATA, 0);
+> > +		dac_writel(dac, CTRL, 0);
+> > +		clk_disable(dac->sample_clk);
+> > +		break;
 > 
-> Ditto.
+> No retval is set for these cases?
 > 
 
-OK
+Nope, they are all void return functions and will always complete
+successfully.
 
-> > +static int __devinit atmel_ac97c_probe(struct platform_device
-> > *pdev)
-> ...
-> > +	mutex_init(&opened_mutex);
-> 
-> This is superfluous.
-> 
-> > +
+> > +static int __devinit at32_abdac_probe(struct platform_device *pdev)
+> (snip)
 > > +	retval = -ENOMEM;
 > > +	card = snd_card_new(SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
-> > +			THIS_MODULE, sizeof(struct atmel_ac97c));
+> > +			THIS_MODULE, sizeof(struct at32_abdac));
 > 
-> Use snd_card_create().
+> The recent version has a newer API, snd_card_create().  This function
+> gives the error code.  Please use the new function instead.
 > 
 
-OK, I'll convert to using this for both drivers.
+Okay, no problem, will redo with the new API.
 
 -- 
 Best regards,
