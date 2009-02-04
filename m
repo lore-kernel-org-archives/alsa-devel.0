@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2.6.30] ASoC: add additional controls to
-	the CS4270	codec driver
-Date: Wed, 4 Feb 2009 14:08:33 +0000
-Message-ID: <20090204140832.GA27713@rakim.wolfsonmicro.main>
-References: <1233680972-1443-1-git-send-email-timur@freescale.com>
+From: Kusanagi Kouichi <slash@ma.neweb.ne.jp>
+Subject: Re: [PATCH] ALSA: hda - Add digital BEEP
+	generator	support for Realtek codecs.
+Date: Wed, 4 Feb 2009 23:20:12 +0900
+Message-ID: <200902041420132766610006MA66@nm06mta.auone-net.jp>
+References: <200902031428523216360006MA62@nm06mta.auone-net.jp>
+	<s5hbptjbna3.wl%tiwai@suse.de>
+	<200902040837524161510006MA49@nm06mta.auone-net.jp>
+	<s5hocxia1tx.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D82401038BF
-	for <alsa-devel@alsa-project.org>; Wed,  4 Feb 2009 15:08:34 +0100 (CET)
+Received: from nmomta.auone-net.jp (nm06omta07.auone-net.jp [219.125.112.24])
+	by alsa0.perex.cz (Postfix) with SMTP id D909824405
+	for <alsa-devel@alsa-project.org>; Wed,  4 Feb 2009 15:20:16 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1233680972-1443-1-git-send-email-timur@freescale.com>
+In-Reply-To: <s5hocxia1tx.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +25,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 03, 2009 at 11:09:32AM -0600, Timur Tabi wrote:
+On Wed, Feb 04, 2009 at 12:17:14PM +0100, Takashi Iwai wrote:
+> Fair enough.
+> 
+> Though, there is still one problem -- not all models enabled the
+> analog beep path.  So, the next step is to create beep controls in all
+> possible situations.
 
-> Remove CONFIG_SND_SOC_CS4270_HWMUTE and always allow ASoC to control the mute
-> bits.  The driver previously and erroneously assumed that these bits
-> control only external muting circuitry, but they also control internal
-> muting circuitry, so they should always be used.
+I'll try later.
 
-As discussed I'm holding off on this until the I2C folks decide what to
-do about the signal handling issue you found on teardown.
+
+> But I'm going to apply your patch as now.
+> Could you repost the patch with a proper summary, a changelog text and
+> your sign-off so that I can apply it as is?
+
+Sure. I'll send the patch. Thank you.
