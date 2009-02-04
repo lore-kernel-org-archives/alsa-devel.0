@@ -1,104 +1,105 @@
-From: Tim Blechmann <tim@klingt.org>
-Subject: alsa license question
-Date: Wed, 04 Feb 2009 10:07:58 +0100
-Message-ID: <49895AEE.1000005@klingt.org>
+From: Jaswinder Singh Rajput <jaswinder@kernel.org>
+Subject: Re: usr/include/linux/soundcard.h warnings for 'make headers_check'
+Date: Wed, 04 Feb 2009 16:07:57 +0530
+Message-ID: <1233743877.5563.7.camel@localhost.localdomain>
+References: <1232465902.3088.31.camel@localhost.localdomain>
+	 <s5h7i4psepm.wl%tiwai@suse.de> <20090121054138.GA26551@uranus.ravnborg.org>
+	 <200902032127.24526.arnd@arndb.de>
+	 <1233720252.3595.5.camel@localhost.localdomain>
+	 <s5hhc3ak8ns.wl%tiwai@suse.de>
+	 <1233736494.3198.15.camel@localhost.localdomain>
+	 <s5h4ozak20l.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3055342918043358052=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3DFD82444A
-	for <alsa-devel@alsa-project.org>; Wed,  4 Feb 2009 10:10:02 +0100 (CET)
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1LUdli-0000qN-7M
-	for alsa-devel@alsa-project.org; Wed, 04 Feb 2009 09:10:02 +0000
-Received: from 85-127-251-132.dynamic.xdsl-line.inode.at ([85.127.251.132])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 04 Feb 2009 09:10:02 +0000
-Received: from tim by 85-127-251-132.dynamic.xdsl-line.inode.at with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 04 Feb 2009 09:10:02 +0000
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Joffrey Heyraud <heyraud@digigram.com>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754582AbZBDKio@vger.kernel.org>
+In-Reply-To: <s5h4ozak20l.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Arnd Bergmann <arnd@arndb.de>, Sam Ravnborg <sam@ravnborg.org>, alsa-devel@alsa-project.org, Ingo Molnar <mingo@elte.hu>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============3055342918043358052==
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigB5294236A42A2B8CEFAE40FE"
+On Wed, 2009-02-04 at 10:03 +0100, Takashi Iwai wrote:
+> At Wed, 04 Feb 2009 14:04:54 +0530,
+> Jaswinder Singh Rajput wrote:
+> > 
+> > On Wed, 2009-02-04 at 07:39 +0100, Takashi Iwai wrote:
+> > > At Wed, 04 Feb 2009 09:34:12 +0530,
+> > > Jaswinder Singh Rajput wrote:
+> > > > 
+> > > > On Tue, 2009-02-03 at 21:27 +0100, Arnd Bergmann wrote:
+> > > > > On Wednesday 21 January 2009, Sam Ravnborg wrote:
+> > > > > > 
+> > > > > > > No, these are declarations for OSS-lib.
+> > > > > > > It doesn't belong to kernel, but it's better to keep it for
+> > > > > > > compatibility in some way.
+> > > > > > 
+> > > > > > But not in the kernel for sure.
+> > > > > > I just checked and for example: OSS_init is not used anywhere in the kernel.
+> > > > > > The kernel headers are not a "dump all your stuff" ground anymore.
+> > > > > > 
+> > > > > > So I encourage you to find a better home for the user space library definitons.
+> > > > > > We can let the definiton stay for a while - but eventually they have to
+> > > > > > be dropped from the kernel.
+> > > > > 
+> > > > > The last free version of OSSlib that matches this header is from ~1997, and
+> > > > > no current distro appears to be shipping it. All new OSSlib versions (the
+> > > > > oldest I found was from ~2003) contain in their documentation:
+> > > > > 
+> > > > > "Older versions of some OSS include files are distributed
+> > > > >  with various operating systems. There is no danger in
+> > > > >  using them but applications written for more recent OSS
+> > > > >  versions will not compile with older header files.
+> > > > > 
+> > > > >  The latest versions of these include files (such as
+> > > > >  soundcard.h) are distributed in ../include/sys. Use
+> > > > >  the -I/usr/lib/oss/include switch when compiling
+> > > > >  programs. Alternatively copy these files to /usr/include/sys
+> > > > >  so that they replace the original ones."
+> > > > > 
+> > > > > I think it's safe enough to assume that everyone that builds against
+> > > > > OSSlib by now also has the correct version of the header installed.
+> > > > > Consequently, we should just drop the #ifndef __KERNEL__ section
+> > > > > of soundcard.h (all the macros in there depend on the extern
+> > > > > declarations), and maybe add an
+> > > > > 
+> > > > > #ifdef OSSLIB
+> > > > > #error need to use <sys/soundcard.h> from libOSSlib
+> > > > > #endif
+> > > > > 
+> > > > 
+> > > > sys/soundcard.h is also pointing to linux/soundcard.h, we need to move
+> > > > all this stuff to sys/soundcard.h.
+> > > 
+> > > All which stuff?
+> > > If you are referring to OSS-lib stuff in soundcard.h, then I'm for
+> > > it.
+> > > 
+> > 
+> > We need to fix things in such a way that we can replace:
+> > #if (!defined(__KERNEL__) && !defined(KERNEL) && !defined(INKERNEL) && !defined(_KERNEL)) || defined(USE_SEQ_MACROS)
+> > with
+> > #ifdef __KERNEL__
+> > and only keep those things in this file which we need in kernel and move
+> > userspace declarations which are not required for kernel to
+> > sys/soundcard.h
+> 
+> Which means to remove only the OSS-lib part.  Some other macros are
+> used in sound/oss/*.c.  And, there are cases that apps want to use
+> SEQ* macros without oss-lib (which are actually most cases).
+> 
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigB5294236A42A2B8CEFAE40FE
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In kernel space we use USE_SEQ_MACROS in:
+sound/oss/mpu401.c
+sound/oss/midi_synth.c
 
-hi all,
+so we can replace
+#if (!defined(__KERNEL__) && !defined(KERNEL) && !defined(INKERNEL) && !defined(_KERNEL)) || defined(USE_SEQ_MACROS)
+with
+#ifdef USE_SEQ_MACROS
+and keep SEQ* macros used by above files so we do not break kernel and
+move rest of the block in sys/soundcard.h so userspace will be also
+happy.
 
-i am currently working on an alsa driver for the digigram lx6464es
-interface, based on the sources of the windows driver.
-
-since i would like to include some parts of the windows source code,
-(mainly the header files with register declarations) to the alsa driver,
-i have a few question:
-- is it ok, if these files don't match the coding style of the linux kern=
-el?
-- digigram assured, that i am allowed to include source code to the
-linux driver. most of the files have the copyright notice:
-COPYRIGHT (some year) DIGIGRAM. ALL RIGHTS RESERVED.
-is this statement ok, or do i need to replace the `ALL RIGHTS RESERVED'
-with a gpl-compatible license note?
-- is there any repository for alsa driver documentation, provided by the
-manufacturer? digigram provided the windows driver for the lx6464es,
-mentioning that this source is `freely accessible to the GNU / ALSA
-community', so if there is a repository like that, the source package
-should probably be archived there.
-
-thanks, tim
-
---=20
-tim@klingt.org
-http://tim.klingt.org
-
-Avoid the world, it's just a lot of dust and drag and means nothing in
-the end.
-  Jack Kerouac
-
-
---------------enigB5294236A42A2B8CEFAE40FE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkmJWvEACgkQdL+4qsZfVsvpSQCaAmWMkICUCDGA5sOWjGwIPZFx
-aHAAoIaUzh2o1Pg6zWT9X6brdGuk0Gzc
-=uWb5
------END PGP SIGNATURE-----
-
---------------enigB5294236A42A2B8CEFAE40FE--
-
-
---===============3055342918043358052==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============3055342918043358052==--
+--
+JSR
