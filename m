@@ -1,97 +1,239 @@
-From: Jaswinder Singh Rajput <jaswinder@kernel.org>
-Subject: Re: usr/include/linux/soundcard.h warnings for 'make headers_check'
-Date: Wed, 04 Feb 2009 14:04:54 +0530
-Message-ID: <1233736494.3198.15.camel@localhost.localdomain>
-References: <1232465902.3088.31.camel@localhost.localdomain>
-	 <s5h7i4psepm.wl%tiwai@suse.de> <20090121054138.GA26551@uranus.ravnborg.org>
-	 <200902032127.24526.arnd@arndb.de>
-	 <1233720252.3595.5.camel@localhost.localdomain>
-	 <s5hhc3ak8ns.wl%tiwai@suse.de>
+From: Kusanagi Kouichi <slash@ma.neweb.ne.jp>
+Subject: Re: [PATCH] ALSA: hda - Add digital BEEP
+	generator	support for Realtek codecs.
+Date: Wed, 4 Feb 2009 17:37:51 +0900
+Message-ID: <200902040837524161510006MA49@nm06mta.auone-net.jp>
+References: <200902031428523216360006MA62@nm06mta.auone-net.jp>
+	<s5hbptjbna3.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753236AbZBDIgA@vger.kernel.org>
-In-Reply-To: <s5hhc3ak8ns.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Arnd Bergmann <arnd@arndb.de>, Sam Ravnborg <sam@ravnborg.org>, alsa-devel@alsa-project.org, Ingo Molnar <mingo@elte.hu>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="9jxsPFA5p3P2qPhR"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nmomta.auone-net.jp (nm06omta04.auone-net.jp [219.125.112.21])
+	by alsa0.perex.cz (Postfix) with SMTP id A373F103875
+	for <alsa-devel@alsa-project.org>; Wed,  4 Feb 2009 09:37:55 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hbptjbna3.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2009-02-04 at 07:39 +0100, Takashi Iwai wrote:
-> At Wed, 04 Feb 2009 09:34:12 +0530,
-> Jaswinder Singh Rajput wrote:
+
+--9jxsPFA5p3P2qPhR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Feb 03, 2009 at 03:36:20PM +0100, Takashi Iwai wrote:
+> > > Another concern is that I don't want to add the digital beep control
+> > > unconditionally.  On many devices, the beep is implemented in the old
+> > > good analog way.  We'd need to add the check of analog/digital beep in
+> > > a new spec field and in the preset table not to duplicate beep
+> > > controls on these.
 > > 
-> > On Tue, 2009-02-03 at 21:27 +0100, Arnd Bergmann wrote:
-> > > On Wednesday 21 January 2009, Sam Ravnborg wrote:
-> > > > 
-> > > > > No, these are declarations for OSS-lib.
-> > > > > It doesn't belong to kernel, but it's better to keep it for
-> > > > > compatibility in some way.
-> > > > 
-> > > > But not in the kernel for sure.
-> > > > I just checked and for example: OSS_init is not used anywhere in the kernel.
-> > > > The kernel headers are not a "dump all your stuff" ground anymore.
-> > > > 
-> > > > So I encourage you to find a better home for the user space library definitons.
-> > > > We can let the definiton stay for a while - but eventually they have to
-> > > > be dropped from the kernel.
-> > > 
-> > > The last free version of OSSlib that matches this header is from ~1997, and
-> > > no current distro appears to be shipping it. All new OSSlib versions (the
-> > > oldest I found was from ~2003) contain in their documentation:
-> > > 
-> > > "Older versions of some OSS include files are distributed
-> > >  with various operating systems. There is no danger in
-> > >  using them but applications written for more recent OSS
-> > >  versions will not compile with older header files.
-> > > 
-> > >  The latest versions of these include files (such as
-> > >  soundcard.h) are distributed in ../include/sys. Use
-> > >  the -I/usr/lib/oss/include switch when compiling
-> > >  programs. Alternatively copy these files to /usr/include/sys
-> > >  so that they replace the original ones."
-> > > 
-> > > I think it's safe enough to assume that everyone that builds against
-> > > OSSlib by now also has the correct version of the header installed.
-> > > Consequently, we should just drop the #ifndef __KERNEL__ section
-> > > of soundcard.h (all the macros in there depend on the extern
-> > > declarations), and maybe add an
-> > > 
-> > > #ifdef OSSLIB
-> > > #error need to use <sys/soundcard.h> from libOSSlib
-> > > #endif
-> > > 
-> > 
-> > sys/soundcard.h is also pointing to linux/soundcard.h, we need to move
-> > all this stuff to sys/soundcard.h.
+> > I don't think such a check is needed.  I presume that analog beep in
+> > is disabled while digital beep generetor is being used.
+> > Furthermore, keyboard bell rings only one device even if both
+> > HDA Digital PCBeep and PC Speaker have been registered.
 > 
-> All which stuff?
-> If you are referring to OSS-lib stuff in soundcard.h, then I'm for
-> it.
+> However it's just annoying to have multiple controls for the very same
+> purpose.  If the digital beep works more reliably overall, let's get
+> rid of all existing analog beep stuff.  Having both makes no sense.
 > 
+> (Well, I don't remember exactly your patch so I suppose your patch
+>  doesn't remove the analog beep stuff...  Anyway reposting the patch
+>  and checking it's still applicable to the latest driver code would be
+>  helpful :)
 
-We need to fix things in such a way that we can replace:
-#if (!defined(__KERNEL__) && !defined(KERNEL) && !defined(INKERNEL) && !defined(_KERNEL)) || defined(USE_SEQ_MACROS)
-with
-#ifdef __KERNEL__
-and only keep those things in this file which we need in kernel and move
-userspace declarations which are not required for kernel to
-sys/soundcard.h
+Ah! I see the point. There is no duplicated control because I didn't
+add any new controls. Existing beep control controls digital beep, too.
+Analog beep and digital beep look to be routed through the same path.
 
+Updated patch is attached.
 
-> Also giving an error with an ifdef OSSLIB like Arnd suggested would be
-> nice, too.  But maybe we need one more ifdef such as
-> 
-> #ifdef OSSLIB
-> #ifndef _SYS_SOUNDCARD_H
-> #error ...
-> #endif
-> #endif
-> 
+--9jxsPFA5p3P2qPhR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="realtek_beep.diff"
 
-hmm, so you want to confirm that we only come through sys/soundcard.h
-for OSSLIB
+diff --git a/sound/pci/hda/hda_beep.h b/sound/pci/hda/hda_beep.h
+index b9679f0..51bf6a5 100644
+--- a/sound/pci/hda/hda_beep.h
++++ b/sound/pci/hda/hda_beep.h
+@@ -39,7 +39,7 @@ struct hda_beep {
+ int snd_hda_attach_beep_device(struct hda_codec *codec, int nid);
+ void snd_hda_detach_beep_device(struct hda_codec *codec);
+ #else
+-#define snd_hda_attach_beep_device(...)
++#define snd_hda_attach_beep_device(...)		0
+ #define snd_hda_detach_beep_device(...)
+ #endif
+ #endif
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 7884a4e..956b327 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -30,6 +30,7 @@
+ #include <sound/core.h>
+ #include "hda_codec.h"
+ #include "hda_local.h"
++#include "hda_beep.h"
+ 
+ #define ALC880_FRONT_EVENT		0x01
+ #define ALC880_DCVOL_EVENT		0x02
+@@ -3160,6 +3161,7 @@ static void alc_free(struct hda_codec *codec)
+ 
+ 	alc_free_kctls(codec);
+ 	kfree(spec);
++	snd_hda_detach_beep_device(codec);
+ 	codec->spec = NULL; /* to be sure */
+ }
+ 
+@@ -4328,6 +4330,12 @@ static int patch_alc880(struct hda_codec *codec)
+ 		}
+ 	}
+ 
++	err = snd_hda_attach_beep_device(codec, 0x1);
++	if (err < 0) {
++		alc_free(codec);
++		return err;
++	}
++
+ 	if (board_config != ALC880_AUTO)
+ 		setup_preset(spec, &alc880_presets[board_config]);
+ 
+@@ -5855,6 +5863,12 @@ static int patch_alc260(struct hda_codec *codec)
+ 		}
+ 	}
+ 
++	err = snd_hda_attach_beep_device(codec, 0x1);
++	if (err < 0) {
++		alc_free(codec);
++		return err;
++	}
++
+ 	if (board_config != ALC260_AUTO)
+ 		setup_preset(spec, &alc260_presets[board_config]);
+ 
+@@ -7050,6 +7064,12 @@ static int patch_alc882(struct hda_codec *codec)
+ 		}
+ 	}
+ 
++	err = snd_hda_attach_beep_device(codec, 0x1);
++	if (err < 0) {
++		alc_free(codec);
++		return err;
++	}
++
+ 	if (board_config != ALC882_AUTO)
+ 		setup_preset(spec, &alc882_presets[board_config]);
+ 
+@@ -9024,6 +9044,12 @@ static int patch_alc883(struct hda_codec *codec)
+ 		}
+ 	}
+ 
++	err = snd_hda_attach_beep_device(codec, 0x1);
++	if (err < 0) {
++		alc_free(codec);
++		return err;
++	}
++
+ 	if (board_config != ALC883_AUTO)
+ 		setup_preset(spec, &alc883_presets[board_config]);
+ 
+@@ -10844,6 +10870,12 @@ static int patch_alc262(struct hda_codec *codec)
+ 		}
+ 	}
+ 
++	err = snd_hda_attach_beep_device(codec, 0x1);
++	if (err < 0) {
++		alc_free(codec);
++		return err;
++	}
++
+ 	if (board_config != ALC262_AUTO)
+ 		setup_preset(spec, &alc262_presets[board_config]);
+ 
+@@ -11896,6 +11928,12 @@ static int patch_alc268(struct hda_codec *codec)
+ 		}
+ 	}
+ 
++	err = snd_hda_attach_beep_device(codec, 0x1);
++	if (err < 0) {
++		alc_free(codec);
++		return err;
++	}
++
+ 	if (board_config != ALC268_AUTO)
+ 		setup_preset(spec, &alc268_presets[board_config]);
+ 
+@@ -12730,6 +12768,12 @@ static int patch_alc269(struct hda_codec *codec)
+ 		}
+ 	}
+ 
++	err = snd_hda_attach_beep_device(codec, 0x1);
++	if (err < 0) {
++		alc_free(codec);
++		return err;
++	}
++
+ 	if (board_config != ALC269_AUTO)
+ 		setup_preset(spec, &alc269_presets[board_config]);
+ 
+@@ -13823,6 +13867,12 @@ static int patch_alc861(struct hda_codec *codec)
+ 		}
+ 	}
+ 
++	err = snd_hda_attach_beep_device(codec, 0x23);
++	if (err < 0) {
++		alc_free(codec);
++		return err;
++	}
++
+ 	if (board_config != ALC861_AUTO)
+ 		setup_preset(spec, &alc861_presets[board_config]);
+ 
+@@ -14769,6 +14819,12 @@ static int patch_alc861vd(struct hda_codec *codec)
+ 		}
+ 	}
+ 
++	err = snd_hda_attach_beep_device(codec, 0x23);
++	if (err < 0) {
++		alc_free(codec);
++		return err;
++	}
++
+ 	if (board_config != ALC861VD_AUTO)
+ 		setup_preset(spec, &alc861vd_presets[board_config]);
+ 
+@@ -16578,6 +16634,12 @@ static int patch_alc662(struct hda_codec *codec)
+ 		}
+ 	}
+ 
++	err = snd_hda_attach_beep_device(codec, 0x1);
++	if (err < 0) {
++		alc_free(codec);
++		return err;
++	}
++
+ 	if (board_config != ALC662_AUTO)
+ 		setup_preset(spec, &alc662_presets[board_config]);
+ 
 
-Thanks,
---
-JSR
+--9jxsPFA5p3P2qPhR
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--9jxsPFA5p3P2qPhR--
