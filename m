@@ -1,26 +1,16 @@
-From: Eric <ejaouen@ponctey.fr>
-Subject: Re: intel DP35DP adat supported (STAC927x codec) ?
-Date: Thu, 05 Feb 2009 00:03:24 +0100
-Message-ID: <498A1EBC.9060203@ponctey.fr>
-References: <4969FBA0.1030008@ponctey.fr>	<s5hvdskdah9.wl%tiwai@suse.de><496B3BB7.1020203@ponctey.fr>	<496E7FE7.8020706@embeddedalley.com>
-	<16A430A423D62246A24C9A892622FE668D5227@CORPEXCH1.na.ads.idt.com>
+From: Bankim Bhavsar <bankim.bhavsar@gmail.com>
+Subject: Finding the buffer fill level
+Date: Wed, 4 Feb 2009 15:40:20 -0800
+Message-ID: <4eccebac0902041540u38b6b9fake9de02ac75be2a1c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp21.orange.fr (smtp21.orange.fr [80.12.242.49])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2DE4524442
-	for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2009 00:03:30 +0100 (CET)
-Received: from anita.2sapins.ponctey.fr
-	(LRouen-151-72-65-95.w193-251.abo.wanadoo.fr [193.251.41.95])
-	by mwinf2121.orange.fr (SMTP Server) with ESMTP id 8BD661C0009E
-	for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2009 00:03:29 +0100 (CET)
-Received: from [192.168.100.3] (unknown [192.168.100.3])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client did not present a certificate)
-	by anita.2sapins.ponctey.fr (Postfix) with ESMTPS id 73D945161B
-	for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2009 00:03:28 +0100 (CET)
-In-Reply-To: <16A430A423D62246A24C9A892622FE668D5227@CORPEXCH1.na.ads.idt.com>
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.155])
+	by alsa0.perex.cz (Postfix) with ESMTP id D8D981037F2
+	for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2009 00:40:21 +0100 (CET)
+Received: by yx-out-1718.google.com with SMTP id 36so1243221yxh.2
+	for <alsa-devel@alsa-project.org>; Wed, 04 Feb 2009 15:40:21 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,93 +20,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Steven,
-I have studied the hd audio documents :
-Please make sure the pin default is actually 015521xx when in ADAT mode
-(instead of config default 014521xx ) .
+Hi Jaroslav,
 
-Please copy me your alsainfo script if it still does not work.
+I'm using following as the reference to find buffer fill-level of the
+playback channel
 
-Matthew Ranostay is right : really not much is missing or wrong for ADAT
-to work.
-Thanks everybody for future help, Eric
+* WRITE_TO_READ:  the current fill level of the playback buffer
+- buffer_size - snd_pcm_avail_update()
 
-Tellman, Steven a =E9crit :
-> It doesn't work. The option comes up, but no dice. Doesn't lock to the
-> receiver that has ADAT support.
+http://article.gmane.org/gmane.linux.alsa.devel/54017
 
-> Hello Eric,
-> You should run the latest ALSA from the git tree because I added a codec
-> specific SPDIF output control control for that chipset.
-> =
+Infact I use snd_pcm_hwsync() before calling snd_pcm_avail_update() (
+I know I can use snd_pcm_avail() but thats only available 1.0.18
+onwards)
 
-> ....
->  417 static const char *stac927x_spdif_labels[5] =3D {
->  418     "Digital Playback", "ADAT", "Analog Mux 1",
->  419     "Analog Mux 2", "Analog Mux 3"
->  420 };
-> ....
-> =
+I use snd_pcm_set_buffer_size_near() to configure the hw params and
+save the returned value of bufffer_size to find the buffer fill level
+later on. On some sound cards
+( snd_pcm_avail_update()  > buffer_size) which shouldn't be the case!
+This throws off our internal polling calculations.
 
-> I haven't tested ADAT output though but I have no reason to
-> think it wouldn't work.
-> =
+Information about the Linux hosts and sound cards where we've seen this issue.
 
-> Thanks,
-> =
+Ubuntu 8.10 x64 host with kernel version 2.6.27-11-generic
+Alsa lib version 1.0.17a
 
-> Matt Ranostay
-> =
+1) **** List of PLAYBACK Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: AD198x Analog [AD198x Analog]
 
-> =
+2) **** List of PLAYBACK Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: ALC885 Analog [ALC885 Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: Intel [HDA Intel], device 1: ALC885 Digital [ALC885 Digital]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
-> Eric wrote:
->> In their handbook, motherboard intel DP35DP and others with STAC927x
-> (in
->> the codec datasheet also ADAT output is featured on older sigmatel
->> STAC9271 and now IDT STAC9274 only) advertise ADAT output possible on
->> their toslink.
->> DP35DP and other intel boards are proven to have the ADAT output
-> working
->> under windows.
->> Is it working in Alsa ? Many HTPC users would love that... I would !
->>
->> Anybody from intel or IDT/sigmatel to confirm (by checking the
-> sigmatel
->> STAC927x hda codec driver) that it will work ?
->> I want these intel motherboards only for this ADAT output feature and
-> I
->> am a linux only user so I would like to know before buying...
->> I want to be sure someone would make the necessary changes to the hda
->> sigmatel codec alsa driver so it would work.
->> Thank you everybody
->>
->>
->>>> Is the ADAT output of the IDT (sigmatel) STAC927x HDA codec
-> supported in
->>>> alsa ?
->>>> If not could someone please try to add this incredibly nice feature
-> in
->>>> the existing alsa driver ?
->>
->>> Do you have any HD-audio device with ADAT?
->>> IIRC, there is no specific verbs for ADAT on STAC927x...
->>> Takashi
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
-> =
+Is this a known issue?
 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Let me know if you need more information. Or there is an alternative
+approach/workaround?
+
+Thanks,
+Bankim.
