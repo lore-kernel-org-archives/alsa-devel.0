@@ -1,18 +1,17 @@
-From: Sedji Gaouaou <sedji.gaouaou@atmel.com>
-Subject: Re: [PATCH 3/3] Add ALSA driver for Atmel AC97
-	controller
-Date: Wed, 04 Feb 2009 14:11:38 +0100
-Message-ID: <4989940A.9000706@atmel.com>
-References: <1233748114-6353-1-git-send-email-hans-christian.egtvedt@atmel.com>	<1233748114-6353-2-git-send-email-hans-christian.egtvedt@atmel.com>	<1233748114-6353-3-git-send-email-hans-christian.egtvedt@atmel.com>	<1233748114-6353-4-git-send-email-hans-christian.egtvedt@atmel.com>	<20090204120045.GB29849@sirena.org.uk>	<20090204131505.380492af@hcegtvedt>
-	<49898F64.2000107@atmel.com> <20090204140308.1f850546@hcegtvedt>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: pxa-ssp: fix SSP port request
+Date: Wed, 4 Feb 2009 13:19:49 +0000
+Message-ID: <20090204131948.GF29849@sirena.org.uk>
+References: <1233692306-13211-1-git-send-email-philipp.zabel@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atmel-es2.atmel.fr (mail.atmel.fr [81.80.104.162])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3741B243BD
-	for <alsa-devel@alsa-project.org>; Wed,  4 Feb 2009 14:11:53 +0100 (CET)
-In-Reply-To: <20090204140308.1f850546@hcegtvedt>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 47EBC243D2
+	for <alsa-devel@alsa-project.org>; Wed,  4 Feb 2009 14:19:50 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1233692306-13211-1-git-send-email-philipp.zabel@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,22 +21,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>
+To: Philipp Zabel <philipp.zabel@gmail.com>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.miao@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGFucy1DaHJpc3RpYW4gRWd0dmVkdCBhIMOpY3JpdCA6Cj4+IEFjdHVhbGx5IHRoZXJlIGFyZSBz
-b21lIGRpZmZlcmVuY2VzLCBBVDkxIGRvZXMgbm90IHVzZSBhIERNQSwgd2UgdXNlCj4+IGEgc3Bl
-Y2lmaWMgSVAoUERDKSB0byB0cmFuc2VyIHRoZSBkYXRhLi4uCj4+Cj4gCj4gUERDIGlzIHN0aWxs
-IERNQSA7KSBJIGd1ZXNzIEFUOTEgdXNlcyB0aGUgIm9sZCIgUERDIGFuZCBub3QgUERDQT8KPiAK
-SSBkb24ndCBrbm93IGFib3V0IGFueSBQRENBLi4uc28geWVzIEkgZ3Vlc3Mgd2UgYXJlIHVzaW5n
-IHRoZSBvbGQgb25lLi4uCj4+IE1heWJlIHdlIGNvdWxkIHNoYXJlIHRoZSBzYW1lIGNvZGUgd2Ug
-c29tZSAjZGVmaW5lIGluIGl0Pwo+Pgo+IAo+IFllcywgaXQgc2hvdWxkIGJlIHNpbXBsZSB0byBh
-ZGQgYW4gYWRkaXRpb25hbCAjZGVmaW5lIGluIGtjb25maWcuCj4gCj4gY29uZmlnIFNORF9BVE1F
-TF9BQzk3Q19QREMKPiAJYm9vbAo+IAlkZXBlbmRzIG9uIEFSQ0hfQVQ5MQo+IAo+IEFuZCB0aGVu
-IGhhdmUgc29tZSBpZmRlZnMvZWxzZSBhcm91bmQgdGhlIERNQSBzdHVmZiwgbXVjaCBsaWtlIHRo
-ZQo+IGF0bWVsLW1jaSBkcml2ZXIgZG9lcyB0b2RheS4KPiAKSSBkb24ndCBrbm93IHdoaWNoIHNv
-bHV0aW9uIGlzIHRoZSBkZXN0OiBpZmRlZiBvciBhcyBNYXJrJ3Mgb25lLi4uCgoKUmVnYXJkcywK
-U2VkamkKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Tue, Feb 03, 2009 at 09:18:26PM +0100, Philipp Zabel wrote:
+> PXA2xx/3xx SSP ports start from 1, not 0. Thus, the probe function
+> requested the wrong SSP port. Correcting this unveiled another bug
+> where ssp_init tries to request the already-requested SSP port again.
+> So this patch replaces the ssp_init/exit calls with their internals
+> from mach-pxa/ssp.c, leaving out the redundant ssp_request and the
+> unneeded IRQ request. Effectively, that leaves us with not much more
+> than enabling/disabling the SSP clock.
+
+Applied, thanks.
