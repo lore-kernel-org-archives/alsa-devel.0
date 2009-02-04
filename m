@@ -1,53 +1,174 @@
-From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-Subject: Re: [PATCH 3/3] Add ALSA driver for Atmel AC97
- controller
-Date: Wed, 4 Feb 2009 14:03:08 +0100
-Message-ID: <20090204140308.1f850546@hcegtvedt>
-References: <1233748114-6353-1-git-send-email-hans-christian.egtvedt@atmel.com>
-	<1233748114-6353-2-git-send-email-hans-christian.egtvedt@atmel.com>
-	<1233748114-6353-3-git-send-email-hans-christian.egtvedt@atmel.com>
-	<1233748114-6353-4-git-send-email-hans-christian.egtvedt@atmel.com>
-	<20090204120045.GB29849@sirena.org.uk>
-	<20090204131505.380492af@hcegtvedt> <49898F64.2000107@atmel.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: usr/include/linux/soundcard.h warnings for 'make headers_check'
+Date: Wed, 4 Feb 2009 13:51:17 +0100
+Message-ID: <200902041351.18596.arnd@arndb.de>
+References: <1232465902.3088.31.camel@localhost.localdomain> <1233747097.5563.29.camel@localhost.localdomain> <s5hk586a0mw.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay.atmel.no (relay.atmel.no [80.232.32.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5B4E7243C4
-	for <alsa-devel@alsa-project.org>; Wed,  4 Feb 2009 14:03:09 +0100 (CET)
-In-Reply-To: <49898F64.2000107@atmel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sedji Gaouaou <sedji.gaouaou@atmel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1760469AbZBDNG5@vger.kernel.org>
+In-Reply-To: <s5hk586a0mw.wl%tiwai@suse.de>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaswinder Singh Rajput <jaswinder@kernel.org>, Sam Ravnborg <sam@ravnborg.org>, alsa-devel@alsa-project.org, Ingo Molnar <mingo@elte.hu>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAwNCBGZWIgMjAwOSAxMzo1MTo0OCArMDEwMApTZWRqaSBHYW91YW91IDxzZWRqaS5n
-YW91YW91QGF0bWVsLmNvbT4gd3JvdGU6Cgo+IEhpLAo+IEhhbnMtQ2hyaXN0aWFuIEVndHZlZHQg
-YSDDqWNyaXQgOgo+ID4gWWVzLCBpdCBzaG91bGQgYmUgcG9zc2libGUgdG8gc2hhcmUgdGhlIEFD
-OTdDIGRyaXZlciBiZXR3ZWVuIEFUOTEKPiA+IGFuZCBBVlIzMi4gQWx0aG91Z2ggdGhpcyBBQzk3
-QyBkcml2ZXIgdXNlcyB0aGUgRGVzaWduV2FyZSBETUFDCj4gPiBjb250cm9sbGVyIChkcml2ZXJz
-L2RtYS9kd19kbWFjLmMpLgo+ID4gCj4gPiBJIGRvIG5vdCByZW1lbWJlciB3aGljaCBETUEgaW50
-ZXJmYWNlIEFUOTEgZGV2aWNlcyB1c2VzLgo+ID4gCj4gPiBTaG91bGQgdGhlIGRyaXZlciBnbyBp
-bnRvIHNvdW5kL2RyaXZlcnMgdGhlbj8gQW5kIHJlbmFtZWQgdG8KPiA+IGF0bWVsLWFjOTdjLntj
-LGh9IGZvciBleGFtcGxlLgo+ID4gCj4gQWN0dWFsbHkgdGhlcmUgYXJlIHNvbWUgZGlmZmVyZW5j
-ZXMsIEFUOTEgZG9lcyBub3QgdXNlIGEgRE1BLCB3ZSB1c2UKPiBhIHNwZWNpZmljIElQKFBEQykg
-dG8gdHJhbnNlciB0aGUgZGF0YS4uLgo+IAoKUERDIGlzIHN0aWxsIERNQSA7KSBJIGd1ZXNzIEFU
-OTEgdXNlcyB0aGUgIm9sZCIgUERDIGFuZCBub3QgUERDQT8KCj4gTWF5YmUgd2UgY291bGQgc2hh
-cmUgdGhlIHNhbWUgY29kZSB3ZSBzb21lICNkZWZpbmUgaW4gaXQ/Cj4gCgpZZXMsIGl0IHNob3Vs
-ZCBiZSBzaW1wbGUgdG8gYWRkIGFuIGFkZGl0aW9uYWwgI2RlZmluZSBpbiBrY29uZmlnLgoKY29u
-ZmlnIFNORF9BVE1FTF9BQzk3Q19QREMKCWJvb2wKCWRlcGVuZHMgb24gQVJDSF9BVDkxCgpBbmQg
-dGhlbiBoYXZlIHNvbWUgaWZkZWZzL2Vsc2UgYXJvdW5kIHRoZSBETUEgc3R1ZmYsIG11Y2ggbGlr
-ZSB0aGUKYXRtZWwtbWNpIGRyaXZlciBkb2VzIHRvZGF5LgoKLS0gCkJlc3QgcmVnYXJkcywKSGFu
-cy1DaHJpc3RpYW4gRWd0dmVkdApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+On Wednesday 04 February 2009, Takashi Iwai wrote:
+
+> It's not always true -- that's the whole problem I'm concerned.
+> Apparently old apps do include linux/soundcard.h.
+> 
+> I agree to remove the stuff causing warnings, i.e. moving oss-lib part
+> to sys/soundcard.h.  In this case, the only possible regression is the
+> case where apps use OSS-lib and include linux/soundcard.h.  For other
+> cases (use sequencer stuff with linux/soundcard.h but without
+> oss-lib), it will still work.
+
+You cannot "move" things to <sys/soundcard.h>, because that file
+is provided by glibc as a simple redirect to <linux/soundcard.h>.
+The problem there is obviously the compatibility of combinations
+of kernel and glibc before and after the change.
+
+The use cases I can see include:
+
+1. A simple app that only needs the ioctl definitions in
+   linux/soundcard.h and does not care about all this.
+
+2. A slightly more sophisticated app that uses the !OSSLIB part of
+   <sys/soundcard.h> or <linux/soundcard.h>.
+
+3. A new OSSlib application for OSS-3.9 or OSS-4.x that uses the
+   <sys/soundcard.h> file provided by OSSlib, instead of the
+   one from glibc.
+
+4. A legacy OSSlib application from the last century using either
+   linux/soundcard.h or sys/soundcard.h to get at the macros.
+
+5. An application that gets compiled against <linux/soundcard.h>
+   but linked against OSSlib 3.9 or 4.x.
+
+Removing the macros and extern declarations from linux/soundcard.h
+will break the final two cases. The only options I can see here
+are "do nothing" and "screw them". 
+Both should be fine, because the warning is easy to shut up
+with a small preprocessor macro #define _SEQ_EXTERN extern,
+and it's rather unlikely that anyone runs into this problem
+on a 2.6 kernel in the first place.
+
+	Arnd <><
+
+---
+This patch breaks building against OSSlib with the kernel headers
+instead of its own headers. It should still work with any
+version of the library from the 2003 onwards which provide
+their own headers for the latest interface.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+--- a/include/linux/soundcard.h
++++ b/include/linux/soundcard.h
+@@ -1045,7 +1045,7 @@ typedef struct mixer_vol_table {
+  */
+ #define LOCL_STARTAUDIO		1
+ 
+-#if (!defined(__KERNEL__) && !defined(KERNEL) && !defined(INKERNEL) && !defined(_KERNEL)) || defined(USE_SEQ_MACROS) 
++#if !defined(__KERNEL__) || defined(USE_SEQ_MACROS)
+ /*
+  *	Some convenience macros to simplify programming of the
+  *	/dev/sequencer interface
+@@ -1056,39 +1056,15 @@ typedef struct mixer_vol_table {
+ 
+ void seqbuf_dump(void);	/* This function must be provided by programs */
+ 
+-extern int OSS_init(int seqfd, int buflen);
+-extern void OSS_seqbuf_dump(int fd, unsigned char *buf, int buflen);
+-extern void OSS_seq_advbuf(int len, int fd, unsigned char *buf, int buflen);
+-extern void OSS_seq_needbuf(int len, int fd, unsigned char *buf, int buflen);
+-extern void OSS_patch_caching(int dev, int chn, int patch,
+-			      int fd, unsigned char *buf, int buflen);
+-extern void OSS_drum_caching(int dev, int chn, int patch,
+-			      int fd, unsigned char *buf, int buflen);
+-extern void OSS_write_patch(int fd, unsigned char *buf, int len);
+-extern int OSS_write_patch2(int fd, unsigned char *buf, int len);
+-
+ #define SEQ_PM_DEFINES int __foo_bar___
+-#ifdef OSSLIB
+-#  define SEQ_USE_EXTBUF() \
+-		extern unsigned char *_seqbuf; \
+-		extern int _seqbuflen;extern int _seqbufptr
+-#  define SEQ_DEFINEBUF(len) SEQ_USE_EXTBUF();static int _requested_seqbuflen=len
+-#  define _SEQ_ADVBUF(len) OSS_seq_advbuf(len, seqfd, _seqbuf, _seqbuflen)
+-#  define _SEQ_NEEDBUF(len) OSS_seq_needbuf(len, seqfd, _seqbuf, _seqbuflen)
+-#  define SEQ_DUMPBUF() OSS_seqbuf_dump(seqfd, _seqbuf, _seqbuflen)
+-
+-#  define SEQ_LOAD_GMINSTR(dev, instr) \
+-		OSS_patch_caching(dev, -1, instr, seqfd, _seqbuf, _seqbuflen)
+-#  define SEQ_LOAD_GMDRUM(dev, drum) \
+-		OSS_drum_caching(dev, -1, drum, seqfd, _seqbuf, _seqbuflen)
+-#else /* !OSSLIB */
+-
+-#  define SEQ_LOAD_GMINSTR(dev, instr)
+-#  define SEQ_LOAD_GMDRUM(dev, drum)
+-
+-#  define SEQ_USE_EXTBUF() \
+-		extern unsigned char _seqbuf[]; \
+-		extern int _seqbuflen;extern int _seqbufptr
++
++#define SEQ_LOAD_GMINSTR(dev, instr)
++#define SEQ_LOAD_GMDRUM(dev, drum)
++
++#define _SEQ_EXTERN extern
++#define SEQ_USE_EXTBUF() \
++		_SEQ_EXTERN unsigned char _seqbuf[]; \
++		_SEQ_EXTERN int _seqbuflen;_SEQ_EXTERN int _seqbufptr
+ 
+ #ifndef USE_SIMPLE_MACROS
+ /* Sample seqbuf_dump() implementation:
+@@ -1131,7 +1107,6 @@ extern int OSS_write_patch2(int fd, unsigned char *buf, int len);
+  */
+ #define _SEQ_NEEDBUF(len)	/* empty */
+ #endif
+-#endif /* !OSSLIB */
+ 
+ #define SEQ_VOLUME_MODE(dev, mode)	{_SEQ_NEEDBUF(8);\
+ 					_seqbuf[_seqbufptr] = SEQ_EXTENDED;\
+@@ -1215,14 +1190,8 @@ extern int OSS_write_patch2(int fd, unsigned char *buf, int len);
+ 		_CHN_COMMON(dev, MIDI_CHN_PRESSURE, chn, pressure, 0, 0)
+ 
+ #define SEQ_SET_PATCH SEQ_PGM_CHANGE
+-#ifdef OSSLIB
+-#   define SEQ_PGM_CHANGE(dev, chn, patch) \
+-		{OSS_patch_caching(dev, chn, patch, seqfd, _seqbuf, _seqbuflen); \
+-		 _CHN_COMMON(dev, MIDI_PGM_CHANGE, chn, patch, 0, 0);}
+-#else
+-#   define SEQ_PGM_CHANGE(dev, chn, patch) \
++#define SEQ_PGM_CHANGE(dev, chn, patch) \
+ 		_CHN_COMMON(dev, MIDI_PGM_CHANGE, chn, patch, 0, 0)
+-#endif
+ 
+ #define SEQ_CONTROL(dev, chn, controller, value) \
+ 		_CHN_COMMON(dev, MIDI_CTL_CHANGE, chn, controller, 0, value)
+@@ -1300,19 +1269,12 @@ extern int OSS_write_patch2(int fd, unsigned char *buf, int len);
+ /*
+  * Patch loading.
+  */
+-#ifdef OSSLIB
+-#   define SEQ_WRPATCH(patchx, len) \
+-		OSS_write_patch(seqfd, (char*)(patchx), len)
+-#   define SEQ_WRPATCH2(patchx, len) \
+-		OSS_write_patch2(seqfd, (char*)(patchx), len)
+-#else
+-#   define SEQ_WRPATCH(patchx, len) \
++#define SEQ_WRPATCH(patchx, len) \
+ 		{if (_seqbufptr) SEQ_DUMPBUF();\
+ 		 if (write(seqfd, (char*)(patchx), len)==-1) \
+ 		    perror("Write patch: /dev/sequencer");}
+-#   define SEQ_WRPATCH2(patchx, len) \
++#define SEQ_WRPATCH2(patchx, len) \
+ 		(SEQ_DUMPBUF(), write(seqfd, (char*)(patchx), len))
+-#endif
+ 
+ #endif
+ #endif
