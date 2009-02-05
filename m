@@ -1,17 +1,18 @@
 From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-Subject: [PATCH v2 1/3] Add ALSA driver for Atmel Audio
-	Bitstream DAC
-Date: Thu,  5 Feb 2009 13:10:59 +0100
-Message-ID: <1233835861-5533-2-git-send-email-hans-christian.egtvedt@atmel.com>
+Subject: [PATCH v2 2/3] Add ALSA driver for Atmel AC97
+	controller
+Date: Thu,  5 Feb 2009 13:11:00 +0100
+Message-ID: <1233835861-5533-3-git-send-email-hans-christian.egtvedt@atmel.com>
 References: <1233835861-5533-1-git-send-email-hans-christian.egtvedt@atmel.com>
+	<1233835861-5533-2-git-send-email-hans-christian.egtvedt@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from relay.atmel.no (relay.atmel.no [80.232.32.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 511A610390F
+	by alsa0.perex.cz (Postfix) with ESMTP id 4CC181038E4
 	for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2009 13:11:03 +0100 (CET)
-In-Reply-To: <1233835861-5533-1-git-send-email-hans-christian.egtvedt@atmel.com>
+In-Reply-To: <1233835861-5533-2-git-send-email-hans-christian.egtvedt@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,207 +26,199 @@ To: alsa-devel@alsa-project.org
 Cc: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds ALSA support for the Audio Bistream DAC found on Atmel
-AVR32 devices. The ABDAC is an Atmel IP which might show up on AT91
-devices in the future, hence making a generic driver which can be
-utilized by AT91 arch if needed.
+This patch adds ALSA support for the AC97 controller found on Atmel
+AVR32 devices.
 
-Datasheet describing the ABDAC peripheral is available in the AT32AP7000
-datasheet, http://www.atmel.com/dyn/products/datasheets.asp?family_id=682
-
-Tested on ATSTK1006 + ATSTK1000 with a class D amplifier stage.
+Tested on ATSTK1006 + ATSTK1000 with a development board with a AC97
+codec.
 
 Signed-off-by: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
 ---
- include/sound/atmel-abdac.h |   23 ++
- sound/atmel/Kconfig         |   11 +
- sound/atmel/Makefile        |    3 +
- sound/atmel/abdac.c         |  602 +++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 639 insertions(+), 0 deletions(-)
- create mode 100644 include/sound/atmel-abdac.h
- create mode 100644 sound/atmel/Kconfig
- create mode 100644 sound/atmel/Makefile
- create mode 100644 sound/atmel/abdac.c
+ include/sound/atmel-ac97c.h |   40 ++
+ sound/atmel/Kconfig         |    8 +
+ sound/atmel/Makefile        |    2 +
+ sound/atmel/ac97c.c         |  932 +++++++++++++++++++++++++++++++++++++++++++
+ sound/atmel/ac97c.h         |   71 ++++
+ 5 files changed, 1053 insertions(+), 0 deletions(-)
+ create mode 100644 include/sound/atmel-ac97c.h
+ create mode 100644 sound/atmel/ac97c.c
+ create mode 100644 sound/atmel/ac97c.h
 
-diff --git a/include/sound/atmel-abdac.h b/include/sound/atmel-abdac.h
+diff --git a/include/sound/atmel-ac97c.h b/include/sound/atmel-ac97c.h
 new file mode 100644
-index 0000000..edff6a8
+index 0000000..e6aabdb
 --- /dev/null
-+++ b/include/sound/atmel-abdac.h
-@@ -0,0 +1,23 @@
++++ b/include/sound/atmel-ac97c.h
+@@ -0,0 +1,40 @@
 +/*
-+ * Driver for the Atmel Audio Bitstream DAC (ABDAC)
++ * Driver for the Atmel AC97C controller
 + *
-+ * Copyright (C) 2009 Atmel Corporation
++ * Copyright (C) 2005-2009 Atmel Corporation
 + *
 + * This program is free software; you can redistribute it and/or modify it
 + * under the terms of the GNU General Public License version 2 as published
 + * by the Free Software Foundation.
 + */
-+#ifndef __INCLUDE_SOUND_ATMEL_ABDAC_H
-+#define __INCLUDE_SOUND_ATMEL_ABDAC_H
++#ifndef __INCLUDE_SOUND_ATMEL_AC97C_H
++#define __INCLUDE_SOUND_ATMEL_AC97C_H
 +
 +#include <linux/dw_dmac.h>
 +
++#define AC97C_CAPTURE	0x01
++#define AC97C_PLAYBACK	0x02
++#define AC97C_BOTH	(AC97C_CAPTURE | AC97C_PLAYBACK)
++
 +/**
-+ * struct atmel_abdac_pdata - board specific ABDAC configuration
-+ * @dws: DMA slave interface to use for sound playback.
++ * struct atmel_ac97c_pdata - board specific AC97C configuration
++ * @rx_dws: DMA slave interface to use for sound capture.
++ * @tx_dws: DMA slave interface to use for sound playback.
++ * @reset_pin: GPIO pin wired to the reset input on the external AC97 codec,
++ *             optional to use, set to -ENODEV if not in use. AC97 layer will
++ *             try to do a software reset of the external codec anyway.
++ * @flags: Flags for which directions should be enabled.
++ *
++ * If the user do not want to use a DMA channel for playback or capture, i.e.
++ * only one feature is required on the board. The slave for playback or capture
++ * can be set to NULL. The AC97C driver will take use of this when setting up
++ * the sound streams.
 + */
-+struct atmel_abdac_pdata {
-+	struct dw_dma_slave	dws;
++struct ac97c_platform_data {
++	struct dw_dma_slave	rx_dws;
++	struct dw_dma_slave	tx_dws;
++	unsigned int 		flags;
++	int			reset_pin;
 +};
 +
-+#endif /* __INCLUDE_SOUND_ATMEL_ABDAC_H */
++#endif /* __INCLUDE_SOUND_ATMEL_AC97C_H */
 diff --git a/sound/atmel/Kconfig b/sound/atmel/Kconfig
-new file mode 100644
-index 0000000..715318e
---- /dev/null
+index 715318e..6c228a9 100644
+--- a/sound/atmel/Kconfig
 +++ b/sound/atmel/Kconfig
-@@ -0,0 +1,11 @@
-+menu "Atmel devices (AVR32 and AT91)"
-+	depends on AVR32 || ARCH_AT91
-+
-+config SND_ATMEL_ABDAC
-+	tristate "Atmel Audio Bitstream DAC (ABDAC) driver"
+@@ -8,4 +8,12 @@ config SND_ATMEL_ABDAC
+ 	help
+ 	  ALSA sound driver for the Atmel Audio Bitstream DAC (ABDAC).
+ 
++config SND_ATMEL_AC97C
++	tristate "Atmel AC97 Controller (AC97C) driver"
 +	select SND_PCM
++	select SND_AC97_CODEC
 +	depends on DW_DMAC && AVR32
 +	help
-+	  ALSA sound driver for the Atmel Audio Bitstream DAC (ABDAC).
++	  ALSA sound driver for the Atmel AC97 controller.
 +
-+endmenu
+ endmenu
 diff --git a/sound/atmel/Makefile b/sound/atmel/Makefile
-new file mode 100644
-index 0000000..c5a8213
---- /dev/null
+index c5a8213..219dcfa 100644
+--- a/sound/atmel/Makefile
 +++ b/sound/atmel/Makefile
-@@ -0,0 +1,3 @@
-+snd-atmel-abdac-objs		:= abdac.o
-+
-+obj-$(CONFIG_SND_ATMEL_ABDAC)	+= snd-atmel-abdac.o
-diff --git a/sound/atmel/abdac.c b/sound/atmel/abdac.c
+@@ -1,3 +1,5 @@
+ snd-atmel-abdac-objs		:= abdac.o
++snd-atmel-ac97c-objs		:= ac97c.o
+ 
+ obj-$(CONFIG_SND_ATMEL_ABDAC)	+= snd-atmel-abdac.o
++obj-$(CONFIG_SND_ATMEL_AC97C)	+= snd-atmel-ac97c.o
+diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
 new file mode 100644
-index 0000000..28b3c7f
+index 0000000..dd72e00
 --- /dev/null
-+++ b/sound/atmel/abdac.c
-@@ -0,0 +1,602 @@
++++ b/sound/atmel/ac97c.c
+@@ -0,0 +1,932 @@
 +/*
-+ * Driver for the Atmel on-chip Audio Bitstream DAC (ABDAC)
++ * Driver for the Atmel AC97C controller
 + *
-+ * Copyright (C) 2006-2009 Atmel Corporation
++ * Copyright (C) 2005-2009 Atmel Corporation
 + *
 + * This program is free software; you can redistribute it and/or modify it
 + * under the terms of the GNU General Public License version 2 as published by
 + * the Free Software Foundation.
 + */
 +#include <linux/clk.h>
++#include <linux/delay.h>
 +#include <linux/bitmap.h>
-+#include <linux/dw_dmac.h>
 +#include <linux/dmaengine.h>
 +#include <linux/dma-mapping.h>
 +#include <linux/init.h>
 +#include <linux/interrupt.h>
 +#include <linux/module.h>
 +#include <linux/platform_device.h>
++#include <linux/mutex.h>
++#include <linux/gpio.h>
 +#include <linux/io.h>
 +
 +#include <sound/core.h>
 +#include <sound/initval.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
-+#include <sound/atmel-abdac.h>
++#include <sound/ac97_codec.h>
++#include <sound/atmel-ac97c.h>
++#include <sound/memalloc.h>
 +
-+/* DAC register offsets */
-+#define DAC_DATA                                0x0000
-+#define DAC_CTRL                                0x0008
-+#define DAC_INT_MASK                            0x000c
-+#define DAC_INT_EN                              0x0010
-+#define DAC_INT_DIS                             0x0014
-+#define DAC_INT_CLR                             0x0018
-+#define DAC_INT_STATUS                          0x001c
++#include <linux/dw_dmac.h>
 +
-+/* Bitfields in CTRL */
-+#define DAC_SWAP_OFFSET                         30
-+#define DAC_SWAP_SIZE                           1
-+#define DAC_EN_OFFSET                           31
-+#define DAC_EN_SIZE                             1
-+
-+/* Bitfields in INT_MASK/INT_EN/INT_DIS/INT_STATUS/INT_CLR */
-+#define DAC_UNDERRUN_OFFSET                     28
-+#define DAC_UNDERRUN_SIZE                       1
-+#define DAC_TX_READY_OFFSET                     29
-+#define DAC_TX_READY_SIZE                       1
-+
-+/* Bit manipulation macros */
-+#define DAC_BIT(name)					\
-+	(1 << DAC_##name##_OFFSET)
-+#define DAC_BF(name, value)				\
-+	(((value) & ((1 << DAC_##name##_SIZE) - 1))	\
-+	 << DAC_##name##_OFFSET)
-+#define DAC_BFEXT(name, value)				\
-+	(((value) >> DAC_##name##_OFFSET)		\
-+	 & ((1 << DAC_##name##_SIZE) - 1))
-+#define DAC_BFINS(name, value, old)			\
-+	(((old) & ~(((1 << DAC_##name##_SIZE) - 1)	\
-+		    << DAC_##name##_OFFSET))		\
-+	 | DAC_BF(name, value))
-+
-+/* Register access macros */
-+#define dac_readl(port, reg)				\
-+	__raw_readl((port)->regs + DAC_##reg)
-+#define dac_writel(port, reg, value)			\
-+	__raw_writel((value), (port)->regs + DAC_##reg)
-+
-+/*
-+ * ABDAC supports a maximum of 6 different rates from a generic clock. The
-+ * generic clock has a power of two divider, which gives 6 steps from 192 kHz
-+ * to 5112 Hz.
-+ */
-+#define MAX_NUM_RATES	6
-+/* ALSA seems to use rates between 192000 Hz and 5112 Hz. */
-+#define RATE_MAX	192000
-+#define RATE_MIN	5112
++#include "ac97c.h"
 +
 +enum {
-+	DMA_READY = 0,
++	DMA_TX_READY = 0,
++	DMA_RX_READY,
++	DMA_TX_CHAN_PRESENT,
++	DMA_RX_CHAN_PRESENT,
 +};
 +
-+struct atmel_abdac_dma {
-+	struct dma_chan		*chan;
-+	struct dw_cyclic_desc	*cdesc;
++/* Serialize access to opened variable */
++static DEFINE_MUTEX(opened_mutex);
++
++struct atmel_ac97c_dma {
++	struct dma_chan			*rx_chan;
++	struct dma_chan			*tx_chan;
 +};
 +
-+struct atmel_abdac {
-+	struct clk				*pclk;
-+	struct clk				*sample_clk;
-+	struct platform_device			*pdev;
-+	struct atmel_abdac_dma			dma;
++struct atmel_ac97c {
++	struct clk			*pclk;
++	struct platform_device		*pdev;
++	struct atmel_ac97c_dma		dma;
 +
-+	struct snd_pcm_hw_constraint_list	constraints_rates;
-+	struct snd_pcm_substream		*substream;
-+	struct snd_card				*card;
-+	struct snd_pcm				*pcm;
++	struct snd_pcm_substream	*playback_substream;
++	struct snd_pcm_substream	*capture_substream;
++	struct snd_card			*card;
++	struct snd_pcm			*pcm;
++	struct snd_ac97			*ac97;
++	struct snd_ac97_bus		*ac97_bus;
 +
-+	void __iomem				*regs;
-+	unsigned long				flags;
-+	unsigned int				rates[MAX_NUM_RATES];
-+	unsigned int				rates_num;
-+	int					irq;
++	u64				cur_format;
++	unsigned int			cur_rate;
++	unsigned long			flags;
++	/* Serialize access to opened variable */
++	spinlock_t			lock;
++	void __iomem			*regs;
++	int				opened;
++	int				reset_pin;
 +};
 +
-+#define get_dac(card) ((struct atmel_abdac *)(card)->private_data)
++#define get_chip(card) ((struct atmel_ac97c *)(card)->private_data)
++
++#define ac97c_writel(chip, reg, val)			\
++	__raw_writel((val), (chip)->regs + AC97C_##reg)
++#define ac97c_readl(chip, reg)				\
++	__raw_readl((chip)->regs + AC97C_##reg)
 +
 +/* This function is called by the DMA driver. */
-+static void atmel_abdac_dma_period_done(void *arg)
++static void atmel_ac97c_dma_playback_period_done(void *arg)
 +{
-+	struct atmel_abdac *dac = arg;
-+	snd_pcm_period_elapsed(dac->substream);
++	struct atmel_ac97c *chip = arg;
++	snd_pcm_period_elapsed(chip->playback_substream);
 +}
 +
-+static int atmel_abdac_prepare_dma(struct atmel_abdac *dac,
++static void atmel_ac97c_dma_capture_period_done(void *arg)
++{
++	struct atmel_ac97c *chip = arg;
++	snd_pcm_period_elapsed(chip->capture_substream);
++}
++
++static int atmel_ac97c_prepare_dma(struct atmel_ac97c *chip,
 +		struct snd_pcm_substream *substream,
 +		enum dma_data_direction direction)
 +{
-+	struct dma_chan			*chan = dac->dma.chan;
++	struct dma_chan			*chan;
 +	struct dw_cyclic_desc		*cdesc;
 +	struct snd_pcm_runtime		*runtime = substream->runtime;
 +	unsigned long			buffer_len, period_len;
@@ -235,42 +228,52 @@ index 0000000..28b3c7f
 +	 * non-halfword-aligned buffers or lengths.
 +	 */
 +	if (runtime->dma_addr & 1 || runtime->buffer_size & 1) {
-+		dev_dbg(&dac->pdev->dev, "too complex transfer\n");
++		dev_dbg(&chip->pdev->dev, "too complex transfer\n");
 +		return -EINVAL;
 +	}
++
++	if (direction == DMA_TO_DEVICE)
++		chan = chip->dma.tx_chan;
++	else
++		chan = chip->dma.rx_chan;
 +
 +	buffer_len = frames_to_bytes(runtime, runtime->buffer_size);
 +	period_len = frames_to_bytes(runtime, runtime->period_size);
 +
 +	cdesc = dw_dma_cyclic_prep(chan, runtime->dma_addr, buffer_len,
-+			period_len, DMA_TO_DEVICE);
++			period_len, direction);
 +	if (IS_ERR(cdesc)) {
-+		dev_dbg(&dac->pdev->dev, "could not prepare cyclic DMA\n");
++		dev_dbg(&chip->pdev->dev, "could not prepare cyclic DMA\n");
 +		return PTR_ERR(cdesc);
 +	}
 +
-+	cdesc->period_callback = atmel_abdac_dma_period_done;
-+	cdesc->period_callback_param = dac;
++	if (direction == DMA_TO_DEVICE) {
++		cdesc->period_callback = atmel_ac97c_dma_playback_period_done;
++		set_bit(DMA_TX_READY, &chip->flags);
++	} else {
++		cdesc->period_callback = atmel_ac97c_dma_capture_period_done;
++		set_bit(DMA_RX_READY, &chip->flags);
++	}
 +
-+	dac->dma.cdesc = cdesc;
-+
-+	set_bit(DMA_READY, &dac->flags);
++	cdesc->period_callback_param = chip;
 +
 +	return 0;
 +}
 +
-+static struct snd_pcm_hardware atmel_abdac_hw = {
++static struct snd_pcm_hardware atmel_ac97c_hw = {
 +	.info			= (SNDRV_PCM_INFO_MMAP
 +				  | SNDRV_PCM_INFO_MMAP_VALID
 +				  | SNDRV_PCM_INFO_INTERLEAVED
 +				  | SNDRV_PCM_INFO_BLOCK_TRANSFER
++				  | SNDRV_PCM_INFO_JOINT_DUPLEX
 +				  | SNDRV_PCM_INFO_RESUME
 +				  | SNDRV_PCM_INFO_PAUSE),
-+	.formats		= (SNDRV_PCM_FMTBIT_S16_BE),
-+	.rates			= (SNDRV_PCM_RATE_KNOT),
-+	.rate_min		= RATE_MIN,
-+	.rate_max		= RATE_MAX,
-+	.channels_min		= 2,
++	.formats		= (SNDRV_PCM_FMTBIT_S16_BE
++				  | SNDRV_PCM_FMTBIT_S16_LE),
++	.rates			= (SNDRV_PCM_RATE_CONTINUOUS),
++	.rate_min		= 4000,
++	.rate_max		= 48000,
++	.channels_min		= 1,
 +	.channels_max		= 2,
 +	.buffer_bytes_max	= 64 * 4096,
 +	.period_bytes_min	= 4096,
@@ -279,168 +282,499 @@ index 0000000..28b3c7f
 +	.periods_max		= 64,
 +};
 +
-+static int atmel_abdac_open(struct snd_pcm_substream *substream)
++static int atmel_ac97c_playback_open(struct snd_pcm_substream *substream)
 +{
-+	struct atmel_abdac *dac = snd_pcm_substream_chip(substream);
++	struct atmel_ac97c *chip = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
 +
-+	dac->substream = substream;
-+	atmel_abdac_hw.rate_max = dac->rates[dac->rates_num - 1];
-+	atmel_abdac_hw.rate_min = dac->rates[0];
-+	substream->runtime->hw = atmel_abdac_hw;
-+
-+	return snd_pcm_hw_constraint_list(substream->runtime, 0,
-+			SNDRV_PCM_HW_PARAM_RATE, &dac->constraints_rates);
-+}
-+
-+static int atmel_abdac_close(struct snd_pcm_substream *substream)
-+{
-+	struct atmel_abdac *dac = snd_pcm_substream_chip(substream);
-+	dac->substream = NULL;
++	mutex_lock(&opened_mutex);
++	chip->opened++;
++	runtime->hw = atmel_ac97c_hw;
++	if (chip->cur_rate) {
++		runtime->hw.rate_min = chip->cur_rate;
++		runtime->hw.rate_max = chip->cur_rate;
++	}
++	if (chip->cur_format)
++		runtime->hw.formats = (1ULL << chip->cur_format);
++	mutex_unlock(&opened_mutex);
++	chip->playback_substream = substream;
 +	return 0;
 +}
 +
-+static int atmel_abdac_hw_params(struct snd_pcm_substream *substream,
++static int atmel_ac97c_capture_open(struct snd_pcm_substream *substream)
++{
++	struct atmel_ac97c *chip = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	mutex_lock(&opened_mutex);
++	chip->opened++;
++	runtime->hw = atmel_ac97c_hw;
++	if (chip->cur_rate) {
++		runtime->hw.rate_min = chip->cur_rate;
++		runtime->hw.rate_max = chip->cur_rate;
++	}
++	if (chip->cur_format)
++		runtime->hw.formats = (1ULL << chip->cur_format);
++	mutex_unlock(&opened_mutex);
++	chip->capture_substream = substream;
++	return 0;
++}
++
++static int atmel_ac97c_playback_close(struct snd_pcm_substream *substream)
++{
++	struct atmel_ac97c *chip = snd_pcm_substream_chip(substream);
++
++	mutex_lock(&opened_mutex);
++	chip->opened--;
++	if (!chip->opened) {
++		chip->cur_rate = 0;
++		chip->cur_format = 0;
++	}
++	mutex_unlock(&opened_mutex);
++
++	chip->playback_substream = NULL;
++
++	return 0;
++}
++
++static int atmel_ac97c_capture_close(struct snd_pcm_substream *substream)
++{
++	struct atmel_ac97c *chip = snd_pcm_substream_chip(substream);
++
++	mutex_lock(&opened_mutex);
++	chip->opened--;
++	if (!chip->opened) {
++		chip->cur_rate = 0;
++		chip->cur_format = 0;
++	}
++	mutex_unlock(&opened_mutex);
++
++	chip->capture_substream = NULL;
++
++	return 0;
++}
++
++static int atmel_ac97c_playback_hw_params(struct snd_pcm_substream *substream,
 +		struct snd_pcm_hw_params *hw_params)
 +{
-+	struct atmel_abdac *dac = snd_pcm_substream_chip(substream);
++	struct atmel_ac97c *chip = snd_pcm_substream_chip(substream);
 +	int retval;
 +
 +	retval = snd_pcm_lib_malloc_pages(substream,
-+			params_buffer_bytes(hw_params));
++					params_buffer_bytes(hw_params));
 +	if (retval < 0)
 +		return retval;
 +	/* snd_pcm_lib_malloc_pages returns 1 if buffer is changed. */
 +	if (retval == 1)
-+		if (test_and_clear_bit(DMA_READY, &dac->flags))
-+			dw_dma_cyclic_free(dac->dma.chan);
++		if (test_and_clear_bit(DMA_TX_READY, &chip->flags))
++			dw_dma_cyclic_free(chip->dma.tx_chan);
++
++	/* Set restrictions to params. */
++	mutex_lock(&opened_mutex);
++	chip->cur_rate = params_rate(hw_params);
++	chip->cur_format = params_format(hw_params);
++	mutex_unlock(&opened_mutex);
 +
 +	return retval;
 +}
 +
-+static int atmel_abdac_hw_free(struct snd_pcm_substream *substream)
++static int atmel_ac97c_capture_hw_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *hw_params)
 +{
-+	struct atmel_abdac *dac = snd_pcm_substream_chip(substream);
-+	if (test_and_clear_bit(DMA_READY, &dac->flags))
-+		dw_dma_cyclic_free(dac->dma.chan);
++	struct atmel_ac97c *chip = snd_pcm_substream_chip(substream);
++	int retval;
++
++	retval = snd_pcm_lib_malloc_pages(substream,
++					params_buffer_bytes(hw_params));
++	if (retval < 0)
++		return retval;
++	/* snd_pcm_lib_malloc_pages returns 1 if buffer is changed. */
++	if (retval == 1)
++		if (test_and_clear_bit(DMA_RX_READY, &chip->flags))
++			dw_dma_cyclic_free(chip->dma.rx_chan);
++
++	/* Set restrictions to params. */
++	mutex_lock(&opened_mutex);
++	chip->cur_rate = params_rate(hw_params);
++	chip->cur_format = params_format(hw_params);
++	mutex_unlock(&opened_mutex);
++
++	return retval;
++}
++
++static int atmel_ac97c_playback_hw_free(struct snd_pcm_substream *substream)
++{
++	struct atmel_ac97c *chip = snd_pcm_substream_chip(substream);
++	if (test_and_clear_bit(DMA_TX_READY, &chip->flags))
++		dw_dma_cyclic_free(chip->dma.tx_chan);
 +	return snd_pcm_lib_free_pages(substream);
 +}
 +
-+static int atmel_abdac_prepare(struct snd_pcm_substream *substream)
++static int atmel_ac97c_capture_hw_free(struct snd_pcm_substream *substream)
 +{
-+	struct atmel_abdac *dac = snd_pcm_substream_chip(substream);
++	struct atmel_ac97c *chip = snd_pcm_substream_chip(substream);
++	if (test_and_clear_bit(DMA_RX_READY, &chip->flags))
++		dw_dma_cyclic_free(chip->dma.rx_chan);
++	return snd_pcm_lib_free_pages(substream);
++}
++
++static int atmel_ac97c_playback_prepare(struct snd_pcm_substream *substream)
++{
++	struct atmel_ac97c *chip = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	unsigned long word = 0;
 +	int retval;
 +
-+	retval = clk_set_rate(dac->sample_clk, 256 * substream->runtime->rate);
-+	if (retval)
-+		return retval;
++	/* assign channels to AC97C channel A */
++	switch (runtime->channels) {
++	case 1:
++		word |= AC97C_CH_ASSIGN(PCM_LEFT, A);
++		break;
++	case 2:
++		word |= AC97C_CH_ASSIGN(PCM_LEFT, A)
++			| AC97C_CH_ASSIGN(PCM_RIGHT, A);
++		break;
++	default:
++		/* TODO: support more than two channels */
++		return -EINVAL;
++		break;
++	}
++	ac97c_writel(chip, OCA, word);
 +
-+	if (!test_bit(DMA_READY, &dac->flags))
-+		retval = atmel_abdac_prepare_dma(dac, substream, DMA_TO_DEVICE);
++	/* configure sample format and size */
++	word = AC97C_CMR_DMAEN | AC97C_CMR_SIZE_16;
++
++	switch (runtime->format) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		word |= AC97C_CMR_CEM_LITTLE;
++		break;
++	case SNDRV_PCM_FORMAT_S16_BE: /* fall through */
++	default:
++		word &= ~(AC97C_CMR_CEM_LITTLE);
++		break;
++	}
++
++	ac97c_writel(chip, CAMR, word);
++
++	/* set variable rate if needed */
++	if (runtime->rate != 48000) {
++		word = ac97c_readl(chip, MR);
++		word |= AC97C_MR_VRA;
++		ac97c_writel(chip, MR, word);
++	} else {
++		word = ac97c_readl(chip, MR);
++		word &= ~(AC97C_MR_VRA);
++		ac97c_writel(chip, MR, word);
++	}
++
++	retval = snd_ac97_set_rate(chip->ac97, AC97_PCM_FRONT_DAC_RATE,
++			runtime->rate);
++	if (retval)
++		dev_dbg(&chip->pdev->dev, "could not set rate %d Hz\n",
++				runtime->rate);
++
++	if (!test_bit(DMA_TX_READY, &chip->flags))
++		retval = atmel_ac97c_prepare_dma(chip, substream,
++				DMA_TO_DEVICE);
 +
 +	return retval;
 +}
 +
-+static int atmel_abdac_trigger(struct snd_pcm_substream *substream, int cmd)
++static int atmel_ac97c_capture_prepare(struct snd_pcm_substream *substream)
 +{
-+	struct atmel_abdac *dac = snd_pcm_substream_chip(substream);
++	struct atmel_ac97c *chip = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	unsigned long word = 0;
++	int retval;
++
++	/* assign channels to AC97C channel A */
++	switch (runtime->channels) {
++	case 1:
++		word |= AC97C_CH_ASSIGN(PCM_LEFT, A);
++		break;
++	case 2:
++		word |= AC97C_CH_ASSIGN(PCM_LEFT, A)
++			| AC97C_CH_ASSIGN(PCM_RIGHT, A);
++		break;
++	default:
++		/* TODO: support more than two channels */
++		return -EINVAL;
++		break;
++	}
++	ac97c_writel(chip, ICA, word);
++
++	/* configure sample format and size */
++	word = AC97C_CMR_DMAEN | AC97C_CMR_SIZE_16;
++
++	switch (runtime->format) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		word |= AC97C_CMR_CEM_LITTLE;
++		break;
++	case SNDRV_PCM_FORMAT_S16_BE: /* fall through */
++	default:
++		word &= ~(AC97C_CMR_CEM_LITTLE);
++		break;
++	}
++
++	ac97c_writel(chip, CAMR, word);
++
++	/* set variable rate if needed */
++	if (runtime->rate != 48000) {
++		word = ac97c_readl(chip, MR);
++		word |= AC97C_MR_VRA;
++		ac97c_writel(chip, MR, word);
++	} else {
++		word = ac97c_readl(chip, MR);
++		word &= ~(AC97C_MR_VRA);
++		ac97c_writel(chip, MR, word);
++	}
++
++	retval = snd_ac97_set_rate(chip->ac97, AC97_PCM_LR_ADC_RATE,
++			runtime->rate);
++	if (retval)
++		dev_dbg(&chip->pdev->dev, "could not set rate %d Hz\n",
++				runtime->rate);
++
++	if (!test_bit(DMA_RX_READY, &chip->flags))
++		retval = atmel_ac97c_prepare_dma(chip, substream,
++				DMA_FROM_DEVICE);
++
++	return retval;
++}
++
++static int
++atmel_ac97c_playback_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct atmel_ac97c *chip = snd_pcm_substream_chip(substream);
++	unsigned long camr;
 +	int retval = 0;
++
++	camr = ac97c_readl(chip, CAMR);
 +
 +	switch (cmd) {
 +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE: /* fall through */
 +	case SNDRV_PCM_TRIGGER_RESUME: /* fall through */
 +	case SNDRV_PCM_TRIGGER_START:
-+		clk_enable(dac->sample_clk);
-+		retval = dw_dma_cyclic_start(dac->dma.chan);
++		retval = dw_dma_cyclic_start(chip->dma.tx_chan);
 +		if (retval)
 +			goto out;
-+		dac_writel(dac, CTRL, DAC_BIT(EN));
++		camr |= AC97C_CMR_CENA;
 +		break;
 +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH: /* fall through */
 +	case SNDRV_PCM_TRIGGER_SUSPEND: /* fall through */
 +	case SNDRV_PCM_TRIGGER_STOP:
-+		dw_dma_cyclic_stop(dac->dma.chan);
-+		dac_writel(dac, DATA, 0);
-+		dac_writel(dac, CTRL, 0);
-+		clk_disable(dac->sample_clk);
++		dw_dma_cyclic_stop(chip->dma.tx_chan);
++		if (chip->opened <= 1)
++			camr &= ~AC97C_CMR_CENA;
++		break;
++	default:
++		retval = -EINVAL;
++		goto out;
++	}
++
++	ac97c_writel(chip, CAMR, camr);
++out:
++	return retval;
++}
++
++static int
++atmel_ac97c_capture_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct atmel_ac97c *chip = snd_pcm_substream_chip(substream);
++	unsigned long camr;
++	int retval = 0;
++
++	camr = ac97c_readl(chip, CAMR);
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE: /* fall through */
++	case SNDRV_PCM_TRIGGER_RESUME: /* fall through */
++	case SNDRV_PCM_TRIGGER_START:
++		retval = dw_dma_cyclic_start(chip->dma.rx_chan);
++		if (retval)
++			goto out;
++		camr |= AC97C_CMR_CENA;
++		break;
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH: /* fall through */
++	case SNDRV_PCM_TRIGGER_SUSPEND: /* fall through */
++	case SNDRV_PCM_TRIGGER_STOP:
++		dw_dma_cyclic_stop(chip->dma.rx_chan);
++		if (chip->opened <= 1)
++			camr &= ~AC97C_CMR_CENA;
 +		break;
 +	default:
 +		retval = -EINVAL;
 +		break;
 +	}
++
++	ac97c_writel(chip, CAMR, camr);
 +out:
 +	return retval;
 +}
 +
 +static snd_pcm_uframes_t
-+atmel_abdac_pointer(struct snd_pcm_substream *substream)
++atmel_ac97c_playback_pointer(struct snd_pcm_substream *substream)
 +{
-+	struct atmel_abdac	*dac = snd_pcm_substream_chip(substream);
++	struct atmel_ac97c	*chip = snd_pcm_substream_chip(substream);
 +	struct snd_pcm_runtime	*runtime = substream->runtime;
 +	snd_pcm_uframes_t	frames;
 +	unsigned long		bytes;
 +
-+	bytes = dw_dma_get_src_addr(dac->dma.chan);
++	bytes = dw_dma_get_src_addr(chip->dma.tx_chan);
 +	bytes -= runtime->dma_addr;
 +
 +	frames = bytes_to_frames(runtime, bytes);
 +	if (frames >= runtime->buffer_size)
 +		frames -= runtime->buffer_size;
-+
 +	return frames;
 +}
 +
-+static irqreturn_t abdac_interrupt(int irq, void *dev_id)
++static snd_pcm_uframes_t
++atmel_ac97c_capture_pointer(struct snd_pcm_substream *substream)
 +{
-+	struct atmel_abdac *dac = dev_id;
-+	u32 status;
++	struct atmel_ac97c	*chip = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime	*runtime = substream->runtime;
++	snd_pcm_uframes_t	frames;
++	unsigned long		bytes;
 +
-+	status = dac_readl(dac, INT_STATUS);
-+	if (status & DAC_BIT(UNDERRUN)) {
-+		dev_err(&dac->pdev->dev, "underrun detected\n");
-+		dac_writel(dac, INT_CLR, DAC_BIT(UNDERRUN));
-+	} else {
-+		dev_err(&dac->pdev->dev, "spurious interrupt (status=0x%x)\n",
-+			status);
-+		dac_writel(dac, INT_CLR, status);
-+	}
++	bytes = dw_dma_get_dst_addr(chip->dma.rx_chan);
++	bytes -= runtime->dma_addr;
 +
-+	return IRQ_HANDLED;
++	frames = bytes_to_frames(runtime, bytes);
++	if (frames >= runtime->buffer_size)
++		frames -= runtime->buffer_size;
++	return frames;
 +}
 +
-+static struct snd_pcm_ops atmel_abdac_ops = {
-+	.open		= atmel_abdac_open,
-+	.close		= atmel_abdac_close,
++static struct snd_pcm_ops atmel_ac97_playback_ops = {
++	.open		= atmel_ac97c_playback_open,
++	.close		= atmel_ac97c_playback_close,
 +	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= atmel_abdac_hw_params,
-+	.hw_free	= atmel_abdac_hw_free,
-+	.prepare	= atmel_abdac_prepare,
-+	.trigger	= atmel_abdac_trigger,
-+	.pointer	= atmel_abdac_pointer,
++	.hw_params	= atmel_ac97c_playback_hw_params,
++	.hw_free	= atmel_ac97c_playback_hw_free,
++	.prepare	= atmel_ac97c_playback_prepare,
++	.trigger	= atmel_ac97c_playback_trigger,
++	.pointer	= atmel_ac97c_playback_pointer,
 +};
 +
-+static int __devinit atmel_abdac_pcm_new(struct atmel_abdac *dac)
-+{
-+	struct snd_pcm_hardware hw = atmel_abdac_hw;
-+	struct snd_pcm *pcm;
-+	int retval;
++static struct snd_pcm_ops atmel_ac97_capture_ops = {
++	.open		= atmel_ac97c_capture_open,
++	.close		= atmel_ac97c_capture_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= atmel_ac97c_capture_hw_params,
++	.hw_free	= atmel_ac97c_capture_hw_free,
++	.prepare	= atmel_ac97c_capture_prepare,
++	.trigger	= atmel_ac97c_capture_trigger,
++	.pointer	= atmel_ac97c_capture_pointer,
++};
 +
-+	retval = snd_pcm_new(dac->card, dac->card->shortname,
-+			dac->pdev->id, 1, 0, &pcm);
++static int __devinit atmel_ac97c_pcm_new(struct atmel_ac97c *chip)
++{
++	struct snd_pcm		*pcm;
++	struct snd_pcm_hardware	hw = atmel_ac97c_hw;
++	int			capture, playback, retval;
++
++	capture = test_bit(DMA_RX_CHAN_PRESENT, &chip->flags);
++	playback = test_bit(DMA_TX_CHAN_PRESENT, &chip->flags);
++
++	retval = snd_pcm_new(chip->card, chip->card->shortname,
++			chip->pdev->id, playback, capture, &pcm);
 +	if (retval)
 +		return retval;
 +
-+	strcpy(pcm->name, dac->card->shortname);
-+	pcm->private_data = dac;
-+	pcm->info_flags = 0;
-+	dac->pcm = pcm;
-+
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &atmel_abdac_ops);
++	if (capture)
++		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
++				&atmel_ac97_capture_ops);
++	if (playback)
++		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
++				&atmel_ac97_playback_ops);
 +
 +	retval = snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
-+			&dac->pdev->dev, hw.periods_min * hw.period_bytes_min,
++			&chip->pdev->dev, hw.periods_min * hw.period_bytes_min,
 +			hw.buffer_bytes_max);
++	if (retval)
++		return retval;
 +
-+	return retval;
++	pcm->private_data = chip;
++	pcm->info_flags = 0;
++	strcpy(pcm->name, chip->card->shortname);
++	chip->pcm = pcm;
++
++	return 0;
++}
++
++static int atmel_ac97c_mixer_new(struct atmel_ac97c *chip)
++{
++	struct snd_ac97_template template;
++	memset(&template, 0, sizeof(template));
++	template.private_data = chip;
++	return snd_ac97_mixer(chip->ac97_bus, &template, &chip->ac97);
++}
++
++static void atmel_ac97c_write(struct snd_ac97 *ac97, unsigned short reg,
++		unsigned short val)
++{
++	struct atmel_ac97c *chip = get_chip(ac97);
++	unsigned long word;
++	int timeout = 40;
++
++	word = (reg & 0x7f) << 16 | val;
++
++	do {
++		if (ac97c_readl(chip, COSR) & AC97C_CSR_TXRDY) {
++			ac97c_writel(chip, COTHR, word);
++			return;
++		}
++		udelay(1);
++	} while (--timeout);
++
++	dev_dbg(&chip->pdev->dev, "codec write timeout\n");
++}
++
++static unsigned short atmel_ac97c_read(struct snd_ac97 *ac97,
++		unsigned short reg)
++{
++	struct atmel_ac97c *chip = get_chip(ac97);
++	unsigned long word;
++	int timeout = 40;
++	int write = 10;
++
++	word = (0x80 | (reg & 0x7f)) << 16;
++
++	if ((ac97c_readl(chip, COSR) & AC97C_CSR_RXRDY) != 0)
++		ac97c_readl(chip, CORHR);
++
++retry_write:
++	timeout = 40;
++
++	do {
++		if ((ac97c_readl(chip, COSR) & AC97C_CSR_TXRDY) != 0) {
++			ac97c_writel(chip, COTHR, word);
++			goto read_reg;
++		}
++		udelay(10);
++	} while (--timeout);
++
++	if (!--write)
++		goto timed_out;
++	goto retry_write;
++
++read_reg:
++	do {
++		if ((ac97c_readl(chip, COSR) & AC97C_CSR_RXRDY) != 0) {
++			unsigned short val = ac97c_readl(chip, CORHR);
++			return val;
++		}
++		udelay(10);
++	} while (--timeout);
++
++	if (!--write)
++		goto timed_out;
++	goto retry_write;
++
++timed_out:
++	dev_dbg(&chip->pdev->dev, "codec read timeout\n");
++	return 0xffff;
 +}
 +
 +static bool filter(struct dma_chan *chan, void *slave)
@@ -454,68 +788,38 @@ index 0000000..28b3c7f
 +		return false;
 +}
 +
-+static int set_sample_rates(struct atmel_abdac *dac)
++static void atmel_ac97c_reset(struct atmel_ac97c *chip)
 +{
-+	long new_rate = RATE_MAX;
-+	int retval = -EINVAL;
-+	int index = 0;
++	ac97c_writel(chip, MR, AC97C_MR_WRST);
 +
-+	/* we start at 192 kHz and work our way down to 5112 Hz */
-+	while (new_rate >= RATE_MIN && index < (MAX_NUM_RATES + 1)) {
-+		new_rate = clk_round_rate(dac->sample_clk, 256 * new_rate);
-+		if (new_rate < 0)
-+			break;
-+		/* make sure we are below the ABDAC clock */
-+		if (new_rate <= clk_get_rate(dac->pclk)) {
-+			dac->rates[index] = new_rate / 256;
-+			index++;
-+		}
-+		/* divide by 256 and then by two to get next rate */
-+		new_rate /= 256 * 2;
++	if (gpio_is_valid(chip->reset_pin)) {
++		gpio_set_value(chip->reset_pin, 0);
++		/* AC97 v2.2 specifications says minimum 1 us. */
++		udelay(10);
++		gpio_set_value(chip->reset_pin, 1);
 +	}
 +
-+	if (index) {
-+		int i;
-+
-+		/* reverse array, smallest go first */
-+		for (i = 0; i < (index / 2); i++) {
-+			unsigned int tmp = dac->rates[index - 1 - i];
-+			dac->rates[index - 1 - i] = dac->rates[i];
-+			dac->rates[i] = tmp;
-+		}
-+
-+		dac->constraints_rates.count = index;
-+		dac->constraints_rates.list = dac->rates;
-+		dac->constraints_rates.mask = 0;
-+		dac->rates_num = index;
-+
-+		retval = 0;
-+	}
-+
-+	return retval;
++	udelay(1);
++	ac97c_writel(chip, MR, AC97C_MR_ENA);
 +}
 +
-+static int __devinit atmel_abdac_probe(struct platform_device *pdev)
++static int __devinit atmel_ac97c_probe(struct platform_device *pdev)
 +{
-+	struct snd_card		*card;
-+	struct atmel_abdac	*dac;
-+	struct resource		*regs;
-+	struct atmel_abdac_pdata	*pdata;
-+	struct clk		*pclk;
-+	struct clk		*sample_clk;
-+	int			retval;
-+	int			irq;
++	struct snd_card			*card;
++	struct atmel_ac97c		*chip;
++	struct resource			*regs;
++	struct ac97c_platform_data	*pdata;
++	struct clk			*pclk;
++	static struct snd_ac97_bus_ops	ops = {
++		.write	= atmel_ac97c_write,
++		.read	= atmel_ac97c_read,
++	};
++	int				retval;
 +
 +	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 +	if (!regs) {
 +		dev_dbg(&pdev->dev, "no memory resource\n");
 +		return -ENXIO;
-+	}
-+
-+	irq = platform_get_irq(pdev, 0);
-+	if (irq < 0) {
-+		dev_dbg(&pdev->dev, "could not get IRQ number\n");
-+		return irq;
 +	}
 +
 +	pdata = pdev->dev.platform_data;
@@ -529,155 +833,196 @@ index 0000000..28b3c7f
 +		dev_dbg(&pdev->dev, "no peripheral clock\n");
 +		return PTR_ERR(pclk);
 +	}
-+	sample_clk = clk_get(&pdev->dev, "sample_clk");
-+	if (IS_ERR(pclk)) {
-+		dev_dbg(&pdev->dev, "no sample clock\n");
-+		retval = PTR_ERR(pclk);
-+		goto out_put_pclk;
-+	}
 +	clk_enable(pclk);
 +
 +	retval = snd_card_create(SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
-+			THIS_MODULE, sizeof(struct atmel_abdac), &card);
++			THIS_MODULE, sizeof(struct atmel_ac97c), &card);
 +	if (retval) {
 +		dev_dbg(&pdev->dev, "could not create sound card device\n");
-+		goto out_put_sample_clk;
++		goto err_snd_card_new;
 +	}
 +
-+	dac = get_dac(card);
++	chip = get_chip(card);
 +
-+	dac->irq = irq;
-+	dac->card = card;
-+	dac->pclk = pclk;
-+	dac->sample_clk = sample_clk;
-+	dac->pdev = pdev;
++	spin_lock_init(&chip->lock);
 +
-+	retval = set_sample_rates(dac);
-+	if (retval < 0) {
-+		dev_dbg(&pdev->dev, "could not set supported rates\n");
-+		goto out_free_card;
-+	}
++	strcpy(card->driver, "Atmel AC97C");
++	strcpy(card->shortname, "Atmel AC97C");
++	sprintf(card->longname, "Atmel AC97 controller");
 +
-+	dac->regs = ioremap(regs->start, regs->end - regs->start + 1);
-+	if (!dac->regs) {
++	chip->card = card;
++	chip->pclk = pclk;
++	chip->pdev = pdev;
++	chip->regs = ioremap(regs->start, regs->end - regs->start + 1);
++
++	if (!chip->regs) {
 +		dev_dbg(&pdev->dev, "could not remap register memory\n");
-+		goto out_free_card;
++		goto err_ioremap;
 +	}
 +
-+	/* make sure the DAC is silent and disabled */
-+	dac_writel(dac, DATA, 0);
-+	dac_writel(dac, CTRL, 0);
-+
-+	retval = request_irq(irq, abdac_interrupt, 0, "abdac", dac);
-+	if (retval) {
-+		dev_dbg(&pdev->dev, "could not request irq\n");
-+		goto out_unmap_regs;
++	if (gpio_is_valid(pdata->reset_pin)) {
++		if (gpio_request(pdata->reset_pin, "reset_pin")) {
++			dev_dbg(&pdev->dev, "reset pin not available\n");
++			chip->reset_pin = -ENODEV;
++		} else {
++			gpio_direction_output(pdata->reset_pin, 1);
++			chip->reset_pin = pdata->reset_pin;
++		}
 +	}
 +
 +	snd_card_set_dev(card, &pdev->dev);
 +
-+	if (pdata->dws.dma_dev) {
-+		struct dw_dma_slave *dws = &pdata->dws;
++	retval = snd_ac97_bus(card, 0, &ops, chip, &chip->ac97_bus);
++	if (retval) {
++		dev_dbg(&pdev->dev, "could not register on ac97 bus\n");
++		goto err_ac97_bus;
++	}
++
++	atmel_ac97c_reset(chip);
++
++	retval = atmel_ac97c_mixer_new(chip);
++	if (retval) {
++		dev_dbg(&pdev->dev, "could not register ac97 mixer\n");
++		goto err_ac97_bus;
++	}
++
++	if (pdata->rx_dws.dma_dev) {
++		struct dw_dma_slave *dws = &pdata->rx_dws;
 +		dma_cap_mask_t mask;
 +
-+		dws->tx_reg = regs->start + DAC_DATA;
++		dws->rx_reg = regs->start + AC97C_CARHR + 2;
 +
 +		dma_cap_zero(mask);
 +		dma_cap_set(DMA_SLAVE, mask);
 +
-+		dac->dma.chan = dma_request_channel(mask, filter, dws);
++		chip->dma.rx_chan = dma_request_channel(mask, filter, dws);
++
++		dev_info(&chip->pdev->dev, "using %s for DMA RX\n",
++					chip->dma.rx_chan->dev->device.bus_id);
++		set_bit(DMA_RX_CHAN_PRESENT, &chip->flags);
 +	}
-+	if (!pdata->dws.dma_dev || !dac->dma.chan) {
++
++	if (pdata->tx_dws.dma_dev) {
++		struct dw_dma_slave *dws = &pdata->tx_dws;
++		dma_cap_mask_t mask;
++
++		dws->tx_reg = regs->start + AC97C_CATHR + 2;
++
++		dma_cap_zero(mask);
++		dma_cap_set(DMA_SLAVE, mask);
++
++		chip->dma.tx_chan = dma_request_channel(mask, filter, dws);
++
++		dev_info(&chip->pdev->dev, "using %s for DMA TX\n",
++					chip->dma.tx_chan->dev->device.bus_id);
++		set_bit(DMA_TX_CHAN_PRESENT, &chip->flags);
++	}
++
++	if (!test_bit(DMA_RX_CHAN_PRESENT, &chip->flags) &&
++			!test_bit(DMA_TX_CHAN_PRESENT, &chip->flags)) {
 +		dev_dbg(&pdev->dev, "DMA not available\n");
 +		retval = -ENODEV;
-+		goto out_unset_card_dev;
++		goto err_dma;
 +	}
 +
-+	strcpy(card->driver, "Atmel ABDAC");
-+	strcpy(card->shortname, "Atmel ABDAC");
-+	sprintf(card->longname, "Atmel Audio Bitstream DAC");
-+
-+	retval = atmel_abdac_pcm_new(dac);
++	retval = atmel_ac97c_pcm_new(chip);
 +	if (retval) {
-+		dev_dbg(&pdev->dev, "could not register ABDAC pcm device\n");
-+		goto out_release_dma;
++		dev_dbg(&pdev->dev, "could not register ac97 pcm device\n");
++		goto err_dma;
 +	}
 +
 +	retval = snd_card_register(card);
 +	if (retval) {
 +		dev_dbg(&pdev->dev, "could not register sound card\n");
-+		goto out_release_dma;
++		goto err_ac97_bus;
 +	}
 +
 +	platform_set_drvdata(pdev, card);
 +
-+	dev_info(&pdev->dev, "Atmel ABDAC at 0x%p using %s\n",
-+			dac->regs, dac->dma.chan->dev->device.bus_id);
++	dev_info(&pdev->dev, "Atmel AC97 controller at 0x%p\n",
++			chip->regs);
 +
-+	return retval;
++	return 0;
 +
-+out_release_dma:
-+	dma_release_channel(dac->dma.chan);
-+	dac->dma.chan = NULL;
-+out_unset_card_dev:
++err_dma:
++	if (test_bit(DMA_RX_CHAN_PRESENT, &chip->flags))
++		dma_release_channel(chip->dma.rx_chan);
++	if (test_bit(DMA_TX_CHAN_PRESENT, &chip->flags))
++		dma_release_channel(chip->dma.tx_chan);
++	clear_bit(DMA_RX_CHAN_PRESENT, &chip->flags);
++	clear_bit(DMA_TX_CHAN_PRESENT, &chip->flags);
++	chip->dma.rx_chan = NULL;
++	chip->dma.tx_chan = NULL;
++err_ac97_bus:
 +	snd_card_set_dev(card, NULL);
-+	free_irq(irq, dac);
-+out_unmap_regs:
-+	iounmap(dac->regs);
-+out_free_card:
++
++	if (gpio_is_valid(chip->reset_pin))
++		gpio_free(chip->reset_pin);
++
++	iounmap(chip->regs);
++err_ioremap:
 +	snd_card_free(card);
-+out_put_sample_clk:
-+	clk_put(sample_clk);
++err_snd_card_new:
 +	clk_disable(pclk);
-+out_put_pclk:
 +	clk_put(pclk);
 +	return retval;
 +}
 +
 +#ifdef CONFIG_PM
-+static int atmel_abdac_suspend(struct platform_device *pdev, pm_message_t msg)
++static int atmel_ac97c_suspend(struct platform_device *pdev, pm_message_t msg)
 +{
 +	struct snd_card *card = platform_get_drvdata(pdev);
-+	struct atmel_abdac *dac = card->private_data;
++	struct atmel_ac97c *chip = card->private_data;
 +
-+	dw_dma_cyclic_stop(dac->dma.chan);
-+	clk_disable(dac->sample_clk);
-+	clk_disable(dac->pclk);
++	if (test_bit(DMA_RX_READY, &chip->flags))
++		dw_dma_cyclic_stop(chip->dma.rx_chan);
++	if (test_bit(DMA_TX_READY, &chip->flags))
++		dw_dma_cyclic_stop(chip->dma.tx_chan);
++	clk_disable(chip->pclk);
 +
 +	return 0;
 +}
 +
-+static int atmel_abdac_resume(struct platform_device *pdev)
++static int atmel_ac97c_resume(struct platform_device *pdev)
 +{
 +	struct snd_card *card = platform_get_drvdata(pdev);
-+	struct atmel_abdac *dac = card->private_data;
++	struct atmel_ac97c *chip = card->private_data;
 +
-+	clk_enable(dac->pclk);
-+	clk_enable(dac->sample_clk);
-+	if (test_bit(DMA_READY, &dac->flags))
-+		dw_dma_cyclic_start(dac->dma.chan);
++	clk_enable(chip->pclk);
++	if (test_bit(DMA_RX_READY, &chip->flags))
++		dw_dma_cyclic_start(chip->dma.rx_chan);
++	if (test_bit(DMA_TX_READY, &chip->flags))
++		dw_dma_cyclic_start(chip->dma.tx_chan);
 +
 +	return 0;
 +}
 +#else
-+#define atmel_abdac_suspend NULL
-+#define atmel_abdac_resume NULL
++#define atmel_ac97c_suspend NULL
++#define atmel_ac97c_resume NULL
 +#endif
 +
-+static int __devexit atmel_abdac_remove(struct platform_device *pdev)
++static int __devexit atmel_ac97c_remove(struct platform_device *pdev)
 +{
 +	struct snd_card *card = platform_get_drvdata(pdev);
-+	struct atmel_abdac *dac = get_dac(card);
++	struct atmel_ac97c *chip = get_chip(card);
 +
-+	clk_put(dac->sample_clk);
-+	clk_disable(dac->pclk);
-+	clk_put(dac->pclk);
++	if (gpio_is_valid(chip->reset_pin))
++		gpio_free(chip->reset_pin);
 +
-+	dma_release_channel(dac->dma.chan);
-+	dac->dma.chan = NULL;
++	clk_disable(chip->pclk);
++	clk_put(chip->pclk);
++	iounmap(chip->regs);
++
++	if (test_bit(DMA_RX_CHAN_PRESENT, &chip->flags))
++		dma_release_channel(chip->dma.rx_chan);
++	if (test_bit(DMA_TX_CHAN_PRESENT, &chip->flags))
++		dma_release_channel(chip->dma.tx_chan);
++	clear_bit(DMA_RX_CHAN_PRESENT, &chip->flags);
++	clear_bit(DMA_TX_CHAN_PRESENT, &chip->flags);
++	chip->dma.rx_chan = NULL;
++	chip->dma.tx_chan = NULL;
++
 +	snd_card_set_dev(card, NULL);
-+	iounmap(dac->regs);
-+	free_irq(dac->irq, dac);
 +	snd_card_free(card);
 +
 +	platform_set_drvdata(pdev, NULL);
@@ -685,30 +1030,107 @@ index 0000000..28b3c7f
 +	return 0;
 +}
 +
-+static struct platform_driver atmel_abdac_driver = {
-+	.remove		= __devexit_p(atmel_abdac_remove),
++static struct platform_driver atmel_ac97c_driver = {
++	.remove		= __devexit_p(atmel_ac97c_remove),
 +	.driver		= {
-+		.name	= "atmel_abdac",
++		.name	= "atmel_ac97c",
 +	},
-+	.suspend	= atmel_abdac_suspend,
-+	.resume		= atmel_abdac_resume,
++	.suspend	= atmel_ac97c_suspend,
++	.resume		= atmel_ac97c_resume,
 +};
 +
-+static int __init atmel_abdac_init(void)
++static int __init atmel_ac97c_init(void)
 +{
-+	return platform_driver_probe(&atmel_abdac_driver,
-+			atmel_abdac_probe);
++	return platform_driver_probe(&atmel_ac97c_driver,
++			atmel_ac97c_probe);
 +}
-+module_init(atmel_abdac_init);
++module_init(atmel_ac97c_init);
 +
-+static void __exit atmel_abdac_exit(void)
++static void __exit atmel_ac97c_exit(void)
 +{
-+	platform_driver_unregister(&atmel_abdac_driver);
++	platform_driver_unregister(&atmel_ac97c_driver);
 +}
-+module_exit(atmel_abdac_exit);
++module_exit(atmel_ac97c_exit);
 +
 +MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Driver for Atmel Audio Bitstream DAC (ABDAC)");
++MODULE_DESCRIPTION("Driver for Atmel AC97 controller");
 +MODULE_AUTHOR("Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>");
+diff --git a/sound/atmel/ac97c.h b/sound/atmel/ac97c.h
+new file mode 100644
+index 0000000..c17bd58
+--- /dev/null
++++ b/sound/atmel/ac97c.h
+@@ -0,0 +1,71 @@
++/*
++ * Register definitions for the Atmel AC97C controller
++ *
++ * Copyright (C) 2005-2009 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published
++ * by the Free Software Foundation.
++ */
++#ifndef __SOUND_ATMEL_AC97C_H
++#define __SOUND_ATMEL_AC97C_H
++
++#define AC97C_MR		0x08
++#define AC97C_ICA		0x10
++#define AC97C_OCA		0x14
++#define AC97C_CARHR		0x20
++#define AC97C_CATHR		0x24
++#define AC97C_CASR		0x28
++#define AC97C_CAMR		0x2c
++#define AC97C_CBRHR		0x30
++#define AC97C_CBTHR		0x34
++#define AC97C_CBSR		0x38
++#define AC97C_CBMR		0x3c
++#define AC97C_CORHR		0x40
++#define AC97C_COTHR		0x44
++#define AC97C_COSR		0x48
++#define AC97C_COMR		0x4c
++#define AC97C_SR		0x50
++#define AC97C_IER		0x54
++#define AC97C_IDR		0x58
++#define AC97C_IMR		0x5c
++#define AC97C_VERSION		0xfc
++
++#define AC97C_CATPR		PDC_TPR
++#define AC97C_CATCR		PDC_TCR
++#define AC97C_CATNPR		PDC_TNPR
++#define AC97C_CATNCR		PDC_TNCR
++#define AC97C_CARPR		PDC_RPR
++#define AC97C_CARCR		PDC_RCR
++#define AC97C_CARNPR		PDC_RNPR
++#define AC97C_CARNCR		PDC_RNCR
++#define AC97C_PTCR		PDC_PTCR
++
++#define AC97C_MR_ENA		(1 << 0)
++#define AC97C_MR_WRST		(1 << 1)
++#define AC97C_MR_VRA		(1 << 2)
++
++#define AC97C_CSR_TXRDY		(1 << 0)
++#define AC97C_CSR_UNRUN		(1 << 2)
++#define AC97C_CSR_RXRDY		(1 << 4)
++#define AC97C_CSR_ENDTX		(1 << 10)
++#define AC97C_CSR_ENDRX		(1 << 14)
++
++#define AC97C_CMR_SIZE_20	(0 << 16)
++#define AC97C_CMR_SIZE_18	(1 << 16)
++#define AC97C_CMR_SIZE_16	(2 << 16)
++#define AC97C_CMR_SIZE_10	(3 << 16)
++#define AC97C_CMR_CEM_LITTLE	(1 << 18)
++#define AC97C_CMR_CEM_BIG	(0 << 18)
++#define AC97C_CMR_CENA		(1 << 21)
++#define AC97C_CMR_DMAEN		(1 << 22)
++
++#define AC97C_SR_CAEVT		(1 << 3)
++
++#define AC97C_CH_ASSIGN(slot, channel)					\
++	(AC97C_CHANNEL_##channel << (3 * (AC97_SLOT_##slot - 3)))
++#define AC97C_CHANNEL_NONE	0x0
++#define AC97C_CHANNEL_A		0x1
++#define AC97C_CHANNEL_B		0x2
++
++#endif /* __SOUND_ATMEL_AC97C_H */
 -- 
 1.5.6.3
