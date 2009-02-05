@@ -1,15 +1,16 @@
-From: Tim Blechmann <tim@klingt.org>
-Subject: Re: [PATCH] alsa: snd_pcm_new api cleanup
-Date: Thu, 05 Feb 2009 13:04:27 +0100
-Message-ID: <498AD5CB.2030003@klingt.org>
-References: <20090205122715.5bc58b29@thinkpad> <s5hfxit6s0m.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Tascam US-1641 Firmware File
+Date: Thu, 05 Feb 2009 13:08:25 +0100
+Message-ID: <498AD6B9.4070903@ladisch.de>
+References: <58f7a09c0902021427i3eaa9955nf862b1ef282569ca@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1103195543016804632=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from klingt.org (mail.klingt.org [86.59.21.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5FE611037FD
-	for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2009 13:04:33 +0100 (CET)
-In-Reply-To: <s5hfxit6s0m.wl%tiwai@suse.de>
+Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 7F89E1037FD
+	for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2009 13:08:30 +0100 (CET)
+In-Reply-To: <58f7a09c0902021427i3eaa9955nf862b1ef282569ca@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,62 +20,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Donnie Menig <soundprizm@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============1103195543016804632==
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigA8C125555DC3BEC2DCF1034F"
+Donnie Menig wrote:
+> I have the Tascam US-1641 firmware now... I'm pretty sure I did everything
+> right, but I keep getting the "can't modify CPUCS: Broken pipe" or "unable
+> to open for input." error.
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigA8C125555DC3BEC2DCF1034F
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+You didn't tell what you're doing with the firmware, or how you're doing
+it, but I guess you are trying to download it.
 
-> Don't forget to fix include/sound/pcm.h, too.
->=20
-> Or, more better, please test the build once before submitting patches :=
-)
+"Broken pipe" means error code EPIPE, which means, according to
+linux/Documentation/usb/error-codes.txt, "endpoint is stalled", which
+means that the device did not like what you did to it.
 
-hrm, compiled wrong source tree :/
-
-best, tim
-
---=20
-tim@klingt.org
-http://tim.klingt.org
-
-The composer makes plans, music laughs.
-  Morton Feldman
+The "CPUCS" indicates that you're trying to use the EZ-USB download
+protocol; however, the firmware file is too big for that, i.e., your
+device is based on some other chipset.
 
 
---------------enigA8C125555DC3BEC2DCF1034F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkmK1dEACgkQdL+4qsZfVssAmwCfdvXLH51xSzbFOHyutdoxsL85
-7W8AnRQMngaaBOL3g7q9V0ZeQcYCDkHU
-=EX/z
------END PGP SIGNATURE-----
-
---------------enigA8C125555DC3BEC2DCF1034F--
-
---===============1103195543016804632==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============1103195543016804632==--
+Best regards,
+Clemens
