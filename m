@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: pxa-ssp: disable only when the ssp
-	dai is active
-Date: Thu, 5 Feb 2009 11:03:20 +0000
-Message-ID: <20090205110319.GA17085@rakim.wolfsonmicro.main>
-References: <f17812d70902050242h145788b7s34a34d34f6f26c06@mail.gmail.com>
+From: Tim Blechmann <tim@klingt.org>
+Subject: [PATCH] alsa: snd_pcm_new api cleanup
+Date: Thu, 5 Feb 2009 12:27:15 +0100
+Message-ID: <20090205122715.5bc58b29@thinkpad>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E8C391037FD
-	for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2009 12:03:20 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <f17812d70902050242h145788b7s34a34d34f6f26c06@mail.gmail.com>
+Received: from klingt.org (mail.klingt.org [86.59.21.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6DCA01037FD
+	for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2009 12:27:16 +0100 (CET)
+Received: from thinkpad (localhost [127.0.0.1]) (authenticated bits=0)
+	by klingt.org (8.14.3/8.14.3/Debian-5) with ESMTP id n15BRFaA014439
+	for <alsa-devel@alsa-project.org>; Thu, 5 Feb 2009 12:27:16 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric Miao <eric.y.miao@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 05, 2009 at 06:42:13PM +0800, Eric Miao wrote:
+Impact: cleanup
 
-> Typo?
+snd_pcm_new takes a char *id argument, although it is not modifying
+the string. it can therefore be declared as const char *id.
 
-No, the check is inverted since the shutdown function will be called
-once per substream.  This means that if both playback and record are
-active and one is stopped the driver can't stop the clocks since
-that'd disrupt the other.  The core updates the active flag before
-calling into the driver.
+Signed-off-by: Tim Blechmann <tim@klingt.org>
+---
+ sound/core/pcm.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/core/pcm.c b/sound/core/pcm.c
+index 192a433..583453e 100644
+--- a/sound/core/pcm.c
++++ b/sound/core/pcm.c
+@@ -692,7 +692,7 @@ EXPORT_SYMBOL(snd_pcm_new_stream);
+  *
+  * Returns zero if successful, or a negative error code on failure.
+  */
+-int snd_pcm_new(struct snd_card *card, char *id, int device,
++int snd_pcm_new(struct snd_card *card, const char *id, int device,
+ 		int playback_count, int capture_count,
+ 	        struct snd_pcm ** rpcm)
+ {
+-- 
+1.5.6.3
