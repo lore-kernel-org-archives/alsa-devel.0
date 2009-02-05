@@ -1,16 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Tascam US-1641 Firmware File
-Date: Thu, 05 Feb 2009 13:08:25 +0100
-Message-ID: <498AD6B9.4070903@ladisch.de>
-References: <58f7a09c0902021427i3eaa9955nf862b1ef282569ca@mail.gmail.com>
+From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+Subject: [PATCH v2 0/3] Atmel ALSA drivers
+Date: Thu,  5 Feb 2009 13:10:58 +0100
+Message-ID: <1233835861-5533-1-git-send-email-hans-christian.egtvedt@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 7F89E1037FD
-	for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2009 13:08:30 +0100 (CET)
-In-Reply-To: <58f7a09c0902021427i3eaa9955nf862b1ef282569ca@mail.gmail.com>
+Received: from relay.atmel.no (relay.atmel.no [80.232.32.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4C8811037FD
+	for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2009 13:11:03 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,26 +18,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Donnie Menig <soundprizm@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Donnie Menig wrote:
-> I have the Tascam US-1641 firmware now... I'm pretty sure I did everything
-> right, but I keep getting the "can't modify CPUCS: Broken pipe" or "unable
-> to open for input." error.
+This patch series is the second revision after the initial review on
+alsa-devel mailing list. I have addressed the feedback and fixed up the
+drivers appropriatly, at least I hope so.
 
-You didn't tell what you're doing with the firmware, or how you're doing
-it, but I guess you are trying to download it.
+I've settled to put the drivers in the more common sound/atmel and added
+an "Atmel devices (AVR32 and AT91)" menu entry in the ALSA part of
+kconfig. No drivers are available for AT91 yet, but the AC97C driver
+should be quite simple to add support for AT91 devices as well.
 
-"Broken pipe" means error code EPIPE, which means, according to
-linux/Documentation/usb/error-codes.txt, "endpoint is stalled", which
-means that the device did not like what you did to it.
+The patches are formatted against v2.6.29-rc3 tag from Linux repository.
+In addition a vital DMA patch[1] is needed, which adds a cyclic DMA
+interface to the DesignWare DMA controller.
 
-The "CPUCS" indicates that you're trying to use the EZ-USB download
-protocol; however, the firmware file is too big for that, i.e., your
-device is based on some other chipset.
+1: http://avr32linux.org/archives/kernel/2009-February/002088.html
+   http://avr32linux.org/archives/kernel/2009-February/002087.html
 
-
+-- 
 Best regards,
-Clemens
+Hans-Christian Egtvedt
