@@ -1,17 +1,18 @@
-From: Eric Miao <eric.y.miao@gmail.com>
-Subject: [PATCH] ASoC: pxa-ssp: disable only when the ssp dai
-	is active
-Date: Thu, 5 Feb 2009 18:42:13 +0800
-Message-ID: <f17812d70902050242h145788b7s34a34d34f6f26c06@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: pxa-ssp: disable only when the ssp
+	dai is active
+Date: Thu, 5 Feb 2009 11:03:20 +0000
+Message-ID: <20090205110319.GA17085@rakim.wolfsonmicro.main>
+References: <f17812d70902050242h145788b7s34a34d34f6f26c06@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.244])
-	by alsa0.perex.cz (Postfix) with ESMTP id BD6AE1037F4
-	for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2009 11:42:14 +0100 (CET)
-Received: by rv-out-0708.google.com with SMTP id f25so179563rvb.32
-	for <alsa-devel@alsa-project.org>; Thu, 05 Feb 2009 02:42:13 -0800 (PST)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E8C391037FD
+	for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2009 12:03:20 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <f17812d70902050242h145788b7s34a34d34f6f26c06@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,36 +22,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Eric Miao <eric.y.miao@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->From aa615ac25173dc6f610d8f6ec55cb9d7d8894124 Mon Sep 17 00:00:00 2001
-From: Eric Miao <eric.miao@marvell.com>
-Date: Thu, 5 Feb 2009 18:39:20 +0800
-Subject: [PATCH] ASoC: pxa-ssp: disable only when the ssp dai is active
+On Thu, Feb 05, 2009 at 06:42:13PM +0800, Eric Miao wrote:
 
-Signed-off-by: Eric Miao <eric.miao@marvell.com>
----
+> Typo?
 
-Typo?
-
- sound/soc/pxa/pxa-ssp.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index 4a973ab..3f12b45 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -238,7 +238,7 @@ static void pxa_ssp_shutdown(struct
-snd_pcm_substream *substream,
- 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
- 	struct ssp_priv *priv = cpu_dai->private_data;
-
--	if (!cpu_dai->active) {
-+	if (cpu_dai->active) {
- 		ssp_disable(&priv->dev);
- 		clk_disable(priv->dev.ssp->clk);
- 	}
--- 
-1.6.0.4
+No, the check is inverted since the shutdown function will be called
+once per substream.  This means that if both playback and record are
+active and one is stopped the driver can't stop the clocks since
+that'd disrupt the other.  The core updates the active flag before
+calling into the driver.
