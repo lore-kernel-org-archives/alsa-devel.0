@@ -1,15 +1,14 @@
 From: Tim Blechmann <tim@klingt.org>
-Subject: [PATCH] alsa: snd_pcm_new api cleanup
-Date: Thu, 5 Feb 2009 13:01:54 +0100
-Message-ID: <20090205130154.2839e1cc@thinkpad>
-References: <s5hfxit6s0m.wl%tiwai@suse.de>
+Subject: Re: [PATCH] alsa: snd_pcm_new api cleanup
+Date: Thu, 05 Feb 2009 13:04:27 +0100
+Message-ID: <498AD5CB.2030003@klingt.org>
+References: <20090205122715.5bc58b29@thinkpad> <s5hfxit6s0m.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1103195543016804632=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from klingt.org (mail.klingt.org [86.59.21.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 60C561037FD
-	for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2009 13:01:54 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 5FE611037FD
+	for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2009 13:04:33 +0100 (CET)
 In-Reply-To: <s5hfxit6s0m.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,42 +23,58 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Impact: cleanup
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============1103195543016804632==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigA8C125555DC3BEC2DCF1034F"
 
-snd_pcm_new takes a char *id argument, although it is not modifying
-the string. it can therefore be declared as const char *id.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigA8C125555DC3BEC2DCF1034F
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Tim Blechmann <tim@klingt.org>
----
- include/sound/pcm.h |    2 +-
- sound/core/pcm.c    |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+> Don't forget to fix include/sound/pcm.h, too.
+>=20
+> Or, more better, please test the build once before submitting patches :=
+)
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 40c5a6f..ee0e887 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -451,7 +451,7 @@ struct snd_pcm_notify {
- 
- extern const struct file_operations snd_pcm_f_ops[2];
- 
--int snd_pcm_new(struct snd_card *card, char *id, int device,
-+int snd_pcm_new(struct snd_card *card, const char *id, int device,
- 		int playback_count, int capture_count,
- 		struct snd_pcm **rpcm);
- int snd_pcm_new_stream(struct snd_pcm *pcm, int stream, int substream_count);
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 192a433..583453e 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -692,7 +692,7 @@ EXPORT_SYMBOL(snd_pcm_new_stream);
-  *
-  * Returns zero if successful, or a negative error code on failure.
-  */
--int snd_pcm_new(struct snd_card *card, char *id, int device,
-+int snd_pcm_new(struct snd_card *card, const char *id, int device,
- 		int playback_count, int capture_count,
- 	        struct snd_pcm ** rpcm)
- {
--- 
-1.5.6.3
+hrm, compiled wrong source tree :/
+
+best, tim
+
+--=20
+tim@klingt.org
+http://tim.klingt.org
+
+The composer makes plans, music laughs.
+  Morton Feldman
+
+
+--------------enigA8C125555DC3BEC2DCF1034F
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkmK1dEACgkQdL+4qsZfVssAmwCfdvXLH51xSzbFOHyutdoxsL85
+7W8AnRQMngaaBOL3g7q9V0ZeQcYCDkHU
+=EX/z
+-----END PGP SIGNATURE-----
+
+--------------enigA8C125555DC3BEC2DCF1034F--
+
+--===============1103195543016804632==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============1103195543016804632==--
