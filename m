@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 2.6.30] ASoC: optimize init sequence
-	of	Freescale MPC8610 sound drivers
-Date: Fri, 6 Feb 2009 11:46:59 +0000
-Message-ID: <20090206114613.GC8723@sirena.org.uk>
-References: <1233878162-30569-1-git-send-email-timur@freescale.com>
+Subject: Re: [PATCH 3/3] ASoC: Blackfin: fix bug - kernel
+	will	crash when record and play in bf527-ezkit
+Date: Fri, 6 Feb 2009 11:56:45 +0000
+Message-ID: <20090206115626.GD8723@sirena.org.uk>
+References: <1233915156-17985-1-git-send-email-cooloney@kernel.org>
+	<1233915156-17985-4-git-send-email-cooloney@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4FEFA2432F
-	for <alsa-devel@alsa-project.org>; Fri,  6 Feb 2009 12:47:09 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id CA9CA2432C
+	for <alsa-devel@alsa-project.org>; Fri,  6 Feb 2009 12:56:56 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1233878162-30569-1-git-send-email-timur@freescale.com>
+In-Reply-To: <1233915156-17985-4-git-send-email-cooloney@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,22 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org
+To: Bryan Wu <cooloney@kernel.org>
+Cc: alsa-devel@alsa-project.org, Cliff Cai <cliff.cai@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 05, 2009 at 05:56:02PM -0600, Timur Tabi wrote:
-> In the Freescale MPC8610 sound drivers, relocate all code from the _prepare
-> functions into the corresponding _hw_params functions.  These drivers assumed
-> that the sample size is known in the _prepare function and not in the
-> _hw_params function, but this is not true.
+On Fri, Feb 06, 2009 at 06:12:36PM +0800, Bryan Wu wrote:
+> From: Cliff Cai <cliff.cai@analog.com>
 > 
-> Move the code in fsl_dma_prepare() into fsl_dma_hw_param().  Create
-> fsl_ssi_hw_params() and move the code from fsl_ssi_prepare() into it.
-> 
-> Turn off snooping for DMA operations to/from I/O registers, since that's not
-> necessary.
-> 
-> Signed-off-by: Timur Tabi <timur@freescale.com>
+> set constraint only if the value is not 0, change the configuring way for sport
 
-Applied, thanks.
+> Signed-off-by: Cliff Cai <cliff.cai@analog.com>
+> Signed-off-by: Bryan Wu <cooloney@kernel.org>
+
+If this is fixing a kernel crash we should push it for 2.6.29 (the code
+hasn't changed so I'm assuming it occurs there).  What is the crash that
+is being fixed?
+
+> ---
+>  sound/soc/blackfin/bf5xx-i2s.c |   25 ++++---------------------
+>  sound/soc/codecs/ssm2602.c     |   29 ++++++++++++++---------------
+>  2 files changed, 18 insertions(+), 36 deletions(-)
+
+Presumably only one of these drivers needs to be changed for the crash
+fix?  I'd have expected to see two separate patches for the two separate
+drivers - the changes don't depend on each other and do very different
+things.
