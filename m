@@ -1,22 +1,13 @@
-From: Kusanagi Kouichi <slash@ma.neweb.ne.jp>
-Subject: Re: [PATCH] ALSA: hda - Add digital BEEP
-	generator	support for Realtek codecs.
-Date: Sat, 7 Feb 2009 19:40:52 +0900
-Message-ID: <200902071040534227980006MA83@nm06mta.auone-net.jp>
-References: <200902031428523216360006MA62@nm06mta.auone-net.jp>
-	<s5hbptjbna3.wl%tiwai@suse.de>
-	<200902040837524161510006MA49@nm06mta.auone-net.jp>
-	<s5hocxia1tx.wl%tiwai@suse.de>
-	<200902041420132766610006MA66@nm06mta.auone-net.jp>
-	<s5hljsm8doj.wl%tiwai@suse.de> <s5hprhv7ct2.wl%tiwai@suse.de>
+From: Tim Blechmann <tim@klingt.org>
+Subject: alsa driver api documentation
+Date: Sat, 07 Feb 2009 11:47:23 +0100
+Message-ID: <498D66BB.2040302@klingt.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="UlVJffcvxoiEqYs2"
+Content-Type: multipart/mixed; boundary="===============5610889641469561400=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nmomta.auone-net.jp (nm06omta08.auone-net.jp [219.125.112.25])
-	by alsa0.perex.cz (Postfix) with SMTP id E66E81037E3
-	for <alsa-devel@alsa-project.org>; Sat,  7 Feb 2009 11:40:57 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hprhv7ct2.wl%tiwai@suse.de>
+Received: from klingt.org (mail.klingt.org [86.59.21.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0572F1037E3
+	for <alsa-devel@alsa-project.org>; Sat,  7 Feb 2009 11:47:26 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,82 +17,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============5610889641469561400==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig30F5DE9CF336C6F166C0E129"
 
---UlVJffcvxoiEqYs2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig30F5DE9CF336C6F166C0E129
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 06, 2009 at 05:25:13PM +0100, Takashi Iwai wrote:
-> At Wed, 04 Feb 2009 15:44:12 +0100,
-> I wrote:
-> > 
-> > At Wed, 4 Feb 2009 23:20:12 +0900,
-> > Kusanagi Kouichi wrote:
-> > > 
-> > > On Wed, Feb 04, 2009 at 12:17:14PM +0100, Takashi Iwai wrote:
-> > > > Fair enough.
-> > > > 
-> > > > Though, there is still one problem -- not all models enabled the
-> > > > analog beep path.  So, the next step is to create beep controls in all
-> > > > possible situations.
-> > > 
-> > > I'll try later.
-> > 
-> > This can be a separate (additional) patch.  Let's get the first patch
-> > into the main tree so that one can work on further issues.
-> 
-> ... and now fixed on sound git tree.
+hello takashi,
 
-Some models for alc268 still seems to lack a beep control.
-Is it OK to add a beep control unconditionally?
+is it me, or is the alsa driver api documentation at [1] and [2] out of
+date? at least CONFIG_SND_DEBUG_DETECT seems to be renamed to
+CONFIG_SND_DEBUG_VERBOSE. would be great to see these changes in the api
+documentation ...
 
---UlVJffcvxoiEqYs2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="0001-hda-Add-mising-beep-controls-for-realtek-alc268-cod.patch"
+thnx, tim
 
->From 184d1a1b1c3976a8a76b2f3b40ad02992b44db48 Mon Sep 17 00:00:00 2001
-From: Kusanagi Kouichi <slash@ma.neweb.ne.jp>
-Date: Sat, 7 Feb 2009 19:30:05 +0900
-Subject: [PATCH] hda: Add mising beep controls for realtek alc268 codec.
+[1] http://www.alsa-project.org/~tiwai/alsa-driver-api/
+[2]
+http://www.kernel.org/pub/linux/kernel/people/tiwai/docs/alsa-driver-api/=
 
-So far, some models didn't add a beep control since they don't use
-analog beep in.
+--=20
+tim@klingt.org
+http://tim.klingt.org
 
-Signed-off-by: Kusanagi Kouichi <slash@ma.neweb.ne.jp>
----
- sound/pci/hda/patch_realtek.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index f594a09..2fa26f9 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -11887,7 +11887,7 @@ static struct snd_pci_quirk alc268_cfg_tbl[] = {
- 
- static struct alc_config_preset alc268_presets[] = {
- 	[ALC267_QUANTA_IL1] = {
--		.mixers = { alc267_quanta_il1_mixer },
-+		.mixers = { alc267_quanta_il1_mixer, alc268_beep_mixer },
- 		.init_verbs = { alc268_base_init_verbs, alc268_eapd_verbs,
- 				alc267_quanta_il1_verbs },
- 		.num_dacs = ARRAY_SIZE(alc268_dac_nids),
-@@ -11969,7 +11969,7 @@ static struct alc_config_preset alc268_presets[] = {
- 	},
- 	[ALC268_ACER_ASPIRE_ONE] = {
- 		.mixers = { alc268_acer_aspire_one_mixer,
--				alc268_capture_alt_mixer },
-+				alc268_capture_alt_mixer, alc268_beep_mixer },
- 		.init_verbs = { alc268_base_init_verbs, alc268_eapd_verbs,
- 				alc268_acer_aspire_one_verbs },
- 		.num_dacs = ARRAY_SIZE(alc268_dac_nids),
--- 
-1.5.6.5
+I must say I find television very educational. The minute somebody
+turns it on, I go to the library and read a good book.
+  Groucho Marx
 
 
---UlVJffcvxoiEqYs2
+--------------enig30F5DE9CF336C6F166C0E129
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkmNZr4ACgkQdL+4qsZfVsuguACeLw6ZTbInYBkhim/oO6+KQ8Td
+yxYAoJt9XKIwMzFYi4lGUEkGrqZcj10z
+=wJ3O
+-----END PGP SIGNATURE-----
+
+--------------enig30F5DE9CF336C6F166C0E129--
+
+--===============5610889641469561400==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -112,4 +80,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---UlVJffcvxoiEqYs2--
+--===============5610889641469561400==--
