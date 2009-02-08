@@ -1,24 +1,27 @@
-From: Dmitry Baikov <dsbaikov@gmail.com>
-Subject: Re: RME HDSP rev 37 does not work on 64-bit linux
-Date: Sun, 8 Feb 2009 01:11:16 +0300
-Message-ID: <70a871c80902071411qec480baq8fd9223767d1562d@mail.gmail.com>
-References: <70a871c80902010708s2a10ff8bobe79622949da62fe@mail.gmail.com>
-	<200902011616.49454.faber@faberman.de>
-	<70a871c80902010846i1059ab26t63c1d7e530126caf@mail.gmail.com>
-	<200902020935.35530.faber@faberman.de>
-	<70a871c80902030358x469723c4t9eb4af574370d289@mail.gmail.com>
-	<s5hhc396xlx.wl%tiwai@suse.de>
+From: Florian Mickler <florian@mickler.org>
+Subject: Re: HD-audio modularization
+Date: Sun, 8 Feb 2009 11:20:13 +0100
+Message-ID: <20090208112013.6fbb9c2e@schatten>
+References: <s5hiqq83zr8.wl%tiwai@suse.de>
+	<s5h4p1luyip.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f19.google.com (mail-fx0-f19.google.com
-	[209.85.220.19])
-	by alsa0.perex.cz (Postfix) with ESMTP id 196E61037ED
-	for <alsa-devel@alsa-project.org>; Sat,  7 Feb 2009 23:11:18 +0100 (CET)
-Received: by fxm12 with SMTP id 12so1875908fxm.8
-	for <alsa-devel@alsa-project.org>; Sat, 07 Feb 2009 14:11:17 -0800 (PST)
-In-Reply-To: <s5hhc396xlx.wl%tiwai@suse.de>
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id C51BF1037F5
+	for <alsa-devel@alsa-project.org>; Sun,  8 Feb 2009 14:45:05 +0100 (CET)
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1LW9y3-0005lH-0x
+	for alsa-devel@alsa-project.org; Sun, 08 Feb 2009 13:45:03 +0000
+Received: from f053210106.adsl.alicedsl.de ([78.53.210.106])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sun, 08 Feb 2009 13:45:03 +0000
+Received: from florian by f053210106.adsl.alicedsl.de with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sun, 08 Feb 2009 13:45:03 +0000
+In-Reply-To: <s5h4p1luyip.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,55 +31,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Florian Faber <faber@faberman.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 5, 2009 at 12:28 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Tue, 3 Feb 2009 14:58:41 +0300,
-> Dmitry Baikov wrote:
->>
->> On Mon, Feb 2, 2009 at 11:35 AM, Florian Faber <faber@faberman.de> wrote:
->> > Dmitry,
->> >
->> >> I just revived my 64-bit Gentoo partition, and vanilla 2.6.28.2 says
->> >> No Multiface or Digiface found, disabling the card.
->> >
->> > Ok, you are using a notebook. I have seen problems with notebooks when the
->> > period between powering up the cardbus socket and trying to access the card
->> > wasn't long enough, the interface card isn't initialized fast enough.
->> Actually, this is desktop with pci-pcmcia adapter card.
->> I just tried it in my laptop with 64-bit Ubuntu 8.10 and everything
->> works perfectly.
->>
->> > Please try the following: Go to line 5059 in /sound/pci/rme9652/hdsp.c and
->> > change the line
->> >        ssleep(2);
->> > to
->> >        ssleep(5);
->> >
->> > Compile it and try again.
->>
->> It waits for 5 seconds according to dmesg, but the result is the same:
->> card disabled.
->>
->> The summary of my experiments so far:
->> everywhere Ubuntu is 8.10, kernel 2.6.27-11
->>
->> laptop + cardbus + 64-bit ubuntu: WORKS
->>
->> desktop + pci-pcmcia adapter:
->> ubuntu 32: WORKS
->> ubuntu 64: can't upload firmware
->> gentoo 64 + vanilla kernel 2.6.28.2: can't recognize external box,
->> disables the card.
->
-> Increasing HDSP_SHORT_WAIT doesn't help, too?
+On Wed, 03 Dec 2008 15:25:02 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
 
-No, I tried several values up to 300 (from original 30), result is the same:
-No Digiface or Multiface connected.
+> At Fri, 28 Nov 2008 11:34:35 +0100,
+> I wrote:
+> > A known issue is that "alsasound stop" may not work with this
+> > because of the explicit module refcount without dependency.  But
+> > it's a script problem, basically.  The similar problem must be
+> > there for snd-aoa, for example, too.
+> 
+> FYI, the hda-modularization patches are now merged to master branch
+> on sound git tree.  The snapshot tarball includes this change as well.
 
-This is weird.
+Hey! My system doesn't shutdown anymore! And i found it is the
+alsasound-stop problem. 
+
+Is there no way to have snd_hda_intel listed in the used-by column of
+lsmod for snd_hda_codec_analog  ?
+
+how should that ''script problem'' be solved?
+
+up until now, the gentoo-initscript takes the lsmod output and removes
+recursively the dependancies of the /^snd_/ modules.
+
+a simple shootdown-script doesn't work:
+
+--------------------------------------------
+#!/bin/sh
+unload_module_my() {
+	echo "Unloading: $1"
+		rmmod -v --wait "$1"
+	echo $?
+}
+
+unload_modules_26() {
+# First of all, remove the snd module and all the modules depending
+# on it, this should remove already most of ALSA modules.
+
+	UNLOAD_MODULES_LIST=
+
+		lsmod | grep -q "^snd[[:space:]]" && rmmod --wait "snd"
+		&
+
+		wait
+# Then find the remaining ones, and handle them too.
+		for module in $(lsmod | sed -n -e
+		's/^\(snd[^ ]*\) .*/\1/p'); do unload_module_my
+		"${module}" & done
+
+				wait
+
+				lsmod | grep -vq "^snd"
+}
+
+unload_modules_26
+
+-----------------------------------------------
+
+dosn't work. 
+
+it gives: 
+
+Unloading: snd_pcm_oss
+rmmod snd_pcm_oss, wait=yes
+Unloading: snd_mixer_oss
+Unloading: snd_hda_codec_analog
+rmmod snd_mixer_oss, wait=yes
+rmmod snd_hda_codec_analog, wait=yes
+Unloading: snd_hda_intel
+Unloading: snd_hda_codec
+rmmod snd_hda_intel, wait=yes
+rmmod snd_hda_codec, wait=yes
+Unloading: snd_pcm
+Unloading: snd_page_alloc
+rmmod snd_pcm, wait=yes
+rmmod snd_page_alloc, wait=yes
+Unloading: snd_timer
+rmmod snd_timer, wait=yes
+0
+0
+ERROR: Removing 'snd_pcm': Resource temporarily unavailable
+1
+0
+ERROR: Removing 'snd_hda_codec': Resource temporarily unavailable
+0
+1
+ERROR: Removing 'snd_page_alloc': Resource temporarily unavailable
+ERROR: Removing 'snd_timer': Resource temporarily unavailable
+1
+1
 
 
-Dmitry.
+how is one supposed to get the unload-ordering, to do a step by step
+unload?
+
+Sincerely,
+Florian
