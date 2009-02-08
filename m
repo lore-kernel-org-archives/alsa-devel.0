@@ -1,26 +1,16 @@
-From: Guy Stalnaker <jstalnak@wisc.edu>
-Subject: Thank for your efforts.
-Date: Sun, 08 Feb 2009 08:19:49 -0600
-Message-ID: <498EEA05.5000806@wisc.edu>
+From: Roel Kluin <roel.kluin@gmail.com>
+Subject: [PATCH] ASoC: count reaches 10001, not 10000.
+Date: Sun, 08 Feb 2009 18:17:37 +0100
+Message-ID: <498F13B1.1090704@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from agogare.doit.wisc.edu (agogare.doit.wisc.edu [144.92.197.211])
-	by alsa0.perex.cz (Postfix) with ESMTP id 688BF1037ED
-	for <alsa-devel@alsa-project.org>; Sun,  8 Feb 2009 15:19:52 +0100 (CET)
-Received: from avs-daemon.smtpauth2.wiscmail.wisc.edu by
-	smtpauth2.wiscmail.wisc.edu
-	(Sun Java(tm) System Messaging Server 6.3-7.04 (built Sep 26 2008;
-	32bit)) id <0KER009003T2QM00@smtpauth2.wiscmail.wisc.edu> for
-	alsa-devel@alsa-project.org; Sun, 08 Feb 2009 08:19:50 -0600 (CST)
-Received: from [192.168.1.110]
-	(24-196-90-60.dhcp.mdsn.wi.charter.com [24.196.90.60])
-	by smtpauth2.wiscmail.wisc.edu
-	(Sun Java(tm) System Messaging Server 6.3-7.04 (built Sep 26 2008;
-	32bit))
-	with ESMTPSA id <0KER003JY3T1SF20@smtpauth2.wiscmail.wisc.edu> for
-	alsa-devel@alsa-project.org; Sun, 08 Feb 2009 08:19:50 -0600 (CST)
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.191])
+	by alsa0.perex.cz (Postfix) with ESMTP id 57B662433B
+	for <alsa-devel@alsa-project.org>; Sun,  8 Feb 2009 18:17:38 +0100 (CET)
+Received: by nf-out-0910.google.com with SMTP id e27so323402nfd.32
+	for <alsa-devel@alsa-project.org>; Sun, 08 Feb 2009 09:17:37 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,28 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: lrg@slimlogic.co.uk, cooloney@kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi, Herton, Tim, Jeanne-Pierre, etc.
+With a postfix increment count reaches 10001, not 10000.
 
-My thanks for your efforts to get sound working on the internal speakers
-on HP Pavilion Dv4 laptops.  I have a brand new1225 (one week old) and
-Ubuntu 8.10 works splendidly in all the things I need (wireless,
-graphics, etc.).  Sound works, however, only on the front headphone
-jack, but not through the internal speakers.
-
-I offer myself as another test platform for your test code.  To date
-I've installed the lastest snapshot, have model=hp-dv5 in
-/etc/modprobe.d/alsa-base, and I've tried Takashi's hda-verb option to
-modify the pin.  That does change the pin value, but it has no affect,
-internal speaker's remain dead.
-
-Best regards,
-
-Guy
-
--- 
-Guy Stalnaker, I^2@DOIT, 1210 West Dayton Street, Room 3209 CSS, Madison
-WI 53719-1220, jstalnak@wisc.edu, work 608.263.8035, cell 608.235.4718,
-fax 608.265.6681, page page-guy@watchdog.doit.wisc.edu
+diff --git a/sound/soc/blackfin/bf5xx-ad73311.c b/sound/soc/blackfin/bf5xx-ad73311.c
+index 7f2a5e1..edfbdc0 100644
+--- a/sound/soc/blackfin/bf5xx-ad73311.c
++++ b/sound/soc/blackfin/bf5xx-ad73311.c
+@@ -114,7 +114,7 @@ static int snd_ad73311_configure(void)
+ 	SSYNC();
+ 
+ 	/* When TUVF is set, the data is already send out */
+-	while (!(status & TUVF) && count++ < 10000) {
++	while (!(status & TUVF) && ++count < 10000) {
+ 		udelay(1);
+ 		status = bfin_read_SPORT_STAT();
+ 		SSYNC();
+@@ -123,7 +123,7 @@ static int snd_ad73311_configure(void)
+ 	SSYNC();
+ 	local_irq_enable();
+ 
+-	if (count == 10000) {
++	if (count >= 10000) {
+ 		printk(KERN_ERR "ad73311: failed to configure codec\n");
+ 		return -1;
+ 	}
