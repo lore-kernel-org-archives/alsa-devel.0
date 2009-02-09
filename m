@@ -1,18 +1,20 @@
-From: "Demian Martin" <demianm_1@yahoo.com>
+From: =?UTF-8?Q?Vedran_Mileti=C4=87?= <rivanvx@gmail.com>
 Subject: Re: Juli@ ICE1724 and 24 bit audio
-Date: Mon, 9 Feb 2009 13:29:23 -0800
-Message-ID: <67FF030CD7BA4BFB9ACE52B69F56D69D@DemianM1330>
+Date: Mon, 9 Feb 2009 22:38:58 +0100
+Message-ID: <fd3eb9bf0902091338i7ffa51d6t5a62d82a6b48ada3@mail.gmail.com>
 References: <366C228A7F9A4AAF9EE7190DC4C0EE68@PDSDesktop>
 	<49909186.4050902@insite.cz>
+	<67FF030CD7BA4BFB9ACE52B69F56D69D@DemianM1330>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp103.prem.mail.sp1.yahoo.com
-	(smtp103.prem.mail.sp1.yahoo.com [98.136.44.58])
-	by alsa0.perex.cz (Postfix) with SMTP id DD572103840
-	for <alsa-devel@alsa-project.org>; Mon,  9 Feb 2009 22:29:25 +0100 (CET)
-In-Reply-To: <49909186.4050902@insite.cz>
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id 109F9103833
+	for <alsa-devel@alsa-project.org>; Mon,  9 Feb 2009 22:38:59 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id 13so1227212fge.44
+	for <alsa-devel@alsa-project.org>; Mon, 09 Feb 2009 13:38:58 -0800 (PST)
+In-Reply-To: <67FF030CD7BA4BFB9ACE52B69F56D69D@DemianM1330>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,77 +24,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Pavel Hofman' <pavel.hofman@insite.cz>
-Cc: alsa-devel@alsa-project.org
+To: Demian Martin <demianm_1@yahoo.com>
+Cc: alsa-devel@alsa-project.org, Pavel Hofman <pavel.hofman@insite.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Pavel:
-Thanks for all your help and work on this project.
-
-I'm using the Juli@ card because it supports 176.4KHz. The only other
-candidates are much more expensive and bring their own problems.
-
-I'm using Xine set for dolby/dts passthrough which seems to send the audio
-data at its native rate. The resampling is bypassed (Dolby Digital would be
-trashed otherwise). 
-
-I will try playing the files from the command line when I am next in front
-of the system, tomorrow.
-
-This is the Asound.conf:
-Asound.conf  (/etc)
-
-pcm.asym_spdif {
-
-       type asym
-
-       playback.pcm "plughw:0,1"
-
-       capture.pcm "plughw:0"
-
-}
-
-
-pcm.!default asym_spdif
-
-Demian Martin
-PDS
-
-> -----Original Message-----
-> From: Pavel Hofman [mailto:pavel.hofman@insite.cz]
-> Sent: Monday, February 09, 2009 12:27 PM
-> To: Demian Martin
-> Cc: alsa-devel@alsa-project.org; pavel.hofman@insite.cz
-> Subject: Re: [alsa-devel] Juli@ ICE1724 and 24 bit audio
-> 
-> Demian Martin napsal(a):
-> > I have the driver working fine for sample rates from 44.1K to 196K
-> however
-> > it seems to be truncating the data to 16 bits. I wasn't sure until I
-> started
-> > testing with the HRx 176.4K 24 bit files that have an embedded HDCD flag
-> in
-> > the LSB. The files work OK on Windoze systems (with a lot of low level
-> > settings tweaked) and they play fine but the flag isn't detected by a
-> system
-> > that can detect them. Further looking at the data stream with a scope it
-> > seems the last 8 bits aren't changing. Is there anything I can do to
-> control
-> > the driver to confirm this problem or change the playback settings to
-> make
-> > it work?
-> >
-> >
-> 
-> How do you play the files? Do you use the hw or plug:hw device? IIRC,
-> the standard-setup dmix resampler is 16-bit only.
-> 
-> I did tests with SPDIF OUT/IN and found it bit-perfect, for 24bit too.
-> 
-> Regular ICE1724 cards do not output 176.4kHz SPDIF, only 88.2kHz. But
-> Juli is not affected by that bug.
-> 
-> Regards,
-> 
-> 
-> Pavel.
+VGhlIHBsdWdodyBwYXJ0IGlzIHdoYXQgbWFrZXNlIGl0IHJlc2FtcGxlIHRvIDE2LWJpdC4gWW91
+IHNob3VsZCBqdXN0IHVzZSBody4KCk9uIE1vbiwgRmViIDksIDIwMDkgYXQgMTA6MjkgUE0sIERl
+bWlhbiBNYXJ0aW4gPGRlbWlhbm1fMUB5YWhvby5jb20+IHdyb3RlOgo+IFBhdmVsOgo+IFRoYW5r
+cyBmb3IgYWxsIHlvdXIgaGVscCBhbmQgd29yayBvbiB0aGlzIHByb2plY3QuCj4KPiBJJ20gdXNp
+bmcgdGhlIEp1bGlAIGNhcmQgYmVjYXVzZSBpdCBzdXBwb3J0cyAxNzYuNEtIei4gVGhlIG9ubHkg
+b3RoZXIKPiBjYW5kaWRhdGVzIGFyZSBtdWNoIG1vcmUgZXhwZW5zaXZlIGFuZCBicmluZyB0aGVp
+ciBvd24gcHJvYmxlbXMuCj4KPiBJJ20gdXNpbmcgWGluZSBzZXQgZm9yIGRvbGJ5L2R0cyBwYXNz
+dGhyb3VnaCB3aGljaCBzZWVtcyB0byBzZW5kIHRoZSBhdWRpbwo+IGRhdGEgYXQgaXRzIG5hdGl2
+ZSByYXRlLiBUaGUgcmVzYW1wbGluZyBpcyBieXBhc3NlZCAoRG9sYnkgRGlnaXRhbCB3b3VsZCBi
+ZQo+IHRyYXNoZWQgb3RoZXJ3aXNlKS4KPgo+IEkgd2lsbCB0cnkgcGxheWluZyB0aGUgZmlsZXMg
+ZnJvbSB0aGUgY29tbWFuZCBsaW5lIHdoZW4gSSBhbSBuZXh0IGluIGZyb250Cj4gb2YgdGhlIHN5
+c3RlbSwgdG9tb3Jyb3cuCj4KPiBUaGlzIGlzIHRoZSBBc291bmQuY29uZjoKPiBBc291bmQuY29u
+ZiAgKC9ldGMpCj4KPiBwY20uYXN5bV9zcGRpZiB7Cj4KPiAgICAgICB0eXBlIGFzeW0KPgo+ICAg
+ICAgIHBsYXliYWNrLnBjbSAicGx1Z2h3OjAsMSIKPgo+ICAgICAgIGNhcHR1cmUucGNtICJwbHVn
+aHc6MCIKPgo+IH0KPgo+Cj4gcGNtLiFkZWZhdWx0IGFzeW1fc3BkaWYKPgo+IERlbWlhbiBNYXJ0
+aW4KPiBQRFMKPgo+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+PiBGcm9tOiBQYXZlbCBI
+b2ZtYW4gW21haWx0bzpwYXZlbC5ob2ZtYW5AaW5zaXRlLmN6XQo+PiBTZW50OiBNb25kYXksIEZl
+YnJ1YXJ5IDA5LCAyMDA5IDEyOjI3IFBNCj4+IFRvOiBEZW1pYW4gTWFydGluCj4+IENjOiBhbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IHBhdmVsLmhvZm1hbkBpbnNpdGUuY3oKPj4gU3ViamVj
+dDogUmU6IFthbHNhLWRldmVsXSBKdWxpQCBJQ0UxNzI0IGFuZCAyNCBiaXQgYXVkaW8KPj4KPj4g
+RGVtaWFuIE1hcnRpbiBuYXBzYWwoYSk6Cj4+ID4gSSBoYXZlIHRoZSBkcml2ZXIgd29ya2luZyBm
+aW5lIGZvciBzYW1wbGUgcmF0ZXMgZnJvbSA0NC4xSyB0byAxOTZLCj4+IGhvd2V2ZXIKPj4gPiBp
+dCBzZWVtcyB0byBiZSB0cnVuY2F0aW5nIHRoZSBkYXRhIHRvIDE2IGJpdHMuIEkgd2Fzbid0IHN1
+cmUgdW50aWwgSQo+PiBzdGFydGVkCj4+ID4gdGVzdGluZyB3aXRoIHRoZSBIUnggMTc2LjRLIDI0
+IGJpdCBmaWxlcyB0aGF0IGhhdmUgYW4gZW1iZWRkZWQgSERDRCBmbGFnCj4+IGluCj4+ID4gdGhl
+IExTQi4gVGhlIGZpbGVzIHdvcmsgT0sgb24gV2luZG96ZSBzeXN0ZW1zICh3aXRoIGEgbG90IG9m
+IGxvdyBsZXZlbAo+PiA+IHNldHRpbmdzIHR3ZWFrZWQpIGFuZCB0aGV5IHBsYXkgZmluZSBidXQg
+dGhlIGZsYWcgaXNuJ3QgZGV0ZWN0ZWQgYnkgYQo+PiBzeXN0ZW0KPj4gPiB0aGF0IGNhbiBkZXRl
+Y3QgdGhlbS4gRnVydGhlciBsb29raW5nIGF0IHRoZSBkYXRhIHN0cmVhbSB3aXRoIGEgc2NvcGUg
+aXQKPj4gPiBzZWVtcyB0aGUgbGFzdCA4IGJpdHMgYXJlbid0IGNoYW5naW5nLiBJcyB0aGVyZSBh
+bnl0aGluZyBJIGNhbiBkbyB0bwo+PiBjb250cm9sCj4+ID4gdGhlIGRyaXZlciB0byBjb25maXJt
+IHRoaXMgcHJvYmxlbSBvciBjaGFuZ2UgdGhlIHBsYXliYWNrIHNldHRpbmdzIHRvCj4+IG1ha2UK
+Pj4gPiBpdCB3b3JrPwo+PiA+Cj4+ID4KPj4KPj4gSG93IGRvIHlvdSBwbGF5IHRoZSBmaWxlcz8g
+RG8geW91IHVzZSB0aGUgaHcgb3IgcGx1ZzpodyBkZXZpY2U/IElJUkMsCj4+IHRoZSBzdGFuZGFy
+ZC1zZXR1cCBkbWl4IHJlc2FtcGxlciBpcyAxNi1iaXQgb25seS4KPj4KPj4gSSBkaWQgdGVzdHMg
+d2l0aCBTUERJRiBPVVQvSU4gYW5kIGZvdW5kIGl0IGJpdC1wZXJmZWN0LCBmb3IgMjRiaXQgdG9v
+Lgo+Pgo+PiBSZWd1bGFyIElDRTE3MjQgY2FyZHMgZG8gbm90IG91dHB1dCAxNzYuNGtIeiBTUERJ
+Riwgb25seSA4OC4ya0h6LiBCdXQKPj4gSnVsaSBpcyBub3QgYWZmZWN0ZWQgYnkgdGhhdCBidWcu
+Cj4+Cj4+IFJlZ2FyZHMsCj4+Cj4+Cj4+IFBhdmVsLgo+Cj4gX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4KCgoKLS0gClZlZHJhbiBNaWxldGnEhwpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
