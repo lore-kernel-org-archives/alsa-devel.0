@@ -1,32 +1,94 @@
-From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: Re: [PATCH] ASoC: Replace snd_soc_machine by snd_soc_card structure
- in SDP3430 machine driver
-Date: Tue, 10 Feb 2009 11:41:59 +0200
-Message-ID: <20090210114159.ed51d30d.jarkko.nikula@nokia.com>
-References: <2C7D3DF36ADFFC479B44490D912B616705D6175435@dlee07.ent.ti.com>
+From: =?UTF-8?Q?Vedran_Mileti=C4=87?= <rivanvx@gmail.com>
+Subject: Re: Juli@ ICE1724 and 24 bit audio
+Date: Tue, 10 Feb 2009 12:33:15 +0100
+Message-ID: <fd3eb9bf0902100333m7ab4edc1g99de11000a794245@mail.gmail.com>
+References: <366C228A7F9A4AAF9EE7190DC4C0EE68@PDSDesktop>
+	<49909186.4050902@insite.cz>
+	<67FF030CD7BA4BFB9ACE52B69F56D69D@DemianM1330>
+	<fd3eb9bf0902091338i7ffa51d6t5a62d82a6b48ada3@mail.gmail.com>
+	<47A687F571094A7F827250BBE602F100@DemianM1330>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705D6175435@dlee07.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "ext Lopez Cruz, Misael" <x0052729@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Nagalla, Hari" <hnagalla@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.156])
+	by alsa0.perex.cz (Postfix) with ESMTP id CBC47103830
+	for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2009 12:33:16 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id 13so1372908fge.44
+	for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2009 03:33:16 -0800 (PST)
+In-Reply-To: <47A687F571094A7F827250BBE602F100@DemianM1330>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Demian Martin <demianm_1@yahoo.com>
+Cc: alsa-devel@alsa-project.org, Pavel Hofman <pavel.hofman@insite.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 10 Feb 2009 09:05:07 +0100
-"ext Lopez Cruz, Misael" <x0052729@ti.com> wrote:
-
-> This patch replaces "snd_soc_machine" structure by "snd_soc_card" in
-> SP3430 driver. This change is needed in SDP3430 driver to reflect
-> changes introduced by "ASoC: Rename snd_soc_card to snd_soc_machine"
-> patch (875065491fba8eb13219f16c36e79a6fb4e15c68).
-> 
-> Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
-> ---
->  sound/soc/omap/sdp3430.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
-IMO, this is for 2.6.29-rc since it fixes a compilation error.
-
-Acked-by: Jarkko Nikula <jarkko.nikula@nokia.com>
+WWVhaCwgQUxTQSdzIGRvY3VtZW50YXRpb24gaXMgYWN0dWFsbHkgcXVpdGUgbGFja2luZyBvbiBt
+YW55IGZyb250cwphbmQgaXMgbW9zdGx5IHNjYXR0ZXJlZCBhcm91bmQgdmFyaW91cyB3aWtpcyBh
+bmQgbWFpbGluZyBsaXN0cy4KCkJ1dCBJIGd1ZXNzIGl0IGlzIGFzIGl0IGlzLCBjb21wbGFpbmlu
+ZyBhYm91dCBpdCB3b24ndCBmaXggaXQuCgpPbiAyLzkvMDksIERlbWlhbiBNYXJ0aW4gPGRlbWlh
+bm1fMUB5YWhvby5jb20+IHdyb3RlOgo+IFRoYW5rcywgSSdsbCB0cnkgdGhhdC4gSSBndWVzcyB0
+aGlzIGUtbWFpbCB3aWxsIHNlcnZlIGFzIG1vcmUgZG9jdW1lbnRhdGlvbgo+IG9uIHRoYXQgZmVh
+dHVyZSAoYnVnKS4gSSBoYWQgbm90IHNlZW4gdGhhdCBmYWN0b2lkIGFueXdoZXJlLgo+Cj4gRGVt
+aWFuIE1hcnRpbgo+IFBEUwo+Cj4KPj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KPj4gRnJv
+bTogVmVkcmFuIE1pbGV0acSHIFttYWlsdG86cml2YW52eEBnbWFpbC5jb21dCj4+IFNlbnQ6IE1v
+bmRheSwgRmVicnVhcnkgMDksIDIwMDkgMTozOSBQTQo+PiBUbzogRGVtaWFuIE1hcnRpbgo+PiBD
+YzogUGF2ZWwgSG9mbWFuOyBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPj4gU3ViamVjdDog
+UmU6IFthbHNhLWRldmVsXSBKdWxpQCBJQ0UxNzI0IGFuZCAyNCBiaXQgYXVkaW8KPj4KPj4gVGhl
+IHBsdWdodyBwYXJ0IGlzIHdoYXQgbWFrZXNlIGl0IHJlc2FtcGxlIHRvIDE2LWJpdC4gWW91IHNo
+b3VsZCBqdXN0IHVzZQo+PiBody4KPj4KPj4gT24gTW9uLCBGZWIgOSwgMjAwOSBhdCAxMDoyOSBQ
+TSwgRGVtaWFuIE1hcnRpbiA8ZGVtaWFubV8xQHlhaG9vLmNvbT4KPj4gd3JvdGU6Cj4+ID4gUGF2
+ZWw6Cj4+ID4gVGhhbmtzIGZvciBhbGwgeW91ciBoZWxwIGFuZCB3b3JrIG9uIHRoaXMgcHJvamVj
+dC4KPj4gPgo+PiA+IEknbSB1c2luZyB0aGUgSnVsaUAgY2FyZCBiZWNhdXNlIGl0IHN1cHBvcnRz
+IDE3Ni40S0h6LiBUaGUgb25seSBvdGhlcgo+PiA+IGNhbmRpZGF0ZXMgYXJlIG11Y2ggbW9yZSBl
+eHBlbnNpdmUgYW5kIGJyaW5nIHRoZWlyIG93biBwcm9ibGVtcy4KPj4gPgo+PiA+IEknbSB1c2lu
+ZyBYaW5lIHNldCBmb3IgZG9sYnkvZHRzIHBhc3N0aHJvdWdoIHdoaWNoIHNlZW1zIHRvIHNlbmQg
+dGhlCj4+IGF1ZGlvCj4+ID4gZGF0YSBhdCBpdHMgbmF0aXZlIHJhdGUuIFRoZSByZXNhbXBsaW5n
+IGlzIGJ5cGFzc2VkIChEb2xieSBEaWdpdGFsIHdvdWxkCj4+IGJlCj4+ID4gdHJhc2hlZCBvdGhl
+cndpc2UpLgo+PiA+Cj4+ID4gSSB3aWxsIHRyeSBwbGF5aW5nIHRoZSBmaWxlcyBmcm9tIHRoZSBj
+b21tYW5kIGxpbmUgd2hlbiBJIGFtIG5leHQgaW4KPj4gZnJvbnQKPj4gPiBvZiB0aGUgc3lzdGVt
+LCB0b21vcnJvdy4KPj4gPgo+PiA+IFRoaXMgaXMgdGhlIEFzb3VuZC5jb25mOgo+PiA+IEFzb3Vu
+ZC5jb25mICAoL2V0YykKPj4gPgo+PiA+IHBjbS5hc3ltX3NwZGlmIHsKPj4gPgo+PiA+ICAgICAg
+IHR5cGUgYXN5bQo+PiA+Cj4+ID4gICAgICAgcGxheWJhY2sucGNtICJwbHVnaHc6MCwxIgo+PiA+
+Cj4+ID4gICAgICAgY2FwdHVyZS5wY20gInBsdWdodzowIgo+PiA+Cj4+ID4gfQo+PiA+Cj4+ID4K
+Pj4gPiBwY20uIWRlZmF1bHQgYXN5bV9zcGRpZgo+PiA+Cj4+ID4gRGVtaWFuIE1hcnRpbgo+PiA+
+IFBEUwo+PiA+Cj4+ID4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4+ID4+IEZyb206IFBh
+dmVsIEhvZm1hbiBbbWFpbHRvOnBhdmVsLmhvZm1hbkBpbnNpdGUuY3pdCj4+ID4+IFNlbnQ6IE1v
+bmRheSwgRmVicnVhcnkgMDksIDIwMDkgMTI6MjcgUE0KPj4gPj4gVG86IERlbWlhbiBNYXJ0aW4K
+Pj4gPj4gQ2M6IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgcGF2ZWwuaG9mbWFuQGluc2l0
+ZS5jego+PiA+PiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIEp1bGlAIElDRTE3MjQgYW5kIDI0
+IGJpdCBhdWRpbwo+PiA+Pgo+PiA+PiBEZW1pYW4gTWFydGluIG5hcHNhbChhKToKPj4gPj4gPiBJ
+IGhhdmUgdGhlIGRyaXZlciB3b3JraW5nIGZpbmUgZm9yIHNhbXBsZSByYXRlcyBmcm9tIDQ0LjFL
+IHRvIDE5NksKPj4gPj4gaG93ZXZlcgo+PiA+PiA+IGl0IHNlZW1zIHRvIGJlIHRydW5jYXRpbmcg
+dGhlIGRhdGEgdG8gMTYgYml0cy4gSSB3YXNuJ3Qgc3VyZSB1bnRpbCBJCj4+ID4+IHN0YXJ0ZWQK
+Pj4gPj4gPiB0ZXN0aW5nIHdpdGggdGhlIEhSeCAxNzYuNEsgMjQgYml0IGZpbGVzIHRoYXQgaGF2
+ZSBhbiBlbWJlZGRlZCBIRENECj4+IGZsYWcKPj4gPj4gaW4KPj4gPj4gPiB0aGUgTFNCLiBUaGUg
+ZmlsZXMgd29yayBPSyBvbiBXaW5kb3plIHN5c3RlbXMgKHdpdGggYSBsb3Qgb2YgbG93Cj4+IGxl
+dmVsCj4+ID4+ID4gc2V0dGluZ3MgdHdlYWtlZCkgYW5kIHRoZXkgcGxheSBmaW5lIGJ1dCB0aGUg
+ZmxhZyBpc24ndCBkZXRlY3RlZCBieSBhCj4+ID4+IHN5c3RlbQo+PiA+PiA+IHRoYXQgY2FuIGRl
+dGVjdCB0aGVtLiBGdXJ0aGVyIGxvb2tpbmcgYXQgdGhlIGRhdGEgc3RyZWFtIHdpdGggYSBzY29w
+ZQo+PiBpdAo+PiA+PiA+IHNlZW1zIHRoZSBsYXN0IDggYml0cyBhcmVuJ3QgY2hhbmdpbmcuIElz
+IHRoZXJlIGFueXRoaW5nIEkgY2FuIGRvIHRvCj4+ID4+IGNvbnRyb2wKPj4gPj4gPiB0aGUgZHJp
+dmVyIHRvIGNvbmZpcm0gdGhpcyBwcm9ibGVtIG9yIGNoYW5nZSB0aGUgcGxheWJhY2sgc2V0dGlu
+Z3MgdG8KPj4gPj4gbWFrZQo+PiA+PiA+IGl0IHdvcms/Cj4+ID4+ID4KPj4gPj4gPgo+PiA+Pgo+
+PiA+PiBIb3cgZG8geW91IHBsYXkgdGhlIGZpbGVzPyBEbyB5b3UgdXNlIHRoZSBodyBvciBwbHVn
+Omh3IGRldmljZT8gSUlSQywKPj4gPj4gdGhlIHN0YW5kYXJkLXNldHVwIGRtaXggcmVzYW1wbGVy
+IGlzIDE2LWJpdCBvbmx5Lgo+PiA+Pgo+PiA+PiBJIGRpZCB0ZXN0cyB3aXRoIFNQRElGIE9VVC9J
+TiBhbmQgZm91bmQgaXQgYml0LXBlcmZlY3QsIGZvciAyNGJpdCB0b28uCj4+ID4+Cj4+ID4+IFJl
+Z3VsYXIgSUNFMTcyNCBjYXJkcyBkbyBub3Qgb3V0cHV0IDE3Ni40a0h6IFNQRElGLCBvbmx5IDg4
+LjJrSHouIEJ1dAo+PiA+PiBKdWxpIGlzIG5vdCBhZmZlY3RlZCBieSB0aGF0IGJ1Zy4KPj4gPj4K
+Pj4gPj4gUmVnYXJkcywKPj4gPj4KPj4gPj4KPj4gPj4gUGF2ZWwuCj4+ID4KPj4gPiBfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+PiA+IEFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0Cj4+ID4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4+ID4gaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPj4g
+Pgo+Pgo+Pgo+Pgo+PiAtLQo+PiBWZWRyYW4gTWlsZXRpxIcKPgo+CgoKLS0gClZlZHJhbiBNaWxl
+dGnEhwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
