@@ -1,16 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: using ALSA one call
-Date: Tue, 10 Feb 2009 16:04:05 +0100
-Message-ID: <49919765.4000706@ladisch.de>
-References: <1234269014.49917356f0157@mail.inbox.lv>
+From: Pavel Hofman <pavel.hofman@insite.cz>
+Subject: Re: Juli@ ICE1724 and 24 bit audio
+Date: Tue, 10 Feb 2009 16:34:58 +0100
+Message-ID: <49919EA2.6030000@insite.cz>
+References: <366C228A7F9A4AAF9EE7190DC4C0EE68@PDSDesktop>	<49909186.4050902@insite.cz>	<67FF030CD7BA4BFB9ACE52B69F56D69D@DemianM1330>	<fd3eb9bf0902091338i7ffa51d6t5a62d82a6b48ada3@mail.gmail.com>	<47A687F571094A7F827250BBE602F100@DemianM1330>
+	<fd3eb9bf0902100333m7ab4edc1g99de11000a794245@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id C250A103834
-	for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2009 16:04:09 +0100 (CET)
-In-Reply-To: <1234269014.49917356f0157@mail.inbox.lv>
+Received: from server.insite.cz (cable.insite.cz [84.242.84.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0A553244F6
+	for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2009 16:35:00 +0100 (CET)
+In-Reply-To: <fd3eb9bf0902100333m7ab4edc1g99de11000a794245@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,26 +21,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: kallipygos@inbox.lv
-Cc: alsa-devel@alsa-project.org
+To: =?UTF-8?B?VmVkcmFuIE1pbGV0acSH?= <rivanvx@gmail.com>
+Cc: Demian Martin <demianm_1@yahoo.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-kallipygos@inbox.lv wrote:
-> OK , this example works 
-> http://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2pcm__min_8c-example.html
-> but only if  samplerate = 48000; 
-> if  samplerate = 44100 - then not :(
-> 44k file play in 48k mode :D  it sounds funnee :D
-> 
-> I remixed this program so that it read data from wave file.
-> 
-> gcc  pcm_min01.c -lasound -O2  -o pcm_min01 
-> ./pcm_min01  '/mnt/hda2/Booty Luv - Shine/Booty Luv - Shine (Ian Carey remix).wav'
-> i gotta this :
-> ALSA lib pcm.c:7160:(snd_pcm_set_params) Rate doesn't match (requested 44100Hz, get 0Hz)
-
-Please show the source code of your program.
-
-
-Best regards,
-Clemens
+VmVkcmFuIE1pbGV0acSHIHdyb3RlOgo+IFllYWgsIEFMU0EncyBkb2N1bWVudGF0aW9uIGlzIGFj
+dHVhbGx5IHF1aXRlIGxhY2tpbmcgb24gbWFueSBmcm9udHMKPiBhbmQgaXMgbW9zdGx5IHNjYXR0
+ZXJlZCBhcm91bmQgdmFyaW91cyB3aWtpcyBhbmQgbWFpbGluZyBsaXN0cy4KPiAKPiBCdXQgSSBn
+dWVzcyBpdCBpcyBhcyBpdCBpcywgY29tcGxhaW5pbmcgYWJvdXQgaXQgd29uJ3QgZml4IGl0Lgo+
+IAo+IE9uIDIvOS8wOSwgRGVtaWFuIE1hcnRpbiA8ZGVtaWFubV8xQHlhaG9vLmNvbT4gd3JvdGU6
+Cj4+IFRoYW5rcywgSSdsbCB0cnkgdGhhdC4gSSBndWVzcyB0aGlzIGUtbWFpbCB3aWxsIHNlcnZl
+IGFzIG1vcmUgZG9jdW1lbnRhdGlvbgo+PiBvbiB0aGF0IGZlYXR1cmUgKGJ1ZykuIEkgaGFkIG5v
+dCBzZWVuIHRoYXQgZmFjdG9pZCBhbnl3aGVyZS4KPj4KPj4gRGVtaWFuIE1hcnRpbgo+PiBQRFMK
+Pj4KPj4KPj4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4+PiBGcm9tOiBWZWRyYW4gTWls
+ZXRpxIcgW21haWx0bzpyaXZhbnZ4QGdtYWlsLmNvbV0KPj4+IFNlbnQ6IE1vbmRheSwgRmVicnVh
+cnkgMDksIDIwMDkgMTozOSBQTQo+Pj4gVG86IERlbWlhbiBNYXJ0aW4KPj4+IENjOiBQYXZlbCBI
+b2ZtYW47IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+Pj4gU3ViamVjdDogUmU6IFthbHNh
+LWRldmVsXSBKdWxpQCBJQ0UxNzI0IGFuZCAyNCBiaXQgYXVkaW8KPj4+Cj4+PiBUaGUgcGx1Z2h3
+IHBhcnQgaXMgd2hhdCBtYWtlc2UgaXQgcmVzYW1wbGUgdG8gMTYtYml0LiBZb3Ugc2hvdWxkIGp1
+c3QgdXNlCj4+PiBody4KPj4+Cj4+PiBPbiBNb24sIEZlYiA5LCAyMDA5IGF0IDEwOjI5IFBNLCBE
+ZW1pYW4gTWFydGluIDxkZW1pYW5tXzFAeWFob28uY29tPgo+Pj4gd3JvdGU6Cj4+Pj4gUGF2ZWw6
+Cj4+Pj4gVGhhbmtzIGZvciBhbGwgeW91ciBoZWxwIGFuZCB3b3JrIG9uIHRoaXMgcHJvamVjdC4K
+Pj4+Pgo+Pj4+IEknbSB1c2luZyB0aGUgSnVsaUAgY2FyZCBiZWNhdXNlIGl0IHN1cHBvcnRzIDE3
+Ni40S0h6LiBUaGUgb25seSBvdGhlcgo+Pj4+IGNhbmRpZGF0ZXMgYXJlIG11Y2ggbW9yZSBleHBl
+bnNpdmUgYW5kIGJyaW5nIHRoZWlyIG93biBwcm9ibGVtcy4KPj4+Pgo+Pj4+IEknbSB1c2luZyBY
+aW5lIHNldCBmb3IgZG9sYnkvZHRzIHBhc3N0aHJvdWdoIHdoaWNoIHNlZW1zIHRvIHNlbmQgdGhl
+Cj4+PiBhdWRpbwo+Pj4+IGRhdGEgYXQgaXRzIG5hdGl2ZSByYXRlLiBUaGUgcmVzYW1wbGluZyBp
+cyBieXBhc3NlZCAoRG9sYnkgRGlnaXRhbCB3b3VsZAo+Pj4gYmUKPj4+PiB0cmFzaGVkIG90aGVy
+d2lzZSkuCj4+Pj4KPj4+PiBJIHdpbGwgdHJ5IHBsYXlpbmcgdGhlIGZpbGVzIGZyb20gdGhlIGNv
+bW1hbmQgbGluZSB3aGVuIEkgYW0gbmV4dCBpbgo+Pj4gZnJvbnQKPj4+PiBvZiB0aGUgc3lzdGVt
+LCB0b21vcnJvdy4KPj4+Pgo+Pj4+IFRoaXMgaXMgdGhlIEFzb3VuZC5jb25mOgo+Pj4+IEFzb3Vu
+ZC5jb25mICAoL2V0YykKPj4+Pgo+Pj4+IHBjbS5hc3ltX3NwZGlmIHsKPj4+Pgo+Pj4+ICAgICAg
+IHR5cGUgYXN5bQo+Pj4+Cj4+Pj4gICAgICAgcGxheWJhY2sucGNtICJwbHVnaHc6MCwxIgo+Pj4+
+Cj4+Pj4gICAgICAgY2FwdHVyZS5wY20gInBsdWdodzowIgo+Pj4+Cj4+Pj4gfQo+Pj4+Cj4+Pj4K
+Pj4+PiBwY20uIWRlZmF1bHQgYXN5bV9zcGRpZgo+Pj4+Cj4+Pj4gRGVtaWFuIE1hcnRpbgo+Pj4+
+IFBEUwo+Pj4+Cj4+Pj4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4+Pj4+IEZyb206IFBh
+dmVsIEhvZm1hbiBbbWFpbHRvOnBhdmVsLmhvZm1hbkBpbnNpdGUuY3pdCj4+Pj4+IFNlbnQ6IE1v
+bmRheSwgRmVicnVhcnkgMDksIDIwMDkgMTI6MjcgUE0KPj4+Pj4gVG86IERlbWlhbiBNYXJ0aW4K
+Pj4+Pj4gQ2M6IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgcGF2ZWwuaG9mbWFuQGluc2l0
+ZS5jego+Pj4+PiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIEp1bGlAIElDRTE3MjQgYW5kIDI0
+IGJpdCBhdWRpbwo+Pj4+Pgo+Pj4+PiBEZW1pYW4gTWFydGluIG5hcHNhbChhKToKPj4+Pj4+IEkg
+aGF2ZSB0aGUgZHJpdmVyIHdvcmtpbmcgZmluZSBmb3Igc2FtcGxlIHJhdGVzIGZyb20gNDQuMUsg
+dG8gMTk2Swo+Pj4+PiBob3dldmVyCj4+Pj4+PiBpdCBzZWVtcyB0byBiZSB0cnVuY2F0aW5nIHRo
+ZSBkYXRhIHRvIDE2IGJpdHMuIEkgd2Fzbid0IHN1cmUgdW50aWwgSQo+Pj4+PiBzdGFydGVkCj4+
+Pj4+PiB0ZXN0aW5nIHdpdGggdGhlIEhSeCAxNzYuNEsgMjQgYml0IGZpbGVzIHRoYXQgaGF2ZSBh
+biBlbWJlZGRlZCBIRENECj4+PiBmbGFnCj4+Pj4+IGluCj4+Pj4+PiB0aGUgTFNCLiBUaGUgZmls
+ZXMgd29yayBPSyBvbiBXaW5kb3plIHN5c3RlbXMgKHdpdGggYSBsb3Qgb2YgbG93Cj4+PiBsZXZl
+bAo+Pj4+Pj4gc2V0dGluZ3MgdHdlYWtlZCkgYW5kIHRoZXkgcGxheSBmaW5lIGJ1dCB0aGUgZmxh
+ZyBpc24ndCBkZXRlY3RlZCBieSBhCj4+Pj4+IHN5c3RlbQo+Pj4+Pj4gdGhhdCBjYW4gZGV0ZWN0
+IHRoZW0uIEZ1cnRoZXIgbG9va2luZyBhdCB0aGUgZGF0YSBzdHJlYW0gd2l0aCBhIHNjb3BlCj4+
+PiBpdAo+Pj4+Pj4gc2VlbXMgdGhlIGxhc3QgOCBiaXRzIGFyZW4ndCBjaGFuZ2luZy4gSXMgdGhl
+cmUgYW55dGhpbmcgSSBjYW4gZG8gdG8KPj4+Pj4gY29udHJvbAo+Pj4+Pj4gdGhlIGRyaXZlciB0
+byBjb25maXJtIHRoaXMgcHJvYmxlbSBvciBjaGFuZ2UgdGhlIHBsYXliYWNrIHNldHRpbmdzIHRv
+Cj4+Pj4+IG1ha2UKPj4+Pj4+IGl0IHdvcms/Cj4+Pj4+Pgo+Pj4+Pj4KPj4+Pj4gSG93IGRvIHlv
+dSBwbGF5IHRoZSBmaWxlcz8gRG8geW91IHVzZSB0aGUgaHcgb3IgcGx1ZzpodyBkZXZpY2U/IElJ
+UkMsCj4+Pj4+IHRoZSBzdGFuZGFyZC1zZXR1cCBkbWl4IHJlc2FtcGxlciBpcyAxNi1iaXQgb25s
+eS4KPj4+Pj4KPj4+Pj4gSSBkaWQgdGVzdHMgd2l0aCBTUERJRiBPVVQvSU4gYW5kIGZvdW5kIGl0
+IGJpdC1wZXJmZWN0LCBmb3IgMjRiaXQgdG9vLgo+Pj4+Pgo+Pj4+PiBSZWd1bGFyIElDRTE3MjQg
+Y2FyZHMgZG8gbm90IG91dHB1dCAxNzYuNGtIeiBTUERJRiwgb25seSA4OC4ya0h6LiBCdXQKPj4+
+Pj4gSnVsaSBpcyBub3QgYWZmZWN0ZWQgYnkgdGhhdCBidWcuCj4+Pj4+Cj4+Pj4+IFJlZ2FyZHMs
+Cj4+Pj4+Cj4+Pj4+Cj4+Pj4+IFBhdmVsLgo+Pj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCj4+Pj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPj4+PiBB
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPj4+PiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+Pj4+Cj4+Pgo+Pj4KPj4+IC0tCj4+
+PiBWZWRyYW4gTWlsZXRpxIcKPj4KCldoYXQgbWFrZXMgeW91IGd1eXMgdGhpbmsgdGhlIHBsdWcg
+cGx1Z2luIHRyaW1zIHRoZSBkYXRhIGRvd24gdG8gMTZiaXRzPyAKICBTdXJlIGlmIHRoZSByYXRl
+IGlzIGNoYW5nZWQgKHRoZSBzb3VyY2UgY29kZSBzdWdnZXN0cyBvbmx5IHRoZSAKbG93LXF1YWxp
+dHkgbGluZWFyIHJhdGUgYWxnb3JpdGhtIHN1cHBvcnRzIGFib3ZlLTE2Yml0IGZvcm1hdCAtIApv
+cGVyYXRpb24gY29udmVydCwgdGhlIG90aGVyIHJlc2FtcGxpbmcgYWxnb3JpdGhtcyBjb252ZXJ0
+IHVzaW5nIHRoZSAKb3BlcmF0aW9uIGNvbnZlcnRfczE2KS4KCkljZTE3MjQgc3VwcG9ydHMgYWxs
+IHRoZSBnZW5lcmFsIHJhdGVzIG5hdGl2ZWx5LCB0aGUgcmF0ZSBjb252ZXJzaW9uIGluIAp0aGUg
+cGx1ZyBwbHVnaW4gc2hvdWxkIG5vdCBraWNrIGluIGZvciBjb21tb24gYXVkaW8gZm9ybWF0cy4g
+VGhlIG9ubHkgCmNhc2UgSSBjYW4gdGhpbmsgb2Ygd291bGQgYmUgc3dpdGNoaW5nIEp1bGkgdG8g
+ZXh0ZXJuYWwgU1BESUYtSU4gY2xvY2sgLSAKdGhlIGh3LnJhdGVfbWluID0gaHcucmF0ZV9tYXgg
+PSBhY3R1YWxfcmF0ZSBhbmQgdGhlIGF1dG9tYXRpYyByYXRlIApjb252ZXJzaW9uIGNvdWxkIGhh
+cHBlbi4KCkkgZGlkIG5vdCB1c2UgdGhlIGh3IGRldmljZSBpbiBteSB0ZXN0cyBzaW5jZSBhbGwg
+dGhlIHRlc3RlZCB0cmFja3MgCndvdWxkIGhhdmUgdG8gYmUgMzItYml0IGZvciB0aGUgaHcgZGV2
+aWNlIHRvIGFjY2VwdCB0aGUgZm9ybWF0IHdoZW4gCnBsYXllZCB2aWEgbXkgZmF2b3JpdGUgYXBs
+YXkuCgpNeSAyIGNlbnRzIGd1ZXNzIGlzIHhpbmUgZG9lcyB0aGUgY29udmVyc2lvbi4KClJlZ2Fy
+ZHMsCgpQYXZlbC4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
