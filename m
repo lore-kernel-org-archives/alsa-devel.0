@@ -1,50 +1,42 @@
-From: Brendan Pike <spike@spykes.net>
-Subject: Re: Software mixer at kernel level
-Date: Tue, 10 Feb 2009 01:50:54 -0500
-Message-ID: <20090210015054.24a5f522@darius>
-References: <BAY121-W2620F292F939B826EEDC6DFBBD0@phx.gbl>
-	<74eb1fe20902091827w7f6020e2r58f0ba27f651de1f@mail.gmail.com>
-	<4990FB35.8050205@cox.net>
+From: "Lopez Cruz, Misael" <x0052729@ti.com>
+Subject: RE: [PATCH] ASoC: Replace snd_soc_machine by snd_soc_card structure
+ in SDP3430 machine driver
+Date: Tue, 10 Feb 2009 01:57:08 -0600
+Message-ID: <2C7D3DF36ADFFC479B44490D912B616705D6175432@dlee07.ent.ti.com>
+References: <2C7D3DF36ADFFC479B44490D912B616705D6175398@dlee07.ent.ti.com>
+ <20090210095146.63a77c83.jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.spykes.net (dsl.spykes.net [76.10.173.13])
-	by alsa0.perex.cz (Postfix) with ESMTP id C3410103814
-	for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2009 07:50:53 +0100 (CET)
-In-Reply-To: <4990FB35.8050205@cox.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20090210095146.63a77c83.jarkko.nikula@nokia.com>
+Content-Language: en-US
+Sender: linux-omap-owner@vger.kernel.org
+To: Jarkko Nikula <jarkko.nikula@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Nagalla, Hari" <hnagalla@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Sean McNamara wrote:
+> On Tue, 10 Feb 2009 00:57:00 +0100
+> "ext Lopez Cruz, Misael" <x0052729@ti.com> wrote:
 > 
-> You are welcome to do whatever you want on your system, but don't assume that everyone wants what you want.
-> </rant>
-> _______________________________________________
+> > This patch replaces "snd_soc_machine" structure by "snd_soc_card" in 
+> > SP3430 driver. This change is needed in SDP3430 driver to reflect 
+> > changes introduced by "ASoC: Rename snd_soc_card to snd_soc_machine"
+> > patch (875065491fba8eb13219f16c36e79a6fb4e15c68).
+> > 
+> > Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
+> > ---
+> >  sound/soc/omap/sdp3430.c |    4 ++--
+> >  1 files changed, 2 insertions(+), 2 deletions(-)
+> > 
+> Looks like you haven't subscribed to alsa-devel since I don't 
+> see your patch there? You can subscribe but have mail 
+> delivery disabled if you don't want to get mailing list 
+> traffic to your account.
 
+I'm sorry I used 'alsa-devel-request' instead of 'alsa-devel'. I'll resend the patch right away.
 
-Or you could just avoid all this mess with Linux audio for the time
-being and use a hardware mixing device instead. I realize laptop users
-are going to bitchslap me for saying that but its true.
-
-The whole buggy software mixing situation with regards to applications
-not working correctly or as intended is frustrating. OSS4 does it at
-the kernel level because it tries to be transparent to all the
-applications which think the device has hardware mixing capabilities. I
-realize OSS4 can be buggy for some but its implementation is far more
-compatible instead of the cocktail of sound servers and software
-mixing routines we have in ALSA right now.
-
-Some apps out there require direct access to /dev/dsp or whatever, what
-are we going to do? Hope somebody updates the program? (usually not
-going to happen with older closed source games or whatnot). Take UT99
-for example, rarely does this ever work with any software mixing period.
+> Patch itself looks like for 2.6.29-rc since it fixes a 
+> compilation error. Ack from me, compile tested on linux-omap.
+> 
+> Acked-by: Jarkko Nikula <jarkko.nikula@nokia.com>
