@@ -1,18 +1,16 @@
-From: =?UTF-8?Q?Bart=C5=82omiej?= Holdenmayer <bh@habah.com>
-Subject: HP pavilion dv5 1110ew - no hdmi sound
-Date: Wed, 11 Feb 2009 03:20:44 +0100
-Message-ID: <1234318844.9425.6.camel@hplaptop>
+From: Naveen Krishna Ch <naveenkrishna.ch@gmail.com>
+Subject: ASoC: TWL4030 audio issue with PM
+Date: Wed, 11 Feb 2009 10:46:45 +0530
+Message-ID: <ef0d8a250902102116t71ea79cs6c1cb94a05cee407@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from secure4.ia-dns.com (secure4.ia-dns.com [70.84.79.68])
-	by alsa0.perex.cz (Postfix) with ESMTP id 956181037EC
-	for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2009 03:21:00 +0100 (CET)
-Received: from auy37.neoplus.adsl.tpnet.pl ([83.27.32.37] helo=[192.168.1.15])
-	by secure4.ia-dns.com with esmtpa (Exim 4.69)
-	(envelope-from <bh@habah.com>) id 1LX4ic-0002B4-Aq
-	for alsa-devel@alsa-project.org; Tue, 10 Feb 2009 20:20:55 -0600
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.156])
+	by alsa0.perex.cz (Postfix) with ESMTP id 295A224478
+	for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2009 06:16:47 +0100 (CET)
+Received: by yx-out-1718.google.com with SMTP id 36so20381yxh.2
+	for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2009 21:16:46 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +21,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Welcome,
-I have no sound through HDMI.
-I have Nvidia Geforce 9200M GS with 180.11 driver. Alsa 1.0.19. And
-newest bios F13A. 
+Hi Developers,
 
-I was googling for a week and only solution i found was to upgrade Alsa
-and Nvidia to the newest version. I did, but i still do not have sound
-over HDMI. In Win$ it is working ok.
+I am using 2.6.28 kernel on OMAP3430 and TWL4030 for audio (ASoC).
 
-http://www.alsa-project.org/db/?f=01be9175263a5021fcfef3a47123afc04d62a863
+When i play or record a 8Khz or 48Khz file and try suspending the machine
+the PM works well.
 
--  
-Pozdrawiam / Regards
-bartek
+" while playing a file if the we put machine into suspend the play back
+should stop and it should
+start playing back from that point where it stopped when we resume our
+machine"
 
-GG:541634; ICQ:33920811;
+Is this the exact behavior expected from a audio codec driver of ASoC during
+kernels PM.
+
+-- 
+Cheers
+(: Naveen Krishna Ch :)
