@@ -1,17 +1,17 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: Juli@ ICE1724 and 24 bit audio
-Date: Wed, 11 Feb 2009 09:44:25 +0100
-Message-ID: <49928FE9.7060903@insite.cz>
-References: <366C228A7F9A4AAF9EE7190DC4C0EE68@PDSDesktop>	<49909186.4050902@insite.cz>	<67FF030CD7BA4BFB9ACE52B69F56D69D@DemianM1330>	<fd3eb9bf0902091338i7ffa51d6t5a62d82a6b48ada3@mail.gmail.com>	<47A687F571094A7F827250BBE602F100@DemianM1330>	<fd3eb9bf0902100333m7ab4edc1g99de11000a794245@mail.gmail.com>	<49919EA2.6030000@insite.cz>
-	<3C34CD030E4642119E63E2F4F979C7DD@PDSDesktop>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: using ALSA one call
+Date: Wed, 11 Feb 2009 09:55:00 +0100
+Message-ID: <49929264.1060503@ladisch.de>
+References: <1234269014.49917356f0157@mail.inbox.lv>	<49919765.4000706@ladisch.de>
+	<1234306055.499204078ce73@mail.inbox.lv>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.insite.cz (cable.insite.cz [84.242.84.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 67AA910388C
-	for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2009 09:44:30 +0100 (CET)
-In-Reply-To: <3C34CD030E4642119E63E2F4F979C7DD@PDSDesktop>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 40BAC10388C
+	for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2009 09:55:08 +0100 (CET)
+In-Reply-To: <1234306055.499204078ce73@mail.inbox.lv>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,29 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Demian Martin <demianm_1@yahoo.com>
-Cc: =?ISO-8859-2?Q?=27Vedran_Mileti=E6=27?= <rivanvx@gmail.com>, alsa-devel@alsa-project.org
+To: Alfs Kurmis <kallipygos@inbox.lv>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Demian Martin napsal(a):
-> I confirmed that aplay and plughw:0,1 work fine. Aplay and hw:0,1 don't work
-> at all.
-> 
-> And that Xine is the culprit. Now to find out how to fix/work around Xine.
-> 
-> Demian Martin
-> Product Design Services
-> 
-> 
+Alfs Kurmis wrote:
+> As given here
+> http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#g6aa164ed37308d66bcc079f5cd265a09
+> latency         required overall latency in us (0 = optimum latency for players)
+> i have try to set  optimum latency = 0;
 
-The older aplay you most likely use does not support 24bit properly.
-Install the latest alsa-utils from git and you will be fine.
+That documentation is wrong; 0 is not allowed.  Just use 0.5 s, or some
+larger value.
 
-Perhaps the Xine problem is caused by the passthrough mode. E.g. in
-mplayer the hwac3/hwdts output decoders for passthrough run in 16bit
-only, but they work actively with the non-audio format. You can check
-xine/xinelib code, the alsa output should not be that difficult to analyze.
+> But why i can not play my wave on notebook sound device "hw:0,0" ??
 
-Regards,
+Because the "hw" device goes straight to the hardware and disallows
+any conversion of sample rate/format.
 
-Pavel.
+Use "default", or something like "default:0" to select a specific card.
+
+> snd_pcm_set_params(handle, SND_PCM_FORMAT_S16_LE, SND_PCM_ACCESS_RW_INTERLEAVED,
+>                    channelz, samplerate ,  0, 500000)
+
+... and setting soft_resample to 0 disallows resampling in any case.
+
+
+HTH
+Clemens
