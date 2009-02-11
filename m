@@ -1,14 +1,19 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: [PATCH] hda: Add logic to force HP mixer creation
-Date: Sun, 15 Feb 2009 11:01:01 -0500
-Message-ID: <49983C3D.2000309@embeddedalley.com>
+From: "Demian Martin" <demianm_1@yahoo.com>
+Subject: Re: Juli@ ICE1724 and 24 bit audio
+Date: Tue, 10 Feb 2009 17:06:32 -0800
+Message-ID: <3C34CD030E4642119E63E2F4F979C7DD@PDSDesktop>
+References: <366C228A7F9A4AAF9EE7190DC4C0EE68@PDSDesktop>	<49909186.4050902@insite.cz>	<67FF030CD7BA4BFB9ACE52B69F56D69D@DemianM1330>	<fd3eb9bf0902091338i7ffa51d6t5a62d82a6b48ada3@mail.gmail.com>	<47A687F571094A7F827250BBE602F100@DemianM1330>
+	<fd3eb9bf0902100333m7ab4edc1g99de11000a794245@mail.gmail.com>
+	<49919EA2.6030000@insite.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
-	by alsa0.perex.cz (Postfix) with SMTP id 8B29E1037F5
-	for <alsa-devel@alsa-project.org>; Sun, 15 Feb 2009 17:01:13 +0100 (CET)
+Received: from smtp109.prem.mail.sp1.yahoo.com
+	(smtp109.prem.mail.sp1.yahoo.com [98.136.44.54])
+	by alsa0.perex.cz (Postfix) with SMTP id 3BCAE1037EC
+	for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2009 02:06:30 +0100 (CET)
+In-Reply-To: <49919EA2.6030000@insite.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,94 +23,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Mario Limonciello <mario_limonciello@dell.com>
+To: 'Pavel Hofman' <pavel.hofman@insite.cz>, =?iso-8859-2?Q?'Vedran_Mileti=E6'?= <rivanvx@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In some instances like a laptop PCI_QUIRK you may want to force a
-headphone mixer otherwise a "Front" mixer would be in its place, this
-is to aid user friendlyness.
+I confirmed that aplay and plughw:0,1 work fine. Aplay and hw:0,1 don't work
+at all.
 
-Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
----
- sound/pci/hda/patch_sigmatel.c |   25 ++++++++++++++++++-------
- 1 files changed, 18 insertions(+), 7 deletions(-)
+And that Xine is the culprit. Now to find out how to fix/work around Xine.
 
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index aeb5d21..e02a187 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -168,6 +168,7 @@ struct sigmatel_spec {
- 	unsigned int surr_switch: 1;
- 	unsigned int alt_switch: 1;
- 	unsigned int hp_detect: 1;
-+	unsigned int hp_mixer: 1;
- 	unsigned int spdif_mute: 1;
- 	unsigned int check_volume_offset:1;
- 
-@@ -857,9 +858,9 @@ static struct hda_verb stac92hd73xx_10ch_core_init[] = {
- };
- 
- static struct hda_verb stac92hd83xxx_core_init[] = {
--	{ 0xa, AC_VERB_SET_CONNECT_SEL, 0x1},
--	{ 0xb, AC_VERB_SET_CONNECT_SEL, 0x1},
--	{ 0xd, AC_VERB_SET_CONNECT_SEL, 0x0},
-+	{ 0xa, AC_VERB_SET_CONNECT_SEL, 0x0},
-+	{ 0xb, AC_VERB_SET_CONNECT_SEL, 0x0},
-+	{ 0xd, AC_VERB_SET_CONNECT_SEL, 0x1},
- 
- 	/* power state controls amps */
- 	{ 0x01, AC_VERB_SET_EAPD, 1 << 2},
-@@ -3115,12 +3116,12 @@ static int stac92xx_auto_create_multi_out_ctls(struct hda_codec *codec,
- 		"Front", "Surround", NULL /*CLFE*/, "Side"
- 	};
- 	hda_nid_t nid = 0;
--	int i, err;
-+	int i, idx = 0, err;
- 	unsigned int wid_caps;
- 
- 	for (i = 0; i < cfg->line_outs && spec->multiout.dac_nids[i]; i++) {
- 		nid = spec->multiout.dac_nids[i];
--		if (i == 2) {
-+		if (idx == 2) {
- 			/* Center/LFE */
- 			err = create_controls(codec, "Center", nid, 1);
- 			if (err < 0)
-@@ -3139,9 +3140,9 @@ static int stac92xx_auto_create_multi_out_ctls(struct hda_codec *codec,
- 				if (err < 0)
- 					return err;
- 			}
--
-+			idx++;
- 		} else {
--			const char *name = chname[i];
-+			const char *name = chname[idx];
- 			/* if it's a single DAC, assign a better name */
- 			if (!i && is_unique_dac(spec, nid)) {
- 				switch (cfg->line_out_type) {
-@@ -3153,6 +3154,10 @@ static int stac92xx_auto_create_multi_out_ctls(struct hda_codec *codec,
- 					break;
- 				}
- 			}
-+			if (!i && spec->hp_mixer)
-+				name = "Headphone";
-+			else
-+				idx++;
- 			err = create_controls(codec, name, nid, 3);
- 			if (err < 0)
- 				return err;
-@@ -4894,6 +4899,12 @@ again:
- 		break;
- 	}
- 
-+	switch (spec->board_config) {
-+	case STAC_DELL_S14:
-+		spec->hp_mixer = 1;
-+		break;
-+	}
-+
- 	err = stac92xx_parse_auto_config(codec, 0x1d, 0);
- 	if (!err) {
- 		if (spec->board_config < 0) {
--- 
-1.5.6.3
+Demian Martin
+Product Design Services
+
+
+-----Original Message-----
+From: Pavel Hofman [mailto:pavel.hofman@insite.cz] =
+
+Sent: Tuesday, February 10, 2009 7:35 AM
+To: Vedran Mileti=E6
+Cc: Demian Martin; alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Juli@ ICE1724 and 24 bit audio
+
+
+
+What makes you guys think the plug plugin trims the data down to 16bits? =
+
+  Sure if the rate is changed (the source code suggests only the =
+
+low-quality linear rate algorithm supports above-16bit format - =
+
+operation convert, the other resampling algorithms convert using the =
+
+operation convert_s16).
+
+Ice1724 supports all the general rates natively, the rate conversion in =
+
+the plug plugin should not kick in for common audio formats. The only =
+
+case I can think of would be switching Juli to external SPDIF-IN clock - =
+
+the hw.rate_min =3D hw.rate_max =3D actual_rate and the automatic rate =
+
+conversion could happen.
+
+I did not use the hw device in my tests since all the tested tracks =
+
+would have to be 32-bit for the hw device to accept the format when =
+
+played via my favorite aplay.
+
+My 2 cents guess is xine does the conversion.
+
+Regards,
+
+Pavel.
