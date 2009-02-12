@@ -1,16 +1,20 @@
-From: Tim Blechmann <tim@klingt.org>
-Subject: Re: pointer callback question
-Date: Thu, 12 Feb 2009 19:04:10 +0100
-Message-ID: <4994649A.8080005@klingt.org>
-References: <49946175.5070008@klingt.org>	<s5h1vu3k0bj.wl%tiwai@suse.de>	<499462A5.2000705@klingt.org>
-	<s5hy6wbillh.wl%tiwai@suse.de>
+From: =?UTF-8?Q?Bart=C5=82omiej?= Holdenmayer <bh@habah.com>
+Subject: Re: HP pavilion dv5 1110ew - no hdmi sound
+Date: Thu, 12 Feb 2009 20:08:29 +0100
+Message-ID: <1234465709.6575.5.camel@hplaptop>
+References: <1234318844.9425.6.camel@hplaptop>
+	<s5hd4dpe7nl.wl%tiwai@suse.de> <1234380215.6310.2.camel@hplaptop>
+	<s5h3aekpvdl.wl%tiwai@suse.de> <1234395683.10208.2.camel@hplaptop>
+	<s5hvdrg7cms.wl%tiwai@suse.de>
+	<fd3eb9bf0902120819q3e4bf5f1x4a6b619802f9ec45@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6616635586072888224=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from klingt.org (mail.klingt.org [86.59.21.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id F2CAE2414D
-	for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2009 19:04:11 +0100 (CET)
-In-Reply-To: <s5hy6wbillh.wl%tiwai@suse.de>
+Received: from secure4.ia-dns.com (secure4.ia-dns.com [70.84.79.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id DF34524365
+	for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2009 20:08:37 +0100 (CET)
+In-Reply-To: <fd3eb9bf0902120819q3e4bf5f1x4a6b619802f9ec45@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,80 +24,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Vedran =?UTF-8?Q?Mileti=C4=87?= <rivanvx@gmail.com>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============6616635586072888224==
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig6D5319C9D1678467DE8E7CD9"
-
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig6D5319C9D1678467DE8E7CD9
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-Takashi Iwai wrote:
-> At Thu, 12 Feb 2009 18:55:49 +0100,
-> Tim Blechmann wrote:
->>>> the brief log is (4 periods of 64 frames):
->>>> stream_pointer at 64
->>>> stream_pointer at 128
->>>> stream_pointer at 192
->>>> stream_pointer at 256
->>> This is invalid.  The pointer callback must return 0 in this case.
->>> The value the pointer callback returns is between 0 and buffer_size-1=
-=2E
->> sry, typo, 5 periods of 64 frames
->=20
-> Then it must be OK.  If the stream is stopped, it's likely by the
-> buffer underrun detection or so...
-
-is there any way to compile alsa to get some debugging information about
-that?
-
-> BTW, you should be sure that the buffer size is aligned to the period=20
-> size if such a design is assumed.  Without the extra constraint, it
-> could be unaligned as default.
-
-hm, afaict alignment should be ok ...
-
-thnx, tim
-
---=20
-tim@klingt.org
-http://tim.klingt.org
-
-A good composer does not imitate; he steals.
-  Igor Stravinsky
-
-
---------------enig6D5319C9D1678467DE8E7CD9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkmUZJ4ACgkQdL+4qsZfVsta8QCdGZWL5s608D/2yUPjIjxkn/Mg
-CqEAn2052mU3VckOm4fG3tRpe3SdqeQZ
-=5/G+
------END PGP SIGNATURE-----
-
---------------enig6D5319C9D1678467DE8E7CD9--
-
---===============6616635586072888224==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============6616635586072888224==--
+RG5pYSAyMDA5LTAyLTEyLCBjencgbyBnb2R6aW5pZSAxNzoxOSArMDEwMCwgVmVkcmFuIE1pbGV0
+acSHIHBpc3plOgo+IE9uIFRodSwgRmViIDEyLCAyMDA5IGF0IDEyOjU0IEFNLCBUYWthc2hpIEl3
+YWkgPHRpd2FpQHN1c2UuZGU+IHdyb3RlOgo+ID4gQXQgVGh1LCAxMiBGZWIgMjAwOSAwMDo0MToy
+MiArMDEwMCwKPiA+IEJhcnTFgm9taWVqIEhvbGRlbm1heWVyIHdyb3RlOgo+ID4+Cj4gPj4gRG5p
+YSAyMDA5LTAyLTExLCDFm3JvIG8gZ29kemluaWUgMjE6MzIgKzAxMDAsIFRha2FzaGkgSXdhaSBw
+aXN6ZToKPiA+PiA+IEF0IFdlZCwgMTEgRmViIDIwMDkgMjA6MjM6MzUgKzAxMDAsCj4gPj4gPiBC
+YXJ0xYJvbWllaiBIb2xkZW5tYXllciB3cm90ZToKPiA+PiA+ID4KPiA+PiA+ID4gSSBkaWQgd2l0
+aDoKPiA+PiA+ID4gc3VkbyBzaCAuL0Fsc2FVcGdyYWRlLTEuMC54LXJldi0xLjE2LnNoIC1zbmFw
+Cj4gPj4gPgo+ID4+ID4gV2hhdCB0aGUgaGFjayB0aGlzIHNjcmlwdCBkb2VzPwo+ID4+ID4KPiA+
+PiA+Cj4gPj4gPiBUYWthc2hpCj4gPj4KPiA+PiBEZXNjcmlwdGlvbiBpbiBmdWxsIGlzIGhlcmU6
+Cj4gPj4gaHR0cDovL3VidW50dWZvcnVtcy5vcmcvc2hvd3RocmVhZC5waHA/cD02NTg5ODEwCj4g
+Pj4KPiA+Pgo+ID4+Cj4gPj4gVGhlIG1haW4gaWRlYSBvZiB1cGdyYWRpbmcgQUxTQSB3aXRoIGF0
+dGFjaGVkIHNjcmlwdCwgaXMgdGhlIHRpbWVzaGlmdAo+ID4+IG9mIHVwZGF0ZXMgdGhyb3VnaCBv
+ZmZpY2lhbCBjaGFubmVscyBpbiB0aGUgcmFuZ2Ugb2YgdXAgdG8gaGFsZiBhIHllYXIuCj4gPj4K
+PiA+PiBUaGlzIGlzIElNTyBub3QgYWNjZXB0YWJsZS4KPiA+Pgo+ID4+IFRoZXJlIGlzIGEgZ3Jl
+YXQgY2hhbmNlIHRoYXQgeW91IGdldCB5b3VyIHNvdW5kY2FyZCB1cCBhbmQgcnVubmluZyBvcgo+
+ID4+IHByb2JsZW1zIHJlc29sdmVkIG11Y2ggZWFybGllciwgaWYgeW91IHVzZSB0aGUgdmVyeSBs
+YXN0ZXN0Cj4gPj4gQUxTQSB2ZXJzaW9uLiBUaGUgc2NyaXB0IHdpbGwgZ2V0IHlvdSB0aGUgbGF0
+ZXN0IG9mZmljaWFsIHN0YWJsZSBBTFNBCj4gPj4gcmVsZWFzZSBhbmQgLSBpZiBhdmFpbGFibGUg
+LSB0aGUgbGF0ZXN0IHJlbGVhc2UgY2FuZGlkYXRlCj4gPj4gZm9yIGFuIHVwY29taW5nIHJlbGVh
+c2UuCj4gPgo+ID4gVGhlIHJlbGVhc2VkIG9yIHJjIHRhcmJhbGxzIGFyZSB3YXkgdG9vIG9sZCBm
+b3IgZGVidWdnaW5nLgo+ID4gVXNlIHRoZSBzbmFwc2hvdCB0YXJiYWxsIGluIHRoZSBVUkwgYmVs
+b3cgKG5vdCBmcm9tCj4gPiBhbHNhLW9yb2plY3Qub3JnKS4KPiA+ICAgIGZ0cDovL2Z0cC5rZXJu
+ZWwub3JnL3B1Yi9saW51eC9rZXJuZWwvcGVvcGxlL3Rpd2FpL3NuYXBzaG90L2Fsc2EtZHJpdmVy
+LXNuYXBzaG90LnRhci5nego+ID4KPiA+Cj4gPiBUYWthc2hpCj4gPiBfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+ID4gQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKPiA+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+ID4gaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPiA+Cj4gCj4gSSBkb24n
+IHRoaW5rIHRoaXMgd2lsbCBiZSBlbm91Z2guIElmIHlvdSBsb29rIGF0IGxzcGNpLCB0aGVyZSBp
+cyBub3QgYQo+IHNpbmdsZSBtZW50aW9uIG9mIEhETUkgZGV2aWNlLiBJIGJlbGlldmUgKHdlbGws
+IGF0IGxlYXN0IE1DUDc4UyBoYXMgaXQKPiB0aGF0IHdheSkgdGhhdCBIRE1JIGRldmljZSBzaG91
+bGQgYmUgbGlzdGVkLiBJZiBpdCBpc24ndCBsaXN0ZWQgZm9yCj4gZGlzY3JldGUgZ3JhcGhpY3Ms
+IHRoZW4gdGhlcmUgaXMgc29tZSBvdGhlciB3YXkgdGhhdCBpdCBtdXN0IGJlCj4gaW1wbGVtZW50
+ZWQuCj4gCj4gSSBiZWxpZXZlIHRoYXQgQVRJIGFsc28gbGlzdHMgc2VwYXJhdGUgZGV2aWNlIGZv
+ciBIRE1JIGF1ZGlvLgo+IAo+IFRvIGJlIHByZWNpc2UsIG15IDgyMDAgYm9hcmQgaGFzIHRoaXM6
+Cj4gaHR0cDovL3BjaS1pZHMudWN3LmN6L3JlYWQvUEMvMTBkZS8wNzc0LCBhbmQgdGhlcmUgaXMg
+YSBCSU9TIG9wdGlvbiB0bwo+IGVuYWJsZSBhbmQgZGlzYWJsZSBpdC4KPiAKPiBJZiB0aGVyZSBp
+c24ndCBhIHdheSB0byBnZXQgSERNSSBhdWRpbyBkZXZpY2UgbGlzdGVkIGluIGxzcGNpIChCSU9T
+Cj4gb3B0aW9uIG9yIHdoYXRldmVyKSwgSSBkb24ndCBiZWxpZXZlIHVwZ3JhZGluZyBBTFNBIHdp
+bGwgZG8gbXVjaCBoZXJlLgo+IApJIG15IGJpb3MgdGhlcmUgaXMgbm8gc3VjaCBhIG9wdGlvbiBh
+Ym91dCBoZG1pLiBJdCBpcyBzaW1wbGUgYmlvcyAtIGJvb3QKb3JkZXIsIHBhc3N3b3JkcyBhbmQg
+dGVzdCBmb3IgaGhkLCBtZW1vcnkuCgpXaGF0IGVsc2UgY2FuIGkgZG8/IElzIG15IHByb2JsZW0g
+Y29ubmVjdGVkIHdpdGggYmlvcywgbnZpZGlhIGRyaXZlciBvcgphbHNhPyBJIGhhdmUgdGhlIG1v
+c3QgYWN0dWFsIGJpb3MsIGFsc2EgZnJvbSBzbmFwIGFuZCBudmlkaWEgMTgwLjExCihtb3N0IGFj
+dHVhbCBmcm9tIHJlcG9zaXRvcmllczsgb24gbnZpZGlhIHdlYnBhZ2UgdGhlcmUgaXMgMTgwLjIy
+KQotLSAKUG96ZHJhd2lhbSAvIFJlZ2FyZHMKQmFydMWCb21pZWogSG9sZGVubWF5ZXIKCkdHOjU0
+MTYzNDsgSUNROjMzOTIwODExOyBza3lwZW5hbWU6YmFydGxvbWllamhvbGRlbm1heWVyCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
