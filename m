@@ -1,20 +1,18 @@
-From: =?UTF-8?Q?Bart=C5=82omiej?= Holdenmayer <bh@habah.com>
-Subject: Re: No sound for HP Pavilion DV4z
-Date: Thu, 12 Feb 2009 02:07:29 +0100
-Message-ID: <1234400849.7314.2.camel@hplaptop>
-References: <1856646965.309841234390528103.JavaMail.root@sz0025a.westchester.pa.mail.comcast.net>
-	<947282031.309861234390530891.JavaMail.root@sz0025a.westchester.pa.mail.comcast.net>
-	<s5hbpt88tta.wl%tiwai@suse.de> <1234395832.10208.3.camel@hplaptop>
-	<s5hwsbw7cs9.wl%tiwai@suse.de> <1234398580.6603.2.camel@hplaptop>
-	<s5hiqngwklh.wl%tiwai@suse.de>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: [PATCH 0/4] Intel HDMI audio fixes
+Date: Thu, 12 Feb 2009 09:25:04 +0800
+Message-ID: <20090212012504.GA6387@localhost>
+References: <20090211072227.760779741@intel.com>
+	<20090211223241.GA31322@csy.ca> <s5hfxik8ukn.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from secure4.ia-dns.com (secure4.ia-dns.com [70.84.79.68])
-	by alsa0.perex.cz (Postfix) with ESMTP id 631751037EE
-	for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2009 02:07:37 +0100 (CET)
-In-Reply-To: <s5hiqngwklh.wl%tiwai@suse.de>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 902191037EE
+	for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2009 02:25:07 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hfxik8ukn.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,61 +23,153 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, aeleneski@comcast.net
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shane W <shane-alsa@csy.ca>
 List-Id: alsa-devel@alsa-project.org
 
-RG5pYSAyMDA5LTAyLTEyLCBjencgbyBnb2R6aW5pZSAwMTo0MyArMDEwMCwgVGFrYXNoaSBJd2Fp
-IHBpc3plOgo+IEF0IFRodSwgMTIgRmViIDIwMDkgMDE6Mjk6NDAgKzAxMDAsCj4gQmFydMWCb21p
-ZWogSG9sZGVubWF5ZXIgd3JvdGU6Cj4gPiAKPiA+IERuaWEgMjAwOS0wMi0xMiwgY3p3IG8gZ29k
-emluaWUgMDA6NTEgKzAxMDAsIFRha2FzaGkgSXdhaSBwaXN6ZToKPiA+ID4gQXQgVGh1LCAxMiBG
-ZWIgMjAwOSAwMDo0Mzo1MiArMDEwMCwKPiA+ID4gQmFydMWCb21pZWogSG9sZGVubWF5ZXIgd3Jv
-dGU6Cj4gPiA+ID4gCj4gPiA+ID4gRG5pYSAyMDA5LTAyLTExLCDFm3JvIG8gZ29kemluaWUgMjM6
-NTggKzAxMDAsIFRha2FzaGkgSXdhaSBwaXN6ZToKPiA+ID4gPiA+IEF0IFdlZCwgMTEgRmViIDIw
-MDkgMjI6MTU6MzAgKzAwMDAgKFVUQyksCj4gPiA+ID4gPiBhZWxlbmVza2lAY29tY2FzdC5uZXQg
-d3JvdGU6Cj4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiBBbHJpZ2h0LiBXZWxsLCBpdCBhZ2FpbiBz
-ZWVtcyBsaWtlIGEgbm8gZ28uCj4gPiA+ID4gPiA+IFJhbiBhbGwgdGhlIGNvbW1hbmRzLCBzdGls
-bCBubyBzb3VuZC4gVXBvbiBzdGFydGluZyBBbWFyb2ssIEkgcmVjZWl2ZSB0aGUKPiA+ID4gPiA+
-ID4gZXJyb3IgInhpbmUgd2FzIHVuYWJsZSB0byBpbml0aWFsaXplIGFueSBhdWRpbyBkcml2ZXJz
-LiIKPiA+ID4gPiA+IAo+ID4gPiA+ID4gQ291bGQgeW91IHRyeSB0aGUgcGF0Y2ggYmVsb3c/Cj4g
-PiA+ID4gPiAKPiA+ID4gPiA+IE9yLCBmaXJzdCBsb2FkIHdpdGhvdXQgcHJvYmVfbWFzaz0xIG9w
-dGlvbiwgZ2l2ZSB0aGUgY29tbWFuZCBzZXF1ZW5jZQo+ID4gPiA+ID4gYW5kIGRvIGVjaG8gdG8g
-cmVjb25maWcgZmlsZS4KPiA+ID4gPiA+IAo+ID4gPiA+ID4gCj4gPiA+ID4gPiB0aGFua3MsCj4g
-PiA+ID4gPiAKPiA+ID4gPiA+IFRha2FzaGkKPiA+ID4gPiA+IAo+ID4gPiA+ID4gLS0tCj4gPiA+
-ID4gPiBkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9oZGFfaHdkZXAuYyBiL3NvdW5kL3BjaS9o
-ZGEvaGRhX2h3ZGVwLmMKPiA+ID4gPiA+IGluZGV4IDMwMGFiNDAuLjQ4MmZiMDMgMTAwNjQ0Cj4g
-PiA+ID4gPiAtLS0gYS9zb3VuZC9wY2kvaGRhL2hkYV9od2RlcC5jCj4gPiA+ID4gPiArKysgYi9z
-b3VuZC9wY2kvaGRhL2hkYV9od2RlcC5jCj4gPiA+ID4gPiBAQCAtMTc1LDcgKzE3NSw3IEBAIHN0
-YXRpYyBpbnQgcmVjb25maWdfY29kZWMoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCj4gPiA+ID4g
-PiAgCWVyciA9IHNuZF9oZGFfY29kZWNfYnVpbGRfY29udHJvbHMoY29kZWMpOwo+ID4gPiA+ID4g
-IAlpZiAoZXJyIDwgMCkKPiA+ID4gPiA+ICAJCXJldHVybiBlcnI7Cj4gPiA+ID4gPiAtCXJldHVy
-biAwOwo+ID4gPiA+ID4gKwlyZXR1cm4gc25kX2NhcmRfcmVnaXN0ZXIoY29kZWMtPmJ1cy0+Y2Fy
-ZCk7Cj4gPiA+ID4gPiAgfQo+ID4gPiA+ID4gIAo+ID4gPiA+ID4gIC8qCj4gPiA+ID4gPiBfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+ID4gPiA+ID4gQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKPiA+ID4gPiA+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-Zwo+ID4gPiA+ID4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwKPiA+ID4gPiAKPiA+ID4gPiBDYW4gWW91IGV4cGxhaW4gd2hhdCB0byBk
-byBsaWtlIGZvciA2IHllYXJzIG9sZCBraWQ/Cj4gPiA+IAo+ID4gPiBXZWxsLCBJIGFscmVhZHkg
-bWVyZ2VkIHRoZSBwYXRjaCB0byBzb3VuZCBnaXQgdHJlZSwgc28geW91IGp1c3QgbmVlZAo+ID4g
-PiB0byB1c2UgdGhlIGxhdGVzdCBhbHNhLWRyaXZlciBzbmFwc2hvdCB0cmVlIGFnYWluIGZyb206
-Cj4gPiA+ICAgICBmdHA6Ly9mdHAua2VybmVsLm9yZy9wdWIvbGludXgva2VybmVsL3Blb3BsZS90
-aXdhaS9zbmFwc2hvdC9hbHNhLWRyaXZlci1zbmFwc2hvdC50YXIuZ3oKPiA+ID4gCj4gPiA+IAo+
-ID4gPiBUYWthc2hpCj4gPiA+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCj4gPiA+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gPiA+IEFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwo+ID4gPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+ID4gCj4gPiBJIGRpZCB1cGdyYWRlLiBObyBjaGFu
-Z2UuIGFwbGF5IC1sIHN0aWxsIGRvZXMgbm90IGRpc3BsYXkgaGRtaS4KPiAKPiBUaGVuIGdpdmUg
-YWxzYS1pbmZvIG91dHB1dCBhZ2Fpbi4KPiBBbHNvLCBsb2FkIHdpdGggcHJvYmVfb25seT0xIG9w
-dGlvbiBmaXJzdCBhbmQgZ2V0IGFsc2EtaW5mbywgdG9vLgo+IEF0dGFjaCB0b2dldGhlciB3aXRo
-IHRoZSByZWxldmFudCBrZXJuZWwgbWVzc2FnZXMuCj4gCj4gCj4gVGFrYXNoaQo+IF9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAoKSSBhbSBzb3JyeSwg
-aSBtZXNzZWQgdXAgdGhyZWFkcy4gSSB3YXMgd3JpdGluZyBhYm91dCBwYXZpbGlvbiBkdjUuIEkK
-aGF2ZSBwcm9ibGVtIHdpdGggaGRtaS4gU2hvdWxkIGkgZG8gd2hhdCBZb3Ugd3JvdGU6IAo+IEFs
-c28sIGxvYWQgd2l0aCBwcm9iZV9vbmx5PTEgb3B0aW9uIGZpcnN0IGFuZCBnZXQgYWxzYS1pbmZv
-LCB0b28uCj4gQXR0YWNoIHRvZ2V0aGVyIHdpdGggdGhlIHJlbGV2YW50IGtlcm5lbCBtZXNzYWdl
-cy4KPwoKLS0gClBvemRyYXdpYW0gLyBSZWdhcmRzCkJhcnTFgm9taWVqIEhvbGRlbm1heWVyCgpH
-Rzo1NDE2MzQ7IElDUTozMzkyMDgxMTsgc2t5cGVuYW1lOmJhcnRsb21pZWpob2xkZW5tYXllcgoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Thu, Feb 12, 2009 at 12:42:00AM +0200, Takashi Iwai wrote:
+> At Wed, 11 Feb 2009 14:32:41 -0800,
+> Shane W wrote:
+> > 
+> > On Wed, Feb 11, 2009 at 03:22:27PM +0800, Wu Fengguang wrote:
+> > > Shane: the first two patches should address the two bugs you reported, i.e.
+> > > - multi-channel HDMI audio playback problem
+> > > - first half-second audio samples missing
+> > > These two bugs was reproduced and fixed in the combination of
+> > > G35 SDVO HDMI + Yamaha RX-V1800 AV receiver. The first problem cannot be
+> > > verified in G45 system because we still cannot make G45 work with
+> > > Yamaha. The second problem is interesting in that it can be fixed by the
+> > > second patch in G35, but still remains in G45.
+> > 
+> > Hi,
+> > 
+> > Ok mixed results here.  I'm using this for my test signal:
+> > http://www.csy.ca/~shane/51test.wav
+> > 
+> > when using:
+> > aplay -D hw:0,3 51test.wav
+> > 
+> > Front and rear left and right are correct but centre is
+> > missing.  The order in the wav is:
+> > front left
+> > centre
+> > front right
+> > rear left
+> > rear right
+> > sub buz
+> 
+> The order assumed here doesn't match with ALSA mapping.
+> In ALSA,
+>   front left
+>   front right
+>   rear left
+>   rear right
+>   center
+>   LFE
+>   
+> Better to test with speaker-test program whether the mapping is
+> correct.
+
+Hi Takashi,
+
+Yes I've not yet taken care of the channel orders, so disorders are expected.
+
+Before beginning our discussion, I'd like to first submit a patch for
+speaker-test. I guess the ordering in it defines the ALSA order.
+
+Thanks,
+Fengguang
+---
+speaker-test.c - add readability comments to speaker channels
+
+Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
+---
+
+diff --git a/speaker-test/speaker-test.c b/speaker-test/speaker-test.c
+index 57a7cbc..bf97d33 100644
+--- a/speaker-test/speaker-test.c
++++ b/speaker-test/speaker-test.c
+@@ -84,48 +84,48 @@ static const char *given_test_wav_file = NULL;
+ static char *wav_file_dir = SOUNDSDIR;
+ 
+ static const char        *channel_name[MAX_CHANNELS] = {
+-  N_("Front Left"),
+-  N_("Front Right"),
+-  N_("Rear Left"),
+-  N_("Rear Right"),
+-  N_("Center"),
+-  N_("LFE"),
+-  N_("Side Left"),
+-  N_("Side Right"),
+-  N_("Channel 9"),
+-  N_("Channel 10"),
+-  N_("Channel 11"),
+-  N_("Channel 12"),
+-  N_("Channel 13"),
+-  N_("Channel 14"),
+-  N_("Channel 15"),
+-  N_("Channel 16")
++  /*  0 */ N_("Front Left"),
++  /*  1 */ N_("Front Right"),
++  /*  2 */ N_("Rear Left"),
++  /*  3 */ N_("Rear Right"),
++  /*  4 */ N_("Center"),
++  /*  5 */ N_("LFE"),
++  /*  6 */ N_("Side Left"),
++  /*  7 */ N_("Side Right"),
++  /*  8 */ N_("Channel 9"),
++  /*  9 */ N_("Channel 10"),
++  /* 10 */ N_("Channel 11"),
++  /* 11 */ N_("Channel 12"),
++  /* 12 */ N_("Channel 13"),
++  /* 13 */ N_("Channel 14"),
++  /* 14 */ N_("Channel 15"),
++  /* 15 */ N_("Channel 16")
+ };
+ 
+ static const int	channels4[] = {
+-  0,
+-  1,
+-  3,
+-  2
++  0, /* Front Left  */
++  1, /* Front Right */
++  3, /* Rear Right  */
++  2, /* Rear Left   */
+ };
+ static const int	channels6[] = {
+-  0,
+-  4,
+-  1,
+-  3,
+-  2,
+-  5
+-}; 
++  0, /* Front Left  */
++  4, /* Center      */
++  1, /* Front Right */
++  3, /* Rear Right  */
++  2, /* Rear Left   */
++  5, /* LFE         */
++};
+ static const int	channels8[] = {
+-  0,
+-  4,
+-  1,
+-  7,
+-  3,
+-  2,
+-  6,
+-  5
+-}; 
++  0, /* Front Left  */
++  4, /* Center      */
++  1, /* Front Right */
++  7, /* Side Right  */
++  3, /* Rear Right  */
++  2, /* Rear Left   */
++  6, /* Side Left   */
++  5, /* LFE         */
++};
+ 
+ static void generate_sine(uint8_t *frames, int channel, int count, double *_phase) {
+   double phase = *_phase;
