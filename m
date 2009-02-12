@@ -1,17 +1,14 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC ac97: kobject warnings
-Date: Thu, 12 Feb 2009 19:37:56 +0000
-Message-ID: <20090212193756.GB9772@rakim.wolfsonmicro.main>
-References: <20090212170504.GA7118@roarinelk.homelinux.net>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: Add STAC_DELL_S14 quirk
+Date: Thu, 12 Feb 2009 16:50:01 -0500
+Message-ID: <49949989.9080707@embeddedalley.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 032D124395
-	for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2009 20:37:58 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20090212170504.GA7118@roarinelk.homelinux.net>
+Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
+	by alsa0.perex.cz (Postfix) with SMTP id 63CBE1037FA
+	for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2009 22:50:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,46 +18,143 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Manuel Lauss <mano@roarinelk.homelinux.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, "Tellman, Steven" <Steven.Tellman@idt.com>, Mario Limonciello <mario_limonciello@dell.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 12, 2009 at 06:05:05PM +0100, Manuel Lauss wrote:
+Add STAC_DELL_S14 quirk for new laptop series. Removed un-needed pins in pin_nids
+for stac92hd83xxx. Also reorganized connection selection code for the respective ports
+per quirk define.
 
-> the asoc generic ac97 codec support throws a warning on 2.6.29:
-
-Please try this patch, it fixes the problem for me here:
-
->From 809e4472590e2312d3bea70b4327c3b65676b1a6 Mon Sep 17 00:00:00 2001
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Date: Thu, 12 Feb 2009 19:33:19 +0000
-Subject: [PATCH] ASoC: Only register AC97 bus if it's not done already
-
-ASoC supports both explicit codec drivers for AC97 devices and a simple
-driver which uses the standard ALSA AC97 framework for codec support.
-When used with the generic AC97 codec support that will provide the
-ad hoc AC97 device for drivers like touchscreens to attach to so the
-core shouldn't do so.
-
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/soc-core.c |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
+ sound/pci/hda/patch_sigmatel.c |   52 +++++++++++++++++++++++++++-------------
+ 1 files changed, 35 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 580a1a5..ae1d7a9 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1382,7 +1382,9 @@ int snd_soc_init_card(struct snd_soc_device *socdev)
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index 12b3088..ed1c25c 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -83,6 +83,7 @@ enum {
+ enum {
+ 	STAC_92HD83XXX_REF,
+ 	STAC_92HD83XXX_PWR_REF,
++	STAC_DELL_S14,
+ 	STAC_92HD83XXX_MODELS
+ };
  
- 	mutex_lock(&codec->mutex);
- #ifdef CONFIG_SND_SOC_AC97_BUS
--	if (ac97) {
-+	/* Only instantiate AC97 if not already done (normally only by
-+	 * the adaptor for the generic AC97 subsystem). */
-+	if (ac97 && !codec->ac97) {
- 		ret = soc_ac97_dev_register(codec);
- 		if (ret < 0) {
- 			printk(KERN_ERR "asoc: AC97 device register failed\n");
+@@ -480,10 +481,9 @@ static hda_nid_t stac92hd73xx_pin_nids[13] = {
+ 	0x14, 0x22, 0x23
+ };
+ 
+-static hda_nid_t stac92hd83xxx_pin_nids[14] = {
++static hda_nid_t stac92hd83xxx_pin_nids[10] = {
+ 	0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
+-	0x0f, 0x10, 0x11, 0x12, 0x13,
+-	0x1d, 0x1e, 0x1f, 0x20
++	0x0f, 0x10, 0x11, 0x1f, 0x20,
+ };
+ 
+ #define STAC92HD71BXX_NUM_PINS 13
+@@ -857,9 +857,9 @@ static struct hda_verb stac92hd73xx_10ch_core_init[] = {
+ };
+ 
+ static struct hda_verb stac92hd83xxx_core_init[] = {
+-	{ 0xa, AC_VERB_SET_CONNECT_SEL, 0x0},
+-	{ 0xb, AC_VERB_SET_CONNECT_SEL, 0x0},
+-	{ 0xd, AC_VERB_SET_CONNECT_SEL, 0x1},
++	{ 0xa, AC_VERB_SET_CONNECT_SEL, 0x1},
++	{ 0xb, AC_VERB_SET_CONNECT_SEL, 0x1},
++	{ 0xd, AC_VERB_SET_CONNECT_SEL, 0x0},
+ 
+ 	/* power state controls amps */
+ 	{ 0x01, AC_VERB_SET_EAPD, 1 << 2},
+@@ -1730,21 +1730,28 @@ static struct snd_pci_quirk stac92hd73xx_cfg_tbl[] = {
+ 	{} /* terminator */
+ };
+ 
+-static unsigned int ref92hd83xxx_pin_configs[14] = {
++static unsigned int ref92hd83xxx_pin_configs[10] = {
+ 	0x02214030, 0x02211010, 0x02a19020, 0x02170130,
+ 	0x01014050, 0x01819040, 0x01014020, 0x90a3014e,
+-	0x40f000f0, 0x40f000f0, 0x40f000f0, 0x40f000f0,
+ 	0x01451160, 0x98560170,
+ };
+ 
++static unsigned int dell_s14_pin_configs[10] = {
++	0x02214030, 0x02211010, 0x02a19020, 0x01014050,
++	0x40f000f0, 0x01819040, 0x40f000f0, 0x90a60160,
++	0x40f000f0, 0x40f000f0,
++};
++
+ static unsigned int *stac92hd83xxx_brd_tbl[STAC_92HD83XXX_MODELS] = {
+ 	[STAC_92HD83XXX_REF] = ref92hd83xxx_pin_configs,
+ 	[STAC_92HD83XXX_PWR_REF] = ref92hd83xxx_pin_configs,
++	[STAC_DELL_S14] = dell_s14_pin_configs,
+ };
+ 
+ static const char *stac92hd83xxx_models[STAC_92HD83XXX_MODELS] = {
+ 	[STAC_92HD83XXX_REF] = "ref",
+ 	[STAC_92HD83XXX_PWR_REF] = "mic-ref",
++	[STAC_DELL_S14] = "dell-s14",
+ };
+ 
+ static struct snd_pci_quirk stac92hd83xxx_cfg_tbl[] = {
+@@ -1753,6 +1760,8 @@ static struct snd_pci_quirk stac92hd83xxx_cfg_tbl[] = {
+ 		      "DFI LanParty", STAC_92HD83XXX_REF),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_DFI, 0x3101,
+ 		      "DFI LanParty", STAC_92HD83XXX_REF),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x02ba,
++		      "unknown Dell", STAC_DELL_S14),
+ 	{} /* terminator */
+ };
+ 
+@@ -4822,6 +4831,7 @@ static int patch_stac92hd83xxx(struct hda_codec *codec)
+ 	hda_nid_t conn[STAC92HD83_DAC_COUNT + 1];
+ 	int err;
+ 	int num_dacs;
++	hda_nid_t nid;
+ 
+ 	spec  = kzalloc(sizeof(*spec), GFP_KERNEL);
+ 	if (spec == NULL)
+@@ -4840,15 +4850,6 @@ static int patch_stac92hd83xxx(struct hda_codec *codec)
+ 	spec->num_pwrs = ARRAY_SIZE(stac92hd83xxx_pwr_nids);
+ 	spec->multiout.dac_nids = spec->dac_nids;
+ 
+-
+-	/* set port 0xe to select the last DAC
+-	 */
+-	num_dacs = snd_hda_get_connections(codec, 0x0e,
+-		conn, STAC92HD83_DAC_COUNT + 1) - 1;
+-
+-	snd_hda_codec_write_cache(codec, 0xe, 0,
+-		AC_VERB_SET_CONNECT_SEL, num_dacs);
+-
+ 	spec->init = stac92hd83xxx_core_init;
+ 	spec->mixer = stac92hd83xxx_mixer;
+ 	spec->num_pins = ARRAY_SIZE(stac92hd83xxx_pin_nids);
+@@ -4900,6 +4901,23 @@ again:
+ 		return err;
+ 	}
+ 
++	switch (spec->board_config) {
++	case STAC_DELL_S14:
++		nid = 0xf;
++		break;
++	default:
++		nid = 0xe;
++		break;
++	}
++
++	num_dacs = snd_hda_get_connections(codec, nid,
++				conn, STAC92HD83_DAC_COUNT + 1) - 1;
++
++	/* set port X to select the last DAC
++	 */
++	snd_hda_codec_write_cache(codec, nid, 0,
++			AC_VERB_SET_CONNECT_SEL, num_dacs);
++
+ 	codec->patch_ops = stac92xx_patch_ops;
+ 
+ 	codec->proc_widget_hook = stac92hd_proc_hook;
 -- 
-1.5.6.5
+1.5.6.3
