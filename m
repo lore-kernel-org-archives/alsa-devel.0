@@ -1,19 +1,21 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: [PATCH 0/4] Intel HDMI audio fixes
-Date: Thu, 12 Feb 2009 15:58:35 +0800
-Message-ID: <20090212075835.GA15713@localhost>
-References: <20090211072227.760779741@intel.com>
-	<20090211223241.GA31322@csy.ca> <s5hfxik8ukn.wl%tiwai@suse.de>
-	<20090212012504.GA6387@localhost> <s5hhc30m6oa.wl%tiwai@suse.de>
+From: =?UTF-8?Q?Vedran_Mileti=C4=87?= <rivanvx@gmail.com>
+Subject: Re: HP pavilion dv5 1110ew - no hdmi sound
+Date: Thu, 12 Feb 2009 17:19:14 +0100
+Message-ID: <fd3eb9bf0902120819q3e4bf5f1x4a6b619802f9ec45@mail.gmail.com>
+References: <1234318844.9425.6.camel@hplaptop> <s5hd4dpe7nl.wl%tiwai@suse.de>
+	<1234380215.6310.2.camel@hplaptop> <s5h3aekpvdl.wl%tiwai@suse.de>
+	<1234395683.10208.2.camel@hplaptop> <s5hvdrg7cms.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id CD0D31038BE
-	for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2009 08:58:38 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hhc30m6oa.wl%tiwai@suse.de>
+Received: from mail-bw0-f162.google.com (mail-bw0-f162.google.com
+	[209.85.218.162])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2656A243CF
+	for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2009 17:19:16 +0100 (CET)
+Received: by bwz6 with SMTP id 6so1223168bwz.8
+	for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2009 08:19:15 -0800 (PST)
+In-Reply-To: <s5hvdrg7cms.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,118 +26,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shane W <shane-alsa@csy.ca>
+Cc: alsa-devel@alsa-project.org, =?UTF-8?Q?Bart=C5=82omiej_Holdenmayer?= <bh@habah.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 12, 2009 at 09:54:29AM +0200, Takashi Iwai wrote:
-> At Thu, 12 Feb 2009 09:25:04 +0800,
-> Wu Fengguang wrote:
-> > 
-> > Before beginning our discussion, I'd like to first submit a patch for
-> > speaker-test. I guess the ordering in it defines the ALSA order.
-> 
-> The change looks good but the patch is rejected.
-> Could you create a patch based on the latest version?
- 
-OK. I'll resubmit it sometime later, because it's not convenient for now
-to do the git pull inside company firewall...
-
-Thanks,
-Fengguang
-
-> > ---
-> > speaker-test.c - add readability comments to speaker channels
-> > 
-> > Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
-> > ---
-> > 
-> > diff --git a/speaker-test/speaker-test.c b/speaker-test/speaker-test.c
-> > index 57a7cbc..bf97d33 100644
-> > --- a/speaker-test/speaker-test.c
-> > +++ b/speaker-test/speaker-test.c
-> > @@ -84,48 +84,48 @@ static const char *given_test_wav_file = NULL;
-> >  static char *wav_file_dir = SOUNDSDIR;
-> >  
-> >  static const char        *channel_name[MAX_CHANNELS] = {
-> > -  N_("Front Left"),
-> > -  N_("Front Right"),
-> > -  N_("Rear Left"),
-> > -  N_("Rear Right"),
-> > -  N_("Center"),
-> > -  N_("LFE"),
-> > -  N_("Side Left"),
-> > -  N_("Side Right"),
-> > -  N_("Channel 9"),
-> > -  N_("Channel 10"),
-> > -  N_("Channel 11"),
-> > -  N_("Channel 12"),
-> > -  N_("Channel 13"),
-> > -  N_("Channel 14"),
-> > -  N_("Channel 15"),
-> > -  N_("Channel 16")
-> > +  /*  0 */ N_("Front Left"),
-> > +  /*  1 */ N_("Front Right"),
-> > +  /*  2 */ N_("Rear Left"),
-> > +  /*  3 */ N_("Rear Right"),
-> > +  /*  4 */ N_("Center"),
-> > +  /*  5 */ N_("LFE"),
-> > +  /*  6 */ N_("Side Left"),
-> > +  /*  7 */ N_("Side Right"),
-> > +  /*  8 */ N_("Channel 9"),
-> > +  /*  9 */ N_("Channel 10"),
-> > +  /* 10 */ N_("Channel 11"),
-> > +  /* 11 */ N_("Channel 12"),
-> > +  /* 12 */ N_("Channel 13"),
-> > +  /* 13 */ N_("Channel 14"),
-> > +  /* 14 */ N_("Channel 15"),
-> > +  /* 15 */ N_("Channel 16")
-> >  };
-> >  
-> >  static const int	channels4[] = {
-> > -  0,
-> > -  1,
-> > -  3,
-> > -  2
-> > +  0, /* Front Left  */
-> > +  1, /* Front Right */
-> > +  3, /* Rear Right  */
-> > +  2, /* Rear Left   */
-> >  };
-> >  static const int	channels6[] = {
-> > -  0,
-> > -  4,
-> > -  1,
-> > -  3,
-> > -  2,
-> > -  5
-> > -}; 
-> > +  0, /* Front Left  */
-> > +  4, /* Center      */
-> > +  1, /* Front Right */
-> > +  3, /* Rear Right  */
-> > +  2, /* Rear Left   */
-> > +  5, /* LFE         */
-> > +};
-> >  static const int	channels8[] = {
-> > -  0,
-> > -  4,
-> > -  1,
-> > -  7,
-> > -  3,
-> > -  2,
-> > -  6,
-> > -  5
-> > -}; 
-> > +  0, /* Front Left  */
-> > +  4, /* Center      */
-> > +  1, /* Front Right */
-> > +  7, /* Side Right  */
-> > +  3, /* Rear Right  */
-> > +  2, /* Rear Left   */
-> > +  6, /* Side Left   */
-> > +  5, /* LFE         */
-> > +};
-> >  
-> >  static void generate_sine(uint8_t *frames, int channel, int count, double *_phase) {
-> >    double phase = *_phase;
-> > 
+T24gVGh1LCBGZWIgMTIsIDIwMDkgYXQgMTI6NTQgQU0sIFRha2FzaGkgSXdhaSA8dGl3YWlAc3Vz
+ZS5kZT4gd3JvdGU6Cj4gQXQgVGh1LCAxMiBGZWIgMjAwOSAwMDo0MToyMiArMDEwMCwKPiBCYXJ0
+xYJvbWllaiBIb2xkZW5tYXllciB3cm90ZToKPj4KPj4gRG5pYSAyMDA5LTAyLTExLCDFm3JvIG8g
+Z29kemluaWUgMjE6MzIgKzAxMDAsIFRha2FzaGkgSXdhaSBwaXN6ZToKPj4gPiBBdCBXZWQsIDEx
+IEZlYiAyMDA5IDIwOjIzOjM1ICswMTAwLAo+PiA+IEJhcnTFgm9taWVqIEhvbGRlbm1heWVyIHdy
+b3RlOgo+PiA+ID4KPj4gPiA+IEkgZGlkIHdpdGg6Cj4+ID4gPiBzdWRvIHNoIC4vQWxzYVVwZ3Jh
+ZGUtMS4wLngtcmV2LTEuMTYuc2ggLXNuYXAKPj4gPgo+PiA+IFdoYXQgdGhlIGhhY2sgdGhpcyBz
+Y3JpcHQgZG9lcz8KPj4gPgo+PiA+Cj4+ID4gVGFrYXNoaQo+Pgo+PiBEZXNjcmlwdGlvbiBpbiBm
+dWxsIGlzIGhlcmU6Cj4+IGh0dHA6Ly91YnVudHVmb3J1bXMub3JnL3Nob3d0aHJlYWQucGhwP3A9
+NjU4OTgxMAo+Pgo+Pgo+Pgo+PiBUaGUgbWFpbiBpZGVhIG9mIHVwZ3JhZGluZyBBTFNBIHdpdGgg
+YXR0YWNoZWQgc2NyaXB0LCBpcyB0aGUgdGltZXNoaWZ0Cj4+IG9mIHVwZGF0ZXMgdGhyb3VnaCBv
+ZmZpY2lhbCBjaGFubmVscyBpbiB0aGUgcmFuZ2Ugb2YgdXAgdG8gaGFsZiBhIHllYXIuCj4+Cj4+
+IFRoaXMgaXMgSU1PIG5vdCBhY2NlcHRhYmxlLgo+Pgo+PiBUaGVyZSBpcyBhIGdyZWF0IGNoYW5j
+ZSB0aGF0IHlvdSBnZXQgeW91ciBzb3VuZGNhcmQgdXAgYW5kIHJ1bm5pbmcgb3IKPj4gcHJvYmxl
+bXMgcmVzb2x2ZWQgbXVjaCBlYXJsaWVyLCBpZiB5b3UgdXNlIHRoZSB2ZXJ5IGxhc3Rlc3QKPj4g
+QUxTQSB2ZXJzaW9uLiBUaGUgc2NyaXB0IHdpbGwgZ2V0IHlvdSB0aGUgbGF0ZXN0IG9mZmljaWFs
+IHN0YWJsZSBBTFNBCj4+IHJlbGVhc2UgYW5kIC0gaWYgYXZhaWxhYmxlIC0gdGhlIGxhdGVzdCBy
+ZWxlYXNlIGNhbmRpZGF0ZQo+PiBmb3IgYW4gdXBjb21pbmcgcmVsZWFzZS4KPgo+IFRoZSByZWxl
+YXNlZCBvciByYyB0YXJiYWxscyBhcmUgd2F5IHRvbyBvbGQgZm9yIGRlYnVnZ2luZy4KPiBVc2Ug
+dGhlIHNuYXBzaG90IHRhcmJhbGwgaW4gdGhlIFVSTCBiZWxvdyAobm90IGZyb20KPiBhbHNhLW9y
+b2plY3Qub3JnKS4KPiAgICBmdHA6Ly9mdHAua2VybmVsLm9yZy9wdWIvbGludXgva2VybmVsL3Bl
+b3BsZS90aXdhaS9zbmFwc2hvdC9hbHNhLWRyaXZlci1zbmFwc2hvdC50YXIuZ3oKPgo+Cj4gVGFr
+YXNoaQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4g
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo+CgpJIGRvbicgdGhpbmsgdGhpcyB3aWxsIGJlIGVub3VnaC4gSWYgeW91IGxvb2sgYXQgbHNw
+Y2ksIHRoZXJlIGlzIG5vdCBhCnNpbmdsZSBtZW50aW9uIG9mIEhETUkgZGV2aWNlLiBJIGJlbGll
+dmUgKHdlbGwsIGF0IGxlYXN0IE1DUDc4UyBoYXMgaXQKdGhhdCB3YXkpIHRoYXQgSERNSSBkZXZp
+Y2Ugc2hvdWxkIGJlIGxpc3RlZC4gSWYgaXQgaXNuJ3QgbGlzdGVkIGZvcgpkaXNjcmV0ZSBncmFw
+aGljcywgdGhlbiB0aGVyZSBpcyBzb21lIG90aGVyIHdheSB0aGF0IGl0IG11c3QgYmUKaW1wbGVt
+ZW50ZWQuCgpJIGJlbGlldmUgdGhhdCBBVEkgYWxzbyBsaXN0cyBzZXBhcmF0ZSBkZXZpY2UgZm9y
+IEhETUkgYXVkaW8uCgpUbyBiZSBwcmVjaXNlLCBteSA4MjAwIGJvYXJkIGhhcyB0aGlzOgpodHRw
+Oi8vcGNpLWlkcy51Y3cuY3ovcmVhZC9QQy8xMGRlLzA3NzQsIGFuZCB0aGVyZSBpcyBhIEJJT1Mg
+b3B0aW9uIHRvCmVuYWJsZSBhbmQgZGlzYWJsZSBpdC4KCklmIHRoZXJlIGlzbid0IGEgd2F5IHRv
+IGdldCBIRE1JIGF1ZGlvIGRldmljZSBsaXN0ZWQgaW4gbHNwY2kgKEJJT1MKb3B0aW9uIG9yIHdo
+YXRldmVyKSwgSSBkb24ndCBiZWxpZXZlIHVwZ3JhZGluZyBBTFNBIHdpbGwgZG8gbXVjaCBoZXJl
+LgoKLS0gClZlZHJhbiBNaWxldGnEhwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwK
