@@ -1,31 +1,17 @@
-From: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
-Subject: [PATCH] ALSA: hda - Change HP dv7 (103c:30f4) quirk
-	from hp-m4 to hp-dv5 model
-Date: Thu, 12 Feb 2009 17:27:27 -0200
-Message-ID: <200902121727.27839.herton@mandriva.com.br>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC ac97: kobject warnings
+Date: Thu, 12 Feb 2009 19:37:56 +0000
+Message-ID: <20090212193756.GB9772@rakim.wolfsonmicro.main>
+References: <20090212170504.GA7118@roarinelk.homelinux.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perninha.conectiva.com.br (perninha.conectiva.com.br
-	[200.140.247.100])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4B6BE24377
-	for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2009 20:27:14 +0100 (CET)
-Received: from localhost (perninha.conectiva.com.br [127.0.0.1])
-	by perninha.conectiva.com.br (Postfix) with ESMTP id 716633EAF
-	for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2009 14:27:30 -0500 (EST)
-Received: from perninha.conectiva.com.br ([127.0.0.1])
-	by localhost (perninha.conectiva.com.br [127.0.0.1]) (amavisd-new,
-	port 10025)
-	with LMTP id T3PhWZYjslGW for <alsa-devel@alsa-project.org>;
-	Thu, 12 Feb 2009 14:27:29 -0500 (EST)
-Received: from fox.conectiva (fox.conectiva [10.0.2.195])
-	by perninha.conectiva.com.br (Postfix) with ESMTP id 2D0D03EA5
-	for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2009 14:27:29 -0500 (EST)
-Received: from gotham.conectiva (gotham.conectiva [10.0.2.23])
-	by fox.conectiva (Postfix) with ESMTP id 9C55B2F428
-	for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2009 16:27:12 -0300 (BRT)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 032D124395
+	for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2009 20:37:58 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <20090212170504.GA7118@roarinelk.homelinux.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,37 +21,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Manuel Lauss <mano@roarinelk.homelinux.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Change HP dv7 quirk: although reported to work with hp-m4 model
-(https://bugzilla.novell.com/show_bug.cgi?id=445321), the original
-report doesn't contain info about testing of internal microphone.
+On Thu, Feb 12, 2009 at 06:05:05PM +0100, Manuel Lauss wrote:
 
-Recently I received a report about internal mic not working
-(https://qa.mandriva.com/show_bug.cgi?id=44855#c193), this must be
-related with the forced line in on pin 0x0e done with hp-m4 model. Thus
-change the current quirk from STAC_HP_M4 to STAC_HP_DV5, later reported
-to be fixed on a provided kernel with this change
-(https://qa.mandriva.com/show_bug.cgi?id=44855#c196).
+> the asoc generic ac97 codec support throws a warning on 2.6.29:
 
-Signed-off-by: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
+Please try this patch, it fixes the problem for me here:
+
+>From 809e4472590e2312d3bea70b4327c3b65676b1a6 Mon Sep 17 00:00:00 2001
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Date: Thu, 12 Feb 2009 19:33:19 +0000
+Subject: [PATCH] ASoC: Only register AC97 bus if it's not done already
+
+ASoC supports both explicit codec drivers for AC97 devices and a simple
+driver which uses the standard ALSA AC97 framework for codec support.
+When used with the generic AC97 codec support that will provide the
+ad hoc AC97 device for drivers like touchscreens to attach to so the
+core shouldn't do so.
+
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/pci/hda/patch_sigmatel.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/soc/soc-core.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 3c84817..efc1aff 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -1811,7 +1811,7 @@ static struct snd_pci_quirk stac92hd71bxx_cfg_tbl[] = {
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x30f2,
- 		      "HP dv5", STAC_HP_M4),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x30f4,
--		      "HP dv7", STAC_HP_M4),
-+		      "HP dv7", STAC_HP_DV5),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x30f7,
- 		      "HP dv4", STAC_HP_DV5),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x30fc,
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 580a1a5..ae1d7a9 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1382,7 +1382,9 @@ int snd_soc_init_card(struct snd_soc_device *socdev)
+ 
+ 	mutex_lock(&codec->mutex);
+ #ifdef CONFIG_SND_SOC_AC97_BUS
+-	if (ac97) {
++	/* Only instantiate AC97 if not already done (normally only by
++	 * the adaptor for the generic AC97 subsystem). */
++	if (ac97 && !codec->ac97) {
+ 		ret = soc_ac97_dev_register(codec);
+ 		if (ret < 0) {
+ 			printk(KERN_ERR "asoc: AC97 device register failed\n");
 -- 
-1.6.1.3
+1.5.6.5
