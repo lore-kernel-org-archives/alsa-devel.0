@@ -1,17 +1,16 @@
-From: aeleneski@comcast.net
-Subject: Re: No sound for HP Pavilion DV4z
-Date: Tue, 10 Feb 2009 23:58:19 +0000 (UTC)
-Message-ID: <1556036805.4531471234310299501.JavaMail.root@sz0025a.westchester.pa.mail.comcast.net>
-References: <s5hwsby34r9.wl%tiwai@suse.de>
+From: Aristeu Sergio Rozanski Filho <aris@ruivo.org>
+Subject: [PATCH] snd-hda-intel: add quirk for Lenovo X200
+	laptop dock
+Date: Thu, 12 Feb 2009 17:50:37 -0500
+Message-ID: <20090212225037.GA1846@jake.ruivo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from QMTA08.westchester.pa.mail.comcast.net
-	(qmta08.westchester.pa.mail.comcast.net [76.96.62.80])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4FBA024423
-	for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2009 00:58:20 +0100 (CET)
-In-Reply-To: <s5hwsby34r9.wl%tiwai@suse.de>
+Received: from lobo.ruivo.org (lobo.ruivo.org [66.92.68.119])
+	by alsa0.perex.cz (Postfix) with ESMTP id D4B2C1037FF
+	for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2009 23:50:49 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,85 +20,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: aris@redhat.com
 List-Id: alsa-devel@alsa-project.org
 
-Ok, well I tried this: 
+Currently the HP connector on X200 dock doesn't detect when a HP is connected
+nor allows sound to be played using it. This patch fixes the problem by adding
+a quirk for this specific model. It's possible that others have the same NID
+(0x19) to report when dock HP is connected, but I don't have access to any.
+Please Cc me in the reply since I'm not subscribed to alsa-devel@.
 
-The above might be not suffice to give the initialization before the 
-parser. Try to call hda-verb like the following instead: 
+Signed-off-by: Aristeu Rozanski <aris@redhat.com>
 
-hda-verb /dev/snd/hwC0D0 0x0d 0x71c 0x10 
-hda-verb /dev/snd/hwC0D0 0x0d 0x71d 0x11 
-hda-verb /dev/snd/hwC0D0 0x0d 0x71e 0x17 
-hda-verb /dev/snd/hwC0D0 0x0d 0x71f 0x90 
+---
+ sound/pci/hda/patch_conexant.c |   39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
-then 
-
-echo 1 > /sys/class/sound/hwC0D0/reconfig 
-
-I started my system, changed to probe_only=1. Ran the commands above, and removed probe_only=1. 
-Upon shutdown during restart, I again heard the speakers crackle. When the system came back up, no sound. 
-
-
-
------ Original Message ----- 
-From: "Takashi Iwai" <tiwai@suse.de> 
-To: aeleneski@comcast.net 
-Cc: alsa-devel@alsa-project.org 
-Sent: Tuesday, February 10, 2009 6:34:02 AM GMT -05:00 US/Canada Eastern 
-Subject: Re: [alsa-devel] No sound for HP Pavilion DV4z 
-
-At Mon, 09 Feb 2009 18:24:57 +0100, 
-I wrote: 
-> 
-> At Mon, 9 Feb 2009 17:18:59 +0000 (UTC), 
-> aeleneski@comcast.net wrote: 
-> > 
-> > Thanks for your time and all these suggestions. Still no luck though. 
-> > 
-> > Seems like you might not be able to have two files ending in alsa-base in 
-> > the /etc/modprobe.d/ folder. That was the reason for the orange speaker 
-> > indicator. I had 
-> > alsa-base and backup-alsa-base, for some reason it was grabbing the settings 
-> > from the backup. 
-> 
-> Ah, yes, module-init-tools doesn't check every backup file suffix. 
-> Better to remove completely old files. 
-> 
-> > Anyway, with probe only, orange sound indicator, when doing aplay -l I get 
-> > 
-> > **** List of PLAYBACK Hardware Devices **** 
-> > card 1: HDMI [HDA ATI HDMI], device 3: ATI HDMI [ATI HDMI] 
-> > Subdevices: 1/1 
-> > Subdevice #0: subdevice #0 
-> 
-> With probe_only option, it doesn't make sense to run aplay. This 
-> option basically means "probe codecs but don't set up for use yet". 
-> This is useful to check the raw setup by BIOS before overriding or 
-> modifying by the driver. 
-> 
-> One thing we can try is to add the pin config dynamically then 
-> reconfigure. For example, load the driver with probe_only=1, then 
-> do the following as root: 
-> 
-> echo 0x0d 0x71c 0x10 > /sys/class/sound/hwC0D0/init_verbs 
-> echo 0x0d 0x71d 0x11 > /sys/class/sound/hwC0D0/init_verbs 
-> echo 0x0d 0x71e 0x17 > /sys/class/sound/hwC0D0/init_verbs 
-> echo 0x0d 0x71f 0x90 > /sys/class/sound/hwC0D0/init_verbs 
-
-The above might be not suffice to give the initialization before the 
-parser. Try to call hda-verb like the following instead: 
-
-hda-verb /dev/snd/hwC0D0 0x0d 0x71c 0x10 
-hda-verb /dev/snd/hwC0D0 0x0d 0x71d 0x11 
-hda-verb /dev/snd/hwC0D0 0x0d 0x71e 0x17 
-hda-verb /dev/snd/hwC0D0 0x0d 0x71f 0x90 
-
-then 
-
-echo 1 > /sys/class/sound/hwC0D0/reconfig 
-
-
-Takashi 
+--- a/sound/pci/hda/patch_conexant.c	2009-02-12 17:03:19.000000000 -0500
++++ b/sound/pci/hda/patch_conexant.c	2009-02-12 17:33:20.000000000 -0500
+@@ -1806,6 +1806,40 @@ static struct hda_verb cxt5051_init_verb
+ 	{ } /* end */
+ };
+ 
++static struct hda_verb cxt5051_lenovo_x200_init_verbs[] = {
++	/* Line in, Mic */
++	{0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0) | 0x03},
++	{0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
++	{0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0) | 0x03},
++	{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
++	{0x1d, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
++	{0x1d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0) | 0x03},
++	/* SPK  */
++	{0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
++	{0x1a, AC_VERB_SET_CONNECT_SEL, 0x00},
++	/* HP, Amp  */
++	{0x16, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
++	{0x16, AC_VERB_SET_CONNECT_SEL, 0x00},
++	/* Docking HP */
++	{0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
++	{0x19, AC_VERB_SET_CONNECT_SEL, 0x00},
++	/* DAC1 */
++	{0x10, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	/* Record selector: Int mic */
++	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0) | 0x44},
++	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1) | 0x44},
++	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0) | 0x44},
++	/* SPDIF route: PCM */
++	{0x1c, AC_VERB_SET_CONNECT_SEL, 0x0},
++	/* EAPD */
++	{0x1a, AC_VERB_SET_EAPD_BTLENABLE, 0x2}, /* default on */
++	{0x16, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN|CONEXANT_HP_EVENT},
++	{0x17, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN|CXT5051_PORTB_EVENT},
++	{0x18, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN|CXT5051_PORTC_EVENT},
++	{0x19, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN|CONEXANT_HP_EVENT},
++	{ } /* end */
++};
++
+ /* initialize jack-sensing, too */
+ static int cxt5051_init(struct hda_codec *codec)
+ {
+@@ -1823,18 +1857,21 @@ static int cxt5051_init(struct hda_codec
+ enum {
+ 	CXT5051_LAPTOP,	 /* Laptops w/ EAPD support */
+ 	CXT5051_HP,	/* no docking */
++	CXT5051_LENOVO_X200,	/* Lenovo X200 laptop */
+ 	CXT5051_MODELS
+ };
+ 
+ static const char *cxt5051_models[CXT5051_MODELS] = {
+ 	[CXT5051_LAPTOP]	= "laptop",
+ 	[CXT5051_HP]		= "hp",
++	[CXT5051_LENOVO_X200]	= "Lenovo X200",
+ };
+ 
+ static struct snd_pci_quirk cxt5051_cfg_tbl[] = {
+ 	SND_PCI_QUIRK(0x14f1, 0x0101, "Conexant Reference board",
+ 		      CXT5051_LAPTOP),
+ 	SND_PCI_QUIRK(0x14f1, 0x5051, "HP Spartan 1.1", CXT5051_HP),
++	SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo X200", CXT5051_LENOVO_X200),
+ 	{}
+ };
+ 
+@@ -1875,6 +1912,8 @@ static int patch_cxt5051(struct hda_code
+ 		codec->patch_ops.unsol_event = cxt5051_hp_unsol_event;
+ 		spec->mixers[0] = cxt5051_hp_mixers;
+ 		break;
++	case CXT5051_LENOVO_X200:
++		spec->init_verbs[0] = cxt5051_lenovo_x200_init_verbs;
+ 	default:
+ 	case CXT5051_LAPTOP:
+ 		codec->patch_ops.unsol_event = cxt5051_hp_unsol_event;
