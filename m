@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH]: ARM DaVinci ASoC: Fix module unload error
-Date: Fri, 13 Feb 2009 13:30:57 +0000
-Message-ID: <20090213133057.GC31085@sirena.org.uk>
-References: <1234508979-13522-1-git-send-email-chaithrika@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC update for 2.6.29
+Date: Fri, 13 Feb 2009 13:57:50 +0000
+Message-ID: <20090213135750.GA13249@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7EBDE243BE
-	for <alsa-devel@alsa-project.org>; Fri, 13 Feb 2009 14:30:58 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8C001243F8
+	for <alsa-devel@alsa-project.org>; Fri, 13 Feb 2009 14:57:51 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1234508979-13522-1-git-send-email-chaithrika@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,19 +19,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: chaithrika@ti.com
-Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 13, 2009 at 12:39:39PM +0530, chaithrika@ti.com wrote:
-> From: Chaithrika U S <chaithrika@ti.com>
+The following changes since commit 272edb00493af32c609f43bdf1d75141756fd999:
+  Lopez Cruz, Misael (1):
+        ASoC: Update SDP3430 machine driver for snd_soc_card
 
-> Fix for the error when the audio module is unloaded.
-> On unregistering the platform_device, platform_device_release will free the 
-> platform data.If platform data is static the kernel panics when it is freed.
-> Instead use the platform device helper function to add data.
+are available in the git repository at:
 
-Which kernel tree is this patch against?  It doesn't apply against
-either the topic/asoc or fix/asoc branch of
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.29
 
-	git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+Mark Brown (1):
+      ASoC: Only register AC97 bus if it's not done already
+
+ sound/soc/soc-core.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
