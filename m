@@ -1,14 +1,16 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: [PATCH] hda: Add STAC_DELL_S14 quirk
-Date: Thu, 12 Feb 2009 16:50:01 -0500
-Message-ID: <49949989.9080707@embeddedalley.com>
+From: =?UTF-8?Q?Bart=C5=82omiej?= Holdenmayer <bh@habah.com>
+Subject: Re: HP pavilion dv5 1110ew - no hdmi sound
+Date: Fri, 13 Feb 2009 04:37:54 +0100
+Message-ID: <1234496274.6869.3.camel@hplaptop>
+References: <1234318844.9425.6.camel@hplaptop> <s5hd4dpe7nl.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
-	by alsa0.perex.cz (Postfix) with SMTP id 63CBE1037FA
-	for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2009 22:50:23 +0100 (CET)
+Received: from secure4.ia-dns.com (secure4.ia-dns.com [70.84.79.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1B8F7243EB
+	for <alsa-devel@alsa-project.org>; Fri, 13 Feb 2009 04:38:09 +0100 (CET)
+In-Reply-To: <s5hd4dpe7nl.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,143 +20,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, "Tellman, Steven" <Steven.Tellman@idt.com>, Mario Limonciello <mario_limonciello@dell.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add STAC_DELL_S14 quirk for new laptop series. Removed un-needed pins in pin_nids
-for stac92hd83xxx. Also reorganized connection selection code for the respective ports
-per quirk define.
-
----
- sound/pci/hda/patch_sigmatel.c |   52 +++++++++++++++++++++++++++-------------
- 1 files changed, 35 insertions(+), 17 deletions(-)
-
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 12b3088..ed1c25c 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -83,6 +83,7 @@ enum {
- enum {
- 	STAC_92HD83XXX_REF,
- 	STAC_92HD83XXX_PWR_REF,
-+	STAC_DELL_S14,
- 	STAC_92HD83XXX_MODELS
- };
- 
-@@ -480,10 +481,9 @@ static hda_nid_t stac92hd73xx_pin_nids[13] = {
- 	0x14, 0x22, 0x23
- };
- 
--static hda_nid_t stac92hd83xxx_pin_nids[14] = {
-+static hda_nid_t stac92hd83xxx_pin_nids[10] = {
- 	0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
--	0x0f, 0x10, 0x11, 0x12, 0x13,
--	0x1d, 0x1e, 0x1f, 0x20
-+	0x0f, 0x10, 0x11, 0x1f, 0x20,
- };
- 
- #define STAC92HD71BXX_NUM_PINS 13
-@@ -857,9 +857,9 @@ static struct hda_verb stac92hd73xx_10ch_core_init[] = {
- };
- 
- static struct hda_verb stac92hd83xxx_core_init[] = {
--	{ 0xa, AC_VERB_SET_CONNECT_SEL, 0x0},
--	{ 0xb, AC_VERB_SET_CONNECT_SEL, 0x0},
--	{ 0xd, AC_VERB_SET_CONNECT_SEL, 0x1},
-+	{ 0xa, AC_VERB_SET_CONNECT_SEL, 0x1},
-+	{ 0xb, AC_VERB_SET_CONNECT_SEL, 0x1},
-+	{ 0xd, AC_VERB_SET_CONNECT_SEL, 0x0},
- 
- 	/* power state controls amps */
- 	{ 0x01, AC_VERB_SET_EAPD, 1 << 2},
-@@ -1730,21 +1730,28 @@ static struct snd_pci_quirk stac92hd73xx_cfg_tbl[] = {
- 	{} /* terminator */
- };
- 
--static unsigned int ref92hd83xxx_pin_configs[14] = {
-+static unsigned int ref92hd83xxx_pin_configs[10] = {
- 	0x02214030, 0x02211010, 0x02a19020, 0x02170130,
- 	0x01014050, 0x01819040, 0x01014020, 0x90a3014e,
--	0x40f000f0, 0x40f000f0, 0x40f000f0, 0x40f000f0,
- 	0x01451160, 0x98560170,
- };
- 
-+static unsigned int dell_s14_pin_configs[10] = {
-+	0x02214030, 0x02211010, 0x02a19020, 0x01014050,
-+	0x40f000f0, 0x01819040, 0x40f000f0, 0x90a60160,
-+	0x40f000f0, 0x40f000f0,
-+};
-+
- static unsigned int *stac92hd83xxx_brd_tbl[STAC_92HD83XXX_MODELS] = {
- 	[STAC_92HD83XXX_REF] = ref92hd83xxx_pin_configs,
- 	[STAC_92HD83XXX_PWR_REF] = ref92hd83xxx_pin_configs,
-+	[STAC_DELL_S14] = dell_s14_pin_configs,
- };
- 
- static const char *stac92hd83xxx_models[STAC_92HD83XXX_MODELS] = {
- 	[STAC_92HD83XXX_REF] = "ref",
- 	[STAC_92HD83XXX_PWR_REF] = "mic-ref",
-+	[STAC_DELL_S14] = "dell-s14",
- };
- 
- static struct snd_pci_quirk stac92hd83xxx_cfg_tbl[] = {
-@@ -1753,6 +1760,8 @@ static struct snd_pci_quirk stac92hd83xxx_cfg_tbl[] = {
- 		      "DFI LanParty", STAC_92HD83XXX_REF),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_DFI, 0x3101,
- 		      "DFI LanParty", STAC_92HD83XXX_REF),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x02ba,
-+		      "unknown Dell", STAC_DELL_S14),
- 	{} /* terminator */
- };
- 
-@@ -4822,6 +4831,7 @@ static int patch_stac92hd83xxx(struct hda_codec *codec)
- 	hda_nid_t conn[STAC92HD83_DAC_COUNT + 1];
- 	int err;
- 	int num_dacs;
-+	hda_nid_t nid;
- 
- 	spec  = kzalloc(sizeof(*spec), GFP_KERNEL);
- 	if (spec == NULL)
-@@ -4840,15 +4850,6 @@ static int patch_stac92hd83xxx(struct hda_codec *codec)
- 	spec->num_pwrs = ARRAY_SIZE(stac92hd83xxx_pwr_nids);
- 	spec->multiout.dac_nids = spec->dac_nids;
- 
--
--	/* set port 0xe to select the last DAC
--	 */
--	num_dacs = snd_hda_get_connections(codec, 0x0e,
--		conn, STAC92HD83_DAC_COUNT + 1) - 1;
--
--	snd_hda_codec_write_cache(codec, 0xe, 0,
--		AC_VERB_SET_CONNECT_SEL, num_dacs);
--
- 	spec->init = stac92hd83xxx_core_init;
- 	spec->mixer = stac92hd83xxx_mixer;
- 	spec->num_pins = ARRAY_SIZE(stac92hd83xxx_pin_nids);
-@@ -4900,6 +4901,23 @@ again:
- 		return err;
- 	}
- 
-+	switch (spec->board_config) {
-+	case STAC_DELL_S14:
-+		nid = 0xf;
-+		break;
-+	default:
-+		nid = 0xe;
-+		break;
-+	}
-+
-+	num_dacs = snd_hda_get_connections(codec, nid,
-+				conn, STAC92HD83_DAC_COUNT + 1) - 1;
-+
-+	/* set port X to select the last DAC
-+	 */
-+	snd_hda_codec_write_cache(codec, nid, 0,
-+			AC_VERB_SET_CONNECT_SEL, num_dacs);
-+
- 	codec->patch_ops = stac92xx_patch_ops;
- 
- 	codec->proc_widget_hook = stac92hd_proc_hook;
--- 
-1.5.6.3
+RG5pYSAyMDA5LTAyLTExLCDFm3JvIG8gZ29kemluaWUgMDg6NDggKzAxMDAsIFRha2FzaGkgSXdh
+aSBwaXN6ZToKPiBBdCBXZWQsIDExIEZlYiAyMDA5IDAzOjIwOjQ0ICswMTAwLAo+IEJhcnTFgm9t
+aWVqIEhvbGRlbm1heWVyIHdyb3RlOgo+ID4gCj4gPiBXZWxjb21lLAo+ID4gSSBoYXZlIG5vIHNv
+dW5kIHRocm91Z2ggSERNSS4KPiA+IEkgaGF2ZSBOdmlkaWEgR2Vmb3JjZSA5MjAwTSBHUyB3aXRo
+IDE4MC4xMSBkcml2ZXIuIEFsc2EgMS4wLjE5LiBBbmQKPiA+IG5ld2VzdCBiaW9zIEYxM0EuIAo+
+ID4gCj4gPiBJIHdhcyBnb29nbGluZyBmb3IgYSB3ZWVrIGFuZCBvbmx5IHNvbHV0aW9uIGkgZm91
+bmQgd2FzIHRvIHVwZ3JhZGUgQWxzYQo+ID4gYW5kIE52aWRpYSB0byB0aGUgbmV3ZXN0IHZlcnNp
+b24uIEkgZGlkLCBidXQgaSBzdGlsbCBkbyBub3QgaGF2ZSBzb3VuZAo+ID4gb3ZlciBIRE1JLiBJ
+biBXaW4kIGl0IGlzIHdvcmtpbmcgb2suCj4gPiAKPiA+IGh0dHA6Ly93d3cuYWxzYS1wcm9qZWN0
+Lm9yZy9kYi8/Zj0wMWJlOTE3NTI2M2E1MDIxZmNmZWYzYTQ3MTIzYWZjMDRkNjJhODYzCj4gCj4g
+VHJ5IHRoZSB2ZXJ5IGxhdGVzdCBhbHNhLWRyaXZlciBzbmFwc2hvdCBiZWxvdzoKPiAgICAgZnRw
+Oi8vZnRwLmtlcm5lbC5vcmcvcHViL2xpbnV4L2tlcm5lbC9wZW9wbGUvdGl3YWkvc25hcHNob3Qv
+YWxzYS1kcml2ZXItc25hcHNob3QudGFyLmd6Cj4gCj4gCj4gVGFrYXNoaQoKSSBoYXZlIG5vdyB0
+aGUgbmV3ZXN0IG52aWRpYSAxODAuMjkgZnJvbSAxMS4wMi4wOS4gSSBoYXZlIGFsc2Egc25hcHNo
+b3QuClN0aWxsIHNvdW5kIGRvZXMgbm90IHdvcmsgb3ZlciBoZG1pLgoKSSBmb3VuZCBpbnRlcmVz
+dGluZyBkaXNjdXNzaW9uLCBidXQgbm90aGluZyBmcm9tIHRoZXJlIGlzIGhlbHBpbmcgbWUuCmh0
+dHA6Ly93d3cubnZuZXdzLm5ldC92YnVsbGV0aW4vc2hvd3RocmVhZC5waHA/dD05Nzk5MyZoaWdo
+bGlnaHQ9aGRtaSZwYWdlPTcKLS0gClBvemRyYXdpYW0gLyBSZWdhcmRzCkJhcnTFgm9taWVqIEhv
+bGRlbm1heWVyCgpHRzo1NDE2MzQ7IElDUTozMzkyMDgxMTsgc2t5cGVuYW1lOmJhcnRsb21pZWpo
+b2xkZW5tYXllcgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cg==
