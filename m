@@ -1,17 +1,29 @@
-From: chaithrika@ti.com
-Subject: [PATCH]: ARM DaVinci ASoC: Fix module unload error
-Date: Fri, 13 Feb 2009 12:39:39 +0530
-Message-ID: <1234508979-13522-1-git-send-email-chaithrika@ti.com>
+From: Mauro Condarelli <mc5686@mclink.it>
+Subject: Re:
+	=?utf-8?q?=5BPATCH=5D_ALSA=3A_hda_-_Consider_additio?=
+	=?utf-8?q?nal_capture=09source/selector_in_ALC889?=
+Date: Fri, 13 Feb 2009 11:10:10 +0000 (UTC)
+Message-ID: <loom.20090213T105448-97@post.gmane.org>
+References: <200901280916.37234.herton@mandriva.com.br>
+	<s5hmydbv471.wl%tiwai@suse.de>
+	<200901281556.50512.herton@mandriva.com.br>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 92BB62433B
-	for <alsa-devel@alsa-project.org>; Fri, 13 Feb 2009 09:38:25 +0100 (CET)
-Received: from dbdp31.itg.ti.com ([172.24.170.98])
-	by arroyo.ext.ti.com (8.13.7/8.13.7) with ESMTP id n1D8cH6V001175
-	for <alsa-devel@alsa-project.org>; Fri, 13 Feb 2009 02:38:23 -0600
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4A9921037FF
+	for <alsa-devel@alsa-project.org>; Fri, 13 Feb 2009 12:15:03 +0100 (CET)
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1LXw0c-0001lN-MC
+	for alsa-devel@alsa-project.org; Fri, 13 Feb 2009 11:15:02 +0000
+Received: from wifihost62-238.ydea.com ([80.79.62.238])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 13 Feb 2009 11:15:02 +0000
+Received: from mc5686 by wifihost62-238.ydea.com with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 13 Feb 2009 11:15:02 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +34,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Chaithrika U S <chaithrika@ti.com>, davinci-linux-open-source@linux.davincidsp.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Chaithrika U S <chaithrika@ti.com>
-
-Fix for the error when the audio module is unloaded.
-On unregistering the platform_device, platform_device_release will free the 
-platform data.If platform data is static the kernel panics when it is freed.
-Instead use the platform device helper function to add data.
-
-This change has been tested on DM644x EVM.
-
-Signed-off-by: Chaithrika U S <chaithrika@ti.com>
----
- sound/soc/davinci/davinci-evm.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
-index 1aad262..95c44bf 100644
---- a/sound/soc/davinci/davinci-evm.c
-+++ b/sound/soc/davinci/davinci-evm.c
-@@ -225,7 +225,7 @@ static int __init evm_init(void)
- 
- 	platform_set_drvdata(evm_snd_device, &evm_snd_devdata);
- 	evm_snd_devdata.dev = &evm_snd_device->dev;
--	evm_snd_device->dev.platform_data = data;
-+	platform_device_add_data(evm_snd_device, data, sizeof(data));
- 
- 	ret = platform_device_add_resources(evm_snd_device, resources, 1);
- 	if (ret) {
--- 
-1.5.6
+SGVydG9uIFJvbmFsZG8gS3J6ZXNpbnNraSA8aGVydG9uIDxhdD4gbWFuZHJpdmEuY29tLmJyPiB3
+cml0ZXM6Cgo+IAo+IEVtIFF1YXJ0YS1mZWlyYSAyOCBKYW5laXJvIDIwMDksIMOgcyAxMzozMDox
+MCwgVGFrYXNoaSBJd2FpIGVzY3JldmV1Ogo+ID4gQXQgV2VkLCAyOCBKYW4gMjAwOSAwOToxNjoz
+MyAtMDIwMCwKPiA+IEhlcnRvbiBSb25hbGRvIEtyemVzaW5za2kgd3JvdGU6Cj4gPiA+IAo+ID4g
+PiBDdXJyZW50bHkgY29kZSBmb3IgY2FwdHVyZSBzb3VyY2Ugc3VwcG9ydCBpbiBBTEM4ODkgb25s
+eSBjb25zaWRlcnMKPiA+ID4gY2FwdHVyZSBtaXhlcnMuIFRoaXMgY2hhbmdlIGFkZHMgYWRpdGlv
+bmFsIHN1cHBvcnQgZm9yIEFEQytzZWxlY3Rvcgo+ID4gPiBwcmVzZW50IGluIEFMQzg4OSwgdGFr
+aW5nIGludG8gYWNjb3VudCBhbHNvIHRoZSBwcmVzZW5jZSBvZiBhbgo+ID4gPiBhZGRpdGlvbmFs
+IERNSUMgY29ubmVjdGlvbiBpdGVtIGluIHRoZSBzZWxlY3Rvci4KPiA+ID4gCj4gPiA+IFNpZ25l
+ZC1vZmYtYnk6IEhlcnRvbiBSb25hbGRvIEtyemVzaW5za2kgPGhlcnRvbiA8YXQ+IG1hbmRyaXZh
+LmNvbS5icj4KPiA+ID4gLS0tCj4gPiA+ICBzb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyB8
+ICAxMDUKKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0KPiA+ID4gIDEg
+ZmlsZXMgY2hhbmdlZCwgNzcgaW5zZXJ0aW9ucygrKSwgMjggZGVsZXRpb25zKC0pCj4gPiA+IAo+
+ID4gPiBOb3RlOiBJIGRpZCB0aGlzIHBhdGNoIHdpdGhvdXQgaGFyZHdhcmUgdG8gdGVzdCBvbiwg
+anVzdCBiYXNlZCBvbgphbHNhLWluZm8udHh0Cj4gPiA+IGZyb20gb25lIG1hY2hpbmUgd2l0aCBB
+TEM4ODkgcGx1cyB0aGUgQUxDODg5IGRhdGFzaGVldCBhdmFpbGFibGUgZnJvbQo+ID4gPiBSZWFs
+dGVrIHdlYnNpdGUsIHNvIHRoaXMgaXMganVzdCBidWlsZCB0ZXN0ZWQuCj4gPiAKPiA+IENvdWxk
+IHlvdSBwb3N0IHRoYXQgYWxzYS1pbmZvIG91dHB1dD8gIFRoZW4gSSBjYW4gdGVzdCBpdCB3aXRo
+Cj4gPiBoZGEtZW11LCB0b28uCj4gCj4gT3BzLCBpdCdzIHRoZSAvcHJvYy9hc291bmQvY2FyZDAv
+Y29kZWMjMCAobm90IGZ1bGwgYWxzYS1pbmZvLCBqdXN0IGNvbmZ1c2VkCj4gbXlzZWxmKSBpbiB0
+aGlzIHRpY2tldDogaHR0cHM6Ly9xYS5tYW5kcml2YS5jb20vc2hvd19idWcuY2dpP2lkPTQ1ODM4
+Cj4gSSBoYXZlIHlldCB0byBjaGVjayBoZGEtZW11LCB3aWxsIHRlc3Qgd2l0aCBpdCBuZXh0IHRp
+bWUuCj4gCj4gSSBkaWQgYSBwYXRjaCBmb3IgYWxzYSAxLjAuMTggZm9yIHRoZSBidWcgcmVwb3J0
+LCBub3cgSSB3YXMgY29udmVydGluZyBpdCB0bwo+IHNvdW5kIHRyZWUsIGJ5IGZpcnN0IGFkZGlu
+ZyB0aGlzIGNhcHR1cmUgQURDK3NlbGVjdG9yIHN1cHBvcnQgYW5kIGxhdGVyIHRvIGFkZAo+IGFu
+IGFkZGl0aW9uYWwgbW9kZWwgZm9yIGFjZXIgODkzMC4gSnVzdCBkaWRuJ3Qgc3VibWl0IHRoZSBw
+YXRjaCB3aXRoIG1vZGVsCj4gYWRkaXRpb24geWV0IGFzIGl0IGxvb2tzIGxpa2UgdGhlIGxhcHRv
+cCBoYXMgc3BlYWtlcnMgZm9yIHJlYXIvY2xmZSBldGMuIGFuZAo+IEknbSBub3cgd2FpdGluZyBm
+cm9tIGZlZWRiYWNrIGFib3V0IHRoaXMgb24gdGhlIGJ1ZyByZXBvcnQsIGJ1dCBmb3Igbm93IHRo
+ZQo+IHBhdGNoIHdpdGggYWRkaXRpb24gaXMgdGhpczoKPiAKPiBBTFNBOiBoZGEgLSBBZGQgYWNl
+ci1hc3BpcmUtYWxjODg5IG1vZGVsIGZvciBBTEM4ODkgY29kZWNzCj4gCj4gVGhpcyBhZGRzIGEg
+bmV3IG1vZGVsIHRvIGhhbmRsZSBBY2VyIEFzcGlyZSA4OTMwLCB0aGF0IHNsaWdodGx5IGRpZmZl
+cnMKPiBmcm9tIG90aGVyIEFMQzg4My84ODkgbW9kZWxzLiBDdXJyZW50bHkgaXQgZG9lc24ndCB3
+b3JrIGFzIHJlcG9ydGVkIG9uCj4gaHR0cHM6Ly9xYS5tYW5kcml2YS5jb20vc2hvd19idWcuY2dp
+P2lkPTQ1ODM4Cj4gCj4gU2lnbmVkLW9mZi1ieTogSGVydG9uIFJvbmFsZG8gS3J6ZXNpbnNraSA8
+aGVydG9uIDxhdD4gbWFuZHJpdmEuY29tLmJyPgo+IC0tLQpIaSwKc29ycnkgdG8gZGlzdHVyYi4K
+SSBoYXZlIGFuIGFjZXIgQXNwaXJlIDg5MzAgYW5kIEkgYW0gZmlnaHRpbmcgd2l0aCBzb3VuZC4K
+SSBoYXZlIGFuIHVwLXRvLWRhdGUgdWJ1bnR1IEludHJlcGlkIGRpc3RyaWJ1dGlvbi4KSSBoYWQg
+Tk8gc291bmQgYXQgYWxsLgpJIGZvbGxvd2VkIGluc3RydWN0aW9ucyB1cGdyYWRpbmcgdG8gbGF0
+ZXN0IGFsc2EtZHJpdmVyLTEuMC4xOSBhZGRlZCAib3B0aW9ucwpzbmQtaGRhLWludGVsIG1vZGVs
+PWFjZXIiIHRvIC9ldGMvbW9kcHJvYmUuZC9hbHNhLWJhc2UgYW5kCiIvdXNyL2xvY2FsL2Jpbi9o
+ZGEtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHgxNSBTRVRfRUFQRF9CVExFTkFCTEUgMiIgdG8KL2V0
+Yy9yYy5sb2NhbC4KSk9ZISBJIGhhdmUgc291bmQuClNvIGZhciBzbyBnb29kLgpOb3cgbXkgcHJv
+YmxlbSBpcyBJIGRvIG5vdCBoYXZlIGNhcHR1cmUgKGludHJuYWwgb3IgZXh0ZXJuYWwgbWljIGFy
+ZSBub3QKd29ya2luZyk7IEkga2VwdCBzZWFyY2hpbmcgYW5kIGZvdW5kIHRoaXMgdGhyZWFkLgpJ
+IGRvd25sb2FkZWQgdGhlIGFsc2EtZHJpdmVyLXNuYXBzaG90LXRpd2FpIGZyb20gZnRwLmtlcm5l
+bC5vcmcsIGFwcGxpZWQgdGhlCmxhc3QgcGF0Y2ggKGl0IHNlZW1lZCBub3QgYXBwbGllZCBpbiB0
+aGUgc25hcHNob3QpIHdoaWNoIHdlbnQgaW4gd2l0aCBzb21lIGxpbmUKZGlzY3JlcGFuY2llcy4K
+UmVtb3ZlZCB0aGUgYWJvdmUgc2V0dGluZ3MgYW5kIGluc2F0YWxsZWQgdGhlIG5ldyBkcml2ZXIu
+ClJlc3VsdCBpcyBub3cgSSBoYXZlIGEgKnZlcnkqIGxvdyB2b2x1bWUgYXVkaW8gYW5kIEknbSB1
+bnN1cmUgdGhlIG1pYyBpcyB3b3JraW5nCmF0IGFsbC4KSSdtIG9idmlvdXNseSBtaXNzaW5nIHNv
+bWV0aGluZy4KQ2FuIHNvbWVvbmUgYmUgc28ga2luZCB0byBwb2ludCBtZSBpbiB0aGUgcmlnaHQg
+ZGlyZWN0aW9uLCBwbGVhc2U/CkknbSAob2J2aW91c2x5ISkgcmVhZHkgdG8gb2ZmZXIgYWxsIGlu
+Zm8gcmVxdWlyZWQuIEkgc2ltcGx5IGRpZG4ndCB3YW50IHRvIG1ha2UKdGhpcyBwb3N0IGFueSBs
+b25nZXIuCgpUaGFua3MgaW4gQWR2YW5jZQpNYXVybwoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
