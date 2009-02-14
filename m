@@ -1,22 +1,29 @@
-From: =?UTF-8?Q?Bart=C5=82omiej?= Holdenmayer <bh@habah.com>
-Subject: Re: HP pavilion dv5 1110ew - no hdmi sound
-Date: Sat, 14 Feb 2009 21:19:57 +0100
-Message-ID: <1234642797.6906.0.camel@hplaptop>
-References: <1234318844.9425.6.camel@hplaptop>
-	<s5hd4dpe7nl.wl%tiwai@suse.de> <1234496274.6869.3.camel@hplaptop>
-	<s5h1vu2esbf.wl%tiwai@suse.de> <s5hmycqdaqx.wl%tiwai@suse.de>
-	<1234561706.7664.0.camel@hplaptop> <s5hprhlfgzo.wl%tiwai@suse.de>
-	<1234621321.6514.23.camel@hplaptop>
-	<fd3eb9bf0902140628g36d4ceetb708aba3125758f7@mail.gmail.com>
-	<1234623206.6467.4.camel@hplaptop>  <s5hvdrdgdci.wl%tiwai@suse.de>
+From: Joris van Rantwijk <jorispubl@xs4all.nl>
+Subject: [PATCH] Workaround for misdetected sample rate with
+	CM6207
+Date: Sat, 14 Feb 2009 22:22:05 +0100
+Message-ID: <20090214212205.GA4898@xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from secure4.ia-dns.com (secure4.ia-dns.com [70.84.79.68])
-	by alsa0.perex.cz (Postfix) with ESMTP id CCE7C243FE
-	for <alsa-devel@alsa-project.org>; Sat, 14 Feb 2009 21:20:10 +0100 (CET)
-In-Reply-To: <s5hvdrdgdci.wl%tiwai@suse.de>
+Received: from smtp-vbr9.xs4all.nl (smtp-vbr9.xs4all.nl [194.109.24.29])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2D1042441E
+	for <alsa-devel@alsa-project.org>; Sat, 14 Feb 2009 22:22:16 +0100 (CET)
+Received: from xs2.xs4all.nl (xs2.xs4all.nl [194.109.21.3])
+	by smtp-vbr9.xs4all.nl (8.13.8/8.13.8) with ESMTP id n1ELMAPm019766
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <alsa-devel@alsa-project.org>; Sat, 14 Feb 2009 22:22:15 +0100 (CET)
+	(envelope-from rjoris@xs4all.nl)
+Received: from xs2.xs4all.nl (rjoris@localhost [127.0.0.1])
+	by xs2.xs4all.nl (8.13.6/8.13.6) with ESMTP id n1ELMAK1014229
+	for <alsa-devel@alsa-project.org>; Sat, 14 Feb 2009 22:22:10 +0100 (CET)
+	(envelope-from rjoris@xs4all.nl)
+Received: (from rjoris@localhost)
+	by xs2.xs4all.nl (8.13.6/8.13.6/Submit) id n1ELM5dW013477
+	for alsa-devel@alsa-project.org; Sat, 14 Feb 2009 22:22:05 +0100 (CET)
+	(envelope-from rjoris)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,55 +33,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Vedran =?UTF-8?Q?Mileti=C4=87?= <rivanvx@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-RG5pYSAyMDA5LTAyLTE0LCBzb2IgbyBnb2R6aW5pZSAxODowMyArMDEwMCwgVGFrYXNoaSBJd2Fp
-IHBpc3plOgo+IEF0IFNhdCwgMTQgRmViIDIwMDkgMTU6NTM6MjYgKzAxMDAsCj4gQmFydMWCb21p
-ZWogSG9sZGVubWF5ZXIgd3JvdGU6Cj4gPiAKPiA+IERuaWEgMjAwOS0wMi0xNCwgc29iIG8gZ29k
-emluaWUgMTU6MjggKzAxMDAsIFZlZHJhbiBNaWxldGnEhyBwaXN6ZToKPiA+ID4gT24gU2F0LCBG
-ZWIgMTQsIDIwMDkgYXQgMzoyMiBQTSwgQmFydMWCb21pZWogSG9sZGVubWF5ZXIgPGJoQGhhYmFo
-LmNvbT4gd3JvdGU6Cj4gPiA+ID4gSSBhbSBub3Qgc3VyZSBpZiBkbyBldmVyeXRoaW5nIHByb3Bl
-cmx5Lgo+ID4gPiA+Cj4gPiA+ID4gMS4gSSBkaWQgaW5zdGFsbGF0aW9uIG9mIGFsc2Egc25hcCB3
-aXRoIHNjcmlwdAo+ID4gPiA+IEFsc2FVcGdyYWRlLTEuMC54LXJldi0xLjE2LnNoOwo+ID4gPiA+
-Cj4gPiA+ID4gMi4gQWZ0ZXIgdGhhdCwgSSBjaGFuZ2VkIGxhc3QgbGluZSBpbiAvZXRjL21vZHBy
-b2JlLmQvYWxzYS1iYXNlIGZyb206Cj4gPiA+ID4gb3B0aW9ucyBzbmQtaGRhLWludGVsIGVuYWJs
-ZV9tc2k9MQo+ID4gPiA+Cj4gPiA+ID4gaW50bzoKPiA+ID4gPiBvcHRpb25zIHNuZC1oZGEtaW50
-ZWwgZW5hYmxlX21zaT0xIHByb2JlX21hc2s9MHgxZmYKPiA+ID4gPgo+ID4gPiA+Cj4gPiA+ID4g
-My4gQWZ0ZXIgSSByZXN0YXJ0ZWQgYWxzYSB3aXRoICAvZXRjL2luaXQuZC9hbHNhc291bmQgc3Rv
-cAo+ID4gPiA+IGFuZAo+ID4gPiA+IC9ldGMvaW5pdC5kL2Fsc2Fzb3VuZCBzdGFydAo+ID4gPiA+
-Cj4gPiA+ID4gYW5kIGdldCBtZXNzYWdlOgo+ID4gPiA+IFN0YXJ0aW5nIHNvdW5kIGRyaXZlcjog
-c25kLWhkYS1pbnRlbCBkb25lCj4gPiA+ID4KPiA+ID4gPiBBbSBJIGRvaW5nIHRoYXQgcHJvcGVy
-bHk/IFdoYXQgc2hvdWxkIEkgZG8gKHdoYXQgY29tbWFuZCkgdG8gc2VlCj4gPiA+ID4gaGRhX2lu
-dGVsOiBjb2RlY19tYXNrIGZvcmNlZCB0byAweGZmCj4gPiA+ID4KPiA+ID4gPgo+ID4gPiA+IC0t
-Cj4gPiA+ID4gUG96ZHJhd2lhbSAvIFJlZ2FyZHMKPiA+ID4gPiBCYXJ0xYJvbWllaiBIb2xkZW5t
-YXllcgo+ID4gPiA+Cj4gPiA+ID4gR0c6NTQxNjM0OyBJQ1E6MzM5MjA4MTE7IHNreXBlbmFtZTpi
-YXJ0bG9taWVqaG9sZGVubWF5ZXIKPiA+ID4gPgo+ID4gPiA+IF9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gPiA+ID4gQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKPiA+ID4gPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiA+ID4gPiBodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+ID4gPiA+
-Cj4gPiA+IAo+ID4gPiBEaWQgeW91IHRyeSBpbnN0YWxsaW5nIHNuYXBzaG90IG1hbnVhbGx5PyBT
-Y3JpcHQgY291bGQgYmUgYmFkLgo+ID4gPiAKPiA+ID4gVmVkcmFuCj4gPiA+IF9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gPiA+IEFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0Cj4gPiA+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+ID4gPiBodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+ID4g
-Cj4gPiBJIGNoZWNrZWQgc2NyaXB0LiBJdCBpcyBkb3dubG9hZGluZyBnb29kIHNuYXBzaG90Lgo+
-ID4gCj4gPiBUaGVyZSBhcmUgb3RoZXIgb3B0aW9ucyBpbiBzY3JpcHQ6Cj4gPiAuL2NvbmZpZ3Vy
-ZSAtLXdpdGgta2VybmVsPS91c3Ivc3JjL2xpbnV4LWhlYWRlcnMtJEtFUk5FTAo+ID4gLS13aXRo
-LWNhcmRzPWFsbCAtLXdpdGgtY2FyZC1vcHRpb25zPWFsbCAtLXdpdGgtc2VxdWVuY2VyPXllcwo+
-ID4gLS13aXRoLW9zcz15ZXMgLS1wcmVmaXg9L3VzciB8fCBkaWUgIiREUklWRVIgY29uZmlndXJl
-IGZhaWxlZCIKPiA+IAo+ID4gSSBndWVzcyBldmVyeXRoaW5nIGlzIG9rLiBJIGF0dGFjaCB0aGUg
-c2NyaXB0Lgo+IAo+IEFmdGVyIHlvdSBsb2FkIHRoZSBsYXRlc3QgZHJpdmVyIHdpdGggdGhhdCBw
-cm9iZV9tYXNrIG9wdGlvbiwgY2hlY2sKPiB0aGUgImtlcm5lbCBtZXNzYWdlcyIgKGkuZS4gcnVu
-IGRtZXNnIGNvbW1hbmQpLiAgSXQncyBub3QgYWJvdXQgdGhlCj4gbWVzc2FnZSBmcm9tIG1vZHBy
-b2JlLgo+IAo+IAo+IFRha2FzaGkKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwKCkhvdyB0byBsb2FkIHRoZSBsYXRlc3QgZHJpdmVyIHdpdGggdGhh
-dCBwcm9iZV9tYXNrIG9wdGlvbgotLSAKUG96ZHJhd2lhbSAvIFJlZ2FyZHMKQmFydMWCb21pZWog
-SG9sZGVubWF5ZXIKCkdHOjU0MTYzNDsgSUNROjMzOTIwODExOyBza3lwZW5hbWU6YmFydGxvbWll
-amhvbGRlbm1heWVyCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+Summary: Workaround for misdetected sample rate with CM6207
+
+The CM6207 incorrectly advertises its 96 kHz playback setting as 48 kHz
+in its USB device descriptor. This patch extends an existing workaround
+in usbaudio.c to also cover the CM6207.
+
+This resolves issue 0004249 in the ALSA bug tracker.
+
+Signed-off by: Joris van Rantwijk <jorispubl@xs4all.nl>
+
+diff -ur linux-2.6.28.4/sound/usb/usbaudio.c linux-2.6.28.4_j/sound/usb/usbaudio.c
+--- linux-2.6.28.4/sound/usb/usbaudio.c	2009-02-13 21:45:17.000000000 +0100
++++ linux-2.6.28.4_j/sound/usb/usbaudio.c	2009-02-13 22:00:44.000000000 +0100
+@@ -2533,19 +2533,20 @@
+ 		}
+ 
+ 		fp->nr_rates = nr_rates;
+-		fp->rate_min = fp->rate_max = combine_triple(&fmt[8]);
++		fp->rate_min = fp->rate_max = 0;
+ 		for (r = 0, idx = offset + 1; r < nr_rates; r++, idx += 3) {
+ 			unsigned int rate = combine_triple(&fmt[idx]);
+ 			/* C-Media CM6501 mislabels its 96 kHz altsetting */
+ 			if (rate == 48000 && nr_rates == 1 &&
+-			    chip->usb_id == USB_ID(0x0d8c, 0x0201) &&
++                            (chip->usb_id == USB_ID(0x0d8c, 0x0201) ||
++                             chip->usb_id == USB_ID(0x0d8c, 0x0102)) &&
+ 			    fp->altsetting == 5 && fp->maxpacksize == 392)
+ 				rate = 96000;
+ 			fp->rate_table[r] = rate;
+ 			nonzero_rates |= rate;
+-			if (rate < fp->rate_min)
++			if (r == 0 || rate < fp->rate_min)
+ 				fp->rate_min = rate;
+-			else if (rate > fp->rate_max)
++			else if (r == 0 || rate > fp->rate_max)
+ 				fp->rate_max = rate;
+ 			fp->rates |= snd_pcm_rate_to_rate_bit(rate);
+ 		}
