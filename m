@@ -1,20 +1,23 @@
-From: =?UTF-8?Q?Bart=C5=82omiej?= Holdenmayer <bh@habah.com>
+From: =?UTF-8?Q?Vedran_Mileti=C4=87?= <rivanvx@gmail.com>
 Subject: Re: HP pavilion dv5 1110ew - no hdmi sound
-Date: Sat, 14 Feb 2009 15:53:26 +0100
-Message-ID: <1234623206.6467.4.camel@hplaptop>
-References: <1234318844.9425.6.camel@hplaptop>
-	<s5hd4dpe7nl.wl%tiwai@suse.de> <1234496274.6869.3.camel@hplaptop>
-	<s5h1vu2esbf.wl%tiwai@suse.de> <s5hmycqdaqx.wl%tiwai@suse.de>
-	<1234561706.7664.0.camel@hplaptop> <s5hprhlfgzo.wl%tiwai@suse.de>
-	<1234621321.6514.23.camel@hplaptop>
+Date: Sat, 14 Feb 2009 16:15:59 +0100
+Message-ID: <fd3eb9bf0902140715o6804b00fqb270984e5d87a5c7@mail.gmail.com>
+References: <1234318844.9425.6.camel@hplaptop> <s5hd4dpe7nl.wl%tiwai@suse.de>
+	<1234496274.6869.3.camel@hplaptop> <s5h1vu2esbf.wl%tiwai@suse.de>
+	<s5hmycqdaqx.wl%tiwai@suse.de> <1234561706.7664.0.camel@hplaptop>
+	<s5hprhlfgzo.wl%tiwai@suse.de> <1234621321.6514.23.camel@hplaptop>
 	<fd3eb9bf0902140628g36d4ceetb708aba3125758f7@mail.gmail.com>
+	<1234623206.6467.4.camel@hplaptop>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-RJfe9FLa79SbzMjTuKuM"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from secure4.ia-dns.com (secure4.ia-dns.com [70.84.79.68])
-	by alsa0.perex.cz (Postfix) with ESMTP id 78E981037F8
-	for <alsa-devel@alsa-project.org>; Sat, 14 Feb 2009 15:53:36 +0100 (CET)
-In-Reply-To: <fd3eb9bf0902140628g36d4ceetb708aba3125758f7@mail.gmail.com>
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0F91C1037F8
+	for <alsa-devel@alsa-project.org>; Sat, 14 Feb 2009 16:16:00 +0100 (CET)
+Received: by fk-out-0910.google.com with SMTP id 26so888531fkx.0
+	for <alsa-devel@alsa-project.org>; Sat, 14 Feb 2009 07:15:59 -0800 (PST)
+In-Reply-To: <1234623206.6467.4.camel@hplaptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,590 +27,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vedran =?UTF-8?Q?Mileti=C4=87?= <rivanvx@gmail.com>
+To: =?UTF-8?Q?Bart=C5=82omiej_Holdenmayer?= <bh@habah.com>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---=-RJfe9FLa79SbzMjTuKuM
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Dnia 2009-02-14, sob o godzinie 15:28 +0100, Vedran Mileti=C4=87 pisze:
-> On Sat, Feb 14, 2009 at 3:22 PM, Bart=C5=82omiej Holdenmayer <bh@habah.co=
-m> wrote:
-> > I am not sure if do everything properly.
-> >
-> > 1. I did installation of alsa snap with script
-> > AlsaUpgrade-1.0.x-rev-1.16.sh;
-> >
-> > 2. After that, I changed last line in /etc/modprobe.d/alsa-base from:
-> > options snd-hda-intel enable_msi=3D1
-> >
-> > into:
-> > options snd-hda-intel enable_msi=3D1 probe_mask=3D0x1ff
-> >
-> >
-> > 3. After I restarted alsa with  /etc/init.d/alsasound stop
-> > and
-> > /etc/init.d/alsasound start
-> >
-> > and get message:
-> > Starting sound driver: snd-hda-intel done
-> >
-> > Am I doing that properly? What should I do (what command) to see
-> > hda_intel: codec_mask forced to 0xff
-> >
-> >
-> > --
-> > Pozdrawiam / Regards
-> > Bart=C5=82omiej Holdenmayer
-> >
-> > GG:541634; ICQ:33920811; skypename:bartlomiejholdenmayer
-> >
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >
->=20
-> Did you try installing snapshot manually? Script could be bad.
->=20
-> Vedran
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-I checked script. It is downloading good snapshot.
-
-There are other options in script:
-./configure --with-kernel=3D/usr/src/linux-headers-$KERNEL
---with-cards=3Dall --with-card-options=3Dall --with-sequencer=3Dyes
---with-oss=3Dyes --prefix=3D/usr || die "$DRIVER configure failed"
-
-I guess everything is ok. I attach the script.
-
---=20
-Pozdrawiam / Regards
-Bart=C5=82omiej Holdenmayer
-
-GG:541634; ICQ:33920811; skypename:bartlomiejholdenmayer
-
---=-RJfe9FLa79SbzMjTuKuM
-Content-Disposition: attachment; filename="AlsaUpgrade-1.0.x-rev-1.16.sh"
-Content-Type: application/x-shellscript; name="AlsaUpgrade-1.0.x-rev-1.16.sh"
-Content-Transfer-Encoding: 7bit
-
-#!/bin/bash 
-#
-# AlsaUpgrade-1.0.x-rev-1.X.sh 
-# Provided under the GNU General Public License version 2 or later or the GNU Free Documentation License version 1.2 or later, at your option.
-# See http://www.gnu.org/copyleft/gpl.html for the Warranty Disclaimer.
-
-# This script upgrades ALSA on Ubuntu systems with 2.6.24-28 (non)-ubuntu kernels and is not following 
-# official Ubuntu/Debian Package handling rules
-
-# This script is not compliant to Ubuntu official package handling. This script overwrites the existing files and modules.
-# You won't see any changes on the revisions if you run e.g. Synaptics..
-# If there are official ALSA updates supplied by Ubuntu repositories or kernel changes, these will overwrite your manual ALSA installation - 
-# you need to re-run this script in this case.
-# You can check the Alsa revision by typing "cat /proc/asound/version" or "alsactl --version" or the utils by "aplay --version" 
-#
-# Note: As usual  I'd like to recommend that you make a backup of your drive first. I don't guarantee for anything!
-#
-# The script compiles all drivers by default.
-#
-# The official thread connected to this script you'll find at: http://ubuntuforums.org/showthread.php?t=962695   
-# 
-# You might want to go through the script and try to understand what it is doing. It's not a must though. 
-#
-#  Changelog:
-#
-#  Rev: 1.00  01-01-2008 Temueijn 
-#  Rev: 1.01  09-05-2008 soundcheck Changelog: Bugfixes/A bit of cleanup
-#  Rev: 1.02  09-22-2008 soundcheck Changelog: A bit of cleanup/Intro of revison handling/Install drivers before libs/2.6.27 support/multiple alsa-rev support
-#  Rev: 1.03  10-04-2008 soundcheck Changelog: PackageUpdate AlsaLib 1.0.17a
-#  Rev: 1.04  10-05-2008 soundcheck Changelog: Output to logfile/different installation modes selectable/different alsa revisions stored on drive
-#  Rev: 1.05  10-16-2008 soundcheck Changelog: Bugfix typo "sequencer"
-#  Rev: 1.06  10-16-2008 soundcheck Changelog: introducing snddevices script, separate configure&make from make
-#                                        install, to avoid corrupt installations if one module compilation/installation fails    
-#  Rev: 1.07  10-17-2008 soundcheck Changelog: Using specific kernel headers for driver compilation, taking out soundevices
-#  Rev: 1.08  10-17-2008 soundcheck Changelog: script cleanup and introduction of "compile only" (dry run) option, take out kernel-headers option in driver config
-#  Rev: 1.09  10-25-2008 soundcheck Changelog: Added libasound2-dev to the package list. It seems that alsalib won't compile properly without it.
-#  Rev: 1.11  10-29-2008 soundcheck Changelog: run "make install" on lib befoe compiling alsa-utils 
-#  Rev: 1.12  11-12-2008 soundcheck Changelog: alsa-driver 1.018a changelog http://www.alsa-project.org/main/index.php/Changes_v1.0.18_v1.0.18a
-#  Rev: 1.13-beta  11-30-2008 soundcheck Changelog: chmod of /devices; 2.6.28 kernel support, restore option, prepared for alsa-tools install
-#  Rev: 1.14  12-15-2008 soundcheck Changelog: introduction of latest alsa-driver snapshot-install (option -snap), introduction of help menu, clean up
-#  Rev: 1.15  12-16-2008 soundcheck Changelog: added asound.state workaround to get mixer-settings restored 
-#  Rev: 1.16  01-21-2008 soundcheck Changelog: added kernel-headers compile option to alsa-driver/ support of 1.0.19
-
-##--------------------------------------------------------------------------------------------------------------------------------------
-# Below package variables need to be adapted according to available package ids at  http://www.alsa-project.org/main/index.php/Download 
-# otherwise the script execution will fail!
-##--------------------------------------------------------------------------------------------------------------------------------------
-
-alsa1019 () {
-PACKAGE=1.0.19
-DRIVER=alsa-driver-1.0.19
-FIRMWARE=alsa-firmware-1.0.19
-LIB=alsa-lib-1.0.19
-PLUGINS=alsa-plugins-1.0.19
-UTILS=alsa-utils-1.0.19
-TOOLS=alsa-tools-1.0.19
-OSS=alsa-oss-1.0.17
-}
-
-
-#------------Ususally NO Changes to be done below this line-----------------------------------------------------------------------------------------
-
-# script revision
-REV="1.16"
-
-#----supported kernels-----------------------------------------------------------------------------------------------------------------
-
-KERNEL1="2.6.24" # Ubuntu kernel family
-KERNEL2="2.6.26" # kernel family
-KERNEL3="2.6.27" # kernel family
-KERNEL4="2.6.28" # kernel family
-
-#TOOLSRC =" ac3dec as10k1 envy24control hdsploader hdspconf hdspmixer \
-#	  mixartloader pcxhrloader rmedigicontrol sb16_csp seq sscape_ctl \
-#	  us428control usx2yloader vxloader echomixer ld10k1 qlo10k1"
-#
-
-
-SRCDIR=/usr/src          # Sources will be stored here
-ALSASRCDIR=${SRCDIR}/alsa  # Packages will be stored here
-NOW=`date '+%m%d%y-%H.%M'`
-DATE=`date`
-LOGFILE=/var/log/AlsaUpgradeRev-$REV-$NOW.log
-KERNEL=`uname -r` 
-CURRENTPACKAGE=`cat /proc/asound/version | awk '{ print $7 }'`
-ALSAPACKS=" alsa-base  alsa-oss  alsa-utils alsa-tools alsa-tools-gui libasound2 libasound2-dev libasound2-plugins aconnectgui "
-KERNELPACKS=" `dpkg -l |  awk '{print $2}' | grep -e ${KERNEL}` "
-
-
-
-#---------------------------------------------------------------------------------------------------------------------------------
-
-#---You need to have root permissions to run the script----
-
-if [ "$UID" -ne 0  ]
- then
- echo "Must be root to run this script..."
- exit 0
-fi  
-
-package () {
-echo -n "Choose Alsa Package (1) 1.0.19 default[1]: " 
-   read PACK
-   case $PACK in
-       		""  	) alsa1019 ;;
-       		[1]     ) alsa1019 ;;
-       		*	) alsa1019 ;;
-esac
-
-ALSASRCDIR=${SRCDIR}/Alsa-${PACKAGE}
-
-}
-
-
-header () {
-echo
-echo "-------------------------------------------------------------"
-echo "-  ${1}"
-echo "-------------------------------------------------------------"
-echo
-
-}
-
-die () {
-  echo "$1"
-  exit 1 #error
-}
-
-greet () {
-clear
-echo
-echo "--$DATE----Alsa-Upgrade-Script-$REV -----------------" 
-echo "-  "
-echo "- You'll be upgraded from $CURRENTPACKAGE to $PACKAGE. "
-echo "- "
-echo "- All script output is routed to $LOGFILE" 
-echo "- Run tail -f <logfile> in a seperate terminal to follow the upgrade"
-echo "- "
-echo "- Reboot your machine afterwards."
-echo "- "
-echo "- Enjoy - meet you at ubuntuforums.org or diy-audio.com"
-echo "- soundcheck"
-echo "---------------------------------------------------------------------------"
-echo
-echo "Upgrade in progress..The process can take up to 15minutes.....Be patient!"
-
-}
-
-
-bye () {
-header "Installation successfully finished!"
-header "Your new ALSA version will be loaded after the next reboot..."
-
-}
-
-prep () {
-
-header "Working on following Alsa packages..."
-echo "Driver: $DRIVER"
-echo "Library: $LIB"
-echo "Plugins: $PLUGINS"
-echo "Utils: $UTILS"
-echo "Firmware: $FIRMWARE"
-echo "OSS: $OSS"
-#echo "Installing tools: $TOOLS"
-
-#install necessary Linux packages
-header "Installing packages required to build ALSA..."
-
-apt-get install -y $ALSAPACKS
-apt-get install -y build-essential libsysfs-dev libncurses5-dev gettext python-all-dev xmlto libpulse-dev libspeex-dev
-apt-get install -y libavcodec-dev libavformat-dev libavutil-dev libmpeg4ip-dev liba52-0.7.4-dev
-apt-get install -y linux-headers-$KERNEL  
-
-}
-
-download () {
-
-cd $SRCDIR
-
-header "Downloading and extracting ALSA packages..."
-wget ftp://ftp.alsa-project.org/pub/driver/$DRIVER.tar.bz2 && tar -xjf $DRIVER.tar.bz2 
-wget ftp://ftp.alsa-project.org/pub/firmware/$FIRMWARE.tar.bz2 && tar -xjf $FIRMWARE.tar.bz2 
-wget ftp://ftp.alsa-project.org/pub/lib/$LIB.tar.bz2 && tar -xjf $LIB.tar.bz2 
-wget ftp://ftp.alsa-project.org/pub/plugins/$PLUGINS.tar.bz2 && tar -xvf $PLUGINS.tar.bz2 
-wget ftp://ftp.alsa-project.org/pub/utils/$UTILS.tar.bz2 && tar -xjf $UTILS.tar.bz2 
-wget ftp://ftp.alsa-project.org/pub/tools/$TOOLS.tar.bz2 && tar -xjf $TOOLS.tar.bz2 
-wget ftp://ftp.alsa-project.org/pub/oss-lib/$OSS.tar.bz2 && tar -xvf $OSS.tar.bz2 
-
-rm alsa*.tar.bz2
-rm -rf $ALSASRCDIR
-mkdir -p $ALSASRCDIR && mv alsa-* $ALSASRCDIR
-
-}
-
-
-compile () {
-
-header "Prepare for compilation and installation..."
-
-test -d $ALSASRCDIR || die "$ALSASRCDIR not found"
-
-cd $ALSASRCDIR
-
-test -d $DRIVER || die "$DRIVER  not found"
-test -d $FIRMWARE || die "$FIRMWARE not found"
-test -d $LIB || die "$LIB not found"
-test -d $PLUGINS || die "$PLUGINS not found"
-test -d $UTILS || die "$UTILS not found" 
-test -d $TOOLS || die "$TOOLS not found"
-test -d $OSS || die "$OSS not found"
-
-
-#alsa-driver Note: Driver to be installed before library
-header "Compiling drivers..."
-cd $ALSASRCDIR/$DRIVER
-make clean
-./configure --with-kernel=/usr/src/linux-headers-$KERNEL --with-cards=all --with-card-options=all --with-sequencer=yes --with-oss=yes --prefix=/usr || die "$DRIVER configure failed"
-#./configure --with-cards=usb-audio,hda-intel,emu10k1,hrtimer,rtctimer,hpet --with-card-options=all --with-sequencer=yes --with-oss=yes --with-kernel=/usr/src/linux --prefix=/usr || die "$DRIVER configure failed"
-make || die "$DRIVER make failed"
-
-#alsa-lib
-header "Compiling library..."
-cd $ALSASRCDIR/$LIB
-make clean
-./configure --prefix=/usr || die "$LIB configure failed"
-make || die "$LIB make failed"
-
-#alsa-plugins
-header "Compiling plugins..."
-cd $ALSASRCDIR/$PLUGINS
-make clean
-./configure  --prefix=/usr || die "$PLUGINS configure failed"
-make || die "$PLUGINS make failed"
-
-#alsa-firmware
-header "Compiling firmware..."
-cd $ALSASRCDIR/$FIRMWARE
-make clean
-./configure --prefix=/usr || die "$FIRMWARE configure failed"
-make || die "$FIRMWARE make failed"
-
-## utils will be compiled and installed later on, since lib needs to be installed first
-
-#alsa-oss
-header "Compiling OSS..."
-cd $ALSASRCDIR/$OSS
-make clean
-./configure --prefix=/usr || die "$OSS configure failed"
-make || die "$OSS make failed"
-
-
-#alsa-tools if you need any of the tools you need to select and install them one by one manually - look up the respective directory within /usr/src/alsa/alsa-tools*/
-#header "Compiling tools..."
-
-#
-#cd $ALSASRCDIR/$TOOLS
-#for i in $TOOLSRC ; do
-# cd $i
-# if [ -x ./configure ]; then \
-#  make clean   
-#  ./configure --prefix=/usr ||  die "$Tools $i configure failed"
-#  make ||  die "$Tools $i make failed"
-# fi
-
-
-}
-
-installation () {
-
-header "Installing all modules..."
-
-header "Installing driver..."
-cd $ALSASRCDIR/$DRIVER
-make install
-header "Installing library..."
-cd $ALSASRCDIR/$LIB
-make install
-header "Installing plugins..."
-cd $ALSASRCDIR/$PLUGINS
-make install
-header "Installing firmware..."
-cd $ALSASRCDIR/$FIRMWARE
-make install
-header "Installing OSS..."
-cd $ALSASRCDIR/$OSS
-make install
-
-#
-#alsa-utils need to be compiled after lib installation!!
-#
-
-header "Compiling utils..."
-cd $ALSASRCDIR/$UTILS
-make clean
-header "Compiling utils..."
-./configure --prefix=/usr 
-make
-header "Installing utils..."
-make install
-
-#
-#alsa-tools not yet ready!!
-#
-
-#cd $ALSASRCDIR/$TOOLS
-#for j in $TOOLSRC ; do
-# cd $j
-#  header "Installing tool $i"
-#  make install
-# fi
-
-#
-#copy modules to respective kernel!!
-#
-
-
-cd ${ALSASRCDIR}/${DRIVER}/
-
-find ./ -name ''*.ko'' > /tmp/alsa_manifest
-
-header "Copy modules to target directories..."
-
-#This block of code works with 2.6.24-x Ubuntu standard kernels
-if [ "`uname -a| grep ${KERNEL1} `" != "" ] ; then
- tar -cv -T /tmp/alsa_manifest -f /lib/modules/`uname -r`/ubuntu/sound/alsa-driver/${DRIVER}.tar
- cd /lib/modules/`uname -r`/ubuntu/sound/alsa-driver
-fi
-
-#This block of code works with 2.6.26-x kernels
-if [ "`uname -a| grep ${KERNEL2} `" != "" ] ; then
- tar -cv -T /tmp/alsa_manifest -f /lib/modules/`uname -r`/kernel/sound/${DRIVER}.tar
- cd /lib/modules/`uname -r`/kernel/sound/
-fi
-
-#This block of code works with 2.6.27 kernels 
-if [ "`uname -a| grep ${KERNEL3} `" != "" ] ; then
- tar -cv -T /tmp/alsa_manifest -f /lib/modules/`uname -r`/kernel/sound/${DRIVER}.tar
- cd /lib/modules/`uname -r`/kernel/sound/
-fi
-
-#This block of code works with 2.6.28 kernels 
-if [ "`uname -a| grep ${KERNEL4} `" != "" ] ; then
- tar -cv -T /tmp/alsa_manifest -f /lib/modules/`uname -r`/kernel/sound/${DRIVER}.tar
- cd /lib/modules/`uname -r`/kernel/sound/
-fi
-
-#Extract new modules, overwriting old ones
-tar -xvf ${DRIVER}.tar
-rm *.tar
-
-depmod -a
-
-chmod a+rw /dev/dsp /dev/mixer /dev/sequencer /dev/midi /dev/snd/*
-
-####alsa-utils patch for asound.state to avoid patching alsa-utils, see below debian patch - ####
-##http://svn.debian.org/wsvn/pkg-alsa/trunk/alsa-utils/debian/patches/move_asound_state_to_var.patch?op=file&rev=0&sc=0
-
-cd /var/lib/alsa
-rm asound.state
-ln -s /etc/asound.state asound.state
-
-}
-
-
-restorealsa () {
-for y in ${KERNELPACKS} ; do
-header "Package ${y} will be reinstalled" 
-apt-get -y --reinstall install $y
-done
-
-for k in ${ALSAPACKS} ; do 
-header "Package ${k} will be reinstalled" 
-apt-get -y --reinstall install $k
-done
-depmod -a
-}
-
-downloadsnapshot () {
-test -d $ALSASRCDIR || die "$ALSASRCDIR not found"
-cd $ALSASRCDIR
-test -d $DRIVER || die "$DRIVER  not found"
-mv $DRIVER $DRIVER.old
-wget ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
-test -f  alsa-driver-snapshot.tar.gz || die "Download of snapshot didn't work"
-tar xvvf alsa-driver-snapshot.tar.gz
-mv alsa-driver $DRIVER
-rm alsa-driver-snapshot.tar.gz
-}
-
-usage() {
-    echo "
-Usage: $0 [OPTION]...
-
-Available options:
-   -di    Download (to /usr/src), compile and install the packages
-          This option will compeletely upgrade your ALSA in one step
-   -d     Download the packages only
-          In case you want to tweak/patch the official packages or 
-          you'd like to install the snapshot on top of the official 
-          packages prior to compiling and installating them   
-   -c     Compilation only 
-          Kind of dry-run option to see if the configuration and compilation 
-          works
-   -i     Compilation and installation of packages
-          Sources must exist under /usr/src. Run script with -d or -di options first.
-          The option is useful to speed up your installation in case Ubuntu upgrades 
-          have overwritten your ALSA installation. It is also useful if you want to 
-          keep your patched version or snapshot version, when reinstalling the packages
-   -r     Restore ALSA 
-          Kernel and all ALSA relevant Ubuntu packages will be restored
-          (done by re-installation of relevant packages)
-   -snap  Download, compile and install of latest ALSA driver-sources-snapshot 
-          Please run script using -d option first. Recommended for troubleshooting.
-          (The snapshot is not an offical ALSA release or even pre-release,
-           it is the latest snapshot taken from the design-tree!) 
-   -h     Help - this page 
-
-Please visit http://ubuntuforums.org/showthread.php?t=962695 
-to report any issues you might encounter by using this script.
-"
-    exit 1;
-}
-
-
-#--- main ----
-
-case "$1" in
-  -di)
-        header "Alsa will be downloaded and installed"
-        package  
-        greet
-        exec 1>${LOGFILE} 2>&1
-        prep
-        download
-        compile
-        installation
-        bye     
-        ;;
-  -d)
-        header "Alsa will be downloaded only"
-        package
-        greet
-        exec 1>${LOGFILE} 2>&1
-        prep
-        download    
-        ;;
-  -c)
-        header "Alsa will be compiled"
-        package
-        greet
-        exec 1>${LOGFILE} 2>&1
-        prep
-        compile
-        ;;
-
-  -i)
-        header "Alsa will be compiled and installed"
-        package
-        greet
-        exec 1>${LOGFILE} 2>&1
-        prep
-        compile
-        installation
-        bye
-        ;;
-
-  -r)   
-        header "Alsa will be restored. You'll get a maiden version from Ubuntu repositories"
-        exec 1>${LOGFILE} 2>&1
-        restorealsa
-        ;;
-  
-  -snap)
-        header "The latest Alsa-driver snapshot will be downloaded,compiled and installed"
-        package
-        greet
-        exec 1>${LOGFILE} 2>&1
-        downloadsnapshot
-        compile
-        installation
-        bye
-        ;;
-    
-  -h)
-        usage
-        exit 1
-        ;;
-  *)
-        usage
-        exit 1
-        ;;
-esac
-
-exit 0
-
-
-##----Script End ----
-
-
---=-RJfe9FLa79SbzMjTuKuM
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---=-RJfe9FLa79SbzMjTuKuM--
+WWVzLiBidXQgeW91IHNob3VsZCB0cnkgYSBzbmFwc2hvdCBpbnN0ZWFkLgoKaHR0cDovL2Z0cC5r
+ZXJuZWwub3JnL3B1Yi9saW51eC9rZXJuZWwvcGVvcGxlL3Rpd2FpL2Fsc2EvYWxzYS1kcml2ZXIv
+YWxzYS1kcml2ZXItdW5zdGFibGUtc25hcHNob3QudGFyLmJ6MgoKVmVkcmFuIE1pbGV0acSHCgoK
+Ck9uIFNhdCwgRmViIDE0LCAyMDA5IGF0IDM6NTMgUE0sIEJhcnTFgm9taWVqIEhvbGRlbm1heWVy
+IDxiaEBoYWJhaC5jb20+IHdyb3RlOgo+IERuaWEgMjAwOS0wMi0xNCwgc29iIG8gZ29kemluaWUg
+MTU6MjggKzAxMDAsIFZlZHJhbiBNaWxldGnEhyBwaXN6ZToKPj4gT24gU2F0LCBGZWIgMTQsIDIw
+MDkgYXQgMzoyMiBQTSwgQmFydMWCb21pZWogSG9sZGVubWF5ZXIgPGJoQGhhYmFoLmNvbT4gd3Jv
+dGU6Cj4+ID4gSSBhbSBub3Qgc3VyZSBpZiBkbyBldmVyeXRoaW5nIHByb3Blcmx5Lgo+PiA+Cj4+
+ID4gMS4gSSBkaWQgaW5zdGFsbGF0aW9uIG9mIGFsc2Egc25hcCB3aXRoIHNjcmlwdAo+PiA+IEFs
+c2FVcGdyYWRlLTEuMC54LXJldi0xLjE2LnNoOwo+PiA+Cj4+ID4gMi4gQWZ0ZXIgdGhhdCwgSSBj
+aGFuZ2VkIGxhc3QgbGluZSBpbiAvZXRjL21vZHByb2JlLmQvYWxzYS1iYXNlIGZyb206Cj4+ID4g
+b3B0aW9ucyBzbmQtaGRhLWludGVsIGVuYWJsZV9tc2k9MQo+PiA+Cj4+ID4gaW50bzoKPj4gPiBv
+cHRpb25zIHNuZC1oZGEtaW50ZWwgZW5hYmxlX21zaT0xIHByb2JlX21hc2s9MHgxZmYKPj4gPgo+
+PiA+Cj4+ID4gMy4gQWZ0ZXIgSSByZXN0YXJ0ZWQgYWxzYSB3aXRoICAvZXRjL2luaXQuZC9hbHNh
+c291bmQgc3RvcAo+PiA+IGFuZAo+PiA+IC9ldGMvaW5pdC5kL2Fsc2Fzb3VuZCBzdGFydAo+PiA+
+Cj4+ID4gYW5kIGdldCBtZXNzYWdlOgo+PiA+IFN0YXJ0aW5nIHNvdW5kIGRyaXZlcjogc25kLWhk
+YS1pbnRlbCBkb25lCj4+ID4KPj4gPiBBbSBJIGRvaW5nIHRoYXQgcHJvcGVybHk/IFdoYXQgc2hv
+dWxkIEkgZG8gKHdoYXQgY29tbWFuZCkgdG8gc2VlCj4+ID4gaGRhX2ludGVsOiBjb2RlY19tYXNr
+IGZvcmNlZCB0byAweGZmCj4+ID4KPj4gPgo+PiA+IC0tCj4+ID4gUG96ZHJhd2lhbSAvIFJlZ2Fy
+ZHMKPj4gPiBCYXJ0xYJvbWllaiBIb2xkZW5tYXllcgo+PiA+Cj4+ID4gR0c6NTQxNjM0OyBJQ1E6
+MzM5MjA4MTE7IHNreXBlbmFtZTpiYXJ0bG9taWVqaG9sZGVubWF5ZXIKPj4gPgo+PiA+IF9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+ID4gQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKPj4gPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPj4gPiBodHRw
+Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+
+PiA+Cj4+Cj4+IERpZCB5b3UgdHJ5IGluc3RhbGxpbmcgc25hcHNob3QgbWFudWFsbHk/IFNjcmlw
+dCBjb3VsZCBiZSBiYWQuCj4+Cj4+IFZlZHJhbgo+PiBfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwo+PiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+PiBBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgo+IEkgY2hlY2tlZCBzY3JpcHQuIEl0IGlz
+IGRvd25sb2FkaW5nIGdvb2Qgc25hcHNob3QuCj4KPiBUaGVyZSBhcmUgb3RoZXIgb3B0aW9ucyBp
+biBzY3JpcHQ6Cj4gLi9jb25maWd1cmUgLS13aXRoLWtlcm5lbD0vdXNyL3NyYy9saW51eC1oZWFk
+ZXJzLSRLRVJORUwKPiAtLXdpdGgtY2FyZHM9YWxsIC0td2l0aC1jYXJkLW9wdGlvbnM9YWxsIC0t
+d2l0aC1zZXF1ZW5jZXI9eWVzCj4gLS13aXRoLW9zcz15ZXMgLS1wcmVmaXg9L3VzciB8fCBkaWUg
+IiREUklWRVIgY29uZmlndXJlIGZhaWxlZCIKPgo+IEkgZ3Vlc3MgZXZlcnl0aGluZyBpcyBvay4g
+SSBhdHRhY2ggdGhlIHNjcmlwdC4KPgo+IC0tCj4gUG96ZHJhd2lhbSAvIFJlZ2FyZHMKPiBCYXJ0
+xYJvbWllaiBIb2xkZW5tYXllcgo+Cj4gR0c6NTQxNjM0OyBJQ1E6MzM5MjA4MTE7IHNreXBlbmFt
+ZTpiYXJ0bG9taWVqaG9sZGVubWF5ZXIKPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
