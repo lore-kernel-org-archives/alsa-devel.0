@@ -1,22 +1,23 @@
-From: Bryan Wu <cooloney@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: Blackfin: fix bug - kernel will
-	crash when record and play in bf527-ezkit
-Date: Sat, 14 Feb 2009 23:36:40 +0800
-Message-ID: <386072610902140736u25f9a70haa9b836c4f9ce252@mail.gmail.com>
-References: <1233915156-17985-1-git-send-email-cooloney@kernel.org>
-	<1233915156-17985-4-git-send-email-cooloney@kernel.org>
-	<20090206115626.GD8723@sirena.org.uk>
-	<20090213201816.GA6410@sirena.org.uk>
+From: =?UTF-8?Q?Bart=C5=82omiej?= Holdenmayer <bh@habah.com>
+Subject: Re: HP pavilion dv5 1110ew - no hdmi sound
+Date: Sat, 14 Feb 2009 16:54:10 +0100
+Message-ID: <1234626850.16405.3.camel@hplaptop>
+References: <1234318844.9425.6.camel@hplaptop>
+	<s5hd4dpe7nl.wl%tiwai@suse.de> <1234496274.6869.3.camel@hplaptop>
+	<s5h1vu2esbf.wl%tiwai@suse.de> <s5hmycqdaqx.wl%tiwai@suse.de>
+	<1234561706.7664.0.camel@hplaptop> <s5hprhlfgzo.wl%tiwai@suse.de>
+	<1234621321.6514.23.camel@hplaptop>
+	<fd3eb9bf0902140628g36d4ceetb708aba3125758f7@mail.gmail.com>
+	<1234623206.6467.4.camel@hplaptop>
+	<fd3eb9bf0902140715o6804b00fqb270984e5d87a5c7@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.168])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2F85C1037F8
-	for <alsa-devel@alsa-project.org>; Sat, 14 Feb 2009 16:36:41 +0100 (CET)
-Received: by wf-out-1314.google.com with SMTP id 26so1658060wfd.23
-	for <alsa-devel@alsa-project.org>; Sat, 14 Feb 2009 07:36:41 -0800 (PST)
-In-Reply-To: <20090213201816.GA6410@sirena.org.uk>
+Received: from secure4.ia-dns.com (secure4.ia-dns.com [70.84.79.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id 132431037F8
+	for <alsa-devel@alsa-project.org>; Sat, 14 Feb 2009 16:54:20 +0100 (CET)
+In-Reply-To: <fd3eb9bf0902140715o6804b00fqb270984e5d87a5c7@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,24 +27,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org, Cliff Cai <cliff.cai@analog.com>
+To: Vedran =?UTF-8?Q?Mileti=C4=87?= <rivanvx@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Feb 14, 2009 at 4:18 AM, Mark Brown <broonie@sirena.org.uk> wrote:
-> On Fri, Feb 06, 2009 at 11:56:45AM +0000, Mark Brown wrote:
->
->> > set constraint only if the value is not 0, change the configuring way for sport
->
->> If this is fixing a kernel crash we should push it for 2.6.29 (the code
->> hasn't changed so I'm assuming it occurs there).  What is the crash that
->> is being fixed?
->
-> Any updates on this?
->
-
-Sorry for the delay. I will split this patch into 2 patches. And
-resent them to soon.
-
-Thanks
--Bryan
+RG5pYSAyMDA5LTAyLTE0LCBzb2IgbyBnb2R6aW5pZSAxNjoxNSArMDEwMCwgVmVkcmFuIE1pbGV0
+acSHIHBpc3plOgo+IFllcy4gYnV0IHlvdSBzaG91bGQgdHJ5IGEgc25hcHNob3QgaW5zdGVhZC4K
+PiAKPiBodHRwOi8vZnRwLmtlcm5lbC5vcmcvcHViL2xpbnV4L2tlcm5lbC9wZW9wbGUvdGl3YWkv
+YWxzYS9hbHNhLWRyaXZlci9hbHNhLWRyaXZlci11bnN0YWJsZS1zbmFwc2hvdC50YXIuYnoyCj4g
+Cj4gVmVkcmFuIE1pbGV0acSHCj4gCj4gCj4gCj4gT24gU2F0LCBGZWIgMTQsIDIwMDkgYXQgMzo1
+MyBQTSwgQmFydMWCb21pZWogSG9sZGVubWF5ZXIgPGJoQGhhYmFoLmNvbT4gd3JvdGU6Cj4gPiBE
+bmlhIDIwMDktMDItMTQsIHNvYiBvIGdvZHppbmllIDE1OjI4ICswMTAwLCBWZWRyYW4gTWlsZXRp
+xIcgcGlzemU6Cj4gPj4gT24gU2F0LCBGZWIgMTQsIDIwMDkgYXQgMzoyMiBQTSwgQmFydMWCb21p
+ZWogSG9sZGVubWF5ZXIgPGJoQGhhYmFoLmNvbT4gd3JvdGU6Cj4gPj4gPiBJIGFtIG5vdCBzdXJl
+IGlmIGRvIGV2ZXJ5dGhpbmcgcHJvcGVybHkuCj4gPj4gPgo+ID4+ID4gMS4gSSBkaWQgaW5zdGFs
+bGF0aW9uIG9mIGFsc2Egc25hcCB3aXRoIHNjcmlwdAo+ID4+ID4gQWxzYVVwZ3JhZGUtMS4wLngt
+cmV2LTEuMTYuc2g7Cj4gPj4gPgo+ID4+ID4gMi4gQWZ0ZXIgdGhhdCwgSSBjaGFuZ2VkIGxhc3Qg
+bGluZSBpbiAvZXRjL21vZHByb2JlLmQvYWxzYS1iYXNlIGZyb206Cj4gPj4gPiBvcHRpb25zIHNu
+ZC1oZGEtaW50ZWwgZW5hYmxlX21zaT0xCj4gPj4gPgo+ID4+ID4gaW50bzoKPiA+PiA+IG9wdGlv
+bnMgc25kLWhkYS1pbnRlbCBlbmFibGVfbXNpPTEgcHJvYmVfbWFzaz0weDFmZgo+ID4+ID4KPiA+
+PiA+Cj4gPj4gPiAzLiBBZnRlciBJIHJlc3RhcnRlZCBhbHNhIHdpdGggIC9ldGMvaW5pdC5kL2Fs
+c2Fzb3VuZCBzdG9wCj4gPj4gPiBhbmQKPiA+PiA+IC9ldGMvaW5pdC5kL2Fsc2Fzb3VuZCBzdGFy
+dAo+ID4+ID4KPiA+PiA+IGFuZCBnZXQgbWVzc2FnZToKPiA+PiA+IFN0YXJ0aW5nIHNvdW5kIGRy
+aXZlcjogc25kLWhkYS1pbnRlbCBkb25lCj4gPj4gPgo+ID4+ID4gQW0gSSBkb2luZyB0aGF0IHBy
+b3Blcmx5PyBXaGF0IHNob3VsZCBJIGRvICh3aGF0IGNvbW1hbmQpIHRvIHNlZQo+ID4+ID4gaGRh
+X2ludGVsOiBjb2RlY19tYXNrIGZvcmNlZCB0byAweGZmCj4gPj4gPgo+ID4+ID4KPiA+PiA+IC0t
+Cj4gPj4gPiBQb3pkcmF3aWFtIC8gUmVnYXJkcwo+ID4+ID4gQmFydMWCb21pZWogSG9sZGVubWF5
+ZXIKPiA+PiA+Cj4gPj4gPiBHRzo1NDE2MzQ7IElDUTozMzkyMDgxMTsgc2t5cGVuYW1lOmJhcnRs
+b21pZWpob2xkZW5tYXllcgo+ID4+ID4KPiA+PiA+IF9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCj4gPj4gPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+ID4+
+ID4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gPj4gPiBodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+ID4+ID4KPiA+Pgo+ID4+
+IERpZCB5b3UgdHJ5IGluc3RhbGxpbmcgc25hcHNob3QgbWFudWFsbHk/IFNjcmlwdCBjb3VsZCBi
+ZSBiYWQuCj4gPj4KPiA+PiBWZWRyYW4KPiA+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwo+ID4+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gPj4gQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gPj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPiA+Cj4gPiBJIGNoZWNrZWQgc2NyaXB0
+LiBJdCBpcyBkb3dubG9hZGluZyBnb29kIHNuYXBzaG90Lgo+ID4KPiA+IFRoZXJlIGFyZSBvdGhl
+ciBvcHRpb25zIGluIHNjcmlwdDoKPiA+IC4vY29uZmlndXJlIC0td2l0aC1rZXJuZWw9L3Vzci9z
+cmMvbGludXgtaGVhZGVycy0kS0VSTkVMCj4gPiAtLXdpdGgtY2FyZHM9YWxsIC0td2l0aC1jYXJk
+LW9wdGlvbnM9YWxsIC0td2l0aC1zZXF1ZW5jZXI9eWVzCj4gPiAtLXdpdGgtb3NzPXllcyAtLXBy
+ZWZpeD0vdXNyIHx8IGRpZSAiJERSSVZFUiBjb25maWd1cmUgZmFpbGVkIgo+ID4KPiA+IEkgZ3Vl
+c3MgZXZlcnl0aGluZyBpcyBvay4gSSBhdHRhY2ggdGhlIHNjcmlwdC4KPiA+Cj4gPiAtLQo+ID4g
+UG96ZHJhd2lhbSAvIFJlZ2FyZHMKPiA+IEJhcnTFgm9taWVqIEhvbGRlbm1heWVyCj4gPgo+ID4g
+R0c6NTQxNjM0OyBJQ1E6MzM5MjA4MTE7IHNreXBlbmFtZTpiYXJ0bG9taWVqaG9sZGVubWF5ZXIK
+PiA+CkkgZGlkIG5vdCBub3RpY2VkIGJlZm9yZSB0aGVyZSBhcmUgMiBvZiB0aGVtOgphbHNhLWRy
+aXZlci1zbmFwc2hvdAphbHNhLWRyaXZlci11bnN0YWJsZS1zbmFwc2hvdAotLSAKUG96ZHJhd2lh
+bSAvIFJlZ2FyZHMKQmFydMWCb21pZWogSG9sZGVubWF5ZXIKCkdHOjU0MTYzNDsgSUNROjMzOTIw
+ODExOyBza3lwZW5hbWU6YmFydGxvbWllamhvbGRlbm1heWVyCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
