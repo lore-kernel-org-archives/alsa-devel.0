@@ -1,22 +1,19 @@
-From: =?UTF-8?Q?Bart=C5=82omiej?= Holdenmayer <bh@habah.com>
-Subject: Re: HP pavilion dv5 1110ew - no hdmi sound
-Date: Sun, 15 Feb 2009 21:11:39 +0100
-Message-ID: <1234728699.7073.3.camel@hplaptop>
-References: <1234318844.9425.6.camel@hplaptop>
-	<s5hd4dpe7nl.wl%tiwai@suse.de> <1234496274.6869.3.camel@hplaptop>
-	<s5h1vu2esbf.wl%tiwai@suse.de> <s5hmycqdaqx.wl%tiwai@suse.de>
-	<1234561706.7664.0.camel@hplaptop> <s5hprhlfgzo.wl%tiwai@suse.de>
-	<1234621321.6514.23.camel@hplaptop>
-	<fd3eb9bf0902140628g36d4ceetb708aba3125758f7@mail.gmail.com>
-	<1234623206.6467.4.camel@hplaptop>  <s5hvdrdgdci.wl%tiwai@suse.de>
+From: Thomas Stenhaug <thomas.stenhaug@gmail.com>
+Subject: Bug: Mic problem, mostly noise, almost no signal,
+	AD1988B on an Asus 	P5B
+Date: Mon, 16 Feb 2009 00:10:03 +0100
+Message-ID: <f96756290902151510n170f6eaaw14311378fe1db608@mail.gmail.com>
+References: <f96756290902151506n2b956961ibf0e74192c74bbb7@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from secure4.ia-dns.com (secure4.ia-dns.com [70.84.79.68])
-	by alsa0.perex.cz (Postfix) with ESMTP id 755C824362
-	for <alsa-devel@alsa-project.org>; Sun, 15 Feb 2009 21:11:50 +0100 (CET)
-In-Reply-To: <s5hvdrdgdci.wl%tiwai@suse.de>
+Received: from mail-ew0-f19.google.com (mail-ew0-f19.google.com
+	[209.85.219.19]) by alsa0.perex.cz (Postfix) with ESMTP id C50E62451D
+	for <alsa-devel@alsa-project.org>; Mon, 16 Feb 2009 00:10:04 +0100 (CET)
+Received: by ewy12 with SMTP id 12so1914737ewy.8
+	for <alsa-devel@alsa-project.org>; Sun, 15 Feb 2009 15:10:04 -0800 (PST)
+In-Reply-To: <f96756290902151506n2b956961ibf0e74192c74bbb7@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,70 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Vedran =?UTF-8?Q?Mileti=C4=87?= <rivanvx@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-RG5pYSAyMDA5LTAyLTE0LCBzb2IgbyBnb2R6aW5pZSAxODowMyArMDEwMCwgVGFrYXNoaSBJd2Fp
-IHBpc3plOgo+IEF0IFNhdCwgMTQgRmViIDIwMDkgMTU6NTM6MjYgKzAxMDAsCj4gQmFydMWCb21p
-ZWogSG9sZGVubWF5ZXIgd3JvdGU6Cj4gPiAKPiA+IERuaWEgMjAwOS0wMi0xNCwgc29iIG8gZ29k
-emluaWUgMTU6MjggKzAxMDAsIFZlZHJhbiBNaWxldGnEhyBwaXN6ZToKPiA+ID4gT24gU2F0LCBG
-ZWIgMTQsIDIwMDkgYXQgMzoyMiBQTSwgQmFydMWCb21pZWogSG9sZGVubWF5ZXIgPGJoQGhhYmFo
-LmNvbT4gd3JvdGU6Cj4gPiA+ID4gSSBhbSBub3Qgc3VyZSBpZiBkbyBldmVyeXRoaW5nIHByb3Bl
-cmx5Lgo+ID4gPiA+Cj4gPiA+ID4gMS4gSSBkaWQgaW5zdGFsbGF0aW9uIG9mIGFsc2Egc25hcCB3
-aXRoIHNjcmlwdAo+ID4gPiA+IEFsc2FVcGdyYWRlLTEuMC54LXJldi0xLjE2LnNoOwo+ID4gPiA+
-Cj4gPiA+ID4gMi4gQWZ0ZXIgdGhhdCwgSSBjaGFuZ2VkIGxhc3QgbGluZSBpbiAvZXRjL21vZHBy
-b2JlLmQvYWxzYS1iYXNlIGZyb206Cj4gPiA+ID4gb3B0aW9ucyBzbmQtaGRhLWludGVsIGVuYWJs
-ZV9tc2k9MQo+ID4gPiA+Cj4gPiA+ID4gaW50bzoKPiA+ID4gPiBvcHRpb25zIHNuZC1oZGEtaW50
-ZWwgZW5hYmxlX21zaT0xIHByb2JlX21hc2s9MHgxZmYKPiA+ID4gPgo+ID4gPiA+Cj4gPiA+ID4g
-My4gQWZ0ZXIgSSByZXN0YXJ0ZWQgYWxzYSB3aXRoICAvZXRjL2luaXQuZC9hbHNhc291bmQgc3Rv
-cAo+ID4gPiA+IGFuZAo+ID4gPiA+IC9ldGMvaW5pdC5kL2Fsc2Fzb3VuZCBzdGFydAo+ID4gPiA+
-Cj4gPiA+ID4gYW5kIGdldCBtZXNzYWdlOgo+ID4gPiA+IFN0YXJ0aW5nIHNvdW5kIGRyaXZlcjog
-c25kLWhkYS1pbnRlbCBkb25lCj4gPiA+ID4KPiA+ID4gPiBBbSBJIGRvaW5nIHRoYXQgcHJvcGVy
-bHk/IFdoYXQgc2hvdWxkIEkgZG8gKHdoYXQgY29tbWFuZCkgdG8gc2VlCj4gPiA+ID4gaGRhX2lu
-dGVsOiBjb2RlY19tYXNrIGZvcmNlZCB0byAweGZmCj4gPiA+ID4KPiA+ID4gPgo+ID4gPiA+IC0t
-Cj4gPiA+ID4gUG96ZHJhd2lhbSAvIFJlZ2FyZHMKPiA+ID4gPiBCYXJ0xYJvbWllaiBIb2xkZW5t
-YXllcgo+ID4gPiA+Cj4gPiA+ID4gR0c6NTQxNjM0OyBJQ1E6MzM5MjA4MTE7IHNreXBlbmFtZTpi
-YXJ0bG9taWVqaG9sZGVubWF5ZXIKPiA+ID4gPgo+ID4gPiA+IF9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gPiA+ID4gQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKPiA+ID4gPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiA+ID4gPiBodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+ID4gPiA+
-Cj4gPiA+IAo+ID4gPiBEaWQgeW91IHRyeSBpbnN0YWxsaW5nIHNuYXBzaG90IG1hbnVhbGx5PyBT
-Y3JpcHQgY291bGQgYmUgYmFkLgo+ID4gPiAKPiA+ID4gVmVkcmFuCj4gPiA+IF9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gPiA+IEFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0Cj4gPiA+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+ID4gPiBodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+ID4g
-Cj4gPiBJIGNoZWNrZWQgc2NyaXB0LiBJdCBpcyBkb3dubG9hZGluZyBnb29kIHNuYXBzaG90Lgo+
-ID4gCj4gPiBUaGVyZSBhcmUgb3RoZXIgb3B0aW9ucyBpbiBzY3JpcHQ6Cj4gPiAuL2NvbmZpZ3Vy
-ZSAtLXdpdGgta2VybmVsPS91c3Ivc3JjL2xpbnV4LWhlYWRlcnMtJEtFUk5FTAo+ID4gLS13aXRo
-LWNhcmRzPWFsbCAtLXdpdGgtY2FyZC1vcHRpb25zPWFsbCAtLXdpdGgtc2VxdWVuY2VyPXllcwo+
-ID4gLS13aXRoLW9zcz15ZXMgLS1wcmVmaXg9L3VzciB8fCBkaWUgIiREUklWRVIgY29uZmlndXJl
-IGZhaWxlZCIKPiA+IAo+ID4gSSBndWVzcyBldmVyeXRoaW5nIGlzIG9rLiBJIGF0dGFjaCB0aGUg
-c2NyaXB0Lgo+IAo+IEFmdGVyIHlvdSBsb2FkIHRoZSBsYXRlc3QgZHJpdmVyIHdpdGggdGhhdCBw
-cm9iZV9tYXNrIG9wdGlvbiwgY2hlY2sKPiB0aGUgImtlcm5lbCBtZXNzYWdlcyIgKGkuZS4gcnVu
-IGRtZXNnIGNvbW1hbmQpLiAgSXQncyBub3QgYWJvdXQgdGhlCj4gbWVzc2FnZSBmcm9tIG1vZHBy
-b2JlLgo+IAo+IAo+IFRha2FzaGkKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwKCkkgY2hhbmdlZCBsYXN0IGxpbmUgaW4gL2V0Yy9tb2Rwcm9iZS5k
-L2Fsc2EtYmFzZSBmcm9tOgpvcHRpb25zIHNuZC1oZGEtaW50ZWwgZW5hYmxlX21zaT0xCmludG86
-Cm9wdGlvbnMgc25kLWhkYS1pbnRlbCBlbmFibGVfbXNpPTEgcHJvYmVfbWFzaz0weDFmZgphbmQg
-cmVzdGFydGVkIHN5c3RlbS4KCklzIHRoYXQgdGhlIHdheSB0byBsb2FkIHRoZSBsYXRlc3QgZHJp
-dmVyIHdpdGggdGhhdCBwcm9iZV9tYXNrIG9wdGlvbiA/Pz8/IAoKTXkgZG1lc2cgfGdyZXAgaGRh
-IGlzIHJldHVybmlnIG51bGwuCgpBbmQgZG1lc2cgfGdyZXAgSERBOgpbICAgMTYuODYzNDI2XSBI
-REEgSW50ZWwgMDAwMDowMDoxYi4wOiBQQ0kgSU5UIEEgLT4gR1NJIDIyIChsZXZlbCwgbG93KSAt
-PiBJUlEgMjIKWyAgIDE2Ljg2MzUwNl0gSERBIEludGVsIDAwMDA6MDA6MWIuMDogc2V0dGluZyBs
-YXRlbmN5IHRpbWVyIHRvIDY0ClsgICAxNi45ODc5MTNdIGlucHV0OiBIREEgRGlnaXRhbCBQQ0Jl
-ZXAgYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFiLjAvaW5wdXQvaW5wdXQxMQpbICAg
-MTcuMTQ4NTAzXSBpbnB1dDogSERBIEludGVsIGF0IDB4OWYzMDAwMDAgaXJxIDIxNCBNaWMgYXQg
-RXh0IEZyb250IEphY2sgYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFiLjAvaW5wdXQv
-aW5wdXQxMgpbICAgMTcuMTQ4OTA1XSBpbnB1dDogSERBIEludGVsIGF0IDB4OWYzMDAwMDAgaXJx
-IDIxNCBNaWMgYXQgU2VwIFVOS05PV04gSmFjayBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6
-MDA6MWIuMC9pbnB1dC9pbnB1dDEzClsgICAxNy4xNDkyNjhdIGlucHV0OiBIREEgSW50ZWwgYXQg
-MHg5ZjMwMDAwMCBpcnEgMjE0IEhQIE91dCBhdCBFeHQgRnJvbnQgSmFjayBhcyAvZGV2aWNlcy9w
-Y2kwMDAwOjAwLzAwMDA6MDA6MWIuMC9pbnB1dC9pbnB1dDE0CgoKLS0gClBvemRyYXdpYW0gLyBS
-ZWdhcmRzCkJhcnTFgm9taWVqIEhvbGRlbm1heWVyCgpHRzo1NDE2MzQ7IElDUTozMzkyMDgxMTsg
-c2t5cGVuYW1lOmJhcnRsb21pZWpob2xkZW5tYXllcgoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Current settings and info here:
+http://www.alsa-project.org/db/?f=021ee315857ae0928de665f1f0924cc84c609576
+
+When I record with these settings, I get a /lot/ of static, and discernible
+signal when I tap the microphone on my desktop, or scream into it.
+The static gets better when I reduce the capture level, but the signal is
+still barely discernible.
+
+The microphone works in the same jack when the computer is running Windows.
+ I've also tried a different mic, with the same results.
+
+Playback works flawlessly.
+
+I have seen some posts with people having problems that sound similar, and
+some of them seems to be resolved by enabling Mic bias.  However, I don't
+have a control called that when I look at alsamixer.
+My system is running Debian Etch.  When I started working on this problem, I
+used the packages from the "testing" (Etch) repository.  I then pulled in
+alsa-base and alsa-utils from the "experimental" repository, and compiled
+the 1.0.18a drivers.  This changed nothing in the recordings, nor did any
+new controls appear in alsamixer.
+
+I added "snd-hda-intel: model=6stack-dig" to /etc/modprobe.db/alsa-base, and
+there was no change in the visible controls.
+
+Regards,
+
+
+Thomas
