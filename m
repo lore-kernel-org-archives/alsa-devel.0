@@ -1,16 +1,22 @@
-From: Roel Kluin <roel.kluin@gmail.com>
-Subject: [PATCH] staging: &&/|| typo
-Date: Sun, 15 Feb 2009 20:51:19 +0100
-Message-ID: <49987237.7040604@gmail.com>
+From: =?UTF-8?Q?Bart=C5=82omiej?= Holdenmayer <bh@habah.com>
+Subject: Re: HP pavilion dv5 1110ew - no hdmi sound
+Date: Sun, 15 Feb 2009 21:11:39 +0100
+Message-ID: <1234728699.7073.3.camel@hplaptop>
+References: <1234318844.9425.6.camel@hplaptop>
+	<s5hd4dpe7nl.wl%tiwai@suse.de> <1234496274.6869.3.camel@hplaptop>
+	<s5h1vu2esbf.wl%tiwai@suse.de> <s5hmycqdaqx.wl%tiwai@suse.de>
+	<1234561706.7664.0.camel@hplaptop> <s5hprhlfgzo.wl%tiwai@suse.de>
+	<1234621321.6514.23.camel@hplaptop>
+	<fd3eb9bf0902140628g36d4ceetb708aba3125758f7@mail.gmail.com>
+	<1234623206.6467.4.camel@hplaptop>  <s5hvdrdgdci.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f19.google.com (mail-ew0-f19.google.com
-	[209.85.219.19]) by alsa0.perex.cz (Postfix) with ESMTP id EBAE3243CD
-	for <alsa-devel@alsa-project.org>; Sun, 15 Feb 2009 20:51:19 +0100 (CET)
-Received: by ewy12 with SMTP id 12so1851327ewy.8
-	for <alsa-devel@alsa-project.org>; Sun, 15 Feb 2009 11:51:19 -0800 (PST)
+Received: from secure4.ia-dns.com (secure4.ia-dns.com [70.84.79.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id 755C824362
+	for <alsa-devel@alsa-project.org>; Sun, 15 Feb 2009 21:11:50 +0100 (CET)
+In-Reply-To: <s5hvdrdgdci.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,29 +26,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, Andrew Morton <akpm@linux-foundation.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Vedran =?UTF-8?Q?Mileti=C4=87?= <rivanvx@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-&&/|| typo
-
-Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
----
-// vi sound/oss/ad1848.c +83
-#define MD_1845         4
-...
-#define MD_1845_SSCAPE  9 /* Ensoniq Soundscape PNP*/
-
-diff --git a/sound/oss/ad1848.c b/sound/oss/ad1848.c
-index 7cf9913..a5b8356 100644
---- a/sound/oss/ad1848.c
-+++ b/sound/oss/ad1848.c
-@@ -2107,7 +2107,7 @@ int ad1848_control(int cmd, int arg)
- 	switch (cmd)
- 	{
- 		case AD1848_SET_XTAL:	/* Change clock frequency of AD1845 (only ) */
--			if (devc->model != MD_1845 || devc->model != MD_1845_SSCAPE)
-+			if (devc->model != MD_1845 && devc->model != MD_1845_SSCAPE)
- 				return -EINVAL;
- 			spin_lock_irqsave(&devc->lock,flags);
- 			ad_enter_MCE(devc);
+RG5pYSAyMDA5LTAyLTE0LCBzb2IgbyBnb2R6aW5pZSAxODowMyArMDEwMCwgVGFrYXNoaSBJd2Fp
+IHBpc3plOgo+IEF0IFNhdCwgMTQgRmViIDIwMDkgMTU6NTM6MjYgKzAxMDAsCj4gQmFydMWCb21p
+ZWogSG9sZGVubWF5ZXIgd3JvdGU6Cj4gPiAKPiA+IERuaWEgMjAwOS0wMi0xNCwgc29iIG8gZ29k
+emluaWUgMTU6MjggKzAxMDAsIFZlZHJhbiBNaWxldGnEhyBwaXN6ZToKPiA+ID4gT24gU2F0LCBG
+ZWIgMTQsIDIwMDkgYXQgMzoyMiBQTSwgQmFydMWCb21pZWogSG9sZGVubWF5ZXIgPGJoQGhhYmFo
+LmNvbT4gd3JvdGU6Cj4gPiA+ID4gSSBhbSBub3Qgc3VyZSBpZiBkbyBldmVyeXRoaW5nIHByb3Bl
+cmx5Lgo+ID4gPiA+Cj4gPiA+ID4gMS4gSSBkaWQgaW5zdGFsbGF0aW9uIG9mIGFsc2Egc25hcCB3
+aXRoIHNjcmlwdAo+ID4gPiA+IEFsc2FVcGdyYWRlLTEuMC54LXJldi0xLjE2LnNoOwo+ID4gPiA+
+Cj4gPiA+ID4gMi4gQWZ0ZXIgdGhhdCwgSSBjaGFuZ2VkIGxhc3QgbGluZSBpbiAvZXRjL21vZHBy
+b2JlLmQvYWxzYS1iYXNlIGZyb206Cj4gPiA+ID4gb3B0aW9ucyBzbmQtaGRhLWludGVsIGVuYWJs
+ZV9tc2k9MQo+ID4gPiA+Cj4gPiA+ID4gaW50bzoKPiA+ID4gPiBvcHRpb25zIHNuZC1oZGEtaW50
+ZWwgZW5hYmxlX21zaT0xIHByb2JlX21hc2s9MHgxZmYKPiA+ID4gPgo+ID4gPiA+Cj4gPiA+ID4g
+My4gQWZ0ZXIgSSByZXN0YXJ0ZWQgYWxzYSB3aXRoICAvZXRjL2luaXQuZC9hbHNhc291bmQgc3Rv
+cAo+ID4gPiA+IGFuZAo+ID4gPiA+IC9ldGMvaW5pdC5kL2Fsc2Fzb3VuZCBzdGFydAo+ID4gPiA+
+Cj4gPiA+ID4gYW5kIGdldCBtZXNzYWdlOgo+ID4gPiA+IFN0YXJ0aW5nIHNvdW5kIGRyaXZlcjog
+c25kLWhkYS1pbnRlbCBkb25lCj4gPiA+ID4KPiA+ID4gPiBBbSBJIGRvaW5nIHRoYXQgcHJvcGVy
+bHk/IFdoYXQgc2hvdWxkIEkgZG8gKHdoYXQgY29tbWFuZCkgdG8gc2VlCj4gPiA+ID4gaGRhX2lu
+dGVsOiBjb2RlY19tYXNrIGZvcmNlZCB0byAweGZmCj4gPiA+ID4KPiA+ID4gPgo+ID4gPiA+IC0t
+Cj4gPiA+ID4gUG96ZHJhd2lhbSAvIFJlZ2FyZHMKPiA+ID4gPiBCYXJ0xYJvbWllaiBIb2xkZW5t
+YXllcgo+ID4gPiA+Cj4gPiA+ID4gR0c6NTQxNjM0OyBJQ1E6MzM5MjA4MTE7IHNreXBlbmFtZTpi
+YXJ0bG9taWVqaG9sZGVubWF5ZXIKPiA+ID4gPgo+ID4gPiA+IF9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gPiA+ID4gQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKPiA+ID4gPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiA+ID4gPiBodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+ID4gPiA+
+Cj4gPiA+IAo+ID4gPiBEaWQgeW91IHRyeSBpbnN0YWxsaW5nIHNuYXBzaG90IG1hbnVhbGx5PyBT
+Y3JpcHQgY291bGQgYmUgYmFkLgo+ID4gPiAKPiA+ID4gVmVkcmFuCj4gPiA+IF9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gPiA+IEFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0Cj4gPiA+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+ID4gPiBodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+ID4g
+Cj4gPiBJIGNoZWNrZWQgc2NyaXB0LiBJdCBpcyBkb3dubG9hZGluZyBnb29kIHNuYXBzaG90Lgo+
+ID4gCj4gPiBUaGVyZSBhcmUgb3RoZXIgb3B0aW9ucyBpbiBzY3JpcHQ6Cj4gPiAuL2NvbmZpZ3Vy
+ZSAtLXdpdGgta2VybmVsPS91c3Ivc3JjL2xpbnV4LWhlYWRlcnMtJEtFUk5FTAo+ID4gLS13aXRo
+LWNhcmRzPWFsbCAtLXdpdGgtY2FyZC1vcHRpb25zPWFsbCAtLXdpdGgtc2VxdWVuY2VyPXllcwo+
+ID4gLS13aXRoLW9zcz15ZXMgLS1wcmVmaXg9L3VzciB8fCBkaWUgIiREUklWRVIgY29uZmlndXJl
+IGZhaWxlZCIKPiA+IAo+ID4gSSBndWVzcyBldmVyeXRoaW5nIGlzIG9rLiBJIGF0dGFjaCB0aGUg
+c2NyaXB0Lgo+IAo+IEFmdGVyIHlvdSBsb2FkIHRoZSBsYXRlc3QgZHJpdmVyIHdpdGggdGhhdCBw
+cm9iZV9tYXNrIG9wdGlvbiwgY2hlY2sKPiB0aGUgImtlcm5lbCBtZXNzYWdlcyIgKGkuZS4gcnVu
+IGRtZXNnIGNvbW1hbmQpLiAgSXQncyBub3QgYWJvdXQgdGhlCj4gbWVzc2FnZSBmcm9tIG1vZHBy
+b2JlLgo+IAo+IAo+IFRha2FzaGkKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwKCkkgY2hhbmdlZCBsYXN0IGxpbmUgaW4gL2V0Yy9tb2Rwcm9iZS5k
+L2Fsc2EtYmFzZSBmcm9tOgpvcHRpb25zIHNuZC1oZGEtaW50ZWwgZW5hYmxlX21zaT0xCmludG86
+Cm9wdGlvbnMgc25kLWhkYS1pbnRlbCBlbmFibGVfbXNpPTEgcHJvYmVfbWFzaz0weDFmZgphbmQg
+cmVzdGFydGVkIHN5c3RlbS4KCklzIHRoYXQgdGhlIHdheSB0byBsb2FkIHRoZSBsYXRlc3QgZHJp
+dmVyIHdpdGggdGhhdCBwcm9iZV9tYXNrIG9wdGlvbiA/Pz8/IAoKTXkgZG1lc2cgfGdyZXAgaGRh
+IGlzIHJldHVybmlnIG51bGwuCgpBbmQgZG1lc2cgfGdyZXAgSERBOgpbICAgMTYuODYzNDI2XSBI
+REEgSW50ZWwgMDAwMDowMDoxYi4wOiBQQ0kgSU5UIEEgLT4gR1NJIDIyIChsZXZlbCwgbG93KSAt
+PiBJUlEgMjIKWyAgIDE2Ljg2MzUwNl0gSERBIEludGVsIDAwMDA6MDA6MWIuMDogc2V0dGluZyBs
+YXRlbmN5IHRpbWVyIHRvIDY0ClsgICAxNi45ODc5MTNdIGlucHV0OiBIREEgRGlnaXRhbCBQQ0Jl
+ZXAgYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFiLjAvaW5wdXQvaW5wdXQxMQpbICAg
+MTcuMTQ4NTAzXSBpbnB1dDogSERBIEludGVsIGF0IDB4OWYzMDAwMDAgaXJxIDIxNCBNaWMgYXQg
+RXh0IEZyb250IEphY2sgYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFiLjAvaW5wdXQv
+aW5wdXQxMgpbICAgMTcuMTQ4OTA1XSBpbnB1dDogSERBIEludGVsIGF0IDB4OWYzMDAwMDAgaXJx
+IDIxNCBNaWMgYXQgU2VwIFVOS05PV04gSmFjayBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6
+MDA6MWIuMC9pbnB1dC9pbnB1dDEzClsgICAxNy4xNDkyNjhdIGlucHV0OiBIREEgSW50ZWwgYXQg
+MHg5ZjMwMDAwMCBpcnEgMjE0IEhQIE91dCBhdCBFeHQgRnJvbnQgSmFjayBhcyAvZGV2aWNlcy9w
+Y2kwMDAwOjAwLzAwMDA6MDA6MWIuMC9pbnB1dC9pbnB1dDE0CgoKLS0gClBvemRyYXdpYW0gLyBS
+ZWdhcmRzCkJhcnTFgm9taWVqIEhvbGRlbm1heWVyCgpHRzo1NDE2MzQ7IElDUTozMzkyMDgxMTsg
+c2t5cGVuYW1lOmJhcnRsb21pZWpob2xkZW5tYXllcgoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
