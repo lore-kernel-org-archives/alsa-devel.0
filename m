@@ -1,17 +1,27 @@
-From: Brendan Minish <bminish@minish.org>
-Subject: Re: Possible bug with ICE1712 driver
-Date: Mon, 16 Feb 2009 19:54:30 +0000
-Message-ID: <1234814070.4138.3.camel@localhost.localdomain>
-References: <1234797376.4179.14.camel@localhost.localdomain>
-	<s5hiqnaz7db.wl%tiwai@suse.de>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: ALSA layer in Linux 2.6.18 and OSS
+Date: Mon, 16 Feb 2009 20:10:42 +0000
+Message-ID: <gnch82$rc6$2@ger.gmane.org>
+References: <49991BCE.40400@einfochips.com> <s5h63jairgn.wl%tiwai@suse.de>
+	<49994682.6010502@einfochips.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ns1.westnet.ie (ns1.westnet.ie [88.81.100.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id E9D9824335
-	for <alsa-devel@alsa-project.org>; Mon, 16 Feb 2009 20:54:31 +0100 (CET)
-In-Reply-To: <s5hiqnaz7db.wl%tiwai@suse.de>
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 213DE243BE
+	for <alsa-devel@alsa-project.org>; Mon, 16 Feb 2009 21:10:57 +0100 (CET)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1LZ9ns-0007ft-0T
+	for alsa-devel@alsa-project.org; Mon, 16 Feb 2009 20:10:56 +0000
+Received: from 80-192-67-147.cable.ubr10.sgyl.blueyonder.co.uk
+	([80.192.67.147]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 16 Feb 2009 20:10:56 +0000
+Received: from gmane by 80-192-67-147.cable.ubr10.sgyl.blueyonder.co.uk with
+	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 16 Feb 2009 20:10:56 +0000
+In-Reply-To: <49994682.6010502@einfochips.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,22 +31,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2009-02-16 at 17:14 +0100, Takashi Iwai wrote:
-> At Mon, 16 Feb 2009 15:16:16 +0000,
-> Brendan Minish wrote:
-> > Hello 
-> > the driver for my M-Audio Delta66, snd_ice1712 fails when my machine
-> > resumes from suspend.
-> The driver doesn't support PM (yet).
-> So, it's no bug but a feature :)
+'Twas brillig, and Viral Mehta at 16/02/09 10:57 did gyre and gimble:
+> Thanks for quick response. Well, I myself am writing Audio Player 
+> application for some embedded device.
 
-Thank you for the speedy reply and the answer to my issue. Have you any
-idea when we might have do do without this feature ;-) 
+This recent article may make for interesting reading for you:
+
+  http://0pointer.de/blog/projects/guide-to-sound-apis.html
+
+Col
 
 
-regards
-Brendan Minish
+-- 
+
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+   Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+   Mandriva Linux Contributor [http://www.mandriva.com/]
+   PulseAudio Hacker [http://www.pulseaudio.org/]
+   Trac Hacker [http://trac.edgewall.org/]
