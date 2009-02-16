@@ -1,19 +1,15 @@
-From: Thomas Stenhaug <thomas.stenhaug@gmail.com>
-Subject: Bug: Mic problem, mostly noise, almost no signal,
-	AD1988B on an Asus 	P5B
-Date: Mon, 16 Feb 2009 00:10:03 +0100
-Message-ID: <f96756290902151510n170f6eaaw14311378fe1db608@mail.gmail.com>
-References: <f96756290902151506n2b956961ibf0e74192c74bbb7@mail.gmail.com>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Rationale behind snd_pcm_htimestamp()
+Date: Mon, 16 Feb 2009 03:35:09 +0100
+Message-ID: <20090216023509.GA16494@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f19.google.com (mail-ew0-f19.google.com
-	[209.85.219.19]) by alsa0.perex.cz (Postfix) with ESMTP id C50E62451D
-	for <alsa-devel@alsa-project.org>; Mon, 16 Feb 2009 00:10:04 +0100 (CET)
-Received: by ewy12 with SMTP id 12so1914737ewy.8
-	for <alsa-devel@alsa-project.org>; Sun, 15 Feb 2009 15:10:04 -0800 (PST)
-In-Reply-To: <f96756290902151506n2b956961ibf0e74192c74bbb7@mail.gmail.com>
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id C6B93103815
+	for <alsa-devel@alsa-project.org>; Mon, 16 Feb 2009 03:35:10 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,35 +19,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Current settings and info here:
-http://www.alsa-project.org/db/?f=021ee315857ae0928de665f1f0924cc84c609576
+Heya!
 
-When I record with these settings, I get a /lot/ of static, and discernible
-signal when I tap the microphone on my desktop, or scream into it.
-The static gets better when I reduce the capture level, but the signal is
-still barely discernible.
+I am interested to query the current delay and the current avail
+atomically together with the timestamp when they were current.
 
-The microphone works in the same jack when the computer is running Windows.
- I've also tried a different mic, with the same results.
+Apparantly there is now a function that can get the former two
+atomically (snd_pcm_avail_delay()) and another one that gets the latter
+two atomically (snd_pcm_htimestamp()). _avail_delay() seems to sync
+the hw index data, _htimestamp() apparently not. Hence I had assume
+that first calling _avail_delay() and then _htimestamp() one after the
+other without any further access would return the same avail
+value. Turns out, my test results on an USB card show that this
+assumption is not true.
 
-Playback works flawlessly.
+An alternative way seemed to be to go via the snd_pcm_status
+structure. However querying that seems not to sync the hw index
+data. Hmm... so let's call snd_pcm_hwsync() right before querying the
+struct -- as it turns out however, that function is now deprecated. So
+which function should I call? The doxygen comments of _hwsync() kind
+of suggest in a way to call snd_pcm_avail_update(), whose doxygen
+comments however declare that it does in fact *not* sync the hw state
+either, but suggest to use snd_pcm_avail() for that.
 
-I have seen some posts with people having problems that sound similar, and
-some of them seems to be resolved by enabling Mic bias.  However, I don't
-have a control called that when I look at alsamixer.
-My system is running Debian Etch.  When I started working on this problem, I
-used the packages from the "testing" (Etch) repository.  I then pulled in
-alsa-base and alsa-utils from the "experimental" repository, and compiled
-the 1.0.18a drivers.  This changed nothing in the recordings, nor did any
-new controls appear in alsamixer.
+Ok, so I am now tempted to first call snd_pcm_avail() and then
+snd_pcm_status() and have all three values atomically. But unfortunately
+that's not the case. Again the avail value of the two calls differs sometimes.
 
-I added "snd-hda-intel: model=6stack-dig" to /etc/modprobe.db/alsa-base, and
-there was no change in the visible controls.
+How can I query the three values atomically? Can i do that at all?
 
-Regards,
+Also, snd_pcm_hw_params_is_monotonic() always returns 0 on all my
+devices. I am calling that function after having set both HW and SW
+params. Kernel is 2.6.27, alsa-libs is 1.0.19. The kernel itself does
+monotonic/hrtimers just fine.
 
+Hmm, last week I started this discussion about "snd_pcm_busy_for()"
+(aka granularity API). Who can I bribe to get an API like this?
+Although snd_pcm_busy_for() would suit me much better than just a call
+to query the granularity, I'd be happy with either...
 
-Thomas
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
