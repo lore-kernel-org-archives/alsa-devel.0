@@ -1,15 +1,29 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Rationale behind snd_pcm_htimestamp()
-Date: Mon, 16 Feb 2009 03:35:09 +0100
-Message-ID: <20090216023509.GA16494@tango.0pointer.de>
+From: Guy Stalnaker <jstalnak@wisc.edu>
+Subject: Re: [Fwd: HP DV4 1155 SE - No Sound through,
+	speakers...]
+Date: Sun, 15 Feb 2009 23:25:15 -0600
+Message-ID: <4998F8BB.10801@wisc.edu>
+References: <mailman.2709.1234557113.1965.alsa-devel@alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id C6B93103815
-	for <alsa-devel@alsa-project.org>; Mon, 16 Feb 2009 03:35:10 +0100 (CET)
-Content-Disposition: inline
+Received: from adsum.doit.wisc.edu (adsum.doit.wisc.edu [144.92.197.210])
+	by alsa0.perex.cz (Postfix) with ESMTP id 53E3F24353
+	for <alsa-devel@alsa-project.org>; Mon, 16 Feb 2009 06:25:19 +0100 (CET)
+Received: from avs-daemon.smtpauth1.wiscmail.wisc.edu by
+	smtpauth1.wiscmail.wisc.edu
+	(Sun Java(tm) System Messaging Server 6.3-7.04 (built Sep 26 2008;
+	32bit)) id <0KF500A048E59B00@smtpauth1.wiscmail.wisc.edu> for
+	alsa-devel@alsa-project.org; Sun, 15 Feb 2009 23:25:17 -0600 (CST)
+Received: from [192.168.1.104]
+	(24-196-90-60.dhcp.mdsn.wi.charter.com [24.196.90.60])
+	by smtpauth1.wiscmail.wisc.edu
+	(Sun Java(tm) System Messaging Server 6.3-7.04 (built Sep 26 2008;
+	32bit))
+	with ESMTPSA id <0KF50026K8E3VA30@smtpauth1.wiscmail.wisc.edu> for
+	alsa-devel@alsa-project.org; Sun, 15 Feb 2009 23:25:16 -0600 (CST)
+In-reply-to: <mailman.2709.1234557113.1965.alsa-devel@alsa-project.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,51 +33,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Heya!
+Herton and Takashi,
 
-I am interested to query the current delay and the current avail
-atomically together with the timestamp when they were current.
+I can confirm that compiling and installing the latest snapshot of 
+alsa-drivers, adding "model=hp-dv5" to /etc/modprobe.d/alsa-base, and 
+running hda-verb with the parameters Takashi indicates DOES result in 
+sound from the onboard, internal speakers on my Hewlitt Packard dv4 1225 
+Pavilion Entertainment PC.
 
-Apparantly there is now a function that can get the former two
-atomically (snd_pcm_avail_delay()) and another one that gets the latter
-two atomically (snd_pcm_htimestamp()). _avail_delay() seems to sync
-the hw index data, _htimestamp() apparently not. Hence I had assume
-that first calling _avail_delay() and then _htimestamp() one after the
-other without any further access would return the same avail
-value. Turns out, my test results on an USB card show that this
-assumption is not true.
+The mute on headphone use does not work, but that's okay by me for now.
 
-An alternative way seemed to be to go via the snd_pcm_status
-structure. However querying that seems not to sync the hw index
-data. Hmm... so let's call snd_pcm_hwsync() right before querying the
-struct -- as it turns out however, that function is now deprecated. So
-which function should I call? The doxygen comments of _hwsync() kind
-of suggest in a way to call snd_pcm_avail_update(), whose doxygen
-comments however declare that it does in fact *not* sync the hw state
-either, but suggest to use snd_pcm_avail() for that.
+I think you're on the right track in diagnosing the problem and it's 
+solution.
 
-Ok, so I am now tempted to first call snd_pcm_avail() and then
-snd_pcm_status() and have all three values atomically. But unfortunately
-that's not the case. Again the avail value of the two calls differs sometimes.
+Thank you very, very much for helping us.  I know it'll likely be a 
+while before the solution actually makes it into distributions, but at 
+the least I can use my sound apps without having to plug my laptop into 
+something to hear what's playing.  Kinda defeats the notion of having a 
+laptop if one has to keep it plugged in.
 
-How can I query the three values atomically? Can i do that at all?
+Do either of you mind if I collate notes from the posts exchanged on 
+alsa-devel and post them on the Ubuntu forums?  There are a lot of other 
+HP users who have posted about the same problem.  It's likely they have 
+no idea the resource available to them in the alsa-devel archives.
 
-Also, snd_pcm_hw_params_is_monotonic() always returns 0 on all my
-devices. I am calling that function after having set both HW and SW
-params. Kernel is 2.6.27, alsa-libs is 1.0.19. The kernel itself does
-monotonic/hrtimers just fine.
+BEST regards,
 
-Hmm, last week I started this discussion about "snd_pcm_busy_for()"
-(aka granularity API). Who can I bribe to get an API like this?
-Although snd_pcm_busy_for() would suit me much better than just a call
-to query the granularity, I'd be happy with either...
+Guy S.
 
-Lennart
+> ------------------------------
+> 
+> Message: 4
+> Date: Fri, 13 Feb 2009 14:16:21 -0500
+> From: Tim Barnette <tim.barnette@gmail.com>
+> Subject: Re: [alsa-devel] [Fwd: HP DV4 1155 SE - No Sound through
+> 	speakers...]
+> To: Takashi Iwai <tiwai@suse.de>
+> Cc: alsa-devel@alsa-project.org, Jean-Pierre Andr?
+> 	<jean-pierre.andre@wanadoo.fr>
+> Message-ID:
+> 	<b71cdde20902131116l4c7da119s6c51a67e37371ebe@mail.gmail.com>
+> Content-Type: text/plain; charset=ISO-8859-1
+> 
+> Takashi, I was able to build hda-verb and when I executed the command below,
+> it responded with:
+> nid=0xd, verb=0x707, param=0x40
+> value=0x0
+> 
+> On Mon, Feb 2, 2009 at 10:25 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> 
+>> At Mon, 2 Feb 2009 10:17:03 -0500,
+>> Tim Barnette wrote:
+>>> Thanks, Takashi. I made this change and rebooted.
+>>>
+>>> I noticed right away the mute light is no longer on... but still no sound
+>>> through speakers, only headphones..
+>>>
+>>> /sys/module/snd_hda_intel/parameters/model
+>>> contains
+>>> hp-dv5,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
+>>>
+>>> attached is the alsa-info.txt you requested..
+>> Did you try the latest alsa-driver snapshot?
+>>
+>> If it still doesn't work, I guess this is a BIOS problem.
+>> The other HP dv laptops show the widget 0x0d as the speaker while
+>> yours is unused.
+>>
+>> Try to run:
+>>        hda-verb /dev/snd/hwC0D0 0x0d SET_PIN_WID 0x40
+>>
+>>
+>> Takashi
+>>
+> 
+> 
+> ------------------------------
+> 
+> Message: 5
+> Date: Fri, 13 Feb 2009 14:22:00 -0500
+> From: Tim Barnette <tim.barnette@gmail.com>
+> Subject: Re: [alsa-devel] [Fwd: HP DV4 1155 SE - No Sound through
+> 	speakers...]
+> To: Takashi Iwai <tiwai@suse.de>
+> Cc: alsa-devel@alsa-project.org, Jean-Pierre Andr?
+> 	<jean-pierre.andre@wanadoo.fr>
+> Message-ID:
+> 	<b71cdde20902131122q16eb7e44u92daf2a4c9500bd0@mail.gmail.com>
+> Content-Type: text/plain; charset=ISO-8859-1
+> 
+> ..And it worked!  I now have sound!  Can you tell me what I actually did
+> here?
 
 -- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Guy Stalnaker, I2@DOIT, jstalnak@wisc.edu
+1210 West Dayton Street, Room 3209 CSS, Madison WI 53706
+work 608.263.8035, cell 608.235.4718, fax 608.265.6681
