@@ -1,17 +1,23 @@
-From: Mario Limonciello <mario_limonciello@dell.com>
-Subject: Re: [PATCH] hda: Add logic to force HP mixer creation
-Date: Tue, 17 Feb 2009 13:27:12 -0600
-Message-ID: <499B0F90.4070008@dell.com>
-References: <49983C3D.2000309@embeddedalley.com>	<s5hiqnaiwa1.wl%tiwai@suse.de>	<499AFBAE.3050003@dell.com>
-	<s5heixw2a0i.wl%tiwai@suse.de>
+From: Tim Barnette <tim.barnette@gmail.com>
+Subject: Re: [Fwd: HP DV4 1155 SE - No Sound through
+	speakers...]
+Date: Tue, 17 Feb 2009 14:51:03 -0500
+Message-ID: <b71cdde20902171151v4ec58bc8p3f45cd7e345b1220@mail.gmail.com>
+References: <4983FE7A.1040201@wanadoo.fr>
+	<b71cdde20902131122q16eb7e44u92daf2a4c9500bd0@mail.gmail.com>
+	<s5hskmhfh9s.wl%tiwai@suse.de>
+	<200902141713.55843.herton@mandriva.com.br>
+	<s5h7i3qirnr.wl%tiwai@suse.de> <s5heixyh60y.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4382995067722759376=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ausc60pc101.us.dell.com (ausc60pc101.us.dell.com
-	[143.166.85.206])
-	by alsa0.perex.cz (Postfix) with ESMTP id 82164243F3
-	for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2009 20:27:15 +0100 (CET)
-In-Reply-To: <s5heixw2a0i.wl%tiwai@suse.de>
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.180])
+	by alsa0.perex.cz (Postfix) with ESMTP id B5E2C24141
+	for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2009 20:51:04 +0100 (CET)
+Received: by wa-out-1112.google.com with SMTP id v27so1449728wah.16
+	for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2009 11:51:03 -0800 (PST)
+In-Reply-To: <s5heixyh60y.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,109 +28,117 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Matthew Ranostay <mranostay@embeddedalley.com>
+Cc: alsa-devel@alsa-project.org, =?ISO-8859-1?Q?Jean=2DPierre_Andr=E9?= <jean-pierre.andre@wanadoo.fr>, Herton Ronaldo Krzesinski <herton@mandriva.com.br>
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============4382995067722759376==
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig85880B964A0FC88589DF577C"
+Thanks guys.  Will the patch make it to a near-term future upgrade so I can
+run the alsa-upgrade script instead of the patch?
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig85880B964A0FC88589DF577C
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Also, now my headphones no longer work... And my speaker light on the
+keyboard seems to malfunction.. Any idea about those?
 
-Hi Takashi:
+On Mon, Feb 16, 2009 at 8:21 AM, Takashi Iwai <tiwai@suse.de> wrote:
 
-Takashi Iwai wrote:
-> If "Surround" doesn't do anything, why should it be there?
-> And, does "Headphone" change both headphones even with 4 or 6 ch output=
-s
-> properly?   Doesn't "Headhpone" change any other output volumes?
->  =20
-I found what the surround mixer is being used for. If "Mic as Output" is
-turned on, "Surround" acts as the mixer to control that jack.
-
-The Headphone mixer changes both of the regular headphone jack's
-volumes. Changing the "Headphone" volume doesn't affect the speaker
-outputs at all, only the two headphone jacks.
-> The patch introduces another exception, and now nobody would understand=
-
-> how the channels and outputs and mixers are assigned together.
->  =20
-Two points:
-1) I'm not sure this is as much of a problem as you raise. I don't
-believe many people even know how the channels and mixers are assigned
-in the first place. I see plenty of support requests for "why doesn't
-this second headphone jack work with headphones". I've never seen one of
-"I can't hook up my 7.1 surround system to my consumer grade laptop and
-have all of my speakers work". These machines come with DisplayPort and
-HDMI ports which people will generally be using for hooking up to their
-television sets. I seem to think it's not very common to use the
-analogue jacks to independently hook up pairs of speakers assigned to
-say Front or Surround.
-2) You are still able to hook up a separate set of speakers to the mic
-output jack and since those are assigned surround have things work as
-expected.
-
+> At Mon, 16 Feb 2009 11:48:24 +0100,
+> I wrote:
+> >
+> > At Sat, 14 Feb 2009 17:13:55 -0200,
+> > Herton Ronaldo Krzesinski wrote:
+> > >
+> > > On Saturday 14 February 2009 08:24:15 Takashi Iwai wrote:
+> > > > At Fri, 13 Feb 2009 14:22:00 -0500,
+> > > > Tim Barnette wrote:
+> > > > >
+> > > > > ..And it worked!  I now have sound!  Can you tell me what I
+> actually did here?
+> > > >
+> > > > The problem was that your BIOS didn't set the correct default pin
+> > > > configuration.  The driver doesn't know which pin should be used for
+> > > > the speaker output, as a consequence, it's set as INPUT.
+> > > > Now you set it OUTPUT manually by hda-verb, and (fortunately) the
+> > > > route to that pin was alive even though it wasn't declared, you get
+> > > > the speaker output now.
+> > > >
+> > > > The next step is to implement a proper pin-config to override by
+> > > > the driver.  This won't be much work, but hey, wait for a while.
+> > > >
+> > > > (Or, did Herton already work on that?)
+> > >
+> > > I had added before pin configs for which source came from *.ini files
+> of IDT
+> > > windows drivers provided by HP. But I don't know if they are at all
+> necessary,
+> > > may be just setting config of 0x0d pin should suffice for all hp-dv5
+> models,
+> > > as all of them have speaker on 0x0d from all reports and also looking
+> at the
+> > > *.ini files.
+> > >
+> > > I have three patches, you can choose one of them :), see attached. The
+> first
+> > > one is my previous pin configs work "let's set for all cases the pin
+> configs
+> > > based on *.ini files", the others are same smaller change/less
+> intrusive that
+> > > instead just deals with this hp dv4 case.
+> >
+> > I took the last, the smallest one.  It's not too bad to define all
+> > models, but at this stage, I'd like rather to slim the code down.
 >
-> Hm, I thought I did.  Which patch exactly?
+> And now I cleaned up the quirk entries.
 >
->  =20
-The patch title was [PATCH] hda: Add STA_DELL_S14 quirk. Here's the
-starting part of it:
-
-Add STAC_DELL_S14 quirk for new laptop series. Removed un-needed pins in =
-pin_nids
-for stac92hd83xxx. Also reorganized connection selection code for the res=
-pective ports
-per quirk define.
-
----
- sound/pci/hda/patch_sigmatel.c <imap://mario_limonciello@outlook.dell.co=
-m:143/fetch%3EUID%3E/INBOX%3E13699#sound/pci/hda/patch_sigmatel.c> |   52=
- +++++++++++++++++++++++++++-------------
-
-
- 1 files changed, 35 insertions(+), 17 deletions(-)
-
-
-You responded to the mail saying it was applied, but I seem to not be
-able to find it in current ALSA git.
-
-Regards
---=20
-Mario Limonciello
-*Dell | Linux Engineering*
-mario_limonciello@dell.com
-
---------------enig85880B964A0FC88589DF577C
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iEYEARECAAYFAkmbD5AACgkQ2CrZjkA73Ys3IwCgnGLqflG6/ee75N/uVXD+YJ7c
-dlAAoJwf8AiHfKVdborsHZfLF/iHJPvI
-=t9IE
------END PGP SIGNATURE-----
-
---------------enig85880B964A0FC88589DF577C--
-
---===============4382995067722759376==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============4382995067722759376==--
+>
+> Takashi
+>
+> ===
+> From 2ae466f8cc522843fa9a456e46007dd98b052b13 Mon Sep 17 00:00:00 2001
+> From: Takashi Iwai <tiwai@suse.de>
+> Date: Mon, 16 Feb 2009 14:16:36 +0100
+> Subject: [PATCH] ALSA: hda - Cleanup IDT92HD7x HP quirks
+>
+> Clean up IDT92HD7x quirks for HP laptops with SND_PCI_QUIRK_MASK().
+>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/pci/hda/patch_sigmatel.c |   20 +++++---------------
+>  1 files changed, 5 insertions(+), 15 deletions(-)
+>
+> diff --git a/sound/pci/hda/patch_sigmatel.c
+> b/sound/pci/hda/patch_sigmatel.c
+> index 7320059..d00a211 100644
+> --- a/sound/pci/hda/patch_sigmatel.c
+> +++ b/sound/pci/hda/patch_sigmatel.c
+> @@ -1817,22 +1817,12 @@ static struct snd_pci_quirk stac92hd71bxx_cfg_tbl[]
+> = {
+>                       "DFI LanParty", STAC_92HD71BXX_REF),
+>         SND_PCI_QUIRK(PCI_VENDOR_ID_DFI, 0x3101,
+>                       "DFI LanParty", STAC_92HD71BXX_REF),
+> -       SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x30f2,
+> -                     "HP dv5", STAC_HP_M4),
+> -       SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x30f4,
+> -                     "HP dv7", STAC_HP_DV5),
+> -       SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x30f7,
+> -                     "HP dv4", STAC_HP_DV5),
+> -       SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x30fb,
+> -                     "HP dv7", STAC_HP_DV5),
+> -       SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x30fc,
+> -                     "HP dv7", STAC_HP_M4),
+> -       SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x3600,
+> -                     "HP dv5", STAC_HP_DV5),
+> -       SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x3603,
+> -                     "HP dv5", STAC_HP_DV5),
+> +       SND_PCI_QUIRK_MASK(PCI_VENDOR_ID_HP, 0xfff0, 0x30f0,
+> +                     "HP dv4-7", STAC_HP_DV5),
+> +       SND_PCI_QUIRK_MASK(PCI_VENDOR_ID_HP, 0xfff0, 0x3600,
+> +                     "HP dv4-7", STAC_HP_DV5),
+>         SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x361a,
+> -                               "unknown HP", STAC_HP_M4),
+> +                     "HP mini 1000", STAC_HP_M4),
+>         SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0233,
+>                                "unknown Dell", STAC_DELL_M4_1),
+>        SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0234,
+> --
+> 1.6.1.3
+>
+>
+>
