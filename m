@@ -1,17 +1,19 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: Re: [PATCH] hda: Add logic to force HP mixer creation
-Date: Tue, 17 Feb 2009 15:42:02 -0500
-Message-ID: <499B211A.1040509@embeddedalley.com>
-References: <49983C3D.2000309@embeddedalley.com>	<s5hiqnaiwa1.wl%tiwai@suse.de>	<499AFBAE.3050003@dell.com>
-	<s5heixw2a0i.wl%tiwai@suse.de> <499B0F90.4070008@dell.com>
+From: =?UTF-8?Q?Bart=C5=82omiej?= Holdenmayer <bh@habah.com>
+Subject: Re: HP pavilion dv5 1110ew - no hdmi sound
+Date: Tue, 17 Feb 2009 21:43:16 +0100
+Message-ID: <1234903396.6737.14.camel@hplaptop>
+References: <1234318844.9425.6.camel@hplaptop>
+	<s5hd4dpe7nl.wl%tiwai@suse.de> <1234496274.6869.3.camel@hplaptop>
+	<s5h1vu2esbf.wl%tiwai@suse.de> <s5hmycqdaqx.wl%tiwai@suse.de>
+	<1234561706.7664.0.camel@hplaptop>  <s5hprhlfgzo.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
-	by alsa0.perex.cz (Postfix) with SMTP id 4EF74243B5
-	for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2009 21:42:21 +0100 (CET)
-In-Reply-To: <499B0F90.4070008@dell.com>
+Received: from secure4.ia-dns.com (secure4.ia-dns.com [70.84.79.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id 349C4243B5
+	for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2009 21:43:28 +0100 (CET)
+In-Reply-To: <s5hprhlfgzo.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,65 +23,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mario Limonciello <mario_limonciello@dell.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mario Limonciello wrote:
-> Hi Takashi:
-> 
-> Takashi Iwai wrote:
->> If "Surround" doesn't do anything, why should it be there?
->> And, does "Headphone" change both headphones even with 4 or 6 ch outputs
->> properly?   Doesn't "Headhpone" change any other output volumes?
->>   
-> I found what the surround mixer is being used for. If "Mic as Output" is
-> turned on, "Surround" acts as the mixer to control that jack.
-> 
-Correct. 
-
-The the reason the headphone mixer isn't created without my patch is the "mic as output"
-and "line in as output" switches.
-
-> The Headphone mixer changes both of the regular headphone jack's
-> volumes. Changing the "Headphone" volume doesn't affect the speaker
-> outputs at all, only the two headphone jacks.
->> The patch introduces another exception, and now nobody would understand
->> how the channels and outputs and mixers are assigned together.
->>   
-> Two points:
-> 1) I'm not sure this is as much of a problem as you raise. I don't
-> believe many people even know how the channels and mixers are assigned
-> in the first place. I see plenty of support requests for "why doesn't
-> this second headphone jack work with headphones". I've never seen one of
-> "I can't hook up my 7.1 surround system to my consumer grade laptop and
-> have all of my speakers work". These machines come with DisplayPort and
-> HDMI ports which people will generally be using for hooking up to their
-> television sets. I seem to think it's not very common to use the
-> analogue jacks to independently hook up pairs of speakers assigned to
-> say Front or Surround.
-> 2) You are still able to hook up a separate set of speakers to the mic
-> output jack and since those are assigned surround have things work as
-> expected.
-> 
->> Hm, I thought I did.  Which patch exactly?
->>
->>   
-> The patch title was [PATCH] hda: Add STA_DELL_S14 quirk. Here's the
-> starting part of it:
-> 
-> Add STAC_DELL_S14 quirk for new laptop series. Removed un-needed pins in pin_nids
-> for stac92hd83xxx. Also reorganized connection selection code for the respective ports
-> per quirk define.
-> 
-> ---
->  sound/pci/hda/patch_sigmatel.c <imap://mario_limonciello@outlook.dell.com:143/fetch%3EUID%3E/INBOX%3E13699#sound/pci/hda/patch_sigmatel.c> |   52 +++++++++++++++++++++++++++-------------
-> 
-> 
->  1 files changed, 35 insertions(+), 17 deletions(-)
-> 
-> 
-> You responded to the mail saying it was applied, but I seem to not be
-> able to find it in current ALSA git.
-> 
-> Regards
+RG5pYSAyMDA5LTAyLTE0LCBzb2IgbyBnb2R6aW5pZSAxMTozMCArMDEwMCwgVGFrYXNoaSBJd2Fp
+IHBpc3plOgo+IEF0IEZyaSwgMTMgRmViIDIwMDkgMjI6NDg6MjYgKzAxMDAsCj4gQmFydMWCb21p
+ZWogSG9sZGVubWF5ZXIgd3JvdGU6Cj4gPiAKPiA+IERuaWEgMjAwOS0wMi0xMywgcGnEhSBvIGdv
+ZHppbmllIDA5OjAzICswMTAwLCBUYWthc2hpIEl3YWkgcGlzemU6Cj4gPiA+IEF0IEZyaSwgMTMg
+RmViIDIwMDkgMDc6NTg6NDQgKzAxMDAsCj4gPiA+IEkgd3JvdGU6Cj4gPiA+ID4gCj4gPiA+ID4g
+QXQgRnJpLCAxMyBGZWIgMjAwOSAwNDozNzo1NCArMDEwMCwKPiA+ID4gPiBCYXJ0xYJvbWllaiBI
+b2xkZW5tYXllciB3cm90ZToKPiA+ID4gPiA+IAo+ID4gPiA+ID4gRG5pYSAyMDA5LTAyLTExLCDF
+m3JvIG8gZ29kemluaWUgMDg6NDggKzAxMDAsIFRha2FzaGkgSXdhaSBwaXN6ZToKPiA+ID4gPiA+
+ID4gQXQgV2VkLCAxMSBGZWIgMjAwOSAwMzoyMDo0NCArMDEwMCwKPiA+ID4gPiA+ID4gQmFydMWC
+b21pZWogSG9sZGVubWF5ZXIgd3JvdGU6Cj4gPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+ID4gV2Vs
+Y29tZSwKPiA+ID4gPiA+ID4gPiBJIGhhdmUgbm8gc291bmQgdGhyb3VnaCBIRE1JLgo+ID4gPiA+
+ID4gPiA+IEkgaGF2ZSBOdmlkaWEgR2Vmb3JjZSA5MjAwTSBHUyB3aXRoIDE4MC4xMSBkcml2ZXIu
+IEFsc2EgMS4wLjE5LiBBbmQKPiA+ID4gPiA+ID4gPiBuZXdlc3QgYmlvcyBGMTNBLiAKPiA+ID4g
+PiA+ID4gPiAKPiA+ID4gPiA+ID4gPiBJIHdhcyBnb29nbGluZyBmb3IgYSB3ZWVrIGFuZCBvbmx5
+IHNvbHV0aW9uIGkgZm91bmQgd2FzIHRvIHVwZ3JhZGUgQWxzYQo+ID4gPiA+ID4gPiA+IGFuZCBO
+dmlkaWEgdG8gdGhlIG5ld2VzdCB2ZXJzaW9uLiBJIGRpZCwgYnV0IGkgc3RpbGwgZG8gbm90IGhh
+dmUgc291bmQKPiA+ID4gPiA+ID4gPiBvdmVyIEhETUkuIEluIFdpbiQgaXQgaXMgd29ya2luZyBv
+ay4KPiA+ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4gPiBodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5v
+cmcvZGIvP2Y9MDFiZTkxNzUyNjNhNTAyMWZjZmVmM2E0NzEyM2FmYzA0ZDYyYTg2Mwo+ID4gPiA+
+ID4gPiAKPiA+ID4gPiA+ID4gVHJ5IHRoZSB2ZXJ5IGxhdGVzdCBhbHNhLWRyaXZlciBzbmFwc2hv
+dCBiZWxvdzoKPiA+ID4gPiA+ID4gICAgIGZ0cDovL2Z0cC5rZXJuZWwub3JnL3B1Yi9saW51eC9r
+ZXJuZWwvcGVvcGxlL3Rpd2FpL3NuYXBzaG90L2Fsc2EtZHJpdmVyLXNuYXBzaG90LnRhci5nego+
+ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+IFRha2FzaGkKPiA+ID4gPiA+IAo+
+ID4gPiA+ID4gSSBoYXZlIG5vdyB0aGUgbmV3ZXN0IG52aWRpYSAxODAuMjkgZnJvbSAxMS4wMi4w
+OS4gSSBoYXZlIGFsc2Egc25hcHNob3QuCj4gPiA+ID4gPiBTdGlsbCBzb3VuZCBkb2VzIG5vdCB3
+b3JrIG92ZXIgaGRtaS4KPiA+ID4gPiAKPiA+ID4gPiBXZWxsLCB0aGVuIHRoZSBsYXN0IHN1c3Bl
+Y3QgaXMgQklPUy4KPiA+ID4gCj4gPiA+IEJUVywgdGhlIHZlcnkgbGF0ZXN0IGFsc2EtZHJpdmVy
+IHNuYXBzaG90IGluY2x1ZGVzIGEgbmV3IGZlYXR1cmUgdG8KPiA+ID4gZm9yY2UgdGhlIGNvZGVj
+IHByb2JpbmcuICBHcmFiIHRoZSBsYXRlc3Qgb25lIGFuZCB0cnkgcHJvYmVfbWFzaz0weDFmZgo+
+ID4gPiBvcHRpb24uICBZb3UnbGwgaGF2ZSB0byBzZWUgc29tZSBuZXcgbWVzc2FnZXMKPiA+ID4g
+CWhkYV9pbnRlbDogY29kZWNfbWFzayBmb3JjZWQgdG8gMHhmZgo+ID4gPiAKPiA+ID4gVGFrYXNo
+aQo+ID4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+
+ID4gPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+ID4gPiBBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKPiA+ID4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwKPiA+IAo+ID4gQ2FuIFlvdSBwbGVhc2UgdGVsbCBtZSB3aGF0IGV4YWN0
+bHkgc2hvdWxkIEkgZG8/Cj4gCj4gV2VsbCwganVzdCBsaWtlIHdoYXQgSSB3cm90ZSBpbiB0aGUg
+YWJvdmU6IGdyYWIgdGhlIGxhdGVzdCBhbHNhLWRyaXZlcgo+IHNuYXBzaG90IHRhcmJhbGwsIGJ1
+aWxkIGl0LCBpbnN0YWxsIGl0LCBhbmQgYWRkIHByb2JlX21hc2s9MHgxZmYKPiBtb2R1bGUgb3B0
+aW9uIHRvIHNuZC1oZGEtaW50ZWwsIHRoZW4gbG9hZCBpdC4gIElmIHlvdSd2ZSBkb25lIGl0Cj4g
+cHJvcGVybHksIHlvdSBzZWUgdGhlIG1lc3NhZ2UgbGlrZSBhYm92ZS4gIEFuZCBsZXQncyBzZWUg
+d2hldGhlciB0aGUKPiBkcml2ZXIgY2FuIGRldGVjdCBtb3JlIGNvZGVjcy4KPiAKPiAKPiBUYWth
+c2hpCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+CgpJIGRpZCBlaGF0IFlvdSB3cm90ZS4gSGVyZSBpcyBteSBkbWVzZzoKWyAgIDE0LjcyOTAyM10g
+SERBIEludGVsIDAwMDA6MDA6MWIuMDogUENJIElOVCBBIC0+IEdTSSAyMiAobGV2ZWwsIGxvdykK
+LT4gSVJRIDIKMgpbICAgMTQuNzI5MDI4XSBoZGFfaW50ZWw6IGNvZGVjX21hc2sgZm9yY2VkIHRv
+IDB4ZmYKWyAgIDE0LjcyOTA1NF0gSERBIEludGVsIDAwMDA6MDA6MWIuMDogc2V0dGluZyBsYXRl
+bmN5IHRpbWVyIHRvIDY0ClsgICAxNS43NzYwMjFdCkFMU0EgL3Vzci9zcmMvQWxzYS0xLjAuMTkv
+YWxzYS1kcml2ZXItMS4wLjE5L3BjaS9oZGEvLi4vLi4vYWxzYS1rCmVybmVsL3BjaS9oZGEvaGRh
+X2ludGVsLmM6NjM0OiBoZGFfaW50ZWw6IGF6eF9nZXRfcmVzcG9uc2UgdGltZW91dCwKc3dpdGNo
+aW5nIHRvCiBwb2xsaW5nIG1vZGU6IGxhc3QgY21kPTB4MTAwZjAwMDAKWyAgIDE2Ljc4MDAxOV0K
+QUxTQSAvdXNyL3NyYy9BbHNhLTEuMC4xOS9hbHNhLWRyaXZlci0xLjAuMTkvcGNpL2hkYS8uLi8u
+Li9hbHNhLWsKZXJuZWwvcGNpL2hkYS9oZGFfaW50ZWwuYzoxMjcxOiBoZGFfaW50ZWw6IENvZGVj
+ICMxIHByb2JlIGVycm9yOwpkaXNhYmxpbmcgaXQuLi4KWyAgIDE3LjgxNjUwOF0KQUxTQSAvdXNy
+L3NyYy9BbHNhLTEuMC4xOS9hbHNhLWRyaXZlci0xLjAuMTkvcGNpL2hkYS8uLi8uLi9hbHNhLWsK
+ZXJuZWwvcGNpL2hkYS9oZGFfaW50ZWwuYzoxMjcxOiBoZGFfaW50ZWw6IENvZGVjICMzIHByb2Jl
+IGVycm9yOwpkaXNhYmxpbmcgaXQuLi4KWyAgIDE3LjkyMTYwMF0gaW5wdXQ6IEhEQSBEaWdpdGFs
+IFBDQmVlcAphcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWIuMC9pbnAKdXQvaW5wdXQx
+MQpbICAgMTguMDUyMTk0XSBpbnB1dDogSERBIEludGVsIGF0IDB4OWYzMDAwMDAgaXJxIDIyIE1p
+YyBhdCBFeHQgRnJvbnQKSmFjayBhcyAvZApldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFiLjAv
+aW5wdXQvaW5wdXQxMgpbICAgMTguMDUyNTg3XSBpbnB1dDogSERBIEludGVsIGF0IDB4OWYzMDAw
+MDAgaXJxIDIyIE1pYyBhdCBTZXAgVU5LTk9XTgpKYWNrIGFzIAovZGV2aWNlcy9wY2kwMDAwOjAw
+LzAwMDA6MDA6MWIuMC9pbnB1dC9pbnB1dDEzClsgICAxOC4wNTI4OTRdIGlucHV0OiBIREEgSW50
+ZWwgYXQgMHg5ZjMwMDAwMCBpcnEgMjIgSFAgT3V0IGF0IEV4dCBGcm9udApKYWNrIGFzCiAvZGV2
+aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWIuMC9pbnB1dC9pbnB1dDE0CgpXaGF0IG5leHQgc2hv
+dWxkIEkgZG8/CgpJIGhhdmUgYmFzaWMgcXVlc3Rpb25zOgpBbHNhIHRvIHdvcmsgZ29vZCB3aXRo
+IG15IEhETUkgc291bmQgaGF2ZSB0byBrbm93IHdoYXQgaGFyZHdhcmUgaXMKb25ib2FyZCBhbmQg
+d2hhdCBpdCBjYW4gZG8tIGZlYXR1cmVzIChmLmV4LkhETUkpLiBXaGF0IGlzIHJlc3BvbnNpYmxl
+CmZvciByZWNvZ25pdGlvbiBvZiBoYXJkd2FyZT8gSXMgdGhhdCBhbHNhLWRyaXZlciBwYWNrYWdl
+PyBIb3cgY2FuIEkKZm9yY2UgZ29vZCByZWNvZ25pdGlvbj8KCmFwbGF5IC1sIGxpc3QgZGV2aWNl
+cyBpdCBjYW4gdXNlLiBOb3cgZm9yIG1lIGl0IGlzOgphcnRla0BocGxhcHRvcDp+JCBhcGxheSAt
+bAoqKioqIExpc3RhIFBMQVlCQUNLIHVyesSFZHplxYQgKioqKgprYXJ0YSAwOiBJbnRlbCBbSERB
+IEludGVsXSwgdXJ6xIVkemVuaWUgMDogU1RBQzkyeHggQW5hbG9nIFtTVEFDOTJ4eApBbmFsb2dd
+CiAgVXJ6xIVkemVuaWEgcG9kcnrEmWRuZTogMS8xCiAgVXJ6xIVkemVuaWUgcG9kcnrEmWRuZSAj
+MDogc3ViZGV2aWNlICMwCmthcnRhIDA6IEludGVsIFtIREEgSW50ZWxdLCB1cnrEhWR6ZW5pZSAx
+OiBTVEFDOTJ4eCBEaWdpdGFsIFtTVEFDOTJ4eApEaWdpdGFsXQogIFVyesSFZHplbmlhIHBvZHJ6
+xJlkbmU6IDEvMQogIFVyesSFZHplbmllIHBvZHJ6xJlkbmUgIzA6IHN1YmRldmljZSAjMAoKVXAg
+dG8gbXkga25vd2xlZGdlLCBhcyBzb29uIGFzIEFsc2Ega25vd3MgYWJvdXQgSERNSSBmZWF0dXJl
+LCBpIHdpbGwgZ2V0CjNyZCBkZXZpY2Ugd2l0aCBhcGxheSAtbC4gQW0gSSByaWdodCBhYm91dCBp
+dD8KCldoYXQgaXMgdGhhdCBkZXZpY2U6IFNUQUM5Mnh4IERpZ2l0YWw/Ci0tClBvemRyYXdpYW0g
+LyBSZWdhcmRzCkJhcnTFgm9taWVqIEhvbGRlbm1heWVyCgpHRzo1NDE2MzQ7IElDUTozMzkyMDgx
+MTsgc2t5cGVuYW1lOmJhcnRsb21pZWpob2xkZW5tYXllcgoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
