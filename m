@@ -1,19 +1,21 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: ALSA SoC Architecture Document
-Date: Tue, 17 Feb 2009 14:13:08 +0000
-Message-ID: <20090217141307.GC25029@sirena.org.uk>
-References: <2ee9e08d0902170411u5ff7c18fs249b5800189a57e5@mail.gmail.com>
-	<20090217130701.GA25029@sirena.org.uk>
-	<2ee9e08d0902170520v23a3bb7ao271ba1e9553d8c8a@mail.gmail.com>
+From: =?ISO-8859-1?Q?Jean-Pierre_Andr=E9?= <jean-pierre.andre@wanadoo.fr>
+Subject: Snapshot From ALSA Server
+Date: Tue, 17 Feb 2009 16:08:01 +0100
+Message-ID: <499AD2D1.6050109@wanadoo.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 36DBD1037F2
-	for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2009 15:13:09 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <2ee9e08d0902170520v23a3bb7ao271ba1e9553d8c8a@mail.gmail.com>
+Received: from smtp2f.orange.fr (smtp2f.orange.fr [80.12.242.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4E29110382A
+	for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2009 16:08:02 +0100 (CET)
+Received: from me-wanadoo.net (localhost [127.0.0.1])
+	by mwinf2f22.orange.fr (SMTP Server) with ESMTP id EFC7770000A3
+	for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2009 16:08:01 +0100 (CET)
+Received: from [10.0.0.10] (ASt-Lambert-153-1-109-158.w90-2.abo.wanadoo.fr
+	[90.2.96.158])
+	by mwinf2f22.orange.fr (SMTP Server) with ESMTP id B88137000081
+	for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2009 16:08:01 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,39 +25,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Anuj Aggarwal <anuj.aggarwal@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 17, 2009 at 06:50:32PM +0530, Anuj Aggarwal wrote:
+Hi,
 
-[Please don't top post.]
+When I try to compile alsa-driver from the snapshot from alsa server
+(eg alsa-driver-1.0.19.11.g5fc41.195.g772ce.tar.bz2), the compilation
+process fails at applying two patches : pci/hda/hda_beep.patch and
+acore/misc.patch
 
-> As I have mentioned earlier, I am specifically looking for some
-> architecture/block diagrams and data/control paths which will enable
-> users to grasp quickly what is lying underneath, instead of the user
-> going and reading the kernel documentation.
+After manually fixing the patches, the compilation goes on and
+provides apparently valid modules (at least I get sound from them).
 
-What exactly are you trying to give an overview of - who is the user and
-what do they want to know?
+Why is it so ? In the said patches I see nothing specific to my
+environment. Could there be a missing patch or overlapping patches
+applied in a wrong order ? Are these tarballs compiled before
+being made available ?
 
-If you're trying to explain what the controls exposed to user space map
-to then that's going to be specific to a given board (and codec).  If
-you just want a brief overview of how things are structured in kernel
-without any detail then if there's nothing in any of the presentations
-then something along the lines of the quick ASCII art below *might*
-help?
+Note : this problem does not occur in daily snapshots by Tagashi.
 
-                 /----\
-                 |ALSA|
-                 \----/
-                   ||
-               /---------\
-               |ASoC core|
-               \---------/
-                   ||
-          =====================
-          ||       ||        ||
-      /-------\ /--------\ /-----\
-      |Machine| |Platform| |Codec|
-      \-------/ \--------/ \-----/
+Regards
+
+Jean-Pierre
