@@ -1,17 +1,21 @@
-From: Mario Limonciello <mario_limonciello@dell.com>
-Subject: Re: [PATCH] hda: Add logic to force HP mixer creation
-Date: Tue, 17 Feb 2009 15:06:38 -0600
-Message-ID: <499B26DE.2010109@dell.com>
-References: <49983C3D.2000309@embeddedalley.com>	<s5hiqnaiwa1.wl%tiwai@suse.de>	<499AFBAE.3050003@dell.com>	<s5heixw2a0i.wl%tiwai@suse.de>	<499B0F90.4070008@dell.com>
-	<s5hljs46beo.wl%tiwai@suse.de>
+From: =?UTF-8?Q?Vedran_Mileti=C4=87?= <rivanvx@gmail.com>
+Subject: Re: HP pavilion dv5 1110ew - no hdmi sound
+Date: Tue, 17 Feb 2009 23:19:49 +0100
+Message-ID: <fd3eb9bf0902171419m53241d47pe17c5b2694d2aba8@mail.gmail.com>
+References: <1234318844.9425.6.camel@hplaptop> <s5hd4dpe7nl.wl%tiwai@suse.de>
+	<1234496274.6869.3.camel@hplaptop> <s5h1vu2esbf.wl%tiwai@suse.de>
+	<s5hmycqdaqx.wl%tiwai@suse.de> <1234561706.7664.0.camel@hplaptop>
+	<s5hprhlfgzo.wl%tiwai@suse.de> <1234903396.6737.14.camel@hplaptop>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5885878284670535505=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ausxippc101.us.dell.com (ausxippc101.us.dell.com
-	[143.166.85.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id E6401243BC
-	for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2009 22:06:40 +0100 (CET)
-In-Reply-To: <s5hljs46beo.wl%tiwai@suse.de>
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id 399C82441A
+	for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2009 23:19:50 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id 13so598170fge.44
+	for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2009 14:19:49 -0800 (PST)
+In-Reply-To: <1234903396.6737.14.camel@hplaptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,104 +25,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Matthew Ranostay <mranostay@embeddedalley.com>
+To: =?UTF-8?Q?Bart=C5=82omiej_Holdenmayer?= <bh@habah.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============5885878284670535505==
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig13ED45A198E71F6467F9C04E"
-
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig13ED45A198E71F6467F9C04E
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Hi Takashi:
-
-Takashi Iwai wrote:
-> At Tue, 17 Feb 2009 13:27:12 -0600,
-> Mario Limonciello wrote:
->  =20
->
-> Ah, OK, then the mic jack is connected to the surround DAC.
-> But don't you have Center and LFE?
->  =20
-There aren't mixers for Center or LFE at all.  Again going back to my
-feelings about mixer names, for the purposes of a laptop I think
-providing a knob called Center or another called LFE just adds to the
-confusion.
-> And any control of speaker volume?
->  =20
-Speaker volume is handled by the combination of Master, PCM, and Front
-mixers.  The headphone mixer has no bearing on the volume of the speakers=
-=2E
->
-> And exactly this is another point why I feel the necessity of
-> cleanup.  If the feature isn't needed, we should get rid of it.  Or,
-> implement in a better form.
->  =20
-If I was to put a vote towards this, I think attempting to support 6
-channel analog in the mobile space is a feature that needs to go.  It
-causes confusion and complicates the code.=20
-> One more another problem is that this setup thingy isn't described
-> at all, or pretty hard to guess from the mixer control.  There are
-> knobs, but you don't know the combination.
->  =20
-I think knobs, switches, do-hickeys, etc are great to have when they
-serve an explicit purpose.  I look at the mixers being presented to me,
-and I've no idea what
-
-"Mono Mux" is there for, or why I've got several "Digital Input Source"
-areas.=20
-> This must be included.  Check commit
-> 8bb0ac5573ff0879fef511e1a80a4a4db0316daa
-> in sound git tree.
->  =20
-I suppose i've got some confusion for when these commits are showing up
-on
-http://git.alsa-project.org/?p=3Dalsa-kernel.git;a=3Dhistory;f=3Dsound/pc=
-i/hda/patch_sigmatel.c;h=3D3c84817ccd2e0d4bd1eee4f2882047ae84165e10;hb=3D=
-HEAD
-My understanding was that the tree alsa-kernel tree was merged into the
-alsa-driver and alsa-kmirror trees on a regular basis.  I have been
-operating off of web snapshots of alsa-driver from
-http://www.alsa-project.org/snapshot/ since I can't do GIT internally
-here, but I'm not seeing the patch show up in alsa-driver there.
-
-Regards
---=20
-Mario Limonciello
-*Dell | Linux Engineering*
-mario_limonciello@dell.com
-
---------------enig13ED45A198E71F6467F9C04E
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iEYEARECAAYFAkmbJt4ACgkQ2CrZjkA73YujoACfb5fM/dqO2cZ12g88USdhmOyT
-ousAn0Oo1tjp2HkMcrpflsf+SCUmOq0E
-=0JiW
------END PGP SIGNATURE-----
-
---------------enig13ED45A198E71F6467F9C04E--
-
---===============5885878284670535505==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============5885878284670535505==--
+T24gVHVlLCBGZWIgMTcsIDIwMDkgYXQgOTo0MyBQTSwgQmFydMWCb21pZWogSG9sZGVubWF5ZXIg
+PGJoQGhhYmFoLmNvbT4gd3JvdGU6Cj4gRG5pYSAyMDA5LTAyLTE0LCBzb2IgbyBnb2R6aW5pZSAx
+MTozMCArMDEwMCwgVGFrYXNoaSBJd2FpIHBpc3plOgo+Pgo+PiBXZWxsLCBqdXN0IGxpa2Ugd2hh
+dCBJIHdyb3RlIGluIHRoZSBhYm92ZTogZ3JhYiB0aGUgbGF0ZXN0IGFsc2EtZHJpdmVyCj4+IHNu
+YXBzaG90IHRhcmJhbGwsIGJ1aWxkIGl0LCBpbnN0YWxsIGl0LCBhbmQgYWRkIHByb2JlX21hc2s9
+MHgxZmYKPj4gbW9kdWxlIG9wdGlvbiB0byBzbmQtaGRhLWludGVsLCB0aGVuIGxvYWQgaXQuICBJ
+ZiB5b3UndmUgZG9uZSBpdAo+PiBwcm9wZXJseSwgeW91IHNlZSB0aGUgbWVzc2FnZSBsaWtlIGFi
+b3ZlLiAgQW5kIGxldCdzIHNlZSB3aGV0aGVyIHRoZQo+PiBkcml2ZXIgY2FuIGRldGVjdCBtb3Jl
+IGNvZGVjcy4KPj4KPj4KPj4gVGFrYXNoaQo+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwo+PiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+PiBBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKPj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgo+IEkgZGlkIGVoYXQgWW91IHdyb3RlLiBIZXJl
+IGlzIG15IGRtZXNnOgo+IFsgICAxNC43MjkwMjNdIEhEQSBJbnRlbCAwMDAwOjAwOjFiLjA6IFBD
+SSBJTlQgQSAtPiBHU0kgMjIgKGxldmVsLCBsb3cpCj4gLT4gSVJRIDIKPiAyCj4gWyAgIDE0Ljcy
+OTAyOF0gaGRhX2ludGVsOiBjb2RlY19tYXNrIGZvcmNlZCB0byAweGZmCj4gWyAgIDE0LjcyOTA1
+NF0gSERBIEludGVsIDAwMDA6MDA6MWIuMDogc2V0dGluZyBsYXRlbmN5IHRpbWVyIHRvIDY0Cj4g
+WyAgIDE1Ljc3NjAyMV0KPiBBTFNBIC91c3Ivc3JjL0Fsc2EtMS4wLjE5L2Fsc2EtZHJpdmVyLTEu
+MC4xOS9wY2kvaGRhLy4uLy4uL2Fsc2Etawo+IGVybmVsL3BjaS9oZGEvaGRhX2ludGVsLmM6NjM0
+OiBoZGFfaW50ZWw6IGF6eF9nZXRfcmVzcG9uc2UgdGltZW91dCwKPiBzd2l0Y2hpbmcgdG8KPiAg
+cG9sbGluZyBtb2RlOiBsYXN0IGNtZD0weDEwMGYwMDAwCj4gWyAgIDE2Ljc4MDAxOV0KPiBBTFNB
+IC91c3Ivc3JjL0Fsc2EtMS4wLjE5L2Fsc2EtZHJpdmVyLTEuMC4xOS9wY2kvaGRhLy4uLy4uL2Fs
+c2Etawo+IGVybmVsL3BjaS9oZGEvaGRhX2ludGVsLmM6MTI3MTogaGRhX2ludGVsOiBDb2RlYyAj
+MSBwcm9iZSBlcnJvcjsKPiBkaXNhYmxpbmcgaXQuLi4KPiBbICAgMTcuODE2NTA4XQo+IEFMU0Eg
+L3Vzci9zcmMvQWxzYS0xLjAuMTkvYWxzYS1kcml2ZXItMS4wLjE5L3BjaS9oZGEvLi4vLi4vYWxz
+YS1rCj4gZXJuZWwvcGNpL2hkYS9oZGFfaW50ZWwuYzoxMjcxOiBoZGFfaW50ZWw6IENvZGVjICMz
+IHByb2JlIGVycm9yOwo+IGRpc2FibGluZyBpdC4uLgo+IFsgICAxNy45MjE2MDBdIGlucHV0OiBI
+REEgRGlnaXRhbCBQQ0JlZXAKPiBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWIuMC9p
+bnAKPiB1dC9pbnB1dDExCj4gWyAgIDE4LjA1MjE5NF0gaW5wdXQ6IEhEQSBJbnRlbCBhdCAweDlm
+MzAwMDAwIGlycSAyMiBNaWMgYXQgRXh0IEZyb250Cj4gSmFjayBhcyAvZAo+IGV2aWNlcy9wY2kw
+MDAwOjAwLzAwMDA6MDA6MWIuMC9pbnB1dC9pbnB1dDEyCj4gWyAgIDE4LjA1MjU4N10gaW5wdXQ6
+IEhEQSBJbnRlbCBhdCAweDlmMzAwMDAwIGlycSAyMiBNaWMgYXQgU2VwIFVOS05PV04KPiBKYWNr
+IGFzCj4gL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFiLjAvaW5wdXQvaW5wdXQxMwo+IFsg
+ICAxOC4wNTI4OTRdIGlucHV0OiBIREEgSW50ZWwgYXQgMHg5ZjMwMDAwMCBpcnEgMjIgSFAgT3V0
+IGF0IEV4dCBGcm9udAo+IEphY2sgYXMKPiAgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFi
+LjAvaW5wdXQvaW5wdXQxNAo+Cj4gV2hhdCBuZXh0IHNob3VsZCBJIGRvPwo+Cj4gSSBoYXZlIGJh
+c2ljIHF1ZXN0aW9uczoKPiBBbHNhIHRvIHdvcmsgZ29vZCB3aXRoIG15IEhETUkgc291bmQgaGF2
+ZSB0byBrbm93IHdoYXQgaGFyZHdhcmUgaXMKPiBvbmJvYXJkIGFuZCB3aGF0IGl0IGNhbiBkby0g
+ZmVhdHVyZXMgKGYuZXguSERNSSkuIFdoYXQgaXMgcmVzcG9uc2libGUKPiBmb3IgcmVjb2duaXRp
+b24gb2YgaGFyZHdhcmU/IElzIHRoYXQgYWxzYS1kcml2ZXIgcGFja2FnZT8gSG93IGNhbiBJCj4g
+Zm9yY2UgZ29vZCByZWNvZ25pdGlvbj8KPgo+IGFwbGF5IC1sIGxpc3QgZGV2aWNlcyBpdCBjYW4g
+dXNlLiBOb3cgZm9yIG1lIGl0IGlzOgo+IGFydGVrQGhwbGFwdG9wOn4kIGFwbGF5IC1sCj4gKioq
+KiBMaXN0YSBQTEFZQkFDSyB1cnrEhWR6ZcWEICoqKioKPiBrYXJ0YSAwOiBJbnRlbCBbSERBIElu
+dGVsXSwgdXJ6xIVkemVuaWUgMDogU1RBQzkyeHggQW5hbG9nIFtTVEFDOTJ4eAo+IEFuYWxvZ10K
+PiAgVXJ6xIVkemVuaWEgcG9kcnrEmWRuZTogMS8xCj4gIFVyesSFZHplbmllIHBvZHJ6xJlkbmUg
+IzA6IHN1YmRldmljZSAjMAo+IGthcnRhIDA6IEludGVsIFtIREEgSW50ZWxdLCB1cnrEhWR6ZW5p
+ZSAxOiBTVEFDOTJ4eCBEaWdpdGFsIFtTVEFDOTJ4eAo+IERpZ2l0YWxdCj4gIFVyesSFZHplbmlh
+IHBvZHJ6xJlkbmU6IDEvMQo+ICBVcnrEhWR6ZW5pZSBwb2RyesSZZG5lICMwOiBzdWJkZXZpY2Ug
+IzAKPgo+IFVwIHRvIG15IGtub3dsZWRnZSwgYXMgc29vbiBhcyBBbHNhIGtub3dzIGFib3V0IEhE
+TUkgZmVhdHVyZSwgaSB3aWxsIGdldAo+IDNyZCBkZXZpY2Ugd2l0aCBhcGxheSAtbC4gQW0gSSBy
+aWdodCBhYm91dCBpdD8KPgo+IFdoYXQgaXMgdGhhdCBkZXZpY2U6IFNUQUM5Mnh4IERpZ2l0YWw/
+Cj4gLS0KPiBQb3pkcmF3aWFtIC8gUmVnYXJkcwo+IEJhcnTFgm9taWVqIEhvbGRlbm1heWVyCj4K
+PiBHRzo1NDE2MzQ7IElDUTozMzkyMDgxMTsgc2t5cGVuYW1lOmJhcnRsb21pZWpob2xkZW5tYXll
+cgo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cj4KClRoaXMgKmNvdWxkKiBiZSBIRE1JIGRldmljZSwgSUYgaXQgaXMgaW50ZXJuYWxseSByb3V0
+ZWQgdGhhdCB3YXkuIE5vdApzdXJlLiBDYW4geW91IGdpdmUgaXQgYSBzaG90PwoKVmVkcmFuIE1p
+bGV0acSHCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
