@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 07/11] ASoC: Actively manage MCLK for
-	AT91SAM9G20-EK
-Date: Wed, 18 Feb 2009 12:02:29 +0000
-Message-ID: <1234958553-16049-7-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 09/11] ASoC: Shuffle WM8731 SPI and I2C device
+	registration
+Date: Wed, 18 Feb 2009 12:02:31 +0000
+Message-ID: <1234958553-16049-9-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20090218120135.GA15414@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id AE71910388D
-	for <alsa-devel@alsa-project.org>; Wed, 18 Feb 2009 13:18:15 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id B927F10388D
+	for <alsa-devel@alsa-project.org>; Wed, 18 Feb 2009 13:18:16 +0100 (CET)
 In-Reply-To: <20090218120135.GA15414@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,148 +25,261 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-We have software control of the MCLK for the WM8731 so save a bit of
-power by actively managing it within the machine driver, enabling it
-only while the codec is active.
+This is a pure code motion patch intended to improve reviewability of a
+following patch moving WM8731 to use more standard device registration.
 
-Once ASoC supports multiple boards and doesn't require the soc-audio
-device the initial clock setup should be pushed down into the arch/arm
-code but for now this reduces merge issues.
-
-Tested-by: Sedji Gaouaou <sedji.gaouaou@atmel.com>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/atmel/sam9g20_wm8731.c |   68 ++++++++++++++++++++++++++++++++++++--
- 1 files changed, 65 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wm8731.c |  215 +++++++++++++++++++++++---------------------
+ 1 files changed, 112 insertions(+), 103 deletions(-)
 
-diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
-index b7efdc8..ab32514 100644
---- a/sound/soc/atmel/sam9g20_wm8731.c
-+++ b/sound/soc/atmel/sam9g20_wm8731.c
-@@ -53,6 +53,9 @@
- #include "atmel-pcm.h"
- #include "atmel_ssc_dai.h"
- 
-+#define MCLK_RATE 12000000
-+
-+static struct clk *mclk;
- 
- static int at91sam9g20ek_startup(struct snd_pcm_substream *substream)
- {
-@@ -60,11 +63,12 @@ static int at91sam9g20ek_startup(struct snd_pcm_substream *substream)
- 	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
- 	int ret;
- 
--	/* codec system clock is supplied by PCK0, set to 12MHz */
- 	ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK,
--		12000000, SND_SOC_CLOCK_IN);
--	if (ret < 0)
-+		MCLK_RATE, SND_SOC_CLOCK_IN);
-+	if (ret < 0) {
-+		clk_disable(mclk);
- 		return ret;
-+	}
- 
- 	return 0;
- }
-@@ -190,6 +194,31 @@ static struct snd_soc_ops at91sam9g20ek_ops = {
- 	.shutdown = at91sam9g20ek_shutdown,
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index c6db677..3ff971a 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -36,6 +36,11 @@ struct wm8731_priv {
+ 	unsigned int sysclk;
  };
  
-+static int at91sam9g20ek_set_bias_level(struct snd_soc_card *card,
-+					enum snd_soc_bias_level level)
++#ifdef CONFIG_SPI_MASTER
++static int wm8731_spi_write(struct spi_device *spi, const char *data, int len);
++static struct spi_driver wm8731_spi_driver;
++#endif
++
+ /*
+  * wm8731 register cache
+  * We can't read the WM8731 register space when we are
+@@ -544,54 +549,9 @@ pcm_err:
+ 
+ static struct snd_soc_device *wm8731_socdev;
+ 
+-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+-
+-/*
+- * WM8731 2 wire address is determined by GPIO5
+- * state during powerup.
+- *    low  = 0x1a
+- *    high = 0x1b
+- */
+-
+-static int wm8731_i2c_probe(struct i2c_client *i2c,
+-			    const struct i2c_device_id *id)
+-{
+-	struct snd_soc_device *socdev = wm8731_socdev;
+-	struct snd_soc_codec *codec = socdev->card->codec;
+-	int ret;
+-
+-	i2c_set_clientdata(i2c, codec);
+-	codec->control_data = i2c;
+-
+-	ret = wm8731_init(socdev);
+-	if (ret < 0)
+-		pr_err("failed to initialise WM8731\n");
+-
+-	return ret;
+-}
+ 
+-static int wm8731_i2c_remove(struct i2c_client *client)
+-{
+-	struct snd_soc_codec *codec = i2c_get_clientdata(client);
+-	kfree(codec->reg_cache);
+-	return 0;
+-}
+-
+-static const struct i2c_device_id wm8731_i2c_id[] = {
+-	{ "wm8731", 0 },
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(i2c, wm8731_i2c_id);
+-
+-static struct i2c_driver wm8731_i2c_driver = {
+-	.driver = {
+-		.name = "WM8731 I2C Codec",
+-		.owner = THIS_MODULE,
+-	},
+-	.probe =    wm8731_i2c_probe,
+-	.remove =   wm8731_i2c_remove,
+-	.id_table = wm8731_i2c_id,
+-};
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++static struct i2c_driver wm8731_i2c_driver;
+ 
+ static int wm8731_add_i2c_device(struct platform_device *pdev,
+ 				 const struct wm8731_setup_data *setup)
+@@ -634,62 +594,6 @@ err_driver:
+ }
+ #endif
+ 
+-#if defined(CONFIG_SPI_MASTER)
+-static int __devinit wm8731_spi_probe(struct spi_device *spi)
+-{
+-	struct snd_soc_device *socdev = wm8731_socdev;
+-	struct snd_soc_codec *codec = socdev->card->codec;
+-	int ret;
+-
+-	codec->control_data = spi;
+-
+-	ret = wm8731_init(socdev);
+-	if (ret < 0)
+-		dev_err(&spi->dev, "failed to initialise WM8731\n");
+-
+-	return ret;
+-}
+-
+-static int __devexit wm8731_spi_remove(struct spi_device *spi)
+-{
+-	return 0;
+-}
+-
+-static struct spi_driver wm8731_spi_driver = {
+-	.driver = {
+-		.name	= "wm8731",
+-		.bus	= &spi_bus_type,
+-		.owner	= THIS_MODULE,
+-	},
+-	.probe		= wm8731_spi_probe,
+-	.remove		= __devexit_p(wm8731_spi_remove),
+-};
+-
+-static int wm8731_spi_write(struct spi_device *spi, const char *data, int len)
+-{
+-	struct spi_transfer t;
+-	struct spi_message m;
+-	u8 msg[2];
+-
+-	if (len <= 0)
+-		return 0;
+-
+-	msg[0] = data[0];
+-	msg[1] = data[1];
+-
+-	spi_message_init(&m);
+-	memset(&t, 0, (sizeof t));
+-
+-	t.tx_buf = &msg[0];
+-	t.len = len;
+-
+-	spi_message_add_tail(&t, &m);
+-	spi_sync(spi, &m);
+-
+-	return len;
+-}
+-#endif /* CONFIG_SPI_MASTER */
+-
+ static int wm8731_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+@@ -772,6 +676,111 @@ struct snd_soc_codec_device soc_codec_dev_wm8731 = {
+ };
+ EXPORT_SYMBOL_GPL(soc_codec_dev_wm8731);
+ 
++#if defined(CONFIG_SPI_MASTER)
++static int __devinit wm8731_spi_probe(struct spi_device *spi)
 +{
-+	static int mclk_on;
-+	int ret = 0;
++	struct snd_soc_device *socdev = wm8731_socdev;
++	struct snd_soc_codec *codec = socdev->card->codec;
++	int ret;
 +
-+	switch (level) {
-+	case SND_SOC_BIAS_ON:
-+	case SND_SOC_BIAS_PREPARE:
-+		if (!mclk_on)
-+			ret = clk_enable(mclk);
-+		if (ret == 0)
-+			mclk_on = 1;
-+		break;
++	codec->control_data = spi;
 +
-+	case SND_SOC_BIAS_OFF:
-+	case SND_SOC_BIAS_STANDBY:
-+		if (mclk_on)
-+			clk_disable(mclk);
-+		mclk_on = 0;
-+		break;
-+	}
++	ret = wm8731_init(socdev);
++	if (ret < 0)
++		dev_err(&spi->dev, "failed to initialise WM8731\n");
 +
 +	return ret;
 +}
- 
- static const struct snd_soc_dapm_widget at91sam9g20ek_dapm_widgets[] = {
- 	SND_SOC_DAPM_MIC("Int Mic", NULL),
-@@ -248,6 +277,7 @@ static struct snd_soc_card snd_soc_at91sam9g20ek = {
- 	.platform = &atmel_soc_platform,
- 	.dai_link = &at91sam9g20ek_dai,
- 	.num_links = 1,
-+	.set_bias_level = at91sam9g20ek_set_bias_level,
- };
- 
- static struct wm8731_setup_data at91sam9g20ek_wm8731_setup = {
-@@ -267,12 +297,38 @@ static int __init at91sam9g20ek_init(void)
++
++static int __devexit wm8731_spi_remove(struct spi_device *spi)
++{
++	return 0;
++}
++
++static struct spi_driver wm8731_spi_driver = {
++	.driver = {
++		.name	= "wm8731",
++		.bus	= &spi_bus_type,
++		.owner	= THIS_MODULE,
++	},
++	.probe		= wm8731_spi_probe,
++	.remove		= __devexit_p(wm8731_spi_remove),
++};
++
++static int wm8731_spi_write(struct spi_device *spi, const char *data, int len)
++{
++	struct spi_transfer t;
++	struct spi_message m;
++	u8 msg[2];
++
++	if (len <= 0)
++		return 0;
++
++	msg[0] = data[0];
++	msg[1] = data[1];
++
++	spi_message_init(&m);
++	memset(&t, 0, (sizeof t));
++
++	t.tx_buf = &msg[0];
++	t.len = len;
++
++	spi_message_add_tail(&t, &m);
++	spi_sync(spi, &m);
++
++	return len;
++}
++#endif /* CONFIG_SPI_MASTER */
++
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++/*
++ * WM8731 2 wire address is determined by GPIO5
++ * state during powerup.
++ *    low  = 0x1a
++ *    high = 0x1b
++ */
++
++static int wm8731_i2c_probe(struct i2c_client *i2c,
++			    const struct i2c_device_id *id)
++{
++	struct snd_soc_device *socdev = wm8731_socdev;
++	struct snd_soc_codec *codec = socdev->card->codec;
++	int ret;
++
++	i2c_set_clientdata(i2c, codec);
++	codec->control_data = i2c;
++
++	ret = wm8731_init(socdev);
++	if (ret < 0)
++		pr_err("failed to initialise WM8731\n");
++
++	return ret;
++}
++
++static int wm8731_i2c_remove(struct i2c_client *client)
++{
++	struct snd_soc_codec *codec = i2c_get_clientdata(client);
++	kfree(codec->reg_cache);
++	return 0;
++}
++
++static const struct i2c_device_id wm8731_i2c_id[] = {
++	{ "wm8731", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, wm8731_i2c_id);
++
++static struct i2c_driver wm8731_i2c_driver = {
++	.driver = {
++		.name = "WM8731 I2C Codec",
++		.owner = THIS_MODULE,
++	},
++	.probe =    wm8731_i2c_probe,
++	.remove =   wm8731_i2c_remove,
++	.id_table = wm8731_i2c_id,
++};
++#endif
++
+ static int __init wm8731_modinit(void)
  {
- 	struct atmel_ssc_info *ssc_p = at91sam9g20ek_dai.cpu_dai->private_data;
- 	struct ssc_device *ssc = NULL;
-+	struct clk *pllb;
- 	int ret;
- 
- 	if (!machine_is_at91sam9g20ek())
- 		return -ENODEV;
- 
- 	/*
-+	 * Codec MCLK is supplied by PCK0 - set it up.
-+	 */
-+	mclk = clk_get(NULL, "pck0");
-+	if (IS_ERR(mclk)) {
-+		printk(KERN_ERR "ASoC: Failed to get MCLK\n");
-+		ret = PTR_ERR(mclk);
-+		goto err;
-+	}
-+
-+	pllb = clk_get(NULL, "pllb");
-+	if (IS_ERR(mclk)) {
-+		printk(KERN_ERR "ASoC: Failed to get PLLB\n");
-+		ret = PTR_ERR(mclk);
-+		goto err_mclk;
-+	}
-+	ret = clk_set_parent(mclk, pllb);
-+	clk_put(pllb);
-+	if (ret != 0) {
-+		printk(KERN_ERR "ASoC: Failed to set MCLK parent\n");
-+		goto err_mclk;
-+	}
-+
-+	clk_set_rate(mclk, MCLK_RATE);
-+
-+	/*
- 	 * Request SSC device
- 	 */
- 	ssc = ssc_request(0);
-@@ -303,6 +359,10 @@ static int __init at91sam9g20ek_init(void)
- 	return ret;
- 
- err_ssc:
-+err_mclk:
-+	clk_put(mclk);
-+	mclk = NULL;
-+err:
- 	return ret;
- }
- 
-@@ -320,6 +380,8 @@ static void __exit at91sam9g20ek_exit(void)
- 
- 	platform_device_unregister(at91sam9g20ek_snd_device);
- 	at91sam9g20ek_snd_device = NULL;
-+	clk_put(mclk);
-+	mclk = NULL;
- }
- 
- module_init(at91sam9g20ek_init);
+ 	return snd_soc_register_dai(&wm8731_dai);
 -- 
 1.5.6.3
