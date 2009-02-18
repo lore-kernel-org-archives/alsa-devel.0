@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 06/11] ASoC: Check machine type before loading
-	on AT91SAM9G20-EK
-Date: Wed, 18 Feb 2009 12:02:28 +0000
-Message-ID: <1234958553-16049-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 08/11] ASoC: Rename AT91SAMG20-EK for
+	applications
+Date: Wed, 18 Feb 2009 12:02:30 +0000
+Message-ID: <1234958553-16049-8-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20090218120135.GA15414@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 44BE910388F
-	for <alsa-devel@alsa-project.org>; Wed, 18 Feb 2009 13:18:18 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id C8B631038AC
+	for <alsa-devel@alsa-project.org>; Wed, 18 Feb 2009 13:18:19 +0100 (CET)
 In-Reply-To: <20090218120135.GA15414@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,32 +25,26 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+This is a bit more idiomatic and makes identifying a configuration
+based on the board type work better.
+
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/atmel/sam9g20_wm8731.c |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
+ sound/soc/atmel/sam9g20_wm8731.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
-index be3f923..b7efdc8 100644
+index ab32514..aa52423 100644
 --- a/sound/soc/atmel/sam9g20_wm8731.c
 +++ b/sound/soc/atmel/sam9g20_wm8731.c
-@@ -45,6 +45,7 @@
- #include <sound/soc.h>
- #include <sound/soc-dapm.h>
+@@ -273,7 +273,7 @@ static struct snd_soc_dai_link at91sam9g20ek_dai = {
+ };
  
-+#include <asm/mach-types.h>
- #include <mach/hardware.h>
- #include <mach/gpio.h>
- 
-@@ -268,6 +269,9 @@ static int __init at91sam9g20ek_init(void)
- 	struct ssc_device *ssc = NULL;
- 	int ret;
- 
-+	if (!machine_is_at91sam9g20ek())
-+		return -ENODEV;
-+
- 	/*
- 	 * Request SSC device
- 	 */
+ static struct snd_soc_card snd_soc_at91sam9g20ek = {
+-	.name = "WM8731",
++	.name = "AT91SAMG20-EK",
+ 	.platform = &atmel_soc_platform,
+ 	.dai_link = &at91sam9g20ek_dai,
+ 	.num_links = 1,
 -- 
 1.5.6.3
