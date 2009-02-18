@@ -1,21 +1,19 @@
-From: =?UTF-8?Q?Vedran_Mileti=C4=87?= <rivanvx@gmail.com>
-Subject: Re: HP pavilion dv5 1110ew - no hdmi sound
-Date: Tue, 17 Feb 2009 23:19:49 +0100
-Message-ID: <fd3eb9bf0902171419m53241d47pe17c5b2694d2aba8@mail.gmail.com>
-References: <1234318844.9425.6.camel@hplaptop> <s5hd4dpe7nl.wl%tiwai@suse.de>
-	<1234496274.6869.3.camel@hplaptop> <s5h1vu2esbf.wl%tiwai@suse.de>
-	<s5hmycqdaqx.wl%tiwai@suse.de> <1234561706.7664.0.camel@hplaptop>
-	<s5hprhlfgzo.wl%tiwai@suse.de> <1234903396.6737.14.camel@hplaptop>
+From: Paulo Cavalcanti <promac@gmail.com>
+Subject: Re: idt blue jack patch
+Date: Tue, 17 Feb 2009 23:04:31 -0300
+Message-ID: <68720af30902171804t1ce547edx41ca120396e66e72@mail.gmail.com>
+References: <68720af30902160113t5c0f206di4c63ecf801ce74ea@mail.gmail.com>
+	<s5h4oyuirc5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id 399C82441A
-	for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2009 23:19:50 +0100 (CET)
-Received: by fg-out-1718.google.com with SMTP id 13so598170fge.44
-	for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2009 14:19:49 -0800 (PST)
-In-Reply-To: <1234903396.6737.14.camel@hplaptop>
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id 156571037F0
+	for <alsa-devel@alsa-project.org>; Wed, 18 Feb 2009 03:04:32 +0100 (CET)
+Received: by rv-out-0708.google.com with SMTP id c5so2130777rvf.32
+	for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2009 18:04:31 -0800 (PST)
+In-Reply-To: <s5h4oyuirc5.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,67 +23,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Bart=C5=82omiej_Holdenmayer?= <bh@habah.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBGZWIgMTcsIDIwMDkgYXQgOTo0MyBQTSwgQmFydMWCb21pZWogSG9sZGVubWF5ZXIg
-PGJoQGhhYmFoLmNvbT4gd3JvdGU6Cj4gRG5pYSAyMDA5LTAyLTE0LCBzb2IgbyBnb2R6aW5pZSAx
-MTozMCArMDEwMCwgVGFrYXNoaSBJd2FpIHBpc3plOgo+Pgo+PiBXZWxsLCBqdXN0IGxpa2Ugd2hh
-dCBJIHdyb3RlIGluIHRoZSBhYm92ZTogZ3JhYiB0aGUgbGF0ZXN0IGFsc2EtZHJpdmVyCj4+IHNu
-YXBzaG90IHRhcmJhbGwsIGJ1aWxkIGl0LCBpbnN0YWxsIGl0LCBhbmQgYWRkIHByb2JlX21hc2s9
-MHgxZmYKPj4gbW9kdWxlIG9wdGlvbiB0byBzbmQtaGRhLWludGVsLCB0aGVuIGxvYWQgaXQuICBJ
-ZiB5b3UndmUgZG9uZSBpdAo+PiBwcm9wZXJseSwgeW91IHNlZSB0aGUgbWVzc2FnZSBsaWtlIGFi
-b3ZlLiAgQW5kIGxldCdzIHNlZSB3aGV0aGVyIHRoZQo+PiBkcml2ZXIgY2FuIGRldGVjdCBtb3Jl
-IGNvZGVjcy4KPj4KPj4KPj4gVGFrYXNoaQo+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwo+PiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+PiBBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKPj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgo+IEkgZGlkIGVoYXQgWW91IHdyb3RlLiBIZXJl
-IGlzIG15IGRtZXNnOgo+IFsgICAxNC43MjkwMjNdIEhEQSBJbnRlbCAwMDAwOjAwOjFiLjA6IFBD
-SSBJTlQgQSAtPiBHU0kgMjIgKGxldmVsLCBsb3cpCj4gLT4gSVJRIDIKPiAyCj4gWyAgIDE0Ljcy
-OTAyOF0gaGRhX2ludGVsOiBjb2RlY19tYXNrIGZvcmNlZCB0byAweGZmCj4gWyAgIDE0LjcyOTA1
-NF0gSERBIEludGVsIDAwMDA6MDA6MWIuMDogc2V0dGluZyBsYXRlbmN5IHRpbWVyIHRvIDY0Cj4g
-WyAgIDE1Ljc3NjAyMV0KPiBBTFNBIC91c3Ivc3JjL0Fsc2EtMS4wLjE5L2Fsc2EtZHJpdmVyLTEu
-MC4xOS9wY2kvaGRhLy4uLy4uL2Fsc2Etawo+IGVybmVsL3BjaS9oZGEvaGRhX2ludGVsLmM6NjM0
-OiBoZGFfaW50ZWw6IGF6eF9nZXRfcmVzcG9uc2UgdGltZW91dCwKPiBzd2l0Y2hpbmcgdG8KPiAg
-cG9sbGluZyBtb2RlOiBsYXN0IGNtZD0weDEwMGYwMDAwCj4gWyAgIDE2Ljc4MDAxOV0KPiBBTFNB
-IC91c3Ivc3JjL0Fsc2EtMS4wLjE5L2Fsc2EtZHJpdmVyLTEuMC4xOS9wY2kvaGRhLy4uLy4uL2Fs
-c2Etawo+IGVybmVsL3BjaS9oZGEvaGRhX2ludGVsLmM6MTI3MTogaGRhX2ludGVsOiBDb2RlYyAj
-MSBwcm9iZSBlcnJvcjsKPiBkaXNhYmxpbmcgaXQuLi4KPiBbICAgMTcuODE2NTA4XQo+IEFMU0Eg
-L3Vzci9zcmMvQWxzYS0xLjAuMTkvYWxzYS1kcml2ZXItMS4wLjE5L3BjaS9oZGEvLi4vLi4vYWxz
-YS1rCj4gZXJuZWwvcGNpL2hkYS9oZGFfaW50ZWwuYzoxMjcxOiBoZGFfaW50ZWw6IENvZGVjICMz
-IHByb2JlIGVycm9yOwo+IGRpc2FibGluZyBpdC4uLgo+IFsgICAxNy45MjE2MDBdIGlucHV0OiBI
-REEgRGlnaXRhbCBQQ0JlZXAKPiBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWIuMC9p
-bnAKPiB1dC9pbnB1dDExCj4gWyAgIDE4LjA1MjE5NF0gaW5wdXQ6IEhEQSBJbnRlbCBhdCAweDlm
-MzAwMDAwIGlycSAyMiBNaWMgYXQgRXh0IEZyb250Cj4gSmFjayBhcyAvZAo+IGV2aWNlcy9wY2kw
-MDAwOjAwLzAwMDA6MDA6MWIuMC9pbnB1dC9pbnB1dDEyCj4gWyAgIDE4LjA1MjU4N10gaW5wdXQ6
-IEhEQSBJbnRlbCBhdCAweDlmMzAwMDAwIGlycSAyMiBNaWMgYXQgU2VwIFVOS05PV04KPiBKYWNr
-IGFzCj4gL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFiLjAvaW5wdXQvaW5wdXQxMwo+IFsg
-ICAxOC4wNTI4OTRdIGlucHV0OiBIREEgSW50ZWwgYXQgMHg5ZjMwMDAwMCBpcnEgMjIgSFAgT3V0
-IGF0IEV4dCBGcm9udAo+IEphY2sgYXMKPiAgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFi
-LjAvaW5wdXQvaW5wdXQxNAo+Cj4gV2hhdCBuZXh0IHNob3VsZCBJIGRvPwo+Cj4gSSBoYXZlIGJh
-c2ljIHF1ZXN0aW9uczoKPiBBbHNhIHRvIHdvcmsgZ29vZCB3aXRoIG15IEhETUkgc291bmQgaGF2
-ZSB0byBrbm93IHdoYXQgaGFyZHdhcmUgaXMKPiBvbmJvYXJkIGFuZCB3aGF0IGl0IGNhbiBkby0g
-ZmVhdHVyZXMgKGYuZXguSERNSSkuIFdoYXQgaXMgcmVzcG9uc2libGUKPiBmb3IgcmVjb2duaXRp
-b24gb2YgaGFyZHdhcmU/IElzIHRoYXQgYWxzYS1kcml2ZXIgcGFja2FnZT8gSG93IGNhbiBJCj4g
-Zm9yY2UgZ29vZCByZWNvZ25pdGlvbj8KPgo+IGFwbGF5IC1sIGxpc3QgZGV2aWNlcyBpdCBjYW4g
-dXNlLiBOb3cgZm9yIG1lIGl0IGlzOgo+IGFydGVrQGhwbGFwdG9wOn4kIGFwbGF5IC1sCj4gKioq
-KiBMaXN0YSBQTEFZQkFDSyB1cnrEhWR6ZcWEICoqKioKPiBrYXJ0YSAwOiBJbnRlbCBbSERBIElu
-dGVsXSwgdXJ6xIVkemVuaWUgMDogU1RBQzkyeHggQW5hbG9nIFtTVEFDOTJ4eAo+IEFuYWxvZ10K
-PiAgVXJ6xIVkemVuaWEgcG9kcnrEmWRuZTogMS8xCj4gIFVyesSFZHplbmllIHBvZHJ6xJlkbmUg
-IzA6IHN1YmRldmljZSAjMAo+IGthcnRhIDA6IEludGVsIFtIREEgSW50ZWxdLCB1cnrEhWR6ZW5p
-ZSAxOiBTVEFDOTJ4eCBEaWdpdGFsIFtTVEFDOTJ4eAo+IERpZ2l0YWxdCj4gIFVyesSFZHplbmlh
-IHBvZHJ6xJlkbmU6IDEvMQo+ICBVcnrEhWR6ZW5pZSBwb2RyesSZZG5lICMwOiBzdWJkZXZpY2Ug
-IzAKPgo+IFVwIHRvIG15IGtub3dsZWRnZSwgYXMgc29vbiBhcyBBbHNhIGtub3dzIGFib3V0IEhE
-TUkgZmVhdHVyZSwgaSB3aWxsIGdldAo+IDNyZCBkZXZpY2Ugd2l0aCBhcGxheSAtbC4gQW0gSSBy
-aWdodCBhYm91dCBpdD8KPgo+IFdoYXQgaXMgdGhhdCBkZXZpY2U6IFNUQUM5Mnh4IERpZ2l0YWw/
-Cj4gLS0KPiBQb3pkcmF3aWFtIC8gUmVnYXJkcwo+IEJhcnTFgm9taWVqIEhvbGRlbm1heWVyCj4K
-PiBHRzo1NDE2MzQ7IElDUTozMzkyMDgxMTsgc2t5cGVuYW1lOmJhcnRsb21pZWpob2xkZW5tYXll
-cgo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cj4KClRoaXMgKmNvdWxkKiBiZSBIRE1JIGRldmljZSwgSUYgaXQgaXMgaW50ZXJuYWxseSByb3V0
-ZWQgdGhhdCB3YXkuIE5vdApzdXJlLiBDYW4geW91IGdpdmUgaXQgYSBzaG90PwoKVmVkcmFuIE1p
-bGV0acSHCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Mon, Feb 16, 2009 at 7:55 AM, Takashi Iwai <tiwai@suse.de> wrote:
+
+> At Mon, 16 Feb 2009 06:13:35 -0300,
+> Paulo Cavalcanti wrote:
+> >
+> > Hi,
+> >
+> > I received a patch form Fengguang that
+> > made my Intel DG45ID (snd-hda-intel, codec IDT 92HD73E1X5)
+> > behave the way it should, in my opinion.
+> >
+> > It just makes the blue jack behave as an input source by default (in alsa
+> > 1.0.19 it is
+> > an output jack).
+> >
+> > It is widespread that the green jack is output, the blue input and the
+> pink
+> > is mic.
+> > Some cards allow reconfiguring the jacks in alsamixer, but the DG45ID
+> > already has
+> > an orange and black jacks for rear and center speakers, and a digital
+> > output.
+> >
+> > Other people have also raised this problem some time ago:
+> >
+> >
+> https://fcp.surfsite.org/modules/newbb/viewtopic.php?viewmode=threaded&order=ASC&topic_id=62855&forum=12&move=prev&topic_time=1224179600
+> >
+> > Fengguang suggested me to direct my request to the development list,
+> > so the other developers could decide what to do.
+> >
+> > I would like to add that I can use the input source and the mic just fine
+> > now
+> > (the mic could be a bit louder, but it works fine with skype).
+> >
+> > The patch is very simple and is attached. This would conclude the fix
+> > for this card, Takashi started with me some time ago (I just made the
+> > tests).
+>
+> It's fine to put a quirk there.  But, you'd need to create a "model"
+> for your device so that it won't interfere other devices.  That is,
+> define a new model type, and call stac92xx_set_config_reg() with the
+> check of spec->board_config.
+>
+>
+This is easy. The problem is that I am already using model "no-jd",
+remember?
+In this case, if I used
+
+        /* was 0x01113014 */
+        if (spec->board_config > STAC_92HD73XX_NO_JD ) {
+            stac92xx_set_config_reg(codec, 0x0c, 0x01813021);
+        }
+
+would be fine to me.
+
+However, there is a possibility that all "stac92hd73xx" family needs
+this quirk. In this case, no additional code is needed.
+
+-- 
+Paulo Roma Cavalcanti
+LCG - UFRJ
