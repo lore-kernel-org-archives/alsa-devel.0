@@ -1,19 +1,23 @@
-From: Paulo Cavalcanti <promac@gmail.com>
-Subject: Re: idt blue jack patch
-Date: Tue, 17 Feb 2009 23:04:31 -0300
-Message-ID: <68720af30902171804t1ce547edx41ca120396e66e72@mail.gmail.com>
-References: <68720af30902160113t5c0f206di4c63ecf801ce74ea@mail.gmail.com>
-	<s5h4oyuirc5.wl%tiwai@suse.de>
+From: Guy Stalnaker <jstalnak@wisc.edu>
+Subject: Re: [Fwd: HP DV4 1155 SE - No Sound through,
+	speakers...]
+Date: Tue, 17 Feb 2009 22:10:05 -0600
+Message-ID: <499B8A1D.3060309@wisc.edu>
+References: <mailman.2709.1234557113.1965.alsa-devel@alsa-project.org>
+	<4998F8BB.10801@wisc.edu> <s5h8wo6irpr.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id 156571037F0
-	for <alsa-devel@alsa-project.org>; Wed, 18 Feb 2009 03:04:32 +0100 (CET)
-Received: by rv-out-0708.google.com with SMTP id c5so2130777rvf.32
-	for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2009 18:04:31 -0800 (PST)
-In-Reply-To: <s5h4oyuirc5.wl%tiwai@suse.de>
+Received: from adsum.doit.wisc.edu (adsum.doit.wisc.edu [144.92.197.210])
+	by alsa0.perex.cz (Postfix) with ESMTP id D16ED1037F0
+	for <alsa-devel@alsa-project.org>; Wed, 18 Feb 2009 05:10:08 +0100 (CET)
+Received: from avs-daemon.smtpauth1.wiscmail.wisc.edu by
+	smtpauth1.wiscmail.wisc.edu
+	(Sun Java(tm) System Messaging Server 6.3-7.04 (built Sep 26 2008;
+	32bit)) id <0KF800K02U8UFY00@smtpauth1.wiscmail.wisc.edu> for
+	alsa-devel@alsa-project.org; Tue, 17 Feb 2009 22:10:06 -0600 (CST)
+In-reply-to: <s5h8wo6irpr.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,65 +31,138 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 16, 2009 at 7:55 AM, Takashi Iwai <tiwai@suse.de> wrote:
+Takashi,
 
-> At Mon, 16 Feb 2009 06:13:35 -0300,
-> Paulo Cavalcanti wrote:
-> >
-> > Hi,
-> >
-> > I received a patch form Fengguang that
-> > made my Intel DG45ID (snd-hda-intel, codec IDT 92HD73E1X5)
-> > behave the way it should, in my opinion.
-> >
-> > It just makes the blue jack behave as an input source by default (in alsa
-> > 1.0.19 it is
-> > an output jack).
-> >
-> > It is widespread that the green jack is output, the blue input and the
-> pink
-> > is mic.
-> > Some cards allow reconfiguring the jacks in alsamixer, but the DG45ID
-> > already has
-> > an orange and black jacks for rear and center speakers, and a digital
-> > output.
-> >
-> > Other people have also raised this problem some time ago:
-> >
-> >
-> https://fcp.surfsite.org/modules/newbb/viewtopic.php?viewmode=threaded&order=ASC&topic_id=62855&forum=12&move=prev&topic_time=1224179600
-> >
-> > Fengguang suggested me to direct my request to the development list,
-> > so the other developers could decide what to do.
-> >
-> > I would like to add that I can use the input source and the mic just fine
-> > now
-> > (the mic could be a bit louder, but it works fine with skype).
-> >
-> > The patch is very simple and is attached. This would conclude the fix
-> > for this card, Takashi started with me some time ago (I just made the
-> > tests).
->
-> It's fine to put a quirk there.  But, you'd need to create a "model"
-> for your device so that it won't interfere other devices.  That is,
-> define a new model type, and call stac92xx_set_config_reg() with the
-> check of spec->board_config.
->
->
-This is easy. The problem is that I am already using model "no-jd",
-remember?
-In this case, if I used
+Sorry it took me until tonight.  I downloaded and install the current 
+snapshot and it works. That is, I get sound from the speakers of my HP 
+Pavilion dv4 1225 laptop without needing to use the hda-verb command. 
+There is now a "Speakers" section in the GNOME Panel Volume Applet that 
+was not there before.  It starts out muted, but after changing that, I 
+have sound.
 
-        /* was 0x01113014 */
-        if (spec->board_config > STAC_92HD73XX_NO_JD ) {
-            stac92xx_set_config_reg(codec, 0x0c, 0x01813021);
-        }
+Again, MUCH THANKS to you, Herton, and the two gentlemen who also posted 
+about their HP dv4 issues.
 
-would be fine to me.
+Best regards,
 
-However, there is a possibility that all "stac92hd73xx" family needs
-this quirk. In this case, no additional code is needed.
+Guy S.
+
+Takashi Iwai wrote:
+> At Sun, 15 Feb 2009 23:25:15 -0600,
+> Guy Stalnaker wrote:
+>> Herton and Takashi,
+>>
+>> I can confirm that compiling and installing the latest snapshot of 
+>> alsa-drivers, adding "model=hp-dv5" to /etc/modprobe.d/alsa-base, and 
+>> running hda-verb with the parameters Takashi indicates DOES result in 
+>> sound from the onboard, internal speakers on my Hewlitt Packard dv4 1225 
+>> Pavilion Entertainment PC.
+>>
+>> The mute on headphone use does not work, but that's okay by me for now.
+> 
+> Good.  Could you try the very latest alsa-driver-snapshot tarball?
+> Herton's patch is already included.  If your PCI SSID matches, it
+> should work as is.  If not, please run alsa-info.sh with --no-upload 
+> option and attach the generated file.
+> 
+> 
+>> I think you're on the right track in diagnosing the problem and it's 
+>> solution.
+>>
+>> Thank you very, very much for helping us.  I know it'll likely be a 
+>> while before the solution actually makes it into distributions, but at 
+>> the least I can use my sound apps without having to plug my laptop into 
+>> something to hear what's playing.  Kinda defeats the notion of having a 
+>> laptop if one has to keep it plugged in.
+>>
+>> Do either of you mind if I collate notes from the posts exchanged on 
+>> alsa-devel and post them on the Ubuntu forums?  There are a lot of other 
+>> HP users who have posted about the same problem.  It's likely they have 
+>> no idea the resource available to them in the alsa-devel archives.
+> 
+> Sure, it's an open mailing list, so feel free to cite the thread.
+> 
+> 
+> 
+> Takashi
+> 
+>> BEST regards,
+>>
+>> Guy S.
+>>
+>>> ------------------------------
+>>>
+>>> Message: 4
+>>> Date: Fri, 13 Feb 2009 14:16:21 -0500
+>>> From: Tim Barnette <tim.barnette@gmail.com>
+>>> Subject: Re: [alsa-devel] [Fwd: HP DV4 1155 SE - No Sound through
+>>> 	speakers...]
+>>> To: Takashi Iwai <tiwai@suse.de>
+>>> Cc: alsa-devel@alsa-project.org, Jean-Pierre Andr?
+>>> 	<jean-pierre.andre@wanadoo.fr>
+>>> Message-ID:
+>>> 	<b71cdde20902131116l4c7da119s6c51a67e37371ebe@mail.gmail.com>
+>>> Content-Type: text/plain; charset=ISO-8859-1
+>>>
+>>> Takashi, I was able to build hda-verb and when I executed the command below,
+>>> it responded with:
+>>> nid=0xd, verb=0x707, param=0x40
+>>> value=0x0
+>>>
+>>> On Mon, Feb 2, 2009 at 10:25 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>>>
+>>>> At Mon, 2 Feb 2009 10:17:03 -0500,
+>>>> Tim Barnette wrote:
+>>>>> Thanks, Takashi. I made this change and rebooted.
+>>>>>
+>>>>> I noticed right away the mute light is no longer on... but still no sound
+>>>>> through speakers, only headphones..
+>>>>>
+>>>>> /sys/module/snd_hda_intel/parameters/model
+>>>>> contains
+>>>>> hp-dv5,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
+>>>>>
+>>>>> attached is the alsa-info.txt you requested..
+>>>> Did you try the latest alsa-driver snapshot?
+>>>>
+>>>> If it still doesn't work, I guess this is a BIOS problem.
+>>>> The other HP dv laptops show the widget 0x0d as the speaker while
+>>>> yours is unused.
+>>>>
+>>>> Try to run:
+>>>>        hda-verb /dev/snd/hwC0D0 0x0d SET_PIN_WID 0x40
+>>>>
+>>>>
+>>>> Takashi
+>>>>
+>>>
+>>> ------------------------------
+>>>
+>>> Message: 5
+>>> Date: Fri, 13 Feb 2009 14:22:00 -0500
+>>> From: Tim Barnette <tim.barnette@gmail.com>
+>>> Subject: Re: [alsa-devel] [Fwd: HP DV4 1155 SE - No Sound through
+>>> 	speakers...]
+>>> To: Takashi Iwai <tiwai@suse.de>
+>>> Cc: alsa-devel@alsa-project.org, Jean-Pierre Andr?
+>>> 	<jean-pierre.andre@wanadoo.fr>
+>>> Message-ID:
+>>> 	<b71cdde20902131122q16eb7e44u92daf2a4c9500bd0@mail.gmail.com>
+>>> Content-Type: text/plain; charset=ISO-8859-1
+>>>
+>>> ..And it worked!  I now have sound!  Can you tell me what I actually did
+>>> here?
+>> -- 
+>> Guy Stalnaker, I2@DOIT, jstalnak@wisc.edu
+>> 1210 West Dayton Street, Room 3209 CSS, Madison WI 53706
+>> work 608.263.8035, cell 608.235.4718, fax 608.265.6681
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
 
 -- 
-Paulo Roma Cavalcanti
-LCG - UFRJ
+Guy Stalnaker, I2@DOIT, jstalnak@wisc.edu
+1210 West Dayton Street, Room 3209 CSS, Madison WI 53706
+work 608.263.8035, cell 608.235.4718, fax 608.265.6681
