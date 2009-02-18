@@ -1,21 +1,18 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: [PATCH] Remove documentation for OSS CS4232 driver
-Date: Wed, 18 Feb 2009 19:07:18 +0100
-Message-ID: <20090218190718.ca4af94a.krzysztof.h1@poczta.fm>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: Rationale behind snd_pcm_htimestamp()
+Date: Wed, 18 Feb 2009 22:51:57 +0100
+Message-ID: <20090218215157.GA13939@tango.0pointer.de>
+References: <20090216023509.GA16494@tango.0pointer.de>
+	<s5hk57qz7ng.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7315410997048742837=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
-	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id 96C1224156
-	for <alsa-devel@alsa-project.org>; Wed, 18 Feb 2009 19:02:35 +0100 (CET)
-Received: from poczta.interia.pl (mi02.poczta.interia.pl [10.217.12.2])
-	by smtp239.poczta.interia.pl (INTERIA.PL) with ESMTP id CF02629A1C5
-	for <alsa-devel@alsa-project.org>; Wed, 18 Feb 2009 19:02:30 +0100 (CET)
-Received: from krzysio.net (93-181-133-4.as.kn.pl [93.181.133.4])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by www.poczta.fm (INTERIA.PL) with ESMTP id A9D2D2BC3BB
-	for <alsa-devel@alsa-project.org>; Wed, 18 Feb 2009 19:02:30 +0100 (CET)
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id C3C242433F
+	for <alsa-devel@alsa-project.org>; Wed, 18 Feb 2009 22:52:00 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hk57qz7ng.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,72 +22,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============7315410997048742837==
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+On Mon, 16.02.09 17:08, Takashi Iwai (tiwai@suse.de) wrote:
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
+> > An alternative way seemed to be to go via the snd_pcm_status
+> > structure. However querying that seems not to sync the hw index
+> > data. Hmm... so let's call snd_pcm_hwsync() right before querying the
+> > struct -- as it turns out however, that function is now deprecated. So
+> > which function should I call? The doxygen comments of _hwsync() kind
+> > of suggest in a way to call snd_pcm_avail_update(), whose doxygen
+> > comments however declare that it does in fact *not* sync the hw state
+> > either, but suggest to use snd_pcm_avail() for that.
+> > 
+> > Ok, so I am now tempted to first call snd_pcm_avail() and then
+> > snd_pcm_status() and have all three values atomically. But unfortunately
+> > that's not the case. Again the avail value of the two calls differs sometimes.
+> > 
+> > How can I query the three values atomically? Can i do that at all?
+> 
+> Hmm, there is no way to get them in atomic way anyway, I guess.
+> Even in *_avail_delay(),  basically each of them is called
+> sequentially in alsa-lib code.
+> 
+> But, I wonder whether calling snd_pcm_delay() then
+> snd_pcm_htimestamp() doesn't work?  snd_pcm_avail_delay() is nothing
+> but a sequential call of snd_pcm_delay() and avail_update().  And,
+> htimestamp is avail_update() and timestamp check.
+> 
+> Well, *_htimestamp() has a loop to sync with avail, so the similar
+> logic could be used to sync all of them...
 
-There is no OSS cs4232 driver in the kernel
-any more and this documentation does not
-contain any info useful for ALSA driver.
+Hmm, so I understood you correctly then the API would need changing to
+get the timestamp, the delay and the avail value that belong together?
+That's unfortunate.
 
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
----
- Documentation/sound/oss/CS4232 |   23 -----------------------
- 1 files changed, 0 insertions(+), 23 deletions(-)
- delete mode 100644 Documentation/sound/oss/CS4232
+Why doesn't calling _avail() and then _status() do what I want?
 
-diff --git a/Documentation/sound/oss/CS4232 b/Documentation/sound/oss/CS4232
-deleted file mode 100644
-index 7d6af7a..0000000
---- a/Documentation/sound/oss/CS4232
-+++ /dev/null
-@@ -1,23 +0,0 @@
--To configure the Crystal CS423x sound chip and activate its DSP functions,
--modules may be loaded in this order:
--  
--	modprobe sound
--	insmod ad1848
--	insmod uart401
--	insmod cs4232 io=* irq=* dma=* dma2=*
--  
--This is the meaning of the parameters:
--  
--	io--I/O address of the Windows Sound System (normally 0x534)
--	irq--IRQ of this device
--	dma and dma2--DMA channels (DMA2 may be 0)
--  
--On some cards, the board attempts to do non-PnP setup, and fails.  If you
--have problems, use Linux' PnP facilities. 
--  
--To get MIDI facilities add
--  
--	insmod opl3 io=*
--  
--where "io" is the I/O address of the OPL3 synthesizer. This will be shown
--in /proc/sys/pnp and is normally 0x388.
+Lennart
+
 -- 
-1.5.2.2
-
-
-----------------------------------------------------------------------
-Promocja w Speak Up. Kurs angielskiego za darmo. 
-Liczba miejsc ograniczona. Sprawd¼!>> http://link.interia.pl/f205c
-
-
---===============7315410997048742837==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============7315410997048742837==--
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
