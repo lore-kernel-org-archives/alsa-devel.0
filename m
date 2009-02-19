@@ -1,15 +1,23 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Timer instability
-Date: Thu, 19 Feb 2009 03:46:11 +0100
-Message-ID: <20090219024611.GA7930@tango.0pointer.de>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: idt blue jack patch
+Date: Thu, 19 Feb 2009 11:02:12 +0800
+Message-ID: <20090219030212.GA26505@localhost>
+References: <68720af30902160113t5c0f206di4c63ecf801ce74ea@mail.gmail.com>
+	<s5h4oyuirc5.wl%tiwai@suse.de>
+	<68720af30902171804t1ce547edx41ca120396e66e72@mail.gmail.com>
+	<s5htz6s8cis.wl%tiwai@suse.de>
+	<68720af30902180104k40a3377cs95ae80446af61f0d@mail.gmail.com>
+	<fd3eb9bf0902180144r476fd065ued924b5b26a6675@mail.gmail.com>
+	<s5hk57nzs1h.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id E93261038A4
-	for <alsa-devel@alsa-project.org>; Thu, 19 Feb 2009 03:46:17 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 819F1103803
+	for <alsa-devel@alsa-project.org>; Thu, 19 Feb 2009 04:02:15 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <s5hk57nzs1h.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,65 +27,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Paulo Cavalcanti <promac@gmail.com>, Vedran =?utf-8?Q?Mileti=C4=87?= <rivanvx@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Heya!
-
-As you might now PulseAudio schedules audio by system timers, not by
-sound card interrupts. Unfortunately there are are couple of issues
-with the reliability of the timing/buffering information we get from
-ALSA. 
-
-For example, on an ens1371 I have tracked down the following issue: I
-use the full buffer that the sound card provides (64K, i.e. 371ms). I
-sleep for about 350 ms, then fill up again, and sleep 350ms, and so
-and so on. Everytime I wake up I check snd_pcm_avail() and write
-exactly as much as this call tells me to. I also listen to POLLOUT
-events on the fd, however I call snd_pcm_sw_params_set_period_event(,
-0) for it to make sure I actually don't get any real events on that.
-
-After a couple of minutes of running this loop I can reliably
-reproduce that _avail() tells me I should fill the buffer up, I do so,
-query it again and it shows the buffer is filled up. I then go to
-sleep but immediately get POLLIN (although I shouldnt, given that I
-called snd_pcm_sw_params_set_period_event()), wake up again, call
-snd_pcm_avail() and according to it the buffer ran completely
-empty. The poll() took less than 1 ms time, and the last thing I did
-before going to sleep was checking that the buffer was full. So
-certainly ALSA is lying to me here... The buffer couldn't have run
-empty in less than 1 ms!
-
-The same with real numbers as one example:
-
-  1. ... we are woken up
-  2. _avail() returns 15496 samples (i.e. 350ms to fill up)
-  3. we gather and write 15496 samples
-  4. _avail() returns 48 samples, which we consider "filled up enough" to go to sleep
-  5. we call poll()
-  6. after < 1ms we are woken up by a POLLIN (which we actually thought we had explicitly disabled)
-  7. _avail() returns 16448 samples (i.e. 372ms to fill up -- larger than the actual buffer of 16384 samples!)  
-  
-This smells a lot like some kind of overflow to me, given that in every
-case where I could reproduce this it was possible to 'fix' the issue
-by substracting the buffer size from the _avail() after the
-poll(). After that substraction the value started to make sense
-again. (i.e. in the example above it then becomes 64 samples, which is
-reasonable after sleep less than 1ms I guess).
-
-The stop threshold is set to the boundary here btw.
-
-If necessary I could extract a test case for this, but my hope that
-you guys might have an idea what goes on without a test case, given
-that this smells so "overflowy" ;-)
-
-And of course, how come ALSA triggers POLLIN if I asked it not to?
-
-This is alsa-libs 1.0.19 on a 2.6.27 kernel.
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+T24gV2VkLCBGZWIgMTgsIDIwMDkgYXQgMDQ6MjQ6NThQTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IEF0IFdlZCwgMTggRmViIDIwMDkgMTA6NDQ6MjYgKzAxMDAsCj4gVmVkcmFuIE1pbGV0
+acSHIHdyb3RlOgo+ID4gCj4gPiBPbiBXZWQsIEZlYiAxOCwgMjAwOSBhdCAxMDowNCBBTSwgUGF1
+bG8gQ2F2YWxjYW50aSA8cHJvbWFjQGdtYWlsLmNvbT4gd3JvdGU6Cj4gPiA+IFRha2FzaGksCj4g
+PiA+Cj4gPiA+IEZlbmdndWFuZyBnb3QgdGhlIHNhbWUgYm9hcmQgSSBoYXZlIChERzQ1SUQpCj4g
+PiA+IGFuZCBoZSBjb25maXJtZWQgdGhhdCB0aGUgYmx1ZSBqYWNrIHdhcyBvdXRwdXQuCj4gPiA+
+IFRoZSBvbmx5IGRpZmZlcmVuY2UgYmV0d2VlbiBoaXMgY29tcHV0ZXIgYW5kIG1pbmUKPiA+ID4g
+d2FzIHRoYXQgaGlzIGhhZCBhbiBvbGRlciBiaW9zLgo+ID4gPgo+ID4gPiBUaGlzIGlzIHdoYXQg
+aGUgc2FpZCB0byBtZSBiZWZvcmUgc2VuZGluZyBtZSB0aGUgcGF0Y2g6Cj4gPiA+Cj4gPiA+ICJP
+Sywgc28gaXQncyBpbiBmYWN0IGEgZ2VuZXJhbCBpc3N1ZS4gSSdsbCBsb29rIGludG8gaXQuIEJ1
+dCBJJ20gYWZyYWlkCj4gPiA+IEkgaGF2ZSBkaWZmaWN1bHR5IGluIGFsbG9jYXRpbmcgdGltZSBm
+b3IgaXQgaW4gdGhlIG5lYXIgZnV0dXJlLi4uIgo+ID4gPgo+ID4gPiBUaGVyZWZvcmUsIEkgdGhp
+bmsgd2UgbmVlZCBhbm90aGVyIHF1aXJrLgo+ID4gPgo+ID4gPiBUaGFua3MuCj4gPiA+Cj4gPiA+
+Cj4gPiA+IC0tCj4gPiA+IFBhdWxvIFJvbWEgQ2F2YWxjYW50aQo+ID4gPiBMQ0cgLSBVRlJKCj4g
+PiA+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gPiA+
+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gPiA+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+Zwo+ID4gPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo+ID4gPgoKW3NvcnJ5IGZvciBiZWluZyBsYXRlXQoKPiA+IAo+ID4gQ2FuIHlv
+dSBmaW5kIHNvbWVvbmUgd2hvIGhhcyBkaWZmZXJlbnQgYm9hcmQgd2l0aCBzYW1lIGNvZGVjIHRv
+IHZlcmlmeQo+ID4gaG93IGdlbmVyYWwgaXNzdWUgdGhpcyByZWFsbHkgaXM/Cj4KPiBJbiBnZW5l
+cmFsLCB0aGUgcGluIGNvbmZpZyB2YWx1ZSBjYW4ndCBiZSBnZW5lcmljLgo+IEFzIHBvcnQtQyBp
+cyBhIG11bHRpLXB1cnBvc2UgamFjaywgSSBkb24ndCB0aGluayB0aGlzIGNhbiBiZSBhcHBsaWVk
+Cj4gdG8gYWxsIGNhc2VzLgoKSSBtYWRlIHRoYXQgaGFja2luZyBwYXRjaCBiYXNlZCBvbiBJRFQn
+cyBzcGVjLiBUaGUgdmFsdWUgSSB3cm90ZSBpcyBpbgpmYWN0IHRoZSBkZWZhdWx0IHZhbHVlIGxp
+c3RlZCBpbiB0aGUgc3BlYy4gU28gaXQncyB0aGUgSW50ZWwgQklPUyB0aGF0CmNoYW5nZWQgdGhl
+IGRlZmF1bHQgdmFsdWUgYW5kIG1ha2UgaXQgYW4gb3V0cHV0IHBpbi4KCj4gU28sIG5vdyB0aGUg
+cXVlc3Rpb24gaXMgd2hlbiB0byBhcHBseSAtLSB1bmRlciB3aGljaCBjb25kaXRpb24uCj4gQXBw
+YXJlbnRseSwgdGhlIEJJT1Mgb2YgUGF1bG8gaXMgYnJva2VuLiAgQW5kLCBXdSBGZW5nZ3Vhbmcn
+cyBjYXNlCj4gaXMgdW5jbGVhciwgd2hldGhlciBpdCBjb21lcyBmcm9tIEJJT1Mgb3IgZnJvbSBh
+IHN0YXRpYyBwaW4gY2ZnCj4gdGFibGUgaW4gcGF0Y2hfc2lnbWF0ZWwuYy4KCkFmdGVyIHJlYm9v
+dGluZyBhbmQgZm9yY2UgdXNpbmcgdGhlIGdlbmVyaWMgY29kZWMsIHRoZSAweDBjIG5vZGUgc3Rp
+bGwKc2hvd3MgIlBpbiBEZWZhdWx0IDB4MDExMTMwMTQ6IFtKYWNrXSBTcGVha2VyIGF0IEV4dCBS
+ZWFyIi4gU28gdGhlCnZhbHVlIGlzIGZyb20gdGhlIEJJT1MuCgpUaGUgb25seSBwcm9ibGVtIGlz
+IHRoYXQgdGhlIHBpbiBjb2xvciBpcyBCbHVlIGJvdGggbG9naWNhbGx5IGFuZApwaHlzaWNhbGx5
+LCB3aGljaCBzaG91bGQgYmUgaW5wdXQgaW5zdGVhZCBvZiBvdXRwdXQgYWNjb3JkaW5nIHRvIHRo
+ZQpjb252ZW50aW9uIG9mIGNvbG9yIGNvZGVzLgoKSWYgeW91IHRoaW5rIGl0J3MgT0ssIEkgY2Fu
+IHJlZmluZSB0aGF0IHBhdGNoIGZvciBzdWJtaXR0aW5nLiAgVGhlCnBvc3NpYmxlIHJlZ3Jlc3Np
+b24gY291bGQgYmUgdGhhdCB1c2VycyBjb25uZWN0aW5nIHNwZWFrZXJzIHRvIHRoYXQKcGluIHdp
+bGwgZmluZCBpdCBubyBsb25nZXIgcHJvZHVjaW5nIHNvdW5kIGFmdGVyIHVwZ3JhZGluZyBrZXJu
+ZWwuCgpUaGFua3MsCkZlbmdndWFuZwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
