@@ -1,18 +1,15 @@
 From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Rationale behind snd_pcm_htimestamp()
-Date: Wed, 18 Feb 2009 22:51:57 +0100
-Message-ID: <20090218215157.GA13939@tango.0pointer.de>
-References: <20090216023509.GA16494@tango.0pointer.de>
-	<s5hk57qz7ng.wl%tiwai@suse.de>
+Subject: Timer instability
+Date: Thu, 19 Feb 2009 03:46:11 +0100
+Message-ID: <20090219024611.GA7930@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id C3C242433F
-	for <alsa-devel@alsa-project.org>; Wed, 18 Feb 2009 22:52:00 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id E93261038A4
+	for <alsa-devel@alsa-project.org>; Thu, 19 Feb 2009 03:46:17 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5hk57qz7ng.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,43 +19,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 16.02.09 17:08, Takashi Iwai (tiwai@suse.de) wrote:
+Heya!
 
-> > An alternative way seemed to be to go via the snd_pcm_status
-> > structure. However querying that seems not to sync the hw index
-> > data. Hmm... so let's call snd_pcm_hwsync() right before querying the
-> > struct -- as it turns out however, that function is now deprecated. So
-> > which function should I call? The doxygen comments of _hwsync() kind
-> > of suggest in a way to call snd_pcm_avail_update(), whose doxygen
-> > comments however declare that it does in fact *not* sync the hw state
-> > either, but suggest to use snd_pcm_avail() for that.
-> > 
-> > Ok, so I am now tempted to first call snd_pcm_avail() and then
-> > snd_pcm_status() and have all three values atomically. But unfortunately
-> > that's not the case. Again the avail value of the two calls differs sometimes.
-> > 
-> > How can I query the three values atomically? Can i do that at all?
-> 
-> Hmm, there is no way to get them in atomic way anyway, I guess.
-> Even in *_avail_delay(),  basically each of them is called
-> sequentially in alsa-lib code.
-> 
-> But, I wonder whether calling snd_pcm_delay() then
-> snd_pcm_htimestamp() doesn't work?  snd_pcm_avail_delay() is nothing
-> but a sequential call of snd_pcm_delay() and avail_update().  And,
-> htimestamp is avail_update() and timestamp check.
-> 
-> Well, *_htimestamp() has a loop to sync with avail, so the similar
-> logic could be used to sync all of them...
+As you might now PulseAudio schedules audio by system timers, not by
+sound card interrupts. Unfortunately there are are couple of issues
+with the reliability of the timing/buffering information we get from
+ALSA. 
 
-Hmm, so I understood you correctly then the API would need changing to
-get the timestamp, the delay and the avail value that belong together?
-That's unfortunate.
+For example, on an ens1371 I have tracked down the following issue: I
+use the full buffer that the sound card provides (64K, i.e. 371ms). I
+sleep for about 350 ms, then fill up again, and sleep 350ms, and so
+and so on. Everytime I wake up I check snd_pcm_avail() and write
+exactly as much as this call tells me to. I also listen to POLLOUT
+events on the fd, however I call snd_pcm_sw_params_set_period_event(,
+0) for it to make sure I actually don't get any real events on that.
 
-Why doesn't calling _avail() and then _status() do what I want?
+After a couple of minutes of running this loop I can reliably
+reproduce that _avail() tells me I should fill the buffer up, I do so,
+query it again and it shows the buffer is filled up. I then go to
+sleep but immediately get POLLIN (although I shouldnt, given that I
+called snd_pcm_sw_params_set_period_event()), wake up again, call
+snd_pcm_avail() and according to it the buffer ran completely
+empty. The poll() took less than 1 ms time, and the last thing I did
+before going to sleep was checking that the buffer was full. So
+certainly ALSA is lying to me here... The buffer couldn't have run
+empty in less than 1 ms!
+
+The same with real numbers as one example:
+
+  1. ... we are woken up
+  2. _avail() returns 15496 samples (i.e. 350ms to fill up)
+  3. we gather and write 15496 samples
+  4. _avail() returns 48 samples, which we consider "filled up enough" to go to sleep
+  5. we call poll()
+  6. after < 1ms we are woken up by a POLLIN (which we actually thought we had explicitly disabled)
+  7. _avail() returns 16448 samples (i.e. 372ms to fill up -- larger than the actual buffer of 16384 samples!)  
+  
+This smells a lot like some kind of overflow to me, given that in every
+case where I could reproduce this it was possible to 'fix' the issue
+by substracting the buffer size from the _avail() after the
+poll(). After that substraction the value started to make sense
+again. (i.e. in the example above it then becomes 64 samples, which is
+reasonable after sleep less than 1ms I guess).
+
+The stop threshold is set to the boundary here btw.
+
+If necessary I could extract a test case for this, but my hope that
+you guys might have an idea what goes on without a test case, given
+that this smells so "overflowy" ;-)
+
+And of course, how come ALSA triggers POLLIN if I asked it not to?
+
+This is alsa-libs 1.0.19 on a 2.6.27 kernel.
 
 Lennart
 
