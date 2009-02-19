@@ -1,16 +1,21 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [RFC/PATCH] pxa2xx_ac97 and gpio reset line
-Date: Thu, 19 Feb 2009 21:21:59 +0000
-Message-ID: <4C46CDB4-EF69-4B6F-929E-FCBE644A7FA5@sirena.org.uk>
-References: <87iqn6f97x.fsf@free.fr> (sfid-20090219_204415_285057_2FE278FF)
-Mime-Version: 1.0 (iPhone Mail 5H11)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: =?UTF-8?Q?Bart=C5=82omiej?= Holdenmayer <bh@habah.com>
+Subject: Re: HP pavilion dv5 1110ew - no hdmi sound
+Date: Thu, 19 Feb 2009 23:41:40 +0100
+Message-ID: <1235083300.7015.22.camel@hplaptop>
+References: <1234318844.9425.6.camel@hplaptop>
+	<s5hd4dpe7nl.wl%tiwai@suse.de> <1234496274.6869.3.camel@hplaptop>
+	<s5h1vu2esbf.wl%tiwai@suse.de> <s5hmycqdaqx.wl%tiwai@suse.de>
+	<1234561706.7664.0.camel@hplaptop> <s5hprhlfgzo.wl%tiwai@suse.de>
+	<1234903396.6737.14.camel@hplaptop> <s5hwsbo8da1.wl%tiwai@suse.de>
+	<s5hskmc8c3t.wl%tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id B767A243B4
-	for <alsa-devel@alsa-project.org>; Thu, 19 Feb 2009 22:21:58 +0100 (CET)
-In-Reply-To: <87iqn6f97x.fsf@free.fr> (sfid-20090219_204415_285057_2FE278FF)
+Received: from secure4.ia-dns.com (secure4.ia-dns.com [70.84.79.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2CCDC1037ED
+	for <alsa-devel@alsa-project.org>; Thu, 19 Feb 2009 23:41:53 +0100 (CET)
+In-Reply-To: <s5hskmc8c3t.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,207 +25,165 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 19 Feb 2009, at 20:44, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
-
-> Hi Mark,
->
-> I can't find out if somebody had submitted that kind of patch  
-> before. This is a
-> starting point of discussion. I'm not fully convinced by my own  
-> code, and so I
-> post it here for advice.
->
-> What I'd really like is to be able to choose the PXA AC97 gpio reset  
-> (GPIO95 or
-> GPIO113) through platform_data, but I couldn't find a way of doing  
-> it. I hope
-> you'll have some kind of idea.
-
-This is a sensible idea in principle but should be done via platform  
-data for the AC97 driver rather than via Kconfig - it'll need an  
-update to use the platform in ASoC but I'll need to do those anyway.
-
->
->
-> Cheers.
->
-> --
-> Robert
->
-> From 8d4a0c602b85528af2a35fd3f1f1bd8ddca22985 Mon Sep 17 00:00:00 2001
-> From: Robert Jarzmik <robert.jarzmik@free.fr>
-> Date: Thu, 19 Feb 2009 21:35:42 +0100
-> Subject: [PATCH] Allow choice in ac97 gpio reset line
->
-> As the PXA series allow 2 gpios to reset the ac97 bus, allow
-> through configuration the definition of the correct gpio
-> which will reset the AC97 bus.
->
-> This comes from a silicon defect on the PXA series, where
-> the gpio must be manually controlled in warm reset cases.
->
-> Signed-off-by: Robert Jarzmik <rjarzmik@free.fr>
-> ---
-> sound/arm/Kconfig           |   17 +++++++++++
-> sound/arm/pxa2xx-ac97-lib.c |   68 ++++++++++++++++++++++++++++++++++ 
-> +++++---
-> 2 files changed, 80 insertions(+), 5 deletions(-)
->
-> diff --git a/sound/arm/Kconfig b/sound/arm/Kconfig
-> index f8e6de4..2749274 100644
-> --- a/sound/arm/Kconfig
-> +++ b/sound/arm/Kconfig
-> @@ -39,6 +39,23 @@ config SND_PXA2XX_LIB
-> config SND_PXA2XX_LIB_AC97
->    bool
->
-> +choice
-> +    prompt "PXA GPIO line used to reset AC97 bus"
-> +    depends on SND_PXA2XX_LIB_AC97
-> +    help
-> +      Choose which GPIO is assigned the AC97 reset function.
-> +
-> +      Usually board designers use GPIO 113, but GPIO 95 can be used
-> +      as well.
-> +
-> +config    SND_PXA2XX_LIB_AC97_RESET113
-> +    bool "GPIO113"
-> +
-> +config    SND_PXA2XX_LIB_AC97_RESET95
-> +    bool "GPIO95"
-> +
-> +endchoice
-> +
-> config SND_PXA2XX_AC97
->    tristate "AC97 driver for the Intel PXA2xx chip"
->    depends on ARCH_PXA
-> diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
-> index 35afd0c..aa522d2 100644
-> --- a/sound/arm/pxa2xx-ac97-lib.c
-> +++ b/sound/arm/pxa2xx-ac97-lib.c
-> @@ -31,6 +31,8 @@ static DECLARE_WAIT_QUEUE_HEAD(gsr_wq);
-> static volatile long gsr_bits;
-> static struct clk *ac97_clk;
-> static struct clk *ac97conf_clk;
-> +static int is_ac97_resetgpio_95;
-> +static int is_ac97_resetgpio_113;
->
-> /*
->  * Beware PXA27x bugs:
-> @@ -42,6 +44,55 @@ static struct clk *ac97conf_clk;
->  * 1 jiffy timeout if interrupt never comes).
->  */
->
-> +enum {
-> +    RESETGPIO_FORCE_HIGH,
-> +    RESETGPIO_FORCE_LOW,
-> +    RESETGPIO_NORMAL_ALTFUNC
-> +};
-> +
-> +/**
-> + * set_resetgpio_mode - computes and sets the AC97_RESET gpio mode  
-> on PXA
-> + * @mode: chosen action
-> + *
-> + * As the PXA CPUs suffer from a AC97 bug, a manual control of the  
-> reset
-> + * line must be done to insure proper work of AC97 reset line.
-> + * This function computes the correct gpio_mode for further use by  
-> reset
-> + * functions, and applied the change through pxa_gpio_mode.
-> + */
-> +static void set_resetgpio_mode(int resetgpio_action)
-> +{
-> +    int mode = 0;
-> +
-> +    if (is_ac97_resetgpio_113)
-> +        switch (resetgpio_action) {
-> +        case RESETGPIO_FORCE_LOW:
-> +            mode = 113 | GPIO_OUT | GPIO_DFLT_LOW;
-> +            break;
-> +        case RESETGPIO_FORCE_HIGH:
-> +            mode = 113 | GPIO_OUT | GPIO_DFLT_HIGH;
-> +            break;
-> +        case RESETGPIO_NORMAL_ALTFUNC:
-> +            mode = 113 | GPIO_ALT_FN_2_OUT;
-> +            break;
-> +        };
-> +
-> +    if (is_ac97_resetgpio_95)
-> +        switch (resetgpio_action) {
-> +        case RESETGPIO_FORCE_LOW:
-> +            mode = 95 | GPIO_OUT | GPIO_DFLT_LOW;
-> +            break;
-> +        case RESETGPIO_FORCE_HIGH:
-> +            mode = 95 | GPIO_OUT | GPIO_DFLT_HIGH;
-> +            break;
-> +        case RESETGPIO_NORMAL_ALTFUNC:
-> +            mode = 95 | GPIO_ALT_FN_1_OUT;
-> +            break;
-> +        };
-> +
-> +    if (mode)
-> +        pxa_gpio_mode(mode);
-> +}
-> +
-> unsigned short pxa2xx_ac97_read(struct snd_ac97 *ac97, unsigned  
-> short reg)
-> {
->    unsigned short val = -1;
-> @@ -137,10 +188,10 @@ static inline void pxa_ac97_warm_pxa27x(void)
->
->    /* warm reset broken on Bulverde,
->       so manually keep AC97 reset high */
-> -    pxa_gpio_mode(113 | GPIO_OUT | GPIO_DFLT_HIGH);
-> +    set_resetgpio_mode(RESETGPIO_FORCE_HIGH);
->    udelay(10);
->    GCR |= GCR_WARM_RST;
-> -    pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
-> +    set_resetgpio_mode(RESETGPIO_NORMAL_ALTFUNC);
->    udelay(500);
-> }
->
-> @@ -308,8 +359,8 @@ int pxa2xx_ac97_hw_resume(void)
->        pxa_gpio_mode(GPIO29_SDATA_IN_AC97_MD);
->    }
->    if (cpu_is_pxa27x()) {
-> -        /* Use GPIO 113 as AC97 Reset on Bulverde */
-> -        pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
-> +        /* Use GPIO 113 or 95 as AC97 Reset on Bulverde */
-> +        set_resetgpio_mode(RESETGPIO_NORMAL_ALTFUNC);
->    }
->    clk_enable(ac97_clk);
->    return 0;
-> @@ -321,6 +372,13 @@ int __devinit pxa2xx_ac97_hw_probe(struct  
-> platform_device *dev)
-> {
->    int ret;
->
-> +#ifdef CONFIG_SND_PXA2XX_LIB_AC97_RESET113
-> +    is_ac97_resetgpio_113 = 1;
-> +#endif
-> +#ifdef CONFIG_SND_PXA2XX_LIB_AC97_RESET95
-> +    is_ac97_resetgpio_95 = 1;
-> +#endif
-> +
->    if (cpu_is_pxa25x() || cpu_is_pxa27x()) {
->        pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
->        pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
-> @@ -330,7 +388,7 @@ int __devinit pxa2xx_ac97_hw_probe(struct  
-> platform_device *dev)
->
->    if (cpu_is_pxa27x()) {
->        /* Use GPIO 113 as AC97 Reset on Bulverde */
-> -        pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
-> +        set_resetgpio_mode(RESETGPIO_NORMAL_ALTFUNC);
->        ac97conf_clk = clk_get(&dev->dev, "AC97CONFCLK");
->        if (IS_ERR(ac97conf_clk)) {
->            ret = PTR_ERR(ac97conf_clk);
-> -- 
-> 1.5.6.5
->
->
+RG5pYSAyMDA5LTAyLTE4LCDFm3JvIG8gZ29kemluaWUgMDc6NTkgKzAxMDAsIFRha2FzaGkgSXdh
+aSBwaXN6ZToKPiBBdCBXZWQsIDE4IEZlYiAyMDA5IDA3OjMzOjQyICswMTAwLAo+IEkgd3JvdGU6
+Cj4gPiAKPiA+IEF0IFR1ZSwgMTcgRmViIDIwMDkgMjE6NDM6MTYgKzAxMDAsCj4gPiBCYXJ0xYJv
+bWllaiBIb2xkZW5tYXllciB3cm90ZToKPiA+ID4gCj4gPiA+IERuaWEgMjAwOS0wMi0xNCwgc29i
+IG8gZ29kemluaWUgMTE6MzAgKzAxMDAsIFRha2FzaGkgSXdhaSBwaXN6ZToKPiA+ID4gPiBBdCBG
+cmksIDEzIEZlYiAyMDA5IDIyOjQ4OjI2ICswMTAwLAo+ID4gPiA+IEJhcnTFgm9taWVqIEhvbGRl
+bm1heWVyIHdyb3RlOgo+ID4gPiA+ID4gCj4gPiA+ID4gPiBEbmlhIDIwMDktMDItMTMsIHBpxIUg
+byBnb2R6aW5pZSAwOTowMyArMDEwMCwgVGFrYXNoaSBJd2FpIHBpc3plOgo+ID4gPiA+ID4gPiBB
+dCBGcmksIDEzIEZlYiAyMDA5IDA3OjU4OjQ0ICswMTAwLAo+ID4gPiA+ID4gPiBJIHdyb3RlOgo+
+ID4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiA+IEF0IEZyaSwgMTMgRmViIDIwMDkgMDQ6Mzc6NTQg
+KzAxMDAsCj4gPiA+ID4gPiA+ID4gQmFydMWCb21pZWogSG9sZGVubWF5ZXIgd3JvdGU6Cj4gPiA+
+ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4gPiA+IERuaWEgMjAwOS0wMi0xMSwgxZtybyBvIGdvZHpp
+bmllIDA4OjQ4ICswMTAwLCBUYWthc2hpIEl3YWkgcGlzemU6Cj4gPiA+ID4gPiA+ID4gPiA+IEF0
+IFdlZCwgMTEgRmViIDIwMDkgMDM6MjA6NDQgKzAxMDAsCj4gPiA+ID4gPiA+ID4gPiA+IEJhcnTF
+gm9taWVqIEhvbGRlbm1heWVyIHdyb3RlOgo+ID4gPiA+ID4gPiA+ID4gPiA+IAo+ID4gPiA+ID4g
+PiA+ID4gPiA+IFdlbGNvbWUsCj4gPiA+ID4gPiA+ID4gPiA+ID4gSSBoYXZlIG5vIHNvdW5kIHRo
+cm91Z2ggSERNSS4KPiA+ID4gPiA+ID4gPiA+ID4gPiBJIGhhdmUgTnZpZGlhIEdlZm9yY2UgOTIw
+ME0gR1Mgd2l0aCAxODAuMTEgZHJpdmVyLiBBbHNhIDEuMC4xOS4gQW5kCj4gPiA+ID4gPiA+ID4g
+PiA+ID4gbmV3ZXN0IGJpb3MgRjEzQS4gCj4gPiA+ID4gPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+
+ID4gPiA+ID4gSSB3YXMgZ29vZ2xpbmcgZm9yIGEgd2VlayBhbmQgb25seSBzb2x1dGlvbiBpIGZv
+dW5kIHdhcyB0byB1cGdyYWRlIEFsc2EKPiA+ID4gPiA+ID4gPiA+ID4gPiBhbmQgTnZpZGlhIHRv
+IHRoZSBuZXdlc3QgdmVyc2lvbi4gSSBkaWQsIGJ1dCBpIHN0aWxsIGRvIG5vdCBoYXZlIHNvdW5k
+Cj4gPiA+ID4gPiA+ID4gPiA+ID4gb3ZlciBIRE1JLiBJbiBXaW4kIGl0IGlzIHdvcmtpbmcgb2su
+Cj4gPiA+ID4gPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+ID4gPiA+ID4gaHR0cDovL3d3dy5hbHNh
+LXByb2plY3Qub3JnL2RiLz9mPTAxYmU5MTc1MjYzYTUwMjFmY2ZlZjNhNDcxMjNhZmMwNGQ2MmE4
+NjMKPiA+ID4gPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+ID4gPiA+IFRyeSB0aGUgdmVyeSBsYXRl
+c3QgYWxzYS1kcml2ZXIgc25hcHNob3QgYmVsb3c6Cj4gPiA+ID4gPiA+ID4gPiA+ICAgICBmdHA6
+Ly9mdHAua2VybmVsLm9yZy9wdWIvbGludXgva2VybmVsL3Blb3BsZS90aXdhaS9zbmFwc2hvdC9h
+bHNhLWRyaXZlci1zbmFwc2hvdC50YXIuZ3oKPiA+ID4gPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+
+ID4gPiA+IAo+ID4gPiA+ID4gPiA+ID4gPiBUYWthc2hpCj4gPiA+ID4gPiA+ID4gPiAKPiA+ID4g
+PiA+ID4gPiA+IEkgaGF2ZSBub3cgdGhlIG5ld2VzdCBudmlkaWEgMTgwLjI5IGZyb20gMTEuMDIu
+MDkuIEkgaGF2ZSBhbHNhIHNuYXBzaG90Lgo+ID4gPiA+ID4gPiA+ID4gU3RpbGwgc291bmQgZG9l
+cyBub3Qgd29yayBvdmVyIGhkbWkuCj4gPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+ID4gV2VsbCwg
+dGhlbiB0aGUgbGFzdCBzdXNwZWN0IGlzIEJJT1MuCj4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiBC
+VFcsIHRoZSB2ZXJ5IGxhdGVzdCBhbHNhLWRyaXZlciBzbmFwc2hvdCBpbmNsdWRlcyBhIG5ldyBm
+ZWF0dXJlIHRvCj4gPiA+ID4gPiA+IGZvcmNlIHRoZSBjb2RlYyBwcm9iaW5nLiAgR3JhYiB0aGUg
+bGF0ZXN0IG9uZSBhbmQgdHJ5IHByb2JlX21hc2s9MHgxZmYKPiA+ID4gPiA+ID4gb3B0aW9uLiAg
+WW91J2xsIGhhdmUgdG8gc2VlIHNvbWUgbmV3IG1lc3NhZ2VzCj4gPiA+ID4gPiA+IAloZGFfaW50
+ZWw6IGNvZGVjX21hc2sgZm9yY2VkIHRvIDB4ZmYKPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+IFRh
+a2FzaGkKPiA+ID4gPiA+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KPiA+ID4gPiA+ID4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiA+ID4gPiA+ID4g
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gPiA+ID4gPiA+IGh0dHA6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4gPiA+ID4gPiAKPiA+
+ID4gPiA+IENhbiBZb3UgcGxlYXNlIHRlbGwgbWUgd2hhdCBleGFjdGx5IHNob3VsZCBJIGRvPwo+
+ID4gPiA+IAo+ID4gPiA+IFdlbGwsIGp1c3QgbGlrZSB3aGF0IEkgd3JvdGUgaW4gdGhlIGFib3Zl
+OiBncmFiIHRoZSBsYXRlc3QgYWxzYS1kcml2ZXIKPiA+ID4gPiBzbmFwc2hvdCB0YXJiYWxsLCBi
+dWlsZCBpdCwgaW5zdGFsbCBpdCwgYW5kIGFkZCBwcm9iZV9tYXNrPTB4MWZmCj4gPiA+ID4gbW9k
+dWxlIG9wdGlvbiB0byBzbmQtaGRhLWludGVsLCB0aGVuIGxvYWQgaXQuICBJZiB5b3UndmUgZG9u
+ZSBpdAo+ID4gPiA+IHByb3Blcmx5LCB5b3Ugc2VlIHRoZSBtZXNzYWdlIGxpa2UgYWJvdmUuICBB
+bmQgbGV0J3Mgc2VlIHdoZXRoZXIgdGhlCj4gPiA+ID4gZHJpdmVyIGNhbiBkZXRlY3QgbW9yZSBj
+b2RlY3MuCj4gPiA+ID4gCj4gPiA+ID4gCj4gPiA+ID4gVGFrYXNoaQo+ID4gPiA+IF9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gPiA+ID4gQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKPiA+ID4gPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiA+ID4g
+PiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo+ID4gPiAKPiA+ID4gSSBkaWQgZWhhdCBZb3Ugd3JvdGUuIEhlcmUgaXMgbXkgZG1lc2c6
+Cj4gPiA+IFsgICAxNC43MjkwMjNdIEhEQSBJbnRlbCAwMDAwOjAwOjFiLjA6IFBDSSBJTlQgQSAt
+PiBHU0kgMjIgKGxldmVsLCBsb3cpCj4gPiA+IC0+IElSUSAyCj4gPiA+IDIKPiA+ID4gWyAgIDE0
+LjcyOTAyOF0gaGRhX2ludGVsOiBjb2RlY19tYXNrIGZvcmNlZCB0byAweGZmCj4gPiA+IFsgICAx
+NC43MjkwNTRdIEhEQSBJbnRlbCAwMDAwOjAwOjFiLjA6IHNldHRpbmcgbGF0ZW5jeSB0aW1lciB0
+byA2NAo+ID4gPiBbICAgMTUuNzc2MDIxXQo+ID4gPiBBTFNBIC91c3Ivc3JjL0Fsc2EtMS4wLjE5
+L2Fsc2EtZHJpdmVyLTEuMC4xOS9wY2kvaGRhLy4uLy4uL2Fsc2Etawo+ID4gPiBlcm5lbC9wY2kv
+aGRhL2hkYV9pbnRlbC5jOjYzNDogaGRhX2ludGVsOiBhenhfZ2V0X3Jlc3BvbnNlIHRpbWVvdXQs
+Cj4gPiA+IHN3aXRjaGluZyB0bwo+ID4gPiAgcG9sbGluZyBtb2RlOiBsYXN0IGNtZD0weDEwMGYw
+MDAwCj4gPiA+IFsgICAxNi43ODAwMTldCj4gPiA+IEFMU0EgL3Vzci9zcmMvQWxzYS0xLjAuMTkv
+YWxzYS1kcml2ZXItMS4wLjE5L3BjaS9oZGEvLi4vLi4vYWxzYS1rCj4gPiA+IGVybmVsL3BjaS9o
+ZGEvaGRhX2ludGVsLmM6MTI3MTogaGRhX2ludGVsOiBDb2RlYyAjMSBwcm9iZSBlcnJvcjsKPiA+
+ID4gZGlzYWJsaW5nIGl0Li4uCj4gPiA+IFsgICAxNy44MTY1MDhdCj4gPiA+IEFMU0EgL3Vzci9z
+cmMvQWxzYS0xLjAuMTkvYWxzYS1kcml2ZXItMS4wLjE5L3BjaS9oZGEvLi4vLi4vYWxzYS1rCj4g
+PiA+IGVybmVsL3BjaS9oZGEvaGRhX2ludGVsLmM6MTI3MTogaGRhX2ludGVsOiBDb2RlYyAjMyBw
+cm9iZSBlcnJvcjsKPiA+ID4gZGlzYWJsaW5nIGl0Li4uCj4gPiA+IFsgICAxNy45MjE2MDBdIGlu
+cHV0OiBIREEgRGlnaXRhbCBQQ0JlZXAKPiA+ID4gYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAw
+OjAwOjFiLjAvaW5wCj4gPiA+IHV0L2lucHV0MTEKPiA+ID4gWyAgIDE4LjA1MjE5NF0gaW5wdXQ6
+IEhEQSBJbnRlbCBhdCAweDlmMzAwMDAwIGlycSAyMiBNaWMgYXQgRXh0IEZyb250Cj4gPiA+IEph
+Y2sgYXMgL2QKPiA+ID4gZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxYi4wL2lucHV0L2lucHV0
+MTIKPiA+ID4gWyAgIDE4LjA1MjU4N10gaW5wdXQ6IEhEQSBJbnRlbCBhdCAweDlmMzAwMDAwIGly
+cSAyMiBNaWMgYXQgU2VwIFVOS05PV04KPiA+ID4gSmFjayBhcyAKPiA+ID4gL2RldmljZXMvcGNp
+MDAwMDowMC8wMDAwOjAwOjFiLjAvaW5wdXQvaW5wdXQxMwo+ID4gPiBbICAgMTguMDUyODk0XSBp
+bnB1dDogSERBIEludGVsIGF0IDB4OWYzMDAwMDAgaXJxIDIyIEhQIE91dCBhdCBFeHQgRnJvbnQK
+PiA+ID4gSmFjayBhcwo+ID4gPiAgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFiLjAvaW5w
+dXQvaW5wdXQxNAo+ID4gPiAKPiA+ID4gV2hhdCBuZXh0IHNob3VsZCBJIGRvPwo+ID4gPiAKPiA+
+ID4gSSBoYXZlIGJhc2ljIHF1ZXN0aW9uczoKPiA+ID4gQWxzYSB0byB3b3JrIGdvb2Qgd2l0aCBt
+eSBIRE1JIHNvdW5kIGhhdmUgdG8ga25vdyB3aGF0IGhhcmR3YXJlIGlzCj4gPiA+IG9uYm9hcmQg
+YW5kIHdoYXQgaXQgY2FuIGRvLSBmZWF0dXJlcyAoZi5leC5IRE1JKS4gV2hhdCBpcyByZXNwb25z
+aWJsZQo+ID4gPiBmb3IgcmVjb2duaXRpb24gb2YgaGFyZHdhcmU/IElzIHRoYXQgYWxzYS1kcml2
+ZXIgcGFja2FnZT8gSG93IGNhbiBJCj4gPiA+IGZvcmNlIGdvb2QgcmVjb2duaXRpb24/Cj4gPiA+
+IAo+ID4gPiBhcGxheSAtbCBsaXN0IGRldmljZXMgaXQgY2FuIHVzZS4gTm93IGZvciBtZSBpdCBp
+czoKPiA+ID4gYXJ0ZWtAaHBsYXB0b3A6fiQgYXBsYXkgLWwKPiA+ID4gKioqKiBMaXN0YSBQTEFZ
+QkFDSyB1cnrEhWR6ZcWEICoqKioKPiA+ID4ga2FydGEgMDogSW50ZWwgW0hEQSBJbnRlbF0sIHVy
+esSFZHplbmllIDA6IFNUQUM5Mnh4IEFuYWxvZyBbU1RBQzkyeHgKPiA+ID4gQW5hbG9nXQo+ID4g
+PiAgIFVyesSFZHplbmlhIHBvZHJ6xJlkbmU6IDEvMQo+ID4gPiAgIFVyesSFZHplbmllIHBvZHJ6
+xJlkbmUgIzA6IHN1YmRldmljZSAjMAo+ID4gPiBrYXJ0YSAwOiBJbnRlbCBbSERBIEludGVsXSwg
+dXJ6xIVkemVuaWUgMTogU1RBQzkyeHggRGlnaXRhbCBbU1RBQzkyeHgKPiA+ID4gRGlnaXRhbF0K
+PiA+ID4gICBVcnrEhWR6ZW5pYSBwb2RyesSZZG5lOiAxLzEKPiA+ID4gICBVcnrEhWR6ZW5pZSBw
+b2RyesSZZG5lICMwOiBzdWJkZXZpY2UgIzAKPiA+ID4gCj4gPiA+IFVwIHRvIG15IGtub3dsZWRn
+ZSwgYXMgc29vbiBhcyBBbHNhIGtub3dzIGFib3V0IEhETUkgZmVhdHVyZSwgaSB3aWxsIGdldAo+
+ID4gPiAzcmQgZGV2aWNlIHdpdGggYXBsYXkgLWwuIEFtIEkgcmlnaHQgYWJvdXQgaXQ/Cj4gPiAK
+PiA+IEl0J3MgdHJ1ZSBmb3IgZGVkaWNhdGVkIEhETUkgY29kZWMgY2hpcC4gIEJ1dCwgcmlnaHQg
+bm93IGl0J3MgbWl4ZWQKPiA+IGZvciB0aGUgSERNSSByb3V0aW5nIGZyb20gdGhlIGFuYWxvZyBj
+b2RlYyBjaGlwLiAgVGhpcyBzaG91bGQgYmUgZml4ZWQKPiA+IGluIGZ1dHVyZS4KPiA+IAo+ID4g
+PiBXaGF0IGlzIHRoYXQgZGV2aWNlOiBTVEFDOTJ4eCBEaWdpdGFsPwo+ID4gCj4gPiBJdCdzIGVp
+dGhlciBhbiBTUERJRiBvciBhbiBIRE1JIG91dHB1dC4KPiA+IAo+ID4gVHVybiBvbiAiSUVDOTU4
+IFBsYXliYWNrIFN3aXRjaCIsIGFuZCBqdXN0IHRyeSB0byBwbGF5IHNvbWV0aGluZyBmcm9tCj4g
+PiB0aGUgZGVmYXVsdCBkZXZpY2UuCj4gCj4gLi4uIGFuZCBwb3N0IHRoZSBhbHNhLWluZm8gb3V0
+cHV0LCB0b28uCj4gCj4gCj4gVGFrYXNoaQoKU1RJTEwgbm8gc3VjY2VzLgoKQmVsb3cgaXMgcmVz
+dWx0IG9mIG15IHRyaWVzOgpfX19fX19fX19fX19fX19fX19fX19fXwpiYXJ0ZWtAaHBsYXB0b3A6
+fiQgYXBsYXkgLUQgcGx1ZzppZWM5NTggLWMgMiAtdiAvbmF0dXJlMS53YXYgCk9kdHdhcnphbmll
+IFdBVkUgJy9uYXR1cmUxLndhdicgOiBTaWduZWQgMTYgYml0IExpdHRsZSBFbmRpYW4sCkN6xJlz
+dG90bGl3b8WbxIcgMTEwMjUgSHosIE1vbm8KUGx1ZyBQQ006IFJhdGUgY29udmVyc2lvbiBQQ00g
+KDQ0MTAwLCBzZm9ybWF0PVMxNl9MRSkKSXRzIHNldHVwIGlzOgogIHN0cmVhbSAgICAgICA6IFBM
+QVlCQUNLCiAgYWNjZXNzICAgICAgIDogUldfSU5URVJMRUFWRUQKICBmb3JtYXQgICAgICAgOiBT
+MTZfTEUKICBzdWJmb3JtYXQgICAgOiBTVEQKICBjaGFubmVscyAgICAgOiAxCiAgcmF0ZSAgICAg
+ICAgIDogMTEwMjUKICBleGFjdCByYXRlICAgOiAxMTAyNSAoMTEwMjUvMSkKICBtc2JpdHMgICAg
+ICAgOiAxNgogIGJ1ZmZlcl9zaXplICA6IDQwOTYKICBwZXJpb2Rfc2l6ZSAgOiAxMDI0CiAgcGVy
+aW9kX3RpbWUgIDogOTI4NzkKICB0c3RhbXBfbW9kZSAgOiBOT05FCiAgcGVyaW9kX3N0ZXAgIDog
+MQogIGF2YWlsX21pbiAgICA6IDEwMjQKICBwZXJpb2RfZXZlbnQgOiAwCiAgc3RhcnRfdGhyZXNo
+b2xkICA6IDQwOTYKICBzdG9wX3RocmVzaG9sZCAgIDogNDA5NgogIHNpbGVuY2VfdGhyZXNob2xk
+OiAwCiAgc2lsZW5jZV9zaXplIDogMAogIGJvdW5kYXJ5ICAgICA6IDI2ODQzNTQ1NgpTbGF2ZTog
+Um91dGUgY29udmVyc2lvbiBQQ00gKHNmb3JtYXQ9UzE2X0xFKQogIFRyYW5zZm9ybWF0aW9uIHRh
+YmxlOgogICAgMCA8LSAwCiAgICAxIDwtIDAKSXRzIHNldHVwIGlzOgogIHN0cmVhbSAgICAgICA6
+IFBMQVlCQUNLCiAgYWNjZXNzICAgICAgIDogTU1BUF9JTlRFUkxFQVZFRAogIGZvcm1hdCAgICAg
+ICA6IFMxNl9MRQogIHN1YmZvcm1hdCAgICA6IFNURAogIGNoYW5uZWxzICAgICA6IDEKICByYXRl
+ICAgICAgICAgOiA0NDEwMAogIGV4YWN0IHJhdGUgICA6IDQ0MTAwICg0NDEwMC8xKQogIG1zYml0
+cyAgICAgICA6IDE2CiAgYnVmZmVyX3NpemUgIDogMTYzODQKICBwZXJpb2Rfc2l6ZSAgOiA0MDk2
+CiAgcGVyaW9kX3RpbWUgIDogOTI4NzkKICB0c3RhbXBfbW9kZSAgOiBOT05FCiAgcGVyaW9kX3N0
+ZXAgIDogMQogIGF2YWlsX21pbiAgICA6IDQwOTYKICBwZXJpb2RfZXZlbnQgOiAwCiAgc3RhcnRf
+dGhyZXNob2xkICA6IDE2Mzg0CiAgc3RvcF90aHJlc2hvbGQgICA6IDE2Mzg0CiAgc2lsZW5jZV90
+aHJlc2hvbGQ6IDAKICBzaWxlbmNlX3NpemUgOiAwCiAgYm91bmRhcnkgICAgIDogMTA3Mzc0MTgy
+NApTbGF2ZTogSG9va3MgUENNCkl0cyBzZXR1cCBpczoKICBzdHJlYW0gICAgICAgOiBQTEFZQkFD
+SwogIGFjY2VzcyAgICAgICA6IE1NQVBfSU5URVJMRUFWRUQKICBmb3JtYXQgICAgICAgOiBTMTZf
+TEUKICBzdWJmb3JtYXQgICAgOiBTVEQKICBjaGFubmVscyAgICAgOiAyCiAgcmF0ZSAgICAgICAg
+IDogNDQxMDAKICBleGFjdCByYXRlICAgOiA0NDEwMCAoNDQxMDAvMSkKICBtc2JpdHMgICAgICAg
+OiAxNgogIGJ1ZmZlcl9zaXplICA6IDE2Mzg0CiAgcGVyaW9kX3NpemUgIDogNDA5NgogIHBlcmlv
+ZF90aW1lICA6IDkyODc5CiAgdHN0YW1wX21vZGUgIDogTk9ORQogIHBlcmlvZF9zdGVwICA6IDEK
+ICBhdmFpbF9taW4gICAgOiA0MDk2CiAgcGVyaW9kX2V2ZW50IDogMAogIHN0YXJ0X3RocmVzaG9s
+ZCAgOiAxNjM4NAogIHN0b3BfdGhyZXNob2xkICAgOiAxNjM4NAogIHNpbGVuY2VfdGhyZXNob2xk
+OiAwCiAgc2lsZW5jZV9zaXplIDogMAogIGJvdW5kYXJ5ICAgICA6IDEwNzM3NDE4MjQKU2xhdmU6
+IEhhcmR3YXJlIFBDTSBjYXJkIDAgJ0hEQSBJbnRlbCcgZGV2aWNlIDEgc3ViZGV2aWNlIDAKSXRz
+IHNldHVwIGlzOgogIHN0cmVhbSAgICAgICA6IFBMQVlCQUNLCiAgYWNjZXNzICAgICAgIDogTU1B
+UF9JTlRFUkxFQVZFRAogIGZvcm1hdCAgICAgICA6IFMxNl9MRQogIHN1YmZvcm1hdCAgICA6IFNU
+RAogIGNoYW5uZWxzICAgICA6IDIKICByYXRlICAgICAgICAgOiA0NDEwMAogIGV4YWN0IHJhdGUg
+ICA6IDQ0MTAwICg0NDEwMC8xKQogIG1zYml0cyAgICAgICA6IDE2CiAgYnVmZmVyX3NpemUgIDog
+MTYzODQKICBwZXJpb2Rfc2l6ZSAgOiA0MDk2CiAgcGVyaW9kX3RpbWUgIDogOTI4NzkKICB0c3Rh
+bXBfbW9kZSAgOiBOT05FCiAgcGVyaW9kX3N0ZXAgIDogMQogIGF2YWlsX21pbiAgICA6IDQwOTYK
+ICBwZXJpb2RfZXZlbnQgOiAwCiAgc3RhcnRfdGhyZXNob2xkICA6IDE2Mzg0CiAgc3RvcF90aHJl
+c2hvbGQgICA6IDE2Mzg0CiAgc2lsZW5jZV90aHJlc2hvbGQ6IDAKICBzaWxlbmNlX3NpemUgOiAw
+CiAgYm91bmRhcnkgICAgIDogMTA3Mzc0MTgyNApfX19fX19fX19fX19fX19fX19fX19fXwpJIHdh
+cyBwbGF5aW5nIHdpdGggaWVjOTU4IGFuZCBpZWM5NTggZGVmYXVsdCBwY20gc3dpdGNoZXMuIFN0
+aWxsIG5vCnNvdW5kLgoKSGVyZSBpcyBteSBhbHNhLWluZm86Cmh0dHA6Ly93d3cuYWxzYS1wcm9q
+ZWN0Lm9yZy9kYi8/Zj1hZGFjZDQwMzhhMjEzOWNmYjJhNDEyMzlkZjE4ODVhZjE3MjFmMjk0CgpU
+aGVyZSBpcyBvbmUgdGhpbmcgdGhhdCBtYWtlcyBtZSBwdXp6bGVkLiBJbiAiVm9sdW1lIGNvbnRy
+b2wiIGkgY2FuCmNob29zZSB3aGljaCBkZXZpY2UgdG8gY29udHJvbCwgYW5kIGkgaGF2ZTogCkhE
+QSBJbnRlbCAoQWxzYSBtaXhlcikKTnZpZGlhIElEIDMgKE9TUyBNaXhlcikgLSBsaWtlIGdub21l
+IGtub3dzIGFib3V0IDNyZCBzb3VuZCBkZXZpY2UKdGhyb3VnaCBOdmlkaWEgLWhkbWkuCi0tIApQ
+b3pkcmF3aWFtIC8gUmVnYXJkcwpCYXJ0xYJvbWllaiBIb2xkZW5tYXllcgoKR0c6NTQxNjM0OyBJ
+Q1E6MzM5MjA4MTE7IHNreXBlbmFtZTpiYXJ0bG9taWVqaG9sZGVubWF5ZXIKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
+aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
