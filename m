@@ -1,22 +1,15 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: idt blue jack patch
-Date: Wed, 18 Feb 2009 19:22:52 -0800
-Message-ID: <1235013772.27435.118.camel@razman>
-References: <68720af30902160113t5c0f206di4c63ecf801ce74ea@mail.gmail.com>
-	<s5h4oyuirc5.wl%tiwai@suse.de>
-	<68720af30902171804t1ce547edx41ca120396e66e72@mail.gmail.com>
-	<s5htz6s8cis.wl%tiwai@suse.de>
-	<68720af30902180104k40a3377cs95ae80446af61f0d@mail.gmail.com>
-	<fd3eb9bf0902180144r476fd065ued924b5b26a6675@mail.gmail.com>
-	<s5hk57nzs1h.wl%tiwai@suse.de>  <20090219030212.GA26505@localhost>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: zero appl_ptr reported
+Date: Thu, 19 Feb 2009 13:20:16 +0800
+Message-ID: <20090219052016.GA31253@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0F2C3103803
-	for <alsa-devel@alsa-project.org>; Thu, 19 Feb 2009 04:22:56 +0100 (CET)
-In-Reply-To: <20090219030212.GA26505@localhost>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3581D103803
+	for <alsa-devel@alsa-project.org>; Thu, 19 Feb 2009 06:20:19 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,73 +19,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wu Fengguang <fengguang.wu@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Paulo Cavalcanti <promac@gmail.com>, Vedran =?UTF-8?Q?Mileti=C4=87?= <rivanvx@gmail.com>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhvdWdodCBJJ2QgYWRkIG15ICQuMDIgaGVyZS4gIFRyYWRpdGlvbmFsbHksIDUtc3RhY2sgYm9h
-cmRzIGhhdmUgb3V0cHV0Cm9uIEdyZWVuIChmcm9udCksIEJsYWNrIChyZWFyKSwgYW5kIE9yYW5n
-ZSAoQ2VudGVyL0xGRSkgY2hhbm5lbHMsIGFuZApJbnB1dCBvbiBQaW5rIChNaWMpIGFuZCBCbHVl
-IChMaW5lKS4gIEJ1dCBCbHVlIGlzIGFsc28gcmV2ZXJzYWJsZSBmb3IKc2lkZSBvdXRwdXQgY2hh
-bm5lbHMgZ2l2aW5nIHRoZSB1c2VyIDcuMSBzdXJyb3VuZCBzb3VuZC4KClNpbmNlIHRoZXNlIGJv
-YXJkcyBhcmUgZGVzaWduZWQgdG8gYmUgdXNlZCBtb3JlIGZvciBtdWx0aW1lZGlhIHRoYW4KcmVj
-b3JkaW5nLCB0aGUgZGVmYXVsdCBvZiBCbHVlIGJlaW5nIG91dHB1dCBpbiBiaW9zIGtpbmQgb2Yg
-bWFrZXMgc2Vuc2UuCk9mIGNvdXJzZSwgaXQgY291bGQgYWxzbyBiZSBhIGJpb3MgYnVnIChpdCdz
-IGJlZW4ga25vd24gdG8gaGFwcGVuKS4KCklmIHlvdSB3YW50IHRvIHNlZSB3aGF0IHRoZSBjb2Rl
-YyBpcyBzZXQgZm9yIGluIFdpbmRvd3MsIGRvd25sb2FkIHRoZQp3aW5kb3dzIGRyaXZlcnMgZnJv
-bSBzdXBwb3J0LmludGVsLmNvbSBhbmQgbG9vayBmb3IgdGhlIFBDSSBzdWJzeXN5dGVtCmlkIGlu
-IHRoZSBTVEhEQS5pbmYgZmlsZS4gIEl0IHdpbGwgcG9pbnQgdG8gYW5vdGhlciBpbmYgZmlsZSB3
-aXRoIHRoZQpkZWZhdWx0IHBpbiBjb25maWdzIGFsb25nIHdpdGggYSB0b24gb2YgcmVnaXN0cnkg
-c2V0dGluZ3MuCgpIb3BlIHRoaXMgaGVscHMuCgpUb2JpbiBEYXZpcwpQLlMuIEkndmUgYmVlbiBt
-b25pdG9yaW5nIGRldmVsb3BtZW50IHdoaWxlIGZpbmlzaGluZyBteSBkZWdyZWUuICBJIGhvcGUK
-dG8gcmV0dXJuIHRvIHRoZSBmb2xkIGhlcmUgc29vbi4KCk9uIFRodSwgMjAwOS0wMi0xOSBhdCAx
-MTowMiArMDgwMCwgV3UgRmVuZ2d1YW5nIHdyb3RlOgoKPiBPbiBXZWQsIEZlYiAxOCwgMjAwOSBh
-dCAwNDoyNDo1OFBNICswMTAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gPiBBdCBXZWQsIDE4IEZl
-YiAyMDA5IDEwOjQ0OjI2ICswMTAwLAo+ID4gVmVkcmFuIE1pbGV0acSHIHdyb3RlOgo+ID4gPiAK
-PiA+ID4gT24gV2VkLCBGZWIgMTgsIDIwMDkgYXQgMTA6MDQgQU0sIFBhdWxvIENhdmFsY2FudGkg
-PHByb21hY0BnbWFpbC5jb20+IHdyb3RlOgo+ID4gPiA+IFRha2FzaGksCj4gPiA+ID4KPiA+ID4g
-PiBGZW5nZ3VhbmcgZ290IHRoZSBzYW1lIGJvYXJkIEkgaGF2ZSAoREc0NUlEKQo+ID4gPiA+IGFu
-ZCBoZSBjb25maXJtZWQgdGhhdCB0aGUgYmx1ZSBqYWNrIHdhcyBvdXRwdXQuCj4gPiA+ID4gVGhl
-IG9ubHkgZGlmZmVyZW5jZSBiZXR3ZWVuIGhpcyBjb21wdXRlciBhbmQgbWluZQo+ID4gPiA+IHdh
-cyB0aGF0IGhpcyBoYWQgYW4gb2xkZXIgYmlvcy4KPiA+ID4gPgo+ID4gPiA+IFRoaXMgaXMgd2hh
-dCBoZSBzYWlkIHRvIG1lIGJlZm9yZSBzZW5kaW5nIG1lIHRoZSBwYXRjaDoKPiA+ID4gPgo+ID4g
-PiA+ICJPSywgc28gaXQncyBpbiBmYWN0IGEgZ2VuZXJhbCBpc3N1ZS4gSSdsbCBsb29rIGludG8g
-aXQuIEJ1dCBJJ20gYWZyYWlkCj4gPiA+ID4gSSBoYXZlIGRpZmZpY3VsdHkgaW4gYWxsb2NhdGlu
-ZyB0aW1lIGZvciBpdCBpbiB0aGUgbmVhciBmdXR1cmUuLi4iCj4gPiA+ID4KPiA+ID4gPiBUaGVy
-ZWZvcmUsIEkgdGhpbmsgd2UgbmVlZCBhbm90aGVyIHF1aXJrLgo+ID4gPiA+Cj4gPiA+ID4gVGhh
-bmtzLgo+ID4gPiA+Cj4gPiA+ID4KPiA+ID4gPiAtLQo+ID4gPiA+IFBhdWxvIFJvbWEgQ2F2YWxj
-YW50aQo+ID4gPiA+IExDRyAtIFVGUkoKPiA+ID4gPiBfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwo+ID4gPiA+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4g
-PiA+ID4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gPiA+ID4gaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPiA+ID4gPgo+IAo+
-IFtzb3JyeSBmb3IgYmVpbmcgbGF0ZV0KPiAKPiA+ID4gCj4gPiA+IENhbiB5b3UgZmluZCBzb21l
-b25lIHdobyBoYXMgZGlmZmVyZW50IGJvYXJkIHdpdGggc2FtZSBjb2RlYyB0byB2ZXJpZnkKPiA+
-ID4gaG93IGdlbmVyYWwgaXNzdWUgdGhpcyByZWFsbHkgaXM/Cj4gPgo+ID4gSW4gZ2VuZXJhbCwg
-dGhlIHBpbiBjb25maWcgdmFsdWUgY2FuJ3QgYmUgZ2VuZXJpYy4KPiA+IEFzIHBvcnQtQyBpcyBh
-IG11bHRpLXB1cnBvc2UgamFjaywgSSBkb24ndCB0aGluayB0aGlzIGNhbiBiZSBhcHBsaWVkCj4g
-PiB0byBhbGwgY2FzZXMuCj4gCj4gSSBtYWRlIHRoYXQgaGFja2luZyBwYXRjaCBiYXNlZCBvbiBJ
-RFQncyBzcGVjLiBUaGUgdmFsdWUgSSB3cm90ZSBpcyBpbgo+IGZhY3QgdGhlIGRlZmF1bHQgdmFs
-dWUgbGlzdGVkIGluIHRoZSBzcGVjLiBTbyBpdCdzIHRoZSBJbnRlbCBCSU9TIHRoYXQKPiBjaGFu
-Z2VkIHRoZSBkZWZhdWx0IHZhbHVlIGFuZCBtYWtlIGl0IGFuIG91dHB1dCBwaW4uCj4gCj4gPiBT
-bywgbm93IHRoZSBxdWVzdGlvbiBpcyB3aGVuIHRvIGFwcGx5IC0tIHVuZGVyIHdoaWNoIGNvbmRp
-dGlvbi4KPiA+IEFwcGFyZW50bHksIHRoZSBCSU9TIG9mIFBhdWxvIGlzIGJyb2tlbi4gIEFuZCwg
-V3UgRmVuZ2d1YW5nJ3MgY2FzZQo+ID4gaXMgdW5jbGVhciwgd2hldGhlciBpdCBjb21lcyBmcm9t
-IEJJT1Mgb3IgZnJvbSBhIHN0YXRpYyBwaW4gY2ZnCj4gPiB0YWJsZSBpbiBwYXRjaF9zaWdtYXRl
-bC5jLgo+IAo+IEFmdGVyIHJlYm9vdGluZyBhbmQgZm9yY2UgdXNpbmcgdGhlIGdlbmVyaWMgY29k
-ZWMsIHRoZSAweDBjIG5vZGUgc3RpbGwKPiBzaG93cyAiUGluIERlZmF1bHQgMHgwMTExMzAxNDog
-W0phY2tdIFNwZWFrZXIgYXQgRXh0IFJlYXIiLiBTbyB0aGUKPiB2YWx1ZSBpcyBmcm9tIHRoZSBC
-SU9TLgo+IAo+IFRoZSBvbmx5IHByb2JsZW0gaXMgdGhhdCB0aGUgcGluIGNvbG9yIGlzIEJsdWUg
-Ym90aCBsb2dpY2FsbHkgYW5kCj4gcGh5c2ljYWxseSwgd2hpY2ggc2hvdWxkIGJlIGlucHV0IGlu
-c3RlYWQgb2Ygb3V0cHV0IGFjY29yZGluZyB0byB0aGUKPiBjb252ZW50aW9uIG9mIGNvbG9yIGNv
-ZGVzLgo+IAo+IElmIHlvdSB0aGluayBpdCdzIE9LLCBJIGNhbiByZWZpbmUgdGhhdCBwYXRjaCBm
-b3Igc3VibWl0dGluZy4gIFRoZQo+IHBvc3NpYmxlIHJlZ3Jlc3Npb24gY291bGQgYmUgdGhhdCB1
-c2VycyBjb25uZWN0aW5nIHNwZWFrZXJzIHRvIHRoYXQKPiBwaW4gd2lsbCBmaW5kIGl0IG5vIGxv
-bmdlciBwcm9kdWNpbmcgc291bmQgYWZ0ZXIgdXBncmFkaW5nIGtlcm5lbC4KPiAKPiBUaGFua3Ms
-Cj4gRmVuZ2d1YW5nCj4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hbHNhLWRldmVsCgotLSAKVG9iaW4gRGF2aXMgCgoKRG9uJ3QgZ28gc3VyZmluZyBpbiBTb3V0
-aCBEYWtvdGEgZm9yIGEgd2hpbGUuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+Hi Takashi,
+
+I noticed that 'appl_ptr' is always 0 during playback, whether it be
+mplayer or aplay, T61 or DG45ID. Is this a bug?
+
+        % grep -r . /proc/asound/card0/pcm0p
+        /proc/asound/card0/pcm0p/sub0/prealloc_max:32768
+        /proc/asound/card0/pcm0p/sub0/prealloc:64
+        /proc/asound/card0/pcm0p/sub0/status:state: RUNNING
+        /proc/asound/card0/pcm0p/sub0/status:trigger_time: 260.550520867
+        /proc/asound/card0/pcm0p/sub0/status:tstamp      : 264.361429403
+        /proc/asound/card0/pcm0p/sub0/status:delay       : -182952
+        /proc/asound/card0/pcm0p/sub0/status:avail       : 191144
+        /proc/asound/card0/pcm0p/sub0/status:avail_max   : 191144
+        /proc/asound/card0/pcm0p/sub0/status:-----
+        /proc/asound/card0/pcm0p/sub0/status:hw_ptr      : 182952
+        /proc/asound/card0/pcm0p/sub0/status:appl_ptr    : 0
+        /proc/asound/card0/pcm0p/sub0/sw_params:tstamp_mode: ENABLE
+        /proc/asound/card0/pcm0p/sub0/sw_params:period_step: 1
+        /proc/asound/card0/pcm0p/sub0/sw_params:avail_min: 1024
+        /proc/asound/card0/pcm0p/sub0/sw_params:start_threshold: 1
+        /proc/asound/card0/pcm0p/sub0/sw_params:stop_threshold: 4611686018427387904
+        /proc/asound/card0/pcm0p/sub0/sw_params:silence_threshold: 0
+        /proc/asound/card0/pcm0p/sub0/sw_params:silence_size: 4611686018427387904
+        /proc/asound/card0/pcm0p/sub0/sw_params:boundary: 4611686018427387904
+        /proc/asound/card0/pcm0p/sub0/hw_params:access: MMAP_INTERLEAVED
+        /proc/asound/card0/pcm0p/sub0/hw_params:format: S32_LE
+        /proc/asound/card0/pcm0p/sub0/hw_params:subformat: STD
+        /proc/asound/card0/pcm0p/sub0/hw_params:channels: 2
+        /proc/asound/card0/pcm0p/sub0/hw_params:rate: 48000 (48000/1)
+        /proc/asound/card0/pcm0p/sub0/hw_params:period_size: 1024
+        /proc/asound/card0/pcm0p/sub0/hw_params:buffer_size: 8192
+        /proc/asound/card0/pcm0p/sub0/info:card: 0
+        /proc/asound/card0/pcm0p/sub0/info:device: 0
+        /proc/asound/card0/pcm0p/sub0/info:subdevice: 0
+        /proc/asound/card0/pcm0p/sub0/info:stream: PLAYBACK
+        /proc/asound/card0/pcm0p/sub0/info:id: STAC92xx Analog
+        /proc/asound/card0/pcm0p/sub0/info:name: STAC92xx Analog
+        /proc/asound/card0/pcm0p/sub0/info:subname: subdevice #0
+        /proc/asound/card0/pcm0p/sub0/info:class: 0
+        /proc/asound/card0/pcm0p/sub0/info:subclass: 0
+        /proc/asound/card0/pcm0p/sub0/info:subdevices_count: 1
+        /proc/asound/card0/pcm0p/sub0/info:subdevices_avail: 0
+        /proc/asound/card0/pcm0p/xrun_debug:0
+        /proc/asound/card0/pcm0p/info:card: 0
+        /proc/asound/card0/pcm0p/info:device: 0
+        /proc/asound/card0/pcm0p/info:subdevice: 0
+        /proc/asound/card0/pcm0p/info:stream: PLAYBACK
+        /proc/asound/card0/pcm0p/info:id: STAC92xx Analog
+        /proc/asound/card0/pcm0p/info:name: STAC92xx Analog
+        /proc/asound/card0/pcm0p/info:subname: subdevice #0
+        /proc/asound/card0/pcm0p/info:class: 0
+        /proc/asound/card0/pcm0p/info:subclass: 0
+        /proc/asound/card0/pcm0p/info:subdevices_count: 1
+        /proc/asound/card0/pcm0p/info:subdevices_avail: 0
+
+
+Interestingly DG45ID HDMI audio playback does not have this problem:
+
+        /proc/asound/card0/pcm3p/sub0/prealloc_max:32768
+        /proc/asound/card0/pcm3p/sub0/prealloc:64
+        /proc/asound/card0/pcm3p/sub0/status:state: RUNNING
+        /proc/asound/card0/pcm3p/sub0/status:trigger_time: 441.375970806
+        /proc/asound/card0/pcm3p/sub0/status:tstamp      : 447.039903859
+        /proc/asound/card0/pcm3p/sub0/status:delay       : 16096
+        /proc/asound/card0/pcm3p/sub0/status:avail       : 288
+        /proc/asound/card0/pcm3p/sub0/status:avail_max   : 288
+        /proc/asound/card0/pcm3p/sub0/status:-----
+        /proc/asound/card0/pcm3p/sub0/status:hw_ptr      : 249824
+        /proc/asound/card0/pcm3p/sub0/status:appl_ptr    : 265920
+        /proc/asound/card0/pcm3p/sub0/sw_params:tstamp_mode: NONE
+        /proc/asound/card0/pcm3p/sub0/sw_params:period_step: 1
+        /proc/asound/card0/pcm3p/sub0/sw_params:avail_min: 1024
+        /proc/asound/card0/pcm3p/sub0/sw_params:start_threshold: 1024
+        /proc/asound/card0/pcm3p/sub0/sw_params:stop_threshold: 4611686018427387904
+        /proc/asound/card0/pcm3p/sub0/sw_params:silence_threshold: 0
+        /proc/asound/card0/pcm3p/sub0/sw_params:silence_size: 4611686018427387904
+        /proc/asound/card0/pcm3p/sub0/sw_params:boundary: 4611686018427387904
+        /proc/asound/card0/pcm3p/sub0/hw_params:access: RW_INTERLEAVED
+        /proc/asound/card0/pcm3p/sub0/hw_params:format: S16_LE
+        /proc/asound/card0/pcm3p/sub0/hw_params:subformat: STD
+        /proc/asound/card0/pcm3p/sub0/hw_params:channels: 2
+        /proc/asound/card0/pcm3p/sub0/hw_params:rate: 44100 (44100/1)
+        /proc/asound/card0/pcm3p/sub0/hw_params:period_size: 1024
+        /proc/asound/card0/pcm3p/sub0/hw_params:buffer_size: 16384
+        /proc/asound/card0/pcm3p/sub0/info:card: 0
+        /proc/asound/card0/pcm3p/sub0/info:device: 3
+        /proc/asound/card0/pcm3p/sub0/info:subdevice: 0
+        /proc/asound/card0/pcm3p/sub0/info:stream: PLAYBACK
+        /proc/asound/card0/pcm3p/sub0/info:id: INTEL HDMI
+        /proc/asound/card0/pcm3p/sub0/info:name: INTEL HDMI
+        /proc/asound/card0/pcm3p/sub0/info:subname: subdevice #0
+        /proc/asound/card0/pcm3p/sub0/info:class: 0
+        /proc/asound/card0/pcm3p/sub0/info:subclass: 0
+        /proc/asound/card0/pcm3p/sub0/info:subdevices_count: 1
+        /proc/asound/card0/pcm3p/sub0/info:subdevices_avail: 0
+        /proc/asound/card0/pcm3p/xrun_debug:0
+        /proc/asound/card0/pcm3p/info:card: 0
+        /proc/asound/card0/pcm3p/info:device: 3
+        /proc/asound/card0/pcm3p/info:subdevice: 0
+        /proc/asound/card0/pcm3p/info:stream: PLAYBACK
+        /proc/asound/card0/pcm3p/info:id: INTEL HDMI
+        /proc/asound/card0/pcm3p/info:name: INTEL HDMI
+        /proc/asound/card0/pcm3p/info:subname: subdevice #0
+        /proc/asound/card0/pcm3p/info:class: 0
+        /proc/asound/card0/pcm3p/info:subclass: 0
+        /proc/asound/card0/pcm3p/info:subdevices_count: 1
+        /proc/asound/card0/pcm3p/info:subdevices_avail: 0
+
+Thanks,
+Fengguang
