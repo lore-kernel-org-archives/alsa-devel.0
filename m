@@ -1,16 +1,14 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/4] ASoC: TWL4030: Add digital loopback support
-Date: Thu, 19 Feb 2009 19:02:37 +0000
-Message-ID: <1235070160-10709-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <20090219190140.GA9707@sirena.org.uk>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: [RFC/PATCH] pxa2xx_ac97 and gpio reset line
+Date: Thu, 19 Feb 2009 21:44:02 +0100
+Message-ID: <87iqn6f97x.fsf@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3904410390C
-	for <alsa-devel@alsa-project.org>; Thu, 19 Feb 2009 20:03:33 +0100 (CET)
-In-Reply-To: <20090219190140.GA9707@sirena.org.uk>
+Received: from smtp5-g21.free.fr (smtp5-g21.free.fr [212.27.42.5])
+	by alsa0.perex.cz (Postfix) with ESMTP id 278A52433A
+	for <alsa-devel@alsa-project.org>; Thu, 19 Feb 2009 21:44:08 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,115 +18,186 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Hi Mark,
 
-This patch adds the digital loopback/bypass support for twl4030 codec.
+I can't find out if somebody had submitted that kind of patch before. This is a
+starting point of discussion. I'm not fully convinced by my own code, and so I
+post it here for advice.
 
-The digital loopback will let the digimic0 (routed in the TX1 capture path
-inside of TWL4030) data to be routed back to the RX2 playback path
-(I2S stereo). It can also route the analog capture date routed through the
-TX1 back to RX2.
+What I'd really like is to be able to choose the PXA AC97 gpio reset (GPIO95 or
+GPIO113) through platform_data, but I couldn't find a way of doing it. I hope
+you'll have some kind of idea.
 
-Effectively the digital loopback is routing the audio from the TX1 capture path
-to the RX2 playback path.
+Cheers.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+--
+Robert
+
+>From 8d4a0c602b85528af2a35fd3f1f1bd8ddca22985 Mon Sep 17 00:00:00 2001
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Thu, 19 Feb 2009 21:35:42 +0100
+Subject: [PATCH] Allow choice in ac97 gpio reset line
+
+As the PXA series allow 2 gpios to reset the ac97 bus, allow
+through configuration the definition of the correct gpio
+which will reset the AC97 bus.
+
+This comes from a silicon defect on the PXA series, where
+the gpio must be manually controlled in warm reset cases.
+
+Signed-off-by: Robert Jarzmik <rjarzmik@free.fr>
 ---
- sound/soc/codecs/twl4030.c |   56 +++++++++++++++++++++++++++++++++++++++----
- 1 files changed, 50 insertions(+), 6 deletions(-)
+ sound/arm/Kconfig           |   17 +++++++++++
+ sound/arm/pxa2xx-ac97-lib.c |   68 +++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 80 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index c26854b..535d8ce 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -504,6 +504,25 @@ static const struct snd_kcontrol_new twl4030_dapm_abypassr2_control =
- static const struct snd_kcontrol_new twl4030_dapm_abypassl2_control =
- 	SOC_DAPM_SINGLE("Switch", TWL4030_REG_ARXL2_APGA_CTL, 2, 1, 0);
+diff --git a/sound/arm/Kconfig b/sound/arm/Kconfig
+index f8e6de4..2749274 100644
+--- a/sound/arm/Kconfig
++++ b/sound/arm/Kconfig
+@@ -39,6 +39,23 @@ config SND_PXA2XX_LIB
+ config SND_PXA2XX_LIB_AC97
+ 	bool
  
-+/* Digital bypass gain, 0 mutes the bypass */
-+static const unsigned int twl4030_dapm_dbypass_tlv[] = {
-+	TLV_DB_RANGE_HEAD(2),
-+	0, 3, TLV_DB_SCALE_ITEM(-2400, 0, 1),
-+	4, 7, TLV_DB_SCALE_ITEM(-1800, 600, 0),
++choice
++	prompt "PXA GPIO line used to reset AC97 bus"
++	depends on SND_PXA2XX_LIB_AC97
++	help
++	  Choose which GPIO is assigned the AC97 reset function.
++
++	  Usually board designers use GPIO 113, but GPIO 95 can be used
++	  as well.
++
++config	SND_PXA2XX_LIB_AC97_RESET113
++	bool "GPIO113"
++
++config	SND_PXA2XX_LIB_AC97_RESET95
++	bool "GPIO95"
++
++endchoice
++
+ config SND_PXA2XX_AC97
+ 	tristate "AC97 driver for the Intel PXA2xx chip"
+ 	depends on ARCH_PXA
+diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
+index 35afd0c..aa522d2 100644
+--- a/sound/arm/pxa2xx-ac97-lib.c
++++ b/sound/arm/pxa2xx-ac97-lib.c
+@@ -31,6 +31,8 @@ static DECLARE_WAIT_QUEUE_HEAD(gsr_wq);
+ static volatile long gsr_bits;
+ static struct clk *ac97_clk;
+ static struct clk *ac97conf_clk;
++static int is_ac97_resetgpio_95;
++static int is_ac97_resetgpio_113;
+ 
+ /*
+  * Beware PXA27x bugs:
+@@ -42,6 +44,55 @@ static struct clk *ac97conf_clk;
+  * 1 jiffy timeout if interrupt never comes).
+  */
+ 
++enum {
++	RESETGPIO_FORCE_HIGH,
++	RESETGPIO_FORCE_LOW,
++	RESETGPIO_NORMAL_ALTFUNC
 +};
 +
-+/* Digital bypass left (TX1L -> RX2L) */
-+static const struct snd_kcontrol_new twl4030_dapm_dbypassl_control =
-+	SOC_DAPM_SINGLE_TLV("Volume",
-+			TWL4030_REG_ATX2ARXPGA, 3, 7, 0,
-+			twl4030_dapm_dbypass_tlv);
++/**
++ * set_resetgpio_mode - computes and sets the AC97_RESET gpio mode on PXA
++ * @mode: chosen action
++ *
++ * As the PXA CPUs suffer from a AC97 bug, a manual control of the reset
++ * line must be done to insure proper work of AC97 reset line.
++ * This function computes the correct gpio_mode for further use by reset
++ * functions, and applied the change through pxa_gpio_mode.
++ */
++static void set_resetgpio_mode(int resetgpio_action)
++{
++	int mode = 0;
 +
-+/* Digital bypass right (TX1R -> RX2R) */
-+static const struct snd_kcontrol_new twl4030_dapm_dbypassr_control =
-+	SOC_DAPM_SINGLE_TLV("Volume",
-+			TWL4030_REG_ATX2ARXPGA, 0, 7, 0,
-+			twl4030_dapm_dbypass_tlv);
++	if (is_ac97_resetgpio_113)
++		switch (resetgpio_action) {
++		case RESETGPIO_FORCE_LOW:
++			mode = 113 | GPIO_OUT | GPIO_DFLT_LOW;
++			break;
++		case RESETGPIO_FORCE_HIGH:
++			mode = 113 | GPIO_OUT | GPIO_DFLT_HIGH;
++			break;
++		case RESETGPIO_NORMAL_ALTFUNC:
++			mode = 113 | GPIO_ALT_FN_2_OUT;
++			break;
++		};
 +
- static int micpath_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
++	if (is_ac97_resetgpio_95)
++		switch (resetgpio_action) {
++		case RESETGPIO_FORCE_LOW:
++			mode = 95 | GPIO_OUT | GPIO_DFLT_LOW;
++			break;
++		case RESETGPIO_FORCE_HIGH:
++			mode = 95 | GPIO_OUT | GPIO_DFLT_HIGH;
++			break;
++		case RESETGPIO_NORMAL_ALTFUNC:
++			mode = 95 | GPIO_ALT_FN_1_OUT;
++			break;
++		};
++
++	if (mode)
++		pxa_gpio_mode(mode);
++}
++
+ unsigned short pxa2xx_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
  {
-@@ -608,12 +627,22 @@ static int bypass_event(struct snd_soc_dapm_widget *w,
- 	unsigned char reg;
+ 	unsigned short val = -1;
+@@ -137,10 +188,10 @@ static inline void pxa_ac97_warm_pxa27x(void)
  
- 	reg = twl4030_read_reg_cache(w->codec, m->reg);
--	if (reg & (1 << m->shift))
--		twl4030->bypass_state |=
--			(1 << (m->reg - TWL4030_REG_ARXL1_APGA_CTL));
--	else
--		twl4030->bypass_state &=
--			~(1 << (m->reg - TWL4030_REG_ARXL1_APGA_CTL));
+ 	/* warm reset broken on Bulverde,
+ 	   so manually keep AC97 reset high */
+-	pxa_gpio_mode(113 | GPIO_OUT | GPIO_DFLT_HIGH);
++	set_resetgpio_mode(RESETGPIO_FORCE_HIGH);
+ 	udelay(10);
+ 	GCR |= GCR_WARM_RST;
+-	pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
++	set_resetgpio_mode(RESETGPIO_NORMAL_ALTFUNC);
+ 	udelay(500);
+ }
+ 
+@@ -308,8 +359,8 @@ int pxa2xx_ac97_hw_resume(void)
+ 		pxa_gpio_mode(GPIO29_SDATA_IN_AC97_MD);
+ 	}
+ 	if (cpu_is_pxa27x()) {
+-		/* Use GPIO 113 as AC97 Reset on Bulverde */
+-		pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
++		/* Use GPIO 113 or 95 as AC97 Reset on Bulverde */
++		set_resetgpio_mode(RESETGPIO_NORMAL_ALTFUNC);
+ 	}
+ 	clk_enable(ac97_clk);
+ 	return 0;
+@@ -321,6 +372,13 @@ int __devinit pxa2xx_ac97_hw_probe(struct platform_device *dev)
+ {
+ 	int ret;
+ 
++#ifdef CONFIG_SND_PXA2XX_LIB_AC97_RESET113
++	is_ac97_resetgpio_113 = 1;
++#endif
++#ifdef CONFIG_SND_PXA2XX_LIB_AC97_RESET95
++	is_ac97_resetgpio_95 = 1;
++#endif
 +
-+	if (m->reg <= TWL4030_REG_ARXR2_APGA_CTL) {
-+		/* Analog bypass */
-+		if (reg & (1 << m->shift))
-+			twl4030->bypass_state |=
-+				(1 << (m->reg - TWL4030_REG_ARXL1_APGA_CTL));
-+		else
-+			twl4030->bypass_state &=
-+				~(1 << (m->reg - TWL4030_REG_ARXL1_APGA_CTL));
-+	} else {
-+		/* Digital bypass */
-+		if (reg & (0x7 << m->shift))
-+			twl4030->bypass_state |= (1 << (m->shift ? 5 : 4));
-+		else
-+			twl4030->bypass_state &= ~(1 << (m->shift ? 5 : 4));
-+	}
+ 	if (cpu_is_pxa25x() || cpu_is_pxa27x()) {
+ 		pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
+ 		pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
+@@ -330,7 +388,7 @@ int __devinit pxa2xx_ac97_hw_probe(struct platform_device *dev)
  
- 	if (w->codec->bias_level == SND_SOC_BIAS_STANDBY) {
- 		if (twl4030->bypass_state)
-@@ -934,6 +963,14 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 			&twl4030_dapm_abypassl2_control,
- 			bypass_event, SND_SOC_DAPM_POST_REG),
- 
-+	/* Digital bypasses */
-+	SND_SOC_DAPM_SWITCH_E("Left Digital Loopback", SND_SOC_NOPM, 0, 0,
-+			&twl4030_dapm_dbypassl_control, bypass_event,
-+			SND_SOC_DAPM_POST_REG),
-+	SND_SOC_DAPM_SWITCH_E("Right Digital Loopback", SND_SOC_NOPM, 0, 0,
-+			&twl4030_dapm_dbypassr_control, bypass_event,
-+			SND_SOC_DAPM_POST_REG),
-+
- 	SND_SOC_DAPM_MIXER("Analog R1 Playback Mixer", TWL4030_REG_AVDAC_CTL,
- 			0, 0, NULL, 0),
- 	SND_SOC_DAPM_MIXER("Analog L1 Playback Mixer", TWL4030_REG_AVDAC_CTL,
-@@ -1118,6 +1155,13 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{"Analog R2 Playback Mixer", NULL, "Right2 Analog Loopback"},
- 	{"Analog L2 Playback Mixer", NULL, "Left2 Analog Loopback"},
- 
-+	/* Digital bypass routes */
-+	{"Right Digital Loopback", "Volume", "TX1 Capture Route"},
-+	{"Left Digital Loopback", "Volume", "TX1 Capture Route"},
-+
-+	{"Analog R2 Playback Mixer", NULL, "Right Digital Loopback"},
-+	{"Analog L2 Playback Mixer", NULL, "Left Digital Loopback"},
-+
- };
- 
- static int twl4030_add_widgets(struct snd_soc_codec *codec)
+ 	if (cpu_is_pxa27x()) {
+ 		/* Use GPIO 113 as AC97 Reset on Bulverde */
+-		pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
++		set_resetgpio_mode(RESETGPIO_NORMAL_ALTFUNC);
+ 		ac97conf_clk = clk_get(&dev->dev, "AC97CONFCLK");
+ 		if (IS_ERR(ac97conf_clk)) {
+ 			ret = PTR_ERR(ac97conf_clk);
 -- 
-1.5.6.3
+1.5.6.5
