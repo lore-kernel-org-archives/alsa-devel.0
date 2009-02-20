@@ -1,24 +1,18 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: idt blue jack patch
-Date: Fri, 20 Feb 2009 09:00:01 +0800
-Message-ID: <20090220010001.GA7520@localhost>
-References: <68720af30902160113t5c0f206di4c63ecf801ce74ea@mail.gmail.com>
-	<s5h4oyuirc5.wl%tiwai@suse.de>
-	<68720af30902171804t1ce547edx41ca120396e66e72@mail.gmail.com>
-	<s5htz6s8cis.wl%tiwai@suse.de>
-	<68720af30902180104k40a3377cs95ae80446af61f0d@mail.gmail.com>
-	<fd3eb9bf0902180144r476fd065ued924b5b26a6675@mail.gmail.com>
-	<s5hk57nzs1h.wl%tiwai@suse.de> <20090219030212.GA26505@localhost>
-	<1235013772.27435.118.camel@razman>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: Timer instability
+Date: Fri, 20 Feb 2009 02:22:20 +0100
+Message-ID: <20090220012220.GA11526@tango.0pointer.de>
+References: <20090219024611.GA7930@tango.0pointer.de>
+	<s5hy6w2hqap.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id BD5991037F8
-	for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2009 02:00:24 +0100 (CET)
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6CB531037F8
+	for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2009 02:22:21 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1235013772.27435.118.camel@razman>
+In-Reply-To: <s5hy6w2hqap.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,111 +22,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tobin Davis <tdavis@dsl-only.net>
-Cc: Takashi Iwai <tiwai@suse.de>, Paulo Cavalcanti <promac@gmail.com>, Vedran =?utf-8?Q?Mileti=C4=87?= <rivanvx@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVG9iaW4sCgpIZXJlIGFyZSB0aGUgTGludXggYW5kIFdpblhQIHBpbiBjb25maWd1cmF0aW9u
-cy4KQm90aCBMaW51eCBhbmQgV2luWFAgY29uZmlndXJlIG5vZGUgMHgwYyBhcyBhbiBvdXRwdXQg
-cGluLgoKSG93ZXZlciB0aGUgZHJpdmVyIHNlZW1zIHRvIGJlIG9mZmVyaW5nIHRocmVlIHNjaGVt
-ZXM6CgogICAgICAgIHNjaGVtZSBkZXNjICAgICAgICAgICAgIDB4QyBkZXYKLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgICAgICAgSURTX0NP
-TkZJR19PUEVOICAgICAgICAgU3BlYWtlcl9TaWRlL0xpbmVJbgogICAgICAgIElEU19DT05GSUdf
-NTEgICAgICAgICAgIExpbmVJbgogICAgICAgIElEU19DT05GSUdfNzEgICAgICAgICAgIFNwZWFr
-ZXJfU2lkZQoKUGF1bG8sIG1heWJlIHlvdSBjYW4gcnVuIHRoZXNlIGNvbW1hbmRzIHRvIHN3aXRj
-aCBiZXR3ZWVuCmxpbmVpbi9saW5lb3V0IG1vZGVzOgoKICAgICAgICAjIHdnZXQgaHR0cDovL3d3
-dy5rZXJuZWwub3JnL3B1Yi9saW51eC9rZXJuZWwvcGVvcGxlL3Rpd2FpL21pc2MvaGRhLXZlcmIt
-MC4zLnRhci5iejIKCiAgICAgICAgIyBzZXQgUElOX0lOIG1vZGUKICAgICAgICBoZGEtdmVyYiAv
-ZGV2L3NuZC9od0MwRDIgMHgwYyBTRVRfUElOX1dJREdFVF9DT05UUk9MIDB4MjAKCiAgICAgICAg
-IyBzZXQgUElOX09VVCBtb2RlCiAgICAgICAgaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQyIDB4MGMg
-U0VUX1BJTl9XSURHRVRfQ09OVFJPTCAweDQwCgpUaGFua3MsCkZlbmdndWFuZwotLS0KCi9wcm9j
-L2Fzb3VuZC9jYXJkMC9jb2RlY1wjMgoKICAgICAgICBDb2RlYzogSURUIDkySEQ3M0UxWDUKICAg
-ICAgICBBZGRyZXNzOiAyCiAgICAgICAgVmVuZG9yIElkOiAweDExMWQ3Njc2CiAgICAgICAgU3Vi
-c3lzdGVtIElkOiAweDgwODY1MDAyCiAgICAgICAgUmV2aXNpb24gSWQ6IDB4MTAwMjAyCgoKQVVE
-X2FsbE9TXzYwMzMuMl9QVl9JRFRHVUlfdjEyNC9XRE0vV2luWFAvU3RoZGEuaW5pCgogICAgICAg
-ICMgc3RoZGEuSU5JCiAgICAgICAgW01vZGVsc10KICAgICAgICAuLi4KICAgICAgICBIREFVRElP
-XEZVTkNfMDEmVkVOXzExMUQmREVWXzc2NzYmU1VCU1lTXzgwODY1MDAyPUk3M0UtRUwyLklOSSAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IAogICAgICAgIC4uLgoKCkFVRF9hbGxPU182MDMzLjJfUFZfSURUR1VJX3YxMjQvV0RNL1dpblhQ
-L0k3M0UtRUwyLklOSQoKICAgICAgICBbSEtSXFNldHRpbmdzXFBpblwwQ10KICAgICAgICBDZmdE
-Zmx0ICAgICAgICAgICAgICAgICAgICAgICAgID0gZHdvcmQ6IDB4MDExMTMyMTQKICAgICAgICBB
-bHRDZmcgICAgICAgICAgICAgICAgICAgICAgICAgID0gaGV4OiA1RSwzMiw4MSwwMQogICAgICAg
-IEFzc2lnbmVkREFDICAgICA9IGhleDogMHgxOAoKCi9wcm9jL2Fzb3VuZC9jYXJkMC9jb2RlY1wj
-MgoKICAgICAgICBOb2RlIDB4MGMgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDE4MzogU3RlcmVv
-IEFtcC1JbgogICAgICAgICAgQW1wLUluIGNhcHM6IE4vQQogICAgICAgICAgQW1wLUluIHZhbHM6
-ICBbMHgwMCAweDAwXQogICAgICAgICAgUGluY2FwIDB4MDAwMDE3Mzc6IElOIE9VVCBEZXRlY3Qg
-VHJpZ2dlciBJbXBTZW5zZQogICAgICAgICAgICBWcmVmIGNhcHM6IEhJWiA1MCBHUkQgODAKICAg
-ICAgICAgIFBpbiBEZWZhdWx0IDB4MDExMTMwMTQ6IFtKYWNrXSBTcGVha2VyIGF0IEV4dCBSZWFy
-CiAgICAgICAgICAgIENvbm4gPSAxLzgsIENvbG9yID0gQmx1ZQogICAgICAgICAgICBEZWZBc3Nv
-Y2lhdGlvbiA9IDB4MSwgU2VxdWVuY2UgPSAweDQKICAgICAgICAgIFBpbi1jdGxzOiAweDQwOiBP
-VVQgVlJFRl9ISVoKICAgICAgICAgIFVuc29saWNpdGVkOiB0YWc9MDQsIGVuYWJsZWQ9MQogICAg
-ICAgICAgQ29ubmVjdGlvbjogNgogICAgICAgICAgICAgMHgxNSAweDE2IDB4MTcgMHgxOCogMHgx
-OSAweDFlCgpPbiBUaHUsIEZlYiAxOSwgMjAwOSBhdCAwNToyMjo1MkFNICswMjAwLCBUb2JpbiBE
-YXZpcyB3cm90ZToKPiBUaG91Z2h0IEknZCBhZGQgbXkgJC4wMiBoZXJlLiAgVHJhZGl0aW9uYWxs
-eSwgNS1zdGFjayBib2FyZHMgaGF2ZSBvdXRwdXQgb24gR3JlZW4gKGZyb250KSwgQmxhY2sgKHJl
-YXIpLCBhbmQgT3JhbmdlIChDZW50ZXIvTEZFKSBjaGFubmVscywgYW5kIElucHV0IG9uIFBpbmsg
-KE1pYykgYW5kIEJsdWUgKExpbmUpLiAgQnV0IEJsdWUgaXMgYWxzbyByZXZlcnNhYmxlIGZvciBz
-aWRlIG91dHB1dCBjaGFubmVscyBnaXZpbmcgdGhlIHVzZXIgNy4xIHN1cnJvdW5kIHNvdW5kLgo+
-IAo+IFNpbmNlIHRoZXNlIGJvYXJkcyBhcmUgZGVzaWduZWQgdG8gYmUgdXNlZCBtb3JlIGZvciBt
-dWx0aW1lZGlhIHRoYW4gcmVjb3JkaW5nLCB0aGUgZGVmYXVsdCBvZiBCbHVlIGJlaW5nIG91dHB1
-dCBpbiBiaW9zIGtpbmQgb2YgbWFrZXMgc2Vuc2UuICBPZiBjb3Vyc2UsIGl0IGNvdWxkIGFsc28g
-YmUgYSBiaW9zIGJ1ZyAoaXQncyBiZWVuIGtub3duIHRvIGhhcHBlbikuCj4gCj4gSWYgeW91IHdh
-bnQgdG8gc2VlIHdoYXQgdGhlIGNvZGVjIGlzIHNldCBmb3IgaW4gV2luZG93cywgZG93bmxvYWQg
-dGhlIHdpbmRvd3MgZHJpdmVycyBmcm9tIHN1cHBvcnQuaW50ZWwuY29tIGFuZCBsb29rIGZvciB0
-aGUgUENJIHN1YnN5c3l0ZW0gaWQgaW4gdGhlIFNUSERBLmluZiBmaWxlLiAgSXQgd2lsbCBwb2lu
-dCB0byBhbm90aGVyIGluZiBmaWxlIHdpdGggdGhlIGRlZmF1bHQgcGluIGNvbmZpZ3MgYWxvbmcg
-d2l0aCBhIHRvbiBvZiByZWdpc3RyeSBzZXR0aW5ncy4KPiAKPiBIb3BlIHRoaXMgaGVscHMuCj4g
-Cj4gVG9iaW4gRGF2aXMKPiBQLlMuIEkndmUgYmVlbiBtb25pdG9yaW5nIGRldmVsb3BtZW50IHdo
-aWxlIGZpbmlzaGluZyBteSBkZWdyZWUuICBJIGhvcGUgdG8gcmV0dXJuIHRvIHRoZSBmb2xkIGhl
-cmUgc29vbi4KPiAKPiBPbiBUaHUsIDIwMDktMDItMTkgYXQgMTE6MDIgKzA4MDAsIFd1IEZlbmdn
-dWFuZyB3cm90ZToKPiAKPiAKPiBPbiBXZWQsIEZlYiAxOCwgMjAwOSBhdCAwNDoyNDo1OFBNICsw
-MTAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gPiBBdCBXZWQsIDE4IEZlYiAyMDA5IDEwOjQ0OjI2
-ICswMTAwLAo+ID4gVmVkcmFuIE1pbGV0acSHIHdyb3RlOgo+ID4gPgo+ID4gPiBPbiBXZWQsIEZl
-YiAxOCwgMjAwOSBhdCAxMDowNCBBTSwgUGF1bG8gQ2F2YWxjYW50aSA8cHJvbWFjQGdtYWlsLmNv
-bTxtYWlsdG86cHJvbWFjQGdtYWlsLmNvbT4+IHdyb3RlOgo+ID4gPiA+IFRha2FzaGksCj4gPiA+
-ID4KPiA+ID4gPiBGZW5nZ3VhbmcgZ290IHRoZSBzYW1lIGJvYXJkIEkgaGF2ZSAoREc0NUlEKQo+
-ID4gPiA+IGFuZCBoZSBjb25maXJtZWQgdGhhdCB0aGUgYmx1ZSBqYWNrIHdhcyBvdXRwdXQuCj4g
-PiA+ID4gVGhlIG9ubHkgZGlmZmVyZW5jZSBiZXR3ZWVuIGhpcyBjb21wdXRlciBhbmQgbWluZQo+
-ID4gPiA+IHdhcyB0aGF0IGhpcyBoYWQgYW4gb2xkZXIgYmlvcy4KPiA+ID4gPgo+ID4gPiA+IFRo
-aXMgaXMgd2hhdCBoZSBzYWlkIHRvIG1lIGJlZm9yZSBzZW5kaW5nIG1lIHRoZSBwYXRjaDoKPiA+
-ID4gPgo+ID4gPiA+ICJPSywgc28gaXQncyBpbiBmYWN0IGEgZ2VuZXJhbCBpc3N1ZS4gSSdsbCBs
-b29rIGludG8gaXQuIEJ1dCBJJ20gYWZyYWlkCj4gPiA+ID4gSSBoYXZlIGRpZmZpY3VsdHkgaW4g
-YWxsb2NhdGluZyB0aW1lIGZvciBpdCBpbiB0aGUgbmVhciBmdXR1cmUuLi4iCj4gPiA+ID4KPiA+
-ID4gPiBUaGVyZWZvcmUsIEkgdGhpbmsgd2UgbmVlZCBhbm90aGVyIHF1aXJrLgo+ID4gPiA+Cj4g
-PiA+ID4gVGhhbmtzLgo+ID4gPiA+Cj4gPiA+ID4KPiA+ID4gPiAtLQo+ID4gPiA+IFBhdWxvIFJv
-bWEgQ2F2YWxjYW50aQo+ID4gPiA+IExDRyAtIFVGUkoKPiA+ID4gPiBfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+ID4gPiA+IEFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0Cj4gPiA+ID4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnPG1haWx0bzpBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmc+Cj4gPiA+ID4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPiA+ID4gPgo+IAo+IFtzb3JyeSBmb3Ig
-YmVpbmcgbGF0ZV0KPiAKPiA+ID4KPiA+ID4gQ2FuIHlvdSBmaW5kIHNvbWVvbmUgd2hvIGhhcyBk
-aWZmZXJlbnQgYm9hcmQgd2l0aCBzYW1lIGNvZGVjIHRvIHZlcmlmeQo+ID4gPiBob3cgZ2VuZXJh
-bCBpc3N1ZSB0aGlzIHJlYWxseSBpcz8KPiA+Cj4gPiBJbiBnZW5lcmFsLCB0aGUgcGluIGNvbmZp
-ZyB2YWx1ZSBjYW4ndCBiZSBnZW5lcmljLgo+ID4gQXMgcG9ydC1DIGlzIGEgbXVsdGktcHVycG9z
-ZSBqYWNrLCBJIGRvbid0IHRoaW5rIHRoaXMgY2FuIGJlIGFwcGxpZWQKPiA+IHRvIGFsbCBjYXNl
-cy4KPiAKPiBJIG1hZGUgdGhhdCBoYWNraW5nIHBhdGNoIGJhc2VkIG9uIElEVCdzIHNwZWMuIFRo
-ZSB2YWx1ZSBJIHdyb3RlIGlzIGluCj4gZmFjdCB0aGUgZGVmYXVsdCB2YWx1ZSBsaXN0ZWQgaW4g
-dGhlIHNwZWMuIFNvIGl0J3MgdGhlIEludGVsIEJJT1MgdGhhdAo+IGNoYW5nZWQgdGhlIGRlZmF1
-bHQgdmFsdWUgYW5kIG1ha2UgaXQgYW4gb3V0cHV0IHBpbi4KPiAKPiA+IFNvLCBub3cgdGhlIHF1
-ZXN0aW9uIGlzIHdoZW4gdG8gYXBwbHkgLS0gdW5kZXIgd2hpY2ggY29uZGl0aW9uLgo+ID4gQXBw
-YXJlbnRseSwgdGhlIEJJT1Mgb2YgUGF1bG8gaXMgYnJva2VuLiAgQW5kLCBXdSBGZW5nZ3Vhbmcn
-cyBjYXNlCj4gPiBpcyB1bmNsZWFyLCB3aGV0aGVyIGl0IGNvbWVzIGZyb20gQklPUyBvciBmcm9t
-IGEgc3RhdGljIHBpbiBjZmcKPiA+IHRhYmxlIGluIHBhdGNoX3NpZ21hdGVsLmMuCj4gCj4gQWZ0
-ZXIgcmVib290aW5nIGFuZCBmb3JjZSB1c2luZyB0aGUgZ2VuZXJpYyBjb2RlYywgdGhlIDB4MGMg
-bm9kZSBzdGlsbAo+IHNob3dzICJQaW4gRGVmYXVsdCAweDAxMTEzMDE0OiBbSmFja10gU3BlYWtl
-ciBhdCBFeHQgUmVhciIuIFNvIHRoZQo+IHZhbHVlIGlzIGZyb20gdGhlIEJJT1MuCj4gCj4gVGhl
-IG9ubHkgcHJvYmxlbSBpcyB0aGF0IHRoZSBwaW4gY29sb3IgaXMgQmx1ZSBib3RoIGxvZ2ljYWxs
-eSBhbmQKPiBwaHlzaWNhbGx5LCB3aGljaCBzaG91bGQgYmUgaW5wdXQgaW5zdGVhZCBvZiBvdXRw
-dXQgYWNjb3JkaW5nIHRvIHRoZQo+IGNvbnZlbnRpb24gb2YgY29sb3IgY29kZXMuCj4gCj4gSWYg
-eW91IHRoaW5rIGl0J3MgT0ssIEkgY2FuIHJlZmluZSB0aGF0IHBhdGNoIGZvciBzdWJtaXR0aW5n
-LiAgVGhlCj4gcG9zc2libGUgcmVncmVzc2lvbiBjb3VsZCBiZSB0aGF0IHVzZXJzIGNvbm5lY3Rp
-bmcgc3BlYWtlcnMgdG8gdGhhdAo+IHBpbiB3aWxsIGZpbmQgaXQgbm8gbG9uZ2VyIHByb2R1Y2lu
-ZyBzb3VuZCBhZnRlciB1cGdyYWRpbmcga2VybmVsLgo+IAo+IFRoYW5rcywKPiBGZW5nZ3VhbmcK
-PiAKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnPG1haWx0
-bzpBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc+Cj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPiAKPiAKPiAtLSBUb2JpbiBEYXZp
-cwo+IAo+IAo+IAo+IERvbid0IGdvIHN1cmZpbmcgaW4gU291dGggRGFrb3RhIGZvciBhIHdoaWxl
-Lgo+IAo+IApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Thu, 19.02.09 07:52, Takashi Iwai (tiwai@suse.de) wrote:
+
+> 
+> At Thu, 19 Feb 2009 03:46:11 +0100,
+> Lennart Poettering wrote:
+> > 
+> > Heya!
+> > 
+> > As you might now PulseAudio schedules audio by system timers, not by
+> > sound card interrupts. Unfortunately there are are couple of issues
+> > with the reliability of the timing/buffering information we get from
+> > ALSA. 
+> > 
+> > For example, on an ens1371 I have tracked down the following issue: I
+> > use the full buffer that the sound card provides (64K, i.e. 371ms). I
+> > sleep for about 350 ms, then fill up again, and sleep 350ms, and so
+> > and so on. Everytime I wake up I check snd_pcm_avail() and write
+> > exactly as much as this call tells me to. I also listen to POLLOUT
+> > events on the fd, however I call snd_pcm_sw_params_set_period_event(,
+> > 0) for it to make sure I actually don't get any real events on that.
+> > 
+> > After a couple of minutes of running this loop I can reliably
+> > reproduce that _avail() tells me I should fill the buffer up, I do so,
+> > query it again and it shows the buffer is filled up. I then go to
+> > sleep but immediately get POLLIN (although I shouldnt, given that I
+> > called snd_pcm_sw_params_set_period_event()), wake up again, call
+> > snd_pcm_avail() and according to it the buffer ran completely
+> > empty. The poll() took less than 1 ms time, and the last thing I did
+> > before going to sleep was checking that the buffer was full. So
+> > certainly ALSA is lying to me here... The buffer couldn't have run
+> > empty in less than 1 ms!
+> > 
+> > The same with real numbers as one example:
+> > 
+> >   1. ... we are woken up
+> >   2. _avail() returns 15496 samples (i.e. 350ms to fill up)
+> >   3. we gather and write 15496 samples
+> >   4. _avail() returns 48 samples, which we consider "filled up enough" to go to sleep
+> >   5. we call poll()
+> >   6. after < 1ms we are woken up by a POLLIN (which we actually thought we had explicitly disabled)
+> >   7. _avail() returns 16448 samples (i.e. 372ms to fill up -- larger than the actual buffer of 16384 samples!)  
+> >   
+> > This smells a lot like some kind of overflow to me, given that in every
+> > case where I could reproduce this it was possible to 'fix' the issue
+> > by substracting the buffer size from the _avail() after the
+> > poll(). After that substraction the value started to make sense
+> > again. (i.e. in the example above it then becomes 64 samples, which is
+> > reasonable after sleep less than 1ms I guess).
+> > 
+> > The stop threshold is set to the boundary here btw.
+> > 
+> > If necessary I could extract a test case for this, but my hope that
+> > you guys might have an idea what goes on without a test case, given
+> > that this smells so "overflowy" ;-)
+> > 
+> > And of course, how come ALSA triggers POLLIN if I asked it not to?
+> 
+> Are you using *_period_event() stuff?
+
+Yes, I am. But ignore that part for now. I have now commented the use
+of that call. Now I certainly get more POLLOUTs as expected, but the
+real problem stays: after a few minutes _avail() will suddenly jump
+from next to zero to more then the hwbuf size in less than 1ms without
+any further inteference and with a buffer size of 350ms! There is
+something really wrong with the behaviour of _avail().
+
+I can reproduce this only on ens1371 for now.
+
+> Unless you use dmix, this is the only place where strange POLLIN may
+> come in.  There are many new hacks there...
+
+There is no plug in used but "hw".
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
