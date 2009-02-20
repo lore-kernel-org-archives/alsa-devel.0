@@ -1,17 +1,20 @@
-From: =?ISO-8859-1?Q?Juan_Jes=FAs_Garc=EDa_de_Soria_Lucena?=
-	<skandalfo@gmail.com>
-Subject: [PATCH] Quirk for Acer Aspire 6530G
-Date: Fri, 20 Feb 2009 20:45:35 +0100
-Message-ID: <b0bb99640902201145q758f0a9bvea5e8327894e2dfa@mail.gmail.com>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: Timer instability
+Date: Fri, 20 Feb 2009 21:34:17 +0100
+Message-ID: <20090220203417.GA19093@tango.0pointer.de>
+References: <20090219024611.GA7930@tango.0pointer.de>
+	<s5hy6w2hqap.wl%tiwai@suse.de>
+	<20090220012220.GA11526@tango.0pointer.de>
+	<s5h1vtty3f8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=000e0cd47b26818c9604635ee5c1
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f158.google.com (mail-gx0-f158.google.com
-	[209.85.217.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id 795F0103931
-	for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2009 20:45:36 +0100 (CET)
-Received: by gxk2 with SMTP id 2so3007209gxk.8
-	for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2009 11:45:35 -0800 (PST)
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 26D3324448
+	for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2009 21:34:19 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5h1vtty3f8.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,54 +24,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---000e0cd47b26818c9604635ee5c1
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+On Fri, 20.02.09 08:26, Takashi Iwai (tiwai@suse.de) wrote:
 
-Hi everyone.
+> > Yes, I am. But ignore that part for now. I have now commented the use
+> > of that call. Now I certainly get more POLLOUTs as expected, but the
+> > real problem stays: after a few minutes _avail() will suddenly jump
+> > from next to zero to more then the hwbuf size in less than 1ms without
+> > any further inteference and with a buffer size of 350ms! There is
+> > something really wrong with the behaviour of _avail().
+> > 
+> > I can reproduce this only on ens1371 for now.
+> 
+> The ens1371 driver itself is damn simple.  The pointer callback just
+> returns the read value.  So, it implies that it's basically a hardware
+> issue.
+> 
+> Does the patch below have any influence?
 
-The Acer Aspire 6530G needs the 4930G "model" for the front mic to
-work properly. Please apply the attached patch in order to properly
-support it out of the box.
+No. It doesn't appear to have any effect whatsoever. Still, from time
+to time the value returned by _avail() is off by once the buffer size,
+sometimes upwards, sometimes downwards.
 
-Best regards,
+Moreover I can now reproduce the same issue on snd-intel8x0, albeit it
+takes more than a couple of minutes to make snd_pcm_avail() return
+bogus data.
 
-   Juan Jesus Garcia de Soria
+Somehow I get the feeling the problem is not so much the inaccuracy of
+the pointer the kernel reports but in what alsa-libs does ith it.
+
+Lennart
 
 -- 
-Dream small if success is enough for you; dream big if you need to
-change the world.
-
---000e0cd47b26818c9604635ee5c1
-Content-Type: text/plain; charset=US-ASCII; name="alsa-add-acer6530g-quirk.diff"
-Content-Disposition: attachment; filename="alsa-add-acer6530g-quirk.diff"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_frf9t84t0
-
-ZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIGIvc291bmQvcGNpL2hk
-YS9wYXRjaF9yZWFsdGVrLmMKaW5kZXggZWQ4ZmNiZC4uZGYwZmQwMiAxMDA2NDQKLS0tIGEvc291
-bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFs
-dGVrLmMKQEAgLTg0NjksNiArODQ2OSw4IEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3BjaV9xdWlyayBh
-bGM4ODNfY2ZnX3RibFtdID0gewogCQlBTEM4ODhfQUNFUl9BU1BJUkVfNDkzMEcpLAogCVNORF9Q
-Q0lfUVVJUksoMHgxMDI1LCAweDAxNWUsICJBY2VyIEFzcGlyZSA2OTMwRyIsCiAJCUFMQzg4OF9B
-Q0VSX0FTUElSRV80OTMwRyksCisJU05EX1BDSV9RVUlSSygweDEwMjUsIDB4MDE2NiwgIkFjZXIg
-QXNwaXJlIDY1MzBHIiwKKwkJQUxDODg4X0FDRVJfQVNQSVJFXzQ5MzBHKSwKIAlTTkRfUENJX1FV
-SVJLKDB4MTAyNSwgMCwgIkFjZXIgbGFwdG9wIiwgQUxDODgzX0FDRVIpLCAvKiBkZWZhdWx0IEFj
-ZXIgKi8KIAlTTkRfUENJX1FVSVJLKDB4MTAyOCwgMHgwMjBkLCAiRGVsbCBJbnNwaXJvbiA1MzAi
-LCBBTEM4ODhfNlNUX0RFTEwpLAogCVNORF9QQ0lfUVVJUksoMHgxMDNjLCAweDJhM2QsICJIUCBQ
-YXZpbGxpb24iLCBBTEM4ODNfNlNUX0RJRyksCg==
---000e0cd47b26818c9604635ee5c1
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---000e0cd47b26818c9604635ee5c1--
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
