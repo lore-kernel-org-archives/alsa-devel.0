@@ -1,7 +1,7 @@
 From: Wu Fengguang <fengguang.wu@intel.com>
 Subject: Re: idt blue jack patch
-Date: Sat, 21 Feb 2009 09:42:14 +0800
-Message-ID: <20090221014214.GB6175@localhost>
+Date: Sat, 21 Feb 2009 09:55:29 +0800
+Message-ID: <20090221015529.GA6821@localhost>
 References: <s5h4oyuirc5.wl%tiwai@suse.de>
 	<68720af30902171804t1ce547edx41ca120396e66e72@mail.gmail.com>
 	<s5htz6s8cis.wl%tiwai@suse.de>
@@ -14,9 +14,9 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id AD434103808
-	for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2009 02:42:27 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4B75110391E
+	for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2009 02:55:38 +0100 (CET)
 Content-Disposition: inline
 In-Reply-To: <s5hbpsx10yg.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -107,30 +107,15 @@ On Fri, Feb 20, 2009 at 07:18:31PM +0200, Takashi Iwai wrote:
 > 	# echo 1 > /sys/class/sound/hwC0D0/reconfig
 > 
 > This will re-setup the driver based on the given pin configs.
-
-Cool!  This interface will greatly ease the developer-user interactions.
-
-Without knowing this feature, I had to write a patch for Paulo,
-and compile/verify it before sending it to him. Paulo also have to
-pull the kernel source, apply the patch, compile and run it...
-
-Now you turned that tedious process into two simple echo commands :-)
-
+> 
 > Unfortunately, in the current scenario, it can't override the static
 > pincfg table in the driver like in patch_sigmatel.c.  It's just for
 > fixing and BIOS setup.
 
-Unfortunately patch_sigmatel has a long list of static pincfgs, i.e.:
+If override_pin_configs cannot override the values in cur_pin_configs
+(or will it later?), then the name is kind of misleading.
 
-        static unsigned int ref927x_pin_configs[14] = {
-                0x02214020, 0x02a19080, 0x0181304e, 0x01014010,
-                0x01a19040, 0x01011012, 0x01016011, 0x0101201f,
-                0x183301f0, 0x18a001f0, 0x18a001f0, 0x01442070,
-                0x01c42190, 0x40000100,
-        };
-
-This effectively prohibits itself from being dynamically reconfigured
-via the override_pin_configs interface... 
+How about the names bios_pin_configs, driver_pin_configs and user_pin_configs?
 
 Thanks,
 Fengguang
