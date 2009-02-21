@@ -1,25 +1,24 @@
 From: Wu Fengguang <fengguang.wu@intel.com>
 Subject: Re: idt blue jack patch
-Date: Sat, 21 Feb 2009 09:05:19 +0800
-Message-ID: <20090221010519.GA6175@localhost>
-References: <fd3eb9bf0902180144r476fd065ued924b5b26a6675@mail.gmail.com>
+Date: Sat, 21 Feb 2009 09:42:14 +0800
+Message-ID: <20090221014214.GB6175@localhost>
+References: <s5h4oyuirc5.wl%tiwai@suse.de>
+	<68720af30902171804t1ce547edx41ca120396e66e72@mail.gmail.com>
+	<s5htz6s8cis.wl%tiwai@suse.de>
+	<68720af30902180104k40a3377cs95ae80446af61f0d@mail.gmail.com>
+	<fd3eb9bf0902180144r476fd065ued924b5b26a6675@mail.gmail.com>
 	<s5hk57nzs1h.wl%tiwai@suse.de> <20090219030212.GA26505@localhost>
 	<1235013772.27435.118.camel@razman>
-	<20090220010001.GA7520@localhost>
-	<68720af30902200215l2fa5f4fbvc52fb45dc3ea6a41@mail.gmail.com>
-	<20090220112052.GA5612@localhost>
-	<68720af30902200616q645a8c5dy12e0ecf56af1da3b@mail.gmail.com>
-	<20090220143120.GA9795@localhost>
-	<68720af30902200807i29cf0df2q106e92c67287ba30@mail.gmail.com>
+	<20090220010001.GA7520@localhost> <s5hbpsx10yg.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 79670103808
-	for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2009 02:05:31 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id AD434103808
+	for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2009 02:42:27 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <68720af30902200807i29cf0df2q106e92c67287ba30@mail.gmail.com>
+In-Reply-To: <s5hbpsx10yg.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,225 +28,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Paulo Cavalcanti <promac@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Paulo Cavalcanti <promac@gmail.com>, Vedran =?utf-8?Q?Mileti=C4=87?= <rivanvx@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 20, 2009 at 06:07:03PM +0200, Paulo Cavalcanti wrote:
+On Fri, Feb 20, 2009 at 07:18:31PM +0200, Takashi Iwai wrote:
+> At Fri, 20 Feb 2009 09:00:01 +0800,
+> Wu Fengguang wrote:
+> > 
+> > Hi Tobin,
+> > 
+> > Here are the Linux and WinXP pin configurations.
+> > Both Linux and WinXP configure node 0x0c as an output pin.
+> > 
+> > However the driver seems to be offering three schemes:
+> > 
+> >         scheme desc             0xC dev
+> > ------------------------------------------------------
+> >         IDS_CONFIG_OPEN         Speaker_Side/LineIn
+> >         IDS_CONFIG_51           LineIn
+> >         IDS_CONFIG_71           Speaker_Side
+> > 
+> > Paulo, maybe you can run these commands to switch between
+> > linein/lineout modes:
+> > 
+> >         # wget http://www.kernel.org/pub/linux/kernel/people/tiwai/misc/hda-verb-0.3.tar.bz2
+> > 
+> >         # set PIN_IN mode
+> >         hda-verb /dev/snd/hwC0D2 0x0c SET_PIN_WIDGET_CONTROL 0x20
+> > 
+> >         # set PIN_OUT mode
+> >         hda-verb /dev/snd/hwC0D2 0x0c SET_PIN_WIDGET_CONTROL 0x40
 > 
 > 
-> On Fri, Feb 20, 2009 at 11:31 AM, Wu Fengguang <fengguang.wu@intel.com<mailto:fengguang.wu@intel.com>> wrote:
-> On Fri, Feb 20, 2009 at 04:16:52PM +0200, Paulo Cavalcanti wrote:
-> >
-> >
-> > On Fri, Feb 20, 2009 at 8:20 AM, Wu Fengguang <fengguang.wu@intel.com<mailto:fengguang.wu@intel.com><mailto:fengguang.wu@intel.com<mailto:fengguang.wu@intel.com>>> wrote:
-> > On Fri, Feb 20, 2009 at 12:15:16PM +0200, Paulo Cavalcanti wrote:
-> > >
-> > >
-> > > On Thu, Feb 19, 2009 at 10:00 PM, Wu Fengguang <fengguang.wu@intel.com<mailto:fengguang.wu@intel.com><mailto:fengguang.wu@intel.com<mailto:fengguang.wu@intel.com>><mailto:fengguang.wu@intel.com<mailto:fengguang.wu@intel.com><mailto:fengguang.wu@intel.com<mailto:fengguang.wu@intel.com>>>> wrote:
-> > > Hi Tobin,
-> > >
-> > > Here are the Linux and WinXP pin configurations.
-> > > Both Linux and WinXP configure node 0x0c as an output pin.
-> > >
-> > > However the driver seems to be offering three schemes:
-> > >
-> > >        scheme desc             0xC dev
-> > > ------------------------------------------------------
-> > >        IDS_CONFIG_OPEN         Speaker_Side/LineIn
-> > >        IDS_CONFIG_51           LineIn
-> > >        IDS_CONFIG_71           Speaker_Side
-> > >
-> > > Paulo, maybe you can run these commands to switch between
-> > > linein/lineout modes:
-> > >
-> > >        # wget http://www.kernel.org/pub/linux/kernel/people/tiwai/misc/hda-verb-0.3.tar.bz2
-> > >
-> > >        # set PIN_IN mode
-> > >        hda-verb /dev/snd/hwC0D2 0x0c SET_PIN_WIDGET_CONTROL 0x20
-> > >
-> > >        # set PIN_OUT mode
-> > >        hda-verb /dev/snd/hwC0D2 0x0c SET_PIN_WIDGET_CONTROL 0x40
-> > >
-> > > Thanks,
-> > > Fengguang
-> > > ---
-> > >
-> > > /proc/asound/card0/codec\#2
-> > >
-> > >        Codec: IDT 92HD73E1X5
-> > >        Address: 2
-> > >        Vendor Id: 0x111d7676
-> > >        Subsystem Id: 0x80865002
-> > >        Revision Id: 0x100202
-> > >
-> > >
-> > > AUD_allOS_6033.2_PV_IDTGUI_v124/WDM/WinXP/Sthda.ini
-> > >
-> > >        # sthda.INI
-> > >        [Models]
-> > >        ...
-> > >        HDAUDIO\FUNC_01&VEN_111D&DEV_7676&SUBSYS_80865002=I73E-EL2.INI
-> > >        ...
-> > >
-> > >
-> > > AUD_allOS_6033.2_PV_IDTGUI_v124/WDM/WinXP/I73E-EL2.INI
-> > >
-> > >        [HKR\Settings\Pin\0C]
-> > >        CfgDflt                         = dword: 0x01113214
-> > >        AltCfg                          = hex: 5E,32,81,01
-> > >        AssignedDAC     = hex: 0x18
-> > >
-> > >
-> > > /proc/asound/card0/codec\#2
-> > >
-> > >        Node 0x0c [Pin Complex] wcaps 0x400183: Stereo Amp-In
-> > >          Amp-In caps: N/A
-> > >          Amp-In vals:  [0x00 0x00]
-> > >          Pincap 0x00001737: IN OUT Detect Trigger ImpSense
-> > >            Vref caps: HIZ 50 GRD 80
-> > >          Pin Default 0x01113014: [Jack] Speaker at Ext Rear
-> > >            Conn = 1/8, Color = Blue
-> > >            DefAssociation = 0x1, Sequence = 0x4
-> > >          Pin-ctls: 0x40: OUT VREF_HIZ
-> > >          Unsolicited: tag=04, enabled=1
-> > >          Connection: 6
-> > >             0x15 0x16 0x17 0x18* 0x19 0x1e
-> > >
-> > >
-> > > Thanks a lot, Fengguang.
-> > >
-> > > The other models for this codec are for Dell computers.
-> > > Probably, all of then will behave the same way, right?
-> >
-> > I guess the hda-verb commands will work for all IN/OUT configurable pins.
-> >
-> > > I still have a question. I see that you  changed Pin Default 0x01113014,
-> > > for 0x01813021, in the driver for having LineIn.
-> > > Also, Pin-ctls: 0x40 should provide the pin as an output. The Node is 0x0c.
-> > >
-> > > Therefore,
-> > >
-> > > # set PIN_OUT mode
-> > >        hda-verb /dev/snd/hwC0D2 0x0c SET_PIN_WIDGET_CONTROL 0x40
-> > >
-> > >  makes sense.
-> > >
-> > > But how would I know that 0x20 would turn the pin 0x0c into LineIn?
-> > >
-> > >   # set PIN_IN mode
-> > >        hda-verb /dev/snd/hwC0D2 0x0c SET_PIN_WIDGET_CONTROL 0x20
-> >
-> > ALSA defined the following values according to the HDA spec:
-> >
-> >        /* Pin widget control - 8bit */
-> >        #define AC_PINCTL_IN_EN                 (1<<5)
-> >        #define AC_PINCTL_OUT_EN                (1<<6)
-> >        #define AC_PINCTL_HP_EN                 (1<<7)
-> >
-> >        #define PIN_IN                  (AC_PINCTL_IN_EN)
-> >        #define PIN_OUT                 (AC_PINCTL_OUT_EN)
-> >        #define PIN_HP                  (AC_PINCTL_OUT_EN | AC_PINCTL_HP_EN)
-> >
-> > So PIN_OUT=0x40 and PIN_IN=0x20.
-> >
-> > > I am asking because I have a Dell laptop (Vostro 1400) where the external mic
-> > > works when I use model=ref (and I loose the speakers in this case), but not
-> > > when I use model=dell-3stack. If I could figure out how to switch
-> > > the pin using hda-verb in this case, would solve my problems when using skype.
-> >
-> > You can locate the external mic pin in /proc/asound/card0/codec#* and
-> > feed its node id to the hda-verb command. It should work the same way.
-> >
-> > This is from model=ref. I can see it defines Line In as the
-> > pin 0xe (exactly the jack marked as mic in the Vostro 1400).
-> > This is how it should be.
-> >
+> Regarding the default pin configurations.
+> I made a series of patches to add the interface to change the default
+> pincfg values dynamically via hwdep sysfs.  The patches are found in
+> test/hda-pincfg branch of sound git tree
+>     git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
 > 
-> But you pasted info for 0x0c instead of 0xe below...
-> Would you provide the full codec file?
+> and included in the very latest alsa-driver-unstable snapshot
+>     ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-unstable-snapshot.tar.gz
 > 
-> > Node 0x0c [Pin Complex] wcaps 0x400181: Stereo
-> >   Pincap 0x00001737: IN OUT Detect Trigger ImpSense
-> >     Vref caps: HIZ 50 GRD 80
-> >   Pin Default 0x0181304e: [Jack] Line In at Ext Rear
-> >     Conn = 1/8, Color = Blue
-> >     DefAssociation = 0x4, Sequence = 0xe
-> >   Pin-ctls: 0x20: IN VREF_HIZ
-> >   Unsolicited: tag=04, enabled=1
-> >   Connection: 1
-> >      0x03
-> >
-> > ----------------------------------
-> >
-> > This is from model=dell-3stack. There is no Line In defined. This
-> > is the problem....
-> >
-> >
-> > Node 0x10 [Pin Complex] wcaps 0x400181: Stereo
-> >   Pincap 0x00000037: IN OUT Detect Trigger ImpSense
-> >   Pin Default 0x01813050: [Jack] Line In at Ext Rear
-> >     Conn = 1/8, Color = Blue
-> >     DefAssociation = 0x5, Sequence = 0x0
-> >   Pin-ctls: 0x20: IN
-> >   Unsolicited: tag=04, enabled=1
-> >   Connection: 1
-> >      0x04
-> >
-> >
-> > The question is: how can I use hda-verb to make pin 0xe
-> > be an input pin (0x20), the way it were when using model = ref?
+> Basically, you can get / set the default pincfg values on the fly, and
+> trigger the codec reconfiguration after that.
 > 
-> Where is Node 0x0e? You didn't paste Node 0x0e info, but 0x0c and 0x10.
+> The init_pin_configs file shows the initial default pincfgs set by BIOS.
 > 
-> > set PIN_IN mode:
-> >         hda-verb /dev/snd/hwC0D0 0x0c SET_PIN_WIDGET_CONTROL 0x20
-> >
-> > The node is 0x0c, but I am not sure if it is that simple.
+> 	# cat /sys/class/sound/hwC0D0/init_pin_configs
+> 	0x14 0x9993013f
+> 	0x15 0x01014c10
+> 	0x16 0x99030120
+> 	0x18 0x01a19c30
+> 	0x19 0x02a11c31
+> 	0x1a 0x01813c32
+> 	0x1b 0x02211c1f
+> 	0x1c 0x99330133
+> 	0x1d 0x411111f0
+> 	0x1e 0x411111f0
+> 	0x1f 0x411111f0
 > 
-> It's trivial to try it out, its harmless anyway :)
-> You only have to replace 0x0c with your mic node.
+> Then, you can override the default value by writing to
+> override_pin_configs sysfs file.
 > 
+> 	# cat /sys/class/sound/hwC0D0/override_pin_configs
+> 	# echo 0x1d 0x02a11c30 > /sys/class/sound/hwC0D0/override_pin_configs
+> 	# cat /sys/class/sound/hwC0D0/override_pin_configs
+> 	0x1d 0x02a11c30
 > 
-> Using hda-verb-0.3, the pins are:
+> Note that this value won't appear in init_pin_configs.
 > 
-> 0xa - headphones (first connector - the one which works)
-> 0xf - headphones (second connector  - no output)
-> 0xe - analog mic
+> Also, there is another file, cur_pin_configs.  This contains the
+> pincfgs that are set by the driver explicitly.  For example,
+> the static pincfg table in patch_sigmatel.c appears here.
 > 
-> I am attaching the dell-3stack codec and the ref codec.
+> Then you can trigger the codec reconfiguration by
 > 
-> This laptop has a digital Mic and a jack for connecting an analog
-> mic, ehich I am supposing it is the "Line In" in the "model=ref" codec.
+> 	# echo 1 > /sys/class/sound/hwC0D0/reconfig
 > 
-> The dell-3tack model works well, but I have no analog mic, and the
-> digital mic sounds too low to be usable.
+> This will re-setup the driver based on the given pin configs.
 
-So you want the analog mic function of node 0x0e to be usable for model
-dell-3tack, as it has worked in model ref? 
+Cool!  This interface will greatly ease the developer-user interactions.
 
---- ref.txt
-+++ dell-3stack.txt
- Node 0x0e [Pin Complex] wcaps 0x400181: Stereo
-   Pincap 0x00001737: IN OUT Detect Trigger ImpSense
-     Vref caps: HIZ 50 GRD 80
--  Pin Default 0x01a19040: [Jack] Mic at Ext Rear
-+  Pin Default 0x01111212: [Jack] Speaker at Ext Rear
--    Conn = 1/8, Color = Pink
-+    Conn = 1/8, Color = Black
--    DefAssociation = 0x4, Sequence = 0x0
-+    DefAssociation = 0x1, Sequence = 0x2
--  Pin-ctls: 0x24: IN VREF_80
-+  Pin-ctls: 0x40: OUT VREF_HIZ
--  Unsolicited: tag=02, enabled=1
-+  Unsolicited: tag=00, enabled=0
-   Connection: 1
-      0x04
- 
- From the above info I'd suggest to try this command to make node 0x0e
- a port for mic instead of speaker:
+Without knowing this feature, I had to write a patch for Paulo,
+and compile/verify it before sending it to him. Paulo also have to
+pull the kernel source, apply the patch, compile and run it...
 
-         hda-verb /dev/snd/hwC0D0 0x0e SET_PIN_WIDGET_CONTROL 0x20
+Now you turned that tedious process into two simple echo commands :-)
+
+> Unfortunately, in the current scenario, it can't override the static
+> pincfg table in the driver like in patch_sigmatel.c.  It's just for
+> fixing and BIOS setup.
+
+Unfortunately patch_sigmatel has a long list of static pincfgs, i.e.:
+
+        static unsigned int ref927x_pin_configs[14] = {
+                0x02214020, 0x02a19080, 0x0181304e, 0x01014010,
+                0x01a19040, 0x01011012, 0x01016011, 0x0101201f,
+                0x183301f0, 0x18a001f0, 0x18a001f0, 0x01442070,
+                0x01c42190, 0x40000100,
+        };
+
+This effectively prohibits itself from being dynamically reconfigured
+via the override_pin_configs interface... 
 
 Thanks,
 Fengguang
