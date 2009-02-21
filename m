@@ -1,15 +1,17 @@
 From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Standard mixer control names
-Date: Sun, 22 Feb 2009 00:36:30 +0100
-Message-ID: <20090221233629.GA3748@tango.0pointer.de>
+Subject: Re: PCM delay compensation
+Date: Sun, 22 Feb 2009 00:45:04 +0100
+Message-ID: <20090221234502.GA8504@tango.0pointer.de>
+References: <s5h4p3ol8ui.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9AD2E24472
-	for <alsa-devel@alsa-project.org>; Sun, 22 Feb 2009 00:36:32 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 015062447D
+	for <alsa-devel@alsa-project.org>; Sun, 22 Feb 2009 00:45:10 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <s5h4p3ol8ui.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,40 +21,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Heya!
+On Tue, 07.10.08 17:32, Takashi Iwai (tiwai@suse.de) wrote:
 
-I'd like to add functionality to PulseAudio to allow a simplified
-selection of capture input (i.e. "Mic", "Line-In", ...) and playback
-outputs ("Headphones", "Line-Out", ...) for ALSA cards. By
-"simplified" I mean that only one input and output shall be active at
-a time. Also, some more nonsense items shall be filtered out
-(i.e. recording from "Phone"). Hence, basically I want to compile a
-list of available and whitelisted inputs and outputs and allow the
-user to select exactly one from each.
+> Hi,
 
-ALSA is making that very hard to implement something like this because
-every driver seems to wrap input/output selection differently.
+Sorry for the overly long delay.
+> 
+> the patch below (to the latest sound git tree) adds the extra delay
+> count for USB-audio driver.  This change will appear as the return
+> value of snd_pcm_delay().
+> 
+> Could you check whether it's appropriate behavior you've wanted?
 
-On one card I have only has a couple of cswitches
-(snd-es1371). The same one has an enum "Mic Select". Another card has
-an enum "Input Source", but no cswitches (a HDA chip). The
-"ControlNames.txt" file in the kernel seems to suggest that there is an
-element "Capture Source".
+I have now tested this patch on the current 2.6.29-rc5 kernel. The
+effect is that snd_pcm_delay() returns always increasing values, as if
+the playback never proceeds. Most movie players which need that call
+to synchronize video frames hence stall completely.
 
-For playback it seems that some cards have a a headphone switch, and
-others a headphone slider (which i guess makes sense).
+Lennart
 
-Now, the question, how should I implement this?
 
-For playback the handling is easy as long as there is only one element
-to deal with, but what about capture? One option would be to simply
-go by cswitch and nothing else. Or go by "Input Source" and nothing
-else. Or combine some form. Now I'd of course prefer if the drivers
-get fixed to use a single element naming scheme only. Is there any
-chance to get that? And which one would that be?
+> diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+> index 40c5a6f..dcbdc60 100644
+> --- a/include/sound/pcm.h
+> +++ b/include/sound/pcm.h
+> @@ -269,6 +269,7 @@ struct snd_pcm_runtime {
+>  	snd_pcm_uframes_t avail_max;
+>  	snd_pcm_uframes_t hw_ptr_base;	/* Position at buffer restart */
+>  	snd_pcm_uframes_t hw_ptr_interrupt; /* Position at interrupt time*/
+> +	snd_pcm_sframes_t delay;	/* extra delay; typically FIFO size */
+>  
+>  	/* -- HW params -- */
+>  	snd_pcm_access_t access;	/* access mode */
+> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+> index e61e125..df7c3fa 100644
+> --- a/sound/core/pcm_native.c
+> +++ b/sound/core/pcm_native.c
+> @@ -597,14 +597,15 @@ int snd_pcm_status(struct snd_pcm_substream *substream,
+>  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>  		status->avail = snd_pcm_playback_avail(runtime);
+>  		if (runtime->status->state == SNDRV_PCM_STATE_RUNNING ||
+> -		    runtime->status->state == SNDRV_PCM_STATE_DRAINING)
+> +		    runtime->status->state == SNDRV_PCM_STATE_DRAINING) {
+>  			status->delay = runtime->buffer_size - status->avail;
+> -		else
+> +			status->delay += runtime->delay;
+> +		} else
+>  			status->delay = 0;
+>  	} else {
+>  		status->avail = snd_pcm_capture_avail(runtime);
+>  		if (runtime->status->state == SNDRV_PCM_STATE_RUNNING)
+> -			status->delay = status->avail;
+> +			status->delay = status->avail + runtime->delay;
+>  		else
+>  			status->delay = 0;
+>  	}
+> @@ -2423,6 +2424,7 @@ static int snd_pcm_delay(struct snd_pcm_substream *substream,
+>  			n = snd_pcm_playback_hw_avail(runtime);
+>  		else
+>  			n = snd_pcm_capture_avail(runtime);
+> +		n += runtime->delay;
+>  		break;
+>  	case SNDRV_PCM_STATE_XRUN:
+>  		err = -EPIPE;
+> diff --git a/sound/usb/usbaudio.c b/sound/usb/usbaudio.c
+> index 6e70ba4..7d5a103 100644
+> --- a/sound/usb/usbaudio.c
+> +++ b/sound/usb/usbaudio.c
+> @@ -629,6 +629,7 @@ static int prepare_playback_urb(struct snd_usb_substream *subs,
+>  	subs->hwptr_done += offs;
+>  	if (subs->hwptr_done >= runtime->buffer_size)
+>  		subs->hwptr_done -= runtime->buffer_size;
+> +	runtime->delay += offs;
+>  	spin_unlock_irqrestore(&subs->lock, flags);
+>  	urb->transfer_buffer_length = offs * stride;
+>  	if (period_elapsed)
+> @@ -638,12 +639,20 @@ static int prepare_playback_urb(struct snd_usb_substream *subs,
+>  
+>  /*
+>   * process after playback data complete
+> - * - nothing to do
+> + * - decrease the delay count again
+>   */
+>  static int retire_playback_urb(struct snd_usb_substream *subs,
+>  			       struct snd_pcm_runtime *runtime,
+>  			       struct urb *urb)
+>  {
+> +	unsigned long flags;
+> +	int stride = runtime->frame_bits >> 3;
+> +	int processed = urb->transfer_buffer_length / stride;
+> +
+> +	spin_lock_irqsave(&subs->lock, flags);
+> +	if (processed > runtime->delay)
+> +		runtime->delay -= processed;
+> +	spin_unlock_irqrestore(&subs->lock, flags);
+>  	return 0;
+>  }
+>  
+> @@ -1542,6 +1551,7 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+>  	subs->hwptr_done = 0;
+>  	subs->transfer_done = 0;
+>  	subs->phase = 0;
+> +	runtime->delay = 0;
+>  
+>  	/* clear urbs (to be sure) */
+>  	deactivate_urbs(subs, 0, 1);
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
 
 Lennart
 
