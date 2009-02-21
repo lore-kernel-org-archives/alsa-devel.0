@@ -1,24 +1,24 @@
-From: Paulo Cavalcanti <promac@gmail.com>
+From: Wu Fengguang <fengguang.wu@intel.com>
 Subject: Re: idt blue jack patch
-Date: Fri, 20 Feb 2009 23:42:00 -0300
-Message-ID: <68720af30902201842u2d60dc99q7d2f2388491cdf6b@mail.gmail.com>
-References: <s5h4oyuirc5.wl%tiwai@suse.de> <s5htz6s8cis.wl%tiwai@suse.de>
+Date: Sat, 21 Feb 2009 10:56:39 +0800
+Message-ID: <20090221025639.GA8151@localhost>
+References: <s5htz6s8cis.wl%tiwai@suse.de>
 	<68720af30902180104k40a3377cs95ae80446af61f0d@mail.gmail.com>
 	<fd3eb9bf0902180144r476fd065ued924b5b26a6675@mail.gmail.com>
 	<s5hk57nzs1h.wl%tiwai@suse.de> <20090219030212.GA26505@localhost>
-	<1235013772.27435.118.camel@razman> <20090220010001.GA7520@localhost>
-	<s5hbpsx10yg.wl%tiwai@suse.de> <20090221015529.GA6821@localhost>
+	<1235013772.27435.118.camel@razman>
+	<20090220010001.GA7520@localhost> <s5hbpsx10yg.wl%tiwai@suse.de>
+	<20090221015529.GA6821@localhost>
+	<68720af30902201842u2d60dc99q7d2f2388491cdf6b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f158.google.com (mail-gx0-f158.google.com
-	[209.85.217.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6A71E103946
-	for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2009 03:42:01 +0100 (CET)
-Received: by gxk2 with SMTP id 2so3422993gxk.8
-	for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2009 18:42:00 -0800 (PST)
-In-Reply-To: <20090221015529.GA6821@localhost>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 841CF103808
+	for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2009 03:56:49 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <68720af30902201842u2d60dc99q7d2f2388491cdf6b@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,151 +28,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wu Fengguang <fengguang.wu@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, =?ISO-8859-2?Q?Vedran_Mileti=E6?= <rivanvx@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Paulo Cavalcanti <promac@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Vedran =?utf-8?Q?Mileti=C4=87?= <rivanvx@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 20, 2009 at 10:55 PM, Wu Fengguang <fengguang.wu@intel.com>wrot=
-e:
-
-> On Fri, Feb 20, 2009 at 07:18:31PM +0200, Takashi Iwai wrote:
-> > At Fri, 20 Feb 2009 09:00:01 +0800,
-> > Wu Fengguang wrote:
-> > >
-> > > Hi Tobin,
-> > >
-> > > Here are the Linux and WinXP pin configurations.
-> > > Both Linux and WinXP configure node 0x0c as an output pin.
-> > >
-> > > However the driver seems to be offering three schemes:
-> > >
-> > >         scheme desc             0xC dev
-> > > ------------------------------------------------------
-> > >         IDS_CONFIG_OPEN         Speaker_Side/LineIn
-> > >         IDS_CONFIG_51           LineIn
-> > >         IDS_CONFIG_71           Speaker_Side
-> > >
-> > > Paulo, maybe you can run these commands to switch between
-> > > linein/lineout modes:
-> > >
-> > >         # wget
-> http://www.kernel.org/pub/linux/kernel/people/tiwai/misc/hda-verb-0.3.tar=
-.bz2
-> > >
-> > >         # set PIN_IN mode
-> > >         hda-verb /dev/snd/hwC0D2 0x0c SET_PIN_WIDGET_CONTROL 0x20
-> > >
-> > >         # set PIN_OUT mode
-> > >         hda-verb /dev/snd/hwC0D2 0x0c SET_PIN_WIDGET_CONTROL 0x40
-> >
-> >
-> > Regarding the default pin configurations.
-> > I made a series of patches to add the interface to change the default
-> > pincfg values dynamically via hwdep sysfs.  The patches are found in
-> > test/hda-pincfg branch of sound git tree
-> >     git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
-> >
-> > and included in the very latest alsa-driver-unstable snapshot
-> >
-> ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-u=
-nstable-snapshot.tar.gz
-> >
-> > Basically, you can get / set the default pincfg values on the fly, and
-> > trigger the codec reconfiguration after that.
-> >
-> > The init_pin_configs file shows the initial default pincfgs set by BIOS.
-> >
-> >       # cat /sys/class/sound/hwC0D0/init_pin_configs
-> >       0x14 0x9993013f
-> >       0x15 0x01014c10
-> >       0x16 0x99030120
-> >       0x18 0x01a19c30
-> >       0x19 0x02a11c31
-> >       0x1a 0x01813c32
-> >       0x1b 0x02211c1f
-> >       0x1c 0x99330133
-> >       0x1d 0x411111f0
-> >       0x1e 0x411111f0
-> >       0x1f 0x411111f0
-> >
-> > Then, you can override the default value by writing to
-> > override_pin_configs sysfs file.
-> >
-> >       # cat /sys/class/sound/hwC0D0/override_pin_configs
-> >       # echo 0x1d 0x02a11c30 >
-> /sys/class/sound/hwC0D0/override_pin_configs
-> >       # cat /sys/class/sound/hwC0D0/override_pin_configs
-> >       0x1d 0x02a11c30
-> >
-> > Note that this value won't appear in init_pin_configs.
-> >
-> > Also, there is another file, cur_pin_configs.  This contains the
-> > pincfgs that are set by the driver explicitly.  For example,
-> > the static pincfg table in patch_sigmatel.c appears here.
-> >
-> > Then you can trigger the codec reconfiguration by
-> >
-> >       # echo 1 > /sys/class/sound/hwC0D0/reconfig
-> >
-> > This will re-setup the driver based on the given pin configs.
-> >
-> > Unfortunately, in the current scenario, it can't override the static
-> > pincfg table in the driver like in patch_sigmatel.c.  It's just for
-> > fixing and BIOS setup.
->
-> If override_pin_configs cannot override the values in cur_pin_configs
-> (or will it later?), then the name is kind of misleading.
->
-> How about the names bios_pin_configs, driver_pin_configs and
-> user_pin_configs?
->
->
-
-Having a tool for reconfiguring the pins seems to be the only hope
-for fixing the problems of all cards available out there.
-
-However, I fixed my problem. The Dell Vostro 1400 (STAC9228) uses the model
-"dell-bios" by default. The problem is that plugging the headphones does not
-mute the speakers, and the digital mic does not work at all.
-
-The model that works better is the "dell-3stack". But in this case there is
-no analog mic available (the digital mic works, but it is too low).
-
-Comparing the codecs I realizaded that the problem was that
-the pin/node 0x0e (mic) was 0x01a19040 in the ref model and 0x01111212 in
-the del-3stack. Then I just switched their positions in the initialization,
-and voil=E1,
-I have an analog mic using the model I want, that is, del-3stack.
-
-Unfortunately, I know I did not contribute to anything. I just changed a
-codec
-to fit my needs, and maybe created a lot of noise tn the process.
-
-Cheers,
-
-and thanks for all the guidance I received.
-
-
---- alsa-driver-1.0.19/alsa-kernel/pci/hda/patch_sigmatel.c     2009-01-19
-09:08:58.000000000 -0200
-+++ alsa-driver-1.0.19-new/alsa-kernel/pci/hda/patch_sigmatel.c 2009-02-20
-19:08:18.000000000 -0300
-@@ -2113,8 +2113,8 @@
- };
-
- static unsigned int dell_3st_pin_configs[14] =3D {
--       0x02211230, 0x02a11220, 0x01a19040, 0x01114210,
--       0x01111212, 0x01116211, 0x01813050, 0x01112214,
-+       0x02211230, 0x02a11220, 0x01111212, 0x01114210,
-+       0x01a19040, 0x01116211, 0x01813050, 0x01112214,
-        0x403003fa, 0x90a60040, 0x90a60040, 0x404003fb,
-        0x40c003fc, 0x40000100
- };
-
-
-
-
--- =
-
-Paulo Roma Cavalcanti
-LCG - UFRJ
+T24gU2F0LCBGZWIgMjEsIDIwMDkgYXQgMDQ6NDI6MDBBTSArMDIwMCwgUGF1bG8gQ2F2YWxjYW50
+aSB3cm90ZToKPiAKPiAKPiBPbiBGcmksIEZlYiAyMCwgMjAwOSBhdCAxMDo1NSBQTSwgV3UgRmVu
+Z2d1YW5nIDxmZW5nZ3Vhbmcud3VAaW50ZWwuY29tPG1haWx0bzpmZW5nZ3Vhbmcud3VAaW50ZWwu
+Y29tPj4gd3JvdGU6Cj4gT24gRnJpLCBGZWIgMjAsIDIwMDkgYXQgMDc6MTg6MzFQTSArMDIwMCwg
+VGFrYXNoaSBJd2FpIHdyb3RlOgo+ID4gQXQgRnJpLCAyMCBGZWIgMjAwOSAwOTowMDowMSArMDgw
+MCwKPiA+IFd1IEZlbmdndWFuZyB3cm90ZToKPiA+ID4KPiA+ID4gSGkgVG9iaW4sCj4gPiA+Cj4g
+PiA+IEhlcmUgYXJlIHRoZSBMaW51eCBhbmQgV2luWFAgcGluIGNvbmZpZ3VyYXRpb25zLgo+ID4g
+PiBCb3RoIExpbnV4IGFuZCBXaW5YUCBjb25maWd1cmUgbm9kZSAweDBjIGFzIGFuIG91dHB1dCBw
+aW4uCj4gPiA+Cj4gPiA+IEhvd2V2ZXIgdGhlIGRyaXZlciBzZWVtcyB0byBiZSBvZmZlcmluZyB0
+aHJlZSBzY2hlbWVzOgo+ID4gPgo+ID4gPiAgICAgICAgIHNjaGVtZSBkZXNjICAgICAgICAgICAg
+IDB4QyBkZXYKPiA+ID4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tCj4gPiA+ICAgICAgICAgSURTX0NPTkZJR19PUEVOICAgICAgICAgU3BlYWtl
+cl9TaWRlL0xpbmVJbgo+ID4gPiAgICAgICAgIElEU19DT05GSUdfNTEgICAgICAgICAgIExpbmVJ
+bgo+ID4gPiAgICAgICAgIElEU19DT05GSUdfNzEgICAgICAgICAgIFNwZWFrZXJfU2lkZQo+ID4g
+Pgo+ID4gPiBQYXVsbywgbWF5YmUgeW91IGNhbiBydW4gdGhlc2UgY29tbWFuZHMgdG8gc3dpdGNo
+IGJldHdlZW4KPiA+ID4gbGluZWluL2xpbmVvdXQgbW9kZXM6Cj4gPiA+Cj4gPiA+ICAgICAgICAg
+IyB3Z2V0IGh0dHA6Ly93d3cua2VybmVsLm9yZy9wdWIvbGludXgva2VybmVsL3Blb3BsZS90aXdh
+aS9taXNjL2hkYS12ZXJiLTAuMy50YXIuYnoyCj4gPiA+Cj4gPiA+ICAgICAgICAgIyBzZXQgUElO
+X0lOIG1vZGUKPiA+ID4gICAgICAgICBoZGEtdmVyYiAvZGV2L3NuZC9od0MwRDIgMHgwYyBTRVRf
+UElOX1dJREdFVF9DT05UUk9MIDB4MjAKPiA+ID4KPiA+ID4gICAgICAgICAjIHNldCBQSU5fT1VU
+IG1vZGUKPiA+ID4gICAgICAgICBoZGEtdmVyYiAvZGV2L3NuZC9od0MwRDIgMHgwYyBTRVRfUElO
+X1dJREdFVF9DT05UUk9MIDB4NDAKPiA+Cj4gPgo+ID4gUmVnYXJkaW5nIHRoZSBkZWZhdWx0IHBp
+biBjb25maWd1cmF0aW9ucy4KPiA+IEkgbWFkZSBhIHNlcmllcyBvZiBwYXRjaGVzIHRvIGFkZCB0
+aGUgaW50ZXJmYWNlIHRvIGNoYW5nZSB0aGUgZGVmYXVsdAo+ID4gcGluY2ZnIHZhbHVlcyBkeW5h
+bWljYWxseSB2aWEgaHdkZXAgc3lzZnMuICBUaGUgcGF0Y2hlcyBhcmUgZm91bmQgaW4KPiA+IHRl
+c3QvaGRhLXBpbmNmZyBicmFuY2ggb2Ygc291bmQgZ2l0IHRyZWUKPiA+ICAgICBnaXQ6Ly9naXQu
+a2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQtMi42LmdpdDxo
+dHRwOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5k
+LTIuNi5naXQ+Cj4gPgo+ID4gYW5kIGluY2x1ZGVkIGluIHRoZSB2ZXJ5IGxhdGVzdCBhbHNhLWRy
+aXZlci11bnN0YWJsZSBzbmFwc2hvdAo+ID4gICAgIGZ0cDovL2Z0cC5rZXJuZWwub3JnL3B1Yi9s
+aW51eC9rZXJuZWwvcGVvcGxlL3Rpd2FpL3NuYXBzaG90L2Fsc2EtZHJpdmVyLXVuc3RhYmxlLXNu
+YXBzaG90LnRhci5nego+ID4KPiA+IEJhc2ljYWxseSwgeW91IGNhbiBnZXQgLyBzZXQgdGhlIGRl
+ZmF1bHQgcGluY2ZnIHZhbHVlcyBvbiB0aGUgZmx5LCBhbmQKPiA+IHRyaWdnZXIgdGhlIGNvZGVj
+IHJlY29uZmlndXJhdGlvbiBhZnRlciB0aGF0Lgo+ID4KPiA+IFRoZSBpbml0X3Bpbl9jb25maWdz
+IGZpbGUgc2hvd3MgdGhlIGluaXRpYWwgZGVmYXVsdCBwaW5jZmdzIHNldCBieSBCSU9TLgo+ID4K
+PiA+ICAgICAgICMgY2F0IC9zeXMvY2xhc3Mvc291bmQvaHdDMEQwL2luaXRfcGluX2NvbmZpZ3MK
+PiA+ICAgICAgIDB4MTQgMHg5OTkzMDEzZgo+ID4gICAgICAgMHgxNSAweDAxMDE0YzEwCj4gPiAg
+ICAgICAweDE2IDB4OTkwMzAxMjAKPiA+ICAgICAgIDB4MTggMHgwMWExOWMzMAo+ID4gICAgICAg
+MHgxOSAweDAyYTExYzMxCj4gPiAgICAgICAweDFhIDB4MDE4MTNjMzIKPiA+ICAgICAgIDB4MWIg
+MHgwMjIxMWMxZgo+ID4gICAgICAgMHgxYyAweDk5MzMwMTMzCj4gPiAgICAgICAweDFkIDB4NDEx
+MTExZjAKPiA+ICAgICAgIDB4MWUgMHg0MTExMTFmMAo+ID4gICAgICAgMHgxZiAweDQxMTExMWYw
+Cj4gPgo+ID4gVGhlbiwgeW91IGNhbiBvdmVycmlkZSB0aGUgZGVmYXVsdCB2YWx1ZSBieSB3cml0
+aW5nIHRvCj4gPiBvdmVycmlkZV9waW5fY29uZmlncyBzeXNmcyBmaWxlLgo+ID4KPiA+ICAgICAg
+ICMgY2F0IC9zeXMvY2xhc3Mvc291bmQvaHdDMEQwL292ZXJyaWRlX3Bpbl9jb25maWdzCj4gPiAg
+ICAgICAjIGVjaG8gMHgxZCAweDAyYTExYzMwID4gL3N5cy9jbGFzcy9zb3VuZC9od0MwRDAvb3Zl
+cnJpZGVfcGluX2NvbmZpZ3MKPiA+ICAgICAgICMgY2F0IC9zeXMvY2xhc3Mvc291bmQvaHdDMEQw
+L292ZXJyaWRlX3Bpbl9jb25maWdzCj4gPiAgICAgICAweDFkIDB4MDJhMTFjMzAKPiA+Cj4gPiBO
+b3RlIHRoYXQgdGhpcyB2YWx1ZSB3b24ndCBhcHBlYXIgaW4gaW5pdF9waW5fY29uZmlncy4KPiA+
+Cj4gPiBBbHNvLCB0aGVyZSBpcyBhbm90aGVyIGZpbGUsIGN1cl9waW5fY29uZmlncy4gIFRoaXMg
+Y29udGFpbnMgdGhlCj4gPiBwaW5jZmdzIHRoYXQgYXJlIHNldCBieSB0aGUgZHJpdmVyIGV4cGxp
+Y2l0bHkuICBGb3IgZXhhbXBsZSwKPiA+IHRoZSBzdGF0aWMgcGluY2ZnIHRhYmxlIGluIHBhdGNo
+X3NpZ21hdGVsLmMgYXBwZWFycyBoZXJlLgo+ID4KPiA+IFRoZW4geW91IGNhbiB0cmlnZ2VyIHRo
+ZSBjb2RlYyByZWNvbmZpZ3VyYXRpb24gYnkKPiA+Cj4gPiAgICAgICAjIGVjaG8gMSA+IC9zeXMv
+Y2xhc3Mvc291bmQvaHdDMEQwL3JlY29uZmlnCj4gPgo+ID4gVGhpcyB3aWxsIHJlLXNldHVwIHRo
+ZSBkcml2ZXIgYmFzZWQgb24gdGhlIGdpdmVuIHBpbiBjb25maWdzLgo+ID4KPiA+IFVuZm9ydHVu
+YXRlbHksIGluIHRoZSBjdXJyZW50IHNjZW5hcmlvLCBpdCBjYW4ndCBvdmVycmlkZSB0aGUgc3Rh
+dGljCj4gPiBwaW5jZmcgdGFibGUgaW4gdGhlIGRyaXZlciBsaWtlIGluIHBhdGNoX3NpZ21hdGVs
+LmMuICBJdCdzIGp1c3QgZm9yCj4gPiBmaXhpbmcgYW5kIEJJT1Mgc2V0dXAuCj4gCj4gSWYgb3Zl
+cnJpZGVfcGluX2NvbmZpZ3MgY2Fubm90IG92ZXJyaWRlIHRoZSB2YWx1ZXMgaW4gY3VyX3Bpbl9j
+b25maWdzCj4gKG9yIHdpbGwgaXQgbGF0ZXI/KSwgdGhlbiB0aGUgbmFtZSBpcyBraW5kIG9mIG1p
+c2xlYWRpbmcuCj4gCj4gSG93IGFib3V0IHRoZSBuYW1lcyBiaW9zX3Bpbl9jb25maWdzLCBkcml2
+ZXJfcGluX2NvbmZpZ3MgYW5kIHVzZXJfcGluX2NvbmZpZ3M/Cj4gCj4gCj4gCj4gSGF2aW5nIGEg
+dG9vbCBmb3IgcmVjb25maWd1cmluZyB0aGUgcGlucyBzZWVtcyB0byBiZSB0aGUgb25seSBob3Bl
+Cj4gZm9yIGZpeGluZyB0aGUgcHJvYmxlbXMgb2YgYWxsIGNhcmRzIGF2YWlsYWJsZSBvdXQgdGhl
+cmUuCj4gCj4gSG93ZXZlciwgSSBmaXhlZCBteSBwcm9ibGVtLiBUaGUgRGVsbCBWb3N0cm8gMTQw
+MCAoU1RBQzkyMjgpIHVzZXMgdGhlIG1vZGVsICJkZWxsLWJpb3MiIGJ5IGRlZmF1bHQuIFRoZSBw
+cm9ibGVtIGlzIHRoYXQgcGx1Z2dpbmcgdGhlIGhlYWRwaG9uZXMgZG9lcyBub3QgbXV0ZSB0aGUg
+c3BlYWtlcnMsIGFuZCB0aGUgZGlnaXRhbCBtaWMgZG9lcyBub3Qgd29yayBhdCBhbGwuCj4gCj4g
+VGhlIG1vZGVsIHRoYXQgd29ya3MgYmV0dGVyIGlzIHRoZSAiZGVsbC0zc3RhY2siLiBCdXQgaW4g
+dGhpcyBjYXNlIHRoZXJlIGlzIG5vIGFuYWxvZyBtaWMgYXZhaWxhYmxlICh0aGUgZGlnaXRhbCBt
+aWMgd29ya3MsIGJ1dCBpdCBpcyB0b28gbG93KS4KPiAKPiBDb21wYXJpbmcgdGhlIGNvZGVjcyBJ
+IHJlYWxpemFkZWQgdGhhdCB0aGUgcHJvYmxlbSB3YXMgdGhhdAo+IHRoZSBwaW4vbm9kZSAweDBl
+IChtaWMpIHdhcyAweDAxYTE5MDQwIGluIHRoZSByZWYgbW9kZWwgYW5kIDB4MDExMTEyMTIgaW4g
+dGhlIGRlbC0zc3RhY2suIFRoZW4gSSBqdXN0IHN3aXRjaGVkIHRoZWlyIHBvc2l0aW9ucyBpbiB0
+aGUgaW5pdGlhbGl6YXRpb24sIGFuZCB2b2lsw6EsCj4gSSBoYXZlIGFuIGFuYWxvZyBtaWMgdXNp
+bmcgdGhlIG1vZGVsIEkgd2FudCwgdGhhdCBpcywgZGVsLTNzdGFjay4KClBhdWxvLCBoYXZlIHlv
+dSB0cmllZCB0aGUgaGRhLXZlcmI/IE9yIGl0IHdvbid0IHdvcmsgZm9yIHlvdSwgc28gaGF2ZQp0
+byBtb2RpZnkgdGhlIHNvdXJjZSBjb2RlPwoKVGhhbmtzLApGZW5nZ3VhbmcKCj4gVW5mb3J0dW5h
+dGVseSwgSSBrbm93IEkgZGlkIG5vdCBjb250cmlidXRlIHRvIGFueXRoaW5nLiBJIGp1c3QgY2hh
+bmdlZCBhIGNvZGVjCj4gdG8gZml0IG15IG5lZWRzLCBhbmQgbWF5YmUgY3JlYXRlZCBhIGxvdCBv
+ZiBub2lzZSB0biB0aGUgcHJvY2Vzcy4KPiAKPiBDaGVlcnMsCj4gCj4gYW5kIHRoYW5rcyBmb3Ig
+YWxsIHRoZSBndWlkYW5jZSBJIHJlY2VpdmVkLgo+IAo+IAo+IC0tLSBhbHNhLWRyaXZlci0xLjAu
+MTkvYWxzYS1rZXJuZWwvcGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jICAgICAyMDA5LTAxLTE5IDA5
+OjA4OjU4LjAwMDAwMDAwMCAtMDIwMAo+ICsrKyBhbHNhLWRyaXZlci0xLjAuMTktbmV3L2Fsc2Et
+a2VybmVsL3BjaS9oZGEvcGF0Y2hfc2lnbWF0ZWwuYyAyMDA5LTAyLTIwIDE5OjA4OjE4LjAwMDAw
+MDAwMCAtMDMwMAo+IEBAIC0yMTEzLDggKzIxMTMsOCBAQAo+ICB9Owo+IAo+ICBzdGF0aWMgdW5z
+aWduZWQgaW50IGRlbGxfM3N0X3Bpbl9jb25maWdzWzE0XSA9IHsKPiAtICAgICAgIDB4MDIyMTEy
+MzAsIDB4MDJhMTEyMjAsIDB4MDFhMTkwNDAsIDB4MDExMTQyMTAsCj4gLSAgICAgICAweDAxMTEx
+MjEyLCAweDAxMTE2MjExLCAweDAxODEzMDUwLCAweDAxMTEyMjE0LAo+ICsgICAgICAgMHgwMjIx
+MTIzMCwgMHgwMmExMTIyMCwgMHgwMTExMTIxMiwgMHgwMTExNDIxMCwKPiArICAgICAgIDB4MDFh
+MTkwNDAsIDB4MDExMTYyMTEsIDB4MDE4MTMwNTAsIDB4MDExMTIyMTQsCj4gICAgICAgICAweDQw
+MzAwM2ZhLCAweDkwYTYwMDQwLCAweDkwYTYwMDQwLCAweDQwNDAwM2ZiLAo+ICAgICAgICAgMHg0
+MGMwMDNmYywgMHg0MDAwMDEwMAo+ICB9Owo+IAo+IAo+IAo+IAo+IC0tCj4gUGF1bG8gUm9tYSBD
+YXZhbGNhbnRpCj4gTENHIC0gVUZSSgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwK
