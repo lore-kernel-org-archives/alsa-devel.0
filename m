@@ -1,20 +1,25 @@
-From: maarten van es <maarten.h.van.es@gmail.com>
-Subject: Re: set_params:1073: not enough memory
-Date: Fri, 20 Feb 2009 22:18:00 +0000
-Message-ID: <bca65b460902201418g146e66e7xefd0ad96e308d471@mail.gmail.com>
-References: <bca65b460901291443h4bbcbd36p683614a7d9770f45@mail.gmail.com>
-	<s5h8wopdlr9.wl%tiwai@suse.de>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: idt blue jack patch
+Date: Sat, 21 Feb 2009 09:05:19 +0800
+Message-ID: <20090221010519.GA6175@localhost>
+References: <fd3eb9bf0902180144r476fd065ued924b5b26a6675@mail.gmail.com>
+	<s5hk57nzs1h.wl%tiwai@suse.de> <20090219030212.GA26505@localhost>
+	<1235013772.27435.118.camel@razman>
+	<20090220010001.GA7520@localhost>
+	<68720af30902200215l2fa5f4fbvc52fb45dc3ea6a41@mail.gmail.com>
+	<20090220112052.GA5612@localhost>
+	<68720af30902200616q645a8c5dy12e0ecf56af1da3b@mail.gmail.com>
+	<20090220143120.GA9795@localhost>
+	<68720af30902200807i29cf0df2q106e92c67287ba30@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f162.google.com (mail-fx0-f162.google.com
-	[209.85.220.162])
-	by alsa0.perex.cz (Postfix) with ESMTP id 96D9E103814
-	for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2009 23:18:01 +0100 (CET)
-Received: by fxm6 with SMTP id 6so475859fxm.8
-	for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2009 14:18:00 -0800 (PST)
-In-Reply-To: <s5h8wopdlr9.wl%tiwai@suse.de>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 79670103808
+	for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2009 02:05:31 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <68720af30902200807i29cf0df2q106e92c67287ba30@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,100 +29,225 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Paulo Cavalcanti <promac@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Fri, Feb 20, 2009 at 06:07:03PM +0200, Paulo Cavalcanti wrote:
+> 
+> 
+> On Fri, Feb 20, 2009 at 11:31 AM, Wu Fengguang <fengguang.wu@intel.com<mailto:fengguang.wu@intel.com>> wrote:
+> On Fri, Feb 20, 2009 at 04:16:52PM +0200, Paulo Cavalcanti wrote:
+> >
+> >
+> > On Fri, Feb 20, 2009 at 8:20 AM, Wu Fengguang <fengguang.wu@intel.com<mailto:fengguang.wu@intel.com><mailto:fengguang.wu@intel.com<mailto:fengguang.wu@intel.com>>> wrote:
+> > On Fri, Feb 20, 2009 at 12:15:16PM +0200, Paulo Cavalcanti wrote:
+> > >
+> > >
+> > > On Thu, Feb 19, 2009 at 10:00 PM, Wu Fengguang <fengguang.wu@intel.com<mailto:fengguang.wu@intel.com><mailto:fengguang.wu@intel.com<mailto:fengguang.wu@intel.com>><mailto:fengguang.wu@intel.com<mailto:fengguang.wu@intel.com><mailto:fengguang.wu@intel.com<mailto:fengguang.wu@intel.com>>>> wrote:
+> > > Hi Tobin,
+> > >
+> > > Here are the Linux and WinXP pin configurations.
+> > > Both Linux and WinXP configure node 0x0c as an output pin.
+> > >
+> > > However the driver seems to be offering three schemes:
+> > >
+> > >        scheme desc             0xC dev
+> > > ------------------------------------------------------
+> > >        IDS_CONFIG_OPEN         Speaker_Side/LineIn
+> > >        IDS_CONFIG_51           LineIn
+> > >        IDS_CONFIG_71           Speaker_Side
+> > >
+> > > Paulo, maybe you can run these commands to switch between
+> > > linein/lineout modes:
+> > >
+> > >        # wget http://www.kernel.org/pub/linux/kernel/people/tiwai/misc/hda-verb-0.3.tar.bz2
+> > >
+> > >        # set PIN_IN mode
+> > >        hda-verb /dev/snd/hwC0D2 0x0c SET_PIN_WIDGET_CONTROL 0x20
+> > >
+> > >        # set PIN_OUT mode
+> > >        hda-verb /dev/snd/hwC0D2 0x0c SET_PIN_WIDGET_CONTROL 0x40
+> > >
+> > > Thanks,
+> > > Fengguang
+> > > ---
+> > >
+> > > /proc/asound/card0/codec\#2
+> > >
+> > >        Codec: IDT 92HD73E1X5
+> > >        Address: 2
+> > >        Vendor Id: 0x111d7676
+> > >        Subsystem Id: 0x80865002
+> > >        Revision Id: 0x100202
+> > >
+> > >
+> > > AUD_allOS_6033.2_PV_IDTGUI_v124/WDM/WinXP/Sthda.ini
+> > >
+> > >        # sthda.INI
+> > >        [Models]
+> > >        ...
+> > >        HDAUDIO\FUNC_01&VEN_111D&DEV_7676&SUBSYS_80865002=I73E-EL2.INI
+> > >        ...
+> > >
+> > >
+> > > AUD_allOS_6033.2_PV_IDTGUI_v124/WDM/WinXP/I73E-EL2.INI
+> > >
+> > >        [HKR\Settings\Pin\0C]
+> > >        CfgDflt                         = dword: 0x01113214
+> > >        AltCfg                          = hex: 5E,32,81,01
+> > >        AssignedDAC     = hex: 0x18
+> > >
+> > >
+> > > /proc/asound/card0/codec\#2
+> > >
+> > >        Node 0x0c [Pin Complex] wcaps 0x400183: Stereo Amp-In
+> > >          Amp-In caps: N/A
+> > >          Amp-In vals:  [0x00 0x00]
+> > >          Pincap 0x00001737: IN OUT Detect Trigger ImpSense
+> > >            Vref caps: HIZ 50 GRD 80
+> > >          Pin Default 0x01113014: [Jack] Speaker at Ext Rear
+> > >            Conn = 1/8, Color = Blue
+> > >            DefAssociation = 0x1, Sequence = 0x4
+> > >          Pin-ctls: 0x40: OUT VREF_HIZ
+> > >          Unsolicited: tag=04, enabled=1
+> > >          Connection: 6
+> > >             0x15 0x16 0x17 0x18* 0x19 0x1e
+> > >
+> > >
+> > > Thanks a lot, Fengguang.
+> > >
+> > > The other models for this codec are for Dell computers.
+> > > Probably, all of then will behave the same way, right?
+> >
+> > I guess the hda-verb commands will work for all IN/OUT configurable pins.
+> >
+> > > I still have a question. I see that you  changed Pin Default 0x01113014,
+> > > for 0x01813021, in the driver for having LineIn.
+> > > Also, Pin-ctls: 0x40 should provide the pin as an output. The Node is 0x0c.
+> > >
+> > > Therefore,
+> > >
+> > > # set PIN_OUT mode
+> > >        hda-verb /dev/snd/hwC0D2 0x0c SET_PIN_WIDGET_CONTROL 0x40
+> > >
+> > >  makes sense.
+> > >
+> > > But how would I know that 0x20 would turn the pin 0x0c into LineIn?
+> > >
+> > >   # set PIN_IN mode
+> > >        hda-verb /dev/snd/hwC0D2 0x0c SET_PIN_WIDGET_CONTROL 0x20
+> >
+> > ALSA defined the following values according to the HDA spec:
+> >
+> >        /* Pin widget control - 8bit */
+> >        #define AC_PINCTL_IN_EN                 (1<<5)
+> >        #define AC_PINCTL_OUT_EN                (1<<6)
+> >        #define AC_PINCTL_HP_EN                 (1<<7)
+> >
+> >        #define PIN_IN                  (AC_PINCTL_IN_EN)
+> >        #define PIN_OUT                 (AC_PINCTL_OUT_EN)
+> >        #define PIN_HP                  (AC_PINCTL_OUT_EN | AC_PINCTL_HP_EN)
+> >
+> > So PIN_OUT=0x40 and PIN_IN=0x20.
+> >
+> > > I am asking because I have a Dell laptop (Vostro 1400) where the external mic
+> > > works when I use model=ref (and I loose the speakers in this case), but not
+> > > when I use model=dell-3stack. If I could figure out how to switch
+> > > the pin using hda-verb in this case, would solve my problems when using skype.
+> >
+> > You can locate the external mic pin in /proc/asound/card0/codec#* and
+> > feed its node id to the hda-verb command. It should work the same way.
+> >
+> > This is from model=ref. I can see it defines Line In as the
+> > pin 0xe (exactly the jack marked as mic in the Vostro 1400).
+> > This is how it should be.
+> >
+> 
+> But you pasted info for 0x0c instead of 0xe below...
+> Would you provide the full codec file?
+> 
+> > Node 0x0c [Pin Complex] wcaps 0x400181: Stereo
+> >   Pincap 0x00001737: IN OUT Detect Trigger ImpSense
+> >     Vref caps: HIZ 50 GRD 80
+> >   Pin Default 0x0181304e: [Jack] Line In at Ext Rear
+> >     Conn = 1/8, Color = Blue
+> >     DefAssociation = 0x4, Sequence = 0xe
+> >   Pin-ctls: 0x20: IN VREF_HIZ
+> >   Unsolicited: tag=04, enabled=1
+> >   Connection: 1
+> >      0x03
+> >
+> > ----------------------------------
+> >
+> > This is from model=dell-3stack. There is no Line In defined. This
+> > is the problem....
+> >
+> >
+> > Node 0x10 [Pin Complex] wcaps 0x400181: Stereo
+> >   Pincap 0x00000037: IN OUT Detect Trigger ImpSense
+> >   Pin Default 0x01813050: [Jack] Line In at Ext Rear
+> >     Conn = 1/8, Color = Blue
+> >     DefAssociation = 0x5, Sequence = 0x0
+> >   Pin-ctls: 0x20: IN
+> >   Unsolicited: tag=04, enabled=1
+> >   Connection: 1
+> >      0x04
+> >
+> >
+> > The question is: how can I use hda-verb to make pin 0xe
+> > be an input pin (0x20), the way it were when using model = ref?
+> 
+> Where is Node 0x0e? You didn't paste Node 0x0e info, but 0x0c and 0x10.
+> 
+> > set PIN_IN mode:
+> >         hda-verb /dev/snd/hwC0D0 0x0c SET_PIN_WIDGET_CONTROL 0x20
+> >
+> > The node is 0x0c, but I am not sure if it is that simple.
+> 
+> It's trivial to try it out, its harmless anyway :)
+> You only have to replace 0x0c with your mic node.
+> 
+> 
+> Using hda-verb-0.3, the pins are:
+> 
+> 0xa - headphones (first connector - the one which works)
+> 0xf - headphones (second connector  - no output)
+> 0xe - analog mic
+> 
+> I am attaching the dell-3stack codec and the ref codec.
+> 
+> This laptop has a digital Mic and a jack for connecting an analog
+> mic, ehich I am supposing it is the "Line In" in the "model=ref" codec.
+> 
+> The dell-3tack model works well, but I have no analog mic, and the
+> digital mic sounds too low to be usable.
 
-This is a hobby project, so I am not so quick with building and
-testing things. Anyway, it seems to me now this error is related to a
-driver (or perhaps my 'hardware'). I tested the environment built by
-buildroot by chrooting into it, from 2 host systems. Aplay then works
-fine on my laptop, with an intel HDA card running OpenSuse 11.0
-x86-64, kernel 2.6.25.20. The exact same build gives the error in
-set_params in aplay running in qemu, with an (emulated) es1370 and
-running OpenSuse 11.0 x86-64, kernel 2.6.25.5. The error also occurs
-when booting qemu with the buildroot environment with kernel 2.6.28.4.
-The qemu system is not my final target, but if there are things I can
-try / test with the driver I am willing to spend some time on that.
+So you want the analog mic function of node 0x0e to be usable for model
+dell-3tack, as it has worked in model ref? 
 
-Regards
-Maarten
+--- ref.txt
++++ dell-3stack.txt
+ Node 0x0e [Pin Complex] wcaps 0x400181: Stereo
+   Pincap 0x00001737: IN OUT Detect Trigger ImpSense
+     Vref caps: HIZ 50 GRD 80
+-  Pin Default 0x01a19040: [Jack] Mic at Ext Rear
++  Pin Default 0x01111212: [Jack] Speaker at Ext Rear
+-    Conn = 1/8, Color = Pink
++    Conn = 1/8, Color = Black
+-    DefAssociation = 0x4, Sequence = 0x0
++    DefAssociation = 0x1, Sequence = 0x2
+-  Pin-ctls: 0x24: IN VREF_80
++  Pin-ctls: 0x40: OUT VREF_HIZ
+-  Unsolicited: tag=02, enabled=1
++  Unsolicited: tag=00, enabled=0
+   Connection: 1
+      0x04
+ 
+ From the above info I'd suggest to try this command to make node 0x0e
+ a port for mic instead of speaker:
 
+         hda-verb /dev/snd/hwC0D0 0x0e SET_PIN_WIDGET_CONTROL 0x20
 
-On Mon, Feb 2, 2009 at 1:14 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Thu, 29 Jan 2009 22:43:05 +0000,
-> maarten van es wrote:
->>
->> Hello all,
->>
->> I am trying to get alsa to work using buildroot to crosscompile to
->> i686-linux-uclibc. I am using the latest git version of alsa-lib and a
->> recent git version of alsa-util. I am stuck with the same error as in
->> the message included below when using aplay. So far I have been able
->> to narrow this down to the function set_params in aplay.c, lines 1070,
->> 1071:
->>
->> chunk_bytes = chunk_size * bits_per_frame / 8;
->> audiobuf = realloc(audiobuf, chunk_bytes);
->>
->> chunk_size is 0 here and obviously the realloc fails.
->>
->> Any ideas on what's going on here?
->
-> No idea yet.  But can you reproduce the same problem with glibc?
->
->
-> Takashi
->
->> For the record, "aplay -L" lists the correct devices, "aplay -D null
->> test.wav" works ok and the card works correctly using alsa version
->> 1.0.16 on standard suse 11.0.
->>
->> Best regards
->> Maarten van Es
->>
->>
->>
->>
->> Hello all,
->>
->> I'm trying to get alsa 1.0.18 working on a ARM PXA processor and I'm
->> stuck with the following error message:
->>
->> aplay /Sinus.raw -fcd
->> Playing raw data '/Sinus.raw' : Signed 16 bit Little Endian, Rate 44100
->> Hz, Stereo
->> aplay: set_params:1073: not enough memory
->>
->> alsa kernel was compiled with alsa 1.0.16, alsa.conf, located in
->> /usr/share/alsa is the basic:
->>
->> pcm.!default {
->>       type hw
->>       card 0
->>       }
->>
->>       ctl.!default {
->>       type hw
->>       card 0
->>          }
->>
->> also aplay -l and alsaconf store show the message:
->>
->> ALSA lib control.c:909:(snd_ctl_open_noupdate) Invalid CTL hw:0
->>
->> However the card shows up /proc/asound/cards and alsamixer is able to
->> access it.
->>
->> Any ideas?
->>
->> Best regards
->>
->> Michael
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
->
+Thanks,
+Fengguang
