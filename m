@@ -1,22 +1,21 @@
 From: Daniel Mack <daniel@caiaq.org>
-Subject: snd_pcm_hw_params_get_period_size points to __old_
-	symbol
-Date: Sun, 22 Feb 2009 22:35:53 +0100
-Message-ID: <20090222213553.GA5893@buzzloop.caiaq.de>
+Subject: pxassp dma pointer not moving
+Date: Sun, 22 Feb 2009 22:47:21 +0100
+Message-ID: <20090222214721.GB5893@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id AE74424492
-	for <alsa-devel@alsa-project.org>; Sun, 22 Feb 2009 22:35:58 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id CFA3E24498
+	for <alsa-devel@alsa-project.org>; Sun, 22 Feb 2009 22:47:23 +0100 (CET)
 Received: from localhost (localhost [127.0.0.1])
-	by buzzloop.caiaq.de (Postfix) with ESMTP id C98F67F404F
-	for <alsa-devel@alsa-project.org>; Sun, 22 Feb 2009 22:35:55 +0100 (CET)
+	by buzzloop.caiaq.de (Postfix) with ESMTP id 9ECBE7F404F
+	for <alsa-devel@alsa-project.org>; Sun, 22 Feb 2009 22:47:23 +0100 (CET)
 Received: from buzzloop.caiaq.de ([127.0.0.1])
 	by localhost (buzzloop.caiaq.de [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id Y7UnIwXhvuHT for <alsa-devel@alsa-project.org>;
-	Sun, 22 Feb 2009 22:35:53 +0100 (CET)
+	with ESMTP id lbVA6VPOg0Aw for <alsa-devel@alsa-project.org>;
+	Sun, 22 Feb 2009 22:47:21 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,19 +31,16 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-With alsa-lib and alsa-utils cross-compiled for ARM by
-buildroot (currently version 1.0.19, but earlier versions
-seem to be equally affected), I encounter the effect that
-snd_pcm_hw_params_get_period_size() does not write the expected
-value to the given snd_pcm_uframes_t pointer. In fact, this
-variable is not written at all. This makes aplay calculate 0
-for chunk_bytes in set_params() and then exit with the bogus error
-message "Not enough memory". I did some tracing and found out that
-the function called for snd_pcm_hw_params_get_period_size() is in
-fact __old_snd_pcm_hw_params_get_period_size() which has a different
-footprint and hence the pointer given to it is leaved untouched.
+I'm currently implementing support for a board based on a PXA300 with an
+I2S codec (CS4270) next to it. Things do work in general, including the
+setup of the SSP engine and clocks, and when using the OSS compat layer,
+I can see data on the bus. With the native ALSA API, however, the DMA
+pointer does not move forward but is stuck at position 8. ALSA's core
+calls pxa2xx_pcm_pointer() a couple of times and eventually gives up on
+it. Unfortunately, I don't have a Zylonite board for cross-check; could
+anyone verify that things are not currently broken in a general way?
 
-As I don't fully understand all the system behind the symbol names
-remapping, I'm stuck here. Can anybody reproduce this bug?
+My code base is up-to-date to sound-2.6.git/for-2.6.30.
 
+Thanks and best regards,
 Daniel
