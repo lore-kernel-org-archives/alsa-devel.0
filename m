@@ -1,17 +1,25 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: pxassp dma pointer not moving
-Date: Mon, 23 Feb 2009 17:46:46 +0000
-Message-ID: <20090223174646.GF2078@sirena.org.uk>
-References: <20090222214721.GB5893@buzzloop.caiaq.de>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: Timer instability
+Date: Mon, 23 Feb 2009 20:20:45 +0100
+Message-ID: <20090223192045.GA19543@tango.0pointer.de>
+References: <20090219024611.GA7930@tango.0pointer.de>
+	<s5hy6w2hqap.wl%tiwai@suse.de>
+	<20090220012220.GA11526@tango.0pointer.de>
+	<s5h1vtty3f8.wl%tiwai@suse.de>
+	<20090220203417.GA19093@tango.0pointer.de>
+	<s5hhc2nu4qy.wl%tiwai@suse.de>
+	<20090222031453.GA24365@tango.0pointer.de>
+	<20090223024233.GA1901@tango.0pointer.de>
+	<20090223025610.GA7062@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5C8341037EC
-	for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2009 18:46:47 +0100 (CET)
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5CE001037EC
+	for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2009 20:20:46 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20090222214721.GB5893@buzzloop.caiaq.de>
+In-Reply-To: <20090223025610.GA7062@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,19 +29,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Feb 22, 2009 at 10:47:21PM +0100, Daniel Mack wrote:
+On Mon, 23.02.09 03:56, Lennart Poettering (mznyfn@0pointer.de) wrote:
 
-> I2S codec (CS4270) next to it. Things do work in general, including the
-> setup of the SSP engine and clocks, and when using the OSS compat layer,
-> I can see data on the bus. With the native ALSA API, however, the DMA
+> Hmm, for now my little testing experiment I've now found es1969,
+> ens1371, intel8x0, snd-emu10k1 and some intel-hda to have unreliable
+> _avail() or _delay().
 
-One other thing to check here is that because the OSS API will iterate
-through several different calls to hw_params() since it sets each
-parameter individually it's possible that the configuration done in one
-of the intermediate states is causing your configuration to spring to
-life.  It might be worth looking at what's different about the setup
-done by the OSS API and working back from there.
+And here's the output for HDA STAC92xx:
+
+http://pastebin.mandriva.com/7149
+
+The first dump is the interesting one: when audio starts to play the
+buffer abruptly runs empty in just 20us after the device started. (The
+rightmost column is the state btw, 3 == playing).
+
+A quick overview of cards where _delay() and/or _avail() are unreliable:
+
+ es1969
+ ens1371
+ intel8x0
+ emu10k1
+ intel-hda on STAC92xx
+ intel-hda on AD1989B
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
