@@ -1,18 +1,20 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Standard mixer control names
-Date: Mon, 23 Feb 2009 17:47:00 +0100
-Message-ID: <20090223164700.GD22083@tango.0pointer.de>
-References: <20090221233629.GA3748@tango.0pointer.de>
-	<s5hzlgd34c3.wl%tiwai@suse.de>
+From: "Harsha, Priya" <priya.harsha@intel.com>
+Subject: Re: clarification on mmap
+Date: Mon, 23 Feb 2009 22:21:24 +0530
+Message-ID: <98769532B4BB14429434178695419EAE31FCFCB0@bgsmsx501.gar.corp.intel.com>
+References: <200902211659.48009.linux@dadeos.co.uk>
+	<s5hvdr1337t.wl%tiwai@suse.de>
+	<98769532B4BB14429434178695419EAE31FCFB62@bgsmsx501.gar.corp.intel.com>
+	<s5hy6vxxjfy.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 722DA24531
-	for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2009 17:47:06 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hzlgd34c3.wl%tiwai@suse.de>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 11E0524345
+	for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2009 17:51:29 +0100 (CET)
+In-Reply-To: <s5hy6vxxjfy.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,69 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 23.02.09 10:11, Takashi Iwai (tiwai@suse.de) wrote:
+Thank you. Can I use .ack callback to know that the mmaped buffer has been filled by the user? How would I know how much the user has written into the buffer that time? Would I need to have the pointers calculated and tracked myself or is there a field in the structures that I can read and find out?
 
-> > ALSA is making that very hard to implement something like this because
-> > every driver seems to wrap input/output selection differently.
-> > 
-> > On one card I have only has a couple of cswitches
-> > (snd-es1371). The same one has an enum "Mic Select". Another card has
-> > an enum "Input Source", but no cswitches (a HDA chip). The
-> > "ControlNames.txt" file in the kernel seems to suggest that there is an
-> > element "Capture Source".
+-----Original Message-----
+From: Takashi Iwai [mailto:tiwai@suse.de] 
+Sent: Monday, February 23, 2009 8:57 PM
+To: Harsha, Priya
+Cc: alsa-devel@alsa-project.org
+Subject: Re: clarification on mmap
+
+At Mon, 23 Feb 2009 18:59:11 +0530,
+Harsha, Priya wrote:
 > 
-> That's because "Capture Source" can't work for multiple (sub)devices
-> with the mixer abstraction of alsa-lib, per design.
-> "Input Source" was born as a workaround (still found in many places
-> in the driver code).  Maybe we should update ControlNames.txt as well.
+> Hi,
 > 
-> > For playback it seems that some cards have a a headphone switch, and
-> > others a headphone slider (which i guess makes sense).
-> > 
-> > Now, the question, how should I implement this?
-> > 
-> > For playback the handling is easy as long as there is only one element
-> > to deal with, but what about capture? One option would be to simply
-> > go by cswitch and nothing else. Or go by "Input Source" and nothing
-> > else. Or combine some form. Now I'd of course prefer if the drivers
-> > get fixed to use a single element naming scheme only. Is there any
-> > chance to get that? And which one would that be?
-> 
-> I rarely believe this will be ever "fixed" in the driver side
-> completely.  We may improve a bit, but not the whole stuff.
-> It's no good idea to have a restriction in the driver code because
-> the control API is just for generic purpose, not only about mixers.
-> And, many embedded devices love to have specific unique control names
-> just for their purpose...
+> I have a question on mmap. If I give my .info to be _MMAP and
+> _MMAP_VALID. Will ALSA framework internally take care of mmap-ing
+> the kernel buffer that has been pre-allocated in the .probe call? Do
+> I need to do anything special to mmap a kernel buffer into user
+> space? Just accessing the runtime->dma_area would allow me to access
+> user data right? 
 
-Hmm, so this won't get fixed.
+Yes.  The buffers allocated via preallocator are supposed to be
+mmappable, so you can simply pass _MMAP* flag there.
 
->From an application pov, how am I supposed to use the current
-abstraction? What algorithm should I then pick for PulseAudio? How
-should I compile the list of possible outputs and inputs? And if an
-item is selected from that list, how am I supposed to activate the
-entry?
 
-For inputs: should I simply compile a list of all elements that have a
-cswitch plus all items from "Mic Select" plus all items from "Input
-Source"? And if an item is selected the logic would be like this: if a
-cswitch is selected we simply activate it, deactivating all others. If
-an item from "Mic Select" is selected we activate it in the enum and
-set the cswitch for "Mic" if there is any. And if an item from "Input
-Source" is seleced we activate it in the enum and set the cswitch for
-"Capture" if there is any. And we ignore "Capture Source". Is that a
-good idea?
-
-For outputs: If there is a Headphone element we assume we can use the
-"Master" and "Headphone" elements to switch between "Line-Out" and
-"Headphone". Is that assumption correct?
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Takashi
