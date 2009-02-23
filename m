@@ -1,24 +1,17 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Timer instability
-Date: Mon, 23 Feb 2009 03:56:10 +0100
-Message-ID: <20090223025610.GA7062@tango.0pointer.de>
-References: <20090219024611.GA7930@tango.0pointer.de>
-	<s5hy6w2hqap.wl%tiwai@suse.de>
-	<20090220012220.GA11526@tango.0pointer.de>
-	<s5h1vtty3f8.wl%tiwai@suse.de>
-	<20090220203417.GA19093@tango.0pointer.de>
-	<s5hhc2nu4qy.wl%tiwai@suse.de>
-	<20090222031453.GA24365@tango.0pointer.de>
-	<20090223024233.GA1901@tango.0pointer.de>
+From: Richard Zhao <linuxzsc@gmail.com>
+Subject: How to tell user level hardware not support a certain
+	format in a certain sample rate
+Date: Mon, 23 Feb 2009 15:02:24 +0800
+Message-ID: <4e090d470902222302g16a99f5dq77d0d40f6cba855e@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 74C1E1037F2
-	for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2009 03:56:10 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20090223024233.GA1901@tango.0pointer.de>
+Received: from rv-out-0506.google.com (rv-out-0506.google.com [209.85.198.231])
+	by alsa0.perex.cz (Postfix) with ESMTP id 37A6F2433E
+	for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2009 08:02:26 +0100 (CET)
+Received: by rv-out-0506.google.com with SMTP id f9so1723375rvb.0
+	for <alsa-devel@alsa-project.org>; Sun, 22 Feb 2009 23:02:24 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,51 +21,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 23.02.09 03:42, Lennart Poettering (mznyfn@0pointer.de) wrote:
+Hi,
 
-> 
-> On Sun, 22.02.09 04:14, Lennart Poettering (mznyfn@0pointer.de) wrote:
-> 
-> > I wrote this little test to track down all kinds of timer issues: it
-> > opens and sets up a sound device. Then it will constantly query
-> > _avail(), _delay() and _htstamp() in a busy loop writing a single
-> > sample at a time. The three values are then printed along with a
-> > system timestamp. The data generated like this can be opened in
-> > gnumeric and a nice graph be drawn.
-> 
-> Hmm, did some more testing with this tool on other cards:
-> 
-> On es1969 snd_pcm_avail() sometimes returns values like
-> 1073728596 samples. This smells a lot like an overflow given that this
-> times four (i.e. the sample size in bytes) is near to 2^32.
+runtime->hw.rates and runtime->hw.formats indicate the rate and
+formats hardware can support, so the user level plugins can
+auto-convert the audio data. But hardware may not support a certain
+combin of sample rate and format, and will cause hw_parm fail. In such
+case, plugin auto-convert will not work.
+How can I let userlevel know the failure conbin, so let auto-convert work?
 
-[...]
-
-> Here's an output of this tool for an emu10k1 card:
-
-[...]
-
-This is the end of the tool's output for HDA AD1989B:
-
-http://fpaste.org/paste/4240
-
-The device is completely filled up (i.e. avail is 0, delay is 4416)
-and then after 2us suddenly the avail jumps to 4971973988617027465 and
-the delay to -4971973988617023049.
-
-Smells like an integer overflow to me ...
-
-Hmm, for now my little testing experiment I've now found es1969,
-ens1371, intel8x0, snd-emu10k1 and some intel-hda to have unreliable
-_avail() or _delay().
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Thanks
+Richard
