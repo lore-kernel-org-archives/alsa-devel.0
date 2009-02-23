@@ -1,21 +1,15 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: snd_pcm_hw_params_get_period_size points to __old_
- symbol
-Date: Sun, 22 Feb 2009 22:32:04 +0000
-Message-ID: <1235341924.27887.555.camel@vega.slimlogic.co.uk>
-References: <20090222213553.GA5893@buzzloop.caiaq.de>
-	<1235340956.27887.547.camel@vega.slimlogic.co.uk>
-	<20090222222228.GE5893@buzzloop.caiaq.de>
-	<1235341488.27887.552.camel@vega.slimlogic.co.uk>
-	<20090222222739.GF5893@buzzloop.caiaq.de>
+From: Luke Yelavich <themuso@ubuntu.com>
+Subject: [PATCH] ALSA: hda - add another MacBook Pro 3,1 SSID
+Date: Mon, 23 Feb 2009 13:00:33 +1100
+Message-ID: <1235354433-26943-1-git-send-email-themuso@ubuntu.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from slimlogic.co.uk (slimlogic.co.uk [89.16.172.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3B253244E4
-	for <alsa-devel@alsa-project.org>; Sun, 22 Feb 2009 23:32:06 +0100 (CET)
-In-Reply-To: <20090222222739.GF5893@buzzloop.caiaq.de>
+Received: from ipmail01.adl6.internode.on.net (ipmail01.adl6.internode.on.net
+	[203.16.214.146])
+	by alsa0.perex.cz (Postfix) with ESMTP id E7C911037F2
+	for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2009 03:00:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,30 +19,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Luke Yelavich <themuso@ubuntu.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2009-02-22 at 23:27 +0100, Daniel Mack wrote:
-> On Sun, Feb 22, 2009 at 10:24:48PM +0000, Liam Girdwood wrote:
-> > > > Please either build alsa-lib natively or with OpenEmbedded.
-> > > 
-> > > This is rather unpracticable for us as we build the whole system with
-> > > buildroot. Hence, I'd rather go and fix it. Any hint about what could
-> > > possibily go wrong during the build phase which would explain that bug
-> > > to happen? A missing/wrong define, bogus configure arguments?
-> > > 
-> > 
-> > Probably best to check against OE alsa-lib config arguments. They have
-> > gitweb now for easy browsing.
-> 
-> Ok, will do and let you know. So probably both my questions would have
-> the same root cause, which would be great :)
+Reference: Ubuntu bug #33245
+    https://bugs.launchpad.net/bugs/332456
 
-Hopefully :)
+Signed-off-by: Luke Yelavich <themuso@ubuntu.com>
+---
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-The only other major ARM alsa-lib PITA is gcc 4.1.1. It would optimise
-out PCM refinement. Although OE patched their gcc years ago so probably
-not an issue anymore.
-
-Liam
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 169b383..02ef827 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7094,6 +7094,7 @@ static int patch_alc882(struct hda_codec *codec)
+ 		case 0x106b3e00: /* iMac 24 Aluminium */
+ 			board_config = ALC885_IMAC24;
+ 			break;
++		case 0x106b00a0: /* MacBookPro3,1 - Another revision */
+ 		case 0x106b00a1: /* Macbook (might be wrong - PCI SSID?) */
+ 		case 0x106b00a4: /* MacbookPro4,1 */
+ 		case 0x106b2c00: /* Macbook Pro rev3 */
+-- 
+1.6.0.4
