@@ -1,17 +1,20 @@
-From: Kristian Lumme <kristian.lumme@gmail.com>
-Subject: E-MU 0404 Support
-Date: Mon, 23 Feb 2009 23:28:56 +0200
-Message-ID: <9fca51520902231328h3ee698ean8aa2601898f34a6f@mail.gmail.com>
+From: "Lopez Cruz, Misael" <x0052729@ti.com>
+Subject: Re: Configuring a TWL GPIO pin as an interrupt
+Date: Mon, 23 Feb 2009 16:11:04 -0600
+Message-ID: <2C7D3DF36ADFFC479B44490D912B616705D632A0EE@dlee07.ent.ti.com>
+References: <2C7D3DF36ADFFC479B44490D912B616705D6329B7D@dlee07.ent.ti.com>
+	<200902202112.23307.david-b@pacbell.net>
+	<2C7D3DF36ADFFC479B44490D912B616705D61AF093@dlee07.ent.ti.com>
+	<200902222326.39232.david-b@pacbell.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f162.google.com (mail-bw0-f162.google.com
-	[209.85.218.162])
-	by alsa0.perex.cz (Postfix) with ESMTP id 43B2A2433D
-	for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2009 22:28:57 +0100 (CET)
-Received: by bwz6 with SMTP id 6so5354520bwz.8
-	for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2009 13:28:56 -0800 (PST)
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id E7CC724397
+	for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2009 23:11:17 +0100 (CET)
+In-Reply-To: <200902222326.39232.david-b@pacbell.net>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,22 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: David Brownell <david-b@pacbell.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+> On Sunday 22 February 2009, Lopez Cruz, Misael wrote:
+> > In the particular case of ALSA SoC, could the machine/board 
+> > driver be a better place to handle all GPIO/IRQ configuration?
+> > That driver also contains only board specific code.
+> 
+> It'd be best of the ASoC stuff could sit with all the other 
+> board-specfic init code, in arch/*/mach-*/board-*.c files, 
+> but I understand those interfaces are not yet stable enough 
+> to support that ... that's why they're in sound/soc/*/*.c 
+> files instead.
+> 
+> In any case ... everything I said still stands.  If you're 
+> doing this for ASoC, you'll need some way to pass data to the 
+> ASoC board-specific code from normal board-specific code, 
+> since some of the relevant config data is not static.
 
-I reported a bug (or what I think is a bug) with the E-MU 0404 USB
-driver (https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4410)
-(this probably concerns other E-MU cards as well). Now, the supported
-soundcards list states that E-MU (or Creative) have supplied ALSA
-developers with datasheets to help the development of the driver.
-Well... in my bug report I was referred to this discussion on the ALSA
-devel list: http://thread.gmane.org/gmane.linux.alsa.devel/56288/focus=56355
+I think that if I move the platform_device registration from machine driver to board file I can append jack detection information (gpio pin, irq) through "platform_data" of "dev" field in platform_device structure. And then in the "probe" part in ASoC machine driver I can receive it.
 
-If I understand this correctly, people that are offering to help
-develop the driver can't get in touch with the person who has the
-datasheets (and there hasn't been any update from him in a long
-time... or so it seems--sorry if I'm mistaken). Surely, there's some
-way to make these specifications available to interested developers so
-the support for the E-MU cards can be improved?
+Could that be correct? Any other better/standard option?
+
+> The current ASoC model seems to be biased towards static 
+> configurations.  Notice how it's got to create its own 
+> platform_device nodes ... it can't easily use the standard 
+> mechanisms for associating platform_data or archdata with 
+> those nodes, ditto clocks.
