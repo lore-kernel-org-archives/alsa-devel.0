@@ -1,21 +1,22 @@
 From: "Harsha, Priya" <priya.harsha@intel.com>
 Subject: Re: clarification on mmap
-Date: Tue, 24 Feb 2009 10:24:19 +0530
-Message-ID: <98769532B4BB14429434178695419EAE31FD01A2@bgsmsx501.gar.corp.intel.com>
+Date: Tue, 24 Feb 2009 10:43:54 +0530
+Message-ID: <98769532B4BB14429434178695419EAE31FD024D@bgsmsx501.gar.corp.intel.com>
 References: <200902211659.48009.linux@dadeos.co.uk>
 	<s5hvdr1337t.wl%tiwai@suse.de>
 	<98769532B4BB14429434178695419EAE31FCFB62@bgsmsx501.gar.corp.intel.com>
 	<s5hy6vxxjfy.wl%tiwai@suse.de>
 	<98769532B4BB14429434178695419EAE31FCFCB0@bgsmsx501.gar.corp.intel.com>
 	<s5h63j1lzvo.wl%tiwai@suse.de>
+	<98769532B4BB14429434178695419EAE31FD01A2@bgsmsx501.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id AABA824529
-	for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2009 05:54:39 +0100 (CET)
-In-Reply-To: <s5h63j1lzvo.wl%tiwai@suse.de>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id DA7B22453F
+	for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2009 06:14:56 +0100 (CET)
+In-Reply-To: <98769532B4BB14429434178695419EAE31FD01A2@bgsmsx501.gar.corp.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,6 +30,21 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
+
+I have another question on the same. 
+
+What are the runtime->transfer_ack_begin and transfer_ack_end used for? Will this help me understand when the runtime->dma_area are updated be it MMAPed buffer or not.
+
+Thanks,
+Harsha
+
+
+-----Original Message-----
+From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Harsha, Priya
+Sent: Tuesday, February 24, 2009 10:24 AM
+To: Takashi Iwai
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] clarification on mmap
 
 Thanks Takashi. Then what would be the best way to know when the mmaped buffer has been filled. So that I can take action to send it to the hardware? 
 
@@ -87,3 +103,7 @@ Takashi
 > 
 > Takashi
 > 
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
