@@ -1,33 +1,62 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: Configuring a TWL GPIO pin as an interrupt
-Date: Mon, 23 Feb 2009 22:20:16 +0000
-Message-ID: <20090223222016.GA6584@sirena.org.uk>
-References: <2C7D3DF36ADFFC479B44490D912B616705D6329B7D@dlee07.ent.ti.com> <200902202112.23307.david-b@pacbell.net> <2C7D3DF36ADFFC479B44490D912B616705D61AF093@dlee07.ent.ti.com> <200902222326.39232.david-b@pacbell.net> <2C7D3DF36ADFFC479B44490D912B616705D632A0EE@dlee07.ent.ti.com>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: idt blue jack patch
+Date: Tue, 24 Feb 2009 10:30:30 +0800
+Message-ID: <20090224023030.GA7778@localhost>
+References: <20090220010001.GA7520@localhost> <s5hbpsx10yg.wl%tiwai@suse.de>
+	<20090221014214.GB6175@localhost>
+	<s5hljrzu53u.wl%tiwai@suse.de> <s5h7i3h4joz.wl%tiwai@suse.de>
+	<20090223095351.GA18093@localhost> <s5h3ae51mjl.wl%tiwai@suse.de>
+	<20090223125820.GA7403@localhost>
+	<s5hd4d9z4sk.wl%tiwai@suse.de> <s5hy6vx86zt.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 61F7B24486
+	for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2009 03:33:11 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705D632A0EE@dlee07.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Lopez Cruz, Misael" <x0052729@ti.com>
-Cc: David Brownell <david-b@pacbell.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+In-Reply-To: <s5hy6vx86zt.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Paulo Cavalcanti <promac@gmail.com>, Vedran =?utf-8?Q?Mileti=C4=87?= <rivanvx@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 23, 2009 at 04:11:04PM -0600, Lopez Cruz, Misael wrote:
+On Mon, Feb 23, 2009 at 06:15:18PM +0200, Takashi Iwai wrote:
+> At Mon, 23 Feb 2009 14:00:43 +0100,
+> I wrote:
+> > > > > - if reconfig while playing audio, it will trigger a panic:
+> > > > 
+> > > > Ah, that's bad.  I know this can be a problem (and thus is marked as
+> > > > EXPERIMENTAL :)
+> > > > 
+> > > > We need some mutex and/or flag to disable the reconfig during the
+> > > > critical operation.
+> > > 
+> > > It won't be a trivial work. The reset/rebuild is a long and complex process.
+> > > For the moment I'd suggest to simply fail reconfig if there are active streams,
+> > 
+> > Yep, that's what I thought of, too.
+> > 
+> > > so as to let this useful feature go upstream ASAP.
+> > 
+> > I'll merge the branch soon later.
+> 
+> FYI, now the branch is merged to master.
+> The dynamic pincfg feature is available on alsa-driver snapshot, too.
+> 
+> Also, I added the check of opened streams before doing clear/reconfig
+> work so that the kernel panic won't happen so easily.
 
-[Please fix your mail client to wrap lines at ~80 characters, it makes
-your mails much easier to work with.]
+That's great, thank you!
 
-> I think that if I move the platform_device registration from machine
-> driver to board file I can append jack detection information (gpio
-> pin, irq) through "platform_data" of "dev" field in platform_device
-> structure. And then in the "probe" part in ASoC machine driver I can
-> receive it.
-
-Yes, though unless you actually have a generic ASoC machine driver that
-works over multiple boards it's as well just skipping the platform data.
-Look at s3c24xx_uda134x for an example of doing this.
-
-If these are CPU side GPIOs that you're talking about you'll also want
-to write the standard utility for using gpiolib for jack detection that
-I've not got round to doing yet :)
+Regards,
+Fengguang
