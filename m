@@ -1,21 +1,24 @@
-From: Tim Barnette <tim.barnette@gmail.com>
-Subject: Re: [Fwd: HP DV4 1155 SE - No Sound through
-	speakers...]
-Date: Tue, 24 Feb 2009 13:08:42 -0500
-Message-ID: <b71cdde20902241008s164eeb5ci9d32cc67ac73dba5@mail.gmail.com>
-References: <4983FE7A.1040201@wanadoo.fr> <s5heixyh60y.wl%tiwai@suse.de>
-	<b71cdde20902171151v4ec58bc8p3f45cd7e345b1220@mail.gmail.com>
-	<200902181016.08553.herton@mandriva.com.br>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: Timer instability
+Date: Tue, 24 Feb 2009 19:46:05 +0100
+Message-ID: <20090224184604.GA2253@tango.0pointer.de>
+References: <20090219024611.GA7930@tango.0pointer.de>
+	<s5hy6w2hqap.wl%tiwai@suse.de>
+	<20090220012220.GA11526@tango.0pointer.de>
+	<s5h1vtty3f8.wl%tiwai@suse.de>
+	<20090220203417.GA19093@tango.0pointer.de>
+	<s5hhc2nu4qy.wl%tiwai@suse.de>
+	<20090222031453.GA24365@tango.0pointer.de>
+	<s5h8wnvreab.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.180])
-	by alsa0.perex.cz (Postfix) with ESMTP id 13D2F1037F6
-	for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2009 19:08:43 +0100 (CET)
-Received: by wa-out-1112.google.com with SMTP id v27so1376724wah.16
-	for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2009 10:08:42 -0800 (PST)
-In-Reply-To: <200902181016.08553.herton@mandriva.com.br>
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 68F161037F6
+	for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2009 19:46:09 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5h8wnvreab.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,32 +28,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?ISO-8859-1?Q?Jean=2DPierre_Andr=E9?= <jean-pierre.andre@wanadoo.fr>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I downloaded the latest alsa-driver, configured, make'd, installed, and
-voila... it all appears to work... Thank you soooooo much..
+On Tue, 24.02.09 17:27, Takashi Iwai (tiwai@suse.de) wrote:
 
-On Wed, Feb 18, 2009 at 8:16 AM, Herton Ronaldo Krzesinski <
-herton@mandriva.com.br> wrote:
+> > > > Moreover I can now reproduce the same issue on snd-intel8x0, albeit it
+> > > > takes more than a couple of minutes to make snd_pcm_avail() return
+> > > > bogus data.
+> > > > 
+> > > > Somehow I get the feeling the problem is not so much the inaccuracy of
+> > > > the pointer the kernel reports but in what alsa-libs does ith it.
+> > > 
+> > > Hrm... both cases the pointer calculation is relatively simple,
+> > > and for "hw" PCM, the avail calculation is also very straightforward.
+> > > So, my first suspect is about the pointer calculation.  But, of course
+> > > we should check all possibilities.
+> > > 
+> > > Can you give a small testcase?
+> > 
+> > Ok, here's a little test case:
+> > 
+> > http://git.0pointer.de/?p=pulseaudio.git;a=blob_plain;f=src/tests/alsa-time-test.c
+> 
+> Finally have time to go back to this issue again now.
+> 
+> With your test case, indeed I get abort(), too.  However, checking
+> through the code, you set stop_threshold to the boundary size like:
+> 
+>     r = snd_pcm_sw_params_get_boundary(swparams, &boundary);
+>     r = snd_pcm_sw_params_set_stop_threshold(pcm, swparams, boundary);
+> 
+> This means essentially you are disabling the XRUN detection in the
+> driver and keep it free-running.  So, no wonder avail gets over
+> buffer_size.  It's actually an XRUN condition, but just ignored due to
+> this setup.  (Usually, stop_threshould == buffer_size.)
 
-> Em Ter=E7a-feira 17 Fevereiro 2009, =E0s 16:51:03, Tim Barnette escreveu:
-> > Thanks guys.  Will the patch make it to a near-term future upgrade so I
-> can
-> > run the alsa-upgrade script instead of the patch?
->
-> The changes are in latest sound tree/alsa-driver snapshot
-> (ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-
-> snapshot.tar.gz). I don't know about alsa-upgrade script.
->
-> >
-> > Also, now my headphones no longer work... And my speaker light on the
-> > keyboard seems to malfunction.. Any idea about those?
->
-> You tested with latest alsa-driver snapshot, and stopped to work there?
->
-> --
-> []'s
-> Herton
->
+Yes, threshold is set to boundary. But that's intended. Remember that
+the original purpose of the tool is to graph _avail() and _delay()
+against the time. For that I want to make sure the that timing stays
+stable no matter what.
+
+In reality this setting should not matter at all, because most machines
+should be fast enough to keep the buffer filled even if we write one
+sample at a time as it is done in the example.
+
+The problems exposed in all the test data posted here for the various
+sound cards are not normal normal buffer underruns.
+
+In summary: just ignore the setting of the stop threshold. It is not
+related to the problems exposed here.
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
