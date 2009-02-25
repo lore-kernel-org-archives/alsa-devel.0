@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/7] ASoC: Only unregister drivers we
-	registered for WM8753
-Date: Wed, 25 Feb 2009 10:48:17 +0000
-Message-ID: <1235558902-20314-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/7] ASoC: Improve WM9713 voice DAC shutdown
+	procedure
+Date: Wed, 25 Feb 2009 10:48:18 +0000
+Message-ID: <1235558902-20314-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20090225104701.GA20221@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F353A2443D
-	for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2009 11:48:23 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1C98E2443E
+	for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2009 11:48:24 +0100 (CET)
 In-Reply-To: <20090225104701.GA20221@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,38 +27,30 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8753.c |   10 +++++++---
- 1 files changed, 7 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wm9713.c |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index 180ec94..93c22c4 100644
---- a/sound/soc/codecs/wm8753.c
-+++ b/sound/soc/codecs/wm8753.c
-@@ -1845,6 +1845,7 @@ static int wm8753_remove(struct platform_device *pdev)
+diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
+index 54db9c5..a93aea5 100644
+--- a/sound/soc/codecs/wm9713.c
++++ b/sound/soc/codecs/wm9713.c
+@@ -940,13 +940,14 @@ static void wm9713_voiceshutdown(struct snd_pcm_substream *substream,
+ 				 struct snd_soc_dai *dai)
  {
- 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
- 	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct wm8753_setup_data *setup = socdev->codec_data;
+ 	struct snd_soc_codec *codec = dai->codec;
+-	u16 status;
++	u16 status, rate;
  
- 	if (codec->control_data)
- 		wm8753_set_bias_level(codec, SND_SOC_BIAS_OFF);
-@@ -1852,11 +1853,14 @@ static int wm8753_remove(struct platform_device *pdev)
- 	snd_soc_free_pcms(socdev);
- 	snd_soc_dapm_free(socdev);
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
--	i2c_unregister_device(codec->control_data);
--	i2c_del_driver(&wm8753_i2c_driver);
-+	if (setup->i2c_address) {
-+		i2c_unregister_device(codec->control_data);
-+		i2c_del_driver(&wm8753_i2c_driver);
-+	}
- #endif
- #if defined(CONFIG_SPI_MASTER)
--	spi_unregister_driver(&wm8753_spi_driver);
-+	if (setup->spi)
-+		spi_unregister_driver(&wm8753_spi_driver);
- #endif
- 	kfree(codec->private_data);
- 	kfree(codec);
+ 	/* Gracefully shut down the voice interface. */
+ 	status = ac97_read(codec, AC97_EXTENDED_STATUS) | 0x1000;
+-	ac97_write(codec, AC97_HANDSET_RATE, 0x0280);
++	rate = ac97_read(codec, AC97_HANDSET_RATE) & 0xF0FF;
++	ac97_write(codec, AC97_HANDSET_RATE, rate | 0x0200);
+ 	schedule_timeout_interruptible(msecs_to_jiffies(1));
+-	ac97_write(codec, AC97_HANDSET_RATE, 0x0F80);
++	ac97_write(codec, AC97_HANDSET_RATE, rate | 0x0F00);
+ 	ac97_write(codec, AC97_EXTENDED_MID, status);
+ }
+ 
 -- 
 1.6.1.3
