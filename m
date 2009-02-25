@@ -1,14 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/7] ASoC: Report I/O errors from WM8753 reset
-Date: Wed, 25 Feb 2009 10:48:16 +0000
-Message-ID: <1235558902-20314-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 4/7] ASoC: Fix Zylonite voice interface stereo
+	configurations
+Date: Wed, 25 Feb 2009 10:48:19 +0000
+Message-ID: <1235558902-20314-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20090225104701.GA20221@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 34BA124441
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 32A692443F
 	for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2009 11:48:24 +0100 (CET)
 In-Reply-To: <20090225104701.GA20221@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -24,27 +25,28 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+We always run in the first timeslot of one.
+
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8753.c |    6 +++++-
- 1 files changed, 5 insertions(+), 1 deletions(-)
+ sound/soc/pxa/zylonite.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index 31ff337..180ec94 100644
---- a/sound/soc/codecs/wm8753.c
-+++ b/sound/soc/codecs/wm8753.c
-@@ -1561,7 +1561,11 @@ static int wm8753_init(struct snd_soc_device *socdev)
+diff --git a/sound/soc/pxa/zylonite.c b/sound/soc/pxa/zylonite.c
+index ec2fb76..0140a25 100644
+--- a/sound/soc/pxa/zylonite.c
++++ b/sound/soc/pxa/zylonite.c
+@@ -127,9 +127,8 @@ static int zylonite_voice_hw_params(struct snd_pcm_substream *substream,
+ 	if (ret < 0)
+ 		return ret;
  
- 	wm8753_set_dai_mode(codec, 0);
+-	ret = snd_soc_dai_set_tdm_slot(cpu_dai,
+-				       params_channels(params),
+-				       params_channels(params));
++	/* We're not really in network mode but the emulation wants this. */
++	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 1, 1);
+ 	if (ret < 0)
+ 		return ret;
  
--	wm8753_reset(codec);
-+	ret = wm8753_reset(codec);
-+	if (ret < 0) {
-+		printk(KERN_ERR "wm8753: failed to reset device\n");
-+		return ret;
-+	}
- 
- 	/* register pcms */
- 	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
 -- 
 1.6.1.3
