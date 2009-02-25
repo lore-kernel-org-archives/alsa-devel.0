@@ -1,14 +1,21 @@
-From: Jonathan Scruggs <scruggsj@sbcglobal.net>
-Subject: Audio problems with HP DV7-1025nr
-Date: Wed, 25 Feb 2009 08:39:33 -0800 (PST)
-Message-ID: <986248.32550.qm@web81204.mail.mud.yahoo.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [PATCH 4/7] ASoC: Fix Zylonite voice
+	interface	stereo configurations
+Date: Wed, 25 Feb 2009 17:41:13 +0100
+Message-ID: <20090225164113.GI11203@buzzloop.caiaq.de>
+References: <20090225104701.GA20221@rakim.wolfsonmicro.main>
+	<1235558902-20314-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<20090225160617.GH11203@buzzloop.caiaq.de>
+	<20090225162241.GE31637@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="0-1261855571-1235579973=:32550"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web81219.mail.mud.yahoo.com (web81204.mail.mud.yahoo.com
-	[68.142.199.108])
-	by alsa0.perex.cz (Postfix) with SMTP id 8AE6B1038DA
-	for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2009 17:39:38 +0100 (CET)
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id E8F6F24363
+	for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2009 17:41:16 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20090225162241.GE31637@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,430 +25,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---0-1261855571-1235579973=:32550
-Content-Type: text/plain; charset=us-ascii
+On Wed, Feb 25, 2009 at 04:22:42PM +0000, Mark Brown wrote:
+> On Wed, Feb 25, 2009 at 05:06:17PM +0100, Daniel Mack wrote:
+> > I'm currently fiddling around with these bits in order to find a
+> > suitable configuration where the codec is master, so this is
+> 
+> Several people have reported problems in slave mode, unfortunately I've
+> no hardware which allows me to do tests in slave mode so I'm a bit stuck
+> there.
 
-Hi,
+Is there a thread you can point me to or where have people reported such
+things? Grep'ing the archives did unveil anything regarding this.
 
-I have tried many things to try to get my sound card to work, but no luck. At first with the when I started alsamixer, it would say that I have a generic sound card. My laptop has two audio interfaces: a nVidia HDMI and an IDT High Definition Codec. I read this mailing list and saw that many people had issues with the HP's version of the IDT sound card. Then someone added patches to fix an issue with DV4. The fixes were in the latest snapshots, so I did some searching and pulled the alsa sources from here: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git since I am using the 2.6.28 kernel. I went through the code and confirmed that it was updated to what I saw in the patches and the patches were not compatible with the kernel source I have, hence I was looking for somethin
- g more compatible. More specifically, the kernel I have is "2.6.28-gentoo-r2 #5 SMP Wed Feb 25 15:37:22 GMT 2009 x86_64 Intel(R) Core(TM)2 Duo CPU P8400 @ 2.26GHz
- Genuine Intel GNU/Linux". With a little bit of work, I merged in the new alsa source with that kernel and recompiled. Things are detected a bit better, like now alsamixer is saying that I have the chip "Nvidia MCP78 HDMI" instead of a Generic one. However, this is not the chip I want. I want to output to my speakers and headphone ports. I tried setting the option "model=hp-dv5" and then "model=hp-dv7" but that does nothing. I have absolutely no sound at all out of my speakers or headphone port. The drivers for this soundcard are on the HP website if you need them.
+> > interesting. As the whole frame in I2S is 64 bits long and one FIFO
+> > entry has 32 bits of audio data - how can you only deal with one
+> > timeslot and still playback stereo?
+> 
+> The I2S frame length depends on the number of bits per sample.
 
-Also, I tried removing the nvidia option from the list in the kernel configuration and only have IDT selected, but it would say unknow nvidia chip when trying to load the module on boot.
+Well, as far as I got it, these are different things in the register
+set. The I2S frame is 64 bits per definition (32 bits for each channel),
+and this is what the cs4270 requires to use.
 
-I have the output of lspci -nv attached to this email. I hope you can give me a clue as to what to do next.
-
-This is what I have in my in my /etc/modprobe.d/alsa file:
-# Alsa kernel modules' configuration file.
-
-# ALSA portion
-alias char-major-116 snd
-# OSS/Free portion
-alias char-major-14 soundcore
-
-# OSS/Free portion - card #1
-alias sound-service-0-0 snd-mixer-oss
-alias sound-service-0-1 snd-seq-oss
-alias sound-service-0-3 snd-pcm-oss
-alias sound-service-0-8 snd-seq-oss
-alias sound-service-0-12 snd-pcm-oss
-
-alias /dev/mixer snd-mixer-oss
-alias /dev/dsp snd-pcm-oss
-alias /dev/midi snd-seq-oss
-
-# Set this to the correct number of cards.
-options snd cards_limit=1
-
-alias snd-card-0 snd-hda-intel
-options snd-hda-intel model=hp-dv7 enable=1 enable_msi=1 single_cmd=0 power_save_controller=0 power_save=0
-
-
- I have a program that analyzed my audio in Windows. This is the output from that:
-Sound, video and game controllers || NVIDIA HDMI Audio
-Top
-  Property
-Value
-NVIDIA HDMI Audio   
-  Device ID  HDAUDIO\FUNC_01VEN_10DEDEV_0006SUBSYS_10DE0101REV_1000\43451138D00201
-  Status  0x0180200a Started
-  Problem  0x00000000 (0)
-  Service  NVHDA
-  Capabilities  0x00000000
-  Config Flags  0x00000000
-  Class  MEDIA
-  Manufacturer  NVIDIA
-  Hardware IDs  HDAUDIO\FUNC_01VEN_10DEDEV_0006SUBSYS_10DE0101REV_1000
-     HDAUDIO\FUNC_01VEN_10DEDEV_0006SUBSYS_10DE0101
-  Compatible IDs  HDAUDIO\FUNC_01CTLR_VEN_8086CTLR_DEV_293EVEN_10DEDEV_0006REV_1000
-     HDAUDIO\FUNC_01CTLR_VEN_8086VEN_10DEDEV_0006REV_1000
-     HDAUDIO\FUNC_01VEN_10DEDEV_0006REV_1000
-     HDAUDIO\FUNC_01CTLR_VEN_8086CTLR_DEV_293EVEN_10DEDEV_0006
-     HDAUDIO\FUNC_01CTLR_VEN_8086VEN_10DEDEV_0006
-     HDAUDIO\FUNC_01VEN_10DEDEV_0006
-     HDAUDIO\FUNC_01CTLR_VEN_8086CTLR_DEV_293EVEN_10DE
-     HDAUDIO\FUNC_01CTLR_VEN_8086VEN_10DE
-     HDAUDIO\FUNC_01VEN_10DE
-     HDAUDIO\FUNC_01CTLR_VEN_8086CTLR_DEV_293E
-     HDAUDIO\FUNC_01CTLR_VEN_8086
-     HDAUDIO\FUNC_01GFVEN_10DEDEV_0006SUBSYS_10DE0101REV_1000
-     HDAUDIO\FUNC_01
-  Class GUID  {4d36e96c-e325-11ce-bfc1-08002be10318}
-  Location  Internal High Definition Audio Bus
-  Bus number  0x00000000
-  Enumerator name  HDAUDIO
-  Description  NVIDIA HDMI Audio
-  Driver  {4d36e96c-e325-11ce-bfc1-08002be10318}\0000
-  Physical Object Name  \Device\0000008b
-  UI number  0x00000002
-  Bustype GUID  {41203534-2037-3144-2042-422044362041}
-  Legacy bus type  0x00000005
-  Device Type  0x0000001d
-  Install State  0x00000000
-  Security  01 00 04 90 00 00 00 00 00 00 00 00 00 00 00 00 14 00 00 00 02 00 5C 00 04 00 00 00 00 00 14 00 00 00 00 10 01 01 00 00 00 00 00 05 12 00 00 00 00 00 18 00 00 00 00 E0 01 02 00 00 00 00 00 05 20 00 00 00 20 02 00 00 00 00 14 00 00 00 00 E0 01 01 00 00 00 00 00 01 00 00 00 00 00 00 14 00 00 00 00 E0 01 01 00 00 00 00 00 05 0C 00 00 00
-  Security (SDS form)  D:P(A;;GA;;;SY)(A;;GXGWGR;;;BA)(A;;GXGWGR;;;WD)(A;;GXGWGR;;;RC)
-  Device Address  0x00000201
-
-   Sound, video and game controllers || IDT High Definition Audio CODEC
-Top
-  Property
-Value
-IDT High Definition Audio CODEC   
-  Device ID  HDAUDIO\FUNC_01VEN_111DDEV_76B2SUBSYS_103C30F4REV_1003\43451138D00001
-  Status  0x0180200a Started
-  Problem  0x00000000 (0)
-  Service  STHDA
-  Capabilities  0x00000000
-  Config Flags  0x00000000
-  Class  MEDIA
-  Manufacturer  IDT
-  Hardware IDs  HDAUDIO\FUNC_01VEN_111DDEV_76B2SUBSYS_103C30F4REV_1003
-     HDAUDIO\FUNC_01VEN_111DDEV_76B2SUBSYS_103C30F4
-  Compatible IDs  HDAUDIO\FUNC_01CTLR_VEN_8086CTLR_DEV_293EVEN_111DDEV_76B2REV_1003
-     HDAUDIO\FUNC_01CTLR_VEN_8086VEN_111DDEV_76B2REV_1003
-     HDAUDIO\FUNC_01VEN_111DDEV_76B2REV_1003
-     HDAUDIO\FUNC_01CTLR_VEN_8086CTLR_DEV_293EVEN_111DDEV_76B2
-     HDAUDIO\FUNC_01CTLR_VEN_8086VEN_111DDEV_76B2
-     HDAUDIO\FUNC_01VEN_111DDEV_76B2
-     HDAUDIO\FUNC_01CTLR_VEN_8086CTLR_DEV_293EVEN_111D
-     HDAUDIO\FUNC_01CTLR_VEN_8086VEN_111D
-     HDAUDIO\FUNC_01VEN_111D
-     HDAUDIO\FUNC_01CTLR_VEN_8086CTLR_DEV_293E
-     HDAUDIO\FUNC_01CTLR_VEN_8086
-     HDAUDIO\FUNC_01GFVEN_111DDEV_76B2SUBSYS_103C30F4REV_1003
-     HDAUDIO\FUNC_01
-  Class GUID  {4d36e96c-e325-11ce-bfc1-08002be10318}
-  Location  Internal High Definition Audio Bus
-  Bus number  0x00000000
-  Enumerator name  HDAUDIO
-  Description  IDT High Definition Audio CODEC
-  Friendly name  IDT High Definition Audio CODEC
-  Driver  {4d36e96c-e325-11ce-bfc1-08002be10318}\0007
-  Physical Object Name  \Device\00000089
-  UI number  0x00000000
-  Bustype GUID  {41203534-2037-3144-2042-422044362041}
-  Legacy bus type  0x00000005
-  Device Type  0x0000001d
-  Install State  0x00000000
-  Security  01 00 04 90 00 00 00 00 00 00 00 00 00 00 00 00 14 00 00 00 02 00 5C 00 04 00 00 00 00 00 14 00 00 00 00 10 01 01 00 00 00 00 00 05 12 00 00 00 00 00 18 00 00 00 00 E0 01 02 00 00 00 00 00 05 20 00 00 00 20 02 00 00 00 00 14 00 00 00 00 E0 01 01 00 00 00 00 00 01 00 00 00 00 00 00 14 00 00 00 00 E0 01 01 00 00 00 00 00 05 0C 00 00 00
-  Security (SDS form)  D:P(A;;GA;;;SY)(A;;GXGWGR;;;BA)(A;;GXGWGR;;;WD)(A;;GXGWGR;;;RC)
-  Device Address  0x00000001
+The particular problem with the PXA SSP mode is that I've not yet seen a
+configuration (neighter in slave nor in master mode) where it sends out
+16 bits of left channel information, followed by 16 bits of zeros, then
+16 bits of right channel and finally another 16bits of zeros (which
+exactly what they talk about in the 'i2s via ssp' application note).
+Has anyone ever got that?
 
 Thanks,
-Jon
-
---0-1261855571-1235579973=:32550
-Content-Type: text/plain; name="lspic -nv audio.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="lspic -nv audio.txt"
-
-MDA6MDAuMCAwNjAwOiA4MDg2OjJhNDAgKHJldiAwNykKCVN1YnN5c3RlbTog
-MTAzYzozMGY0CglGbGFnczogYnVzIG1hc3RlciwgZmFzdCBkZXZzZWwsIGxh
-dGVuY3kgMAoJQ2FwYWJpbGl0aWVzOiBbZTBdIFZlbmRvciBTcGVjaWZpYyBJ
-bmZvcm1hdGlvbiA8Pz4KCUtlcm5lbCBtb2R1bGVzOiBpbnRlbC1hZ3AKCjAw
-OjAxLjAgMDYwNDogODA4NjoyYTQxIChyZXYgMDcpIChwcm9nLWlmIDAwIFtO
-b3JtYWwgZGVjb2RlXSkKCUZsYWdzOiBidXMgbWFzdGVyLCBmYXN0IGRldnNl
-bCwgbGF0ZW5jeSAwCglCdXM6IHByaW1hcnk9MDAsIHNlY29uZGFyeT0wMSwg
-c3Vib3JkaW5hdGU9MDEsIHNlYy1sYXRlbmN5PTAKCUkvTyBiZWhpbmQgYnJp
-ZGdlOiAwMDAwNzAwMC0wMDAwN2ZmZgoJTWVtb3J5IGJlaGluZCBicmlkZ2U6
-IGQwMDAwMDAwLWQyZmZmZmZmCglQcmVmZXRjaGFibGUgbWVtb3J5IGJlaGlu
-ZCBicmlkZ2U6IDAwMDAwMDAwYzAwMDAwMDAtMDAwMDAwMDBjZmZmZmZmZgoJ
-Q2FwYWJpbGl0aWVzOiBbODhdIFN1YnN5c3RlbTogMTAzYzozMGY0CglDYXBh
-YmlsaXRpZXM6IFs4MF0gUG93ZXIgTWFuYWdlbWVudCB2ZXJzaW9uIDMKCUNh
-cGFiaWxpdGllczogWzkwXSBNU0k6IE1hc2stIDY0Yml0LSBDb3VudD0xLzEg
-RW5hYmxlLQoJQ2FwYWJpbGl0aWVzOiBbYTBdIEV4cHJlc3MgUm9vdCBQb3J0
-IChTbG90KyksIE1TSSAwMAoJQ2FwYWJpbGl0aWVzOiBbMTAwXSBWaXJ0dWFs
-IENoYW5uZWwgPD8+CglDYXBhYmlsaXRpZXM6IFsxNDBdIFJvb3QgQ29tcGxl
-eCBMaW5rIDw/PgoJS2VybmVsIGRyaXZlciBpbiB1c2U6IHBjaWVwb3J0LWRy
-aXZlcgoKMDA6MWEuMCAwYzAzOiA4MDg2OjI5MzcgKHJldiAwMykgKHByb2ct
-aWYgMDAgW1VIQ0ldKQoJU3Vic3lzdGVtOiAxMDNjOjMwZjQKCUZsYWdzOiBi
-dXMgbWFzdGVyLCBtZWRpdW0gZGV2c2VsLCBsYXRlbmN5IDAsIElSUSAxNgoJ
-SS9PIHBvcnRzIGF0IDgwZTAgW3NpemU9MzJdCglDYXBhYmlsaXRpZXM6IFs1
-MF0gUENJZSBhZHZhbmNlZCBmZWF0dXJlcyA8Pz4KCUtlcm5lbCBkcml2ZXIg
-aW4gdXNlOiB1aGNpX2hjZAoJS2VybmVsIG1vZHVsZXM6IHVoY2ktaGNkCgow
-MDoxYS4xIDBjMDM6IDgwODY6MjkzOCAocmV2IDAzKSAocHJvZy1pZiAwMCBb
-VUhDSV0pCglTdWJzeXN0ZW06IDEwM2M6MzBmNAoJRmxhZ3M6IGJ1cyBtYXN0
-ZXIsIG1lZGl1bSBkZXZzZWwsIGxhdGVuY3kgMCwgSVJRIDE3CglJL08gcG9y
-dHMgYXQgODBjMCBbc2l6ZT0zMl0KCUNhcGFiaWxpdGllczogWzUwXSBQQ0ll
-IGFkdmFuY2VkIGZlYXR1cmVzIDw/PgoJS2VybmVsIGRyaXZlciBpbiB1c2U6
-IHVoY2lfaGNkCglLZXJuZWwgbW9kdWxlczogdWhjaS1oY2QKCjAwOjFhLjcg
-MGMwMzogODA4NjoyOTNjIChyZXYgMDMpIChwcm9nLWlmIDIwIFtFSENJXSkK
-CVN1YnN5c3RlbTogMTAzYzozMGY0CglGbGFnczogYnVzIG1hc3RlciwgbWVk
-aXVtIGRldnNlbCwgbGF0ZW5jeSAwLCBJUlEgMTgKCU1lbW9yeSBhdCBkZjAw
-NGMwMCAoMzItYml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0xS10KCUNh
-cGFiaWxpdGllczogWzUwXSBQb3dlciBNYW5hZ2VtZW50IHZlcnNpb24gMgoJ
-Q2FwYWJpbGl0aWVzOiBbNThdIERlYnVnIHBvcnQ6IEJBUj0xIG9mZnNldD0w
-MGEwCglDYXBhYmlsaXRpZXM6IFs5OF0gUENJZSBhZHZhbmNlZCBmZWF0dXJl
-cyA8Pz4KCUtlcm5lbCBkcml2ZXIgaW4gdXNlOiBlaGNpX2hjZAoJS2VybmVs
-IG1vZHVsZXM6IGVoY2ktaGNkCgowMDoxYi4wIDA0MDM6IDgwODY6MjkzZSAo
-cmV2IDAzKQoJU3Vic3lzdGVtOiAxMDNjOjMwZjQKCUZsYWdzOiBidXMgbWFz
-dGVyLCBmYXN0IGRldnNlbCwgbGF0ZW5jeSAwLCBJUlEgMjIKCU1lbW9yeSBh
-dCBkZjAwMDAwMCAoNjQtYml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0x
-NktdCglDYXBhYmlsaXRpZXM6IFs1MF0gUG93ZXIgTWFuYWdlbWVudCB2ZXJz
-aW9uIDIKCUNhcGFiaWxpdGllczogWzYwXSBNU0k6IE1hc2stIDY0Yml0KyBD
-b3VudD0xLzEgRW5hYmxlKwoJQ2FwYWJpbGl0aWVzOiBbNzBdIEV4cHJlc3Mg
-Um9vdCBDb21wbGV4IEludGVncmF0ZWQgRW5kcG9pbnQsIE1TSSAwMAoJQ2Fw
-YWJpbGl0aWVzOiBbMTAwXSBWaXJ0dWFsIENoYW5uZWwgPD8+CglDYXBhYmls
-aXRpZXM6IFsxMzBdIFJvb3QgQ29tcGxleCBMaW5rIDw/PgoJS2VybmVsIGRy
-aXZlciBpbiB1c2U6IEhEQSBJbnRlbAoJS2VybmVsIG1vZHVsZXM6IHNuZC1o
-ZGEtaW50ZWwKCjAwOjFjLjAgMDYwNDogODA4NjoyOTQwIChyZXYgMDMpIChw
-cm9nLWlmIDAwIFtOb3JtYWwgZGVjb2RlXSkKCUZsYWdzOiBidXMgbWFzdGVy
-LCBmYXN0IGRldnNlbCwgbGF0ZW5jeSAwCglCdXM6IHByaW1hcnk9MDAsIHNl
-Y29uZGFyeT0wMiwgc3Vib3JkaW5hdGU9MDIsIHNlYy1sYXRlbmN5PTAKCUkv
-TyBiZWhpbmQgYnJpZGdlOiAwMDAwNjAwMC0wMDAwNmZmZgoJTWVtb3J5IGJl
-aGluZCBicmlkZ2U6IGRlMDAwMDAwLWRlZmZmZmZmCglQcmVmZXRjaGFibGUg
-bWVtb3J5IGJlaGluZCBicmlkZ2U6IDAwMDAwMDAwZDMwMDAwMDAtMDAwMDAw
-MDBkM2ZmZmZmZgoJQ2FwYWJpbGl0aWVzOiBbNDBdIEV4cHJlc3MgUm9vdCBQ
-b3J0IChTbG90KyksIE1TSSAwMAoJQ2FwYWJpbGl0aWVzOiBbODBdIE1TSTog
-TWFzay0gNjRiaXQtIENvdW50PTEvMSBFbmFibGUtCglDYXBhYmlsaXRpZXM6
-IFs5MF0gU3Vic3lzdGVtOiAxMDNjOjMwZjQKCUNhcGFiaWxpdGllczogW2Ew
-XSBQb3dlciBNYW5hZ2VtZW50IHZlcnNpb24gMgoJQ2FwYWJpbGl0aWVzOiBb
-MTAwXSBWaXJ0dWFsIENoYW5uZWwgPD8+CglDYXBhYmlsaXRpZXM6IFsxODBd
-IFJvb3QgQ29tcGxleCBMaW5rIDw/PgoJS2VybmVsIGRyaXZlciBpbiB1c2U6
-IHBjaWVwb3J0LWRyaXZlcgoKMDA6MWMuMSAwNjA0OiA4MDg2OjI5NDIgKHJl
-diAwMykgKHByb2ctaWYgMDAgW05vcm1hbCBkZWNvZGVdKQoJRmxhZ3M6IGJ1
-cyBtYXN0ZXIsIGZhc3QgZGV2c2VsLCBsYXRlbmN5IDAKCUJ1czogcHJpbWFy
-eT0wMCwgc2Vjb25kYXJ5PTAzLCBzdWJvcmRpbmF0ZT0wMywgc2VjLWxhdGVu
-Y3k9MAoJSS9PIGJlaGluZCBicmlkZ2U6IDAwMDA1MDAwLTAwMDA1ZmZmCglN
-ZW1vcnkgYmVoaW5kIGJyaWRnZTogZGQwMDAwMDAtZGRmZmZmZmYKCVByZWZl
-dGNoYWJsZSBtZW1vcnkgYmVoaW5kIGJyaWRnZTogMDAwMDAwMDBkNDAwMDAw
-MC0wMDAwMDAwMGQ0ZmZmZmZmCglDYXBhYmlsaXRpZXM6IFs0MF0gRXhwcmVz
-cyBSb290IFBvcnQgKFNsb3QrKSwgTVNJIDAwCglDYXBhYmlsaXRpZXM6IFs4
-MF0gTVNJOiBNYXNrLSA2NGJpdC0gQ291bnQ9MS8xIEVuYWJsZS0KCUNhcGFi
-aWxpdGllczogWzkwXSBTdWJzeXN0ZW06IDEwM2M6MzBmNAoJQ2FwYWJpbGl0
-aWVzOiBbYTBdIFBvd2VyIE1hbmFnZW1lbnQgdmVyc2lvbiAyCglDYXBhYmls
-aXRpZXM6IFsxMDBdIFZpcnR1YWwgQ2hhbm5lbCA8Pz4KCUNhcGFiaWxpdGll
-czogWzE4MF0gUm9vdCBDb21wbGV4IExpbmsgPD8+CglLZXJuZWwgZHJpdmVy
-IGluIHVzZTogcGNpZXBvcnQtZHJpdmVyCgowMDoxYy4yIDA2MDQ6IDgwODY6
-Mjk0NCAocmV2IDAzKSAocHJvZy1pZiAwMCBbTm9ybWFsIGRlY29kZV0pCglG
-bGFnczogYnVzIG1hc3RlciwgZmFzdCBkZXZzZWwsIGxhdGVuY3kgMAoJQnVz
-OiBwcmltYXJ5PTAwLCBzZWNvbmRhcnk9MDQsIHN1Ym9yZGluYXRlPTA0LCBz
-ZWMtbGF0ZW5jeT0wCglJL08gYmVoaW5kIGJyaWRnZTogMDAwMDQwMDAtMDAw
-MDRmZmYKCU1lbW9yeSBiZWhpbmQgYnJpZGdlOiBkYzAwMDAwMC1kY2ZmZmZm
-ZgoJUHJlZmV0Y2hhYmxlIG1lbW9yeSBiZWhpbmQgYnJpZGdlOiAwMDAwMDAw
-MGQ1MDAwMDAwLTAwMDAwMDAwZDVmZmZmZmYKCUNhcGFiaWxpdGllczogWzQw
-XSBFeHByZXNzIFJvb3QgUG9ydCAoU2xvdCspLCBNU0kgMDAKCUNhcGFiaWxp
-dGllczogWzgwXSBNU0k6IE1hc2stIDY0Yml0LSBDb3VudD0xLzEgRW5hYmxl
-LQoJQ2FwYWJpbGl0aWVzOiBbOTBdIFN1YnN5c3RlbTogMTAzYzozMGY0CglD
-YXBhYmlsaXRpZXM6IFthMF0gUG93ZXIgTWFuYWdlbWVudCB2ZXJzaW9uIDIK
-CUNhcGFiaWxpdGllczogWzEwMF0gVmlydHVhbCBDaGFubmVsIDw/PgoJQ2Fw
-YWJpbGl0aWVzOiBbMTgwXSBSb290IENvbXBsZXggTGluayA8Pz4KCUtlcm5l
-bCBkcml2ZXIgaW4gdXNlOiBwY2llcG9ydC1kcml2ZXIKCjAwOjFjLjMgMDYw
-NDogODA4NjoyOTQ2IChyZXYgMDMpIChwcm9nLWlmIDAwIFtOb3JtYWwgZGVj
-b2RlXSkKCUZsYWdzOiBidXMgbWFzdGVyLCBmYXN0IGRldnNlbCwgbGF0ZW5j
-eSAwCglCdXM6IHByaW1hcnk9MDAsIHNlY29uZGFyeT0wNSwgc3Vib3JkaW5h
-dGU9MDUsIHNlYy1sYXRlbmN5PTAKCUkvTyBiZWhpbmQgYnJpZGdlOiAwMDAw
-MzAwMC0wMDAwM2ZmZgoJTWVtb3J5IGJlaGluZCBicmlkZ2U6IGRiMDAwMDAw
-LWRiZmZmZmZmCglQcmVmZXRjaGFibGUgbWVtb3J5IGJlaGluZCBicmlkZ2U6
-IDAwMDAwMDAwZDYwMDAwMDAtMDAwMDAwMDBkNmZmZmZmZgoJQ2FwYWJpbGl0
-aWVzOiBbNDBdIEV4cHJlc3MgUm9vdCBQb3J0IChTbG90KyksIE1TSSAwMAoJ
-Q2FwYWJpbGl0aWVzOiBbODBdIE1TSTogTWFzay0gNjRiaXQtIENvdW50PTEv
-MSBFbmFibGUtCglDYXBhYmlsaXRpZXM6IFs5MF0gU3Vic3lzdGVtOiAxMDNj
-OjMwZjQKCUNhcGFiaWxpdGllczogW2EwXSBQb3dlciBNYW5hZ2VtZW50IHZl
-cnNpb24gMgoJQ2FwYWJpbGl0aWVzOiBbMTAwXSBWaXJ0dWFsIENoYW5uZWwg
-PD8+CglDYXBhYmlsaXRpZXM6IFsxODBdIFJvb3QgQ29tcGxleCBMaW5rIDw/
-PgoJS2VybmVsIGRyaXZlciBpbiB1c2U6IHBjaWVwb3J0LWRyaXZlcgoKMDA6
-MWMuNCAwNjA0OiA4MDg2OjI5NDggKHJldiAwMykgKHByb2ctaWYgMDAgW05v
-cm1hbCBkZWNvZGVdKQoJRmxhZ3M6IGJ1cyBtYXN0ZXIsIGZhc3QgZGV2c2Vs
-LCBsYXRlbmN5IDAKCUJ1czogcHJpbWFyeT0wMCwgc2Vjb25kYXJ5PTA2LCBz
-dWJvcmRpbmF0ZT0wNiwgc2VjLWxhdGVuY3k9MAoJSS9PIGJlaGluZCBicmlk
-Z2U6IDAwMDAyMDAwLTAwMDAyZmZmCglNZW1vcnkgYmVoaW5kIGJyaWRnZTog
-ZGEwMDAwMDAtZGFmZmZmZmYKCVByZWZldGNoYWJsZSBtZW1vcnkgYmVoaW5k
-IGJyaWRnZTogMDAwMDAwMDBkNzAwMDAwMC0wMDAwMDAwMGQ3ZmZmZmZmCglD
-YXBhYmlsaXRpZXM6IFs0MF0gRXhwcmVzcyBSb290IFBvcnQgKFNsb3QrKSwg
-TVNJIDAwCglDYXBhYmlsaXRpZXM6IFs4MF0gTVNJOiBNYXNrLSA2NGJpdC0g
-Q291bnQ9MS8xIEVuYWJsZS0KCUNhcGFiaWxpdGllczogWzkwXSBTdWJzeXN0
-ZW06IDEwM2M6MzBmNAoJQ2FwYWJpbGl0aWVzOiBbYTBdIFBvd2VyIE1hbmFn
-ZW1lbnQgdmVyc2lvbiAyCglDYXBhYmlsaXRpZXM6IFsxMDBdIFZpcnR1YWwg
-Q2hhbm5lbCA8Pz4KCUNhcGFiaWxpdGllczogWzE4MF0gUm9vdCBDb21wbGV4
-IExpbmsgPD8+CglLZXJuZWwgZHJpdmVyIGluIHVzZTogcGNpZXBvcnQtZHJp
-dmVyCgowMDoxYy41IDA2MDQ6IDgwODY6Mjk0YSAocmV2IDAzKSAocHJvZy1p
-ZiAwMCBbTm9ybWFsIGRlY29kZV0pCglGbGFnczogYnVzIG1hc3RlciwgZmFz
-dCBkZXZzZWwsIGxhdGVuY3kgMAoJQnVzOiBwcmltYXJ5PTAwLCBzZWNvbmRh
-cnk9MDcsIHN1Ym9yZGluYXRlPTA5LCBzZWMtbGF0ZW5jeT0wCglJL08gYmVo
-aW5kIGJyaWRnZTogMDAwMDEwMDAtMDAwMDFmZmYKCU1lbW9yeSBiZWhpbmQg
-YnJpZGdlOiBkOTAwMDAwMC1kOWZmZmZmZgoJUHJlZmV0Y2hhYmxlIG1lbW9y
-eSBiZWhpbmQgYnJpZGdlOiAwMDAwMDAwMGQ4MDAwMDAwLTAwMDAwMDAwZDhm
-ZmZmZmYKCUNhcGFiaWxpdGllczogWzQwXSBFeHByZXNzIFJvb3QgUG9ydCAo
-U2xvdCspLCBNU0kgMDAKCUNhcGFiaWxpdGllczogWzgwXSBNU0k6IE1hc2st
-IDY0Yml0LSBDb3VudD0xLzEgRW5hYmxlLQoJQ2FwYWJpbGl0aWVzOiBbOTBd
-IFN1YnN5c3RlbTogMTAzYzozMGY0CglDYXBhYmlsaXRpZXM6IFthMF0gUG93
-ZXIgTWFuYWdlbWVudCB2ZXJzaW9uIDIKCUNhcGFiaWxpdGllczogWzEwMF0g
-VmlydHVhbCBDaGFubmVsIDw/PgoJQ2FwYWJpbGl0aWVzOiBbMTgwXSBSb290
-IENvbXBsZXggTGluayA8Pz4KCUtlcm5lbCBkcml2ZXIgaW4gdXNlOiBwY2ll
-cG9ydC1kcml2ZXIKCjAwOjFkLjAgMGMwMzogODA4NjoyOTM0IChyZXYgMDMp
-IChwcm9nLWlmIDAwIFtVSENJXSkKCVN1YnN5c3RlbTogMTAzYzozMGY0CglG
-bGFnczogYnVzIG1hc3RlciwgbWVkaXVtIGRldnNlbCwgbGF0ZW5jeSAwLCBJ
-UlEgMjAKCUkvTyBwb3J0cyBhdCA4MGEwIFtzaXplPTMyXQoJQ2FwYWJpbGl0
-aWVzOiBbNTBdIFBDSWUgYWR2YW5jZWQgZmVhdHVyZXMgPD8+CglLZXJuZWwg
-ZHJpdmVyIGluIHVzZTogdWhjaV9oY2QKCUtlcm5lbCBtb2R1bGVzOiB1aGNp
-LWhjZAoKMDA6MWQuMSAwYzAzOiA4MDg2OjI5MzUgKHJldiAwMykgKHByb2ct
-aWYgMDAgW1VIQ0ldKQoJU3Vic3lzdGVtOiAxMDNjOjMwZjQKCUZsYWdzOiBi
-dXMgbWFzdGVyLCBtZWRpdW0gZGV2c2VsLCBsYXRlbmN5IDAsIElSUSAyMgoJ
-SS9PIHBvcnRzIGF0IDgwODAgW3NpemU9MzJdCglDYXBhYmlsaXRpZXM6IFs1
-MF0gUENJZSBhZHZhbmNlZCBmZWF0dXJlcyA8Pz4KCUtlcm5lbCBkcml2ZXIg
-aW4gdXNlOiB1aGNpX2hjZAoJS2VybmVsIG1vZHVsZXM6IHVoY2ktaGNkCgow
-MDoxZC4yIDBjMDM6IDgwODY6MjkzNiAocmV2IDAzKSAocHJvZy1pZiAwMCBb
-VUhDSV0pCglTdWJzeXN0ZW06IDEwM2M6MzBmNAoJRmxhZ3M6IGJ1cyBtYXN0
-ZXIsIG1lZGl1bSBkZXZzZWwsIGxhdGVuY3kgMCwgSVJRIDE4CglJL08gcG9y
-dHMgYXQgODA2MCBbc2l6ZT0zMl0KCUNhcGFiaWxpdGllczogWzUwXSBQQ0ll
-IGFkdmFuY2VkIGZlYXR1cmVzIDw/PgoJS2VybmVsIGRyaXZlciBpbiB1c2U6
-IHVoY2lfaGNkCglLZXJuZWwgbW9kdWxlczogdWhjaS1oY2QKCjAwOjFkLjMg
-MGMwMzogODA4NjoyOTM5IChyZXYgMDMpIChwcm9nLWlmIDAwIFtVSENJXSkK
-CVN1YnN5c3RlbTogMTAzYzozMGY0CglGbGFnczogYnVzIG1hc3RlciwgbWVk
-aXVtIGRldnNlbCwgbGF0ZW5jeSAwLCBJUlEgMTkKCUkvTyBwb3J0cyBhdCA4
-MDQwIFtzaXplPTMyXQoJQ2FwYWJpbGl0aWVzOiBbNTBdIFBDSWUgYWR2YW5j
-ZWQgZmVhdHVyZXMgPD8+CglLZXJuZWwgZHJpdmVyIGluIHVzZTogdWhjaV9o
-Y2QKCUtlcm5lbCBtb2R1bGVzOiB1aGNpLWhjZAoKMDA6MWQuNyAwYzAzOiA4
-MDg2OjI5M2EgKHJldiAwMykgKHByb2ctaWYgMjAgW0VIQ0ldKQoJU3Vic3lz
-dGVtOiAxMDNjOjMwZjQKCUZsYWdzOiBidXMgbWFzdGVyLCBtZWRpdW0gZGV2
-c2VsLCBsYXRlbmN5IDAsIElSUSAyMAoJTWVtb3J5IGF0IGRmMDA0ODAwICgz
-Mi1iaXQsIG5vbi1wcmVmZXRjaGFibGUpIFtzaXplPTFLXQoJQ2FwYWJpbGl0
-aWVzOiBbNTBdIFBvd2VyIE1hbmFnZW1lbnQgdmVyc2lvbiAyCglDYXBhYmls
-aXRpZXM6IFs1OF0gRGVidWcgcG9ydDogQkFSPTEgb2Zmc2V0PTAwYTAKCUNh
-cGFiaWxpdGllczogWzk4XSBQQ0llIGFkdmFuY2VkIGZlYXR1cmVzIDw/PgoJ
-S2VybmVsIGRyaXZlciBpbiB1c2U6IGVoY2lfaGNkCglLZXJuZWwgbW9kdWxl
-czogZWhjaS1oY2QKCjAwOjFlLjAgMDYwNDogODA4NjoyNDQ4IChyZXYgOTMp
-IChwcm9nLWlmIDAxIFtTdWJ0cmFjdGl2ZSBkZWNvZGVdKQoJRmxhZ3M6IGJ1
-cyBtYXN0ZXIsIGZhc3QgZGV2c2VsLCBsYXRlbmN5IDAKCUJ1czogcHJpbWFy
-eT0wMCwgc2Vjb25kYXJ5PTBhLCBzdWJvcmRpbmF0ZT0wYSwgc2VjLWxhdGVu
-Y3k9MzIKCUNhcGFiaWxpdGllczogWzUwXSBTdWJzeXN0ZW06IDEwM2M6MzBm
-NAoKMDA6MWYuMCAwNjAxOiA4MDg2OjI5MTkgKHJldiAwMykKCVN1YnN5c3Rl
-bTogMTAzYzozMGY0CglGbGFnczogYnVzIG1hc3RlciwgbWVkaXVtIGRldnNl
-bCwgbGF0ZW5jeSAwCglDYXBhYmlsaXRpZXM6IFtlMF0gVmVuZG9yIFNwZWNp
-ZmljIEluZm9ybWF0aW9uIDw/PgoKMDA6MWYuMiAwMTA2OiA4MDg2OjI5Mjkg
-KHJldiAwMykgKHByb2ctaWYgMDEgW0FIQ0kgMS4wXSkKCVN1YnN5c3RlbTog
-MTAzYzozMGY0CglGbGFnczogYnVzIG1hc3RlciwgNjZNSHosIG1lZGl1bSBk
-ZXZzZWwsIGxhdGVuY3kgMCwgSVJRIDIxCglJL08gcG9ydHMgYXQgODEwOCBb
-c2l6ZT04XQoJSS9PIHBvcnRzIGF0IDgxMTQgW3NpemU9NF0KCUkvTyBwb3J0
-cyBhdCA4MTAwIFtzaXplPThdCglJL08gcG9ydHMgYXQgODExMCBbc2l6ZT00
-XQoJSS9PIHBvcnRzIGF0IDgwMjAgW3NpemU9MzJdCglNZW1vcnkgYXQgZGYw
-MDQwMDAgKDMyLWJpdCwgbm9uLXByZWZldGNoYWJsZSkgW3NpemU9MktdCglD
-YXBhYmlsaXRpZXM6IFs4MF0gTVNJOiBNYXNrLSA2NGJpdC0gQ291bnQ9MS8x
-NiBFbmFibGUtCglDYXBhYmlsaXRpZXM6IFs3MF0gUG93ZXIgTWFuYWdlbWVu
-dCB2ZXJzaW9uIDMKCUNhcGFiaWxpdGllczogW2E4XSBTQVRBIEhCQSA8Pz4K
-CUNhcGFiaWxpdGllczogW2IwXSBQQ0llIGFkdmFuY2VkIGZlYXR1cmVzIDw/
-PgoJS2VybmVsIGRyaXZlciBpbiB1c2U6IGFoY2kKCjAwOjFmLjMgMGMwNTog
-ODA4NjoyOTMwIChyZXYgMDMpCglTdWJzeXN0ZW06IDEwM2M6MzBmNAoJRmxh
-Z3M6IG1lZGl1bSBkZXZzZWwsIElSUSAxOAoJTWVtb3J5IGF0IGRmMDA1MDAw
-ICg2NC1iaXQsIG5vbi1wcmVmZXRjaGFibGUpIFtzaXplPTI1Nl0KCUkvTyBw
-b3J0cyBhdCA4MDAwIFtzaXplPTMyXQoJS2VybmVsIGRyaXZlciBpbiB1c2U6
-IGk4MDFfc21idXMKCUtlcm5lbCBtb2R1bGVzOiBpMmMtaTgwMQoKMDE6MDAu
-MCAwMzAwOiAxMGRlOjA2NDkgKHJldiBhMSkgKHByb2ctaWYgMDAgW1ZHQSBj
-b250cm9sbGVyXSkKCVN1YnN5c3RlbTogMTAzYzozMGY0CglGbGFnczogYnVz
-IG1hc3RlciwgZmFzdCBkZXZzZWwsIGxhdGVuY3kgMCwgSVJRIDE2CglNZW1v
-cnkgYXQgZDIwMDAwMDAgKDMyLWJpdCwgbm9uLXByZWZldGNoYWJsZSkgW3Np
-emU9MTZNXQoJTWVtb3J5IGF0IGMwMDAwMDAwICg2NC1iaXQsIHByZWZldGNo
-YWJsZSkgW3NpemU9MjU2TV0KCU1lbW9yeSBhdCBkMDAwMDAwMCAoNjQtYml0
-LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0zMk1dCglJL08gcG9ydHMgYXQg
-NzAwMCBbc2l6ZT0xMjhdCglFeHBhbnNpb24gUk9NIGF0IDxpZ25vcmVkPiBb
-ZGlzYWJsZWRdCglDYXBhYmlsaXRpZXM6IFs2MF0gUG93ZXIgTWFuYWdlbWVu
-dCB2ZXJzaW9uIDMKCUNhcGFiaWxpdGllczogWzY4XSBNU0k6IE1hc2stIDY0
-Yml0KyBDb3VudD0xLzEgRW5hYmxlLQoJQ2FwYWJpbGl0aWVzOiBbNzhdIEV4
-cHJlc3MgRW5kcG9pbnQsIE1TSSAwMAoJQ2FwYWJpbGl0aWVzOiBbYjRdIFZl
-bmRvciBTcGVjaWZpYyBJbmZvcm1hdGlvbiA8Pz4KCUNhcGFiaWxpdGllczog
-WzEwMF0gVmlydHVhbCBDaGFubmVsIDw/PgoJQ2FwYWJpbGl0aWVzOiBbMTI4
-XSBQb3dlciBCdWRnZXRpbmcgPD8+CglDYXBhYmlsaXRpZXM6IFs2MDBdIFZl
-bmRvciBTcGVjaWZpYyBJbmZvcm1hdGlvbiA8Pz4KCUtlcm5lbCBkcml2ZXIg
-aW4gdXNlOiBudmlkaWEKCUtlcm5lbCBtb2R1bGVzOiBudmlkaWEKCjAyOjAw
-LjAgMDI4MDogODA4Njo0MjM3CglTdWJzeXN0ZW06IDgwODY6MTIxMQoJRmxh
-Z3M6IGJ1cyBtYXN0ZXIsIGZhc3QgZGV2c2VsLCBsYXRlbmN5IDAsIElSUSAx
-NgoJTWVtb3J5IGF0IGRlMDAwMDAwICg2NC1iaXQsIG5vbi1wcmVmZXRjaGFi
-bGUpIFtzaXplPThLXQoJQ2FwYWJpbGl0aWVzOiBbYzhdIFBvd2VyIE1hbmFn
-ZW1lbnQgdmVyc2lvbiAzCglDYXBhYmlsaXRpZXM6IFtkMF0gTVNJOiBNYXNr
-LSA2NGJpdCsgQ291bnQ9MS8xIEVuYWJsZS0KCUNhcGFiaWxpdGllczogW2Uw
-XSBFeHByZXNzIEVuZHBvaW50LCBNU0kgMDAKCUNhcGFiaWxpdGllczogWzEw
-MF0gQWR2YW5jZWQgRXJyb3IgUmVwb3J0aW5nCglDYXBhYmlsaXRpZXM6IFsx
-NDBdIERldmljZSBTZXJpYWwgTnVtYmVyIDkwLTdhLTc4LWZmLWZmLWVhLTE2
-LTAwCglLZXJuZWwgZHJpdmVyIGluIHVzZTogaXdsYWduCgowNTowMC4wIDAy
-MDA6IDEwZWM6ODE2OCAocmV2IDAyKQoJU3Vic3lzdGVtOiAxMDNjOjMwZjQK
-CUZsYWdzOiBidXMgbWFzdGVyLCBmYXN0IGRldnNlbCwgbGF0ZW5jeSAwLCBJ
-UlEgMTkKCUkvTyBwb3J0cyBhdCAzMDAwIFtzaXplPTI1Nl0KCU1lbW9yeSBh
-dCBkNjAxMDAwMCAoNjQtYml0LCBwcmVmZXRjaGFibGUpIFtzaXplPTRLXQoJ
-TWVtb3J5IGF0IGQ2MDAwMDAwICg2NC1iaXQsIHByZWZldGNoYWJsZSkgW3Np
-emU9NjRLXQoJRXhwYW5zaW9uIFJPTSBhdCBkNjAyMDAwMCBbZGlzYWJsZWRd
-IFtzaXplPTY0S10KCUNhcGFiaWxpdGllczogWzQwXSBQb3dlciBNYW5hZ2Vt
-ZW50IHZlcnNpb24gMwoJQ2FwYWJpbGl0aWVzOiBbNTBdIE1TSTogTWFzay0g
-NjRiaXQrIENvdW50PTEvMiBFbmFibGUtCglDYXBhYmlsaXRpZXM6IFs3MF0g
-RXhwcmVzcyBFbmRwb2ludCwgTVNJIDAxCglDYXBhYmlsaXRpZXM6IFtiMF0g
-TVNJLVg6IEVuYWJsZS0gTWFzay0gVGFiU2l6ZT0yCglDYXBhYmlsaXRpZXM6
-IFtkMF0gVml0YWwgUHJvZHVjdCBEYXRhCglDYXBhYmlsaXRpZXM6IFsxMDBd
-IEFkdmFuY2VkIEVycm9yIFJlcG9ydGluZwoJQ2FwYWJpbGl0aWVzOiBbMTQw
-XSBWaXJ0dWFsIENoYW5uZWwgPD8+CglDYXBhYmlsaXRpZXM6IFsxNjBdIERl
-dmljZSBTZXJpYWwgTnVtYmVyIDAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwCglL
-ZXJuZWwgZHJpdmVyIGluIHVzZTogcjgxNjkKCjA2OjAwLjAgMGMwMDogMTk3
-YjoyMzgwIChwcm9nLWlmIDEwIFtPSENJXSkKCVN1YnN5c3RlbTogMTAzYzoz
-MGY0CglGbGFnczogYnVzIG1hc3RlciwgZmFzdCBkZXZzZWwsIGxhdGVuY3kg
-MCwgSVJRIDE2CglNZW1vcnkgYXQgZGEwMDAwMDAgKDMyLWJpdCwgbm9uLXBy
-ZWZldGNoYWJsZSkgW3NpemU9MktdCglNZW1vcnkgYXQgZGEwMDBkMDAgKDMy
-LWJpdCwgbm9uLXByZWZldGNoYWJsZSkgW3NpemU9MTI4XQoJTWVtb3J5IGF0
-IGRhMDAwYzgwICgzMi1iaXQsIG5vbi1wcmVmZXRjaGFibGUpIFtzaXplPTEy
-OF0KCU1lbW9yeSBhdCBkYTAwMGMwMCAoMzItYml0LCBub24tcHJlZmV0Y2hh
-YmxlKSBbc2l6ZT0xMjhdCglDYXBhYmlsaXRpZXM6IFs0NF0gUG93ZXIgTWFu
-YWdlbWVudCB2ZXJzaW9uIDMKCUNhcGFiaWxpdGllczogWzgwXSBFeHByZXNz
-IEVuZHBvaW50LCBNU0kgMDAKCUNhcGFiaWxpdGllczogWzk0XSBNU0k6IE1h
-c2stIDY0Yml0LSBDb3VudD0xLzEgRW5hYmxlLQoJS2VybmVsIGRyaXZlciBp
-biB1c2U6IG9oY2kxMzk0CgowNjowMC4xIDA4ODA6IDE5N2I6MjM4MgoJU3Vi
-c3lzdGVtOiAxMDNjOjMwZjQKCUZsYWdzOiBidXMgbWFzdGVyLCBmYXN0IGRl
-dnNlbCwgbGF0ZW5jeSAwLCBJUlEgMTEKCU1lbW9yeSBhdCBkYTAwMGIwMCAo
-MzItYml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0yNTZdCglDYXBhYmls
-aXRpZXM6IFthNF0gUG93ZXIgTWFuYWdlbWVudCB2ZXJzaW9uIDMKCUNhcGFi
-aWxpdGllczogWzgwXSBFeHByZXNzIEVuZHBvaW50LCBNU0kgMDAKCUNhcGFi
-aWxpdGllczogWzk0XSBNU0k6IE1hc2stIDY0Yml0LSBDb3VudD0xLzEgRW5h
-YmxlLQoKMDY6MDAuMiAwODA1OiAxOTdiOjIzODEgKHByb2ctaWYgMDEpCglT
-dWJzeXN0ZW06IDEwM2M6MzBmNAoJRmxhZ3M6IGJ1cyBtYXN0ZXIsIGZhc3Qg
-ZGV2c2VsLCBsYXRlbmN5IDAsIElSUSAxMQoJTWVtb3J5IGF0IGRhMDAwYTAw
-ICgzMi1iaXQsIG5vbi1wcmVmZXRjaGFibGUpIFtzaXplPTI1Nl0KCUNhcGFi
-aWxpdGllczogW2E0XSBQb3dlciBNYW5hZ2VtZW50IHZlcnNpb24gMwoJQ2Fw
-YWJpbGl0aWVzOiBbODBdIEV4cHJlc3MgRW5kcG9pbnQsIE1TSSAwMAoJQ2Fw
-YWJpbGl0aWVzOiBbOTRdIE1TSTogTWFzay0gNjRiaXQtIENvdW50PTEvMSBF
-bmFibGUtCgowNjowMC4zIDA4ODA6IDE5N2I6MjM4MwoJU3Vic3lzdGVtOiAx
-MDNjOjMwZjQKCUZsYWdzOiBidXMgbWFzdGVyLCBmYXN0IGRldnNlbCwgbGF0
-ZW5jeSAwLCBJUlEgMTEKCU1lbW9yeSBhdCBkYTAwMDkwMCAoMzItYml0LCBu
-b24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0yNTZdCglDYXBhYmlsaXRpZXM6IFth
-NF0gUG93ZXIgTWFuYWdlbWVudCB2ZXJzaW9uIDMKCUNhcGFiaWxpdGllczog
-WzgwXSBFeHByZXNzIEVuZHBvaW50LCBNU0kgMDAKCUNhcGFiaWxpdGllczog
-Wzk0XSBNU0k6IE1hc2stIDY0Yml0LSBDb3VudD0xLzEgRW5hYmxlLQoKMDY6
-MDAuNCAwODgwOiAxOTdiOjIzODQKCVN1YnN5c3RlbTogMTAzYzozMGY0CglG
-bGFnczogYnVzIG1hc3RlciwgZmFzdCBkZXZzZWwsIGxhdGVuY3kgMCwgSVJR
-IDExCglNZW1vcnkgYXQgZGEwMDA4MDAgKDMyLWJpdCwgbm9uLXByZWZldGNo
-YWJsZSkgW3NpemU9MjU2XQoJQ2FwYWJpbGl0aWVzOiBbYTRdIFBvd2VyIE1h
-bmFnZW1lbnQgdmVyc2lvbiAzCglDYXBhYmlsaXRpZXM6IFs4MF0gRXhwcmVz
-cyBFbmRwb2ludCwgTVNJIDAwCglDYXBhYmlsaXRpZXM6IFs5NF0gTVNJOiBN
-YXNrLSA2NGJpdC0gQ291bnQ9MS8xIEVuYWJsZS0KCg==
-
---0-1261855571-1235579973=:32550
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---0-1261855571-1235579973=:32550--
+Daniel
