@@ -1,26 +1,18 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Timer instability
-Date: Tue, 24 Feb 2009 22:16:21 +0100
-Message-ID: <20090224211621.GA25412@tango.0pointer.de>
-References: <s5hy6w2hqap.wl%tiwai@suse.de>
-	<20090220012220.GA11526@tango.0pointer.de>
-	<s5h1vtty3f8.wl%tiwai@suse.de>
-	<20090220203417.GA19093@tango.0pointer.de>
-	<s5hhc2nu4qy.wl%tiwai@suse.de>
-	<20090222031453.GA24365@tango.0pointer.de>
-	<s5h8wnvreab.wl%tiwai@suse.de>
-	<20090224184604.GA2253@tango.0pointer.de>
-	<s5hocwr64pz.wl%tiwai@suse.de>
-	<20090224192611.GC2253@tango.0pointer.de>
+From: =?UTF-8?Q?Bart=C5=82omiej?= Holdenmayer <bh@habah.com>
+Subject: Re: No sound for HP Pavilion DV4z
+Date: Wed, 25 Feb 2009 01:17:25 +0100
+Message-ID: <1235521045.8100.1.camel@hplaptop>
+References: <1856646965.309841234390528103.JavaMail.root@sz0025a.westchester.pa.mail.comcast.net>
+	<947282031.309861234390530891.JavaMail.root@sz0025a.westchester.pa.mail.comcast.net>
+	<s5hbpt88tta.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 272E61037F6
-	for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2009 22:16:24 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20090224192611.GC2253@tango.0pointer.de>
+Received: from secure4.ia-dns.com (secure4.ia-dns.com [70.84.79.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1DB511037ED
+	for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2009 01:17:38 +0100 (CET)
+In-Reply-To: <s5hbpt88tta.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,39 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, aeleneski@comcast.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 24.02.09 20:26, Lennart Poettering (mznyfn@0pointer.de) wrote:
-
-> Oh, and one thing I didn't actually notice earlier: Most drivers return
-> a negative snd_pcm_delay() if a real underrun happens. According to
-> the definition of snd_pcm_delay() that we agreed on a couple of
-> months ago and that is now docuemented in doxygen this makes no
-> sense. The definition of snd_pcm_delay() goes like this:
-> 
-> "For playback the delay is defined as the time that a frame that is
-> written to the PCM stream shortly after this call will take to be
-> actually audible. It is as such the overall latency from the write
-> call to the final DAC." (from the doxygen docs)
-> 
-> I.e. because on the this world it is impossible to hear a sample that
-> hasn't even been written yet, _delay() should only return positive
-> values. However many drivers do return negative values on underrun.
-
-I take this back.
-
-I think the correct way to handle an underrun when stop_threshold is
-set to boundary is that if a write happens after an underrun the
-appropriate amount of data is simply dropped. I think enabling this
-mode is primarily useful to guarantee timer stability even in case of
-underrun. That means snd_pcm_delay() should very well return negative
-values meaning "what you write next is past the playback pointer, it
-will not be heard".
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+RG5pYSAyMDA5LTAyLTExLCDFm3JvIG8gZ29kemluaWUgMjM6NTggKzAxMDAsIFRha2FzaGkgSXdh
+aSBwaXN6ZToKPiBBdCBXZWQsIDExIEZlYiAyMDA5IDIyOjE1OjMwICswMDAwIChVVEMpLAo+IGFl
+bGVuZXNraUBjb21jYXN0Lm5ldCB3cm90ZToKPiA+IAo+ID4gQWxyaWdodC4gV2VsbCwgaXQgYWdh
+aW4gc2VlbXMgbGlrZSBhIG5vIGdvLgo+ID4gUmFuIGFsbCB0aGUgY29tbWFuZHMsIHN0aWxsIG5v
+IHNvdW5kLiBVcG9uIHN0YXJ0aW5nIEFtYXJvaywgSSByZWNlaXZlIHRoZQo+ID4gZXJyb3IgInhp
+bmUgd2FzIHVuYWJsZSB0byBpbml0aWFsaXplIGFueSBhdWRpbyBkcml2ZXJzLiIKPiAKPiBDb3Vs
+ZCB5b3UgdHJ5IHRoZSBwYXRjaCBiZWxvdz8KPiAKPiBPciwgZmlyc3QgbG9hZCB3aXRob3V0IHBy
+b2JlX21hc2s9MSBvcHRpb24sIGdpdmUgdGhlIGNvbW1hbmQgc2VxdWVuY2UKPiBhbmQgZG8gZWNo
+byB0byByZWNvbmZpZyBmaWxlLgo+IAo+IAo+IHRoYW5rcywKPiAKPiBUYWthc2hpCj4gCj4gLS0t
+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvaGRhX2h3ZGVwLmMgYi9zb3VuZC9wY2kvaGRh
+L2hkYV9od2RlcC5jCj4gaW5kZXggMzAwYWI0MC4uNDgyZmIwMyAxMDA2NDQKPiAtLS0gYS9zb3Vu
+ZC9wY2kvaGRhL2hkYV9od2RlcC5jCj4gKysrIGIvc291bmQvcGNpL2hkYS9oZGFfaHdkZXAuYwo+
+IEBAIC0xNzUsNyArMTc1LDcgQEAgc3RhdGljIGludCByZWNvbmZpZ19jb2RlYyhzdHJ1Y3QgaGRh
+X2NvZGVjICpjb2RlYykKPiAgCWVyciA9IHNuZF9oZGFfY29kZWNfYnVpbGRfY29udHJvbHMoY29k
+ZWMpOwo+ICAJaWYgKGVyciA8IDApCj4gIAkJcmV0dXJuIGVycjsKPiAtCXJldHVybiAwOwo+ICsJ
+cmV0dXJuIHNuZF9jYXJkX3JlZ2lzdGVyKGNvZGVjLT5idXMtPmNhcmQpOwo+ICB9Cj4gIAo+ICAv
+Kgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRw
+Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAoK
+QW55IHNvbHV0aW9uIGZvciBtZT8KLS0gClBvemRyYXdpYW0gLyBSZWdhcmRzCkJhcnTFgm9taWVq
+IEhvbGRlbm1heWVyCgpHRzo1NDE2MzQ7IElDUTozMzkyMDgxMTsgc2t5cGVuYW1lOmJhcnRsb21p
+ZWpob2xkZW5tYXllcgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCg==
