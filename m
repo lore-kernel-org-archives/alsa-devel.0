@@ -1,43 +1,87 @@
-From: =?UTF-8?Q?Vedran_Mileti=C4=87?= <rivanvx@gmail.com>
-Subject: Re: E-MU 0404 Support
-Date: Thu, 26 Feb 2009 11:13:13 +0100
-Message-ID: <fd3eb9bf0902260213x2c973026h293690a87f7fcb64@mail.gmail.com>
-References: <9fca51520902231328h3ee698ean8aa2601898f34a6f@mail.gmail.com>
-	<loom.20090226T023652-878@post.gmane.org>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: Add GPIO support for jack
+	reporting interface
+Date: Thu, 26 Feb 2009 11:52:43 +0000
+Message-ID: <20090226115243.GC4229@sirena.org.uk>
+References: <2C7D3DF36ADFFC479B44490D912B616705EC8B1C03@dlee07.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f174.google.com (mail-bw0-f174.google.com
-	[209.85.218.174])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9B29810381B
-	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2009 11:13:14 +0100 (CET)
-Received: by bwz22 with SMTP id 22so456645bwz.32
-	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2009 02:13:14 -0800 (PST)
-In-Reply-To: <loom.20090226T023652-878@post.gmane.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: beecher <bofphile@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705EC8B1C03@dlee07.ent.ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: "Lopez Cruz, Misael" <x0052729@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgZ3V5cywKCkkgYmVsaWV2ZSBKYW1lcyBDb3VpcnRlci1EdXR0b24gY29udGFjdGVkIENyZWF0
-aXZlL0UtbXUgYW5kIGdvdCBzb21lCnNwZWNpZmljYXRpb25zIGZyb20gdGhlbS4gWW91IGNhbiBj
-aGVjayB3aXRoIGhpbS4KClZlZHJhbiBNaWxldGnEhwoKCgpPbiBUaHUsIEZlYiAyNiwgMjAwOSBh
-dCAzOjQwIEFNLCBiZWVjaGVyIDxib2ZwaGlsZUBnbWFpbC5jb20+IHdyb3RlOgo+IEkgc2Vjb25k
-IHRoaXMgZGVtYW5kL3JlcXVlc3QsIEkgaGF2ZSBhbiBFLU1VIDAyMDIgVVNCIGRldmljZSBhbmQg
-SSBrbm93IG90aGVyCj4gcGVvcGxlIHdobyB3b3VsZCBiZSBnbGFkIHRvIHNlZSBhIHdvcmtpbmcg
-ZHJpdmVyIGRldmVsb3BlZC4KPgo+IFRoYW5rcyBpbiBhZHZhbmNlLgo+Cj4gX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4KX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Thu, Feb 26, 2009 at 01:57:03AM -0600, Lopez Cruz, Misael wrote:
+
+>  struct snd_soc_jack_pin {
+> +	struct snd_soc_jack *jack;
+> +	struct snd_soc_jack_gpio *gpio_pin;
+>  	struct list_head list;
+>  	const char *pin;
+>  	int mask;
+>  	bool invert;
+> +	/* GPIO */
+> +	unsigned int gpio;
+> +	unsigned int irq;
+> +	unsigned long irqflags;
+> +	irq_handler_t handler;
+> +	struct work_struct work;
+>  };
+
+This needs to be rethought - it breaks the abstraction layers.
+
+There are three things working together here:
+
+ - The snd_soc_jack, which represents a physical jack on the system and
+   is what is visible to user space.
+ - The snd_soc_jack_pin, which represents a DAPM pin to update depending
+   on some of the status bits supported by the jack.  Each snd_soc_jack
+   has zero or more of these which are updated automatically.
+ - The jack reporting mechanism, which represents something that can do
+   detection - it is associated with a snd_soc_jack, reporting a subset
+   of the status bits supported by the snd_soc_jack.  Each jack may
+   have multiple reporting mechanisms, though it will need at least one
+   to be useful.
+
+These are all hooked together by the machine driver depending on the
+system hardware.  The machine driver will set up the snd_soc_jack and
+the list of pins to update then set up one or more jack detection
+mechanisms to update that jack based on their current status.
+
+For example, a system may have a stereo headset jack with two reporting
+mechansms, one for the headphone and one for the microphone.  Some
+systems won't be able to use their speaker output while a headphone is
+connected and so will want to make sure to update both speaker and
+headphone when the headphone jack status changes.
+
+The GPIO jack detection code should operate only on a snd_soc_jack that
+is provided to it by a machine driver - you'll need to define a
+structure to hold the information the GPIO jack detection needs (there
+is a structure there but you've not defined it so I'm not sure what you
+have in it at the minute).
+
+Please look at the wm8350 headphone detection for an example of how to
+integrate a detection mechanism.
+
+> +static void gpio_work(struct work_struct *work)
+> +{
+> +       struct snd_soc_jack_pin *pin;
+> +       int report;
+> +
+> +       pin = container_of(work, struct snd_soc_jack_pin, work);
+> +       report = pin->jack->status & pin->mask;
+> +       if (gpio_get_value(pin->gpio))
+> +               report |= pin->mask;
+> +       else
+> +               report &= ~pin->mask;
+> +
+> +       snd_soc_jack_report(pin->jack, report, pin->jack->jack->type);
+> +}
+
+The value to report should be supplied by the machine driver.
+
+BTW, please remember to CC the maintainers of the things you're
+submitting patches for.
