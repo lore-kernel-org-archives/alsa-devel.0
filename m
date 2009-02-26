@@ -1,87 +1,146 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: Add GPIO support for jack
-	reporting interface
-Date: Thu, 26 Feb 2009 11:52:43 +0000
-Message-ID: <20090226115243.GC4229@sirena.org.uk>
-References: <2C7D3DF36ADFFC479B44490D912B616705EC8B1C03@dlee07.ent.ti.com>
+From: Tim Blechmann <tim@klingt.org>
+Subject: Re: pointer callback question
+Date: Thu, 26 Feb 2009 15:44:13 +0100
+Message-ID: <49A6AABD.7040300@klingt.org>
+References: <49946175.5070008@klingt.org>
+	<s5h1vu3k0bj.wl%tiwai@suse.de>	<499462A5.2000705@klingt.org>
+	<s5hy6wbillh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705EC8B1C03@dlee07.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Lopez Cruz, Misael" <x0052729@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============4393899422349175331=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from klingt.org (mail.klingt.org [86.59.21.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id 900961038FC
+	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2009 15:44:16 +0100 (CET)
+In-Reply-To: <s5hy6wbillh.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 26, 2009 at 01:57:03AM -0600, Lopez Cruz, Misael wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============4393899422349175331==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig58789A8A4B0C17831B00B1DB"
 
->  struct snd_soc_jack_pin {
-> +	struct snd_soc_jack *jack;
-> +	struct snd_soc_jack_gpio *gpio_pin;
->  	struct list_head list;
->  	const char *pin;
->  	int mask;
->  	bool invert;
-> +	/* GPIO */
-> +	unsigned int gpio;
-> +	unsigned int irq;
-> +	unsigned long irqflags;
-> +	irq_handler_t handler;
-> +	struct work_struct work;
->  };
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig58789A8A4B0C17831B00B1DB
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-This needs to be rethought - it breaks the abstraction layers.
+hello takashi,
 
-There are three things working together here:
+>>>> the brief log is (4 periods of 64 frames):
+>>>> stream_pointer at 64
+>>>> stream_pointer at 128
+>>>> stream_pointer at 192
+>>>> stream_pointer at 256
+>>> This is invalid.  The pointer callback must return 0 in this case.
+>>> The value the pointer callback returns is between 0 and buffer_size-1=
+=2E
+>> sry, typo, 5 periods of 64 frames
+>=20
+> Then it must be OK.  If the stream is stopped, it's likely by the
+> buffer underrun detection or so...
+>=20
+> BTW, you should be sure that the buffer size is aligned to the period=20
+> size if such a design is assumed.  Without the extra constraint, it
+> could be unaligned as default.
 
- - The snd_soc_jack, which represents a physical jack on the system and
-   is what is visible to user space.
- - The snd_soc_jack_pin, which represents a DAPM pin to update depending
-   on some of the status bits supported by the jack.  Each snd_soc_jack
-   has zero or more of these which are updated automatically.
- - The jack reporting mechanism, which represents something that can do
-   detection - it is associated with a snd_soc_jack, reporting a subset
-   of the status bits supported by the snd_soc_jack.  Each jack may
-   have multiple reporting mechanisms, though it will need at least one
-   to be useful.
+now i am trying to debug it some more. the lx6464es card provides
+commands to send audio buffers to the card, and issues an interrupt,
+when the buffer has been processed. i am using one dma buffer of
+period_bytes*periods (128 frames, 3 bytes per sample, 64 channels, 5
+periods)
 
-These are all hooked together by the machine driver depending on the
-system hardware.  The machine driver will set up the snd_soc_jack and
-the list of pins to update then set up one or more jack detection
-mechanisms to update that jack based on their current status.
+for the startup, i am sending a number of buffers to the card (periods):
+[ 2825.545296] LX6464ES: starting: buffer index 0 on ef620000 (24576 byte=
+s)
+[ 2825.545385] LX6464ES: starting: buffer index 1 on ef626000 (24576 byte=
+s)
+[ 2825.545474] LX6464ES: starting: buffer index 2 on ef62c000 (24576 byte=
+s)
+[ 2825.545568] LX6464ES: starting: buffer index 3 on ef632000 (24576 byte=
+s)
+[ 2825.545662] LX6464ES: starting: buffer index 4 on ef638000 (24576 byte=
+s)
 
-For example, a system may have a stereo headset jack with two reporting
-mechansms, one for the headphone and one for the microphone.  Some
-systems won't be able to use their speaker output while a headphone is
-connected and so will want to make sure to update both speaker and
-headphone when the headphone jack status changes.
+for each buffer, the card issues an `end of buffer' interrupt, in which
+i send a new buffer to the card and call snd_pcm_period_elapsed with an
+updated hw pointer:
+[ 2825.548340] LX6464ES: interrupt: gave buffer index 0 on ef620000
+(24576 bytes)
+[ 2825.548385] LX6464ES: stream_pointer at 128
+[ 2825.550986] LX6464ES: interrupt: gave buffer index 1 on ef626000
+(24576 bytes)
+[ 2825.551029] LX6464ES: stream_pointer at 256
+[ 2825.553653] LX6464ES: interrupt: gave buffer index 2 on ef62c000
+(24576 bytes)
+[ 2825.553695] LX6464ES: stream_pointer at 384
+[ 2825.556353] LX6464ES: interrupt: gave buffer index 3 on ef632000
+(24576 bytes)
+[ 2825.556397] LX6464ES: stream_pointer at 512
+[ 2825.559014] LX6464ES: interrupt: gave buffer index 4 on ef638000
+(24576 bytes)
+[ 2825.559061] LX6464ES: stream_pointer at 0
 
-The GPIO jack detection code should operate only on a snd_soc_jack that
-is provided to it by a machine driver - you'll need to define a
-structure to hold the information the GPIO jack detection needs (there
-is a structure there but you've not defined it so I'm not sure what you
-have in it at the minute).
+directly after returning 0 from the pointer callback, alsa requests a sto=
+p:
+[ 2825.559067] ->lx_pcm_trigger
+the timing seems to be fine (2.7 ms for 128 frames).
 
-Please look at the wm8350 headphone detection for an example of how to
-integrate a detection mechanism.
+any idea, why alsa wants to stop the transfer? am i missing something,
+like to i need to inform alsa, that the cyclic buffer wraps around?
 
-> +static void gpio_work(struct work_struct *work)
-> +{
-> +       struct snd_soc_jack_pin *pin;
-> +       int report;
-> +
-> +       pin = container_of(work, struct snd_soc_jack_pin, work);
-> +       report = pin->jack->status & pin->mask;
-> +       if (gpio_get_value(pin->gpio))
-> +               report |= pin->mask;
-> +       else
-> +               report &= ~pin->mask;
-> +
-> +       snd_soc_jack_report(pin->jack, report, pin->jack->jack->type);
-> +}
+the code is available at [1]
 
-The value to report should be supplied by the machine driver.
+thanks, tim
 
-BTW, please remember to CC the maintainers of the things you're
-submitting patches for.
+[1]
+http://tim.klingt.org/git?p=3Ddigigram.git;a=3Dshortlog;h=3Drefs/heads/di=
+gigram
+
+--=20
+tim@klingt.org
+http://tim.klingt.org
+
+Relying on the government to protect your privacy is like asking a
+peeping tom to install your window blinds.
+  John Perry Barlow
+
+
+--------------enig58789A8A4B0C17831B00B1DB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkmmqsIACgkQdL+4qsZfVssbaACgozqIZwQENzB0J62Y6cju+QJM
+1IIAnAvhj986Tthdh0m1aCS5Et/sQ6dA
+=7myg
+-----END PGP SIGNATURE-----
+
+--------------enig58789A8A4B0C17831B00B1DB--
+
+--===============4393899422349175331==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============4393899422349175331==--
