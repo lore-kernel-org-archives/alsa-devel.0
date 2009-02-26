@@ -1,82 +1,84 @@
-From: "Lopez Cruz, Misael" <x0052729@ti.com>
-Subject: [PATCH 3/3] ASoC: Add headset jack detection for SDP3430 machine
- driver
-Date: Thu, 26 Feb 2009 01:57:53 -0600
-Message-ID: <2C7D3DF36ADFFC479B44490D912B616705EC8B1C05@dlee07.ent.ti.com>
+From: pHilipp Zabel <philipp.zabel@gmail.com>
+Subject: Re: [PATCH 4/7] ASoC: Fix Zylonite voice interface
+	stereo configurations
+Date: Thu, 26 Feb 2009 10:59:16 +0100
+Message-ID: <74d0deb30902260159ob8e750drcd539a63285a0c09@mail.gmail.com>
+References: <20090225104701.GA20221@rakim.wolfsonmicro.main>
+	<1235558902-20314-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<20090225160617.GH11203@buzzloop.caiaq.de>
+	<20090225162241.GE31637@sirena.org.uk>
+	<20090225164113.GI11203@buzzloop.caiaq.de>
+	<20090225165458.GF31637@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Language: en-US
-Sender: linux-omap-owner@vger.kernel.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3725C103808
+	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2009 10:59:17 +0100 (CET)
+Received: by yw-out-1718.google.com with SMTP id 6so365245ywa.2
+	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2009 01:59:16 -0800 (PST)
+In-Reply-To: <20090225165458.GF31637@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add headset jack detection for SDP3430 boards using SoC jack
-reporting interface. Headset detection on SDP3430 board is
-achieved through TWL4030 GPIO_2 pin.
+On Wed, Feb 25, 2009 at 5:54 PM, Mark Brown <broonie@sirena.org.uk> wrote:
+> On Wed, Feb 25, 2009 at 05:41:13PM +0100, Daniel Mack wrote:
+>
+>> Is there a thread you can point me to or where have people reported such
+>> things? Grep'ing the archives did unveil anything regarding this.
+>
+> Private e-mail only, sorry.
 
-Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
----
- sound/soc/omap/sdp3430.c |   31 ++++++++++++++++++++++++++++++-
- 1 files changed, 30 insertions(+), 1 deletions(-)
+Seconded.
 
-diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
-index 7a996d9..7695675 100644
---- a/sound/soc/omap/sdp3430.c
-+++ b/sound/soc/omap/sdp3430.c
-@@ -28,6 +28,7 @@
- #include <sound/pcm.h>
- #include <sound/soc.h>
- #include <sound/soc-dapm.h>
-+#include <sound/jack.h>
- 
- #include <asm/mach-types.h>
- #include <mach/hardware.h>
-@@ -141,6 +142,18 @@ static int sdp3430_twl4030_init(struct snd_soc_codec *codec)
- 	return ret;
- }
- 
-+/* Jack detection */
-+struct snd_soc_jack *sdp3430_jack;
-+
-+struct snd_soc_jack_pin sdp3430_jack_pins[] = {
-+	{
-+		.pin = "Headset Jack",
-+		.mask = SND_JACK_HEADSET,
-+		.invert = 0,
-+		.gpio = (OMAP_MAX_GPIO_LINES + 2),
-+	},
-+};
-+
- /* Digital audio interface glue - connects codec <--> CPU */
- static struct snd_soc_dai_link sdp3430_dai = {
- 	.name = "TWL4030",
-@@ -191,7 +204,23 @@ static int __init sdp3430_soc_init(void)
- 	if (ret)
- 		goto err1;
- 
--	return 0;
-+	/* Jack detection */
-+	sdp3430_jack = kzalloc(sizeof(struct snd_soc_jack), GFP_KERNEL);
-+	if (!sdp3430_jack) {
-+		printk(KERN_ERR "SDP3430 SoC Jack allocation failed\n");
-+		return -ENOMEM;
-+	}
-+
-+	snd_soc_jack_new(&snd_soc_sdp3430, "SDP3430 SoC Jack",
-+				SND_JACK_HEADSET, sdp3430_jack);
-+	if (ret)
-+		return ret;
-+
-+	ret = snd_soc_jack_add_pins(sdp3430_jack,
-+				ARRAY_SIZE(sdp3430_jack_pins),
-+				sdp3430_jack_pins);
-+
-+	return ret;
- 
- err1:
- 	printk(KERN_ERR "Unable to add platform device\n");
--- 
-1.5.4.3
+I've got a Philips UDA1380 codec with its digital input pins connected
+to a PXA272's SSP1 port. From the diagrams in the codec's datasheet,
+I'd expect it to understand I2S formats with anything >=3D 8 bits per
+channel.
+But when driving it with the current pxa-ssp code, I only ever get one
+channel output to both left and right speakers. Whether this is the
+left or the right channel depends on the frame clock polarity setting
+(SSPSP[SFRMP]).
+
+>> > The I2S frame length depends on the number of bits per sample.
+>
+>> Well, as far as I got it, these are different things in the register
+>> set. The I2S frame is 64 bits per definition (32 bits for each channel),
+>> and this is what the cs4270 requires to use.
+>
+> Ah, that's not true of I2S devices in general - most only require as
+> many bit clocks as they have data. =A0I've only ever tested with such
+> devices.
+>
+>> The particular problem with the PXA SSP mode is that I've not yet seen a
+>> configuration (neighter in slave nor in master mode) where it sends out
+>> 16 bits of left channel information, followed by 16 bits of zeros, then
+>> 16 bits of right channel and finally another 16bits of zeros (which
+>> exactly what they talk about in the 'i2s via ssp' application note).
+>> Has anyone ever got that?
+>
+> Not to my knowledge.
+
+I think I've tried to do this by setting network mode with four slots
+=E0 16 bit data width, with a SFRMWDTH of 32 and only the first and
+third slot active (SSTSA[TTSA] =3D 0x5). During the inactive slots,
+SSPTXD should be forced low, as long as SSPSP[ETDS] is not set.
+It didn't work out, but I'm not sure whether I've set up everything
+correctly. My whole understanding of this SSP busineess is rather
+cloudy.
+
+Is that 'i2s via ssp' application note downloadable somewhere?
+
+regards
+Philipp
