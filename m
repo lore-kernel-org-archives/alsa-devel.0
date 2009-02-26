@@ -1,20 +1,19 @@
-From: Jarkko Nikula <jarkko.nikula@nokia.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Subject: Re: [PATCH] ASoC: Add support for OMAP3 EVM
-Date: Thu, 26 Feb 2009 09:18:19 +0200
-Message-ID: <20090226091819.bd509ade.jarkko.nikula@nokia.com>
+Date: Thu, 26 Feb 2009 09:36:54 +0200
+Message-ID: <200902260936.54301.peter.ujfalusi@nokia.com>
 References: <1227591577-23414-1-git-send-email-anuj.aggarwal@ti.com>
-	<20081125132120.1d740c04.jarkko.nikula@nokia.com>
 	<20081125145257.GD12414@sirena.org.uk>
 	<20090225202559.GO4368@mvista.com>
-	<20090225202744.GG31637@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0CE552414E
-	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2009 08:18:10 +0100 (CET)
-In-Reply-To: <20090225202744.GG31637@sirena.org.uk>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 354A224334
+	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2009 08:37:05 +0100 (CET)
+In-Reply-To: <20090225202559.GO4368@mvista.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,33 +23,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@sirena.org.uk>
-Cc: "George G. Davis" <gdavis@mvista.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, stanley.miao@windriver.com, ext Anuj Aggarwal <anuj.aggarwal@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, ext Misael Lopez Cruz <mesak82@gmail.com>
+To: "ext George G. Davis" <gdavis@mvista.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikula Jarkko (Nokia-D/Helsinki)" <jarkko.nikula@nokia.com>, Mark Brown <broonie@sirena.org.uk>, ext Anuj Aggarwal <anuj.aggarwal@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, ext Misael Lopez Cruz <mesak82@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 25 Feb 2009 21:27:44 +0100
-ext Mark Brown <broonie@sirena.org.uk> wrote:
+On Wednesday 25 February 2009 22:25:59 ext George G. Davis wrote:
+> Hi,
+>
+> On Tue, Nov 25, 2008 at 02:52:58PM +0000, Mark Brown wrote:
+> > On Tue, Nov 25, 2008 at 01:21:20PM +0200, Jarkko Nikula wrote:
+> > > Or if those EVM's & SDP's can route TWL4030 audio connections more
+> > > flexible than Beagle but somewhat similar manner, then probably have
+> > > one single machine driver for all EVM's?
+> > >
+> > > Otherwise it doesn't make very much sense to have n similar machine
+> > > drivers where only functions and variable names differ.
+> >
+> > Yes, it looks like a lot of these drivers could be redone along the
+> > lines of s3c24xx_uda134x.c with platform data specifying the differences
+> > between the boards.
+>
+> Is someone working on updating ASoC drivers for OMAP TWL4030 based
+> boards as recommended above?  Just curious since I already made the
+> mistake of creating my own OMAP3 EVM ASoC driver w/o checking the
+> list first.  : /
 
-> On Wed, Feb 25, 2009 at 03:25:59PM -0500, George G. Davis wrote:
-> 
-> > Is someone working on updating ASoC drivers for OMAP TWL4030 based
-> > boards as recommended above?  Just curious since I already made the
-> > mistake of creating my own OMAP3 EVM ASoC driver w/o checking the
-> > list first.  : /
-> 
-> Not to my knowledge.
+Well, I have checked the s3c24xx_uda134x.c and the corresponding uda134x.c =
 
-Stanley Miao started to do some early development on this:
+codec driver. In case of the uda134x codec - since it does not have DAPM =
 
-http://mailman.alsa-project.org/pipermail/alsa-devel/2008-November/012946.html
-http://mailman.alsa-project.org/pipermail/alsa-devel/2008-November/012995.html
+implementation, the board file does not need to deal with the output/input =
 
-IRCC this work was let to aside to develop since there were some slight
-differencies between the boards and also TWL4030 didn't contain all the
-features. Stanley, do you remember better?
+pins.
+In case of boards using the TWL4030 codec it is not that simple IMHO.
+You see TWL4030 has nine output 'pins' and six (plus 2x stereo digital mic) =
 
-Probably now there is a better change after tons of generic TWL4030
-patches and TWL4030 codec updates from Peter Ujfalusi.
+input 'pins'. =
+
+So, yes it is doable, but will it make things cleaner and more manageable?
+Few things came to my mind, which needs to be addressed:
+1. Who is the master (OMAP McBSP or TWL4030)?
+2. What is the reference clock in the given board
+3.  Connected pins (or not connected pins)
+4.  I2S or TDM mode (this is not implemented yet, but it is coming at some =
+
+point)
+
+It easy to provide 1, 2 and 4. But when it comes to 3... One needs to build=
+ up =
+
+the DAPM routes in the common board file for the supported boards, which ag=
+ain =
+
+doable based on - for example  - some model/board ID, but I think it will l=
+ook =
+
+ugly.
+
+Or I might over complicate things ;) =
 
 
-Jarkko
+> --
+> Regards,
+> George
+
+-- =
+
+P=E9ter
