@@ -1,24 +1,20 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 4/7] ASoC: Fix Zylonite voice
-	interface	stereo configurations
-Date: Thu, 26 Feb 2009 11:03:14 +0100
-Message-ID: <20090226100314.GB24575@buzzloop.caiaq.de>
-References: <20090225104701.GA20221@rakim.wolfsonmicro.main>
-	<1235558902-20314-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<20090225160617.GH11203@buzzloop.caiaq.de>
-	<20090225162241.GE31637@sirena.org.uk>
-	<20090225164113.GI11203@buzzloop.caiaq.de>
-	<20090225165458.GF31637@sirena.org.uk>
-	<74d0deb30902260159ob8e750drcd539a63285a0c09@mail.gmail.com>
+From: =?UTF-8?Q?Vedran_Mileti=C4=87?= <rivanvx@gmail.com>
+Subject: Re: E-MU 0404 Support
+Date: Thu, 26 Feb 2009 11:13:13 +0100
+Message-ID: <fd3eb9bf0902260213x2c973026h293690a87f7fcb64@mail.gmail.com>
+References: <9fca51520902231328h3ee698ean8aa2601898f34a6f@mail.gmail.com>
+	<loom.20090226T023652-878@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8438A10381B
-	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2009 11:03:18 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <74d0deb30902260159ob8e750drcd539a63285a0c09@mail.gmail.com>
+Received: from mail-bw0-f174.google.com (mail-bw0-f174.google.com
+	[209.85.218.174])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9B29810381B
+	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2009 11:13:14 +0100 (CET)
+Received: by bwz22 with SMTP id 22so456645bwz.32
+	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2009 02:13:14 -0800 (PST)
+In-Reply-To: <loom.20090226T023652-878@post.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,38 +24,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: pHilipp Zabel <philipp.zabel@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>
+To: beecher <bofphile@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 26, 2009 at 10:59:16AM +0100, pHilipp Zabel wrote:
-> >> The particular problem with the PXA SSP mode is that I've not yet seen=
- a
-> >> configuration (neighter in slave nor in master mode) where it sends out
-> >> 16 bits of left channel information, followed by 16 bits of zeros, then
-> >> 16 bits of right channel and finally another 16bits of zeros (which
-> >> exactly what they talk about in the 'i2s via ssp' application note).
-> >> Has anyone ever got that?
-> >
-> > Not to my knowledge.
-> =
-
-> I think I've tried to do this by setting network mode with four slots
-> =E0 16 bit data width, with a SFRMWDTH of 32 and only the first and
-> third slot active (SSTSA[TTSA] =3D 0x5). During the inactive slots,
-> SSPTXD should be forced low, as long as SSPSP[ETDS] is not set.
-> It didn't work out, but I'm not sure whether I've set up everything
-> correctly.
-
-This is exactly how I understand the docs as well, so thanks for sharing
-this :)
-
-> My whole understanding of this SSP busineess is rather cloudy.
-
-To me too, especially because the documents are faulty.
-
-> Is that 'i2s via ssp' application note downloadable somewhere?
-
-Only if you signed an NDA with Marvell :-/
-
-Daniel
+SGkgZ3V5cywKCkkgYmVsaWV2ZSBKYW1lcyBDb3VpcnRlci1EdXR0b24gY29udGFjdGVkIENyZWF0
+aXZlL0UtbXUgYW5kIGdvdCBzb21lCnNwZWNpZmljYXRpb25zIGZyb20gdGhlbS4gWW91IGNhbiBj
+aGVjayB3aXRoIGhpbS4KClZlZHJhbiBNaWxldGnEhwoKCgpPbiBUaHUsIEZlYiAyNiwgMjAwOSBh
+dCAzOjQwIEFNLCBiZWVjaGVyIDxib2ZwaGlsZUBnbWFpbC5jb20+IHdyb3RlOgo+IEkgc2Vjb25k
+IHRoaXMgZGVtYW5kL3JlcXVlc3QsIEkgaGF2ZSBhbiBFLU1VIDAyMDIgVVNCIGRldmljZSBhbmQg
+SSBrbm93IG90aGVyCj4gcGVvcGxlIHdobyB3b3VsZCBiZSBnbGFkIHRvIHNlZSBhIHdvcmtpbmcg
+ZHJpdmVyIGRldmVsb3BlZC4KPgo+IFRoYW5rcyBpbiBhZHZhbmNlLgo+Cj4gX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4KX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
