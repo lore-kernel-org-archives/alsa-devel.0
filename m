@@ -1,25 +1,20 @@
-From: beecher <bofphile@gmail.com>
-Subject: Re: E-MU 0404 Support
-Date: Thu, 26 Feb 2009 02:40:42 +0000 (UTC)
-Message-ID: <loom.20090226T023652-878@post.gmane.org>
-References: <9fca51520902231328h3ee698ean8aa2601898f34a6f@mail.gmail.com>
+From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Subject: Re: [PATCH] ASoC: Add support for OMAP3 EVM
+Date: Thu, 26 Feb 2009 09:18:19 +0200
+Message-ID: <20090226091819.bd509ade.jarkko.nikula@nokia.com>
+References: <1227591577-23414-1-git-send-email-anuj.aggarwal@ti.com>
+	<20081125132120.1d740c04.jarkko.nikula@nokia.com>
+	<20081125145257.GD12414@sirena.org.uk>
+	<20090225202559.GO4368@mvista.com>
+	<20090225202744.GG31637@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 43BC5103811
-	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2009 03:45:11 +0100 (CET)
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1LcWFD-0006ZM-0g
-	for alsa-devel@alsa-project.org; Thu, 26 Feb 2009 02:45:03 +0000
-Received: from tha68-1-88-163-12-102.fbx.proxad.net ([88.163.12.102])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2009 02:45:03 +0000
-Received: from bofphile by tha68-1-88-163-12-102.fbx.proxad.net with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2009 02:45:03 +0000
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0CE552414E
+	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2009 08:18:10 +0100 (CET)
+In-Reply-To: <20090225202744.GG31637@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,10 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ext Mark Brown <broonie@sirena.org.uk>
+Cc: "George G. Davis" <gdavis@mvista.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, stanley.miao@windriver.com, ext Anuj Aggarwal <anuj.aggarwal@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, ext Misael Lopez Cruz <mesak82@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-I second this demand/request, I have an E-MU 0202 USB device and I know other
-people who would be glad to see a working driver developed.
+On Wed, 25 Feb 2009 21:27:44 +0100
+ext Mark Brown <broonie@sirena.org.uk> wrote:
 
-Thanks in advance.
+> On Wed, Feb 25, 2009 at 03:25:59PM -0500, George G. Davis wrote:
+> 
+> > Is someone working on updating ASoC drivers for OMAP TWL4030 based
+> > boards as recommended above?  Just curious since I already made the
+> > mistake of creating my own OMAP3 EVM ASoC driver w/o checking the
+> > list first.  : /
+> 
+> Not to my knowledge.
+
+Stanley Miao started to do some early development on this:
+
+http://mailman.alsa-project.org/pipermail/alsa-devel/2008-November/012946.html
+http://mailman.alsa-project.org/pipermail/alsa-devel/2008-November/012995.html
+
+IRCC this work was let to aside to develop since there were some slight
+differencies between the boards and also TWL4030 didn't contain all the
+features. Stanley, do you remember better?
+
+Probably now there is a better change after tons of generic TWL4030
+patches and TWL4030 codec updates from Peter Ujfalusi.
+
+
+Jarkko
