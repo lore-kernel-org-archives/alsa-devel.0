@@ -1,21 +1,16 @@
-From: Kristian Lumme <kristian.lumme@gmail.com>
-Subject: Re: E-MU 0404 Support
-Date: Fri, 27 Feb 2009 21:27:05 +0200
-Message-ID: <9fca51520902271127v7ae45358s63c636176ca561e0@mail.gmail.com>
-References: <9fca51520902231328h3ee698ean8aa2601898f34a6f@mail.gmail.com>
-	<loom.20090226T023652-878@post.gmane.org>
-	<fd3eb9bf0902260213x2c973026h293690a87f7fcb64@mail.gmail.com>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: [PATCH] opl3sa2 fix irq releasing and short name of
+	card
+Date: Fri, 27 Feb 2009 21:41:40 +0100
+Message-ID: <20090227214140.78b37fcf.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f174.google.com (mail-bw0-f174.google.com
-	[209.85.218.174])
-	by alsa0.perex.cz (Postfix) with ESMTP id 727851037EB
-	for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2009 20:27:06 +0100 (CET)
-Received: by bwz22 with SMTP id 22so1279688bwz.32
-	for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2009 11:27:05 -0800 (PST)
-In-Reply-To: <fd3eb9bf0902260213x2c973026h293690a87f7fcb64@mail.gmail.com>
+Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
+	[217.74.64.239])
+	by alsa0.perex.cz (Postfix) with ESMTP id 617831037EB
+	for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2009 21:36:24 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,44 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
+Cc: Rene Herman <rene.herman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks, but it seems like he's the guy people have tried to reach
-before (unsuccessfully, I think). Also, the Mac driver for the E-MU
-cards have been released as open source:
-http://sourceforge.net/projects/zaudiodrivermac/
-I don't know nearly enough to work on the driver myself, but I guess
-having the source for the Mac drivers would help a bit, even if you
-don't have access to the datasheets.
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-Thanks for your help
+Two simple fixes:
 
-On Thu, Feb 26, 2009 at 12:13 PM, Vedran Mileti=E6 <rivanvx@gmail.com> wrot=
-e:
-> Hi guys,
->
-> I believe James Couirter-Dutton contacted Creative/E-mu and got some
-> specifications from them. You can check with him.
->
-> Vedran Mileti=E6
->
->
->
-> On Thu, Feb 26, 2009 at 3:40 AM, beecher <bofphile@gmail.com> wrote:
->> I second this demand/request, I have an E-MU 0202 USB device and I know =
-other
->> people who would be glad to see a working driver developed.
->>
->> Thanks in advance.
->>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+1. Use the same pointer for the free_irq() and
+   the request_irq() calls.
+
+2. A short name of card is appended with '2' or '3'
+   character depending on a detected chip. Remove 
+   the '2' character from the short name.
+
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
+
+The short name without the patch is "OPL3-SA23"
+for opl3-sa3.
+
+ sound/isa/opl3sa2.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/isa/opl3sa2.c b/sound/isa/opl3sa2.c
+index 58c972b..9a53ab4 100644
+--- a/sound/isa/opl3sa2.c
++++ b/sound/isa/opl3sa2.c
+@@ -613,7 +613,7 @@ static void snd_opl3sa2_free(struct snd_card *card)
+ {
+ 	struct snd_opl3sa2 *chip = card->private_data;
+ 	if (chip->irq >= 0)
+-		free_irq(chip->irq, (void *)chip);
++		free_irq(chip->irq, card);
+ 	release_and_free_resource(chip->res_port);
+ }
+ 
+@@ -626,7 +626,7 @@ static struct snd_card *snd_opl3sa2_card_new(int dev)
+ 	if (card == NULL)
+ 		return NULL;
+ 	strcpy(card->driver, "OPL3SA2");
+-	strcpy(card->shortname, "Yamaha OPL3-SA2");
++	strcpy(card->shortname, "Yamaha OPL3-SA");
+ 	chip = card->private_data;
+ 	spin_lock_init(&chip->reg_lock);
+ 	chip->irq = -1;
+-- 
+1.5.2.2
+
+
+
+----------------------------------------------------------------------
+169 stacji TV! Naziemne i satelitarne!
+Sprawdz program TV w kilka sekund >> http://link.interia.pl/f2050
