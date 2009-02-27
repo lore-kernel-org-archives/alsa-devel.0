@@ -1,16 +1,19 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: [PATCH] opl3sa2 fix irq releasing and short name of
-	card
-Date: Fri, 27 Feb 2009 21:41:40 +0100
-Message-ID: <20090227214140.78b37fcf.krzysztof.h1@poczta.fm>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH] cs4270: add support for slave mode
+	configurations
+Date: Fri, 27 Feb 2009 15:51:58 -0600
+Message-ID: <ed82fe3e0902271351nc170b16v71b81754f8aeadd3@mail.gmail.com>
+References: <1235569041-856-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
-	[217.74.64.239])
-	by alsa0.perex.cz (Postfix) with ESMTP id 617831037EB
-	for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2009 21:36:24 +0100 (CET)
+Received: from el-out-1112.google.com (el-out-1112.google.com [209.85.162.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 665B61037EB
+	for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2009 22:52:00 +0100 (CET)
+Received: by el-out-1112.google.com with SMTP id r27so1164708ele.2
+	for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2009 13:51:59 -0800 (PST)
+In-Reply-To: <1235569041-856-1-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,57 +23,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
-Cc: Rene Herman <rene.herman@gmail.com>
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
+On Wed, Feb 25, 2009 at 7:37 AM, Daniel Mack <daniel@caiaq.de> wrote:
+> Added support for scenarios where the Cirrus CS4270 audio codec is slave
+> to the bitclk and lrclk. Mixed setups are unsupported.
+>
+> Signed-off-by: Daniel Mack <daniel@caiaq.de>
 
-Two simple fixes:
+FYI, it's customary to CC: the author of a driver when posting patches for it.
 
-1. Use the same pointer for the free_irq() and
-   the request_irq() calls.
+> +       /* set master/slave audio interface */
+> +       switch (format & SND_SOC_DAIFMT_MASTER_MASK) {
+> +       case SND_SOC_DAIFMT_CBS_CFS:
+> +               cs4270->slave_mode = 1;
+> +               break;
+> +       case SND_SOC_DAIFMT_CBM_CFM:
+> +               cs4270->slave_mode = 0;
+> +               break;
+> +       case SND_SOC_DAIFMT_CBM_CFS:
+> +               /* unsupported - cs4270 can eigther be slave or master to
 
-2. A short name of card is appended with '2' or '3'
-   character depending on a detected chip. Remove 
-   the '2' character from the short name.
+Typo.  However, I suggest you get rid of the "case
+SND_SOC_DAIFMT_CBM_CFS" and in the "default:", just have this:
 
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
----
+> +       default:
+                   /* all other modes are unsupported by the hardware */
+> +               ret = -EINVAL;
+> +       }
+> +
 
-The short name without the patch is "OPL3-SA23"
-for opl3-sa3.
+>
+>        reg = snd_soc_read(codec, CS4270_MODE);
+>        reg &= ~(CS4270_MODE_SPEED_MASK | CS4270_MODE_DIV_MASK);
+> -       reg |= cs4270_mode_ratios[i].speed_mode | cs4270_mode_ratios[i].mclk;
+> +       reg |= cs4270_mode_ratios[i].mclk;
+> +
+> +       if (cs4270->slave_mode)
+> +               reg |= CS4270_MODE_SLAVE;
+> +       else
+> +               reg |= cs4270_mode_ratios[i].speed_mode;
 
- sound/isa/opl3sa2.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+Are you sure that the mclk bits are still correct in slave mode?  I'm
+looking at table 5 in the CS4270 manual, and it lists settings for
+1x,2x,4x speed even though the register is set to slave mode instead.
 
-diff --git a/sound/isa/opl3sa2.c b/sound/isa/opl3sa2.c
-index 58c972b..9a53ab4 100644
---- a/sound/isa/opl3sa2.c
-+++ b/sound/isa/opl3sa2.c
-@@ -613,7 +613,7 @@ static void snd_opl3sa2_free(struct snd_card *card)
- {
- 	struct snd_opl3sa2 *chip = card->private_data;
- 	if (chip->irq >= 0)
--		free_irq(chip->irq, (void *)chip);
-+		free_irq(chip->irq, card);
- 	release_and_free_resource(chip->res_port);
- }
- 
-@@ -626,7 +626,7 @@ static struct snd_card *snd_opl3sa2_card_new(int dev)
- 	if (card == NULL)
- 		return NULL;
- 	strcpy(card->driver, "OPL3SA2");
--	strcpy(card->shortname, "Yamaha OPL3-SA2");
-+	strcpy(card->shortname, "Yamaha OPL3-SA");
- 	chip = card->private_data;
- 	spin_lock_init(&chip->reg_lock);
- 	chip->irq = -1;
 -- 
-1.5.2.2
-
-
-
-----------------------------------------------------------------------
-169 stacji TV! Naziemne i satelitarne!
-Sprawdz program TV w kilka sekund >> http://link.interia.pl/f2050
+Timur Tabi
+Linux kernel developer at Freescale
