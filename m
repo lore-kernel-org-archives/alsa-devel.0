@@ -1,18 +1,15 @@
-From: David Brownell <david-b@pacbell.net>
-Subject: Re: [PATCH 1/3] ASoC: Add GPIO support for jack
-	reporting interface
-Date: Thu, 26 Feb 2009 10:52:10 -0800
-Message-ID: <200902261052.10647.david-b@pacbell.net>
-References: <2C7D3DF36ADFFC479B44490D912B616705EC8B1C03@dlee07.ent.ti.com>
+From: "Harsha, Priya" <priya.harsha@intel.com>
+Subject: Keyboard volume buttons
+Date: Fri, 27 Feb 2009 07:50:17 +0530
+Message-ID: <98769532B4BB14429434178695419EAE3208CBBD@bgsmsx501.gar.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp118.sbc.mail.sp1.yahoo.com (smtp118.sbc.mail.sp1.yahoo.com
-	[69.147.64.91]) by alsa0.perex.cz (Postfix) with SMTP id C761A1037F3
-	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2009 19:52:13 +0100 (CET)
-In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705EC8B1C03@dlee07.ent.ti.com>
-Content-Disposition: inline
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 92C811037F3
+	for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2009 03:21:35 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,28 +19,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Lopez Cruz, Misael" <x0052729@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 25 February 2009, Lopez Cruz, Misael wrote:
-> +=A0=A0=A0=A0=A0=A0=A0unsigned int gpio;
+Hi,
 
-Use "int" not unsigned for such might-be-a-GPIO codes ...
+Can anyone tell me how keyboard's volume buttons are converted into real volume change? Will there be an application that monitors the keyboard volume button events and call ALSA API to set the volume?
 
-> +=A0=A0=A0=A0=A0=A0=A0unsigned int irq;
-> +=A0=A0=A0=A0=A0=A0=A0unsigned long irqflags;
-> +=A0=A0=A0=A0=A0=A0=A0irq_handler_t handler;
-> +=A0=A0=A0=A0=A0=A0=A0struct work_struct work;
-> =A0};
-> =A0
-> +#define NO_JACK_PIN_GPIO=A0=A0=A0=A0=A0=A0=A0UINT_MAX
-
-And any negative number to flag "no GPIO";
-"-EINVAL" for example.
-
-
-> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0if (pins[i].gpio !=3D NO_JA=
-CK_PIN_GPIO) {
-
-Make that:  if (gpio_is_valid(pins[i].gpio)) ...
+Thanks
+Harsha
