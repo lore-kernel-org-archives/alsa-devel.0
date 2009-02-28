@@ -1,16 +1,21 @@
-From: Tim Blechmann <tim@klingt.org>
-Subject: arecord channel limitation
-Date: Sat, 28 Feb 2009 14:57:33 +0100
-Message-ID: <49A942CD.7090106@klingt.org>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH] cs4270: add support for slave mode
+	configurations
+Date: Sat, 28 Feb 2009 10:32:30 -0600
+Message-ID: <ed82fe3e0902280832u2a6e907l8195b5d9b00eafa2@mail.gmail.com>
+References: <1235569041-856-1-git-send-email-daniel@caiaq.de>
+	<ed82fe3e0902271351nc170b16v71b81754f8aeadd3@mail.gmail.com>
+	<20090228121343.GA18336@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0377239810307943988=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from klingt.org (mail.klingt.org [86.59.21.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 119532477E
-	for <alsa-devel@alsa-project.org>; Sat, 28 Feb 2009 14:57:35 +0100 (CET)
-Received: from [10.9.3.234] (localhost [127.0.0.1]) (authenticated bits=0)
-	by klingt.org (8.14.3/8.14.3/Debian-6) with ESMTP id n1SDvYGv027251
-	for <alsa-devel@alsa-project.org>; Sat, 28 Feb 2009 14:57:34 +0100
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id DFA4624359
+	for <alsa-devel@alsa-project.org>; Sat, 28 Feb 2009 17:32:31 +0100 (CET)
+Received: by qw-out-1920.google.com with SMTP id 5so1433600qwf.56
+	for <alsa-devel@alsa-project.org>; Sat, 28 Feb 2009 08:32:30 -0800 (PST)
+In-Reply-To: <20090228121343.GA18336@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,60 +25,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============0377239810307943988==
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigDDA6FF051B209E3D9EC5F61B"
+On Sat, Feb 28, 2009 at 6:13 AM, Daniel Mack <daniel@caiaq.de> wrote:
+> Hmm - mclk bits are set with 'reg |= cs4270_mode_ratios[i].mclk;'
+> unconditionally, and both speed flags are used when in slave mode. Don't
+> see where you suspect a flaw here?
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigDDA6FF051B209E3D9EC5F61B
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-hi all,
-
-is there any reason, why arecord limits the channel count to 32?
-
-best, tim
-
---=20
-tim@klingt.org
-http://tim.klingt.org
-
-Desperation is the raw material of drastic change. Only those who can
-leave behind everything they have ever believed in can hope to escape.
-  William S. Burroughs
+I think the code is fine, my question is more about the behavior of
+the hardware.  We were never able to get our board to run reliably
+with the cs4270 in slave mode, so I never gave it much thought.  I was
+hoping you could explain why you still need to set the mclk bits in
+the mode register when you're in slave mode.
 
 
-
---------------enigDDA6FF051B209E3D9EC5F61B
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkmpQtAACgkQdL+4qsZfVstynACfXEC6Oh5PurNX3g3Az0yOEjks
-obUAoIFwhz3c/DlhN2BkR5EDotc3ewWm
-=+p7a
------END PGP SIGNATURE-----
-
---------------enigDDA6FF051B209E3D9EC5F61B--
-
---===============0377239810307943988==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============0377239810307943988==--
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
