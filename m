@@ -1,25 +1,24 @@
-From: Peter Stokes <linux@dadeos.co.uk>
-Subject: [PATCH] Arcam AV Control Plugin Update
-Date: Sat, 28 Feb 2009 18:14:21 +0000
-Message-ID: <200902281814.21098.linux@dadeos.co.uk>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH] cs4270: add support for slave mode
+	configurations
+Date: Sat, 28 Feb 2009 19:09:10 -0600
+Message-ID: <ed82fe3e0902281709i60266708q9293873f3e0faa58@mail.gmail.com>
+References: <1235569041-856-1-git-send-email-daniel@caiaq.de>
+	<ed82fe3e0902271351nc170b16v71b81754f8aeadd3@mail.gmail.com>
+	<20090228121343.GA18336@buzzloop.caiaq.de>
+	<ed82fe3e0902280832u2a6e907l8195b5d9b00eafa2@mail.gmail.com>
+	<20090228174713.GA20813@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_97XqJVkOgE/TJJz"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6.freeserve.com (unknown [193.252.22.190])
-	by alsa0.perex.cz (Postfix) with ESMTP id 66C3F243E0
-	for <alsa-devel@alsa-project.org>; Sat, 28 Feb 2009 19:15:10 +0100 (CET)
-Received: from me-wanadoo.net (localhost [127.0.0.1])
-	by mwinf3603.me.freeserve.com (SMTP Server) with ESMTP id CA6197000086
-	for <alsa-devel@alsa-project.org>; Sat, 28 Feb 2009 19:15:09 +0100 (CET)
-Received: from RedDwarf.dadeos.co.uk (unknown [91.109.232.222])
-	by mwinf3603.me.freeserve.com (SMTP Server) with ESMTP id 913627000085
-	for <alsa-devel@alsa-project.org>; Sat, 28 Feb 2009 19:15:09 +0100 (CET)
-Received: from tuscan.dadeos.co.uk (Tuscan.dadeos.co.uk [10.0.0.243])
-	(authenticated bits=0)
-	by RedDwarf.dadeos.co.uk (8.14.3/8.14.2) with ESMTP id n1SIF8FW009873
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <alsa-devel@alsa-project.org>; Sat, 28 Feb 2009 18:15:08 GMT
+Received: from mail-qy0-f34.google.com (mail-qy0-f34.google.com
+	[209.85.221.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id 777681037E3
+	for <alsa-devel@alsa-project.org>; Sun,  1 Mar 2009 02:09:11 +0100 (CET)
+Received: by qyk42 with SMTP id 42so397374qyk.16
+	for <alsa-devel@alsa-project.org>; Sat, 28 Feb 2009 17:09:10 -0800 (PST)
+In-Reply-To: <20090228174713.GA20813@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,203 +28,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---Boundary-00=_97XqJVkOgE/TJJz
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On Sat, Feb 28, 2009 at 11:47 AM, Daniel Mack <daniel@caiaq.de> wrote:
 
-arcam_av: Refactor event callback to facilitate addition of "numid" optimisation
+> Setting the MCLKs for slave mode is probably not necessary (the
+> datesheet says so, too), but it doesn't harm either. We're doing that
+> for our other applications, so I copied the behaviour.
 
-Signed-off-by: Peter Stokes <linux@dadeos.co.uk>
+My only concern with that is that the code now implies that the mclk
+bits need to be set even in slave mode.
 
+> In general, I
+> can says that this codec is a very smoothly working piece of hardware,
+> we never had any hazzle with it and use it for years now - what are the
+> effects that you see?
 
---Boundary-00=_97XqJVkOgE/TJJz
-Content-Type: text/x-diff;
-  charset="iso 8859-15";
-  name="arcam_av_read_event_refactor.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="arcam_av_read_event_refactor.patch"
+The codec itself seems to work fine.  I don't know what the problem
+with our board was that required us to use the cs4270 in master mode.
+It was probably not worth the effort trying to make it work in slave
+mode.
 
-diff --git a/arcam-av/arcam_av.h b/arcam-av/arcam_av.h
-index 85e9219..5d8624e 100644
---- a/arcam-av/arcam_av.h
-+++ b/arcam-av/arcam_av.h
-@@ -133,22 +133,28 @@ int arcam_av_send(int fd, arcam_av_cc_t command, unsigned char param1, unsigned
- 
- 
- typedef struct arcam_av_state {
--	struct {
--		arcam_av_power_t		power;
--		unsigned char			volume;
--		arcam_av_mute_t			mute;
--		arcam_av_direct_t		direct;
--		arcam_av_source_t		source;
--		arcam_av_source_type_t		source_type;
--		arcam_av_stereo_decode_t	stereo_decode;
--		arcam_av_stereo_effect_t	stereo_effect;
--		arcam_av_multi_decode_t		multi_decode;
-+	union {
-+		struct {
-+			unsigned char		power;
-+			unsigned char		volume;
-+			unsigned char		mute;
-+			unsigned char		direct;
-+			unsigned char		source;
-+			unsigned char		source_type;
-+			unsigned char		stereo_decode;
-+			unsigned char		stereo_effect;
-+			unsigned char		multi_decode;
-+		};
-+		unsigned char			state[9];
- 	} zone1;
--	struct {
--		arcam_av_power_t		power;
--		unsigned char			volume;
--		arcam_av_mute_t			mute;
--		arcam_av_source_t		source;
-+	union {
-+		struct {
-+			unsigned char		power;
-+			unsigned char		volume;
-+			unsigned char		mute;
-+			unsigned char		source;
-+		};
-+		unsigned char			state[4];
- 	} zone2;
- } arcam_av_state_t;
- 
-diff --git a/arcam-av/ctl_arcam_av.c b/arcam-av/ctl_arcam_av.c
-index d571b4f..0ab1460 100644
---- a/arcam-av/ctl_arcam_av.c
-+++ b/arcam-av/ctl_arcam_av.c
-@@ -816,81 +816,51 @@ static int arcam_av_write_enumerated(snd_ctl_ext_t *ext, snd_ctl_ext_key_t key,
- static int arcam_av_read_event(snd_ctl_ext_t *ext, snd_ctl_elem_id_t *id, unsigned int *event_mask)
- {
- 	snd_ctl_arcam_av_t *arcam_av = ext->private_data;
-+	unsigned int elem;
-+	int result = 0;
- 
- 	switch(arcam_av->zone) {
- 	case ARCAM_AV_ZONE1:
--		if (arcam_av->local.zone1.power != arcam_av->global->zone1.power) {
--			snd_ctl_elem_id_set_name(id, arcam_av_zone1[0].name);
--			arcam_av->local.zone1.power = arcam_av->global->zone1.power;
--		} else if (arcam_av->local.zone1.volume != arcam_av->global->zone1.volume) {
--			snd_ctl_elem_id_set_name(id, arcam_av_zone1[1].name);
--			arcam_av->local.zone1.volume = arcam_av->global->zone1.volume;
--		} else if (arcam_av->local.zone1.mute != arcam_av->global->zone1.mute) {
--			snd_ctl_elem_id_set_name(id, arcam_av_zone1[2].name);
--			arcam_av->local.zone1.mute = arcam_av->global->zone1.mute;
--		} else if (arcam_av->local.zone1.direct != arcam_av->global->zone1.direct) {
--			snd_ctl_elem_id_set_name(id, arcam_av_zone1[3].name);
--			arcam_av->local.zone1.direct = arcam_av->global->zone1.direct;
--		} else if (arcam_av->local.zone1.source != arcam_av->global->zone1.source) {
--			snd_ctl_elem_id_set_name(id, arcam_av_zone1[4].name);
--			arcam_av->local.zone1.source = arcam_av->global->zone1.source;
--		} else if (arcam_av->local.zone1.source_type != arcam_av->global->zone1.source_type) {
--			snd_ctl_elem_id_set_name(id, arcam_av_zone1[5].name);
--			arcam_av->local.zone1.source_type = arcam_av->global->zone1.source_type;
--		} else if (arcam_av->local.zone1.stereo_decode != arcam_av->global->zone1.stereo_decode) {
--			snd_ctl_elem_id_set_name(id, arcam_av_zone1[6].name);
--			arcam_av->local.zone1.stereo_decode = arcam_av->global->zone1.stereo_decode;
--		} else if (arcam_av->local.zone1.stereo_effect != arcam_av->global->zone1.stereo_effect) {
--			snd_ctl_elem_id_set_name(id, arcam_av_zone1[7].name);
--			arcam_av->local.zone1.stereo_effect = arcam_av->global->zone1.stereo_effect;
--		} else if (arcam_av->local.zone1.multi_decode != arcam_av->global->zone1.multi_decode) {
--			snd_ctl_elem_id_set_name(id, arcam_av_zone1[8].name);
--			arcam_av->local.zone1.multi_decode = arcam_av->global->zone1.multi_decode;
--		} else {
--			char buf[10];
--			if (recv(arcam_av->ext.poll_fd, buf, sizeof(buf), 0) <= 0) {
--				close(arcam_av->ext.poll_fd);
--				arcam_av->ext.poll_fd = arcam_av_client(arcam_av->port);
--				if (arcam_av->ext.poll_fd > 0)
--					fcntl(arcam_av->ext.poll_fd, F_SETFL, O_NONBLOCK);
-+		for (elem = 0; elem < ARRAY_SIZE(arcam_av_zone1); ++elem) {
-+			if (arcam_av->local.zone1.state[elem] != arcam_av->global->zone1.state[elem]) {
-+				snd_ctl_elem_id_set_name(id, arcam_av_zone1[elem].name);
-+				snd_ctl_elem_id_set_numid(id, elem + 1);
-+				arcam_av->local.zone1.state[elem] = arcam_av->global->zone1.state[elem];
-+				result = 1;
-+				break;
- 			}
--
--			return -EAGAIN;
--		}
-+		}		
- 		break;
- 
- 	case ARCAM_AV_ZONE2:
--		if (arcam_av->local.zone2.power != arcam_av->global->zone2.power) {
--			snd_ctl_elem_id_set_name(id, arcam_av_zone2[0].name);
--			arcam_av->local.zone2.power = arcam_av->global->zone2.power;
--		} else if (arcam_av->local.zone2.volume != arcam_av->global->zone2.volume) {
--			snd_ctl_elem_id_set_name(id, arcam_av_zone2[1].name);
--			arcam_av->local.zone2.volume = arcam_av->global->zone2.volume;
--		} else if (arcam_av->local.zone2.mute != arcam_av->global->zone2.mute) {
--			snd_ctl_elem_id_set_name(id, arcam_av_zone2[2].name);
--			arcam_av->local.zone2.mute = arcam_av->global->zone2.mute;
--		} else if (arcam_av->local.zone2.source != arcam_av->global->zone2.source) {
--			snd_ctl_elem_id_set_name(id, arcam_av_zone2[3].name);
--			arcam_av->local.zone2.source = arcam_av->global->zone2.source;
--		} else {
--			char buf[10];
--			if (recv(arcam_av->ext.poll_fd, buf, sizeof(buf), 0) <= 0) {
--				close(arcam_av->ext.poll_fd);
--				arcam_av->ext.poll_fd = arcam_av_client(arcam_av->port);
--				if (arcam_av->ext.poll_fd > 0)
--					fcntl(arcam_av->ext.poll_fd, F_SETFL, O_NONBLOCK);
-+		for (elem = 0; elem < ARRAY_SIZE(arcam_av_zone2); ++elem) {
-+			if (arcam_av->local.zone2.state[elem] != arcam_av->global->zone2.state[elem]) {
-+				snd_ctl_elem_id_set_name(id, arcam_av_zone2[elem].name);
-+				snd_ctl_elem_id_set_numid(id, elem + 1);
-+				arcam_av->local.zone2.state[elem] = arcam_av->global->zone2.state[elem];
-+				result = 1;
-+				break;
- 			}
--
--			return -EAGAIN;
- 		}
- 		break;
- 	}
- 
--	snd_ctl_elem_id_set_interface(id, SND_CTL_ELEM_IFACE_MIXER);
-+	if (!result) {
-+		char buf[10];
-+		if (recv(arcam_av->ext.poll_fd, buf, sizeof(buf), 0) <= 0) {
-+			close(arcam_av->ext.poll_fd);
-+			arcam_av->ext.poll_fd = arcam_av_client(arcam_av->port);
-+			if (arcam_av->ext.poll_fd > 0)
-+				fcntl(arcam_av->ext.poll_fd, F_SETFL, O_NONBLOCK);
-+		}
- 
--	*event_mask = SND_CTL_EVENT_MASK_VALUE;
-+		result = -EAGAIN;
-+	} else {
-+		snd_ctl_elem_id_set_interface(id, SND_CTL_ELEM_IFACE_MIXER);
-+		*event_mask = SND_CTL_EVENT_MASK_VALUE;
-+	}
- 
--	return 1;
-+	return result;
- }
- 
- 
-
---Boundary-00=_97XqJVkOgE/TJJz
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---Boundary-00=_97XqJVkOgE/TJJz--
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
