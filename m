@@ -1,20 +1,23 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] ASoC: make ops a pointer in 'struct
-	snd_soc_dai'
-Date: Mon, 02 Mar 2009 12:15:57 -0600
-Message-ID: <49AC225D.6090002@freescale.com>
-References: <f17812d70903011925w2a201e27m39fa001d4c700d45@mail.gmail.com>	
-	<ed82fe3e0903020439u497389ccp7ec35c7de37ad936@mail.gmail.com>
-	<f17812d70903020646q15d43dcch8ad90df2cb486499@mail.gmail.com>
+From: "Lopez Cruz, Misael" <x0052729@ti.com>
+Subject: Re: [PATCH 1/3] ASoC: Add GPIO support for
+	jack	reporting interface
+Date: Mon, 2 Mar 2009 15:16:22 -0600
+Message-ID: <2C7D3DF36ADFFC479B44490D912B616705ECC77862@dlee07.ent.ti.com>
+References: <2C7D3DF36ADFFC479B44490D912B616705EC8B1C03@dlee07.ent.ti.com>
+	<20090226115243.GC4229@sirena.org.uk>
+	<2C7D3DF36ADFFC479B44490D912B616705ECC76DF8@dlee07.ent.ti.com>
+	<20090227130502.GA4415@sirena.org.uk>
+	<2C7D3DF36ADFFC479B44490D912B616705ECC77374@dlee07.ent.ti.com>
+	<20090302113845.GA19744@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw02.freescale.net (az33egw02.freescale.net
-	[192.88.158.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id BCD932440B
-	for <alsa-devel@alsa-project.org>; Mon,  2 Mar 2009 19:15:59 +0100 (CET)
-In-Reply-To: <f17812d70903020646q15d43dcch8ad90df2cb486499@mail.gmail.com>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4F4EF2413F
+	for <alsa-devel@alsa-project.org>; Mon,  2 Mar 2009 22:16:37 +0100 (CET)
+In-Reply-To: <20090302113845.GA19744@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,16 +27,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric Miao <eric.y.miao@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@kernel.org>
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Eric Miao wrote:
 
->  sound/soc/fsl/fsl_ssi.c          |   18 ++++---
+> > Could we leave the actual implementation of this report function to
+> > the machine driver? Since the things being done in detection function
+> > are common (even if other status are wanted to be updated), then
+> > probably machine driver could define a specific function ("action")
+> > for doing extra tasks, it can be called from generic gpio detect
+> > function. Could it be a valid approach?
 
-I think you forgot sound/soc/fsl/mpc5200_psc_i2s.c
+> That sounds like adding a callback for power updates on the jack itself
+> to me (which isn't a bad idea), rather than changing the report function
+> of the jack detection method.  The need for machine-specific extra
+> actions probably isn't specific to jacks that are detected via GPIOs.
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+In that situation, power updates should come only when the jack reporting
+bits are either all active (jack enabled) or none (jack disabled), is that
+correct?
+
+If so, then machine drivers can create callbacks receiving the soc_codec
+the jack belongs to and the current state of the jack. All the power updates
+(dapm_enable_pin/damp_disable_pin) will happen in the callback in machine
+driver but the dapm sync will happen in soc jack framework (i.e. when
+reporting current status of the jack).
+
+-Misa
