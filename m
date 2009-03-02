@@ -1,23 +1,22 @@
-From: "Lopez Cruz, Misael" <x0052729@ti.com>
-Subject: Re: [PATCH 1/3] ASoC: Add GPIO support for
-	jack	reporting interface
-Date: Mon, 2 Mar 2009 15:16:22 -0600
-Message-ID: <2C7D3DF36ADFFC479B44490D912B616705ECC77862@dlee07.ent.ti.com>
-References: <2C7D3DF36ADFFC479B44490D912B616705EC8B1C03@dlee07.ent.ti.com>
-	<20090226115243.GC4229@sirena.org.uk>
-	<2C7D3DF36ADFFC479B44490D912B616705ECC76DF8@dlee07.ent.ti.com>
-	<20090227130502.GA4415@sirena.org.uk>
-	<2C7D3DF36ADFFC479B44490D912B616705ECC77374@dlee07.ent.ti.com>
-	<20090302113845.GA19744@sirena.org.uk>
+From: Dmitry Baikov <dsbaikov@gmail.com>
+Subject: Re: Fwd: [LAD] kernel 2.6.29 rc6 no working rme
+	multiface 1
+Date: Tue, 3 Mar 2009 01:54:14 +0300
+Message-ID: <70a871c80903021454u7e644a56lba1814fec69f1494@mail.gmail.com>
+References: <20090302025929.64889223@rt-ente>
+	<70a871c80903011849r586443e4h7188747ac01cbaf3@mail.gmail.com>
+	<70a871c80903011959s9e4c94ds62aa0e88b4f2c040@mail.gmail.com>
+	<s5hhc2bdg36.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4F4EF2413F
-	for <alsa-devel@alsa-project.org>; Mon,  2 Mar 2009 22:16:37 +0100 (CET)
-In-Reply-To: <20090302113845.GA19744@sirena.org.uk>
-Content-Language: en-US
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id EF19B243B6
+	for <alsa-devel@alsa-project.org>; Mon,  2 Mar 2009 23:54:15 +0100 (CET)
+Received: by yw-out-1718.google.com with SMTP id 6so1668952ywa.2
+	for <alsa-devel@alsa-project.org>; Mon, 02 Mar 2009 14:54:14 -0800 (PST)
+In-Reply-To: <s5hhc2bdg36.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,31 +26,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-> > Could we leave the actual implementation of this report function to
-> > the machine driver? Since the things being done in detection function
-> > are common (even if other status are wanted to be updated), then
-> > probably machine driver could define a specific function ("action")
-> > for doing extra tasks, it can be called from generic gpio detect
-> > function. Could it be a valid approach?
-
-> That sounds like adding a callback for power updates on the jack itself
-> to me (which isn't a bad idea), rather than changing the report function
-> of the jack detection method.  The need for machine-specific extra
-> actions probably isn't specific to jacks that are detected via GPIOs.
-
-In that situation, power updates should come only when the jack reporting
-bits are either all active (jack enabled) or none (jack disabled), is that
-correct?
-
-If so, then machine drivers can create callbacks receiving the soc_codec
-the jack belongs to and the current state of the jack. All the power updates
-(dapm_enable_pin/damp_disable_pin) will happen in the callback in machine
-driver but the dapm sync will happen in soc jack framework (i.e. when
-reporting current status of the jack).
-
--Misa
+T24gTW9uLCBNYXIgMiwgMjAwOSBhdCA3OjUwIFBNLCBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2Uu
+ZGU+IHdyb3RlOgo+IEF0IE1vbiwgMiBNYXIgMjAwOSAwNjo1OTozNSArMDMwMCwKPiBEbWl0cnkg
+QmFpa292IHdyb3RlOgo+Pgo+PiAtLS0tLS0tLS0tIEZvcndhcmRlZCBtZXNzYWdlIC0tLS0tLS0t
+LS0KPj4gRnJvbTogRG1pdHJ5IEJhaWtvdiA8ZHNiYWlrb3ZAZ21haWwuY29tPgo+PiBEYXRlOiBN
+b24sIE1hciAyLCAyMDA5IGF0IDU6NDkgQU0KPj4gU3ViamVjdDogUmU6IFtMQURdIGtlcm5lbCAy
+LjYuMjkgcmM2IG5vIHdvcmtpbmcgcm1lIG11bHRpZmFjZSAxCj4+IFRvOiAibS53b2xrc3RlaW5A
+Z214LmRlIiA8bS53b2xrc3RlaW5AZ214LmRlPgo+PiBDYzogVGhlIExpbnV4IEF1ZGlvIERldmVs
+b3BlcnMnIE1haWxpbmcgTGlzdAo+PiA8bGludXgtYXVkaW8tZGV2QGxpc3RzLmxpbnV4YXVkaW8u
+b3JnPgo+Pgo+Pgo+PiBPbiBNb24sIE1hciAyLCAyMDA5IGF0IDQ6NTkgQU0sIG0ud29sa3N0ZWlu
+QGdteC5kZSA8bS53b2xrc3RlaW5AZ214LmRlPiB3cm90ZToKPj4gPiBoaWhvLAo+PiA+IG15IG5h
+bWUgaXMgbWljaGFlbCB3b2xrc3RlaW4gYW5kIGkgd3JvdGUgdGhlIGZpcnN0IHRpbWUgdG8gdGhp
+cyBsaXN0Lgo+PiA+IHNvcnJ5IGFib3V0IG15IGVuZ2xpc2guIGJ1dCBpIGFtIG5vIGVuZ2xpc2gg
+bmF0aXZlLXNwZWFrZXIuCj4+ID4KPj4gPiBhZnRlciBib290aW5nIGtlcm5lbCAyLjYuMjkgcmM2
+IGkgZ2V0IGEgcHJvYmxlbSB3aXRoIG15IHJtZSBtdWx0aWZhY2UgMSBjb25uZWN0ZWQgdHJ1ZSBw
+Y21jaWEgY2FyZGJ1c2ludGVyZmFjZS4KPj4gPgo+PiA+IGkgZ2V0IHRoaXMgbWVzc2FnZSBhZnRl
+ciBpbnNlcnQgbXkgY2FyZC4KPj4gPiBSTUUgSGFtbWVyZmFsbCBEU1AgMDAwMDoxNjowMC4wOiBl
+bmFibGluZyBkZXZpY2UgKDAwMDAgLT4gMDAwMikKPj4gPiBSTUUgSGFtbWVyZmFsbCBEU1AgMDAw
+MDoxNjowMC4wOiBQQ0kgSU5UIEEgLT4gR1NJIDE2IChsZXZlbCwgbG93KSAtPiBJUlEgMTYKPj4g
+PiBIYW1tZXJmYWxsLURTUDogbm8gRGlnaWZhY2Ugb3IgTXVsdGlmYWNlIGNvbm5lY3RlZCEKPj4g
+PiBSTUUgSGFtbWVyZmFsbCBEU1AgMDAwMDoxNjowMC4wOiBQQ0kgSU5UIEEgZGlzYWJsZWQKPj4g
+PiBSTUUgSGFtbWVyZmFsbCBEU1A6IHByb2JlIG9mIDAwMDA6MTY6MDAuMCBmYWlsZWQgd2l0aCBl
+cnJvciAtNQo+PiA+Cj4+ID4gaSBoYXZlIGNvbXBpbGUgdGhlIGtlcm5lbCBpbmNsdWRlZCBhbHNh
+IG1vZHVsZS4KPj4gPiBhbHNvIGkgaGF2ZSBpbnN0YWxsZWQgdGhlIG5ld2VzdCBhbHNhLWZpcm13
+YXJlIDEuMC4xOSBhbmQgbmV3ZXN0IGFsc2EtdG9vbHMgMS4wLjE5Lgo+PiA+Cj4+ID4gbXkgb2xk
+IGtlcm5lbCAyLjYuMjQgbG9hZCBib3RoIGZpcm13YXJlcyBjb3JyZWN0Lgo+PiA+Cj4+ID4gdGhl
+IG9sZCBvbmUgMS4wLjE2IChkZWJpYW4gdW5zdGFibGUpCj4+ID4gYW5kIHRoZSBuZXcgMS4wLjE5
+IGRvd25sb2FkIGZyb20gdGhlIGFsc2EtcHJvamVjdCBwYWdlCj4+ID4KPj4gPiB0aGUgbmV3IGtl
+cm5lbCBwcm9kdWNlIGVycm9ycy4ga2VybmVsIG1vZHVsZSBzbmRfaGRzcCBpcyBhbHJlYWR5IGxv
+YWRlZCB3aXRoIHRoZSBuZXcga2VybmVsLgo+Pgo+Pgo+PiBIYXZlIHRoZSBzYW1lIHByb2JsZW0g
+aGVyZS4KPj4gMi42LjI0IHdvcmtzLCAyLjYuMjggZG9lc24ndCAodHJpZWQgMi42LjgtQVJDSCBh
+bmQgMi42LjI4LjctMS1BUkNIKS4KPj4gSSByZXBvcnRlZCB0aGUgcHJvYmxlbSB0byBhbHNhLWRl
+dmVsIGxpc3QsIGJ1dCB0aGV5IHNhaWQgSSBoYXZlIGh3Cj4+IHByb2JsZW1zIChJIHRoaW5rIEkg
+ZG8gbm90KS4KPgo+IENvdWxkIHlvdSBjaGVjayB0aGUgbGF0ZXN0IHNvdW5kIGdpdCB0cmVlIHRv
+IGJlIHN1cmU/Cj4KPiDCoCBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5l
+bC9naXQvdGl3YWkvc291bmQtMi42LmdpdAoKRG9lcyBub3Qgb29wcy4KQnV0IHRoZSBjYXJkIGRv
+ZXMgbm90IHdvcmsgZWl0aGVyLgoKPiBBbHNvIHRoZSBwcm9ibGVtIG1pZ2h0IGJlIHJhdGhlciB0
+aGUgY2FyZGJ1cyBzaWRlLi4uCkkgc3VzcGVjdCwgdG9vLgpCZWNhdXNlIGl0IHdvcmtzIGluIG15
+IGxhcHRvcC4gQnV0IGZhaWxzIG9uIGEgZGVza3RvcCB3aXRoIHBjaS1jYXJkYnVzIGFkYXB0ZXIu
+Cgo+Cj4+IFRoZSBsYXRlc3QgYXJjaCBrZXJuZWwgZ2l2ZXMgb29wcywgaWYgdGhlIGNhcmQgaXMg
+aW5zZXJ0ZWQgYmVmb3JlIGJvb3RpbmcuCj4+IEl0IGNyYXNoZXMgZHVyaW5nIHVkZXYgZXZlbnQg
+cHJvY2Vzc2luZyAoaS5lLiBzb21ldGhpbmcgZnJvbSB1c2Vyc3BhY2UKPj4gdHJpZ2dlcnMgdGhl
+IHByb2JsZW0pCj4+IElmIGFueWJvZHkgaXMgcmVhbGx5IGludGVyZXN0ZWQsIEkgY2FuIHRyeSB0
+byBwcm92aWRlIGtlcm5lbCBiYWNrdHJhY2UKPj4gKGVpdGhlciB0eXBlIGl0IGluLCBvciB0cnkg
+dG8gdXNlIHNlcmlhbCBjb25zb2xlKS4KPgo+IE9vcHMgaXMgYmFkLCBhbmQgeWVzLCBpdCdkIGJl
+IGhlbHBmdWwgaWYgeW91IGNhbiBzaG93IHRoZSBiYWNrdHJhY2UuCgpObyBzZXJpYWwgY29uc29s
+ZSA6KCBNeSBuZXcgTS9CIGhhdmUgb25seSBwaW4gaGVhZGVyIGFuZCBubyByczIzMgpqYWNrLiBO
+ZWVkIHRvIGZpbmQvYnVpbGQgYW4gYWRhcHRlci4KU28uIHdoYXQgSSBzZWUgKHdpdGhvdXQgc3Rh
+Y2sgYWRkcmVzc2VzIGFuZCBzb21lIG9mZnNldHMpOgoKLS0gdG9wIG9mIHRoZSBzY3JlZW4gLS0K
+cmVzY2hlZF90YXNrCnRyeV90b193YWtlX3VwCmF0YV9zY3NpX3RyYW5zbGF0ZQplbnF1ZXVlX3Rh
+c2tfZmFpcgplbnF1ZXVlX3Rhc2sKcmVzY2hlZF90YXNrCnRyeV90b193YWtlX3VwCmVycm9yX2V4
+aXQKbmF0aXZlX2FwaWNfbWVtX3dyaXRlCnNuZF9oZHNwX21pZGlfaW5wdXRfcmVhZCsweDE0MC8w
+eDE3MAp1aGNpX3NjYW5fc2NoZWR1bGUKX3NwaW5fdW5sb2NrCmhkc3BfbWlkaV90YXNrbGV0KzB4
+MzkvMHg0MAp0YXNrbGV0X2hpX2FjdGlvbgpfX2RvX3NvZnRpcnEKY2FsbF9zb2Z0aXJxCmRvX3Nv
+ZnRpcnErMHg0ZC8weDkwCmlycV9leGl0KzB4YTUvMHhiMApkb19JUlErMHhjNS8weDExMApyZXRf
+ZnJvbV9pbnRyKzB4MC8weDI5CjxFT0k+IGRhdGFncmFtX3BvbGwrMHgwLzB4ZjAKbXdhaXRfaWRs
+ZSsweDNjLzB4NTAKY3B1X2lkbGUgKyAweDY1LzB4ZDAKLS0tIGVuZCB0cmFjZSAtLS0KClF1aXRl
+IG1lZGl0YXRpdmUgdG8gdHlwZSA6KQoKRG1pdHJ5LgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
