@@ -1,16 +1,21 @@
-From: John Kha <sirkha@gmail.com>
-Subject: Support for fujitsu T421x
-Date: Sun, 1 Mar 2009 20:43:56 -0500
-Message-ID: <b91658390903011743x6e744b32y1cb9e8f8cb210b2e@mail.gmail.com>
+From: "Lopez Cruz, Misael" <x0052729@ti.com>
+Subject: Re: [PATCH 1/3] ASoC: Add GPIO support for
+	jack	reporting interface
+Date: Sun, 1 Mar 2009 19:54:36 -0600
+Message-ID: <2C7D3DF36ADFFC479B44490D912B616705ECC77374@dlee07.ent.ti.com>
+References: <2C7D3DF36ADFFC479B44490D912B616705EC8B1C03@dlee07.ent.ti.com>
+	<20090226115243.GC4229@sirena.org.uk>
+	<2C7D3DF36ADFFC479B44490D912B616705ECC76DF8@dlee07.ent.ti.com>
+	<20090227130502.GA4415@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 618D31037F0
-	for <alsa-devel@alsa-project.org>; Mon,  2 Mar 2009 02:43:57 +0100 (CET)
-Received: by yw-out-1718.google.com with SMTP id 6so1414569ywa.2
-	for <alsa-devel@alsa-project.org>; Sun, 01 Mar 2009 17:43:56 -0800 (PST)
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 61CEA1037EC
+	for <alsa-devel@alsa-project.org>; Mon,  2 Mar 2009 02:54:52 +0100 (CET)
+In-Reply-To: <20090227130502.GA4415@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,27 +25,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-I have a Fujitsu Lifebook T4210 (very similar to the T4215) and wish
-to work on adding support for these models in patch_sigmatel.c.  I
-have ran the alsa-info script, once after a fresh boot, and once after
-changing the model a few times:
+> > * Create a new structure "snd_soc_jack_gpio" holding info 
+> > specific for a gpio pin like: gpio, irq, irqflags,
+> > irqhandler, private data (to be passed to irqhandler).
+> 
+> Yes, roughly.  The jack_gpio will also need to know the 
+> status bits to update and which jack to update.  I'd expect 
+> something along the lines
+> of:
+> 
+> struct snd_soc_jack_gpio {
+> 	struct snd_soc_jack *jack;
+> 	int report;         /* Value to report when jack detected */
+> 	int invert_report;  /* Report presence when GPIO low */
+> 	int gpio;           /* GPIO to read */
+> };
+> 
+> possibly with some other data stored (eg, a debounce time).  
+> You can use gpio_to_irq() to get the interrupt number.
+> 
+> If the machine drivers need to customise the IRQ handler code 
+> itself then it's probably getting to the point where another 
+> detection method should be written, though perhaps I'm 
+> missing something?
 
-Virgin: http://www.alsa-project.org/db/?f=e76430dbf61b0e2c1ff199c9d1c85051a0341508
-With Model Changed:
-http://www.alsa-project.org/db/?f=cdd45e343c143052e18f9706e65eef8865696606
+Well, customise the IRQ handler itself probably not since the
+irq handler only needs to queue a work for doing the actual
+detection/report. There can be a generic detection/report function
+for gpio, I was thinking in something like:
 
-After trying various models, I have been unable to get the audio to
-output to the correct pin groups.  I have managed to use
-hda_analyzer.py to change some of my hardware settings, and have an
-idea of what verbs i need to send.  What I need is some information on
-the architecture of the driver, or an idea of where to edit things.  I
-would just say the config here and ask someone else to edit
-patch_sigmatel.c, but this is only the first of the issues I want to
-fix, so some knowledge of how to edit myself would be useful.
+void gpio_detect(struct snd_soc_jack_gpio *gpio)
+{
+        struct snd_soc_jack *jack = gpio->jack;
+        int enable;
+        int report;
 
--- 
-John C. Kha
-United States Navy
+        if (gpio->debounce_time > 0)
+                mdelay(gpio->debounce_time);
+
+        enable = gpio_get_value(gpio->gpio);
+        if (gpio->invert)
+                enable != enable;
+
+        if (enable)
+                report = gpio->report;
+        else
+                report = 0;
+
+        snd_soc_jack_report(jack, report, gpio->report);
+}
+
+This way we will be updating only bits associated to that particular
+gpio. But in a previous mail you mentioned about a case:
+
+> Some systems won't be able to use their speaker output while a
+> headphone is connected and so will want to make sure to update
+> both speaker and headphone when the headphone jack status
+> changes.
+
+Having a single/generic report function like shown above (as is) we
+can't handle that case.
+
+Could we leave the actual implementation of this report function to
+the machine driver? Since the things being done in detection function
+are common (even if other status are wanted to be updated), then
+probably machine driver could define a specific function ("action")
+for doing extra tasks, it can be called from generic gpio detect
+function. Could it be a valid approach?
+
+-Misa
