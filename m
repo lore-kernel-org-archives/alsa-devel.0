@@ -1,45 +1,93 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: Add GPIO support for jack
-	reporting interface
-Date: Mon, 2 Mar 2009 22:55:29 +0000
-Message-ID: <20090302225527.GA6390@sirena.org.uk>
-References: <2C7D3DF36ADFFC479B44490D912B616705EC8B1C03@dlee07.ent.ti.com> <20090226115243.GC4229@sirena.org.uk> <2C7D3DF36ADFFC479B44490D912B616705ECC76DF8@dlee07.ent.ti.com> <20090227130502.GA4415@sirena.org.uk> <2C7D3DF36ADFFC479B44490D912B616705ECC77374@dlee07.ent.ti.com> <20090302113845.GA19744@sirena.org.uk> <2C7D3DF36ADFFC479B44490D912B616705ECC77862@dlee07.ent.ti.com>
+From: =?ISO-8859-1?Q?Emilio_L=F3pez?= <buhitoescolar@gmail.com>
+Subject: Re: Plugging in headphones doesn't mute speakers,
+	internal microphone does not work
+Date: Mon, 2 Mar 2009 21:47:03 -0200
+Message-ID: <d54969c50903021547u5d828106ia894226765f6291f@mail.gmail.com>
+References: <d54969c50902280727i58fc689dib97a1fe9658b88ab@mail.gmail.com>
+	<d54969c50902280838i4f48aa43w6630bfc87105890c@mail.gmail.com>
+	<s5hd4czdfv9.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705ECC77862@dlee07.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Lopez Cruz, Misael" <x0052729@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.156])
+	by alsa0.perex.cz (Postfix) with ESMTP id 43B152440A
+	for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2009 00:47:05 +0100 (CET)
+Received: by yx-out-1718.google.com with SMTP id 36so1682022yxh.2
+	for <alsa-devel@alsa-project.org>; Mon, 02 Mar 2009 15:47:04 -0800 (PST)
+In-Reply-To: <s5hd4czdfv9.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 02, 2009 at 03:16:22PM -0600, Lopez Cruz, Misael wrote:
+Hi,
 
-> > That sounds like adding a callback for power updates on the jack itself
-> > to me (which isn't a bad idea), rather than changing the report function
-> > of the jack detection method.  The need for machine-specific extra
-> > actions probably isn't specific to jacks that are detected via GPIOs.
+I tried with the alsa-driver snapshot without any model option, and now the
+headphones mute the speakers. But the internal microphone doesn't still
+work, and 'Side' doesn't output sound like it did before, even if it's
+unmuted and with volume at 100% (with the old version and without any model
+option, it worked)
 
-> In that situation, power updates should come only when the jack reporting
-> bits are either all active (jack enabled) or none (jack disabled), is that
-> correct?
+Any thoughts? If you need any other info about my system, don't hesitate to
+ask for it :)
 
-No, the jack detect bits can change independently - you won't always
-physically be able to get everything that can be detected to report at
-once (eg, something that can distinguish between headphones and line
-output) or things may not always be present together (eg, a jack could
-detect headphones but no microphone even if it's possible that both may
-be present simultaneously).
+Looking forward to hearing from you, and thanks in advance!
 
-> If so, then machine drivers can create callbacks receiving the soc_codec
-> the jack belongs to and the current state of the jack. All the power updates
-> (dapm_enable_pin/damp_disable_pin) will happen in the callback in machine
-> driver but the dapm sync will happen in soc jack framework (i.e. when
-> reporting current status of the jack).
+Emilio
 
-No.  The framework takes care of doing the power updates already, there
-is no need to add that functionality since the machine drivers can just
-use a simple data table.  A callback could be used to do things that
-can't be coped with already or more complex updates that aren't simply
-directly mirroring the status in DAPM pins.
+2009/3/2 Takashi Iwai <tiwai@suse.de>
+
+> At Sat, 28 Feb 2009 14:38:10 -0200,
+> Emilio L=F3pez wrote:
+> >
+> > Hello,
+> >
+> > This is my first mail to the list, I hope you can help me. I have been
+> > talking with people on #alsa, but they couldn't help me, so that's why
+> > I'm writing to you.
+> >
+> > Well, as lspci says, my Acer Aspire 6930 laptop has an "Intel
+> > Corporation 82801I (ICH9 Family) HD Audio Controller (rev 03)". With
+> > this card, and without adding any mode=3D... to
+> > /etc/modprobe.d/alsa-base, playback works perfectly, but when I plug
+> > in headphones, the integrated speakers do not mute. I can mute the
+> > speakers muting "front" and "side" and use the headphones, but it
+> > should be automatic.
+> >
+> > Setting mode=3Dauto makes the headphones, when plugged, mute the
+> > speakers. But the problem with this is, that when using the speakers,
+> > I only get sound from the speaker that was "front" in the other mode.
+> > The microphone does not work in this mode either.
+> >
+> > I also tried other modes, including (but not limited to) acer,
+> > acer-aspire. I ran alsa-info.sh, here is the URL:
+> >
+> http://www.alsa-project.org/db/?f=3D7910da439e8e190a8c2a6f18167d4879c7488=
+1c9
+> >
+> > And before I forget, regarding the microphone, if I plug an external
+> > one on the microphone plug, I can record. And I tried the internal one
+> > on windows, and it works, so I believe it's an alsa problem.
+> >
+> > Looking forward to hearing from you!
+>
+> Could you check the very latest sound git tree or alsa-driver snapshot
+> below, first without model option?
+>  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+>
+> ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-s=
+napshot.tar.gz
+>
+>
+> thanks,
+>
+> Takashi
+>
