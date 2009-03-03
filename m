@@ -1,20 +1,15 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ASoC: Add GPIO support for jack
-	reporting	interface
-Date: Tue, 3 Mar 2009 18:42:57 +0000
-Message-ID: <20090303184257.GJ27155@sirena.org.uk>
-References: <2C7D3DF36ADFFC479B44490D912B616705ECD6D7C1@dlee07.ent.ti.com>
-	<s5h63irp0qb.wl%tiwai@suse.de>
-	<2C7D3DF36ADFFC479B44490D912B616705ECD6DB74@dlee07.ent.ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.30
+Date: Tue, 3 Mar 2009 18:45:22 +0000
+Message-ID: <20090303184521.GA30349@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 99960103823
-	for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2009 19:42:59 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EF3E7103823
+	for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2009 19:45:22 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705ECD6DB74@dlee07.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,36 +19,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Lopez Cruz, Misael" <x0052729@ti.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 03, 2009 at 12:39:17PM -0600, Lopez Cruz, Misael wrote:
+The following changes since commit ff09d49ad0176a5f52a398c137a7ff5f669d6be4:
+  Daniel Mack (1):
+        ASoC: fix typo and removed unneeded switch case for cs4270
 
-> > I prefer GPIO stuff built in conditionally.
-> > The jack layer is used also for non-ASoC codes, and GPIO 
-> > isn't always present.
+are available in the git repository at:
 
-> Is it ok if I enclose all gpio functionality with #ifdef CONFIG_GPIOLIB?
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.30
 
-Yes, that's fine.
+Philipp Zabel (4):
+      ASoC: Remove version display from the UDA1380 driver
+      ASoC: UDA1380: change decimator/interpolator register handling
+      ASoC: Use network mode with 2 slots for 16-bit stereo in pxa-ssp/Zylonite
+      ASoC: UDA1380: DATAI is slave only
 
-> > This error path doesn't look good.  It seems leaking / 
-> > keeping some resources.
-
-> Changed to:
-
-> int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
->                         struct snd_soc_jack_gpio *gpios)
-> {
-> 	int i, ret;
-> 
-> 	for (i = 0; i < count; i++) {
-> 		if (!gpio_is_valid(gpios[i].gpio)) {
-> 			printk(KERN_ERR "Invalid gpio %d\n",
-> 					gpios[i].gpio);
-> 			return -EINVAL;
-> 		}
-
-This still leaks GPIOs and interrupts if one of these tests fails on a
-GPIO after the first.
+ sound/soc/codecs/uda1380.c |  113 +++++++++++++++++++++-----------------------
+ sound/soc/pxa/pxa-ssp.c    |    3 +-
+ sound/soc/pxa/zylonite.c   |    7 ++-
+ 3 files changed, 60 insertions(+), 63 deletions(-)
