@@ -1,7 +1,8 @@
 From: Philipp Zabel <philipp.zabel@gmail.com>
-Subject: [PATCH 2/4] ASoC: UDA1380: DATAI is slave only
-Date: Tue,  3 Mar 2009 16:10:52 +0100
-Message-ID: <1236093054-1952-2-git-send-email-philipp.zabel@gmail.com>
+Subject: [PATCH 3/4] ASoC: Remove version display from the
+	UDA1380 driver
+Date: Tue,  3 Mar 2009 16:10:53 +0100
+Message-ID: <1236093054-1952-3-git-send-email-philipp.zabel@gmail.com>
 References: <1236093054-1952-1-git-send-email-philipp.zabel@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,10 +10,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f177.google.com (mail-fx0-f177.google.com
 	[209.85.220.177])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9934A10380E
-	for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2009 16:11:00 +0100 (CET)
-Received: by fxm25 with SMTP id 25so2677141fxm.32
-	for <alsa-devel@alsa-project.org>; Tue, 03 Mar 2009 07:11:00 -0800 (PST)
+	by alsa0.perex.cz (Postfix) with ESMTP id 6C25110384A
+	for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2009 16:11:02 +0100 (CET)
+Received: by mail-fx0-f177.google.com with SMTP id 25so2677141fxm.32
+	for <alsa-devel@alsa-project.org>; Tue, 03 Mar 2009 07:11:02 -0800 (PST)
 In-Reply-To: <1236093054-1952-1-git-send-email-philipp.zabel@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,39 +28,32 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Only allow SND_SOC_DAIFMT_CBS_CFS for the playback DAI.
-
 Signed-off-by: Philipp Zabel <philipp.zabel@gmail.com>
 ---
- sound/soc/codecs/uda1380.c |    9 +++++++--
- 1 files changed, 7 insertions(+), 2 deletions(-)
+ sound/soc/codecs/uda1380.c |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
-index 5242b81..1e3769d 100644
+index 1e3769d..a6987d7 100644
 --- a/sound/soc/codecs/uda1380.c
 +++ b/sound/soc/codecs/uda1380.c
-@@ -377,8 +377,9 @@ static int uda1380_set_dai_fmt_both(struct snd_soc_dai *codec_dai,
- 		iface |= R01_SFORI_MSB | R01_SFORO_MSB;
- 	}
+@@ -35,8 +35,6 @@
  
--	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) == SND_SOC_DAIFMT_CBM_CFM)
--		iface |= R01_SIM;
-+	/* DATAI is slave only, so in single-link mode, this has to be slave */
-+	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS)
-+		return -EINVAL;
+ #include "uda1380.h"
  
- 	uda1380_write(codec, UDA1380_IFACE, iface);
+-#define UDA1380_VERSION "0.6"
+-
+ /*
+  * uda1380 register cache
+  */
+@@ -831,8 +829,6 @@ static int uda1380_probe(struct platform_device *pdev)
+ 	struct snd_soc_codec *codec;
+ 	int ret;
  
-@@ -406,6 +407,10 @@ static int uda1380_set_dai_fmt_playback(struct snd_soc_dai *codec_dai,
- 		iface |= R01_SFORI_MSB;
- 	}
- 
-+	/* DATAI is slave only, so this has to be slave */
-+	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS)
-+		return -EINVAL;
-+
- 	uda1380_write(codec, UDA1380_IFACE, iface);
- 
- 	return 0;
+-	pr_info("UDA1380 Audio Codec %s", UDA1380_VERSION);
+-
+ 	setup = socdev->codec_data;
+ 	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
+ 	if (codec == NULL)
 -- 
 1.6.1.3
