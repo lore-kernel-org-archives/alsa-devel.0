@@ -1,17 +1,19 @@
 From: Philipp Zabel <philipp.zabel@gmail.com>
-Subject: [PATCH 1/4] ASoC: Use network mode with 2 slots for
-	16-bit stereo in pxa-ssp/Zylonite
-Date: Tue,  3 Mar 2009 16:10:51 +0100
-Message-ID: <1236093054-1952-1-git-send-email-philipp.zabel@gmail.com>
+Subject: [PATCH 2/4] ASoC: UDA1380: DATAI is slave only
+Date: Tue,  3 Mar 2009 16:10:52 +0100
+Message-ID: <1236093054-1952-2-git-send-email-philipp.zabel@gmail.com>
+References: <1236093054-1952-1-git-send-email-philipp.zabel@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id B16D610380E
-	for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2009 16:10:58 +0100 (CET)
-Received: by fg-out-1718.google.com with SMTP id 13so84570fge.44
-	for <alsa-devel@alsa-project.org>; Tue, 03 Mar 2009 07:10:58 -0800 (PST)
+Received: from mail-fx0-f177.google.com (mail-fx0-f177.google.com
+	[209.85.220.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9934A10380E
+	for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2009 16:11:00 +0100 (CET)
+Received: by fxm25 with SMTP id 25so2677141fxm.32
+	for <alsa-devel@alsa-project.org>; Tue, 03 Mar 2009 07:11:00 -0800 (PST)
+In-Reply-To: <1236093054-1952-1-git-send-email-philipp.zabel@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,50 +27,39 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-For consistency with 24-bit and 32-bit modes, don't send 16-bit stereo
-in one 32-bit transfer. Use 2 slots instead on Zylonite. It should result
-in exactly the same behaviour.
-Now it is possible to use 16-bit single slot transfers in pxa-ssp, which
-are needed for Magician to get two frame clock pulses per sample
-(one for each channel).
+Only allow SND_SOC_DAIFMT_CBS_CFS for the playback DAI.
 
 Signed-off-by: Philipp Zabel <philipp.zabel@gmail.com>
 ---
- sound/soc/pxa/pxa-ssp.c  |    3 +--
- sound/soc/pxa/zylonite.c |    7 +++++--
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/codecs/uda1380.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index 4a973ab..c49bb12 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -644,8 +644,7 @@ static int pxa_ssp_hw_params(struct snd_pcm_substream *substream,
- 			sscr0 |= SSCR0_FPCKE;
- #endif
- 		sscr0 |= SSCR0_DataSize(16);
--		if (params_channels(params) > 1)
--			sscr0 |= SSCR0_EDSS;
-+		/* use network mode (2 slots) for 16 bit stereo */
- 		break;
- 	case SNDRV_PCM_FORMAT_S24_LE:
- 		sscr0 |= (SSCR0_EDSS | SSCR0_DataSize(8));
-diff --git a/sound/soc/pxa/zylonite.c b/sound/soc/pxa/zylonite.c
-index 0140a25..9f6116e 100644
---- a/sound/soc/pxa/zylonite.c
-+++ b/sound/soc/pxa/zylonite.c
-@@ -127,8 +127,11 @@ static int zylonite_voice_hw_params(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		return ret;
+diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
+index 5242b81..1e3769d 100644
+--- a/sound/soc/codecs/uda1380.c
++++ b/sound/soc/codecs/uda1380.c
+@@ -377,8 +377,9 @@ static int uda1380_set_dai_fmt_both(struct snd_soc_dai *codec_dai,
+ 		iface |= R01_SFORI_MSB | R01_SFORO_MSB;
+ 	}
  
--	/* We're not really in network mode but the emulation wants this. */
--	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 1, 1);
-+	/* Use network mode for stereo, one slot per channel. */
-+	if (params_channels(params) > 1)
-+		ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0x3, 2);
-+	else
-+		ret = snd_soc_dai_set_tdm_slot(cpu_dai, 1, 1);
- 	if (ret < 0)
- 		return ret;
+-	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) == SND_SOC_DAIFMT_CBM_CFM)
+-		iface |= R01_SIM;
++	/* DATAI is slave only, so in single-link mode, this has to be slave */
++	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS)
++		return -EINVAL;
  
+ 	uda1380_write(codec, UDA1380_IFACE, iface);
+ 
+@@ -406,6 +407,10 @@ static int uda1380_set_dai_fmt_playback(struct snd_soc_dai *codec_dai,
+ 		iface |= R01_SFORI_MSB;
+ 	}
+ 
++	/* DATAI is slave only, so this has to be slave */
++	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS)
++		return -EINVAL;
++
+ 	uda1380_write(codec, UDA1380_IFACE, iface);
+ 
+ 	return 0;
 -- 
 1.6.1.3
