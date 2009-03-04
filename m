@@ -1,16 +1,16 @@
-From: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
-Subject: [PATCH 2/3] ALSA: hda - Add headphone automute support
-	for 3stack-hp model (ALC888)
-Date: Wed,  4 Mar 2009 14:22:51 -0300
-Message-ID: <1236187372-15818-2-git-send-email-herton@mandriva.com.br>
+From: "Lopez Cruz, Misael" <x0052729@ti.com>
+Subject: [PATCH 1/2] ASoC: Add DAPM machine widgets to SDP3430
+	driver
+Date: Wed, 4 Mar 2009 11:39:07 -0600
+Message-ID: <2C7D3DF36ADFFC479B44490D912B616705ECD6E1B5@dlee07.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perninha.conectiva.com.br (perninha.conectiva.com.br
-	[200.140.247.100])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8FF75103813
-	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 18:28:45 +0100 (CET)
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8EE90103826
+	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 18:39:26 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,78 +20,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Herton Ronaldo Krzesinski <herton@mandriva.com.br>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Cc: Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Mute speaker outputs on headphone insertion for machines that use
-3stack-hp model.
+Add DAPM machine domain widgets to SDP3430 machine driver.
+Interconnection:
+* Ext Mic: MAINMIC, SUBMIC
+* Ext Spk: HFL, HFR
+* Headset Jack: HSMIC, HSOL, HSOR
 
-Signed-off-by: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
+Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
 ---
- sound/pci/hda/patch_realtek.c |   38 +++++++++++++++++++++++++++++++++-----
- 1 files changed, 33 insertions(+), 5 deletions(-)
+ sound/soc/omap/sdp3430.c |   64 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 64 insertions(+), 0 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 3696ff3..251647d 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8056,16 +8056,42 @@ static struct hda_verb alc888_lenovo_sky_verbs[] = {
- 	{ } /* end */
+diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
+index e226fa7..4eab4b4 100644
+--- a/sound/soc/omap/sdp3430.c
++++ b/sound/soc/omap/sdp3430.c
+@@ -81,12 +81,76 @@ static struct snd_soc_ops sdp3430_ops = {
+ 	.hw_params = sdp3430_hw_params,
  };
  
-+static struct hda_verb alc888_6st_dell_verbs[] = {
-+	{0x1b, AC_VERB_SET_UNSOLICITED_ENABLE, ALC880_HP_EVENT | AC_USRSP_EN},
-+	{ }
++/* SDP3430 machine DAPM */
++static const struct snd_soc_dapm_widget sdp3430_twl4030_dapm_widgets[] = {
++	SND_SOC_DAPM_MIC("Ext Mic", NULL),
++	SND_SOC_DAPM_SPK("Ext Spk", NULL),
++	SND_SOC_DAPM_HP("Headset Jack", NULL),
 +};
 +
-+static void alc888_3st_hp_front_automute(struct hda_codec *codec)
-+{
-+	unsigned int present, bits;
++static const struct snd_soc_dapm_route audio_map[] = {
++	/* External Mics: MAINMIC, SUBMIC with bias*/
++	{"MAINMIC", NULL, "Mic Bias 1"},
++	{"SUBMIC", NULL, "Mic Bias 2"},
++	{"Mic Bias 1", NULL, "Ext Mic"},
++	{"Mic Bias 2", NULL, "Ext Mic"},
 +
-+	present = snd_hda_codec_read(codec, 0x1b, 0,
-+			AC_VERB_GET_PIN_SENSE, 0) & 0x80000000;
-+	bits = present ? HDA_AMP_MUTE : 0;
-+	snd_hda_codec_amp_stereo(codec, 0x14, HDA_OUTPUT, 0,
-+				 HDA_AMP_MUTE, bits);
-+	snd_hda_codec_amp_stereo(codec, 0x16, HDA_OUTPUT, 0,
-+				 HDA_AMP_MUTE, bits);
-+	snd_hda_codec_amp_stereo(codec, 0x18, HDA_OUTPUT, 0,
-+				 HDA_AMP_MUTE, bits);
++	/* External Speakers: HFL, HFR */
++	{"Ext Spk", NULL, "HFL"},
++	{"Ext Spk", NULL, "HFR"},
++
++	/* Headset: HSMIC (with bias), HSOL, HSOR */
++	{"Headset Jack", NULL, "HSOL"},
++	{"Headset Jack", NULL, "HSOR"},
++	{"HSMIC", NULL, "Headset Mic Bias"},
++	{"Headset Mic Bias", NULL, "Headset Jack"},
++};
++
++static int sdp3430_twl4030_init(struct snd_soc_codec *codec)
++{
++	int ret;
++
++	/* Add SDP3430 specific widgets */
++	ret = snd_soc_dapm_new_controls(codec, sdp3430_twl4030_dapm_widgets,
++				ARRAY_SIZE(sdp3430_twl4030_dapm_widgets));
++	if (ret)
++		return ret;
++
++	/* Set up SDP3430 specific audio path audio_map */
++	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
++
++	/* SDP3430 connected pins */
++	snd_soc_dapm_enable_pin(codec, "Ext Mic");
++	snd_soc_dapm_enable_pin(codec, "Ext Spk");
++	snd_soc_dapm_enable_pin(codec, "Headset Jack");
++
++	/* TWL4030 not connected pins */
++	snd_soc_dapm_nc_pin(codec, "AUXL");
++	snd_soc_dapm_nc_pin(codec, "AUXR");
++	snd_soc_dapm_nc_pin(codec, "CARKITMIC");
++	snd_soc_dapm_nc_pin(codec, "DIGIMIC0");
++	snd_soc_dapm_nc_pin(codec, "DIGIMIC1");
++
++	snd_soc_dapm_nc_pin(codec, "OUTL");
++	snd_soc_dapm_nc_pin(codec, "OUTR");
++	snd_soc_dapm_nc_pin(codec, "EARPIECE");
++	snd_soc_dapm_nc_pin(codec, "PREDRIVEL");
++	snd_soc_dapm_nc_pin(codec, "PREDRIVER");
++	snd_soc_dapm_nc_pin(codec, "CARKITL");
++	snd_soc_dapm_nc_pin(codec, "CARKITR");
++
++	ret = snd_soc_dapm_sync(codec);
++
++	return ret;
 +}
 +
-+static void alc888_3st_hp_unsol_event(struct hda_codec *codec,
-+				      unsigned int res)
-+{
-+	switch (res >> 26) {
-+	case ALC880_HP_EVENT:
-+		alc888_3st_hp_front_automute(codec);
-+		break;
-+	}
-+}
-+
- static struct hda_verb alc888_3st_hp_verbs[] = {
- 	{0x14, AC_VERB_SET_CONNECT_SEL, 0x00},	/* Front: output 0 (0x0c) */
- 	{0x16, AC_VERB_SET_CONNECT_SEL, 0x01},	/* Rear : output 1 (0x0d) */
- 	{0x18, AC_VERB_SET_CONNECT_SEL, 0x02},	/* CLFE : output 2 (0x0e) */
--	{ }
--};
--
--static struct hda_verb alc888_6st_dell_verbs[] = {
- 	{0x1b, AC_VERB_SET_UNSOLICITED_ENABLE, ALC880_HP_EVENT | AC_USRSP_EN},
--	{ }
-+	{ } /* end */
+ /* Digital audio interface glue - connects codec <--> CPU */
+ static struct snd_soc_dai_link sdp3430_dai = {
+ 	.name = "TWL4030",
+ 	.stream_name = "TWL4030",
+ 	.cpu_dai = &omap_mcbsp_dai[0],
+ 	.codec_dai = &twl4030_dai,
++	.init = sdp3430_twl4030_init,
+ 	.ops = &sdp3430_ops,
  };
  
- /*
-@@ -8950,6 +8976,8 @@ static struct alc_config_preset alc883_presets[] = {
- 		.channel_mode = alc888_3st_hp_modes,
- 		.need_dac_fix = 1,
- 		.input_mux = &alc883_capture_source,
-+		.unsol_event = alc888_3st_hp_unsol_event,
-+		.init_hook = alc888_3st_hp_front_automute,
- 	},
- 	[ALC888_6ST_DELL] = {
- 		.mixers = { alc883_base_mixer, alc883_chmode_mixer },
 -- 
-1.6.1.3
+1.5.4.3
