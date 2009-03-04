@@ -1,16 +1,18 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH 1/4] pxa-ssp: fix name of register bit
-Date: Wed,  4 Mar 2009 21:16:57 +0100
-Message-ID: <1236197820-21022-1-git-send-email-daniel@caiaq.de>
+Subject: [PATCH 2/4] soc-dai: add bitfields for hardware I2S
+	formats
+Date: Wed,  4 Mar 2009 21:16:58 +0100
+Message-ID: <1236197820-21022-2-git-send-email-daniel@caiaq.de>
 References: <20090304201505.GE12183@buzzloop.caiaq.de>
+	<1236197820-21022-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id B81581038C5
+	by alsa0.perex.cz (Postfix) with ESMTP id E5C61103910
 	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 21:17:11 +0100 (CET)
-In-Reply-To: <20090304201505.GE12183@buzzloop.caiaq.de>
+In-Reply-To: <1236197820-21022-1-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,61 +26,49 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Tim Ruetz <tim@caiaq.de>, Liam Girdwood <lrg@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-A bit in PXA's SSCR0 register was erroneously named ADC but its name is
-in fact ADC (audio clock select).
+This patch adds bitfields for I2S serial formats that differ from the
+amount of data actually sent on the line. Some codecs (namely the
+cs4270) require 64 sysclks being sent during each frame period, even
+though the number of acutal data bits might be less.
 
 Signed-off-by: Daniel Mack <daniel@caiaq.de>
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: Liam Girdwood <lrg@kernel.org>
 Cc: Tim Ruetz <tim@caiaq.de>
 ---
- arch/arm/mach-pxa/include/mach/regs-ssp.h |    2 +-
- sound/soc/pxa/pxa-ssp.c                   |    6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ include/sound/soc-dai.h |   20 ++++++++++++++++----
+ 1 files changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/mach-pxa/include/mach/regs-ssp.h b/arch/arm/mach-pxa/include/mach/regs-ssp.h
-index 34eda82..70e0b81 100644
---- a/arch/arm/mach-pxa/include/mach/regs-ssp.h
-+++ b/arch/arm/mach-pxa/include/mach/regs-ssp.h
-@@ -50,7 +50,7 @@
- #define SSCR0_TUM	(1 << 23)	/* Transmit FIFO underrun interrupt mask */
- #define SSCR0_FRDC	(0x07000000)	/* Frame rate divider control (mask) */
- #define SSCR0_SlotsPerFrm(x) (((x) - 1) << 24)	/* Time slots per frame [1..8] */
--#define SSCR0_ADC	(1 << 30)	/* Audio clock select */
-+#define SSCR0_ACS	(1 << 30)	/* Audio clock select */
- #define SSCR0_MOD	(1 << 31)	/* Mode (normal or network) */
- #endif
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 24247f7..83b617f 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -85,10 +85,22 @@ struct snd_pcm_substream;
+ #define SND_SOC_DAIFMT_CBM_CFS		(2 << 12) /* codec clk master & frame slave */
+ #define SND_SOC_DAIFMT_CBS_CFS		(3 << 12) /* codec clk & frm slave */
  
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index c49bb12..7fc13f0 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -300,7 +300,7 @@ static int pxa_ssp_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 	int val;
+-#define SND_SOC_DAIFMT_FORMAT_MASK	0x000f
+-#define SND_SOC_DAIFMT_CLOCK_MASK	0x00f0
+-#define SND_SOC_DAIFMT_INV_MASK		0x0f00
+-#define SND_SOC_DAIFMT_MASTER_MASK	0xf000
++/*
++ * DAI hardware frame formats.
++ *
++ * Independently, these bits the define the audio format on the
++ * pysical channel in case it differs from the audio sample the
++ * DAI is configured to
++ */
++#define SND_SOC_DAIFMT_FF_SAMPLE	(0 << 16)
++#define SND_SOC_DAIFMT_FF_I2S_16	(1 << 16)
++#define SND_SOC_DAIFMT_FF_I2S_32	(2 << 16)
++
++#define SND_SOC_DAIFMT_FORMAT_MASK		0x0000f
++#define SND_SOC_DAIFMT_CLOCK_MASK		0x000f0
++#define SND_SOC_DAIFMT_INV_MASK			0x00f00
++#define SND_SOC_DAIFMT_MASTER_MASK		0x0f000
++#define SND_SOC_DAIFMT_FRAME_FORMAT_MASK	0xf0000
  
- 	u32 sscr0 = ssp_read_reg(ssp, SSCR0) &
--		~(SSCR0_ECS |  SSCR0_NCS | SSCR0_MOD | SSCR0_ADC);
-+		~(SSCR0_ECS |  SSCR0_NCS | SSCR0_MOD | SSCR0_ACS);
- 
- 	dev_dbg(&ssp->pdev->dev,
- 		"pxa_ssp_set_dai_sysclk id: %d, clk_id %d, freq %d\n",
-@@ -328,7 +328,7 @@ static int pxa_ssp_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 	case PXA_SSP_CLK_AUDIO:
- 		priv->sysclk = 0;
- 		ssp_set_scr(&priv->dev, 1);
--		sscr0 |= SSCR0_ADC;
-+		sscr0 |= SSCR0_ACS;
- 		break;
- 	default:
- 		return -ENODEV;
-@@ -524,7 +524,7 @@ static int pxa_ssp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 
- 	/* reset port settings */
- 	sscr0 = ssp_read_reg(ssp, SSCR0) &
--		(SSCR0_ECS |  SSCR0_NCS | SSCR0_MOD | SSCR0_ADC);
-+		(SSCR0_ECS |  SSCR0_NCS | SSCR0_MOD | SSCR0_ACS);
- 	sscr1 = SSCR1_RxTresh(8) | SSCR1_TxTresh(7);
- 	sspsp = 0;
- 
+ /*
+  * Master Clock Directions
 -- 
 1.6.1.3
