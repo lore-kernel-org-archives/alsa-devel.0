@@ -1,22 +1,20 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] ASoC: make ops a pointer in 'struct
-	snd_soc_dai'
-Date: Wed, 04 Mar 2009 15:32:58 -0600
-Message-ID: <49AEF38A.6050802@freescale.com>
-References: <f17812d70903011925w2a201e27m39fa001d4c700d45@mail.gmail.com>	
-	<ed82fe3e0903020439u497389ccp7ec35c7de37ad936@mail.gmail.com>	
-	<f17812d70903020646q15d43dcch8ad90df2cb486499@mail.gmail.com>	
-	<49AC225D.6090002@freescale.com>
-	<f17812d70903021740w5c0c5dfck5a92869650bf5bd7@mail.gmail.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 2/4] soc-dai: add bitfields for
+	hardware	I2S formats
+Date: Wed, 4 Mar 2009 22:30:58 +0000
+Message-ID: <20090304223057.GD10731@sirena.org.uk>
+References: <20090304201505.GE12183@buzzloop.caiaq.de>
+	<1236197820-21022-1-git-send-email-daniel@caiaq.de>
+	<1236197820-21022-2-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw02.freescale.net (az33egw02.freescale.net
-	[192.88.158.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8CAF62433C
-	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 22:33:02 +0100 (CET)
-In-Reply-To: <f17812d70903021740w5c0c5dfck5a92869650bf5bd7@mail.gmail.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id E54E9243AD
+	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 23:31:05 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1236197820-21022-2-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,37 +24,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric Miao <eric.y.miao@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>, Liam Girdwood <lrg@kernel.org>
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org, Tim Ruetz <tim@caiaq.de>, Liam Girdwood <lrg@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Eric Miao wrote:
+On Wed, Mar 04, 2009 at 09:16:58PM +0100, Daniel Mack wrote:
+> This patch adds bitfields for I2S serial formats that differ from the
+> amount of data actually sent on the line. Some codecs (namely the
+> cs4270) require 64 sysclks being sent during each frame period, even
+> though the number of acutal data bits might be less.
 
-> Updated as below, (gzip version attached due to mailing list
-> mail size limitation).
-> 
-> From 74a2b6dfff2948d9d04b33d0a02f645f8c12caf7 Mon Sep 17 00:00:00 2001
-> From: Eric Miao <eric.miao@marvell.com>
-> Date: Mon, 2 Mar 2009 22:38:31 +0800
-> Subject: [PATCH] ASoC: make ops a pointer of 'struct snd_soc_dai'
-> 
-> Considering the fact that most cpu_dai or codec_dai are using a same
-> 'snd_soc_dai_ops' for several similar interfaces, 'ops' would be better
-> made a pointer instead, to make sharing easier and code a bit cleaner.
-> 
-> The patch below is rather preliminary since the asoc tree is being
-> actively developed, and this touches almost every piece of code,
-> (and possibly many others in development need to be changed as
-> well). Building of all codecs are OK, yet to every SoC, I didn't test
-> that.
-> 
-> Signed-off-by: Eric Miao <eric.miao@marvell.com>
+Hrm.  This is normally handled via the clock divider interface - it's
+often much more straightforward to work with when dealing with devices
+with very flexible clocking, especially if there are more than two
+devices on the link.  Have you considered handling this through that,
+perhaps through adding a virtual thing to configure (eg, a
+PXA_SSP_FRAME_CLOCKS)?  Normally this would be a network mode but it
+seems clear that that has some issues on this hardware and an
+alternative solution is required.
 
-Tested on an MPC8610 HPCD, and it works.  That's all I can vouch for,
-though.
+The other downside of this approach is that it makes all existing
+drivers theoretically instabuggy in that they don't reject invalid
+configurations, although that's not such a big issue since it really
+only makes life easier when writing board drivers.
 
-Acked-by: Timur Tabi <timur@freescale.com>
+I guess cs4270.c ought to be enforcing this if it's added...
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+> +#define SND_SOC_DAIFMT_FF_SAMPLE	(0 << 16)
+> +#define SND_SOC_DAIFMT_FF_I2S_16	(1 << 16)
+> +#define SND_SOC_DAIFMT_FF_I2S_32	(2 << 16)
+
+FF_SAMPLE should probably be FF_UNSPEC or something to preserve the
+existing semantics.
+
+FF_I2S should probably be something else since something might need this
+for non-I2S devices - _BIT, perhaps?
