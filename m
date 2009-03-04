@@ -1,22 +1,17 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ASoC: make ops a pointer in
-	'struct	snd_soc_dai'
-Date: Wed, 4 Mar 2009 15:00:03 +0000
-Message-ID: <20090304150002.GH433@sirena.org.uk>
-References: <f17812d70903011925w2a201e27m39fa001d4c700d45@mail.gmail.com>
-	<ed82fe3e0903020439u497389ccp7ec35c7de37ad936@mail.gmail.com>
-	<f17812d70903020646q15d43dcch8ad90df2cb486499@mail.gmail.com>
-	<49AC225D.6090002@freescale.com>
-	<f17812d70903021740w5c0c5dfck5a92869650bf5bd7@mail.gmail.com>
+From: Roel Kluin <roel.kluin@gmail.com>
+Subject: pcm_oss: Can period_bytes - buffer_used be less than 0?
+Date: Wed, 04 Mar 2009 16:32:23 +0100
+Message-ID: <49AE9F07.1000904@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 367781037EF
-	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 16:00:08 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <f17812d70903021740w5c0c5dfck5a92869650bf5bd7@mail.gmail.com>
+Received: from mail-ew0-f163.google.com (mail-ew0-f163.google.com
+	[209.85.219.163])
+	by alsa0.perex.cz (Postfix) with ESMTP id 886EE1037EF
+	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 16:32:24 +0100 (CET)
+Received: by ewy7 with SMTP id 7so2751366ewy.32
+	for <alsa-devel@alsa-project.org>; Wed, 04 Mar 2009 07:32:23 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,15 +21,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric Miao <eric.y.miao@gmail.com>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@kernel.org>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 03, 2009 at 09:41:00AM +0800, Eric Miao wrote:
+vi sound/core/oss/pcm_oss.c +1572 (in linus' git tree) and note:
 
-> Updated as below, (gzip version attached due to mailing list
-> mail size limitation).
+static int snd_pcm_oss_sync(struct snd_pcm_oss_file *pcm_oss_file)
+{
+	...
+	size_t size;
+	... :1608
+	size = runtime->oss.period_bytes - runtime->oss.period_ptr;
 
-Only doing the attachment should put you under the limit and works well
-with git am so might've been worth trying.  I've applied it so no need
-to worry, though - thanks!
+can this period_bytes - buffer_used become less than 0?
+
+Roel
