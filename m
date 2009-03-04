@@ -1,15 +1,18 @@
-From: Ben Dooks <ben-alsa@fluff.org>
-Subject: S3C64XX: Add s3c64xx-i2s support
-Date: Wed, 04 Mar 2009 00:59:38 +0000
-Message-ID: <20090304005937.923704962@fluff.org.uk>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [PATCH 1/4] ASoC: Use network mode with 2
+	slots	for 16-bit stereo in pxa-ssp/Zylonite
+Date: Wed, 4 Mar 2009 02:34:24 +0100
+Message-ID: <20090304013424.GA5165@buzzloop.caiaq.de>
+References: <1236093054-1952-1-git-send-email-philipp.zabel@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from teyla.home.fluff.org (aeryn.fluff.org.uk [87.194.8.8])
-	by alsa0.perex.cz (Postfix) with ESMTP id BFCA12440D
-	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 02:01:53 +0100 (CET)
-Content-Disposition: inline; filename=audio/audio-s3c64xx-dai.patch
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9B08224422
+	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 02:34:27 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1236093054-1952-1-git-send-email-philipp.zabel@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,340 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com
+To: Philipp Zabel <philipp.zabel@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Ben Dooks <ben@simtec.co.uk>
+Hi Phillip,
 
-Add the initial code to support the S3C64XX I2S hardware using the
-s3c-i2s-v2 core code.
+glad to see someone is wasting time with that issue, too :)
 
-Signed-off-by: Ben Dooks <ben@simtec.co.uk>
+On Tue, Mar 03, 2009 at 04:10:51PM +0100, Philipp Zabel wrote:
+> For consistency with 24-bit and 32-bit modes, don't send 16-bit stereo
+> in one 32-bit transfer. Use 2 slots instead on Zylonite. It should result
+> in exactly the same behaviour.
+> Now it is possible to use 16-bit single slot transfers in pxa-ssp, which
+> are needed for Magician to get two frame clock pulses per sample
+> (one for each channel).
 
-Index: linux.git/sound/soc/s3c24xx/Makefile
-===================================================================
---- linux.git.orig/sound/soc/s3c24xx/Makefile	2009-03-04 00:44:28.000000000 +0000
-+++ linux.git/sound/soc/s3c24xx/Makefile	2009-03-04 00:56:40.000000000 +0000
-@@ -2,6 +2,7 @@
- snd-soc-s3c24xx-objs := s3c24xx-pcm.o
- snd-soc-s3c24xx-i2s-objs := s3c24xx-i2s.o
- snd-soc-s3c2412-i2s-objs := s3c2412-i2s.o
-+snd-soc-s3c64xx-i2s-objs := s3c64xx-i2s.o
- snd-soc-s3c2443-ac97-objs := s3c2443-ac97.o
- snd-soc-s3c-i2s-v2-objs := s3c-i2s-v2.o
- 
-@@ -9,6 +10,7 @@ obj-$(CONFIG_SND_S3C24XX_SOC) += snd-soc
- obj-$(CONFIG_SND_S3C24XX_SOC_I2S) += snd-soc-s3c24xx-i2s.o
- obj-$(CONFIG_SND_S3C2443_SOC_AC97) += snd-soc-s3c2443-ac97.o
- obj-$(CONFIG_SND_S3C2412_SOC_I2S) += snd-soc-s3c2412-i2s.o
-+obj-$(CONFIG_SND_S3C64XX_SOC_I2S) += snd-soc-s3c64xx-i2s.o
- obj-$(CONFIG_SND_S3C_I2SV2_SOC) += snd-soc-s3c-i2s-v2.o
- 
- # S3C24XX Machine Support
-Index: linux.git/sound/soc/s3c24xx/s3c64xx-i2s.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux.git/sound/soc/s3c24xx/s3c64xx-i2s.c	2009-03-04 00:58:09.000000000 +0000
-@@ -0,0 +1,223 @@
-+/* sound/soc/s3c24xx/s3c64xx-i2s.c
-+ *
-+ * ALSA SoC Audio Layer - S3C64XX I2S driver
-+ *
-+ * Copyright 2008 Openmoko, Inc.
-+ * Copyright 2008 Simtec Electronics
-+ *      Ben Dooks <ben@simtec.co.uk>
-+ *      http://armlinux.simtec.co.uk/
-+ *
-+ * Based on s3c24xx-i2s.c and s3c-i2c-v2.c
-+ *	(c) 2006 Wolfson Microelectronics PLC.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/delay.h>
-+#include <linux/clk.h>
-+#include <linux/kernel.h>
-+#include <linux/gpio.h>
-+#include <linux/io.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/initval.h>
-+#include <sound/soc.h>
-+
-+#include <plat/regs-s3c2412-iis.h>
-+#include <plat/gpio-bank-d.h>
-+#include <plat/gpio-bank-e.h>
-+#include <plat/gpio-cfg.h>
-+#include <plat/audio.h>
-+
-+#include <mach/map.h>
-+#include <mach/dma.h>
-+
-+#include "s3c24xx-pcm.h"
-+#include "s3c64xx-i2s.h"
-+
-+static struct s3c2410_dma_client s3c64xx_dma_client_out = {
-+	.name		= "I2S PCM Stereo out"
-+};
-+
-+static struct s3c2410_dma_client s3c64xx_dma_client_in = {
-+	.name		= "I2S PCM Stereo in"
-+};
-+
-+static struct s3c24xx_pcm_dma_params s3c64xx_i2s_pcm_stereo_out[2] = {
-+	[0] = {
-+		.channel	= DMACH_I2S0_OUT,
-+		.client		= &s3c64xx_dma_client_out,
-+		.dma_addr	= S3C64XX_PA_IIS0 + S3C2412_IISTXD,
-+		.dma_size	= 4,
-+	},
-+	[1] = {
-+		.channel	= DMACH_I2S1_OUT,
-+		.client		= &s3c64xx_dma_client_out,
-+		.dma_addr	= S3C64XX_PA_IIS1 + S3C2412_IISTXD,
-+		.dma_size	= 4,
-+	},
-+};
-+
-+static struct s3c24xx_pcm_dma_params s3c64xx_i2s_pcm_stereo_in[2] = {
-+	[0] = {
-+		.channel	= DMACH_I2S0_IN,
-+		.client		= &s3c64xx_dma_client_in,
-+		.dma_addr	= S3C64XX_PA_IIS0 + S3C2412_IISRXD,
-+		.dma_size	= 4,
-+	},
-+	[1] = {
-+		.channel	= DMACH_I2S1_IN,
-+		.client		= &s3c64xx_dma_client_in,
-+		.dma_addr	= S3C64XX_PA_IIS1 + S3C2412_IISRXD,
-+		.dma_size	= 4,
-+	},
-+};
-+
-+static struct s3c_i2sv2_info s3c64xx_i2s[2];
-+
-+static inline struct s3c_i2sv2_info *to_info(struct snd_soc_dai *cpu_dai)
-+{
-+	return cpu_dai->private_data;
-+}
-+
-+static int s3c64xx_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
-+				  int clk_id, unsigned int freq, int dir)
-+{
-+	struct s3c_i2sv2_info *i2s = to_info(cpu_dai);
-+	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
-+
-+	switch (clk_id) {
-+	case S3C64XX_CLKSRC_PCLK:
-+		iismod &= ~S3C64XX_IISMOD_IMS_SYSMUX;
-+		break;
-+
-+	case S3C64XX_CLKSRC_MUX:
-+		iismod |= S3C64XX_IISMOD_IMS_SYSMUX;
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	writel(iismod, i2s->regs + S3C2412_IISMOD);
-+
-+	return 0;
-+}
-+
-+
-+unsigned long s3c64xx_i2s_get_clockrate(struct snd_soc_dai *dai)
-+{
-+	struct s3c_i2sv2_info *i2s = to_info(dai);
-+
-+	return clk_get_rate(i2s->iis_cclk);
-+}
-+EXPORT_SYMBOL_GPL(s3c64xx_i2s_get_clockrate);
-+
-+static int s3c64xx_i2s_probe(struct platform_device *pdev,
-+			     struct snd_soc_dai *dai)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct s3c_i2sv2_info *i2s;
-+	int ret;
-+
-+	dev_dbg(dev, "%s: probing dai %d\n", __func__, pdev->id);
-+
-+	if (pdev->id < 0 || pdev->id > ARRAY_SIZE(s3c64xx_i2s)) {
-+		dev_err(dev, "id %d out of range\n", pdev->id);
-+		return -EINVAL;
-+	}
-+
-+	i2s = &s3c64xx_i2s[pdev->id];
-+
-+	ret = s3c_i2sv2_probe(pdev, dai, i2s,
-+			      pdev->id ? S3C64XX_PA_IIS1 : S3C64XX_PA_IIS0);
-+	if (ret)
-+		return ret;
-+
-+	i2s->dma_capture = &s3c64xx_i2s_pcm_stereo_in[pdev->id];
-+	i2s->dma_playback = &s3c64xx_i2s_pcm_stereo_out[pdev->id];
-+
-+	i2s->iis_cclk = clk_get(dev, "audio-bus");
-+	if (IS_ERR(i2s->iis_cclk)) {
-+		dev_err(dev, "failed to get audio-bus");
-+		iounmap(i2s->regs);
-+		return -ENODEV;
-+	}
-+
-+	/* configure GPIO for i2s port */
-+	switch (pdev->id) {
-+	case 0:
-+		s3c_gpio_cfgpin(S3C64XX_GPD(0), S3C64XX_GPD0_I2S0_CLK);
-+		s3c_gpio_cfgpin(S3C64XX_GPD(1), S3C64XX_GPD1_I2S0_CDCLK);
-+		s3c_gpio_cfgpin(S3C64XX_GPD(2), S3C64XX_GPD2_I2S0_LRCLK);
-+		s3c_gpio_cfgpin(S3C64XX_GPD(3), S3C64XX_GPD3_I2S0_DI);
-+		s3c_gpio_cfgpin(S3C64XX_GPD(4), S3C64XX_GPD4_I2S0_D0);
-+		break;
-+	case 1:
-+		s3c_gpio_cfgpin(S3C64XX_GPE(0), S3C64XX_GPE0_I2S1_CLK);
-+		s3c_gpio_cfgpin(S3C64XX_GPE(1), S3C64XX_GPE1_I2S1_CDCLK);
-+		s3c_gpio_cfgpin(S3C64XX_GPE(2), S3C64XX_GPE2_I2S1_LRCLK);
-+		s3c_gpio_cfgpin(S3C64XX_GPE(3), S3C64XX_GPE3_I2S1_DI);
-+		s3c_gpio_cfgpin(S3C64XX_GPE(4), S3C64XX_GPE4_I2S1_D0);
-+	}
-+
-+	return 0;
-+}
-+
-+
-+#define S3C64XX_I2S_RATES \
-+	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
-+	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
-+	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
-+
-+#define S3C64XX_I2S_FMTS \
-+	(SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE)
-+
-+struct snd_soc_dai s3c64xx_i2s_dai = {
-+	.name		= "s3c64xx-i2s",
-+	.id		= 0,
-+	.probe		= s3c64xx_i2s_probe,
-+	.playback = {
-+		.channels_min	= 2,
-+		.channels_max	= 2,
-+		.rates		= S3C64XX_I2S_RATES,
-+		.formats	= S3C64XX_I2S_FMTS,
-+	},
-+	.capture = {
-+		.channels_min	= 2,
-+		.channels_max	= 2,
-+		.rates		= S3C64XX_I2S_RATES,
-+		.formats	= S3C64XX_I2S_FMTS,
-+	},
-+	.ops = {
-+		.set_sysclk	= s3c64xx_i2s_set_sysclk,
-+	},
-+};
-+EXPORT_SYMBOL_GPL(s3c64xx_i2s_dai);
-+
-+static int __init s3c64xx_i2s_init(void)
-+{
-+	return  s3c_i2sv2_register_dai(&s3c64xx_i2s_dai);
-+}
-+module_init(s3c64xx_i2s_init);
-+
-+static void __exit s3c64xx_i2s_exit(void)
-+{
-+	snd_soc_unregister_dai(&s3c64xx_i2s_dai);
-+}
-+module_exit(s3c64xx_i2s_exit);
-+
-+/* Module information */
-+MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
-+MODULE_DESCRIPTION("S3C64XX I2S SoC Interface");
-+MODULE_LICENSE("GPL");
-+
-+
-+
-Index: linux.git/sound/soc/s3c24xx/s3c64xx-i2s.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux.git/sound/soc/s3c24xx/s3c64xx-i2s.h	2009-03-04 00:44:31.000000000 +0000
-@@ -0,0 +1,31 @@
-+/* sound/soc/s3c24xx/s3c64xx-i2s.h
-+ *
-+ * ALSA SoC Audio Layer - S3C64XX I2S driver
-+ *
-+ * Copyright 2008 Openmoko, Inc.
-+ * Copyright 2008 Simtec Electronics
-+ *      Ben Dooks <ben@simtec.co.uk>
-+ *      http://armlinux.simtec.co.uk/
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __SND_SOC_S3C24XX_S3C64XX_I2S_H
-+#define __SND_SOC_S3C24XX_S3C64XX_I2S_H __FILE__
-+
-+#include "s3c-i2s-v2.h"
-+
-+#define S3C64XX_DIV_BCLK	S3C_I2SV2_DIV_BCLK
-+#define S3C64XX_DIV_RCLK	S3C_I2SV2_DIV_RCLK
-+#define S3C64XX_DIV_PRESCALER	S3C_I2SV2_DIV_PRESCALER
-+
-+#define S3C64XX_CLKSRC_PCLK	(0)
-+#define S3C64XX_CLKSRC_MUX	(1)
-+
-+extern struct snd_soc_dai s3c64xx_i2s_dai;
-+
-+extern unsigned long s3c64xx_i2s_get_clockrate(struct snd_soc_dai *cpu_dai);
-+
-+#endif /* __SND_SOC_S3C24XX_S3C64XX_I2S_H */
-Index: linux.git/sound/soc/s3c24xx/Kconfig
-===================================================================
---- linux.git.orig/sound/soc/s3c24xx/Kconfig	2009-03-04 00:44:28.000000000 +0000
-+++ linux.git/sound/soc/s3c24xx/Kconfig	2009-03-04 00:56:40.000000000 +0000
-@@ -1,6 +1,6 @@
- config SND_S3C24XX_SOC
- 	tristate "SoC Audio for the Samsung S3C24XX chips"
--	depends on ARCH_S3C2410
-+	depends on ARCH_S3C2410 || ARCH_S3C64XX
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
- 	  the S3C24XX AC97, I2S or SSP interface. You will also need
-@@ -16,6 +16,10 @@ config SND_S3C2412_SOC_I2S
- 	tristate
- 	select SND_S3C_I2SV2_SOC
- 
-+config SND_S3C64XX_SOC_I2S
-+	tristate
-+	select SND_S3C_I2SV2_SOC
-+
- config SND_S3C2443_SOC_AC97
- 	tristate
- 	select AC97_BUS
-Index: linux.git/arch/arm/plat-s3c/include/plat/regs-s3c2412-iis.h
-===================================================================
---- linux.git.orig/arch/arm/plat-s3c/include/plat/regs-s3c2412-iis.h	2009-03-04 00:44:10.000000000 +0000
-+++ linux.git/arch/arm/plat-s3c/include/plat/regs-s3c2412-iis.h	2009-03-04 00:44:31.000000000 +0000
-@@ -33,6 +33,9 @@
- #define S3C2412_IISCON_RXDMA_ACTIVE	(1 << 1)
- #define S3C2412_IISCON_IIS_ACTIVE	(1 << 0)
- 
-+#define S3C64XX_IISMOD_IMS_PCLK		(0 << 10)
-+#define S3C64XX_IISMOD_IMS_SYSMUX	(1 << 10)
-+
- #define S3C2412_IISMOD_MASTER_INTERNAL	(0 << 10)
- #define S3C2412_IISMOD_MASTER_EXTERNAL	(1 << 10)
- #define S3C2412_IISMOD_SLAVE		(2 << 10)
+We've been fiddling around with these modes and registers for
+another two days in a row now and figured out that literally all the
+documentation about these registers is entirly bogus. In particular,
+the network mode with the associated timeslots simply does not work at
+all, according to our measurements.
 
--- 
-Ben (ben@fluff.org, http://www.fluff.org/)
+Hence the question: how does your I2S signal look like at the moment?
+How many clocks do you measure in one frame cylce, how many of them are
+actually filled with data? And which format does the userspace use to
+send samples in?
 
-  'a smiley only costs 4 bytes'
+We finally got a mode now that outputs 2x16 bit on a 2x32 bits I2S
+frame, padded with zeros. But that is in non-network modes, more
+about that tomorrow ...
+
+Thanks,
+Daniel
