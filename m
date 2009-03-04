@@ -1,20 +1,23 @@
 From: pHilipp Zabel <philipp.zabel@gmail.com>
-Subject: Re: [PATCH 1/4] ASoC: Use network mode with 2 slots
-	for 16-bit stereo in pxa-ssp/Zylonite
-Date: Wed, 4 Mar 2009 21:45:33 +0100
-Message-ID: <74d0deb30903041245q4ba5b97fm80324e46e40e55ff@mail.gmail.com>
-References: <1236093054-1952-1-git-send-email-philipp.zabel@gmail.com>
-	<20090304013424.GA5165@buzzloop.caiaq.de>
+Subject: Re: [PATCH 4/4] pxa-ssp: switch from network mode to
+	psp
+Date: Wed, 4 Mar 2009 21:56:01 +0100
+Message-ID: <74d0deb30903041256u8eeea03n5500cd59afadd86e@mail.gmail.com>
+References: <20090304201505.GE12183@buzzloop.caiaq.de>
+	<1236197820-21022-1-git-send-email-daniel@caiaq.de>
+	<1236197820-21022-2-git-send-email-daniel@caiaq.de>
+	<1236197820-21022-3-git-send-email-daniel@caiaq.de>
+	<1236197820-21022-4-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id 47BFA1038AC
-	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 21:45:34 +0100 (CET)
-Received: by yx-out-1718.google.com with SMTP id 36so2307833yxh.2
-	for <alsa-devel@alsa-project.org>; Wed, 04 Mar 2009 12:45:33 -0800 (PST)
-In-Reply-To: <20090304013424.GA5165@buzzloop.caiaq.de>
+	by alsa0.perex.cz (Postfix) with ESMTP id 4A6F3103833
+	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 21:56:02 +0100 (CET)
+Received: by yx-out-1718.google.com with SMTP id 36so2311023yxh.2
+	for <alsa-devel@alsa-project.org>; Wed, 04 Mar 2009 12:56:01 -0800 (PST)
+In-Reply-To: <1236197820-21022-4-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,52 +28,163 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tim Ruetz <tim@caiaq.de>, Liam Girdwood <lrg@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 4, 2009 at 2:34 AM, Daniel Mack <daniel@caiaq.de> wrote:
-> Hi Phillip,
+On Wed, Mar 4, 2009 at 9:17 PM, Daniel Mack <daniel@caiaq.de> wrote:
+> This patch uses the SSP's PSP functionality to provide I2S timings. The
+> particular problem is that even though the datasheets state it should be
+> possbible, there is no mode which uses the network feature with its
+> associated time slots in a sane way to do what we need.
 >
-> glad to see someone is wasting time with that issue, too :)
+> Hence, in order to have full 64 bit I2S on the wire, we need to fiddle
+> around with the SSP and the timing paramters a lot. There are some
+> constants left in the code which can't be replaced by names because the
+> true meaning of their registers remains nebulous.
 >
-> On Tue, Mar 03, 2009 at 04:10:51PM +0100, Philipp Zabel wrote:
->> For consistency with 24-bit and 32-bit modes, don't send 16-bit stereo
->> in one 32-bit transfer. Use 2 slots instead on Zylonite. It should result
->> in exactly the same behaviour.
->> Now it is possible to use 16-bit single slot transfers in pxa-ssp, which
->> are needed for Magician to get two frame clock pulses per sample
->> (one for each channel).
+> Signed-off-by: Daniel Mack <daniel@caiaq.de>
+> Signed-off-by: Tim Ruetz <tim@caiaq.de>
+> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Cc: Liam Girdwood <lrg@kernel.org>
+> Cc: Philipp Zabel <philipp.zabel@gmail.com>
+> ---
+> =A0sound/soc/pxa/pxa-ssp.c | =A0 39 +++++++++++++++++++++----------------=
+--
+> =A01 files changed, 21 insertions(+), 18 deletions(-)
 >
-> We've been fiddling around with these modes and registers for
-> another two days in a row now and figured out that literally all the
-> documentation about these registers is entirly bogus. In particular,
-> the network mode with the associated timeslots simply does not work at
-> all, according to our measurements.
->
-> Hence the question: how does your I2S signal look like at the moment?
-> How many clocks do you measure in one frame cylce, how many of them are
-> actually filled with data? And which format does the userspace use to
-> send samples in?
+> diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+> index 45fb600..97f11d6 100644
+> --- a/sound/soc/pxa/pxa-ssp.c
+> +++ b/sound/soc/pxa/pxa-ssp.c
+> @@ -319,6 +319,7 @@ static int pxa_ssp_set_dai_sysclk(struct snd_soc_dai =
+*cpu_dai,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
+> =A0 =A0 =A0 =A0case PXA_SSP_CLK_EXT:
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0priv->sysclk =3D freq;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ssp_set_scr(&priv->dev, 4);
 
-Unfortunately, I can't measure anything. I don't own an oscilloscope
-and I don't even know if there are useful test points on the phone's
-mainboard.
-Also, I've come to the conclusion that on Magician there has to be
-some kind of flip-flop between the PXA272's SSPFRMCLK and the codec's
-LRCLK input. I'm not using I2S mode at all, but TISSP (or PSP with
-DAIFMT_DSP_A) and two full frames per sample.
-I can more or less handle S16_LE and S32_LE from userspace now.
-Using S24_LE doesn't work because the codec supports LSB aligned
-signals only up to 20-bit.
-S24_3LE I didn't try yet, but the PXA DMA can't advance the source
-pointer by 3 bytes per transfer, so that would be ugly anyway (and
-only possible if network mode works).
+Shouldn't this be somehow set by set_dai_clkdiv instead?
 
-> We finally got a mode now that outputs 2x16 bit on a 2x32 bits I2S
-> frame, padded with zeros. But that is in non-network modes, more
-> about that tomorrow ...
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sscr0 |=3D SSCR0_ECS;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
+> =A0 =A0 =A0 =A0case PXA_SSP_CLK_NET:
+> @@ -551,17 +552,13 @@ static int pxa_ssp_set_dai_fmt(struct snd_soc_dai *=
+cpu_dai,
+>
+> =A0 =A0 =A0 =A0switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+> =A0 =A0 =A0 =A0case SND_SOC_DAIFMT_I2S:
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_MOD | SSCR0_PSP;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_PSP;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sscr1 |=3D SSCR1_RWOT | SSCR1_TRAIL;
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0case SND_SOC_DAIFMT_NB_NF:
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sspsp |=3D SSPSP_FSRT;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0case SND_SOC_DAIFMT_NB_IF:
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sspsp |=3D SSPSP_SFRMP | SS=
+PSP_FSRT;
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 case SND_SOC_DAIFMT_IB_IF:
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sspsp |=3D SSPSP_SFRMP;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
 
-Strange, interesting ...
+Removal of SSPSP_FSRT from NB/IB selection seems to be correct from the doc=
+s.
+Can you check if IB could be properly handled by setting SCMODE(1)?
+
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0default:
+> @@ -652,33 +649,39 @@ static int pxa_ssp_hw_params(struct snd_pcm_substre=
+am *substream,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
+> =A0 =A0 =A0 =A0case SNDRV_PCM_FORMAT_S24_LE:
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sscr0 |=3D (SSCR0_EDSS | SSCR0_DataSize(8)=
+);
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* we must be in network mode (2 slots) for=
+ 24 bit stereo */
+
+This is still dubious ...
+S24_LE is 24-bit sound LSB-aligned in 32-bit frames, so DataSize
+should be 32 here.
+
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
+> =A0 =A0 =A0 =A0case SNDRV_PCM_FORMAT_S32_LE:
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sscr0 |=3D (SSCR0_EDSS | SSCR0_DataSize(16=
+));
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* we must be in network mode (2 slots) for=
+ 32 bit stereo */
+
+How is it possible to send 64bit in one frame otherwise?
+
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
+> =A0 =A0 =A0 =A0}
+> =A0 =A0 =A0 =A0ssp_write_reg(ssp, SSCR0, sscr0);
+>
+> =A0 =A0 =A0 =A0switch (priv->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+> =A0 =A0 =A0 =A0case SND_SOC_DAIFMT_I2S:
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Cleared when the DAI format is set */
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 sspsp =3D ssp_read_reg(ssp, SSPSP) | SSPSP_=
+SFRMWDTH(width);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sspsp =3D ssp_read_reg(ssp, SSPSP);
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 switch (priv->dai_fmt & SND_SOC_DAIFMT_FRAM=
+E_FORMAT_MASK) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 case SND_SOC_DAIFMT_FF_I2S_32:
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* These values are all fou=
+nd out by trying and
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* failing a lot. PXA's S=
+SP is all black magic and
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* does not work like des=
+cribed in any datasheet.
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*/
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sspsp |=3D SSPSP_SFRMWDTH(3=
+2);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sspsp |=3D SSPSP_SFRMDLY(32=
+ * 2);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sspsp |=3D SSPSP_EDMYSTOP(3=
+);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sspsp |=3D SSPSP_DMYSTOP(3);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sspsp |=3D SSPSP_DMYSTRT(1);
+
+Wha?! Amazing. And this really works?
+How the hell can this result in 16 bits of data followed by 16 bits of
+zeroes, twice :)
+
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 default:
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Cleared when the DAI for=
+mat is set */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sspsp |=3D SSPSP_SFRMWDTH(w=
+idth);
+
+Not good for DSP_A/B.
+
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ssp_write_reg(ssp, SSPSP, sspsp);
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> =A0 =A0 =A0 =A0default:
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
+> =A0 =A0 =A0 =A0}
+>
+> - =A0 =A0 =A0 /* We always use a network mode so we always require TDM sl=
+ots
+> - =A0 =A0 =A0 =A0* - complain loudly and fail if they've not been set up =
+yet.
+> - =A0 =A0 =A0 =A0*/
+> - =A0 =A0 =A0 if (!(ssp_read_reg(ssp, SSTSA) & 0xf)) {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_err(&ssp->pdev->dev, "No TDM timeslot c=
+onfigured\n");
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EINVAL;
+> - =A0 =A0 =A0 }
+> -
+> =A0 =A0 =A0 =A0dump_registers(ssp);
+>
+> =A0 =A0 =A0 =A0return 0;
+> --
+> 1.6.1.3
+>
+>
 
 regards
 Philipp
