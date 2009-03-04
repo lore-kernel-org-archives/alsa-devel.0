@@ -1,17 +1,21 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [patch 0/9] S3C24XX/S3C64XX updates
-Date: Wed, 4 Mar 2009 20:29:54 +0000
-Message-ID: <20090304202952.GA10731@sirena.org.uk>
-References: <20090304004925.530566010@fluff.org.uk>
+Subject: Re: [PATCH 3/4] pxa-ssp: don't touch ssp
+	registers	when stream is running
+Date: Wed, 4 Mar 2009 20:33:52 +0000
+Message-ID: <20090304203350.GB10731@sirena.org.uk>
+References: <20090304201505.GE12183@buzzloop.caiaq.de>
+	<1236197820-21022-1-git-send-email-daniel@caiaq.de>
+	<1236197820-21022-2-git-send-email-daniel@caiaq.de>
+	<1236197820-21022-3-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 705F1103828
-	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 21:30:02 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id C173E103846
+	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 21:33:58 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20090304004925.530566010@fluff.org.uk>
+In-Reply-To: <1236197820-21022-3-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,31 +25,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ben Dooks <ben-alsa@fluff.org>, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org, Tim Ruetz <tim@caiaq.de>, Liam Girdwood <lrg@kernel.org>, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 04, 2009 at 12:49:25AM +0000, Ben Dooks wrote:
-> This is a set of patches for 2.6.30 to add more
-> s3c24xx machine support and support for the S3C64XX
-> series of SoC.
+On Wed, Mar 04, 2009 at 09:16:59PM +0100, Daniel Mack wrote:
+> In pxa_ssp_set_dai_fmt(), don't modify the SSP registers in case the
+> stream is already running. With that patch applied, loop-thru tests like
+> 'acrecord -f cd | aplay -f cd' succeed.
 
-I've merged everything I didn't specifically comment on, plus some of
-the rest.  I also added JIVE and fixed the review issues myself.  Thanks
-a lot for doing this!
+> +	/* we can only change the settings if the port is not in use */
+> +	if (ssp_read_reg(ssp, SSCR0) & SSCR0_SSE)
+> +		return 0;
 
-As previously discussed I'll update my IISv4 driver from the Samsung BSP
-for mainline and take care of AC97 and the on board audio for the
-SMDK6410 too.
-
-> It would be very useful to get the header moves merged
-> as soon as possible, to help clear out the old ARM
-> include directories (and make it easier for the merges
-> from other s3c branches that need to take place in the
-> merge window). As such, they're only moves and should
-> not affect the actual build.
-
-Takashi, what do you think about this?  Should I send a 2.6.29 update
-(it's very late in the game...) or would it be better to deal with this
-by trying to merge ALSA early in the merge window?  Either way works for
-me.
+I'd expect an error to be reported here - if we needed to change the
+settings and can't things could go wrong.  Ideally it'd check to see if
+the DAI format was being changed and only error if it was.
