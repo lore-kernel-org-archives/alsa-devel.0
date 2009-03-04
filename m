@@ -1,16 +1,18 @@
 From: Ben Dooks <ben-alsa@fluff.org>
-Subject: [patch 1/9] S3C24XX: Move and update IIS headers
-Date: Wed, 04 Mar 2009 00:49:26 +0000
-Message-ID: <20090304005138.236616450@fluff.org.uk>
+Subject: Re: [patch 6/9] S3C64XX: Add s3c64xx-i2s support
+Date: Wed, 4 Mar 2009 00:56:59 +0000
+Message-ID: <20090304005659.GQ30710@trinity.fluff.org>
 References: <20090304004925.530566010@fluff.org.uk>
+	<20090304005139.012781244@fluff.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from teyla.home.fluff.org (aeryn.fluff.org.uk [87.194.8.8])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5529E2440A
-	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 01:54:04 +0100 (CET)
-Content-Disposition: inline; filename=audio/audio-header-fixes.patch
+Received: from trinity.fluff.org (trinity.fluff.org [89.16.178.74])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9A5CF24406
+	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 01:57:00 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20090304005139.012781244@fluff.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,507 +22,351 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com
+To: Ben Dooks <ben-alsa@fluff.org>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Ben Dooks <ben@simtec.co.uk>
+On Wed, Mar 04, 2009 at 12:49:31AM +0000, Ben Dooks wrote:
+> From: Ben Dooks <ben@simtec.co.uk>
+> 
+> Add the initial code to support the S3C64XX I2S hardware using the
+> s3c-i2s-v2 core code.
+> 
+> Signed-off-by: Ben Dooks <ben@simtec.co.uk>
+> 
+> Index: linux.git/sound/soc/s3c24xx/Makefile
+> ===================================================================
+> --- linux.git.orig/sound/soc/s3c24xx/Makefile	2009-03-04 00:44:28.000000000 +0000
+> +++ linux.git/sound/soc/s3c24xx/Makefile	2009-03-04 00:44:31.000000000 +0000
+> @@ -2,6 +2,7 @@
+>  snd-soc-s3c24xx-objs := s3c24xx-pcm.o
+>  snd-soc-s3c24xx-i2s-objs := s3c24xx-i2s.o
+>  snd-soc-s3c2412-i2s-objs := s3c2412-i2s.o
+> +snd-soc-s3c64xx-i2s-objs := s3c64xx-i2s.o
+>  snd-soc-s3c2443-ac97-objs := s3c2443-ac97.o
+>  snd-soc-s3c-i2s-v2-objs := s3c-i2s-v2.o
+>  
+> @@ -9,6 +10,7 @@ obj-$(CONFIG_SND_S3C24XX_SOC) += snd-soc
+>  obj-$(CONFIG_SND_S3C24XX_SOC_I2S) += snd-soc-s3c24xx-i2s.o
+>  obj-$(CONFIG_SND_S3C2443_SOC_AC97) += snd-soc-s3c2443-ac97.o
+>  obj-$(CONFIG_SND_S3C2412_SOC_I2S) += snd-soc-s3c2412-i2s.o
+> +obj-$(CONFIG_SND_S3C64XX_SOC_I2S) += snd-soc-s3c64xx-i2s.o
+>  obj-$(CONFIG_SND_S3C_I2SV2_SOC) += snd-soc-s3c-i2s-v2.o
+>  
+>  # S3C24XX Machine Support
+> Index: linux.git/sound/soc/s3c24xx/s3c64xx-i2s.c
+> ===================================================================
+> --- /dev/null	1970-01-01 00:00:00.000000000 +0000
+> +++ linux.git/sound/soc/s3c24xx/s3c64xx-i2s.c	2009-03-04 00:44:31.000000000 +0000
+> @@ -0,0 +1,220 @@
+> +/* sound/soc/s3c24xx/s3c64xx-i2s.c
+> + *
+> + * ALSA SoC Audio Layer - S3C64XX I2S driver
+> + *
+> + * Copyright 2008 Openmoko, Inc.
+> + * Copyright 2008 Simtec Electronics
+> + *      Ben Dooks <ben@simtec.co.uk>
+> + *      http://armlinux.simtec.co.uk/
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
 
-Move the IIS headers to their correct place.
+sorry, forgot to update copyright before sending
 
-Signed-off-by: Ben Dooks <ben@simtec.co.uk>
-
-diff --git a/arch/arm/mach-s3c2410/dma.c b/arch/arm/mach-s3c2410/dma.c
-index 552b4c7..440c014 100644
---- a/arch/arm/mach-s3c2410/dma.c
-+++ b/arch/arm/mach-s3c2410/dma.c
-@@ -28,7 +28,7 @@
- #include <mach/regs-mem.h>
- #include <mach/regs-lcd.h>
- #include <mach/regs-sdi.h>
--#include <asm/plat-s3c24xx/regs-iis.h>
-+#include <plat/regs-iis.h>
- #include <plat/regs-spi.h>
- 
- static struct s3c24xx_dma_map __initdata s3c2410_dma_mappings[] = {
-diff --git a/arch/arm/mach-s3c2410/include/mach/hardware.h b/arch/arm/mach-s3c2410/include/mach/hardware.h
-index 74d5a1a..db72beb 100644
---- a/arch/arm/mach-s3c2410/include/mach/hardware.h
-+++ b/arch/arm/mach-s3c2410/include/mach/hardware.h
-@@ -131,7 +131,4 @@ extern int s3c2412_gpio_set_sleepcfg(unsigned int pin, unsigned int state);
- 
- /* machine specific hardware definitions should go after this */
- 
--/* currently here until moved into config (todo) */
--#define CONFIG_NO_MULTIWORD_IO
--
- #endif /* __ASM_ARCH_HARDWARE_H */
-diff --git a/arch/arm/mach-s3c2410/include/mach/io.h b/arch/arm/mach-s3c2410/include/mach/io.h
-index 9813dbf..c477771 100644
---- a/arch/arm/mach-s3c2410/include/mach/io.h
-+++ b/arch/arm/mach-s3c2410/include/mach/io.h
-@@ -9,7 +9,7 @@
- #ifndef __ASM_ARM_ARCH_IO_H
- #define __ASM_ARM_ARCH_IO_H
- 
--#include <mach/hardware.h>
-+#include <mach/map.h>
- 
- #define IO_SPACE_LIMIT 0xffffffff
- 
-diff --git a/arch/arm/mach-s3c2412/dma.c b/arch/arm/mach-s3c2412/dma.c
-index 919856c..9e34785 100644
---- a/arch/arm/mach-s3c2412/dma.c
-+++ b/arch/arm/mach-s3c2412/dma.c
-@@ -29,8 +29,8 @@
- #include <mach/regs-mem.h>
- #include <mach/regs-lcd.h>
- #include <mach/regs-sdi.h>
--#include <asm/plat-s3c24xx/regs-s3c2412-iis.h>
--#include <asm/plat-s3c24xx/regs-iis.h>
-+#include <plat/regs-s3c2412-iis.h>
-+#include <plat/regs-iis.h>
- #include <plat/regs-spi.h>
- 
- #define MAP(x) { (x)| DMA_CH_VALID, (x)| DMA_CH_VALID, (x)| DMA_CH_VALID, (x)| DMA_CH_VALID }
-diff --git a/arch/arm/mach-s3c2440/dma.c b/arch/arm/mach-s3c2440/dma.c
-index 5b5ee0b..69b6cf3 100644
---- a/arch/arm/mach-s3c2440/dma.c
-+++ b/arch/arm/mach-s3c2440/dma.c
-@@ -28,7 +28,7 @@
- #include <mach/regs-mem.h>
- #include <mach/regs-lcd.h>
- #include <mach/regs-sdi.h>
--#include <asm/plat-s3c24xx/regs-iis.h>
-+#include <plat/regs-iis.h>
- #include <plat/regs-spi.h>
- 
- static struct s3c24xx_dma_map __initdata s3c2440_dma_mappings[] = {
-diff --git a/arch/arm/mach-s3c2443/dma.c b/arch/arm/mach-s3c2443/dma.c
-index 2a58a4d..8430e58 100644
---- a/arch/arm/mach-s3c2443/dma.c
-+++ b/arch/arm/mach-s3c2443/dma.c
-@@ -29,7 +29,7 @@
- #include <mach/regs-mem.h>
- #include <mach/regs-lcd.h>
- #include <mach/regs-sdi.h>
--#include <asm/plat-s3c24xx/regs-iis.h>
-+#include <plat/regs-iis.h>
- #include <plat/regs-spi.h>
- 
- #define MAP(x) { \
-diff --git a/arch/arm/mach-shark/include/mach/io.h b/arch/arm/mach-shark/include/mach/io.h
-index c5cee82..8ca7d7f 100644
---- a/arch/arm/mach-shark/include/mach/io.h
-+++ b/arch/arm/mach-shark/include/mach/io.h
-@@ -14,7 +14,7 @@
- #define PCIO_BASE	0xe0000000
- #define IO_SPACE_LIMIT	0xffffffff
- 
--#define __io(a)		((void __iomem *)(PCIO_BASE + (a)))
-+#define __io(a)		__typesafe_io(PCIO_BASE + (a))
- #define __mem_pci(addr)	(addr)
- 
- #endif
-diff --git a/arch/arm/plat-s3c/include/plat/regs-s3c2412-iis.h b/arch/arm/plat-s3c/include/plat/regs-s3c2412-iis.h
-new file mode 100644
-index 0000000..25d4058
---- /dev/null
-+++ b/arch/arm/plat-s3c/include/plat/regs-s3c2412-iis.h
-@@ -0,0 +1,72 @@
-+/* linux/include/asm-arm/plat-s3c24xx/regs-s3c2412-iis.h
-+ *
-+ * Copyright 2007 Simtec Electronics <linux@simtec.co.uk>
-+ *	http://armlinux.simtec.co.uk/
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * S3C2412 IIS register definition
-+*/
-+
-+#ifndef __ASM_ARCH_REGS_S3C2412_IIS_H
-+#define __ASM_ARCH_REGS_S3C2412_IIS_H
-+
-+#define S3C2412_IISCON			(0x00)
-+#define S3C2412_IISMOD			(0x04)
-+#define S3C2412_IISFIC			(0x08)
-+#define S3C2412_IISPSR			(0x0C)
-+#define S3C2412_IISTXD			(0x10)
-+#define S3C2412_IISRXD			(0x14)
-+
-+#define S3C2412_IISCON_LRINDEX		(1 << 11)
-+#define S3C2412_IISCON_TXFIFO_EMPTY	(1 << 10)
-+#define S3C2412_IISCON_RXFIFO_EMPTY	(1 << 9)
-+#define S3C2412_IISCON_TXFIFO_FULL	(1 << 8)
-+#define S3C2412_IISCON_RXFIFO_FULL	(1 << 7)
-+#define S3C2412_IISCON_TXDMA_PAUSE	(1 << 6)
-+#define S3C2412_IISCON_RXDMA_PAUSE	(1 << 5)
-+#define S3C2412_IISCON_TXCH_PAUSE	(1 << 4)
-+#define S3C2412_IISCON_RXCH_PAUSE	(1 << 3)
-+#define S3C2412_IISCON_TXDMA_ACTIVE	(1 << 2)
-+#define S3C2412_IISCON_RXDMA_ACTIVE	(1 << 1)
-+#define S3C2412_IISCON_IIS_ACTIVE	(1 << 0)
-+
-+#define S3C2412_IISMOD_MASTER_INTERNAL	(0 << 10)
-+#define S3C2412_IISMOD_MASTER_EXTERNAL	(1 << 10)
-+#define S3C2412_IISMOD_SLAVE		(2 << 10)
-+#define S3C2412_IISMOD_MASTER_MASK	(3 << 10)
-+#define S3C2412_IISMOD_MODE_TXONLY	(0 << 8)
-+#define S3C2412_IISMOD_MODE_RXONLY	(1 << 8)
-+#define S3C2412_IISMOD_MODE_TXRX	(2 << 8)
-+#define S3C2412_IISMOD_MODE_MASK	(3 << 8)
-+#define S3C2412_IISMOD_LR_LLOW		(0 << 7)
-+#define S3C2412_IISMOD_LR_RLOW		(1 << 7)
-+#define S3C2412_IISMOD_SDF_IIS		(0 << 5)
-+#define S3C2412_IISMOD_SDF_MSB		(0 << 5)
-+#define S3C2412_IISMOD_SDF_LSB		(0 << 5)
-+#define S3C2412_IISMOD_SDF_MASK		(3 << 5)
-+#define S3C2412_IISMOD_RCLK_256FS	(0 << 3)
-+#define S3C2412_IISMOD_RCLK_512FS	(1 << 3)
-+#define S3C2412_IISMOD_RCLK_384FS	(2 << 3)
-+#define S3C2412_IISMOD_RCLK_768FS	(3 << 3)
-+#define S3C2412_IISMOD_RCLK_MASK 	(3 << 3)
-+#define S3C2412_IISMOD_BCLK_32FS	(0 << 1)
-+#define S3C2412_IISMOD_BCLK_48FS	(1 << 1)
-+#define S3C2412_IISMOD_BCLK_16FS	(2 << 1)
-+#define S3C2412_IISMOD_BCLK_24FS	(3 << 1)
-+#define S3C2412_IISMOD_BCLK_MASK	(3 << 1)
-+#define S3C2412_IISMOD_8BIT		(1 << 0)
-+
-+#define S3C2412_IISPSR_PSREN		(1 << 15)
-+
-+#define S3C2412_IISFIC_TXFLUSH		(1 << 15)
-+#define S3C2412_IISFIC_RXFLUSH		(1 << 7)
-+#define S3C2412_IISFIC_TXCOUNT(x)	(((x) >>  8) & 0xf)
-+#define S3C2412_IISFIC_RXCOUNT(x)	(((x) >>  0) & 0xf)
-+
-+
-+
-+#endif /* __ASM_ARCH_REGS_S3C2412_IIS_H */
-+
-diff --git a/arch/arm/plat-s3c24xx/clock-dclk.c b/arch/arm/plat-s3c24xx/clock-dclk.c
-index 5b75a79..35219dc 100644
---- a/arch/arm/plat-s3c24xx/clock-dclk.c
-+++ b/arch/arm/plat-s3c24xx/clock-dclk.c
-@@ -18,6 +18,7 @@
- 
- #include <mach/regs-clock.h>
- #include <mach/regs-gpio.h>
-+#include <mach/hardware.h>
- 
- #include <plat/clock.h>
- #include <plat/cpu.h>
-diff --git a/arch/arm/plat-s3c24xx/include/plat/regs-iis.h b/arch/arm/plat-s3c24xx/include/plat/regs-iis.h
-new file mode 100644
-index 0000000..a6f1d5d
---- /dev/null
-+++ b/arch/arm/plat-s3c24xx/include/plat/regs-iis.h
-@@ -0,0 +1,77 @@
-+/* arch/arm/mach-s3c2410/include/mach/regs-iis.h
-+ *
-+ * Copyright (c) 2003 Simtec Electronics <linux@simtec.co.uk>
-+ *		      http://www.simtec.co.uk/products/SWLINUX/
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * S3C2410 IIS register definition
-+*/
-+
-+#ifndef __ASM_ARCH_REGS_IIS_H
-+#define __ASM_ARCH_REGS_IIS_H
-+
-+#define S3C2410_IISCON	 (0x00)
-+
-+#define S3C2410_IISCON_LRINDEX	  (1<<8)
-+#define S3C2410_IISCON_TXFIFORDY  (1<<7)
-+#define S3C2410_IISCON_RXFIFORDY  (1<<6)
-+#define S3C2410_IISCON_TXDMAEN	  (1<<5)
-+#define S3C2410_IISCON_RXDMAEN	  (1<<4)
-+#define S3C2410_IISCON_TXIDLE	  (1<<3)
-+#define S3C2410_IISCON_RXIDLE	  (1<<2)
-+#define S3C2410_IISCON_PSCEN	  (1<<1)
-+#define S3C2410_IISCON_IISEN	  (1<<0)
-+
-+#define S3C2410_IISMOD	 (0x04)
-+
-+#define S3C2440_IISMOD_MPLL	  (1<<9)
-+#define S3C2410_IISMOD_SLAVE	  (1<<8)
-+#define S3C2410_IISMOD_NOXFER	  (0<<6)
-+#define S3C2410_IISMOD_RXMODE	  (1<<6)
-+#define S3C2410_IISMOD_TXMODE	  (2<<6)
-+#define S3C2410_IISMOD_TXRXMODE	  (3<<6)
-+#define S3C2410_IISMOD_LR_LLOW	  (0<<5)
-+#define S3C2410_IISMOD_LR_RLOW	  (1<<5)
-+#define S3C2410_IISMOD_IIS	  (0<<4)
-+#define S3C2410_IISMOD_MSB	  (1<<4)
-+#define S3C2410_IISMOD_8BIT	  (0<<3)
-+#define S3C2410_IISMOD_16BIT	  (1<<3)
-+#define S3C2410_IISMOD_BITMASK	  (1<<3)
-+#define S3C2410_IISMOD_256FS	  (0<<2)
-+#define S3C2410_IISMOD_384FS	  (1<<2)
-+#define S3C2410_IISMOD_16FS	  (0<<0)
-+#define S3C2410_IISMOD_32FS	  (1<<0)
-+#define S3C2410_IISMOD_48FS	  (2<<0)
-+#define S3C2410_IISMOD_FS_MASK	  (3<<0)
-+
-+#define S3C2410_IISPSR		(0x08)
-+#define S3C2410_IISPSR_INTMASK	(31<<5)
-+#define S3C2410_IISPSR_INTSHIFT	(5)
-+#define S3C2410_IISPSR_EXTMASK	(31<<0)
-+#define S3C2410_IISPSR_EXTSHFIT	(0)
-+
-+#define S3C2410_IISFCON  (0x0c)
-+
-+#define S3C2410_IISFCON_TXDMA	  (1<<15)
-+#define S3C2410_IISFCON_RXDMA	  (1<<14)
-+#define S3C2410_IISFCON_TXENABLE  (1<<13)
-+#define S3C2410_IISFCON_RXENABLE  (1<<12)
-+#define S3C2410_IISFCON_TXMASK	  (0x3f << 6)
-+#define S3C2410_IISFCON_TXSHIFT	  (6)
-+#define S3C2410_IISFCON_RXMASK	  (0x3f)
-+#define S3C2410_IISFCON_RXSHIFT	  (0)
-+
-+#define S3C2400_IISFCON_TXDMA     (1<<11)
-+#define S3C2400_IISFCON_RXDMA     (1<<10)
-+#define S3C2400_IISFCON_TXENABLE  (1<<9)
-+#define S3C2400_IISFCON_RXENABLE  (1<<8)
-+#define S3C2400_IISFCON_TXMASK	  (0x07 << 4)
-+#define S3C2400_IISFCON_TXSHIFT	  (4)
-+#define S3C2400_IISFCON_RXMASK	  (0x07)
-+#define S3C2400_IISFCON_RXSHIFT	  (0)
-+
-+#define S3C2410_IISFIFO  (0x10)
-+#endif /* __ASM_ARCH_REGS_IIS_H */
-diff --git a/include/asm-arm/plat-s3c24xx/regs-iis.h b/include/asm-arm/plat-s3c24xx/regs-iis.h
-deleted file mode 100644
-index a6f1d5d..0000000
---- a/include/asm-arm/plat-s3c24xx/regs-iis.h
-+++ /dev/null
-@@ -1,77 +0,0 @@
--/* arch/arm/mach-s3c2410/include/mach/regs-iis.h
-- *
-- * Copyright (c) 2003 Simtec Electronics <linux@simtec.co.uk>
-- *		      http://www.simtec.co.uk/products/SWLINUX/
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-- * S3C2410 IIS register definition
--*/
--
--#ifndef __ASM_ARCH_REGS_IIS_H
--#define __ASM_ARCH_REGS_IIS_H
--
--#define S3C2410_IISCON	 (0x00)
--
--#define S3C2410_IISCON_LRINDEX	  (1<<8)
--#define S3C2410_IISCON_TXFIFORDY  (1<<7)
--#define S3C2410_IISCON_RXFIFORDY  (1<<6)
--#define S3C2410_IISCON_TXDMAEN	  (1<<5)
--#define S3C2410_IISCON_RXDMAEN	  (1<<4)
--#define S3C2410_IISCON_TXIDLE	  (1<<3)
--#define S3C2410_IISCON_RXIDLE	  (1<<2)
--#define S3C2410_IISCON_PSCEN	  (1<<1)
--#define S3C2410_IISCON_IISEN	  (1<<0)
--
--#define S3C2410_IISMOD	 (0x04)
--
--#define S3C2440_IISMOD_MPLL	  (1<<9)
--#define S3C2410_IISMOD_SLAVE	  (1<<8)
--#define S3C2410_IISMOD_NOXFER	  (0<<6)
--#define S3C2410_IISMOD_RXMODE	  (1<<6)
--#define S3C2410_IISMOD_TXMODE	  (2<<6)
--#define S3C2410_IISMOD_TXRXMODE	  (3<<6)
--#define S3C2410_IISMOD_LR_LLOW	  (0<<5)
--#define S3C2410_IISMOD_LR_RLOW	  (1<<5)
--#define S3C2410_IISMOD_IIS	  (0<<4)
--#define S3C2410_IISMOD_MSB	  (1<<4)
--#define S3C2410_IISMOD_8BIT	  (0<<3)
--#define S3C2410_IISMOD_16BIT	  (1<<3)
--#define S3C2410_IISMOD_BITMASK	  (1<<3)
--#define S3C2410_IISMOD_256FS	  (0<<2)
--#define S3C2410_IISMOD_384FS	  (1<<2)
--#define S3C2410_IISMOD_16FS	  (0<<0)
--#define S3C2410_IISMOD_32FS	  (1<<0)
--#define S3C2410_IISMOD_48FS	  (2<<0)
--#define S3C2410_IISMOD_FS_MASK	  (3<<0)
--
--#define S3C2410_IISPSR		(0x08)
--#define S3C2410_IISPSR_INTMASK	(31<<5)
--#define S3C2410_IISPSR_INTSHIFT	(5)
--#define S3C2410_IISPSR_EXTMASK	(31<<0)
--#define S3C2410_IISPSR_EXTSHFIT	(0)
--
--#define S3C2410_IISFCON  (0x0c)
--
--#define S3C2410_IISFCON_TXDMA	  (1<<15)
--#define S3C2410_IISFCON_RXDMA	  (1<<14)
--#define S3C2410_IISFCON_TXENABLE  (1<<13)
--#define S3C2410_IISFCON_RXENABLE  (1<<12)
--#define S3C2410_IISFCON_TXMASK	  (0x3f << 6)
--#define S3C2410_IISFCON_TXSHIFT	  (6)
--#define S3C2410_IISFCON_RXMASK	  (0x3f)
--#define S3C2410_IISFCON_RXSHIFT	  (0)
--
--#define S3C2400_IISFCON_TXDMA     (1<<11)
--#define S3C2400_IISFCON_RXDMA     (1<<10)
--#define S3C2400_IISFCON_TXENABLE  (1<<9)
--#define S3C2400_IISFCON_RXENABLE  (1<<8)
--#define S3C2400_IISFCON_TXMASK	  (0x07 << 4)
--#define S3C2400_IISFCON_TXSHIFT	  (4)
--#define S3C2400_IISFCON_RXMASK	  (0x07)
--#define S3C2400_IISFCON_RXSHIFT	  (0)
--
--#define S3C2410_IISFIFO  (0x10)
--#endif /* __ASM_ARCH_REGS_IIS_H */
-diff --git a/include/asm-arm/plat-s3c24xx/regs-s3c2412-iis.h b/include/asm-arm/plat-s3c24xx/regs-s3c2412-iis.h
-deleted file mode 100644
-index 25d4058..0000000
---- a/include/asm-arm/plat-s3c24xx/regs-s3c2412-iis.h
-+++ /dev/null
-@@ -1,72 +0,0 @@
--/* linux/include/asm-arm/plat-s3c24xx/regs-s3c2412-iis.h
-- *
-- * Copyright 2007 Simtec Electronics <linux@simtec.co.uk>
-- *	http://armlinux.simtec.co.uk/
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-- * S3C2412 IIS register definition
--*/
--
--#ifndef __ASM_ARCH_REGS_S3C2412_IIS_H
--#define __ASM_ARCH_REGS_S3C2412_IIS_H
--
--#define S3C2412_IISCON			(0x00)
--#define S3C2412_IISMOD			(0x04)
--#define S3C2412_IISFIC			(0x08)
--#define S3C2412_IISPSR			(0x0C)
--#define S3C2412_IISTXD			(0x10)
--#define S3C2412_IISRXD			(0x14)
--
--#define S3C2412_IISCON_LRINDEX		(1 << 11)
--#define S3C2412_IISCON_TXFIFO_EMPTY	(1 << 10)
--#define S3C2412_IISCON_RXFIFO_EMPTY	(1 << 9)
--#define S3C2412_IISCON_TXFIFO_FULL	(1 << 8)
--#define S3C2412_IISCON_RXFIFO_FULL	(1 << 7)
--#define S3C2412_IISCON_TXDMA_PAUSE	(1 << 6)
--#define S3C2412_IISCON_RXDMA_PAUSE	(1 << 5)
--#define S3C2412_IISCON_TXCH_PAUSE	(1 << 4)
--#define S3C2412_IISCON_RXCH_PAUSE	(1 << 3)
--#define S3C2412_IISCON_TXDMA_ACTIVE	(1 << 2)
--#define S3C2412_IISCON_RXDMA_ACTIVE	(1 << 1)
--#define S3C2412_IISCON_IIS_ACTIVE	(1 << 0)
--
--#define S3C2412_IISMOD_MASTER_INTERNAL	(0 << 10)
--#define S3C2412_IISMOD_MASTER_EXTERNAL	(1 << 10)
--#define S3C2412_IISMOD_SLAVE		(2 << 10)
--#define S3C2412_IISMOD_MASTER_MASK	(3 << 10)
--#define S3C2412_IISMOD_MODE_TXONLY	(0 << 8)
--#define S3C2412_IISMOD_MODE_RXONLY	(1 << 8)
--#define S3C2412_IISMOD_MODE_TXRX	(2 << 8)
--#define S3C2412_IISMOD_MODE_MASK	(3 << 8)
--#define S3C2412_IISMOD_LR_LLOW		(0 << 7)
--#define S3C2412_IISMOD_LR_RLOW		(1 << 7)
--#define S3C2412_IISMOD_SDF_IIS		(0 << 5)
--#define S3C2412_IISMOD_SDF_MSB		(0 << 5)
--#define S3C2412_IISMOD_SDF_LSB		(0 << 5)
--#define S3C2412_IISMOD_SDF_MASK		(3 << 5)
--#define S3C2412_IISMOD_RCLK_256FS	(0 << 3)
--#define S3C2412_IISMOD_RCLK_512FS	(1 << 3)
--#define S3C2412_IISMOD_RCLK_384FS	(2 << 3)
--#define S3C2412_IISMOD_RCLK_768FS	(3 << 3)
--#define S3C2412_IISMOD_RCLK_MASK 	(3 << 3)
--#define S3C2412_IISMOD_BCLK_32FS	(0 << 1)
--#define S3C2412_IISMOD_BCLK_48FS	(1 << 1)
--#define S3C2412_IISMOD_BCLK_16FS	(2 << 1)
--#define S3C2412_IISMOD_BCLK_24FS	(3 << 1)
--#define S3C2412_IISMOD_BCLK_MASK	(3 << 1)
--#define S3C2412_IISMOD_8BIT		(1 << 0)
--
--#define S3C2412_IISPSR_PSREN		(1 << 15)
--
--#define S3C2412_IISFIC_TXFLUSH		(1 << 15)
--#define S3C2412_IISFIC_RXFLUSH		(1 << 7)
--#define S3C2412_IISFIC_TXCOUNT(x)	(((x) >>  8) & 0xf)
--#define S3C2412_IISFIC_RXCOUNT(x)	(((x) >>  0) & 0xf)
--
--
--
--#endif /* __ASM_ARCH_REGS_S3C2412_IIS_H */
--
-diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/s3c24xx/neo1973_wm8753.c
-index 45bb12e..286ff44 100644
---- a/sound/soc/s3c24xx/neo1973_wm8753.c
-+++ b/sound/soc/s3c24xx/neo1973_wm8753.c
-@@ -33,7 +33,7 @@
- #include <linux/io.h>
- #include <mach/spi-gpio.h>
- 
--#include <asm/plat-s3c24xx/regs-iis.h>
-+#include <plat/regs-iis.h>
- 
- #include "../codecs/wm8753.h"
- #include "lm4857.h"
-diff --git a/sound/soc/s3c24xx/s3c2412-i2s.c b/sound/soc/s3c24xx/s3c2412-i2s.c
-index f3fc0ab..36b927d 100644
---- a/sound/soc/s3c24xx/s3c2412-i2s.c
-+++ b/sound/soc/s3c24xx/s3c2412-i2s.c
-@@ -22,6 +22,7 @@
- #include <linux/delay.h>
- #include <linux/clk.h>
- #include <linux/kernel.h>
-+#include <linux/io.h>
- 
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -30,10 +31,7 @@
- #include <sound/soc.h>
- #include <mach/hardware.h>
- 
--#include <linux/io.h>
--#include <asm/dma.h>
--
--#include <asm/plat-s3c24xx/regs-s3c2412-iis.h>
-+#include <plat/regs-s3c2412-iis.h>
- 
- #include <mach/regs-gpio.h>
- #include <mach/audio.h>
-diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.c b/sound/soc/s3c24xx/s3c24xx-i2s.c
-index 6f4d439..2569b91 100644
---- a/sound/soc/s3c24xx/s3c24xx-i2s.c
-+++ b/sound/soc/s3c24xx/s3c24xx-i2s.c
-@@ -34,7 +34,7 @@
- #include <asm/dma.h>
- #include <mach/dma.h>
- 
--#include <asm/plat-s3c24xx/regs-iis.h>
-+#include <plat/regs-iis.h>
- 
- #include "s3c24xx-pcm.h"
- #include "s3c24xx-i2s.h"
-diff --git a/sound/soc/s3c24xx/s3c24xx_uda134x.c b/sound/soc/s3c24xx/s3c24xx_uda134x.c
-index a0a4d18..8e79a41 100644
---- a/sound/soc/s3c24xx/s3c24xx_uda134x.c
-+++ b/sound/soc/s3c24xx/s3c24xx_uda134x.c
-@@ -22,7 +22,7 @@
- #include <sound/s3c24xx_uda134x.h>
- #include <sound/uda134x.h>
- 
--#include <asm/plat-s3c24xx/regs-iis.h>
-+#include <plat/regs-iis.h>
- 
- #include "s3c24xx-pcm.h"
- #include "s3c24xx-i2s.h"
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+> +#include <linux/device.h>
+> +#include <linux/delay.h>
+> +#include <linux/clk.h>
+> +#include <linux/kernel.h>
+> +#include <linux/gpio.h>
+> +#include <linux/io.h>
+> +
+> +#include <sound/core.h>
+> +#include <sound/pcm.h>
+> +#include <sound/pcm_params.h>
+> +#include <sound/initval.h>
+> +#include <sound/soc.h>
+> +
+> +#include <plat/regs-s3c2412-iis.h>
+> +#include <plat/gpio-bank-d.h>
+> +#include <plat/gpio-bank-e.h>
+> +#include <plat/gpio-cfg.h>
+> +#include <plat/audio.h>
+> +
+> +#include <mach/map.h>
+> +#include <mach/dma.h>
+> +
+> +#include "s3c24xx-pcm.h"
+> +#include "s3c64xx-i2s.h"
+> +
+> +static struct s3c2410_dma_client s3c64xx_dma_client_out = {
+> +	.name		= "I2S PCM Stereo out"
+> +};
+> +
+> +static struct s3c2410_dma_client s3c64xx_dma_client_in = {
+> +	.name		= "I2S PCM Stereo in"
+> +};
+> +
+> +static struct s3c24xx_pcm_dma_params s3c64xx_i2s_pcm_stereo_out[2] = {
+> +	[0] = {
+> +		.channel	= DMACH_I2S0_OUT,
+> +		.client		= &s3c64xx_dma_client_out,
+> +		.dma_addr	= S3C64XX_PA_IIS0 + S3C2412_IISTXD,
+> +		.dma_size	= 4,
+> +	},
+> +	[1] = {
+> +		.channel	= DMACH_I2S1_OUT,
+> +		.client		= &s3c64xx_dma_client_out,
+> +		.dma_addr	= S3C64XX_PA_IIS1 + S3C2412_IISTXD,
+> +		.dma_size	= 4,
+> +	},
+> +};
+> +
+> +static struct s3c24xx_pcm_dma_params s3c64xx_i2s_pcm_stereo_in[2] = {
+> +	[0] = {
+> +		.channel	= DMACH_I2S0_IN,
+> +		.client		= &s3c64xx_dma_client_in,
+> +		.dma_addr	= S3C64XX_PA_IIS0 + S3C2412_IISRXD,
+> +		.dma_size	= 4,
+> +	},
+> +	[1] = {
+> +		.channel	= DMACH_I2S1_IN,
+> +		.client		= &s3c64xx_dma_client_in,
+> +		.dma_addr	= S3C64XX_PA_IIS1 + S3C2412_IISRXD,
+> +		.dma_size	= 4,
+> +	},
+> +};
+> +
+> +static struct s3c_i2sv2_info s3c64xx_i2s[2];
+> +
+> +static inline struct s3c_i2sv2_info *to_info(struct snd_soc_dai *cpu_dai)
+> +{
+> +	return cpu_dai->private_data;
+> +}
+> +
+> +static int s3c64xx_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
+> +				  int clk_id, unsigned int freq, int dir)
+> +{
+> +	struct s3c_i2sv2_info *i2s = to_info(cpu_dai);
+> +	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
+> +
+> +	switch (clk_id) {
+> +	case S3C64XX_CLKSRC_PCLK:
+> +		iismod &= ~S3C64XX_IISMOD_IMS_SYSMUX;
+> +		break;
+> +
+> +	case S3C64XX_CLKSRC_MUX:
+> +		iismod |= S3C64XX_IISMOD_IMS_SYSMUX;
+> +		break;
+> +
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	writel(iismod, i2s->regs + S3C2412_IISMOD);
+> +
+> +	return 0;
+> +}
+> +
+> +
+> +unsigned long s3c64xx_i2s_get_clockrate(struct snd_soc_dai *dai)
+> +{
+> +	struct s3c_i2sv2_info *i2s = to_info(dai);
+> +
+> +	return clk_get_rate(i2s->iis_cclk);
+> +}
+> +EXPORT_SYMBOL_GPL(s3c64xx_i2s_get_clockrate);
+> +
+> +static int s3c64xx_i2s_probe(struct platform_device *pdev,
+> +			     struct snd_soc_dai *dai)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct s3c_i2sv2_info *i2s;
+> +	int ret;
+> +
+> +	dev_dbg(dev, "%s: probing dai %d\n", __func__, pdev->id);
+> +
+> +	if (pdev->id < 0 || pdev->id > ARRAY_SIZE(s3c64xx_i2s)) {
+> +		dev_err(dev, "id %d out of range\n", pdev->id);
+> +		return -EINVAL;
+> +	}
+> +
+> +	i2s = &s3c64xx_i2s[pdev->id];
+> +
+> +	ret = s3c_i2sv2_probe(pdev, dai, i2s,
+> +			      pdev->id ? S3C64XX_PA_IIS1 : S3C64XX_PA_IIS0);
+> +	if (ret)
+> +		return ret;
+> +
+> +	i2s->dma_capture = &s3c64xx_i2s_pcm_stereo_in[pdev->id];
+> +	i2s->dma_playback = &s3c64xx_i2s_pcm_stereo_out[pdev->id];
+> +
+> +	i2s->iis_cclk = clk_get(dev, "audio-bus");
+> +	if (IS_ERR(i2s->iis_cclk)) {
+> +		dev_err(dev, "failed to get audio-bus");
+> +		iounmap(i2s->regs);
+> +		return -ENODEV;
+> +	}
+> +
+> +	/* configure GPIO for i2s port */
+> +	switch (pdev->id) {
+> +	case 0:
+> +		s3c_gpio_cfgpin(S3C64XX_GPD(0), S3C64XX_GPD0_I2S0_CLK);
+> +		s3c_gpio_cfgpin(S3C64XX_GPD(1), S3C64XX_GPD1_I2S0_CDCLK);
+> +		s3c_gpio_cfgpin(S3C64XX_GPD(2), S3C64XX_GPD2_I2S0_LRCLK);
+> +		s3c_gpio_cfgpin(S3C64XX_GPD(3), S3C64XX_GPD3_I2S0_DI);
+> +		s3c_gpio_cfgpin(S3C64XX_GPD(4), S3C64XX_GPD4_I2S0_D0);
+> +		break;
+> +	case 1:
+> +		s3c_gpio_cfgpin(S3C64XX_GPE(0), S3C64XX_GPE0_I2S1_CLK);
+> +		s3c_gpio_cfgpin(S3C64XX_GPE(1), S3C64XX_GPE1_I2S1_CDCLK);
+> +		s3c_gpio_cfgpin(S3C64XX_GPE(2), S3C64XX_GPE2_I2S1_LRCLK);
+> +		s3c_gpio_cfgpin(S3C64XX_GPE(3), S3C64XX_GPE3_I2S1_DI);
+> +		s3c_gpio_cfgpin(S3C64XX_GPE(4), S3C64XX_GPE4_I2S1_D0);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +
+> +#define S3C64XX_I2S_RATES \
+> +	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
+> +	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
+> +	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
+> +
+> +#define S3C64XX_I2S_FMTS \
+> +	(SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE)
+> +
+> +struct snd_soc_dai s3c64xx_i2s_dai = {
+> +	.name		= "s3c64xx-i2s",
+> +	.id		= 0,
+> +	.probe		= s3c64xx_i2s_probe,
+> +	.playback = {
+> +		.channels_min	= 2,
+> +		.channels_max	= 2,
+> +		.rates		= S3C64XX_I2S_RATES,
+> +		.formats	= S3C64XX_I2S_FMTS,
+> +	},
+> +	.capture = {
+> +		.channels_min	= 2,
+> +		.channels_max	= 2,
+> +		.rates		= S3C64XX_I2S_RATES,
+> +		.formats	= S3C64XX_I2S_FMTS,
+> +	},
+> +	.ops = {
+> +		.set_sysclk	= s3c64xx_i2s_set_sysclk,
+> +	},
+> +};
+> +EXPORT_SYMBOL_GPL(s3c64xx_i2s_dai);
+> +
+> +static int __init s3c64xx_i2s_init(void)
+> +{
+> +	return  s3c_i2sv2_register_dai(&s3c64xx_i2s_dai);
+> +}
+> +module_init(s3c64xx_i2s_init);
+> +
+> +static void __exit s3c64xx_i2s_exit(void)
+> +{
+> +	snd_soc_unregister_dai(&s3c64xx_i2s_dai);
+> +}
+> +module_exit(s3c64xx_i2s_exit);
+> +
+> +/* Module information */
+> +MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
+> +MODULE_DESCRIPTION("S3C64XX I2S SoC Interface");
+> +MODULE_LICENSE("GPL");
+> +
+> +
+> +
+> Index: linux.git/sound/soc/s3c24xx/s3c64xx-i2s.h
+> ===================================================================
+> --- /dev/null	1970-01-01 00:00:00.000000000 +0000
+> +++ linux.git/sound/soc/s3c24xx/s3c64xx-i2s.h	2009-03-04 00:44:31.000000000 +0000
+> @@ -0,0 +1,31 @@
+> +/* sound/soc/s3c24xx/s3c64xx-i2s.h
+> + *
+> + * ALSA SoC Audio Layer - S3C64XX I2S driver
+> + *
+> + * Copyright 2008 Openmoko, Inc.
+> + * Copyright 2008 Simtec Electronics
+> + *      Ben Dooks <ben@simtec.co.uk>
+> + *      http://armlinux.simtec.co.uk/
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
+> +
+> +#ifndef __SND_SOC_S3C24XX_S3C64XX_I2S_H
+> +#define __SND_SOC_S3C24XX_S3C64XX_I2S_H __FILE__
+> +
+> +#include "s3c-i2s-v2.h"
+> +
+> +#define S3C64XX_DIV_BCLK	S3C_I2SV2_DIV_BCLK
+> +#define S3C64XX_DIV_RCLK	S3C_I2SV2_DIV_RCLK
+> +#define S3C64XX_DIV_PRESCALER	S3C_I2SV2_DIV_PRESCALER
+> +
+> +#define S3C64XX_CLKSRC_PCLK	(0)
+> +#define S3C64XX_CLKSRC_MUX	(1)
+> +
+> +extern struct snd_soc_dai s3c64xx_i2s_dai;
+> +
+> +extern unsigned long s3c64xx_i2s_get_clockrate(struct snd_soc_dai *cpu_dai);
+> +
+> +#endif /* __SND_SOC_S3C24XX_S3C64XX_I2S_H */
+> Index: linux.git/sound/soc/s3c24xx/Kconfig
+> ===================================================================
+> --- linux.git.orig/sound/soc/s3c24xx/Kconfig	2009-03-04 00:44:28.000000000 +0000
+> +++ linux.git/sound/soc/s3c24xx/Kconfig	2009-03-04 00:44:31.000000000 +0000
+> @@ -1,6 +1,6 @@
+>  config SND_S3C24XX_SOC
+>  	tristate "SoC Audio for the Samsung S3C24XX chips"
+> -	depends on ARCH_S3C2410
+> +	depends on ARCH_S3C2410 || ARCH_S3C64XX
+>  	help
+>  	  Say Y or M if you want to add support for codecs attached to
+>  	  the S3C24XX AC97, I2S or SSP interface. You will also need
+> @@ -16,6 +16,10 @@ config SND_S3C2412_SOC_I2S
+>  	tristate
+>  	select SND_S3C_I2SV2_SOC
+>  
+> +config SND_S3C64XX_SOC_I2S
+> +	tristate
+> +	select SND_S3C_I2SV2_SOC
+> +
+>  config SND_S3C2443_SOC_AC97
+>  	tristate
+>  	select AC97_BUS
+> Index: linux.git/arch/arm/plat-s3c/include/plat/regs-s3c2412-iis.h
+> ===================================================================
+> --- linux.git.orig/arch/arm/plat-s3c/include/plat/regs-s3c2412-iis.h	2009-03-04 00:44:10.000000000 +0000
+> +++ linux.git/arch/arm/plat-s3c/include/plat/regs-s3c2412-iis.h	2009-03-04 00:44:31.000000000 +0000
+> @@ -33,6 +33,9 @@
+>  #define S3C2412_IISCON_RXDMA_ACTIVE	(1 << 1)
+>  #define S3C2412_IISCON_IIS_ACTIVE	(1 << 0)
+>  
+> +#define S3C64XX_IISMOD_IMS_PCLK		(0 << 10)
+> +#define S3C64XX_IISMOD_IMS_SYSMUX	(1 << 10)
+> +
+>  #define S3C2412_IISMOD_MASTER_INTERNAL	(0 << 10)
+>  #define S3C2412_IISMOD_MASTER_EXTERNAL	(1 << 10)
+>  #define S3C2412_IISMOD_SLAVE		(2 << 10)
+> 
+> -- 
+> Ben (ben@fluff.org, http://www.fluff.org/)
+> 
+>   'a smiley only costs 4 bytes'
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
 -- 
-Ben (ben@fluff.org, http://www.fluff.org/)
+-- 
+Ben
 
-  'a smiley only costs 4 bytes'
+Q:      What's a light-year?
+A:      One-third less calories than a regular year.
