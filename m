@@ -1,18 +1,16 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 1/4] ASoC: Use network mode with 2
-	slots	for 16-bit stereo in pxa-ssp/Zylonite
-Date: Wed, 4 Mar 2009 02:34:24 +0100
-Message-ID: <20090304013424.GA5165@buzzloop.caiaq.de>
-References: <1236093054-1952-1-git-send-email-philipp.zabel@gmail.com>
+From: Joonyoung Shim <dofmind@gmail.com>
+Subject: [PATCH] ASoC: Fix long name of control for dapm_switch
+Date: Wed, 4 Mar 2009 10:47:09 +0900
+Message-ID: <4e1455be0903031747s65097766saea220037d1335ff@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9B08224422
-	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 02:34:27 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1236093054-1952-1-git-send-email-philipp.zabel@gmail.com>
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.249])
+	by alsa0.perex.cz (Postfix) with ESMTP id B3E7724430
+	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 02:47:10 +0100 (CET)
+Received: by rv-out-0708.google.com with SMTP id c5so2736208rvf.32
+	for <alsa-devel@alsa-project.org>; Tue, 03 Mar 2009 17:47:09 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,36 +20,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Philipp Zabel <philipp.zabel@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Phillip,
+The length of long control name doesn't include the length of widget
+name at present when widget->id is snd_soc_dapm_switch, so the long
+control name of dapm_switch is shortened.
+To avoid this problem, the long control name only for dapm_mixer_named_ctl
+must have simply the kcontrol name.
 
-glad to see someone is wasting time with that issue, too :)
+Signed-off-by: Joonyoung Shim <jy0922.shim@samsung.com>
+---
+ sound/soc/soc-dapm.c |   21 +++++++++------------
+ 1 files changed, 9 insertions(+), 12 deletions(-)
 
-On Tue, Mar 03, 2009 at 04:10:51PM +0100, Philipp Zabel wrote:
-> For consistency with 24-bit and 32-bit modes, don't send 16-bit stereo
-> in one 32-bit transfer. Use 2 slots instead on Zylonite. It should result
-> in exactly the same behaviour.
-> Now it is possible to use 16-bit single slot transfers in pxa-ssp, which
-> are needed for Magician to get two frame clock pulses per sample
-> (one for each channel).
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 4b8dbbf..7a1fed1 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -331,26 +331,23 @@ static int dapm_new_mixer(struct snd_soc_codec *codec,
+                         * for dapm_mixer_named_ctl this is simply the
+                         * kcontrol name.
+                         */
+-                       name_len = strlen(w->kcontrols[i].name) + 1;
+-                       if (w->id == snd_soc_dapm_mixer)
+-                               name_len += 1 + strlen(w->name);
++                       if (w->id == snd_soc_dapm_mixer_named_ctl)
++                               name_len = strlen(w->kcontrols[i].name) + 1;
++                       else
++                               name_len = 2 + strlen(w->name)
++                                       + strlen(w->kcontrols[i].name);
 
-We've been fiddling around with these modes and registers for
-another two days in a row now and figured out that literally all the
-documentation about these registers is entirly bogus. In particular,
-the network mode with the associated timeslots simply does not work at
-all, according to our measurements.
+                        path->long_name = kmalloc(name_len, GFP_KERNEL);
 
-Hence the question: how does your I2S signal look like at the moment?
-How many clocks do you measure in one frame cylce, how many of them are
-actually filled with data? And which format does the userspace use to
-send samples in?
+                        if (path->long_name == NULL)
+                                return -ENOMEM;
 
-We finally got a mode now that outputs 2x16 bit on a 2x32 bits I2S
-frame, padded with zeros. But that is in non-network modes, more
-about that tomorrow ...
+-                       switch (w->id) {
+-                       case snd_soc_dapm_mixer:
+-                       default:
+-                               snprintf(path->long_name, name_len, "%s %s",
+-                                        w->name, w->kcontrols[i].name);
+-                       break;
+-                       case snd_soc_dapm_mixer_named_ctl:
++                       if (w->id == snd_soc_dapm_mixer_named_ctl)
+                                snprintf(path->long_name, name_len, "%s",
+                                         w->kcontrols[i].name);
+-                       break;
+-                       }
++                       else
++                               snprintf(path->long_name, name_len, "%s %s",
++                                        w->name, w->kcontrols[i].name);
 
-Thanks,
-Daniel
+                        path->long_name[name_len - 1] = '\0';
+
+-- 
+1.5.6.3
+
+
+-- 
+- Joonyoung Shim
