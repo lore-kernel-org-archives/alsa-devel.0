@@ -1,16 +1,17 @@
 From: Ben Dooks <ben-alsa@fluff.org>
-Subject: [patch 6/9] S3C64XX: Add s3c64xx-i2s support
-Date: Wed, 04 Mar 2009 00:49:31 +0000
-Message-ID: <20090304005139.012781244@fluff.org.uk>
+Subject: [patch 8/9] SMDK6410: Add support for WM8731 on an
+	add-on board
+Date: Wed, 04 Mar 2009 00:49:33 +0000
+Message-ID: <20090304005139.317005352@fluff.org.uk>
 References: <20090304004925.530566010@fluff.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from teyla.home.fluff.org (aeryn.fluff.org.uk [87.194.8.8])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5231824409
+	by alsa0.perex.cz (Postfix) with ESMTP id B377F2440B
 	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 01:54:00 +0100 (CET)
-Content-Disposition: inline; filename=audio/audio-s3c64xx-dai.patch
+Content-Disposition: inline; filename=audio/smdk6410-wm8713-bjd.patch
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,334 +22,278 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com
+Cc: Ben Dooks <benb@simtec.co.uk>, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Ben Dooks <ben@simtec.co.uk>
+Add support for an WM8731 connected to an SMDK6410 instead
+of the onboard codec.
 
-Add the initial code to support the S3C64XX I2S hardware using the
-s3c-i2s-v2 core code.
-
-Signed-off-by: Ben Dooks <ben@simtec.co.uk>
+Signed-off-by: Ben Dooks <benb@simtec.co.uk>
 
 Index: linux.git/sound/soc/s3c24xx/Makefile
 ===================================================================
---- linux.git.orig/sound/soc/s3c24xx/Makefile	2009-03-04 00:44:28.000000000 +0000
-+++ linux.git/sound/soc/s3c24xx/Makefile	2009-03-04 00:44:31.000000000 +0000
-@@ -2,6 +2,7 @@
- snd-soc-s3c24xx-objs := s3c24xx-pcm.o
- snd-soc-s3c24xx-i2s-objs := s3c24xx-i2s.o
- snd-soc-s3c2412-i2s-objs := s3c2412-i2s.o
-+snd-soc-s3c64xx-i2s-objs := s3c64xx-i2s.o
- snd-soc-s3c2443-ac97-objs := s3c2443-ac97.o
- snd-soc-s3c-i2s-v2-objs := s3c-i2s-v2.o
+--- linux.git.orig/sound/soc/s3c24xx/Makefile	2009-03-04 00:44:31.000000000 +0000
++++ linux.git/sound/soc/s3c24xx/Makefile	2009-03-04 00:45:54.000000000 +0000
+@@ -19,9 +19,11 @@ snd-soc-neo1973-wm8753-objs := neo1973_w
+ snd-soc-smdk2443-wm9710-objs := smdk2443_wm9710.o
+ snd-soc-ln2440sbc-alc650-objs := ln2440sbc_alc650.o
+ snd-soc-s3c24xx-uda134x-objs := s3c24xx_uda134x.o
++snd-soc-smdk6410-wm8731-objs := smdk6410-wm8731.o
  
-@@ -9,6 +10,7 @@ obj-$(CONFIG_SND_S3C24XX_SOC) += snd-soc
- obj-$(CONFIG_SND_S3C24XX_SOC_I2S) += snd-soc-s3c24xx-i2s.o
- obj-$(CONFIG_SND_S3C2443_SOC_AC97) += snd-soc-s3c2443-ac97.o
- obj-$(CONFIG_SND_S3C2412_SOC_I2S) += snd-soc-s3c2412-i2s.o
-+obj-$(CONFIG_SND_S3C64XX_SOC_I2S) += snd-soc-s3c64xx-i2s.o
- obj-$(CONFIG_SND_S3C_I2SV2_SOC) += snd-soc-s3c-i2s-v2.o
- 
- # S3C24XX Machine Support
-Index: linux.git/sound/soc/s3c24xx/s3c64xx-i2s.c
+ obj-$(CONFIG_SND_S3C24XX_SOC_JIVE_WM8750) += snd-soc-jive-wm8750.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_NEO1973_WM8753) += snd-soc-neo1973-wm8753.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_SMDK2443_WM9710) += snd-soc-smdk2443-wm9710.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_LN2440SBC_ALC650) += snd-soc-ln2440sbc-alc650.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_S3C24XX_UDA134X) += snd-soc-s3c24xx-uda134x.o
++obj-$(CONFIG_SND_S3C64XX_SOC_SMDK6410_WM8731) += snd-soc-smdk6410-wm8731.o
+Index: linux.git/sound/soc/s3c24xx/smdk6410-wm8731.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux.git/sound/soc/s3c24xx/s3c64xx-i2s.c	2009-03-04 00:44:31.000000000 +0000
-@@ -0,0 +1,220 @@
-+/* sound/soc/s3c24xx/s3c64xx-i2s.c
-+ *
-+ * ALSA SoC Audio Layer - S3C64XX I2S driver
-+ *
-+ * Copyright 2008 Openmoko, Inc.
-+ * Copyright 2008 Simtec Electronics
-+ *      Ben Dooks <ben@simtec.co.uk>
-+ *      http://armlinux.simtec.co.uk/
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
++++ linux.git/sound/soc/s3c24xx/smdk6410-wm8731.c	2009-03-04 00:45:04.000000000 +0000
+@@ -0,0 +1,227 @@
 +
-+#include <linux/init.h>
++
 +#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/delay.h>
-+#include <linux/clk.h>
++#include <linux/moduleparam.h>
 +#include <linux/kernel.h>
-+#include <linux/gpio.h>
-+#include <linux/io.h>
++#include <linux/clk.h>
++#include <linux/timer.h>
++#include <linux/interrupt.h>
++#include <linux/platform_device.h>
 +
 +#include <sound/core.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
-+#include <sound/initval.h>
 +#include <sound/soc.h>
++#include <sound/soc-dapm.h>
 +
-+#include <plat/regs-s3c2412-iis.h>
-+#include <plat/gpio-bank-d.h>
-+#include <plat/gpio-bank-e.h>
-+#include <plat/gpio-cfg.h>
-+#include <plat/audio.h>
++#include <asm/mach-types.h>
 +
-+#include <mach/map.h>
-+#include <mach/dma.h>
-+
-+#include "s3c24xx-pcm.h"
++#include "../codecs/wm8731.h"
 +#include "s3c64xx-i2s.h"
 +
-+static struct s3c2410_dma_client s3c64xx_dma_client_out = {
-+	.name		= "I2S PCM Stereo out"
-+};
++static struct platform_device *socdev;
 +
-+static struct s3c2410_dma_client s3c64xx_dma_client_in = {
-+	.name		= "I2S PCM Stereo in"
-+};
 +
-+static struct s3c24xx_pcm_dma_params s3c64xx_i2s_pcm_stereo_out[2] = {
-+	[0] = {
-+		.channel	= DMACH_I2S0_OUT,
-+		.client		= &s3c64xx_dma_client_out,
-+		.dma_addr	= S3C64XX_PA_IIS0 + S3C2412_IISTXD,
-+		.dma_size	= 4,
-+	},
-+	[1] = {
-+		.channel	= DMACH_I2S1_OUT,
-+		.client		= &s3c64xx_dma_client_out,
-+		.dma_addr	= S3C64XX_PA_IIS1 + S3C2412_IISTXD,
-+		.dma_size	= 4,
-+	},
-+};
 +
-+static struct s3c24xx_pcm_dma_params s3c64xx_i2s_pcm_stereo_in[2] = {
-+	[0] = {
-+		.channel	= DMACH_I2S0_IN,
-+		.client		= &s3c64xx_dma_client_in,
-+		.dma_addr	= S3C64XX_PA_IIS0 + S3C2412_IISRXD,
-+		.dma_size	= 4,
-+	},
-+	[1] = {
-+		.channel	= DMACH_I2S1_IN,
-+		.client		= &s3c64xx_dma_client_in,
-+		.dma_addr	= S3C64XX_PA_IIS1 + S3C2412_IISRXD,
-+		.dma_size	= 4,
-+	},
-+};
-+
-+static struct s3c_i2sv2_info s3c64xx_i2s[2];
-+
-+static inline struct s3c_i2sv2_info *to_info(struct snd_soc_dai *cpu_dai)
++static void wm_shutdown(struct snd_pcm_substream *substream)
 +{
-+	return cpu_dai->private_data;
++	printk(KERN_INFO "%s: substream %p\n", __func__, substream);
 +}
 +
-+static int s3c64xx_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
-+				  int clk_id, unsigned int freq, int dir)
++static int wm_hw_params(struct snd_pcm_substream *substream,
++			struct snd_pcm_hw_params *params)
 +{
-+	struct s3c_i2sv2_info *i2s = to_info(cpu_dai);
-+	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
-+
-+	switch (clk_id) {
-+	case S3C64XX_CLKSRC_PCLK:
-+		iismod &= ~S3C64XX_IISMOD_IMS_SYSMUX;
-+		break;
-+
-+	case S3C64XX_CLKSRC_MUX:
-+		iismod |= S3C64XX_IISMOD_IMS_SYSMUX;
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	writel(iismod, i2s->regs + S3C2412_IISMOD);
-+
-+	return 0;
-+}
-+
-+
-+unsigned long s3c64xx_i2s_get_clockrate(struct snd_soc_dai *dai)
-+{
-+	struct s3c_i2sv2_info *i2s = to_info(dai);
-+
-+	return clk_get_rate(i2s->iis_cclk);
-+}
-+EXPORT_SYMBOL_GPL(s3c64xx_i2s_get_clockrate);
-+
-+static int s3c64xx_i2s_probe(struct platform_device *pdev,
-+			     struct snd_soc_dai *dai)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct s3c_i2sv2_info *i2s;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	unsigned int fmt;
 +	int ret;
 +
-+	dev_dbg(dev, "%s: probing dai %d\n", __func__, pdev->id);
++	printk(KERN_INFO "%s: (%p,%p)\n", __func__, substream, params);
++	printk(KERN_INFO "%s: dai: cpu %p, codec %p\n", __func__, cpu_dai, codec_dai);
 +
-+	if (pdev->id < 0 || pdev->id > ARRAY_SIZE(s3c64xx_i2s)) {
-+		dev_err(dev, "id %d out of range\n", pdev->id);
-+		return -EINVAL;
-+	}
++	//fmt = SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS;
++	fmt = SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM;
++	fmt |= SND_SOC_DAIFMT_I2S;
 +
-+	i2s = &s3c64xx_i2s[pdev->id];
-+
-+	ret = s3c_i2sv2_probe(pdev, dai, i2s,
-+			      pdev->id ? S3C64XX_PA_IIS1 : S3C64XX_PA_IIS0);
-+	if (ret)
++	ret = snd_soc_dai_set_fmt(codec_dai, fmt);
++	if (ret < 0)
 +		return ret;
 +
-+	i2s->dma_capture = &s3c64xx_i2s_pcm_stereo_in[pdev->id];
-+	i2s->dma_playback = &s3c64xx_i2s_pcm_stereo_out[pdev->id];
++	/* set cpu DAI configuration */
++	ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
++	if (ret < 0)
++		return ret;
 +
-+	i2s->iis_cclk = clk_get(dev, "audio-bus");
-+	if (IS_ERR(i2s->iis_cclk)) {
-+		dev_err(dev, "failed to get audio-bus");
-+		iounmap(i2s->regs);
-+		return -ENODEV;
-+	}
++	if (fmt == (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM)) {
++		unsigned long iis_clkrate;
 +
-+	/* configure GPIO for i2s port */
-+	switch (pdev->id) {
-+	case 0:
-+		s3c_gpio_cfgpin(S3C64XX_GPD(0), S3C64XX_GPD0_I2S0_CLK);
-+		s3c_gpio_cfgpin(S3C64XX_GPD(1), S3C64XX_GPD1_I2S0_CDCLK);
-+		s3c_gpio_cfgpin(S3C64XX_GPD(2), S3C64XX_GPD2_I2S0_LRCLK);
-+		s3c_gpio_cfgpin(S3C64XX_GPD(3), S3C64XX_GPD3_I2S0_DI);
-+		s3c_gpio_cfgpin(S3C64XX_GPD(4), S3C64XX_GPD4_I2S0_D0);
-+		break;
-+	case 1:
-+		s3c_gpio_cfgpin(S3C64XX_GPE(0), S3C64XX_GPE0_I2S1_CLK);
-+		s3c_gpio_cfgpin(S3C64XX_GPE(1), S3C64XX_GPE1_I2S1_CDCLK);
-+		s3c_gpio_cfgpin(S3C64XX_GPE(2), S3C64XX_GPE2_I2S1_LRCLK);
-+		s3c_gpio_cfgpin(S3C64XX_GPE(3), S3C64XX_GPE3_I2S1_DI);
-+		s3c_gpio_cfgpin(S3C64XX_GPE(4), S3C64XX_GPE4_I2S1_D0);
++		ret = snd_soc_dai_set_sysclk(cpu_dai, S3C64XX_CLKSRC_MUX, 0,
++					     SND_SOC_CLOCK_OUT);
++		if (ret < 0) {
++			printk(KERN_ERR "%s: cpu set_sysclk err\n", __func__);
++			return ret;
++		}
++
++		/* set prescaler division for sample rate */
++		ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C64XX_DIV_PRESCALER, 1);
++		if (ret < 0) {
++			printk(KERN_ERR "%s: codec clkdiv err\n", __func__);
++			return ret;
++		}
++
++		iis_clkrate = s3c64xx_i2s_get_clockrate(cpu_dai) / 2;
++		printk(KERN_INFO "%s: clockrate %ld\n", __func__, iis_clkrate);
++
++		iis_clkrate = 12000000; //tmphack//
++
++		/* set the codec system clock for DAC and ADC */
++		ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK,
++					     iis_clkrate,
++					     SND_SOC_CLOCK_IN);
++		if (ret < 0) {
++			printk(KERN_ERR "%s: codec sysclk err\n", __func__);
++			return ret;
++		}
++
++	} else {
++		/* TODO */
++		BUG();
 +	}
 +
 +	return 0;
 +}
 +
++static int wm_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	int ret;
 +
-+#define S3C64XX_I2S_RATES \
-+	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
-+	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
-+	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
++	ret = snd_soc_dai_set_sysclk(cpu_dai, S3C64XX_CLKSRC_MUX, 0,
++				     SND_SOC_CLOCK_OUT);
++	if (ret < 0) {
++		printk(KERN_ERR "%s: cpu set_sysclk err\n", __func__);
++		return ret;
++	}
 +
-+#define S3C64XX_I2S_FMTS \
-+	(SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE)
++	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C64XX_DIV_PRESCALER, 1);
++	if (ret < 0) {
++		printk(KERN_ERR "%s: cpu set_clkdiv err\n", __func__);
++		return ret;
++	}
 +
-+struct snd_soc_dai s3c64xx_i2s_dai = {
-+	.name		= "s3c64xx-i2s",
-+	.id		= 0,
-+	.probe		= s3c64xx_i2s_probe,
-+	.playback = {
-+		.channels_min	= 2,
-+		.channels_max	= 2,
-+		.rates		= S3C64XX_I2S_RATES,
-+		.formats	= S3C64XX_I2S_FMTS,
-+	},
-+	.capture = {
-+		.channels_min	= 2,
-+		.channels_max	= 2,
-+		.rates		= S3C64XX_I2S_RATES,
-+		.formats	= S3C64XX_I2S_FMTS,
-+	},
-+	.ops = {
-+		.set_sysclk	= s3c64xx_i2s_set_sysclk,
-+	},
++	ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK,
++				     12000000, SND_SOC_CLOCK_IN);
++	if (ret < 0) {
++		printk(KERN_ERR "%s: codec sysclk err\n", __func__);
++		return ret;
++	}
++
++	return 0;
++}
++
++static struct snd_soc_ops wm_ops = {
++	.startup	= wm_startup,
++	.hw_params	= wm_hw_params,
++	.shutdown	= wm_shutdown,
 +};
-+EXPORT_SYMBOL_GPL(s3c64xx_i2s_dai);
 +
-+static int __init s3c64xx_i2s_init(void)
++static const struct snd_soc_dapm_widget widgets[] = {
++	SND_SOC_DAPM_LINE("Line Out", NULL),
++	SND_SOC_DAPM_HP("Headphone Jack", NULL),
++	SND_SOC_DAPM_INPUT("Line In"),
++};
++
++static const struct snd_soc_dapm_route intercon[] = {
++	/* headphone connected to LHPOUT1, RHPOUT1 */
++	{"Headphone Jack", NULL, "LHPOUT"},
++	{"Headphone Jack", NULL, "RHPOUT"},
++
++	{"Line Out", NULL, "LOUT" },
++	{"Line Out", NULL, "ROUT" },
++
++	{"LLINEIN", NULL, "Line In" },
++	{"RLINEIN", NULL, "Line In" },
++};
++
++static int wm_init(struct snd_soc_codec *codec)
 +{
-+	return  s3c_i2sv2_register_dai(&s3c64xx_i2s_dai);
-+}
-+module_init(s3c64xx_i2s_init);
++	printk(KERN_DEBUG "%s: codec %p\n", __func__, codec);
 +
-+static void __exit s3c64xx_i2s_exit(void)
++	snd_soc_dapm_new_controls(codec, widgets, ARRAY_SIZE(widgets));
++	snd_soc_dapm_add_routes(codec, intercon, ARRAY_SIZE(intercon));
++
++	snd_soc_dapm_sync(codec);
++
++	return 0;
++}
++
++#include "s3c24xx-pcm.h"
++
++static struct snd_soc_dai_link wm_dai_link = {
++	.name		= "WM8731",
++	.stream_name	= "WM8731",
++	.cpu_dai	= &s3c64xx_i2s_dai,
++	.codec_dai	= &wm8731_dai,
++	.init		= wm_init,
++	.ops		= &wm_ops,
++};
++
++static struct snd_soc_card wm_card = {
++	.name		= "SMDK6410-WM8731",
++	.dai_link	= &wm_dai_link,
++	.platform	= &s3c24xx_soc_platform,
++	.num_links	= 1,
++};
++
++struct wm8731_setup_data wm_setup = {
++	.i2c_bus	= 0,
++	.i2c_address	= 0x1a,
++};
++
++static struct snd_soc_device wm_snd_devdata = {
++	.card		= &wm_card,
++	.codec_dev	= &soc_codec_dev_wm8731,
++	.codec_data	= &wm_setup,
++};
++
++static int __init smdk6410_wm8731_init(void)
 +{
-+	snd_soc_unregister_dai(&s3c64xx_i2s_dai);
-+}
-+module_exit(s3c64xx_i2s_exit);
++	int ret;
 +
-+/* Module information */
-+MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
-+MODULE_DESCRIPTION("S3C64XX I2S SoC Interface");
++	printk(KERN_INFO "%s: welcome\n", __func__);
++
++	if (!machine_is_smdk6410()) {
++		printk(KERN_INFO "%s: for SMDK6410s\n", __func__);
++		return -ENOENT;
++	}
++
++	socdev = platform_device_alloc("soc-audio", 0);
++	if (!socdev) {
++		printk(KERN_ERR "%s: no device\n", __func__);
++		return -ENOMEM;
++	}
++
++	platform_set_drvdata(socdev, &wm_snd_devdata);
++
++	wm_snd_devdata.dev = &socdev->dev;
++
++	ret = platform_device_add(socdev);
++	if (ret) {
++		printk(KERN_ERR "%s: failed to add\n", __func__);
++		goto err_dev;
++	}
++
++	printk(KERN_INFO "%s: succesfull\n", __func__);
++	return 0;
++
++err_dev:
++	platform_device_put(socdev);
++	return ret;
++}
++
++module_init(smdk6410_wm8731_init);
++MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
 +MODULE_LICENSE("GPL");
-+
-+
-+
-Index: linux.git/sound/soc/s3c24xx/s3c64xx-i2s.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux.git/sound/soc/s3c24xx/s3c64xx-i2s.h	2009-03-04 00:44:31.000000000 +0000
-@@ -0,0 +1,31 @@
-+/* sound/soc/s3c24xx/s3c64xx-i2s.h
-+ *
-+ * ALSA SoC Audio Layer - S3C64XX I2S driver
-+ *
-+ * Copyright 2008 Openmoko, Inc.
-+ * Copyright 2008 Simtec Electronics
-+ *      Ben Dooks <ben@simtec.co.uk>
-+ *      http://armlinux.simtec.co.uk/
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __SND_SOC_S3C24XX_S3C64XX_I2S_H
-+#define __SND_SOC_S3C24XX_S3C64XX_I2S_H __FILE__
-+
-+#include "s3c-i2s-v2.h"
-+
-+#define S3C64XX_DIV_BCLK	S3C_I2SV2_DIV_BCLK
-+#define S3C64XX_DIV_RCLK	S3C_I2SV2_DIV_RCLK
-+#define S3C64XX_DIV_PRESCALER	S3C_I2SV2_DIV_PRESCALER
-+
-+#define S3C64XX_CLKSRC_PCLK	(0)
-+#define S3C64XX_CLKSRC_MUX	(1)
-+
-+extern struct snd_soc_dai s3c64xx_i2s_dai;
-+
-+extern unsigned long s3c64xx_i2s_get_clockrate(struct snd_soc_dai *cpu_dai);
-+
-+#endif /* __SND_SOC_S3C24XX_S3C64XX_I2S_H */
 Index: linux.git/sound/soc/s3c24xx/Kconfig
 ===================================================================
---- linux.git.orig/sound/soc/s3c24xx/Kconfig	2009-03-04 00:44:28.000000000 +0000
-+++ linux.git/sound/soc/s3c24xx/Kconfig	2009-03-04 00:44:31.000000000 +0000
-@@ -1,6 +1,6 @@
- config SND_S3C24XX_SOC
- 	tristate "SoC Audio for the Samsung S3C24XX chips"
--	depends on ARCH_S3C2410
-+	depends on ARCH_S3C2410 || ARCH_S3C64XX
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
- 	  the S3C24XX AC97, I2S or SSP interface. You will also need
-@@ -16,6 +16,10 @@ config SND_S3C2412_SOC_I2S
- 	tristate
- 	select SND_S3C_I2SV2_SOC
- 
-+config SND_S3C64XX_SOC_I2S
-+	tristate
-+	select SND_S3C_I2SV2_SOC
+--- linux.git.orig/sound/soc/s3c24xx/Kconfig	2009-03-04 00:44:31.000000000 +0000
++++ linux.git/sound/soc/s3c24xx/Kconfig	2009-03-04 00:45:04.000000000 +0000
+@@ -66,3 +66,11 @@ config SND_S3C24XX_SOC_S3C24XX_UDA134X
+        	depends on SND_S3C24XX_SOC
+        	select SND_S3C24XX_SOC_I2S
+        	select SND_SOC_UDA134X
 +
- config SND_S3C2443_SOC_AC97
- 	tristate
- 	select AC97_BUS
-Index: linux.git/arch/arm/plat-s3c/include/plat/regs-s3c2412-iis.h
-===================================================================
---- linux.git.orig/arch/arm/plat-s3c/include/plat/regs-s3c2412-iis.h	2009-03-04 00:44:10.000000000 +0000
-+++ linux.git/arch/arm/plat-s3c/include/plat/regs-s3c2412-iis.h	2009-03-04 00:44:31.000000000 +0000
-@@ -33,6 +33,9 @@
- #define S3C2412_IISCON_RXDMA_ACTIVE	(1 << 1)
- #define S3C2412_IISCON_IIS_ACTIVE	(1 << 0)
- 
-+#define S3C64XX_IISMOD_IMS_PCLK		(0 << 10)
-+#define S3C64XX_IISMOD_IMS_SYSMUX	(1 << 10)
-+
- #define S3C2412_IISMOD_MASTER_INTERNAL	(0 << 10)
- #define S3C2412_IISMOD_MASTER_EXTERNAL	(1 << 10)
- #define S3C2412_IISMOD_SLAVE		(2 << 10)
++config SND_S3C64XX_SOC_SMDK6410_WM8731
++	tristate "SoC I2S Audio support for WM8731 added to an SMDK6410"
++	depends on SND_S3C24XX_SOC
++	select SND_S3C64XX_SOC_I2S
++	select SND_SOC_WM8731
++	help
++	  Support for an WM8731 add-on board on I2S channel 0 on an SMDK6410
 
 -- 
 Ben (ben@fluff.org, http://www.fluff.org/)
