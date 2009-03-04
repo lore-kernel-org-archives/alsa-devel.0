@@ -1,16 +1,26 @@
-From: "Lopez Cruz, Misael" <x0052729@ti.com>
-Subject: [PATCH 2/2] ASoC: Add headset jack detection for
- SDP3430 machine driver
-Date: Wed, 4 Mar 2009 11:39:12 -0600
-Message-ID: <2C7D3DF36ADFFC479B44490D912B616705ECD6E1B6@dlee07.ent.ti.com>
+From: Dmitry Baikov <dsbaikov@gmail.com>
+Subject: Re: Fwd: [LAD] kernel 2.6.29 rc6 no working rme
+	multiface 1
+Date: Wed, 4 Mar 2009 21:22:29 +0300
+Message-ID: <70a871c80903041022o2c52b3baudec682508977e963@mail.gmail.com>
+References: <20090302025929.64889223@rt-ente>
+	<70a871c80903011849r586443e4h7188747ac01cbaf3@mail.gmail.com>
+	<70a871c80903011959s9e4c94ds62aa0e88b4f2c040@mail.gmail.com>
+	<s5hhc2bdg36.wl%tiwai@suse.de>
+	<70a871c80903021454u7e644a56lba1814fec69f1494@mail.gmail.com>
+	<s5h3advoz0t.wl%tiwai@suse.de>
+	<70a871c80903031806t766337fet7ceecd243ee1694e@mail.gmail.com>
+	<s5h4oy9stb2.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7477E103846
-	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 18:39:30 +0100 (CET)
-Content-Language: en-US
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.242])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2F8B1103846
+	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 19:22:31 +0100 (CET)
+Received: by an-out-0708.google.com with SMTP id c5so3403998anc.2
+	for <alsa-devel@alsa-project.org>; Wed, 04 Mar 2009 10:22:30 -0800 (PST)
+In-Reply-To: <s5h4oy9stb2.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,107 +30,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
-Cc: Mark Brown <broonie@sirena.org.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add headset jack detection for SDP3430 boards using SoC jack
-reporting interface. Headset detection on SDP3430 board is
-achieved through TWL4030 GPIO_2 pin.
-
-Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
----
- sound/soc/omap/sdp3430.c |   49 ++++++++++++++++++++++++++++++++++++++++++++-
- 1 files changed, 47 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
-index 4eab4b4..b595aa4 100644
---- a/sound/soc/omap/sdp3430.c
-+++ b/sound/soc/omap/sdp3430.c
-@@ -28,6 +28,7 @@
- #include <sound/pcm.h>
- #include <sound/soc.h>
- #include <sound/soc-dapm.h>
-+#include <sound/jack.h>
- 
- #include <asm/mach-types.h>
- #include <mach/hardware.h>
-@@ -122,7 +123,7 @@ static int sdp3430_twl4030_init(struct snd_soc_codec *codec)
- 	/* SDP3430 connected pins */
- 	snd_soc_dapm_enable_pin(codec, "Ext Mic");
- 	snd_soc_dapm_enable_pin(codec, "Ext Spk");
--	snd_soc_dapm_enable_pin(codec, "Headset Jack");
-+	snd_soc_dapm_disable_pin(codec, "Headset Jack");
- 
- 	/* TWL4030 not connected pins */
- 	snd_soc_dapm_nc_pin(codec, "AUXL");
-@@ -144,6 +145,29 @@ static int sdp3430_twl4030_init(struct snd_soc_codec *codec)
- 	return ret;
- }
- 
-+/* Headset jack */
-+struct snd_soc_jack *hs_jack;
-+
-+/* Headset jack DAPM pins */
-+struct snd_soc_jack_pin hs_jack_pins[] = {
-+	{
-+		.pin = "Headset Jack",
-+		.mask = SND_JACK_HEADSET,
-+		.invert = 0,
-+	},
-+};
-+
-+/* Headset jack gpios */
-+struct snd_soc_jack_gpio hs_jack_gpios[] = {
-+	{
-+		.gpio = (OMAP_MAX_GPIO_LINES + 2),
-+		.name = "hsdet-gpio",
-+		.report = SND_JACK_HEADSET,
-+		.invert = 0,
-+		.debounce_time = 200,
-+	},
-+};
-+
- /* Digital audio interface glue - connects codec <--> CPU */
- static struct snd_soc_dai_link sdp3430_dai = {
- 	.name = "TWL4030",
-@@ -194,8 +218,25 @@ static int __init sdp3430_soc_init(void)
- 	if (ret)
- 		goto err1;
- 
--	return 0;
-+	/* Headset jack detection */
-+	hs_jack = kzalloc(sizeof(struct snd_soc_jack), GFP_KERNEL);
-+	if (!hs_jack)
-+		return -ENOMEM;
-+
-+	ret = snd_soc_jack_new(&snd_soc_sdp3430, "SDP3430 headset jack",
-+				SND_JACK_HEADSET, hs_jack);
-+	if (ret)
-+		return ret;
-+
-+	ret = snd_soc_jack_add_pins(hs_jack, ARRAY_SIZE(hs_jack_pins),
-+				hs_jack_pins);
-+	if (ret)
-+		return ret;
-+
-+	ret = snd_soc_jack_add_gpios(hs_jack, ARRAY_SIZE(hs_jack_gpios),
-+				hs_jack_gpios);
- 
-+	return ret;
- err1:
- 	printk(KERN_ERR "Unable to add platform device\n");
- 	platform_device_put(sdp3430_snd_device);
-@@ -206,6 +247,10 @@ module_init(sdp3430_soc_init);
- 
- static void __exit sdp3430_soc_exit(void)
- {
-+	snd_soc_jack_free_gpios(hs_jack, ARRAY_SIZE(hs_jack_gpios),
-+				hs_jack_gpios);
-+	kfree(hs_jack);
-+
- 	platform_device_unregister(sdp3430_snd_device);
- }
- module_exit(sdp3430_soc_exit);
--- 
-1.5.4.3
+T24gV2VkLCBNYXIgNCwgMjAwOSBhdCA5OjIwIEFNLCBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2Uu
+ZGU+IHdyb3RlOgo+IEF0IFdlZCwgNCBNYXIgMjAwOSAwNTowNjo0NyArMDMwMCwKPiBEbWl0cnkg
+QmFpa292IHdyb3RlOgo+Pgo+PiBPbiBUdWUsIE1hciAzLCAyMDA5IGF0IDEwOjE4IEFNLCBUYWth
+c2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+IHdyb3RlOgo+PiA+IEF0IFR1ZSwgMyBNYXIgMjAwOSAw
+MTo1NDoxNCArMDMwMCwKPj4gPiBEbWl0cnkgQmFpa292IHdyb3RlOgo+PiA+Pgo+PiA+PiBPbiBN
+b24sIE1hciAyLCAyMDA5IGF0IDc6NTAgUE0sIFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4g
+d3JvdGU6Cj4+ID4+ID4gQXQgTW9uLCAyIE1hciAyMDA5IDA2OjU5OjM1ICswMzAwLAo+PiA+PiA+
+IERtaXRyeSBCYWlrb3Ygd3JvdGU6Cj4+ID4+ID4+Cj4+ID4+ID4+IC0tLS0tLS0tLS0gRm9yd2Fy
+ZGVkIG1lc3NhZ2UgLS0tLS0tLS0tLQo+PiA+PiA+PiBGcm9tOiBEbWl0cnkgQmFpa292IDxkc2Jh
+aWtvdkBnbWFpbC5jb20+Cj4+ID4+ID4+IERhdGU6IE1vbiwgTWFyIDIsIDIwMDkgYXQgNTo0OSBB
+TQo+PiA+PiA+PiBTdWJqZWN0OiBSZTogW0xBRF0ga2VybmVsIDIuNi4yOSByYzYgbm8gd29ya2lu
+ZyBybWUgbXVsdGlmYWNlIDEKPj4gPj4gPj4gVG86ICJtLndvbGtzdGVpbkBnbXguZGUiIDxtLndv
+bGtzdGVpbkBnbXguZGU+Cj4+ID4+ID4+IENjOiBUaGUgTGludXggQXVkaW8gRGV2ZWxvcGVycycg
+TWFpbGluZyBMaXN0Cj4+ID4+ID4+IDxsaW51eC1hdWRpby1kZXZAbGlzdHMubGludXhhdWRpby5v
+cmc+Cj4+ID4+ID4+Cj4+ID4+ID4+Cj4+ID4+ID4+IE9uIE1vbiwgTWFyIDIsIDIwMDkgYXQgNDo1
+OSBBTSwgbS53b2xrc3RlaW5AZ214LmRlIDxtLndvbGtzdGVpbkBnbXguZGU+IHdyb3RlOgo+PiA+
+PiA+PiA+IGhpaG8sCj4+ID4+ID4+ID4gbXkgbmFtZSBpcyBtaWNoYWVsIHdvbGtzdGVpbiBhbmQg
+aSB3cm90ZSB0aGUgZmlyc3QgdGltZSB0byB0aGlzIGxpc3QuCj4+ID4+ID4+ID4gc29ycnkgYWJv
+dXQgbXkgZW5nbGlzaC4gYnV0IGkgYW0gbm8gZW5nbGlzaCBuYXRpdmUtc3BlYWtlci4KPj4gPj4g
+Pj4gPgo+PiA+PiA+PiA+IGFmdGVyIGJvb3Rpbmcga2VybmVsIDIuNi4yOSByYzYgaSBnZXQgYSBw
+cm9ibGVtIHdpdGggbXkgcm1lIG11bHRpZmFjZSAxIGNvbm5lY3RlZCB0cnVlIHBjbWNpYSBjYXJk
+YnVzaW50ZXJmYWNlLgo+PiA+PiA+PiA+Cj4+ID4+ID4+ID4gaSBnZXQgdGhpcyBtZXNzYWdlIGFm
+dGVyIGluc2VydCBteSBjYXJkLgo+PiA+PiA+PiA+IFJNRSBIYW1tZXJmYWxsIERTUCAwMDAwOjE2
+OjAwLjA6IGVuYWJsaW5nIGRldmljZSAoMDAwMCAtPiAwMDAyKQo+PiA+PiA+PiA+IFJNRSBIYW1t
+ZXJmYWxsIERTUCAwMDAwOjE2OjAwLjA6IFBDSSBJTlQgQSAtPiBHU0kgMTYgKGxldmVsLCBsb3cp
+IC0+IElSUSAxNgo+PiA+PiA+PiA+IEhhbW1lcmZhbGwtRFNQOiBubyBEaWdpZmFjZSBvciBNdWx0
+aWZhY2UgY29ubmVjdGVkIQo+PiA+PiA+PiA+IFJNRSBIYW1tZXJmYWxsIERTUCAwMDAwOjE2OjAw
+LjA6IFBDSSBJTlQgQSBkaXNhYmxlZAo+PiA+PiA+PiA+IFJNRSBIYW1tZXJmYWxsIERTUDogcHJv
+YmUgb2YgMDAwMDoxNjowMC4wIGZhaWxlZCB3aXRoIGVycm9yIC01Cj4+ID4+ID4+ID4KPj4gPj4g
+Pj4gPiBpIGhhdmUgY29tcGlsZSB0aGUga2VybmVsIGluY2x1ZGVkIGFsc2EgbW9kdWxlLgo+PiA+
+PiA+PiA+IGFsc28gaSBoYXZlIGluc3RhbGxlZCB0aGUgbmV3ZXN0IGFsc2EtZmlybXdhcmUgMS4w
+LjE5IGFuZCBuZXdlc3QgYWxzYS10b29scyAxLjAuMTkuCj4+ID4+ID4+ID4KPj4gPj4gPj4gPiBt
+eSBvbGQga2VybmVsIDIuNi4yNCBsb2FkIGJvdGggZmlybXdhcmVzIGNvcnJlY3QuCj4+ID4+ID4+
+ID4KPj4gPj4gPj4gPiB0aGUgb2xkIG9uZSAxLjAuMTYgKGRlYmlhbiB1bnN0YWJsZSkKPj4gPj4g
+Pj4gPiBhbmQgdGhlIG5ldyAxLjAuMTkgZG93bmxvYWQgZnJvbSB0aGUgYWxzYS1wcm9qZWN0IHBh
+Z2UKPj4gPj4gPj4gPgo+PiA+PiA+PiA+IHRoZSBuZXcga2VybmVsIHByb2R1Y2UgZXJyb3JzLiBr
+ZXJuZWwgbW9kdWxlIHNuZF9oZHNwIGlzIGFscmVhZHkgbG9hZGVkIHdpdGggdGhlIG5ldyBrZXJu
+ZWwuCj4+ID4+ID4+Cj4+ID4+ID4+Cj4+ID4+ID4+IEhhdmUgdGhlIHNhbWUgcHJvYmxlbSBoZXJl
+Lgo+PiA+PiA+PiAyLjYuMjQgd29ya3MsIDIuNi4yOCBkb2Vzbid0ICh0cmllZCAyLjYuOC1BUkNI
+IGFuZCAyLjYuMjguNy0xLUFSQ0gpLgo+PiA+PiA+PiBJIHJlcG9ydGVkIHRoZSBwcm9ibGVtIHRv
+IGFsc2EtZGV2ZWwgbGlzdCwgYnV0IHRoZXkgc2FpZCBJIGhhdmUgaHcKPj4gPj4gPj4gcHJvYmxl
+bXMgKEkgdGhpbmsgSSBkbyBub3QpLgo+PiA+PiA+Cj4+ID4+ID4gQ291bGQgeW91IGNoZWNrIHRo
+ZSBsYXRlc3Qgc291bmQgZ2l0IHRyZWUgdG8gYmUgc3VyZT8KPj4gPj4gPgo+PiA+PiA+IMKgIGdp
+dDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90aXdhaS9zb3VuZC0y
+LjYuZ2l0Cj4+ID4+Cj4+ID4+IERvZXMgbm90IG9vcHMuCj4+ID4+IEJ1dCB0aGUgY2FyZCBkb2Vz
+IG5vdCB3b3JrIGVpdGhlci4KPj4gPj4KPj4gPj4gPiBBbHNvIHRoZSBwcm9ibGVtIG1pZ2h0IGJl
+IHJhdGhlciB0aGUgY2FyZGJ1cyBzaWRlLi4uCj4+ID4+IEkgc3VzcGVjdCwgdG9vLgo+PiA+PiBC
+ZWNhdXNlIGl0IHdvcmtzIGluIG15IGxhcHRvcC4gQnV0IGZhaWxzIG9uIGEgZGVza3RvcCB3aXRo
+IHBjaS1jYXJkYnVzIGFkYXB0ZXIuCj4+ID4KPj4gPiBUaGF0IGV4cGxhaW5zLiDCoEEgUENJLWJv
+YXJkIGlzIG9mdGVuIHByb2JsZW1hdGljLi4uCj4+ID4KPj4gPj4gPgo+PiA+PiA+PiBUaGUgbGF0
+ZXN0IGFyY2gga2VybmVsIGdpdmVzIG9vcHMsIGlmIHRoZSBjYXJkIGlzIGluc2VydGVkIGJlZm9y
+ZSBib290aW5nLgo+PiA+PiA+PiBJdCBjcmFzaGVzIGR1cmluZyB1ZGV2IGV2ZW50IHByb2Nlc3Np
+bmcgKGkuZS4gc29tZXRoaW5nIGZyb20gdXNlcnNwYWNlCj4+ID4+ID4+IHRyaWdnZXJzIHRoZSBw
+cm9ibGVtKQo+PiA+PiA+PiBJZiBhbnlib2R5IGlzIHJlYWxseSBpbnRlcmVzdGVkLCBJIGNhbiB0
+cnkgdG8gcHJvdmlkZSBrZXJuZWwgYmFja3RyYWNlCj4+ID4+ID4+IChlaXRoZXIgdHlwZSBpdCBp
+biwgb3IgdHJ5IHRvIHVzZSBzZXJpYWwgY29uc29sZSkuCj4+ID4+ID4KPj4gPj4gPiBPb3BzIGlz
+IGJhZCwgYW5kIHllcywgaXQnZCBiZSBoZWxwZnVsIGlmIHlvdSBjYW4gc2hvdyB0aGUgYmFja3Ry
+YWNlLgo+PiA+Pgo+PiA+PiBObyBzZXJpYWwgY29uc29sZSA6KCBNeSBuZXcgTS9CIGhhdmUgb25s
+eSBwaW4gaGVhZGVyIGFuZCBubyByczIzMgo+PiA+PiBqYWNrLiBOZWVkIHRvIGZpbmQvYnVpbGQg
+YW4gYWRhcHRlci4KPj4gPj4gU28uIHdoYXQgSSBzZWUgKHdpdGhvdXQgc3RhY2sgYWRkcmVzc2Vz
+IGFuZCBzb21lIG9mZnNldHMpOgo+PiA+Cj4+ID4gTG9va3MgbGlrZSBhbiBhY2Nlc3NpbmcgdG8g
+dGhlIHVuaW5pdGlhbGl6ZWQgZGV2aWNlLgo+PiA+IERvZXMgdGhlIHBhdGNoIGJlbG93IGZpeD8K
+Pj4gWWVzLgo+PiAyLjYuMjgtQVJDSCArIHlvdXIgcGF0Y2ggZml4ZXMgb29wcy4KPj4gQ2FyZHMg
+c3RpbGwgZG9lcyBub3Qgd29yayB0aG91Z2guCj4KPiBPZiBjb3Vyc2UsIGl0J3MgdG90YWxseSBp
+cnJlbGV2YW50IDopCj4KPj4gSWYgSSBhZGRpdGlvbmFsbHkgYXBwbHkgVGltJ3MgcGF0Y2gsIEkg
+Z2V0IChjb2xkcGx1Z2dlZCkKPj4gTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlIGF0IDAwMDAwMDAw
+MDAwMDAxNDAKPgo+IFdoYXQgaXMgVGltJ3MgcGF0Y2g/IMKgQ291bGQgeW91IGF0dGFjaCBvciBn
+aXZlIHRoZSBjb21taXQgaWQgaWYgaXQncwo+IGFscmVhZHkgaW4gdGhlIGdpdCB0cmVlPwoKSGVy
+ZSBpdCBnb2VzOgoKPj4gaHR0cDovL2FydGljbGUuZ21hbmUub3JnL2dtYW5lLmxpbnV4LmFsc2Eu
+ZGV2ZWwvNjA0MTEKPgo+IGxvb2tzIGxpa2UgYSBnb29kIHBhdGNoIHRvIG1lLiBpIGhvcGUgaXQg
+Z2V0cyBwdXNoZWQgaW50byBBTFNBIHNvb24uCgp0YWthc2hpIGFwcGxpZWQgaXQgdG8gdGhlIHNv
+dW5kLTIuNiBnaXQgcmVwb3NpdG9yeToKaHR0cDovL2dpdC5rZXJuZWwub3JnLz9wPWxpbnV4L2tl
+cm5lbC9naXQvdGl3YWkvc291bmQtMi42LmdpdDthPWNvbW1pdDtoPWU1ODhlZDgzMDRmNzZjYmIz
+OTZlZTg1ZTY1N2E1ODk5MDI5OGE2NzUKCgpSZWdhcmRzLApEbWl0cnkuCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
