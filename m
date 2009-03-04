@@ -1,16 +1,24 @@
-From: Joonyoung Shim <dofmind@gmail.com>
-Subject: [PATCH] ASoC: Fix long name of control for dapm_switch
-Date: Wed, 4 Mar 2009 10:47:09 +0900
-Message-ID: <4e1455be0903031747s65097766saea220037d1335ff@mail.gmail.com>
+From: Dmitry Baikov <dsbaikov@gmail.com>
+Subject: Re: Fwd: [LAD] kernel 2.6.29 rc6 no working rme
+	multiface 1
+Date: Wed, 4 Mar 2009 05:06:47 +0300
+Message-ID: <70a871c80903031806t766337fet7ceecd243ee1694e@mail.gmail.com>
+References: <20090302025929.64889223@rt-ente>
+	<70a871c80903011849r586443e4h7188747ac01cbaf3@mail.gmail.com>
+	<70a871c80903011959s9e4c94ds62aa0e88b4f2c040@mail.gmail.com>
+	<s5hhc2bdg36.wl%tiwai@suse.de>
+	<70a871c80903021454u7e644a56lba1814fec69f1494@mail.gmail.com>
+	<s5h3advoz0t.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.249])
-	by alsa0.perex.cz (Postfix) with ESMTP id B3E7724430
-	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 02:47:10 +0100 (CET)
-Received: by rv-out-0708.google.com with SMTP id c5so2736208rvf.32
-	for <alsa-devel@alsa-project.org>; Tue, 03 Mar 2009 17:47:09 -0800 (PST)
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 67F5E1038BC
+	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 03:06:48 +0100 (CET)
+Received: by yw-out-1718.google.com with SMTP id 6so2065760ywa.2
+	for <alsa-devel@alsa-project.org>; Tue, 03 Mar 2009 18:06:47 -0800 (PST)
+In-Reply-To: <s5h3advoz0t.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,64 +28,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The length of long control name doesn't include the length of widget
-name at present when widget->id is snd_soc_dapm_switch, so the long
-control name of dapm_switch is shortened.
-To avoid this problem, the long control name only for dapm_mixer_named_ctl
-must have simply the kcontrol name.
-
-Signed-off-by: Joonyoung Shim <jy0922.shim@samsung.com>
----
- sound/soc/soc-dapm.c |   21 +++++++++------------
- 1 files changed, 9 insertions(+), 12 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 4b8dbbf..7a1fed1 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -331,26 +331,23 @@ static int dapm_new_mixer(struct snd_soc_codec *codec,
-                         * for dapm_mixer_named_ctl this is simply the
-                         * kcontrol name.
-                         */
--                       name_len = strlen(w->kcontrols[i].name) + 1;
--                       if (w->id == snd_soc_dapm_mixer)
--                               name_len += 1 + strlen(w->name);
-+                       if (w->id == snd_soc_dapm_mixer_named_ctl)
-+                               name_len = strlen(w->kcontrols[i].name) + 1;
-+                       else
-+                               name_len = 2 + strlen(w->name)
-+                                       + strlen(w->kcontrols[i].name);
-
-                        path->long_name = kmalloc(name_len, GFP_KERNEL);
-
-                        if (path->long_name == NULL)
-                                return -ENOMEM;
-
--                       switch (w->id) {
--                       case snd_soc_dapm_mixer:
--                       default:
--                               snprintf(path->long_name, name_len, "%s %s",
--                                        w->name, w->kcontrols[i].name);
--                       break;
--                       case snd_soc_dapm_mixer_named_ctl:
-+                       if (w->id == snd_soc_dapm_mixer_named_ctl)
-                                snprintf(path->long_name, name_len, "%s",
-                                         w->kcontrols[i].name);
--                       break;
--                       }
-+                       else
-+                               snprintf(path->long_name, name_len, "%s %s",
-+                                        w->name, w->kcontrols[i].name);
-
-                        path->long_name[name_len - 1] = '\0';
-
--- 
-1.5.6.3
-
-
--- 
-- Joonyoung Shim
+T24gVHVlLCBNYXIgMywgMjAwOSBhdCAxMDoxOCBBTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNl
+LmRlPiB3cm90ZToKPiBBdCBUdWUsIDMgTWFyIDIwMDkgMDE6NTQ6MTQgKzAzMDAsCj4gRG1pdHJ5
+IEJhaWtvdiB3cm90ZToKPj4KPj4gT24gTW9uLCBNYXIgMiwgMjAwOSBhdCA3OjUwIFBNLCBUYWth
+c2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+IHdyb3RlOgo+PiA+IEF0IE1vbiwgMiBNYXIgMjAwOSAw
+Njo1OTozNSArMDMwMCwKPj4gPiBEbWl0cnkgQmFpa292IHdyb3RlOgo+PiA+Pgo+PiA+PiAtLS0t
+LS0tLS0tIEZvcndhcmRlZCBtZXNzYWdlIC0tLS0tLS0tLS0KPj4gPj4gRnJvbTogRG1pdHJ5IEJh
+aWtvdiA8ZHNiYWlrb3ZAZ21haWwuY29tPgo+PiA+PiBEYXRlOiBNb24sIE1hciAyLCAyMDA5IGF0
+IDU6NDkgQU0KPj4gPj4gU3ViamVjdDogUmU6IFtMQURdIGtlcm5lbCAyLjYuMjkgcmM2IG5vIHdv
+cmtpbmcgcm1lIG11bHRpZmFjZSAxCj4+ID4+IFRvOiAibS53b2xrc3RlaW5AZ214LmRlIiA8bS53
+b2xrc3RlaW5AZ214LmRlPgo+PiA+PiBDYzogVGhlIExpbnV4IEF1ZGlvIERldmVsb3BlcnMnIE1h
+aWxpbmcgTGlzdAo+PiA+PiA8bGludXgtYXVkaW8tZGV2QGxpc3RzLmxpbnV4YXVkaW8ub3JnPgo+
+PiA+Pgo+PiA+Pgo+PiA+PiBPbiBNb24sIE1hciAyLCAyMDA5IGF0IDQ6NTkgQU0sIG0ud29sa3N0
+ZWluQGdteC5kZSA8bS53b2xrc3RlaW5AZ214LmRlPiB3cm90ZToKPj4gPj4gPiBoaWhvLAo+PiA+
+PiA+IG15IG5hbWUgaXMgbWljaGFlbCB3b2xrc3RlaW4gYW5kIGkgd3JvdGUgdGhlIGZpcnN0IHRp
+bWUgdG8gdGhpcyBsaXN0Lgo+PiA+PiA+IHNvcnJ5IGFib3V0IG15IGVuZ2xpc2guIGJ1dCBpIGFt
+IG5vIGVuZ2xpc2ggbmF0aXZlLXNwZWFrZXIuCj4+ID4+ID4KPj4gPj4gPiBhZnRlciBib290aW5n
+IGtlcm5lbCAyLjYuMjkgcmM2IGkgZ2V0IGEgcHJvYmxlbSB3aXRoIG15IHJtZSBtdWx0aWZhY2Ug
+MSBjb25uZWN0ZWQgdHJ1ZSBwY21jaWEgY2FyZGJ1c2ludGVyZmFjZS4KPj4gPj4gPgo+PiA+PiA+
+IGkgZ2V0IHRoaXMgbWVzc2FnZSBhZnRlciBpbnNlcnQgbXkgY2FyZC4KPj4gPj4gPiBSTUUgSGFt
+bWVyZmFsbCBEU1AgMDAwMDoxNjowMC4wOiBlbmFibGluZyBkZXZpY2UgKDAwMDAgLT4gMDAwMikK
+Pj4gPj4gPiBSTUUgSGFtbWVyZmFsbCBEU1AgMDAwMDoxNjowMC4wOiBQQ0kgSU5UIEEgLT4gR1NJ
+IDE2IChsZXZlbCwgbG93KSAtPiBJUlEgMTYKPj4gPj4gPiBIYW1tZXJmYWxsLURTUDogbm8gRGln
+aWZhY2Ugb3IgTXVsdGlmYWNlIGNvbm5lY3RlZCEKPj4gPj4gPiBSTUUgSGFtbWVyZmFsbCBEU1Ag
+MDAwMDoxNjowMC4wOiBQQ0kgSU5UIEEgZGlzYWJsZWQKPj4gPj4gPiBSTUUgSGFtbWVyZmFsbCBE
+U1A6IHByb2JlIG9mIDAwMDA6MTY6MDAuMCBmYWlsZWQgd2l0aCBlcnJvciAtNQo+PiA+PiA+Cj4+
+ID4+ID4gaSBoYXZlIGNvbXBpbGUgdGhlIGtlcm5lbCBpbmNsdWRlZCBhbHNhIG1vZHVsZS4KPj4g
+Pj4gPiBhbHNvIGkgaGF2ZSBpbnN0YWxsZWQgdGhlIG5ld2VzdCBhbHNhLWZpcm13YXJlIDEuMC4x
+OSBhbmQgbmV3ZXN0IGFsc2EtdG9vbHMgMS4wLjE5Lgo+PiA+PiA+Cj4+ID4+ID4gbXkgb2xkIGtl
+cm5lbCAyLjYuMjQgbG9hZCBib3RoIGZpcm13YXJlcyBjb3JyZWN0Lgo+PiA+PiA+Cj4+ID4+ID4g
+dGhlIG9sZCBvbmUgMS4wLjE2IChkZWJpYW4gdW5zdGFibGUpCj4+ID4+ID4gYW5kIHRoZSBuZXcg
+MS4wLjE5IGRvd25sb2FkIGZyb20gdGhlIGFsc2EtcHJvamVjdCBwYWdlCj4+ID4+ID4KPj4gPj4g
+PiB0aGUgbmV3IGtlcm5lbCBwcm9kdWNlIGVycm9ycy4ga2VybmVsIG1vZHVsZSBzbmRfaGRzcCBp
+cyBhbHJlYWR5IGxvYWRlZCB3aXRoIHRoZSBuZXcga2VybmVsLgo+PiA+Pgo+PiA+Pgo+PiA+PiBI
+YXZlIHRoZSBzYW1lIHByb2JsZW0gaGVyZS4KPj4gPj4gMi42LjI0IHdvcmtzLCAyLjYuMjggZG9l
+c24ndCAodHJpZWQgMi42LjgtQVJDSCBhbmQgMi42LjI4LjctMS1BUkNIKS4KPj4gPj4gSSByZXBv
+cnRlZCB0aGUgcHJvYmxlbSB0byBhbHNhLWRldmVsIGxpc3QsIGJ1dCB0aGV5IHNhaWQgSSBoYXZl
+IGh3Cj4+ID4+IHByb2JsZW1zIChJIHRoaW5rIEkgZG8gbm90KS4KPj4gPgo+PiA+IENvdWxkIHlv
+dSBjaGVjayB0aGUgbGF0ZXN0IHNvdW5kIGdpdCB0cmVlIHRvIGJlIHN1cmU/Cj4+ID4KPj4gPiDC
+oCBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291
+bmQtMi42LmdpdAo+Pgo+PiBEb2VzIG5vdCBvb3BzLgo+PiBCdXQgdGhlIGNhcmQgZG9lcyBub3Qg
+d29yayBlaXRoZXIuCj4+Cj4+ID4gQWxzbyB0aGUgcHJvYmxlbSBtaWdodCBiZSByYXRoZXIgdGhl
+IGNhcmRidXMgc2lkZS4uLgo+PiBJIHN1c3BlY3QsIHRvby4KPj4gQmVjYXVzZSBpdCB3b3JrcyBp
+biBteSBsYXB0b3AuIEJ1dCBmYWlscyBvbiBhIGRlc2t0b3Agd2l0aCBwY2ktY2FyZGJ1cyBhZGFw
+dGVyLgo+Cj4gVGhhdCBleHBsYWlucy4gwqBBIFBDSS1ib2FyZCBpcyBvZnRlbiBwcm9ibGVtYXRp
+Yy4uLgo+Cj4+ID4KPj4gPj4gVGhlIGxhdGVzdCBhcmNoIGtlcm5lbCBnaXZlcyBvb3BzLCBpZiB0
+aGUgY2FyZCBpcyBpbnNlcnRlZCBiZWZvcmUgYm9vdGluZy4KPj4gPj4gSXQgY3Jhc2hlcyBkdXJp
+bmcgdWRldiBldmVudCBwcm9jZXNzaW5nIChpLmUuIHNvbWV0aGluZyBmcm9tIHVzZXJzcGFjZQo+
+PiA+PiB0cmlnZ2VycyB0aGUgcHJvYmxlbSkKPj4gPj4gSWYgYW55Ym9keSBpcyByZWFsbHkgaW50
+ZXJlc3RlZCwgSSBjYW4gdHJ5IHRvIHByb3ZpZGUga2VybmVsIGJhY2t0cmFjZQo+PiA+PiAoZWl0
+aGVyIHR5cGUgaXQgaW4sIG9yIHRyeSB0byB1c2Ugc2VyaWFsIGNvbnNvbGUpLgo+PiA+Cj4+ID4g
+T29wcyBpcyBiYWQsIGFuZCB5ZXMsIGl0J2QgYmUgaGVscGZ1bCBpZiB5b3UgY2FuIHNob3cgdGhl
+IGJhY2t0cmFjZS4KPj4KPj4gTm8gc2VyaWFsIGNvbnNvbGUgOiggTXkgbmV3IE0vQiBoYXZlIG9u
+bHkgcGluIGhlYWRlciBhbmQgbm8gcnMyMzIKPj4gamFjay4gTmVlZCB0byBmaW5kL2J1aWxkIGFu
+IGFkYXB0ZXIuCj4+IFNvLiB3aGF0IEkgc2VlICh3aXRob3V0IHN0YWNrIGFkZHJlc3NlcyBhbmQg
+c29tZSBvZmZzZXRzKToKPgo+IExvb2tzIGxpa2UgYW4gYWNjZXNzaW5nIHRvIHRoZSB1bmluaXRp
+YWxpemVkIGRldmljZS4KPiBEb2VzIHRoZSBwYXRjaCBiZWxvdyBmaXg/Clllcy4KMi42LjI4LUFS
+Q0ggKyB5b3VyIHBhdGNoIGZpeGVzIG9vcHMuCkNhcmRzIHN0aWxsIGRvZXMgbm90IHdvcmsgdGhv
+dWdoLgoKSWYgSSBhZGRpdGlvbmFsbHkgYXBwbHkgVGltJ3MgcGF0Y2gsIEkgZ2V0IChjb2xkcGx1
+Z2dlZCkKTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlIGF0IDAwMDAwMDAwMDAwMDAxNDAKCklQOiBz
+bmRfaGRzcF9pbnRlcnJ1cHQgKyAweDljLzB4MjIwCgpUcmFjZToKCmhhbmRsZV9JUlFfZXZlbnQK
+aGFuZGxlX2Zhc3Rlb2lfaXJxCmRvX0lSUQpyZXRfZnJvbV9pbnRyCmZsYXRfc2VuZF9JUElfbWFz
+awptd2FpdF9pZGxlCmNwdV9pZGxlCgoKSG90cGx1Z2dpbmcganVzdCBkaXNhYmxlcyB0aGUgY2Fy
+ZCAoYXMgInVzdWFsIikuCgpEbWl0cnkuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYWxzYS1kZXZlbAo=
