@@ -1,19 +1,17 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH 4/4] pxa-ssp: switch from network mode to psp
-Date: Wed,  4 Mar 2009 21:17:00 +0100
-Message-ID: <1236197820-21022-4-git-send-email-daniel@caiaq.de>
-References: <20090304201505.GE12183@buzzloop.caiaq.de>
-	<1236197820-21022-1-git-send-email-daniel@caiaq.de>
-	<1236197820-21022-2-git-send-email-daniel@caiaq.de>
-	<1236197820-21022-3-git-send-email-daniel@caiaq.de>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [patch 0/9] S3C24XX/S3C64XX updates
+Date: Wed, 4 Mar 2009 20:29:54 +0000
+Message-ID: <20090304202952.GA10731@sirena.org.uk>
+References: <20090304004925.530566010@fluff.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 29160103929
-	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 21:17:14 +0100 (CET)
-In-Reply-To: <1236197820-21022-3-git-send-email-daniel@caiaq.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 705F1103828
+	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 21:30:02 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20090304004925.530566010@fluff.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,112 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Philipp Zabel <philipp.zabel@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tim Ruetz <tim@caiaq.de>, Liam Girdwood <lrg@kernel.org>
+To: Ben Dooks <ben-alsa@fluff.org>, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch uses the SSP's PSP functionality to provide I2S timings. The
-particular problem is that even though the datasheets state it should be
-possbible, there is no mode which uses the network feature with its
-associated time slots in a sane way to do what we need.
+On Wed, Mar 04, 2009 at 12:49:25AM +0000, Ben Dooks wrote:
+> This is a set of patches for 2.6.30 to add more
+> s3c24xx machine support and support for the S3C64XX
+> series of SoC.
 
-Hence, in order to have full 64 bit I2S on the wire, we need to fiddle
-around with the SSP and the timing paramters a lot. There are some
-constants left in the code which can't be replaced by names because the
-true meaning of their registers remains nebulous.
+I've merged everything I didn't specifically comment on, plus some of
+the rest.  I also added JIVE and fixed the review issues myself.  Thanks
+a lot for doing this!
 
-Signed-off-by: Daniel Mack <daniel@caiaq.de>
-Signed-off-by: Tim Ruetz <tim@caiaq.de>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@kernel.org>
-Cc: Philipp Zabel <philipp.zabel@gmail.com>
----
- sound/soc/pxa/pxa-ssp.c |   39 +++++++++++++++++++++------------------
- 1 files changed, 21 insertions(+), 18 deletions(-)
+As previously discussed I'll update my IISv4 driver from the Samsung BSP
+for mainline and take care of AC97 and the on board audio for the
+SMDK6410 too.
 
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index 45fb600..97f11d6 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -319,6 +319,7 @@ static int pxa_ssp_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 		break;
- 	case PXA_SSP_CLK_EXT:
- 		priv->sysclk = freq;
-+		ssp_set_scr(&priv->dev, 4);
- 		sscr0 |= SSCR0_ECS;
- 		break;
- 	case PXA_SSP_CLK_NET:
-@@ -551,17 +552,13 @@ static int pxa_ssp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
--		sscr0 |= SSCR0_MOD | SSCR0_PSP;
-+		sscr0 |= SSCR0_PSP;
- 		sscr1 |= SSCR1_RWOT | SSCR1_TRAIL;
- 
- 		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
- 		case SND_SOC_DAIFMT_NB_NF:
--			sspsp |= SSPSP_FSRT;
- 			break;
- 		case SND_SOC_DAIFMT_NB_IF:
--			sspsp |= SSPSP_SFRMP | SSPSP_FSRT;
--			break;
--		case SND_SOC_DAIFMT_IB_IF:
- 			sspsp |= SSPSP_SFRMP;
- 			break;
- 		default:
-@@ -652,33 +649,39 @@ static int pxa_ssp_hw_params(struct snd_pcm_substream *substream,
- 		break;
- 	case SNDRV_PCM_FORMAT_S24_LE:
- 		sscr0 |= (SSCR0_EDSS | SSCR0_DataSize(8));
--		/* we must be in network mode (2 slots) for 24 bit stereo */
- 		break;
- 	case SNDRV_PCM_FORMAT_S32_LE:
- 		sscr0 |= (SSCR0_EDSS | SSCR0_DataSize(16));
--		/* we must be in network mode (2 slots) for 32 bit stereo */
- 		break;
- 	}
- 	ssp_write_reg(ssp, SSCR0, sscr0);
- 
- 	switch (priv->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
--		/* Cleared when the DAI format is set */
--		sspsp = ssp_read_reg(ssp, SSPSP) | SSPSP_SFRMWDTH(width);
-+		sspsp = ssp_read_reg(ssp, SSPSP);
-+
-+		switch (priv->dai_fmt & SND_SOC_DAIFMT_FRAME_FORMAT_MASK) {
-+		case SND_SOC_DAIFMT_FF_I2S_32:
-+			/* These values are all found out by trying and
-+			 * failing a lot. PXA's SSP is all black magic and
-+			 * does not work like described in any datasheet.
-+			 */
-+			sspsp |= SSPSP_SFRMWDTH(32);
-+			sspsp |= SSPSP_SFRMDLY(32 * 2);
-+			sspsp |= SSPSP_EDMYSTOP(3);
-+			sspsp |= SSPSP_DMYSTOP(3);
-+			sspsp |= SSPSP_DMYSTRT(1);
-+			break;
-+		default:
-+			/* Cleared when the DAI format is set */
-+			sspsp |= SSPSP_SFRMWDTH(width);
-+			break;
-+		}
- 		ssp_write_reg(ssp, SSPSP, sspsp);
--		break;
- 	default:
- 		break;
- 	}
- 
--	/* We always use a network mode so we always require TDM slots
--	 * - complain loudly and fail if they've not been set up yet.
--	 */
--	if (!(ssp_read_reg(ssp, SSTSA) & 0xf)) {
--		dev_err(&ssp->pdev->dev, "No TDM timeslot configured\n");
--		return -EINVAL;
--	}
--
- 	dump_registers(ssp);
- 
- 	return 0;
--- 
-1.6.1.3
+> It would be very useful to get the header moves merged
+> as soon as possible, to help clear out the old ARM
+> include directories (and make it easier for the merges
+> from other s3c branches that need to take place in the
+> merge window). As such, they're only moves and should
+> not affect the actual build.
+
+Takashi, what do you think about this?  Should I send a 2.6.29 update
+(it's very late in the game...) or would it be better to deal with this
+by trying to merge ALSA early in the merge window?  Either way works for
+me.
