@@ -1,23 +1,21 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 4/4] pxa-ssp: switch from network mode to
-	psp
-Date: Thu, 5 Mar 2009 00:03:01 +0100
-Message-ID: <20090304230301.GA20915@buzzloop.caiaq.de>
+Subject: Re: [PATCH 2/4] soc-dai: add bitfields for
+	hardware	I2S formats
+Date: Thu, 5 Mar 2009 00:12:23 +0100
+Message-ID: <20090304231223.GB20915@buzzloop.caiaq.de>
 References: <20090304201505.GE12183@buzzloop.caiaq.de>
 	<1236197820-21022-1-git-send-email-daniel@caiaq.de>
 	<1236197820-21022-2-git-send-email-daniel@caiaq.de>
-	<1236197820-21022-3-git-send-email-daniel@caiaq.de>
-	<1236197820-21022-4-git-send-email-daniel@caiaq.de>
-	<74d0deb30903041256u8eeea03n5500cd59afadd86e@mail.gmail.com>
+	<20090304223057.GD10731@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id F0653243CB
-	for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2009 00:03:05 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 0BF34243D7
+	for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2009 00:12:27 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <74d0deb30903041256u8eeea03n5500cd59afadd86e@mail.gmail.com>
+In-Reply-To: <20090304223057.GD10731@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,131 +25,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: pHilipp Zabel <philipp.zabel@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tim Ruetz <tim@caiaq.de>, Liam Girdwood <lrg@kernel.org>
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org, Tim Ruetz <tim@caiaq.de>, Liam Girdwood <lrg@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Philipp,
+Hi Mark,
 
-On Wed, Mar 04, 2009 at 09:56:01PM +0100, pHilipp Zabel wrote:
-> > diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-> > index 45fb600..97f11d6 100644
-> > --- a/sound/soc/pxa/pxa-ssp.c
-> > +++ b/sound/soc/pxa/pxa-ssp.c
-> > @@ -319,6 +319,7 @@ static int pxa_ssp_set_dai_sysclk(struct snd_soc_da=
-i *cpu_dai,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
-> > =A0 =A0 =A0 =A0case PXA_SSP_CLK_EXT:
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0priv->sysclk =3D freq;
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ssp_set_scr(&priv->dev, 4);
-> =
+On Wed, Mar 04, 2009 at 10:30:58PM +0000, Mark Brown wrote:
+> On Wed, Mar 04, 2009 at 09:16:58PM +0100, Daniel Mack wrote:
+> > This patch adds bitfields for I2S serial formats that differ from the
+> > amount of data actually sent on the line. Some codecs (namely the
+> > cs4270) require 64 sysclks being sent during each frame period, even
+> > though the number of acutal data bits might be less.
+> 
+> Hrm.  This is normally handled via the clock divider interface - it's
+> often much more straightforward to work with when dealing with devices
+> with very flexible clocking, especially if there are more than two
+> devices on the link.  Have you considered handling this through that,
+> perhaps through adding a virtual thing to configure (eg, a
+> PXA_SSP_FRAME_CLOCKS)?
 
-> Shouldn't this be somehow set by set_dai_clkdiv instead?
+I thought about that but then I condidered it's actually the wrong place
+for such a setting. I see two statements the board file has to make:
 
-This is actually a very common case - MCLK is BCLK*4, so I put it here.
-We could still move it to some more configurable place if it turns out
-we need to configure it per board.
+1) "We need to have 64 bits per frame for the codec"
+2) "The sample data you'll be finding in the FIFO is 16 bits"
 
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0case SND_SOC_DAIFMT_NB_NF:
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sspsp |=3D SSPSP_FSRT;
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0case SND_SOC_DAIFMT_NB_IF:
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sspsp |=3D SSPSP_SFRMP | =
-SSPSP_FSRT;
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 case SND_SOC_DAIFMT_IB_IF:
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sspsp |=3D SSPSP_SFRMP;
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
-> =
+It could be possible to express that in clk division rations, but it is
+actually a lot more straight forward to make that setting once rather
+then changing it over and over again.
 
-> Removal of SSPSP_FSRT from NB/IB selection seems to be correct from the d=
-ocs.
+> Normally this would be a network mode but it
+> seems clear that that has some issues on this hardware and an
+> alternative solution is required.
+> 
+> The other downside of this approach is that it makes all existing
+> drivers theoretically instabuggy in that they don't reject invalid
+> configurations, although that's not such a big issue since it really
+> only makes life easier when writing board drivers.
 
-SSPSP_FSRT has a totally different meaning according to the PXA3xx docs,
-but I'll have a look at the PXA2x specs - maybe we need a special case
-here. Unfortunately, I'm not able to quote from PXA3x specs here due to
-NDA restrictions.
+Well, it won't break things - the worst thing that can happen is that
+things are silently ignored. That bitfield was meant to be extended,
+wasn't it ;)
 
-> Can you check if IB could be properly handled by setting SCMODE(1)?
+> I guess cs4270.c ought to be enforcing this if it's added...
 
-Can't follow that - what are you referring to here?
+cs4270.c would need that flag to be set or fail otherwise. Don't know if
+that really makes life easier for board support files that are not
+mainline. Want me to do that?
 
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0default:
-> > @@ -652,33 +649,39 @@ static int pxa_ssp_hw_params(struct snd_pcm_subst=
-ream *substream,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
-> > =A0 =A0 =A0 =A0case SNDRV_PCM_FORMAT_S24_LE:
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sscr0 |=3D (SSCR0_EDSS | SSCR0_DataSize(=
-8));
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* we must be in network mode (2 slots) f=
-or 24 bit stereo */
-> =
+> > +#define SND_SOC_DAIFMT_FF_SAMPLE	(0 << 16)
+> > +#define SND_SOC_DAIFMT_FF_I2S_16	(1 << 16)
+> > +#define SND_SOC_DAIFMT_FF_I2S_32	(2 << 16)
+> 
+> FF_SAMPLE should probably be FF_UNSPEC or something to preserve the
+> existing semantics.
 
-> This is still dubious ...
-> S24_LE is 24-bit sound LSB-aligned in 32-bit frames, so DataSize
-> should be 32 here.
+Could do that, yes.
 
-I didn't test that, and I didn't change it either - I just removed the
-comment, as we're not running in network mode anymore.
+> FF_I2S should probably be something else since something might need this
+> for non-I2S devices - _BIT, perhaps?
 
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
-> > =A0 =A0 =A0 =A0case SNDRV_PCM_FORMAT_S32_LE:
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sscr0 |=3D (SSCR0_EDSS | SSCR0_DataSize(=
-16));
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* we must be in network mode (2 slots) f=
-or 32 bit stereo */
-> =
+For non-I2S devices, we could re-use the same bit space as they will
+never appear in the same format word anyway, right?
 
-> How is it possible to send 64bit in one frame otherwise?
-
-We're not running in network mode anymore - things are different now :)
-
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 switch (priv->dai_fmt & SND_SOC_DAIFMT_FR=
-AME_FORMAT_MASK) {
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 case SND_SOC_DAIFMT_FF_I2S_32:
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* These values are all f=
-ound out by trying and
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* failing a lot. PXA's=
- SSP is all black magic and
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* does not work like d=
-escribed in any datasheet.
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*/
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sspsp |=3D SSPSP_SFRMWDTH=
-(32);
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sspsp |=3D SSPSP_SFRMDLY(=
-32 * 2);
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sspsp |=3D SSPSP_EDMYSTOP=
-(3);
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sspsp |=3D SSPSP_DMYSTOP(=
-3);
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sspsp |=3D SSPSP_DMYSTRT(=
-1);
-> =
-
-> Wha?! Amazing. And this really works?
-> How the hell can this result in 16 bits of data followed by 16 bits of
-> zeroes, twice :)
-
-Don't ask :) If we could explain in detail what these registers mean,
-I'd rather make them macro values, but unfortunately, the comment is
-correct ...
-
-> =
-
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 default:
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Cleared when the DAI f=
-ormat is set */
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sspsp |=3D SSPSP_SFRMWDTH=
-(width);
-> =
-
-> Not good for DSP_A/B.
-
-This is the SND_SOC_DAIFMT_I2S case, so DSP modes will be unaffected.
-
-Could you try the patches on your board?
+Anyway, I'm totally open to any other approach, this one just seems most
+straight forward :)
 
 Thanks,
 Daniel
