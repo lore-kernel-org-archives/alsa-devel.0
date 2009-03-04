@@ -1,49 +1,37 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 2/2] ASoC: Add headset jack detection for SDP3430
-	machine driver
-Date: Wed, 4 Mar 2009 19:07:17 +0000
-Message-ID: <20090304190716.GB6420@sirena.org.uk>
-References: <2C7D3DF36ADFFC479B44490D912B616705ECD6E1B6@dlee07.ent.ti.com>
+Subject: Re: [patch 4/9] S3C24XX ASoC: Fix copyright	statements
+	on Simtec files
+Date: Wed, 4 Mar 2009 19:20:08 +0000
+Message-ID: <20090304192005.GA7680@sirena.org.uk>
+References: <20090304004925.530566010@fluff.org.uk>
+	<20090304005138.721060659@fluff.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8C15B1038C1
+	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 20:20:15 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705ECD6E1B6@dlee07.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Lopez Cruz, Misael" <x0052729@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+In-Reply-To: <20090304005138.721060659@fluff.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Ben Dooks <ben-alsa@fluff.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 04, 2009 at 11:39:12AM -0600, Lopez Cruz, Misael wrote:
+On Wed, Mar 04, 2009 at 12:49:29AM +0000, Ben Dooks wrote:
+> From: Ben Dooks <ben@simtec.co.uk>
+> Fix the copyright statements in two of the S3C24XX ASoC files
+> that have (c) when we require the full word.
+> 
+> Signed-off-by: Ben Dooks <ben@simtec.co.uk>
 
-> +/* Headset jack */
-> +struct snd_soc_jack *hs_jack;
-
-This (and all your other globals) should be declared static.
-
-> +/* Headset jack DAPM pins */
-> +struct snd_soc_jack_pin hs_jack_pins[] = {
-> +	{
-> +		.pin = "Headset Jack",
-> +		.mask = SND_JACK_HEADSET,
-> +		.invert = 0,
-> +	},
-> +};
-
-No need to initialise things to zero, that's the default for static
-variables.
-
-> +	/* Headset jack detection */
-> +	hs_jack = kzalloc(sizeof(struct snd_soc_jack), GFP_KERNEL);
-> +	if (!hs_jack)
-> +		return -ENOMEM;
-
-If you declare hs_jack as a direct static variable you won't need to
-kzalloc() it and save some error checking and cleanup code too :)
-
-> +	ret = snd_soc_jack_new(&snd_soc_sdp3430, "SDP3430 headset jack",
-> +				SND_JACK_HEADSET, hs_jack);
-> +	if (ret)
-> +		return ret;
-
-This leaks the jack.
+This was merged previously from your presubmission.
