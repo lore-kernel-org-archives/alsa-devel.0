@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 1/4] ASoC: Use network mode with 2
-	slots	for 16-bit stereo in pxa-ssp/Zylonite
-Date: Wed, 4 Mar 2009 14:29:36 +0000
-Message-ID: <20090304142934.GA433@sirena.org.uk>
-References: <1236093054-1952-1-git-send-email-philipp.zabel@gmail.com>
-	<20090304013424.GA5165@buzzloop.caiaq.de>
+Subject: Re: [PATCH] ASoC: Add GPIO support for jack reporting
+	interface
+Date: Wed, 4 Mar 2009 14:43:14 +0000
+Message-ID: <20090304144313.GC433@sirena.org.uk>
+References: <2C7D3DF36ADFFC479B44490D912B616705ECD6DD49@dlee07.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E7B5224561
-	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 15:29:38 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id A1F2F1037EA
+	for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2009 15:43:14 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20090304013424.GA5165@buzzloop.caiaq.de>
+In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705ECD6DD49@dlee07.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,20 +22,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Philipp Zabel <philipp.zabel@gmail.com>
+To: "Lopez Cruz, Misael" <x0052729@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 04, 2009 at 02:34:24AM +0100, Daniel Mack wrote:
+On Tue, Mar 03, 2009 at 03:25:04PM -0600, Lopez Cruz, Misael wrote:
+> Add GPIO support to jack reporting framework in ASoC using gpiolib calls.
+> The gpio support exports two new functions: snd_soc_jack_add_gpios and
+> snd_soc_jack_free_gpios.
 
-> Hence the question: how does your I2S signal look like at the moment?
-> How many clocks do you measure in one frame cylce, how many of them are
-> actually filled with data? And which format does the userspace use to
-> send samples in?
+Applied, thanks.  However, I'll provide a follow on patch to...
 
-> We finally got a mode now that outputs 2x16 bit on a 2x32 bits I2S
-> frame, padded with zeros. But that is in non-network modes, more
-> about that tomorrow ...
+> +undo:
+> +	snd_soc_jack_free_gpios(jack, i, gpios);
 
-Zylonite generates I2S signals which look OK but which don't have any
-padding.
+change this to i + 1 - confusion due to zero based indexing.
