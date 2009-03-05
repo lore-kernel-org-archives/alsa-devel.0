@@ -1,24 +1,19 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 3/4] pxa-ssp: don't touch ssp
-	registers	when stream is running
-Date: Thu, 5 Mar 2009 11:23:37 +0100
-Message-ID: <20090305102337.GB28448@buzzloop.caiaq.de>
-References: <20090304201505.GE12183@buzzloop.caiaq.de>
-	<1236197820-21022-1-git-send-email-daniel@caiaq.de>
-	<1236197820-21022-2-git-send-email-daniel@caiaq.de>
-	<1236197820-21022-3-git-send-email-daniel@caiaq.de>
-	<20090304203350.GB10731@sirena.org.uk>
-	<20090304203911.GA18917@buzzloop.caiaq.de>
-	<20090304204222.GC10731@sirena.org.uk>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [patch 0/9] S3C24XX/S3C64XX updates
+Date: Thu, 5 Mar 2009 10:31:12 +0000
+Message-ID: <20090305103111.GA2416@sirena.org.uk>
+References: <20090304004925.530566010@fluff.org.uk>
+	<20090304202952.GA10731@sirena.org.uk>
+	<s5hvdqofn6a.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id D56A210381B
-	for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2009 11:23:40 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 58AFA103852
+	for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2009 11:31:14 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20090304204222.GC10731@sirena.org.uk>
+In-Reply-To: <s5hvdqofn6a.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,29 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org, Tim Ruetz <tim@caiaq.de>, Philipp Zabel <philipp.zabel@gmail.com>, Liam Girdwood <lrg@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Ben Dooks <ben-alsa@fluff.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 04, 2009 at 08:42:22PM +0000, Mark Brown wrote:
-> On Wed, Mar 04, 2009 at 09:39:11PM +0100, Daniel Mack wrote:
-> > On Wed, Mar 04, 2009 at 08:33:52PM +0000, Mark Brown wrote:
-> 
-> > > I'd expect an error to be reported here - if we needed to change the
-> > > settings and can't things could go wrong.  Ideally it'd check to see if
-> > > the DAI format was being changed and only error if it was.
-> 
-> > In my tests, pxa_ssp_set_dai_fmt() was simply called twice, once for the
-> > input, once for the ouput. Hence I believed a silent exit in such a case
-> 
-> That'll be because you weren't changing the DAI format - hence my
-> comment about only erroring if the format is changed.
+On Thu, Mar 05, 2009 at 08:23:25AM +0100, Takashi Iwai wrote:
 
-Ok, that makes sense. We should probably do something silimar in
-set_hw_params() were we also currently exit silently in case of running
-streams.
+> Me too :)  I wouldn't take this for 2.6.29 as long as it builds now,
+> but this particular change should go through ARM tree, so it's rather
+> Russell's call.  Could you forward this one?
 
-I'll post a new set soon when we sorted out more things on the other
-patches.
+> The others are applied fine to sound tree as 2.6.30 changes.
 
-Daniel
+Ordinarily it should go through the ARM tree but due to the addition of
+the S3C64xx support it would create merge issues to separate it out -
+most of the other patches in the series depend on this in one way or
+another.  Ben is the maintainer for the general Samsung processor
+support and this header move is part of a general reorgansation of ARM
+headers from include/asm-arm into arch/arm so it was expected and should
+be entirely uncontrovesial.
+
+I could separate it out and push a separate branch via Russell as well
+but that'd make more work for him and he's been having some very bad
+network problems in addition to all the stuff he normally has to do so
+I'm not sure he'd welcome more work right now.
