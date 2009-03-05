@@ -1,16 +1,18 @@
-From: "Lopez Cruz, Misael" <x0052729@ti.com>
-Subject: [PATCH 2/2] ASoC: Add headset jack detection for
- SDP3430 machine driver
-Date: Thu, 5 Mar 2009 11:32:31 -0600
-Message-ID: <2C7D3DF36ADFFC479B44490D912B616705ECE137B9@dlee07.ent.ti.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: Fix long name of control
+	for	dapm_switch
+Date: Thu, 5 Mar 2009 17:26:26 +0000
+Message-ID: <20090305172624.GH2416@sirena.org.uk>
+References: <4e1455be0903031747s65097766saea220037d1335ff@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 85012244F1
-	for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2009 18:32:51 +0100 (CET)
-Content-Language: en-US
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id A36C9244F5
+	for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2009 18:35:20 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4e1455be0903031747s65097766saea220037d1335ff@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,100 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
-Cc: Mark Brown <broonie@sirena.org.uk>
+To: Joonyoung Shim <dofmind@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add headset jack detection for SDP3430 boards using SoC jack
-reporting interface. Headset detection on SDP3430 board is
-achieved through TWL4030 GPIO_2 pin.
+On Wed, Mar 04, 2009 at 10:47:09AM +0900, Joonyoung Shim wrote:
+> The length of long control name doesn't include the length of widget
+> name at present when widget->id is snd_soc_dapm_switch, so the long
+> control name of dapm_switch is shortened.
+> To avoid this problem, the long control name only for dapm_mixer_named_ctl
+> must have simply the kcontrol name.
 
-Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
----
- sound/soc/omap/sdp3430.c |   43 +++++++++++++++++++++++++++++++++++++++++--
- 1 files changed, 41 insertions(+), 2 deletions(-)
+This is a good catch - thanks!
 
-diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
-index 4eab4b4..715c648 100644
---- a/sound/soc/omap/sdp3430.c
-+++ b/sound/soc/omap/sdp3430.c
-@@ -28,6 +28,7 @@
- #include <sound/pcm.h>
- #include <sound/soc.h>
- #include <sound/soc-dapm.h>
-+#include <sound/jack.h>
- 
- #include <asm/mach-types.h>
- #include <mach/hardware.h>
-@@ -122,7 +123,7 @@ static int sdp3430_twl4030_init(struct snd_soc_codec *codec)
- 	/* SDP3430 connected pins */
- 	snd_soc_dapm_enable_pin(codec, "Ext Mic");
- 	snd_soc_dapm_enable_pin(codec, "Ext Spk");
--	snd_soc_dapm_enable_pin(codec, "Headset Jack");
-+	snd_soc_dapm_disable_pin(codec, "Headset Jack");
- 
- 	/* TWL4030 not connected pins */
- 	snd_soc_dapm_nc_pin(codec, "AUXL");
-@@ -144,6 +145,27 @@ static int sdp3430_twl4030_init(struct snd_soc_codec *codec)
- 	return ret;
- }
- 
-+/* Headset jack */
-+static struct snd_soc_jack hs_jack;
-+
-+/* Headset jack detection DAPM pins */
-+static struct snd_soc_jack_pin hs_jack_pins[] = {
-+	{
-+		.pin = "Headset Jack",
-+		.mask = SND_JACK_HEADSET,
-+	},
-+};
-+
-+/* Headset jack detection gpios */
-+static struct snd_soc_jack_gpio hs_jack_gpios[] = {
-+	{
-+		.gpio = (OMAP_MAX_GPIO_LINES + 2),
-+		.name = "hsdet-gpio",
-+		.report = SND_JACK_HEADSET,
-+		.debounce_time = 200,
-+	},
-+};
-+
- /* Digital audio interface glue - connects codec <--> CPU */
- static struct snd_soc_dai_link sdp3430_dai = {
- 	.name = "TWL4030",
-@@ -194,7 +216,21 @@ static int __init sdp3430_soc_init(void)
- 	if (ret)
- 		goto err1;
- 
--	return 0;
-+	/* Headset jack detection */
-+	ret = snd_soc_jack_new(&snd_soc_sdp3430, "SDP3430 headset jack",
-+				SND_JACK_HEADSET, &hs_jack);
-+	if (ret)
-+		return ret;
-+
-+	ret = snd_soc_jack_add_pins(&hs_jack, ARRAY_SIZE(hs_jack_pins),
-+				hs_jack_pins);
-+	if (ret)
-+		return ret;
-+
-+	ret = snd_soc_jack_add_gpios(&hs_jack, ARRAY_SIZE(hs_jack_gpios),
-+				hs_jack_gpios);
-+
-+	return ret;
- 
- err1:
- 	printk(KERN_ERR "Unable to add platform device\n");
-@@ -206,6 +242,9 @@ module_init(sdp3430_soc_init);
- 
- static void __exit sdp3430_soc_exit(void)
- {
-+	snd_soc_jack_free_gpios(&hs_jack, ARRAY_SIZE(hs_jack_gpios),
-+				hs_jack_gpios);
-+
- 	platform_device_unregister(sdp3430_snd_device);
- }
- module_exit(sdp3430_soc_exit);
--- 
-1.5.4.3
+Unfortunately your patch doesn't apply against the current topic/asoc
+branch of Takashi's repository, I've implemented a slightly different
+version of it.
+
+> -                       name_len = strlen(w->kcontrols[i].name) + 1;
+> -                       if (w->id == snd_soc_dapm_mixer)
+> -                               name_len += 1 + strlen(w->name);
+> +                       if (w->id == snd_soc_dapm_mixer_named_ctl)
+> +                               name_len = strlen(w->kcontrols[i].name) + 1;
+> +                       else
+> +                               name_len = 2 + strlen(w->name)
+> +                                       + strlen(w->kcontrols[i].name);
+
+Here I just changed the test to != named_ctl.
+
+> 
+> -                       switch (w->id) {
+> -                       case snd_soc_dapm_mixer:
+> -                       default:
+
+Your chanegs here appear to only flip to an if/else from a switch
+statement?  Please mention things like this in your commit logs (or
+split them into separate patches) - it makes your changes easier to
+review.
