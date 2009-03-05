@@ -1,21 +1,24 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [patch 0/9] S3C24XX/S3C64XX updates
-Date: Thu, 5 Mar 2009 11:03:00 +0000
-Message-ID: <20090305110259.GC2416@sirena.org.uk>
-References: <20090304004925.530566010@fluff.org.uk>
-	<20090304202952.GA10731@sirena.org.uk>
-	<s5hvdqofn6a.wl%tiwai@suse.de>
-	<20090305103111.GA2416@sirena.org.uk>
-	<s5h8wnk45ot.wl%tiwai@suse.de>
+Subject: Re: [PATCH 4/4] pxa-ssp: switch from network mode
+	to	psp
+Date: Thu, 5 Mar 2009 11:21:33 +0000
+Message-ID: <20090305112133.GD2416@sirena.org.uk>
+References: <20090304201505.GE12183@buzzloop.caiaq.de>
+	<1236197820-21022-1-git-send-email-daniel@caiaq.de>
+	<1236197820-21022-2-git-send-email-daniel@caiaq.de>
+	<1236197820-21022-3-git-send-email-daniel@caiaq.de>
+	<1236197820-21022-4-git-send-email-daniel@caiaq.de>
+	<74d0deb30903041256u8eeea03n5500cd59afadd86e@mail.gmail.com>
+	<20090304230301.GA20915@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8F8CD10383D
-	for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2009 12:03:01 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 707BA10386C
+	for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2009 12:21:34 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5h8wnk45ot.wl%tiwai@suse.de>
+In-Reply-To: <20090304230301.GA20915@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,23 +28,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Ben Dooks <ben-alsa@fluff.org>, alsa-devel@alsa-project.org
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org, Tim Ruetz <tim@caiaq.de>, Liam Girdwood <lrg@kernel.org>, pHilipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 05, 2009 at 11:36:34AM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
+On Thu, Mar 05, 2009 at 12:03:01AM +0100, Daniel Mack wrote:
+> On Wed, Mar 04, 2009 at 09:56:01PM +0100, pHilipp Zabel wrote:
 
-> > I could separate it out and push a separate branch via Russell as well
-> > but that'd make more work for him and he's been having some very bad
-> > network problems in addition to all the stuff he normally has to do so
-> > I'm not sure he'd welcome more work right now.
+> > Shouldn't this be somehow set by set_dai_clkdiv instead?
 
-> Then it must be OK to keep the changes in our tree.  Though, it'd be
-> nice to have Russell's ack beforehand.
-> Maybe we can separate the header-move patch to another branch so that
-> he can pull it in easily if needed.
+> This is actually a very common case - MCLK is BCLK*4, so I put it here.
+> We could still move it to some more configurable place if it turns out
+> we need to configure it per board.
 
-OK, I'll create the separate branch and merge it into the branch I push
-to you - Ben, I guess it'll be best to merge that one into whatever you
-push to Russell?
+It's a common option but far from universal - apart from anything else
+normally the MCLK requirement is a multiple of the sampling frequency
+rather than the bitclock rate so the ratio with BCLK will often vary
+with sample size.  I've seen devices able to operate as low as 64fs and
+IIRC I've seen things up to 512fs, though 256fs is more common.
