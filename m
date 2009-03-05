@@ -1,21 +1,24 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 2/4] soc-dai: add bitfields for
-	hardware	I2S formats
-Date: Thu, 5 Mar 2009 00:12:23 +0100
-Message-ID: <20090304231223.GB20915@buzzloop.caiaq.de>
-References: <20090304201505.GE12183@buzzloop.caiaq.de>
-	<1236197820-21022-1-git-send-email-daniel@caiaq.de>
-	<1236197820-21022-2-git-send-email-daniel@caiaq.de>
-	<20090304223057.GD10731@sirena.org.uk>
+From: Eric Miao <eric.y.miao@gmail.com>
+Subject: Re: [PATCH] ASoC: make ops a pointer in 'struct
+	snd_soc_dai'
+Date: Thu, 5 Mar 2009 10:03:18 +0800
+Message-ID: <f17812d70903041803s4c95dfebjf38079cce34b10ca@mail.gmail.com>
+References: <f17812d70903011925w2a201e27m39fa001d4c700d45@mail.gmail.com>
+	<ed82fe3e0903020439u497389ccp7ec35c7de37ad936@mail.gmail.com>
+	<f17812d70903020646q15d43dcch8ad90df2cb486499@mail.gmail.com>
+	<49AC225D.6090002@freescale.com>
+	<f17812d70903021740w5c0c5dfck5a92869650bf5bd7@mail.gmail.com>
+	<49AEF38A.6050802@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0BF34243D7
-	for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2009 00:12:27 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20090304223057.GD10731@sirena.org.uk>
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.244])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3D77D1037EB
+	for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2009 03:03:19 +0100 (CET)
+Received: by rv-out-0708.google.com with SMTP id c5so3226273rvf.32
+	for <alsa-devel@alsa-project.org>; Wed, 04 Mar 2009 18:03:19 -0800 (PST)
+In-Reply-To: <49AEF38A.6050802@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,72 +28,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org, Tim Ruetz <tim@caiaq.de>, Liam Girdwood <lrg@kernel.org>
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>, Liam Girdwood <lrg@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
-
-On Wed, Mar 04, 2009 at 10:30:58PM +0000, Mark Brown wrote:
-> On Wed, Mar 04, 2009 at 09:16:58PM +0100, Daniel Mack wrote:
-> > This patch adds bitfields for I2S serial formats that differ from the
-> > amount of data actually sent on the line. Some codecs (namely the
-> > cs4270) require 64 sysclks being sent during each frame period, even
-> > though the number of acutal data bits might be less.
-> 
-> Hrm.  This is normally handled via the clock divider interface - it's
-> often much more straightforward to work with when dealing with devices
-> with very flexible clocking, especially if there are more than two
-> devices on the link.  Have you considered handling this through that,
-> perhaps through adding a virtual thing to configure (eg, a
-> PXA_SSP_FRAME_CLOCKS)?
-
-I thought about that but then I condidered it's actually the wrong place
-for such a setting. I see two statements the board file has to make:
-
-1) "We need to have 64 bits per frame for the codec"
-2) "The sample data you'll be finding in the FIFO is 16 bits"
-
-It could be possible to express that in clk division rations, but it is
-actually a lot more straight forward to make that setting once rather
-then changing it over and over again.
-
-> Normally this would be a network mode but it
-> seems clear that that has some issues on this hardware and an
-> alternative solution is required.
-> 
-> The other downside of this approach is that it makes all existing
-> drivers theoretically instabuggy in that they don't reject invalid
-> configurations, although that's not such a big issue since it really
-> only makes life easier when writing board drivers.
-
-Well, it won't break things - the worst thing that can happen is that
-things are silently ignored. That bitfield was meant to be extended,
-wasn't it ;)
-
-> I guess cs4270.c ought to be enforcing this if it's added...
-
-cs4270.c would need that flag to be set or fail otherwise. Don't know if
-that really makes life easier for board support files that are not
-mainline. Want me to do that?
-
-> > +#define SND_SOC_DAIFMT_FF_SAMPLE	(0 << 16)
-> > +#define SND_SOC_DAIFMT_FF_I2S_16	(1 << 16)
-> > +#define SND_SOC_DAIFMT_FF_I2S_32	(2 << 16)
-> 
-> FF_SAMPLE should probably be FF_UNSPEC or something to preserve the
-> existing semantics.
-
-Could do that, yes.
-
-> FF_I2S should probably be something else since something might need this
-> for non-I2S devices - _BIT, perhaps?
-
-For non-I2S devices, we could re-use the same bit space as they will
-never appear in the same format word anyway, right?
-
-Anyway, I'm totally open to any other approach, this one just seems most
-straight forward :)
-
-Thanks,
-Daniel
+T24gVGh1LCBNYXIgNSwgMjAwOSBhdCA1OjMyIEFNLCBUaW11ciBUYWJpIDx0aW11ckBmcmVlc2Nh
+bGUuY29tPiB3cm90ZToKPiBFcmljIE1pYW8gd3JvdGU6Cj4KPj4gVXBkYXRlZCBhcyBiZWxvdywg
+KGd6aXAgdmVyc2lvbiBhdHRhY2hlZCBkdWUgdG8gbWFpbGluZyBsaXN0Cj4+IG1haWwgc2l6ZSBs
+aW1pdGF0aW9uKS4KPj4KPj4gRnJvbSA3NGEyYjZkZmZmMjk0OGQ5ZDA0YjMzZDBhMDJmNjQ1Zjhj
+MTJjYWY3IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQo+PiBGcm9tOiBFcmljIE1pYW8gPGVyaWMu
+bWlhb0BtYXJ2ZWxsLmNvbT4KPj4gRGF0ZTogTW9uLCAyIE1hciAyMDA5IDIyOjM4OjMxICswODAw
+Cj4+IFN1YmplY3Q6IFtQQVRDSF0gQVNvQzogbWFrZSBvcHMgYSBwb2ludGVyIG9mICdzdHJ1Y3Qg
+c25kX3NvY19kYWknCj4+Cj4+IENvbnNpZGVyaW5nIHRoZSBmYWN0IHRoYXQgbW9zdCBjcHVfZGFp
+IG9yIGNvZGVjX2RhaSBhcmUgdXNpbmcgYSBzYW1lCj4+ICdzbmRfc29jX2RhaV9vcHMnIGZvciBz
+ZXZlcmFsIHNpbWlsYXIgaW50ZXJmYWNlcywgJ29wcycgd291bGQgYmUgYmV0dGVyCj4+IG1hZGUg
+YSBwb2ludGVyIGluc3RlYWQsIHRvIG1ha2Ugc2hhcmluZyBlYXNpZXIgYW5kIGNvZGUgYSBiaXQg
+Y2xlYW5lci4KPj4KPj4gVGhlIHBhdGNoIGJlbG93IGlzIHJhdGhlciBwcmVsaW1pbmFyeSBzaW5j
+ZSB0aGUgYXNvYyB0cmVlIGlzIGJlaW5nCj4+IGFjdGl2ZWx5IGRldmVsb3BlZCwgYW5kIHRoaXMg
+dG91Y2hlcyBhbG1vc3QgZXZlcnkgcGllY2Ugb2YgY29kZSwKPj4gKGFuZCBwb3NzaWJseSBtYW55
+IG90aGVycyBpbiBkZXZlbG9wbWVudCBuZWVkIHRvIGJlIGNoYW5nZWQgYXMKPj4gd2VsbCkuIEJ1
+aWxkaW5nIG9mIGFsbCBjb2RlY3MgYXJlIE9LLCB5ZXQgdG8gZXZlcnkgU29DLCBJIGRpZG4ndCB0
+ZXN0Cj4+IHRoYXQuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IEVyaWMgTWlhbyA8ZXJpYy5taWFvQG1h
+cnZlbGwuY29tPgo+Cj4gVGVzdGVkIG9uIGFuIE1QQzg2MTAgSFBDRCwgYW5kIGl0IHdvcmtzLiDC
+oFRoYXQncyBhbGwgSSBjYW4gdm91Y2ggZm9yLAo+IHRob3VnaC4KPgo+IEFja2VkLWJ5OiBUaW11
+ciBUYWJpIDx0aW11ckBmcmVlc2NhbGUuY29tPgo+CgpUaGFua3MuCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
