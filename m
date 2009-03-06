@@ -1,21 +1,16 @@
-From: Karl Beldan <karl.beldan@gmail.com>
-Subject: Re: [PATCH 2/5] ASoC: ssm2602 codec: fix bug - kernel
- will crash when record and play in bf527-ezkit
-Date: Fri, 06 Mar 2009 10:50:08 +0100
-Message-ID: <49B0F1D0.9070707@gmail.com>
-References: <1236326010-683-1-git-send-email-cooloney@kernel.org>
-	<1236326010-683-3-git-send-email-cooloney@kernel.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: No headphone output on HT Omega Claro Halo
+Date: Fri, 06 Mar 2009 11:24:51 +0100
+Message-ID: <49B0F9F3.2060208@ladisch.de>
+References: <49B0965A.1040208@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f163.google.com (mail-ew0-f163.google.com
-	[209.85.219.163])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7345F24134
-	for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2009 10:49:37 +0100 (CET)
-Received: by ewy7 with SMTP id 7so160618ewy.32
-	for <alsa-devel@alsa-project.org>; Fri, 06 Mar 2009 01:49:36 -0800 (PST)
-In-Reply-To: <1236326010-683-3-git-send-email-cooloney@kernel.org>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 6DFF92438A
+	for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2009 11:24:56 +0100 (CET)
+In-Reply-To: <49B0965A.1040208@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +20,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Bryan Wu <cooloney@kernel.org>
-Cc: Cliff Cai <cliff.cai@analog.com>, broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: "Christopher J. Atherton" <the8lack8ox@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Bryan Wu wrote:
-> From: Cliff Cai <cliff.cai@analog.com>
-> 
-> set constraint only if the value is not 0, change the configuring way for sport
-> 
-> Signed-off-by: Cliff Cai <cliff.cai@analog.com>
-> Signed-off-by: Bryan Wu <cooloney@kernel.org>
-> ---
->  sound/soc/codecs/ssm2602.c |   29 ++++++++++++++---------------
->  1 files changed, 14 insertions(+), 15 deletions(-)
->
-What tree is this against ?
+Christopher J. Atherton wrote:
+> I have an HT Omega Claro Halo (CMI8878) card that is not entirely
+> working.  This card has two analog outputs, a pair of RCA connectors and
+> also a separate headphone output (3.5mm jack).  The RCA outputs work,
+> but the headphone output, which notably passes a signal from a built in
+> headphone amp, does not.
 
--- 
-Karl Beldan
+Please try this patch:
+
+--- linux/sound/pci/oxygen/oxygen.c
++++ linux/sound/pci/oxygen/oxygen.c
+@@ -200,6 +200,8 @@ static void halo_init(struct oxygen *chip)
+ {
+ 	ak4396_init(chip);
+ 	ak5385_init(chip);
++	oxygen_set_bits16(chip, OXYGEN_GPIO_CONTROL, 0x100);
++	oxygen_set_bits16(chip, OXYGEN_GPIO_DATA, 0x100);
+ }
+ 
+ static void generic_cleanup(struct oxygen *chip)
