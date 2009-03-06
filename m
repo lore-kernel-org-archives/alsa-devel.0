@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 2/2] ASoC: Add headset jack detection
-	for	SDP3430 machine driver
-Date: Fri, 6 Mar 2009 11:01:19 +0000
-Message-ID: <20090306110116.GA6493@sirena.org.uk>
-References: <2C7D3DF36ADFFC479B44490D912B616705ECE137B9@dlee07.ent.ti.com>
+Subject: Re: [PATCH] ASoC: add support for SSI
+	asynchronous	mode to the Freescale SSI drivers
+Date: Fri, 6 Mar 2009 11:02:54 +0000
+Message-ID: <20090306110226.GB6493@sirena.org.uk>
+References: <1236295417-12013-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id C3A90243D7
-	for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2009 12:01:30 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id C372A243E3
+	for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2009 12:05:22 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705ECE137B9@dlee07.ent.ti.com>
+In-Reply-To: <1236295417-12013-1-git-send-email-timur@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,21 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Lopez Cruz, Misael" <x0052729@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 05, 2009 at 11:32:31AM -0600, Lopez Cruz, Misael wrote:
-> Add headset jack detection for SDP3430 boards using SoC jack
-> reporting interface. Headset detection on SDP3430 board is
-> achieved through TWL4030 GPIO_2 pin.
+On Thu, Mar 05, 2009 at 05:23:37PM -0600, Timur Tabi wrote:
+> Add a new device tree property for the SSI node: "fsl,ssi-asynchronous".  If
+> defined, the SSI is programmed into asynchronous mode, otherwise it is
+> programmed into synchronous mode.  In asynchronous mode, pin SRCK must be
+> connected to the same clock source as STFS, and pin SRFS must be connected to
+> the same signal as STFS.  Asynchronous mode allows playback and capture to
+> use different sample sizes.  It also technically allows different sample rates,
+> but the driver does not support that.
 
-Applied, thanks.  One comment:
+> Signed-off-by: Timur Tabi <timur@freescale.com>
 
-> +/* Headset jack detection gpios */
-> +static struct snd_soc_jack_gpio hs_jack_gpios[] = {
-> +	{
-> +		.gpio = (OMAP_MAX_GPIO_LINES + 2),
-
-It feels like there should be a nicer way of specifying the GPIO
-number?
+Applied, thanks,
