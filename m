@@ -1,16 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: No headphone output on HT Omega Claro Halo
-Date: Fri, 06 Mar 2009 11:24:51 +0100
-Message-ID: <49B0F9F3.2060208@ladisch.de>
-References: <49B0965A.1040208@gmail.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 2/2] ASoC: Add headset jack detection
+	for	SDP3430 machine driver
+Date: Fri, 6 Mar 2009 11:01:19 +0000
+Message-ID: <20090306110116.GA6493@sirena.org.uk>
+References: <2C7D3DF36ADFFC479B44490D912B616705ECE137B9@dlee07.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 6DFF92438A
-	for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2009 11:24:56 +0100 (CET)
-In-Reply-To: <49B0965A.1040208@gmail.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id C3A90243D7
+	for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2009 12:01:30 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705ECE137B9@dlee07.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,27 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Christopher J. Atherton" <the8lack8ox@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: "Lopez Cruz, Misael" <x0052729@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Christopher J. Atherton wrote:
-> I have an HT Omega Claro Halo (CMI8878) card that is not entirely
-> working.  This card has two analog outputs, a pair of RCA connectors and
-> also a separate headphone output (3.5mm jack).  The RCA outputs work,
-> but the headphone output, which notably passes a signal from a built in
-> headphone amp, does not.
+On Thu, Mar 05, 2009 at 11:32:31AM -0600, Lopez Cruz, Misael wrote:
+> Add headset jack detection for SDP3430 boards using SoC jack
+> reporting interface. Headset detection on SDP3430 board is
+> achieved through TWL4030 GPIO_2 pin.
 
-Please try this patch:
+Applied, thanks.  One comment:
 
---- linux/sound/pci/oxygen/oxygen.c
-+++ linux/sound/pci/oxygen/oxygen.c
-@@ -200,6 +200,8 @@ static void halo_init(struct oxygen *chip)
- {
- 	ak4396_init(chip);
- 	ak5385_init(chip);
-+	oxygen_set_bits16(chip, OXYGEN_GPIO_CONTROL, 0x100);
-+	oxygen_set_bits16(chip, OXYGEN_GPIO_DATA, 0x100);
- }
- 
- static void generic_cleanup(struct oxygen *chip)
+> +/* Headset jack detection gpios */
+> +static struct snd_soc_jack_gpio hs_jack_gpios[] = {
+> +	{
+> +		.gpio = (OMAP_MAX_GPIO_LINES + 2),
+
+It feels like there should be a nicer way of specifying the GPIO
+number?
