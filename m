@@ -1,22 +1,19 @@
-From: Nicolas.Castagne@imag.fr
-Subject: [Re: Crash when snd_pcm_open is called from a thread
- with "pulse" as playback]
-Date: Sun, 8 Mar 2009 16:11:45 -0000 (GMT)
-Message-ID: <2210.93.1.202.94.1236528705.squirrel@acroe.imag.fr>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH] CS4270: comments: slave mode is now
+	supported
+Date: Sun, 8 Mar 2009 11:40:30 -0500
+Message-ID: <ed82fe3e0903080940n4af2a4ffide7d44bd15bb22c8@mail.gmail.com>
+References: <1236528963-11943-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imag.imag.fr (imag.imag.fr [129.88.30.1])
-	by alsa0.perex.cz (Postfix) with ESMTP id 19B8F1037F5
-	for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2009 17:18:13 +0100 (CET)
-Received: from acroe.imag.fr (acroe.imag.fr [147.171.149.150])
-	by imag.imag.fr (8.13.8/8.13.8) with ESMTP id n28GFjvb010667
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <alsa-devel@alsa-project.org>; Sun, 8 Mar 2009 17:15:45 +0100 (CET)
-Received: from acroe.imag.fr (localhost [127.0.0.1])
-	by acroe.imag.fr (8.13.8/8.13.8/ImagV2.1) with ESMTP id n28GBjGv020727
-	for <alsa-devel@alsa-project.org>; Sun, 8 Mar 2009 17:11:45 +0100
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.148])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9BCFA1037F5
+	for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2009 17:40:31 +0100 (CET)
+Received: by ey-out-1920.google.com with SMTP id 3so112090eyh.56
+	for <alsa-devel@alsa-project.org>; Sun, 08 Mar 2009 09:40:30 -0700 (PDT)
+In-Reply-To: <1236528963-11943-1-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,47 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgZm9sa3MsCgpJJ2QgbmVlZCB0aGUgaGVscCBvZiBzb21lIGFsc2EgZGV2ZWxvcHBlcnMgcmVn
-YXJkaW5nIHRoZSBidWcgcmVwb3J0IDoKaHR0cHM6Ly9idWd0cmFjay5hbHNhLXByb2plY3Qub3Jn
-L2Fsc2EtYnVnL3ZpZXcucGhwP2lkPTQ0MjYKCldlJ3ZlIG1hZGUgYSBmZXcgcHJvZ3Jlc3Mgb24g
-aXQsIGJ1dCB3ZSBhcmUgc3R1Y2sgYWdhaW4uCgpCYXNpY2FsbHksIGl0IHNlZW1zIHRoYXQgY2Fs
-bGluZyBzbmRfY29uZmlnX3VwZGF0ZV9mcmVlX2dsb2JhbCgpIGZyb20gYQpwdGhyZWFkIGNhdXNl
-cyB0aGUgcHJvZ3JhbSB0byBjcmFzaCB3aGVuIHRoZSB0aHJlYWQgdGVybWluYXRlcy4KCgoKUXVl
-c3Rpb25zIGFyZToKClNob3VsZCBjb25maWdfdXBkYXRlX2ZyZWVfZ2xvYmFsIE5PVCBiZSBjYWxs
-ZWQgZnJvbSBhIHRocmVhZCA/CgpJbiBvdGhlciB3b3JkcywgaXMgdGhlIGZvbGxvd2luZyBjb2Rl
-IHZhbGlkICh0aG91Z2ggZHVtYiA6PSkpID8KT3IgaXMgdGhlcmUgc29tZSByZWFzb24gZm9yIGl0
-IHRvIGNyYXNoID8KCgoKKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgojaW5jbHVk
-ZSA8cHRocmVhZC5oPgojaW5jbHVkZSA8YWxzYS9hc291bmRsaWIuaD4Kdm9pZCAqIHRocmVhZFdv
-cmsodm9pZCAqYXJnKSB7CiAgICBzbmRfcGNtX3QgKnBsYXliYWNrX2hhbmRsZTsKICAgIGlmIChz
-bmRfcGNtX29wZW4gKCZwbGF5YmFja19oYW5kbGUsICJkZWZhdWx0IiwKU05EX1BDTV9TVFJFQU1f
-UExBWUJBQ0ssIDApIDwgMCkKICAgICAgICBmcHJpbnRmIChzdGRlcnIsICJlcnJvclxuIjsKICAg
-IHNuZF9wY21fY2xvc2UocGxheWJhY2tfaGFuZGxlKTsKCiAgICBzbmRfY29uZmlnX3VwZGF0ZV9m
-cmVlX2dsb2JhbCgpOwogICAgcmV0dXJuIE5VTEw7Cn0KaW50IG1haW4oKSB7CiAgICBwdGhyZWFk
-X2F0dHJfdCBhdHRyOwogICAgcHRocmVhZF9hdHRyX2luaXQoJmF0dHIpOwogICAgcHRocmVhZF90
-IHRocmVhZGlkOwogICAgcHRocmVhZF9jcmVhdGUoICZ0aHJlYWRpZCwgJmF0dHIsIHRocmVhZFdv
-cmssIE5VTEwpOwogICAgcmV0dXJuIEVYSVRfU1VDQ0VTUzsKfQoqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqCgoKSSB0aGFuayB5b3UgbXVjaCwKCk5pY29sYXMKCgoKCgotLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tIE1lc3NhZ2Ugb3JpZ2luYWwgLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLQpPYmpldDogICAgQ3Jhc2ggd2hlbiBzbmRfcGNtX29wZW4gaXMgY2FsbGVkIGZy
-b20gYSB0aHJlYWQgd2l0aCAicHVsc2UiIGFzIAogICAgcGxheWJhY2sKRGU6ICAgICAgIGNhc3Rh
-Z25lQGltYWcuZnIKRGF0ZTogICAgIE1lciA0IG1hcnMgMjAwOSA4OjIwCsOAOiAgICAgICBhbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCkhpIGZvbGtzLAoKSSBo
-b3BlIEkgcG9zdCBvbiB0aGUgY29ycmVjdCBtYWlsIGxpc3QuLi4KSSd2ZSByZWFkIHNvbWV3aGVy
-ZSB0aGF0IEkgc2hvdWxkIHJlcG9ydCBidWdzIG9uIGEgbGlzdCwgYW5kIG5vdCBvbmx5IG9uCnRo
-ZSBUcmFja2VyLiBUaGF0J3MgdGhlIGFpbSBvZiB0aGlzIG1lc3NhZ2UuCgoKT24gYWxsIG15IEZl
-ZG9yYSAxMCBtYWNoaW5lcywKd2hlbmV2ZXIKICAgICAgIHNuZF9wY21fb3BlbgpoYXMgYmVlbiBj
-YWxsZWQgZnJvbSBhIHB0aHJlYWQgdXNpbmcgInB1bHNlIiBhcyBwbGF5YmFjawp0aGVuIHRoZSBw
-cm9ncmFtIGNyYXNoZXMgd2hlbiB0aGUgdGhyZWFkIHRlcm1pbmF0ZXMuCgpDcmFzaCBpbiBfX25w
-dGxfZGVhbGxvY2F0ZV90c2QKCkhvd2V2ZXIsIEFGQUlLLCBvbmUgc2hvdWxkIGJlIGFibGUgdG8g
-Y2FsbCBzbmRfcGNtX29wZW4gZnJvbSBhIHRocmVhZC4KClRoZSBmdWxsIGJ1ZyByZXBvcnQgaXMg
-dGhlcmUsIHdpdGggYSB2ZXJ5IHNpbXBsZSBzYW1wbGUgY29kZSA6Cmh0dHBzOi8vYnVndHJhY2su
-YWxzYS1wcm9qZWN0Lm9yZy9hbHNhLWJ1Zy92aWV3LnBocD9pZD00NDI2CgpJIHRoaW5rIHRoaXMg
-YnVnIHJlbGF0ZXMgZGlyZWN0bHkgdG8gYWxzYS4KSSBob3BlIHRoaXMgcmVwb3J0IGlzIHVzZWZ1
-bC4KCgpCZXN0LQpOaWNvbGFzCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-bHNhLWRldmVsCg==
+On Sun, Mar 8, 2009 at 11:16 AM, Daniel Mack <daniel@caiaq.de> wrote:
+
+> - * 3) Only Master mode is supported, not Slave.
+> - * 4) The machine driver's 'startup' function must call
+> + * 3) The machine driver's 'startup' function must call
+
+I would have been simpler if you just said that both Master and Slave
+mode is supported.  However, if you really want to delete #3, you may
+as well get rid of all the numbers, so that we don't have to renumber
+them again in the future.
+
+> + * 6) The only supported control is volume and hardware mute (if enabled)
+
+This is no longer true.  Pretty much all controls are now supported.
+I should have changed that in my prior patch, but for now could you
+just delete #6?  Thanks.
+
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
