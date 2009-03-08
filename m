@@ -1,21 +1,20 @@
-From: Bryan Wu <cooloney@kernel.org>
-Subject: Re: [PATCH 4/5] ASoC: Blackfin: drop pointless casts
-	due to dma updates
-Date: Sun, 8 Mar 2009 12:28:22 +0800
-Message-ID: <386072610903072028i64865773w4e05598c7ff49ac9@mail.gmail.com>
-References: <1236326010-683-1-git-send-email-cooloney@kernel.org>
-	<1236326010-683-5-git-send-email-cooloney@kernel.org>
-	<20090306110949.GC6493@sirena.org.uk>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: configure script doesn't succesfully end with the
+	latest snapshots
+Date: Sun, 08 Mar 2009 15:54:01 +0200
+Message-ID: <49B3CDF9.9040402@pardus.org.tr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.173])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9D6CD1037F6
-	for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2009 05:28:23 +0100 (CET)
-Received: by wf-out-1314.google.com with SMTP id 26so1217502wfd.23
-	for <alsa-devel@alsa-project.org>; Sat, 07 Mar 2009 20:28:22 -0800 (PST)
-In-Reply-To: <20090306110949.GC6493@sirena.org.uk>
+Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id B17B52436A
+	for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2009 14:56:00 +0100 (CET)
+Received: from [192.168.1.2] (unknown [88.249.178.198])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested) (Authenticated sender: ozan)
+	by pardus.org.tr (Postfix) with ESMTP id EC86C63C9B39
+	for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2009 15:55:51 +0200 (EET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,28 +24,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Mike Frysinger <vapier.adi@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 6, 2009 at 7:10 PM, Mark Brown <broonie@sirena.org.uk> wrote:
-> On Fri, Mar 06, 2009 at 03:53:29PM +0800, Bryan Wu wrote:
->> From: Mike Frysinger <vapier.adi@gmail.com>
->>
->> Signed-off-by: Mike Frysinger <vapier.adi@gmail.com>
->> Signed-off-by: Bryan Wu <cooloney@kernel.org>
->> ---
->> =A0sound/blackfin/bf53x_sport.c | =A0 55 ++++++++++++++++++-------------=
-----------
->> =A01 files changed, 24 insertions(+), 31 deletions(-)
->
-> Mainline doesn't have a sound/blackfin directory at all as far as I can
-> tell so this patch doesn't apply? =A0The only mainline support I can see
-> for blackfin audio is sound/soc/blackfin which only has a generic
-> bf5xx-sport file. =A0A similar cleanup was done there a while ago.
->
-
-Oh, god. Sorry, my script sent out this in a mess. Please ignore this one
-
-Thanks a lot
--Bryan
+CkxhdGVzdCB3b3JraW5nIHNuYXBzaG90czoKCmFsc2EtZHJpdmVyLTIwMDkwMzA1LnRhci5iejIK
+YWxzYS1kcml2ZXItMjAwOTAzMDYudGFyLmJ6MgoKQWZmZWN0ZWQgc25hcHNob3RzOgphbHNhLWRy
+aXZlci0yMDA5MDMwNy50YXIuYnoyCmFsc2EtZHJpdmVyLTIwMDkwMzA4LnRhci5iejIKClByb2Js
+ZW0KLS0tLS0tLS0KCi0+IDIwMDkwMzA3CgpEdXJpbmcgdGhlIGNvbmZpZ3VyYXRpb24gc3RlcCwg
+Y29uZmlndXJlIHNjcmlwdCBjb21wbGFpbnMgdGhhdCBpdApjYW4ndCBmaW5kIHNvbWUgY29tbWFu
+ZHM6CgpjaGVja2luZyB3aGV0aGVyIGdjYyBuZWVkcyAtdHJhZGl0aW9uYWwuLi4gbm8gICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIApjaGVja2luZyBmb3IgY3VycmVudCBk
+aXJlY3RvcnkuLi4gL3Jvb3QvZGV2ZWwva2VybmVsL2RyaXZlcnMvYWxzYS1kcml2ZXIvYWxzYS1k
+cml2ZXItMjAwOTAzMDcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIAouL2NvbmZpZ3VyZTogbGluZSAzODYzOiBBTFNBX1RPUExFVkVMX0lOSVQ6IGNvbW1h
+bmQgbm90IGZvdW5kICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIApjaGVja2luZyBjcm9zcyBjb21w
+aWxlLi4uICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIApjaGVja2luZyBmb3IgZGlyZWN0b3J5IHdpdGgga2VybmVsIHNvdXJjZS4uLiAv
+bGliL21vZHVsZXMvMi42LjI1LjIwLTExNC9zb3VyY2UgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIApjaGVja2luZyBmb3IgZGly
+ZWN0b3J5IHdpdGgga2VybmVsIGJ1aWxkLi4uIC9saWIvbW9kdWxlcy8yLjYuMjUuMjAtMTE0L2J1
+aWxkCi4uCi4uCmNoZWNraW5nIGZvciBDT05GSUdfSEFTX0RNQS4uLiB5ZXMKLi9jb25maWd1cmU6
+IGxpbmUgMTMzMjU6IEFMU0FfVE9QTEVWRUxfU0VMRUNUOiBjb21tYW5kIG5vdCBmb3VuZAouL2Nv
+bmZpZ3VyZTogbGluZSAxMzMyNzogQUxTQV9QQVJTRV9LQ09ORklHOiBjb21tYW5kIG5vdCBmb3Vu
+ZAouL2NvbmZpZ3VyZTogbGluZSAxMzMyOTogQUxTQV9UT1BMRVZFTF9ERUZJTkVTOiBjb21tYW5k
+IG5vdCBmb3VuZAouL2NvbmZpZ3VyZTogbGluZSAxMzMzOTogQUxTQV9UT1BMRVZFTF9PVVRQVVQ6
+IGNvbW1hbmQgbm90IGZvdW5kCmNvbmZpZ3VyZTogY3JlYXRpbmcgLi9jb25maWcuc3RhdHVzCgpF
+dmVudGhvdWdoIGl0IGNvbXBsYWlucywgdGhlIGNvbmZpZ3VyYXRpb24gc3RlcCBlbmRzIHN1Y2Nl
+c2Z1bGx5IGFuZApJIGNhbiBjb21waWxlIHRoZSBkcml2ZXJzIHdpdGggbWFrZS4KCi0+IDIwMDkw
+MzA4CgpJdCdzIGV2ZW4gd29yc2UuIEFmdGVyIGNvbXBsYWluaW5nIGFib3V0CnRoZSBzYW1lIEFM
+U0FfKiBzdHVmZiwgaXQgZmFpbHMgYWxzbyBvbiB0aGUgZm9sbG93aW5nIGVycm9yOgoKY29uZmln
+dXJlOiBjcmVhdGluZyAuL2NvbmZpZy5zdGF0dXMKY29uZmlnLnN0YXR1czogY3JlYXRpbmcgdmVy
+c2lvbgpjb25maWcuc3RhdHVzOiBjcmVhdGluZyBNYWtlZmlsZS5jb25mCmNvbmZpZy5zdGF0dXM6
+IFdBUk5JTkc6ICAnTWFrZWZpbGUuY29uZi5pbicgc2VlbXMgdG8gaWdub3JlIHRoZSAtLWRhdGFy
+b290ZGlyIHNldHRpbmcKY29uZmlnLnN0YXR1czogY3JlYXRpbmcgc25kZGV2aWNlcwpjb25maWcu
+c3RhdHVzOiBjcmVhdGluZyB1dGlscy9hbHNhLWRyaXZlci5zcGVjCmNvbmZpZy5zdGF0dXM6IGNy
+ZWF0aW5nIHV0aWxzL2J1aWxkcnBtCmNvbmZpZy5zdGF0dXM6IGNyZWF0aW5nIHRvcGxldmVsLmNv
+bmZpZwpjb25maWcuc3RhdHVzOiBjcmVhdGluZyB1dGlscy9hbHNhc291bmQKY29uZmlnLnN0YXR1
+czogY3JlYXRpbmcgdXRpbHMvYWxzYXNvdW5kLnBvc2l4CmNvbmZpZy5zdGF0dXM6IGNyZWF0aW5n
+IGluY2x1ZGUvcGNpX2lkc19jb21wYXQuaApjb25maWcuc3RhdHVzOiBjcmVhdGluZyBpbmNsdWRl
+L2kyYy1pZF9jb21wYXQuaApjb25maWcuc3RhdHVzOiBjcmVhdGluZyBpbmNsdWRlL2NvbmZpZy5o
+CmNvbmZpZy5zdGF0dXM6IGVycm9yOiBjYW5ub3QgZmluZCBpbnB1dCBmaWxlOiBpbmNsdWRlL2Nv
+bmZpZzEuaC5pbgoKCi0tIAoKT3phbiDDh2HEn2xheWFuCjxvemFuX2F0X3BhcmR1cy5vcmcudHI+
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
