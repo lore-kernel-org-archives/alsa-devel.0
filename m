@@ -1,19 +1,15 @@
-From: Gregorio Guidi <gregorio.guidi@gmail.com>
-Subject: [PATCH] fix headphone settings and master volume
-	(Conexant CX20551 0x103c30b2)
-Date: Sun, 8 Mar 2009 21:19:41 +0100
-Message-ID: <200903082119.41670.gregorio.guidi@gmail.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: [PATCH] ASoC: Add a driver for AK4104 S/PDIF
+	transmitter
+Date: Mon,  9 Mar 2009 00:19:31 +0100
+Message-ID: <1236554371-5911-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay2.tre.it (mail.tre.it [62.13.171.46])
-	by alsa0.perex.cz (Postfix) with ESMTP id ACB9424355
-	for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2009 21:20:57 +0100 (CET)
-Received: from miummr0mt01.um.ced.h3g.it ([10.216.58.129])
-	by relay2.tre.it  with ESMTP id n28KKtQF018659
-	for <alsa-devel@alsa-project.org>; Sun, 8 Mar 2009 21:20:55 +0100
-Content-Disposition: inline
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 129C61037F7
+	for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2009 00:19:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,61 +20,452 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, I have an Intel HDA card, Conexant CX20551 (Waikiki) model,
-Subsystem Id: 0x103c30b2 (HP DV2000 series).
+This adds a driver for the SPI connected AK4104 S/PDIF transmitter
+device. It's features are fairly simple, but as there is need to set up
+certain bits in the IEC958 information, this better goes into a real
+driver.
 
-With these settings, there are 4 volume controls: "PCM-2" and "Speaker" to 
-control speakers, "PCM" and "Headphone" to control headphones.
-At the moment "PCM-2", "Speaker", "PCM" work fine, but "Headphone" has no effect 
-(also reported inside bug #3091).
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
+Cc: Mark Brown <broonie@sirena.org.uk>
+---
+ sound/soc/codecs/Kconfig  |    4 +
+ sound/soc/codecs/Makefile |    2 +
+ sound/soc/codecs/ak4104.c |  367 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/ak4104.h |    7 +
+ 4 files changed, 380 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/codecs/ak4104.c
+ create mode 100644 sound/soc/codecs/ak4104.h
 
-With the following patch, the "Headphone" volume/switch work 
-as intended, with no effect on other functionalities.
-
---- patch_conexant.c    2009-03-08 21:10:14.000000000 +0100
-+++ patch_conexant.c.new        2009-03-08 21:09:51.000000000 +0100
-@@ -1357,7 +1357,7 @@
-        {0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN|AC_PINCTL_VREF_50 },
-        /* HP, Speaker  */
-        {0x13, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP },
--       {0x13, AC_VERB_SET_CONNECT_SEL,0x1},
-+       {0x13, AC_VERB_SET_CONNECT_SEL,0x0},
-        {0x1d, AC_VERB_SET_CONNECT_SEL,0x0},
-        /* Record selector: Mic */
-        {0x12, AC_VERB_SET_CONNECT_SEL,0x03},
-
-
-Also, there is no "Master" control to set the volume for both speakers and 
-headphones. The patch below adds a master volume (and a master 
-switch) that work ok for me. By the way, with the patch the light on the mute 
-button changes between blue and red, which is a nice plus.
-
---- patch_conexant.c    2009-03-08 21:11:14.000000000 +0100
-+++ patch_conexant.c.new        2009-03-08 21:11:01.000000000 +0100
-@@ -1293,6 +1293,15 @@
-        HDA_CODEC_MUTE("Speaker Playback Switch", 0x1d, 0x00, HDA_OUTPUT),
-        HDA_CODEC_VOLUME("Headphone Playback Volume", 0x13, 0x00, HDA_OUTPUT),
-        HDA_CODEC_MUTE("Headphone Playback Switch", 0x13, 0x00, HDA_OUTPUT),
-+       HDA_BIND_VOL("Master Playback Volume", &cxt5047_bind_master_vol),
-+       {
-+               .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+               .name = "Master Playback Switch",
-+               .info = cxt_eapd_info,
-+               .get = cxt_eapd_get,
-+               .put = cxt5047_hp_master_sw_put,
-+               .private_value = 0x13,
-+       },
-
-        {}
- };
-
-
-I am no expert of Conexant hardware and I don't know if those changes are 
-correct for all the devices that share the same code (the 103c:30xx), but 
-I'm confident that they are the right ones for the 103c:30b2 device.
-
-Can someone take a look? Thanks.
-
-Gregorio Guidi
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 628a591..a1af311 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -14,6 +14,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_AC97_CODEC if SND_SOC_AC97_BUS
+ 	select SND_SOC_AD1980 if SND_SOC_AC97_BUS
+ 	select SND_SOC_AD73311 if I2C
++	select SND_SOC_AK4104 if SPI_MASTER
+ 	select SND_SOC_AK4535 if I2C
+ 	select SND_SOC_CS4270 if I2C
+ 	select SND_SOC_PCM3008
+@@ -60,6 +61,9 @@ config SND_SOC_AD1980
+ config SND_SOC_AD73311
+ 	tristate
+ 
++config SND_SOC_AK4104
++	tristate
++
+ config SND_SOC_AK4535
+ 	tristate
+ 
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 3664cdc..4717c3c 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -1,6 +1,7 @@
+ snd-soc-ac97-objs := ac97.o
+ snd-soc-ad1980-objs := ad1980.o
+ snd-soc-ad73311-objs := ad73311.o
++snd-soc-ak4104-objs := ak4104.o
+ snd-soc-ak4535-objs := ak4535.o
+ snd-soc-cs4270-objs := cs4270.o
+ snd-soc-l3-objs := l3.o
+@@ -30,6 +31,7 @@ snd-soc-wm9713-objs := wm9713.o
+ obj-$(CONFIG_SND_SOC_AC97_CODEC)	+= snd-soc-ac97.o
+ obj-$(CONFIG_SND_SOC_AD1980)	+= snd-soc-ad1980.o
+ obj-$(CONFIG_SND_SOC_AD73311) += snd-soc-ad73311.o
++obj-$(CONFIG_SND_SOC_AK4104)	+= snd-soc-ak4104.o
+ obj-$(CONFIG_SND_SOC_AK4535)	+= snd-soc-ak4535.o
+ obj-$(CONFIG_SND_SOC_CS4270)	+= snd-soc-cs4270.o
+ obj-$(CONFIG_SND_SOC_L3)	+= snd-soc-l3.o
+diff --git a/sound/soc/codecs/ak4104.c b/sound/soc/codecs/ak4104.c
+new file mode 100644
+index 0000000..8508a22
+--- /dev/null
++++ b/sound/soc/codecs/ak4104.c
+@@ -0,0 +1,367 @@
++/*
++ * AK4104 ALSA SoC (ASoC) driver
++ *
++ * Copyright (c) 2009 Daniel Mack <daniel@caiaq.de>
++ *
++ * Copyright 2007-2009 Freescale Semiconductor, Inc.  This file is licensed
++ * under the terms of the GNU General Public License version 2.  This
++ * program is licensed "as is" without any warranty of any kind, whether
++ * express or implied.
++ */
++
++#include <linux/module.h>
++#include <sound/core.h>
++#include <sound/soc.h>
++#include <sound/initval.h>
++#include <linux/spi/spi.h>
++#include <sound/asoundef.h>
++
++#include "ak4104.h"
++
++/* AK4104 registers addresses */
++#define AK4104_REG_CONTROL1		0x00
++#define AK4104_REG_RESERVED		0x01
++#define AK4104_REG_CONTROL2		0x02
++#define AK4104_REG_TX			0x03
++#define AK4104_REG_CHN_STATUS(x)	((x) + 0x04)
++#define AK4104_NUM_REGS			10
++
++#define AK4104_REG_MASK			0x1f
++#define AK4104_READ			0xc0
++#define AK4104_WRITE			0xe0
++#define AK4104_RESERVED_VAL		0x5b
++
++/* Bit masks for AK4104 registers */
++#define AK4104_CONTROL1_RSTN		(1 << 0)
++#define AK4104_CONTROL1_PW		(1 << 1)
++#define AK4104_CONTROL1_DIF0		(1 << 2)
++#define AK4104_CONTROL1_DIF1		(1 << 3)
++
++#define AK4104_CONTROL2_SEL0		(1 << 0)
++#define AK4104_CONTROL2_SEL1		(1 << 1)
++#define AK4104_CONTROL2_MODE		(1 << 2)
++
++#define AK4104_TX_TXE			(1 << 0)
++#define AK4104_TX_V			(1 << 1)
++
++#define DRV_NAME "ak4104"
++
++struct ak4104_private {
++	struct snd_soc_codec codec;
++	u8 reg_cache[AK4104_NUM_REGS];
++};
++
++static int ak4104_fill_cache(struct snd_soc_codec *codec)
++{
++	int i;
++	u8 *reg_cache = codec->reg_cache;
++	struct spi_device *spi = codec->control_data;
++
++	for (i = 0; i < codec->reg_cache_size; i++) {
++		int ret = spi_w8r8(spi, i | AK4104_READ);
++		if (ret < 0) {
++			dev_err(&spi->dev, "SPI write failure\n");
++			return ret;
++		}
++
++		reg_cache[i] = ret;
++	}
++
++	return 0;
++}
++
++static unsigned int ak4104_read_reg_cache(struct snd_soc_codec *codec,
++					  unsigned int reg)
++{
++	u8 *reg_cache = codec->reg_cache;
++
++	if (reg >= codec->reg_cache_size)
++		return -EINVAL;
++
++	return reg_cache[reg];
++}
++
++static int ak4104_spi_write(struct snd_soc_codec *codec, unsigned int reg,
++			    unsigned int value)
++{
++	u8 *cache = codec->reg_cache;
++	struct spi_device *spi = codec->control_data;
++
++	if (reg >= codec->reg_cache_size)
++		return -EINVAL;
++
++	reg &= AK4104_REG_MASK;
++	reg |= AK4104_WRITE;
++
++	/* only write to the hardware if value has changed */
++	if (cache[reg] != value) {
++		u8 tmp[2] = { reg, value };
++		if (spi_write(spi, tmp, sizeof(tmp))) {
++			dev_err(&spi->dev, "SPI write failed\n");
++			return -EIO;
++		}
++
++		cache[reg] = value;
++	}
++
++	return 0;
++}
++
++static int ak4104_set_dai_fmt(struct snd_soc_dai *codec_dai,
++			      unsigned int format)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	int val = 0;
++
++	val = ak4104_read_reg_cache(codec, AK4104_REG_CONTROL1);
++	if (val < 0)
++		return val;
++
++	val &= ~(AK4104_CONTROL1_DIF0 | AK4104_CONTROL1_DIF1);
++
++	/* set DAI format */
++	switch (format & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_RIGHT_J:
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		val |= AK4104_CONTROL1_DIF0;
++		break;
++	case SND_SOC_DAIFMT_I2S:
++		val |= AK4104_CONTROL1_DIF0 | AK4104_CONTROL1_DIF1;
++		break;
++	default:
++		dev_err(codec->dev, "invalid dai format\n");
++		return -EINVAL;
++	}
++
++	/* This device can only be slave */
++	if ((format & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS)
++		return -EINVAL;
++
++	return ak4104_spi_write(codec, AK4104_REG_CONTROL1, val);
++}
++
++static int ak4104_hw_params(struct snd_pcm_substream *substream,
++			    struct snd_pcm_hw_params *params,
++			    struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_device *socdev = rtd->socdev;
++	struct snd_soc_codec *codec = socdev->card->codec;
++	int ret, val = 0;
++
++	/* set the IEC958 bits: consumer mode, no copyright bit */
++	val |= IEC958_AES0_CON_NOT_COPYRIGHT;
++	ak4104_spi_write(codec, AK4104_REG_CHN_STATUS(0), val);
++
++	val = 0;
++
++	switch (params_rate(params)) {
++	case 44100:
++		val |= IEC958_AES3_CON_FS_44100;
++		break;
++	case 48000:
++		val |= IEC958_AES3_CON_FS_48000;
++		break;
++	case 32000:
++		val |= IEC958_AES3_CON_FS_32000;
++		break;
++	default:
++		dev_err(codec->dev, "unsupported sampling rate\n");
++		return -EINVAL;
++	}
++
++	ret = ak4104_spi_write(codec, AK4104_REG_CHN_STATUS(3), val);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++struct snd_soc_dai ak4104_dai = {
++	.name = DRV_NAME,
++	.playback = {
++		.stream_name = "Playback",
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = SNDRV_PCM_RATE_44100 |
++			 SNDRV_PCM_RATE_48000 |
++			 SNDRV_PCM_RATE_32000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE  |
++			   SNDRV_PCM_FMTBIT_S24_3LE |
++			   SNDRV_PCM_FMTBIT_S24_LE
++	},
++	.ops = {
++		.hw_params = ak4104_hw_params,
++		.set_fmt = ak4104_set_dai_fmt,
++	}
++};
++
++static struct snd_soc_codec *ak4104_codec;
++
++static int ak4104_spi_probe(struct spi_device *spi)
++{
++	struct snd_soc_codec *codec;
++	struct ak4104_private *ak4104;
++	int ret, val;
++
++	spi->bits_per_word = 8;
++	spi->mode = SPI_MODE_0;
++	ret = spi_setup(spi);
++	if (ret < 0)
++		return ret;
++
++	ak4104 = kzalloc(sizeof(struct ak4104_private), GFP_KERNEL);
++	if (!ak4104) {
++		dev_err(&spi->dev, "could not allocate codec\n");
++		return -ENOMEM;
++	}
++
++	codec = &ak4104->codec;
++	mutex_init(&codec->mutex);
++	INIT_LIST_HEAD(&codec->dapm_widgets);
++	INIT_LIST_HEAD(&codec->dapm_paths);
++
++	codec->dev = &spi->dev;
++	codec->name = DRV_NAME;
++	codec->owner = THIS_MODULE;
++	codec->dai = &ak4104_dai;
++	codec->num_dai = 1;
++	codec->private_data = ak4104;
++	codec->control_data = spi;
++	codec->reg_cache = ak4104->reg_cache;
++	codec->reg_cache_size = AK4104_NUM_REGS;
++
++	/* read all regs and fill the cache */
++	ret = ak4104_fill_cache(codec);
++	if (ret < 0) {
++		dev_err(&spi->dev, "failed to fill register cache\n");
++		return ret;
++	}
++
++	/* read the 'reserved' register - according to the datasheet, it
++	 * should contain 0x5b. Not a good way to verify the presence of
++	 * the device, but there is no hardware ID register. */
++	if (ak4104_read_reg_cache(codec, AK4104_REG_RESERVED) !=
++					 AK4104_RESERVED_VAL) {
++		ret = -ENODEV;
++		goto error_free_codec;
++	}
++
++	/* set power-up and non-reset bits */
++	val = ak4104_read_reg_cache(codec, AK4104_REG_CONTROL1);
++	val |= AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN;
++	ret = ak4104_spi_write(codec, AK4104_REG_CONTROL1, val);
++	if (ret < 0)
++		goto error_free_codec;
++
++	/* enable transmitter */
++	val = ak4104_read_reg_cache(codec, AK4104_REG_TX);
++	val |= AK4104_TX_TXE;
++	ret = ak4104_spi_write(codec, AK4104_REG_TX, val);
++	if (ret < 0)
++		goto error_free_codec;
++
++	ak4104_codec = codec;
++	ret = snd_soc_register_dai(&ak4104_dai);
++	if (ret < 0) {
++		dev_err(&spi->dev, "failed to register DAI\n");
++		goto error_free_codec;
++	}
++
++	spi_set_drvdata(spi, ak4104);
++	dev_info(&spi->dev, "SPI device initialized\n");
++	return 0;
++
++error_free_codec:
++	kfree(ak4104);
++	ak4104_dai.dev = NULL;
++	return ret;
++}
++
++static int __devexit ak4104_spi_remove(struct spi_device *spi)
++{
++	int ret, val;
++	struct ak4104_private *ak4104 = spi_get_drvdata(spi);
++
++	val = ak4104_read_reg_cache(&ak4104->codec, AK4104_REG_CONTROL1);
++	if (val < 0)
++		return val;
++
++	/* clear power-up and non-reset bits */
++	val &= ~(AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN);
++	ret = ak4104_spi_write(&ak4104->codec, AK4104_REG_CONTROL1, val);
++	if (ret < 0)
++		return ret;
++
++	ak4104_codec = NULL;
++	kfree(ak4104);
++	return 0;
++}
++
++static int ak4104_probe(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec = ak4104_codec;
++	int ret;
++
++	/* Connect the codec to the socdev.  snd_soc_new_pcms() needs this. */
++	socdev->card->codec = codec;
++
++	/* Register PCMs */
++	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
++	if (ret < 0) {
++		dev_err(codec->dev, "failed to create pcms\n");
++		return ret;
++	}
++
++	/* Register the socdev */
++	ret = snd_soc_init_card(socdev);
++	if (ret < 0) {
++		dev_err(codec->dev, "failed to register card\n");
++		snd_soc_free_pcms(socdev);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int ak4104_remove(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	snd_soc_free_pcms(socdev);
++	return 0;
++};
++
++struct snd_soc_codec_device soc_codec_device_ak4104 = {
++	.probe = 	ak4104_probe,
++	.remove = 	ak4104_remove
++};
++EXPORT_SYMBOL_GPL(soc_codec_device_ak4104);
++
++static struct spi_driver ak4104_spi_driver = {
++	.driver  = {
++		.name   = DRV_NAME,
++		.owner  = THIS_MODULE,
++	},
++	.probe  = ak4104_spi_probe,
++	.remove = __devexit_p(ak4104_spi_remove),
++};
++
++static int __init ak4104_init(void)
++{
++	pr_info("Asahi Kasei AK4104 ALSA SoC Codec Driver\n");
++	return spi_register_driver(&ak4104_spi_driver);
++}
++module_init(ak4104_init);
++
++static void __exit ak4104_exit(void)
++{
++	spi_unregister_driver(&ak4104_spi_driver);
++}
++module_exit(ak4104_exit);
++
++MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
++MODULE_DESCRIPTION("Asahi Kasei AK4104 ALSA SoC driver");
++MODULE_LICENSE("GPL");
++
+diff --git a/sound/soc/codecs/ak4104.h b/sound/soc/codecs/ak4104.h
+new file mode 100644
+index 0000000..eb88fe7
+--- /dev/null
++++ b/sound/soc/codecs/ak4104.h
+@@ -0,0 +1,7 @@
++#ifndef _AK4104_H
++#define _AK4104_H
++
++extern struct snd_soc_dai ak4104_dai;
++extern struct snd_soc_codec_device soc_codec_device_ak4104;
++
++#endif
+-- 
+1.6.1.3
