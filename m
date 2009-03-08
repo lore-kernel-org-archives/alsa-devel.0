@@ -1,20 +1,14 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: configure script doesn't succesfully end with the
-	latest snapshots
-Date: Sun, 08 Mar 2009 15:54:01 +0200
-Message-ID: <49B3CDF9.9040402@pardus.org.tr>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: [PATCH] CS4270: comments: slave mode is now supported
+Date: Sun,  8 Mar 2009 17:16:03 +0100
+Message-ID: <1236528963-11943-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id B17B52436A
-	for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2009 14:56:00 +0100 (CET)
-Received: from [192.168.1.2] (unknown [88.249.178.198])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested) (Authenticated sender: ozan)
-	by pardus.org.tr (Postfix) with ESMTP id EC86C63C9B39
-	for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2009 15:55:51 +0200 (EET)
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7B4981037ED
+	for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2009 17:16:13 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,49 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-CkxhdGVzdCB3b3JraW5nIHNuYXBzaG90czoKCmFsc2EtZHJpdmVyLTIwMDkwMzA1LnRhci5iejIK
-YWxzYS1kcml2ZXItMjAwOTAzMDYudGFyLmJ6MgoKQWZmZWN0ZWQgc25hcHNob3RzOgphbHNhLWRy
-aXZlci0yMDA5MDMwNy50YXIuYnoyCmFsc2EtZHJpdmVyLTIwMDkwMzA4LnRhci5iejIKClByb2Js
-ZW0KLS0tLS0tLS0KCi0+IDIwMDkwMzA3CgpEdXJpbmcgdGhlIGNvbmZpZ3VyYXRpb24gc3RlcCwg
-Y29uZmlndXJlIHNjcmlwdCBjb21wbGFpbnMgdGhhdCBpdApjYW4ndCBmaW5kIHNvbWUgY29tbWFu
-ZHM6CgpjaGVja2luZyB3aGV0aGVyIGdjYyBuZWVkcyAtdHJhZGl0aW9uYWwuLi4gbm8gICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIApjaGVja2luZyBmb3IgY3VycmVudCBk
-aXJlY3RvcnkuLi4gL3Jvb3QvZGV2ZWwva2VybmVsL2RyaXZlcnMvYWxzYS1kcml2ZXIvYWxzYS1k
-cml2ZXItMjAwOTAzMDcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIAouL2NvbmZpZ3VyZTogbGluZSAzODYzOiBBTFNBX1RPUExFVkVMX0lOSVQ6IGNvbW1h
-bmQgbm90IGZvdW5kICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIApjaGVja2luZyBjcm9zcyBjb21w
-aWxlLi4uICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIApjaGVja2luZyBmb3IgZGlyZWN0b3J5IHdpdGgga2VybmVsIHNvdXJjZS4uLiAv
-bGliL21vZHVsZXMvMi42LjI1LjIwLTExNC9zb3VyY2UgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIApjaGVja2luZyBmb3IgZGly
-ZWN0b3J5IHdpdGgga2VybmVsIGJ1aWxkLi4uIC9saWIvbW9kdWxlcy8yLjYuMjUuMjAtMTE0L2J1
-aWxkCi4uCi4uCmNoZWNraW5nIGZvciBDT05GSUdfSEFTX0RNQS4uLiB5ZXMKLi9jb25maWd1cmU6
-IGxpbmUgMTMzMjU6IEFMU0FfVE9QTEVWRUxfU0VMRUNUOiBjb21tYW5kIG5vdCBmb3VuZAouL2Nv
-bmZpZ3VyZTogbGluZSAxMzMyNzogQUxTQV9QQVJTRV9LQ09ORklHOiBjb21tYW5kIG5vdCBmb3Vu
-ZAouL2NvbmZpZ3VyZTogbGluZSAxMzMyOTogQUxTQV9UT1BMRVZFTF9ERUZJTkVTOiBjb21tYW5k
-IG5vdCBmb3VuZAouL2NvbmZpZ3VyZTogbGluZSAxMzMzOTogQUxTQV9UT1BMRVZFTF9PVVRQVVQ6
-IGNvbW1hbmQgbm90IGZvdW5kCmNvbmZpZ3VyZTogY3JlYXRpbmcgLi9jb25maWcuc3RhdHVzCgpF
-dmVudGhvdWdoIGl0IGNvbXBsYWlucywgdGhlIGNvbmZpZ3VyYXRpb24gc3RlcCBlbmRzIHN1Y2Nl
-c2Z1bGx5IGFuZApJIGNhbiBjb21waWxlIHRoZSBkcml2ZXJzIHdpdGggbWFrZS4KCi0+IDIwMDkw
-MzA4CgpJdCdzIGV2ZW4gd29yc2UuIEFmdGVyIGNvbXBsYWluaW5nIGFib3V0CnRoZSBzYW1lIEFM
-U0FfKiBzdHVmZiwgaXQgZmFpbHMgYWxzbyBvbiB0aGUgZm9sbG93aW5nIGVycm9yOgoKY29uZmln
-dXJlOiBjcmVhdGluZyAuL2NvbmZpZy5zdGF0dXMKY29uZmlnLnN0YXR1czogY3JlYXRpbmcgdmVy
-c2lvbgpjb25maWcuc3RhdHVzOiBjcmVhdGluZyBNYWtlZmlsZS5jb25mCmNvbmZpZy5zdGF0dXM6
-IFdBUk5JTkc6ICAnTWFrZWZpbGUuY29uZi5pbicgc2VlbXMgdG8gaWdub3JlIHRoZSAtLWRhdGFy
-b290ZGlyIHNldHRpbmcKY29uZmlnLnN0YXR1czogY3JlYXRpbmcgc25kZGV2aWNlcwpjb25maWcu
-c3RhdHVzOiBjcmVhdGluZyB1dGlscy9hbHNhLWRyaXZlci5zcGVjCmNvbmZpZy5zdGF0dXM6IGNy
-ZWF0aW5nIHV0aWxzL2J1aWxkcnBtCmNvbmZpZy5zdGF0dXM6IGNyZWF0aW5nIHRvcGxldmVsLmNv
-bmZpZwpjb25maWcuc3RhdHVzOiBjcmVhdGluZyB1dGlscy9hbHNhc291bmQKY29uZmlnLnN0YXR1
-czogY3JlYXRpbmcgdXRpbHMvYWxzYXNvdW5kLnBvc2l4CmNvbmZpZy5zdGF0dXM6IGNyZWF0aW5n
-IGluY2x1ZGUvcGNpX2lkc19jb21wYXQuaApjb25maWcuc3RhdHVzOiBjcmVhdGluZyBpbmNsdWRl
-L2kyYy1pZF9jb21wYXQuaApjb25maWcuc3RhdHVzOiBjcmVhdGluZyBpbmNsdWRlL2NvbmZpZy5o
-CmNvbmZpZy5zdGF0dXM6IGVycm9yOiBjYW5ub3QgZmluZCBpbnB1dCBmaWxlOiBpbmNsdWRlL2Nv
-bmZpZzEuaC5pbgoKCi0tIAoKT3phbiDDh2HEn2xheWFuCjxvemFuX2F0X3BhcmR1cy5vcmcudHI+
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Just a minor thing: make the comments reflect the new slave mode
+feature.
+
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
+Cc: Timur Tabi <timur@freescale.com>
+---
+ sound/soc/codecs/cs4270.c |    9 ++++-----
+ 1 files changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
+index 4c7e546..0558674 100644
+--- a/sound/soc/codecs/cs4270.c
++++ b/sound/soc/codecs/cs4270.c
+@@ -14,12 +14,11 @@
+  *
+  * 1) Software mode is supported.  Stand-alone mode is not supported.
+  * 2) Only I2C is supported, not SPI
+- * 3) Only Master mode is supported, not Slave.
+- * 4) The machine driver's 'startup' function must call
++ * 3) The machine driver's 'startup' function must call
+  *    cs4270_set_dai_sysclk() with the value of MCLK.
+- * 5) Only I2S and left-justified modes are supported
+- * 6) Power management is not supported
+- * 7) The only supported control is volume and hardware mute (if enabled)
++ * 4) Only I2S and left-justified modes are supported
++ * 5) Power management is not supported
++ * 6) The only supported control is volume and hardware mute (if enabled)
+  */
+ 
+ #include <linux/module.h>
+-- 
+1.6.1.3
