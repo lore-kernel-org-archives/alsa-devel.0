@@ -1,51 +1,105 @@
-From: "Cai, Cliff" <Cliff.Cai@analog.com>
-Subject: RE: [alsa-devel] [PATCH 2/5] ASoC: ssm2602 codec: fix bug - kernelwill crash when record and play in bf527-ezkit
-Date: Mon, 9 Mar 2009 19:07:26 +0800
-Message-ID: <0F1B54C89D5F954D8535DB252AF412FA03AB85FE@chinexm1.ad.analog.com>
-References: <1236326010-683-1-git-send-email-cooloney@kernel.org> <1236326010-683-3-git-send-email-cooloney@kernel.org> <20090306123515.GG6493@sirena.org.uk>
+From: Clive Messer <clive@vacuumtube.org.uk>
+Subject: Re: Timer instability
+Date: Mon, 9 Mar 2009 11:13:21 +0000
+Message-ID: <200903091113.21965.clive@vacuumtube.org.uk>
+References: <20090219024611.GA7930@tango.0pointer.de>
+	<s5h8wnm6184.wl%tiwai@suse.de> <s5hy6vm4i7x.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753895AbZCILEg@vger.kernel.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <20090306123515.GG6493@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@sirena.org.uk>, Bryan Wu <cooloney@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from abbey4.objectsoft-systems.ltd.uk
+	(abbey4.objectsoft-systems.ltd.uk [87.194.123.10])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3922210381D
+	for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2009 12:13:24 +0100 (CET)
+In-Reply-To: <s5hy6vm4i7x.wl%tiwai@suse.de>
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Lennart Poettering <mznyfn@0pointer.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Tuesday 03 Mar 2009 17:41:22 Takashi Iwai wrote:
 
- This patch should be named :set constraint only if the value is not 0.
- I found that sometimes substream may be not NULL,but runtime can be
-NULL,So the previous way will cause
-Kernel to crash.
+> > Hrm, but still an unexpected jump is found.
+> >
+> > If you build the driver with CONFIG_SND_PCM_XRUN_DEBUG=y, you must
+> > have /proc/asound/card0/pcm0p/xrun_debug.  Echo 1 to this (as root)
+> > 	echo 1 > /proc/asound/card0/pcm0p/xrun_debug
+> > and try the program, see whether any debug message appears.
+> > If any message appears, it means basically an unstable hardware.
+> >
+> > Also, the below is a patch I tried to clean up and improve the
+> > handling.  Give it a try (and do echo 1 above for testing).
+>
+> BTW, the original test program is very hard to see what's wrong
+> because it spews out way too many lines.  The below is a filtered-out
+> version.
+>
+> It prints only unexpected jumps of avail values (the threshold is
+> set 100 blindly).  The output is like below:
+>
+> 	% ./alsa-time-test hw
+> 	21720872	(4987)	delta 216	avail 216	delay 4200
+> 	21943118	(65)	delta 208	avail 208	delay 4208
+> 	23752310	(3)	delta 232	avail 232	delay 4184
+> 	23761847	(5972)	delta 264	avail 264	delay 4152
+>
+> The first column is the usec from the program start, the next value in
+> parentheses is the time-step from the last time of status changes,
+> the delta is the increase of avail, and the rest are raw values.
+>
+> If a too large delta appears in a short time-step, something is wrong.
+> If it appears in a large time-step, it's simply a wrong responsiveness
+> (aka system latency).
 
-Cliff
+Hello Takashi/Lennart,
 
->-----Original Message-----
->From: Mark Brown [mailto:broonie@sirena.org.uk] 
->Sent: Friday, March 06, 2009 8:35 PM
->To: Bryan Wu
->Cc: Cliff Cai; alsa-devel@alsa-project.org; 
->linux-kernel@vger.kernel.org
->Subject: Re: [alsa-devel] [PATCH 2/5] ASoC: ssm2602 codec: fix 
->bug - kernelwill crash when record and play in bf527-ezkit
->
->On Fri, Mar 06, 2009 at 03:53:27PM +0800, Bryan Wu wrote:
->
->> set constraint only if the value is not 0, change the 
->configuring way 
->> for sport
->
->This changelog doesn't appear to apply to this patch - it 
->looks like was copied from the previous one?  This patch 
->appears to suffer from a similar issue where only the first 
->format set by an application can ever be used, though since 
->this changes the constraints that are set by the driver 
->there's no possibility that applications will end up trying to 
->use a sample format that the hardware is not configured for.
->
->Do we really need such a heavy handed fix here - what is the 
->issue that's being fixed?
->
+Sorry, I have been busy for a few days.
+I patched my kernel (kernel-2.6.29-0.53.rc7.fc10.x86_64) with your pcm_lib.c 
+patch and 'echo 1 > /proc/asound/card0/pcm0p/xrun_debug'.
+
+I have done several runs with the new alsa-time-test.c code. Typically I get a 
+bunch of kernel dmesg when I start the alsa-time-test program but not 
+afterwards. Just a reminder - I'm running this on fast hardware - X58 / Core 
+i7 920 - the machine is not loaded at all, so latency should be very low. 
+snd_hda_intel - ' 00-00: AD198x Analog : AD198x Analog : playback 1 : capture 
+3'.
+
+Here is an example run .....
+
+hw_ptr skipping! (pos=2096, delta=2096, period=1472)
+hw_ptr skipping! (pos=2096, delta=2096, period=1472)
+hw_ptr skipping! (pos=3600, delta=3600, period=1472)
+hw_ptr skipping! (pos=3600, delta=3600, period=1472)
+hw_ptr skipping! (pos=3600, delta=3600, period=1472)
+hw_ptr skipping! (pos=3600, delta=3600, period=1472)
+hw_ptr skipping! (pos=3600, delta=3600, period=1472)
+hw_ptr skipping! (pos=3600, delta=3600, period=1472)
+
+9901323          (2632)  delta 111       avail 117       delay 4299
+19901290        (2599)  delta 112       avail 112       delay 4304
+29901285        (3)     delta 112       avail 112       delay 4304
+39901315        (2624)  delta 120       avail 120       delay 4296
+49901317        (2626)  delta 112       avail 112       delay 4304
+59901317        (2625)  delta 112       avail 112       delay 4304
+69901323        (2632)  delta 118       avail 118       delay 4298
+79901391        (3)     delta 120       avail 120       delay 4296
+89901327        (2634)  delta 112       avail 112       delay 4304
+99901283        (2591)  delta 120       avail 120       delay 4296
+109901334       (2642)  delta 120       avail 120       delay 4296
+119901320       (2627)  delta 112       avail 112       delay 4304
+
+Regards
+
+Clive
+-- 
+Clive Messer <clive@vacuumtube.org.uk>
