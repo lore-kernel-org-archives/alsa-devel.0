@@ -1,19 +1,20 @@
-From: Gregorio Guidi <gregorio.guidi@gmail.com>
-Subject: Re: [PATCH] fix headphone settings and master
-	volume	(Conexant CX20551 0x103c30b2)
-Date: Mon, 9 Mar 2009 15:49:47 +0100
-Message-ID: <200903091549.47758.gregorio.guidi@gmail.com>
-References: <200903082119.41670.gregorio.guidi@gmail.com>
-	<s5hljredifh.wl%tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [Re: Crash when snd_pcm_open is called from a
+ thread with "pulse" as playback]
+Date: Mon, 9 Mar 2009 15:51:27 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0903091541290.25713@tm8103.perex-int.cz>
+References: <2210.93.1.202.94.1236528705.squirrel@acroe.imag.fr>   
+	<s5h4oy2debq.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0903091433430.25713@tm8103.perex-int.cz>
+	<55892.147.171.149.152.1236608283.squirrel@acroe.imag.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay2.tre.it (mail.tre.it [62.13.171.46])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1399710387F
-	for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2009 15:49:54 +0100 (CET)
-In-Reply-To: <s5hljredifh.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9774B10384D
+	for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2009 15:51:27 +0100 (CET)
+In-Reply-To: <55892.147.171.149.152.1236608283.squirrel@acroe.imag.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,33 +24,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Nicolas.Castagne@imag.fr
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 09 March 2009 12:50:10 Takashi Iwai wrote:
-> At Sun, 8 Mar 2009 21:19:41 +0100,
->
-> Gregorio Guidi wrote:
-> > Hi, I have an Intel HDA card, Conexant CX20551 (Waikiki) model,
-> > Subsystem Id: 0x103c30b2 (HP DV2000 series).
-> >
-> > With these settings, there are 4 volume controls: "PCM-2" and "Speaker"
-> > to control speakers, "PCM" and "Headphone" to control headphones.
-> > At the moment "PCM-2", "Speaker", "PCM" work fine, but "Headphone" has no
-> > effect (also reported inside bug #3091).
->
-> Does the current driver work with model=laptop-hp option?
+On Mon, 9 Mar 2009 Nicolas.Castagne@imag.fr wrote:
 
-I did try the laptop-hp option. I got only two controls: PCM and Master, PCM 
-controlled both speakers and headphones, while Master controlled only the 
-headphones (in fact the "Master" control for model=laptop-hp is the same as 
-the "Headphone" control for model=laptop with the patch). There is no automute 
-when plugging headphones.
+> Hi Jaroslav, Takashi and all,
+> 
+> thx for you answers.
+> 
+> 
+> Takashi :
+> > Hm, I don't see any reason, and I cannot reproduce a crash on my machine...
+> 
+> I can reproduce it on my three Fedora10 machines, using 2 hardware.
+> 
+> Jaroslav
+> > I would suggest to comment out code from snd_config_update_free_global().
+> > Try to comment out snd_dlobj_cache_cleanup() at first. You may compile
+> > alsa-lib from the tar ball on www.alsa-project.org and use
+> > LD_PRELOAD=alsa-lib/src/.libs/libasound.so.2.0.0 <your_program> for tests.
+> 
+> Done.
+> 
+> * First, no more bug when commenting    snd_dlobj_cache_cleanup
+> 
+> * Also,  no more bug when commenting    dlclose
+>        in snd_dlclose
+>        called from snd_dlobj_cache_cleanup
+> 
+> 
+> 
+> The only dynamically loaded lib is  _snd_pcm_pulse_open
+> 
+> 
+> Seems once again that pulse is involved somewhere.
 
-By the way, I was incorrect: also with model=laptop (the default) "PCM" 
-controls both speakers and headphones (PCM-2 only the speakers).
+Maybe. I guess it's a glibc bug which might be Fedora specific. Could you 
+try glibc from different distribution (or maybe rawhide) using LD_PRELOAD 
+hack if this bug can be reproduced? Just unpack glibc rpm with rpm2cpio 
+and use libc.so, libdl.so and libphread.so files for LD_PRELOAD.
 
-Let me know if you need info or you have something to test.
+						Jaroslav
 
-Gregorio Guidi
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
