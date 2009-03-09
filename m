@@ -1,36 +1,51 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ASoC: Add a driver for AK4104
-	S/PDIF	transmitter
-Date: Mon, 9 Mar 2009 10:56:37 +0000
-Message-ID: <20090309105633.GA13593@sirena.org.uk>
-References: <1236554371-5911-1-git-send-email-daniel@caiaq.de>
-	<1236561197-7968-1-git-send-email-daniel@caiaq.de>
+From: "Cai, Cliff" <Cliff.Cai@analog.com>
+Subject: RE: [alsa-devel] [PATCH 2/5] ASoC: ssm2602 codec: fix bug - kernelwill crash when record and play in bf527-ezkit
+Date: Mon, 9 Mar 2009 19:07:26 +0800
+Message-ID: <0F1B54C89D5F954D8535DB252AF412FA03AB85FE@chinexm1.ad.analog.com>
+References: <1236326010-683-1-git-send-email-cooloney@kernel.org> <1236326010-683-3-git-send-email-cooloney@kernel.org> <20090306123515.GG6493@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 06DB3103823
-	for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2009 11:56:38 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1236561197-7968-1-git-send-email-daniel@caiaq.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753895AbZCILEg@vger.kernel.org>
+Content-class: urn:content-classes:message
+In-Reply-To: <20090306123515.GG6493@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@sirena.org.uk>, Bryan Wu <cooloney@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 09, 2009 at 02:13:17AM +0100, Daniel Mack wrote:
-> This adds a driver for the SPI connected AK4104 S/PDIF transmitter
-> device. Its features are fairly simple, but as there is need to set up
-> certain bits in the IEC958 information, this better goes into a real
-> driver.
 
-Applied, thanks.
+ This patch should be named :set constraint only if the value is not 0.
+ I found that sometimes substream may be not NULL,but runtime can be
+NULL,So the previous way will cause
+Kernel to crash.
+
+Cliff
+
+>-----Original Message-----
+>From: Mark Brown [mailto:broonie@sirena.org.uk] 
+>Sent: Friday, March 06, 2009 8:35 PM
+>To: Bryan Wu
+>Cc: Cliff Cai; alsa-devel@alsa-project.org; 
+>linux-kernel@vger.kernel.org
+>Subject: Re: [alsa-devel] [PATCH 2/5] ASoC: ssm2602 codec: fix 
+>bug - kernelwill crash when record and play in bf527-ezkit
+>
+>On Fri, Mar 06, 2009 at 03:53:27PM +0800, Bryan Wu wrote:
+>
+>> set constraint only if the value is not 0, change the 
+>configuring way 
+>> for sport
+>
+>This changelog doesn't appear to apply to this patch - it 
+>looks like was copied from the previous one?  This patch 
+>appears to suffer from a similar issue where only the first 
+>format set by an application can ever be used, though since 
+>this changes the constraints that are set by the driver 
+>there's no possibility that applications will end up trying to 
+>use a sample format that the hardware is not configured for.
+>
+>Do we really need such a heavy handed fix here - what is the 
+>issue that's being fixed?
+>
