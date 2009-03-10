@@ -1,14 +1,14 @@
 From: Viral Mehta <viral.mehta@einfochips.com>
 Subject: [PATCH] [SOUND] Fixes recording gain control
-Date: Tue, 10 Mar 2009 18:31:56 +0530
-Message-ID: <49B664C4.2080804@einfochips.com>
+Date: Tue, 10 Mar 2009 18:40:49 +0530
+Message-ID: <49B666D9.2000002@einfochips.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ahmedabad.einfochips.com (india.einfochips.com [203.88.139.151])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1EE011037EB
-	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2009 14:10:08 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 4C1421037EB
+	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2009 14:19:00 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,8 +18,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
+
+Sorry for resending it again and again. This is since submitting a patch 
+first time. Please never mind.
+Consider the below thing.
 
 Have tested two usb audio mic devices.
 At the time of initialization, SNDRV_MIXER_OSS_PRESENT_PVOLUME bit is not
@@ -33,28 +37,24 @@ Verified with a simple application which opens /dev/dsp for recording and
 
 Signed-off-by: Viral Mehta <viral.mehta@einfochips.com>
 ---
- sound/core/oss/mixer_oss.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+sound/core/oss/mixer_oss.c |    2 +-
+1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/core/oss/mixer_oss.c b/sound/core/oss/mixer_oss.c
-index 4690b8b..919c7eb 100644
---- a/sound/core/oss/mixer_oss.c
-+++ b/sound/core/oss/mixer_oss.c
-@@ -690,7 +690,7 @@ static int snd_mixer_oss_put_volume1(struct 
-snd_mixer_oss_file *fmixer,
-
-        if (slot->present & SNDRV_MIXER_OSS_PRESENT_PVOLUME) {
+--- sound/core/oss/mixer_oss.org.c      2009-03-10 18:37:49.000000000 +0530
++++ sound/core/oss/mixer_oss.c  2009-03-10 18:37:07.000000000 +0530
+@@ -692,6 +692,8 @@ static int snd_mixer_oss_put_volume1(str
                 snd_mixer_oss_put_volume1_vol(fmixer, pslot, 
 slot->numid[SNDRV_MIXER_OSS_ITEM_PVOLUME], left, right);
--               if (slot->present & SNDRV_MIXER_OSS_PRESENT_CVOLUME)
-+       } else if (slot->present & SNDRV_MIXER_OSS_PRESENT_CVOLUME) {
+                if (slot->present & SNDRV_MIXER_OSS_PRESENT_CVOLUME)
                         snd_mixer_oss_put_volume1_vol(fmixer, pslot, 
+slot->numid[SNDRV_MIXER_OSS_ITEM_CVOLUME], left, right);
++       } else if (slot->present & SNDRV_MIXER_OSS_PRESENT_CVOLUME) {
++                       snd_mixer_oss_put_volume1_vol(fmixer, pslot, 
 slot->numid[SNDRV_MIXER_OSS_ITEM_CVOLUME], left, right);
         } else if (slot->present & SNDRV_MIXER_OSS_PRESENT_GVOLUME) {
                 snd_mixer_oss_put_volume1_vol(fmixer, pslot, 
 slot->numid[SNDRV_MIXER_OSS_ITEM_GVOLUME], left, right);
---
-1.6.0.2.GIT
+        } else if (slot->present & SNDRV_MIXER_OSS_PRESENT_GLOBAL) {
 
 -- 
 _____________________________________________________________________
