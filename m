@@ -1,104 +1,43 @@
-From: Viral Mehta <viral.mehta-7dMfbm5N4krDzftRWevZcw@public.gmane.org>
-Subject: Re: [LAD] [alsa-devel] [PATCH] [SOUND] recording gain control
-Date: Tue, 10 Mar 2009 17:52:46 +0530
-Message-ID: <49B65B96.5080108@einfochips.com>
-References: <49B5F8F5.8040100@einfochips.com>	<49B62C1D.4080509@ladisch.de>
-	<s5h1vt5k1xp.wl%tiwai@suse.de>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: Re: [PATCH] ALSA: hda - Add model quirk for Sony	VAIO
+ VGN-NR21E
+Date: Tue, 10 Mar 2009 14:54:08 +0200
+Message-ID: <49B662F0.4060602@pardus.org.tr>
+References: <1236671482-3748-1-git-send-email-ozan@pardus.org.tr>
+	<s5hzlftinb6.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-In-Reply-To: <s5h1vt5k1xp.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
-List-Unsubscribe: <http://lists.linuxaudio.org/mailman/listinfo/linux-audio-dev>,
-	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev>
-List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.linuxaudio.org/mailman/listinfo/linux-audio-dev>,
-	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
-Sender: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
-Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, perex-/Fr2/VpizcU@public.gmane.org, Linux audio dev <linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8407B1037EB
+	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2009 13:53:48 +0100 (CET)
+Received: from [192.168.3.203] (uekae-subnet-out.ume.tubitak.gov.tr
+	[194.27.222.253])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested) (Authenticated sender: ozan)
+	by pardus.org.tr (Postfix) with ESMTP id 25FC263E7E93
+	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2009 14:53:41 +0200 (EET)
+In-Reply-To: <s5hzlftinb6.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Tue, 10 Mar 2009 10:00:13 +0100,
-> Clemens Ladisch wrote:
->   
->> (CC alsa-devel)
->>
->> Viral Mehta wrote:
->>     
->>> Hi,
->>>
->>> I am trying to do gain control while RECORDING for my Audio Mic device.
->>>
->>> My application opens /dev/mixer device and calls ioctl(fdmixer, 
->>> MIXER_WRITE(SOUND_MIXER_MIC), ...)
->>>
->>> But, the call fails. It traces to sound/core/oss/mixer_oss.c file and 
->>> snd_mixer_oss_put_volume1() function.
->>> It never falls in "if (slot->present & SNDRV_MIXER_OSS_PRESENT_CVOLUME)" 
->>> as condition "if (slot->present & SNDRV_MIXER_OSS_PRESENT_PVOLUME) " 
->>> comes as false.
->>>
->>> I think there is a bug in kernel and I think it should be like as below,
->>>
->>> --- sound/core/oss/mixer_oss.c  2008-12-03 13:24:02.000000000 +0530
->>> +++ sound/core/oss/mixer_oss.c   2009-03-09 16:22:06.548766896 +0530
->>> @@ -688,7 +688,7 @@ static int snd_mixer_oss_put_volume1(str
->>>
->>>      if (slot->present & SNDRV_MIXER_OSS_PRESENT_PVOLUME) {
->>>              snd_mixer_oss_put_volume1_vol(fmixer, pslot, 
->>> slot->numid[SNDRV_MIXER_OSS_ITEM_PVOLUME], left, right);
->>> -               if (slot->present & SNDRV_MIXER_OSS_PRESENT_CVOLUME)
->>> +       } else if (slot->present & SNDRV_MIXER_OSS_PRESENT_CVOLUME) {
->>>                      snd_mixer_oss_put_volume1_vol(fmixer, pslot, 
->>> slot->numid[SNDRV_MIXER_OSS_ITEM_CVOLUME], left, right);
->>>      } else if (slot->present & SNDRV_MIXER_OSS_PRESENT_GVOLUME) {
->>>              snd_mixer_oss_put_volume1_vol(fmixer, pslot, 
->>> slot->numid[SNDRV_MIXER_OSS_ITEM_GVOLUME], left, right);
->>>       
->> Your mailer mangled the patch; see linux/Documentation/email-clients.txt.
->>     
->
-> Also, the current code behaves intentionally so (as it's designed for
-> mic-loopback volume).
->
-> A more feasible fix would be to add another if check for *_CVOLUME
-> instead of moving it.
->
->
->   
-Oh okie. It makes sense.
-I just sent out a patch on LAD. Should I resubmit with what you proposed ?
-
-> Takashi
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
->
->
-> Email Scanned for Virus & Dangerous Content by : www.CleanMailGateway.com
->
->
->   
--- 
-_____________________________________________________________________
-Disclaimer: This e-mail message and all attachments transmitted with it
-are intended solely for the use of the addressee and may contain legally
-privileged and confidential information. If the reader of this message
-is not the intended recipient, or an employee or agent responsible for
-delivering this message to the intended recipient, you are hereby
-notified that any dissemination, distribution, copying, or other use of
-this message or its attachments is strictly prohibited. If you have
-received this message in error, please notify the sender immediately by
-replying to this message and please delete it from your computer. Any
-views expressed in this message are those of the individual sender
-unless otherwise stated.Company has taken enough precautions to prevent
-the spread of viruses. However the company accepts no liability for any
-damage caused by any virus transmitted by this email.
-__________________________________________________________________________
+VGFrYXNoaSBJd2FpIHdyb3RlIE9uIDEwLTAzLTIwMDkgMTQ6MTg6Cj4gQXQgVHVlLCAxMCBNYXIg
+MjAwOSAwOTo1MToyMiArMDIwMCwKPiBPemFuIENhZ2xheWFuIHdyb3RlOgo+PiBPbmUgb2Ygb3Vy
+IHVzZXJzIHJlcG9ydGVkIHRoYXQgaXRzIGxhcHRvcCBkb2Vzbid0IG11dGUgdGhlIGludGVybmFs
+Cj4+IHNwZWFrZXJzIHdoZW4gYSBqYWNrIGlzIGluc2VydGVkIGludG8gaGVhZHBob25lcyB3aXRo
+b3V0IG1vZGVsPWhpcHBvLgo+IAo+IElzbid0IG1vZGVsPXNvbnktYXNzYW1kIGJldHRlcj8KCkhl
+L1NoZSBzYWlkIHRoYXQgaXQgdHJpZWQgc29ueS1hc3NhbWQgYnV0IEknbGwgZG91YmxlIGNoZWNr
+IGl0IGFuZApyZXBvcnQgYmFjayBpbiBoZXJlLgoKCi0tIApPemFuIMOHYcSfbGF5YW4KCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
