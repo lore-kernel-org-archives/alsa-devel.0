@@ -1,14 +1,20 @@
-From: Viral Mehta <viral.mehta@einfochips.com>
-Subject: [PATCH] [SOUND] Fixes recording gain control
-Date: Tue, 10 Mar 2009 18:40:49 +0530
-Message-ID: <49B666D9.2000002@einfochips.com>
+From: Hugo Villeneuve <hugo@hugovil.com>
+Subject: Re: [PATCH 4/4] ALSA: ASoC: Davinci: Fixed missing
+ McBSP pinmux for SFFSDR
+Date: Tue, 10 Mar 2009 10:03:41 -0400
+Message-ID: <20090310100341.cc08cc08.hugo@hugovil.com>
+References: <1236655929-31688-1-git-send-email-hugo@hugovil.com>
+	<1236655929-31688-5-git-send-email-hugo@hugovil.com>
+	<20090310102921.GA12297@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ahmedabad.einfochips.com (india.einfochips.com [203.88.139.151])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4C1421037EB
-	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2009 14:19:00 +0100 (CET)
+Received: from server.hugovil.com (201-217-static-ppp.3menatwork.com
+	[64.235.217.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0A1951037F2
+	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2009 15:03:46 +0100 (CET)
+In-Reply-To: <20090310102921.GA12297@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,57 +24,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, perex@perex.cz
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com
 List-Id: alsa-devel@alsa-project.org
 
-Sorry for resending it again and again. This is since submitting a patch 
-first time. Please never mind.
-Consider the below thing.
+On Tue, 10 Mar 2009 10:29:23 +0000
+Mark Brown <broonie@sirena.org.uk> wrote:
 
-Have tested two usb audio mic devices.
-At the time of initialization, SNDRV_MIXER_OSS_PRESENT_PVOLUME bit is not
-set for MIC (slot 7).
-So, the same should not be checked when an application tries to do gain 
-control
-for audio recording devices. Just check
-slot->present for SNDRV_MIXER_OSS_PRESENT_CVOLUME independently.
-Verified with a simple application which opens /dev/dsp for recording and
-/dev/mixer for volume control.
+> On Mon, Mar 09, 2009 at 11:32:09PM -0400, Hugo Villeneuve wrote:
+> >  		return -EINVAL;
+> >  
+> > +	davinci_cfg_reg(DM644X_MCBSP);
+> > +
+> 
+> I can't find any references to this function in mainline?
 
-Signed-off-by: Viral Mehta <viral.mehta@einfochips.com>
----
-sound/core/oss/mixer_oss.c |    2 +-
-1 files changed, 1 insertions(+), 1 deletions(-)
+Hi Mark,
+I based those patches on the latest linux-davinci git tree, which has
+the function.
 
---- sound/core/oss/mixer_oss.org.c      2009-03-10 18:37:49.000000000 +0530
-+++ sound/core/oss/mixer_oss.c  2009-03-10 18:37:07.000000000 +0530
-@@ -692,6 +692,8 @@ static int snd_mixer_oss_put_volume1(str
-                snd_mixer_oss_put_volume1_vol(fmixer, pslot, 
-slot->numid[SNDRV_MIXER_OSS_ITEM_PVOLUME], left, right);
-                if (slot->present & SNDRV_MIXER_OSS_PRESENT_CVOLUME)
-                        snd_mixer_oss_put_volume1_vol(fmixer, pslot, 
-slot->numid[SNDRV_MIXER_OSS_ITEM_CVOLUME], left, right);
-+       } else if (slot->present & SNDRV_MIXER_OSS_PRESENT_CVOLUME) {
-+                       snd_mixer_oss_put_volume1_vol(fmixer, pslot, 
-slot->numid[SNDRV_MIXER_OSS_ITEM_CVOLUME], left, right);
-        } else if (slot->present & SNDRV_MIXER_OSS_PRESENT_GVOLUME) {
-                snd_mixer_oss_put_volume1_vol(fmixer, pslot, 
-slot->numid[SNDRV_MIXER_OSS_ITEM_GVOLUME], left, right);
-        } else if (slot->present & SNDRV_MIXER_OSS_PRESENT_GLOBAL) {
+> Most of the
+> ARM variants do this sort of configuration in the arch/arm code which
+> was why I was looking for other users to see what was idiomatic for
+> DaVinci.
 
--- 
-_____________________________________________________________________
-Disclaimer: This e-mail message and all attachments transmitted with it
-are intended solely for the use of the addressee and may contain legally
-privileged and confidential information. If the reader of this message
-is not the intended recipient, or an employee or agent responsible for
-delivering this message to the intended recipient, you are hereby
-notified that any dissemination, distribution, copying, or other use of
-this message or its attachments is strictly prohibited. If you have
-received this message in error, please notify the sender immediately by
-replying to this message and please delete it from your computer. Any
-views expressed in this message are those of the individual sender
-unless otherwise stated.Company has taken enough precautions to prevent
-the spread of viruses. However the company accepts no liability for any
-damage caused by any virus transmitted by this email.
-__________________________________________________________________________
+In fact I just duplicated what was done for the evm board in
+sound/soc/davinci/davinci-evm.c, which also has the davinci_cfg_reg()
+function (in the linux-davinci tree):
+
+  http://git.kernel.org/?p=linux/kernel/git/khilman/linux-davinci.git;a=commit;h=da57d7068350741e62671a7f619d5b4fad2727c0
+
+> I've applied the other three patches.
+
+Thanks, Hugo V.
