@@ -1,16 +1,21 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] [SOUND] recording gain control
-Date: Tue, 10 Mar 2009 10:00:13 +0100
-Message-ID: <49B62C1D.4080509@ladisch.de>
-References: <49B5F8F5.8040100@einfochips.com>
+From: Nicolas.Castagne@imag.fr
+Subject: Re: [Re: Crash when snd_pcm_open is called from a
+ thread with "pulse" as playback]
+Date: Tue, 10 Mar 2009 10:16:48 +0100 (CET)
+Message-ID: <43861.147.171.149.152.1236676608.squirrel@acroe.imag.fr>
+References: <2210.93.1.202.94.1236528705.squirrel@acroe.imag.fr>
+	<s5h4oy2debq.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0903091433430.25713@tm8103.perex-int.cz>
+	<55892.147.171.149.152.1236608283.squirrel@acroe.imag.fr>
+	<Pine.LNX.4.61.0903091541290.25713@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 49AD824436
-	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2009 10:00:17 +0100 (CET)
-In-Reply-To: <49B5F8F5.8040100@einfochips.com>
+Received: from imag.imag.fr (imag.imag.fr [129.88.30.1])
+	by alsa0.perex.cz (Postfix) with ESMTP id CCF3124456
+	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2009 10:26:49 +0100 (CET)
+In-Reply-To: <Pine.LNX.4.61.0903091541290.25713@tm8103.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,45 +25,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Viral Mehta <viral.mehta@einfochips.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>, nicolas.castagne@imag.fr
 List-Id: alsa-devel@alsa-project.org
 
-(CC alsa-devel)
+Hi Jaroslav & all,
 
-Viral Mehta wrote:
-> Hi,
-> 
-> I am trying to do gain control while RECORDING for my Audio Mic device.
-> 
-> My application opens /dev/mixer device and calls ioctl(fdmixer, 
-> MIXER_WRITE(SOUND_MIXER_MIC), ...)
-> 
-> But, the call fails. It traces to sound/core/oss/mixer_oss.c file and 
-> snd_mixer_oss_put_volume1() function.
-> It never falls in "if (slot->present & SNDRV_MIXER_OSS_PRESENT_CVOLUME)" 
-> as condition "if (slot->present & SNDRV_MIXER_OSS_PRESENT_PVOLUME) " 
-> comes as false.
-> 
-> I think there is a bug in kernel and I think it should be like as below,
-> 
-> --- sound/core/oss/mixer_oss.c  2008-12-03 13:24:02.000000000 +0530
-> +++ sound/core/oss/mixer_oss.c   2009-03-09 16:22:06.548766896 +0530
-> @@ -688,7 +688,7 @@ static int snd_mixer_oss_put_volume1(str
-> 
->      if (slot->present & SNDRV_MIXER_OSS_PRESENT_PVOLUME) {
->              snd_mixer_oss_put_volume1_vol(fmixer, pslot, 
-> slot->numid[SNDRV_MIXER_OSS_ITEM_PVOLUME], left, right);
-> -               if (slot->present & SNDRV_MIXER_OSS_PRESENT_CVOLUME)
-> +       } else if (slot->present & SNDRV_MIXER_OSS_PRESENT_CVOLUME) {
->                      snd_mixer_oss_put_volume1_vol(fmixer, pslot, 
-> slot->numid[SNDRV_MIXER_OSS_ITEM_CVOLUME], left, right);
->      } else if (slot->present & SNDRV_MIXER_OSS_PRESENT_GVOLUME) {
->              snd_mixer_oss_put_volume1_vol(fmixer, pslot, 
-> slot->numid[SNDRV_MIXER_OSS_ITEM_GVOLUME], left, right);
+> Maybe. I guess it's a glibc bug which might be Fedora specific. Could you
+> try glibc from different distribution (or maybe rawhide) using LD_PRELOAD
+> hack if this bug can be reproduced? Just unpack glibc rpm with rpm2cpio
+> and use libc.so, libdl.so and libphread.so files for LD_PRELOAD.
 
-Your mailer mangled the patch; see linux/Documentation/email-clients.txt.
+Well, these are manipulations I am not used to :(
+In particular, I never installed rawhide.
+
+But I tried the pre compiled libraries in http://download.fedora.redhat.com
+then used the downloaded libc.so, libdl.so and libphread.so at run time.
 
 
-Best regards,
-Clemens
+-> Fedora development version glibc-2.9.90-8.1.i686.rpm
+Newer than mine. Found in :
+http://download.fedora.redhat.com/pub/fedora/linux/development/i386/os/Packages/
+
+
+-> Fedora release version glibc-2.9-2.i686.rpm
+Older than mine. Found in :
+http://download.fedora.redhat.com/pub/fedora/linux/releases/10/Everything/i386/os/Packages/
+
+
+The bug is still there with both these versions.
+
+
+I've tried using another glibc (eg ubuntu), but I must say I have
+difficulties looking into them...
+
+
+Perhaps someone has Fedora Rawhide installed, and could test ?
+
+If this is possible he sample program is alsa_main.cpp, available at :
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4426
+
+
+
+Cheers,
+Nicolas
+
+
+> On Mon, 9 Mar 2009 Nicolas.Castagne@imag.fr wrote:
+>
+>> Hi Jaroslav, Takashi and all,
+>>
+>> thx for you answers.
+>>
+>>
+>> Takashi :
+>> > Hm, I don't see any reason, and I cannot reproduce a crash on my
+>> machine...
+>>
+>> I can reproduce it on my three Fedora10 machines, using 2 hardware.
+>>
+>> Jaroslav
+>> > I would suggest to comment out code from
+>> snd_config_update_free_global().
+>> > Try to comment out snd_dlobj_cache_cleanup() at first. You may compile
+>> > alsa-lib from the tar ball on www.alsa-project.org and use
+>> > LD_PRELOAD=alsa-lib/src/.libs/libasound.so.2.0.0 <your_program> for
+>> tests.
+>>
+>> Done.
+>>
+>> * First, no more bug when commenting    snd_dlobj_cache_cleanup
+>>
+>> * Also,  no more bug when commenting    dlclose
+>>        in snd_dlclose
+>>        called from snd_dlobj_cache_cleanup
+>>
+>>
+>>
+>> The only dynamically loaded lib is  _snd_pcm_pulse_open
+>>
+>>
+>> Seems once again that pulse is involved somewhere.
+>
+> Maybe. I guess it's a glibc bug which might be Fedora specific. Could you
+> try glibc from different distribution (or maybe rawhide) using LD_PRELOAD
+> hack if this bug can be reproduced? Just unpack glibc rpm with rpm2cpio
+> and use libc.so, libdl.so and libphread.so files for LD_PRELOAD.
+>
+> 						Jaroslav
+>
+> -----
+> Jaroslav Kysela <perex@perex.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, Red Hat, Inc.
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
