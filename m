@@ -1,21 +1,16 @@
-From: Ozan Caglayan <ozan@pardus.org.tr>
-Subject: [PATCH] ALSA: hda - Add model quirk for Sony VAIO
-	VGN-NR21E
-Date: Tue, 10 Mar 2009 09:51:22 +0200
-Message-ID: <1236671482-3748-1-git-send-email-ozan@pardus.org.tr>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] [SOUND] recording gain control
+Date: Tue, 10 Mar 2009 10:00:13 +0100
+Message-ID: <49B62C1D.4080509@ladisch.de>
+References: <49B5F8F5.8040100@einfochips.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id BF548243EE
-	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2009 08:49:28 +0100 (CET)
-Received: from localhost.localdomain (uekae-subnet-out.ume.tubitak.gov.tr
-	[194.27.222.253])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested) (Authenticated sender: ozan)
-	by pardus.org.tr (Postfix) with ESMTP id 48AED63E5339
-	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2009 09:49:23 +0200 (EET)
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 49AD824436
+	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2009 10:00:17 +0100 (CET)
+In-Reply-To: <49B5F8F5.8040100@einfochips.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,31 +20,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Viral Mehta <viral.mehta@einfochips.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-One of our users reported that its laptop doesn't mute the internal
-speakers when a jack is inserted into headphones without model=hippo.
+(CC alsa-devel)
 
-Here's the alsa-info output for reference:
-http://www.alsa-project.org/db/?f=8dae188ec2db110b9e6804c60f4659f0cb606c62
+Viral Mehta wrote:
+> Hi,
+> 
+> I am trying to do gain control while RECORDING for my Audio Mic device.
+> 
+> My application opens /dev/mixer device and calls ioctl(fdmixer, 
+> MIXER_WRITE(SOUND_MIXER_MIC), ...)
+> 
+> But, the call fails. It traces to sound/core/oss/mixer_oss.c file and 
+> snd_mixer_oss_put_volume1() function.
+> It never falls in "if (slot->present & SNDRV_MIXER_OSS_PRESENT_CVOLUME)" 
+> as condition "if (slot->present & SNDRV_MIXER_OSS_PRESENT_PVOLUME) " 
+> comes as false.
+> 
+> I think there is a bug in kernel and I think it should be like as below,
+> 
+> --- sound/core/oss/mixer_oss.c  2008-12-03 13:24:02.000000000 +0530
+> +++ sound/core/oss/mixer_oss.c   2009-03-09 16:22:06.548766896 +0530
+> @@ -688,7 +688,7 @@ static int snd_mixer_oss_put_volume1(str
+> 
+>      if (slot->present & SNDRV_MIXER_OSS_PRESENT_PVOLUME) {
+>              snd_mixer_oss_put_volume1_vol(fmixer, pslot, 
+> slot->numid[SNDRV_MIXER_OSS_ITEM_PVOLUME], left, right);
+> -               if (slot->present & SNDRV_MIXER_OSS_PRESENT_CVOLUME)
+> +       } else if (slot->present & SNDRV_MIXER_OSS_PRESENT_CVOLUME) {
+>                      snd_mixer_oss_put_volume1_vol(fmixer, pslot, 
+> slot->numid[SNDRV_MIXER_OSS_ITEM_CVOLUME], left, right);
+>      } else if (slot->present & SNDRV_MIXER_OSS_PRESENT_GVOLUME) {
+>              snd_mixer_oss_put_volume1_vol(fmixer, pslot, 
+> slot->numid[SNDRV_MIXER_OSS_ITEM_GVOLUME], left, right);
 
-Signed-off-by: Ozan Caglayan <ozan@pardus.org.tr>
----
- sound/pci/hda/patch_realtek.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+Your mailer mangled the patch; see linux/Documentation/email-clients.txt.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index b794cba..6e79770 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -10874,6 +10874,7 @@ static struct snd_pci_quirk alc262_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x2817, "HP RP5700", ALC262_HP_RP5700),
- 	SND_PCI_QUIRK(0x104d, 0x1f00, "Sony ASSAMD", ALC262_SONY_ASSAMD),
- 	SND_PCI_QUIRK(0x104d, 0x8203, "Sony UX-90", ALC262_HIPPO),
-+	SND_PCI_QUIRK(0x104d, 0x902d, "Sony VAIO VGN-NR21E", ALC262_HIPPO),
- 	SND_PCI_QUIRK(0x104d, 0x820f, "Sony ASSAMD", ALC262_SONY_ASSAMD),
- 	SND_PCI_QUIRK(0x104d, 0x9016, "Sony VAIO", ALC262_AUTO), /* dig-only */
- 	SND_PCI_QUIRK_MASK(0x104d, 0xff00, 0x9000, "Sony VAIO",
--- 
-1.6.2
+
+Best regards,
+Clemens
