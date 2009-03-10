@@ -1,8 +1,8 @@
 From: Hugo Villeneuve <hugo@hugovil.com>
-Subject: [PATCH 1/4] ALSA: ASoC: Davinci: Fix SFFSDR FPGA
-	module codec FS bug
-Date: Mon,  9 Mar 2009 23:32:06 -0400
-Message-ID: <1236655929-31688-2-git-send-email-hugo@hugovil.com>
+Subject: [PATCH 2/4] ALSA: ASoC: Davinci: Replaced DAI format
+	RIGHT_J by DSP_B for SFFSDR
+Date: Mon,  9 Mar 2009 23:32:07 -0400
+Message-ID: <1236655929-31688-3-git-send-email-hugo@hugovil.com>
 References: <1236655929-31688-1-git-send-email-hugo@hugovil.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from server.hugovil.com (201-217-static-ppp.3menatwork.com
 	[64.235.217.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 917ED2445F
+	by alsa0.perex.cz (Postfix) with ESMTP id 8BF8C2445D
 	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2009 04:32:32 +0100 (CET)
 In-Reply-To: <1236655929-31688-1-git-send-email-hugo@hugovil.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -26,54 +26,45 @@ To: alsa-devel@alsa-project.org
 Cc: davinci-linux-open-source@linux.davincidsp.com
 List-Id: alsa-devel@alsa-project.org
 
-This prevented the FPGA from properly configuring the codec FS when
-the SFFSDR FPGA was compiled as a module.
-
 Signed-off-by: Hugo Villeneuve <hugo@hugovil.com>
 ---
- sound/soc/davinci/davinci-sffsdr.c |   14 +++++++-------
- 1 files changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/davinci/davinci-sffsdr.c |   17 ++++++++++-------
+ 1 files changed, 10 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/davinci/davinci-sffsdr.c b/sound/soc/davinci/davinci-sffsdr.c
-index 74f1eb3..1d10957 100644
+index 1d10957..b338c71 100644
 --- a/sound/soc/davinci/davinci-sffsdr.c
 +++ b/sound/soc/davinci/davinci-sffsdr.c
-@@ -25,10 +25,10 @@
+@@ -36,6 +36,14 @@
+ #include "davinci-pcm.h"
+ #include "davinci-i2s.h"
  
- #include <asm/dma.h>
- #include <asm/mach-types.h>
--#ifdef CONFIG_SFFSDR_FPGA
--#include <asm/plat-sffsdr/sffsdr-fpga.h>
--#endif
- 
-+#if defined(CONFIG_SFFSDR_FPGA) || defined(CONFIG_SFFSDR_FPGA_MODULE)
-+#include <mach/sffsdr-fpga.h>
-+#endif
- #include <mach/asp.h>
- #include <mach/edma.h>
- 
-@@ -48,7 +48,7 @@ static int sffsdr_hw_params(struct snd_pcm_substream *substream,
- 	/* Fsref can be 32000, 44100 or 48000. */
- 	fs = params_rate(params);
- 
--#ifndef CONFIG_SFFSDR_FPGA
-+#if !defined(CONFIG_SFFSDR_FPGA) && !defined(CONFIG_SFFSDR_FPGA_MODULE)
- 	/* Without the FPGA module, the Fs is fixed at 44100 Hz */
- 	if (fs != 44100) {
- 		pr_debug("warning: only 44.1 kHz is supported without SFFSDR FPGA module\n");
-@@ -68,10 +68,10 @@ static int sffsdr_hw_params(struct snd_pcm_substream *substream,
- 
- 	pr_debug("sffsdr_hw_params: rate = %d Hz\n", fs);
- 
--#ifndef CONFIG_SFFSDR_FPGA
--	return 0;
--#else
-+#if defined(CONFIG_SFFSDR_FPGA) || defined(CONFIG_SFFSDR_FPGA_MODULE)
- 	return sffsdr_fpga_set_codec_fs(fs);
-+#else
-+	return 0;
++/*
++ * CLKX and CLKR are the inputs for the Sample Rate Generator.
++ * FSX and FSR are outputs, driven by the sample Rate Generator.
++ */
++#define AUDIO_FORMAT (SND_SOC_DAIFMT_DSP_B |	\
++		      SND_SOC_DAIFMT_CBM_CFS |	\
++		      SND_SOC_DAIFMT_IB_NF)
++
+ static int sffsdr_hw_params(struct snd_pcm_substream *substream,
+ 			    struct snd_pcm_hw_params *params,
+ 			    struct snd_soc_dai *dai)
+@@ -56,13 +64,8 @@ static int sffsdr_hw_params(struct snd_pcm_substream *substream,
+ 	}
  #endif
- }
+ 
+-	/* Set cpu DAI configuration:
+-	 * CLKX and CLKR are the inputs for the Sample Rate Generator.
+-	 * FSX and FSR are outputs, driven by the sample Rate Generator. */
+-	ret = snd_soc_dai_set_fmt(cpu_dai,
+-				  SND_SOC_DAIFMT_RIGHT_J |
+-				  SND_SOC_DAIFMT_CBM_CFS |
+-				  SND_SOC_DAIFMT_IB_NF);
++	/* set cpu DAI configuration */
++	ret = snd_soc_dai_set_fmt(cpu_dai, AUDIO_FORMAT);
+ 	if (ret < 0)
+ 		return ret;
  
 -- 
 1.5.5
