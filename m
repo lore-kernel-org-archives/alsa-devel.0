@@ -1,26 +1,24 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 3/4] pxa-ssp: don't touch ssp
-	registers	when stream is running
-Date: Tue, 10 Mar 2009 15:56:00 +0000
-Message-ID: <20090310155559.GD12297@sirena.org.uk>
-References: <20090304201505.GE12183@buzzloop.caiaq.de>
-	<1236197820-21022-1-git-send-email-daniel@caiaq.de>
-	<1236197820-21022-2-git-send-email-daniel@caiaq.de>
-	<1236197820-21022-3-git-send-email-daniel@caiaq.de>
-	<20090304203350.GB10731@sirena.org.uk>
-	<20090304203911.GA18917@buzzloop.caiaq.de>
-	<20090304204222.GC10731@sirena.org.uk>
-	<20090305102337.GB28448@buzzloop.caiaq.de>
-	<20090310154100.GB10574@buzzloop.caiaq.de>
+Subject: Re: [PATCH 4/4] ALSA: ASoC: Davinci: Fixed
+	missing	McBSP pinmux for SFFSDR
+Date: Tue, 10 Mar 2009 16:02:10 +0000
+Message-ID: <20090310160207.GE12297@sirena.org.uk>
+References: <1236655929-31688-1-git-send-email-hugo@hugovil.com>
+	<1236655929-31688-5-git-send-email-hugo@hugovil.com>
+	<20090310102921.GA12297@sirena.org.uk>
+	<20090310100341.cc08cc08.hugo@hugovil.com>
+	<20090310151615.GB12297@sirena.org.uk>
+	<20090310114211.4ad49269.hugo@hugovil.com>
+	<87hc21tlt1.fsf@deeprootsystems.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 01DF8103871
-	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2009 16:56:01 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 157161037F2
+	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2009 17:02:19 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20090310154100.GB10574@buzzloop.caiaq.de>
+In-Reply-To: <87hc21tlt1.fsf@deeprootsystems.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,12 +28,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Philipp Zabel <philipp.zabel@gmail.com>, Liam Girdwood <lrg@kernel.org>
+To: Kevin Hilman <khilman@deeprootsystems.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org, Hugo Villeneuve <hugo@hugovil.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 10, 2009 at 04:41:00PM +0100, Daniel Mack wrote:
+On Tue, Mar 10, 2009 at 08:55:06AM -0700, Kevin Hilman wrote:
 
-> Could you have a look on the patch below please - does that look better?
+> On a related note, sound/soc/davinci/davinci-[evm,sffsdr].c is
+> actually board-level setup code and should not actually live in
+> sound/asoc/.  It should live in arch/arm/mach-davinci/* and follow the
+> rest of the davinci chip/board code upstream.
 
-Looks good, I'll apply this.
+No, the ASoC APIs are not stable enough for this - putting this code in
+arch/arm will just lead to merge pain when code from one tree goes in
+without updates from the other.
+
+Experience also suggests that audio drivers often get substantial enough
+and need sufficient review to warrant keeping separate from the core
+machine code.
