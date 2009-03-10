@@ -1,27 +1,15 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 4/4] ALSA: ASoC: Davinci: Fixed
-	missing	McBSP pinmux for SFFSDR
-Date: Tue, 10 Mar 2009 19:42:52 +0000
-Message-ID: <20090310194248.GA6484@sirena.org.uk>
-References: <1236655929-31688-1-git-send-email-hugo@hugovil.com>
-	<1236655929-31688-5-git-send-email-hugo@hugovil.com>
-	<20090310102921.GA12297@sirena.org.uk>
-	<20090310100341.cc08cc08.hugo@hugovil.com>
-	<20090310151615.GB12297@sirena.org.uk>
-	<20090310114211.4ad49269.hugo@hugovil.com>
-	<87hc21tlt1.fsf@deeprootsystems.com>
-	<20090310120434.0e6db8e7.hugo@hugovil.com>
-	<874oy1tkn4.fsf@deeprootsystems.com>
-	<20090310130734.c877b1f6.hugo@hugovil.com>
+Subject: ASoC updates for 2.6.30
+Date: Tue, 10 Mar 2009 19:55:52 +0000
+Message-ID: <20090310195551.GA8255@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8DEDD1037FB
-	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2009 20:43:40 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 59C1F1037FB
+	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2009 20:55:59 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20090310130734.c877b1f6.hugo@hugovil.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,23 +19,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Hugo Villeneuve <hugo@hugovil.com>
-Cc: Kevin Hilman <khilman@deeprootsystems.com>, davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 10, 2009 at 01:07:34PM -0400, Hugo Villeneuve wrote:
+The following changes since commit 0a4e1c9069b3cc2a9e5b57898ac9be94314e8efa:
+  Takashi Iwai (1):
+        Merge branch 'for-2.6.30' of git://git.kernel.org/.../broonie/sound-2.6 into topic/asoc
 
-> It is not easy following you guys. You say something and then do the
-> opposite.
+are available in the git repository at:
 
-There's a very simple rule which works for all upstream submissions:
-always generate patches against the tree which the patches are being
-submitted to.  If there are changes that have cross-tree dependencies
-then those need to be resolved on a case by case basis - normally the
-best thing to there is for the affected patches to take the same path
-as whatever they depend on.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.30
 
-It is normal and expected for the different trees people merge on to
-diverge during a release cycle: for example, changes to a subsystem may
-well affect large portions of that subsystem while architecture changes
-may affect a wide range of drivers.
+Ben Dooks (1):
+      ASoC: Fix Samsung S3C2412_IISMOD_SDF_{MSB,LSB} definitions
+
+Daniel Mack (1):
+      ASoC: don't touch pxa-ssp registers when stream is running
+
+Hugo Villeneuve (2):
+      ALSA: ASoC: Davinci: Replaced DAI format RIGHT_J by DSP_B for SFFSDR
+      ALSA: ASoC: Davinci: Updated sffsdr_hw_params() function to new format
+
+Mark Brown (3):
+      ASoC: Convert PXA AC97 driver to probe with the platform device
+      Merge commit 'takashi/topic/asoc' into for-2.6.30
+      ASoC: Fix up merge with the ARM tree
+
+ arch/arm/mach-shark/include/mach/io.h             |    1 +
+ arch/arm/plat-s3c/include/plat/regs-s3c2412-iis.h |    4 +-
+ sound/soc/davinci/davinci-sffsdr.c                |   20 ++++++-----
+ sound/soc/pxa/pxa-ssp.c                           |   11 ++++++
+ sound/soc/pxa/pxa2xx-ac97.c                       |   38 ++++++++++++++++++--
+ 5 files changed, 59 insertions(+), 15 deletions(-)
