@@ -1,20 +1,27 @@
-From: David Brownell <david-b@pacbell.net>
-Subject: Re: [PATCH 4/4] ALSA: ASoC: Davinci: Fixed missing
-	McBSP pinmux for SFFSDR
-Date: Tue, 10 Mar 2009 10:10:09 -0800
-Message-ID: <200903101110.10447.david-b@pacbell.net>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 4/4] ALSA: ASoC: Davinci: Fixed
+	missing	McBSP pinmux for SFFSDR
+Date: Tue, 10 Mar 2009 19:42:52 +0000
+Message-ID: <20090310194248.GA6484@sirena.org.uk>
 References: <1236655929-31688-1-git-send-email-hugo@hugovil.com>
+	<1236655929-31688-5-git-send-email-hugo@hugovil.com>
+	<20090310102921.GA12297@sirena.org.uk>
+	<20090310100341.cc08cc08.hugo@hugovil.com>
+	<20090310151615.GB12297@sirena.org.uk>
+	<20090310114211.4ad49269.hugo@hugovil.com>
+	<87hc21tlt1.fsf@deeprootsystems.com>
+	<20090310120434.0e6db8e7.hugo@hugovil.com>
+	<874oy1tkn4.fsf@deeprootsystems.com>
 	<20090310130734.c877b1f6.hugo@hugovil.com>
-	<87y6vds3ph.fsf@deeprootsystems.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp125.sbc.mail.sp1.yahoo.com (smtp125.sbc.mail.sp1.yahoo.com
-	[69.147.65.184]) by alsa0.perex.cz (Postfix) with SMTP id 3AA9C1037FB
-	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2009 19:10:12 +0100 (CET)
-In-Reply-To: <87y6vds3ph.fsf@deeprootsystems.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8DEDD1037FB
+	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2009 20:43:40 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <20090310130734.c877b1f6.hugo@hugovil.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,41 +31,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kevin Hilman <khilman@deeprootsystems.com>, Hugo Villeneuve <hugo@hugovil.com>
-Cc: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>
+To: Hugo Villeneuve <hugo@hugovil.com>
+Cc: Kevin Hilman <khilman@deeprootsystems.com>, davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 10 March 2009, Kevin Hilman wrote:
-> >
-> > Ok, so the patch affecting sound/soc/davinci/davinci-evm.c SHOULD have
-> > been submitted to ALSA first.
-> =
+On Tue, Mar 10, 2009 at 01:07:34PM -0400, Hugo Villeneuve wrote:
 
-> Yes, but it should've been a patch against an ASoC tree, not against
-> DaVinci git which may contain things not (yet) in the ASoC tree.
-> =
+> It is not easy following you guys. You say something and then do the
+> opposite.
 
-> > It is not easy following you guys. You say something and then do the
-> > opposite.
-> =
+There's a very simple rule which works for all upstream submissions:
+always generate patches against the tree which the patches are being
+submitted to.  If there are changes that have cross-tree dependencies
+then those need to be resolved on a case by case basis - normally the
+best thing to there is for the affected patches to take the same path
+as whatever they depend on.
 
-> Heh, sorry.
-> =
-
-> Do as I do, not as I say. =A0;)
-
-I'd say "my bad" ... but in these cases there's seems to be no
-better solution than having the DaVinci GIT tree diverge a bit
-from mainline ASoC, in synchrony with arch/arm/mach-davinci
-which is also diverging from mainline.
-
-There's a general rule that patches should not break builds.
-And that rule is why there are several ASoC patches I've not
-yet sent to mainline.
-
-The whole ASoC/DaVinci thing has been nothing but build
-breakage however, since it depends on EDMA patches which
-haven't yet gone to mainline.  (But, I believe, will soon
-do so, at which point that breakage will stop.)
-
-- Dave
+It is normal and expected for the different trees people merge on to
+diverge during a release cycle: for example, changes to a subsystem may
+well affect large portions of that subsystem while architecture changes
+may affect a wide range of drivers.
