@@ -1,22 +1,20 @@
-From: pHilipp Zabel <philipp.zabel@gmail.com>
-Subject: Re: [PATCH 3/3][RFC] ASoC: pxa-ssp: Don't use
-	SSCR0_SerClkDiv and SSCR0_SCR
-Date: Wed, 11 Mar 2009 22:10:27 +0100
-Message-ID: <74d0deb30903111410v5a601709jf779c0d2e64e7de7@mail.gmail.com>
-References: <1236795420-12175-1-git-send-email-philipp.zabel@gmail.com>
-	<1236795420-12175-3-git-send-email-philipp.zabel@gmail.com>
-	<20090311184416.GA29865@buzzloop.caiaq.de>
+From: Gregorio Guidi <gregorio.guidi@gmail.com>
+Subject: Re: [PATCH] fix headphone settings and master
+	volume	(Conexant CX20551 0x103c30b2)
+Date: Wed, 11 Mar 2009 22:22:39 +0100
+Message-ID: <200903112222.40445.gregorio.guidi@gmail.com>
+References: <200903082119.41670.gregorio.guidi@gmail.com>
+	<200903092019.36312.gregorio.guidi@gmail.com>
+	<s5hmybtigal.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f158.google.com (mail-gx0-f158.google.com
-	[209.85.217.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7169D243E3
-	for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2009 22:10:28 +0100 (CET)
-Received: by gxk2 with SMTP id 2so484660gxk.8
-	for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2009 14:10:27 -0700 (PDT)
-In-Reply-To: <20090311184416.GA29865@buzzloop.caiaq.de>
+Received: from relay2.tre.it (mail.tre.it [62.13.171.46])
+	by alsa0.perex.cz (Postfix) with ESMTP id 047971038A2
+	for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2009 22:22:52 +0100 (CET)
+In-Reply-To: <s5hmybtigal.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,100 +24,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 11, 2009 at 7:44 PM, Daniel Mack <daniel@caiaq.de> wrote:
-> On Wed, Mar 11, 2009 at 07:17:00PM +0100, Philipp Zabel wrote:
->> As soon as CONFIG_PXA25x is enabled, those macros only handle the PXA25x=
-_SSP
->> case, which is wrong most of the time (and always wrong on >=3DPXA27x).
+On Tuesday 10 March 2009 15:49:38 Takashi Iwai wrote:
+> At Mon, 9 Mar 2009 20:19:35 +0100,
 >
-> Ah, I just (while reading this header file) wondered how this is
-> supposed to work :)
+> ...
 >
->> @@ -287,10 +287,17 @@ static void ssp_set_scr(struct ssp_priv *priv, u32=
- div)
->> =A0{
->> =A0 =A0 =A0 struct ssp_dev *dev =3D &priv->dev;
->> =A0 =A0 =A0 struct ssp_device *ssp =3D dev->ssp;
->> - =A0 =A0 u32 sscr0 =3D ssp_read_reg(dev->ssp, SSCR0) & ~SSCR0_SCR;
->> + =A0 =A0 u32 sscr0 =3D ssp_read_reg(dev->ssp, SSCR0);
->>
->> =A0 =A0 =A0 priv->scr_div =3D div;
->> - =A0 =A0 ssp_write_reg(ssp, SSCR0, (sscr0 | SSCR0_SerClkDiv(div)));
->> + =A0 =A0 if (ssp->type =3D=3D PXA25x_SSP) {
->> + =A0 =A0 =A0 =A0 =A0 =A0 sscr0 &=3D ~0x0000ff00; =A0 =A0 =A0 =A0/* SSCR=
-0_SCR */
->> + =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D ((div - 2)/2) << 8; /* SSCR0_SerClk=
-Div(div) */
->> + =A0 =A0 } else {
->> + =A0 =A0 =A0 =A0 =A0 =A0 sscr0 &=3D ~0x000fff00; =A0 =A0 =A0 =A0/* SSCR=
-0_SCR */
->> + =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D (div - 1) << 8; =A0 =A0 /* SSCR0_Se=
-rClkDiv(div) */
->> + =A0 =A0 }
->> + =A0 =A0 ssp_write_reg(ssp, SSCR0, sscr0);
->> =A0}
+> Thanks, that helps for debugging.
 >
-> Then we need something like ssp_get_scr() as well to cover my special
-> case which uses SSCR0_SCR and SSCR0_SerClkDiv() again as you proposed ;)
+> Looking through the current patch_conexant.c, there are other messy
+> codes there, too.  So I cleaned up and fixed it on sound git tree
+> now.  Any chance to try it out?  The GIT tree is found at:
+>
+>    git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
 
-Aren't I clever... How about something like this:
+I managed to test a kernel snapshot with the latest changes, thanks for taking 
+the time to refactor and clean up the code there.
+There are still issues, though: at the moment, the "Speaker" control does not 
+work. Consequently, automute does not work and Master only controls 
+headphones.
 
----
- sound/soc/pxa/pxa-ssp.c |   30 ++++++++++++++++++++++++++----
- 1 files changed, 26 insertions(+), 4 deletions(-)
+I think there is a problem with this changeset:
+http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=commitdiff;h=5b3a7440cbabdda07cfb3dcf4a07e0115a3dff9a
 
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index 3cde686..245063b 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -284,9 +284,30 @@ static int pxa_ssp_resume(struct snd_soc_dai *cpu_dai)
- static void ssp_set_scr(struct ssp_dev *dev, u32 div)
- {
- 	struct ssp_device *ssp =3D dev->ssp;
--	u32 sscr0 =3D ssp_read_reg(dev->ssp, SSCR0) & ~SSCR0_SCR;
-+	u32 sscr0 =3D ssp_read_reg(ssp, SSCR0);
-+
-+	if (cpu_is_pxa25x() && ssp->type =3D=3D PXA25x_SSP) {
-+		sscr0 &=3D ~0x0000ff00;
-+		sscr0 |=3D ((div - 2)/2) << 8;
-+	} else {
-+		sscr0 &=3D ~0x000fff00;
-+		sscr0 |=3D (div - 1) << 8;
-+	}
-+	ssp_write_reg(ssp, SSCR0, sscr0);
-+}
+Specifically, I had to revert part of that patch to get all the functionality 
+back. The bits I reverted are in the patch at the end of the mail.
 
--	ssp_write_reg(ssp, SSCR0, (sscr0 | SSCR0_SerClkDiv(div)));
-+/**
-+ * ssp_get_clkdiv - get SSP clock divider
-+ */
-+static u32 ssp_get_scr(struct ssp_dev *dev)
-+{
-+	struct ssp_device *ssp =3D dev->ssp;
-+	u32 sscr0 =3D ssp_read_reg(ssp, SSCR0);
-+
-+	if (cpu_is_pxa25x() && ssp->type =3D=3D PXA25x_SSP)
-+		return ((sscr0 >> 8) & 0xff) * 2 + 2;
-+	else
-+		return ((sscr0 >> 8) & 0xfff) + 1;
- }
+It looks like these two lines:
+	static hda_nid_t cxt5047_dac_nids[2] = { 0x10, 0x1c };
+	...
+	{0x1d, AC_VERB_SET_CONNECT_SEL, 0x0}
 
- /*
-@@ -668,8 +689,7 @@ static int pxa_ssp_hw_params(struct
-snd_pcm_substream *substream,
- 	case SND_SOC_DAIFMT_I2S:
- 	       sspsp =3D ssp_read_reg(ssp, SSPSP);
+are needed to have a working "Speaker" control, you probably know better than 
+me what it means. 
+I also readded the "PCM-2" lines. While not strictly necessary, if they are 
+not there the speaker volume is stuck at a very low level and cannot be 
+raised, as if the PCM-2 volume starts at a low value at boot. Actually, if I 
+recall correctly the low speaker volume was a problem in early versions of the 
+driver and the "PCM-2" controls were introduced for that reason.
+But obviously if there is a way to avoid the widget 0x1c and have a working 
+"Speaker" control that would be best.
 
--		if (((sscr0 & SSCR0_SCR) =3D=3D SSCR0_SerClkDiv(4)) &&
--		     (width =3D=3D 16)) {
-+		if (ssp_get_scr(ssp) =3D=3D 4) && (width =3D=3D 16)) {
- 			/* This is a special case where the bitclk is 64fs
- 			* and we're not dealing with 2*32 bits of audio
- 			* samples.
--- =
+Hope this makes some sense to you.
 
-1.6.2
+Gregorio
+
+--- patch_conexant.c.orig       2009-03-11 22:02:44.000000000 +0100
++++ patch_conexant.c    2009-03-11 22:03:09.000000000 +0100
+@@ -1165,7 +1165,7 @@
+ /* Conexant 5047 specific */
+ #define CXT5047_SPDIF_OUT      0x11
+
+-static hda_nid_t cxt5047_dac_nids[1] = { 0x10 }; /* 0x1c */
++static hda_nid_t cxt5047_dac_nids[2] = { 0x10, 0x1c };
+ static hda_nid_t cxt5047_adc_nids[1] = { 0x12 };
+ static hda_nid_t cxt5047_capsrc_nids[1] = { 0x1a };
+
+@@ -1263,6 +1263,8 @@
+        HDA_CODEC_MUTE("Capture Switch", 0x12, 0x03, HDA_INPUT),
+        HDA_CODEC_VOLUME("PCM Volume", 0x10, 0x00, HDA_OUTPUT),
+        HDA_CODEC_MUTE("PCM Switch", 0x10, 0x00, HDA_OUTPUT),
++       HDA_CODEC_VOLUME("PCM-2 Volume", 0x1c, 0x00, HDA_OUTPUT),
++       HDA_CODEC_MUTE("PCM-2 Switch", 0x1c, 0x00, HDA_OUTPUT),
+        {
+                .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+                .name = "Master Playback Switch",
+@@ -1294,7 +1296,7 @@
+        /* HP, Speaker  */
+        {0x13, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP },
+        {0x13, AC_VERB_SET_CONNECT_SEL, 0x0}, /* mixer(0x19) */
+-       {0x1d, AC_VERB_SET_CONNECT_SEL, 0x1}, /* mixer(0x19) */
++       {0x1d, AC_VERB_SET_CONNECT_SEL, 0x0}, /* mixer(0x19) */
+        /* Record selector: Mic */
+        {0x12, AC_VERB_SET_CONNECT_SEL,0x03},
+        {0x19, AC_VERB_SET_AMP_GAIN_MUTE,
