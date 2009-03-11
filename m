@@ -1,23 +1,19 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [patch 0/9] S3C24XX/S3C64XX updates
-Date: Wed, 11 Mar 2009 12:47:39 +0000
-Message-ID: <20090311124738.GD20230@sirena.org.uk>
-References: <20090304004925.530566010@fluff.org.uk>
-	<20090304202952.GA10731@sirena.org.uk>
-	<s5hvdqofn6a.wl%tiwai@suse.de>
-	<20090305103111.GA2416@sirena.org.uk>
-	<s5h8wnk45ot.wl%tiwai@suse.de>
-	<20090305110259.GC2416@sirena.org.uk>
-	<20090311103936.GA18264@trinity.fluff.org>
+From: Steve Sakoman <sakoman@gmail.com>
+Subject: Re: [PATCH] ASoC: Complete Beagleboard support
+Date: Wed, 11 Mar 2009 06:50:18 -0700
+Message-ID: <5e088bd90903110650y62dc21caobed1d577b4c90844@mail.gmail.com>
+References: <5e088bd90901202305m26900888jcaa2b0ec57d3fab1@mail.gmail.com>
+	<20090121100946.cef76a2a.jarkko.nikula@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6FC7C2435D
-	for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2009 13:47:42 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20090311103936.GA18264@trinity.fluff.org>
+Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id E25F8243CE
+	for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2009 14:50:19 +0100 (CET)
+Received: by wf-out-1314.google.com with SMTP id 26so12789wfd.23
+	for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2009 06:50:18 -0700 (PDT)
+In-Reply-To: <20090121100946.cef76a2a.jarkko.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,17 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ben Dooks <ben-alsa@fluff.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, linux-omap <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 11, 2009 at 10:39:36AM +0000, Ben Dooks wrote:
+On Wed, Jan 21, 2009 at 1:09 AM, Jarkko Nikula <jarkko.nikula@nokia.com> wr=
+ote:
+> On Tue, 20 Jan 2009 23:05:27 -0800
+> "ext Steve Sakoman" <sakoman@gmail.com> wrote:
+>
+>> Commit dc06102a0c8b5aa0dd7f9a40ce241e793c252a87 in the asoc tree
+>> did not include the necessary Kconfig and Makefile changes. =A0This patch
+>> completes the support for Beagleboard
+>>
+>> Signed-off-by: Steve Sakoman <steve@sakoman.com>
+>>
+> Acked-by: Jarkko Nikula <jarkko.nikula@nokia.com>
+>
+> Not tested but definitely a way to go forward :-)
 
-> At the moment this is still in your for-2.6.30 branch, do I need to look
-> at doing anything about it?
+Any updates on the status of this patch?  Doesn't seem to have been applied=
+ yet.
 
-I've pushed a revert of the two hunks I mentioned to Takashi already.
-If you could comment on the other two hunks I identified and provide a
-revert patch for them as well if they're not required that would be
-helpful - if they're not essential for this change they should be
-submitted separately via the ARM tree.
+I've seen lot's of folks on the Beagle mailing list and IRC channels
+who are getting bitten by this issue.
+
+Steve
