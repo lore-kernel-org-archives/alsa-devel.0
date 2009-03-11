@@ -1,18 +1,17 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 2/3][RFC] ASoC: Add Magician machine
- support.
-Date: Wed, 11 Mar 2009 19:02:08 +0000
-Message-ID: <1236798128.6781.187.camel@vega.slimlogic.co.uk>
-References: <1236795420-12175-1-git-send-email-philipp.zabel@gmail.com>
-	<1236795420-12175-2-git-send-email-philipp.zabel@gmail.com>
+From: Giovanni Maruzzelli <gmaruzz.lists@gmail.com>
+Subject: multiple USB soundcards crashes, please help
+Date: Wed, 11 Mar 2009 20:08:26 +0100
+Message-ID: <7c5010d60903111208k1e637a21xde4007e9c0ddbd4b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from slimlogic.co.uk (slimlogic.co.uk [89.16.172.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 511C41038A8
-	for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2009 20:02:10 +0100 (CET)
-In-Reply-To: <1236795420-12175-2-git-send-email-philipp.zabel@gmail.com>
+Received: from mail-bw0-f174.google.com (mail-bw0-f174.google.com
+	[209.85.218.174])
+	by alsa0.perex.cz (Postfix) with ESMTP id A8E371038A8
+	for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2009 20:08:26 +0100 (CET)
+Received: by bwz22 with SMTP id 22so138219bwz.32
+	for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2009 12:08:26 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,45 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Philipp Zabel <philipp.zabel@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Alsa Dev <alsa-devel@lists.sourceforge.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Overall looks good. One very minor issue :-
+Dear ALSA developers,
 
-On Wed, 2009-03-11 at 19:16 +0100, Philipp Zabel wrote:
-> HTC Magician has a Philips UDA1380 codec connected via
-> SSP1 (playback) and I2S (capture).
-> There is a flip-flop between the SSP frame clock output
-> and the codec's word select input pin. To make the codec
-> see proper I2S input, the SSP has to send two frames per
-> sample.
-> 
-> Signed-off-by: Philipp Zabel <philipp.zabel@gmail.com>
-> ---
->  sound/soc/pxa/Kconfig    |   10 +
->  sound/soc/pxa/Makefile   |    2 +
->  sound/soc/pxa/magician.c |  563 ++++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 575 insertions(+), 0 deletions(-)
->  create mode 100644 sound/soc/pxa/magician.c
-> 
+my application needs to use multiple USB soundcards (based on standard
+cm-108 chipset) for I/O.
 
-snip
+Seems to me that with recent kernels (after 2.6.21) this is almost impossible:
 
-> --- /dev/null
-> +++ b/sound/soc/pxa/magician.c
-> @@ -0,0 +1,563 @@
-> +/*
-> + * SoC audio for HTC Magician
-> + *
-> + * Copyright (c) 2006-2009 Philipp Zabel <philipp.zabel@gmail.com>
-> + *
-> + * based on spitz.c,
-> + * Authors: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+-if you use uhci_hcd it crashes with 4 running soundcards (cannot
+submit datapipe: not enough bandwidth)
+-if you use ehci_hcd it crashes way before (device resets)
 
-This address is no longer valid. Could you change to the address I'm
-sending with.
+With older kernels, at least uhci_hcd seems to work. This maybe is
+related to the reworking of the bandwidth management into the uhci_hcd
+introduced in 2.6.21.
 
-Thanks
+I'm available to and I would be glad to help you ALSA developers with
+all the information possible: just tell me wich infos you need and
+I'll gather all the infos for you.
 
-Liam
+You can test the problem with:
+arecord -Dplughw:0 | aplay plughw:0 &
+arecord -Dplughw:1 | aplay plughw:1 &
+arecord -Dplughw:2 | aplay plughw:2 &
+arecord -Dplughw:3 | aplay plughw:3 &
