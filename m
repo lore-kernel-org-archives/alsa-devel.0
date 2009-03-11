@@ -1,19 +1,16 @@
-From: Daniel Stodden <dns@somacoma.net>
-Subject: Intel HDA volume low
-Date: Sun, 08 Mar 2009 04:23:26 -0700
-Message-ID: <1236511406.21390.15.camel@ramone.van.xensource.com>
+From: Dmitry Artamonow <mad_soft@inbox.ru>
+Subject: [PATCH] ALSA: drop outdated and broken sa11xx-uda1341
+	driver
+Date: Thu, 12 Mar 2009 00:11:13 +0300
+Message-ID: <20090311211113.GA18750@rainbow>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vs137225.vserver.de
-	(static-ip-62-75-137-225.inaddr.intergenia.de [62.75.137.225])
-	by alsa0.perex.cz (Postfix) with ESMTP id 63D812433F
-	for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2009 12:23:31 +0100 (CET)
-Received: from [192.168.1.128] (S0106000e08cec998.vc.shawcable.net
-	[96.49.210.198]) (Authenticated sender: dns)
-	by vs137225.vserver.de (Postfix) with ESMTP id EFCC68A70070
-	for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2009 12:23:28 +0100 (CET)
+Received: from mail.asoft.ru (mail.asoft.ru [83.222.19.8])
+	by alsa0.perex.cz (Postfix) with ESMTP id A46A1243E8
+	for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2009 22:11:23 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,34 +21,2156 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Russell King <linux@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
+It depends on L3 support from 2.4 kernel (CONFIG_L3) that never got
+merged into mainline. Since there's no way to use it on any of
+supported machines (iPaq h3100 or h3600), better drop it for now.
+It can be reimplemented later using ASoC infrastructure (there's
+already a driver for uda1341 codec in mainline, so only CPU and machine
+parts need to be written).
 
-Hi.
+Signed-off-by: Dmitry Artamonow <mad_soft@inbox.ru>
+Cc: Russell King <linux@arm.linux.org.uk>
+---
+ include/sound/uda1341.h    |  126 ------
+ sound/arm/Kconfig          |   11 -
+ sound/arm/Makefile         |    3 -
+ sound/arm/sa11xx-uda1341.c |  983 --------------------------------------------
+ sound/i2c/Makefile         |    2 -
+ sound/i2c/l3/Makefile      |    8 -
+ sound/i2c/l3/uda1341.c     |  935 -----------------------------------------
+ 7 files changed, 0 insertions(+), 2068 deletions(-)
+ delete mode 100644 include/sound/uda1341.h
+ delete mode 100644 sound/arm/sa11xx-uda1341.c
+ delete mode 100644 sound/i2c/l3/Makefile
+ delete mode 100644 sound/i2c/l3/uda1341.c
 
-I've got a Lenovo Thinkpad T400 with snd_hda_intel:
-
-00:1b.0 Audio device: Intel Corporation 82801I (ICH9 Family) HD Audio
-Controller (rev 03)
-Subsystem: Lenovo Device 20f2
-
-I think this is the same chip which recently quirks entries to work
-around docking issues on the Thinkpad x200.
-
-The codec is identified as a conexant CX20561 (Hermosa).
-
-Running Ubuntu 8.10 with 2.6.27, the Volume is extremely low. Quality
-seems okay, but setting Master and PCM outputs to 100% is barely
-audible. There's a bunch of similar reports on the Internet. I could not
-find any workaround but Window users usually report the volume should be
-fine.
-
-I tried 2.6.28 but to no avail. Will verify against latest git.
-
-Could someone help me fix this? I don't actually know much about the
-hardware in question, but would also willing to poke a little around in
-patch_conexant.c, if that could help identifying the issue. Provided
-someone someone around here has advice on what to try out.
-
-Cheers,
-Daniell
+diff --git a/include/sound/uda1341.h b/include/sound/uda1341.h
+deleted file mode 100644
+index 110d5dc..0000000
+--- a/include/sound/uda1341.h
++++ /dev/null
+@@ -1,126 +0,0 @@
+-/*
+- *  linux/include/linux/l3/uda1341.h
+- *
+- * Philips UDA1341 mixer device driver for ALSA
+- *
+- * Copyright (c) 2002 Tomas Kasparek <tomas.kasparek@seznam.cz>
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License.
+- *
+- * History:
+- *
+- * 2002-03-13 Tomas Kasparek Initial release - based on uda1341.h from OSS
+- * 2002-03-30 Tomas Kasparek Proc filesystem support, complete mixer and DSP
+- *                           features support
+- */
+-
+-#define UDA1341_ALSA_NAME "snd-uda1341"
+-
+-/*
+- * Default rate set after inicialization
+- */
+-#define AUDIO_RATE_DEFAULT	44100
+-
+-/*
+- * UDA1341 L3 address and command types
+- */
+-#define UDA1341_L3ADDR		5
+-#define UDA1341_DATA0		(UDA1341_L3ADDR << 2 | 0)
+-#define UDA1341_DATA1		(UDA1341_L3ADDR << 2 | 1)
+-#define UDA1341_STATUS		(UDA1341_L3ADDR << 2 | 2)
+-
+-enum uda1341_onoff {
+-	OFF=0,
+-	ON,
+-};
+-
+-enum uda1341_format {
+-	I2S=0,
+-	LSB16,
+-	LSB18,
+-	LSB20,
+-	MSB,
+-	LSB16MSB,
+-	LSB18MSB,
+-	LSB20MSB,        
+-};
+-
+-enum uda1341_fs {
+-	F512=0,
+-	F384,
+-	F256,
+-	Funused,
+-};
+-
+-enum uda1341_peak {
+-	BEFORE=0,
+-	AFTER,
+-};
+-
+-enum uda1341_filter {
+-	FLAT=0,
+-	MIN,
+-	MIN2,
+-	MAX,
+-};
+-
+-enum uda1341_mixer {
+-	DOUBLE,
+-	LINE,
+-	MIC,
+-	MIXER,
+-};
+-
+-enum uda1341_deemp {
+-	NONE,
+-	D32,
+-	D44,
+-	D48,
+-};
+-
+-enum uda1341_config {
+-	CMD_READ_REG = 0,
+-	CMD_RESET,
+-	CMD_FS,
+-	CMD_FORMAT,
+-	CMD_OGAIN,
+-	CMD_IGAIN,
+-	CMD_DAC,
+-	CMD_ADC,
+-	CMD_VOLUME,
+-	CMD_BASS,
+-	CMD_TREBBLE,
+-	CMD_PEAK,
+-	CMD_DEEMP,
+-	CMD_MUTE,        
+-	CMD_FILTER,
+-	CMD_CH1,
+-	CMD_CH2,
+-	CMD_MIC,       
+-	CMD_MIXER,
+-	CMD_AGC,
+-	CMD_IG,
+-	CMD_AGC_TIME,
+-	CMD_AGC_LEVEL,
+-#ifdef CONFIG_PM
+-	CMD_SUSPEND,
+-	CMD_RESUME,
+-#endif
+-	CMD_LAST,
+-};
+-
+-enum write_through {
+-	//used in update_bits (write_cfg) to avoid l3_write - just update local copy of regs.
+-	REGS_ONLY=0,
+-	//update local regs and write value to uda1341 - do l3_write
+-	FLUSH,
+-};
+-
+-int __init snd_chip_uda1341_mixer_new(struct snd_card *card, struct l3_client **clnt);
+-
+-/*
+- * Local variables:
+- * indent-tabs-mode: t
+- * End:
+- */
+diff --git a/sound/arm/Kconfig b/sound/arm/Kconfig
+index f8e6de4..885683a 100644
+--- a/sound/arm/Kconfig
++++ b/sound/arm/Kconfig
+@@ -11,17 +11,6 @@ menuconfig SND_ARM
+ 
+ if SND_ARM
+ 
+-config SND_SA11XX_UDA1341
+-	tristate "SA11xx UDA1341TS driver (iPaq H3600)"
+-	depends on ARCH_SA1100 && L3
+-	select SND_PCM
+-	help
+-	  Say Y here if you have a Compaq iPaq H3x00 handheld computer
+-	  and want to use its Philips UDA 1341 audio chip.
+-
+-	  To compile this driver as a module, choose M here: the module
+-	  will be called snd-sa11xx-uda1341.
+-
+ config SND_ARMAACI
+ 	tristate "ARM PrimeCell PL041 AC Link support"
+ 	depends on ARM_AMBA
+diff --git a/sound/arm/Makefile b/sound/arm/Makefile
+index 2054de1..5a549ed 100644
+--- a/sound/arm/Makefile
++++ b/sound/arm/Makefile
+@@ -2,9 +2,6 @@
+ # Makefile for ALSA
+ #
+ 
+-obj-$(CONFIG_SND_SA11XX_UDA1341) += snd-sa11xx-uda1341.o 
+-snd-sa11xx-uda1341-objs		:= sa11xx-uda1341.o
+-
+ obj-$(CONFIG_SND_ARMAACI)	+= snd-aaci.o
+ snd-aaci-objs			:= aaci.o devdma.o
+ 
+diff --git a/sound/arm/sa11xx-uda1341.c b/sound/arm/sa11xx-uda1341.c
+deleted file mode 100644
+index 1dcd51d..0000000
+--- a/sound/arm/sa11xx-uda1341.c
++++ /dev/null
+@@ -1,983 +0,0 @@
+-/*
+- *  Driver for Philips UDA1341TS on Compaq iPAQ H3600 soundcard
+- *  Copyright (C) 2002 Tomas Kasparek <tomas.kasparek@seznam.cz>
+- *
+- *   This program is free software; you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License.
+- * 
+- * History:
+- *
+- * 2002-03-13   Tomas Kasparek  initial release - based on h3600-uda1341.c from OSS
+- * 2002-03-20   Tomas Kasparek  playback over ALSA is working
+- * 2002-03-28   Tomas Kasparek  playback over OSS emulation is working
+- * 2002-03-29   Tomas Kasparek  basic capture is working (native ALSA)
+- * 2002-03-29   Tomas Kasparek  capture is working (OSS emulation)
+- * 2002-04-04   Tomas Kasparek  better rates handling (allow non-standard rates)
+- * 2003-02-14   Brian Avery     fixed full duplex mode, other updates
+- * 2003-02-20   Tomas Kasparek  merged updates by Brian (except HAL)
+- * 2003-04-19   Jaroslav Kysela recoded DMA stuff to follow 2.4.18rmk3-hh24 kernel
+- *                              working suspend and resume
+- * 2003-04-28   Tomas Kasparek  updated work by Jaroslav to compile it under 2.5.x again
+- *                              merged HAL layer (patches from Brian)
+- */
+-
+-/***************************************************************************************************
+-*
+-* To understand what Alsa Drivers should be doing look at "Writing an Alsa Driver" by Takashi Iwai
+-* available in the Alsa doc section on the website		
+-* 
+-* A few notes to make things clearer. The UDA1341 is hooked up to Serial port 4 on the SA1100.
+-* We are using  SSP mode to talk to the UDA1341. The UDA1341 bit & wordselect clocks are generated
+-* by this UART. Unfortunately, the clock only runs if the transmit buffer has something in it.
+-* So, if we are just recording, we feed the transmit DMA stream a bunch of 0x0000 so that the
+-* transmit buffer is full and the clock keeps going. The zeroes come from FLUSH_BASE_PHYS which
+-* is a mem loc that always decodes to 0's w/ no off chip access.
+-*
+-* Some alsa terminology:
+-*	frame => num_channels * sample_size  e.g stereo 16 bit is 2 * 16 = 32 bytes
+-*	period => the least number of bytes that will generate an interrupt e.g. we have a 1024 byte
+-*             buffer and 4 periods in the runtime structure this means we'll get an int every 256
+-*             bytes or 4 times per buffer.
+-*             A number of the sizes are in frames rather than bytes, use frames_to_bytes and
+-*             bytes_to_frames to convert.  The easiest way to tell the units is to look at the
+-*             type i.e. runtime-> buffer_size is in frames and its type is snd_pcm_uframes_t
+-*             
+-*	Notes about the pointer fxn:
+-*	The pointer fxn needs to return the offset into the dma buffer in frames.
+-*	Interrupts must be blocked before calling the dma_get_pos fxn to avoid race with interrupts.
+-*
+-*	Notes about pause/resume
+-*	Implementing this would be complicated so it's skipped.  The problem case is:
+-*	A full duplex connection is going, then play is paused. At this point you need to start xmitting
+-*	0's to keep the record active which means you cant just freeze the dma and resume it later you'd
+-*	need to	save off the dma info, and restore it properly on a resume.  Yeach!
+-*
+-*	Notes about transfer methods:
+-*	The async write calls fail.  I probably need to implement something else to support them?
+-* 
+-***************************************************************************************************/
+-
+-#include <linux/module.h>
+-#include <linux/moduleparam.h>
+-#include <linux/init.h>
+-#include <linux/err.h>
+-#include <linux/platform_device.h>
+-#include <linux/errno.h>
+-#include <linux/ioctl.h>
+-#include <linux/delay.h>
+-#include <linux/slab.h>
+-
+-#ifdef CONFIG_PM
+-#include <linux/pm.h>
+-#endif
+-
+-#include <mach/hardware.h>
+-#include <mach/h3600.h>
+-#include <asm/mach-types.h>
+-#include <asm/dma.h>
+-
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+-#include <sound/initval.h>
+-
+-#include <linux/l3/l3.h>
+-
+-#undef DEBUG_MODE
+-#undef DEBUG_FUNCTION_NAMES
+-#include <sound/uda1341.h>
+-
+-/*
+- * FIXME: Is this enough as autodetection of 2.4.X-rmkY-hhZ kernels?
+- * We use DMA stuff from 2.4.18-rmk3-hh24 here to be able to compile this
+- * module for Familiar 0.6.1
+- */
+-
+-/* {{{ Type definitions */
+-
+-MODULE_AUTHOR("Tomas Kasparek <tomas.kasparek@seznam.cz>");
+-MODULE_LICENSE("GPL");
+-MODULE_DESCRIPTION("SA1100/SA1111 + UDA1341TS driver for ALSA");
+-MODULE_SUPPORTED_DEVICE("{{UDA1341,iPAQ H3600 UDA1341TS}}");
+-
+-static char *id;	/* ID for this card */
+-
+-module_param(id, charp, 0444);
+-MODULE_PARM_DESC(id, "ID string for SA1100/SA1111 + UDA1341TS soundcard.");
+-
+-struct audio_stream {
+-	char *id;		/* identification string */
+-	int stream_id;		/* numeric identification */	
+-	dma_device_t dma_dev;	/* device identifier for DMA */
+-#ifdef HH_VERSION
+-	dmach_t dmach;		/* dma channel identification */
+-#else
+-	dma_regs_t *dma_regs;	/* points to our DMA registers */
+-#endif
+-	unsigned int active:1;	/* we are using this stream for transfer now */
+-	int period;		/* current transfer period */
+-	int periods;		/* current count of periods registerd in the DMA engine */
+-	int tx_spin;		/* are we recoding - flag used to do DMA trans. for sync */
+-	unsigned int old_offset;
+-	spinlock_t dma_lock;	/* for locking in DMA operations (see dma-sa1100.c in the kernel) */
+-	struct snd_pcm_substream *stream;
+-};
+-
+-struct sa11xx_uda1341 {
+-	struct snd_card *card;
+-	struct l3_client *uda1341;
+-	struct snd_pcm *pcm;
+-	long samplerate;
+-	struct audio_stream s[2];	/* playback & capture */
+-};
+-
+-static unsigned int rates[] = {
+-	8000,  10666, 10985, 14647,
+-	16000, 21970, 22050, 24000,
+-	29400, 32000, 44100, 48000,
+-};
+-
+-static struct snd_pcm_hw_constraint_list hw_constraints_rates = {
+-	.count	= ARRAY_SIZE(rates),
+-	.list	= rates,
+-	.mask	= 0,
+-};
+-
+-static struct platform_device *device;
+-
+-/* }}} */
+-
+-/* {{{ Clock and sample rate stuff */
+-
+-/*
+- * Stop-gap solution until rest of hh.org HAL stuff is merged.
+- */
+-#define GPIO_H3600_CLK_SET0		GPIO_GPIO (12)
+-#define GPIO_H3600_CLK_SET1		GPIO_GPIO (13)
+-
+-#ifdef CONFIG_SA1100_H3XXX
+-#define	clr_sa11xx_uda1341_egpio(x)	clr_h3600_egpio(x)
+-#define set_sa11xx_uda1341_egpio(x)	set_h3600_egpio(x)
+-#else
+-#error This driver could serve H3x00 handhelds only!
+-#endif
+-
+-static void sa11xx_uda1341_set_audio_clock(long val)
+-{
+-	switch (val) {
+-	case 24000: case 32000: case 48000:	/* 00: 12.288 MHz */
+-		GPCR = GPIO_H3600_CLK_SET0 | GPIO_H3600_CLK_SET1;
+-		break;
+-
+-	case 22050: case 29400: case 44100:	/* 01: 11.2896 MHz */
+-		GPSR = GPIO_H3600_CLK_SET0;
+-		GPCR = GPIO_H3600_CLK_SET1;
+-		break;
+-
+-	case 8000: case 10666: case 16000:	/* 10: 4.096 MHz */
+-		GPCR = GPIO_H3600_CLK_SET0;
+-		GPSR = GPIO_H3600_CLK_SET1;
+-		break;
+-
+-	case 10985: case 14647: case 21970:	/* 11: 5.6245 MHz */
+-		GPSR = GPIO_H3600_CLK_SET0 | GPIO_H3600_CLK_SET1;
+-		break;
+-	}
+-}
+-
+-static void sa11xx_uda1341_set_samplerate(struct sa11xx_uda1341 *sa11xx_uda1341, long rate)
+-{
+-	int clk_div = 0;
+-	int clk=0;
+-
+-	/* We don't want to mess with clocks when frames are in flight */
+-	Ser4SSCR0 &= ~SSCR0_SSE;
+-	/* wait for any frame to complete */
+-	udelay(125);
+-
+-	/*
+-	 * We have the following clock sources:
+-	 * 4.096 MHz, 5.6245 MHz, 11.2896 MHz, 12.288 MHz
+-	 * Those can be divided either by 256, 384 or 512.
+-	 * This makes up 12 combinations for the following samplerates...
+-	 */
+-	if (rate >= 48000)
+-		rate = 48000;
+-	else if (rate >= 44100)
+-		rate = 44100;
+-	else if (rate >= 32000)
+-		rate = 32000;
+-	else if (rate >= 29400)
+-		rate = 29400;
+-	else if (rate >= 24000)
+-		rate = 24000;
+-	else if (rate >= 22050)
+-		rate = 22050;
+-	else if (rate >= 21970)
+-		rate = 21970;
+-	else if (rate >= 16000)
+-		rate = 16000;
+-	else if (rate >= 14647)
+-		rate = 14647;
+-	else if (rate >= 10985)
+-		rate = 10985;
+-	else if (rate >= 10666)
+-		rate = 10666;
+-	else
+-		rate = 8000;
+-
+-	/* Set the external clock generator */
+-	
+-	sa11xx_uda1341_set_audio_clock(rate);
+-
+-	/* Select the clock divisor */
+-	switch (rate) {
+-	case 8000:
+-	case 10985:
+-	case 22050:
+-	case 24000:
+-		clk = F512;
+-		clk_div = SSCR0_SerClkDiv(16);
+-		break;
+-	case 16000:
+-	case 21970:
+-	case 44100:
+-	case 48000:
+-		clk = F256;
+-		clk_div = SSCR0_SerClkDiv(8);
+-		break;
+-	case 10666:
+-	case 14647:
+-	case 29400:
+-	case 32000:
+-		clk = F384;
+-		clk_div = SSCR0_SerClkDiv(12);
+-		break;
+-	}
+-
+-	/* FMT setting should be moved away when other FMTs are added (FIXME) */
+-	l3_command(sa11xx_uda1341->uda1341, CMD_FORMAT, (void *)LSB16);
+-	
+-	l3_command(sa11xx_uda1341->uda1341, CMD_FS, (void *)clk);        
+-	Ser4SSCR0 = (Ser4SSCR0 & ~0xff00) + clk_div + SSCR0_SSE;
+-	sa11xx_uda1341->samplerate = rate;
+-}
+-
+-/* }}} */
+-
+-/* {{{ HW init and shutdown */
+-
+-static void sa11xx_uda1341_audio_init(struct sa11xx_uda1341 *sa11xx_uda1341)
+-{
+-	unsigned long flags;
+-
+-	/* Setup DMA stuff */
+-	sa11xx_uda1341->s[SNDRV_PCM_STREAM_PLAYBACK].id = "UDA1341 out";
+-	sa11xx_uda1341->s[SNDRV_PCM_STREAM_PLAYBACK].stream_id = SNDRV_PCM_STREAM_PLAYBACK;
+-	sa11xx_uda1341->s[SNDRV_PCM_STREAM_PLAYBACK].dma_dev = DMA_Ser4SSPWr;
+-
+-	sa11xx_uda1341->s[SNDRV_PCM_STREAM_CAPTURE].id = "UDA1341 in";
+-	sa11xx_uda1341->s[SNDRV_PCM_STREAM_CAPTURE].stream_id = SNDRV_PCM_STREAM_CAPTURE;
+-	sa11xx_uda1341->s[SNDRV_PCM_STREAM_CAPTURE].dma_dev = DMA_Ser4SSPRd;
+-
+-	/* Initialize the UDA1341 internal state */
+-       
+-	/* Setup the uarts */
+-	local_irq_save(flags);
+-	GAFR |= (GPIO_SSP_CLK);
+-	GPDR &= ~(GPIO_SSP_CLK);
+-	Ser4SSCR0 = 0;
+-	Ser4SSCR0 = SSCR0_DataSize(16) + SSCR0_TI + SSCR0_SerClkDiv(8);
+-	Ser4SSCR1 = SSCR1_SClkIactL + SSCR1_SClk1P + SSCR1_ExtClk;
+-	Ser4SSCR0 |= SSCR0_SSE;
+-	local_irq_restore(flags);
+-
+-	/* Enable the audio power */
+-
+-	clr_sa11xx_uda1341_egpio(IPAQ_EGPIO_CODEC_NRESET);
+-	set_sa11xx_uda1341_egpio(IPAQ_EGPIO_AUDIO_ON);
+-	set_sa11xx_uda1341_egpio(IPAQ_EGPIO_QMUTE);
+- 
+-	/* Wait for the UDA1341 to wake up */
+-	mdelay(1); //FIXME - was removed by Perex - Why?
+-
+-	/* Initialize the UDA1341 internal state */
+-	l3_open(sa11xx_uda1341->uda1341);
+-	
+-	/* external clock configuration (after l3_open - regs must be initialized */
+-	sa11xx_uda1341_set_samplerate(sa11xx_uda1341, sa11xx_uda1341->samplerate);
+-
+-	/* Wait for the UDA1341 to wake up */
+-	set_sa11xx_uda1341_egpio(IPAQ_EGPIO_CODEC_NRESET);
+-	mdelay(1);	
+-
+-	/* make the left and right channels unswapped (flip the WS latch) */
+-	Ser4SSDR = 0;
+-
+-	clr_sa11xx_uda1341_egpio(IPAQ_EGPIO_QMUTE);
+-}
+-
+-static void sa11xx_uda1341_audio_shutdown(struct sa11xx_uda1341 *sa11xx_uda1341)
+-{
+-	/* mute on */
+-	set_sa11xx_uda1341_egpio(IPAQ_EGPIO_QMUTE);
+-	
+-	/* disable the audio power and all signals leading to the audio chip */
+-	l3_close(sa11xx_uda1341->uda1341);
+-	Ser4SSCR0 = 0;
+-	clr_sa11xx_uda1341_egpio(IPAQ_EGPIO_CODEC_NRESET);
+-
+-	/* power off and mute off */
+-	/* FIXME - is muting off necesary??? */
+-
+-	clr_sa11xx_uda1341_egpio(IPAQ_EGPIO_AUDIO_ON);
+-	clr_sa11xx_uda1341_egpio(IPAQ_EGPIO_QMUTE);
+-}
+-
+-/* }}} */
+-
+-/* {{{ DMA staff */
+-
+-/*
+- * these are the address and sizes used to fill the xmit buffer
+- * so we can get a clock in record only mode
+- */
+-#define FORCE_CLOCK_ADDR		(dma_addr_t)FLUSH_BASE_PHYS
+-#define FORCE_CLOCK_SIZE		4096 // was 2048
+-
+-// FIXME Why this value exactly - wrote comment
+-#define DMA_BUF_SIZE	8176	/* <= MAX_DMA_SIZE from asm/arch-sa1100/dma.h */
+-
+-#ifdef HH_VERSION
+-
+-static int audio_dma_request(struct audio_stream *s, void (*callback)(void *, int))
+-{
+-	int ret;
+-
+-	ret = sa1100_request_dma(&s->dmach, s->id, s->dma_dev);
+-	if (ret < 0) {
+-		printk(KERN_ERR "unable to grab audio dma 0x%x\n", s->dma_dev);
+-		return ret;
+-	}
+-	sa1100_dma_set_callback(s->dmach, callback);
+-	return 0;
+-}
+-
+-static inline void audio_dma_free(struct audio_stream *s)
+-{
+-	sa1100_free_dma(s->dmach);
+-	s->dmach = -1;
+-}
+-
+-#else
+-
+-static int audio_dma_request(struct audio_stream *s, void (*callback)(void *))
+-{
+-	int ret;
+-
+-	ret = sa1100_request_dma(s->dma_dev, s->id, callback, s, &s->dma_regs);
+-	if (ret < 0)
+-		printk(KERN_ERR "unable to grab audio dma 0x%x\n", s->dma_dev);
+-	return ret;
+-}
+-
+-static void audio_dma_free(struct audio_stream *s)
+-{
+-	sa1100_free_dma(s->dma_regs);
+-	s->dma_regs = 0;
+-}
+-
+-#endif
+-
+-static u_int audio_get_dma_pos(struct audio_stream *s)
+-{
+-	struct snd_pcm_substream *substream = s->stream;
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	unsigned int offset;
+-	unsigned long flags;
+-	dma_addr_t addr;
+-	
+-	// this must be called w/ interrupts locked out see dma-sa1100.c in the kernel
+-	spin_lock_irqsave(&s->dma_lock, flags);
+-#ifdef HH_VERSION	
+-	sa1100_dma_get_current(s->dmach, NULL, &addr);
+-#else
+-	addr = sa1100_get_dma_pos((s)->dma_regs);
+-#endif
+-	offset = addr - runtime->dma_addr;
+-	spin_unlock_irqrestore(&s->dma_lock, flags);
+-	
+-	offset = bytes_to_frames(runtime,offset);
+-	if (offset >= runtime->buffer_size)
+-		offset = 0;
+-
+-	return offset;
+-}
+-
+-/*
+- * this stops the dma and clears the dma ptrs
+- */
+-static void audio_stop_dma(struct audio_stream *s)
+-{
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&s->dma_lock, flags);	
+-	s->active = 0;
+-	s->period = 0;
+-	/* this stops the dma channel and clears the buffer ptrs */
+-#ifdef HH_VERSION
+-	sa1100_dma_flush_all(s->dmach);
+-#else
+-	sa1100_clear_dma(s->dma_regs);	
+-#endif
+-	spin_unlock_irqrestore(&s->dma_lock, flags);
+-}
+-
+-static void audio_process_dma(struct audio_stream *s)
+-{
+-	struct snd_pcm_substream *substream = s->stream;
+-	struct snd_pcm_runtime *runtime;
+-	unsigned int dma_size;		
+-	unsigned int offset;
+-	int ret;
+-                
+-	/* we are requested to process synchronization DMA transfer */
+-	if (s->tx_spin) {
+-		if (snd_BUG_ON(s->stream_id != SNDRV_PCM_STREAM_PLAYBACK))
+-			return;
+-		/* fill the xmit dma buffers and return */
+-#ifdef HH_VERSION
+-		sa1100_dma_set_spin(s->dmach, FORCE_CLOCK_ADDR, FORCE_CLOCK_SIZE);
+-#else
+-		while (1) {
+-			ret = sa1100_start_dma(s->dma_regs, FORCE_CLOCK_ADDR, FORCE_CLOCK_SIZE);
+-			if (ret)
+-				return;   
+-		}
+-#endif
+-		return;
+-	}
+-
+-	/* must be set here - only valid for running streams, not for forced_clock dma fills  */
+-	runtime = substream->runtime;
+-	while (s->active && s->periods < runtime->periods) {
+-		dma_size = frames_to_bytes(runtime, runtime->period_size);
+-		if (s->old_offset) {
+-			/* a little trick, we need resume from old position */
+-			offset = frames_to_bytes(runtime, s->old_offset - 1);
+-			s->old_offset = 0;
+-			s->periods = 0;
+-			s->period = offset / dma_size;
+-			offset %= dma_size;
+-			dma_size = dma_size - offset;
+-			if (!dma_size)
+-				continue;		/* special case */
+-		} else {
+-			offset = dma_size * s->period;
+-			snd_BUG_ON(dma_size > DMA_BUF_SIZE);
+-		}
+-#ifdef HH_VERSION
+-		ret = sa1100_dma_queue_buffer(s->dmach, s, runtime->dma_addr + offset, dma_size);
+-		if (ret)
+-			return; //FIXME
+-#else
+-		ret = sa1100_start_dma((s)->dma_regs, runtime->dma_addr + offset, dma_size);
+-		if (ret) {
+-			printk(KERN_ERR "audio_process_dma: cannot queue DMA buffer (%i)\n", ret);
+-			return;
+-		}
+-#endif
+-
+-		s->period++;
+-		s->period %= runtime->periods;
+-		s->periods++;
+-	}
+-}
+-
+-#ifdef HH_VERSION
+-static void audio_dma_callback(void *data, int size)
+-#else
+-static void audio_dma_callback(void *data)
+-#endif
+-{
+-	struct audio_stream *s = data;
+-        
+-	/* 
+-	 * If we are getting a callback for an active stream then we inform
+-	 * the PCM middle layer we've finished a period
+-	 */
+- 	if (s->active)
+-		snd_pcm_period_elapsed(s->stream);
+-
+-	spin_lock(&s->dma_lock);
+-	if (!s->tx_spin && s->periods > 0)
+-		s->periods--;
+-	audio_process_dma(s);
+-	spin_unlock(&s->dma_lock);
+-}
+-
+-/* }}} */
+-
+-/* {{{ PCM setting */
+-
+-/* {{{ trigger & timer */
+-
+-static int snd_sa11xx_uda1341_trigger(struct snd_pcm_substream *substream, int cmd)
+-{
+-	struct sa11xx_uda1341 *chip = snd_pcm_substream_chip(substream);
+-	int stream_id = substream->pstr->stream;
+-	struct audio_stream *s = &chip->s[stream_id];
+-	struct audio_stream *s1 = &chip->s[stream_id ^ 1];
+-	int err = 0;
+-
+-	/* note local interrupts are already disabled in the midlevel code */
+-	spin_lock(&s->dma_lock);
+-	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+-		/* now we need to make sure a record only stream has a clock */
+-		if (stream_id == SNDRV_PCM_STREAM_CAPTURE && !s1->active) {
+-			/* we need to force fill the xmit DMA with zeros */
+-			s1->tx_spin = 1;
+-			audio_process_dma(s1);
+-		}
+-		/* this case is when you were recording then you turn on a
+-		 * playback stream so we stop (also clears it) the dma first,
+-		 * clear the sync flag and then we let it turned on
+-		 */		
+-		else {
+- 			s->tx_spin = 0;
+- 		}
+-
+-		/* requested stream startup */
+-		s->active = 1;
+-		audio_process_dma(s);
+-		break;
+-	case SNDRV_PCM_TRIGGER_STOP:
+-		/* requested stream shutdown */
+-		audio_stop_dma(s);
+-		
+-		/*
+-		 * now we need to make sure a record only stream has a clock
+-		 * so if we're stopping a playback with an active capture
+-		 * we need to turn the 0 fill dma on for the xmit side
+-		 */
+-		if (stream_id == SNDRV_PCM_STREAM_PLAYBACK && s1->active) {
+-			/* we need to force fill the xmit DMA with zeros */
+-			s->tx_spin = 1;
+-			audio_process_dma(s);
+-		}
+-		/*
+-		 * we killed a capture only stream, so we should also kill
+-		 * the zero fill transmit
+-		 */
+-		else {
+-			if (s1->tx_spin) {
+-				s1->tx_spin = 0;
+-				audio_stop_dma(s1);
+-			}
+-		}
+-		
+-		break;
+-	case SNDRV_PCM_TRIGGER_SUSPEND:
+-		s->active = 0;
+-#ifdef HH_VERSION		
+-		sa1100_dma_stop(s->dmach);
+-#else
+-		//FIXME - DMA API
+-#endif		
+-		s->old_offset = audio_get_dma_pos(s) + 1;
+-#ifdef HH_VERSION		
+-		sa1100_dma_flush_all(s->dmach);
+-#else
+-		//FIXME - DMA API
+-#endif		
+-		s->periods = 0;
+-		break;
+-	case SNDRV_PCM_TRIGGER_RESUME:
+-		s->active = 1;
+-		s->tx_spin = 0;
+-		audio_process_dma(s);
+-		if (stream_id == SNDRV_PCM_STREAM_CAPTURE && !s1->active) {
+-			s1->tx_spin = 1;
+-			audio_process_dma(s1);
+-		}
+-		break;
+-	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-#ifdef HH_VERSION		
+-		sa1100_dma_stop(s->dmach);
+-#else
+-		//FIXME - DMA API
+-#endif
+-		s->active = 0;
+-		if (stream_id == SNDRV_PCM_STREAM_PLAYBACK) {
+-			if (s1->active) {
+-				s->tx_spin = 1;
+-				s->old_offset = audio_get_dma_pos(s) + 1;
+-#ifdef HH_VERSION				
+-				sa1100_dma_flush_all(s->dmach);
+-#else
+-				//FIXME - DMA API
+-#endif				
+-				audio_process_dma(s);
+-			}
+-		} else {
+-			if (s1->tx_spin) {
+-				s1->tx_spin = 0;
+-#ifdef HH_VERSION				
+-				sa1100_dma_flush_all(s1->dmach);
+-#else
+-				//FIXME - DMA API
+-#endif				
+-			}
+-		}
+-		break;
+-	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		s->active = 1;
+-		if (s->old_offset) {
+-			s->tx_spin = 0;
+-			audio_process_dma(s);
+-			break;
+-		}
+-		if (stream_id == SNDRV_PCM_STREAM_CAPTURE && !s1->active) {
+-			s1->tx_spin = 1;
+-			audio_process_dma(s1);
+-		}
+-#ifdef HH_VERSION		
+-		sa1100_dma_resume(s->dmach);
+-#else
+-		//FIXME - DMA API
+-#endif
+-		break;
+-	default:
+-		err = -EINVAL;
+-		break;
+-	}
+-	spin_unlock(&s->dma_lock);	
+-	return err;
+-}
+-
+-static int snd_sa11xx_uda1341_prepare(struct snd_pcm_substream *substream)
+-{
+-	struct sa11xx_uda1341 *chip = snd_pcm_substream_chip(substream);
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct audio_stream *s = &chip->s[substream->pstr->stream];
+-        
+-	/* set requested samplerate */
+-	sa11xx_uda1341_set_samplerate(chip, runtime->rate);
+-
+-	/* set requestd format when available */
+-	/* set FMT here !!! FIXME */
+-
+-	s->period = 0;
+-	s->periods = 0;
+-        
+-	return 0;
+-}
+-
+-static snd_pcm_uframes_t snd_sa11xx_uda1341_pointer(struct snd_pcm_substream *substream)
+-{
+-	struct sa11xx_uda1341 *chip = snd_pcm_substream_chip(substream);
+-	return audio_get_dma_pos(&chip->s[substream->pstr->stream]);
+-}
+-
+-/* }}} */
+-
+-static struct snd_pcm_hardware snd_sa11xx_uda1341_capture =
+-{
+-	.info			= (SNDRV_PCM_INFO_INTERLEAVED |
+-				   SNDRV_PCM_INFO_BLOCK_TRANSFER |
+-				   SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+-				   SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
+-	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
+-	.rates			= (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
+-				   SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 |\
+-				   SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |\
+-				   SNDRV_PCM_RATE_KNOT),
+-	.rate_min		= 8000,
+-	.rate_max		= 48000,
+-	.channels_min		= 2,
+-	.channels_max		= 2,
+-	.buffer_bytes_max	= 64*1024,
+-	.period_bytes_min	= 64,
+-	.period_bytes_max	= DMA_BUF_SIZE,
+-	.periods_min		= 2,
+-	.periods_max		= 255,
+-	.fifo_size		= 0,
+-};
+-
+-static struct snd_pcm_hardware snd_sa11xx_uda1341_playback =
+-{
+-	.info			= (SNDRV_PCM_INFO_INTERLEAVED |
+-				   SNDRV_PCM_INFO_BLOCK_TRANSFER |
+-				   SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+-				   SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
+-	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
+-	.rates			= (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
+-                                   SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 |\
+-				   SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |\
+-				   SNDRV_PCM_RATE_KNOT),
+-	.rate_min		= 8000,
+-	.rate_max		= 48000,
+-	.channels_min		= 2,
+-	.channels_max		= 2,
+-	.buffer_bytes_max	= 64*1024,
+-	.period_bytes_min	= 64,
+-	.period_bytes_max	= DMA_BUF_SIZE,
+-	.periods_min		= 2,
+-	.periods_max		= 255,
+-	.fifo_size		= 0,
+-};
+-
+-static int snd_card_sa11xx_uda1341_open(struct snd_pcm_substream *substream)
+-{
+-	struct sa11xx_uda1341 *chip = snd_pcm_substream_chip(substream);
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	int stream_id = substream->pstr->stream;
+-	int err;
+-
+-	chip->s[stream_id].stream = substream;
+-
+-	if (stream_id == SNDRV_PCM_STREAM_PLAYBACK)
+-		runtime->hw = snd_sa11xx_uda1341_playback;
+-	else
+-		runtime->hw = snd_sa11xx_uda1341_capture;
+-	if ((err = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS)) < 0)
+-		return err;
+-	if ((err = snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE, &hw_constraints_rates)) < 0)
+-		return err;
+-        
+-	return 0;
+-}
+-
+-static int snd_card_sa11xx_uda1341_close(struct snd_pcm_substream *substream)
+-{
+-	struct sa11xx_uda1341 *chip = snd_pcm_substream_chip(substream);
+-
+-	chip->s[substream->pstr->stream].stream = NULL;
+-	return 0;
+-}
+-
+-/* {{{ HW params & free */
+-
+-static int snd_sa11xx_uda1341_hw_params(struct snd_pcm_substream *substream,
+-					struct snd_pcm_hw_params *hw_params)
+-{
+-        
+-	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
+-}
+-
+-static int snd_sa11xx_uda1341_hw_free(struct snd_pcm_substream *substream)
+-{
+-	return snd_pcm_lib_free_pages(substream);
+-}
+-
+-/* }}} */
+-
+-static struct snd_pcm_ops snd_card_sa11xx_uda1341_playback_ops = {
+-	.open			= snd_card_sa11xx_uda1341_open,
+-	.close			= snd_card_sa11xx_uda1341_close,
+-	.ioctl			= snd_pcm_lib_ioctl,
+-	.hw_params	        = snd_sa11xx_uda1341_hw_params,
+-	.hw_free	        = snd_sa11xx_uda1341_hw_free,
+-	.prepare		= snd_sa11xx_uda1341_prepare,
+-	.trigger		= snd_sa11xx_uda1341_trigger,
+-	.pointer		= snd_sa11xx_uda1341_pointer,
+-};
+-
+-static struct snd_pcm_ops snd_card_sa11xx_uda1341_capture_ops = {
+-	.open			= snd_card_sa11xx_uda1341_open,
+-	.close			= snd_card_sa11xx_uda1341_close,
+-	.ioctl			= snd_pcm_lib_ioctl,
+-	.hw_params	        = snd_sa11xx_uda1341_hw_params,
+-	.hw_free	        = snd_sa11xx_uda1341_hw_free,
+-	.prepare		= snd_sa11xx_uda1341_prepare,
+-	.trigger		= snd_sa11xx_uda1341_trigger,
+-	.pointer		= snd_sa11xx_uda1341_pointer,
+-};
+-
+-static int __init snd_card_sa11xx_uda1341_pcm(struct sa11xx_uda1341 *sa11xx_uda1341, int device)
+-{
+-	struct snd_pcm *pcm;
+-	int err;
+-
+-	if ((err = snd_pcm_new(sa11xx_uda1341->card, "UDA1341 PCM", device, 1, 1, &pcm)) < 0)
+-		return err;
+-
+-	/*
+-	 * this sets up our initial buffers and sets the dma_type to isa.
+-	 * isa works but I'm not sure why (or if) it's the right choice
+-	 * this may be too large, trying it for now
+-	 */
+-	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV, 
+-					      snd_dma_isa_data(),
+-					      64*1024, 64*1024);
+-
+-	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_card_sa11xx_uda1341_playback_ops);
+-	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_card_sa11xx_uda1341_capture_ops);
+-	pcm->private_data = sa11xx_uda1341;
+-	pcm->info_flags = 0;
+-	strcpy(pcm->name, "UDA1341 PCM");
+-
+-	sa11xx_uda1341_audio_init(sa11xx_uda1341);
+-
+-	/* setup DMA controller */
+-	audio_dma_request(&sa11xx_uda1341->s[SNDRV_PCM_STREAM_PLAYBACK], audio_dma_callback);
+-	audio_dma_request(&sa11xx_uda1341->s[SNDRV_PCM_STREAM_CAPTURE], audio_dma_callback);
+-
+-	sa11xx_uda1341->pcm = pcm;
+-
+-	return 0;
+-}
+-
+-/* }}} */
+-
+-/* {{{ module init & exit */
+-
+-#ifdef CONFIG_PM
+-
+-static int snd_sa11xx_uda1341_suspend(struct platform_device *devptr,
+-				      pm_message_t state)
+-{
+-	struct snd_card *card = platform_get_drvdata(devptr);
+-	struct sa11xx_uda1341 *chip = card->private_data;
+-
+-	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+-	snd_pcm_suspend_all(chip->pcm);
+-#ifdef HH_VERSION
+-	sa1100_dma_sleep(chip->s[SNDRV_PCM_STREAM_PLAYBACK].dmach);
+-	sa1100_dma_sleep(chip->s[SNDRV_PCM_STREAM_CAPTURE].dmach);
+-#else
+-	//FIXME
+-#endif
+-	l3_command(chip->uda1341, CMD_SUSPEND, NULL);
+-	sa11xx_uda1341_audio_shutdown(chip);
+-
+-	return 0;
+-}
+-
+-static int snd_sa11xx_uda1341_resume(struct platform_device *devptr)
+-{
+-	struct snd_card *card = platform_get_drvdata(devptr);
+-	struct sa11xx_uda1341 *chip = card->private_data;
+-
+-	sa11xx_uda1341_audio_init(chip);
+-	l3_command(chip->uda1341, CMD_RESUME, NULL);
+-#ifdef HH_VERSION	
+-	sa1100_dma_wakeup(chip->s[SNDRV_PCM_STREAM_PLAYBACK].dmach);
+-	sa1100_dma_wakeup(chip->s[SNDRV_PCM_STREAM_CAPTURE].dmach);
+-#else
+-	//FIXME
+-#endif
+-	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
+-	return 0;
+-}
+-#endif /* COMFIG_PM */
+-
+-void snd_sa11xx_uda1341_free(struct snd_card *card)
+-{
+-	struct sa11xx_uda1341 *chip = card->private_data;
+-
+-	audio_dma_free(&chip->s[SNDRV_PCM_STREAM_PLAYBACK]);
+-	audio_dma_free(&chip->s[SNDRV_PCM_STREAM_CAPTURE]);
+-}
+-
+-static int __devinit sa11xx_uda1341_probe(struct platform_device *devptr)
+-{
+-	int err;
+-	struct snd_card *card;
+-	struct sa11xx_uda1341 *chip;
+-
+-	/* register the soundcard */
+-	card = snd_card_new(-1, id, THIS_MODULE, sizeof(struct sa11xx_uda1341));
+-	if (card == NULL)
+-		return -ENOMEM;
+-
+-	chip = card->private_data;
+-	spin_lock_init(&chip->s[0].dma_lock);
+-	spin_lock_init(&chip->s[1].dma_lock);
+-
+-	card->private_free = snd_sa11xx_uda1341_free;
+-	chip->card = card;
+-	chip->samplerate = AUDIO_RATE_DEFAULT;
+-
+-	// mixer
+-	if ((err = snd_chip_uda1341_mixer_new(card, &chip->uda1341)))
+-		goto nodev;
+-
+-	// PCM
+-	if ((err = snd_card_sa11xx_uda1341_pcm(chip, 0)) < 0)
+-		goto nodev;
+-        
+-	strcpy(card->driver, "UDA1341");
+-	strcpy(card->shortname, "H3600 UDA1341TS");
+-	sprintf(card->longname, "Compaq iPAQ H3600 with Philips UDA1341TS");
+-        
+-	snd_card_set_dev(card, &devptr->dev);
+-
+-	if ((err = snd_card_register(card)) == 0) {
+-		printk( KERN_INFO "iPAQ audio support initialized\n" );
+-		platform_set_drvdata(devptr, card);
+-		return 0;
+-	}
+-        
+- nodev:
+-	snd_card_free(card);
+-	return err;
+-}
+-
+-static int __devexit sa11xx_uda1341_remove(struct platform_device *devptr)
+-{
+-	snd_card_free(platform_get_drvdata(devptr));
+-	platform_set_drvdata(devptr, NULL);
+-	return 0;
+-}
+-
+-#define SA11XX_UDA1341_DRIVER	"sa11xx_uda1341"
+-
+-static struct platform_driver sa11xx_uda1341_driver = {
+-	.probe		= sa11xx_uda1341_probe,
+-	.remove		= __devexit_p(sa11xx_uda1341_remove),
+-#ifdef CONFIG_PM
+-	.suspend	= snd_sa11xx_uda1341_suspend,
+-	.resume		= snd_sa11xx_uda1341_resume,
+-#endif
+-	.driver		= {
+-		.name	= SA11XX_UDA1341_DRIVER,
+-	},
+-};
+-
+-static int __init sa11xx_uda1341_init(void)
+-{
+-	int err;
+-
+-	if (!machine_is_h3xxx())
+-		return -ENODEV;
+-	if ((err = platform_driver_register(&sa11xx_uda1341_driver)) < 0)
+-		return err;
+-	device = platform_device_register_simple(SA11XX_UDA1341_DRIVER, -1, NULL, 0);
+-	if (!IS_ERR(device)) {
+-		if (platform_get_drvdata(device))
+-			return 0;
+-		platform_device_unregister(device);
+-		err = -ENODEV;
+-	} else
+-		err = PTR_ERR(device);
+-	platform_driver_unregister(&sa11xx_uda1341_driver);
+-	return err;
+-}
+-
+-static void __exit sa11xx_uda1341_exit(void)
+-{
+-	platform_device_unregister(device);
+-	platform_driver_unregister(&sa11xx_uda1341_driver);
+-}
+-
+-module_init(sa11xx_uda1341_init);
+-module_exit(sa11xx_uda1341_exit);
+-
+-/* }}} */
+-
+-/*
+- * Local variables:
+- * indent-tabs-mode: t
+- * End:
+- */
+diff --git a/sound/i2c/Makefile b/sound/i2c/Makefile
+index 3797066..36879bf 100644
+--- a/sound/i2c/Makefile
++++ b/sound/i2c/Makefile
+@@ -7,8 +7,6 @@ snd-i2c-objs := i2c.o
+ snd-cs8427-objs := cs8427.o
+ snd-tea6330t-objs := tea6330t.o
+ 
+-obj-$(CONFIG_L3) += l3/
+-
+ obj-$(CONFIG_SND) += other/
+ 
+ # Toplevel Module Dependency
+diff --git a/sound/i2c/l3/Makefile b/sound/i2c/l3/Makefile
+deleted file mode 100644
+index 49455b8..0000000
+--- a/sound/i2c/l3/Makefile
++++ /dev/null
+@@ -1,8 +0,0 @@
+-#
+-# Makefile for ALSA
+-#
+-
+-snd-uda1341-objs := uda1341.o
+-
+-# Module Dependency
+-obj-$(CONFIG_SND_SA11XX_UDA1341) += snd-uda1341.o
+diff --git a/sound/i2c/l3/uda1341.c b/sound/i2c/l3/uda1341.c
+deleted file mode 100644
+index 9840eb4..0000000
+--- a/sound/i2c/l3/uda1341.c
++++ /dev/null
+@@ -1,935 +0,0 @@
+-/*
+- * Philips UDA1341 mixer device driver
+- * Copyright (c) 2002 Tomas Kasparek <tomas.kasparek@seznam.cz>
+- *
+- * Portions are Copyright (C) 2000 Lernout & Hauspie Speech Products, N.V.
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License.
+- *
+- * History:
+- *
+- * 2002-03-13   Tomas Kasparek  initial release - based on uda1341.c from OSS
+- * 2002-03-28   Tomas Kasparek  basic mixer is working (volume, bass, treble)
+- * 2002-03-30   Tomas Kasparek  proc filesystem support, complete mixer and DSP
+- *                              features support
+- * 2002-04-12	Tomas Kasparek	proc interface update, code cleanup
+- * 2002-05-12   Tomas Kasparek  another code cleanup
+- */
+-
+-#include <linux/module.h>
+-#include <linux/init.h>
+-#include <linux/types.h>
+-#include <linux/slab.h>
+-#include <linux/errno.h>
+-#include <linux/ioctl.h>
+-
+-#include <asm/uaccess.h>
+-
+-#include <sound/core.h>
+-#include <sound/control.h>
+-#include <sound/initval.h>
+-#include <sound/info.h>
+-
+-#include <linux/l3/l3.h>
+-
+-#include <sound/uda1341.h>
+-
+-/* {{{ HW regs definition */
+-
+-#define STAT0                   0x00
+-#define STAT1			0x80
+-#define STAT_MASK               0x80
+-
+-#define DATA0_0			0x00
+-#define DATA0_1			0x40
+-#define DATA0_2			0x80
+-#define DATA_MASK               0xc0
+-
+-#define IS_DATA0(x)     ((x) >= data0_0 && (x) <= data0_2)
+-#define IS_DATA1(x)     ((x) == data1)
+-#define IS_STATUS(x)    ((x) == stat0 || (x) == stat1)
+-#define IS_EXTEND(x)   ((x) >= ext0 && (x) <= ext6)
+-
+-/* }}} */
+-
+-
+-static const char *peak_names[] = {
+-	"before",
+-	"after",
+-};
+-
+-static const char *filter_names[] = {
+-	"flat",
+-	"min",
+-	"min",
+-	"max",
+-};
+-
+-static const char *mixer_names[] = {
+-	"double differential",
+-	"input channel 1 (line in)",
+-	"input channel 2 (microphone)",
+-	"digital mixer",
+-};
+-
+-static const char *deemp_names[] = {
+-	"none",
+-	"32 kHz",
+-	"44.1 kHz",
+-	"48 kHz",        
+-};
+-
+-enum uda1341_regs_names {
+-	stat0,
+-	stat1,
+-	data0_0,
+-	data0_1,
+-	data0_2,
+-	data1,
+-	ext0,
+-	ext1,
+-	ext2,
+-	empty,
+-	ext4,
+-	ext5,
+-	ext6,
+-	uda1341_reg_last,
+-};
+-
+-static const char *uda1341_reg_names[] = {
+-	"stat 0 ",
+-	"stat 1 ",
+-	"data 00",
+-	"data 01",
+-	"data 02",
+-	"data 1 ",
+-	"ext 0",
+-	"ext 1",
+-	"ext 2",
+-	"empty",
+-	"ext 4",
+-	"ext 5",
+-	"ext 6",
+-};
+-
+-static const int uda1341_enum_items[] = {
+-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+-	2, //peak - before/after
+-	4, //deemp - none/32/44.1/48
+-	0,
+-	4, //filter - flat/min/min/max
+-	0, 0, 0,
+-	4, //mixer - differ/line/mic/mixer
+-	0, 0, 0, 0, 0,
+-};
+-
+-static const char ** uda1341_enum_names[] = {
+-	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+-	peak_names, //peak - before/after
+-	deemp_names, //deemp - none/32/44.1/48
+-	NULL,
+-	filter_names, //filter - flat/min/min/max
+-	NULL, NULL, NULL,
+-	mixer_names, //mixer - differ/line/mic/mixer
+-	NULL, NULL, NULL, NULL, NULL,
+-};
+-
+-typedef int uda1341_cfg[CMD_LAST];
+-
+-struct uda1341 {
+-	int (*write) (struct l3_client *uda1341, unsigned short reg, unsigned short val);
+-	int (*read) (struct l3_client *uda1341, unsigned short reg);        
+-	unsigned char regs[uda1341_reg_last];
+-	int active;
+-	spinlock_t reg_lock;
+-	struct snd_card *card;
+-	uda1341_cfg cfg;
+-#ifdef CONFIG_PM
+-	unsigned char suspend_regs[uda1341_reg_last];
+-	uda1341_cfg suspend_cfg;
+-#endif
+-};
+-
+-/* transfer 8bit integer into string with binary representation */
+-static void int2str_bin8(uint8_t val, char *buf)
+-{
+-	const int size = sizeof(val) * 8;
+-	int i;
+-
+-	for (i= 0; i < size; i++){
+-		*(buf++) = (val >> (size - 1)) ? '1' : '0';
+-		val <<= 1;
+-	}
+-	*buf = '\0'; //end the string with zero
+-}
+-
+-/* {{{ HW manipulation routines */
+-
+-static int snd_uda1341_codec_write(struct l3_client *clnt, unsigned short reg, unsigned short val)
+-{
+-	struct uda1341 *uda = clnt->driver_data;
+-	unsigned char buf[2] = { 0xc0, 0xe0 }; // for EXT addressing
+-	int err = 0;
+-
+-	uda->regs[reg] = val;
+-
+-	if (uda->active) {
+-		if (IS_DATA0(reg)) {
+-			err = l3_write(clnt, UDA1341_DATA0, (const unsigned char *)&val, 1);
+-		} else if (IS_DATA1(reg)) {
+-			err = l3_write(clnt, UDA1341_DATA1, (const unsigned char *)&val, 1);
+-		} else if (IS_STATUS(reg)) {
+-			err = l3_write(clnt, UDA1341_STATUS, (const unsigned char *)&val, 1);
+-		} else if (IS_EXTEND(reg)) {
+-			buf[0] |= (reg - ext0) & 0x7;   //EXT address
+-			buf[1] |= val;                  //EXT data
+-			err = l3_write(clnt, UDA1341_DATA0, (const unsigned char *)buf, 2);
+-		}
+-	} else
+-		printk(KERN_ERR "UDA1341 codec not active!\n");
+-	return err;
+-}
+-
+-static int snd_uda1341_codec_read(struct l3_client *clnt, unsigned short reg)
+-{
+-	unsigned char val;
+-	int err;
+-
+-	err = l3_read(clnt, reg, &val, 1);
+-	if (err == 1)
+-		// use just 6bits - the rest is address of the reg
+-		return val & 63;
+-	return err < 0 ? err : -EIO;
+-}
+-
+-static inline int snd_uda1341_valid_reg(struct l3_client *clnt, unsigned short reg)
+-{
+-	return reg < uda1341_reg_last;
+-}
+-
+-static int snd_uda1341_update_bits(struct l3_client *clnt, unsigned short reg,
+-				   unsigned short mask, unsigned short shift,
+-				   unsigned short value, int flush)
+-{
+-	int change;
+-	unsigned short old, new;
+-	struct uda1341 *uda = clnt->driver_data;
+-
+-#if 0
+-	printk(KERN_DEBUG "update_bits: reg: %s mask: %d shift: %d val: %d\n",
+-	       uda1341_reg_names[reg], mask, shift, value);
+-#endif
+-        
+-	if (!snd_uda1341_valid_reg(clnt, reg))
+-		return -EINVAL;
+-	spin_lock(&uda->reg_lock);
+-	old = uda->regs[reg];
+-	new = (old & ~(mask << shift)) | (value << shift);
+-	change = old != new;
+-	if (change) {
+-		if (flush) uda->write(clnt, reg, new);
+-		uda->regs[reg] = new;
+-	}
+-	spin_unlock(&uda->reg_lock);
+-	return change;
+-}
+-
+-static int snd_uda1341_cfg_write(struct l3_client *clnt, unsigned short what,
+-				 unsigned short value, int flush)
+-{
+-	struct uda1341 *uda = clnt->driver_data;
+-	int ret = 0;
+-#ifdef CONFIG_PM
+-	int reg;
+-#endif
+-
+-#if 0
+-	printk(KERN_DEBUG "cfg_write what: %d value: %d\n", what, value);
+-#endif
+-
+-	uda->cfg[what] = value;
+-        
+-	switch(what) {
+-	case CMD_RESET:
+-		ret = snd_uda1341_update_bits(clnt, data0_2, 1, 2, 1, flush);	// MUTE
+-		ret = snd_uda1341_update_bits(clnt, stat0, 1, 6, 1, flush);	// RESET
+-		ret = snd_uda1341_update_bits(clnt, stat0, 1, 6, 0, flush);	// RESTORE
+-		uda->cfg[CMD_RESET]=0;
+-		break;
+-	case CMD_FS:
+-		ret = snd_uda1341_update_bits(clnt, stat0, 3, 4, value, flush);
+-		break;
+-	case CMD_FORMAT:
+-		ret = snd_uda1341_update_bits(clnt, stat0, 7, 1, value, flush);
+-		break;
+-	case CMD_OGAIN:
+-		ret = snd_uda1341_update_bits(clnt, stat1, 1, 6, value, flush);
+-		break;
+-	case CMD_IGAIN:
+-		ret = snd_uda1341_update_bits(clnt, stat1, 1, 5, value, flush);
+-		break;
+-	case CMD_DAC:
+-		ret = snd_uda1341_update_bits(clnt, stat1, 1, 0, value, flush);
+-		break;
+-	case CMD_ADC:
+-		ret = snd_uda1341_update_bits(clnt, stat1, 1, 1, value, flush);
+-		break;
+-	case CMD_VOLUME:
+-		ret = snd_uda1341_update_bits(clnt, data0_0, 63, 0, value, flush);
+-		break;
+-	case CMD_BASS:
+-		ret = snd_uda1341_update_bits(clnt, data0_1, 15, 2, value, flush);
+-		break;
+-	case CMD_TREBBLE:
+-		ret = snd_uda1341_update_bits(clnt, data0_1, 3, 0, value, flush);
+-		break;
+-	case CMD_PEAK:
+-		ret = snd_uda1341_update_bits(clnt, data0_2, 1, 5, value, flush);
+-		break;
+-	case CMD_DEEMP:
+-		ret = snd_uda1341_update_bits(clnt, data0_2, 3, 3, value, flush);
+-		break;
+-	case CMD_MUTE:
+-		ret = snd_uda1341_update_bits(clnt, data0_2, 1, 2, value, flush);
+-		break;
+-	case CMD_FILTER:
+-		ret = snd_uda1341_update_bits(clnt, data0_2, 3, 0, value, flush);
+-		break;
+-	case CMD_CH1:
+-		ret = snd_uda1341_update_bits(clnt, ext0, 31, 0, value, flush);
+-		break;
+-	case CMD_CH2:
+-		ret = snd_uda1341_update_bits(clnt, ext1, 31, 0, value, flush);
+-		break;
+-	case CMD_MIC:
+-		ret = snd_uda1341_update_bits(clnt, ext2, 7, 2, value, flush);
+-		break;
+-	case CMD_MIXER:
+-		ret = snd_uda1341_update_bits(clnt, ext2, 3, 0, value, flush);
+-		break;
+-	case CMD_AGC:
+-		ret = snd_uda1341_update_bits(clnt, ext4, 1, 4, value, flush);
+-		break;
+-	case CMD_IG:
+-		ret = snd_uda1341_update_bits(clnt, ext4, 3, 0, value & 0x3, flush);
+-		ret = snd_uda1341_update_bits(clnt, ext5, 31, 0, value >> 2, flush);
+-		break;
+-	case CMD_AGC_TIME:
+-		ret = snd_uda1341_update_bits(clnt, ext6, 7, 2, value, flush);
+-		break;
+-	case CMD_AGC_LEVEL:
+-		ret = snd_uda1341_update_bits(clnt, ext6, 3, 0, value, flush);
+-		break;
+-#ifdef CONFIG_PM		
+-	case CMD_SUSPEND:
+-		for (reg = stat0; reg < uda1341_reg_last; reg++)
+-			uda->suspend_regs[reg] = uda->regs[reg];
+-		for (reg = 0; reg < CMD_LAST; reg++)
+-			uda->suspend_cfg[reg] = uda->cfg[reg];
+-		break;
+-	case CMD_RESUME:
+-		for (reg = stat0; reg < uda1341_reg_last; reg++)
+-			snd_uda1341_codec_write(clnt, reg, uda->suspend_regs[reg]);
+-		for (reg = 0; reg < CMD_LAST; reg++)
+-			uda->cfg[reg] = uda->suspend_cfg[reg];
+-		break;
+-#endif
+-	default:
+-		ret = -EINVAL;
+-		break;
+-	}
+-                
+-	if (!uda->active)
+-		printk(KERN_ERR "UDA1341 codec not active!\n");                
+-	return ret;
+-}
+-
+-/* }}} */
+-
+-/* {{{ Proc interface */
+-#ifdef CONFIG_PROC_FS
+-
+-static const char *format_names[] = {
+-	"I2S-bus",
+-	"LSB 16bits",
+-	"LSB 18bits",
+-	"LSB 20bits",
+-	"MSB",
+-	"in LSB 16bits/out MSB",
+-	"in LSB 18bits/out MSB",
+-	"in LSB 20bits/out MSB",        
+-};
+-
+-static const char *fs_names[] = {
+-	"512*fs",
+-	"384*fs",
+-	"256*fs",
+-	"Unused - bad value!",
+-};
+-
+-static const char* bass_values[][16] = {
+-	{"0 dB", "0 dB", "0 dB", "0 dB", "0 dB", "0 dB", "0 dB", "0 dB", "0 dB", "0 dB", "0 dB",
+-	 "0 dB", "0 dB", "0 dB", "0 dB", "undefined", }, //flat
+-	{"0 dB", "2 dB", "4 dB", "6 dB", "8 dB", "10 dB", "12 dB", "14 dB", "16 dB", "18 dB", "18 dB",
+-	 "18 dB", "18 dB", "18 dB", "18 dB", "undefined",}, // min
+-	{"0 dB", "2 dB", "4 dB", "6 dB", "8 dB", "10 dB", "12 dB", "14 dB", "16 dB", "18 dB", "18 dB",
+-	 "18 dB", "18 dB", "18 dB", "18 dB", "undefined",}, // min
+-	{"0 dB", "2 dB", "4 dB", "6 dB", "8 dB", "10 dB", "12 dB", "14 dB", "16 dB", "18 dB", "20 dB",
+-	 "22 dB", "24 dB", "24 dB", "24 dB", "undefined",}, // max
+-};
+-
+-static const char *mic_sens_value[] = {
+-	"-3 dB", "0 dB", "3 dB", "9 dB", "15 dB", "21 dB", "27 dB", "not used",
+-};
+-
+-static const unsigned short AGC_atime[] = {
+-	11, 16, 11, 16, 21, 11, 16, 21,
+-};
+-
+-static const unsigned short AGC_dtime[] = {
+-	100, 100, 200, 200, 200, 400, 400, 400,
+-};
+-
+-static const char *AGC_level[] = {
+-	"-9.0", "-11.5", "-15.0", "-17.5",
+-};
+-
+-static const char *ig_small_value[] = {
+-	"-3.0", "-2.5", "-2.0", "-1.5", "-1.0", "-0.5",
+-};
+-
+-/*
+- * this was computed as peak_value[i] = pow((63-i)*1.42,1.013)
+- *
+- * UDA1341 datasheet on page 21: Peak value (dB) = (Peak level - 63.5)*5*log2
+- * There is an table with these values [level]=value: [3]=-90.31, [7]=-84.29
+- * [61]=-2.78, [62] = -1.48, [63] = 0.0
+- * I tried to compute it, but using but even using logarithm with base either 10 or 2
+- * i was'n able to get values in the table from the formula. So I constructed another
+- * formula (see above) to interpolate the values as good as possible. If there is some
+- * mistake, please contact me on tomas.kasparek@seznam.cz. Thanks.
+- * UDA1341TS datasheet is available at:
+- *   http://www-us9.semiconductors.com/acrobat/datasheets/UDA1341TS_3.pdf 
+- */
+-static const char *peak_value[] = {
+-	"-INF dB", "N.A.", "N.A", "90.31 dB", "N.A.", "N.A.", "N.A.", "-84.29 dB",
+-	"-82.65 dB", "-81.13 dB", "-79.61 dB", "-78.09 dB", "-76.57 dB", "-75.05 dB", "-73.53 dB",
+-	"-72.01 dB", "-70.49 dB", "-68.97 dB", "-67.45 dB", "-65.93 dB", "-64.41 dB", "-62.90 dB",
+-	"-61.38 dB", "-59.86 dB", "-58.35 dB", "-56.83 dB", "-55.32 dB", "-53.80 dB", "-52.29 dB",
+-	"-50.78 dB", "-49.26 dB", "-47.75 dB", "-46.24 dB", "-44.73 dB", "-43.22 dB", "-41.71 dB",
+-	"-40.20 dB", "-38.69 dB", "-37.19 dB", "-35.68 dB", "-34.17 dB", "-32.67 dB", "-31.17 dB",
+-	"-29.66 dB", "-28.16 dB", "-26.66 dB", "-25.16 dB", "-23.66 dB", "-22.16 dB", "-20.67 dB",
+-	"-19.17 dB", "-17.68 dB", "-16.19 dB", "-14.70 dB", "-13.21 dB", "-11.72 dB", "-10.24 dB",
+-	"-8.76 dB", "-7.28 dB", "-5.81 dB", "-4.34 dB", "-2.88 dB", "-1.43 dB", "0.00 dB",
+-};
+-
+-static void snd_uda1341_proc_read(struct snd_info_entry *entry, 
+-				  struct snd_info_buffer *buffer)
+-{
+-	struct l3_client *clnt = entry->private_data;
+-	struct uda1341 *uda = clnt->driver_data;
+-	int peak;
+-
+-	peak = snd_uda1341_codec_read(clnt, UDA1341_DATA1);
+-	if (peak < 0)
+-		peak = 0;
+-	
+-	snd_iprintf(buffer, "%s\n\n", uda->card->longname);
+-
+-	// for information about computed values see UDA1341TS datasheet pages 15 - 21
+-	snd_iprintf(buffer, "DAC power           : %s\n", uda->cfg[CMD_DAC] ? "on" : "off");
+-	snd_iprintf(buffer, "ADC power           : %s\n", uda->cfg[CMD_ADC] ? "on" : "off");
+- 	snd_iprintf(buffer, "Clock frequency     : %s\n", fs_names[uda->cfg[CMD_FS]]);
+-	snd_iprintf(buffer, "Data format         : %s\n\n", format_names[uda->cfg[CMD_FORMAT]]);
+-
+-	snd_iprintf(buffer, "Filter mode         : %s\n", filter_names[uda->cfg[CMD_FILTER]]);
+-	snd_iprintf(buffer, "Mixer mode          : %s\n", mixer_names[uda->cfg[CMD_MIXER]]);
+-	snd_iprintf(buffer, "De-emphasis         : %s\n", deemp_names[uda->cfg[CMD_DEEMP]]);	
+-	snd_iprintf(buffer, "Peak detection pos. : %s\n", uda->cfg[CMD_PEAK] ? "after" : "before");
+-	snd_iprintf(buffer, "Peak value          : %s\n\n", peak_value[peak]);		
+-	
+-	snd_iprintf(buffer, "Automatic Gain Ctrl : %s\n", uda->cfg[CMD_AGC] ? "on" : "off");
+-	snd_iprintf(buffer, "AGC attack time     : %d ms\n", AGC_atime[uda->cfg[CMD_AGC_TIME]]);
+-	snd_iprintf(buffer, "AGC decay time      : %d ms\n", AGC_dtime[uda->cfg[CMD_AGC_TIME]]);
+-	snd_iprintf(buffer, "AGC output level    : %s dB\n\n", AGC_level[uda->cfg[CMD_AGC_LEVEL]]);
+-
+-	snd_iprintf(buffer, "Mute                : %s\n", uda->cfg[CMD_MUTE] ? "on" : "off");
+-
+-	if (uda->cfg[CMD_VOLUME] == 0)
+-		snd_iprintf(buffer, "Volume              : 0 dB\n");
+-	else if (uda->cfg[CMD_VOLUME] < 62)
+-		snd_iprintf(buffer, "Volume              : %d dB\n", -1*uda->cfg[CMD_VOLUME] +1);
+-	else
+-		snd_iprintf(buffer, "Volume              : -INF dB\n");
+-	snd_iprintf(buffer, "Bass                : %s\n", bass_values[uda->cfg[CMD_FILTER]][uda->cfg[CMD_BASS]]);
+-	snd_iprintf(buffer, "Trebble             : %d dB\n", uda->cfg[CMD_FILTER] ? 2*uda->cfg[CMD_TREBBLE] : 0);
+-	snd_iprintf(buffer, "Input Gain (6dB)    : %s\n", uda->cfg[CMD_IGAIN] ? "on" : "off");
+-	snd_iprintf(buffer, "Output Gain (6dB)   : %s\n", uda->cfg[CMD_OGAIN] ? "on" : "off");
+-	snd_iprintf(buffer, "Mic sensitivity     : %s\n", mic_sens_value[uda->cfg[CMD_MIC]]);
+-
+-	
+-	if(uda->cfg[CMD_CH1] < 31)
+-		snd_iprintf(buffer, "Mixer gain channel 1: -%d.%c dB\n",
+-			    ((uda->cfg[CMD_CH1] >> 1) * 3) + (uda->cfg[CMD_CH1] & 1),
+-			    uda->cfg[CMD_CH1] & 1 ? '5' : '0');
+-	else
+-		snd_iprintf(buffer, "Mixer gain channel 1: -INF dB\n");
+-	if(uda->cfg[CMD_CH2] < 31)
+-		snd_iprintf(buffer, "Mixer gain channel 2: -%d.%c dB\n",
+-			    ((uda->cfg[CMD_CH2] >> 1) * 3) + (uda->cfg[CMD_CH2] & 1),
+-			    uda->cfg[CMD_CH2] & 1 ? '5' : '0');
+-	else
+-		snd_iprintf(buffer, "Mixer gain channel 2: -INF dB\n");
+-
+-	if(uda->cfg[CMD_IG] > 5)
+-		snd_iprintf(buffer, "Input Amp. Gain ch 2: %d.%c dB\n",
+-			    (uda->cfg[CMD_IG] >> 1) -3, uda->cfg[CMD_IG] & 1 ? '5' : '0');
+-	else
+-		snd_iprintf(buffer, "Input Amp. Gain ch 2: %s dB\n",  ig_small_value[uda->cfg[CMD_IG]]);
+-}
+-
+-static void snd_uda1341_proc_regs_read(struct snd_info_entry *entry, 
+-				       struct snd_info_buffer *buffer)
+-{
+-	struct l3_client *clnt = entry->private_data;
+-	struct uda1341 *uda = clnt->driver_data;		
+-	int reg;
+-	char buf[12];
+-
+-	for (reg = 0; reg < uda1341_reg_last; reg ++) {
+-		if (reg == empty)
+-			continue;
+-		int2str_bin8(uda->regs[reg], buf);
+-		snd_iprintf(buffer, "%s = %s\n", uda1341_reg_names[reg], buf);
+-	}
+-
+-	int2str_bin8(snd_uda1341_codec_read(clnt, UDA1341_DATA1), buf);
+-	snd_iprintf(buffer, "DATA1 = %s\n", buf);
+-}
+-#endif /* CONFIG_PROC_FS */
+-
+-static void __devinit snd_uda1341_proc_init(struct snd_card *card, struct l3_client *clnt)
+-{
+-	struct snd_info_entry *entry;
+-
+-	if (! snd_card_proc_new(card, "uda1341", &entry))
+-		snd_info_set_text_ops(entry, clnt, snd_uda1341_proc_read);
+-	if (! snd_card_proc_new(card, "uda1341-regs", &entry))
+-		snd_info_set_text_ops(entry, clnt, snd_uda1341_proc_regs_read);
+-}
+-
+-/* }}} */
+-
+-/* {{{ Mixer controls setting */
+-
+-/* {{{ UDA1341 single functions */
+-
+-#define UDA1341_SINGLE(xname, where, reg, shift, mask, invert) \
+-{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .info = snd_uda1341_info_single, \
+-  .get = snd_uda1341_get_single, .put = snd_uda1341_put_single, \
+-  .private_value = where | (reg << 5) | (shift << 9) | (mask << 12) | (invert << 18) \
+-}
+-
+-static int snd_uda1341_info_single(struct snd_kcontrol *kcontrol,
+-				   struct snd_ctl_elem_info *uinfo)
+-{
+-	int mask = (kcontrol->private_value >> 12) & 63;
+-
+-	uinfo->type = mask == 1 ? SNDRV_CTL_ELEM_TYPE_BOOLEAN : SNDRV_CTL_ELEM_TYPE_INTEGER;
+-	uinfo->count = 1;
+-	uinfo->value.integer.min = 0;
+-	uinfo->value.integer.max = mask;
+-	return 0;
+-}
+-
+-static int snd_uda1341_get_single(struct snd_kcontrol *kcontrol,
+-				  struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct l3_client *clnt = snd_kcontrol_chip(kcontrol);
+-	struct uda1341 *uda = clnt->driver_data;
+-	int where = kcontrol->private_value & 31;        
+-	int mask = (kcontrol->private_value >> 12) & 63;
+-	int invert = (kcontrol->private_value >> 18) & 1;
+-        
+-	ucontrol->value.integer.value[0] = uda->cfg[where];
+-	if (invert)
+-		ucontrol->value.integer.value[0] = mask - ucontrol->value.integer.value[0];
+-
+-	return 0;
+-}
+-
+-static int snd_uda1341_put_single(struct snd_kcontrol *kcontrol,
+-				  struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct l3_client *clnt = snd_kcontrol_chip(kcontrol);
+-	struct uda1341 *uda = clnt->driver_data;
+-	int where = kcontrol->private_value & 31;        
+-	int reg = (kcontrol->private_value >> 5) & 15;
+-	int shift = (kcontrol->private_value >> 9) & 7;
+-	int mask = (kcontrol->private_value >> 12) & 63;
+-	int invert = (kcontrol->private_value >> 18) & 1;
+-	unsigned short val;
+-
+-	val = (ucontrol->value.integer.value[0] & mask);
+-	if (invert)
+-		val = mask - val;
+-
+-	uda->cfg[where] = val;
+-	return snd_uda1341_update_bits(clnt, reg, mask, shift, val, FLUSH);
+-}
+-
+-/* }}} */
+-
+-/* {{{ UDA1341 enum functions */
+-
+-#define UDA1341_ENUM(xname, where, reg, shift, mask, invert) \
+-{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .info = snd_uda1341_info_enum, \
+-  .get = snd_uda1341_get_enum, .put = snd_uda1341_put_enum, \
+-  .private_value = where | (reg << 5) | (shift << 9) | (mask << 12) | (invert << 18) \
+-}
+-
+-static int snd_uda1341_info_enum(struct snd_kcontrol *kcontrol,
+-				 struct snd_ctl_elem_info *uinfo)
+-{
+-	int where = kcontrol->private_value & 31;
+-	const char **texts;
+-	
+-	// this register we don't handle this way
+-	if (!uda1341_enum_items[where])
+-		return -EINVAL;
+-
+-	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+-	uinfo->count = 1;
+-	uinfo->value.enumerated.items = uda1341_enum_items[where];
+-
+-	if (uinfo->value.enumerated.item >= uda1341_enum_items[where])
+-		uinfo->value.enumerated.item = uda1341_enum_items[where] - 1;
+-
+-	texts = uda1341_enum_names[where];
+-	strcpy(uinfo->value.enumerated.name, texts[uinfo->value.enumerated.item]);
+-	return 0;
+-}
+-
+-static int snd_uda1341_get_enum(struct snd_kcontrol *kcontrol,
+-				struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct l3_client *clnt = snd_kcontrol_chip(kcontrol);
+-	struct uda1341 *uda = clnt->driver_data;
+-	int where = kcontrol->private_value & 31;        
+-        
+-	ucontrol->value.enumerated.item[0] = uda->cfg[where];	
+-	return 0;
+-}
+-
+-static int snd_uda1341_put_enum(struct snd_kcontrol *kcontrol,
+-				struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct l3_client *clnt = snd_kcontrol_chip(kcontrol);
+-	struct uda1341 *uda = clnt->driver_data;
+-	int where = kcontrol->private_value & 31;        
+-	int reg = (kcontrol->private_value >> 5) & 15;
+-	int shift = (kcontrol->private_value >> 9) & 7;
+-	int mask = (kcontrol->private_value >> 12) & 63;
+-
+-	uda->cfg[where] = (ucontrol->value.enumerated.item[0] & mask);
+-	
+-	return snd_uda1341_update_bits(clnt, reg, mask, shift, uda->cfg[where], FLUSH);
+-}
+-
+-/* }}} */
+-
+-/* {{{ UDA1341 2regs functions */
+-
+-#define UDA1341_2REGS(xname, where, reg_1, reg_2, shift_1, shift_2, mask_1, mask_2, invert) \
+-{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), .info = snd_uda1341_info_2regs, \
+-  .get = snd_uda1341_get_2regs, .put = snd_uda1341_put_2regs, \
+-  .private_value = where | (reg_1 << 5) | (reg_2 << 9) | (shift_1 << 13) | (shift_2 << 16) | \
+-                         (mask_1 << 19) | (mask_2 << 25) | (invert << 31) \
+-}
+-
+-
+-static int snd_uda1341_info_2regs(struct snd_kcontrol *kcontrol,
+-				  struct snd_ctl_elem_info *uinfo)
+-{
+-	int mask_1 = (kcontrol->private_value >> 19) & 63;
+-	int mask_2 = (kcontrol->private_value >> 25) & 63;
+-	int mask;
+-        
+-	mask = (mask_2 + 1) * (mask_1 + 1) - 1;
+-	uinfo->type = mask == 1 ? SNDRV_CTL_ELEM_TYPE_BOOLEAN : SNDRV_CTL_ELEM_TYPE_INTEGER;
+-	uinfo->count = 1;
+-	uinfo->value.integer.min = 0;
+-	uinfo->value.integer.max = mask;
+-	return 0;
+-}
+-
+-static int snd_uda1341_get_2regs(struct snd_kcontrol *kcontrol,
+-				 struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct l3_client *clnt = snd_kcontrol_chip(kcontrol);
+-	struct uda1341 *uda = clnt->driver_data;
+-	int where = kcontrol->private_value & 31;
+-	int mask_1 = (kcontrol->private_value >> 19) & 63;
+-	int mask_2 = (kcontrol->private_value >> 25) & 63;        
+-	int invert = (kcontrol->private_value >> 31) & 1;
+-	int mask;
+-
+-	mask = (mask_2 + 1) * (mask_1 + 1) - 1;
+-
+-	ucontrol->value.integer.value[0] = uda->cfg[where];
+-	if (invert)
+-		ucontrol->value.integer.value[0] = mask - ucontrol->value.integer.value[0];
+-	return 0;
+-}
+-
+-static int snd_uda1341_put_2regs(struct snd_kcontrol *kcontrol,
+-				 struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct l3_client *clnt = snd_kcontrol_chip(kcontrol);
+-	struct uda1341 *uda = clnt->driver_data;        
+-	int where = kcontrol->private_value & 31;        
+-	int reg_1 = (kcontrol->private_value >> 5) & 15;
+-	int reg_2 = (kcontrol->private_value >> 9) & 15;        
+-	int shift_1 = (kcontrol->private_value >> 13) & 7;
+-	int shift_2 = (kcontrol->private_value >> 16) & 7;
+-	int mask_1 = (kcontrol->private_value >> 19) & 63;
+-	int mask_2 = (kcontrol->private_value >> 25) & 63;        
+-	int invert = (kcontrol->private_value >> 31) & 1;
+-	int mask;
+-	unsigned short val1, val2, val;
+-
+-	val = ucontrol->value.integer.value[0];
+-         
+-	mask = (mask_2 + 1) * (mask_1 + 1) - 1;
+-
+-	val1 = val & mask_1;
+-	val2 = (val / (mask_1 + 1)) & mask_2;        
+-
+-	if (invert) {
+-		val1 = mask_1 - val1;
+-		val2 = mask_2 - val2;
+-	}
+-
+-	uda->cfg[where] = invert ? mask - val : val;
+-        
+-	//FIXME - return value
+-	snd_uda1341_update_bits(clnt, reg_1, mask_1, shift_1, val1, FLUSH);
+-	return snd_uda1341_update_bits(clnt, reg_2, mask_2, shift_2, val2, FLUSH);
+-}
+-
+-/* }}} */
+-  
+-static struct snd_kcontrol_new snd_uda1341_controls[] = {
+-	UDA1341_SINGLE("Master Playback Switch", CMD_MUTE, data0_2, 2, 1, 1),
+-	UDA1341_SINGLE("Master Playback Volume", CMD_VOLUME, data0_0, 0, 63, 1),
+-
+-	UDA1341_SINGLE("Bass Playback Volume", CMD_BASS, data0_1, 2, 15, 0),
+-	UDA1341_SINGLE("Treble Playback Volume", CMD_TREBBLE, data0_1, 0, 3, 0),
+-
+-	UDA1341_SINGLE("Input Gain Switch", CMD_IGAIN, stat1, 5, 1, 0),
+-	UDA1341_SINGLE("Output Gain Switch", CMD_OGAIN, stat1, 6, 1, 0),
+-
+-	UDA1341_SINGLE("Mixer Gain Channel 1 Volume", CMD_CH1, ext0, 0, 31, 1),
+-	UDA1341_SINGLE("Mixer Gain Channel 2 Volume", CMD_CH2, ext1, 0, 31, 1),
+-
+-	UDA1341_SINGLE("Mic Sensitivity Volume", CMD_MIC, ext2, 2, 7, 0),
+-
+-	UDA1341_SINGLE("AGC Output Level", CMD_AGC_LEVEL, ext6, 0, 3, 0),
+-	UDA1341_SINGLE("AGC Time Constant", CMD_AGC_TIME, ext6, 2, 7, 0),
+-	UDA1341_SINGLE("AGC Time Constant Switch", CMD_AGC, ext4, 4, 1, 0),
+-
+-	UDA1341_SINGLE("DAC Power", CMD_DAC, stat1, 0, 1, 0),
+-	UDA1341_SINGLE("ADC Power", CMD_ADC, stat1, 1, 1, 0),
+-
+-	UDA1341_ENUM("Peak detection", CMD_PEAK, data0_2, 5, 1, 0),
+-	UDA1341_ENUM("De-emphasis", CMD_DEEMP, data0_2, 3, 3, 0),
+-	UDA1341_ENUM("Mixer mode", CMD_MIXER, ext2, 0, 3, 0),
+-	UDA1341_ENUM("Filter mode", CMD_FILTER, data0_2, 0, 3, 0),
+-
+-	UDA1341_2REGS("Gain Input Amplifier Gain (channel 2)", CMD_IG, ext4, ext5, 0, 0, 3, 31, 0),
+-};
+-
+-static void uda1341_free(struct l3_client *clnt)
+-{
+-	l3_detach_client(clnt); // calls kfree for driver_data (struct uda1341)
+-	kfree(clnt);
+-}
+-
+-static int uda1341_dev_free(struct snd_device *device)
+-{
+-	struct l3_client *clnt = device->device_data;
+-	uda1341_free(clnt);
+-	return 0;
+-}
+-
+-int __init snd_chip_uda1341_mixer_new(struct snd_card *card, struct l3_client **clntp)
+-{
+-	static struct snd_device_ops ops = {
+-		.dev_free =     uda1341_dev_free,
+-	};
+-	struct l3_client *clnt;
+-	int idx, err;
+-
+-	if (snd_BUG_ON(!card))
+-		return -EINVAL;
+-
+-	clnt = kzalloc(sizeof(*clnt), GFP_KERNEL);
+-	if (clnt == NULL)
+-		return -ENOMEM;
+-         
+-	if ((err = l3_attach_client(clnt, "l3-bit-sa1100-gpio", UDA1341_ALSA_NAME))) {
+-		kfree(clnt);
+-		return err;
+-	}
+-
+-	for (idx = 0; idx < ARRAY_SIZE(snd_uda1341_controls); idx++) {
+-		if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_uda1341_controls[idx], clnt))) < 0) {
+-			uda1341_free(clnt);
+-			return err;
+-		}
+-	}
+-
+-	if ((err = snd_device_new(card, SNDRV_DEV_CODEC, clnt, &ops)) < 0) {
+-		uda1341_free(clnt);
+-		return err;
+-	}
+-
+-	*clntp = clnt;
+-	strcpy(card->mixername, "UDA1341TS Mixer");
+-	((struct uda1341 *)clnt->driver_data)->card = card;
+-        
+-	snd_uda1341_proc_init(card, clnt);
+-        
+-	return 0;
+-}
+-
+-/* }}} */
+-
+-/* {{{ L3 operations */
+-
+-static int uda1341_attach(struct l3_client *clnt)
+-{
+-	struct uda1341 *uda;
+-
+-	uda = kzalloc(sizeof(*uda), 0, GFP_KERNEL);
+-	if (!uda)
+-		return -ENOMEM;
+-
+-	/* init fixed parts of my copy of registers */
+-	uda->regs[stat0]   = STAT0;
+-	uda->regs[stat1]   = STAT1;
+-
+-	uda->regs[data0_0] = DATA0_0;
+-	uda->regs[data0_1] = DATA0_1;
+-	uda->regs[data0_2] = DATA0_2;
+-
+-	uda->write = snd_uda1341_codec_write;
+-	uda->read = snd_uda1341_codec_read;
+-  
+-	spin_lock_init(&uda->reg_lock);
+-        
+-	clnt->driver_data = uda;
+-	return 0;
+-}
+-
+-static void uda1341_detach(struct l3_client *clnt)
+-{
+-	kfree(clnt->driver_data);
+-}
+-
+-static int
+-uda1341_command(struct l3_client *clnt, int cmd, void *arg)
+-{
+-	if (cmd != CMD_READ_REG)
+-		return snd_uda1341_cfg_write(clnt, cmd, (int) arg, FLUSH);
+-
+-	return snd_uda1341_codec_read(clnt, (int) arg);
+-}
+-
+-static int uda1341_open(struct l3_client *clnt)
+-{
+-	struct uda1341 *uda = clnt->driver_data;
+-
+-	uda->active = 1;
+-
+-	/* init default configuration */
+-	snd_uda1341_cfg_write(clnt, CMD_RESET, 0, REGS_ONLY);
+-	snd_uda1341_cfg_write(clnt, CMD_FS, F256, FLUSH);       // unknown state after reset
+-	snd_uda1341_cfg_write(clnt, CMD_FORMAT, LSB16, FLUSH);  // unknown state after reset
+-	snd_uda1341_cfg_write(clnt, CMD_OGAIN, ON, FLUSH);      // default off after reset
+-	snd_uda1341_cfg_write(clnt, CMD_IGAIN, ON, FLUSH);      // default off after reset
+-	snd_uda1341_cfg_write(clnt, CMD_DAC, ON, FLUSH);	// ??? default value after reset
+-	snd_uda1341_cfg_write(clnt, CMD_ADC, ON, FLUSH);	// ??? default value after reset
+-	snd_uda1341_cfg_write(clnt, CMD_VOLUME, 20, FLUSH);     // default 0dB after reset
+-	snd_uda1341_cfg_write(clnt, CMD_BASS, 0, REGS_ONLY);    // default value after reset
+-	snd_uda1341_cfg_write(clnt, CMD_TREBBLE, 0, REGS_ONLY); // default value after reset
+-	snd_uda1341_cfg_write(clnt, CMD_PEAK, AFTER, REGS_ONLY);// default value after reset
+-	snd_uda1341_cfg_write(clnt, CMD_DEEMP, NONE, REGS_ONLY);// default value after reset
+-	//at this moment should be QMUTED by h3600_audio_init
+-	snd_uda1341_cfg_write(clnt, CMD_MUTE, OFF, REGS_ONLY);  // default value after reset
+-	snd_uda1341_cfg_write(clnt, CMD_FILTER, MAX, FLUSH);    // defaul flat after reset
+-	snd_uda1341_cfg_write(clnt, CMD_CH1, 31, FLUSH);        // default value after reset
+-	snd_uda1341_cfg_write(clnt, CMD_CH2, 4, FLUSH);         // default value after reset
+-	snd_uda1341_cfg_write(clnt, CMD_MIC, 4, FLUSH);         // default 0dB after reset
+-	snd_uda1341_cfg_write(clnt, CMD_MIXER, MIXER, FLUSH);   // default doub.dif.mode          
+-	snd_uda1341_cfg_write(clnt, CMD_AGC, OFF, FLUSH);       // default value after reset
+-	snd_uda1341_cfg_write(clnt, CMD_IG, 0, FLUSH);          // unknown state after reset
+-	snd_uda1341_cfg_write(clnt, CMD_AGC_TIME, 0, FLUSH);    // default value after reset
+-	snd_uda1341_cfg_write(clnt, CMD_AGC_LEVEL, 0, FLUSH);   // default value after reset
+-
+-	return 0;
+-}
+-
+-static void uda1341_close(struct l3_client *clnt)
+-{
+-	struct uda1341 *uda = clnt->driver_data;
+-
+-	uda->active = 0;
+-}
+-
+-/* }}} */
+-
+-/* {{{ Module and L3 initialization */
+-
+-static struct l3_ops uda1341_ops = {
+-	.open =		uda1341_open,
+-	.command =	uda1341_command,
+-	.close =	uda1341_close,
+-};
+-
+-static struct l3_driver uda1341_driver = {
+-	.name =		UDA1341_ALSA_NAME,
+-	.attach_client = uda1341_attach,
+-	.detach_client = uda1341_detach,
+-	.ops =		&uda1341_ops,
+-	.owner =	THIS_MODULE,
+-};
+-
+-static int __init uda1341_init(void)
+-{
+-	return l3_add_driver(&uda1341_driver);
+-}
+-
+-static void __exit uda1341_exit(void)
+-{
+-	l3_del_driver(&uda1341_driver);
+-}
+-
+-module_init(uda1341_init);
+-module_exit(uda1341_exit);
+-
+-MODULE_AUTHOR("Tomas Kasparek <tomas.kasparek@seznam.cz>");
+-MODULE_LICENSE("GPL");
+-MODULE_DESCRIPTION("Philips UDA1341 CODEC driver for ALSA");
+-MODULE_SUPPORTED_DEVICE("{{UDA1341,UDA1341TS}}");
+-
+-EXPORT_SYMBOL(snd_chip_uda1341_mixer_new);
+-
+-/* }}} */
+-
+-/*
+- * Local variables:
+- * indent-tabs-mode: t
+- * End:
+- */
+-- 
+1.6.1.3
