@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: ASoC updates for 2.6.30
-Date: Wed, 11 Mar 2009 15:29:39 +0000
-Message-ID: <20090311152938.GA15629@sirena.org.uk>
-References: <20090310195551.GA8255@sirena.org.uk>
-	<s5htz60czu4.wl%tiwai@suse.de> <49B7CD71.7020606@gmail.com>
+Subject: Re: Problem compiling soc - imx31 and wm8753
+Date: Wed, 11 Mar 2009 15:36:06 +0000
+Message-ID: <20090311153554.GB15629@sirena.org.uk>
+References: <49B7CEFD.1080006@tecnequip.com.br>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2BFAB1037E3
-	for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2009 16:29:47 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id C878D10387E
+	for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2009 16:51:17 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <49B7CD71.7020606@gmail.com>
+In-Reply-To: <49B7CEFD.1080006@tecnequip.com.br>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +21,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ben Gamari <bgamari@gmail.com>
+To: Marcelo Utikawa da Fonseca <marcelo.fonseca@tecnequip.com.br>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 11, 2009 at 10:40:49AM -0400, Ben Gamari wrote:
-> On 03/11/2009 02:56 AM, Takashi Iwai wrote:
-> > Pulled now.  Thanks.
+On Wed, Mar 11, 2009 at 11:47:25AM -0300, Marcelo Utikawa da Fonseca wrote:
 
-> Can someone see to it that the BeagleBoard machine driver is re-added to 
-> sound/soc/omap/Makefile? It seems to have be dropped by accident.
+> I am facing a problem while compiling the sound support for imx31ads board.
+> I got the kernel from wolfsonmicro using the following command:
 
-As I said earlier on the OMAP list it's present in ALSA git.  If you
-think there's something else for this missing from ALSA git please post
-a patch - the only patch that was posted for this was applied in
-January.
+> git clone git://opensource.wolfsonmicro.com/linux-2.6-asoc linux-2.6-asoc
 
-If you want the patch cherry-picking over into an OMAP development
-branch you will need to speak to the people who maintain the relevant
-git tree about that or wait for the commit to get merged up from
-mainline after the 2.6.30 merge window.
+> After this I just copy the arch/arm/configs/mx31ads_defconfig to .config 
+> and run:
+
+> make ARCH=arm CROSS_COMPILE=arm-none-linux-gnueabi- menuconfig
+
+> I did not change nothing, just configure and compile...
+> My gcc version is 4.1.2 from Freescale.
+> What can be wrong? Could be this version of gcc a problem?
+> I already tried to correct the missing include files but the other 
+> errors are still there after the corrections...
+
+The i.MX31 support that is present in ASoC git depends on underlying
+support for the CPU which is not present in any mainline tree (which is
+why this code has not been contributed to mainline yet).
+
+Probably the easiest thing to do is to start from the BSP provided by
+Freescale - I believe that most versions of that contain the CPU audio
+drivers already, probably including a version of the WM8731 driver.  It
+should be much easier to merge that driver (by itself, just wm8731.c and
+wm8731.h) into the Freescale BSP than to merge the i.MX31 support into
+the standard kernel.
