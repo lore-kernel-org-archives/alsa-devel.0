@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ASoC: Add Magician machine support.
-Date: Thu, 12 Mar 2009 15:58:59 +0000
-Message-ID: <20090312155858.GE24376@sirena.org.uk>
-References: <20090311222501.GA7536@sirena.org.uk>
-	<1236852410-15891-1-git-send-email-philipp.zabel@gmail.com>
+Subject: Re: [PATCH 1/3][RFC] ASoC: pxa-ssp: Use 16-bit DMA	for
+	magician stereo
+Date: Thu, 12 Mar 2009 15:57:51 +0000
+Message-ID: <20090312155751.GD24376@sirena.org.uk>
+References: <1236795420-12175-1-git-send-email-philipp.zabel@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E7F42103896
-	for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2009 16:59:00 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id E78A4103896
+	for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2009 16:57:52 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1236852410-15891-1-git-send-email-philipp.zabel@gmail.com>
+In-Reply-To: <1236795420-12175-1-git-send-email-philipp.zabel@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,18 +23,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Philipp Zabel <philipp.zabel@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 12, 2009 at 11:06:50AM +0100, Philipp Zabel wrote:
-> HTC Magician has a Philips UDA1380 codec connected via
-> SSP1 (playback) and I2S (capture).
-> There is a flip-flop between the SSP frame clock output
-> and the codec's word select input pin. To make the codec
-> see proper I2S input, the SSP has to send two frames per
-> sample.
+On Wed, Mar 11, 2009 at 07:16:58PM +0100, Philipp Zabel wrote:
+> Please advise how this behaviour could be made configurable. I guess
+> the only machines that will ever need this are HTC Magician, Blueangel
+> and Himalaya.
 
-> Signed-off-by: Philipp Zabel <philipp.zabel@gmail.com>
+Mmm...  fun.  :/
 
-This all looks good.  I'll hold off on applying until we've got the SSP
-change resolved since it's needed for the driver to work properly.
+For configurability I'd suggest using one of the ops that the DAI
+exports to allow you to flip a variable somewhere.  That variable can
+then be checked instead of your machine_is_() check.  Not terribly nice
+but as you say I don't see this being needed terribly often.
