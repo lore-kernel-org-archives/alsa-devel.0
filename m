@@ -1,8 +1,8 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Daniel Mack <daniel@caiaq.de>
 Subject: Re: [PATCH 3/3][RFC] ASoC: pxa-ssp: Don't
 	use	SSCR0_SerClkDiv and SSCR0_SCR
-Date: Thu, 12 Mar 2009 10:29:40 +0000
-Message-ID: <20090312102939.GC4038@rakim.wolfsonmicro.main>
+Date: Thu, 12 Mar 2009 11:36:54 +0100
+Message-ID: <20090312103654.GB14526@buzzloop.caiaq.de>
 References: <1236795420-12175-1-git-send-email-philipp.zabel@gmail.com>
 	<1236795420-12175-3-git-send-email-philipp.zabel@gmail.com>
 	<20090311184416.GA29865@buzzloop.caiaq.de>
@@ -14,9 +14,9 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E0D041038BE
-	for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2009 11:29:40 +0100 (CET)
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7951E1038BE
+	for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2009 11:37:05 +0100 (CET)
 Content-Disposition: inline
 In-Reply-To: <20090312102749.GA14526@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -28,12 +28,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, pHilipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 On Thu, Mar 12, 2009 at 11:27:49AM +0100, Daniel Mack wrote:
+> On Thu, Mar 12, 2009 at 10:23:56AM +0000, Mark Brown wrote:
+> > On Thu, Mar 12, 2009 at 01:46:39AM +0100, Daniel Mack wrote:
+> > 
+> > > (Just for the reference - this one needs to be applied on top of my last
+> > >  'network vs psp mode' patch, otherwise the second hunk won't apply).
+> > 
+> > Could you please resubmit the most current versions of your outstanding
+> > patches?  There's too many versions of patches floating around in the
+> > middle of threads and I want to make sure I'm looking at the most
+> > current versions.
+> 
 > Sorry. See below. There's only one left now and this one shrunk a lot.
 
-Oh, thanks - I had that one, from what you wrote I thought there were
-more that I'd dropped on the floor.  I'll review later today.
+Forgot one credit to this one.
+
+> From ad8734e93eed130a55482b0e937729578e6d93c8 Mon Sep 17 00:00:00 2001
+> From: Daniel Mack <daniel@caiaq.de>
+> Date: Wed, 11 Mar 2009 19:38:15 +0100
+> Subject: [PATCH] pxa-ssp: switch from network mode to PSP
+> 
+> This switches the pxa ssp port usage from network mode to PSP mode.
+> Removed some comments and checks for configured TDM channels.
+> A special case is added to support configuration where BCLK = 64fs. We
+> need to do some black magic in this case which doesn't look nice but
+> there is unfortunately no other option than that.
+> 
+> Signed-off-by: Daniel Mack <daniel@caiaq.de>
+
+Diagnosed-by: Tim Ruetz <tim@caiaq.de>
