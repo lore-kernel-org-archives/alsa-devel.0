@@ -1,18 +1,19 @@
 From: Philipp Zabel <philipp.zabel@gmail.com>
-Subject: [PATCH] ASoC: Add Magician machine support.
-Date: Thu, 12 Mar 2009 11:06:50 +0100
-Message-ID: <1236852410-15891-1-git-send-email-philipp.zabel@gmail.com>
-References: <20090311222501.GA7536@sirena.org.uk>
+Subject: [PATCH 3/5] ASoC: Replace remaining uses of
+	snd_soc_cnew with snd_soc_add_controls.
+Date: Thu, 12 Mar 2009 11:07:54 +0100
+Message-ID: <1236852474-15930-1-git-send-email-philipp.zabel@gmail.com>
+References: <20090311224439.GB9001@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.159])
-	by alsa0.perex.cz (Postfix) with ESMTP id EA69A1038AE
-	for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2009 11:07:00 +0100 (CET)
-Received: by fg-out-1718.google.com with SMTP id 13so93704fge.44
-	for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2009 03:07:00 -0700 (PDT)
-In-Reply-To: <20090311222501.GA7536@sirena.org.uk>
+	by alsa0.perex.cz (Postfix) with ESMTP id CACFF1038CD
+	for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2009 11:08:03 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id 13so93809fge.44
+	for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2009 03:08:03 -0700 (PDT)
+In-Reply-To: <20090311224439.GB9001@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,626 +27,322 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, Philipp Zabel <philipp.zabel@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-HTC Magician has a Philips UDA1380 codec connected via
-SSP1 (playback) and I2S (capture).
-There is a flip-flop between the SSP frame clock output
-and the codec's word select input pin. To make the codec
-see proper I2S input, the SSP has to send two frames per
-sample.
+The drivers are basically duplicating the same code over and over.
+As snd_soc_cnew is going to be made static some time after the next
+merge window, we might as well convert them now.
 
 Signed-off-by: Philipp Zabel <philipp.zabel@gmail.com>
 ---
- sound/soc/pxa/Kconfig    |   10 +
- sound/soc/pxa/Makefile   |    2 +
- sound/soc/pxa/magician.c |  560 ++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 572 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/pxa/magician.c
+ sound/soc/codecs/cs4270.c          |   23 +++++------------------
+ sound/soc/codecs/tlv320aic26.c     |   11 ++++-------
+ sound/soc/codecs/wm8400.c          |   12 ++----------
+ sound/soc/omap/n810.c              |   12 +++++-------
+ sound/soc/pxa/corgi.c              |   12 +++++-------
+ sound/soc/pxa/palm27x.c            |   13 +++++--------
+ sound/soc/pxa/poodle.c             |   12 +++++-------
+ sound/soc/pxa/spitz.c              |   12 +++++-------
+ sound/soc/pxa/tosa.c               |   12 +++++-------
+ sound/soc/s3c24xx/neo1973_wm8753.c |   13 +++++--------
+ 10 files changed, 46 insertions(+), 86 deletions(-)
 
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 5998ab3..ad8a10f 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -116,6 +116,16 @@ config SND_SOC_ZYLONITE
- 	  Say Y if you want to add support for SoC audio on the
- 	  Marvell Zylonite reference platform.
+diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
+index 0e0c23e..8e58c81 100644
+--- a/sound/soc/codecs/cs4270.c
++++ b/sound/soc/codecs/cs4270.c
+@@ -538,7 +538,6 @@ static int cs4270_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+ 	struct snd_soc_codec *codec = cs4270_codec;
+-	unsigned int i;
+ 	int ret;
  
-+config SND_PXA2XX_SOC_MAGICIAN
-+	tristate "SoC Audio support for HTC Magician"
-+	depends on SND_PXA2XX_SOC && MACH_MAGICIAN
-+	select SND_PXA2XX_SOC_I2S
-+	select SND_PXA_SOC_SSP
-+	select SND_SOC_UDA1380
-+	help
-+	  Say Y if you want to add support for SoC audio on the
-+	  HTC Magician.
-+
- config SND_PXA2XX_SOC_MIOA701
-         tristate "SoC Audio support for MIO A701"
-         depends on SND_PXA2XX_SOC && MACH_MIOA701
-diff --git a/sound/soc/pxa/Makefile b/sound/soc/pxa/Makefile
-index 8ed881c..4b90c3c 100644
---- a/sound/soc/pxa/Makefile
-+++ b/sound/soc/pxa/Makefile
-@@ -20,6 +20,7 @@ snd-soc-spitz-objs := spitz.o
- snd-soc-em-x270-objs := em-x270.o
- snd-soc-palm27x-objs := palm27x.o
- snd-soc-zylonite-objs := zylonite.o
-+snd-soc-magician-objs := magician.o
- snd-soc-mioa701-objs := mioa701_wm9713.o
+ 	/* Connect the codec to the socdev.  snd_soc_new_pcms() needs this. */
+@@ -552,23 +551,11 @@ static int cs4270_probe(struct platform_device *pdev)
+ 	}
  
- obj-$(CONFIG_SND_PXA2XX_SOC_CORGI) += snd-soc-corgi.o
-@@ -31,5 +32,6 @@ obj-$(CONFIG_SND_PXA2XX_SOC_E800) += snd-soc-e800.o
- obj-$(CONFIG_SND_PXA2XX_SOC_SPITZ) += snd-soc-spitz.o
- obj-$(CONFIG_SND_PXA2XX_SOC_EM_X270) += snd-soc-em-x270.o
- obj-$(CONFIG_SND_PXA2XX_SOC_PALM27X) += snd-soc-palm27x.o
-+obj-$(CONFIG_SND_PXA2XX_SOC_MAGICIAN) += snd-soc-magician.o
- obj-$(CONFIG_SND_PXA2XX_SOC_MIOA701) += snd-soc-mioa701.o
- obj-$(CONFIG_SND_SOC_ZYLONITE) += snd-soc-zylonite.o
-diff --git a/sound/soc/pxa/magician.c b/sound/soc/pxa/magician.c
-new file mode 100644
-index 0000000..f7c4544
---- /dev/null
-+++ b/sound/soc/pxa/magician.c
-@@ -0,0 +1,560 @@
-+/*
-+ * SoC audio for HTC Magician
-+ *
-+ * Copyright (c) 2006 Philipp Zabel <philipp.zabel@gmail.com>
-+ *
-+ * based on spitz.c,
-+ * Authors: Liam Girdwood <lrg@slimlogic.co.uk>
-+ *          Richard Purdie <richard@openedhand.com>
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/timer.h>
-+#include <linux/interrupt.h>
-+#include <linux/platform_device.h>
-+#include <linux/delay.h>
-+#include <linux/gpio.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+#include <mach/pxa-regs.h>
-+#include <mach/hardware.h>
-+#include <mach/magician.h>
-+#include <asm/mach-types.h>
-+#include "../codecs/uda1380.h"
-+#include "pxa2xx-pcm.h"
-+#include "pxa2xx-i2s.h"
-+#include "pxa-ssp.h"
-+
-+#define MAGICIAN_MIC       0
-+#define MAGICIAN_MIC_EXT   1
-+
-+static int magician_hp_switch;
-+static int magician_spk_switch = 1;
-+static int magician_in_sel = MAGICIAN_MIC;
-+
-+static void magician_ext_control(struct snd_soc_codec *codec)
-+{
-+	if (magician_spk_switch)
-+		snd_soc_dapm_enable_pin(codec, "Speaker");
-+	else
-+		snd_soc_dapm_disable_pin(codec, "Speaker");
-+	if (magician_hp_switch)
-+		snd_soc_dapm_enable_pin(codec, "Headphone Jack");
-+	else
-+		snd_soc_dapm_disable_pin(codec, "Headphone Jack");
-+
-+	switch (magician_in_sel) {
-+	case MAGICIAN_MIC:
-+		snd_soc_dapm_disable_pin(codec, "Headset Mic");
-+		snd_soc_dapm_enable_pin(codec, "Call Mic");
-+		break;
-+	case MAGICIAN_MIC_EXT:
-+		snd_soc_dapm_disable_pin(codec, "Call Mic");
-+		snd_soc_dapm_enable_pin(codec, "Headset Mic");
-+		break;
-+	}
-+
-+	snd_soc_dapm_sync(codec);
-+}
-+
-+static int magician_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_codec *codec = rtd->socdev->card->codec;
-+
-+	/* check the jack status at stream startup */
-+	magician_ext_control(codec);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Magician uses SSP port for playback.
-+ */
-+static int magician_playback_hw_params(struct snd_pcm_substream *substream,
-+				       struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	unsigned int acps, acds, width, rate;
-+	unsigned int div4 = PXA_SSP_CLK_SCDB_4;
-+	int ret = 0;
-+
-+	rate = params_rate(params);
-+	width = snd_pcm_format_physical_width(params_format(params));
-+
-+	/*
-+	 * rate = SSPSCLK / (2 * width(16 or 32))
-+	 * SSPSCLK = (ACPS / ACDS) / SSPSCLKDIV(div4 or div1)
-+	 */
-+	switch (params_rate(params)) {
-+	case 8000:
-+		/* off by a factor of 2: bug in the PXA27x audio clock? */
-+		acps = 32842000;
-+		switch (width) {
-+		case 16:
-+			/* 513156 Hz ~= _2_ * 8000 Hz * 32 (+0.23%) */
-+			acds = PXA_SSP_CLK_AUDIO_DIV_16;
-+			break;
-+		case 32:
-+			/* 1026312 Hz ~= _2_ * 8000 Hz * 64 (+0.23%) */
-+			acds = PXA_SSP_CLK_AUDIO_DIV_8;
-+		}
-+		break;
-+	case 11025:
-+		acps = 5622000;
-+		switch (width) {
-+		case 16:
-+			/* 351375 Hz ~= 11025 Hz * 32 (-0.41%) */
-+			acds = PXA_SSP_CLK_AUDIO_DIV_4;
-+			break;
-+		case 32:
-+			/* 702750 Hz ~= 11025 Hz * 64 (-0.41%) */
-+			acds = PXA_SSP_CLK_AUDIO_DIV_2;
-+		}
-+		break;
-+	case 22050:
-+		acps = 5622000;
-+		switch (width) {
-+		case 16:
-+			/* 702750 Hz ~= 22050 Hz * 32 (-0.41%) */
-+			acds = PXA_SSP_CLK_AUDIO_DIV_2;
-+			break;
-+		case 32:
-+			/* 1405500 Hz ~= 22050 Hz * 64 (-0.41%) */
-+			acds = PXA_SSP_CLK_AUDIO_DIV_1;
-+		}
-+		break;
-+	case 44100:
-+		acps = 5622000;
-+		switch (width) {
-+		case 16:
-+			/* 1405500 Hz ~= 44100 Hz * 32 (-0.41%) */
-+			acds = PXA_SSP_CLK_AUDIO_DIV_2;
-+			break;
-+		case 32:
-+			/* 2811000 Hz ~= 44100 Hz * 64 (-0.41%) */
-+			acds = PXA_SSP_CLK_AUDIO_DIV_1;
-+		}
-+		break;
-+	case 48000:
-+		acps = 12235000;
-+		switch (width) {
-+		case 16:
-+			/* 1529375 Hz ~= 48000 Hz * 32 (-0.44%) */
-+			acds = PXA_SSP_CLK_AUDIO_DIV_2;
-+			break;
-+		case 32:
-+			/* 3058750 Hz ~= 48000 Hz * 64 (-0.44%) */
-+			acds = PXA_SSP_CLK_AUDIO_DIV_1;
-+		}
-+		break;
-+	case 96000:
-+		acps = 12235000;
-+		switch (width) {
-+		case 16:
-+			/* 3058750 Hz ~= 96000 Hz * 32 (-0.44%) */
-+			acds = PXA_SSP_CLK_AUDIO_DIV_1;
-+			break;
-+		case 32:
-+			/* 6117500 Hz ~= 96000 Hz * 64 (-0.44%) */
-+			acds = PXA_SSP_CLK_AUDIO_DIV_2;
-+			div4 = PXA_SSP_CLK_SCDB_1;
-+			break;
-+		}
-+		break;
-+	}
-+
-+	/* set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_MSB |
-+			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set cpu DAI configuration */
-+	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_DSP_A |
-+			SND_SOC_DAIFMT_IB_IF | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 1, 1);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set audio clock as clock source */
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, PXA_SSP_CLK_AUDIO, 0,
-+			SND_SOC_CLOCK_OUT);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set the SSP audio system clock ACDS divider */
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai,
-+			PXA_SSP_AUDIO_DIV_ACDS, acds);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set the SSP audio system clock SCDB divider4 */
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai,
-+			PXA_SSP_AUDIO_DIV_SCDB, div4);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set SSP audio pll clock */
-+	ret = snd_soc_dai_set_pll(cpu_dai, 0, 0, acps);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+/*
-+ * Magician uses I2S for capture.
-+ */
-+static int magician_capture_hw_params(struct snd_pcm_substream *substream,
-+				      struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	int ret = 0;
-+
-+	/* set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai,
-+			SND_SOC_DAIFMT_MSB | SND_SOC_DAIFMT_NB_NF |
-+			SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set cpu DAI configuration */
-+	ret = snd_soc_dai_set_fmt(cpu_dai,
-+			SND_SOC_DAIFMT_MSB | SND_SOC_DAIFMT_NB_NF |
-+			SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set the I2S system clock as output */
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, PXA2XX_I2S_SYSCLK, 0,
-+			SND_SOC_CLOCK_OUT);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops magician_capture_ops = {
-+	.startup = magician_startup,
-+	.hw_params = magician_capture_hw_params,
-+};
-+
-+static struct snd_soc_ops magician_playback_ops = {
-+	.startup = magician_startup,
-+	.hw_params = magician_playback_hw_params,
-+};
-+
-+static int magician_get_hp(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_value *ucontrol)
-+{
-+	ucontrol->value.integer.value[0] = magician_hp_switch;
-+	return 0;
-+}
-+
-+static int magician_set_hp(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+
-+	if (magician_hp_switch == ucontrol->value.integer.value[0])
-+		return 0;
-+
-+	magician_hp_switch = ucontrol->value.integer.value[0];
-+	magician_ext_control(codec);
-+	return 1;
-+}
-+
-+static int magician_get_spk(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	ucontrol->value.integer.value[0] = magician_spk_switch;
-+	return 0;
-+}
-+
-+static int magician_set_spk(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+
-+	if (magician_spk_switch == ucontrol->value.integer.value[0])
-+		return 0;
-+
-+	magician_spk_switch = ucontrol->value.integer.value[0];
-+	magician_ext_control(codec);
-+	return 1;
-+}
-+
-+static int magician_get_input(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *ucontrol)
-+{
-+	ucontrol->value.integer.value[0] = magician_in_sel;
-+	return 0;
-+}
-+
-+static int magician_set_input(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *ucontrol)
-+{
-+	if (magician_in_sel == ucontrol->value.integer.value[0])
-+		return 0;
-+
-+	magician_in_sel = ucontrol->value.integer.value[0];
-+
-+	switch (magician_in_sel) {
-+	case MAGICIAN_MIC:
-+		gpio_set_value(EGPIO_MAGICIAN_IN_SEL1, 1);
-+		break;
-+	case MAGICIAN_MIC_EXT:
-+		gpio_set_value(EGPIO_MAGICIAN_IN_SEL1, 0);
-+	}
-+
-+	return 1;
-+}
-+
-+static int magician_spk_power(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *k, int event)
-+{
-+	gpio_set_value(EGPIO_MAGICIAN_SPK_POWER, SND_SOC_DAPM_EVENT_ON(event));
-+	return 0;
-+}
-+
-+static int magician_hp_power(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *k, int event)
-+{
-+	gpio_set_value(EGPIO_MAGICIAN_EP_POWER, SND_SOC_DAPM_EVENT_ON(event));
-+	return 0;
-+}
-+
-+static int magician_mic_bias(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *k, int event)
-+{
-+	gpio_set_value(EGPIO_MAGICIAN_MIC_POWER, SND_SOC_DAPM_EVENT_ON(event));
-+	return 0;
-+}
-+
-+/* magician machine dapm widgets */
-+static const struct snd_soc_dapm_widget uda1380_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", magician_hp_power),
-+	SND_SOC_DAPM_SPK("Speaker", magician_spk_power),
-+	SND_SOC_DAPM_MIC("Call Mic", magician_mic_bias),
-+	SND_SOC_DAPM_MIC("Headset Mic", magician_mic_bias),
-+};
-+
-+/* magician machine audio_map */
-+static const struct snd_soc_dapm_route audio_map[] = {
-+
-+	/* Headphone connected to VOUTL, VOUTR */
-+	{"Headphone Jack", NULL, "VOUTL"},
-+	{"Headphone Jack", NULL, "VOUTR"},
-+
-+	/* Speaker connected to VOUTL, VOUTR */
-+	{"Speaker", NULL, "VOUTL"},
-+	{"Speaker", NULL, "VOUTR"},
-+
-+	/* Mics are connected to VINM */
-+	{"VINM", NULL, "Headset Mic"},
-+	{"VINM", NULL, "Call Mic"},
-+};
-+
-+static const char *input_select[] = {"Call Mic", "Headset Mic"};
-+static const struct soc_enum magician_in_sel_enum =
-+	SOC_ENUM_SINGLE_EXT(2, input_select);
-+
-+static const struct snd_kcontrol_new uda1380_magician_controls[] = {
-+	SOC_SINGLE_BOOL_EXT("Headphone Switch",
-+			(unsigned long)&magician_hp_switch,
-+			magician_get_hp, magician_set_hp),
-+	SOC_SINGLE_BOOL_EXT("Speaker Switch",
-+			(unsigned long)&magician_spk_switch,
-+			magician_get_spk, magician_set_spk),
-+	SOC_ENUM_EXT("Input Select", magician_in_sel_enum,
-+			magician_get_input, magician_set_input),
-+};
-+
-+/*
-+ * Logic for a uda1380 as connected on a HTC Magician
-+ */
-+static int magician_uda1380_init(struct snd_soc_codec *codec)
-+{
+ 	/* Add the non-DAPM controls */
+-	for (i = 0; i < ARRAY_SIZE(cs4270_snd_controls); i++) {
+-		struct snd_kcontrol *kctrl;
+-
+-		kctrl = snd_soc_cnew(&cs4270_snd_controls[i], codec, NULL);
+-		if (!kctrl) {
+-			dev_err(codec->dev, "error creating control '%s'\n",
+-			       cs4270_snd_controls[i].name);
+-			ret = -ENOMEM;
+-			goto error_free_pcms;
+-		}
+-
+-		ret = snd_ctl_add(codec->card, kctrl);
+-		if (ret < 0) {
+-			dev_err(codec->dev, "error adding control '%s'\n",
+-			       cs4270_snd_controls[i].name);
+-			goto error_free_pcms;
+-		}
++	ret = snd_soc_add_controls(codec, cs4270_snd_controls,
++				ARRAY_SIZE(cs4270_snd_controls));
++	if (ret < 0) {
++		dev_err(codec->dev, "failed to add controls\n");
++		goto error_free_pcms;
+ 	}
+ 
+ 	/* And finally, register the socdev */
+diff --git a/sound/soc/codecs/tlv320aic26.c b/sound/soc/codecs/tlv320aic26.c
+index 229e464..633bc4b 100644
+--- a/sound/soc/codecs/tlv320aic26.c
++++ b/sound/soc/codecs/tlv320aic26.c
+@@ -322,9 +322,8 @@ static int aic26_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+ 	struct snd_soc_codec *codec;
+-	struct snd_kcontrol *kcontrol;
+ 	struct aic26 *aic26;
+-	int i, ret, err;
++	int ret, err;
+ 
+ 	dev_info(&pdev->dev, "Probing AIC26 SoC CODEC driver\n");
+ 	dev_dbg(&pdev->dev, "socdev=%p\n", socdev);
+@@ -351,11 +350,9 @@ static int aic26_probe(struct platform_device *pdev)
+ 
+ 	/* register controls */
+ 	dev_dbg(&pdev->dev, "Registering controls\n");
+-	for (i = 0; i < ARRAY_SIZE(aic26_snd_controls); i++) {
+-		kcontrol = snd_soc_cnew(&aic26_snd_controls[i], codec, NULL);
+-		err = snd_ctl_add(codec->card, kcontrol);
+-		WARN_ON(err < 0);
+-	}
++	err = snd_soc_add_controls(codec, aic26_snd_controls,
++			ARRAY_SIZE(aic26_snd_controls));
++	WARN_ON(err < 0);
+ 
+ 	/* CODEC is setup, we can register the card now */
+ 	dev_dbg(&pdev->dev, "Registering card\n");
+diff --git a/sound/soc/codecs/wm8400.c b/sound/soc/codecs/wm8400.c
+index 9cb73d9..3269121 100644
+--- a/sound/soc/codecs/wm8400.c
++++ b/sound/soc/codecs/wm8400.c
+@@ -351,16 +351,8 @@ SOC_SINGLE("RIN34 Mute Switch", WM8400_RIGHT_LINE_INPUT_3_4_VOLUME,
+ /* add non dapm controls */
+ static int wm8400_add_controls(struct snd_soc_codec *codec)
+ {
+-	int err, i;
+-
+-	for (i = 0; i < ARRAY_SIZE(wm8400_snd_controls); i++) {
+-		err = snd_ctl_add(codec->card,
+-				snd_soc_cnew(&wm8400_snd_controls[i],codec,
+-					NULL));
+-		if (err < 0)
+-			return err;
+-	}
+-	return 0;
++	return snd_soc_add_controls(codec, wm8400_snd_controls,
++				ARRAY_SIZE(wm8400_snd_controls));
+ }
+ 
+ /*
+diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
+index 9f037cd..86471fd 100644
+--- a/sound/soc/omap/n810.c
++++ b/sound/soc/omap/n810.c
+@@ -248,7 +248,7 @@ static const struct snd_kcontrol_new aic33_n810_controls[] = {
+ 
+ static int n810_aic33_init(struct snd_soc_codec *codec)
+ {
+-	int i, err;
 +	int err;
-+
-+	/* NC codec pins */
-+	snd_soc_dapm_nc_pin(codec, "VOUTLHP");
-+	snd_soc_dapm_nc_pin(codec, "VOUTRHP");
-+
-+	/* FIXME: is anything connected here? */
-+	snd_soc_dapm_nc_pin(codec, "VINL");
-+	snd_soc_dapm_nc_pin(codec, "VINR");
-+
-+	/* Add magician specific controls */
-+	err = snd_soc_add_controls(codec, uda1380_magician_controls,
-+				ARRAY_SIZE(uda1380_magician_controls));
+ 
+ 	/* Not connected */
+ 	snd_soc_dapm_nc_pin(codec, "MONO_LOUT");
+@@ -256,12 +256,10 @@ static int n810_aic33_init(struct snd_soc_codec *codec)
+ 	snd_soc_dapm_nc_pin(codec, "HPRCOM");
+ 
+ 	/* Add N810 specific controls */
+-	for (i = 0; i < ARRAY_SIZE(aic33_n810_controls); i++) {
+-		err = snd_ctl_add(codec->card,
+-			snd_soc_cnew(&aic33_n810_controls[i], codec, NULL));
+-		if (err < 0)
+-			return err;
+-	}
++	err = snd_soc_add_controls(codec, aic33_n810_controls,
++				ARRAY_SIZE(aic33_n810_controls));
 +	if (err < 0)
 +		return err;
-+
-+	/* Add magician specific widgets */
-+	snd_soc_dapm_new_controls(codec, uda1380_dapm_widgets,
-+				  ARRAY_SIZE(uda1380_dapm_widgets));
-+
-+	/* Set up magician specific audio path interconnects */
-+	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
-+
-+	snd_soc_dapm_sync(codec);
-+	return 0;
-+}
-+
-+/* magician digital audio interface glue - connects codec <--> CPU */
-+static struct snd_soc_dai_link magician_dai[] = {
-+{
-+	.name = "uda1380",
-+	.stream_name = "UDA1380 Playback",
-+	.cpu_dai = &pxa_ssp_dai[PXA_DAI_SSP1],
-+	.codec_dai = &uda1380_dai[UDA1380_DAI_PLAYBACK],
-+	.init = magician_uda1380_init,
-+	.ops = &magician_playback_ops,
-+},
-+{
-+	.name = "uda1380",
-+	.stream_name = "UDA1380 Capture",
-+	.cpu_dai = &pxa_i2s_dai,
-+	.codec_dai = &uda1380_dai[UDA1380_DAI_CAPTURE],
-+	.ops = &magician_capture_ops,
-+}
-+};
-+
-+/* magician audio machine driver */
-+static struct snd_soc_card snd_soc_card_magician = {
-+	.name = "Magician",
-+	.dai_link = magician_dai,
-+	.num_links = ARRAY_SIZE(magician_dai),
-+	.platform = &pxa2xx_soc_platform,
-+};
-+
-+/* magician audio private data */
-+static struct uda1380_setup_data magician_uda1380_setup = {
-+	.i2c_address = 0x18,
-+	.dac_clk = UDA1380_DAC_CLK_WSPLL,
-+};
-+
-+/* magician audio subsystem */
-+static struct snd_soc_device magician_snd_devdata = {
-+	.card = &snd_soc_card_magician,
-+	.codec_dev = &soc_codec_dev_uda1380,
-+	.codec_data = &magician_uda1380_setup,
-+};
-+
-+static struct platform_device *magician_snd_device;
-+
-+static int __init magician_init(void)
-+{
-+	int ret;
-+
-+	if (!machine_is_magician())
-+		return -ENODEV;
-+
-+	ret = gpio_request(EGPIO_MAGICIAN_CODEC_POWER, "CODEC_POWER");
-+	if (ret)
-+		goto err_request_power;
-+	ret = gpio_request(EGPIO_MAGICIAN_CODEC_RESET, "CODEC_RESET");
-+	if (ret)
-+		goto err_request_reset;
-+	ret = gpio_request(EGPIO_MAGICIAN_SPK_POWER, "SPK_POWER");
-+	if (ret)
-+		goto err_request_spk;
-+	ret = gpio_request(EGPIO_MAGICIAN_EP_POWER, "EP_POWER");
-+	if (ret)
-+		goto err_request_ep;
-+	ret = gpio_request(EGPIO_MAGICIAN_MIC_POWER, "MIC_POWER");
-+	if (ret)
-+		goto err_request_mic;
-+	ret = gpio_request(EGPIO_MAGICIAN_IN_SEL0, "IN_SEL0");
-+	if (ret)
-+		goto err_request_in_sel0;
-+	ret = gpio_request(EGPIO_MAGICIAN_IN_SEL1, "IN_SEL1");
-+	if (ret)
-+		goto err_request_in_sel1;
-+
-+	gpio_set_value(EGPIO_MAGICIAN_CODEC_POWER, 1);
-+	gpio_set_value(EGPIO_MAGICIAN_IN_SEL0, 0);
-+
-+	/* we may need to have the clock running here - pH5 */
-+	gpio_set_value(EGPIO_MAGICIAN_CODEC_RESET, 1);
-+	udelay(5);
-+	gpio_set_value(EGPIO_MAGICIAN_CODEC_RESET, 0);
-+
-+	magician_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!magician_snd_device) {
-+		ret = -ENOMEM;
-+		goto err_pdev;
-+	}
-+
-+	platform_set_drvdata(magician_snd_device, &magician_snd_devdata);
-+	magician_snd_devdata.dev = &magician_snd_device->dev;
-+	ret = platform_device_add(magician_snd_device);
-+	if (ret) {
-+		platform_device_put(magician_snd_device);
-+		goto err_pdev;
-+	}
-+
-+	return 0;
-+
-+err_pdev:
-+	gpio_free(EGPIO_MAGICIAN_IN_SEL1);
-+err_request_in_sel1:
-+	gpio_free(EGPIO_MAGICIAN_IN_SEL0);
-+err_request_in_sel0:
-+	gpio_free(EGPIO_MAGICIAN_MIC_POWER);
-+err_request_mic:
-+	gpio_free(EGPIO_MAGICIAN_EP_POWER);
-+err_request_ep:
-+	gpio_free(EGPIO_MAGICIAN_SPK_POWER);
-+err_request_spk:
-+	gpio_free(EGPIO_MAGICIAN_CODEC_RESET);
-+err_request_reset:
-+	gpio_free(EGPIO_MAGICIAN_CODEC_POWER);
-+err_request_power:
-+	return ret;
-+}
-+
-+static void __exit magician_exit(void)
-+{
-+	platform_device_unregister(magician_snd_device);
-+
-+	gpio_set_value(EGPIO_MAGICIAN_SPK_POWER, 0);
-+	gpio_set_value(EGPIO_MAGICIAN_EP_POWER, 0);
-+	gpio_set_value(EGPIO_MAGICIAN_MIC_POWER, 0);
-+	gpio_set_value(EGPIO_MAGICIAN_CODEC_POWER, 0);
-+
-+	gpio_free(EGPIO_MAGICIAN_IN_SEL1);
-+	gpio_free(EGPIO_MAGICIAN_IN_SEL0);
-+	gpio_free(EGPIO_MAGICIAN_MIC_POWER);
-+	gpio_free(EGPIO_MAGICIAN_EP_POWER);
-+	gpio_free(EGPIO_MAGICIAN_SPK_POWER);
-+	gpio_free(EGPIO_MAGICIAN_CODEC_RESET);
-+	gpio_free(EGPIO_MAGICIAN_CODEC_POWER);
-+}
-+
-+module_init(magician_init);
-+module_exit(magician_exit);
-+
-+MODULE_AUTHOR("Philipp Zabel");
-+MODULE_DESCRIPTION("ALSA SoC Magician");
-+MODULE_LICENSE("GPL");
+ 
+ 	/* Add N810 specific widgets */
+ 	snd_soc_dapm_new_controls(codec, aic33_dapm_widgets,
+diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
+index 146973a..02263e5 100644
+--- a/sound/soc/pxa/corgi.c
++++ b/sound/soc/pxa/corgi.c
+@@ -276,18 +276,16 @@ static const struct snd_kcontrol_new wm8731_corgi_controls[] = {
+  */
+ static int corgi_wm8731_init(struct snd_soc_codec *codec)
+ {
+-	int i, err;
++	int err;
+ 
+ 	snd_soc_dapm_nc_pin(codec, "LLINEIN");
+ 	snd_soc_dapm_nc_pin(codec, "RLINEIN");
+ 
+ 	/* Add corgi specific controls */
+-	for (i = 0; i < ARRAY_SIZE(wm8731_corgi_controls); i++) {
+-		err = snd_ctl_add(codec->card,
+-			snd_soc_cnew(&wm8731_corgi_controls[i], codec, NULL));
+-		if (err < 0)
+-			return err;
+-	}
++	err = snd_soc_add_controls(codec, wm8731_corgi_controls,
++				ARRAY_SIZE(wm8731_corgi_controls));
++	if (err < 0)
++		return err;
+ 
+ 	/* Add corgi specific widgets */
+ 	snd_soc_dapm_new_controls(codec, wm8731_dapm_widgets,
+diff --git a/sound/soc/pxa/palm27x.c b/sound/soc/pxa/palm27x.c
+index 29958cd..48a73f6 100644
+--- a/sound/soc/pxa/palm27x.c
++++ b/sound/soc/pxa/palm27x.c
+@@ -146,19 +146,16 @@ static const struct snd_kcontrol_new palm27x_controls[] = {
+ 
+ static int palm27x_ac97_init(struct snd_soc_codec *codec)
+ {
+-	int i, err;
++	int err;
+ 
+ 	snd_soc_dapm_nc_pin(codec, "OUT3");
+ 	snd_soc_dapm_nc_pin(codec, "MONOOUT");
+ 
+ 	/* add palm27x specific controls */
+-	for (i = 0; i < ARRAY_SIZE(palm27x_controls); i++) {
+-		err = snd_ctl_add(codec->card,
+-				snd_soc_cnew(&palm27x_controls[i],
+-						codec, NULL));
+-		if (err < 0)
+-			return err;
+-	}
++	err = snd_soc_add_controls(codec, palm27x_controls,
++				ARRAY_SIZE(palm27x_controls));
++	if (err < 0)
++		return err;
+ 
+ 	/* add palm27x specific widgets */
+ 	snd_soc_dapm_new_controls(codec, palm27x_dapm_widgets,
+diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
+index fb17a0a..ef7c6c8 100644
+--- a/sound/soc/pxa/poodle.c
++++ b/sound/soc/pxa/poodle.c
+@@ -241,19 +241,17 @@ static const struct snd_kcontrol_new wm8731_poodle_controls[] = {
+  */
+ static int poodle_wm8731_init(struct snd_soc_codec *codec)
+ {
+-	int i, err;
++	int err;
+ 
+ 	snd_soc_dapm_nc_pin(codec, "LLINEIN");
+ 	snd_soc_dapm_nc_pin(codec, "RLINEIN");
+ 	snd_soc_dapm_enable_pin(codec, "MICIN");
+ 
+ 	/* Add poodle specific controls */
+-	for (i = 0; i < ARRAY_SIZE(wm8731_poodle_controls); i++) {
+-		err = snd_ctl_add(codec->card,
+-			snd_soc_cnew(&wm8731_poodle_controls[i], codec, NULL));
+-		if (err < 0)
+-			return err;
+-	}
++	err = snd_soc_add_controls(codec, wm8731_poodle_controls,
++				ARRAY_SIZE(wm8731_poodle_controls));
++	if (err < 0)
++		return err;
+ 
+ 	/* Add poodle specific widgets */
+ 	snd_soc_dapm_new_controls(codec, wm8731_dapm_widgets,
+diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
+index 1aafd8c..6ca9f53 100644
+--- a/sound/soc/pxa/spitz.c
++++ b/sound/soc/pxa/spitz.c
+@@ -278,7 +278,7 @@ static const struct snd_kcontrol_new wm8750_spitz_controls[] = {
+  */
+ static int spitz_wm8750_init(struct snd_soc_codec *codec)
+ {
+-	int i, err;
++	int err;
+ 
+ 	/* NC codec pins */
+ 	snd_soc_dapm_nc_pin(codec, "RINPUT1");
+@@ -290,12 +290,10 @@ static int spitz_wm8750_init(struct snd_soc_codec *codec)
+ 	snd_soc_dapm_nc_pin(codec, "MONO1");
+ 
+ 	/* Add spitz specific controls */
+-	for (i = 0; i < ARRAY_SIZE(wm8750_spitz_controls); i++) {
+-		err = snd_ctl_add(codec->card,
+-			snd_soc_cnew(&wm8750_spitz_controls[i], codec, NULL));
+-		if (err < 0)
+-			return err;
+-	}
++	err = snd_soc_add_controls(codec, wm8750_spitz_controls,
++				ARRAY_SIZE(wm8750_spitz_controls));
++	if (err < 0)
++		return err;
+ 
+ 	/* Add spitz specific widgets */
+ 	snd_soc_dapm_new_controls(codec, wm8750_dapm_widgets,
+diff --git a/sound/soc/pxa/tosa.c b/sound/soc/pxa/tosa.c
+index 09b5bad..fc78137 100644
+--- a/sound/soc/pxa/tosa.c
++++ b/sound/soc/pxa/tosa.c
+@@ -188,18 +188,16 @@ static const struct snd_kcontrol_new tosa_controls[] = {
+ 
+ static int tosa_ac97_init(struct snd_soc_codec *codec)
+ {
+-	int i, err;
++	int err;
+ 
+ 	snd_soc_dapm_nc_pin(codec, "OUT3");
+ 	snd_soc_dapm_nc_pin(codec, "MONOOUT");
+ 
+ 	/* add tosa specific controls */
+-	for (i = 0; i < ARRAY_SIZE(tosa_controls); i++) {
+-		err = snd_ctl_add(codec->card,
+-				snd_soc_cnew(&tosa_controls[i],codec, NULL));
+-		if (err < 0)
+-			return err;
+-	}
++	err = snd_soc_add_controls(codec, tosa_controls,
++				ARRAY_SIZE(tosa_controls));
++	if (err < 0)
++		return err;
+ 
+ 	/* add tosa specific widgets */
+ 	snd_soc_dapm_new_controls(codec, tosa_dapm_widgets,
+diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/s3c24xx/neo1973_wm8753.c
+index 5f6aeec..289fadf 100644
+--- a/sound/soc/s3c24xx/neo1973_wm8753.c
++++ b/sound/soc/s3c24xx/neo1973_wm8753.c
+@@ -498,7 +498,7 @@ static const struct snd_kcontrol_new wm8753_neo1973_controls[] = {
+  */
+ static int neo1973_wm8753_init(struct snd_soc_codec *codec)
+ {
+-	int i, err;
++	int err;
+ 
+ 	pr_debug("Entered %s\n", __func__);
+ 
+@@ -518,13 +518,10 @@ static int neo1973_wm8753_init(struct snd_soc_codec *codec)
+ 	set_scenario_endpoints(codec, NEO_AUDIO_OFF);
+ 
+ 	/* add neo1973 specific controls */
+-	for (i = 0; i < ARRAY_SIZE(wm8753_neo1973_controls); i++) {
+-		err = snd_ctl_add(codec->card,
+-				snd_soc_cnew(&wm8753_neo1973_controls[i],
+-				codec, NULL));
+-		if (err < 0)
+-			return err;
+-	}
++	err = snd_soc_add_controls(codec, wm8753_neo1973_controls,
++				ARRAY_SIZE(8753_neo1973_controls));
++	if (err < 0)
++		return err;
+ 
+ 	/* set up neo1973 specific audio routes */
+ 	err = snd_soc_dapm_add_routes(codec, dapm_routes,
 -- 
 1.6.2
