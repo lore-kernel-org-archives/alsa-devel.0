@@ -1,20 +1,18 @@
-From: Gregorio Guidi <gregorio.guidi@gmail.com>
-Subject: Re: [PATCH] fix headphone settings and master
-	volume	(Conexant CX20551 0x103c30b2)
-Date: Thu, 12 Mar 2009 15:35:37 +0100
-Message-ID: <200903121535.37563.gregorio.guidi@gmail.com>
-References: <200903082119.41670.gregorio.guidi@gmail.com>
-	<200903121500.35635.gregorio.guidi@gmail.com>
-	<s5hab7qomcv.wl%tiwai@suse.de>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: sys/class entry not created for jack in machine
+	driver
+Date: Thu, 12 Mar 2009 14:39:31 +0000
+Message-ID: <20090312143930.GC24376@sirena.org.uk>
+References: <2C7D3DF36ADFFC479B44490D912B616705ECEA5E07@dlee07.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay2.tre.it (mail.tre.it [62.13.171.46])
-	by alsa0.perex.cz (Postfix) with ESMTP id C9789103896
-	for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2009 15:35:52 +0100 (CET)
-In-Reply-To: <s5hab7qomcv.wl%tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id D60FB103896
+	for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2009 15:39:32 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705ECEA5E07@dlee07.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,117 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: "Lopez Cruz, Misael" <x0052729@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 12 March 2009 15:18:56 Takashi Iwai wrote:
-> At Thu, 12 Mar 2009 15:00:35 +0100,
->
-> Gregorio Guidi wrote:
-> > On Thursday 12 March 2009 07:43:27 Takashi Iwai wrote:
-> > > At Wed, 11 Mar 2009 22:22:39 +0100,
-> > >
-> > > Gregorio Guidi wrote:
-> > > > On Tuesday 10 March 2009 15:49:38 Takashi Iwai wrote:
-> > > > > At Mon, 9 Mar 2009 20:19:35 +0100,
-> > > > >
-> > > > > ...
-> > > > >
-> > > > > Thanks, that helps for debugging.
-> > > > >
-> > > > > Looking through the current patch_conexant.c, there are other messy
-> > > > > codes there, too.  So I cleaned up and fixed it on sound git tree
-> > > > > now.  Any chance to try it out?  The GIT tree is found at:
-> > > > >
-> > > > >   
-> > > > > git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
-> > > >
-> > > > I managed to test a kernel snapshot with the latest changes, thanks
-> > > > for taking the time to refactor and clean up the code there.
-> > >
-> > > Thanks for testing.
-> > >
-> > > > There are still issues, though: at the moment, the "Speaker" control
-> > > > does not work. Consequently, automute does not work and Master only
-> > > > controls headphones.
-> > >
-> > > Hm, doesn't "Speaker" give any change if you unplug the headphone?
-> > > It should change the output volume of widget 0x1d.  If it's true, there
-> > > can be a few reasons:
-> > >
-> > > A. The real speaker output pin isn't 0x1d but another pin
-> > >
-> > > B. The widget 0x1d has a problem with connection to 0x19
-> > >
-> > > C. The widget 0x1d has no output amp control despite the description
-> >
-> > To clarify: the speakers make sounds, but volume control and muting do
-> > not work.
-> >
-> > Actually, now that I start to understand how these widget connections
-> > work, I see the problem is simpler: after changing the 0x1d connection
-> > (routing the speakers to 0x19) with {0x1d, AC_VERB_SET_CONNECT_SEL, 0x1},
-> > you have to update the other places where the 0x1d widget is used (see
-> > patch). This also explains the problem originally reported where
-> > Headphone didn't work (here and in bug #3091).
-> >
-> > With just the following patch applied on top of the git tree everything
-> > works nicely (Headphone, Speaker, Master, automute all work as expected).
->
-> Wow, that's a nice finding!  Yes, this explains everything.
->
-> In the HD-audio specification, the amp volume selection of a pin
-> widget is defined ambiguously.  Usually, the input amp takes the
-> index, at least for other widget types.  However, the input amp for a
-> pin widget means the recording (the "input" from the pin jack) while
-> the output amp corresponds to the output level from the jack.  So,
-> there is an inconsistency in the definition.
->
-> Normally, the other vendors don't use the index for the pin output
-> amp -- i.e. no index selection for output amps.  But it seems that
-> conexant codec uses it.  That's why we are fooled by this for such a
-> long time...
->
-> Anyway, the patch looks good.  Could you give your sign-off?
+On Thu, Mar 12, 2009 at 04:54:16AM -0500, Lopez Cruz, Misael wrote:
 
-Sure.
+> case of jacks not belonging to a codec, they never get registered. A jack
+> device in a codec driver gets registered because codec when initializing
+> the SoC card (snd_soc_init_card) registers the sound card, and the sound
+> card registers all sound devices added to it, among them the jack device.
 
-Update the places where the 0x1d widget is used for Conexant 5047, fixing 
-mismatch introduced after changing the connection.
+Ah, you should move the jack registration to the device initialisation -
+it needs to happen before the card is registered.  Putting it in
+sdp4030_twl4030_init() ought to do the job.
 
-Signed-off-by: Gregorio Guidi <gregorio.guidi@gmail.com>
+> I'm registering the jack device after it's created (in function
+> snd_jack_new) and now I get the sys/class entry for the headset jack in
+> my machine driver. What do you think about that solution?
 
-diff -Nur sound-2.6.git.orig/sound/pci/hda/patch_conexant.c 
-sound-2.6.git/sound/pci/hda/patch_conexant.c
---- sound-2.6.git.orig/sound/pci/hda/patch_conexant.c   2009-03-12 
-14:56:20.000000000 +0100
-+++ sound-2.6.git/sound/pci/hda/patch_conexant.c        2009-03-12 
-14:29:48.000000000 +0100
-@@ -1196,7 +1196,7 @@
-         * the headphone jack
-         */
-        bits = (!spec->hp_present && spec->cur_eapd) ? 0 : HDA_AMP_MUTE;
--       snd_hda_codec_amp_stereo(codec, 0x1d, HDA_OUTPUT, 0,
-+       snd_hda_codec_amp_stereo(codec, 0x1d, HDA_OUTPUT, 0x01,
-                                 HDA_AMP_MUTE, bits);
-        bits = spec->cur_eapd ? 0 : HDA_AMP_MUTE;
-        snd_hda_codec_amp_stereo(codec, 0x13, HDA_OUTPUT, 0,
-@@ -1214,7 +1214,7 @@
-                                     AC_VERB_GET_PIN_SENSE, 0) & 0x80000000;
+That shouldn't be required.
 
-        bits = (spec->hp_present || !spec->cur_eapd) ? HDA_AMP_MUTE : 0;
--       snd_hda_codec_amp_stereo(codec, 0x1d, HDA_OUTPUT, 0,
-+       snd_hda_codec_amp_stereo(codec, 0x1d, HDA_OUTPUT, 0x01,
-                                 HDA_AMP_MUTE, bits);
- }
-
-@@ -1276,7 +1276,7 @@
- };
-
- static struct snd_kcontrol_new cxt5047_hp_spk_mixers[] = {
--       HDA_CODEC_VOLUME("Speaker Playback Volume", 0x1d, 0x00, HDA_OUTPUT),
-+       HDA_CODEC_VOLUME("Speaker Playback Volume", 0x1d, 0x01, HDA_OUTPUT),
-        HDA_CODEC_VOLUME("Headphone Playback Volume", 0x13, 0x00, HDA_OUTPUT),
-        {}
- };
+BTW, when talking about code modifications you've done it's normally
+helpful if you post the change you've made to reduce the chances of
+miscommunication.
