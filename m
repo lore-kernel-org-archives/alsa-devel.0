@@ -1,24 +1,20 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 3/3][RFC] ASoC: pxa-ssp: Don't
-	use	SSCR0_SerClkDiv and SSCR0_SCR
-Date: Thu, 12 Mar 2009 11:36:54 +0100
-Message-ID: <20090312103654.GB14526@buzzloop.caiaq.de>
-References: <1236795420-12175-1-git-send-email-philipp.zabel@gmail.com>
-	<1236795420-12175-3-git-send-email-philipp.zabel@gmail.com>
-	<20090311184416.GA29865@buzzloop.caiaq.de>
-	<74d0deb30903111410v5a601709jf779c0d2e64e7de7@mail.gmail.com>
-	<20090312004639.GB7462@buzzloop.caiaq.de>
-	<20090312102355.GB4038@rakim.wolfsonmicro.main>
-	<20090312102749.GA14526@buzzloop.caiaq.de>
+From: Gregorio Guidi <gregorio.guidi@gmail.com>
+Subject: Re: [PATCH] fix headphone settings and master
+	volume	(Conexant CX20551 0x103c30b2)
+Date: Thu, 12 Mar 2009 15:00:35 +0100
+Message-ID: <200903121500.35635.gregorio.guidi@gmail.com>
+References: <200903082119.41670.gregorio.guidi@gmail.com>
+	<200903112222.40445.gregorio.guidi@gmail.com>
+	<s5h7i2v2qcw.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7951E1038BE
-	for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2009 11:37:05 +0100 (CET)
+Received: from relay2.tre.it (mail.tre.it [62.13.171.46])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2E85724498
+	for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2009 15:00:59 +0100 (CET)
+In-Reply-To: <s5h7i2v2qcw.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <20090312102749.GA14526@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,37 +24,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, pHilipp Zabel <philipp.zabel@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 12, 2009 at 11:27:49AM +0100, Daniel Mack wrote:
-> On Thu, Mar 12, 2009 at 10:23:56AM +0000, Mark Brown wrote:
-> > On Thu, Mar 12, 2009 at 01:46:39AM +0100, Daniel Mack wrote:
-> > 
-> > > (Just for the reference - this one needs to be applied on top of my last
-> > >  'network vs psp mode' patch, otherwise the second hunk won't apply).
-> > 
-> > Could you please resubmit the most current versions of your outstanding
-> > patches?  There's too many versions of patches floating around in the
-> > middle of threads and I want to make sure I'm looking at the most
-> > current versions.
-> 
-> Sorry. See below. There's only one left now and this one shrunk a lot.
+On Thursday 12 March 2009 07:43:27 Takashi Iwai wrote:
+> At Wed, 11 Mar 2009 22:22:39 +0100,
+>
+> Gregorio Guidi wrote:
+> > On Tuesday 10 March 2009 15:49:38 Takashi Iwai wrote:
+> > > At Mon, 9 Mar 2009 20:19:35 +0100,
+> > >
+> > > ...
+> > >
+> > > Thanks, that helps for debugging.
+> > >
+> > > Looking through the current patch_conexant.c, there are other messy
+> > > codes there, too.  So I cleaned up and fixed it on sound git tree
+> > > now.  Any chance to try it out?  The GIT tree is found at:
+> > >
+> > >    git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+> >
+> > I managed to test a kernel snapshot with the latest changes, thanks for
+> > taking the time to refactor and clean up the code there.
+>
+> Thanks for testing.
+>
+> > There are still issues, though: at the moment, the "Speaker" control does
+> > not work. Consequently, automute does not work and Master only controls
+> > headphones.
+>
+> Hm, doesn't "Speaker" give any change if you unplug the headphone?
+> It should change the output volume of widget 0x1d.  If it's true, there
+> can be a few reasons:
+>
+> A. The real speaker output pin isn't 0x1d but another pin
+>
+> B. The widget 0x1d has a problem with connection to 0x19
+>
+> C. The widget 0x1d has no output amp control despite the description
 
-Forgot one credit to this one.
+To clarify: the speakers make sounds, but volume control and muting do not 
+work.
 
-> From ad8734e93eed130a55482b0e937729578e6d93c8 Mon Sep 17 00:00:00 2001
-> From: Daniel Mack <daniel@caiaq.de>
-> Date: Wed, 11 Mar 2009 19:38:15 +0100
-> Subject: [PATCH] pxa-ssp: switch from network mode to PSP
-> 
-> This switches the pxa ssp port usage from network mode to PSP mode.
-> Removed some comments and checks for configured TDM channels.
-> A special case is added to support configuration where BCLK = 64fs. We
-> need to do some black magic in this case which doesn't look nice but
-> there is unfortunately no other option than that.
-> 
-> Signed-off-by: Daniel Mack <daniel@caiaq.de>
+Actually, now that I start to understand how these widget connections work, I 
+see the problem is simpler: after changing the 0x1d connection (routing the 
+speakers to 0x19) with {0x1d, AC_VERB_SET_CONNECT_SEL, 0x1}, you have to 
+update the other places where the 0x1d widget is used (see patch). This also 
+explains the problem originally reported where Headphone didn't work (here and 
+in bug #3091).
 
-Diagnosed-by: Tim Ruetz <tim@caiaq.de>
+With just the following patch applied on top of the git tree everything works 
+nicely (Headphone, Speaker, Master, automute all work as expected).
+
+diff -Nur sound-2.6.git.orig/sound/pci/hda/patch_conexant.c 
+sound-2.6.git/sound/pci/hda/patch_conexant.c
+--- sound-2.6.git.orig/sound/pci/hda/patch_conexant.c   2009-03-12 
+14:56:20.000000000 +0100
++++ sound-2.6.git/sound/pci/hda/patch_conexant.c        2009-03-12 
+14:29:48.000000000 +0100
+@@ -1196,7 +1196,7 @@
+         * the headphone jack
+         */
+        bits = (!spec->hp_present && spec->cur_eapd) ? 0 : HDA_AMP_MUTE;
+-       snd_hda_codec_amp_stereo(codec, 0x1d, HDA_OUTPUT, 0,
++       snd_hda_codec_amp_stereo(codec, 0x1d, HDA_OUTPUT, 0x01,
+                                 HDA_AMP_MUTE, bits);
+        bits = spec->cur_eapd ? 0 : HDA_AMP_MUTE;
+        snd_hda_codec_amp_stereo(codec, 0x13, HDA_OUTPUT, 0,
+@@ -1214,7 +1214,7 @@
+                                     AC_VERB_GET_PIN_SENSE, 0) & 0x80000000;
+
+        bits = (spec->hp_present || !spec->cur_eapd) ? HDA_AMP_MUTE : 0;
+-       snd_hda_codec_amp_stereo(codec, 0x1d, HDA_OUTPUT, 0,
++       snd_hda_codec_amp_stereo(codec, 0x1d, HDA_OUTPUT, 0x01,
+                                 HDA_AMP_MUTE, bits);
+ }
+
+@@ -1276,7 +1276,7 @@
+ };
+
+ static struct snd_kcontrol_new cxt5047_hp_spk_mixers[] = {
+-       HDA_CODEC_VOLUME("Speaker Playback Volume", 0x1d, 0x00, HDA_OUTPUT),
++       HDA_CODEC_VOLUME("Speaker Playback Volume", 0x1d, 0x01, HDA_OUTPUT),
+        HDA_CODEC_VOLUME("Headphone Playback Volume", 0x13, 0x00, HDA_OUTPUT),
+        {}
+ };
