@@ -1,19 +1,22 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/5] ASoC: Replace remaining uses of
-	snd_soc_cnew with	snd_soc_add_controls.
-Date: Thu, 12 Mar 2009 10:11:51 +0000
-Message-ID: <20090312101151.GA4038@rakim.wolfsonmicro.main>
-References: <20090311224439.GB9001@sirena.org.uk>
-	<1236852474-15930-1-git-send-email-philipp.zabel@gmail.com>
+Subject: Re: [PATCH 3/3][RFC] ASoC: pxa-ssp: Don't
+	use	SSCR0_SerClkDiv and SSCR0_SCR
+Date: Thu, 12 Mar 2009 10:23:56 +0000
+Message-ID: <20090312102355.GB4038@rakim.wolfsonmicro.main>
+References: <1236795420-12175-1-git-send-email-philipp.zabel@gmail.com>
+	<1236795420-12175-3-git-send-email-philipp.zabel@gmail.com>
+	<20090311184416.GA29865@buzzloop.caiaq.de>
+	<74d0deb30903111410v5a601709jf779c0d2e64e7de7@mail.gmail.com>
+	<20090312004639.GB7462@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F2ABA1038C7
-	for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2009 11:11:52 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 108BA1038C7
+	for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2009 11:23:57 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1236852474-15930-1-git-send-email-philipp.zabel@gmail.com>
+In-Reply-To: <20090312004639.GB7462@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +26,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Philipp Zabel <philipp.zabel@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org, pHilipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 12, 2009 at 11:07:54AM +0100, Philipp Zabel wrote:
-> The drivers are basically duplicating the same code over and over.
-> As snd_soc_cnew is going to be made static some time after the next
-> merge window, we might as well convert them now.
+On Thu, Mar 12, 2009 at 01:46:39AM +0100, Daniel Mack wrote:
 
-> Signed-off-by: Philipp Zabel <philipp.zabel@gmail.com>
+> (Just for the reference - this one needs to be applied on top of my last
+>  'network vs psp mode' patch, otherwise the second hunk won't apply).
 
-Applied, thanks.
+Could you please resubmit the most current versions of your outstanding
+patches?  There's too many versions of patches floating around in the
+middle of threads and I want to make sure I'm looking at the most
+current versions.
