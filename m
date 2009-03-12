@@ -1,16 +1,19 @@
 From: Dmitry Artamonow <mad_soft@inbox.ru>
-Subject: [PATCH] ALSA: drop outdated and broken sa11xx-uda1341
-	driver
-Date: Thu, 12 Mar 2009 00:11:13 +0300
-Message-ID: <20090311211113.GA18750@rainbow>
+Subject: Re: [PATCH] ALSA: drop outdated and broken
+	sa11xx-uda1341 driver
+Date: Fri, 13 Mar 2009 00:46:47 +0300
+Message-ID: <20090312214646.GA20480@rainbow>
+References: <20090311211113.GA18750@rainbow>
+	<20090311212654.GE18096@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.asoft.ru (mail.asoft.ru [83.222.19.8])
-	by alsa0.perex.cz (Postfix) with ESMTP id A46A1243E8
-	for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2009 22:11:23 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 40C001038BE
+	for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2009 22:46:51 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <20090311212654.GE18096@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,8 +24,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Russell King <linux@arm.linux.org.uk>
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
+
+On 21:26 Wed 11 Mar     , Russell King - ARM Linux wrote:
+> On Thu, Mar 12, 2009 at 12:11:13AM +0300, Dmitry Artamonow wrote:
+> > It depends on L3 support from 2.4 kernel (CONFIG_L3) that never got
+> > merged into mainline. Since there's no way to use it on any of
+> > supported machines (iPaq h3100 or h3600), better drop it for now.
+> > It can be reimplemented later using ASoC infrastructure (there's
+> > already a driver for uda1341 codec in mainline, so only CPU and machine
+> > parts need to be written).
+Seems that my patch stuck somewhere in alsa-devel moderator's queue.
+My fault, sorry - posted first, and only then realised that I'm
+not subscribed yet. Anyway, I noticed that in alsa-kernel.git some
+changes to sa11xx-uda1341.c were added comparing to Linus' tree,
+so here's the rebased version - please find it at the end of the letter.
+
+> Yay, someone finally removing this.
+> 
+> I never saw this going in, but when I read through it, it was totally
+> iPAQ specific.  Having seen soo much effort put in to the OSS driver
+> to make it flexible, have the iPAQ people use that, and then write
+> their own ALSA specific driver irked the people who contributed to
+> the OSS driver, to the extent that the OSS support was ripped out.  (So
+> I have platforms here were there _was_ full sound support but with the
+> advent of ALSA, lost all sound support.)  It was certainly a sad day
+> when this driver was merged.
+
+That saddens me most is that all this years since it was merged various
+people spent their time to do some small fixes, cleanups and API conversion
+in this driver, and nobody ever noticed that it can't even be compiled.
+
+
+=======================================================================
+
+>From 4b4e7524fd91d818a3b08f12c1ef3875ebf68673 Mon Sep 17 00:00:00 2001
+From: Dmitry Artamonow <mad_soft@inbox.ru>
+Date: Thu, 12 Mar 2009 23:03:13 +0300
+Subject: [PATCH] ALSA: drop outdated and broken sa11xx-uda1341 driver
 
 It depends on L3 support from 2.4 kernel (CONFIG_L3) that never got
 merged into mainline. Since there's no way to use it on any of
@@ -37,11 +77,11 @@ Cc: Russell King <linux@arm.linux.org.uk>
  include/sound/uda1341.h    |  126 ------
  sound/arm/Kconfig          |   11 -
  sound/arm/Makefile         |    3 -
- sound/arm/sa11xx-uda1341.c |  983 --------------------------------------------
+ sound/arm/sa11xx-uda1341.c |  984 --------------------------------------------
  sound/i2c/Makefile         |    2 -
  sound/i2c/l3/Makefile      |    8 -
  sound/i2c/l3/uda1341.c     |  935 -----------------------------------------
- 7 files changed, 0 insertions(+), 2068 deletions(-)
+ 7 files changed, 0 insertions(+), 2069 deletions(-)
  delete mode 100644 include/sound/uda1341.h
  delete mode 100644 sound/arm/sa11xx-uda1341.c
  delete mode 100644 sound/i2c/l3/Makefile
@@ -217,10 +257,10 @@ index 2054de1..5a549ed 100644
  
 diff --git a/sound/arm/sa11xx-uda1341.c b/sound/arm/sa11xx-uda1341.c
 deleted file mode 100644
-index 1dcd51d..0000000
+index 7101d3d..0000000
 --- a/sound/arm/sa11xx-uda1341.c
 +++ /dev/null
-@@ -1,983 +0,0 @@
+@@ -1,984 +0,0 @@
 -/*
 - *  Driver for Philips UDA1341TS on Compaq iPAQ H3600 soundcard
 - *  Copyright (C) 2002 Tomas Kasparek <tomas.kasparek@seznam.cz>
@@ -1110,9 +1150,10 @@ index 1dcd51d..0000000
 -	struct sa11xx_uda1341 *chip;
 -
 -	/* register the soundcard */
--	card = snd_card_new(-1, id, THIS_MODULE, sizeof(struct sa11xx_uda1341));
--	if (card == NULL)
--		return -ENOMEM;
+-	err = snd_card_create(-1, id, THIS_MODULE,
+-			      sizeof(struct sa11xx_uda1341), &card);
+-	if (err < 0)
+-		return err;
 -
 -	chip = card->private_data;
 -	spin_lock_init(&chip->s[0].dma_lock);
@@ -1137,7 +1178,7 @@ index 1dcd51d..0000000
 -	snd_card_set_dev(card, &devptr->dev);
 -
 -	if ((err = snd_card_register(card)) == 0) {
--		printk( KERN_INFO "iPAQ audio support initialized\n" );
+-		printk(KERN_INFO "iPAQ audio support initialized\n");
 -		platform_set_drvdata(devptr, card);
 -		return 0;
 -	}
@@ -2174,3 +2215,7 @@ index 9840eb4..0000000
 - */
 -- 
 1.6.1.3
+
+-- 
+Best regards,
+Dmitry "MAD" Artamonow
