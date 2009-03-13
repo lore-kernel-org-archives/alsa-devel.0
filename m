@@ -1,55 +1,152 @@
-From: Robert Hancock <hancockrwd@gmail.com>
-Subject: Re: How can PCI resource allocation fail?
-Date: Thu, 12 Mar 2009 20:36:30 -0600
-Message-ID: <49B9C6AE.5050308@gmail.com>
-References: <49B9959F.1080705@digadd.de>
+From: "Lopez Cruz, Misael" <x0052729@ti.com>
+Subject: [PATCH] SoC: Move headset jack registration to device
+ initialization for SDP3430
+Date: Thu, 12 Mar 2009 21:45:27 -0500
+Message-ID: <2C7D3DF36ADFFC479B44490D912B616705ECF129A3@dlee07.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1758217AbZCMCiw@vger.kernel.org>
-In-Reply-To: <49B9959F.1080705@digadd.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Christian P. Schmidt" <schmidt@digadd.de>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 01D591038E2
+	for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2009 03:45:48 +0100 (CET)
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Christian P. Schmidt wrote:
-> Hi all,
-> 
-> I'm toying with the alsa-driver for the Creative Labs X-Fi. I'm working on the PCI Express version of this card, though, which is
-> the same as the PCI version plus a PCIe to PCI bridge but has a different ID:
-> 
->           +-1c.2-[0000:03-04]----00.0-[0000:04]----00.0  1102:0009
-> 
-> 03:00.0 PCI bridge: Creative Labs Device 7006
-> 04:00.0 Audio device: Creative Labs [SB X-Fi Xtreme Audio] CA0110-IBG
-> 
-> Now, after adding the ID, the driver fails:
-> 
-> [46833.487579] CA0106 0000:04:00.0: PCI INT A -> GSI 18 (level, low) -> IRQ 18
-> [46833.487586] CA0106 0000:04:00.0: PCI INT A disabled
-> [46833.487588] cannot allocate the port
-> [46833.487594] CA0106: probe of 0000:04:00.0 failed with error -16
-> 
-> The actual error is occurring in
-> 
-> 	chip->port = pci_resource_start(pci, 0);
-> 	chip->res_port = request_region(chip->port, pci_resource_len(pci,0), "snd_ca0106");
-> 	if (!chip->res_port) {
-> 		snd_ca0106_free(chip);
-> 		printk(KERN_ERR "cannot allocate the port\n");
-> 		return -EBUSY;
-> 	}
-> 
-> This from /proc/iomem:
-> 
-> f9f00000-f9ffffff : PCI Bus 0000:03
->   f9f00000-f9ffffff : PCI Bus 0000:04
->     f9ffc000-f9ffffff : 0000:04:00.0
-> 
-> Some additional debug output tells me that the code is actually trying to allocate 16k starting from f9ffc000. What could be
-> potential reasons for the failure? Do I have to do something with the bridge before I can try to request the region?
+Move headset jack registration to the codec/machine specific
+initialization. Having the jack registration in machine init
+causes that the jack device gets initialized but not registered
+since the sound card is registered before the jack. Moving jack
+registration to device initialization will register the jack
+device along with all other devices associated to the card when
+the card is registed. As a consequence of jack device registered
+properly, the jack is detected as an input device.
 
-request_region is requesting IO ports. The PCI BAR on the card is MMIO 
-memory, not IO ports, so request_mem_region has to be used. It's 
-possible that this driver isn't set up to handle MMIO space.
+Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
+---
+ sound/soc/omap/sdp3430.c |   74 ++++++++++++++++++++++++---------------------
+ 1 files changed, 39 insertions(+), 35 deletions(-)
+
+diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
+index 715c648..0a41de6 100644
+--- a/sound/soc/omap/sdp3430.c
++++ b/sound/soc/omap/sdp3430.c
+@@ -39,6 +39,8 @@
+ #include "omap-pcm.h"
+ #include "../codecs/twl4030.h"
+ 
++static struct snd_soc_card snd_soc_sdp3430;
++
+ static int sdp3430_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
+ {
+@@ -82,6 +84,27 @@ static struct snd_soc_ops sdp3430_ops = {
+ 	.hw_params = sdp3430_hw_params,
+ };
+ 
++/* Headset jack */
++static struct snd_soc_jack hs_jack;
++
++/* Headset jack detection DAPM pins */
++static struct snd_soc_jack_pin hs_jack_pins[] = {
++	{
++		.pin = "Headset Jack",
++		.mask = SND_JACK_HEADSET,
++	},
++};
++
++/* Headset jack detection gpios */
++static struct snd_soc_jack_gpio hs_jack_gpios[] = {
++	{
++		.gpio = (OMAP_MAX_GPIO_LINES + 2),
++		.name = "hsdet-gpio",
++		.report = SND_JACK_HEADSET,
++		.debounce_time = 200,
++	},
++};
++
+ /* SDP3430 machine DAPM */
+ static const struct snd_soc_dapm_widget sdp3430_twl4030_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MIC("Ext Mic", NULL),
+@@ -141,30 +164,25 @@ static int sdp3430_twl4030_init(struct snd_soc_codec *codec)
+ 	snd_soc_dapm_nc_pin(codec, "CARKITR");
+ 
+ 	ret = snd_soc_dapm_sync(codec);
++	if (ret)
++		return ret;
+ 
+-	return ret;
+-}
++	/* Headset jack detection */
++	ret = snd_soc_jack_new(&snd_soc_sdp3430, "Headset Jack",
++				SND_JACK_HEADSET, &hs_jack);
++	if (ret)
++		return ret;
+ 
+-/* Headset jack */
+-static struct snd_soc_jack hs_jack;
++	ret = snd_soc_jack_add_pins(&hs_jack, ARRAY_SIZE(hs_jack_pins),
++				hs_jack_pins);
++	if (ret)
++		return ret;
+ 
+-/* Headset jack detection DAPM pins */
+-static struct snd_soc_jack_pin hs_jack_pins[] = {
+-	{
+-		.pin = "Headset Jack",
+-		.mask = SND_JACK_HEADSET,
+-	},
+-};
++	ret = snd_soc_jack_add_gpios(&hs_jack, ARRAY_SIZE(hs_jack_gpios),
++				hs_jack_gpios);
+ 
+-/* Headset jack detection gpios */
+-static struct snd_soc_jack_gpio hs_jack_gpios[] = {
+-	{
+-		.gpio = (OMAP_MAX_GPIO_LINES + 2),
+-		.name = "hsdet-gpio",
+-		.report = SND_JACK_HEADSET,
+-		.debounce_time = 200,
+-	},
+-};
++	return ret;
++}
+ 
+ /* Digital audio interface glue - connects codec <--> CPU */
+ static struct snd_soc_dai_link sdp3430_dai = {
+@@ -216,21 +234,7 @@ static int __init sdp3430_soc_init(void)
+ 	if (ret)
+ 		goto err1;
+ 
+-	/* Headset jack detection */
+-	ret = snd_soc_jack_new(&snd_soc_sdp3430, "SDP3430 headset jack",
+-				SND_JACK_HEADSET, &hs_jack);
+-	if (ret)
+-		return ret;
+-
+-	ret = snd_soc_jack_add_pins(&hs_jack, ARRAY_SIZE(hs_jack_pins),
+-				hs_jack_pins);
+-	if (ret)
+-		return ret;
+-
+-	ret = snd_soc_jack_add_gpios(&hs_jack, ARRAY_SIZE(hs_jack_gpios),
+-				hs_jack_gpios);
+-
+-	return ret;
++	return 0;
+ 
+ err1:
+ 	printk(KERN_ERR "Unable to add platform device\n");
+-- 
+1.5.4.3
