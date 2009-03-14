@@ -1,17 +1,17 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: PXA SSP - work in progress
-Date: Fri, 13 Mar 2009 18:15:03 +0100
-Message-ID: <20090313171503.GJ32760@buzzloop.caiaq.de>
-References: <20090313143720.GC8989@sirena.org.uk>
+From: Emmanuel Chanel <emmanuelchanel@gmail.com>
+Subject: Fedora 10 x86_64 alsa problem: Realtek ALC889A Audio
+ Codec(ATI azalia) not detected on alsa
+Date: Sun, 15 Mar 2009 03:50:10 +0900
+Message-ID: <1237056610.21086.72.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 00F49103801
-	for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2009 18:15:06 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20090313143720.GC8989@sirena.org.uk>
+Received: from ti-out-0910.google.com (ti-out-0910.google.com [209.85.142.191])
+	by alsa0.perex.cz (Postfix) with ESMTP id 32E4E244D1
+	for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2009 19:50:13 +0100 (CET)
+Received: by ti-out-0910.google.com with SMTP id u3so576475tia.8
+	for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2009 11:50:11 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,28 +21,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, pHilipp Zabel <philipp.zabel@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+I wrote this on
+https://bugzilla.redhat.com/show_bug.cgi?id=489828
+I've used the driver of kernel package. And Mr. Jaroslav Kysela replied me that I could try snapshot source. (Thx, Mr. Jaroslav Kysela.
+And on #alsa on Freenode, Thingol and gnubien advised me much. Thank you!)
+But I couldn't get sound back none of both: stable(alsa-driver-1.0.19) and snapshot (alsa-driver-1.0.19.34.g70f78.363.g0ec3b).
+My alsa info is on
+http://www.alsa-project.org/db/?f=af6a6e787d4bd5212bf766bf5d09fda1ab5e2300
+I use desktop. Its mother board is GA-MA69H-S3H . The soundcard is
+onboard. Realtek ALC889A Audio Codec.
+# lspci |grep -i "multi\|audio\|040[0-3]"
+# Audio device: ATI Technologies Inc SB600 Azalia (Intel HDA)
+When I installed stable release of alsa-driver --with-debug=verbose ,
+dmesg says
+HDA Intel 0000:00:14.2: PCI INT A -> GSI 16 (level, low) -> IRQ 16
+ALSA /home/emmanuel/Softwares/alsa-driver-1.0.19/pci/hda/hda_intel.c:2218: chipset global capabilities = 0x4401
+ALSA /home/emmanuel/Softwares/alsa-driver-1.0.19/pci/hda/hda_intel.c:786: codec_mask = 0x8
+ALSA /home/emmanuel/Softwares/alsa-driver-1.0.19/pci/hda/hda_intel.c:1214: hda_intel: codec #3 probed OK
+ALSA /home/emmanuel/Softwares/alsa-driver-1.0.19/pci/hda/../../alsa-kernel/pci/hda/hda_codec.c:788: hda_codec: no AFG or MFG node found
+ALSA /home/emmanuel/Softwares/alsa-driver-1.0.19/pci/hda/hda_intel.c:1298: hda-intel: no codecs initialized
+HDA Intel 0000:00:14.2: PCI INT A disabled
 
-On Fri, Mar 13, 2009 at 02:37:24PM +0000, Mark Brown wrote:
-> I worked a bit on the PXA SSP code last night and was able to come up
-> with a configuration which uses non-network mode for I2S and works well
-> on the Zylonite.  I'll post the current series I have in a followup to
-> this, if you could take a look that'd be great - I haven't yet worked
-> through all the testing I'd like to do.
-> 
-> Unfortunately it's going to have broken Daniel's configuration since I
-> inverted the sense of LRCLK as the chip seemed not to generate an LRCLK
-> with a non-zero frame delay; I need to check to see if this is just
-> something I've overlooked.  Hopefully Daniel's system should just have
-> inverted the left and right channels.
-
-I can confirm that my board still works with your latest patches, so I'm
-fine with your changes :) And indeed - the channels were inverted, I
-didn't check that before as it wasn't my greatest concern ...
-
-Thanks,
-Daniel
+-- 
+Emmanuel Chanel <emmanuelchanel@gmail.com>
