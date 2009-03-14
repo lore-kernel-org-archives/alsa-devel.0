@@ -1,17 +1,20 @@
-From: Emmanuel Chanel <emmanuelchanel@gmail.com>
-Subject: Fedora 10 x86_64 alsa problem: Realtek ALC889A Audio
- Codec(ATI azalia) not detected on alsa
-Date: Sun, 15 Mar 2009 03:50:10 +0900
-Message-ID: <1237056610.21086.72.camel@localhost.localdomain>
+From: =?UTF-8?Q?Vedran_Mileti=C4=87?= <rivanvx@gmail.com>
+Subject: Re: Fedora 10 x86_64 alsa problem: Realtek ALC889A
+	Audio Codec(ATI azalia) not detected on alsa
+Date: Sat, 14 Mar 2009 20:35:16 +0100
+Message-ID: <fd3eb9bf0903141235v1878ae03h8e51b8bcebb4c87d@mail.gmail.com>
+References: <1237056610.21086.72.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ti-out-0910.google.com (ti-out-0910.google.com [209.85.142.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id 32E4E244D1
-	for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2009 19:50:13 +0100 (CET)
-Received: by ti-out-0910.google.com with SMTP id u3so576475tia.8
-	for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2009 11:50:11 -0700 (PDT)
+Received: from mail-fx0-f161.google.com (mail-fx0-f161.google.com
+	[209.85.220.161])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3004624506
+	for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2009 20:35:17 +0100 (CET)
+Received: by fxm5 with SMTP id 5so585915fxm.32
+	for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2009 12:35:16 -0700 (PDT)
+In-Reply-To: <1237056610.21086.72.camel@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,29 +24,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Emmanuel Chanel <emmanuelchanel@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I wrote this on
-https://bugzilla.redhat.com/show_bug.cgi?id=489828
-I've used the driver of kernel package. And Mr. Jaroslav Kysela replied me that I could try snapshot source. (Thx, Mr. Jaroslav Kysela.
-And on #alsa on Freenode, Thingol and gnubien advised me much. Thank you!)
-But I couldn't get sound back none of both: stable(alsa-driver-1.0.19) and snapshot (alsa-driver-1.0.19.34.g70f78.363.g0ec3b).
-My alsa info is on
-http://www.alsa-project.org/db/?f=af6a6e787d4bd5212bf766bf5d09fda1ab5e2300
-I use desktop. Its mother board is GA-MA69H-S3H . The soundcard is
-onboard. Realtek ALC889A Audio Codec.
-# lspci |grep -i "multi\|audio\|040[0-3]"
-# Audio device: ATI Technologies Inc SB600 Azalia (Intel HDA)
-When I installed stable release of alsa-driver --with-debug=verbose ,
-dmesg says
-HDA Intel 0000:00:14.2: PCI INT A -> GSI 16 (level, low) -> IRQ 16
-ALSA /home/emmanuel/Softwares/alsa-driver-1.0.19/pci/hda/hda_intel.c:2218: chipset global capabilities = 0x4401
-ALSA /home/emmanuel/Softwares/alsa-driver-1.0.19/pci/hda/hda_intel.c:786: codec_mask = 0x8
-ALSA /home/emmanuel/Softwares/alsa-driver-1.0.19/pci/hda/hda_intel.c:1214: hda_intel: codec #3 probed OK
-ALSA /home/emmanuel/Softwares/alsa-driver-1.0.19/pci/hda/../../alsa-kernel/pci/hda/hda_codec.c:788: hda_codec: no AFG or MFG node found
-ALSA /home/emmanuel/Softwares/alsa-driver-1.0.19/pci/hda/hda_intel.c:1298: hda-intel: no codecs initialized
-HDA Intel 0000:00:14.2: PCI INT A disabled
-
--- 
-Emmanuel Chanel <emmanuelchanel@gmail.com>
+T24gU2F0LCBNYXIgMTQsIDIwMDkgYXQgNzo1MCBQTSwgRW1tYW51ZWwgQ2hhbmVsCjxlbW1hbnVl
+bGNoYW5lbEBnbWFpbC5jb20+IHdyb3RlOgo+IEkgd3JvdGUgdGhpcyBvbgo+IGh0dHBzOi8vYnVn
+emlsbGEucmVkaGF0LmNvbS9zaG93X2J1Zy5jZ2k/aWQ9NDg5ODI4Cj4gSSd2ZSB1c2VkIHRoZSBk
+cml2ZXIgb2Yga2VybmVsIHBhY2thZ2UuIEFuZCBNci4gSmFyb3NsYXYgS3lzZWxhIHJlcGxpZWQg
+bWUgdGhhdCBJIGNvdWxkIHRyeSBzbmFwc2hvdCBzb3VyY2UuIChUaHgsIE1yLiBKYXJvc2xhdiBL
+eXNlbGEuCj4gQW5kIG9uICNhbHNhIG9uIEZyZWVub2RlLCBUaGluZ29sIGFuZCBnbnViaWVuIGFk
+dmlzZWQgbWUgbXVjaC4gVGhhbmsgeW91ISkKPiBCdXQgSSBjb3VsZG4ndCBnZXQgc291bmQgYmFj
+ayBub25lIG9mIGJvdGg6IHN0YWJsZShhbHNhLWRyaXZlci0xLjAuMTkpIGFuZCBzbmFwc2hvdCAo
+YWxzYS1kcml2ZXItMS4wLjE5LjM0Lmc3MGY3OC4zNjMuZzBlYzNiKS4KPiBNeSBhbHNhIGluZm8g
+aXMgb24KPiBodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9YWY2YTZlNzg3ZDRiZDUy
+MTJiZjc2NmJmNWQwOWZkYTFhYjVlMjMwMAo+IEkgdXNlIGRlc2t0b3AuIEl0cyBtb3RoZXIgYm9h
+cmQgaXMgR0EtTUE2OUgtUzNIIC4gVGhlIHNvdW5kY2FyZCBpcwo+IG9uYm9hcmQuIFJlYWx0ZWsg
+QUxDODg5QSBBdWRpbyBDb2RlYy4KPiAjIGxzcGNpIHxncmVwIC1pICJtdWx0aVx8YXVkaW9cfDA0
+MFswLTNdIgo+ICMgQXVkaW8gZGV2aWNlOiBBVEkgVGVjaG5vbG9naWVzIEluYyBTQjYwMCBBemFs
+aWEgKEludGVsIEhEQSkKPiBXaGVuIEkgaW5zdGFsbGVkIHN0YWJsZSByZWxlYXNlIG9mIGFsc2Et
+ZHJpdmVyIC0td2l0aC1kZWJ1Zz12ZXJib3NlICwKPiBkbWVzZyBzYXlzCj4gSERBIEludGVsIDAw
+MDA6MDA6MTQuMjogUENJIElOVCBBIC0+IEdTSSAxNiAobGV2ZWwsIGxvdykgLT4gSVJRIDE2Cj4g
+QUxTQSAvaG9tZS9lbW1hbnVlbC9Tb2Z0d2FyZXMvYWxzYS1kcml2ZXItMS4wLjE5L3BjaS9oZGEv
+aGRhX2ludGVsLmM6MjIxODogY2hpcHNldCBnbG9iYWwgY2FwYWJpbGl0aWVzID0gMHg0NDAxCj4g
+QUxTQSAvaG9tZS9lbW1hbnVlbC9Tb2Z0d2FyZXMvYWxzYS1kcml2ZXItMS4wLjE5L3BjaS9oZGEv
+aGRhX2ludGVsLmM6Nzg2OiBjb2RlY19tYXNrID0gMHg4Cj4gQUxTQSAvaG9tZS9lbW1hbnVlbC9T
+b2Z0d2FyZXMvYWxzYS1kcml2ZXItMS4wLjE5L3BjaS9oZGEvaGRhX2ludGVsLmM6MTIxNDogaGRh
+X2ludGVsOiBjb2RlYyAjMyBwcm9iZWQgT0sKPiBBTFNBIC9ob21lL2VtbWFudWVsL1NvZnR3YXJl
+cy9hbHNhLWRyaXZlci0xLjAuMTkvcGNpL2hkYS8uLi8uLi9hbHNhLWtlcm5lbC9wY2kvaGRhL2hk
+YV9jb2RlYy5jOjc4ODogaGRhX2NvZGVjOiBubyBBRkcgb3IgTUZHIG5vZGUgZm91bmQKPiBBTFNB
+IC9ob21lL2VtbWFudWVsL1NvZnR3YXJlcy9hbHNhLWRyaXZlci0xLjAuMTkvcGNpL2hkYS9oZGFf
+aW50ZWwuYzoxMjk4OiBoZGEtaW50ZWw6IG5vIGNvZGVjcyBpbml0aWFsaXplZAo+IEhEQSBJbnRl
+bCAwMDAwOjAwOjE0LjI6IFBDSSBJTlQgQSBkaXNhYmxlZAo+Cj4gLS0KPiBFbW1hbnVlbCBDaGFu
+ZWwgPGVtbWFudWVsY2hhbmVsQGdtYWlsLmNvbT4KPgo+IF9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+CgpJJ20gbGlrZSA5OSUgc3VyZSB0aGF0IHRo
+aXMgYm9hcmQgaXMgd29ya2luZy4gQSBmcmllbmQgb2YgbWluZSBoYWQKR2lnYWJ5dGUgNjkwRywg
+YW5kIEkgYmVsaWV2ZSBpdCB3YXMgdGhpcyBvbmUgYW5kIGl0IHdhcyB3b3JraW5nIGZ1bGx5LgpB
+cmUgeW91IHN1cmUgZXZlcnl0aGluZyBpcyBlbmFibGVkIChub3QgYXV0bykgaW4gQklPUyBwcm9w
+ZXJseSBhbmQKdGhhdCB5b3UgaGF2ZSBsYXN0ZXN0IEJJT1M/CgpWZWRyYW4gTWlsZXRpxIcKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
+YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
