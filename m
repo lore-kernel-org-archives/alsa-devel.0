@@ -1,20 +1,20 @@
-From: =?UTF-8?Q?Vedran_Mileti=C4=87?= <rivanvx@gmail.com>
+From: Emmanuel Chanel <emmanuelchanel@gmail.com>
 Subject: Re: Fedora 10 x86_64 alsa problem: Realtek ALC889A
-	Audio Codec(ATI azalia) not detected on alsa
-Date: Sat, 14 Mar 2009 20:35:16 +0100
-Message-ID: <fd3eb9bf0903141235v1878ae03h8e51b8bcebb4c87d@mail.gmail.com>
+ Audio Codec(ATI azalia) not detected on alsa
+Date: Sun, 15 Mar 2009 05:04:25 +0900
+Message-ID: <1237061065.2581.3.camel@localhost.localdomain>
 References: <1237056610.21086.72.camel@localhost.localdomain>
+	<fd3eb9bf0903141235v1878ae03h8e51b8bcebb4c87d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f161.google.com (mail-fx0-f161.google.com
-	[209.85.220.161])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3004624506
-	for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2009 20:35:17 +0100 (CET)
-Received: by fxm5 with SMTP id 5so585915fxm.32
-	for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2009 12:35:16 -0700 (PDT)
-In-Reply-To: <1237056610.21086.72.camel@localhost.localdomain>
+Received: from ti-out-0910.google.com (ti-out-0910.google.com [209.85.142.191])
+	by alsa0.perex.cz (Postfix) with ESMTP id A807A24510
+	for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2009 21:04:29 +0100 (CET)
+Received: by ti-out-0910.google.com with SMTP id u3so582210tia.8
+	for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2009 13:04:27 -0700 (PDT)
+In-Reply-To: <fd3eb9bf0903141235v1878ae03h8e51b8bcebb4c87d@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,46 +24,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Emmanuel Chanel <emmanuelchanel@gmail.com>
+To: Vedran Mileti <rivanvx@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBNYXIgMTQsIDIwMDkgYXQgNzo1MCBQTSwgRW1tYW51ZWwgQ2hhbmVsCjxlbW1hbnVl
-bGNoYW5lbEBnbWFpbC5jb20+IHdyb3RlOgo+IEkgd3JvdGUgdGhpcyBvbgo+IGh0dHBzOi8vYnVn
-emlsbGEucmVkaGF0LmNvbS9zaG93X2J1Zy5jZ2k/aWQ9NDg5ODI4Cj4gSSd2ZSB1c2VkIHRoZSBk
-cml2ZXIgb2Yga2VybmVsIHBhY2thZ2UuIEFuZCBNci4gSmFyb3NsYXYgS3lzZWxhIHJlcGxpZWQg
-bWUgdGhhdCBJIGNvdWxkIHRyeSBzbmFwc2hvdCBzb3VyY2UuIChUaHgsIE1yLiBKYXJvc2xhdiBL
-eXNlbGEuCj4gQW5kIG9uICNhbHNhIG9uIEZyZWVub2RlLCBUaGluZ29sIGFuZCBnbnViaWVuIGFk
-dmlzZWQgbWUgbXVjaC4gVGhhbmsgeW91ISkKPiBCdXQgSSBjb3VsZG4ndCBnZXQgc291bmQgYmFj
-ayBub25lIG9mIGJvdGg6IHN0YWJsZShhbHNhLWRyaXZlci0xLjAuMTkpIGFuZCBzbmFwc2hvdCAo
-YWxzYS1kcml2ZXItMS4wLjE5LjM0Lmc3MGY3OC4zNjMuZzBlYzNiKS4KPiBNeSBhbHNhIGluZm8g
-aXMgb24KPiBodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9YWY2YTZlNzg3ZDRiZDUy
-MTJiZjc2NmJmNWQwOWZkYTFhYjVlMjMwMAo+IEkgdXNlIGRlc2t0b3AuIEl0cyBtb3RoZXIgYm9h
-cmQgaXMgR0EtTUE2OUgtUzNIIC4gVGhlIHNvdW5kY2FyZCBpcwo+IG9uYm9hcmQuIFJlYWx0ZWsg
-QUxDODg5QSBBdWRpbyBDb2RlYy4KPiAjIGxzcGNpIHxncmVwIC1pICJtdWx0aVx8YXVkaW9cfDA0
-MFswLTNdIgo+ICMgQXVkaW8gZGV2aWNlOiBBVEkgVGVjaG5vbG9naWVzIEluYyBTQjYwMCBBemFs
-aWEgKEludGVsIEhEQSkKPiBXaGVuIEkgaW5zdGFsbGVkIHN0YWJsZSByZWxlYXNlIG9mIGFsc2Et
-ZHJpdmVyIC0td2l0aC1kZWJ1Zz12ZXJib3NlICwKPiBkbWVzZyBzYXlzCj4gSERBIEludGVsIDAw
-MDA6MDA6MTQuMjogUENJIElOVCBBIC0+IEdTSSAxNiAobGV2ZWwsIGxvdykgLT4gSVJRIDE2Cj4g
-QUxTQSAvaG9tZS9lbW1hbnVlbC9Tb2Z0d2FyZXMvYWxzYS1kcml2ZXItMS4wLjE5L3BjaS9oZGEv
-aGRhX2ludGVsLmM6MjIxODogY2hpcHNldCBnbG9iYWwgY2FwYWJpbGl0aWVzID0gMHg0NDAxCj4g
-QUxTQSAvaG9tZS9lbW1hbnVlbC9Tb2Z0d2FyZXMvYWxzYS1kcml2ZXItMS4wLjE5L3BjaS9oZGEv
-aGRhX2ludGVsLmM6Nzg2OiBjb2RlY19tYXNrID0gMHg4Cj4gQUxTQSAvaG9tZS9lbW1hbnVlbC9T
-b2Z0d2FyZXMvYWxzYS1kcml2ZXItMS4wLjE5L3BjaS9oZGEvaGRhX2ludGVsLmM6MTIxNDogaGRh
-X2ludGVsOiBjb2RlYyAjMyBwcm9iZWQgT0sKPiBBTFNBIC9ob21lL2VtbWFudWVsL1NvZnR3YXJl
-cy9hbHNhLWRyaXZlci0xLjAuMTkvcGNpL2hkYS8uLi8uLi9hbHNhLWtlcm5lbC9wY2kvaGRhL2hk
-YV9jb2RlYy5jOjc4ODogaGRhX2NvZGVjOiBubyBBRkcgb3IgTUZHIG5vZGUgZm91bmQKPiBBTFNB
-IC9ob21lL2VtbWFudWVsL1NvZnR3YXJlcy9hbHNhLWRyaXZlci0xLjAuMTkvcGNpL2hkYS9oZGFf
-aW50ZWwuYzoxMjk4OiBoZGEtaW50ZWw6IG5vIGNvZGVjcyBpbml0aWFsaXplZAo+IEhEQSBJbnRl
-bCAwMDAwOjAwOjE0LjI6IFBDSSBJTlQgQSBkaXNhYmxlZAo+Cj4gLS0KPiBFbW1hbnVlbCBDaGFu
-ZWwgPGVtbWFudWVsY2hhbmVsQGdtYWlsLmNvbT4KPgo+IF9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+CgpJJ20gbGlrZSA5OSUgc3VyZSB0aGF0IHRo
-aXMgYm9hcmQgaXMgd29ya2luZy4gQSBmcmllbmQgb2YgbWluZSBoYWQKR2lnYWJ5dGUgNjkwRywg
-YW5kIEkgYmVsaWV2ZSBpdCB3YXMgdGhpcyBvbmUgYW5kIGl0IHdhcyB3b3JraW5nIGZ1bGx5LgpB
-cmUgeW91IHN1cmUgZXZlcnl0aGluZyBpcyBlbmFibGVkIChub3QgYXV0bykgaW4gQklPUyBwcm9w
-ZXJseSBhbmQKdGhhdCB5b3UgaGF2ZSBsYXN0ZXN0IEJJT1M/CgpWZWRyYW4gTWlsZXRpxIcKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+PiBJJ20gbGlrZSA5OSUgc3VyZSB0aGF0IHRoaXMgYm9hcmQgaXMgd29ya2luZy4gQSBmcmllbmQg
+b2YgbWluZSBoYWQKPiBHaWdhYnl0ZSA2OTBHLCBhbmQgSSBiZWxpZXZlIGl0IHdhcyB0aGlzIG9u
+ZSBhbmQgaXQgd2FzIHdvcmtpbmcgZnVsbHkuCj4gQXJlIHlvdSBzdXJlIGV2ZXJ5dGhpbmcgaXMg
+ZW5hYmxlZCAobm90IGF1dG8pIGluIEJJT1MgcHJvcGVybHkgYW5kCj4gdGhhdCB5b3UgaGF2ZSBs
+YXN0ZXN0IEJJT1M/Cj4gCj4gVmVkcmFuIE1pbGV0acSHCgpXaGVuIEkgY2hlY2tlZCBCSU9TLCBv
+bmJvYXJkIHNvdW5kIHNldHRpbmcgd2FzICJBVVRPIiBhbmQgbm90IEVuYWJsZWQuCkJ1dCBJIGNv
+dWxkIGxpc3RlbiBzeXN0ZW0gc291bmQgb24gVWJ1bnR1IDcuMDQgaTM4NiBMaXZlIENELiBTbyBp
+dAp3b3VsZG5iJ3QgYmUgdGhlIEJJT1MgcHJvYmxlbS4gSSdtIG5vdCBzdXJlIHRoYXQgSSBoYXZl
+IGxhdGVzdCBCSU9TCnNpbmNlIEkgaGF2ZW4ndCB1cGRhdGVkIEJJT1Mgb3IgZXZlbiBib290ZWQg
+V2luZG93cyBvbiBpdC4KCi0tIApFbW1hbnVlbCBDaGFuZWwgPGVtbWFudWVsY2hhbmVsQGdtYWls
+LmNvbT4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
