@@ -1,15 +1,15 @@
 From: Giuliano Pochini <pochini@shiny.it>
-Subject: [PATCH 1/2] Echoaudio: remove line-out volume from
+Subject: [PATCH 2/2] Echoaudio: remove line-out volume from
 	vmixer cards
-Date: Sun, 15 Mar 2009 21:33:34 +0100
-Message-ID: <20090315213334.e6bc8928.pochini@shiny.it>
+Date: Sun, 15 Mar 2009 21:33:55 +0100
+Message-ID: <20090315213355.e7ca643b.pochini@shiny.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out114.alice.it (smtp-out114.alice.it [85.37.17.114])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8DC771037EA
-	for <alsa-devel@alsa-project.org>; Sun, 15 Mar 2009 21:33:25 +0100 (CET)
+Received: from smtp-out113.alice.it (smtp-out113.alice.it [85.37.17.113])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8196F1037F1
+	for <alsa-devel@alsa-project.org>; Sun, 15 Mar 2009 21:33:44 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,67 +22,101 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-There is a long standing bug in the drivers for cards with a vmixer because
-I overlooked a detail in the c++ generic driver by echoaudio. Those cards
-do not have a line-out volume control. It is a virtual control provided by
-the generic driver. The bug is harmless because the DSP just ignores the
-command to change the volume.
-*NB:* It breaks alsa-tools/echomixer. A patch for it will follow.
+With this patch the drivers do not set the vmixer volume anymore at startup
+because it is actually the output volume of the voices and ALSA mandates
+that the volume must be 0 by default.
 
-
-This patch removes the line-out volume control from vmixer-equipped cards.
 
 Signed-off-by Giuliano Pochini <pochini@shiny.it>
 
-diff -dupN alsa-driver-1.0.19__orig/alsa-kernel/pci/echoaudio/echoaudio.c alsa-driver-1.0.19/sound/pci/echoaudio/echoaudio.c
---- alsa-driver-1.0.19__orig/alsa-kernel/pci/echoaudio/echoaudio.c	2009-01-19 12:08:58.000000000 +0100
-+++ alsa-driver-1.0.19/sound/pci/echoaudio/echoaudio.c	2009-03-15 16:51:17.000000000 +0100
-@@ -950,6 +950,8 @@ static int __devinit snd_echo_new_pcm(st
- 	Control interface
- ******************************************************************************/
+diff -dupN alsa-driver-1.0.19__orig/alsa-kernel/pci/echoaudio/indigodj_dsp.c alsa-driver-1.0.19/sound/pci/echoaudio/indigodj_dsp.c
+--- alsa-driver-1.0.19__orig/alsa-kernel/pci/echoaudio/indigodj_dsp.c	2009-01-19 12:08:58.000000000 +0100
++++ alsa-driver-1.0.19/sound/pci/echoaudio/indigodj_dsp.c	2009-03-15 17:24:35.000000000 +0100
+@@ -63,18 +63,6 @@ static int init_hw(struct echoaudio *chi
+ 	if ((err = init_line_levels(chip)) < 0)
+ 		return err;
  
-+#ifndef ECHOCARD_HAS_VMIXER
-+
- /******************* PCM output volume *******************/
- static int snd_echo_output_gain_info(struct snd_kcontrol *kcontrol,
- 				     struct snd_ctl_elem_info *uinfo)
-@@ -1001,18 +1003,6 @@ static int snd_echo_output_gain_put(stru
- 	return changed;
+-	/* Default routing of the virtual channels: vchannels 0-3 and
+-	vchannels 4-7 are routed to real channels 0-4 */
+-	set_vmixer_gain(chip, 0, 0, 0);
+-	set_vmixer_gain(chip, 1, 1, 0);
+-	set_vmixer_gain(chip, 2, 2, 0);
+-	set_vmixer_gain(chip, 3, 3, 0);
+-	set_vmixer_gain(chip, 0, 4, 0);
+-	set_vmixer_gain(chip, 1, 5, 0);
+-	set_vmixer_gain(chip, 2, 6, 0);
+-	set_vmixer_gain(chip, 3, 7, 0);
+-	err = update_vmixer_level(chip);
+-
+ 	DE_INIT(("init_hw done\n"));
+ 	return err;
  }
+diff -dupN alsa-driver-1.0.19__orig/alsa-kernel/pci/echoaudio/indigo_dsp.c alsa-driver-1.0.19/sound/pci/echoaudio/indigo_dsp.c
+--- alsa-driver-1.0.19__orig/alsa-kernel/pci/echoaudio/indigo_dsp.c	2009-01-19 12:08:58.000000000 +0100
++++ alsa-driver-1.0.19/sound/pci/echoaudio/indigo_dsp.c	2009-03-15 17:24:14.000000000 +0100
+@@ -63,18 +63,6 @@ static int init_hw(struct echoaudio *chi
+ 	if ((err = init_line_levels(chip)) < 0)
+ 		return err;
  
--#ifdef ECHOCARD_HAS_VMIXER
--/* On Vmixer cards this one controls the line-out volume */
--static struct snd_kcontrol_new snd_echo_line_output_gain __devinitdata = {
--	.name = "Line Playback Volume",
--	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_TLV_READ,
--	.info = snd_echo_output_gain_info,
--	.get = snd_echo_output_gain_get,
--	.put = snd_echo_output_gain_put,
--	.tlv = {.p = db_scale_output_gain},
--};
--#else
- static struct snd_kcontrol_new snd_echo_pcm_output_gain __devinitdata = {
- 	.name = "PCM Playback Volume",
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-@@ -1022,6 +1012,7 @@ static struct snd_kcontrol_new snd_echo_
- 	.put = snd_echo_output_gain_put,
- 	.tlv = {.p = db_scale_output_gain},
- };
-+
- #endif
+-	/* Default routing of the virtual channels: all vchannels are routed
+-	to the stereo output */
+-	set_vmixer_gain(chip, 0, 0, 0);
+-	set_vmixer_gain(chip, 1, 1, 0);
+-	set_vmixer_gain(chip, 0, 2, 0);
+-	set_vmixer_gain(chip, 1, 3, 0);
+-	set_vmixer_gain(chip, 0, 4, 0);
+-	set_vmixer_gain(chip, 1, 5, 0);
+-	set_vmixer_gain(chip, 0, 6, 0);
+-	set_vmixer_gain(chip, 1, 7, 0);
+-	err = update_vmixer_level(chip);
+-
+ 	DE_INIT(("init_hw done\n"));
+ 	return err;
+ }
+diff -dupN alsa-driver-1.0.19__orig/alsa-kernel/pci/echoaudio/indigoio_dsp.c alsa-driver-1.0.19/sound/pci/echoaudio/indigoio_dsp.c
+--- alsa-driver-1.0.19__orig/alsa-kernel/pci/echoaudio/indigoio_dsp.c	2009-01-19 12:08:58.000000000 +0100
++++ alsa-driver-1.0.19/sound/pci/echoaudio/indigoio_dsp.c	2009-03-15 17:24:00.000000000 +0100
+@@ -63,18 +63,6 @@ static int init_hw(struct echoaudio *chi
+ 	if ((err = init_line_levels(chip)) < 0)
+ 		return err;
  
+-	/* Default routing of the virtual channels: all vchannels are routed
+-	to the stereo output */
+-	set_vmixer_gain(chip, 0, 0, 0);
+-	set_vmixer_gain(chip, 1, 1, 0);
+-	set_vmixer_gain(chip, 0, 2, 0);
+-	set_vmixer_gain(chip, 1, 3, 0);
+-	set_vmixer_gain(chip, 0, 4, 0);
+-	set_vmixer_gain(chip, 1, 5, 0);
+-	set_vmixer_gain(chip, 0, 6, 0);
+-	set_vmixer_gain(chip, 1, 7, 0);
+-	err = update_vmixer_level(chip);
+-
+ 	DE_INIT(("init_hw done\n"));
+ 	return err;
+ }
+diff -dupN alsa-driver-1.0.19__orig/alsa-kernel/pci/echoaudio/mia_dsp.c alsa-driver-1.0.19/sound/pci/echoaudio/mia_dsp.c
+--- alsa-driver-1.0.19__orig/alsa-kernel/pci/echoaudio/mia_dsp.c	2009-01-19 12:08:58.000000000 +0100
++++ alsa-driver-1.0.19/sound/pci/echoaudio/mia_dsp.c	2009-03-15 17:23:37.000000000 +0100
+@@ -69,18 +69,6 @@ static int init_hw(struct echoaudio *chi
+ 	if ((err = init_line_levels(chip)))
+ 		return err;
  
-@@ -2037,8 +2028,6 @@ static int __devinit snd_echo_probe(stru
- 
- #ifdef ECHOCARD_HAS_VMIXER
- 	snd_echo_vmixer.count = num_pipes_out(chip) * num_busses_out(chip);
--	if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&snd_echo_line_output_gain, chip))) < 0)
--		goto ctl_error;
- 	if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&snd_echo_vmixer, chip))) < 0)
- 		goto ctl_error;
- #else
-
+-	/* Default routing of the virtual channels: vchannels 0-3 go to analog
+-	outputs and vchannels 4-7 go to S/PDIF outputs */
+-	set_vmixer_gain(chip, 0, 0, 0);
+-	set_vmixer_gain(chip, 1, 1, 0);
+-	set_vmixer_gain(chip, 0, 2, 0);
+-	set_vmixer_gain(chip, 1, 3, 0);
+-	set_vmixer_gain(chip, 2, 4, 0);
+-	set_vmixer_gain(chip, 3, 5, 0);
+-	set_vmixer_gain(chip, 2, 6, 0);
+-	set_vmixer_gain(chip, 3, 7, 0);
+-	err = update_vmixer_level(chip);
+-
+ 	DE_INIT(("init_hw done\n"));
+ 	return err;
+ }
 
 
 
