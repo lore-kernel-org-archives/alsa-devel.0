@@ -1,22 +1,15 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [RFC/PATCH] pxa2xx_ac97 and gpio reset line
-Date: Sun, 15 Mar 2009 20:25:55 +0000
-Message-ID: <20090315202554.GB7439@sirena.org.uk>
-References: <87bpsb6dt1.fsf@free.fr> <20090308193138.GB18035@sirena.org.uk>
-	<20090308194456.GC18035@sirena.org.uk> <878wn723si.fsf@free.fr>
-	<20090314224648.GB6523@sirena.org.uk> <87d4cjghrp.fsf@free.fr>
-	<20090315112638.GA7439@sirena.org.uk> <87hc1vezdr.fsf@free.fr>
-	<9D6BA91B-5FD3-4EE4-ACAD-21C144198AA5@sirena.org.uk>
-	<874oxvdj8h.fsf@free.fr>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: [PATCH 1/2] Echoaudio: remove line-out volume from
+	vmixer cards
+Date: Sun, 15 Mar 2009 21:33:34 +0100
+Message-ID: <20090315213334.e6bc8928.pochini@shiny.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id B20CE1037EB
-	for <alsa-devel@alsa-project.org>; Sun, 15 Mar 2009 21:26:02 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <874oxvdj8h.fsf@free.fr>
+Received: from smtp-out114.alice.it (smtp-out114.alice.it [85.37.17.114])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8DC771037EA
+	for <alsa-devel@alsa-project.org>; Sun, 15 Mar 2009 21:33:25 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,21 +19,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Mar 15, 2009 at 02:10:54PM +0100, Robert Jarzmik wrote:
-> Mark Brown <broonie@sirena.org.uk> writes:
+There is a long standing bug in the drivers for cards with a vmixer because
+I overlooked a detail in the c++ generic driver by echoaudio. Those cards
+do not have a line-out volume control. It is a virtual control provided by
+the generic driver. The bug is harmless because the DSP just ignores the
+command to change the volume.
+*NB:* It breaks alsa-tools/echomixer. A patch for it will follow.
 
-> >> Should this be handled like a casual gpio (ie. gpio 99) ?
-> > I'm not sure what you mean by a casual GPIO?
 
-> I meant different from "special" gpios (ie. GPIO95 and GPIO113), which are
-> "special" because they have an alternate function tied to AC97 reset.
+This patch removes the line-out volume control from vmixer-equipped cards.
 
-Ah, I see - for reference, a more normal term would be something like
-generic.  I didn't mean it was essential support them right now, just
-that it'd be better to allow for them in the interface in case we need
-the same workaround again.  But yes, this looks good - I've applied it,
-thanks.
+Signed-off-by Giuliano Pochini <pochini@shiny.it>
+
+diff -dupN alsa-driver-1.0.19__orig/alsa-kernel/pci/echoaudio/echoaudio.c alsa-driver-1.0.19/sound/pci/echoaudio/echoaudio.c
+--- alsa-driver-1.0.19__orig/alsa-kernel/pci/echoaudio/echoaudio.c	2009-01-19 12:08:58.000000000 +0100
++++ alsa-driver-1.0.19/sound/pci/echoaudio/echoaudio.c	2009-03-15 16:51:17.000000000 +0100
+@@ -950,6 +950,8 @@ static int __devinit snd_echo_new_pcm(st
+ 	Control interface
+ ******************************************************************************/
+ 
++#ifndef ECHOCARD_HAS_VMIXER
++
+ /******************* PCM output volume *******************/
+ static int snd_echo_output_gain_info(struct snd_kcontrol *kcontrol,
+ 				     struct snd_ctl_elem_info *uinfo)
+@@ -1001,18 +1003,6 @@ static int snd_echo_output_gain_put(stru
+ 	return changed;
+ }
+ 
+-#ifdef ECHOCARD_HAS_VMIXER
+-/* On Vmixer cards this one controls the line-out volume */
+-static struct snd_kcontrol_new snd_echo_line_output_gain __devinitdata = {
+-	.name = "Line Playback Volume",
+-	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+-	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_TLV_READ,
+-	.info = snd_echo_output_gain_info,
+-	.get = snd_echo_output_gain_get,
+-	.put = snd_echo_output_gain_put,
+-	.tlv = {.p = db_scale_output_gain},
+-};
+-#else
+ static struct snd_kcontrol_new snd_echo_pcm_output_gain __devinitdata = {
+ 	.name = "PCM Playback Volume",
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+@@ -1022,6 +1012,7 @@ static struct snd_kcontrol_new snd_echo_
+ 	.put = snd_echo_output_gain_put,
+ 	.tlv = {.p = db_scale_output_gain},
+ };
++
+ #endif
+ 
+ 
+@@ -2037,8 +2028,6 @@ static int __devinit snd_echo_probe(stru
+ 
+ #ifdef ECHOCARD_HAS_VMIXER
+ 	snd_echo_vmixer.count = num_pipes_out(chip) * num_busses_out(chip);
+-	if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&snd_echo_line_output_gain, chip))) < 0)
+-		goto ctl_error;
+ 	if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&snd_echo_vmixer, chip))) < 0)
+ 		goto ctl_error;
+ #else
+
+
+
+
+--
+Giuliano.
