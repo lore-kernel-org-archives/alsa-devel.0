@@ -1,14 +1,16 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Problem with Pulse Audio plugin?
-Date: Sat, 14 Mar 2009 18:57:20 -0700 (PDT)
-Message-ID: <484027.10000.qm@web65416.mail.ac4.yahoo.com>
+From: =?ISO-8859-1?Q?Lasse_K=E4rkk=E4inen?= <tronic@trn.iki.fi>
+Subject: Re: Roland/Edirol M-16DX
+Date: Sun, 15 Mar 2009 04:06:29 +0200
+Message-ID: <49BC62A5.9070103@trn.iki.fi>
+References: <487F10EE.6030405@trn.iki.fi> <48883AAC.6060101@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web65416.mail.ac4.yahoo.com (web65416.mail.ac4.yahoo.com
-	[76.13.9.36]) by alsa0.perex.cz (Postfix) with SMTP id 7F505243C6
-	for <alsa-devel@alsa-project.org>; Sun, 15 Mar 2009 02:57:21 +0100 (CET)
+Received: from jenni1.inet.fi (mta-out.inet.fi [195.156.147.13])
+	by alsa0.perex.cz (Postfix) with ESMTP id CDD2D243D7
+	for <alsa-devel@alsa-project.org>; Sun, 15 Mar 2009 03:06:31 +0100 (CET)
+In-Reply-To: <48883AAC.6060101@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,25 +20,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, =?ISO-8859-1?Q?Lasse_K=E4rkk=E4inen?= <tronic+8nhy@trn.iki.fi>
 List-Id: alsa-devel@alsa-project.org
 
+>> This device doesn't seem to be supported yet. Does Roland make the
+>> specifications available, etc? The device is not compatible with USB
+>> Audio, but rather uses Vendor Specific Class.
+> 
+> It appears to have most of the audio class descriptors, so it should be
+> possible to tell the driver to just use it.
+> 
+> Please try to add the following entry somewhere in sound/usb/usbquirks.h
+> and to recompile the driver:
+> 
+> 
+> {
+> 	/* Edirol M-16DX */
+> 	USB_DEVICE(0x0582, 0x00c4),
+> 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+> 		.ifnum = QUIRK_ANY_INTERFACE,
+> 		.type = QUIRK_COMPOSITE,
+> 		.data = (const struct snd_usb_audio_quirk[]) {
+> 			{
+> 				.ifnum = 0,
+> 				.type = QUIRK_AUDIO_STANDARD_INTERFACE
+> 			},
+> 			{
+> 				.ifnum = 1,
+> 				.type = QUIRK_AUDIO_STANDARD_INTERFACE
+> 			},
+> 			{
+> 				.ifnum = 2,
+> 				.type = QUIRK_MIDI_FIXED_ENDPOINT,
+> 				.data = & (const struct snd_usb_midi_endpoint_info) {
+> 					.out_cables = 0x0001,
+> 					.in_cables  = 0x0001
+> 				}
+> 			},
+> 			{
+> 				.ifnum = -1
+> 			}
+> 		}
+> 	}
+> },
 
-I'm doing some experimenting and found that a simple sequential play of a small sound file caused an assertion in the pulse audio plugin.  The base system is Fedora 8, and it uses alsa 1.0.16 versions.  I looked at the 1.0.19 versions and they still have assertions, so the problem may still be there.  It is pretty easy to trip up:
+Could you add this quirk to the alsa-driver distribution as well? I'm 
+getting tired of patching it myself for every new release :)
 
-$ aplay blah.wav blah.wav
-Playing WAVE 'blah.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
-Playing WAVE 'blah.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
-aplay: pcm_pulse.c:524: pulse_hw_params: Assertion `!pcm->stream' failed.
-Aborted by signal Aborted...
-
-(where "blah.wav" is a simple short wav file)  The first time through, it plays find, but the second time it doesn't.
-
-If this has been solved in 1.0.19, (I haven't installed it), please let me know and I'll go away.  If not, it may be a problem in the pulse audio thing.
-
-Thanks.
-
-
--- 
-Tom Watson
-tsw@johana.com
+Note: playback doesn't actually work because it is not properly 
+synchronized. The device also doesn't have any MIDI ports, but maybe 
+that's for remote control of parameters?
