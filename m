@@ -1,15 +1,24 @@
-From: Santo Chow <santo_chow@yahoo.com>
-Subject: Using snd-aloop as default soundcard (need urgent help
-	T.T)
-Date: Mon, 16 Mar 2009 04:16:43 -0700 (PDT)
-Message-ID: <95966.99325.qm@web110815.mail.gq1.yahoo.com>
+From: Andreas Mohr <andi@lisas.de>
+Subject: Re: Bugs on aspire one A150
+Date: Mon, 16 Mar 2009 13:03:12 +0100
+Message-ID: <20090316120312.GA19299@rhlx01.hs-esslingen.de>
+References: <20081109151323.GA18705@rhlx01.hs-esslingen.de>
+	<s5h7i7c916e.wl%tiwai@suse.de>
+	<20081109200929.GA29333@rhlx01.hs-esslingen.de>
+	<s5hiqqtkxqr.wl%tiwai@suse.de> <491B0D38.1050207@gmail.com>
+	<20081112180519.GA21919@rhlx01.hs-esslingen.de>
+	<491DBDEA.9010104@gmail.com> <492856C2.8000707@gmail.com>
+	<s5hy6z9i44h.wl%tiwai@suse.de>
+	<20090315092117.GA1567@rhlx01.hs-esslingen.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web110815.mail.gq1.yahoo.com (web110815.mail.gq1.yahoo.com
-	[67.195.13.238]) by alsa0.perex.cz (Postfix) with SMTP id 92746103818
-	for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2009 12:16:45 +0100 (CET)
+Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
+	by alsa0.perex.cz (Postfix) with ESMTP id F13B8103804
+	for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2009 13:03:12 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20090315092117.GA1567@rhlx01.hs-esslingen.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,69 +28,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Andreas Mohr <andi@lisas.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Kernel Testers List <kernel-testers@vger.kernel.org>, Maxim Levitsky <maximlevitsky@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi every one..
+Hi,
 
-I'm currently on a project that requires me to capture a raw audio data from a dummy soundcard. I've so far manage to do that, by using snd-aloop. Now the problem i have is.. when i'm running several audio program at the same time, i can only hear the sound from the first program that i ran. i've followed the example os dmix, but this doesn't help either.
+On Sun, Mar 15, 2009 at 10:21:17AM +0100, Andreas Mohr wrote:
+> Hi,
+> 
+> On Mon, Nov 24, 2008 at 03:35:10PM +0100, Takashi Iwai wrote:
+> > At Sat, 22 Nov 2008 21:00:18 +0200,
+> > Maxim Levitsky wrote:
+> > > Finally, I found how to reproduce that bug,
+> > > I mean to get normal volume on internal mic, I have to increase volume
+> > > only on left or right channel.
+> > > 
+> > > So, this happens always, and _only_ when recording _mono_ sound from internal
+> > > mic.
+> > > 
+> > > Since hardware doesn't support hardware mono input, tested with -D hw:0
+> > > I suspect this to be alsa-lib bug, any ideas?
+> > > Happens with arecord -D plughw:0 -c1 .
+> > 
+> > What does show with -v option?
+> 
+> OK, I could fully reproduce this now (sorry for the delay!).
+> 
+> Currently 2.6.28, u8.10, model acer-aspire, libasound2 1.0.17a-0ubuntu4,
+> libasound2-plugins 1.0.17-0ubuntu5.
 
-So, right now, i have a Loopback soundcard as my default. My .asoundrc looks like this:
+Same microphone behaviour on 2.6.29-rc8 (additionally remembered to enable
+CONFIG_SND_HDA_HWDEP for further testing!), u9.04, model acer-aspire,
+libasound2 1.0.18-1ubuntu7, libasound2-plugins 1.0.18-1ubuntu4
+(yes, I've just done some monster upgrade).
 
-pcm.!default{
-   type hw
-   card 1
-}
-
-Card 0 is my actual soundcard (that can actually produce sound). Card 1, when i checked on the /proc/asound/cards actually pointing to Loopback card. So right now, the way i test the card 1, is to call arecord from card 1, and play it to card 0. Right now, i'm still developing this in my ubuntu PC.
-
-so i ran this
-arecord -f cd -D hw:1,1 | aplay -f cd -D hw:0
-
-in one terminal, and in the other terminal i can play mplayer, watching youtube, etc.. and the sound would come out nicely. (Thanks to all of your efforts, nevertheless)
-
-But I notice that, when i play mplayer, then i open a web-browser, and surf youtube, the sound from youtube is gone. But if i close the browser, close the mplayer, then reopen the browser, go to youtube and play a video, i can hear the sound nicely. but then, if during the time i start mplayer, it will complain about 'no sound'. Turns out, I have to use dmix. So, i modify my .asoundrc like this:
-
-pcm.!default {
-   type plug
-   slave.pcm "dmixer"
-}
-
-pcm.dmixer  {
-   type dmix
-   ipc_key 1025
-   slave {
-      pcm "hw:0,0"
-      rate 44100
-   }
-   bindings {
-      0 0
-      1 1
-   }
-}
-i put 'pcm "hw:0,0" ' over there, because i want to make sure that this setting works with my actual sound card first. If it works with my card 0, it should work with my card 1. with the above .asoundrc file, i can play multiple sound from different application at the same time. I even tried to remove the "bindings" tag, and it still able to play multiple sound very well. so i guess, this should work on my card 1.
-
-then i change the .asoundrc become like this again:
+Will try to eventually analyze things using your _HWDEP-related tools.
 
 
-pcm.!default {
-   type plug
-   slave.pcm "dmixer"
-}
+2.6.29-rc8, in contrast to several other kernel upgrade occasions,
+seems pretty solid so far, BTW.
 
-pcm.dmixer  {
-   type dmix
-   ipc_key 1025
-   slave {
-      pcm "hw:1,1"
-      period_time 0
-      period_size 881
-      buffer_size 3524
-      rate 44100
-   }
-}the value for perio_time, period_size, and buffer_size have been adjusted by me to suits my hardware requirement. This is the setting that works on my machine. It's just that, in the end, I'm still ended up with one sound at a time. I can't run mplayer + youtube at the same time. I can only run one of them. And furthermore, if i just paused the mplayer, the audio device is still locks. It will be good enough if someone can hint me a way to unlock the audio device.
-
-So, what i want to ask is.. can this Loopback card handle more than 1 sound at a time? Have anyone tried this before? I have tried changing the value of .asoundrc, switching the slave pcm to pcm "hw:1,0" (not working) pcm "hw:1" (works, but only 1 sound too). Any idea guys?
-
-
--santo-
+Andreas Mohr
