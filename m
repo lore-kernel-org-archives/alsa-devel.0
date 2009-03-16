@@ -1,30 +1,25 @@
-From: Emmanuel Chanel <emmanuelchanel@gmail.com>
-Subject: Re: My PC has 6GB memory but the limitation of the
- alsa-driver is 4GB.
-Date: Tue, 17 Mar 2009 03:02:58 +0900
-Message-ID: <1237226578.21372.2.camel@localhost.localdomain>
-References: <1237056610.21086.72.camel@localhost.localdomain>
-	<fd3eb9bf0903141235v1878ae03h8e51b8bcebb4c87d@mail.gmail.com>
-	<1237061065.2581.3.camel@localhost.localdomain>
-	<1237093356.3501.45.camel@localhost.localdomain>
-	<s5hocw2rl9y.wl%tiwai@suse.de>
-	<1237197183.3501.64.camel@localhost.localdomain>
-	<s5hocw1rdoq.wl%tiwai@suse.de>
-	<1237209483.13649.3.camel@localhost.localdomain>
-	<s5hiqm9r44x.wl%tiwai@suse.de>
-	<1237216549.29020.13.camel@localhost.localdomain>
-	<s5h3addqy4b.wl%tiwai@suse.de> <s5hzlflpje2.wl%tiwai@suse.de>
-	<1237224576.6808.2.camel@localhost.localdomain>
-	<s5hhc1tpdwk.wl%tiwai@suse.de>
+From: Andreas Mohr <andi@lisas.de>
+Subject: Re: Bugs on aspire one A150
+Date: Mon, 16 Mar 2009 19:06:38 +0100
+Message-ID: <20090316180638.GB25647@rhlx01.hs-esslingen.de>
+References: <s5hab7lr0k1.wl%tiwai@suse.de>
+	<20090316145036.GA26358@rhlx01.hs-esslingen.de>
+	<s5h4oxtqy6q.wl%tiwai@suse.de>
+	<20090316160208.GB4458@rhlx01.hs-esslingen.de>
+	<s5hwsappi44.wl%tiwai@suse.de> <s5hprghphid.wl%tiwai@suse.de>
+	<20090316170015.GA9776@rhlx01.hs-esslingen.de>
+	<s5hljr5pex0.wl%tiwai@suse.de>
+	<20090316173000.GA25647@rhlx01.hs-esslingen.de>
+	<s5hiqm9pe1g.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-QBNnN5Vx+Nr3odHEE/u4"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ti-out-0910.google.com (ti-out-0910.google.com [209.85.142.190])
-	by alsa0.perex.cz (Postfix) with ESMTP id D79AB103882
-	for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2009 19:03:02 +0100 (CET)
-Received: by ti-out-0910.google.com with SMTP id u3so1032048tia.8
-	for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2009 11:03:00 -0700 (PDT)
-In-Reply-To: <s5hhc1tpdwk.wl%tiwai@suse.de>
+Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
+	by alsa0.perex.cz (Postfix) with ESMTP id 516EA10384B
+	for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2009 19:06:38 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hiqm9pe1g.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,233 +30,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Kernel Testers List <kernel-testers@vger.kernel.org>, Maxim Levitsky <maximlevitsky@gmail.com>, Andreas Mohr <andi@lisas.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
---=-QBNnN5Vx+Nr3odHEE/u4
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-
-Your revice on the mail below didn't work. I cannot listen the sound.
-
-2009-03-16 (Mon) 18:37 +0100 Takashi Iwai wrote:
-> At Tue, 17 Mar 2009 02:29:36 +0900,
-> Emmanuel Chanel wrote:
+On Mon, Mar 16, 2009 at 06:34:35PM +0100, Takashi Iwai wrote:
+> At Mon, 16 Mar 2009 18:30:00 +0100,
+> Andreas Mohr wrote:
 > > 
-> > My result of "your original change"
-> > Attached file: alsa-info-090317-Daniel is the result of alsa-info.sh
-> > And alsa-driver-090317-Daniel-info.txt is script output.
-> > I could listen sounds with that modification.
+> > Hi,
+> > 
+> > On Mon, Mar 16, 2009 at 06:15:39PM +0100, Takashi Iwai wrote:
+> > > At Mon, 16 Mar 2009 18:00:15 +0100,
+> > > Andreas Mohr wrote:
+> > > > > > And, is the behavior consistent regardless of the value high, i.e.
+> > > > > > the key is only whether the values for both channels are identical?
+> > > > > 
+> > > > > BTW, what if you record with the following definition?
+> > > > > Put the below to ~/.asoundrc
+> > > > > 
+> > > > > pcm.imix {
+> > > > > 	type plug
+> > > > > 	slave.pcm "hw"
+> > > > > 	ttable.0.0 0.5
+> > > > > 	ttable.0.1 -0.5
+> > > > > }
+> > > > > 
+> > > > > and record like
+> > > > > 
+> > > > > 	% aplay -Dimix -c1 foo.wav
+> > > > 
+> > > > Does NOT exhibit the "equal sliders == no sound" bug (apart from this sliders
+> > > > are acting normally, i.e. slider low == no sound), despite being a
+> > > > "plug" type definition (this is what you wanted to discern, right? ;).
+> > > 
+> > > Interesting.  This implies that one channel is inverted indeed.
+> > 
+> > Oh, you mean "inverted" as in "_hardware_ channel which provides opposite
+> > sample values as compared to the other channel"?
 > 
-> OK, then apparently the DMA buffers have to be in 32bit, too.
+> Right.  My guess is that the hardware provides left (or right) channel
+> is multiplied by -1  (yep "inverted" is no correct word choice).
 > 
-> There might be a missing register to set 64bit DMA for ATI chipset,
-> but right now it's safe to set 32bit DMA for them...
+> > > As default the alsa-lib plugin downmixes a stereo stream to a mono
+> > > stream simply  by left/2 + right/2.  The above changes the routing
+> > > policy as left/2 - right/2.
+> > 
+> > That exactly matches my current stream of thought (while reading
+> > "one channel is inverted" above).
+> > 
+> > > So we need to pass some information to change this kind of thing...
+> > 
+> > That's something specific to ALC268 codec setup, right?
+> > ("ALC268 digital mic == left plus right channel, but inverted setup"?)
 > 
-> The below is the revised patch.  Could you check whether it works?
-> 
-> 
-> thanks,
-> 
-> Takashi
--- 
-Emmanuel Chanel <emmanuelchanel@gmail.com>
+> No.  It's specific to the digital-mic side.
 
---=-QBNnN5Vx+Nr3odHEE/u4
-Content-Disposition: attachment; filename="alsa-info-0903172.txt"
-Content-Type: text/plain; name="alsa-info-0903172.txt"; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-
-upload=true&script=true&cardinfo=
-!!################################
-!!ALSA Information Script v 0.4.56
-!!################################
-
-!!Script ran on: Mon Mar 16 18:01:38 UTC 2009
+I just tried connecting a headset and switching to E-Mic.
+What I can say is:
+- opposite levels does NOT happen there (E-Mic is "analog micro"-based, right?)
+- leaving E-Mic unplugged will actually record from i-Mic (due to properly
+  working EAPD mechanism, right?)
 
 
-!!Linux Distribution
-!!------------------
+BTW, the output (of arecord -Dplughw:0 -c2 -traw -fdat foo.wav) _does_ have
+inverted channels:
 
-Fedora release 10 (Cambridge) Fedora release 10 (Cambridge) Fedora release 10 (Cambridge) Fedora release 10 (Cambridge)
-
-
-!!Kernel Information
-!!------------------
-
-Kernel release:    2.6.27.19-170.2.35.fc10.x86_64
-Operating System:  GNU/Linux
-Architecture:      x86_64
-Processor:         x86_64
-SMP Enabled:       Yes
+00000130   2A 02 D2 FD  65 02 A5 FD  10 00 E7 FF  99 FF 72 00 *...e.........r.
+00000140   53 FE A7 01  ED FF 12 00  4F FF A6 00  86 00 81 FF S.......O.......
+... and so on in the entire file ...
 
 
-!!ALSA Version
-!!------------
+One question still: is this a hardware defect (i.e. could this possibly
+be swapped cables of the microphone connector in this model or so?
+Not plausible but...), or is this an existing property
+of the HDA's dig-mic base? You indicated it's the latter I think...
 
-Driver version:     1.0.19
-Library version:    1.0.19
-Utilities version:  1.0.19
-
-
-!!Loaded ALSA modules
-!!-------------------
-
-
-
-!!Sound Servers on this system
-!!----------------------------
-
-Pulseaudio:
-      Installed - Yes (/usr/bin/pulseaudio)
-      Running - Yes
-
-Jack:
-      Installed - Yes (/usr/bin/jackd)
-      Running - No
-
-
-!!Soundcards recognised by ALSA
-!!-----------------------------
-
---- no soundcards ---
-
-
-!!PCI Soundcards installed in the system
-!!--------------------------------------
-
-00:14.2 Audio device: ATI Technologies Inc SBx00 Azalia (Intel HDA)
-
-
-!!Advanced information - PCI Vendor/Device/Susbsystem ID's
-!!--------------------------------------------------------
-
-00:14.2 0403: 1002:4383
-	Subsystem: 1458:a002
-
-
-!!Loaded sound module options
-!!--------------------------
-
-
-!!ALSA Device nodes
-!!-----------------
-
-crw-rw----+ 1 root root 116,  1 Mar 17 02:56 /dev/snd/seq
-crw-rw----+ 1 root root 116, 33 Mar 17 02:56 /dev/snd/timer
-
-
-!!ALSA configuration files
-!!------------------------
-
-!!System wide config file (/etc/asound.conf)
-
-#
-# Place your global alsa-lib configuration here...
-#
-
-@hooks [
-	{
-		func load
-		files [
-			"/etc/alsa/pulse-default.conf"
-		]
-		errors false
-	}
-]
-
-
-!!Aplay/Arecord output
-!!------------
-
-APLAY
-
-aplay: device_list:217: no soundcards found...
-
-ARECORD
-
-arecord: device_list:217: no soundcards found...
-
-!!Amixer output
-!!-------------
-
-
-!!Alsactl output
-!!-------------
-
---startcollapse--
---endcollapse--
-
-
-!!All Loaded Modules
-!!------------------
-
-Module
-snd_hda_intel
-snd_hda_codec
-snd_hwdep
-snd_seq_dummy
-snd_seq_oss
-snd_seq_midi_event
-snd_seq
-snd_seq_device
-snd_pcm_oss
-snd_mixer_oss
-snd_pcm
-snd_timer
-snd
-soundcore
-snd_page_alloc
-ext2
-fuse
-nfs
-lockd
-nfs_acl
-bridge
-stp
-bnep
-sco
-l2cap
-bluetooth
-sunrpc
-ipv6
-cpufreq_ondemand
-powernow_k8
-freq_table
-reiserfs
-dm_multipath
-uinput
-ata_generic
-pata_acpi
-usb_storage
-ppdev
-firewire_ohci
-pata_atiixp
-i2c_piix4
-k8temp
-firewire_core
-parport_pc
-parport
-pcspkr
-floppy
-r8169
-i2c_core
-crc_itu_t
-hwmon
-mii
-
-
-
---=-QBNnN5Vx+Nr3odHEE/u4
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---=-QBNnN5Vx+Nr3odHEE/u4--
+Andreas
