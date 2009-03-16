@@ -1,18 +1,26 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 0/9] ARM: DaVinci: ASoC: Adds Audio	support
-	for TI DM646X
-Date: Mon, 16 Mar 2009 15:38:56 +0000
-Message-ID: <20090316153855.GI16539@sirena.org.uk>
-References: <1237204854-29989-1-git-send-email-naresh@ti.com>
+From: Andreas Mohr <andi@lisas.de>
+Subject: Re: Bugs on aspire one A150
+Date: Mon, 16 Mar 2009 17:02:08 +0100
+Message-ID: <20090316160208.GB4458@rhlx01.hs-esslingen.de>
+References: <s5hy6z9i44h.wl%tiwai@suse.de>
+	<20090315092117.GA1567@rhlx01.hs-esslingen.de>
+	<20090316120312.GA19299@rhlx01.hs-esslingen.de>
+	<s5hocw1r7n5.wl%tiwai@suse.de>
+	<20090316133001.GA8437@rhlx01.hs-esslingen.de>
+	<s5hfxhdr1oz.wl%tiwai@suse.de>
+	<20090316143158.GA12725@rhlx01.hs-esslingen.de>
+	<s5hab7lr0k1.wl%tiwai@suse.de>
+	<20090316145036.GA26358@rhlx01.hs-esslingen.de>
+	<s5h4oxtqy6q.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 57AFB24133
-	for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2009 16:38:57 +0100 (CET)
+Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
+	by alsa0.perex.cz (Postfix) with ESMTP id BB9A7103863
+	for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2009 17:02:08 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1237204854-29989-1-git-send-email-naresh@ti.com>
+In-Reply-To: <s5h4oxtqy6q.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,29 +30,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Naresh Medisetty <naresh@ti.com>
-Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Kernel Testers List <kernel-testers@vger.kernel.org>, Maxim Levitsky <maximlevitsky@gmail.com>, Andreas Mohr <andi@lisas.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 16, 2009 at 08:00:54AM -0400, Naresh Medisetty wrote:
-> Adds Audio support for TI DM646X EVM platform
+Hi,
 
-> Signed-off-by: Naresh Medisetty <naresh@ti.com>
+On Mon, Mar 16, 2009 at 04:34:05PM +0100, Takashi Iwai wrote:
+> At Mon, 16 Mar 2009 15:50:36 +0100,
+> Andreas Mohr wrote:
+> > In the problematic case (using plughw),
+> > whenever left channel / right channel sliders are equal, no sound gets recorded.
+> 
+> What are "sliders"?
 
-I'm broadly OK with anything I haven't specifically commented on here.
-However, the ASoC bits of the series need to be updated to reflect the
-current ASoC APIs.  Some additional documentation for your changes to
-the EVM would be very helpful.
+Umm, volume level controls.
 
-It would also be very much better if you could restructure the series to
-reflect the changes you're making.  You're actually doing three things:
-
- - Add support for a dummy codec.
- - Add support for the McASP port on the DaVinci.
- - Update the DaVinci EVM driver to use these two things on relevant
-   EVMs.
-
-and the series should be structured to reflect this.  The codec and EVM
-support should each go in a single patch by themselves.  The McASP
-support is big enough to be broken down but it does need to come before
-the EVM support that uses it.
+Andreas
