@@ -1,20 +1,23 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: How to tell user level hardware not support a
- certain format in a certain sample rate
-Date: Mon, 16 Mar 2009 09:54:28 +0100
-Message-ID: <49BE13C4.10909@ladisch.de>
-References: <4e090d470902222302g16a99f5dq77d0d40f6cba855e@mail.gmail.com>	
-	<4e090d470903020604h27ce2ce8l47f996edc9764ada@mail.gmail.com>	
-	<49AC0232.1060909@ladisch.de>
-	<4e090d470903150338q74cd3538xe908bc3d7df9a8de@mail.gmail.com>
+From: Emmanuel Chanel <emmanuelchanel@gmail.com>
+Subject: Re: My PC has 6GB memory but the limitation of the
+ alsa-driver is 4GB.
+Date: Mon, 16 Mar 2009 18:53:02 +0900
+Message-ID: <1237197183.3501.64.camel@localhost.localdomain>
+References: <1237056610.21086.72.camel@localhost.localdomain>
+	<fd3eb9bf0903141235v1878ae03h8e51b8bcebb4c87d@mail.gmail.com>
+	<1237061065.2581.3.camel@localhost.localdomain>
+	<1237093356.3501.45.camel@localhost.localdomain>
+	<s5hocw2rl9y.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 67D742436A
-	for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2009 09:54:27 +0100 (CET)
-In-Reply-To: <4e090d470903150338q74cd3538xe908bc3d7df9a8de@mail.gmail.com>
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.245])
+	by alsa0.perex.cz (Postfix) with ESMTP id DB3FC103812
+	for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2009 10:53:08 +0100 (CET)
+Received: by rv-out-0708.google.com with SMTP id c5so2543981rvf.32
+	for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2009 02:53:07 -0700 (PDT)
+In-Reply-To: <s5hocw2rl9y.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,44 +27,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Richard Zhao <linuxzsc@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Richard Zhao wrote:
-> Sure I can add rules. but the rules will be checked as hw_param. If
-> hw_param failed, does alsalib convert fmt or sample rate
-> automatically?
+Takashi Iwai wrote at 08:15 +0100 , 2009-03-16 (Mon)
+> Hmm, then it's a bug of AMD/ATI controller chip. 
 > 
-> For example:
-> One codec, support:
-> 44.1k : s8 s16 s24 s32
-> 96k:  s24 s32
-> 
-> When user try to play s8/s16 96k audio file, hw_param will fail.
+> The problem is however likely only about CORB/RIRB addresses, and not
+> about the sample buffers.  So setting 32bit there couldn't be the
+> "right" fix.
 
-This is not how the rules work.
+Yeah, he said so, too. I mistook.
 
-Initializing a device works like this:
-1) The application opens the device, and the driver's open callback gets
-   called.
-2) The application chooses hardware parameters; ALSA checks that these
-   values conform to the device's limitations.
-3) After all hardware parameters are known, the driver's hw_params
-   callback gets called.
+> How about the patch below?
 
-When you driver adds constraint rules, it has do this in the open
-callback (so that the rules are available in step 2 above).  Your
-constraint rules will be called when the application tries to select
-parameters; this is before the hw_params callback gets called.
+I tried but it says
 
-In your example above, the open callback would install two rule
-functions: one to remove s8/s16 if 96k has been selected, and one to
-remove 96k if s8/s16 has been selected.
+----
+[emmanuel@star1 alsa-driver-1.0.19]$ patch -p1 <
+hda_intel_Takashi_Iwai_0903161.diff
+patching file sound/pci/hda/hda_intel.c
+Hunk #1 FAILED at 2136.
+Hunk #2 FAILED at 2218.
+Hunk #3 FAILED at 2319.
+3 out of 3 hunks FAILED -- saving rejects to file
+sound/pci/hda/hda_intel.c.rej
+----
 
-When the hw_params callback is called, ALSA guarantees that the
-parameters are valid for the device.
+Which version of the source shall I patch ? svn ?
 
-
-HTH
-Clemens
+-- 
+Emmanuel Chanel <emmanuelchanel@gmail.com>
