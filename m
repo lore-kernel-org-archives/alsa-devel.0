@@ -1,16 +1,15 @@
-From: Dany Svirsky <dany.svirsky@gmail.com>
-Subject: ESI Maya44 Driver
-Date: Tue, 17 Mar 2009 20:38:53 +0200
-Message-ID: <7c3371200903171138n7350606ftcaa44ba80cf28f9d@mail.gmail.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: ASoC updates for 2.6.30
+Date: Tue, 17 Mar 2009 19:30:24 +0000
+Message-ID: <20090317193022.GA6522@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0C30010388A
-	for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2009 19:38:54 +0100 (CET)
-Received: by wf-out-1314.google.com with SMTP id 24so118510wfg.23
-	for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2009 11:38:53 -0700 (PDT)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 39064103896
+	for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2009 20:30:31 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,17 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
+The following changes since commit 852fd9e50f62b4ea7afe26eee0710464de4801b8:
+  Mark Brown (1):
+        ASoC: Each PXA AC97 DAI needs a separate ops
 
-This subject was disscused before, but it has been very long time without
-any updates.
-It been more then half a year since the patch is out.
-Was someone able to contact Rainer?
-If not what can be done to finally merge the patch?
-Is it possible for someone to take over the development of the driver?
+are available in the git repository at:
 
-Thanks,
-Dany
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.30
+
+Atsushi Nemoto (1):
+      ASoC: Only deregister AC97 dev if it's name was not "AC97"
+
+Daniel Mack (1):
+      ASoC: switch PXA SSP driver from network mode to PSP
+
+Mark Brown (3):
+      ASoC: Fix non-networked I2S mode for PXA SSP
+      ASoC: Fix Zylonite for non-networked SSP mode
+      Merge branch 'pxa-ssp' into for-2.6.30
+
+ sound/soc/pxa/pxa-ssp.c  |   55 ++++++++++++++++++++++++++++++++++++----------
+ sound/soc/pxa/zylonite.c |   55 +++++++++++++++++++++-------------------------
+ sound/soc/soc-core.c     |    3 +-
+ 3 files changed, 70 insertions(+), 43 deletions(-)
