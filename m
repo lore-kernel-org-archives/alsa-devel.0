@@ -1,21 +1,16 @@
-From: PETER EASTHOPE <peasthope@shaw.ca>
-Subject: Tenx USB audio adapter
-Date: Tue, 17 Mar 2009 09:54:30 -0700
-Message-ID: <cf7b962e257a6.49bf7356@shaw.ca>
-Reply-To: peasthope@shaw.ca
+From: Dany Svirsky <dany.svirsky@gmail.com>
+Subject: ESI Maya44 Driver
+Date: Tue, 17 Mar 2009 20:38:53 +0200
+Message-ID: <7c3371200903171138n7350606ftcaa44ba80cf28f9d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from idcmail-mo2no.shaw.ca (idcmail-mo2no.shaw.ca [64.59.134.9])
-	by alsa0.perex.cz (Postfix) with ESMTP id 168A01037F0
-	for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2009 17:54:18 +0100 (CET)
-Received: from shaw.ca (pd5ms2no-con [10.0.145.111])
-	by l-daemon (Sun Java System Messaging Server 6.2-7.05 (built Sep 5
-	2006)) with ESMTP id <0KGN00BKCTMU7CE0@l-daemon> for
-	alsa-devel@alsa-project.org; Tue, 17 Mar 2009 10:54:30 -0600 (MDT)
-Content-language: en
-Content-disposition: inline
+Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0C30010388A
+	for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2009 19:38:54 +0100 (CET)
+Received: by wf-out-1314.google.com with SMTP id 24so118510wfg.23
+	for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2009 11:38:53 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,25 +23,14 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Folk,
+Hi All,
 
-I was advised to ask about the Tenx USB 
-audio adapter here.  lshal claims it is 
-a standard HID device and a standard USB 
-device.  Ref. 
-http://carnot.yi.org/lshal1.out
+This subject was disscused before, but it has been very long time without
+any updates.
+It been more then half a year since the patch is out.
+Was someone able to contact Rainer?
+If not what can be done to finally merge the patch?
+Is it possible for someone to take over the development of the driver?
 
-Nevertheless, sound in and sound out both 
-fail in my system.
-
-Some information is at the bottom of 
-this page.
-"http://carnot.yi.org/DebianPage.html#USBAudio"
-
-Any suggestions?
-
-Thanks,     ... Peter E.
-
--- 
-http://members.shaw.ca/peasthope/
-http://carnot.yi.org/ = http://carnot.pathology.ubc.ca/
+Thanks,
+Dany
