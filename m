@@ -1,17 +1,23 @@
-From: Santo Chow <santo_chow@yahoo.com>
-Subject: Re: Need help on getting raw audio stream from a dummy
-	sound card
-Date: Mon, 16 Mar 2009 23:22:25 -0700 (PDT)
-Message-ID: <735382.67435.qm@web110804.mail.gq1.yahoo.com>
-References: <528253.23902.qm@web110802.mail.gq1.yahoo.com>
-	<s5hhc21ienk.wl%tiwai@suse.de>
+From: Richard Zhao <linuxzsc@gmail.com>
+Subject: Re: How to tell user level hardware not support a
+	certain format in a certain sample rate
+Date: Tue, 17 Mar 2009 14:57:09 +0800
+Message-ID: <4e090d470903162357x776b37b7o5d76dad49e0b23df@mail.gmail.com>
+References: <4e090d470902222302g16a99f5dq77d0d40f6cba855e@mail.gmail.com>
+	<4e090d470903020604h27ce2ce8l47f996edc9764ada@mail.gmail.com>
+	<49AC0232.1060909@ladisch.de>
+	<4e090d470903150338q74cd3538xe908bc3d7df9a8de@mail.gmail.com>
+	<49BE13C4.10909@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web110804.mail.gq1.yahoo.com (web110804.mail.gq1.yahoo.com
-	[67.195.13.227]) by alsa0.perex.cz (Postfix) with SMTP id 3397E10387B
-	for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2009 07:22:27 +0100 (CET)
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.248])
+	by alsa0.perex.cz (Postfix) with ESMTP id 183AF10387E
+	for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2009 07:57:10 +0100 (CET)
+Received: by rv-out-0708.google.com with SMTP id c5so2985203rvf.32
+	for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2009 23:57:09 -0700 (PDT)
+In-Reply-To: <49BE13C4.10909@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,120 +27,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On Mon, Mar 16, 2009 at 4:54 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Richard Zhao wrote:
+>> Sure I can add rules. but the rules will be checked as hw_param. If
+>> hw_param failed, does alsalib convert fmt or sample rate
+>> automatically?
+>>
+>> For example:
+>> One codec, support:
+>> 44.1k : s8 s16 s24 s32
+>> 96k: =A0s24 s32
+>>
+>> When user try to play s8/s16 96k audio file, hw_param will fail.
+>
+> This is not how the rules work.
+>
+> Initializing a device works like this:
+> 1) The application opens the device, and the driver's open callback gets
+> =A0 called.
+> 2) The application chooses hardware parameters; ALSA checks that these
+> =A0 values conform to the device's limitations.
+> 3) After all hardware parameters are known, the driver's hw_params
+> =A0 callback gets called.
+>
+> When you driver adds constraint rules, it has do this in the open
+> callback (so that the rules are available in step 2 above). =A0Your
+> constraint rules will be called when the application tries to select
+> parameters; this is before the hw_params callback gets called.
+>
+> In your example above, the open callback would install two rule
+> functions: one to remove s8/s16 if 96k has been selected, and one to
+> remove 96k if s8/s16 has been selected.
+>
+> When the hw_params callback is called, ALSA guarantees that the
+> parameters are valid for the device.
+>
+>
+> HTH
+> Clemens
+>
 
-I have followed your suggestion and now i'm faced with another problem. So, right now, i have a Loopback soundcard as my default. My .asoundrc looks like this:
+Hi Clemens,
 
-pcm.!default{
-   type hw
-   card 1
-}
+Thank you!  I see. After set every hw parm, snd_pcm_hw_refine will
+called, then the corresponding constraints(rules) will be checked.
 
-Card
-0 is my actual soundcard (that can actually produce sound). Card 1,
-when i checked on the /proc/asound/cards actually pointing to Loopback
-card. So right now, the way i test the card 1, is to call arecord from
-card 1, and play it to card 0. Right now, i'm still developing this in
-my ubuntu PC.
-
-so i ran this
-arecord -f cd -D hw:1,1 | aplay -f cd -D hw:0
-
-in
-one terminal, and in the other terminal i can play mplayer, watching
-youtube, etc.. and the sound would come out nicely. (Thanks to all of
-your efforts, nevertheless)
-
-But I notice that, when i play
-mplayer, then i open a web-browser, and surf youtube, the sound from
-youtube is gone. But if i close the browser, close the mplayer, then
-reopen the browser, go to youtube and play a video, i can hear the
-sound nicely. but then, if during the time i start mplayer, it will
-complain about 'no sound'. Turns out, I have to use dmix. So, i modify
-my .asoundrc like this:
-
-pcm.!default {
-   type plug
-   slave.pcm "dmixer"
-}
-
-pcm.dmixer  {
-   type dmix
-   ipc_key 1025
-   slave {
-      pcm "hw:0,0"
-      rate 44100
-   }
-   bindings {
-
-  0 0
-      1 1
-   }
-}
-i put 'pcm "hw:0,0" ' over there, because i want to make sure that this setting works with my actual sound card first. If it works with my card 0, it should work with my card 1. with
-the above .asoundrc file, i can play multiple sound from different
-application at the same time. I even tried to remove the "bindings"
-tag, and it still able to play multiple sound very well. so i guess,
-this should work on my card 1.
-
-then i change the .asoundrc become like this again:
-
-
-pcm.!default {
-   type plug
-   slave.pcm "dmixer"
-}
-
-pcm.dmixer  {
-   type dmix
-   ipc_key 1025
-   slave {
-      pcm "hw:1,1"
-      period_time 0
-      period_size 881
-      buffer_size 3524
-      rate 44100
-
- }
-}the value for perio_time,
-period_size, and buffer_size have been adjusted by me to suits my
-hardware requirement. This is the setting that works on my machine.
-It's just that, in the end, I'm still ended up with one sound at a
-time. I can't run mplayer + youtube at the same time. I can only run
-one of them. And furthermore, if i just paused the mplayer, the audio device is still locks. It will be good enough if someone can hint me a way to unlock the audio device.
-
-So,
-what i want to ask is.. can this Loopback card handle more than 1 sound
-at a time? Have anyone tried this before? I have tried changing the
-value of .asoundrc, switching the slave pcm to pcm "hw:1,0" (not
-working) pcm "hw:1" (works, but only 1 sound too). Any idea guys?
-
-
-Santo
-
-
-
-
-________________________________
-From: Takashi Iwai <tiwai@suse.de>
-To: Santo Chow <santo_chow@yahoo.com>
-Cc: alsa-devel@alsa-project.org
-Sent: Tuesday, March 10, 2009 11:25:03 PM
-Subject: Re: [alsa-devel] Need help on getting raw audio stream from a dummy sound card
-
-At Thu, 5 Mar 2009 08:34:03 -0800 (PST),
-Santo Chow wrote:
-> 
-> Hi everyone :)
-> 
-> I'm currently assigned to a task that requires me to capture raw audio stream from a dummy sound card. Is this even possible?
-
-You can use aloop driver in alsa-driver tree for such a purpose.
-Then you can capture streams freely from the currently running playbacks.
-
-
-Takashi
+Thanks again!
+Richard
