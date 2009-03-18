@@ -1,19 +1,15 @@
-From: "Medisetty, Naresh" <naresh@ti.com>
-Subject: Re: [PATCH 0/9] ARM: DaVinci: ASoC: Adds Audio	support
- for TI DM646X
-Date: Wed, 18 Mar 2009 18:02:01 +0530
-Message-ID: <FF55437E1F14DA4BAEB721A458B67017069809B09D@dbde02.ent.ti.com>
-References: <1237204854-29989-1-git-send-email-naresh@ti.com>,
-	<20090316153855.GI16539@sirena.org.uk>
+From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Subject: [2.6.30][topic/asoc][PATCH 1/2] ASoC: OMAP: N810: Mark
+	not connected input pins
+Date: Wed, 18 Mar 2009 16:46:53 +0200
+Message-ID: <1237387614-27295-1-git-send-email-jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1BCD81037EC
-	for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2009 13:33:41 +0100 (CET)
-In-Reply-To: <20090316153855.GI16539@sirena.org.uk>
-Content-Language: en-US
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id A852E1038DC
+	for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2009 15:47:12 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,59 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>
+To: alsa-devel@alsa-project.org
+Cc: Jarkko Nikula <jarkko.nikula@nokia.com>, broonie@sirena.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
+Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
+---
+ sound/soc/omap/n810.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
-
-
-Thanks for the review.
-
-
-
-I will re-submit the series by taking care of  your comments.
-
-
-
-> -----Original Message-----
-> From: naresh [mailto:x0090427@ti.com]
-> Sent: Wednesday, March 18, 2009 5:50 PM
-> To: 'naresh@ti.com'<mailto:'naresh@ti.com'>
-> Subject:
->
-> On Mon, Mar 16, 2009 at 08:00:54AM -0400, Naresh Medisetty wrote:
-> > Adds Audio support for TI DM646X EVM platform
->
-> > Signed-off-by: Naresh Medisetty <naresh@ti.com<mailto:naresh@ti.com>>
->
-> I'm broadly OK with anything I haven't specifically commented on here.
-> However, the ASoC bits of the series need to be updated to reflect the
-> current ASoC APIs.  Some additional documentation for your changes to
-> the EVM would be very helpful.
-
-
-
-I will take elaborate the documentation while re-submitting the patches
-
-
-
->
-> It would also be very much better if you could restructure the series
-> to
-> reflect the changes you're making.  You're actually doing three things:
->
->  - Add support for a dummy codec.
->  - Add support for the McASP port on the DaVinci.
->  - Update the DaVinci EVM driver to use these two things on relevant
->    EVMs.
->
-> and the series should be structured to reflect this.  The codec and EVM
-> support should each go in a single patch by themselves.  The McASP
-> support is big enough to be broken down but it does need to come before
-> the EVM support that uses it.
-
-
-
-I will structure the series according to this.
+diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
+index 86471fd..f203221 100644
+--- a/sound/soc/omap/n810.c
++++ b/sound/soc/omap/n810.c
+@@ -254,6 +254,11 @@ static int n810_aic33_init(struct snd_soc_codec *codec)
+ 	snd_soc_dapm_nc_pin(codec, "MONO_LOUT");
+ 	snd_soc_dapm_nc_pin(codec, "HPLCOM");
+ 	snd_soc_dapm_nc_pin(codec, "HPRCOM");
++	snd_soc_dapm_nc_pin(codec, "MIC3L");
++	snd_soc_dapm_nc_pin(codec, "MIC3R");
++	snd_soc_dapm_nc_pin(codec, "LINE1R");
++	snd_soc_dapm_nc_pin(codec, "LINE2L");
++	snd_soc_dapm_nc_pin(codec, "LINE2R");
+ 
+ 	/* Add N810 specific controls */
+ 	err = snd_soc_add_controls(codec, aic33_n810_controls,
+-- 
+1.6.2
