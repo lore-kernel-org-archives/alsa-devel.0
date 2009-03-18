@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: Correct macro for Headset widgets
-Date: Wed, 18 Mar 2009 11:08:57 +0000
-Message-ID: <20090318110855.GA11750@sirena.org.uk>
-References: <2C7D3DF36ADFFC479B44490D912B616705ECF95A8F@dlee07.ent.ti.com>
+From: "Medisetty, Naresh" <naresh@ti.com>
+Subject: Re: [PATCH 1/9] ARM: DaVinci: ASoC: Adds ASoC
+	driver	support for TI DM646X EVM platform
+Date: Wed, 18 Mar 2009 17:07:32 +0530
+Message-ID: <FF55437E1F14DA4BAEB721A458B67017069809B095@dbde02.ent.ti.com>
+References: <1237204945-30039-1-git-send-email-naresh@ti.com>,
+	<20090316145659.GC16539@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1EF291038D9
-	for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2009 12:08:58 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705ECF95A8F@dlee07.ent.ti.com>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 74D8A243E4
+	for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2009 12:38:15 +0100 (CET)
+In-Reply-To: <20090316145659.GC16539@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,26 +23,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Lopez Cruz, Misael" <x0052729@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 17, 2009 at 08:31:55PM -0500, Lopez Cruz, Misael wrote:
+I will re-work on this and re-submit the patch.
 
-> What is the correct way to declare a Headset widget in a machine
-> driver? I originally thought that by using SND_SOC_DAPM_HP macro
-> was enough, but it's not since the headset is both headphones and
-> microphone.
+Regards
+Naresh
+________________________________________
+From: Mark Brown [broonie@sirena.org.uk]
+Sent: Monday, March 16, 2009 8:27 PM
+To: Medisetty, Naresh
+Cc: davinci-linux-open-source@linux.davincidsp.com; alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [PATCH 1/9] ARM: DaVinci: ASoC: Adds ASoC driver      support for TI DM646X EVM platform
 
-Declare separate microphone and headphone widgets ("Headset Microphone"
-and "Headset Headphone" or something).  While physically they're on the
-same device as far as the audio routing of the codec is concerned
-they are separate devices - there's no direct electrical interconnection
-between the input and output side.
+On Mon, Mar 16, 2009 at 08:02:25AM -0400, Naresh Medisetty wrote:
+> Adds ASoC driver support for TI DM646X EVM platform
 
-> Can we have a macro specifically for Headset widgets?
+Your changelog needs to be a bit more verbose here...
 
-If we had a single macro then it'd need to expand to the two separate
-widgets - we could do that but I'm not sure it'd add much to usability
-since the routes would end up not linking to widgets that were directly
-specified in the code.
+> +#include "../codecs/codec_stubs.h"
+
+Interesting...
+
+> +static struct resource dm6467_evm_snd_resources[] = {
+> +     {
+> +             .start = DAVINCI_DM646X_MCASP0_REG_BASE,
+> +             .end = DAVINCI_DM646X_MCASP0_REG_BASE + (SZ_1K << 1) - 1,
+> +             .flags = IORESOURCE_MEM,
+> +     },
+
+Take a look at how the s3c24xx_uda134x driver handles getting platform
+data for the device.
+
+> +static struct evm_snd_platform_data dm6467_evm_snd_data[] = {
+> +     {
+> +             .clk_name       = "McASPCLK0",
+> +             .tx_dma_ch      = DAVINCI_DM646X_DMA_MCASP0_AXEVT0,
+> +             .rx_dma_ch      = DAVINCI_DM646X_DMA_MCASP0_AREVT0,
+> +             .tx_dma_offset  = 0x400,
+> +             .rx_dma_offset  = 0x400,
+> +             .op_mode        = DAVINCI_MCASP_IIS_MODE,
+> +             .num_serializer = 4,
+> +             .tdm_slots      = 2,
+> +             .serial_dir     = dm6467_iis_serializer_direction,
+> +             .eventq_no      = EVENTQ_0,
+> +             .codec_fmt      = SND_SOC_DAIFMT_CBM_CFM | SND_SOC_DAIFMT_IB_NF,
+> +     },
+
+Lots of this stuff looks like it ought to be part of the driver for the
+DAI rather than part of the machine driver.
+
+>
+> -     if (machine_is_davinci_evm()) {
+> +     if (cpu_is_davinci_dm644x()) {
+>               davinci_cfg_reg(DM644X_MCBSP);
+
+This really should be checking for the machine - presumably it needs to
+check for both the EVM and the particular CPU variant that's fitted on
+it.
