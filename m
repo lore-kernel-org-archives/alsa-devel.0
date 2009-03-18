@@ -1,17 +1,17 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH 2/3] snd-usb-caiaq: drop bogus iso packets
-Date: Wed, 18 Mar 2009 11:03:54 +0100
-Message-ID: <1237370635-27728-3-git-send-email-daniel@caiaq.de>
+Subject: [PATCH 1/3] snd-usb-caiaq: only warn once on streaming
+	errors
+Date: Wed, 18 Mar 2009 11:03:53 +0100
+Message-ID: <1237370635-27728-2-git-send-email-daniel@caiaq.de>
 References: <1237370635-27728-1-git-send-email-daniel@caiaq.de>
-	<1237370635-27728-2-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9DE5C1038D8
-	for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2009 11:04:07 +0100 (CET)
-In-Reply-To: <1237370635-27728-2-git-send-email-daniel@caiaq.de>
+	by alsa0.perex.cz (Postfix) with ESMTP id 3A9211038CF
+	for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2009 11:04:05 +0100 (CET)
+In-Reply-To: <1237370635-27728-1-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,69 +24,53 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Drop inbound packets that are smaller than expected. This has been
-observed at the very beginning of the streaming transaction.
-
-And when the hardware is in panic mode (which can only very rarely
-happen in case of massive EMI chaos), mute the input channels.
+Limit the number of printed warnings to one in case of streaming errors.
+printk() happens to be expensive, especially in code called as often as
+here.
 
 Signed-off-by: Daniel Mack <daniel@caiaq.de>
-Tested-by: Mark Hills <mark@pogo.org.uk>
 ---
- sound/usb/caiaq/caiaq-audio.c  |    6 ++++++
- sound/usb/caiaq/caiaq-device.c |    2 ++
+ sound/usb/caiaq/caiaq-audio.c  |    4 +++-
  sound/usb/caiaq/caiaq-device.h |    2 +-
- 3 files changed, 9 insertions(+), 1 deletions(-)
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/sound/usb/caiaq/caiaq-audio.c b/sound/usb/caiaq/caiaq-audio.c
-index 577b112..08d51e0 100644
+index fc6d571..577b112 100644
 --- a/sound/usb/caiaq/caiaq-audio.c
 +++ b/sound/usb/caiaq/caiaq-audio.c
-@@ -377,6 +377,9 @@ static void read_in_urb_mode2(struct snd_usb_caiaqdev *dev,
+@@ -114,6 +114,7 @@ static int stream_start(struct snd_usb_caiaqdev *dev)
+ 	dev->output_panic = 0;
+ 	dev->first_packet = 1;
+ 	dev->streaming = 1;
++	dev->warned = 0;
  
- 		for (stream = 0; stream < dev->n_streams; stream++, i++) {
- 			sub = dev->sub_capture[stream];
-+			if (dev->input_panic)
-+				usb_buf[i] = 0;
-+
- 			if (sub) {
- 				struct snd_pcm_runtime *rt = sub->runtime;
- 				char *audio_buf = rt->dma_area;
-@@ -398,6 +401,9 @@ static void read_in_urb(struct snd_usb_caiaqdev *dev,
- 	if (!dev->streaming)
- 		return;
+ 	for (i = 0; i < N_URBS; i++) {
+ 		ret = usb_submit_urb(dev->data_urbs_in[i], GFP_ATOMIC);
+@@ -406,10 +407,11 @@ static void read_in_urb(struct snd_usb_caiaqdev *dev,
+ 		break;
+ 	}
  
-+	if (iso->actual_length < dev->bpp)
-+		return;
-+
- 	switch (dev->spec.data_alignment) {
- 	case 0:
- 		read_in_urb_mode0(dev, urb, iso);
-diff --git a/sound/usb/caiaq/caiaq-device.c b/sound/usb/caiaq/caiaq-device.c
-index 5cf841e..8af47c2 100644
---- a/sound/usb/caiaq/caiaq-device.c
-+++ b/sound/usb/caiaq/caiaq-device.c
-@@ -251,6 +251,8 @@ int snd_usb_caiaq_set_audio_params (struct snd_usb_caiaqdev *dev,
- 		
- 	if (dev->audio_parm_answer != 1) 
- 		debug("unable to set the device's audio params\n");
-+	else
-+		dev->bpp = bpp;
- 
- 	return dev->audio_parm_answer == 1 ? 0 : -EINVAL;
+-	if (dev->input_panic || dev->output_panic) {
++	if ((dev->input_panic || dev->output_panic) && !dev->warned) {
+ 		debug("streaming error detected %s %s\n", 
+ 				dev->input_panic ? "(input)" : "",
+ 				dev->output_panic ? "(output)" : "");
++		dev->warned = 1;
+ 	}
  }
+ 
 diff --git a/sound/usb/caiaq/caiaq-device.h b/sound/usb/caiaq/caiaq-device.h
-index 4aa8631..1a2a21d 100644
+index 3edd94d..4aa8631 100644
 --- a/sound/usb/caiaq/caiaq-device.h
 +++ b/sound/usb/caiaq/caiaq-device.h
-@@ -92,7 +92,7 @@ struct snd_usb_caiaqdev {
+@@ -90,7 +90,7 @@ struct snd_usb_caiaqdev {
+ 	int audio_out_buf_pos[MAX_STREAMS];
+ 	int period_in_count[MAX_STREAMS];
  	int period_out_count[MAX_STREAMS];
- 	int input_panic, output_panic, warned;
+-	int input_panic, output_panic;
++	int input_panic, output_panic, warned;
  	char *audio_in_buf, *audio_out_buf;
--	unsigned int samplerates;
-+	unsigned int samplerates, bpp;
+ 	unsigned int samplerates;
  
- 	struct snd_pcm_substream *sub_playback[MAX_STREAMS];
- 	struct snd_pcm_substream *sub_capture[MAX_STREAMS];
 -- 
 1.6.2
