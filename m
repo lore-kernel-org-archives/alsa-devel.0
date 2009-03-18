@@ -1,21 +1,26 @@
-From: =?UTF-8?B?IlRpbW8gVC5IeXJzeWzDpCI=?= <timo.hyrsyla@cc-systems.com>
-Subject: Re: Bad page state in process 'rmmod' cs4281
-Date: Wed, 18 Mar 2009 11:01:36 +0200
-Message-ID: <49C0B870.9040901@cc-systems.com>
-References: <49B4D402.4050509@cc-systems.com>	<s5hbpsb7xbw.wl%tiwai@suse.de>
-	<s5hsklhn0ou.wl%tiwai@suse.de>
+From: Andreas Mohr <andi@lisas.de>
+Subject: Re: Bugs on aspire one A150
+Date: Wed, 18 Mar 2009 10:05:07 +0100
+Message-ID: <20090318090507.GA30453@rhlx01.hs-esslingen.de>
+References: <20090316180638.GB25647@rhlx01.hs-esslingen.de>
+	<s5htz5tyzyg.wl%tiwai@suse.de>
+	<20090316212227.GA29471@rhlx01.hs-esslingen.de>
+	<s5hfxhczinh.wl%tiwai@suse.de>
+	<20090317100500.GA16029@rhlx01.hs-esslingen.de>
+	<20090317103845.GA26007@rhlx01.hs-esslingen.de>
+	<20090317104755.GA1446@rhlx01.hs-esslingen.de>
+	<s5h3adcpf1i.wl%tiwai@suse.de>
+	<20090317161828.GA32756@rhlx01.hs-esslingen.de>
+	<s5h3adbhovj.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw2.cc-systems.com (mailgw2.cc-systems.com
-	[213.132.102.109])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0C49D24395
-	for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2009 10:01:37 +0100 (CET)
-Received: from mail-ua.ccs.local (mail-ua.ccs.local [192.168.2.223])
-	by mailgw2.cc-systems.com (8.14.3/8.14.3) with ESMTP id n2I91aON002985
-	for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2009 10:01:36 +0100
-In-Reply-To: <s5hsklhn0ou.wl%tiwai@suse.de>
+Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9A51424398
+	for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2009 10:05:07 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5h3adbhovj.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,52 +30,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Kernel Testers List <kernel-testers@vger.kernel.org>, Maxim Levitsky <maximlevitsky@gmail.com>, Andreas Mohr <andi@lisas.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTMuMy4yMDA5IDEzOjA0LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gQXQgTW9uLCAwOSBNYXIg
-MjAwOSAxMjoyNDo1MSArMDEwMCwKPiAgd3JvdGU6Cj4+IEF0IE1vbiwgMDkgTWFyIDIwMDkgMTA6
-MzI6MDIgKzAyMDAsCj4+IFRpbW8gVC5IeXJzeWzDpCB3cm90ZToKPj4+IFRyeWluZyB0byBtYWtl
-IEFsc2Egd29yayBvbiBvdXIgZW1iZWRkZWQgYXJtIHN5c3RlbSB3aXRoIGl4ZHA0MjUgYW5kIENT
-NDI4MS4KPj4+Cj4+PiBrZXJuZWwgaXMgMi42LjIwLjMgYW5kIHRoZSBBbHNhcyAoZHJpdmVyK2xp
-Yit1dGlscykgbGF0ZXN0IDEuMC4xOQo+Pj4KPj4+IE90aGVyIHRoYW4gdGhlIHR3byBiZWxvdyBl
-cnJvcnMsIHRoZSBzeXN0ZW0gc2VlbXMgdG8gd29yayBvay4KPj4+Cj4+PiBXaGVuIHJlbW92aW5n
-IHRoZSBzbmRfY3M0MjgxIG1vZHVsZSwgZG1lc2cgcmVwb3J0cyBtdWx0aXBsZSBlcnJvcnMgYWJv
-dXQgCj4+PiBiYWQgcGFnZQo+Pj4KPj4+IDwwPkJhZCBwYWdlIHN0YXRlIGluIHByb2Nlc3MgJ3Jt
-bW9kJwo+Pj4gPDA+cGFnZTpjNDAwNzMwMCBmbGFnczoweDAwMDA0MDAwIG1hcHBpbmc6MDAwMDAw
-MDAgbWFwY291bnQ6MCBjb3VudDowCj4+PiA8MD5UcnlpbmcgdG8gZml4IGl0IHVwLCBidXQgYSBy
-ZWJvb3QgaXMgbmVlZGVkCj4+PiA8MD5CYWNrdHJhY2U6Cj4+PiA8MD5CYWQgcGFnZSBzdGF0ZSBp
-biBwcm9jZXNzICdybW1vZCcKPj4+IDwwPnBhZ2U6YzQwMDczMjAgZmxhZ3M6MHgwMDAwNDAwMCBt
-YXBwaW5nOjAwMDAwMDAwIG1hcGNvdW50OjAgY291bnQ6MAo+Pj4gPDA+VHJ5aW5nIHRvIGZpeCBp
-dCB1cCwgYnV0IGEgcmVib290IGlzIG5lZWRlZAo+Pj4gPDA+QmFja3RyYWNlOgo+Pj4KPj4+IEkn
-dmUgbWFuYWdlZCB0byB0cmFjayBkb3duIHRoZSBlcnJvciB1cHRvIGRtYV9mcmVlX2NvaGVyZW50
-Lgo+Pj4KPj4+IHNuZF9wY21fZnJlZSA+IHNuZF9wY21fbGliX3ByZWFsbG9jYXRlX2ZyZWVfZm9y
-X2FsbCA+IAo+Pj4gc25kX3BjbV9saWJfcHJlYWxsb2NhdGVfZnJlZSA+IHNuZF9wY21fbGliX3By
-ZWFsbG9jYXRlX2RtYV9mcmVlID4gCj4+PiBzbmRfZG1hX2ZyZWVfcGFnZXMgPiBzbmRfZnJlZV9k
-ZXZfcGFnZXMgPiBkbWFfZnJlZV9jb2hlcmVudAo+Pj4KPj4+Cj4+PiBBbm90aGVyIGlzc3VlLCBw
-b3NzaWJseSByZWxhdGVkLCBpcyB0aGF0IHdoZW4gcnVubmluZyBhcGxheSB3aXRoIC0tbW1hcCAK
-Pj4+IGl0IHdpbGwgY3Jhc2ggd2l0aDoKPj4+Cj4+PiBJbnRlcm5hbCBlcnJvcjogT29wczogZjMg
-WyMxXQo+Pj4gUEMgaXMgYXQgc25kX3BjbV9tbWFwX2RhdGFfbm9wYWdlKzB4MTBjLzB4MTQ4IFtz
-bmRfcGNtXQo+Pj4gTFIgaXMgYXQgX19oYW5kbGVfbW1fZmF1bHQrMHgxNmMvMHg4YWMKPj4gVGhp
-cyBpcyBsaWtlbHkgdGhlIHByb2JsZW0gd2l0aCBkbWFfYWxsb2NfY29oZXJlbnQoKSBhbmQgbW1h
-cCBvbgo+PiBhIG5vbi1jb2hlcmVudCBhcmNoaXRlY3R1cmUuICBJIGhhdmUgcGF0Y2hlcyBmb3Ig
-dGhlc2UsIGJ1dCBvbmx5IGZvcgo+PiByZWNlbnQga2VybmVscy4gIFRoZSBwYXRjaGVzIGFyZSBm
-b3VuZCBpbiB0ZXN0L2RtYS1maXggYnJhbmNoIG9mIHNvdW5kCj4+IGdpdCB0cmVlOgo+PiAgIGdp
-dDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90aXdhaS9zb3VuZC0y
-LjYuZ2l0IHRlc3QvZG1hLWZpeAo+IAo+IEFsdGVybmF0aXZlbHksIGFuIGVhc2llciAiZml4IiB3
-b3VsZCBiZSBzaW1wbHkgZGlzYWJsZSBtbWFwIHN1cHBvcnQuCj4gUmVtb3ZlIFNORFJWX1BDTV9J
-TkZPX01NQVAqIGZyb20gc25kX3BjbV9oYXJkd2FyZSBkZWZpbml0aW9ucy4KPiAKPiBUaGlzIG1h
-eSBkaXNhYmxlIHRoZSBjb252ZXJzaW9uIHBsdWdpbiB1c2FnZSBpbiB0aGUgZWFybGllciBhbHNh
-LWxpYgo+IHZlcnNpb25zLCB0aG91Z2guCj4gCj4gCj4gVGFrYXNoaQoKClRyaWVkIHRvIGFwcGx5
-IHRoZSBwYXRjaCBjaGFuZ2VzIGludG8gbXkgdmVyc2lvbiwgYnV0IGl0IGRpZCBub3QgYWZmZWN0
-IAp0aGUgdW5sb2FkaW5nICdiYWQgcGFnZScgcHJvYmxlbSBhdCBhbGwuIEluc3RlYWQgaXQgZGlk
-IG1ha2UgYWxsIHBsYXkgCmF0dGVtcHRzIChldmVuIG5vbiBNTUFQKSB0byBjcmFzaC4gKG5vIGNy
-YXNoIGRldGFpbHMgYXZhaWxhYmxlIHNpbmNlIEkgCmRlc2lkZWQgdG8gZm9yZ2V0IGFib3V0IGl0
-IGZvciBub3csIHdvcmtpbmcgb24gdW5yZWxhdGVkIGlzc3VlcyBmb3IgYXdoaWxlKQoKSSBkaWQg
-ZGlzYWJsZSB0aGUgTU1BUCBzbyB0aGF0IHBsYXllciB3b250IGNyYXNoIHdoZW4gcmVxdWVzdGlu
-ZyBNTUFQLgoKU3lzdGVtIHN0aWxsIGR1bXBzIHRoZSBiYWQgcGFnZXMgYXQgdW5sb2FkLCBwbGF5
-IGFuZCBjYXB0dXJlIHNlZW0gdG8gCndvcmsgT0ssIG5vdCB0ZXN0ZWQgZXh0ZW5zaXZlbHkgdGhv
-dS4KCi0tIApUaW1vCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+Hi,
+
+On Tue, Mar 17, 2009 at 09:32:16PM +0100, Takashi Iwai wrote:
+> At Tue, 17 Mar 2009 17:18:28 +0100,
+> Andreas Mohr wrote:
+> > I had the same thoughts later. Since they use an extensive SAM handling
+> > library, there probably isn't such a chip, otherwise they probably
+> > wouldn't need it ;)
+> > Could you thus implement a nice beam-forming sound evaluation SAM
+> > library for ALSA pretty pretty please? ;)
+> 
+> A patch please :)
+
+Not at the moment at least, sorry. But that would make for a nice
+little (student?) project (or not so little).
+
+> Don't use -Dplughw:0.  Then the default setup will be used.
+> 
+> 	% arecord -fdat -c1 test.wav
+
+Tried that, didn't help. /usr/share/alsa/cards/HDA-Intel.conf still
+contains the patch, but equal Capture Volume sliders still silenced
+audio input, whereas non-equal worked. Hmm.
+
+Andreas
