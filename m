@@ -1,49 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.30
-Date: Thu, 19 Mar 2009 12:00:28 +0000
-Message-ID: <20090319120028.GA27550@rakim.wolfsonmicro.main>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Declare Headset as Mic and
+	Headphone widgets for SDP3430
+Date: Thu, 19 Mar 2009 12:01:25 +0000
+Message-ID: <20090319120124.GD1598@sirena.org.uk>
+References: <2C7D3DF36ADFFC479B44490D912B616705ECF95F43@dlee07.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BAA661038EC
-	for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2009 13:00:31 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705ECF95F43@dlee07.ent.ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: "Lopez Cruz, Misael" <x0052729@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit da88b48b84e1a504b6a19aff9d5b8236a59e228a:
-  Mark Brown (1):
-        Merge branch 'pxa-ssp' into for-2.6.30
+On Thu, Mar 19, 2009 at 01:07:34AM -0500, Lopez Cruz, Misael wrote:
+> Headset was declared previously as a Headphone widget connecting
+> HSMIC and HSOL/HSOR pins of TWL4030 codec in SDP430 machine driver.
+> The capture path becomes invalid as the Headphone widget is not a
+> valid input endpoint.
 
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.30
-
-Jarkko Nikula (2):
-      ASoC: OMAP: N810: Mark not connected input pins
-      ASoC: OMAP: N810: Add more jack functions
-
-Lopez Cruz, Misael (1):
-      ASoC: Declare Headset as Mic and Headphone widgets for SDP3430
-
-Mark Brown (3):
-      ASoC: Further optimise WM8400 bias configuration sequence
-      ASoC: Add separate AVDD for WM8400
-      ASoC: Add FLL support for WM8400
-
- sound/soc/codecs/wm8400.c |  159 ++++++++++++++++++++++++++++++++++++++-------
- sound/soc/omap/n810.c     |   33 +++++++++-
- sound/soc/omap/sdp3430.c  |   24 +++++--
- 3 files changed, 181 insertions(+), 35 deletions(-)
+Applied, thanks.
