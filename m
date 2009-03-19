@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 3/3] ASoC: pxa-ssp: Don't
-	use	SSCR0_SerClkDiv and SSCR0_SCR
-Date: Thu, 19 Mar 2009 11:48:09 +0000
-Message-ID: <20090319114809.GC1598@sirena.org.uk>
-References: <1237451692.14402.10.camel@localhost.localdomain>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.30
+Date: Thu, 19 Mar 2009 12:00:28 +0000
+Message-ID: <20090319120028.GA27550@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 34A9B1038D0
-	for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2009 12:48:11 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BAA661038EC
+	for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2009 13:00:31 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1237451692.14402.10.camel@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Philipp Zabel <philipp.zabel@gmail.com>
-Cc: alsa-devel@alsa-project.org, eric miao <eric.y.miao@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 19, 2009 at 09:34:52AM +0100, Philipp Zabel wrote:
+The following changes since commit da88b48b84e1a504b6a19aff9d5b8236a59e228a:
+  Mark Brown (1):
+        Merge branch 'pxa-ssp' into for-2.6.30
 
-> +static u32 ssp_get_scr(struct ssp_dev *dev)
+are available in the git repository at:
 
-...
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.30
 
-> +		if ((ssp_get_scr(ssp) == 4) && (width == 16)) {
+Jarkko Nikula (2):
+      ASoC: OMAP: N810: Mark not connected input pins
+      ASoC: OMAP: N810: Add more jack functions
 
-but here ssp is a ssp_device, not a ssp_dev (the compiler warns about
-this).
+Lopez Cruz, Misael (1):
+      ASoC: Declare Headset as Mic and Headphone widgets for SDP3430
+
+Mark Brown (3):
+      ASoC: Further optimise WM8400 bias configuration sequence
+      ASoC: Add separate AVDD for WM8400
+      ASoC: Add FLL support for WM8400
+
+ sound/soc/codecs/wm8400.c |  159 ++++++++++++++++++++++++++++++++++++++-------
+ sound/soc/omap/n810.c     |   33 +++++++++-
+ sound/soc/omap/sdp3430.c  |   24 +++++--
+ 3 files changed, 181 insertions(+), 35 deletions(-)
