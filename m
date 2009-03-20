@@ -1,52 +1,64 @@
-From: Halim Sahin <halim.sahin@freenet.de>
-Subject: trouble using dmix with tts systems (accessibility )
-Date: Fri, 20 Mar 2009 09:28:02 +0000 (UTC)
-Message-ID: <20090320092802.GA8779@halim>
+From: "Pascal de Bruijn | Unilogic Networks B.V."
+	<pascal@unilogicnetworks.net>
+Subject: [PATCH] alsa: Intel HDA output and align Ids.
+Date: Fri, 20 Mar 2009 14:00:56 +0100
+Message-ID: <1237554056.6305.9.camel@carnifex>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0A07E2438A
-	for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2009 10:30:02 +0100 (CET)
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1Lkb3C-0004lR-MX
-	for alsa-devel@alsa-project.org; Fri, 20 Mar 2009 09:30:02 +0000
-Received: from pd9e3ca8d.dip.t-dialin.net ([217.227.202.141])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2009 09:30:02 +0000
-Received: from halim.sahin by pd9e3ca8d.dip.t-dialin.net with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2009 09:30:02 +0000
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754676AbZCTNYX@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hello,
+Output Intel HDA Function Id in /proc/asound/cardX/codec#X
+Align Vendor/Subsystem/Revision Ids to 8 characters, front-padded with zeros
 
-I have asked this question to alsa user list but got no useful answer.
+As submitted to Kernel Bugzilla #12888
 
-I am a blind linux user and need asistive Technology to use my pc.
-The problem I have experienced with alsa is that it is sometimes too slow to stop
-previous output before starting a new one.
-The result of this ends in several speech outputs at a time.
-The problem only occurs if the dmix plugin is used.
+Signed-off-by: Pascal de Bruijn <pascal@unilogicnetworks.net>
 
-Is there a way to modify the buffer to avoid these delays???
-I have tried to customize my buffer_size vallue in ~/.asoundrc but I wasn't able to
-to create a working setup with dmix.
-
-
-All help appreciated ;-)
-Regards
-halim
+diff -Nurp linux-2.6.28.8-orig/sound/pci/hda/hda_codec.c linux-2.6.28.8-func/sound/pci/hda/hda_codec.c
+--- linux-2.6.28.8-orig/sound/pci/hda/hda_codec.c	2009-03-17 01:50:03.000000000 +0100
++++ linux-2.6.28.8-func/sound/pci/hda/hda_codec.c	2009-03-17 10:39:45.000000000 +0100
+@@ -519,9 +519,8 @@ static void __devinit setup_fg_nodes(str
+ 
+ 	total_nodes = snd_hda_get_sub_nodes(codec, AC_NODE_ROOT, &nid);
+ 	for (i = 0; i < total_nodes; i++, nid++) {
+-		unsigned int func;
+-		func = snd_hda_param_read(codec, nid, AC_PAR_FUNCTION_TYPE);
+-		switch (func & 0xff) {
++		codec->function_id = snd_hda_param_read(codec, nid, AC_PAR_FUNCTION_TYPE) & 0xff;
++		switch (codec->function_id) {
+ 		case AC_GRP_AUDIO_FUNCTION:
+ 			codec->afg = nid;
+ 			break;
+diff -Nurp linux-2.6.28.8-orig/sound/pci/hda/hda_codec.h linux-2.6.28.8-func/sound/pci/hda/hda_codec.h
+--- linux-2.6.28.8-orig/sound/pci/hda/hda_codec.h	2009-03-17 01:50:03.000000000 +0100
++++ linux-2.6.28.8-func/sound/pci/hda/hda_codec.h	2009-03-17 10:39:45.000000000 +0100
+@@ -693,6 +693,7 @@ struct hda_codec {
+ 	hda_nid_t mfg;	/* MFG node id */
+ 
+ 	/* ids */
++	u32 function_id;
+ 	u32 vendor_id;
+ 	u32 subsystem_id;
+ 	u32 revision_id;
+diff -Nurp linux-2.6.28.8-orig/sound/pci/hda/hda_proc.c linux-2.6.28.8-func/sound/pci/hda/hda_proc.c
+--- linux-2.6.28.8-orig/sound/pci/hda/hda_proc.c	2009-03-17 01:50:03.000000000 +0100
++++ linux-2.6.28.8-func/sound/pci/hda/hda_proc.c	2009-03-17 10:40:08.000000000 +0100
+@@ -520,9 +520,10 @@ static void print_codec_info(struct snd_
+ 	snd_hda_get_codec_name(codec, buf, sizeof(buf));
+ 	snd_iprintf(buffer, "Codec: %s\n", buf);
+ 	snd_iprintf(buffer, "Address: %d\n", codec->addr);
+-	snd_iprintf(buffer, "Vendor Id: 0x%x\n", codec->vendor_id);
+-	snd_iprintf(buffer, "Subsystem Id: 0x%x\n", codec->subsystem_id);
+-	snd_iprintf(buffer, "Revision Id: 0x%x\n", codec->revision_id);
++	snd_iprintf(buffer, "Function Id: 0x%x\n", codec->function_id);
++	snd_iprintf(buffer, "Vendor Id: 0x%08x\n", codec->vendor_id);
++	snd_iprintf(buffer, "Subsystem Id: 0x%08x\n", codec->subsystem_id);
++	snd_iprintf(buffer, "Revision Id: 0x%08x\n", codec->revision_id);
+ 
+ 	if (codec->mfg)
+ 		snd_iprintf(buffer, "Modem Function Group: 0x%x\n", codec->mfg);
