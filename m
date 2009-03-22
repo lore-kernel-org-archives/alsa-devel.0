@@ -1,17 +1,17 @@
-From: Russ Dill <russ.dill@gmail.com>
-Subject: Acer Ferrari 5000
-Date: Sat, 21 Mar 2009 22:23:15 -0700
-Message-ID: <f9d2a5e10903212223i3bd811dfob65575c7f16030a4@mail.gmail.com>
+From: okias <d.okias@gmail.com>
+Subject: MSI GX620 support
+Date: Sun, 22 Mar 2009 17:25:27 +0100
+Message-ID: <c2673ca60903220925q57a252c0i35079d841f8d7a91@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f207.google.com (mail-gx0-f207.google.com
-	[209.85.217.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id 44B691037E3
-	for <alsa-devel@alsa-project.org>; Sun, 22 Mar 2009 06:23:17 +0100 (CET)
-Received: by gxk3 with SMTP id 3so4422742gxk.8
-	for <alsa-devel@alsa-project.org>; Sat, 21 Mar 2009 22:23:16 -0700 (PDT)
+Received: from mail-bw0-f175.google.com (mail-bw0-f175.google.com
+	[209.85.218.175])
+	by alsa0.perex.cz (Postfix) with ESMTP id BB91624154
+	for <alsa-devel@alsa-project.org>; Sun, 22 Mar 2009 17:25:28 +0100 (CET)
+Received: by bwz23 with SMTP id 23so1531141bwz.32
+	for <alsa-devel@alsa-project.org>; Sun, 22 Mar 2009 09:25:28 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,380 +24,88 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-GIven the recent changes in gnome land (pulseaudio), I'd like to be
-able to get alsa support for my hardware fixed up. My biggest
-annoyance right now is that when I plug headphones in, it doesn't mute
-the speakers. Another issue I have is that I'd like to have support
-for audio out on HDMI (which is supported by Vista). On with the show.
-
-I'm currently running 2.6.28-9-generic (Ubuntu 9.04). All my info is
-below, what can I do to get everything exposed and working?
-
-00:14.2 Audio device: ATI Technologies Inc IXP SB4x0 High Definition
-Audio Controller (rev 01)
-	Subsystem: Acer Incorporated [ALI] Device 010a
-	Flags: bus master, slow devsel, latency 64, IRQ 16
-	Memory at b0000000 (64-bit, non-prefetchable) [size=16K]
-	Capabilities: <access denied>
-	Kernel driver in use: HDA Intel
-	Kernel modules: snd-hda-intel
-
-HDA Intel 0000:00:14.2: PCI INT A disabled
-HDA Intel 0000:00:14.2: PCI INT A -> GSI 16 (level, low) -> IRQ 16
-hda-intel: Invalid position buffer, using LPIB read method instead.
-hda-intel: IRQ timing workaround is activated for card #0. Suggest a
-bigger bdl_pos_adj.
-hda_intel: azx_get_response timeout, switching to polling mode: last
-cmd=0x101f000a
-hda_intel: azx_get_response timeout, switching to single_cmd mode:
-last cmd=0x101f000a
-
-(methinks these timeouts are no good)
-
-devices:
-  2:        : timer
-  3: [ 0- 4]: digital audio capture
-  4: [ 0- 0]: digital audio playback
-  5: [ 0- 0]: digital audio capture
-  6: [ 0]   : control
-
-pcm0c/info:
-card: 0
-device: 0
-subdevice: 0
-stream: CAPTURE
-id: ALC883 Analog
-name: ALC883 Analog
-subname: subdevice #0
-class: 0
-subclass: 0
-subdevices_count: 1
-subdevices_avail: 1
-
-pcm0p/info:
-card: 0
-device: 0
-subdevice: 0
-stream: PLAYBACK
-id: ALC883 Analog
-name: ALC883 Analog
-subname: subdevice #0
-class: 0
-subclass: 0
-subdevices_count: 1
-subdevices_avail: 0
-
-pcm4c/info:
-card: 0
-device: 4
-subdevice: 0
-stream: CAPTURE
-id: ALC883 Analog
-name: ALC883 Analog
-subname: subdevice #0
-class: 0
-subclass: 0
-subdevices_count: 1
-subdevices_avail: 1
-
-
-codec#0:
-Codec: Conexant ID 2bfa
-Address: 0
-Vendor Id: 0x14f12bfa
-Subsystem Id: 0x1025010a
-Revision Id: 0x90000
-Modem Function Group: 0x2
-
-codec#1:
-Codec: Realtek ALC883
-Address: 1
-Vendor Id: 0x10ec0883
-Subsystem Id: 0x10ec0883
-Revision Id: 0x100002
-No Modem Function Group found
-Default PCM:
-N/A
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-GPIO: io=2, o=0, i=0, unsolicited=1, wake=0
-  IO[0]: enable=1, dir=1, wake=0, sticky=0, data=1
-  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0
-Node 0x02 [Audio Output] wcaps 0x11: Stereo
-  Converter: stream=5, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x03 [Audio Output] wcaps 0x11: Stereo
-  Converter: stream=5, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x04 [Audio Output] wcaps 0x11: Stereo
-  Converter: stream=5, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x05 [Audio Output] wcaps 0x11: Stereo
-  Converter: stream=5, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0x1e]: 16 20 24 32
-    formats [0x1]: PCM
-Node 0x07 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x08 [Audio Input] wcaps 0x10011b: Stereo Amp-In
-  Amp-In caps: ofs=0x08, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x98 0x98]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0x6]: 16 20
-    formats [0x1]: PCM
-  Connection: 1
-     0x23
-Node 0x09 [Audio Input] wcaps 0x10011b: Stereo Amp-In
-  Amp-In caps: ofs=0x08, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x80 0x80]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0x6]: 16 20
-    formats [0x1]: PCM
-  Connection: 1
-     0x22
-Node 0x0a [Audio Input] wcaps 0x100391: Stereo Digital
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0x1e]: 16 20 24 32
-    formats [0x1]: PCM
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x1f
-Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80
-0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Connection: 10
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17
-Node 0x0c [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x15 0x15]
-  Connection: 2
-     0x02 0x0b
-Node 0x0d [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80]
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x15 0x15]
-  Connection: 2
-     0x03 0x0b
-Node 0x0e [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80]
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 2
-     0x04 0x0b
-Node 0x0f [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80]
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 2
-     0x05 0x0b
-Node 0x10 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x11 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x12 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x14 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0000003e: IN OUT HP Detect Trigger
-  Pin Default 0x01014030: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Green
-    DefAssociation = 0x3, Sequence = 0x0
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 5
-     0x0c* 0x0d 0x0e 0x0f 0x26
-Node 0x15 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0000003e: IN OUT HP Detect Trigger
-  Pin Default 0x01011031: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x3, Sequence = 0x1
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 5
-     0x0c 0x0d* 0x0e 0x0f 0x26
-Node 0x16 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0000003e: IN OUT HP Detect Trigger
-  Pin Default 0x01016032: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Orange
-    DefAssociation = 0x3, Sequence = 0x2
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 5
-     0x0c 0x0d 0x0e* 0x0f 0x26
-Node 0x17 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0000003e: IN OUT HP Detect Trigger
-  Pin Default 0x01012033: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Grey
-    DefAssociation = 0x3, Sequence = 0x3
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 5
-     0x0c 0x0d 0x0e 0x0f* 0x26
-Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000173e: IN OUT HP Detect Trigger
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x01a19850: [Jack] Mic at Ext Rear
-    Conn = 1/8, Color = Pink
-    DefAssociation = 0x5, Sequence = 0x0
-  Pin-ctls: 0x24: IN VREF_80
-  Unsolicited: tag=00, enabled=0
-  Connection: 5
-     0x0c* 0x0d 0x0e 0x0f 0x26
-Node 0x19 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000173e: IN OUT HP Detect Trigger
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x02a19c80: [Jack] Mic at Ext Front
-    Conn = 1/8, Color = Pink
-    DefAssociation = 0x8, Sequence = 0x0
-  Pin-ctls: 0x24: IN VREF_80
-  Unsolicited: tag=00, enabled=0
-  Connection: 5
-     0x0c* 0x0d 0x0e 0x0f 0x26
-Node 0x1a [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000173e: IN OUT HP Detect Trigger
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x01813050: [Jack] Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-    DefAssociation = 0x5, Sequence = 0x0
-  Pin-ctls: 0x20: IN VREF_HIZ
-  Unsolicited: tag=00, enabled=0
-  Connection: 5
-     0x0c* 0x0d 0x0e 0x0f 0x26
-Node 0x1b [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0000173e: IN OUT HP Detect Trigger
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x02214c40: [Jack] HP Out at Ext Front
-    Conn = 1/8, Color = Green
-    DefAssociation = 0x4, Sequence = 0x0
-  Pin-ctls: 0xc0: OUT HP VREF_HIZ
-  Unsolicited: tag=00, enabled=0
-  Connection: 5
-     0x0c* 0x0d 0x0e 0x0f 0x26
-Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x00000020: IN
-  Pin Default 0x99331150: [Fixed] CD at Int ATAPI
-    Conn = ATAPI, Color = Black
-    DefAssociation = 0x5, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-Node 0x1d [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x00000020: IN
-  Pin Default 0x00000100: [Jack] Line Out at Ext N/A
-    Conn = Unknown, Color = Unknown
-    DefAssociation = 0x0, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-Node 0x1e [Pin Complex] wcaps 0x400300: Mono Digital
-  Pincap 0x00000010: OUT
-  Pin Default 0x01441170: [Jack] SPDIF Out at Ext Rear
-    Conn = RCA, Color = Black
-    DefAssociation = 0x7, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Connection: 1
-     0x06
-Node 0x1f [Pin Complex] wcaps 0x400200: Mono Digital
-  Pincap 0x00000020: IN
-  Pin Default 0x01c46160: [Jack] SPDIF In at Ext Rear
-    Conn = RCA, Color = Orange
-    DefAssociation = 0x6, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
-  Processing caps: benign=0, ncoeff=17
-Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x22 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80
-0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-[0x80 0x80]
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 11
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
-Node 0x23 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80
-0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-[0x80 0x80]
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 11
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
-Node 0x24 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x25 [Audio Output] wcaps 0x11: Stereo
-  Converter: stream=0, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x26 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x80 0x80]
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 2
-     0x25 0x0b
+TVNJIEdYNjIwWC0wNjFDWiwgYnV0IHByb2JhYmx5IGlzIHRoaXMgYXVkaW8gY2hpcCB3aXRoIHRo
+aXMKY29uZmlndXJhdGlvbiBvbiBhbGwgR1g2MjAKQ29ubmVjdG9yczoKR3JlZW4sIHN0YW5kYXJ0
+IGphY2sgMy41IGhlYWRwaG9uZXMKQmx1ZSwgbGluZS1pbgpQaW5rLCBtaWMKR3JleSwgc2lkZQpE
+T0xCWSBIT01FIFRIRUFURVIKCgpLTyAxMjcgICAzc3RhY2stZGlnICAgIDMtamFjayB3aXRoIFNQ
+RElGIEkvTwoqT0sgMTI4ICAgNnN0YWNrLWRpZyAgICA2LWphY2sgZGlnaXRhbCB3aXRoIFNQRElG
+IEkvTyAvLyB3b3JrClNJREUramFjaywgYnV0IFNJREUgY2FuJ3QgYmUgY29uZmlndXJlZCwgbm90
+IGRlYWN0aXZhdGluZyBpbnRlZ3JhdGVkCnJlcHJvCipPSyAxMjkgICAzc3RhY2stNmNoICAgIDMt
+amFjayA2LWNoYW5uZWwgLy8gaGVhZHBob25lIHBvd2VyIG9mZgppbnRlZ3JhdGVkIHJlcHJvLCA2
+Y2ggd29ya2luZywgbm8gOGNoCk9LIDEzMCAgIDNzdGFjay02Y2gtZGlnIDMtamFjayA2LWNoYW5u
+ZWwgd2l0aCBTUERJRiBJL08gLy9zYW1lIDNzdGFjai02Y2gKS08gMTMxICAgNnN0YWNrLWRpZy1k
+ZW1vICA2LWphY2sgZGlnaXRhbCBmb3IgSW50ZWwgZGVtbyBib2FyZApPSyAxMzIgICBhY2VyICAg
+ICAgICAgIEFjZXIgbGFwdG9wcyAoVHJhdmVsbWF0ZSAzMDEyV1RNaSwgQXNwaXJlIDU2MDAsCmV0
+YykvL2phY2src2lkZSwgYnV0IFNJREUgY2FuJ3QgYmUgY29uZmlndXJlZCwgaGVhZHBob25lIHBv
+d2VyIG9mZgppbnRlZ3IuLCBub3R3b3JraW5nIDZjaApLTyAxMzMgICBhY2VyLWFzcGlyZSAgIEFj
+ZXIgQXNwaXJlIDk4MTAKKk9LIDEzNCAgIGFjZXItYXNwaXJlLTQ5MzBnIEFjZXIgQXNwaXJlIDQ5
+MzBHIC8vIEZyb250IHN3aXRjaCBzaHV0dGluZwpkb3duIGJvdGggcmVwcm8gKGV4dGVybmFsIGlu
+IGphY2ssIGludGVncmF0ZWQpLCA2Y2hhbm5lbHMgKyBTSURFCihzaG91bGQgYmUgOGNoKSwgYW5k
+IGlmIGlzIHBsdWdnZWQgc29tZXRoaW5nIGludG8gamFjayBpbnRlZ3JhdGVkCnJlcHJvIHN0aWxs
+IHBsYXlpbmcKS08gMTM1ICAgbWVkaW9uICAgICAgICBNZWRpb24gTGFwdG9wcwpLTyAxMzYgICBt
+ZWRpb24tbWQyICAgIE1lZGlvbiBNRDIKISEgMTM3ICAgdGFyZ2EtZGlnICAgICBUYXJnYS9NU0kg
+Ly8gSWYgaXMgcGx1Z2dlZCBqYWNrLCB0aGVuCmludGVncmF0ZWQgcmVwcm8gcG93ZXIgZG93biEg
+YnV0IG1pc3Npbmcgc2V0dGluZ3MgdG8ga2VlcCBpbnRlZ3JhdGVkCnJlcHJvIHBsYXlpbmcgYW5k
+IDhjaCBpc24ndCBwcmVzZW50KHNpZGUgbm90IHdvcmtpbmcpLgpLTyAxMzggICB0YXJnYS0yY2gt
+ZGlnIFRhcmdzL01TSSB3aXRoIDItY2hhbm5lbApLTyAxMzkgICBsYXB0b3AtZWFwZCAgIDMtamFj
+ayB3aXRoIFNQRElGIEkvTyBhbmQgRUFQRCAoQ2xldm8gTTU0MEpFLApNNTUwSkUpIC8vIFNJREUg
+d29ya2luZywgYnV0IDZjaCBjb25mIG5vdCwgb25seSBzaWRlICsgcmVwcm8gb3V0cHV0CktPIDE0
+MCAgIGxlbm92by0xMDFlICAgTGVub3ZvIDEwMUUgLy8gbm90aGluZyBuZXcuLi4gbGVzcyBzZXR0
+aW5ncywgbm8Kc2lkZS4uLiBubyA2Y2gKS08gMTQxICAgbGVub3ZvLW5iMDc2MyBMZW5vdm8gTkIw
+NzYzCktPIDE0MiAgIGxlbm92by1tczcxOTUtZGlnIExlbm92byBNUzcxOTUKS08gMTQzICAgbGVu
+b3ZvLXNreSAgICBMZW5vdm8gU2t5CktPIDE0NCAgIGhhaWVyLXc2NiAgICAgSGFpZXIgVzY2CktP
+IDE0NSAgIDNzdGFjay1ocCAgICAgSFAgbWFjaGluZXMgd2l0aCAzc3RhY2sgKEx1Y2tub3csIFNh
+bWJhIGJvYXJkcykKLy8gNC4gY2hhbm5lbCBub3Qgd29ya2luZywgZXRjLgpLTyAxNDYgICA2c3Rh
+Y2stZGVsbCAgIERlbGwgbWFjaGluZXMgd2l0aCA2c3RhY2sgKEluc3Bpcm9uIDUzMCkgLy8gaWYK
+aXMgYWN0aXZhdGVkIDhjaCBjb25mLCBzaWRlIGlzIGFjdGl2YXRlZCwgYnV0IDQgYW5kIDZ0aCBj
+aGFubmVsIG5vdAp3b3JraW5nIHdpdGggdGhpcyBjb25mCktPIDE0NyAgIG1pdGFjICAgICAgICAg
+TWl0YWMgODI1MkQKS08gMTQ4ICAgY2xldm8tbTcyMCAgICBDbGV2byBNNzIwIGxhcHRvcCBzZXJp
+ZXMKS08gMTQ5ICAgZnVqaXRzdS1waTI1MTUgRnVqaXRzdSBBTUlMTyBQaTI1MTUKKk9LIDE1MCAg
+IGZ1aml0c3UteGEzNTMwIEZ1aml0c3UgQU1JTE8gWEEzNTMwIC8vIDZjaCBtb2RlIHdvcmtpbmcs
+IGJ1dApTSURFIHdvcmtpbmcgZXZlbiBpZiBpcyBzZXQgb25seSA2Y2gKS08gMTUxICAgM3N0YWNr
+LTZjaC1pbnRlbCBJbnRlbCBERzMzKiBib2FyZHMKT0sgMTUyICAgYXV0byAgICAgICAgICBhdXRv
+LWNvbmZpZyByZWFkaW5nIEJJT1MgKGRlZmF1bHQpIC8vClNJREUrSkFDSywgQk9USCBNSUMgT0ss
+IGNhbid0IGJlIGNvbmZpZ3VyZWQgdG8gNCw2IG9yIDhjaCwgaWYgaXMKcGx1Z2VkIGludG8gSkFD
+SyByZXBybyB0aGVuIGludGVncmF0ZWQgcGxheWluZy4uLgoKT0sgbWVhbnMsIGl0J3MgaW4gdXNh
+YmxlIHN0YXRlLCBLTyBtZWFuIHNvbWV0aGluZyBpbXBvcnRhbnQgZG9lc24ndAp3b3JrLCBvciBu
+b3RoaW5nIG5ldyBpbiBjb21wYXJlIHRvIGJlZm9yZSB0ZXN0ZWQgY29uZmlndXJhdGlvbnMuCipP
+SyBtZWFucyB2ZXJ5IGdvb2QgY29uZmlndXJhdGlvbnMKCjAwOjFiLjAgQXVkaW8gZGV2aWNlOiBJ
+bnRlbCBDb3Jwb3JhdGlvbiA4MjgwMUkgKElDSDkgRmFtaWx5KSBIRCBBdWRpbwpDb250cm9sbGVy
+IChyZXYgMDMpCiAgICAgICAgU3Vic3lzdGVtOiBNaWNyby1TdGFyIEludGVybmF0aW9uYWwgQ28u
+LCBMdGQuIERldmljZSA2NTEwCiAgICAgICAgQ29udHJvbDogSS9PLSBNZW0rIEJ1c01hc3Rlcisg
+U3BlY0N5Y2xlLSBNZW1XSU5WLSBWR0FTbm9vcC0KUGFyRXJyLSBTdGVwcGluZy0gU0VSUi0gRmFz
+dEIyQi0gRGlzSU5UeC0KICAgICAgICBTdGF0dXM6IENhcCsgNjZNSHotIFVERi0gRmFzdEIyQi0g
+UGFyRXJyLSBERVZTRUw9ZmFzdCA+VEFib3J0LQo8VEFib3J0LSA8TUFib3J0LSA+U0VSUi0gPFBF
+UlItIElOVHgtCiAgICAgICAgTGF0ZW5jeTogMCwgQ2FjaGUgTGluZSBTaXplOiAzMiBieXRlcwog
+ICAgICAgIEludGVycnVwdDogcGluIEEgcm91dGVkIHRvIElSUSAyMgogICAgICAgIFJlZ2lvbiAw
+OiBNZW1vcnkgYXQgZjhlZjgwMDAgKDY0LWJpdCwgbm9uLXByZWZldGNoYWJsZSkKW3NpemU9MTZL
+XQogICAgICAgIENhcGFiaWxpdGllczogWzUwXSBQb3dlciBNYW5hZ2VtZW50IHZlcnNpb24gMgog
+ICAgICAgICAgICAgICAgRmxhZ3M6IFBNRUNsay0gRFNJLSBEMS0gRDItIEF1eEN1cnJlbnQ9NTVt
+QQpQTUUoRDArLEQxLSxEMi0sRDNob3QrLEQzY29sZCspCiAgICAgICAgICAgICAgICBTdGF0dXM6
+IEQwIFBNRS1FbmFibGUtIERTZWw9MCBEU2NhbGU9MCBQTUUtCiAgICAgICAgQ2FwYWJpbGl0aWVz
+OiBbNjBdIE1TSTogTWFzay0gNjRiaXQrIENvdW50PTEvMSBFbmFibGUtCiAgICAgICAgICAgICAg
+ICBBZGRyZXNzOiAwMDAwMDAwMDAwMDAwMDAwICBEYXRhOiAwMDAwCiAgICAgICAgQ2FwYWJpbGl0
+aWVzOiBbNzBdIEV4cHJlc3MgKHYxKSBSb290IENvbXBsZXggSW50ZWdyYXRlZApFbmRwb2ludCwg
+TVNJIDAwCiAgICAgICAgICAgICAgICBEZXZDYXA6IE1heFBheWxvYWQgMTI4IGJ5dGVzLCBQaGFu
+dEZ1bmMgMCwgTGF0ZW5jeSBMMHMKPDY0bnMsIEwxIDwxdXMKICAgICAgICAgICAgICAgICAgICAg
+ICAgRXh0VGFnLSBSQkUtIEZMUmVzZXQrCiAgICAgICAgICAgICAgICBEZXZDdGw6IFJlcG9ydCBl
+cnJvcnM6IENvcnJlY3RhYmxlLSBOb24tRmF0YWwtIEZhdGFsLQpVbnN1cHBvcnRlZC0KICAgICAg
+ICAgICAgICAgICAgICAgICAgUmx4ZE9yZC0gRXh0VGFnLSBQaGFudEZ1bmMtIEF1eFB3ci0gTm9T
+bm9vcCsKICAgICAgICAgICAgICAgICAgICAgICAgTWF4UGF5bG9hZCAxMjggYnl0ZXMsIE1heFJl
+YWRSZXEgMTI4IGJ5dGVzCiAgICAgICAgICAgICAgICBEZXZTdGE6IENvcnJFcnItIFVuY29yckVy
+ci0gRmF0YWxFcnItIFVuc3VwcFJlcS0KQXV4UHdyKyBUcmFuc1BlbmQtCiAgICAgICAgICAgICAg
+ICBMbmtDYXA6IFBvcnQgIzAsIFNwZWVkIHVua25vd24sIFdpZHRoIHgwLCBBU1BNCnVua25vd24s
+IExhdGVuY3kgTDAgPDY0bnMsIEwxIDwxdXMKICAgICAgICAgICAgICAgICAgICAgICAgQ2xvY2tQ
+TS0gU3VycHJpc2UtIExMQWN0UmVwLSBCd05vdC0KICAgICAgICAgICAgICAgIExua0N0bDogQVNQ
+TSBEaXNhYmxlZDsgRGlzYWJsZWQtIFJldHJhaW4tIENvbW1DbGstCiAgICAgICAgICAgICAgICAg
+ICAgICAgIEV4dFN5bmNoLSBDbG9ja1BNLSBBdXRXaWREaXMtIEJXSW50LSBBdXRCV0ludC0KICAg
+ICAgICAgICAgICAgIExua1N0YTogU3BlZWQgdW5rbm93biwgV2lkdGggeDAsIFRyRXJyLSBUcmFp
+bi0KU2xvdENsay0gRExBY3RpdmUtIEJXTWdtdC0gQUJXTWdtdC0KICAgICAgICBDYXBhYmlsaXRp
+ZXM6IFsxMDBdIFZpcnR1YWwgQ2hhbm5lbCA8Pz4KICAgICAgICBDYXBhYmlsaXRpZXM6IFsxMzBd
+IFJvb3QgQ29tcGxleCBMaW5rIDw/PgogICAgICAgIEtlcm5lbCBkcml2ZXIgaW4gdXNlOiBIREEg
+SW50ZWwKCklmIHlvdSBuZWVkIGFueSBhZGRpb25hbCBpbmZvcm1hdGlvbiwgdGVzdGluZyBwYXRj
+aHMgKGdlbnRvbyksIHBsZWFzZQpjb250YWN0IG1lIDotKQoKb2tpYXMKCi0tIApKYWJiZXIvWE1Q
+UDogb2tpYXNAaXNnZWVrLmluZm8KV2Vib3bDqSBzdHLDoW5reTogaHR0cDovL3d3dy5qYWJiZXIu
+eGYuY3oKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
