@@ -1,29 +1,26 @@
 From: Russ Dill <russ.dill@gmail.com>
 Subject: Re: Acer Ferrari 5000
-Date: Mon, 23 Mar 2009 10:45:52 -0700
-Message-ID: <1237830352.9890.15.camel@russ-laptop>
+Date: Mon, 23 Mar 2009 15:28:57 -0700
+Message-ID: <f9d2a5e10903231528n30dd20e4hf7a67753431d530a@mail.gmail.com>
 References: <f9d2a5e10903212223i3bd811dfob65575c7f16030a4@mail.gmail.com>
-	<s5hiqm05rmm.wl%tiwai@suse.de>
-	<f9d2a5e10903230636r1f1bf1d2h8f9181802d45f841@mail.gmail.com>
-	<s5hab7c5pdu.wl%tiwai@suse.de>
-	<f9d2a5e10903230742h913ec66k50ea68bca932ec94@mail.gmail.com>
 	<s5htz5k478z.wl%tiwai@suse.de>
 	<f9d2a5e10903230824y3d8233c5q7cebaaf8ed4ffe44@mail.gmail.com>
 	<s5hljqw44zw.wl%tiwai@suse.de>
 	<f9d2a5e10903230927q66d2e536se0e364f05044374a@mail.gmail.com>
 	<s5h4oxk42np.wl%tiwai@suse.de>
 	<f9d2a5e10903230940n78335b8di96ddd93326e7a76d@mail.gmail.com>
-	<s5hzlfc2mms.wl%tiwai@suse.de>
+	<s5hzlfc2mms.wl%tiwai@suse.de> <1237830352.9890.15.camel@russ-laptop>
+	<s5hd4c7hpgz.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0506.google.com (rv-out-0708.google.com [209.85.198.245])
-	by alsa0.perex.cz (Postfix) with ESMTP id 182BE1037F6
-	for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2009 18:46:25 +0100 (CET)
-Received: by rv-out-0506.google.com with SMTP id b17so1073565rvf.0
-	for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2009 10:46:24 -0700 (PDT)
-In-Reply-To: <s5hzlfc2mms.wl%tiwai@suse.de>
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id 30D371037FA
+	for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2009 23:28:59 +0100 (CET)
+Received: by yw-out-1718.google.com with SMTP id 5so1677864ywr.2
+	for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2009 15:28:58 -0700 (PDT)
+In-Reply-To: <s5hd4c7hpgz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,94 +34,69 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2009-03-23 at 18:07 +0100, Takashi Iwai wrote:
-> At Mon, 23 Mar 2009 09:40:46 -0700,
-> Russ Dill wrote:
-> > 
-> > On Mon, Mar 23, 2009 at 9:36 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> > > At Mon, 23 Mar 2009 09:27:24 -0700,
-> > > Russ Dill wrote:
-> > >>
-> > >> I'm testing with the acer-aspire quirk set, and things seem to be
-> > >> working rather well. The headphone plug/unplug detection and speaker
-> > >> muting actually work :) However, I'm still not getting HDMI audio
-> > >> working. I'm not that familiar with IEC958, how should I have the
-> > >> switches set? I currently have both IEC958 and IEC958 Default PCM on.
-> > >> I've tried with mplayer -ao alsa:device=iec958 <mp3 file>
-> > >
-> > > Basically it should be OK.  I guess it's rather an issue of the video
-> > > driver side.  If the video driver doesn't support HDMI audio output,
-> > > it doesn't work, of course.
-> > >
-> > 
-> > [ Working on testing patch... ]
-> > 
-> > The audio does work over HDMI though, Vista has better support for
-> > connecting to HDTV and getting the video modes right, so I was
-> > watching a DVD. Out of curiosity, I checked a box in the audio
-> > configuration for digital output, and sound started coming out of the
-> > TV.
-> 
-> Do you mean it working on Linux?  When "IEC958 Default PCM" is set
-> to on, the analog PCM outputs are also routed to the digital output
-> automatically.  So you should be hearing the sound played via aplay.
-
-No such luck. Enabling it and playing audio (that comes out on the
-speakers) does not cause an audio signal to be sent on the HDMI cable.
-
-> The "iec958" PCM device is for the exclusive digital output, mainly
-> for the raw digital stream like AC3.  If it's being used with the
-> analog streams at the same time, you won't be able to open it.
-
-On the Vista side, it refers to the digital output both as S/PDIF
-digital output and "Real Panel Optical Jack". It is definitely part of
-the realtek high def audio driver. The realtek config app gives a choice
-for default audio output; speakers or digital.
-
-> BTW, I found why model=auto doesn't work well on your machine.
-> It's because (again) of BIOS.  It doesn't set the codec SSID properly
-> so the driver doesn't accept the HP auto-toggle and other features.
-> 
-> So, in your case, using model=acer-aspire would be likely the best
-> choice (supposing it matches with most functionality).  If you have no
-> problem (at least regressions) with this model, I'll add the entry to
-> point to model=acer-aspire
-
-Add Acer Ferrar 5000 Quirk to Intel HDA driver
-
----
- sound/pci/hda/patch_realtek.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index bf7e64e..88b674e 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8655,6 +8655,7 @@ static struct snd_pci_quirk alc883_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0x0110, "Acer Aspire", ALC883_ACER_ASPIRE),
- 	SND_PCI_QUIRK(0x1025, 0x0112, "Acer Aspire 9303", ALC883_ACER_ASPIRE),
- 	SND_PCI_QUIRK(0x1025, 0x0121, "Acer Aspire 5920G", ALC883_ACER_ASPIRE),
-+	SND_PCI_QUIRK(0x1025, 0x010a, "Acer Ferrari 5000", ALC883_ACER_ASPIRE),
- 	SND_PCI_QUIRK(0x1025, 0x013e, "Acer Aspire 4930G",
- 		ALC888_ACER_ASPIRE_4930G),
- 	SND_PCI_QUIRK(0x1025, 0x013f, "Acer Aspire 5930G",
--- 
-1.6.0.4
-
-
-
-> Anyway, my previous test patch is independent from the model problem.
-> It's still helpful to know whether it can solve the codec
-> communication errors with model=auto.
-
-[  715.680015] hda_intel: azx_get_response timeout, switching to polling mode: last cmd=0x106f000a
-[  716.684012] hda_intel: azx_get_response timeout (ERROR): last cmd=0x106f000a
-[  717.688024] hda_intel: azx_get_response timeout (ERROR): last cmd=0x106f000a
-[  718.708012] hda_intel: azx_get_response timeout (ERROR): last cmd=0x106f000a
-[  719.712011] hda_intel: azx_get_response timeout (ERROR): last cmd=0x106f000a
-[  738.813550] hda-intel: IRQ timing workaround is activated for card #0. Suggest a bigger bdl_pos_adj.
-
-> 
-> thanks,
-> 
-> Takashi
+T24gTW9uLCBNYXIgMjMsIDIwMDkgYXQgMjo1NyBQTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNl
+LmRlPiB3cm90ZToKPiBBdCBNb24sIDIzIE1hciAyMDA5IDEwOjQ1OjUyIC0wNzAwLAo+IFJ1c3Mg
+RGlsbCB3cm90ZToKPj4KPj4gT24gTW9uLCAyMDA5LTAzLTIzIGF0IDE4OjA3ICswMTAwLCBUYWth
+c2hpIEl3YWkgd3JvdGU6Cj4+ID4gQXQgTW9uLCAyMyBNYXIgMjAwOSAwOTo0MDo0NiAtMDcwMCwK
+Pj4gPiBSdXNzIERpbGwgd3JvdGU6Cj4+ID4gPgo+PiA+ID4gT24gTW9uLCBNYXIgMjMsIDIwMDkg
+YXQgOTozNiBBTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90ZToKPj4gPiA+ID4g
+QXQgTW9uLCAyMyBNYXIgMjAwOSAwOToyNzoyNCAtMDcwMCwKPj4gPiA+ID4gUnVzcyBEaWxsIHdy
+b3RlOgo+PiA+ID4gPj4KPj4gPiA+ID4+IEknbSB0ZXN0aW5nIHdpdGggdGhlIGFjZXItYXNwaXJl
+IHF1aXJrIHNldCwgYW5kIHRoaW5ncyBzZWVtIHRvIGJlCj4+ID4gPiA+PiB3b3JraW5nIHJhdGhl
+ciB3ZWxsLiBUaGUgaGVhZHBob25lIHBsdWcvdW5wbHVnIGRldGVjdGlvbiBhbmQgc3BlYWtlcgo+
+PiA+ID4gPj4gbXV0aW5nIGFjdHVhbGx5IHdvcmsgOikgSG93ZXZlciwgSSdtIHN0aWxsIG5vdCBn
+ZXR0aW5nIEhETUkgYXVkaW8KPj4gPiA+ID4+IHdvcmtpbmcuIEknbSBub3QgdGhhdCBmYW1pbGlh
+ciB3aXRoIElFQzk1OCwgaG93IHNob3VsZCBJIGhhdmUgdGhlCj4+ID4gPiA+PiBzd2l0Y2hlcyBz
+ZXQ/IEkgY3VycmVudGx5IGhhdmUgYm90aCBJRUM5NTggYW5kIElFQzk1OCBEZWZhdWx0IFBDTSBv
+bi4KPj4gPiA+ID4+IEkndmUgdHJpZWQgd2l0aCBtcGxheWVyIC1hbyBhbHNhOmRldmljZT1pZWM5
+NTggPG1wMyBmaWxlPgo+PiA+ID4gPgo+PiA+ID4gPiBCYXNpY2FsbHkgaXQgc2hvdWxkIGJlIE9L
+LiDCoEkgZ3Vlc3MgaXQncyByYXRoZXIgYW4gaXNzdWUgb2YgdGhlIHZpZGVvCj4+ID4gPiA+IGRy
+aXZlciBzaWRlLiDCoElmIHRoZSB2aWRlbyBkcml2ZXIgZG9lc24ndCBzdXBwb3J0IEhETUkgYXVk
+aW8gb3V0cHV0LAo+PiA+ID4gPiBpdCBkb2Vzbid0IHdvcmssIG9mIGNvdXJzZS4KPj4gPiA+ID4K
+Pj4gPiA+Cj4+ID4gPiBbIFdvcmtpbmcgb24gdGVzdGluZyBwYXRjaC4uLiBdCj4+ID4gPgo+PiA+
+ID4gVGhlIGF1ZGlvIGRvZXMgd29yayBvdmVyIEhETUkgdGhvdWdoLCBWaXN0YSBoYXMgYmV0dGVy
+IHN1cHBvcnQgZm9yCj4+ID4gPiBjb25uZWN0aW5nIHRvIEhEVFYgYW5kIGdldHRpbmcgdGhlIHZp
+ZGVvIG1vZGVzIHJpZ2h0LCBzbyBJIHdhcwo+PiA+ID4gd2F0Y2hpbmcgYSBEVkQuIE91dCBvZiBj
+dXJpb3NpdHksIEkgY2hlY2tlZCBhIGJveCBpbiB0aGUgYXVkaW8KPj4gPiA+IGNvbmZpZ3VyYXRp
+b24gZm9yIGRpZ2l0YWwgb3V0cHV0LCBhbmQgc291bmQgc3RhcnRlZCBjb21pbmcgb3V0IG9mIHRo
+ZQo+PiA+ID4gVFYuCj4+ID4KPj4gPiBEbyB5b3UgbWVhbiBpdCB3b3JraW5nIG9uIExpbnV4PyDC
+oFdoZW4gIklFQzk1OCBEZWZhdWx0IFBDTSIgaXMgc2V0Cj4+ID4gdG8gb24sIHRoZSBhbmFsb2cg
+UENNIG91dHB1dHMgYXJlIGFsc28gcm91dGVkIHRvIHRoZSBkaWdpdGFsIG91dHB1dAo+PiA+IGF1
+dG9tYXRpY2FsbHkuIMKgU28geW91IHNob3VsZCBiZSBoZWFyaW5nIHRoZSBzb3VuZCBwbGF5ZWQg
+dmlhIGFwbGF5Lgo+Pgo+PiBObyBzdWNoIGx1Y2suIEVuYWJsaW5nIGl0IGFuZCBwbGF5aW5nIGF1
+ZGlvICh0aGF0IGNvbWVzIG91dCBvbiB0aGUKPj4gc3BlYWtlcnMpIGRvZXMgbm90IGNhdXNlIGFu
+IGF1ZGlvIHNpZ25hbCB0byBiZSBzZW50IG9uIHRoZSBIRE1JIGNhYmxlLgo+Cj4gT0ssIHRoZW4g
+aXQgY291bGQgYmUgcmF0aGVyIHRoZSB2aWRlby1kcml2ZXIgc2lkZSBwcm9ibGVtLgo+IFR5cGlj
+YWxseSwgdGhlcmUgbXVzdCBiZSBhIHJlZ2lzdGVyIGNvbnRyb2wgdG8gZW5hYmxlL2Rpc2FibGUg
+dGhlIEhETUkKPiBhdWRpbyBpbiB0aGUgdmlkZW8gY29udHJvbGxlci4KCkknbSBjaGVja2luZyB3
+aXRoIHRoZSB4b3JnIGF0aSBsaXN0IHRvIHNlZSBpZiB0aGV5IGhhdmUgYW55IGluZm8uIE5leHQK
+dGltZSBJIGhhdmUgbXkgbGFwdG9wIG9wZW4gSSdsbCBjaGVjayBmb3IgaW5mbyBvbiB0aGUgSERN
+SS9EVkkgZW5jb2RlcgpjaGlwLgoKPj4gPiBUaGUgImllYzk1OCIgUENNIGRldmljZSBpcyBmb3Ig
+dGhlIGV4Y2x1c2l2ZSBkaWdpdGFsIG91dHB1dCwgbWFpbmx5Cj4+ID4gZm9yIHRoZSByYXcgZGln
+aXRhbCBzdHJlYW0gbGlrZSBBQzMuIMKgSWYgaXQncyBiZWluZyB1c2VkIHdpdGggdGhlCj4+ID4g
+YW5hbG9nIHN0cmVhbXMgYXQgdGhlIHNhbWUgdGltZSwgeW91IHdvbid0IGJlIGFibGUgdG8gb3Bl
+biBpdC4KPj4KPj4gT24gdGhlIFZpc3RhIHNpZGUsIGl0IHJlZmVycyB0byB0aGUgZGlnaXRhbCBv
+dXRwdXQgYm90aCBhcyBTL1BESUYKPj4gZGlnaXRhbCBvdXRwdXQgYW5kICJSZWFsIFBhbmVsIE9w
+dGljYWwgSmFjayIuIEl0IGlzIGRlZmluaXRlbHkgcGFydCBvZgo+PiB0aGUgcmVhbHRlayBoaWdo
+IGRlZiBhdWRpbyBkcml2ZXIuIFRoZSByZWFsdGVrIGNvbmZpZyBhcHAgZ2l2ZXMgYSBjaG9pY2UK
+Pj4gZm9yIGRlZmF1bHQgYXVkaW8gb3V0cHV0OyBzcGVha2VycyBvciBkaWdpdGFsLgo+Cj4gSW4g
+QUxDODgzIGNvZGVjLCB0aGVyZSBpcyBhY3R1YWxseSBhIGRpZ2l0YWwgSS9PIGFuZCBzbmQtaGRh
+LWludGVsCj4gZW5hYmxlZCBpdC4gwqBIb3dldmVyLCBob3cgdGhlIHJlc3QgaXMgaGFuZGxlZCAo
+aS5lLiBTUERJRiBvciBIRE1JKQo+IGlzIG91dCBvZiB0aGUgc2NvcGUgb2YgdGhlIGF1ZGlvIGNv
+ZGVjLgo+Cj4+ID4gQlRXLCBJIGZvdW5kIHdoeSBtb2RlbD1hdXRvIGRvZXNuJ3Qgd29yayB3ZWxs
+IG9uIHlvdXIgbWFjaGluZS4KPj4gPiBJdCdzIGJlY2F1c2UgKGFnYWluKSBvZiBCSU9TLiDCoEl0
+IGRvZXNuJ3Qgc2V0IHRoZSBjb2RlYyBTU0lEIHByb3Blcmx5Cj4+ID4gc28gdGhlIGRyaXZlciBk
+b2Vzbid0IGFjY2VwdCB0aGUgSFAgYXV0by10b2dnbGUgYW5kIG90aGVyIGZlYXR1cmVzLgo+PiA+
+Cj4+ID4gU28sIGluIHlvdXIgY2FzZSwgdXNpbmcgbW9kZWw9YWNlci1hc3BpcmUgd291bGQgYmUg
+bGlrZWx5IHRoZSBiZXN0Cj4+ID4gY2hvaWNlIChzdXBwb3NpbmcgaXQgbWF0Y2hlcyB3aXRoIG1v
+c3QgZnVuY3Rpb25hbGl0eSkuIMKgSWYgeW91IGhhdmUgbm8KPj4gPiBwcm9ibGVtIChhdCBsZWFz
+dCByZWdyZXNzaW9ucykgd2l0aCB0aGlzIG1vZGVsLCBJJ2xsIGFkZCB0aGUgZW50cnkgdG8KPj4g
+PiBwb2ludCB0byBtb2RlbD1hY2VyLWFzcGlyZQo+Pgo+PiBBZGQgQWNlciBGZXJyYXIgNTAwMCBR
+dWlyayB0byBJbnRlbCBIREEgZHJpdmVyCj4KPiBUaGFua3MsIGEgc2ltaWxhciBmaXggd2FzIGFs
+cmVhZHkgbWVyZ2VkIG5vdy4KCkl0IGFsbCB3b3JrcyBmb3IgYSB3aGlsZSwgYnV0IGV2ZW50dWFs
+bHkgSSdsbCBnZXQgYSAiYXp4X2dldF9yZXNwb25zZQp0aW1lb3V0LCBzd2l0Y2hpbmcgdG8gcG9s
+bGluZyBtb2RlOiBsYXN0IGNtZD0weDEwYmIyMDAxIiBhbmQgaXQgbm8KbG9uZ2VyIHJlc3BvbmRz
+IHRvIGhlYWRwaG9uZSBwbHVnIGV2ZW50cyB3aXRob3V0IGFuIHVubG9hZC9yZWxvYWQgb2YKdGhl
+IG1vZHVsZS4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
