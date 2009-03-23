@@ -1,75 +1,89 @@
-From: "Pascal de Bruijn | Unilogic Networks B.V."
-	<pascal@unilogicnetworks.net>
-Subject: [PATCH] alsa: Intel HDA output and align Ids.
-Date: Mon, 23 Mar 2009 11:15:59 +0100
-Message-ID: <1237803359.11871.23.camel@carnifex>
+From: Tim Blechmann <tim@klingt.org>
+Subject: Re: alsa driver for digigram lx6464es
+Date: Mon, 23 Mar 2009 11:26:11 +0100
+Message-ID: <49C763C3.3000509@klingt.org>
+References: <49C692B0.7040609@klingt.org> <s5hljqwlogv.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756780AbZCWKQY@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============2234887055628188491=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from klingt.org (mail.klingt.org [86.59.21.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4526224367
+	for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2009 11:26:13 +0100 (CET)
+In-Reply-To: <s5hljqwlogv.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch does two things:
- Output Intel HDA Function Id in /proc/asound/cardX/codec#X
- Align Vendor/Subsystem/Revision Ids to 8 characters, front-padded with zeros
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============2234887055628188491==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig59BFC6AD0C01788A6FE776D8"
 
-Before:
- Vendor Id: 0x11d41884
- Subsystem Id: 0x103c281a
- Revision Id: 0x100100
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig59BFC6AD0C01788A6FE776D8
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-After:
- Function Id: 0x1
- Vendor Id: 0x11d41884
- Subsystem Id: 0x103c281a
- Revision Id: 0x0100100
+>> takashi, i would like to submit the patch to alsa soon ... how should =
+i
+>> proceed? can you do a review of the code?
+>=20
+> Simply post patches to alsa-devel ML and Cc to me (or vice versa).
+> But I'll be on vacation from this week (Wednesday) until the Easter
+> holidays.  So, sooner better ;)
 
-As report on the Kernel Bugzilla #12888
+the patch seems to be too large for the mailing-list, 140kb ...	i hope
+the moderator will accept the message ...
 
-Signed-off-by: Pascal de Bruijn <pascal@unilogicnetworks.net>
+please note, that i included 4 header files and some minor code portions
+from digigram's windows driver, which do not match the linux coding
+style. i preferred to do so in order to keep the similarity to the
+windows driver, which was my main reference for implementing the driver.
 
-diff -Nurp linux-2.6.29-rc8-orig/sound/pci/hda/hda_codec.c linux-2.6.29-rc8-func/sound/pci/hda/hda_codec.c
---- linux-2.6.29-rc8-orig/sound/pci/hda/hda_codec.c	2009-03-20 16:05:15.000000000 +0100
-+++ linux-2.6.29-rc8-func/sound/pci/hda/hda_codec.c	2009-03-23 10:37:30.000000000 +0100
-@@ -647,9 +647,9 @@ static void /*__devinit*/ setup_fg_nodes
- 
- 	total_nodes = snd_hda_get_sub_nodes(codec, AC_NODE_ROOT, &nid);
- 	for (i = 0; i < total_nodes; i++, nid++) {
--		unsigned int func;
--		func = snd_hda_param_read(codec, nid, AC_PAR_FUNCTION_TYPE);
--		switch (func & 0xff) {
-+		codec->function_id = snd_hda_param_read(codec, nid,
-+						AC_PAR_FUNCTION_TYPE) & 0xff;
-+		switch (codec->function_id) {
- 		case AC_GRP_AUDIO_FUNCTION:
- 			codec->afg = nid;
- 			break;
-diff -Nurp linux-2.6.29-rc8-orig/sound/pci/hda/hda_codec.h linux-2.6.29-rc8-func/sound/pci/hda/hda_codec.h
---- linux-2.6.29-rc8-orig/sound/pci/hda/hda_codec.h	2009-03-20 16:05:15.000000000 +0100
-+++ linux-2.6.29-rc8-func/sound/pci/hda/hda_codec.h	2009-03-20 16:10:07.000000000 +0100
-@@ -739,6 +739,7 @@ struct hda_codec {
- 	hda_nid_t mfg;	/* MFG node id */
- 
- 	/* ids */
-+	u32 function_id;
- 	u32 vendor_id;
- 	u32 subsystem_id;
- 	u32 revision_id;
-diff -Nurp linux-2.6.29-rc8-orig/sound/pci/hda/hda_proc.c linux-2.6.29-rc8-func/sound/pci/hda/hda_proc.c
---- linux-2.6.29-rc8-orig/sound/pci/hda/hda_proc.c	2009-03-20 16:05:15.000000000 +0100
-+++ linux-2.6.29-rc8-func/sound/pci/hda/hda_proc.c	2009-03-20 16:10:07.000000000 +0100
-@@ -467,8 +467,9 @@ static void print_codec_info(struct snd_
- 	snd_iprintf(buffer, "Codec: %s\n",
- 		    codec->name ? codec->name : "Not Set");
- 	snd_iprintf(buffer, "Address: %d\n", codec->addr);
--	snd_iprintf(buffer, "Vendor Id: 0x%x\n", codec->vendor_id);
--	snd_iprintf(buffer, "Subsystem Id: 0x%x\n", codec->subsystem_id);
-+	snd_iprintf(buffer, "Function Id: 0x%x\n", codec->function_id);
-+	snd_iprintf(buffer, "Vendor Id: 0x%08x\n", codec->vendor_id);
-+	snd_iprintf(buffer, "Subsystem Id: 0x%08x\n", codec->subsystem_id);
- 	snd_iprintf(buffer, "Revision Id: 0x%x\n", codec->revision_id);
- 
- 	if (codec->mfg)
+cheers, tim
+
+--=20
+tim@klingt.org
+http://tim.klingt.org
+
+The composer makes plans, music laughs.
+  Morton Feldman
+
+
+--------------enig59BFC6AD0C01788A6FE776D8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAknHY8UACgkQdL+4qsZfVssgbwCdE22RwDhfpwYa3Z/w/Bwcc0EJ
+6jYAoJoWBOhxuqRmrL8vS4w611g9JQeM
+=Bej/
+-----END PGP SIGNATURE-----
+
+--------------enig59BFC6AD0C01788A6FE776D8--
+
+--===============2234887055628188491==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============2234887055628188491==--
