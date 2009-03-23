@@ -1,7 +1,7 @@
 From: Russ Dill <russ.dill@gmail.com>
 Subject: Re: Acer Ferrari 5000
-Date: Mon, 23 Mar 2009 09:40:46 -0700
-Message-ID: <f9d2a5e10903230940n78335b8di96ddd93326e7a76d@mail.gmail.com>
+Date: Mon, 23 Mar 2009 10:45:52 -0700
+Message-ID: <1237830352.9890.15.camel@russ-laptop>
 References: <f9d2a5e10903212223i3bd811dfob65575c7f16030a4@mail.gmail.com>
 	<s5hiqm05rmm.wl%tiwai@suse.de>
 	<f9d2a5e10903230636r1f1bf1d2h8f9181802d45f841@mail.gmail.com>
@@ -12,16 +12,18 @@ References: <f9d2a5e10903212223i3bd811dfob65575c7f16030a4@mail.gmail.com>
 	<s5hljqw44zw.wl%tiwai@suse.de>
 	<f9d2a5e10903230927q66d2e536se0e364f05044374a@mail.gmail.com>
 	<s5h4oxk42np.wl%tiwai@suse.de>
+	<f9d2a5e10903230940n78335b8di96ddd93326e7a76d@mail.gmail.com>
+	<s5hzlfc2mms.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.149])
-	by alsa0.perex.cz (Postfix) with ESMTP id 586FF2439E
-	for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2009 17:40:50 +0100 (CET)
-Received: by qw-out-1920.google.com with SMTP id 5so1090521qwf.56
-	for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2009 09:40:49 -0700 (PDT)
-In-Reply-To: <s5h4oxk42np.wl%tiwai@suse.de>
+Received: from rv-out-0506.google.com (rv-out-0708.google.com [209.85.198.245])
+	by alsa0.perex.cz (Postfix) with ESMTP id 182BE1037F6
+	for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2009 18:46:25 +0100 (CET)
+Received: by rv-out-0506.google.com with SMTP id b17so1073565rvf.0
+	for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2009 10:46:24 -0700 (PDT)
+In-Reply-To: <s5hzlfc2mms.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,27 +37,94 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBNYXIgMjMsIDIwMDkgYXQgOTozNiBBTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNl
-LmRlPiB3cm90ZToKPiBBdCBNb24sIDIzIE1hciAyMDA5IDA5OjI3OjI0IC0wNzAwLAo+IFJ1c3Mg
-RGlsbCB3cm90ZToKPj4KPj4gSSdtIHRlc3Rpbmcgd2l0aCB0aGUgYWNlci1hc3BpcmUgcXVpcmsg
-c2V0LCBhbmQgdGhpbmdzIHNlZW0gdG8gYmUKPj4gd29ya2luZyByYXRoZXIgd2VsbC4gVGhlIGhl
-YWRwaG9uZSBwbHVnL3VucGx1ZyBkZXRlY3Rpb24gYW5kIHNwZWFrZXIKPj4gbXV0aW5nIGFjdHVh
-bGx5IHdvcmsgOikgSG93ZXZlciwgSSdtIHN0aWxsIG5vdCBnZXR0aW5nIEhETUkgYXVkaW8KPj4g
-d29ya2luZy4gSSdtIG5vdCB0aGF0IGZhbWlsaWFyIHdpdGggSUVDOTU4LCBob3cgc2hvdWxkIEkg
-aGF2ZSB0aGUKPj4gc3dpdGNoZXMgc2V0PyBJIGN1cnJlbnRseSBoYXZlIGJvdGggSUVDOTU4IGFu
-ZCBJRUM5NTggRGVmYXVsdCBQQ00gb24uCj4+IEkndmUgdHJpZWQgd2l0aCBtcGxheWVyIC1hbyBh
-bHNhOmRldmljZT1pZWM5NTggPG1wMyBmaWxlPgo+Cj4gQmFzaWNhbGx5IGl0IHNob3VsZCBiZSBP
-Sy4gwqBJIGd1ZXNzIGl0J3MgcmF0aGVyIGFuIGlzc3VlIG9mIHRoZSB2aWRlbwo+IGRyaXZlciBz
-aWRlLiDCoElmIHRoZSB2aWRlbyBkcml2ZXIgZG9lc24ndCBzdXBwb3J0IEhETUkgYXVkaW8gb3V0
-cHV0LAo+IGl0IGRvZXNuJ3Qgd29yaywgb2YgY291cnNlLgo+CgpbIFdvcmtpbmcgb24gdGVzdGlu
-ZyBwYXRjaC4uLiBdCgpUaGUgYXVkaW8gZG9lcyB3b3JrIG92ZXIgSERNSSB0aG91Z2gsIFZpc3Rh
-IGhhcyBiZXR0ZXIgc3VwcG9ydCBmb3IKY29ubmVjdGluZyB0byBIRFRWIGFuZCBnZXR0aW5nIHRo
-ZSB2aWRlbyBtb2RlcyByaWdodCwgc28gSSB3YXMKd2F0Y2hpbmcgYSBEVkQuIE91dCBvZiBjdXJp
-b3NpdHksIEkgY2hlY2tlZCBhIGJveCBpbiB0aGUgYXVkaW8KY29uZmlndXJhdGlvbiBmb3IgZGln
-aXRhbCBvdXRwdXQsIGFuZCBzb3VuZCBzdGFydGVkIGNvbWluZyBvdXQgb2YgdGhlClRWLgoKSSds
-bCBib290IGludG8gVmlzdGEgaW4gYSB3aGlsZSB0byB0cnkgdG8gZmluZCBvdXQgd2hpY2ggZGV2
-aWNlIGRyaXZlcgppcyBkb2luZyB3aGljaCB0aGluZywgYnV0IEknbSBmYWlybHkgY2VydGFpbiBp
-dHMgdGhlIGJhc2UgYXVkaW8KZHJpdmVyLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+On Mon, 2009-03-23 at 18:07 +0100, Takashi Iwai wrote:
+> At Mon, 23 Mar 2009 09:40:46 -0700,
+> Russ Dill wrote:
+> > 
+> > On Mon, Mar 23, 2009 at 9:36 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> > > At Mon, 23 Mar 2009 09:27:24 -0700,
+> > > Russ Dill wrote:
+> > >>
+> > >> I'm testing with the acer-aspire quirk set, and things seem to be
+> > >> working rather well. The headphone plug/unplug detection and speaker
+> > >> muting actually work :) However, I'm still not getting HDMI audio
+> > >> working. I'm not that familiar with IEC958, how should I have the
+> > >> switches set? I currently have both IEC958 and IEC958 Default PCM on.
+> > >> I've tried with mplayer -ao alsa:device=iec958 <mp3 file>
+> > >
+> > > Basically it should be OK.  I guess it's rather an issue of the video
+> > > driver side.  If the video driver doesn't support HDMI audio output,
+> > > it doesn't work, of course.
+> > >
+> > 
+> > [ Working on testing patch... ]
+> > 
+> > The audio does work over HDMI though, Vista has better support for
+> > connecting to HDTV and getting the video modes right, so I was
+> > watching a DVD. Out of curiosity, I checked a box in the audio
+> > configuration for digital output, and sound started coming out of the
+> > TV.
+> 
+> Do you mean it working on Linux?  When "IEC958 Default PCM" is set
+> to on, the analog PCM outputs are also routed to the digital output
+> automatically.  So you should be hearing the sound played via aplay.
+
+No such luck. Enabling it and playing audio (that comes out on the
+speakers) does not cause an audio signal to be sent on the HDMI cable.
+
+> The "iec958" PCM device is for the exclusive digital output, mainly
+> for the raw digital stream like AC3.  If it's being used with the
+> analog streams at the same time, you won't be able to open it.
+
+On the Vista side, it refers to the digital output both as S/PDIF
+digital output and "Real Panel Optical Jack". It is definitely part of
+the realtek high def audio driver. The realtek config app gives a choice
+for default audio output; speakers or digital.
+
+> BTW, I found why model=auto doesn't work well on your machine.
+> It's because (again) of BIOS.  It doesn't set the codec SSID properly
+> so the driver doesn't accept the HP auto-toggle and other features.
+> 
+> So, in your case, using model=acer-aspire would be likely the best
+> choice (supposing it matches with most functionality).  If you have no
+> problem (at least regressions) with this model, I'll add the entry to
+> point to model=acer-aspire
+
+Add Acer Ferrar 5000 Quirk to Intel HDA driver
+
+---
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index bf7e64e..88b674e 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8655,6 +8655,7 @@ static struct snd_pci_quirk alc883_cfg_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x0110, "Acer Aspire", ALC883_ACER_ASPIRE),
+ 	SND_PCI_QUIRK(0x1025, 0x0112, "Acer Aspire 9303", ALC883_ACER_ASPIRE),
+ 	SND_PCI_QUIRK(0x1025, 0x0121, "Acer Aspire 5920G", ALC883_ACER_ASPIRE),
++	SND_PCI_QUIRK(0x1025, 0x010a, "Acer Ferrari 5000", ALC883_ACER_ASPIRE),
+ 	SND_PCI_QUIRK(0x1025, 0x013e, "Acer Aspire 4930G",
+ 		ALC888_ACER_ASPIRE_4930G),
+ 	SND_PCI_QUIRK(0x1025, 0x013f, "Acer Aspire 5930G",
+-- 
+1.6.0.4
+
+
+
+> Anyway, my previous test patch is independent from the model problem.
+> It's still helpful to know whether it can solve the codec
+> communication errors with model=auto.
+
+[  715.680015] hda_intel: azx_get_response timeout, switching to polling mode: last cmd=0x106f000a
+[  716.684012] hda_intel: azx_get_response timeout (ERROR): last cmd=0x106f000a
+[  717.688024] hda_intel: azx_get_response timeout (ERROR): last cmd=0x106f000a
+[  718.708012] hda_intel: azx_get_response timeout (ERROR): last cmd=0x106f000a
+[  719.712011] hda_intel: azx_get_response timeout (ERROR): last cmd=0x106f000a
+[  738.813550] hda-intel: IRQ timing workaround is activated for card #0. Suggest a bigger bdl_pos_adj.
+
+> 
+> thanks,
+> 
+> Takashi
