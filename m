@@ -1,14 +1,19 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: [PATCH] opl3sa2: add ZV port control
-Date: Tue, 24 Mar 2009 22:37:14 +0100
-Message-ID: <20090324223714.c65e9232.krzysztof.h1@poczta.fm>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [RESEND] [PATCH] pxa2xx-ac97: fix displaying GSR
+	after reset	timeout
+Date: Tue, 24 Mar 2009 22:18:41 +0000
+Message-ID: <20090324221841.GC15455@n2100.arm.linux.org.uk>
+References: <gq8unj$6og$1@ger.gmane.org>
+	<1237911929-29895-1-git-send-email-l.fu@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
-	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id B8D9924359
-	for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2009 22:36:32 +0100 (CET)
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id DD26B243E3
+	for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2009 23:18:54 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1237911929-29895-1-git-send-email-l.fu@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,39 +23,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Rene Herman <rene.herman@gmail.com>
+To: Luotao Fu <l.fu@pengutronix.de>
+Cc: dbaryshkov@gmail.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, linux-arm-kernel@lists.arm.linux.org.uk, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
+On Tue, Mar 24, 2009 at 05:25:28PM +0100, Luotao Fu wrote:
+> the variable gsr_bit is set in isr. It is however set to 0 and interrupts are
+> disabled prior to reset on pxa27x and pxa3xx. Hence it doesn't make a lot of
+> sense to show the content of gsr_bit in case of a reset timeout.
 
-Add ZV port control switch.
+It would make more sense to put "GSR | gsr_bits" into a temporary variable
+for testing, and then printing so that the value printed is the exact
+value which was tested, not somehting that may have changed.
 
-This patch is done after solution
-given in the ALSA bug #2872 report.
-The patch resolves the issue.
-
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
----
- sound/isa/opl3sa2.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-diff --git a/sound/isa/opl3sa2.c b/sound/isa/opl3sa2.c
-index f395b0f..d161e74 100644
---- a/sound/isa/opl3sa2.c
-+++ b/sound/isa/opl3sa2.c
-@@ -477,6 +477,7 @@ OPL3SA2_DOUBLE_TLV("Master Playback Volume", 0, 0x07, 0x08, 0, 0, 15, 1,
- OPL3SA2_SINGLE("Mic Playback Switch", 0, 0x09, 7, 1, 1),
- OPL3SA2_SINGLE_TLV("Mic Playback Volume", 0, 0x09, 0, 31, 1,
- 		   db_scale_5bit_12db_max),
-+OPL3SA2_SINGLE("ZV Port Switch", 0, 0x02, 0, 1, 0),
- };
- 
- static struct snd_kcontrol_new snd_opl3sa2_tone_controls[] = {
--- 
-1.5.2.2
-
-
-----------------------------------------------------------------------
-Szukasz pieniedzy? Wez podwojny limit zadluzenia w koncie direct.
->> http://link.interia.pl/f20a3
+Also, you've resent your patch but omitted the ALSA mailing list.
