@@ -1,45 +1,56 @@
-From: Luotao Fu <l.fu@pengutronix.de>
-Subject: [RESEND] [PATCH] pxa2xx-ac97: fix displaying GSR after reset timeout
-Date: Tue, 24 Mar 2009 17:25:28 +0100
-Message-ID: <1237911929-29895-1-git-send-email-l.fu@pengutronix.de>
-References: <gq8unj$6og$1@ger.gmane.org>
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1763081AbZCXQ1f@vger.kernel.org>
-In-Reply-To: <gq8unj$6og$1@ger.gmane.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: dbaryshkov@gmail.com, linux-arm-kernel@lists.arm.linux.org.uk, linux-kernel@vger.kernel.org, broonie@opensource.wolfsonmicro.com, Luotao Fu <l.fu@pengutronix.de>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: [PATCH] opl3sa2: add ZV port control
+Date: Tue, 24 Mar 2009 22:37:14 +0100
+Message-ID: <20090324223714.c65e9232.krzysztof.h1@poczta.fm>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
+	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id B8D9924359
+	for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2009 22:36:32 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Rene Herman <rene.herman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-the variable gsr_bit is set in isr. It is however set to 0 and interrupts are
-disabled prior to reset on pxa27x and pxa3xx. Hence it doesn't make a lot of
-sense to show the content of gsr_bit in case of a reset timeout.
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-Signed-off-by: Luotao Fu <l.fu@pengutronix.de>
+Add ZV port control switch.
+
+This patch is done after solution
+given in the ALSA bug #2872 report.
+The patch resolves the issue.
+
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
 ---
- sound/arm/pxa2xx-ac97-lib.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ sound/isa/opl3sa2.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
-index 35afd0c..25933ba 100644
---- a/sound/arm/pxa2xx-ac97-lib.c
-+++ b/sound/arm/pxa2xx-ac97-lib.c
-@@ -218,7 +218,7 @@ bool pxa2xx_ac97_try_warm_reset(struct snd_ac97 *ac97)
+diff --git a/sound/isa/opl3sa2.c b/sound/isa/opl3sa2.c
+index f395b0f..d161e74 100644
+--- a/sound/isa/opl3sa2.c
++++ b/sound/isa/opl3sa2.c
+@@ -477,6 +477,7 @@ OPL3SA2_DOUBLE_TLV("Master Playback Volume", 0, 0x07, 0x08, 0, 0, 15, 1,
+ OPL3SA2_SINGLE("Mic Playback Switch", 0, 0x09, 7, 1, 1),
+ OPL3SA2_SINGLE_TLV("Mic Playback Volume", 0, 0x09, 0, 31, 1,
+ 		   db_scale_5bit_12db_max),
++OPL3SA2_SINGLE("ZV Port Switch", 0, 0x02, 0, 1, 0),
+ };
  
- 	if (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR))) {
- 		printk(KERN_INFO "%s: warm reset timeout (GSR=%#lx)\n",
--				 __func__, gsr_bits);
-+				 __func__, GSR | gsr_bits);
- 
- 		return false;
- 	}
-@@ -248,7 +248,7 @@ bool pxa2xx_ac97_try_cold_reset(struct snd_ac97 *ac97)
- 
- 	if (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR))) {
- 		printk(KERN_INFO "%s: cold reset timeout (GSR=%#lx)\n",
--				 __func__, gsr_bits);
-+				 __func__, GSR | gsr_bits);
- 
- 		return false;
- 	}
+ static struct snd_kcontrol_new snd_opl3sa2_tone_controls[] = {
 -- 
-1.5.6.5
+1.5.2.2
+
+
+----------------------------------------------------------------------
+Szukasz pieniedzy? Wez podwojny limit zadluzenia w koncie direct.
+>> http://link.interia.pl/f20a3
