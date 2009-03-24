@@ -1,17 +1,22 @@
 From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-Subject: [PATCH 1/7] snd-atmel-ac97c: cleanup register
-	definitions
-Date: Tue, 24 Mar 2009 13:47:44 +0100
-Message-ID: <1237898870-15780-2-git-send-email-hans-christian.egtvedt@atmel.com>
+Subject: [PATCH 6/7] ac97c: do a proper reset of the external
+	codec
+Date: Tue, 24 Mar 2009 13:47:49 +0100
+Message-ID: <1237898870-15780-7-git-send-email-hans-christian.egtvedt@atmel.com>
 References: <1237898870-15780-1-git-send-email-hans-christian.egtvedt@atmel.com>
+	<1237898870-15780-2-git-send-email-hans-christian.egtvedt@atmel.com>
+	<1237898870-15780-3-git-send-email-hans-christian.egtvedt@atmel.com>
+	<1237898870-15780-4-git-send-email-hans-christian.egtvedt@atmel.com>
+	<1237898870-15780-5-git-send-email-hans-christian.egtvedt@atmel.com>
+	<1237898870-15780-6-git-send-email-hans-christian.egtvedt@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from relay.atmel.no (relay.atmel.no [80.232.32.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3415E103835
+	by alsa0.perex.cz (Postfix) with ESMTP id 343C0103837
 	for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2009 13:47:52 +0100 (CET)
-In-Reply-To: <1237898870-15780-1-git-send-email-hans-christian.egtvedt@atmel.com>
+In-Reply-To: <1237898870-15780-6-git-send-email-hans-christian.egtvedt@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,66 +30,59 @@ To: alsa-devel@alsa-project.org
 Cc: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch will remove traces of channel B registers, since they are not
-used by the AC97C driver. Channel B might be used for other purposes.
-
-The driver also adds channel status bits TXEMPTY and OVRUN and a
-AC97C_CH_MASK macro to ease clearing a channel settings.
+This patch will enable the AC97C before resetting the external codec,
+leaving the AC97C disabled will result in floating I/O lines that can
+affect the reset procedure.
 
 Signed-off-by: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
 ---
- sound/atmel/ac97c.h |   14 ++++++++------
- 1 files changed, 8 insertions(+), 6 deletions(-)
+ sound/atmel/ac97c.c |   14 +++++++-------
+ 1 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/atmel/ac97c.h b/sound/atmel/ac97c.h
-index c17bd58..ecbba50 100644
---- a/sound/atmel/ac97c.h
-+++ b/sound/atmel/ac97c.h
-@@ -1,5 +1,5 @@
- /*
-- * Register definitions for the Atmel AC97C controller
-+ * Register definitions for Atmel AC97C
-  *
-  * Copyright (C) 2005-2009 Atmel Corporation
-  *
-@@ -17,10 +17,6 @@
- #define AC97C_CATHR		0x24
- #define AC97C_CASR		0x28
- #define AC97C_CAMR		0x2c
--#define AC97C_CBRHR		0x30
--#define AC97C_CBTHR		0x34
--#define AC97C_CBSR		0x38
--#define AC97C_CBMR		0x3c
- #define AC97C_CORHR		0x40
- #define AC97C_COTHR		0x44
- #define AC97C_COSR		0x48
-@@ -46,8 +42,10 @@
- #define AC97C_MR_VRA		(1 << 2)
+diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
+index 7c7521b..75100b0 100644
+--- a/sound/atmel/ac97c.c
++++ b/sound/atmel/ac97c.c
+@@ -730,17 +730,17 @@ static bool filter(struct dma_chan *chan, void *slave)
  
- #define AC97C_CSR_TXRDY		(1 << 0)
-+#define AC97C_CSR_TXEMPTY	(1 << 1)
- #define AC97C_CSR_UNRUN		(1 << 2)
- #define AC97C_CSR_RXRDY		(1 << 4)
-+#define AC97C_CSR_OVRUN		(1 << 5)
- #define AC97C_CSR_ENDTX		(1 << 10)
- #define AC97C_CSR_ENDRX		(1 << 14)
+ static void atmel_ac97c_reset(struct atmel_ac97c *chip)
+ {
+-	ac97c_writel(chip, MR, AC97C_MR_WRST);
++	ac97c_writel(chip, MR,   0);
++	ac97c_writel(chip, MR,   AC97C_MR_ENA);
++	ac97c_writel(chip, CAMR, 0);
++	ac97c_writel(chip, COMR, 0);
  
-@@ -61,11 +59,15 @@
- #define AC97C_CMR_DMAEN		(1 << 22)
+ 	if (gpio_is_valid(chip->reset_pin)) {
+ 		gpio_set_value(chip->reset_pin, 0);
+ 		/* AC97 v2.2 specifications says minimum 1 us. */
+-		udelay(10);
++		udelay(2);
+ 		gpio_set_value(chip->reset_pin, 1);
+ 	}
+-
+-	udelay(1);
+-	ac97c_writel(chip, MR, AC97C_MR_ENA);
+ }
  
- #define AC97C_SR_CAEVT		(1 << 3)
-+#define AC97C_SR_COEVT		(1 << 2)
-+#define AC97C_SR_WKUP		(1 << 1)
-+#define AC97C_SR_SOF		(1 << 0)
+ static int __devinit atmel_ac97c_probe(struct platform_device *pdev)
+@@ -826,6 +826,8 @@ static int __devinit atmel_ac97c_probe(struct platform_device *pdev)
  
-+#define AC97C_CH_MASK(slot)						\
-+	(0x7 << (3 * (AC97_SLOT_##slot - 3)))
- #define AC97C_CH_ASSIGN(slot, channel)					\
- 	(AC97C_CHANNEL_##channel << (3 * (AC97_SLOT_##slot - 3)))
- #define AC97C_CHANNEL_NONE	0x0
- #define AC97C_CHANNEL_A		0x1
--#define AC97C_CHANNEL_B		0x2
+ 	snd_card_set_dev(card, &pdev->dev);
  
- #endif /* __SOUND_ATMEL_AC97C_H */
++	atmel_ac97c_reset(chip);
++
+ 	/* Enable overrun interrupt from codec channel */
+ 	ac97c_writel(chip, COMR, AC97C_CSR_OVRUN);
+ 	ac97c_writel(chip, IER, ac97c_readl(chip, IMR) | AC97C_SR_COEVT);
+@@ -836,8 +838,6 @@ static int __devinit atmel_ac97c_probe(struct platform_device *pdev)
+ 		goto err_ac97_bus;
+ 	}
+ 
+-	atmel_ac97c_reset(chip);
+-
+ 	retval = atmel_ac97c_mixer_new(chip);
+ 	if (retval) {
+ 		dev_dbg(&pdev->dev, "could not register ac97 mixer\n");
 -- 
 1.5.6.3
