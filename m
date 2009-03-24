@@ -1,47 +1,45 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 2/2] ASoC: twl4030 - Add VDL path support
-Date: Tue, 24 Mar 2009 16:21:22 +0000
-Message-ID: <20090324162122.GE5990@sirena.org.uk>
-References: <49C8D933.5020303@samsung.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3FDD3103810
-	for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2009 17:21:23 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <49C8D933.5020303@samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joonyoung Shim <jy0922.shim@samsung.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, '?????????' <kyungmin.park@samsung.com>, ????????? <bhmin@samsung.com>
+From: Luotao Fu <l.fu@pengutronix.de>
+Subject: [RESEND] [PATCH] pxa2xx-ac97: fix displaying GSR after reset timeout
+Date: Tue, 24 Mar 2009 17:25:28 +0100
+Message-ID: <1237911929-29895-1-git-send-email-l.fu@pengutronix.de>
+References: <gq8unj$6og$1@ger.gmane.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1763081AbZCXQ1f@vger.kernel.org>
+In-Reply-To: <gq8unj$6og$1@ger.gmane.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: dbaryshkov@gmail.com, linux-arm-kernel@lists.arm.linux.org.uk, linux-kernel@vger.kernel.org, broonie@opensource.wolfsonmicro.com, Luotao Fu <l.fu@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 24, 2009 at 09:59:31PM +0900, Joonyoung Shim wrote:
-> Adds DAPMs for VDL(voice down link) path.
-> To support VDL path, we have to change DAPM of outputs(Earpiece,
-> PreDrive Left/Right, Headset Left/Right, Carkit Left/Right) from mux to
-> mixer, also codec mode from option1 to option2.
+the variable gsr_bit is set in isr. It is however set to 0 and interrupts are
+disabled prior to reset on pxa27x and pxa3xx. Hence it doesn't make a lot of
+sense to show the content of gsr_bit in case of a reset timeout.
 
-In this specific case where there is no DAI interfacing with the voice
-DAC you could just not tell DAPM it's a DAC - it doesn't buy anything
-since the only thing that DACs do at the minute is stream 
+Signed-off-by: Luotao Fu <l.fu@pengutronix.de>
+---
+ sound/arm/pxa2xx-ac97-lib.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Alternatively, if this is for something like playback of an audio stream
-take a look at how the Neo1973 driver represents the audio downlink from
-the bluetooth chipset.  A dummy audio interface is provided to user
-space which user space can set up as normal through ALSA, just skipping
-actually transferring any data.  This is hacky but has the advantage of
-keeping the power management.
-
-There's a sample user space application driving this here:
-
-	http://opensource.wolfsonmicro.com/~gg/bluetooth-pcm/bluetooth_pcm.c
+diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
+index 35afd0c..25933ba 100644
+--- a/sound/arm/pxa2xx-ac97-lib.c
++++ b/sound/arm/pxa2xx-ac97-lib.c
+@@ -218,7 +218,7 @@ bool pxa2xx_ac97_try_warm_reset(struct snd_ac97 *ac97)
+ 
+ 	if (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR))) {
+ 		printk(KERN_INFO "%s: warm reset timeout (GSR=%#lx)\n",
+-				 __func__, gsr_bits);
++				 __func__, GSR | gsr_bits);
+ 
+ 		return false;
+ 	}
+@@ -248,7 +248,7 @@ bool pxa2xx_ac97_try_cold_reset(struct snd_ac97 *ac97)
+ 
+ 	if (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR))) {
+ 		printk(KERN_INFO "%s: cold reset timeout (GSR=%#lx)\n",
+-				 __func__, gsr_bits);
++				 __func__, GSR | gsr_bits);
+ 
+ 		return false;
+ 	}
+-- 
+1.5.6.5
