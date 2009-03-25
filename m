@@ -1,19 +1,22 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [RESEND] [PATCH] pxa2xx-ac97: fix displaying GSR
-	after reset	timeout
-Date: Tue, 24 Mar 2009 22:18:41 +0000
-Message-ID: <20090324221841.GC15455@n2100.arm.linux.org.uk>
-References: <gq8unj$6og$1@ger.gmane.org>
-	<1237911929-29895-1-git-send-email-l.fu@pengutronix.de>
+From: "Geiger Ho" <geiger.ho@fmp.fujitsu.com>
+Subject: building soc module drivers
+Date: Wed, 25 Mar 2009 12:26:36 +0800
+Message-ID: <49C9B27C.8040108@fmp.fujitsu.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
-	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id DD26B243E3
-	for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2009 23:18:54 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1237911929-29895-1-git-send-email-l.fu@pengutronix.de>
+Received: from mail.fmp.fujitsu.com (pcd753105.netvigator.com [218.103.29.105])
+	by alsa0.perex.cz (Postfix) with ESMTP id 50A881037FD
+	for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2009 05:26:55 +0100 (CET)
+Received: from mail.fmp.fujitsu.com (localhost.localdomain [127.0.0.1])
+	by localhost (Email Security Appliance) with SMTP id
+	A4DA02220217_9C9B29AB
+	for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2009 04:27:06 +0000 (GMT)
+Received: from fmalhkmsex03.fmal.fujitsu.com (unknown [172.16.56.143])
+	by mail.fmp.fujitsu.com (Sophos Email Appliance) with ESMTP id
+	9E9F2222017C_9C9B290F
+	for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2009 04:26:56 +0000 (GMT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,17 +26,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Luotao Fu <l.fu@pengutronix.de>
-Cc: dbaryshkov@gmail.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, linux-arm-kernel@lists.arm.linux.org.uk, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 24, 2009 at 05:25:28PM +0100, Luotao Fu wrote:
-> the variable gsr_bit is set in isr. It is however set to 0 and interrupts are
-> disabled prior to reset on pxa27x and pxa3xx. Hence it doesn't make a lot of
-> sense to show the content of gsr_bit in case of a reset timeout.
+Hi all,
 
-It would make more sense to put "GSR | gsr_bits" into a temporary variable
-for testing, and then printing so that the value printed is the exact
-value which was tested, not somehting that may have changed.
+  I would like to build the WM8510 SOC sound driver for my ARM platform. 
+After downloading alsa-driver-1.0.19, "./configure 
+--with-cross=arm-linux- --with-kernel=/home/source/linux-2.6.22.19 
+--with-build=/home/source/linux-2.6.22.19 --with-cards=all", and then 
+make. I get no wm8510.c compiled. What other stuff should I do to make 
+it compiled? Many thanks.
 
-Also, you've resent your patch but omitted the ALSA mailing list.
+Best regards,
+Geiger
+
+-- 
+Geiger Ho  <geiger.ho@fmp.fujitsu.com>, armed with Agile and Lean.
+Mission: To deliver quality of work.
+Phone : (852) 2736-3232 Direct : (852) 2737-9681   Fax : (852) 2314-4207
+Fujitsu Microelectronics Pacific Asia Ltd, Design Centre
