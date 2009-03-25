@@ -1,20 +1,17 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 1/2] ASoC: dapm - Add DAPM for
-	always	active DAC or ADC
-Date: Wed, 25 Mar 2009 11:52:39 +0000
-Message-ID: <20090325115239.GE20936@sirena.org.uk>
-References: <49C8D8B0.8030807@samsung.com>
-	<20090324161510.GD5990@sirena.org.uk>
-	<49C9ECB1.9030005@samsung.com>
+From: Tim Blechmann <tim@klingt.org>
+Subject: Re: [PATCH v2] alsa: lx6464es - driver for the
+ digigram lx6464es interface
+Date: Wed, 25 Mar 2009 14:56:46 +0100
+Message-ID: <49CA381E.6020205@klingt.org>
+References: <s5hvdq05xjb.wl%tiwai@suse.de> <20090324122435.2630842f@thinkpad>
+	<s5htz5hluvj.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4901604075570425331=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 07C38103852
-	for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2009 12:52:41 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <49C9ECB1.9030005@samsung.com>
+Received: from klingt.org (mail.klingt.org [86.59.21.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6762E103852
+	for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2009 14:56:58 +0100 (CET)
+In-Reply-To: <s5htz5hluvj.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,46 +21,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joonyoung Shim <jy0922.shim@samsung.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, '?????????' <kyungmin.park@samsung.com>, ????????? <bhmin@samsung.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 25, 2009 at 05:34:57PM +0900, Joonyoung Shim wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============4901604075570425331==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig6D80B64DB4AB8019F2445E2D"
 
-> Activating always DAC or ADC widget doesn't mean powering it on all the
-> time. To power on DAC or ADC activated, we need one or more complete path
-> connecting with DAC or ADC because the power of widgets is controlled by
-> DAPM automatically. If complete path is no, DAC or ADC will be powered off
-> , so we can control the power of DAC or ADC using controls at user space.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig6D80B64DB4AB8019F2445E2D
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-That will only work in a limited number of systems - it means there's no
-facility provided to configure the DAI (I've no idea if the CODEC you're
-interested in has any configuration there).  It also has problems in
-situations where the voice DAC is hooked up to the CPU since no DAI is
-provided.  Some systems will hook multiple DAIs in the CODEC up to the
-CPU and then use this to either allow multiple streams to be played back
-with mixing being done in the CODEC rather than by software or to allow
-the different streams to be routed to different outputs.
+>> prototype of a driver for the digigram lx6464es 64 channel ethersound
+>> interface.
+>>
+>> Signed-off-by: Tim Blechmann <tim@klingt.org>
+>=20
+> In a quick glance, it looks much better now.
+> I'll merge it later after more checks (as I'm on vacation now).
+>=20
+> Note that the merge to the linux kernel tree will be postponed to
+> 2.6.31 since the merge window for 2.6.30 already started.
 
-> Thanks, but i think hooking in using events on the widgets is impossible
-> because voice call is different operation with record or playback.
+thanks, no hurry, i will be able to do more tests during the next few
+weeks, when i have access to a multichannel setup ...
 
-As, so you don't have any digital bypass paths (the fact that you're
-also talking about ADCs suggested that you did)?  Like I said in reply
-to the TWL4030 patch this sounds like you should be representing this as
-a normal DAI.
+cheers, tim
 
-> > When the core gains support for digital routing this can be replaced.
-> > Alternatively, if there is no integration with record or playback
-> > required then there's no reason to represent them as DACs and ADCs, they
-> > could be done as some other path element that DAPM does know about.
+--=20
+tim@klingt.org
+http://tim.klingt.org
 
-> Hmm, I think additional support needs for voice call operation at ASoC, so
-> i suggested a way of this patch.
+The composer makes plans, music laughs.
+  Morton Feldman
 
-This sort of configuration has been supported in ASoC for some time.
-See the OpenMoko Neo1973 for a public example of how this can be
-implemented.  It's not the nicest solution possible but it means that
-when we do get something better the CODEC drivers won't require updates
-and scenarios where the voice interface is connected to the CPU can be
-supported.
+
+--------------enig6D80B64DB4AB8019F2445E2D
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAknKOCMACgkQdL+4qsZfVsuwTgCfXnTAYTScIF9FccmCC+P7oBIH
+qYMAn2fscGN09c8vNNBej2U3ZabByzXF
+=8WNL
+-----END PGP SIGNATURE-----
+
+--------------enig6D80B64DB4AB8019F2445E2D--
+
+--===============4901604075570425331==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============4901604075570425331==--
