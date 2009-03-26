@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [patch] tlv320aic3x: disable ADC/DAC
-	while	changing clock
-Date: Thu, 26 Mar 2009 13:45:29 +0000
-Message-ID: <20090326134528.GC3771@sirena.org.uk>
-References: <1238073706-23821-1-git-send-email-dg@emlix.com>
+Subject: Re: [patch 1/2] alsa: ASoC driver for s6000
+	I2S	interface
+Date: Thu, 26 Mar 2009 14:15:03 +0000
+Message-ID: <20090326141503.GD3771@sirena.org.uk>
+References: <1238074574-24734-1-git-send-email-dg@emlix.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 09956103857
-	for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2009 14:45:30 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 91CD310385B
+	for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2009 15:15:03 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1238073706-23821-1-git-send-email-dg@emlix.com>
+In-Reply-To: <1238074574-24734-1-git-send-email-dg@emlix.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,55 +26,129 @@ To: Daniel Gl??ckner <dg@emlix.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 26, 2009 at 02:21:46PM +0100, Daniel Gl??ckner wrote:
-> While using a tlv320aic3101 as a clock master, it often happened that the
-> clock lines got stuck while changing the sampling rate. In a discussion
-> with TI technical support it was suggested to shut down the ADC and DAC
-> while there are changes being made to the clock.
+On Thu, Mar 26, 2009 at 02:36:13PM +0100, Daniel Gl??ckner wrote:
 
-> Following that rule resolves the problem, but merely writing the
-> registers to switch the ADC/DAC off is not enough. One needs to poll the
-> power status registers to wait until they have completely shut down.
+> This patch adds a driver for the I2S interface found on Stretch s6000
+> family processors.
 
-> The aforementioned rule implies that we can not disable the PLL in
-> stand-by bias level.
+Thanks for this.  It looks basically good - there's some issues below,
+several of which appear to be due to this having been done against a
+slightly old kernel version.  Please see the topic/asoc branch of
 
-Could you go into more detail on why you believe that this is the case?
-The DACs and ADCs won't be operational when the bias is held at standby
-which means that at most standby needs to wait for them to go idle.
+	git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
 
-In any case, it's looking more and more like the driver should just
-implement a set_pll() operaton here...
+for the most current code.
 
-> +static u8 aic3x_power_codec(struct snd_soc_codec *codec, u8 new)
+> +config SND_S6000_SOC
+> +	tristate "SoC Audio for the Stretch s6000 family"
+> +	depends on XTENSA_VARIANT_S6000 && SND_SOC
+> +	help
+
+I'm not seeing any hits on XTENSA_VARIANT_S6000 in next?  While that
+shouldn't hurt immediately since it'll just never appear it'd be good to
+make sure that the APIs this depends on are going into mainline in the
+form they're in.  Do you know what the status is there?
+
+The SND_SOC isn't required due to the use of menuconfig in the sound/soc
+directory.
+
+> +static int __devinit s6000_i2s_probe(struct platform_device *pdev,
+> +				     struct snd_soc_dai *dai)
+> +{
+> +	struct s6000_i2s_dev *dev;
+> +	struct resource *scbmem, *sifmem, *region, *dma_in, *dma_out;
+> +	struct s6000_snd_platform_data *pdata;
+> +	u8 __iomem *mmio;
+> +	int ret;
+> +
+> +	pdata = pdev->dev.platform_data;
+> +
+> +	scbmem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!scbmem) {
+
+With current ASoC it is now possible for the DAIs to be probed using the
+regular device model and register with the core when that happens.  The
+core will delay probe of the card until all components have registered
+with it.  For CPU side stuff this means that you can provide a standard
+set of resources for the device in your architecture code without having
+to have all the machines replicate them in their soc-audio device.
+
+Look at the PXA AC97 driver for an example of this on the platform side.
+
+> +#define S6000_I2S_RATES	(SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_KNOT | \
+> +			 SNDRV_PCM_RATE_5512 | SNDRV_PCM_RATE_8000_192000)
+
+SND_PCM_RATE_KNOT doesn't work with ASoC (though it shouldn't do any
+harm since it'll just get removed).
+
+> +	.ops = {
+> +		.set_fmt = s6000_i2s_set_dai_fmt,
+> +		.set_clkdiv = s6000_i2s_set_clkdiv,
+> +		.hw_params = s6000_i2s_hw_params,
+> +	}
+
+This won't build with current ASoC, the DAI ops have been moved out of
+line.
+
+> +static inline void s6_i2s_write_reg(struct s6000_i2s_dev *dev, int reg, u32 val)
+> +{
+> +	writel(val, dev->scbbase + reg);
+> +}
+
+Any reason to expose these to users? 
+
+> +static inline void s6000_i2s_start_channel(struct s6000_i2s_dev *dev,
+> +					   int channel)
 > +{
 
-This really needs some comments explaining what it's doing; it's not
-really clear what effect it's trying to achieve or how it interacts with
-DAPM.
+This and the rest of the functions in the file look especially like it
+should be in the body of the driver.  It also looks a little large to be
+forcing inline?
 
-> @@ -749,9 +800,11 @@ static int aic3x_hw_params(struct snd_pcm_substream *substream,
->  	struct snd_soc_codec *codec = socdev->codec;
->  	struct aic3x_priv *aic3x = codec->private_data;
->  	int codec_clk = 0, bypass_pll = 0, fsref, last_clk = 0;
-> -	u8 data, r, p, pll_q, pll_p = 1, pll_r = 1, pll_j = 1;
-> +	u8 data, r, p, pll_q, pll_p = 1, pll_r = 1, pll_j = 1, state_saved;
->  	u16 pll_d = 1;
->  
-> +	state_saved = aic3x_power_off_wait(codec);
+> +#define S6000_PCM_DEBUG 0
+> +#if S6000_PCM_DEBUG
+> +#define DPRINTK(x...) printk(KERN_DEBUG x)
+> +#else
+> +#define DPRINTK(x...)
+> +#endif
+
+Use the standard pr_dbg() (or dev_dbg()), no need to reproduce it.
+
+> +	if (unlikely(i2s_errors & S6_I2S_INT_ALIGNMENT)) {
+> +		printk(KERN_ERR "s6000-i2s: Alignment Error\n");
+
+
+> +	if (unlikely(i2s_errors & S6_I2S_INT_UNDERRUN) &&
+> +	    playback->runtime &&
+> +	    snd_pcm_running(playback)) {
+> +		printk(KERN_WARNING "s6000-i2s: Tx Underrun\n");
+> +		s6000_i2s_start(playback);
 > +
+> +		prtd = playback->runtime->private_data;
+> +		spin_lock(&prtd->lock);
+> +		s6000_pcm_enqueue_dma(playback);
+> +		/* a second descriptor will be queued below */
+> +		spin_unlock(&prtd->lock);
 
-This appears to unconditionally power off the DAC and ADC when setting
-parameters - I'd expect that to cause issues with simultaneous record
-and playback, even for completely symmetric configurations where there's
-no actual change in configuration being made.  It'd be better to check
-to see if a change is being requested while the device is operational
-and refuse to reconfigure if that is the case.
+Hrm.  ALSA has underrun handling mechanisms as standard?
 
->  	if (last_clk == 0) {
->  		printk(KERN_ERR "%s(): unable to setup PLL\n", __func__);
-> +		aic3x_power_codec(codec, state_saved);
->  		return -EINVAL;
+> +	for (i = 0; i < 2; ++i) {
 
-This looks wrong - if the configuration is known broken then I'd expect
-that it'd be safer to leave things powered off.
+Magic number here - ARRAY_SIZE()?
+
+> +int s6000_pcm_start(struct snd_pcm_substream *substream)
+> +{
+> +	struct s6000_runtime_data *prtd = substream->runtime->private_data;
+> +	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
+> +	struct s6000_pcm_dma_params *par = soc_runtime->dai->cpu_dai->dma_data;
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&prtd->lock, flags);
+> +
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +		s6dmac_enable_chan(DMA_MASK_DMAC(par->dma_out),
+> +				   DMA_INDEX_CHNL(par->dma_out),
+> +				   1, 0, 1, 0, 0, 0, 0, 4, -1, 0, 0, 1);
+
+Hrm.  Lots of magic numbers here but it seems to come from the API
+you're using so not much doing I guess.
