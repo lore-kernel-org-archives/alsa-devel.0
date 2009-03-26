@@ -1,66 +1,72 @@
-From: Steven Edwards <cureadvocate@gmail.com>
-Subject: CA0106 mic not working, logs attached
-Date: Wed, 25 Mar 2009 20:52:54 -0400
-Message-ID: <ab44b6810903251752g29f1bd1bp8fb338e505c18915@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.246])
-	by alsa0.perex.cz (Postfix) with ESMTP id 61C45103856
-	for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2009 01:53:13 +0100 (CET)
-Received: by an-out-0708.google.com with SMTP id d40so249856and.2
-	for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2009 17:53:12 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Luotao Fu <l.fu@pengutronix.de>
+Subject: [PATCH] pxa2xx-ac97: fix displaying GSR after reset timeout
+Date: Thu, 26 Mar 2009 13:18:03 +0100
+Message-ID: <1238069883-12445-1-git-send-email-l.fu@pengutronix.de>
+References: <20090325103406.GA20936@sirena.org.uk>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754690AbZCZMSX@vger.kernel.org>
+In-Reply-To: <20090325103406.GA20936@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@sirena.org.uk
+Cc: linux@arm.linux.org.uk, dbaryshkov@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.arm.linux.org.uk, linux-kernel@vger.kernel.org, Luotao Fu <l.fu@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-Dear ALSA,
+the variable gsr_bit is set in isr. It is however set to 0 and interrupts are
+disabled prior to reset. Hence it doesn't make a lot of sense to show the
+content of gsr_bit in case of a reset timeout.
 
-I installed Ubuntu 8.10 yesterday, updating ALSA to 1.0.19 to mute my
-speakers when the headset is plugged in.  I unchecked the mute below the
-Microphone slider, maximized the volume, clicked Close.  Sound Recorder
-detected nothing, so I returned to Volume Control->Recording and noticed
-that Microphone stayed checked.  Repeat x3, same results.
+Signed-off-by: Luotao Fu <l.fu@pengutronix.de>
+---
+ sound/arm/pxa2xx-ac97-lib.c |   15 ++++++++++-----
+ 1 files changed, 10 insertions(+), 5 deletions(-)
 
-I then tried the PulseAudio setup outlined by markbuntu at:
-
-http://ubuntuforums.org/showthread.php?t=843012
-
-That failed, so I tried soundrecorder's ALSA upgrade script at:
-
-http://ubuntuforums.org/showthread.php?t=1046137
-
-This (sudo bash ./AlsaUpgrade-1.0.x-rev-1.16.sh -di) killed all sound and
-aplay -l detected no sound cards.  Restore (sudo bash ./
-AlsaUpgrade-1.0.x-rev-1.16.sh -r) didn't restore my speakers, so I ran
-alsa-info.sh:
-
-http://www.alsa-project.org/db/?f=5a408b2a5328279dbac25a54ce34f6ae707e7cf6
-
-Next, retrying the update script didn't restore my speakers either.
-alsa-info.sh:
-
-http://www.alsa-project.org/db/?f=bd33dc839806cd151e21bdfe4c32bf02a0a9aa57
-
-Finally, (sudo ./configure && sudo make && sudo make install) restored my
-speakers' ability to output sound, but the mic still isn't recording sound.
-The original problem--Volume Recorder not accepting/remembering/allowing my
-unmuted Microphone--remains.  alsa-info.sh:
-
-http://www.alsa-project.org/db/?f=5e4bcbc453960ece52e3bf21fb475c768b50f979
-
-I don't know where to go next.  I hope the reports help and that you will be
-able to help me.
-
-Best,
-
-Steven
+diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
+index 35afd0c..bbb71ae 100644
+--- a/sound/arm/pxa2xx-ac97-lib.c
++++ b/sound/arm/pxa2xx-ac97-lib.c
+@@ -199,6 +199,8 @@ static inline void pxa_ac97_cold_pxa3xx(void)
+ 
+ bool pxa2xx_ac97_try_warm_reset(struct snd_ac97 *ac97)
+ {
++	unsigned long gsr;
++
+ #ifdef CONFIG_PXA25x
+ 	if (cpu_is_pxa25x())
+ 		pxa_ac97_warm_pxa25x();
+@@ -215,10 +217,10 @@ bool pxa2xx_ac97_try_warm_reset(struct snd_ac97 *ac97)
+ 	else
+ #endif
+ 		BUG();
+-
+-	if (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR))) {
++	gsr = GSR | gsr_bits;
++	if (!(gsr & (GSR_PCR | GSR_SCR))) {
+ 		printk(KERN_INFO "%s: warm reset timeout (GSR=%#lx)\n",
+-				 __func__, gsr_bits);
++				 __func__, gsr);
+ 
+ 		return false;
+ 	}
+@@ -229,6 +231,8 @@ EXPORT_SYMBOL_GPL(pxa2xx_ac97_try_warm_reset);
+ 
+ bool pxa2xx_ac97_try_cold_reset(struct snd_ac97 *ac97)
+ {
++	unsigned long gsr;
++
+ #ifdef CONFIG_PXA25x
+ 	if (cpu_is_pxa25x())
+ 		pxa_ac97_cold_pxa25x();
+@@ -246,9 +250,10 @@ bool pxa2xx_ac97_try_cold_reset(struct snd_ac97 *ac97)
+ #endif
+ 		BUG();
+ 
+-	if (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR))) {
++	gsr = GSR | gsr_bits;
++	if (!(gsr & (GSR_PCR | GSR_SCR))) {
+ 		printk(KERN_INFO "%s: cold reset timeout (GSR=%#lx)\n",
+-				 __func__, gsr_bits);
++				 __func__, gsr);
+ 
+ 		return false;
+ 	}
+-- 
+1.6.2
