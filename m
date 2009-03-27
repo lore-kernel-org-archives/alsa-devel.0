@@ -1,13 +1,19 @@
-From: Werner Van Belle <werner@yellowcouch.org>
-Subject: Closing alsa devices after forking off children
-Date: Fri, 27 Mar 2009 17:13:24 +0100
-Message-ID: <49CCFB24.5020100@yellowcouch.org>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [patch 1/2] alsa: ASoC driver for s6000
+	I2S	interface
+Date: Fri, 27 Mar 2009 16:20:49 +0000
+Message-ID: <20090327162048.GA7542@sirena.org.uk>
+References: <1238074574-24734-1-git-send-email-dg@emlix.com>
+	<20090326141503.GD3771@sirena.org.uk> <49CCFA24.3020203@emlix.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4771748664458760705=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sigtrans.org (sigtrans.org [213.239.213.249])
-	by alsa0.perex.cz (Postfix) with ESMTP id 91CD41038AF
-	for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2009 17:12:52 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4232C103881
+	for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2009 17:20:56 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <49CCFA24.3020203@emlix.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -17,69 +23,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Daniel =?iso-8859-1?Q?Gl=F6ckner?= <dg@emlix.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============4771748664458760705==
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig3EA28D3F689201F1BF44C00A"
+On Fri, Mar 27, 2009 at 05:09:08PM +0100, Daniel Gl=F6ckner wrote:
+> On 03/26/2009 03:15 PM, Mark Brown wrote:
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig3EA28D3F689201F1BF44C00A
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+> > I'm not seeing any hits on XTENSA_VARIANT_S6000 in next?  While that
+> > shouldn't hurt immediately since it'll just never appear it'd be good to
+> > make sure that the APIs this depends on are going into mainline in the
+> > form they're in.  Do you know what the status is there?
 
-Hello,
+> The patch introducing XTENSA_VARIANT_S6000 has already been reviewed by
+> the architecture maintainer and there is hope that it will make it into
+> 2.6.30. The dma api, which we posted four days ago to LKML, has not
+> received any comments so far.
 
-I'm currently trying to figure out why a close of the alsa device is not
-realized 'quickly'. That is it seems to take 2 to 3 seconds before I can
-reopen the device in anopther program. After observing this behavior
-somewhat I figured out that opening an alsa device and then forking off
-a process will keep the alsa device open until the child dies, even when
-the parent process closes the alsa device.
+OK, might be worth nagging the architecture maintainer to get their tree
+included in -next if it isn't already.
 
-Is this behavior known and if so how can I work around this ?
+> >> +#define S6000_I2S_RATES	(SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_K=
+NOT | \
+> >> +			 SNDRV_PCM_RATE_5512 | SNDRV_PCM_RATE_8000_192000)
+> > =
 
-I tried to use pthread_atfork to close the device in the forked off
-child, but that closes the device in the parent process as well, so I
-would rather want to unlink the device in such a way that the close call
-does not need to wait until all children have given up their handle.
+> > SND_PCM_RATE_KNOT doesn't work with ASoC (though it shouldn't do any
+> > harm since it'll just get removed).
 
-With kind regards,
+> Except for the maximum bit clock (50 MHz) the interface doesn't care about
+> the sampling rate, so I put in all SNDRV_PCM_RATE_* constants.
+> Shall I remove it?
 
---=20
-Dr. Werner Van Belle
-http://werner.yellowcouch.org/
+Yes, please - this applies to almost all CPU side drivers, it's kind of
+unfortunate but in practice it generally makes very little practical
+difference since applications tend to use one of the standard audio
+rates.
+
+> > Any reason to expose these to users? =
 
 
+> This was an attempt to avoid symbol exports..
+> I'll move everything to s6000-i2s.c and export the three necessary
+> functions.
 
---------------enig3EA28D3F689201F1BF44C00A
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iEYEARECAAYFAknM+yQACgkQYJM5sO5rAR1NVACgop519CGscXof+styO2mhH9aa
-vIMAnROiBLYPe2xmjzW+zF3ViXEiqYHt
-=AsuN
------END PGP SIGNATURE-----
-
---------------enig3EA28D3F689201F1BF44C00A--
-
---===============4771748664458760705==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============4771748664458760705==--
+Which functions are you exporting?  None of this looked like anything
+that I'd expect to see used outside of the driver.
