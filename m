@@ -1,18 +1,18 @@
-From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: [PATCH] ASoC: OMAP: Set minimum buffer size constraint
-	for McBSP2 in OMAP3
-Date: Fri, 27 Mar 2009 15:32:01 +0200
-Message-ID: <1238160721-27180-2-git-send-email-jarkko.nikula@nokia.com>
-References: <20090327085613.dc719780.jarkko.nikula@nokia.com>
-	<1238160721-27180-1-git-send-email-jarkko.nikula@nokia.com>
+From: =?UTF-8?B?RGFuaWVsIEdsw7Zja25lcg==?= <dg@emlix.com>
+Subject: Re: [patch 1/2] alsa: ASoC driver for s6000 I2S
+	interface
+Date: Fri, 27 Mar 2009 17:09:08 +0100
+Message-ID: <49CCFA24.3020203@emlix.com>
+References: <1238074574-24734-1-git-send-email-dg@emlix.com>
+	<20090326141503.GD3771@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5A40410389D
-	for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2009 14:31:48 +0100 (CET)
-In-Reply-To: <1238160721-27180-1-git-send-email-jarkko.nikula@nokia.com>
+Received: from mx1.emlix.com (mx1.emlix.com [193.175.82.87])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7B2771038AF
+	for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2009 17:09:09 +0100 (CET)
+In-Reply-To: <20090326141503.GD3771@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,36 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Jarkko Nikula <jarkko.nikula@nokia.com>, x0052729@ti.com
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
----
- sound/soc/omap/omap-mcbsp.c |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
-
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index d6882be..9c09b94 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -146,6 +146,17 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
- 	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
- 	int err = 0;
- 
-+	if (cpu_is_omap343x() && mcbsp_data->bus_id == 1) {
-+		/*
-+		 * McBSP2 in OMAP3 has 1024 * 32-bit internal audio buffer.
-+		 * Set constraint for minimum buffer size to the same than FIFO
-+		 * size in order to avoid underruns in playback startup because
-+		 * HW is keeping the DMA request active until FIFO is filled.
-+		 */
-+		snd_pcm_hw_constraint_minmax(substream->runtime,
-+			SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 4096, UINT_MAX);
-+	}
-+
- 	if (!cpu_dai->active)
- 		err = omap_mcbsp_request(mcbsp_data->bus_id);
- 
--- 
-1.6.2
+T24gMDMvMjYvMjAwOSAwMzoxNSBQTSwgTWFyayBCcm93biB3cm90ZToKPiBJJ20gbm90IHNlZWlu
+ZyBhbnkgaGl0cyBvbiBYVEVOU0FfVkFSSUFOVF9TNjAwMCBpbiBuZXh0PyAgV2hpbGUgdGhhdAo+
+IHNob3VsZG4ndCBodXJ0IGltbWVkaWF0ZWx5IHNpbmNlIGl0J2xsIGp1c3QgbmV2ZXIgYXBwZWFy
+IGl0J2QgYmUgZ29vZCB0bwo+IG1ha2Ugc3VyZSB0aGF0IHRoZSBBUElzIHRoaXMgZGVwZW5kcyBv
+biBhcmUgZ29pbmcgaW50byBtYWlubGluZSBpbiB0aGUKPiBmb3JtIHRoZXkncmUgaW4uICBEbyB5
+b3Uga25vdyB3aGF0IHRoZSBzdGF0dXMgaXMgdGhlcmU/CgpUaGUgcGF0Y2ggaW50cm9kdWNpbmcg
+WFRFTlNBX1ZBUklBTlRfUzYwMDAgaGFzIGFscmVhZHkgYmVlbiByZXZpZXdlZCBieQp0aGUgYXJj
+aGl0ZWN0dXJlIG1haW50YWluZXIgYW5kIHRoZXJlIGlzIGhvcGUgdGhhdCBpdCB3aWxsIG1ha2Ug
+aXQgaW50bwoyLjYuMzAuIFRoZSBkbWEgYXBpLCB3aGljaCB3ZSBwb3N0ZWQgZm91ciBkYXlzIGFn
+byB0byBMS01MLCBoYXMgbm90CnJlY2VpdmVkIGFueSBjb21tZW50cyBzbyBmYXIuCgo+PiArI2Rl
+ZmluZSBTNjAwMF9JMlNfUkFURVMJKFNORFJWX1BDTV9SQVRFX0NPTlRJTlVPVVMgfCBTTkRSVl9Q
+Q01fUkFURV9LTk9UIHwgXAo+PiArCQkJIFNORFJWX1BDTV9SQVRFXzU1MTIgfCBTTkRSVl9QQ01f
+UkFURV84MDAwXzE5MjAwMCkKPiAKPiBTTkRfUENNX1JBVEVfS05PVCBkb2Vzbid0IHdvcmsgd2l0
+aCBBU29DICh0aG91Z2ggaXQgc2hvdWxkbid0IGRvIGFueQo+IGhhcm0gc2luY2UgaXQnbGwganVz
+dCBnZXQgcmVtb3ZlZCkuCgpFeGNlcHQgZm9yIHRoZSBtYXhpbXVtIGJpdCBjbG9jayAoNTAgTUh6
+KSB0aGUgaW50ZXJmYWNlIGRvZXNuJ3QgY2FyZSBhYm91dAp0aGUgc2FtcGxpbmcgcmF0ZSwgc28g
+SSBwdXQgaW4gYWxsIFNORFJWX1BDTV9SQVRFXyogY29uc3RhbnRzLgpTaGFsbCBJIHJlbW92ZSBp
+dD8KCj4+ICtzdGF0aWMgaW5saW5lIHZvaWQgczZfaTJzX3dyaXRlX3JlZyhzdHJ1Y3QgczYwMDBf
+aTJzX2RldiAqZGV2LCBpbnQgcmVnLCB1MzIgdmFsKQo+PiArewo+PiArCXdyaXRlbCh2YWwsIGRl
+di0+c2NiYmFzZSArIHJlZyk7Cj4+ICt9Cj4gCj4gQW55IHJlYXNvbiB0byBleHBvc2UgdGhlc2Ug
+dG8gdXNlcnM/IAo+IAo+PiArc3RhdGljIGlubGluZSB2b2lkIHM2MDAwX2kyc19zdGFydF9jaGFu
+bmVsKHN0cnVjdCBzNjAwMF9pMnNfZGV2ICpkZXYsCj4+ICsJCQkJCSAgIGludCBjaGFubmVsKQo+
+PiArewo+IAo+IFRoaXMgYW5kIHRoZSByZXN0IG9mIHRoZSBmdW5jdGlvbnMgaW4gdGhlIGZpbGUg
+bG9vayBlc3BlY2lhbGx5IGxpa2UgaXQKPiBzaG91bGQgYmUgaW4gdGhlIGJvZHkgb2YgdGhlIGRy
+aXZlci4gIEl0IGFsc28gbG9va3MgYSBsaXR0bGUgbGFyZ2UgdG8gYmUKPiBmb3JjaW5nIGlubGlu
+ZT8KClRoaXMgd2FzIGFuIGF0dGVtcHQgdG8gYXZvaWQgc3ltYm9sIGV4cG9ydHMuLgpJJ2xsIG1v
+dmUgZXZlcnl0aGluZyB0byBzNjAwMC1pMnMuYyBhbmQgZXhwb3J0IHRoZSB0aHJlZSBuZWNlc3Nh
+cnkKZnVuY3Rpb25zLgoKPj4gKwlpZiAodW5saWtlbHkoaTJzX2Vycm9ycyAmIFM2X0kyU19JTlRf
+VU5ERVJSVU4pICYmCj4+ICsJICAgIHBsYXliYWNrLT5ydW50aW1lICYmCj4+ICsJICAgIHNuZF9w
+Y21fcnVubmluZyhwbGF5YmFjaykpIHsKPj4gKwkJcHJpbnRrKEtFUk5fV0FSTklORyAiczYwMDAt
+aTJzOiBUeCBVbmRlcnJ1blxuIik7Cj4+ICsJCXM2MDAwX2kyc19zdGFydChwbGF5YmFjayk7Cj4+
+ICsKPj4gKwkJcHJ0ZCA9IHBsYXliYWNrLT5ydW50aW1lLT5wcml2YXRlX2RhdGE7Cj4+ICsJCXNw
+aW5fbG9jaygmcHJ0ZC0+bG9jayk7Cj4+ICsJCXM2MDAwX3BjbV9lbnF1ZXVlX2RtYShwbGF5YmFj
+ayk7Cj4+ICsJCS8qIGEgc2Vjb25kIGRlc2NyaXB0b3Igd2lsbCBiZSBxdWV1ZWQgYmVsb3cgKi8K
+Pj4gKwkJc3Bpbl91bmxvY2soJnBydGQtPmxvY2spOwo+IAo+IEhybS4gIEFMU0EgaGFzIHVuZGVy
+cnVuIGhhbmRsaW5nIG1lY2hhbmlzbXMgYXMgc3RhbmRhcmQ/CgpJIGd1ZXNzIHNuZF9wY21fc3Rv
+cChzdWJzdHJlYW0sIFNORFJWX1BDTV9TVEFURV9YUlVOKSBpcyB0aGUgd2F5IHRvIGdvIHRoZW4/
+CgpUaGUgcmVtYWluaW5nIGlzc3VlcyB3aWxsIGJlIGFkZHJlc3NlZCBpbiB0aGUgdjIgcGF0Y2gg
+YXMgd2VsbC4KCiAgRGFuaWVsCgoKLS0gCkRpcGwuLU1hdGguIERhbmllbCBHbMO2Y2tuZXIsIGVt
+bGl4IEdtYkgsIGh0dHA6Ly93d3cuZW1saXguY29tCkZvbiArNDkgNTUxIDMwNjY0LTAsIEZheCAt
+MTEsIEJhaG5ob2ZzYWxsZWUgMWIsIDM3MDgxIEfDtnR0aW5nZW4sIEdlcm1hbnkKR2VzY2jDpGZ0
+c2bDvGhydW5nOiBEci4gVXdlIEtyYWNrZSwgRHIuIENvcmQgU2VlbGUsIFVzdC1JZE5yLjogREUg
+MjA1IDE5OCAwNTUKU2l0eiBkZXIgR2VzZWxsc2NoYWZ0OiBHw7Z0dGluZ2VuLCBBbXRzZ2VyaWNo
+dCBHw7Z0dGluZ2VuIEhSIEIgMzE2MAoKZW1saXggLSB5b3VyIGVtYmVkZGVkIGxpbnV4IHBhcnRu
+ZXIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
