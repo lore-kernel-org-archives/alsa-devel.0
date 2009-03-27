@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: (no subject)
-Date: Fri, 27 Mar 2009 16:31:25 +0000
-Message-ID: <20090327163124.GB6752@sirena.org.uk>
-References: <20090327085613.dc719780.jarkko.nikula@nokia.com>
-	<1238160721-27180-1-git-send-email-jarkko.nikula@nokia.com>
+From: =?ISO-8859-1?Q?Daniel_Gl=F6ckner?= <dg@emlix.com>
+Subject: Re: [patch 2/2] alsa: s6105 IP camera machine specific
+ ASoC code
+Date: Fri, 27 Mar 2009 17:33:21 +0100
+Message-ID: <49CCFFD1.7000705@emlix.com>
+References: <1238074574-24734-1-git-send-email-dg@emlix.com>	<1238074574-24734-2-git-send-email-dg@emlix.com>
+	<20090326142640.GE3771@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id ACB3610385B
-	for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2009 17:31:31 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1238160721-27180-1-git-send-email-jarkko.nikula@nokia.com>
+Received: from mx1.emlix.com (mx1.emlix.com [193.175.82.87])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5865710385B
+	for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2009 17:33:22 +0100 (CET)
+In-Reply-To: <20090326142640.GE3771@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@nokia.com>
-Cc: alsa-devel@alsa-project.org, x0052729@ti.com
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 27, 2009 at 03:32:00PM +0200, Jarkko Nikula wrote:
+On 03/26/2009 03:26 PM, Mark Brown wrote:
+> Are you sure you're applying the correct configuration to the correct
+> DAI here - S6105_CODEC_CLOCK is a CPU define, not a CODEC define?
 
-> I think we should use something like this in case of McBSP2 in OMAP3. McBSP2
-> has 4 kB internal audio buffer and it's causing underruns in playback
-> startup if ALSA buffer is smaller than that because DMA is looping around the
-> buffer while filling up the HW FIFO.
+In this case S6105 was referring to the S6105 reference design. It's a mach=
+ine
+define at the top of the file.
 
-Applied, thanks (with your explanation from the previous message pasted
-into the commit message for the benefit of anyone going through logs).
+>> +static int snd_soc_dapm_set_endpoint(struct snd_soc_codec *codec, char =
+*name,
+>> +				     int status)
+>> +{
+>> +	if (status)
+>> +		return snd_soc_dapm_enable_pin(codec, name);
+>> +	else
+>> +		return snd_soc_dapm_disable_pin(codec, name);
+>> +}
+> =
+
+> This shouldn't be in a driver!
+
+I know, but it was made static in soc-dapm.c when it was renamed to
+snd_soc_dapm_set_pin.
+
+> Hrm.  Given the fact that you can't have the stereo and differential
+> outputs enabled simultaneously is it not safer to first disable the
+> active output, then sync, then enable the new output?
+
+The pins are connected via 0.47uF..
+I'll insert the sync. Then I won't have to bug you about exporting
+snd_soc_dapm_set_pin as well (as it will no longer result in shorter code).
+
+  Daniel
+
+-- =
+
+Dipl.-Math. Daniel Gl=F6ckner, emlix GmbH, http://www.emlix.com
+Fon +49 551 30664-0, Fax -11, Bahnhofsallee 1b, 37081 G=F6ttingen, Germany
+Gesch=E4ftsf=FChrung: Dr. Uwe Kracke, Dr. Cord Seele, Ust-IdNr.: DE 205 198=
+ 055
+Sitz der Gesellschaft: G=F6ttingen, Amtsgericht G=F6ttingen HR B 3160
+
+emlix - your embedded linux partner
