@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [patch 1/2] alsa: ASoC driver for s6000
-	I2S	interface
-Date: Fri, 27 Mar 2009 16:56:16 +0000
-Message-ID: <20090327165616.GA9314@sirena.org.uk>
-References: <1238074574-24734-1-git-send-email-dg@emlix.com>
-	<20090326141503.GD3771@sirena.org.uk> <49CCFA24.3020203@emlix.com>
-	<20090327162048.GA7542@sirena.org.uk> <49CD039D.8070302@emlix.com>
+From: Susan Cragin <susancragin@earthlink.net>
+Subject: Regression? Default card no longer shows up
+Date: Sat, 28 Mar 2009 10:04:38 -0400 (GMT-04:00)
+Message-ID: <26844765.1238249078383.JavaMail.root@elwamui-royal.atl.sa.earthlink.net>
+Reply-To: Susan Cragin <susancragin@earthlink.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3DBC51037EB
-	for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2009 17:56:22 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <49CD039D.8070302@emlix.com>
+Received: from elasmtp-kukur.atl.sa.earthlink.net
+	(elasmtp-kukur.atl.sa.earthlink.net [209.86.89.65])
+	by alsa0.perex.cz (Postfix) with ESMTP id A77F51037E3
+	for <alsa-devel@alsa-project.org>; Sat, 28 Mar 2009 15:04:39 +0100 (CET)
+Received: from [209.86.224.46] (helo=elwamui-royal.atl.sa.earthlink.net)
+	by elasmtp-kukur.atl.sa.earthlink.net with esmtpa (Exim 4.67)
+	(envelope-from <susancragin@earthlink.net>) id 1LnZ9K-0000Rk-Bj
+	for alsa-devel@alsa-project.org; Sat, 28 Mar 2009 10:04:38 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,27 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel =?iso-8859-1?Q?Gl=F6ckner?= <dg@emlix.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 27, 2009 at 05:49:33PM +0100, Daniel Gl=F6ckner wrote:
+I have been compiling the development alsa-drivers because I use an X-fi card. They have worked great up until today. 
+I use Ubuntu Studio. I installed it clean this morning, with default options. 
+Then I purged pulseaudio (because pulseaudio does not work with wine) 
+re-booted. 
+compiled and installed alsa-driver
+re-booted
+set-default-card to Generic
 
-> s6000_i2s_start and s6000_i2s_stop are called in s6000_pcm_trigger and
-> s6000_i2s_int_sources is called in the interrupt handler.
+asoundconf list shows the following
+Names of available sound cards:
+Intel
+Generic (this of course is my X-fi card)
 
-> s6000_i2s_start can't be called from the dai's trigger callback on playba=
-ck as
-> the data sheet is very explicit about the order of enabling dma and i2s.
+tried to run Audacity. 
+Audacity only recognizes the Intel card. 
 
-> s6000_i2s_stop is called there for consistency. The order on disabling is
-> uncritical.
+Installed wine. 
+Wine shows the following:
 
-Are these two drivers really separate?  The reason for splitting out the
-DMA driver in the normal case is that it is common for CPUs to be able
-to use the same DMA driver for multiple interfaces - if that's not the
-case then don't feel obligated to split them up too much.
+alsa-driver
+MIDI Out Devices: Midi Through Port-0
+MIDI In Devices: Midi Through Port-0
+Mixer Devices: 
+     HDA Intel
+     HDA-Audio Generic
 
-Also note that you can pass data from the I2S driver to the PCM driver
-via the dma_data pointer - if you need to pass a little vtable through
-there then that's another option.
+This may be a Ubuntu bug, but I wanted to run it by you first. 
+
+Susan Cragin
