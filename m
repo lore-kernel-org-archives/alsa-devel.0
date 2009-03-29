@@ -1,19 +1,19 @@
-From: Manuel Lauss <mano@roarinelk.homelinux.net>
-Subject: Re: [PATCH] ALSA: au1x00: convert to platform device
-Date: Sun, 29 Mar 2009 17:54:07 +0200
-Message-ID: <20090329175407.570af32d@scarran.roarinelk.net>
-References: <1238320026-4936-1-git-send-email-mano@roarinelk.homelinux.net>
-	<49CF9558.6030604@cooper-street.com>
+From: Alexander Beregalov <a.beregalov@gmail.com>
+Subject: [PATCH] Staging: line6: convert to snd_card_create()
+Date: Sun, 29 Mar 2009 19:59:13 +0400
+Message-ID: <20090329155913.GK11056@orion>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from roarinelk.homelinux.net (fnoeppeil48.netpark.at
-	[217.175.205.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0193D1037EC
+Received: from mail-fx0-f170.google.com (mail-fx0-f170.google.com
+	[209.85.220.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5838C1037F0
 	for <alsa-devel@alsa-project.org>;
-	Sun, 29 Mar 2009 17:54:05 +0200 (CEST)
-In-Reply-To: <49CF9558.6030604@cooper-street.com>
+	Sun, 29 Mar 2009 17:59:20 +0200 (CEST)
+Received: by fxm18 with SMTP id 18so1700226fxm.32
+	for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2009 08:59:19 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,27 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: charles@cooper-street.com
-Cc: Linux-MIPS <linux-mips@linux-mips.org>, alsa-devel <alsa-devel@alsa-project.org>
+To: gregkh@suse.de, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Charles,
 
-> > ---
-> > Compile-tested only; I don't have the right hardware to test this.
-> > 
-> > Charles: If you still have access to the hardware, could you please test
-> > this patch?  Just add something like the following to your board's
-> > platform device registration:
-> > 
-> 
-> Hi,
-> 
-> I wish I could but it's been years since I worked on that project and I'm pretty 
-> sure that I don't have any hardware around anymore, but I will do a thorough 
-> search next week anyway. There may be something hiding in the back of a dusty 
-> closet that I've forgotten about, if I find something I will let you know.
 
-Thanks! I really appreciate it!
+Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
+---
 
-	Manuel Lauss
+ drivers/staging/line6/audio.c |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/staging/line6/audio.c b/drivers/staging/line6/audio.c
+index 3aa9468..e2ac8d6 100644
+--- a/drivers/staging/line6/audio.c
++++ b/drivers/staging/line6/audio.c
+@@ -27,11 +27,12 @@ int line6_init_audio(struct usb_line6 *line6)
+ {
+ 	static int dev;
+ 	struct snd_card *card;
++	int err;
+ 
+-	card = snd_card_new(line6_index[dev], line6_id[dev], THIS_MODULE, 0);
+-
+-	if (card == NULL)
+-		return -ENOMEM;
++	err = snd_card_create(line6_index[dev], line6_id[dev], THIS_MODULE, 0,
++			      &card);
++	if (err < 0)
++		return err;
+ 
+ 	line6->card = card;
