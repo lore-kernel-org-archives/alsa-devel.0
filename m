@@ -1,19 +1,17 @@
 From: Luke Yelavich <themuso@ubuntu.com>
-Subject: [PATCH] alsa-info.sh: use distros package manager to
-	retrieve alsa library version
-Date: Mon, 30 Mar 2009 11:03:45 +1100
-Message-ID: <1238371425-6762-2-git-send-email-themuso@ubuntu.com>
-References: <1238371425-6762-1-git-send-email-themuso@ubuntu.com>
+Subject: [PATCH] alsa-info.sh: add command-line flag to print
+	alsa info to stdout
+Date: Mon, 30 Mar 2009 11:03:44 +1100
+Message-ID: <1238371425-6762-1-git-send-email-themuso@ubuntu.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ipmail05.adl2.internode.on.net (ipmail05.adl2.internode.on.net
 	[203.16.214.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3B81C1037F6
+	by alsa0.perex.cz (Postfix) with ESMTP id 9A2451037F5
 	for <alsa-devel@alsa-project.org>;
-	Mon, 30 Mar 2009 02:04:00 +0200 (CEST)
-In-Reply-To: <1238371425-6762-1-git-send-email-themuso@ubuntu.com>
+	Mon, 30 Mar 2009 02:03:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,76 +25,94 @@ To: alsa-devel@alsa-project.org
 Cc: Luke Yelavich <themuso@ubuntu.com>
 List-Id: alsa-devel@alsa-project.org
 
-Move the alsa library version retrieval code into a new function,
-get_alsa_library_version. This new function uses the original checking of the
-alsa library header file for the version. If nothing is found, then move
-onto using various distro package managers to get the alsa library version.
-This commit takes care of checks for Ubuntu and Debian only, so other distro
-developers/users will have to provide code for their distro.
-
-Using the distro package manager to determine the alsa version is useful in
-cases where information has been requested from a user who doesn't have
-development files for the alsa library installed, as many distros don't install
-such files by default.
+Add the --stdout command-line flag to allow displaying the collected alsa
+information directly to standard output. This is useful for bug information
+collecting systems, such as Ubuntu's apport.
 
 Signed-off-by: Luke Yelavich <themuso@ubuntu.com>
 ---
- utils/alsa-info.sh |   36 +++++++++++++++++++++++++++++++++++-
- 1 files changed, 35 insertions(+), 1 deletions(-)
+ utils/alsa-info.sh |   34 +++++++++++++++++++++++++++++-----
+ 1 files changed, 29 insertions(+), 5 deletions(-)
 
 diff --git a/utils/alsa-info.sh b/utils/alsa-info.sh
-index 8340019..736281d 100755
+index b62c4d5..8340019 100755
 --- a/utils/alsa-info.sh
 +++ b/utils/alsa-info.sh
-@@ -214,6 +214,40 @@ then
- fi
- }
+@@ -250,6 +250,12 @@ case "$1" in
+ 		REPEAT=""
+ 		shift
+ 		;;
++	--stdout)
++		DIALOG=""
++		NOUPLOAD="yes"
++		QUESTION="no"
++		TOSTDOUT="yes"
++		;;
+ esac
+ done
+ 		
+@@ -596,6 +602,17 @@ then
+ 				fi
+ 			fi
+ 			;;
++		--stdout)
++			NOUPLOAD="yes"
++			withdevices
++			withconfigs
++			withaplay
++			withamixer
++			withalsactl
++			withlsmod
++			cat $FILE
++			rm $FILE
++			;;
+ 		--about)
+ 			echo "Written/Tested by the following users of #alsa on irc.freenode.net:"
+ 			echo ""
+@@ -604,6 +621,7 @@ then
+ 			echo "	gnubien - Various script ideas / Testing"
+ 			echo "	GrueMaster - HDA Intel specific items / Testing"
+ 			echo "	olegfink - Script update function"
++			echo "  TheMuso - display to stdout functionality"
+ 			exit 0
+ 			;;
+ 		*)
+@@ -621,6 +639,8 @@ then
+ 			echo "	--no-upload (do not upload contents to remote server)"
+ 			echo "	--pastebin (use http://pastebin.ca) as remote server"
+ 			echo "	    instead www.alsa-project.org"
++			echo "  --stdout (print alsa information to standard output"
++			echo "      instead of a file)"
+ 			echo "	--about (show some information about the script)"
+ 			echo "	--debug (will run the script as normal, but will not"
+ 			echo "	     delete $FILE)"
+@@ -637,7 +657,9 @@ fi
  
-+get_alsa_library_version() {
-+	ALSA_LIB_VERSION=`grep VERSION_STR /usr/include/alsa/version.h 2>/dev/null|awk {'print $3'}|sed 's/"//g'`
-+
-+	if [ -z "$ALSA_LIB_VERSION" ]; then
-+		if [ -f /etc/lsb-release ]; then
-+			. /etc/lsb-release
-+			case "$DISTRIB_ID" in
-+				Ubuntu)
-+					if which dpkg > /dev/null ; then
-+						ALSA_LIB_VERSION=`dpkg -l libasound2 | tail -1 | awk '{print $3}' | cut -f 1 -d -`
-+					fi
-+
-+					if [ "$ALSA_LIB_VERSION" = "<none>" ]; then
-+						ALSA_LIB_VERSION=""
-+					fi
-+					return
-+					;;
-+				*)
-+					return
-+					;;
-+			esac
-+		elif [ -f /etc/debian_version ]; then
-+			if which dpkg > /dev/null ; then
-+				ALSA_LIB_VERSION=`dpkg -l libasound2 | tail -1 | awk '{print $3}' | cut -f 1 -d -`
-+			fi
-+
-+			if [ "$ALSA_LIB_VERSION" = "<none>" ]; then
-+				ALSA_LIB_VERSION=""
-+			fi
-+			return
-+		fi
+ if [ -n "$NOUPLOAD" ]; then
+ 
+-	mv $FILE $NFILE || exit 1
++	if [ -z "$TOSTDOUT" ]; then
++		mv $FILE $NFILE || exit 1
 +	fi
-+}
-+
  
- #Run checks to make sure the programs we need are installed.
- LSPCI=$(which lspci 2>/dev/null| sed 's|^[^/]*||' 2>/dev/null);
-@@ -329,7 +363,7 @@ KERNEL_MACHINE=`uname -m`
- KERNEL_OS=`uname -o`
- [[ `uname -v |grep SMP`  ]] && KERNEL_SMP="Yes" || KERNEL_SMP="No" 
- ALSA_DRIVER_VERSION=`cat /proc/asound/version |head -n1|awk {'print $7'} |sed 's/\.$//'`
--ALSA_LIB_VERSION=`grep VERSION_STR /usr/include/alsa/version.h 2>/dev/null|awk {'print $3'}|sed 's/"//g'`
-+get_alsa_library_version
- ALSA_UTILS_VERSION=`amixer -v |awk {'print $3'}`
- VENDOR_ID=`lspci -vn |grep 040[1-3] | awk -F':' '{print $3}'|awk {'print substr($0, 2);}' >$TEMPDIR/vendor_id.tmp`
- DEVICE_ID=`lspci -vn |grep 040[1-3] | awk -F':' '{print $4}'|awk {'print $1'} >$TEMPDIR/device_id.tmp`
+ 	if [[ -n $DIALOG ]]
+ 	then
+@@ -655,10 +677,12 @@ if [ -n "$NOUPLOAD" ]; then
+ 			echo "Your ALSA information can be seen by looking in $NFILE"
+ 			echo ""
+ 		else
+-			echo "You requested that your information was NOT automatically uploaded to the $WWWSERVICE"
+-			echo ""
+-			echo "Your ALSA information can be seen by looking in $NFILE"
+-			echo ""
++			if [ -z "$TOSTDOUT" ]; then
++				echo "You requested that your information was NOT automatically uploaded to the $WWWSERVICE"
++				echo ""
++				echo "Your ALSA information can be seen by looking in $NFILE"
++				echo ""
++			fi
+ 		fi
+ 	fi
+ 
 -- 
 1.6.0.4
