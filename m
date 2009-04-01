@@ -1,20 +1,22 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH v2 2/2] alsa: s6105 IP camera machine
-	specific ASoC code
-Date: Wed, 1 Apr 2009 14:29:05 +0100
-Message-ID: <20090401132904.GB21294@sirena.org.uk>
-References: <1238266022-27893-1-git-send-email-dg@emlix.com>
-	<1238266022-27893-2-git-send-email-dg@emlix.com>
+From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+Subject: Re: [PATCH 0/7] snd-atmel-ac97c: misc fixes and error
+	reporting
+Date: Wed, 1 Apr 2009 15:50:06 +0200
+Message-ID: <20090401155006.53a8b7e0@hcegtvedt>
+References: <1237898870-15780-1-git-send-email-hans-christian.egtvedt@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8FAE6243B6
+Received: from relay.atmel.no (relay.atmel.no [80.232.32.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id E5BBC243C8
 	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Apr 2009 15:29:06 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1238266022-27893-2-git-send-email-dg@emlix.com>
+	Wed,  1 Apr 2009 15:50:07 +0200 (CEST)
+Received: from hcegtvedt (dhcp-252-083.norway.atmel.com [10.191.252.83])
+	by relay.atmel.no (8.13.4/8.13.4) with ESMTP id n31Dmsiq043489
+	for <alsa-devel@alsa-project.org>; Wed, 1 Apr 2009 15:48:54 +0200 (CEST)
+	(envelope-from hans-christian.egtvedt@atmel.com)
+In-Reply-To: <1237898870-15780-1-git-send-email-hans-christian.egtvedt@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,27 +26,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Gl??ckner <dg@emlix.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Mar 28, 2009 at 07:47:02PM +0100, Daniel Gl??ckner wrote:
+On Tue, 24 Mar 2009 13:47:43 +0100
+Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com> wrote:
 
-> +	/* set codec DAI configuration */
-> +	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-> +					     SND_SOC_DAIFMT_CBM_CFM);
-> +	if (ret < 0)
-> +		return ret;
+Hi,
 
-> +	/* set cpu DAI configuration */
-> +	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_CBM_CFM |
-> +					   SND_SOC_DAIFMT_IB_IF);
-> +	if (ret < 0)
-> +		return ret;
+> This patch series contains six minor fixes and one enhancment of the
+> snd-atmel-ac97c driver. It is based on the for-next branch in
+> sound-2.6 git repo.
+> 
 
-Why do these two differ?  It's very unusual to see different formats and
-generally indicates a bug in one of the drivers involved that's being
-worked around.  The omission of I2S is understandable since the CPU only
-does I2S (though ideally it'd be specified) but the inversion of the bit
-and frame clocks for the CPU only looks like the CPU is generating
-inverted clocks by default.
+Any news about this patch series? It would be great if it could make it
+in with this merge window.
+
+<snipp>
+
+-- 
+Best regards,
+Hans-Christian Egtvedt
