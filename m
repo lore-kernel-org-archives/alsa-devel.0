@@ -1,18 +1,25 @@
-From: Simon Hengel <simon.hengel@gmx.net>
-Subject: [PATCH - alsa-utils] Added vi-like key bindings to
-	alsamixer.
-Date: Wed,  1 Apr 2009 21:58:15 +0200
-Message-ID: <1238615895-5980-2-git-send-email-simon.hengel@gmx.net>
-References: <1238615895-5980-1-git-send-email-simon.hengel@gmx.net>
+From: Chuck Ebbert <cebbert@redhat.com>
+Subject: Rewrite of hw_ptr updaters makes things worse?
+Date: Wed, 1 Apr 2009 18:46:27 -0400
+Message-ID: <20090401184627.5034c20d@dhcp-100-2-144.bos.redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id C171C10383A
+Received: from mx2.redhat.com (mx2.redhat.com [66.187.237.31])
+	by alsa0.perex.cz (Postfix) with ESMTP id C798F103839
 	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Apr 2009 21:58:16 +0200 (CEST)
-In-Reply-To: <1238615895-5980-1-git-send-email-simon.hengel@gmx.net>
+	Thu,  2 Apr 2009 00:46:47 +0200 (CEST)
+Received: from int-mx2.corp.redhat.com (int-mx2.corp.redhat.com [172.16.27.26])
+	by mx2.redhat.com (8.13.8/8.13.8) with ESMTP id n31MkkOR021596
+	for <alsa-devel@alsa-project.org>; Wed, 1 Apr 2009 18:46:46 -0400
+Received: from ns3.rdu.redhat.com (ns3.rdu.redhat.com [10.11.255.199])
+	by int-mx2.corp.redhat.com (8.13.1/8.13.1) with ESMTP id n31Mkkvk021445
+	for <alsa-devel@alsa-project.org>; Wed, 1 Apr 2009 18:46:47 -0400
+Received: from dhcp-100-2-144.bos.redhat.com (dhcp-100-2-144.bos.redhat.com
+	[10.16.2.144])
+	by ns3.rdu.redhat.com (8.13.8/8.13.8) with ESMTP id n31MkjIn031786
+	for <alsa-devel@alsa-project.org>; Wed, 1 Apr 2009 18:46:45 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,46 +30,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Simon Hengel <simon.hengel@gmx.net>
 List-Id: alsa-devel@alsa-project.org
 
-* Added 'j' as an alias for KEY_DOWN
-* Added 'k' as an alias for KEY_UP
+After adding these patches from 2.6.30 to a 2.6.29 kernel, pulseaudio problems
+are worse:
 
-Signed-off-by: Simon Hengel <simon.hengel@gmx.net>
+ALSA: pcm - Reset invalid position even without debug option
+ALSA: pcm - Fix delta calculation at boundary overlap
+ALSA: pcm - Safer boundary checks
+ALSA: Rewrite hw_ptr updaters
 
-diff --git a/alsamixer/alsamixer.c b/alsamixer/alsamixer.c
-index 414033e..c65c22d 100644
---- a/alsamixer/alsamixer.c
-+++ b/alsamixer/alsamixer.c
-@@ -2113,11 +2113,13 @@ mixer_iteration (void)
- 	mixer_hscroll_delta -= 1;
- 	break;
-       case KEY_UP:
-+      case 'k':
-       case 'w':
-       case 'W':
- 	mixer_vscroll_delta -= 1;
- 	break;
-       case KEY_DOWN:
-+      case 'j':
-       case 'x':
-       case 'X':
- 	mixer_vscroll_delta += 1;
-@@ -2179,12 +2181,14 @@ mixer_iteration (void)
- 	break;
-       case 'w':
-       case KEY_UP:
-+      case 'k':
-         mixer_set_delta(1);
-       case 'W':
-         mixer_add_delta(1);
- 	break;
-       case 'x':
-       case KEY_DOWN:
-+      case 'j':
-         mixer_set_delta(-1);
-       case 'X':
-         mixer_add_delta(-1);
--- 
-1.5.6.3
+
+Mar 28 14:28:20 platon pulseaudio[3040]: alsa-sink.c: Increasing wakeup
+watermark to 60,00 ms
+Mar 28 14:31:35 platon pulseaudio[3040]: alsa-sink.c: Increasing wakeup
+watermark to 70,00 ms
+Mar 28 14:31:35 platon pulseaudio[3040]: alsa-sink.c: Increasing wakeup
+watermark to 80,00 ms
+Mar 28 14:31:35 platon pulseaudio[3040]: alsa-util.c: snd_pcm_avail() returned
+a value that is exceptionally large: 4294952932 bytes (24347805 ms).
+Mar 28 14:31:35 platon pulseaudio[3040]: alsa-util.c: Most likely this is a bug
+in the ALSA driver 'snd_intel8x0'. Please report this issue to the ALSA
+developers.
+Mar 28 14:31:35 platon pulseaudio[3040]: rtpoll.c: Assertion 'usec <=
+((pa_usec_t) 1000000ULL)*60ULL*60ULL' failed at pulsecore/rtpoll.c:548,
+function pa_rtpoll_set_timer_relative(). Aborting.
