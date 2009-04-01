@@ -1,20 +1,15 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 0/7] snd-atmel-ac97c: misc fixes and
-	error	reporting
-Date: Wed, 1 Apr 2009 16:37:24 +0100
-Message-ID: <20090401153724.GD21294@sirena.org.uk>
-References: <1237898870-15780-1-git-send-email-hans-christian.egtvedt@atmel.com>
-	<20090401155006.53a8b7e0@hcegtvedt>
+From: Singaravelan Nallasellan <singaravelann@hotmail.com>
+Subject: Interleaving and Deinterleaving support
+Date: Wed, 1 Apr 2009 15:43:02 +0000
+Message-ID: <BAY119-W55D505978A73AE7CDB81D4B08B0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 969FA24428
+Received: from bay0-omc2-s17.bay0.hotmail.com (bay0-omc2-s17.bay0.hotmail.com
+	[65.54.246.153]) by alsa0.perex.cz (Postfix) with ESMTP id BA89C24430
 	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Apr 2009 17:37:25 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20090401155006.53a8b7e0@hcegtvedt>
+	Wed,  1 Apr 2009 17:43:04 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,16 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 01, 2009 at 03:50:06PM +0200, Hans-Christian Egtvedt wrote:
 
-> Any news about this patch series? It would be great if it could make it
-> in with this merge window.
+Hi,
 
-Takashi is away at the minute - I'm not entirely sure when he's due
-back.  If he doesn't notice the patches in the backlog when he returns
-it'd be worth resubmitting with a CC to him (this is a good idea in
-general when submitting ALSA patches).
+ =
+
+
+Does alsa core in the kernel support interleaving and deinterleaving? if th=
+e driver receives a deinterleaved stream and wants to interleave for the so=
+und card, should the driver perform the conversion?
+
+ =
+
+
+ =
+
+
+Cheers,
+
+Sing
+
+_________________________________________________________________
+Rediscover Hotmail=AE: Get e-mail storage that grows with you. =
+
+http://windowslive.com/RediscoverHotmail?ocid=3DTXT_TAGLM_WL_HM_Rediscover_=
+Storage1_042009
