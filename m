@@ -1,22 +1,16 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH v2] tlv320aic3x: disable ADC/DAC
-	while	changing clock
-Date: Wed, 1 Apr 2009 17:48:47 +0100
-Message-ID: <20090401164847.GE21294@sirena.org.uk>
-References: <1238073706-23821-1-git-send-email-dg@emlix.com>
-	<1238583415-19543-1-git-send-email-dg@emlix.com>
-	<20090401121032.GA21294@sirena.org.uk> <49D374CD.20401@emlix.com>
-	<20090401152421.GC21294@sirena.org.uk> <49D3947F.3010805@emlix.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: [PATCH] snd-usb-caiaq: rename files to remove
+	redundant information in file pathes
+Date: Wed,  1 Apr 2009 19:05:39 +0200
+Message-ID: <1238605539-18475-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6B20A24446
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 68D4624456
 	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Apr 2009 18:48:47 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <49D3947F.3010805@emlix.com>
+	Wed,  1 Apr 2009 19:05:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,42 +20,163 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Gl?ckner <dg@emlix.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 01, 2009 at 06:21:19PM +0200, Daniel Gl?ckner wrote:
-> On 04/01/2009 05:24 PM, Mark Brown wrote:
-> > In that case rather than using a trigger to check if the device is
-> > running it should be possible to use constraints to prevent
-> > reconfiguration of the device when it's not supported - this is more
-> > friendly to apps since they know they won't be allowed to change the
-> > configuration.
+Cleanup only, no functional change.
 
-> It was my impression that it is up to the pcm part to install these
-> constraints as this is where SNDRV_PCM_INFO_JOINT_DUPLEX can be put into
-> the snd_pcm_hardware structure.
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
+---
+ sound/usb/caiaq/Makefile                       |    4 ++--
+ sound/usb/caiaq/{caiaq-audio.c => audio.c}     |    4 ++--
+ sound/usb/caiaq/{caiaq-audio.h => audio.h}     |    0
+ sound/usb/caiaq/{caiaq-control.c => control.c} |    4 ++--
+ sound/usb/caiaq/{caiaq-control.h => control.h} |    0
+ sound/usb/caiaq/{caiaq-device.c => device.c}   |   10 +++++-----
+ sound/usb/caiaq/{caiaq-device.h => device.h}   |    0
+ sound/usb/caiaq/{caiaq-input.c => input.c}     |    5 +++--
+ sound/usb/caiaq/{caiaq-input.h => input.h}     |    0
+ sound/usb/caiaq/{caiaq-midi.c => midi.c}       |    4 ++--
+ sound/usb/caiaq/{caiaq-midi.h => midi.h}       |    0
+ 11 files changed, 16 insertions(+), 15 deletions(-)
+ rename sound/usb/caiaq/{caiaq-audio.c => audio.c} (99%)
+ rename sound/usb/caiaq/{caiaq-audio.h => audio.h} (100%)
+ rename sound/usb/caiaq/{caiaq-control.c => control.c} (99%)
+ rename sound/usb/caiaq/{caiaq-control.h => control.h} (100%)
+ rename sound/usb/caiaq/{caiaq-device.c => device.c} (99%)
+ rename sound/usb/caiaq/{caiaq-device.h => device.h} (100%)
+ rename sound/usb/caiaq/{caiaq-input.c => input.c} (99%)
+ rename sound/usb/caiaq/{caiaq-input.h => input.h} (100%)
+ rename sound/usb/caiaq/{caiaq-midi.c => midi.c} (98%)
+ rename sound/usb/caiaq/{caiaq-midi.h => midi.h} (100%)
 
-JOINT_DUPLEX is just a hint to the application about how the card will
-behave - you still need to enforce the actual constraints you have in
-the driver.  In any case, the PCM driver shouldn't be setting that
-unless it has such a constraint itself since it should work with the
-widest possible range of systems.
-
-> > Hrm.  For the ADC that's probably OK but powering off the DAC does risk
-> > being audible in the output; that does depend on the hardware, though.
-> > It should do the right thing, I think, but checking for audio artefacts
-> > would be advisable.
-
-> I can't hear any artefacts with my cheap headphones.
-> The delayed close is audible, though.
-
-Probably due to something else in the output path powerdown (eg, the
-output stages).  If it happens without the change to power down the DAC
-it's a separate issue :)
-
-> - and one to fix the bug
-
-This sounds like a good plan.  Please put something explaining the
-failure scenario in the comments so anyone pulling the PLL configuration
-out for machine drivers doesn't get suprised by this.
+diff --git a/sound/usb/caiaq/Makefile b/sound/usb/caiaq/Makefile
+index 23dadd5..3889996 100644
+--- a/sound/usb/caiaq/Makefile
++++ b/sound/usb/caiaq/Makefile
+@@ -1,4 +1,4 @@
+-snd-usb-caiaq-y := caiaq-device.o caiaq-audio.o caiaq-midi.o caiaq-control.o
+-snd-usb-caiaq-$(CONFIG_SND_USB_CAIAQ_INPUT) += caiaq-input.o
++snd-usb-caiaq-y := device.o audio.o midi.o control.o
++snd-usb-caiaq-$(CONFIG_SND_USB_CAIAQ_INPUT) += input.o
+ 
+ obj-$(CONFIG_SND_USB_CAIAQ) += snd-usb-caiaq.o
+diff --git a/sound/usb/caiaq/caiaq-audio.c b/sound/usb/caiaq/audio.c
+similarity index 99%
+rename from sound/usb/caiaq/caiaq-audio.c
+rename to sound/usb/caiaq/audio.c
+index cf37331..3f45c0f 100644
+--- a/sound/usb/caiaq/caiaq-audio.c
++++ b/sound/usb/caiaq/audio.c
+@@ -22,8 +22,8 @@
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ 
+-#include "caiaq-device.h"
+-#include "caiaq-audio.h"
++#include "device.h"
++#include "audio.h"
+ 
+ #define N_URBS			32
+ #define CLOCK_DRIFT_TOLERANCE	5
+diff --git a/sound/usb/caiaq/caiaq-audio.h b/sound/usb/caiaq/audio.h
+similarity index 100%
+rename from sound/usb/caiaq/caiaq-audio.h
+rename to sound/usb/caiaq/audio.h
+diff --git a/sound/usb/caiaq/caiaq-control.c b/sound/usb/caiaq/control.c
+similarity index 99%
+rename from sound/usb/caiaq/caiaq-control.c
+rename to sound/usb/caiaq/control.c
+index 52685cf..305f3c3 100644
+--- a/sound/usb/caiaq/caiaq-control.c
++++ b/sound/usb/caiaq/control.c
+@@ -23,8 +23,8 @@
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ 
+-#include "caiaq-device.h"
+-#include "caiaq-control.h"
++#include "device.h"
++#include "control.h"
+ 
+ #define CNT_INTVAL 0x10000
+ 
+diff --git a/sound/usb/caiaq/caiaq-control.h b/sound/usb/caiaq/control.h
+similarity index 100%
+rename from sound/usb/caiaq/caiaq-control.h
+rename to sound/usb/caiaq/control.h
+diff --git a/sound/usb/caiaq/caiaq-device.c b/sound/usb/caiaq/device.c
+similarity index 99%
+rename from sound/usb/caiaq/caiaq-device.c
+rename to sound/usb/caiaq/device.c
+index 89f8b68..6d51770 100644
+--- a/sound/usb/caiaq/caiaq-device.c
++++ b/sound/usb/caiaq/device.c
+@@ -28,11 +28,11 @@
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ 
+-#include "caiaq-device.h"
+-#include "caiaq-audio.h"
+-#include "caiaq-midi.h"
+-#include "caiaq-control.h"
+-#include "caiaq-input.h"
++#include "device.h"
++#include "audio.h"
++#include "midi.h"
++#include "control.h"
++#include "input.h"
+ 
+ MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
+ MODULE_DESCRIPTION("caiaq USB audio, version 1.3.13");
+diff --git a/sound/usb/caiaq/caiaq-device.h b/sound/usb/caiaq/device.h
+similarity index 100%
+rename from sound/usb/caiaq/caiaq-device.h
+rename to sound/usb/caiaq/device.h
+diff --git a/sound/usb/caiaq/caiaq-input.c b/sound/usb/caiaq/input.c
+similarity index 99%
+rename from sound/usb/caiaq/caiaq-input.c
+rename to sound/usb/caiaq/input.c
+index 4451775..a48d309 100644
+--- a/sound/usb/caiaq/caiaq-input.c
++++ b/sound/usb/caiaq/input.c
+@@ -20,8 +20,9 @@
+ #include <linux/usb.h>
+ #include <linux/usb/input.h>
+ #include <sound/pcm.h>
+-#include "caiaq-device.h"
+-#include "caiaq-input.h"
++
++#include "device.h"
++#include "input.h"
+ 
+ static unsigned short keycode_ak1[] =  { KEY_C, KEY_B, KEY_A };
+ static unsigned short keycode_rk2[] =  { KEY_1, KEY_2, KEY_3, KEY_4,
+diff --git a/sound/usb/caiaq/caiaq-input.h b/sound/usb/caiaq/input.h
+similarity index 100%
+rename from sound/usb/caiaq/caiaq-input.h
+rename to sound/usb/caiaq/input.h
+diff --git a/sound/usb/caiaq/caiaq-midi.c b/sound/usb/caiaq/midi.c
+similarity index 98%
+rename from sound/usb/caiaq/caiaq-midi.c
+rename to sound/usb/caiaq/midi.c
+index 79424c1..8fa8cd8 100644
+--- a/sound/usb/caiaq/caiaq-midi.c
++++ b/sound/usb/caiaq/midi.c
+@@ -21,8 +21,8 @@
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ 
+-#include "caiaq-device.h"
+-#include "caiaq-midi.h"
++#include "device.h"
++#include "midi.h"
+ 
+ static int snd_usb_caiaq_midi_input_open(struct snd_rawmidi_substream *substream)
+ {
+diff --git a/sound/usb/caiaq/caiaq-midi.h b/sound/usb/caiaq/midi.h
+similarity index 100%
+rename from sound/usb/caiaq/caiaq-midi.h
+rename to sound/usb/caiaq/midi.h
+-- 
+1.6.2.1
