@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: how to use mcbsp for i2s?
-Date: Wed, 1 Apr 2009 19:40:39 +0100
-Message-ID: <20090401184039.GG21294@sirena.org.uk>
-References: <fb44c3530904011129s7dd5cf1fgcf266fac3fb059d3@mail.gmail.com>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] Add 92HD81B1C device id
+Date: Wed, 01 Apr 2009 14:49:48 -0400
+Message-ID: <49D3B74C.9070409@embeddedalley.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id CC83B103814
+Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
+	by alsa0.perex.cz (Postfix) with SMTP id 5762C103814
 	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Apr 2009 20:40:40 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <fb44c3530904011129s7dd5cf1fgcf266fac3fb059d3@mail.gmail.com>
+	Wed,  1 Apr 2009 20:50:00 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +19,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ernesto Torres <skullmate@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, "Tellman, Steven" <Steven.Tellman@idt.com>, "Hutson, Whit" <Whit.Hutson@idt.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 01, 2009 at 12:29:02PM -0600, Ernesto Torres wrote:
-> I'm currently working in adding an external codec to the beagleboard, so far
-> the i2c control part is functional, now i want to use mcbsp3 to provide i2s
-> transfers
+Added device id in struct for codec 92HD81B1C (0x111d76d5).
 
-> Is there any way to test the mcbsp to validate the connection?
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+---
+ sound/pci/hda/patch_sigmatel.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-The easiest thing is often to use a scope to check that clocks and data
-are present on the relevant lines.
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index b5e108a..b34d78b 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -4895,6 +4895,7 @@ again:
+ 	switch (codec->vendor_id) {
+ 	case 0x111d7604:
+ 	case 0x111d7605:
++	case 0x111d76d5:
+ 		if (spec->board_config == STAC_92HD83XXX_PWR_REF)
+ 			break;
+ 		spec->num_pwrs = 0;
+@@ -5707,6 +5708,7 @@ static struct hda_codec_preset snd_hda_preset_sigmatel[] = {
+ 	{ .id = 0x111d7603, .name = "92HD75B3X5", .patch = patch_stac92hd71bxx},
+ 	{ .id = 0x111d7604, .name = "92HD83C1X5", .patch = patch_stac92hd83xxx},
+ 	{ .id = 0x111d7605, .name = "92HD81B1X5", .patch = patch_stac92hd83xxx},
++	{ .id = 0x111d76d5, .name = "92HD81B1C5", .patch = patch_stac92hd83xxx},
+ 	{ .id = 0x111d7608, .name = "92HD75B2X5", .patch = patch_stac92hd71bxx},
+ 	{ .id = 0x111d7674, .name = "92HD73D1X5", .patch = patch_stac92hd73xx },
+ 	{ .id = 0x111d7675, .name = "92HD73C1X5", .patch = patch_stac92hd73xx },
+-- 
+1.5.6.3
