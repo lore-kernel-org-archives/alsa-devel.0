@@ -1,18 +1,16 @@
 From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-Subject: [PATCH v2 2/9] snd-atmel-ac97c: remove dead break
-	statements after return in switch case
-Date: Thu,  2 Apr 2009 08:21:11 +0200
-Message-ID: <1238653278-2546-2-git-send-email-hans-christian.egtvedt@atmel.com>
-References: <1238653278-2546-1-git-send-email-hans-christian.egtvedt@atmel.com>
+Subject: [PATCH v2 1/9] snd-atmel-ac97c: cleanup register
+	definitions
+Date: Thu,  2 Apr 2009 08:21:10 +0200
+Message-ID: <1238653278-2546-1-git-send-email-hans-christian.egtvedt@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from relay.atmel.no (relay.atmel.no [80.232.32.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8C03524433
+	by alsa0.perex.cz (Postfix) with ESMTP id 88BB724430
 	for <alsa-devel@alsa-project.org>;
 	Thu,  2 Apr 2009 08:21:19 +0200 (CEST)
-In-Reply-To: <1238653278-2546-1-git-send-email-hans-christian.egtvedt@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,30 +24,66 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
+This patch will remove traces of channel B registers, since they are not
+used by the AC97C driver. Channel B might be used for other purposes.
+
+The driver also adds channel status bits TXEMPTY and OVRUN and a
+AC97C_CH_MASK macro to ease clearing a channel settings.
+
 Signed-off-by: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
 ---
- sound/atmel/ac97c.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
+ sound/atmel/ac97c.h |   14 ++++++++------
+ 1 files changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
-index dd72e00..21be9c9 100644
---- a/sound/atmel/ac97c.c
-+++ b/sound/atmel/ac97c.c
-@@ -312,7 +312,6 @@ static int atmel_ac97c_playback_prepare(struct snd_pcm_substream *substream)
- 	default:
- 		/* TODO: support more than two channels */
- 		return -EINVAL;
--		break;
- 	}
- 	ac97c_writel(chip, OCA, word);
+diff --git a/sound/atmel/ac97c.h b/sound/atmel/ac97c.h
+index c17bd58..ecbba50 100644
+--- a/sound/atmel/ac97c.h
++++ b/sound/atmel/ac97c.h
+@@ -1,5 +1,5 @@
+ /*
+- * Register definitions for the Atmel AC97C controller
++ * Register definitions for Atmel AC97C
+  *
+  * Copyright (C) 2005-2009 Atmel Corporation
+  *
+@@ -17,10 +17,6 @@
+ #define AC97C_CATHR		0x24
+ #define AC97C_CASR		0x28
+ #define AC97C_CAMR		0x2c
+-#define AC97C_CBRHR		0x30
+-#define AC97C_CBTHR		0x34
+-#define AC97C_CBSR		0x38
+-#define AC97C_CBMR		0x3c
+ #define AC97C_CORHR		0x40
+ #define AC97C_COTHR		0x44
+ #define AC97C_COSR		0x48
+@@ -46,8 +42,10 @@
+ #define AC97C_MR_VRA		(1 << 2)
  
-@@ -374,7 +373,6 @@ static int atmel_ac97c_capture_prepare(struct snd_pcm_substream *substream)
- 	default:
- 		/* TODO: support more than two channels */
- 		return -EINVAL;
--		break;
- 	}
- 	ac97c_writel(chip, ICA, word);
+ #define AC97C_CSR_TXRDY		(1 << 0)
++#define AC97C_CSR_TXEMPTY	(1 << 1)
+ #define AC97C_CSR_UNRUN		(1 << 2)
+ #define AC97C_CSR_RXRDY		(1 << 4)
++#define AC97C_CSR_OVRUN		(1 << 5)
+ #define AC97C_CSR_ENDTX		(1 << 10)
+ #define AC97C_CSR_ENDRX		(1 << 14)
  
+@@ -61,11 +59,15 @@
+ #define AC97C_CMR_DMAEN		(1 << 22)
+ 
+ #define AC97C_SR_CAEVT		(1 << 3)
++#define AC97C_SR_COEVT		(1 << 2)
++#define AC97C_SR_WKUP		(1 << 1)
++#define AC97C_SR_SOF		(1 << 0)
+ 
++#define AC97C_CH_MASK(slot)						\
++	(0x7 << (3 * (AC97_SLOT_##slot - 3)))
+ #define AC97C_CH_ASSIGN(slot, channel)					\
+ 	(AC97C_CHANNEL_##channel << (3 * (AC97_SLOT_##slot - 3)))
+ #define AC97C_CHANNEL_NONE	0x0
+ #define AC97C_CHANNEL_A		0x1
+-#define AC97C_CHANNEL_B		0x2
+ 
+ #endif /* __SOUND_ATMEL_AC97C_H */
 -- 
 1.5.6.3
