@@ -1,20 +1,21 @@
 From: Jarkko Nikula <jhnikula@gmail.com>
 Subject: Re: how to use mcbsp for i2s?
-Date: Thu, 2 Apr 2009 10:48:06 +0300
-Message-ID: <bd7b27490904020048h672ce810j3c79868a7f5ef4e0@mail.gmail.com>
+Date: Thu, 2 Apr 2009 13:20:36 +0300
+Message-ID: <bd7b27490904020320i714cd812i49bd834676ce4dee@mail.gmail.com>
 References: <fb44c3530904011129s7dd5cf1fgcf266fac3fb059d3@mail.gmail.com>
+	<bd7b27490904020048h672ce810j3c79868a7f5ef4e0@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f175.google.com (mail-bw0-f175.google.com
-	[209.85.218.175])
-	by alsa0.perex.cz (Postfix) with ESMTP id CDFD624480
+Received: from mail-fx0-f170.google.com (mail-fx0-f170.google.com
+	[209.85.220.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 57DE3103831
 	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Apr 2009 09:48:07 +0200 (CEST)
-Received: by bwz23 with SMTP id 23so387018bwz.32
-	for <alsa-devel@alsa-project.org>; Thu, 02 Apr 2009 00:48:07 -0700 (PDT)
-In-Reply-To: <fb44c3530904011129s7dd5cf1fgcf266fac3fb059d3@mail.gmail.com>
+	Thu,  2 Apr 2009 12:20:37 +0200 (CEST)
+Received: by fxm18 with SMTP id 18so461762fxm.32
+	for <alsa-devel@alsa-project.org>; Thu, 02 Apr 2009 03:20:36 -0700 (PDT)
+In-Reply-To: <bd7b27490904020048h672ce810j3c79868a7f5ef4e0@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,41 +29,27 @@ To: Ernesto Torres <skullmate@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 1, 2009 at 9:29 PM, Ernesto Torres <skullmate@gmail.com> wrote:
+On Thu, Apr 2, 2009 at 10:48 AM, Jarkko Nikula <jhnikula@gmail.com> wrote:
 
-> I'm currently working in adding an external codec to the beagleboard, so
-> far
-> the i2c control part is functional, now i want to use mcbsp3 to provide i2s
-> transfers
 >
-> Is there any way to test the mcbsp to validate the connection?
+> But by default McBSP1 and 3 which available in Beale pin header are muxed
+> to GPIO
+> so you need to mux those pins for McBSP by the bootloader and with
+> linux-omap
+> kernel multiplexing support.
 >
-> Also, I've done little modifications to the omap3beagle.c to change from
-> mcbsp2 to mcbsp3, can someone validate this is correct?
+> I may have a hack patch somewhere... I'll try to find it and post it here
+> for reference.
 >
-> In:
-> static int __init omap3beagle_soc_init(void)
->
-> I changed to:
-> *(unsigned int *)omap3beagle_dai.cpu_dai->private_data = 2; /* McBSP3 */
->
-> It was:
-> *(unsigned int *)omap3beagle_dai.cpu_dai->private_data = 1; /* McBSP2 */
->
-> Is this correct? Or it should be changed in other places too?
->
-> It is basically enough as well as setting correct DAI and clocking
-configuration (if needed)
-in omap3beagle_hw_params.
+> Grrr... cannot find the hack, I'm too keen to delete temporary hacks. I was
+pretty sure I had
+it somewhere.
 
-But by default McBSP1 and 3 which available in Beale pin header are muxed to
-GPIO
-so you need to mux those pins for McBSP by the bootloader and with
-linux-omap
-kernel multiplexing support.
-
-I may have a hack patch somewhere... I'll try to find it and post it here
-for reference.
+Basically it was adding necessary pin multiplexing configuration into
+arch/arm/plat-omap/include/mach/mux.h and arch/arm/mach-omap2/mux.c and
+then using omap_cfg_reg(...) in omap3beagle.c to change pin configuration
+from
+GPIOs to McBPS[1 | 3] pins.
 
 
 Jarkko
