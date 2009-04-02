@@ -1,21 +1,22 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: how to use mcbsp for i2s?
-Date: Thu, 2 Apr 2009 13:20:36 +0300
-Message-ID: <bd7b27490904020320i714cd812i49bd834676ce4dee@mail.gmail.com>
-References: <fb44c3530904011129s7dd5cf1fgcf266fac3fb059d3@mail.gmail.com>
-	<bd7b27490904020048h672ce810j3c79868a7f5ef4e0@mail.gmail.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH v2] tlv320aic3x: disable ADC/DAC
+	while	changing clock
+Date: Thu, 2 Apr 2009 11:34:56 +0100
+Message-ID: <20090402103455.GA4527@sirena.org.uk>
+References: <1238073706-23821-1-git-send-email-dg@emlix.com>
+	<1238583415-19543-1-git-send-email-dg@emlix.com>
+	<20090401121032.GA21294@sirena.org.uk>
+	<bd7b27490904020039y4616f611l53a96ef12edcf486@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f170.google.com (mail-fx0-f170.google.com
-	[209.85.220.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id 57DE3103831
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7F57C10383A
 	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Apr 2009 12:20:37 +0200 (CEST)
-Received: by fxm18 with SMTP id 18so461762fxm.32
-	for <alsa-devel@alsa-project.org>; Thu, 02 Apr 2009 03:20:36 -0700 (PDT)
-In-Reply-To: <bd7b27490904020048h672ce810j3c79868a7f5ef4e0@mail.gmail.com>
+	Thu,  2 Apr 2009 12:34:57 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <bd7b27490904020039y4616f611l53a96ef12edcf486@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,31 +26,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ernesto Torres <skullmate@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: alsa-devel@alsa-project.org, Daniel Gl??ckner <dg@emlix.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 2, 2009 at 10:48 AM, Jarkko Nikula <jhnikula@gmail.com> wrote:
+On Thu, Apr 02, 2009 at 10:39:12AM +0300, Jarkko Nikula wrote:
 
->
-> But by default McBSP1 and 3 which available in Beale pin header are muxed
-> to GPIO
-> so you need to mux those pins for McBSP by the bootloader and with
-> linux-omap
-> kernel multiplexing support.
->
-> I may have a hack patch somewhere... I'll try to find it and post it here
-> for reference.
->
-> Grrr... cannot find the hack, I'm too keen to delete temporary hacks. I was
-pretty sure I had
-it somewhere.
+> > Hrm, does the chip support asymmetric configurations for playback and
+> > capture?
 
-Basically it was adding necessary pin multiplexing configuration into
-arch/arm/plat-omap/include/mach/mux.h and arch/arm/mach-omap2/mux.c and
-then using omap_cfg_reg(...) in omap3beagle.c to change pin configuration
-from
-GPIOs to McBPS[1 | 3] pins.
+> My two cents: It supports different sampling rates for ADC and DAC but
+> I don't believe there is practical use or HW doing this. In this setup
+> there is separate word clock signal on GPIO1 for ADC.
 
+Hrm, that's fairly common for hardware - even with shared LRCLK many
+devices will be able to support asymmetric rates providing there are
+enough BCLKs to drive the data.  Presumably the only limit in the codec
+itself is going to be that whatever the PLL is set for will be the
+maximum.
 
-Jarkko
+Being a bit stricter than is required probaly won't hurt; someone can
+always relax things later on if required.
+
+> Unfortunately I'm bit off from the actual issue here but I remember some
+> TI codec had requirement to keep DAC/ADC off while changing the
+> configuration...
+
+Yes, that's the issue that Daniel is fixing here - it's not possible to
+change the clocking (or at least the PLL) while a DAC or ADC is active.
