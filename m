@@ -1,16 +1,17 @@
-From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-Subject: [PATCH] snd-atmel-abdac: increase periods_min to 6
-	instead of 4
-Date: Thu,  2 Apr 2009 13:42:26 +0200
-Message-ID: <1238672546-14785-1-git-send-email-hans-christian.egtvedt@atmel.com>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: [PATCH] hda - enable SPDIF output for Intel DX58SO
+	board
+Date: Thu, 2 Apr 2009 19:44:18 +0800
+Message-ID: <20090402114418.GA25902@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay.atmel.no (relay.atmel.no [80.232.32.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 79902103842
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5ACE5103848
 	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Apr 2009 13:42:27 +0200 (CEST)
+	Thu,  2 Apr 2009 13:44:33 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,30 +21,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jeroen Van Breedam <jeroen.vanbreedam@sgr5.be>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch increases periods_min to 6 from 4, this will remove any
-hickups where the buffer is not filled fast enough from user space.
+ALC889 has two SPDIF outputs: 0x06, 0x10. Board vendors can use either or both.
+DX58SO uses 0x10, but the driver assumes 0x06. The safe solution is to add
+0x10 as slave output to the existing 0x06.
 
-Signed-off-by: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+Reported-by: Jeroen Van Breedam <jeroen.vanbreedam@sgr5.be>
+Tested-by: Jeroen Van Breedam <jeroen.vanbreedam@sgr5.be>
+Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
 ---
- sound/atmel/abdac.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/pci/hda/patch_realtek.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/atmel/abdac.c b/sound/atmel/abdac.c
-index aeda7cf..232de1e 100644
---- a/sound/atmel/abdac.c
-+++ b/sound/atmel/abdac.c
-@@ -176,7 +176,7 @@ static struct snd_pcm_hardware atmel_abdac_hw = {
- 	.buffer_bytes_max	= 64 * 4096,
- 	.period_bytes_min	= 4096,
- 	.period_bytes_max	= 4096,
--	.periods_min		= 4,
-+	.periods_min		= 6,
- 	.periods_max		= 64,
+--- sound-2.6.orig/sound/pci/hda/patch_realtek.c
++++ sound-2.6/sound/pci/hda/patch_realtek.c
+@@ -8764,6 +8764,10 @@ static struct snd_pci_quirk alc883_cfg_t
+ 	{}
  };
  
--- 
-1.5.6.3
++static hda_nid_t alc883_slave_dig_outs[] = {
++	ALC1200_DIGOUT_NID, 0,
++};
++
+ static hda_nid_t alc1200_slave_dig_outs[] = {
+ 	ALC883_DIGOUT_NID, 0,
+ };
+@@ -8809,6 +8813,7 @@ static struct alc_config_preset alc883_p
+ 		.dac_nids = alc883_dac_nids,
+ 		.dig_out_nid = ALC883_DIGOUT_NID,
+ 		.dig_in_nid = ALC883_DIGIN_NID,
++		.slave_dig_outs = alc883_slave_dig_outs,
+ 		.num_channel_mode = ARRAY_SIZE(alc883_3ST_6ch_intel_modes),
+ 		.channel_mode = alc883_3ST_6ch_intel_modes,
+ 		.need_dac_fix = 1,
