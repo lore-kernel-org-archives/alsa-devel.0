@@ -1,17 +1,22 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: [PATCH] hda - enable SPDIF output for Intel DX58SO
-	board
-Date: Thu, 2 Apr 2009 19:44:18 +0800
-Message-ID: <20090402114418.GA25902@localhost>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: SoC pxa2xx-ac97 + wm9705 + touchscreen
+	suspend/resume
+Date: Thu, 2 Apr 2009 12:55:41 +0100
+Message-ID: <20090402115541.GB9522@n2100.arm.linux.org.uk>
+References: <20090330223720.GC31396@n2100.arm.linux.org.uk>
+	<20090331103048.GC11800@sirena.org.uk>
+	<20090331183755.GA27451@n2100.arm.linux.org.uk>
+	<20090331191539.GA10854@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5ACE5103848
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 312F1103848
 	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Apr 2009 13:44:33 +0200 (CEST)
+	Thu,  2 Apr 2009 13:55:56 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <20090331191539.GA10854@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,39 +26,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jeroen Van Breedam <jeroen.vanbreedam@sgr5.be>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org, eric miao <eric.y.miao@gmail.com>, linux-arm-kernel@lists.arm.linux.org.uk, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-ALC889 has two SPDIF outputs: 0x06, 0x10. Board vendors can use either or both.
-DX58SO uses 0x10, but the driver assumes 0x06. The safe solution is to add
-0x10 as slave output to the existing 0x06.
+On Tue, Mar 31, 2009 at 08:15:40PM +0100, Mark Brown wrote:
+> On Tue, Mar 31, 2009 at 07:37:55PM +0100, Russell King - ARM Linux wrote:
+> 
+> > I don't think this is the complete story.  Sometime between 2.6.27 and
+> > 2.6.29, the structure below /sys/devices/platform/soc-audio changed
+> > (the ac97 codec moved to the top level.)
+> 
+> Oh, are you using the ac97.c codec driver?
 
-Reported-by: Jeroen Van Breedam <jeroen.vanbreedam@sgr5.be>
-Tested-by: Jeroen Van Breedam <jeroen.vanbreedam@sgr5.be>
-Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
----
- sound/pci/hda/patch_realtek.c |    5 +++++
- 1 file changed, 5 insertions(+)
+No, I'm using the wm9705 driver.
 
---- sound-2.6.orig/sound/pci/hda/patch_realtek.c
-+++ sound-2.6/sound/pci/hda/patch_realtek.c
-@@ -8764,6 +8764,10 @@ static struct snd_pci_quirk alc883_cfg_t
- 	{}
- };
- 
-+static hda_nid_t alc883_slave_dig_outs[] = {
-+	ALC1200_DIGOUT_NID, 0,
-+};
-+
- static hda_nid_t alc1200_slave_dig_outs[] = {
- 	ALC883_DIGOUT_NID, 0,
- };
-@@ -8809,6 +8813,7 @@ static struct alc_config_preset alc883_p
- 		.dac_nids = alc883_dac_nids,
- 		.dig_out_nid = ALC883_DIGOUT_NID,
- 		.dig_in_nid = ALC883_DIGIN_NID,
-+		.slave_dig_outs = alc883_slave_dig_outs,
- 		.num_channel_mode = ARRAY_SIZE(alc883_3ST_6ch_intel_modes),
- 		.channel_mode = alc883_3ST_6ch_intel_modes,
- 		.need_dac_fix = 1,
+> With a normal ASoC codec
+> driver the AC97 codec is not visible as a separate device in the device
+> tree - if you could point me to your machine driver that'd be helpful.
+
+Not true - the codec appears as /sys/devices/0-0:WM9705 rather than a
+sub-device of the AC97 controller.  Below this there are two sub-devices:
+
+/sys/devices/0-0:WM9705/wm97xx-battery
+/sys/devices/0-0:WM9705/wm97xx-touch
+
+The wm97xx-ts touchscreen driver binds to the 0-0:WM9705 device, so
+clearly unless 0-0:WM9705 is a child of the AC97 controller, things
+aren't going to be guaranteed to be resumed in the right order.
