@@ -1,23 +1,16 @@
-From: Ernesto Torres <skullmate@gmail.com>
-Subject: Re: how to use mcbsp for i2s?
-Date: Thu, 2 Apr 2009 11:27:13 -0600
-Message-ID: <fb44c3530904021027r7a1387cag8507c4a1a88811ca@mail.gmail.com>
-References: <fb44c3530904011129s7dd5cf1fgcf266fac3fb059d3@mail.gmail.com>
-	<bd7b27490904020048h672ce810j3c79868a7f5ef4e0@mail.gmail.com>
-	<bd7b27490904020320i714cd812i49bd834676ce4dee@mail.gmail.com>
-	<20090402195653.0bcfb59e.jhnikula@gmail.com>
+From: Micah Bucy <micah.bucy@gmail.com>
+Subject: iMac 9,1 sound patch
+Date: Thu, 2 Apr 2009 13:30:20 -0400
+Message-ID: <e40c6ffa0904021030r230b328fm1f076eea1280dd41@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=0016e64652fa8e2e80046695ca7d
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f132.google.com (mail-qy0-f132.google.com
-	[209.85.221.132])
-	by alsa0.perex.cz (Postfix) with ESMTP id CAB28103877
-	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Apr 2009 19:27:14 +0200 (CEST)
-Received: by qyk38 with SMTP id 38so1247214qyk.16
-	for <alsa-devel@alsa-project.org>; Thu, 02 Apr 2009 10:27:13 -0700 (PDT)
-In-Reply-To: <20090402195653.0bcfb59e.jhnikula@gmail.com>
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7739510389F
+	for <Alsa-devel@alsa-project.org>;
+	Thu,  2 Apr 2009 19:30:42 +0200 (CEST)
+Received: by yx-out-1718.google.com with SMTP id 4so495860yxp.2
+	for <Alsa-devel@alsa-project.org>; Thu, 02 Apr 2009 10:30:41 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,50 +20,154 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-thank you, I'll try it and let you know how it went
+--0016e64652fa8e2e80046695ca7d
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 2, 2009 at 10:56 AM, Jarkko Nikula <jhnikula@gmail.com> wrote:
+I tried a git snapshot, but it wasn't working at all, so this patch was
+developed against the 1.0.19 stable release.
 
-> On Thu, 2 Apr 2009 13:20:36 +0300
-> Jarkko Nikula <jhnikula@gmail.com> wrote:
->
-> > > Grrr... cannot find the hack, I'm too keen to delete temporary
-> > > hacks. I was
-> > pretty sure I had
-> > it somewhere.
-> >
-> > Basically it was adding necessary pin multiplexing configuration into
-> > arch/arm/plat-omap/include/mach/mux.h and arch/arm/mach-omap2/mux.c
-> > and then using omap_cfg_reg(...) in omap3beagle.c to change pin
-> > configuration from
-> > GPIOs to McBPS[1 | 3] pins.
-> >
-> Yes, I found it. Hack attached :-)
->
-> Now I don't have here Beagle to test but hack still applies on top of
-> linux-omap. Then you will need CONFIG_OMAP_MUX=y and following lines
-> into omap3beagle.c or board-omap3beagle.c.
->
-> omap_cfg_reg(AF6_3430_MCBSP3_DX);
-> omap_cfg_reg(AE6_3430_MCBSP3_DR);
-> omap_cfg_reg(AF5_3430_MCBSP3_CLKX);
-> omap_cfg_reg(AE5_3430_MCBSP3_FSX);
->
->
-> Jarkko
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
->
+This is my first time delving into alsa, so I'm not sure if everything is
+how it should be, including if the patch was correctly created.  I can tell
+you this.  I was able to get jack detection working correctly as long as the
+6 channel option is set.  I had tried modifying it to only allow a 6ch
+option as 2ch is for line-out (headphones) only, but the internal speakers
+wouldn't work, so I left it alone.  My guess is, this same setup could be
+used by the macbook pro 5,1  I'll give it a try over the weekend.  I have
+not tested the built-in mic or the line-in.
 
+-Micah
 
--- 
-___________
-EhTd
+--0016e64652fa8e2e80046695ca7d
+Content-Type: text/x-patch; charset=US-ASCII; name="imac91.patch"
+Content-Disposition: attachment; filename="imac91.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_ft1py17l0
+
+ZGlmZiAtdSAtciBhbHNhLWRyaXZlci0xLjAuMTkub3JpZy9hbHNhLWtlcm5lbC9wY2kvaGRhL3Bh
+dGNoX3JlYWx0ZWsuYyBhbHNhLWRyaXZlci0xLjAuMTkvYWxzYS1rZXJuZWwvcGNpL2hkYS9wYXRj
+aF9yZWFsdGVrLmMKLS0tIGFsc2EtZHJpdmVyLTEuMC4xOS5vcmlnL2Fsc2Eta2VybmVsL3BjaS9o
+ZGEvcGF0Y2hfcmVhbHRlay5jCTIwMDktMDEtMTkgMDY6MDg6NTguMDAwMDAwMDAwIC0wNTAwCisr
+KyBhbHNhLWRyaXZlci0xLjAuMTkvYWxzYS1rZXJuZWwvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMJ
+MjAwOS0wNC0wMiAxMzoxMzoxNy4wMDAwMDAwMDAgLTA0MDAKQEAgLTIwMCw2ICsyMDAsNyBAQAog
+CUFMQzg4Ml9BU1VTX0E3TSwKIAlBTEM4ODVfTUFDUFJPLAogCUFMQzg4NV9NQlAzLAorCUFMQzg4
+NV9JTUFDOTEsCiAJQUxDODg1X0lNQUMyNCwKIAlBTEM4ODJfQVVUTywKIAlBTEM4ODJfTU9ERUxf
+TEFTVCwKQEAgLTYwNjksNiArNjA3MCwxOSBAQAogCUhEQV9DT0RFQ19WT0xVTUUoIk1pYyBCb29z
+dCIsIDB4MTgsIDB4MDAsIEhEQV9JTlBVVCksCiAJeyB9IC8qIGVuZCAqLwogfTsKKworc3RhdGlj
+IHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3IGFsYzg4NV9pbWFjOTFfbWl4ZXJbXSA9IHsKKwlIREFf
+Q09ERUNfVk9MVU1FKCJMaW5lLU91dCBQbGF5YmFjayBWb2x1bWUiLCAweDBjLCAweDAwLCBIREFf
+T1VUUFVUKSwKKwlIREFfQklORF9NVVRFICAgKCJMaW5lLU91dCBQbGF5YmFjayBTd2l0Y2giLCAw
+eDBjLCAweDAyLCBIREFfSU5QVVQpLAorCUhEQV9DT0RFQ19NVVRFICAoIlNwZWFrZXIgUGxheWJh
+Y2sgU3dpdGNoIiwgMHgxNCwgMHgwMCwgSERBX09VVFBVVCksCisJSERBX0NPREVDX1ZPTFVNRSgi
+U3BlYWtlciBQbGF5YmFjayBWb2x1bWUiLCAweDBkLCAweDAwLCBIREFfT1VUUFVUKSwKKwlIREFf
+Q09ERUNfVk9MVU1FKCJMaW5lIFBsYXliYWNrIFZvbHVtZSIsIDB4MGIsIDB4MDIsIEhEQV9JTlBV
+VCksCisJSERBX0NPREVDX01VVEUgICgiTGluZSBQbGF5YmFjayBTd2l0Y2giLCAweDBiLCAweDAy
+LCBIREFfSU5QVVQpLAorCUhEQV9DT0RFQ19WT0xVTUUoIk1pYyBQbGF5YmFjayBWb2x1bWUiLCAw
+eDBiLCAweDAwLCBIREFfSU5QVVQpLAorCUhEQV9DT0RFQ19NVVRFICAoIk1pYyBQbGF5YmFjayBT
+d2l0Y2giLCAweDBiLCAweDAwLCBIREFfSU5QVVQpLAorCUhEQV9DT0RFQ19WT0xVTUUoIk1pYyBC
+b29zdCIsIDB4MTgsIDB4MDAsIEhEQV9JTlBVVCksCisJeyB9IC8qIGVuZCAqLworfTsKIHN0YXRp
+YyBzdHJ1Y3Qgc25kX2tjb250cm9sX25ldyBhbGM4ODJfdzJqY19taXhlcltdID0gewogCUhEQV9D
+T0RFQ19WT0xVTUUoIkZyb250IFBsYXliYWNrIFZvbHVtZSIsIDB4MGMsIDB4MCwgSERBX09VVFBV
+VCksCiAJSERBX0JJTkRfTVVURSgiRnJvbnQgUGxheWJhY2sgU3dpdGNoIiwgMHgwYywgMiwgSERB
+X0lOUFVUKSwKQEAgLTYzNTgsNiArNjM3Miw2NiBAQAogCXsgfQogfTsKIAorLyogaU1hYyA5LDEg
+Ki8KK3N0YXRpYyBzdHJ1Y3QgaGRhX3ZlcmIgYWxjODg1X2ltYWM5MV9pbml0X3ZlcmJzW10gPSB7
+CisJLyogTGluZS1PdXQgbWl4ZXI6IHVubXV0ZSBpbnB1dC9vdXRwdXQgYW1wIGxlZnQgYW5kIHJp
+Z2h0ICh2b2x1bWUgPSAwKSAqLworCXsweDBjLCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBB
+TVBfT1VUX1pFUk99LAorCXsweDBjLCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfSU5f
+TVVURSgwKX0sCisJezB4MGMsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFNUF9JTl9NVVRF
+KDEpfSwKKwkvKiBSZWFyIG1peGVyICovCisJezB4MGQsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01V
+VEUsIEFNUF9PVVRfWkVST30sCisJezB4MGQsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFN
+UF9JTl9NVVRFKDApfSwKKwl7MHgwZCwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX0lO
+X01VVEUoMSl9LAorCS8qIEhQIFBpbjogb3V0cHV0IDAgKDB4MGMpICovCisJezB4MTQsIEFDX1ZF
+UkJfU0VUX1BJTl9XSURHRVRfQ09OVFJPTCwgUElOX0hQfSwKKwl7MHgxNCwgQUNfVkVSQl9TRVRf
+QU1QX0dBSU5fTVVURSwgQU1QX09VVF9VTk1VVEV9LAorCXsweDE0LCBBQ19WRVJCX1NFVF9DT05O
+RUNUX1NFTCwgMHgwMH0sCisJezB4MTQsIEFDX1ZFUkJfU0VUX1VOU09MSUNJVEVEX0VOQUJMRSwg
+QUxDODgwX0hQX0VWRU5UIHwgQUNfVVNSU1BfRU59LAorCS8qIEludGVybmFsIFNwZWFrZXJzOiBv
+dXRwdXQgMCAoMHgwZCkgKi8KKwl7MHgxNSwgQUNfVkVSQl9TRVRfUElOX1dJREdFVF9DT05UUk9M
+LCBQSU5fT1VUfSwKKwl7MHgxNSwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX09VVF9N
+VVRFfSwKKwl7MHgxNSwgQUNfVkVSQl9TRVRfQ09OTkVDVF9TRUwsIDB4MDB9LAorCS8qIE1pYyAo
+cmVhcikgcGluOiBpbnB1dCB2cmVmIGF0IDgwJSAqLworCXsweDE4LCBBQ19WRVJCX1NFVF9QSU5f
+V0lER0VUX0NPTlRST0wsIFBJTl9WUkVGODB9LAorCXsweDE4LCBBQ19WRVJCX1NFVF9BTVBfR0FJ
+Tl9NVVRFLCBBTVBfT1VUX01VVEV9LAorCS8qIEZyb250IE1pYyBwaW46IGlucHV0IHZyZWYgYXQg
+ODAlICovCisJezB4MTksIEFDX1ZFUkJfU0VUX1BJTl9XSURHRVRfQ09OVFJPTCwgUElOX1ZSRUY4
+MH0sCisJezB4MTksIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFNUF9PVVRfTVVURX0sCisJ
+LyogTGluZSBJbiBwaW46IHVzZSBvdXRwdXQgMSB3aGVuIGluIExpbmVPdXQgbW9kZSAqLworCXsw
+eDFhLCBBQ19WRVJCX1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9JTn0sCisJezB4MWEsIEFD
+X1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFNUF9PVVRfTVVURX0sCisJezB4MWEsIEFDX1ZFUkJf
+U0VUX0NPTk5FQ1RfU0VMLCAweDAxfSwKKworCS8qIEZJWE1FOiB1c2UgbWF0cml4LXR5cGUgaW5w
+dXQgc291cmNlIHNlbGVjdGlvbiAqLworCS8qIE1peGVyIGVsZW1lbnRzOiAweDE4LCAxOSwgMWEs
+IDFiLCAxYywgMWQsIDE0LCAxNSwgMTYsIDE3LCAwYiAqLworCS8qIElucHV0IG1peGVyMTogdW5t
+dXRlIE1pYywgRi1NaWMsIExpbmUsIENEIGlucHV0cyAqLworCXsweDI0LCBBQ19WRVJCX1NFVF9B
+TVBfR0FJTl9NVVRFLCBBTVBfSU5fVU5NVVRFKDApfSwKKwl7MHgyNCwgQUNfVkVSQl9TRVRfQU1Q
+X0dBSU5fTVVURSwgQU1QX0lOX01VVEUoMyl9LAorCXsweDI0LCBBQ19WRVJCX1NFVF9BTVBfR0FJ
+Tl9NVVRFLCBBTVBfSU5fTVVURSgyKX0sCisJezB4MjQsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01V
+VEUsIEFNUF9JTl9NVVRFKDQpfSwKKwkvKiBJbnB1dCBtaXhlcjIgKi8KKwl7MHgyMywgQUNfVkVS
+Ql9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX0lOX1VOTVVURSgwKX0sCisJezB4MjMsIEFDX1ZFUkJf
+U0VUX0FNUF9HQUlOX01VVEUsIEFNUF9JTl9NVVRFKDMpfSwKKwl7MHgyMywgQUNfVkVSQl9TRVRf
+QU1QX0dBSU5fTVVURSwgQU1QX0lOX01VVEUoMil9LAorCXsweDIzLCBBQ19WRVJCX1NFVF9BTVBf
+R0FJTl9NVVRFLCBBTVBfSU5fTVVURSg0KX0sCisJLyogSW5wdXQgbWl4ZXIzICovCisJezB4MjIs
+IEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFNUF9JTl9VTk1VVEUoMCl9LAorCXsweDIyLCBB
+Q19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfSU5fTVVURSgzKX0sCisJezB4MjIsIEFDX1ZF
+UkJfU0VUX0FNUF9HQUlOX01VVEUsIEFNUF9JTl9NVVRFKDIpfSwKKwl7MHgyMiwgQUNfVkVSQl9T
+RVRfQU1QX0dBSU5fTVVURSwgQU1QX0lOX01VVEUoNCl9LAorCS8qIEFEQzE6IG11dGUgYW1wIGxl
+ZnQgYW5kIHJpZ2h0ICovCisJezB4MDcsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFNUF9J
+Tl9NVVRFKDApfSwKKwl7MHgwNywgQUNfVkVSQl9TRVRfQ09OTkVDVF9TRUwsIDB4MDB9LAorCS8q
+IEFEQzI6IG11dGUgYW1wIGxlZnQgYW5kIHJpZ2h0ICovCisJezB4MDgsIEFDX1ZFUkJfU0VUX0FN
+UF9HQUlOX01VVEUsIEFNUF9JTl9NVVRFKDApfSwKKwl7MHgwOCwgQUNfVkVSQl9TRVRfQ09OTkVD
+VF9TRUwsIDB4MDB9LAorCS8qIEFEQzM6IG11dGUgYW1wIGxlZnQgYW5kIHJpZ2h0ICovCisJezB4
+MDksIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFNUF9JTl9NVVRFKDApfSwKKwl7MHgwOSwg
+QUNfVkVSQl9TRVRfQ09OTkVDVF9TRUwsIDB4MDB9LAorCisJeyB9Cit9OworCiAvKiBpTWFjIDI0
+IG1peGVyLiAqLwogc3RhdGljIHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3IGFsYzg4NV9pbWFjMjRf
+bWl4ZXJbXSA9IHsKIAlIREFfQ09ERUNfVk9MVU1FKCJNYXN0ZXIgUGxheWJhY2sgVm9sdW1lIiwg
+MHgwYywgMHgwMCwgSERBX09VVFBVVCksCkBAIC02NDI4LDYgKzY1MDIsMjUgQEAKIAkJYWxjODg1
+X21icDNfYXV0b211dGUoY29kZWMpOwogfQogCitzdGF0aWMgdm9pZCBhbGM4ODVfaW1hYzkxX2F1
+dG9tdXRlKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQoreworIAl1bnNpZ25lZCBpbnQgcHJlc2Vu
+dDsKKworIAlwcmVzZW50ID0gc25kX2hkYV9jb2RlY19yZWFkKGNvZGVjLCAweDE0LCAwLAorCQkJ
+CSAgICAgQUNfVkVSQl9HRVRfUElOX1NFTlNFLCAwKSAmIDB4ODAwMDAwMDA7CisJc25kX2hkYV9j
+b2RlY19hbXBfc3RlcmVvKGNvZGVjLCAweDE1LCBIREFfT1VUUFVULCAwLAorCQkJCSBIREFfQU1Q
+X01VVEUsIHByZXNlbnQgPyBIREFfQU1QX01VVEUgOiAwKTsKKwlzbmRfaGRhX2NvZGVjX2FtcF9z
+dGVyZW8oY29kZWMsIDB4MWEsIEhEQV9PVVRQVVQsIDAsCisJCQkJIEhEQV9BTVBfTVVURSwgcHJl
+c2VudCA/IEhEQV9BTVBfTVVURSA6IDApOworCit9CitzdGF0aWMgdm9pZCBhbGM4ODVfaW1hYzkx
+X3Vuc29sX2V2ZW50KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLAorCQkJCSAgICB1bnNpZ25lZCBp
+bnQgcmVzKQoreworCS8qIEhlYWRwaG9uZSBpbnNlcnRpb24gb3IgcmVtb3ZhbC4gKi8KKwlpZiAo
+KHJlcyA+PiAyNikgPT0gQUxDODgwX0hQX0VWRU5UKQorCQlhbGM4ODVfaW1hYzkxX2F1dG9tdXRl
+KGNvZGVjKTsKK30KIAogc3RhdGljIHN0cnVjdCBoZGFfdmVyYiBhbGM4ODJfdGFyZ2FfdmVyYnNb
+XSA9IHsKIAl7MHgwYywgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX0lOX1VOTVVURSgw
+KX0sCkBAIC02NjQzLDYgKzY3MzYsNyBAQAogCVtBTEM4ODJfQVNVU19BN01dCT0gImFzdXMtYTdt
+IiwKIAlbQUxDODg1X01BQ1BST10JCT0gIm1hY3BybyIsCiAJW0FMQzg4NV9NQlAzXQkJPSAibWJw
+MyIsCisJW0FMQzg4NV9JTUFDOTFdCQk9ICJpbWFjOTEiLAogCVtBTEM4ODVfSU1BQzI0XQkJPSAi
+aW1hYzI0IiwKIAlbQUxDODgyX0FVVE9dCQk9ICJhdXRvIiwKIH07CkBAIC02NzIyLDYgKzY4MTYs
+MjAgQEAKIAkJLnVuc29sX2V2ZW50ID0gYWxjODg1X21icDNfdW5zb2xfZXZlbnQsCiAJCS5pbml0
+X2hvb2sgPSBhbGM4ODVfbWJwM19hdXRvbXV0ZSwKIAl9LAorCVtBTEM4ODVfSU1BQzkxXSA9IHsK
+KwkJLm1peGVycyA9IHsgYWxjODg1X2ltYWM5MV9taXhlciwgYWxjODgyX2NobW9kZV9taXhlciB9
+LAorCQkuaW5pdF92ZXJicyA9IHsgYWxjODg1X2ltYWM5MV9pbml0X3ZlcmJzLAorCQkJCWFsYzg4
+MF9ncGlvMV9pbml0X3ZlcmJzIH0sCisJCS5udW1fZGFjcyA9IEFSUkFZX1NJWkUoYWxjODgyX2Rh
+Y19uaWRzKSwKKwkJLmRhY19uaWRzID0gYWxjODgyX2RhY19uaWRzLAorCQkuY2hhbm5lbF9tb2Rl
+ID0gYWxjODg1X21icF82Y2hfbW9kZXMsCisJCS5udW1fY2hhbm5lbF9tb2RlID0gQVJSQVlfU0la
+RShhbGM4ODVfbWJwXzZjaF9tb2RlcyksCisJCS5pbnB1dF9tdXggPSAmYWxjODgyX2NhcHR1cmVf
+c291cmNlLAorCQkuZGlnX291dF9uaWQgPSBBTEM4ODJfRElHT1VUX05JRCwKKwkJLmRpZ19pbl9u
+aWQgPSBBTEM4ODJfRElHSU5fTklELAorCQkudW5zb2xfZXZlbnQgPSBhbGM4ODVfaW1hYzkxX3Vu
+c29sX2V2ZW50LAorCQkuaW5pdF9ob29rID0gYWxjODg1X2ltYWM5MV9hdXRvbXV0ZSwKKwl9LAog
+CVtBTEM4ODVfTUFDUFJPXSA9IHsKIAkJLm1peGVycyA9IHsgYWxjODgyX21hY3Byb19taXhlciB9
+LAogCQkuaW5pdF92ZXJicyA9IHsgYWxjODgyX21hY3Byb19pbml0X3ZlcmJzIH0sCkBAIC03MDE0
+LDYgKzcxMjIsOSBAQAogCQljYXNlIDB4MTA2YjI4MDA6IC8qIEFwcGxlVFYgKi8KIAkJCWJvYXJk
+X2NvbmZpZyA9IEFMQzg4NV9JTUFDMjQ7CiAJCQlicmVhazsKKwkJY2FzZSAweDEwNmI0OTAwOiAv
+KiBpTWFjIDksMSAqLworCQkJYm9hcmRfY29uZmlnID0gQUxDODg1X0lNQUM5MTsKKwkJCWJyZWFr
+OwogCQljYXNlIDB4MTA2YjAwYTE6IC8qIE1hY2Jvb2sgKG1pZ2h0IGJlIHdyb25nIC0gUENJIFNT
+SUQ/KSAqLwogCQljYXNlIDB4MTA2YjAwYTQ6IC8qIE1hY2Jvb2tQcm80LDEgKi8KIAkJY2FzZSAw
+eDEwNmIyYzAwOiAvKiBNYWNib29rIFBybyByZXYzICovCg==
+--0016e64652fa8e2e80046695ca7d
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--0016e64652fa8e2e80046695ca7d--
