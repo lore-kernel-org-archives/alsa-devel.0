@@ -1,16 +1,17 @@
 From: Micah Bucy <micah.bucy@gmail.com>
 Subject: iMac 9,1 sound patch
-Date: Thu, 2 Apr 2009 13:30:20 -0400
-Message-ID: <e40c6ffa0904021030r230b328fm1f076eea1280dd41@mail.gmail.com>
+Date: Thu, 2 Apr 2009 13:30:42 -0400
+Message-ID: <e40c6ffa0904021030u701701c8w1f1ec65be007ecb2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=0016e64652fa8e2e80046695ca7d
+Content-Type: multipart/mixed; boundary=0016364270bcaafb1a046695caf2
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7739510389F
+Received: from mail-qy0-f132.google.com (mail-qy0-f132.google.com
+	[209.85.221.132])
+	by alsa0.perex.cz (Postfix) with ESMTP id 81EEE1038B1
 	for <Alsa-devel@alsa-project.org>;
-	Thu,  2 Apr 2009 19:30:42 +0200 (CEST)
-Received: by yx-out-1718.google.com with SMTP id 4so495860yxp.2
-	for <Alsa-devel@alsa-project.org>; Thu, 02 Apr 2009 10:30:41 -0700 (PDT)
+	Thu,  2 Apr 2009 19:30:45 +0200 (CEST)
+Received: by qyk38 with SMTP id 38so1250909qyk.16
+	for <Alsa-devel@alsa-project.org>; Thu, 02 Apr 2009 10:30:44 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,7 +24,7 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---0016e64652fa8e2e80046695ca7d
+--0016364270bcaafb1a046695caf2
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
@@ -41,7 +42,7 @@ not tested the built-in mic or the line-in.
 
 -Micah
 
---0016e64652fa8e2e80046695ca7d
+--0016364270bcaafb1a046695caf2
 Content-Type: text/x-patch; charset=US-ASCII; name="imac91.patch"
 Content-Disposition: attachment; filename="imac91.patch"
 Content-Transfer-Encoding: base64
@@ -159,7 +160,7 @@ KiBpTWFjIDksMSAqLworCQkJYm9hcmRfY29uZmlnID0gQUxDODg1X0lNQUM5MTsKKwkJCWJyZWFr
 OwogCQljYXNlIDB4MTA2YjAwYTE6IC8qIE1hY2Jvb2sgKG1pZ2h0IGJlIHdyb25nIC0gUENJIFNT
 SUQ/KSAqLwogCQljYXNlIDB4MTA2YjAwYTQ6IC8qIE1hY2Jvb2tQcm80LDEgKi8KIAkJY2FzZSAw
 eDEwNmIyYzAwOiAvKiBNYWNib29rIFBybyByZXYzICovCg==
---0016e64652fa8e2e80046695ca7d
+--0016364270bcaafb1a046695caf2
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -170,4 +171,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---0016e64652fa8e2e80046695ca7d--
+--0016364270bcaafb1a046695caf2--
