@@ -1,22 +1,24 @@
 From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-Subject: [PATCH v2 6/9] snd-atmel-ac97c: do a proper reset of
-	the external codec
-Date: Thu,  2 Apr 2009 08:21:15 +0200
-Message-ID: <1238653278-2546-6-git-send-email-hans-christian.egtvedt@atmel.com>
+Subject: [PATCH v2 8/9] snd-atmel-ac97c: replace bus_id with
+	dev_name()
+Date: Thu,  2 Apr 2009 08:21:17 +0200
+Message-ID: <1238653278-2546-8-git-send-email-hans-christian.egtvedt@atmel.com>
 References: <1238653278-2546-1-git-send-email-hans-christian.egtvedt@atmel.com>
 	<1238653278-2546-2-git-send-email-hans-christian.egtvedt@atmel.com>
 	<1238653278-2546-3-git-send-email-hans-christian.egtvedt@atmel.com>
 	<1238653278-2546-4-git-send-email-hans-christian.egtvedt@atmel.com>
 	<1238653278-2546-5-git-send-email-hans-christian.egtvedt@atmel.com>
+	<1238653278-2546-6-git-send-email-hans-christian.egtvedt@atmel.com>
+	<1238653278-2546-7-git-send-email-hans-christian.egtvedt@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from relay.atmel.no (relay.atmel.no [80.232.32.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 94C062443A
+	by alsa0.perex.cz (Postfix) with ESMTP id 8F3E324435
 	for <alsa-devel@alsa-project.org>;
 	Thu,  2 Apr 2009 08:21:19 +0200 (CEST)
-In-Reply-To: <1238653278-2546-5-git-send-email-hans-christian.egtvedt@atmel.com>
+In-Reply-To: <1238653278-2546-7-git-send-email-hans-christian.egtvedt@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,59 +32,34 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch will enable the AC97C before resetting the external codec,
-leaving the AC97C disabled will result in floating I/O lines that can
-affect the reset procedure.
+This patch replaces the references to bus_id to the new dev_name() API.
 
 Signed-off-by: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
 ---
- sound/atmel/ac97c.c |   14 +++++++-------
- 1 files changed, 7 insertions(+), 7 deletions(-)
+ sound/atmel/ac97c.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
-index e8484cb..90527c1 100644
+index 4df9ca4..0c0f877 100644
 --- a/sound/atmel/ac97c.c
 +++ b/sound/atmel/ac97c.c
-@@ -730,17 +730,17 @@ static bool filter(struct dma_chan *chan, void *slave)
+@@ -856,7 +856,7 @@ static int __devinit atmel_ac97c_probe(struct platform_device *pdev)
+ 		chip->dma.rx_chan = dma_request_channel(mask, filter, dws);
  
- static void atmel_ac97c_reset(struct atmel_ac97c *chip)
- {
--	ac97c_writel(chip, MR, AC97C_MR_WRST);
-+	ac97c_writel(chip, MR,   0);
-+	ac97c_writel(chip, MR,   AC97C_MR_ENA);
-+	ac97c_writel(chip, CAMR, 0);
-+	ac97c_writel(chip, COMR, 0);
- 
- 	if (gpio_is_valid(chip->reset_pin)) {
- 		gpio_set_value(chip->reset_pin, 0);
- 		/* AC97 v2.2 specifications says minimum 1 us. */
--		udelay(10);
-+		udelay(2);
- 		gpio_set_value(chip->reset_pin, 1);
- 	}
--
--	udelay(1);
--	ac97c_writel(chip, MR, AC97C_MR_ENA);
- }
- 
- static int __devinit atmel_ac97c_probe(struct platform_device *pdev)
-@@ -826,6 +826,8 @@ static int __devinit atmel_ac97c_probe(struct platform_device *pdev)
- 
- 	snd_card_set_dev(card, &pdev->dev);
- 
-+	atmel_ac97c_reset(chip);
-+
- 	/* Enable overrun interrupt from codec channel */
- 	ac97c_writel(chip, COMR, AC97C_CSR_OVRUN);
- 	ac97c_writel(chip, IER, ac97c_readl(chip, IMR) | AC97C_SR_COEVT);
-@@ -836,8 +838,6 @@ static int __devinit atmel_ac97c_probe(struct platform_device *pdev)
- 		goto err_ac97_bus;
+ 		dev_info(&chip->pdev->dev, "using %s for DMA RX\n",
+-					chip->dma.rx_chan->dev->device.bus_id);
++				dev_name(&chip->dma.rx_chan->dev->device));
+ 		set_bit(DMA_RX_CHAN_PRESENT, &chip->flags);
  	}
  
--	atmel_ac97c_reset(chip);
--
- 	retval = atmel_ac97c_mixer_new(chip);
- 	if (retval) {
- 		dev_dbg(&pdev->dev, "could not register ac97 mixer\n");
+@@ -872,7 +872,7 @@ static int __devinit atmel_ac97c_probe(struct platform_device *pdev)
+ 		chip->dma.tx_chan = dma_request_channel(mask, filter, dws);
+ 
+ 		dev_info(&chip->pdev->dev, "using %s for DMA TX\n",
+-					chip->dma.tx_chan->dev->device.bus_id);
++				dev_name(&chip->dma.tx_chan->dev->device));
+ 		set_bit(DMA_TX_CHAN_PRESENT, &chip->flags);
+ 	}
+ 
 -- 
 1.5.6.3
