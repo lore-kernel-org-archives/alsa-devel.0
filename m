@@ -1,28 +1,19 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: SoC pxa2xx-ac97 + wm9705 +
-	touchscreen	suspend/resume
-Date: Thu, 2 Apr 2009 15:53:30 +0100
-Message-ID: <20090402145330.GA21646@sirena.org.uk>
-References: <20090330223720.GC31396@n2100.arm.linux.org.uk>
-	<20090331103048.GC11800@sirena.org.uk>
-	<20090331183755.GA27451@n2100.arm.linux.org.uk>
-	<20090401192710.GH21294@sirena.org.uk>
-	<20090402121348.GC9522@n2100.arm.linux.org.uk>
-	<20090402121803.GD4527@sirena.org.uk>
-	<20090402123844.GD9522@n2100.arm.linux.org.uk>
-	<20090402133124.GE9522@n2100.arm.linux.org.uk>
-	<20090402141200.GH4527@sirena.org.uk>
-	<20090402144017.GI9522@n2100.arm.linux.org.uk>
+Subject: Re: [PATCH 1/5] ARM: DaVinci: ASoC: Add mcasp
+	support	for DM646x
+Date: Thu, 2 Apr 2009 16:06:41 +0100
+Message-ID: <20090402150641.GI4527@sirena.org.uk>
+References: <1238723238-27360-1-git-send-email-naresh@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 49000103859
+	by alsa0.perex.cz (Postfix) with ESMTP id F0F18243F3
 	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Apr 2009 16:53:31 +0200 (CEST)
+	Thu,  2 Apr 2009 17:06:41 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20090402144017.GI9522@n2100.arm.linux.org.uk>
+In-Reply-To: <1238723238-27360-1-git-send-email-naresh@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,88 +23,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: alsa-devel@alsa-project.org, eric miao <eric.y.miao@gmail.com>, linux-arm-kernel@lists.arm.linux.org.uk, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Naresh Medisetty <naresh@ti.com>
+Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 02, 2009 at 03:40:17PM +0100, Russell King - ARM Linux wrote:
+On Thu, Apr 02, 2009 at 09:47:18PM -0400, Naresh Medisetty wrote:
 
-> It's actually worse though - using my devmem2 hack no longer restores
-> things to a functional state.  devmem2 says the control register is
-> now set as:
+This all looks pretty good - the comments below are all pretty small,
+mostly coding style and questions.
 
-Gah, I see one problem with the patch I sent.  The one below *might* do
-better if you have time to test it.  In any case, thanks a lot for your
-help here - I'm fairly confident that the remaining problems you're
-seeing are due to the lack of suspend and resume operations in the
-WM9705 driver.
+> +
+> +	/* programming GBLCTL needs to read back from GBLCTL and verfiy */
+> +	/* loop count is to avoid the lock-up */
+> +	for (i = 0; (i < 1000) && ((mcasp_get_reg(regs) & val) != val); i++);
 
->From eeec4f57eb9d8f5f45d9536319e0eb130cc3ba28 Mon Sep 17 00:00:00 2001
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Date: Thu, 2 Apr 2009 15:49:41 +0100
-Subject: [PATCH] ASoC: Implement suspend and resume operations for WM9705
+Should this warn if the loop times out?  For legibility I'd rewrite as:
 
-Compile tested only.
+	for (i = 0; i < 1000; i++)
+		if ((mcasp_get_reg(regs) & val) == val)
+			break;
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm9705.c |   37 +++++++++++++++++++++++++++++++++++++
- 1 files changed, 37 insertions(+), 0 deletions(-)
+The ; should be on a separate line at least.
 
-diff --git a/sound/soc/codecs/wm9705.c b/sound/soc/codecs/wm9705.c
-index 3265817..2109b50 100644
---- a/sound/soc/codecs/wm9705.c
-+++ b/sound/soc/codecs/wm9705.c
-@@ -317,6 +317,41 @@ static int wm9705_reset(struct snd_soc_codec *codec)
- 	return -EIO;
- }
- 
-+#ifdef CONFIG_PM
-+static int wm9705_soc_suspend(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec *codec = socdev->card->codec;
-+
-+	soc_ac97_ops.write(codec->ac97, AC97_POWERDONW, 0xffff);
-+
-+	return 0;
-+}
-+
-+static int wm9705_soc_resume(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec *codec = socdev->card->codec;
-+	int i, ret;
-+	u16 *cache = codec->reg_cache;
-+
-+	ret = wm9705_reset(codec);
-+	if (ret < 0) {
-+		printk(KERN_ERR "could not reset AC97 codec\n");
-+		return ret;
-+	}
-+
-+	for (i = 2; i < ARRAY_SIZE(wm9705_reg) << 1; i += 2) {
-+		soc_ac97_ops.write(codec->ac97, i, cache[i>>1]);
-+	}
-+
-+	return 0;
-+}
-+#else
-+#define wm9705_soc_suspend NULL
-+#define wm9705_soc_resume NULL
-+#endif
-+
- static int wm9705_soc_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-@@ -407,6 +442,8 @@ static int wm9705_soc_remove(struct platform_device *pdev)
- struct snd_soc_codec_device soc_codec_dev_wm9705 = {
- 	.probe = 	wm9705_soc_probe,
- 	.remove = 	wm9705_soc_remove,
-+	.suspend =	wm9705_soc_suspend,
-+	.resume =	wm9705_soc_resume,
- };
- EXPORT_SYMBOL_GPL(soc_codec_dev_wm9705);
- 
--- 
-1.6.2.1
+> +int davinci_i2s_startup(struct snd_pcm_substream *substream,
+> +							struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+> +	struct davinci_audio_dev *dev = rtd->dai->cpu_dai->private_data;
+> +
+> +	cpu_dai->dma_data = dev->dma_params[substream->stream];
+
+cpu_dai is passed in as the dai parameter, no need to look it up like
+this (in the past it wasn't - most of the code hasn't yet been fixed up
+to take advantage of this yet).
+
+> +int davinci_i2s_mcasp_probe(struct platform_device *pdev,
+> +							struct snd_soc_dai *dai)
+
+Indentation?
+
+> +		mem = platform_get_resource(pdev, IORESOURCE_MEM, link_cnt);
+> +		if (!mem) {
+> +			dev_err(&pdev->dev, "no mem resource?\n");
+> +			ret = -ENODEV;
+> +		}
+> +		ioarea = request_mem_region(mem->start,
+> +				(mem->end - mem->start) + 1, pdev->name);
+> +		if (!ioarea) {
+> +			dev_err(&pdev->dev, "Audio region already claimed\n");
+> +			ret = -EBUSY;
+> +		}
+
+Should these be jumping to the unwind code?
+
+> +
+> +		dev = kzalloc(sizeof(struct davinci_audio_dev) *
+> +			card->num_links, GFP_KERNEL);
+> +		if (!dev) {
+> +			return	-ENOMEM;
+> +			goto err_release_region;
+> +		}
+
+return followed by goto?
+
+> +		dma_data = kzalloc(sizeof(struct davinci_pcm_dma_params) *
+> +					(card->num_links << 1), GFP_KERNEL);
+> +		if (!dma_data)
+> +				goto err_release_dev;
+
+Do you need to set ret here?
+
+> +	}
+> +}
+> +static void davinci_hw_iis_param(struct snd_pcm_substream *substream)
+
+Blank line between functions, please.
+
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> +		/* bit stream is MSB first */
+> +		mcasp_set_bits(dev->base + DAVINCI_MCASP_AHCLKXCTL_REG,
+> +				AHCLKXE);
+
+For I2S you should have one BCLK before MSB - is that happening (it may
+well be, I've no knowledge of your hardware)?
+
+> +	} else {
+> +		/* bit stream is MSB first with no delay */
+> +		mcasp_set_bits(dev->base + DAVINCI_MCASP_RXFMT_REG,
+> +				FSRDLY(1) | RXORD);
+
+The comment and code don't look like they match up (but again, I don't
+have any knowledge of this specific hardware).
