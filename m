@@ -1,25 +1,17 @@
-From: Chuck Ebbert <cebbert@redhat.com>
-Subject: Rewrite of hw_ptr updaters makes things worse?
-Date: Wed, 1 Apr 2009 18:46:27 -0400
-Message-ID: <20090401184627.5034c20d@dhcp-100-2-144.bos.redhat.com>
+From: Micah Bucy <micah.bucy@gmail.com>
+Subject: iMac 9,1 sound
+Date: Wed, 1 Apr 2009 20:04:32 -0400
+Message-ID: <e40c6ffa0904011704y2d4e1029p854244c132897541@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.redhat.com (mx2.redhat.com [66.187.237.31])
-	by alsa0.perex.cz (Postfix) with ESMTP id C798F103839
-	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Apr 2009 00:46:47 +0200 (CEST)
-Received: from int-mx2.corp.redhat.com (int-mx2.corp.redhat.com [172.16.27.26])
-	by mx2.redhat.com (8.13.8/8.13.8) with ESMTP id n31MkkOR021596
-	for <alsa-devel@alsa-project.org>; Wed, 1 Apr 2009 18:46:46 -0400
-Received: from ns3.rdu.redhat.com (ns3.rdu.redhat.com [10.11.255.199])
-	by int-mx2.corp.redhat.com (8.13.1/8.13.1) with ESMTP id n31Mkkvk021445
-	for <alsa-devel@alsa-project.org>; Wed, 1 Apr 2009 18:46:47 -0400
-Received: from dhcp-100-2-144.bos.redhat.com (dhcp-100-2-144.bos.redhat.com
-	[10.16.2.144])
-	by ns3.rdu.redhat.com (8.13.8/8.13.8) with ESMTP id n31MkjIn031786
-	for <alsa-devel@alsa-project.org>; Wed, 1 Apr 2009 18:46:45 -0400
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id E2BAD244AA
+	for <Alsa-devel@alsa-project.org>;
+	Thu,  2 Apr 2009 02:04:35 +0200 (CEST)
+Received: by yw-out-1718.google.com with SMTP id 5so243708ywr.2
+	for <Alsa-devel@alsa-project.org>; Wed, 01 Apr 2009 17:04:34 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,29 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-After adding these patches from 2.6.30 to a 2.6.29 kernel, pulseaudio problems
-are worse:
+I was able to get sound working on the new iMac by adding the following to
+alsa-driver-1.0.19/alsa-kernel/pci/hda/patch_realtek.c
 
-ALSA: pcm - Reset invalid position even without debug option
-ALSA: pcm - Fix delta calculation at boundary overlap
-ALSA: pcm - Safer boundary checks
-ALSA: Rewrite hw_ptr updaters
+case 0x106b4900: /* iMac 9,1 */
 
+underneath line 7013
+case 0x106b1000: /* iMac 24 */
 
-Mar 28 14:28:20 platon pulseaudio[3040]: alsa-sink.c: Increasing wakeup
-watermark to 60,00 ms
-Mar 28 14:31:35 platon pulseaudio[3040]: alsa-sink.c: Increasing wakeup
-watermark to 70,00 ms
-Mar 28 14:31:35 platon pulseaudio[3040]: alsa-sink.c: Increasing wakeup
-watermark to 80,00 ms
-Mar 28 14:31:35 platon pulseaudio[3040]: alsa-util.c: snd_pcm_avail() returned
-a value that is exceptionally large: 4294952932 bytes (24347805 ms).
-Mar 28 14:31:35 platon pulseaudio[3040]: alsa-util.c: Most likely this is a bug
-in the ALSA driver 'snd_intel8x0'. Please report this issue to the ALSA
-developers.
-Mar 28 14:31:35 platon pulseaudio[3040]: rtpoll.c: Assertion 'usec <=
-((pa_usec_t) 1000000ULL)*60ULL*60ULL' failed at pulsecore/rtpoll.c:548,
-function pa_rtpoll_set_timer_relative(). Aborting.
+(this kept it from using the alc883 since the revision_id is 0x100103).
+
+I did find though, that using the mbp3 option is what allowed sound to
+work.  The same issues with the macbook pro aluminum apply here.  the
+channel must be switched to 2ch to mute built-in speakers and to 6ch to
+unmute.  There is another issue here though.  the playback from the speakers
+is barely audible, i'm guessing it's similar to the issue with the right
+speaker on the macbook pro.  I'm guessing there needs to be adjustments to
+the pins defined.
+
+My current alsa-info resides at
+http://www.alsa-project.org/db/?f=5bfaadf03f7134e9ef2c3a934fb4084d36ba2d93
+
+If there's anything else I can do to help this along, let me know.  I do
+have the macbook pro aluminum, so I can test there as well.
+
+-Micah
