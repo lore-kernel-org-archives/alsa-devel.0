@@ -1,17 +1,20 @@
-From: Micah Bucy <micah.bucy@gmail.com>
-Subject: iMac 9,1 sound
-Date: Wed, 1 Apr 2009 20:04:32 -0400
-Message-ID: <e40c6ffa0904011704y2d4e1029p854244c132897541@mail.gmail.com>
+From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+Subject: Re: [PATCH 0/7] snd-atmel-ac97c: misc fixes and error
+ reporting
+Date: Thu, 2 Apr 2009 07:04:57 +0200
+Message-ID: <20090402070457.33500c8b@hcegtvedt>
+References: <1237898870-15780-1-git-send-email-hans-christian.egtvedt@atmel.com>
+	<20090401155006.53a8b7e0@hcegtvedt>
+	<20090401153724.GD21294@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id E2BAD244AA
-	for <Alsa-devel@alsa-project.org>;
-	Thu,  2 Apr 2009 02:04:35 +0200 (CEST)
-Received: by yw-out-1718.google.com with SMTP id 5so243708ywr.2
-	for <Alsa-devel@alsa-project.org>; Wed, 01 Apr 2009 17:04:34 -0700 (PDT)
+Received: from relay.atmel.no (relay.atmel.no [80.232.32.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id B2421243E0
+	for <alsa-devel@alsa-project.org>;
+	Thu,  2 Apr 2009 07:04:59 +0200 (CEST)
+In-Reply-To: <20090401153724.GD21294@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,31 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I was able to get sound working on the new iMac by adding the following to
-alsa-driver-1.0.19/alsa-kernel/pci/hda/patch_realtek.c
+On Wed, 1 Apr 2009 16:37:24 +0100
+Mark Brown <broonie@sirena.org.uk> wrote:
 
-case 0x106b4900: /* iMac 9,1 */
+> On Wed, Apr 01, 2009 at 03:50:06PM +0200, Hans-Christian Egtvedt
+> wrote:
+> 
+> > Any news about this patch series? It would be great if it could
+> > make it in with this merge window.
+> 
+> Takashi is away at the minute - I'm not entirely sure when he's due
+> back.  If he doesn't notice the patches in the backlog when he returns
+> it'd be worth resubmitting with a CC to him (this is a good idea in
+> general when submitting ALSA patches).
 
-underneath line 7013
-case 0x106b1000: /* iMac 24 */
+Okay, thanks, I think I'll do a resubmit then with Takashi on CC, since
+I am leaving for holidays later today.
 
-(this kept it from using the alc883 since the revision_id is 0x100103).
-
-I did find though, that using the mbp3 option is what allowed sound to
-work.  The same issues with the macbook pro aluminum apply here.  the
-channel must be switched to 2ch to mute built-in speakers and to 6ch to
-unmute.  There is another issue here though.  the playback from the speakers
-is barely audible, i'm guessing it's similar to the issue with the right
-speaker on the macbook pro.  I'm guessing there needs to be adjustments to
-the pins defined.
-
-My current alsa-info resides at
-http://www.alsa-project.org/db/?f=5bfaadf03f7134e9ef2c3a934fb4084d36ba2d93
-
-If there's anything else I can do to help this along, let me know.  I do
-have the macbook pro aluminum, so I can test there as well.
-
--Micah
+-- 
+Best regards,
+Hans-Christian Egtvedt
