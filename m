@@ -1,19 +1,28 @@
-From: Naresh Medisetty <naresh@ti.com>
-Subject: [PATCH 5/5] ARM: DaVinci: ASoC: Add machine driver
-	support for DM646x
-Date: Thu,  2 Apr 2009 21:58:17 -0400
-Message-ID: <1238723897-27687-1-git-send-email-naresh@ti.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: SoC pxa2xx-ac97 + wm9705 +
+	touchscreen	suspend/resume
+Date: Thu, 2 Apr 2009 15:53:30 +0100
+Message-ID: <20090402145330.GA21646@sirena.org.uk>
+References: <20090330223720.GC31396@n2100.arm.linux.org.uk>
+	<20090331103048.GC11800@sirena.org.uk>
+	<20090331183755.GA27451@n2100.arm.linux.org.uk>
+	<20090401192710.GH21294@sirena.org.uk>
+	<20090402121348.GC9522@n2100.arm.linux.org.uk>
+	<20090402121803.GD4527@sirena.org.uk>
+	<20090402123844.GD9522@n2100.arm.linux.org.uk>
+	<20090402133124.GE9522@n2100.arm.linux.org.uk>
+	<20090402141200.GH4527@sirena.org.uk>
+	<20090402144017.GI9522@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9F07B103882
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 49000103859
 	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Apr 2009 16:45:45 +0200 (CEST)
-Received: from dflp53.itg.ti.com ([128.247.5.6])
-	by arroyo.ext.ti.com (8.13.7/8.13.7) with ESMTP id n32EjdJ3006944
-	for <alsa-devel@alsa-project.org>; Thu, 2 Apr 2009 09:45:44 -0500
+	Thu,  2 Apr 2009 16:53:31 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20090402144017.GI9522@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,222 +32,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: davinci-linux-open-source@linux.davincidsp.com, Naresh Medisetty <naresh@ti.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: alsa-devel@alsa-project.org, eric miao <eric.y.miao@gmail.com>, linux-arm-kernel@lists.arm.linux.org.uk, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-This patch does the following: 
-(1) Add support for the DM646x machine 
-(2)Introduce the platform driver model to get platform data for all the machines
-including dm355 and dm644x.
+On Thu, Apr 02, 2009 at 03:40:17PM +0100, Russell King - ARM Linux wrote:
 
-Signed-off-by: Naresh Medisetty <naresh@ti.com>
+> It's actually worse though - using my devmem2 hack no longer restores
+> things to a functional state.  devmem2 says the control register is
+> now set as:
+
+Gah, I see one problem with the patch I sent.  The one below *might* do
+better if you have time to test it.  In any case, thanks a lot for your
+help here - I'm fairly confident that the remaining problems you're
+seeing are due to the lack of suspend and resume operations in the
+WM9705 driver.
+
+>From eeec4f57eb9d8f5f45d9536319e0eb130cc3ba28 Mon Sep 17 00:00:00 2001
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Date: Thu, 2 Apr 2009 15:49:41 +0100
+Subject: [PATCH] ASoC: Implement suspend and resume operations for WM9705
+
+Compile tested only.
+
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
-This patch applies against ALSA mainline - that's the topic/asoc
-branch of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+ sound/soc/codecs/wm9705.c |   37 +++++++++++++++++++++++++++++++++++++
+ 1 files changed, 37 insertions(+), 0 deletions(-)
 
- sound/soc/davinci/davinci-evm.c |  129 ++++++++++++++++++++++++++++++++-------
- 1 files changed, 107 insertions(+), 22 deletions(-)
-
-diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
-index 9b90b34..b89a322 100644
---- a/sound/soc/davinci/davinci-evm.c
-+++ b/sound/soc/davinci/davinci-evm.c
-@@ -20,11 +20,19 @@
- #include <sound/soc-dapm.h>
- 
- #include <asm/dma.h>
--#include <mach/hardware.h>
-+#include <asm/mach-types.h>
-+
-+#include <mach/asp.h>
-+#include <mach/edma.h>
-+#include <mach/mux.h>
-+#include <mach/cpu.h>
-+
- 
- #include "../codecs/tlv320aic3x.h"
-+#include "../codecs/davinci_codec_stubs.h"
- #include "davinci-pcm.h"
- #include "davinci-i2s.h"
-+#include "davinci-i2s-mcasp.h"
- 
- 
- #define AUDIO_FORMAT (SND_SOC_DAIFMT_DSP_B | \
-@@ -39,7 +47,7 @@ static int evm_hw_params(struct snd_pcm_substream *substream,
- 	unsigned sysclk;
- 
- 	/* ASP1 on DM355 EVM is clocked by an external oscillator */
--	if (machine_is_davinci_dm355_evm())
-+	if (machine_is_davinci_dm355_evm() || machine_is_davinci_dm6467_evm())
- 		sysclk = 27000000;
- 
- 	/* ASP0 in DM6446 EVM is clocked by U55, as configured by
-@@ -140,6 +148,25 @@ static struct snd_soc_dai_link evm_dai = {
- 	.ops = &evm_ops,
- };
- 
-+static struct snd_soc_dai_link dm6467_evm_dai[] = {
-+	{
-+		.name = "TLV320AIC3X",
-+		.stream_name = "AIC3X",
-+		.cpu_dai = davinci_iis_mcasp_dai,
-+		.codec_dai = &aic3x_dai,
-+		.init = evm_aic3x_init,
-+		.ops = &evm_ops,
-+	},
-+	{
-+		.name = "MCASP SPDIF",
-+		.stream_name = "spdif",
-+		.cpu_dai = &davinci_iis_mcasp_dai[1],
-+		.codec_dai = dit_stub_dai,
-+		.ops = &evm_ops,
-+	},
-+};
-+
-+
- /* davinci-evm audio machine driver */
- static struct snd_soc_card snd_soc_card_evm = {
- 	.name = "DaVinci EVM",
-@@ -148,12 +175,27 @@ static struct snd_soc_card snd_soc_card_evm = {
- 	.num_links = 1,
- };
- 
-+/* davinci dm6467 evm audio machine driver */
-+static struct snd_soc_card dm6467_snd_soc_card_evm = {
-+		.name = "DaVinci DM6467 EVM",
-+		.platform = &davinci_soc_platform,
-+		.dai_link = dm6467_evm_dai,
-+		.num_links = 2,
-+};
-+
- /* evm audio private data */
- static struct aic3x_setup_data evm_aic3x_setup = {
- 	.i2c_bus = 0,
- 	.i2c_address = 0x1b,
- };
- 
-+/* dm6467 evm audio private data */
-+static struct aic3x_setup_data dm6467_evm_aic3x_setup = {
-+       .i2c_bus = 1,
-+       .i2c_address = 0x18,
-+};
-+
-+
- /* evm audio subsystem */
- static struct snd_soc_device evm_snd_devdata = {
- 	.card = &snd_soc_card_evm,
-@@ -161,36 +203,58 @@ static struct snd_soc_device evm_snd_devdata = {
- 	.codec_data = &evm_aic3x_setup,
- };
- 
--static struct resource evm_snd_resources[] = {
--	{
--		.start = DAVINCI_MCBSP_BASE,
--		.end = DAVINCI_MCBSP_BASE + SZ_8K - 1,
--		.flags = IORESOURCE_MEM,
--	},
--};
--
--static struct evm_snd_platform_data evm_snd_data = {
--	.tx_dma_ch	= DM644X_DMACH_MCBSP_TX,
--	.rx_dma_ch	= DM644X_DMACH_MCBSP_RX,
-+/* evm audio subsystem */
-+static struct snd_soc_device dm6467_evm_snd_devdata = {
-+	.card = &dm6467_snd_soc_card_evm,
-+	.codec_dev = &soc_codec_dev_aic3x,
-+	.codec_data = &dm6467_evm_aic3x_setup,
- };
- 
- static struct platform_device *evm_snd_device;
- 
--static int __init evm_init(void)
-+static int davinci_evm_probe(struct platform_device *pdev)
- {
-+	struct resource *resources;
-+	struct evm_snd_platform_data *data = pdev->dev.platform_data;
-+	struct snd_soc_device *evm_snd_dev_data;
-+	int index;
- 	int ret;
-+	int res_size =  pdev->num_resources;
-+
-+	if (!data)
-+		return -ENODEV;
-+
-+	resources = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!resources)
-+		return -ENODEV;
-+
-+	if (machine_is_davinci_evm()) {
-+		davinci_cfg_reg(DM644X_MCBSP);
-+		evm_snd_dev_data = &evm_snd_devdata;
-+		index = 0;
-+	} else if (machine_is_davinci_dm355_evm()) {
-+		/* we don't use ASP1 IRQs, or we'd need to mux them ... */
-+		davinci_cfg_reg(DM355_EVT8_ASP1_TX);
-+		davinci_cfg_reg(DM355_EVT9_ASP1_RX);
-+		evm_snd_dev_data = &evm_snd_devdata;
-+		index = 1;
-+	} else if (machine_is_davinci_dm6467_evm()) {
-+		evm_snd_dev_data = &dm6467_evm_snd_devdata;
-+		index = 0;
-+	} else
-+		return -EINVAL;
- 
--	evm_snd_device = platform_device_alloc("soc-audio", 0);
-+	evm_snd_device = platform_device_alloc("soc-audio", index);
- 	if (!evm_snd_device)
- 		return -ENOMEM;
- 
--	platform_set_drvdata(evm_snd_device, &evm_snd_devdata);
--	evm_snd_devdata.dev = &evm_snd_device->dev;
--	platform_device_add_data(evm_snd_device, &evm_snd_data,
--				 sizeof(evm_snd_data));
-+       platform_set_drvdata(evm_snd_device, evm_snd_dev_data);
-+       evm_snd_dev_data->dev = &evm_snd_device->dev;
-+       evm_snd_device->dev.platform_data = data;
-+
-+       ret = platform_device_add_resources(evm_snd_device,
-+			resources, res_size);
- 
--	ret = platform_device_add_resources(evm_snd_device, evm_snd_resources,
--					    ARRAY_SIZE(evm_snd_resources));
- 	if (ret) {
- 		platform_device_put(evm_snd_device);
- 		return ret;
-@@ -203,11 +267,32 @@ static int __init evm_init(void)
- 	return ret;
+diff --git a/sound/soc/codecs/wm9705.c b/sound/soc/codecs/wm9705.c
+index 3265817..2109b50 100644
+--- a/sound/soc/codecs/wm9705.c
++++ b/sound/soc/codecs/wm9705.c
+@@ -317,6 +317,41 @@ static int wm9705_reset(struct snd_soc_codec *codec)
+ 	return -EIO;
  }
  
--static void __exit evm_exit(void)
-+static int davici_evm_remove(struct platform_device *pdev)
- {
- 	platform_device_unregister(evm_snd_device);
++#ifdef CONFIG_PM
++static int wm9705_soc_suspend(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec = socdev->card->codec;
++
++	soc_ac97_ops.write(codec->ac97, AC97_POWERDONW, 0xffff);
++
 +	return 0;
 +}
-+static struct platform_driver davinci_asoc_driver = {
-+	.probe		= davinci_evm_probe,
-+	.remove		= davici_evm_remove,
-+	.driver		= {
-+		.name	= "davinci-asoc",
-+		.owner	= THIS_MODULE,
-+	},
-+};
 +
-+static int __init evm_init(void)
++static int wm9705_soc_resume(struct platform_device *pdev)
 +{
-+	return platform_driver_register(&davinci_asoc_driver);
- }
- 
-+static void __exit evm_exit(void)
-+{
-+	platform_driver_unregister(&davinci_asoc_driver);
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec = socdev->card->codec;
++	int i, ret;
++	u16 *cache = codec->reg_cache;
++
++	ret = wm9705_reset(codec);
++	if (ret < 0) {
++		printk(KERN_ERR "could not reset AC97 codec\n");
++		return ret;
++	}
++
++	for (i = 2; i < ARRAY_SIZE(wm9705_reg) << 1; i += 2) {
++		soc_ac97_ops.write(codec->ac97, i, cache[i>>1]);
++	}
++
++	return 0;
 +}
++#else
++#define wm9705_soc_suspend NULL
++#define wm9705_soc_resume NULL
++#endif
 +
-+
-+
- module_init(evm_init);
- module_exit(evm_exit);
+ static int wm9705_soc_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+@@ -407,6 +442,8 @@ static int wm9705_soc_remove(struct platform_device *pdev)
+ struct snd_soc_codec_device soc_codec_dev_wm9705 = {
+ 	.probe = 	wm9705_soc_probe,
+ 	.remove = 	wm9705_soc_remove,
++	.suspend =	wm9705_soc_suspend,
++	.resume =	wm9705_soc_resume,
+ };
+ EXPORT_SYMBOL_GPL(soc_codec_dev_wm9705);
  
 -- 
-1.5.6
+1.6.2.1
