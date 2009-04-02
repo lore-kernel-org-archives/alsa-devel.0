@@ -1,20 +1,23 @@
 From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-Subject: Re: [PATCH 0/7] snd-atmel-ac97c: misc fixes and error
- reporting
-Date: Thu, 2 Apr 2009 07:04:57 +0200
-Message-ID: <20090402070457.33500c8b@hcegtvedt>
-References: <1237898870-15780-1-git-send-email-hans-christian.egtvedt@atmel.com>
-	<20090401155006.53a8b7e0@hcegtvedt>
-	<20090401153724.GD21294@sirena.org.uk>
+Subject: [PATCH v2 7/9] snd-atmel-ac97c: cleanup registers when
+	removing driver
+Date: Thu,  2 Apr 2009 08:21:16 +0200
+Message-ID: <1238653278-2546-7-git-send-email-hans-christian.egtvedt@atmel.com>
+References: <1238653278-2546-1-git-send-email-hans-christian.egtvedt@atmel.com>
+	<1238653278-2546-2-git-send-email-hans-christian.egtvedt@atmel.com>
+	<1238653278-2546-3-git-send-email-hans-christian.egtvedt@atmel.com>
+	<1238653278-2546-4-git-send-email-hans-christian.egtvedt@atmel.com>
+	<1238653278-2546-5-git-send-email-hans-christian.egtvedt@atmel.com>
+	<1238653278-2546-6-git-send-email-hans-christian.egtvedt@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from relay.atmel.no (relay.atmel.no [80.232.32.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id B2421243E0
+	by alsa0.perex.cz (Postfix) with ESMTP id 9419924438
 	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Apr 2009 07:04:59 +0200 (CEST)
-In-Reply-To: <20090401153724.GD21294@sirena.org.uk>
+	Thu,  2 Apr 2009 08:21:19 +0200 (CEST)
+In-Reply-To: <1238653278-2546-6-git-send-email-hans-christian.egtvedt@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,27 +27,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 1 Apr 2009 16:37:24 +0100
-Mark Brown <broonie@sirena.org.uk> wrote:
+This patch will set the channel A and control channel mode register to
+zero before disabling the AC97C peripheral.
 
-> On Wed, Apr 01, 2009 at 03:50:06PM +0200, Hans-Christian Egtvedt
-> wrote:
-> 
-> > Any news about this patch series? It would be great if it could
-> > make it in with this merge window.
-> 
-> Takashi is away at the minute - I'm not entirely sure when he's due
-> back.  If he doesn't notice the patches in the backlog when he returns
-> it'd be worth resubmitting with a CC to him (this is a good idea in
-> general when submitting ALSA patches).
+Signed-off-by: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+---
+ sound/atmel/ac97c.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-Okay, thanks, I think I'll do a resubmit then with Takashi on CC, since
-I am leaving for holidays later today.
-
+diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
+index 90527c1..4df9ca4 100644
+--- a/sound/atmel/ac97c.c
++++ b/sound/atmel/ac97c.c
+@@ -969,6 +969,10 @@ static int __devexit atmel_ac97c_remove(struct platform_device *pdev)
+ 	if (gpio_is_valid(chip->reset_pin))
+ 		gpio_free(chip->reset_pin);
+ 
++	ac97c_writel(chip, CAMR, 0);
++	ac97c_writel(chip, COMR, 0);
++	ac97c_writel(chip, MR,   0);
++
+ 	clk_disable(chip->pclk);
+ 	clk_put(chip->pclk);
+ 	iounmap(chip->regs);
 -- 
-Best regards,
-Hans-Christian Egtvedt
+1.5.6.3
