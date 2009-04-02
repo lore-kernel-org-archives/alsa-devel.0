@@ -1,27 +1,20 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: SoC pxa2xx-ac97 + wm9705 +
-	touchscreen	suspend/resume
-Date: Thu, 2 Apr 2009 15:40:17 +0100
-Message-ID: <20090402144017.GI9522@n2100.arm.linux.org.uk>
-References: <20090330223720.GC31396@n2100.arm.linux.org.uk>
-	<20090331103048.GC11800@sirena.org.uk>
-	<20090331183755.GA27451@n2100.arm.linux.org.uk>
-	<20090401192710.GH21294@sirena.org.uk>
-	<20090402121348.GC9522@n2100.arm.linux.org.uk>
-	<20090402121803.GD4527@sirena.org.uk>
-	<20090402123844.GD9522@n2100.arm.linux.org.uk>
-	<20090402133124.GE9522@n2100.arm.linux.org.uk>
-	<20090402141200.GH4527@sirena.org.uk>
+From: "Medisetty, Naresh" <naresh@ti.com>
+Subject: Re: [PATCH 3/3] ARM: DaVinci: ASoC: Add machine driver
+ support for DM646x
+Date: Thu, 2 Apr 2009 20:11:06 +0530
+Message-ID: <FF55437E1F14DA4BAEB721A458B67017069809B0E4@dbde02.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
-	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 920B6103877
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 766CE10387D
 	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Apr 2009 16:40:32 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20090402141200.GH4527@sirena.org.uk>
+	Thu,  2 Apr 2009 16:44:56 +0200 (CEST)
+Received: from dbdp20.itg.ti.com ([172.24.170.38])
+	by comal.ext.ti.com (8.13.7/8.13.7) with ESMTP id n32Eimto021822
+	for <alsa-devel@alsa-project.org>; Thu, 2 Apr 2009 09:44:54 -0500
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,32 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org, eric miao <eric.y.miao@gmail.com>, linux-arm-kernel@lists.arm.linux.org.uk, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 02, 2009 at 03:12:01PM +0100, Mark Brown wrote:
-> Before doing that could you please try the patch below to wm9705.c
-> implementing suspend and resume operations?  It's completely
-> speculative, I don't have a WM9705 test system to hand but I'm
-> moderately confident
 
-No real change - since I got rid of the debug printk's I scattered in
-last time around, I don't know if this patch has changed anything.
+Please ignore this patch since the patch number is wrong.
 
-It's actually worse though - using my devmem2 hack no longer restores
-things to a functional state.  devmem2 says the control register is
-now set as:
+I will re-submit the same patch with proper numbering.
 
-Value at address 0x4050000C: 0xC0002
+Regards
+Naresh
 
-but I'm still seeing lots of:
 
-pxa2xx_ac97_write: write error (ac97_reg=118 GSR=0x0)                           
-pxa2xx_ac97_read: read error (ac97_reg=118 GSR=0x0)                             
-pxa2xx_ac97_read: read error (ac97_reg=118 GSR=0x0)                             
-pxa2xx_ac97_read: read error (ac97_reg=118 GSR=0x0)                             
-...
+This patch does the following:
+(1) Add support for the DM646x machine
+(2)Introduce the platform driver model to get platform data for all the machines
+including dm355 and dm644x.
 
-messages.  Before, setting the control register to '2' (thereby
-releasing the cold reset) caused things to start working again.
+Signed-off-by: Naresh Medisetty naresh@ti.com
+---
+_______________________________________________
+Davinci-linux-open-source mailing list
+Davinci-linux-open-source@linux.davincidsp.com
+http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source
