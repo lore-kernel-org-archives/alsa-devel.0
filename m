@@ -1,19 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: Device creation order
-Date: Fri, 3 Apr 2009 09:31:40 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.0904030921280.17368@eeebox2.perex-int.cz>
+Date: Fri, 03 Apr 2009 09:38:30 +0200
+Message-ID: <49D5BCF6.1020407@ladisch.de>
 References: <20090403015429.GA702@tango.0pointer.de>
 	<alpine.LNX.2.00.0904030904160.17368@eeebox2.perex-int.cz>
-	<20090403072030.GB15466@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id DC49B1037FC
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 6B7EE10380A
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Apr 2009 09:31:40 +0200 (CEST)
-In-Reply-To: <20090403072030.GB15466@buzzloop.caiaq.de>
+	Fri,  3 Apr 2009 09:38:26 +0200 (CEST)
+In-Reply-To: <alpine.LNX.2.00.0904030904160.17368@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,63 +22,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
+To: Jaroslav Kysela <perex@perex.cz>
 Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Lennart Poettering <mznyfn@0pointer.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 3 Apr 2009, Daniel Mack wrote:
+Jaroslav Kysela wrote:
+> Unfortunately, driver may use more complex scenarios like:
+> 
+> - some hardware requires additional firmware - in this case devices
+>    might be created, but they are not useable until firmware is loaded
 
-> On Fri, Apr 03, 2009 at 09:12:34AM +0200, Jaroslav Kysela wrote:
->>> PulseAudio listens for hotplugged audio devices via hal/udev. For each
->>> card ALSA creates a bunch of device nodes in /dev. Before PA can open
->>> the card it needs to make sure that all devices nodes of the card got
->>> properly created. I.e. to make sure that surround sound and SPDIF
->>> works it is not sufficient to wait until one PCM device is available,
->>> but instead that *all* devices that belong to the card are available,
->>> i.e. device nodes created with permissions and ACLs set up
->>> correctly. Unfortunately there is no signal from udev/hal/kernel that
->>> would tell me explicitly that all subdevices of a specific devices are
->>> completely enumerated and device files created for. I have been
->>> discussing this a bit with Kay Sievers and we came to the conclusion
->>> that a simple fix would be if we could rely that the control
->>> (i.e. /dev/snd/controlCxx) device is always the last device to be
->>> created for a card.
->>>
->>> Looking at the drivers this seems to be generally the case, so I was
->>> wondering if I can rely on this? Do all drivers behave like this? Do
->>> all drivers expose a control device? Can we officially declare it part
->>> of the userspace API that the control device is the last one to be
->>> created?
->>
->> Unfortunately, driver may use more complex scenarios like:
->>
->> - some hardware requires additional firmware - in this case devices
->>    might be created, but they are not useable until firmware is loaded
->> - dynamic device creation at runtime - for example we have an
->>    experimental HDA driver configuration code which might change
->>    the arrangement of PCM devices on request from the user space
->>
->> I would suggest to wait awhile with some small timeout (0.5 sec?) for all
->> devices to get the usual static arrangement working and handle extra
->> dynamic cases, too.
->
-> Wouldn't the real fix be to make sure that the event from hal/udev
-> happens after all the initialization has finished, i.e. the device got
-> its firmware, all connected layers finished their work etc? Before all
-> that, the audio device is not really available, right?
+This is only true for drivers that load firmware with a hwdep device
+instead of using request_firmware().  Is there any driver that has not
+yet been converted?  *grep*  ... except usx2y?
 
-But even with this extension, the user space should handle dynamic device 
-reconfiguration (my second example case). The question is, if it makes 
-sense to handle group of devices per card basis or just take single 
-devices and dynamically handle device changes.
+> - dynamic device creation at runtime - for example we have an
+>    experimental HDA driver configuration code which might change
+>    the arrangement of PCM devices on request from the user space
+> 
+> I would suggest to wait awhile with some small timeout (0.5 sec?) for all 
+> devices to get the usual static arrangement working and handle extra
+> dynamic cases, too.
 
-Lennart, why you need to enumerate all devices per card at one time? I 
-think that having mixer access plus one PCM device is enough for minimal 
-configuration for PA.
+The current implementation of the ALSA framework guarantees that the
+control device file is that latest one to be created for all the devices
+created at initialization.  Any devices created later depend on some
+userspace action, so a small timeout won't help in this case.
 
- 					Jaroslav
+In other words:
+1) When the control device file has been created, all other devices
+   (that are created during sound card initialization) are available.
+2) When some device file for a specific sound card is created after the
+   card's control device, the sound card configuration has changed.
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+
+Best regards,
+Clemens
