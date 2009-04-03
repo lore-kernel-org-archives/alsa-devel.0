@@ -1,21 +1,20 @@
 From: Lennart Poettering <mznyfn@0pointer.de>
 Subject: Re: Device creation order
-Date: Fri, 3 Apr 2009 13:51:55 +0200
-Message-ID: <20090403115155.GC15646@tango.0pointer.de>
+Date: Fri, 3 Apr 2009 13:56:47 +0200
+Message-ID: <20090403115647.GD15646@tango.0pointer.de>
 References: <20090403015429.GA702@tango.0pointer.de>
 	<alpine.LNX.2.00.0904030904160.17368@eeebox2.perex-int.cz>
-	<20090403072030.GB15466@buzzloop.caiaq.de>
-	<alpine.LNX.2.00.0904030921280.17368@eeebox2.perex-int.cz>
+	<49D5BCF6.1020407@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id F2D2F103898
+	by alsa0.perex.cz (Postfix) with ESMTP id 8AEF51037FF
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Apr 2009 13:51:56 +0200 (CEST)
+	Fri,  3 Apr 2009 13:56:48 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.00.0904030921280.17368@eeebox2.perex-int.cz>
+In-Reply-To: <49D5BCF6.1020407@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,39 +27,40 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 03.04.09 09:31, Jaroslav Kysela (perex@perex.cz) wrote:
+On Fri, 03.04.09 09:38, Clemens Ladisch (clemens@ladisch.de) wrote:
 
-> >> I would suggest to wait awhile with some small timeout (0.5 sec?) for all
-> >> devices to get the usual static arrangement working and handle extra
-> >> dynamic cases, too.
-> >
-> > Wouldn't the real fix be to make sure that the event from hal/udev
-> > happens after all the initialization has finished, i.e. the device got
-> > its firmware, all connected layers finished their work etc? Before all
-> > that, the audio device is not really available, right?
+> > - dynamic device creation at runtime - for example we have an
+> >    experimental HDA driver configuration code which might change
+> >    the arrangement of PCM devices on request from the user space
+> > 
+> > I would suggest to wait awhile with some small timeout (0.5 sec?) for all 
+> > devices to get the usual static arrangement working and handle extra
+> > dynamic cases, too.
 > 
-> But even with this extension, the user space should handle dynamic device 
-> reconfiguration (my second example case). The question is, if it makes 
-> sense to handle group of devices per card basis or just take single 
-> devices and dynamically handle device changes.
+> The current implementation of the ALSA framework guarantees that the
+> control device file is that latest one to be created for all the devices
+> created at initialization.  Any devices created later depend on some
+> userspace action, so a small timeout won't help in this case.
 > 
-> Lennart, why you need to enumerate all devices per card at one time? I 
-> think that having mixer access plus one PCM device is enough for minimal 
-> configuration for PA.
+> In other words:
+> 1) When the control device file has been created, all other devices
+>    (that are created during sound card initialization) are
+>    available.
 
-PA has no clue how the different PCM device nodes of a card relate to
-each other. To my knowledge Creative cards have multiple PCM device
-nodes that are combined in userspace via 'multi' to make one surround
-device. When PA wants to open that we need to make sure that all PCM
-devices that are necessary for that are fully created. Since we have
-no clue how the PCM devices relate to each other we have no other
-option than to wait for all PCM devices.
+OK. Very good. I'll then change PA to rely on this behaviour and hope
+that this is considered part of the ALSA userspace API and is not
+changed in the future...
 
-Also, as Colin noted we probe a few possible combinations of how we
-can open the audio device to know which combinations the sound card
-supports. It's a bit ugly and slow but the only option right now since
-the name hinting API is too limited for this since it does not tell us
-which devices can be used simultaneously and which ones are exclusive.
+> 2) When some device file for a specific sound card is created after the
+>    card's control device, the sound card configuration has changed.
+
+I'll ignore this for now since Jaroslav mentioned drivers doing this
+are still experimental. But eventually we'd need to know some kind of
+'end notification' for this as well: i..e if the reconfiguration
+causes multiple device nodes to disappear/appear we also need to know
+when they are all complete. A possible simple fix would be to issue an
+udev 'change' event on the control device after the reconfiguration
+finished.
 
 Lennart
 
