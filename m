@@ -1,21 +1,23 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Device creation order
-Date: Fri, 3 Apr 2009 13:58:26 +0200
-Message-ID: <20090403115826.GE15646@tango.0pointer.de>
-References: <20090403015429.GA702@tango.0pointer.de>
-	<alpine.LNX.2.00.0904030904160.17368@eeebox2.perex-int.cz>
-	<49D5BCF6.1020407@ladisch.de>
-	<alpine.LNX.2.00.0904030945380.17368@eeebox2.perex-int.cz>
+From: Ernesto Torres <skullmate@gmail.com>
+Subject: Re: how to use mcbsp for i2s?
+Date: Fri, 3 Apr 2009 10:14:45 -0600
+Message-ID: <fb44c3530904030914w255d1502pec109d6c494b8f1b@mail.gmail.com>
+References: <fb44c3530904011129s7dd5cf1fgcf266fac3fb059d3@mail.gmail.com>
+	<bd7b27490904020048h672ce810j3c79868a7f5ef4e0@mail.gmail.com>
+	<bd7b27490904020320i714cd812i49bd834676ce4dee@mail.gmail.com>
+	<20090402195653.0bcfb59e.jhnikula@gmail.com>
+	<fb44c3530904021027r7a1387cag8507c4a1a88811ca@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 675061037F3
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id A86DF10387A
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Apr 2009 13:58:27 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.00.0904030945380.17368@eeebox2.perex-int.cz>
+	Fri,  3 Apr 2009 18:14:47 +0200 (CEST)
+Received: by yx-out-1718.google.com with SMTP id 4so841026yxp.2
+	for <alsa-devel@alsa-project.org>; Fri, 03 Apr 2009 09:14:46 -0700 (PDT)
+In-Reply-To: <fb44c3530904021027r7a1387cag8507c4a1a88811ca@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,34 +27,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 03.04.09 09:50, Jaroslav Kysela (perex@perex.cz) wrote:
+Im getting this output from muxing:
 
-> >> - dynamic device creation at runtime - for example we have an
-> >>    experimental HDA driver configuration code which might change
-> >>    the arrangement of PCM devices on request from the user space
-> >>
-> >> I would suggest to wait awhile with some small timeout (0.5 sec?) for all
-> >> devices to get the usual static arrangement working and handle extra
-> >> dynamic cases, too.
-> >
-> > The current implementation of the ALSA framework guarantees that the
-> > control device file is that latest one to be created for all the devices
-> > created at initialization.  Any devices created later depend on some
-> > userspace action, so a small timeout won't help in this case.
-> 
-> The timeout might help to let alsactl utility to initialize the 
-> soundcard's mixer. But I agree that alsactl should send a HAL message that 
-> initial setting was done instead.
+MUX: setup AF6_3430_MCBSP3_DX (0xd800216c): 0x0004 ->
+0x0000
+MUX: setup AE6_3430_MCBSP3_DR (0xd800216e): 0x0004 ->
+0x0000
+MUX: setup AF5_3430_MCBSP3_CLKX (0xd8002170): 0x0004 ->
+0x0000
+MUX: setup AE5_3430_MCBSP3_FSX (0xd8002172): 0x0004 -> 0x0000
 
-This is not an issue AFAICS. udev will run alsactl and only *after* that
-finished forward the device creation events to HAL and then PA.
+Is this correct?
 
-Lennart
+On Thu, Apr 2, 2009 at 11:27 AM, Ernesto Torres <skullmate@gmail.com> wrote:
+
+> thank you, I'll try it and let you know how it went
+>
+> On Thu, Apr 2, 2009 at 10:56 AM, Jarkko Nikula <jhnikula@gmail.com> wrote:
+>
+>> On Thu, 2 Apr 2009 13:20:36 +0300
+>> Jarkko Nikula <jhnikula@gmail.com> wrote:
+>>
+>> > > Grrr... cannot find the hack, I'm too keen to delete temporary
+>> > > hacks. I was
+>> > pretty sure I had
+>> > it somewhere.
+>> >
+>> > Basically it was adding necessary pin multiplexing configuration into
+>> > arch/arm/plat-omap/include/mach/mux.h and arch/arm/mach-omap2/mux.c
+>> > and then using omap_cfg_reg(...) in omap3beagle.c to change pin
+>> > configuration from
+>> > GPIOs to McBPS[1 | 3] pins.
+>> >
+>> Yes, I found it. Hack attached :-)
+>>
+>> Now I don't have here Beagle to test but hack still applies on top of
+>> linux-omap. Then you will need CONFIG_OMAP_MUX=y and following lines
+>> into omap3beagle.c or board-omap3beagle.c.
+>>
+>> omap_cfg_reg(AF6_3430_MCBSP3_DX);
+>> omap_cfg_reg(AE6_3430_MCBSP3_DR);
+>> omap_cfg_reg(AF5_3430_MCBSP3_CLKX);
+>> omap_cfg_reg(AE5_3430_MCBSP3_FSX);
+>>
+>>
+>> Jarkko
+>>
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+>>
+>
+>
+> --
+> ___________
+> EhTd
+>
+>
+
 
 -- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+___________
+EhTd
