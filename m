@@ -1,19 +1,26 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Device creation order
-Date: Fri, 3 Apr 2009 09:50:47 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.0904030945380.17368@eeebox2.perex-int.cz>
-References: <20090403015429.GA702@tango.0pointer.de>
-	<alpine.LNX.2.00.0904030904160.17368@eeebox2.perex-int.cz>
-	<49D5BCF6.1020407@ladisch.de>
+From: Frederik Himpe <fhimpe@telenet.be>
+Subject: Missing pcmC0D0p on Intel HDA with Alsa 20090327
+	snapshot
+Date: Fri, 3 Apr 2009 07:20:40 +0000 (UTC)
+Message-ID: <gr4dc8$aph$1@ger.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7BC191037E3
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id D7BBA10380A
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Apr 2009 09:50:48 +0200 (CEST)
-In-Reply-To: <49D5BCF6.1020407@ladisch.de>
+	Fri,  3 Apr 2009 09:55:04 +0200 (CEST)
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1LpeEw-0004Pw-ED
+	for alsa-devel@alsa-project.org; Fri, 03 Apr 2009 07:55:02 +0000
+Received: from artipc9.vub.ac.be ([134.184.26.59])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 03 Apr 2009 07:55:02 +0000
+Received: from fhimpe by artipc9.vub.ac.be with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 03 Apr 2009 07:55:02 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,44 +30,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Lennart Poettering <mznyfn@0pointer.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 3 Apr 2009, Clemens Ladisch wrote:
+Hi, I'm using Mandriva kernel 2.6.29-tmb-desktop-2mdv, which according to 
+the changelog contains Alsa 1.0.19+ snapshot 20090327 and Alsa 1.0.19+ 
+unstable addons snapshot 20090327.
 
-> Jaroslav Kysela wrote:
->> Unfortunately, driver may use more complex scenarios like:
->>
->> - some hardware requires additional firmware - in this case devices
->>    might be created, but they are not useable until firmware is loaded
->
-> This is only true for drivers that load firmware with a hwdep device
-> instead of using request_firmware().  Is there any driver that has not
-> yet been converted?  *grep*  ... except usx2y?
+With this kernel, I have no sound working on my Intel HDA device on a 
+Dell Latitude E6400 system, while sound is working fine with standard 
+2.6.29 kernel.
 
-Good point.
+aplay gives this output:
+ALSA lib pcm_dmix.c:1008:(snd_pcm_dmix_open) unable to open slave
+aplay: main:590: audio open error: No such file or directory
 
->> - dynamic device creation at runtime - for example we have an
->>    experimental HDA driver configuration code which might change
->>    the arrangement of PCM devices on request from the user space
->>
->> I would suggest to wait awhile with some small timeout (0.5 sec?) for all
->> devices to get the usual static arrangement working and handle extra
->> dynamic cases, too.
->
-> The current implementation of the ALSA framework guarantees that the
-> control device file is that latest one to be created for all the devices
-> created at initialization.  Any devices created later depend on some
-> userspace action, so a small timeout won't help in this case.
+According to strace, this is because of a missing /dev/snd/pcmC0D0p.
+# ls /dev/snd
+controlC0  hwC0D0  hwC0D2  seq  timer
 
-The timeout might help to let alsactl utility to initialize the 
-soundcard's mixer. But I agree that alsactl should send a HAL message that 
-initial setting was done instead.
+Some dmesg related output:
+HDA Intel 0000:00:1b.0: PCI INT A -> GSI 21 (level, low) -> IRQ 21
+HDA Intel 0000:00:1b.0: setting latency timer to 64
+input: HDA Digital PCBeep as /class/input/input9
+hda_codec: formats == 0 (nid=0x10, val=0xe07e0, ovrd=0, streams=0xe07e0)
+hda_codec: cannot attach PCM stream 0 for codec #0
+hda_codec: formats == 0 (nid=0x2, val=0x1e07f0, ovrd=1, streams=0x1e07f0)
+hda_codec: cannot attach PCM stream 3 for codec #2
+input: HDA Intel Mic at Sep Left Jack as /class/input/input10
+input: HDA Intel Mic at Ext Right Jack as /class/input/input11
+input: HDA Intel Line Out at Sep Left Jack as /class/input/input12
+input: HDA Intel HP Out at Ext Right Jack as /class/input/input13
 
- 					Jaroslav
+lspci:
+00:1b.0 Audio device [0403]: Intel Corporation 82801I (ICH9 Family) HD 
+Audio Controller [8086:293e] (rev 03)
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+# lsmod | grep snd
+snd_hda_codec_intelhdmi    13856  1 
+snd_hda_codec_idt      69004  1 
+snd_hda_intel          29128  0 
+snd_hda_codec          68864  3 
+snd_hda_codec_intelhdmi,snd_hda_codec_idt,snd_hda_intel
+snd_hwdep               8488  1 snd_hda_codec
+snd_seq_dummy           3140  0 
+snd_seq_oss            31456  0 
+snd_seq_midi_event      7296  1 snd_seq_oss
+snd_seq                56704  5 
+snd_seq_dummy,snd_seq_oss,snd_seq_midi_event
+snd_seq_device          7156  3 snd_seq_dummy,snd_seq_oss,snd_seq
+snd_pcm_oss            43392  0 
+snd_pcm                80520  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
+snd_timer              22832  2 snd_seq,snd_pcm
+snd_mixer_oss          16512  1 snd_pcm_oss
+snd                    65192  12 
+snd_hda_codec_intelhdmi,snd_hda_codec_idt,snd_hda_intel,snd_hda_codec,snd_hwdep,snd_seq_oss,snd_seq,snd_seq_device,snd_pcm_oss,snd_pcm,snd_timer,snd_mixer_oss
+soundcore               7648  1 snd
+snd_page_alloc          9680  2 snd_hda_intel,snd_pcm
+
+-- 
+Frederik Himpe
