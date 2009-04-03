@@ -1,19 +1,16 @@
-From: Justin Mattock <justinmattock@gmail.com>
-Subject: Re: iMac 9,1 sound patch
-Date: Thu, 2 Apr 2009 13:01:18 -0700
-Message-ID: <dd18b0c30904021301y4aaca17er575aa1ba58069d81@mail.gmail.com>
-References: <e40c6ffa0904021030u701701c8w1f1ec65be007ecb2@mail.gmail.com>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Device creation order
+Date: Fri, 3 Apr 2009 03:54:30 +0200
+Message-ID: <20090403015429.GA702@tango.0pointer.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.150])
-	by alsa0.perex.cz (Postfix) with ESMTP id 34ECB1037F3
-	for <Alsa-devel@alsa-project.org>;
-	Thu,  2 Apr 2009 22:01:19 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 5so546333qwf.56
-	for <Alsa-devel@alsa-project.org>; Thu, 02 Apr 2009 13:01:18 -0700 (PDT)
-In-Reply-To: <e40c6ffa0904021030u701701c8w1f1ec65be007ecb2@mail.gmail.com>
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 61A911037F2
+	for <alsa-devel@alsa-project.org>;
+	Fri,  3 Apr 2009 03:54:32 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,39 +20,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Micah Bucy <micah.bucy@gmail.com>
-Cc: Alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2009/4/2 Micah Bucy <micah.bucy@gmail.com>:
-> I tried a git snapshot, but it wasn't working at all, so this patch was
-> developed against the 1.0.19 stable release.
->
-> This is my first time delving into alsa, so I'm not sure if everything is
-> how it should be, including if the patch was correctly created. =A0I can =
-tell
-> you this. =A0I was able to get jack detection working correctly as long a=
-s the
-> 6 channel option is set. =A0I had tried modifying it to only allow a 6ch
-> option as 2ch is for line-out (headphones) only, but the internal speakers
-> wouldn't work, so I left it alone. =A0My guess is, this same setup could =
-be
-> used by the macbook pro 5,1 =A0I'll give it a try over the weekend. =A0I =
-have
-> not tested the built-in mic or the line-in.
->
-> -Micah
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
->
+Heya!
 
-will this work on the new imac, or
-is it something with nvidia?
+PulseAudio listens for hotplugged audio devices via hal/udev. For each
+card ALSA creates a bunch of device nodes in /dev. Before PA can open
+the card it needs to make sure that all devices nodes of the card got
+properly created. I.e. to make sure that surround sound and SPDIF
+works it is not sufficient to wait until one PCM device is available,
+but instead that *all* devices that belong to the card are available,
+i.e. device nodes created with permissions and ACLs set up
+correctly. Unfortunately there is no signal from udev/hal/kernel that
+would tell me explicitly that all subdevices of a specific devices are
+completely enumerated and device files created for. I have been
+discussing this a bit with Kay Sievers and we came to the conclusion
+that a simple fix would be if we could rely that the control
+(i.e. /dev/snd/controlCxx) device is always the last device to be
+created for a card.
 
--- =
+Looking at the drivers this seems to be generally the case, so I was
+wondering if I can rely on this? Do all drivers behave like this? Do
+all drivers expose a control device? Can we officially declare it part
+of the userspace API that the control device is the last one to be
+created?
 
-Justin P. Mattock
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
