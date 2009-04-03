@@ -1,20 +1,19 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Device creation order
-Date: Fri, 3 Apr 2009 13:43:59 +0200
-Message-ID: <20090403114359.GB15646@tango.0pointer.de>
-References: <20090403015429.GA702@tango.0pointer.de>
-	<alpine.LNX.2.00.0904030904160.17368@eeebox2.perex-int.cz>
-	<20090403072030.GB15466@buzzloop.caiaq.de>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: TWL4030: Add actuall support
+	for	96KHz playback support
+Date: Fri, 3 Apr 2009 12:49:24 +0100
+Message-ID: <20090403114923.GA26639@sirena.org.uk>
+References: <1238758745-15424-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8B1FC103884
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id BF113103898
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Apr 2009 13:44:00 +0200 (CEST)
+	Fri,  3 Apr 2009 13:49:30 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20090403072030.GB15466@buzzloop.caiaq.de>
+In-Reply-To: <1238758745-15424-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,37 +23,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: sakoman@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 03.04.09 09:20, Daniel Mack (daniel@caiaq.de) wrote:
-
-> > Unfortunately, driver may use more complex scenarios like:
-> > 
-> > - some hardware requires additional firmware - in this case devices
-> >    might be created, but they are not useable until firmware is loaded
-> > - dynamic device creation at runtime - for example we have an
-> >    experimental HDA driver configuration code which might change
-> >    the arrangement of PCM devices on request from the user space
-> > 
-> > I would suggest to wait awhile with some small timeout (0.5 sec?) for all 
-> > devices to get the usual static arrangement working and handle extra
-> > dynamic cases, too.
+On Fri, Apr 03, 2009 at 02:39:05PM +0300, Peter Ujfalusi wrote:
+> Adds the needed code to be able to use 96KHz playback.
 > 
-> Wouldn't the real fix be to make sure that the event from hal/udev
-> happens after all the initialization has finished, i.e. the device got
-> its firmware, all connected layers finished their work etc? Before all
-> that, the audio device is not really available, right?
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 
-But still, we'd need some kind of 'end marker' to know when all
-devices are set up properly. Just delaying the device creation events
-and then triggering them all at once doesn't really fix the entire
-issue.
-
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Applied, thanks.
