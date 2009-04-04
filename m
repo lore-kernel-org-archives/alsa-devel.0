@@ -1,19 +1,17 @@
-From: Viral Mehta <viral.mehta@einfochips.com>
-Subject: [PATCH][SOUND]volume control for CSWITCH and CROUTE
-Date: Sat, 04 Apr 2009 18:08:28 +0530
-Message-ID: <49D754C4.2030803@einfochips.com>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: Re: [PATCH] sc6000: add support for SC-6600 and SC-7000
+Date: Sat, 4 Apr 2009 14:48:32 +0200
+Message-ID: <20090404144832.0796531d.krzysztof.h1@poczta.fm>
+References: <20090401162231.37e71124.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ahmedabad.einfochips.com (india.einfochips.com [203.88.139.151])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4D4F524519
+Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
+	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id CE0532451C
 	for <alsa-devel@alsa-project.org>;
-	Sat,  4 Apr 2009 14:41:58 +0200 (CEST)
-Received: from unknown (HELO [192.168.14.27]) (viral.mehta@[192.168.14.27])
-	(envelope-sender <viral.mehta@einfochips.com>)
-	by ahmedabad.einfochips.com (qmail-ldap-1.03) with SMTP
-	for <alsa-devel@alsa-project.org>; 4 Apr 2009 12:39:54 -0000
+	Sat,  4 Apr 2009 14:47:02 +0200 (CEST)
+In-Reply-To: <20090401162231.37e71124.krzysztof.h1@poczta.fm>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,49 +21,329 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+To: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>, Rene Herman <rene.herman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Deepika Makhija <deepika.makhija@einfochips.com>
+The previous patch does not apply to the current kernel.
 
-Added an else part to check 
-SNDRV_MIXER_OSS_PRESENT_CVOLUME for MIC (slot 7)
-in commit 36c7b833e5d2501142a371e4e75281d3a29fbd6b
+Here is a new one.
 
-Similarly, checks and volume control is required for 
-SNDRV_MIXER_OSS_PRESENT_CSWITCH and SNDRV_MIXER_OSS_PRESENT_CROUTE
-as well.
-
-Signed-off-by: Deepika Makhija <deepika.makhija@einfochips.com>
-Signed-off-by: Viral Mehta <viral.mehta@einfochips.com>
+Best regards,
+Krzysztof
 ---
---- a/sound/core/oss/mixer-oss.c	2009-04-04 17:06:46.000000000 +0530
-+++ b/sound/core/oss/mixer-oss.c	2009-04-04 17:04:33.000000000 +0530
-@@ -703,19 +703,27 @@ static int snd_mixer_oss_put_volume1(str
- 	if (left || right) {
- 		if (slot->present & SNDRV_MIXER_OSS_PRESENT_PSWITCH)
- 			snd_mixer_oss_put_volume1_sw(fmixer, pslot, slot->numid[SNDRV_MIXER_OSS_ITEM_PSWITCH], left, right, 0);
-+		if (slot->present & SNDRV_MIXER_OSS_PRESENT_CSWITCH)
-+			snd_mixer_oss_put_volume1_sw(fmixer, pslot, slot->numid[SNDRV_MIXER_OSS_ITEM_CSWITCH], left, right, 0);
- 		if (slot->present & SNDRV_MIXER_OSS_PRESENT_GSWITCH)
- 			snd_mixer_oss_put_volume1_sw(fmixer, pslot, slot->numid[SNDRV_MIXER_OSS_ITEM_GSWITCH], left, right, 0);
- 		if (slot->present & SNDRV_MIXER_OSS_PRESENT_PROUTE)
- 			snd_mixer_oss_put_volume1_sw(fmixer, pslot, slot->numid[SNDRV_MIXER_OSS_ITEM_PROUTE], left, right, 1);
-+		if (slot->present & SNDRV_MIXER_OSS_PRESENT_CROUTE)
-+			snd_mixer_oss_put_volume1_sw(fmixer, pslot, slot->numid[SNDRV_MIXER_OSS_ITEM_CROUTE], left, right, 1);
- 		if (slot->present & SNDRV_MIXER_OSS_PRESENT_GROUTE)
- 			snd_mixer_oss_put_volume1_sw(fmixer, pslot, slot->numid[SNDRV_MIXER_OSS_ITEM_GROUTE], left, right, 1);
- 	} else {
- 		if (slot->present & SNDRV_MIXER_OSS_PRESENT_PSWITCH) {
- 			snd_mixer_oss_put_volume1_sw(fmixer, pslot, slot->numid[SNDRV_MIXER_OSS_ITEM_PSWITCH], left, right, 0);
-+		} else if (slot->present & SNDRV_MIXER_OSS_PRESENT_CSWITCH) {
-+			snd_mixer_oss_put_volume1_sw(fmixer, pslot, slot->numid[SNDRV_MIXER_OSS_ITEM_CSWITCH], left, right, 0);
- 		} else if (slot->present & SNDRV_MIXER_OSS_PRESENT_GSWITCH) {
- 			snd_mixer_oss_put_volume1_sw(fmixer, pslot, slot->numid[SNDRV_MIXER_OSS_ITEM_GSWITCH], left, right, 0);
- 		} else if (slot->present & SNDRV_MIXER_OSS_PRESENT_PROUTE) {
- 			snd_mixer_oss_put_volume1_sw(fmixer, pslot, slot->numid[SNDRV_MIXER_OSS_ITEM_PROUTE], left, right, 1);
-+		} else if (slot->present & SNDRV_MIXER_OSS_PRESENT_CROUTE) {
-+			snd_mixer_oss_put_volume1_sw(fmixer, pslot, slot->numid[SNDRV_MIXER_OSS_ITEM_CROUTE], left, right, 1);
- 		} else if (slot->present & SNDRV_MIXER_OSS_PRESENT_GROUTE) {
- 			snd_mixer_oss_put_volume1_sw(fmixer, pslot, slot->numid[SNDRV_MIXER_OSS_ITEM_GROUTE], left, right, 1);
- 		}
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
+
+Add support for later cards based
+on CompuMedia ASC-9408 chipsets.
+These cards were produced by Gallant.
+
+This patch make the OSS aedsp16 driver
+redundant.
+
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
+ sound/isa/Kconfig  |    7 ++-
+ sound/isa/sc6000.c |  127 ++++++++++++++++++++++++++++++++++++++++-----------
+ 2 files changed, 104 insertions(+), 30 deletions(-)
+
+diff --git a/sound/isa/Kconfig b/sound/isa/Kconfig
+index c5c9a92..64129bf 100644
+--- a/sound/isa/Kconfig
++++ b/sound/isa/Kconfig
+@@ -177,15 +177,18 @@ config SND_ES18XX
+ 	  will be called snd-es18xx.
+ 
+ config SND_SC6000
+-	tristate "Gallant SC-6000, Audio Excel DSP 16"
++	tristate "Gallant SC-6000/6600/7000 and Audio Excel DSP 16"
+ 	depends on HAS_IOPORT
+ 	select SND_WSS_LIB
+ 	select SND_OPL3_LIB
+ 	select SND_MPU401_UART
+ 	help
+-	  Say Y here to include support for Gallant SC-6000 card and clones:
++	  Say Y here to include support for Gallant SC-6000, SC-6600, SC-7000
++	  cards and clones:
+ 	  Audio Excel DSP 16 and Zoltrix AV302.
+ 
++	  These cards are based on CompuMedia ASC-9308 or ASC-9408 chips.
++
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-sc6000.
+ 
+diff --git a/sound/isa/sc6000.c b/sound/isa/sc6000.c
+index 7820106..983ab7e 100644
+--- a/sound/isa/sc6000.c
++++ b/sound/isa/sc6000.c
+@@ -2,6 +2,8 @@
+  *  Driver for Gallant SC-6000 soundcard. This card is also known as
+  *  Audio Excel DSP 16 or Zoltrix AV302.
+  *  These cards use CompuMedia ASC-9308 chip + AD1848 codec.
++ *  SC-6600 and SC-7000 cards are also supported. They are based on
++ *  CompuMedia ASC-9408 chip and CS4231 codec.
+  *
+  *  Copyright (C) 2007 Krzysztof Helt <krzysztof.h1@wp.pl>
+  *
+@@ -191,7 +193,7 @@ static __devinit unsigned char sc6000_mpu_irq_to_softcfg(int mpu_irq)
+ 	return val;
+ }
+ 
+-static __devinit int sc6000_wait_data(char __iomem *vport)
++static int sc6000_wait_data(char __iomem *vport)
+ {
+ 	int loop = 1000;
+ 	unsigned char val = 0;
+@@ -206,7 +208,7 @@ static __devinit int sc6000_wait_data(char __iomem *vport)
+ 	return -EAGAIN;
+ }
+ 
+-static __devinit int sc6000_read(char __iomem *vport)
++static int sc6000_read(char __iomem *vport)
+ {
+ 	if (sc6000_wait_data(vport))
+ 		return -EBUSY;
+@@ -215,7 +217,7 @@ static __devinit int sc6000_read(char __iomem *vport)
+ 
+ }
+ 
+-static __devinit int sc6000_write(char __iomem *vport, int cmd)
++static int sc6000_write(char __iomem *vport, int cmd)
+ {
+ 	unsigned char val;
+ 	int loop = 500000;
+@@ -276,8 +278,33 @@ static int __devinit sc6000_dsp_reset(char __iomem *vport)
+ }
+ 
+ /* detection and initialization */
+-static int __devinit sc6000_cfg_write(char __iomem *vport,
+-				      unsigned char softcfg)
++static int __devinit sc6000_hw_cfg_write(char __iomem *vport, const int *cfg)
++{
++	if (sc6000_write(vport, COMMAND_6C) < 0) {
++		snd_printk(KERN_WARNING "CMD 0x%x: failed!\n", COMMAND_6C);
++		return -EIO;
++	}
++	if (sc6000_write(vport, COMMAND_5C) < 0) {
++		snd_printk(KERN_ERR "CMD 0x%x: failed!\n", COMMAND_5C);
++		return -EIO;
++	}
++	if (sc6000_write(vport, cfg[0]) < 0) {
++		snd_printk(KERN_ERR "DATA 0x%x: failed!\n", cfg[0]);
++		return -EIO;
++	}
++	if (sc6000_write(vport, cfg[1]) < 0) {
++		snd_printk(KERN_ERR "DATA 0x%x: failed!\n", cfg[1]);
++		return -EIO;
++	}
++	if (sc6000_write(vport, COMMAND_C5) < 0) {
++		snd_printk(KERN_ERR "CMD 0x%x: failed!\n", COMMAND_C5);
++		return -EIO;
++	}
++
++	return 0;
++}
++
++static int sc6000_cfg_write(char __iomem *vport, unsigned char softcfg)
+ {
+ 
+ 	if (sc6000_write(vport, WRITE_MDIRQ_CFG)) {
+@@ -291,7 +318,7 @@ static int __devinit sc6000_cfg_write(char __iomem *vport,
+ 	return 0;
+ }
+ 
+-static int __devinit sc6000_setup_board(char __iomem *vport, int config)
++static int sc6000_setup_board(char __iomem *vport, int config)
+ {
+ 	int loop = 10;
+ 
+@@ -334,16 +361,38 @@ static int __devinit sc6000_init_mss(char __iomem *vport, int config,
+ 	return 0;
+ }
+ 
+-static int __devinit sc6000_init_board(char __iomem *vport, int irq, int dma,
+-					char __iomem *vmss_port, int mpu_irq)
++static void __devinit sc6000_hw_cfg_encode(char __iomem *vport, int *cfg,
++					   long xport, long xmpu,
++					   long xmss_port)
++{
++	cfg[0] = 0;
++	cfg[1] = 0;
++	if (xport == 0x240)
++		cfg[0] |= 1;
++	if (xmpu != SNDRV_AUTO_PORT) {
++		cfg[0] |= (xmpu & 0x30) >> 2;
++		cfg[1] |= 0x20;
++	}
++	if (xmss_port == 0xe80)
++		cfg[0] |= 0x10;
++	cfg[0] |= 0x40;		/* always set */
++	cfg[1] |= 0x80;		/* enable WSS system */
++	cfg[1] &= ~0x40;	/* disable IDE */
++	snd_printd("hw cfg %x, %x\n", cfg[0], cfg[1]);
++}
++
++static int __devinit sc6000_init_board(char __iomem *vport,
++					char __iomem *vmss_port, int dev)
+ {
+ 	char answer[15];
+ 	char version[2];
+-	int mss_config = sc6000_irq_to_softcfg(irq) |
+-			 sc6000_dma_to_softcfg(dma);
++	int mss_config = sc6000_irq_to_softcfg(irq[dev]) |
++			 sc6000_dma_to_softcfg(dma[dev]);
+ 	int config = mss_config |
+-		     sc6000_mpu_irq_to_softcfg(mpu_irq);
++		     sc6000_mpu_irq_to_softcfg(mpu_irq[dev]);
+ 	int err;
++	int cfg[2];
++	int old = 0;
+ 
+ 	err = sc6000_dsp_reset(vport);
+ 	if (err < 0) {
+@@ -360,7 +409,6 @@ static int __devinit sc6000_init_board(char __iomem *vport, int irq, int dma,
+ 	/*
+ 	 * My SC-6000 card return "SC-6000" in DSPCopyright, so
+ 	 * if we have something different, we have to be warned.
+-	 * Mine returns "SC-6000A " - KH
+ 	 */
+ 	if (strncmp("SC-6000", answer, 7))
+ 		snd_printk(KERN_WARNING "Warning: non SC-6000 audio card!\n");
+@@ -372,13 +420,29 @@ static int __devinit sc6000_init_board(char __iomem *vport, int irq, int dma,
+ 	printk(KERN_INFO PFX "Detected model: %s, DSP version %d.%d\n",
+ 		answer, version[0], version[1]);
+ 
+-	/*
+-	 * 0x0A == (IRQ 7, DMA 1, MIRQ 0)
+-	 */
+-	err = sc6000_cfg_write(vport, 0x0a);
++	/* set configuration */
++	sc6000_hw_cfg_encode(vport, &cfg[0], port[dev], mpu_port[dev],
++			     mss_port[dev]);
++	if (sc6000_hw_cfg_write(vport, cfg) < 0) {
++		snd_printk(KERN_ERR "sc6000_hw_cfg_write: failed!\n");
++		return -EIO;
++	}
++	err = sc6000_setup_board(vport, config);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR "sc6000_cfg_write: failed!\n");
+-		return -EFAULT;
++		snd_printk(KERN_ERR "sc6000_setup_board: failed!\n");
++		return -ENODEV;
++	}
++
++	sc6000_dsp_reset(vport);
++	sc6000_write(vport, COMMAND_5C);
++	if (sc6000_read(vport) < 0)
++		old = 1;
++	sc6000_dsp_reset(vport);
++
++	if (!old) {
++		sc6000_write(vport, COMMAND_60);
++		sc6000_write(vport, 0x02);
++		sc6000_dsp_reset(vport);
+ 	}
+ 
+ 	err = sc6000_setup_board(vport, config);
+@@ -386,10 +450,9 @@ static int __devinit sc6000_init_board(char __iomem *vport, int irq, int dma,
+ 		snd_printk(KERN_ERR "sc6000_setup_board: failed!\n");
+ 		return -ENODEV;
+ 	}
+-
+ 	err = sc6000_init_mss(vport, config, vmss_port, mss_config);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR "Can not initialize "
++		snd_printk(KERN_ERR "Cannot initialize "
+ 			   "Microsoft Sound System mode.\n");
+ 		return -ENODEV;
+ 	}
+@@ -485,14 +548,16 @@ static int __devinit snd_sc6000_probe(struct device *devptr, unsigned int dev)
+ 	struct snd_card *card;
+ 	struct snd_wss *chip;
+ 	struct snd_opl3 *opl3;
+-	char __iomem *vport;
++	char __iomem **vport;
+ 	char __iomem *vmss_port;
+ 
+ 
+-	err = snd_card_create(index[dev], id[dev], THIS_MODULE, 0, &card);
++	err = snd_card_create(index[dev], id[dev], THIS_MODULE, sizeof(vport),
++				&card);
+ 	if (err < 0)
+ 		return err;
+ 
++	vport = card->private_data;
+ 	if (xirq == SNDRV_AUTO_IRQ) {
+ 		xirq = snd_legacy_find_free_irq(possible_irqs);
+ 		if (xirq < 0) {
+@@ -517,8 +582,8 @@ static int __devinit snd_sc6000_probe(struct device *devptr, unsigned int dev)
+ 		err = -EBUSY;
+ 		goto err_exit;
+ 	}
+-	vport = devm_ioport_map(devptr, port[dev], 0x10);
+-	if (!vport) {
++	*vport = devm_ioport_map(devptr, port[dev], 0x10);
++	if (*vport == NULL) {
+ 		snd_printk(KERN_ERR PFX
+ 			   "I/O port cannot be iomaped.\n");
+ 		err = -EBUSY;
+@@ -533,7 +598,7 @@ static int __devinit snd_sc6000_probe(struct device *devptr, unsigned int dev)
+ 		goto err_unmap1;
+ 	}
+ 	vmss_port = devm_ioport_map(devptr, mss_port[dev], 4);
+-	if (!vport) {
++	if (!vmss_port) {
+ 		snd_printk(KERN_ERR PFX
+ 			   "MSS port I/O cannot be iomaped.\n");
+ 		err = -EBUSY;
+@@ -544,7 +609,7 @@ static int __devinit snd_sc6000_probe(struct device *devptr, unsigned int dev)
+ 		   port[dev], xirq, xdma,
+ 		   mpu_irq[dev] == SNDRV_AUTO_IRQ ? 0 : mpu_irq[dev]);
+ 
+-	err = sc6000_init_board(vport, xirq, xdma, vmss_port, mpu_irq[dev]);
++	err = sc6000_init_board(*vport, vmss_port, dev);
+ 	if (err < 0)
+ 		goto err_unmap2;
+ 
+@@ -552,7 +617,6 @@ static int __devinit snd_sc6000_probe(struct device *devptr, unsigned int dev)
+ 			     WSS_HW_DETECT, 0, &chip);
+ 	if (err < 0)
+ 		goto err_unmap2;
+-	card->private_data = chip;
+ 
+ 	err = snd_wss_pcm(chip, 0, NULL);
+ 	if (err < 0) {
+@@ -608,6 +672,7 @@ static int __devinit snd_sc6000_probe(struct device *devptr, unsigned int dev)
+ 	return 0;
+ 
+ err_unmap2:
++	sc6000_setup_board(*vport, 0);
+ 	release_region(mss_port[dev], 4);
+ err_unmap1:
+ 	release_region(port[dev], 0x10);
+@@ -618,11 +683,17 @@ err_exit:
+ 
+ static int __devexit snd_sc6000_remove(struct device *devptr, unsigned int dev)
+ {
++	struct snd_card *card = dev_get_drvdata(devptr);
++	char __iomem **vport = card->private_data;
++
++	if (sc6000_setup_board(*vport, 0) < 0)
++		snd_printk(KERN_WARNING "sc6000_setup_board failed on exit!\n");
++
+ 	release_region(port[dev], 0x10);
+ 	release_region(mss_port[dev], 4);
+ 
+-	snd_card_free(dev_get_drvdata(devptr));
+ 	dev_set_drvdata(devptr, NULL);
++	snd_card_free(card);
+ 	return 0;
+ }
+ 
+-- 
+1.6.0.3
+
+
+----------------------------------------------------------------------
+10% zysku na lokacie bankowej z gwarancja BFG. Sprawdz!
+http://link.interia.pl/f20fd
