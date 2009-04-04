@@ -1,17 +1,29 @@
-From: Anton Vorontsov <avorontsov@ru.mvista.com>
-Subject: [PATCH] ASoC: fsl_dma: Pass the proper device for dma
-	mapping	routines
-Date: Sat, 4 Apr 2009 22:33:19 +0400
-Message-ID: <20090404183319.GA22203@oksana.dev.rtsoft.ru>
+From: Eric <ejaouen@ponctey.fr>
+Subject: Re: to support STAC927x ADATout (intel hda mobo)
+Date: Sun, 05 Apr 2009 00:19:37 +0200
+Message-ID: <49D7DCF9.7050409@ponctey.fr>
+References: <4969FBA0.1030008@ponctey.fr>	<s5hvdskdah9.wl%tiwai@suse.de><496B3BB7.1020203@ponctey.fr>	<496E7FE7.8020706@embeddedalley.com>	<16A430A423D62246A24C9A892622FE668D5227@CORPEXCH1.na.ads.idt.com>	<498A1EBC.9060203@ponctey.fr>
+	<49D17798.6040205@ponctey.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buildserver.ru.mvista.com (unknown [213.79.90.228])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6CA261037F8
+Received: from smtp20.orange.fr (unknown [80.12.242.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id 516E31037FE
 	for <alsa-devel@alsa-project.org>;
-	Sat,  4 Apr 2009 20:33:20 +0200 (CEST)
-Content-Disposition: inline
+	Sun,  5 Apr 2009 00:20:30 +0200 (CEST)
+Received: from anita.2sapins.ponctey.fr
+	(LRouen-151-72-65-95.w193-251.abo.wanadoo.fr [193.251.41.95])
+	by mwinf2004.orange.fr (SMTP Server) with ESMTP id 1533B20000A4
+	for <alsa-devel@alsa-project.org>;
+	Sun,  5 Apr 2009 00:20:28 +0200 (CEST)
+Received: from [192.168.100.3] (unknown [192.168.100.3])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client did not present a certificate)
+	by anita.2sapins.ponctey.fr (Postfix) with ESMTPS id 4DCE651789
+	for <alsa-devel@alsa-project.org>;
+	Sun,  5 Apr 2009 00:20:28 +0200 (CEST)
+In-Reply-To: <49D17798.6040205@ponctey.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,96 +33,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Timur Tabi <timur@freescale.com>, Kumar Gala <galak@kernel.crashing.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The driver should pass a device that specifies internal DMA ops, but
-substream->pcm is just a logical device, and thus doesn't have arch-
-specific dma callbacks, therefore following bug appears:
+Hi again,
+Please any developper try to make ADAT output feature of sigmatel/IDT
+STAC927x codecs (used on most intel HDA media and extreme boards)
+actually work in ALSA.
+ADAT is a great feature and I am an ALSAonly user so I really need your
+help.
 
-  Freescale Synchronous Serial Interface (SSI) ASoC Driver
-  ------------[ cut here ]------------
-  kernel BUG at arch/powerpc/include/asm/dma-mapping.h:237!
-  Oops: Exception in kernel mode, sig: 5 [#1]
-  ...
-  NIP [c02259c4] snd_malloc_dev_pages+0x58/0xac
-  LR [c0225c74] snd_dma_alloc_pages+0xf8/0x108
-  Call Trace:
-  [df02bde0] [df02be2c] 0xdf02be2c (unreliable)
-  [df02bdf0] [c0225c74] snd_dma_alloc_pages+0xf8/0x108
-  [df02be10] [c023a100] fsl_dma_new+0x68/0x124
-  [df02be20] [c02342ac] soc_new_pcm+0x1bc/0x234
-  [df02bea0] [c02343dc] snd_soc_new_pcms+0xb8/0x148
-  [df02bed0] [c023824c] cs4270_probe+0x34/0x124
-  [df02bef0] [c0232fe8] snd_soc_instantiate_card+0x1a4/0x2f4
-  [df02bf20] [c0233164] snd_soc_instantiate_cards+0x2c/0x68
-  [df02bf30] [c0234704] snd_soc_register_platform+0x60/0x80
-  [df02bf50] [c03d5664] fsl_soc_platform_init+0x18/0x28
-  ...
+here is the codec datasheet
+http://www1.idt.com/products/files/17122877/STAC927x-DS-0-7_IDT.pdf
 
-This patch fixes the issue by using card's device instead.
+Can some of you read the 0x1f ADATout converter (page185-188) and 0x21
+digitalOUT pin complex (page155-159) and compare them with the sigmatel
+alsa driver and sigmatel stac927x patch to see what controls are still
+missing ?
 
-Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
----
- sound/soc/fsl/fsl_dma.c |   12 ++++++------
- 1 files changed, 6 insertions(+), 6 deletions(-)
+I can test your work and more...
+I will help as much as I can,
+thanks in advance, Eric
 
-diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
-index b3eb857..835e43c 100644
---- a/sound/soc/fsl/fsl_dma.c
-+++ b/sound/soc/fsl/fsl_dma.c
-@@ -300,7 +300,7 @@ static int fsl_dma_new(struct snd_card *card, struct snd_soc_dai *dai,
- 	if (!card->dev->coherent_dma_mask)
- 		card->dev->coherent_dma_mask = fsl_dma_dmamask;
- 
--	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, pcm->dev,
-+	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
- 		fsl_dma_hardware.buffer_bytes_max,
- 		&pcm->streams[0].substream->dma_buffer);
- 	if (ret) {
-@@ -310,7 +310,7 @@ static int fsl_dma_new(struct snd_card *card, struct snd_soc_dai *dai,
- 		return -ENOMEM;
- 	}
- 
--	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, pcm->dev,
-+	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
- 		fsl_dma_hardware.buffer_bytes_max,
- 		&pcm->streams[1].substream->dma_buffer);
- 	if (ret) {
-@@ -418,7 +418,7 @@ static int fsl_dma_open(struct snd_pcm_substream *substream)
- 		return -EBUSY;
- 	}
- 
--	dma_private = dma_alloc_coherent(substream->pcm->dev,
-+	dma_private = dma_alloc_coherent(substream->pcm->card->dev,
- 		sizeof(struct fsl_dma_private), &ld_buf_phys, GFP_KERNEL);
- 	if (!dma_private) {
- 		dev_err(substream->pcm->card->dev,
-@@ -445,7 +445,7 @@ static int fsl_dma_open(struct snd_pcm_substream *substream)
- 		dev_err(substream->pcm->card->dev,
- 			"can't register ISR for IRQ %u (ret=%i)\n",
- 			dma_private->irq, ret);
--		dma_free_coherent(substream->pcm->dev,
-+		dma_free_coherent(substream->pcm->card->dev,
- 			sizeof(struct fsl_dma_private),
- 			dma_private, dma_private->ld_buf_phys);
- 		return ret;
-@@ -761,13 +761,13 @@ static int fsl_dma_close(struct snd_pcm_substream *substream)
- 			free_irq(dma_private->irq, dma_private);
- 
- 		if (dma_private->ld_buf_phys) {
--			dma_unmap_single(substream->pcm->dev,
-+			dma_unmap_single(substream->pcm->card->dev,
- 				dma_private->ld_buf_phys,
- 				sizeof(dma_private->link), DMA_TO_DEVICE);
- 		}
- 
- 		/* Deallocate the fsl_dma_private structure */
--		dma_free_coherent(substream->pcm->dev,
-+		dma_free_coherent(substream->pcm->card->dev,
- 			sizeof(struct fsl_dma_private),
- 			dma_private, dma_private->ld_buf_phys);
- 		substream->runtime->private_data = NULL;
--- 
-1.5.6.5
+> Hi all, I bought motherboards intel DP35DP and DG33TL and just tried
+> ADAT output in Alsa (ADAT output on them is proven to work under windows).
+> I wrote the command (thanks to the work of Matthew for the 'IEC958
+> Playback Source' control.28 setting) :
+> amixer sset 'IEC958 Playback Source' ADAT
+> =
+
+> Here is my resulting alsainfo:
+> www.alsa-project.org/db/?f=3Dcb01bf4f7bc62fe69f36bc1a4bbc0dbcace20605
+> =
+
+> It still does not work
+> I think the reason is that contrary to the windows driver the
+> Node 0x21 is still unchanged :
+> Pin Default 0x01452150: [Jack] SPDIF Out
+> whereas it should be better with :
+> 		0x01552150
+> =
+
+> How can I change my computer from the Pin default config to this
+> alternative Pin config ?
+> Thanks a lot, Eric
+> =
+
+>> Hi Steven,
+>> I have studied the hd audio documents :
+>> Please make sure the pin default is actually 015521xx when in ADAT mode
+>> (instead of config default 014521xx ) .
+>>
+>> Please copy me your alsainfo script if it still does not work.
+>> Matthew Ranostay is right : really not much is missing or wrong for ADAT
+>> to work.
+>> Thanks everybody for future help, Eric
+>> Tellman, Steven a =E9crit :
+>>> It doesn't work. The option comes up, but no dice. Doesn't lock to the
+>>> receiver that has ADAT support.
+> =
+
+>>> Hello Eric,
+>>> You should run the latest ALSA from the git tree because I added a codec
+>>> specific SPDIF output control control for that chipset.
+>>> ....
+>>>  417 static const char *stac927x_spdif_labels[5] =3D {
+>>>  418     "Digital Playback", "ADAT", "Analog Mux 1",
+>>>  419     "Analog Mux 2", "Analog Mux 3"
+>>>  420 };
+>>> ....
+>>> I haven't tested ADAT output though but I have no reason to
+>>> think it wouldn't work.
+>>> Thanks,
+>>> Matt Ranostay
+>>>
+>>>
+>>> Eric wrote:
+>>>> In their handbook, motherboard intel DP35DP and others with STAC927x
+>>> (in
+>>>> the codec datasheet also ADAT output is featured on older sigmatel
+>>>> STAC9271 and now IDT STAC9274 only) advertise ADAT output possible on
+>>>> their toslink.
+>>>> DP35DP and other intel boards are proven to have the ADAT output
+>>> working
+>>>> under windows.
+>>>> Is it working in Alsa ?>>>
+>>>> Anybody from intel or IDT/sigmatel to confirm (by checking the
+>>> sigmatel
+>>>> STAC927x hda codec driver) that it will work ?
+>>>> I want these intel motherboards only for this ADAT output feature and
+>>> I
+>>>> am a linux only user so I would like to know before buying...
+>>>> I want to be sure someone would make the necessary changes to the hda
+>>>> sigmatel codec alsa driver so it would work.
+> _______________________________________________
+> Alsa-devel mailing list
