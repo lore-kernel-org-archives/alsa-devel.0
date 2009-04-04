@@ -1,19 +1,25 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH v2 1/2] alsa: ASoC driver for s6000 I2S
-	interface
-Date: Sat, 4 Apr 2009 15:37:41 +0100
-Message-ID: <20090404143741.GA6474@sirena.org.uk>
-References: <1238266022-27893-1-git-send-email-dg@emlix.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: how to use mcbsp for i2s?
+Date: Sat, 4 Apr 2009 17:39:37 +0300
+Message-ID: <20090404173937.ba34d888.jhnikula@gmail.com>
+References: <fb44c3530904011129s7dd5cf1fgcf266fac3fb059d3@mail.gmail.com>
+	<bd7b27490904020048h672ce810j3c79868a7f5ef4e0@mail.gmail.com>
+	<bd7b27490904020320i714cd812i49bd834676ce4dee@mail.gmail.com>
+	<20090402195653.0bcfb59e.jhnikula@gmail.com>
+	<fb44c3530904021027r7a1387cag8507c4a1a88811ca@mail.gmail.com>
+	<fb44c3530904030914w255d1502pec109d6c494b8f1b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E71161037F6
+Received: from mail-ew0-f166.google.com (mail-ew0-f166.google.com
+	[209.85.219.166])
+	by alsa0.perex.cz (Postfix) with ESMTP id E988A1037F8
 	for <alsa-devel@alsa-project.org>;
-	Sat,  4 Apr 2009 16:37:48 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1238266022-27893-1-git-send-email-dg@emlix.com>
+	Sat,  4 Apr 2009 16:39:41 +0200 (CEST)
+Received: by ewy10 with SMTP id 10so1405084ewy.32
+	for <alsa-devel@alsa-project.org>; Sat, 04 Apr 2009 07:39:41 -0700 (PDT)
+In-Reply-To: <fb44c3530904030914w255d1502pec109d6c494b8f1b@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,23 +29,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel =?iso-8859-1?Q?Gl=F6ckner?= <dg@emlix.com>
+To: Ernesto Torres <skullmate@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Mar 28, 2009 at 07:47:01PM +0100, Daniel Gl=F6ckner wrote:
-> This patch adds a driver for the I2S interface found on Stretch s6000
-> family processors.
+On Fri, 3 Apr 2009 10:14:45 -0600
+Ernesto Torres <skullmate@gmail.com> wrote:
 
-This all looks good - the only concern I have is the issue with the
-polarity of the clock signals I mentioned in reply to the machine
-driver.  The code in the machine driver does make it look like the I2S
-driver is using the opposite polarity to that expected.  If that's not
-the case then I guess the thing to do is have some documentation in the
-machine driver explaining what's going on.
+> Im getting this output from muxing:
+> 
+> MUX: setup AF6_3430_MCBSP3_DX (0xd800216c): 0x0004 ->
+> 0x0000
+> MUX: setup AE6_3430_MCBSP3_DR (0xd800216e): 0x0004 ->
+> 0x0000
+> MUX: setup AF5_3430_MCBSP3_CLKX (0xd8002170): 0x0004 ->
+> 0x0000
+> MUX: setup AE5_3430_MCBSP3_FSX (0xd8002172): 0x0004 -> 0x0000
+> 
+> Is this correct?
+> 
+It look likes since debug output says that the muxmode for those pins
+are changed from mode 4 (gpio in this case) to 0 (McBSP3 pins in
+this case).
 
-In order to simplify review I've applied both patches to the s6000
-branch of my sound git repository.  Please submit any changes as
-incremental patches against that rather than as whole new patches.
+Actually all of those pins are configured as outputs in muxing module
+point of view but IRCC actually McBSP HW will set the direction
+depending on its configuration. At least I didn't notice any
+difference what was the muxing direction when I was playing with them
+shortly some time ago.
 
-Thanks!
+-- 
+Jarkko
