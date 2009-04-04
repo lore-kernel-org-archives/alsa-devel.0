@@ -1,25 +1,17 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: how to use mcbsp for i2s?
-Date: Sat, 4 Apr 2009 17:39:37 +0300
-Message-ID: <20090404173937.ba34d888.jhnikula@gmail.com>
-References: <fb44c3530904011129s7dd5cf1fgcf266fac3fb059d3@mail.gmail.com>
-	<bd7b27490904020048h672ce810j3c79868a7f5ef4e0@mail.gmail.com>
-	<bd7b27490904020320i714cd812i49bd834676ce4dee@mail.gmail.com>
-	<20090402195653.0bcfb59e.jhnikula@gmail.com>
-	<fb44c3530904021027r7a1387cag8507c4a1a88811ca@mail.gmail.com>
-	<fb44c3530904030914w255d1502pec109d6c494b8f1b@mail.gmail.com>
+From: Anton Vorontsov <avorontsov@ru.mvista.com>
+Subject: [PATCH] ASoC: fsl_dma: Pass the proper device for dma
+	mapping	routines
+Date: Sat, 4 Apr 2009 22:33:19 +0400
+Message-ID: <20090404183319.GA22203@oksana.dev.rtsoft.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f166.google.com (mail-ew0-f166.google.com
-	[209.85.219.166])
-	by alsa0.perex.cz (Postfix) with ESMTP id E988A1037F8
+Received: from buildserver.ru.mvista.com (unknown [213.79.90.228])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6CA261037F8
 	for <alsa-devel@alsa-project.org>;
-	Sat,  4 Apr 2009 16:39:41 +0200 (CEST)
-Received: by ewy10 with SMTP id 10so1405084ewy.32
-	for <alsa-devel@alsa-project.org>; Sat, 04 Apr 2009 07:39:41 -0700 (PDT)
-In-Reply-To: <fb44c3530904030914w255d1502pec109d6c494b8f1b@mail.gmail.com>
+	Sat,  4 Apr 2009 20:33:20 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,34 +21,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ernesto Torres <skullmate@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Timur Tabi <timur@freescale.com>, Kumar Gala <galak@kernel.crashing.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 3 Apr 2009 10:14:45 -0600
-Ernesto Torres <skullmate@gmail.com> wrote:
+The driver should pass a device that specifies internal DMA ops, but
+substream->pcm is just a logical device, and thus doesn't have arch-
+specific dma callbacks, therefore following bug appears:
 
-> Im getting this output from muxing:
-> 
-> MUX: setup AF6_3430_MCBSP3_DX (0xd800216c): 0x0004 ->
-> 0x0000
-> MUX: setup AE6_3430_MCBSP3_DR (0xd800216e): 0x0004 ->
-> 0x0000
-> MUX: setup AF5_3430_MCBSP3_CLKX (0xd8002170): 0x0004 ->
-> 0x0000
-> MUX: setup AE5_3430_MCBSP3_FSX (0xd8002172): 0x0004 -> 0x0000
-> 
-> Is this correct?
-> 
-It look likes since debug output says that the muxmode for those pins
-are changed from mode 4 (gpio in this case) to 0 (McBSP3 pins in
-this case).
+  Freescale Synchronous Serial Interface (SSI) ASoC Driver
+  ------------[ cut here ]------------
+  kernel BUG at arch/powerpc/include/asm/dma-mapping.h:237!
+  Oops: Exception in kernel mode, sig: 5 [#1]
+  ...
+  NIP [c02259c4] snd_malloc_dev_pages+0x58/0xac
+  LR [c0225c74] snd_dma_alloc_pages+0xf8/0x108
+  Call Trace:
+  [df02bde0] [df02be2c] 0xdf02be2c (unreliable)
+  [df02bdf0] [c0225c74] snd_dma_alloc_pages+0xf8/0x108
+  [df02be10] [c023a100] fsl_dma_new+0x68/0x124
+  [df02be20] [c02342ac] soc_new_pcm+0x1bc/0x234
+  [df02bea0] [c02343dc] snd_soc_new_pcms+0xb8/0x148
+  [df02bed0] [c023824c] cs4270_probe+0x34/0x124
+  [df02bef0] [c0232fe8] snd_soc_instantiate_card+0x1a4/0x2f4
+  [df02bf20] [c0233164] snd_soc_instantiate_cards+0x2c/0x68
+  [df02bf30] [c0234704] snd_soc_register_platform+0x60/0x80
+  [df02bf50] [c03d5664] fsl_soc_platform_init+0x18/0x28
+  ...
 
-Actually all of those pins are configured as outputs in muxing module
-point of view but IRCC actually McBSP HW will set the direction
-depending on its configuration. At least I didn't notice any
-difference what was the muxing direction when I was playing with them
-shortly some time ago.
+This patch fixes the issue by using card's device instead.
 
+Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
+---
+ sound/soc/fsl/fsl_dma.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
+index b3eb857..835e43c 100644
+--- a/sound/soc/fsl/fsl_dma.c
++++ b/sound/soc/fsl/fsl_dma.c
+@@ -300,7 +300,7 @@ static int fsl_dma_new(struct snd_card *card, struct snd_soc_dai *dai,
+ 	if (!card->dev->coherent_dma_mask)
+ 		card->dev->coherent_dma_mask = fsl_dma_dmamask;
+ 
+-	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, pcm->dev,
++	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
+ 		fsl_dma_hardware.buffer_bytes_max,
+ 		&pcm->streams[0].substream->dma_buffer);
+ 	if (ret) {
+@@ -310,7 +310,7 @@ static int fsl_dma_new(struct snd_card *card, struct snd_soc_dai *dai,
+ 		return -ENOMEM;
+ 	}
+ 
+-	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, pcm->dev,
++	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
+ 		fsl_dma_hardware.buffer_bytes_max,
+ 		&pcm->streams[1].substream->dma_buffer);
+ 	if (ret) {
+@@ -418,7 +418,7 @@ static int fsl_dma_open(struct snd_pcm_substream *substream)
+ 		return -EBUSY;
+ 	}
+ 
+-	dma_private = dma_alloc_coherent(substream->pcm->dev,
++	dma_private = dma_alloc_coherent(substream->pcm->card->dev,
+ 		sizeof(struct fsl_dma_private), &ld_buf_phys, GFP_KERNEL);
+ 	if (!dma_private) {
+ 		dev_err(substream->pcm->card->dev,
+@@ -445,7 +445,7 @@ static int fsl_dma_open(struct snd_pcm_substream *substream)
+ 		dev_err(substream->pcm->card->dev,
+ 			"can't register ISR for IRQ %u (ret=%i)\n",
+ 			dma_private->irq, ret);
+-		dma_free_coherent(substream->pcm->dev,
++		dma_free_coherent(substream->pcm->card->dev,
+ 			sizeof(struct fsl_dma_private),
+ 			dma_private, dma_private->ld_buf_phys);
+ 		return ret;
+@@ -761,13 +761,13 @@ static int fsl_dma_close(struct snd_pcm_substream *substream)
+ 			free_irq(dma_private->irq, dma_private);
+ 
+ 		if (dma_private->ld_buf_phys) {
+-			dma_unmap_single(substream->pcm->dev,
++			dma_unmap_single(substream->pcm->card->dev,
+ 				dma_private->ld_buf_phys,
+ 				sizeof(dma_private->link), DMA_TO_DEVICE);
+ 		}
+ 
+ 		/* Deallocate the fsl_dma_private structure */
+-		dma_free_coherent(substream->pcm->dev,
++		dma_free_coherent(substream->pcm->card->dev,
+ 			sizeof(struct fsl_dma_private),
+ 			dma_private, dma_private->ld_buf_phys);
+ 		substream->runtime->private_data = NULL;
 -- 
-Jarkko
+1.5.6.5
