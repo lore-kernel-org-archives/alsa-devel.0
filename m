@@ -1,35 +1,45 @@
-From: Charles Eidsness <charles@cooper-street.com>
-Subject: Re: [PATCH] ALSA: au1x00: convert to platform device
-Date: Sat, 04 Apr 2009 08:36:52 -0400
-Message-ID: <49D75464.2060704@cooper-street.com>
-References: <1238320026-4936-1-git-send-email-mano@roarinelk.homelinux.net>	<49CF9558.6030604@cooper-street.com> <20090329175407.570af32d@scarran.roarinelk.net>
-Reply-To: charles@cooper-street.com
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH v2 1/2] alsa: ASoC driver for s6000 I2S
+	interface
+Date: Sat, 4 Apr 2009 15:37:41 +0100
+Message-ID: <20090404143741.GA6474@sirena.org.uk>
+References: <1238266022-27893-1-git-send-email-dg@emlix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <20090329175407.570af32d@scarran.roarinelk.net>
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-To: Manuel Lauss <mano@roarinelk.homelinux.net>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Linux-MIPS <linux-mips@linux-mips.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id E71161037F6
+	for <alsa-devel@alsa-project.org>;
+	Sat,  4 Apr 2009 16:37:48 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1238266022-27893-1-git-send-email-dg@emlix.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Daniel =?iso-8859-1?Q?Gl=F6ckner?= <dg@emlix.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->> Hi,
->>
->> I wish I could but it's been years since I worked on that project and I'm pretty 
->> sure that I don't have any hardware around anymore, but I will do a thorough 
->> search next week anyway. There may be something hiding in the back of a dusty 
->> closet that I've forgotten about, if I find something I will let you know.
-> 
-> Thanks! I really appreciate it!
-> 
-> 	Manuel Lauss
-> 
+On Sat, Mar 28, 2009 at 07:47:01PM +0100, Daniel Gl=F6ckner wrote:
+> This patch adds a driver for the I2S interface found on Stretch s6000
+> family processors.
 
-Hi Manuel,
+This all looks good - the only concern I have is the issue with the
+polarity of the clock signals I mentioned in reply to the machine
+driver.  The code in the machine driver does make it look like the I2S
+driver is using the opposite polarity to that expected.  If that's not
+the case then I guess the thing to do is have some documentation in the
+machine driver explaining what's going on.
 
-Sorry, but I wasn't able to find any working hardware.
+In order to simplify review I've applied both patches to the s6000
+branch of my sound git repository.  Please submit any changes as
+incremental patches against that rather than as whole new patches.
 
-Cheers,
-Charles
+Thanks!
