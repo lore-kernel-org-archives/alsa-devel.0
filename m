@@ -1,71 +1,54 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Device creation order
-Date: Sun, 5 Apr 2009 16:40:42 +0200
-Message-ID: <20090405144041.GA31963@tango.0pointer.de>
-References: <20090403015429.GA702@tango.0pointer.de>
-	<alpine.LNX.2.00.0904030904160.17368@eeebox2.perex-int.cz>
-	<49D5BCF6.1020407@ladisch.de>
-	<20090403115647.GD15646@tango.0pointer.de>
-	<20090405131605.GA31915@localhost>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+From: Kumar Gala <galak@kernel.crashing.org>
+Subject: Re: [PATCH] ASoC: fsl_dma: Pass the proper device for dma mapping
+	routines
+Date: Sun, 5 Apr 2009 09:59:12 -0500
+Message-ID: <85829FCA-D181-4992-9889-640B3329D023@kernel.crashing.org>
+References: <20090404183319.GA22203@oksana.dev.rtsoft.ru>
+	<fa686aa40904042259h4c69e632x47a9e82393e8faef@mail.gmail.com>
+	<20090405085243.GA16005@oksana.dev.rtsoft.ru>
+	<fa686aa40904050739g219a9143v7bbc8cd673e52f4e@mail.gmail.com>
+Mime-Version: 1.0 (Apple Message framework v930.3)
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="yes"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4011610381C
-	for <alsa-devel@alsa-project.org>;
-	Sun,  5 Apr 2009 16:40:53 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20090405131605.GA31915@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
+In-Reply-To: <fa686aa40904050739g219a9143v7bbc8cd673e52f4e@mail.gmail.com>
+List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
+List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
+List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
+Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: Becky Bruce <Becky.Bruce@freescale.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linuxppc-dev@ozlabs.org, Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 05.04.09 21:16, Wu Fengguang (fengguang.wu@intel.com) wrote:
 
-> > I'll ignore this for now since Jaroslav mentioned drivers doing this
-> > are still experimental. But eventually we'd need to know some kind of
-> > 'end notification' for this as well: i..e if the reconfiguration
-> > causes multiple device nodes to disappear/appear we also need to know
-> > when they are all complete. A possible simple fix would be to issue an
-> > udev 'change' event on the control device after the reconfiguration
-> > finished.
-> 
-> btw, HDMI sink devices could be taught to generate more event types:
-> 
-> - hotplug
->   The user connected/disconnected a HDMI device.
+On Apr 5, 2009, at 9:39 AM, Grant Likely wrote:
 
-Wouldn't that overlap with the jack sensing API? 
+> On Sun, Apr 5, 2009 at 2:52 AM, Anton Vorontsov
+> <avorontsov@ru.mvista.com> wrote:
+>> On Sat, Apr 04, 2009 at 11:59:39PM -0600, Grant Likely wrote:
+>>> Becky & Kumar,
+>>>
+>>> Considering these fixups, would it be advisable for the dma  
+>>> functions
+>>> to climb up the dev->parent linkage when dma_ops are NULL?
+>>
+>> pcm->dev->parent doesn't point to the proper device, so
+>> this won't work.
+>
+> What does it point to then?  IIUC, following the ->parent links should
+> eventually get to a struct device that represents the platform or
+> of_platform device for purposes of power management.
+>
+> BTW, I'm not NAKing your patch.  The patch looks fine to me.
+>
+> g.
 
-> - reconfiguration
->   The update of HDMI audio capabilities due to some user actions.
-> 
-> - pause/play of audio stream
->   An advanced feature in Consumer Electronics Control (CEC) for
->   high-level user control of HDMI-connected devices.
+No, I think we should just fix drivers.  There aren't that many SoC  
+drivers and once they are fixed this will resolve itself.
 
-What would these be?
-
-> 
-> The HDMI audio devices will be created at module loading time, and
-> won't be dynamically created/tear down on hotplug events.  I wonder 
-> if PA is interested in the HDMI current-connectivity state?
-
-Yes, we certainly are. I am not entirely sure though how to best
-expose this. 
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+- k
