@@ -1,25 +1,32 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] ASoC: fsl_dma: Pass the proper device for
-	dma mapping routines
-Date: Sun, 5 Apr 2009 14:18:20 -0500
-Message-ID: <ed82fe3e0904051218i60edfe42o879ee5f7063a2e4c@mail.gmail.com>
-References: <20090404183319.GA22203@oksana.dev.rtsoft.ru>
-	<fa686aa40904042259h4c69e632x47a9e82393e8faef@mail.gmail.com>
-	<20090405085243.GA16005@oksana.dev.rtsoft.ru>
-	<fa686aa40904050739g219a9143v7bbc8cd673e52f4e@mail.gmail.com>
-	<85829FCA-D181-4992-9889-640B3329D023@kernel.crashing.org>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: Device creation order
+Date: Sun, 5 Apr 2009 21:29:05 +0100
+Message-ID: <20090405202904.GA6843@sirena.org.uk>
+References: <20090403015429.GA702@tango.0pointer.de>
+	<alpine.LNX.2.00.0904030904160.17368@eeebox2.perex-int.cz>
+	<49D5BCF6.1020407@ladisch.de>
+	<20090403115647.GD15646@tango.0pointer.de>
+	<20090405131605.GA31915@localhost>
+	<20090405144041.GA31963@tango.0pointer.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f132.google.com (mail-qy0-f132.google.com
-	[209.85.221.132])
-	by alsa0.perex.cz (Postfix) with ESMTP id 709342415F
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id DE35724385
 	for <alsa-devel@alsa-project.org>;
-	Sun,  5 Apr 2009 21:18:21 +0200 (CEST)
-Received: by qyk38 with SMTP id 38so3210928qyk.16
-	for <alsa-devel@alsa-project.org>; Sun, 05 Apr 2009 12:18:20 -0700 (PDT)
-In-Reply-To: <85829FCA-D181-4992-9889-640B3329D023@kernel.crashing.org>
+	Sun,  5 Apr 2009 22:29:12 +0200 (CEST)
+Received: from 82-41-28-43.cable.ubr04.sgyl.blueyonder.co.uk ([82.41.28.43]
+	helo=finisterre)
+	by cassiel.sirena.org.uk with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.69) (envelope-from <broonie@sirena.org.uk>)
+	id 1LqYxr-0000WR-OV
+	for alsa-devel@alsa-project.org; Sun, 05 Apr 2009 21:29:12 +0100
+Received: from broonie by finisterre with local (Exim 4.69)
+	(envelope-from <broonie@sirena.org.uk>) id 1LqYxl-0001pO-Cz
+	for alsa-devel@alsa-project.org; Sun, 05 Apr 2009 21:29:05 +0100
+Content-Disposition: inline
+In-Reply-To: <20090405144041.GA31963@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,26 +36,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kumar Gala <galak@kernel.crashing.org>
-Cc: Becky Bruce <Becky.Bruce@freescale.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Apr 5, 2009 at 9:59 AM, Kumar Gala <galak@kernel.crashing.org> wrot=
-e:
+On Sun, Apr 05, 2009 at 04:40:42PM +0200, Lennart Poettering wrote:
+> On Sun, 05.04.09 21:16, Wu Fengguang (fengguang.wu@intel.com) wrote:
 
-> No, I think we should just fix drivers. =A0There aren't that many SoC dri=
-vers
-> and once they are fixed this will resolve itself.
+> > - hotplug
+> >   The user connected/disconnected a HDMI device.
 
-I agree.  The only reason I passed NULL when I wrote the drivers was
-because I was too lazy to figure out what the right dev pointer was.
-ASoC is kinda screwy in that many fields are not initialized when you
-think they should be.  More than once I passed a pointer to a wrong
-object without realizing it, even though the code worked.
+> Wouldn't that overlap with the jack sensing API? 
 
-I'll check out these two patches on Monday.
-
--- =
-
-Timur Tabi
-Linux kernel developer at Freescale
+Yes, although given that AIUI the HDMI port will be able to communicate
+with the connected device it may make more sense to expose the connected
+device to user space as what it is, or to do both.
