@@ -1,21 +1,14 @@
-From: Anton Vorontsov <avorontsov@ru.mvista.com>
-Subject: Re: [PATCH] ASoC: fsl_dma: Pass the proper device for
-	dma mapping	routines
-Date: Sun, 5 Apr 2009 12:52:43 +0400
-Message-ID: <20090405085243.GA16005@oksana.dev.rtsoft.ru>
-References: <20090404183319.GA22203@oksana.dev.rtsoft.ru>
-	<fa686aa40904042259h4c69e632x47a9e82393e8faef@mail.gmail.com>
-Reply-To: avorontsov@ru.mvista.com
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: hda-intel channels hibernate bug
+Date: Sun, 05 Apr 2009 10:55:30 +0200
+Message-ID: <1238921730.3782.3.camel@johannes.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============6660572771617169303=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buildserver.ru.mvista.com (unknown [213.79.90.228])
-	by alsa0.perex.cz (Postfix) with ESMTP id 87C622433E
+Received: from sipsolutions.net (xc.sipsolutions.net [83.246.72.84])
+	by alsa0.perex.cz (Postfix) with ESMTP id A7BEA2433E
 	for <alsa-devel@alsa-project.org>;
-	Sun,  5 Apr 2009 10:52:48 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <fa686aa40904042259h4c69e632x47a9e82393e8faef@mail.gmail.com>
+	Sun,  5 Apr 2009 10:55:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,105 +18,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Likely <grant.likely@secretlab.ca>
-Cc: Becky Bruce <Becky.Bruce@freescale.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Kumar Gala <galak@kernel.crashing.org>, linuxppc-dev@ozlabs.org, Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBBcHIgMDQsIDIwMDkgYXQgMTE6NTk6MzlQTSAtMDYwMCwgR3JhbnQgTGlrZWx5IHdy
-b3RlOgo+IEJlY2t5ICYgS3VtYXIsCj4gCj4gQ29uc2lkZXJpbmcgdGhlc2UgZml4dXBzLCB3b3Vs
-ZCBpdCBiZSBhZHZpc2FibGUgZm9yIHRoZSBkbWEgZnVuY3Rpb25zCj4gdG8gY2xpbWIgdXAgdGhl
-IGRldi0+cGFyZW50IGxpbmthZ2Ugd2hlbiBkbWFfb3BzIGFyZSBOVUxMPwoKcGNtLT5kZXYtPnBh
-cmVudCBkb2Vzbid0IHBvaW50IHRvIHRoZSBwcm9wZXIgZGV2aWNlLCBzbwp0aGlzIHdvbid0IHdv
-cmsuCgo+IE9uIFNhdCwgQXByIDQsIDIwMDkgYXQgMTI6MzMgUE0sIEFudG9uIFZvcm9udHNvdgo+
-IDxhdm9yb250c292QHJ1Lm12aXN0YS5jb20+IHdyb3RlOgo+ID4gVGhlIGRyaXZlciBzaG91bGQg
-cGFzcyBhIGRldmljZSB0aGF0IHNwZWNpZmllcyBpbnRlcm5hbCBETUEgb3BzLCBidXQKPiA+IHN1
-YnN0cmVhbS0+cGNtIGlzIGp1c3QgYSBsb2dpY2FsIGRldmljZSwgYW5kIHRodXMgZG9lc24ndCBo
-YXZlIGFyY2gtCj4gPiBzcGVjaWZpYyBkbWEgY2FsbGJhY2tzLCB0aGVyZWZvcmUgZm9sbG93aW5n
-IGJ1ZyBhcHBlYXJzOgo+ID4KPiA+IMKgRnJlZXNjYWxlIFN5bmNocm9ub3VzIFNlcmlhbCBJbnRl
-cmZhY2UgKFNTSSkgQVNvQyBEcml2ZXIKPiA+IMKgLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0t
-LS0tLS0tLS0tCj4gPiDCoGtlcm5lbCBCVUcgYXQgYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL2Rt
-YS1tYXBwaW5nLmg6MjM3IQo+ID4gwqBPb3BzOiBFeGNlcHRpb24gaW4ga2VybmVsIG1vZGUsIHNp
-ZzogNSBbIzFdCj4gPiDCoC4uLgo+ID4gwqBOSVAgW2MwMjI1OWM0XSBzbmRfbWFsbG9jX2Rldl9w
-YWdlcysweDU4LzB4YWMKPiA+IMKgTFIgW2MwMjI1Yzc0XSBzbmRfZG1hX2FsbG9jX3BhZ2VzKzB4
-ZjgvMHgxMDgKPiA+IMKgQ2FsbCBUcmFjZToKPiA+IMKgW2RmMDJiZGUwXSBbZGYwMmJlMmNdIDB4
-ZGYwMmJlMmMgKHVucmVsaWFibGUpCj4gPiDCoFtkZjAyYmRmMF0gW2MwMjI1Yzc0XSBzbmRfZG1h
-X2FsbG9jX3BhZ2VzKzB4ZjgvMHgxMDgKPiA+IMKgW2RmMDJiZTEwXSBbYzAyM2ExMDBdIGZzbF9k
-bWFfbmV3KzB4NjgvMHgxMjQKPiA+IMKgW2RmMDJiZTIwXSBbYzAyMzQyYWNdIHNvY19uZXdfcGNt
-KzB4MWJjLzB4MjM0Cj4gPiDCoFtkZjAyYmVhMF0gW2MwMjM0M2RjXSBzbmRfc29jX25ld19wY21z
-KzB4YjgvMHgxNDgKPiA+IMKgW2RmMDJiZWQwXSBbYzAyMzgyNGNdIGNzNDI3MF9wcm9iZSsweDM0
-LzB4MTI0Cj4gPiDCoFtkZjAyYmVmMF0gW2MwMjMyZmU4XSBzbmRfc29jX2luc3RhbnRpYXRlX2Nh
-cmQrMHgxYTQvMHgyZjQKPiA+IMKgW2RmMDJiZjIwXSBbYzAyMzMxNjRdIHNuZF9zb2NfaW5zdGFu
-dGlhdGVfY2FyZHMrMHgyYy8weDY4Cj4gPiDCoFtkZjAyYmYzMF0gW2MwMjM0NzA0XSBzbmRfc29j
-X3JlZ2lzdGVyX3BsYXRmb3JtKzB4NjAvMHg4MAo+ID4gwqBbZGYwMmJmNTBdIFtjMDNkNTY2NF0g
-ZnNsX3NvY19wbGF0Zm9ybV9pbml0KzB4MTgvMHgyOAo+ID4gwqAuLi4KPiA+Cj4gPiBUaGlzIHBh
-dGNoIGZpeGVzIHRoZSBpc3N1ZSBieSB1c2luZyBjYXJkJ3MgZGV2aWNlIGluc3RlYWQuCj4gPgo+
-ID4gU2lnbmVkLW9mZi1ieTogQW50b24gVm9yb250c292IDxhdm9yb250c292QHJ1Lm12aXN0YS5j
-b20+Cj4gPiAtLS0KPiA+IMKgc291bmQvc29jL2ZzbC9mc2xfZG1hLmMgfCDCoCAxMiArKysrKyst
-LS0tLS0KPiA+IMKgMSBmaWxlcyBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25z
-KC0pCj4gPgo+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9mc2wvZnNsX2RtYS5jIGIvc291bmQv
-c29jL2ZzbC9mc2xfZG1hLmMKPiA+IGluZGV4IGIzZWI4NTcuLjgzNWU0M2MgMTAwNjQ0Cj4gPiAt
-LS0gYS9zb3VuZC9zb2MvZnNsL2ZzbF9kbWEuYwo+ID4gKysrIGIvc291bmQvc29jL2ZzbC9mc2xf
-ZG1hLmMKPiA+IEBAIC0zMDAsNyArMzAwLDcgQEAgc3RhdGljIGludCBmc2xfZG1hX25ldyhzdHJ1
-Y3Qgc25kX2NhcmQgKmNhcmQsIHN0cnVjdCBzbmRfc29jX2RhaSAqZGFpLAo+ID4gwqAgwqAgwqAg
-wqBpZiAoIWNhcmQtPmRldi0+Y29oZXJlbnRfZG1hX21hc2spCj4gPiDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoGNhcmQtPmRldi0+Y29oZXJlbnRfZG1hX21hc2sgPSBmc2xfZG1hX2RtYW1hc2s7Cj4g
-Pgo+ID4gLSDCoCDCoCDCoCByZXQgPSBzbmRfZG1hX2FsbG9jX3BhZ2VzKFNORFJWX0RNQV9UWVBF
-X0RFViwgcGNtLT5kZXYsCj4gPiArIMKgIMKgIMKgIHJldCA9IHNuZF9kbWFfYWxsb2NfcGFnZXMo
-U05EUlZfRE1BX1RZUEVfREVWLCBjYXJkLT5kZXYsCj4gPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oGZzbF9kbWFfaGFyZHdhcmUuYnVmZmVyX2J5dGVzX21heCwKPiA+IMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgJnBjbS0+c3RyZWFtc1swXS5zdWJzdHJlYW0tPmRtYV9idWZmZXIpOwo+ID4gwqAgwqAg
-wqAgwqBpZiAocmV0KSB7Cj4gPiBAQCAtMzEwLDcgKzMxMCw3IEBAIHN0YXRpYyBpbnQgZnNsX2Rt
-YV9uZXcoc3RydWN0IHNuZF9jYXJkICpjYXJkLCBzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSwKPiA+
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgcmV0dXJuIC1FTk9NRU07Cj4gPiDCoCDCoCDCoCDCoH0K
-PiA+Cj4gPiAtIMKgIMKgIMKgIHJldCA9IHNuZF9kbWFfYWxsb2NfcGFnZXMoU05EUlZfRE1BX1RZ
-UEVfREVWLCBwY20tPmRldiwKPiA+ICsgwqAgwqAgwqAgcmV0ID0gc25kX2RtYV9hbGxvY19wYWdl
-cyhTTkRSVl9ETUFfVFlQRV9ERVYsIGNhcmQtPmRldiwKPiA+IMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgZnNsX2RtYV9oYXJkd2FyZS5idWZmZXJfYnl0ZXNfbWF4LAo+ID4gwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAmcGNtLT5zdHJlYW1zWzFdLnN1YnN0cmVhbS0+ZG1hX2J1ZmZlcik7Cj4gPiDCoCDC
-oCDCoCDCoGlmIChyZXQpIHsKPiA+IEBAIC00MTgsNyArNDE4LDcgQEAgc3RhdGljIGludCBmc2xf
-ZG1hX29wZW4oc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0pCj4gPiDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoHJldHVybiAtRUJVU1k7Cj4gPiDCoCDCoCDCoCDCoH0KPiA+Cj4gPiAt
-IMKgIMKgIMKgIGRtYV9wcml2YXRlID0gZG1hX2FsbG9jX2NvaGVyZW50KHN1YnN0cmVhbS0+cGNt
-LT5kZXYsCj4gPiArIMKgIMKgIMKgIGRtYV9wcml2YXRlID0gZG1hX2FsbG9jX2NvaGVyZW50KHN1
-YnN0cmVhbS0+cGNtLT5jYXJkLT5kZXYsCj4gPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHNpemVv
-ZihzdHJ1Y3QgZnNsX2RtYV9wcml2YXRlKSwgJmxkX2J1Zl9waHlzLCBHRlBfS0VSTkVMKTsKPiA+
-IMKgIMKgIMKgIMKgaWYgKCFkbWFfcHJpdmF0ZSkgewo+ID4gwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqBkZXZfZXJyKHN1YnN0cmVhbS0+cGNtLT5jYXJkLT5kZXYsCj4gPiBAQCAtNDQ1LDcgKzQ0NSw3
-IEBAIHN0YXRpYyBpbnQgZnNsX2RtYV9vcGVuKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vi
-c3RyZWFtKQo+ID4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBkZXZfZXJyKHN1YnN0cmVhbS0+cGNt
-LT5jYXJkLT5kZXYsCj4gPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCJjYW4n
-dCByZWdpc3RlciBJU1IgZm9yIElSUSAldSAocmV0PSVpKVxuIiwKPiA+IMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgZG1hX3ByaXZhdGUtPmlycSwgcmV0KTsKPiA+IC0gwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgZG1hX2ZyZWVfY29oZXJlbnQoc3Vic3RyZWFtLT5wY20tPmRldiwKPiA+
-ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgZG1hX2ZyZWVfY29oZXJlbnQoc3Vic3RyZWFtLT5wY20t
-PmNhcmQtPmRldiwKPiA+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgc2l6ZW9m
-KHN0cnVjdCBmc2xfZG1hX3ByaXZhdGUpLAo+ID4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqBkbWFfcHJpdmF0ZSwgZG1hX3ByaXZhdGUtPmxkX2J1Zl9waHlzKTsKPiA+IMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgcmV0dXJuIHJldDsKPiA+IEBAIC03NjEsMTMgKzc2MSwxMyBAQCBz
-dGF0aWMgaW50IGZzbF9kbWFfY2xvc2Uoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJl
-YW0pCj4gPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGZyZWVfaXJxKGRtYV9w
-cml2YXRlLT5pcnEsIGRtYV9wcml2YXRlKTsKPiA+Cj4gPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oGlmIChkbWFfcHJpdmF0ZS0+bGRfYnVmX3BoeXMpIHsKPiA+IC0gwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgZG1hX3VubWFwX3NpbmdsZShzdWJzdHJlYW0tPnBjbS0+ZGV2LAo+ID4g
-KyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBkbWFfdW5tYXBfc2luZ2xlKHN1YnN0
-cmVhbS0+cGNtLT5jYXJkLT5kZXYsCj4gPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoGRtYV9wcml2YXRlLT5sZF9idWZfcGh5cywKPiA+IMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgc2l6ZW9mKGRtYV9wcml2YXRlLT5s
-aW5rKSwgRE1BX1RPX0RFVklDRSk7Cj4gPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoH0KPiA+Cj4g
-PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoC8qIERlYWxsb2NhdGUgdGhlIGZzbF9kbWFfcHJpdmF0
-ZSBzdHJ1Y3R1cmUgKi8KPiA+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgZG1hX2ZyZWVfY29oZXJl
-bnQoc3Vic3RyZWFtLT5wY20tPmRldiwKPiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgZG1hX2Zy
-ZWVfY29oZXJlbnQoc3Vic3RyZWFtLT5wY20tPmNhcmQtPmRldiwKPiA+IMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgc2l6ZW9mKHN0cnVjdCBmc2xfZG1hX3ByaXZhdGUpLAo+ID4g
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBkbWFfcHJpdmF0ZSwgZG1hX3ByaXZh
-dGUtPmxkX2J1Zl9waHlzKTsKPiA+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgc3Vic3RyZWFtLT5y
-dW50aW1lLT5wcml2YXRlX2RhdGEgPSBOVUxMOwo+ID4gLS0KPiA+IDEuNS42LjUKPiA+IF9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gPiBMaW51eHBwYy1k
-ZXYgbWFpbGluZyBsaXN0Cj4gPiBMaW51eHBwYy1kZXZAb3psYWJzLm9yZwo+ID4gaHR0cHM6Ly9v
-emxhYnMub3JnL21haWxtYW4vbGlzdGluZm8vbGludXhwcGMtZGV2Cj4gPgo+IAo+IAo+IAo+IC0t
-IAo+IEdyYW50IExpa2VseSwgQi5TYy4sIFAuRW5nLgo+IFNlY3JldCBMYWIgVGVjaG5vbG9naWVz
-IEx0ZC4KCi0tIApBbnRvbiBWb3JvbnRzb3YKZW1haWw6IGNib3VhdG1haWxydUBnbWFpbC5jb20K
-aXJjOi8vaXJjLmZyZWVub2RlLm5ldC9iZDIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+
+--===============6660572771617169303==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-OsO/AYHG6Nj6k9fv7LU7"
+
+
+--=-OsO/AYHG6Nj6k9fv7LU7
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On my macbook 5,1 I need to use model=3Dmbp3, as you may still remember. I
+also need to set channels to 6 to hear anything at all, probably due to
+the codec mismatch -- it's not really an mbp3 so that only works 80%,
+but I haven't gotten around to writing a better codec description.
+
+However, when I hibernate with channels set to 6, I always need to reset
+the channels to 6 again after resume to hear anything -- it seems the
+channels control isn't reset to the hardware at resume time. I suppose
+this bugs affects any users of this codec, regardless of whether it is
+actually right or wrong.
+
+johannes
+
+PS: I wanted to file a bug on the alsa bugtracker but mantisbt decided I
+had not entered all fields correctly and didn't give me an option to
+edit, so I had to reenter, which frustrated me enough to give up on
+mantis.
+
+--=-OsO/AYHG6Nj6k9fv7LU7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Comment: Johannes Berg (powerbook)
+
+iQIcBAABAgAGBQJJ2HH/AAoJEKVg1VMiehFYnToP/i0U9Z+ViXHanblL5fnf4m88
+3lbJv050sNEd+DpRF93w4NgIt1lFWok2EFmlwCIpPVf6+sI5mrrcXWrc/JPY6ptd
+mhLbBs51ft/QUiVjf0UnovI1Q87Gww24YVF8/8pt0BTzio8ss5Ibv7yYC3L3d3t5
+KEuTB2hCgF1UBt50dsaxqQfAR3+wzTiNOV0xwPiWzuF0+pCI3gpuuCTzC+3G7gZV
+w3q0V1pFYWG5XvvqdcXYhw5La6rFK+GauT+uOK/3qQQd+LUJw4iQiovnjBPj4KPL
+4LQ01StQvC/0/0joMFcNc6aPYgH1xy9LThLkUYTLuT5V/hSNQsR/potDLf0wiiQq
+EDlo3dMSw4DyvmbmI9LrHfnmfDmgfkTSv9Zi+Wo2+rzd3fmRnVJK1Kn0MUnzMS9d
+zfgpanNSAspemMTNyPE7I16IG1Mv/5XDiBVHVNVM3yghuH7m6jnrsOtdl6w0Qt6w
+eyPqRUj+u9CCPsTfe8UYMnPFRskmRENBohHKEtP0INeJ+02phS5ePkpo1pXDoH9u
+jOo/MpPEKFD5jFsou6tfMGaBLtGUAnIiAhkHLmrq7vVOIHdjy9D9kiF6nnSUzOYR
+HL8Kl9YL2cNnKJrhcvZHkABZZzXRJf4E6hQZrlcvueYxGZAFfVJLmWqpEZYfTdzX
+Qr3kGsHt+gmFjyLMjTGu
+=vWUV
+-----END PGP SIGNATURE-----
+
+--=-OsO/AYHG6Nj6k9fv7LU7--
+
+
+--===============6660572771617169303==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============6660572771617169303==--
