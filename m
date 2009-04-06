@@ -1,50 +1,61 @@
-From: Manuel Lauss <mano@roarinelk.homelinux.net>
-Subject: Re: [PATCH] ALSA: au1x00: convert to platform device
-Date: Mon, 6 Apr 2009 20:24:45 +0200
-Message-ID: <20090406182445.GA3432@roarinelk.homelinux.net>
-References: <1238320026-4936-1-git-send-email-mano@roarinelk.homelinux.net>
-	<49CF9558.6030604@cooper-street.com>
-	<20090329175407.570af32d@scarran.roarinelk.net>
-	<49D75464.2060704@cooper-street.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH] ASoC: fsl_dma: Pass the proper device for dma mapping
+	routines
+Date: Mon, 06 Apr 2009 16:06:22 -0500
+Message-ID: <49DA6ECE.4010900@freescale.com>
+References: <20090404183319.GA22203@oksana.dev.rtsoft.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from roarinelk.homelinux.net (fnoeppeil48.netpark.at
-	[217.175.205.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3F9D2243E2
-	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Apr 2009 20:24:46 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <49D75464.2060704@cooper-street.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Charles Eidsness <charles@cooper-street.com>
-Cc: Linux-MIPS <linux-mips@linux-mips.org>, alsa-devel <alsa-devel@alsa-project.org>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
+In-Reply-To: <20090404183319.GA22203@oksana.dev.rtsoft.ru>
+List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
+List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
+List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
+Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+To: Anton Vorontsov <avorontsov@ru.mvista.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linuxppc-dev@ozlabs.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Apr 04, 2009 at 08:36:52AM -0400, Charles Eidsness wrote:
->>> Hi,
->>>
->>> I wish I could but it's been years since I worked on that project and I'm 
->>> pretty sure that I don't have any hardware around anymore, but I will do 
->>> a thorough search next week anyway. There may be something hiding in the 
->>> back of a dusty closet that I've forgotten about, if I find something I 
->>> will let you know.
->> Thanks! I really appreciate it!
->> 	Manuel Lauss
->
-> Hi Manuel,
->
-> Sorry, but I wasn't able to find any working hardware.
+Anton Vorontsov wrote:
+> The driver should pass a device that specifies internal DMA ops, but
+> substream->pcm is just a logical device, and thus doesn't have arch-
+> specific dma callbacks, therefore following bug appears:
+> 
+>   Freescale Synchronous Serial Interface (SSI) ASoC Driver
+>   ------------[ cut here ]------------
+>   kernel BUG at arch/powerpc/include/asm/dma-mapping.h:237!
+>   Oops: Exception in kernel mode, sig: 5 [#1]
+>   ...
+>   NIP [c02259c4] snd_malloc_dev_pages+0x58/0xac
+>   LR [c0225c74] snd_dma_alloc_pages+0xf8/0x108
+>   Call Trace:
+>   [df02bde0] [df02be2c] 0xdf02be2c (unreliable)
+>   [df02bdf0] [c0225c74] snd_dma_alloc_pages+0xf8/0x108
+>   [df02be10] [c023a100] fsl_dma_new+0x68/0x124
+>   [df02be20] [c02342ac] soc_new_pcm+0x1bc/0x234
+>   [df02bea0] [c02343dc] snd_soc_new_pcms+0xb8/0x148
+>   [df02bed0] [c023824c] cs4270_probe+0x34/0x124
+>   [df02bef0] [c0232fe8] snd_soc_instantiate_card+0x1a4/0x2f4
+>   [df02bf20] [c0233164] snd_soc_instantiate_cards+0x2c/0x68
+>   [df02bf30] [c0234704] snd_soc_register_platform+0x60/0x80
+>   [df02bf50] [c03d5664] fsl_soc_platform_init+0x18/0x28
+>   ...
+> 
+> This patch fixes the issue by using card's device instead.
+> 
+> Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
+> ---
 
-Bummer.  Thanks for trying though!
+Acked-by: Timur Tabi <timur@freescale.com>
 
-	Manuel
+Mark and Takashi: this patch is a must-fix for 2.6.30
+
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
