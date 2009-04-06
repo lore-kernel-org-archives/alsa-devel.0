@@ -1,18 +1,23 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 2/6] ASoC: OMAP mcbsp: Add 4 channel support
-Date: Mon,  6 Apr 2009 15:19:28 +0300
-Message-ID: <1239020372-8457-3-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 6/6] ASoC: Beagle: Add support for 4 channel
+	mode
+Date: Mon,  6 Apr 2009 15:19:32 +0300
+Message-ID: <1239020372-8457-7-git-send-email-peter.ujfalusi@nokia.com>
 References: <1239020372-8457-1-git-send-email-peter.ujfalusi@nokia.com>
 	<1239020372-8457-2-git-send-email-peter.ujfalusi@nokia.com>
+	<1239020372-8457-3-git-send-email-peter.ujfalusi@nokia.com>
+	<1239020372-8457-4-git-send-email-peter.ujfalusi@nokia.com>
+	<1239020372-8457-5-git-send-email-peter.ujfalusi@nokia.com>
+	<1239020372-8457-6-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4560A2436D
+	by alsa0.perex.cz (Postfix) with ESMTP id 323821038B8
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Apr 2009 14:20:00 +0200 (CEST)
-In-Reply-To: <1239020372-8457-2-git-send-email-peter.ujfalusi@nokia.com>
+	Mon,  6 Apr 2009 14:19:51 +0200 (CEST)
+In-Reply-To: <1239020372-8457-6-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,80 +31,62 @@ To: alsa-devel@alsa-project.org
 Cc: sakoman@gmail.com, broonie@opensource.wolfsonmicro.com, jarkko.nikula@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-Add 4 channel support (with DSP_A format) to omap-mcbsp.
-This mode is used by the twl4030 codec, when it is configured
-in Option2 mode.
+This patch adds support for the four channel TDM mode
+on Beagle board.
 
-Also fixes the DSP_B mode, since it has to have single-phase
-configuration.
+Depending on the channel count, the interface needs to be
+configured differently (I2S for stereo DSP_A for four channels)
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
- sound/soc/omap/omap-mcbsp.c |   23 +++++++++++++++++------
- 1 files changed, 17 insertions(+), 6 deletions(-)
+ sound/soc/omap/omap3beagle.c |   26 ++++++++++++++++++--------
+ 1 files changed, 18 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index d88e4cd..eca50cc 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -216,6 +216,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 	int dma, bus_id = mcbsp_data->bus_id, id = cpu_dai->id;
- 	int wlen, channels;
- 	unsigned long port;
-+	unsigned int format;
+diff --git a/sound/soc/omap/omap3beagle.c b/sound/soc/omap/omap3beagle.c
+index fd24a4a..511a570 100644
+--- a/sound/soc/omap/omap3beagle.c
++++ b/sound/soc/omap/omap3beagle.c
+@@ -41,23 +41,33 @@ static int omap3beagle_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
+ 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	unsigned int fmt;
+ 	int ret;
  
- 	if (cpu_class_is_omap1()) {
- 		dma = omap1_dma_reqs[bus_id][substream->stream];
-@@ -243,12 +244,22 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 		return 0;
++	switch (params_channels(params)) {
++	case 2: /* Stereo I2S mode */
++		fmt =	SND_SOC_DAIFMT_I2S |
++			SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CBM_CFM;
++		break;
++	case 4: /* Four channel TDM mode */
++		fmt =	SND_SOC_DAIFMT_DSP_A |
++			SND_SOC_DAIFMT_IB_NF |
++			SND_SOC_DAIFMT_CBM_CFM;
++		break;
++	default:
++		return -EINVAL;
++	}
++
+ 	/* Set codec DAI configuration */
+-	ret = snd_soc_dai_set_fmt(codec_dai,
+-				  SND_SOC_DAIFMT_I2S |
+-				  SND_SOC_DAIFMT_NB_NF |
+-				  SND_SOC_DAIFMT_CBM_CFM);
++	ret = snd_soc_dai_set_fmt(codec_dai, fmt);
+ 	if (ret < 0) {
+ 		printk(KERN_ERR "can't set codec DAI configuration\n");
+ 		return ret;
  	}
  
-+	format = mcbsp_data->fmt & SND_SOC_DAIFMT_FORMAT_MASK;
- 	channels = params_channels(params);
- 	switch (channels) {
- 	case 2:
--		/* Use dual-phase frames */
--		regs->rcr2	|= RPHASE;
--		regs->xcr2	|= XPHASE;
-+	case 4:
-+		if (format == SND_SOC_DAIFMT_DSP_A ||
-+		    format == SND_SOC_DAIFMT_DSP_B) {
-+			/* Use single-phase frames */
-+			regs->rcr1	|= RFRLEN1(channels - 1);
-+			regs->xcr1	|= XFRLEN1(channels - 1);
-+			break;
-+		} else {
-+			/* Use dual-phase frames */
-+			regs->rcr2	|= RPHASE;
-+			regs->xcr2	|= XPHASE;
-+		}
- 	case 1:
- 		/* Set 1 word per (McBSP) frame */
- 		regs->rcr2	|= RFRLEN2(1 - 1);
-@@ -276,7 +287,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- 	/* Set FS period and length in terms of bit clock periods */
--	switch (mcbsp_data->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	switch (format) {
- 	case SND_SOC_DAIFMT_I2S:
- 		regs->srgr2	|= FPER(wlen * 2 - 1);
- 		regs->srgr1	|= FWID(wlen - 1);
-@@ -490,13 +501,13 @@ static struct snd_soc_dai_ops omap_mcbsp_dai_ops = {
- 	.id = (link_id),					\
- 	.playback = {						\
- 		.channels_min = 1,				\
--		.channels_max = 2,				\
-+		.channels_max = 4,				\
- 		.rates = OMAP_MCBSP_RATES,			\
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE,		\
- 	},							\
- 	.capture = {						\
- 		.channels_min = 1,				\
--		.channels_max = 2,				\
-+		.channels_max = 4,				\
- 		.rates = OMAP_MCBSP_RATES,			\
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE,		\
- 	},							\
+ 	/* Set cpu DAI configuration */
+-	ret = snd_soc_dai_set_fmt(cpu_dai,
+-				  SND_SOC_DAIFMT_I2S |
+-				  SND_SOC_DAIFMT_NB_NF |
+-				  SND_SOC_DAIFMT_CBM_CFM);
++	ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
+ 	if (ret < 0) {
+ 		printk(KERN_ERR "can't set cpu DAI configuration\n");
+ 		return ret;
 -- 
 1.6.2.2
