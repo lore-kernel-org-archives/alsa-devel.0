@@ -1,20 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 1/6] ASoC: OMAP mcbsp: Add DSP_A support
-Date: Mon, 6 Apr 2009 15:37:58 +0300
-Message-ID: <200904061537.59067.peter.ujfalusi@nokia.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 3/6] ASoC: TWL4030: Enable all audio paths
+Date: Mon, 6 Apr 2009 13:45:21 +0100
+Message-ID: <20090406124520.GA14169@sirena.org.uk>
 References: <1239020372-8457-1-git-send-email-peter.ujfalusi@nokia.com>
 	<1239020372-8457-2-git-send-email-peter.ujfalusi@nokia.com>
-	<20090406122232.GA8585@rakim.wolfsonmicro.main>
+	<1239020372-8457-3-git-send-email-peter.ujfalusi@nokia.com>
+	<1239020372-8457-4-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id E0C0A2437E
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4D35124386
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Apr 2009 14:38:02 +0200 (CEST)
-In-Reply-To: <20090406122232.GA8585@rakim.wolfsonmicro.main>
+	Mon,  6 Apr 2009 14:45:23 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <1239020372-8457-4-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,33 +25,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikula Jarkko (Nokia-D/Helsinki)" <jarkko.nikula@nokia.com>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: sakoman@gmail.com, alsa-devel@alsa-project.org, jarkko.nikula@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 06 April 2009 15:22:33 ext Mark Brown wrote:
-> On Mon, Apr 06, 2009 at 03:19:27PM +0300, Peter Ujfalusi wrote:
-> > Add SND_SOC_DAIFMT_DSP_A support for omap-mcbsp.
-> > The configuration for DSP_A and DSP_B is the same.
->
-> That doesn't sound right - the two formats do differ on the wire.  In
-> mode B the MSB of data is transmitted along with the LRC pulse while in
-> mode A it is transmitted after the trailing edge of the LRC pulse.
+On Mon, Apr 06, 2009 at 03:19:29PM +0300, Peter Ujfalusi wrote:
 
-That is why I have asked previously about these... I'm still a bit confused=
-, =
+> Enable all TX and RX paths on the TWL codec.
 
-but at the end (I think) the configuration in omap-mcbsp is right for the =
+What does this mean by "enable" - I'm guessing it's powering blocks
+within the CODEC rather than connecting any audio paths?
 
-twl4030:
-regs->srgr2	|=3D FPER(wlen * channels - 1);
-regs->srgr1	|=3D FWID(wlen * channels - 2);
-and
-/* 0-bit data delay */
-regs->rcr2      |=3D RDATDLY(0);
-regs->xcr2      |=3D XDATDLY(0);
+> This is not so nice, but doing it runtime brings quite a bit
+> of challenge, since for example the Digital loopback also needs
+> the RX and TX paths to be enabled.
 
-I'll revisit this.
-
-Thanks,
-P=E9ter
+What are the problems other than loopback (which really needs digital
+routing to work properly, though I've never seen much demand for it
+outside of testing)?  Powering everything is probably fine, I'm just
+wondering if this is due to the hardware or the core.
