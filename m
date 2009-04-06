@@ -1,19 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: correct s6000 I2S clock polarity
-Date: Mon, 6 Apr 2009 11:23:42 +0100
-Message-ID: <20090406102341.GA31607@rakim.wolfsonmicro.main>
-References: <49D9D001.7070901@emlix.com>
-	<1239011422-23249-1-git-send-email-dg@emlix.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH 1/6] ASoC: OMAP mcbsp: Add DSP_A support
+Date: Mon,  6 Apr 2009 15:19:27 +0300
+Message-ID: <1239020372-8457-2-git-send-email-peter.ujfalusi@nokia.com>
+References: <1239020372-8457-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1208824402
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id A392824359
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Apr 2009 12:23:43 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1239011422-23249-1-git-send-email-dg@emlix.com>
+	Mon,  6 Apr 2009 14:19:43 +0200 (CEST)
+In-Reply-To: <1239020372-8457-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +21,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel =?iso-8859-1?Q?Gl=F6ckner?= <dg@emlix.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: sakoman@gmail.com, broonie@opensource.wolfsonmicro.com, jarkko.nikula@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 06, 2009 at 11:50:22AM +0200, Daniel Gl=F6ckner wrote:
-> According to the data sheet data is clocked out on the falling edge
-> and latched on the rising edge of the bit clock. While the left sample
-> is transmitted the word clock line is low.
+Add SND_SOC_DAIFMT_DSP_A support for omap-mcbsp.
+The configuration for DSP_A and DSP_B is the same.
 
-> Signed-off-by: Daniel Gl=F6ckner <dg@emlix.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+ sound/soc/omap/omap-mcbsp.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-Applied, thanks!
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index 9c09b94..d88e4cd 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -282,6 +282,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
+ 		regs->srgr1	|= FWID(wlen - 1);
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_B:
++	case SND_SOC_DAIFMT_DSP_A:
+ 		regs->srgr2	|= FPER(wlen * channels - 1);
+ 		regs->srgr1	|= FWID(wlen * channels - 2);
+ 		break;
+@@ -325,6 +326,7 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		regs->xcr2	|= XDATDLY(1);
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_B:
++	case SND_SOC_DAIFMT_DSP_A:
+ 		/* 0-bit data delay */
+ 		regs->rcr2      |= RDATDLY(0);
+ 		regs->xcr2      |= XDATDLY(0);
+-- 
+1.6.2.2
