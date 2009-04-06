@@ -1,20 +1,16 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ASoC: fsl_dma: Pass the proper device
-	for	dma mapping routines
-Date: Mon, 6 Apr 2009 23:38:37 +0100
-Message-ID: <20090406223837.GA3622@sirena.org.uk>
-References: <20090404183319.GA22203@oksana.dev.rtsoft.ru>
-	<49DA6ECE.4010900@freescale.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.30
+Date: Mon, 6 Apr 2009 23:48:44 +0100
+Message-ID: <20090406224844.GB3622@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1B64C1037F1
+	by alsa0.perex.cz (Postfix) with ESMTP id 780001037F1
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Apr 2009 00:41:03 +0200 (CEST)
+	Tue,  7 Apr 2009 00:48:50 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <49DA6ECE.4010900@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,13 +20,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Kumar Gala <galak@kernel.crashing.org>, linuxppc-dev@ozlabs.org, Anton Vorontsov <avorontsov@ru.mvista.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 06, 2009 at 04:06:22PM -0500, Timur Tabi wrote:
-> Acked-by: Timur Tabi <timur@freescale.com>
+The following changes since commit 103f211d0be2bed75b5739de62a10415ef0bbc25:
+  Peter Ujfalusi (1):
+        ASoC: TWL4030: Add actual support for 96KHz playback support
 
-> Mark and Takashi: this patch is a must-fix for 2.6.30
+are available in the git repository at:
 
-Applied, thanks.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.30
+
+Anton Vorontsov (1):
+      ASoC: fsl_dma: Pass the proper device for dma mapping routines
+
+Dan Carpenter (1):
+      ASoC: Fix null dereference in ak4535_remove()
+
+ sound/soc/codecs/ak4535.c |    3 ++-
+ sound/soc/fsl/fsl_dma.c   |   12 ++++++------
+ 2 files changed, 8 insertions(+), 7 deletions(-)
