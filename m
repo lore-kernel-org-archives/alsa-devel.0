@@ -1,16 +1,20 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: ASoC: Correct DSP/TDM mode (for twl4030 4 channel mode)
-Date: Mon, 6 Apr 2009 09:57:43 +0300
-Message-ID: <200904060957.43102.peter.ujfalusi@nokia.com>
+From: "Medisetty, Naresh" <naresh@ti.com>
+Subject: Re: [PATCH 0/5] ARM: DaVinci: ASoC: Add audio
+	support	for DM646x
+Date: Mon, 6 Apr 2009 12:53:54 +0530
+Message-ID: <FF55437E1F14DA4BAEB721A458B67017069809B0E8@dbde02.ent.ti.com>
+References: <1238723211-27329-1-git-send-email-naresh@ti.com>,
+	<20090402154219.GM4527@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 060C0103801
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA2111037F1
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Apr 2009 08:58:04 +0200 (CEST)
-Content-Disposition: inline
+	Mon,  6 Apr 2009 09:26:12 +0200 (CEST)
+In-Reply-To: <20090402154219.GM4527@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,28 +24,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: ext Mark Brown <broonie@sirena.org.uk>
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Mark,
 
-I have now the implementation for the 4 channel support on the twl4030 code=
-c =
 
-driver (and also for the omap-mcbsp). It does work nicely, but I'm not sure =
 
-what Interface format (DSP_A or DSP_B or TDM?) should I use for it.
+Thanks for the review.
 
-Can someone help me out on this one?
 
-The TPS65950 TRM is publicly available, which has exactly the same audio =
 
-block:
-http://focus.tij.co.jp/jp/lit/ug/swcu050b/swcu050b.pdf
-Page 712 (TDM mode, Sample length 16 bits; Word length 16 bits)
+I will re-submit the patches by taking care of all your comments
 
-My bet goes to SND_SOC_DAIFMT_DSP_A, but I'm not 100% sure about it.
 
-Thank you,
-P=E9ter
+
+> On Thu, Apr 02, 2009 at 09:46:51PM -0400, Naresh Medisetty wrote:
+>
+> > This series is dependant on the following 3 patches submitted to the
+> > DaVinci git:
+>
+> Am I right in thinking that there aren't any compile time dependencies
+> on the DaVinci patches, only runtime ones?
+
+
+Yes, there are no compile time dependencies on DaVinci patches submitted
+to DaVinci list.
+
+
+
+
+
+Thanks and Regards,
+Naresh
+
+________________________________________
+From: Mark Brown [broonie@sirena.org.uk]
+Sent: Thursday, April 02, 2009 9:12 PM
+To: Medisetty, Naresh
+Cc: alsa-devel@alsa-project.org; davinci-linux-open-source@linux.davincidsp.com
+Subject: Re: [alsa-devel] [PATCH 0/5] ARM: DaVinci: ASoC: Add audio support     for DM646x
+
+On Thu, Apr 02, 2009 at 09:46:51PM -0400, Naresh Medisetty wrote:
+
+> This series is dependant on the following 3 patches submitted to the
+> DaVinci git:
+
+Am I right in thinking that there aren't any compile time dependencies
+on the DaVinci patches, only runtime ones?
