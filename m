@@ -1,25 +1,15 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 6/6] ASoC: Beagle: Add support for
-	4	channel mode
-Date: Mon, 6 Apr 2009 13:50:29 +0100
-Message-ID: <20090406125028.GB14169@sirena.org.uk>
-References: <1239020372-8457-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1239020372-8457-2-git-send-email-peter.ujfalusi@nokia.com>
-	<1239020372-8457-3-git-send-email-peter.ujfalusi@nokia.com>
-	<1239020372-8457-4-git-send-email-peter.ujfalusi@nokia.com>
-	<1239020372-8457-5-git-send-email-peter.ujfalusi@nokia.com>
-	<1239020372-8457-6-git-send-email-peter.ujfalusi@nokia.com>
-	<1239020372-8457-7-git-send-email-peter.ujfalusi@nokia.com>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] Add VREF powerdown sequence for another board
+Date: Mon, 06 Apr 2009 09:30:46 -0400
+Message-ID: <49DA0406.8030209@embeddedalley.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 588AA2438F
+Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
+	by alsa0.perex.cz (Postfix) with SMTP id 9604D2434F
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Apr 2009 14:50:29 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1239020372-8457-7-git-send-email-peter.ujfalusi@nokia.com>
+	Mon,  6 Apr 2009 15:30:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,20 +19,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: sakoman@gmail.com, alsa-devel@alsa-project.org, jarkko.nikula@nokia.com
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 06, 2009 at 03:19:32PM +0300, Peter Ujfalusi wrote:
+Add powerdown sequence for VREF using a shared jack when the headphone is present and
+the microphone isn't on.
 
-> +	switch (params_channels(params)) {
-> +	case 2: /* Stereo I2S mode */
-> +		fmt =	SND_SOC_DAIFMT_I2S |
-> +			SND_SOC_DAIFMT_NB_NF |
-> +			SND_SOC_DAIFMT_CBM_CFM;
-> +		break;
-> +	case 4: /* Four channel TDM mode */
-> +		fmt =	SND_SOC_DAIFMT_DSP_A |
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+---
+ sound/pci/hda/patch_sigmatel.c |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
 
-
-Might it not be easier to just run in DSP mode all the time?
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index b5e108a..a6fc257 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -4413,6 +4413,22 @@ static void stac92xx_unsol_event(struct hda_codec *codec, unsigned int res)
+ 		if (spec->num_pwrs > 0)
+ 			stac92xx_pin_sense(codec, event->nid);
+ 		stac92xx_report_jack(codec, event->nid);
++
++		switch (codec->subsystem_id) {
++		case 0x103c308f:
++			if (event->nid == 0xb) {
++				int pin = AC_PINCTL_IN_EN;
++
++				if (get_pin_presence(codec, 0xa)
++						&& get_pin_presence(codec, 0xb))
++					pin |= AC_PINCTL_VREF_80;
++				if (!get_pin_presence(codec, 0xb))
++					pin |= AC_PINCTL_VREF_80;
++
++				/* toggle VREF state based on mic + hp pin status */
++				stac92xx_auto_set_pinctl(codec, 0x0a, pin);
++			}
++		}
+ 		break;
+ 	case STAC_VREF_EVENT:
+ 		data = snd_hda_codec_read(codec, codec->afg, 0,
+-- 
+1.5.6.3
