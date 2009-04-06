@@ -1,32 +1,30 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: Device creation order
-Date: Sun, 5 Apr 2009 21:29:05 +0100
-Message-ID: <20090405202904.GA6843@sirena.org.uk>
-References: <20090403015429.GA702@tango.0pointer.de>
-	<alpine.LNX.2.00.0904030904160.17368@eeebox2.perex-int.cz>
-	<49D5BCF6.1020407@ladisch.de>
-	<20090403115647.GD15646@tango.0pointer.de>
-	<20090405131605.GA31915@localhost>
-	<20090405144041.GA31963@tango.0pointer.de>
+From: Eric <ejaouen@ponctey.fr>
+Subject: modify the 0x21 pin config for ADATout (STAC927x hda
+ codec) ?
+Date: Mon, 06 Apr 2009 03:37:59 +0200
+Message-ID: <49D95CF7.2070503@ponctey.fr>
+References: <4969FBA0.1030008@ponctey.fr>	<s5hvdskdah9.wl%tiwai@suse.de><496B3BB7.1020203@ponctey.fr>	<496E7FE7.8020706@embeddedalley.com>	<16A430A423D62246A24C9A892622FE668D5227@CORPEXCH1.na.ads.idt.com>	<498A1EBC.9060203@ponctey.fr>
+	<49D17798.6040205@ponctey.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id DE35724385
+Received: from smtp21.orange.fr (unknown [80.12.242.48])
+	by alsa0.perex.cz (Postfix) with ESMTP id E9AA624531
 	for <alsa-devel@alsa-project.org>;
-	Sun,  5 Apr 2009 22:29:12 +0200 (CEST)
-Received: from 82-41-28-43.cable.ubr04.sgyl.blueyonder.co.uk ([82.41.28.43]
-	helo=finisterre)
-	by cassiel.sirena.org.uk with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.69) (envelope-from <broonie@sirena.org.uk>)
-	id 1LqYxr-0000WR-OV
-	for alsa-devel@alsa-project.org; Sun, 05 Apr 2009 21:29:12 +0100
-Received: from broonie by finisterre with local (Exim 4.69)
-	(envelope-from <broonie@sirena.org.uk>) id 1LqYxl-0001pO-Cz
-	for alsa-devel@alsa-project.org; Sun, 05 Apr 2009 21:29:05 +0100
-Content-Disposition: inline
-In-Reply-To: <20090405144041.GA31963@tango.0pointer.de>
+	Mon,  6 Apr 2009 03:38:53 +0200 (CEST)
+Received: from anita.2sapins.ponctey.fr
+	(LRouen-151-72-65-95.w193-251.abo.wanadoo.fr [193.251.41.95])
+	by mwinf2118.orange.fr (SMTP Server) with ESMTP id 4B5BB1C00083
+	for <alsa-devel@alsa-project.org>;
+	Mon,  6 Apr 2009 03:38:53 +0200 (CEST)
+Received: from [192.168.100.3] (unknown [192.168.100.3])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client did not present a certificate)
+	by anita.2sapins.ponctey.fr (Postfix) with ESMTPS id 6E2D951789
+	for <alsa-devel@alsa-project.org>;
+	Mon,  6 Apr 2009 03:38:52 +0200 (CEST)
+In-Reply-To: <49D17798.6040205@ponctey.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -39,14 +37,90 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Apr 05, 2009 at 04:40:42PM +0200, Lennart Poettering wrote:
-> On Sun, 05.04.09 21:16, Wu Fengguang (fengguang.wu@intel.com) wrote:
+Please somebody give me a simple way so as to have my 0x21 node Pin
+config change
+from my current (Default) 0x01452150: [Jack] SPDIF Out
+to the aimed 0x01552150
 
-> > - hotplug
-> >   The user connected/disconnected a HDMI device.
+If fact I bought these intel media motherboards ONLY for ADATout and
+linux use.
+Thanks in advance, Eric
 
-> Wouldn't that overlap with the jack sensing API? 
+> Hi all, I bought motherboards intel DP35DP and DG33TL and just tried
+> ADAT output in Alsa (ADAT output on them is proven to work under windows).
+> I wrote the command (thanks to the work of Matthew for the 'IEC958
+> Playback Source' control.28 setting) :
+> amixer sset 'IEC958 Playback Source' ADAT
+> =
 
-Yes, although given that AIUI the HDMI port will be able to communicate
-with the connected device it may make more sense to expose the connected
-device to user space as what it is, or to do both.
+> Here is my resulting alsainfo:
+> www.alsa-project.org/db/?f=3Dcb01bf4f7bc62fe69f36bc1a4bbc0dbcace20605
+> =
+
+> It still does not work
+> I think the reason is that contrary to the windows driver the
+> Node 0x21 is still unchanged :
+> Pin Default 0x01452150: [Jack] SPDIF Out
+> whereas it should be better with :
+> 		0x01552150
+> =
+
+> How can I change my computer from the Pin default config to this
+> alternative Pin config ?
+> =
+
+> Anybody has any other idea to help ?
+> Thanks a lot, Eric
+> =
+
+>> Hi Steven,
+>> I have studied the hd audio documents :
+>> Please make sure the pin default is actually 015521xx when in ADAT mode
+>> (instead of config default 014521xx ) .
+>>
+>> Please copy me your alsainfo script if it still does not work.
+>> Matthew Ranostay is right : really not much is missing or wrong for ADAT
+>> to work.
+>> Thanks everybody for future help, Eric
+>> Tellman, Steven a =E9crit :
+>>> It doesn't work. The option comes up, but no dice. Doesn't lock to the
+>>> receiver that has ADAT support.
+> =
+
+>>> Hello Eric,
+>>> You should run the latest ALSA from the git tree because I added a codec
+>>> specific SPDIF output control control for that chipset.
+>>> ....
+>>>  417 static const char *stac927x_spdif_labels[5] =3D {
+>>>  418     "Digital Playback", "ADAT", "Analog Mux 1",
+>>>  419     "Analog Mux 2", "Analog Mux 3"
+>>>  420 };
+>>> ....
+>>> I haven't tested ADAT output though but I have no reason to
+>>> think it wouldn't work.
+>>> Thanks,
+>>> Matt Ranostay
+>>>
+>>>
+>>> Eric wrote:
+>>>> In their handbook, motherboard intel DP35DP and others with STAC927x
+>>> (in
+>>>> the codec datasheet also ADAT output is featured on older sigmatel
+>>>> STAC9271 and now IDT STAC9274 only) advertise ADAT output possible on
+>>>> their toslink.
+>>>> DP35DP and other intel boards are proven to have the ADAT output
+>>> working
+>>>> under windows.
+>>>> Is it working in Alsa ?>>>
+>>>> Anybody from intel or IDT/sigmatel to confirm (by checking the
+>>> sigmatel
+>>>> STAC927x hda codec driver) that it will work ?
+>>>> I want these intel motherboards only for this ADAT output feature and
+>>> I
+>>>> am a linux only user so I would like to know before buying...
+>>>> I want to be sure someone would make the necessary changes to the hda
+>>>> sigmatel codec alsa driver so it would work.
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
