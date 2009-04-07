@@ -1,17 +1,21 @@
-From: Viral Mehta <viral.mehta@einfochips.com>
-Subject: Re: [PATCH][SOUND]volume control for CSWITCH and CROUTE
-Date: Tue, 07 Apr 2009 10:10:59 +0530
-Message-ID: <49DAD95B.5090707@einfochips.com>
-References: <49D754C4.2030803@einfochips.com> <s5htz51i3ik.wl%tiwai@suse.de>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 3/6] ASoC: TWL4030: Enable all audio paths
+Date: Tue, 7 Apr 2009 10:45:59 +0100
+Message-ID: <20090407094558.GA24788@sirena.org.uk>
+References: <1239020372-8457-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1239020372-8457-4-git-send-email-peter.ujfalusi@nokia.com>
+	<20090406124520.GA14169@sirena.org.uk>
+	<200904070759.19600.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ahmedabad.einfochips.com (india.einfochips.com [203.88.139.151])
-	by alsa0.perex.cz (Postfix) with ESMTP id 67CDC244A8
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4AD82244BA
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Apr 2009 11:24:34 +0200 (CEST)
-In-Reply-To: <s5htz51i3ik.wl%tiwai@suse.de>
+	Tue,  7 Apr 2009 11:46:00 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <200904070759.19600.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,41 +25,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikula Jarkko (Nokia-D/Helsinki)" <jarkko.nikula@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Apr 07, 2009 at 07:59:19AM +0300, Peter Ujfalusi wrote:
+> On Monday 06 April 2009 15:45:21 ext Mark Brown wrote:
 
+> > What does this mean by "enable" - I'm guessing it's powering blocks
+> > within the CODEC rather than connecting any audio paths?
 
-Takashi Iwai wrote:
-> At Sat, 04 Apr 2009 18:08:28 +0530,
-> Viral Mehta wrote:
->   
->> From: Deepika Makhija <deepika.makhija@einfochips.com>
->>
->> Added an else part to check 
->> SNDRV_MIXER_OSS_PRESENT_CVOLUME for MIC (slot 7)
->> in commit 36c7b833e5d2501142a371e4e75281d3a29fbd6b
->>
->> Similarly, checks and volume control is required for 
->> SNDRV_MIXER_OSS_PRESENT_CSWITCH and SNDRV_MIXER_OSS_PRESENT_CROUTE
->> as well.
->>
->> Signed-off-by: Deepika Makhija <deepika.makhija@einfochips.com>
->> Signed-off-by: Viral Mehta <viral.mehta@einfochips.com>
->>     
->
-> Thanks, applied now to sound git tree.
->
-> The original patch wasn't applicable (the file name was wrong) so I
-> had to apply the patch manually.  It'd be helpful to test the patch
-> before submission at the next time :)
->
->
-> Takashi
->   
-Thanks for taking care. I am sorry about that mistake.
-Yeah, lately I have learned using checkpatch.pl and things which are 
-helpful before patch submission.
+> The TRM calls these as Audio/Voice digital filters.
+> In effect, they enable the shifting out bits from the Capture path to the bus 
+> and shifting in bits on the Playback side.
 
-Thanks again,
-Viral
+Hrm, so this is a routing thing then - from your description I'm a bit
+surprised that this can be turned on unconditionally since it sounds
+like it'll give you a sidetone all the time which might not be what
+people want.
+
+> But as I said, this is not so nice thing to do, so it need to be revisited.
+
+It needs digital routing.  In the interim another option would be to
+provide switches to user space, possibly?
