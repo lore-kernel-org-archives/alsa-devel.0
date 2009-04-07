@@ -1,17 +1,21 @@
-From: Ernesto Torres <skullmate@gmail.com>
-Subject: Help for writting an ASoC driver
-Date: Tue, 7 Apr 2009 12:18:25 -0500
-Message-ID: <fb44c3530904071018o542cb622k6ab9b939b3144c78@mail.gmail.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 3/6] ASoC: TWL4030: Enable all audio paths
+Date: Tue, 7 Apr 2009 22:02:42 +0100
+Message-ID: <20090407210242.GA5262@sirena.org.uk>
+References: <1239020372-8457-1-git-send-email-peter.ujfalusi@nokia.com>
+	<200904070759.19600.peter.ujfalusi@nokia.com>
+	<20090407094558.GA24788@sirena.org.uk>
+	<200904071330.22727.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id A002024603
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 26F0D2434D
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Apr 2009 19:18:27 +0200 (CEST)
-Received: by yx-out-1718.google.com with SMTP id 4so2069660yxp.2
-	for <alsa-devel@alsa-project.org>; Tue, 07 Apr 2009 10:18:26 -0700 (PDT)
+	Tue,  7 Apr 2009 23:02:44 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <200904071330.22727.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,22 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikula Jarkko (Nokia-D/Helsinki)" <jarkko.nikula@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, i'm new to alsa and i would like some advice on where to get information
-about writing an ASoC driver it would be for the beagle board, since is the
-board i have available. I have already made some progress initializing and
-loading info to the codec via I2C, but I think there are still many things I
-don't know.
-I still don't know the exact way for playing via pcm with aplay or the order
-of the callbacks. I have checked the web for info but not much about ASoC,
-just the documentation with the linux kernel.
+On Tue, Apr 07, 2009 at 01:30:22PM +0300, Peter Ujfalusi wrote:
+> On Tuesday 07 April 2009 12:45:59 ext Mark Brown wrote:
 
-My driver actually tries to play with aplay, but gets stuck in : omap-pcm.c:
-omap_pcm_pointer
-It just won't send the frames.
+> > Hrm, so this is a routing thing then - from your description I'm a bit
+> > surprised that this can be turned on unconditionally since it sounds
+> > like it'll give you a sidetone all the time which might not be what
+> > people want.
 
-Thank you for your help.
+> Not quite. The sidetone/loopback can be turned off inside of twl4030 with the
+> 'Left Digital Loopback' and 'Right Digital Loopback' set to 0.
 
-- Ernesto
+Ah, so there's a separate control to enable the path.
+
+> I think the twl4030 codec still holds some interesting 'features'...
+
+It certainly seems that way.
