@@ -1,16 +1,18 @@
-From: reeteshchandran@yahoo.com
-Subject: Alsa driver issue with udev events
-Date: Wed, 8 Apr 2009 14:48:53 -0700 (PDT)
-Message-ID: <403230.83878.qm@web30002.mail.mud.yahoo.com>
-Reply-To: reeteshchandran@yahoo.com
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: skype and old alsa RC4 symbols
+Date: Wed, 8 Apr 2009 17:55:02 -0400
+Message-ID: <9e4733910904081455u181eecebi31837f490cfd85@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web30002.mail.mud.yahoo.com (web30002.mail.mud.yahoo.com
-	[209.191.69.19]) by alsa0.perex.cz (Postfix) with SMTP id DE2DC103852
+Received: from mail-qy0-f132.google.com (mail-qy0-f132.google.com
+	[209.85.221.132])
+	by alsa0.perex.cz (Postfix) with ESMTP id 34C94103852
 	for <alsa-devel@alsa-project.org>;
-	Wed,  8 Apr 2009 23:48:55 +0200 (CEST)
+	Wed,  8 Apr 2009 23:55:04 +0200 (CEST)
+Received: by qyk38 with SMTP id 38so592270qyk.16
+	for <alsa-devel@alsa-project.org>; Wed, 08 Apr 2009 14:55:03 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,34 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
-=A0
-I am using Alsa driver 1.0.12RC1 on ARM platform. I have a=A0volume control=
- application=A0using=A0SALSA (small alsa) running.=A0The app has the contro=
-l device open (/dev/snd/controlC0).=A0I have another=A0application listenin=
-g to udev events, something like udev monitor. The device in description is=
- USB headset. =
+I would like to run pulseaudio 9.15 contained in this ubuntu
+repository since it fixes my problems with S/PDIF
+https://launchpad.net/~themuso/+archive/ppa
 
-=A0
-The problem is when I unplug the device. When I unplug, I am not getting al=
-l udev remove events. I get only 3 remove events from /class/sound/mixer, /=
-class/sound/dsp and /class/sound/audio. But I dont get the remove events fo=
-r the USB device layer. As a result I am not able to detect that the device=
- has been removed. =
+However, the 32b compatibility library in this build don't work with
+skype since it is missing some RC4 obsolete symbols.
 
-=A0
-This problem exists only if the app has the control device open. I closed t=
-he control device and I get all unplug events correctly. =
+jonsmirl@terra:/home/apps/alsa-lib-1.0.19/debian/lib32asound2/usr/lib32$
+readelf -W -s libasound.so.2.0.0 | grep
+snd_pcm_hw_params_get_channels_min
+   174: 0004a970    58 FUNC    WEAK   DEFAULT   12
+snd_pcm_hw_params_get_channels_min@@ALSA_0.9
+   454: 0004a970    58 FUNC    GLOBAL DEFAULT   12
+__snd_pcm_hw_params_get_channels_min@@ALSA_0.9
 
-=A0
-Has anyone else seen this problem ? Any pointers as to where to start looki=
-ng ?
-=A0
-Thanks and regards,
-Reetesh
+The 64b library has the missing RC4 symbols.
 
+jonsmirl@terra:/home/apps/alsa-lib-1.0.19/debian/libasound2/usr/lib$
+readelf -W -s libasound.so.2.0.0 | grep
+snd_pcm_hw_params_get_channels_min
+   173: 000000000004ff10    15 FUNC    GLOBAL DEFAULT   12
+snd_pcm_hw_params_get_channels_min@@ALSA_0.9.0rc4
+   177: 000000000004ff20    31 FUNC    GLOBAL DEFAULT   12
+snd_pcm_hw_params_get_channels_min@ALSA_0.9
+   462: 000000000004ff10    15 FUNC    GLOBAL DEFAULT   12
+__snd_pcm_hw_params_get_channels_min@@ALSA_0.9
+jonsmirl@terra:/home/apps/alsa-lib-1.0.19/debian/libasound2/usr/lib$
 
-      =
+How do I get the RC4 symbols into the 32 library? I can pull down the
+source for this and build without problem. I just can't identify what
+needs to be changed to make the symbols appear in the 32b compat lib.
+
+-- 
+Jon Smirl
+jonsmirl@gmail.com
