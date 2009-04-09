@@ -1,79 +1,96 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 1/1] ASoC: TWL4030: Add support Voice DAI
-Date: Thu, 9 Apr 2009 15:06:54 +0100
-Message-ID: <20090409140654.GC18152@sirena.org.uk>
-References: <49DDFE1D.3090009@samsung.com>
+From: Jean Delvare <khali@linux-fr.org>
+Subject: Re: [PATCH] AOA: Convert onyx and tas codecs to new-style i2c   
+	drivers
+Date: Thu, 9 Apr 2009 16:21:42 +0200
+Message-ID: <20090409162142.653decf9@hyperion.delvare>
+References: <20090408150249.5a62a56c@hyperion.delvare>
+	<1239205899.16477.32.camel@johannes.local>
+	<20090408224858.04cb6dc4@hyperion.delvare>
+	<1239263089.24548.30.camel@johannes.local>
+	<20090409141945.116772e3@hyperion.delvare>
+	<1239280485.4953.6.camel@johannes.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5CC3E103803
-	for <alsa-devel@alsa-project.org>;
-	Thu,  9 Apr 2009 16:06:56 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <49DDFE1D.3090009@samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joonyoung Shim <jy0922.shim@samsung.com>
-Cc: alsa-devel@alsa-project.org, peter.ujfalusi@nokia.com, kyungmin.park@samsung.com, bhmin@samsung.com
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
+In-Reply-To: <1239280485.4953.6.camel@johannes.local>
+List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
+List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
+List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
+Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Benjamin@ozlabs.org, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 09, 2009 at 10:54:37PM +0900, Joonyoung Shim wrote:
+Hi Johannes,
 
-> The PCM voice interface has two modes
-> - PCM mode1 : This uses the rising edge of the clock signal
-> - PCM mode2 : This uses the falling edge of the clock signal
+On Thu, 09 Apr 2009 14:34:44 +0200, Johannes Berg wrote:
+> > My new approach doesn't auto-load anything. Here we go, what you think?
+> > This time there is no logic change, I'm really only turning legacy code
+> > into new-style i2c code (basically calling i2c_new_device() instead of
+> > i2c_attach_client()) and that's about it.
+> > 
+> > (Once again this is only build-tested and I would like people with the
+> > hardware to give it a try.)
+> 
+> Looks reasonable.
+> 
+> >  static int onyx_create(struct i2c_adapter *adapter,
+> >  		       struct device_node *node,
+> >  		       int addr)
+> >  {
+> > +	struct i2c_board_info info;
+> > +	struct i2c_client *client;
+> > +
+> > +	memset(&info, 0, sizeof(struct i2c_board_info));
+> > +	strlcpy(info.type, "aoa_codec_onyx", I2C_NAME_SIZE);
+> > +	if (node) {
+> > +		info.addr = addr;
+> > +		info.platform_data = node;
+> > +		client = i2c_new_device(adapter, &info);
+> > +	} else {
+> > +		/* probe both possible addresses for the onyx chip */
+> > +		unsigned short probe_onyx[] = {
+> > +			0x46, 0x47, I2C_CLIENT_END
+> > +		};
+> > +
+> > +		client = i2c_new_probed_device(adapter, &info, probe_onyx);
+> > +	}
+> > +	if (!client)
+> > +		return -ENODEV;
+> > +
+> > +	list_add_tail(&client->detected, &client->driver->clients);
+> 
+> That list_add looks a little hackish, and wouldn't it be racy?
 
-> PCM mode1 and mode2 have a look of DSP_A and DSP_B, so we used DSP_A and
-> DSP_B.
+Yes it is a little hackish, the idea is to let i2c-core remove the
+device if our i2c_driver is removed (which happens when you rmmod the
+module). I'll add a comment to explain that. If there are more use
+cases I might move that to a helper function in i2c-core.
 
-That sounds wrong - the difference between modes A and B is an extra
-cycle on BCLK after LRP, not the polarity of the signal.  I'd expect
-that it should be one or the other of these modes with the option to
-invert BCLK.
+No it's not racy, we're called with i2c-core's main mutex held.
 
-> +static int twl4030_voice_startup(struct snd_pcm_substream *substream,
-> +				struct snd_soc_dai *dai)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_device *socdev = rtd->socdev;
-> +	struct snd_soc_codec *codec = socdev->card->codec;
-> +	u8 infreq;
-> +
-> +	/* If the system master clock is not 26MHz, the voice PCM interface is
-> +	 * not avilable.
-> +	 */
-> +	infreq = twl4030_read_reg_cache(codec, TWL4030_REG_APLL_CTL)
-> +		& TWL4030_APLL_INFREQ;
-> +
-> +	if (infreq != TWL4030_APLL_INFREQ_26000KHZ)
-> +		return -EPERM;
-> +
-> +	return 0;
-> +}
+> > +static const struct i2c_device_id onyx_i2c_id[] = {
+> > +	{ "aoa_codec_onyx", 0 },
+> > +	{ }
+> > +};
+> > +MODULE_DEVICE_TABLE(i2c, onyx_i2c_id);
+> 
+> Should it really export the device table?
+> 
+> (same comments for tas)
 
-It's probably worth a comment here telling users that they'll need to
-call set_sysclk() in their init() function rather than hw_params() -
-otherwise this might get called before the clock is set up.
+No, that's a leftover, I intended to remove it but forgot. It's gone
+now. That being said, it's useless, but I don't think it would hurt.
 
-> +		/* change rate and set CODECPDZ */
-> +		twl4030_codec_enable(codec, 0);
-> +		twl4030_write(codec, TWL4030_REG_CODEC_MODE, mode);
-> +		twl4030_codec_enable(codec, 1);
+> It'll be until mid next week that I can test anything.
 
-Hrm.  This codec_enable() call looks fishy - what's the effect if the
-other DAI is running when the voice DAI is configured?  Though there may
-be no way round this...
+OK, thanks.
 
-> +struct snd_soc_dai twl4030_dai[] = {
-> +{	.name = "twl4030",
-
-The { should ideally be on a line by itself (for both DAIs).
+-- 
+Jean Delvare
