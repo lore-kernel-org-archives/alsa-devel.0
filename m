@@ -1,7 +1,8 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 3/3] ASoC: osk5912: Use the correct DSP_A mode
-Date: Thu,  9 Apr 2009 12:34:42 +0300
-Message-ID: <1239269682-21309-4-git-send-email-peter.ujfalusi@nokia.com>
+From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Subject: Re: [PATCH 2/3] ASoC: omap-mcbsp: change the DSP_B
+ mode to DSP_A mode
+Date: Thu, 9 Apr 2009 13:00:14 +0300
+Message-ID: <20090409130014.52b9319d.jarkko.nikula@nokia.com>
 References: <1239269682-21309-1-git-send-email-peter.ujfalusi@nokia.com>
 	<1239269682-21309-2-git-send-email-peter.ujfalusi@nokia.com>
 	<1239269682-21309-3-git-send-email-peter.ujfalusi@nokia.com>
@@ -10,9 +11,9 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id BF2A7103873
+	by alsa0.perex.cz (Postfix) with ESMTP id 04C14243B5
 	for <alsa-devel@alsa-project.org>;
-	Thu,  9 Apr 2009 11:35:12 +0200 (CEST)
+	Thu,  9 Apr 2009 11:59:38 +0200 (CEST)
 In-Reply-To: <1239269682-21309-3-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,42 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: jarkko.nikula@nokia.com, broonie@opensource.wolfsonmicro.com, arunks@mistralsolutions.com
+To: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "arunks@mistralsolutions.com" <arunks@mistralsolutions.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use DSP_A format with correct clock, frame sync polarity.
+On Thu, 9 Apr 2009 11:34:41 +0200
+"Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com> wrote:
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
----
- sound/soc/omap/osk5912.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+> -	case SND_SOC_DAIFMT_DSP_B:
+> +	case SND_SOC_DAIFMT_DSP_A:
+>  		/* 0-bit data delay */
+>  		regs->rcr2      |= RDATDLY(0);
+>  		regs->xcr2      |= XDATDLY(0);
+> -- 
+Are you absolutely sure on this? According to WM9713, it's the DSP_A
+where MSB is valid after 1 bit clock period of the FS.
 
-diff --git a/sound/soc/omap/osk5912.c b/sound/soc/omap/osk5912.c
-index a952a4e..d67e77e 100644
---- a/sound/soc/omap/osk5912.c
-+++ b/sound/soc/omap/osk5912.c
-@@ -61,8 +61,8 @@ static int osk_hw_params(struct snd_pcm_substream *substream,
- 
- 	/* Set codec DAI configuration */
- 	err = snd_soc_dai_set_fmt(codec_dai,
--				  SND_SOC_DAIFMT_DSP_B |
--				  SND_SOC_DAIFMT_NB_IF |
-+				  SND_SOC_DAIFMT_DSP_A |
-+				  SND_SOC_DAIFMT_IB_IF |
- 				  SND_SOC_DAIFMT_CBM_CFM);
- 	if (err < 0) {
- 		printk(KERN_ERR "can't set codec DAI configuration\n");
-@@ -71,8 +71,8 @@ static int osk_hw_params(struct snd_pcm_substream *substream,
- 
- 	/* Set cpu DAI configuration */
- 	err = snd_soc_dai_set_fmt(cpu_dai,
--				  SND_SOC_DAIFMT_DSP_B |
--				  SND_SOC_DAIFMT_NB_IF |
-+				  SND_SOC_DAIFMT_DSP_A |
-+				  SND_SOC_DAIFMT_IB_IF |
- 				  SND_SOC_DAIFMT_CBM_CFM);
- 	if (err < 0) {
- 		printk(KERN_ERR "can't set cpu DAI configuration\n");
+
 -- 
-1.6.2.2
+Jarkko
