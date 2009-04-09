@@ -1,96 +1,110 @@
-From: Jean Delvare <khali@linux-fr.org>
-Subject: Re: [PATCH] AOA: Convert onyx and tas codecs to new-style i2c   
-	drivers
-Date: Thu, 9 Apr 2009 16:21:42 +0200
-Message-ID: <20090409162142.653decf9@hyperion.delvare>
-References: <20090408150249.5a62a56c@hyperion.delvare>
-	<1239205899.16477.32.camel@johannes.local>
-	<20090408224858.04cb6dc4@hyperion.delvare>
-	<1239263089.24548.30.camel@johannes.local>
-	<20090409141945.116772e3@hyperion.delvare>
-	<1239280485.4953.6.camel@johannes.local>
+From: jesse fillion <jessefillion24@hotmail.com>
+Subject: Ubuntu sound problem -
+ http://ubuntuforums.org/showthread.php?t=1073090
+Date: Thu, 9 Apr 2009 10:19:42 -0600
+Message-ID: <BLU132-W46435E073082F30B96BF12C4830@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
-In-Reply-To: <1239280485.4953.6.camel@johannes.local>
-List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
-List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
-List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
-Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Benjamin@ozlabs.org, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from blu0-omc3-s18.blu0.hotmail.com (blu0-omc3-s18.blu0.hotmail.com
+	[65.55.116.93]) by alsa0.perex.cz (Postfix) with ESMTP id E003E2412E
+	for <alsa-devel@alsa-project.org>;
+	Thu,  9 Apr 2009 18:20:15 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Johannes,
 
-On Thu, 09 Apr 2009 14:34:44 +0200, Johannes Berg wrote:
-> > My new approach doesn't auto-load anything. Here we go, what you think?
-> > This time there is no logic change, I'm really only turning legacy code
-> > into new-style i2c code (basically calling i2c_new_device() instead of
-> > i2c_attach_client()) and that's about it.
-> > 
-> > (Once again this is only build-tested and I would like people with the
-> > hardware to give it a try.)
-> 
-> Looks reasonable.
-> 
-> >  static int onyx_create(struct i2c_adapter *adapter,
-> >  		       struct device_node *node,
-> >  		       int addr)
-> >  {
-> > +	struct i2c_board_info info;
-> > +	struct i2c_client *client;
-> > +
-> > +	memset(&info, 0, sizeof(struct i2c_board_info));
-> > +	strlcpy(info.type, "aoa_codec_onyx", I2C_NAME_SIZE);
-> > +	if (node) {
-> > +		info.addr = addr;
-> > +		info.platform_data = node;
-> > +		client = i2c_new_device(adapter, &info);
-> > +	} else {
-> > +		/* probe both possible addresses for the onyx chip */
-> > +		unsigned short probe_onyx[] = {
-> > +			0x46, 0x47, I2C_CLIENT_END
-> > +		};
-> > +
-> > +		client = i2c_new_probed_device(adapter, &info, probe_onyx);
-> > +	}
-> > +	if (!client)
-> > +		return -ENODEV;
-> > +
-> > +	list_add_tail(&client->detected, &client->driver->clients);
-> 
-> That list_add looks a little hackish, and wouldn't it be racy?
+Good afternoon,
+ 
+My name is Jesse. Forgive me if this is not the correct address to be sending this type of request to, but I am looking for support in getting the Alsa drivers to work correctly with HP DV4 laptops. The DV4 1228ca has a Azalia RS780 soundcard. I have the ability to hear music through the headphone jack, but not the internal speakers (please see ubuntu forum for additional information). 
+I would truly appreciate any information you could provide. Thank you.
+ 
+-Jesse
+ 
 
-Yes it is a little hackish, the idea is to let i2c-core remove the
-device if our i2c_driver is removed (which happens when you rmmod the
-module). I'll add a comment to explain that. If there are more use
-cases I might move that to a helper function in i2c-core.
+ 
+Hi, I'm relatively new to Ubuntu and would be thrilled for any assistance anyone can provide me with this problem. I have an HP DV4 1228ca. Just like everyone, I did have sound through my front audio jack and could listen to with headphones. Unfortunately after trying all of your helpful suggestions, I don't even have audio in my front jack anymore. If I go into my sound properties, it doesnt seem to recognize my sound card anymore. I beleive this has to do with the entry in the alsa base file. 
+Here are my results:
 
-No it's not racy, we're called with i2c-core's main mutex held.
+"[code]#> ./configure --enable-dynamic-minors
+#> make"
 
-> > +static const struct i2c_device_id onyx_i2c_id[] = {
-> > +	{ "aoa_codec_onyx", 0 },
-> > +	{ }
-> > +};
-> > +MODULE_DEVICE_TABLE(i2c, onyx_i2c_id);
-> 
-> Should it really export the device table?
-> 
-> (same comments for tas)
+winblows@ubuntu:~/Desktop/AlsaDriver/alsa-driver$ make
+make dep
+make[1]: Entering directory `/home/winblows/Desktop/AlsaDriver/alsa-driver'
+make[2]: Entering directory `/home/winblows/Desktop/AlsaDriver/alsa-driver/acore'
+copying file alsa-kernel/core/info.c
+/home/winblows/Desktop/AlsaDriver/alsa-driver/utils/patch-alsa: 24: patch: not found
+make[2]: *** [info.c] Error 1
+make[2]: Leaving directory `/home/winblows/Desktop/AlsaDriver/alsa-driver/acore'
+make[1]: *** [dep] Error 1
+make[1]: Leaving directory `/home/winblows/Desktop/AlsaDriver/alsa-driver'
+make: *** [include/sndversions.h] Error 2
 
-No, that's a leftover, I intended to remove it but forgot. It's gone
-now. That being said, it's useless, but I don't think it would hurt.
+#> sudo make install-modules
 
-> It'll be until mid next week that I can test anything.
+This is where my noobishness may shine through. I wasn't quite sure what to take from the make process above so I continued...
+winblows@ubuntu:~/Desktop/AlsaDriver/alsa-driver$ sudo make install-modules
+[sudo] password for winblows: 
+find /lib/modules/2.6.27-11-generic/kernel/sound -name 'snd*.*o' | xargs rm -f
+find /lib/modules/2.6.27-11-generic/kernel/sound -name 'snd*.*o.gz' | xargs rm -f
+find /lib/modules/2.6.27-11-generic/kernel/sound -name 'ac97_bus.*o' | xargs rm -f
+find /lib/modules/2.6.27-11-generic/kernel/sound -name 'ac97_bus.*o.gz' | xargs rm -f
+make[1]: Entering directory `/home/winblows/Desktop/AlsaDriver/alsa-driver/acore'
+mkdir -p /lib/modules/2.6.27-11-generic/kernel/sound/acore
+cp snd-hrtimer.ko snd-hwdep.ko snd-page-alloc.ko snd-pcm.ko snd-rawmidi.ko snd-timer.ko snd.ko /lib/modules/2.6.27-11-generic/kernel/sound/acore
+cp: cannot stat `snd-hrtimer.ko': No such file or directory
+cp: cannot stat `snd-hwdep.ko': No such file or directory
+cp: cannot stat `snd-page-alloc.ko': No such file or directory
+cp: cannot stat `snd-pcm.ko': No such file or directory
+cp: cannot stat `snd-rawmidi.ko': No such file or directory
+cp: cannot stat `snd-timer.ko': No such file or directory
+cp: cannot stat `snd.ko': No such file or directory
+make[1]: *** [modules_install] Error 1
+make[1]: Leaving directory `/home/winblows/Desktop/AlsaDriver/alsa-driver/acore'
+make: *** [install-modules] Error 1
 
-OK, thanks.
 
--- 
-Jean Delvare
+#> sudo vim /etc/modprobe.d/alsa-base
+[add 'options snd_hda_intel model=hp-dv5' sans quotes to the bottom of the file, even if you have a dv4, etc.]
+
+
+I have tried each of the following, rebooting in between them:
+
+options snd_hda_intel model=hp-dv5
+
+options snd_hda_intel model=hp-dv4
+
+# Keep snd-pcsp from beeing loaded as first soundcard
+options snd-pcsp index=-2
+alias snd-card-0 snd-hda-intel
+alias sound-slot-0 snd-hda-intel
+options snd-hda-intel model=dell-m4-1 
+options snd-hda-intel enable_msi=1
+
+# Keep snd-pcsp from beeing loaded as first soundcard
+options snd-pcsp index=-2
+alias snd-card-0 snd-hda-intel
+alias sound-slot-0 snd-hda-intel
+options snd-hda-intel model=hp=dv4 
+options snd-hda-intel enable_msi=1
+
+I have also tried using the 3.4 compiler and "unstable" alsa snapshot package recommended by uticamarco.
+
+If anyone has any suggestions, I would be most grateful. Thank you very much.
+ 
+ 
+ Jesse
+_________________________________________________________________
+Internet Explorer 8 helps keep your personal info safe.
+http://go.microsoft.com/?linkid=9655581
