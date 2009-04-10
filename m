@@ -1,20 +1,22 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 1/1] ASoC: TWL4030: Add support Voice DAI
-Date: Fri, 10 Apr 2009 11:22:41 +0100
-Message-ID: <20090410102240.GA6882@sirena.org.uk>
-References: <49DDFE1D.3090009@samsung.com>
-	<20090409140654.GC18152@sirena.org.uk>
-	<49DEA8FE.8010700@samsung.com>
+From: Jean Delvare <khali@linux-fr.org>
+Subject: Re: [PATCH] AOA: Convert onyx and tas codecs to
+ new-style i2c drivers
+Date: Fri, 10 Apr 2009 17:02:38 +0200
+Message-ID: <20090410170238.6cc3a420@hyperion.delvare>
+References: <20090408150249.5a62a56c@hyperion.delvare>
+	<1239205899.16477.32.camel@johannes.local>
+	<20090408224858.04cb6dc4@hyperion.delvare>
+	<1239263089.24548.30.camel@johannes.local>
+	<20090409141945.116772e3@hyperion.delvare>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 68BA324412
+Received: from services.gcu-squad.org (zone0.gcu-squad.org [212.85.147.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 69202243CF
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Apr 2009 12:22:49 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <49DEA8FE.8010700@samsung.com>
+	Fri, 10 Apr 2009 17:02:58 +0200 (CEST)
+In-Reply-To: <20090409141945.116772e3@hyperion.delvare>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,31 +26,315 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joonyoung Shim <jy0922.shim@samsung.com>
-Cc: alsa-devel@alsa-project.org, peter.ujfalusi@nokia.com, kyungmin.park@samsung.com, bhmin@samsung.com
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Benjamin@alsa-project.org, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Herrenschmidt <benh@kernel.crashing.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 10, 2009 at 11:03:42AM +0900, Joonyoung Shim wrote:
-> On 4/9/2009 11:06 PM, Mark Brown wrote:
+On Thu, 9 Apr 2009 14:19:45 +0200, Jean Delvare wrote:
+> From: Jean Delvare <khali@linux-fr.org>
+> Subject: AOA: Convert onyx and tas codecs to new-style i2c drivers
+> 
+> The legacy i2c binding model is going away soon, so convert the AOA
+> codec drivers to the new model or they'll break.
+> 
+> Signed-off-by: Jean Delvare <khali@linux-fr.org>
+> Cc: Johannes Berg <johannes@sipsolutions.net>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> ---
+>  sound/aoa/codecs/onyx.c |   71 +++++++++++++++++++++++++++++------------------
+>  sound/aoa/codecs/tas.c  |   63 +++++++++++++++++++++++++----------------
+>  2 files changed, 84 insertions(+), 50 deletions(-)
 
-> >> +	if (infreq != TWL4030_APLL_INFREQ_26000KHZ)
-> >> +		return -EPERM;
+Note to potential testers of this patch: you need to apply this i2c
+patch first:
 
-> > It's probably worth a comment here telling users that they'll need to
-> > call set_sysclk() in their init() function rather than hw_params() -
-> > otherwise this might get called before the clock is set up.
+ftp://ftp.kernel.org/pub/linux/kernel/people/jdelvare/linux-2.6/jdelvare-i2c/i2c-loosen-driver-check.patch
 
-> It seems better that i remove startup function and add set_sysclk function,
-> and inform supporting only 26MHz system master clock through comment. 
-> i think it is not important where set_sysclk() is called, the voice PCM
-> interface needs just 26MHz system master clock.
+> 
+> --- linux-2.6.30-rc1.orig/sound/aoa/codecs/onyx.c	2009-04-09 11:53:11.000000000 +0200
+> +++ linux-2.6.30-rc1/sound/aoa/codecs/onyx.c	2009-04-09 13:58:44.000000000 +0200
+> @@ -47,7 +47,7 @@ MODULE_DESCRIPTION("pcm3052 (onyx) codec
+>  struct onyx {
+>  	/* cache registers 65 to 80, they are write-only! */
+>  	u8			cache[16];
+> -	struct i2c_client	i2c;
+> +	struct i2c_client	*i2c;
+>  	struct aoa_codec	codec;
+>  	u32			initialised:1,
+>  				spdif_locked:1,
+> @@ -72,7 +72,7 @@ static int onyx_read_register(struct ony
+>  		*value = onyx->cache[reg-FIRSTREGISTER];
+>  		return 0;
+>  	}
+> -	v = i2c_smbus_read_byte_data(&onyx->i2c, reg);
+> +	v = i2c_smbus_read_byte_data(onyx->i2c, reg);
+>  	if (v < 0)
+>  		return -1;
+>  	*value = (u8)v;
+> @@ -84,7 +84,7 @@ static int onyx_write_register(struct on
+>  {
+>  	int result;
+>  
+> -	result = i2c_smbus_write_byte_data(&onyx->i2c, reg, value);
+> +	result = i2c_smbus_write_byte_data(onyx->i2c, reg, value);
+>  	if (!result)
+>  		onyx->cache[reg-FIRSTREGISTER] = value;
+>  	return result;
+> @@ -996,12 +996,38 @@ static void onyx_exit_codec(struct aoa_c
+>  	onyx->codec.soundbus_dev->detach_codec(onyx->codec.soundbus_dev, onyx);
+>  }
+>  
+> -static struct i2c_driver onyx_driver;
+> -
+>  static int onyx_create(struct i2c_adapter *adapter,
+>  		       struct device_node *node,
+>  		       int addr)
+>  {
+> +	struct i2c_board_info info;
+> +	struct i2c_client *client;
+> +
+> +	memset(&info, 0, sizeof(struct i2c_board_info));
+> +	strlcpy(info.type, "aoa_codec_onyx", I2C_NAME_SIZE);
+> +	if (node) {
+> +		info.addr = addr;
+> +		info.platform_data = node;
+> +		client = i2c_new_device(adapter, &info);
+> +	} else {
+> +		/* probe both possible addresses for the onyx chip */
+> +		unsigned short probe_onyx[] = {
+> +			0x46, 0x47, I2C_CLIENT_END
+> +		};
+> +
+> +		client = i2c_new_probed_device(adapter, &info, probe_onyx);
+> +	}
+> +	if (!client)
+> +		return -ENODEV;
+> +
+> +	list_add_tail(&client->detected, &client->driver->clients);
+> +	return 0;
+> +}
+> +
+> +static int onyx_i2c_probe(struct i2c_client *client,
+> +			  const struct i2c_device_id *id)
+> +{
+> +	struct device_node *node = client->dev.platform_data;
+>  	struct onyx *onyx;
+>  	u8 dummy;
+>  
+> @@ -1011,20 +1037,12 @@ static int onyx_create(struct i2c_adapte
+>  		return -ENOMEM;
+>  
+>  	mutex_init(&onyx->mutex);
+> -	onyx->i2c.driver = &onyx_driver;
+> -	onyx->i2c.adapter = adapter;
+> -	onyx->i2c.addr = addr & 0x7f;
+> -	strlcpy(onyx->i2c.name, "onyx audio codec", I2C_NAME_SIZE);
+> -
+> -	if (i2c_attach_client(&onyx->i2c)) {
+> -		printk(KERN_ERR PFX "failed to attach to i2c\n");
+> -		goto fail;
+> -	}
+> +	onyx->i2c = client;
+> +	i2c_set_clientdata(client, onyx);
+>  
+>  	/* we try to read from register ONYX_REG_CONTROL
+>  	 * to check if the codec is present */
+>  	if (onyx_read_register(onyx, ONYX_REG_CONTROL, &dummy) != 0) {
+> -		i2c_detach_client(&onyx->i2c);
+>  		printk(KERN_ERR PFX "failed to read control register\n");
+>  		goto fail;
+>  	}
+> @@ -1036,7 +1054,6 @@ static int onyx_create(struct i2c_adapte
+>  	onyx->codec.node = of_node_get(node);
+>  
+>  	if (aoa_codec_register(&onyx->codec)) {
+> -		i2c_detach_client(&onyx->i2c);
+>  		goto fail;
+>  	}
+>  	printk(KERN_DEBUG PFX "created and attached onyx instance\n");
+> @@ -1074,19 +1091,13 @@ static int onyx_i2c_attach(struct i2c_ad
+>  		return -ENODEV;
+>  
+>  	printk(KERN_DEBUG PFX "found k2-i2c, checking if onyx chip is on it\n");
+> -	/* probe both possible addresses for the onyx chip */
+> -	if (onyx_create(adapter, NULL, 0x46) == 0)
+> -		return 0;
+> -	return onyx_create(adapter, NULL, 0x47);
+> +	return onyx_create(adapter, NULL, 0);
+>  }
+>  
+> -static int onyx_i2c_detach(struct i2c_client *client)
+> +static int onyx_i2c_remove(struct i2c_client *client)
+>  {
+> -	struct onyx *onyx = container_of(client, struct onyx, i2c);
+> -	int err;
+> +	struct onyx *onyx = i2c_get_clientdata(client);
+>  
+> -	if ((err = i2c_detach_client(client)))
+> -		return err;
+>  	aoa_codec_unregister(&onyx->codec);
+>  	of_node_put(onyx->codec.node);
+>  	if (onyx->codec_info)
+> @@ -1095,13 +1106,21 @@ static int onyx_i2c_detach(struct i2c_cl
+>  	return 0;
+>  }
+>  
+> +static const struct i2c_device_id onyx_i2c_id[] = {
+> +	{ "aoa_codec_onyx", 0 },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(i2c, onyx_i2c_id);
+> +
+>  static struct i2c_driver onyx_driver = {
+>  	.driver = {
+>  		.name = "aoa_codec_onyx",
+>  		.owner = THIS_MODULE,
+>  	},
+>  	.attach_adapter = onyx_i2c_attach,
+> -	.detach_client = onyx_i2c_detach,
+> +	.probe = onyx_i2c_probe,
+> +	.remove = onyx_i2c_remove,
+> +	.id_table = onyx_i2c_id,
+>  };
+>  
+>  static int __init onyx_init(void)
+> --- linux-2.6.30-rc1.orig/sound/aoa/codecs/tas.c	2009-04-09 11:53:11.000000000 +0200
+> +++ linux-2.6.30-rc1/sound/aoa/codecs/tas.c	2009-04-09 13:58:41.000000000 +0200
+> @@ -82,7 +82,7 @@ MODULE_DESCRIPTION("tas codec driver for
+>  
+>  struct tas {
+>  	struct aoa_codec	codec;
+> -	struct i2c_client	i2c;
+> +	struct i2c_client	*i2c;
+>  	u32			mute_l:1, mute_r:1 ,
+>  				controls_created:1 ,
+>  				drc_enabled:1,
+> @@ -108,9 +108,9 @@ static struct tas *codec_to_tas(struct a
+>  static inline int tas_write_reg(struct tas *tas, u8 reg, u8 len, u8 *data)
+>  {
+>  	if (len == 1)
+> -		return i2c_smbus_write_byte_data(&tas->i2c, reg, *data);
+> +		return i2c_smbus_write_byte_data(tas->i2c, reg, *data);
+>  	else
+> -		return i2c_smbus_write_i2c_block_data(&tas->i2c, reg, len, data);
+> +		return i2c_smbus_write_i2c_block_data(tas->i2c, reg, len, data);
+>  }
+>  
+>  static void tas3004_set_drc(struct tas *tas)
+> @@ -882,12 +882,30 @@ static void tas_exit_codec(struct aoa_co
+>  }
+>  
+>  
+> -static struct i2c_driver tas_driver;
+> -
+>  static int tas_create(struct i2c_adapter *adapter,
+>  		       struct device_node *node,
+>  		       int addr)
+>  {
+> +	struct i2c_board_info info;
+> +	struct i2c_client *client;
+> +
+> +	memset(&info, 0, sizeof(struct i2c_board_info));
+> +	strlcpy(info.type, "aoa_codec_tas", I2C_NAME_SIZE);
+> +	info.addr = addr;
+> +	info.platform_data = node;
+> +
+> +	client = i2c_new_device(adapter, &info);
+> +	if (!client)
+> +		return -ENODEV;
+> +
+> +	list_add_tail(&client->detected, &client->driver->clients);
+> +	return 0;
+> +}
+> +
+> +static int tas_i2c_probe(struct i2c_client *client,
+> +			 const struct i2c_device_id *id)
+> +{
+> +	struct device_node *node = client->dev.platform_data;
+>  	struct tas *tas;
+>  
+>  	tas = kzalloc(sizeof(struct tas), GFP_KERNEL);
+> @@ -896,17 +914,11 @@ static int tas_create(struct i2c_adapter
+>  		return -ENOMEM;
+>  
+>  	mutex_init(&tas->mtx);
+> -	tas->i2c.driver = &tas_driver;
+> -	tas->i2c.adapter = adapter;
+> -	tas->i2c.addr = addr;
+> +	tas->i2c = client;
+> +	i2c_set_clientdata(client, tas);
+> +
+>  	/* seems that half is a saner default */
+>  	tas->drc_range = TAS3004_DRC_MAX / 2;
+> -	strlcpy(tas->i2c.name, "tas audio codec", I2C_NAME_SIZE);
+> -
+> -	if (i2c_attach_client(&tas->i2c)) {
+> -		printk(KERN_ERR PFX "failed to attach to i2c\n");
+> -		goto fail;
+> -	}
+>  
+>  	strlcpy(tas->codec.name, "tas", MAX_CODEC_NAME_LEN);
+>  	tas->codec.owner = THIS_MODULE;
+> @@ -915,14 +927,12 @@ static int tas_create(struct i2c_adapter
+>  	tas->codec.node = of_node_get(node);
+>  
+>  	if (aoa_codec_register(&tas->codec)) {
+> -		goto detach;
+> +		goto fail;
+>  	}
+>  	printk(KERN_DEBUG
+>  	       "snd-aoa-codec-tas: tas found, addr 0x%02x on %s\n",
+> -	       addr, node->full_name);
+> +	       (unsigned int)client->addr, node->full_name);
+>  	return 0;
+> - detach:
+> -	i2c_detach_client(&tas->i2c);
+>   fail:
+>  	mutex_destroy(&tas->mtx);
+>  	kfree(tas);
+> @@ -970,14 +980,11 @@ static int tas_i2c_attach(struct i2c_ada
+>  	return -ENODEV;
+>  }
+>  
+> -static int tas_i2c_detach(struct i2c_client *client)
+> +static int tas_i2c_remove(struct i2c_client *client)
+>  {
+> -	struct tas *tas = container_of(client, struct tas, i2c);
+> -	int err;
+> +	struct tas *tas = i2c_get_clientdata(client);
+>  	u8 tmp = TAS_ACR_ANALOG_PDOWN;
+>  
+> -	if ((err = i2c_detach_client(client)))
+> -		return err;
+>  	aoa_codec_unregister(&tas->codec);
+>  	of_node_put(tas->codec.node);
+>  
+> @@ -989,13 +996,21 @@ static int tas_i2c_detach(struct i2c_cli
+>  	return 0;
+>  }
+>  
+> +static const struct i2c_device_id tas_i2c_id[] = {
+> +	{ "aoa_codec_tas", 0 },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(i2c, tas_i2c_id);
+> +
+>  static struct i2c_driver tas_driver = {
+>  	.driver = {
+>  		.name = "aoa_codec_tas",
+>  		.owner = THIS_MODULE,
+>  	},
+>  	.attach_adapter = tas_i2c_attach,
+> -	.detach_client = tas_i2c_detach,
+> +	.probe = tas_i2c_probe,
+> +	.remove = tas_i2c_remove,
+> +	.id_table = tas_i2c_id,
+>  };
+>  
+>  static int __init tas_init(void)
+> 
+> 
 
-It does feel right to have some sort of check for a valid sysclk so that
-there's some software level documentation for the requirement since it's
-easy to set up an ASoC driver without reading the datasheet for the part
-so it's helpful if the driver can flag up broken configurations to them.
 
-The reason for worrying about where set_sysclk() is called from is that
-if you are going to have a check like that the user needs to call
-set_sysclk() before the check is performed to ensure that the correct
-configuration has been applied.
+-- 
+Jean Delvare
