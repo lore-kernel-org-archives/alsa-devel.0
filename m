@@ -1,18 +1,20 @@
-From: Jean Delvare <khali@linux-fr.org>
-Subject: Re: [PATCH 1/2] keywest: Convert to new-style i2c
-	driver
-Date: Fri, 10 Apr 2009 17:09:51 +0200
-Message-ID: <20090410170951.084e9b5c@hyperion.delvare>
-References: <20090410170726.3616b6d5@hyperion.delvare>
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: Re: skype and old alsa RC4 symbols
+Date: Fri, 10 Apr 2009 12:13:07 -0400
+Message-ID: <9e4733910904100913h8cd0466m21b3815030ad32fb@mail.gmail.com>
+References: <9e4733910904081455u181eecebi31837f490cfd85@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from services.gcu-squad.org (zone0.gcu-squad.org [212.85.147.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 75639243CC
+Received: from mail-qy0-f132.google.com (mail-qy0-f132.google.com
+	[209.85.221.132])
+	by alsa0.perex.cz (Postfix) with ESMTP id CA6DD2440F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Apr 2009 17:09:58 +0200 (CEST)
-In-Reply-To: <20090410170726.3616b6d5@hyperion.delvare>
+	Fri, 10 Apr 2009 18:13:08 +0200 (CEST)
+Received: by qyk38 with SMTP id 38so1921846qyk.16
+	for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2009 09:13:08 -0700 (PDT)
+In-Reply-To: <9e4733910904081455u181eecebi31837f490cfd85@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,143 +24,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linuxppc-dev@ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To: alsa-devel mailing list <alsa-devel@alsa-project.org>, Luke Yelavich <luke@audioslack.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 10 Apr 2009 17:07:26 +0200, Jean Delvare wrote:
-> The legacy i2c binding model is going away soon, so convert the ppc
-> keywest sound driver to the new model or it will break.
-> 
-> Signed-off-by: Jean Delvare <khali@linux-fr.org>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> ---
->  sound/ppc/keywest.c |   81 +++++++++++++++++++++++++--------------------------
->  1 file changed, 40 insertions(+), 41 deletions(-)
+On Wed, Apr 8, 2009 at 5:55 PM, Jon Smirl <jonsmirl@gmail.com> wrote:
+> I would like to run pulseaudio 9.15 contained in this ubuntu
+> repository since it fixes my problems with S/PDIF
+> https://launchpad.net/~themuso/+archive/ppa
 
-Ah, I forgot. You need the following patch applied before testing:
-ftp://ftp.kernel.org/pub/linux/kernel/people/jdelvare/linux-2.6/jdelvare-i2c/i2c-loosen-driver-check.patch
+I finally fixed this by hacking around to define -DUSE_VERSIONED_SYMBOLS.
 
-> 
-> --- linux-2.6.30-rc1.orig/sound/ppc/keywest.c	2009-04-10 15:22:18.000000000 +0200
-> +++ linux-2.6.30-rc1/sound/ppc/keywest.c	2009-04-10 16:41:36.000000000 +0200
-> @@ -33,26 +33,25 @@
->  static struct pmac_keywest *keywest_ctx;
->  
->  
-> -static int keywest_attach_adapter(struct i2c_adapter *adapter);
-> -static int keywest_detach_client(struct i2c_client *client);
-> -
-> -struct i2c_driver keywest_driver = {  
-> -	.driver = {
-> -		.name = "PMac Keywest Audio",
-> -	},
-> -	.attach_adapter = &keywest_attach_adapter,
-> -	.detach_client = &keywest_detach_client,
-> -};
-> -
-> -
->  #ifndef i2c_device_name
->  #define i2c_device_name(x)	((x)->name)
->  #endif
->  
-> +static int keywest_probe(struct i2c_client *client,
-> +			 const struct i2c_device_id *id)
-> +{
-> +	i2c_set_clientdata(client, keywest_ctx);
-> +	return 0;
-> +}
-> +
-> +/*
-> + * This is kind of a hack, best would be to turn powermac to fixed i2c
-> + * bus numbers and declare the sound device as part of platform
-> + * initialization
-> + */
->  static int keywest_attach_adapter(struct i2c_adapter *adapter)
->  {
-> -	int err;
-> -	struct i2c_client *new_client;
-> +	struct i2c_board_info info;
->  
->  	if (! keywest_ctx)
->  		return -EINVAL;
-> @@ -60,46 +59,46 @@ static int keywest_attach_adapter(struct
->  	if (strncmp(i2c_device_name(adapter), "mac-io", 6))
->  		return 0; /* ignored */
->  
-> -	new_client = kzalloc(sizeof(struct i2c_client), GFP_KERNEL);
-> -	if (! new_client)
-> -		return -ENOMEM;
-> -
-> -	new_client->addr = keywest_ctx->addr;
-> -	i2c_set_clientdata(new_client, keywest_ctx);
-> -	new_client->adapter = adapter;
-> -	new_client->driver = &keywest_driver;
-> -	new_client->flags = 0;
-> -
-> -	strcpy(i2c_device_name(new_client), keywest_ctx->name);
-> -	keywest_ctx->client = new_client;
-> +	memset(&info, 0, sizeof(struct i2c_board_info));
-> +	strlcpy(info.type, "keywest", I2C_NAME_SIZE);
-> +	info.addr = keywest_ctx->addr;
-> +	keywest_ctx->client = i2c_new_device(adapter, &info);
->  	
-> -	/* Tell the i2c layer a new client has arrived */
-> -	if (i2c_attach_client(new_client)) {
-> -		snd_printk(KERN_ERR "tumbler: cannot attach i2c client\n");
-> -		err = -ENODEV;
-> -		goto __err;
-> -	}
-> -
-> +	/*
-> +	 * Let i2c-core delete that device on driver removal.
-> +	 * This is safe because i2c-core holds the core_lock mutex for us.
-> +	 */
-> +	list_add_tail(&keywest_ctx->client->detected,
-> +		      &keywest_ctx->client->driver->clients);
->  	return 0;
-> -
-> - __err:
-> -	kfree(new_client);
-> -	keywest_ctx->client = NULL;
-> -	return err;
->  }
->  
-> -static int keywest_detach_client(struct i2c_client *client)
-> +static int keywest_remove(struct i2c_client *client)
->  {
->  	if (! keywest_ctx)
->  		return 0;
->  	if (client == keywest_ctx->client)
->  		keywest_ctx->client = NULL;
->  
-> -	i2c_detach_client(client);
-> -	kfree(client);
->  	return 0;
->  }
->  
-> +
-> +static const struct i2c_device_id keywest_i2c_id[] = {
-> +	{ "keywest", 0 },
-> +	{ }
-> +};
-> +
-> +struct i2c_driver keywest_driver = {
-> +	.driver = {
-> +		.name = "PMac Keywest Audio",
-> +	},
-> +	.attach_adapter = keywest_attach_adapter,
-> +	.probe = keywest_probe,
-> +	.remove = keywest_remove,
-> +	.id_table = keywest_i2c_id,
-> +};
-> +
->  /* exported */
->  void snd_pmac_keywest_cleanup(struct pmac_keywest *i2c)
->  {
-> 
-> 
+Something is wrong in the build process for these packages.
 
 
--- 
-Jean Delvare
+>
+> However, the 32b compatibility library in this build don't work with
+> skype since it is missing some RC4 obsolete symbols.
+>
+> jonsmirl@terra:/home/apps/alsa-lib-1.0.19/debian/lib32asound2/usr/lib32$
+> readelf -W -s libasound.so.2.0.0 | grep
+> snd_pcm_hw_params_get_channels_min
+> =A0 174: 0004a970 =A0 =A058 FUNC =A0 =A0WEAK =A0 DEFAULT =A0 12
+> snd_pcm_hw_params_get_channels_min@@ALSA_0.9
+> =A0 454: 0004a970 =A0 =A058 FUNC =A0 =A0GLOBAL DEFAULT =A0 12
+> __snd_pcm_hw_params_get_channels_min@@ALSA_0.9
+>
+> The 64b library has the missing RC4 symbols.
+>
+> jonsmirl@terra:/home/apps/alsa-lib-1.0.19/debian/libasound2/usr/lib$
+> readelf -W -s libasound.so.2.0.0 | grep
+> snd_pcm_hw_params_get_channels_min
+> =A0 173: 000000000004ff10 =A0 =A015 FUNC =A0 =A0GLOBAL DEFAULT =A0 12
+> snd_pcm_hw_params_get_channels_min@@ALSA_0.9.0rc4
+> =A0 177: 000000000004ff20 =A0 =A031 FUNC =A0 =A0GLOBAL DEFAULT =A0 12
+> snd_pcm_hw_params_get_channels_min@ALSA_0.9
+> =A0 462: 000000000004ff10 =A0 =A015 FUNC =A0 =A0GLOBAL DEFAULT =A0 12
+> __snd_pcm_hw_params_get_channels_min@@ALSA_0.9
+> jonsmirl@terra:/home/apps/alsa-lib-1.0.19/debian/libasound2/usr/lib$
+>
+> How do I get the RC4 symbols into the 32 library? I can pull down the
+> source for this and build without problem. I just can't identify what
+> needs to be changed to make the symbols appear in the 32b compat lib.
+>
+> --
+> Jon Smirl
+> jonsmirl@gmail.com
+>
+
+
+
+-- =
+
+Jon Smirl
+jonsmirl@gmail.com
