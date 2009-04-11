@@ -1,19 +1,15 @@
-From: Phil Gorbett <pgorbett@usc.edu.au>
-Subject: Re: DELL SP2309W Monitor with Integrated microphone
-Date: Sat, 11 Apr 2009 15:48:38 +1000
-Message-ID: <1239428918.22783.8.camel@sundance.localdomain>
-References: <1239411042.15067.41.camel@sundance.localdomain>
-	<75b66ecd0904101823l4a34e297u1246a4ff6117643f@mail.gmail.com>
+From: reetesh chandran <reeteshchandran@yahoo.com>
+Subject: Re: Alsa driver compatible with 2.6.18 kernel
+Date: Sat, 11 Apr 2009 07:07:40 -0700 (PDT)
+Message-ID: <690386.60989.qm@web30007.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail03.syd.optusnet.com.au (mail03.syd.optusnet.com.au
-	[211.29.132.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2D9AB1037EE
+Received: from web30007.mail.mud.yahoo.com (web30007.mail.mud.yahoo.com
+	[209.191.69.24]) by alsa0.perex.cz (Postfix) with SMTP id 6A43424433
 	for <alsa-devel@alsa-project.org>;
-	Sat, 11 Apr 2009 07:48:48 +0200 (CEST)
-In-Reply-To: <75b66ecd0904101823l4a34e297u1246a4ff6117643f@mail.gmail.com>
+	Sat, 11 Apr 2009 16:07:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,26 +23,33 @@ To: Lee Revell <rlrevell@joe-job.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2009-04-10 at 21:23 -0400, Lee Revell wrote:
-> 
-> arecord -v -f cd -D plughw:0 file.wav
+Thanks a lot Lee. Which Alsa driver version is the latest stable version, o=
+r which is most widely used ?
 
-I get:
-
-"arecord -v -f cd -D plughw:0 file.wav
-Recording WAVE 'file.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-ALSA lib pcm_params.c:2135:(snd1_pcm_hw_refine_slave) Slave PCM not
-usable
-arecord: set_params:939: Broken configuration for this PCM: no
-configurations available"
+--- On Fri, 4/10/09, Lee Revell <rlrevell@joe-job.com> wrote:
 
 
-To disable p/a, I selected alsa in all sound prefs.  The ALSA webcam
-driver is also selected for "sound capture".  I then did "sudo killall
-pulseaudio" as well as "pulseaudio -k" for root (sudo) and normal user.
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [alsa-devel] Alsa driver compatible with 2.6.18 kernel
+To: "reetesh chandran" <reeteshchandran@yahoo.com>
+Cc: alsa-devel@alsa-project.org
+Date: Friday, April 10, 2009, 5:45 PM
 
-A file.wav was not created.
 
-Cheers,
-PG
+On Fri, Apr 10, 2009 at 12:54 PM, reetesh chandran
+<reeteshchandran@yahoo.com> wrote:
+> Hello all,
+>
+> I have a 2.6.18 kernel and I am using 1.0.12rc1 alsa driver. I am facing =
+some issues and would like to get a newer alsa driver. I cant change the li=
+nux kernel version. Do you know which is the latest alsa driver which is su=
+pported on linux 2.6.18 ? How do I find that out ?
+
+The latest should work.=A0 New ALSA releases are backwards compatible
+with old kernels.
+
+Lee
+
+
+
+      =
