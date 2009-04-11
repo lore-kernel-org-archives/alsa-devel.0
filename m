@@ -1,15 +1,14 @@
-From: reetesh chandran <reeteshchandran@yahoo.com>
-Subject: Re: Alsa driver compatible with 2.6.18 kernel
-Date: Sat, 11 Apr 2009 07:07:40 -0700 (PDT)
-Message-ID: <690386.60989.qm@web30007.mail.mud.yahoo.com>
+From: Arjan van de Ven <arjan@infradead.org>
+Subject: Re: General protection fault when unloading
+ snd_hda_intel on 2.6.30-rc1+
+Date: Sat, 11 Apr 2009 13:20:33 -0700
+Message-ID: <20090411132033.003c581c@infradead.org>
+References: <20090411193630.GA16968@Pilar.aei.mpg.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web30007.mail.mud.yahoo.com (web30007.mail.mud.yahoo.com
-	[209.191.69.24]) by alsa0.perex.cz (Postfix) with SMTP id 6A43424433
-	for <alsa-devel@alsa-project.org>;
-	Sat, 11 Apr 2009 16:07:43 +0200 (CEST)
+In-Reply-To: <20090411193630.GA16968@Pilar.aei.mpg.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,37 +18,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, linux-kernel@vger.kernel.org, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks a lot Lee. Which Alsa driver version is the latest stable version, o=
-r which is most widely used ?
+On Sat, 11 Apr 2009 21:36:30 +0200
+"Carlos R. Mafra" <crmafra2@gmail.com> wrote:
 
---- On Fri, 4/10/09, Lee Revell <rlrevell@joe-job.com> wrote:
+> general protection fault:
 
+Hi,
 
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [alsa-devel] Alsa driver compatible with 2.6.18 kernel
-To: "reetesh chandran" <reeteshchandran@yahoo.com>
-Cc: alsa-devel@alsa-project.org
-Date: Friday, April 10, 2009, 5:45 PM
-
-
-On Fri, Apr 10, 2009 at 12:54 PM, reetesh chandran
-<reeteshchandran@yahoo.com> wrote:
-> Hello all,
->
-> I have a 2.6.18 kernel and I am using 1.0.12rc1 alsa driver. I am facing =
-some issues and would like to get a newer alsa driver. I cant change the li=
-nux kernel version. Do you know which is the latest alsa driver which is su=
-pported on linux 2.6.18 ? How do I find that out ?
-
-The latest should work.=A0 New ALSA releases are backwards compatible
-with old kernels.
-
-Lee
+if you happen to have CONFIG_DEBUG_INFO enabled, then you can run the
+oops through scripts/markup_oops.pl to get the source code of the exact
+line that is oopsing.. makes diagnosing it even easier!
 
 
 
-      =
+-- 
+Arjan van de Ven 	Intel Open Source Technology Centre
+For development, discussion and tips for power savings, 
+visit http://www.lesswatts.org
