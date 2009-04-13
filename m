@@ -1,23 +1,21 @@
-From: James Gauld <james@thundermonkey.net>
-Subject: Help required. Slax OS, no audio, multiple cards, hdmi
-Date: Mon, 13 Apr 2009 16:09:20 +0100
-Message-ID: <49E355A0.1080106@thundermonkey.net>
+From: Mackenzie Morgan <macoafi@gmail.com>
+Subject: Re: Ubuntu sound problem -
+	http://ubuntuforums.org/showthread.php?t=1073090
+Date: Mon, 13 Apr 2009 11:17:53 -0400
+Message-ID: <200904131117.58008.macoafi@gmail.com>
+References: <BLU132-W46435E073082F30B96BF12C4830@phx.gbl>
+	<49DE9CA7.7090209@MessageNetSystems.com>
+	<BLU132-W34CB1E0A97375289AF5DD1C47E0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1724802648870267491=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out5.blueyonder.co.uk (smtp-out5.blueyonder.co.uk
-	[195.188.213.8]) by alsa0.perex.cz (Postfix) with ESMTP id 0EAB82450C
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6289624514
 	for <alsa-devel@alsa-project.org>;
-	Mon, 13 Apr 2009 17:09:23 +0200 (CEST)
-Received: from [172.23.170.138] (helo=anti-virus01-09)
-	by smtp-out5.blueyonder.co.uk with smtp (Exim 4.52)
-	id 1LtNmk-0008JC-I2
-	for alsa-devel@alsa-project.org; Mon, 13 Apr 2009 16:09:22 +0100
-Received: from [82.39.153.172] (helo=[192.168.2.3])
-	by asmtp-out3.blueyonder.co.uk with esmtpa (Exim 4.52)
-	id 1LtNmi-0000aA-0R
-	for alsa-devel@alsa-project.org; Mon, 13 Apr 2009 16:09:20 +0100
+	Mon, 13 Apr 2009 17:18:05 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 5so1408833qwf.56
+	for <alsa-devel@alsa-project.org>; Mon, 13 Apr 2009 08:18:04 -0700 (PDT)
+In-Reply-To: <BLU132-W34CB1E0A97375289AF5DD1C47E0@phx.gbl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,32 +28,68 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+--===============1724802648870267491==
+Content-Type: multipart/signed;
+  boundary="nextPart11073611.R7vHUDKigP";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-My first post and of course it's a help request, sorry ...
+--nextPart11073611.R7vHUDKigP
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-I've got a fresh install of Slax 6.10 with the latest alsa packages as 
-available on slackware. Here's the result of alsa-info.sh:
+On Sunday 12 April 2009 5:24:19 pm jesse fillion wrote:
+>=20
+> Hello,
+>=20
+> I wish I was coming back to you with good news.
+> I have tried the suggested addition to my modprobe. I added the line you=
+=20
+gave me to the alsa-base file in my modprobe folder.=20
 
-http://www.alsa-project.org/db/?f=01356b864296bea4beb140b73cf41cbf84158997
+I'm not sure what Rob's way of determining "same hardware" was, but since y=
+ou=20
+din't include the SSID for the sound device, I'm guessing he went by laptop=
+=20
+model or sound card model, neither of which is terribly accurate/useful (on=
+e=20
+laptop model may come with 15 different sound card models over the years, a=
+nd=20
+each of those may see 3 revisions, for example).  Where's your alsa-info.sh=
+=20
+output?
 
-My hardware:
-Samsung TV with integrated PC (model: LH32MGTLBC)
-2 onboard audio devices, one of which is Radeon HD3200/RS780
+=2D-=20
+Mackenzie Morgan
+http://ubuntulinuxtipstricks.blogspot.com
+apt-get moo
 
-This machine has windows xp embedded through which I can get audio 
-output via the HDMI device.
+--nextPart11073611.R7vHUDKigP
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-However, running slax (from usb) I cannot get any sound from either 
-device, but I'm only interested in the HDMI card (card #1) which 
-delivers output to the integrated speakers (as far as I can tell from 
-windows).
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
 
-I've tried from console and various widgets in KDE with no success.
+iEYEABECAAYFAknjV6EACgkQojm3DbyNMmkR7wCdEDsLn+BYWYuFYJ9b5E+Tvzuk
+OPkAnAlkkh/IRt27tl4o5yI8SCB0rtZd
+=Jp8m
+-----END PGP SIGNATURE-----
 
-I've searched all week with no solutions working.
+--nextPart11073611.R7vHUDKigP--
 
-If anyone can help me out with this I'd be incredibly grateful
+--===============1724802648870267491==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Thanks
-James
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============1724802648870267491==--
