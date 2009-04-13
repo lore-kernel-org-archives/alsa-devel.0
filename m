@@ -1,8 +1,8 @@
 From: renidragsemaj@yahoo.com
-Subject: [PATCH - patch_sigmatel.c for HP dv4-1222nr laptop
+Subject: [ALSA - patch_sigmatel.c for HP dv4-1222nr laptop
 	9/9Patch to patch_sigmatel.c for HP dv4-1222nr laptop
-Date: Mon, 13 Apr 2009 17:43:19 -0400
-Message-ID: <1239658999-8196-1-git-send-email-renidragsemaj@yahoo.com>
+Date: Mon, 13 Apr 2009 18:04:16 -0400
+Message-ID: <1239660256-8266-1-git-send-email-renidragsemaj@yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
