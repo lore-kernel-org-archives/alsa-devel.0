@@ -1,21 +1,12 @@
-From: Ernesto Torres <skullmate@gmail.com>
-Subject: Re: Help for writting an ASoC driver
-Date: Mon, 13 Apr 2009 12:50:07 -0500
-Message-ID: <fb44c3530904131050s397c080bs8dffb61120c47de4@mail.gmail.com>
-References: <fb44c3530904071018o542cb622k6ab9b939b3144c78@mail.gmail.com>
-	<20090407221935.GB8465@sirena.org.uk>
-	<fb44c3530904071626q22e41db2s76f6089771de74c2@mail.gmail.com>
+From: renidragsemaj@yahoo.com
+Subject: [PATCH - patch_sigmatel.c for HP dv4-1222nr laptop
+	9/9Patch to patch_sigmatel.c for HP dv4-1222nr laptop
+Date: Mon, 13 Apr 2009 17:43:19 -0400
+Message-ID: <1239658999-8196-1-git-send-email-renidragsemaj@yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id CDADC24580
-	for <alsa-devel@alsa-project.org>;
-	Mon, 13 Apr 2009 19:50:08 +0200 (CEST)
-Received: by yx-out-1718.google.com with SMTP id 4so1653097yxp.2
-	for <alsa-devel@alsa-project.org>; Mon, 13 Apr 2009 10:50:07 -0700 (PDT)
-In-Reply-To: <fb44c3530904071626q22e41db2s76f6089771de74c2@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,71 +16,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: patch@alsa-project.org
+Cc: James Gardiner <renidragsemaj@yahoo.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-from omap_pcm_hw_params:
-    err = omap_request_dma(dma_data->dma_req, dma_data->name,
-                   omap_pcm_dma_irq, substream, &prtd->dma_ch);
+From: James Gardiner <renidragsemaj@yahoo.com>
 
-With twl4030 it successfully calls omap_pcm_dma_irq, but with my codec it
-never get called, am I forgetting to set some value?
+This patch to patch_sigmatel.c is for the HP dv4-1222nr laptop. It
+activates the included microphone(s) and the mute status change light
+for this computer. I don't know if this will work for any other dv4
+laptop. The commit isn't perfect, for it doesn't seem to work too well
+with pulseaudio - the mic boost doesn't work with that audioserver.
+Otherwise, it works well with esound, even across reboots and
+suspend/hibernate/resume. The built-in microphone sits on node 0x18 and
+feeds through node 0x1c. The gpio for the mute light is GPIO #0. I
+borrowed the code from the HP HDX. Occasionally if you press the mute
+button too fast in succession it lowers the actual volume to 0 and
+you'll have to adjust it again...But if you are doing that you probably
+are getting a kick out of making me feel bad about the behavior. :) No
+autodetect of the laptop seems to work for me, but "model=hp-dv4-1222nr"
+as an option to modprobe will make the changes.
 
-On Tue, Apr 7, 2009 at 6:26 PM, Ernesto Torres <skullmate@gmail.com> wrote:
+Signed-off-by: James Gardiner <renidragsemaj@yahoo.com>
 
-> Sorry for not being clear, I'm writting a driver for an external codec to
-> use instead of twl4030 not for the beagleboard
-> I'll check the clocking, thanks.
->
->
->
-> On Tue, Apr 7, 2009 at 5:19 PM, Mark Brown <broonie@sirena.org.uk> wrote:
->
->> On Tue, Apr 07, 2009 at 12:18:25PM -0500, Ernesto Torres wrote:
->>
->> > Hi, i'm new to alsa and i would like some advice on where to get
->> information
->> > about writing an ASoC driver it would be for the beagle board, since is
->> the
->> > board i have available. I have already made some progress initializing
->> and
->>
->> There is already a drier for the Beagle board in the kernel - see the
->> omap3beagle driver.
->>
->> > I still don't know the exact way for playing via pcm with aplay or the
->> order
->> > of the callbacks. I have checked the web for info but not much about
->> ASoC,
->> > just the documentation with the linux kernel.
->>
->> ASoC jsust presents a standard sound card so applications such as aplay
->> work as they normally do.  The callbacks are all called in the same
->> order as the standard ALSA equivalents are, you can check how exactly
->> things are mapped from the standard ALSA callbacks into ASoC in
->> soc-core.c.
->>
->> > My driver actually tries to play with aplay, but gets stuck in :
->> omap-pcm.c:
->> > omap_pcm_pointer
->> > It just won't send the frames.
->>
->> At a guess you've not got the clocking set up properly - either the pins
->> for the clock signals are not configured in the appropriate mode or an
->> inappropriate clock configuration has been set up in your machine
->> driver.
->>
->
->
->
-> --
-> ___________
-> EhTd
->
->
-
-
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index 61996a2..4286155 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -100,6 +100,7 @@ enum {
+ 	STAC_HP_M4,
+ 	STAC_HP_DV5,
+ 	STAC_HP_HDX,
++	STAC_HP_DV4_1222NR,
+ 	STAC_92HD71BXX_MODELS
+ };
+ 
+@@ -1847,6 +1848,7 @@ static const char *stac92hd71bxx_models[STAC_92HD71BXX_MODELS] = {
+ 	[STAC_HP_M4] = "hp-m4",
+ 	[STAC_HP_DV5] = "hp-dv5",
+ 	[STAC_HP_HDX] = "hp-hdx",
++	[STAC_HP_DV4_1222NR] = "hp-dv4-1222nr",
+ };
+ 
+ static struct snd_pci_quirk stac92hd71bxx_cfg_tbl[] = {
+@@ -4534,6 +4536,28 @@ static int stac92xx_hp_hdx_check_power_status(struct hda_codec *codec,
+ }
+ #endif
+ 
++static int stac92xx_hp_dv4_1222nr_check_power_status(struct hda_codec *codec,
++						     hda_nid_t nid)
++{
++  /* Shamelessly stolen from the function stac92xx_hp_hdx_check_power_status */
++  /* by James Gardiner */
++	struct sigmatel_spec *spec = codec->spec;
++
++	if (nid == 0x10) {
++		if (snd_hda_codec_amp_read(codec, nid, 0, HDA_OUTPUT, 0) &
++		    HDA_AMP_MUTE)
++			spec->gpio_data &= ~0x01;  /* orange */
++		else
++			spec->gpio_data |= 0x01;   /* white */
++
++		stac_gpio_set(codec, spec->gpio_mask,
++			    spec->gpio_dir,
++			    spec->gpio_data);
++	}
++
++	return 0;
++}
++
+ static int stac92xx_suspend(struct hda_codec *codec, pm_message_t state)
+ {
+ 	struct sigmatel_spec *spec = codec->spec;
+@@ -5202,6 +5226,19 @@ again:
+ 		spec->num_smuxes = 0;
+ 		spec->num_dmuxes = 1;
+ 		break;
++	case STAC_HP_DV4_1222NR: /* James Gardiner */
++		spec->num_dmics = 1;
++		spec->num_dmuxes = 2;
++		stac92xx_auto_set_pinctl(codec, 0x1c, 2);
++		stac92xx_auto_set_pinctl(codec, 0x18, AC_PINCTL_IN_EN);
++#ifdef CONFIG_SND_HDA_POWER_SAVE
++		spec->gpio_mask |= 0x01;
++		spec->gpio_dir  |= 0x01;
++		spec->gpio_data |= 0x01;
++		codec->patch_ops.check_power_status =
++		    stac92xx_hp_dv4_1222nr_check_power_status;
++#endif
++		/* fallthrough */
+ 	case STAC_HP_DV5:
+ 		snd_hda_codec_set_pincfg(codec, 0x0d, 0x90170010);
+ 		stac92xx_auto_set_pinctl(codec, 0x0d, AC_PINCTL_OUT_EN);
 -- 
-___________
-EhTd
+1.5.6.3
