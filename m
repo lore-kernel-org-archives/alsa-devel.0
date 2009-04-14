@@ -1,14 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 03/14] ASoC: correct s6000 I2S clock polarity
-Date: Tue, 14 Apr 2009 13:33:02 +0100
-Message-ID: <1239712393-6428-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] mx31ads: Depend on all the WM8350 core
+	dependencies for WM1133-EV1 board
+Date: Tue, 14 Apr 2009 13:33:00 +0100
+Message-ID: <1239712393-6428-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20090414123220.GA6342@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 05B0124352
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 49E4510384A
 	for <alsa-devel@alsa-project.org>;
 	Tue, 14 Apr 2009 14:33:16 +0200 (CEST)
 In-Reply-To: <20090414123220.GA6342@rakim.wolfsonmicro.main>
@@ -22,35 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, =?utf-8?q?Daniel=20Gl=C3=B6ckner?= <dg@emlix.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogRGFuaWVsIEdsw7Zja25lciA8ZGdAZW1saXguY29tPgoKQWNjb3JkaW5nIHRvIHRoZSBk
-YXRhIHNoZWV0IGRhdGEgaXMgY2xvY2tlZCBvdXQgb24gdGhlIGZhbGxpbmcgZWRnZQphbmQgbGF0
-Y2hlZCBvbiB0aGUgcmlzaW5nIGVkZ2Ugb2YgdGhlIGJpdCBjbG9jay4gV2hpbGUgdGhlIGxlZnQg
-c2FtcGxlCmlzIHRyYW5zbWl0dGVkIHRoZSB3b3JkIGNsb2NrIGxpbmUgaXMgbG93LgoKU2lnbmVk
-LW9mZi1ieTogRGFuaWVsIEdsw7Zja25lciA8ZGdAZW1saXguY29tPgpTaWduZWQtb2ZmLWJ5OiBN
-YXJrIEJyb3duIDxicm9vbmllQG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbT4KLS0tCiBzb3Vu
-ZC9zb2MvczYwMDAvczYwMDAtaTJzLmMgICB8ICAgIDQgKystLQogc291bmQvc29jL3M2MDAwL3M2
-MTA1LWlwY2FtLmMgfCAgICAyICstCiAyIGZpbGVzIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwg
-MyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvczYwMDAvczYwMDAtaTJzLmMg
-Yi9zb3VuZC9zb2MvczYwMDAvczYwMDAtaTJzLmMKaW5kZXggZGNjNzkwNC4uYzVjZGExOCAxMDA2
-NDQKLS0tIGEvc291bmQvc29jL3M2MDAwL3M2MDAwLWkycy5jCisrKyBiL3NvdW5kL3NvYy9zNjAw
-MC9zNjAwMC1pMnMuYwpAQCAtMjUyLDEwICsyNTIsMTAgQEAgc3RhdGljIGludCBzNjAwMF9pMnNf
-c2V0X2RhaV9mbXQoc3RydWN0IHNuZF9zb2NfZGFpICpjcHVfZGFpLAogCX0KIAogCXN3aXRjaCAo
-Zm10ICYgU05EX1NPQ19EQUlGTVRfSU5WX01BU0spIHsKLQljYXNlIFNORF9TT0NfREFJRk1UX0lC
-X0lGOgorCWNhc2UgU05EX1NPQ19EQUlGTVRfTkJfTkY6CiAJCXcgfD0gUzZfSTJTX0xFRlRfRklS
-U1Q7CiAJCWJyZWFrOwotCWNhc2UgU05EX1NPQ19EQUlGTVRfSUJfTkY6CisJY2FzZSBTTkRfU09D
-X0RBSUZNVF9OQl9JRjoKIAkJdyB8PSBTNl9JMlNfUklHSFRfRklSU1Q7CiAJCWJyZWFrOwogCWRl
-ZmF1bHQ6CmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvczYwMDAvczYxMDUtaXBjYW0uYyBiL3NvdW5k
-L3NvYy9zNjAwMC9zNjEwNS1pcGNhbS5jCmluZGV4IDIxYzRmNTUuLmI1Zjk1ZjkgMTAwNjQ0Ci0t
-LSBhL3NvdW5kL3NvYy9zNjAwMC9zNjEwNS1pcGNhbS5jCisrKyBiL3NvdW5kL3NvYy9zNjAwMC9z
-NjEwNS1pcGNhbS5jCkBAIC00Myw3ICs0Myw3IEBAIHN0YXRpYyBpbnQgczYxMDVfaHdfcGFyYW1z
-KHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogCiAJLyogc2V0IGNwdSBEQUkg
-Y29uZmlndXJhdGlvbiAqLwogCXJldCA9IHNuZF9zb2NfZGFpX3NldF9mbXQoY3B1X2RhaSwgU05E
-X1NPQ19EQUlGTVRfQ0JNX0NGTSB8Ci0JCQkJCSAgIFNORF9TT0NfREFJRk1UX0lCX0lGKTsKKwkJ
-CQkJICAgU05EX1NPQ19EQUlGTVRfTkJfTkYpOwogCWlmIChyZXQgPCAwKQogCQlyZXR1cm4gcmV0
-OwogCi0tIAoxLjYuMi4yCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+Otherwise we'd need massive ifdefs in the code.
+
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ arch/arm/mach-mx3/Kconfig |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-mx3/Kconfig b/arch/arm/mach-mx3/Kconfig
+index d623558..194b842 100644
+--- a/arch/arm/mach-mx3/Kconfig
++++ b/arch/arm/mach-mx3/Kconfig
+@@ -19,6 +19,8 @@ config MACH_MX31ADS
+ config MACH_MX31ADS_WM1133_EV1
+ 	bool "Support Wolfson Microelectronics 1133-EV1 module"
+ 	depends on MACH_MX31ADS
++	depends on MFD_WM8350_I2C
++	depends on REGULATOR_WM8350
+ 	select MFD_WM8350_CONFIG_MODE_0
+ 	select MFD_WM8352_CONFIG_MODE_0
+ 	help
+-- 
+1.6.2.2
