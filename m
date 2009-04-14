@@ -1,21 +1,24 @@
-From: Mackenzie Morgan <macoafi@gmail.com>
-Subject: Re: hda-intel channels hibernate bug
-Date: Tue, 14 Apr 2009 11:45:58 -0400
-Message-ID: <200904141145.59252.macoafi@gmail.com>
-References: <1238921730.3782.3.camel@johannes.local>
-	<s5hd4bf2w27.wl%tiwai@suse.de>
-	<1239716613.22047.2.camel@johannes.local>
+From: James Gauld <james@thundermonkey.net>
+Subject: Re: Help required. Slax OS, no audio, multiple cards,
+ hdmi
+Date: Tue, 14 Apr 2009 16:46:21 +0100
+Message-ID: <49E4AFCD.6020603@thundermonkey.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3034302934990132245=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f130.google.com (mail-qy0-f130.google.com
-	[209.85.221.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3D9BC243C6
+Received: from smtp-out5.blueyonder.co.uk (smtp-out5.blueyonder.co.uk
+	[195.188.213.8]) by alsa0.perex.cz (Postfix) with ESMTP id 54E7C243E2
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Apr 2009 17:46:03 +0200 (CEST)
-Received: by qyk36 with SMTP id 36so822753qyk.16
-	for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2009 08:46:02 -0700 (PDT)
-In-Reply-To: <1239716613.22047.2.camel@johannes.local>
+	Tue, 14 Apr 2009 17:46:23 +0200 (CEST)
+Received: from [172.23.170.143] (helo=anti-virus02-10)
+	by smtp-out5.blueyonder.co.uk with smtp (Exim 4.52)
+	id 1Ltkq6-0006uv-MZ
+	for alsa-devel@alsa-project.org; Tue, 14 Apr 2009 16:46:22 +0100
+Received: from [82.39.153.172] (helo=[192.168.2.3])
+	by asmtp-out2.blueyonder.co.uk with esmtpa (Exim 4.52)
+	id 1Ltkq4-0003Ov-Ha
+	for alsa-devel@alsa-project.org; Tue, 14 Apr 2009 16:46:20 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,77 +31,36 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============3034302934990132245==
-Content-Type: multipart/signed;
-  boundary="nextPart1360169.LAvD5D3ois";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Yes, I tried the following Slax module first of all:
 
---nextPart1360169.LAvD5D3ois
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+http://www.slax.org/modules.php?action=detail&id=1063
 
-On Tuesday 14 April 2009 9:43:33 am Johannes Berg wrote:
-> On Tue, 2009-04-14 at 15:40 +0200, Takashi Iwai wrote:
->=20
-> > >  Node 0x0d [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-> > >    Amp-In caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
-> > > -  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-> > > +  Amp-In vals:  [0x80 0x80] [0x00 0x00]
-> > >    Amp-Out caps: ofs=3D0x40, nsteps=3D0x40, stepsize=3D0x03, mute=3D0
-> > >    Amp-Out vals:  [0x25 0x25]
-> > >    Connection: 2
-> >=20
-> > So the widget 0x0d is muted.  Maybe the channel mode control
-> > doesn't do caching the value properly...
->=20
-> No idea :)
->=20
-> > Could you give the raw alsa-info.sh output?
->=20
-> Sure, below (before hibernating).
->=20
-> Mind you -- mbp3 isn't really the correct thing for my machine, the
-> microphone also seems to be bad when using it -- but I haven't gotten
-> around to writing a proper description or trying to find it even.
+with no success.
 
-Maybe being the wrong quirk means its being initialized wrong.  I think you=
-=20
-said originally that a proper quirk for it hadn't been written yet though,=
-=20
-yeah?
+any other suggestions?
 
-=2D-=20
-Mackenzie Morgan
-http://ubuntulinuxtipstricks.blogspot.com
-apt-get moo
+i've enabled iec958 mixer control, but cannot adjst it's volume. the
+HDMI device does not have the "pvolume" capability. I don't know if
+that's of any significance, but I'm in dark, uncharted territory here.
 
---nextPart1360169.LAvD5D3ois
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEABECAAYFAknkr7cACgkQojm3DbyNMmkuwACgtzTmXuZQAA8oPgeYDJowD/Lg
-TlcAoIJcTRIE8+aishmjZJF5GbWf3n4Q
-=7MNJ
------END PGP SIGNATURE-----
-
---nextPart1360169.LAvD5D3ois--
-
---===============3034302934990132245==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============3034302934990132245==--
+Lee Revell wrote:
+> On Mon, Apr 13, 2009 at 11:09 AM, James Gauld <james@thundermonkey.net> wrote:
+>> However, running slax (from usb) I cannot get any sound from either
+>> device, but I'm only interested in the HDMI card (card #1) which
+>> delivers output to the integrated speakers (as far as I can tell from
+>> windows).
+>>
+>> I've tried from console and various widgets in KDE with no success.
+> 
+> Try installing the proprietary ATI video driver.  Thanks to DRM the
+> video driver has veto power over whether you can output audio via
+> HDMI.
+> 
+> Lee
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
+> 
