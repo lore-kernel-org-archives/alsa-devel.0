@@ -1,19 +1,23 @@
-From: Justin Mattock <justinmattock@gmail.com>
-Subject: [PATCH] add missing definitions(letters) to
-	HD-Audio.txt
-Date: Tue, 14 Apr 2009 14:31:21 -0700
-Message-ID: <dd18b0c30904141431x231a3251v438e365d512f9f95@mail.gmail.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH] General fix for Palm27x aSoC driver
+Date: Tue, 14 Apr 2009 23:42:34 +0200
+Message-ID: <200904142342.34914.marek.vasut@gmail.com>
+References: <200904121858.42931.marek.vasut@gmail.com>
+	<200904122051.19335.marek.vasut@gmail.com>
+	<20090414195035.GA6902@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f130.google.com (mail-qy0-f130.google.com
-	[209.85.221.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4FB4D103869
+Received: from mail-bw0-f223.google.com (mail-bw0-f223.google.com
+	[209.85.218.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 93BE1103869
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Apr 2009 23:31:22 +0200 (CEST)
-Received: by qyk36 with SMTP id 36so1165024qyk.16
-	for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2009 14:31:21 -0700 (PDT)
+	Tue, 14 Apr 2009 23:42:28 +0200 (CEST)
+Received: by bwz23 with SMTP id 23so2914950bwz.32
+	for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2009 14:42:27 -0700 (PDT)
+In-Reply-To: <20090414195035.GA6902@sirena.org.uk>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,42 +27,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-impact: Add missing definitions(letters).
+On Tuesday 14 of April 2009 21:50:36 Mark Brown wrote:
+> On Sun, Apr 12, 2009 at 08:51:19PM +0200, Marek Vasut wrote:
+> > +static struct pxa2xx_ac97_platform_data palmld_ac97_pdata = {
+> > +	.reset_gpio	= 95,
+> > +};
+>
+> The type of this will need changing to reflect the patch that got merged
+> for this but other than that minor point this approach is fine.
 
-Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
+OK, shall I change it and resend (ps. to what if you dont mind telling me?) ? 
+Also, do you want to push it through also tree or ARM tree ? I'm for the 
+second option as it's more of a bugfix suitable for that tree.
 
----
- Documentation/sound/alsa/HD-Audio.txt | 3 +++
- 1 files changed,3 insertions(+),0 deletions(-)
-
-===========================================================================================
----- Documentation/sound/alsa/HD-Audio.txt        2009-04-14
-17:03:14.000000000 -0700
-++++ Documentation/sound/alsa/HD-Audio.txt        2009-04-14
-21:15:22.000000000 -0700
-@@ -162,7 +162,7 @@
- What `model` option values are available depends on the codec chip.
- Check your codec chip from the codec proc file (see "Codec Proc-File"
- section below).  It will show the vendor/product name of your codec
--chip.  Then, see Documentation/sound/alsa/HD-Audio-Modelstxt file,
-+chip.  Then, see Documentation/sound/alsa/HD-Audio-Models.txt file,
- the section of HD-audio driver.  You can find a list of codecs
- and `model` options belonging to each codec.  For example, for Realtek
- ALC262 codec chip, pass `model=ultra` for devices that are compatible
-@@ -170,7 +170,7 @@
-
- Thus, the first thing you can do for any brand-new, unsupported and
- non-working HD-audio hardware is to check HD-audio codec and several
--different `model` option values.  If you have a luck, some of them
-+different `model` option values.  If you have any luck, some of them
- might suit with your device well.
-
- Some codecs such as ALC880 have a special model option `model=test`.
-
-
-
--- 
-Justin P. Mattock
+Thanks
