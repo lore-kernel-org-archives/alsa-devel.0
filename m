@@ -1,15 +1,15 @@
 From: Florian Faber <faber@faberman.de>
-Subject: [PATCH 1/2] hdspm: metering ioctl fixed
-Date: Tue, 14 Apr 2009 17:47:20 +0200
-Message-ID: <1239724040.18545.6.camel@x200.watzmann.local>
+Subject: [PATCH 2/2] hdspm: modified include file
+Date: Tue, 14 Apr 2009 17:48:53 +0200
+Message-ID: <1239724133.18545.8.camel@x200.watzmann.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from india820.server4you.de (india820.server4you.de [85.25.152.101])
-	by alsa0.perex.cz (Postfix) with ESMTP id 775C5243C6
+	by alsa0.perex.cz (Postfix) with ESMTP id 5AA3F243D1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Apr 2009 17:47:23 +0200 (CEST)
+	Tue, 14 Apr 2009 17:49:05 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,125 +22,62 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Metering didn't work before. I know of no application that used this
-ioctl before, so I assume it is safe to modify the structure.
+Ckeaned up meter structure and modified the PEAK_RMS ioctl to reflect
+the modifications.
 
-diff a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+diff a/sound/include/sound/hdspm.h b/sound/include/sound/hdspm.h
 
-10a11,13
->  *      Modified 2009-04-13 for proper metering by Florian Faber 
->  *                                               <faber@faberman.de>
->  *
-82c85,86
-<        "Remy Bruno <remy.bruno@trinnov.com>");
----
->        "Remy Bruno <remy.bruno@trinnov.com>, "
->        "Florian Faber <faber@faberman.de>");
-136c140,151
-< #define HDSPM_MADI_peakrmsbase 	4096	/* 4096-8191 2x64x32Bit Meters */
----
-> 
-> #define HDSPM_MADI_INPUT_PEAK		4096
-> #define HDSPM_MADI_PLAYBACK_PEAK	4352
-> #define HDSPM_MADI_OUTPUT_PEAK		4608
-> 
-> #define HDSPM_MADI_INPUT_RMS_L		6144
-> #define HDSPM_MADI_PLAYBACK_RMS_L	6400
-> #define HDSPM_MADI_OUTPUT_RMS_L		6656
-> 
-> #define HDSPM_MADI_INPUT_RMS_H		7168
-> #define HDSPM_MADI_PLAYBACK_RMS_H	7424
-> #define HDSPM_MADI_OUTPUT_RMS_H		7680
-707c722
-< 		/* maby a madi input (which is taken if sel sync is madi) */
----
-> 		/* mayby a madi input (which is taken if sel sync is madi) */
-4108a4124,4128
-> static inline int copy_u32_le(void __user *dest, void __iomem *src)
-> {
-> 	u32 val = readl(src);
-> 	return copy_to_user(dest, &val, 4);
-> }
-4111c4131
-< 				 unsigned int cmd, unsigned long arg)
----
-> 				 unsigned int cmd, unsigned long __user arg)
-4113,4136c4133,4172
-< 	struct hdspm *hdspm = hw->private_data;
-< 	struct hdspm_mixer_ioctl mixer;
-< 	struct hdspm_config_info info;
-< 	struct hdspm_version hdspm_version;
-< 	struct hdspm_peak_rms_ioctl rms;
+28,36d27
+< /* peam rms level structure like we get from hardware 
+<   
+<    maybe in future we can memory map it so I just copy it
+<    to user on ioctl call now an dont change anything
+<    rms are made out of low and high values
+<    where (long) ????_rms = (????_rms_l >> 8) + ((????_rms_h &
+0xFFFFFF00)<<24)
+<    (i asume so from the code)
+< */
 < 
-< 	switch (cmd) {
-< 
-< 	case SNDRV_HDSPM_IOCTL_GET_PEAK_RMS:
-< 		if (copy_from_user(&rms, (void __user *)arg, sizeof(rms)))
-< 			return -EFAULT;
-< 		/* maybe there is a chance to memorymap in future
-< 		 * so dont touch just copy
-< 		 */
-< 		if(copy_to_user_fromio((void __user *)rms.peak,
-< 				       hdspm->iobase+HDSPM_MADI_peakrmsbase,
-< 				       sizeof(struct hdspm_peak_rms)) != 0 )
-< 			return -EFAULT;
-< 
-< 		break;
-< 		
-< 
-< 	case SNDRV_HDSPM_IOCTL_GET_CONFIG_INFO:
-< 
----
->   void __user *argp = (void __user *)arg;
->   struct hdspm *hdspm = hw->private_data;
->   struct hdspm_mixer_ioctl mixer;
->   struct hdspm_config_info info;
->   struct hdspm_version hdspm_version;
->   struct hdspm_peak_rms levels;
->   long unsigned int s;
->   int i=0;
+37a29,35
+>         uint32_t input_peaks[64];
+>         uint32_t playback_peaks[64];
+>         uint32_t output_peaks[64];
 >   
->   switch (cmd) {
->     
->   case SNDRV_HDSPM_IOCTL_GET_PEAK_RMS:
->     for (i=0; i<64; i++) {
->       levels.input_peaks[i] = readl(hdspm->iobase
-+HDSPM_MADI_INPUT_PEAK+i*4);
->       levels.playback_peaks[i] = readl(hdspm->iobase
-+HDSPM_MADI_PLAYBACK_PEAK+i*4);
->       levels.output_peaks[i] = readl(hdspm->iobase
-+HDSPM_MADI_OUTPUT_PEAK+i*4);
->       levels.input_rms[i] = (readl(hdspm->iobase
-+HDSPM_MADI_INPUT_RMS_H+i*4) << 32) | readl(hdspm->iobase
-+HDSPM_MADI_INPUT_RMS_L+i*4);
->       levels.playback_rms[i] = (readl(hdspm->iobase
-+HDSPM_MADI_PLAYBACK_RMS_H+i*4) << 32) | readl(hdspm->iobase
-+HDSPM_MADI_PLAYBACK_RMS_L+i*4);
->       levels.output_rms[i] = (readl(hdspm->iobase
-+HDSPM_MADI_OUTPUT_RMS_H+i*4) << 32) | readl(hdspm->iobase
-+HDSPM_MADI_OUTPUT_RMS_L+i*4);
->     }
-> 
->     if (hdspm->system_sample_rate>96000) {
->       levels.speed = qs;
->     } else if (hdspm->system_sample_rate>48000) {
->       levels.speed = ds;
->     } else {
->       levels.speed = ss;
->     }
->     levels.status2 = hdspm_read(hdspm, HDSPM_statusRegister2);
-> 
->     s = copy_to_user(argp, &levels, sizeof(struct hdspm_peak_rms));
->     if (0 != s) {
->       snd_printk(KERN_ERR "copy_to_user(.., .., %lu): %lu\n",
-sizeof(struct hdspm_peak_rms), s);
->       return -EFAULT;
->     }
->     break;
->     
->     
->   case SNDRV_HDSPM_IOCTL_GET_CONFIG_INFO:
->     
+>         uint64_t input_rms[64];
+>         uint64_t playback_rms[64];
+>         uint64_t output_rms[64];
+39,56c37,38
+< 	unsigned int level_offset[1024];
+< 
+< 	unsigned int input_peak[64];
+< 	unsigned int playback_peak[64];
+< 	unsigned int output_peak[64];
+< 	unsigned int xxx_peak[64];	/* not used */
+< 
+< 	unsigned int reserved[256];	/* not used */
+< 
+< 	unsigned int input_rms_l[64];
+< 	unsigned int playback_rms_l[64];
+< 	unsigned int output_rms_l[64];
+< 	unsigned int xxx_rms_l[64];	/* not used */
+< 
+< 	unsigned int input_rms_h[64];
+< 	unsigned int playback_rms_h[64];
+< 	unsigned int output_rms_h[64];
+< 	unsigned int xxx_rms_h[64];	/* not used */
+---
+>         enum {ss, ds, qs} speed;
+>         int status2;
+59,61d40
+< struct hdspm_peak_rms_ioctl {
+< 	struct hdspm_peak_rms *peak;
+< };
+63d41
+< /* use indirect access due to the limit of ioctl bit size */
+65c43
+< 	_IOR('H', 0x40, struct hdspm_peak_rms_ioctl)
+---
+> 	_IOR('H', 0x40, struct hdspm_peak_rms)
 
 Flo
 -- 
