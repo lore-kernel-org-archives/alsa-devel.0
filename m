@@ -1,85 +1,89 @@
-From: Florian Faber <faber@faberman.de>
-Subject: [PATCH 2/2] hdspm: modified include file
-Date: Tue, 14 Apr 2009 17:48:53 +0200
-Message-ID: <1239724133.18545.8.camel@x200.watzmann.local>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: [PATCH] AOA: Convert onyx and tas codecs to new-style i2c  
+	drivers
+Date: Tue, 14 Apr 2009 17:50:27 +0200
+Message-ID: <1239724227.24771.9.camel@johannes.local>
+References: <20090408150249.5a62a56c@hyperion.delvare>
+	<1239205899.16477.32.camel@johannes.local>
+	<20090408224858.04cb6dc4@hyperion.delvare>
+	<1239263089.24548.30.camel@johannes.local>
+	<20090409141945.116772e3@hyperion.delvare>
+	<1239723613.24771.8.camel@johannes.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from india820.server4you.de (india820.server4you.de [85.25.152.101])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5AA3F243D1
-	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Apr 2009 17:49:05 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============0417598940=="
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
+In-Reply-To: <1239723613.24771.8.camel@johannes.local>
+List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
+List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
+List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
+Mime-version: 1.0
+Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+To: Jean Delvare <khali@linux-fr.org>
+Cc: Takashi Iwai <tiwai@suse.de>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Ckeaned up meter structure and modified the PEAK_RMS ioctl to reflect
-the modifications.
 
-diff a/sound/include/sound/hdspm.h b/sound/include/sound/hdspm.h
+--===============0417598940==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-KHxUTyN12gZiQwMpwo/o"
 
-28,36d27
-< /* peam rms level structure like we get from hardware 
-<   
-<    maybe in future we can memory map it so I just copy it
-<    to user on ioctl call now an dont change anything
-<    rms are made out of low and high values
-<    where (long) ????_rms = (????_rms_l >> 8) + ((????_rms_h &
-0xFFFFFF00)<<24)
-<    (i asume so from the code)
-< */
-< 
-37a29,35
->         uint32_t input_peaks[64];
->         uint32_t playback_peaks[64];
->         uint32_t output_peaks[64];
->   
->         uint64_t input_rms[64];
->         uint64_t playback_rms[64];
->         uint64_t output_rms[64];
-39,56c37,38
-< 	unsigned int level_offset[1024];
-< 
-< 	unsigned int input_peak[64];
-< 	unsigned int playback_peak[64];
-< 	unsigned int output_peak[64];
-< 	unsigned int xxx_peak[64];	/* not used */
-< 
-< 	unsigned int reserved[256];	/* not used */
-< 
-< 	unsigned int input_rms_l[64];
-< 	unsigned int playback_rms_l[64];
-< 	unsigned int output_rms_l[64];
-< 	unsigned int xxx_rms_l[64];	/* not used */
-< 
-< 	unsigned int input_rms_h[64];
-< 	unsigned int playback_rms_h[64];
-< 	unsigned int output_rms_h[64];
-< 	unsigned int xxx_rms_h[64];	/* not used */
----
->         enum {ss, ds, qs} speed;
->         int status2;
-59,61d40
-< struct hdspm_peak_rms_ioctl {
-< 	struct hdspm_peak_rms *peak;
-< };
-63d41
-< /* use indirect access due to the limit of ioctl bit size */
-65c43
-< 	_IOR('H', 0x40, struct hdspm_peak_rms_ioctl)
----
-> 	_IOR('H', 0x40, struct hdspm_peak_rms)
 
-Flo
--- 
-Machines can do the work, so people have time to think.
-public key 6C002249          x-hkp://wwwkeys.eu.pgp.net
+--=-KHxUTyN12gZiQwMpwo/o
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, 2009-04-14 at 17:40 +0200, Johannes Berg wrote:
+
+> So I went to test this, but for some reason aoa doesn't work for me at
+> all, neither with nor without this patch.
+>=20
+> The reason seems to be that aoa_fabric_layout_probe() is never called,
+> but my driver model fu is weak so I can't tell why -- I definitely see
+> the i2sbus soundbus devices registered. soundbus_probe() isn't getting
+> called either though, but we do of_device_register(). I'm confused, but
+> don't have time to dig further right now.
+
+2.6.29 works -- guess somebody could bisect, but I can't now.
+
+johannes
+
+--=-KHxUTyN12gZiQwMpwo/o
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Comment: Johannes Berg (powerbook)
+
+iQIcBAABAgAGBQJJ5LDBAAoJEKVg1VMiehFYSfYQALUtPyixjj5EjvK26wJHHVny
++Gb2HL1X3o5QuFnB0/Gu2KGQZSXvqU5273mCXW4dScb+JfdBI5qIRZCT9FFVrfD7
+Un1p+A6kEv9s5osmubHC95dZ0Z1OZzT/5pBlTKh2ejPc51cUzI2AFJLfxob8Gc5r
+gebscoAdbJR4LfCZRC2U+d4EHcuX5TeIaFJbuMjcnGkacpRtFKlhPSQypxsHIWV2
+cLy9OkHFjAoRDfgqHVuEFM8BbIUeq6LV8XswKJ0ePKKUlAZPs20j2kijCAt4MKq1
+7t81oGzVq0Lhf0YHT3rUlJls4f8Y7nqnDeFtrNgS9nmruR/y7B8M0EOEnt8kmas6
+fiPpRedN87AM280w27Qvm5++l2peme+y4s0atjcsyr6EPOLkRK30O1Gm2KEewGv8
+5RwdHln8LpC87rpArnN8S8wQCeV4zC+PjQc6sDclGFWEq19ELY/6vxeaK5Nww3Y8
+Y6AmhDfCHoPXyVMti7+lQQ5KzIYydAvQaVtgGDTwGwSs+asBSTP08rlQqzXRbrm2
+YoQbmP6OCtqFweb6/zI12TJBw9q7P1CnmgTwQVeIy3iq6CWExeTN59434Pnr1Osr
+Y78cbmd2vYwGVcPxHxhU/Wx/IzEqZ0H6BXhxroMJsjVlDhV6E1pECHAVIWSLhcSO
+mGHxVPmjWcFrDCaEO/FV
+=TS7V
+-----END PGP SIGNATURE-----
+
+--=-KHxUTyN12gZiQwMpwo/o--
+
+
+--===============0417598940==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Linuxppc-dev mailing list
+Linuxppc-dev@ozlabs.org
+https://ozlabs.org/mailman/listinfo/linuxppc-dev
+--===============0417598940==--
