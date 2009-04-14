@@ -1,8 +1,8 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 1/2] ASoC: omap-mcbsp: Correct
-	the?DSP_B	mode
-Date: Tue, 14 Apr 2009 11:47:07 +0100
-Message-ID: <20090414104707.GF12678@sirena.org.uk>
+From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Subject: Re: [PATCH 1/2] ASoC: omap-mcbsp: Correct the DSP_B
+ mode
+Date: Tue, 14 Apr 2009 14:20:04 +0300
+Message-ID: <20090414142004.fee14e30.jarkko.nikula@nokia.com>
 References: <1239695131-30367-1-git-send-email-peter.ujfalusi@nokia.com>
 	<20090414120221.f0e89499.jarkko.nikula@nokia.com>
 	<20090414093133.GB12678@sirena.org.uk>
@@ -11,11 +11,10 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id DBD34103839
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5F4DA103826
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Apr 2009 12:47:07 +0200 (CEST)
-Content-Disposition: inline
+	Tue, 14 Apr 2009 13:19:45 +0200 (CEST)
 In-Reply-To: <200904141334.33497.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,34 +25,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, "Nikula Jarkko (Nokia-D/Helsinki)" <jarkko.nikula@nokia.com>
+To: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ext@alsa-project.org, Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 14, 2009 at 01:34:33PM +0300, Peter Ujfalusi wrote:
+On Tue, 14 Apr 2009 12:34:33 +0200
+"Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com> wrote:
 
-> To have the DSP_B mode correctly (for the tvl320aic32 codec used in osk5912 
-> board) the FS polarity has to be handled by the mcbsp as it has been inverted. 
-> If we don't do this, there is no way to have the MSB at the correct place (it 
-> has to be available when the FS is high).
+> Well, I think the mcbsp module is quite - maybe too - flexible...
+> To have the DSP_B mode correctly (for the tvl320aic32 codec used in osk5912 board) the FS polarity has to be handled by the mcbsp as it has been inverted. If we don't do this, there is no way to have the MSB at the correct place (it has to be available when the FS is high).
+> 
+> 
+> The DSP_A mode can use the FS polarity 'correctly' - as it is. Or we can also consider to require to invert the FS polarity, than add 1 bit delay for DSP_A mode.
+> 
+I meant something like this below integrating your FWID(0) and temp_fmt from my earlier commit da6320becf31c40b60d4b1dc6b339c9a766b671c so that SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_NB_NF will produce correct format.
 
-> The DSP_A mode can use the FS polarity 'correctly' - as it is. Or we can also 
-> consider to require to invert the FS polarity, than add 1 bit delay for DSP_A 
-> mode.
+I tested this only with Beagle McBSP3 and oscilloscope but I like to verify it with real codecs as well :-)
 
-As Jarkko says the driver should be hiding all this from users - it
-should just set the port up as best it can, refusing to do anything that
-can't be supported by the hardware.  The default polarity the hardware
-uses shouldn't be visible outside the driver.
 
-> a) The proposal in the series
-> DSP_B mode (the MSB is transmitted when the FS is high, the length for the 
-> pulse is 1):
+Jarkko
 
-> DSP_A mode (the MSB is transmitted when the FS went low, the length for the 
-> pulse is still 1, but the FS stays low for (wlen * channels - 1) cycles):
-
-The difference between the two modes shouldn't be edge of FS used, it
-should be a clock cycle, though with a 1 BCLK pulse on FS the effect
-will probably line up.  The MSB data needs to be available for sampling
-on the appropriate rising edge of BCLK.
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index d6882be..c40ea21 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -272,7 +272,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_B:
+ 		regs->srgr2	|= FPER(wlen * channels - 1);
+-		regs->srgr1	|= FWID(wlen * channels - 2);
++		regs->srgr1	|= FWID(0);
+ 		break;
+ 	}
+ 
+@@ -291,6 +291,7 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ {
+ 	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
+ 	struct omap_mcbsp_reg_cfg *regs = &mcbsp_data->regs;
++	unsigned int temp_fmt = fmt;
+ 
+ 	if (mcbsp_data->configured)
+ 		return 0;
+@@ -317,6 +318,8 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		/* 0-bit data delay */
+ 		regs->rcr2      |= RDATDLY(0);
+ 		regs->xcr2      |= XDATDLY(0);
++		/* Invert bit clock and FS polarity configuration */
++		temp_fmt ^= SND_SOC_DAIFMT_IB_IF;
+ 		break;
+ 	default:
+ 		/* Unsupported data format */
+@@ -340,7 +343,7 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 	}
+ 
+ 	/* Set bit clock (CLKX/CLKR) and FS polarities */
+-	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	switch (temp_fmt & SND_SOC_DAIFMT_INV_MASK) {
+ 	case SND_SOC_DAIFMT_NB_NF:
+ 		/*
+ 		 * Normal BCLK + FS.
