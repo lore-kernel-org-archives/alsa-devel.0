@@ -1,15 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 10/14] ASoC: Factor out application of power
-	for generic widgets
-Date: Tue, 14 Apr 2009 13:33:09 +0100
-Message-ID: <1239712393-6428-11-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 03/14] ASoC: correct s6000 I2S clock polarity
+Date: Tue, 14 Apr 2009 13:33:02 +0100
+Message-ID: <1239712393-6428-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20090414123220.GA6342@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 82C53103857
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 05B0124352
 	for <alsa-devel@alsa-project.org>;
 	Tue, 14 Apr 2009 14:33:16 +0200 (CEST)
 In-Reply-To: <20090414123220.GA6342@rakim.wolfsonmicro.main>
@@ -23,145 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, =?utf-8?q?Daniel=20Gl=C3=B6ckner?= <dg@emlix.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is simple code motion, intended to support future refactoring of
-the DAPM algorithms and (more immediately) the additon of events for
-DACs and ADCs.
-
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-dapm.c |  110 +++++++++++++++++++++++++++-----------------------
- 1 files changed, 60 insertions(+), 50 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 46485de..713d125 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -522,6 +522,65 @@ int dapm_reg_event(struct snd_soc_dapm_widget *w,
- }
- EXPORT_SYMBOL_GPL(dapm_reg_event);
- 
-+/* Standard power change method, used to apply power changes to most
-+ * widgets.
-+ */
-+static int dapm_generic_apply_power(struct snd_soc_dapm_widget *w)
-+{
-+	int ret;
-+
-+	/* call any power change event handlers */
-+	if (w->event)
-+		pr_debug("power %s event for %s flags %x\n",
-+			 w->power ? "on" : "off",
-+			 w->name, w->event_flags);
-+
-+	/* power up pre event */
-+	if (w->power && w->event &&
-+	    (w->event_flags & SND_SOC_DAPM_PRE_PMU)) {
-+		ret = w->event(w, NULL, SND_SOC_DAPM_PRE_PMU);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	/* power down pre event */
-+	if (!w->power && w->event &&
-+	    (w->event_flags & SND_SOC_DAPM_PRE_PMD)) {
-+		ret = w->event(w, NULL, SND_SOC_DAPM_PRE_PMD);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	/* Lower PGA volume to reduce pops */
-+	if (w->id == snd_soc_dapm_pga && !w->power)
-+		dapm_set_pga(w, w->power);
-+
-+	dapm_update_bits(w);
-+
-+	/* Raise PGA volume to reduce pops */
-+	if (w->id == snd_soc_dapm_pga && w->power)
-+		dapm_set_pga(w, w->power);
-+
-+	/* power up post event */
-+	if (w->power && w->event &&
-+	    (w->event_flags & SND_SOC_DAPM_POST_PMU)) {
-+		ret = w->event(w,
-+			       NULL, SND_SOC_DAPM_POST_PMU);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	/* power down post event */
-+	if (!w->power && w->event &&
-+	    (w->event_flags & SND_SOC_DAPM_POST_PMD)) {
-+		ret = w->event(w, NULL, SND_SOC_DAPM_POST_PMD);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Scan a single DAPM widget for a complete audio path and update the
-  * power status appropriately.
-@@ -601,56 +660,7 @@ static int dapm_power_widget(struct snd_soc_codec *codec, int event,
- 	if (!power_change)
- 		return 0;
- 
--	/* call any power change event handlers */
--	if (w->event)
--		pr_debug("power %s event for %s flags %x\n",
--			 w->power ? "on" : "off",
--			 w->name, w->event_flags);
--
--	/* power up pre event */
--	if (power && w->event &&
--	    (w->event_flags & SND_SOC_DAPM_PRE_PMU)) {
--		ret = w->event(w, NULL, SND_SOC_DAPM_PRE_PMU);
--		if (ret < 0)
--			return ret;
--	}
--
--	/* power down pre event */
--	if (!power && w->event &&
--	    (w->event_flags & SND_SOC_DAPM_PRE_PMD)) {
--		ret = w->event(w, NULL, SND_SOC_DAPM_PRE_PMD);
--		if (ret < 0)
--			return ret;
--	}
--
--	/* Lower PGA volume to reduce pops */
--	if (w->id == snd_soc_dapm_pga && !power)
--		dapm_set_pga(w, power);
--
--	dapm_update_bits(w);
--
--	/* Raise PGA volume to reduce pops */
--	if (w->id == snd_soc_dapm_pga && power)
--		dapm_set_pga(w, power);
--
--	/* power up post event */
--	if (power && w->event &&
--	    (w->event_flags & SND_SOC_DAPM_POST_PMU)) {
--		ret = w->event(w,
--			       NULL, SND_SOC_DAPM_POST_PMU);
--		if (ret < 0)
--			return ret;
--	}
--
--	/* power down post event */
--	if (!power && w->event &&
--	    (w->event_flags & SND_SOC_DAPM_POST_PMD)) {
--		ret = w->event(w, NULL, SND_SOC_DAPM_POST_PMD);
--		if (ret < 0)
--			return ret;
--	}
--
--	return 0;
-+	return dapm_generic_apply_power(w);
- }
- 
- /*
--- 
-1.6.2.2
+RnJvbTogRGFuaWVsIEdsw7Zja25lciA8ZGdAZW1saXguY29tPgoKQWNjb3JkaW5nIHRvIHRoZSBk
+YXRhIHNoZWV0IGRhdGEgaXMgY2xvY2tlZCBvdXQgb24gdGhlIGZhbGxpbmcgZWRnZQphbmQgbGF0
+Y2hlZCBvbiB0aGUgcmlzaW5nIGVkZ2Ugb2YgdGhlIGJpdCBjbG9jay4gV2hpbGUgdGhlIGxlZnQg
+c2FtcGxlCmlzIHRyYW5zbWl0dGVkIHRoZSB3b3JkIGNsb2NrIGxpbmUgaXMgbG93LgoKU2lnbmVk
+LW9mZi1ieTogRGFuaWVsIEdsw7Zja25lciA8ZGdAZW1saXguY29tPgpTaWduZWQtb2ZmLWJ5OiBN
+YXJrIEJyb3duIDxicm9vbmllQG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbT4KLS0tCiBzb3Vu
+ZC9zb2MvczYwMDAvczYwMDAtaTJzLmMgICB8ICAgIDQgKystLQogc291bmQvc29jL3M2MDAwL3M2
+MTA1LWlwY2FtLmMgfCAgICAyICstCiAyIGZpbGVzIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwg
+MyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvczYwMDAvczYwMDAtaTJzLmMg
+Yi9zb3VuZC9zb2MvczYwMDAvczYwMDAtaTJzLmMKaW5kZXggZGNjNzkwNC4uYzVjZGExOCAxMDA2
+NDQKLS0tIGEvc291bmQvc29jL3M2MDAwL3M2MDAwLWkycy5jCisrKyBiL3NvdW5kL3NvYy9zNjAw
+MC9zNjAwMC1pMnMuYwpAQCAtMjUyLDEwICsyNTIsMTAgQEAgc3RhdGljIGludCBzNjAwMF9pMnNf
+c2V0X2RhaV9mbXQoc3RydWN0IHNuZF9zb2NfZGFpICpjcHVfZGFpLAogCX0KIAogCXN3aXRjaCAo
+Zm10ICYgU05EX1NPQ19EQUlGTVRfSU5WX01BU0spIHsKLQljYXNlIFNORF9TT0NfREFJRk1UX0lC
+X0lGOgorCWNhc2UgU05EX1NPQ19EQUlGTVRfTkJfTkY6CiAJCXcgfD0gUzZfSTJTX0xFRlRfRklS
+U1Q7CiAJCWJyZWFrOwotCWNhc2UgU05EX1NPQ19EQUlGTVRfSUJfTkY6CisJY2FzZSBTTkRfU09D
+X0RBSUZNVF9OQl9JRjoKIAkJdyB8PSBTNl9JMlNfUklHSFRfRklSU1Q7CiAJCWJyZWFrOwogCWRl
+ZmF1bHQ6CmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvczYwMDAvczYxMDUtaXBjYW0uYyBiL3NvdW5k
+L3NvYy9zNjAwMC9zNjEwNS1pcGNhbS5jCmluZGV4IDIxYzRmNTUuLmI1Zjk1ZjkgMTAwNjQ0Ci0t
+LSBhL3NvdW5kL3NvYy9zNjAwMC9zNjEwNS1pcGNhbS5jCisrKyBiL3NvdW5kL3NvYy9zNjAwMC9z
+NjEwNS1pcGNhbS5jCkBAIC00Myw3ICs0Myw3IEBAIHN0YXRpYyBpbnQgczYxMDVfaHdfcGFyYW1z
+KHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogCiAJLyogc2V0IGNwdSBEQUkg
+Y29uZmlndXJhdGlvbiAqLwogCXJldCA9IHNuZF9zb2NfZGFpX3NldF9mbXQoY3B1X2RhaSwgU05E
+X1NPQ19EQUlGTVRfQ0JNX0NGTSB8Ci0JCQkJCSAgIFNORF9TT0NfREFJRk1UX0lCX0lGKTsKKwkJ
+CQkJICAgU05EX1NPQ19EQUlGTVRfTkJfTkYpOwogCWlmIChyZXQgPCAwKQogCQlyZXR1cm4gcmV0
+OwogCi0tIAoxLjYuMi4yCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
