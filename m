@@ -1,18 +1,18 @@
-From: tifereth <jesodi@googlemail.com>
-Subject: Acer 5920G: HDMI Sound
-Date: Tue, 14 Apr 2009 21:54:31 +0200
-Message-ID: <49E4E9F7.4060606@googlemail.com>
+From: Chuck Ebbert <cebbert@redhat.com>
+Subject: Re: Rewrite of hw_ptr updaters makes things worse?
+Date: Tue, 14 Apr 2009 16:22:51 -0400
+Message-ID: <20090414162251.1e565b86@dhcp-100-2-144.bos.redhat.com>
+References: <20090401184627.5034c20d@dhcp-100-2-144.bos.redhat.com>
+	<s5heivv2w5u.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f170.google.com (mail-fx0-f170.google.com
-	[209.85.220.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5F9F4103869
+Received: from mx2.redhat.com (mx2.redhat.com [66.187.237.31])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3C47B24467
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Apr 2009 21:54:33 +0200 (CEST)
-Received: by fxm18 with SMTP id 18so2847720fxm.32
-	for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2009 12:54:33 -0700 (PDT)
+	Tue, 14 Apr 2009 22:23:25 +0200 (CEST)
+In-Reply-To: <s5heivv2w5u.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,78 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hi,
+On Tue, 14 Apr 2009 15:37:49 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-i'm the owner of an "Acer 5920g" Laptop with the following specs:
-- Nvidia 8600m GT
-- HDMI Port
-- afaik. Realtek Sound Chip
+> At Wed, 1 Apr 2009 18:46:27 -0400,
+> Chuck Ebbert wrote:
+> > 
+> > After adding these patches from 2.6.30 to a 2.6.29 kernel, pulseaudio problems
+> > are worse:
+> > 
+> > ALSA: pcm - Reset invalid position even without debug option
+> > ALSA: pcm - Fix delta calculation at boundary overlap
+> > ALSA: pcm - Safer boundary checks
+> > ALSA: Rewrite hw_ptr updaters
+> 
+> Hrm, these patches are basically to avoid reporting bogus hw_ptr
+> values to the user-space.  So, the problem could be really the bad
+> DMA pointer reporting on your hardware.  What shows if you enable
+> the debug via
+> 	# echo 1 > /proc/asound/card0/pcm0p/xrun_debug
+> ??  Note that this file appears when built with
+> CONFIG_SND_PCM_XRUN_DEBUG.
+> 
+> Jaroslav made some patches to handle the bogus DMA-pointer values.
+> Could you check sound git tree below, either for-next or master
+> branch?
+> 
 
-i've tried a lot to get the hdmi sound working, but still without =
-
-success. As i can only find "requests for help" for this sound chip, =
-
-perhaps you could help the lost acer 5920 owners and me.
-
-things i've tried yet:
-- updated kernel to vanilla 2.6.29.1 ( alsa 1.8a )
-- updated alsa to 1.9 ( stable )
-- updated alsa to "1.0.19.46.g516fa.506.gb750c" ( snapshot from =
-
-14.04.2009 )
-- added the followng line to /etc/modprobe.d/alsa-base: "options =
-
-snd-hda-intel model=3Dauto"
-
-result of aplay -L && aplay -l ist still the same:
-
-aplay -l
-**** Liste von PLAYBACK Ger=E4ten ****
-Karte 0: Intel [HDA Intel], Ger=E4t 0: ALC1200 Analog [ALC1200 Analog]
- Untergeordnete Ger=E4te: 1/1
- Untergeordnetes Ger=E4t '0: subdevice #0
-Karte 0: Intel [HDA Intel], Ger=E4t 1: ALC1200 Digital [ALC1200 Digital]
- Untergeordnete Ger=E4te: 1/1
- Untergeordnetes Ger=E4t '0: subdevice #0
-
-aplay -L
-default:CARD=3DIntel
-   HDA Intel, ALC1200 Analog
-   Default Audio Device
-front:CARD=3DIntel,DEV=3D0
-   HDA Intel, ALC1200 Analog
-   Front speakers
-surround40:CARD=3DIntel,DEV=3D0
-   HDA Intel, ALC1200 Analog
-   4.0 Surround output to Front and Rear speakers
-surround41:CARD=3DIntel,DEV=3D0
-   HDA Intel, ALC1200 Analog
-   4.1 Surround output to Front, Rear and Subwoofer speakers
-surround50:CARD=3DIntel,DEV=3D0
-   HDA Intel, ALC1200 Analog
-   5.0 Surround output to Front, Center and Rear speakers
-surround51:CARD=3DIntel,DEV=3D0
-   HDA Intel, ALC1200 Analog
-   5.1 Surround output to Front, Center, Rear and Subwoofer speakers
-surround71:CARD=3DIntel,DEV=3D0
-   HDA Intel, ALC1200 Analog
-   7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
-iec958:CARD=3DIntel,DEV=3D0
-   HDA Intel, ALC1200 Digital
-   IEC958 (S/PDIF) Digital Audio Output
-null
-   Discard all samples (playback) or generate zero samples (capture)
-
-alsa_info.sh output: =
-
-http://www.alsa-project.org/db/?f=3Daa10ba4429b9cc24826d8ce1a79a0e898fd69dea
-
-Hopefully you have anymore ideas i could try, if you need anymore =
-
-hardware information please contact me
-
-thanks in advance,
-tifereth
+Those patches seem to have fixed things.
