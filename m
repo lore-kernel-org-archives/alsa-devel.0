@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: ASoC: DMA Platform driver for i.mx27
-Date: Tue, 14 Apr 2009 21:42:44 +0100
-Message-ID: <20090414204243.GB6902@sirena.org.uk>
-References: <eedb5540904140917ic0f3626s5f6b98a2d22ec36b@mail.gmail.com>
+From: Justin Mattock <justinmattock@gmail.com>
+Subject: [PATCH] add missing definitions(letters) to
+	HD-Audio.txt
+Date: Tue, 14 Apr 2009 14:31:21 -0700
+Message-ID: <dd18b0c30904141431x231a3251v438e365d512f9f95@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 595A6103869
+Received: from mail-qy0-f130.google.com (mail-qy0-f130.google.com
+	[209.85.221.130])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4FB4D103869
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Apr 2009 22:42:51 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <eedb5540904140917ic0f3626s5f6b98a2d22ec36b@mail.gmail.com>
+	Tue, 14 Apr 2009 23:31:22 +0200 (CEST)
+Received: by qyk36 with SMTP id 36so1165024qyk.16
+	for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2009 14:31:21 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,85 +23,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: javier Martin <javier.martin@vista-silicon.com>
-Cc: alsa-devel@alsa-project.org
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 14, 2009 at 06:17:39PM +0200, javier Martin wrote:
+impact: Add missing definitions(letters).
 
-> This still does not support bidirectional audio but works when used playback
-> or capture separatelly.
-> 
-> SDMA API used in i.mx31 dma driver has been moved to DMA API.
-> 
-> Please, have patience with me, this is a very experimental version and I am
-> new to this world (audio codecs and linux in general).
-> 
-> 
-> Signed-off-by: Javier Martin <javier.martin@vista-silicon.com>
+Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
 
-This all looks basically OK at first read, though you probably want to
-run it through checkpatch.pl for coding style things - this might help
-spot some more stuff.
+---
+ Documentation/sound/alsa/HD-Audio.txt | 3 +++
+ 1 files changed,3 insertions(+),0 deletions(-)
 
-A few smallish issues below:
+===========================================================================================
+---- Documentation/sound/alsa/HD-Audio.txt        2009-04-14
+17:03:14.000000000 -0700
+++++ Documentation/sound/alsa/HD-Audio.txt        2009-04-14
+21:15:22.000000000 -0700
+@@ -162,7 +162,7 @@
+ What `model` option values are available depends on the codec chip.
+ Check your codec chip from the codec proc file (see "Codec Proc-File"
+ section below).  It will show the vendor/product name of your codec
+-chip.  Then, see Documentation/sound/alsa/HD-Audio-Modelstxt file,
++chip.  Then, see Documentation/sound/alsa/HD-Audio-Models.txt file,
+ the section of HD-audio driver.  You can find a list of codecs
+ and `model` options belonging to each codec.  For example, for Realtek
+ ALC262 codec chip, pass `model=ultra` for devices that are compatible
+@@ -170,7 +170,7 @@
 
->  *  Revision history
->  *    14th April 2009   Initial version.
->  *
->  */
+ Thus, the first thing you can do for any brand-new, unsupported and
+ non-working HD-audio hardware is to check HD-audio codec and several
+-different `model` option values.  If you have a luck, some of them
++different `model` option values.  If you have any luck, some of them
+ might suit with your device well.
 
-Remove the history bit - once it's merged git will provide logs.
+ Some codecs such as ALC880 have a special model option `model=test`.
 
-> /* debug */
-> #define IMX_DEBUG 0
-> #if IMX_DEBUG
-> #define dbg(format, arg...) printk(format, ## arg)
-> #else
-> #define dbg(format, arg...)
-> #endif
 
-Replace this with use of the standard pr_dbg() macro.
 
-> /*!
->   * This function is called whenever a new audio block needs to be
->   * transferred to wm8974. The function receives the address and the size
->   * of the new block and start a new DMA transfer.
->   *
->   * @param    substream    pointer to the structure of the current stream.
->   *
->   */
-
-The kernel uses /** to introduce marked up functions.  You probably want
-to say "the codec" rather than wm8974 - other options are also available :)
-
-> #ifdef CONFIG_SND_SOC_MX27_SSI1
-> 
->             dma_request.dst_addr = (dma_addr_t) (SSI1_BASE_ADDR +
-> MXC_SSI1STX0);
->             printk("dst_addr is %x\n", dma_request.dst_addr);
->             printk("src_addr is %x\n", dma_request.src_addr);
-> #else
->             dma_request.dst_addr =
->                 (dma_addr_t) (SSI2_BASE_ADDR + MXC_SSI2STX0);
-> #endif
-
-This should be done based on the DAI used by the machine driver - look
-at how some of the other PCM drivers figure out which DMA parameter to
-use for a given stream.
-
-> static int mxc_pcm_hw_free(struct snd_pcm_substream *substream)
-> {
->     struct snd_pcm_runtime *runtime = substream->runtime;
->     struct mx27_runtime_data *prtd = runtime->private_data;
-> 
-> 
->     mxc_dma_free(prtd->dma_ch_tx);
->     mxc_dma_free(prtd->dma_ch_rx);
->     snd_pcm_lib_free_pages(substream);
-> 
->     return 0;
-> }
-
-This will free both TX and RX DMA channels but you only allocated one of
-them when the device is opened.
+-- 
+Justin P. Mattock
