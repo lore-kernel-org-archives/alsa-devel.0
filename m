@@ -1,15 +1,22 @@
-From: Florian Faber <faber@faberman.de>
-Subject: [PATCH] hdspm: native float
-Date: Tue, 14 Apr 2009 19:11:45 +0200
-Message-ID: <1239729105.18545.12.camel@x200.watzmann.local>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: [PATCH] AOA: Convert onyx and tas codecs to
+ new-style i2c drivers
+Date: Tue, 14 Apr 2009 19:20:37 +0200
+Message-ID: <1239729637.24771.10.camel@johannes.local>
+References: <20090408150249.5a62a56c@hyperion.delvare>
+	<1239205899.16477.32.camel@johannes.local>
+	<20090408224858.04cb6dc4@hyperion.delvare>
+	<1239263089.24548.30.camel@johannes.local>
+	<20090409141945.116772e3@hyperion.delvare>
+	<1239723613.24771.8.camel@johannes.local>  <m2ws9n18rn.fsf@igel.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3471825357944431855=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from india820.server4you.de (india820.server4you.de [85.25.152.101])
-	by alsa0.perex.cz (Postfix) with ESMTP id A039024434
+Received: from sipsolutions.net (xc.sipsolutions.net [83.246.72.84])
+	by alsa0.perex.cz (Postfix) with ESMTP id 511782443C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Apr 2009 19:12:11 +0200 (CEST)
+	Tue, 14 Apr 2009 19:21:19 +0200 (CEST)
+In-Reply-To: <m2ws9n18rn.fsf@igel.home>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,51 +26,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Jean Delvare <khali@linux-fr.org>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Adds native float support to the driver. The interface has hardware
-support for CoreAudio[tm], why shouldn't jack users benefit from it.
 
-diff a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+--===============3471825357944431855==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-w/Qz7N0j4vQuEC0Fddxn"
 
-13a14,16
->  *      Modified 2009-04-14 for native float support by Florian Faber
->  *                                               <faber@faberman.de>
->  *
-39a43
-> #include <sound/pcm_params.h>
-198a203
-> #define HDSPe_FLOAT_FORMAT         0x2000000
-3726a3732,3747
-> 
-> 
-> 	/* Switch to native float format if requested */
-> 	if (SNDRV_PCM_FORMAT_FLOAT_LE == params_format(params)) {
-> 	  if (!(hdspm->control_register & HDSPe_FLOAT_FORMAT)) {
-> 	    snd_printk(KERN_INFO "hdspm: Switching to native 32bit LE float
-format.\n");
-> 	  }
-> 	  hdspm->control_register |= HDSPe_FLOAT_FORMAT;
-> 	} else if (SNDRV_PCM_FORMAT_S32_LE == params_format(params)) {
-> 	  if (hdspm->control_register & HDSPe_FLOAT_FORMAT) {
-> 	    snd_printk(KERN_INFO "hdspm: Switching to native 32bit LE integer
-format.\n");
-> 	  }
-> 	  hdspm->control_register &= ~HDSPe_FLOAT_FORMAT;
-> 	}
-> 	hdspm_write(hdspm, HDSPM_controlRegister, hdspm->control_register);
-> 
-3870c3891
-< 	.formats = SNDRV_PCM_FMTBIT_S32_LE,
----
-> 	.formats = SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_FLOAT_LE,
-3895c3916
-< 	.formats = SNDRV_PCM_FMTBIT_S32_LE,
----
-> 	.formats = SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_FLOAT_LE,
 
-Flo
--- 
-Machines can do the work, so people have time to think.
-public key 6C002249          x-hkp://wwwkeys.eu.pgp.net
+--=-w/Qz7N0j4vQuEC0Fddxn
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, 2009-04-14 at 18:48 +0200, Andreas Schwab wrote:
+> Johannes Berg <johannes@sipsolutions.net> writes:
+>=20
+> > So I went to test this, but for some reason aoa doesn't work for me at
+> > all, neither with nor without this patch.
+>=20
+> That is already fixed by
+> <http://www.kernel.org/pub/linux/kernel/people/gregkh/gregkh-2.6/patches/=
+driver-core.current/driver-core-fix-driver_match_device.patch>
+
+Ah, cool, thanks. I'll add that to the mix and test again.
+
+johannes
+
+--=-w/Qz7N0j4vQuEC0Fddxn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Comment: Johannes Berg (powerbook)
+
+iQIcBAABAgAGBQJJ5MXjAAoJEKVg1VMiehFYUs0P/3nz5hzSkLMIMi1FHkw2ejKV
+CsxbKjMlYpri/2yYxwL42xE4LfrLZ1S/tsjI2B0x5gxNAQ/306WWoqKp1MgSIfpD
++EMV0MC8H7259msVZxlQbVSNl5X9dBSkzggKS2Y3vErXU7QeK3g3Tdv5YCpQ2fkI
+NE8H3MFCOzbPaj3QGQlZh5M+Y4yIqcG2qi50P2WA6++A5DSvN3rJhJTiH7cXUr8B
+c0FczUtx4LCPq59KaGUtLeAwhDlo6Bzm0htL6z3Hsc5OjLoh/U3Z7J84UqKB5jxv
++RqDJDllQHsLEC+tzI7aPAsWy25k/OgP4rTHszHlwnzEQru2hj2Fq3Oqm5fqJffz
+RdaMo9cW6eQpz+CXVpeY65CZ7yB4xOJj6MBSI4/bMpGipCy0NAUBsHrhdvTiQFiM
+38NUGYPIVjqddU0QhQfgLJ1hsncVdMkfUFf756GnHBG76P2chR0a55Ex7/K8dzTG
+NmNk+ecYuSZuu8l/PEawsV2EXWs3cJMXBOC6eJpV9DVnn0g1ZA0HaTUB7jmhKhEu
+K2/snHa/2PeHKw5EWr/qitRse33mwSB+5DCAmLXwiF10LQyKYItXNSQ5v9eeBzN3
+5H9gh6LQG9jumhqT9/DgLUh3l5RsDjfS2W+gyNOrUBJpLBPly6kLipEeEhYbtQfl
+nXnnSYYHwN2ae+n3+zUL
+=NL6m
+-----END PGP SIGNATURE-----
+
+--=-w/Qz7N0j4vQuEC0Fddxn--
+
+
+--===============3471825357944431855==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3471825357944431855==--
