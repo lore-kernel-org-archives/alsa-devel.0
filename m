@@ -1,21 +1,18 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] General fix for Palm27x aSoC driver
-Date: Tue, 14 Apr 2009 20:50:36 +0100
-Message-ID: <20090414195035.GA6902@sirena.org.uk>
-References: <200904121858.42931.marek.vasut@gmail.com>
-	<200904121920.15488.marek.vasut@gmail.com>
-	<20090412175800.GA8209@sirena.org.uk>
-	<200904122051.19335.marek.vasut@gmail.com>
+From: tifereth <jesodi@googlemail.com>
+Subject: Acer 5920G: HDMI Sound
+Date: Tue, 14 Apr 2009 21:54:31 +0200
+Message-ID: <49E4E9F7.4060606@googlemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 617BD103876
+Received: from mail-fx0-f170.google.com (mail-fx0-f170.google.com
+	[209.85.220.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5F9F4103869
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Apr 2009 21:50:43 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200904122051.19335.marek.vasut@gmail.com>
+	Tue, 14 Apr 2009 21:54:33 +0200 (CEST)
+Received: by fxm18 with SMTP id 18so2847720fxm.32
+	for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2009 12:54:33 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,15 +22,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel@lists.arm.linux.org.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Apr 12, 2009 at 08:51:19PM +0200, Marek Vasut wrote:
+hi,
 
-> +static struct pxa2xx_ac97_platform_data palmld_ac97_pdata = {
-> +	.reset_gpio	= 95,
-> +};
+i'm the owner of an "Acer 5920g" Laptop with the following specs:
+- Nvidia 8600m GT
+- HDMI Port
+- afaik. Realtek Sound Chip
 
-The type of this will need changing to reflect the patch that got merged
-for this but other than that minor point this approach is fine.
+i've tried a lot to get the hdmi sound working, but still without =
+
+success. As i can only find "requests for help" for this sound chip, =
+
+perhaps you could help the lost acer 5920 owners and me.
+
+things i've tried yet:
+- updated kernel to vanilla 2.6.29.1 ( alsa 1.8a )
+- updated alsa to 1.9 ( stable )
+- updated alsa to "1.0.19.46.g516fa.506.gb750c" ( snapshot from =
+
+14.04.2009 )
+- added the followng line to /etc/modprobe.d/alsa-base: "options =
+
+snd-hda-intel model=3Dauto"
+
+result of aplay -L && aplay -l ist still the same:
+
+aplay -l
+**** Liste von PLAYBACK Ger=E4ten ****
+Karte 0: Intel [HDA Intel], Ger=E4t 0: ALC1200 Analog [ALC1200 Analog]
+ Untergeordnete Ger=E4te: 1/1
+ Untergeordnetes Ger=E4t '0: subdevice #0
+Karte 0: Intel [HDA Intel], Ger=E4t 1: ALC1200 Digital [ALC1200 Digital]
+ Untergeordnete Ger=E4te: 1/1
+ Untergeordnetes Ger=E4t '0: subdevice #0
+
+aplay -L
+default:CARD=3DIntel
+   HDA Intel, ALC1200 Analog
+   Default Audio Device
+front:CARD=3DIntel,DEV=3D0
+   HDA Intel, ALC1200 Analog
+   Front speakers
+surround40:CARD=3DIntel,DEV=3D0
+   HDA Intel, ALC1200 Analog
+   4.0 Surround output to Front and Rear speakers
+surround41:CARD=3DIntel,DEV=3D0
+   HDA Intel, ALC1200 Analog
+   4.1 Surround output to Front, Rear and Subwoofer speakers
+surround50:CARD=3DIntel,DEV=3D0
+   HDA Intel, ALC1200 Analog
+   5.0 Surround output to Front, Center and Rear speakers
+surround51:CARD=3DIntel,DEV=3D0
+   HDA Intel, ALC1200 Analog
+   5.1 Surround output to Front, Center, Rear and Subwoofer speakers
+surround71:CARD=3DIntel,DEV=3D0
+   HDA Intel, ALC1200 Analog
+   7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
+iec958:CARD=3DIntel,DEV=3D0
+   HDA Intel, ALC1200 Digital
+   IEC958 (S/PDIF) Digital Audio Output
+null
+   Discard all samples (playback) or generate zero samples (capture)
+
+alsa_info.sh output: =
+
+http://www.alsa-project.org/db/?f=3Daa10ba4429b9cc24826d8ce1a79a0e898fd69dea
+
+Hopefully you have anymore ideas i could try, if you need anymore =
+
+hardware information please contact me
+
+thanks in advance,
+tifereth
