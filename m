@@ -1,92 +1,104 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: [PATCH] AOA: Convert onyx and tas codecs to new-style i2c  
-	drivers
-Date: Tue, 14 Apr 2009 17:40:13 +0200
-Message-ID: <1239723613.24771.8.camel@johannes.local>
-References: <20090408150249.5a62a56c@hyperion.delvare>
-	<1239205899.16477.32.camel@johannes.local>
-	<20090408224858.04cb6dc4@hyperion.delvare>
-	<1239263089.24548.30.camel@johannes.local>
-	<20090409141945.116772e3@hyperion.delvare>
+From: Mackenzie Morgan <macoafi@gmail.com>
+Subject: Re: hda-intel channels hibernate bug
+Date: Tue, 14 Apr 2009 11:45:58 -0400
+Message-ID: <200904141145.59252.macoafi@gmail.com>
+References: <1238921730.3782.3.camel@johannes.local>
+	<s5hd4bf2w27.wl%tiwai@suse.de>
+	<1239716613.22047.2.camel@johannes.local>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0087149222=="
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
-In-Reply-To: <20090409141945.116772e3@hyperion.delvare>
-List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
-List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
-List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
-Mime-version: 1.0
-Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
-To: Jean Delvare <khali@linux-fr.org>
-Cc: Takashi Iwai <tiwai@suse.de>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============3034302934990132245=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qy0-f130.google.com (mail-qy0-f130.google.com
+	[209.85.221.130])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3D9BC243C6
+	for <alsa-devel@alsa-project.org>;
+	Tue, 14 Apr 2009 17:46:03 +0200 (CEST)
+Received: by qyk36 with SMTP id 36so822753qyk.16
+	for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2009 08:46:02 -0700 (PDT)
+In-Reply-To: <1239716613.22047.2.camel@johannes.local>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--===============3034302934990132245==
+Content-Type: multipart/signed;
+  boundary="nextPart1360169.LAvD5D3ois";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
---===============0087149222==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-BAW04IYgFlAJ7OMfBifh"
-
-
---=-BAW04IYgFlAJ7OMfBifh
-Content-Type: text/plain
+--nextPart1360169.LAvD5D3ois
+Content-Type: text/plain;
+  charset="iso-8859-15"
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-On Thu, 2009-04-09 at 14:19 +0200, Jean Delvare wrote:
-
-> From: Jean Delvare <khali@linux-fr.org>
-> Subject: AOA: Convert onyx and tas codecs to new-style i2c drivers
+On Tuesday 14 April 2009 9:43:33 am Johannes Berg wrote:
+> On Tue, 2009-04-14 at 15:40 +0200, Takashi Iwai wrote:
 >=20
-> The legacy i2c binding model is going away soon, so convert the AOA
-> codec drivers to the new model or they'll break.
+> > >  Node 0x0d [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+> > >    Amp-In caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
+> > > -  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+> > > +  Amp-In vals:  [0x80 0x80] [0x00 0x00]
+> > >    Amp-Out caps: ofs=3D0x40, nsteps=3D0x40, stepsize=3D0x03, mute=3D0
+> > >    Amp-Out vals:  [0x25 0x25]
+> > >    Connection: 2
+> >=20
+> > So the widget 0x0d is muted.  Maybe the channel mode control
+> > doesn't do caching the value properly...
+>=20
+> No idea :)
+>=20
+> > Could you give the raw alsa-info.sh output?
+>=20
+> Sure, below (before hibernating).
+>=20
+> Mind you -- mbp3 isn't really the correct thing for my machine, the
+> microphone also seems to be bad when using it -- but I haven't gotten
+> around to writing a proper description or trying to find it even.
 
-So I went to test this, but for some reason aoa doesn't work for me at
-all, neither with nor without this patch.
+Maybe being the wrong quirk means its being initialized wrong.  I think you=
+=20
+said originally that a proper quirk for it hadn't been written yet though,=
+=20
+yeah?
 
-The reason seems to be that aoa_fabric_layout_probe() is never called,
-but my driver model fu is weak so I can't tell why -- I definitely see
-the i2sbus soundbus devices registered. soundbus_probe() isn't getting
-called either though, but we do of_device_register(). I'm confused, but
-don't have time to dig further right now.
+=2D-=20
+Mackenzie Morgan
+http://ubuntulinuxtipstricks.blogspot.com
+apt-get moo
 
-johannes
-
---=-BAW04IYgFlAJ7OMfBifh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
+--nextPart1360169.LAvD5D3ois
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
-Comment: Johannes Berg (powerbook)
+Version: GnuPG v1.4.9 (GNU/Linux)
 
-iQIcBAABAgAGBQJJ5K5aAAoJEKVg1VMiehFYqDEP+wWx95N5W38XjfRWqXmeDjo7
-ISlNNOMemKEuViuLSLdP33qK9JkYc+97sSqSexoZHZrE6MdNsVfKDKHcENDh3Q14
-s1bzsqzIokljTS0xrO4MBXued9y2Mw4J487b4FPTa7aXqSR9ZUa1HhuiTTBDJFjq
-oCePZsHMQdd5PuGdJTWEHk0sV7HG2hpMGmOId5SfZqUBFnNspv69HU5/pYPwlevr
-uAYeotLVEZ2r4pdRNj5clIvmjsCIf4X8aLEm/16JOa6Nt/hE6hnNkkGuUdPyJEVP
-CCR2vCZMbKcctlrn2bd2MFeTKdikMMb/A86JWAzmG9J2XtxIm6LxsY7sb9PGdbym
-FLoEl+lvesJuDCwqFRyNXhW3s2YmH6BjmoUCriRE3C3CzmWCo4RZXNpXCgfnrDur
-e1iBMPovfm38FrEKqAhhmbcaHx3dLTRmbvvk+Xqh4tmUyDiKVCKmthsdBR20EWth
-xfyxM5sS/xTMBuJwgrlTLwGdR2gMOMm15Si+/+7ZNYHRws1QXAvCJHsJMtF5vjf0
-2zwcSC1QU6+75ByBeg0YFMeQB4E8+vT5lCbvHItwYup/mkUN8oC3dFSDNr/rIPhC
-SmQ3d1dIocRrUiRUTY/LhJe1KWp0AWjLeFyMO5Y2ocWrGVTT4LvEtujPenR6rXvX
-nNC1aOmWxatcUUq4XtGV
-=4eXS
+iEYEABECAAYFAknkr7cACgkQojm3DbyNMmkuwACgtzTmXuZQAA8oPgeYDJowD/Lg
+TlcAoIJcTRIE8+aishmjZJF5GbWf3n4Q
+=7MNJ
 -----END PGP SIGNATURE-----
 
---=-BAW04IYgFlAJ7OMfBifh--
+--nextPart1360169.LAvD5D3ois--
 
-
---===============0087149222==
+--===============3034302934990132245==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 _______________________________________________
-Linuxppc-dev mailing list
-Linuxppc-dev@ozlabs.org
-https://ozlabs.org/mailman/listinfo/linuxppc-dev
---===============0087149222==--
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3034302934990132245==--
