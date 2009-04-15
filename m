@@ -1,21 +1,17 @@
-From: Susan Cragin <susancragin@earthlink.net>
-Subject: Re: 15 April unstable does not handle wave-in
-Date: Wed, 15 Apr 2009 10:40:31 -0400 (GMT-04:00)
-Message-ID: <7386160.1239806431888.JavaMail.root@mswamui-chipeau.atl.sa.earthlink.net>
-Reply-To: Susan Cragin <susancragin@earthlink.net>
+From: Jerry Geis <geisj@pagestation.com>
+Subject: Re: Gigabyte ALC889A Function ID: 0x01
+Date: Wed, 15 Apr 2009 10:45:43 -0400
+Message-ID: <49E5F317.9050505@pagestation.com>
+References: <49E5E881.5020507@pagestation.com> <s5h4owq0zot.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from elasmtp-mealy.atl.sa.earthlink.net
-	(elasmtp-mealy.atl.sa.earthlink.net [209.86.89.69])
-	by alsa0.perex.cz (Postfix) with ESMTP id 864611038F1
+Received: from unifiedpaging.messagenetsystems.com (unknown [24.123.23.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 490AD1038F1
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Apr 2009 16:40:35 +0200 (CEST)
-Received: from [209.86.224.30] (helo=mswamui-chipeau.atl.sa.earthlink.net)
-	by elasmtp-mealy.atl.sa.earthlink.net with esmtpa (Exim 4.67)
-	(envelope-from <susancragin@earthlink.net>) id 1Lu6Hv-0006nS-Ux
-	for alsa-devel@alsa-project.org; Wed, 15 Apr 2009 10:40:32 -0400
+	Wed, 15 Apr 2009 16:45:43 +0200 (CEST)
+In-Reply-To: <s5h4owq0zot.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,102 +21,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->At Wed, 15 Apr 2009 07:22:08 -0400 (GMT-04:00),
->Susan Cragin wrote:
->> 
->> I just downloaded and installed the unstable snapshot 15-April 9:55. 
->> Both my sound cards are shown by asoundconf, but neither works. The wave-in wave-out is still not recognized. 
+
+Takashi Iwai wrote:
+> At Wed, 15 Apr 2009 10:00:33 -0400,
+> Jerry Geis wrote:
+>   
+>> I am using the gigabyte MA78GM-US2H motherboard. it has the ALC889A audio.
+>>
+>> I am trying 1.0.19 and audio works out the analog back port but not over 
+>> HDMI.
+>>     
 >
->I suppose you are referring to CA0110?  Could you elaborate?
+> Never mind about "Function ID" entry.  It's just a new line that was
+> added recently.  function_id=1 means it's an audio codec.
 >
->The ca0110 codec support itself has no big change.  The last one was
->in Feb. 18.  The rest is either HD-audio core or PCM core.  But these
->have little to do with the probing...
+> The way HDMI is supported are mainly either through the same audio
+> codec (ALC889A) or through a dedicated HDMI codec.  In the former
+> case, you'll likely see a word "HDMI" in the digital output pin of the
+> codec proc file.  In the latter case, you must have a different codec
+> chip connected to the HD-audio bus with a different codec address
+> number.
 >
 >
->Takashi
+> Takashi
+>
+>
+>   
+>> Codec: Realtek ALC889A
+>> Address: 0
+>> Function Id: 0x1                                     
+>> <--------------------------------- this is different
+>> Vendor Id: 0x10ec0885
+>> Subsystem Id: 0x1458a002
+>> Revision Id: 0x100101
+>> No Modem Function Group found
+>> Default PCM:
+>>     rates [0x560]: 44100 48000 96000 192000
+>>     bits [0xe]: 16 20 24
+>>     formats [0x1]: PCM
+>> Default Amp-In caps: N/A
+>> Default Amp-Out caps: N/A
+>> GPIO: io=2, o=0, i=0, unsolicited=1, wake=0
+>>   IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+>>   IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+>> Node 0x02 [Audio Output] wcaps 0x11: Stereo
+>>   Converter: stream=0, channel=0
+>>   PCM:
+>>     rates [0x560]: 44100 48000 96000 192000
+>>     bits [0xe]: 16 20 24
+>>     formats [0x1]: PCM
+>> Node 0x03 [Audio Output] wcaps 0x11: Stereo
+>>
+>> I have been looking but havent found a solution yet. I tried grabbing 
+>> the snapshot tar ball for today but I get errors on the compile.
+>>
+>> I had a similiar motherboard but it does not report Function ID: 01 : - 
+>> HDMI audio on this board works correctly.
+>> Codec: Realtek ALC889A
+>> Address: 0
+>> Vendor Id: 0x10ec0885
+>> Subsystem Id: 0x1458a002
+>> Revision Id: 0x100101
+>> No Modem Function Group found
+>> Default PCM:
+>>     rates [0x560]: 44100 48000 96000 192000
+>>
+>> Any thoughts????
+>>
+>> Jerry
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+>>     
+>
+>   
 
-Please excuse my technical ignorance. Here is everything I know. 
-My hda-intel card is also not being recognized after installing alsa-driver-unstable. The only thing that works is my usb microphone. 
-I think that the program is not giving the instruction to have modules inserted on bootup. 
-I have attached sample modprobe, aplay, asoundconf, modules, alsa-base.conf
-Susan
+I upload alsa-info.sh
 
-----------------------------------------------------------------------
-$ modprobe snd-card-hda-intel
-WARNING: All config files need .conf: /etc/modprobe.d/oss-compat, it will be ignored in a future release.
-FATAL: Module snd_card_hda_intel not found.
-oss-compat is already the newest version.
+for the NOT WORKIng one 
+http://www.alsa-project.org/db/?f=7e8bc9485e8bb98bf15dae5a0d5dc038003c3203
 
------------------------------------------------------------------------
-$ aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: Intel [HDA Intel], device 6: Si3054 Modem [Si3054 Modem]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 2: system [iMic USB audio system], device 0: USB Audio [USB Audio]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+for the working on 
+http://www.alsa-project.org/db/?f=a18bcb6e87fe33a7365a749d0877a4546e901bf2
 
-------------------------------------------------------------------------
-$ asoundconf list
-Names of available sound cards:
-Intel
-Generic  (this is my Creative X-fi)
-system   (this is my USB microphone)
+I  noticed the subsystem a002 and a022 is different. Can this be why its 
+not working?
 
-------------------------------------------------------------------------
-# /etc/modules: kernel modules to load at boot time.
-#
-# This file contains the names of kernel modules that should be loaded
-# at boot time, one per line. Lines beginning with "#" are ignored.
+Any thoughts?
 
-loop
-lp
-
-------------------------------------------------------------------------
-alsabase.conf
-
-# autoloader aliases
-install sound-slot-0 /sbin/modprobe snd-card-0
-install sound-slot-1 /sbin/modprobe snd-card-1
-install sound-slot-2 /sbin/modprobe snd-card-2
-install sound-slot-3 /sbin/modprobe snd-card-3
-install sound-slot-4 /sbin/modprobe snd-card-4
-install sound-slot-5 /sbin/modprobe snd-card-5
-install sound-slot-6 /sbin/modprobe snd-card-6
-install sound-slot-7 /sbin/modprobe snd-card-7
-
-# Cause optional modules to be loaded above generic modules
-install snd /sbin/modprobe --ignore-install snd $CMDLINE_OPTS && { /sbin/modprobe --quiet --use-blacklist snd-ioctl32 ; /sbin/modprobe --quiet --use-blacklist snd-seq ; }
-#
-# Workaround at bug #499695 (reverted in Ubuntu see LP #319505)
-install snd-pcm /sbin/modprobe --ignore-install snd-pcm $CMDLINE_OPTS && { /sbin/modprobe --quiet --use-blacklist snd-pcm-oss ; : ; }
-install snd-mixer /sbin/modprobe --ignore-install snd-mixer $CMDLINE_OPTS && { /sbin/modprobe --quiet --use-blacklist snd-mixer-oss ; : ; }
-install snd-seq /sbin/modprobe --ignore-install snd-seq $CMDLINE_OPTS && { /sbin/modprobe --quiet --use-blacklist snd-seq-midi ; /sbin/modprobe --quiet --use-blacklist snd-se$
-#
-install snd-rawmidi /sbin/modprobe --ignore-install snd-rawmidi $CMDLINE_OPTS && { /sbin/modprobe --quiet --use-blacklist snd-seq-midi ; : ; }
-# Cause optional modules to be loaded above sound card driver modules
-install snd-emu10k1 /sbin/modprobe --ignore-install snd-emu10k1 $CMDLINE_OPTS && { /sbin/modprobe --quiet --use-blacklist snd-emu10k1-synth ; }
-install snd-via82xx /sbin/modprobe --ignore-install snd-via82xx $CMDLINE_OPTS && { /sbin/modprobe --quiet --use-blacklist snd-seq ; }
-
-# Load saa7134-alsa instead of saa7134 (which gets dragged in by it anyway)
-install saa7134 /sbin/modprobe --ignore-install saa7134 $CMDLINE_OPTS && { /sbin/modprobe --quiet --use-blacklist saa7134-alsa ; : ; }
-# Prevent abnormal drivers from grabbing index 0
-options bt87x index=-2
-options cx88_alsa index=-2
-options saa7134-alsa index=-2
-options snd-atiixp-modem index=-2
-options snd-intel8x0m index=-2
-options snd-via82xx-modem index=-2
-options snd-usb-audio index=-2
-options snd-usb-us122l index=-2
-options snd-usb-usx2y index=-2
-options snd-usb-caiaq index=-2
-# Ubuntu #62691, enable MPU for snd-cmipci
-options snd-cmipci mpu_port=0x330 fm_port=0x388
-# Keep snd-pcsp from beeing loaded as first soundcard
-options snd-pcsp index=-2
+Jerry
