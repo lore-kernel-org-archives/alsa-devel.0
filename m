@@ -1,19 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [2.6.30-rc2][PATCH 1/2] ASoC: OMAP: Fix DSP_B
-	format in OMAP McBSP DAI driver
-Date: Wed, 15 Apr 2009 14:04:36 +0300
-Message-ID: <200904151404.37003.peter.ujfalusi@nokia.com>
-References: <1239792497-31761-1-git-send-email-jarkko.nikula@nokia.com>
-	<1239792497-31761-2-git-send-email-jarkko.nikula@nokia.com>
+From: Susan Cragin <susancragin@earthlink.net>
+Subject: 15 April unstable does not handle wave-in
+Date: Wed, 15 Apr 2009 07:22:08 -0400 (GMT-04:00)
+Message-ID: <16457791.1239794529036.JavaMail.root@mswamui-blood.atl.sa.earthlink.net>
+Reply-To: Susan Cragin <susancragin@earthlink.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id A184C10387A
+Received: from elasmtp-kukur.atl.sa.earthlink.net
+	(elasmtp-kukur.atl.sa.earthlink.net [209.86.89.65])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4D2251038CD
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Apr 2009 13:05:14 +0200 (CEST)
-In-Reply-To: <1239792497-31761-2-git-send-email-jarkko.nikula@nokia.com>
+	Wed, 15 Apr 2009 13:22:10 +0200 (CEST)
+Received: from [209.86.224.28] (helo=mswamui-blood.atl.sa.earthlink.net)
+	by elasmtp-kukur.atl.sa.earthlink.net with esmtpa (Exim 4.67)
+	(envelope-from <susancragin@earthlink.net>) id 1Lu3Bx-0006hb-0H
+	for alsa-devel@alsa-project.org; Wed, 15 Apr 2009 07:22:09 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,24 +25,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Nikula Jarkko (Nokia-D/Helsinki)" <jarkko.nikula@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@sirena.org.uk>
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 15 April 2009 13:48:16 Nikula Jarkko (Nokia-D/Helsinki) wrote:
-> The DSP format wasn't still correct in OMAP McBSP DAI even after the commit
-> bd25867a6cbe7a00ef7dbe8d9ddebc91b00b9b3f.
->
-> Thanks to Peter Ujfalusi <peter.ujfalusi@nokia.com> for noticing and being
-> part of the fix. Now the FS length definition is more clear by defining
-> it with  FWID(0).
->
-> Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
-> Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> ---
->  sound/soc/omap/omap-mcbsp.c |    7 +++++--
->  1 files changed, 5 insertions(+), 2 deletions(-)
+I just downloaded and installed the unstable snapshot 15-April 9:55. 
+Both my sound cards are shown by asoundconf, but neither works. The wave-in wave-out is still not recognized. 
+(USB sound does work.)
 
-I believe this is correct.
-
-Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+System:
+Asus G1S running Ubuntu Jaunty with all updates (most recent kernel is only 2.6.28-11-Generic). 
+Sound cards present:
+hda-intel / Realtek ALC660-VD
+hda-audio-generic / Creative CA0110-IBG (Creative X-fi)
