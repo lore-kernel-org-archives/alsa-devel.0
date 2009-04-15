@@ -1,19 +1,23 @@
-From: tifereth <jesodi@googlemail.com>
-Subject: Re: Acer 5920G: HDMI Sound
-Date: Wed, 15 Apr 2009 19:18:37 +0200
-Message-ID: <49E616ED.5010103@googlemail.com>
-References: <49E4E9F7.4060606@googlemail.com>
+From: Justin Mattock <justinmattock@gmail.com>
+Subject: Re: [PATCH] add missing definitions(letters) to
+	HD-Audio.txt
+Date: Wed, 15 Apr 2009 10:43:43 -0700
+Message-ID: <dd18b0c30904151043l4bd15a0bma0bcf79a942422c6@mail.gmail.com>
+References: <dd18b0c30904141431x231a3251v438e365d512f9f95@mail.gmail.com>
+	<s5hiql618mt.wl%tiwai@suse.de>
+	<dd18b0c30904150835l6d246bbes648ad50e20690e7e@mail.gmail.com>
+	<49E603A9.2010004@oracle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id D309B103816
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.241])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5AFFB103816
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Apr 2009 19:18:39 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id e12so204fga.21
-	for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2009 10:18:39 -0700 (PDT)
-In-Reply-To: <49E4E9F7.4060606@googlemail.com>
+	Wed, 15 Apr 2009 19:43:44 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id c5so8326rvf.32
+	for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2009 10:43:43 -0700 (PDT)
+In-Reply-To: <49E603A9.2010004@oracle.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,113 +27,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Randy Dunlap <randy.dunlap@oracle.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-I finally managed to get it running:
-
-my problem was that i didn't upgrade alsa-utils to 1.9 which made it =
-
-finally working.
-
-Here are some steps that could help:
-- update alsa-base to 1.9
-- update alsa-utils to 1.9
-- stop your XServer, run "alsaconf", reboot
-
-some system info:
-
-aplay -l
-**** Liste von PLAYBACK Ger=E4ten ****
-Karte 0: Intel [HDA Intel], Ger=E4t 0: ALC1200 Analog [ALC1200 Analog]
-  Untergeordnete Ger=E4te: 0/1
-  Untergeordnetes Ger=E4t '0: subdevice #0
-Karte 0: Intel [HDA Intel], Ger=E4t 1: ALC1200 Digital [ALC1200 Digital]
-  Untergeordnete Ger=E4te: 1/1
-  Untergeordnetes Ger=E4t '0: subdevice #0
-
-cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version =
-
-1.0.19.46.g516fa.506.gb750c.
-Compiled on Apr 13 2009 for kernel 2.6.29.1 (SMP).
-
-greetings
-
-tifereth wrote:
-> hi,
+On Wed, Apr 15, 2009 at 8:56 AM, Randy Dunlap <randy.dunlap@oracle.com> wro=
+te:
+> Justin Mattock wrote:
+>> On Wed, Apr 15, 2009 at 4:03 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>>> At Tue, 14 Apr 2009 14:31:21 -0700,
+>>> Justin Mattock wrote:
+>>>> impact: Add missing definitions(letters).
+>>>>
+>>>> Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
+>>> Thanks, applied now.
+>>>
+>>> (BTW, your patch couldn't be applied cleanly, partly because of
+>>> =A0a wrong format and partly because of your MUA breaking the lines...)
+>>>
+>>>
+>>> Takashi
+>>>
+>>>> ---
+>>>> =A0Documentation/sound/alsa/HD-Audio.txt | 3 +++
+>>>> =A01 files changed,3 insertions(+),0 deletions(-)
+>>>>
+>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>>> ---- Documentation/sound/alsa/HD-Audio.txt =A0 =A0 =A0 =A02009-04-14
+>>>> 17:03:14.000000000 -0700
+>>>> ++++ Documentation/sound/alsa/HD-Audio.txt =A0 =A0 =A0 =A02009-04-14
+>>>> 21:15:22.000000000 -0700
+>>>> @@ -162,7 +162,7 @@
+>>>> =A0What `model` option values are available depends on the codec chip.
+>>>> =A0Check your codec chip from the codec proc file (see "Codec Proc-Fil=
+e"
+>>>> =A0section below). =A0It will show the vendor/product name of your cod=
+ec
+>>>> -chip. =A0Then, see Documentation/sound/alsa/HD-Audio-Modelstxt file,
+>>>> +chip. =A0Then, see Documentation/sound/alsa/HD-Audio-Models.txt file,
+>>>> =A0the section of HD-audio driver. =A0You can find a list of codecs
+>>>> =A0and `model` options belonging to each codec. =A0For example, for Re=
+altek
+>>>> =A0ALC262 codec chip, pass `model=3Dultra` for devices that are compat=
+ible
+>>>> @@ -170,7 +170,7 @@
+>>>>
+>>>> =A0Thus, the first thing you can do for any brand-new, unsupported and
+>>>> =A0non-working HD-audio hardware is to check HD-audio codec and several
+>>>> -different `model` option values. =A0If you have a luck, some of them
+>>>> +different `model` option values. =A0If you have any luck, some of them
+>>>> =A0might suit with your device well.
+>>>>
+>>>> =A0Some codecs such as ALC880 have a special model option `model=3Dtes=
+t`.
+>>>>
+>>>> --
+>>
+>> I went diff -u file.old file.new
+>> (I'm not sure how to generate the
+>> 1 files changed,2 etc... stuff)
 >
-> i'm the owner of an "Acer 5920g" Laptop with the following specs:
-> - Nvidia 8600m GT
-> - HDMI Port
-> - afaik. Realtek Sound Chip
+> It's listed in Documentation/SubmittingPatches: =A0/diffstat/
+> along with the expected patch format etc.
+> Please read/use it.
 >
-> i've tried a lot to get the hdmi sound working, but still without =
-
-> success. As i can only find "requests for help" for this sound chip, =
-
-> perhaps you could help the lost acer 5920 owners and me.
->
-> things i've tried yet:
-> - updated kernel to vanilla 2.6.29.1 ( alsa 1.8a )
-> - updated alsa to 1.9 ( stable )
-> - updated alsa to "1.0.19.46.g516fa.506.gb750c" ( snapshot from =
-
-> 14.04.2009 )
-> - added the followng line to /etc/modprobe.d/alsa-base: "options =
-
-> snd-hda-intel model=3Dauto"
->
-> result of aplay -L && aplay -l ist still the same:
->
-> aplay -l
-> **** Liste von PLAYBACK Ger=E4ten ****
-> Karte 0: Intel [HDA Intel], Ger=E4t 0: ALC1200 Analog [ALC1200 Analog]
-> Untergeordnete Ger=E4te: 1/1
-> Untergeordnetes Ger=E4t '0: subdevice #0
-> Karte 0: Intel [HDA Intel], Ger=E4t 1: ALC1200 Digital [ALC1200 Digital]
-> Untergeordnete Ger=E4te: 1/1
-> Untergeordnetes Ger=E4t '0: subdevice #0
->
-> aplay -L
-> default:CARD=3DIntel
->   HDA Intel, ALC1200 Analog
->   Default Audio Device
-> front:CARD=3DIntel,DEV=3D0
->   HDA Intel, ALC1200 Analog
->   Front speakers
-> surround40:CARD=3DIntel,DEV=3D0
->   HDA Intel, ALC1200 Analog
->   4.0 Surround output to Front and Rear speakers
-> surround41:CARD=3DIntel,DEV=3D0
->   HDA Intel, ALC1200 Analog
->   4.1 Surround output to Front, Rear and Subwoofer speakers
-> surround50:CARD=3DIntel,DEV=3D0
->   HDA Intel, ALC1200 Analog
->   5.0 Surround output to Front, Center and Rear speakers
-> surround51:CARD=3DIntel,DEV=3D0
->   HDA Intel, ALC1200 Analog
->   5.1 Surround output to Front, Center, Rear and Subwoofer speakers
-> surround71:CARD=3DIntel,DEV=3D0
->   HDA Intel, ALC1200 Analog
->   7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
-> iec958:CARD=3DIntel,DEV=3D0
->   HDA Intel, ALC1200 Digital
->   IEC958 (S/PDIF) Digital Audio Output
-> null
->   Discard all samples (playback) or generate zero samples (capture)
->
-> alsa_info.sh output: =
-
-> http://www.alsa-project.org/db/?f=3Daa10ba4429b9cc24826d8ce1a79a0e898fd69=
-dea =
-
+>> And yes I will be honest I didn't test the patch.
+>> (figured it wasn't that complicated, and I was tired).
+>>
+>> If I find more I'll let you know.
+>> (back to trying to get sound working on my imac).
 >
 >
-> Hopefully you have anymore ideas i could try, if you need anymore =
+> --
+> ~Randy
+>
 
-> hardware information please contact me
->
-> thanks in advance,
-> tifereth
->
+alright.
+
+-- =
+
+Justin P. Mattock
