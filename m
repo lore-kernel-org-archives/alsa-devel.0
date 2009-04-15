@@ -1,57 +1,86 @@
-From: Arun KS <getarunks@gmail.com>
-Subject: Re: [PATCH 0/2] ASoC: OMAP: Finalizing the DSP mode
-	support
-Date: Wed, 15 Apr 2009 18:57:38 +0530
-Message-ID: <dfeb90390904150627t727a1aeekc07c2cf9bedbec4e@mail.gmail.com>
-References: <1239799136-28729-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20090415160759.4ceec30b.jarkko.nikula@nokia.com>
+From: Jean Delvare <khali@linux-fr.org>
+Subject: Re: [PATCH] AOA: Convert onyx and tas codecs to new-style i2c drivers
+Date: Wed, 15 Apr 2009 15:52:36 +0200
+Message-ID: <20090415155236.379479b7@hyperion.delvare>
+References: <20090408150249.5a62a56c@hyperion.delvare>
+	<1239205899.16477.32.camel@johannes.local>
+	<20090408224858.04cb6dc4@hyperion.delvare>
+	<1239263089.24548.30.camel@johannes.local>
+	<20090409141945.116772e3@hyperion.delvare>
+	<1239723613.24771.8.camel@johannes.local>
+	<1239724227.24771.9.camel@johannes.local>
+	<1239730915.24771.12.camel@johannes.local>
+	<20090414214949.736597d9@hyperion.delvare>
+	<1239746399.4205.21.camel@johannes.local>
+	<20090415141530.0d5e47fc@hyperion.delvare>
+	<1239799934.9071.4.camel@johannes.local>
+	<20090415150632.0b2fe6bb@hyperion.delvare>
+	<1239801490.9071.11.camel@johannes.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ti-out-0910.google.com (ti-out-0910.google.com [209.85.142.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id 15F291038CE
-	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Apr 2009 15:27:39 +0200 (CEST)
-Received: by ti-out-0910.google.com with SMTP id a21so2338318tia.8
-	for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2009 06:27:38 -0700 (PDT)
-In-Reply-To: <20090415160759.4ceec30b.jarkko.nikula@nokia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
+In-Reply-To: <1239801490.9071.11.camel@johannes.local>
+List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
+List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
+List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
+Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Benjamin@ozlabs.org, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 15, 2009 at 6:37 PM, Jarkko Nikula <jarkko.nikula@nokia.com> wrote:
-> On Wed, 15 Apr 2009 14:38:54 +0200
-> "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com> wrote:
->
->> But, the DSP modes should use single-phase mode instead of the
->> dual-phase mode, which is intended to be used with I2S,
->> Left-justified, Right-justified modes.
->>
-> At quick testing seems correct with Beagle but I'll give some more
-> testing tomorrow and let you know.
+On Wed, 15 Apr 2009 15:18:10 +0200, Johannes Berg wrote:
+> On Wed, 2009-04-15 at 15:06 +0200, Jean Delvare wrote:
+> > Yes, i2c core or even driver core. I'll see if I can reproduce it.
+> 
+> Alright.
 
-I'll also try to test it on osk5912,  i m trying to  get a proper
-commit to test on l-o tree.
+Hmm, couldn't reproduce it. Maybe it is fixed in rc2. I don't have too
+much time to spend on this, so if we don't hit it again I consider it
+solved.
 
->
->> The second patch adds DSP_A mode support to omap-mcbsp.
->>
-> This looks ok.
->
->
-> Jarkko
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+> > (...)
+> > What I had in mind was not so complex. Simply, we could move the
+> > i2c_new_device() calls into layout_found_codec(). That way we can
+> > decide to instantiate the I2C device if and only if check_codec() is
+> > successful. This is more efficient that creating the device, letting
+> > the driver attach to it, with probing eventually failing, and then
+> > removing the device if it wasn't the right one.
+> > 
+> > That is, the i2c client would be a mere helper on top of struct
+> > aoa_codec, rather than the other way around.
+> 
+> Ah. That would probably work, but right now I have little motivation to
+> work on it -- I hardly use the G5 desktop machine any more.
+
+OK, no problem. I don't want to force anyone to spend time on this. But
+if anyone ever does and need my help for the i2c part, just drop me a
+line!
+
+> > Wow. One I2C device which can be reached through 2 different I2C buses?
+> > First time I hear about something like this. Very odd. I can't see the
+> > point of doing this.
+> 
+> Hmm. How do you know it's on different buses?
+
+2-0046 fails and 3-0046 succeeds. The second number is the hexadecimal
+I2C address, the first number is the I2C bus number. So, unless
+i2c-powermac was told to register the same I2C bus twice (which would
+be dangerous), the device can be accessed through 2 different buses.
+
+> I don't really know
+> anything -- all I know is that the DT is buggered and lists the codec
+> twice. Since we can talk to both, then I'm sure it's just one chip, they
+> wouldn't put the chip in twice when you can use only one of them :)
+
+There's probably little point in trying to guess anything further, the
+only thing that would help are the detailed schematics of that part of
+the board.
+
+-- 
+Jean Delvare
