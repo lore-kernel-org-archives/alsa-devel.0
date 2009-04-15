@@ -1,17 +1,17 @@
 From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: [2.6.30-rc2][PATCH 2/2] ASoC: OMAP: Fix FS polarity in
-	OSK5912 machine driver
-Date: Wed, 15 Apr 2009 13:48:17 +0300
-Message-ID: <1239792497-31761-3-git-send-email-jarkko.nikula@nokia.com>
+Subject: [2.6.30-rc2][PATCH 1/2] ASoC: OMAP: Fix DSP_B format
+	in OMAP McBSP DAI driver
+Date: Wed, 15 Apr 2009 13:48:16 +0300
+Message-ID: <1239792497-31761-2-git-send-email-jarkko.nikula@nokia.com>
 References: <1239792497-31761-1-git-send-email-jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id E5DC02445B
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id E448A1037F5
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Apr 2009 12:47:48 +0200 (CEST)
+	Wed, 15 Apr 2009 12:47:51 +0200 (CEST)
 In-Reply-To: <1239792497-31761-1-git-send-email-jarkko.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,41 +23,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Arun KS <arunks@mistralsolutions.com>, Jarkko Nikula <jarkko.nikula@nokia.com>, Mark Brown <broonie@sirena.org.uk>
+Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>, Jarkko Nikula <jarkko.nikula@nokia.com>, Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Using inverted FS polarity in OSK5912 must be an error since TLV320AIC23
-do not have support for inverted polarities. This is mostly due the hassle
-with the DSP formats in OMAP McBSP DAI and inversion on OMAP side probably
-just made this configuration working at some point.
+The DSP format wasn't still correct in OMAP McBSP DAI even after the commit
+bd25867a6cbe7a00ef7dbe8d9ddebc91b00b9b3f.
+
+Thanks to Peter Ujfalusi <peter.ujfalusi@nokia.com> for noticing and being
+part of the fix. Now the FS length definition is more clear by defining
+it with  FWID(0).
 
 Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
-Cc: Arun KS <arunks@mistralsolutions.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
- sound/soc/omap/osk5912.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/omap/omap-mcbsp.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/omap/osk5912.c b/sound/soc/omap/osk5912.c
-index a952a4e..a4e149b 100644
---- a/sound/soc/omap/osk5912.c
-+++ b/sound/soc/omap/osk5912.c
-@@ -62,7 +62,7 @@ static int osk_hw_params(struct snd_pcm_substream *substream,
- 	/* Set codec DAI configuration */
- 	err = snd_soc_dai_set_fmt(codec_dai,
- 				  SND_SOC_DAIFMT_DSP_B |
--				  SND_SOC_DAIFMT_NB_IF |
-+				  SND_SOC_DAIFMT_NB_NF |
- 				  SND_SOC_DAIFMT_CBM_CFM);
- 	if (err < 0) {
- 		printk(KERN_ERR "can't set codec DAI configuration\n");
-@@ -72,7 +72,7 @@ static int osk_hw_params(struct snd_pcm_substream *substream,
- 	/* Set cpu DAI configuration */
- 	err = snd_soc_dai_set_fmt(cpu_dai,
- 				  SND_SOC_DAIFMT_DSP_B |
--				  SND_SOC_DAIFMT_NB_IF |
-+				  SND_SOC_DAIFMT_NB_NF |
- 				  SND_SOC_DAIFMT_CBM_CFM);
- 	if (err < 0) {
- 		printk(KERN_ERR "can't set cpu DAI configuration\n");
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index 9c09b94..90f4df7 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -283,7 +283,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_B:
+ 		regs->srgr2	|= FPER(wlen * channels - 1);
+-		regs->srgr1	|= FWID(wlen * channels - 2);
++		regs->srgr1	|= FWID(0);
+ 		break;
+ 	}
+ 
+@@ -302,6 +302,7 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ {
+ 	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
+ 	struct omap_mcbsp_reg_cfg *regs = &mcbsp_data->regs;
++	unsigned int temp_fmt = fmt;
+ 
+ 	if (mcbsp_data->configured)
+ 		return 0;
+@@ -328,6 +329,8 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		/* 0-bit data delay */
+ 		regs->rcr2      |= RDATDLY(0);
+ 		regs->xcr2      |= XDATDLY(0);
++		/* Invert FS polarity configuration */
++		temp_fmt ^= SND_SOC_DAIFMT_NB_IF;
+ 		break;
+ 	default:
+ 		/* Unsupported data format */
+@@ -351,7 +354,7 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 	}
+ 
+ 	/* Set bit clock (CLKX/CLKR) and FS polarities */
+-	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	switch (temp_fmt & SND_SOC_DAIFMT_INV_MASK) {
+ 	case SND_SOC_DAIFMT_NB_NF:
+ 		/*
+ 		 * Normal BCLK + FS.
 -- 
 1.6.2.1
