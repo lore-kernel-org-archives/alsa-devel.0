@@ -1,21 +1,21 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 05/14] ASoC: Provide core support
-	for	symmetric sample rates
-Date: Wed, 15 Apr 2009 09:29:04 +0100
-Message-ID: <20090415082904.GB29399@sirena.org.uk>
-References: <20090414123220.GA6342@rakim.wolfsonmicro.main>
-	<1239712393-6428-6-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<200904150931.47272.peter.ujfalusi@nokia.com>
+From: javier Martin <javier.martin@vista-silicon.com>
+Subject: Re: ASoC: DMA Platform driver for i.mx27
+Date: Wed, 15 Apr 2009 11:10:43 +0200
+Message-ID: <eedb5540904150210y68f08597p9f6c032ca17faa27@mail.gmail.com>
+References: <eedb5540904140917ic0f3626s5f6b98a2d22ec36b@mail.gmail.com>
+	<20090414204243.GB6902@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9D3F0243DD
+Received: from mail-ew0-f166.google.com (mail-ew0-f166.google.com
+	[209.85.219.166])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9DFC424407
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Apr 2009 10:29:05 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200904150931.47272.peter.ujfalusi@nokia.com>
+	Wed, 15 Apr 2009 11:10:44 +0200 (CEST)
+Received: by ewy10 with SMTP id 10so3164453ewy.32
+	for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2009 02:10:43 -0700 (PDT)
+In-Reply-To: <20090414204243.GB6902@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,29 +25,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 15, 2009 at 09:31:46AM +0300, Peter Ujfalusi wrote:
-> On Tuesday 14 April 2009 15:33:04 ext Mark Brown wrote:
+2009/4/14 Mark Brown <broonie@sirena.org.uk>
 
-> > Many devices require symmetric configurations of capture and playback
-> > data formats, often due to shared clocking but sometimes also due to
+> On Tue, Apr 14, 2009 at 06:17:39PM +0200, javier Martin wrote:
+> Remove the history bit - once it's merged git will provide logs.
+>
+> > /* debug */
+> > #define IMX_DEBUG 0
+> > #if IMX_DEBUG
+> > #define dbg(format, arg...) printk(format, ## arg)
+> > #else
+> > #define dbg(format, arg...)
+> > #endif
+>
+> Replace this with use of the standard pr_dbg() macro.
 
-> Would it make sense to add also the channel count and probably sample_bits as 
-> constraint as well here?
-> I think the symmetric means that you should not be able to change any of the 
-> parameters.
 
-Yes, we should have something for those but they are a bit more complex:
-normally with bit clock the restriction is actually that you need to
-have at least as many clocks as the format needs but can have more.
-This means that rather than an absolute symmetry requirement you end up
-setting a reduced maximum for both directions.
+Do you mean that I must do:
 
-The two limits play into each other with DSP mode too: you can have
-twice as many channels in the same number of bit clocks if you halve the
-sameple size.  For I2S style modes the channel count doesn't tend to be
-restricted since you always have the clocks for two channels even if
-you're only looking at one.
+> /* debug */
+> #define IMX_DEBUG 0
+> #if IMX_DEBUG
+> #define pr_dbg(format, arg...) printk(format, ## arg)
+> #else
+> #define pr_dbg(format, arg...)
+> #endif
+
+Or that I must use a pr_dbg macro defined elsewhere (I don't find it)?
+
+
+> > #ifdef CONFIG_SND_SOC_MX27_SSI1
+> >
+> >             dma_request.dst_addr = (dma_addr_t) (SSI1_BASE_ADDR +
+> > MXC_SSI1STX0);
+> >             printk("dst_addr is %x\n", dma_request.dst_addr);
+> >             printk("src_addr is %x\n", dma_request.src_addr);
+> > #else
+> >             dma_request.dst_addr =
+> >                 (dma_addr_t) (SSI2_BASE_ADDR + MXC_SSI2STX0);
+> > #endif
+>
+> This should be done based on the DAI used by the machine driver - look
+> at how some of the other PCM drivers figure out which DMA parameter to
+> use for a given stream.
+>
+
+Yes, you are right. I was aware of this issue. But current dai "imx-ssi.c"
+only exports dma data for the SDMA API used in i.mx31. So I provisionally
+use this trick untill I fix that in the SSI.
+
+
+>
+> > static int mxc_pcm_hw_free(struct snd_pcm_substream *substream)
+> > {
+> >     struct snd_pcm_runtime *runtime = substream->runtime;
+> >     struct mx27_runtime_data *prtd = runtime->private_data;
+> >
+> >
+> >     mxc_dma_free(prtd->dma_ch_tx);
+> >     mxc_dma_free(prtd->dma_ch_rx);
+> >     snd_pcm_lib_free_pages(substream);
+> >
+> >     return 0;
+> > }
+>
+> This will free both TX and RX DMA channels but you only allocated one of
+> them when the device is opened.
+
+
+Man, I missed that, thanks.
+Do you think this could be related to the problem of not being able of
+having both directions working properly?
