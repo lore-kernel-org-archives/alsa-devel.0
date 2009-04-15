@@ -1,21 +1,22 @@
 From: Johannes Berg <johannes@sipsolutions.net>
 Subject: Re: hda-intel channels hibernate bug
-Date: Wed, 15 Apr 2009 17:40:02 +0200
-Message-ID: <1239810002.6981.2.camel@johannes.local>
+Date: Wed, 15 Apr 2009 17:42:31 +0200
+Message-ID: <1239810151.6981.5.camel@johannes.local>
 References: <1238921730.3782.3.camel@johannes.local>
 	<s5hocuz2xau.wl%tiwai@suse.de>
 	<1239715639.22047.0.camel@johannes.local>
 	<s5hd4bf2w27.wl%tiwai@suse.de>
 	<1239716613.22047.2.camel@johannes.local>
-	<s5h63h60zwf.wl%tiwai@suse.de>
+	<s5h63h60zwf.wl%tiwai@suse.de> <1239809427.4809.7.camel@johannes.local>
+	<s5hmyaiylkm.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0254710279895475843=="
+Content-Type: multipart/mixed; boundary="===============3379519261318789970=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from sipsolutions.net (xc.sipsolutions.net [83.246.72.84])
-	by alsa0.perex.cz (Postfix) with ESMTP id 62EBC244AB
+	by alsa0.perex.cz (Postfix) with ESMTP id 8855D244AA
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Apr 2009 17:40:35 +0200 (CEST)
-In-Reply-To: <s5h63h60zwf.wl%tiwai@suse.de>
+	Wed, 15 Apr 2009 17:43:04 +0200 (CEST)
+In-Reply-To: <s5hmyaiylkm.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,77 +31,83 @@ Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0254710279895475843==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-Tpb5rh7rQwylrJQvR5vF"
+--===============3379519261318789970==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-sSR+ctjeE5hL7CVrR5V9"
 
 
---=-Tpb5rh7rQwylrJQvR5vF
+--=-sSR+ctjeE5hL7CVrR5V9
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2009-04-15 at 16:12 +0200, Takashi Iwai wrote:
-> At Tue, 14 Apr 2009 15:43:33 +0200,
-> Johannes Berg wrote:
-> >=20
-> > On Tue, 2009-04-14 at 15:40 +0200, Takashi Iwai wrote:
-> >=20
-> > > >  Node 0x0d [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-> > > >    Amp-In caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D=
-1
-> > > > -  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-> > > > +  Amp-In vals:  [0x80 0x80] [0x00 0x00]
-> > > >    Amp-Out caps: ofs=3D0x40, nsteps=3D0x40, stepsize=3D0x03, mute=
-=3D0
-> > > >    Amp-Out vals:  [0x25 0x25]
-> > > >    Connection: 2
-> > >=20
-> > > So the widget 0x0d is muted.  Maybe the channel mode control
-> > > doesn't do caching the value properly...
-> >=20
-> > No idea :)
-> >=20
-> > > Could you give the raw alsa-info.sh output?
-> >=20
-> > Sure, below (before hibernating).
+On Wed, 2009-04-15 at 17:37 +0200, Takashi Iwai wrote:
+
+> > Sorry... Well, I can't seem to record at all right now for some reason,
+> > but here are a few things that are wrong:
+> >  1) master mute has no effect (I think that actually worked before?)
 >=20
-> Thanks.  Could you try the patch below?
+> Do you mean that it has no effect on the playback volumes, or on the
+> recording level?  The former is a bug, the latter not.
+>=20
+> >  2) the "Speaker" control has no effect (mute/unmute)
+>=20
+> Ditto.
 
-Yes, this helps, thanks. Mind you, if I play music with mplayer _while_
-hibernating, I get a horrible buzzing when waking up and mplayer says:
+Sorry -- playback on both points.
 
-[AO_ALSA] alsa-lib: pcm_hw.c:727:(snd_pcm_hw_resume)
-SNDRV_PCM_IOCTL_RESUME failed: Function not implemented
+> >  3) need to set channel control to 6 to get sound at all
+>=20
+> So the pin setup used there don't match with the actual environment,
+> apparently...
 
-Needed to kill mplayer but the channels control is remembered properly.
+Yeah.
+
+> >  4) speaker volume is line-out * pcm * master
+> >  5) cannot automatically detect codec, need to load with model=3Dmbp3
+>=20
+> What happens exactly, if you load the module without model option?
+> Note that "Unknown xxx" message is no error but an informational one.
+
+It says
+[ 1319.570055] hda_codec: Unknown model for ALC883, trying auto-probe from =
+BIOS...
+
+but then with the controls I get I cannot make it play any sound.
+
+> > And the last time I could record sound it was all choppy and sounded
+> > clipped.
+>=20
+> This might have been improved in the recent version.
+
+Ok, I'll try harder to record something.
 
 johannes
 
---=-Tpb5rh7rQwylrJQvR5vF
+--=-sSR+ctjeE5hL7CVrR5V9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 Comment: Johannes Berg (powerbook)
 
-iQIcBAABAgAGBQJJ5f/PAAoJEKVg1VMiehFYmdEP/0A/hZG2D/o5CzVzRP2lG9SF
-jqIA96DDIt9TeNkw9gcydFVVBePxCvyVJKZdiIQb+v2B/WO1r4M5eNeD5zht/AqL
-UTlaTioBoh8g/1L3Z9YZh8752jlROw+4mbikvj03+SU+O+Hln/k7GOm28vFd01IL
-oQdNqPZVrmtyDWs7MHOFnym8P9NGDjO7dz18qNcwwXqdLgexyJAR56Fpe9Jaccr3
-JaRubNI/2xsvI6JWbHz/xHORbPBz5nMmvYptEmc7CMB0UTo0t2xJmBACHrQxtHRl
-PLJPT/s/+zLSGviXTX8KGqe2Bno7AjEOYPDk4kOu//7hUSqBZqtSDeAf+nSJLlzh
-bDN0P6rk5qu49teK8H6uZynfFN+i+Ar+33L3+NBlIdxZzsN+Yk/v0jB5hyTADbFr
-BP8aZ1/SFAm1GRlnFmATrougCuNnzeicrS/E/kkHjKlB+vJK6kB68z0ymtOtxbsC
-C+IcT1a6QwqGi9RIZqMFP/78lXzvHaAsUosORUIfAJKssz2TaYKwNVUPW4koUyDN
-8aVpm7WTNLaJ+ByRvmZpXpGasknrAhR/wosLBg/t/ZL46Eci4Zr2sU2/9jpDiihn
-EvppcFbMcz55+iBoYwyLaZipinXjNxrmmg35k801pIeIyqf7ediyBHW1uNrP0kth
-KORjVh2Ms7juv8GuEck3
-=i3GR
+iQIcBAABAgAGBQJJ5gBlAAoJEKVg1VMiehFYfkkQAJ5RJNIh6UBdvA3wZ3hx5Eso
+GPOF/T787EkI6VXcZ2IVBB83ljOzzX1jbvHZkF7tWlw84s9Zbsy5wzDXboyemKpH
+Uh8G1bYoEIMrfwOCbQrcHF2O4SzsVWGOL3vvyQSWgQunX6UAHvIujxU1k2HkTusv
+sj8Niv7PtOndMFBTv4oLkvsursdZD4R9/xiqARR6N8olwgVSBhmCzprM5KRYbuvL
+asy9T3CYvoDyGW6vcjoUd/awOvtq1gaz7OjK+273BQ5O6yH5W7WGnnyEf6W0Ayut
+YxA2auQaNlt5ACaWX3WeIQi3tSgimPJrElNYw1nSE43lA/CEqCmtOdw8Rt9xcpic
+vUcZJKX5RZMEqDz+uo2jTclIOWZuUdiwhd2OabQr6ieesbfS6pjtbFiu2Rn906bQ
+m/kqzJJ32RRX3p/b2ATXBjqE2nQdCIMwEE2P137ywvtwsp79gT8Ln6MQZDIEAi3W
+Nl9CWIteV0A/BoNxQyNYcA7Xd0gmKol+uR/gXRs1ru91LyjLocNNZRMchs6mBPx9
+oJculp7FwKgyKb7+anWJmrHg9KR+mhZ6qqf6M+JePMuiEhd3lTM1J9ykOij+I2Yi
+AMlutVxmAVXzQV7fICxCdCCNUASmu7NLwaDSLQFBY4o7kQphkEigAqsUTdNxMSjH
+YetuqZUsRKQeIlxhoZAZ
+=wIA2
 -----END PGP SIGNATURE-----
 
---=-Tpb5rh7rQwylrJQvR5vF--
+--=-sSR+ctjeE5hL7CVrR5V9--
 
 
---===============0254710279895475843==
+--===============3379519261318789970==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -111,4 +118,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============0254710279895475843==--
+--===============3379519261318789970==--
