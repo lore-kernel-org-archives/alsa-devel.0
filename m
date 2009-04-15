@@ -1,19 +1,27 @@
 From: Jean Delvare <khali@linux-fr.org>
-Subject: Re: [PATCH 1/2] keywest: Convert to new-style i2c
-	driver
-Date: Wed, 15 Apr 2009 09:20:57 +0200
-Message-ID: <20090415092057.52542464@hyperion.delvare>
-References: <20090410170726.3616b6d5@hyperion.delvare>
-	<18917.26938.10873.119892@drongo.ozlabs.ibm.com>
+Subject: Re: [PATCH] AOA: Convert onyx and tas codecs to
+ new-style i2c drivers
+Date: Wed, 15 Apr 2009 10:19:36 +0200
+Message-ID: <20090415101936.7f6d720e@hyperion.delvare>
+References: <20090408150249.5a62a56c@hyperion.delvare>
+	<1239205899.16477.32.camel@johannes.local>
+	<20090408224858.04cb6dc4@hyperion.delvare>
+	<1239263089.24548.30.camel@johannes.local>
+	<20090409141945.116772e3@hyperion.delvare>
+	<1239723613.24771.8.camel@johannes.local>
+	<1239724227.24771.9.camel@johannes.local>
+	<1239730915.24771.12.camel@johannes.local>
+	<20090414214949.736597d9@hyperion.delvare>
+	<m2prfe26on.fsf@igel.home>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from services.gcu-squad.org (zone0.gcu-squad.org [212.85.147.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id B8665243A1
+	by alsa0.perex.cz (Postfix) with ESMTP id 872252434A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Apr 2009 09:21:08 +0200 (CEST)
-In-Reply-To: <18917.26938.10873.119892@drongo.ozlabs.ibm.com>
+	Wed, 15 Apr 2009 10:20:02 +0200 (CEST)
+In-Reply-To: <m2prfe26on.fsf@igel.home>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,50 +31,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Paul Mackerras <paulus@samba.org>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Takashi Iwai <tiwai@suse.de>, linuxppc-dev@ozlabs.org, Johannes Berg <johannes@sipsolutions.net>, Benjamin@ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Paul,
-
-On Wed, 15 Apr 2009 14:57:30 +1000, Paul Mackerras wrote:
-> Jean Delvare writes:
+On Wed, 15 Apr 2009 00:48:08 +0200, Andreas Schwab wrote:
+> Jean Delvare <khali@linux-fr.org> writes:
 > 
-> > The legacy i2c binding model is going away soon,
+> > Hi Johannes,
+> >
+> > On Tue, 14 Apr 2009 19:41:55 +0200, Johannes Berg wrote:
+> >> Alright, with the patch Andreas pointed out it loads, but segfaults, as
+> >> below. Works fine without your patch.
+> >
+> > Thanks for the quick test and sorry that it didn't work. I'll take a
+> > look at the trace below and try to figure out what went wrong.
+> >
+> > Did you remove the 2 MODULE_DEVICE_TABLE from my patch? If you didn't,
+> > please pick the latest version of my patch which doesn't have them:
+> > ftp://ftp.kernel.org/pub/linux/kernel/people/jdelvare/linux-2.6/jdelvare-i2c/sound-aoa-codecs-convert-to-new-style.patch
+> > I don't think they are the reason of the crash, but who knows...
 > 
-> But not before 2.6.30, right?
+> I tried with a tas-based iBook, and it works fine here.
 
-Ideally, yes, before 2.6.30. This is what
-Documentation/feature-removal-schedule.txt says:
+Good news, thanks Andreas!
 
----------------------------
-
-What:	i2c_attach_client(), i2c_detach_client(), i2c_driver->detach_client(),
-	i2c_adapter->client_register(), i2c_adapter->client_unregister
-When:	2.6.30
-Check:	i2c_attach_client i2c_detach_client
-Why:	Deprecated by the new (standard) device driver binding model. Use
-	i2c_driver->probe() and ->remove() instead.
-Who:	Jean Delvare <khali@linux-fr.org>
-
----------------------------
-
-There are only 10 legacy i2c drivers remaining (not counting staging),
-9 of which are ppc drivers. My hope was that ppc developers would see
-the deprecation warning and convert the drivers themselves, but it did
-not happen. Which is why I am trying to do it myself now, admittedly
-quite late in the 2.6.30 development cycle.
-
-This seems doable to me if my patches get proper testing fast (which
-seems to be the case, thanks!) and positive results (not true for onyx,
-but tas and therm_pm72 are apparently OK). Now I know I have to be
-realistic, if problems arise and/or ppc people feel too bad about me
-pushing these patches at about rc3 time, I will refrain from doing so
-and wait for 2.6.31. But there are a number or i2c-core improvements
-other developers are asking for for quite some times now, which depend
-on the removal of the legacy model, so delaying this wound not make me
-happy at all.
-
-Thanks,
 -- 
 Jean Delvare
