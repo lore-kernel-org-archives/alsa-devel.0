@@ -1,20 +1,18 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: ASoC: DMA Platform driver for i.mx27
-Date: Wed, 15 Apr 2009 10:43:01 +0100
-Message-ID: <20090415094301.GC29399@sirena.org.uk>
-References: <eedb5540904140917ic0f3626s5f6b98a2d22ec36b@mail.gmail.com>
-	<20090414204243.GB6902@sirena.org.uk>
-	<eedb5540904150210y68f08597p9f6c032ca17faa27@mail.gmail.com>
+From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Subject: [2.6.30-rc2][PATCH 2/2] ASoC: OMAP: Fix FS polarity in
+	OSK5912 machine driver
+Date: Wed, 15 Apr 2009 13:48:17 +0300
+Message-ID: <1239792497-31761-3-git-send-email-jarkko.nikula@nokia.com>
+References: <1239792497-31761-1-git-send-email-jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4BEE024442
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id E5DC02445B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Apr 2009 11:43:02 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <eedb5540904150210y68f08597p9f6c032ca17faa27@mail.gmail.com>
+	Wed, 15 Apr 2009 12:47:48 +0200 (CEST)
+In-Reply-To: <1239792497-31761-1-git-send-email-jarkko.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,34 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: javier Martin <javier.martin@vista-silicon.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Arun KS <arunks@mistralsolutions.com>, Jarkko Nikula <jarkko.nikula@nokia.com>, Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 15, 2009 at 11:10:43AM +0200, javier Martin wrote:
-> 2009/4/14 Mark Brown <broonie@sirena.org.uk>
+Using inverted FS polarity in OSK5912 must be an error since TLV320AIC23
+do not have support for inverted polarities. This is mostly due the hassle
+with the DSP formats in OMAP McBSP DAI and inversion on OMAP side probably
+just made this configuration working at some point.
 
-> > Replace this with use of the standard pr_dbg() macro.
+Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
+Cc: Arun KS <arunks@mistralsolutions.com>
+---
+ sound/soc/omap/osk5912.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-> Do you mean that I must do:
-
-> Or that I must use a pr_dbg macro defined elsewhere (I don't find it)?
-
-pr_dbg() is defined in some standard kernel header that gets included
-everywhere - you shouldn't need to define it yourself.
-
-> Yes, you are right. I was aware of this issue. But current dai "imx-ssi.c"
-> only exports dma data for the SDMA API used in i.mx31. So I provisionally
-> use this trick untill I fix that in the SSI.
-
-That's fine for development.
-
-> > This will free both TX and RX DMA channels but you only allocated one of
-> > them when the device is opened.
-
-> Man, I missed that, thanks.
-> Do you think this could be related to the problem of not being able of
-> having both directions working properly?
-
-If things are going wrong when you free a stream - if it's at other
-times it's less likely.
+diff --git a/sound/soc/omap/osk5912.c b/sound/soc/omap/osk5912.c
+index a952a4e..a4e149b 100644
+--- a/sound/soc/omap/osk5912.c
++++ b/sound/soc/omap/osk5912.c
+@@ -62,7 +62,7 @@ static int osk_hw_params(struct snd_pcm_substream *substream,
+ 	/* Set codec DAI configuration */
+ 	err = snd_soc_dai_set_fmt(codec_dai,
+ 				  SND_SOC_DAIFMT_DSP_B |
+-				  SND_SOC_DAIFMT_NB_IF |
++				  SND_SOC_DAIFMT_NB_NF |
+ 				  SND_SOC_DAIFMT_CBM_CFM);
+ 	if (err < 0) {
+ 		printk(KERN_ERR "can't set codec DAI configuration\n");
+@@ -72,7 +72,7 @@ static int osk_hw_params(struct snd_pcm_substream *substream,
+ 	/* Set cpu DAI configuration */
+ 	err = snd_soc_dai_set_fmt(cpu_dai,
+ 				  SND_SOC_DAIFMT_DSP_B |
+-				  SND_SOC_DAIFMT_NB_IF |
++				  SND_SOC_DAIFMT_NB_NF |
+ 				  SND_SOC_DAIFMT_CBM_CFM);
+ 	if (err < 0) {
+ 		printk(KERN_ERR "can't set cpu DAI configuration\n");
+-- 
+1.6.2.1
