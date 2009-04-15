@@ -1,21 +1,19 @@
-From: Dake Gu <Dake.Gu@palm.com>
-Subject: Alsa Pulse plugin pcm->ptr initialization problem
-Date: Wed, 15 Apr 2009 16:40:15 -0700
-Message-ID: <F9C2E2EABD9FD9428530435E0CB176A518A14F58B4@ushqwmb01.palm1.palmone.com>
+From: Daniel T Chen <seven.steps@gmail.com>
+Subject: [PATCH] Intel8x0: Remove conflicting quirk for SSID
+	0x103c0934
+Date: Wed, 15 Apr 2009 19:43:35 -0400 (EDT)
+Message-ID: <alpine.DEB.2.00.0904151940220.25087@errno>
+Reply-To: Daniel T Chen <seven.steps@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323329-1631712441-1239839027=:25087"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-relay2.palm.com (smtp-relay2.palm.com [64.28.152.243])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9B29E10389D
+Received: from mail-qy0-f103.google.com (mail-qy0-f103.google.com
+	[209.85.221.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id A405B1038A8
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Apr 2009 01:40:20 +0200 (CEST)
-Received: from ushqwmh02.palm1.palmone.com (ushqwmh02.palm1.palmone.com
-	[148.92.223.143])
-	by mailhost01.palm.com (8.13.6+Sun/8.12.10) with ESMTP id
-	n3FNeGgu001606
-	for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2009 16:40:17 -0700 (PDT)
-Content-Language: en-US
+	Thu, 16 Apr 2009 01:43:48 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so304859qyk.16
+	for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2009 16:43:47 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,25 +23,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-By looking through the pcm_pulse.c(1.0.18), I found there is a possible error in initializing the pcm->ptr.
+--8323329-1631712441-1239839027=:25087
+Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
 
-Some background: see update_ptr() function in pcm_pulse.c:
-Basically the pcm->ptr is increased when pa_stream_writable_size() increases.  The last pa_stream_writable_size() is saved in pcm->last_size,  so if new pa_stream_writable_size() value is larger than pcm->last_size,  the pcm->ptr is increased.    For example,  the pa_stream_writable_size() increases from 800 to 1400,  then pcm->ptr is increased by 400.   Alsa-lib's snd_pcm_ioplug_hw_ptr_update() function is calling pulse_pointer() to get pcm->ptr,  then pcm_ioplug.c calculates the hw.ptr from the changes of pulse_pointer().  The hw.ptr is used in snd_pcm_mmap_playback_avail().
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-However, there is an issue that during the pulse is started,  the pcm->last_size jumps from 0 to a positive value, which should not be counted as pcm->ptr increase.  It's causing the hw.ptr wrongly calculated.
-Wrong senario
-      pa_writable   (N/A)  1000    900      800       1200
-           pcm->ptr   0        1000    1000    1000     1400    .....
-               hw.ptr   0        1000    1000    1000     1400
-Correct scenario:
-      pa_writable   (N/A)  1000   900      800       1200
-           pcm->ptr   0         0        0          0           400    .....
-               hw.ptr   0        0         0          0           400
-If hw.ptr is incorrectly set larger than actual size,  it causes avail>"real avail" and client sends more data than pulse can accept.
+While cleaning up quirks, I noticed that there is a duplicated quirk for 
+the SSID 0x103c0934. Looking back through the bug reports, I've concluded 
+that there is only one necessary quirk (hp_mute_led), so this patch 
+removes the conflicting one.
 
-Dake
+Thanks,
+Daniel T Chen
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iD8DBQFJ5nEoe9GwFciKvaMRAqf+AJ45j7iM7XYnV+bDO9sa7fj4XjpHlQCfSSAw
+mOJvx87TYvsMbGw5g/aS8Ds=
+=rvle
+-----END PGP SIGNATURE-----
+--8323329-1631712441-1239839027=:25087
+Content-Type: TEXT/x-diff; name=0001-Reference-Ubuntu-44066-https-launchpad.net-bugs.patch
+Content-Transfer-Encoding: BASE64
+Content-ID: <alpine.DEB.2.00.0904151943350.25087@errno>
+Content-Description: 
+Content-Disposition: attachment; filename=0001-Reference-Ubuntu-44066-https-launchpad.net-bugs.patch
+
+RnJvbSA1MTg1MGY2ZTYzNjNkYTUwYmVmNmZmMTAzM2YwOTM3ZWE2YmNjMzZj
+IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQ0KRnJvbTogRGFuaWVsIFQgQ2hl
+biA8c2V2ZW4uc3RlcHNAZ21haWwuY29tPg0KRGF0ZTogV2VkLCAxNSBBcHIg
+MjAwOSAxOToyMjozOCAtMDQwMA0KU3ViamVjdDogW1BBVENIXSBSZWZlcmVu
+Y2U6IFVidW50dSAjNDQwNjYgKGh0dHBzOi8vbGF1bmNocGFkLm5ldC9idWdz
+LzQ0MDY2KQ0KDQpSZW1vdmUgY29uZmxpY3RpbmcgcXVpcmsgZm9yIFNTSUQg
+MHgxMDNjMDkzNA0KDQpTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgVCBDaGVuIDxz
+ZXZlbi5zdGVwc0BnbWFpbC5jb20+DQotLS0NCiBwY2kvaW50ZWw4eDAuYyB8
+ICAgIDYgLS0tLS0tDQogMSBmaWxlcyBjaGFuZ2VkLCAwIGluc2VydGlvbnMo
+KyksIDYgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9wY2kvaW50ZWw4
+eDAuYyBiL3BjaS9pbnRlbDh4MC5jDQppbmRleCA1ZGNlZDViLi5iMzE4MGQw
+IDEwMDY0NA0KLS0tIGEvcGNpL2ludGVsOHgwLmMNCisrKyBiL3BjaS9pbnRl
+bDh4MC5jDQpAQCAtMTg5NiwxMiArMTg5Niw2IEBAIHN0YXRpYyBzdHJ1Y3Qg
+YWM5N19xdWlyayBhYzk3X3F1aXJrc1tdIF9fZGV2aW5pdGRhdGEgPSB7DQog
+CX0sDQogCXsNCiAJCS5zdWJ2ZW5kb3IgPSAweDEwM2MsDQotCQkuc3ViZGV2
+aWNlID0gMHgwOTM0LA0KLQkJLm5hbWUgPSAiSFAgbng4MjIwIiwNCi0JCS50
+eXBlID0gQUM5N19UVU5FX01VVEVfTEVEDQotCX0sDQotCXsNCi0JCS5zdWJ2
+ZW5kb3IgPSAweDEwM2MsDQogCQkuc3ViZGV2aWNlID0gMHgxMjlkLA0KIAkJ
+Lm5hbWUgPSAiSFAgeHc4MDAwIiwNCiAJCS50eXBlID0gQUM5N19UVU5FX0hQ
+X09OTFkNCi0tIA0KMS42LjAuNA0KDQo=
+
+--8323329-1631712441-1239839027=:25087
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--8323329-1631712441-1239839027=:25087--
