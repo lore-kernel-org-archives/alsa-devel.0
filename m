@@ -1,18 +1,21 @@
-From: Jerry Geis <geisj@pagestation.com>
-Subject: Re: Gigabyte ALC889A Function ID: 0x01
-Date: Wed, 15 Apr 2009 11:34:23 -0400
-Message-ID: <49E5FE7F.3090806@pagestation.com>
-References: <49E5E881.5020507@pagestation.com>	<s5h4owq0zot.wl%tiwai@suse.de>	<49E5F317.9050505@pagestation.com>	<s5hvdp6ymtp.wl%tiwai@suse.de>	<49E5F9CC.5030502@pagestation.com>
-	<s5hr5zuymif.wl%tiwai@suse.de>
+From: Justin Mattock <justinmattock@gmail.com>
+Subject: Re: [PATCH] add missing definitions(letters) to
+	HD-Audio.txt
+Date: Wed, 15 Apr 2009 08:35:18 -0700
+Message-ID: <dd18b0c30904150835l6d246bbes648ad50e20690e7e@mail.gmail.com>
+References: <dd18b0c30904141431x231a3251v438e365d512f9f95@mail.gmail.com>
+	<s5hiql618mt.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from unifiedpaging.messagenetsystems.com (unknown [24.123.23.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9171E244A7
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.249])
+	by alsa0.perex.cz (Postfix) with ESMTP id E1089244AA
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Apr 2009 17:34:22 +0200 (CEST)
-In-Reply-To: <s5hr5zuymif.wl%tiwai@suse.de>
+	Wed, 15 Apr 2009 17:35:20 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id c5so2449895rvf.32
+	for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2009 08:35:19 -0700 (PDT)
+In-Reply-To: <s5hiql618mt.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,147 +26,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-Takashi Iwai wrote:
-> At Wed, 15 Apr 2009 11:14:20 -0400,
-> Jerry Geis wrote:
->   
+On Wed, Apr 15, 2009 at 4:03 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Tue, 14 Apr 2009 14:31:21 -0700,
+> Justin Mattock wrote:
 >>
->> Takashi Iwai wrote:
->>     
->>> At Wed, 15 Apr 2009 10:45:43 -0400,
->>> Jerry Geis wrote:
->>>   
->>>       
->>>> Takashi Iwai wrote:
->>>>     
->>>>         
->>>>> At Wed, 15 Apr 2009 10:00:33 -0400,
->>>>> Jerry Geis wrote:
->>>>>   
->>>>>       
->>>>>           
->>>>>> I am using the gigabyte MA78GM-US2H motherboard. it has the ALC889A audio.
->>>>>>
->>>>>> I am trying 1.0.19 and audio works out the analog back port but not over 
->>>>>> HDMI.
->>>>>>     
->>>>>>         
->>>>>>             
->>>>> Never mind about "Function ID" entry.  It's just a new line that was
->>>>> added recently.  function_id=1 means it's an audio codec.
->>>>>
->>>>> The way HDMI is supported are mainly either through the same audio
->>>>> codec (ALC889A) or through a dedicated HDMI codec.  In the former
->>>>> case, you'll likely see a word "HDMI" in the digital output pin of the
->>>>> codec proc file.  In the latter case, you must have a different codec
->>>>> chip connected to the HD-audio bus with a different codec address
->>>>> number.
->>>>>
->>>>>
->>>>> Takashi
->>>>>
->>>>>
->>>>>   
->>>>>       
->>>>>           
->>>>>> Codec: Realtek ALC889A
->>>>>> Address: 0
->>>>>> Function Id: 0x1                                     
->>>>>> <--------------------------------- this is different
->>>>>> Vendor Id: 0x10ec0885
->>>>>> Subsystem Id: 0x1458a002
->>>>>> Revision Id: 0x100101
->>>>>> No Modem Function Group found
->>>>>> Default PCM:
->>>>>>     rates [0x560]: 44100 48000 96000 192000
->>>>>>     bits [0xe]: 16 20 24
->>>>>>     formats [0x1]: PCM
->>>>>> Default Amp-In caps: N/A
->>>>>> Default Amp-Out caps: N/A
->>>>>> GPIO: io=2, o=0, i=0, unsolicited=1, wake=0
->>>>>>   IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
->>>>>>   IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
->>>>>> Node 0x02 [Audio Output] wcaps 0x11: Stereo
->>>>>>   Converter: stream=0, channel=0
->>>>>>   PCM:
->>>>>>     rates [0x560]: 44100 48000 96000 192000
->>>>>>     bits [0xe]: 16 20 24
->>>>>>     formats [0x1]: PCM
->>>>>> Node 0x03 [Audio Output] wcaps 0x11: Stereo
->>>>>>
->>>>>> I have been looking but havent found a solution yet. I tried grabbing 
->>>>>> the snapshot tar ball for today but I get errors on the compile.
->>>>>>
->>>>>> I had a similiar motherboard but it does not report Function ID: 01 : - 
->>>>>> HDMI audio on this board works correctly.
->>>>>> Codec: Realtek ALC889A
->>>>>> Address: 0
->>>>>> Vendor Id: 0x10ec0885
->>>>>> Subsystem Id: 0x1458a002
->>>>>> Revision Id: 0x100101
->>>>>> No Modem Function Group found
->>>>>> Default PCM:
->>>>>>     rates [0x560]: 44100 48000 96000 192000
->>>>>>
->>>>>> Any thoughts????
->>>>>>
->>>>>> Jerry
->>>>>> _______________________________________________
->>>>>> Alsa-devel mailing list
->>>>>> Alsa-devel@alsa-project.org
->>>>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>>>>>
->>>>>>     
->>>>>>         
->>>>>>             
->>>>>   
->>>>>       
->>>>>           
->>>> I upload alsa-info.sh
->>>>
->>>> for the NOT WORKIng one 
->>>> http://www.alsa-project.org/db/?f=7e8bc9485e8bb98bf15dae5a0d5dc038003c3203
->>>>
->>>> for the working on 
->>>> http://www.alsa-project.org/db/?f=a18bcb6e87fe33a7365a749d0877a4546e901bf2
->>>>     
->>>>         
->>> How are you testing HDMI output?
->>>
->>>
->>> Takashi
->>>
->>>   
->>>       
->> I have a sharp aquos HDMI that works with the other motherboard.
+>> impact: Add missing definitions(letters).
 >>
->> I am just switching between the two.
->>
->> I have the asound.conf set to the correct hw:X,y on both machines for HDMI.
->>     
+>> Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
 >
-> More exactly?
+> Thanks, applied now.
 >
-> Also, try like below:
-> 	% aplay -Dhdmi:1 foo.wav
+> (BTW, your patch couldn't be applied cleanly, partly because of
+> =A0a wrong format and partly because of your MUA breaking the lines...)
+>
 >
 > Takashi
 >
->   
-When I run your command :
-aplay -Dhdmi:1 /tmp/NewVoiceMale.wav
-aplay: main:590: audio open error: Device or resource busy
+>>
+>> ---
+>> =A0Documentation/sound/alsa/HD-Audio.txt | 3 +++
+>> =A01 files changed,3 insertions(+),0 deletions(-)
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> ---- Documentation/sound/alsa/HD-Audio.txt =A0 =A0 =A0 =A02009-04-14
+>> 17:03:14.000000000 -0700
+>> ++++ Documentation/sound/alsa/HD-Audio.txt =A0 =A0 =A0 =A02009-04-14
+>> 21:15:22.000000000 -0700
+>> @@ -162,7 +162,7 @@
+>> =A0What `model` option values are available depends on the codec chip.
+>> =A0Check your codec chip from the codec proc file (see "Codec Proc-File"
+>> =A0section below). =A0It will show the vendor/product name of your codec
+>> -chip. =A0Then, see Documentation/sound/alsa/HD-Audio-Modelstxt file,
+>> +chip. =A0Then, see Documentation/sound/alsa/HD-Audio-Models.txt file,
+>> =A0the section of HD-audio driver. =A0You can find a list of codecs
+>> =A0and `model` options belonging to each codec. =A0For example, for Real=
+tek
+>> =A0ALC262 codec chip, pass `model=3Dultra` for devices that are compatib=
+le
+>> @@ -170,7 +170,7 @@
+>>
+>> =A0Thus, the first thing you can do for any brand-new, unsupported and
+>> =A0non-working HD-audio hardware is to check HD-audio codec and several
+>> -different `model` option values. =A0If you have a luck, some of them
+>> +different `model` option values. =A0If you have any luck, some of them
+>> =A0might suit with your device well.
+>>
+>> =A0Some codecs such as ALC880 have a special model option `model=3Dtest`.
+>>
+>>
+>>
+>> --
+>> Justin P. Mattock
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+>
 
+I went diff -u file.old file.new
+(I'm not sure how to generate the
+1 files changed,2 etc... stuff)
+And yes I will be honest I didn't test the patch.
+(figured it wasn't that complicated, and I was tired).
 
-when I run my command aplay /tmp/NewVoiceMail.wav
-it plays the file (no audio though).
+If I find more I'll let you know.
+(back to trying to get sound working on my imac).
 
-asound.conf has hw:1,3 for my device. if I change it to hw:0,0
-I get analog audio out the back.
+-- =
 
-jerry
+Justin P. Mattock
