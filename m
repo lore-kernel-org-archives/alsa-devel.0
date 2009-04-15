@@ -1,17 +1,19 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 1/2] ASoC: OMAP: Use single-phase for DSP mode
-Date: Wed, 15 Apr 2009 15:38:55 +0300
-Message-ID: <1239799136-28729-2-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 2/2] ASoC: OMAP: Add DSP_A mode support for
+	mcbsp
+Date: Wed, 15 Apr 2009 15:38:56 +0300
+Message-ID: <1239799136-28729-3-git-send-email-peter.ujfalusi@nokia.com>
 References: <1239799136-28729-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1239799136-28729-2-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id D71F01038CF
+	by alsa0.perex.cz (Postfix) with ESMTP id C80BD1038CF
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Apr 2009 14:39:21 +0200 (CEST)
-In-Reply-To: <1239799136-28729-1-git-send-email-peter.ujfalusi@nokia.com>
+	Wed, 15 Apr 2009 14:39:23 +0200 (CEST)
+In-Reply-To: <1239799136-28729-2-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,77 +27,39 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com, jarkko.nikula@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-Use single-phase mode for the DSP mode and keep the dual phase
-mode for the I2S mode.
-
-The mono (1 channel) mode already used single phase mode,
-now it is more cleaner. There is no need to configure the
-second phase, when the single phase is used.
+DSP_A mode is similar to the DSP_B, but the MSB is delayed with
+one bclk (appears after the FS pulse and not under it).
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
- sound/soc/omap/omap-mcbsp.c |   30 ++++++++++++++++++------------
- 1 files changed, 18 insertions(+), 12 deletions(-)
+ sound/soc/omap/omap-mcbsp.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 90f4df7..5857c3c 100644
+index 5857c3c..4d6ef0b 100644
 --- a/sound/soc/omap/omap-mcbsp.c
 +++ b/sound/soc/omap/omap-mcbsp.c
-@@ -214,8 +214,9 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
- 	struct omap_mcbsp_reg_cfg *regs = &mcbsp_data->regs;
- 	int dma, bus_id = mcbsp_data->bus_id, id = cpu_dai->id;
--	int wlen, channels;
-+	int wlen, channels, wpf;
- 	unsigned long port;
-+	unsigned int format;
- 
- 	if (cpu_class_is_omap1()) {
- 		dma = omap1_dma_reqs[bus_id][substream->stream];
-@@ -243,18 +244,23 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 		return 0;
- 	}
- 
--	channels = params_channels(params);
-+	format = mcbsp_data->fmt & SND_SOC_DAIFMT_FORMAT_MASK;
-+	wpf = channels = params_channels(params);
- 	switch (channels) {
- 	case 2:
--		/* Use dual-phase frames */
--		regs->rcr2	|= RPHASE;
--		regs->xcr2	|= XPHASE;
-+		if (format == SND_SOC_DAIFMT_I2S) {
-+			/* Use dual-phase frames */
-+			regs->rcr2	|= RPHASE;
-+			regs->xcr2	|= XPHASE;
-+			/* Set 1 word per (McBSP) frame for phase1 and phase2 */
-+			wpf--;
-+			regs->rcr2	|= RFRLEN2(wpf - 1);
-+			regs->xcr2	|= XFRLEN2(wpf - 1);
-+		}
- 	case 1:
--		/* Set 1 word per (McBSP) frame */
--		regs->rcr2	|= RFRLEN2(1 - 1);
--		regs->rcr1	|= RFRLEN1(1 - 1);
--		regs->xcr2	|= XFRLEN2(1 - 1);
--		regs->xcr1	|= XFRLEN1(1 - 1);
-+		/* Set word per (McBSP) frame for phase1 */
-+		regs->rcr1	|= RFRLEN1(wpf - 1);
-+		regs->xcr1	|= XFRLEN1(wpf - 1);
- 		break;
- 	default:
- 		/* Unsupported number of channels */
-@@ -276,9 +282,9 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- 	/* Set FS period and length in terms of bit clock periods */
--	switch (mcbsp_data->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	switch (format) {
- 	case SND_SOC_DAIFMT_I2S:
--		regs->srgr2	|= FPER(wlen * 2 - 1);
-+		regs->srgr2	|= FPER(wlen * channels - 1);
+@@ -287,6 +287,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
+ 		regs->srgr2	|= FPER(wlen * channels - 1);
  		regs->srgr1	|= FWID(wlen - 1);
  		break;
++	case SND_SOC_DAIFMT_DSP_A:
  	case SND_SOC_DAIFMT_DSP_B:
+ 		regs->srgr2	|= FPER(wlen * channels - 1);
+ 		regs->srgr1	|= FWID(0);
+@@ -331,6 +332,13 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		regs->rcr2	|= RDATDLY(1);
+ 		regs->xcr2	|= XDATDLY(1);
+ 		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		/* 1-bit data delay */
++		regs->rcr2      |= RDATDLY(1);
++		regs->xcr2      |= XDATDLY(1);
++		/* Invert FS polarity configuration */
++		temp_fmt ^= SND_SOC_DAIFMT_NB_IF;
++		break;
+ 	case SND_SOC_DAIFMT_DSP_B:
+ 		/* 0-bit data delay */
+ 		regs->rcr2      |= RDATDLY(0);
 -- 
 1.6.2.3
