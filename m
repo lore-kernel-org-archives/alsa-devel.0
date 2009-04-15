@@ -1,20 +1,22 @@
-From: Randy Dunlap <randy.dunlap@oracle.com>
-Subject: Re: [PATCH] add missing definitions(letters) to
-	HD-Audio.txt
-Date: Wed, 15 Apr 2009 08:56:25 -0700
-Message-ID: <49E603A9.2010004@oracle.com>
-References: <dd18b0c30904141431x231a3251v438e365d512f9f95@mail.gmail.com>	
-	<s5hiql618mt.wl%tiwai@suse.de>
-	<dd18b0c30904150835l6d246bbes648ad50e20690e7e@mail.gmail.com>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: hda-intel channels hibernate bug
+Date: Wed, 15 Apr 2009 17:59:01 +0200
+Message-ID: <1239811141.6981.7.camel@johannes.local>
+References: <1238921730.3782.3.camel@johannes.local>
+	<s5hocuz2xau.wl%tiwai@suse.de>
+	<1239715639.22047.0.camel@johannes.local>
+	<s5hd4bf2w27.wl%tiwai@suse.de>
+	<1239716613.22047.2.camel@johannes.local>
+	<s5h63h60zwf.wl%tiwai@suse.de> <1239810002.6981.2.camel@johannes.local>
+	<s5hk55lzzdh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0127070784745180624=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rgminet12.oracle.com (rcsinet12.oracle.com [148.87.113.124])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3011424499
+Received: from sipsolutions.net (xc.sipsolutions.net [83.246.72.84])
+	by alsa0.perex.cz (Postfix) with ESMTP id C7E51244C3
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Apr 2009 17:55:54 +0200 (CEST)
-In-Reply-To: <dd18b0c30904150835l6d246bbes648ad50e20690e7e@mail.gmail.com>
+	Wed, 15 Apr 2009 17:59:32 +0200 (CEST)
+In-Reply-To: <s5hk55lzzdh.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,69 +26,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Justin Mattock <justinmattock@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Justin Mattock wrote:
-> On Wed, Apr 15, 2009 at 4:03 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> At Tue, 14 Apr 2009 14:31:21 -0700,
->> Justin Mattock wrote:
->>> impact: Add missing definitions(letters).
->>>
->>> Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
->> Thanks, applied now.
->>
->> (BTW, your patch couldn't be applied cleanly, partly because of
->>  a wrong format and partly because of your MUA breaking the lines...)
->>
->>
->> Takashi
->>
->>> ---
->>>  Documentation/sound/alsa/HD-Audio.txt | 3 +++
->>>  1 files changed,3 insertions(+),0 deletions(-)
->>>
->>> ===========================================================================================
->>> ---- Documentation/sound/alsa/HD-Audio.txt        2009-04-14
->>> 17:03:14.000000000 -0700
->>> ++++ Documentation/sound/alsa/HD-Audio.txt        2009-04-14
->>> 21:15:22.000000000 -0700
->>> @@ -162,7 +162,7 @@
->>>  What `model` option values are available depends on the codec chip.
->>>  Check your codec chip from the codec proc file (see "Codec Proc-File"
->>>  section below).  It will show the vendor/product name of your codec
->>> -chip.  Then, see Documentation/sound/alsa/HD-Audio-Modelstxt file,
->>> +chip.  Then, see Documentation/sound/alsa/HD-Audio-Models.txt file,
->>>  the section of HD-audio driver.  You can find a list of codecs
->>>  and `model` options belonging to each codec.  For example, for Realtek
->>>  ALC262 codec chip, pass `model=ultra` for devices that are compatible
->>> @@ -170,7 +170,7 @@
->>>
->>>  Thus, the first thing you can do for any brand-new, unsupported and
->>>  non-working HD-audio hardware is to check HD-audio codec and several
->>> -different `model` option values.  If you have a luck, some of them
->>> +different `model` option values.  If you have any luck, some of them
->>>  might suit with your device well.
->>>
->>>  Some codecs such as ALC880 have a special model option `model=test`.
->>>
->>> --
-> 
-> I went diff -u file.old file.new
-> (I'm not sure how to generate the
-> 1 files changed,2 etc... stuff)
 
-It's listed in Documentation/SubmittingPatches:  /diffstat/
-along with the expected patch format etc.
-Please read/use it.
-
-> And yes I will be honest I didn't test the patch.
-> (figured it wasn't that complicated, and I was tired).
-> 
-> If I find more I'll let you know.
-> (back to trying to get sound working on my imac).
+--===============0127070784745180624==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-pACAUpFtFV5dmFz0u5g9"
 
 
--- 
-~Randy
+--=-pACAUpFtFV5dmFz0u5g9
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 2009-04-15 at 17:54 +0200, Takashi Iwai wrote:
+
+> > Yes, this helps, thanks. Mind you, if I play music with mplayer _while_
+> > hibernating, I get a horrible buzzing when waking up and mplayer says:
+> >=20
+> > [AO_ALSA] alsa-lib: pcm_hw.c:727:(snd_pcm_hw_resume)
+> > SNDRV_PCM_IOCTL_RESUME failed: Function not implemented
+>=20
+> This is actually no fatal error.  It appears because libao sets
+> its own error logger.  But...
+>=20
+> > Needed to kill mplayer but the channels control is remembered properly.
+>=20
+> ... Necessity of kill sounds like a bug in either libao or else.
+
+mplayer just hung there, while hda-intel was buzzing away... not very
+nice, but I agree it's quite probably not a kernel bug.
+
+> Anyway, I'll add the patch to the next pull request.
+
+Alright, thanks.
+
+johannes
+
+--=-pACAUpFtFV5dmFz0u5g9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Comment: Johannes Berg (powerbook)
+
+iQIcBAABAgAGBQJJ5gRCAAoJEKVg1VMiehFYhRAP/1hgXujbrmrusO7M5xej3mt0
+FuUqjBSPz3RRp9G2WwZivjI50u4oK9zBxuzJcuIR/mq5dwi3uQacgjYoC8/v1uFz
+x9UXbHaa8X+QLh70q2Dc1b/2rtLkRJ/9XfxCQAoShFRKgcecRyQvWbkT2Ud7lqy6
+dObaq+zrbhMYJubLSFmPMQfSdAvs1midPDa4NSiNlhBW/9j4pKjvSFpGOxRxFzZz
+lIJZwpWom1Jban4lwYNsWf84TKLiHPDpxXHGDYl5pKMdfYS4a5ITKpiNRk+sHVOc
+EHySje8eR6IpwTLLC2LK2HHjUZcPr3cMUYrMv9yAlr1GgDnOXQT/9e9akDBJzFHF
+rP5N4879tCfwrz96BsxGSVVMM+bC3ANLKUqLGTrim8dXKU6ifMT7MQujvaWE9zpC
+dFqerrdAUWNwjq34UTS4E46Cto+NhCDFeaql9F/mw0re41F+ZTkdftxasn7hYAMS
+1WnBsO4x0QHYhVEx4fCZ9JfmaxMqxQGtmtYW84lKQwDe+EuUoeAKljmNcyhcRU4Z
+tNDu5uTcMsfYHyvUdLcI+c51sE1hgP9TCZ6cJOpkW4x+LOSF/ztZF+GoSPM1fBjJ
+CjXL8UngLDlodkLmVmxBr2MB3tnuSVSsH99w3QtBBNUuJ3g2pHuTM4UCXipxlvvr
+Khru8XrHu2tU7PKee2rg
+=d3Qw
+-----END PGP SIGNATURE-----
+
+--=-pACAUpFtFV5dmFz0u5g9--
+
+
+--===============0127070784745180624==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============0127070784745180624==--
