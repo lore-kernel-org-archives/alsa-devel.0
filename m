@@ -1,56 +1,61 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH] AOA: Convert onyx and tas codecs to new-style i2c drivers
-Date: Wed, 15 Apr 2009 00:48:08 +0200
-Message-ID: <m2prfe26on.fsf@igel.home>
-References: <20090408150249.5a62a56c@hyperion.delvare>
-	<1239205899.16477.32.camel@johannes.local>
-	<20090408224858.04cb6dc4@hyperion.delvare>
-	<1239263089.24548.30.camel@johannes.local>
-	<20090409141945.116772e3@hyperion.delvare>
-	<1239723613.24771.8.camel@johannes.local>
-	<1239724227.24771.9.camel@johannes.local>
-	<1239730915.24771.12.camel@johannes.local>
-	<20090414214949.736597d9@hyperion.delvare>
+From: Eric Miao <eric.y.miao@gmail.com>
+Subject: Re: [PATCH] General fix for Palm27x aSoC driver
+Date: Wed, 15 Apr 2009 10:23:49 +0800
+Message-ID: <f17812d70904141923l7f1b5697gbb27e852dfe6dba0@mail.gmail.com>
+References: <200904121858.42931.marek.vasut@gmail.com>
+	<200904122051.19335.marek.vasut@gmail.com>
+	<20090414195035.GA6902@sirena.org.uk>
+	<200904142342.34914.marek.vasut@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
-In-Reply-To: <20090414214949.736597d9@hyperion.delvare> (Jean Delvare's
-	message of "Tue, 14 Apr 2009 21:49:49 +0200")
-List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
-List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
-List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
-Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
-To: Jean Delvare <khali@linux-fr.org>
-Cc: Takashi Iwai <tiwai@suse.de>, linuxppc-dev@ozlabs.org, Johannes Berg <johannes@sipsolutions.net>, Benjamin@ozlabs.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qy0-f130.google.com (mail-qy0-f130.google.com
+	[209.85.221.130])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4EB152433C
+	for <alsa-devel@alsa-project.org>;
+	Wed, 15 Apr 2009 04:23:50 +0200 (CEST)
+Received: by qyk36 with SMTP id 36so1333217qyk.16
+	for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2009 19:23:49 -0700 (PDT)
+In-Reply-To: <200904142342.34914.marek.vasut@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Mark Brown <broonie@sirena.org.uk>, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Jean Delvare <khali@linux-fr.org> writes:
-
-> Hi Johannes,
->
-> On Tue, 14 Apr 2009 19:41:55 +0200, Johannes Berg wrote:
->> Alright, with the patch Andreas pointed out it loads, but segfaults, as
->> below. Works fine without your patch.
->
-> Thanks for the quick test and sorry that it didn't work. I'll take a
-> look at the trace below and try to figure out what went wrong.
->
-> Did you remove the 2 MODULE_DEVICE_TABLE from my patch? If you didn't,
-> please pick the latest version of my patch which doesn't have them:
-> ftp://ftp.kernel.org/pub/linux/kernel/people/jdelvare/linux-2.6/jdelvare-i2c/sound-aoa-codecs-convert-to-new-style.patch
-> I don't think they are the reason of the crash, but who knows...
-
-I tried with a tas-based iBook, and it works fine here.
-
-Andreas.
-
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+T24gV2VkLCBBcHIgMTUsIDIwMDkgYXQgNTo0MiBBTSwgTWFyZWsgVmFzdXQgPG1hcmVrLnZhc3V0
+QGdtYWlsLmNvbT4gd3JvdGU6Cj4gT24gVHVlc2RheSAxNCBvZiBBcHJpbCAyMDA5IDIxOjUwOjM2
+IE1hcmsgQnJvd24gd3JvdGU6Cj4+IE9uIFN1biwgQXByIDEyLCAyMDA5IGF0IDA4OjUxOjE5UE0g
+KzAyMDAsIE1hcmVrIFZhc3V0IHdyb3RlOgo+PiA+ICtzdGF0aWMgc3RydWN0IHB4YTJ4eF9hYzk3
+X3BsYXRmb3JtX2RhdGEgcGFsbWxkX2FjOTdfcGRhdGEgPSB7Cj4+ID4gKyDCoCAucmVzZXRfZ3Bp
+byDCoCDCoCA9IDk1LAo+PiA+ICt9Owo+Pgo+PiBUaGUgdHlwZSBvZiB0aGlzIHdpbGwgbmVlZCBj
+aGFuZ2luZyB0byByZWZsZWN0IHRoZSBwYXRjaCB0aGF0IGdvdCBtZXJnZWQKPj4gZm9yIHRoaXMg
+YnV0IG90aGVyIHRoYW4gdGhhdCBtaW5vciBwb2ludCB0aGlzIGFwcHJvYWNoIGlzIGZpbmUuCj4K
+PiBPSywgc2hhbGwgSSBjaGFuZ2UgaXQgYW5kIHJlc2VuZCAocHMuIHRvIHdoYXQgaWYgeW91IGRv
+bnQgbWluZCB0ZWxsaW5nIG1lPykgPwo+IEFsc28sIGRvIHlvdSB3YW50IHRvIHB1c2ggaXQgdGhy
+b3VnaCBhbHNvIHRyZWUgb3IgQVJNIHRyZWUgPyBJJ20gZm9yIHRoZQo+IHNlY29uZCBvcHRpb24g
+YXMgaXQncyBtb3JlIG9mIGEgYnVnZml4IHN1aXRhYmxlIGZvciB0aGF0IHRyZWUuCj4KClNvcnJ5
+LCBsYXRlIG9uIHRoaXMuIFRoZSBjaGFuZ2VzIHRvIHRoZSBwbGF0Zm9ybSBwYXJ0IGxvb2sgT0sg
+dG8gbWUsCmFuZCBzb21lIG1pbm9yIHRoaW5ncyB5b3UgbWF5IGhhdmUgYW5vdGhlciBsb29rOgoK
+Pgo+IC1zdGF0aWMgaW50IF9faW5pdCBwYWxtMjd4X2Fzb2NfaW5pdCh2b2lkKQo+ICtzdGF0aWMg
+aW50IHBhbG0yN3hfYXNvY19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQoKX19k
+ZXZpbml0Cgo+ICB7Cj4gIAlpbnQgcmV0Owo+Cj4gQEAgLTIwOCw2ICsyMDgsMTAgQEAgc3RhdGlj
+IGludCBfX2luaXQgcGFsbTI3eF9hc29jX2luaXQodm9pZCkKPiAgCQltYWNoaW5lX2lzX3BhbG1s
+ZCgpKSkKPiAgCQlyZXR1cm4gLUVOT0RFVjsKPgo+ICsJaWYgKHBkZXYtPmRldi5wbGF0Zm9ybV9k
+YXRhKQo+ICsJCXBhbG0yN3hfZXBfZ3BpbyA9ICgoc3RydWN0IHBhbG0yN3hfYXNvY19pbmZvICop
+Cj4gKwkJCShwZGV2LT5kZXYucGxhdGZvcm1fZGF0YSkpLT5qYWNrX2dwaW87Cj4gKwoKVGhpcyBp
+cyBub3Qgc28gcmVhZGFibGUsIEknZCBwcmVmZXIgdG8gaW50cm9kdWNlIGEgdmFyaWFibGUgZm9y
+IHRoZQonc3RydWN0IHBhbG0yN3hfYXNvY19pbmZvIConIHBvaW50ZXIuCgo+ICAJcmV0ID0gZ3Bp
+b19yZXF1ZXN0KHBhbG0yN3hfZXBfZ3BpbywgIkhlYWRwaG9uZSBKYWNrIik7Cj4gIAlpZiAocmV0
+KQo+ICAJCXJldHVybiByZXQ7Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbAo=
