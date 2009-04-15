@@ -1,21 +1,15 @@
-From: Susan Cragin <susancragin@earthlink.net>
-Subject: Re: 15 April unstable does not handle wave-in
-Date: Wed, 15 Apr 2009 14:40:07 -0400 (GMT-04:00)
-Message-ID: <31206109.1239820807382.JavaMail.root@elwamui-chisos.atl.sa.earthlink.net>
-Reply-To: Susan Cragin <susancragin@earthlink.net>
+From: reetesh chandran <reeteshchandran@yahoo.com>
+Subject: Re: SALSA library and recording
+Date: Wed, 15 Apr 2009 11:40:51 -0700 (PDT)
+Message-ID: <185775.25127.qm@web30001.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from elasmtp-banded.atl.sa.earthlink.net
-	(elasmtp-banded.atl.sa.earthlink.net [209.86.89.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id 03366103864
+Received: from web30001.mail.mud.yahoo.com (web30001.mail.mud.yahoo.com
+	[209.191.69.18]) by alsa0.perex.cz (Postfix) with SMTP id 0089E1037F8
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Apr 2009 20:40:08 +0200 (CEST)
-Received: from [209.86.224.31] (helo=elwamui-chisos.atl.sa.earthlink.net)
-	by elasmtp-banded.atl.sa.earthlink.net with esmtpa (Exim 4.67)
-	(envelope-from <susancragin@earthlink.net>) id 1LuA1n-0007v1-D1
-	for alsa-devel@alsa-project.org; Wed, 15 Apr 2009 14:40:07 -0400
+	Wed, 15 Apr 2009 20:40:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,43 +19,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, Manisha Sankpal <manisha.sankpal@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
->>> >> I just downloaded and installed the unstable snapshot 15-April 9:55. 
->>> >> Both my sound cards are shown by asoundconf, but neither works. The wave-in wave-out is still not recognized. 
->>> >
->>> >I suppose you are referring to CA0110?  Could you elaborate?
->>> >
->>> >The ca0110 codec support itself has no big change.  The last one was
->>> >in Feb. 18.  The rest is either HD-audio core or PCM core.  But these
->>> >have little to do with the probing...
->>> >
->>> >
->>> >Takashi
->>> 
->>> Please excuse my technical ignorance. Here is everything I know. 
->>> My hda-intel card is also not being recognized after installing alsa-driver-unstable. The only thing that works is my usb microphone. 
->>> I think that the program is not giving the instruction to have
->>> modules inserted on bootup.  
->>> I have attached sample modprobe, aplay, asoundconf, modules,
->>> alsa-base.conf 
->>
->>Check /proc/asound/version.  Is it the latest one?
->>
->>> $ modprobe snd-card-hda-intel
->>
->>modprobe snd-hda-intel
->>
->>
->>Takashi
->
->$ sudo cat /proc/asound/version
->Advanced Linux Sound Architecture Driver Version 1.0.19.
->Compiled on Apr 15 2009 for kernel 2.6.28-11-generic (SMP).
->susan@ubuntu:~$ modprobe snd-hda-intel
->WARNING: All config files need .conf: /etc/modprobe.d/oss-compat, it will be ignored in a future release.
->susan@ubuntu:~$ 
+Hi Manisha,
+=A0
+Sorry this is not a response which will help you.
+=A0
+I am facing similar issue. I am using SALSA and I am trying to record from =
+a USB headset. The USB headset does have a mixer elem "Mic". But when I use=
+ snd_mixer_selem_get_capture_dB_range() or snd_mixer_selem_get_capture_volu=
+me_range() I just get zeroes. =
 
-I should mention something else. This happened once before, a couple of weeks ago, I think. Then header updates came out of the Ubuntu-Jaunty repository, and then the problem went away. I wish I had been paying more attention to what happened.
-Susan
+=A0
+I did not do any set() functions like snd_mixer_selem_set_capture_switch_al=
+l(). Do I need to do that ? What is your source of info about how to set up=
+ the mixer for capture ? =
+
+=A0
+Thanks in advance
+Reetesh
+
+--- On Wed, 4/15/09, Manisha Sankpal <manisha.sankpal@gmail.com> wrote:
+
+
+From: Manisha Sankpal <manisha.sankpal@gmail.com>
+Subject: [alsa-devel] SALSA library and recording
+To: alsa-devel@alsa-project.org
+Date: Wednesday, April 15, 2009, 9:32 AM
+
+
+Hi All,
+I am using salsa library to capture the data from the sound card.=A0 The
+requirement is that the recording should be done from line-in port of the
+sound card. The selection of "Line-in" port should be done=A0 programatical=
+ly.
+
+
+With ALSA library, I am able to select the line-in by calling
+snd_mixer_selem_set_capture_switch_all()=A0 function. However, this function
+is returning an error when SALSA library is used.=A0 Is there any other
+function/way to select the line-in mixer element in the SALSA API?
+
+The help would be appreciated.
+Thanks & regards,
+manisha
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+
+
+      =
