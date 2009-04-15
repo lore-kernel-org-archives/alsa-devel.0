@@ -1,21 +1,22 @@
-From: Susan Cragin <susancragin@earthlink.net>
-Subject: 15 April unstable does not handle wave-in
-Date: Wed, 15 Apr 2009 07:22:08 -0400 (GMT-04:00)
-Message-ID: <16457791.1239794529036.JavaMail.root@mswamui-blood.atl.sa.earthlink.net>
-Reply-To: Susan Cragin <susancragin@earthlink.net>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: ASoC: DMA Platform driver for i.mx27
+Date: Wed, 15 Apr 2009 12:54:12 +0100
+Message-ID: <20090415115412.GA9311@sirena.org.uk>
+References: <eedb5540904140917ic0f3626s5f6b98a2d22ec36b@mail.gmail.com>
+	<20090414204243.GB6902@sirena.org.uk>
+	<eedb5540904150210y68f08597p9f6c032ca17faa27@mail.gmail.com>
+	<20090415094301.GC29399@sirena.org.uk>
+	<eedb5540904150419p42979faeodc2cb94342050d57@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from elasmtp-kukur.atl.sa.earthlink.net
-	(elasmtp-kukur.atl.sa.earthlink.net [209.86.89.65])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4D2251038CD
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 60F85103887
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Apr 2009 13:22:10 +0200 (CEST)
-Received: from [209.86.224.28] (helo=mswamui-blood.atl.sa.earthlink.net)
-	by elasmtp-kukur.atl.sa.earthlink.net with esmtpa (Exim 4.67)
-	(envelope-from <susancragin@earthlink.net>) id 1Lu3Bx-0006hb-0H
-	for alsa-devel@alsa-project.org; Wed, 15 Apr 2009 07:22:09 -0400
+	Wed, 15 Apr 2009 13:54:13 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <eedb5540904150419p42979faeodc2cb94342050d57@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,15 +26,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: javier Martin <javier.martin@vista-silicon.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I just downloaded and installed the unstable snapshot 15-April 9:55. 
-Both my sound cards are shown by asoundconf, but neither works. The wave-in wave-out is still not recognized. 
-(USB sound does work.)
+On Wed, Apr 15, 2009 at 01:19:58PM +0200, javier Martin wrote:
 
-System:
-Asus G1S running Ubuntu Jaunty with all updates (most recent kernel is only 2.6.28-11-Generic). 
-Sound cards present:
-hda-intel / Realtek ALC660-VD
-hda-audio-generic / Creative CA0110-IBG (Creative X-fi)
+> Fixed a lot of coding style problems, debugging information now using
+> "pr_debug()"
+> and problem of freeing both dma's when closing pcm.
+
+Your MUA has mangled the patch again - it's word wrapped everything.
+See Documentation/email-clients.txt for some suggestions for various
+common clients.
