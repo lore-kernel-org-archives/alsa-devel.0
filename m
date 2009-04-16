@@ -1,16 +1,25 @@
-From: Karsten Wiese <fzu@wemgehoertderstaat.de>
-Subject: [PATCH] us122l: add snd_us122l_free()
-Date: Thu, 16 Apr 2009 19:38:50 +0200
-Message-ID: <200904161938.50539.fzu@wemgehoertderstaat.de>
+From: John Rigg <aldev@sound-man.co.uk>
+Subject: Re: [PATCH] hdspm: native float
+Date: Thu, 16 Apr 2009 19:32:42 +0100
+Message-ID: <20090416183242.GA2713@localhost>
+References: <1239883941.10715.26.camel@x200.watzmann.local>
+	<20090416124159.GN16318@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout1.freenet.de (mout1.freenet.de [195.4.92.91])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0B364103978
+Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id C3FA124434
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Apr 2009 19:38:58 +0200 (CEST)
+	Thu, 16 Apr 2009 20:17:30 +0200 (CEST)
+Received: from localhost (unknown [78.32.150.178])
+	by mail3.uklinux.net (Postfix) with ESMTP id 7C9B91F7722
+	for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2009 19:17:30 +0100 (BST)
+Received: from anon by localhost with local (Exim 4.63)
+	(envelope-from <john@sound-man.co.uk>) id 1LuWOA-0000i0-6R
+	for alsa-devel@alsa-project.org; Thu, 16 Apr 2009 19:32:42 +0100
 Content-Disposition: inline
+In-Reply-To: <20090416124159.GN16318@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,69 +30,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, stable@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Use it to clean up snd_us122l_card_used[].
+On Thu, Apr 16, 2009 at 01:41:59PM +0100, Mark Brown wrote:
+> On Thu, Apr 16, 2009 at 02:12:21PM +0200, Florian Faber wrote:
+> 
+> > > > It is a global change. The only use case is for jack, and jack doesn't
+> > > > use different formats for input/output.
+> > > "Using aplay + arecord" is a second use case.  :-)
+> 
+> > And they would willingly choose different formats?
+> 
+> A moderately common case is recording voice quality audio (at 8kHz or
+> so) and playing back higher quality audio.
 
-Signed-off-by: Karsten Wiese <fzu@wemgehoertderstaat.de>
-Cc: stable@kernel.org
----
- sound/usb/usx2y/us122l.c |   16 ++++++++++++----
- 1 files changed, 12 insertions(+), 4 deletions(-)
+Perhaps a little less common on a 64-channel MADI interface
+like this :-)
 
-diff --git a/sound/usb/usx2y/us122l.c b/sound/usb/usx2y/us122l.c
-index 012ff1f..e0385ce 100644
---- a/sound/usb/usx2y/us122l.c
-+++ b/sound/usb/usx2y/us122l.c
-@@ -1,5 +1,5 @@
- /*
-- * Copyright (C) 2007, 2008 Karsten Wiese <fzu@wemgehoertderstaat.de>
-+ * Copyright (C) 2007-2009 Karsten Wiese <fzu@wemgehoertderstaat.de>
-  *
-  * This program is free software; you can redistribute it and/or modify it
-  * under the terms of the GNU General Public License as published by the
-@@ -26,7 +26,7 @@
- #include "us122l.h"
- 
- MODULE_AUTHOR("Karsten Wiese <fzu@wemgehoertderstaat.de>");
--MODULE_DESCRIPTION("TASCAM "NAME_ALLCAPS" Version 0.5");
-+MODULE_DESCRIPTION("TASCAM "NAME_ALLCAPS" Version 0.6");
- MODULE_LICENSE("GPL");
- 
- static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-max */
-@@ -474,6 +474,14 @@ static bool us122l_create_card(struct snd_card *card)
- 	return true;
- }
- 
-+static void snd_us122l_free(struct snd_card *card)
-+{
-+	struct us122l	*us122l = US122L(card);
-+	int		index = us122l->chip.index;
-+	if (index >= 0  &&  index < SNDRV_CARDS)
-+		snd_us122l_card_used[index] = 0;
-+}
-+
- static int usx2y_create_card(struct usb_device *device, struct snd_card **cardp)
- {
- 	int		dev;
-@@ -490,7 +498,7 @@ static int usx2y_create_card(struct usb_device *device, struct snd_card **cardp)
- 	if (err < 0)
- 		return err;
- 	snd_us122l_card_used[US122L(card)->chip.index = dev] = 1;
--
-+	card->private_free = snd_us122l_free;
- 	US122L(card)->chip.dev = device;
- 	US122L(card)->chip.card = card;
- 	mutex_init(&US122L(card)->mutex);
-@@ -584,7 +592,7 @@ static void snd_us122l_disconnect(struct usb_interface *intf)
- 	}
- 
- 	usb_put_intf(intf);
--	usb_put_dev(US122L(card)->chip.dev);
-+	usb_put_dev(us122l->chip.dev);
- 
- 	while (atomic_read(&us122l->mmap_count))
- 		msleep(500);
--- 
-1.6.0.6
+John
