@@ -1,24 +1,20 @@
-From: Justin Mattock <justinmattock@gmail.com>
-Subject: Re: /proc/asound/* shows signs of life,
-	but alsactl 	see's nothing
-Date: Thu, 16 Apr 2009 12:50:46 -0700
-Message-ID: <dd18b0c30904161250h131dc392x700675766c6a4b63@mail.gmail.com>
-References: <dd18b0c30904151603x226dfedaje9e443f7dc9eda38@mail.gmail.com>
-	<s5hbpqx2k6e.wl%tiwai@suse.de>
-	<dd18b0c30904160700y4157ebbdg3c561f4b294d2f4e@mail.gmail.com>
-	<dd18b0c30904161118y2fc7873jf8392b24c0ab0585@mail.gmail.com>
+From: Troy Kisky <troy.kisky@boundarydevices.com>
+Subject: Re: [2.6.30-rc2][PATCH 1/2] ASoC: OMAP: Fix
+ DSP_B	format in OMAP McBSP DAI driver
+Date: Thu, 16 Apr 2009 14:35:20 -0700
+Message-ID: <49E7A498.8060804@boundarydevices.com>
+References: <1239792497-31761-1-git-send-email-jarkko.nikula@nokia.com>	<20090416134724.dfb3e57a.jarkko.nikula@nokia.com>	<dfeb90390904160420l3461f155u25d632d22388391e@mail.gmail.com>	<200904161427.30707.peter.ujfalusi@nokia.com>
+	<dfeb90390904160605m478dbf66yf78a0c012c2efc58@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f103.google.com (mail-qy0-f103.google.com
-	[209.85.221.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 05D631039A3
+Received: from smtpauth00.csee.onr.siteprotect.com
+	(smtpauth00.csee.onr.siteprotect.com [64.26.60.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4BA77103800
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Apr 2009 21:50:48 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so1064891qyk.16
-	for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2009 12:50:48 -0700 (PDT)
-In-Reply-To: <dd18b0c30904161118y2fc7873jf8392b24c0ab0585@mail.gmail.com>
+	Thu, 16 Apr 2009 23:35:26 +0200 (CEST)
+In-Reply-To: <dfeb90390904160605m478dbf66yf78a0c012c2efc58@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,184 +24,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Micah Bucy <micah.bucy@gmail.com>, alsa-devel@alsa-project.org
+To: Arun KS <getarunks@gmail.com>
+Cc: "Nikula Jarkko (Nokia-D/Helsinki)" <jarkko.nikula@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, ext Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 16, 2009 at 11:18 AM, Justin Mattock
-<justinmattock@gmail.com> wrote:
-> On Thu, Apr 16, 2009 at 7:00 AM, Justin Mattock <justinmattock@gmail.com>=
- wrote:
->> On Wed, Apr 15, 2009 at 11:21 PM, Takashi Iwai <tiwai@suse.de> wrote:
->>> At Wed, 15 Apr 2009 16:03:07 -0700,
->>> Justin Mattock wrote:
->>>>
->>>> This is confusing to me
->>>> (with or without the imac9,1 patch
->>>> for the imac)
->>>> there is still entries in /proc/asound
->>>>
->>>> lrwxrwxrwx 1 root root 5 Apr 15 22:49 NVidia -> card0
->>>> dr-xr-xr-x 7 root root 0 Apr 15 22:49 card0
->>>> -r--r--r-- 1 root root 0 Apr 15 22:49 cards
->>>> -r--r--r-- 1 root root 0 Apr 15 22:49 devices
->>>> -r--r--r-- 1 root root 0 Apr 15 22:49 hwdep
->>>> -r--r--r-- 1 root root 0 Apr 15 22:49 pcm
->>>> -r--r--r-- 1 root root 0 Apr 15 22:49 timers
->>>> -r--r--r-- 1 root root 0 Apr 15 22:49 version
->>>>
->>>> but when I do:
->>>> sudo /usr/sbin/alsactl store
->>>> /usr/sbin/alsactl: save_state:1502: No soundcards found...
+Arun KS wrote:
+> On Thu, Apr 16, 2009 at 4:57 PM, Peter Ujfalusi
+> <peter.ujfalusi@nokia.com> wrote:
+>> On Thursday 16 April 2009 14:20:36 ext Arun KS wrote:
+>>> Hi Guys,
 >>>
->>> Check /dev/snd/* files.
+>>> I had done some mistake while applying the Jarkko's patch previously.
+>>> Now its working fine.
+>>> Sorry for the confusion caused.
+>> :)
+>> I have digged out an old omap1510 TRM to see what is going on...
+>>
+>> Still, while you have the setup, can you give my two patch a try on OMAP1 to
+>> see if it is working correctly?
+> 
+> Your patches are working.
+> I tested for DSP_A and DSP_B. Both works fine on osk5912 board.
+> 
+> But when I2S is used there is no audio on Right channel(left channel
+> is working fine).
+> Thinks something is missing on tlv320aic23 driver.
+> 
+> Arun
+> 
+>>> Arun
 >>>
->>
->> Thank you.
->> I ended up missing an entry in /etc/ude/rules.d/alsa-*
->> (the devices were present,but in /dev/* instead of /dev/snd/*
->>
->>
->>>> I this a software issue, or is this because the kernel is missing
->>>> something important in patch_realtek.c ?
->>>>
->>>> I've moved different things around in patch_realtek.c
->>>> but still no speaker sound or headphone, not even
->>>> the sound during boot when the module is being loaded.
->>>
->>> Then it sounds like a different problem.
->>
->> yeah devices in the wrong location(hopefully
->> just this simple)
->>
->>>
->>>> Also what is the best way to find PCI SSID?
->>>
->>> lspci -nv
->>>
->>
->> 00:08.0 0403: 10de:0ac0 (rev b1)
->> =A0 =A0 =A0 =A0Subsystem: 10de:cb79
->> =A0 =A0 =A0 =A0Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 17
->> =A0 =A0 =A0 =A0Memory at d3480000 (32-bit, non-prefetchable) [size=3D16K]
->> =A0 =A0 =A0 =A0Capabilities: <access denied>
->> =A0 =A0 =A0 =A0Kernel driver in use: HDA Intel
->> =A0 =A0 =A0 =A0Kernel modules: snd-hda-intel
->>
->>
->>>> under codec#0:(I have)
->>>>
->>>> Codec: Realtek ALC889A
->>>> Address: 0
->>>> Vendor Id: 0x10ec0885
->>>> Subsystem Id: 0x106b4900
->>>> Revision Id: 0x100103
->>>> No Modem Function Group found
->>>>
->>>> but with lspci -nnv
->>>>
->>>> 00:08.0 0403: 10de:0ac0 (rev b1)
->>>> =A0 =A0 =A0 =A0 Subsystem: 10de:cb79
->>>> =A0 =A0 =A0 =A0 Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGAS=
-noop-
->>>> ParErr- Stepping- SERR- FastB2B- DisINTx-
->>>> =A0 =A0 =A0 =A0 Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=3Dfas=
-t >TAbort-
->>>> <TAbort- <MAbort- >SERR- <PERR- INTx-
->>>> =A0 =A0 =A0 =A0 Latency: 0 (500ns min, 1250ns max)
->>>> =A0 =A0 =A0 =A0 Interrupt: pin A routed to IRQ 17
->>>> =A0 =A0 =A0 =A0 Region 0: Memory at d3480000 (32-bit, non-prefetchable=
-) [size=3D16K]
->>>> =A0 =A0 =A0 =A0 Capabilities: <access denied>
->>>> =A0 =A0 =A0 =A0 Kernel driver in use: HDA Intel
->>>> =A0 =A0 =A0 =A0 Kernel modules: snd-hda-intel
->>>>
->>>> the subsystem is 10de:cb79
->>>> but is
->>>> Subsystem Id: 0x106b4900
->>>
->>> The former is PCI SSID and the latter is the codec SSID.
->>> They are often different.
->>>
->>>
->>> Takashi
->>>
->>
->> Now that i've realized udev
->> was not creating the device, everything
->> has changed(back to the beginning with this one)
->> so hopefully, by the end of the day one option
->> in there will work.
->> I'll let you know if I find anything
->> interesting(hopefully).
->>
->> regards,
->>
->> --
->> Justin P. Mattock
->>
->
-> Alright after configuring udev,
-> sound is finally working
-> internal speakers and headphones
-> here's the diff(no mac 9,1 patch)
->
-> --- patch_realtek.c.old 2009-04-16 18:14:21.000000000 -0700
-> +++ patch_realtek.c =A0 =A0 2009-04-16 18:13:41.000000000 -0700
-> @@ -7023,6 +7023,7 @@
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0case 0x106b2c00: /* Macbook Pro rev3 */
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0case 0x106b3600: /* Macbook 3.1 */
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0case 0x106b3800: /* MacbookPro4,1 - latter=
- revision */
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0case 0x106b4900:
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0board_config =3D ALC885_MB=
-P3;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0default:
->
-> I'll try imac 24, and then add the imac 91 patch to
-> see the differences.
->
-> As for quality damn this sh^t is loud,
-> when plugging in headphones you need to
-> change to channel 2 for internal speakers to mute
-> and transition to headphones.
->
->
->
-> --
-> Justin P. Mattock
->
+>>>> Jarkko
+This sounds like the same problem Davinci has. From a comment in davinci-i2s.c
 
-O.K.
-after changing different options in patch_realtek.c
-(mp3 option
-imac24
-imac9,1)
-
-every option works,except imac24 configuration(no sound at all)
-mbp3 works good(especially if imac9,1 is not patched into the kernel yet)
-imac9,1 work's perfectly =3D its loud, plugging headphones(mutes
-internal speakers),
-microphone(don't know) I don't have any apps yet to test.(still need
-to build them)
-
-As for the main issue:
-besides being an impatient drunk
-I didnt follow the instructions at
-http://cblfs.cross-lfs.org/index.php/ALSA_Utilities for
-15-alsa.rules which was putting all of the created devices in
-/dev/* instead of /dev/snd/*
-
-Overall mbp3 options is good for now,
-(this way people can enjoy there machines)
-but the imac91.patch
-works perfectly.
-
-Thank you for helping me out.
-
-regards,
-
--- =
-
-Justin P. Mattock
+case SND_SOC_DAIFMT_I2S:
+        /* Davinci doesn't support TRUE I2S, but some codecs will have
+         * the left and right channels contiguous. This allows
+         * dsp_a mode to be used with an inverted normal frame clk.
+         * If your codec is master and does not have contiguous
+         * channels, then you will have sound on only one channel.
+         * Try using a different mode, or codec as slave.
+         *
+         * The TLV320AIC33 is an example of a codec where this works.
+         * It has a variable bit clock frequency allowing it to have
+         * valid data on every bit clock.
+         *
+         * The TLV320AIC23 is an example of a codec where this does not
+         * work. It has a fixed bit clock frequency with progressively
+         * more empty bit clock slots between channels as the sample
+         * rate is lowered.
+         */
+Troy
