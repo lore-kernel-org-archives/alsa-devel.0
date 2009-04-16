@@ -1,16 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.30
-Date: Thu, 16 Apr 2009 14:01:40 +0100
-Message-ID: <20090416130139.GA7035@rakim.wolfsonmicro.main>
+From: Arun KS <getarunks@gmail.com>
+Subject: Re: [2.6.30-rc2][PATCH 1/2] ASoC: OMAP: Fix DSP_B
+	format in OMAP McBSP DAI driver
+Date: Thu, 16 Apr 2009 18:35:34 +0530
+Message-ID: <dfeb90390904160605m478dbf66yf78a0c012c2efc58@mail.gmail.com>
+References: <1239792497-31761-1-git-send-email-jarkko.nikula@nokia.com>
+	<20090416134724.dfb3e57a.jarkko.nikula@nokia.com>
+	<dfeb90390904160420l3461f155u25d632d22388391e@mail.gmail.com>
+	<200904161427.30707.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 622BC24378
+Received: from ti-out-0910.google.com (ti-out-0910.google.com [209.85.142.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5FB982438D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Apr 2009 15:01:41 +0200 (CEST)
-Content-Disposition: inline
+	Thu, 16 Apr 2009 15:05:36 +0200 (CEST)
+Received: by ti-out-0910.google.com with SMTP id a21so261034tia.8
+	for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2009 06:05:34 -0700 (PDT)
+In-Reply-To: <200904161427.30707.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,35 +27,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikula Jarkko (Nokia-D/Helsinki)" <jarkko.nikula@nokia.com>, ext Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 9dd175f7d2db1826c891855d3d150da3a5792e94:
-  Takashi Iwai (1):
-        Merge branch 'topic/hda' into for-linus
+On Thu, Apr 16, 2009 at 4:57 PM, Peter Ujfalusi
+<peter.ujfalusi@nokia.com> wrote:
+> On Thursday 16 April 2009 14:20:36 ext Arun KS wrote:
+>> Hi Guys,
+>>
+>> I had done some mistake while applying the Jarkko's patch previously.
+>> Now its working fine.
+>> Sorry for the confusion caused.
+>
+> :)
+> I have digged out an old omap1510 TRM to see what is going on...
+>
+> Still, while you have the setup, can you give my two patch a try on OMAP1=
+ to
+> see if it is working correctly?
 
-are available in the git repository at:
+Your patches are working.
+I tested for DSP_A and DSP_B. Both works fine on osk5912 board.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.30
+But when I2S is used there is no audio on Right channel(left channel
+is working fine).
+Thinks something is missing on tlv320aic23 driver.
 
-Ben Dooks (4):
-      ASoC: Fix jive_wm8750.c build problems
-      ASoC: s3c-i2s-v2.c fix for s3c_i2sv2_iis_calc_rate
-      ASoC: Fix s3c-i2s-v2.c snd_soc_dai changes
-      ASoC: Fix include build error in s3c2412-i2s.c
+Arun
 
-Daniel Mack (1):
-      ASoC: pxa-ssp: allow setting of dai format 0
-
-Jarkko Nikula (2):
-      ASoC: OMAP: Fix DSP_B format in OMAP McBSP DAI driver
-      ASoC: OMAP: Fix FS polarity in OSK5912 machine driver
-
- sound/soc/omap/omap-mcbsp.c     |    7 +++++--
- sound/soc/omap/osk5912.c        |    4 ++--
- sound/soc/pxa/pxa-ssp.c         |    1 +
- sound/soc/s3c24xx/jive_wm8750.c |   12 ++++++------
- sound/soc/s3c24xx/s3c-i2s-v2.c  |   18 ++++++++++--------
- sound/soc/s3c24xx/s3c2412-i2s.c |    2 +-
- 6 files changed, 25 insertions(+), 19 deletions(-)
+>
+>>
+>> Arun
+>>
+>> > Jarkko
+>
+> --
+> P=E9ter
