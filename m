@@ -1,18 +1,24 @@
-From: Daniel T Chen <seven.steps@gmail.com>
-Subject: [PATCH] Intel8x0: Add hp_only quirk for SSID
- 0x1028016a (Dell Inspiron 8600)
-Date: Wed, 15 Apr 2009 19:48:08 -0400 (EDT)
-Message-ID: <alpine.DEB.2.00.0904151946510.25087@errno>
-Reply-To: Daniel T Chen <seven.steps@gmail.com>
+From: Eric Miao <eric.y.miao@gmail.com>
+Subject: Re: [PATCH] General fix for Palm27x aSoC driver
+Date: Thu, 16 Apr 2009 10:43:27 +0800
+Message-ID: <f17812d70904151943kef62292v2fc3e0bc0dbe579c@mail.gmail.com>
+References: <200904121858.42931.marek.vasut@gmail.com>
+	<200904122051.19335.marek.vasut@gmail.com>
+	<20090414195035.GA6902@sirena.org.uk>
+	<200904142342.34914.marek.vasut@gmail.com>
+	<20090415082127.GA29399@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323329-1643418594-1239839303=:25087"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.181])
-	by alsa0.perex.cz (Postfix) with ESMTP id 770C91038A8
+Received: from mail-qy0-f103.google.com (mail-qy0-f103.google.com
+	[209.85.221.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id A105624506
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Apr 2009 01:48:25 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id k40so69926wah.16
-	for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2009 16:48:24 -0700 (PDT)
+	Thu, 16 Apr 2009 04:43:28 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so399760qyk.16
+	for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2009 19:43:27 -0700 (PDT)
+In-Reply-To: <20090415082127.GA29399@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,69 +28,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Mark Brown <broonie@sirena.org.uk>, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Wed, Apr 15, 2009 at 4:21 PM, Mark Brown <broonie@sirena.org.uk> wrote:
+> On Tue, Apr 14, 2009 at 11:42:34PM +0200, Marek Vasut wrote:
+>
+>> OK, shall I change it and resend (ps. to what if you dont mind telling me?) ?
+>
+> pxa2xx_audio_ops_t
+>
+>> Also, do you want to push it through also tree or ARM tree ? I'm for the
+>> second option as it's more of a bugfix suitable for that tree.
+>
+> ARM.
+>
 
---8323329-1643418594-1239839303=:25087
-Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
+Marek,
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Any update?
 
-Subject says it all. Briefly, use hp_only for another Dell Inspiron 8600.
-
-Thanks,
-Daniel T Chen
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iD8DBQFJ5nI5e9GwFciKvaMRAqyEAKDEzBbqoTVX84Mnh3G/5NtRsy7hbACcC/8a
-xoAY8903z+8x7oIB3WKoZkA=
-=r3JR
------END PGP SIGNATURE-----
---8323329-1643418594-1239839303=:25087
-Content-Type: TEXT/x-diff; name=0002-Reference-Ubuntu-41015-https-launchpad.net-bugs.patch
-Content-Transfer-Encoding: BASE64
-Content-ID: <alpine.DEB.2.00.0904151948080.25087@errno>
-Content-Description: 
-Content-Disposition: attachment; filename=0002-Reference-Ubuntu-41015-https-launchpad.net-bugs.patch
-
-RnJvbSAzYWE5ZWY3YmQyNzBhZDFjMzVmNDdlMGNjZDk3MmU1NGE0YWRjMGU1
-IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQ0KRnJvbTogRGFuaWVsIFQgQ2hl
-biA8c2V2ZW4uc3RlcHNAZ21haWwuY29tPg0KRGF0ZTogV2VkLCAxNSBBcHIg
-MjAwOSAxOTozMzo1NiAtMDQwMA0KU3ViamVjdDogW1BBVENIXSBSZWZlcmVu
-Y2U6IFVidW50dSAjNDEwMTUgKGh0dHBzOi8vbGF1bmNocGFkLm5ldC9idWdz
-LzQxMDE1KQ0KDQpBZGQgaHBfb25seSBxdWlyayBmb3IgU1NJRCAweDEwMjgw
-MTZhIChEZWxsIEluc3Bpcm9uIDg2MDApDQoNClNpZ25lZC1vZmYtYnk6IERh
-bmllbCBUIENoZW4gPHNldmVuLnN0ZXBzQGdtYWlsLmNvbT4NCi0tLQ0KIHBj
-aS9pbnRlbDh4MC5jIHwgICAgNiArKysrKysNCiAxIGZpbGVzIGNoYW5nZWQs
-IDYgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdp
-dCBhL3BjaS9pbnRlbDh4MC5jIGIvcGNpL2ludGVsOHgwLmMNCmluZGV4IGIz
-MTgwZDAuLjgwNDJkNTMgMTAwNjQ0DQotLS0gYS9wY2kvaW50ZWw4eDAuYw0K
-KysrIGIvcGNpL2ludGVsOHgwLmMNCkBAIC0xODU0LDYgKzE4NTQsMTIgQEAg
-c3RhdGljIHN0cnVjdCBhYzk3X3F1aXJrIGFjOTdfcXVpcmtzW10gX19kZXZp
-bml0ZGF0YSA9IHsNCiAJfSwNCiAJew0KIAkJLnN1YnZlbmRvciA9IDB4MTAy
-OCwNCisJCS5zdWJkZXZpY2UgPSAweDAxNmEsDQorCQkubmFtZSA9ICJEZWxs
-IEluc3Bpcm9uIDg2MDAiLAkvKiBTVEFDOTc1MC81MSAqLw0KKwkJLnR5cGUg
-PSBBQzk3X1RVTkVfSFBfT05MWQ0KKwl9LA0KKwl7DQorCQkuc3VidmVuZG9y
-ID0gMHgxMDI4LA0KIAkJLnN1YmRldmljZSA9IDB4MDE4NiwNCiAJCS5uYW1l
-ID0gIkRlbGwgTGF0aXR1ZGUgRDgxMCIsIC8qIGNmLiBNYWxvbmUgIzQxMDE1
-ICovDQogCQkudHlwZSA9IEFDOTdfVFVORV9IUF9NVVRFX0xFRA0KLS0gDQox
-LjYuMC40DQoNCg==
-
---8323329-1643418594-1239839303=:25087
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---8323329-1643418594-1239839303=:25087--
+-- 
+Cheers
+- eric
