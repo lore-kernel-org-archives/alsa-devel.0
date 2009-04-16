@@ -1,27 +1,23 @@
 From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: Re: [2.6.30-rc2][PATCH 1/2] ASoC: OMAP: Fix DSP_B
- format in OMAP McBSP DAI driver
-Date: Thu, 16 Apr 2009 13:47:24 +0300
-Message-ID: <20090416134724.dfb3e57a.jarkko.nikula@nokia.com>
-References: <1239792497-31761-1-git-send-email-jarkko.nikula@nokia.com>
-	<1239792497-31761-2-git-send-email-jarkko.nikula@nokia.com>
-	<200904151404.37003.peter.ujfalusi@nokia.com>
-	<20090415115606.GB9311@sirena.org.uk>
-	<dfeb90390904160308t626cfe7axc78dedca915076@mail.gmail.com>
-	<20090416101216.GI16318@sirena.org.uk>
-	<dfeb90390904160317r1c1bfad0ndf2370120b18c8e1@mail.gmail.com>
-	<20090416101945.GJ16318@sirena.org.uk>
-	<20090416133143.10cbd1bf.jarkko.nikula@nokia.com>
-	<20090416103358.GL16318@sirena.org.uk>
+Subject: Re: [PATCH 1/2] ASoC: OMAP: Use single-phase for DSP
+ mode
+Date: Thu, 16 Apr 2009 14:15:37 +0300
+Message-ID: <20090416141537.ee7b531c.jarkko.nikula@nokia.com>
+References: <1239799136-28729-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1239799136-28729-2-git-send-email-peter.ujfalusi@nokia.com>
+	<20090416120750.f3cf99ed.jarkko.nikula@nokia.com>
+	<20090416093121.GB16318@sirena.org.uk>
+	<20090416125642.bc76035e.jarkko.nikula@nokia.com>
+	<20090416100701.GH16318@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7F5F5103956
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id C99F610381F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Apr 2009 12:46:40 +0200 (CEST)
-In-Reply-To: <20090416103358.GL16318@sirena.org.uk>
+	Thu, 16 Apr 2009 13:15:01 +0200 (CEST)
+In-Reply-To: <20090416100701.GH16318@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,32 +28,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: ext Mark Brown <broonie@sirena.org.uk>
-Cc: Arun KS <getarunks@gmail.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 16 Apr 2009 12:33:58 +0200
+On Thu, 16 Apr 2009 12:07:01 +0200
 ext Mark Brown <broonie@sirena.org.uk> wrote:
 
-> On Thu, Apr 16, 2009 at 01:31:43PM +0300, Jarkko Nikula wrote:
-> > ext Mark Brown <broonie@sirena.org.uk> wrote:
+> > I also believe that quite many developers may be using linux-omap
+> > tree only for developing e.g. new machine or codec driver and there
+> > is a risk that then error might populate into those drivers as well
+> > and we don't catch it when patches are based on topic/asoc and sent
+> > here for review.
 > 
-> > > Could you try the test with no data on the left channel?  I
-> > > suspect that the LSB of the left channel may be being processed
-> > > as the MSB of the right channel.
-> 
-> > I'm wondering why the left channel is still playing fine?
-> 
-> If you drop the LSB of data it will normally sound fine but the signal
-> level will be reduced - the effects are much less obvious when testing
-> by ear than errors in the MSB.
+> *sigh*, that's true - a lot of the OMAP folks don't seem to want to
+> move outside of linux-omap so I'd expect a lot of stuff wouldn't get
+> pushed here at all.  I've pulled the changes over.
 
-I meant if there is one bit difference or bit clock polarity is wrong
-then the both channels should be corrupted? At least the AIC33 is
-behaving so.
-
-I was thinking can the codec go out-of-sync during bit transmission
-of left followed by right channel data and resynchronize back after next
-FS change but this really sounds bit too far reason to me.
+Yes true, it has been previously junkyard for all kind of code but
+luckily this is changing and linux-omap is gradually moving towards
+queue for mainline since Tony is not accepting code anymore outside of
+OMAP core :-)
 
 
 Jarkko
