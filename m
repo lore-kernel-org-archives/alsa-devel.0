@@ -1,19 +1,20 @@
-From: Ben Dooks <ben-linux@fluff.org>
-Subject: [PATCH] ASoC: Fix s3c-i2s-v2.c snd_soc_dai changes
-Date: Thu, 16 Apr 2009 10:32:22 +0100
-Message-ID: <1239874343-7280-4-git-send-email-ben-linux@fluff.org>
-References: <1239874343-7280-1-git-send-email-ben-linux@fluff.org>
-	<1239874343-7280-2-git-send-email-ben-linux@fluff.org>
-	<1239874343-7280-3-git-send-email-ben-linux@fluff.org>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 1/2] ASoC: OMAP: Use single-phase for DSP
+	mode
+Date: Thu, 16 Apr 2009 12:43:00 +0300
+Message-ID: <200904161243.01010.peter.ujfalusi@nokia.com>
+References: <1239799136-28729-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20090416120750.f3cf99ed.jarkko.nikula@nokia.com>
+	<20090416093121.GB16318@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from teyla.home.fluff.org (aeryn.fluff.org.uk [87.194.8.8])
-	by alsa0.perex.cz (Postfix) with ESMTP id 971A0103959
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 46804103936
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Apr 2009 11:36:10 +0200 (CEST)
-In-Reply-To: <1239874343-7280-3-git-send-email-ben-linux@fluff.org>
+	Thu, 16 Apr 2009 11:43:29 +0200 (CEST)
+In-Reply-To: <20090416093121.GB16318@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,38 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
-Cc: Ben Dooks <ben-linux@fluff.org>
+To: ext Mark Brown <broonie@sirena.org.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikula Jarkko (Nokia-D/Helsinki)" <jarkko.nikula@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fix the build error in s3c-i2s-v2.c caused by
-a change to the snd_soc_dai ops field.
+On Thursday 16 April 2009 12:31:21 ext Mark Brown wrote:
+> On Thu, Apr 16, 2009 at 12:07:50PM +0300, Jarkko Nikula wrote:
+> > I did a little bit of hacking and testing with this to see are can this
+> > even be a fix on top of my DSP_B fix for 2.6.30 but looks like there is
+>
+> Hrm.  I'd merged your DSP_B fix for 2.6.31 not 2.6.30 since it seemed
+> to be needed for new things like the TWL4030 4 channel mode and the
+> existing boards were apparently OK in 2.6.29.  Do you think it's urgent
+> enough to pull over to 2.6.30 (I've not pushed to Takashi yet)?
 
-Signed-off-by: Ben Dooks <ben-linux@fluff.org>
----
- sound/soc/s3c24xx/s3c-i2s-v2.c |   10 ++++++----
- 1 files changed, 6 insertions(+), 4 deletions(-)
+Well, the DSP_B mode was broken for OMAP, the osk5912 with DSP_B mode was a=
+lso =
 
-diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.c b/sound/soc/s3c24xx/s3c-i2s-v2.c
-index 295a4c9..b983ad7 100644
---- a/sound/soc/s3c24xx/s3c-i2s-v2.c
-+++ b/sound/soc/s3c24xx/s3c-i2s-v2.c
-@@ -624,10 +624,12 @@ static int s3c2412_i2s_resume(struct snd_soc_dai *dai)
- 
- int s3c_i2sv2_register_dai(struct snd_soc_dai *dai)
- {
--	dai->ops.trigger = s3c2412_i2s_trigger;
--	dai->ops.hw_params = s3c2412_i2s_hw_params;
--	dai->ops.set_fmt = s3c2412_i2s_set_fmt;
--	dai->ops.set_clkdiv = s3c2412_i2s_set_clkdiv;
-+	struct snd_soc_dai_ops *ops = dai->ops;
-+
-+	ops->trigger = s3c2412_i2s_trigger;
-+	ops->hw_params = s3c2412_i2s_hw_params;
-+	ops->set_fmt = s3c2412_i2s_set_fmt;
-+	ops->set_clkdiv = s3c2412_i2s_set_clkdiv;
- 
- 	dai->suspend = s3c2412_i2s_suspend;
- 	dai->resume = s3c2412_i2s_resume;
--- 
-1.5.6.5
+broken in 2.6.29. I think the reason that we have not heard any screams =
+
+regarding to broken DSP_B mode, that no one actually used osk5912 with 2.6.=
+29?
+
+>
+> I've applied both Peter's patches - thanks.
+
+-- =
+
+P=E9ter
