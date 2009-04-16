@@ -1,17 +1,23 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] hdspm: native float
-Date: Thu, 16 Apr 2009 12:01:10 +0200
-Message-ID: <49E701E6.3090500@ladisch.de>
-References: <1239729105.18545.12.camel@x200.watzmann.local>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 1/2] ASoC: OMAP: Use single-phase for
+	DSP	mode
+Date: Thu, 16 Apr 2009 11:07:01 +0100
+Message-ID: <20090416100701.GH16318@sirena.org.uk>
+References: <1239799136-28729-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1239799136-28729-2-git-send-email-peter.ujfalusi@nokia.com>
+	<20090416120750.f3cf99ed.jarkko.nikula@nokia.com>
+	<20090416093121.GB16318@sirena.org.uk>
+	<20090416125642.bc76035e.jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id CECD3103981
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1422C10396F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Apr 2009 12:01:08 +0200 (CEST)
-In-Reply-To: <1239729105.18545.12.camel@x200.watzmann.local>
+	Thu, 16 Apr 2009 12:07:02 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20090416125642.bc76035e.jarkko.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,29 +27,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Florian Faber <faber@faberman.de>
-Cc: alsa-devel@alsa-project.org
+To: Jarkko Nikula <jarkko.nikula@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Florian Faber wrote:
-> diff a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+On Thu, Apr 16, 2009 at 12:56:42PM +0300, Jarkko Nikula wrote:
 
-Please use unified diff format and add Signed-off-by; see
-linux/Documentation/SubmittingPatches.
+> I also believe that quite many developers may be using linux-omap tree
+> only for developing e.g. new machine or codec driver and there is a
+> risk that then error might populate into those drivers as well and we
+> don't catch it when patches are based on topic/asoc and sent here for
+> review.
 
-> >  *      Modified 2009-04-14 for native float support by Florian Faber
-> >  *                                               <faber@faberman.de>
-> >  *
-
-Changelogs are now in git.
-
-> > 	/* Switch to native float format if requested */
-> > ...
-> > 	hdspm_write(hdspm, HDSPM_controlRegister, hdspm->control_register);
-
-This looks like a global change.  What happens when playback and
-recording want to use different formats?
-
-
-Best regards,
-Clemens
+*sigh*, that's true - a lot of the OMAP folks don't seem to want to move
+outside of linux-omap so I'd expect a lot of stuff wouldn't get pushed
+here at all.  I've pulled the changes over.
