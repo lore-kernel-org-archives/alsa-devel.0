@@ -1,15 +1,15 @@
 From: Karsten Wiese <fzu@wemgehoertderstaat.de>
-Subject: [PATCH] us122l: Fix signedness in comparisions
-Date: Thu, 16 Apr 2009 19:35:01 +0200
-Message-ID: <200904161935.01883.fzu@wemgehoertderstaat.de>
+Subject: [PATCH] us122l: add snd_us122l_free()
+Date: Thu, 16 Apr 2009 19:38:50 +0200
+Message-ID: <200904161938.50539.fzu@wemgehoertderstaat.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout2.freenet.de (mout2.freenet.de [195.4.92.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id BE7E2103955
+Received: from mout1.freenet.de (mout1.freenet.de [195.4.92.91])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0B364103978
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Apr 2009 19:38:45 +0200 (CEST)
+	Thu, 16 Apr 2009 19:38:58 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,148 +24,66 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, stable@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Within 2.6.30's mergewindow, struct urb's transfer_buffer_length has become
-unsigned. This changed an "int > int" comparision to an "unsigned > int" one
-in snd_usb_122l.
-Fix this by using a local int variable instead of urb->transfer_buffer_length
-in comparisions.
-
-Shorten playback_prep_freqn() a bit and tweak error-paths in
-usb_stream_prepare_playback().
+Use it to clean up snd_us122l_card_used[].
 
 Signed-off-by: Karsten Wiese <fzu@wemgehoertderstaat.de>
 Cc: stable@kernel.org
 ---
- sound/usb/usx2y/usb_stream.c |   67 +++++++++++++++++++-----------------------
- 1 files changed, 30 insertions(+), 37 deletions(-)
+ sound/usb/usx2y/us122l.c |   16 ++++++++++++----
+ 1 files changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/sound/usb/usx2y/usb_stream.c b/sound/usb/usx2y/usb_stream.c
-index 24393da..12ae034 100644
---- a/sound/usb/usx2y/usb_stream.c
-+++ b/sound/usb/usx2y/usb_stream.c
-@@ -33,32 +33,26 @@ static unsigned usb_stream_next_packet_size(struct usb_stream_kernel *sk)
- static void playback_prep_freqn(struct usb_stream_kernel *sk, struct urb *urb)
+diff --git a/sound/usb/usx2y/us122l.c b/sound/usb/usx2y/us122l.c
+index 012ff1f..e0385ce 100644
+--- a/sound/usb/usx2y/us122l.c
++++ b/sound/usb/usx2y/us122l.c
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (C) 2007, 2008 Karsten Wiese <fzu@wemgehoertderstaat.de>
++ * Copyright (C) 2007-2009 Karsten Wiese <fzu@wemgehoertderstaat.de>
+  *
+  * This program is free software; you can redistribute it and/or modify it
+  * under the terms of the GNU General Public License as published by the
+@@ -26,7 +26,7 @@
+ #include "us122l.h"
+ 
+ MODULE_AUTHOR("Karsten Wiese <fzu@wemgehoertderstaat.de>");
+-MODULE_DESCRIPTION("TASCAM "NAME_ALLCAPS" Version 0.5");
++MODULE_DESCRIPTION("TASCAM "NAME_ALLCAPS" Version 0.6");
+ MODULE_LICENSE("GPL");
+ 
+ static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-max */
+@@ -474,6 +474,14 @@ static bool us122l_create_card(struct snd_card *card)
+ 	return true;
+ }
+ 
++static void snd_us122l_free(struct snd_card *card)
++{
++	struct us122l	*us122l = US122L(card);
++	int		index = us122l->chip.index;
++	if (index >= 0  &&  index < SNDRV_CARDS)
++		snd_us122l_card_used[index] = 0;
++}
++
+ static int usx2y_create_card(struct usb_device *device, struct snd_card **cardp)
  {
- 	struct usb_stream *s = sk->s;
--	unsigned l = 0;
--	int pack;
+ 	int		dev;
+@@ -490,7 +498,7 @@ static int usx2y_create_card(struct usb_device *device, struct snd_card **cardp)
+ 	if (err < 0)
+ 		return err;
+ 	snd_us122l_card_used[US122L(card)->chip.index = dev] = 1;
 -
--	urb->iso_frame_desc[0].offset = 0;
--	urb->iso_frame_desc[0].length =	usb_stream_next_packet_size(sk);
--	sk->out_phase = sk->out_phase_peeked;
--	urb->transfer_buffer_length = urb->iso_frame_desc[0].length;
--
--	for (pack = 1; pack < sk->n_o_ps; pack++) {
--		l = usb_stream_next_packet_size(sk);
--		if (s->idle_outsize + urb->transfer_buffer_length + l >
--		    s->period_size)
-+	int pack, lb = 0;
-+
-+	for (pack = 0; pack < sk->n_o_ps; pack++) {
-+		int l = usb_stream_next_packet_size(sk);
-+		if (s->idle_outsize + lb + l > s->period_size)
- 			goto check;
- 
- 		sk->out_phase = sk->out_phase_peeked;
--		urb->iso_frame_desc[pack].offset = urb->transfer_buffer_length;
-+		urb->iso_frame_desc[pack].offset = lb;
- 		urb->iso_frame_desc[pack].length = l;
--		urb->transfer_buffer_length += l;
-+		lb += l;
- 	}
--	snd_printdd(KERN_DEBUG "%i\n", urb->transfer_buffer_length);
-+	snd_printdd(KERN_DEBUG "%i\n", lb);
- 
- check:
- 	urb->number_of_packets = pack;
--	s->idle_outsize += urb->transfer_buffer_length - s->period_size;
-+	urb->transfer_buffer_length = lb;
-+	s->idle_outsize += lb - s->period_size;
- 	snd_printdd(KERN_DEBUG "idle=%i ul=%i ps=%i\n", s->idle_outsize,
--		    urb->transfer_buffer_length, s->period_size);
-+		    lb, s->period_size);
- }
- 
- static void init_pipe_urbs(struct usb_stream_kernel *sk, unsigned use_packsize,
-@@ -282,21 +276,20 @@ static int usb_stream_prepare_playback(struct usb_stream_kernel *sk,
- 	struct usb_stream *s = sk->s;
- 	struct urb *io;
- 	struct usb_iso_packet_descriptor *id, *od;
--	int p, l = 0;
-+	int p = 0, lb = 0, l = 0;
- 
- 	io = sk->idle_outurb;
- 	od = io->iso_frame_desc;
--	io->transfer_buffer_length = 0;
- 
--	for (p = 0; s->sync_packet < 0; ++p, ++s->sync_packet) {
-+	for (; s->sync_packet < 0; ++p, ++s->sync_packet) {
- 		struct urb *ii = sk->completed_inurb;
- 		id = ii->iso_frame_desc +
- 			ii->number_of_packets + s->sync_packet;
- 		l = id->actual_length;
- 
- 		od[p].length = l;
--		od[p].offset = io->transfer_buffer_length;
--		io->transfer_buffer_length += l;
-+		od[p].offset = lb;
-+		lb += l;
++	card->private_free = snd_us122l_free;
+ 	US122L(card)->chip.dev = device;
+ 	US122L(card)->chip.card = card;
+ 	mutex_init(&US122L(card)->mutex);
+@@ -584,7 +592,7 @@ static void snd_us122l_disconnect(struct usb_interface *intf)
  	}
  
- 	for (;
-@@ -304,38 +297,38 @@ static int usb_stream_prepare_playback(struct usb_stream_kernel *sk,
- 	     ++p, ++s->sync_packet) {
- 		l = inurb->iso_frame_desc[s->sync_packet].actual_length;
+ 	usb_put_intf(intf);
+-	usb_put_dev(US122L(card)->chip.dev);
++	usb_put_dev(us122l->chip.dev);
  
--		if (s->idle_outsize + io->transfer_buffer_length + l >
--		    s->period_size)
-+		if (s->idle_outsize + lb + l > s->period_size)
- 			goto check_ok;
- 
- 		od[p].length = l;
--		od[p].offset = io->transfer_buffer_length;
--		io->transfer_buffer_length += l;
-+		od[p].offset = lb;
-+		lb += l;
- 	}
- 
- check_ok:
- 	s->sync_packet -= inurb->number_of_packets;
--	if (s->sync_packet < -2 || s->sync_packet > 0) {
-+	if (unlikely(s->sync_packet < -2 || s->sync_packet > 0)) {
- 		snd_printk(KERN_WARNING "invalid sync_packet = %i;"
- 			   " p=%i nop=%i %i %x %x %x > %x\n",
- 			   s->sync_packet, p, inurb->number_of_packets,
--			   s->idle_outsize + io->transfer_buffer_length + l,
--			   s->idle_outsize, io->transfer_buffer_length,  l,
-+			   s->idle_outsize + lb + l,
-+			   s->idle_outsize, lb,  l,
- 			   s->period_size);
- 		return -1;
- 	}
--	if (io->transfer_buffer_length % s->cfg.frame_size) {
-+	if (unlikely(lb % s->cfg.frame_size)) {
- 		snd_printk(KERN_WARNING"invalid outsize = %i\n",
--			   io->transfer_buffer_length);
-+			   lb);
- 		return -1;
- 	}
--	s->idle_outsize += io->transfer_buffer_length - s->period_size;
-+	s->idle_outsize += lb - s->period_size;
- 	io->number_of_packets = p;
--	if (s->idle_outsize > 0) {
--		snd_printk(KERN_WARNING "idle=%i\n", s->idle_outsize);
--		return -1;
--	}
--	return 0;
-+	io->transfer_buffer_length = lb;
-+	if (s->idle_outsize <= 0)
-+		return 0;
-+
-+	snd_printk(KERN_WARNING "idle=%i\n", s->idle_outsize);
-+	return -1;
- }
- 
- static void prepare_inurb(int number_of_packets, struct urb *iu)
+ 	while (atomic_read(&us122l->mmap_count))
+ 		msleep(500);
 -- 
 1.6.0.6
