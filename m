@@ -1,19 +1,19 @@
 From: Naresh Medisetty <naresh@ti.com>
-Subject: [PATCH v2 2/6] ARM: DaVinci: ASoC: Add the platform
-	devices for ASP
-Date: Thu, 16 Apr 2009 18:42:15 -0400
-Message-ID: <1239921735-26911-1-git-send-email-naresh@ti.com>
+Subject: [PATCH v2 4/6] ARM: DaVinci: ASoC: Add dummy codec
+	support
+Date: Thu, 16 Apr 2009 18:44:54 -0400
+Message-ID: <1239921894-26973-1-git-send-email-naresh@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3BF8C10394E
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6436A103920
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Apr 2009 13:30:09 +0200 (CEST)
+	Thu, 16 Apr 2009 13:32:57 +0200 (CEST)
 Received: from dflp53.itg.ti.com ([128.247.5.6])
-	by devils.ext.ti.com (8.13.7/8.13.7) with ESMTP id n3GBU2SC020990
-	for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2009 06:30:07 -0500
+	by bear.ext.ti.com (8.13.7/8.13.7) with ESMTP id n3GBWp7I026616
+	for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2009 06:32:56 -0500
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,299 +23,182 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: davinci-linux-open-source@linux.davincidsp.com
-Cc: alsa-devel@alsa-project.org, Naresh Medisetty <naresh@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: davinci-linux-open-source@linux.davincidsp.com, Steve Chen <schen@mvista.com>, "Naresh.Medisetty" <naresh@ti.com>, Pavel Kiryukhin <pkiryukhin@ru.mvista.com>
 List-Id: alsa-devel@alsa-project.org
 
-1)Registers the platform devices for ASP on dm355, dm644x and dm646x so that
-the machine driver can probe to get ASP related platform data.
-2)Move towards definition of the asp clocks using phyisical name(for dm355 and
-dm644x)
+From: Naresh.Medisetty <naresh@ti.com>
+
+McASP on DM646x can operate in DIT (S/PDIF) where no codec is needed.
+This patch provides stub codec that can be used in these configurations.
+On DM646x EVM the McASP1 is connected to the S/PDIF out.
+
+Signed-off-by: Steve Chen <schen@mvista.com>
+Signed-off-by: Pavel Kiryukhin <pkiryukhin@ru.mvista.com>
 Signed-off-by: Naresh Medisetty <naresh@ti.com>
 ---
-This patch applies to the DaVinci git tree available at
-http://git.kernel.org/?p=linux/kernel/git/khilman/linux-davinci.git
+This patch applies against ALSA mainline - that's the topic/asoc
+branch of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
 
- arch/arm/mach-davinci/dm355.c            |   29 ++++++++++++-
- arch/arm/mach-davinci/dm644x.c           |   27 +++++++++++-
- arch/arm/mach-davinci/dm646x.c           |   67 ++++++++++++++++++++++++++++++
- arch/arm/mach-davinci/include/mach/asp.h |   39 ++++++++++++++++-
- 4 files changed, 157 insertions(+), 5 deletions(-)
+ sound/soc/codecs/Kconfig             |    3 +
+ sound/soc/codecs/Makefile            |    2 +
+ sound/soc/codecs/spdif_transciever.c |   69 ++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/spdif_transciever.h |   17 ++++++++
+ sound/soc/davinci/Kconfig            |    1 +
+ 5 files changed, 92 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/codecs/spdif_transciever.c
+ create mode 100644 sound/soc/codecs/spdif_transciever.h
 
-diff --git a/arch/arm/mach-davinci/dm355.c b/arch/arm/mach-davinci/dm355.c
-index c20211c..222c3f3 100755
---- a/arch/arm/mach-davinci/dm355.c
-+++ b/arch/arm/mach-davinci/dm355.c
-@@ -23,6 +23,7 @@
- #include <mach/psc.h>
- #include <mach/mux.h>
- #include <mach/irqs.h>
-+#include <mach/asp.h>
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 121d63f..154c64c 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -22,6 +22,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_TLV320AIC23 if I2C
+ 	select SND_SOC_TLV320AIC26 if SPI_MASTER
+ 	select SND_SOC_TLV320AIC3X if I2C
++	select SND_SOC_SPDIF
+ 	select SND_SOC_TWL4030 if TWL4030_CORE
+ 	select SND_SOC_UDA134X
+ 	select SND_SOC_UDA1380 if I2C
+@@ -93,6 +94,8 @@ config SND_SOC_SSM2602
  
- #include "clock.h"
- #include "mux.h"
-@@ -351,8 +352,8 @@ static struct davinci_clk dm355_clks[] = {
- 	CLK(NULL, "uart1", &uart1_clk),
- 	CLK(NULL, "uart2", &uart2_clk),
- 	CLK("i2c_davinci.1", NULL, &i2c_clk),
--	CLK("soc-audio.0", NULL, &asp0_clk),
--	CLK("soc-audio.1", NULL, &asp1_clk),
-+	CLK(NULL, "asp0", &asp0_clk),
-+	CLK(NULL, "asp1", &asp1_clk),
- 	CLK("davinci_mmc.0", NULL, &mmcsd0_clk),
- 	CLK("davinci_mmc.1", NULL, &mmcsd1_clk),
- 	CLK(NULL, "spi0", &spi0_clk),
-@@ -540,6 +541,29 @@ static struct platform_device dm355_edma_device = {
- 	.resource		= edma_resources,
- };
+ config SND_SOC_TLV320AIC23
+ 	tristate
++config SND_SOC_SPDIF
++        tristate
  
-+/* DM335 EVM uses ASP1; line-out is a stereo mini-jack */
-+static struct resource dm355_evm_snd_resources[] = {
-+	{
-+		.start	= DAVINCI_ASP1_BASE,
-+		.end	= DAVINCI_ASP1_BASE + SZ_8K - 1,
-+		.flags	= IORESOURCE_MEM,
+ config SND_SOC_TLV320AIC26
+ 	tristate "TI TLV320AIC26 Codec support" if SND_SOC_OF_SIMPLE
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index d8e15a4..10d5729 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -10,6 +10,7 @@ snd-soc-ssm2602-objs := ssm2602.o
+ snd-soc-tlv320aic23-objs := tlv320aic23.o
+ snd-soc-tlv320aic26-objs := tlv320aic26.o
+ snd-soc-tlv320aic3x-objs := tlv320aic3x.o
++snd-soc-spdif-objs := spdif_transciever.o
+ snd-soc-twl4030-objs := twl4030.o
+ snd-soc-uda134x-objs := uda134x.o
+ snd-soc-uda1380-objs := uda1380.o
+@@ -43,6 +44,7 @@ obj-$(CONFIG_SND_SOC_SSM2602)	+= snd-soc-ssm2602.o
+ obj-$(CONFIG_SND_SOC_TLV320AIC23)	+= snd-soc-tlv320aic23.o
+ obj-$(CONFIG_SND_SOC_TLV320AIC26)	+= snd-soc-tlv320aic26.o
+ obj-$(CONFIG_SND_SOC_TLV320AIC3X)	+= snd-soc-tlv320aic3x.o
++obj-$(CONFIG_SND_SOC_SPDIF)	+= snd-soc-spdif.o
+ obj-$(CONFIG_SND_SOC_TWL4030)	+= snd-soc-twl4030.o
+ obj-$(CONFIG_SND_SOC_UDA134X)	+= snd-soc-uda134x.o
+ obj-$(CONFIG_SND_SOC_UDA1380)	+= snd-soc-uda1380.o
+diff --git a/sound/soc/codecs/spdif_transciever.c b/sound/soc/codecs/spdif_transciever.c
+new file mode 100644
+index 0000000..45f56ae
+--- /dev/null
++++ b/sound/soc/codecs/spdif_transciever.c
+@@ -0,0 +1,69 @@
++/*
++ * ALSA SoC DaVinci DIT driver
++ *
++ *  TI DaVinci audio controller can operate in DIT (SPDI/F) where
++ *  no codec is needed.  This file provides stub codec that can be used
++ *  in these configurations.
++ *
++ * Author:      Steve Chen,  <schen@mvista.com>
++ * Copyright:   (C) 2009 MontaVista Software, Inc., <source@mvista.com>
++ * Copyright:   (C) 2009  Texas Instruments, India
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <sound/soc.h>
++#include <sound/pcm.h>
++
++#define STUB_RATES	SNDRV_PCM_RATE_8000_96000
++#define STUB_FORMATS	SNDRV_PCM_FMTBIT_S16_LE
++
++
++struct snd_soc_dai dit_stub_dai = {
++	.name = "DIT",
++	.playback = {
++		.stream_name = "Playback",
++		.channels_min = 1,
++		.channels_max = 384,
++		.rates = STUB_RATES,
++		.formats = STUB_FORMATS,
 +	},
 +};
 +
-+static struct evm_snd_platform_data dm355_evm_snd_data = {
-+	.clk_name	= "asp1",
-+	.tx_dma_ch	= DAVINCI_DMA_ASP1_TX,
-+	.rx_dma_ch	= DAVINCI_DMA_ASP1_RX,
-+};
++static int davinci_dit_probe(struct platform_device *pdev)
++{
++	return snd_soc_register_dai(&dit_stub_dai);
++}
 +
-+static struct platform_device dm355_asoc_device = {
-+	.name				= "davinci-asoc",
-+	.id					= -1,
-+	.dev.platform_data	= &dm355_evm_snd_data,
-+	.num_resources		= ARRAY_SIZE(dm355_evm_snd_resources),
-+	.resource			= dm355_evm_snd_resources,
-+};
++static int davinci_dit_remove(struct platform_device *pdev)
++{
++	snd_soc_unregister_dai(&dit_stub_dai);
++	return 0;
++}
 +
- /*----------------------------------------------------------------------*/
- 
- void __init dm355_init(void)
-@@ -555,6 +579,7 @@ static int __init dm355_init_devices(void)
- 
- 	davinci_cfg_reg(DM355_INT_EDMA_CC);
- 	platform_device_register(&dm355_edma_device);
-+	platform_device_register(&dm355_asoc_device);
- 	return 0;
- }
- postcore_initcall(dm355_init_devices);
-diff --git a/arch/arm/mach-davinci/dm644x.c b/arch/arm/mach-davinci/dm644x.c
-index 9878c17..01112ca 100755
---- a/arch/arm/mach-davinci/dm644x.c
-+++ b/arch/arm/mach-davinci/dm644x.c
-@@ -20,6 +20,7 @@
- #include <mach/irqs.h>
- #include <mach/psc.h>
- #include <mach/mux.h>
-+#include <mach/asp.h>
- 
- #include "clock.h"
- #include "mux.h"
-@@ -296,7 +297,7 @@ struct davinci_clk dm644x_clks[] = {
- 	CLK("davinci_emac.1", NULL, &emac_clk),
- 	CLK("i2c_davinci.1", NULL, &i2c_clk),
- 	CLK("palm_bk3710", NULL, &ide_clk),
--	CLK("soc-audio.0", NULL, &asp_clk),
-+	CLK(NULL, "asp0", &asp_clk),
- 	CLK("davinci_mmc.0", NULL, &mmcsd_clk),
- 	CLK(NULL, "spi", &spi_clk),
- 	CLK(NULL, "gpio", &gpio_clk),
-@@ -463,6 +464,29 @@ static struct platform_device dm644x_edma_device = {
- 	.resource		= edma_resources,
- };
- 
-+/* DM6446 EVM uses ASP0; line-out is a pair of RCA jacks */
-+static struct resource dm644x_evm_snd_resources[] = {
-+	{
-+		.start	= DAVINCI_ASP0_BASE,
-+		.end	= DAVINCI_ASP0_BASE + SZ_8K - 1,
-+		.flags	= IORESOURCE_MEM,
++static struct platform_driver davinci_dit_driver = {
++	.probe		= davinci_dit_probe,
++	.remove		= davinci_dit_remove,
++	.driver		= {
++		.name	= "davinci-dit",
++		.owner	= THIS_MODULE,
 +	},
 +};
 +
-+static struct evm_snd_platform_data dm644x_evm_snd_data = {
-+	.clk_name	= "asp0",
-+	.tx_dma_ch	= DAVINCI_DMA_ASP0_TX,
-+	.rx_dma_ch	= DAVINCI_DMA_ASP0_RX,
-+};
++static int __init dit_modinit(void)
++{
++	return platform_driver_register(&davinci_dit_driver);
++}
 +
-+static struct platform_device dm644x_asoc_device = {
-+	.name				= "davinci-asoc",
-+	.id					= -1,
-+	.dev.platform_data	= &dm644x_evm_snd_data,
-+	.num_resources		= ARRAY_SIZE(dm644x_evm_snd_resources),
-+	.resource			= dm644x_evm_snd_resources,
-+};
++static void __exit dit_exit(void)
++{
++	platform_driver_unregister(&davinci_dit_driver);
++}
 +
- /*----------------------------------------------------------------------*/
- #if defined(CONFIG_TI_DAVINCI_EMAC) || defined(CONFIG_TI_DAVINCI_EMAC_MODULE)
- 
-@@ -495,6 +519,7 @@ static int __init dm644x_init_devices(void)
- 		return 0;
- 
- 	platform_device_register(&dm644x_edma_device);
-+	platform_device_register(&dm644x_asoc_device);
- 	return 0;
- }
- postcore_initcall(dm644x_init_devices);
-diff --git a/arch/arm/mach-davinci/dm646x.c b/arch/arm/mach-davinci/dm646x.c
-index 39ffd17..bb8c65a 100755
---- a/arch/arm/mach-davinci/dm646x.c
-+++ b/arch/arm/mach-davinci/dm646x.c
-@@ -20,6 +20,7 @@
- #include <mach/irqs.h>
- #include <mach/psc.h>
- #include <mach/mux.h>
-+#include <mach/asp.h>
- 
- #include "clock.h"
- #include "mux.h"
-@@ -499,6 +500,70 @@ static struct platform_device dm646x_edma_device = {
- 	.resource		= edma_resources,
- };
- 
-+static u8 dm6467_iis_serializer_direction[] = {
-+       TX_MODE, RX_MODE, INACTIVE_MODE, INACTIVE_MODE,
-+};
++module_init(dit_modinit);
++module_exit(dit_exit);
 +
-+static u8 dm6467_dit_serializer_direction[] = {
-+       TX_MODE, INACTIVE_MODE, INACTIVE_MODE, INACTIVE_MODE,
-+};
+diff --git a/sound/soc/codecs/spdif_transciever.h b/sound/soc/codecs/spdif_transciever.h
+new file mode 100644
+index 0000000..296f2eb
+--- /dev/null
++++ b/sound/soc/codecs/spdif_transciever.h
+@@ -0,0 +1,17 @@
++/*
++ * ALSA SoC DIT/DIR driver header
++ *
++ * Author:      Steve Chen,  <schen@mvista.com>
++ * Copyright:   (C) 2008 MontaVista Software, Inc., <source@mvista.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
 +
-+static struct evm_snd_platform_data dm6467_evm_snd_data[] = {
-+	{
-+		.clk_name       = "mcasp0",
-+		.tx_dma_ch      = DAVINCI_DM646X_DMA_MCASP0_AXEVT0,
-+		.rx_dma_ch      = DAVINCI_DM646X_DMA_MCASP0_AREVT0,
-+		.tx_dma_offset  = 0x400,
-+		.rx_dma_offset  = 0x400,
-+		.op_mode        = DAVINCI_MCASP_IIS_MODE,
-+		.num_serializer = 4,
-+		.tdm_slots      = 2,
-+		.serial_dir     = dm6467_iis_serializer_direction,
-+		.eventq_no      = EVENTQ_0,
-+	},
-+	{
-+		.clk_name       = "mcasp1",
-+		.tx_dma_ch      = DAVINCI_DM646X_DMA_MCASP1_AXEVT1,
-+		.rx_dma_ch      = -1,
-+		.tx_dma_offset  = 0x400,
-+		.rx_dma_offset  = 0,
-+		.op_mode        = DAVINCI_MCASP_DIT_MODE,
-+		.num_serializer = 4,
-+		.tdm_slots      = 32,
-+		.serial_dir     = dm6467_dit_serializer_direction,
-+		.eventq_no      = EVENTQ_0,
-+	},
-+};
++#ifndef CODEC_STUBS_H
++#define CODEC_STUBS_H
 +
-+static struct resource dm6467_evm_snd_resources[] = {
-+	{
-+		.name	= "mcasp0",
-+		.start 	= DAVINCI_DM646X_MCASP0_REG_BASE,
-+		.end 	= DAVINCI_DM646X_MCASP0_REG_BASE + (SZ_1K << 1) - 1,
-+		.flags 	= IORESOURCE_MEM,
-+	},
-+	{
-+		.name	= "mcasp1",
-+		.start	= DAVINCI_DM646X_MCASP1_REG_BASE,
-+		.end	= DAVINCI_DM646X_MCASP1_REG_BASE + (SZ_1K << 1) - 1,
-+		.flags	= IORESOURCE_MEM,
-+	},
-+};
++extern struct snd_soc_dai dit_stub_dai;
 +
-+static struct platform_device dm646x_asoc_device = {
-+	.name				= "davinci-asoc",
-+	.id					= -1,
-+	.dev.platform_data	= dm6467_evm_snd_data,
-+	.num_resources		= ARRAY_SIZE(dm6467_evm_snd_resources),
-+	.resource			= dm6467_evm_snd_resources,
-+};
-+
-+static struct platform_device dm646x_dit_device = {
-+	.name				= "davinci-dit",
-+	.id					= -1,
-+
-+};
-+
- /*----------------------------------------------------------------------*/
- 
- #if defined(CONFIG_TI_DAVINCI_EMAC) || defined(CONFIG_TI_DAVINCI_EMAC_MODULE)
-@@ -532,6 +597,8 @@ static int __init dm646x_init_devices(void)
- 		return 0;
- 
- 	platform_device_register(&dm646x_edma_device);
-+	platform_device_register(&dm646x_asoc_device);
-+	platform_device_register(&dm646x_dit_device);
- 	return 0;
- }
- postcore_initcall(dm646x_init_devices);
-diff --git a/arch/arm/mach-davinci/include/mach/asp.h b/arch/arm/mach-davinci/include/mach/asp.h
-index e0abc43..1bb1f0b 100644
---- a/arch/arm/mach-davinci/include/mach/asp.h
-+++ b/arch/arm/mach-davinci/include/mach/asp.h
-@@ -5,21 +5,56 @@
- #define __ASM_ARCH_DAVINCI_ASP_H
- 
- #include <mach/irqs.h>
-+#include <mach/edma.h>
- 
--/* Bases of register banks */
-+/* Bases of dm644x and dm355 register banks */
- #define DAVINCI_ASP0_BASE	0x01E02000
- #define DAVINCI_ASP1_BASE	0x01E04000
- 
--/* EDMA channels */
-+
-+/* Bases of dm646x register banks */
-+#define	DAVINCI_DM646X_MCASP0_REG_BASE		0x01D01000
-+#define DAVINCI_DM646X_MCASP1_REG_BASE		0x01D01800
-+
-+/* EDMA channels of dm644x and dm355 */
- #define DAVINCI_DMA_ASP0_TX	2
- #define DAVINCI_DMA_ASP0_RX	3
- #define DAVINCI_DMA_ASP1_TX	8
- #define DAVINCI_DMA_ASP1_RX	9
- 
-+
-+/* EDMA channels of dm646x */
-+#define	DAVINCI_DM646X_DMA_MCASP0_AXEVT0	6
-+#define	DAVINCI_DM646X_DMA_MCASP0_AREVT0	9
-+#define	DAVINCI_DM646X_DMA_MCASP1_AXEVT1	12
- /* Interrupts */
- #define DAVINCI_ASP0_RX_INT	IRQ_MBRINT
- #define DAVINCI_ASP0_TX_INT	IRQ_MBXINT
- #define DAVINCI_ASP1_RX_INT	IRQ_MBRINT
- #define DAVINCI_ASP1_TX_INT	IRQ_MBXINT
- 
-+struct evm_snd_platform_data {
-+	char *clk_name;
-+	int tx_dma_ch;
-+	int rx_dma_ch;
-+	u32 tx_dma_offset;
-+	u32 rx_dma_offset;
-+	enum dma_event_q eventq_no;	/* event queue number */
-+	unsigned int codec_fmt;
-+
-+	/* McASP specific fields */
-+	int tdm_slots;
-+	u8 op_mode;
-+	u8 num_serializer;
-+	u8 *serial_dir;
-+};
-+
-+#define INACTIVE_MODE	0
-+#define TX_MODE		1
-+#define RX_MODE		2
-+
-+#define DAVINCI_MCASP_IIS_MODE	0
-+#define DAVINCI_MCASP_DIT_MODE	1
-+
-+
- #endif /* __ASM_ARCH_DAVINCI_ASP_H */
++#endif /* CODEC_STUBS_H */
+diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
+index 0ae84d4..03631a7 100644
+--- a/sound/soc/davinci/Kconfig
++++ b/sound/soc/davinci/Kconfig
+@@ -26,6 +26,7 @@ config  SND_DM6467_SOC_EVM
+         depends on SND_DAVINCI_SOC && MACH_DAVINCI_DM6467_EVM
+         select SND_DAVINCI_SOC_I2S_MCASP
+         select SND_SOC_TLV320AIC3X
++        select SND_SOC_SPDIF
+         help
+           Say Y if you want to add support for SoC audio on TI
+           DaVinci DM6467 EVM platform.
 -- 
 1.5.6
