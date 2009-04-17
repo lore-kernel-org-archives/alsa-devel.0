@@ -1,20 +1,23 @@
-From: James Gardiner <renidragsemaj@yahoo.com>
-Subject: Re: [ALSA - patch_sigmatel.c for HP dv4-1222nr laptop
-	9/9Patch to patch_sigmatel.c for HP dv4-1222nr laptop
-Date: Thu, 16 Apr 2009 22:39:35 -0700 (PDT)
-Message-ID: <730476.70849.qm@web54507.mail.re2.yahoo.com>
-References: <s5hprff2xew.wl%tiwai@suse.de>
-Reply-To: renidragsemaj@yahoo.com
+From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Subject: Re: [2.6.30-rc2][PATCH 1/2] ASoC: OMAP: Fix DSP_B
+ format in OMAP McBSP DAI driver
+Date: Fri, 17 Apr 2009 09:59:23 +0300
+Message-ID: <20090417095923.6392f82e.jarkko.nikula@nokia.com>
+References: <1239792497-31761-1-git-send-email-jarkko.nikula@nokia.com>
+	<20090416134724.dfb3e57a.jarkko.nikula@nokia.com>
+	<dfeb90390904160420l3461f155u25d632d22388391e@mail.gmail.com>
+	<200904161427.30707.peter.ujfalusi@nokia.com>
+	<dfeb90390904160605m478dbf66yf78a0c012c2efc58@mail.gmail.com>
+	<49E7A498.8060804@boundarydevices.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web54507.mail.re2.yahoo.com (web54507.mail.re2.yahoo.com
-	[206.190.49.157])
-	by alsa0.perex.cz (Postfix) with SMTP id DD3891037E3
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA3E32438D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Apr 2009 07:39:36 +0200 (CEST)
-In-Reply-To: <s5hprff2xew.wl%tiwai@suse.de>
+	Fri, 17 Apr 2009 08:58:47 +0200 (CEST)
+In-Reply-To: <49E7A498.8060804@boundarydevices.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,40 +27,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: ext Troy Kisky <troy.kisky@boundarydevices.com>
+Cc: Arun KS <getarunks@gmail.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ext Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 16 Apr 2009 23:35:20 +0200
+ext Troy Kisky <troy.kisky@boundarydevices.com> wrote:
 
-
-
-
---- On Tue, 4/14/09, Takashi Iwai <tiwai@suse.de> wrote:
-
+> Arun KS wrote:
+> > But when I2S is used there is no audio on Right channel(left channel
+> > is working fine).
+> > Thinks something is missing on tlv320aic23 driver.
+> > 
+> This sounds like the same problem Davinci has. From a comment in
+> davinci-i2s.c
 > 
-> Thanks for the patch.  The change looks almost good to me.
-> See some comments below
->
->
-> 
-> > +		spec->num_dmics = 1;
-> > +		spec->num_dmuxes = 2;
-> > +		stac92xx_auto_set_pinctl(codec, 0x1c, 2);
-> 
-> The number "2" doesn't look cute... 
-> 
-> Could you fix and repost the patch?
-> 
-> 
-> thanks,
-> 
-> Takashi
+> case SND_SOC_DAIFMT_I2S:
+>         /* Davinci doesn't support TRUE I2S, but some codecs will have
+>          * the left and right channels contiguous. This allows
+>          * dsp_a mode to be used with an inverted normal frame clk.
+>          * If your codec is master and does not have contiguous
+>          * channels, then you will have sound on only one channel.
+>          * Try using a different mode, or codec as slave.
+>          *
+>          * The TLV320AIC33 is an example of a codec where this works.
+>          * It has a variable bit clock frequency allowing it to have
+>          * valid data on every bit clock.
+>          *
+>          * The TLV320AIC23 is an example of a codec where this does
+> not
+>          * work. It has a fixed bit clock frequency with progressively
+>          * more empty bit clock slots between channels as the sample
+>          * rate is lowered.
+>          */
 
-Are you worried it looks like a magic number? Or am I supposed to be looking for something else?  Or would a '#define' be more what you're talking about?
+Interesting codec. Arun, how is the right channel working with I2S if
+you try to run with higher rate? E.g. aplay -r [48000 |
+96000] /dev/urandom
 
-Oh, and by the way, I figured out what pulseaudio was doing. I still don't like it, but it seems to be the norm for it.
+The I2S mode setup in tlv320aic23_set_dai_fmt looks correct.
 
-Can you (simple) explain to me what the PCI_QUIRK stuff does? I've tried adding to it to get the autodetect to work and I really don't know what I'm doing there. If not, manual setting is fine, I just wanted to make the patch work automatically. I've read the source, read your driver handbook, and I still don't get it. :P
 
-Thanks,
-James
+Jarkko
