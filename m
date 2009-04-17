@@ -1,18 +1,18 @@
 From: Karsten Wiese <fzu@wemgehoertderstaat.de>
-Subject: Re: [PATCH] us122l: Fix signedness in comparisions
-Date: Fri, 17 Apr 2009 13:23:05 +0200
-Message-ID: <200904171323.06068.fzu@wemgehoertderstaat.de>
-References: <200904161935.01883.fzu@wemgehoertderstaat.de>
-	<s5hy6tzahiu.wl%tiwai@suse.de>
+Subject: Re: [PATCH] us122l: add snd_us122l_free()
+Date: Fri, 17 Apr 2009 13:38:24 +0200
+Message-ID: <200904171338.24877.fzu@wemgehoertderstaat.de>
+References: <200904161938.50539.fzu@wemgehoertderstaat.de>
+	<s5hws9jahh0.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout3.freenet.de (mout3.freenet.de [195.4.92.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1D44410380E
+Received: from mout4.freenet.de (mout4.freenet.de [195.4.92.94])
+	by alsa0.perex.cz (Postfix) with ESMTP id DE6D810380E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Apr 2009 13:23:13 +0200 (CEST)
-In-Reply-To: <s5hy6tzahiu.wl%tiwai@suse.de>
+	Fri, 17 Apr 2009 13:38:30 +0200 (CEST)
+In-Reply-To: <s5hws9jahh0.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,18 +28,31 @@ Cc: alsa-devel@alsa-project.org, stable@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 Am Freitag 17 April 2009 schrieb Takashi Iwai:
-> At Thu, 16 Apr 2009 19:35:01 +0200,
+> At Thu, 16 Apr 2009 19:38:50 +0200,
 > Karsten Wiese wrote:
 > > 
-> > Within 2.6.30's mergewindow, struct urb's transfer_buffer_length has become
-> > unsigned. This changed an "int > int" comparision to an "unsigned > int" one
-> > in snd_usb_122l.
+> > Use it to clean up snd_us122l_card_used[].
+> > 
+> > Signed-off-by: Karsten Wiese <fzu@wemgehoertderstaat.de>
+> > Cc: stable@kernel.org
 > 
-> Does this cause any error, i.e. a real bug?  Otherwise this patch isn't
-> needed for stable kernel.
+> Is it really for stable kernel?  Any bug report for this?
 
-struct urb's transfer_buffer_length is still an int in 2.6.29.1.
-This patch wouldn't fix a bug in stable. I agree it is not needed for stable.
+This really is for stable too. The bug it fixes happens if one does:
+
+	Start on a pc with onboard soundcard at index 0.
+	$ modprobe snd_usb_us122l modprobe snd_usb_us122l index=2
+	plug US122L soundcard
+	$ cat /proc/asound/devices
+	last command shows the US122L soundcard is at index 2.
+
+	unplug US122L soundcard
+	plug US122L soundcard
+	$ cat /proc/asound/devices
+	last command shows the US122L soundcard is at index 1 now, which is the bug
+	the patch fixes.
 
 Thanks,
 Karsten
+
+	
