@@ -1,28 +1,15 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: SoC pxa2xx-ac97 + wm9705 +
-	touchscreen	suspend/resume
-Date: Sat, 18 Apr 2009 10:47:02 +0100
-Message-ID: <20090418094701.GA7236@sirena.org.uk>
-References: <20090402121348.GC9522@n2100.arm.linux.org.uk>
-	<20090402121803.GD4527@sirena.org.uk>
-	<20090402123844.GD9522@n2100.arm.linux.org.uk>
-	<20090402133124.GE9522@n2100.arm.linux.org.uk>
-	<20090402141200.GH4527@sirena.org.uk>
-	<20090402144017.GI9522@n2100.arm.linux.org.uk>
-	<20090402145330.GA21646@sirena.org.uk>
-	<20090402150922.GK9522@n2100.arm.linux.org.uk>
-	<20090402152234.GA24804@sirena.org.uk>
-	<20090418091153.GA28946@n2100.arm.linux.org.uk>
+From: reetesh chandran <reeteshchandran@yahoo.com>
+Subject: how to find the last plugged in USB headset ?
+Date: Sat, 18 Apr 2009 09:26:46 -0700 (PDT)
+Message-ID: <765681.23349.qm@web30007.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 85C0F24342
+Received: from web30007.mail.mud.yahoo.com (web30007.mail.mud.yahoo.com
+	[209.191.69.24]) by alsa0.perex.cz (Postfix) with SMTP id 7F08C244AB
 	for <alsa-devel@alsa-project.org>;
-	Sat, 18 Apr 2009 11:47:10 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20090418091153.GA28946@n2100.arm.linux.org.uk>
+	Sat, 18 Apr 2009 18:26:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,12 +19,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: alsa-devel@alsa-project.org, eric miao <eric.y.miao@gmail.com>, linux-arm-kernel@lists.arm.linux.org.uk, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Apr 18, 2009 at 10:11:53AM +0100, Russell King - ARM Linux wrote:
+Hi all,
 
-> so you might find this trivial patch useful.
+Is there a way to find the card number associated with the USB headset that was plugged in last. I am listening to udev events and I can find the card number by comparing the VendorId product Id combination. But if there are multiple devices of same VendorId and productId, how do I find the card number associated with the device that was plugged in the last ?
 
-Applied, thanks.
+Thanks in advance ?
+Reetesh
