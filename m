@@ -1,22 +1,21 @@
 From: Eric Miao <eric.y.miao@gmail.com>
-Subject: Re: [PATCH] General fix for Palm27x aSoC driver
-Date: Sun, 19 Apr 2009 21:52:04 +0800
-Message-ID: <f17812d70904190652s68420568pc4213f8e718d7a@mail.gmail.com>
-References: <200904121858.42931.marek.vasut@gmail.com>
-	<200904160645.17191.marek.vasut@gmail.com>
-	<200904171142.08879.marek.vasut@gmail.com>
-	<200904181902.31678.marek.vasut@gmail.com>
+Subject: Re: [PATCH] ASoC: pxa-ssp: Don't use SSCR0_SerClkDiv
+	and SSCR0_SCR
+Date: Sun, 19 Apr 2009 22:01:33 +0800
+Message-ID: <f17812d70904190701i5cea465anb9a982c33142f0df@mail.gmail.com>
+References: <1239961178-19122-1-git-send-email-philipp.zabel@gmail.com>
+	<20090417102257.GA10992@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6F486243F1
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.147])
+	by alsa0.perex.cz (Postfix) with ESMTP id 293B1243FC
 	for <alsa-devel@alsa-project.org>;
-	Sun, 19 Apr 2009 15:52:05 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 4so361794qwk.56
-	for <alsa-devel@alsa-project.org>; Sun, 19 Apr 2009 06:52:04 -0700 (PDT)
-In-Reply-To: <200904181902.31678.marek.vasut@gmail.com>
+	Sun, 19 Apr 2009 16:01:34 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 4so362879qwk.56
+	for <alsa-devel@alsa-project.org>; Sun, 19 Apr 2009 07:01:33 -0700 (PDT)
+In-Reply-To: <20090417102257.GA10992@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,22 +25,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Mark Brown <broonie@sirena.org.uk>, linux-arm-kernel@lists.arm.linux.org.uk
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.miao@marvell.com>, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
->> > > Marek,
->> > >
->> > > Any update?
->> >
->> > Sorry, LinuxEXPO takes place here so my sleep amount is reduced to about
->> > three hours a day ...
->> >
->> > I'll try asap (I hope today), sorry for the delay.
->>
->> Ok, this one should be fine with you
+On Fri, Apr 17, 2009 at 6:22 PM, Mark Brown <broonie@sirena.org.uk> wrote:
+> On Fri, Apr 17, 2009 at 11:39:38AM +0200, Philipp Zabel wrote:
 >
-> Any update from your side?
+>> To me, using ssp_dev seems to be cleaner, as all the places where
+>> ssp_set_scr is called, we already have an ssp_dev *ssp = priv->dev.ssp
+>> set up, which allows us to call ssp_set_scr(ssp, ...) instead of
+>> ssp_set_scr(&priv->dev, ...). Same for ssp_get_scr.
+>
+> Yeah, the combination of ssp_dev and ssp_device is icky in general and
+> largely historical as a result of a partially done transition of the
+> driver to ssp_device.
 >
 
-Applied, thanks.
+I'm working on that clean up. A lot of historical and dependency issues
+indeed.
+
+And the patch looks OK. The condition of cpu_is_pxa25x() might not
+be necessary though, ssp->type == PXA25x_SSP already implies that
+and is more specific.
