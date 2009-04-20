@@ -1,50 +1,38 @@
-From: Nicola Mfb <nicola.mfb@gmail.com>
-Subject: Asterisk 1.4.17 and alsa 1.0.19 dmix plugin problem.
-Date: Mon, 20 Apr 2009 20:22:21 +0200
-Message-ID: <359c5480904201122m7a45dbe8hd1f6b597dea57283@mail.gmail.com>
+From: Tino Keitel <tino.keitel@tikei.de>
+Subject: 2.6.29 regression: left audio channel broken after resume from
+	suspend with Intel HDA
+Date: Mon, 20 Apr 2009 20:40:24 +0200
+Message-ID: <20090420184024.GA10155@dose.home.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.159])
-	by alsa0.perex.cz (Postfix) with ESMTP id 37F2A244ED
-	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Apr 2009 20:22:22 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id 22so25002fge.21
-	for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2009 11:22:21 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754149AbZDTSkg@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
-I'm sorry if this is an old issue but I did not found help in
-archives/alsaweb/google and I'm new to alsa, so this report is what I
-guessed reading sources and compiling test apps for about 2 days, and
-the following assumptions may be completely wrong.
+Hi,
 
-Asterisk has an alsa channel that works fine when using plughw:0,0
-both for read and for writing, but if use plug:dmix/plug:dsnoop or
-default with a dmix/dsnoop wrapper in /etc/asound.conf it does not
-emit any sound. It uses select on poll fd descriptor to know if the
-pcm is ready to be sent output samples.
-The select will never return as it seems the dmix plugin is not able
-to signal when is ready.
-I noted that using snd_pcm_wait works well but cannot be used in
-asterisk as it needs to select on two fd.
-I guess that snd_pcm_wait with dmix check the shared memory and not
-the fd descriptor.
-So should poll/select be avoided completely in applications (as they
-does not know if the default pcm is a dmix) and asterisk alsa channel
-be rewritten or is there a workaround?
+since 2.6.29 and also with 2.6.29.1 the left audio channel of the
+digital output of my Mac mini Core 2 Duo is noisy.  This didn't happen
+with 2.6.28.  Unloading snd-hda-intel and reloading it does fix the
+noisy sound.
 
-Best Regards
+This happened with some older versions of the Linux kernel (with an
+older Mac mini Core Duo, I don't remeber which kernel version), but got
+fixed at some point.  Now it happens again with 2.6.29.
 
-      Nicola
+Here is the dmesg output for the sound hardware:
+
+HDA Intel 0000:00:1b.0: PCI INT A -> GSI 22 (level, low) -> IRQ 22
+HDA Intel 0000:00:1b.0: setting latency timer to 64
+hda_codec: STAC922x, Apple subsys_id=100
+input: HDA Intel Line In at Ext Left Jack as /class/input/input18
+input: HDA Intel Mic at Ext Left Jack as /class/input/input19
+input: HDA Intel HP Out at Ext Left Jack as /class/input/input20
+
+Any hints what I could try to fix this, maybe some commit that I should
+try to revert?
+
+Regards,
+Tino
