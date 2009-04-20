@@ -1,24 +1,22 @@
-From: Joonyoung Shim <jy0922.shim@samsung.com>
-Subject: [PATCH v2 1/1] ASoC: TWL4030: Add support Voice DAI
-Date: Mon, 20 Apr 2009 19:21:35 +0900
-Message-ID: <49EC4CAF.5090106@samsung.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 1/1] ASoC: TWL4030: Fix for the
+	constraint	handling
+Date: Mon, 20 Apr 2009 11:40:41 +0100
+Message-ID: <20090420104041.GA8776@sirena.org.uk>
+References: <1239972908-4158-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1239972908-4158-2-git-send-email-peter.ujfalusi@nokia.com>
+	<20090417142642.GD10992@sirena.org.uk>
+	<200904201023.30652.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout5.samsung.com (mailout5.samsung.com [203.254.224.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id ACD312438D
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2EB1B243AA
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Apr 2009 12:21:37 +0200 (CEST)
-Received: from epmmp2 (mailout5.samsung.com [203.254.224.35])
-	by mailout5.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KIE00H9QA3ZF4@mailout5.samsung.com> for
-	alsa-devel@alsa-project.org; Mon, 20 Apr 2009 19:21:35 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KIE00HBYA3Z22@mmp2.samsung.com> for
-	alsa-devel@alsa-project.org; Mon, 20 Apr 2009 19:21:35 +0900 (KST)
+	Mon, 20 Apr 2009 12:40:43 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <200904201023.30652.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,368 +26,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: kyungmin.park@samsung.com, broonie@opensource.wolfsonmicro.com, peter.ujfalusi@nokia.com, bhmin@samsung.com
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add Voice DAI to support the PCM voice interface of the twl4030 codec.
+On Mon, Apr 20, 2009 at 10:23:30AM +0300, Peter Ujfalusi wrote:
 
-The PCM voice interface can be used with 8-kHz(voice narrowband) or
-16-kHz(voice wideband) sampling rates, and 16bits, and mono RX and mono
-TX or stereo TX.
+> I have been thinking of implementing this in core in a similar manner as I 
+> have implemented in the twl4030 codec, but I'm not sure that the assumption of 
+> having a maximum of two streams (one for playback and one for capture) holds 
+> for all codec/machine pairs. If it does, I can improve the core's constraint 
+> handling with the approach taken in the twl4030 codec. With my limited tests 
+> it passed all cases that I could come up...
 
-The PCM voice interface has two modes
- - PCM mode1 : This uses the normal FS polarity and the rising edge of
-               the clock signal.
- - PCM mode2 : This uses the FS polarity inverted and the falling edge
-               of the clock signal.
+The single streams are assumed in the ASoC core so there's not much
+concern there.  Without working on the ALSA core itself there's not much
+you can do to fully plug all the holes, though.
 
-If the system master clock is not 26MHz or the twl4030 codec mode is not
-option2, the voice PCM interface is not available.
+> > > +				SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
+> > > +				SNDRV_PCM_HW_PARAM_CHANNELS,
 
-Signed-off-by: Joonyoung Shim <jy0922.shim@samsung.com>
----
- sound/soc/codecs/twl4030.c    |  173 +++++++++++++++++++++++++++++++++++++++-
- sound/soc/codecs/twl4030.h    |   18 ++++-
- sound/soc/omap/omap2evm.c     |    2 +-
- sound/soc/omap/omap3beagle.c  |    2 +-
- sound/soc/omap/omap3pandora.c |    4 +-
- sound/soc/omap/overo.c        |    2 +-
- sound/soc/omap/sdp3430.c      |    2 +-
- 7 files changed, 191 insertions(+), 12 deletions(-)
+> > Are you sure that these need to match exactly and don't set maxima?
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index a1b76d7..cc2968c 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -1484,6 +1484,144 @@ static int twl4030_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	return 0;
- }
- 
-+static int twl4030_voice_startup(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_codec *codec = socdev->card->codec;
-+	u8 infreq;
-+	u8 mode;
-+
-+	/* If the system master clock is not 26MHz, the voice PCM interface is
-+	 * not avilable.
-+	 */
-+	infreq = twl4030_read_reg_cache(codec, TWL4030_REG_APLL_CTL)
-+		& TWL4030_APLL_INFREQ;
-+
-+	if (infreq != TWL4030_APLL_INFREQ_26000KHZ) {
-+		printk(KERN_ERR "TWL4030 voice startup: "
-+			"MCLK is not 26MHz, call set_sysclk() on init\n");
-+		return -EINVAL;
-+	}
-+
-+	/* If the codec mode is not option2, the voice PCM interface is not
-+	 * avilable.
-+	 */
-+	mode = twl4030_read_reg_cache(codec, TWL4030_REG_CODEC_MODE)
-+		& TWL4030_OPT_MODE;
-+
-+	if (mode != TWL4030_OPTION_2) {
-+		printk(KERN_ERR "TWL4030 voice startup: "
-+			"the codec mode is not option2\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int twl4030_voice_hw_params(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_codec *codec = socdev->card->codec;
-+	u8 old_mode, mode;
-+
-+	/* bit rate */
-+	old_mode = twl4030_read_reg_cache(codec, TWL4030_REG_CODEC_MODE)
-+		& ~(TWL4030_CODECPDZ);
-+	mode = old_mode;
-+
-+	switch (params_rate(params)) {
-+	case 8000:
-+		mode &= ~(TWL4030_SEL_16K);
-+		break;
-+	case 16000:
-+		mode |= TWL4030_SEL_16K;
-+		break;
-+	default:
-+		printk(KERN_ERR "TWL4030 voice hw params: unknown rate %d\n",
-+			params_rate(params));
-+		return -EINVAL;
-+	}
-+
-+	if (mode != old_mode) {
-+		/* change rate and set CODECPDZ */
-+		twl4030_codec_enable(codec, 0);
-+		twl4030_write(codec, TWL4030_REG_CODEC_MODE, mode);
-+		twl4030_codec_enable(codec, 1);
-+	}
-+
-+	return 0;
-+}
-+
-+static int twl4030_voice_set_dai_sysclk(struct snd_soc_dai *codec_dai,
-+		int clk_id, unsigned int freq, int dir)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	u8 infreq;
-+
-+	switch (freq) {
-+	case 26000000:
-+		infreq = TWL4030_APLL_INFREQ_26000KHZ;
-+		break;
-+	default:
-+		printk(KERN_ERR "TWL4030 voice set sysclk: unknown rate %d\n",
-+			freq);
-+		return -EINVAL;
-+	}
-+
-+	infreq |= TWL4030_APLL_EN;
-+	twl4030_write(codec, TWL4030_REG_APLL_CTL, infreq);
-+
-+	return 0;
-+}
-+
-+static int twl4030_voice_set_dai_fmt(struct snd_soc_dai *codec_dai,
-+		unsigned int fmt)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	u8 old_format, format;
-+
-+	/* get format */
-+	old_format = twl4030_read_reg_cache(codec, TWL4030_REG_VOICE_IF);
-+	format = old_format;
-+
-+	/* set master/slave audio interface */
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBS_CFM:
-+		format &= ~(TWL4030_VIF_SLAVE_EN);
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		format |= TWL4030_VIF_SLAVE_EN;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	/* clock inversion */
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_IB_NF:
-+		format &= ~(TWL4030_VIF_FORMAT);
-+		break;
-+	case SND_SOC_DAIFMT_NB_IF:
-+		format |= TWL4030_VIF_FORMAT;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (format != old_format) {
-+		/* change format and set CODECPDZ */
-+		twl4030_codec_enable(codec, 0);
-+		twl4030_write(codec, TWL4030_REG_VOICE_IF, format);
-+		twl4030_codec_enable(codec, 1);
-+	}
-+
-+	return 0;
-+}
-+
- #define TWL4030_RATES	 (SNDRV_PCM_RATE_8000_48000)
- #define TWL4030_FORMATS	 (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FORMAT_S24_LE)
- 
-@@ -1495,7 +1633,15 @@ static struct snd_soc_dai_ops twl4030_dai_ops = {
- 	.set_fmt	= twl4030_set_dai_fmt,
- };
- 
--struct snd_soc_dai twl4030_dai = {
-+static struct snd_soc_dai_ops twl4030_dai_voice_ops = {
-+	.startup	= twl4030_voice_startup,
-+	.hw_params	= twl4030_voice_hw_params,
-+	.set_sysclk	= twl4030_voice_set_dai_sysclk,
-+	.set_fmt	= twl4030_voice_set_dai_fmt,
-+};
-+
-+struct snd_soc_dai twl4030_dai[] = {
-+{
- 	.name = "twl4030",
- 	.playback = {
- 		.stream_name = "Playback",
-@@ -1510,6 +1656,23 @@ struct snd_soc_dai twl4030_dai = {
- 		.rates = TWL4030_RATES,
- 		.formats = TWL4030_FORMATS,},
- 	.ops = &twl4030_dai_ops,
-+},
-+{
-+	.name = "twl4030 Voice",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 1,
-+		.channels_max = 1,
-+		.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+	.ops = &twl4030_dai_voice_ops,
-+},
- };
- EXPORT_SYMBOL_GPL(twl4030_dai);
- 
-@@ -1550,8 +1713,8 @@ static int twl4030_init(struct snd_soc_device *socdev)
- 	codec->read = twl4030_read_reg_cache;
- 	codec->write = twl4030_write;
- 	codec->set_bias_level = twl4030_set_bias_level;
--	codec->dai = &twl4030_dai;
--	codec->num_dai = 1;
-+	codec->dai = twl4030_dai;
-+	codec->num_dai = ARRAY_SIZE(twl4030_dai),
- 	codec->reg_cache_size = sizeof(twl4030_reg);
- 	codec->reg_cache = kmemdup(twl4030_reg, sizeof(twl4030_reg),
- 					GFP_KERNEL);
-@@ -1645,13 +1808,13 @@ EXPORT_SYMBOL_GPL(soc_codec_dev_twl4030);
- 
- static int __init twl4030_modinit(void)
- {
--	return snd_soc_register_dai(&twl4030_dai);
-+	return snd_soc_register_dais(&twl4030_dai[0], ARRAY_SIZE(twl4030_dai));
- }
- module_init(twl4030_modinit);
- 
- static void __exit twl4030_exit(void)
- {
--	snd_soc_unregister_dai(&twl4030_dai);
-+	snd_soc_unregister_dais(&twl4030_dai[0], ARRAY_SIZE(twl4030_dai));
- }
- module_exit(twl4030_exit);
- 
-diff --git a/sound/soc/codecs/twl4030.h b/sound/soc/codecs/twl4030.h
-index cb63765..981ec60 100644
---- a/sound/soc/codecs/twl4030.h
-+++ b/sound/soc/codecs/twl4030.h
-@@ -113,6 +113,8 @@
- #define TWL4030_SEL_16K			0x04
- #define TWL4030_CODECPDZ		0x02
- #define TWL4030_OPT_MODE		0x01
-+#define TWL4030_OPTION_1		(1 << 0)
-+#define TWL4030_OPTION_2		(0 << 0)
- 
- /* TWL4030_REG_MICBIAS_CTL (0x04) Fields */
- 
-@@ -171,6 +173,17 @@
- #define TWL4030_CLK256FS_EN		0x02
- #define TWL4030_AIF_EN			0x01
- 
-+/* VOICE_IF (0x0F) Fields */
-+
-+#define TWL4030_VIF_SLAVE_EN		0x80
-+#define TWL4030_VIF_DIN_EN		0x40
-+#define TWL4030_VIF_DOUT_EN		0x20
-+#define TWL4030_VIF_SWAP		0x10
-+#define TWL4030_VIF_FORMAT		0x08
-+#define TWL4030_VIF_TRI_EN		0x04
-+#define TWL4030_VIF_SUB_EN		0x02
-+#define TWL4030_VIF_EN			0x01
-+
- /* EAR_CTL (0x21) */
- #define TWL4030_EAR_GAIN		0x30
- 
-@@ -236,7 +249,10 @@
- #define TWL4030_SMOOTH_ANAVOL_EN	0x02
- #define TWL4030_DIGMIC_LR_SWAP_EN	0x01
- 
--extern struct snd_soc_dai twl4030_dai;
-+#define TWL4030_DAI_HIFI		0
-+#define TWL4030_DAI_VOICE		1
-+
-+extern struct snd_soc_dai twl4030_dai[2];
- extern struct snd_soc_codec_device soc_codec_dev_twl4030;
- 
- #endif	/* End of __TWL4030_AUDIO_H__ */
-diff --git a/sound/soc/omap/omap2evm.c b/sound/soc/omap/omap2evm.c
-index 0c2322d..027e1a4 100644
---- a/sound/soc/omap/omap2evm.c
-+++ b/sound/soc/omap/omap2evm.c
-@@ -86,7 +86,7 @@ static struct snd_soc_dai_link omap2evm_dai = {
- 	.name = "TWL4030",
- 	.stream_name = "TWL4030",
- 	.cpu_dai = &omap_mcbsp_dai[0],
--	.codec_dai = &twl4030_dai,
-+	.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
- 	.ops = &omap2evm_ops,
- };
- 
-diff --git a/sound/soc/omap/omap3beagle.c b/sound/soc/omap/omap3beagle.c
-index fd24a4a..6aa428e 100644
---- a/sound/soc/omap/omap3beagle.c
-+++ b/sound/soc/omap/omap3beagle.c
-@@ -83,7 +83,7 @@ static struct snd_soc_dai_link omap3beagle_dai = {
- 	.name = "TWL4030",
- 	.stream_name = "TWL4030",
- 	.cpu_dai = &omap_mcbsp_dai[0],
--	.codec_dai = &twl4030_dai,
-+	.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
- 	.ops = &omap3beagle_ops,
- };
- 
-diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
-index fe282d4..ad219aa 100644
---- a/sound/soc/omap/omap3pandora.c
-+++ b/sound/soc/omap/omap3pandora.c
-@@ -228,14 +228,14 @@ static struct snd_soc_dai_link omap3pandora_dai[] = {
- 		.name = "PCM1773",
- 		.stream_name = "HiFi Out",
- 		.cpu_dai = &omap_mcbsp_dai[0],
--		.codec_dai = &twl4030_dai,
-+		.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
- 		.ops = &omap3pandora_out_ops,
- 		.init = omap3pandora_out_init,
- 	}, {
- 		.name = "TWL4030",
- 		.stream_name = "Line/Mic In",
- 		.cpu_dai = &omap_mcbsp_dai[1],
--		.codec_dai = &twl4030_dai,
-+		.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
- 		.ops = &omap3pandora_in_ops,
- 		.init = omap3pandora_in_init,
- 	}
-diff --git a/sound/soc/omap/overo.c b/sound/soc/omap/overo.c
-index a72dc4e..ec4f8fd 100644
---- a/sound/soc/omap/overo.c
-+++ b/sound/soc/omap/overo.c
-@@ -83,7 +83,7 @@ static struct snd_soc_dai_link overo_dai = {
- 	.name = "TWL4030",
- 	.stream_name = "TWL4030",
- 	.cpu_dai = &omap_mcbsp_dai[0],
--	.codec_dai = &twl4030_dai,
-+	.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
- 	.ops = &overo_ops,
- };
- 
-diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
-index 10f1c86..1c79741 100644
---- a/sound/soc/omap/sdp3430.c
-+++ b/sound/soc/omap/sdp3430.c
-@@ -197,7 +197,7 @@ static struct snd_soc_dai_link sdp3430_dai = {
- 	.name = "TWL4030",
- 	.stream_name = "TWL4030",
- 	.cpu_dai = &omap_mcbsp_dai[0],
--	.codec_dai = &twl4030_dai,
-+	.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
- 	.init = sdp3430_twl4030_init,
- 	.ops = &sdp3430_ops,
- };
--- 
-1.5.6.3
+> These settings are for the audio interface (HiFi interface), which means they 
+> are changing the interface format for both playback and capture. On top of 
+> that in 2 channel mode the interface has to be in I2S mode, in 4 channel mode 
+> it has to be in DSP_A mode. So I think they have to be exact match in order to 
+> not to break the existing stream.
+
+Oh, nice.  With some care it should be possible to allow at least a
+maximum bit rate setting (since lower bit rates are going to be wire
+compatible if enough clocks are generated).
