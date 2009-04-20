@@ -1,19 +1,18 @@
-From: Karsten Wiese <fzu@wemgehoertderstaat.de>
-Subject: [PATCH v3] us122l: add snd_us122l_free()
-Date: Mon, 20 Apr 2009 13:01:21 +0200
-Message-ID: <200904201301.22375.fzu@wemgehoertderstaat.de>
-References: <200904171456.25980.fzu@wemgehoertderstaat.de>
-	<s5hws9jv2a6.wl%tiwai@suse.de>
+From: Daniel T Chen <seven.steps@gmail.com>
+Subject: [PATCH] Atiixp: Add SSID for mute_led quirk (unknown
+	HP model)
+Date: Mon, 20 Apr 2009 07:09:11 -0400 (EDT)
+Message-ID: <alpine.DEB.2.00.0904200706530.7662@errno>
+Reply-To: Daniel T Chen <seven.steps@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323329-305384278-1240225766=:7662"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout5.freenet.de (mout5.freenet.de [195.4.92.95])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2D74B243C8
+Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.169])
+	by alsa0.perex.cz (Postfix) with ESMTP id 35FB8243CC
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Apr 2009 13:01:29 +0200 (CEST)
-In-Reply-To: <s5hws9jv2a6.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Mon, 20 Apr 2009 13:09:28 +0200 (CEST)
+Received: by wf-out-1314.google.com with SMTP id 24so1797643wfg.23
+	for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2009 04:09:26 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,61 +22,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, stable@kernel.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Use it to clean up snd_us122l_card_used[].
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Without patch unplugging of an US122L soundcard didn't reset the
-corresponding element of snd_us122l_card_used[] to 0.
-The (SNDRV_CARDS + 1)th plugging in did not result in creating the soundcard
-device anymore.
-Index values supplied with the modprobe command line were not used correctly
-anymore after the first unplugging of an US122L.
+--8323329-305384278-1240225766=:7662
+Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
 
-Signed-off-by: Karsten Wiese <fzu@wemgehoertderstaat.de>
-Cc: stable@kernel.org
----
- sound/usb/usx2y/us122l.c |   12 ++++++++++--
- 1 files changed, 10 insertions(+), 2 deletions(-)
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-diff --git a/sound/usb/usx2y/us122l.c b/sound/usb/usx2y/us122l.c
-index 012ff1f..a5aae9d 100644
---- a/sound/usb/usx2y/us122l.c
-+++ b/sound/usb/usx2y/us122l.c
-@@ -474,6 +474,14 @@ static bool us122l_create_card(struct snd_card *card)
- 	return true;
- }
- 
-+static void snd_us122l_free(struct snd_card *card)
-+{
-+	struct us122l	*us122l = US122L(card);
-+	int		index = us122l->chip.index;
-+	if (index >= 0  &&  index < SNDRV_CARDS)
-+		snd_us122l_card_used[index] = 0;
-+}
-+
- static int usx2y_create_card(struct usb_device *device, struct snd_card **cardp)
- {
- 	int		dev;
-@@ -490,7 +498,7 @@ static int usx2y_create_card(struct usb_device *device, struct snd_card **cardp)
- 	if (err < 0)
- 		return err;
- 	snd_us122l_card_used[US122L(card)->chip.index = dev] = 1;
--
-+	card->private_free = snd_us122l_free;
- 	US122L(card)->chip.dev = device;
- 	US122L(card)->chip.card = card;
- 	mutex_init(&US122L(card)->mutex);
-@@ -584,7 +592,7 @@ static void snd_us122l_disconnect(struct usb_interface *intf)
- 	}
- 
- 	usb_put_intf(intf);
--	usb_put_dev(US122L(card)->chip.dev);
-+	usb_put_dev(us122l->chip.dev);
- 
- 	while (atomic_read(&us122l->mmap_count))
- 		msleep(500);
--- 
-1.6.0.6
+Subject says it all. Briefly, use the mute_led quirk for another HP model.
+
+Thanks,
+Dan
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iD8DBQFJ7FfZe9GwFciKvaMRAleaAJ9mmtLUW7HgwjZCHkV1Mk4/dbV+MgCgjDEm
+ZD/KsZbyDYJB4Egq+fzDXc8=
+=qaDE
+-----END PGP SIGNATURE-----
+--8323329-305384278-1240225766=:7662
+Content-Type: TEXT/x-diff; name=0001--Atiixp-Add-SSID-for-mute_led-quirk.patch
+Content-Transfer-Encoding: BASE64
+Content-ID: <alpine.DEB.2.00.0904200709110.7662@errno>
+Content-Description: 
+Content-Disposition: attachment; filename=0001--Atiixp-Add-SSID-for-mute_led-quirk.patch
+
+RnJvbSBmMzM5YjBmZGJkZDA1ZDNjMDBkMWZjMTI2N2IzYzJhZTRmNmQyNDBm
+IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQ0KRnJvbTogRGFuaWVsIFQgQ2hl
+biA8c2V2ZW4uc3RlcHNAZ21haWwuY29tPg0KRGF0ZTogU2F0LCAxOCBBcHIg
+MjAwOSAyMToxOTozOSAtMDQwMA0KU3ViamVjdDogW1BBVENIXSBbUEFUQ0hd
+IEF0aWl4cDogQWRkIFNTSUQgZm9yIG11dGVfbGVkIHF1aXJrDQoNClJlZmVy
+ZW5jZTogVWJ1bnR1ICM4NDk3MyAoaHR0cHM6Ly9sYXVuY2hwYWQubmV0L2J1
+Z3MvODQ5NzMpDQpSZWZlcmVuY2U6IExpbnV4ICM4MDAxIChodHRwOi8vYnVn
+emlsbGEua2VybmVsLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9ODAwMSkNCg0KTWFr
+ZSB0aGUgbXV0ZSBMRUQgZnVuY3Rpb24gcHJvcGVybHkgb24gdGhpcyB1bmtu
+b3duIEhQIG1vZGVsLg0KDQpTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgVCBDaGVu
+IDxzZXZlbi5zdGVwc0BnbWFpbC5jb20+DQotLS0NCiBzb3VuZC9wY2kvYXRp
+aXhwLmMgfCAgICA2ICsrKysrKw0KIDEgZmlsZXMgY2hhbmdlZCwgNiBpbnNl
+cnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvc291
+bmQvcGNpL2F0aWl4cC5jIGIvc291bmQvcGNpL2F0aWl4cC5jDQppbmRleCA5
+Y2U4NTQ4Li43MTUxNWRkIDEwMDY0NA0KLS0tIGEvc291bmQvcGNpL2F0aWl4
+cC5jDQorKysgYi9zb3VuZC9wY2kvYXRpaXhwLmMNCkBAIC0xMzkzLDYgKzEz
+OTMsMTIgQEAgc3RhdGljIHN0cnVjdCBhYzk3X3F1aXJrIGFjOTdfcXVpcmtz
+W10gX19kZXZpbml0ZGF0YSA9IHsNCiAJCS5uYW1lID0gIkhQIG54NjEyNSIs
+DQogCQkudHlwZSA9IEFDOTdfVFVORV9NVVRFX0xFRA0KIAl9LA0KKwl7DQor
+CQkuc3VidmVuZG9yID0gMHgxMDNjLA0KKwkJLnN1YmRldmljZSA9IDB4MzA5
+MSwNCisJCS5uYW1lID0gInVua25vd24gSFAiLA0KKwkJLnR5cGUgPSBBQzk3
+X1RVTkVfTVVURV9MRUQNCisJfSwNCiAJeyB9IC8qIHRlcm1pbmF0b3IgKi8N
+CiB9Ow0KIA0KLS0gDQoxLjYuMC40DQoNCg==
+
+--8323329-305384278-1240225766=:7662
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--8323329-305384278-1240225766=:7662--
