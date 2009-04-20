@@ -1,21 +1,20 @@
-From: Greg Erwin <gerwin@ncsu.edu>
-Subject: Getting M-Audio JamLab simple controls to work
-Date: Sat, 18 Apr 2009 04:01:04 -0400
-Message-ID: <20090418040104.6d7ad3a1@ncsu.edu>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 1/1] ASoC: TWL4030: Add support Voice DAI
+Date: Mon, 20 Apr 2009 09:35:45 +0300
+Message-ID: <200904200935.46381.peter.ujfalusi@nokia.com>
+References: <49DDFE1D.3090009@samsung.com>
+	<200904141007.52528.peter.ujfalusi@nokia.com>
+	<49EC0897.5060007@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from uni20mr.unity.ncsu.edu (uni20mr.unity.ncsu.edu [152.1.2.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id F004F1037F4
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id CC14424458
 	for <alsa-devel@alsa-project.org>;
-	Sat, 18 Apr 2009 10:00:50 +0200 (CEST)
-Received: from localhost.localdomain (Sull-03-138.rh.ncsu.edu [152.7.59.138])
-	(authenticated bits=0)
-	by uni20mr.unity.ncsu.edu (8.13.7/8.13.8/Nv5.2008.0610.1) with ESMTP id
-	n3I80kQB006605
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES128-SHA bits=128 verify=NO)
-	for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2009 04:00:48 -0400 (EDT)
+	Mon, 20 Apr 2009 08:35:54 +0200 (CEST)
+In-Reply-To: <49EC0897.5060007@samsung.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,17 +24,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ext Joonyoung Shim <jy0922.shim@samsung.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>, "bhmin@samsung.com" <bhmin@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-I have an M-Audio JamLab usb audio interface.  Long story short, it
-works for the most part, but trying to use the simple controls via
-amixer or alsamixer don't work.
-
-I've filed a bug report about it a little while back that has quite a
-bit of information in it:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4415
-
-Anyway, I feel like it would't take a whole lot to get working (I hope),
-but the thing is, I bet very few people actually have one.  I know a
-little bit of C, and will be glad to help as much as I can.
+T24gTW9uZGF5IDIwIEFwcmlsIDIwMDkgMDg6MzE6MDMgZXh0IEpvb255b3VuZyBTaGltIHdyb3Rl
+Ogo+IE9uIDQvMTQvMjAwOSA0OjA3IFBNLCBQZXRlciBVamZhbHVzaSB3cm90ZToKPiA+IEJvdGgg
+b2YgdGhlIFBDTSBtb2RlMSBhbmQgbW9kZTIgaXMgYWN0dWFsbHkgRFNQX0EsIGJ1dCB0aGUgRlMg
+cG9sYXJpdHkgaXMKPiA+IGludmVydGVkIGFuZCBhbHNvIHRoZSBkYXRhIGlzIHNoaWZ0ZWQvc2Ft
+cGxlZCBvbiB0aGUgb3Bwb3NpdGUgZWRnZSBvZiB0aGUKPiA+IGJpdGNsb2NrLgo+Cj4gU28sIEkg
+d2lsbCB1c2UgdGhhdCB0aGUgUENNIG1vZGUxIGlzIFNORF9TT0NfREFJRk1UX0lCX05GIGFuZCBQ
+Q00gbW9kZTIgaXMKPiBTTkRfU09DX0RBSUZNVF9OQl9JRi4gSXMgdGhpcyByaWdodD8KClllcywg
+SSB0aGluayB0aGlzIGlzIHJpZ2h0LgoKLS0gClDDqXRlcgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
