@@ -1,19 +1,19 @@
 From: Jean Delvare <khali@linux-fr.org>
 Subject: Re: [PATCH] keywest: Convert to new-style i2c driver
-Date: Tue, 21 Apr 2009 11:44:13 +0200
-Message-ID: <20090421114413.61e52817@hyperion.delvare>
+Date: Tue, 21 Apr 2009 11:48:53 +0200
+Message-ID: <20090421114853.7a9d82c1@hyperion.delvare>
 References: <20090420225659.7b92a184@hyperion.delvare>
-	<s5h1vrmikm3.wl%tiwai@suse.de>
-	<20090421112300.467e9f9b@hyperion.delvare>
+	<18924.63578.495727.152443@cargo.ozlabs.ibm.com>
+	<s5hzleah5x4.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from services.gcu-squad.org (zone0.gcu-squad.org [212.85.147.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5F25B2460E
+	by alsa0.perex.cz (Postfix) with ESMTP id 4548F24616
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Apr 2009 11:44:21 +0200 (CEST)
-In-Reply-To: <20090421112300.467e9f9b@hyperion.delvare>
+	Tue, 21 Apr 2009 11:49:03 +0200 (CEST)
+In-Reply-To: <s5hzleah5x4.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,42 +23,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org
+To: Takashi Iwai <tiwai@suse.de>, Paul Mackerras <paulus@samba.org>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 21 Apr 2009 11:23:00 +0200, Jean Delvare wrote:
-> On Tue, 21 Apr 2009 08:31:00 +0200, Takashi Iwai wrote:
-> > At Mon, 20 Apr 2009 22:56:59 +0200,
-> > Jean Delvare wrote:
-> > > 
-> > > The legacy i2c binding model is going away soon, so convert the ppc
-> > > keywest sound driver to the new model or it will break.
-> > > 
-> > > Signed-off-by: Jean Delvare <khali@linux-fr.org>
-> > > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> > > Cc: Takashi Iwai <tiwai@suse.de>
-> > > ---
+Hi Paul, Takashi,
+
+On Tue, 21 Apr 2009 08:33:43 +0200, Takashi Iwai wrote:
+> At Tue, 21 Apr 2009 08:34:02 +1000,
+> Paul Mackerras wrote:
+> > 
+> > Jean Delvare writes:
+> > 
 > > > Takashi, please push this patch to Linus quickly, as this is blocking
 > > > the removal of the legacy i2c binding model, which is scheduled for
 > > > 2.6.30.
-> > > 
-> > > I did not get any test report for this one, but it's relatively simple
-> > > so I am confident I got it right.
 > > 
-> > Applied this one, too.  Thanks.
-> 
-> Thanks Takashi.
-> 
-> BTW, I forgot to mention again that the new i2c binding model is
-> functional since kernel 2.6.25, so for the external alsa driver tree
-> you will want to guard these changes with appropriate ifdef magic.
+> > I really don't think you can remove it from Linus' tree at this stage
+> > in the 2.6.30 cycle.  If it was going to be removed it should have
+> > been removed in the merge window.
 
-Err, make that 2.6.30, sorry. While the infrastructure was there since
-2.6.25, the way I converted the sound drivers doesn't fit in what
-earlier kernels considered acceptable (the checks on which driver
-methods were implemented was a little too strict IMHO). So the
-converted drivers can only be used with kernels >= 2.6.30.
+It would have happened if the developers/maintainers who see
+deprecation warnings when they build their drivers had paid attention
+to them. And actually some did, but not all. The remaining drivers are
+the ones nobody cared about, and this is the reason why I have to take
+care of them myself, that late in the development cycle.
 
+Note that the removal had already been scheduled for 2.6.29, and it did
+not happen. The set of legacy drivers did shrink a bit between
+2.6.29-rc1 and 2.6.30-rc1 (thanks to Hans Verkuil) but not as much as
+it should have. Basically the number of remaining driver was halved. If
+the number of remaining drivers is halved with each release cycle, the
+legacy model is never going to be removed ;)
+
+> > Removing it now has too much risk
+> > of introducing regressions in my opinion.
+
+Not removing it now has a high risk of developers continuing to ignore
+the deprecation warnings and adding new legacy drivers, which I then
+must convert to the new model. This never ends.
+
+I know my behavior may seem a bit rude, but apparently this is the only
+way to get things to actually happen. I've been waiting for over a year
+already!
+
+I don't think the risk is that high, at least not for sound drivers.
+The conversions are fairly easy and if something really went wrong,
+fixing it is a matter of minutes.
+
+Please note that the removal of the legacy model isn't my goal per se.
+The fact is that the legacy model needs to be removed for further
+developments of i2c-core to happen, in particular the support of i2C
+bus multiplexers. There are patches waiting for inclusion since early
+February, which I can't take as long as the legacy i2c model is in.
+This is why I am pushing.
+
+> > I presume you have a development tree where you queue up commits for
+> > the i2c subsystem for the next merge window.  I suggest you do the
+> > removal there now (or whenever you like) and push it to Linus in the
+> > next merge window.
+> 
+> At least, the conversion patch Jean posted can be in 2.6.30, I think.
+> As the old API is marked deprecated, it should be fixed sooner or
+> later.
+> 
+> Whether to remove the whole old i2c-binding in 2.6.30 is a different
+> question, although I myself feel it's feasible.
+
+I have converted all remaining drivers by now:
+http://i2c.wiki.kernel.org/index.php/Legacy_drivers_to_be_converted
+It's really only a matter of getting them tested in time now. Given
+that most drivers are powermac ones, what I really need here is
+powermac users/maintainers to test my patches and report success or
+failure.
+
+Thanks,
 -- 
 Jean Delvare
