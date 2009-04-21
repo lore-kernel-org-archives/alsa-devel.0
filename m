@@ -1,89 +1,56 @@
-From: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH] keywest: Convert to new-style i2c driver
-Date: Tue, 21 Apr 2009 11:56:04 +0200
-Message-ID: <20090421095604.GC3100@pengutronix.de>
-References: <20090420225659.7b92a184@hyperion.delvare>
-	<18924.63578.495727.152443@cargo.ozlabs.ibm.com>
-	<s5hzleah5x4.wl%tiwai@suse.de>
-	<20090421114853.7a9d82c1@hyperion.delvare>
+From: Nicola Mfb <nicola.mfb@gmail.com>
+Subject: Re: Asterisk 1.4.17 and alsa 1.0.19 dmix plugin
+	problem.
+Date: Tue, 21 Apr 2009 12:35:28 +0200
+Message-ID: <359c5480904210335o25d636a4i14b7fe5f7391c839@mail.gmail.com>
+References: <359c5480904201122m7a45dbe8hd1f6b597dea57283@mail.gmail.com>
+	<alpine.LNX.2.00.0904202039160.4553@eeebox2.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1764106931=="
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
-In-Reply-To: <20090421114853.7a9d82c1@hyperion.delvare>
-List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
-List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
-List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
-Mime-version: 1.0
-Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
-To: Jean Delvare <khali@linux-fr.org>
-Cc: Takashi Iwai <tiwai@suse.de>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Paul Mackerras <paulus@samba.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.147])
+	by alsa0.perex.cz (Postfix) with ESMTP id 15E8924636
+	for <alsa-devel@alsa-project.org>;
+	Tue, 21 Apr 2009 12:35:29 +0200 (CEST)
+Received: by ey-out-1920.google.com with SMTP id 26so431282eyw.56
+	for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2009 03:35:28 -0700 (PDT)
+In-Reply-To: <alpine.LNX.2.00.0904202039160.4553@eeebox2.perex-int.cz>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+2009/4/20 Jaroslav Kysela <perex@perex.cz>:
+> On Mon, 20 Apr 2009, Nicola Mfb wrote:
+[...]
+> Asterisk does not use snd_pcm_poll_descriptors_revents to translate events
+> returned from poll to correct poll event. Also, only file descriptor numb=
+er
+> from snd_pcm_poll_descriptors() - asterisk should handle correctly return=
+ed
+> poll events as well.
+>
+> See chan_alsa.c - readdev / writedev variables and sound_thread().
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0Jaroslav
 
---===============1764106931==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7qSK/uQB79J36Y4o"
-Content-Disposition: inline
+Hi Jaroslav!
+thanks for quick reply and hints!
+I finally understand the inverted POLLIN/POLLOUT in dmix. As a quick
+check I added writedev to fds set and it worked, now I'll able to
+write a patch using poll and demangling revents...
+First level documentation on www.alsa-project.org says that you may
+use select or poll as you need, should be this corrected?
 
+Thank you again!
 
---7qSK/uQB79J36Y4o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-> Not removing it now has a high risk of developers continuing to ignore
-> the deprecation warnings and adding new legacy drivers, which I then
-> must convert to the new model. This never ends.
->=20
-> I know my behavior may seem a bit rude, but apparently this is the only
-> way to get things to actually happen. I've been waiting for over a year
-> already!
->=20
-> I don't think the risk is that high, at least not for sound drivers.
-> The conversions are fairly easy and if something really went wrong,
-> fixing it is a matter of minutes.
->=20
-> Please note that the removal of the legacy model isn't my goal per se.
-> The fact is that the legacy model needs to be removed for further
-> developments of i2c-core to happen, in particular the support of i2C
-> bus multiplexers. There are patches waiting for inclusion since early
-> February, which I can't take as long as the legacy i2c model is in.
-> This is why I am pushing.
-
-Full ACK!
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---7qSK/uQB79J36Y4o
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkntmDQACgkQD27XaX1/VRvN7ACguh9w2d9l9wLw6o6t1XI15Hqa
-CN8AniHkFvxCZ91/ZcB8C6xPDXsJpC6m
-=dk3S
------END PGP SIGNATURE-----
-
---7qSK/uQB79J36Y4o--
-
---===============1764106931==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Linuxppc-dev mailing list
-Linuxppc-dev@ozlabs.org
-https://ozlabs.org/mailman/listinfo/linuxppc-dev
---===============1764106931==--
+     Nicola
