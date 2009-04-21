@@ -1,56 +1,53 @@
 From: Jean Delvare <khali@linux-fr.org>
-Subject: Re: [PATCH] keywest: Convert to new-style i2c driver
-Date: Tue, 21 Apr 2009 11:23:00 +0200
-Message-ID: <20090421112300.467e9f9b@hyperion.delvare>
-References: <20090420225659.7b92a184@hyperion.delvare>
-	<s5h1vrmikm3.wl%tiwai@suse.de>
+Subject: Re: [PATCH] AOA: Convert onyx and tas codecs to new-style i2c drivers
+Date: Tue, 21 Apr 2009 11:29:21 +0200
+Message-ID: <20090421112921.373fae89@hyperion.delvare>
+References: <20090420225425.2a150a4f@hyperion.delvare>
+	<1240261492.4632.21.camel@johannes.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from services.gcu-squad.org (zone0.gcu-squad.org [212.85.147.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8637E245FD
-	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Apr 2009 11:23:12 +0200 (CEST)
-In-Reply-To: <s5h1vrmikm3.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
+In-Reply-To: <1240261492.4632.21.camel@johannes.local>
+List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
+List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
+List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
+Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Takashi Iwai <tiwai@suse.de>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Andreas Schwab <schwab@linux-m68k.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 21 Apr 2009 08:31:00 +0200, Takashi Iwai wrote:
-> At Mon, 20 Apr 2009 22:56:59 +0200,
-> Jean Delvare wrote:
-> > 
-> > The legacy i2c binding model is going away soon, so convert the ppc
-> > keywest sound driver to the new model or it will break.
+Hi Johannes,
+
+On Mon, 20 Apr 2009 23:04:52 +0200, Johannes Berg wrote:
+> On Mon, 2009-04-20 at 22:54 +0200, Jean Delvare wrote:
+> > The legacy i2c binding model is going away soon, so convert the AOA
+> > codec drivers to the new model or they'll break.
 > > 
 > > Signed-off-by: Jean Delvare <khali@linux-fr.org>
+> > Tested-by: Johannes Berg <johannes@sipsolutions.net>
+> > Tested-by: Andreas Schwab <schwab@linux-m68k.org>
 > > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 > > Cc: Takashi Iwai <tiwai@suse.de>
 > > ---
 > > Takashi, please push this patch to Linus quickly, as this is blocking
 > > the removal of the legacy i2c binding model, which is scheduled for
 > > 2.6.30.
-> > 
-> > I did not get any test report for this one, but it's relatively simple
-> > so I am confident I got it right.
 > 
-> Applied this one, too.  Thanks.
+> Have you taken care of snd-powermac similarly?
 
-Thanks Takashi.
+Yes I did, see my patch "keywest: Convert to new-style i2c driver" to
+the alsa-devel and linuxppc-dev mailing lists:
+http://ozlabs.org/pipermail/linuxppc-dev/2009-April/070884.html
 
-BTW, I forgot to mention again that the new i2c binding model is
-functional since kernel 2.6.25, so for the external alsa driver tree
-you will want to guard these changes with appropriate ifdef magic.
+Would you be able to test this patch? This would be very welcome. I can
+resend it to you if it helps.
 
+Thanks,
 -- 
 Jean Delvare
