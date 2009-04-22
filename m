@@ -1,22 +1,20 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ASoC: OMAP: Add checking to
-	detect	bufferless pcms
-Date: Wed, 22 Apr 2009 10:26:18 +0100
-Message-ID: <20090422092618.GC10356@sirena.org.uk>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH] ASoC: OMAP: Add checking to detect
+	bufferless pcms
+Date: Wed, 22 Apr 2009 12:42:46 +0300
+Message-ID: <200904221242.46541.peter.ujfalusi@nokia.com>
 References: <49EE7962.6080008@samsung.com>
 	<bd7b27490904220130g13602721u6ae4fd3dca21fde5@mail.gmail.com>
-	<20090422084349.GB10356@sirena.org.uk>
-	<bd7b27490904220201u2c9da4dgce14c2da368f0f08@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7AAFC24646
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 862742465C
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Apr 2009 11:26:20 +0200 (CEST)
+	Wed, 22 Apr 2009 11:43:14 +0200 (CEST)
+In-Reply-To: <bd7b27490904220130g13602721u6ae4fd3dca21fde5@mail.gmail.com>
 Content-Disposition: inline
-In-Reply-To: <bd7b27490904220201u2c9da4dgce14c2da368f0f08@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,24 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: kyungmin.park@samsung.com, peter.ujfalusi@nokia.com, alsa-devel@alsa-project.org, bhmin@samsung.com, Joonyoung Shim <jy0922.shim@samsung.com>
+To: ext Jarkko Nikula <jhnikula@gmail.com>
+Cc: "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Joonyoung Shim <jy0922.shim@samsung.com>, "bhmin@samsung.com" <bhmin@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 22, 2009 at 12:01:28PM +0300, Jarkko Nikula wrote:
-> On Wed, Apr 22, 2009 at 11:43 AM, Mark Brown <broonie@sirena.org.uk> wrote:
+On Wednesday 22 April 2009 11:30:32 ext Jarkko Nikula wrote:
+> On Wed, Apr 22, 2009 at 4:56 AM, Joonyoung Shim
+> <jy0922.shim@samsung.com<mailto:jy0922.shim@samsung.com>> wrote: Add
+> checking in hw_params and prepare to detect bufferless pcms(i.e. BT <-->
+> codec).
+>
+> I see exactly similar lines in s3c24xx-pcm.c but don't point now the use
+> case where this is used and I don't have idea what is this all about.
+>
+> Is this something where DAI driver or another end of connection is used to
+> provide clocking and the whole setup is then controlled with ALSA PCM API?
+> Somehow I have the feeling that would there be a better way to achieve it
+> than with dummy bufferless transfer?
 
-> > The host isn't transferring any data at all in these cases.  Ideally
-> > we'd support multiple platforms and there'd be a dummy platform driver
-> > to go with the dummy DAI driver.
+In the twl codec, the BT interface does not have dedicated clock line, but =
+it =
 
-> Probably it's better to extend this patch to other architectures as well (at
-> least DaVinci) where possible in order to be more consistent. I just noticed
-> that also PXA is having the same feature.
+is (re)using the clock lines for the voice PCM interface. So in order to ge=
+t =
 
-Yes, though given that it's a bodge at the moment it'd need someone to
-go through per architecture and check that the right thing is being
-done.
+BT data going between the BT and the codec, the voice PCM interface has to =
 
-When I've thought about doing it I've always decided it'd probably be
-less hassle to fix the core not to need the bodge :/
+generate the clocks.
+
+But I think this could be done even without the need for the alsa PCM =
+
+interface, probably well placed DAPM switches would also can take care of =
+
+this?
+
+>
+> --
+> Jarkko
+
+-- =
+
+P=E9ter
