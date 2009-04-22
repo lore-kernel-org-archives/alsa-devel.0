@@ -1,25 +1,24 @@
 From: Joonyoung Shim <jy0922.shim@samsung.com>
-Subject: [PATCH] ASoC: OMAP: Add checking to detect bufferless
-	pcms
-Date: Wed, 22 Apr 2009 10:56:50 +0900
-Message-ID: <49EE7962.6080008@samsung.com>
+Subject: [PATCH v2 0/1] ASoC: TWL4030: Add VDL path support
+Date: Wed, 22 Apr 2009 13:13:30 +0900
+Message-ID: <49EE996A.5080000@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id 844EA244E0
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id 05D782453C
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Apr 2009 03:57:03 +0200 (CEST)
-Received: from epmmp2 (mailout3.samsung.com [203.254.224.33])
-	by mailout3.samsung.com
+	Wed, 22 Apr 2009 06:13:43 +0200 (CEST)
+Received: from epmmp2 (mailout4.samsung.com [203.254.224.34])
+	by mailout4.samsung.com
 	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KIH007ESC2QSC@mailout3.samsung.com> for
-	alsa-devel@alsa-project.org; Wed, 22 Apr 2009 10:56:50 +0900 (KST)
+	with ESMTP id <0KIH004WRIEIRC@mailout4.samsung.com> for
+	alsa-devel@alsa-project.org; Wed, 22 Apr 2009 13:13:31 +0900 (KST)
 Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
 	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KIH005WMC2QPT@mmp2.samsung.com> for
-	alsa-devel@alsa-project.org; Wed, 22 Apr 2009 10:56:50 +0900 (KST)
+	2004)) with ESMTPA id <0KIH00A9JIEJS1@mmp2.samsung.com> for
+	alsa-devel@alsa-project.org; Wed, 22 Apr 2009 13:13:31 +0900 (KST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,41 +32,11 @@ To: alsa-devel@alsa-project.org
 Cc: kyungmin.park@samsung.com, broonie@opensource.wolfsonmicro.com, peter.ujfalusi@nokia.com, bhmin@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-Add checking in hw_params and prepare to detect bufferless pcms(i.e. BT
-<--> codec).
+Hi,
 
-Signed-off-by: Joonyoung Shim <jy0922.shim@samsung.com>
----
- sound/soc/omap/omap-pcm.c |    9 ++++++++-
- 1 files changed, 8 insertions(+), 1 deletions(-)
+I added and modified some DAPMs for VDL path of the twl4030 codec. 
+This patch was posted in the past, but i resend the patch modified more.
 
-diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-index 07cf7f4..6454e15 100644
---- a/sound/soc/omap/omap-pcm.c
-+++ b/sound/soc/omap/omap-pcm.c
-@@ -87,8 +87,10 @@ static int omap_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct omap_pcm_dma_data *dma_data = rtd->dai->cpu_dai->dma_data;
- 	int err = 0;
- 
-+	/* return if this is a bufferless transfer e.g.
-+	 * codec <--> BT codec or GSM modem -- lg FIXME */
- 	if (!dma_data)
--		return -ENODEV;
-+		return 0;
- 
- 	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
- 	runtime->dma_bytes = params_buffer_bytes(params);
-@@ -134,6 +136,11 @@ static int omap_pcm_prepare(struct snd_pcm_substream *substream)
- 	struct omap_pcm_dma_data *dma_data = prtd->dma_data;
- 	struct omap_dma_channel_params dma_params;
- 
-+	/* return if this is a bufferless transfer e.g.
-+	 * codec <--> BT codec or GSM modem -- lg FIXME */
-+	if (!prtd->dma_data)
-+		return 0;
-+
- 	memset(&dma_params, 0, sizeof(dma_params));
- 	/*
- 	 * Note: Regardless of interface data formats supported by OMAP McBSP
--- 
-1.5.6.3
+Please review.
+
+Thanks.
