@@ -1,80 +1,54 @@
-From: Maris <maris.rob@vdi.de>
-Subject: inserting operations while in rate conversion
-Date: Wed, 22 Apr 2009 20:17:48 +0200
-Message-ID: <op.ussvry0i7fwl0e@rob-desktop.lan>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] trouble with alsa, wolfson, and TI OMAP35xx McBSP
+Date: Wed, 22 Apr 2009 19:55:39 +0100
+Message-ID: <20090422185539.GG10356@sirena.org.uk>
+References: <dbdb2ea60904221058w67b775f3occ07f55938fe4d03@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.vdi-online.de (mail1.vdi-online.de [194.245.126.17])
-	by alsa0.perex.cz (Postfix) with ESMTP id C57301037EE
-	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Apr 2009 20:17:49 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <dbdb2ea60904221058w67b775f3occ07f55938fe4d03@mail.gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: twebb <taliaferro62@gmail.com>
+Cc: "linux-omap@vger.kernel.org Mailing List" <linux-omap@vger.kernel.org>, alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Jarkko Nikula <jhnikula@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-I'm running uClinux with ALSA in an Analog Devices' Blackfin CPU
-environment.
-Actually I'm checking possibilities in doing special things while ALSA is
-going to do automatic rate conversion.
+On Wed, Apr 22, 2009 at 01:58:01PM -0400, twebb wrote:
 
-Specific description:
-ADC is sampled with 32 or 64 ksps rate. The corresponding hardware driver
-is specified to operate at one of these rates (which I'll specify later).
-The application reads the ADC input stream at the output end of the ALSA
-processing as a stream with a rate of 8 ksps. I need some information
-about inside details of ALSA's automatic rate conversion (pointers to
-appropriate information would be helpful).
+> Problem 1:
+> The WM8978 sample rate PLL does not seem to be stable while DCVDD =
+> DBVDD = 1.8V.  FCLK mean = 44.5KHz and jittering. Increasing DCVDD and
+> DBVDD voltage above 2V increases PLL stability. We have a workaround
+> for this for now.
 
-What I want to do: insert a digital anti-aliasing filter algorithm which
-limits the effective bandwidth of the ADC stream to 4 kHz prior to
-actually have the rate converted.
-Of course, I could also add the filter algorithm in the hardware device
-driver - at the cost of not inherently being available as a hardware
-independent algorithm.
+Can I suggest that you contact Wolfson's applications support team
+regarding this issue - there's a web form at:
 
-Some detail info:
-- ADC = AD73311 (speech codec). Basic drivers that allow e.g. arecord &
-aplay are available.
-- CPU: convergent DSP/microcontroller core @ 500 MHz and fixed point
-processing.
+	http://www.wolfsonmicro.com/support/technical/
 
-Thanks for attention. BTW: this is my first dig into ALSA details...
+Looking at the datasheet the PLL is specified as requiring a minimum of
+1.9V - see page 6 of:
 
-Rob
+	http://www.wolfsonmicro.com/uploads/documents/en/WM8978_Rev4.3.pdf
 
+> Problem 2:
+> Test tone is being presented by the user application, providing a 1Khz
+> tone sampled at 44.1Khz. The data are S16_LE, right channel only. Left
+> channel is quiet. The data seems to slip back and forth from left to
+> right channel. This is reproducable and verified with a scope trace.
 
-Code snippet:
-(currently only one rate is defined as a correspondence to the hardware
-driver rate)
+> Anybody have any ideas what might be going wrong here?  Traces for
+> codec reg dump and mcbsp are attached.
 
-#define AD73311_RATES (SNDRV_PCM_RATE_8000  |	\
-		      SNDRV_PCM_RATE_16000 |	\
-		      SNDRV_PCM_RATE_32000 |	\
-		      SNDRV_PCM_RATE_64000)
+There have been some recent threads on this list regarding the
+configuration of the McBSP port configuration for various formats - it's
+probably worth checking the latest changes to the OMAP code in the
+topic/asoc branch of:
 
-struct snd_soc_dai ad73311_dai = {
-	.name = "AD73311",
-	.playback = {
-		.stream_name = "Playback",
-		.channels_min = 1,
-		.channels_max = 1,
-		.rates = SNDRV_PCM_RATE_32000,
-		.formats = SNDRV_PCM_FMTBIT_S16_LE, },
-	.capture = {
-		.stream_name = "Capture",
-		.channels_min = 1,
-		.channels_max = 1,
-		.rates = SNDRV_PCM_RATE_32000,
-		.formats = SNDRV_PCM_FMTBIT_S16_LE, },
-};
-EXPORT_SYMBOL_GPL(ad73311_dai);
+	git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+
+That said, I2S with the CODEC as clock master is one of the most common
+configurations for OMAP so I'd expect it to be well tested.  Have you
+tried testing recording?
+
+Also CCing in Peter and Jarkko, our resident OMAP audio experts.
