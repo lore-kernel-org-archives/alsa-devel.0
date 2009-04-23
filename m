@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 21/21] ASoC: TWL4030: Add 4 channel TDM support
-Date: Thu, 23 Apr 2009 20:55:55 +0100
-Message-ID: <1240516555-22249-21-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 18/21] ASoC: change stereo/mono to
+	32-bit/16-bit for pxa-ssp
+Date: Thu, 23 Apr 2009 20:55:52 +0100
+Message-ID: <1240516555-22249-18-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20090423195420.GA20863@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9D60D10389E
+	by alsa0.perex.cz (Postfix) with ESMTP id 3E1861038A6
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Apr 2009 21:56:03 +0200 (CEST)
+	Thu, 23 Apr 2009 21:56:04 +0200 (CEST)
 In-Reply-To: <20090423195420.GA20863@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,159 +23,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.miao@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+From: Eric Miao <eric.miao@marvell.com>
 
-Support for 4 channel TDM (SND_SOC_DAIFMT_DSP_A) for twl4030
-codec.
-The channel allocations are:
-Playback:
-TDM         i2s   TWL RX
-Channel 1   Left  SDRL2
-Channel 3   Right SDRR2
-Channel 2   --    SDRL1
-Channel 4   --    SDRR1
+The original idea came from pHilipp, and this makes the code looks
+more consistent.
 
-Capture:
-TDM         i2s   TWL TX
-Channel 1   Left  TXL1
-Channel 3   Right TXR1
-Channel 2   --    TXL2
-Channel 4   --    TXR2
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Signed-off-by: Eric Miao <eric.miao@marvell.com>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/twl4030.c |   52 ++++++++++++++++++++++++++++++++++++++++++-
- sound/soc/codecs/twl4030.h |   11 +++++++++
- 2 files changed, 61 insertions(+), 2 deletions(-)
+ sound/soc/pxa/pxa-ssp.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index fdf88df..e23c20c 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -1251,6 +1251,28 @@ static void twl4030_constraints(struct twl4030_priv *twl4030,
- 				twl4030->channels);
- }
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index fb8cacc..6fc7876 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -67,7 +67,7 @@ struct pxa2xx_pcm_dma_data {
+ };
  
-+/* In case of 4 channel mode, the RX1 L/R for playback and the TX2 L/R for
-+ * capture has to be enabled/disabled. */
-+static void twl4030_tdm_enable(struct snd_soc_codec *codec, int direction,
-+				int enable)
-+{
-+	u8 reg, mask;
-+
-+	reg = twl4030_read_reg_cache(codec, TWL4030_REG_OPTION);
-+
-+	if (direction == SNDRV_PCM_STREAM_PLAYBACK)
-+		mask = TWL4030_ARXL1_VRX_EN | TWL4030_ARXR1_EN;
-+	else
-+		mask = TWL4030_ATXL2_VTXL_EN | TWL4030_ATXR2_VTXR_EN;
-+
-+	if (enable)
-+		reg |= mask;
-+	else
-+		reg &= ~mask;
-+
-+	twl4030_write(codec, TWL4030_REG_OPTION, reg);
-+}
-+
- static int twl4030_startup(struct snd_pcm_substream *substream,
- 			   struct snd_soc_dai *dai)
+ static struct pxa2xx_pcm_dma_params *
+-ssp_get_dma_params(struct ssp_device *ssp, int stereo, int out)
++ssp_get_dma_params(struct ssp_device *ssp, int width4, int out)
  {
-@@ -1267,6 +1289,15 @@ static int twl4030_startup(struct snd_pcm_substream *substream,
- 		if (twl4030->configured)
- 			twl4030_constraints(twl4030, twl4030->master_substream);
- 	} else {
-+		if (!(twl4030_read_reg_cache(codec, TWL4030_REG_CODEC_MODE) &
-+			TWL4030_OPTION_1)) {
-+			/* In option2 4 channel is not supported, set the
-+			 * constraint for the first stream for channels, the
-+			 * second stream will 'inherit' this cosntraint */
-+			snd_pcm_hw_constraint_minmax(substream->runtime,
-+						SNDRV_PCM_HW_PARAM_CHANNELS,
-+						2, 2);
-+		}
- 		twl4030->master_substream = substream;
- 	}
+ 	struct pxa2xx_pcm_dma_data *dma;
  
-@@ -1292,6 +1323,10 @@ static void twl4030_shutdown(struct snd_pcm_substream *substream,
- 		twl4030->configured = 0;
- 	 else if (!twl4030->master_substream->runtime->channels)
- 		twl4030->configured = 0;
-+
-+	 /* If the closing substream had 4 channel, do the necessary cleanup */
-+	if (substream->runtime->channels == 4)
-+		twl4030_tdm_enable(codec, substream->stream, 0);
- }
+@@ -76,13 +76,13 @@ ssp_get_dma_params(struct ssp_device *ssp, int stereo, int out)
+ 		return NULL;
  
- static int twl4030_hw_params(struct snd_pcm_substream *substream,
-@@ -1304,6 +1339,16 @@ static int twl4030_hw_params(struct snd_pcm_substream *substream,
- 	struct twl4030_priv *twl4030 = codec->private_data;
- 	u8 mode, old_mode, format, old_format;
+ 	snprintf(dma->name, 20, "SSP%d PCM %s %s", ssp->port_id,
+-			stereo ? "Stereo" : "Mono", out ? "out" : "in");
++			width4 ? "32-bit" : "16-bit", out ? "out" : "in");
  
-+	 /* If the substream has 4 channel, do the necessary setup */
-+	if (params_channels(params) == 4) {
-+		/* Safety check: are we in the correct operating mode? */
-+		if ((twl4030_read_reg_cache(codec, TWL4030_REG_CODEC_MODE) &
-+			TWL4030_OPTION_1))
-+			twl4030_tdm_enable(codec, substream->stream, 1);
-+		else
-+			return -EINVAL;
-+	}
-+
- 	if (twl4030->configured)
- 		/* Ignoring hw_params for already configured DAI */
- 		return 0;
-@@ -1461,6 +1506,9 @@ static int twl4030_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	case SND_SOC_DAIFMT_I2S:
- 		format |= TWL4030_AIF_FORMAT_CODEC;
- 		break;
-+	case SND_SOC_DAIFMT_DSP_A:
-+		format |= TWL4030_AIF_FORMAT_TDM;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -1642,13 +1690,13 @@ struct snd_soc_dai twl4030_dai[] = {
- 	.playback = {
- 		.stream_name = "Playback",
- 		.channels_min = 2,
--		.channels_max = 2,
-+		.channels_max = 4,
- 		.rates = TWL4030_RATES | SNDRV_PCM_RATE_96000,
- 		.formats = TWL4030_FORMATS,},
- 	.capture = {
- 		.stream_name = "Capture",
- 		.channels_min = 2,
--		.channels_max = 2,
-+		.channels_max = 4,
- 		.rates = TWL4030_RATES,
- 		.formats = TWL4030_FORMATS,},
- 	.ops = &twl4030_dai_ops,
-diff --git a/sound/soc/codecs/twl4030.h b/sound/soc/codecs/twl4030.h
-index 981ec60..3441115 100644
---- a/sound/soc/codecs/twl4030.h
-+++ b/sound/soc/codecs/twl4030.h
-@@ -116,6 +116,17 @@
- #define TWL4030_OPTION_1		(1 << 0)
- #define TWL4030_OPTION_2		(0 << 0)
+ 	dma->params.name = dma->name;
+ 	dma->params.drcmr = &DRCMR(out ? ssp->drcmr_tx : ssp->drcmr_rx);
+ 	dma->params.dcmd = (out ? (DCMD_INCSRCADDR | DCMD_FLOWTRG) :
+ 				  (DCMD_INCTRGADDR | DCMD_FLOWSRC)) |
+-			(stereo ? DCMD_WIDTH4 : DCMD_WIDTH2) | DCMD_BURST16;
++			(width4 ? DCMD_WIDTH4 : DCMD_WIDTH2) | DCMD_BURST16;
+ 	dma->params.dev_addr = ssp->phys_base + SSDR;
  
-+/* TWL4030_OPTION (0x02) Fields */
-+
-+#define TWL4030_ATXL1_EN		(1 << 0)
-+#define TWL4030_ATXR1_EN		(1 << 1)
-+#define TWL4030_ATXL2_VTXL_EN		(1 << 2)
-+#define TWL4030_ATXR2_VTXR_EN		(1 << 3)
-+#define TWL4030_ARXL1_VRX_EN		(1 << 4)
-+#define TWL4030_ARXR1_EN		(1 << 5)
-+#define TWL4030_ARXL2_EN		(1 << 6)
-+#define TWL4030_ARXR2_EN		(1 << 7)
-+
- /* TWL4030_REG_MICBIAS_CTL (0x04) Fields */
- 
- #define TWL4030_MICBIAS2_CTL		0x40
+ 	return &dma->params;
 -- 
 1.5.6.3
