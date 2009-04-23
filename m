@@ -1,177 +1,106 @@
-From: Jean Delvare <khali@linux-fr.org>
-Subject: Re: [PATCH] keywest: Convert to new-style i2c driver
-Date: Thu, 23 Apr 2009 11:54:51 +0200
-Message-ID: <20090423115451.70d5cb2e@hyperion.delvare>
-References: <20090420225659.7b92a184@hyperion.delvare>
-	<18924.63578.495727.152443@cargo.ozlabs.ibm.com>
-	<s5hzleah5x4.wl%tiwai@suse.de>
-	<20090421114853.7a9d82c1@hyperion.delvare>
-	<18926.58544.374626.696097@cargo.ozlabs.ibm.com>
-	<20090422140401.04a402e9@hyperion.delvare>
-	<18927.5140.888171.141615@cargo.ozlabs.ibm.com>
+From: Eric Miao <eric.y.miao@gmail.com>
+Subject: Re: [RFC PATCH 5/5] ASoC: simplify the SSP DMA
+	parameters settings by run-time generation
+Date: Thu, 23 Apr 2009 17:57:46 +0800
+Message-ID: <f17812d70904230257h4a72b03oa26f69663859b9b6@mail.gmail.com>
+References: <f17812d70904222208i79604f3evb9950d6351377a83@mail.gmail.com>
+	<74d0deb30904230153l5ec490eck211d6ef456869f36@mail.gmail.com>
+	<f17812d70904230202t5dc459bbud36c13b11c6d5725@mail.gmail.com>
+	<20090423090810.GD30105@sirena.org.uk>
+	<f17812d70904230228j394713cbj4f99803d6031387d@mail.gmail.com>
+	<20090423093435.GH30105@sirena.org.uk>
+	<f17812d70904230241y31291230j85646ac09a72a3cd@mail.gmail.com>
+	<20090423094438.GI30105@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
-In-Reply-To: <18927.5140.888171.141615@cargo.ozlabs.ibm.com>
-List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
-List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
-List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
-Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
-To: Paul Mackerras <paulus@samba.org>
-Cc: Takashi Iwai <tiwai@suse.de>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary=0016364eef74764ff2046835e99d
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qy0-f103.google.com (mail-qy0-f103.google.com
+	[209.85.221.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4FC3F103854
+	for <alsa-devel@alsa-project.org>;
+	Thu, 23 Apr 2009 11:57:57 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so872942qyk.16
+	for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2009 02:57:46 -0700 (PDT)
+In-Reply-To: <20090423094438.GI30105@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org, Paul Shen <bshen9@marvell.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, pHilipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Paul,
+--0016364eef74764ff2046835e99d
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, 22 Apr 2009 22:56:52 +1000, Paul Mackerras wrote:
-> Jean Delvare writes:
-> > We're past -rc3 because people discuss instead of testing my patches.
-> > Otherwise everything would be merged already.
-> 
-> Well, no.  The first conversion patch that I saw was posted after the
-> merge window had already closed, on 8 April.
+On Thu, Apr 23, 2009 at 5:44 PM, Mark Brown <broonie@sirena.org.uk> wrote:
+> On Thu, Apr 23, 2009 at 05:41:55PM +0800, Eric Miao wrote:
+>
+>> I'd prefer this being added to the original one, provided that you haven't
+>> merged and pushed to public. Patch below:
+>
+> This is word wrapped again and I've already published the changes
+> (though only minutes ago so...).
+>
 
-I had the hope that the developers/maintainers involved would not
-ignore the warnings and had patches ready, that would go to Linus
-during the merge window. This didn't happen, call me naive if you want.
-So right after rc1 I started working on the conversion myself. 
-
-> > And really, these changes (sound drivers) don't qualify as disruptive.
-> > You might argue about the thermal management driver changes if you
-> > want. But sound drivers, nothing bad will happen if they accidentally
-> > break.
-> 
-> That's what we call a "regression". :)
-
-Regressions happen all the time, no matter how hard we all try to avoid
-them. As long as they are fixed before -final, this isn't a big problem
-though.
-
-> > But linux-next will only build-test the code. That I have already done,
-> > so it really doesn't buy my anything. Developers (including me) don't
-> > look at warnings in linux-next, and I don't think linux-next gets a lot
-> > of testing.
-> 
-> If you remove the legacy interfaces then even a build test will point
-> out the drivers that still need to be converted. :)
-
-I don't consider breaking the linux-next build a good practice, sorry.
-I suspect this tree doesn't get a lot of testing, breaking it isn't
-going to improve the situation. Not to mention that this will make
-Stephen's life harder, which isn't my goal. I do have a list of drivers
-that aren't yet converted upstream, I don't need linux-next to tell me.
-Except for new drivers, of course, there I agree your strategy has
-value (but has a flaw, see below.)
-
-> > Also, I can't push all untested patches to linux-next. In particular
-> > the 4 patches that touch thermal management on powermac, need to be
-> > tested successfully by at least one person before I can push them. You
-> > did test the therm_pm72 patch, and I thank you for that, so that one is
-> > in linux-next, but the other 3 ones need testing.
-> > 
-> > So, really, you're trying to solve the wrong problem. Whether the
-> > patches go to Linus now or in the next merge window, doesn't really
-> > matter.
-> 
-> It does matter, actually.
-> 
-> > And 2.6.31 isn't the kernel to remove an interface which was scheduled
-> > for removal in 2.6.29 and then 2.6.30 and which is blocking the
-> > development of features people need badly.
-> 
-> What's so special about 2.6.30 that it matters whether the legacy
-> interfaces are still there or not?
-
-3 months ago, people told me "what's so special about 2.6.29". The
-result is that we made very little progress and the legacy interface
-was still used by 10 (non-staging) drivers in 2.6.30-rc1. There's
-nothing special about 2.6.30 other than the fact that I am fed up
-waiting for all drivers to drop using a deprecated API so that I can
-remove it. Again, further i2c developments are blocked by the existence
-of this deprecated API.
-
-> As for blocking development, you can remove the legacy interfaces
-> today in your next branch and get on with development immediately.
-
-No, I can't, that would break the linux-next build, as explained above.
-I would also have to include all the driver conversion patches there.
-The problem is that this still touches drivers/macintosh,
-drivers/media/video and sound/ppc at the moment, each of which is
-supposed to be maintained in a different tree. If I include these
-patches in my i2c tree, chances of collisions with other trees are big,
-which means more work for Stephen. If the patches are instead included
-in their respective trees (as Takashi just did for sound/ppc), you
-avoid the collisions, but then I can't remove the legacy API in
-linux-next, because the i2c tree is listed relatively early, so
-bisecting (or just incrementally building) linux-next would fail
-horribly.
-
-So, as you can see, the problem you think is so easily solved by
-linux-next, isn't. The only thing I can do at this point is keep the
-patches in a local tree and point other interested developers thereto.
-Basically I'll tell them "you need to use linux-next plus a number of
-public patches that can't go to linux-next plus the development patches
-we are discussing." This makes the work and discussions about further
-developments much more difficult, and results in zero testing outside
-the development group, which makes it unclear if they will be ready for
-2.6.31.
-
-Compare this with the case where all driver conversions are already in
-Linus' tree (even without removing the legacy interface): I can put the
-legacy interface removal and all the development patches in linux-next
-and interested people can test just this, and this is build tested on
-several architectures, and possibly even runtime-tested by a few random
-users. This is way less work for everyone and a much better quality in
-the end.
-
-> So
-> the "blocking development" argument has zero relevance to what goes
-> into Linus' tree for 2.6.30.  Even if you got the legacy interfaces
-> removed for 2.6.30 you still wouldn't be able to get any new features
-> based on that into 2.6.30.
-
-But I would be able to get the new features in 2.6.31. With your plan,
-I doubt this can happen.
-
-> And this is a particularly bad time to be hastily trying to get
-> powermac driver changes upstream, since Ben H. is on vacation.
-
-Yes, that I admit is pretty bad luck :(
-
-> > So, once again, can powermac developers/users please test my patches?
-> 
-> Can we compromise on this?  I'll do everything I reasonably can to
-> help you get the powermac driver patches tested and working before the
-> 2.6.31 merge window, if you agree to leave the drivers and interfaces
-> in Linus' tree as they are for 2.6.30.
-
-"Before the 2.6.31 merge window" is way too late if I want any i2c
-development to make it into 2.6.31 as well. The conversions must go in
-linux-next as soon as possible. Even that isn't ideal as I explained
-above, but that's the bare minimum to make sure everything (driver
-conversions, interface removal and i2c developments) has a chance to be
-ready for 2.6.31.
-
-Note that I did get some more test results meanwhile. Johannes Berg
-was able to test the windfarm drivers conversion, and Andreas Schwab
-tested the therm_adt746x conversion, both successfully. So the only two
-drivers which didn't get any testing at this point are keywest
-(snd-powermac) and therm_windtunnel. That being said, more testing for
-every driver is certainly welcome. You can check the current status at:
-http://i2c.wiki.kernel.org/index.php/Legacy_drivers_to_be_converted
-
-I agree to stop pushing driver conversions to Linus for 2.6.30, which
-means the legacy API will stay there. Some drivers have already been
-converted though (go7007 in rc3) and some conversions are scheduled to
-go to Linus already (sound drivers in rc4, Takashi said.) This means 7
-remaining unconverted drivers in 2.6.30 (6 powermac thermal management
-drivers, and ir-kbd-i2c.)
+Gmail web interface, sorry. That's why I attached the original file.
+Now the incremental patch as attached.
 
 -- 
-Jean Delvare
+Cheers
+- eric
+
+--0016364eef74764ff2046835e99d
+Content-Type: text/x-diff; charset=US-ASCII;
+	name="0001-ASoC-change-stereo-mono-to-32-bit-16-bit-for-pxa-ss.patch"
+Content-Disposition: attachment;
+	filename="0001-ASoC-change-stereo-mono-to-32-bit-16-bit-for-pxa-ss.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_ftva36ao0
+
+RnJvbSBlMjAzNzMzNGQ3N2U0ODI2YWFlYmY1ODAwZWVlNDZmNDA5YjBhNjk4IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBFcmljIE1pYW8gPGVyaWMubWlhb0BtYXJ2ZWxsLmNvbT4KRGF0
+ZTogVGh1LCAyMyBBcHIgMjAwOSAxNzo0ODo1NiArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIEFTb0M6
+IGNoYW5nZSBzdGVyZW8vbW9ubyB0byAzMi1iaXQvMTYtYml0IGZvciBweGEtc3NwCgpUaGUgb3Jp
+Z2luYWwgaWRlYSBjYW1lIGZyb20gcEhpbGlwcCwgYW5kIHRoaXMgbWFrZXMgdGhlIGNvZGUgbG9v
+a3MKbW9yZSBjb25zaXN0ZW50LgoKU2lnbmVkLW9mZi1ieTogcEhpbGlwcCBaYWJlbCA8cGhpbGlw
+cC56YWJlbEBnbWFpbC5jb20+ClNpZ25lZC1vZmYtYnk6IEVyaWMgTWlhbyA8ZXJpYy5taWFvQG1h
+cnZlbGwuY29tPgotLS0KIHNvdW5kL3NvYy9weGEvcHhhLXNzcC5jIHwgICAgNiArKystLS0KIDEg
+ZmlsZXMgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdp
+dCBhL3NvdW5kL3NvYy9weGEvcHhhLXNzcC5jIGIvc291bmQvc29jL3B4YS9weGEtc3NwLmMKaW5k
+ZXggZmI4Y2FjYy4uNmZjNzg3NiAxMDA2NDQKLS0tIGEvc291bmQvc29jL3B4YS9weGEtc3NwLmMK
+KysrIGIvc291bmQvc29jL3B4YS9weGEtc3NwLmMKQEAgLTY3LDcgKzY3LDcgQEAgc3RydWN0IHB4
+YTJ4eF9wY21fZG1hX2RhdGEgewogfTsKIAogc3RhdGljIHN0cnVjdCBweGEyeHhfcGNtX2RtYV9w
+YXJhbXMgKgotc3NwX2dldF9kbWFfcGFyYW1zKHN0cnVjdCBzc3BfZGV2aWNlICpzc3AsIGludCBz
+dGVyZW8sIGludCBvdXQpCitzc3BfZ2V0X2RtYV9wYXJhbXMoc3RydWN0IHNzcF9kZXZpY2UgKnNz
+cCwgaW50IHdpZHRoNCwgaW50IG91dCkKIHsKIAlzdHJ1Y3QgcHhhMnh4X3BjbV9kbWFfZGF0YSAq
+ZG1hOwogCkBAIC03NiwxMyArNzYsMTMgQEAgc3NwX2dldF9kbWFfcGFyYW1zKHN0cnVjdCBzc3Bf
+ZGV2aWNlICpzc3AsIGludCBzdGVyZW8sIGludCBvdXQpCiAJCXJldHVybiBOVUxMOwogCiAJc25w
+cmludGYoZG1hLT5uYW1lLCAyMCwgIlNTUCVkIFBDTSAlcyAlcyIsIHNzcC0+cG9ydF9pZCwKLQkJ
+CXN0ZXJlbyA/ICJTdGVyZW8iIDogIk1vbm8iLCBvdXQgPyAib3V0IiA6ICJpbiIpOworCQkJd2lk
+dGg0ID8gIjMyLWJpdCIgOiAiMTYtYml0Iiwgb3V0ID8gIm91dCIgOiAiaW4iKTsKIAogCWRtYS0+
+cGFyYW1zLm5hbWUgPSBkbWEtPm5hbWU7CiAJZG1hLT5wYXJhbXMuZHJjbXIgPSAmRFJDTVIob3V0
+ID8gc3NwLT5kcmNtcl90eCA6IHNzcC0+ZHJjbXJfcngpOwogCWRtYS0+cGFyYW1zLmRjbWQgPSAo
+b3V0ID8gKERDTURfSU5DU1JDQUREUiB8IERDTURfRkxPV1RSRykgOgogCQkJCSAgKERDTURfSU5D
+VFJHQUREUiB8IERDTURfRkxPV1NSQykpIHwKLQkJCShzdGVyZW8gPyBEQ01EX1dJRFRINCA6IERD
+TURfV0lEVEgyKSB8IERDTURfQlVSU1QxNjsKKwkJCSh3aWR0aDQgPyBEQ01EX1dJRFRINCA6IERD
+TURfV0lEVEgyKSB8IERDTURfQlVSU1QxNjsKIAlkbWEtPnBhcmFtcy5kZXZfYWRkciA9IHNzcC0+
+cGh5c19iYXNlICsgU1NEUjsKIAogCXJldHVybiAmZG1hLT5wYXJhbXM7Ci0tIAoxLjYuMC40Cgo=
+--0016364eef74764ff2046835e99d
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--0016364eef74764ff2046835e99d--
