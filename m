@@ -1,20 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/3] ASoC: s3c-i2s-v2 needs to declare a
-	license for modular builds
-Date: Thu, 23 Apr 2009 19:49:18 +0100
-Message-ID: <1240512558-8030-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <20090423184829.GA7807@sirena.org.uk>
-	<1240512558-8030-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1240512558-8030-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: maarten van es <maarten.h.van.es@gmail.com>
+Subject: salsa error message setting hwparams
+Date: Thu, 23 Apr 2009 20:31:18 +0100
+Message-ID: <bca65b460904231231n6eacecc4l783ba028030d4398@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 518C3243A0
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id 59B081037F9
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Apr 2009 20:49:25 +0200 (CEST)
-In-Reply-To: <1240512558-8030-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Thu, 23 Apr 2009 21:31:19 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id 16so53106fgg.21
+	for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2009 12:31:18 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,28 +21,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-It relies on EXPORT_SYMBOL_GPL() symbols.
+Hi everyone,
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/s3c24xx/s3c-i2s-v2.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+I am running out of ideas of why I am getting the error "operation not
+permitted" when I try setting hw parameters with one of my audio
+cards. I have a custom linux system based on uclibc with salsa for
+audio and use the default device for playback. This sytem works fine
+on a via C7 based pc with via audio. When I try an exact copy of the
+system on an athlon64 based system with a HDPS9632 I get this error
+message. The card works fine with other linux systems. I tested
+several (recent) kernels with my system, all the same result. Any
+ideas why I might be getting this message?
 
-diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.c b/sound/soc/s3c24xx/s3c-i2s-v2.c
-index 689ffcd..ab680aa 100644
---- a/sound/soc/s3c24xx/s3c-i2s-v2.c
-+++ b/sound/soc/s3c24xx/s3c-i2s-v2.c
-@@ -636,5 +636,6 @@ int s3c_i2sv2_register_dai(struct snd_soc_dai *dai)
- 
- 	return snd_soc_register_dai(dai);
- }
--
- EXPORT_SYMBOL_GPL(s3c_i2sv2_register_dai);
-+
-+MODULE_LICENSE("GPL");
--- 
-1.5.6.3
+Maarten
