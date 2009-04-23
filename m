@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 1/3] ASoC: cs4270: fix Master Capture
-	Switch polarity
-Date: Sun, 26 Apr 2009 10:49:17 +0100
-Message-ID: <20090426094917.GA4760@sirena.org.uk>
-References: <1240578026-1987-1-git-send-email-daniel@caiaq.de>
-	<49F1DE99.7050104@freescale.com>
+From: Juha Kuikka <juha.kuikka@gmail.com>
+Subject: Re: trouble with alsa, wolfson, and TI OMAP35xx McBSP
+Date: Thu, 23 Apr 2009 11:16:14 -0700
+Message-ID: <a46a26fd0904231116y4abc7ab2k93bb02806e029f6e@mail.gmail.com>
+References: <dbdb2ea60904221058w67b775f3occ07f55938fe4d03@mail.gmail.com>
+	<200904231220.14465.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9DDC824495
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.241])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4270A24363
 	for <alsa-devel@alsa-project.org>;
-	Sun, 26 Apr 2009 11:49:28 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <49F1DE99.7050104@freescale.com>
+	Thu, 23 Apr 2009 20:16:18 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c3so397751ana.2
+	for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2009 11:16:14 -0700 (PDT)
+In-Reply-To: <200904231220.14465.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,28 +24,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org Mailing List" <linux-omap@vger.kernel.org>, ext twebb <taliaferro62@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 24, 2009 at 10:45:29AM -0500, Timur Tabi wrote:
-> Daniel Mack wrote:
-> > The control modifies the MUTE register, hence the polarity must be
-> > inverted.
+On Thu, Apr 23, 2009 at 2:20 AM, Peter Ujfalusi <peter.ujfalusi@nokia.com>wrote:
 
->                             L    R
->                             CAPTUR
-> 
->                           < Master >
+> On Wednesday 22 April 2009 20:58:01 ext twebb wrote:
+> > Problem 2:
+> > Test tone is being presented by the user application, providing a 1Khz
+> > tone sampled at 44.1Khz. The data are S16_LE, right channel only. Left
+> > channel is quiet. The data seems to slip back and forth from left to
+> > right channel. This is reproducable and verified with a scope trace.
+> >
+> > Anybody have any ideas what might be going wrong here?  Traces for
+> > codec reg dump and mcbsp are attached.
+>
+> As Jarkko already asked: are you seeing the channel switch while running or
+> is
+> it happens on playback start?
+>
+> AFAIK this phenomena can be also seen on Beagle board.
+>
+> I have done some investigation regarding to these, but so far I can not say
+> that I know what causes it.
+>
+> BTW: these are separate issues (startup switch and runtime switch).
+>
 
-> What exactly does this mean?  Which one is supposed to mean "muted"?
+I have seen the startup switch happening and I investigated it a bit.
+The XDISABLE bit solution discussed on the list earlier did not solve the
+problem fully, additionally I needed to add check for the FIFO state before
+clearing XDISABLE.
 
-Capture is enabled in the picture above; often when the alsamixer UI is
-confusing amixer is a bit clearer about what's going on.
+Simplified:
 
-> And how come even though this switch is a SOC_DOUBLE, I cannot control
-> the left and right channel independently with the < and > keys, and the
-> "M" key doesn't toggle it either.
+1. Set XDISABLE bit
+2. Start DMA
+3. Start serial port.
+4. Wait for the DMA to put data into McBSP FIFO (there is status you can
+poll for this)
+5. Clear XDISABLE bit.
 
-This is a property of capture controls.  I'm not entirely sure why,
-CCing in Takashi who should be able to offer more knowledgable comment.
+I found that without step #4 the FIFO would sometimes be empty on step #5
+and switching happened because first word sent was bogus and second was the
+first audio word.
+
+This was on OMAP2430.
+
+ - Juha
+
+-- 
+Madness takes it's toll. Please have exact change.
