@@ -1,128 +1,58 @@
-From: Eric Miao <eric.y.miao@gmail.com>
-Subject: [RFC PATCH 4/5] ASoC: remove those unnecessary #ifdef CONFIG_PXA3xx
-	.. #endif
-Date: Thu, 23 Apr 2009 13:06:55 +0800
-Message-ID: <f17812d70904222206h27c58e40t5c8383133df1a7d0@mail.gmail.com>
+From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Subject: Re: trouble with alsa, wolfson, and TI OMAP35xx McBSP
+Date: Thu, 23 Apr 2009 09:08:44 +0300
+Message-ID: <20090423090844.50d05a65.jarkko.nikula@nokia.com>
+References: <dbdb2ea60904221058w67b775f3occ07f55938fe4d03@mail.gmail.com>
+	<7A436F7769CA33409C6B44B358BFFF0C0106373FD4@dlee02.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.arm.linux.org.uk>
-List-Unsubscribe: <http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=unsubscribe>
-List-Archive: <http://lists.arm.linux.org.uk/lurker/list/linux-arm-kernel.html>
-List-Post: <mailto:linux-arm-kernel@lists.arm.linux.org.uk>
-List-Help: <mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=help>
-List-Subscribe: <http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.arm.linux.org.uk
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.arm.linux.org.uk
-To: linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>, Philipp Zabel <philipp.zabel@gmail.com>, Paul Shen <bshen9@marvell.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id CBE2910381B
+	for <alsa-devel@alsa-project.org>;
+	Thu, 23 Apr 2009 08:07:57 +0200 (CEST)
+In-Reply-To: <7A436F7769CA33409C6B44B358BFFF0C0106373FD4@dlee02.ent.ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "ext Menon, Nishanth" <nm@ti.com>
+Cc: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org Mailing List" <linux-omap@vger.kernel.org>, twebb <taliaferro62@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-These are unnecessary since the compiler is smart enough to optimize
-the code away if CONFIG_PXA3xx is not defined, when cpu_is_pxa3xx()
-will just be expanded to constant 0.
+On Wed, 22 Apr 2009 20:05:40 +0200
+"ext Menon, Nishanth" <nm@ti.com> wrote:
 
-Signed-off-by: Eric Miao <eric.miao@marvell.com>
----
- sound/soc/pxa/pxa-ssp.c |   15 ---------------
- 1 files changed, 0 insertions(+), 15 deletions(-)
+> > Test tone is being presented by the user application, providing a
+> > 1Khz tone sampled at 44.1Khz. The data are S16_LE, right channel
+> > only. Left channel is quiet. The data seems to slip back and forth
+> > from left to right channel. This is reproducable and verified with
+> > a scope trace.
+>
+Is this slipping happening in middle of playback or between the tracks?
 
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index a65993c..2ce4fb6 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -360,24 +360,20 @@ static int pxa_ssp_set_dai_clkdiv(struct
-snd_soc_dai *cpu_dai,
- 	case PXA_SSP_AUDIO_DIV_SCDB:
- 		val = ssp_read_reg(ssp, SSACD);
- 		val &= ~SSACD_SCDB;
--#if defined(CONFIG_PXA3xx)
- 		if (cpu_is_pxa3xx())
- 			val &= ~SSACD_SCDX8;
--#endif
- 		switch (div) {
- 		case PXA_SSP_CLK_SCDB_1:
- 			val |= SSACD_SCDB;
- 			break;
- 		case PXA_SSP_CLK_SCDB_4:
- 			break;
--#if defined(CONFIG_PXA3xx)
- 		case PXA_SSP_CLK_SCDB_8:
- 			if (cpu_is_pxa3xx())
- 				val |= SSACD_SCDX8;
- 			else
- 				return -EINVAL;
- 			break;
--#endif
- 		default:
- 			return -EINVAL;
- 		}
-@@ -403,10 +399,8 @@ static int pxa_ssp_set_dai_pll(struct snd_soc_dai *cpu_dai,
- 	struct ssp_device *ssp = priv->ssp;
- 	u32 ssacd = ssp_read_reg(ssp, SSACD) & ~0x70;
+> I recollect this issue from years back of OSS driver -> i2s is
+> configured as dual phase - mcbsp sends data on both edges, and if the
+> data write happen on the wrong edge for the wrong phase, we might get
+> mix up.. if I recollect right, configuration for mcbsp was done as a
+> single phase with the right edge as a trigger for transfer, the
+> transfer size was set as 32 bytes (both channels).. this essentially
+> guarentees that mcbsp will never mix up channels.
+> 
+Thanks Menon! This is sounds a information we should try out. OMAP2420
+in N810 is especially suffering from channel swapping between the
+tracks and I haven't found time to look any deeper :-(
 
--#if defined(CONFIG_PXA3xx)
- 	if (cpu_is_pxa3xx())
- 		ssp_write_reg(ssp, SSACDD, 0);
--#endif
+I know there is a fix for DaVinci (commit
+fb0ef645f2c546f8297b2fbf9b2b8fff4a7455e8) but I would like to find
+out are there any other or simpler way to fix it than mixing DMA and DAI
+setup.
 
- 	switch (freq_out) {
- 	case 5622000:
-@@ -431,7 +425,6 @@ static int pxa_ssp_set_dai_pll(struct snd_soc_dai *cpu_dai,
- 		break;
 
- 	default:
--#ifdef CONFIG_PXA3xx
- 		/* PXA3xx has a clock ditherer which can be used to generate
- 		 * a wider range of frequencies - calculate a value for it.
- 		 */
-@@ -452,8 +445,6 @@ static int pxa_ssp_set_dai_pll(struct snd_soc_dai *cpu_dai,
- 				val, freq_out);
- 			break;
- 		}
--#endif
--
- 		return -EINVAL;
- 	}
-
-@@ -652,10 +643,8 @@ static int pxa_ssp_hw_params(struct
-snd_pcm_substream *substream,
- 	sscr0 = ssp_read_reg(ssp, SSCR0);
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S16_LE:
--#ifdef CONFIG_PXA3xx
- 		if (cpu_is_pxa3xx())
- 			sscr0 |= SSCR0_FPCKE;
--#endif
- 		sscr0 |= SSCR0_DataSize(16);
- 		break;
- 	case SNDRV_PCM_FORMAT_S24_LE:
-@@ -682,7 +671,6 @@ static int pxa_ssp_hw_params(struct
-snd_pcm_substream *substream,
- 			* needed for that mode are only available on PXA3xx.
- 			*/
-
--#ifdef CONFIG_PXA3xx
- 			if (!cpu_is_pxa3xx())
- 				return -EINVAL;
-
-@@ -691,9 +679,6 @@ static int pxa_ssp_hw_params(struct
-snd_pcm_substream *substream,
- 			sspsp |= SSPSP_EDMYSTOP(3);
- 			sspsp |= SSPSP_DMYSTOP(3);
- 			sspsp |= SSPSP_DMYSTRT(1);
--#else
--			return -EINVAL;
--#endif
- 		} else {
- 			/* The frame width is the width the LRCLK is
- 			 * asserted for; the delay is expressed in
--- 
-1.6.0.4
-
--------------------------------------------------------------------
-List admin: http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel
-FAQ:        http://www.arm.linux.org.uk/mailinglists/faq.php
-Etiquette:  http://www.arm.linux.org.uk/mailinglists/etiquette.php
+Jarkko
