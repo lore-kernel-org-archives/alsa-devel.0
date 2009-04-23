@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 15/21] ASoC: remove non-existing referece to
-	CONFIG_SND_SOC_CODEC_WM8991
-Date: Thu, 23 Apr 2009 20:55:49 +0100
-Message-ID: <1240516555-22249-15-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 13/21] ASoC: Remove redundant rate constraint
+	for WM8903
+Date: Thu, 23 Apr 2009 20:55:47 +0100
+Message-ID: <1240516555-22249-13-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20090423195420.GA20863@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3081B103897
+	by alsa0.perex.cz (Postfix) with ESMTP id A9CAC1038AB
 	for <alsa-devel@alsa-project.org>;
 	Thu, 23 Apr 2009 21:56:05 +0200 (CEST)
 In-Reply-To: <20090423195420.GA20863@sirena.org.uk>
@@ -22,27 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Takashi Iwai <tiwai@suse.de>
+This is now handled by symmetric_rates.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/Makefile |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+ sound/soc/codecs/wm8903.c |   10 ++--------
+ 1 files changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 030d245..f265380 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -56,7 +56,6 @@ obj-$(CONFIG_SND_SOC_WM8900)	+= snd-soc-wm8900.o
- obj-$(CONFIG_SND_SOC_WM8903)	+= snd-soc-wm8903.o
- obj-$(CONFIG_SND_SOC_WM8971)	+= snd-soc-wm8971.o
- obj-$(CONFIG_SND_SOC_WM8990)	+= snd-soc-wm8990.o
--obj-$(CONFIG_SND_SOC_WM8991)	+= snd-soc-wm8991.o
- obj-$(CONFIG_SND_SOC_WM9705)	+= snd-soc-wm9705.o
- obj-$(CONFIG_SND_SOC_WM9712)	+= snd-soc-wm9712.o
- obj-$(CONFIG_SND_SOC_WM9713)	+= snd-soc-wm9713.o
+diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
+index 0bab5c6..bec418a 100644
+--- a/sound/soc/codecs/wm8903.c
++++ b/sound/soc/codecs/wm8903.c
+@@ -1289,14 +1289,8 @@ static int wm8903_startup(struct snd_pcm_substream *substream,
+ 	if (wm8903->master_substream) {
+ 		master_runtime = wm8903->master_substream->runtime;
+ 
+-		dev_dbg(&i2c->dev, "Constraining to %d bits at %dHz\n",
+-			master_runtime->sample_bits,
+-			master_runtime->rate);
+-
+-		snd_pcm_hw_constraint_minmax(substream->runtime,
+-					     SNDRV_PCM_HW_PARAM_RATE,
+-					     master_runtime->rate,
+-					     master_runtime->rate);
++		dev_dbg(&i2c->dev, "Constraining to %d bits\n",
++			master_runtime->sample_bits);
+ 
+ 		snd_pcm_hw_constraint_minmax(substream->runtime,
+ 					     SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
 -- 
 1.5.6.3
