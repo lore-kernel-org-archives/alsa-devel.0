@@ -1,18 +1,19 @@
 From: Eric Miao <eric.y.miao@gmail.com>
-Subject: [RFC PATCH 3/5] pxa: clean up the legacy SSP API
-Date: Thu, 23 Apr 2009 13:06:12 +0800
-Message-ID: <f17812d70904222206n73b3f7d1se18a2615c7aad2bc@mail.gmail.com>
+Subject: [RFC PATCH 2/5] pxa: remove deprecated corgi_{ssp,
+	lcd}.c
+Date: Thu, 23 Apr 2009 13:05:19 +0800
+Message-ID: <f17812d70904222205xc4fd928g54196660fea0ad21@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-qy0-f103.google.com (mail-qy0-f103.google.com
 	[209.85.221.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2029C103801
+	by alsa0.perex.cz (Postfix) with ESMTP id 344BF103801
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Apr 2009 07:06:14 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so730118qyk.16
-	for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2009 22:06:13 -0700 (PDT)
+	Thu, 23 Apr 2009 07:05:21 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so729692qyk.16
+	for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2009 22:05:20 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,633 +27,678 @@ To: linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
 Cc: alsa-devel@alsa-project.org, Paul Shen <bshen9@marvell.com>, Mark Brown <broonie@sirena.org.uk>, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Actually, due to the number of possible SSP configurations, it's quite a
-difficult job to maintain an API that can be well re-used. The guideline
-here is to keep only a list of SSP devices and their basic information,
-and it's up to the user driver (like SPI or Audio SSP) to configure the
-SSP in a desired way.
-
-Now that the legacy 'struct ssp_dev' based APIs are removed, and only the
-functions below are kept, modified a little bit to make them aware of the
-new 'struct ssp_device':
-
-  ssp_enable()
-  ssp_disable()
-  ssp_save_state()
-  ssp_restore_state()
-
-And finally, ssp_{save,restore}_state() can be merged into the suspend()
-and resume() interface of the SSP's platform_driver, thus saving the user
-driver from doing some similar things in common.
-
 Signed-off-by: Eric Miao <eric.miao@marvell.com>
 ---
- arch/arm/mach-pxa/include/mach/ssp.h |   32 +----
- arch/arm/mach-pxa/ssp.c              |  240 +---------------------------------
- sound/soc/pxa/pxa-ssp.c              |   65 +++++-----
- 3 files changed, 45 insertions(+), 292 deletions(-)
+ arch/arm/mach-pxa/Kconfig      |    8 -
+ arch/arm/mach-pxa/Makefile     |    1 -
+ arch/arm/mach-pxa/corgi_lcd.c  |  288 ----------------------------------------
+ arch/arm/mach-pxa/corgi_ssp.c  |  275 --------------------------------------
+ arch/arm/mach-pxa/sharpsl_pm.c |    9 +-
+ 5 files changed, 2 insertions(+), 579 deletions(-)
+ delete mode 100644 arch/arm/mach-pxa/corgi_lcd.c
+ delete mode 100644 arch/arm/mach-pxa/corgi_ssp.c
 
-diff --git a/arch/arm/mach-pxa/include/mach/ssp.h
-b/arch/arm/mach-pxa/include/mach/ssp.h
-index cb5cb76..e431685 100644
---- a/arch/arm/mach-pxa/include/mach/ssp.h
-+++ b/arch/arm/mach-pxa/include/mach/ssp.h
-@@ -58,26 +58,10 @@ struct ssp_state {
- 	u32 psp;
- };
+diff --git a/arch/arm/mach-pxa/Kconfig b/arch/arm/mach-pxa/Kconfig
+index a225658..d52d8a3 100644
+--- a/arch/arm/mach-pxa/Kconfig
++++ b/arch/arm/mach-pxa/Kconfig
+@@ -88,14 +88,6 @@ config PXA_SHARPSL
+ 	  SL-C3000 (Spitz), SL-C3100 (Borzoi) or SL-C6000x (Tosa)
+ 	  handheld computer.
 
--struct ssp_dev {
--	struct ssp_device *ssp;
--	u32 port;
--	u32 mode;
--	u32 flags;
--	u32 psp_flags;
--	u32 speed;
--	int irq;
--};
+-config CORGI_SSP_DEPRECATED
+-	bool
+-	select PXA_SSP
+-	help
+-	  This option will include corgi_ssp.c and corgi_lcd.c
+-	  that corgi_ts.c and other legacy drivers (corgi_bl.c
+-	  and sharpsl_pm.c) may depend on.
 -
--int ssp_write_word(struct ssp_dev *dev, u32 data);
--int ssp_read_word(struct ssp_dev *dev, u32 *data);
--int ssp_flush(struct ssp_dev *dev);
--void ssp_enable(struct ssp_dev *dev);
--void ssp_disable(struct ssp_dev *dev);
--void ssp_save_state(struct ssp_dev *dev, struct ssp_state *ssp);
--void ssp_restore_state(struct ssp_dev *dev, struct ssp_state *ssp);
--int ssp_init(struct ssp_dev *dev, u32 port, u32 init_flags);
--int ssp_config(struct ssp_dev *dev, u32 mode, u32 flags, u32
-psp_flags, u32 speed);
--void ssp_exit(struct ssp_dev *dev);
-+void ssp_enable(struct ssp_device *ssp);
-+void ssp_disable(struct ssp_device *ssp);
-+void ssp_save_state(struct ssp_device *ssp, struct ssp_state *);
-+void ssp_restore_state(struct ssp_device *ssp, struct ssp_state *);
-
- /**
-  * ssp_write_reg - Write to a SSP register
-@@ -86,9 +70,9 @@ void ssp_exit(struct ssp_dev *dev);
-  * @reg: Register to write to
-  * @val: Value to be written.
-  */
--static inline void ssp_write_reg(struct ssp_device *dev, u32 reg, u32 val)
-+static inline void ssp_write_reg(struct ssp_device *ssp, u32 reg, u32 val)
- {
--	__raw_writel(val, dev->mmio_base + reg);
-+	__raw_writel(val, ssp->mmio_base + reg);
- }
-
- /**
-@@ -97,9 +81,9 @@ static inline void ssp_write_reg(struct ssp_device
-*dev, u32 reg, u32 val)
-  * @dev: SSP device to access
-  * @reg: Register to read from
-  */
--static inline u32 ssp_read_reg(struct ssp_device *dev, u32 reg)
-+static inline u32 ssp_read_reg(struct ssp_device *ssp, u32 reg)
- {
--	return __raw_readl(dev->mmio_base + reg);
-+	return __raw_readl(ssp->mmio_base + reg);
- }
-
- struct ssp_device *ssp_request(int port, const char *label);
-diff --git a/arch/arm/mach-pxa/ssp.c b/arch/arm/mach-pxa/ssp.c
-index 965e38c..f48807a 100644
---- a/arch/arm/mach-pxa/ssp.c
-+++ b/arch/arm/mach-pxa/ssp.c
-@@ -35,153 +35,25 @@
- #include <mach/ssp.h>
- #include <mach/regs-ssp.h>
-
--#define TIMEOUT 100000
+ config MACH_POODLE
+ 	bool "Enable Sharp SL-5600 (Poodle) Support"
+ 	depends on PXA_SHARPSL
+diff --git a/arch/arm/mach-pxa/Makefile b/arch/arm/mach-pxa/Makefile
+index 4bcebf7..eb89363 100644
+--- a/arch/arm/mach-pxa/Makefile
++++ b/arch/arm/mach-pxa/Makefile
+@@ -41,7 +41,6 @@ obj-$(CONFIG_MACH_COLIBRI320)	+= colibri-pxa3xx.o
+colibri-pxa320.o
+ obj-$(CONFIG_MACH_H5000)	+= h5000.o
+ obj-$(CONFIG_PXA_SHARP_C7xx)	+= corgi.o sharpsl_pm.o corgi_pm.o
+ obj-$(CONFIG_PXA_SHARP_Cxx00)	+= spitz.o sharpsl_pm.o spitz_pm.o
+-obj-$(CONFIG_CORGI_SSP_DEPRECATED)	+= corgi_ssp.o corgi_lcd.o
+ obj-$(CONFIG_MACH_POODLE)	+= poodle.o
+ obj-$(CONFIG_MACH_PCM027)	+= pcm027.o
+ obj-$(CONFIG_MACH_PCM990_BASEBOARD)	+= pcm990-baseboard.o
+diff --git a/arch/arm/mach-pxa/corgi_lcd.c b/arch/arm/mach-pxa/corgi_lcd.c
+deleted file mode 100644
+index d9b9631..0000000
+--- a/arch/arm/mach-pxa/corgi_lcd.c
++++ /dev/null
+@@ -1,288 +0,0 @@
+-/*
+- * linux/arch/arm/mach-pxa/corgi_lcd.c
+- *
+- * Corgi/Spitz LCD Specific Code
+- *
+- * Copyright (C) 2005 Richard Purdie
+- *
+- * Connectivity:
+- *   Corgi - LCD to ATI Imageon w100 (Wallaby)
+- *   Spitz - LCD to PXA Framebuffer
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- *
+- */
 -
--static irqreturn_t ssp_interrupt(int irq, void *dev_id)
-+void ssp_enable(struct ssp_device *ssp)
- {
--	struct ssp_dev *dev = dev_id;
--	struct ssp_device *ssp = dev->ssp;
--	unsigned int status;
+-#include <linux/delay.h>
+-#include <linux/kernel.h>
+-#include <linux/platform_device.h>
+-#include <linux/module.h>
+-#include <linux/string.h>
+-#include <mach/corgi.h>
+-#include <mach/hardware.h>
+-#include <mach/sharpsl.h>
+-#include <mach/spitz.h>
+-#include <asm/hardware/scoop.h>
+-#include <asm/mach/sharpsl_param.h>
+-#include "generic.h"
 -
--	status = __raw_readl(ssp->mmio_base + SSSR);
--	__raw_writel(status, ssp->mmio_base + SSSR);
+-/* Register Addresses */
+-#define RESCTL_ADRS     0x00
+-#define PHACTRL_ADRS    0x01
+-#define DUTYCTRL_ADRS   0x02
+-#define POWERREG0_ADRS  0x03
+-#define POWERREG1_ADRS  0x04
+-#define GPOR3_ADRS      0x05
+-#define PICTRL_ADRS     0x06
+-#define POLCTRL_ADRS    0x07
 -
--	if (status & SSSR_ROR)
--		printk(KERN_WARNING "SSP(%d): receiver overrun\n", dev->port);
+-/* Register Bit Definitions */
+-#define RESCTL_QVGA     0x01
+-#define RESCTL_VGA      0x00
 -
--	if (status & SSSR_TUR)
--		printk(KERN_WARNING "SSP(%d): transmitter underrun\n", dev->port);
+-#define POWER1_VW_ON    0x01  /* VW Supply FET ON */
+-#define POWER1_GVSS_ON  0x02  /* GVSS(-8V) Power Supply ON */
+-#define POWER1_VDD_ON   0x04  /* VDD(8V),SVSS(-4V) Power Supply ON */
 -
--	if (status & SSSR_BCE)
--		printk(KERN_WARNING "SSP(%d): bit count error\n", dev->port);
+-#define POWER1_VW_OFF   0x00  /* VW Supply FET OFF */
+-#define POWER1_GVSS_OFF 0x00  /* GVSS(-8V) Power Supply OFF */
+-#define POWER1_VDD_OFF  0x00  /* VDD(8V),SVSS(-4V) Power Supply OFF */
 -
--	return IRQ_HANDLED;
+-#define POWER0_COM_DCLK 0x01  /* COM Voltage DC Bias DAC Serial Data Clock */
+-#define POWER0_COM_DOUT 0x02  /* COM Voltage DC Bias DAC Serial Data Out */
+-#define POWER0_DAC_ON   0x04  /* DAC Power Supply ON */
+-#define POWER0_COM_ON   0x08  /* COM Power Supply ON */
+-#define POWER0_VCC5_ON  0x10  /* VCC5 Power Supply ON */
+-
+-#define POWER0_DAC_OFF  0x00  /* DAC Power Supply OFF */
+-#define POWER0_COM_OFF  0x00  /* COM Power Supply OFF */
+-#define POWER0_VCC5_OFF 0x00  /* VCC5 Power Supply OFF */
+-
+-#define PICTRL_INIT_STATE      0x01
+-#define PICTRL_INIOFF          0x02
+-#define PICTRL_POWER_DOWN      0x04
+-#define PICTRL_COM_SIGNAL_OFF  0x08
+-#define PICTRL_DAC_SIGNAL_OFF  0x10
+-
+-#define POLCTRL_SYNC_POL_FALL  0x01
+-#define POLCTRL_EN_POL_FALL    0x02
+-#define POLCTRL_DATA_POL_FALL  0x04
+-#define POLCTRL_SYNC_ACT_H     0x08
+-#define POLCTRL_EN_ACT_L       0x10
+-
+-#define POLCTRL_SYNC_POL_RISE  0x00
+-#define POLCTRL_EN_POL_RISE    0x00
+-#define POLCTRL_DATA_POL_RISE  0x00
+-#define POLCTRL_SYNC_ACT_L     0x00
+-#define POLCTRL_EN_ACT_H       0x00
+-
+-#define PHACTRL_PHASE_MANUAL   0x01
+-#define DEFAULT_PHAD_QVGA     (9)
+-#define DEFAULT_COMADJ        (125)
+-
+-/*
+- * This is only a psuedo I2C interface. We can't use the standard kernel
+- * routines as the interface is write only. We just assume the data is acked...
+- */
+-static void lcdtg_ssp_i2c_send(u8 data)
+-{
+-	corgi_ssp_lcdtg_send(POWERREG0_ADRS, data);
+-	udelay(10);
 -}
 -
--/**
-- * ssp_write_word - write a word to the SSP port
-- * @data: 32-bit, MSB justified data to write.
-- *
-- * Wait for a free entry in the SSP transmit FIFO, and write a data
-- * word to the SSP port.
-- *
-- * The caller is expected to perform the necessary locking.
-- *
-- * Returns:
-- *   %-ETIMEDOUT	timeout occurred
-- *   0			success
-- */
--int ssp_write_word(struct ssp_dev *dev, u32 data)
+-static void lcdtg_i2c_send_bit(u8 data)
 -{
--	struct ssp_device *ssp = dev->ssp;
--	int timeout = TIMEOUT;
+-	lcdtg_ssp_i2c_send(data);
+-	lcdtg_ssp_i2c_send(data | POWER0_COM_DCLK);
+-	lcdtg_ssp_i2c_send(data);
+-}
 -
--	while (!(__raw_readl(ssp->mmio_base + SSSR) & SSSR_TNF)) {
--	        if (!--timeout)
--	        	return -ETIMEDOUT;
--		cpu_relax();
+-static void lcdtg_i2c_send_start(u8 base)
+-{
+-	lcdtg_ssp_i2c_send(base | POWER0_COM_DCLK | POWER0_COM_DOUT);
+-	lcdtg_ssp_i2c_send(base | POWER0_COM_DCLK);
+-	lcdtg_ssp_i2c_send(base);
+-}
+-
+-static void lcdtg_i2c_send_stop(u8 base)
+-{
+-	lcdtg_ssp_i2c_send(base);
+-	lcdtg_ssp_i2c_send(base | POWER0_COM_DCLK);
+-	lcdtg_ssp_i2c_send(base | POWER0_COM_DCLK | POWER0_COM_DOUT);
+-}
+-
+-static void lcdtg_i2c_send_byte(u8 base, u8 data)
+-{
+-	int i;
+-	for (i = 0; i < 8; i++) {
+-		if (data & 0x80)
+-			lcdtg_i2c_send_bit(base | POWER0_COM_DOUT);
+-		else
+-			lcdtg_i2c_send_bit(base);
+-		data <<= 1;
+-	}
+-}
+-
+-static void lcdtg_i2c_wait_ack(u8 base)
+-{
+-	lcdtg_i2c_send_bit(base);
+-}
+-
+-static void lcdtg_set_common_voltage(u8 base_data, u8 data)
+-{
+-	/* Set Common Voltage to M62332FP via I2C */
+-	lcdtg_i2c_send_start(base_data);
+-	lcdtg_i2c_send_byte(base_data, 0x9c);
+-	lcdtg_i2c_wait_ack(base_data);
+-	lcdtg_i2c_send_byte(base_data, 0x00);
+-	lcdtg_i2c_wait_ack(base_data);
+-	lcdtg_i2c_send_byte(base_data, data);
+-	lcdtg_i2c_wait_ack(base_data);
+-	lcdtg_i2c_send_stop(base_data);
+-}
+-
+-/* Set Phase Adjust */
+-static void lcdtg_set_phadadj(int mode)
+-{
+-	int adj;
+-	switch(mode) {
+-		case 480:
+-		case 640:
+-			/* Setting for VGA */
+-			adj = sharpsl_param.phadadj;
+-			if (adj < 0) {
+-				adj = PHACTRL_PHASE_MANUAL;
+-			} else {
+-				adj = ((adj & 0x0f) << 1) | PHACTRL_PHASE_MANUAL;
+-			}
+-			break;
+-		case 240:
+-		case 320:
+-		default:
+-			/* Setting for QVGA */
+-			adj = (DEFAULT_PHAD_QVGA << 1) | PHACTRL_PHASE_MANUAL;
+-			break;
 -	}
 -
--	__raw_writel(data, ssp->mmio_base + SSDR);
--
--	return 0;
+-	corgi_ssp_lcdtg_send(PHACTRL_ADRS, adj);
 -}
 -
--/**
-- * ssp_read_word - read a word from the SSP port
-- *
-- * Wait for a data word in the SSP receive FIFO, and return the
-- * received data.  Data is LSB justified.
-- *
-- * Note: Currently, if data is not expected to be received, this
-- * function will wait for ever.
-- *
-- * The caller is expected to perform the necessary locking.
-- *
-- * Returns:
-- *   %-ETIMEDOUT	timeout occurred
-- *   32-bit data	success
-- */
--int ssp_read_word(struct ssp_dev *dev, u32 *data)
--{
--	struct ssp_device *ssp = dev->ssp;
--	int timeout = TIMEOUT;
+-static int lcd_inited;
 -
--	while (!(__raw_readl(ssp->mmio_base + SSSR) & SSSR_RNE)) {
--	        if (!--timeout)
--	        	return -ETIMEDOUT;
--		cpu_relax();
+-void corgi_lcdtg_hw_init(int mode)
+-{
+-	if (!lcd_inited) {
+-		int comadj;
+-
+-		/* Initialize Internal Logic & Port */
+-		corgi_ssp_lcdtg_send(PICTRL_ADRS, PICTRL_POWER_DOWN | PICTRL_INIOFF
+| PICTRL_INIT_STATE
+-	  			| PICTRL_COM_SIGNAL_OFF | PICTRL_DAC_SIGNAL_OFF);
+-
+-		corgi_ssp_lcdtg_send(POWERREG0_ADRS, POWER0_COM_DCLK |
+POWER0_COM_DOUT | POWER0_DAC_OFF
+-				| POWER0_COM_OFF | POWER0_VCC5_OFF);
+-
+-		corgi_ssp_lcdtg_send(POWERREG1_ADRS, POWER1_VW_OFF |
+POWER1_GVSS_OFF | POWER1_VDD_OFF);
+-
+-		/* VDD(+8V), SVSS(-4V) ON */
+-		corgi_ssp_lcdtg_send(POWERREG1_ADRS, POWER1_VW_OFF |
+POWER1_GVSS_OFF | POWER1_VDD_ON);
+-		mdelay(3);
+-
+-		/* DAC ON */
+-		corgi_ssp_lcdtg_send(POWERREG0_ADRS, POWER0_COM_DCLK |
+POWER0_COM_DOUT | POWER0_DAC_ON
+-				| POWER0_COM_OFF | POWER0_VCC5_OFF);
+-
+-		/* INIB = H, INI = L  */
+-		/* PICTL[0] = H , PICTL[1] = PICTL[2] = PICTL[4] = L */
+-		corgi_ssp_lcdtg_send(PICTRL_ADRS, PICTRL_INIT_STATE | PICTRL_COM_SIGNAL_OFF);
+-
+-		/* Set Common Voltage */
+-		comadj = sharpsl_param.comadj;
+-		if (comadj < 0)
+-			comadj = DEFAULT_COMADJ;
+-		lcdtg_set_common_voltage((POWER0_DAC_ON | POWER0_COM_OFF |
+POWER0_VCC5_OFF), comadj);
+-
+-		/* VCC5 ON, DAC ON */
+-		corgi_ssp_lcdtg_send(POWERREG0_ADRS, POWER0_COM_DCLK |
+POWER0_COM_DOUT | POWER0_DAC_ON |
+-				POWER0_COM_OFF | POWER0_VCC5_ON);
+-
+-		/* GVSS(-8V) ON, VDD ON */
+-		corgi_ssp_lcdtg_send(POWERREG1_ADRS, POWER1_VW_OFF | POWER1_GVSS_ON
+| POWER1_VDD_ON);
+-		mdelay(2);
+-
+-		/* COM SIGNAL ON (PICTL[3] = L) */
+-		corgi_ssp_lcdtg_send(PICTRL_ADRS, PICTRL_INIT_STATE);
+-
+-		/* COM ON, DAC ON, VCC5_ON */
+-		corgi_ssp_lcdtg_send(POWERREG0_ADRS, POWER0_COM_DCLK |
+POWER0_COM_DOUT | POWER0_DAC_ON
+-				| POWER0_COM_ON | POWER0_VCC5_ON);
+-
+-		/* VW ON, GVSS ON, VDD ON */
+-		corgi_ssp_lcdtg_send(POWERREG1_ADRS, POWER1_VW_ON | POWER1_GVSS_ON
+| POWER1_VDD_ON);
+-
+-		/* Signals output enable */
+-		corgi_ssp_lcdtg_send(PICTRL_ADRS, 0);
+-
+-		/* Set Phase Adjust */
+-		lcdtg_set_phadadj(mode);
+-
+-		/* Initialize for Input Signals from ATI */
+-		corgi_ssp_lcdtg_send(POLCTRL_ADRS, POLCTRL_SYNC_POL_RISE |
+POLCTRL_EN_POL_RISE
+-				| POLCTRL_DATA_POL_RISE | POLCTRL_SYNC_ACT_L | POLCTRL_EN_ACT_H);
+-		udelay(1000);
+-
+-		lcd_inited=1;
+-	} else {
+-		lcdtg_set_phadadj(mode);
 -	}
 -
--	*data = __raw_readl(ssp->mmio_base + SSDR);
--	return 0;
--}
--
--/**
-- * ssp_flush - flush the transmit and receive FIFOs
-- *
-- * Wait for the SSP to idle, and ensure that the receive FIFO
-- * is empty.
-- *
-- * The caller is expected to perform the necessary locking.
-- */
--int ssp_flush(struct ssp_dev *dev)
--{
--	struct ssp_device *ssp = dev->ssp;
--	int timeout = TIMEOUT * 2;
--
--	/* ensure TX FIFO is empty instead of not full */
--	if (cpu_is_pxa3xx()) {
--		while (__raw_readl(ssp->mmio_base + SSSR) & 0xf00) {
--			if (!--timeout)
--				return -ETIMEDOUT;
--			cpu_relax();
--		}
--		timeout = TIMEOUT * 2;
+-	switch(mode) {
+-		case 480:
+-		case 640:
+-			/* Set Lcd Resolution (VGA) */
+-			corgi_ssp_lcdtg_send(RESCTL_ADRS, RESCTL_VGA);
+-			break;
+-		case 240:
+-		case 320:
+-		default:
+-			/* Set Lcd Resolution (QVGA) */
+-			corgi_ssp_lcdtg_send(RESCTL_ADRS, RESCTL_QVGA);
+-			break;
 -	}
--
--	do {
--		while (__raw_readl(ssp->mmio_base + SSSR) & SSSR_RNE) {
--		        if (!--timeout)
--		        	return -ETIMEDOUT;
--			(void)__raw_readl(ssp->mmio_base + SSDR);
--		}
--	        if (!--timeout)
--	        	return -ETIMEDOUT;
--	} while (__raw_readl(ssp->mmio_base + SSSR) & SSSR_BSY);
--
--	return 0;
 -}
 -
--/**
-- * ssp_enable - enable the SSP port
-- *
-- * Turn on the SSP port.
-- */
--void ssp_enable(struct ssp_dev *dev)
+-void corgi_lcdtg_suspend(void)
 -{
--	struct ssp_device *ssp = dev->ssp;
- 	uint32_t sscr0;
-
- 	sscr0 = __raw_readl(ssp->mmio_base + SSCR0);
- 	sscr0 |= SSCR0_SSE;
- 	__raw_writel(sscr0, ssp->mmio_base + SSCR0);
- }
-+EXPORT_SYMBOL(ssp_enable);
-
--/**
-- * ssp_disable - shut down the SSP port
-- *
-- * Turn off the SSP port, optionally powering it down.
-- */
--void ssp_disable(struct ssp_dev *dev)
-+void ssp_disable(struct ssp_device *ssp)
- {
--	struct ssp_device *ssp = dev->ssp;
- 	uint32_t sscr0;
-
- 	sscr0 = __raw_readl(ssp->mmio_base + SSCR0);
- 	sscr0 &= ~SSCR0_SSE;
- 	__raw_writel(sscr0, ssp->mmio_base + SSCR0);
- }
-+EXPORT_SYMBOL(ssp_disable);
-
- /**
-  * ssp_save_state - save the SSP configuration
-@@ -189,16 +61,12 @@ void ssp_disable(struct ssp_dev *dev)
-  *
-  * Save the configured SSP state for suspend.
-  */
--void ssp_save_state(struct ssp_dev *dev, struct ssp_state *state)
-+void ssp_save_state(struct ssp_device *ssp, struct ssp_state *state)
- {
--	struct ssp_device *ssp = dev->ssp;
+-	/* 60Hz x 2 frame = 16.7msec x 2 = 33.4 msec */
+-	mdelay(34);
 -
- 	state->cr0 = __raw_readl(ssp->mmio_base + SSCR0);
- 	state->cr1 = __raw_readl(ssp->mmio_base + SSCR1);
- 	state->to  = __raw_readl(ssp->mmio_base + SSTO);
- 	state->psp = __raw_readl(ssp->mmio_base + SSPSP);
+-	/* (1)VW OFF */
+-	corgi_ssp_lcdtg_send(POWERREG1_ADRS, POWER1_VW_OFF | POWER1_GVSS_ON
+| POWER1_VDD_ON);
 -
--	ssp_disable(dev);
- }
-
- /**
-@@ -207,9 +75,8 @@ void ssp_save_state(struct ssp_dev *dev, struct
-ssp_state *state)
-  *
-  * Restore the SSP configuration saved previously by ssp_save_state.
-  */
--void ssp_restore_state(struct ssp_dev *dev, struct ssp_state *state)
-+void ssp_restore_state(struct ssp_device *ssp, struct ssp_state *state)
- {
--	struct ssp_device *ssp = dev->ssp;
- 	uint32_t sssr = SSSR_ROR | SSSR_TUR | SSSR_BCE;
-
- 	__raw_writel(sssr, ssp->mmio_base + SSSR);
-@@ -221,89 +88,6 @@ void ssp_restore_state(struct ssp_dev *dev, struct
-ssp_state *state)
- 	__raw_writel(state->cr0, ssp->mmio_base + SSCR0);
- }
-
--/**
-- * ssp_config - configure SSP port settings
-- * @mode: port operating mode
-- * @flags: port config flags
-- * @psp_flags: port PSP config flags
-- * @speed: port speed
-- *
-- * Port MUST be disabled by ssp_disable before making any config changes.
-- */
--int ssp_config(struct ssp_dev *dev, u32 mode, u32 flags, u32
-psp_flags, u32 speed)
--{
--	struct ssp_device *ssp = dev->ssp;
+-	/* (2)COM OFF */
+-	corgi_ssp_lcdtg_send(PICTRL_ADRS, PICTRL_COM_SIGNAL_OFF);
+-	corgi_ssp_lcdtg_send(POWERREG0_ADRS, POWER0_DAC_ON | POWER0_COM_OFF
+| POWER0_VCC5_ON);
 -
--	dev->mode = mode;
--	dev->flags = flags;
--	dev->psp_flags = psp_flags;
--	dev->speed = speed;
+-	/* (3)Set Common Voltage Bias 0V */
+-	lcdtg_set_common_voltage(POWER0_DAC_ON | POWER0_COM_OFF | POWER0_VCC5_ON, 0);
 -
--	/* set up port type, speed, port settings */
--	__raw_writel((dev->speed | dev->mode), ssp->mmio_base + SSCR0);
--	__raw_writel(dev->flags, ssp->mmio_base + SSCR1);
--	__raw_writel(dev->psp_flags, ssp->mmio_base + SSPSP);
+-	/* (4)GVSS OFF */
+-	corgi_ssp_lcdtg_send(POWERREG1_ADRS, POWER1_VW_OFF | POWER1_GVSS_OFF
+| POWER1_VDD_ON);
 -
--	return 0;
+-	/* (5)VCC5 OFF */
+-	corgi_ssp_lcdtg_send(POWERREG0_ADRS, POWER0_DAC_ON | POWER0_COM_OFF
+| POWER0_VCC5_OFF);
+-
+-	/* (6)Set PDWN, INIOFF, DACOFF */
+-	corgi_ssp_lcdtg_send(PICTRL_ADRS, PICTRL_INIOFF | PICTRL_DAC_SIGNAL_OFF |
+-			PICTRL_POWER_DOWN | PICTRL_COM_SIGNAL_OFF);
+-
+-	/* (7)DAC OFF */
+-	corgi_ssp_lcdtg_send(POWERREG0_ADRS, POWER0_DAC_OFF | POWER0_COM_OFF
+| POWER0_VCC5_OFF);
+-
+-	/* (8)VDD OFF */
+-	corgi_ssp_lcdtg_send(POWERREG1_ADRS, POWER1_VW_OFF | POWER1_GVSS_OFF
+| POWER1_VDD_OFF);
+-
+-	lcd_inited = 0;
 -}
 -
--/**
-- * ssp_init - setup the SSP port
+diff --git a/arch/arm/mach-pxa/corgi_ssp.c b/arch/arm/mach-pxa/corgi_ssp.c
+deleted file mode 100644
+index a5ee707..0000000
+--- a/arch/arm/mach-pxa/corgi_ssp.c
++++ /dev/null
+@@ -1,275 +0,0 @@
+-/*
+- *  SSP control code for Sharp Corgi devices
 - *
-- * initialise and claim resources for the SSP port.
+- *  Copyright (c) 2004-2005 Richard Purdie
 - *
-- * Returns:
-- *   %-ENODEV	if the SSP port is unavailable
-- *   %-EBUSY	if the resources are already in use
-- *   %0		on success
+- *  This program is free software; you can redistribute it and/or modify
+- *  it under the terms of the GNU General Public License version 2 as
+- *  published by the Free Software Foundation.
+- *
 - */
--int ssp_init(struct ssp_dev *dev, u32 port, u32 init_flags)
+-
+-#include <linux/module.h>
+-#include <linux/init.h>
+-#include <linux/kernel.h>
+-#include <linux/sched.h>
+-#include <linux/slab.h>
+-#include <linux/delay.h>
+-#include <linux/platform_device.h>
+-#include <mach/hardware.h>
+-#include <asm/mach-types.h>
+-
+-#include <mach/ssp.h>
+-#include <mach/pxa2xx-gpio.h>
+-#include <mach/regs-ssp.h>
+-#include "sharpsl.h"
+-
+-static DEFINE_SPINLOCK(corgi_ssp_lock);
+-static struct ssp_dev corgi_ssp_dev;
+-static struct ssp_state corgi_ssp_state;
+-static struct corgissp_machinfo *ssp_machinfo;
+-
+-/*
+- * There are three devices connected to the SSP interface:
+- *   1. A touchscreen controller (TI ADS7846 compatible)
+- *   2. An LCD controller (with some Backlight functionality)
+- *   3. A battery monitoring IC (Maxim MAX1111)
+- *
+- * Each device uses a different speed/mode of communication.
+- *
+- * The touchscreen is very sensitive and the most frequently used
+- * so the port is left configured for this.
+- *
+- * Devices are selected using Chip Selects on GPIOs.
+- */
+-
+-/*
+- *  ADS7846 Routines
+- */
+-unsigned long corgi_ssp_ads7846_putget(ulong data)
 -{
--	struct ssp_device *ssp;
--	int ret;
+-	unsigned long flag;
+-	u32 ret = 0;
 -
--	ssp = ssp_request(port, "SSP");
--	if (ssp == NULL)
--		return -ENODEV;
+-	spin_lock_irqsave(&corgi_ssp_lock, flag);
+-	if (ssp_machinfo->cs_ads7846 >= 0)
+-		GPCR(ssp_machinfo->cs_ads7846) = GPIO_bit(ssp_machinfo->cs_ads7846);
 -
--	dev->ssp = ssp;
--	dev->port = port;
+-	ssp_write_word(&corgi_ssp_dev,data);
+- 	ssp_read_word(&corgi_ssp_dev, &ret);
 -
--	/* do we need to get irq */
--	if (!(init_flags & SSP_NO_IRQ)) {
--		ret = request_irq(ssp->irq, ssp_interrupt,
--				0, "SSP", dev);
--	    	if (ret)
--			goto out_region;
--		dev->irq = ssp->irq;
--	} else
--		dev->irq = NO_IRQ;
+-	if (ssp_machinfo->cs_ads7846 >= 0)
+-		GPSR(ssp_machinfo->cs_ads7846) = GPIO_bit(ssp_machinfo->cs_ads7846);
+-	spin_unlock_irqrestore(&corgi_ssp_lock, flag);
 -
--	/* turn on SSP port clock */
--	clk_enable(ssp->clk);
--	return 0;
--
--out_region:
--	ssp_free(ssp);
 -	return ret;
 -}
 -
--/**
-- * ssp_exit - undo the effects of ssp_init
-- *
-- * release and free resources for the SSP port.
+-/*
+- * NOTE: These functions should always be called in interrupt context
+- * and use the _lock and _unlock functions. They are very time sensitive.
 - */
--void ssp_exit(struct ssp_dev *dev)
+-void corgi_ssp_ads7846_lock(void)
 -{
--	struct ssp_device *ssp = dev->ssp;
--
--	ssp_disable(dev);
--	if (dev->irq != NO_IRQ)
--		free_irq(dev->irq, dev);
--	clk_disable(ssp->clk);
--	ssp_free(ssp);
+-	spin_lock(&corgi_ssp_lock);
+-	if (ssp_machinfo->cs_ads7846 >= 0)
+-		GPCR(ssp_machinfo->cs_ads7846) = GPIO_bit(ssp_machinfo->cs_ads7846);
 -}
 -
- static DEFINE_MUTEX(ssp_lock);
- static LIST_HEAD(ssp_list);
-
-@@ -531,18 +315,6 @@ static void __exit pxa_ssp_exit(void)
- arch_initcall(pxa_ssp_init);
- module_exit(pxa_ssp_exit);
-
--EXPORT_SYMBOL(ssp_write_word);
--EXPORT_SYMBOL(ssp_read_word);
--EXPORT_SYMBOL(ssp_flush);
--EXPORT_SYMBOL(ssp_enable);
--EXPORT_SYMBOL(ssp_disable);
--EXPORT_SYMBOL(ssp_save_state);
--EXPORT_SYMBOL(ssp_restore_state);
--EXPORT_SYMBOL(ssp_init);
--EXPORT_SYMBOL(ssp_exit);
--EXPORT_SYMBOL(ssp_config);
+-void corgi_ssp_ads7846_unlock(void)
+-{
+-	if (ssp_machinfo->cs_ads7846 >= 0)
+-		GPSR(ssp_machinfo->cs_ads7846) = GPIO_bit(ssp_machinfo->cs_ads7846);
+-	spin_unlock(&corgi_ssp_lock);
+-}
 -
- MODULE_DESCRIPTION("PXA SSP driver");
- MODULE_AUTHOR("Liam Girdwood");
- MODULE_LICENSE("GPL");
+-void corgi_ssp_ads7846_put(ulong data)
+-{
+-	ssp_write_word(&corgi_ssp_dev,data);
+-}
 -
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index 308a657..a65993c 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -42,7 +42,7 @@
-  * SSP audio private data
+-unsigned long corgi_ssp_ads7846_get(void)
+-{
+-	u32 ret = 0;
+-	ssp_read_word(&corgi_ssp_dev, &ret);
+-	return ret;
+-}
+-
+-EXPORT_SYMBOL(corgi_ssp_ads7846_putget);
+-EXPORT_SYMBOL(corgi_ssp_ads7846_lock);
+-EXPORT_SYMBOL(corgi_ssp_ads7846_unlock);
+-EXPORT_SYMBOL(corgi_ssp_ads7846_put);
+-EXPORT_SYMBOL(corgi_ssp_ads7846_get);
+-
+-
+-/*
+- *  LCD/Backlight Routines
+- */
+-unsigned long corgi_ssp_dac_put(ulong data)
+-{
+-	unsigned long flag, sscr1 = SSCR1_SPH;
+-	u32 tmp;
+-
+-	spin_lock_irqsave(&corgi_ssp_lock, flag);
+-
+-	if (machine_is_spitz() || machine_is_akita() || machine_is_borzoi())
+-		sscr1 = 0;
+-
+-	ssp_disable(&corgi_ssp_dev);
+-	ssp_config(&corgi_ssp_dev, (SSCR0_Motorola | (SSCR0_DSS & 0x07 )),
+sscr1, 0, SSCR0_SerClkDiv(ssp_machinfo->clk_lcdcon));
+-	ssp_enable(&corgi_ssp_dev);
+-
+-	if (ssp_machinfo->cs_lcdcon >= 0)
+-		GPCR(ssp_machinfo->cs_lcdcon) = GPIO_bit(ssp_machinfo->cs_lcdcon);
+-	ssp_write_word(&corgi_ssp_dev,data);
+-	/* Read null data back from device to prevent SSP overflow */
+-	ssp_read_word(&corgi_ssp_dev, &tmp);
+-	if (ssp_machinfo->cs_lcdcon >= 0)
+-		GPSR(ssp_machinfo->cs_lcdcon) = GPIO_bit(ssp_machinfo->cs_lcdcon);
+-
+-	ssp_disable(&corgi_ssp_dev);
+-	ssp_config(&corgi_ssp_dev, (SSCR0_National | (SSCR0_DSS & 0x0b )),
+0, 0, SSCR0_SerClkDiv(ssp_machinfo->clk_ads7846));
+-	ssp_enable(&corgi_ssp_dev);
+-
+-	spin_unlock_irqrestore(&corgi_ssp_lock, flag);
+-
+-	return 0;
+-}
+-
+-void corgi_ssp_lcdtg_send(u8 adrs, u8 data)
+-{
+-	corgi_ssp_dac_put(((adrs & 0x07) << 5) | (data & 0x1f));
+-}
+-
+-void corgi_ssp_blduty_set(int duty)
+-{
+-	corgi_ssp_lcdtg_send(0x02,duty);
+-}
+-
+-EXPORT_SYMBOL(corgi_ssp_lcdtg_send);
+-EXPORT_SYMBOL(corgi_ssp_blduty_set);
+-
+-/*
+- *  Max1111 Routines
+- */
+-int corgi_ssp_max1111_get(ulong data)
+-{
+-	unsigned long flag;
+-	long voltage = 0, voltage1 = 0, voltage2 = 0;
+-
+-	spin_lock_irqsave(&corgi_ssp_lock, flag);
+-	if (ssp_machinfo->cs_max1111 >= 0)
+-		GPCR(ssp_machinfo->cs_max1111) = GPIO_bit(ssp_machinfo->cs_max1111);
+-	ssp_disable(&corgi_ssp_dev);
+-	ssp_config(&corgi_ssp_dev, (SSCR0_Motorola | (SSCR0_DSS & 0x07 )),
+0, 0, SSCR0_SerClkDiv(ssp_machinfo->clk_max1111));
+-	ssp_enable(&corgi_ssp_dev);
+-
+-	udelay(1);
+-
+-	/* TB1/RB1 */
+-	ssp_write_word(&corgi_ssp_dev,data);
+-	ssp_read_word(&corgi_ssp_dev, (u32*)&voltage1); /* null read */
+-
+-	/* TB12/RB2 */
+-	ssp_write_word(&corgi_ssp_dev,0);
+-	ssp_read_word(&corgi_ssp_dev, (u32*)&voltage1);
+-
+-	/* TB13/RB3*/
+-	ssp_write_word(&corgi_ssp_dev,0);
+-	ssp_read_word(&corgi_ssp_dev, (u32*)&voltage2);
+-
+-	ssp_disable(&corgi_ssp_dev);
+-	ssp_config(&corgi_ssp_dev, (SSCR0_National | (SSCR0_DSS & 0x0b )),
+0, 0, SSCR0_SerClkDiv(ssp_machinfo->clk_ads7846));
+-	ssp_enable(&corgi_ssp_dev);
+-	if (ssp_machinfo->cs_max1111 >= 0)
+-		GPSR(ssp_machinfo->cs_max1111) = GPIO_bit(ssp_machinfo->cs_max1111);
+-	spin_unlock_irqrestore(&corgi_ssp_lock, flag);
+-
+-	if (voltage1 & 0xc0 || voltage2 & 0x3f)
+-		voltage = -1;
+-	else
+-		voltage = ((voltage1 << 2) & 0xfc) | ((voltage2 >> 6) & 0x03);
+-
+-	return voltage;
+-}
+-
+-EXPORT_SYMBOL(corgi_ssp_max1111_get);
+-
+-/*
+- *  Support Routines
+- */
+-
+-void __init corgi_ssp_set_machinfo(struct corgissp_machinfo *machinfo)
+-{
+-	ssp_machinfo = machinfo;
+-}
+-
+-static int __init corgi_ssp_probe(struct platform_device *dev)
+-{
+-	int ret;
+-
+-	/* Chip Select - Disable All */
+-	if (ssp_machinfo->cs_lcdcon >= 0)
+-		pxa_gpio_mode(ssp_machinfo->cs_lcdcon  | GPIO_OUT | GPIO_DFLT_HIGH);
+-	if (ssp_machinfo->cs_max1111 >= 0)
+-	        pxa_gpio_mode(ssp_machinfo->cs_max1111 | GPIO_OUT | GPIO_DFLT_HIGH);
+-	if (ssp_machinfo->cs_ads7846 >= 0)
+-        	pxa_gpio_mode(ssp_machinfo->cs_ads7846 | GPIO_OUT | GPIO_DFLT_HIGH);
+-
+-	ret = ssp_init(&corgi_ssp_dev, ssp_machinfo->port, 0);
+-
+-	if (ret)
+-		printk(KERN_ERR "Unable to register SSP handler!\n");
+-	else {
+-		ssp_disable(&corgi_ssp_dev);
+-		ssp_config(&corgi_ssp_dev, (SSCR0_National | (SSCR0_DSS & 0x0b )),
+0, 0, SSCR0_SerClkDiv(ssp_machinfo->clk_ads7846));
+-		ssp_enable(&corgi_ssp_dev);
+-	}
+-
+-	return ret;
+-}
+-
+-static int corgi_ssp_remove(struct platform_device *dev)
+-{
+-	ssp_exit(&corgi_ssp_dev);
+-	return 0;
+-}
+-
+-static int corgi_ssp_suspend(struct platform_device *dev, pm_message_t state)
+-{
+-	ssp_flush(&corgi_ssp_dev);
+-	ssp_save_state(&corgi_ssp_dev,&corgi_ssp_state);
+-
+-	return 0;
+-}
+-
+-static int corgi_ssp_resume(struct platform_device *dev)
+-{
+-	if (ssp_machinfo->cs_lcdcon >= 0)
+-		GPSR(ssp_machinfo->cs_lcdcon) = GPIO_bit(ssp_machinfo->cs_lcdcon);
+/* High - Disable LCD Control/Timing Gen */
+-	if (ssp_machinfo->cs_max1111 >= 0)
+-		GPSR(ssp_machinfo->cs_max1111) =
+GPIO_bit(ssp_machinfo->cs_max1111); /* High - Disable MAX1111*/
+-	if (ssp_machinfo->cs_ads7846 >= 0)
+-		GPSR(ssp_machinfo->cs_ads7846) =
+GPIO_bit(ssp_machinfo->cs_ads7846); /* High - Disable ADS7846*/
+-	ssp_restore_state(&corgi_ssp_dev,&corgi_ssp_state);
+-	ssp_enable(&corgi_ssp_dev);
+-
+-	return 0;
+-}
+-
+-static struct platform_driver corgissp_driver = {
+-	.probe		= corgi_ssp_probe,
+-	.remove		= corgi_ssp_remove,
+-	.suspend	= corgi_ssp_suspend,
+-	.resume		= corgi_ssp_resume,
+-	.driver		= {
+-		.name	= "corgi-ssp",
+-	},
+-};
+-
+-int __init corgi_ssp_init(void)
+-{
+-	return platform_driver_register(&corgissp_driver);
+-}
+-
+-arch_initcall(corgi_ssp_init);
+diff --git a/arch/arm/mach-pxa/sharpsl_pm.c b/arch/arm/mach-pxa/sharpsl_pm.c
+index 16b4ec6..007ff5e 100644
+--- a/arch/arm/mach-pxa/sharpsl_pm.c
++++ b/arch/arm/mach-pxa/sharpsl_pm.c
+@@ -126,22 +126,17 @@ struct battery_thresh  spitz_battery_levels_noac[] = {
+ /*
+  * Read MAX1111 ADC
   */
- struct ssp_priv {
--	struct ssp_dev dev;
-+	struct ssp_device *ssp;
- 	unsigned int sysclk;
- 	int dai_fmt;
- #ifdef CONFIG_PM
-@@ -222,10 +222,8 @@ static int pxa_ssp_startup(struct
-snd_pcm_substream *substream,
- 	int ret = 0;
++extern int max1111_read_channel(int);
++
+ int sharpsl_pm_pxa_read_max1111(int channel)
+ {
+ 	if (machine_is_tosa()) // Ugly, better move this function into another module
+ 	    return 0;
 
- 	if (!cpu_dai->active) {
--		priv->dev.port = cpu_dai->id + 1;
--		priv->dev.irq = NO_IRQ;
--		clk_enable(priv->dev.ssp->clk);
--		ssp_disable(&priv->dev);
-+		clk_enable(priv->ssp->clk);
-+		ssp_disable(priv->ssp);
- 	}
- 	return ret;
- }
-@@ -238,8 +236,8 @@ static void pxa_ssp_shutdown(struct
-snd_pcm_substream *substream,
- 	struct ssp_priv *priv = cpu_dai->private_data;
-
- 	if (!cpu_dai->active) {
--		ssp_disable(&priv->dev);
--		clk_disable(priv->dev.ssp->clk);
-+		ssp_disable(priv->ssp);
-+		clk_disable(priv->ssp->clk);
- 	}
- }
-
-@@ -252,8 +250,9 @@ static int pxa_ssp_suspend(struct snd_soc_dai *cpu_dai)
- 	if (!cpu_dai->active)
- 		return 0;
-
--	ssp_save_state(&priv->dev, &priv->state);
--	clk_disable(priv->dev.ssp->clk);
-+	ssp_save_state(priv->ssp, &priv->state);
-+	ssp_disable(priv->ssp);
-+	clk_disable(priv->ssp->clk);
- 	return 0;
- }
-
-@@ -264,10 +263,9 @@ static int pxa_ssp_resume(struct snd_soc_dai *cpu_dai)
- 	if (!cpu_dai->active)
- 		return 0;
-
--	clk_enable(priv->dev.ssp->clk);
--	ssp_restore_state(&priv->dev, &priv->state);
--	ssp_enable(&priv->dev);
+-#ifdef CONFIG_CORGI_SSP_DEPRECATED
+-	return corgi_ssp_max1111_get((channel << MAXCTRL_SEL_SH) |
+MAXCTRL_PD0 | MAXCTRL_PD1
+-			| MAXCTRL_SGL | MAXCTRL_UNI | MAXCTRL_STR);
+-#else
+-	extern int max1111_read_channel(int);
 -
-+	clk_enable(priv->ssp->clk);
-+	ssp_restore_state(priv->ssp, &priv->state);
-+	ssp_enable(priv->ssp);
- 	return 0;
+ 	/* max1111 accepts channels from 0-3, however,
+ 	 * it is encoded from 0-7 here in the code.
+ 	 */
+ 	return max1111_read_channel(channel >> 1);
+-#endif
  }
 
-@@ -280,10 +278,9 @@ static int pxa_ssp_resume(struct snd_soc_dai *cpu_dai)
-  * ssp_set_clkdiv - set SSP clock divider
-  * @div: serial clock rate divider
-  */
--static void ssp_set_scr(struct ssp_dev *dev, u32 div)
-+static void ssp_set_scr(struct ssp_device *ssp, u32 div)
- {
--	struct ssp_device *ssp = dev->ssp;
--	u32 sscr0 = ssp_read_reg(dev->ssp, SSCR0) & ~SSCR0_SCR;
-+	u32 sscr0 = ssp_read_reg(ssp, SSCR0) & ~SSCR0_SCR;
-
- 	ssp_write_reg(ssp, SSCR0, (sscr0 | SSCR0_SerClkDiv(div)));
- }
-@@ -295,7 +292,7 @@ static int pxa_ssp_set_dai_sysclk(struct
-snd_soc_dai *cpu_dai,
- 	int clk_id, unsigned int freq, int dir)
- {
- 	struct ssp_priv *priv = cpu_dai->private_data;
--	struct ssp_device *ssp = priv->dev.ssp;
-+	struct ssp_device *ssp = priv->ssp;
- 	int val;
-
- 	u32 sscr0 = ssp_read_reg(ssp, SSCR0) &
-@@ -326,7 +323,7 @@ static int pxa_ssp_set_dai_sysclk(struct
-snd_soc_dai *cpu_dai,
- 		break;
- 	case PXA_SSP_CLK_AUDIO:
- 		priv->sysclk = 0;
--		ssp_set_scr(&priv->dev, 1);
-+		ssp_set_scr(priv->ssp, 1);
- 		sscr0 |= SSCR0_ACS;
- 		break;
- 	default:
-@@ -336,11 +333,11 @@ static int pxa_ssp_set_dai_sysclk(struct
-snd_soc_dai *cpu_dai,
- 	/* The SSP clock must be disabled when changing SSP clock mode
- 	 * on PXA2xx.  On PXA3xx it must be enabled when doing so. */
- 	if (!cpu_is_pxa3xx())
--		clk_disable(priv->dev.ssp->clk);
-+		clk_disable(priv->ssp->clk);
- 	val = ssp_read_reg(ssp, SSCR0) | sscr0;
- 	ssp_write_reg(ssp, SSCR0, val);
- 	if (!cpu_is_pxa3xx())
--		clk_enable(priv->dev.ssp->clk);
-+		clk_enable(priv->ssp->clk);
-
- 	return 0;
- }
-@@ -352,7 +349,7 @@ static int pxa_ssp_set_dai_clkdiv(struct
-snd_soc_dai *cpu_dai,
- 	int div_id, int div)
- {
- 	struct ssp_priv *priv = cpu_dai->private_data;
--	struct ssp_device *ssp = priv->dev.ssp;
-+	struct ssp_device *ssp = priv->ssp;
- 	int val;
-
- 	switch (div_id) {
-@@ -387,7 +384,7 @@ static int pxa_ssp_set_dai_clkdiv(struct
-snd_soc_dai *cpu_dai,
- 		ssp_write_reg(ssp, SSACD, val);
- 		break;
- 	case PXA_SSP_DIV_SCR:
--		ssp_set_scr(&priv->dev, div);
-+		ssp_set_scr(ssp, div);
- 		break;
- 	default:
- 		return -ENODEV;
-@@ -403,7 +400,7 @@ static int pxa_ssp_set_dai_pll(struct snd_soc_dai *cpu_dai,
- 	int pll_id, unsigned int freq_in, unsigned int freq_out)
- {
- 	struct ssp_priv *priv = cpu_dai->private_data;
--	struct ssp_device *ssp = priv->dev.ssp;
-+	struct ssp_device *ssp = priv->ssp;
- 	u32 ssacd = ssp_read_reg(ssp, SSACD) & ~0x70;
-
- #if defined(CONFIG_PXA3xx)
-@@ -472,7 +469,7 @@ static int pxa_ssp_set_dai_tdm_slot(struct
-snd_soc_dai *cpu_dai,
- 	unsigned int mask, int slots)
- {
- 	struct ssp_priv *priv = cpu_dai->private_data;
--	struct ssp_device *ssp = priv->dev.ssp;
-+	struct ssp_device *ssp = priv->ssp;
- 	u32 sscr0;
-
- 	sscr0 = ssp_read_reg(ssp, SSCR0) & ~SSCR0_SlotsPerFrm(7);
-@@ -494,7 +491,7 @@ static int pxa_ssp_set_dai_tristate(struct
-snd_soc_dai *cpu_dai,
- 	int tristate)
- {
- 	struct ssp_priv *priv = cpu_dai->private_data;
--	struct ssp_device *ssp = priv->dev.ssp;
-+	struct ssp_device *ssp = priv->ssp;
- 	u32 sscr1;
-
- 	sscr1 = ssp_read_reg(ssp, SSCR1);
-@@ -516,7 +513,7 @@ static int pxa_ssp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		unsigned int fmt)
- {
- 	struct ssp_priv *priv = cpu_dai->private_data;
--	struct ssp_device *ssp = priv->dev.ssp;
-+	struct ssp_device *ssp = priv->ssp;
- 	u32 sscr0;
- 	u32 sscr1;
- 	u32 sspsp;
-@@ -622,7 +619,7 @@ static int pxa_ssp_hw_params(struct
-snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
- 	struct ssp_priv *priv = cpu_dai->private_data;
--	struct ssp_device *ssp = priv->dev.ssp;
-+	struct ssp_device *ssp = priv->ssp;
- 	int dma = 0, chn = params_channels(params);
- 	u32 sscr0;
- 	u32 sspsp;
-@@ -735,12 +732,12 @@ static int pxa_ssp_trigger(struct
-snd_pcm_substream *substream, int cmd,
- 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
- 	int ret = 0;
- 	struct ssp_priv *priv = cpu_dai->private_data;
--	struct ssp_device *ssp = priv->dev.ssp;
-+	struct ssp_device *ssp = priv->ssp;
- 	int val;
-
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_RESUME:
--		ssp_enable(&priv->dev);
-+		ssp_enable(ssp);
- 		break;
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		val = ssp_read_reg(ssp, SSCR1);
-@@ -759,7 +756,7 @@ static int pxa_ssp_trigger(struct
-snd_pcm_substream *substream, int cmd,
- 		else
- 			val |= SSCR1_RSRE;
- 		ssp_write_reg(ssp, SSCR1, val);
--		ssp_enable(&priv->dev);
-+		ssp_enable(ssp);
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		val = ssp_read_reg(ssp, SSCR1);
-@@ -770,7 +767,7 @@ static int pxa_ssp_trigger(struct
-snd_pcm_substream *substream, int cmd,
- 		ssp_write_reg(ssp, SSCR1, val);
- 		break;
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
--		ssp_disable(&priv->dev);
-+		ssp_disable(ssp);
- 		break;
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 		val = ssp_read_reg(ssp, SSCR1);
-@@ -800,8 +797,8 @@ static int pxa_ssp_probe(struct platform_device *pdev,
- 	if (!priv)
- 		return -ENOMEM;
-
--	priv->dev.ssp = ssp_request(dai->id + 1, "SoC audio");
--	if (priv->dev.ssp == NULL) {
-+	priv->ssp = ssp_request(dai->id + 1, "SoC audio");
-+	if (priv->ssp == NULL) {
- 		ret = -ENODEV;
- 		goto err_priv;
- 	}
-@@ -819,7 +816,7 @@ static void pxa_ssp_remove(struct platform_device *pdev,
- 			      struct snd_soc_dai *dai)
- {
- 	struct ssp_priv *priv = dai->private_data;
--	ssp_free(priv->dev.ssp);
-+	ssp_free(priv->ssp);
- }
-
- #define PXA_SSP_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
+ void sharpsl_pm_pxa_init(void)
 -- 
 1.6.0.4
