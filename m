@@ -1,20 +1,16 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: trouble with alsa, wolfson, and TI OMAP35xx McBSP
-Date: Thu, 23 Apr 2009 19:30:38 +0100
-Message-ID: <20090423183038.GA6642@sirena.org.uk>
-References: <dbdb2ea60904221058w67b775f3occ07f55938fe4d03@mail.gmail.com>
-	<200904231220.14465.peter.ujfalusi@nokia.com>
-	<b6ab3a160904230950g61ae6e78mac2f02ada111c40c@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.30
+Date: Thu, 23 Apr 2009 19:48:29 +0100
+Message-ID: <20090423184829.GA7807@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id EFC012436A
+	by alsa0.perex.cz (Postfix) with ESMTP id 5A9732438D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Apr 2009 20:30:48 +0200 (CEST)
+	Thu, 23 Apr 2009 20:48:40 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <b6ab3a160904230950g61ae6e78mac2f02ada111c40c@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,20 +20,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Alejandro Blanca G." <alex.blanca@gmail.com>
-Cc: ext twebb <taliaferro62@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org Mailing List" <linux-omap@vger.kernel.org>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, etorres@dextratech.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 23, 2009 at 11:50:25AM -0500, Alejandro Blanca G. wrote:
+The following changes since commit a1992db55d80297544a65160ddb98afba45f7759:
+  Takashi Iwai (1):
+        ASoC: remove non-existing referece to CONFIG_SND_SOC_CODEC_WM8991
 
-> Probably the issue we are seeing is related: we are having problems
-> when doing playback and observe that the information corresponding to
-> 2 channels is being sent only through the left channel. We might have
-> some other problems too, since we are new to this kind of development,
-> but maybe our observations or yours could be useful to stabilize the
-> Beagle platform code.
+are available in the git repository at:
 
-Please check out the current ASoC branch - as previously mentioned there
-has been quite a bit of work recently on the McBSP audio formatting:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.30
 
-	git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6
+Mark Brown (4):
+      ASoC: Fix offset of freqmode in WM8580 PLL configuration
+      ASoC: Fix WM8580 volume update handling for large register changes
+      Merge commit 'takashi/fix/asoc' into for-2.6.30
+      ASoC: s3c-i2s-v2 needs to declare a license for modular builds
+
+ sound/soc/codecs/wm8580.c      |   16 ++++++++++------
+ sound/soc/s3c24xx/s3c-i2s-v2.c |    3 ++-
+ 2 files changed, 12 insertions(+), 7 deletions(-)
