@@ -1,24 +1,18 @@
-From: Eric Miao <eric.y.miao@gmail.com>
-Subject: Re: [RFC PATCH 4/5] ASoC: remove those unnecessary
-	#ifdef CONFIG_PXA3xx .. #endif
-Date: Thu, 23 Apr 2009 17:18:18 +0800
-Message-ID: <f17812d70904230218t3d7da731j7baebb704b26910b@mail.gmail.com>
-References: <f17812d70904222206h27c58e40t5c8383133df1a7d0@mail.gmail.com>
-	<20090423081715.GA30105@sirena.org.uk>
-	<f17812d70904230133l34f77174sc18d4f30879dac64@mail.gmail.com>
-	<20090423090419.GA29567@buzzloop.caiaq.de>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: trouble with alsa, wolfson, and TI OMAP35xx McBSP
+Date: Thu, 23 Apr 2009 12:20:14 +0300
+Message-ID: <200904231220.14465.peter.ujfalusi@nokia.com>
+References: <dbdb2ea60904221058w67b775f3occ07f55938fe4d03@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f103.google.com (mail-qy0-f103.google.com
-	[209.85.221.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id B9B80103861
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 24D1B103861
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Apr 2009 11:18:18 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so852330qyk.16
-	for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2009 02:18:18 -0700 (PDT)
-In-Reply-To: <20090423090419.GA29567@buzzloop.caiaq.de>
+	Thu, 23 Apr 2009 11:20:25 +0200 (CEST)
+In-Reply-To: <dbdb2ea60904221058w67b775f3occ07f55938fe4d03@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,32 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Paul Shen <bshen9@marvell.com>, Mark Brown <broonie@sirena.org.uk>, Philipp Zabel <philipp.zabel@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
+To: ext twebb <taliaferro62@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org Mailing List" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBBcHIgMjMsIDIwMDkgYXQgNTowNCBQTSwgRGFuaWVsIE1hY2sgPGRhbmllbEBjYWlh
-cS5kZT4gd3JvdGU6Cj4gT24gVGh1LCBBcHIgMjMsIDIwMDkgYXQgMDQ6MzM6MzRQTSArMDgwMCwg
-RXJpYyBNaWFvIHdyb3RlOgo+PiBPbiBUaHUsIEFwciAyMywgMjAwOSBhdCA0OjE3IFBNLCBNYXJr
-IEJyb3duIDxicm9vbmllQHNpcmVuYS5vcmcudWs+IHdyb3RlOgo+PiA+IFRoaXMgaXNuJ3QgZG9u
-ZSBmb3IgY29tcGlsZXIgb3B0aW1pc2F0aW9uIC0gaXQncyBkb25lIGJlY2F1c2UgdGhlCj4+ID4g
-cmVnaXN0ZXIgYml0IG1hY3JvcyBhcmUgb25seSBkZWZpbmVkIGlmIFBYQTN4eCBzdXBwb3J0IGlz
-IGJlaW5nIGJ1aWx0Cj4+ID4gaW4uIMKgSSd2ZSBubyBwcm9ibGVtIHdpdGggcmVtb3ZpbmcgdGhv
-c2UgZ3VhcmRzIGJ1dCB3aXRob3V0IHRoYXQgeW91J2xsCj4+ID4gZ2V0IGJ1aWxkIGZhaWx1cmVz
-IG9uIFBYQTJ4eC4KPj4gPgo+Pgo+PiBZZWFoLCBpbmRlZWQuIFRoaXMgaXMgYSBydXNoIChzbyB0
-aGUgdGl0bGUgaXMgUkZDKSwgc29ycnkuIEknbGwgZ2V0IHRob3NlCj4+IGNvbmRpdGlvbmFsICNp
-ZmRlZiAuLiAjZW5kaWYgcmVtb3ZlZCBhcyB3ZWxsIGluIHRoZSBzc3AtcmVncy5oLCBpdAo+PiBh
-bHdheXMgbWFrZXMgbWUgdXBzZXQuCj4KPiBXZWxsLCBJIHB1dCB0aGVtIGluIHRoZXJlIHRvIGNs
-ZWFybHkgc3RhdGUgd2hpY2ggQ1BVcyBoYXZlIHN1cHBvcnQKPiBmb3IgdGhpcyBwYXJ0aWN1bGFy
-IGZlYXR1cmUuIEVzcGVjaWFsbHkgZm9yIFBYQXMsIHdoZXJlIGV2ZW4gcmVnaXN0ZXIKPiBkZWZp
-bml0aW9ucyBhcmUgY29uc2lkZXJlZCBjb25maWRlbnRpYWwsIHRoaXMgbWlnaHQgaGVscCBwZW9w
-bGUgZmlzaGluZwo+IGluIG11ZGR5IHdhdGVycy4gU29tZSBjb21tZW50IHdvdWxkIGRvIGFzIHdl
-bGwsIHRob3VnaC4KPgoKWWVhaCwgSSBmdWxseSB1bmRlcnN0YW5kIHRoYXQuIEFjdHVhbGx5IHRo
-ZXNlIGFyZSBpbmNsdXNpdmUgI2lmZGVmIC4uCndoaWNoIGFjdHVhbGx5IGRvZXNuJ3QgaHVydC4g
-KFVubGlrZSAjaWZkZWYgLi4gI2Vsc2UgLi4gI2VuZGlmKS4KCkJ1dCBzaW5jZSB0aGUgY29tcGls
-ZXIgY2FuIGFjdHVhbGx5IG9wdGltaXplIGl0IGF3YXksIGFuZCBpdCdzIHF1aXRlCm9idmlvdXMg
-cHhhM3h4IHNwZWNpZmljIGJ5IGlmIChjcHVfaXNfcHhhM3h4KCkpIC4uICwgSSdtIGEgYml0IGlu
-dGVuZGVkCnRvIHJlbW92ZSB0aGVtIGF3YXksIG5vPwpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Wednesday 22 April 2009 20:58:01 ext twebb wrote:
+> Problem 2:
+> Test tone is being presented by the user application, providing a 1Khz
+> tone sampled at 44.1Khz. The data are S16_LE, right channel only. Left
+> channel is quiet. The data seems to slip back and forth from left to
+> right channel. This is reproducable and verified with a scope trace.
+>
+> Anybody have any ideas what might be going wrong here?  Traces for
+> codec reg dump and mcbsp are attached.
+
+As Jarkko already asked: are you seeing the channel switch while running or=
+ is =
+
+it happens on playback start?
+
+AFAIK this phenomena can be also seen on Beagle board.
+
+I have done some investigation regarding to these, but so far I can not say =
+
+that I know what causes it.
+
+BTW: these are separate issues (startup switch and runtime switch).
+
+> Thanks,
+> twebb
+
+-- =
+
+P=E9ter
