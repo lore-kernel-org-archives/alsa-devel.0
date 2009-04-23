@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 14/21] ASoC: Implement WM8903 digital sidetone
-	support
-Date: Thu, 23 Apr 2009 20:55:48 +0100
-Message-ID: <1240516555-22249-14-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 06/21] ASoC: Fix WM8580 volume update handling
+	for large register changes
+Date: Thu, 23 Apr 2009 20:55:40 +0100
+Message-ID: <1240516555-22249-6-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20090423195420.GA20863@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id ACAFE1038AD
+	by alsa0.perex.cz (Postfix) with ESMTP id F14041038A3
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Apr 2009 21:56:05 +0200 (CEST)
+	Thu, 23 Apr 2009 21:56:07 +0200 (CEST)
 In-Reply-To: <20090423195420.GA20863@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,87 +26,51 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+The driver is out of sync with the core functions it is using.
+
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8903.c |   30 ++++++++++++++++++++++++++++++
- 1 files changed, 30 insertions(+), 0 deletions(-)
+ sound/soc/codecs/wm8580.c |   14 +++++++++-----
+ 1 files changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
-index bec418a..d8a9222 100644
---- a/sound/soc/codecs/wm8903.c
-+++ b/sound/soc/codecs/wm8903.c
-@@ -533,6 +533,7 @@ static int wm8903_class_w_put(struct snd_kcontrol *kcontrol,
- /* ALSA can only do steps of .01dB */
- static const DECLARE_TLV_DB_SCALE(digital_tlv, -7200, 75, 1);
+diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
+index 41aab4a..9f6be3d 100644
+--- a/sound/soc/codecs/wm8580.c
++++ b/sound/soc/codecs/wm8580.c
+@@ -268,9 +268,11 @@ static const DECLARE_TLV_DB_SCALE(dac_tlv, -12750, 50, 1);
+ static int wm8580_out_vu(struct snd_kcontrol *kcontrol,
+ 			 struct snd_ctl_elem_value *ucontrol)
+ {
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
+ 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+-	int reg = kcontrol->private_value & 0xff;
+-	int reg2 = (kcontrol->private_value >> 24) & 0xff;
++	unsigned int reg = mc->reg;
++	unsigned int reg2 = mc->rreg;
+ 	int ret;
+ 	u16 val;
  
-+static const DECLARE_TLV_DB_SCALE(digital_sidetone_tlv, -3600, 300, 0);
- static const DECLARE_TLV_DB_SCALE(out_tlv, -5700, 100, 0);
+@@ -292,15 +294,17 @@ static int wm8580_out_vu(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
  
- static const DECLARE_TLV_DB_SCALE(drc_tlv_thresh, 0, 75, 0);
-@@ -651,6 +652,16 @@ static const struct soc_enum rinput_inv_enum =
- 	SOC_ENUM_SINGLE(WM8903_ANALOGUE_RIGHT_INPUT_1, 4, 3, rinput_mux_text);
+-#define SOC_WM8580_OUT_DOUBLE_R_TLV(xname, reg_left, reg_right, shift, max, invert, tlv_array) \
++#define SOC_WM8580_OUT_DOUBLE_R_TLV(xname, reg_left, reg_right, xshift, xmax, \
++				    xinvert, tlv_array)			\
+ {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
+ 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
+ 		SNDRV_CTL_ELEM_ACCESS_READWRITE,  \
+ 	.tlv.p = (tlv_array), \
+ 	.info = snd_soc_info_volsw_2r, \
+ 	.get = snd_soc_get_volsw_2r, .put = wm8580_out_vu, \
+-	.private_value = (reg_left) | ((shift) << 8)  |		\
+-		((max) << 12) | ((invert) << 20) | ((reg_right) << 24) }
++	.private_value = (unsigned long)&(struct soc_mixer_control) \
++		{.reg = reg_left, .rreg = reg_right, .shift = xshift, \
++		.max = xmax, .invert = xinvert} }
  
- 
-+static const char *sidetone_text[] = {
-+	"None", "Left", "Right"
-+};
-+
-+static const struct soc_enum lsidetone_enum =
-+	SOC_ENUM_SINGLE(WM8903_DAC_DIGITAL_0, 2, 3, sidetone_text);
-+
-+static const struct soc_enum rsidetone_enum =
-+	SOC_ENUM_SINGLE(WM8903_DAC_DIGITAL_0, 0, 3, sidetone_text);
-+
- static const struct snd_kcontrol_new wm8903_snd_controls[] = {
- 
- /* Input PGAs - No TLV since the scale depends on PGA mode */
-@@ -694,6 +705,9 @@ SOC_DOUBLE_R_TLV("Digital Capture Volume", WM8903_ADC_DIGITAL_VOLUME_LEFT,
- SOC_ENUM("ADC Companding Mode", adc_companding),
- SOC_SINGLE("ADC Companding Switch", WM8903_AUDIO_INTERFACE_0, 3, 1, 0),
- 
-+SOC_DOUBLE_TLV("Digital Sidetone Volume", WM8903_DAC_DIGITAL_0, 4, 8,
-+	       12, 0, digital_sidetone_tlv),
-+
- /* DAC */
- SOC_DOUBLE_R_TLV("Digital Playback Volume", WM8903_DAC_DIGITAL_VOLUME_LEFT,
- 		 WM8903_DAC_DIGITAL_VOLUME_RIGHT, 1, 120, 0, digital_tlv),
-@@ -756,6 +770,12 @@ static const struct snd_kcontrol_new rinput_mux =
- static const struct snd_kcontrol_new rinput_inv_mux =
- 	SOC_DAPM_ENUM("Right Inverting Input Mux", rinput_inv_enum);
- 
-+static const struct snd_kcontrol_new lsidetone_mux =
-+	SOC_DAPM_ENUM("DACL Sidetone Mux", lsidetone_enum);
-+
-+static const struct snd_kcontrol_new rsidetone_mux =
-+	SOC_DAPM_ENUM("DACR Sidetone Mux", rsidetone_enum);
-+
- static const struct snd_kcontrol_new left_output_mixer[] = {
- SOC_DAPM_SINGLE("DACL Switch", WM8903_ANALOGUE_LEFT_MIX_0, 3, 1, 0),
- SOC_DAPM_SINGLE("DACR Switch", WM8903_ANALOGUE_LEFT_MIX_0, 2, 1, 0),
-@@ -822,6 +842,9 @@ SND_SOC_DAPM_PGA("Right Input PGA", WM8903_POWER_MANAGEMENT_0, 0, 0, NULL, 0),
- SND_SOC_DAPM_ADC("ADCL", "Left HiFi Capture", WM8903_POWER_MANAGEMENT_6, 1, 0),
- SND_SOC_DAPM_ADC("ADCR", "Right HiFi Capture", WM8903_POWER_MANAGEMENT_6, 0, 0),
- 
-+SND_SOC_DAPM_MUX("DACL Sidetone", SND_SOC_NOPM, 0, 0, &lsidetone_mux),
-+SND_SOC_DAPM_MUX("DACR Sidetone", SND_SOC_NOPM, 0, 0, &rsidetone_mux),
-+
- SND_SOC_DAPM_DAC("DACL", "Left Playback", WM8903_POWER_MANAGEMENT_6, 3, 0),
- SND_SOC_DAPM_DAC("DACR", "Right Playback", WM8903_POWER_MANAGEMENT_6, 2, 0),
- 
-@@ -910,7 +933,14 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{ "ADCR", NULL, "Right Input PGA" },
- 	{ "ADCR", NULL, "CLK_DSP" },
- 
-+	{ "DACL Sidetone", "Left", "ADCL" },
-+	{ "DACL Sidetone", "Right", "ADCR" },
-+	{ "DACR Sidetone", "Left", "ADCL" },
-+	{ "DACR Sidetone", "Right", "ADCR" },
-+
-+	{ "DACL", NULL, "DACL Sidetone" },
- 	{ "DACL", NULL, "CLK_DSP" },
-+	{ "DACR", NULL, "DACR Sidetone" },
- 	{ "DACR", NULL, "CLK_DSP" },
- 
- 	{ "Left Output Mixer", "Left Bypass Switch", "Left Input PGA" },
+ static const struct snd_kcontrol_new wm8580_snd_controls[] = {
+ SOC_WM8580_OUT_DOUBLE_R_TLV("DAC1 Playback Volume",
 -- 
 1.5.6.3
