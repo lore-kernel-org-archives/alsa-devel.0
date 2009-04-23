@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 16/21] ASoC: TWL4030: Add VDL path support
-Date: Thu, 23 Apr 2009 20:55:50 +0100
-Message-ID: <1240516555-22249-16-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 09/21] ASoC: Use DAPM supply widget for WM8903
+	charge pump
+Date: Thu, 23 Apr 2009 20:55:43 +0100
+Message-ID: <1240516555-22249-9-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20090423195420.GA20863@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id AC7771038AC
+	by alsa0.perex.cz (Postfix) with ESMTP id 2B2161038B2
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Apr 2009 21:56:05 +0200 (CEST)
+	Thu, 23 Apr 2009 21:56:07 +0200 (CEST)
 In-Reply-To: <20090423195420.GA20863@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,370 +23,138 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Joonyoung Shim <jy0922.shim@samsung.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Joonyoung Shim <jy0922.shim@samsung.com>
-
-Add DAPMs for VDL(Voice Down Link) path. To support VDL path, we have
-to change DAPMs of outputs(Earpiece, PreDrive Left/Right, Headset
-Left/Right, Carkit Left/Right) from mux to mixer.
-
-Signed-off-by: Joonyoung Shim <jy0922.shim@samsung.com>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/twl4030.c |  256 ++++++++++++++++++++++----------------------
- 1 files changed, 126 insertions(+), 130 deletions(-)
+ sound/soc/codecs/wm8903.c |   53 +++++++++++++++++----------------------------
+ 1 files changed, 20 insertions(+), 33 deletions(-)
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index cc2968c..fdf88df 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -321,104 +321,60 @@ static void twl4030_power_down(struct snd_soc_codec *codec)
+diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
+index c539184..a3a489d 100644
+--- a/sound/soc/codecs/wm8903.c
++++ b/sound/soc/codecs/wm8903.c
+@@ -217,7 +217,6 @@ struct wm8903_priv {
+ 	int sysclk;
+ 
+ 	/* Reference counts */
+-	int charge_pump_users;
+ 	int class_w_users;
+ 	int playback_active;
+ 	int capture_active;
+@@ -373,6 +372,15 @@ static void wm8903_reset(struct snd_soc_codec *codec)
+ #define WM8903_OUTPUT_INT   0x2
+ #define WM8903_OUTPUT_IN    0x1
+ 
++static int wm8903_cp_event(struct snd_soc_dapm_widget *w,
++			   struct snd_kcontrol *kcontrol, int event)
++{
++	WARN_ON(event != SND_SOC_DAPM_POST_PMU);
++	mdelay(4);
++
++	return 0;
++}
++
+ /*
+  * Event for headphone and line out amplifier power changes.  Special
+  * power up/down sequences are required in order to maximise pop/click
+@@ -382,12 +390,9 @@ static int wm8903_output_event(struct snd_soc_dapm_widget *w,
+ 			       struct snd_kcontrol *kcontrol, int event)
+ {
+ 	struct snd_soc_codec *codec = w->codec;
+-	struct wm8903_priv *wm8903 = codec->private_data;
+-	struct i2c_client *i2c = codec->control_data;
+ 	u16 val;
+ 	u16 reg;
+ 	int shift;
+-	u16 cp_reg = wm8903_read(codec, WM8903_CHARGE_PUMP_0);
+ 
+ 	switch (w->reg) {
+ 	case WM8903_POWER_MANAGEMENT_2:
+@@ -419,18 +424,6 @@ static int wm8903_output_event(struct snd_soc_dapm_widget *w,
+ 		/* Short the output */
+ 		val &= ~(WM8903_OUTPUT_SHORT << shift);
+ 		wm8903_write(codec, reg, val);
+-
+-		wm8903->charge_pump_users++;
+-
+-		dev_dbg(&i2c->dev, "Charge pump use count now %d\n",
+-			wm8903->charge_pump_users);
+-
+-		if (wm8903->charge_pump_users == 1) {
+-			dev_dbg(&i2c->dev, "Enabling charge pump\n");
+-			wm8903_write(codec, WM8903_CHARGE_PUMP_0,
+-				     cp_reg | WM8903_CP_ENA);
+-			mdelay(4);
+-		}
+ 	}
+ 
+ 	if (event & SND_SOC_DAPM_POST_PMU) {
+@@ -464,19 +457,6 @@ static int wm8903_output_event(struct snd_soc_dapm_widget *w,
+ 		wm8903_write(codec, reg, val);
+ 	}
+ 
+-	if (event & SND_SOC_DAPM_POST_PMD) {
+-		wm8903->charge_pump_users--;
+-
+-		dev_dbg(&i2c->dev, "Charge pump use count now %d\n",
+-			wm8903->charge_pump_users);
+-
+-		if (wm8903->charge_pump_users == 0) {
+-			dev_dbg(&i2c->dev, "Disabling charge pump\n");
+-			wm8903_write(codec, WM8903_CHARGE_PUMP_0,
+-				     cp_reg & ~WM8903_CP_ENA);
+-		}
+-	}
+-
+ 	return 0;
  }
  
- /* Earpiece */
--static const char *twl4030_earpiece_texts[] =
--		{"Off", "DACL1", "DACL2", "DACR1"};
--
--static const unsigned int twl4030_earpiece_values[] =
--		{0x0, 0x1, 0x2, 0x4};
--
--static const struct soc_enum twl4030_earpiece_enum =
--	SOC_VALUE_ENUM_SINGLE(TWL4030_REG_EAR_CTL, 1, 0x7,
--			ARRAY_SIZE(twl4030_earpiece_texts),
--			twl4030_earpiece_texts,
--			twl4030_earpiece_values);
--
--static const struct snd_kcontrol_new twl4030_dapm_earpiece_control =
--SOC_DAPM_VALUE_ENUM("Route", twl4030_earpiece_enum);
-+static const struct snd_kcontrol_new twl4030_dapm_earpiece_controls[] = {
-+	SOC_DAPM_SINGLE("Voice", TWL4030_REG_EAR_CTL, 0, 1, 0),
-+	SOC_DAPM_SINGLE("AudioL1", TWL4030_REG_EAR_CTL, 1, 1, 0),
-+	SOC_DAPM_SINGLE("AudioL2", TWL4030_REG_EAR_CTL, 2, 1, 0),
-+	SOC_DAPM_SINGLE("AudioR1", TWL4030_REG_EAR_CTL, 3, 1, 0),
-+};
+@@ -844,26 +824,28 @@ SND_SOC_DAPM_MIXER("Right Speaker Mixer", WM8903_POWER_MANAGEMENT_4, 0, 0,
+ SND_SOC_DAPM_PGA_E("Left Headphone Output PGA", WM8903_POWER_MANAGEMENT_2,
+ 		   1, 0, NULL, 0, wm8903_output_event,
+ 		   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
+-		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
++		   SND_SOC_DAPM_PRE_PMD),
+ SND_SOC_DAPM_PGA_E("Right Headphone Output PGA", WM8903_POWER_MANAGEMENT_2,
+ 		   0, 0, NULL, 0, wm8903_output_event,
+ 		   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
+-		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
++		   SND_SOC_DAPM_PRE_PMD),
  
- /* PreDrive Left */
--static const char *twl4030_predrivel_texts[] =
--		{"Off", "DACL1", "DACL2", "DACR2"};
--
--static const unsigned int twl4030_predrivel_values[] =
--		{0x0, 0x1, 0x2, 0x4};
--
--static const struct soc_enum twl4030_predrivel_enum =
--	SOC_VALUE_ENUM_SINGLE(TWL4030_REG_PREDL_CTL, 1, 0x7,
--			ARRAY_SIZE(twl4030_predrivel_texts),
--			twl4030_predrivel_texts,
--			twl4030_predrivel_values);
--
--static const struct snd_kcontrol_new twl4030_dapm_predrivel_control =
--SOC_DAPM_VALUE_ENUM("Route", twl4030_predrivel_enum);
-+static const struct snd_kcontrol_new twl4030_dapm_predrivel_controls[] = {
-+	SOC_DAPM_SINGLE("Voice", TWL4030_REG_PREDL_CTL, 0, 1, 0),
-+	SOC_DAPM_SINGLE("AudioL1", TWL4030_REG_PREDL_CTL, 1, 1, 0),
-+	SOC_DAPM_SINGLE("AudioL2", TWL4030_REG_PREDL_CTL, 2, 1, 0),
-+	SOC_DAPM_SINGLE("AudioR2", TWL4030_REG_PREDL_CTL, 3, 1, 0),
-+};
+ SND_SOC_DAPM_PGA_E("Left Line Output PGA", WM8903_POWER_MANAGEMENT_3, 1, 0,
+ 		   NULL, 0, wm8903_output_event,
+ 		   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
+-		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
++		   SND_SOC_DAPM_PRE_PMD),
+ SND_SOC_DAPM_PGA_E("Right Line Output PGA", WM8903_POWER_MANAGEMENT_3, 0, 0,
+ 		   NULL, 0, wm8903_output_event,
+ 		   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
+-		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
++		   SND_SOC_DAPM_PRE_PMD),
  
- /* PreDrive Right */
--static const char *twl4030_predriver_texts[] =
--		{"Off", "DACR1", "DACR2", "DACL2"};
--
--static const unsigned int twl4030_predriver_values[] =
--		{0x0, 0x1, 0x2, 0x4};
--
--static const struct soc_enum twl4030_predriver_enum =
--	SOC_VALUE_ENUM_SINGLE(TWL4030_REG_PREDR_CTL, 1, 0x7,
--			ARRAY_SIZE(twl4030_predriver_texts),
--			twl4030_predriver_texts,
--			twl4030_predriver_values);
--
--static const struct snd_kcontrol_new twl4030_dapm_predriver_control =
--SOC_DAPM_VALUE_ENUM("Route", twl4030_predriver_enum);
-+static const struct snd_kcontrol_new twl4030_dapm_predriver_controls[] = {
-+	SOC_DAPM_SINGLE("Voice", TWL4030_REG_PREDR_CTL, 0, 1, 0),
-+	SOC_DAPM_SINGLE("AudioR1", TWL4030_REG_PREDR_CTL, 1, 1, 0),
-+	SOC_DAPM_SINGLE("AudioR2", TWL4030_REG_PREDR_CTL, 2, 1, 0),
-+	SOC_DAPM_SINGLE("AudioL2", TWL4030_REG_PREDR_CTL, 3, 1, 0),
-+};
+ SND_SOC_DAPM_PGA("Left Speaker PGA", WM8903_POWER_MANAGEMENT_5, 1, 0,
+ 		 NULL, 0),
+ SND_SOC_DAPM_PGA("Right Speaker PGA", WM8903_POWER_MANAGEMENT_5, 0, 0,
+ 		 NULL, 0),
  
- /* Headset Left */
--static const char *twl4030_hsol_texts[] =
--		{"Off", "DACL1", "DACL2"};
--
--static const struct soc_enum twl4030_hsol_enum =
--	SOC_ENUM_SINGLE(TWL4030_REG_HS_SEL, 1,
--			ARRAY_SIZE(twl4030_hsol_texts),
--			twl4030_hsol_texts);
--
--static const struct snd_kcontrol_new twl4030_dapm_hsol_control =
--SOC_DAPM_ENUM("Route", twl4030_hsol_enum);
-+static const struct snd_kcontrol_new twl4030_dapm_hsol_controls[] = {
-+	SOC_DAPM_SINGLE("Voice", TWL4030_REG_HS_SEL, 0, 1, 0),
-+	SOC_DAPM_SINGLE("AudioL1", TWL4030_REG_HS_SEL, 1, 1, 0),
-+	SOC_DAPM_SINGLE("AudioL2", TWL4030_REG_HS_SEL, 2, 1, 0),
-+};
++SND_SOC_DAPM_SUPPLY("Charge Pump", WM8903_CHARGE_PUMP_0, 0, 0,
++		    wm8903_cp_event, SND_SOC_DAPM_POST_PMU),
+ };
  
- /* Headset Right */
--static const char *twl4030_hsor_texts[] =
--		{"Off", "DACR1", "DACR2"};
--
--static const struct soc_enum twl4030_hsor_enum =
--	SOC_ENUM_SINGLE(TWL4030_REG_HS_SEL, 4,
--			ARRAY_SIZE(twl4030_hsor_texts),
--			twl4030_hsor_texts);
--
--static const struct snd_kcontrol_new twl4030_dapm_hsor_control =
--SOC_DAPM_ENUM("Route", twl4030_hsor_enum);
-+static const struct snd_kcontrol_new twl4030_dapm_hsor_controls[] = {
-+	SOC_DAPM_SINGLE("Voice", TWL4030_REG_HS_SEL, 3, 1, 0),
-+	SOC_DAPM_SINGLE("AudioR1", TWL4030_REG_HS_SEL, 4, 1, 0),
-+	SOC_DAPM_SINGLE("AudioR2", TWL4030_REG_HS_SEL, 5, 1, 0),
-+};
+ static const struct snd_soc_dapm_route intercon[] = {
+@@ -951,6 +933,11 @@ static const struct snd_soc_dapm_route intercon[] = {
  
- /* Carkit Left */
--static const char *twl4030_carkitl_texts[] =
--		{"Off", "DACL1", "DACL2"};
--
--static const struct soc_enum twl4030_carkitl_enum =
--	SOC_ENUM_SINGLE(TWL4030_REG_PRECKL_CTL, 1,
--			ARRAY_SIZE(twl4030_carkitl_texts),
--			twl4030_carkitl_texts);
--
--static const struct snd_kcontrol_new twl4030_dapm_carkitl_control =
--SOC_DAPM_ENUM("Route", twl4030_carkitl_enum);
-+static const struct snd_kcontrol_new twl4030_dapm_carkitl_controls[] = {
-+	SOC_DAPM_SINGLE("Voice", TWL4030_REG_PRECKL_CTL, 0, 1, 0),
-+	SOC_DAPM_SINGLE("AudioL1", TWL4030_REG_PRECKL_CTL, 1, 1, 0),
-+	SOC_DAPM_SINGLE("AudioL2", TWL4030_REG_PRECKL_CTL, 2, 1, 0),
-+};
- 
- /* Carkit Right */
--static const char *twl4030_carkitr_texts[] =
--		{"Off", "DACR1", "DACR2"};
--
--static const struct soc_enum twl4030_carkitr_enum =
--	SOC_ENUM_SINGLE(TWL4030_REG_PRECKR_CTL, 1,
--			ARRAY_SIZE(twl4030_carkitr_texts),
--			twl4030_carkitr_texts);
--
--static const struct snd_kcontrol_new twl4030_dapm_carkitr_control =
--SOC_DAPM_ENUM("Route", twl4030_carkitr_enum);
-+static const struct snd_kcontrol_new twl4030_dapm_carkitr_controls[] = {
-+	SOC_DAPM_SINGLE("Voice", TWL4030_REG_PRECKR_CTL, 0, 1, 0),
-+	SOC_DAPM_SINGLE("AudioR1", TWL4030_REG_PRECKR_CTL, 1, 1, 0),
-+	SOC_DAPM_SINGLE("AudioR2", TWL4030_REG_PRECKR_CTL, 2, 1, 0),
-+};
- 
- /* Handsfree Left */
- static const char *twl4030_handsfreel_texts[] =
--		{"Voice", "DACL1", "DACL2", "DACR2"};
-+		{"Voice", "AudioL1", "AudioL2", "AudioR2"};
- 
- static const struct soc_enum twl4030_handsfreel_enum =
- 	SOC_ENUM_SINGLE(TWL4030_REG_HFL_CTL, 0,
-@@ -430,7 +386,7 @@ SOC_DAPM_ENUM("Route", twl4030_handsfreel_enum);
- 
- /* Handsfree Right */
- static const char *twl4030_handsfreer_texts[] =
--		{"Voice", "DACR1", "DACR2", "DACL2"};
-+		{"Voice", "AudioR1", "AudioR2", "AudioL2"};
- 
- static const struct soc_enum twl4030_handsfreer_enum =
- 	SOC_ENUM_SINGLE(TWL4030_REG_HFR_CTL, 0,
-@@ -829,6 +785,12 @@ static DECLARE_TLV_DB_SCALE(digital_fine_tlv, -6300, 100, 1);
- static DECLARE_TLV_DB_SCALE(digital_coarse_tlv, 0, 600, 0);
- 
- /*
-+ * Voice Downlink GAIN volume control:
-+ * from -37 to 12 dB in 1 dB steps (mute instead of -37 dB)
-+ */
-+static DECLARE_TLV_DB_SCALE(digital_voice_downlink_tlv, -3700, 100, 1);
+ 	{ "ROP", NULL, "Right Speaker PGA" },
+ 	{ "RON", NULL, "Right Speaker PGA" },
 +
-+/*
-  * Analog playback gain
-  * -24 dB to 12 dB in 2 dB steps
-  */
-@@ -892,6 +854,16 @@ static const struct snd_kcontrol_new twl4030_snd_controls[] = {
- 		TWL4030_REG_ARXL2_APGA_CTL, TWL4030_REG_ARXR2_APGA_CTL,
- 		1, 1, 0),
++	{ "Left Headphone Output PGA", NULL, "Charge Pump" },
++	{ "Right Headphone Output PGA", NULL, "Charge Pump" },
++	{ "Left Line Output PGA", NULL, "Charge Pump" },
++	{ "Right Line Output PGA", NULL, "Charge Pump" },
+ };
  
-+	/* Common voice downlink gain controls */
-+	SOC_SINGLE_TLV("DAC Voice Digital Downlink Volume",
-+		TWL4030_REG_VRXPGA, 0, 0x31, 0, digital_voice_downlink_tlv),
-+
-+	SOC_SINGLE_TLV("DAC Voice Analog Downlink Volume",
-+		TWL4030_REG_VDL_APGA_CTL, 3, 0x12, 1, analog_tlv),
-+
-+	SOC_SINGLE("DAC Voice Analog Downlink Switch",
-+		TWL4030_REG_VDL_APGA_CTL, 1, 1, 0),
-+
- 	/* Separate output gain controls */
- 	SOC_DOUBLE_R_TLV_TWL4030("PreDriv Playback Volume",
- 		TWL4030_REG_PREDL_CTL, TWL4030_REG_PREDR_CTL,
-@@ -956,6 +928,8 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 			SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_DAC("DAC Left2", "Left Rear Playback",
- 			SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_DAC("DAC Voice", "Voice Playback",
-+			TWL4030_REG_AVDAC_CTL, 4, 0),
- 
- 	/* Analog PGAs */
- 	SND_SOC_DAPM_PGA("ARXR1_APGA", TWL4030_REG_ARXR1_APGA_CTL,
-@@ -966,6 +940,8 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 			0, 0, NULL, 0),
- 	SND_SOC_DAPM_PGA("ARXL2_APGA", TWL4030_REG_ARXL2_APGA_CTL,
- 			0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("VDL_APGA", TWL4030_REG_VDL_APGA_CTL,
-+			0, 0, NULL, 0),
- 
- 	/* Analog bypasses */
- 	SND_SOC_DAPM_SWITCH_E("Right1 Analog Loopback", SND_SOC_NOPM, 0, 0,
-@@ -998,26 +974,35 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 	SND_SOC_DAPM_MIXER("Analog L2 Playback Mixer", TWL4030_REG_AVDAC_CTL,
- 			3, 0, NULL, 0),
- 
--	/* Output MUX controls */
-+	/* Output MIXER controls */
- 	/* Earpiece */
--	SND_SOC_DAPM_VALUE_MUX("Earpiece Mux", SND_SOC_NOPM, 0, 0,
--		&twl4030_dapm_earpiece_control),
-+	SND_SOC_DAPM_MIXER("Earpiece Mixer", SND_SOC_NOPM, 0, 0,
-+			&twl4030_dapm_earpiece_controls[0],
-+			ARRAY_SIZE(twl4030_dapm_earpiece_controls)),
- 	/* PreDrivL/R */
--	SND_SOC_DAPM_VALUE_MUX("PredriveL Mux", SND_SOC_NOPM, 0, 0,
--		&twl4030_dapm_predrivel_control),
--	SND_SOC_DAPM_VALUE_MUX("PredriveR Mux", SND_SOC_NOPM, 0, 0,
--		&twl4030_dapm_predriver_control),
-+	SND_SOC_DAPM_MIXER("PredriveL Mixer", SND_SOC_NOPM, 0, 0,
-+			&twl4030_dapm_predrivel_controls[0],
-+			ARRAY_SIZE(twl4030_dapm_predrivel_controls)),
-+	SND_SOC_DAPM_MIXER("PredriveR Mixer", SND_SOC_NOPM, 0, 0,
-+			&twl4030_dapm_predriver_controls[0],
-+			ARRAY_SIZE(twl4030_dapm_predriver_controls)),
- 	/* HeadsetL/R */
--	SND_SOC_DAPM_MUX_E("HeadsetL Mux", SND_SOC_NOPM, 0, 0,
--		&twl4030_dapm_hsol_control, headsetl_event,
--		SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
--	SND_SOC_DAPM_MUX("HeadsetR Mux", SND_SOC_NOPM, 0, 0,
--		&twl4030_dapm_hsor_control),
-+	SND_SOC_DAPM_MIXER_E("HeadsetL Mixer", SND_SOC_NOPM, 0, 0,
-+			&twl4030_dapm_hsol_controls[0],
-+			ARRAY_SIZE(twl4030_dapm_hsol_controls), headsetl_event,
-+			SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
-+	SND_SOC_DAPM_MIXER("HeadsetR Mixer", SND_SOC_NOPM, 0, 0,
-+			&twl4030_dapm_hsor_controls[0],
-+			ARRAY_SIZE(twl4030_dapm_hsor_controls)),
- 	/* CarkitL/R */
--	SND_SOC_DAPM_MUX("CarkitL Mux", SND_SOC_NOPM, 0, 0,
--		&twl4030_dapm_carkitl_control),
--	SND_SOC_DAPM_MUX("CarkitR Mux", SND_SOC_NOPM, 0, 0,
--		&twl4030_dapm_carkitr_control),
-+	SND_SOC_DAPM_MIXER("CarkitL Mixer", SND_SOC_NOPM, 0, 0,
-+			&twl4030_dapm_carkitl_controls[0],
-+			ARRAY_SIZE(twl4030_dapm_carkitl_controls)),
-+	SND_SOC_DAPM_MIXER("CarkitR Mixer", SND_SOC_NOPM, 0, 0,
-+			&twl4030_dapm_carkitr_controls[0],
-+			ARRAY_SIZE(twl4030_dapm_carkitr_controls)),
-+
-+	/* Output MUX controls */
- 	/* HandsfreeL/R */
- 	SND_SOC_DAPM_MUX_E("HandsfreeL Mux", TWL4030_REG_HFL_CTL, 5, 0,
- 		&twl4030_dapm_handsfreel_control, handsfree_event,
-@@ -1082,50 +1067,61 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{"ARXL2_APGA", NULL, "Analog L2 Playback Mixer"},
- 	{"ARXR2_APGA", NULL, "Analog R2 Playback Mixer"},
- 
-+	{"VDL_APGA", NULL, "DAC Voice"},
-+
- 	/* Internal playback routings */
- 	/* Earpiece */
--	{"Earpiece Mux", "DACL1", "ARXL1_APGA"},
--	{"Earpiece Mux", "DACL2", "ARXL2_APGA"},
--	{"Earpiece Mux", "DACR1", "ARXR1_APGA"},
-+	{"Earpiece Mixer", "Voice", "VDL_APGA"},
-+	{"Earpiece Mixer", "AudioL1", "ARXL1_APGA"},
-+	{"Earpiece Mixer", "AudioL2", "ARXL2_APGA"},
-+	{"Earpiece Mixer", "AudioR1", "ARXR1_APGA"},
- 	/* PreDrivL */
--	{"PredriveL Mux", "DACL1", "ARXL1_APGA"},
--	{"PredriveL Mux", "DACL2", "ARXL2_APGA"},
--	{"PredriveL Mux", "DACR2", "ARXR2_APGA"},
-+	{"PredriveL Mixer", "Voice", "VDL_APGA"},
-+	{"PredriveL Mixer", "AudioL1", "ARXL1_APGA"},
-+	{"PredriveL Mixer", "AudioL2", "ARXL2_APGA"},
-+	{"PredriveL Mixer", "AudioR2", "ARXR2_APGA"},
- 	/* PreDrivR */
--	{"PredriveR Mux", "DACR1", "ARXR1_APGA"},
--	{"PredriveR Mux", "DACR2", "ARXR2_APGA"},
--	{"PredriveR Mux", "DACL2", "ARXL2_APGA"},
-+	{"PredriveR Mixer", "Voice", "VDL_APGA"},
-+	{"PredriveR Mixer", "AudioR1", "ARXR1_APGA"},
-+	{"PredriveR Mixer", "AudioR2", "ARXR2_APGA"},
-+	{"PredriveR Mixer", "AudioL2", "ARXL2_APGA"},
- 	/* HeadsetL */
--	{"HeadsetL Mux", "DACL1", "ARXL1_APGA"},
--	{"HeadsetL Mux", "DACL2", "ARXL2_APGA"},
-+	{"HeadsetL Mixer", "Voice", "VDL_APGA"},
-+	{"HeadsetL Mixer", "AudioL1", "ARXL1_APGA"},
-+	{"HeadsetL Mixer", "AudioL2", "ARXL2_APGA"},
- 	/* HeadsetR */
--	{"HeadsetR Mux", "DACR1", "ARXR1_APGA"},
--	{"HeadsetR Mux", "DACR2", "ARXR2_APGA"},
-+	{"HeadsetR Mixer", "Voice", "VDL_APGA"},
-+	{"HeadsetR Mixer", "AudioR1", "ARXR1_APGA"},
-+	{"HeadsetR Mixer", "AudioR2", "ARXR2_APGA"},
- 	/* CarkitL */
--	{"CarkitL Mux", "DACL1", "ARXL1_APGA"},
--	{"CarkitL Mux", "DACL2", "ARXL2_APGA"},
-+	{"CarkitL Mixer", "Voice", "VDL_APGA"},
-+	{"CarkitL Mixer", "AudioL1", "ARXL1_APGA"},
-+	{"CarkitL Mixer", "AudioL2", "ARXL2_APGA"},
- 	/* CarkitR */
--	{"CarkitR Mux", "DACR1", "ARXR1_APGA"},
--	{"CarkitR Mux", "DACR2", "ARXR2_APGA"},
-+	{"CarkitR Mixer", "Voice", "VDL_APGA"},
-+	{"CarkitR Mixer", "AudioR1", "ARXR1_APGA"},
-+	{"CarkitR Mixer", "AudioR2", "ARXR2_APGA"},
- 	/* HandsfreeL */
--	{"HandsfreeL Mux", "DACL1", "ARXL1_APGA"},
--	{"HandsfreeL Mux", "DACL2", "ARXL2_APGA"},
--	{"HandsfreeL Mux", "DACR2", "ARXR2_APGA"},
-+	{"HandsfreeL Mux", "Voice", "VDL_APGA"},
-+	{"HandsfreeL Mux", "AudioL1", "ARXL1_APGA"},
-+	{"HandsfreeL Mux", "AudioL2", "ARXL2_APGA"},
-+	{"HandsfreeL Mux", "AudioR2", "ARXR2_APGA"},
- 	/* HandsfreeR */
--	{"HandsfreeR Mux", "DACR1", "ARXR1_APGA"},
--	{"HandsfreeR Mux", "DACR2", "ARXR2_APGA"},
--	{"HandsfreeR Mux", "DACL2", "ARXL2_APGA"},
-+	{"HandsfreeR Mux", "Voice", "VDL_APGA"},
-+	{"HandsfreeR Mux", "AudioR1", "ARXR1_APGA"},
-+	{"HandsfreeR Mux", "AudioR2", "ARXR2_APGA"},
-+	{"HandsfreeR Mux", "AudioL2", "ARXL2_APGA"},
- 
- 	/* outputs */
- 	{"OUTL", NULL, "ARXL2_APGA"},
- 	{"OUTR", NULL, "ARXR2_APGA"},
--	{"EARPIECE", NULL, "Earpiece Mux"},
--	{"PREDRIVEL", NULL, "PredriveL Mux"},
--	{"PREDRIVER", NULL, "PredriveR Mux"},
--	{"HSOL", NULL, "HeadsetL Mux"},
--	{"HSOR", NULL, "HeadsetR Mux"},
--	{"CARKITL", NULL, "CarkitL Mux"},
--	{"CARKITR", NULL, "CarkitR Mux"},
-+	{"EARPIECE", NULL, "Earpiece Mixer"},
-+	{"PREDRIVEL", NULL, "PredriveL Mixer"},
-+	{"PREDRIVER", NULL, "PredriveR Mixer"},
-+	{"HSOL", NULL, "HeadsetL Mixer"},
-+	{"HSOR", NULL, "HeadsetR Mixer"},
-+	{"CARKITL", NULL, "CarkitL Mixer"},
-+	{"CARKITR", NULL, "CarkitR Mixer"},
- 	{"HFL", NULL, "HandsfreeL Mux"},
- 	{"HFR", NULL, "HandsfreeR Mux"},
- 
+ static int wm8903_add_widgets(struct snd_soc_codec *codec)
 -- 
 1.5.6.3
