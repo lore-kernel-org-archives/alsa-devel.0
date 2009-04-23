@@ -1,22 +1,21 @@
-From: Eric Miao <eric.y.miao@gmail.com>
-Subject: Re: [RFC PATCH 5/5] ASoC: simplify the SSP DMA
-	parameters settings by run-time generation
-Date: Thu, 23 Apr 2009 17:02:14 +0800
-Message-ID: <f17812d70904230202t5dc459bbud36c13b11c6d5725@mail.gmail.com>
-References: <f17812d70904222208i79604f3evb9950d6351377a83@mail.gmail.com>
-	<74d0deb30904230153l5ec490eck211d6ef456869f36@mail.gmail.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [RFC PATCH 4/5] ASoC: remove those unnecessary
+	#ifdef	CONFIG_PXA3xx .. #endif
+Date: Thu, 23 Apr 2009 11:04:19 +0200
+Message-ID: <20090423090419.GA29567@buzzloop.caiaq.de>
+References: <f17812d70904222206h27c58e40t5c8383133df1a7d0@mail.gmail.com>
+	<20090423081715.GA30105@sirena.org.uk>
+	<f17812d70904230133l34f77174sc18d4f30879dac64@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f103.google.com (mail-qy0-f103.google.com
-	[209.85.221.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id B6A89103850
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 50F0A103852
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Apr 2009 11:02:15 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so843811qyk.16
-	for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2009 02:02:15 -0700 (PDT)
-In-Reply-To: <74d0deb30904230153l5ec490eck211d6ef456869f36@mail.gmail.com>
+	Thu, 23 Apr 2009 11:04:22 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <f17812d70904230133l34f77174sc18d4f30879dac64@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,77 +25,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: pHilipp Zabel <philipp.zabel@gmail.com>
-Cc: alsa-devel@alsa-project.org, Paul Shen <bshen9@marvell.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Mark Brown <broonie@sirena.org.uk>
+To: Eric Miao <eric.y.miao@gmail.com>
+Cc: alsa-devel@alsa-project.org, Paul Shen <bshen9@marvell.com>, Mark Brown <broonie@sirena.org.uk>, Philipp Zabel <philipp.zabel@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Pj4gKyDCoCDCoCDCoCBzbnByaW50ZihkbWEtPm5hbWUsIDIwLCAiU1NQJWQgUENNICVzICVzIiwg
-c3NwLT5wb3J0X2lkLAo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHN0ZXJl
-byA/ICJTdGVyZW8iIDogIk1vbm8iLCBvdXQgPyAib3V0IiA6ICJpbiIpOwo+Cj4gU2hvdWxkIHdl
-IGNoYW5nZSBTdGVyZW8vTW9ubyB0byAzMi1iaXQvMTYtYml0IGhlcmU/Cj4KCkRlcGVuZHMgb24g
-TWFyaywgdGhlIGRtYS0+bmFtZSBhbmQgdGhlIGNvbW1lbnRzIGJlbG93IGRvZXNuJ3QKYWN0dWFs
-bHkgbWF0Y2ggdmVyeSB3ZWxsIC4uLgoKPj4gKwo+PiArIMKgIMKgIMKgIGRtYS0+cGFyYW1zLm5h
-bWUgPSBkbWEtPm5hbWU7Cj4+ICsgwqAgwqAgwqAgZG1hLT5wYXJhbXMuZHJjbXIgPSAmRFJDTVIo
-b3V0ID8gc3NwLT5kcmNtcl90eCA6IHNzcC0+ZHJjbXJfcngpOwo+PiArIMKgIMKgIMKgIGRtYS0+
-cGFyYW1zLmRjbWQgPSAob3V0ID8gKERDTURfSU5DU1JDQUREUiB8IERDTURfRkxPV1RSRykgOgo+
-PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIChEQ01E
-X0lOQ1RSR0FERFIgfCBEQ01EX0ZMT1dTUkMpKSB8Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgKHN0ZXJlbyA/IERDTURfV0lEVEg0IDogRENNRF9XSURUSDIpIHwgRENNRF9C
-VVJTVDE2Owo+PiArIMKgIMKgIMKgIGRtYS0+cGFyYW1zLmRldl9hZGRyID0gc3NwLT5waHlzX2Jh
-c2UgKyBTU0RSOwo+PiArCj4+ICsgwqAgwqAgwqAgcmV0dXJuICZkbWEtPnBhcmFtczsKPj4gK30K
-Pj4gKwo+PiDCoHN0YXRpYyBpbnQgcHhhX3NzcF9zdGFydHVwKHN0cnVjdCBzbmRfcGNtX3N1YnN0
-cmVhbSAqc3Vic3RyZWFtLAo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCBzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSkKPj4gwqB7Cj4+IEBAIC0yMjUsNiArMTAwLDExIEBA
-IHN0YXRpYyBpbnQgcHhhX3NzcF9zdGFydHVwKHN0cnVjdAo+PiBzbmRfcGNtX3N1YnN0cmVhbSAq
-c3Vic3RyZWFtLAo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGNsa19lbmFibGUocHJpdi0+c3Nw
-LT5jbGspOwo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHNzcF9kaXNhYmxlKHByaXYtPnNzcCk7
-Cj4+IMKgIMKgIMKgIMKgfQo+PiArCj4+ICsgwqAgwqAgwqAgaWYgKGNwdV9kYWktPmRtYV9kYXRh
-KSB7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAga2ZyZWUoY3B1X2RhaS0+ZG1hX2RhdGEpOwo+
-PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGNwdV9kYWktPmRtYV9kYXRhID0gTlVMTDsKPj4gKyDC
-oCDCoCDCoCB9Cj4+IMKgIMKgIMKgIMKgcmV0dXJuIHJldDsKPj4gwqB9Cj4+Cj4+IEBAIC0yMzks
-NiArMTE5LDExIEBAIHN0YXRpYyB2b2lkIHB4YV9zc3Bfc2h1dGRvd24oc3RydWN0Cj4+IHNuZF9w
-Y21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgc3NwX2Rp
-c2FibGUocHJpdi0+c3NwKTsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBjbGtfZGlzYWJsZShw
-cml2LT5zc3AtPmNsayk7Cj4+IMKgIMKgIMKgIMKgfQo+PiArCj4+ICsgwqAgwqAgwqAgaWYgKGNw
-dV9kYWktPmRtYV9kYXRhKSB7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAga2ZyZWUoY3B1X2Rh
-aS0+ZG1hX2RhdGEpOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGNwdV9kYWktPmRtYV9kYXRh
-ID0gTlVMTDsKPj4gKyDCoCDCoCDCoCB9Cj4+IMKgfQo+Pgo+PiDCoCNpZmRlZiBDT05GSUdfUE0K
-Pj4gQEAgLTYxMSwyNSArNDk2LDIwIEBAIHN0YXRpYyBpbnQgcHhhX3NzcF9od19wYXJhbXMoc3Ry
-dWN0Cj4+IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCj4+IMKgIMKgIMKgIMKgc3RydWN0
-IHNuZF9zb2NfZGFpICpjcHVfZGFpID0gcnRkLT5kYWktPmNwdV9kYWk7Cj4+IMKgIMKgIMKgIMKg
-c3RydWN0IHNzcF9wcml2ICpwcml2ID0gY3B1X2RhaS0+cHJpdmF0ZV9kYXRhOwo+PiDCoCDCoCDC
-oCDCoHN0cnVjdCBzc3BfZGV2aWNlICpzc3AgPSBwcml2LT5zc3A7Cj4+IC0gwqAgwqAgwqAgaW50
-IGRtYSA9IDAsIGNobiA9IHBhcmFtc19jaGFubmVscyhwYXJhbXMpOwo+PiArIMKgIMKgIMKgIGlu
-dCBjaG4gPSBwYXJhbXNfY2hhbm5lbHMocGFyYW1zKTsKPj4gwqAgwqAgwqAgwqB1MzIgc3NjcjA7
-Cj4+IMKgIMKgIMKgIMKgdTMyIHNzcHNwOwo+PiDCoCDCoCDCoCDCoGludCB3aWR0aCA9IHNuZF9w
-Y21fZm9ybWF0X3BoeXNpY2FsX3dpZHRoKHBhcmFtc19mb3JtYXQocGFyYW1zKSk7Cj4+IMKgIMKg
-IMKgIMKgaW50IHR0c2EgPSBzc3BfcmVhZF9yZWcoc3NwLCBTU1RTQSkgJiAweGY7Cj4+Cj4+IC0g
-wqAgwqAgwqAgLyogc2VsZWN0IGNvcnJlY3QgRE1BIHBhcmFtcyAqLwo+PiAtIMKgIMKgIMKgIGlm
-IChzdWJzdHJlYW0tPnN0cmVhbSAhPSBTTkRSVl9QQ01fU1RSRUFNX1BMQVlCQUNLKQo+PiAtIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIGRtYSA9IDE7IC8qIGNhcHR1cmUgRE1BIG9mZnNldCBpcyAxLDMg
-Ki8KPj4gLSDCoCDCoCDCoCAvKiBOZXR3b3JrIG1vZGUgd2l0aCBvbmUgYWN0aXZlIHNsb3QgKHR0
-c2EgPT0gMSkgY2FuIGJlIHVzZWQKPj4gLSDCoCDCoCDCoCDCoCogdG8gZm9yY2UgMTYtYml0IGZy
-YW1lIHdpZHRoIG9uIHRoZSB3aXJlIChmb3IgUzE2X0xFKSwgZXZlbgo+PiAtIMKgIMKgIMKgIMKg
-KiB3aXRoIHR3byBjaGFubmVscy4gVXNlIDE2LWJpdCBETUEgdHJhbnNmZXJzIGZvciB0aGlzIGNh
-c2UuCj4+IC0gwqAgwqAgwqAgwqAqLwo+Cj4gRG8geW91IHRoaW5rIHRoZSB0dHNhIGJpdCBiZWxv
-dyBpcyBvYnZpb3VzIGVub3VnaCB0byB3YXJyYW50IHJlbW92YWwKPiBvZiB0aGUgYWJvdmUgY29t
-bWVudD8KClllcywgc29ycnkuIFRoaXMgaXMgYSBuaWNlIGNvbW1lbnQsIEkgcmVtb3ZlZCBpdCBi
-eSBhY2NpZGVudC4KCj4KPj4gLSDCoCDCoCDCoCBpZiAoKChjaG4gPT0gMikgJiYgKHR0c2EgIT0g
-MSkpIHx8ICh3aWR0aCA9PSAzMikpCj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgZG1hICs9IDI7
-IC8qIDMyLWJpdCBETUEgb2Zmc2V0IGlzIDIsIDE2LWJpdCBpcyAwICovCj4+IC0KPj4gLSDCoCDC
-oCDCoCBjcHVfZGFpLT5kbWFfZGF0YSA9IHNzcF9kbWFfcGFyYW1zW2NwdV9kYWktPmlkXVtkbWFd
-Owo+PiArIMKgIMKgIMKgIHByaW50aygiJXNcbiIsIF9fZnVuY19fKTsKPj4gKyDCoCDCoCDCoCAv
-KiBnZW5lcmF0ZSBjb3JyZWN0IERNQSBwYXJhbXMgKi8KPj4gKyDCoCDCoCDCoCBpZiAoY3B1X2Rh
-aS0+ZG1hX2RhdGEpCj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAga2ZyZWUoY3B1X2RhaS0+ZG1h
-X2RhdGEpOwo+Pgo+PiAtIMKgIMKgIMKgIGRldl9kYmcoJnNzcC0+cGRldi0+ZGV2LCAicHhhX3Nz
-cF9od19wYXJhbXM6IGRtYSAlZFxuIiwgZG1hKTsKPj4gKyDCoCDCoCDCoCBjcHVfZGFpLT5kbWFf
-ZGF0YSA9IHNzcF9nZXRfZG1hX3BhcmFtcyhzc3AsCj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgKChjaG4gPT0gMikgJiYgKHR0c2EgIT0gMSkpIHx8ICh3aWR0aCA9PSAzMiks
-Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgc3Vic3RyZWFtLT5zdHJlYW0g
-PT0gU05EUlZfUENNX1NUUkVBTV9QTEFZQkFDSyk7Cj4+Cj4+IMKgIMKgIMKgIMKgLyogd2UgY2Fu
-IG9ubHkgY2hhbmdlIHRoZSBzZXR0aW5ncyBpZiB0aGUgcG9ydCBpcyBub3QgaW4gdXNlICovCj4+
-IMKgIMKgIMKgIMKgaWYgKHNzcF9yZWFkX3JlZyhzc3AsIFNTQ1IwKSAmIFNTQ1IwX1NTRSkKPj4g
-LS0KPj4gMS42LjAuNAo+Pgo+Cj4gcmVnYXJkcwo+IFBoaWxpcHAKPgoKCgotLSAKQ2hlZXJzCi0g
-ZXJpYwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Thu, Apr 23, 2009 at 04:33:34PM +0800, Eric Miao wrote:
+> On Thu, Apr 23, 2009 at 4:17 PM, Mark Brown <broonie@sirena.org.uk> wrote:
+> > This isn't done for compiler optimisation - it's done because the
+> > register bit macros are only defined if PXA3xx support is being built
+> > in. =A0I've no problem with removing those guards but without that you'=
+ll
+> > get build failures on PXA2xx.
+> >
+> =
+
+> Yeah, indeed. This is a rush (so the title is RFC), sorry. I'll get those
+> conditional #ifdef .. #endif removed as well in the ssp-regs.h, it
+> always makes me upset.
+
+Well, I put them in there to clearly state which CPUs have support
+for this particular feature. Especially for PXAs, where even register
+definitions are considered confidential, this might help people fishing
+in muddy waters. Some comment would do as well, though.
+
+Daniel
