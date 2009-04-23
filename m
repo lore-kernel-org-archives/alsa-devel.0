@@ -1,35 +1,74 @@
-From: "Harsha, Priya" <priya.harsha@intel.com>
-Subject: .pointer return value
-Date: Thu, 23 Apr 2009 19:34:08 +0530
-Message-ID: <98769532B4BB14429434178695419EAE4AA6D20B@bgsmsx501.gar.corp.intel.com>
+From: "Alejandro Blanca G." <alex.blanca@gmail.com>
+Subject: Re: trouble with alsa, wolfson, and TI OMAP35xx McBSP
+Date: Thu, 23 Apr 2009 11:50:25 -0500
+Message-ID: <b6ab3a160904230950g61ae6e78mac2f02ada111c40c@mail.gmail.com>
+References: <dbdb2ea60904221058w67b775f3occ07f55938fe4d03@mail.gmail.com>
+	 <200904231220.14465.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9BB92103838
-	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Apr 2009 16:04:26 +0200 (CEST)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <200904231220.14465.peter.ujfalusi@nokia.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: ext twebb <taliaferro62@gmail.com>, "linux-omap@vger.kernel.org Mailing List" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, etorres@dextratech.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi everyone.
 
-Can anyone educate me on what value should be returned to .pointer function?
-	Should I be passing the number of frames played till that point from the time stream started or thnumber of frames played such that the bytes is within the buf_size?
+We are working with bringing up another audio codec with the Beagle Boa=
+rd.
 
-And if I am using, snd_pcm_indirect_playback_pointer, what should be my input to it?
-	Should I be passing the number of bytes played till that point from the time stream started or the number of bytes within buf_size?
+Probably the issue we are seeing is related: we are having problems
+when doing playback and observe that the information corresponding to
+2 channels is being sent only through the left channel. We might have
+some other problems too, since we are new to this kind of development,
+but maybe our observations or yours could be useful to stabilize the
+Beagle platform code.
 
-Thanks,
-Harsha
+Best regards,
+
+Alex B.
+
+On Thu, Apr 23, 2009 at 4:20 AM, Peter Ujfalusi
+<peter.ujfalusi@nokia.com> wrote:
+> On Wednesday 22 April 2009 20:58:01 ext twebb wrote:
+>> Problem 2:
+>> Test tone is being presented by the user application, providing a 1K=
+hz
+>> tone sampled at 44.1Khz. The data are S16_LE, right channel only. Le=
+ft
+>> channel is quiet. The data seems to slip back and forth from left to
+>> right channel. This is reproducable and verified with a scope trace.
+>>
+>> Anybody have any ideas what might be going wrong here? =A0Traces for
+>> codec reg dump and mcbsp are attached.
+>
+> As Jarkko already asked: are you seeing the channel switch while runn=
+ing or is
+> it happens on playback start?
+>
+> AFAIK this phenomena can be also seen on Beagle board.
+>
+> I have done some investigation regarding to these, but so far I can n=
+ot say
+> that I know what causes it.
+>
+> BTW: these are separate issues (startup switch and runtime switch).
+>
+>> Thanks,
+>> twebb
+>
+> --
+> P=E9ter
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap"=
+ in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
