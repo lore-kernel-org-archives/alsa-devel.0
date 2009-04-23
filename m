@@ -1,17 +1,19 @@
 From: Luke Yelavich <themuso@ubuntu.com>
-Subject: [PATCH] alsa-info.sh: add command-line flag to print
-	alsa info to stdout
-Date: Thu, 23 Apr 2009 20:00:33 +1000
-Message-ID: <1240480834-16528-1-git-send-email-themuso@ubuntu.com>
+Subject: [PATCH] alsa-info.sh: use distros package manager to
+	retrieve alsa library version
+Date: Thu, 23 Apr 2009 20:00:34 +1000
+Message-ID: <1240480834-16528-2-git-send-email-themuso@ubuntu.com>
+References: <1240480834-16528-1-git-send-email-themuso@ubuntu.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ipmail01.adl6.internode.on.net (ipmail01.adl6.internode.on.net
 	[203.16.214.146])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0588810381D
+	by alsa0.perex.cz (Postfix) with ESMTP id 796A3103854
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Apr 2009 12:01:08 +0200 (CEST)
+	Thu, 23 Apr 2009 12:01:10 +0200 (CEST)
+In-Reply-To: <1240480834-16528-1-git-send-email-themuso@ubuntu.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,94 +27,76 @@ To: alsa-devel@alsa-project.org
 Cc: Luke Yelavich <themuso@ubuntu.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add the --stdout command-line flag to allow displaying the collected alsa
-information directly to standard output. This is useful for bug information
-collecting systems, such as Ubuntu's apport.
+Move the alsa library version retrieval code into a new function,
+get_alsa_library_version. This new function uses the original checking of the
+alsa library header file for the version. If nothing is found, then move
+onto using various distro package managers to get the alsa library version.
+This commit takes care of checks for Ubuntu and Debian only, so other distro
+developers/users will have to provide code for their distro.
+
+Using the distro package manager to determine the alsa version is useful in
+cases where information has been requested from a user who doesn't have
+development files for the alsa library installed, as many distros don't install
+such files by default.
 
 Signed-off-by: Luke Yelavich <themuso@ubuntu.com>
 ---
- utils/alsa-info.sh |   34 +++++++++++++++++++++++++++++-----
- 1 files changed, 29 insertions(+), 5 deletions(-)
+ utils/alsa-info.sh |   36 +++++++++++++++++++++++++++++++++++-
+ 1 files changed, 35 insertions(+), 1 deletions(-)
 
 diff --git a/utils/alsa-info.sh b/utils/alsa-info.sh
-index 0fff671..ee0de16 100755
+index ee0de16..f1660f8 100755
 --- a/utils/alsa-info.sh
 +++ b/utils/alsa-info.sh
-@@ -277,6 +277,12 @@ case "$1" in
- 		REPEAT=""
- 		shift
- 		;;
-+	--stdout)
-+		DIALOG=""
-+		NOUPLOAD="yes"
-+		QUESTION="no"
-+		TOSTDOUT="yes"
-+		;;
- esac
- done
- 		
-@@ -627,6 +633,17 @@ then
- 				fi
- 			fi
- 			;;
-+		--stdout)
-+			NOUPLOAD="yes"
-+			withdevices
-+			withconfigs
-+			withaplay
-+			withamixer
-+			withalsactl
-+			withlsmod
-+			cat $FILE
-+			rm $FILE
-+			;;
- 		--about)
- 			echo "Written/Tested by the following users of #alsa on irc.freenode.net:"
- 			echo ""
-@@ -635,6 +652,7 @@ then
- 			echo "	gnubien - Various script ideas / Testing"
- 			echo "	GrueMaster - HDA Intel specific items / Testing"
- 			echo "	olegfink - Script update function"
-+			echo "  TheMuso - display to stdout functionality"
- 			exit 0
- 			;;
- 		*)
-@@ -652,6 +670,8 @@ then
- 			echo "	--no-upload (do not upload contents to remote server)"
- 			echo "	--pastebin (use http://pastebin.ca) as remote server"
- 			echo "	    instead www.alsa-project.org"
-+			echo "  --stdout (print alsa information to standard output"
-+			echo "      instead of a file)"
- 			echo "	--about (show some information about the script)"
- 			echo "	--debug (will run the script as normal, but will not"
- 			echo "	     delete $FILE)"
-@@ -668,7 +688,9 @@ fi
+@@ -241,6 +241,40 @@ withsysfs() {
+     fi
+ }
  
- if [ -n "$NOUPLOAD" ]; then
- 
--	mv $FILE $NFILE || exit 1
-+	if [ -z "$TOSTDOUT" ]; then
-+		mv $FILE $NFILE || exit 1
-+	fi
- 
- 	if [[ -n $DIALOG ]]
- 	then
-@@ -686,10 +708,12 @@ if [ -n "$NOUPLOAD" ]; then
- 			echo "Your ALSA information can be seen by looking in $NFILE"
- 			echo ""
- 		else
--			echo "You requested that your information was NOT automatically uploaded to the $WWWSERVICE"
--			echo ""
--			echo "Your ALSA information can be seen by looking in $NFILE"
--			echo ""
-+			if [ -z "$TOSTDOUT" ]; then
-+				echo "You requested that your information was NOT automatically uploaded to the $WWWSERVICE"
-+				echo ""
-+				echo "Your ALSA information can be seen by looking in $NFILE"
-+				echo ""
++get_alsa_library_version() {
++	ALSA_LIB_VERSION=`grep VERSION_STR /usr/include/alsa/version.h 2>/dev/null|awk {'print $3'}|sed 's/"//g'`
++
++	if [ -z "$ALSA_LIB_VERSION" ]; then
++		if [ -f /etc/lsb-release ]; then
++			. /etc/lsb-release
++			case "$DISTRIB_ID" in
++				Ubuntu)
++					if which dpkg > /dev/null ; then
++						ALSA_LIB_VERSION=`dpkg -l libasound2 | tail -1 | awk '{print $3}' | cut -f 1 -d -`
++					fi
++
++					if [ "$ALSA_LIB_VERSION" = "<none>" ]; then
++						ALSA_LIB_VERSION=""
++					fi
++					return
++					;;
++				*)
++					return
++					;;
++			esac
++		elif [ -f /etc/debian_version ]; then
++			if which dpkg > /dev/null ; then
++				ALSA_LIB_VERSION=`dpkg -l libasound2 | tail -1 | awk '{print $3}' | cut -f 1 -d -`
 +			fi
- 		fi
- 	fi
++
++			if [ "$ALSA_LIB_VERSION" = "<none>" ]; then
++				ALSA_LIB_VERSION=""
++			fi
++			return
++		fi
++	fi
++}
++
  
+ #Run checks to make sure the programs we need are installed.
+ LSPCI=$(which lspci 2>/dev/null| sed 's|^[^/]*||' 2>/dev/null);
+@@ -356,7 +390,7 @@ KERNEL_MACHINE=`uname -m`
+ KERNEL_OS=`uname -o`
+ [[ `uname -v |grep SMP`  ]] && KERNEL_SMP="Yes" || KERNEL_SMP="No" 
+ ALSA_DRIVER_VERSION=`cat /proc/asound/version |head -n1|awk {'print $7'} |sed 's/\.$//'`
+-ALSA_LIB_VERSION=`grep VERSION_STR /usr/include/alsa/version.h 2>/dev/null|awk {'print $3'}|sed 's/"//g'`
++get_alsa_library_version
+ ALSA_UTILS_VERSION=`amixer -v |awk {'print $3'}`
+ VENDOR_ID=`lspci -vn |grep 040[1-3] | awk -F':' '{print $3}'|awk {'print substr($0, 2);}' >$TEMPDIR/vendor_id.tmp`
+ DEVICE_ID=`lspci -vn |grep 040[1-3] | awk -F':' '{print $4}'|awk {'print $1'} >$TEMPDIR/device_id.tmp`
 -- 
 1.6.0.4
