@@ -1,18 +1,19 @@
-From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: Re: trouble with alsa, wolfson, and TI OMAP35xx McBSP
-Date: Thu, 23 Apr 2009 09:08:44 +0300
-Message-ID: <20090423090844.50d05a65.jarkko.nikula@nokia.com>
-References: <dbdb2ea60904221058w67b775f3occ07f55938fe4d03@mail.gmail.com>
-	<7A436F7769CA33409C6B44B358BFFF0C0106373FD4@dlee02.ent.ti.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [RFC PATCH 4/5] ASoC: remove those
+	unnecessary	#ifdef CONFIG_PXA3xx .. #endif
+Date: Thu, 23 Apr 2009 09:08:15 +0200
+Message-ID: <20090423070815.GB23901@buzzloop.caiaq.de>
+References: <f17812d70904222206h27c58e40t5c8383133df1a7d0@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id CBE2910381B
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 951CA103820
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Apr 2009 08:07:57 +0200 (CEST)
-In-Reply-To: <7A436F7769CA33409C6B44B358BFFF0C0106373FD4@dlee02.ent.ti.com>
+	Thu, 23 Apr 2009 09:08:23 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <f17812d70904222206h27c58e40t5c8383133df1a7d0@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,37 +23,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ext Menon, Nishanth" <nm@ti.com>
-Cc: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org Mailing List" <linux-omap@vger.kernel.org>, twebb <taliaferro62@gmail.com>
+To: Eric Miao <eric.y.miao@gmail.com>
+Cc: alsa-devel@alsa-project.org, Paul Shen <bshen9@marvell.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Philipp Zabel <philipp.zabel@gmail.com>, Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 22 Apr 2009 20:05:40 +0200
-"ext Menon, Nishanth" <nm@ti.com> wrote:
+Hi Eric,
 
-> > Test tone is being presented by the user application, providing a
-> > 1Khz tone sampled at 44.1Khz. The data are S16_LE, right channel
-> > only. Left channel is quiet. The data seems to slip back and forth
-> > from left to right channel. This is reproducable and verified with
-> > a scope trace.
->
-Is this slipping happening in middle of playback or between the tracks?
-
-> I recollect this issue from years back of OSS driver -> i2s is
-> configured as dual phase - mcbsp sends data on both edges, and if the
-> data write happen on the wrong edge for the wrong phase, we might get
-> mix up.. if I recollect right, configuration for mcbsp was done as a
-> single phase with the right edge as a trigger for transfer, the
-> transfer size was set as 32 bytes (both channels).. this essentially
-> guarentees that mcbsp will never mix up channels.
+On Thu, Apr 23, 2009 at 01:06:55PM +0800, Eric Miao wrote:
+> @@ -652,10 +643,8 @@ static int pxa_ssp_hw_params(struct
+> snd_pcm_substream *substream,
+>  	sscr0 = ssp_read_reg(ssp, SSCR0);
+>  	switch (params_format(params)) {
+>  	case SNDRV_PCM_FORMAT_S16_LE:
+> -#ifdef CONFIG_PXA3xx
+>  		if (cpu_is_pxa3xx())
+>  			sscr0 |= SSCR0_FPCKE;
+> -#endif
+>  		sscr0 |= SSCR0_DataSize(16);
+>  		break;
+>  	case SNDRV_PCM_FORMAT_S24_LE:
+> @@ -682,7 +671,6 @@ static int pxa_ssp_hw_params(struct
+> snd_pcm_substream *substream,
+>  			* needed for that mode are only available on PXA3xx.
+>  			*/
 > 
-Thanks Menon! This is sounds a information we should try out. OMAP2420
-in N810 is especially suffering from channel swapping between the
-tracks and I haven't found time to look any deeper :-(
+> -#ifdef CONFIG_PXA3xx
+>  			if (!cpu_is_pxa3xx())
+>  				return -EINVAL;
+> 
+> @@ -691,9 +679,6 @@ static int pxa_ssp_hw_params(struct
+> snd_pcm_substream *substream,
+>  			sspsp |= SSPSP_EDMYSTOP(3);
+>  			sspsp |= SSPSP_DMYSTOP(3);
+>  			sspsp |= SSPSP_DMYSTRT(1);
 
-I know there is a fix for DaVinci (commit
-fb0ef645f2c546f8297b2fbf9b2b8fff4a7455e8) but I would like to find
-out are there any other or simpler way to fix it than mixing DMA and DAI
-setup.
+These macros are only defined for PXA3xx since the register bits are not
+used on other PXAs. Hence, the usage of these macros must be conditional
+as well. Was this ever compiled for PXA2xx?
 
-
-Jarkko
+Daniel
