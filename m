@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 11/21] ASoC: Optimise configuration of WM8903
-	DC servo
-Date: Thu, 23 Apr 2009 20:55:45 +0100
-Message-ID: <1240516555-22249-11-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 08/21] ASoC: Add power supply widget to DAPM
+Date: Thu, 23 Apr 2009 20:55:42 +0100
+Message-ID: <1240516555-22249-8-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20090423195420.GA20863@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9AD3810389E
+	by alsa0.perex.cz (Postfix) with ESMTP id B681B1038AA
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Apr 2009 21:56:06 +0200 (CEST)
+	Thu, 23 Apr 2009 21:56:07 +0200 (CEST)
 In-Reply-To: <20090423195420.GA20863@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,29 +25,185 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Modify the default startup sequence in the chip to set the DC servo
-dither level for optimal performance.
+Many modern CODECs have shared resources on chip which must be enabled
+for portions of the chip to work but which can be disabled at other times
+in order to achieve power savings. Examples of such resources include
+power supplies and some internal clocks.
+
+Since these widgets are dependencies for the audio path but do not carry
+audio signals they require slightly different handling to most widgets -
+they do not contribute to the audio path and so should not be counted as
+either inputs or outputs during path walks.
+
+Cases where one supply provides a supply for another will require
+additional work. There is also room for more optimisation of the graph
+walking to avoid repeated checks for the same thing.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8903.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+ Documentation/sound/alsa/soc/dapm.txt |    1 +
+ include/sound/soc-dapm.h              |    7 ++++-
+ sound/soc/soc-dapm.c                  |   44 +++++++++++++++++++++++++++++---
+ 3 files changed, 46 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
-index 27c8b94..de0a585 100644
---- a/sound/soc/codecs/wm8903.c
-+++ b/sound/soc/codecs/wm8903.c
-@@ -978,6 +978,11 @@ static int wm8903_set_bias_level(struct snd_soc_codec *codec,
- 			wm8903_write(codec, WM8903_CLOCK_RATES_2,
- 				     WM8903_CLK_SYS_ENA);
+diff --git a/Documentation/sound/alsa/soc/dapm.txt b/Documentation/sound/alsa/soc/dapm.txt
+index 9e67632..9ac842b 100644
+--- a/Documentation/sound/alsa/soc/dapm.txt
++++ b/Documentation/sound/alsa/soc/dapm.txt
+@@ -62,6 +62,7 @@ Audio DAPM widgets fall into a number of types:-
+  o Mic        - Mic (and optional Jack)
+  o Line       - Line Input/Output (and optional Jack)
+  o Speaker    - Speaker
++ o Supply     - Power or clock supply widget used by other widgets.
+  o Pre        - Special PRE widget (exec before all others)
+  o Post       - Special POST widget (exec after all others)
  
-+			/* Change DC servo dither level in startup sequence */
-+			wm8903_write(codec, WM8903_WRITE_SEQUENCER_0, 0x11);
-+			wm8903_write(codec, WM8903_WRITE_SEQUENCER_1, 0x1257);
-+			wm8903_write(codec, WM8903_WRITE_SEQUENCER_2, 0x2);
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 839a97b..533f9f2 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -154,12 +154,16 @@
+ 	.shift = wshift, .invert = winvert, \
+ 	.event = wevent, .event_flags = wflags}
+ 
+-/* generic register modifier widget */
++/* generic widgets */
+ #define SND_SOC_DAPM_REG(wid, wname, wreg, wshift, wmask, won_val, woff_val) \
+ {	.id = wid, .name = wname, .kcontrols = NULL, .num_kcontrols = 0, \
+ 	.reg = -((wreg) + 1), .shift = wshift, .mask = wmask, \
+ 	.on_val = won_val, .off_val = woff_val, .event = dapm_reg_event, \
+ 	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD}
++#define SND_SOC_DAPM_SUPPLY(wname, wreg, wshift, winvert, wevent, wflags) \
++{	.id = snd_soc_dapm_supply, .name = wname, .reg = wreg,	\
++	.shift = wshift, .invert = winvert, .event = wevent, \
++	.event_flags = wflags}
+ 
+ /* dapm kcontrol types */
+ #define SOC_DAPM_SINGLE(xname, reg, shift, max, invert) \
+@@ -308,6 +312,7 @@ enum snd_soc_dapm_type {
+ 	snd_soc_dapm_vmid,			/* codec bias/vmid - to minimise pops */
+ 	snd_soc_dapm_pre,			/* machine specific pre widget - exec first */
+ 	snd_soc_dapm_post,			/* machine specific post widget - exec last */
++	snd_soc_dapm_supply,		/* power/clock supply */
+ };
+ 
+ /*
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index d3d1735..7847f80 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -52,17 +52,19 @@
+ 
+ /* dapm power sequences - make this per codec in the future */
+ static int dapm_up_seq[] = {
+-	snd_soc_dapm_pre, snd_soc_dapm_micbias, snd_soc_dapm_mic,
+-	snd_soc_dapm_mux, snd_soc_dapm_value_mux, snd_soc_dapm_dac,
+-	snd_soc_dapm_mixer, snd_soc_dapm_mixer_named_ctl, snd_soc_dapm_pga,
+-	snd_soc_dapm_adc, snd_soc_dapm_hp, snd_soc_dapm_spk, snd_soc_dapm_post
++	snd_soc_dapm_pre, snd_soc_dapm_supply, snd_soc_dapm_micbias,
++	snd_soc_dapm_mic, snd_soc_dapm_mux, snd_soc_dapm_value_mux,
++	snd_soc_dapm_dac, snd_soc_dapm_mixer, snd_soc_dapm_mixer_named_ctl,
++	snd_soc_dapm_pga, snd_soc_dapm_adc, snd_soc_dapm_hp, snd_soc_dapm_spk,
++	snd_soc_dapm_post
+ };
+ 
+ static int dapm_down_seq[] = {
+ 	snd_soc_dapm_pre, snd_soc_dapm_adc, snd_soc_dapm_hp, snd_soc_dapm_spk,
+ 	snd_soc_dapm_pga, snd_soc_dapm_mixer_named_ctl, snd_soc_dapm_mixer,
+ 	snd_soc_dapm_dac, snd_soc_dapm_mic, snd_soc_dapm_micbias,
+-	snd_soc_dapm_mux, snd_soc_dapm_value_mux, snd_soc_dapm_post
++	snd_soc_dapm_mux, snd_soc_dapm_value_mux, snd_soc_dapm_supply,
++	snd_soc_dapm_post
+ };
+ 
+ static int dapm_status = 1;
+@@ -165,6 +167,7 @@ static void dapm_set_path_status(struct snd_soc_dapm_widget *w,
+ 	case snd_soc_dapm_dac:
+ 	case snd_soc_dapm_micbias:
+ 	case snd_soc_dapm_vmid:
++	case snd_soc_dapm_supply:
+ 		p->connect = 1;
+ 	break;
+ 	/* does effect routing - dynamically connected */
+@@ -435,6 +438,9 @@ static int is_connected_output_ep(struct snd_soc_dapm_widget *widget)
+ 	struct snd_soc_dapm_path *path;
+ 	int con = 0;
+ 
++	if (widget->id == snd_soc_dapm_supply)
++		return 0;
 +
- 			wm8903_run_sequence(codec, 0);
- 			wm8903_sync_reg_cache(codec, codec->reg_cache);
+ 	if (widget->id == snd_soc_dapm_adc && widget->active)
+ 		return 1;
  
+@@ -471,6 +477,9 @@ static int is_connected_input_ep(struct snd_soc_dapm_widget *widget)
+ 	struct snd_soc_dapm_path *path;
+ 	int con = 0;
+ 
++	if (widget->id == snd_soc_dapm_supply)
++		return 0;
++
+ 	/* active stream ? */
+ 	if (widget->id == snd_soc_dapm_dac && widget->active)
+ 		return 1;
+@@ -622,6 +631,26 @@ static int dapm_dac_check_power(struct snd_soc_dapm_widget *w)
+ 	}
+ }
+ 
++/* Check to see if a power supply is needed */
++static int dapm_supply_check_power(struct snd_soc_dapm_widget *w)
++{
++	struct snd_soc_dapm_path *path;
++	int power = 0;
++
++	/* Check if one of our outputs is connected */
++	list_for_each_entry(path, &w->sinks, list_source) {
++		if (path->sink && path->sink->power_check &&
++		    path->sink->power_check(path->sink)) {
++			power = 1;
++			break;
++		}
++	}
++
++	dapm_clear_walk(w->codec);
++
++	return power;
++}
++
+ /*
+  * Scan a single DAPM widget for a complete audio path and update the
+  * power status appropriately.
+@@ -752,6 +781,7 @@ static void dbg_dump_dapm(struct snd_soc_codec* codec, const char *action)
+ 		case snd_soc_dapm_pga:
+ 		case snd_soc_dapm_mixer:
+ 		case snd_soc_dapm_mixer_named_ctl:
++		case snd_soc_dapm_supply:
+ 			if (w->name) {
+ 				in = is_connected_input_ep(w);
+ 				dapm_clear_walk(w->codec);
+@@ -880,6 +910,7 @@ static ssize_t dapm_widget_show(struct device *dev,
+ 		case snd_soc_dapm_pga:
+ 		case snd_soc_dapm_mixer:
+ 		case snd_soc_dapm_mixer_named_ctl:
++		case snd_soc_dapm_supply:
+ 			if (w->name)
+ 				count += sprintf(buf + count, "%s: %s\n",
+ 					w->name, w->power ? "On":"Off");
+@@ -1044,6 +1075,7 @@ static int snd_soc_dapm_add_route(struct snd_soc_codec *codec,
+ 	case snd_soc_dapm_vmid:
+ 	case snd_soc_dapm_pre:
+ 	case snd_soc_dapm_post:
++	case snd_soc_dapm_supply:
+ 		list_add(&path->list, &codec->dapm_paths);
+ 		list_add(&path->list_sink, &wsink->sources);
+ 		list_add(&path->list_source, &wsource->sinks);
+@@ -1164,6 +1196,8 @@ int snd_soc_dapm_new_widgets(struct snd_soc_codec *codec)
+ 		case snd_soc_dapm_line:
+ 			w->power_check = dapm_generic_check_power;
+ 			break;
++		case snd_soc_dapm_supply:
++			w->power_check = dapm_supply_check_power;
+ 		case snd_soc_dapm_vmid:
+ 		case snd_soc_dapm_pre:
+ 		case snd_soc_dapm_post:
 -- 
 1.5.6.3
