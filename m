@@ -1,17 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 1/3] ASoC: OMAP: Add 4 channel support to mcbsp
-Date: Thu, 23 Apr 2009 14:36:48 +0300
-Message-ID: <1240486610-8125-2-git-send-email-peter.ujfalusi@nokia.com>
-References: <1240486610-8125-1-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 0/3] ASoC: 4 channel support for twl4030 and
+	omap-mcbsp - Try2
+Date: Thu, 23 Apr 2009 14:36:47 +0300
+Message-ID: <1240486610-8125-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id B7E251037F4
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id CF3C710380B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Apr 2009 13:36:57 +0200 (CEST)
-In-Reply-To: <1240486610-8125-1-git-send-email-peter.ujfalusi@nokia.com>
+	Thu, 23 Apr 2009 13:36:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,42 +24,32 @@ To: alsa-devel@alsa-project.org
 Cc: sakoman@gmail.com, broonie@opensource.wolfsonmicro.com, jarkko.nikula@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-Add 4 channel support to omap-mcbsp.
-This mode is going to be used by the twl4030 codec, when it
-is configured in Option1 mode.
+Hello,
+This series adds support for 4 channel DSP mode (A or B) to OMAP McBSP and also
+to the twl4030 codec driver.
+As an example the Beagle board file is modified to be able to use 4 channel
+mode.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+The change in twl4030 is made in a way, that it will not enable the 4 channel
+mode when the codec is in OPTION2 mode.
+Since some of the bits in the OPTION register are shared and have different
+effect in OPTION1 and OPTION2 modes, an extra care is taken to prevent unvanted
+modification to the register.
+
+Note:
+The series is on top of Mark's tree in regard of the twl4030 codec, so it is on
+top of the 'ASoC: TWL4030: Add VDL path support' from Joonyoung Shim.
+
 ---
- sound/soc/omap/omap-mcbsp.c |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
+Peter Ujfalusi (2):
+  ASoC: OMAP: Add 4 channel support to mcbsp
+  ASoC: TWL4030: Add 4 channel TDM support
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 495192a..a5d46a7 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -259,6 +259,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 			regs->xcr2	|= XFRLEN2(wpf - 1);
- 		}
- 	case 1:
-+	case 4:
- 		/* Set word per (McBSP) frame for phase1 */
- 		regs->rcr1	|= RFRLEN1(wpf - 1);
- 		regs->xcr1	|= XFRLEN1(wpf - 1);
-@@ -506,13 +507,13 @@ static struct snd_soc_dai_ops omap_mcbsp_dai_ops = {
- 	.id = (link_id),					\
- 	.playback = {						\
- 		.channels_min = 1,				\
--		.channels_max = 2,				\
-+		.channels_max = 4,				\
- 		.rates = OMAP_MCBSP_RATES,			\
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE,		\
- 	},							\
- 	.capture = {						\
- 		.channels_min = 1,				\
--		.channels_max = 2,				\
-+		.channels_max = 4,				\
- 		.rates = OMAP_MCBSP_RATES,			\
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE,		\
- 	},							\
--- 
-1.6.2.3
+Ujfalusi Peter (Nokia-D/Tampere) (1):
+  ASoC: Beagle: Add support for 4 channel mode
+
+ sound/soc/codecs/twl4030.c   |   52 ++++++++++++++++++++++++++++++++++++++++-
+ sound/soc/codecs/twl4030.h   |   11 +++++++++
+ sound/soc/omap/omap-mcbsp.c  |    5 ++-
+ sound/soc/omap/omap3beagle.c |   26 ++++++++++++++------
+ 4 files changed, 82 insertions(+), 12 deletions(-)
