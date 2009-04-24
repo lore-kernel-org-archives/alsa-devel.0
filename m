@@ -1,17 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: salsa error message setting hwparams
-Date: Fri, 24 Apr 2009 09:22:01 +0200
-Message-ID: <49F16899.6090704@ladisch.de>
-References: <bca65b460904231231n6eacecc4l783ba028030d4398@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH 0/1] ASoC: 4 channel mode for beagle board
+Date: Fri, 24 Apr 2009 11:03:20 +0300
+Message-ID: <1240560201-10454-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id E9A1710388A
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 31D66103818
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Apr 2009 09:21:55 +0200 (CEST)
-In-Reply-To: <bca65b460904231231n6eacecc4l783ba028030d4398@mail.gmail.com>
+	Fri, 24 Apr 2009 10:03:27 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,19 +19,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: maarten van es <maarten.h.van.es@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: sakoman@gmail.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-maarten van es wrote:
-> This sytem works fine on a via C7 based pc with via audio. When I try
-> an exact copy of the system on an athlon64 based system with a
-> HDPS9632 I get this error message.
+Hello,
 
-It's probably that the HDSP does not support the sample format or rate
-that you're tryint to use.  Try this tool:
-http://article.gmane.org/gmane.linux.alsa.user/32525
+Resending the last part of the previous series, which adds 4 channel mode
+support for the Beagle board.
 
+---
+Peter Ujfalusi (1):
+  ASoC: Beagle: Add support for 4 channel
 
-HTH
-Clemens
+ sound/soc/omap/omap3beagle.c |   26 ++++++++++++++++++--------
+ 1 files changed, 18 insertions(+), 8 deletions(-)
