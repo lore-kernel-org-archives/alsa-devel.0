@@ -1,18 +1,19 @@
-From: Jonathan Cameron <jic23@cam.ac.uk>
-Subject: Re: [RFC] SoC WM8940 Driver
-Date: Sat, 25 Apr 2009 19:47:31 +0000
-Message-ID: <49F368D3.5030200@cam.ac.uk>
-References: <49F21310.4060009@cam.ac.uk> <20090425102100.GA4394@sirena.org.uk>
-	<49F345A8.1030901@cam.ac.uk> <20090425180346.GA4072@sirena.org.uk>
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: Re: Problem bringing up new alsa driver
+Date: Sat, 25 Apr 2009 17:28:55 -0400
+Message-ID: <9e4733910904251428r678cd32fkc6c56e4f43a1887b@mail.gmail.com>
+References: <9e4733910904231050p76caeeacn89d65c17f0c12408@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ppsw-6.csi.cam.ac.uk (ppsw-6.csi.cam.ac.uk [131.111.8.136])
-	by alsa0.perex.cz (Postfix) with ESMTP id CC0002455D
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.149])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5908C245D3
 	for <alsa-devel@alsa-project.org>;
-	Sat, 25 Apr 2009 21:47:13 +0200 (CEST)
-In-Reply-To: <20090425180346.GA4072@sirena.org.uk>
+	Sat, 25 Apr 2009 23:28:56 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 4so1380812qwk.56
+	for <alsa-devel@alsa-project.org>; Sat, 25 Apr 2009 14:28:55 -0700 (PDT)
+In-Reply-To: <9e4733910904231050p76caeeacn89d65c17f0c12408@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,95 +23,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
->>>> +static u16 wm8940_reg_defaults[] = {
->>>> +	[WM8940_SOFTRESET] =		0x8940,
->>>> +	[WM8940_POWER1] =		0x0000,
-> 
->>> I'd really rather use the more standard ASoC style here with a simple
->>> table of values.  The driver relies on the fact that the register
->>> cache is fully specified for suspend and resume and having a straight
->>> table makes sure that there aren't any missing values in the cache.
-> 
->> Ok, though I'd place the alternate argument that it lead to rather
->> less readable code than this sort of syntax where it readily apparent
->> exactly what is in each register.
-> 
-> Sure - if you do this using an alternative syntax that'd be fine.  For
-> example, several of the other drivers use comments to provide the
-> register names.
-Yup, that's what I've moved over to.
-> 
->>>> +	SOC_SINGLE("Digital Loopback Switch adc to dac", WM8940_COMPANDINGCTL,
->>>> +		   0, 1, 0),
-> 
->>> This should be called Digital Sidetone Switch and probably ought to be a
->>> DAPM control - there's an ADC to DAC route.
-> 
->> I'll take your word for it!
-> 
-> If you switch the ADC to the DAC then you've got an audio path between
-> them.
-Got that. It was the fact it was a Sidetone Switch that I was surprised by!
-> 
->>>> +	SOC_SINGLE_TLV("Speaker Playback Volume", WM8940_SPKVOL,
->>>> +		       0, 63, 0, wm8940_spk_vol_tlv),
->>>> +	SOC_SINGLE("Speaker Playback Mute", WM8940_SPKVOL,  6, 1, 0),
-> 
->>> Speaker Playback Switch; this also means that the sense of the control
->>> needs to be inverted.  Look at the control in alsamixer and you'll see
->>> that it figures out that these both control the same thing and displays
->>> them as a single Speaker Playback control in the UI.
-> 
->> I wish, alsamixer isn't exactly playing ball with busy box for some reason
->> I haven't chased down.  Looking at this lot using amixer isn't much fun!
-> 
-> amixer should show you the same information - yo'll get a simple mixer
-> control with both switch and volume capabilites.
-It does indeed, but there are so many controls it is a pain to find the one
-you want making checking this lot rather time consuming.
- 
->> I'll try and work out how to do it right before next posting! Need to lure
->> the board side of things into a configuration where this is relevant.
-> 
-> If you've got a scope you can use that to generate clocks with broken
-> audio.
-Yup, fun and games to come.  
-> 
->>>> +	case SND_SOC_BIAS_PREPARE:
->>>> +		/* ensure bufioen and biasen */
->>>> +		pwr_reg |= (1 << 2) | (1 << 3);
->>>> +		/* set vmid to 2.5k for fast start */
->>>> +		wm8940_write(codec, WM8940_POWER1, pwr_reg | 0x3);
->>>> +		break;
-> 
->>> This isn't what the low resistance VMID setting is for;
-> 
->> I admit I didn't really understand what was going on here, so I think I cribbed
->> it from another driver.  What should the setting be? (and what is that setting
->> for?)
-> 
-> Sorry, didn't finish writing that bit.  You should be setting the bias
-> for normal operation in prepare - the fast startup is only for use
-> during initial bringup of VMID since the lower resistrance allows the
-> capacitor used to charge more quickly.
-> 
-> The resistance of the VMID resistor string allows you to trade the
-> accuracy with which the VMID reference voltage is held (and therefore
-> audio performance) for power consumption.  Since it can take time to
-> charge the capacitors and bring VMID up to the required voltage it's
-> desirable to maintian VMID while the system is active in order to allow
-> rapid startup of an audio stream but doing so consumes power so the
-> higher resistance value is provided in order to allow that consumption
-> to be reduced.  The savings involved are very small but can produce a
-> noticable benefit in small, power sensitive devices like MP3 players.
+These new patches have broken audio support on the mpc5200....
 
-Ah, that makes sense now.
+They assume that the hardware is capable of telling where the DMA
+engine is in the middle of an operation.  I'm still checking to see if
+I can get that data out of the Bestcomm DMA engine.
 
-Thanks
+jonsmirl@terra:/home/linus/sound/core$ git log pcm_lib.c
+commit bbf6ad1399e9516b0a95de3ad58ffbaed670e4cc
+Author: Jaroslav Kysela <perex@perex.cz>
+Date:   Fri Apr 10 12:28:58 2009 +0200
 
-Jonathan
+    [ALSA] pcm-midlevel: Add more strict buffer position checks based on jiffies
+
+    Some drivers like Intel8x0 or Intel HDA are broken for some
+hardware variants.
+    This patch adds more strict buffer position checks based on jiffies when
+    internal hw_ptr is updated. Enable xrun_debug to see mangling of wrong
+    positions.
+
+    As a side effect, the hw_ptr interrupt update routine might do
+slightly better
+    job when many interrupts are lost.
+
+    Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+
+commit 8b22d943c34b616eefbd6d2f8f197a53b1f29fd0
+Author: Takashi Iwai <tiwai@suse.de>
+Date:   Fri Mar 20 16:26:15 2009 +0100
+
+    ALSA: pcm - Safer boundary checks
+
+    Make the boundary checks a bit safer.
+    These caese are rare or theoretically won't happen, but nothing
+    bad to keep the checks safer...
+
+    Signed-off-by: Takashi Iwai <tiwai@suse.de>
+
+commit ded652f7024bc2d7b6118b561a44187af30841b0
+Author: Takashi Iwai <tiwai@suse.de>
+Date:   Thu Mar 19 10:08:49 2009 +0100
+
+    ALSA: pcm - Fix delta calculation at boundary overlap
+
+    When the hw_ptr_interrupt reaches the boundary, it must check whether
+    the hw_base was already lapped and corret the delta value appropriately.
+
+    Also, rebasing the hw_ptr needs a correction because buffer_size isn't
+    always aligned to period_size.
+
+    Signed-off-by: Takashi Iwai <tiwai@suse.de>
+
+commit 5f513e1197f27e9a0bcfec0feaac59f976f4a37e
+Author: Takashi Iwai <tiwai@suse.de>
+Date:   Thu Mar 19 10:01:47 2009 +0100
+
+    ALSA: pcm - Reset invalid position even without debug option
+
+    Always reset the invalind hw_ptr position returned by the pointer
+    callback.  The behavior should be consitent independently from the
+    debug option.
+
+    Also, add the printk_ratelimit() check to avoid flooding debug
+    prints.
+
+    Signed-off-by: Takashi Iwai <tiwai@suse.de>
+
+
+
+-- 
+Jon Smirl
+jonsmirl@gmail.com
