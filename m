@@ -1,17 +1,19 @@
-From: maarten van es <maarten.h.van.es@gmail.com>
-Subject: salsa with noninterleaved needs irqpoll?
-Date: Sat, 25 Apr 2009 17:41:23 +0100
-Message-ID: <bca65b460904250941t3132fcdfw976b4fa2c0b0a7bc@mail.gmail.com>
+From: "Harsha, Priya" <priya.harsha@intel.com>
+Subject: Re: .pointer return value
+Date: Sat, 25 Apr 2009 22:43:06 +0530
+Message-ID: <98769532B4BB14429434178695419EAE4AAFABBF@bgsmsx501.gar.corp.intel.com>
+References: <98769532B4BB14429434178695419EAE4AA6D20B@bgsmsx501.gar.corp.intel.com>
+	<20090425142002.1e2ddb1a@Jay>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id EB595244AC
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id CC446244BF
 	for <alsa-devel@alsa-project.org>;
-	Sat, 25 Apr 2009 18:41:23 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id 16so313175fgg.21
-	for <alsa-devel@alsa-project.org>; Sat, 25 Apr 2009 09:41:23 -0700 (PDT)
+	Sat, 25 Apr 2009 19:13:11 +0200 (CEST)
+In-Reply-To: <20090425142002.1e2ddb1a@Jay>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,45 +23,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->>>
->>> And what about the sample format? =A0I looked at the drivers; the two
->>> sound cards do not have a common sample format.
->>>
->>>
->>> Best regards,
->>> Clemens
->>>
->>
->
-> Thanks, the problem was indeed that I was setting hwparams that are
-> not supported by the card. I do think salsa lib could return a more
-> relevant error than "operation not permitted" and I'll see if I can
-> come up with something for that.
-> Right now though I am trying to figure out what snd_pcm_writen needs
-> for its second parameter, void** bufs. I get the error "bad address"
-> when passing in an array of pointers to a malloc-ed space big enough
-> to hold a channels' worth of data. Sorry if I am missing obvious
-> documentation about this, but what should I pass for this parameter?
->
-> Regards
-> Maarten
->
+Thanks a lot. That helps.
 
-Hi again,
-
-Ok, now I finally got everything working and am asking the following
-mostly out of curiosity. The problem I had with snd_pcm_writen by the
-way has to do somehow with using a chroot environment; everything
-works when directly booting into the uclibc / salsa system. For it to
-work I need to add "irqpoll" to the kernel boot options. Without this,
-the card does not start playing (though no error messages from salsa)
-and after a few seconds the kernel tells me to add irqpoll to the boot
-options. On a glibc / alsa based system everything works fine without
-this option as it does with a c-media card with salsa. What does it do
-and why is it needed with the hdsp 9632 on a system with salsa?
-
-Thanks
-Maarten
+>-----Original Message-----
+>From: Giuliano Pochini [mailto:pochini@shiny.it]
+>Sent: Saturday, April 25, 2009 5:50 PM
+>To: Harsha, Priya
+>Cc: alsa-devel@alsa-project.org
+>Subject: Re: [alsa-devel] .pointer return value
+>
+>On Thu, 23 Apr 2009 19:34:08 +0530
+>"Harsha, Priya" <priya.harsha@intel.com> wrote:
+>
+>> Can anyone educate me on what value should be returned to .pointer function?
+>> 	Should I be passing the number of frames played till that point from the time stream started or
+>thnumber of frames played such that the bytes is within the buf_size?
+>
+>The latter: it's the index of the last transferred frame in the ring buffer.
+>
+>
+>> And if I am using, snd_pcm_indirect_playback_pointer, what should be my input to it?
+>> 	Should I be passing the number of bytes played till that point from the time stream started or the
+>number of bytes within buf_size?
+>
+>In practice, they're both fine. After a quick look at the sources
+>in /include/sound/pcm-indirect.h:
+>
+>----
+>static inline snd_pcm_uframes_t
+>snd_pcm_indirect_playback_pointer(struct snd_pcm_substream *substream,
+>				struct snd_pcm_indirect *rec, unsigned int ptr) {
+>        int bytes = ptr - rec->hw_io;
+>        if (bytes < 0)
+>                bytes += rec->hw_buffer_size;
+>        rec->hw_io = ptr;
+>----
+>
+>It cares about the difference from the last position to the current one and
+>it adds hw_buffer_size if ptr wrapped around.
+>
+>Side note:
+>I can guess it may not behave correctly in case of long latencies when
+>bytes < -hw_buffer_size. Perhaps should the "if" be changed to "while" ?
+>
+>
+>
+>--
+>Giuliano.
