@@ -1,20 +1,21 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Breakage in pcm_lib.c
-Date: Sun, 26 Apr 2009 18:31:22 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.0904261820460.25064@eeebox2.perex-int.cz>
-References: <9e4733910904251756y6534d2d0x6c201d00cbc728d9@mail.gmail.com>
-	<9e4733910904251848q4d64c413ld5af61019edae647@mail.gmail.com>
-	<alpine.LNX.2.00.0904261000520.25064@eeebox2.perex-int.cz>
-	<9e4733910904260821xd2d8790me58993df9f530c6f@mail.gmail.com>
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: Re: Problem bringing up new alsa driver
+Date: Sun, 26 Apr 2009 11:42:14 -0400
+Message-ID: <9e4733910904260842g991f476ib112d12c0f481e5d@mail.gmail.com>
+References: <9e4733910904231050p76caeeacn89d65c17f0c12408@mail.gmail.com>
+	<9e4733910904251428r678cd32fkc6c56e4f43a1887b@mail.gmail.com>
+	<s5hljpnwtst.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-367885570-1240763115=:25064"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id A5AEF2434B
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.148])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3A430243B3
 	for <alsa-devel@alsa-project.org>;
-	Sun, 26 Apr 2009 18:31:22 +0200 (CEST)
-In-Reply-To: <9e4733910904260821xd2d8790me58993df9f530c6f@mail.gmail.com>
-Content-ID: <alpine.LNX.2.00.0904261828140.25064@eeebox2.perex-int.cz>
+	Sun, 26 Apr 2009 17:42:17 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 4so1527926qwk.56
+	for <alsa-devel@alsa-project.org>; Sun, 26 Apr 2009 08:42:15 -0700 (PDT)
+In-Reply-To: <s5hljpnwtst.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,66 +25,128 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>, Takashi Iwai <tiwai@suse.de>, alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323584-367885570-1240763115=:25064
-Content-Type: TEXT/PLAIN; CHARSET=UTF-8; FORMAT=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <alpine.LNX.2.00.0904261825241.25064@eeebox2.perex-int.cz>
-
-On Sun, 26 Apr 2009, Jon Smirl wrote:
-
-> On Sun, Apr 26, 2009 at 4:12 AM, Jaroslav Kysela <perex@perex.cz> wrote:
->> On Sat, 25 Apr 2009, Jon Smirl wrote:
+On Sun, Apr 26, 2009 at 7:14 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Sat, 25 Apr 2009 17:28:55 -0400,
+> Jon Smirl wrote:
 >>
->>> This appears to be a bug in this code...
->>>
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (delta < 0) {
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0delta +=3D runti=
-me->period_size * runtime->periods;
->>>
->>> it was adding, buffer_size. But buffer_size is not correct when the
->>> periods don't evenly fit into the buffer
->>
->> Could you show real values what you're getting here with your driver?
+>> These new patches have broken audio support on the mpc5200....
 >
-> psc_dma_pcm_pointer pos 0
-> hw_ptr_interrupt 22052 new_hw_ptr 0
+> Then the lowlevel callbacks are likely wrong :)
+>
+>> They assume that the hardware is capable of telling where the DMA
+>> engine is in the middle of an operation.
+>
+> Well, nothing new by these patches. =A0The original PCM core
+> implementation has been designed in that way. =A0These changes may check
+> some bogus value more strictly.
+>
+> If the hardware doesn't support it, it needs report at least some
+> "sane" value; i.e. it must not be over the real position, but not
+> below the previous pointer.
 
-pos should be >2 here for buffer_size =3D 22050 and period_size =3D 5513..=
-=20
-Your driver code is broken - the routine must be called when period_size=20
-is processed - not before and .pointer callback must return correct value=
-=20
-at this point..
 
-So pos at interrupt time should be equal or slightly greater than:
 
-5513, 11026, 16540, 22054 % 22050 =3D 4, 5517 etc..
+> In the worst case, the driver just needs to report the same position
+> at the previous period boundary until the next
+> snd_pcm_period_elapsed().
 
-pos is position from  range 0 .. (buffer_size - 1) not from range 0 ..=20
-(periods * period_size).
+That's doesn't work anymore. The PCM code is using jiffies to estimate
+where the pointer needs to be.
+I used the same jiffies to fake up a hardware position.
 
- =09=09=09=09=09=09Jaroslav
+>
+>
+> Takashi
+>
+>> =A0I'm still checking to see if
+>> I can get that data out of the Bestcomm DMA engine.
+>>
+>> jonsmirl@terra:/home/linus/sound/core$ git log pcm_lib.c
+>> commit bbf6ad1399e9516b0a95de3ad58ffbaed670e4cc
+>> Author: Jaroslav Kysela <perex@perex.cz>
+>> Date: =A0 Fri Apr 10 12:28:58 2009 +0200
+>>
+>> =A0 =A0 [ALSA] pcm-midlevel: Add more strict buffer position checks base=
+d on jiffies
+>>
+>> =A0 =A0 Some drivers like Intel8x0 or Intel HDA are broken for some
+>> hardware variants.
+>> =A0 =A0 This patch adds more strict buffer position checks based on jiff=
+ies when
+>> =A0 =A0 internal hw_ptr is updated. Enable xrun_debug to see mangling of=
+ wrong
+>> =A0 =A0 positions.
+>>
+>> =A0 =A0 As a side effect, the hw_ptr interrupt update routine might do
+>> slightly better
+>> =A0 =A0 job when many interrupts are lost.
+>>
+>> =A0 =A0 Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+>>
+>> commit 8b22d943c34b616eefbd6d2f8f197a53b1f29fd0
+>> Author: Takashi Iwai <tiwai@suse.de>
+>> Date: =A0 Fri Mar 20 16:26:15 2009 +0100
+>>
+>> =A0 =A0 ALSA: pcm - Safer boundary checks
+>>
+>> =A0 =A0 Make the boundary checks a bit safer.
+>> =A0 =A0 These caese are rare or theoretically won't happen, but nothing
+>> =A0 =A0 bad to keep the checks safer...
+>>
+>> =A0 =A0 Signed-off-by: Takashi Iwai <tiwai@suse.de>
+>>
+>> commit ded652f7024bc2d7b6118b561a44187af30841b0
+>> Author: Takashi Iwai <tiwai@suse.de>
+>> Date: =A0 Thu Mar 19 10:08:49 2009 +0100
+>>
+>> =A0 =A0 ALSA: pcm - Fix delta calculation at boundary overlap
+>>
+>> =A0 =A0 When the hw_ptr_interrupt reaches the boundary, it must check wh=
+ether
+>> =A0 =A0 the hw_base was already lapped and corret the delta value approp=
+riately.
+>>
+>> =A0 =A0 Also, rebasing the hw_ptr needs a correction because buffer_size=
+ isn't
+>> =A0 =A0 always aligned to period_size.
+>>
+>> =A0 =A0 Signed-off-by: Takashi Iwai <tiwai@suse.de>
+>>
+>> commit 5f513e1197f27e9a0bcfec0feaac59f976f4a37e
+>> Author: Takashi Iwai <tiwai@suse.de>
+>> Date: =A0 Thu Mar 19 10:01:47 2009 +0100
+>>
+>> =A0 =A0 ALSA: pcm - Reset invalid position even without debug option
+>>
+>> =A0 =A0 Always reset the invalind hw_ptr position returned by the pointer
+>> =A0 =A0 callback. =A0The behavior should be consitent independently from=
+ the
+>> =A0 =A0 debug option.
+>>
+>> =A0 =A0 Also, add the printk_ratelimit() check to avoid flooding debug
+>> =A0 =A0 prints.
+>>
+>> =A0 =A0 Signed-off-by: Takashi Iwai <tiwai@suse.de>
+>>
+>>
+>>
+>> --
+>> Jon Smirl
+>> jonsmirl@gmail.com
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+>
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
---8323584-367885570-1240763115=:25064
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---8323584-367885570-1240763115=:25064--
+-- =
+
+Jon Smirl
+jonsmirl@gmail.com
