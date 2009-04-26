@@ -1,17 +1,20 @@
-From: Ludovico Cavedon <ludovico.cavedon@gmail.com>
-Subject: Getting the correct capture mixer
-Date: Sat, 25 Apr 2009 21:17:03 -0700
-Message-ID: <49F3E03F.80402@gmail.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 1/3] ASoC: cs4270: fix Master Capture
+	Switch polarity
+Date: Sun, 26 Apr 2009 10:49:17 +0100
+Message-ID: <20090426094917.GA4760@sirena.org.uk>
+References: <1240578026-1987-1-git-send-email-daniel@caiaq.de>
+	<49F1DE99.7050104@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.241])
-	by alsa0.perex.cz (Postfix) with ESMTP id 559C724362
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9DDC824495
 	for <alsa-devel@alsa-project.org>;
-	Sun, 26 Apr 2009 06:17:07 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id k29so1210573rvb.32
-	for <alsa-devel@alsa-project.org>; Sat, 25 Apr 2009 21:17:06 -0700 (PDT)
+	Sun, 26 Apr 2009 11:49:28 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <49F1DE99.7050104@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,57 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I am working on fixing some audio related bugs of a VoIP application
-(qutecom) which, like most VoIP applications, allows the user to change
-the playback and recording volume.
+On Fri, Apr 24, 2009 at 10:45:29AM -0500, Timur Tabi wrote:
+> Daniel Mack wrote:
+> > The control modifies the MUTE register, hence the polarity must be
+> > inverted.
 
-For playback volume I am opening the "Master" mixer element.
+>                             L    R
+>                             CAPTUR
+> 
+>                           < Master >
 
-However I am not able to figure out how the application should get the
-correct mixer for playback. Is there any rule?
-For example, my sound card has two capture volumes, one "Int Mic" and
-one "Ext Mic". I guess I should choose on the basis of what is the
-user-selected mic. In fact there are also two mutually exclusive
-switches "IntMic" and "ExtMic". But how should the application
-understand that?
+> What exactly does this mean?  Which one is supposed to mean "muted"?
 
-Here part of the output of amixer, my sound card is
-"Intel [HDA Intel], device 0: CONEXANT Analog [CONEXANT Analog]"
-----------------------------
-Simple mixer control 'Ext Mic',0
-  Capabilities: pvolume cvolume pswitch cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 20 Capture 0 - 23
-  Front Left: Playback 0 [0%] [-30.00dB] [off] Capture 0 [0%] [0.00dB] [off]
-  Front Right: Playback 0 [0%] [-30.00dB] [off] Capture 0 [0%] [0.00dB]
-[off]
-Simple mixer control 'ExtMic',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Mono
-  Mono: Capture [off]
-Simple mixer control 'Int Mic',0
-  Capabilities: pvolume cvolume pswitch cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 20 Capture 0 - 23
-  Front Left: Playback 0 [0%] [-30.00dB] [off] Capture 0 [0%] [0.00dB] [off]
-  Front Right: Playback 0 [0%] [-30.00dB] [off] Capture 0 [0%] [0.00dB]
-[off]
-Simple mixer control 'IntMic',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Mono
-  Mono: Capture [on]
-------------------------
+Capture is enabled in the picture above; often when the alsamixer UI is
+confusing amixer is a bit clearer about what's going on.
 
-As an aside, it looks like that the capture volume has no effect, as
-well all as the cswitches and pswitches of "Int Mic" and "Ext Mic".
+> And how come even though this switch is a SOC_DOUBLE, I cannot control
+> the left and right channel independently with the < and > keys, and the
+> "M" key doesn't toggle it either.
 
-Thanks,
-Ludovico
+This is a property of capture controls.  I'm not entirely sure why,
+CCing in Takashi who should be able to offer more knowledgable comment.
