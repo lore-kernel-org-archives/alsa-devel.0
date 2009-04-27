@@ -1,19 +1,18 @@
 From: Jon Smirl <jonsmirl@gmail.com>
-Subject: [PATCH v2 1/4] Set the MPC5200 i2s driver to BROKEN
-	status.
-Date: Mon, 27 Apr 2009 12:44:41 -0400
-Message-ID: <20090427164441.18211.77969.stgit@terra>
+Subject: [PATCH v2 4/4] Rename exports in mpc5200_dma.c
+Date: Mon, 27 Apr 2009 12:44:47 -0400
+Message-ID: <20090427164447.18211.42851.stgit@terra>
 References: <20090427164108.18211.44680.stgit@terra>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5EDA6245EA
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.155])
+	by alsa0.perex.cz (Postfix) with ESMTP id 38B0D103928
 	for <alsa-devel@alsa-project.org>;
-	Mon, 27 Apr 2009 18:44:49 +0200 (CEST)
-Received: by yx-out-1718.google.com with SMTP id 6so14188yxn.2
-	for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2009 09:44:48 -0700 (PDT)
+	Mon, 27 Apr 2009 18:44:51 +0200 (CEST)
+Received: by yx-out-1718.google.com with SMTP id 6so14180yxn.2
+	for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2009 09:44:51 -0700 (PDT)
 In-Reply-To: <20090427164108.18211.44680.stgit@terra>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,23 +26,160 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: grant.likely@secretlab.ca, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Set the MPC5200 i2s driver to BROKEN status.
+Rename the public DMA exports into the global name space so that the DMA code can be built as a module.
 
 Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
 ---
- sound/soc/fsl/Kconfig |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/soc/fsl/mpc5200_dma.c     |   18 ++++++++++++------
+ sound/soc/fsl/mpc5200_dma.h     |   10 +++++-----
+ sound/soc/fsl/mpc5200_psc_i2s.c |   14 +++++++-------
+ 3 files changed, 24 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 9fc9082..e7dd79a 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -21,7 +21,7 @@ config SND_SOC_MPC8610_HPCD
+diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
+index c82ef75..621bac8 100644
+--- a/sound/soc/fsl/mpc5200_dma.c
++++ b/sound/soc/fsl/mpc5200_dma.c
+@@ -113,7 +113,7 @@ static irqreturn_t psc_dma_bcom_irq(int irq, void *_psc_dma_stream)
+  * If this is the first stream open, then grab the IRQ and program most of
+  * the PSC registers.
+  */
+-int psc_dma_startup(struct snd_pcm_substream *substream,
++int mpc5200_audio_dma_startup(struct snd_pcm_substream *substream,
+ 			   struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+@@ -145,13 +145,16 @@ int psc_dma_startup(struct snd_pcm_substream *substream,
  
- config SND_SOC_MPC5200_I2S
- 	tristate "Freescale MPC5200 PSC in I2S mode driver"
--	depends on PPC_MPC52xx && PPC_BESTCOMM
-+	depends on PPC_MPC52xx && PPC_BESTCOMM && BROKEN
- 	select SND_SOC_OF_SIMPLE
- 	select PPC_BESTCOMM_GEN_BD
- 	help
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(mpc5200_audio_dma_startup);
+ 
+-int psc_dma_hw_free(struct snd_pcm_substream *substream,
++int mpc5200_audio_dma_hw_free(struct snd_pcm_substream *substream,
+ 			   struct snd_soc_dai *dai)
+ {
+ 	snd_pcm_set_runtime_buffer(substream, NULL);
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(mpc5200_audio_dma_hw_free);
++
+ 
+ /**
+  * psc_dma_trigger: start and stop the DMA transfer.
+@@ -159,7 +162,7 @@ int psc_dma_hw_free(struct snd_pcm_substream *substream,
+  * This function is called by ALSA to start, stop, pause, and resume the DMA
+  * transfer of data.
+  */
+-int psc_dma_trigger(struct snd_pcm_substream *substream, int cmd,
++int mpc5200_audio_dma_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			   struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+@@ -269,13 +272,15 @@ int psc_dma_trigger(struct snd_pcm_substream *substream, int cmd,
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(mpc5200_audio_dma_trigger);
++
+ 
+ /**
+  * psc_dma_shutdown: shutdown the data transfer on a stream
+  *
+  * Shutdown the PSC if there are no other substreams open.
+  */
+-void psc_dma_shutdown(struct snd_pcm_substream *substream,
++void mpc5200_audio_dma_shutdown(struct snd_pcm_substream *substream,
+ 			     struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+@@ -303,6 +308,7 @@ void psc_dma_shutdown(struct snd_pcm_substream *substream,
+ 		free_irq(psc_dma->playback.irq, &psc_dma->playback);
+ 	}
+ }
++EXPORT_SYMBOL_GPL(mpc5200_audio_dma_shutdown);
+ 
+ /* ---------------------------------------------------------------------
+  * The PSC DMA 'ASoC platform' driver
+@@ -448,10 +454,10 @@ static void psc_dma_pcm_free(struct snd_pcm *pcm)
+ 	}
+ }
+ 
+-struct snd_soc_platform psc_dma_pcm_soc_platform = {
++struct snd_soc_platform mpc5200_audio_dma_platform = {
+ 	.name		= "mpc5200-psc-audio",
+ 	.pcm_ops	= &psc_dma_pcm_ops,
+ 	.pcm_new	= &psc_dma_pcm_new,
+ 	.pcm_free	= &psc_dma_pcm_free,
+ };
+-
++EXPORT_SYMBOL_GPL(mpc5200_audio_dma_platform);
+diff --git a/sound/soc/fsl/mpc5200_dma.h b/sound/soc/fsl/mpc5200_dma.h
+index a33232c..c5b9ad7 100644
+--- a/sound/soc/fsl/mpc5200_dma.h
++++ b/sound/soc/fsl/mpc5200_dma.h
+@@ -64,18 +64,18 @@ struct psc_dma {
+ };
+ 
+ 
+-int psc_dma_startup(struct snd_pcm_substream *substream,
++int mpc5200_audio_dma_startup(struct snd_pcm_substream *substream,
+ 			   struct snd_soc_dai *dai);
+ 
+-int psc_dma_hw_free(struct snd_pcm_substream *substream,
++int mpc5200_audio_dma_hw_free(struct snd_pcm_substream *substream,
+ 			   struct snd_soc_dai *dai);
+ 
+-void psc_dma_shutdown(struct snd_pcm_substream *substream,
++void mpc5200_audio_dma_shutdown(struct snd_pcm_substream *substream,
+ 			     struct snd_soc_dai *dai);
+ 
+-int psc_dma_trigger(struct snd_pcm_substream *substream, int cmd,
++int mpc5200_audio_dma_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			   struct snd_soc_dai *dai);
+ 
+-extern struct snd_soc_platform psc_dma_pcm_soc_platform;
++extern struct snd_soc_platform mpc5200_audio_dma_platform;
+ 
+ #endif /* __SOUND_SOC_FSL_MPC5200_DMA_H__ */
+diff --git a/sound/soc/fsl/mpc5200_psc_i2s.c b/sound/soc/fsl/mpc5200_psc_i2s.c
+index 12a7917..403f72c 100644
+--- a/sound/soc/fsl/mpc5200_psc_i2s.c
++++ b/sound/soc/fsl/mpc5200_psc_i2s.c
+@@ -140,11 +140,11 @@ static int psc_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int format)
+  * psc_i2s_dai_template: template CPU Digital Audio Interface
+  */
+ static struct snd_soc_dai_ops psc_i2s_dai_ops = {
+-	.startup	= psc_dma_startup,
++	.startup	= mpc5200_audio_dma_startup,
+ 	.hw_params	= psc_i2s_hw_params,
+-	.hw_free	= psc_dma_hw_free,
+-	.shutdown	= psc_dma_shutdown,
+-	.trigger	= psc_dma_trigger,
++	.hw_free	= mpc5200_audio_dma_hw_free,
++	.shutdown	= mpc5200_audio_dma_shutdown,
++	.trigger	= mpc5200_audio_dma_trigger,
+ 	.set_sysclk	= psc_i2s_set_sysclk,
+ 	.set_fmt	= psc_i2s_set_fmt,
+ };
+@@ -350,10 +350,10 @@ static int __devinit psc_i2s_of_probe(struct of_device *op,
+ 	if (rc)
+ 		dev_info(psc_dma->dev, "error creating sysfs files\n");
+ 
+-	snd_soc_register_platform(&psc_dma_pcm_soc_platform);
++	snd_soc_register_platform(&mpc5200_audio_dma_platform);
+ 
+ 	/* Tell the ASoC OF helpers about it */
+-	of_snd_soc_register_platform(&psc_dma_pcm_soc_platform, op->node,
++	of_snd_soc_register_platform(&mpc5200_audio_dma_platform, op->node,
+ 				     &psc_dma->dai);
+ 
+ 	return 0;
+@@ -365,7 +365,7 @@ static int __devexit psc_i2s_of_remove(struct of_device *op)
+ 
+ 	dev_dbg(&op->dev, "psc_i2s_remove()\n");
+ 
+-	snd_soc_unregister_platform(&psc_dma_pcm_soc_platform);
++	snd_soc_unregister_platform(&mpc5200_audio_dma_platform);
+ 
+ 	bcom_gen_bd_rx_release(psc_dma->capture.bcom_task);
+ 	bcom_gen_bd_tx_release(psc_dma->playback.bcom_task);
