@@ -1,21 +1,21 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] SoC WM8940 Driver
-Date: Mon, 27 Apr 2009 20:58:44 +0100
-Message-ID: <20090427195844.GB14626@sirena.org.uk>
-References: <49F21310.4060009@cam.ac.uk> <20090425102100.GA4394@sirena.org.uk>
-	<49F345A8.1030901@cam.ac.uk> <20090425180346.GA4072@sirena.org.uk>
-	<49F599BB.9050805@cam.ac.uk> <20090427122550.GF1760@sirena.org.uk>
-	<49F5A69C.40406@cam.ac.uk> <49F5B7F8.1010103@cam.ac.uk>
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: Re: [PATCH v2 4/4] Rename exports in mpc5200_dma.c
+Date: Mon, 27 Apr 2009 16:05:10 -0400
+Message-ID: <9e4733910904271305h171f5e9dybdd560ae2c22c9bf@mail.gmail.com>
+References: <20090427164108.18211.44680.stgit@terra>
+	<20090427164447.18211.42851.stgit@terra>
+	<20090427193534.GA23567@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 92750103809
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2F8441037EE
 	for <alsa-devel@alsa-project.org>;
-	Mon, 27 Apr 2009 21:58:44 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <49F5B7F8.1010103@cam.ac.uk>
+	Mon, 27 Apr 2009 22:05:12 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 4so102771qwk.56
+	for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2009 13:05:10 -0700 (PDT)
+In-Reply-To: <20090427193534.GA23567@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,16 +25,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jonathan Cameron <jic23@cam.ac.uk>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: grant.likely@secretlab.ca, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 27, 2009 at 01:49:44PM +0000, Jonathan Cameron wrote:
-> From: Jonathan Cameron <jic23@cam.ac.uk>
-> 
-> aSoC: Initial support for the Wolfson Micro WM8940 codec
+On Mon, Apr 27, 2009 at 3:35 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Mon, Apr 27, 2009 at 12:44:47PM -0400, Jon Smirl wrote:
+>> Rename the public DMA exports into the global name space so that the DMA=
+ code can be built as a module.
+>
+>> +EXPORT_SYMBOL_GPL(mpc5200_audio_dma_startup);
+>> +EXPORT_SYMBOL_GPL(mpc5200_audio_dma_hw_free);
+>> +EXPORT_SYMBOL_GPL(mpc5200_audio_dma_trigger);
+>> +EXPORT_SYMBOL_GPL(mpc5200_audio_dma_shutdown);
+>
+> Why are you exporting these? =A0They should all be accessed via...
 
-ASoC.
+This is part of what is broken in the driver. I have later patches
+that fix it but those patches are more complex.
 
-I've applied this, thanks!  I've also applied a commit staticising the
-TLV values - these aren't exported from the driver.
+This series is meant to be a simple mechanical transform of the driver
+'as is' to make it easier to layer the successive patches on top. I
+currently have twelve more patches layer on top of these four. I want
+to get these code movement patches in so that we can focus on the
+patches that actually fix the problems.
+
+
+>
+>> -struct snd_soc_platform psc_dma_pcm_soc_platform =3D {
+>> +struct snd_soc_platform mpc5200_audio_dma_platform =3D {
+>> =A0 =A0 =A0 .name =A0 =A0 =A0 =A0 =A0 =3D "mpc5200-psc-audio",
+>> =A0 =A0 =A0 .pcm_ops =A0 =A0 =A0 =A0=3D &psc_dma_pcm_ops,
+>> =A0 =A0 =A0 .pcm_new =A0 =A0 =A0 =A0=3D &psc_dma_pcm_new,
+>> =A0 =A0 =A0 .pcm_free =A0 =A0 =A0 =3D &psc_dma_pcm_free,
+>> =A0};
+>> -
+>> +EXPORT_SYMBOL_GPL(mpc5200_audio_dma_platform);
+>
+> ...this unless there's a reason not to do so.
+>
+>> -int psc_dma_startup(struct snd_pcm_substream *substream,
+>> +int mpc5200_audio_dma_startup(struct snd_pcm_substream *substream,
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0struct snd_soc_dai *d=
+ai);
+>
+> These should go.
+>
+
+
+
+-- =
+
+Jon Smirl
+jonsmirl@gmail.com
