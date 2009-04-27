@@ -1,24 +1,17 @@
-From: Aleh <aleh.fl@gmail.com>
-Subject: Re: Benq S32 headphones detection
-Date: Mon, 27 Apr 2009 19:32:31 +0300
-Message-ID: <op.us1z8hsw39g8cz@flip>
-References: <op.ust0kjam39g8cz@flip> <s5h8wlr8wcz.wl%tiwai@suse.de>
-	<op.usuuqios39g8cz@flip> <s5hk556h0aq.wl%tiwai@suse.de>
-	<op.us1w4fpm39g8cz@flip> <s5hskju3yjp.wl%tiwai@suse.de>
-	<op.us1xprp539g8cz@flip> <s5hmya23y1l.wl%tiwai@suse.de>
-	<op.us1ybmhj39g8cz@flip> <s5hd4ay3wvd.wl%tiwai@suse.de>
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: [PATCH v2 0/4] Mark mpc5200 i2s driver BROKEN
+Date: Mon, 27 Apr 2009 12:44:39 -0400
+Message-ID: <20090427164108.18211.44680.stgit@terra>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f170.google.com (mail-fx0-f170.google.com
-	[209.85.220.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4EF09245DA
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.246])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7E453245E0
 	for <alsa-devel@alsa-project.org>;
-	Mon, 27 Apr 2009 18:32:34 +0200 (CEST)
-Received: by fxm18 with SMTP id 18so15947fxm.32
-	for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2009 09:32:34 -0700 (PDT)
-In-Reply-To: <s5hd4ay3wvd.wl%tiwai@suse.de>
+	Mon, 27 Apr 2009 18:44:44 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c3so12938ana.2
+	for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2009 09:44:42 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,117 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: grant.likely@secretlab.ca, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 27 Apr 2009 19:05:42 +0300, Takashi Iwai <tiwai@suse.de> wrote:
+Mark the mpc5200 i2s driver BROKEN and lay out a foundation for
+fixing it. Separate out the mpc5200 core DMA routines from
+mpc5200_psc_i2s.c into a standalone mpc5200_dma.c. No intention
+to change how anything works, this is just a code reorg needed for
+later patches to build on.
 
-> At Mon, 27 Apr 2009 18:51:12 +0300,
-> Aleh wrote:
->>
->> On Mon, 27 Apr 2009 18:40:22 +0300, Takashi Iwai <tiwai@suse.de> wrote:
->>
->> > At Mon, 27 Apr 2009 18:38:05 +0300,
->> > Aleh wrote:
->> >>
->> >> On Mon, 27 Apr 2009 18:29:30 +0300, Takashi Iwai <tiwai@suse.de>  
->> wrote:
->> >>
->> >> > At Mon, 27 Apr 2009 18:25:18 +0300,
->> >> > Aleh wrote:
->> >> >>
->> >> >> On Mon, 27 Apr 2009 13:13:17 +0300, Takashi Iwai <tiwai@suse.de>
->> >> wrote:
->> >> >>
->> >> >> > At Thu, 23 Apr 2009 22:50:32 +0300,
->> >> >> > Aleh wrote:
->> >> >> >>
->> >> >> >> On Thu, 23 Apr 2009 14:04:12 +0300, Takashi Iwai  
->> <tiwai@suse.de>
->> >> >> wrote:
->> >> >> >> > At Thu, 23 Apr 2009 11:58:58 +0300
->> >> >> >> > Aleh wrote:
->> >> >> >> >>
->> >> >> >> >> Hi,
->> >> >> >> >>
->> >> >> >> >> I had a problem with muting speakers when headphones are
->> >> >> plugged-in
->> >> >> >> on
->> >> >> >> >> my
->> >> >> >> >> Benq S32B. So I added proper board configuration to
->> >> >> >> >> sound/pci/hda/patch_realtek.c and now it works.
->> >> >> >> >>
->> >> >> >> >> I wonder if anyone has similar hardware (S-series Benq  
->> laptop)
->> >> to
->> >> >> >> test
->> >> >> >> >> the
->> >> >> >> >> patch (attached) if you find it useful.
->> >> >> >> >
->> >> >> >> > Thanks for the patch.
->> >> >> >> > The lack of headphone mute is likely because of codec SSID
->> >> value.
->> >> >> >> > The realtek codec is supposed to have some special SSID
->> >> indicating
->> >> >> >> > the assembly information, but many vendors don't follow it.
->> >> >> >> >
->> >> >> >> > Could you try the patch below and try model=auto?  It's  
->> found in
->> >> >> >> > sound-unstable tree, too...
->> >> >> >>
->> >> >> >>
->> >> >> >> Downloaded and installed
->> >> >> >>
->> >> >>
->> >>  
->> http://ftp.kernel.org/pub/linux/kernel/people/tiwai/alsa/alsa-driver/alsa-driver-unstable-snapshot.tar.bz2
->> >> >> >> in accordance with those instructions:
->> >> >> >>
->> >> http://alsa-project.org/main/index.php/Matrix:Module-hda-intel
->> >> >> >>
->> >> >> >> loaded it with option 'model=auto' as you suggested, launched
->> >> mplayer
->> >> >> >> and
->> >> >> >> plugged/unplugged headphones several times.
->> >> >> >> Unfortunately, those actions weren't recognized and  
->> laudspeakers
->> >> >> >> continued
->> >> >> >> playing without any interruption.
->> >> >> >
->> >> >> > OK, I found a problem.  The hook wasn't activated for ALC262.
->> >> >> > I fixed the patch now.  Could you retry the unstable snapshot
->> >> again?
->> >> >>
->> >> >> Gave a try to today's snapshot - the problem still exists as
->> >> headphones
->> >> >> haven't been detected.
->> >> >
->> >> > With alsa-driver-unstable snapshot tarball?
->> >> > What is the first line of alsa-driver*/alsa-kernel/HEAD file?
->> >> >
->> >> >
->> >> > Takashi
->> >>
->> >>
->> >> 31d2caf87f5dc5700897ff820c08e84ca35fcffb Merge commit 'stable/master'
->> >
->> > OK, this is the latest version.
->> >
->> > Could you run alsa-info.sh at HP plugged and unplugged states, and
->> > attach both files?
->>
->> Done
->
-> Thanks.  Found out a bug in the patch there.
-> Now I fixed it and updated the snapshot tarball again.
-> Could you give it a try later?  It must contain alsa-kernel/HEAD
->    3db06e963fc5d6199373d988d72f9eaeb745acc7 Merge branch  
-> 'topic/hda-realtek-amp'
->
->
-> thanks,
->
-> Takashi
+---
 
-It works fine, thank you!
+Jon Smirl (4):
+      Rename exports in mpc5200_dma.c
+      Rename the PSC functions to DMA
+      Basic split of mpc5200 DMA code out from mpc5200_psc_i2s
+      Set the MPC5200 i2s driver to BROKEN status.
+
+
+ sound/soc/fsl/Kconfig           |    6 
+ sound/soc/fsl/Makefile          |    2 
+ sound/soc/fsl/mpc5200_dma.c     |  463 ++++++++++++++++++++++++++++
+ sound/soc/fsl/mpc5200_dma.h     |   81 +++++
+ sound/soc/fsl/mpc5200_psc_i2s.c |  644 +++++----------------------------------
+ 5 files changed, 633 insertions(+), 563 deletions(-)
+ create mode 100644 sound/soc/fsl/mpc5200_dma.c
+ create mode 100644 sound/soc/fsl/mpc5200_dma.h
+
+-- 
+Jon Smirl
+jonsmirl@gmail.com
