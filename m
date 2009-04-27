@@ -1,16 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.30
-Date: Mon, 27 Apr 2009 21:10:47 +0100
-Message-ID: <20090427201047.GA8650@rakim.wolfsonmicro.main>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: [PATCH 1/1] indigo-express: add missing 64KHz flags
+Date: Mon, 27 Apr 2009 23:23:29 +0200
+Message-ID: <20090427232329.1be6fa19@Jay>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5B150103842
+Received: from smtp-out114.alice.it (smtp-out114.alice.it [85.37.17.114])
+	by alsa0.perex.cz (Postfix) with ESMTP id E8A1210391B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 27 Apr 2009 22:10:48 +0200 (CEST)
-Content-Disposition: inline
+	Mon, 27 Apr 2009 23:23:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,24 +19,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit a396e32ef0f3b98700abb9a6da3530c945e55908:
-  Mark Brown (1):
-        ASoC: s3c-i2s-v2 needs to declare a license for modular builds
 
-are available in the git repository at:
+Indigo-express cards also support 64KHz sampling rate: this patch adds
+missing SNDRV_PCM_RATE_64000 flags.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.30
 
-Jon Smirl (1):
-      ASoC: Set the MPC5200 i2s driver to BROKEN status.
+Signed-off-by: Giuliano Pochini <pochini@shiny.it>
 
-Mark Brown (1):
-      ASoC: Fix logic in WM8350 master clocking check
+--- alsa-kernel/pci/echoaudio/indigodjx.c__orig	2009-04-27 22:57:20.000000000 +0200
++++ alsa-kernel/pci/echoaudio/indigodjx.c	2009-04-27 22:58:04.000000000 +0200
+@@ -88,6 +88,7 @@ static struct snd_pcm_hardware pcm_hardw
+ 	.rates = 	SNDRV_PCM_RATE_32000 |
+ 			SNDRV_PCM_RATE_44100 |
+ 			SNDRV_PCM_RATE_48000 |
++			SNDRV_PCM_RATE_64000 |
+ 			SNDRV_PCM_RATE_88200 |
+ 			SNDRV_PCM_RATE_96000,
+ 	.rate_min = 32000,
+--- alsa-kernel/pci/echoaudio/indigoiox.c__orig	2009-04-27 22:56:46.000000000 +0200
++++ alsa-kernel/pci/echoaudio/indigoiox.c	2009-04-27 22:57:54.000000000 +0200
+@@ -89,6 +89,7 @@ static struct snd_pcm_hardware pcm_hardw
+ 	.rates = 	SNDRV_PCM_RATE_32000 |
+ 			SNDRV_PCM_RATE_44100 |
+ 			SNDRV_PCM_RATE_48000 |
++			SNDRV_PCM_RATE_64000 |
+ 			SNDRV_PCM_RATE_88200 |
+ 			SNDRV_PCM_RATE_96000,
+ 	.rate_min = 32000,
 
- sound/soc/codecs/wm8350.c |    2 +-
- sound/soc/fsl/Kconfig     |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+
+-- 
+Giuliano.
