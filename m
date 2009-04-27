@@ -1,21 +1,16 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH v2 4/4] Rename exports in mpc5200_dma.c
-Date: Mon, 27 Apr 2009 21:09:10 +0100
-Message-ID: <20090427200910.GC14626@sirena.org.uk>
-References: <20090427164108.18211.44680.stgit@terra>
-	<20090427164447.18211.42851.stgit@terra>
-	<20090427193534.GA23567@rakim.wolfsonmicro.main>
-	<9e4733910904271305h171f5e9dybdd560ae2c22c9bf@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.30
+Date: Mon, 27 Apr 2009 21:10:47 +0100
+Message-ID: <20090427201047.GA8650@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7331610380E
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5B150103842
 	for <alsa-devel@alsa-project.org>;
-	Mon, 27 Apr 2009 22:09:11 +0200 (CEST)
+	Mon, 27 Apr 2009 22:10:48 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <9e4733910904271305h171f5e9dybdd560ae2c22c9bf@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,18 +20,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: grant.likely@secretlab.ca, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 27, 2009 at 04:05:10PM -0400, Jon Smirl wrote:
-> On Mon, Apr 27, 2009 at 3:35 PM, Mark Brown
-> <broonie@opensource.wolfsonmicro.com> wrote:
+The following changes since commit a396e32ef0f3b98700abb9a6da3530c945e55908:
+  Mark Brown (1):
+        ASoC: s3c-i2s-v2 needs to declare a license for modular builds
 
-> > Why are you exporting these? ?They should all be accessed via...
+are available in the git repository at:
 
-> This is part of what is broken in the driver. I have later patches
-> that fix it but those patches are more complex.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.30
 
-Could you go into more detail on this, please?  Why aren't you just
-moving them directly to the vtable of the DMA driver?
+Jon Smirl (1):
+      ASoC: Set the MPC5200 i2s driver to BROKEN status.
+
+Mark Brown (1):
+      ASoC: Fix logic in WM8350 master clocking check
+
+ sound/soc/codecs/wm8350.c |    2 +-
+ sound/soc/fsl/Kconfig     |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
