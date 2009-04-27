@@ -1,23 +1,22 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH 2/2] ASoC: cs4270: add Master Playback
-	Switch
-Date: Mon, 27 Apr 2009 08:55:36 -0500
-Message-ID: <ed82fe3e0904270655o79db933fw29ad3b0b182d5068@mail.gmail.com>
-References: <20090424135216.GF10450@buzzloop.caiaq.de>
-	<1240583865-14407-1-git-send-email-daniel@caiaq.de>
-	<1240583865-14407-2-git-send-email-daniel@caiaq.de>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: Driver code with mpc5200 pointer problem.
+Date: Mon, 27 Apr 2009 14:57:37 +0100
+Message-ID: <20090427135737.GA20591@sirena.org.uk>
+References: <9e4733910904260825o68d5b9dndbf92cdbc4a4e48e@mail.gmail.com>
+	<alpine.LNX.2.00.0904261838010.25064@eeebox2.perex-int.cz>
+	<9e4733910904261114u20e8376ci26a13a5210a4aa0b@mail.gmail.com>
+	<20090427092514.GB1760@sirena.org.uk>
+	<9e4733910904270650g204d2660y7e3b9ea03446a752@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f103.google.com (mail-qy0-f103.google.com
-	[209.85.221.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9B659103837
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7150524570
 	for <alsa-devel@alsa-project.org>;
-	Mon, 27 Apr 2009 15:55:37 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so4502200qyk.16
-	for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2009 06:55:36 -0700 (PDT)
-In-Reply-To: <1240583865-14407-2-git-send-email-daniel@caiaq.de>
+	Mon, 27 Apr 2009 15:57:38 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <9e4733910904270650g204d2660y7e3b9ea03446a752@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,44 +26,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 24, 2009 at 9:37 AM, Daniel Mack <daniel@caiaq.de> wrote:
-> This adds a new control named 'Master Playback Switch' for cs4270
-> codecs. It is implemented using the new SOC_DOUBLE_EXT macro to catch
-> the put function and store the information about manually set mute
-> controls from userspace. When a manual mute is set, we don't want the
-> soc core to un-mute the outputs.
->
-> Renamed cs4270_mute() to cs4270_dai_mute() to avoid confusion.
->
-> Signed-off-by: Daniel Mack <daniel@caiaq.de>
-> Cc: Mark Brown <broonie@sirena.org.uk>
-> Cc: Timur Tabi <timur@freescale.com>
+On Mon, Apr 27, 2009 at 09:50:01AM -0400, Jon Smirl wrote:
+> On Mon, Apr 27, 2009 at 5:25 AM, Mark Brown <broonie@sirena.org.uk> wrote:
 
-Acked-by: Timur Tabi <timur@freescale.com>
+> > Does that patch need merging for 2.6.30 (you said I2S was broken)?
 
-However, ...
+> Grant and I are the only two active users of I2S and we're passing
+> patches to each other.  I don't have I2S completely fixed yet.
 
-> @@ -486,7 +518,9 @@ static const struct snd_kcontrol_new cs4270_snd_contr=
-ols[] =3D {
-> =A0 =A0 =A0 =A0SOC_SINGLE("Zero Cross Switch", CS4270_TRANS, 5, 1, 0),
-> =A0 =A0 =A0 =A0SOC_SINGLE("Popguard Switch", CS4270_MODE, 0, 1, 1),
-> =A0 =A0 =A0 =A0SOC_SINGLE("Auto-Mute Switch", CS4270_MUTE, 5, 1, 0),
-> - =A0 =A0 =A0 SOC_DOUBLE("Master Capture Switch", CS4270_MUTE, 3, 4, 1, 1)
-> + =A0 =A0 =A0 SOC_DOUBLE("Master Capture Switch", CS4270_MUTE, 3, 4, 1, 1=
-),
-> + =A0 =A0 =A0 SOC_DOUBLE_EXT("Master Playback Switch", CS4270_MUTE, 0, 1,=
- 1, 1,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 snd_soc_get_volsw, cs4270_soc_put_mute)
-> =A0};
+> I'll post a series today that reorgs things to make my real patches
 
-Mark, could you add a comma at the end of "cs4270_soc_put_mute)" so
-that any future patches won't need to delete any lines?
+If you're reorganising the code that's not really suitable for 2.6.30.
 
--- =
+> My real patches fix up i2s and implement ac97.
 
-Timur Tabi
-Linux kernel developer at Freescale
+It sounds like we need fixed I2S for 2.6.30 and then a 2.6.31 series
+which does the reorganising and addition of AC97 support.
