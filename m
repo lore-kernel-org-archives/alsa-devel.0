@@ -1,24 +1,21 @@
-From: Claus Ilginnis <Claus@Ilginnis.de>
-Subject: Detect when sound card is in use
-Date: Tue, 28 Apr 2009 21:16:26 +0200
-Message-ID: <1240946186.6657.8.camel@trex>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 16/17] ASoC: Basic split of mpc5200
+	DMA	code out from mpc5200_psc_i2s
+Date: Tue, 28 Apr 2009 20:25:45 +0100
+Message-ID: <20090428192543.GA4241@sirena.org.uk>
+References: <20090428152256.GB2244@rakim.wolfsonmicro.main>
+	<1240932222-3718-16-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<s5hljpk233w.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo-p00-ob.rzone.de (mo-p00-ob.rzone.de [81.169.146.160])
-	by alsa0.perex.cz (Postfix) with ESMTP id 90FED24559
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6B03424564
 	for <alsa-devel@alsa-project.org>;
-	Tue, 28 Apr 2009 21:16:27 +0200 (CEST)
-Received: from andrea.warrior
-	(stgt-5f70026d.pool.einsundeins.de [95.112.2.109])
-	by post.strato.de (mrclete mo19) (RZmta 18.31)
-	with AES128-SHA encrypted ESMTP id C064dal3SHhoCu
-	for <alsa-devel@alsa-project.org>;
-	Tue, 28 Apr 2009 21:16:26 +0200 (MEST)
-Received: from [192.168.1.27] by andrea.warrior with esmtp (Exim 4.69)
-	(envelope-from <Claus@Ilginnis.de>) id 1Lysn4-0001PK-CT
-	for alsa-devel@alsa-project.org; Tue, 28 Apr 2009 21:16:26 +0200
+	Tue, 28 Apr 2009 21:26:00 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hljpk233w.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,22 +25,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-CkhpIGV2ZXJ5b25lLAoKSSBoYXZlIGEgcHJvYmxlbSBhbmQgSSBkb250J3Qga25vdyB3aGVyZSB0
-byBhc2sgbXkgcXVlc3Rpb25zIGFueW1vcmUsIHNvCkkgaG9wZSB0aGlzIG1haWxpbmcgbGlzdCBj
-YW4gaGVscCBtZSBtYWtlIHByb2dyZXNzIHdpdGggbXkgcHJvYmxlbS4uLi4KCkkgaGF2ZSBhIHNw
-ZWFrZXIgc2V0IGNvbm5lY3RlZCB0byBhbiBVU0ItUG93ZXItUGx1ZyAoYnkgd2hpY2ggSSBjYW4g
-dHVybgp0aGUgc3BlYWtlcnMgb24gYW5kIG9mZiApCgpOb3cgSSB3YW50IHRvIGRldGVjdCwgd2hl
-biB0aGUgc291bmRjYXJkIGlzIGluIHVzZSBhbmQgd2hlbiBub3QuCih0byB0dXJuIHRoZSBzcGVh
-a2VycyBvbiB3aGVuIG5lZWRlZC4uLikKKEkgYW0gYSBDKysgcHJvZ3JhbW1lciBzbyBJIGNhbiBt
-ZXNzIHNvbWUgdGhpbmdzIHVwKQoKU28gbXkgcXVlc3Rpb24gaXM6CldoaWNoIHdheSBpcyBiZXN0
-IHRvIGRldGVjdCB3aGVhdGhlciBteSBzb3VuZCBjYXJkIGlzIGluIHVzZSBvciBub3QgPwpJcyB0
-aGVyZSBhIGdlbmVyYWwgb3ZlcnZpZXcvZG9jdW1lbnRhdGlvbiBvZiB0aGUgc291bmQga2VybmVs
-IG1vZHVsZXMKd2hpY2ggZGVzY3JpYmVzIHRoZSBnZW5lcmFsIHJlbGF0aW9uc2hpcCBiZXR3ZWVu
-IHRoZW0gPwpXaGF0IHdvdWxkIHlvdSBkbyA/CgpQTEVBU0UgaGVscCAhCgoKLSAgCgpNaXQgZnJl
-dW5kbGljaGVuIEdyw7zDn2VuIC8gQmVzdCByZWdhcmRzCkNsYXVzIElsZ2lubmlzCgoKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Tue, Apr 28, 2009 at 05:46:11PM +0200, Takashi Iwai wrote:
+
+> And, the jiffies check shall be anyway fixed in the upstream PCM core
+> side, thus there is no big merit to hurry to merge the unfinished
+> changes now.
+
+The refactoring is a largely orthogonal issue to the jiffies check - the
+refactoring is needed to split the DMA code out so that it can be shared
+with the AC97 driver John is writing.
+
+> So, could you back off mpc5200 changes and wait for a while until the
+> issue regarding PCM jiffies-check is resolved?
+
+Done:
+
+The following changes since commit 8a1f936acdfd53cb0a981f3f80483863dcd84fa9:
+  Peter Ujfalusi (1):
+        ASoC: TWL4030: Add 4 channel TDM support
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.31
+
+Daniel Mack (3):
+      ASoC: add SOC_DOUBLE_EXT macro
+      ASoC: cs4270: fix Master Capture Switch polarity
+      ASoC: cs4270: add Master Playback Switch
+
+Jon Smirl (1):
+      ASoC: Set the MPC5200 i2s driver to BROKEN status.
+
+Jonathan Cameron (1):
+      ASoC WM8940 Driver
+
+Joonyoung Shim (1):
+      ASoC: TWL4030: Fix gain control for earpiece amplifier
+
+Mark Brown (10):
+      ASoC: Fix S3C64xx IIS device registration and support both ports
+      ASoC: S3C2412: Failing to get the I2S clock is an error
+      ASoC: Enforce symmetric rates for S3C64xx I2S interface
+      ASoC: Include WM8350 register definitions in CODEC header
+      ASoC: s3c-i2s-v2 diagnostic improvements
+      ASoC: Use our registration function for S3C64xx
+      ASoC: Fix logic in WM8350 master clocking check
+      Merge branch 'for-2.6.30' into for-2.6.31
+      ASoC: Staticise TLV values in WM8940
+      Merge branch 'for-2.6.30' into for-2.6.31
+
+Peter Ujfalusi (1):
+      ASoC: Beagle: Add support for 4 channel
+
+ include/sound/soc.h             |    8 +
+ sound/soc/codecs/Kconfig        |    4 +
+ sound/soc/codecs/Makefile       |    2 +
+ sound/soc/codecs/cs4270.c       |   44 ++-
+ sound/soc/codecs/twl4030.c      |    8 +-
+ sound/soc/codecs/wm8350.c       |    2 +-
+ sound/soc/codecs/wm8350.h       |    1 +
+ sound/soc/codecs/wm8940.c       |  955 +++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/wm8940.h       |  104 +++++
+ sound/soc/fsl/Kconfig           |    2 +-
+ sound/soc/omap/omap3beagle.c    |   26 +-
+ sound/soc/s3c24xx/s3c2412-i2s.c |    2 +-
+ sound/soc/s3c24xx/s3c64xx-i2s.c |  148 ++++--
+ sound/soc/s3c24xx/s3c64xx-i2s.h |    2 +-
+ 14 files changed, 1241 insertions(+), 67 deletions(-)
+ create mode 100644 sound/soc/codecs/wm8940.c
+ create mode 100644 sound/soc/codecs/wm8940.h
