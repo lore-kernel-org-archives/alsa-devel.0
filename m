@@ -1,33 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Driver code with mpc5200 pointer problem.
-Date: Tue, 28 Apr 2009 13:30:09 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.0904281256120.25064@eeebox2.perex-int.cz>
-References: <9e4733910904270650g204d2660y7e3b9ea03446a752@mail.gmail.com>
-	<20090427135737.GA20591@sirena.org.uk>
-	<9e4733910904270702w317c8c62vbee38230979ad121@mail.gmail.com>
-	<20090427140554.GB20591@sirena.org.uk>
-	<9e4733910904270716v289e6d5exaf6e17331786ea11@mail.gmail.com>
-	<20090427142437.GF20591@sirena.org.uk>
-	<9e4733910904270742l751e660bg66844b98fe261f23@mail.gmail.com>
-	<s5h4owa5f1y.wl%tiwai@suse.de>
-	<9e4733910904270804k6ed079d4h16b433b6f8a06fc7@mail.gmail.com>
-	<alpine.LNX.2.00.0904271707000.25064@eeebox2.perex-int.cz>
-	<20090427151512.GI20591@sirena.org.uk>
-	<alpine.LNX.2.00.0904281022210.25064@eeebox2.perex-int.cz>
-	<s5hiqkp16w6.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0904281131440.25064@eeebox2.perex-int.cz>
-	<s5h7i1514bn.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0904281206260.25064@eeebox2.perex-int.cz>
-	<s5h3abt132e.wl%tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH] ASoC: TWL4030: Fix gain control for
+	earpiece amplifier
+Date: Tue, 28 Apr 2009 14:56:48 +0300
+Message-ID: <200904281456.49255.peter.ujfalusi@nokia.com>
+References: <49F6C9CD.1020808@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 445CF1037F1
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 957C724429
 	for <alsa-devel@alsa-project.org>;
-	Tue, 28 Apr 2009 13:30:10 +0200 (CEST)
-In-Reply-To: <s5h3abt132e.wl%tiwai@suse.de>
+	Tue, 28 Apr 2009 13:57:41 +0200 (CEST)
+In-Reply-To: <49F6C9CD.1020808@samsung.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,76 +23,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@sirena.org.uk>
+To: ext Joonyoung Shim <jy0922.shim@samsung.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>, "bhmin@samsung.com" <bhmin@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 28 Apr 2009, Takashi Iwai wrote:
+On Tuesday 28 April 2009 12:18:05 ext Joonyoung Shim wrote:
+> The gain control for earpiece amplifier uses 0dB ~ 12dB according to the
+> TRM, but the present code is implemented to -6dB ~ 6dB.
 
-> At Tue, 28 Apr 2009 12:15:25 +0200 (CEST),
-> Jaroslav Kysela wrote:
->>
->> On Tue, 28 Apr 2009, Takashi Iwai wrote:
->>
->>> Well, I think it'd be better, at this moment for 2.6.30, to allow
->>> problematic drivers to skip the jiffies check.  Adding the fundamental
->>> change at this late stage is bad, especially if the change wasn't
->>> tested much by many others and has an influence on user-side API.
->>>
->>> So, as I proposed, we can simply add the pcm info check, and add
->>> BATCH flag to needed drivers.  Of course, it still requires some
->>> more testing, but basically it'll take back to the old behavior and
->>> should be safer.
->>>
->>> Meanwhile, applying the delay account patch now for 2.6.31 should be
->>> good (ealier is better).  It doesn't conflict with the info flag
->>> check, so we can work parallel.
->>
->> Could we just add the runtime->delay variable without touching other code
->> (pcm status), to correct the jiffies based check now?
->
-> That's possible, of course.
->
->> It seems like a good
->> step forward to me and the lowlevel drivers will be more prepared for next
->> PCM midlevel code changes.
->
-> Well, but I guess providing the proper FIFO size isn't trivial to each
-> driver.  There are many devices, as Mark suggested, which may be
-> broken right now, and we can't determine all h/w specs and test them.
->
-> OTOH, adding INFO_BATCH is fairly easy, because it can be found from
-> the pointer callback implementation of each driver.  On these devices,
-> the jiffies check doesn't help much anyway because it cannot update
-> the hwptr any other than the period size.  So, skipping jiffies check
-> is logically correct as a regression fix.
+You are right on this...
 
-I don't see much difference between adding INFO_BATCH and adding 
-runtime->delay = (runtime->period_size)-1 to avoid jiffies check for one 
-period to these drivers (with some notice to author of the driver to 
-correct this value).
-
-INFO_BATCH is currently in:
-
-/soc/fsl/mpc5200_psc_i2s.c
-/soc/au1x/dbdma2.c
-/soc/sh/dma-sh7760.c
-/usb/usbaudio.c (which works with the current jiffies check at least for
- 		 44100+ rates)
-
-Another (much cleaner) possibility is to make jiffies check conditional to 
-xrun_check() for 2.6.30 and do not bother with the INFO_BATCH flag.
-
-Jiffies check helped me to debug HDA/intel8x0 pointer problems but cannot 
-be triggered until driver is really buggy - the HDA/intel8x0 driver should 
-be fixed now (I know about one intel8x0 pointer problem to this time which 
-triggers this check, but there is still something wrong with returned 
-hardware pointer because audio clicks anyway - no regression from previous 
-state).
-
- 						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
