@@ -1,28 +1,23 @@
-From: Karthik Ramgopal <applefreakpeeps@gmail.com>
-Subject: Re: No sound on Acer Aspire 6935G
-Date: Tue, 28 Apr 2009 23:46:57 +0800
-Message-ID: <4b8c423b0904280846r3c29c402ic54c4d1004ffe8f4@mail.gmail.com>
-References: <4b8c423b0904250904i226fd458we275c263475a3b8c@mail.gmail.com>
-	<s5hpreyh1bh.wl%tiwai@suse.de>
-	<4b8c423b0904271901i2f32a3e2r40a8b3f481e46a1d@mail.gmail.com>
-	<s5h63gp2usp.wl%tiwai@suse.de>
-	<4b8c423b0904272308o5baaf3e0v703016169372a4c9@mail.gmail.com>
-	<s5hws951esg.wl%tiwai@suse.de>
-	<4b8c423b0904280744r1f0f08adn63d581fe2120c78d@mail.gmail.com>
-	<s5hws9425r2.wl%tiwai@suse.de>
-	<4b8c423b0904280810ie07e7d3h28f16df90708e5da@mail.gmail.com>
-	<s5hocug2491.wl%tiwai@suse.de>
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: Re: [PATCH 16/17] ASoC: Basic split of mpc5200 DMA
+	code out from mpc5200_psc_i2s
+Date: Tue, 28 Apr 2009 11:59:01 -0400
+Message-ID: <9e4733910904280859t6409e9b7w4eccee65959598e5@mail.gmail.com>
+References: <20090428152256.GB2244@rakim.wolfsonmicro.main>
+	<1240932222-3718-16-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<s5hljpk233w.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9D62010386F
+Received: from mail-qy0-f103.google.com (mail-qy0-f103.google.com
+	[209.85.221.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id D972D244D1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 28 Apr 2009 17:46:58 +0200 (CEST)
-Received: by yx-out-1718.google.com with SMTP id 6so397845yxn.2
-	for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2009 08:46:57 -0700 (PDT)
-In-Reply-To: <s5hocug2491.wl%tiwai@suse.de>
+	Tue, 28 Apr 2009 17:59:02 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so1230045qyk.16
+	for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2009 08:59:01 -0700 (PDT)
+In-Reply-To: <s5hljpk233w.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,42 +28,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-I am using the ubuntu stock kernel.. Should i compile a custom kernel with
-this option?
-
-Regards,
-Karthik
-
-On Tue, Apr 28, 2009 at 11:21 PM, Takashi Iwai <tiwai@suse.de> wrote:
-
-> At Tue, 28 Apr 2009 23:10:03 +0800,
-> Karthik Ramgopal wrote:
-> >
-> > The only line about the audio from dmesg is:
-> >
-> > [   39.421278] hda-intel: IRQ timing workaround is activated for card #0.
-> > Suggest a bigger bdl_pos_adj.
+On Tue, Apr 28, 2009 at 11:46 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Tue, 28 Apr 2009 16:23:41 +0100,
+> Mark Brown wrote:
+>>
+>> From: Jon Smirl <jonsmirl@gmail.com>
+>>
+>> Basic split of mpc5200 DMA code out from i2s into a standalone file.
+>>
+>> [Fixed trailing whitespace -- broonie.]
+>>
+>> Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
+>> Acked-by: Grant Likely <grant.likely@secretlab.ca>
+>> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 >
-> Did you set CONFIG_SND_DEBUG=y kernel config?
+> This patch conflicts with the last patch I merged to add
+> SNDRV_PCM_INFO_BATCH to some drivers including mpc5200.
+> (It's in fix/pcm-info-batch branch and not merged to */asoc branch
+> =A0yet. =A0Feel free to pull to your tree by yourself.)
+> And, the jiffies check shall be anyway fixed in the upstream PCM core
+> side, thus there is no big merit to hurry to merge the unfinished
+> changes now.
 >
+> So, could you back off mpc5200 changes and wait for a while until the
+> issue regarding PCM jiffies-check is resolved?
+
+This is why I was pushing so hard to get the patches that split the
+files in. Takashi is going to change the base mpc5200_i2c file and I
+am going to have to manually fix up up my 14 patches layered on top.
+Git handles file renames fine, but it doesn't handle the case of
+splitting a file very well. Once the patches that split the file are
+in the tree Git handles things ok.
+
+>
+> Note that the info flag should contain SNDRV_PCM_INFO_BATCH unless the
+> driver provides the precise position reporting in the pointer
+> callback. =A0The flag can be removed once after you implement that
+> feature, of course.
+>
+>
+> thanks,
 >
 > Takashi
 >
-> > On Tue, Apr 28, 2009 at 10:49 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> >     At Tue, 28 Apr 2009 22:44:25 +0800,
-> >     Karthik Ramgopal wrote:
-> >     >
-> >     > cat /sys/modules/snd_hda_intel/parameters/model gives
-> >     >
-> >     > acer-aspire-4930g,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
-> >
-> >     And how is the kernel message?
-> >
-> >     Takashi
-> >
-> >
->
+
+
+
+-- =
+
+Jon Smirl
+jonsmirl@gmail.com
