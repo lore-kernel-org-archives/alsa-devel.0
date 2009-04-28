@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 01/17] ASoC: Beagle: Add support for 4 channel
-Date: Tue, 28 Apr 2009 16:23:26 +0100
-Message-ID: <1240932222-3718-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 02/17] ASoC: add SOC_DOUBLE_EXT macro
+Date: Tue, 28 Apr 2009 16:23:27 +0100
+Message-ID: <1240932222-3718-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20090428152256.GB2244@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 16303103850
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 53B0E10387B
 	for <alsa-devel@alsa-project.org>;
 	Tue, 28 Apr 2009 17:23:45 +0200 (CEST)
 In-Reply-To: <20090428152256.GB2244@rakim.wolfsonmicro.main>
@@ -22,68 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+From: Daniel Mack <daniel@caiaq.de>
 
-This patch adds support for the four channel TDM mode
-on Beagle board.
+Add a macro for double controls with special callback functions.
 
-Depending on the channel count, the interface needs to be
-configured differently (I2S for stereo DSP_A for four channels)
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/omap/omap3beagle.c |   26 ++++++++++++++++++--------
- 1 files changed, 18 insertions(+), 8 deletions(-)
+ include/sound/soc.h |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/omap/omap3beagle.c b/sound/soc/omap/omap3beagle.c
-index 6aa428e..b0cff9f 100644
---- a/sound/soc/omap/omap3beagle.c
-+++ b/sound/soc/omap/omap3beagle.c
-@@ -41,23 +41,33 @@ static int omap3beagle_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
- 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	unsigned int fmt;
- 	int ret;
- 
-+	switch (params_channels(params)) {
-+	case 2: /* Stereo I2S mode */
-+		fmt =	SND_SOC_DAIFMT_I2S |
-+			SND_SOC_DAIFMT_NB_NF |
-+			SND_SOC_DAIFMT_CBM_CFM;
-+		break;
-+	case 4: /* Four channel TDM mode */
-+		fmt =	SND_SOC_DAIFMT_DSP_A |
-+			SND_SOC_DAIFMT_IB_NF |
-+			SND_SOC_DAIFMT_CBM_CFM;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
- 	/* Set codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai,
--				  SND_SOC_DAIFMT_I2S |
--				  SND_SOC_DAIFMT_NB_NF |
--				  SND_SOC_DAIFMT_CBM_CFM);
-+	ret = snd_soc_dai_set_fmt(codec_dai, fmt);
- 	if (ret < 0) {
- 		printk(KERN_ERR "can't set codec DAI configuration\n");
- 		return ret;
- 	}
- 
- 	/* Set cpu DAI configuration */
--	ret = snd_soc_dai_set_fmt(cpu_dai,
--				  SND_SOC_DAIFMT_I2S |
--				  SND_SOC_DAIFMT_NB_NF |
--				  SND_SOC_DAIFMT_CBM_CFM);
-+	ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
- 	if (ret < 0) {
- 		printk(KERN_ERR "can't set cpu DAI configuration\n");
- 		return ret;
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index b1f2f88..6ab80bf 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -118,6 +118,14 @@
+ 	.info = snd_soc_info_volsw, \
+ 	.get = xhandler_get, .put = xhandler_put, \
+ 	.private_value = SOC_SINGLE_VALUE(xreg, xshift, xmax, xinvert) }
++#define SOC_DOUBLE_EXT(xname, xreg, shift_left, shift_right, xmax, xinvert,\
++	 xhandler_get, xhandler_put) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
++	.info = snd_soc_info_volsw, \
++	.get = xhandler_get, .put = xhandler_put, \
++	.private_value = (unsigned long)&(struct soc_mixer_control) \
++		{.reg = xreg, .shift = shift_left, .rshift = shift_right, \
++		 .max = xmax, .invert = xinvert} }
+ #define SOC_SINGLE_EXT_TLV(xname, xreg, xshift, xmax, xinvert,\
+ 	 xhandler_get, xhandler_put, tlv_array) \
+ {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
 -- 
 1.6.2.4
