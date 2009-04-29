@@ -1,29 +1,24 @@
-From: Andres Salomon <dilinger@queued.net>
-Subject: Re: realtek ALC272 support
-Date: Wed, 29 Apr 2009 13:01:42 -0400
-Message-ID: <20090429130142.54ec0802@dev.queued.net>
-References: <20090424152415.10fcebff@dev.queued.net>
-	<s5hljpp3z2w.wl%tiwai@suse.de>
-	<20090425101753.1983e6ae@dev.queued.net>
-	<s5hocujwuhb.wl%tiwai@suse.de>
-	<20090427100151.01a46965@dev.queued.net>
-	<s5hprey3yc5.wl%tiwai@suse.de>
-	<20090427120230.74d70f88@dev.queued.net>
-	<s5hbpqi3wqy.wl%tiwai@suse.de>
-	<20090428154108.6ed3136d@dev.queued.net>
-	<20090428182155.3f6eae50@dev.queued.net>
-	<s5heivcq893.wl%tiwai@suse.de>
-	<20090429090241.1c29817f@dev.queued.net>
-	<s5h8wljbo8v.wl%tiwai@suse.de>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [RFC PATCH 3/5] pxa: clean up the legacy SSP API
+Date: Wed, 29 Apr 2009 19:51:51 +0100
+Message-ID: <20090429185151.GC21459@n2100.arm.linux.org.uk>
+References: <f17812d70904222206n73b3f7d1se18a2615c7aad2bc@mail.gmail.com>
+	<20090428222035.GG29277@n2100.arm.linux.org.uk>
+	<1240959968.30410.1.camel@brutus>
+	<20090429072706.GA31566@n2100.arm.linux.org.uk>
+	<20090429082152.GA2628@sirena.org.uk>
+	<20090429084109.GB10541@n2100.arm.linux.org.uk>
+	<f17812d70904290214g110f2a5ax5da4af478688f3d1@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lunge.queued.net (LUNGE.MIT.EDU [18.54.1.69])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6A00124521
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 1AE10245BB
 	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Apr 2009 19:01:48 +0200 (CEST)
-In-Reply-To: <s5h8wljbo8v.wl%tiwai@suse.de>
+	Wed, 29 Apr 2009 20:52:33 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <f17812d70904290214g110f2a5ax5da4af478688f3d1@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,127 +28,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>, linux-kernel@vger.kernel.org
+To: Eric Miao <eric.y.miao@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>, Philipp Zabel <philipp.zabel@gmail.com>, Paul Shen <bshen9@marvell.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Daniel Ribeiro <drwyrm@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 29 Apr 2009 15:09:20 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+On Wed, Apr 29, 2009 at 05:14:13PM +0800, Eric Miao wrote:
+> On Wed, Apr 29, 2009 at 4:41 PM, Russell King - ARM Linux
+> <linux@arm.linux.org.uk> wrote:
+> > On Wed, Apr 29, 2009 at 09:21:53AM +0100, Mark Brown wrote:
+> >> On Wed, Apr 29, 2009 at 08:27:06AM +0100, Russell King - ARM Linux wro=
+te:
+> >> > On Tue, Apr 28, 2009 at 08:06:08PM -0300, Daniel Ribeiro wrote:
+> >>
+> >> > > The SPI subsystem?
+> >>
+> >> > Can the SPI system cope with the other chip being the master of the
+> >> > interface. =A0In other words, can SPI sit around primed for a transf=
+er,
+> >> > and notify the user of SPI that new data has arrived?
+> >>
+> >> > If not, the SPI subsystem is totally unsuitable for this.
+> >>
+> >> It's slave only at the minute - there's holes in the API someone could
+> >> fill in but that's not happened yet.
+> >
+> > Well, I guess someone else will have to do that; I don't spend much time
+> > on the LX stuff, and so if it requires any time consuming work, it won't
+> > be worth trying to get it into mainline.
+> >
+> =
 
-> At Wed, 29 Apr 2009 09:02:41 -0400,
-> Andres Salomon wrote:
-> > 
-> > On Wed, 29 Apr 2009 08:33:28 +0200
-> > Takashi Iwai <tiwai@suse.de> wrote:
-> > 
-> > > At Tue, 28 Apr 2009 18:21:55 -0400,
-> > > Andres Salomon wrote:
-> > > > 
-> > > > On Tue, 28 Apr 2009 15:41:08 -0400
-> > > > Andres Salomon <dilinger@queued.net> wrote:
-> > > > 
-> > > > > On Mon, 27 Apr 2009 18:08:21 +0200
-> > > > > Takashi Iwai <tiwai@suse.de> wrote:
-> > > > > 
-> > > > [...]
-> > > > > > > > > > > > At Fri, 24 Apr 2009 15:24:15 -0400,
-> > > > > > > > > > > > Andres Salomon wrote:
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > Hi Kailang,
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > I noticed that your name was on the ALC272
-> > > > > > > > > > > > > support patch for ALSA intel-hda.  This patch
-> > > > > > > > > > > > > basically sets ALC272 to use (mostly) the
-> > > > > > > > > > > > > same code as ALC662.  I have two machines
-> > > > > > > > > > > > > that have ALC272, and both of them need verb
-> > > > > > > > > > > > > tables in order to function.  I'm wondering
-> > > > > > > > > > > > > if ALC662 should really be used..
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > Here's one -
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > http://kernel.ubuntu.com/git?p=ubuntu/ubuntu-hardy-lum.git;a=commitdiff;h=7662834bb9a78d244c6d7ee43358c14c94d249c9
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > This isn't the final version of the patch
-> > > > > > > > > > > > > (there are further commits I made in order to
-> > > > > > > > > > > > > support headphone mic stuff), but it gives
-> > > > > > > > > > > > > you an idea of the codec values. The other is:
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > http://kernel.ubuntu.com/git?p=ubuntu/ubuntu-hardy-lum.git;a=commitdiff;h=72ff85641a30dc7ac502e2ea01bf14a04efb4cf1
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > All of these leave me wonder if there's a
-> > > > > > > > > > > > > specific patch_alc272 function that could be
-> > > > > > > > > > > > > written to rid ourselves of these specific
-> > > > > > > > > > > > > quirks.  Are there machines with ALC272 that
-> > > > > > > > > > > > > are functional with the current ALSA code?
-> > > > > > > > > > > > 
-> > > > [...]
-> > > > > > 
-> > > > > > Could you try sound-unstable tree a bit later again?
-> > > > > > I found a bug in my patch, and fixed and updated GIT tree
-> > > > > > now. At least, the headphone plugging should work now.
-> > > > > > 
-> > > > > > The mic auto-detection still doesn't work with model=auto,
-> > > > > > though. So, I'm going to take your patch anyway later.  But
-> > > > > > I just wanted to be sure that the current tree could work
-> > > > > > somehow better...
-> > > > > > 
-> > > > > 
-> > > > > Hi,
-> > > > > 
-> > > > > I just updated and tried the current tree; still no
-> > > > > sound/headphone output.  :(
-> > > > 
-> > > > 
-> > > > Ok, I believe I've made some progress on this.  The problem
-> > > > appears to be related to the autoconfig handling of the line
-> > > > out nids.  The current code ends up with something like the
-> > > > following:
-> > > > 
-> > > > ALSA sound/pci/hda/hda_codec.c:3833: autoconfig: line_outs=1
-> > > > (0x17/0x0/0x0/0x0/0x0)
-> > > > ALSA sound/pci/hda/hda_codec.c:3837:    speaker_outs=0
-> > > > (0x0/0x0/0x0/0x0/0x0)
-> > > > ALSA sound/pci/hda/hda_codec.c:3841:    hp_outs=1
-> > > > (0x21/0x0/0x0/0x0/0x0) ALSA sound/pci/hda/hda_codec.c:3842:
-> > > > mono: mono_out=0x0 ALSA sound/pci/hda/hda_codec.c:3853: inputs:
-> > > > mic=0x18, fmic=0x19, line=0x0, fline=0x0, cd=0x0, aux=0x0
-> > > > 
-> > > > However, NID 0x17 is actually a speaker_out.  The code that
-> > > > checks for line_outs in snd_hda_parse_pin_def_config() unsets
-> > > > the speaker_out and uses that NID for a line_out.  For whatever
-> > > > reason, this breaks things (no sound output, no headphone out).
-> > > 
-> > > That's intentional, and the driver checks that case, too.
-> > > Please check the latest sound git tree and see the kernel message.
-> > > You should have messages like "realtek: ..."
-> > > 
-> > > 
-> > > Takashi
-> > 
-> > 
-> > The realtek: lines don't appear to affect NID 0x17 at all.  Instead,
-> > they say:
-> > 
-> > ALSA sound/pci/hda/patch_realtek.c:1154: realtek: No valid SSID,
-> > checking pincfg 0x40178e2d for NID 0x1d ALSA
-> > sound/pci/hda/patch_realtek.c:1170: realtek: Enabling init
-> > ASM_ID=0x8e2d CODEC_ID=10ec0272 ALSA
-> > sound/pci/hda/patch_realtek.c:1111: realtek: Enable HP auto-muting
-> > on NID 0x21
-> 
-> Then 0x17 should be toggled when the jack on 0x21 is detected.
-> 
-> 
-> Takashi
+> However, the patch itself doesn't looks like to be a SPI slave
+> (I mean from the view of the processor).
+> =
 
-But since I get absolutely no sound through headphones or speakers, I
-can't tell if it's being toggled.  :)
+> 'struct spi_message' does support simultaneous rx/tx transfer
+> and multiple such transfers being queued.
 
-I've noticed:
- - in order to get speaker output, 0x17 *must* be defined as the
-speaker-out, and 0x14 *must* be listed as a line-out pin.
- - in order to get headphone output, neither 0x17 nor 0x15 are to be
-listed as the first line-out pin
+The transfers happen under control of PCON not the PXA; PCON asserts a
+GPIO to activate the DMA to control when the transfer happens.
 
-Can you please provide a suggestion for how this is supposed to work?
-Note that I only have access to this machine for another day.
+We can not just start the SSP for a 32 byte transfer and hope it happens.
+PCON has to be totally in control.
