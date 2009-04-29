@@ -1,26 +1,21 @@
-From: David Douglas <one51s@yahoo.com>
+From: =?UTF-8?Q?Vedran_Mileti=C4=87?= <rivanvx@gmail.com>
 Subject: Re: spdif/iec958 outputs at VT1708S not recognized
-Date: Wed, 29 Apr 2009 15:19:06 +0000 (UTC)
-Message-ID: <loom.20090429T150759-280@post.gmane.org>
+Date: Wed, 29 Apr 2009 18:41:42 +0200
+Message-ID: <fd3eb9bf0904290941u3d45d6d4x573b676d6b8a0dd0@mail.gmail.com>
 References: <gt9gvo$ocq$1@ger.gmane.org>
+	<loom.20090429T150759-280@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6988C24496
+Received: from mail-ew0-f175.google.com (mail-ew0-f175.google.com
+	[209.85.219.175])
+	by alsa0.perex.cz (Postfix) with ESMTP id 77F0024513
 	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Apr 2009 17:20:03 +0200 (CEST)
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1LzBZr-0004VE-4N
-	for alsa-devel@alsa-project.org; Wed, 29 Apr 2009 15:20:03 +0000
-Received: from mnch-5d87371b.pool.einsundeins.de ([93.135.55.27])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2009 15:20:03 +0000
-Received: from one51s by mnch-5d87371b.pool.einsundeins.de with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2009 15:20:03 +0000
+	Wed, 29 Apr 2009 18:41:43 +0200 (CEST)
+Received: by ewy23 with SMTP id 23so723185ewy.32
+	for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2009 09:41:42 -0700 (PDT)
+In-Reply-To: <loom.20090429T150759-280@post.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,46 +25,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: David Douglas <one51s@yahoo.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Peter Niemayer <niemayer <at> isg.de> writes:
-> I recently installed an Asus M4N78 mainboard, that uses a
-> nVidia GeForce 8300 chipset and a VT1708S soundchip.
->
-> I had to short circuit the pin definition
-> in vt1708S_parse_auto_config() to get the digital outputs
-> to work:
-> 
->          spec->multiout.max_channels = spec->multiout.num_dacs * 2;
-> 
-> -       if (spec->autocfg.dig_out_pin)
-> +       // test fails for Asus M4N78 if (spec->autocfg.dig_out_pin)
->                  spec->multiout.dig_out_nid = VT1708S_DIGOUT_NID;
-> 
->          spec->extra_dig_out_nid = 0x15;
-
-
-Hi Peter,
-
-I'm a relative Linux newbie trying to get away from Windows.  But longtime
-computer geek.  I have an issue with my Asus M4A78 (same as yours but ATI
-graphics), that the LFE channel works in speaker-test but has no output from
-applications (even when they should output 5.1, like a DVD in VLC).
-
-I believe that some layer, maybe even the hw, is remixing to 5 (minus the .1)
-without being asked, as even CD sound plays over all five speakers.  And there
-is no gui configuration program I can find to specify such a remixing (which I
-am sure the soundcard is capable of).
-
-Currently I am trying an upgrade (via script from ubuntu forums) to the latest
-Alsa, from .18 to .19.  If that doesn't resolve (and I don't expect it to): I am
-curious if you got 5.1 working properly with your soundcard.  Also the SPDIF
-would be an option for me, can I ask the location of that code you mentioned? 
-(If it's a config file and you wouldn't mind posting yours, would be fantastic).
-
-I have been under the impression that the 1708S is not explicitly supported by
-Alsa, because it's not yet listed in the Alsa-project homepage list  :-/
-
-Many thanks,
-Dave
+T24gV2VkLCBBcHIgMjksIDIwMDkgYXQgNToxOSBQTSwgRGF2aWQgRG91Z2xhcyA8b25lNTFzQHlh
+aG9vLmNvbT4gd3JvdGU6Cj4gUGV0ZXIgTmllbWF5ZXIgPG5pZW1heWVyIDxhdD4gaXNnLmRlPiB3
+cml0ZXM6Cj4+IEkgcmVjZW50bHkgaW5zdGFsbGVkIGFuIEFzdXMgTTRONzggbWFpbmJvYXJkLCB0
+aGF0IHVzZXMgYQo+PiBuVmlkaWEgR2VGb3JjZSA4MzAwIGNoaXBzZXQgYW5kIGEgVlQxNzA4UyBz
+b3VuZGNoaXAuCj4+Cj4+IEkgaGFkIHRvIHNob3J0IGNpcmN1aXQgdGhlIHBpbiBkZWZpbml0aW9u
+Cj4+IGluIHZ0MTcwOFNfcGFyc2VfYXV0b19jb25maWcoKSB0byBnZXQgdGhlIGRpZ2l0YWwgb3V0
+cHV0cwo+PiB0byB3b3JrOgo+Pgo+PiDCoCDCoCDCoCDCoCDCoHNwZWMtPm11bHRpb3V0Lm1heF9j
+aGFubmVscyA9IHNwZWMtPm11bHRpb3V0Lm51bV9kYWNzICogMjsKPj4KPj4gLSDCoCDCoCDCoCBp
+ZiAoc3BlYy0+YXV0b2NmZy5kaWdfb3V0X3BpbikKPj4gKyDCoCDCoCDCoCAvLyB0ZXN0IGZhaWxz
+IGZvciBBc3VzIE00Tjc4IGlmIChzcGVjLT5hdXRvY2ZnLmRpZ19vdXRfcGluKQo+PiDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoHNwZWMtPm11bHRpb3V0LmRpZ19vdXRfbmlkID0gVlQxNzA4U19E
+SUdPVVRfTklEOwo+Pgo+PiDCoCDCoCDCoCDCoCDCoHNwZWMtPmV4dHJhX2RpZ19vdXRfbmlkID0g
+MHgxNTsKPgo+Cj4gSGkgUGV0ZXIsCj4KPiBJJ20gYSByZWxhdGl2ZSBMaW51eCBuZXdiaWUgdHJ5
+aW5nIHRvIGdldCBhd2F5IGZyb20gV2luZG93cy4gwqBCdXQgbG9uZ3RpbWUKPiBjb21wdXRlciBn
+ZWVrLiDCoEkgaGF2ZSBhbiBpc3N1ZSB3aXRoIG15IEFzdXMgTTRBNzggKHNhbWUgYXMgeW91cnMg
+YnV0IEFUSQo+IGdyYXBoaWNzKSwgdGhhdCB0aGUgTEZFIGNoYW5uZWwgd29ya3MgaW4gc3BlYWtl
+ci10ZXN0IGJ1dCBoYXMgbm8gb3V0cHV0IGZyb20KPiBhcHBsaWNhdGlvbnMgKGV2ZW4gd2hlbiB0
+aGV5IHNob3VsZCBvdXRwdXQgNS4xLCBsaWtlIGEgRFZEIGluIFZMQykuCj4KPiBJIGJlbGlldmUg
+dGhhdCBzb21lIGxheWVyLCBtYXliZSBldmVuIHRoZSBodywgaXMgcmVtaXhpbmcgdG8gNSAobWlu
+dXMgdGhlIC4xKQo+IHdpdGhvdXQgYmVpbmcgYXNrZWQsIGFzIGV2ZW4gQ0Qgc291bmQgcGxheXMg
+b3ZlciBhbGwgZml2ZSBzcGVha2Vycy4gwqBBbmQgdGhlcmUKPiBpcyBubyBndWkgY29uZmlndXJh
+dGlvbiBwcm9ncmFtIEkgY2FuIGZpbmQgdG8gc3BlY2lmeSBzdWNoIGEgcmVtaXhpbmcgKHdoaWNo
+IEkKPiBhbSBzdXJlIHRoZSBzb3VuZGNhcmQgaXMgY2FwYWJsZSBvZikuCj4KPiBDdXJyZW50bHkg
+SSBhbSB0cnlpbmcgYW4gdXBncmFkZSAodmlhIHNjcmlwdCBmcm9tIHVidW50dSBmb3J1bXMpIHRv
+IHRoZSBsYXRlc3QKPiBBbHNhLCBmcm9tIC4xOCB0byAuMTkuIMKgSWYgdGhhdCBkb2Vzbid0IHJl
+c29sdmUgKGFuZCBJIGRvbid0IGV4cGVjdCBpdCB0byk6IEkgYW0KPiBjdXJpb3VzIGlmIHlvdSBn
+b3QgNS4xIHdvcmtpbmcgcHJvcGVybHkgd2l0aCB5b3VyIHNvdW5kY2FyZC4gwqBBbHNvIHRoZSBT
+UERJRgo+IHdvdWxkIGJlIGFuIG9wdGlvbiBmb3IgbWUsIGNhbiBJIGFzayB0aGUgbG9jYXRpb24g
+b2YgdGhhdCBjb2RlIHlvdSBtZW50aW9uZWQ/Cj4gKElmIGl0J3MgYSBjb25maWcgZmlsZSBhbmQg
+eW91IHdvdWxkbid0IG1pbmQgcG9zdGluZyB5b3Vycywgd291bGQgYmUgZmFudGFzdGljKS4KPgo+
+IEkgaGF2ZSBiZWVuIHVuZGVyIHRoZSBpbXByZXNzaW9uIHRoYXQgdGhlIDE3MDhTIGlzIG5vdCBl
+eHBsaWNpdGx5IHN1cHBvcnRlZCBieQo+IEFsc2EsIGJlY2F1c2UgaXQncyBub3QgeWV0IGxpc3Rl
+ZCBpbiB0aGUgQWxzYS1wcm9qZWN0IGhvbWVwYWdlIGxpc3QgwqA6LS8KPgo+IE1hbnkgdGhhbmtz
+LAo+IERhdmUKCldpa2kgaXMgZXh0cmVtZWx5IG91dGRhdGVkIGFuZCBpbmNvbXBsZXRlIHNpbmNl
+IG5vYm9keSBpcyBhY3RpdmVseQptYWludGFpbmluZyBpdC4gVlQxNzA4UyBpcyBzdXBwb3J0ZWQs
+IHRoYW5rcyB0byBjb250cmlidXRpb25zIGZyb20KVklBLiBIb3dldmVyLCBxdWlya3kgYm9hcmRz
+IG1pZ2h0IG5vdCBiZSBmdWxseSB3b3JraW5nLgoKTWF5YmUgcmVwb3J0aW5nIEJJT1MgYnVnIHRv
+IEFTVVMgd291bGQgaGVscCwgYnV0IEkgd291bGRuJ3QgYmV0IG9uIHRoYXQuCgpWZWRyYW4gTWls
+ZXRpxIcKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
