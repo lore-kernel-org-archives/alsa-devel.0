@@ -1,20 +1,18 @@
-From: "Lopez Cruz, Misael" <x0052729@ti.com>
-Subject: Re: [PATCH] ASoC: TWL4030: Disable DACs in
-	analog	loopback
-Date: Thu, 30 Apr 2009 04:53:20 -0500
-Message-ID: <2C7D3DF36ADFFC479B44490D912B616705F63E05BE@dlee07.ent.ti.com>
-References: <2C7D3DF36ADFFC479B44490D912B616705F63E05BA@dlee07.ent.ti.com>
-	<200904301146.49080.peter.ujfalusi@nokia.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: errors in wm8990 codec driver
+Date: Thu, 30 Apr 2009 11:23:01 +0100
+Message-ID: <20090430102301.GF10190@sirena.org.uk>
+References: <280b69ac0904292203y11c100f8m658a3579c33e8534@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id D7B5F1038AB
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 90E771038BC
 	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Apr 2009 11:53:29 +0200 (CEST)
-In-Reply-To: <200904301146.49080.peter.ujfalusi@nokia.com>
-Content-Language: en-US
+	Thu, 30 Apr 2009 12:23:02 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <280b69ac0904292203y11c100f8m658a3579c33e8534@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,42 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Jinyoung Park <mcjin02@gmail.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-> > In analog loopback mode, DACs should not be enabled. For 
-> > that reason, DAC widgets (DAC Right1, DAC Left1, DAC
-> > Right2, DAC Left2) will power DACs only during playback.
+On Thu, Apr 30, 2009 at 02:03:03PM +0900, Jinyoung Park wrote:
 
-> > Analog loopback requires to set a master enable bit when any
-> > of the analog bypass switches are enabled.
+> I found a number of typing errors in wm8990 codec driver.
+> The mis-typing exist in dapm controller definitions and dapm route definitions,
+> so happen mis-matched error when snd_soc_dapm_add_routes().
+> Belows are my modified code. Please check...
 
-> I have also noticed this, also in analog loopback mode the 
-> bits in the OPTION register can be cleared, since we don't
-> need those to have analog loopback.
-
-At least, the digital filters (configured in OPTION reg) are
-enabled when the corresponding DAC is enabled, can we attach
-them to a DAC somehow? Could it be a valid approach?
-
-> But I'm afraid, this patch does break the Digital loopback, 
-> which needs the DACs to be powered, in case when the capture
-> path is set in analog mode the ADC(s) also need to be powered.
-
-I think that digital loopback should mix TX with RX only when
-both digital paths are enabled, i.e. in a full-duplex scenario.
-I don't expect it to automatically enable DACs for me, although
-maybe I'm wrong and my argument breaks what digital loopback
-means :( Please clarify.
-
-> Both analog and digital loopback connects to 'Analog XY 
-> Playback Mixer', which turns on/off the physical DAC on
-> the given route.
-
-That was a part of the audio map that doesn't make much sense
-to me, joining analog and digital loopback.
-
-> I have been thinking of - as a part of a big
-> clean up - to separate these, since as you have pointed out,
-> the DACs are not needed for the analog loopback.
+This all looks reasonable - could you please supply a Signed-off-by for
+your patch?  It may also help to use git send-email to send your patch
+or attach it, gmail tends to mangle patches so that they can't be
+applied and it looks like some of that may have happened here, though
+I've not actually tried applying it.
