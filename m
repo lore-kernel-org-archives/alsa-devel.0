@@ -1,24 +1,31 @@
-From: Ryan Dunn <oryandunn.ml@gmail.com>
-Subject: Re: module snd-atiixp issue with
-	suspend/hibernate/resume
-Date: Thu, 30 Apr 2009 07:49:57 -0400
-Message-ID: <bf4fda4a0904300449v7a5db4d6vfdf2f772ce102543@mail.gmail.com>
-References: <bf4fda4a0904282106u7fd3ed03s8d1234423abd679@mail.gmail.com>
-	<75b66ecd0904291942u3b352dbj74e5de00ebdf167b@mail.gmail.com>
-	<bf4fda4a0904292143s34744db8xbf0b4524567d772@mail.gmail.com>
-	<s5h1vralmag.wl%tiwai@suse.de>
+From: Andres Salomon <dilinger@queued.net>
+Subject: Re: realtek ALC272 support
+Date: Thu, 30 Apr 2009 09:51:27 -0400
+Message-ID: <20090430095127.7efc63ca@dev.queued.net>
+References: <20090424152415.10fcebff@dev.queued.net>
+	<s5hljpp3z2w.wl%tiwai@suse.de>
+	<20090425101753.1983e6ae@dev.queued.net>
+	<s5hocujwuhb.wl%tiwai@suse.de>
+	<20090427100151.01a46965@dev.queued.net>
+	<s5hprey3yc5.wl%tiwai@suse.de>
+	<20090427120230.74d70f88@dev.queued.net>
+	<s5hbpqi3wqy.wl%tiwai@suse.de>
+	<20090428154108.6ed3136d@dev.queued.net>
+	<20090428182155.3f6eae50@dev.queued.net>
+	<s5heivcq893.wl%tiwai@suse.de>
+	<20090429090241.1c29817f@dev.queued.net>
+	<s5h8wljbo8v.wl%tiwai@suse.de>
+	<20090429130142.54ec0802@dev.queued.net>
+	<s5hbpqeln79.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f215.google.com (mail-bw0-f215.google.com
-	[209.85.218.215])
-	by alsa0.perex.cz (Postfix) with ESMTP id 449851038AB
+Received: from lunge.queued.net (LUNGE.MIT.EDU [18.54.1.69])
+	by alsa0.perex.cz (Postfix) with ESMTP id AABB61038BC
 	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Apr 2009 13:50:00 +0200 (CEST)
-Received: by bwz11 with SMTP id 11so1910306bwz.32
-	for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2009 04:49:58 -0700 (PDT)
-In-Reply-To: <s5h1vralmag.wl%tiwai@suse.de>
+	Thu, 30 Apr 2009 15:51:32 +0200 (CEST)
+In-Reply-To: <s5hbpqeln79.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,120 +36,146 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Takashi,
+On Thu, 30 Apr 2009 07:34:02 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-I did a bit more testing last night.  The LED does work after a reboot (I
-don't know what I was doing that I thought it didn't).  It also retains
-state after a reboot if I muted it before the reboot.  One thing I noticed,
-if I have it muted when I suspend, on resume, it looks like the mute led
-flashes back on for a split second, then turns off.  Maybe the resume code
-is overwriting the register?  I'll start digging through that code tonight.
+> At Wed, 29 Apr 2009 13:01:42 -0400,
+> Andres Salomon wrote:
+> > 
+> > On Wed, 29 Apr 2009 15:09:20 +0200
+> > Takashi Iwai <tiwai@suse.de> wrote:
+> > 
+> > > At Wed, 29 Apr 2009 09:02:41 -0400,
+> > > Andres Salomon wrote:
+> > > > 
+> > > > On Wed, 29 Apr 2009 08:33:28 +0200
+> > > > Takashi Iwai <tiwai@suse.de> wrote:
+> > > > 
+> > > > > At Tue, 28 Apr 2009 18:21:55 -0400,
+> > > > > Andres Salomon wrote:
+> > > > > > 
+> > > > > > On Tue, 28 Apr 2009 15:41:08 -0400
+> > > > > > Andres Salomon <dilinger@queued.net> wrote:
+> > > > > > 
+> > > > > > > On Mon, 27 Apr 2009 18:08:21 +0200
+> > > > > > > Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > > > 
+> > > > > > [...]
+> > > > > > > > > > > > > > At Fri, 24 Apr 2009 15:24:15 -0400,
+> > > > > > > > > > > > > > Andres Salomon wrote:
+> > > > > > > > > > > > > > > 
+> > > > > > > > > > > > > > > Hi Kailang,
+> > > > > > > > > > > > > > > 
+> > > > > > > > > > > > > > > I noticed that your name was on the ALC272
+> > > > > > > > > > > > > > > support patch for ALSA intel-hda.  This
+> > > > > > > > > > > > > > > patch basically sets ALC272 to use
+> > > > > > > > > > > > > > > (mostly) the same code as ALC662.  I have
+> > > > > > > > > > > > > > > two machines that have ALC272, and both
+> > > > > > > > > > > > > > > of them need verb tables in order to
+> > > > > > > > > > > > > > > function.  I'm wondering if ALC662 should
+> > > > > > > > > > > > > > > really be used..
+> > > > > > > > > > > > > > > 
+> > > > > > > > > > > > > > > Here's one -
+> > > > > > > > > > > > > > > 
+> > > > > > > > > > > > > > > http://kernel.ubuntu.com/git?p=ubuntu/ubuntu-hardy-lum.git;a=commitdiff;h=7662834bb9a78d244c6d7ee43358c14c94d249c9
+> > > > > > > > > > > > > > > 
+> > > > > > > > > > > > > > > This isn't the final version of the patch
+> > > > > > > > > > > > > > > (there are further commits I made in
+> > > > > > > > > > > > > > > order to support headphone mic stuff),
+> > > > > > > > > > > > > > > but it gives you an idea of the codec
+> > > > > > > > > > > > > > > values. The other is:
+> > > > > > > > > > > > > > > 
+> > > > > > > > > > > > > > > http://kernel.ubuntu.com/git?p=ubuntu/ubuntu-hardy-lum.git;a=commitdiff;h=72ff85641a30dc7ac502e2ea01bf14a04efb4cf1
+> > > > > > > > > > > > > > > 
+> > > > > > > > > > > > > > > All of these leave me wonder if there's a
+> > > > > > > > > > > > > > > specific patch_alc272 function that could
+> > > > > > > > > > > > > > > be written to rid ourselves of these
+> > > > > > > > > > > > > > > specific quirks.  Are there machines with
+> > > > > > > > > > > > > > > ALC272 that are functional with the
+> > > > > > > > > > > > > > > current ALSA code?
+> > > > > > > > > > > > > > 
+> > > > > > [...]
+> > > > > > > > 
+> > > > > > > > Could you try sound-unstable tree a bit later again?
+> > > > > > > > I found a bug in my patch, and fixed and updated GIT
+> > > > > > > > tree now. At least, the headphone plugging should work
+> > > > > > > > now.
+> > > > > > > > 
+> > > > > > > > The mic auto-detection still doesn't work with
+> > > > > > > > model=auto, though. So, I'm going to take your patch
+> > > > > > > > anyway later.  But I just wanted to be sure that the
+> > > > > > > > current tree could work somehow better...
+> > > > > > > > 
+> > > > > > > 
+> > > > > > > Hi,
+> > > > > > > 
+> > > > > > > I just updated and tried the current tree; still no
+> > > > > > > sound/headphone output.  :(
+> > > > > > 
+> > > > > > 
+> > > > > > Ok, I believe I've made some progress on this.  The problem
+> > > > > > appears to be related to the autoconfig handling of the line
+> > > > > > out nids.  The current code ends up with something like the
+> > > > > > following:
+> > > > > > 
+> > > > > > ALSA sound/pci/hda/hda_codec.c:3833: autoconfig: line_outs=1
+> > > > > > (0x17/0x0/0x0/0x0/0x0)
+> > > > > > ALSA sound/pci/hda/hda_codec.c:3837:    speaker_outs=0
+> > > > > > (0x0/0x0/0x0/0x0/0x0)
+> > > > > > ALSA sound/pci/hda/hda_codec.c:3841:    hp_outs=1
+> > > > > > (0x21/0x0/0x0/0x0/0x0) ALSA sound/pci/hda/hda_codec.c:3842:
+> > > > > > mono: mono_out=0x0 ALSA sound/pci/hda/hda_codec.c:3853:
+> > > > > > inputs: mic=0x18, fmic=0x19, line=0x0, fline=0x0, cd=0x0,
+> > > > > > aux=0x0
+> > > > > > 
+> > > > > > However, NID 0x17 is actually a speaker_out.  The code that
+> > > > > > checks for line_outs in snd_hda_parse_pin_def_config()
+> > > > > > unsets the speaker_out and uses that NID for a line_out.
+> > > > > > For whatever reason, this breaks things (no sound output,
+> > > > > > no headphone out).
+> > > > > 
+> > > > > That's intentional, and the driver checks that case, too.
+> > > > > Please check the latest sound git tree and see the kernel
+> > > > > message. You should have messages like "realtek: ..."
+> > > > > 
+> > > > > 
+> > > > > Takashi
+> > > > 
+> > > > 
+> > > > The realtek: lines don't appear to affect NID 0x17 at all.
+> > > > Instead, they say:
+> > > > 
+> > > > ALSA sound/pci/hda/patch_realtek.c:1154: realtek: No valid SSID,
+> > > > checking pincfg 0x40178e2d for NID 0x1d ALSA
+> > > > sound/pci/hda/patch_realtek.c:1170: realtek: Enabling init
+> > > > ASM_ID=0x8e2d CODEC_ID=10ec0272 ALSA
+> > > > sound/pci/hda/patch_realtek.c:1111: realtek: Enable HP
+> > > > auto-muting on NID 0x21
+> > > 
+> > > Then 0x17 should be toggled when the jack on 0x21 is detected.
+> > > 
+> > > 
+> > > Takashi
+> > 
+> > But since I get absolutely no sound through headphones or speakers,
+> > I can't tell if it's being toggled.  :)
+> 
+> You can see the 0x17 in the codec proc whether it's changed at plugged
+> / unplugged.  The driver should change its pin control dynamically.
+> 
+> > I've noticed:
+> >  - in order to get speaker output, 0x17 *must* be defined as the
+> > speaker-out, and 0x14 *must* be listed as a line-out pin.
+> >  - in order to get headphone output, neither 0x17 nor 0x15 are to be
+> > listed as the first line-out pin
+> 
+> Then it implies that 0x17 has nothing to do with the speaker, i.e. a
+> BIOS bug.  0x14 could be the speaker output while 0x17 is just a
+> dummy.
+> 
+>
 
-Ryan
-
-On Thu, Apr 30, 2009 at 1:53 AM, Takashi Iwai <tiwai@suse.de> wrote:
-
-> At Thu, 30 Apr 2009 00:43:02 -0400,
-> Ryan Dunn wrote:
-> >
-> > Thanks Lee,
-> >
-> > I grabbed the kernel source from the repos and started perusing the
-> code.  It
-> > looks like when the module is installed, the call chain starts in
-> atiixp.c and
-> > moves into ac97/ac97_codec.c via a call to snd_ac97_tune_hardware() which
-> > ultimately twiddles a bit in the AC97_POWERDOWN register.  I'm not sure
-> yet if
-> > the suspend method properly saves this register on suspend or not;
->
-> It should.  snd_ac97_resume() writes the cached value.
-> Check /proc/asound/card0/codec97#0/ac97#*+regs files before and after
-> suspend.  You can change the codec register value directly via proc
-> file, e.g.
->    # echo 0x12 0x1234 > /proc/asound/card0/codec97#0/ac97#0-0+regs
-> (only when you build with the debug option).
->
-> The bit 0x8000 of the power-down register should correspond to LED.
->
->
-> Takashi
->
-> > or if the
-> > same call chain needs to be repeated on a resume.  I appreciate your
-> quick and
-> > relevant answer.  When I get time, I'll start adding some debug printouts
-> to
-> > try this out.
-> >
-> > Also, the struct ac97_quirk ac97_quirks[] array has a couple of entries
-> in it
-> > currently (in the atiixp.c file).  How do I get the subvender/subdevice
-> id's
-> > for my system (I didn't seem to have luck with lspci, unless I'm not
-> looking
-> > in the right fields)?  Would it be possible to edit the driver so that an
-> > explict module option would not be needed on my hardware?
-> >
-> > Thanks,
-> > Ryan
-> >
-> > On Wed, Apr 29, 2009 at 10:42 PM, Lee Revell <rlrevell@joe-job.com>
-> wrote:
-> >
-> >     On Wed, Apr 29, 2009 at 12:06 AM, Ryan Dunn <oryandunn.ml@gmail.com>
-> >     wrote:
-> >     > I have a Compaq V2000 laptop with the ATI IXP chipset and make use
-> of
-> >     the
-> >     > snd-atiixp module.  The laptop needs to have the ac97_quirk option
-> set
-> >     to 7
-> >     > to enable the mute LED.  After setting this option in the
-> >     > /etc/modprobe.d/options.conf file, the mute LED works after a
-> reboot.
-> >     > However, after a resume from suspend or hibernate, the mute LED
-> does not
-> >     > work.  The alsa-info.sh script reports that the quirk is still set
-> with
-> >     7.
-> >     > At this point a reboot will NOT fix the problem.  The only way to
-> fix it
-> >     is
-> >     > to remove and reinsert the module with modprobe.
-> >     >
-> >     > This is on a fresh Ubuntu 9.04 install.  Any ideas?  I wasn't sure
-> if
-> >     this
-> >     > should be reported here or on the kernel list.  I saw a similar
-> issue
-> >     with
-> >     > the ac97_quirk on the kernel list and they were referred here.  I'm
-> a
-> >     > software developer, so I'd be willing to try ideas/possible
-> solutions if
-> >     you
-> >     > have them.
-> >
-> >     Get the Ubuntu source code for the package that owns that ALSA
-> driver,
-> >     find the place in the driver's initialization code where ac97_quirk=7
-> >     is handled, then check the driver's suspend and resume callbacks and
-> >     make sure the suspend callback is correctly saving the LED state and
-> >     that the resume callback is re-initializing the LED from the saved
-> >     state in the same way the init code does.  grep and printk() are your
-> >     friends ;-)
-> >
-> >     HTH,
-> >
-> >     Lee
-> >
-> >
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+Specifying 0x14 as the speaker-pin doesn't work, either.
