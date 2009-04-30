@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: errors in wm8990 codec driver
-Date: Thu, 30 Apr 2009 11:23:01 +0100
-Message-ID: <20090430102301.GF10190@sirena.org.uk>
-References: <280b69ac0904292203y11c100f8m658a3579c33e8534@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH] ASoC: TWL4030: Disable DACs in analog
+	loopback
+Date: Thu, 30 Apr 2009 13:28:48 +0300
+Message-ID: <200904301328.48853.peter.ujfalusi@nokia.com>
+References: <2C7D3DF36ADFFC479B44490D912B616705F63E05BA@dlee07.ent.ti.com>
+	<200904301146.49080.peter.ujfalusi@nokia.com>
+	<2C7D3DF36ADFFC479B44490D912B616705F63E05BE@dlee07.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 90E771038BC
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 44C271038AB
 	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Apr 2009 12:23:02 +0200 (CEST)
+	Thu, 30 Apr 2009 12:29:46 +0200 (CEST)
+In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705F63E05BE@dlee07.ent.ti.com>
 Content-Disposition: inline
-In-Reply-To: <280b69ac0904292203y11c100f8m658a3579c33e8534@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,19 +25,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jinyoung Park <mcjin02@gmail.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: "ext Lopez Cruz, Misael" <x0052729@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 30, 2009 at 02:03:03PM +0900, Jinyoung Park wrote:
+On Thursday 30 April 2009 12:53:20 ext Lopez Cruz, Misael wrote:
+> At least, the digital filters (configured in OPTION reg) are
+> enabled when the corresponding DAC is enabled, can we attach
+> them to a DAC somehow? Could it be a valid approach?
 
-> I found a number of typing errors in wm8990 codec driver.
-> The mis-typing exist in dapm controller definitions and dapm route definitions,
-> so happen mis-matched error when snd_soc_dapm_add_routes().
-> Belows are my modified code. Please check...
+The digital filters corresponding to the Stereo path (ATXL1_EN, ATXR1_EN, =
 
-This all looks reasonable - could you please supply a Signed-off-by for
-your patch?  It may also help to use git send-email to send your patch
-or attach it, gmail tends to mangle patches so that they can't be
-applied and it looks like some of that may have happened here, though
-I've not actually tried applying it.
+ARXL2_EN, ARXR2_EN) can be enabled dynamically, when the:
+- Playback is running (enable only the ARXL2_EN, ARXR2_EN bits)
+- Capture is running (enable only the ATXL1_EN, ATXR1_EN bits)
+- Digital loopback is enabled (in pairs the ATXL1_EN/ARXL2_EN or  =
+
+ATXR1_EN/ARXR2_EN bits - the first pair is for left digital loopback, the =
+
+second is for the right digital loopback).
+
+>
+> > But I'm afraid, this patch does break the Digital loopback,
+> > which needs the DACs to be powered, in case when the capture
+> > path is set in analog mode the ADC(s) also need to be powered.
+>
+> I think that digital loopback should mix TX with RX only when
+> both digital paths are enabled, i.e. in a full-duplex scenario.
+
+Well, yes... short of. You can still enable the digital loopback without =
+
+active stream. The TWL codec will be in the same state as it if you are usi=
+ng =
+
+full duplex mode. The only difference is that the CPU dai is not running.
+The analog loopback also mixing the RX and TX data, but in the analog domai=
+n.
+If you have only the loopback enabled (analog or digital) the RX path is =
+
+silent in both cases...
+
+While we are here with the loopbacks: When only the analog loopback is enab=
+led =
+
+the PLL can be disabled for the codec (APLL_CTL:APLL_EN =3D 0). I have some =
+
+preliminary implementation for this, but it needs some more tuning... =
+
+
+> I don't expect it to automatically enable DACs for me, although
+> maybe I'm wrong and my argument breaks what digital loopback
+> means :( Please clarify.
+
+You have to specifically flip the user control to enable the digital loopba=
+ck, =
+
+it is not done automatically.
+
+>
+> > Both analog and digital loopback connects to 'Analog XY
+> > Playback Mixer', which turns on/off the physical DAC on
+> > the given route.
+>
+> That was a part of the audio map that doesn't make much sense
+> to me, joining analog and digital loopback.
+
+It was like that, because the TRM has no information on these loopback at a=
+ll, =
+
+so I have chosen this safe path (I have got the digital loopback implemente=
+d =
+
+first) and marked for myself to revisit it later. =
+
+
+>
+> > I have been thinking of - as a part of a big
+> > clean up - to separate these, since as you have pointed out,
+> > the DACs are not needed for the analog loopback.
+
+-- =
+
+P=E9ter
