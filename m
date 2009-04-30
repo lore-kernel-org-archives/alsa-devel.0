@@ -1,31 +1,18 @@
-From: Andres Salomon <dilinger@queued.net>
-Subject: Re: realtek ALC272 support
-Date: Thu, 30 Apr 2009 09:51:27 -0400
-Message-ID: <20090430095127.7efc63ca@dev.queued.net>
-References: <20090424152415.10fcebff@dev.queued.net>
-	<s5hljpp3z2w.wl%tiwai@suse.de>
-	<20090425101753.1983e6ae@dev.queued.net>
-	<s5hocujwuhb.wl%tiwai@suse.de>
-	<20090427100151.01a46965@dev.queued.net>
-	<s5hprey3yc5.wl%tiwai@suse.de>
-	<20090427120230.74d70f88@dev.queued.net>
-	<s5hbpqi3wqy.wl%tiwai@suse.de>
-	<20090428154108.6ed3136d@dev.queued.net>
-	<20090428182155.3f6eae50@dev.queued.net>
-	<s5heivcq893.wl%tiwai@suse.de>
-	<20090429090241.1c29817f@dev.queued.net>
-	<s5h8wljbo8v.wl%tiwai@suse.de>
-	<20090429130142.54ec0802@dev.queued.net>
-	<s5hbpqeln79.wl%tiwai@suse.de>
+From: Gabriel Johnson <johnsoga@gmail.com>
+Subject: dmix and mmap
+Date: Thu, 30 Apr 2009 10:10:23 -0500
+Message-ID: <bb6204720904300810ma174b6cn825f8565c0b694c0@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lunge.queued.net (LUNGE.MIT.EDU [18.54.1.69])
-	by alsa0.perex.cz (Postfix) with ESMTP id AABB61038BC
+Received: from mail-gx0-f158.google.com (mail-gx0-f158.google.com
+	[209.85.217.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3F1472457A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Apr 2009 15:51:32 +0200 (CEST)
-In-Reply-To: <s5hbpqeln79.wl%tiwai@suse.de>
+	Thu, 30 Apr 2009 17:10:25 +0200 (CEST)
+Received: by gxk2 with SMTP id 2so3860061gxk.8
+	for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2009 08:10:24 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,147 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 30 Apr 2009 07:34:02 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+I am currently working on two issues.
 
-> At Wed, 29 Apr 2009 13:01:42 -0400,
-> Andres Salomon wrote:
-> > 
-> > On Wed, 29 Apr 2009 15:09:20 +0200
-> > Takashi Iwai <tiwai@suse.de> wrote:
-> > 
-> > > At Wed, 29 Apr 2009 09:02:41 -0400,
-> > > Andres Salomon wrote:
-> > > > 
-> > > > On Wed, 29 Apr 2009 08:33:28 +0200
-> > > > Takashi Iwai <tiwai@suse.de> wrote:
-> > > > 
-> > > > > At Tue, 28 Apr 2009 18:21:55 -0400,
-> > > > > Andres Salomon wrote:
-> > > > > > 
-> > > > > > On Tue, 28 Apr 2009 15:41:08 -0400
-> > > > > > Andres Salomon <dilinger@queued.net> wrote:
-> > > > > > 
-> > > > > > > On Mon, 27 Apr 2009 18:08:21 +0200
-> > > > > > > Takashi Iwai <tiwai@suse.de> wrote:
-> > > > > > > 
-> > > > > > [...]
-> > > > > > > > > > > > > > At Fri, 24 Apr 2009 15:24:15 -0400,
-> > > > > > > > > > > > > > Andres Salomon wrote:
-> > > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > > Hi Kailang,
-> > > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > > I noticed that your name was on the ALC272
-> > > > > > > > > > > > > > > support patch for ALSA intel-hda.  This
-> > > > > > > > > > > > > > > patch basically sets ALC272 to use
-> > > > > > > > > > > > > > > (mostly) the same code as ALC662.  I have
-> > > > > > > > > > > > > > > two machines that have ALC272, and both
-> > > > > > > > > > > > > > > of them need verb tables in order to
-> > > > > > > > > > > > > > > function.  I'm wondering if ALC662 should
-> > > > > > > > > > > > > > > really be used..
-> > > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > > Here's one -
-> > > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > > http://kernel.ubuntu.com/git?p=ubuntu/ubuntu-hardy-lum.git;a=commitdiff;h=7662834bb9a78d244c6d7ee43358c14c94d249c9
-> > > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > > This isn't the final version of the patch
-> > > > > > > > > > > > > > > (there are further commits I made in
-> > > > > > > > > > > > > > > order to support headphone mic stuff),
-> > > > > > > > > > > > > > > but it gives you an idea of the codec
-> > > > > > > > > > > > > > > values. The other is:
-> > > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > > http://kernel.ubuntu.com/git?p=ubuntu/ubuntu-hardy-lum.git;a=commitdiff;h=72ff85641a30dc7ac502e2ea01bf14a04efb4cf1
-> > > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > > All of these leave me wonder if there's a
-> > > > > > > > > > > > > > > specific patch_alc272 function that could
-> > > > > > > > > > > > > > > be written to rid ourselves of these
-> > > > > > > > > > > > > > > specific quirks.  Are there machines with
-> > > > > > > > > > > > > > > ALC272 that are functional with the
-> > > > > > > > > > > > > > > current ALSA code?
-> > > > > > > > > > > > > > 
-> > > > > > [...]
-> > > > > > > > 
-> > > > > > > > Could you try sound-unstable tree a bit later again?
-> > > > > > > > I found a bug in my patch, and fixed and updated GIT
-> > > > > > > > tree now. At least, the headphone plugging should work
-> > > > > > > > now.
-> > > > > > > > 
-> > > > > > > > The mic auto-detection still doesn't work with
-> > > > > > > > model=auto, though. So, I'm going to take your patch
-> > > > > > > > anyway later.  But I just wanted to be sure that the
-> > > > > > > > current tree could work somehow better...
-> > > > > > > > 
-> > > > > > > 
-> > > > > > > Hi,
-> > > > > > > 
-> > > > > > > I just updated and tried the current tree; still no
-> > > > > > > sound/headphone output.  :(
-> > > > > > 
-> > > > > > 
-> > > > > > Ok, I believe I've made some progress on this.  The problem
-> > > > > > appears to be related to the autoconfig handling of the line
-> > > > > > out nids.  The current code ends up with something like the
-> > > > > > following:
-> > > > > > 
-> > > > > > ALSA sound/pci/hda/hda_codec.c:3833: autoconfig: line_outs=1
-> > > > > > (0x17/0x0/0x0/0x0/0x0)
-> > > > > > ALSA sound/pci/hda/hda_codec.c:3837:    speaker_outs=0
-> > > > > > (0x0/0x0/0x0/0x0/0x0)
-> > > > > > ALSA sound/pci/hda/hda_codec.c:3841:    hp_outs=1
-> > > > > > (0x21/0x0/0x0/0x0/0x0) ALSA sound/pci/hda/hda_codec.c:3842:
-> > > > > > mono: mono_out=0x0 ALSA sound/pci/hda/hda_codec.c:3853:
-> > > > > > inputs: mic=0x18, fmic=0x19, line=0x0, fline=0x0, cd=0x0,
-> > > > > > aux=0x0
-> > > > > > 
-> > > > > > However, NID 0x17 is actually a speaker_out.  The code that
-> > > > > > checks for line_outs in snd_hda_parse_pin_def_config()
-> > > > > > unsets the speaker_out and uses that NID for a line_out.
-> > > > > > For whatever reason, this breaks things (no sound output,
-> > > > > > no headphone out).
-> > > > > 
-> > > > > That's intentional, and the driver checks that case, too.
-> > > > > Please check the latest sound git tree and see the kernel
-> > > > > message. You should have messages like "realtek: ..."
-> > > > > 
-> > > > > 
-> > > > > Takashi
-> > > > 
-> > > > 
-> > > > The realtek: lines don't appear to affect NID 0x17 at all.
-> > > > Instead, they say:
-> > > > 
-> > > > ALSA sound/pci/hda/patch_realtek.c:1154: realtek: No valid SSID,
-> > > > checking pincfg 0x40178e2d for NID 0x1d ALSA
-> > > > sound/pci/hda/patch_realtek.c:1170: realtek: Enabling init
-> > > > ASM_ID=0x8e2d CODEC_ID=10ec0272 ALSA
-> > > > sound/pci/hda/patch_realtek.c:1111: realtek: Enable HP
-> > > > auto-muting on NID 0x21
-> > > 
-> > > Then 0x17 should be toggled when the jack on 0x21 is detected.
-> > > 
-> > > 
-> > > Takashi
-> > 
-> > But since I get absolutely no sound through headphones or speakers,
-> > I can't tell if it's being toggled.  :)
-> 
-> You can see the 0x17 in the codec proc whether it's changed at plugged
-> / unplugged.  The driver should change its pin control dynamically.
-> 
-> > I've noticed:
-> >  - in order to get speaker output, 0x17 *must* be defined as the
-> > speaker-out, and 0x14 *must* be listed as a line-out pin.
-> >  - in order to get headphone output, neither 0x17 nor 0x15 are to be
-> > listed as the first line-out pin
-> 
-> Then it implies that 0x17 has nothing to do with the speaker, i.e. a
-> BIOS bug.  0x14 could be the speaker output while 0x17 is just a
-> dummy.
-> 
->
+First, I am trying to add mmaping support to the pcm driver I am using
+so that I can use the dmix plugin.  My driver is a soc driver for the
+powerpc mpc5121.  The pcm_new function preallocates the dma buffers
+with the following code:
 
-Specifying 0x14 as the speaker-pin doesn't work, either.
+static int mpc512x_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
+{
+	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
+	struct snd_dma_buffer *buf = &substream->dma_buffer;
+	size_t size = mpc512x_pcm_hardware.buffer_bytes_max;
+
+	buf->dev.type = SNDRV_DMA_TYPE_DEV;
+	buf->dev.dev = pcm->card->dev;
+	buf->private_data = NULL;
+	buf->area = dma_alloc_coherent(pcm->card->dev, size,
+				       &buf->addr, GFP_KERNEL);
+	if (!buf->area)
+		return -ENOMEM;
+	buf->bytes = size;
+	return 0;
+}
+
+Given the way the dma buffers are allocated if I just add
+SNDRV_PCM_INFO_MMAP and SNDRV_PCM_INFO_MMAP_VALID to my
+snd_pcm_hardware struct with the alsa framework use a generic mmap
+function or do I still need to implement one?  If I need to implement
+a mmap callback what is the fastest and most simple way to add that
+support?
+
+Second, I need to test dmix with my driver.  My codec only supports
+S16_BE.  When I try to use `aplay -Dplug:dmix -f SE16_BE mywave.raw` I
+get the error `requested or auto-format is not available`.  After
+looking in pcm_direct.c it appears that when I use -Dplug:dmx it
+ignores -f S16_BE and is defaulting to some format that my codec
+doesn't support.  I don't have a /etc/alsa.conf or ~/.asoundrc file
+and /proc/asound/modules doesn't exists.  Where is aplay getting the
+default setting for plug:dmix?  How can I override those defaults?
+
+I am using alsa-lib-1.0.11rc2.
+
+Thanks,
+Gabe
