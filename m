@@ -1,20 +1,22 @@
-From: Lee Revell <rlrevell@joe-job.com>
+From: Ryan Dunn <oryandunn.ml@gmail.com>
 Subject: Re: module snd-atiixp issue with
 	suspend/hibernate/resume
-Date: Wed, 29 Apr 2009 22:42:10 -0400
-Message-ID: <75b66ecd0904291942u3b352dbj74e5de00ebdf167b@mail.gmail.com>
+Date: Thu, 30 Apr 2009 00:43:02 -0400
+Message-ID: <bf4fda4a0904292143s34744db8xbf0b4524567d772@mail.gmail.com>
 References: <bf4fda4a0904282106u7fd3ed03s8d1234423abd679@mail.gmail.com>
+	<75b66ecd0904291942u3b352dbj74e5de00ebdf167b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id EFD74103897
+Received: from mail-fx0-f170.google.com (mail-fx0-f170.google.com
+	[209.85.220.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id ADE4310388C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Apr 2009 04:42:10 +0200 (CEST)
-Received: by yx-out-1718.google.com with SMTP id 6so1021984yxn.2
-	for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2009 19:42:10 -0700 (PDT)
-In-Reply-To: <bf4fda4a0904282106u7fd3ed03s8d1234423abd679@mail.gmail.com>
+	Thu, 30 Apr 2009 06:43:04 +0200 (CEST)
+Received: by fxm18 with SMTP id 18so1763542fxm.32
+	for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2009 21:43:03 -0700 (PDT)
+In-Reply-To: <75b66ecd0904291942u3b352dbj74e5de00ebdf167b@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,40 +26,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ryan Dunn <oryandunn.ml@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 29, 2009 at 12:06 AM, Ryan Dunn <oryandunn.ml@gmail.com> wrote:
-> I have a Compaq V2000 laptop with the ATI IXP chipset and make use of the
-> snd-atiixp module. =A0The laptop needs to have the ac97_quirk option set =
-to 7
-> to enable the mute LED. =A0After setting this option in the
-> /etc/modprobe.d/options.conf file, the mute LED works after a reboot.
-> However, after a resume from suspend or hibernate, the mute LED does not
-> work. =A0The alsa-info.sh script reports that the quirk is still set with=
- 7.
-> At this point a reboot will NOT fix the problem. =A0The only way to fix i=
-t is
-> to remove and reinsert the module with modprobe.
+Thanks Lee,
+
+I grabbed the kernel source from the repos and started perusing the code.
+It looks like when the module is installed, the call chain starts in
+atiixp.c and moves into ac97/ac97_codec.c via a call to
+snd_ac97_tune_hardware() which ultimately twiddles a bit in the
+AC97_POWERDOWN register.  I'm not sure yet if the suspend method properly
+saves this register on suspend or not; or if the same call chain needs to be
+repeated on a resume.  I appreciate your quick and relevant answer.  When I
+get time, I'll start adding some debug printouts to try this out.
+
+Also, the struct ac97_quirk ac97_quirks[] array has a couple of entries in
+it currently (in the atiixp.c file).  How do I get the subvender/subdevice
+id's for my system (I didn't seem to have luck with lspci, unless I'm not
+looking in the right fields)?  Would it be possible to edit the driver so
+that an explict module option would not be needed on my hardware?
+
+Thanks,
+Ryan
+
+On Wed, Apr 29, 2009 at 10:42 PM, Lee Revell <rlrevell@joe-job.com> wrote:
+
+> On Wed, Apr 29, 2009 at 12:06 AM, Ryan Dunn <oryandunn.ml@gmail.com>
+> wrote:
+> > I have a Compaq V2000 laptop with the ATI IXP chipset and make use of the
+> > snd-atiixp module.  The laptop needs to have the ac97_quirk option set to
+> 7
+> > to enable the mute LED.  After setting this option in the
+> > /etc/modprobe.d/options.conf file, the mute LED works after a reboot.
+> > However, after a resume from suspend or hibernate, the mute LED does not
+> > work.  The alsa-info.sh script reports that the quirk is still set with
+> 7.
+> > At this point a reboot will NOT fix the problem.  The only way to fix it
+> is
+> > to remove and reinsert the module with modprobe.
+> >
+> > This is on a fresh Ubuntu 9.04 install.  Any ideas?  I wasn't sure if
+> this
+> > should be reported here or on the kernel list.  I saw a similar issue
+> with
+> > the ac97_quirk on the kernel list and they were referred here.  I'm a
+> > software developer, so I'd be willing to try ideas/possible solutions if
+> you
+> > have them.
 >
-> This is on a fresh Ubuntu 9.04 install. =A0Any ideas? =A0I wasn't sure if=
- this
-> should be reported here or on the kernel list. =A0I saw a similar issue w=
-ith
-> the ac97_quirk on the kernel list and they were referred here. =A0I'm a
-> software developer, so I'd be willing to try ideas/possible solutions if =
-you
-> have them.
-
-Get the Ubuntu source code for the package that owns that ALSA driver,
-find the place in the driver's initialization code where ac97_quirk=3D7
-is handled, then check the driver's suspend and resume callbacks and
-make sure the suspend callback is correctly saving the LED state and
-that the resume callback is re-initializing the LED from the saved
-state in the same way the init code does.  grep and printk() are your
-friends ;-)
-
-HTH,
-
-Lee
+> Get the Ubuntu source code for the package that owns that ALSA driver,
+> find the place in the driver's initialization code where ac97_quirk=7
+> is handled, then check the driver's suspend and resume callbacks and
+> make sure the suspend callback is correctly saving the LED state and
+> that the resume callback is re-initializing the LED from the saved
+> state in the same way the init code does.  grep and printk() are your
+> friends ;-)
+>
+> HTH,
+>
+> Lee
+>
