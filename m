@@ -1,26 +1,30 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [RFC PATCH 3/5] pxa: clean up the legacy SSP API
-Date: Thu, 30 Apr 2009 08:08:58 +0100
-Message-ID: <20090430070858.GA3242@n2100.arm.linux.org.uk>
-References: <f17812d70904222206n73b3f7d1se18a2615c7aad2bc@mail.gmail.com>
-	<20090428222035.GG29277@n2100.arm.linux.org.uk>
-	<1240959968.30410.1.camel@brutus>
-	<20090429072706.GA31566@n2100.arm.linux.org.uk>
-	<20090429082152.GA2628@sirena.org.uk>
-	<20090429084109.GB10541@n2100.arm.linux.org.uk>
-	<f17812d70904290214g110f2a5ax5da4af478688f3d1@mail.gmail.com>
-	<20090429185151.GC21459@n2100.arm.linux.org.uk>
-	<f17812d70904291931o7bbf4df6g2827bdb28920f82b@mail.gmail.com>
+From: Joonyoung Shim <jy0922.shim@samsung.com>
+Subject: Re: [PATCH] ASoC: TWL4030: change DAPMs for analog
+ microphone selection
+Date: Thu, 30 Apr 2009 16:20:16 +0900
+Message-ID: <49F95130.3060004@samsung.com>
+References: <49F69B56.4000902@samsung.com>
+	<200904281506.41577.peter.ujfalusi@nokia.com>
+	<49F79D09.6010901@samsung.com>
+	<200904300951.21620.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
-	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id A8B552446F
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3F65B24476
 	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Apr 2009 09:09:41 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <f17812d70904291931o7bbf4df6g2827bdb28920f82b@mail.gmail.com>
+	Thu, 30 Apr 2009 09:20:35 +0200 (CEST)
+Received: from epmmp1 (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KIW009TVKDXBJ@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Thu, 30 Apr 2009 16:20:21 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KIW0066RKDX3P@mmp1.samsung.com> for
+	alsa-devel@alsa-project.org; Thu, 30 Apr 2009 16:20:21 +0900 (KST)
+In-reply-to: <200904300951.21620.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,28 +34,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric Miao <eric.y.miao@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>, Philipp Zabel <philipp.zabel@gmail.com>, Paul Shen <bshen9@marvell.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Daniel Ribeiro <drwyrm@gmail.com>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>, "bhmin@samsung.com" <bhmin@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 30, 2009 at 10:31:53AM +0800, Eric Miao wrote:
-> On Thu, Apr 30, 2009 at 2:51 AM, Russell King - ARM Linux
-> <linux@arm.linux.org.uk> wrote:
-> > The transfers happen under control of PCON not the PXA; PCON asserts a
-> > GPIO to activate the DMA to control when the transfer happens.
+On 4/30/2009 3:51 PM, Peter Ujfalusi wrote:
+> On Wednesday 29 April 2009 03:19:21 ext Joonyoung Shim wrote:
+>> I read it at TRM too, but cannot believe it such mixer of outputs.
+>>
+>> Actually, i setted to 1 both HSMIC_EN bit and MAINMIC_EN bit for the
+>> ANAMICL register, and recorded sound from headset mic and main mic. The
+>> result is that both sounds are recorded.
+>>
+>> So, to be sure this part, can you inquire about it to TI side?
 > 
-> That's too bad then. Does that GPIO act like a chip select or it's just a
-> signal to inform the host to do a transfer? And it also depends on the
-> SCLK direction.
+> I'll ask Ti about this and also about the output mixer/mux thing, just to be 
+> sure that we are not doing anything 'illegal' with those either.
 > 
-> If the GPIO behaves like an IRQ to inform the host for a transfer, maybe
-> the driver can arrange a transfer initiated by that event.
+> We should wait with this until Ti responds, I'll let you know what is their 
+> opinion...
 
-I don't know what the timing requirement is.  What I do know is what
-the current code does, which is to use the signal to control the
-transmit DMA when PCON wants to transfer data.
+Ok, i see.
 
-Now, remember that PCON has a habbit of resetting the PXA when things
-happen that it doesn't like, I really don't want to go round
-experimenting with this thing; as already stated it's really not worth
-trying to merge this code if that's what will be required.
+Thanks.
