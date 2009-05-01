@@ -1,21 +1,20 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: Too big adjustment messages on hda-intel with ALC883
-Date: Fri, 01 May 2009 13:57:59 +0300
-Message-ID: <49FAD5B7.9030304@pardus.org.tr>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: dmix and mmap
+Date: Fri, 1 May 2009 12:32:41 +0100
+Message-ID: <20090501113240.GF6975@sirena.org.uk>
+References: <bb6204720904300810ma174b6cn825f8565c0b694c0@mail.gmail.com>
+	<20090430151301.GA27605@sirena.org.uk>
+	<bb6204720904301229q3b0b93eao28563ec7bdef73cb@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 039322436D
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 11CF0243BE
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 May 2009 12:58:00 +0200 (CEST)
-Received: from [192.168.1.2] (unknown [88.249.178.198])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested) (Authenticated sender: ozan)
-	by pardus.org.tr (Postfix) with ESMTP id B1EDF6680B25
-	for <alsa-devel@alsa-project.org>;
-	Fri,  1 May 2009 13:57:51 +0300 (EEST)
+	Fri,  1 May 2009 13:32:42 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <bb6204720904301229q3b0b93eao28563ec7bdef73cb@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,26 +24,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Gabriel Johnson <johnsoga@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When I launch pulseaudio, a bunch of the following line is dropped to dmesg:
+On Thu, Apr 30, 2009 at 02:29:41PM -0500, Gabriel Johnson wrote:
 
-[ 1472.847085] ALSA ../../alsa-kernel/pci/hda/hda_intel.c:1102: Too big
-adjustment 32
-[ 1472.998865] hda-intel: IRQ timing workaround is activated for card
-#1. Suggest a bigger bdl_pos_adj.
+> is working.  Now using the ioctl to get mmap address of the dma space
+> isn't working, I get a kernel machine check error:
 
-alsa-info output is at:
-http://www.alsa-project.org/db/?f=fd7037731d908e4287e1d457de6a1483062b2130
+...
 
-I'm using 2.6.30_rc3 with:
-  - 20090421 snapshot of alsa-driver,
-  - 20090410 snapshot of alsa-lib.
+> Should the default mmap ioctl functions work on powerpc?
 
-Pulseaudio version is 0.9.15, timer-based scheduling is enabled.
-
-Regards,
-
-Ozan Caglayan
-http://www.pardus.org.tr/eng
+I know that there were some problems with PowerPC memory access,
+unfortunately I don't know any specifics or if these issues are fixed in
+current kernels.  Searching for postings by Takashi Iwai on the PowerPC
+kernel lists might turn something up.
