@@ -1,16 +1,18 @@
-From: "Park Jinyoung" <parkjy@mtekvision.com>
-Subject: Re: errors in wm8990 codec driver
-Date: Fri, 1 May 2009 11:02:26 +0900
-Message-ID: <FD296E38A61CDB45A5F0E6CCD4B459432EAC40@mtv-mail>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: New codec for STAC9766 used on Efika
+Date: Fri, 1 May 2009 11:14:03 +0100
+Message-ID: <20090501101402.GB6975@sirena.org.uk>
+References: <9e4733910904301330h54581775i592d1ee4049a8dd0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C9CA00.E01EFDC7"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mtv-mail.INFRA.MTEKVISION.COM (mail.mtekvision.com
-	[218.49.29.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 963031037EC
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0FA1E2415F
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 May 2009 04:02:33 +0200 (CEST)
-Content-class: urn:content-classes:message
+	Fri,  1 May 2009 12:14:04 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <9e4733910904301330h54581775i592d1ee4049a8dd0@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,135 +22,186 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@sirena.org.uk
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: Matt Sealey <matt@genesi-usa.com>, alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+On Thu, Apr 30, 2009 at 04:30:12PM -0400, Jon Smirl wrote:
+> Could you please review this new STAC9766 codec implementation. Some
 
-------_=_NextPart_001_01C9CA00.E01EFDC7
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Please do CC me on ASoC patches; I've asked you to do this several times
+before and it's standard practice for kernel patch submissions to CC the
+relevant maintainers.
 
-Hello,
+Overall the driver looks fairly good, just needs a bit of tidying up.
 
-I made wm8990 patch file on your request.
-The patch file was attached in this.
-I use my company email, because I have no other method for=20
-file attach in my company.
+> of the controls aren't where they need to be. For example the mutes on
+> the mixer inputs. I'm not sure where they are supposed to go.
 
-Thanks.
+Could you be more specific?  Generally the mute would be used as a
+switch and appear in the list of controls passed to the mixer.
 
-2009/4/30 Mark Brown <broonie@sirena.org.uk>:
-> On Thu, Apr 30, 2009 at 02:03:03PM +0900, Jinyoung Park wrote:
->> I found a number of typing errors in wm8990 codec driver.
->> The mis-typing exist in dapm controller definitions and dapm route
-definitions,
->> so happen mis-matched error when snd_soc_dapm_add_routes().
->> Belows are my modified code. Please check...
->
-> This all looks reasonable - could you please supply a Signed-off-by
-for
-> your patch?  It may also help to use git send-email to send your patch
-> or attach it, gmail tends to mangle patches so that they can't be
-> applied and it looks like some of that may have happened here, though
-> I've not actually tried applying it.
->
+> How should SPDIF support work? The hardware supports simultaneous use
+> of analog and SPDIF.  Do I want one DAI or two?  If I have two DAI
 
+Having taken a step back and looked at the datasheet what's going on
+here is that the CODEC has a S/PDIF output which can take either an AC97
+timeslot or the output of the ADC as input.  The AC97 timeslot input
+should probably be represented as a DAI, feeding into a mux selecting
+the input to be output to S/PDIF.
 
-------_=_NextPart_001_01C9CA00.E01EFDC7
-Content-Type: application/octet-stream;
-	name="0001-ASoC-Fix-errors-in-WM8990.patch"
-Content-Transfer-Encoding: base64
-Content-Description: 0001-ASoC-Fix-errors-in-WM8990.patch
-Content-Disposition: attachment;
-	filename="0001-ASoC-Fix-errors-in-WM8990.patch"
+> then ALSA needs to interleave the samples into a single DMA stream. So
+> if one stream isn't active it needs to be filled with silence.
 
-RnJvbSBiMDQwZmYyYWNhNjViMjFhMDMyODJlNTk5Yzk1YmEzY2ZlNzBiMTljIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBKaW55b3VuZyBQYXJrIDxwYXJranlAbXRla3Zpc2lvbi5jb20+
-CkRhdGU6IEZyaSwgMSBNYXkgMjAwOSAxMDoyMTozNyArMDAwMApTdWJqZWN0OiBbUEFUQ0hdIEFT
-b0M6IEZpeCBlcnJvcnMgaW4gV004OTkwCgpUaGUgbWlzLXR5cGluZyBleGlzdCBpbiBkYXBtIGNv
-bnRyb2xsZXIgZGVmaW5pdGlvbnMgYW5kIGRhcG0gcm91dGUgZGVmaW5pdGlvbnMsCnNvIGhhcHBl
-biBtaXMtbWF0Y2hlZCBlcnJvciB3aGVuIHNuZF9zb2NfZGFwbV9hZGRfcm91dGVzKCkuCgpTaWdu
-ZWQtb2ZmLWJ5OiBKaW55b3VuZyBQYXJrIDxwYXJranlAbXRla3Zpc2lvbi5jb20+Ci0tLQogc291
-bmQvc29jL2NvZGVjcy93bTg5OTAuYyB8ICAgNDAgKysrKysrKysrKysrKysrKysrKystLS0tLS0t
-LS0tLS0tLS0tLS0tLQogMSBmaWxlcyBjaGFuZ2VkLCAyMCBpbnNlcnRpb25zKCspLCAyMCBkZWxl
-dGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3dtODk5MC5jIGIvc291bmQv
-c29jL2NvZGVjcy93bTg5OTAuYwppbmRleCBjZWRmM2Y5Li5kZGMzMjhlIDEwMDY0NAotLS0gYS9z
-b3VuZC9zb2MvY29kZWNzL3dtODk5MC5jCisrKyBiL3NvdW5kL3NvYy9jb2RlY3Mvd204OTkwLmMK
-QEAgLTcyOSw3ICs3MjksNyBAQCBTTkRfU09DX0RBUE1fTUlYRVJfRSgiSU5NSVhMIiwgV004OTkw
-X0lOVERSSVZCSVRTLCBXTTg5OTBfSU5NSVhMX1BXUl9CSVQsIDAsCiAJaW5taXhlcl9ldmVudCwg
-U05EX1NPQ19EQVBNX1BPU1RfUE1VIHwgU05EX1NPQ19EQVBNX1BPU1RfUE1EKSwKIAogLyogQUlO
-TE1VWCAqLwotU05EX1NPQ19EQVBNX01VWF9FKCJBSUxOTVVYIiwgV004OTkwX0lOVERSSVZCSVRT
-LCBXTTg5OTBfQUlOTE1VWF9QV1JfQklULCAwLAorU05EX1NPQ19EQVBNX01VWF9FKCJBSU5MTVVY
-IiwgV004OTkwX0lOVERSSVZCSVRTLCBXTTg5OTBfQUlOTE1VWF9QV1JfQklULCAwLAogCSZ3bTg5
-OTBfZGFwbV9haW5sbXV4X2NvbnRyb2xzLCBpbm1peGVyX2V2ZW50LAogCVNORF9TT0NfREFQTV9Q
-T1NUX1BNVSB8IFNORF9TT0NfREFQTV9QT1NUX1BNRCksCiAKQEAgLTc0MCw3ICs3NDAsNyBAQCBT
-TkRfU09DX0RBUE1fTUlYRVJfRSgiSU5NSVhSIiwgV004OTkwX0lOVERSSVZCSVRTLCBXTTg5OTBf
-SU5NSVhSX1BXUl9CSVQsIDAsCiAJaW5taXhlcl9ldmVudCwgU05EX1NPQ19EQVBNX1BPU1RfUE1V
-IHwgU05EX1NPQ19EQVBNX1BPU1RfUE1EKSwKIAogLyogQUlOUk1VWCAqLwotU05EX1NPQ19EQVBN
-X01VWF9FKCJBSVJOTVVYIiwgV004OTkwX0lOVERSSVZCSVRTLCBXTTg5OTBfQUlOUk1VWF9QV1Jf
-QklULCAwLAorU05EX1NPQ19EQVBNX01VWF9FKCJBSU5STVVYIiwgV004OTkwX0lOVERSSVZCSVRT
-LCBXTTg5OTBfQUlOUk1VWF9QV1JfQklULCAwLAogCSZ3bTg5OTBfZGFwbV9haW5ybXV4X2NvbnRy
-b2xzLCBpbm1peGVyX2V2ZW50LAogCVNORF9TT0NfREFQTV9QT1NUX1BNVSB8IFNORF9TT0NfREFQ
-TV9QT1NUX1BNRCksCiAKQEAgLTg0OCw0MCArODQ4LDQwIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
-c25kX3NvY19kYXBtX3JvdXRlIGF1ZGlvX21hcFtdID0gewogCXsiTElOMTIgUEdBIiwgIkxJTjIg
-U3dpdGNoIiwgIkxJTjIifSwKIAkvKiBMSU4zNCBQR0EgKi8KIAl7IkxJTjM0IFBHQSIsICJMSU4z
-IFN3aXRjaCIsICJMSU4zIn0sCi0JeyJMSU4zNCBQR0EiLCAiTElONCBTd2l0Y2giLCAiTElONCJ9
-LAorCXsiTElOMzQgUEdBIiwgIkxJTjQgU3dpdGNoIiwgIkxJTjQvUlhOIn0sCiAJLyogSU5NSVhM
-ICovCiAJeyJJTk1JWEwiLCAiUmVjb3JkIExlZnQgVm9sdW1lIiwgIkxPTUlYIn0sCiAJeyJJTk1J
-WEwiLCAiTElOMiBWb2x1bWUiLCAiTElOMiJ9LAogCXsiSU5NSVhMIiwgIkxJTlBHQTEyIFN3aXRj
-aCIsICJMSU4xMiBQR0EifSwKIAl7IklOTUlYTCIsICJMSU5QR0EzNCBTd2l0Y2giLCAiTElOMzQg
-UEdBIn0sCi0JLyogQUlMTk1VWCAqLwotCXsiQUlMTk1VWCIsICJJTk1JWEwgTWl4IiwgIklOTUlY
-TCJ9LAotCXsiQUlMTk1VWCIsICJESUZGSU5MIE1peCIsICJMSU4xMlBHQSJ9LAotCXsiQUlMTk1V
-WCIsICJESUZGSU5MIE1peCIsICJMSU4zNFBHQSJ9LAotCXsiQUlMTk1VWCIsICJSWFZPSUNFIE1p
-eCIsICJMSU40L1JYTiJ9LAotCXsiQUlMTk1VWCIsICJSWFZPSUNFIE1peCIsICJSSU40L1JYUCJ9
-LAorCS8qIEFJTkxNVVggKi8KKwl7IkFJTkxNVVgiLCAiSU5NSVhMIE1peCIsICJJTk1JWEwifSwK
-Kwl7IkFJTkxNVVgiLCAiRElGRklOTCBNaXgiLCAiTElOMTIgUEdBIn0sCisJeyJBSU5MTVVYIiwg
-IkRJRkZJTkwgTWl4IiwgIkxJTjM0IFBHQSJ9LAorCXsiQUlOTE1VWCIsICJSWFZPSUNFIE1peCIs
-ICJMSU40L1JYTiJ9LAorCXsiQUlOTE1VWCIsICJSWFZPSUNFIE1peCIsICJSSU40L1JYUCJ9LAog
-CS8qIEFEQyAqLwotCXsiTGVmdCBBREMiLCBOVUxMLCAiQUlMTk1VWCJ9LAorCXsiTGVmdCBBREMi
-LCBOVUxMLCAiQUlOTE1VWCJ9LAogCiAJLyogUklOMTIgUEdBICovCiAJeyJSSU4xMiBQR0EiLCAi
-UklOMSBTd2l0Y2giLCAiUklOMSJ9LAogCXsiUklOMTIgUEdBIiwgIlJJTjIgU3dpdGNoIiwgIlJJ
-TjIifSwKIAkvKiBSSU4zNCBQR0EgKi8KIAl7IlJJTjM0IFBHQSIsICJSSU4zIFN3aXRjaCIsICJS
-SU4zIn0sCi0JeyJSSU4zNCBQR0EiLCAiUklONCBTd2l0Y2giLCAiUklONCJ9LAorCXsiUklOMzQg
-UEdBIiwgIlJJTjQgU3dpdGNoIiwgIlJJTjQvUlhQIn0sCiAJLyogSU5NSVhMICovCiAJeyJJTk1J
-WFIiLCAiUmVjb3JkIFJpZ2h0IFZvbHVtZSIsICJST01JWCJ9LAogCXsiSU5NSVhSIiwgIlJJTjIg
-Vm9sdW1lIiwgIlJJTjIifSwKIAl7IklOTUlYUiIsICJSSU5QR0ExMiBTd2l0Y2giLCAiUklOMTIg
-UEdBIn0sCiAJeyJJTk1JWFIiLCAiUklOUEdBMzQgU3dpdGNoIiwgIlJJTjM0IFBHQSJ9LAotCS8q
-IEFJUk5NVVggKi8KLQl7IkFJUk5NVVgiLCAiSU5NSVhSIE1peCIsICJJTk1JWFIifSwKLQl7IkFJ
-Uk5NVVgiLCAiRElGRklOUiBNaXgiLCAiUklOMTJQR0EifSwKLQl7IkFJUk5NVVgiLCAiRElGRklO
-UiBNaXgiLCAiUklOMzRQR0EifSwKLQl7IkFJUk5NVVgiLCAiUlhWT0lDRSBNaXgiLCAiUklONC9S
-WE4ifSwKLQl7IkFJUk5NVVgiLCAiUlhWT0lDRSBNaXgiLCAiUklONC9SWFAifSwKKwkvKiBBSU5S
-TVVYICovCisJeyJBSU5STVVYIiwgIklOTUlYUiBNaXgiLCAiSU5NSVhSIn0sCisJeyJBSU5STVVY
-IiwgIkRJRkZJTlIgTWl4IiwgIlJJTjEyIFBHQSJ9LAorCXsiQUlOUk1VWCIsICJESUZGSU5SIE1p
-eCIsICJSSU4zNCBQR0EifSwKKwl7IkFJTlJNVVgiLCAiUlhWT0lDRSBNaXgiLCAiTElONC9SWE4i
-fSwKKwl7IkFJTlJNVVgiLCAiUlhWT0lDRSBNaXgiLCAiUklONC9SWFAifSwKIAkvKiBBREMgKi8K
-LQl7IlJpZ2h0IEFEQyIsIE5VTEwsICJBSVJOTVVYIn0sCisJeyJSaWdodCBBREMiLCBOVUxMLCAi
-QUlOUk1VWCJ9LAogCiAJLyogTE9NSVggKi8KIAl7IkxPTUlYIiwgIkxPTUlYIFJJTjMgQnlwYXNz
-IFN3aXRjaCIsICJSSU4zIn0sCkBAIC05MjIsNyArOTIyLDcgQEAgc3RhdGljIGNvbnN0IHN0cnVj
-dCBzbmRfc29jX2RhcG1fcm91dGUgYXVkaW9fbWFwW10gPSB7CiAJeyJMT1BNSVgiLCAiTE9QTUlY
-IExlZnQgTWl4ZXIgUEdBIFN3aXRjaCIsICJMT1BHQSJ9LAogCiAJLyogT1VUM01JWCAqLwotCXsi
-T1VUM01JWCIsICJPVVQzTUlYIExJTjQvUlhQIEJ5cGFzcyBTd2l0Y2giLCAiTElONC9SWFAifSwK
-Kwl7Ik9VVDNNSVgiLCAiT1VUM01JWCBMSU40L1JYUCBCeXBhc3MgU3dpdGNoIiwgIkxJTjQvUlhO
-In0sCiAJeyJPVVQzTUlYIiwgIk9VVDNNSVggTGVmdCBPdXQgUEdBIFN3aXRjaCIsICJMT1BHQSJ9
-LAogCiAJLyogT1VUNE1JWCAqLwpAQCAtOTQ5LDcgKzk0OSw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1
-Y3Qgc25kX3NvY19kYXBtX3JvdXRlIGF1ZGlvX21hcFtdID0gewogCS8qIE91dHB1dCBQaW5zICov
-CiAJeyJMT04iLCBOVUxMLCAiTE9OTUlYIn0sCiAJeyJMT1AiLCBOVUxMLCAiTE9QTUlYIn0sCi0J
-eyJPVVQiLCBOVUxMLCAiT1VUM01JWCJ9LAorCXsiT1VUMyIsIE5VTEwsICJPVVQzTUlYIn0sCiAJ
-eyJMT1VUIiwgTlVMTCwgIkxPVVQgUEdBIn0sCiAJeyJTUEtOIiwgTlVMTCwgIlNQS01JWCJ9LAog
-CXsiUk9VVCIsIE5VTEwsICJST1VUIFBHQSJ9LAotLSAKMS41LjYuMQoK
+The AC97 controller driver should be able to expose multiple data
+streams - normally the hardware has direct support for this.
 
-------_=_NextPart_001_01C9CA00.E01EFDC7
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> I get a few errors from the current config:
+> Failed to add route All Analog Mixer->Pop Bypass Mux
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+You've called the mixer both "All Analog Mixer" and "All Analog".
 
-------_=_NextPart_001_01C9CA00.E01EFDC7--
+> dapm: STAC9766: configuring unknown pin OUT3
+> dapm: STAC9766: configuring unknown pin MONOOUT
+> Failed to add route HPOUTL->Headphone Jack
+> dapm: STAC9766: configuring unknown pin OUT3
+> dapm: STAC9766: configuring unknown pin MONOOUT
+> Failed to add route HPOUTL->Headphone Jack
+
+For the rest I'd suggest checking your machine driver; there's no
+references to any OUT3, HPOUTL or MONOOUT pins in your driver and
+Headphone Jack should definitely be part of the machine driver.
+
+> /*
+>  * stac9766.c  --  ALSA Soc STAC9766 codec support
+
+SoC.
+
+>  *
+>  * Copyright 2008 Jon Smirl, Digispeaker
+
+2009, I expect.
+
+> static const u16 stac9766_reg[] = {
+>         0x6A90, 0x8000, 0x8000, 0x8000, // 6
+
+No C++ comments, please.
+
+> static const struct soc_enum stac9766_enum[] = {
+> 	SOC_ENUM_DOUBLE(AC97_REC_SEL, 8, 0, 8, stac9766_record_mux), /* Record Mux 0 */
+
+Please define individual variables rather than using a table like this -
+it does nothing for legibility to have to use array indexes to refer to
+the enums.  Some older drivers do this as a result of being converted
+from pre-ASoC driers where it made more sense to have the table.
+
+> 	SOC_SINGLE("Mixer PC Beep Volume", AC97_PC_BEEP, 1, 15, 1),
+
+For the "Mixer x Volume" controls you should change the name so that it
+lines up with the names that are generated for the mixer switches.  This
+will allow ALSA to present them as a single control to users, making UIs
+work better.  You want the control names to be the same apart from the
+final "Switch" or "Volume".
+
+It'd also be worth considering adding TLV information to the volume
+controls if the gains are documented, but it's not essential.
+
+> 	SOC_SINGLE("Mic Gain", AC97_STAC_ANALOG_SPECIAL, 2, 1, 1),
+
+Mic Volume, probably.
+
+> 	SOC_DOUBLE("Record Gain", AC97_REC_GAIN, 8, 0, 31, 1),
+
+Volume, again - gain and attenuation are both just volumes.
+
+> static const struct snd_soc_dapm_widget stac9766_dapm_widgets[] = {
+> 	SND_SOC_DAPM_INPUT("PCMOut"),
+
+If my brief glance at the datasheet is accurate this is actually your
+AC97 DAI and shouldn't be a pin.
+
+> 	SND_SOC_DAPM_ADC("ADC", "Analog Capture", AC97_POWERDOWN, 8, 1),
+
+> 	SND_SOC_DAPM_OUTPUT("PCMIn"),
+
+This is the AC97 DAI too.
+
+> 	/* Record Mux */
+> 	{"ADC", NULL, "Mic1/2 Mux"},
+> 	{"ADC", NULL, "CD"},
+> 	{"ADC", NULL, "Video"},
+> 	{"ADC", NULL, "AUX"},
+> 	{"ADC", NULL, "Line"},
+> 	{"ADC", NULL, "Record All Mux"},
+> 	{"ADC", NULL, "Phone"},
+
+You should be putting the controls from the mux in rather the NULLs here
+- at the minute it looks to DAPM like all the paths are permanantly
+connected.
+
+> 	{NULL, NULL, NULL},
+
+This isn't required.
+
+> 		val = soc_ac97_ops.read(codec->ac97, reg);
+> 		return val;
+> 	}
+> 	return cache[reg / 2];
+
+Indentation.
+
+> static int ac97_analog_prepare(struct snd_pcm_substream *substream,
+> 			     struct snd_soc_dai *dai)
+> {
+> 	struct snd_soc_codec *codec = dai->codec;
+> 	struct snd_pcm_runtime *runtime = substream->runtime;
+> 	unsigned short reg, vra;
+> 
+> 	vra = stac9766_ac97_read(codec, AC97_EXTENDED_STATUS);
+> 
+> 	//vra |= 0x4;
+
+Either this should go or it should be uncommented.
+
+> static int ac97_digital_prepare(struct snd_pcm_substream *substream,
+> 			     struct snd_soc_dai *dai)
+> {
+> 	printk("stac9766: ac97_digital_prepare\n");
+> 
+> 	return 0;
+> }
+
+This function can just be removed.
+
+> static int stac9766_set_bias_level(struct snd_soc_codec *codec,
+> 						enum snd_soc_bias_level level)
+> {
+> 	switch (level) {
+> 	case SND_SOC_BIAS_ON: /* full On */
+> 		stac9766_ac97_write(codec, AC97_POWERDOWN, 0x0000);
+> 		break;
+> 	case SND_SOC_BIAS_PREPARE: /* partial On */
+> 		stac9766_ac97_write(codec, AC97_POWERDOWN, 0x0000);
+> 		break;
+
+These should be noops if you're using DAPM.
+
+> 	.playback = {
+> 		.stream_name	= "stac9766 analog",
+> 		.channels_min	= 1,
+> 		.channels_max	= 2,
+> 		.rates		= SNDRV_PCM_RATE_8000_48000,
+> 		.formats	= SNDRV_PCM_FMTBIT_S32_BE,
+
+Are you sure about this?  AC97 generally does 16 bit samples...
+
+> static int __init stac9766_probe(struct platform_device *pdev)
+
+__devinit.
+
+> static __init int stac9766_driver_init(void)
+> {
+> 	snd_soc_register_dais(stac9766_dai, ARRAY_SIZE(stac9766_dai));
+
+This should be done when your driver probes - it is only done on module
+init for drivers which are not able to probe through normal methods.
