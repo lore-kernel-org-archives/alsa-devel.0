@@ -1,17 +1,16 @@
-From: "Lopez Cruz, Misael" <x0052729@ti.com>
-Subject: [PATCH 2/2] ASoC: TWL4030: Add voice digital loopback:
-	sidetone
-Date: Thu, 30 Apr 2009 21:48:08 -0500
-Message-ID: <2C7D3DF36ADFFC479B44490D912B616705F63E0BA8@dlee07.ent.ti.com>
+From: "Park Jinyoung" <parkjy@mtekvision.com>
+Subject: Re: errors in wm8990 codec driver
+Date: Fri, 1 May 2009 11:02:26 +0900
+Message-ID: <FD296E38A61CDB45A5F0E6CCD4B459432EAC40@mtv-mail>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C9CA00.E01EFDC7"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4CC522479D
+Received: from mtv-mail.INFRA.MTEKVISION.COM (mail.mtekvision.com
+	[218.49.29.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id 963031037EC
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 May 2009 04:48:17 +0200 (CEST)
-Content-Language: en-US
+	Fri,  1 May 2009 04:02:33 +0200 (CEST)
+Content-class: urn:content-classes:message
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,85 +20,135 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>, Mark Brown <broonie@sirena.org.uk>
+To: broonie@sirena.org.uk
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-This patch add voice digital loopback (sidetone) to the twl4030
-driver. It mixes voice uplink attenuated (by sidetone gain) with
-voice downlink when the codec is working in option2 (voice/audio
-mode).
+This is a multi-part message in MIME format.
 
-Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
----
- sound/soc/codecs/twl4030.c |   27 +++++++++++++++++++++++++--
- 1 files changed, 25 insertions(+), 2 deletions(-)
+------_=_NextPart_001_01C9CA00.E01EFDC7
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index efb371f..23bae74 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -491,6 +491,18 @@ static const struct snd_kcontrol_new twl4030_dapm_dbypassr_control =
- 			TWL4030_REG_ATX2ARXPGA, 0, 7, 0,
- 			twl4030_dapm_dbypass_tlv);
- 
-+/*
-+ * Voice Sidetone GAIN volume control:
-+ * from -51 to -10 dB in 1 dB steps (mute instead of -51 dB)
-+ */
-+static DECLARE_TLV_DB_SCALE(twl4030_dapm_dbypassv_tlv, -5100, 100, 1);
-+
-+/* Digital bypass voice: sidetone (VUL -> VDL)*/
-+static const struct snd_kcontrol_new twl4030_dapm_dbypassv_control =
-+	SOC_DAPM_SINGLE_TLV("Volume",
-+			TWL4030_REG_VSTPGA, 0, 0x29, 0,
-+			twl4030_dapm_dbypassv_tlv);
-+
- static int micpath_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
-@@ -607,12 +619,18 @@ static int bypass_event(struct snd_soc_dapm_widget *w,
- 			twl4030->bypass_state |= (1 << 4);
- 		else
- 			twl4030->bypass_state &= ~(1 << 4);
-+	} else if (m->reg == TWL4030_REG_VSTPGA) {
-+		/* Voice digital bypass */
-+		if (reg)
-+			twl4030->bypass_state |= (1 << 5);
-+		else
-+			twl4030->bypass_state &= ~(1 << 5);
- 	} else {
- 		/* Digital bypass */
- 		if (reg & (0x7 << m->shift))
--			twl4030->bypass_state |= (1 << (m->shift ? 6 : 5));
-+			twl4030->bypass_state |= (1 << (m->shift ? 7 : 6));
- 		else
--			twl4030->bypass_state &= ~(1 << (m->shift ? 6 : 5));
-+			twl4030->bypass_state &= ~(1 << (m->shift ? 7 : 6));
- 	}
- 
- 	/* Enable master analog loopback mode if any analog switch is enabled*/
-@@ -991,6 +1009,9 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 	SND_SOC_DAPM_SWITCH_E("Right Digital Loopback", SND_SOC_NOPM, 0, 0,
- 			&twl4030_dapm_dbypassr_control, bypass_event,
- 			SND_SOC_DAPM_POST_REG),
-+	SND_SOC_DAPM_SWITCH_E("Voice Digital Loopback", SND_SOC_NOPM, 0, 0,
-+			&twl4030_dapm_dbypassv_control, bypass_event,
-+			SND_SOC_DAPM_POST_REG),
- 
- 	SND_SOC_DAPM_MIXER("Analog R1 Playback Mixer", TWL4030_REG_AVDAC_CTL,
- 			0, 0, NULL, 0),
-@@ -1203,9 +1224,11 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	/* Digital bypass routes */
- 	{"Right Digital Loopback", "Volume", "TX1 Capture Route"},
- 	{"Left Digital Loopback", "Volume", "TX1 Capture Route"},
-+	{"Voice Digital Loopback", "Volume", "TX2 Capture Route"},
- 
- 	{"Analog R2 Playback Mixer", NULL, "Right Digital Loopback"},
- 	{"Analog L2 Playback Mixer", NULL, "Left Digital Loopback"},
-+	{"Analog Voice Playback Mixer", NULL, "Voice Digital Loopback"},
- 
- };
- 
--- 
-1.5.4.3
+Hello,
+
+I made wm8990 patch file on your request.
+The patch file was attached in this.
+I use my company email, because I have no other method for=20
+file attach in my company.
+
+Thanks.
+
+2009/4/30 Mark Brown <broonie@sirena.org.uk>:
+> On Thu, Apr 30, 2009 at 02:03:03PM +0900, Jinyoung Park wrote:
+>> I found a number of typing errors in wm8990 codec driver.
+>> The mis-typing exist in dapm controller definitions and dapm route
+definitions,
+>> so happen mis-matched error when snd_soc_dapm_add_routes().
+>> Belows are my modified code. Please check...
+>
+> This all looks reasonable - could you please supply a Signed-off-by
+for
+> your patch?  It may also help to use git send-email to send your patch
+> or attach it, gmail tends to mangle patches so that they can't be
+> applied and it looks like some of that may have happened here, though
+> I've not actually tried applying it.
+>
+
+
+------_=_NextPart_001_01C9CA00.E01EFDC7
+Content-Type: application/octet-stream;
+	name="0001-ASoC-Fix-errors-in-WM8990.patch"
+Content-Transfer-Encoding: base64
+Content-Description: 0001-ASoC-Fix-errors-in-WM8990.patch
+Content-Disposition: attachment;
+	filename="0001-ASoC-Fix-errors-in-WM8990.patch"
+
+RnJvbSBiMDQwZmYyYWNhNjViMjFhMDMyODJlNTk5Yzk1YmEzY2ZlNzBiMTljIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBKaW55b3VuZyBQYXJrIDxwYXJranlAbXRla3Zpc2lvbi5jb20+
+CkRhdGU6IEZyaSwgMSBNYXkgMjAwOSAxMDoyMTozNyArMDAwMApTdWJqZWN0OiBbUEFUQ0hdIEFT
+b0M6IEZpeCBlcnJvcnMgaW4gV004OTkwCgpUaGUgbWlzLXR5cGluZyBleGlzdCBpbiBkYXBtIGNv
+bnRyb2xsZXIgZGVmaW5pdGlvbnMgYW5kIGRhcG0gcm91dGUgZGVmaW5pdGlvbnMsCnNvIGhhcHBl
+biBtaXMtbWF0Y2hlZCBlcnJvciB3aGVuIHNuZF9zb2NfZGFwbV9hZGRfcm91dGVzKCkuCgpTaWdu
+ZWQtb2ZmLWJ5OiBKaW55b3VuZyBQYXJrIDxwYXJranlAbXRla3Zpc2lvbi5jb20+Ci0tLQogc291
+bmQvc29jL2NvZGVjcy93bTg5OTAuYyB8ICAgNDAgKysrKysrKysrKysrKysrKysrKystLS0tLS0t
+LS0tLS0tLS0tLS0tLQogMSBmaWxlcyBjaGFuZ2VkLCAyMCBpbnNlcnRpb25zKCspLCAyMCBkZWxl
+dGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3dtODk5MC5jIGIvc291bmQv
+c29jL2NvZGVjcy93bTg5OTAuYwppbmRleCBjZWRmM2Y5Li5kZGMzMjhlIDEwMDY0NAotLS0gYS9z
+b3VuZC9zb2MvY29kZWNzL3dtODk5MC5jCisrKyBiL3NvdW5kL3NvYy9jb2RlY3Mvd204OTkwLmMK
+QEAgLTcyOSw3ICs3MjksNyBAQCBTTkRfU09DX0RBUE1fTUlYRVJfRSgiSU5NSVhMIiwgV004OTkw
+X0lOVERSSVZCSVRTLCBXTTg5OTBfSU5NSVhMX1BXUl9CSVQsIDAsCiAJaW5taXhlcl9ldmVudCwg
+U05EX1NPQ19EQVBNX1BPU1RfUE1VIHwgU05EX1NPQ19EQVBNX1BPU1RfUE1EKSwKIAogLyogQUlO
+TE1VWCAqLwotU05EX1NPQ19EQVBNX01VWF9FKCJBSUxOTVVYIiwgV004OTkwX0lOVERSSVZCSVRT
+LCBXTTg5OTBfQUlOTE1VWF9QV1JfQklULCAwLAorU05EX1NPQ19EQVBNX01VWF9FKCJBSU5MTVVY
+IiwgV004OTkwX0lOVERSSVZCSVRTLCBXTTg5OTBfQUlOTE1VWF9QV1JfQklULCAwLAogCSZ3bTg5
+OTBfZGFwbV9haW5sbXV4X2NvbnRyb2xzLCBpbm1peGVyX2V2ZW50LAogCVNORF9TT0NfREFQTV9Q
+T1NUX1BNVSB8IFNORF9TT0NfREFQTV9QT1NUX1BNRCksCiAKQEAgLTc0MCw3ICs3NDAsNyBAQCBT
+TkRfU09DX0RBUE1fTUlYRVJfRSgiSU5NSVhSIiwgV004OTkwX0lOVERSSVZCSVRTLCBXTTg5OTBf
+SU5NSVhSX1BXUl9CSVQsIDAsCiAJaW5taXhlcl9ldmVudCwgU05EX1NPQ19EQVBNX1BPU1RfUE1V
+IHwgU05EX1NPQ19EQVBNX1BPU1RfUE1EKSwKIAogLyogQUlOUk1VWCAqLwotU05EX1NPQ19EQVBN
+X01VWF9FKCJBSVJOTVVYIiwgV004OTkwX0lOVERSSVZCSVRTLCBXTTg5OTBfQUlOUk1VWF9QV1Jf
+QklULCAwLAorU05EX1NPQ19EQVBNX01VWF9FKCJBSU5STVVYIiwgV004OTkwX0lOVERSSVZCSVRT
+LCBXTTg5OTBfQUlOUk1VWF9QV1JfQklULCAwLAogCSZ3bTg5OTBfZGFwbV9haW5ybXV4X2NvbnRy
+b2xzLCBpbm1peGVyX2V2ZW50LAogCVNORF9TT0NfREFQTV9QT1NUX1BNVSB8IFNORF9TT0NfREFQ
+TV9QT1NUX1BNRCksCiAKQEAgLTg0OCw0MCArODQ4LDQwIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
+c25kX3NvY19kYXBtX3JvdXRlIGF1ZGlvX21hcFtdID0gewogCXsiTElOMTIgUEdBIiwgIkxJTjIg
+U3dpdGNoIiwgIkxJTjIifSwKIAkvKiBMSU4zNCBQR0EgKi8KIAl7IkxJTjM0IFBHQSIsICJMSU4z
+IFN3aXRjaCIsICJMSU4zIn0sCi0JeyJMSU4zNCBQR0EiLCAiTElONCBTd2l0Y2giLCAiTElONCJ9
+LAorCXsiTElOMzQgUEdBIiwgIkxJTjQgU3dpdGNoIiwgIkxJTjQvUlhOIn0sCiAJLyogSU5NSVhM
+ICovCiAJeyJJTk1JWEwiLCAiUmVjb3JkIExlZnQgVm9sdW1lIiwgIkxPTUlYIn0sCiAJeyJJTk1J
+WEwiLCAiTElOMiBWb2x1bWUiLCAiTElOMiJ9LAogCXsiSU5NSVhMIiwgIkxJTlBHQTEyIFN3aXRj
+aCIsICJMSU4xMiBQR0EifSwKIAl7IklOTUlYTCIsICJMSU5QR0EzNCBTd2l0Y2giLCAiTElOMzQg
+UEdBIn0sCi0JLyogQUlMTk1VWCAqLwotCXsiQUlMTk1VWCIsICJJTk1JWEwgTWl4IiwgIklOTUlY
+TCJ9LAotCXsiQUlMTk1VWCIsICJESUZGSU5MIE1peCIsICJMSU4xMlBHQSJ9LAotCXsiQUlMTk1V
+WCIsICJESUZGSU5MIE1peCIsICJMSU4zNFBHQSJ9LAotCXsiQUlMTk1VWCIsICJSWFZPSUNFIE1p
+eCIsICJMSU40L1JYTiJ9LAotCXsiQUlMTk1VWCIsICJSWFZPSUNFIE1peCIsICJSSU40L1JYUCJ9
+LAorCS8qIEFJTkxNVVggKi8KKwl7IkFJTkxNVVgiLCAiSU5NSVhMIE1peCIsICJJTk1JWEwifSwK
+Kwl7IkFJTkxNVVgiLCAiRElGRklOTCBNaXgiLCAiTElOMTIgUEdBIn0sCisJeyJBSU5MTVVYIiwg
+IkRJRkZJTkwgTWl4IiwgIkxJTjM0IFBHQSJ9LAorCXsiQUlOTE1VWCIsICJSWFZPSUNFIE1peCIs
+ICJMSU40L1JYTiJ9LAorCXsiQUlOTE1VWCIsICJSWFZPSUNFIE1peCIsICJSSU40L1JYUCJ9LAog
+CS8qIEFEQyAqLwotCXsiTGVmdCBBREMiLCBOVUxMLCAiQUlMTk1VWCJ9LAorCXsiTGVmdCBBREMi
+LCBOVUxMLCAiQUlOTE1VWCJ9LAogCiAJLyogUklOMTIgUEdBICovCiAJeyJSSU4xMiBQR0EiLCAi
+UklOMSBTd2l0Y2giLCAiUklOMSJ9LAogCXsiUklOMTIgUEdBIiwgIlJJTjIgU3dpdGNoIiwgIlJJ
+TjIifSwKIAkvKiBSSU4zNCBQR0EgKi8KIAl7IlJJTjM0IFBHQSIsICJSSU4zIFN3aXRjaCIsICJS
+SU4zIn0sCi0JeyJSSU4zNCBQR0EiLCAiUklONCBTd2l0Y2giLCAiUklONCJ9LAorCXsiUklOMzQg
+UEdBIiwgIlJJTjQgU3dpdGNoIiwgIlJJTjQvUlhQIn0sCiAJLyogSU5NSVhMICovCiAJeyJJTk1J
+WFIiLCAiUmVjb3JkIFJpZ2h0IFZvbHVtZSIsICJST01JWCJ9LAogCXsiSU5NSVhSIiwgIlJJTjIg
+Vm9sdW1lIiwgIlJJTjIifSwKIAl7IklOTUlYUiIsICJSSU5QR0ExMiBTd2l0Y2giLCAiUklOMTIg
+UEdBIn0sCiAJeyJJTk1JWFIiLCAiUklOUEdBMzQgU3dpdGNoIiwgIlJJTjM0IFBHQSJ9LAotCS8q
+IEFJUk5NVVggKi8KLQl7IkFJUk5NVVgiLCAiSU5NSVhSIE1peCIsICJJTk1JWFIifSwKLQl7IkFJ
+Uk5NVVgiLCAiRElGRklOUiBNaXgiLCAiUklOMTJQR0EifSwKLQl7IkFJUk5NVVgiLCAiRElGRklO
+UiBNaXgiLCAiUklOMzRQR0EifSwKLQl7IkFJUk5NVVgiLCAiUlhWT0lDRSBNaXgiLCAiUklONC9S
+WE4ifSwKLQl7IkFJUk5NVVgiLCAiUlhWT0lDRSBNaXgiLCAiUklONC9SWFAifSwKKwkvKiBBSU5S
+TVVYICovCisJeyJBSU5STVVYIiwgIklOTUlYUiBNaXgiLCAiSU5NSVhSIn0sCisJeyJBSU5STVVY
+IiwgIkRJRkZJTlIgTWl4IiwgIlJJTjEyIFBHQSJ9LAorCXsiQUlOUk1VWCIsICJESUZGSU5SIE1p
+eCIsICJSSU4zNCBQR0EifSwKKwl7IkFJTlJNVVgiLCAiUlhWT0lDRSBNaXgiLCAiTElONC9SWE4i
+fSwKKwl7IkFJTlJNVVgiLCAiUlhWT0lDRSBNaXgiLCAiUklONC9SWFAifSwKIAkvKiBBREMgKi8K
+LQl7IlJpZ2h0IEFEQyIsIE5VTEwsICJBSVJOTVVYIn0sCisJeyJSaWdodCBBREMiLCBOVUxMLCAi
+QUlOUk1VWCJ9LAogCiAJLyogTE9NSVggKi8KIAl7IkxPTUlYIiwgIkxPTUlYIFJJTjMgQnlwYXNz
+IFN3aXRjaCIsICJSSU4zIn0sCkBAIC05MjIsNyArOTIyLDcgQEAgc3RhdGljIGNvbnN0IHN0cnVj
+dCBzbmRfc29jX2RhcG1fcm91dGUgYXVkaW9fbWFwW10gPSB7CiAJeyJMT1BNSVgiLCAiTE9QTUlY
+IExlZnQgTWl4ZXIgUEdBIFN3aXRjaCIsICJMT1BHQSJ9LAogCiAJLyogT1VUM01JWCAqLwotCXsi
+T1VUM01JWCIsICJPVVQzTUlYIExJTjQvUlhQIEJ5cGFzcyBTd2l0Y2giLCAiTElONC9SWFAifSwK
+Kwl7Ik9VVDNNSVgiLCAiT1VUM01JWCBMSU40L1JYUCBCeXBhc3MgU3dpdGNoIiwgIkxJTjQvUlhO
+In0sCiAJeyJPVVQzTUlYIiwgIk9VVDNNSVggTGVmdCBPdXQgUEdBIFN3aXRjaCIsICJMT1BHQSJ9
+LAogCiAJLyogT1VUNE1JWCAqLwpAQCAtOTQ5LDcgKzk0OSw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1
+Y3Qgc25kX3NvY19kYXBtX3JvdXRlIGF1ZGlvX21hcFtdID0gewogCS8qIE91dHB1dCBQaW5zICov
+CiAJeyJMT04iLCBOVUxMLCAiTE9OTUlYIn0sCiAJeyJMT1AiLCBOVUxMLCAiTE9QTUlYIn0sCi0J
+eyJPVVQiLCBOVUxMLCAiT1VUM01JWCJ9LAorCXsiT1VUMyIsIE5VTEwsICJPVVQzTUlYIn0sCiAJ
+eyJMT1VUIiwgTlVMTCwgIkxPVVQgUEdBIn0sCiAJeyJTUEtOIiwgTlVMTCwgIlNQS01JWCJ9LAog
+CXsiUk9VVCIsIE5VTEwsICJST1VUIFBHQSJ9LAotLSAKMS41LjYuMQoK
+
+------_=_NextPart_001_01C9CA00.E01EFDC7
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+------_=_NextPart_001_01C9CA00.E01EFDC7--
