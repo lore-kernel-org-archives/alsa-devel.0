@@ -1,106 +1,137 @@
-From: Bill Unruh <unruh@physics.ubc.ca>
-Subject: Re: [Alsa-user] looking for advice on buying a card
-Date: Sat, 2 May 2009 10:37:10 -0700 (PDT)
-Message-ID: <Pine.LNX.4.64.0905021032120.12805@info.physics.ubc.ca>
+From: gary <lists@lazygranch.com>
+Subject: Re: looking for advice on buying a card
+Date: Sat, 02 May 2009 11:27:28 -0700
+Message-ID: <49FC9090.8070102@lazygranch.com>
 References: <49FC7432.9090301@gmail.com>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED;
-	BOUNDARY="1737365482-1561697974-1241285830=:12805"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from info.physics.ubc.ca (info.physics.ubc.ca [142.103.234.23])
-	by alsa0.perex.cz (Postfix) with ESMTP id 103DB2437D
-	for <alsa-devel@alsa-project.org>;
-	Sat,  2 May 2009 19:37:12 +0200 (CEST)
+Content-Type: multipart/mixed; boundary="=======AVGMAIL-49FC90910000======="
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
 In-Reply-To: <49FC7432.9090301@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: alsa-user-bounces@lists.sourceforge.net
 To: Dmitri Seletski <drjoms@gmail.com>
 Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---1737365482-1561697974-1241285830=:12805
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+--=======AVGMAIL-49FC90910000=======
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sat, 2 May 2009, Dmitri Seletski wrote:
+Having spent an ungodly obscene amount of time trying to get two 
+different USB audio cards to work in 64 bit opensuse, I suggest not 
+trying to be a pioneer. I solved my need for multiple sound cards 
+(exceeding the number of PCI slots I have) by using a PCI bridge.
 
+For one soundcard, you can try thing:
+http://www.siig.com/ViewProduct.aspx?pn=JJ-000111-S1
+It doesn't list linux in support unfortunately. However, the latest 
+linux kernal might recognize the card. Then pick a soundcard from the 
+list of supported devices.
+
+For my particular situation, I bought a Magma PCI expander on ebay. I 
+plugged it in and it worked with the soundcards I had on hand (Diamond 
+5.1 using C-Media chipset). With the shipping, it worked out to be about 
+$39 a PCI slot. [My time, about 10 minutes, not counting searching 
+ebay.] Thus the price for the SIIG seems reasonable if you only need to 
+run one card. However, I can't vouch it will work. The Magma boxes do 
+work, but are obscenely expensive new and bulky.
+
+
+
+Dmitri Seletski wrote:
 > Hello Guys
 > I am thinking to buy pci express sound card. Nothing fancy, just
 > something with dolby surround 7.1 and decent sound quality, rather
 > inexpensive, i am not audiophile.
-
-Exactly why do you want 7.1? How do you listen to your soundcard? What do y=
-ou
-listen to?
-
->
+> 
 > I have noticed that there are not that many sound cards out there which
 > have descent support in Linux(unlike many forums claim). I have had
-
-You have done a survey?
-
-
-
 > MAJOR problems with pci xfi card from creative labs(fatality gamers
 > edition), my buddy still has a lot of problem with it, like major issues
 > with input. No mic - no skype or other voip, you know yourself...
-
-Which version of alsa?
-
->
+> 
 > I have found source of asus xonar dx(namely ebay), it is not that
 > expensive compared to many other pci express cards out there, still is
 > expensive enough, from alsa matrix it appears to be quite descent.
 > Question is, is it worth buying? Is it painful to get it
 > running?(probably nothing unusual, matter of loading module), does it
 > work fully(does microphone work, does surround sound 7.1 work?)?
-> Is there something better for similar money?(EUR 73 or =A365 or $97)
+>  Is there something better for similar money?(EUR 73 or £65 or $97)
 > Please do not propose incompletely supported cards(while i wouldn't mind
 > submitting issues to mail lists if i come across bugs, i wouldn't want
 > product that doesn't work)
->
+> 
 > I appreciate any comments.
->
+> 
 > Thank you in advance.
 > Dmitri
->
-> -------------------------------------------------------------------------=
------
-> Register Now & Save for Velocity, the Web Performance & Operations
-> Conference from O'Reilly Media. Velocity features a full day of
-> expert-led, hands-on workshops and two days of sessions from industry
-> leaders in dedicated Performance & Operations tracks. Use code vel09scf
+> 
+> ------------------------------------------------------------------------------
+> Register Now & Save for Velocity, the Web Performance & Operations 
+> Conference from O'Reilly Media. Velocity features a full day of 
+> expert-led, hands-on workshops and two days of sessions from industry 
+> leaders in dedicated Performance & Operations tracks. Use code vel09scf 
 > and Save an extra 15% before 5/3. http://p.sf.net/sfu/velocityconf
 > _______________________________________________
 > Alsa-user mailing list
 > Alsa-user@lists.sourceforge.net
 > https://lists.sourceforge.net/lists/listinfo/alsa-user
->
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> 
+> No virus found in this incoming message.
+> Checked by AVG - www.avg.com 
+> Version: 8.0.238 / Virus Database: 270.12.13/2091 - Release Date: 05/01/09 17:52:00
+> 
+--=======AVGMAIL-49FC90910000=======
+Content-Type: multipart/alternative;
+	boundary="=======AVGMAIL-49FC90910000======="
 
---=20
-William G. Unruh   |  Canadian Institute for|     Tel: +1(604)822-3273
-Physics&Astronomy  |     Advanced Research  |     Fax: +1(604)822-5324
-UBC, Vancouver,BC  |   Program in Cosmology |     unruh@physics.ubc.ca
-Canada V6T 1Z1     |      and Gravity       |  www.theory.physics.ubc.ca/
---1737365482-1561697974-1241285830=:12805
+
+
+--=======AVGMAIL-49FC90910000=======
+Content-Type: text/plain; x-avg=cert; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Description: "AVG certification"
+
+
+No virus found in this outgoing message.
+Checked by AVG - www.avg.com 
+Version: 8.0.238 / Virus Database: 270.12.15/2093 - Release Date: 05/02/09 1=
+4:23:00
+
+--=======AVGMAIL-49FC90910000=======
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Register Now & Save for Velocity, the Web Performance & Operations 
+Conference from O'Reilly Media. Velocity features a full day of 
+expert-led, hands-on workshops and two days of sessions from industry 
+leaders in dedicated Performance & Operations tracks. Use code vel09scf 
+and Save an extra 15% before 5/3. http://p.sf.net/sfu/velocityconf
+--=======AVGMAIL-49FC90910000=======
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 _______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Alsa-user mailing list
+Alsa-user@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-user
 
---1737365482-1561697974-1241285830=:12805--
+--=======AVGMAIL-49FC90910000=======--
+--=======AVGMAIL-49FC90910000=======--
