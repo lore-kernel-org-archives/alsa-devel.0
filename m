@@ -1,18 +1,20 @@
-From: Dmitri Seletski <drjoms@gmail.com>
-Subject: looking for advice on buying a card
-Date: Sat, 02 May 2009 17:26:26 +0100
-Message-ID: <49FC7432.9090301@gmail.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: New codec for STAC9766 used on Efika
+Date: Sat, 2 May 2009 11:22:07 +0100
+Message-ID: <20090502102206.GA4990@sirena.org.uk>
+References: <9e4733910904301330h54581775i592d1ee4049a8dd0@mail.gmail.com>
+	<20090501101402.GB6975@sirena.org.uk>
+	<9e4733910905012030n5089d199u7ef890978219c3bd@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f175.google.com (mail-ew0-f175.google.com
-	[209.85.219.175])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9515E248B2
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9855D248B4
 	for <alsa-devel@alsa-project.org>;
-	Sat,  2 May 2009 12:20:05 +0200 (CEST)
-Received: by ewy23 with SMTP id 23so2291688ewy.32
-	for <alsa-devel@alsa-project.org>; Sat, 02 May 2009 03:20:04 -0700 (PDT)
+	Sat,  2 May 2009 12:22:15 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <9e4733910905012030n5089d199u7ef890978219c3bd@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,32 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: Matt Sealey <matt@genesi-usa.com>, alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Guys
-I am thinking to buy pci express sound card. Nothing fancy, just
-something with dolby surround 7.1 and decent sound quality, rather
-inexpensive, i am not audiophile.
+On Fri, May 01, 2009 at 11:30:44PM -0400, Jon Smirl wrote:
+> With this version, why are these errors generated?
 
-I have noticed that there are not that many sound cards out there which
-have descent support in Linux(unlike many forums claim). I have had
-MAJOR problems with pci xfi card from creative labs(fatality gamers
-edition), my buddy still has a lot of problem with it, like major issues
-with input. No mic - no skype or other voip, you know yourself...
+> ALSA sound/core/control.c:334: control 2:0:0:All Analog PCM Switch:0
+> is already present
 
-I have found source of asus xonar dx(namely ebay), it is not that
-expensive compared to many other pci express cards out there, still is
-expensive enough, from alsa matrix it appears to be quite descent.
-Question is, is it worth buying? Is it painful to get it
-running?(probably nothing unusual, matter of loading module), does it
-work fully(does microphone work, does surround sound 7.1 work?)?
- Is there something better for similar money?(EUR 73 or =A365 or $97)
-Please do not propose incompletely supported cards(while i wouldn't mind
-submitting issues to mail lists if i come across bugs, i wouldn't want
-product that doesn't work)
-
-I appreciate any comments.
-
-Thank you in advance.
-Dmitri
+The log message seems fairly clear...  Note that controls for mixers get
+generated names in the form "Mixer Name Switch Name".
