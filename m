@@ -1,20 +1,18 @@
-From: Jon Smirl <jonsmirl@gmail.com>
-Subject: Re: New codec for STAC9766 used on Efika
-Date: Fri, 1 May 2009 23:46:48 -0400
-Message-ID: <9e4733910905012046s6fc7f1cci6812f7fb6e493516@mail.gmail.com>
-References: <9e4733910904301330h54581775i592d1ee4049a8dd0@mail.gmail.com>
-	<20090501101402.GB6975@sirena.org.uk>
+From: Dmitri Seletski <drjoms@gmail.com>
+Subject: looking for advice on buying a card
+Date: Sat, 02 May 2009 17:26:26 +0100
+Message-ID: <49FC7432.9090301@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.149])
-	by alsa0.perex.cz (Postfix) with ESMTP id 89C382476E
+Received: from mail-ew0-f175.google.com (mail-ew0-f175.google.com
+	[209.85.219.175])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9515E248B2
 	for <alsa-devel@alsa-project.org>;
-	Sat,  2 May 2009 05:46:49 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 4so1985513qwk.56
-	for <alsa-devel@alsa-project.org>; Fri, 01 May 2009 20:46:48 -0700 (PDT)
-In-Reply-To: <20090501101402.GB6975@sirena.org.uk>
+	Sat,  2 May 2009 12:20:05 +0200 (CEST)
+Received: by ewy23 with SMTP id 23so2291688ewy.32
+	for <alsa-devel@alsa-project.org>; Sat, 02 May 2009 03:20:04 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,61 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: Matt Sealey <matt@genesi-usa.com>, alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 1, 2009 at 6:14 AM, Mark Brown <broonie@sirena.org.uk> wrote:
->> =A0 =A0 =A0 .playback =3D {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 .stream_name =A0 =A0=3D "stac9766 analog",
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 .channels_min =A0 =3D 1,
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 .channels_max =A0 =3D 2,
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 .rates =A0 =A0 =A0 =A0 =A0=3D SNDRV_PCM_RATE=
-_8000_48000,
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 .formats =A0 =A0 =A0 =A0=3D SNDRV_PCM_FMTBIT=
-_S32_BE,
->
-> Are you sure about this? =A0AC97 generally does 16 bit samples...
+Hello Guys
+I am thinking to buy pci express sound card. Nothing fancy, just
+something with dolby surround 7.1 and decent sound quality, rather
+inexpensive, i am not audiophile.
 
-AC97 can be 16, 18 or 20 bit. The link always transmits 20 bits.
-This codec is a 20b version.
+I have noticed that there are not that many sound cards out there which
+have descent support in Linux(unlike many forums claim). I have had
+MAJOR problems with pci xfi card from creative labs(fatality gamers
+edition), my buddy still has a lot of problem with it, like major issues
+with input. No mic - no skype or other voip, you know yourself...
 
-On the mpc5200 side you can only feed the FIFOs 32b data. "For each
-AC97 slot a 32 bit data word must be in the TxFIFO"
-So do I make these pair up?
+I have found source of asus xonar dx(namely ebay), it is not that
+expensive compared to many other pci express cards out there, still is
+expensive enough, from alsa matrix it appears to be quite descent.
+Question is, is it worth buying? Is it painful to get it
+running?(probably nothing unusual, matter of loading module), does it
+work fully(does microphone work, does surround sound 7.1 work?)?
+ Is there something better for similar money?(EUR 73 or =A365 or $97)
+Please do not propose incompletely supported cards(while i wouldn't mind
+submitting issues to mail lists if i come across bugs, i wouldn't want
+product that doesn't work)
 
-static struct snd_soc_dai psc_ac97_dai_template[] =3D {
-{
-	.name	=3D "%s analog",
-	.suspend =3D psc_ac97_suspend,
-	.resume =3D psc_ac97_resume,
-	.playback =3D {
-		.channels_min	=3D 1,
-		.channels_max	=3D 6,
-		.rates		=3D SNDRV_PCM_RATE_8000_48000,
-		.formats	=3D SNDRV_PCM_FMTBIT_S32_BE,
-	},
-	.capture =3D {
-		.channels_min	=3D 1,
-		.channels_max	=3D 2,
-		.rates		=3D SNDRV_PCM_RATE_8000_48000,
-		.formats	=3D SNDRV_PCM_FMTBIT_S32_BE,
-	},
-	.ops =3D &psc_ac97_analog_ops,
-},
-{
-	.name	=3D "%s digital",
-	.playback =3D {
-		.channels_min	=3D 1,
-		.channels_max	=3D 2,
-		.rates		=3D SNDRV_PCM_RATE_32000 | \
-			SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000,
-		.formats	=3D SNDRV_PCM_FORMAT_IEC958_SUBFRAME_BE,
-	},
-	.ops =3D &psc_ac97_digital_ops,
-}};
+I appreciate any comments.
 
--- =
-
-Jon Smirl
-jonsmirl@gmail.com
+Thank you in advance.
+Dmitri
