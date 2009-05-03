@@ -1,12 +1,15 @@
-From: renidragsemaj@yahoo.com
-Subject: [[ALSA] Patch for HP dv4-1222nr laptop 1/1] Addition
-	for HP dv4-1222nr laptop.
-Date: Sun,  3 May 2009 04:00:44 -0400
-Message-ID: <1241337644-8550-1-git-send-email-renidragsemaj@yahoo.com>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: [PATCH] sc6000: enable joystick port
+Date: Sun, 3 May 2009 10:39:19 +0200
+Message-ID: <20090503103919.218e179e.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
+	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id 9C1E42469B
+	for <alsa-devel@alsa-project.org>;
+	Sun,  3 May 2009 10:34:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -16,127 +19,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: James Gardiner <renidragsemaj@yahoo.com>, alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
+Cc: Rene Herman <rene.herman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: James Gardiner <renidragsemaj@yahoo.com>
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
+
+Add module parameter to enable or disable
+joystick port (gameport) on the SC6600 and
+later cards.
+
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
+
+The second version of the patch with fixed
+the bug spotted Takashi.
 
 
-Signed-off-by: James Gardiner <renidragsemaj@yahoo.com>
+ Documentation/sound/alsa/ALSA-Configuration.txt |    4 +++-
+ sound/isa/sc6000.c                              |    9 +++++++--
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/pci/hda/patch_sigmatel.c b/pci/hda/patch_sigmatel.c
-index 917bc5d..27bc568 100644
---- a/pci/hda/patch_sigmatel.c
-+++ b/pci/hda/patch_sigmatel.c
-@@ -100,6 +100,7 @@ enum {
- 	STAC_HP_M4,
- 	STAC_HP_DV5,
- 	STAC_HP_HDX,
-+	STAC_HP_DV4_1222NR,
- 	STAC_92HD71BXX_MODELS
- };
+diff --git a/Documentation/sound/alsa/ALSA-Configuration.txt b/Documentation/sound/alsa/ALSA-Configuration.txt
+index 012858d..11a80a9 100644
+--- a/Documentation/sound/alsa/ALSA-Configuration.txt
++++ b/Documentation/sound/alsa/ALSA-Configuration.txt
+@@ -1543,13 +1543,15 @@ Prior to version 0.9.0rc4 options had a 'snd_' prefix. This was removed.
+   Module snd-sc6000
+   -----------------
  
-@@ -1836,6 +1837,7 @@ static unsigned int *stac92hd71bxx_brd_tbl[STAC_92HD71BXX_MODELS] = {
- 	[STAC_HP_M4]		= NULL,
- 	[STAC_HP_DV5]		= NULL,
- 	[STAC_HP_HDX]           = NULL,
-+	[STAC_HP_DV4_1222NR]	= NULL,
- };
+-    Module for Gallant SC-6000 soundcard.
++    Module for Gallant SC-6000 soundcard and later models: SC-6600
++    and SC-7000.
  
- static const char *stac92hd71bxx_models[STAC_92HD71BXX_MODELS] = {
-@@ -1847,6 +1849,7 @@ static const char *stac92hd71bxx_models[STAC_92HD71BXX_MODELS] = {
- 	[STAC_HP_M4] = "hp-m4",
- 	[STAC_HP_DV5] = "hp-dv5",
- 	[STAC_HP_HDX] = "hp-hdx",
-+	[STAC_HP_DV4_1222NR] = "hp-dv4-1222nr",
- };
+     port	- Port # (0x220 or 0x240)
+     mss_port	- MSS Port # (0x530 or 0xe80)
+     irq		- IRQ # (5,7,9,10,11)
+     mpu_irq	- MPU-401 IRQ # (5,7,9,10) ,0 - no MPU-401 irq
+     dma		- DMA # (1,3,0)
++    joystick	- Enable gameport - 0 = disable (default), 1 = enable
  
- static struct snd_pci_quirk stac92hd71bxx_cfg_tbl[] = {
-@@ -1855,6 +1858,8 @@ static struct snd_pci_quirk stac92hd71bxx_cfg_tbl[] = {
- 		      "DFI LanParty", STAC_92HD71BXX_REF),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_DFI, 0x3101,
- 		      "DFI LanParty", STAC_92HD71BXX_REF),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x30fb,
-+		      "HP dv4-1222nr", STAC_HP_DV4_1222NR),
- 	SND_PCI_QUIRK_MASK(PCI_VENDOR_ID_HP, 0xfff0, 0x3080,
- 		      "HP", STAC_HP_DV5),
- 	SND_PCI_QUIRK_MASK(PCI_VENDOR_ID_HP, 0xfff0, 0x30f0,
-@@ -4520,27 +4525,38 @@ static int stac92xx_resume(struct hda_codec *codec)
- 	return 0;
- }
+     This module supports multiple cards.
  
--
+diff --git a/sound/isa/sc6000.c b/sound/isa/sc6000.c
+index c803b2e..9a8bbf6 100644
+--- a/sound/isa/sc6000.c
++++ b/sound/isa/sc6000.c
+@@ -56,6 +56,7 @@ static long mpu_port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;
+ 						/* 0x300, 0x310, 0x320, 0x330 */
+ static int mpu_irq[SNDRV_CARDS] = SNDRV_DEFAULT_IRQ;	/* 5, 7, 9, 10, 0 */
+ static int dma[SNDRV_CARDS] = SNDRV_DEFAULT_DMA;	/* 0, 1, 3 */
++static bool joystick[SNDRV_CARDS] = { [0 ... (SNDRV_CARDS-1)] = false };
+ 
+ module_param_array(index, int, NULL, 0444);
+ MODULE_PARM_DESC(index, "Index value for sc-6000 based soundcard.");
+@@ -75,6 +76,8 @@ module_param_array(mpu_irq, int, NULL, 0444);
+ MODULE_PARM_DESC(mpu_irq, "MPU-401 IRQ # for sc-6000 driver.");
+ module_param_array(dma, int, NULL, 0444);
+ MODULE_PARM_DESC(dma, "DMA # for sc-6000 driver.");
++module_param_array(joystick, bool, NULL, 0444);
++MODULE_PARM_DESC(joystick, "Enable gameport.");
+ 
  /*
-- * using power check for controlling mute led of HP HDX notebooks
-+ * using power check for controlling mute led of HP notebooks
-  * check for mute state only on Speakers (nid = 0x10)
-  *
-  * For this feature CONFIG_SND_HDA_POWER_SAVE is needed, otherwise
-  * the LED is NOT working properly !
-+ *
-+ * Changed name to reflect that it now works for any designated
-+ * model, not just HP HDX.
-  */
+  * Commands of SC6000's DSP (SBPRO+special).
+@@ -363,7 +366,7 @@ static int __devinit sc6000_init_mss(char __iomem *vport, int config,
  
- #ifdef CONFIG_SND_HDA_POWER_SAVE
--static int stac92xx_hp_hdx_check_power_status(struct hda_codec *codec,
-+static int stac92xx_hp_check_power_status(struct hda_codec *codec,
- 					      hda_nid_t nid)
+ static void __devinit sc6000_hw_cfg_encode(char __iomem *vport, int *cfg,
+ 					   long xport, long xmpu,
+-					   long xmss_port)
++					   long xmss_port, int joystick)
  {
- 	struct sigmatel_spec *spec = codec->spec;
-+	unsigned int gpio_bit = 0; /* gets rid of compiler warning */
-+
-+	switch (spec->board_config) {
-+	case STAC_HP_DV4_1222NR:
-+		gpio_bit = 0x01;
-+		break;
-+	case STAC_HP_HDX:
-+		gpio_bit = 0x08;
-+	}
- 
- 	if (nid == 0x10) {
- 		if (snd_hda_codec_amp_read(codec, nid, 0, HDA_OUTPUT, 0) &
- 		    HDA_AMP_MUTE)
--			spec->gpio_data &= ~0x08;  /* orange */
-+			spec->gpio_data &= ~gpio_bit;  /* orange */
- 		else
--			spec->gpio_data |= 0x08;   /* white */
-+			spec->gpio_data |= gpio_bit;   /* white */
- 
- 		stac_gpio_set(codec, spec->gpio_mask,
- 			      spec->gpio_dir,
-@@ -5219,6 +5235,22 @@ again:
- 		spec->num_smuxes = 0;
- 		spec->num_dmuxes = 1;
- 		break;
-+	case STAC_HP_DV4_1222NR:
-+		spec->num_dmics = 1;
-+		/* I don't know if it needs 1 or 2 smuxes - will wait for
-+		 * bug reports to fix if needed
-+		 */
-+		spec->num_smuxes = 1;
-+		spec->num_dmuxes = 1;
-+#ifdef CONFIG_SND_HDA_POWER_SAVE
-+		/* This controls MUTE LED */
-+		spec->gpio_mask |= 0x01;
-+		spec->gpio_dir  |= 0x01;
-+		spec->gpio_data |= 0x01;
-+		codec->patch_ops.check_power_status =
-+		    stac92xx_hp_check_power_status;
-+#endif
-+		/* fallthrough */
- 	case STAC_HP_DV5:
- 		snd_hda_codec_set_pincfg(codec, 0x0d, 0x90170010);
- 		stac92xx_auto_set_pinctl(codec, 0x0d, AC_PINCTL_OUT_EN);
-@@ -5239,7 +5271,7 @@ again:
- 
- 		/* register check_power_status callback. */
- 		codec->patch_ops.check_power_status =
--		    stac92xx_hp_hdx_check_power_status;
-+		    stac92xx_hp_check_power_status;
- #endif	
- 		break;
- 	};
+ 	cfg[0] = 0;
+ 	cfg[1] = 0;
+@@ -376,6 +379,8 @@ static void __devinit sc6000_hw_cfg_encode(char __iomem *vport, int *cfg,
+ 	if (xmss_port == 0xe80)
+ 		cfg[0] |= 0x10;
+ 	cfg[0] |= 0x40;		/* always set */
++	if (!joystick)
++		cfg[0] |= 0x02;
+ 	cfg[1] |= 0x80;		/* enable WSS system */
+ 	cfg[1] &= ~0x40;	/* disable IDE */
+ 	snd_printd("hw cfg %x, %x\n", cfg[0], cfg[1]);
+@@ -427,7 +432,7 @@ static int __devinit sc6000_init_board(char __iomem *vport,
+ 	if (!old) {
+ 		int cfg[2];
+ 		sc6000_hw_cfg_encode(vport, &cfg[0], port[dev], mpu_port[dev],
+-				     mss_port[dev]);
++				     mss_port[dev], joystick[dev]);
+ 		if (sc6000_hw_cfg_write(vport, cfg) < 0) {
+ 			snd_printk(KERN_ERR "sc6000_hw_cfg_write: failed!\n");
+ 			return -EIO;
 -- 
-1.5.6.3
+1.6.0.3
+
+
+----------------------------------------------------------------------
+Wygraj 3000 zl, wycieczke lub lot balonem!
+Sprawdz >> http://link.interia.pl/f2154
