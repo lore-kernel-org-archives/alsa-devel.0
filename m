@@ -1,19 +1,28 @@
-From: Dmitri Seletski <drjoms@gmail.com>
-Subject: Re: [Alsa-user] looking for advice on buying a card
-Date: Sat, 02 May 2009 20:37:03 +0100
-Message-ID: <49FCA0DF.50606@gmail.com>
-References: <49FC7432.9090301@gmail.com> <49FC9090.8070102@lazygranch.com>
+From: Guy Stalnaker <jstalnak@wisc.edu>
+Subject: Issues with HP DV4 laptop sound after Ubuntu Jaunty
+	9.04 upgrade
+Date: Sat, 02 May 2009 23:57:42 -0500
+Message-ID: <49FD2446.7040001@wisc.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.146])
-	by alsa0.perex.cz (Postfix) with ESMTP id 61C2224403
+Received: from agogare.doit.wisc.edu (agogare.doit.wisc.edu [144.92.197.211])
+	by alsa0.perex.cz (Postfix) with ESMTP id C02C6245F8
 	for <alsa-devel@alsa-project.org>;
-	Sat,  2 May 2009 21:37:07 +0200 (CEST)
-Received: by ey-out-1920.google.com with SMTP id 26so570812eyw.56
-	for <alsa-devel@alsa-project.org>; Sat, 02 May 2009 12:37:05 -0700 (PDT)
-In-Reply-To: <49FC9090.8070102@lazygranch.com>
+	Sun,  3 May 2009 06:57:52 +0200 (CEST)
+Received: from avs-daemon.smtpauth2.wiscmail.wisc.edu by
+	smtpauth2.wiscmail.wisc.edu
+	(Sun Java(tm) System Messaging Server 7.0-5.01 32bit (built Feb 19
+	2009)) id <0KJ100704XSFWZ00@smtpauth2.wiscmail.wisc.edu> for
+	alsa-devel@alsa-project.org; Sat, 02 May 2009 23:57:51 -0500 (CDT)
+Received: from [173.98.170.102]
+	(173-98-170-102.pools.spcsdns.net [173.98.170.102])
+	by smtpauth2.wiscmail.wisc.edu
+	(Sun Java(tm) System Messaging Server 7.0-5.01 32bit (built Feb 19
+	2009))
+	with ESMTPSA id <0KJ10071AXSBU500@smtpauth2.wiscmail.wisc.edu> for
+	alsa-devel@alsa-project.org; Sat, 02 May 2009 23:57:49 -0500 (CDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,113 +32,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: gary <lists@lazygranch.com>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Gary.
+Hello again.
 
-Well, thank you for the idea, but i somehow not comfortable with it.
+I was able to get my internal speakers working for my HP Pavilion Dv4
+laptop by following the advice I found in the alsa-devel archives.  That
+advice seems to have worked for quit a few people who found it by a post
+I made to the Ubuntu Forums.
 
-I have to buy this thing, even if it's inexpensive, i will have to pay
-good amount of money for delivery. I am looking around 20 euro, not
-counting price for device itself. Than again, i have to buy new card and
-pay for delivery  there. To make things worse, none xfi sound cards are
-no longer produced by creative labs and i really don't like idea of
-second hand sound cards(even though  you have to be very skillful to
-break one of those).
+But now, after I have upgraded my Ubuntu from version 8.10 (when sound
+worked) to version 9.04, sound no longer works correctly.  I have some
+detailed information about the sequencing and the specific error.
+Attached is an alsa-info.txt output.
 
-So it simply makes sense to pay a bit extra(i was loosing those money
-with that pcie to pci extentsion and its delivery anyway) but to get
-that card I was referring before, Asus Xonar DX
-I know it's supported by alsa, because of this:
-http://www.alsa-project.org/main/index.php/Matrix:Vendor-Asus
-I am just double checking, since this specific card is really promising
-one and i really feel like buying one.
-But again, i am opened for other options.
+Here's what I'm seeing (extracts from dmesg/kernel logs):
 
-Thanks a lot for your thoughts. I have kinda got used to USB cards by
-now myself and all those troubles they cause :)
+Apr 29 15:13:17 Harlindon kernel: [   19.937190] HDA Intel 0000:00:14.2:
+PCI INT A -> GSI 16 (level, low) -> IRQ 16
+Apr 29 15:13:17 Harlindon kernel: [   19.937270] HDA Intel 0000:00:14.2:
+setting latency timer to 64
 
-gary wrote:
-> Having spent an ungodly obscene amount of time trying to get two
-> different USB audio cards to work in 64 bit opensuse, I suggest not
-> trying to be a pioneer. I solved my need for multiple sound cards
-> (exceeding the number of PCI slots I have) by using a PCI bridge.
->
-> For one soundcard, you can try thing:
-> http://www.siig.com/ViewProduct.aspx?pn=3DJJ-000111-S1
-> It doesn't list linux in support unfortunately. However, the latest
-> linux kernal might recognize the card. Then pick a soundcard from the
-> list of supported devices.
->
-> For my particular situation, I bought a Magma PCI expander on ebay. I
-> plugged it in and it worked with the soundcards I had on hand (Diamond
-> 5.1 using C-Media chipset). With the shipping, it worked out to be
-> about $39 a PCI slot. [My time, about 10 minutes, not counting
-> searching ebay.] Thus the price for the SIIG seems reasonable if you
-> only need to run one card. However, I can't vouch it will work. The
-> Magma boxes do work, but are obscenely expensive new and bulky.
->
->
->
-> Dmitri Seletski wrote:
->> Hello Guys
->> I am thinking to buy pci express sound card. Nothing fancy, just
->> something with dolby surround 7.1 and decent sound quality, rather
->> inexpensive, i am not audiophile.
->>
->> I have noticed that there are not that many sound cards out there which
->> have descent support in Linux(unlike many forums claim). I have had
->> MAJOR problems with pci xfi card from creative labs(fatality gamers
->> edition), my buddy still has a lot of problem with it, like major issues
->> with input. No mic - no skype or other voip, you know yourself...
->>
->> I have found source of asus xonar dx(namely ebay), it is not that
->> expensive compared to many other pci express cards out there, still is
->> expensive enough, from alsa matrix it appears to be quite descent.
->> Question is, is it worth buying? Is it painful to get it
->> running?(probably nothing unusual, matter of loading module), does it
->> work fully(does microphone work, does surround sound 7.1 work?)?
->>  Is there something better for similar money?(EUR 73 or =A365 or $97)
->> Please do not propose incompletely supported cards(while i wouldn't mind
->> submitting issues to mail lists if i come across bugs, i wouldn't want
->> product that doesn't work)
->>
->> I appreciate any comments.
->>
->> Thank you in advance.
->> Dmitri
->>
->> ------------------------------------------------------------------------=
-------
->>
->> Register Now & Save for Velocity, the Web Performance & Operations
->> Conference from O'Reilly Media. Velocity features a full day of
->> expert-led, hands-on workshops and two days of sessions from industry
->> leaders in dedicated Performance & Operations tracks. Use code
->> vel09scf and Save an extra 15% before 5/3.
->> http://p.sf.net/sfu/velocityconf
->> _______________________________________________
->> Alsa-user mailing list
->> Alsa-user@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/alsa-user
->>
->>
->> ------------------------------------------------------------------------
->>
->>
->> No virus found in this incoming message.
->> Checked by AVG - www.avg.com Version: 8.0.238 / Virus Database:
->> 270.12.13/2091 - Release Date: 05/01/09 17:52:00
->>
-> ------------------------------------------------------------------------
->
->
-> No virus found in this outgoing message.
-> Checked by AVG - www.avg.com =
+Apr 30 09:37:09 Harlindon kernel: [   19.941675] HDA Intel 0000:00:14.2:
+PCI INT A -> GSI 16 (level, low) -> IRQ 16
+Apr 30 09:37:09 Harlindon kernel: [   19.941750] HDA Intel 0000:00:14.2:
+setting latency timer to 64
 
-> Version: 8.0.238 / Virus Database: 270.12.15/2093 - Release Date: 05/02/0=
-9 14:23:00
->
->   =
+May  1 16:06:01 Harlindon kernel: [   19.852324] HDA Intel 0000:00:14.2:
+PCI INT A -> GSI 16 (level, low) -> IRQ 16
+May  1 16:06:01 Harlindon kernel: [   19.852398] HDA Intel 0000:00:14.2:
+setting latency timer to 64
+
+May  1 16:13:43 Harlindon kernel: [   20.950985] HDA Intel 0000:00:14.2:
+PCI INT A -> GSI 16 (level, low) -> IRQ 16
+May  1 16:13:43 Harlindon kernel: [   20.951060] HDA Intel 0000:00:14.2:
+setting latency timer to 64
+
+Commit Log for Fri May  1 16:41:58 2009 [Upgrade to Ubuntu Jaunty 9.04]
+
+May  1 17:11:05 Harlindon kernel: [   20.318416] hda-intel: unable to
+grab IRQ 0, disabling device
+May  1 17:11:05 Harlindon kernel: [   20.318517] HDA Intel: probe of
+0000:00:14.2 failed with error -16
+
+May  1 17:14:18 Harlindon kernel: [   22.977762] hda-intel: unable to
+grab IRQ 0, disabling device
+May  1 17:14:18 Harlindon kernel: [   22.977828] HDA Intel: probe of
+0000:00:14.2 failed with error -16
+
+May  1 17:18:49 Harlindon kernel: [   21.105013] HDA Intel 0000:00:14.2:
+PCI INT A -> GSI 16 (level, low) -> IRQ 16
+May  1 17:18:49 Harlindon kernel: [   21.105087] HDA Intel 0000:00:14.2:
+setting latency timer to 64
+
+May  1 21:15:14 Harlindon kernel: [   19.776991] HDA Intel 0000:00:14.2:
+PCI INT A -> GSI 16 (level, low) -> IRQ 16
+May  1 21:15:14 Harlindon kernel: [   19.777893] HDA Intel 0000:00:14.2:
+setting latency timer to 64
+
+May  2 09:22:01 Harlindon kernel: [   20.540543] HDA Intel 0000:00:14.2:
+PCI INT A -> GSI 16 (level, low) -> IRQ 16
+May  2 09:22:01 Harlindon kernel: [   20.540619] HDA Intel 0000:00:14.2:
+setting latency timer to 64
+
+May  2 09:26:04 Harlindon kernel: [   19.819578] hda-intel: unable to
+grab IRQ 0, disabling device
+May  2 09:26:04 Harlindon kernel: [   19.819677] HDA Intel: probe of
+0000:00:14.2 failed with error -16
+
+May  2 10:37:28 Harlindon kernel: [   20.175934] hda-intel: unable to
+grab IRQ 0, disabling device
+May  2 10:37:28 Harlindon kernel: [   20.175999] HDA Intel: probe of
+0000:00:14.2 failed with error -16
+
+May  2 13:26:27 Harlindon kernel: [   20.610591] HDA Intel 0000:00:14.2:
+PCI INT A -> GSI 16 (level, low) -> IRQ 16
+May  2 13:26:27 Harlindon kernel: [   20.610666] HDA Intel 0000:00:14.2:
+setting latency timer to 64
+
+May  2 16:57:23 Harlindon kernel: [   19.885497] hda-intel: unable to
+grab IRQ 0, disabling device
+May  2 16:57:23 Harlindon kernel: [   19.885575] HDA Intel: probe of
+0000:00:14.2 failed with error -16
+
+May  2 18:20:18 Harlindon kernel: [   22.605977] hda-intel: unable to
+grab IRQ 0, disabling device
+May  2 18:20:18 Harlindon kernel: [   22.606042] HDA Intel: probe of
+0000:00:14.2 failed with error -16
+
+What is damned peculiar is that is has sometimes worked (as you can see
+above).  I can find no pattern however.  I HAVE downloaded an compiled
+the latest alsa-driver-snapshot.  That last reboot has the same unable
+to grab irq error.
+
+Any suggestions are greatly appreciated.
+
+-- 
+Guy Stalnaker, I^2@DOIT, 1210 West Dayton Street, Room 3209 CSS, Madison
+WI 53719-1220, jstalnak@wisc.edu, work 608.263.8035, cell 608.235.4718,
+fax 608.265.6681, page page-guy@watchdog.doit.wisc.edu
