@@ -1,23 +1,19 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: dmix and mmap
-Date: Mon, 4 May 2009 11:57:20 -0500
-Message-ID: <ed82fe3e0905040957l13e53319j57ddd1c1de902f92@mail.gmail.com>
-References: <bb6204720904300810ma174b6cn825f8565c0b694c0@mail.gmail.com>
-	<20090430151301.GA27605@sirena.org.uk>
-	<bb6204720904301229q3b0b93eao28563ec7bdef73cb@mail.gmail.com>
-	<20090501113240.GF6975@sirena.org.uk>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 1/2] ASoC: TWL4030: Add VDL analog bypass
+Date: Mon, 4 May 2009 21:40:12 +0100
+Message-ID: <20090504204011.GA25792@sirena.org.uk>
+References: <2C7D3DF36ADFFC479B44490D912B616705F63E0BA7@dlee07.ent.ti.com>
+	<200905040829.25180.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f103.google.com (mail-qy0-f103.google.com
-	[209.85.221.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 37183243CE
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9170524393
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 May 2009 18:57:22 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so7434839qyk.16
-	for <alsa-devel@alsa-project.org>; Mon, 04 May 2009 09:57:20 -0700 (PDT)
-In-Reply-To: <20090501113240.GF6975@sirena.org.uk>
+	Mon,  4 May 2009 22:40:19 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <200905040829.25180.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,21 +23,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: Gabriel Johnson <johnsoga@gmail.com>, alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "ext Lopez Cruz, Misael" <x0052729@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 1, 2009 at 6:32 AM, Mark Brown <broonie@sirena.org.uk> wrote:
-> I know that there were some problems with PowerPC memory access,
-> unfortunately I don't know any specifics or if these issues are fixed in
-> current kernels. =A0Searching for postings by Takashi Iwai on the PowerPC
-> kernel lists might turn something up.
+On Mon, May 04, 2009 at 08:29:24AM +0300, Peter Ujfalusi wrote:
 
-The PowerPC MPC8610 drivers enable mmap support, and it seems to work,
-but that chip has a coherent MMU.  I've never done a definitive test
-that it works, though.  What's the easiest way to test mmap?
+> Otherwise:
+> Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 
--- =
-
-Timur Tabi
-Linux kernel developer at Freescale
+Applied both, thanks!
