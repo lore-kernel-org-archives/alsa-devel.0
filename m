@@ -1,9 +1,8 @@
-From: Mark Brown <broonie@sirena.org.uk>
+From: Jon Smirl <jonsmirl@gmail.com>
 Subject: Re: Driver code with mpc5200 pointer problem.
-Date: Mon, 4 May 2009 14:00:40 +0100
-Message-ID: <20090504130039.GM6975@sirena.org.uk>
+Date: Mon, 4 May 2009 09:22:22 -0400
+Message-ID: <9e4733910905040622y32532527p477e8a5dd514b060@mail.gmail.com>
 References: <alpine.LNX.2.00.0904281022210.25064@eeebox2.perex-int.cz>
-	<s5hiqkp16w6.wl%tiwai@suse.de>
 	<alpine.LNX.2.00.0904281131440.25064@eeebox2.perex-int.cz>
 	<s5h7i1514bn.wl%tiwai@suse.de>
 	<alpine.LNX.2.00.0904281206260.25064@eeebox2.perex-int.cz>
@@ -11,16 +10,18 @@ References: <alpine.LNX.2.00.0904281022210.25064@eeebox2.perex-int.cz>
 	<9e4733910905040529s3376153fj3191295b06e7c7c9@mail.gmail.com>
 	<s5hy6tddomr.wl%tiwai@suse.de>
 	<9e4733910905040558i7f8d9450h8f10ce96f9cf8868@mail.gmail.com>
+	<20090504130039.GM6975@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8B95F243CB
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.149])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0F09F243EC
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 May 2009 15:00:41 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <9e4733910905040558i7f8d9450h8f10ce96f9cf8868@mail.gmail.com>
+	Mon,  4 May 2009 15:22:24 +0200 (CEST)
+Received: by ey-out-1920.google.com with SMTP id 26so746537eyw.56
+	for <alsa-devel@alsa-project.org>; Mon, 04 May 2009 06:22:23 -0700 (PDT)
+In-Reply-To: <20090504130039.GM6975@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,22 +31,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
+To: Mark Brown <broonie@sirena.org.uk>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 04, 2009 at 08:58:04AM -0400, Jon Smirl wrote:
-> On Mon, May 4, 2009 at 8:43 AM, Takashi Iwai <tiwai@suse.de> wrote:
+On Mon, May 4, 2009 at 9:00 AM, Mark Brown <broonie@sirena.org.uk> wrote:
+> On Mon, May 04, 2009 at 08:58:04AM -0400, Jon Smirl wrote:
+>> On Mon, May 4, 2009 at 8:43 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>
+>> > Great. ?So can we remove BROKEN kconfig again?
+>
+>> Sure. There are only two current users of the driver and we know what
+>> is going on.
+>
+> Could you expand on what you mean by "we know what is going on"? =A0If the
+> driver is fixed then there shouldn't really be anything for anyone to
+> know, the driver should just work.
+>
+> I wouldn't count on you being the only users - you may be the only
+> people visibly talking about the driver in public but that's not quite
+> the same thing as being the only users.
 
-> > Great. ?So can we remove BROKEN kconfig again?
+With the fix the driver is back to working the way it was before the
+jiffies issue completely broke it.
 
-> Sure. There are only two current users of the driver and we know what
-> is going on.
+But there are still problems in the driver. For example it is not
+terminating streams correctly. I get a little burp of sound at the end
+of stream that doesn't belong there.
 
-Could you expand on what you mean by "we know what is going on"?  If the
-driver is fixed then there shouldn't really be anything for anyone to
-know, the driver should just work.
+I'm trying to fix the burp. How is stream termination supposed to
+work? Right now when the driver gets STOP in the trigger function. It
+immediately stops the DMA engine and resets the I2S channel. I'm not
+clear on how this get synchronized in order to prevent the partial
+transfer of a DMA period and allowing the FIFO time to drain.
 
-I wouldn't count on you being the only users - you may be the only
-people visibly talking about the driver in public but that's not quite
-the same thing as being the only users.
+
+>
+
+
+
+-- =
+
+Jon Smirl
+jonsmirl@gmail.com
