@@ -1,18 +1,24 @@
-From: Jonathan Cameron <jic23@cam.ac.uk>
-Subject: Re: [ASoC PATCH 1/1] IMote 2 ASoC Support
-Date: Mon, 04 May 2009 14:54:11 +0000
-Message-ID: <49FF0193.1080908@cam.ac.uk>
-References: <49FEFDC8.2090103@cam.ac.uk> <20090504144119.GO6975@sirena.org.uk>
-	<49FEFED3.7090104@cam.ac.uk>
+From: Guy Stalnaker <jstalnak@wisc.edu>
+Subject: Re: Issues with HP DV4 laptop sound after Ubuntu
+ Jaunty 9.04 upgrade
+Date: Mon, 04 May 2009 10:26:27 -0500
+Message-ID: <49FF0923.60902@wisc.edu>
+References: <49FD2446.7040001@wisc.edu> <s5h4ow19way.wl%tiwai@suse.de>
+Reply-To: jstalnak@wisc.edu
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ppsw-5.csi.cam.ac.uk (ppsw-5.csi.cam.ac.uk [131.111.8.135])
-	by alsa0.perex.cz (Postfix) with ESMTP id 912F1103821
+Received: from adsum.doit.wisc.edu (adsum.doit.wisc.edu [144.92.197.210])
+	by alsa0.perex.cz (Postfix) with ESMTP id A89F62433E
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 May 2009 16:54:42 +0200 (CEST)
-In-Reply-To: <49FEFED3.7090104@cam.ac.uk>
+	Mon,  4 May 2009 17:26:41 +0200 (CEST)
+Received: from avs-daemon.smtpauth1.wiscmail.wisc.edu by
+	smtpauth1.wiscmail.wisc.edu
+	(Sun Java(tm) System Messaging Server 7.0-5.01 32bit (built Feb 19
+	2009)) id <0KJ400I0CLKGZZ00@smtpauth1.wiscmail.wisc.edu> for
+	alsa-devel@alsa-project.org; Mon, 04 May 2009 10:26:40 -0500 (CDT)
+In-reply-to: <s5h4ow19way.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,188 +28,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org, ARM Linux <linux-arm-kernel@lists.arm.linux.org.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jonathan Cameron <jic23@cam.ac.uk>
+Hello again, Takashi,
 
-IMote2 ASoC Support
+Can you think of why a new distribution might be the cause, or a change
+that a new distribution makes, that would result in such behavior?  The
+new distribution includes a new kernel and a new version of xorg (I
+think), so everything on top of the hardware is new. What's damned
+peculiar is that the HTML output interface is always recognized
+successfully. It's only the Audio device: ATI Technologies Inc SBx00
+Azalia (Intel HDA) on pci 00:14.2 that seems to have this issue.
 
-This patch adds the ASoC side of the board support for the
-Crossbow IMB400 daughter board.
+To add oddity to the issue, I brought the laptop to work this morning
+and on boot the Audio device was successfully recognized and aplay -l
+shows it a card 0!!
 
-Thanks to Crossbow for considerable assistance.
+I wonder ... do you think that it's possible that a keyboard, mouse,
+printer, or some other USB device plugged into the laptop at boot could
+affect something like this?  That's really the only difference between
+work and home.
 
-Signed-off-by: Jonathan Cameron <jic23@cam.ac.uk>
+Thanks for taking the time to read that long post to the list!!
 
----
+Guy
 
-Changes since last post (in response to Mark's comments)
+Takashi Iwai wrote:
+> At Sat, 02 May 2009 23:57:42 -0500,
+> Guy Stalnaker wrote:
+>> Hello again.
+>>
+>> I was able to get my internal speakers working for my HP Pavilion Dv4
+>> laptop by following the advice I found in the alsa-devel archives.  That
+>> advice seems to have worked for quit a few people who found it by a post
+>> I made to the Ubuntu Forums.
+>>
+>> But now, after I have upgraded my Ubuntu from version 8.10 (when sound
+>> worked) to version 9.04, sound no longer works correctly.  I have some
+>> detailed information about the sequencing and the specific error.
+>> Attached is an alsa-info.txt output.
+>>
+>> Here's what I'm seeing (extracts from dmesg/kernel logs):
+>>
+>> Apr 29 15:13:17 Harlindon kernel: [   19.937190] HDA Intel 0000:00:14.2:
+>> PCI INT A -> GSI 16 (level, low) -> IRQ 16
+>> Apr 29 15:13:17 Harlindon kernel: [   19.937270] HDA Intel 0000:00:14.2:
+>> setting latency timer to 64
+>>
+>> Apr 30 09:37:09 Harlindon kernel: [   19.941675] HDA Intel 0000:00:14.2:
+>> PCI INT A -> GSI 16 (level, low) -> IRQ 16
+>> Apr 30 09:37:09 Harlindon kernel: [   19.941750] HDA Intel 0000:00:14.2:
+>> setting latency timer to 64
+>>
+>> May  1 16:06:01 Harlindon kernel: [   19.852324] HDA Intel 0000:00:14.2:
+>> PCI INT A -> GSI 16 (level, low) -> IRQ 16
+>> May  1 16:06:01 Harlindon kernel: [   19.852398] HDA Intel 0000:00:14.2:
+>> setting latency timer to 64
+>>
+>> May  1 16:13:43 Harlindon kernel: [   20.950985] HDA Intel 0000:00:14.2:
+>> PCI INT A -> GSI 16 (level, low) -> IRQ 16
+>> May  1 16:13:43 Harlindon kernel: [   20.951060] HDA Intel 0000:00:14.2:
+>> setting latency timer to 64
+>>
+>> Commit Log for Fri May  1 16:41:58 2009 [Upgrade to Ubuntu Jaunty 9.04]
+>>
+>> May  1 17:11:05 Harlindon kernel: [   20.318416] hda-intel: unable to
+>> grab IRQ 0, disabling device
+> 
+> This is pretty unusual.  Most likely either a BIOS or an ACPI problem,
+> has little to do with the sound driver itself.
+> 
+> 
+> Takashi
 
-* Removed PLL code. The driver never initializes so why bother to
-disable it.
-
-* Removed excess headers.
-
-Relatively straight forward configuration with the PXA acting as the clock
-master.
- sound/soc/pxa/Kconfig  |    9 ++++
- sound/soc/pxa/Makefile |    2 +
- sound/soc/pxa/imote2.c |  114 ++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 125 insertions(+), 0 deletions(-)
-
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index ad8a10f..eb75a1c 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -134,3 +134,12 @@ config SND_PXA2XX_SOC_MIOA701
-         help
-           Say Y if you want to add support for SoC audio on the
-           MIO A701.
-+
-+config SND_PXA2XX_SOC_IMOTE2
-+       tristate "SoC Audio support for IMote 2"
-+       depends on SND_PXA2XX_SOC && MACH_INTELMOTE2
-+       select SND_PXA2XX_SOC_I2S
-+       select SND_SOC_WM8940
-+       help
-+         Say Y if you want to add support for SoC audio on the
-+	 IMote 2.
-diff --git a/sound/soc/pxa/Makefile b/sound/soc/pxa/Makefile
-index 4b90c3c..6e096b4 100644
---- a/sound/soc/pxa/Makefile
-+++ b/sound/soc/pxa/Makefile
-@@ -22,6 +22,7 @@ snd-soc-palm27x-objs := palm27x.o
- snd-soc-zylonite-objs := zylonite.o
- snd-soc-magician-objs := magician.o
- snd-soc-mioa701-objs := mioa701_wm9713.o
-+snd-soc-imote2-objs := imote2.o
- 
- obj-$(CONFIG_SND_PXA2XX_SOC_CORGI) += snd-soc-corgi.o
- obj-$(CONFIG_SND_PXA2XX_SOC_POODLE) += snd-soc-poodle.o
-@@ -35,3 +36,4 @@ obj-$(CONFIG_SND_PXA2XX_SOC_PALM27X) += snd-soc-palm27x.o
- obj-$(CONFIG_SND_PXA2XX_SOC_MAGICIAN) += snd-soc-magician.o
- obj-$(CONFIG_SND_PXA2XX_SOC_MIOA701) += snd-soc-mioa701.o
- obj-$(CONFIG_SND_SOC_ZYLONITE) += snd-soc-zylonite.o
-+obj-$(CONFIG_SND_PXA2XX_SOC_IMOTE2) += snd-soc-imote2.o
-diff --git a/sound/soc/pxa/imote2.c b/sound/soc/pxa/imote2.c
-new file mode 100644
-index 0000000..405587a
---- /dev/null
-+++ b/sound/soc/pxa/imote2.c
-@@ -0,0 +1,114 @@
-+
-+#include <linux/module.h>
-+#include <sound/soc.h>
-+
-+#include <asm/mach-types.h>
-+
-+#include "../codecs/wm8940.h"
-+#include "pxa2xx-i2s.h"
-+#include "pxa2xx-pcm.h"
-+
-+static int imote2_asoc_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	unsigned int clk = 0;
-+	int ret;
-+
-+	switch (params_rate(params)) {
-+	case 8000:
-+	case 16000:
-+	case 48000:
-+	case 96000:
-+		clk = 12288000;
-+		break;
-+	case 11025:
-+	case 22050:
-+	case 44100:
-+		clk = 11289600;
-+		break;
-+	}
-+
-+	/* set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S
-+				  | SND_SOC_DAIFMT_NB_NF
-+				  | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* CPU should be clock master */
-+	ret = snd_soc_dai_set_fmt(cpu_dai,  SND_SOC_DAIFMT_I2S
-+				  | SND_SOC_DAIFMT_NB_NF
-+				  | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai, 0, clk,
-+				     SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set the I2S system clock as input (unused) */
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, PXA2XX_I2S_SYSCLK, clk,
-+		SND_SOC_CLOCK_OUT);
-+
-+	return ret;
-+}
-+
-+static struct snd_soc_ops imote2_asoc_ops = {
-+	.hw_params = imote2_asoc_hw_params,
-+};
-+
-+static struct snd_soc_dai_link imote2_dai = {
-+	.name = "WM8940",
-+	.stream_name = "WM8940",
-+	.cpu_dai = &pxa_i2s_dai,
-+	.codec_dai = &wm8940_dai,
-+	.ops = &imote2_asoc_ops,
-+};
-+
-+static struct snd_soc_card snd_soc_imote2 = {
-+	.name = "Imote2",
-+	.platform = &pxa2xx_soc_platform,
-+	.dai_link = &imote2_dai,
-+	.num_links = 1,
-+};
-+
-+static struct snd_soc_device imote2_snd_devdata = {
-+	.card = &snd_soc_imote2,
-+	.codec_dev = &soc_codec_dev_wm8940,
-+};
-+
-+static struct platform_device *imote2_snd_device;
-+
-+static int __init imote2_asoc_init(void)
-+{
-+	int ret;
-+
-+	if (!machine_is_intelmote2())
-+		return -ENODEV;
-+	imote2_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!imote2_snd_device)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(imote2_snd_device, &imote2_snd_devdata);
-+	imote2_snd_devdata.dev = &imote2_snd_device->dev;
-+	ret = platform_device_add(imote2_snd_device);
-+	if (ret)
-+		platform_device_put(imote2_snd_device);
-+
-+	return ret;
-+}
-+module_init(imote2_asoc_init);
-+
-+static void __exit imote2_asoc_exit(void)
-+{
-+	platform_device_unregister(imote2_snd_device);
-+}
-+module_exit(imote2_asoc_exit);
-+
-+MODULE_AUTHOR("Jonathan Cameron");
-+MODULE_DESCRIPTION("ALSA SoC Imote 2");
-+MODULE_LICENSE("GPL");
+-- 
+Guy Stalnaker, I2@DOIT, jstalnak@wisc.edu
+1210 West Dayton Street, Room 3209 CSS, Madison WI 53706
+work 608.263.8035, cell 608.235.4718, fax 608.265.6681
