@@ -1,24 +1,23 @@
-From: Guy Stalnaker <jstalnak@wisc.edu>
-Subject: Re: Issues with HP DV4 laptop sound after Ubuntu
- Jaunty 9.04 upgrade
-Date: Mon, 04 May 2009 10:26:27 -0500
-Message-ID: <49FF0923.60902@wisc.edu>
-References: <49FD2446.7040001@wisc.edu> <s5h4ow19way.wl%tiwai@suse.de>
-Reply-To: jstalnak@wisc.edu
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: dmix and mmap
+Date: Mon, 4 May 2009 11:57:20 -0500
+Message-ID: <ed82fe3e0905040957l13e53319j57ddd1c1de902f92@mail.gmail.com>
+References: <bb6204720904300810ma174b6cn825f8565c0b694c0@mail.gmail.com>
+	<20090430151301.GA27605@sirena.org.uk>
+	<bb6204720904301229q3b0b93eao28563ec7bdef73cb@mail.gmail.com>
+	<20090501113240.GF6975@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adsum.doit.wisc.edu (adsum.doit.wisc.edu [144.92.197.210])
-	by alsa0.perex.cz (Postfix) with ESMTP id A89F62433E
+Received: from mail-qy0-f103.google.com (mail-qy0-f103.google.com
+	[209.85.221.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 37183243CE
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 May 2009 17:26:41 +0200 (CEST)
-Received: from avs-daemon.smtpauth1.wiscmail.wisc.edu by
-	smtpauth1.wiscmail.wisc.edu
-	(Sun Java(tm) System Messaging Server 7.0-5.01 32bit (built Feb 19
-	2009)) id <0KJ400I0CLKGZZ00@smtpauth1.wiscmail.wisc.edu> for
-	alsa-devel@alsa-project.org; Mon, 04 May 2009 10:26:40 -0500 (CDT)
-In-reply-to: <s5h4ow19way.wl%tiwai@suse.de>
+	Mon,  4 May 2009 18:57:22 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so7434839qyk.16
+	for <alsa-devel@alsa-project.org>; Mon, 04 May 2009 09:57:20 -0700 (PDT)
+In-Reply-To: <20090501113240.GF6975@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,82 +27,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: Gabriel Johnson <johnsoga@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello again, Takashi,
+On Fri, May 1, 2009 at 6:32 AM, Mark Brown <broonie@sirena.org.uk> wrote:
+> I know that there were some problems with PowerPC memory access,
+> unfortunately I don't know any specifics or if these issues are fixed in
+> current kernels. =A0Searching for postings by Takashi Iwai on the PowerPC
+> kernel lists might turn something up.
 
-Can you think of why a new distribution might be the cause, or a change
-that a new distribution makes, that would result in such behavior?  The
-new distribution includes a new kernel and a new version of xorg (I
-think), so everything on top of the hardware is new. What's damned
-peculiar is that the HTML output interface is always recognized
-successfully. It's only the Audio device: ATI Technologies Inc SBx00
-Azalia (Intel HDA) on pci 00:14.2 that seems to have this issue.
+The PowerPC MPC8610 drivers enable mmap support, and it seems to work,
+but that chip has a coherent MMU.  I've never done a definitive test
+that it works, though.  What's the easiest way to test mmap?
 
-To add oddity to the issue, I brought the laptop to work this morning
-and on boot the Audio device was successfully recognized and aplay -l
-shows it a card 0!!
+-- =
 
-I wonder ... do you think that it's possible that a keyboard, mouse,
-printer, or some other USB device plugged into the laptop at boot could
-affect something like this?  That's really the only difference between
-work and home.
-
-Thanks for taking the time to read that long post to the list!!
-
-Guy
-
-Takashi Iwai wrote:
-> At Sat, 02 May 2009 23:57:42 -0500,
-> Guy Stalnaker wrote:
->> Hello again.
->>
->> I was able to get my internal speakers working for my HP Pavilion Dv4
->> laptop by following the advice I found in the alsa-devel archives.  That
->> advice seems to have worked for quit a few people who found it by a post
->> I made to the Ubuntu Forums.
->>
->> But now, after I have upgraded my Ubuntu from version 8.10 (when sound
->> worked) to version 9.04, sound no longer works correctly.  I have some
->> detailed information about the sequencing and the specific error.
->> Attached is an alsa-info.txt output.
->>
->> Here's what I'm seeing (extracts from dmesg/kernel logs):
->>
->> Apr 29 15:13:17 Harlindon kernel: [   19.937190] HDA Intel 0000:00:14.2:
->> PCI INT A -> GSI 16 (level, low) -> IRQ 16
->> Apr 29 15:13:17 Harlindon kernel: [   19.937270] HDA Intel 0000:00:14.2:
->> setting latency timer to 64
->>
->> Apr 30 09:37:09 Harlindon kernel: [   19.941675] HDA Intel 0000:00:14.2:
->> PCI INT A -> GSI 16 (level, low) -> IRQ 16
->> Apr 30 09:37:09 Harlindon kernel: [   19.941750] HDA Intel 0000:00:14.2:
->> setting latency timer to 64
->>
->> May  1 16:06:01 Harlindon kernel: [   19.852324] HDA Intel 0000:00:14.2:
->> PCI INT A -> GSI 16 (level, low) -> IRQ 16
->> May  1 16:06:01 Harlindon kernel: [   19.852398] HDA Intel 0000:00:14.2:
->> setting latency timer to 64
->>
->> May  1 16:13:43 Harlindon kernel: [   20.950985] HDA Intel 0000:00:14.2:
->> PCI INT A -> GSI 16 (level, low) -> IRQ 16
->> May  1 16:13:43 Harlindon kernel: [   20.951060] HDA Intel 0000:00:14.2:
->> setting latency timer to 64
->>
->> Commit Log for Fri May  1 16:41:58 2009 [Upgrade to Ubuntu Jaunty 9.04]
->>
->> May  1 17:11:05 Harlindon kernel: [   20.318416] hda-intel: unable to
->> grab IRQ 0, disabling device
-> 
-> This is pretty unusual.  Most likely either a BIOS or an ACPI problem,
-> has little to do with the sound driver itself.
-> 
-> 
-> Takashi
-
--- 
-Guy Stalnaker, I2@DOIT, jstalnak@wisc.edu
-1210 West Dayton Street, Room 3209 CSS, Madison WI 53706
-work 608.263.8035, cell 608.235.4718, fax 608.265.6681
+Timur Tabi
+Linux kernel developer at Freescale
