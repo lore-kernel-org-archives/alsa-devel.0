@@ -1,18 +1,18 @@
-From: Jon Smirl <jonsmirl@gmail.com>
-Subject: Call out after period buffer is filled
-Date: Tue, 5 May 2009 10:35:17 -0400
-Message-ID: <9e4733910905050735g168d2c4ibf1ce91538557513@mail.gmail.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH 1/2] ASoC: cs4270: introduce CS4270_I2C_INCR
+Date: Tue, 05 May 2009 09:51:47 -0500
+Message-ID: <4A005283.50306@freescale.com>
+References: <1241515501-6600-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f170.google.com (mail-fx0-f170.google.com
-	[209.85.220.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id 56C251037FA
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id AFB6E1037FA
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 May 2009 16:35:19 +0200 (CEST)
-Received: by fxm18 with SMTP id 18so5192839fxm.32
-	for <alsa-devel@alsa-project.org>; Tue, 05 May 2009 07:35:18 -0700 (PDT)
+	Tue,  5 May 2009 16:52:09 +0200 (CEST)
+In-Reply-To: <1241515501-6600-1-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,12 +22,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Is there some way to get a call out after a period DMA buffer is
-filled so that I can add it to the DMA queue?
+Daniel Mack wrote:
+> Replace the magic 0x80 value with a suitable macro definition.
+> 
+> Signed-off-by: Daniel Mack <daniel@caiaq.de>
+> Cc: Timur Tabi <timur@freescale.com>
+> Cc: Mark Brown <broonie@sirena.org.uk>
+
+And I thought *I* was anal-retentive! :-)
+
+Acked-by: Timur Tabi <timur@freescale.com>
+
+(although personally, I would have called it CS4270_I2C_AUTO_INCR)
 
 -- 
-Jon Smirl
-jonsmirl@gmail.com
+Timur Tabi
+Linux kernel developer at Freescale
