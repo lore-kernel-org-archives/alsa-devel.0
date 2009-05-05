@@ -1,15 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 09/18] ASoC: Staticise txctrl and rxctrl for
-	S3C IISv2
-Date: Tue,  5 May 2009 11:02:22 +0100
-Message-ID: <1241517751-2634-9-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 14/18] ASoC: TWL4030: Add VDL analog bypass
+Date: Tue,  5 May 2009 11:02:27 +0100
+Message-ID: <1241517751-2634-14-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20090505100123.GB2050@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EF3C024520
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D0D912451E
 	for <alsa-devel@alsa-project.org>;
 	Tue,  5 May 2009 12:02:35 +0200 (CEST)
 In-Reply-To: <20090505100123.GB2050@rakim.wolfsonmicro.main>
@@ -23,93 +22,137 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Lopez Cruz,
+	Misael" <x0052729@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-They aren't used by anything external and aren't prototyped; if any
-users appear they can be exported again for them.
+From: Lopez Cruz, Misael <x0052729@ti.com>
 
-Also report what modes we have a problem with when we encounter invalid
-mode configurations.
+This patch adds voice downlink analog bypass switch. It follows
+the same approach as in other analog bypass switches.
+DAC switch is moved from 'DAC Voice' to 'Analog Voice Playback Mixer',
+that will also allow voice DAC to be powered in digital voice
+loopback (sidetone).
 
+Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/s3c24xx/s3c-i2s-v2.c |   20 ++++++++++++--------
- 1 files changed, 12 insertions(+), 8 deletions(-)
+ sound/soc/codecs/twl4030.c |   37 +++++++++++++++++++++++++++++++------
+ 1 files changed, 31 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.c b/sound/soc/s3c24xx/s3c-i2s-v2.c
-index bc4e504..972c276 100644
---- a/sound/soc/s3c24xx/s3c-i2s-v2.c
-+++ b/sound/soc/s3c24xx/s3c-i2s-v2.c
-@@ -89,7 +89,7 @@ static inline void dbg_showcon(const char *fn, u32 con)
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index efa1a80..efb371f 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -468,6 +468,10 @@ static const struct snd_kcontrol_new twl4030_dapm_abypassr2_control =
+ static const struct snd_kcontrol_new twl4030_dapm_abypassl2_control =
+ 	SOC_DAPM_SINGLE("Switch", TWL4030_REG_ARXL2_APGA_CTL, 2, 1, 0);
  
++/* Analog bypass for Voice */
++static const struct snd_kcontrol_new twl4030_dapm_abypassv_control =
++	SOC_DAPM_SINGLE("Switch", TWL4030_REG_VDL_APGA_CTL, 2, 1, 0);
++
+ /* Digital bypass gain, 0 mutes the bypass */
+ static const unsigned int twl4030_dapm_dbypass_tlv[] = {
+ 	TLV_DB_RANGE_HEAD(2),
+@@ -585,7 +589,7 @@ static int bypass_event(struct snd_soc_dapm_widget *w,
+ 	struct soc_mixer_control *m =
+ 		(struct soc_mixer_control *)w->kcontrols->private_value;
+ 	struct twl4030_priv *twl4030 = w->codec->private_data;
+-	unsigned char reg;
++	unsigned char reg, misc;
  
- /* Turn on or off the transmission path. */
--void s3c2412_snd_txctrl(struct s3c_i2sv2_info *i2s, int on)
-+static void s3c2412_snd_txctrl(struct s3c_i2sv2_info *i2s, int on)
- {
- 	void __iomem *regs = i2s->regs;
- 	u32 fic, con, mod;
-@@ -119,7 +119,9 @@ void s3c2412_snd_txctrl(struct s3c_i2sv2_info *i2s, int on)
- 			break;
+ 	reg = twl4030_read_reg_cache(w->codec, m->reg);
  
- 		default:
--			dev_err(i2s->dev, "TXEN: Invalid MODE in IISMOD\n");
-+			dev_err(i2s->dev, "TXEN: Invalid MODE %x in IISMOD\n",
-+				mod & S3C2412_IISMOD_MODE_MASK);
-+			break;
- 		}
+@@ -597,14 +601,28 @@ static int bypass_event(struct snd_soc_dapm_widget *w,
+ 		else
+ 			twl4030->bypass_state &=
+ 				~(1 << (m->reg - TWL4030_REG_ARXL1_APGA_CTL));
++	} else if (m->reg == TWL4030_REG_VDL_APGA_CTL) {
++		/* Analog voice bypass */
++		if (reg & (1 << m->shift))
++			twl4030->bypass_state |= (1 << 4);
++		else
++			twl4030->bypass_state &= ~(1 << 4);
+ 	} else {
+ 		/* Digital bypass */
+ 		if (reg & (0x7 << m->shift))
+-			twl4030->bypass_state |= (1 << (m->shift ? 5 : 4));
++			twl4030->bypass_state |= (1 << (m->shift ? 6 : 5));
+ 		else
+-			twl4030->bypass_state &= ~(1 << (m->shift ? 5 : 4));
++			twl4030->bypass_state &= ~(1 << (m->shift ? 6 : 5));
+ 	}
  
- 		writel(con, regs + S3C2412_IISCON);
-@@ -146,7 +148,9 @@ void s3c2412_snd_txctrl(struct s3c_i2sv2_info *i2s, int on)
- 			break;
++	/* Enable master analog loopback mode if any analog switch is enabled*/
++	misc = twl4030_read_reg_cache(w->codec, TWL4030_REG_MISC_SET_1);
++	if (twl4030->bypass_state & 0x1F)
++		misc |= TWL4030_FMLOOP_EN;
++	else
++		misc &= ~TWL4030_FMLOOP_EN;
++	twl4030_write(w->codec, TWL4030_REG_MISC_SET_1, misc);
++
+ 	if (w->codec->bias_level == SND_SOC_BIAS_STANDBY) {
+ 		if (twl4030->bypass_state)
+ 			twl4030_codec_mute(w->codec, 0);
+@@ -935,7 +953,7 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 	SND_SOC_DAPM_DAC("DAC Left2", "Left Rear Playback",
+ 			SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_DAC("DAC Voice", "Voice Playback",
+-			TWL4030_REG_AVDAC_CTL, 4, 0),
++			SND_SOC_NOPM, 0, 0),
  
- 		default:
--			dev_err(i2s->dev, "TXDIS: Invalid MODE in IISMOD\n");
-+			dev_err(i2s->dev, "TXDIS: Invalid MODE %x in IISMOD\n",
-+				mod & S3C2412_IISMOD_MODE_MASK);
-+			break;
- 		}
+ 	/* Analog PGAs */
+ 	SND_SOC_DAPM_PGA("ARXR1_APGA", TWL4030_REG_ARXR1_APGA_CTL,
+@@ -962,6 +980,9 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SWITCH_E("Left2 Analog Loopback", SND_SOC_NOPM, 0, 0,
+ 			&twl4030_dapm_abypassl2_control,
+ 			bypass_event, SND_SOC_DAPM_POST_REG),
++	SND_SOC_DAPM_SWITCH_E("Voice Analog Loopback", SND_SOC_NOPM, 0, 0,
++			&twl4030_dapm_abypassv_control,
++			bypass_event, SND_SOC_DAPM_POST_REG),
  
- 		writel(mod, regs + S3C2412_IISMOD);
-@@ -157,9 +161,8 @@ void s3c2412_snd_txctrl(struct s3c_i2sv2_info *i2s, int on)
- 	dbg_showcon(__func__, con);
- 	pr_debug("%s: IIS: CON=%x MOD=%x FIC=%x\n", __func__, con, mod, fic);
- }
--EXPORT_SYMBOL_GPL(s3c2412_snd_txctrl);
+ 	/* Digital bypasses */
+ 	SND_SOC_DAPM_SWITCH_E("Left Digital Loopback", SND_SOC_NOPM, 0, 0,
+@@ -979,6 +1000,8 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 			2, 0, NULL, 0),
+ 	SND_SOC_DAPM_MIXER("Analog L2 Playback Mixer", TWL4030_REG_AVDAC_CTL,
+ 			3, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("Analog Voice Playback Mixer", TWL4030_REG_AVDAC_CTL,
++			4, 0, NULL, 0),
  
--void s3c2412_snd_rxctrl(struct s3c_i2sv2_info *i2s, int on)
-+static void s3c2412_snd_rxctrl(struct s3c_i2sv2_info *i2s, int on)
- {
- 	void __iomem *regs = i2s->regs;
- 	u32 fic, con, mod;
-@@ -189,7 +192,8 @@ void s3c2412_snd_rxctrl(struct s3c_i2sv2_info *i2s, int on)
- 			break;
+ 	/* Output MIXER controls */
+ 	/* Earpiece */
+@@ -1067,13 +1090,13 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	{"Analog R1 Playback Mixer", NULL, "DAC Right1"},
+ 	{"Analog L2 Playback Mixer", NULL, "DAC Left2"},
+ 	{"Analog R2 Playback Mixer", NULL, "DAC Right2"},
++	{"Analog Voice Playback Mixer", NULL, "DAC Voice"},
  
- 		default:
--			dev_err(i2s->dev, "RXEN: Invalid MODE in IISMOD\n");
-+			dev_err(i2s->dev, "RXEN: Invalid MODE %x in IISMOD\n",
-+				mod & S3C2412_IISMOD_MODE_MASK);
- 		}
+ 	{"ARXL1_APGA", NULL, "Analog L1 Playback Mixer"},
+ 	{"ARXR1_APGA", NULL, "Analog R1 Playback Mixer"},
+ 	{"ARXL2_APGA", NULL, "Analog L2 Playback Mixer"},
+ 	{"ARXR2_APGA", NULL, "Analog R2 Playback Mixer"},
+-
+-	{"VDL_APGA", NULL, "DAC Voice"},
++	{"VDL_APGA", NULL, "Analog Voice Playback Mixer"},
  
- 		writel(mod, regs + S3C2412_IISMOD);
-@@ -213,7 +217,8 @@ void s3c2412_snd_rxctrl(struct s3c_i2sv2_info *i2s, int on)
- 			break;
+ 	/* Internal playback routings */
+ 	/* Earpiece */
+@@ -1169,11 +1192,13 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	{"Left1 Analog Loopback", "Switch", "Analog Left Capture Route"},
+ 	{"Right2 Analog Loopback", "Switch", "Analog Right Capture Route"},
+ 	{"Left2 Analog Loopback", "Switch", "Analog Left Capture Route"},
++	{"Voice Analog Loopback", "Switch", "Analog Left Capture Route"},
  
- 		default:
--			dev_err(i2s->dev, "RXEN: Invalid MODE in IISMOD\n");
-+			dev_err(i2s->dev, "RXDIS: Invalid MODE %x in IISMOD\n",
-+				mod & S3C2412_IISMOD_MODE_MASK);
- 		}
+ 	{"Analog R1 Playback Mixer", NULL, "Right1 Analog Loopback"},
+ 	{"Analog L1 Playback Mixer", NULL, "Left1 Analog Loopback"},
+ 	{"Analog R2 Playback Mixer", NULL, "Right2 Analog Loopback"},
+ 	{"Analog L2 Playback Mixer", NULL, "Left2 Analog Loopback"},
++	{"Analog Voice Playback Mixer", NULL, "Voice Analog Loopback"},
  
- 		writel(con, regs + S3C2412_IISCON);
-@@ -223,7 +228,6 @@ void s3c2412_snd_rxctrl(struct s3c_i2sv2_info *i2s, int on)
- 	fic = readl(regs + S3C2412_IISFIC);
- 	pr_debug("%s: IIS: CON=%x MOD=%x FIC=%x\n", __func__, con, mod, fic);
- }
--EXPORT_SYMBOL_GPL(s3c2412_snd_rxctrl);
- 
- /*
-  * Wait for the LR signal to allow synchronisation to the L/R clock
+ 	/* Digital bypass routes */
+ 	{"Right Digital Loopback", "Volume", "TX1 Capture Route"},
 -- 
 1.6.2.4
