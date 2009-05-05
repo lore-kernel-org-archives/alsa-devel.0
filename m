@@ -1,18 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 0/1] ASoC: TWL4030: VIBRA output support
-Date: Tue, 5 May 2009 09:12:45 +0300
-Message-ID: <200905050912.45506.peter.ujfalusi@nokia.com>
-References: <1241502947-18151-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: looking for advice on buying a card
+Date: Tue, 05 May 2009 10:10:29 +0200
+Message-ID: <49FFF475.2070108@ladisch.de>
+References: <49FC7432.9090301@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8FAAC24450
+Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 70EA9244BC
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 May 2009 08:13:00 +0200 (CEST)
-In-Reply-To: <1241502947-18151-1-git-send-email-peter.ujfalusi@nokia.com>
-Content-Disposition: inline
+	Tue,  5 May 2009 10:10:27 +0200 (CEST)
+In-Reply-To: <49FC7432.9090301@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +21,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: Dmitri Seletski <drjoms@gmail.com>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 05 May 2009 08:55:46 Ujfalusi Peter (Nokia-D/Tampere) wrote:
-> Hello,
->
-> The VIBRA output can be driven with audio data or with local vibrator
-> driver, the following patch adds VIBRA output support (for driving the
-> VIBRA output with audio data) for the TWL4030 codec.
+Dmitri Seletski wrote:
+> I am thinking to buy pci express sound card.
 
-Forgot to mention, that this patch should be fine against Mark's =
+The Asus Xonar cards are the only supported PCI-E cards.
 
-sound-2.6:for-2.6.31 branch in regards of TWL4030 codec (on top of commit: =
+> Nothing fancy,
 
-ASoC: TWL4030: Add voice digital loopback: sidetone from Lopez Cruz, Misael)
+That rules out the D2X.
 
--- =
+> just something with dolby surround 7.1
 
-P=E9ter
+Now the only choice is the DX.
+
+> Is it painful to get it running?
+
+No, it's standard PCI Plug&Play.
+
+> does it work fully(does microphone work, does surround sound 7.1 work?)?
+
+Yes.
+
+> Is there something better for similar money?
+
+There is nothing else (assuming that you do not want to pay more for the
+D2X just to get an S/PDIF input and colorful LEDs in the jacks).
+
+
+Best regards,
+Clemens
