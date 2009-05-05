@@ -1,21 +1,22 @@
-From: Daniel Mack <daniel@caiaq.de>
+From: Timur Tabi <timur@freescale.com>
 Subject: Re: [PATCH 2/2] ASoC: cs4270: add power management
 	support
-Date: Tue, 5 May 2009 17:51:16 +0200
-Message-ID: <20090505155116.GD24556@buzzloop.caiaq.de>
+Date: Tue, 05 May 2009 12:55:21 -0500
+Message-ID: <4A007D89.8020602@freescale.com>
 References: <1241515501-6600-1-git-send-email-daniel@caiaq.de>
 	<1241515501-6600-2-git-send-email-daniel@caiaq.de>
 	<4A005BA8.2070600@freescale.com>
+	<20090505155116.GD24556@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9B437245D1
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id DB3D0103808
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 May 2009 17:51:20 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4A005BA8.2070600@freescale.com>
+	Tue,  5 May 2009 19:56:27 +0200 (CEST)
+In-Reply-To: <20090505155116.GD24556@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,145 +26,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
+To: Daniel Mack <daniel@caiaq.de>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 05, 2009 at 10:30:48AM -0500, Timur Tabi wrote:
-> > +static int cs4270_i2c_suspend(struct i2c_client *client, pm_message_t mesg)
-> > +{
-> > +	struct cs4270_private *cs4270 = i2c_get_clientdata(client);
-> > +	struct snd_soc_codec *codec = &cs4270->codec;
-> > +	int reg = snd_soc_read(codec, CS4270_PWRCTL);
-> > +
-> > +	if (reg < 0)
-> > +		return reg;
-> 
-> You check for an error code from snd_soc_read() here, but ...
-> 
-> > +	/* ... then disable the power-down bits */
-> > +	reg = snd_soc_read(codec, CS4270_PWRCTL);
-> 
-> you don't check for it here.
-> 
-> In cs4270_i2c_suspend(), snd_soc_read() can never return an error,
-> because you're passing a hard-coded register address.
+Daniel Mack wrote:
 
-Ok - see the patch below.
+> From d2303f37695145018e07aad85200f06b24341648 Mon Sep 17 00:00:00 2001
+> From: Daniel Mack <daniel@caiaq.de>
+> Date: Thu, 2 Apr 2009 15:43:44 +0200
+> Subject: [PATCH 2/2] ASoC: cs4270: add power management support
 
-Thanks,
-Daniel
+You forgot to add "v2" to the subject line.  And you'll need a v3 on the
+next version of the patch, because ...
+
+> +static int cs4270_i2c_resume(struct i2c_client *client)
+> +{
+> +	struct cs4270_private *cs4270 = i2c_get_clientdata(client);
+> +	struct snd_soc_codec *codec = &cs4270->codec;
+> +	int reg;
+> +
+> +	/* In case the device was put to hard reset during sleep, we need to
+> +	 * wait 500ns here before any I2C communication. */
+> +	ndelay(500);
+> +
+> +	/* first restore the entire register cache ... */
+> +	for (reg = CS4270_FIRSTREG; reg <= CS4270_LASTREG; reg++) {
+> +		u8 val = snd_soc_read(codec, reg);
+> +
+> +		if (i2c_smbus_write_byte_data(client, reg, val)) {
+> +			dev_err(codec->dev, "i2c write failed\n");
+> +			return -EIO;
+> +		}
+> +	}
+> +
+> +	/* ... then disable the power-down bits */
+> +	reg = snd_soc_read(codec, CS4270_PWRCTL);
+> +	if (reg < 0)
+> +		return reg;
+
+... you forgot this "reg < 0" check. Also, ...
+
+> +static int cs4270_i2c_suspend(struct i2c_client *client, pm_message_t mesg)
+> +{
+> +	struct cs4270_private *cs4270 = i2c_get_clientdata(client);
+> +	struct snd_soc_codec *codec = &cs4270->codec;
+> +	int reg = snd_soc_read(codec, CS4270_PWRCTL) | CS4270_PWRCTL_PDN_ALL;
+> +	return snd_soc_write(codec, CS4270_PWRCTL, reg);
+> +}
+
+... you need a blank line above the "return"
 
 
->From d2303f37695145018e07aad85200f06b24341648 Mon Sep 17 00:00:00 2001
-From: Daniel Mack <daniel@caiaq.de>
-Date: Thu, 2 Apr 2009 15:43:44 +0200
-Subject: [PATCH 2/2] ASoC: cs4270: add power management support
+> +
+> +	reg &= ~CS4270_PWRCTL_PDN_ALL;
+> +	return snd_soc_write(codec, CS4270_PWRCTL, reg);
+> +}
 
-Signed-off-by: Daniel Mack <daniel@caiaq.de>
-Cc: Timur Tabi <timur@freescale.com>
-Cc: Mark Brown <broonie@sirena.org.uk>
----
- sound/soc/codecs/cs4270.c |   59 ++++++++++++++++++++++++++++++++++++++++++++-
- 1 files changed, 58 insertions(+), 1 deletions(-)
+And here.
 
-diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-index bc338df..65c68a0 100644
---- a/sound/soc/codecs/cs4270.c
-+++ b/sound/soc/codecs/cs4270.c
-@@ -18,7 +18,7 @@
-  * - The machine driver's 'startup' function must call
-  *   cs4270_set_dai_sysclk() with the value of MCLK.
-  * - Only I2S and left-justified modes are supported
-- * - Power management is not supported
-+ * - Power management is supported
-  */
- 
- #include <linux/module.h>
-@@ -27,6 +27,7 @@
- #include <sound/soc.h>
- #include <sound/initval.h>
- #include <linux/i2c.h>
-+#include <linux/delay.h>
- 
- #include "cs4270.h"
- 
-@@ -65,6 +66,8 @@
- #define CS4270_PWRCTL_PDN_ADC	0x20
- #define CS4270_PWRCTL_PDN_DAC	0x02
- #define CS4270_PWRCTL_PDN	0x01
-+#define CS4270_PWRCTL_PDN_ALL	\
-+	(CS4270_PWRCTL_PDN_ADC | CS4270_PWRCTL_PDN_DAC | CS4270_PWRCTL_PDN)
- #define CS4270_MODE_SPEED_MASK	0x30
- #define CS4270_MODE_1X		0x00
- #define CS4270_MODE_2X		0x10
-@@ -788,6 +791,58 @@ static struct i2c_device_id cs4270_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, cs4270_id);
- 
-+#ifdef CONFIG_PM
-+
-+/* This suspend/resume implementation can handle both - a simple standby
-+ * where the codec remains powered, and a full suspend, where the voltage
-+ * domain the codec is connected to is teared down and/or any other hardware
-+ * reset condition is asserted.
-+ *
-+ * The codec's own power saving features are enabled in the suspend callback,
-+ * and all registers are written back to the hardware when resuming.
-+ */
-+
-+static int cs4270_i2c_suspend(struct i2c_client *client, pm_message_t mesg)
-+{
-+	struct cs4270_private *cs4270 = i2c_get_clientdata(client);
-+	struct snd_soc_codec *codec = &cs4270->codec;
-+	int reg = snd_soc_read(codec, CS4270_PWRCTL) | CS4270_PWRCTL_PDN_ALL;
-+	return snd_soc_write(codec, CS4270_PWRCTL, reg);
-+}
-+
-+static int cs4270_i2c_resume(struct i2c_client *client)
-+{
-+	struct cs4270_private *cs4270 = i2c_get_clientdata(client);
-+	struct snd_soc_codec *codec = &cs4270->codec;
-+	int reg;
-+
-+	/* In case the device was put to hard reset during sleep, we need to
-+	 * wait 500ns here before any I2C communication. */
-+	ndelay(500);
-+
-+	/* first restore the entire register cache ... */
-+	for (reg = CS4270_FIRSTREG; reg <= CS4270_LASTREG; reg++) {
-+		u8 val = snd_soc_read(codec, reg);
-+
-+		if (i2c_smbus_write_byte_data(client, reg, val)) {
-+			dev_err(codec->dev, "i2c write failed\n");
-+			return -EIO;
-+		}
-+	}
-+
-+	/* ... then disable the power-down bits */
-+	reg = snd_soc_read(codec, CS4270_PWRCTL);
-+	if (reg < 0)
-+		return reg;
-+
-+	reg &= ~CS4270_PWRCTL_PDN_ALL;
-+	return snd_soc_write(codec, CS4270_PWRCTL, reg);
-+}
-+#else
-+#define cs4270_i2c_suspend	NULL
-+#define cs4270_i2c_resume	NULL
-+#endif /* CONFIG_PM */
-+
- /*
-  * cs4270_i2c_driver - I2C device identification
-  *
-@@ -802,6 +857,8 @@ static struct i2c_driver cs4270_i2c_driver = {
- 	.id_table = cs4270_id,
- 	.probe = cs4270_i2c_probe,
- 	.remove = cs4270_i2c_remove,
-+	.suspend = cs4270_i2c_suspend,
-+	.resume = cs4270_i2c_resume,
- };
- 
- /*
 -- 
-1.6.2.1
+Timur Tabi
+Linux kernel developer at Freescale
