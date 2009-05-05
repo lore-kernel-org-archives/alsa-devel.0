@@ -1,19 +1,20 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 1/2] ASoC: cs4270: introduce CS4270_I2C_INCR
-Date: Tue, 5 May 2009 17:15:38 +0200
-Message-ID: <20090505151538.GC24556@buzzloop.caiaq.de>
-References: <1241515501-6600-1-git-send-email-daniel@caiaq.de>
-	<4A005283.50306@freescale.com>
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: Re: Call out after period buffer is filled
+Date: Tue, 5 May 2009 11:31:42 -0400
+Message-ID: <9e4733910905050831s3001d6a9xbe556e33ffc058c0@mail.gmail.com>
+References: <9e4733910905050735g168d2c4ibf1ce91538557513@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0D657103808
+Received: from mail-fx0-f170.google.com (mail-fx0-f170.google.com
+	[209.85.220.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1297410382B
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 May 2009 17:15:43 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4A005283.50306@freescale.com>
+	Tue,  5 May 2009 17:31:45 +0200 (CEST)
+Received: by fxm18 with SMTP id 18so5255227fxm.32
+	for <alsa-devel@alsa-project.org>; Tue, 05 May 2009 08:31:44 -0700 (PDT)
+In-Reply-To: <9e4733910905050735g168d2c4ibf1ce91538557513@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,28 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>
+To: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 05, 2009 at 09:51:47AM -0500, Timur Tabi wrote:
-> Daniel Mack wrote:
-> > Replace the magic 0x80 value with a suitable macro definition.
-> > 
-> > Signed-off-by: Daniel Mack <daniel@caiaq.de>
-> > Cc: Timur Tabi <timur@freescale.com>
-> > Cc: Mark Brown <broonie@sirena.org.uk>
-> 
-> And I thought *I* was anal-retentive! :-)
+On Tue, May 5, 2009 at 10:35 AM, Jon Smirl <jonsmirl@gmail.com> wrote:
+> Is there some way to get a call out after a period DMA buffer is
+> filled so that I can add it to the DMA queue?
 
-Erm, yes - need to explain that :)
+The current model in my driver is to queue up a bunch of DMA
+descriptors, one per period. When I queue these I don't know if the
+DMA buffers have music in them or not. I then start this queue playing
+and tell ALSA when each period has finished. After each period plays I
+requeue the descriptor. I keep hoping that ALSA can get these filled
+before they start playing.
 
-I planned to use that macro a second time for the register write-back at
-resume time. But unfortunately, the i2c stack is so badly broken that it
-does not allow the write of a whole data block without having the length
-itself as part of the message (which is wrong for the codec).
+After the last period plays ALSA calls trigger(STOP). At that point I
+try to shut down the DMA hardware and get the descriptors back. But
+because of the FIFO and asynchronous DMA engine I can't stop DMA fast
+enough in the trigger(STOP) routine. The result is that the next
+period starts playing. This period has data from earlier in the stream
+and it sounds like a burst of noise.
 
-But the change was there already by then, and so I left the patch in my
-queue.
+What I need is a call back indicating which buffers have valid data in
+them. When I know the buffer is valid I can queue the descriptor. This
+will fix the problem at end of stream since there won't be buffers
+queued containing invalid data.
 
-Daniel
+-- 
+Jon Smirl
+jonsmirl@gmail.com
