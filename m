@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 02/18] ASoC: Check for supported CPUs when
-	building s3c-i2s-v2
-Date: Tue,  5 May 2009 11:02:15 +0100
-Message-ID: <1241517751-2634-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 08/18] ASoC: Display S3C IISv2 mode and MS
+	errors by default
+Date: Tue,  5 May 2009 11:02:21 +0100
+Message-ID: <1241517751-2634-8-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20090505100123.GB2050@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 00CBA24518
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D58402451F
 	for <alsa-devel@alsa-project.org>;
 	Tue,  5 May 2009 12:02:35 +0200 (CEST)
 In-Reply-To: <20090505100123.GB2050@rakim.wolfsonmicro.main>
@@ -28,33 +28,30 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/s3c24xx/s3c-i2s-v2.c |   14 ++++++++++++++
- 1 files changed, 14 insertions(+), 0 deletions(-)
+ sound/soc/s3c24xx/s3c-i2s-v2.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.c b/sound/soc/s3c24xx/s3c-i2s-v2.c
-index ab680aa..3b9201c 100644
+index ad690b2..bc4e504 100644
 --- a/sound/soc/s3c24xx/s3c-i2s-v2.c
 +++ b/sound/soc/s3c24xx/s3c-i2s-v2.c
-@@ -37,6 +37,20 @@
+@@ -295,7 +295,7 @@ static int s3c2412_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 		iismod |= IISMOD_MASTER;
+ 		break;
+ 	default:
+-		pr_debug("unknwon master/slave format\n");
++		pr_err("unknwon master/slave format\n");
+ 		return -EINVAL;
+ 	}
  
- #include "s3c-i2s-v2.h"
+@@ -312,7 +312,7 @@ static int s3c2412_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 		iismod |= S3C2412_IISMOD_SDF_IIS;
+ 		break;
+ 	default:
+-		pr_debug("Unknown data format\n");
++		pr_err("Unknown data format\n");
+ 		return -EINVAL;
+ 	}
  
-+#undef S3C_IIS_V2_SUPPORTED
-+
-+#if defined(CONFIG_CPU_S3C2412) || defined(CONFIG_CPU_S3C2413)
-+#define S3C_IIS_V2_SUPPORTED
-+#endif
-+
-+#ifdef CONFIG_PLAT_S3C64XX
-+#define S3C_IIS_V2_SUPPORTED
-+#endif
-+
-+#ifndef S3C_IIS_V2_SUPPORTED
-+#error Unsupported CPU model
-+#endif
-+
- #define S3C2412_I2S_DEBUG_CON 0
- 
- static inline struct s3c_i2sv2_info *to_info(struct snd_soc_dai *cpu_dai)
 -- 
 1.6.2.4
