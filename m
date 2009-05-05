@@ -1,18 +1,22 @@
-From: "Sudeept Prusti" <sudeeptp@tataelxsi.co.in>
-Subject: Re: Help-Pause/Resume API
-Date: Tue, 5 May 2009 16:45:57 +0530
-Message-ID: <9D5E1752379A43408015F7FE98466115023F03CB@CHNEXVS01.VSNLXCHANGE.COM>
-References: <9D5E1752379A43408015F7FE98466115023F03CA@CHNEXVS01.VSNLXCHANGE.COM>
-	<4A001E10.9080607@ladisch.de>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: dmix and mmap
+Date: Tue, 5 May 2009 12:32:43 +0100
+Message-ID: <20090505113242.GB27386@sirena.org.uk>
+References: <bb6204720904300810ma174b6cn825f8565c0b694c0@mail.gmail.com>
+	<20090430151301.GA27605@sirena.org.uk>
+	<bb6204720904301229q3b0b93eao28563ec7bdef73cb@mail.gmail.com>
+	<20090501113240.GF6975@sirena.org.uk>
+	<ed82fe3e0905040957l13e53319j57ddd1c1de902f92@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpin1.mailsecure.in (SMTPIN1.mailsecure.in [121.241.224.1])
-	by alsa0.perex.cz (Postfix) with ESMTP id 35B3D24525
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4379324560
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 May 2009 13:17:01 +0200 (CEST)
-Content-class: urn:content-classes:message
+	Tue,  5 May 2009 13:32:45 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <ed82fe3e0905040957l13e53319j57ddd1c1de902f92@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,55 +26,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: Gabriel Johnson <johnsoga@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
- 
-Thanks a lot. I will use these API to test.
- 
-Best regards,
-Sudeept
+On Mon, May 04, 2009 at 11:57:20AM -0500, Timur Tabi wrote:
 
-________________________________
+> The PowerPC MPC8610 drivers enable mmap support, and it seems to work,
+> but that chip has a coherent MMU.  I've never done a definitive test
+> that it works, though.  What's the easiest way to test mmap?
 
-From: Clemens Ladisch [mailto:clemens@ladisch.de]
-Sent: Tue 5/5/2009 4:38 PM
-To: Sudeept Prusti
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Help-Pause/Resume API
-
-
-
-Sudeept Prusti wrote:
-> Can anyone educate me which alsa-lib API used for pause and resume.
-> I have a minimal alsa code for pcm playback and i need the needed API
-> for test pause and resume feature on pcm playback.
-
-First, to check whether the device supports pausing, one should call
-snd_pcm_hw_params_can_pause() after calling snd_pcm_hw_params().
-However, in your case, you already know this for your device.
-
-To pause or resume a stream, call snd_pcm_pause(pcm, 1) or ...0).
-
-
-HTH
-Clemens
-
-> The information contained in this electronic message and any attachments to this message are intended for the exclusive
-> use of the addressee(s) and may contain proprietary, confidential or privileged information. If you are not the intended
-> recipient, you should not disseminate, distribute or copy this e-mail. Please notify the sender immediately and destroy
-> all copies of this message and any attachments contained in it.
-
-*** DISCLAIMER ***
-This e-mail contains public information intended for any subscriber of
-this mailing list and for anybody else who bothers to read it; it will
-be copied, disclosed and distributed to the public.  If you think you
-are not the intended recipient, please commit suicide immediately.
-These terms apply also to any e-mails quoted in, referenced from, or
-answering this e-mail, and supersede any disclaimers in those e-mails.
-Additionally, disclaimers in those e-mails will incur legal processing
-fees of $42 per line; you have agreed to this by reading this
-disclaimer.
-*** END OF DISCLAIMER ***
+If you had issues they'd be fairly obvious in the audio stream.
