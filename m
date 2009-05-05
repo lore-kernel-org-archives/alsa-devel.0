@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 15/18] ASoC: TWL4030: Add voice digital
-	loopback: sidetone
-Date: Tue,  5 May 2009 11:02:28 +0100
-Message-ID: <1241517751-2634-15-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 18/18] ASoC: Remove redundant codec pointer
+	from DAIs
+Date: Tue,  5 May 2009 11:02:31 +0100
+Message-ID: <1241517751-2634-18-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20090505100123.GB2050@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0324524522
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 13D16103800
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 May 2009 12:02:35 +0200 (CEST)
+	Tue,  5 May 2009 12:02:36 +0200 (CEST)
 In-Reply-To: <20090505100123.GB2050@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,89 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Lopez Cruz,
-	Misael" <x0052729@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Lopez Cruz, Misael <x0052729@ti.com>
+The DAI structure has two pointers to the codec, one in the body of the
+DAI and one in a union for a parent pointer.  Drop the parent pointer
+version.
 
-This patch add voice digital loopback (sidetone) to the twl4030
-driver. It mixes voice uplink attenuated (by sidetone gain) with
-voice downlink when the codec is working in option2 (voice/audio
-mode).
-
-Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/twl4030.c |   27 +++++++++++++++++++++++++--
- 1 files changed, 25 insertions(+), 2 deletions(-)
+ include/sound/soc-dai.h |    7 ++-----
+ 1 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index efb371f..23bae74 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -491,6 +491,18 @@ static const struct snd_kcontrol_new twl4030_dapm_dbypassr_control =
- 			TWL4030_REG_ATX2ARXPGA, 0, 7, 0,
- 			twl4030_dapm_dbypass_tlv);
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index a997c2c..496dc30 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -205,11 +205,8 @@ struct snd_soc_dai {
+ 	/* DAI private data */
+ 	void *private_data;
  
-+/*
-+ * Voice Sidetone GAIN volume control:
-+ * from -51 to -10 dB in 1 dB steps (mute instead of -51 dB)
-+ */
-+static DECLARE_TLV_DB_SCALE(twl4030_dapm_dbypassv_tlv, -5100, 100, 1);
-+
-+/* Digital bypass voice: sidetone (VUL -> VDL)*/
-+static const struct snd_kcontrol_new twl4030_dapm_dbypassv_control =
-+	SOC_DAPM_SINGLE_TLV("Volume",
-+			TWL4030_REG_VSTPGA, 0, 0x29, 0,
-+			twl4030_dapm_dbypassv_tlv);
-+
- static int micpath_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
-@@ -607,12 +619,18 @@ static int bypass_event(struct snd_soc_dapm_widget *w,
- 			twl4030->bypass_state |= (1 << 4);
- 		else
- 			twl4030->bypass_state &= ~(1 << 4);
-+	} else if (m->reg == TWL4030_REG_VSTPGA) {
-+		/* Voice digital bypass */
-+		if (reg)
-+			twl4030->bypass_state |= (1 << 5);
-+		else
-+			twl4030->bypass_state &= ~(1 << 5);
- 	} else {
- 		/* Digital bypass */
- 		if (reg & (0x7 << m->shift))
--			twl4030->bypass_state |= (1 << (m->shift ? 6 : 5));
-+			twl4030->bypass_state |= (1 << (m->shift ? 7 : 6));
- 		else
--			twl4030->bypass_state &= ~(1 << (m->shift ? 6 : 5));
-+			twl4030->bypass_state &= ~(1 << (m->shift ? 7 : 6));
- 	}
+-	/* parent codec/platform */
+-	union {
+-		struct snd_soc_codec *codec;
+-		struct snd_soc_platform *platform;
+-	};
++	/* parent platform */
++	struct snd_soc_platform *platform;
  
- 	/* Enable master analog loopback mode if any analog switch is enabled*/
-@@ -991,6 +1009,9 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 	SND_SOC_DAPM_SWITCH_E("Right Digital Loopback", SND_SOC_NOPM, 0, 0,
- 			&twl4030_dapm_dbypassr_control, bypass_event,
- 			SND_SOC_DAPM_POST_REG),
-+	SND_SOC_DAPM_SWITCH_E("Voice Digital Loopback", SND_SOC_NOPM, 0, 0,
-+			&twl4030_dapm_dbypassv_control, bypass_event,
-+			SND_SOC_DAPM_POST_REG),
- 
- 	SND_SOC_DAPM_MIXER("Analog R1 Playback Mixer", TWL4030_REG_AVDAC_CTL,
- 			0, 0, NULL, 0),
-@@ -1203,9 +1224,11 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	/* Digital bypass routes */
- 	{"Right Digital Loopback", "Volume", "TX1 Capture Route"},
- 	{"Left Digital Loopback", "Volume", "TX1 Capture Route"},
-+	{"Voice Digital Loopback", "Volume", "TX2 Capture Route"},
- 
- 	{"Analog R2 Playback Mixer", NULL, "Right Digital Loopback"},
- 	{"Analog L2 Playback Mixer", NULL, "Left Digital Loopback"},
-+	{"Analog Voice Playback Mixer", NULL, "Voice Digital Loopback"},
- 
+ 	struct list_head list;
  };
- 
 -- 
 1.6.2.4
