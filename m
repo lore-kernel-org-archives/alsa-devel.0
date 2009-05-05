@@ -1,20 +1,25 @@
-From: Dmitri Seletski <drjoms@gmail.com>
-Subject: Re: looking for advice on buying a card
-Date: Tue, 5 May 2009 14:38:35 +0100
-Message-ID: <f3ebadea0905050638p3b9cf338q8ab31c8687baa0bb@mail.gmail.com>
-References: <49FC7432.9090301@gmail.com> <49FFF475.2070108@ladisch.de>
+From: Guy Stalnaker <jstalnak@wisc.edu>
+Subject: Re: Issues with HP DV4 laptop sound after Ubuntu
+ Jaunty 9.04 upgrade
+Date: Tue, 05 May 2009 08:54:59 -0500
+Message-ID: <4A004533.6030204@wisc.edu>
+References: <49FD2446.7040001@wisc.edu> <s5h4ow19way.wl%tiwai@suse.de>
+	<49FF0923.60902@wisc.edu> <s5hbpq7ddtr.wl%tiwai@suse.de>
+Reply-To: jstalnak@wisc.edu
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f175.google.com (mail-ew0-f175.google.com
-	[209.85.219.175])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5F8221037F3
+Received: from argol.doit.wisc.edu (argol.doit.wisc.edu [144.92.197.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 112341037FA
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 May 2009 15:38:36 +0200 (CEST)
-Received: by ewy23 with SMTP id 23so4516435ewy.32
-	for <alsa-devel@alsa-project.org>; Tue, 05 May 2009 06:38:35 -0700 (PDT)
-In-Reply-To: <49FFF475.2070108@ladisch.de>
+	Tue,  5 May 2009 15:55:15 +0200 (CEST)
+Received: from avs-daemon.smtpauth3.wiscmail.wisc.edu by
+	smtpauth3.wiscmail.wisc.edu
+	(Sun Java(tm) System Messaging Server 7.0-5.01 32bit (built Feb 19
+	2009)) id <0KJ60070GC016900@smtpauth3.wiscmail.wisc.edu> for
+	alsa-devel@alsa-project.org; Tue, 05 May 2009 08:55:13 -0500 (CDT)
+In-reply-to: <s5hbpq7ddtr.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,44 +29,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thank you very much!!!!
-Stuff is ordered :)))
-you just made my day. thank everybody for you time and advices. knowledge i
-got will not be in vain!
+Takashi,
 
-On Tue, May 5, 2009 at 9:10 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+I will take my queries there. Thanks for your help!!
 
-> Dmitri Seletski wrote:
-> > I am thinking to buy pci express sound card.
->
-> The Asus Xonar cards are the only supported PCI-E cards.
->
-> > Nothing fancy,
->
-> That rules out the D2X.
->
-> > just something with dolby surround 7.1
->
-> Now the only choice is the DX.
->
-> > Is it painful to get it running?
->
-> No, it's standard PCI Plug&Play.
->
-> > does it work fully(does microphone work, does surround sound 7.1 work?)?
->
-> Yes.
->
-> > Is there something better for similar money?
->
-> There is nothing else (assuming that you do not want to pay more for the
-> D2X just to get an S/PDIF input and colorful LEDs in the jacks).
->
->
-> Best regards,
-> Clemens
->
+Guy
+
+Takashi Iwai wrote:
+> At Mon, 04 May 2009 10:26:27 -0500,
+> Guy Stalnaker wrote:
+>> Hello again, Takashi,
+>>
+>> Can you think of why a new distribution might be the cause, or a change
+>> that a new distribution makes, that would result in such behavior?  The
+>> new distribution includes a new kernel and a new version of xorg (I
+>> think), so everything on top of the hardware is new. What's damned
+>> peculiar is that the HTML output interface is always recognized
+>> successfully. It's only the Audio device: ATI Technologies Inc SBx00
+>> Azalia (Intel HDA) on pci 00:14.2 that seems to have this issue.
+>>
+>> To add oddity to the issue, I brought the laptop to work this morning
+>> and on boot the Audio device was successfully recognized and aplay -l
+>> shows it a card 0!!
+>>
+>> I wonder ... do you think that it's possible that a keyboard, mouse,
+>> printer, or some other USB device plugged into the laptop at boot could
+>> affect something like this?  That's really the only difference between
+>> work and home.
+> 
+> I guess it's an issue with ACPI or core PCI layer.  Or suspend, if
+> this happens only after suspend/resume and not after a fresh boot.
+> 
+> In any way, I recommend you to report this on kernel bugzilla.
+> 
+> 
+> Takashi
+
+-- 
+Guy Stalnaker, I2@DOIT, jstalnak@wisc.edu
+1210 West Dayton Street, Room 3209 CSS, Madison WI 53706
+work 608.263.8035, cell 608.235.4718, fax 608.265.6681
