@@ -1,15 +1,17 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH 1/2] ASoC: cs4270: introduce CS4270_I2C_INCR
-Date: Tue,  5 May 2009 11:25:00 +0200
-Message-ID: <1241515501-6600-1-git-send-email-daniel@caiaq.de>
+Subject: [PATCH 2/2] ASoC: cs4270: add power management support
+Date: Tue,  5 May 2009 11:25:01 +0200
+Message-ID: <1241515501-6600-2-git-send-email-daniel@caiaq.de>
+References: <1241515501-6600-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4B307244F6
+	by alsa0.perex.cz (Postfix) with ESMTP id 85DCC244F6
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 May 2009 11:25:14 +0200 (CEST)
+	Tue,  5 May 2009 11:25:15 +0200 (CEST)
+In-Reply-To: <1241515501-6600-1-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,35 +25,112 @@ To: alsa-devel@alsa-project.org
 Cc: Timur Tabi <timur@freescale.com>, Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Replace the magic 0x80 value with a suitable macro definition.
-
 Signed-off-by: Daniel Mack <daniel@caiaq.de>
 Cc: Timur Tabi <timur@freescale.com>
 Cc: Mark Brown <broonie@sirena.org.uk>
 ---
- sound/soc/codecs/cs4270.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ sound/soc/codecs/cs4270.c |   61 ++++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 60 insertions(+), 1 deletions(-)
 
 diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-index 0f453a0..bc338df 100644
+index bc338df..80c7282 100644
 --- a/sound/soc/codecs/cs4270.c
 +++ b/sound/soc/codecs/cs4270.c
-@@ -56,6 +56,7 @@
- #define CS4270_FIRSTREG	0x01
- #define CS4270_LASTREG	0x08
- #define CS4270_NUMREGS	(CS4270_LASTREG - CS4270_FIRSTREG + 1)
-+#define CS4270_I2C_INCR	0x80
+@@ -18,7 +18,7 @@
+  * - The machine driver's 'startup' function must call
+  *   cs4270_set_dai_sysclk() with the value of MCLK.
+  * - Only I2S and left-justified modes are supported
+- * - Power management is not supported
++ * - Power management is supported
+  */
  
- /* Bit masks for the CS4270 registers */
- #define CS4270_CHIPID_ID	0xF0
-@@ -296,7 +297,7 @@ static int cs4270_fill_cache(struct snd_soc_codec *codec)
- 	s32 length;
+ #include <linux/module.h>
+@@ -27,6 +27,7 @@
+ #include <sound/soc.h>
+ #include <sound/initval.h>
+ #include <linux/i2c.h>
++#include <linux/delay.h>
  
- 	length = i2c_smbus_read_i2c_block_data(i2c_client,
--		CS4270_FIRSTREG | 0x80, CS4270_NUMREGS, cache);
-+		CS4270_FIRSTREG | CS4270_I2C_INCR, CS4270_NUMREGS, cache);
+ #include "cs4270.h"
  
- 	if (length != CS4270_NUMREGS) {
- 		dev_err(codec->dev, "i2c read failure, addr=0x%x\n",
+@@ -65,6 +66,8 @@
+ #define CS4270_PWRCTL_PDN_ADC	0x20
+ #define CS4270_PWRCTL_PDN_DAC	0x02
+ #define CS4270_PWRCTL_PDN	0x01
++#define CS4270_PWRCTL_PDN_ALL	\
++	(CS4270_PWRCTL_PDN_ADC | CS4270_PWRCTL_PDN_DAC | CS4270_PWRCTL_PDN)
+ #define CS4270_MODE_SPEED_MASK	0x30
+ #define CS4270_MODE_1X		0x00
+ #define CS4270_MODE_2X		0x10
+@@ -788,6 +791,60 @@ static struct i2c_device_id cs4270_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, cs4270_id);
+ 
++#ifdef CONFIG_PM
++
++/* This suspend/resume implementation can handle both - a simple standby
++ * where the codec remains powered, and a full suspend, where the voltage
++ * domain the codec is connected to is teared down and/or any other hardware
++ * reset condition is asserted.
++ *
++ * The codec's own power saving features are enabled in the suspend callback,
++ * and all registers are written back to the hardware when resuming.
++ */
++
++static int cs4270_i2c_suspend(struct i2c_client *client, pm_message_t mesg)
++{
++	struct cs4270_private *cs4270 = i2c_get_clientdata(client);
++	struct snd_soc_codec *codec = &cs4270->codec;
++	int reg = snd_soc_read(codec, CS4270_PWRCTL);
++
++	if (reg < 0)
++		return reg;
++
++	reg |= CS4270_PWRCTL_PDN_ALL;
++	return snd_soc_write(codec, CS4270_PWRCTL, reg);
++}
++
++static int cs4270_i2c_resume(struct i2c_client *client)
++{
++	struct cs4270_private *cs4270 = i2c_get_clientdata(client);
++	struct snd_soc_codec *codec = &cs4270->codec;
++	int reg;
++
++	/* In case the device was put to hard reset during sleep, we need to
++	 * wait 500ns here before any I2C communication. */
++	ndelay(500);
++
++	/* first restore the entire register cache ... */
++	for (reg = CS4270_FIRSTREG; reg <= CS4270_LASTREG; reg++) {
++		u8 val = snd_soc_read(codec, reg);
++
++		if (i2c_smbus_write_byte_data(client, reg, val)) {
++			dev_err(codec->dev, "i2c write failed\n");
++			return -EIO;
++		}
++	}
++
++	/* ... then disable the power-down bits */
++	reg = snd_soc_read(codec, CS4270_PWRCTL);
++	reg &= ~CS4270_PWRCTL_PDN_ALL;
++	return snd_soc_write(codec, CS4270_PWRCTL, reg);
++}
++#else
++#define cs4270_i2c_suspend	NULL
++#define cs4270_i2c_resume	NULL
++#endif /* CONFIG_PM */
++
+ /*
+  * cs4270_i2c_driver - I2C device identification
+  *
+@@ -802,6 +859,8 @@ static struct i2c_driver cs4270_i2c_driver = {
+ 	.id_table = cs4270_id,
+ 	.probe = cs4270_i2c_probe,
+ 	.remove = cs4270_i2c_remove,
++	.suspend = cs4270_i2c_suspend,
++	.resume = cs4270_i2c_resume,
+ };
+ 
+ /*
 -- 
 1.6.2.1
