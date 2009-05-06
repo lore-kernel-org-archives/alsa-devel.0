@@ -1,25 +1,16 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH 1/2] ASoC: cs4270: introduce CS4270_I2C_INCR
-Date: Wed, 6 May 2009 10:28:49 -0500
-Message-ID: <ed82fe3e0905060828ueaf8576v667abfbad50a36ea@mail.gmail.com>
-References: <1241515501-6600-1-git-send-email-daniel@caiaq.de>
-	<4A005283.50306@freescale.com>
-	<20090505151538.GC24556@buzzloop.caiaq.de>
-	<20090505180859.GA3953@sirena.org.uk>
-	<20090505231924.GA28090@buzzloop.caiaq.de>
-	<20090506084434.GA6573@sirena.org.uk>
-	<20090506093936.GB31875@buzzloop.caiaq.de>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Master vs. Front/Rear/LFE/... elements
+Date: Wed, 6 May 2009 19:58:24 +0200
+Message-ID: <20090506175824.GA30355@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7217224736
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id B80681037F2
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 May 2009 17:29:00 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 4so124579qwk.56
-	for <alsa-devel@alsa-project.org>; Wed, 06 May 2009 08:28:59 -0700 (PDT)
-In-Reply-To: <20090506093936.GB31875@buzzloop.caiaq.de>
+	Wed,  6 May 2009 19:58:29 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,19 +20,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 6, 2009 at 4:39 AM, Daniel Mack <daniel@caiaq.de> wrote:
+Heya!
 
-> Hmm, ok. That makes sense. However, the driver uses the equivalent
-> function to read the whole register set, so I wanted to keep it in
-> sync.
+Some cards expose 'Master' volume sliders. Others expose seperate
+(stereo) sliders for 'Front', 'Rear' and so on. I have trouble dealing
+with them properly in PulseAudio:
 
-That's because I could never figure out which API I should use for
-this.  I just kept trying variants until something worked.
+First of all, on some cards 'Master' seems not to have any effect on
+the actual analog output, only 'Front' and friends do. Is this a bug
+or intended behaviour? Can I assume that 'Master' and 'Front' are
+always independant?
+
+Secondly, I have trouble supporting the
+'Front'/'Rear'/'Side'/... elements properly, since they split up the
+surround channels into seperate elements. Now, this is confusing in
+many ways, even for "amixer" which will then show channels such as
+"Rear Front Left" and so on, which obviously make no
+sense. snd_mixer_selem_has_playback_channel() just returns bogus data
+for these cases. Why are those elements seperate anyway? Why aren't
+they combined into a single multi-channel event? Looking at the APIs I
+get the idea that the problem appears to be that elements can only
+control all channels the same are all independantly which doesn't
+really match 1:1 on my multichannel sound cards. However, wouldn't it
+be possible to use the 'index' value of a selem_id for this? I.e. have
+a series of controls by the same name but different indexes which
+would then implement snd_mixer_selem_has_playback_channel() correctly?
+i.e. foo,0 would do front-left/right, foo,1 would do rear, foo,2 would
+do lfe, and so? I have no clue how this implemented internally, so not
+sure how feasible this might be.
+
+Lennart
 
 -- 
-Timur Tabi
-Linux kernel developer at Freescale
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
