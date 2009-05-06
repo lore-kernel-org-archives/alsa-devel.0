@@ -1,18 +1,22 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: Beep sound in the end of audio file
-Date: Wed, 6 May 2009 08:33:10 +0300
-Message-ID: <200905060833.10998.peter.ujfalusi@nokia.com>
-References: <5A47E75E594F054BAF48C5E4FC4B92AB0305559FCC@dbde02.ent.ti.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 1/2] ASoC: cs4270: introduce CS4270_I2C_INCR
+Date: Wed, 6 May 2009 09:44:34 +0100
+Message-ID: <20090506084434.GA6573@sirena.org.uk>
+References: <1241515501-6600-1-git-send-email-daniel@caiaq.de>
+	<4A005283.50306@freescale.com>
+	<20090505151538.GC24556@buzzloop.caiaq.de>
+	<20090505180859.GA3953@sirena.org.uk>
+	<20090505231924.GA28090@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6E4B724554
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id E4D7A24604
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 May 2009 07:33:21 +0200 (CEST)
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB0305559FCC@dbde02.ent.ti.com>
+	Wed,  6 May 2009 10:44:40 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <20090505231924.GA28090@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,46 +26,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ext Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Cc: alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Wed, May 06, 2009 at 01:19:24AM +0200, Daniel Mack wrote:
 
-On Tuesday 05 May 2009 20:03:57 ext Aggarwal, Anuj wrote:
-> Hi,
->
-> After playing out any audio file on OMAP3 EVM, having TWL4030 codec,
-> I am hearing a beep sound. I have also tried implementing a mute function
-> in which I disabled all the inputs/outputs but still that didn't help.
->
-> Any idea how this can be avoided?
+> All high-level i2c functions to write block data, namely
+> i2c_smbus_write_block_data() and i2c_smbus_write_i2c_block_data(), put
+> the length of the data being sent inside the block sent on the wire. I
+> couldn't believe it myself, but even my hardware I2C analyzer clearly
+> shows that. The API seems to assume that communication to I2C devices
+> always wants data to be sent with a leading command, followed by the
+> number of data bytes attached and then the data itself. Correct me if
+> I'm wrong on that.
 
-I have not heard from this kind of problem so far, which does not mean, tha=
-t =
-
-it does not exist ;)
-Can you describe the beep sound?
-
-After a quick look I can not pin point the soc board file used with the =
-
-omap3evm board. Is it in the tree?
-
-Does the beep happens in these cases also (after stopping it with Ctrl+C):
-aplay -f dat /dev/zero
-aplay -f dat /dev/urandom
-
-
-CC-ing alsa-devel...
-
->
-> Thanks and Regards,
-> Anuj Aggarwal
->
-> Platform Support Products
-> Texas Instruments Incorporated
-
-
--- =
-
-P=E9ter
+That's not the I2C API, that's the SMBus API.  SMBus is more restricted
+than I2C - it essentially defines a protocol on top of I2C.  If the
+device doesn't implement SMBus then you should use the I2C API directly.
