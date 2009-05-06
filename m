@@ -1,23 +1,26 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: 1.0.20 release
-Date: Wed, 6 May 2009 16:25:31 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.0905061621130.25064@eeebox2.perex-int.cz>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH 2/2] ASoC: cs4270: add power management
+	support
+Date: Wed, 6 May 2009 10:27:19 -0500
+Message-ID: <ed82fe3e0905060827o5e35b87me5e41c330451b548@mail.gmail.com>
+References: <1241515501-6600-1-git-send-email-daniel@caiaq.de>
+	<1241515501-6600-2-git-send-email-daniel@caiaq.de>
+	<4A005BA8.2070600@freescale.com>
+	<20090505155116.GD24556@buzzloop.caiaq.de>
+	<4A007D89.8020602@freescale.com>
+	<20090505232601.GB28090@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 636922470B
+Received: from mail-qy0-f103.google.com (mail-qy0-f103.google.com
+	[209.85.221.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id A21B424736
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 May 2009 16:25:32 +0200 (CEST)
-Received: from server.perex.cz (server.perex.cz [172.16.0.20])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	56D4F149963 for <alsa-devel@alsa-project.org>;
-	Wed,  6 May 2009 16:25:32 +0200 (CEST)
-Received: from eeebox2.perex-int.cz (localhost [127.0.0.1])
-	by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	4C7158434E for <alsa-devel@alsa-project.org>;
-	Wed,  6 May 2009 16:25:32 +0200 (CEST)
+	Wed,  6 May 2009 17:27:21 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so314696qyk.16
+	for <alsa-devel@alsa-project.org>; Wed, 06 May 2009 08:27:20 -0700 (PDT)
+In-Reply-To: <20090505232601.GB28090@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,19 +30,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Tue, May 5, 2009 at 6:26 PM, Daniel Mack <daniel@caiaq.de> wrote:
 
- 	ALSA 1.0.20 packages (except alsa-oss package) are available for 
-download. Changelog is available at
+> From fff7cf8e74d1529060abe5207ad9b7d39c578026 Mon Sep 17 00:00:00 2001
+> From: Daniel Mack <daniel@caiaq.de>
+> Date: Thu, 2 Apr 2009 15:43:44 +0200
+> Subject: [PATCH v3] ASoC: cs4270: add power management support
+>
+> Signed-off-by: Daniel Mack <daniel@caiaq.de>
+> Cc: Timur Tabi <timur@freescale.com>
+> Cc: Mark Brown <broonie@sirena.org.uk>
 
-http://www.alsa-project.org/main/index.php/Changes_v1.0.19_v1.0.20 .
+Acked-by: Timur Tabi <timur@freescale.com>
 
- 					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
