@@ -1,24 +1,18 @@
 From: "Harsha, Priya" <priya.harsha@intel.com>
-Subject: Re: question on hardware mixing
-Date: Thu, 7 May 2009 20:05:56 +0530
-Message-ID: <98769532B4BB14429434178695419EAE4AD52D66@bgsmsx501.gar.corp.intel.com>
-References: <20081205165341.GA21294@rakim.wolfsonmicro.main>
-	<1228496062-21379-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<98769532B4BB14429434178695419EAE26861315@bgsmsx501.gar.corp.intel.com>
-	<75b66ecd0812052058r36ed20fdo3dc6e40ac23339bf@mail.gmail.com>
-	<98769532B4BB14429434178695419EAE268614A1@bgsmsx501.gar.corp.intel.com>
-	<493E31E3.2080504@ladisch.de>
-	<98769532B4BB14429434178695419EAE268E0FA6@bgsmsx501.gar.corp.intel.com>
-	<493E7B51.3030307@ladisch.de>
+Subject: Re: SNDRV_PCM_FORMAT_GSM
+Date: Thu, 7 May 2009 20:07:41 +0530
+Message-ID: <98769532B4BB14429434178695419EAE4AD52D6E@bgsmsx501.gar.corp.intel.com>
+References: <98769532B4BB14429434178695419EAE4AD52C07@bgsmsx501.gar.corp.intel.com>
+	<20090507115244.GG27897@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id B3806247DC
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1FACA1038B0
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 May 2009 16:36:04 +0200 (CEST)
-In-Reply-To: <493E7B51.3030307@ladisch.de>
+	Thu,  7 May 2009 16:38:01 +0200 (CEST)
+In-Reply-To: <20090507115244.GG27897@sirena.org.uk>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,16 +23,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lee Revell <rlrevell@joe-job.com>
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->I wrote "mixer controls to switch between these settings for each
->substream", i.e., each substream would have its own flag.
+Thank you. That helps. 
 
-If I create a mixer control using snd_kcontrol. When two applications in parallel try to create a stream and change the snd_kcontrol, can you help me understand how I would get the stream type stored in each substream as a flag?
-
-Also, when I get a snd_kcontrol's .set function call, I am not sure how to get the substream specific data in that call?
-
-Thanks,
-Harsha
+>-----Original Message-----
+>From: Mark Brown [mailto:broonie@sirena.org.uk]
+>Sent: Thursday, May 07, 2009 5:23 PM
+>To: Harsha, Priya
+>Cc: alsa-devel@alsa-project.org
+>Subject: Re: [alsa-devel] SNDRV_PCM_FORMAT_GSM
+>
+>On Thu, May 07, 2009 at 04:51:52PM +0530, Harsha, Priya wrote:
+>
+>> If I use the format SNDRV_PCM_FORMAT_GSM to identify if the audio
+>> stream is voice stream or not, would it be appropriate?
+>
+>The format refers to the way the data is encoded rather than the meaning
+>of the content - if actual GSM data were being transmitted it'd be
+>sensible (but note that GSM format is not actually properly handled by
+>ALSA yet).
