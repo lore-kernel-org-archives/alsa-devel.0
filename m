@@ -1,17 +1,19 @@
 From: Jon Smirl <jonsmirl@gmail.com>
-Subject: appl_ptr and DMA overrun at end of stream
-Date: Thu, 7 May 2009 12:23:51 -0400
-Message-ID: <9e4733910905070923i16683486n678653ba56c28b74@mail.gmail.com>
+Subject: Re: appl_ptr and DMA overrun at end of stream
+Date: Thu, 7 May 2009 12:35:24 -0400
+Message-ID: <9e4733910905070935k2da0ea0bu7f8c9cadc3dcd9eb@mail.gmail.com>
+References: <9e4733910905070923i16683486n678653ba56c28b74@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from gv-out-0910.google.com (gv-out-0910.google.com [216.239.58.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id D7D871038C3
+	by alsa0.perex.cz (Postfix) with ESMTP id 5CE4C1038D8
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 May 2009 18:23:53 +0200 (CEST)
-Received: by gv-out-0910.google.com with SMTP id i36so152582gve.24
-	for <alsa-devel@alsa-project.org>; Thu, 07 May 2009 09:23:52 -0700 (PDT)
+	Thu,  7 May 2009 18:35:26 +0200 (CEST)
+Received: by gv-out-0910.google.com with SMTP id i36so154093gve.24
+	for <alsa-devel@alsa-project.org>; Thu, 07 May 2009 09:35:25 -0700 (PDT)
+In-Reply-To: <9e4733910905070923i16683486n678653ba56c28b74@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,63 +26,79 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I am having problem with DMA overrun at the end of the audio stream.
-Is there an official way to know the address of the last valid audio
-sample?
+Debug trace... at the bottom you can see where I needed to stop
+queuing new DMA data
 
-mpc5200 ac97 is keeping a bunch of descriptors queued in a loop to
-continuously play music. I believe this is the way ALSA wants it. Now
-say the last period is
-half full. ALSA fills the other half with silence. When that period
-finishes playing it will generate an interrupt. ALSA comes back from
-that interrupt with trigger(STOP).
+If you dig around in the archives, other people have run into this same problem.
 
-But, our CPU is slow compared to a 3Ghz desktop, there is considerable
-latency from the period end interrupt to trigger(STOP) getting called.
- So the DMA hardware starts playing the next period before
-trigger(STOP) can get the DMA stopped.  I turned off tried turning off
-BestComm, flushing the FIFO, and turning off the audio clocks.  None
-can be done fast enough. That next period contains stale data from
-further back in the stream. When the front part of it plays it makes a
-burst of noise.
+root@phyCORE:~ aplay phone.wav
+mpc5200-psc-ac97 f0002200.sound: psc_dma_open(substream=c7913700)
+Playing WAVE 'phone.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+mpc5200-psc-ac97 f0002200.sound:
+psc_ac97_hw_analog_params(substream=c7913700) p_size=5513
+p_bytes=44104 periods=4 buffer_size=22052  buffer_bytes=176416
+channels=2 rate=44100 format=11
+AC97_EXTENDED_STATUS 411
+mpc5200-psc-ac97 f0002200.sound: psc_dma_trigger(substream=c7913700,
+cmd=1) stream_id=0
+runtime->dma_area c7a00000
+Initial pointer 0
+Playback
 
-What I need is the address of the end of valid data in the buffer. I
-need that address so that I can program the DMA automatically stop at
-end of stream and not overrun. Search around in the guys of ALSA I
-found appl_ptr. I can use appl_ptr to determine the location of end of
-stream and prevent DMA overrun. When there is no valid data I don't
-enqueue the
-descriptor.
+--- DMA address / s->appl_ptr  / runtime->control->appl_ptr
 
- s->appl_ptr track the previous value of  s->runtime->control->appl_ptr.
-The difference between these two is the amount of valid data in the buffer.
-When this difference goes to zero, I stop queue new buffers to ALSA.
-That fixes the DMA overrun.
-
-static void psc_dma_bcom_enqueue_next_buffer(struct psc_dma_stream *s)
-{
-       struct bcom_bd *bd;
-
-       while (s->appl_ptr < s->runtime->control->appl_ptr) {
-
-               if (bcom_queue_full(s->bcom_task))
-                       return;
-
-               s->appl_ptr += s->period_size;
-
-               /* Prepare and enqueue the next buffer descriptor */
-               bd = bcom_prepare_next_buffer(s->bcom_task);
-               bd->status = s->period_bytes;
-               bd->data[0] = s->period_next_pt;
-               bcom_submit_next_buffer(s->bcom_task, NULL);
-
-               /* Update for next period */
-               s->period_next_pt += s->period_bytes;
-               if (s->period_next_pt >= s->period_end)
-                       s->period_next_pt = s->period_start;
-       }
-}
-
+enqueue 7a00000 0 22052
+queued
+enqueue 7a0ac48 5513 22052
+queued
+enqueue 7a15890 11026 22052
+queued
+enqueue 7a204d8 16539 22052
+queued
+enqueue 7a00000 22052 22052
+enqueue 7a00000 22052 22052
+enqueue 7a00000 22052 27565
+queued
+enqueue 7a0ac48 27565 33078
+queued
+enqueue 7a15890 33078 38591
+queued
+enqueue 7a204d8 38591 44104
+queued
+enqueue 7a00000 44104 49617
+queued
+enqueue 7a0ac48 49617 55130
+queued
+enqueue 7a15890 55130 60643
+queued
+enqueue 7a204d8 60643 66156
+queued
+enqueue 7a00000 66156 71669
+queued
+enqueue 7a0ac48 71669 77182
+queued
+enqueue 7a15890 77182 82695
+queued
+enqueue 7a204d8 82695 88208
+queued
+enqueue 7a00000 88208 93721
+queued
+enqueue 7a0ac48 93721 99234
+queued
+enqueue 7a15890 99234 104747
+queued
+enqueue 7a204d8 104747 110260
+queued
+enqueue 7a00000 110260 115773
+queued
+enqueue 7a0ac48 115773 115773 - stopped queuing new buffers here
+enqueue 7a0ac48 115773 115773
+enqueue 7a0ac48 115773 115773
+mpc5200-psc-ac97 f0002200.sound: psc_dma_trigger(substream=c7913700,
+cmd=0) stream_id=0
+ -- this trigger is too late. Samples have already started going into the codec
+mpc5200-psc-ac97 f0002200.sound: psc_dma_close(substream=c7913700)
+root@phyCORE:
 
 
 -- 
