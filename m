@@ -1,20 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: Beep sound in the end of audio file
-Date: Thu, 7 May 2009 14:24:45 +0300
-Message-ID: <200905071424.45431.peter.ujfalusi@nokia.com>
-References: <5A47E75E594F054BAF48C5E4FC4B92AB0305559FCC@dbde02.ent.ti.com>
-	<200905071408.14629.peter.ujfalusi@nokia.com>
-	<5A47E75E594F054BAF48C5E4FC4B92AB030555A662@dbde02.ent.ti.com>
+Subject: [PATCH 1/1] ASoC: TWL4030: Fix typo in
+	twl4030_codec_mute function
+Date: Thu,  7 May 2009 14:32:00 +0300
+Message-ID: <1241695920-24509-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6DCB8103891
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4CC30247AB
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 May 2009 13:24:50 +0200 (CEST)
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB030555A662@dbde02.ent.ti.com>
-Content-Disposition: inline
+	Thu,  7 May 2009 13:32:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,21 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: "ext Aggarwal, Anuj" <anuj.aggarwal@ti.com>, "todd.fischer@ridgerun.com" <todd.fischer@ridgerun.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Cc: sakoman@gmail.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 07 May 2009 14:16:12 ext Aggarwal, Anuj wrote:
-> > [Anuj]: What kernel are you using where you have the beep?
->
-> [Aggarwal, Anuj] 2.6.29-rc3
+Copy-paste error: TWL4030_PRECKL_GAIN >> TWL4030_PRECKR_GAIN
+It has not caused problems, since
+TWL4030_PRECKL_GAIN == TWL4030_PRECKR_GAIN == 0x30
 
-That version still has the old power up/down code. Since than there were 23 =
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+ sound/soc/codecs/twl4030.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-patches for the twl4030 codec.
-The Headset enable/disable mantra could be still wrong in the latest =
-
-version...
-
--- =
-
-P=E9ter
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 1a00e4b..fd392c6 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -237,7 +237,7 @@ static void twl4030_codec_mute(struct snd_soc_codec *codec, int mute)
+ 					TWL4030_REG_PRECKL_CTL);
+ 		reg_val = twl4030_read_reg_cache(codec, TWL4030_REG_PRECKR_CTL);
+ 		twl4030_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE,
+-					reg_val & (~TWL4030_PRECKL_GAIN),
++					reg_val & (~TWL4030_PRECKR_GAIN),
+ 					TWL4030_REG_PRECKR_CTL);
+ 
+ 		/* Disable PLL */
+-- 
+1.6.2.3
