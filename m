@@ -1,16 +1,20 @@
-From: "Harsha, Priya" <priya.harsha@intel.com>
-Subject: SNDRV_PCM_FORMAT_GSM
-Date: Thu, 7 May 2009 16:51:52 +0530
-Message-ID: <98769532B4BB14429434178695419EAE4AD52C07@bgsmsx501.gar.corp.intel.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: Beep sound in the end of audio file
+Date: Thu, 7 May 2009 14:24:45 +0300
+Message-ID: <200905071424.45431.peter.ujfalusi@nokia.com>
+References: <5A47E75E594F054BAF48C5E4FC4B92AB0305559FCC@dbde02.ent.ti.com>
+	<200905071408.14629.peter.ujfalusi@nokia.com>
+	<5A47E75E594F054BAF48C5E4FC4B92AB030555A662@dbde02.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2268E247AE
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6DCB8103891
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 May 2009 13:21:57 +0200 (CEST)
-Content-Language: en-US
+	Thu,  7 May 2009 13:24:50 +0200 (CEST)
+In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB030555A662@dbde02.ent.ti.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,12 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: "ext Aggarwal, Anuj" <anuj.aggarwal@ti.com>, "todd.fischer@ridgerun.com" <todd.fischer@ridgerun.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Thursday 07 May 2009 14:16:12 ext Aggarwal, Anuj wrote:
+> > [Anuj]: What kernel are you using where you have the beep?
+>
+> [Aggarwal, Anuj] 2.6.29-rc3
 
-If I use the format SNDRV_PCM_FORMAT_GSM to identify if the audio stream is voice stream or not, would it be appropriate?
+That version still has the old power up/down code. Since than there were 23 =
 
-Thanks,
-Harsha
+patches for the twl4030 codec.
+The Headset enable/disable mantra could be still wrong in the latest =
+
+version...
+
+-- =
+
+P=E9ter
