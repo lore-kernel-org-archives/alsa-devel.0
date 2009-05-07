@@ -1,15 +1,23 @@
-From: Sergey Lapin <slapin@ossfans.org>
-Subject: [PATCH] AFEB9260 ASoC driver
-Date: Thu,  7 May 2009 17:24:45 +0400
-Message-ID: <1241702685-18877-1-git-send-email-slapin@ossfans.org>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: Beep sound in the end of audio file
+Date: Thu, 7 May 2009 17:15:22 +0300
+Message-ID: <20090507171522.afed1a86.jhnikula@gmail.com>
+References: <5A47E75E594F054BAF48C5E4FC4B92AB0305559FCC@dbde02.ent.ti.com>
+	<1241619589.8928.2038.camel@sax-lx.fischerfamily.org>
+	<200905070848.25904.peter.ujfalusi@nokia.com>
+	<200905071408.14629.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from build.ossfans.org (build.ossfans.org [67.223.233.67])
-	by alsa0.perex.cz (Postfix) with ESMTP id B16BA1038A3
+Received: from mail-ew0-f175.google.com (mail-ew0-f175.google.com
+	[209.85.219.175])
+	by alsa0.perex.cz (Postfix) with ESMTP id 054B42479A
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 May 2009 15:24:47 +0200 (CEST)
+	Thu,  7 May 2009 16:13:56 +0200 (CEST)
+Received: by ewy23 with SMTP id 23so1212500ewy.32
+	for <alsa-devel@alsa-project.org>; Thu, 07 May 2009 07:13:56 -0700 (PDT)
+In-Reply-To: <200905071408.14629.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,290 +27,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Sergey Lapin <slapin@ossfans.org>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>, "todd.fischer@ridgerun.com" <todd.fischer@ridgerun.com>, alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-ASoC driver for AT91SAM9260-based AFEB9260 board
+On Thu, 7 May 2009 14:08:14 +0300
+Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
 
-Signed-off-by: Sergey Lapin <slapin@ossfans.org>
----
- arch/arm/mach-at91/board-afeb-9260v1.c |    4 +
- sound/soc/atmel/Kconfig                |    8 ++
- sound/soc/atmel/Makefile               |    1 +
- sound/soc/atmel/afeb9260.c             |  217 ++++++++++++++++++++++++++++++++
- 4 files changed, 230 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/atmel/afeb9260.c
+> I need to revisit this...
+> After more testing and debugging, it seams that I can not confirm the 
+> existence of the "tuck" (with the latest twl4030  codec code).
+> As soon as I receive my Beagle board I will test it again (can anyone
+> test this with latest ASoC code on Beagle?)...
+> 
+I can hear somewhat audible (stetson guessed -20 db
+from /dev/urandom level) power-up/-down pop with "aplay -f
+dat /dev/zero" but no any other beeps or noises.
 
-diff --git a/arch/arm/mach-at91/board-afeb-9260v1.c b/arch/arm/mach-at91/board-afeb-9260v1.c
-index e263fda..e3f1c56 100644
---- a/arch/arm/mach-at91/board-afeb-9260v1.c
-+++ b/arch/arm/mach-at91/board-afeb-9260v1.c
-@@ -164,6 +164,8 @@ static struct at91_mmc_data __initdata afeb9260_mmc_data = {
- 
- static struct i2c_board_info __initdata afeb9260_i2c_devices[] = {
- 	{
-+		I2C_BOARD_INFO("tlv320aic23", 0x1a),
-+	}, {
- 		I2C_BOARD_INFO("fm3130", 0x68),
- 	}, {
- 		I2C_BOARD_INFO("24c64", 0x50),
-@@ -196,6 +198,8 @@ static void __init afeb9260_board_init(void)
- 	/* I2C */
- 	at91_add_device_i2c(afeb9260_i2c_devices,
- 			ARRAY_SIZE(afeb9260_i2c_devices));
-+	/* Audio */
-+	at91_add_device_ssc(AT91SAM9260_ID_SSC, ATMEL_SSC_TX);
- }
- 
- MACHINE_START(AFEB9260, "Custom afeb9260 board")
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index a608d70..e720d5e 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -41,3 +41,11 @@ config SND_AT32_SOC_PLAYPAQ_SLAVE
-           and FRAME signals on the PlayPaq.  Unless you want to play
-           with the AT32 as the SSC master, you probably want to say N here,
-           as this will give you better sound quality.
-+
-+config SND_AT91_SOC_AFEB9260
-+	tristate "SoC Audio support for AFEB9260 board"
-+	depends on ARCH_AT91 && MACH_AFEB9260 && SND_ATMEL_SOC
-+	select SND_ATMEL_SOC_SSC
-+	select SND_SOC_TLV320AIC23
-+	help
-+	  Say Y here to support sound on AFEB9260 board.
-diff --git a/sound/soc/atmel/Makefile b/sound/soc/atmel/Makefile
-index f54a7cc..ac2df98 100644
---- a/sound/soc/atmel/Makefile
-+++ b/sound/soc/atmel/Makefile
-@@ -13,3 +13,4 @@ snd-soc-playpaq-objs := playpaq_wm8510.o
- 
- obj-$(CONFIG_SND_AT91_SOC_SAM9G20_WM8731) += snd-soc-sam9g20-wm8731.o
- obj-$(CONFIG_SND_AT32_SOC_PLAYPAQ) += snd-soc-playpaq.o
-+obj-$(CONFIG_SND_AT91_SOC_AFEB9260) += afeb9260.o
-diff --git a/sound/soc/atmel/afeb9260.c b/sound/soc/atmel/afeb9260.c
-new file mode 100644
-index 0000000..1514d8d
---- /dev/null
-+++ b/sound/soc/atmel/afeb9260.c
-@@ -0,0 +1,217 @@
-+/*
-+ * afeb9260.c  --  SoC audio for AFEB9260
-+ *
-+ * Copyright (C) 2008 Sergey Lapin <slapin@ossfans.org>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-+ * 02110-1301 USA
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/kernel.h>
-+#include <linux/clk.h>
-+#include <linux/platform_device.h>
-+
-+#include <linux/atmel-ssc.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+#include <asm/mach-types.h>
-+#include <mach/hardware.h>
-+#include <linux/gpio.h>
-+
-+#include "../codecs/tlv320aic23.h"
-+#include "atmel-pcm.h"
-+#include "atmel_ssc_dai.h"
-+
-+#define CODEC_CLOCK 	12000000
-+
-+static int afeb9260_startup(struct snd_pcm_substream *substream)
-+{
-+	return 1;
-+}
-+
-+static void afeb9260_shutdown(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
-+
-+	dev_dbg(rtd->socdev->dev, "shutdown");
-+}
-+
-+static int afeb9260_hw_params(struct snd_pcm_substream *substream,
-+			 struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	int err;
-+
-+	/* Set codec DAI configuration */
-+	err = snd_soc_dai_set_fmt(codec_dai,
-+				  SND_SOC_DAIFMT_I2S|
-+				  SND_SOC_DAIFMT_NB_IF |
-+				  SND_SOC_DAIFMT_CBM_CFM);
-+	if (err < 0) {
-+		printk(KERN_ERR "can't set codec DAI configuration\n");
-+		return err;
-+	}
-+
-+	/* Set cpu DAI configuration */
-+	err = snd_soc_dai_set_fmt(cpu_dai,
-+				  SND_SOC_DAIFMT_I2S |
-+				  SND_SOC_DAIFMT_NB_IF |
-+				  SND_SOC_DAIFMT_CBM_CFM);
-+	if (err < 0) {
-+		printk(KERN_ERR "can't set cpu DAI configuration\n");
-+		return err;
-+	}
-+
-+	/* Set the codec system clock for DAC and ADC */
-+	err =
-+	    snd_soc_dai_set_sysclk(codec_dai, 0, CODEC_CLOCK, SND_SOC_CLOCK_IN);
-+
-+	if (err < 0) {
-+		printk(KERN_ERR "can't set codec system clock\n");
-+		return err;
-+	}
-+
-+	return err;
-+}
-+
-+static struct snd_soc_ops afeb9260_ops = {
-+	.startup = afeb9260_startup,
-+	.hw_params = afeb9260_hw_params,
-+	.shutdown = afeb9260_shutdown,
-+};
-+
-+static const struct snd_soc_dapm_widget tlv320aic23_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_LINE("Line In", NULL),
-+	SND_SOC_DAPM_MIC("Mic Jack", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route audio_map[] = {
-+	{"Headphone Jack", NULL, "LHPOUT"},
-+	{"Headphone Jack", NULL, "RHPOUT"},
-+
-+	{"LLINEIN", NULL, "Line In"},
-+	{"RLINEIN", NULL, "Line In"},
-+
-+	{"MICIN", NULL, "Mic Jack"},
-+};
-+
-+static int afeb9260_tlv320aic23_init(struct snd_soc_codec *codec)
-+{
-+
-+	/* Add osk5912 specific widgets */
-+	snd_soc_dapm_new_controls(codec, tlv320aic23_dapm_widgets,
-+				  ARRAY_SIZE(tlv320aic23_dapm_widgets));
-+
-+	/* Set up osk5912 specific audio path audio_map */
-+	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
-+
-+	snd_soc_dapm_enable_pin(codec, "Headphone Jack");
-+	snd_soc_dapm_enable_pin(codec, "Line In");
-+	snd_soc_dapm_enable_pin(codec, "Mic Jack");
-+
-+	snd_soc_dapm_sync(codec);
-+
-+	return 0;
-+}
-+
-+/* Digital audio interface glue - connects codec <--> CPU */
-+static struct snd_soc_dai_link afeb9260_dai = {
-+	.name = "TLV320AIC23",
-+	.stream_name = "AIC23",
-+	.cpu_dai = &atmel_ssc_dai[0],
-+	.codec_dai = &tlv320aic23_dai,
-+	.init = afeb9260_tlv320aic23_init,
-+	.ops = &afeb9260_ops,
-+};
-+
-+/* Audio machine driver */
-+static struct snd_soc_card snd_soc_machine_afeb9260 = {
-+	.name = "AFEB9260",
-+	.platform = &atmel_soc_platform,
-+	.dai_link = &afeb9260_dai,
-+	.num_links = 1,
-+};
-+
-+/* Audio subsystem */
-+static struct snd_soc_device afeb9260_snd_devdata = {
-+	.card = &snd_soc_machine_afeb9260,
-+	.codec_dev = &soc_codec_dev_tlv320aic23,
-+};
-+
-+static struct platform_device *afeb9260_snd_device;
-+
-+static int __init afeb9260_soc_init(void)
-+{
-+	int err;
-+	struct device *dev;
-+	struct atmel_ssc_info *ssc_p = afeb9260_dai.cpu_dai->private_data;
-+	struct ssc_device *ssc = NULL;
-+
-+	if (!(machine_is_afeb9260()))
-+		return -ENODEV;
-+
-+	ssc = ssc_request(0);
-+	if (IS_ERR(ssc)) {
-+		printk(KERN_ERR "ASoC: Failed to request SSC 0\n");
-+		err = PTR_ERR(ssc);
-+		ssc = NULL;
-+		goto err_ssc;
-+	}
-+	ssc_p->ssc = ssc;
-+
-+	afeb9260_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!afeb9260_snd_device) {
-+		printk(KERN_ERR "ASoC: Platform device allocation failed\n");
-+		return -ENOMEM;
-+	}
-+
-+	platform_set_drvdata(afeb9260_snd_device, &afeb9260_snd_devdata);
-+	afeb9260_snd_devdata.dev = &afeb9260_snd_device->dev;
-+	err = platform_device_add(afeb9260_snd_device);
-+	if (err)
-+		goto err1;
-+
-+	dev = &afeb9260_snd_device->dev;
-+
-+	return 0;
-+err1:
-+	platform_device_del(afeb9260_snd_device);
-+	platform_device_put(afeb9260_snd_device);
-+err_ssc:
-+	return err;
-+
-+}
-+
-+static void __exit afeb9260_soc_exit(void)
-+{
-+	platform_device_unregister(afeb9260_snd_device);
-+}
-+
-+module_init(afeb9260_soc_init);
-+module_exit(afeb9260_soc_exit);
-+
-+MODULE_AUTHOR("Sergey Lapin <slapin@ossfans.org>");
-+MODULE_DESCRIPTION("ALSA SoC for AFEB9260");
-+MODULE_LICENSE("GPL");
-+
+I cannot hear any difference in pop level am I using head of linux-omap
+or when merging sound-2.6/asoc on top of it.
+
+Of cource this pop noise can be codec output & load dependent and also
+possible on-board amplifier with proper power sequencing can mask the
+noise. For reference, output jack of the Beagle is connected directly
+into HSOL and HSOR pins.
+
+
 -- 
-1.5.6.5
+Jarkko
