@@ -1,106 +1,58 @@
-From: Jon Smirl <jonsmirl@gmail.com>
-Subject: Re: appl_ptr and DMA overrun at end of stream
-Date: Thu, 7 May 2009 12:35:24 -0400
-Message-ID: <9e4733910905070935k2da0ea0bu7f8c9cadc3dcd9eb@mail.gmail.com>
-References: <9e4733910905070923i16683486n678653ba56c28b74@mail.gmail.com>
+From: Nigel Cunningham <ncunningham-lkml@crca.org.au>
+Subject: Re: 2.6.29 regression: left audio channel broken after resume from
+ suspend with Intel HDA
+Date: Fri, 08 May 2009 06:42:04 +1000
+Message-ID: <1241728924.19600.208.camel@nigel-laptop>
+References: <20090420194659.GA11399@dose.home.local>
+	 <s5h8wluinon.wl%tiwai@suse.de> <20090421073219.GA5866@dose.home.local>
+	 <s5hfxg2cv6m.wl%tiwai@suse.de> <20090421183936.GA21935@dose.home.local>
+	 <s5hws9a5ewr.wl%tiwai@suse.de> <20090424142113.GA18668@dose.home.local>
+	 <s5hskjy5d2t.wl%tiwai@suse.de> <20090428002309.GA29572@x61>
+	 <20090506222753.GA6728@mac.home> <20090507072352.GA6513@mac.home>
+	 <s5hy6t92nuz.wl%tiwai@suse.de> <1241697280.19600.203.camel@nigel-laptop>
+	 <s5hr5z12jn5.wl%tiwai@suse.de>
+Reply-To: ncunningham-lkml@crca.org.au
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gv-out-0910.google.com (gv-out-0910.google.com [216.239.58.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5CE4C1038D8
-	for <alsa-devel@alsa-project.org>;
-	Thu,  7 May 2009 18:35:26 +0200 (CEST)
-Received: by gv-out-0910.google.com with SMTP id i36so154093gve.24
-	for <alsa-devel@alsa-project.org>; Thu, 07 May 2009 09:35:25 -0700 (PDT)
-In-Reply-To: <9e4733910905070923i16683486n678653ba56c28b74@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel mailing list <alsa-devel@alsa-project.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756647AbZEGUlW@vger.kernel.org>
+In-Reply-To: <s5hr5z12jn5.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Tino Keitel <tino.keitel@gmx.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Debug trace... at the bottom you can see where I needed to stop
-queuing new DMA data
+Hi.
 
-If you dig around in the archives, other people have run into this same problem.
+On Thu, 2009-05-07 at 14:16 +0200, Takashi Iwai wrote:
+> At Thu, 07 May 2009 21:54:40 +1000,
+> Nigel Cunningham wrote:
+> > 
+> > Hi.
+> > 
+> > On Thu, 2009-05-07 at 12:45 +0200, Takashi Iwai wrote:
+> > > The problem is that BIOS on your machine sets this pin both for
+> > > input and output.  Since it's set as input, the driver respects
+> > > the BIOS setup and skips to override.
+> > 
+> > 'scuse the ignorance, but this makes me ask: Are pins logically
+> > unrelated to jacks?
+> 
+> Yes, they are.
+> 
+> > I have a Dell M1530, and it has some jacks that can
+> > work as either inputs or outputs. Under M$, when I plug something in, a
+> > dialog box pops up asking me whether I connected a mic, line in or an
+> > output jack (I forget the details). Sounds like Tino's problem is what
+> > I'd expect from my BIOS. But I'm probably completely ignorant :)
+> 
+> The problem there is that the BIOS sets the current pin direction for
+> both input and output, but you can't play and record at the same time
+> on a jack.  It's not about the capability. 
+> 
+> BIOS is supposed to set all the pins properly ready for use, but it's
+> not so on Mac.
 
-root@phyCORE:~ aplay phone.wav
-mpc5200-psc-ac97 f0002200.sound: psc_dma_open(substream=c7913700)
-Playing WAVE 'phone.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
-mpc5200-psc-ac97 f0002200.sound:
-psc_ac97_hw_analog_params(substream=c7913700) p_size=5513
-p_bytes=44104 periods=4 buffer_size=22052  buffer_bytes=176416
-channels=2 rate=44100 format=11
-AC97_EXTENDED_STATUS 411
-mpc5200-psc-ac97 f0002200.sound: psc_dma_trigger(substream=c7913700,
-cmd=1) stream_id=0
-runtime->dma_area c7a00000
-Initial pointer 0
-Playback
+Thanks! :)
 
---- DMA address / s->appl_ptr  / runtime->control->appl_ptr
-
-enqueue 7a00000 0 22052
-queued
-enqueue 7a0ac48 5513 22052
-queued
-enqueue 7a15890 11026 22052
-queued
-enqueue 7a204d8 16539 22052
-queued
-enqueue 7a00000 22052 22052
-enqueue 7a00000 22052 22052
-enqueue 7a00000 22052 27565
-queued
-enqueue 7a0ac48 27565 33078
-queued
-enqueue 7a15890 33078 38591
-queued
-enqueue 7a204d8 38591 44104
-queued
-enqueue 7a00000 44104 49617
-queued
-enqueue 7a0ac48 49617 55130
-queued
-enqueue 7a15890 55130 60643
-queued
-enqueue 7a204d8 60643 66156
-queued
-enqueue 7a00000 66156 71669
-queued
-enqueue 7a0ac48 71669 77182
-queued
-enqueue 7a15890 77182 82695
-queued
-enqueue 7a204d8 82695 88208
-queued
-enqueue 7a00000 88208 93721
-queued
-enqueue 7a0ac48 93721 99234
-queued
-enqueue 7a15890 99234 104747
-queued
-enqueue 7a204d8 104747 110260
-queued
-enqueue 7a00000 110260 115773
-queued
-enqueue 7a0ac48 115773 115773 - stopped queuing new buffers here
-enqueue 7a0ac48 115773 115773
-enqueue 7a0ac48 115773 115773
-mpc5200-psc-ac97 f0002200.sound: psc_dma_trigger(substream=c7913700,
-cmd=0) stream_id=0
- -- this trigger is too late. Samples have already started going into the codec
-mpc5200-psc-ac97 f0002200.sound: psc_dma_close(substream=c7913700)
-root@phyCORE:
-
-
--- 
-Jon Smirl
-jonsmirl@gmail.com
+Nigel
