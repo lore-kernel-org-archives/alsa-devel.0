@@ -1,78 +1,89 @@
-From: Todd Fischer <todd.fischer@ridgerun.com>
-Subject: Re: Beep sound in the end of audio file
-Date: Wed, 06 May 2009 08:19:49 -0600
-Message-ID: <1241619589.8928.2038.camel@sax-lx.fischerfamily.org>
-References: <5A47E75E594F054BAF48C5E4FC4B92AB0305559FCC@dbde02.ent.ti.com>
-	<200905060833.10998.peter.ujfalusi@nokia.com>
-	<5A47E75E594F054BAF48C5E4FC4B92AB030555A348@dbde02.ent.ti.com>
-Reply-To: todd.fischer@ridgerun.com
+From: Tino Keitel <tino.keitel@gmx.de>
+Subject: Re: 2.6.29 regression: left audio channel broken after resume from
+	suspend with Intel HDA
+Date: Thu, 7 May 2009 09:23:53 +0200
+Message-ID: <20090507072352.GA6513@mac.home>
+References: <20090420194659.GA11399@dose.home.local> <s5h8wluinon.wl%tiwai@suse.de> <20090421073219.GA5866@dose.home.local> <s5hfxg2cv6m.wl%tiwai@suse.de> <20090421183936.GA21935@dose.home.local> <s5hws9a5ewr.wl%tiwai@suse.de> <20090424142113.GA18668@dose.home.local> <s5hskjy5d2t.wl%tiwai@suse.de> <20090428002309.GA29572@x61> <20090506222753.GA6728@mac.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gw.fischerfamily.org (fischerfamily.org [71.216.156.246])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2F8312470D
-	for <alsa-devel@alsa-project.org>;
-	Wed,  6 May 2009 16:21:34 +0200 (CEST)
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB030555A348@dbde02.ent.ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Content-Type: multipart/mixed; boundary="VS++wcV0S1rZb1Fb"
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755049AbZEGHYL@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20090506222753.GA6728@mac.home>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpGV0lXOiB3aGlsZSBkZXZlbG9waW5nIGEgR1NUcmVhbWVyIHByZXNlbnRhdGlvbiB1c2lu
-ZyBhIEJlZ2xlQm9hcmQgKHJldgpDKSwgSSBub3RpY2VkIHRoZSBzYW1lICJ0dWNrIiBzb3VuZC4g
-IEl0IGFsc28gb2NjdXJzIGEgc2Vjb25kIG9yIHR3bwphZnRlciB0aGUgR1NUIGFwcGxpY2F0aW9u
-IGV4aXRzLiAgSSBhc3N1bWVkIGl0IHdhcyBzb21lIHBvd2VyIG1hbmFnZW1lbnQKY29kZSB0aGF0
-IHdhcyBkaXNhYmxpbmcgdGhlIGF1ZGlvIGNvZGVjIGFmdGVyIGl0IGhhZCBnb25lIGlkbGUsIGJ1
-dApuZXZlciBsb29rZWQgaW50byBpdC4gIEJlYWdsZUJvYXJkIGFsc28gdXNlcyBUV0w0MDMwLgoK
-R1NUIGNvbW1hbmQ6IGdzdC1sYXVuY2ggYXVkaW90ZXN0c3JjIGZyZXE9MTAwMCBudW0tYnVmZmVy
-cz0xMDAgIQphbHNhc2luawoKL3Byb2MvdmVyc2lvbjogTGludXggdmVyc2lvbiAyLjYuMjgtb21h
-cDEgKGRkb21wZUBBbGVwaCkgKGdjYyB2ZXJzaW9uCjQuMy4xIChHQ0MpICkgIzIgVGh1IE1hciA1
-IDA4OjU1OjU4IENTVCAyMDA5CgpDb2RlIGltYWdlOiBodHRwOi8vd3d3LmJlYWdsZWJvYXJkLm9y
-Zy9+YXJhZ28vZXNjL2VzYzIwMDlzai52MTIuaW1nLmd6CgpUb2RkCgpPbiBXZWQsIDIwMDktMDUt
-MDYgYXQgMTk6MzAgKzA1MzAsIEFnZ2Fyd2FsLCBBbnVqIHdyb3RlOgoKPiA+IC0tLS0tT3JpZ2lu
-YWwgTWVzc2FnZS0tLS0tCj4gPiBGcm9tOiBQZXRlciBVamZhbHVzaSBbbWFpbHRvOnBldGVyLnVq
-ZmFsdXNpQG5va2lhLmNvbV0KPiA+IFNlbnQ6IFdlZG5lc2RheSwgTWF5IDA2LCAyMDA5IDExOjAz
-IEFNCj4gPiBUbzogQWdnYXJ3YWwsIEFudWoKPiA+IENjOiBsaW51eC1vbWFwQHZnZXIua2VybmVs
-Lm9yZzsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gPiBTdWJqZWN0OiBSZTogQmVlcCBz
-b3VuZCBpbiB0aGUgZW5kIG9mIGF1ZGlvIGZpbGUKPiA+IAo+ID4gSGVsbG8sCj4gPiAKPiA+IE9u
-IFR1ZXNkYXkgMDUgTWF5IDIwMDkgMjA6MDM6NTcgZXh0IEFnZ2Fyd2FsLCBBbnVqIHdyb3RlOgo+
-ID4gPiBIaSwKPiA+ID4KPiA+ID4gQWZ0ZXIgcGxheWluZyBvdXQgYW55IGF1ZGlvIGZpbGUgb24g
-T01BUDMgRVZNLCBoYXZpbmcgVFdMNDAzMCBjb2RlYywKPiA+ID4gSSBhbSBoZWFyaW5nIGEgYmVl
-cCBzb3VuZC4gSSBoYXZlIGFsc28gdHJpZWQgaW1wbGVtZW50aW5nIGEgbXV0ZSBmdW5jdGlvbgo+
-ID4gPiBpbiB3aGljaCBJIGRpc2FibGVkIGFsbCB0aGUgaW5wdXRzL291dHB1dHMgYnV0IHN0aWxs
-IHRoYXQgZGlkbid0IGhlbHAuCj4gPiA+Cj4gPiA+IEFueSBpZGVhIGhvdyB0aGlzIGNhbiBiZSBh
-dm9pZGVkPwo+ID4gCj4gPiBJIGhhdmUgbm90IGhlYXJkIGZyb20gdGhpcyBraW5kIG9mIHByb2Js
-ZW0gc28gZmFyLCB3aGljaCBkb2VzIG5vdCBtZWFuLCB0aGF0Cj4gPiBpdCBkb2VzIG5vdCBleGlz
-dCA7KQo+ID4gQ2FuIHlvdSBkZXNjcmliZSB0aGUgYmVlcCBzb3VuZD8KPiBbQWdnYXJ3YWwsIEFu
-dWpdIEl0J3Mga2luZCBvZiBhICJ0dWNrIiBzb3VuZCBjb21pbmcgaW4gdGhlIGVuZCwgYWZ0ZXIg
-MSBvciAgMiBzZWNvbmRzLgo+ID4gCj4gPiBBZnRlciBhIHF1aWNrIGxvb2sgSSBjYW4gbm90IHBp
-biBwb2ludCB0aGUgc29jIGJvYXJkIGZpbGUgdXNlZCB3aXRoIHRoZQo+ID4gb21hcDNldm0gYm9h
-cmQuIElzIGl0IGluIHRoZSB0cmVlPwo+IFtBZ2dhcndhbCwgQW51al0gTm8sIGl0IGlzIG5vdC4g
-UmVhc29uIGJlaW5nIHdlIGFscmVhZHkgaGF2ZSBiZWFnbGUgJiAKPiBzZHAzNDMwIHRoZXJlLCB3
-aGljaCBhcmUgYm90aCBzaW1pbGFyIHRvIG9tYXAzZXZtLCB3aGljaCBJIHB1c2hlZC4gCj4gU28g
-bWluZSBnb3QgcmVqZWN0ZWQuIFdlIGhhZCBzb21lIGRpc2N1c3Npb25zIG9uIGhvdyB0byBoYW5k
-bGUgdGhpcwo+IHNjZW5hcmlvIGJ1dCBub3RoaW5nIGdvdCBmaW5hbGl6ZWQuCj4gPiAKPiA+IERv
-ZXMgdGhlIGJlZXAgaGFwcGVucyBpbiB0aGVzZSBjYXNlcyBhbHNvIChhZnRlciBzdG9wcGluZyBp
-dCB3aXRoIEN0cmwrQyk6Cj4gPiBhcGxheSAtZiBkYXQgL2Rldi96ZXJvCj4gPiBhcGxheSAtZiBk
-YXQgL2Rldi91cmFuZG9tCj4gW0FnZ2Fyd2FsLCBBbnVqXSBZZXMsIGl0IGNvbWVzIGluIGJvdGgg
-dGhlIGNhc2VzLgo+ID4gCj4gPiAKPiA+IENDLWluZyBhbHNhLWRldmVsLi4uCj4gPiAKPiA+ID4K
-PiA+ID4gVGhhbmtzIGFuZCBSZWdhcmRzLAo+ID4gPiBBbnVqIEFnZ2Fyd2FsCj4gPiA+Cj4gPiA+
-IFBsYXRmb3JtIFN1cHBvcnQgUHJvZHVjdHMKPiA+ID4gVGV4YXMgSW5zdHJ1bWVudHMgSW5jb3Jw
-b3JhdGVkCj4gPiAKPiA+IAo+ID4gLS0KPiA+IFDDqXRlcgo+IAo+IC0tCj4gVG8gdW5zdWJzY3Jp
-YmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQgdGhlIGxpbmUgInVuc3Vic2NyaWJlIGxpbnV4LW9tYXAi
-IGluCj4gdGhlIGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5lbC5vcmcK
-PiBNb3JlIG1ham9yZG9tbyBpbmZvIGF0ICBodHRwOi8vdmdlci5rZXJuZWwub3JnL21ham9yZG9t
-by1pbmZvLmh0bWwKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+
+--VS++wcV0S1rZb1Fb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, May 07, 2009 at 00:27:53 +0200, Tino Keitel wrote:
+> On Tue, Apr 28, 2009 at 02:23:09 +0200, Tino Keitel wrote:
+> 
+> [...]
+> 
+> > I just saw another, major problem: line in doesn't work anymore with
+> > 2.6.29 and also 2.6.30-rc3 (no usable input level). It works with
+> > 2.6.27.20.
+> 
+> FYI: I just tried 2.6.28 and line-in was still broken. So the last
+> working kernel is 2.6.27.
+
+I tried this:
+
+git bisect start v2.6.28 v2.6.27 sound/pci/hda/patch_sigmatel.c
+
+The result is commit 4f1e6bc3646ab50b8181555ab7e6eeab68b8632a.
+
+I can't use git revert because of conflicts, so I crafted the attached
+patch against 2.6.30-rc4-00288-g413f81e, and now line-in works.
+
+Regards,
+Tino
+
+--VS++wcV0S1rZb1Fb
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="fix-mac-mini-line-in.patch"
+
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index 917bc5d..8846a3b 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -4070,21 +4070,19 @@ static int stac92xx_init(struct hda_codec *codec)
+ 		hda_nid_t nid = cfg->input_pins[i];
+ 		if (nid) {
+ 			unsigned int pinctl, conf;
+-			if (i == AUTO_PIN_MIC || i == AUTO_PIN_FRONT_MIC) {
+-				/* for mic pins, force to initialize */
+-				pinctl = stac92xx_get_vref(codec, nid);
+-				pinctl |= AC_PINCTL_IN_EN;
+-				stac92xx_auto_set_pinctl(codec, nid, pinctl);
+-			} else {
+-				pinctl = snd_hda_codec_read(codec, nid, 0,
+-					AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
+-				/* if PINCTL already set then skip */
+-				if (!(pinctl & AC_PINCTL_IN_EN)) {
+-					pinctl |= AC_PINCTL_IN_EN;
+-					stac92xx_auto_set_pinctl(codec, nid,
+-								 pinctl);
+-				}
+-			}
++			pinctl = snd_hda_codec_read(codec, nid,
++						    0, AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
++			/* if PINCTL already set then skip */
++			if (pinctl & AC_PINCAP_IN)
++				continue;
++			pinctl = AC_PINCTL_IN_EN;
++			if (i == AUTO_PIN_MIC || i == AUTO_PIN_FRONT_MIC)
++				pinctl |= stac92xx_get_vref(codec, nid);
++			stac92xx_auto_set_pinctl(codec, nid, pinctl);
++
++
++
++
+ 			conf = snd_hda_codec_get_pincfg(codec, nid);
+ 			if (get_defcfg_connect(conf) != AC_JACK_PORT_FIXED) {
+ 				enable_pin_detect(codec, nid,
+
+--VS++wcV0S1rZb1Fb--
