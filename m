@@ -1,16 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 1/1] ASoC: TWL4030: Fix typo in
-	twl4030_codec_mute function
-Date: Thu,  7 May 2009 14:32:00 +0300
-Message-ID: <1241695920-24509-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: SNDRV_PCM_FORMAT_GSM
+Date: Thu, 7 May 2009 12:52:44 +0100
+Message-ID: <20090507115244.GG27897@sirena.org.uk>
+References: <98769532B4BB14429434178695419EAE4AD52C07@bgsmsx501.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4CC30247AB
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id A20B6247B5
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 May 2009 13:32:15 +0200 (CEST)
+	Thu,  7 May 2009 13:52:45 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <98769532B4BB14429434178695419EAE4AD52C07@bgsmsx501.gar.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,31 +22,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: sakoman@gmail.com, broonie@opensource.wolfsonmicro.com
+To: "Harsha, Priya" <priya.harsha@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Copy-paste error: TWL4030_PRECKL_GAIN >> TWL4030_PRECKR_GAIN
-It has not caused problems, since
-TWL4030_PRECKL_GAIN == TWL4030_PRECKR_GAIN == 0x30
+On Thu, May 07, 2009 at 04:51:52PM +0530, Harsha, Priya wrote:
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
----
- sound/soc/codecs/twl4030.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+> If I use the format SNDRV_PCM_FORMAT_GSM to identify if the audio
+> stream is voice stream or not, would it be appropriate?
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 1a00e4b..fd392c6 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -237,7 +237,7 @@ static void twl4030_codec_mute(struct snd_soc_codec *codec, int mute)
- 					TWL4030_REG_PRECKL_CTL);
- 		reg_val = twl4030_read_reg_cache(codec, TWL4030_REG_PRECKR_CTL);
- 		twl4030_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE,
--					reg_val & (~TWL4030_PRECKL_GAIN),
-+					reg_val & (~TWL4030_PRECKR_GAIN),
- 					TWL4030_REG_PRECKR_CTL);
- 
- 		/* Disable PLL */
--- 
-1.6.2.3
+The format refers to the way the data is encoded rather than the meaning
+of the content - if actual GSM data were being transmitted it'd be
+sensible (but note that GSM format is not actually properly handled by
+ALSA yet).
