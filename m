@@ -1,70 +1,277 @@
-From: =?UTF-8?Q?Vedran_Mileti=C4=87?= <rivanvx@gmail.com>
-Subject: Re: asus xonar DX
-Date: Fri, 8 May 2009 09:06:03 +0200
-Message-ID: <fd3eb9bf0905080006u79c0b06u5ee8076166052d59@mail.gmail.com>
-References: <4A036508.1080000@gmail.com>
+From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
+Subject: RE: [PATCH 1/1] ASoC: Added OMAP3 EVM support in ASoC.
+Date: Fri, 8 May 2009 14:38:05 +0530
+Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB0305600DA5@dbde02.ent.ti.com>
+References: <1241712527-16269-1-git-send-email-anuj.aggarwal@ti.com>
+ <dfeb90390905072142h760e79afmf2d2de0d45646165@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f103.google.com (mail-qy0-f103.google.com
-	[209.85.221.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8696E248B5
-	for <alsa-devel@alsa-project.org>;
-	Fri,  8 May 2009 09:06:04 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so2242230qyk.16
-	for <alsa-devel@alsa-project.org>; Fri, 08 May 2009 00:06:03 -0700 (PDT)
-In-Reply-To: <4A036508.1080000@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dmitri Seletski <drjoms@gmail.com>
-Cc: alsa-user@lists.sourceforge.net, gary <lists@lazygranch.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <dfeb90390905072142h760e79afmf2d2de0d45646165@mail.gmail.com>
+Content-Language: en-US
+Sender: linux-omap-owner@vger.kernel.org
+To: Arun KS <getarunks@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBNYXkgOCwgMjAwOSBhdCAxMjo0NyBBTSwgRG1pdHJpIFNlbGV0c2tpIDxkcmpvbXNA
-Z21haWwuY29tPiB3cm90ZToKPiBIZWxsbyBib3lzIGFuZCBnaXJscy4KPgo+IEkgaGF2ZSBzdWNj
-ZXNzZnVsbHkgaW5zdGFsbGVkIGFzdXMgeG9uYXIgRFggb250byBQQ0lFIHgxNiBzbG90IG9uIExp
-bnV4Cj4gMi42LjI4LWdlbnRvby1yNSBTTVAgb24gYW1kNjQgYXJjaGl0ZWN0dXJlLgo+Cj4gVmVy
-c2lvbiBvZiBhbHNhIHBhY2thZ2UgLSBhbHNhLWRyaXZlcjEuMC4yMCwgYWxzYSBmaXJtd2FyZSAx
-LjAuMTkuIEkKPiB1c2VkIGFsc2EgcGFja2FnZSBhbmQgbm90IGtlcm5lbCBtb2R1bGVzLgo+IFNl
-dmVyYWwgY2hhbm5lbHMgc2VlbSB0byB3b3JrIGZpbmUobXkgc3BlYWtlcnMgYXJlIGJyb2tlbiwg
-bm8gYmFjawo+IGNoYW5uZWxzIGF2YWlsYWJsZSwgwqBzdGFydGVkIGhvbHkgd2FyIHdpdGggY3Jl
-YXRpdmUgYWJvdXQgaXQsIGd1ZXNzIHdpdGgKPiBmaWFzY28gd2l0aCBmYXVsdHkgc3BlYWtlcnMg
-YW5kIHhmaSBkcml2ZXJzIGkgYW0gc3VwcG9ydGVyIG9mIGNyZWF0aXZlCj4gbm8gbW9yZSwgaSBh
-bSBub3QgZ29ubmEgYmFkIG1vdXRoIHRoZW0gZWl0aGVyIGp1c3QgeWV0KS4KPgo+IFNvIGZhciBz
-byBnb29kLiBNaWNyb3Bob25lIHdvcmtzLCDCoHN1cnJvdW5kIHNvdW5kIHdvcmtzIHRvbywgSSBh
-bSBwcmV0dHkKPiBoYXBweS4KPgo+IFRoYW5rcyBmb3IgYWxsIHBlb3BsZSB3aG8gYWR2aXNlZCBt
-ZSBzb21ldGhpbmcuIElmIGkgY29tZSBhY3Jvc3MgdGhpcwo+IHByb2JsZW0gLSB5b3Ugd2lsbCBo
-ZWFyIGZyb20gbWUgYWdhaW4gOykKPiBTcGVjaWFsbHkKPgo+Cj4gLS0tLS0tLS0tLSBGb3J3YXJk
-ZWQgbWVzc2FnZSAtLS0tLS0tLS0tCj4gRnJvbTrCoGxpc3RzQGxhenlncmFuY2guY29tCj4gVG86
-wqAiRG1pdHJpIFNlbGV0c2tpIiA8ZHJqb21zQGdtYWlsLmNvbT4KPiBEYXRlOsKgVHVlLCA1IE1h
-eSAyMDA5IDE0OjM2OjM3ICswMDAwCj4gU3ViamVjdDrCoFJlOiBbQWxzYS11c2VyXSBbYWxzYS1k
-ZXZlbF0gbG9va2luZyBmb3IgYWR2aWNlIG9uIGJ1eWluZyBhIGNhcmQKPiBQbGVhc2UgbGV0IG1l
-IGtub3cgb3IgZG8gYSBwb3N0IHJlZ2FyZGluZyBob3cgdGhpcyB3b3JrcyBvdXQuCj4gLS0tLS1P
-cmlnaW5hbCBNZXNzYWdlLS0tLS0KPiBGcm9tOiBEbWl0cmkgU2VsZXRza2kgPGRyam9tc0BnbWFp
-bC5jb20+Cj4KPiBEYXRlOiBUdWUsIDUgTWF5IDIwMDkgMTQ6Mzg6MzUKPiBUbzogQ2xlbWVucyBM
-YWRpc2NoPGNsZW1lbnNAbGFkaXNjaC5kZT4KPiBDYzogPGFsc2EtdXNlckBsaXN0cy5zb3VyY2Vm
-b3JnZS5uZXQ+OyA8YWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnPgo+IFN1YmplY3Q6IFJlOiBb
-QWxzYS11c2VyXSBbYWxzYS1kZXZlbF0gbG9va2luZyBmb3IgYWR2aWNlIG9uIGJ1eWluZyBhIGNh
-cmQKPgo+Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gVGhlIE5FVyBLT0RBSyBpNzAwIFNlcmll
-cyBTY2FubmVycyBkZWxpdmVyIHVuZGVyIEFOWSBjaXJjdW1zdGFuY2VzISBZb3VyCj4gcHJvZHVj
-dGlvbiBzY2FubmluZyBlbnZpcm9ubWVudCBtYXkgbm90IGJlIGEgcGVyZmVjdCB3b3JsZCAtIGJ1
-dCB0aGFua3MgdG8KPiBLb2RhaywgdGhlcmUncyBhIHBlcmZlY3Qgc2Nhbm5lciB0byBnZXQgdGhl
-IGpvYiBkb25lISBXaXRoIHRoZSBORVcgS09EQUsgaTcwMAo+IFNlcmllcyBTY2FubmVyIHlvdSds
-bCBnZXQgZnVsbCBzcGVlZCBhdCAzMDAgZHBpIGV2ZW4gd2l0aCBhbGwgaW1hZ2UKPiBwcm9jZXNz
-aW5nIGZlYXR1cmVzIGVuYWJsZWQuIGh0dHA6Ly9wLnNmLm5ldC9zZnUva29kYWstY29tCj4KPiBf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgo+CgpH
-bGFkIHlvdSBnb3QgaXQgdG8gd29yayA6KSBYb25hciBpcyBhIGdyZWF0IGNhcmQuCgpWZWRyYW4g
-TWlsZXRpxIcKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
-Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+> -----Original Message-----
+> From: Arun KS [mailto:getarunks@gmail.com]
+> Sent: Friday, May 08, 2009 10:13 AM
+> To: Aggarwal, Anuj
+> Cc: alsa-devel@alsa-project.org; linux-omap@vger.kernel.org
+> Subject: Re: [PATCH 1/1] ASoC: Added OMAP3 EVM support in ASoC.
+>=20
+> On Thu, May 7, 2009 at 9:38 PM, Anuj Aggarwal <anuj.aggarwal@ti.com>
+> wrote:
+> >
+> > Signed-off-by: Anuj Aggarwal <anuj.aggarwal@ti.com>
+> > ---
+> > =A0sound/soc/omap/Kconfig =A0 =A0| =A0 =A08 +++
+> > =A0sound/soc/omap/Makefile =A0 | =A0 =A02 +
+> > =A0sound/soc/omap/omap3evm.c | =A0147
+> +++++++++++++++++++++++++++++++++++++++++++++
+> > =A03 files changed, 157 insertions(+), 0 deletions(-)
+> > =A0create mode 100644 sound/soc/omap/omap3evm.c
+> >
+> > diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+> > index 675732e..b771238 100644
+> > --- a/sound/soc/omap/Kconfig
+> > +++ b/sound/soc/omap/Kconfig
+> > @@ -39,6 +39,14 @@ config SND_OMAP_SOC_OMAP2EVM
+> > =A0 =A0 =A0 =A0help
+> > =A0 =A0 =A0 =A0 =A0Say Y if you want to add support for SoC audio o=
+n the omap2evm
+> board.
+> >
+> > +config SND_OMAP_SOC_OMAP3EVM
+> > + =A0 =A0 =A0 tristate "SoC Audio support for OMAP3EVM board"
+> > + =A0 =A0 =A0 depends on TWL4030_CORE && SND_OMAP_SOC &&
+> MACH_OMAP3EVM
+> > + =A0 =A0 =A0 select SND_OMAP_SOC_MCBSP
+> > + =A0 =A0 =A0 select SND_SOC_TWL4030
+> > + =A0 =A0 =A0 help
+> > + =A0 =A0 =A0 =A0 Say Y if you want to add support for SoC audio on=
+ the omap3evm
+> board.
+> > +
+> > =A0config SND_OMAP_SOC_SDP3430
+> > =A0 =A0 =A0 =A0tristate "SoC Audio support for Texas Instruments SD=
+P3430"
+> > =A0 =A0 =A0 =A0depends on TWL4030_CORE && SND_OMAP_SOC &&
+> MACH_OMAP_3430SDP
+> > diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
+> > index 0c9e4ac..a37f498 100644
+> > --- a/sound/soc/omap/Makefile
+> > +++ b/sound/soc/omap/Makefile
+> > @@ -10,6 +10,7 @@ snd-soc-n810-objs :=3D n810.o
+> > =A0snd-soc-osk5912-objs :=3D osk5912.o
+> > =A0snd-soc-overo-objs :=3D overo.o
+> > =A0snd-soc-omap2evm-objs :=3D omap2evm.o
+> > +snd-soc-omap3evm-objs :=3D omap3evm.o
+> > =A0snd-soc-sdp3430-objs :=3D sdp3430.o
+> > =A0snd-soc-omap3pandora-objs :=3D omap3pandora.o
+> > =A0snd-soc-omap3beagle-objs :=3D omap3beagle.o
+> > @@ -18,6 +19,7 @@ obj-$(CONFIG_SND_OMAP_SOC_N810) +=3D snd-soc-
+> n810.o
+> > =A0obj-$(CONFIG_SND_OMAP_SOC_OSK5912) +=3D snd-soc-osk5912.o
+> > =A0obj-$(CONFIG_SND_OMAP_SOC_OVERO) +=3D snd-soc-overo.o
+> > =A0obj-$(CONFIG_MACH_OMAP2EVM) +=3D snd-soc-omap2evm.o
+> > +obj-$(CONFIG_MACH_OMAP3EVM) +=3D snd-soc-omap3evm.o
+> > =A0obj-$(CONFIG_SND_OMAP_SOC_SDP3430) +=3D snd-soc-sdp3430.o
+> > =A0obj-$(CONFIG_SND_OMAP_SOC_OMAP3_PANDORA) +=3D snd-soc-
+> omap3pandora.o
+> > =A0obj-$(CONFIG_SND_OMAP_SOC_OMAP3_BEAGLE) +=3D snd-soc-
+> omap3beagle.o
+> > diff --git a/sound/soc/omap/omap3evm.c b/sound/soc/omap/omap3evm.c
+> > new file mode 100644
+> > index 0000000..2af5d93
+> > --- /dev/null
+> > +++ b/sound/soc/omap/omap3evm.c
+> > @@ -0,0 +1,147 @@
+> > +/*
+> > + * omap3evm.c =A0-- ALSA SoC support for OMAP3 EVM
+> > + *
+> > + * Author: Anuj Aggarwal <anuj.aggarwal@ti.com>
+> > + *
+> > + * Based on sound/soc/omap/beagle.c by Steve Sakoman
+> > + *
+> > + * Copyright (C) 2008 Texas Instruments, Incorporated
+> > + *
+> > + * This program is free software; you can redistribute it and/or m=
+odify it
+> > + * under the terms of the GNU General Public License as published =
+by the
+> > + * Free Software Foundation version 2.
+> > + *
+> > + * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+> kind,
+> > + * whether express or implied; without even the implied warranty o=
+f
+> > + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+> GNU
+> > + * General Public License for more details.
+> > + */
+> > +
+> > +#include <linux/clk.h>
+> > +#include <linux/platform_device.h>
+> > +#include <sound/core.h>
+> > +#include <sound/pcm.h>
+> > +#include <sound/soc.h>
+> > +#include <sound/soc-dapm.h>
+> > +
+> > +#include <asm/mach-types.h>
+> > +#include <mach/hardware.h>
+> > +#include <mach/gpio.h>
+> > +#include <mach/mcbsp.h>
+> > +
+> > +#include "omap-mcbsp.h"
+> > +#include "omap-pcm.h"
+> > +#include "../codecs/twl4030.h"
+> > +
+> > +static int omap3evm_hw_params(struct snd_pcm_substream *substream,
+> > + =A0 =A0 =A0 struct snd_pcm_hw_params *params)
+> > +{
+> > + =A0 =A0 =A0 struct snd_soc_pcm_runtime *rtd =3D substream->privat=
+e_data;
+> > + =A0 =A0 =A0 struct snd_soc_dai *codec_dai =3D rtd->dai->codec_dai=
+;
+> > + =A0 =A0 =A0 struct snd_soc_dai *cpu_dai =3D rtd->dai->cpu_dai;
+> > + =A0 =A0 =A0 int ret;
+> > +
+> > + =A0 =A0 =A0 /* Set codec DAI configuration */
+> > + =A0 =A0 =A0 ret =3D snd_soc_dai_set_fmt(codec_dai,
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 S=
+ND_SOC_DAIFMT_I2S |
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 S=
+ND_SOC_DAIFMT_NB_NF |
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 S=
+ND_SOC_DAIFMT_CBM_CFM);
+> > + =A0 =A0 =A0 if (ret < 0) {
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_ERR "Can't set codec DAI =
+configuration\n");
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return ret;
+> > + =A0 =A0 =A0 }
+> > +
+> > + =A0 =A0 =A0 /* Set cpu DAI configuration */
+> > + =A0 =A0 =A0 ret =3D snd_soc_dai_set_fmt(cpu_dai,
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 S=
+ND_SOC_DAIFMT_I2S |
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 S=
+ND_SOC_DAIFMT_NB_NF |
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 S=
+ND_SOC_DAIFMT_CBM_CFM);
+> > + =A0 =A0 =A0 if (ret < 0) {
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_ERR "Can't set cpu DAI co=
+nfiguration\n");
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return ret;
+> > + =A0 =A0 =A0 }
+> > +
+> > + =A0 =A0 =A0 /* Set the codec system clock for DAC and ADC */
+> > + =A0 =A0 =A0 ret =3D snd_soc_dai_set_sysclk(codec_dai, 0, 26000000=
+,
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0SND_SOC_CLOCK_IN);
+> > + =A0 =A0 =A0 if (ret < 0) {
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_ERR "Can't set codec syst=
+em clock\n");
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return ret;
+> > + =A0 =A0 =A0 }
+> > +
+> > + =A0 =A0 =A0 return 0;
+> > +}
+> > +
+> > +static struct snd_soc_ops omap3evm_ops =3D {
+> > + =A0 =A0 =A0 .hw_params =3D omap3evm_hw_params,
+> > +};
+> > +
+> > +/* Digital audio interface glue - connects codec <--> CPU */
+> > +static struct snd_soc_dai_link omap3evm_dai =3D {
+> > + =A0 =A0 =A0 .name =A0 =A0 =A0 =A0 =A0 =3D "TWL4030",
+> > + =A0 =A0 =A0 .stream_name =A0 =A0=3D "TWL4030",
+> > + =A0 =A0 =A0 .cpu_dai =A0 =A0 =A0 =A0=3D &omap_mcbsp_dai[0],
+> > + =A0 =A0 =A0 .codec_dai =A0 =A0 =A0=3D &twl4030_dai,
+>=20
+> Please use
+> .codec_dai =3D &twl4030_dai[TWL4030_DAI_HIFI],
+[Aggarwal, Anuj] I will do the modification and send the patch again.
+>=20
+>=20
+> > + =A0 =A0 =A0 .ops =A0 =A0 =A0 =A0 =A0 =A0=3D &omap3evm_ops,
+> > +};
+> > +
+> > +/* Audio machine driver */
+> > +static struct snd_soc_card snd_soc_omap3evm =3D {
+> > + =A0 =A0 =A0 .name =3D "omap3evm",
+> > + =A0 =A0 =A0 .platform =3D &omap_soc_platform,
+> > + =A0 =A0 =A0 .dai_link =3D &omap3evm_dai,
+> > + =A0 =A0 =A0 .num_links =3D 1,
+> > +};
+> > +
+> > +/* Audio subsystem */
+> > +static struct snd_soc_device omap3evm_snd_devdata =3D {
+> > + =A0 =A0 =A0 .card =3D &snd_soc_omap3evm,
+> > + =A0 =A0 =A0 .codec_dev =3D &soc_codec_dev_twl4030,
+> > +};
+> > +
+> > +static struct platform_device *omap3evm_snd_device;
+> > +
+> > +static int __init omap3evm_soc_init(void)
+> > +{
+> > + =A0 =A0 =A0 int ret;
+> > +
+> > + =A0 =A0 =A0 if (!machine_is_omap3evm()) {
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 pr_debug("Not OMAP3 EVM!\n");
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -ENODEV;
+> > + =A0 =A0 =A0 }
+> > + =A0 =A0 =A0 pr_info("OMAP3 EVM SoC init\n");
+> > +
+> > + =A0 =A0 =A0 omap3evm_snd_device =3D platform_device_alloc("soc-au=
+dio", -1);
+> > + =A0 =A0 =A0 if (!omap3evm_snd_device) {
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_ERR "Platform device allo=
+cation failed\n");
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -ENOMEM;
+> > + =A0 =A0 =A0 }
+> > +
+> > + =A0 =A0 =A0 platform_set_drvdata(omap3evm_snd_device,
+> &omap3evm_snd_devdata);
+> > + =A0 =A0 =A0 omap3evm_snd_devdata.dev =3D &omap3evm_snd_device->de=
+v;
+> > + =A0 =A0 =A0 *(unsigned int *)omap3evm_dai.cpu_dai->private_data =3D=
+ 1;
+> > +
+> > + =A0 =A0 =A0 ret =3D platform_device_add(omap3evm_snd_device);
+> > + =A0 =A0 =A0 if (ret)
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto err1;
+> > +
+> > + =A0 =A0 =A0 return 0;
+> > +
+> > +err1:
+> > + =A0 =A0 =A0 printk(KERN_ERR "Unable to add platform device\n");
+> > + =A0 =A0 =A0 platform_device_put(omap3evm_snd_device);
+> > +
+> > + =A0 =A0 =A0 return ret;
+> > +}
+> > +
+> > +static void __exit omap3evm_soc_exit(void)
+> > +{
+> > + =A0 =A0 =A0 platform_device_unregister(omap3evm_snd_device);
+> > +}
+> > +
+> > +module_init(omap3evm_soc_init);
+> > +module_exit(omap3evm_soc_exit);
+> > +
+> > +MODULE_AUTHOR("Anuj Aggarwal <anuj.aggarwal@ti.com>");
+> > +MODULE_DESCRIPTION("ALSA SoC OMAP3 EVM");
+> > +MODULE_LICENSE("GPLv2");
+> > --
+> > 1.6.2.4
+> >
+> >
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
