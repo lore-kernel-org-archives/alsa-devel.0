@@ -1,23 +1,20 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: Master vs. Front/Rear/LFE/... elements
-Date: Fri, 08 May 2009 18:36:02 +1200
-Message-ID: <4A03D2D2.1040800@audioscience.com>
-References: <20090506175824.GA30355@tango.0pointer.de>
-	<s5hbpq5s3fx.wl%tiwai@suse.de> <20090507100915.GB27897@sirena.org.uk>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH 1/1] ASoC: TWL4030: Headset VMID ramp fix
+Date: Fri, 8 May 2009 09:40:44 +0300
+Message-ID: <20090508094044.0c85e86a.jhnikula@gmail.com>
+References: <1241763077-6851-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1241763077-6851-2-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id B893F248A1
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.150])
+	by alsa0.perex.cz (Postfix) with ESMTP id 72AF6248A6
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 May 2009 08:36:05 +0200 (CEST)
-Received: from [192.168.1.4]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp4.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0KJB002BUBO25730@smtp4.clear.net.nz> for
-	alsa-devel@alsa-project.org; Fri, 08 May 2009 18:36:03 +1200 (NZST)
-In-reply-to: <20090507100915.GB27897@sirena.org.uk>
+	Fri,  8 May 2009 08:39:13 +0200 (CEST)
+Received: by ey-out-1920.google.com with SMTP id 26so353874eyw.56
+	for <alsa-devel@alsa-project.org>; Thu, 07 May 2009 23:39:13 -0700 (PDT)
+In-Reply-To: <1241763077-6851-2-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,34 +24,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Lennart Poettering <mznyfn@0pointer.de>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: sakoman@gmail.com, anuj.aggarwal@ti.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, getarunks@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Thu, May 07, 2009 at 10:49:22AM +0200, Takashi Iwai wrote:
+On Fri,  8 May 2009 09:11:17 +0300
+Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
+
+> This patch fixes the 'tuck' phenomena observed on the headset
+> output after the streams are stopped and DAPM send the codec
+> to standby mode.
 > 
->> IMO, the best would be a total rewrite of the current mixer API, as I
->> mentioned some times.  Right now it's more complicated than needed,
->> but not powerful enough to handle exceptional cases.
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> ---
+>  sound/soc/codecs/twl4030.c |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> Indeed - for example, something that allowed audio routing to be
-> expressed in the mixing API would be a very big win for embedded systems
-> too.
-> 
->> I know designing a generic and fully-working API is pretty difficult,
->> though...
-> 
-> Certainly non-trivial :)
+> diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+> index fd392c6..06042a1 100644
+> --- a/sound/soc/codecs/twl4030.c
+> +++ b/sound/soc/codecs/twl4030.c
+> @@ -599,7 +599,7 @@ static int headsetl_event(struct
+> snd_soc_dapm_widget *w, /* Is this needed? Can we just use whatever
+> gain here? */ twl4030_write(w->codec, TWL4030_REG_HS_GAIN_SET,
+>  				(hs_gain & (~0x0f)) | 0x0a);
+> -		hs_pop |= TWL4030_RAMP_EN;
+> +		hs_pop &= ~TWL4030_VMID_EN;
+>  		twl4030_write(w->codec, TWL4030_REG_HS_POPN_SET,
+> hs_pop); 
+>  		/* Restore the original volume */
+> @@ -613,7 +613,7 @@ static int headsetl_event(struct
+> snd_soc_dapm_widget *w, twl4030_i2c_write_u8
+> (TWL4030_MODULE_AUDIO_VOICE, hs_gain & (~0x0f),
+>  					TWL4030_REG_HS_GAIN_SET);
+> -		hs_pop &= ~TWL4030_VMID_EN;
+> +		hs_pop |= TWL4030_RAMP_EN;
+>  		twl4030_write(w->codec, TWL4030_REG_HS_POPN_SET,
 
-I just dumped my notes here on other systems that have some concept of
-routing/connectivity/topology
+It really does fix the power-up & -down pops on Beagle. By listening
+carefully I can hear slight power-up and -down pops but only if really
+focusing on it.
 
-http://bigblen.wordpress.com/2009/05/08/linux-audio-control-topology/
+But now the audio output is distorted and volume level is a little bit
+lower. Without the patch it plays fine. Is it possible that now the
+output voltage is not correctly biased? Worth to check with a scope.
 
-Comments welcome
 
-Still very much a work in progress...
-
---
-Eliot
+-- 
+Jarkko
