@@ -1,19 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 1/1] ASoC: TWL4030: Headset VMID ramp fix
-Date: Fri, 8 May 2009 15:39:55 +0300
-Message-ID: <200905081539.55217.peter.ujfalusi@nokia.com>
-References: <1241763077-6851-1-git-send-email-peter.ujfalusi@nokia.com>
-	<200905081456.50445.peter.ujfalusi@nokia.com>
-	<20090508123207.GA12895@sirena.org.uk>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: ASoC updates for 2.6.31
+Date: Fri, 8 May 2009 13:57:11 +0100
+Message-ID: <20090508125711.GA16335@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id BAC5C1038EF
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3D3F81038F1
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 May 2009 14:39:58 +0200 (CEST)
-In-Reply-To: <20090508123207.GA12895@sirena.org.uk>
+	Fri,  8 May 2009 14:57:18 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,34 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@sirena.org.uk>
-Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "getarunks@gmail.com" <getarunks@gmail.com>, "anuj.aggarwal@ti.com" <anuj.aggarwal@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 08 May 2009 15:32:08 ext Mark Brown wrote:
-> On Fri, May 08, 2009 at 02:56:50PM +0300, Peter Ujfalusi wrote:
-> > Realistically we can not add 2581ms delay to the headsetl_event
-> > function... We could keep the VMID enabled all the time (which increases
-> > the idle power consumption by ~0.001A), but then the muting of the
-> > headset
->
-> Generally you want to leave VMID up all the time for exactly this reason
-> - ramping it cleanly with that generation of hardware just takes too
-> long to do it regularly during normal operation.
->
-> > (HS_POP_GAIN:HSL_GAIN, HSR_GAIN =3D 0) will give the 'tuck'...
->
-> Have you tried ramping the gain down gradually?  DAPM can do that for you
-> automatically if the volume control is attached to the PGA.
+The following changes since commit bbd993077d788589a86a718ba7a7895ba5e71a17:
+  Mark Brown (1):
+        ASoC: Remove redundant codec pointer from DAIs
 
-I'll try that on Monday, but is it a problem that the =
+are available in the git repository at:
 
-HSL_GAIN and HSR_GAIN looks like this:
-0 =3D=3D Off
-1 =3D=3D 6 dB
-2 =3D=3D 0 dB
-3 =3D=3D -6 dB
+  ssh://master.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.31
 
--- =
+(git:// doesn't seem to be updating so...).
 
-P=E9ter
+Daniel Mack (2):
+      ASoC: cs4270: introduce CS4270_I2C_INCR
+      ASoC: cs4270: add power management support
+
+Mark Brown (2):
+      ASoC: Add headers to match patterns in MAINTAINERS
+      ASoC: Fix file patterns for PXA sound drivers
+
+Peter Ujfalusi (1):
+      ASoC: TWL4030: Fix typo in twl4030_codec_mute function
+
+ MAINTAINERS                |    4 ++-
+ sound/soc/codecs/cs4270.c  |   61 ++++++++++++++++++++++++++++++++++++++++++-
+ sound/soc/codecs/twl4030.c |    2 +-
+ 3 files changed, 63 insertions(+), 4 deletions(-)
