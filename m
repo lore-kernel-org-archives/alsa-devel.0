@@ -1,20 +1,20 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH 1/1] ASoC: TWL4030: Headset VMID ramp fix
-Date: Fri, 8 May 2009 09:40:44 +0300
-Message-ID: <20090508094044.0c85e86a.jhnikula@gmail.com>
-References: <1241763077-6851-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1241763077-6851-2-git-send-email-peter.ujfalusi@nokia.com>
+From: =?UTF-8?Q?Vedran_Mileti=C4=87?= <rivanvx@gmail.com>
+Subject: Re: asus xonar DX
+Date: Fri, 8 May 2009 09:06:03 +0200
+Message-ID: <fd3eb9bf0905080006u79c0b06u5ee8076166052d59@mail.gmail.com>
+References: <4A036508.1080000@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.150])
-	by alsa0.perex.cz (Postfix) with ESMTP id 72AF6248A6
+Received: from mail-qy0-f103.google.com (mail-qy0-f103.google.com
+	[209.85.221.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8696E248B5
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 May 2009 08:39:13 +0200 (CEST)
-Received: by ey-out-1920.google.com with SMTP id 26so353874eyw.56
-	for <alsa-devel@alsa-project.org>; Thu, 07 May 2009 23:39:13 -0700 (PDT)
-In-Reply-To: <1241763077-6851-2-git-send-email-peter.ujfalusi@nokia.com>
+	Fri,  8 May 2009 09:06:04 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so2242230qyk.16
+	for <alsa-devel@alsa-project.org>; Fri, 08 May 2009 00:06:03 -0700 (PDT)
+In-Reply-To: <4A036508.1080000@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,51 +24,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: sakoman@gmail.com, anuj.aggarwal@ti.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, getarunks@gmail.com
+To: Dmitri Seletski <drjoms@gmail.com>
+Cc: alsa-user@lists.sourceforge.net, gary <lists@lazygranch.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri,  8 May 2009 09:11:17 +0300
-Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
-
-> This patch fixes the 'tuck' phenomena observed on the headset
-> output after the streams are stopped and DAPM send the codec
-> to standby mode.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> ---
->  sound/soc/codecs/twl4030.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-> index fd392c6..06042a1 100644
-> --- a/sound/soc/codecs/twl4030.c
-> +++ b/sound/soc/codecs/twl4030.c
-> @@ -599,7 +599,7 @@ static int headsetl_event(struct
-> snd_soc_dapm_widget *w, /* Is this needed? Can we just use whatever
-> gain here? */ twl4030_write(w->codec, TWL4030_REG_HS_GAIN_SET,
->  				(hs_gain & (~0x0f)) | 0x0a);
-> -		hs_pop |= TWL4030_RAMP_EN;
-> +		hs_pop &= ~TWL4030_VMID_EN;
->  		twl4030_write(w->codec, TWL4030_REG_HS_POPN_SET,
-> hs_pop); 
->  		/* Restore the original volume */
-> @@ -613,7 +613,7 @@ static int headsetl_event(struct
-> snd_soc_dapm_widget *w, twl4030_i2c_write_u8
-> (TWL4030_MODULE_AUDIO_VOICE, hs_gain & (~0x0f),
->  					TWL4030_REG_HS_GAIN_SET);
-> -		hs_pop &= ~TWL4030_VMID_EN;
-> +		hs_pop |= TWL4030_RAMP_EN;
->  		twl4030_write(w->codec, TWL4030_REG_HS_POPN_SET,
-
-It really does fix the power-up & -down pops on Beagle. By listening
-carefully I can hear slight power-up and -down pops but only if really
-focusing on it.
-
-But now the audio output is distorted and volume level is a little bit
-lower. Without the patch it plays fine. Is it possible that now the
-output voltage is not correctly biased? Worth to check with a scope.
-
-
--- 
-Jarkko
+T24gRnJpLCBNYXkgOCwgMjAwOSBhdCAxMjo0NyBBTSwgRG1pdHJpIFNlbGV0c2tpIDxkcmpvbXNA
+Z21haWwuY29tPiB3cm90ZToKPiBIZWxsbyBib3lzIGFuZCBnaXJscy4KPgo+IEkgaGF2ZSBzdWNj
+ZXNzZnVsbHkgaW5zdGFsbGVkIGFzdXMgeG9uYXIgRFggb250byBQQ0lFIHgxNiBzbG90IG9uIExp
+bnV4Cj4gMi42LjI4LWdlbnRvby1yNSBTTVAgb24gYW1kNjQgYXJjaGl0ZWN0dXJlLgo+Cj4gVmVy
+c2lvbiBvZiBhbHNhIHBhY2thZ2UgLSBhbHNhLWRyaXZlcjEuMC4yMCwgYWxzYSBmaXJtd2FyZSAx
+LjAuMTkuIEkKPiB1c2VkIGFsc2EgcGFja2FnZSBhbmQgbm90IGtlcm5lbCBtb2R1bGVzLgo+IFNl
+dmVyYWwgY2hhbm5lbHMgc2VlbSB0byB3b3JrIGZpbmUobXkgc3BlYWtlcnMgYXJlIGJyb2tlbiwg
+bm8gYmFjawo+IGNoYW5uZWxzIGF2YWlsYWJsZSwgwqBzdGFydGVkIGhvbHkgd2FyIHdpdGggY3Jl
+YXRpdmUgYWJvdXQgaXQsIGd1ZXNzIHdpdGgKPiBmaWFzY28gd2l0aCBmYXVsdHkgc3BlYWtlcnMg
+YW5kIHhmaSBkcml2ZXJzIGkgYW0gc3VwcG9ydGVyIG9mIGNyZWF0aXZlCj4gbm8gbW9yZSwgaSBh
+bSBub3QgZ29ubmEgYmFkIG1vdXRoIHRoZW0gZWl0aGVyIGp1c3QgeWV0KS4KPgo+IFNvIGZhciBz
+byBnb29kLiBNaWNyb3Bob25lIHdvcmtzLCDCoHN1cnJvdW5kIHNvdW5kIHdvcmtzIHRvbywgSSBh
+bSBwcmV0dHkKPiBoYXBweS4KPgo+IFRoYW5rcyBmb3IgYWxsIHBlb3BsZSB3aG8gYWR2aXNlZCBt
+ZSBzb21ldGhpbmcuIElmIGkgY29tZSBhY3Jvc3MgdGhpcwo+IHByb2JsZW0gLSB5b3Ugd2lsbCBo
+ZWFyIGZyb20gbWUgYWdhaW4gOykKPiBTcGVjaWFsbHkKPgo+Cj4gLS0tLS0tLS0tLSBGb3J3YXJk
+ZWQgbWVzc2FnZSAtLS0tLS0tLS0tCj4gRnJvbTrCoGxpc3RzQGxhenlncmFuY2guY29tCj4gVG86
+wqAiRG1pdHJpIFNlbGV0c2tpIiA8ZHJqb21zQGdtYWlsLmNvbT4KPiBEYXRlOsKgVHVlLCA1IE1h
+eSAyMDA5IDE0OjM2OjM3ICswMDAwCj4gU3ViamVjdDrCoFJlOiBbQWxzYS11c2VyXSBbYWxzYS1k
+ZXZlbF0gbG9va2luZyBmb3IgYWR2aWNlIG9uIGJ1eWluZyBhIGNhcmQKPiBQbGVhc2UgbGV0IG1l
+IGtub3cgb3IgZG8gYSBwb3N0IHJlZ2FyZGluZyBob3cgdGhpcyB3b3JrcyBvdXQuCj4gLS0tLS1P
+cmlnaW5hbCBNZXNzYWdlLS0tLS0KPiBGcm9tOiBEbWl0cmkgU2VsZXRza2kgPGRyam9tc0BnbWFp
+bC5jb20+Cj4KPiBEYXRlOiBUdWUsIDUgTWF5IDIwMDkgMTQ6Mzg6MzUKPiBUbzogQ2xlbWVucyBM
+YWRpc2NoPGNsZW1lbnNAbGFkaXNjaC5kZT4KPiBDYzogPGFsc2EtdXNlckBsaXN0cy5zb3VyY2Vm
+b3JnZS5uZXQ+OyA8YWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnPgo+IFN1YmplY3Q6IFJlOiBb
+QWxzYS11c2VyXSBbYWxzYS1kZXZlbF0gbG9va2luZyBmb3IgYWR2aWNlIG9uIGJ1eWluZyBhIGNh
+cmQKPgo+Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gVGhlIE5FVyBLT0RBSyBpNzAwIFNlcmll
+cyBTY2FubmVycyBkZWxpdmVyIHVuZGVyIEFOWSBjaXJjdW1zdGFuY2VzISBZb3VyCj4gcHJvZHVj
+dGlvbiBzY2FubmluZyBlbnZpcm9ubWVudCBtYXkgbm90IGJlIGEgcGVyZmVjdCB3b3JsZCAtIGJ1
+dCB0aGFua3MgdG8KPiBLb2RhaywgdGhlcmUncyBhIHBlcmZlY3Qgc2Nhbm5lciB0byBnZXQgdGhl
+IGpvYiBkb25lISBXaXRoIHRoZSBORVcgS09EQUsgaTcwMAo+IFNlcmllcyBTY2FubmVyIHlvdSds
+bCBnZXQgZnVsbCBzcGVlZCBhdCAzMDAgZHBpIGV2ZW4gd2l0aCBhbGwgaW1hZ2UKPiBwcm9jZXNz
+aW5nIGZlYXR1cmVzIGVuYWJsZWQuIGh0dHA6Ly9wLnNmLm5ldC9zZnUva29kYWstY29tCj4KPiBf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgo+CgpH
+bGFkIHlvdSBnb3QgaXQgdG8gd29yayA6KSBYb25hciBpcyBhIGdyZWF0IGNhcmQuCgpWZWRyYW4g
+TWlsZXRpxIcKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
