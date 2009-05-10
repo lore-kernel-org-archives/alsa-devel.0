@@ -1,20 +1,21 @@
 From: Dan McGee <dpmcgee@gmail.com>
-Subject: [PATCH 2/3] Allow frequencies down to 30 Hz
-Date: Sat,  9 May 2009 19:27:06 -0500
-Message-ID: <1241915227-12629-3-git-send-email-dpmcgee@gmail.com>
+Subject: [PATCH 3/3] Remove dead/commented out code
+Date: Sat,  9 May 2009 19:27:07 -0500
+Message-ID: <1241915227-12629-4-git-send-email-dpmcgee@gmail.com>
 References: <1241915227-12629-1-git-send-email-dpmcgee@gmail.com>
 	<1241915227-12629-2-git-send-email-dpmcgee@gmail.com>
+	<1241915227-12629-3-git-send-email-dpmcgee@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id 83C0B1037ED
+	by alsa0.perex.cz (Postfix) with ESMTP id 520FD1037F7
 	for <alsa-devel@alsa-project.org>;
-	Sun, 10 May 2009 02:27:16 +0200 (CEST)
+	Sun, 10 May 2009 02:27:18 +0200 (CEST)
 Received: by yx-out-1718.google.com with SMTP id 6so1657639yxn.2
-	for <alsa-devel@alsa-project.org>; Sat, 09 May 2009 17:27:15 -0700 (PDT)
-In-Reply-To: <1241915227-12629-2-git-send-email-dpmcgee@gmail.com>
+	for <alsa-devel@alsa-project.org>; Sat, 09 May 2009 17:27:18 -0700 (PDT)
+In-Reply-To: <1241915227-12629-3-git-send-email-dpmcgee@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,30 +31,42 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Dan McGee <dpmcgee@gmail.com>
 ---
-
-This patch is partially an RFC- it seems odd that we limit the frequency
-at all. I proposed lowering it to 30 here only because that is what my
-subwoofer can handle, but it may be better to just accept anything above
-zero, or choose something like 20.
-
--Dan
-
-
- speaker-test/speaker-test.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ speaker-test/speaker-test.c |   15 ---------------
+ 1 files changed, 0 insertions(+), 15 deletions(-)
 
 diff --git a/speaker-test/speaker-test.c b/speaker-test/speaker-test.c
-index 5e00ea4..38e5462 100644
+index 38e5462..d983a4f 100644
 --- a/speaker-test/speaker-test.c
 +++ b/speaker-test/speaker-test.c
-@@ -861,7 +861,7 @@ int main(int argc, char *argv[]) {
-       break;
-     case 'f':
-       freq = atof(optarg);
--      freq = freq < 50.0 ? 50.0 : freq;
-+      freq = freq < 30.0 ? 30.0 : freq;
-       freq = freq > 5000.0 ? 5000.0 : freq;
-       break;
-     case 'b':
+@@ -142,17 +142,6 @@ static void generate_sine(uint8_t *frames, int channel, int count, double *_phas
+   float   *samp_f = (float*) frames;
+ 
+   while (count-- > 0) {
+-    //res = sin((phase * 2 * M_PI) / max_phase - M_PI) * 32767;
+-    //res = sin((phase * 2 * M_PI) / max_phase - M_PI) * 32767;
+-    //res = (sin((phase * 2 * M_PI) / max_phase - M_PI)) * 0x03fffffff; /* Don't use MAX volume */
+-    //if (res > 0) res = 10000;
+-    //if (res < 0) res = -10000;
+-
+-    /* printf("%e\n",res); */
+-    //ires = res;
+-    //ires = ((16 - (count & 0xf)) <<24);
+-    //ires = 0;
+-
+     for(chn=0;chn<channels;chn++) {
+       switch (format) {
+       case SND_PCM_FORMAT_S8:
+@@ -195,11 +184,7 @@ static void generate_sine(uint8_t *frames, int channel, int count, double *_phas
+           res = (sin((phase * 2 * M_PI) / max_phase - M_PI)) * 0.75 ; /* Don't use MAX volume */
+           fres = res;
+ 	  *samp_f++ = fres;
+-	  //*samp32++ = 0xF2345678;
+-	//printf("res=%lf, ires=%d 0x%x, samp32=0x%x\n",res,ires, ires, samp32[-1]);
+         } else {
+-	  //*samp32++ = ires+0x10000;
+-	  //*samp32++ = ires;
+ 	  *samp_f++ = 0.0;
+         }
+         break;
 -- 
 1.6.2.4
