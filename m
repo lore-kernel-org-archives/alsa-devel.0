@@ -1,17 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: How to test new SDPIF implementation?
-Date: Sun, 10 May 2009 21:25:58 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.0905102122360.25064@eeebox2.perex-int.cz>
-References: <9e4733910905101213y6c8909b4l16542f9e59c4db6f@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 1/1] ASoC: TWL4030: Headset VMID ramp fix
+Date: Mon, 11 May 2009 09:22:41 +0300
+Message-ID: <200905110922.41837.peter.ujfalusi@nokia.com>
+References: <1241763077-6851-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20090508165501.954a61e7.jhnikula@gmail.com>
+	<20090508172322.53be8d2c.jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 04588243F1
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5AC0124670
 	for <alsa-devel@alsa-project.org>;
-	Sun, 10 May 2009 21:25:59 +0200 (CEST)
-In-Reply-To: <9e4733910905101213y6c8909b4l16542f9e59c4db6f@mail.gmail.com>
+	Mon, 11 May 2009 08:22:50 +0200 (CEST)
+In-Reply-To: <20090508172322.53be8d2c.jhnikula@gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,29 +24,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "getarunks@gmail.com" <getarunks@gmail.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "anuj.aggarwal@ti.com" <anuj.aggarwal@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 10 May 2009, Jon Smirl wrote:
-
-> I would like to test my SPDIF driver implementation. How can I used
-> command line tools to play sample 5.1 music over SPDIF?
+On Friday 08 May 2009 17:23:22 ext Jarkko Nikula wrote:
+> On Fri, 8 May 2009 16:55:01 +0300
 >
-> I have a file 5.1 AC3 encoded file -- w.ac3
+> Jarkko Nikula <jhnikula@gmail.com> wrote:
+> > Would it be possible that pop is not caused by the HS output but
+> > inside the chip, like from DAC?
 >
-> This doesn't work:
+> Seems to be not the case. Pops are there even if I put msleep(250)
+> before and after playing with the HS.
 >
-> iecset -D hw:0 audio off
-> aplay -c 2 -r 48000 -f S16_BE -D hw:0,1 w.ac3
+> A digital scope would definitely help here to see are there ramp and is
+> the coupling configuration correct.
 
-Use 'ac3dec -C <ac3file>' from alsa-tools to play .ac3 files. The spdif 
-output of ac3 format requires some padding. You cannot send contents of 
-.ac3 file directly to PCM device.
+OK I got the scope hooked up.
+Startup sequence on HS looks fine:
+TWL4030_VMID_EN
+TWL4030_RAMP_EN
+HS gain restore.
 
- 					Jaroslav
+On the shutdown sequence part I have the following:
+~TWL4030_RAMP_EN
+msleep(30)
+~TWL4030_VMID_EN
+HS gain mute
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+When the RAMP_DELAY =3D 0 (27/20/14 ms) the voltage on the HSOL line gradua=
+lly =
+
+ramps down.
+If I set the RAMP_DELAY =3D 1 (55/40/27 ms) the voltage on HSOL line starts=
+ to =
+
+gradually ramp down, but close to the end there is a clear cut (voltage jum=
+ps =
+
+to 0, after around 30ms from the start of the ramp down). If I further =
+
+increase the RAMP_DELAY, the cut happens at the same time, but it falls fro=
+m =
+
+even higher voltage to 0.
+
+I think the solution for now is to fix the RAMP_DELAY to 0 (27/20/14 ms), a=
+nd =
+
+add the delay for the shutdown case.
+
+Also I have tried gradually decrease the volume on the HS output. It does n=
+ot =
+
+seams to be working on the twl4030 codec: when the HSL_GAIN, HSR_GAIN is se=
+t =
+
+to 0 it effectively cuts the output (HSOL line drops to zero -> 'tuck' can =
+be =
+
+heard)
+
+Mark: what do you think, is it acceptable to add a maximum of 27ms delay to =
+
+the hsol_event:SND_SOC_DAPM_POST_PMD event?
+
+-- =
+
+P=E9ter
