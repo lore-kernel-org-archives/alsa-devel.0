@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] pxa2xx-ac97: fix reset gpio mode setting
-Date: Mon, 11 May 2009 19:04:30 +0100
-Message-ID: <20090511180430.GB26817@rakim.wolfsonmicro.main>
-References: <1242036698-29136-1-git-send-email-mike@compulab.co.il>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: em-x270: make the driver
+	support	also eXeda and CM-X300 machines
+Date: Mon, 11 May 2009 19:06:59 +0100
+Message-ID: <20090511180659.GD20283@sirena.org.uk>
+References: <1242043529-9501-1-git-send-email-mike@compulab.co.il>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7CE0324347
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 42CAD24344
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 May 2009 20:04:31 +0200 (CEST)
+	Mon, 11 May 2009 20:07:00 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1242036698-29136-1-git-send-email-mike@compulab.co.il>
+In-Reply-To: <1242043529-9501-1-git-send-email-mike@compulab.co.il>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,10 +24,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mike Rapoport <mike@compulab.co.il>
-Cc: alsa-devel@alsa-project.org, eric.miao@marvell.com, linux-arm-kernel@lists.arm.linux.org.uk
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 11, 2009 at 01:11:38PM +0300, Mike Rapoport wrote:
+On Mon, May 11, 2009 at 03:05:29PM +0300, Mike Rapoport wrote:
 > Signed-off-by: Mike Rapoport <mike@compulab.co.il>
 
-Applied, thanks.  Please CC me on things...
+Applied, thanks.
