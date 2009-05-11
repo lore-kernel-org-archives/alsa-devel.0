@@ -1,17 +1,17 @@
-From: Chris Pockele <chris.pockele.f1@gmail.com>
-Subject: patch to support Samsung NC10 mini notebook
-Date: Sun, 10 May 2009 21:21:33 +0200
-Message-ID: <2b491faa0905101221p6ba903d9kc5be3cc4869f4926@mail.gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: speaker-test cleanups and fixes
+Date: Mon, 11 May 2009 09:10:20 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.0905110909390.25064@eeebox2.perex-int.cz>
+References: <1241915227-12629-1-git-send-email-dpmcgee@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=0016e6dd8e770301f7046993c522
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
-	[209.85.219.223])
-	by alsa0.perex.cz (Postfix) with ESMTP id 59017243EB
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9545D2469B
 	for <alsa-devel@alsa-project.org>;
-	Sun, 10 May 2009 21:21:34 +0200 (CEST)
-Received: by ewy23 with SMTP id 23so3331249ewy.32
-	for <alsa-devel@alsa-project.org>; Sun, 10 May 2009 12:21:33 -0700 (PDT)
+	Mon, 11 May 2009 09:10:20 +0200 (CEST)
+In-Reply-To: <1241915227-12629-1-git-send-email-dpmcgee@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,129 +21,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Dan McGee <dpmcgee@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---0016e6dd8e770301f7046993c522
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+On Sat, 9 May 2009, Dan McGee wrote:
 
-Hello,
+> This is a series of 3 (mostly unrelated) patches to clean up and fix up a
+> few shortcomings I found in the speaker-test program. Please let me know
+> of any concerns or comments on the patches.
 
-The attached file is a patch to support the sound hardware in the
-Samsung NC10 mini notebook.
-The Samsung NC10 is and Intel Atom-based notebook with Realtek ALC272
-HDA codecs.
-Sound is supported partly in Linux depending on ALSA version, but
-there were always some issues (wrong mixer behaviour, PC beep always
-muted, ...). This patch tries to solve most of these issues.
-I updated the patch so it would work using the alsa-driver-20090509
-snapshot from ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/
-(originally developed from alsa-driver-20090416 snapshot).
+Hi,
 
-Fixes:
- - mute internal speaker / microphone when plugging in external
-headphone / microphone
- - stereo capture from external microphone
- - separate volume controls for headphone and internal speakers +
-"Master" for both
- - "PC Beep" mixer control
- - "Mic boost" and "External mic boost" controls
- - ...
+ 	I applied all 5 patches to our git repo. Thanks for your code.
 
-A few issues remaining:
- - Recording PCM output does not work yet. It works on the version of
-Windows that comes with the NC10.
- - When choosing recording source "Internal Mic" while an external
-microphone is plugged in, the internal microphone will be used instead
-of the external one, as it should. However, when plugging in the
-external microphone after choosing the recording source setting, it
-WILL override the internal microphone.
+ 						Jaroslav
 
-When replying, please note I am not on list.
-
-Regards,
-Chris
-http://users.skynet.be/chrisp/linux/
-
---0016e6dd8e770301f7046993c522
-Content-Type: text/x-patch; charset=US-ASCII; name="alsa20090509-add-nc10-support.patch"
-Content-Disposition: attachment;
-	filename="alsa20090509-add-nc10-support.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fuk4emt00
-
-ZGlmZiAtcnUgYWxzYS1kcml2ZXIvYWxzYS1rZXJuZWwvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMg
-YWxzYS1kcml2ZXItMjAwOTA1MDktTU9EL2Fsc2Eta2VybmVsL3BjaS9oZGEvcGF0Y2hfcmVhbHRl
-ay5jCi0tLSBhbHNhLWRyaXZlci9hbHNhLWtlcm5lbC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwky
-MDA5LTA1LTA5IDAwOjA1OjAyLjAwMDAwMDAwMCArMDIwMAorKysgYWxzYS1kcml2ZXItMjAwOTA1
-MDktTU9EL2Fsc2Eta2VybmVsL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCTIwMDktMDUtMTAgMTM6
-MDc6MjIuMDAwMDAwMDAwICswMjAwCkBAIC0xOTAsNiArMTkwLDcgQEAKIAlBTEM2NjNfQVNVU19N
-T0RFNiwKIAlBTEMyNzJfREVMTCwKIAlBTEMyNzJfREVMTF9aTTEsCisJQUxDMjcyX1NBTVNVTkdf
-TkMxMCwJLyoyMDA5MDUwOSBTYW1zdW5nIE5DMTAgc3VwcG9ydCAtIGNocmlzLnBvY2tlbGUuZjFA
-Z21haWwuY29tKi8KIAlBTEM2NjJfQVVUTywKIAlBTEM2NjJfTU9ERUxfTEFTVCwKIH07CkBAIC0x
-NTEyMCw2ICsxNTEyMSwzOCBAQAogCX0sCiB9OwogCisjaWZuZGVmIENPTkZJR19TTkRfREVCVUcK
-K3N0YXRpYyBzdHJ1Y3QgaGRhX2lucHV0X211eCBhbGMyNzJfbmMxMF9jYXB0dXJlX3NvdXJjZSA9
-IHsKKwkubnVtX2l0ZW1zID0gMiwKKwkuaXRlbXMgPSB7CisJCXsgIkF1dG9zZWxlY3QgTWljIiwg
-MHgwIH0sCisJCXsgIkludGVybmFsIE1pYyIsIDB4MSB9LAorCX0sCit9OworI2Vsc2UKK3N0YXRp
-YyBzdHJ1Y3QgaGRhX2lucHV0X211eCBhbGMyNzJfbmMxMF9jYXB0dXJlX3NvdXJjZSA9IHsKKwku
-bnVtX2l0ZW1zID0gMTYsCisJLml0ZW1zID0geworCQl7ICJBdXRvc2VsZWN0IE1pYyIsIDB4MCB9
-LAorCQl7ICJJbnRlcm5hbCBNaWMiLCAweDEgfSwKKwkJeyAiSW4tMHgwMiIsIDB4MiB9LAorCQl7
-ICJJbi0weDAzIiwgMHgzIH0sCisJCXsgIkluLTB4MDQiLCAweDQgfSwKKwkJeyAiSW4tMHgwNSIs
-IDB4NSB9LAorCQl7ICJJbi0weDA2IiwgMHg2IH0sCisJCXsgIkluLTB4MDciLCAweDcgfSwKKwkJ
-eyAiSW4tMHgwOCIsIDB4OCB9LAorCQl7ICJJbi0weDA5IiwgMHg5IH0sCisJCXsgIkluLTB4MGEi
-LCAweDBhIH0sCisJCXsgIkluLTB4MGIiLCAweDBiIH0sCisJCXsgIkluLTB4MGMiLCAweDBjIH0s
-CisJCXsgIkluLTB4MGQiLCAweDBkIH0sCisJCXsgIkluLTB4MGUiLCAweDBlIH0sCisJCXsgIklu
-LTB4MGYiLCAweDBmIH0sCisJfSwKK307CisjZW5kaWYKKwogLyoKICAqIDJjaCBtb2RlCiAgKi8K
-QEAgLTE2MTUxLDYgKzE2MTg0LDIzIEBACiAJeyB9IC8qIGVuZCAqLwogfTsKIAorc3RhdGljIHN0
-cnVjdCBzbmRfa2NvbnRyb2xfbmV3IGFsYzI3Ml9uYzEwX21peGVyW10gPSB7CisJLyogTWFzdGVy
-IFBsYXliYWNrIGF1dG9tYXRpY2FsbHkgY3JlYXRlZCBmcm9tIFNwZWFrZXIgYW5kIEhlYWRwaG9u
-ZSAqLworCUhEQV9DT0RFQ19WT0xVTUUoIlNwZWFrZXIgUGxheWJhY2sgVm9sdW1lIiwgMHgwMiwg
-MHgwLCBIREFfT1VUUFVUKSwKKwlIREFfQ09ERUNfTVVURSgiU3BlYWtlciBQbGF5YmFjayBTd2l0
-Y2giLCAweDE0LCAweDAsIEhEQV9PVVRQVVQpLAorCUhEQV9DT0RFQ19WT0xVTUUoIkhlYWRwaG9u
-ZSBQbGF5YmFjayBWb2x1bWUiLCAweDAzLCAweDAsIEhEQV9PVVRQVVQpLAorCUhEQV9DT0RFQ19N
-VVRFKCJIZWFkcGhvbmUgUGxheWJhY2sgU3dpdGNoIiwgMHgyMSwgMHgwLCBIREFfT1VUUFVUKSwK
-KworCUhEQV9DT0RFQ19WT0xVTUUoIkV4dCBNaWMgUGxheWJhY2sgVm9sdW1lIiwgMHgwYiwgMHgw
-LCBIREFfSU5QVVQpLAorCUhEQV9DT0RFQ19NVVRFKCJFeHQgTWljIFBsYXliYWNrIFN3aXRjaCIs
-IDB4MGIsIDB4MCwgSERBX0lOUFVUKSwKKwlIREFfQ09ERUNfVk9MVU1FKCJFeHQgTWljIEJvb3N0
-IFBsYXliYWNrIFZvbHVtZSIsIDB4MTgsIDAsIEhEQV9JTlBVVCksCisKKwlIREFfQ09ERUNfVk9M
-VU1FKCJJbnQgTWljIFBsYXliYWNrIFZvbHVtZSIsIDB4MGIsIDB4MSwgSERBX0lOUFVUKSwKKwlI
-REFfQ09ERUNfTVVURSgiSW50IE1pYyBQbGF5YmFjayBTd2l0Y2giLCAweDBiLCAweDEsIEhEQV9J
-TlBVVCksCisJSERBX0NPREVDX1ZPTFVNRSgiSW50IE1pYyBCb29zdCBQbGF5YmFjayBWb2x1bWUi
-LCAweDE5LCAwLCBIREFfSU5QVVQpLAorCXsgfSAvKiBlbmQgKi8KK307CisKICNpZmRlZiBDT05G
-SUdfU05EX0hEQV9QT1dFUl9TQVZFCiAjZGVmaW5lIGFsYzY2Ml9sb29wYmFja3MJYWxjODgwX2xv
-b3BiYWNrcwogI2VuZGlmCkBAIC0xNjE4NCw2ICsxNjIzNCw5IEBACiAJW0FMQzY2M19BU1VTX01P
-REU0XSA9ICJhc3VzLW1vZGU0IiwKIAlbQUxDNjYzX0FTVVNfTU9ERTVdID0gImFzdXMtbW9kZTUi
-LAogCVtBTEM2NjNfQVNVU19NT0RFNl0gPSAiYXN1cy1tb2RlNiIsCisJW0FMQzI3Ml9ERUxMXSA9
-ICJkZWxsMjcyIiwKKwlbQUxDMjcyX0RFTExfWk0xXSA9ICJkZWxsLXptMSIsCisJW0FMQzI3Ml9T
-QU1TVU5HX05DMTBdID0gInNhbXN1bmctbmMxMCIsCiAJW0FMQzY2Ml9BVVRPXQkJPSAiYXV0byIs
-CiB9OwogCkBAIC0xNjI0MSw2ICsxNjI5NCw3IEBACiAJU05EX1BDSV9RVUlSSygweDEwNWIsIDB4
-MGNkNiwgIkZveGNvbm4iLCBBTEM2NjJfRUNTKSwKIAlTTkRfUENJX1FVSVJLKDB4MTA1YiwgMHgw
-ZDQ3LCAiRm94Y29ubiA0NUNNWC80NUdNWC80NUNNWC1LIiwKIAkJICAgICAgQUxDNjYyXzNTVF82
-Y2hfRElHKSwKKwlTTkRfUENJX1FVSVJLKDB4MTQ0ZCwgMHhjYTAwLCAiU2Ftc3VuZyBOQzEwIiwg
-QUxDMjcyX1NBTVNVTkdfTkMxMCksCiAJU05EX1BDSV9RVUlSSygweDE0NTgsIDB4YTAwMiwgIkdp
-Z2FieXRlIDk0NUdDTS1TMkwiLAogCQkgICAgICBBTEM2NjJfM1NUXzZjaF9ESUcpLAogCVNORF9Q
-Q0lfUVVJUksoMHgxNTY1LCAweDgyMGYsICJCaW9zdGFyIFRBNzgwRyBNMisiLCBBTEM2NjJfM1NU
-XzZjaF9ESUcpLApAQCAtMTY1MTIsNiArMTY1NjYsMTggQEAKIAkJLnVuc29sX2V2ZW50ID0gYWxj
-NjYzX201MXZhX3Vuc29sX2V2ZW50LAogCQkuaW5pdF9ob29rID0gYWxjNjYzX201MXZhX2luaXRo
-b29rLAogCX0sCisJW0FMQzI3Ml9TQU1TVU5HX05DMTBdID0geworCQkubWl4ZXJzID0geyBhbGMy
-NzJfbmMxMF9taXhlciB9LAorCQkuaW5pdF92ZXJicyA9IHsgYWxjNjYyX2luaXRfdmVyYnMsCisJ
-CQkJYWxjNjYzXzIxamRfYW1pY19pbml0X3ZlcmJzIH0sCisJCS5udW1fZGFjcyA9IEFSUkFZX1NJ
-WkUoYWxjMjcyX2RhY19uaWRzKSwKKwkJLmRhY19uaWRzID0gYWxjMjcyX2RhY19uaWRzLAorCQku
-bnVtX2NoYW5uZWxfbW9kZSA9IEFSUkFZX1NJWkUoYWxjNjYyXzNTVF8yY2hfbW9kZXMpLAorCQku
-Y2hhbm5lbF9tb2RlID0gYWxjNjYyXzNTVF8yY2hfbW9kZXMsCisJCS5pbnB1dF9tdXggPSAmYWxj
-MjcyX25jMTBfY2FwdHVyZV9zb3VyY2UsCisJCS51bnNvbF9ldmVudCA9IGFsYzY2M19tb2RlNF91
-bnNvbF9ldmVudCwKKwkJLmluaXRfaG9vayA9IGFsYzY2M19tb2RlNF9pbml0aG9vaywKKwl9LAog
-fTsKCg==
---0016e6dd8e770301f7046993c522
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---0016e6dd8e770301f7046993c522--
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
