@@ -1,17 +1,23 @@
 From: Karl Beldan <karl.beldan@gmail.com>
-Subject: [RESEND][PATCH 1/4] pxa2xx-i2s: Proper initialization
-Date: Mon, 11 May 2009 23:49:41 +0200
-Message-ID: <4A089D75.3070406@gmail.com>
+Subject: Re: [PATCH 2/4] pxa2xx-i2s: Handle SACR1_DRPL and
+ SACR1_DREC separately
+Date: Tue, 12 May 2009 00:00:33 +0200
+Message-ID: <4A08A001.4050003@gmail.com>
+References: <4A03748B.1010302@gmail.com> <20090508104229.GD5654@sirena.org.uk>
+	<20090511190504.GF20283@sirena.org.uk> <4A087FCF.2080304@gmail.com>
+	<20090511210729.GA4404@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id B443224477
+Received: from mail-fx0-f170.google.com (mail-fx0-f170.google.com
+	[209.85.220.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3845D244A6
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 May 2009 23:49:51 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id 16so954368fgg.21
-	for <alsa-devel@alsa-project.org>; Mon, 11 May 2009 14:49:51 -0700 (PDT)
+	Tue, 12 May 2009 00:00:36 +0200 (CEST)
+Received: by fxm18 with SMTP id 18so3337617fxm.32
+	for <alsa-devel@alsa-project.org>; Mon, 11 May 2009 15:00:36 -0700 (PDT)
+In-Reply-To: <20090511210729.GA4404@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,44 +27,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Eric Miao <eric.miao@marvell.com>, alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel email list <linux-arm-kernel@lists.arm.linux.org.uk>
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: Eric Miao <eric.miao@marvell.com>, alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Matthieu Dumont <matthieu.dumont@mobile-devices.fr>
 List-Id: alsa-devel@alsa-project.org
 
-Reset FIFO logic and registers, and make sure REC and RPL functions along
-with FIFO service are disabled at probe.
+Mark Brown wrote:
+> On Mon, May 11, 2009 at 09:43:11PM +0200, Karl Beldan wrote:
+> 
+>> To be sure:
+>> With current tree you do not have this problem.
+>> You applied 1/4 and 2/4 and you have this problem.
+>> Right ?
+> 
+> Actually just patch 2; patches 1 needs reworking.
 
-Signed-off-by: Karl Beldan <karl.beldan@mobile-devices.fr>
----
- sound/soc/pxa/pxa2xx-i2s.c |   13 +++++++++++++
- 1 files changed, 13 insertions(+), 0 deletions(-)
+Then it is perfectly normal since reset enables both REC and RPL, 2/4 needs 1/4.
+The current tree disables the clocks anytime one function is disabled.
 
-diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
-index 2f4b6e4..450fca6 100644
---- a/sound/soc/pxa/pxa2xx-i2s.c
-+++ b/sound/soc/pxa/pxa2xx-i2s.c
-@@ -346,6 +346,19 @@ static int pxa2xx_i2s_probe(struct platform_device *dev)
- 	if (ret != 0)
- 		clk_put(clk_i2s);
- 
-+	/*
-+	 * PXA Developer's Manual:
-+	 * If SACR0[ENB] is toggled in the middle of a normal operation,
-+	 * the SACR0[RST] bit must also be set and cleared to reset all
-+	 * I2S controller registers.
-+	 */
-+	SACR0 = SACR0_RST;
-+	SACR0 = 0;
-+	/* Make sure RPL and REC are disabled */
-+	SACR1 = SACR1_DRPL | SACR1_DREC;
-+	/* Along with FIFO servicing */
-+	SAIMR &= ~(SAIMR_RFS | SAIMR_TFS);
-+
- 	return ret;
- }
- 
--- 
-1.6.3.rc1.34.g0be9b
+I resent 1/4 and will make it 1/5 with the whole serie once everything is Clear.
+
 
 -- 
-Karl Beldan
+Karl
