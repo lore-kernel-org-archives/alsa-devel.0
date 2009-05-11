@@ -1,114 +1,39 @@
-From: Jon Smirl <jonsmirl@gmail.com>
-Subject: Re: appl_ptr and DMA overrun at end of stream
-Date: Mon, 11 May 2009 09:03:14 -0400
-Message-ID: <9e4733910905110603i3d354ce9lfc74bcbeca6c6bed@mail.gmail.com>
-References: <9e4733910905070923i16683486n678653ba56c28b74@mail.gmail.com>
-	<s5hfxfcaru3.wl%tiwai@suse.de>
+From: "Tomas 'Sleep_Walker' Cech" <sleep_walker@suse.cz>
+Subject: Re: [alsa-devel] [PATCH] pxa2xx-ac97: fix reset gpio mode setting
+Date: Mon, 11 May 2009 15:15:13 +0200
+Message-ID: <200905111515.14217.sleep_walker@suse.cz>
+References: <1242036698-29136-1-git-send-email-mike@compulab.co.il>
+	<f17812d70905110351w6b5250fcqd19590afbc42011e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f103.google.com (mail-qy0-f103.google.com
-	[209.85.221.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 148072480A
-	for <alsa-devel@alsa-project.org>;
-	Mon, 11 May 2009 15:03:15 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so3927139qyk.16
-	for <alsa-devel@alsa-project.org>; Mon, 11 May 2009 06:03:14 -0700 (PDT)
-In-Reply-To: <s5hfxfcaru3.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@sirena.org.uk>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.arm.linux.org.uk>
+In-Reply-To: <f17812d70905110351w6b5250fcqd19590afbc42011e@mail.gmail.com>
+Content-Disposition: inline
+List-Unsubscribe: <http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=unsubscribe>
+List-Archive: <http://lists.arm.linux.org.uk/lurker/list/linux-arm-kernel.html>
+List-Post: <mailto:linux-arm-kernel@lists.arm.linux.org.uk>
+List-Help: <mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=help>
+List-Subscribe: <http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.arm.linux.org.uk
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.arm.linux.org.uk
+To: linux-arm-kernel@lists.arm.linux.org.uk
+Cc: Eric Miao <eric.y.miao@gmail.com>, Mike Rapoport <mike@compulab.co.il>, eric.miao@marvell.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 11, 2009 at 5:53 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Thu, 7 May 2009 12:23:51 -0400,
-> Jon Smirl wrote:
->>
->> I am having problem with DMA overrun at the end of the audio stream.
->> Is there an official way to know the address of the last valid audio
->> sample?
->>
->> mpc5200 ac97 is keeping a bunch of descriptors queued in a loop to
->> continuously play music. I believe this is the way ALSA wants it. Now
->> say the last period is
->> half full. ALSA fills the other half with silence. When that period
->> finishes playing it will generate an interrupt. ALSA comes back from
->> that interrupt with trigger(STOP).
->>
->> But, our CPU is slow compared to a 3Ghz desktop, there is considerable
->> latency from the period end interrupt to trigger(STOP) getting called.
->> =A0So the DMA hardware starts playing the next period before
->> trigger(STOP) can get the DMA stopped. =A0I turned off tried turning off
->> BestComm, flushing the FIFO, and turning off the audio clocks. =A0None
->> can be done fast enough. That next period contains stale data from
->> further back in the stream. When the front part of it plays it makes a
->> burst of noise.
->>
->> What I need is the address of the end of valid data in the buffer. I
->> need that address so that I can program the DMA automatically stop at
->> end of stream and not overrun. Search around in the guys of ALSA I
->> found appl_ptr. I can use appl_ptr to determine the location of end of
->> stream and prevent DMA overrun. When there is no valid data I don't
->> enqueue the
->> descriptor.
->
-> Right. =A0This is the value to check in your case.
-
-What do think about redesigning the ALSA DMA interface to support
-detection of over and under run? Leaving the DMA engine in a loop and
-not coordinating with ALSA as to where the valid data is does not seem
-to be a safe way of exchanging data. That interface may be a source of
-the problems pulseaudio is encountering.
-
-A simple solution would be for snd_pcm_period_elapsed() to return
-physical address of the last valid sample. That would let me avoid
-playing with  s->runtime->control->appl_ptr. You could provide the
-same data in the pointer() function.
-
-If I know where the end of valid data is, I can program the hardware
-to play silence instead of stale data. Don't other embedded systems
-suffer from this same problem? Seems to me like every system has this
-problem, but desktop machines are fast enough that you can't hear it.
-
->
->> =A0s->appl_ptr track the previous value of =A0s->runtime->control->appl_=
-ptr.
->> The difference between these two is the amount of valid data in the buff=
-er.
->> When this difference goes to zero, I stop queueing new buffers to ALSA.
->
-> Yes, that'll work, I guess.
->
->
->> That fixes the DMA overrun.
->>
->> static void psc_dma_bcom_enqueue_next_buffer(struct psc_dma_stream *s)
->> {
->> =A0 =A0 =A0 =A0struct bcom_bd *bd;
->>
->> =A0 =A0 =A0 =A0while (s->appl_ptr < s->runtime->control->appl_ptr) {
->
-> You'd need to think of boundary overlap, too.
-> It's a bit nasty because we wrap the value at runtime->boundary...
->
->
-> thanks,
->
-> Takashi
->
-
-
-
--- =
-
-Jon Smirl
-jonsmirl@gmail.com
+RG5lIHBvbmTEm2zDrSAxMSBLdsSbdGVuIDIwMDkgMTI6NTE6MTQgRXJpYyBNaWFvIG5hcHNhbChh
+KToKPiBPbiBNb24sIE1heSAxMSwgMjAwOSBhdCA2OjExIFBNLCBNaWtlIFJhcG9wb3J0IDxtaWtl
+QGNvbXB1bGFiLmNvLmlsPiB3cm90ZToKPiA+IFNpZ25lZC1vZmYtYnk6IE1pa2UgUmFwb3BvcnQg
+PG1pa2VAY29tcHVsYWIuY28uaWw+Cj4KPiBBY2tlZC1ieTogRXJpYyBNaWFvIDxlcmljLm1pYW9A
+bWFydmVsbC5jb20+Cj4KPiBKdXN0IGN1cmlvdXMsIHRoaXMgZGlkbid0IGNhdXNlIGFueSBpc3N1
+ZSBpbiB0aGUgcGFzdCA6KQo+Ckl0J3MgcHJvYmFibHkgYmVjYXVzZSBhbGwgbWFjaGluZXMgc2V0
+IEFGTiB3aXRoIHB4YTJ4eF9tZnBfY29uZmlnIGluIHN0YXJ0LXVwLiAKSSBoYXZlIHNlZW4gdGhp
+cyB3aGVuIEkgdHJpZWQgdG8gbG9jYXRlIFBhbG0gQUM5NyBwcm9ibGVtIGFmdGVyIHJlc3VtZS4u
+LgoKVG9tYXMgQ2VjaAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTGlzdCBhZG1pbjogaHR0cDovL2xpc3RzLmFybS5s
+aW51eC5vcmcudWsvbWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVsCkZBUTogICAgICAg
+IGh0dHA6Ly93d3cuYXJtLmxpbnV4Lm9yZy51ay9tYWlsaW5nbGlzdHMvZmFxLnBocApFdGlxdWV0
+dGU6ICBodHRwOi8vd3d3LmFybS5saW51eC5vcmcudWsvbWFpbGluZ2xpc3RzL2V0aXF1ZXR0ZS5w
+aHA=
