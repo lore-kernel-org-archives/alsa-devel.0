@@ -1,19 +1,27 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH] pxa2xx-ac97: fix reset gpio mode setting
-Date: Mon, 11 May 2009 19:30:14 +0200
-Message-ID: <87prefeee1.fsf@free.fr>
-References: <1242036698-29136-1-git-send-email-mike@compulab.co.il>
-	<f17812d70905110351w6b5250fcqd19590afbc42011e@mail.gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: appl_ptr and DMA overrun at end of stream
+Date: Mon, 11 May 2009 19:37:05 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.0905111915350.25064@eeebox2.perex-int.cz>
+References: <9e4733910905070923i16683486n678653ba56c28b74@mail.gmail.com>
+	<s5hfxfcaru3.wl%tiwai@suse.de>
+	<9e4733910905110603i3d354ce9lfc74bcbeca6c6bed@mail.gmail.com>
+	<alpine.LNX.2.00.0905111537090.25064@eeebox2.perex-int.cz>
+	<9e4733910905110811k643d899bjf7bd37ea029ac5cc@mail.gmail.com>
+	<s5hfxfbzlz6.wl%tiwai@suse.de>
+	<9e4733910905110850g2b1620a3q47ad2e5a9421a69c@mail.gmail.com>
+	<s5hd4afzl5r.wl%tiwai@suse.de>
+	<9e4733910905110928g618475bj2a4f47d62e4c5e14@mail.gmail.com>
+	<s5h8wl3zj2j.wl%tiwai@suse.de>
+	<9e4733910905111009w10017c21kdcf31e1d26ec231d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 64569248D0
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4B1B0248D2
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 May 2009 19:30:28 +0200 (CEST)
-In-Reply-To: <f17812d70905110351w6b5250fcqd19590afbc42011e@mail.gmail.com>
-	(Eric Miao's message of "Mon\, 11 May 2009 18\:51\:14 +0800")
+	Mon, 11 May 2009 19:37:06 +0200 (CEST)
+In-Reply-To: <9e4733910905111009w10017c21kdcf31e1d26ec231d@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,41 +31,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: alsa-devel@alsa-project.org, eric.miao@marvell.com, linux-arm-kernel@lists.arm.linux.org.uk, Mike Rapoport <mike@compulab.co.il>
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-RXJpYyBNaWFvIDxlcmljLnkubWlhb0BnbWFpbC5jb20+IHdyaXRlczoKCj4gT24gTW9uLCBNYXkg
-MTEsIDIwMDkgYXQgNjoxMSBQTSwgTWlrZSBSYXBvcG9ydCA8bWlrZUBjb21wdWxhYi5jby5pbD4g
-d3JvdGU6Cj4+IFNpZ25lZC1vZmYtYnk6IE1pa2UgUmFwb3BvcnQgPG1pa2VAY29tcHVsYWIuY28u
-aWw+Cj4KPiBBY2tlZC1ieTogRXJpYyBNaWFvIDxlcmljLm1pYW9AbWFydmVsbC5jb20+CkFyZ2gs
-IHRoYXQgd2FzIG15IHNjcmV3IHVwIC4uLiBMZXQncyBmb3J3YXJkIHRoYXQgdG8gTWFyaywgYW5k
-IHNlZSBpZiB0aGF0IGNhbgptYWtlIGl0IGludG8gdGhlIDIuNi4zMCBmaXhlcy4KCkFja2VkLWJ5
-OiBSb2JlcnQgSmFyem1payA8cm9iZXJ0LmphcnptaWtAZnJlZS5mcj4KCi0tClJvYmVydAoKPiBK
-dXN0IGN1cmlvdXMsIHRoaXMgZGlkbid0IGNhdXNlIGFueSBpc3N1ZSBpbiB0aGUgcGFzdCA6KQo+
-Cj4+IC0tLQo+PiDCoHNvdW5kL2FybS9weGEyeHgtYWM5Ny1saWIuYyB8IMKgIMKgMiArLQo+PiDC
-oDEgZmlsZXMgY2hhbmdlZCwgMSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQo+Pgo+PiBk
-aWZmIC0tZ2l0IGEvc291bmQvYXJtL3B4YTJ4eC1hYzk3LWxpYi5jIGIvc291bmQvYXJtL3B4YTJ4
-eC1hYzk3LWxpYi5jCj4+IGluZGV4IGEyYzEyZDEuLjZmZGNhOTcgMTAwNjQ0Cj4+IC0tLSBhL3Nv
-dW5kL2FybS9weGEyeHgtYWM5Ny1saWIuYwo+PiArKysgYi9zb3VuZC9hcm0vcHhhMnh4LWFjOTct
-bGliLmMKPj4gQEAgLTY1LDcgKzY1LDcgQEAgc3RhdGljIHZvaWQgc2V0X3Jlc2V0Z3Bpb19tb2Rl
-KGludCByZXNldGdwaW9fYWN0aW9uKQo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHN3aXRjaCAo
-cmVzZXRncGlvX2FjdGlvbikgewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGNhc2UgUkVTRVRH
-UElPX05PUk1BTF9BTFRGVU5DOgo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oGlmIChyZXNldF9ncGlvID09IDExMykKPj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCBtb2RlID0gMTEzIHwgR1BJT19PVVQgfCBHUElPX0RGTFRfTE9XOwo+
-PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIG1vZGUgPSAx
-MTMgfCBHUElPX0FMVF9GTl8yX09VVDsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqBpZiAocmVzZXRfZ3BpbyA9PSA5NSkKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqBtb2RlID0gOTUgfCBHUElPX0FMVF9GTl8xX09VVDsKPj4gwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBicmVhazsKPj4gLS0KPj4gMS41LjYuNAo+
-Pgo+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+PiBB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdAo+PiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPj4g
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwKPj4KPgo+Cj4KPiAtLSAKPiBDaGVlcnMKPiAtIGVyaWMKPiBfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4g
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Mon, 11 May 2009, Jon Smirl wrote:
+
+> Checking for over/under run in software is not reliable since the DMA
+> hardware runs asynchronously with the CPU. There will always be
+> variable latencies between when the CPU detects the condition and when
+> it can control the DMA hardware.  The only reliable way to do this is
+> to program the DMA hardware to do itself. AFAIK all DMA modern
+> hardware can be programed to do this if the right information is made
+> available. Programming the DMA hardware to do this is a 100% reliable
+> solution and not subject to random latency problems.
+
+I comment playback for simplicity.
+
+The key point is when you fill DMA engine. Nothing forces you to queue 
+whole ring buffer in the scatter-gather list. You may queue just one 
+period and then next one (including partial). The available samples can be 
+determined using snd_pcm_playback_hw_avail() function at any time. If you 
+have large FIFO and you receive interrupt before FIFO goes empty, you can 
+fill partial period. The elapsed notifier does not require any change.
+
+The underruns should be avoided as first step, because it's really 
+unwanted system behaviour. All methods to fix underruns fails in some 
+respects.
+
+Also note that we have also mode when appl_ptr is not updated at all (when 
+stop_threshold == boundary).
+
+ 						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
