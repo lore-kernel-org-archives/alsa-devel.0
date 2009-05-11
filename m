@@ -1,22 +1,23 @@
-From: Karl Beldan <karl.beldan@gmail.com>
-Subject: Re: [PATCH 2/4] pxa2xx-i2s: Handle SACR1_DRPL and
- SACR1_DREC separately
-Date: Mon, 11 May 2009 21:43:11 +0200
-Message-ID: <4A087FCF.2080304@gmail.com>
-References: <4A03748B.1010302@gmail.com> <20090508104229.GD5654@sirena.org.uk>
-	<20090511190504.GF20283@sirena.org.uk>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: Re: MacbookPro5,1 & hda-analyzer
+Date: Mon, 11 May 2009 22:53:34 +0300
+Message-ID: <4A08823E.6020504@pardus.org.tr>
+References: <4A086A58.3000107@pardus.org.tr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f170.google.com (mail-fx0-f170.google.com
-	[209.85.220.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id 74876243FE
+Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7C4A82440C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 May 2009 21:43:14 +0200 (CEST)
-Received: by fxm18 with SMTP id 18so3262618fxm.32
-	for <alsa-devel@alsa-project.org>; Mon, 11 May 2009 12:43:14 -0700 (PDT)
-In-Reply-To: <20090511190504.GF20283@sirena.org.uk>
+	Mon, 11 May 2009 21:53:35 +0200 (CEST)
+Received: from [192.168.1.2] (unknown [88.249.178.198])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested) (Authenticated sender: ozan)
+	by pardus.org.tr (Postfix) with ESMTP id DB5F366945E1
+	for <alsa-devel@alsa-project.org>;
+	Mon, 11 May 2009 22:53:26 +0300 (EEST)
+In-Reply-To: <4A086A58.3000107@pardus.org.tr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,30 +27,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: Eric Miao <eric.miao@marvell.com>, alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Matthieu Dumont <matthieu.dumont@mobile-devices.fr>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Fri, May 08, 2009 at 11:42:29AM +0100, Mark Brown wrote:
-> 
->> ...this really ought to be a separate patch.  I'll wait until Monday
->> when I'm back in the office before applying so I can test.
-> 
-> This patch is causing problems in my testing.  With the patch the clocks
-> are not stopped when closing the stream, causing the next playback to
-> fail.  However, the error handling from that causes the appropriate
-> cleanup and allows playback to proceed.
-> 
-
-To be sure:
-With current tree you do not have this problem.
-You applied 1/4 and 2/4 and you have this problem.
-Right ?
-
-> I've not had time to review properly what's going on here - I suspect
-> that the splits in the patch series need to be looked at but for now
-> I'll not apply this.
-
--- 
-Karl
+T3phbiDDh2HEn2xheWFuIHdyb3RlOgo+IEhpLAo+Cj4gSSBqdXN0IGJvdWdodCBhIE1hY2Jvb2tQ
+cm81LDEgYW5kIGhhdmluZyBkaWZmaWN1bHRpZXMgd2l0aCB0aGUgb25ib2FyZAo+IEhEQSBjaGlw
+c2V0Lgo+Cj4gICAKSnVzdCBzYXcgdGhlIDQtZGF5cy1hZ28gY29tbWl0IGFib3V0IHRoZSBuZXcg
+bW9kZWwgTUI1MSwgd2lsbCB0cnkgaXQgQVNBUC4KCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
+bGlzdGluZm8vYWxzYS1kZXZlbAo=
