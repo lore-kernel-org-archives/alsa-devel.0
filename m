@@ -1,19 +1,23 @@
-From: Roel Kluin <roel.kluin@gmail.com>
-Subject: [PATCH] soc: remove driver_data direct access of
-	struct device
-Date: Mon, 11 May 2009 21:57:08 +0200
-Message-ID: <4A088314.1000204@gmail.com>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: Re: MacbookPro5,1 & hda-analyzer
+Date: Mon, 11 May 2009 23:48:49 +0300
+Message-ID: <4A088F31.8060306@pardus.org.tr>
+References: <4A086A58.3000107@pardus.org.tr> <4A08823E.6020504@pardus.org.tr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f175.google.com (mail-ew0-f175.google.com
-	[209.85.219.175])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3626D2440C
+Received: from pardus.org.tr (comar.pardus.org.tr [193.140.100.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 872D124453
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 May 2009 21:57:09 +0200 (CEST)
-Received: by ewy23 with SMTP id 23so4064765ewy.32
-	for <alsa-devel@alsa-project.org>; Mon, 11 May 2009 12:57:08 -0700 (PDT)
+	Mon, 11 May 2009 22:48:51 +0200 (CEST)
+Received: from [192.168.1.2] (unknown [88.249.178.198])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested) (Authenticated sender: ozan)
+	by pardus.org.tr (Postfix) with ESMTP id 262B666950D9
+	for <alsa-devel@alsa-project.org>;
+	Mon, 11 May 2009 23:48:42 +0300 (EEST)
+In-Reply-To: <4A08823E.6020504@pardus.org.tr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,64 +27,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: lrg@slimlogic.co.uk
-Cc: alsa-devel@alsa-project.org, lkml <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-diff --git a/sound/soc/codecs/wm8400.c b/sound/soc/codecs/wm8400.c
-index 510efa6..e4547de 100644
---- a/sound/soc/codecs/wm8400.c
-+++ b/sound/soc/codecs/wm8400.c
-@@ -1473,8 +1473,8 @@ static int wm8400_codec_probe(struct platform_device *dev)
- 
- 	codec = &priv->codec;
- 	codec->private_data = priv;
--	codec->control_data = dev->dev.driver_data;
--	priv->wm8400 = dev->dev.driver_data;
-+	codec->control_data = dev_get_drvdata(&dev->dev);
-+	priv->wm8400 = dev_get_drvdata(&dev->dev);
- 
- 	ret = regulator_bulk_get(priv->wm8400->dev,
- 				 ARRAY_SIZE(power), &power[0]);
-diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index e043e3f..7a20587 100644
---- a/sound/soc/codecs/wm8731.c
-+++ b/sound/soc/codecs/wm8731.c
-@@ -666,14 +666,14 @@ static int __devinit wm8731_spi_probe(struct spi_device *spi)
- 	codec->hw_write = (hw_write_t)wm8731_spi_write;
- 	codec->dev = &spi->dev;
- 
--	spi->dev.driver_data = wm8731;
-+	dev_set_drvdata(&spi->dev, wm8731);
- 
- 	return wm8731_register(wm8731);
- }
- 
- static int __devexit wm8731_spi_remove(struct spi_device *spi)
- {
--	struct wm8731_priv *wm8731 = spi->dev.driver_data;
-+	struct wm8731_priv *wm8731 = dev_get_drvdata(&spi->dev);
- 
- 	wm8731_unregister(wm8731);
- 
-diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index a6e8f3f..d121e58 100644
---- a/sound/soc/codecs/wm8753.c
-+++ b/sound/soc/codecs/wm8753.c
-@@ -1822,14 +1822,14 @@ static int __devinit wm8753_spi_probe(struct spi_device *spi)
- 	codec->hw_write = (hw_write_t)wm8753_spi_write;
- 	codec->dev = &spi->dev;
- 
--	spi->dev.driver_data = wm8753;
-+	dev_set_drvdata(&spi->dev, wm8753);
- 
- 	return wm8753_register(wm8753);
- }
- 
- static int __devexit wm8753_spi_remove(struct spi_device *spi)
- {
--	struct wm8753_priv *wm8753 = spi->dev.driver_data;
-+	struct wm8753_priv *wm8753 = dev_get_drvdata(&spi->dev);
- 	wm8753_unregister(wm8753);
- 	return 0;
- }
+T3phbiDDh2HEn2xheWFuIHdyb3RlOgo+Cj4gSnVzdCBzYXcgdGhlIDQtZGF5cy1hZ28gY29tbWl0
+IGFib3V0IHRoZSBuZXcgbW9kZWwgTUI1MSwgd2lsbCB0cnkgaXQgQVNBUC4KPgo+ICAgCkkgdGhp
+bmsgdGhlIE1CNTEgbW9kZWwgZG9lc24ndCBzdXBwb3J0IE1hY2Jvb2tQcm81LDEgYmVjYXVzZSBu
+b3RoaW5nCmNoYW5nZWQgb24gbXkgc3lzdGVtLgpUaGUgU1NJRCBpbiB0aGUgY29tbWl0IGlzIGRp
+ZmZlcmVudCBmcm9tIG1pbmUsIGV0Yy4KCkknbGwgY29udGludWUgdG8gcGxheSB3aXRoIGhkYS1h
+bmFseXplciBhbmQgc2VuZCBhIGRldGFpbGVkIG1haWwgYWJvdXQKd2hpY2ggUElOIGFmZmVjdHMg
+dGhlIHNvdW5kIG91dHB1dC4KClRoYW5rcywKT3phbiBDYWdsYXlhbgoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
