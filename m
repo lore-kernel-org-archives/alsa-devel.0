@@ -1,28 +1,19 @@
-From: Jon Smirl <jonsmirl@gmail.com>
-Subject: Re: appl_ptr and DMA overrun at end of stream
-Date: Mon, 11 May 2009 13:09:43 -0400
-Message-ID: <9e4733910905111009w10017c21kdcf31e1d26ec231d@mail.gmail.com>
-References: <9e4733910905070923i16683486n678653ba56c28b74@mail.gmail.com>
-	<s5hfxfcaru3.wl%tiwai@suse.de>
-	<9e4733910905110603i3d354ce9lfc74bcbeca6c6bed@mail.gmail.com>
-	<alpine.LNX.2.00.0905111537090.25064@eeebox2.perex-int.cz>
-	<9e4733910905110811k643d899bjf7bd37ea029ac5cc@mail.gmail.com>
-	<s5hfxfbzlz6.wl%tiwai@suse.de>
-	<9e4733910905110850g2b1620a3q47ad2e5a9421a69c@mail.gmail.com>
-	<s5hd4afzl5r.wl%tiwai@suse.de>
-	<9e4733910905110928g618475bj2a4f47d62e4c5e14@mail.gmail.com>
-	<s5h8wl3zj2j.wl%tiwai@suse.de>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH] pxa2xx-ac97: fix reset gpio mode setting
+Date: Mon, 11 May 2009 19:30:14 +0200
+Message-ID: <87prefeee1.fsf@free.fr>
+References: <1242036698-29136-1-git-send-email-mike@compulab.co.il>
+	<f17812d70905110351w6b5250fcqd19590afbc42011e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.150])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4F048248BD
+Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 64569248D0
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 May 2009 19:09:44 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 4so1751022qwk.56
-	for <alsa-devel@alsa-project.org>; Mon, 11 May 2009 10:09:43 -0700 (PDT)
-In-Reply-To: <s5h8wl3zj2j.wl%tiwai@suse.de>
+	Mon, 11 May 2009 19:30:28 +0200 (CEST)
+In-Reply-To: <f17812d70905110351w6b5250fcqd19590afbc42011e@mail.gmail.com>
+	(Eric Miao's message of "Mon\, 11 May 2009 18\:51\:14 +0800")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,141 +23,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@sirena.org.uk>
+To: broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, eric.miao@marvell.com, linux-arm-kernel@lists.arm.linux.org.uk, Mike Rapoport <mike@compulab.co.il>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 11, 2009 at 12:43 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Mon, 11 May 2009 12:28:48 -0400,
-> Jon Smirl wrote:
->>
->> On Mon, May 11, 2009 at 11:58 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> > At Mon, 11 May 2009 11:50:22 -0400,
->> > Jon Smirl wrote:
->> >>
->> >> On Mon, May 11, 2009 at 11:40 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> >> > At Mon, 11 May 2009 11:11:55 -0400,
->> >> > Jon Smirl wrote:
->> >> >>
->> >> >> On Mon, May 11, 2009 at 9:45 AM, Jaroslav Kysela <perex@perex.cz> =
-wrote:
->> >> >> > On Mon, 11 May 2009, Jon Smirl wrote:
->> >> >> >
->> >> >> >>> Right. =A0This is the value to check in your case.
->> >> >> >>
->> >> >> >> What do think about redesigning the ALSA DMA interface to suppo=
-rt
->> >> >> >> detection of over and under run? Leaving the DMA engine in a lo=
-op and
->> >> >> >> not coordinating with ALSA as to where the valid data is does n=
-ot seem
->> >> >> >> to be a safe way of exchanging data. That interface may be a so=
-urce of
->> >> >> >> the problems pulseaudio is encountering.
->> >> >> >>
->> >> >> >> A simple solution would be for snd_pcm_period_elapsed() to retu=
-rn
->> >> >> >> physical address of the last valid sample. That would let me av=
-oid
->> >> >> >> playing with =A0s->runtime->control->appl_ptr. You could provid=
-e the
->> >> >> >> same data in the pointer() function.
->> >> >> >
->> >> >> > More simpler solution is to check the stream state in the low le=
-vel driver.
->> >> >> > If it's in DRAINING state, then end of stream is signaled from t=
-he
->> >> >> > application and driver might not queue next buffer. We may also =
-add another
->> >> >> > callback (or use ioctl callback) to pass this stream state chang=
-e to the
->> >> >> > lowlevel driver immediately, so the driver might react more quic=
-kly on this
->> >> >> > situation.
->> >> >> >
->> >> >>
->> >> >> Quickness is the wrong way to think about this problem. ALSA knows=
- exactly
->> >> >> when it has placed valid data into the buffer.
->> >> >
->> >> > Not really. =A0When the mmap mode is used, the update isn't always
->> >> > notified to the driver and the transfer can be completely
->> >> > asynchronous.
->> >>
->> >> This seems to me to be a broken design. ALSA is being put into the
->> >> position of guessing when the application has supplied new data.
->> >> Shouldn't the app be required to make a commit() call after filling in
->> >> the data? Without commit it is impossible to detect over/underrun.
->> >
->> > The commit updates the mmapped control data (so that it works even
->> > without the context switch) if the architecture supports. =A0In other
->> > cases, a commit issues an explicit sync ioctl.
->> >
->> > Actually it should be possible to disable the mmap-control mode
->> > explicitly, but right now it's not done from the driver side but only
->> > checks the architecture.
->>
->> Shared memory is another solution that doesn't involve context switches.
->
-> It's mmap when you do between kernel <-> user spaces :)
->
->> The app can update it's valid pointer in shared memory.
->> My IRQ will call snd_pcm_period_elapsed().
->> snd_pcm_period_elapsed() can find the updated valid pointer,
->> =A0 convert it to a physical address and leave it in a shared structure.
->> When snd_pcm_period_elapsed() returns, my IRQ can get to
->> =A0 the pointer and submit the necessary buffers.
->>
->> What's missing is an official way of accessing
->> s->runtime->control->appl_ptr from the low level driver.
->
-> The appl_ptr itself can be accessed at any time from the driver,
-> so there is no need for an "official" accessor to that.
->
->> =A0We're
->> implementing a ring buffer. In a ring buffer I have to know where both
->> pointers are in order to detect over/under run.
->
-> Well, when you call snd_pcm_period_elapsed(), the PCM core actually
-> checks the buffer XRUN there.
-
-Checking for over/under run in software is not reliable since the DMA
-hardware runs asynchronously with the CPU. There will always be
-variable latencies between when the CPU detects the condition and when
-it can control the DMA hardware.  The only reliable way to do this is
-to program the DMA hardware to do itself. AFAIK all DMA modern
-hardware can be programed to do this if the right information is made
-available. Programming the DMA hardware to do this is a 100% reliable
-solution and not subject to random latency problems.
-
-Also, if I had more detailed buffer information, I could set the
-hardware to only play a partial last period and not require that the
-period be padded with silence.
-
-mpc5200 has full scatter/gather capability. You could even send me
-random length buffers scattered anywhere in memory. But not all DMA
-hardware can deal with non-contiguous buffers.
-
-
->
->> I also don't
->> understand why this is specific to my hardware, every DMA
->> implementation should need these two pointers.
->
-> These two pointers *are* available. =A0That's why your first suggestion,
-> checking appl_ptr, did work. =A0That was basically right.
->
-> Yet, there is another question whether we need a better way for
-> the buffer transfer on a queue-style device. =A0For such a device, the
-> async transfer with mmap is somehow troublesome.
->
->
-> Takashi
->
-
-
-
--- =
-
-Jon Smirl
-jonsmirl@gmail.com
+RXJpYyBNaWFvIDxlcmljLnkubWlhb0BnbWFpbC5jb20+IHdyaXRlczoKCj4gT24gTW9uLCBNYXkg
+MTEsIDIwMDkgYXQgNjoxMSBQTSwgTWlrZSBSYXBvcG9ydCA8bWlrZUBjb21wdWxhYi5jby5pbD4g
+d3JvdGU6Cj4+IFNpZ25lZC1vZmYtYnk6IE1pa2UgUmFwb3BvcnQgPG1pa2VAY29tcHVsYWIuY28u
+aWw+Cj4KPiBBY2tlZC1ieTogRXJpYyBNaWFvIDxlcmljLm1pYW9AbWFydmVsbC5jb20+CkFyZ2gs
+IHRoYXQgd2FzIG15IHNjcmV3IHVwIC4uLiBMZXQncyBmb3J3YXJkIHRoYXQgdG8gTWFyaywgYW5k
+IHNlZSBpZiB0aGF0IGNhbgptYWtlIGl0IGludG8gdGhlIDIuNi4zMCBmaXhlcy4KCkFja2VkLWJ5
+OiBSb2JlcnQgSmFyem1payA8cm9iZXJ0LmphcnptaWtAZnJlZS5mcj4KCi0tClJvYmVydAoKPiBK
+dXN0IGN1cmlvdXMsIHRoaXMgZGlkbid0IGNhdXNlIGFueSBpc3N1ZSBpbiB0aGUgcGFzdCA6KQo+
+Cj4+IC0tLQo+PiDCoHNvdW5kL2FybS9weGEyeHgtYWM5Ny1saWIuYyB8IMKgIMKgMiArLQo+PiDC
+oDEgZmlsZXMgY2hhbmdlZCwgMSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQo+Pgo+PiBk
+aWZmIC0tZ2l0IGEvc291bmQvYXJtL3B4YTJ4eC1hYzk3LWxpYi5jIGIvc291bmQvYXJtL3B4YTJ4
+eC1hYzk3LWxpYi5jCj4+IGluZGV4IGEyYzEyZDEuLjZmZGNhOTcgMTAwNjQ0Cj4+IC0tLSBhL3Nv
+dW5kL2FybS9weGEyeHgtYWM5Ny1saWIuYwo+PiArKysgYi9zb3VuZC9hcm0vcHhhMnh4LWFjOTct
+bGliLmMKPj4gQEAgLTY1LDcgKzY1LDcgQEAgc3RhdGljIHZvaWQgc2V0X3Jlc2V0Z3Bpb19tb2Rl
+KGludCByZXNldGdwaW9fYWN0aW9uKQo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHN3aXRjaCAo
+cmVzZXRncGlvX2FjdGlvbikgewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGNhc2UgUkVTRVRH
+UElPX05PUk1BTF9BTFRGVU5DOgo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oGlmIChyZXNldF9ncGlvID09IDExMykKPj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCBtb2RlID0gMTEzIHwgR1BJT19PVVQgfCBHUElPX0RGTFRfTE9XOwo+
+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIG1vZGUgPSAx
+MTMgfCBHUElPX0FMVF9GTl8yX09VVDsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqBpZiAocmVzZXRfZ3BpbyA9PSA5NSkKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqBtb2RlID0gOTUgfCBHUElPX0FMVF9GTl8xX09VVDsKPj4gwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBicmVhazsKPj4gLS0KPj4gMS41LjYuNAo+
+Pgo+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+PiBB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdAo+PiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPj4g
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwKPj4KPgo+Cj4KPiAtLSAKPiBDaGVlcnMKPiAtIGVyaWMKPiBfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4g
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
