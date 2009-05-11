@@ -1,18 +1,30 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 1/1] ASoC: TWL4030: Wait RAMP_DELAY on
-	headsetl_event: POST_PMD
-Date: Mon, 11 May 2009 14:14:25 +0300
-Message-ID: <1242040465-10835-2-git-send-email-peter.ujfalusi@nokia.com>
-References: <1242040465-10835-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Joonyoung Shim <jy0922.shim@samsung.com>
+Subject: Re: [PATCH] ASoC: TWL4030: change DAPMs for analog
+ microphone selection
+Date: Mon, 11 May 2009 20:41:49 +0900
+Message-ID: <4A080EFD.80501@samsung.com>
+References: <49F69B56.4000902@samsung.com>
+	<200904300951.21620.peter.ujfalusi@nokia.com>
+	<49F95130.3060004@samsung.com>
+	<200905110953.35817.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id BE93924797
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id B7FA3247B1
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 May 2009 13:14:32 +0200 (CEST)
-In-Reply-To: <1242040465-10835-1-git-send-email-peter.ujfalusi@nokia.com>
+	Mon, 11 May 2009 13:41:52 +0200 (CEST)
+Received: from epmmp1 (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KJH008JW9TP3P@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Mon, 11 May 2009 20:41:49 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KJH00GMG9TPJ6@mmp1.samsung.com> for
+	alsa-devel@alsa-project.org; Mon, 11 May 2009 20:41:49 +0900 (KST)
+In-reply-to: <200905110953.35817.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,90 +34,130 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: sakoman@gmail.com, anuj.aggarwal@ti.com, getarunks@gmail.com, broonie@opensource.wolfsonmicro.com
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>, "bhmin@samsung.com" <bhmin@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes the - agressive - 'tuck' sound heard when
-the codec goes to standby mode.
+On 5/11/2009 3:53 PM, Peter Ujfalusi wrote:
+> On Thursday 30 April 2009 10:20:16 ext Joonyoung Shim wrote:
+>> On 4/30/2009 3:51 PM, Peter Ujfalusi wrote:
+>>> On Wednesday 29 April 2009 03:19:21 ext Joonyoung Shim wrote:
+>>>> I read it at TRM too, but cannot believe it such mixer of outputs.
+>>>>
+>>>> Actually, i setted to 1 both HSMIC_EN bit and MAINMIC_EN bit for the
+>>>> ANAMICL register, and recorded sound from headset mic and main mic. The
+>>>> result is that both sounds are recorded.
+>>>>
+>>>> So, to be sure this part, can you inquire about it to TI side?
+>>> I'll ask Ti about this and also about the output mixer/mux thing, just to
+>>> be sure that we are not doing anything 'illegal' with those either.
+>>>
+>>> We should wait with this until Ti responds, I'll let you know what is
+>>> their opinion...
+>> Ok, i see.
+>>
+>> Thanks.
+> 
+> I got the response for this:
+> On the output side: ear, predive, HS, Carkit is mixable, but the mixing is 
+> summing and not averaging, so if the inputs are close to full, it may cause 
+> saturation.
+> 
+> On the input side: you are right, the inputs can be mixed, but if we enable 
+> more than one input at the same time, the input impedance of the input 
+> amplifier will be reduced.
+> 
+> Just in case, can you resend the patch?
+> 
 
-We need to wait for the ramp down completion in case of
-headsetl_event:POST_PMD.
+Ok, i resend the patch. Thanks.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+--
+From: Joonyoung Shim <jy0922.shim@samsung.com>
+Date: Mon, 11 May 2009 20:36:08 +0900
+Subject: [PATCH] ASoC: TWL4030: change DAPMs for analog microphone selection
+
+The inputs of the twl4030 codec can be mixed, so we will use the mixer
+DAPM for the analog microphone registers(0x05, 0x06), but if we enable
+more than one input at the same time, the input impedance of the input
+amplifier will be reduced.
+
+Signed-off-by: Joonyoung Shim <jy0922.shim@samsung.com>
 ---
- sound/soc/codecs/twl4030.c |   20 ++++++++++++++++++++
- 1 files changed, 20 insertions(+), 0 deletions(-)
+ sound/soc/codecs/twl4030.c |   52 ++++++++++++++++---------------------------
+ 1 files changed, 19 insertions(+), 33 deletions(-)
 
 diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index fd392c6..c22f8d6 100644
+index fd392c6..eaf91ab 100644
 --- a/sound/soc/codecs/twl4030.c
 +++ b/sound/soc/codecs/twl4030.c
-@@ -130,6 +130,8 @@ struct twl4030_priv {
- 	unsigned int rate;
- 	unsigned int sample_bits;
- 	unsigned int channels;
-+
-+	unsigned int sysclk;
- };
+@@ -422,36 +422,18 @@ static const struct snd_kcontrol_new twl4030_dapm_vibrapath_control =
+ SOC_DAPM_ENUM("Route", twl4030_vibrapath_enum);
  
- /*
-@@ -586,6 +588,11 @@ static int headsetl_event(struct snd_soc_dapm_widget *w,
- 		struct snd_kcontrol *kcontrol, int event)
- {
- 	unsigned char hs_gain, hs_pop;
-+	struct twl4030_priv *twl4030 = w->codec->private_data;
-+	/* Base values for ramp delay calculation: 2^19 - 2^26 */
-+	unsigned int ramp_base[] = {524288, 1048576, 2097152, 4194304,
-+				    8388608, 16777216, 33554432, 67108864};
-+	unsigned int ramp_delay;
+ /* Left analog microphone selection */
+-static const char *twl4030_analoglmic_texts[] =
+-		{"Off", "Main mic", "Headset mic", "AUXL", "Carkit mic"};
+-
+-static const unsigned int twl4030_analoglmic_values[] =
+-		{0x0, 0x1, 0x2, 0x4, 0x8};
+-
+-static const struct soc_enum twl4030_analoglmic_enum =
+-	SOC_VALUE_ENUM_SINGLE(TWL4030_REG_ANAMICL, 0, 0xf,
+-			ARRAY_SIZE(twl4030_analoglmic_texts),
+-			twl4030_analoglmic_texts,
+-			twl4030_analoglmic_values);
+-
+-static const struct snd_kcontrol_new twl4030_dapm_analoglmic_control =
+-SOC_DAPM_VALUE_ENUM("Route", twl4030_analoglmic_enum);
++static const struct snd_kcontrol_new twl4030_dapm_analoglmic_controls[] = {
++	SOC_DAPM_SINGLE("Main mic", TWL4030_REG_ANAMICL, 0, 1, 0),
++	SOC_DAPM_SINGLE("Headset mic", TWL4030_REG_ANAMICL, 1, 1, 0),
++	SOC_DAPM_SINGLE("AUXL", TWL4030_REG_ANAMICL, 2, 1, 0),
++	SOC_DAPM_SINGLE("Carkit mic", TWL4030_REG_ANAMICL, 3, 1, 0),
++};
  
- 	/* Save the current volume */
- 	hs_gain = twl4030_read_reg_cache(w->codec, TWL4030_REG_HS_GAIN_SET);
-@@ -609,6 +616,12 @@ static int headsetl_event(struct snd_soc_dapm_widget *w,
- 		/* Do the anti-pop/bias ramp disable according to the TRM */
- 		hs_pop &= ~TWL4030_RAMP_EN;
- 		twl4030_write(w->codec, TWL4030_REG_HS_POPN_SET, hs_pop);
-+
-+		/* We need to wait RAMP_DELAY time, otherwise 'tuck' sound can
-+		 * be heard on the output */
-+		ramp_delay = (hs_pop & TWL4030_RAMP_DELAY) >> 2;
-+		mdelay(ramp_base[ramp_delay] / twl4030->sysclk);
-+
- 		/* Bypass the reg_cache to mute the headset */
- 		twl4030_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE,
- 					hs_gain & (~0x0f),
-@@ -1567,17 +1580,21 @@ static int twl4030_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 		int clk_id, unsigned int freq, int dir)
- {
- 	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct twl4030_priv *twl4030 = codec->private_data;
- 	u8 infreq;
+ /* Right analog microphone selection */
+-static const char *twl4030_analogrmic_texts[] =
+-		{"Off", "Sub mic", "AUXR"};
+-
+-static const unsigned int twl4030_analogrmic_values[] =
+-		{0x0, 0x1, 0x4};
+-
+-static const struct soc_enum twl4030_analogrmic_enum =
+-	SOC_VALUE_ENUM_SINGLE(TWL4030_REG_ANAMICR, 0, 0x5,
+-			ARRAY_SIZE(twl4030_analogrmic_texts),
+-			twl4030_analogrmic_texts,
+-			twl4030_analogrmic_values);
+-
+-static const struct snd_kcontrol_new twl4030_dapm_analogrmic_control =
+-SOC_DAPM_VALUE_ENUM("Route", twl4030_analogrmic_enum);
++static const struct snd_kcontrol_new twl4030_dapm_analogrmic_controls[] = {
++	SOC_DAPM_SINGLE("Sub mic", TWL4030_REG_ANAMICR, 0, 1, 0),
++	SOC_DAPM_SINGLE("AUXR", TWL4030_REG_ANAMICR, 1, 1, 0),
++};
  
- 	switch (freq) {
- 	case 19200000:
- 		infreq = TWL4030_APLL_INFREQ_19200KHZ;
-+		twl4030->sysclk = 19200;
- 		break;
- 	case 26000000:
- 		infreq = TWL4030_APLL_INFREQ_26000KHZ;
-+		twl4030->sysclk = 26000;
- 		break;
- 	case 38400000:
- 		infreq = TWL4030_APLL_INFREQ_38400KHZ;
-+		twl4030->sysclk = 38400;
- 		break;
- 	default:
- 		printk(KERN_ERR "TWL4030 set sysclk: unknown rate %d\n",
-@@ -1929,6 +1946,9 @@ static int twl4030_probe(struct platform_device *pdev)
- 		kfree(codec);
- 		return -ENOMEM;
- 	}
-+	/* Set default sysclk (used by the headsetl_event callback for
-+	 * pop-attenuation) */
-+	twl4030->sysclk = 26000;
+ /* TX1 L/R Analog/Digital microphone selection */
+ static const char *twl4030_micpathtx1_texts[] =
+@@ -1138,11 +1120,15 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 		SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD|
+ 		SND_SOC_DAPM_POST_REG),
  
- 	codec->private_data = twl4030;
- 	socdev->card->codec = codec;
+-	/* Analog input muxes with switch for the capture amplifiers */
+-	SND_SOC_DAPM_VALUE_MUX("Analog Left Capture Route",
+-		TWL4030_REG_ANAMICL, 4, 0, &twl4030_dapm_analoglmic_control),
+-	SND_SOC_DAPM_VALUE_MUX("Analog Right Capture Route",
+-		TWL4030_REG_ANAMICR, 4, 0, &twl4030_dapm_analogrmic_control),
++	/* Analog input mixers for the capture amplifiers */
++	SND_SOC_DAPM_MIXER("Analog Left Capture Route",
++		TWL4030_REG_ANAMICL, 4, 0,
++		&twl4030_dapm_analoglmic_controls[0],
++		ARRAY_SIZE(twl4030_dapm_analoglmic_controls)),
++	SND_SOC_DAPM_MIXER("Analog Right Capture Route",
++		TWL4030_REG_ANAMICR, 4, 0,
++		&twl4030_dapm_analogrmic_controls[0],
++		ARRAY_SIZE(twl4030_dapm_analogrmic_controls)),
+ 
+ 	SND_SOC_DAPM_PGA("ADC Physical Left",
+ 		TWL4030_REG_AVADC_CTL, 3, 0, NULL, 0),
 -- 
-1.6.2.3
+1.6.0.4
