@@ -1,19 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 0/1] ASoC: TWL4030: Headset ramp down fix
-Date: Tue, 12 May 2009 09:44:19 +0300
-Message-ID: <200905120944.19197.peter.ujfalusi@nokia.com>
-References: <1242040465-10835-1-git-send-email-peter.ujfalusi@nokia.com>
-	<dfeb90390905110557m79ce9a51n5b8b73e5a736d05b@mail.gmail.com>
+From: =?UTF-8?B?UmFwaGHDq2wgRG91cnNlbmF1ZA==?= <rdoursenaud@free.fr>
+Subject: Re: [PATCH 1/1] hdsp: allow firmware loading from
+ inside the kernel
+Date: Tue, 12 May 2009 08:47:29 +0200
+Message-ID: <4A091B81.3050107@free.fr>
+References: <4A091428.2000106@free.fr> <s5hy6t2u8wh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id A178C10382B
+Received: from smtp1.infomaniak.ch (smtp1.infomaniak.ch [84.16.68.89])
+	by alsa0.perex.cz (Postfix) with ESMTP id A3B6F103820
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 May 2009 08:44:49 +0200 (CEST)
-In-Reply-To: <dfeb90390905110557m79ce9a51n5b8b73e5a736d05b@mail.gmail.com>
-Content-Disposition: inline
+	Tue, 12 May 2009 08:47:32 +0200 (CEST)
+In-Reply-To: <s5hy6t2u8wh.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,57 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "anuj.aggarwal@ti.com" <anuj.aggarwal@ti.com>, ext Arun KS <getarunks@gmail.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 11 May 2009 15:57:28 ext Arun KS wrote:
->
-> 'Tuck' still present on omap3evm board.
-
-I'm really puzzled over this...
-
-On my scope I can see 10s of the HSOL line.
-I can see when the playback (/dev/urandom) is terminated, than after 5s the =
-
-HSOL line is ramping down (from 1.4V to 12mV) after that the HSOL line stay=
-s =
-
-low.
-The signal looks really fine, no glitches on the way at all (I have not see=
-n a =
-
-single glitch in any of my measurements).
-Looking at the scope picture, I can not see anything which can cause the =
-
-'tuck' anymore. Before the patch the HSOL jumped from 1.4V to 12mV, while n=
-ow =
-
-it gradually goes down...
-
-Arun: can you try to increase the 'HS ramp delay' to for example =
-
-'1748/1291/874'? Does it makes any difference?
-
-Are you hearing the 'tuck' on the right, left or in both headset speaker?
-Have you configured the Headset left routing correctly? For some reason (wh=
-ich =
-
-I can not recall why I did it) the headsetl_event is only triggered when th=
-e =
-
-HSOL routing is correctly configured.
-
-For reference, this is what happens here after the playback is stopped:
-
-twl4030_set_bias_level: SND_SOC_BIAS_PREPARE active: 0
-twl4030_codec_mute: MUTE
-headsetl_event: PRE_PMD /* Not used, just printout */
-headsetl_event: POST_PMD
-   delay: 27
-twl4030_set_bias_level: SND_SOC_BIAS_STANDBY active: 0
-
-
--- =
-
-P=E9ter
+LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEExCgpUYWthc2hpIEl3
+YWkgYSDDqWNyaXQgOgo+IEF0IFR1ZSwgMTIgTWF5IDIwMDkgMDg6MTY6MDggKzAyMDAsCj4gUmFw
+aGHDq2wgRG91cnNlbmF1ZCB3cm90ZToKPj4gRnJvbTogUmFwaGHDq2wgRG91cnNlbmF1ZCA8cmRv
+dXJzZW5hdWRAZnJlZS5mcj4KPj4KPj4gQWxsb3cgdGhlIHVzZSBvZiAgdGhlIEZJUk1XQVJFX0lO
+X0tFUk5FTCBvcHRpb24gd2l0aCBoZHNwIGNhcmRzIGFuZAo+PiBpbi1rZXJuZWwgZHJpdmVyLgo+
+IAo+IERpZCBpdCByZWFsbHkgd29yayB3aXRob3V0IHByb2JsZW1zPwo+IAo+IAo+IFRha2FzaGkK
+ClRlc3RlZCBvdmVyIHRoZSB3ZWVrZW5kIHdpdGggdHdvIG11bHRpZmFjZXMgaW4gbXkgREFXLgpH
+b3Qgbm8gcHJvYmxlbS4KSG90cGx1Z2dpbmcgd29ya3M6IHRoZSBmaXJtd2FyZSBpcyByZWxvYWRl
+ZCBvbiBjYXJkIGFjY2Vzcy4KCi0gLS0KUmFwaGHDq2wgRG91cnNlbmF1ZAotLS0tLUJFR0lOIFBH
+UCBTSUdOQVRVUkUtLS0tLQpWZXJzaW9uOiBHbnVQRyB2MS40LjkgKEdOVS9MaW51eCkKQ29tbWVu
+dDogVXNpbmcgR251UEcgd2l0aCBNb3ppbGxhIC0gaHR0cDovL2VuaWdtYWlsLm1vemRldi5vcmcK
+CmlFWUVBUkVDQUFZRkFrb0pHMzRBQ2drUWFaS21OQWRYYVZWRGVRQ2Zla1ZIbHJlMFdkUEFYalk2
+WDVia1BXenkKaExJQW5qZDJmWXdvY3UrV3Z2WDB5UkNVRXMzcUt2N2MKPTl2NmgKLS0tLS1FTkQg
+UEdQIFNJR05BVFVSRS0tLS0tCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbAo=
