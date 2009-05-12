@@ -1,21 +1,25 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: [PATCH] control, hw,
-	rawmidi: accept control	device node as card identifier when opening
-Date: Tue, 12 May 2009 14:32:30 +0200
-Message-ID: <20090512123229.GB29607@tango.0pointer.de>
-References: <20090511224130.GA10955@omega>
-	<alpine.LNX.2.00.0905120744260.25064@eeebox2.perex-int.cz>
-	<alpine.LNX.2.00.0905121336130.25064@eeebox2.perex-int.cz>
+From: Karl Beldan <karl.beldan@gmail.com>
+Subject: Re: [PATCH 2/4] pxa2xx-i2s: Handle SACR1_DRPL and
+ SACR1_DREC separately
+Date: Tue, 12 May 2009 14:38:19 +0200
+Message-ID: <4A096DBB.1080909@gmail.com>
+References: <4A03748B.1010302@gmail.com> <20090508104229.GD5654@sirena.org.uk>
+	<20090511190504.GF20283@sirena.org.uk> <4A087FCF.2080304@gmail.com>
+	<20090511210729.GA4404@sirena.org.uk> <4A08A001.4050003@gmail.com>
+	<20090512085838.GB29889@sirena.org.uk> <4A094867.2010600@gmail.com>
+	<20090512103243.GH29889@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id A95EC103840
+Received: from mail-ew0-f175.google.com (mail-ew0-f175.google.com
+	[209.85.219.175])
+	by alsa0.perex.cz (Postfix) with ESMTP id B65EF103840
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 May 2009 14:32:55 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.00.0905121336130.25064@eeebox2.perex-int.cz>
+	Tue, 12 May 2009 14:38:23 +0200 (CEST)
+Received: by ewy23 with SMTP id 23so4531052ewy.32
+	for <alsa-devel@alsa-project.org>; Tue, 12 May 2009 05:38:23 -0700 (PDT)
+In-Reply-To: <20090512103243.GH29889@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,62 +29,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, Matthieu Dumont <matthieu.dumont@mobile-devices.fr>, liam.girdwood@wolfsonmicro.com, Eric Miao <eric.miao@marvell.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 12.05.09 13:40, Jaroslav Kysela (perex@perex.cz) wrote:
-
+Mark Brown wrote:
+> On Tue, May 12, 2009 at 11:59:03AM +0200, Karl Beldan wrote:
+>> Mark Brown wrote:
 > 
-> On Tue, 12 May 2009, Jaroslav Kysela wrote:
+>>> That doesn't seem to tie up - I can see the initialisation changing the
+>>> behaviour on first run but it seems surprising that this should happen
+>>> on subsequent runs too.  Alternatively, is your initialisation patch
+>>> safe to apply by itself?
 > 
-> > On Tue, 12 May 2009, Lennart Poettering wrote:
-> >
-> >> Heya!
-> >> 
-> >> Traditionally low-level ALSA devices are opened with device strings like
-> >> 'hw:CARD' where CARD is either a numeric index or a card name. This
-> >> patch introduces a third syntax that allows you to specify the file name
-> >> of the control device node. The purpose for this is to make ALSA a bit
-> >> more like other Linux devices and allow implementaiton of udev device
-> >> symlinks similar to how disks are currently handled, with
-> >> /dev/disk/by-path/xxxx /dev/disk/by-id/xxxx and so on.
-> >> 
-> >> With this patch this line:
-> >>
-> >>  aplay -f CD -D hw:/dev/snd/controlC0 < /dev/urandom
-> >> 
-> >> becomes equivalent to this line:
-> >>
-> >>  aplay -f CD -D hw:0 < /dev/urandom
-> >> 
-> >> A more useful example is this:
-> >>
-> >>  aplay -f CD -D hw:/dev/snd/by-path/pci-0000:00:1a.7-usb-0:2:1.2
-> >> 
-> >> (this line requires a a few additional udev rules)
-> >> 
-> >> This only works for control devices nodes, not for PCM or any other
-> >> device nodes. Since the control device node is used as 'entry point'
-> >> when opening PCM devices this is no limitation.
-> >
-> > NAK. Passing control device to open() functions is not a good idea. The 
-> > snd_card_get_index() function might be extended to allow /dev style argument. 
-> > Returned card index can be used as argument for hw: devices without this 
-> > massive change.
-> >
-> > http://git.alsa-project.org/?p=alsa-lib.git;a=commit;h=33ab0b5381c87e151e87e5000964edd868484886
+>> Well 2/4 stops the clocks only if both REC and RPL are disabled.
+>> Without 1/4 you end up with REC enabled at startup.
+>> In a scenario where you have never used REC you end up RPLing with REC always on.
+>> REC being on at shutdown(),clocks won't stop.
 > 
-> I just noticed that snd_card_get_index() is used to parse "card" 
-> configuration item when it's string, so control device name can be passed 
-> instead card identification to all open() functions in alsa-lib with my 
-> above patch, too. But it's preferred to use direct card index to reduce
-> control device open/close sequences.
+> Yet they are being stopped by something...
+> 
+You said that clocks are NOT stopped when applying patch 2/4 without 1/4.
+I detailed a fairly likely code path.
 
-With my original patch there are no superfluous opens.
 
-Lennart
+>>> As previously discussed you need to rework the patch to not do the reset
+>>> on initial probe not when the module is loaded, you need to address this
+>>> rather than reposting.
+> 
+>> The patch in question is moving the reset in probe rather than module init - with comment updated.
+>> What is wrong ?
+> 
+> A repost is where you send exactly the same thing again.  When you say
+> you're reposting something it means you've not made any changes; if you
+> say that's what you're doing and your code has problems that need to be
+> fixed it's fairly obvious that all the previous comments are going to
+> continue to apply.
+> 
+When I said I 'resent' it, my meaning was not to let you understand that I did not modify it obviously.
+
+>>> I'll try to find time to re-review the series but I'm going to need to
+>>> sit down with the datasheet and check this in much more detail.
+> 
+>> For 1/4 and 2/4 there should not be great need, Really.
+> 
+> There's been enough stuff with the series that I've got a few alarm
+> bells ringing, if only with obscure relationships between the patches.
+I could say the same about the current status and handling but I will ask you to point precise points instead, please.
+As of the current status of the driver there is not even full duplex, maintainance is likewise.
+The patches I am sending are quite easy to discuss.
+
+Could you point what is wrong in the code or comments ?
+Nitpicking about "A repost is where you send exactly the same thing again." and talking so much about
+pb applying 2/4 without 1/4 really sucks.
+
+I said and am saying my patches improve greatly the code quality/functionnality, if you think otherwise, give tangible reasons and I'll be really happy to discuss/rework/abandon the patches.
+
+Since I have no feedback from Maintainers, I am pinging the original author hoping I won't disturb too much.
+
 
 -- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Karl
