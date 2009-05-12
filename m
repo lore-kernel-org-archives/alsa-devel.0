@@ -1,24 +1,18 @@
-From: Karl Beldan <karl.beldan@gmail.com>
-Subject: Re: [PATCH 2/4] pxa2xx-i2s: Handle SACR1_DRPL and
- SACR1_DREC separately
-Date: Tue, 12 May 2009 11:59:03 +0200
-Message-ID: <4A094867.2010600@gmail.com>
-References: <4A03748B.1010302@gmail.com> <20090508104229.GD5654@sirena.org.uk>
-	<20090511190504.GF20283@sirena.org.uk> <4A087FCF.2080304@gmail.com>
-	<20090511210729.GA4404@sirena.org.uk> <4A08A001.4050003@gmail.com>
-	<20090512085838.GB29889@sirena.org.uk>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: ALSA for SoC audio support full duplex problem
+Date: Tue, 12 May 2009 11:04:24 +0100
+Message-ID: <20090512100423.GG29889@sirena.org.uk>
+References: <8fda62c20905120253u42a7f1f9i723888c44541b46f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f170.google.com (mail-fx0-f170.google.com
-	[209.85.220.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2A96D103839
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 930E0103839
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 May 2009 11:59:07 +0200 (CEST)
-Received: by fxm18 with SMTP id 18so3593036fxm.32
-	for <alsa-devel@alsa-project.org>; Tue, 12 May 2009 02:59:05 -0700 (PDT)
-In-Reply-To: <20090512085838.GB29889@sirena.org.uk>
+	Tue, 12 May 2009 12:04:24 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <8fda62c20905120253u42a7f1f9i723888c44541b46f@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,38 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: Eric Miao <eric.miao@marvell.com>, alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Matthieu Dumont <matthieu.dumont@mobile-devices.fr>
+To: jinjin xu <freebsdxjj@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Tue, May 12, 2009 at 12:00:33AM +0200, Karl Beldan wrote:
-> 
->> Then it is perfectly normal since reset enables both REC and RPL, 2/4 needs 1/4.
->> The current tree disables the clocks anytime one function is disabled.
-> 
-> That doesn't seem to tie up - I can see the initialisation changing the
-> behaviour on first run but it seems surprising that this should happen
-> on subsequent runs too.  Alternatively, is your initialisation patch
-> safe to apply by itself?
-> 
-Well 2/4 stops the clocks only if both REC and RPL are disabled.
-Without 1/4 you end up with REC enabled at startup.
-In a scenario where you have never used REC you end up RPLing with REC always on.
-REC being on at shutdown(),clocks won't stop.
+On Tue, May 12, 2009 at 05:53:52PM +0800, jinjin xu wrote:
 
->> I resent 1/4 and will make it 1/5 with the whole serie once everything is Clear.
-> 
-> As previously discussed you need to rework the patch to not do the reset
-> on initial probe not when the module is loaded, you need to address this
-> rather than reposting.
-> 
-The patch in question is moving the reset in probe rather than module init - with comment updated.
-What is wrong ?
+> I use 2.6.21.5-cfs-v19 on S3C6410(arm),use wm8987 sound card(i2s interface)
 
-> I'll try to find time to re-review the series but I'm going to need to
-> sit down with the datasheet and check this in much more detail.
-For 1/4 and 2/4 there should not be great need, Really.
+This will be with the Samsung BSP...
 
--- 
-Karl
+> soc-core.c:
+
+>         if (playback)
+>         {
+> 
+>                 snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &soc_pcm_ops);
+> 
+>         }
+> 
+>         if (capture)
+>         {
+> 
+>                 snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &soc_pcm_ops);
+>         }
+> 
+
+> ens1370.c use two different fops for playback and record(I test it in
+> Vmware,It can run on full duplex)
+> soc-core.c use the same fops for  playback and record
+> 
+> It that the problem ?
+
+This is not an issue, ASoC supports full duplex perfectly happily -
+where required the drivers can select appropriate behaviour based on the
+substream that is passed into them.  Full duplex is fairly widely used
+in embedded systems.
+
+> So how to fix it for support full duplex?
+
+You'll need to investigate what the problem is on your system.  I'd
+start by checking that the drivers aren't doing excessive initialisation
+(eg, disrupting an existing stream when starting a new one).
+
+Note that the Samsung hardware interface makes the two channels very
+closely related so the configuration of the recieve and transmit data
+paths needs to be identical - it'd probably be useful to compare the
+behaviour with that for the s3c24xx drivers, the hardware is very
+similar and I believe full duplex works there.
