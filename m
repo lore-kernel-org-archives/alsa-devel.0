@@ -1,21 +1,19 @@
-From: James Courtier-Dutton <james.dutton@gmail.com>
-Subject: Re: Master vs. Front/Rear/LFE/... elements
-Date: Tue, 12 May 2009 08:47:31 +0100
-Message-ID: <ad2655cb0905120047g69887a4bg5e0794bbd21eac27@mail.gmail.com>
-References: <20090506175824.GA30355@tango.0pointer.de>
-	<s5hbpq5s3fx.wl%tiwai@suse.de>
+From: =?UTF-8?B?UmFwaGHDq2wgRG91cnNlbmF1ZA==?= <rdoursenaud@free.fr>
+Subject: Re: [PATCH 1/1] hdsp: allow firmware loading from
+ inside the kernel
+Date: Tue, 12 May 2009 10:01:20 +0200
+Message-ID: <4A092CD0.6070500@free.fr>
+References: <4A091428.2000106@free.fr>	<s5hy6t2u8wh.wl%tiwai@suse.de>	<4A091B81.3050107@free.fr>	<s5hskjau7pg.wl%tiwai@suse.de>	<4A091FAF.9090400@free.fr>	<s5hpreeu6uo.wl%tiwai@suse.de>	<4A092467.1070007@free.fr>	<s5hljp2u614.wl%tiwai@suse.de>	<4A092830.8010602@free.fr>
+	<s5hhbzqu5l4.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f167.google.com (mail-bw0-f167.google.com
-	[209.85.218.167])
-	by alsa0.perex.cz (Postfix) with ESMTP id B0B5F103847
+Received: from smtp2.infomaniak.ch (smtp2.infomaniak.ch [84.16.68.90])
+	by alsa0.perex.cz (Postfix) with ESMTP id ADA59246E0
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 May 2009 09:47:32 +0200 (CEST)
-Received: by bwz11 with SMTP id 11so3355713bwz.32
-	for <alsa-devel@alsa-project.org>; Tue, 12 May 2009 00:47:31 -0700 (PDT)
-In-Reply-To: <s5hbpq5s3fx.wl%tiwai@suse.de>
+	Tue, 12 May 2009 10:01:21 +0200 (CEST)
+In-Reply-To: <s5hhbzqu5l4.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,73 +24,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Lennart Poettering <mznyfn@0pointer.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2009/5/7 Takashi Iwai <tiwai@suse.de>:
->
-> IMO, the best would be a total rewrite of the current mixer API, as I
-> mentioned some times. =A0Right now it's more complicated than needed,
-> but not powerful enough to handle exceptional cases.
->
-> I know designing a generic and fully-working API is pretty difficult,
-> though...
->
-
-Isn't that a bit of overkill.
-I don't think the API is the problem.
-I thought about re-writing the API mixer api when I was updating the
-alsamixer.c for dB settings.
-When you look into it in more detail, there really is no easy way to
-do a better api than the one we already have and still support all the
-different sound cards out there.
-For pro applications, one also has large USB attached mixer control
-decks, with sliders etc, and one would have to write code to ensure
-they link up correctly with the correct mixer controls. I.e. A user
-moves a slider on the control deck, and it moves the correct slider in
-alsamixer.
-I think what we really do need is a global definition of each control.
-I.e. Master Playback control
-1) Must exist.
-2) Adds another gain/attenuation after the "front, side, rear etc."
-controls. (I.e between the front control and the speaker.
-3) Should the control be presented as 3 stereo controls, or one 6
-channel control?
-4) Is the control linked to a PCM, or is it a global control on the
-output side of the sound chip.
-
-I would like to see a global "Speaker arrangement" setting, where the
-user can tell alsa how they have their speakers arranged. E.g. They
-have 2 speakers, or they have 5.1 speakers, or that have 2 speakers
-and one set of headphones and where each are plugged in. The driver
-would restrict the options depending on the hardware possibilities.
-The alsa mixer could then present a consistent view in each case.
-
-Once we have the global definition, we can then fix each driver to
-comply with it. In some cases we will have to add virtual controls.
-I.e. Create a software master control and use software to make it
-behave like a real hardware control.
-I think this global definition is all that PA really needs. They can
-then implement it using a single method, and then they can highlight
-all the sound card drivers that need fixing to match it.
-
-I personally think that the user should set the global speaker
-settings, the master, front, rear etc. controls and then just leave
-them.
-I think applications should only control their own PCM channel volume,
-and not touch the master volume at all. PA could then further control
-PCM channel volumes, by for example automatically attenuating the
-sound of an application when it gets put in the backround, if the user
-so wishes. Applications should not have to talk to the alsa mixer at
-all. Just modify a value associated with the PCM stream they are
-outputting to adjust its gain/attenuation.
-I.e.
-int value;
-handle =3D snd_pcm_open();
-snd_pcm_set_hwparam/swparams etc.;
-snd_pcm_set_gain(handle, &value);
-snd_pcm_get_gain(handle, &value);
-
-That should be all the user app or PA needs to do
-The user app should not have to talk to the alsa mixer api at all.
-Only a single global mixer control app should need to do that.
+LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEExCgpUYWthc2hpIEl3
+YWkgYSDDqWNyaXQgOgo+IEF0IFR1ZSwgMTIgTWF5IDIwMDkgMDk6NDE6MzYgKzAyMDAsCj4gUmFw
+aGHDq2wgRG91cnNlbmF1ZCB3cm90ZToKPj4gLS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0Ut
+LS0tLQo+PiBIYXNoOiBTSEExCj4+Cj4+IFRha2FzaGkgSXdhaSBhIMOpY3JpdCA6Cj4+PiBBdCBU
+dWUsIDEyIE1heSAyMDA5IDA5OjI1OjI3ICswMjAwLAo+Pj4gUmFwaGHDq2wgRG91cnNlbmF1ZCB3
+cm90ZToKPj4+PiAtLS0tLUJFR0lOIFBHUCBTSUdORUQgTUVTU0FHRS0tLS0tCj4+Pj4gSGFzaDog
+U0hBMQo+Pj4+Cj4+Pj4gVGFrYXNoaSBJd2FpIGEgw6ljcml0IDoKPj4+Pj4gQXQgVHVlLCAxMiBN
+YXkgMjAwOSAwOTowNToxOSArMDIwMCwKPj4+Pj4gUmFwaGHDq2wgRG91cnNlbmF1ZCB3cm90ZToK
+Pj4+Pj4+IC0tLS0tQkVHSU4gUEdQIFNJR05FRCBNRVNTQUdFLS0tLS0KPj4+Pj4+IEhhc2g6IFNI
+QTEKPj4+Pj4+Cj4+Pj4+PiBUYWthc2hpIEl3YWkgYSDDqWNyaXQgOgo+Pj4+Pj4+IEF0IFR1ZSwg
+MTIgTWF5IDIwMDkgMDg6NDc6MjkgKzAyMDAsCj4+Pj4+Pj4gUmFwaGHDq2wgRG91cnNlbmF1ZCB3
+cm90ZToKPj4+Pj4+Pj4gLS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQo+Pj4+Pj4+
+PiBIYXNoOiBTSEExCj4+Pj4+Pj4+Cj4+Pj4+Pj4+IFRha2FzaGkgSXdhaSBhIMOpY3JpdCA6Cj4+
+Pj4+Pj4+PiBBdCBUdWUsIDEyIE1heSAyMDA5IDA4OjE2OjA4ICswMjAwLAo+Pj4+Pj4+Pj4gUmFw
+aGHDq2wgRG91cnNlbmF1ZCB3cm90ZToKPj4+Pj4+Pj4+PiBGcm9tOiBSYXBoYcOrbCBEb3Vyc2Vu
+YXVkIDxyZG91cnNlbmF1ZEBmcmVlLmZyPgo+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4gQWxsb3cgdGhl
+IHVzZSBvZiAgdGhlIEZJUk1XQVJFX0lOX0tFUk5FTCBvcHRpb24gd2l0aCBoZHNwIGNhcmRzIGFu
+ZAo+Pj4+Pj4+Pj4+IGluLWtlcm5lbCBkcml2ZXIuCj4+Pj4+Pj4+PiBEaWQgaXQgcmVhbGx5IHdv
+cmsgd2l0aG91dCBwcm9ibGVtcz8KPj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4gVGFrYXNo
+aQo+Pj4+Pj4+PiBUZXN0ZWQgb3ZlciB0aGUgd2Vla2VuZCB3aXRoIHR3byBtdWx0aWZhY2VzIGlu
+IG15IERBVy4KPj4+Pj4+Pj4gR290IG5vIHByb2JsZW0uCj4+Pj4+Pj4gSW50ZXJlc3RpbmcuCj4+
+Pj4+Pj4gRGlkIHlvdSBidWlsZCB0aGUgZmlybXdhcmUgZmlsZSBpbnRvIHRoZSBrZXJuZWwsIG9y
+IG5vdD8KPj4+Pj4+Pgo+Pj4+Pj4+Cj4+Pj4+Pj4gVGFrYXNoaQo+Pj4+Pj4gWWVzIEkgYnVpbHQg
+YWxsIGhkc3AgZmltd2FyZSBmaWxlcyAobXVsdGlmYWNlX2Zpcm13YXJlLmJpbgo+Pj4+Pj4gbXVs
+dGlmYWNlX2Zpcm13YXJlX3JldjExLmJpbiBkaWdpZmFjZV9maXJtd2FyZS5iaW4KPj4+Pj4+IGRp
+Z2lmYWNlX2Zpcm13YXJlX3JldjExLmJpbikgaW50byB0aGUga2VybmVsLgo+Pj4+Pj4gSXQncyB0
+aGUgYWltIG9mIHRoaXMgcGF0Y2guCj4+Pj4+IFdlbGwsIHRoZSBwcm9ibGVtIEknbSBjb25jZXJu
+ZWQgaXMgdGhhdCB0aGUgZHJpdmVyIGNhbiBiZSBjb21waWxlZAo+Pj4+PiBpbiBldmVuIGlmIHlv
+dSBoYXZlIG5vIGJ1aWx0LWluIGZpcm13YXJlLiAgQW5kIHRoZXJlIGlzIG5vIHJlc3RyaWN0aW9u
+Cj4+Pj4+IG9yIGRlcGVuZGVuY3kgY2hlY2sgaW4gS2NvbmZpZywgc28gZmFyLgo+Pj4+Pgo+Pj4+
+PiBDb3VsZCB5b3UgdGVzdCBob3cgdGhlIGtlcm5lbCBiZWhhdmVzIHdpdGhvdXQgdGhlIGJ1aWx0
+LWluIGZpcm13YXJlPwo+Pj4+PiBEb2VzIGl0IGhhbmcgb3IgZ2l2ZSBhbnkgY3JpdGljYWwgZXJy
+b3I/Cj4+Pj4+Cj4+Pj4+Cj4+Pj4+IHRoYW5rcywKPj4+Pj4KPj4+Pj4gVGFrYXNoaQo+Pj4+IENv
+dWxkIHlvdSBiZSBtb3JlIHNwZWNpZmljPwo+Pj4+IEknbSBub3Qgc3VyZSB0byB1bmRlcnN0YW5k
+IHdoeSBpdCBjb3VsZCBiZSBhIHByb2JsZW0uCj4+Pj4gRG8geW91IHRoaW5rIHRoYXQgaWYgSSBz
+ZXQgRklSTVdBUkVfSU5fS0VSTkVMIHdpdGhvdXQgY29tcGlsaW5nIHRoZQo+Pj4+IGZpcm13YXJl
+KHMpIGluLWtlcm5lbCB0aGUgcmVxdWVzdF9maXJtd2FyZSgpIHdpbGwgbm90IHJlc29sdmUgYW5k
+IGNhdXNlCj4+Pj4gYW4gZXJyb3I/Cj4+PiBZZXMsIGV4YWN0bHkuCj4+PiByZXF1ZXN0X2Zpcm13
+YXJlKCkgc2hhbGwgZmFpbCBpbiB0aGF0IGNhc2UgbGlrZWx5IGFmdGVyIGEgbG9uZwo+Pj4gdGlt
+ZS1vdXQgKHVubGVzcyB5b3UgaGF2ZSB0aGUgZmlybXdhcmUgZmlsZXMgaW4gaW5pdHJkKSBiZWNh
+dXNlIHRoZXJlCj4+PiBpcyByZWFsbHkgbm8gZmlsZSAvIGRhdGEgYXZhaWxhYmxlIGF0IHRoZSB0
+aW1lIGl0J3MgY2FsbGVkLgo+Pj4gQW5kIEknbSBub3Qgc3VyZSB3aGV0aGVyIHRoaXMgY291bGQg
+bGVhZCB0byBhIGZhdGFsIG9wZXJhdGlvbiBlcnJvci4KPj4+Cj4+Pgo+Pj4gVGFrYXNoaQo+PiBB
+RkFJSyB0aGlzIGlzIGhhbmRsZWQgaW4gdGhlIGNvZGUgKGZyb20gbGluZSA1MDgwKSBhbmQgc2hv
+dWxkIGxlYWQgdG8KPj4gIkhhbW1lcmZhbGwtRFNQOiBjb3VsZG4ndCBnZXQgZmlybXdhcmUgZnJv
+bSB1c2Vyc3BhY2UuIHRyeSB1c2luZyBoZHNwbG9hZGVyIgo+IAo+IFllcCwgYSBmYWxsYmFjayBt
+ZWNoYW5pc20gaXMgZm91bmQgaW4gaGRzcCBkcml2ZXIgaXRzZWxmLgo+IEJ1dCB0aGUgZHJpdmVy
+IHByb2JlIGhhbmdzIGZvciB0b28gbG9uZyB0aW1lLCBhbmQgSSdtIGp1c3Qgd29ycmllZAo+IGFi
+b3V0IGl0cyBpbmZsdWVuY2Ugb24gdGhlIHdob2xlIGtlcm5lbCBib290LXVwLgo+IAo+PiBJJ20g
+YnVpbGRpbmcgYSBrZXJuZWwgdG8gdGVzdCB0aGF0IGNhc2UuCj4gCj4gVGhhbmtzLgo+IAo+IAo+
+IFRha2FzaGkKV293LCB5b3UncmUgcmlnaHQhIERpZG4ndCB0aGluayBhYm91dCB0aGF0Li4uCgpJ
+dCBoYW5ncyBmb3IgYWJvdXQgNDVzIG9uIDoKSGFtbWVyZmFsbC1EU1A6IHdhaXQgZm9yIEZJRk8g
+c3RhdHVzIDw9IDAgZmFpbGVkIGFmdGVyIDMwIGl0ZXJhdGlvbnMKUk1FIEhhbW1lcmZhbGwgRFNQ
+IDAwMDA6MDU6MDIuMDogZmlybXdhcmU6IHJlcXVlc3RpbmcKbXVsdGlmYWNlX2Zpcm13YXJlX3Jl
+djExLmJpbgoKYmVmb3JlIGdvaW5nIG9uIHdpdGggOgpIYW1tZXJmYWxsLURTUDogY2Fubm90IGxv
+YWQgZmlybXdhcmUgbXVsdGlmYWNlX2Zpcm13YXJlX3JldjExLmJpbgpIYW1tZXJmYWxsLURTUDog
+Y291bGRuJ3QgZ2V0IGZpcm13YXJlIGZyb20gdXNlcnNwYWNlLiB0cnkgdXNpbmcgaGRzcGxvYWRl
+cgpIYW1tZXJmYWxsLURTUDogY2FyZCBpbml0aWFsaXphdGlvbiBwZW5kaW5nIDogd2FpdGluZyBm
+b3IgZmlybXdhcmUKCkkgd29uZGVyIHdoYXQgd291bGQgYmUgdGhlIGJlc3Qgd2F5IHRvIGRlYWwg
+d2l0aCB0aGF0IHdoaWxlIHN0aWxsCmVuYWJsaW5nIGluLWtlcm5lbCBmaXJtd2FyZS4KLSAtLQpS
+YXBoYcOrbCBEb3Vyc2VuYXVkCi0tLS0tQkVHSU4gUEdQIFNJR05BVFVSRS0tLS0tClZlcnNpb246
+IEdudVBHIHYxLjQuOSAoR05VL0xpbnV4KQpDb21tZW50OiBVc2luZyBHbnVQRyB3aXRoIE1vemls
+bGEgLSBodHRwOi8vZW5pZ21haWwubW96ZGV2Lm9yZwoKaUVZRUFSRUNBQVlGQWtvSkxNd0FDZ2tR
+YVpLbU5BZFhhVlc5NGdDYkJsbCtjSFN0MS9OaE43L2c2VVRzeWI2Tgp5OVFBbmlQTHduaVZPcDVk
+eEhHT2w5cEk5Z1ROK3Rkdgo9NXVtaQotLS0tLUVORCBQR1AgU0lHTkFUVVJFLS0tLS0KX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
