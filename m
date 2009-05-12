@@ -1,56 +1,77 @@
-From: Greg KH <gregkh@suse.de>
-Subject: Re: [alsa-devel] [PATCH] aoa: remove driver_data direct access of
-	struct device
-Date: Tue, 12 May 2009 16:05:14 -0700
-Message-ID: <20090512230514.GB11084@suse.de>
-References: <4A08828B.7090106@gmail.com> <s5hws8mu8my.wl%tiwai@suse.de>
-	<20090512065743.GA25267@suse.de> <s5hoctyu6m4.wl%tiwai@suse.de>
+From: Ernesto Torres <skullmate@gmail.com>
+Subject: Output frequency configuration for I2S in beagleboard?
+	(underrun problem)
+Date: Tue, 12 May 2009 18:28:58 -0500
+Message-ID: <fb44c3530905121628i56a92ea8x10f966b7aa4ebc00@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
-Content-Disposition: inline
-In-Reply-To: <s5hoctyu6m4.wl%tiwai@suse.de>
-List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
-List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
-List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
-Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linuxppc-dev@ozlabs.org, johannes@sipsolutions.net, Roel Kluin <roel.kluin@gmail.com>, alsa-devel@alsa-project.org, lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bw0-f167.google.com (mail-bw0-f167.google.com
+	[209.85.218.167])
+	by alsa0.perex.cz (Postfix) with ESMTP id E30EF10387D
+	for <alsa-devel@alsa-project.org>;
+	Wed, 13 May 2009 01:28:58 +0200 (CEST)
+Received: by bwz11 with SMTP id 11so315384bwz.32
+	for <alsa-devel@alsa-project.org>; Tue, 12 May 2009 16:28:58 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 12, 2009 at 09:23:47AM +0200, Takashi Iwai wrote:
-> At Mon, 11 May 2009 23:57:43 -0700,
-> Greg KH wrote:
-> > 
-> > On Tue, May 12, 2009 at 08:40:05AM +0200, Takashi Iwai wrote:
-> > > At Mon, 11 May 2009 21:54:51 +0200,
-> > > Roel Kluin wrote:
-> > > > 
-> > > > To avoid direct access to the driver_data pointer in struct device, the
-> > > > functions dev_get_drvdata() and dev_set_drvdata() should be used.
-> > > > 
-> > > > Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
-> > > 
-> > > The same fix has been already in Greg's tree (and thus in linux-next).
-> > > 
-> > > Greg, is it OK that I take over your patch to sound git tree?
-> > 
-> > Yes, please do, no objection from me at all.
-> 
-> OK, will do.
-> 
-> BTW, should it be pushed to 2.6.30?  If "the near future" you
-> mentioned in the patch means 2.6.31, it'll be better to merge that fix
-> now.  Otherwise, I'm going to apply the patch as a 2.6.31 material.
+Hi,
 
-.31 is fine, that is what I was meaning by with "near future" :)
+I would like to know the actual configuration for the output of the Beagle
+Board I2S, from the OMAP35x Reference Manual, on page 2887:
 
-thanks,
+=95 Enable the Sample Rate Generator (take it out of reset).
+  Set McBSPi.MCBSPLP_SPCR2_REG[6] GRSTbit to1 to enable the Sample Rate
+Generator.
+  After the Sample Rate Generator is enabled, wait for 2 CLKG cycles for the
+Sample Rate Generator
+  logic to stabilize.
+*  On the next rising edge of CLKSRG, the CLKG signal transitions to '1' and
+starts clocking with a
+  frequency equal to (input clock frequency)/(CLKGDV + 1).*
+=95 If necessary, enable the receiver and/or the transmitter.
 
-greg k-h
+It says the clocking will start with the frequency of input clock (I thougth
+it is 26Mhz but i've been told is 96Khz, not quite sure) and CLKGDV is a
+variable number to get a desired frequency.
+
+from omap-mcbsp.c:
+
+*static int omap_mcbsp_dai_set_clkdiv(struct snd_soc_dai *cpu_dai,
+                     int div_id, int div)
+{
+    struct omap_mcbsp_data *mcbsp_data =3D to_mcbsp(cpu_dai->private_data);
+    struct omap_mcbsp_reg_cfg *regs =3D &mcbsp_data->regs;
+    dbg("omap_mcbsp_dai_set_clkdiv START");
+    if (div_id !=3D OMAP_MCBSP_CLKGDV)
+        return -ENODEV;
+    dbg("div: %d",div);
+    regs->srgr1    |=3D CLKGDV(div - 1);
+                dbg("omap_mcbsp_dai_set_clkdiv END");
+    return 0;
+}*
+
+Here, the value is asigned to srgr1. I capture all actions from startup and
+from aplay but this function is never called. Do you know when it should be
+called or where we can find the div value?
+
+I'm having trouble adapting an external codec from the beagle, and I think
+it may be because of the output frequency from the beagle. I'm getting some
+underruns during playback(with aplay) and I don't know exactly where to
+begin.  Suggestions are welcome.
+
+Thanks for your help
+
+Best regards,
+Ernesto
