@@ -1,19 +1,25 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 2/4] pxa2xx-i2s: Handle SACR1_DRPL
-	and	SACR1_DREC separately
-Date: Tue, 12 May 2009 17:02:30 +0100
-Message-ID: <20090512160229.GK29889@sirena.org.uk>
-References: <4A03748B.1010302@gmail.com>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: [PATCH] control, hw,
+	rawmidi: accept control	device node as card identifier when opening
+Date: Tue, 12 May 2009 18:04:37 +0200
+Message-ID: <20090512160436.GA14622@tango.0pointer.de>
+References: <20090511224130.GA10955@omega>
+	<alpine.LNX.2.00.0905120744260.25064@eeebox2.perex-int.cz>
+	<alpine.LNX.2.00.0905121336130.25064@eeebox2.perex-int.cz>
+	<20090512123229.GB29607@tango.0pointer.de>
+	<alpine.LNX.2.00.0905121433510.25064@eeebox2.perex-int.cz>
+	<20090512132447.GF29607@tango.0pointer.de>
+	<alpine.LNX.2.00.0905121610420.25064@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 03D31103849
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id BA5BD10385F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 May 2009 18:02:33 +0200 (CEST)
+	Tue, 12 May 2009 18:05:02 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4A03748B.1010302@gmail.com>
+In-Reply-To: <alpine.LNX.2.00.0905121610420.25064@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,52 +29,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Karl Beldan <karl.beldan@gmail.com>
-Cc: Russell King <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, Eric Miao <eric.miao@marvell.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Matthieu Dumont <matthieu.dumont@mobile-devices.fr>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 08, 2009 at 01:53:47AM +0200, Karl Beldan wrote:
+On Tue, 12.05.09 16:40, Jaroslav Kysela (perex@perex.cz) wrote:
 
-> - hw_params enables both RPL and REC functions each time,
-> enable the appropriate function in pxa2xx_i2s_trigger.
-> - pxa2xx_i2s_shutdown disables i2s anytime one of RPL or REC
-> function is off, turn it off only when both functions are off.
-> - do not put the clk_i2s for no reason in pxa2xx_i2s_shutdown.
+> > With my patch that costs exactly two open() calls. It's also more
+> > flexible since it will handle arbitrary device strings, doesn't need
+> > to hardcode "hw:".
+> 
+> The mentioned code will work with my patch as well. There is no 
+> difference, because extended snd_card_get_index() is called from _*open() 
+> callbacks when card argument is a string.
 
-> Signed-off-by: Karl Beldan <karl.beldan@mobile-devices.fr>
+Yes, it will work. But at the price of one extra open. 
 
-I'm still seeing the behaviour I was before now I've applied patch 1.
-To reproduce I'm looking at the clocks with a scope.  After startup I'm
-starting a playback (aplay and mplayer have the same effect).  Once the
-playback is finished (either normally or by killing the application) the
-clocks are still present.  Restarting playback causes the clock to stop
-immediately and the generation of a DMA error.  Subsequent iterations
-repeat the same behaviour, as does recording.
+> > You seem to suggest this:
+> >
+> > <snip>
+> > i = snd_card_index("hw:/dev/snd/by-path/yaddayadda");
+> 
+> It should be: i = snd_card_index("/dev/snd/by-path/yaddayadda");
 
->  	case SNDRV_PCM_TRIGGER_RESUME:
-> @@ -252,13 +254,11 @@ static void pxa2xx_i2s_shutdown(struct snd_pcm_substream *substream,
->  		SAIMR &= ~SAIMR_RFS;
->  	}
->  
-> -	if (SACR1 & (SACR1_DREC | SACR1_DRPL)) {
-> +	if ((SACR1 & (SACR1_DREC | SACR1_DRPL)) == (SACR1_DREC | SACR1_DRPL)) {
->  		SACR0 &= ~SACR0_ENB;
->  		pxa_i2s_wait();
->  		clk_disable(clk_i2s);
->  	}
+Yes, of course.
 
-The problem happens because this code no longer triggers - since the
-port is still being reset on startup if the DAI is inactive the first
-patch will have no effect on DREC and DRPL, they'll be reset to their
-power on default of enabled when startup() is first called.  Applying
-your third patch which removes the port reset avoids that issue.
+> 
+> > snd_hw_open(&hw, snprint("hw:%i", i));
+> 
+> You mean probably snd_pcm_open() here.
 
-Unfortunately there's still the outstanding issue with the third patch
-removing the FIFO flushes - looking at the datasheet I think we do need
-to clear the FIFOs, especially in the case where the PXA is running as
-slave and might've had clocks removed.  Section 14.4.7.2 explicitly says
-there are situations where the FIFO might not be drained and I'd really
-not be surprised if there were others.
+Yes, you are right.
 
-I'm out of time to look at this today - I expect that the fix is
-probably to move some version of the port reset change into this patch.
+> > snd_ctl_open(&ctl, snprint("hw:%i", i));
+> > </snip>
+> >
+> > Which your patch that costs three open()s.
+> 
+> It's similar to your patch. Two open calls. snd_pcm_open() does not use 
+> ctl device if a direct card index is specified.
+
+Hmm? The first thing snd_pcm_hw_open() does is calling
+snd_ctl_hw_open(). So with your code, the name will bre resolved and
+the ctl device opened and closed for that. And then shortly after the
+device will be reopened right-away and then kept open. In my code
+after the resolving I'd just keep the device open.
+
+Your code requires three open()s for this, mine required two. 
+
+> > And hardcodes "hw".
+> 
+> It's not relevant. Your code also hardcodes "hw" (and application should 
+> decide if hw: is a proper interface not alsa-lib - any defined device 
+> which accepts the card argument will work).
+
+The example code I gave doesn't hardcode it. You can specify any
+device as long as the stream info knows the card parameter properly.
+
+> > I really would like to know why my patch was so bad?
+> 
+> I do not think that an addition of extra argument to open() calls is good 
+> in this case. The card identification for open() calls is string anyway, 
+> because you may use syntax like 'hw:FirstHDACard' - see 'cat 
+> /proc/asound/cards' for string identification. All other extensions 
+> should be in the configuration area (in .conf files or configuration 
+> parsing code).
+
+Hmm? The whole point of my patch was to make ALSA devices a bit more
+like other devices, i.e. with persistancy of device symlinks and
+stuff. Also, AFAICS the snd_pcm_hw_open() call (and friends) are
+internal anyway?
+
+Anyway, given that your code has the same effect as mine, it's
+probably not worth dicussing this any further...
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
