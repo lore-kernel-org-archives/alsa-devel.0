@@ -1,19 +1,20 @@
-From: =?UTF-8?B?UmFwaGHDq2wgRG91cnNlbmF1ZA==?= <rdoursenaud@free.fr>
-Subject: Re: [PATCH 1/1] hdsp: allow firmware loading from
- inside the kernel
-Date: Tue, 12 May 2009 11:05:34 +0200
-Message-ID: <4A093BDE.8050703@free.fr>
-References: <4A091428.2000106@free.fr>	<s5hy6t2u8wh.wl%tiwai@suse.de>	<4A091B81.3050107@free.fr>	<s5hskjau7pg.wl%tiwai@suse.de>	<4A091FAF.9090400@free.fr>	<s5hpreeu6uo.wl%tiwai@suse.de>	<4A092467.1070007@free.fr>	<s5hljp2u614.wl%tiwai@suse.de>	<4A092830.8010602@free.fr>	<s5hhbzqu5l4.wl%tiwai@suse.de>	<4A092CD0.6070500@free.fr>
-	<s5hbppyu34q.wl%tiwai@suse.de>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: Master vs. Front/Rear/LFE/... elements
+Date: Tue, 12 May 2009 10:21:05 +0100
+Message-ID: <20090512092105.GD29889@sirena.org.uk>
+References: <20090506175824.GA30355@tango.0pointer.de>
+	<s5hbpq5s3fx.wl%tiwai@suse.de>
+	<ad2655cb0905120047g69887a4bg5e0794bbd21eac27@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2.infomaniak.ch (smtp2.infomaniak.ch [84.16.68.90])
-	by alsa0.perex.cz (Postfix) with ESMTP id C16BB103830
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 122D6103831
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 May 2009 11:05:38 +0200 (CEST)
-In-Reply-To: <s5hbppyu34q.wl%tiwai@suse.de>
+	Tue, 12 May 2009 11:21:07 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <ad2655cb0905120047g69887a4bg5e0794bbd21eac27@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,94 +24,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: James Courtier-Dutton <james.dutton@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Lennart Poettering <mznyfn@0pointer.de>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEExCgpUYWthc2hpIEl3
-YWkgYSDDqWNyaXQgOgo+IEF0IFR1ZSwgMTIgTWF5IDIwMDkgMTA6MDE6MjAgKzAyMDAsCj4gUmFw
-aGHDq2wgRG91cnNlbmF1ZCB3cm90ZToKPj4gVGFrYXNoaSBJd2FpIGEgw6ljcml0IDoKPj4+IEF0
-IFR1ZSwgMTIgTWF5IDIwMDkgMDk6NDE6MzYgKzAyMDAsCj4+PiBSYXBoYcOrbCBEb3Vyc2VuYXVk
-IHdyb3RlOgo+Pj4+IC0tLS0tQkVHSU4gUEdQIFNJR05FRCBNRVNTQUdFLS0tLS0KPj4+PiBIYXNo
-OiBTSEExCj4+Pj4KPj4+PiBUYWthc2hpIEl3YWkgYSDDqWNyaXQgOgo+Pj4+PiBBdCBUdWUsIDEy
-IE1heSAyMDA5IDA5OjI1OjI3ICswMjAwLAo+Pj4+PiBSYXBoYcOrbCBEb3Vyc2VuYXVkIHdyb3Rl
-Ogo+Pj4+Pj4gLS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQo+Pj4+Pj4gSGFzaDog
-U0hBMQo+Pj4+Pj4KPj4+Pj4+IFRha2FzaGkgSXdhaSBhIMOpY3JpdCA6Cj4+Pj4+Pj4gQXQgVHVl
-LCAxMiBNYXkgMjAwOSAwOTowNToxOSArMDIwMCwKPj4+Pj4+PiBSYXBoYcOrbCBEb3Vyc2VuYXVk
-IHdyb3RlOgo+Pj4+Pj4+PiAtLS0tLUJFR0lOIFBHUCBTSUdORUQgTUVTU0FHRS0tLS0tCj4+Pj4+
-Pj4+IEhhc2g6IFNIQTEKPj4+Pj4+Pj4KPj4+Pj4+Pj4gVGFrYXNoaSBJd2FpIGEgw6ljcml0IDoK
-Pj4+Pj4+Pj4+IEF0IFR1ZSwgMTIgTWF5IDIwMDkgMDg6NDc6MjkgKzAyMDAsCj4+Pj4+Pj4+PiBS
-YXBoYcOrbCBEb3Vyc2VuYXVkIHdyb3RlOgo+Pj4+Pj4+Pj4+IC0tLS0tQkVHSU4gUEdQIFNJR05F
-RCBNRVNTQUdFLS0tLS0KPj4+Pj4+Pj4+PiBIYXNoOiBTSEExCj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+
-PiBUYWthc2hpIEl3YWkgYSDDqWNyaXQgOgo+Pj4+Pj4+Pj4+PiBBdCBUdWUsIDEyIE1heSAyMDA5
-IDA4OjE2OjA4ICswMjAwLAo+Pj4+Pj4+Pj4+PiBSYXBoYcOrbCBEb3Vyc2VuYXVkIHdyb3RlOgo+
-Pj4+Pj4+Pj4+Pj4gRnJvbTogUmFwaGHDq2wgRG91cnNlbmF1ZCA8cmRvdXJzZW5hdWRAZnJlZS5m
-cj4KPj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+PiBBbGxvdyB0aGUgdXNlIG9mICB0aGUgRklSTVdB
-UkVfSU5fS0VSTkVMIG9wdGlvbiB3aXRoIGhkc3AgY2FyZHMgYW5kCj4+Pj4+Pj4+Pj4+PiBpbi1r
-ZXJuZWwgZHJpdmVyLgo+Pj4+Pj4+Pj4+PiBEaWQgaXQgcmVhbGx5IHdvcmsgd2l0aG91dCBwcm9i
-bGVtcz8KPj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4gVGFrYXNoaQo+Pj4+Pj4+
-Pj4+IFRlc3RlZCBvdmVyIHRoZSB3ZWVrZW5kIHdpdGggdHdvIG11bHRpZmFjZXMgaW4gbXkgREFX
-Lgo+Pj4+Pj4+Pj4+IEdvdCBubyBwcm9ibGVtLgo+Pj4+Pj4+Pj4gSW50ZXJlc3RpbmcuCj4+Pj4+
-Pj4+PiBEaWQgeW91IGJ1aWxkIHRoZSBmaXJtd2FyZSBmaWxlIGludG8gdGhlIGtlcm5lbCwgb3Ig
-bm90Pwo+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Cj4+Pj4+Pj4+PiBUYWthc2hpCj4+Pj4+Pj4+IFllcyBJ
-IGJ1aWx0IGFsbCBoZHNwIGZpbXdhcmUgZmlsZXMgKG11bHRpZmFjZV9maXJtd2FyZS5iaW4KPj4+
-Pj4+Pj4gbXVsdGlmYWNlX2Zpcm13YXJlX3JldjExLmJpbiBkaWdpZmFjZV9maXJtd2FyZS5iaW4K
-Pj4+Pj4+Pj4gZGlnaWZhY2VfZmlybXdhcmVfcmV2MTEuYmluKSBpbnRvIHRoZSBrZXJuZWwuCj4+
-Pj4+Pj4+IEl0J3MgdGhlIGFpbSBvZiB0aGlzIHBhdGNoLgo+Pj4+Pj4+IFdlbGwsIHRoZSBwcm9i
-bGVtIEknbSBjb25jZXJuZWQgaXMgdGhhdCB0aGUgZHJpdmVyIGNhbiBiZSBjb21waWxlZAo+Pj4+
-Pj4+IGluIGV2ZW4gaWYgeW91IGhhdmUgbm8gYnVpbHQtaW4gZmlybXdhcmUuICBBbmQgdGhlcmUg
-aXMgbm8gcmVzdHJpY3Rpb24KPj4+Pj4+PiBvciBkZXBlbmRlbmN5IGNoZWNrIGluIEtjb25maWcs
-IHNvIGZhci4KPj4+Pj4+Pgo+Pj4+Pj4+IENvdWxkIHlvdSB0ZXN0IGhvdyB0aGUga2VybmVsIGJl
-aGF2ZXMgd2l0aG91dCB0aGUgYnVpbHQtaW4gZmlybXdhcmU/Cj4+Pj4+Pj4gRG9lcyBpdCBoYW5n
-IG9yIGdpdmUgYW55IGNyaXRpY2FsIGVycm9yPwo+Pj4+Pj4+Cj4+Pj4+Pj4KPj4+Pj4+PiB0aGFu
-a3MsCj4+Pj4+Pj4KPj4+Pj4+PiBUYWthc2hpCj4+Pj4+PiBDb3VsZCB5b3UgYmUgbW9yZSBzcGVj
-aWZpYz8KPj4+Pj4+IEknbSBub3Qgc3VyZSB0byB1bmRlcnN0YW5kIHdoeSBpdCBjb3VsZCBiZSBh
-IHByb2JsZW0uCj4+Pj4+PiBEbyB5b3UgdGhpbmsgdGhhdCBpZiBJIHNldCBGSVJNV0FSRV9JTl9L
-RVJORUwgd2l0aG91dCBjb21waWxpbmcgdGhlCj4+Pj4+PiBmaXJtd2FyZShzKSBpbi1rZXJuZWwg
-dGhlIHJlcXVlc3RfZmlybXdhcmUoKSB3aWxsIG5vdCByZXNvbHZlIGFuZCBjYXVzZQo+Pj4+Pj4g
-YW4gZXJyb3I/Cj4+Pj4+IFllcywgZXhhY3RseS4KPj4+Pj4gcmVxdWVzdF9maXJtd2FyZSgpIHNo
-YWxsIGZhaWwgaW4gdGhhdCBjYXNlIGxpa2VseSBhZnRlciBhIGxvbmcKPj4+Pj4gdGltZS1vdXQg
-KHVubGVzcyB5b3UgaGF2ZSB0aGUgZmlybXdhcmUgZmlsZXMgaW4gaW5pdHJkKSBiZWNhdXNlIHRo
-ZXJlCj4+Pj4+IGlzIHJlYWxseSBubyBmaWxlIC8gZGF0YSBhdmFpbGFibGUgYXQgdGhlIHRpbWUg
-aXQncyBjYWxsZWQuCj4+Pj4+IEFuZCBJJ20gbm90IHN1cmUgd2hldGhlciB0aGlzIGNvdWxkIGxl
-YWQgdG8gYSBmYXRhbCBvcGVyYXRpb24gZXJyb3IuCj4+Pj4+Cj4+Pj4+Cj4+Pj4+IFRha2FzaGkK
-Pj4+PiBBRkFJSyB0aGlzIGlzIGhhbmRsZWQgaW4gdGhlIGNvZGUgKGZyb20gbGluZSA1MDgwKSBh
-bmQgc2hvdWxkIGxlYWQgdG8KPj4+PiAiSGFtbWVyZmFsbC1EU1A6IGNvdWxkbid0IGdldCBmaXJt
-d2FyZSBmcm9tIHVzZXJzcGFjZS4gdHJ5IHVzaW5nIGhkc3Bsb2FkZXIiCj4+PiBZZXAsIGEgZmFs
-bGJhY2sgbWVjaGFuaXNtIGlzIGZvdW5kIGluIGhkc3AgZHJpdmVyIGl0c2VsZi4KPj4+IEJ1dCB0
-aGUgZHJpdmVyIHByb2JlIGhhbmdzIGZvciB0b28gbG9uZyB0aW1lLCBhbmQgSSdtIGp1c3Qgd29y
-cmllZAo+Pj4gYWJvdXQgaXRzIGluZmx1ZW5jZSBvbiB0aGUgd2hvbGUga2VybmVsIGJvb3QtdXAu
-Cj4+Pgo+Pj4+IEknbSBidWlsZGluZyBhIGtlcm5lbCB0byB0ZXN0IHRoYXQgY2FzZS4KPj4+IFRo
-YW5rcy4KPj4+Cj4+Pgo+Pj4gVGFrYXNoaQo+PiBXb3csIHlvdSdyZSByaWdodCEgRGlkbid0IHRo
-aW5rIGFib3V0IHRoYXQuLi4KPj4KPj4gSXQgaGFuZ3MgZm9yIGFib3V0IDQ1cyBvbiA6Cj4+IEhh
-bW1lcmZhbGwtRFNQOiB3YWl0IGZvciBGSUZPIHN0YXR1cyA8PSAwIGZhaWxlZCBhZnRlciAzMCBp
-dGVyYXRpb25zCj4+IFJNRSBIYW1tZXJmYWxsIERTUCAwMDAwOjA1OjAyLjA6IGZpcm13YXJlOiBy
-ZXF1ZXN0aW5nCj4+IG11bHRpZmFjZV9maXJtd2FyZV9yZXYxMS5iaW4KPj4KPj4gYmVmb3JlIGdv
-aW5nIG9uIHdpdGggOgo+PiBIYW1tZXJmYWxsLURTUDogY2Fubm90IGxvYWQgZmlybXdhcmUgbXVs
-dGlmYWNlX2Zpcm13YXJlX3JldjExLmJpbgo+PiBIYW1tZXJmYWxsLURTUDogY291bGRuJ3QgZ2V0
-IGZpcm13YXJlIGZyb20gdXNlcnNwYWNlLiB0cnkgdXNpbmcgaGRzcGxvYWRlcgo+PiBIYW1tZXJm
-YWxsLURTUDogY2FyZCBpbml0aWFsaXphdGlvbiBwZW5kaW5nIDogd2FpdGluZyBmb3IgZmlybXdh
-cmUKPiAKPiBPSywgc28gaXQgZG9lc24ndCBsZWFkIHRvIGFueSBjcml0aWNhbCBlcnJvcj8KPiBU
-aGVuIGl0J3MgYmV0dGVyIHRoYW4gdGhlIHdvcnN0IGNhc2UgSSB0aG91Z2h0IG9mIDopCj4gCj4+
-IEkgd29uZGVyIHdoYXQgd291bGQgYmUgdGhlIGJlc3Qgd2F5IHRvIGRlYWwgd2l0aCB0aGF0IHdo
-aWxlIHN0aWxsCj4+IGVuYWJsaW5nIGluLWtlcm5lbCBmaXJtd2FyZS4KPiAKPiBXZWxsLCBpdCdz
-IGJhc2ljYWxseSBhIHByb2JsZW0gb2YgdGhlIHJlcXVlc3RfZmlybXdhcmUoKSBpdHNlbGYsIHNv
-Cj4gd2UgY2FuJ3QgZml4IHRoZSBiZWhhdmlvciBwcm9wZXJseSBpbiB0aGUgZHJpdmVyIHNpZGUu
-ICBUaGVyZSBpcyBhbgo+IG9wdGlvbiB0byB1c2UgKl9ub3dhaXQoKSBjYWxsLCBidXQgdGhpcyB3
-aWxsIGVuZCB1cCB3aXRoIGEgbWVzcyBvZgo+IGNvZGUgZmxvdywgSSdtIGFmcmFpZC4KPiAKPiBT
-bywgSSdtIGdvaW5nIHRvIGFwcGx5IHlvdXIgcGF0Y2guICBCdXQsIG1heWJlIHdlIHNob3VsZCBh
-ZGQgYSB3YXJuaW5nCj4gaW4gS2NvbmZpZyBjb21tZW50LCBzdWNoIGFzCj4gCj4gY29tbWVudCAi
-RG9uJ3QgZm9yZ2V0IHRvIGFkZCBidWlsdC1pbiBmaXJtd2FyZXMgZm9yIEhEU1AgZHJpdmVyIgo+
-IAlkZXBlbmRzIG9uIFNORF9IRFNQPXkKPiAKPiBvciBzby4uLiAgU3VnZ2VzdGlvbnMgb2YgYSBi
-ZXR0ZXIgdGV4dCBhcmUgYXBwcmVjaWF0ZWQuCj4gCj4gCj4gdGhhbmtzLAo+IAo+IFRha2FzaGkK
-Cm1tbSBzb3VuZHMgZ29vZCB0byBtZS4KV2l0aCB0aGUgcGF0Y2ggSSdtIGFib3V0IHRvIHByb3Bv
-c2UgdG8gY29ycmVjdCB0aGUgZmlybXdhcmVzIHBhdGggaXQKc2hvdWxkIGZpdCBtb3N0IHNpdHVh
-dGlvbnMuCgpUaGFua3MgYSBsb3QgZm9yIHlvdXIgaW5wdXQhCgotIC0tClJhcGhhw6tsIERvdXJz
-ZW5hdWQKLS0tLS1CRUdJTiBQR1AgU0lHTkFUVVJFLS0tLS0KVmVyc2lvbjogR251UEcgdjEuNC45
-IChHTlUvTGludXgpCkNvbW1lbnQ6IFVzaW5nIEdudVBHIHdpdGggTW96aWxsYSAtIGh0dHA6Ly9l
-bmlnbWFpbC5tb3pkZXYub3JnCgppRVlFQVJFQ0FBWUZBa29KTzlvQUNna1FhWkttTkFkWGFWVStn
-d0NnbUp6M2M1WU1idEY0S01Za1NGWC84bTIxCkw5Y0FuUmMyNXFWQkQ1N0hlVXRyaUEvdEREQkk2
-dk83Cj1SbkdHCi0tLS0tRU5EIFBHUCBTSUdOQVRVUkUtLS0tLQpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Tue, May 12, 2009 at 08:47:31AM +0100, James Courtier-Dutton wrote:
+
+> Once we have the global definition, we can then fix each driver to
+> comply with it. In some cases we will have to add virtual controls.
+
+...
+
+> I personally think that the user should set the global speaker
+> settings, the master, front, rear etc. controls and then just leave
+> them.
+> I think applications should only control their own PCM channel volume,
+> and not touch the master volume at all. PA could then further control
+> PCM channel volumes, by for example automatically attenuating the
+> sound of an application when it gets put in the backround, if the user
+
+This is starting to sound a lot like the stuff that's been talked about
+for the scenario API in an embedded context - it has a similar idea of
+having a central application managing the overall setup of the card and
+giving applications something simpler to work with:
+
+	http://www.slimlogic.co.uk/?p=40
+
+We don't want to force the use of per-application volume since that will
+be too expensive for some systems, but a system that arranges for there
+to be a standard control that the application should use for things like
+master volume can support either a per-application control or using the
+hardware control directly.
+
+It's not always going to be possible to provide a fixed setup in the
+driver since in systems like smartphones the arrangement of controls can
+change very substantially depending on software controlled 
