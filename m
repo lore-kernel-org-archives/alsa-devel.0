@@ -1,32 +1,21 @@
-From: Marek Peca <marek@duch.cz>
-Subject: Should snd_pcm_drop() interrupt snd_pcm_writei() call?
-Date: Tue, 12 May 2009 18:46:03 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0905121806240.8364@tesla>
+From: Karl Beldan <karl.beldan@gmail.com>
+Subject: Re: [PATCH 2/4] pxa2xx-i2s: Handle SACR1_DRPL and
+ SACR1_DREC separately
+Date: Tue, 12 May 2009 19:43:04 +0200
+Message-ID: <4A09B528.9050109@gmail.com>
+References: <4A03748B.1010302@gmail.com> <20090512160229.GK29889@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from max.feld.cvut.cz (max.feld.cvut.cz [147.32.192.36])
-	by alsa0.perex.cz (Postfix) with ESMTP id C596C10386F
+Received: from mail-fx0-f170.google.com (mail-fx0-f170.google.com
+	[209.85.220.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 29BA810386F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 May 2009 19:41:05 +0200 (CEST)
-Received: from localhost (unknown [192.168.200.4])
-	by max.feld.cvut.cz (Postfix) with ESMTP id 5F39E19F3303
-	for <alsa-devel@alsa-project.org>;
-	Tue, 12 May 2009 19:41:04 +0200 (CEST)
-Received: from max.feld.cvut.cz ([192.168.200.1])
-	by localhost (styx.feld.cvut.cz [192.168.200.4]) (amavisd-new,
-	port 10044)
-	with ESMTP id RJXrB73uwrMS for <alsa-devel@alsa-project.org>;
-	Tue, 12 May 2009 19:40:59 +0200 (CEST)
-Received: from imap.feld.cvut.cz (imap.feld.cvut.cz [147.32.192.34])
-	by max.feld.cvut.cz (Postfix) with ESMTP id B065419F336C
-	for <alsa-devel@alsa-project.org>;
-	Tue, 12 May 2009 19:40:59 +0200 (CEST)
-Received: from k335-169.felk.cvut.cz (k335-169.felk.cvut.cz [147.32.86.169])
-	by imap.feld.cvut.cz (Postfix) with ESMTPSA id 3BEE4FA003
-	for <alsa-devel@alsa-project.org>;
-	Tue, 12 May 2009 19:40:54 +0200 (CEST)
+	Tue, 12 May 2009 19:43:05 +0200 (CEST)
+Received: by fxm18 with SMTP id 18so134844fxm.32
+	for <alsa-devel@alsa-project.org>; Tue, 12 May 2009 10:43:04 -0700 (PDT)
+In-Reply-To: <20090512160229.GK29889@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,34 +25,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: Russell King <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, Eric Miao <eric.miao@marvell.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Matthieu Dumont <matthieu.dumont@mobile-devices.fr>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Mark Brown wrote:
+> On Fri, May 08, 2009 at 01:53:47AM +0200, Karl Beldan wrote:
+> 
+>> - hw_params enables both RPL and REC functions each time,
+>> enable the appropriate function in pxa2xx_i2s_trigger.
+>> - pxa2xx_i2s_shutdown disables i2s anytime one of RPL or REC
+>> function is off, turn it off only when both functions are off.
+>> - do not put the clk_i2s for no reason in pxa2xx_i2s_shutdown.
+> 
+>> Signed-off-by: Karl Beldan <karl.beldan@mobile-devices.fr>
+> 
+> I'm still seeing the behaviour I was before now I've applied patch 1.
+> To reproduce I'm looking at the clocks with a scope.  After startup I'm
+> starting a playback (aplay and mplayer have the same effect).  Once the
+> playback is finished (either normally or by killing the application) the
+> clocks are still present.  Restarting playback causes the clock to stop
+> immediately and the generation of a DMA error.  Subsequent iterations
+> repeat the same behaviour, as does recording.
+> 
+>>  	case SNDRV_PCM_TRIGGER_RESUME:
+>> @@ -252,13 +254,11 @@ static void pxa2xx_i2s_shutdown(struct snd_pcm_substream *substream,
+>>  		SAIMR &= ~SAIMR_RFS;
+>>  	}
+>>  
+>> -	if (SACR1 & (SACR1_DREC | SACR1_DRPL)) {
+>> +	if ((SACR1 & (SACR1_DREC | SACR1_DRPL)) == (SACR1_DREC | SACR1_DRPL)) {
+>>  		SACR0 &= ~SACR0_ENB;
+>>  		pxa_i2s_wait();
+>>  		clk_disable(clk_i2s);
+>>  	}
+> 
+> The problem happens because this code no longer triggers - since the
+> port is still being reset on startup if the DAI is inactive the first
+> patch will have no effect on DREC and DRPL, they'll be reset to their
+> power on default of enabled when startup() is first called.  Applying
+> your third patch which removes the port reset avoids that issue.
+> 
+Indeed, I should have put the port reset in 2/4 or in 1/4 rather than in
+3/4 !
 
-I would like to know, how should snd_pcm_drop() call influence 
-snd_pcm_writei() being simultaneously executed.
+> Unfortunately there's still the outstanding issue with the third patch
+> removing the FIFO flushes - looking at the datasheet I think we do need
+> to clear the FIFOs, especially in the case where the PXA is running as
+> slave and might've had clocks removed.  Section 14.4.7.2 explicitly says
+> there are situations where the FIFO might not be drained and I'd really
+> not be surprised if there were others.
+> 
+> I'm out of time to look at this today - I expect that the fix is
+> probably to move some version of the port reset change into this patch.
+I'd go for moving port reset into 2/4 (or 1/4 ?), 3/4 would just remove
+clk_disable(clk_i2s) and leave the FIFO flushes as is, and keeping 4/4.
+What do you say ?
 
-I expected, that after issuing snd_pcm_drop() (from another thread), the 
-snd_pcm_write*() in progress should be terminated almost immediately with 
-some return value (error or short write). According to my observation, 
-this seem to work on ALSA lib & driver 1.0.14rc3, snd_ali5451.
-
-However, it never or almost never works on another machine with ALSA lib 
-1.0.16 (Debian package libasound2 [1.0.16-2], driver unknown, sorry).
-There, the snd_pcm_write*() _never_returns_ after snd_pcm_drop(), and 
-remain stuck forever.
-
-I would like to ask you, which behaviour of snd_pcm_drop/snd_pcm_write* is 
-the correct one. I suppose the snd_pcm_write*() should be interrupted, 
-otherwise, an extra thread would be needed in many applications. However, 
-I don't know, why does not it work in the later version of ALSA.
-
-I have not found the answer in Doxygen, and since I am real ALSA newbie, I 
-gave up reading ALSA source, especially because I have seen different 
-behaviour among two different versions. Excuse my impatience.
-
-
-Thank you for a clarification.
-Best regards,
-  Marek.
+-- 
+Karl
