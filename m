@@ -1,20 +1,17 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: Master vs. Front/Rear/LFE/... elements
-Date: Tue, 12 May 2009 10:21:05 +0100
-Message-ID: <20090512092105.GD29889@sirena.org.uk>
-References: <20090506175824.GA30355@tango.0pointer.de>
-	<s5hbpq5s3fx.wl%tiwai@suse.de>
-	<ad2655cb0905120047g69887a4bg5e0794bbd21eac27@mail.gmail.com>
+From: jinjin xu <freebsdxjj@gmail.com>
+Subject: ALSA for SoC audio support full duplex problem
+Date: Tue, 12 May 2009 17:53:52 +0800
+Message-ID: <8fda62c20905120253u42a7f1f9i723888c44541b46f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 122D6103831
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.155])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8C0D7103830
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 May 2009 11:21:07 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <ad2655cb0905120047g69887a4bg5e0794bbd21eac27@mail.gmail.com>
+	Tue, 12 May 2009 11:53:53 +0200 (CEST)
+Received: by yw-out-1718.google.com with SMTP id 4so2595387ywq.2
+	for <alsa-devel@alsa-project.org>; Tue, 12 May 2009 02:53:52 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,38 +21,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: James Courtier-Dutton <james.dutton@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Lennart Poettering <mznyfn@0pointer.de>, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 12, 2009 at 08:47:31AM +0100, James Courtier-Dutton wrote:
+Dear All.
 
-> Once we have the global definition, we can then fix each driver to
-> comply with it. In some cases we will have to add virtual controls.
+I use 2.6.21.5-cfs-v19 on S3C6410(arm),use wm8987 sound card(i2s interface)
 
-...
+It is not use in full duplex.
+I grep and diff the drivers
 
-> I personally think that the user should set the global speaker
-> settings, the master, front, rear etc. controls and then just leave
-> them.
-> I think applications should only control their own PCM channel volume,
-> and not touch the master volume at all. PA could then further control
-> PCM channel volumes, by for example automatically attenuating the
-> sound of an application when it gets put in the backround, if the user
+ens1370.c:
 
-This is starting to sound a lot like the stuff that's been talked about
-for the scenario API in an embedded context - it has a similar idea of
-having a central application managing the overall setup of the card and
-giving applications something simpler to work with:
+  snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_ensoniq_playback1_ops);
 
-	http://www.slimlogic.co.uk/?p=40
+  snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_ensoniq_capture_ops);
 
-We don't want to force the use of per-application volume since that will
-be too expensive for some systems, but a system that arranges for there
-to be a standard control that the application should use for things like
-master volume can support either a per-application control or using the
-hardware control directly.
 
-It's not always going to be possible to provide a fixed setup in the
-driver since in systems like smartphones the arrangement of controls can
-change very substantially depending on software controlled 
+soc-core.c:
+
+        if (playback)
+        {
+
+                snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &soc_pcm_ops);
+
+        }
+
+        if (capture)
+        {
+
+                snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &soc_pcm_ops);
+        }
+
+
+ens1370.c use two different fops for playback and record(I test it in
+Vmware,It can run on full duplex)
+soc-core.c use the same fops for  playback and record
+
+It that the problem ?
+So how to fix it for support full duplex?
+
+Thanks!
