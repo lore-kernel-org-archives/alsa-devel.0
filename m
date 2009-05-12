@@ -1,24 +1,25 @@
 From: Jarkko Nikula <jhnikula@gmail.com>
 Subject: Re: [PATCH 1/1] ASoC: TWL4030: Wait RAMP_DELAY on
  headsetl_event: POST_PMD
-Date: Tue, 12 May 2009 14:52:29 +0300
-Message-ID: <20090512145229.bf93fb01.jhnikula@gmail.com>
+Date: Tue, 12 May 2009 15:02:46 +0300
+Message-ID: <20090512150246.2dac1488.jhnikula@gmail.com>
 References: <1242040465-10835-1-git-send-email-peter.ujfalusi@nokia.com>
 	<200905121350.26415.peter.ujfalusi@nokia.com>
 	<20090512141937.08450516.jhnikula@gmail.com>
 	<200905121431.41207.peter.ujfalusi@nokia.com>
+	<20090512145229.bf93fb01.jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ew0-f175.google.com (mail-ew0-f175.google.com
 	[209.85.219.175])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1484B103840
+	by alsa0.perex.cz (Postfix) with ESMTP id ECD86103840
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 May 2009 13:50:52 +0200 (CEST)
-Received: by ewy23 with SMTP id 23so4500783ewy.32
-	for <alsa-devel@alsa-project.org>; Tue, 12 May 2009 04:50:50 -0700 (PDT)
-In-Reply-To: <200905121431.41207.peter.ujfalusi@nokia.com>
+	Tue, 12 May 2009 14:01:05 +0200 (CEST)
+Received: by ewy23 with SMTP id 23so4506982ewy.32
+	for <alsa-devel@alsa-project.org>; Tue, 12 May 2009 05:01:05 -0700 (PDT)
+In-Reply-To: <20090512145229.bf93fb01.jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,31 +33,20 @@ To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "anuj.aggarwal@ti.com" <anuj.aggarwal@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "getarunks@gmail.com" <getarunks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 12 May 2009 14:31:41 +0300
-Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
+On Tue, 12 May 2009 14:52:29 +0300
+Jarkko Nikula <jhnikula@gmail.com> wrote:
 
-> > Do difference IMO.
+> > amixer sset 'HS ramp delay' '109/81/55 ms'
 > 
-> Is it better or worst?
-
-A day between the tests and no noticeable difference to my ears/memory.
-
-> Can you try also with:
+> Again a bit lower than with '55/40/27 ms' but now I hear silent beep
+> (!) when starting the aplay and about 5 s after stopping it followed
+> by the 'tuck'. Length of beep was less than half of second.
 > 
-Tests below are tested with your hack patch on top of your yesterday's
-patch.
-
-> amixer sset 'HS ramp delay' '55/40/27 ms'
-
-Probably a little bit lower 'tuck' than with '27/20/14 ms'.
-
-> amixer sset 'HS ramp delay' '109/81/55 ms'
-
-Again a bit lower than with '55/40/27 ms' but now I hear silent beep (!)
-when starting the aplay and about 5 s after stopping it followed by
-the 'tuck'. Length of beep was less than half of second.
-
-Probably this this is the issue reported by Anuj?
+> Probably this this is the issue reported by Anuj?
+> 
+Looks like the beep is caused by the ramp operation since beep is gone
+in power-down when reverting both of your patches but it's still present
+in power-up.
 
 
 -- 
