@@ -1,19 +1,17 @@
-From: =?UTF-8?B?UmFwaGHDq2wgRG91cnNlbmF1ZA==?= <rdoursenaud@free.fr>
-Subject: Re: [PATCH 1/1] hdsp: allow firmware loading from
- inside the kernel
-Date: Tue, 12 May 2009 09:25:27 +0200
-Message-ID: <4A092467.1070007@free.fr>
-References: <4A091428.2000106@free.fr>	<s5hy6t2u8wh.wl%tiwai@suse.de>	<4A091B81.3050107@free.fr>	<s5hskjau7pg.wl%tiwai@suse.de>	<4A091FAF.9090400@free.fr>
-	<s5hpreeu6uo.wl%tiwai@suse.de>
+From: javier Martin <javier.martin@vista-silicon.com>
+Subject: Audio blank samples after some seconds of playing
+Date: Tue, 12 May 2009 09:28:07 +0200
+Message-ID: <eedb5540905120028j20a9ff5as829e78ccb8a43dec@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2.infomaniak.ch (smtp2.infomaniak.ch [84.16.68.90])
-	by alsa0.perex.cz (Postfix) with ESMTP id E0985246D4
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id EB121103823
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 May 2009 09:25:28 +0200 (CEST)
-In-Reply-To: <s5hpreeu6uo.wl%tiwai@suse.de>
+	Tue, 12 May 2009 09:28:07 +0200 (CEST)
+Received: by yw-out-1718.google.com with SMTP id 4so2559577ywq.2
+	for <alsa-devel@alsa-project.org>; Tue, 12 May 2009 00:28:07 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,44 +21,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEExCgpUYWthc2hpIEl3
-YWkgYSDDqWNyaXQgOgo+IEF0IFR1ZSwgMTIgTWF5IDIwMDkgMDk6MDU6MTkgKzAyMDAsCj4gUmFw
-aGHDq2wgRG91cnNlbmF1ZCB3cm90ZToKPj4gLS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0Ut
-LS0tLQo+PiBIYXNoOiBTSEExCj4+Cj4+IFRha2FzaGkgSXdhaSBhIMOpY3JpdCA6Cj4+PiBBdCBU
-dWUsIDEyIE1heSAyMDA5IDA4OjQ3OjI5ICswMjAwLAo+Pj4gUmFwaGHDq2wgRG91cnNlbmF1ZCB3
-cm90ZToKPj4+PiAtLS0tLUJFR0lOIFBHUCBTSUdORUQgTUVTU0FHRS0tLS0tCj4+Pj4gSGFzaDog
-U0hBMQo+Pj4+Cj4+Pj4gVGFrYXNoaSBJd2FpIGEgw6ljcml0IDoKPj4+Pj4gQXQgVHVlLCAxMiBN
-YXkgMjAwOSAwODoxNjowOCArMDIwMCwKPj4+Pj4gUmFwaGHDq2wgRG91cnNlbmF1ZCB3cm90ZToK
-Pj4+Pj4+IEZyb206IFJhcGhhw6tsIERvdXJzZW5hdWQgPHJkb3Vyc2VuYXVkQGZyZWUuZnI+Cj4+
-Pj4+Pgo+Pj4+Pj4gQWxsb3cgdGhlIHVzZSBvZiAgdGhlIEZJUk1XQVJFX0lOX0tFUk5FTCBvcHRp
-b24gd2l0aCBoZHNwIGNhcmRzIGFuZAo+Pj4+Pj4gaW4ta2VybmVsIGRyaXZlci4KPj4+Pj4gRGlk
-IGl0IHJlYWxseSB3b3JrIHdpdGhvdXQgcHJvYmxlbXM/Cj4+Pj4+Cj4+Pj4+Cj4+Pj4+IFRha2Fz
-aGkKPj4+PiBUZXN0ZWQgb3ZlciB0aGUgd2Vla2VuZCB3aXRoIHR3byBtdWx0aWZhY2VzIGluIG15
-IERBVy4KPj4+PiBHb3Qgbm8gcHJvYmxlbS4KPj4+IEludGVyZXN0aW5nLgo+Pj4gRGlkIHlvdSBi
-dWlsZCB0aGUgZmlybXdhcmUgZmlsZSBpbnRvIHRoZSBrZXJuZWwsIG9yIG5vdD8KPj4+Cj4+Pgo+
-Pj4gVGFrYXNoaQo+PiBZZXMgSSBidWlsdCBhbGwgaGRzcCBmaW13YXJlIGZpbGVzIChtdWx0aWZh
-Y2VfZmlybXdhcmUuYmluCj4+IG11bHRpZmFjZV9maXJtd2FyZV9yZXYxMS5iaW4gZGlnaWZhY2Vf
-ZmlybXdhcmUuYmluCj4+IGRpZ2lmYWNlX2Zpcm13YXJlX3JldjExLmJpbikgaW50byB0aGUga2Vy
-bmVsLgo+PiBJdCdzIHRoZSBhaW0gb2YgdGhpcyBwYXRjaC4KPiAKPiBXZWxsLCB0aGUgcHJvYmxl
-bSBJJ20gY29uY2VybmVkIGlzIHRoYXQgdGhlIGRyaXZlciBjYW4gYmUgY29tcGlsZWQKPiBpbiBl
-dmVuIGlmIHlvdSBoYXZlIG5vIGJ1aWx0LWluIGZpcm13YXJlLiAgQW5kIHRoZXJlIGlzIG5vIHJl
-c3RyaWN0aW9uCj4gb3IgZGVwZW5kZW5jeSBjaGVjayBpbiBLY29uZmlnLCBzbyBmYXIuCj4gCj4g
-Q291bGQgeW91IHRlc3QgaG93IHRoZSBrZXJuZWwgYmVoYXZlcyB3aXRob3V0IHRoZSBidWlsdC1p
-biBmaXJtd2FyZT8KPiBEb2VzIGl0IGhhbmcgb3IgZ2l2ZSBhbnkgY3JpdGljYWwgZXJyb3I/Cj4g
-Cj4gCj4gdGhhbmtzLAo+IAo+IFRha2FzaGkKQ291bGQgeW91IGJlIG1vcmUgc3BlY2lmaWM/Ckkn
-bSBub3Qgc3VyZSB0byB1bmRlcnN0YW5kIHdoeSBpdCBjb3VsZCBiZSBhIHByb2JsZW0uCkRvIHlv
-dSB0aGluayB0aGF0IGlmIEkgc2V0IEZJUk1XQVJFX0lOX0tFUk5FTCB3aXRob3V0IGNvbXBpbGlu
-ZyB0aGUKZmlybXdhcmUocykgaW4ta2VybmVsIHRoZSByZXF1ZXN0X2Zpcm13YXJlKCkgd2lsbCBu
-b3QgcmVzb2x2ZSBhbmQgY2F1c2UKYW4gZXJyb3I/CgotIC0tClJhcGhhw6tsIERvdXJzZW5hdWQK
-LS0tLS1CRUdJTiBQR1AgU0lHTkFUVVJFLS0tLS0KVmVyc2lvbjogR251UEcgdjEuNC45IChHTlUv
-TGludXgpCkNvbW1lbnQ6IFVzaW5nIEdudVBHIHdpdGggTW96aWxsYSAtIGh0dHA6Ly9lbmlnbWFp
-bC5tb3pkZXYub3JnCgppRVlFQVJFQ0FBWUZBa29KSkdRQUNna1FhWkttTkFkWGFWVWlQd0NnMUEv
-cytTUzJxQ3dSRGMrRDBlTVJYVDdWCkhBRUFuMC9sSkx3Rlphb3loRGxTRnNQaE5tYUhUTkhNCj1U
-YzJMCi0tLS0tRU5EIFBHUCBTSUdOQVRVUkUtLS0tLQpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+I have a .wav file which lasts about 2 minutes.
+I am playing it with aplay. It works fine, but after some seconds of
+playing, I hear two blanks suddenly. After that, it continues playing fine
+till the end of the file.
+I have tried to increment buffer size and period size but I don't see any
+difference.
+Possition of blank samples seems to be quite random, but it always happens
+near the beggining of the file.
+
+Can you please give me some tip for debugging this problem or an idea of
+what more can I try?
+
+Thank you.
