@@ -1,23 +1,23 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 2/4] pxa2xx-i2s: Handle SACR1_DRPL
-	and	SACR1_DREC separately
-Date: Tue, 12 May 2009 15:34:13 +0100
-Message-ID: <20090512143412.GI29889@sirena.org.uk>
-References: <4A03748B.1010302@gmail.com> <20090508104229.GD5654@sirena.org.uk>
-	<20090511190504.GF20283@sirena.org.uk> <4A087FCF.2080304@gmail.com>
-	<20090511210729.GA4404@sirena.org.uk> <4A08A001.4050003@gmail.com>
-	<20090512085838.GB29889@sirena.org.uk> <4A094867.2010600@gmail.com>
-	<20090512103243.GH29889@sirena.org.uk> <4A096DBB.1080909@gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] control, hw,
+ rawmidi: accept control device node as card identifier when opening
+Date: Tue, 12 May 2009 16:40:24 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.0905121610420.25064@eeebox2.perex-int.cz>
+References: <20090511224130.GA10955@omega>
+	<alpine.LNX.2.00.0905120744260.25064@eeebox2.perex-int.cz>
+	<alpine.LNX.2.00.0905121336130.25064@eeebox2.perex-int.cz>
+	<20090512123229.GB29607@tango.0pointer.de>
+	<alpine.LNX.2.00.0905121433510.25064@eeebox2.perex-int.cz>
+	<20090512132447.GF29607@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E507C103849
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 94D0E103849
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 May 2009 16:34:15 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4A096DBB.1080909@gmail.com>
+	Tue, 12 May 2009 16:40:25 +0200 (CEST)
+In-Reply-To: <20090512132447.GF29607@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,78 +27,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Karl Beldan <karl.beldan@gmail.com>
-Cc: alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, Matthieu Dumont <matthieu.dumont@mobile-devices.fr>, liam.girdwood@wolfsonmicro.com, Eric Miao <eric.miao@marvell.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
+To: Lennart Poettering <mznyfn@0pointer.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 12, 2009 at 02:38:19PM +0200, Karl Beldan wrote:
-> Mark Brown wrote:
+On Tue, 12 May 2009, Lennart Poettering wrote:
 
-> > Yet they are being stopped by something...
+> On Tue, 12.05.09 14:42, Jaroslav Kysela (perex@perex.cz) wrote:
+>
+>>
+>> On Tue, 12 May 2009, Lennart Poettering wrote:
+>>
+>>> With my original patch there are no superfluous opens.
+>>
+>> If application uses more *open() calls from alsa-lib for one card (for
+>> example to open ctl handle and pcm handle), it's better to obtain card
+>> index at first, because each conversion requires one or more (card id)
+>> open/close sequence for control device to get card_info. Providing direct
+>> card index eliminates this conversion. It's just suggested optimization.
+>
+> I think if apps want to open ctl and hw at the same time the most
+> elegant way would be this:
+>
+> <snip>
+> snd_pcm_open(&pcm, "hw:/dev/snd/by-path/yaddayadda", ...);
+> snd_pcm_info(pcm, &info);
+> snd_ctl_open(&ctl, snprint("hw:%i", snd_pcm_info_get_card(info)));
+> </snip>
+>
+> With my patch that costs exactly two open() calls. It's also more
+> flexible since it will handle arbitrary device strings, doesn't need
+> to hardcode "hw:".
 
-> You said that clocks are NOT stopped when applying patch 2/4 without 1/4.
-> I detailed a fairly likely code path.
+The mentioned code will work with my patch as well. There is no 
+difference, because extended snd_card_get_index() is called from _*open() 
+callbacks when card argument is a string.
 
-They're stopped after every other playback; I can't remember at exactly
-what point things sorted themselves out but IIRC it was starting the
-second playback that stopped them.  I didn't look too closely since the
-behaviour was so obviously incorrect.
+> You seem to suggest this:
+>
+> <snip>
+> i = snd_card_index("hw:/dev/snd/by-path/yaddayadda");
 
-> > A repost is where you send exactly the same thing again.  When you say
+It should be: i = snd_card_index("/dev/snd/by-path/yaddayadda");
 
-> When I said I 'resent' it, my meaning was not to let you understand that I did not modify it obviously.
+> snd_hw_open(&hw, snprint("hw:%i", i));
 
-Unfortunately that was the effect; it's actually less uncommon than you
-might think for people to do just that.
+You mean probably snd_pcm_open() here.
 
-> > There's been enough stuff with the series that I've got a few alarm
-> > bells ringing, if only with obscure relationships between the patches.
+> snd_ctl_open(&ctl, snprint("hw:%i", i));
+> </snip>
+>
+> Which your patch that costs three open()s.
 
-> I could say the same about the current status and handling but I will
-> ask you to point precise points instead, please.
+It's similar to your patch. Two open calls. snd_pcm_open() does not use 
+ctl device if a direct card index is specified.
 
-It really is a case of alarm bells ringing - it's not one specific thing
-but rather a cluster of things that make me want to review in more
-detail, including the fact that I actually have the hardware to hand and
-use it fairly often.
+> And hardcodes "hw".
 
-> As of the current status of the driver there is not even full duplex,
-> maintainance is likewise.
+It's not relevant. Your code also hardcodes "hw" (and application should 
+decide if hw: is a proper interface not alsa-lib - any defined device 
+which accepts the card argument will work).
 
-I've used the driver for full duplex in the past; now you've pointed out
-these issues I suspect it only ever did so due to some race condition or
-other but it has been functional.
+> I really would like to know why my patch was so bad?
 
-> Could you point what is wrong in the code or comments ?
-> Nitpicking about "A repost is where you send exactly the same thing again." and talking so much about
+I do not think that an addition of extra argument to open() calls is good 
+in this case. The card identification for open() calls is string anyway, 
+because you may use syntax like 'hw:FirstHDACard' - see 'cat 
+/proc/asound/cards' for string identification. All other extensions 
+should be in the configuration area (in .conf files or configuration 
+parsing code).
 
-It's probably as well to just wait for me to review the current set of
-patches - I suspect the changes are good, I just need to check them in
-more detail to make sure that I understand what they do.
+ 					Jaroslav
 
-The main thing you could do in future is write changelogs that more
-fully explain what your patches are doing - make sure all the bases are
-covered and the motivation is explained.  For example, the description
-of patch 3 talked only about stream startup so the changes to suspend
-and resume were surprising.  Similarly, with patch 1 the fact that it
-isn't just cleaning up after other software and restoring the hardware
-to a known good state would've been useful to point out (remember that
-the reset values aren't visible in the code).
-
-> pb applying 2/4 without 1/4 really sucks.
-
-At the time I tested with the second patch you hadn't provided a fixed
-version of patch 1.  I generally try to apply as much as possible since
-this cuts down on the amount of effort required when the needed fixes
-are done.
-
-> Since I have no feedback from Maintainers, I am pinging the original
-> author hoping I won't disturb too much.
-
-The maintainer here is in effect a combination of me and Eric Maio, me
-as a result of it being part of ASoC so falling to me by default and
-Eric due to it being PXA hardware.  I'd certainly not expect anyone else
-to review them as a matter of course.
-
-BTW, please fix your MUA to wrap at 80 characters or so - it makes
-things easier to read.
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
