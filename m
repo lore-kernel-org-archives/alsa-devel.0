@@ -1,16 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.31
-Date: Tue, 12 May 2009 11:25:29 +0100
-Message-ID: <20090512102528.GA5488@rakim.wolfsonmicro.main>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 2/4] pxa2xx-i2s: Handle SACR1_DRPL
+	and	SACR1_DREC separately
+Date: Tue, 12 May 2009 11:32:43 +0100
+Message-ID: <20090512103243.GH29889@sirena.org.uk>
+References: <4A03748B.1010302@gmail.com> <20090508104229.GD5654@sirena.org.uk>
+	<20090511190504.GF20283@sirena.org.uk> <4A087FCF.2080304@gmail.com>
+	<20090511210729.GA4404@sirena.org.uk> <4A08A001.4050003@gmail.com>
+	<20090512085838.GB29889@sirena.org.uk> <4A094867.2010600@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4CD7324714
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id D1D63103838
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 May 2009 12:25:30 +0200 (CEST)
+	Tue, 12 May 2009 12:32:44 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <4A094867.2010600@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,48 +26,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Karl Beldan <karl.beldan@gmail.com>
+Cc: Eric Miao <eric.miao@marvell.com>, alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Matthieu Dumont <matthieu.dumont@mobile-devices.fr>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit bec4c99e8637b5b8bd4b0513eacb51da25885e3b:
-  Mark Brown (1):
-        ASoC: Fix file patterns for PXA sound drivers
+On Tue, May 12, 2009 at 11:59:03AM +0200, Karl Beldan wrote:
+> Mark Brown wrote:
 
-are available in the git repository at:
+> > That doesn't seem to tie up - I can see the initialisation changing the
+> > behaviour on first run but it seems surprising that this should happen
+> > on subsequent runs too.  Alternatively, is your initialisation patch
+> > safe to apply by itself?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.31
+> Well 2/4 stops the clocks only if both REC and RPL are disabled.
+> Without 1/4 you end up with REC enabled at startup.
+> In a scenario where you have never used REC you end up RPLing with REC always on.
+> REC being on at shutdown(),clocks won't stop.
 
-Joonyoung Shim (1):
-      ASoC: TWL4030: change DAPM for analog microphone selection
+Yet they are being stopped by something...
 
-Mark Brown (3):
-      ASoC: Fix up CODEC DAI formats for big endian CPUs
-      ASoC: Enforce symmetric rates for PXA2xx I2S
-      Merge branch 'for-2.6.30' into for-2.6.31
+> > As previously discussed you need to rework the patch to not do the reset
+> > on initial probe not when the module is loaded, you need to address this
+> > rather than reposting.
 
-Mike Rapoport (3):
-      ASoC: soc-core: fix crash when removing not instantiated card
-      pxa2xx-ac97: fix reset gpio mode setting
-      ASoC: em-x270: make the driver support also eXeda and CM-X300 machines
+> The patch in question is moving the reset in probe rather than module init - with comment updated.
+> What is wrong ?
 
-Roel Kluin (1):
-      ASoC: remove driver_data direct access of struct device
+A repost is where you send exactly the same thing again.  When you say
+you're reposting something it means you've not made any changes; if you
+say that's what you're doing and your code has problems that need to be
+fixed it's fairly obvious that all the previous comments are going to
+continue to apply.
 
-Sergey Lapin (1):
-      ASoC: AFEB9260 driver
+> > I'll try to find time to re-review the series but I'm going to need to
+> > sit down with the datasheet and check this in much more detail.
 
- sound/arm/pxa2xx-ac97-lib.c        |    2 +-
- sound/soc/atmel/Kconfig            |    8 ++
- sound/soc/atmel/Makefile           |    1 +
- sound/soc/atmel/snd-soc-afeb9260.c |  203 ++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/twl4030.c         |   52 ++++------
- sound/soc/codecs/wm8400.c          |    4 +-
- sound/soc/codecs/wm8731.c          |    4 +-
- sound/soc/codecs/wm8753.c          |    4 +-
- sound/soc/pxa/Kconfig              |    4 +-
- sound/soc/pxa/em-x270.c            |    9 +-
- sound/soc/pxa/pxa2xx-i2s.c         |    1 +
- sound/soc/soc-core.c               |   43 ++++++++
- 12 files changed, 289 insertions(+), 46 deletions(-)
- create mode 100644 sound/soc/atmel/snd-soc-afeb9260.c
+> For 1/4 and 2/4 there should not be great need, Really.
+
+There's been enough stuff with the series that I've got a few alarm
+bells ringing, if only with obscure relationships between the patches.
