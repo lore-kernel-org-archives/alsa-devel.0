@@ -1,18 +1,20 @@
 From: Karl Beldan <karl.beldan@gmail.com>
-Subject: [PATCH 4/4] pxa2xx-i2s: Fix suspend/resume
-Date: Wed, 13 May 2009 22:04:27 +0200
-Message-ID: <4A0B27CB.9070600@gmail.com>
+Subject: Re: [PATCH 0/4 v2] pxa2xx-i2s: Rework
+Date: Wed, 13 May 2009 22:07:42 +0200
+Message-ID: <4A0B288E.4080603@gmail.com>
+References: <4A0B27AC.5090101@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ew0-f175.google.com (mail-ew0-f175.google.com
 	[209.85.219.175])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8F16410392E
+	by alsa0.perex.cz (Postfix) with ESMTP id 0525D1038EF
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 May 2009 22:04:30 +0200 (CEST)
-Received: by mail-ew0-f175.google.com with SMTP id 23so1084011ewy.32
-	for <alsa-devel@alsa-project.org>; Wed, 13 May 2009 13:04:30 -0700 (PDT)
+	Wed, 13 May 2009 22:07:46 +0200 (CEST)
+Received: by ewy23 with SMTP id 23so1086854ewy.32
+	for <alsa-devel@alsa-project.org>; Wed, 13 May 2009 13:07:46 -0700 (PDT)
+In-Reply-To: <4A0B27AC.5090101@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,56 +28,16 @@ To: Mark Brown <broonie@sirena.org.uk>
 Cc: Russell King <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, Eric Miao <eric.miao@marvell.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Matthieu Dumont <matthieu.dumont@mobile-devices.fr>
 List-Id: alsa-devel@alsa-project.org
 
-pxa2xx_i2s_resume is :
- - unconditionnaly setting SACR0_ENB
- - unsetting SACR0_ENB in saved SACR0 pxa_i2s.sacr0
-fix these.
+Karl Beldan wrote:
+> Following is a rework of the i2s code for the pxa.
+> I tested it with the ac97 clock as the master clock.
+> 
+> Feedbacks are welcome.
+> 
+> 
+> Diff with initial version:
 
-In pxa2xx_i2s_{resume,suspend}, save/restore registers even
-when !dai->active.
-
-Signed-off-by: Karl Beldan <karl.beldan@mobile-devices.fr>
----
- sound/soc/pxa/pxa2xx-i2s.c |   11 +++--------
- 1 files changed, 3 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
-index a423637..efe499e 100644
---- a/sound/soc/pxa/pxa2xx-i2s.c
-+++ b/sound/soc/pxa/pxa2xx-i2s.c
-@@ -262,9 +262,6 @@ static void pxa2xx_i2s_shutdown(struct snd_pcm_substream
-*substream,
- #ifdef CONFIG_PM
- static int pxa2xx_i2s_suspend(struct snd_soc_dai *dai)
- {
--	if (!dai->active)
--		return 0;
--
- 	/* store registers */
- 	pxa_i2s.sacr0 = SACR0;
- 	pxa_i2s.sacr1 = SACR1;
-@@ -279,16 +276,14 @@ static int pxa2xx_i2s_suspend(struct snd_soc_dai *dai)
-
- static int pxa2xx_i2s_resume(struct snd_soc_dai *dai)
- {
--	if (!dai->active)
--		return 0;
--
- 	pxa_i2s_wait();
-
--	SACR0 = pxa_i2s.sacr0 &= ~SACR0_ENB;
-+	SACR0 = pxa_i2s.sacr0 & ~SACR0_ENB;
- 	SACR1 = pxa_i2s.sacr1;
- 	SAIMR = pxa_i2s.saimr;
- 	SADIV = pxa_i2s.sadiv;
--	SACR0 |= SACR0_ENB;
-+
-+	SACR0 = pxa_i2s.sacr0;
-
- 	return 0;
- }
--- 
-1.6.3.rc1.34.g0be9b
+arf, I missed the v2 version suffix for the serie, sorry.
 
 -- 
 Karl
