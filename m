@@ -1,22 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/1] ASoC: TWL4030: Wait RAMP_DELAY
-	on	headsetl_event: POST_PMD
-Date: Wed, 13 May 2009 14:05:49 +0100
-Message-ID: <20090513130548.GB10035@sirena.org.uk>
-References: <1242040465-10835-1-git-send-email-peter.ujfalusi@nokia.com>
-	<200905121616.08596.peter.ujfalusi@nokia.com>
-	<20090512165625.e9852d18.jhnikula@gmail.com>
-	<200905131557.09731.peter.ujfalusi@nokia.com>
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: DMA over run on playback
+Date: Wed, 13 May 2009 09:08:17 -0400
+Message-ID: <9e4733910905130608u63a924cam25dca6af929ec82b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2AAC5103894
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id 44FC11038AB
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 May 2009 15:05:53 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200905131557.09731.peter.ujfalusi@nokia.com>
+	Wed, 13 May 2009 15:08:19 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 4so430188qwk.56
+	for <alsa-devel@alsa-project.org>; Wed, 13 May 2009 06:08:18 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,18 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "getarunks@gmail.com" <getarunks@gmail.com>, "anuj.aggarwal@ti.com" <anuj.aggarwal@ti.com>
+To: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 13, 2009 at 03:57:09PM +0300, Peter Ujfalusi wrote:
+There's a long thread over on the pulse list about glitch free
+playback. The glitches they are encountering are caused by CPU
+scheduling latency.  They are trying to fix this by setting HZ up to
+1000 and constantly polling the audio DMA queue to keep it 99% full.
 
-> Mark: About the  power up and down sequences in the soc-dapm.c file: are they 
-> written in stone, or is it possible to make some - I think - minor 
-> modification to the sequences?
+This doesn't seem like the right solution to me. It is fixing the
+symptom not the cause. The cause is 200-300ms scheduling latency. The
+source of that needs to be tracked down and fixed in the kernel.  But
+we have to live with the latencies until they are fixed.
 
-The change you've made is to power the amplifiers down after the mixers.
-That's going to cause problems on other systems - the result is going to
-be that the amplifiers end up amplifying any noise the mixers make on
-the way down which isn't good.  There's bits of the sequence that can be
-fairly readily reordered but I'd worry about that particular change.
+The strategy of checking the queue at 1000Hz works but it is very
+inefficient. The underlying problem is that the buffer ALSA is using
+is too small on systems with 300ms latency.  The buffer is just big
+enough to cover 300ms so they rapidly check and fill it at 1000Hz to
+ensure that it is full if the 300ms latency strikes.
+
+On my hardware with period interrupts ALSA is only checking the buffer
+at 8Hz. Since I'm checking appl_ptr I know when DMA over runs the
+buffers. This allows me to insert silence and I could indicated this
+condition to ALSA if there was a mechanism for doing so. ALSA could
+use this over run knowledge to measure scheduling latency and adjust
+the buffering.
+
+But the DMA interface between ALSA and the driver has been fixed at
+stream creation time. There's no way to dynamically alter it (like
+window size changes in TCP/IP).  With networking you get a list of
+buffers to send. As you send these buffers you mark them sent. The
+core is free to hand you buffers straight from user space or do copies
+and use internal ring buffers. The network driver just gets a list of
+physical addresses to send. This buffer bookkeeping could occur in
+snd_pcm_period_elapsed().
+
+A dynamic chaining mechanism allows you to alter the buffering
+mid-stream. If the driver indication a DMA over run error this tells
+ALSA that it needs to insert another buffer. After a while these
+errors will stop and ALSA will have measured worst case CPU scheduling
+latency. From then on it will know the exact size of buffering needed
+for the kernel it it running on and it can use this knowledge at
+stream creation time. Now filling the buffer at 8Hz or lower will work
+and you don't have to spend the power associated with 1000Hz timer
+interrupts.
+
+-- 
+Jon Smirl
+jonsmirl@gmail.com
