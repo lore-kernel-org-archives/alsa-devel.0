@@ -1,18 +1,19 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: Re: Intel HDA fix for Macbook 3,1 and newer
-Date: Wed, 13 May 2009 19:16:06 +0300
-Message-ID: <4A0AF246.4060207@pardus.org.tr>
-References: <4A0AD9BE.7070808@letorbi.de>	<4A0AE9FB.7010502@pardus.org.tr>
-	<s5hk54lvw8p.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/1] Add AIC3106 support.
+Date: Wed, 13 May 2009 17:18:30 +0100
+Message-ID: <20090513161829.GA3629@sirena.org.uk>
+References: <200905091720.n49HKTSx020571@localhost.localdomain>
+	<A24693684029E5489D1D202277BE89443E39393F@dlee02.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pardus.org.tr (comar.pardus.org.tr [193.140.100.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 880D21038BF
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id BD1051038BF
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 May 2009 18:16:03 +0200 (CEST)
-In-Reply-To: <s5hk54lvw8p.wl%tiwai@suse.de>
+	Wed, 13 May 2009 18:18:30 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <A24693684029E5489D1D202277BE89443E39393F@dlee02.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,43 +23,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: "Ambrose, Martin" <martin@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Did you try the latest alsa-driver snapshot?  It already contains a
-> patch to support Macbook 5,1 (Aluminium).  The tarball is found at:
->    ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
->
->
-> Takashi
->   
+On Wed, May 13, 2009 at 10:28:23AM -0500, Ambrose, Martin wrote:
 
-Yes I already tried it, no effects. I then thought that it was aimed at
-MB51 not MBP51:
+> Signed-off-by: Steve Chen <schen@mvista.com>
+> Signed-off-by: Martin Ambrose <martin@ti.com>
 
-mecbuk 2009 # cat /sys/module/snd_hda_intel/parameters/model
-mb51,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
+You should really provide a changelog explaining what's going on with
+the chip here, especially with regard to the effect on the other devices
+that are supported.
 
-The subsystem ID of my ALC889A codec is : 0x106b4000
-The mb51 quirk is automatically applied to :
+Please also always try to remember to CC the maintainers for things on
+patch submissions.
 
-+               case 0x106b3f00: /* Macbook 5,1 */
-+                       board_config = ALC885_MB5;
-+                       break;
+> +static enum aic3x_codec_variant codec_variant;
 
-so it seems that the codecs differ.
+This shouldn't be static data, it should be stored in the private data
+for the codec in order to account for future support for multiple codecs.
 
+> -static int aic3x_write(struct snd_soc_codec *codec, unsigned int reg,
+> -		       unsigned int value)
+> +static int _aic3x_write(struct snd_soc_codec *codec, unsigned int reg,
+> +			unsigned int value)
 
-I actually made it work by changing VREF of Node[0x18] PIN from HIZ to
-any of 50,80 or 100.
-This fixed the sound, also enabling the surround slider which vastly
-improves the sound quality and loudness.
+Please come up with a better name for this.
 
-But still there are problems with the headphone/internal speaker
-functioning. If you think that this will require
-another model quirk for patch_sigmatel, I really want to get involved on
-providing the necessary informations to you.
+> +
+> +	/* adjust for page 1 before updating hardware if necessary */
+> +	if (data[0] >= AIC3X_GEN_PG1_BEG)
+> +		data[0] -= AIC3X_GEN_PG1_BEG;
+> +
 
-Thanks,
+You really need some comments explaining what's going on with the
+register paging stuff here.
+
+> +	cur_pg = aic3x_read_reg_cache(codec, 0);
+> +	if (reg < pg0_end)
+> +		reg_pg = 0;
+> +	else if ((reg >= AIC3X_GEN_PG1_BEG) && (reg < pg1_end))
+> +		reg_pg = 1;
+> +	else
+> +		return -EIO;
+
+Should be a different return code, probably -EINVAL or something.
+
+> +static int tlv320aic3x_dual_reg_info(struct snd_kcontrol *kcontrol,
+> +				     struct snd_ctl_elem_info *uinfo)
+> +{
+> +	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+> +	uinfo->count = 1;
+> +	uinfo->value.integer.min = 0;
+> +	uinfo->value.integer.max = 0xffff;
+> +	return 0;
+> +}
+
+Is this true for all of these registers?
+
+> +static int tlv320aic3x_dual_reg_put(struct snd_kcontrol *kcontrol,
+> +				    struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+> +	int err;
+> +	int reg_msb = kcontrol->private_value & 0xff;
+> +	int reg_lsb = (kcontrol->private_value >> 8) & 0xff;
+> +	int val_msb, val_lsb;
+> +
+> +	val_msb = (ucontrol->value.integer.value[0] >> 8) & 0xff;
+> +	val_lsb = ucontrol->value.integer.value[0] & 0xff;
+> +
+> +	/* convert unsigned int to 2's complement */
+> +	val_msb ^= 0x80;
+> +
+> +	err = snd_soc_update_bits(codec, reg_msb, 0xff, val_msb);
+> +	if (err < 0)
+> +		return err;
+
+Just do the register write?
+
+> +#define TLV320AIC3X_DUAL_R(xname, page, reg_msb, reg_lsb) \
+> +{      .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
+> +	.info = tlv320aic3x_dual_reg_info, \
+> +	.get = tlv320aic3x_dual_reg_get, .put = tlv320aic3x_dual_reg_put, \
+> +	.private_value = ((reg_msb) + page) | (((reg_lsb) + page) << 8) }
+> +
+> +#define TLV320AIC3X_PG1_DUAL_R(xname, reg_msb, reg_lsb) \
+> +	TLV320AIC3X_DUAL_R(xname, AIC3X_GEN_PG1_BEG, reg_msb, reg_lsb)
+
+Given that your register write code hides the register pages is there
+any need for this to know anything about them?
+
+> +	/* setup register cache sizes */
+> +	if (codec_variant == AIC3106_CODEC)
+> +		pg1_end = AIC3106_PG1_END;
+> +
+
+This doesn't feel very well joined up with the way you've supported this
+in the register cache - I'd expect the register code to know about the
+maximum register address and be able to check that attempts aren't being
+made to use the second page on the less complex codecs.
+
+It'd also be better to write all of these as switch statements so that
+any further devices can be supported more readily.
+
+> @@ -284,6 +292,7 @@ int aic3x_button_pressed(struct snd_soc_codec *codec);
+>  struct aic3x_setup_data {
+>  	int i2c_bus;
+>  	unsigned short i2c_address;
+> +	enum aic3x_codec_variant variant;
+>  	unsigned int gpio_func[2];
+>  };
+
+It'd be nice to convert the driver to use the standard I2C probing
+stuff, though this is not essential to the patch.
