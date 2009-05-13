@@ -1,16 +1,20 @@
-From: Le Torbi <public@letorbi.de>
-Subject: Intel HDA fix for Macbook 3,1 and newer
-Date: Wed, 13 May 2009 16:31:26 +0200
-Message-ID: <4A0AD9BE.7070808@letorbi.de>
+From: Daniel Chen <seven.steps@gmail.com>
+Subject: Re: asoundconf removed from alsa-utils?
+Date: Wed, 13 May 2009 11:12:04 -0400
+Message-ID: <604760770905130812s36a5ab7em63d6627f70d69c66@mail.gmail.com>
+References: <9203434.1242220124470.JavaMail.root@mswamui-andean.atl.sa.earthlink.net>
+	<alpine.LNX.2.00.0905131527010.25064@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lvps87-230-79-166.dedicated.hosteurope.de
-	(lvps87-230-79-166.dedicated.hosteurope.de [87.230.79.166])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2155F10388B
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.156])
+	by alsa0.perex.cz (Postfix) with ESMTP id A1EBB24800
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 May 2009 16:32:09 +0200 (CEST)
+	Wed, 13 May 2009 17:12:05 +0200 (CEST)
+Received: by yw-out-1718.google.com with SMTP id 4so482194ywq.2
+	for <alsa-devel@alsa-project.org>; Wed, 13 May 2009 08:12:04 -0700 (PDT)
+In-Reply-To: <alpine.LNX.2.00.0905131527010.25064@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,30 +24,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi guys,
+On Wed, May 13, 2009 at 9:28 AM, Jaroslav Kysela <perex@perex.cz> wrote:
+> asoundconf is probably an Ubuntu specific tool. We do not maintain this
+> utility. Ask on appropriate place.
 
-I'm new to this list and never contributed anything to such a big
-open-source project like ALSA, so please forgive me if I make some
-newbie mistakes.
-But back the the important stuff: I own a MacBook 3,1 and experienced
-some sound issues with this. I didn't have no sound, but the sound was
-quite low in quality and volume. After some research and a lot of wrong
-ways I stumbled upon bug 0004086 "MacBook 4,1 sounds tinny or not at all
-" in the ALSA bug tracking system
-(https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4086) and
-managed to fix it.
-Any details can be found in the bug report as well as a link to my
-patch. My questions now are:
-
-1. Could an exprineced ALSA-Coder check my patch for bugs or "newbie 
-code glitches"?
-2. What do I have to do, to get my patch in the official code repository?
-
-
-Thanks in advance for any help.
-
-Bai
-Le Torbi
+Correct - asoundconf was developed for Debian and Ubuntu but has been
+removed from Debian unstable's (and Ubuntu Karmic's) alsa-utils. There
+are no plans to resurrect or maintain it beyond the existing support
+life cycles of the stable releases.
