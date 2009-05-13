@@ -1,21 +1,23 @@
-From: Laurent Pinchart <laurent.pinchart@skynet.be>
-Subject: Avoiding buffer underruns in the hardware interrupt
-	handler
-Date: Wed, 13 May 2009 23:24:25 +0200
-Message-ID: <200905132324.26334.laurent.pinchart@skynet.be>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: WM9712 - Big and little endian format conversion.
+Date: Wed, 13 May 2009 22:44:39 +0100
+Message-ID: <20090513214439.GA24973@sirena.org.uk>
+References: <9e4733910905131055v4eb487dhf5d410ae5d6b1a52@mail.gmail.com>
+	<20090513175959.GB27909@sirena.org.uk>
+	<9e4733910905131108n4e109dc5xd4c11056b95b33a4@mail.gmail.com>
+	<20090513181448.GA23738@rakim.wolfsonmicro.main>
+	<9e4733910905131118o6d96c02au3907b3f6cd5203b2@mail.gmail.com>
+	<9e4733910905131120v663486b2j9b80340dfd65616f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perceval.irobotique.be (perceval.irobotique.be [92.243.18.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 314FD24858
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 285272482A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 May 2009 23:21:01 +0200 (CEST)
-Received: from ravenclaw.localnet (153.132-240-81.adsl-dyn.isp.belgacom.be
-	[81.240.132.153])
-	by perceval.irobotique.be (Postfix) with ESMTPSA id 4856D35B22
-	for <alsa-devel@alsa-project.org>; Wed, 13 May 2009 21:20:56 +0000 (UTC)
+	Wed, 13 May 2009 23:44:40 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <9e4733910905131120v663486b2j9b80340dfd65616f@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,34 +27,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi everybody.
+On Wed, May 13, 2009 at 02:20:46PM -0400, Jon Smirl wrote:
+> On Wed, May 13, 2009 at 2:18 PM, Jon Smirl <jonsmirl@gmail.com> wrote:
 
-Disclaimer: I'm new with ALSA development and I'm trying to digest the large 
-amount of information I'm overflowed with, so please bear with possibly stupid 
-help requests.
+> > Adding S32_BE works for me:
 
-I'm writing an ALSA driver for a playback device. Unlike most sound cards, 
-this device uses private memory for its audio buffer. I thus need to manually 
-copy data from the ALSA buffer to the device buffer in the driver.
+> > #define SND_SOC_STD_AC97_FMTS (SNDRV_PCM_FMTBIT_S16_LE |\
+> > ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? SNDRV_PCM_FMTBIT_S32_LE |\
+> > ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? SNDRV_PCM_FMTBIT_S32_BE)
 
-The device audio buffer is quite small, and for this reason I'd rather not use 
-the copy/silence callbacks, but copy data from the ALSA buffer to the device 
-in interrupt.
+> Would it work to just put every format here and let the format be
+> controlled by the platform and CPU DAI?
 
-The device might generate interrupts a bit faster than what would be expected 
-from sampling rate, so I need to check in the interrupt handler how much data 
-the ALSA buffer holds. To do so I need to maintain a "hardware pointer" in the 
-driver and to access the "user pointer" on the other side of the buffer.
+Not quite - there's a bunch of things like the S/PDIF stuff which will
+almost certainly not do anything constructive in one of the generic AC97
+slots without the CODEC and/or CPU doing magic to them.  Also note that
+the core now fixes up CODEC formats on registration so both _BE and _LE
+variants always get set if one is set.  That means that for preference
+I'd use the _LE variants here since it's what all the existing CODEC
+drivers are doing.
 
-I haven't found a clear API to access that second pointer. What is the 
-best/preferred way to find out how much data the ALSA buffer holds ? I suppose 
-I will need to perform some locking when accessing the "user pointer", I will 
-also appreciate advices regarding which mutex/spinlock I should use for that 
-purpose.
-
-Best regards,
-
-Laurent Pinchart
+We should probably also squash all the 20 and 24 bit variants together,
+I need to go and check that there's nothing that'll get confused by
+that.
