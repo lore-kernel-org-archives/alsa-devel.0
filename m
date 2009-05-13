@@ -1,17 +1,21 @@
-From: Karl Beldan <karl.beldan@gmail.com>
-Subject: [PATCH 4/4 v2] pxa2xx-i2s: Fix suspend/resume
-Date: Wed, 13 May 2009 22:16:59 +0200
-Message-ID: <4A0B2ABB.5040904@gmail.com>
+From: Laurent Pinchart <laurent.pinchart@skynet.be>
+Subject: Avoiding buffer underruns in the hardware interrupt
+	handler
+Date: Wed, 13 May 2009 23:24:25 +0200
+Message-ID: <200905132324.26334.laurent.pinchart@skynet.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.148])
-	by alsa0.perex.cz (Postfix) with ESMTP id 47498103947
+Received: from perceval.irobotique.be (perceval.irobotique.be [92.243.18.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 314FD24858
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 May 2009 22:17:03 +0200 (CEST)
-Received: by ey-out-1920.google.com with SMTP id 26so224142eyw.56
-	for <alsa-devel@alsa-project.org>; Wed, 13 May 2009 13:17:02 -0700 (PDT)
+	Wed, 13 May 2009 23:21:01 +0200 (CEST)
+Received: from ravenclaw.localnet (153.132-240-81.adsl-dyn.isp.belgacom.be
+	[81.240.132.153])
+	by perceval.irobotique.be (Postfix) with ESMTPSA id 4856D35B22
+	for <alsa-devel@alsa-project.org>; Wed, 13 May 2009 21:20:56 +0000 (UTC)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,60 +25,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: Russell King <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, Eric Miao <eric.miao@marvell.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Matthieu Dumont <matthieu.dumont@mobile-devices.fr>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-pxa2xx_i2s_resume is :
- - unconditionnaly setting SACR0_ENB
- - unsetting SACR0_ENB in saved SACR0 pxa_i2s.sacr0
-fix these.
+Hi everybody.
 
-In pxa2xx_i2s_{resume,suspend}, save/restore registers even
-when !dai->active.
+Disclaimer: I'm new with ALSA development and I'm trying to digest the large 
+amount of information I'm overflowed with, so please bear with possibly stupid 
+help requests.
 
-Signed-off-by: Karl Beldan <karl.beldan@mobile-devices.fr>
----
- sound/soc/pxa/pxa2xx-i2s.c |   11 +++--------
- 1 files changed, 3 insertions(+), 8 deletions(-)
+I'm writing an ALSA driver for a playback device. Unlike most sound cards, 
+this device uses private memory for its audio buffer. I thus need to manually 
+copy data from the ALSA buffer to the device buffer in the driver.
 
-diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
-index a423637..efe499e 100644
---- a/sound/soc/pxa/pxa2xx-i2s.c
-+++ b/sound/soc/pxa/pxa2xx-i2s.c
-@@ -262,9 +262,6 @@ static void pxa2xx_i2s_shutdown(struct snd_pcm_substream
-*substream,
- #ifdef CONFIG_PM
- static int pxa2xx_i2s_suspend(struct snd_soc_dai *dai)
- {
--	if (!dai->active)
--		return 0;
--
- 	/* store registers */
- 	pxa_i2s.sacr0 = SACR0;
- 	pxa_i2s.sacr1 = SACR1;
-@@ -279,16 +276,14 @@ static int pxa2xx_i2s_suspend(struct snd_soc_dai *dai)
+The device audio buffer is quite small, and for this reason I'd rather not use 
+the copy/silence callbacks, but copy data from the ALSA buffer to the device 
+in interrupt.
 
- static int pxa2xx_i2s_resume(struct snd_soc_dai *dai)
- {
--	if (!dai->active)
--		return 0;
--
- 	pxa_i2s_wait();
+The device might generate interrupts a bit faster than what would be expected 
+from sampling rate, so I need to check in the interrupt handler how much data 
+the ALSA buffer holds. To do so I need to maintain a "hardware pointer" in the 
+driver and to access the "user pointer" on the other side of the buffer.
 
--	SACR0 = pxa_i2s.sacr0 &= ~SACR0_ENB;
-+	SACR0 = pxa_i2s.sacr0 & ~SACR0_ENB;
- 	SACR1 = pxa_i2s.sacr1;
- 	SAIMR = pxa_i2s.saimr;
- 	SADIV = pxa_i2s.sadiv;
--	SACR0 |= SACR0_ENB;
-+
-+	SACR0 = pxa_i2s.sacr0;
+I haven't found a clear API to access that second pointer. What is the 
+best/preferred way to find out how much data the ALSA buffer holds ? I suppose 
+I will need to perform some locking when accessing the "user pointer", I will 
+also appreciate advices regarding which mutex/spinlock I should use for that 
+purpose.
 
- 	return 0;
- }
--- 
-1.6.3.rc1.34.g0be9b
+Best regards,
 
--- 
-Karl
+Laurent Pinchart
