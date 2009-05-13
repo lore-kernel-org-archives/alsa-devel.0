@@ -1,19 +1,19 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: Re: Intel HDA fix for Macbook 3,1 and newer
-Date: Wed, 13 May 2009 19:25:33 +0300
-Message-ID: <4A0AF47D.80600@pardus.org.tr>
-References: <4A0AD9BE.7070808@letorbi.de>
-	<4A0AE9FB.7010502@pardus.org.tr>	<s5hk54lvw8p.wl%tiwai@suse.de>
-	<4A0AF246.4060207@pardus.org.tr> <s5hd4advupp.wl%tiwai@suse.de>
+From: "Ambrose, Martin" <martin@ti.com>
+Subject: Re: [PATCH 0/1] Add AIC3106 support.
+Date: Wed, 13 May 2009 11:30:33 -0500
+Message-ID: <A24693684029E5489D1D202277BE89443E393A6D@dlee02.ent.ti.com>
+References: <A24693684029E5489D1D202277BE89443E39393E@dlee02.ent.ti.com>
+	<20090513161952.GB3629@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pardus.org.tr (comar.uludag.org.tr [193.140.100.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 754341038C6
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id CA3C21038C6
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 May 2009 18:25:30 +0200 (CEST)
-In-Reply-To: <s5hd4advupp.wl%tiwai@suse.de>
+	Wed, 13 May 2009 18:30:41 +0200 (CEST)
+In-Reply-To: <20090513161952.GB3629@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,43 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IFdlZCwgMTMgTWF5IDIwMDkgMTk6MTY6MDYgKzAzMDAs
-Cj4gT3phbiDDh2HEn2xheWFuIHdyb3RlOgo+ICAgCj4+IFRha2FzaGkgSXdhaSB3cm90ZToKPj4g
-ICAgIAo+Pj4gRGlkIHlvdSB0cnkgdGhlIGxhdGVzdCBhbHNhLWRyaXZlciBzbmFwc2hvdD8gIEl0
-IGFscmVhZHkgY29udGFpbnMgYQo+Pj4gcGF0Y2ggdG8gc3VwcG9ydCBNYWNib29rIDUsMSAoQWx1
-bWluaXVtKS4gIFRoZSB0YXJiYWxsIGlzIGZvdW5kIGF0Ogo+Pj4gICAgZnRwOi8vZnRwLmtlcm5l
-bC5vcmcvcHViL2xpbnV4L2tlcm5lbC9wZW9wbGUvdGl3YWkvc25hcHNob3QvYWxzYS1kcml2ZXIt
-c25hcHNob3QudGFyLmd6Cj4+Pgo+Pj4KPj4+IFRha2FzaGkKPj4+ICAgCj4+PiAgICAgICAKPj4g
-WWVzIEkgYWxyZWFkeSB0cmllZCBpdCwgbm8gZWZmZWN0cy4gSSB0aGVuIHRob3VnaHQgdGhhdCBp
-dCB3YXMgYWltZWQgYXQKPj4gTUI1MSBub3QgTUJQNTE6Cj4+ICAgICAKPgo+IEFoLCBPSywgdGhl
-eSBtaWdodCBiZSBkaWZmZXJlbnQuCj4KPiAgIAo+PiBtZWNidWsgMjAwOSAjIGNhdCAvc3lzL21v
-ZHVsZS9zbmRfaGRhX2ludGVsL3BhcmFtZXRlcnMvbW9kZWwKPj4gbWI1MSw8TlVMTD4sPE5VTEw+
-LDxOVUxMPiw8TlVMTD4sPE5VTEw+LDxOVUxMPiw8TlVMTD4KPj4gICAgIAo+Cj4gSXQncyBtYjUs
-IG5vdCBtYjUxLgo+Cj4gICAKPj4gVGhlIHN1YnN5c3RlbSBJRCBvZiBteSBBTEM4ODlBIGNvZGVj
-IGlzIDogMHgxMDZiNDAwMAo+PiBUaGUgbWI1MSBxdWlyayBpcyBhdXRvbWF0aWNhbGx5IGFwcGxp
-ZWQgdG8gOgo+Pgo+PiArICAgICAgICAgICAgICAgY2FzZSAweDEwNmIzZjAwOiAvKiBNYWNib29r
-IDUsMSAqLwo+PiArICAgICAgICAgICAgICAgICAgICAgICBib2FyZF9jb25maWcgPSBBTEM4ODVf
-TUI1Owo+PiArICAgICAgICAgICAgICAgICAgICAgICBicmVhazsKPj4KPj4gc28gaXQgc2VlbXMg
-dGhhdCB0aGUgY29kZWNzIGRpZmZlci4KPj4gICAgIAo+Cj4gVGhlIGNvZGVjIHNob3VsZCBiZSBz
-YW1lIGJ1dCBhcHBhcmVudGx5IGEgZGlmZmVyZW50IFNTSUQuCj4KPiAgIAo+PiBJIGFjdHVhbGx5
-IG1hZGUgaXQgd29yayBieSBjaGFuZ2luZyBWUkVGIG9mIE5vZGVbMHgxOF0gUElOIGZyb20gSEla
-IHRvCj4+IGFueSBvZiA1MCw4MCBvciAxMDAuCj4+IFRoaXMgZml4ZWQgdGhlIHNvdW5kLCBhbHNv
-IGVuYWJsaW5nIHRoZSBzdXJyb3VuZCBzbGlkZXIgd2hpY2ggdmFzdGx5Cj4+IGltcHJvdmVzIHRo
-ZSBzb3VuZCBxdWFsaXR5IGFuZCBsb3VkbmVzcy4KPj4KPj4gQnV0IHN0aWxsIHRoZXJlIGFyZSBw
-cm9ibGVtcyB3aXRoIHRoZSBoZWFkcGhvbmUvaW50ZXJuYWwgc3BlYWtlcgo+PiBmdW5jdGlvbmlu
-Zy4gSWYgeW91IHRoaW5rIHRoYXQgdGhpcyB3aWxsIHJlcXVpcmUKPj4gYW5vdGhlciBtb2RlbCBx
-dWlyayBmb3IgcGF0Y2hfc2lnbWF0ZWwsIEkgcmVhbGx5IHdhbnQgdG8gZ2V0IGludm9sdmVkIG9u
-Cj4+IHByb3ZpZGluZyB0aGUgbmVjZXNzYXJ5IGluZm9ybWF0aW9ucyB0byB5b3UuCj4+ICAgICAK
-Pgo+IGFsc2EtaW5mby5zaCBvdXRwdXQgd291bGQgYmUgaGVscGZ1bC4gIFJ1biB3aXRoIC0tbm8t
-dXBsb2FkIG9wdGlvbiwKPiBhbmQgYXR0YWNoIHRoZSBnZW5lcmF0ZWQgZmlsZS4KPiAgIAoKSSBh
-bHJlYWR5IHNlbnQgaXQgdG8gdGhlIGxpc3Qgb24gMTEvMDUvMjAwOSwgd2l0aCBhIGxvdCBvZiBv
-dGhlciBkZXRhaWxzCm9uIHRoZSBwcm9ibGVtcy4KVGhlIHN1YmplY3Qgb2YgdGhlIGUtbWFpbCBp
-czogTWFjYm9va1BybzUsMSAmIGhkYS1hbmFseXplci4KCkknbGwgdHJ5IHdpdGggTUI1LCByZXBv
-cnQgYmFjayBpZiBpdCBmaXhlcyB0aGUgcHJvYmxlbXMgb3Igbm90LgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Wed, May 13, 2009 at 11:19:52, Mark Brown wrote:
+
+> 
+> > This patch applies to the ASoC tree: 
+> ddc4097b77bbb227851a44287acb2fb8a9896cc1
+> > But it also applies cleanly to the Davinci tree:
+> 
+> Please submit patches against ALSA git - you want the 
+> topic/asoc branch
+> of
+> 
+>     git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+
+Sorry copy/paste error. The patch is against the current tip
+tip of the topic/asoc tree: dd4a416442a2fb4bd761163277d37ab6ce75ee4e
+
+I included the davinci ID for completeness since I needed to use that tree 
+to perform the sanity check of building and running.
+
+Regards, 
+Martin
