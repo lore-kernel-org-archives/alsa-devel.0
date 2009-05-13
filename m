@@ -1,19 +1,19 @@
 From: Karl Beldan <karl.beldan@gmail.com>
-Subject: [PATCH 2/4] pxa2xx-i2s: Handle SACR1_DRPL and
-	SACR1_DREC separately
-Date: Wed, 13 May 2009 22:04:13 +0200
-Message-ID: <4A0B27BD.3090809@gmail.com>
+Subject: [PATCH 3/4] pxa2xx-i2s: Fix inappropriate release of
+	i2s clock
+Date: Wed, 13 May 2009 22:04:20 +0200
+Message-ID: <4A0B27C4.6040007@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ew0-f175.google.com (mail-ew0-f175.google.com
 	[209.85.219.175])
-	by alsa0.perex.cz (Postfix) with ESMTP id EAF431038FA
+	by alsa0.perex.cz (Postfix) with ESMTP id E3C4110392A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 May 2009 22:04:20 +0200 (CEST)
+	Wed, 13 May 2009 22:04:22 +0200 (CEST)
 Received: by mail-ew0-f175.google.com with SMTP id 23so1084011ewy.32
-	for <alsa-devel@alsa-project.org>; Wed, 13 May 2009 13:04:20 -0700 (PDT)
+	for <alsa-devel@alsa-project.org>; Wed, 13 May 2009 13:04:22 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,53 +27,29 @@ To: Mark Brown <broonie@sirena.org.uk>
 Cc: Russell King <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, Eric Miao <eric.miao@marvell.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Matthieu Dumont <matthieu.dumont@mobile-devices.fr>
 List-Id: alsa-devel@alsa-project.org
 
-- hw_params enables both RPL and REC functions each time : Enable the
-	appropriate function in pxa2xx_i2s_trigger.
-- pxa2xx_i2s_shutdown disables i2s anytime one of RPL or REC function is
-	off : Turn it off only when both functions are off.
+i2s_clk is 'put' for no reason in pxa2xx_i2s_shutdown.
+Now we 'get' i2s_clk at probe and 'put' it at driver removal or when
+probe fails.
 
 Signed-off-by: Karl Beldan <karl.beldan@mobile-devices.fr>
 ---
- sound/soc/pxa/pxa2xx-i2s.c |    8 +++++---
- 1 files changed, 5 insertions(+), 3 deletions(-)
+ sound/soc/pxa/pxa2xx-i2s.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
-index 59cc4f5..a461c8d 100644
+index a461c8d..a423637 100644
 --- a/sound/soc/pxa/pxa2xx-i2s.c
 +++ b/sound/soc/pxa/pxa2xx-i2s.c
-@@ -176,9 +176,7 @@ static int pxa2xx_i2s_hw_params(struct snd_pcm_substream
+@@ -257,8 +257,6 @@ static void pxa2xx_i2s_shutdown(struct snd_pcm_substream
 *substream,
-
- 	/* is port used by another stream */
- 	if (!(SACR0 & SACR0_ENB)) {
--
- 		SACR0 = 0;
--		SACR1 = 0;
- 		if (pxa_i2s.master)
- 			SACR0 |= SACR0_BCKD;
-
-@@ -224,6 +222,10 @@ static int pxa2xx_i2s_trigger(struct snd_pcm_substream
-*substream, int cmd,
-
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			SACR1 &= ~SACR1_DRPL;
-+		else
-+			SACR1 &= ~SACR1_DREC;
- 		SACR0 |= SACR0_ENB;
- 		break;
- 	case SNDRV_PCM_TRIGGER_RESUME:
-@@ -250,7 +252,7 @@ static void pxa2xx_i2s_shutdown(struct snd_pcm_substream
-*substream,
- 		SAIMR &= ~SAIMR_RFS;
- 	}
-
--	if (SACR1 & (SACR1_DREC | SACR1_DRPL)) {
-+	if ((SACR1 & (SACR1_DREC | SACR1_DRPL)) == (SACR1_DREC | SACR1_DRPL)) {
- 		SACR0 &= ~SACR0_ENB;
  		pxa_i2s_wait();
  		clk_disable(clk_i2s);
+ 	}
+-
+-	clk_put(clk_i2s);
+ }
+
+ #ifdef CONFIG_PM
 -- 
 1.6.3.rc1.34.g0be9b
 
