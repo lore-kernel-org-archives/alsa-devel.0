@@ -1,18 +1,18 @@
-From: Jon Smirl <jonsmirl@gmail.com>
-Subject: Dynamically registering a codec
-Date: Wed, 13 May 2009 15:18:36 -0400
-Message-ID: <9e4733910905131218t174b3b7cxc0e5c2fd5f5a0a06@mail.gmail.com>
+From: Karl Beldan <karl.beldan@gmail.com>
+Subject: [PATCH 0/4 v2] pxa2xx-i2s: Rework
+Date: Wed, 13 May 2009 22:03:56 +0200
+Message-ID: <4A0B27AC.5090101@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f103.google.com (mail-qy0-f103.google.com
-	[209.85.221.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7863B1038DB
+Received: from mail-ew0-f175.google.com (mail-ew0-f175.google.com
+	[209.85.219.175])
+	by alsa0.perex.cz (Postfix) with ESMTP id F1D9A1038E4
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 May 2009 21:18:37 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so1512877qyk.16
-	for <alsa-devel@alsa-project.org>; Wed, 13 May 2009 12:18:36 -0700 (PDT)
+	Wed, 13 May 2009 22:04:01 +0200 (CEST)
+Received: by ewy23 with SMTP id 23so1084011ewy.32
+	for <alsa-devel@alsa-project.org>; Wed, 13 May 2009 13:04:00 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,70 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@sirena.org.uk>
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: Russell King <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, Eric Miao <eric.miao@marvell.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Matthieu Dumont <matthieu.dumont@mobile-devices.fr>
 List-Id: alsa-devel@alsa-project.org
 
-On PowerPC the device tree is used to dynamically load the correct
-codec module. How am I supposed to get this dynamically loaded module
-registered? The WM8580 codec registers itself.
+Following is a rework of the i2s code for the pxa.
+I tested it with the ac97 clock as the master clock.
 
-Modifying the WM9712 codec to register itself on device load works for
-me. If I don't do this how am I supposed to dynamically find the DAI
-pointer so that I can call snd_soc_register_dais()?
+Feedbacks are welcome.
 
-diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index 550c903..cb0e679 100644
---- a/sound/soc/codecs/wm9712.c
-+++ b/sound/soc/codecs/wm9712.c
-@@ -20,6 +20,7 @@
- #include <sound/initval.h>
- #include <sound/soc.h>
- #include <sound/soc-dapm.h>
-+#include <sound/soc-of-simple.h>
- #include "wm9712.h"
 
- #define WM9712_VERSION "0.4"
-@@ -740,6 +741,39 @@ struct snd_soc_codec_device soc_codec_dev_wm9712 = {
- };
- EXPORT_SYMBOL_GPL(soc_codec_dev_wm9712);
+Diff with initial version:
 
-+static int __init wm9712_probe(struct platform_device *pdev)
-+{
-+	snd_soc_register_dais(wm9712_dai, ARRAY_SIZE(wm9712_dai));
-+#if defined(CONFIG_SND_SOC_OF_SIMPLE)
-+	/* Tell the of_soc helper about this codec */
-+	of_snd_soc_register_codec(&soc_codec_dev_wm9712, pdev->dev.archdata.of_node,
-+									wm9712_dai, ARRAY_SIZE(wm9712_dai),
-+									pdev->dev.archdata.of_node);
-+#endif
-+	return 0;
-+}
-+
-+static struct platform_driver wm9712_driver =
-+{
-+	.probe = wm9712_probe,
-+	.driver = {
-+			.name = "wm9712",
-+	},
-+};
-+
-+static __init int wm9712_driver_init(void)
-+{
-+	return platform_driver_register(&wm9712_driver);
-+}
-+
-+static __exit void wm9712_driver_exit(void)
-+{
-+}
-+
-+module_init(wm9712_driver_init);
-+module_exit(wm9712_driver_exit);
-+
-+
- MODULE_DESCRIPTION("ASoC WM9711/WM9712 driver");
- MODULE_AUTHOR("Liam Girdwood");
- MODULE_LICENSE("GPL");
+- hw init from 1/4 is moved from pxa2xx_i2s_init to pxa2xx_i2s_probe
+- moved 'removal of hw reset from pxa2xx_i2s_startup' from 3/4 to 1/4v2
+- moved 'clk_put(clk_i2s) removal' from 2/4 to 3/4v2
+- 3/4 was also removing FIFOs flushes, 3/4v2 consists of 'clk_put(clk_i2s)
+removal' only,
+
+
 
 -- 
-Jon Smirl
-jonsmirl@gmail.com
+Karl
