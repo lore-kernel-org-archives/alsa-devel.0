@@ -1,18 +1,19 @@
-From: Nickolas Lloyd <ultrageek.lloyd@gmail.com>
-Subject: [PATCH] snd-hda-intel: add controls to toggle DC bias
-	on mic ports
-Date: Wed, 13 May 2009 18:43:04 +0000
-Message-ID: <4A0B14B8.2030705@gmail.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: AC97 reset fail after suspend
+Date: Thu, 14 May 2009 03:57:35 +0200
+Message-ID: <200905140357.35682.marek.vasut@gmail.com>
+References: <200905080148.20137.sleep_walker@suse.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_Pq3CKwCxsPNWG3r"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id A384724423
+Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id C5E242434F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 May 2009 03:34:12 +0200 (CEST)
-Received: by yx-out-1718.google.com with SMTP id 6so723998yxn.2
-	for <alsa-devel@alsa-project.org>; Wed, 13 May 2009 18:34:11 -0700 (PDT)
+	Thu, 14 May 2009 03:57:33 +0200 (CEST)
+Received: by mu-out-0910.google.com with SMTP id g7so372225muf.2
+	for <alsa-devel@alsa-project.org>; Wed, 13 May 2009 18:57:33 -0700 (PDT)
+In-Reply-To: <200905080148.20137.sleep_walker@suse.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,171 +23,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Matthew Ranostay <mranostay@embeddedalley.com>
+To: Tomas 'Sleep_Walker' Cech <sleep_walker@suse.cz>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds a mixer control for the STAC92XX boards to control the
-DC bias of mic ports, allowing recording from both powered and
-non-powered sources.  It replaces the "Mic Output Switch" with "Mic Jack
-Mode" to switch between Mic, Line In, and Line Out.
+--Boundary-00=_Pq3CKwCxsPNWG3r
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Signed-off by: Nickolas Lloyd <ultrageek.lloyd@gmail.com>
+On Friday 08 of May 2009 01:48:19 Tomas 'Sleep_Walker' Cech wrote:
+> Hi,
+>
+> I've got following error on Palm LifeDrive and PalmTX after suspend &
+> resume:
+>
+> pxa2xx_ac97_try_warm_reset: warm reset timeout (GSR=0x0)
+> pxa2xx_ac97_read: read error (ac97_reg=0 GSR=0x0)
+> pxa2xx_ac97_try_cold_reset: cold reset timeout (GSR=0x44)
+> pxa2xx_ac97_read: read error (ac97_reg=0 GSR=0x44)
+> WM9712 AC97 reset failed
+> could not reset AC97 codec
+>
+> That completely disable whole AC97 communication, so touchscreen, sound and
+> battery doesn't work any longer.
+>
+> I also tried this with Treo680 (code will be sent soon). HW is very
+> similar, only codec is different - LD/T5/TX use WM9712, Treo680 use WM9713.
+> On Treo680 there is no problem with that.
+>
+> Thanks for any hint about that.
+>
+> Tomas 'Sleep_Walker' Cech
+>
+> Attaching config for LD/TX and dmesg output.
 
-Note: diffed against alsa-driver-20090513
+The following patch fixes the issue and should be correct. It's indeed a 
+regression that's not in wm9713, but is in wm9712. Please consider applying.
 
-----
-diff -urpN alsa-driver/sound/pci/hda/patch_sigmatel.c
-alsa-driver.a/sound/pci/hda/patch_sigmatel.c
---- alsa-driver/sound/pci/hda/patch_sigmatel.c    2009-05-12
-22:05:31.000000000 +0000
-+++ alsa-driver.a/sound/pci/hda/patch_sigmatel.c    2009-05-13
-12:24:17.000000000 +0000
-@@ -634,6 +634,96 @@ static int stac92xx_smux_enum_put(struct
-     return 0;
- }
- 
-+static unsigned int stac92xx_vref_set(struct hda_codec *codec,
-+                    hda_nid_t nid, unsigned int new_vref)
-+{
-+    unsigned int error;
-+    unsigned int pincfg;
-+    pincfg = snd_hda_codec_read(codec, nid, 0,
-+                AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
-+
-+    pincfg &= 0xff;
-+    pincfg &= ~(AC_PINCTL_VREFEN | AC_PINCTL_IN_EN | AC_PINCTL_OUT_EN);
-+    pincfg |= new_vref;
-+
-+    if (new_vref == AC_PINCTL_VREF_HIZ)
-+        pincfg |= AC_PINCTL_OUT_EN;
-+    else
-+        pincfg |= AC_PINCTL_IN_EN;
-+
-+    error = snd_hda_codec_write_cache(codec, nid, 0,
-+                    AC_VERB_SET_PIN_WIDGET_CONTROL, pincfg);
-+    if (error < 0)
-+        return error;
-+    else
-+        return 1;
-+}
-+
-+static unsigned int stac92xx_vref_get(struct hda_codec *codec,
-hda_nid_t nid)
-+{
-+    unsigned int vref;
-+    vref = snd_hda_codec_read(codec, nid, 0,
-+                AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
-+    vref &= AC_PINCTL_VREFEN;
-+    return vref;
-+}
-+
-+static int stac92xx_dc_bias_put(struct snd_kcontrol *kcontrol,
-+                struct snd_ctl_elem_value *ucontrol)
-+{
-+    struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+    unsigned int new_vref;
-+    unsigned int error;
-+
-+    if (ucontrol->value.enumerated.item[0] == 0)
-+        new_vref = AC_PINCTL_VREF_80;
-+    else if (ucontrol->value.enumerated.item[0] == 1)
-+        new_vref = AC_PINCTL_VREF_GRD;
-+    else
-+        new_vref = AC_PINCTL_VREF_HIZ;
-+
-+    if (new_vref != stac92xx_vref_get(codec, kcontrol->private_value)) {
-+        error = stac92xx_vref_set(codec,
-+                    kcontrol->private_value, new_vref);
-+        return error;
-+    }
-+
-+    return 0;
-+}
-+
-+static int stac92xx_dc_bias_get(struct snd_kcontrol *kcontrol,
-+                struct snd_ctl_elem_value *ucontrol)
-+{
-+    struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+    unsigned int vref = stac92xx_vref_get(codec, kcontrol->private_value);
-+    if (vref == AC_PINCTL_VREF_80)
-+        ucontrol->value.enumerated.item[0] = 0;
-+    else if (vref == AC_PINCTL_VREF_GRD)
-+        ucontrol->value.enumerated.item[0] = 1;
-+    else if (vref == AC_PINCTL_VREF_HIZ)
-+        ucontrol->value.enumerated.item[0] = 2;
-+
-+    return 0;
-+}
-+
-+static int stac92xx_dc_bias_info(struct snd_kcontrol *kcontrol,
-+                struct snd_ctl_elem_info *uinfo)
-+{
-+    static char *texts[] = {
-+        "Mic In", "Line In", "Line Out"
-+    };
-+
-+    uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
-+    uinfo->value.enumerated.items = 3;
-+    uinfo->count = 1;
-+    if (uinfo->value.enumerated.item >= 3)
-+        uinfo->value.enumerated.item = 2;
-+    strcpy(uinfo->value.enumerated.name,
-+        texts[uinfo->value.enumerated.item]);
-+
-+    return 0;
-+}
-+
- static int stac92xx_mux_enum_info(struct snd_kcontrol *kcontrol, struct
-snd_ctl_elem_info *uinfo)
- {
-     struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-@@ -995,6 +1085,17 @@ static struct hda_verb stac9205_core_ini
-         .private_value = verb_read | (verb_write << 16), \
-     }
- 
-+#define DC_BIAS(xname, idx, nid) \
-+    { \
-+        .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
-+        .name = xname, \
-+        .index = idx, \
-+        .info = stac92xx_dc_bias_info, \
-+        .get = stac92xx_dc_bias_get, \
-+        .put = stac92xx_dc_bias_put, \
-+        .private_value = nid, \
-+    }
-+
- static struct snd_kcontrol_new stac9200_mixer[] = {
-     HDA_CODEC_VOLUME("Master Playback Volume", 0xb, 0, HDA_OUTPUT),
-     HDA_CODEC_MUTE("Master Playback Switch", 0xb, 0, HDA_OUTPUT),
-@@ -2702,7 +2803,8 @@ enum {
-     STAC_CTL_WIDGET_AMP_VOL,
-     STAC_CTL_WIDGET_HP_SWITCH,
-     STAC_CTL_WIDGET_IO_SWITCH,
--    STAC_CTL_WIDGET_CLFE_SWITCH
-+    STAC_CTL_WIDGET_CLFE_SWITCH,
-+    STAC_CTL_WIDGET_DC_BIAS
- };
- 
- static struct snd_kcontrol_new stac92xx_control_templates[] = {
-@@ -2714,6 +2816,7 @@ static struct snd_kcontrol_new stac92xx_
-     STAC_CODEC_HP_SWITCH(NULL),
-     STAC_CODEC_IO_SWITCH(NULL, 0),
-     STAC_CODEC_CLFE_SWITCH(NULL, 0),
-+    DC_BIAS(NULL, 0, 0),
- };
- 
- /* add dynamic controls */
-@@ -3165,9 +3268,9 @@ static int stac92xx_auto_create_multi_ou
-     }
- 
-     if (spec->mic_switch) {
--        err = stac92xx_add_control(spec, STAC_CTL_WIDGET_IO_SWITCH,
--                       "Mic as Output Switch",
--                       (spec->mic_switch << 8) | 1);
-+        err = stac92xx_add_control(spec, STAC_CTL_WIDGET_DC_BIAS,
-+                       "Mic Jack Mode",
-+                       spec->mic_switch);
-         if (err < 0)
-             return err;
-     }
+--Boundary-00=_Pq3CKwCxsPNWG3r
+Content-Type: text/x-diff;
+  charset="iso 8859-15";
+  name="0001-WM9712-coldreset-on-resume-bugfix.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="0001-WM9712-coldreset-on-resume-bugfix.patch"
+
+=46rom 06dce145990fb342d66c8fc77704a3dff3c66313 Mon Sep 17 00:00:00 2001
+=46rom: Marek Vasut <marek.vasut@gmail.com>
+Date: Thu, 14 May 2009 03:48:27 +0200
+Subject: [PATCH] WM9712 coldreset on resume bugfix
+
+The following patch fixes problem with wm9712 codec being unable to resume =
+from
+sleep because it doesn't respond after AC97 port was coldreseted (which is =
+done
+in case the warmreset wasn't successful). The solution uses similar approac=
+h as
+wm9713, that is, do one more warmreset after coldreset.
+
+Signed-off-by: Marek Vasut <marek.vasut@gmail.com>
+=2D--
+ sound/soc/codecs/wm9712.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
+index 765cf1e..166ebac 100644
+=2D-- a/sound/soc/codecs/wm9712.c
++++ b/sound/soc/codecs/wm9712.c
+@@ -585,6 +585,8 @@ static int wm9712_reset(struct snd_soc_codec *codec, in=
+t try_warm)
+ 	}
+=20
+ 	soc_ac97_ops.reset(codec->ac97);
++	if (soc_ac97_ops.warm_reset)
++		soc_ac97_ops.warm_reset(codec->ac97);
+ 	if (ac97_read(codec, 0) !=3D wm9712_reg[0])
+ 		goto err;
+ 	return 0;
+=2D-=20
+1.6.2.1
+
+
+--Boundary-00=_Pq3CKwCxsPNWG3r
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--Boundary-00=_Pq3CKwCxsPNWG3r--
