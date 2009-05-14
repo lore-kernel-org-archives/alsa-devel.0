@@ -1,18 +1,19 @@
 From: Jon Smirl <jonsmirl@gmail.com>
-Subject: [PATCH V1 11/13] AC97 driver for mpc5200
-Date: Wed, 13 May 2009 21:59:22 -0400
-Message-ID: <20090514015922.28145.58560.stgit@terra>
+Subject: [PATCH V1 12/13] Fabric bindings for STAC9766 on the
+	Efika
+Date: Wed, 13 May 2009 21:59:24 -0400
+Message-ID: <20090514015924.28145.57971.stgit@terra>
 References: <20090514015729.28145.30483.stgit@terra>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.244])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5B8641038C3
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.155])
+	by alsa0.perex.cz (Postfix) with ESMTP id 696F1243BF
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 May 2009 03:59:32 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c3so522637ana.2
-	for <alsa-devel@alsa-project.org>; Wed, 13 May 2009 18:59:32 -0700 (PDT)
+	Thu, 14 May 2009 03:59:34 +0200 (CEST)
+Received: by yw-out-1718.google.com with SMTP id 4so720053ywq.2
+	for <alsa-devel@alsa-project.org>; Wed, 13 May 2009 18:59:34 -0700 (PDT)
 In-Reply-To: <20090514015729.28145.30483.stgit@terra>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,62 +28,84 @@ To: grant.likely@secretlab.ca, broonie@sirena.org.uk
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-AC97 driver for mpc5200
+Fabric bindings for STAC9766 on the Efika. This includes an example of a custom fabric driver.
 
 Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
 ---
- sound/soc/fsl/Kconfig            |   11 +
- sound/soc/fsl/Makefile           |    1 
- sound/soc/fsl/mpc5200_psc_ac97.c |  379 ++++++++++++++++++++++++++++++++++++++
- sound/soc/fsl/mpc5200_psc_ac97.h |   13 +
- 4 files changed, 404 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/fsl/mpc5200_psc_ac97.c
- create mode 100644 sound/soc/fsl/mpc5200_psc_ac97.h
+ arch/powerpc/platforms/52xx/efika.c |    8 +++
+ sound/soc/fsl/Kconfig               |    8 +++
+ sound/soc/fsl/Makefile              |    3 +
+ sound/soc/fsl/efika-audio-fabric.c  |   95 +++++++++++++++++++++++++++++++++++
+ 4 files changed, 113 insertions(+), 1 deletions(-)
+ create mode 100644 sound/soc/fsl/efika-audio-fabric.c
 
+diff --git a/arch/powerpc/platforms/52xx/efika.c b/arch/powerpc/platforms/52xx/efika.c
+index a2068fa..c7a6a48 100644
+--- a/arch/powerpc/platforms/52xx/efika.c
++++ b/arch/powerpc/platforms/52xx/efika.c
+@@ -211,12 +211,18 @@ static int __init efika_probe(void)
+ 	return 1;
+ }
+ 
++static void __init efika_declare_platform_devices(void)
++{
++	mpc52xx_declare_of_platform_devices();
++	platform_device_register_simple("efika-audio-fabric", 0, NULL, 0);
++}
++
+ define_machine(efika)
+ {
+ 	.name			= EFIKA_PLATFORM_NAME,
+ 	.probe			= efika_probe,
+ 	.setup_arch		= efika_setup_arch,
+-	.init			= mpc52xx_declare_of_platform_devices,
++	.init			= efika_declare_platform_devices,
+ 	.show_cpuinfo		= efika_show_cpuinfo,
+ 	.init_IRQ		= mpc52xx_init_irq,
+ 	.get_irq		= mpc52xx_get_irq,
 diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 8060b95..d8f63f5 100644
+index d8f63f5..266c6b7 100644
 --- a/sound/soc/fsl/Kconfig
 +++ b/sound/soc/fsl/Kconfig
-@@ -30,3 +30,14 @@ config SND_SOC_MPC5200_I2S
- 	select PPC_BESTCOMM_GEN_BD
+@@ -40,4 +40,12 @@ config SND_SOC_MPC5200_AC97
  	help
- 	  Say Y here to support the MPC5200 PSCs in I2S mode.
-+
-+config SND_SOC_MPC5200_AC97
-+	tristate "Freescale MPC5200 PSC in AC97 mode driver"
-+	depends on PPC_MPC52xx && PPC_BESTCOMM
-+	select SND_SOC_OF_SIMPLE
-+	select SND_MPC52xx_DMA
-+	select PPC_BESTCOMM_GEN_BD
+ 	  Say Y here to support the MPC5200 PSCs in AC97 mode.
+ 
++config SND_MPC52xx_SOC_EFIKA
++	tristate "SoC AC97 Audio support for bbplan Efika and STAC9766"
++	depends on PPC_EFIKA
++	select SND_SOC_MPC5200_AC97
++	select SND_SOC_STAC9766
 +	help
-+	  Say Y here to support the MPC5200 PSCs in AC97 mode.
++	  Say Y if you want to add support for sound on the Efika.
 +
-+
+ 
 diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index 7731ef2..14631a1 100644
+index 14631a1..f406470 100644
 --- a/sound/soc/fsl/Makefile
 +++ b/sound/soc/fsl/Makefile
-@@ -13,4 +13,5 @@ obj-$(CONFIG_SND_SOC_MPC8610) += snd-soc-fsl-ssi.o snd-soc-fsl-dma.o
- # MPC5200 Platform Support
- obj-$(CONFIG_SND_MPC52xx_DMA) += mpc5200_dma.o
+@@ -15,3 +15,6 @@ obj-$(CONFIG_SND_MPC52xx_DMA) += mpc5200_dma.o
  obj-$(CONFIG_SND_SOC_MPC5200_I2S) += mpc5200_psc_i2s.o
-+obj-$(CONFIG_SND_SOC_MPC5200_AC97) += mpc5200_psc_ac97.o
+ obj-$(CONFIG_SND_SOC_MPC5200_AC97) += mpc5200_psc_ac97.o
  
-diff --git a/sound/soc/fsl/mpc5200_psc_ac97.c b/sound/soc/fsl/mpc5200_psc_ac97.c
++# MPC5200 Machine Support
++obj-$(CONFIG_SND_MPC52xx_SOC_EFIKA) += efika-audio-fabric.o
++
+diff --git a/sound/soc/fsl/efika-audio-fabric.c b/sound/soc/fsl/efika-audio-fabric.c
 new file mode 100644
-index 0000000..aa37c8d
+index 0000000..56ae471
 --- /dev/null
-+++ b/sound/soc/fsl/mpc5200_psc_ac97.c
-@@ -0,0 +1,379 @@
++++ b/sound/soc/fsl/efika-audio-fabric.c
+@@ -0,0 +1,95 @@
 +/*
-+ * linux/sound/mpc5200-ac97.c -- AC97 support for the Freescale MPC52xx chip.
++ * Efika driver for the PSC of the Freescale MPC52xx configured as AC97 interface
 + *
 + * Copyright 2008 Jon Smirl, Digispeaker
 + * Author: Jon Smirl <jonsmirl@gmail.com>
 + *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
++ * This file is licensed under the terms of the GNU General Public License
++ * version 2. This program is licensed "as is" without any warranty of any
++ * kind, whether express or implied.
 + */
 +
 +#include <linux/init.h>
@@ -101,374 +124,71 @@ index 0000000..aa37c8d
 +#include <sound/soc.h>
 +#include <sound/soc-of-simple.h>
 +
-+#include <sysdev/bestcomm/bestcomm.h>
-+#include <sysdev/bestcomm/gen_bd.h>
-+#include <asm/time.h>
-+#include <asm/mpc52xx.h>
-+#include <asm/mpc52xx_psc.h>
-+
 +#include "mpc5200_dma.h"
 +#include "mpc5200_psc_ac97.h"
++#include "../codecs/stac9766.h"
 +
-+MODULE_AUTHOR("Jon Smirl <jonsmirl@gmail.com>");
-+MODULE_DESCRIPTION("mpc5200 AC97 module");
-+MODULE_LICENSE("GPL");
-+
-+#define DRV_NAME "mpc5200-psc-ac97"
-+
-+static unsigned short psc_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
++static int efika_init(struct snd_soc_codec *codec)
 +{
-+	struct psc_dma *psc_dma = ac97->private_data;
-+	int timeout;
-+	unsigned int val;
-+
-+	spin_lock(&psc_dma->lock);
-+
-+	/* Wait for it to be ready */
-+	timeout = 1000;
-+	while ((--timeout) && (in_be16(&psc_dma->psc_regs->sr_csr.status) &
-+						MPC52xx_PSC_SR_CMDSEND) )
-+		udelay(10);
-+
-+	if (!timeout) {
-+		pr_err(timeout on ac97 bus (rdy)\n");
-+		return 0xffff;
-+	}
-+
-+	/* Do the read */
-+	out_be32(&psc_dma->psc_regs->ac97_cmd, (1<<31) | ((reg & 0x7f) << 24));
-+
-+	/* Wait for the answer */
-+	timeout = 1000;
-+	while ((--timeout) && !(in_be16(&psc_dma->psc_regs->sr_csr.status) &
-+						MPC52xx_PSC_SR_DATA_VAL) )
-+		udelay(10);
-+
-+	if (!timeout) {
-+		pr_err(timeout on ac97 read (val) %x\n", in_be16(&psc_dma->psc_regs->sr_csr.status));
-+		return 0xffff;
-+	}
-+
-+	/* Get the data */
-+	val = in_be32(&psc_dma->psc_regs->ac97_data);
-+	if ( ((val>>24) & 0x7f) != reg ) {
-+		pr_err(reg echo error on ac97 read\n");
-+		return 0xffff;
-+	}
-+	val = (val >> 8) & 0xffff;
-+
-+	spin_unlock(&psc_dma->lock);
-+	return (unsigned short) val;
++	/* Skeleton driver showing framework for setting
++	 * up board specific fabric drivers.
++	 *
++	 * set up Efika specific controls here
++	 *
++	 * Loading of this driver is trigger by
++	 * platform_device_register_simple("efika-audio-fabric", 0, NULL, 0);
++	 * in arch/powerpc/platforms/52xx/efika.c
++	 */
++	return 0;
 +}
 +
-+static void psc_ac97_write(struct snd_ac97 *ac97, unsigned short reg, unsigned short val)
++static int efika_stac9766_probe(struct platform_device *pdev)
 +{
-+	struct psc_dma *psc_dma = ac97->private_data;
-+	int timeout;
-+
-+	spin_lock(&psc_dma->lock);
-+
-+	/* Wait for it to be ready */
-+	timeout = 1000;
-+	while ((--timeout) && (in_be16(&psc_dma->psc_regs->sr_csr.status) &
-+						MPC52xx_PSC_SR_CMDSEND) )
-+		udelay(10);
-+
-+	if (!timeout) {
-+		pr_err(timeout on ac97 write\n");
-+		return;
-+	}
-+
-+	/* Write data */
-+	out_be32(&psc_dma->psc_regs->ac97_cmd, ((reg & 0x7f) << 24) | (val << 8));
-+
-+	spin_unlock(&psc_dma->lock);
++	of_snd_soc_register_fabric("Efika", NULL, efika_init);
++	return 0;
 +}
-+
-+static void psc_ac97_cold_reset(struct snd_ac97 *ac97)
-+{
-+	struct psc_dma *psc_dma = ac97->private_data;
-+
-+	/* Do a cold reset */
-+	out_8(&psc_dma->psc_regs->op1, MPC52xx_PSC_OP_RES);
-+	udelay(10);
-+	out_8(&psc_dma->psc_regs->op0, MPC52xx_PSC_OP_RES);
-+	udelay(50);
-+
-+	/* PSC recover from cold reset (cfr user manual, not sure if useful) */
-+	out_be32(&psc_dma->psc_regs->sicr, in_be32(&psc_dma->psc_regs->sicr));
-+}
-+
-+static void psc_ac97_warm_reset(struct snd_ac97 *ac97)
-+{
-+	pr_info("psc_ac97_warm_reset\n");
-+}
-+
-+struct snd_ac97_bus_ops soc_ac97_ops = {
-+	.read		= psc_ac97_read,
-+	.write		= psc_ac97_write,
-+	.reset		= psc_ac97_cold_reset,
-+	.warm_reset	= psc_ac97_warm_reset,
-+};
-+EXPORT_SYMBOL_GPL(soc_ac97_ops);
 +
 +#ifdef CONFIG_PM
-+static int psc_ac97_suspend(struct snd_soc_dai *dai)
++
++static int efika_stac9766_suspend(struct platform_device *pdev,
++	pm_message_t state)
 +{
 +	return 0;
 +}
 +
-+static int psc_ac97_resume(struct snd_soc_dai *dai)
++static int efika_stac9766_resume(struct platform_device *pdev)
 +{
 +	return 0;
 +}
 +
 +#else
-+#define psc_ac97_suspend	NULL
-+#define psc_ac97_resume	NULL
++#define efika_stac9766_suspend NULL
++#define efika_stac9766_resume  NULL
 +#endif
 +
-+static int psc_ac97_hw_analog_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params,
-+				 struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct psc_dma *psc_dma = rtd->dai->cpu_dai->private_data;
-+
-+	dev_dbg(psc_dma->dev, "%s(substream=%p) p_size=%i p_bytes=%i"
-+		" periods=%i buffer_size=%i  buffer_bytes=%i channels=%i"
-+		" rate=%i format=%i\n",
-+		__func__, substream, params_period_size(params),
-+		params_period_bytes(params), params_periods(params),
-+		params_buffer_size(params), params_buffer_bytes(params),
-+		params_channels(params), params_rate(params), params_format(params));
-+
-+
-+	if (substream->pstr->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+		if (params_channels(params) == 1)
-+			psc_dma->slots |= 0x00000100;
-+		else
-+			psc_dma->slots |= 0x00000300;
-+	} else {
-+		if (params_channels(params) == 1)
-+			psc_dma->slots |= 0x01000000;
-+		else
-+			psc_dma->slots |= 0x03000000;
-+	}
-+
-+	spin_lock(&psc_dma->lock);
-+	out_be32(&psc_dma->psc_regs->ac97_slots, psc_dma->slots);
-+	spin_unlock(&psc_dma->lock);
-+
-+	return 0;
-+}
-+
-+static int psc_ac97_hw_digital_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params,
-+				 struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct psc_dma *psc_dma = rtd->dai->cpu_dai->private_data;
-+
-+	spin_lock(&psc_dma->lock);
-+	if (params_channels(params) == 1)
-+		out_be32(&psc_dma->psc_regs->ac97_slots, 0x01000000);
-+	else
-+		out_be32(&psc_dma->psc_regs->ac97_slots, 0x03000000);
-+	spin_unlock(&psc_dma->lock);
-+
-+	return 0;
-+}
-+
-+static int psc_ac97_trigger(struct snd_pcm_substream *substream, int cmd,
-+								 struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct psc_dma *psc_dma = rtd->dai->cpu_dai->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		if (substream->pstr->stream == SNDRV_PCM_STREAM_CAPTURE)
-+			psc_dma->slots &= 0xFFFF0000;
-+		else
-+			psc_dma->slots &= 0x0000FFFF;
-+
-+		spin_lock(&psc_dma->lock);
-+		out_be32(&psc_dma->psc_regs->ac97_slots, psc_dma->slots);
-+		spin_unlock(&psc_dma->lock);
-+		break;
-+	}
-+	return 0;
-+}
-+
-+/**
-+ * psc_ac97_set_fmt: set the serial format.
-+ *
-+ * This function is called by the machine driver to tell us what serial
-+ * format to use.
-+ *
-+ * This driver only supports AC97 mode.  Return an error if the format is
-+ * not SND_SOC_DAIFMT_AC97.
-+ *
-+ * @format: one of SND_SOC_DAIFMT_xxx
-+ */
-+static int psc_ac97_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int format)
-+{
-+	struct psc_dma *psc_dma = cpu_dai->private_data;
-+	dev_dbg(psc_dma->dev, "psc_ac97_set_fmt(cpu_dai=%p, format=%i)\n",
-+				cpu_dai, format);
-+
-+	return (format == SND_SOC_DAIFMT_AC97) ? 0 : -EINVAL;
-+}
-+
-+/* ---------------------------------------------------------------------
-+ * ALSA SoC Bindings
-+ *
-+ * - Digital Audio Interface (DAI) template
-+ * - create/destroy dai hooks
-+ */
-+
-+/**
-+ * psc_ac97_dai_template: template CPU Digital Audio Interface
-+ */
-+static struct snd_soc_dai_ops psc_ac97_analog_ops = {
-+	.hw_params	= psc_ac97_hw_analog_params,
-+	.set_fmt	= psc_ac97_set_fmt,
-+	.trigger	= psc_ac97_trigger,
-+};
-+
-+static struct snd_soc_dai_ops psc_ac97_digital_ops = {
-+	.hw_params	= psc_ac97_hw_digital_params,
-+	.set_fmt	= psc_ac97_set_fmt,
-+};
-+
-+static struct snd_soc_dai psc_ac97_dai_template[] = {
-+{
-+	.name   = "%s analog",
-+	.suspend = psc_ac97_suspend,
-+	.resume = psc_ac97_resume,
-+	.playback = {
-+		.channels_min   = 1,
-+		.channels_max   = 6,
-+		.rates          = SNDRV_PCM_RATE_8000_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_BE |
-+			   SNDRV_PCM_FMTBIT_S24_BE | SNDRV_PCM_FMTBIT_S32_BE,
-+	},
-+	.capture = {
-+		.channels_min   = 1,
-+		.channels_max   = 2,
-+		.rates          = SNDRV_PCM_RATE_8000_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_BE |
-+			   SNDRV_PCM_FMTBIT_S24_BE | SNDRV_PCM_FMTBIT_S32_BE,
-+	},
-+	.ops = &psc_ac97_analog_ops,
-+},
-+{
-+	.name   = "%s digital",
-+	.playback = {
-+		.channels_min   = 1,
-+		.channels_max   = 2,
-+		.rates          = SNDRV_PCM_RATE_32000 | \
-+			SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_BE,
-+	},
-+	.ops = &psc_ac97_digital_ops,
-+}};
-+
-+
-+/* ---------------------------------------------------------------------
-+ * OF platform bus binding code:
-+ * - Probe/remove operations
-+ * - OF device match table
-+ */
-+static int __devinit psc_ac97_of_probe(struct of_device *op,
-+				      const struct of_device_id *match)
-+{
-+	int rc;
-+	struct psc_dma *psc_dma;
-+
-+	rc = mpc5200_audio_dma_create(op, psc_ac97_dai_template, ARRAY_SIZE(psc_ac97_dai_template));
-+	if (rc != 0)
-+		return rc;
-+
-+	psc_dma = dev_get_drvdata(&op->dev);
-+
-+	psc_dma->imr = 0;
-+	out_be16(&psc_dma->psc_regs->isr_imr.imr, psc_dma->imr);
-+
-+	out_8(&psc_dma->psc_regs->op1, MPC52xx_PSC_OP_RES);
-+	udelay(10);
-+	out_8(&psc_dma->psc_regs->op0, MPC52xx_PSC_OP_RES);
-+	udelay(50);
-+
-+	/* Configure the serial interface mode to AC97 */
-+	psc_dma->sicr = MPC52xx_PSC_SICR_SIM_AC97 | MPC52xx_PSC_SICR_ENAC97;
-+	out_be32(&psc_dma->psc_regs->sicr, psc_dma->sicr);
-+
-+	/* No slots active */
-+	out_be32(&psc_dma->psc_regs->ac97_slots, 0x00000000);
-+
-+	/* Go */
-+	out_8(&psc_dma->psc_regs->command, MPC52xx_PSC_TX_ENABLE);
-+	out_8(&psc_dma->psc_regs->command, MPC52xx_PSC_RX_ENABLE);
-+
-+	return 0;
-+}
-+
-+static int __devexit psc_ac97_of_remove(struct of_device *op)
-+{
-+	return mpc5200_audio_dma_destroy(op);
-+}
-+
-+/* Match table for of_platform binding */
-+static struct of_device_id psc_ac97_match[] __devinitdata = {
-+	{ .compatible = "fsl,mpc5200-psc-ac97", },
-+	{ .compatible = "fsl,mpc5200b-psc-ac97", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, psc_ac97_match);
-+
-+static struct of_platform_driver psc_ac97_driver = {
-+	.match_table = psc_ac97_match,
-+	.probe = psc_ac97_of_probe,
-+	.remove = __devexit_p(psc_ac97_of_remove),
-+	.driver = {
-+		.name = "mpc5200-psc-ac97",
-+		.owner = THIS_MODULE,
++static struct platform_driver efika_fabric = {
++	.probe	= efika_stac9766_probe,
++	.suspend = efika_stac9766_suspend,
++ 	.resume = efika_stac9766_resume,
++	.driver	= {
++		.name	= "efika-audio-fabric",
 +	},
 +};
 +
-+/* ---------------------------------------------------------------------
-+ * Module setup and teardown; simply register the of_platform driver
-+ * for the PSC in AC97 mode.
-+ */
-+static int __init psc_ac97_init(void)
++static __init int efika_fabric_init(void)
 +{
-+	return of_register_platform_driver(&psc_ac97_driver);
++	return platform_driver_register(&efika_fabric);
 +}
-+module_init(psc_ac97_init);
 +
-+static void __exit psc_ac97_exit(void)
++static __exit void efika_fabric_exit(void)
 +{
-+	of_unregister_platform_driver(&psc_ac97_driver);
 +}
-+module_exit(psc_ac97_exit);
-diff --git a/sound/soc/fsl/mpc5200_psc_ac97.h b/sound/soc/fsl/mpc5200_psc_ac97.h
-new file mode 100644
-index 0000000..d028c55
---- /dev/null
-+++ b/sound/soc/fsl/mpc5200_psc_ac97.h
-@@ -0,0 +1,13 @@
-+/*
-+ * Freescale MPC5200 PSC in AC97 mode
-+ * ALSA SoC Digital Audio Interface (DAI) driver
-+ *
-+ */
 +
-+#ifndef __SOUND_SOC_FSL_MPC52xx_PSC_AC97_H__
-+#define __SOUND_SOC_FSL_MPC52xx_PSC_AC97_H__
++module_init(efika_fabric_init);
++module_exit(efika_fabric_exit);
 +
-+#define MPC5200_AC97_ANALOG 0
-+#define MPC5200_AC97_DIGITAL 1
 +
-+#endif /* __SOUND_SOC_FSL_MPC52xx_PSC_AC97_H__ */
++MODULE_AUTHOR("Jon Smirl <jonsmirl@gmail.com>");
++MODULE_DESCRIPTION(DRV_NAME ": mpc5200 Efika fabric driver");
++MODULE_LICENSE("GPL");
++
