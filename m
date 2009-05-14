@@ -1,17 +1,24 @@
-From: puli dilip <pulidilip@yahoo.co.in>
-Subject: SiS SI7012 with ALC202 sound card not working on Acer
-	Aspire G600 in Ubuntu 9.04
-Date: Thu, 14 May 2009 23:43:48 +0530 (IST)
-Message-ID: <971484.37126.qm@web95103.mail.in2.yahoo.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Dynamically registering a codec
+Date: Thu, 14 May 2009 19:38:51 +0100
+Message-ID: <20090514183850.GA13483@rakim.wolfsonmicro.main>
+References: <9e4733910905131218t174b3b7cxc0e5c2fd5f5a0a06@mail.gmail.com>
+	<20090513224424.GB24973@sirena.org.uk>
+	<9e4733910905140844h1899bb60p19309953905b51d3@mail.gmail.com>
+	<1242317750.31458.1782.camel@finisterre>
+	<9e4733910905140943u7f8e5151tbaba86938bf9e77e@mail.gmail.com>
+	<1242322832.31458.1911.camel@finisterre>
+	<9e4733910905141057t64c515a2n8473a26da852fdfd@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from n6-vm1.bullet.mail.in.yahoo.com
-	(n6-vm1.bullet.mail.in.yahoo.com [202.86.4.133])
-	by alsa0.perex.cz (Postfix) with SMTP id BFF0E24495
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3848A10396A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 May 2009 20:20:33 +0200 (CEST)
+	Thu, 14 May 2009 20:38:52 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <9e4733910905141057t64c515a2n8473a26da852fdfd@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,41 +28,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-U2lTIFNJNzAxMiB3aXRoIEFMQzIwMiBzb3VuZCBjYXJkIG5vdCB3b3JraW5nIG9uIEFjZXIgQXNw
-aXJlIEc2MDAgaW4gVWJ1bnR1IDkuMDQKICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIAog
-ICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIAoKICAg
-ICAgCgogICAgICAKCiAgICAgIAoKICAgICAgQ2FyZDogU2lTIFNJNzAxMiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICDilIIKCuKUgiBD
-aGlwOiBSZWFsdGVrIEFMQzIwMiByZXYgMAoKdGhpcyBpcyB0YWtlbiBmcm9tIGFsc2FtaXhlcgow
-MDowMC4wIEhvc3QgYnJpZGdlOiBTaWxpY29uIEludGVncmF0ZWQgU3lzdGVtcyBbU2lTXSA2NTEg
-SG9zdCAocmV2IDAxKQoKMDA6MDEuMCBQQ0kgYnJpZGdlOiBTaWxpY29uIEludGVncmF0ZWQgU3lz
-dGVtcyBbU2lTXSBWaXJ0dWFsIFBDSS10by1QQ0kgYnJpZGdlIChBR1ApCgowMDowMi4wIElTQSBi
-cmlkZ2U6IFNpbGljb24gSW50ZWdyYXRlZCBTeXN0ZW1zIFtTaVNdIFNpUzk2MiBbTXVUSU9MIE1l
-ZGlhIElPXSAocmV2IDA0KQoKMDA6MDIuMSBTTUJ1czogU2lsaWNvbiBJbnRlZ3JhdGVkIFN5c3Rl
-bXMgW1NpU10gU2lTOTYxLzIgU01CdXMgQ29udHJvbGxlcgoKMDA6MDIuMyBGaXJlV2lyZSAoSUVF
-RSAxMzk0KTogU2lsaWNvbiBJbnRlZ3JhdGVkIFN5c3RlbXMgW1NpU10gRmlyZVdpcmUgQ29udHJv
-bGxlcgoKMDA6MDIuNSBJREUgaW50ZXJmYWNlOiBTaWxpY29uIEludGVncmF0ZWQgU3lzdGVtcyBb
-U2lTXSA1NTEzIFtJREVdCgowMDowMi43IE11bHRpbWVkaWEgYXVkaW8gY29udHJvbGxlcjogU2ls
-aWNvbiBJbnRlZ3JhdGVkIFN5c3RlbXMgW1NpU10gQUMnOTcgU291bmQgQ29udHJvbGxlciAocmV2
-IGEwKQoKMDA6MDMuMCBVU0IgQ29udHJvbGxlcjogU2lsaWNvbiBJbnRlZ3JhdGVkIFN5c3RlbXMg
-W1NpU10gVVNCIDEuMSBDb250cm9sbGVyIChyZXYgMGYpCgowMDowMy4xIFVTQiBDb250cm9sbGVy
-OiBTaWxpY29uIEludGVncmF0ZWQgU3lzdGVtcyBbU2lTXSBVU0IgMS4xIENvbnRyb2xsZXIgKHJl
-diAwZikKCjAwOjAzLjIgVVNCIENvbnRyb2xsZXI6IFNpbGljb24gSW50ZWdyYXRlZCBTeXN0ZW1z
-IFtTaVNdIFVTQiAxLjEgQ29udHJvbGxlciAocmV2IDBmKQoKMDA6MDMuMyBVU0IgQ29udHJvbGxl
-cjogU2lsaWNvbiBJbnRlZ3JhdGVkIFN5c3RlbXMgW1NpU10gVVNCIDIuMCBDb250cm9sbGVyCgow
-MDowNi4wIE11bHRpbWVkaWEgY29udHJvbGxlcjogUGhpbGlwcyBTZW1pY29uZHVjdG9ycyBTQUE3
-MTMwIFZpZGVvIEJyb2FkY2FzdCBEZWNvZGVyIChyZXYgMDEpCgowMDowZi4wIEV0aGVybmV0IGNv
-bnRyb2xsZXI6IFJlYWx0ZWsgU2VtaWNvbmR1Y3RvciBDby4sIEx0ZC4gUlRMLTgxMzkvODEzOUMv
-ODEzOUMrIChyZXYgMTApCgowMTowMC4wIFZHQSBjb21wYXRpYmxlIGNvbnRyb2xsZXI6IFNpbGlj
-b24gSW50ZWdyYXRlZCBTeXN0ZW1zIFtTaVNdIDY1eC9NNjUwLzc0MCBQQ0kvQUdQIFZHQSBEaXNw
-bGF5IEFkYXB0ZXIKaGVyZSBpIGFtIGdpdmluZyBsaW5rIHBsZWFzZSBmaXggdGhlIHByb2JsZW0K
-aHR0cHM6Ly9hbnN3ZXJzLmxhdW5jaHBhZC5uZXQvdWJ1bnR1Lytzb3VyY2UvYWxzYS1kcml2ZXIv
-K3F1ZXN0aW9uLzcwOTcyCgoKCiAgICAgIEV4cGxvcmUgYW5kIGRpc2NvdmVyIGV4Y2l0aW5nIGhv
-bGlkYXlzIGFuZCBnZXRhd2F5cyB3aXRoIFlhaG9vISBJbmRpYSBUcmF2ZWwgaHR0cDovL2luLnRy
-YXZlbC55YWhvby5jb20vCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+On Thu, May 14, 2009 at 01:57:37PM -0400, Jon Smirl wrote:
+
+> Now I see what you mean. I need to make the codec into a device so
+> that I can dynamically load and find it. On PowerPC the codecs don't
+> have to be compiled in, they can be on an initrd.
+
+This is the case for all platforms, it's not in any way PowerPC specific.
+
+>                                                   The code in
+> of_simple will find the right driver and get it into memory. The
+> platform device is what triggers the kernel to go searching for the
+> module on initrd.
+
+On every other platform the codec driver is linked to directly by the
+machine driver so loading the machine driver will also cause the codec
+driver to be loaded - at this stage of_simple isn't involved at all
+except in that it has removed the usual way of getting the codec driver
+loaded for AC97 devices.
+
+> This isn't platform specific, other platforms could implement this but
+> they don't have anything like a device tree telling them which modules
+> to load. A device tree is a probing mechanism for devices that can't
+> be probed.
+
+Other platforms use platform devices in just the same way, they just
+happen to set them up in a C file rather than a .dts file.  The
+mechanisms for loading things after that are identical.  What's PowerPC
+specific here is that you are trying to use this of-simple mechainsm and
+that's defeating the way this is handled for AC97 codec drivers.
+
+Please re-read my comments about the specific problems with AC97 - this
+is key here.
