@@ -1,7 +1,7 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Jon Smirl <jonsmirl@gmail.com>
 Subject: Re: Dynamically registering a codec
-Date: Thu, 14 May 2009 19:49:28 +0100
-Message-ID: <20090514184927.GB13483@rakim.wolfsonmicro.main>
+Date: Thu, 14 May 2009 14:56:32 -0400
+Message-ID: <9e4733910905141156j576c059ci653d0acd3e45e156@mail.gmail.com>
 References: <9e4733910905131218t174b3b7cxc0e5c2fd5f5a0a06@mail.gmail.com>
 	<20090513224424.GB24973@sirena.org.uk>
 	<9e4733910905140844h1899bb60p19309953905b51d3@mail.gmail.com>
@@ -9,17 +9,18 @@ References: <9e4733910905131218t174b3b7cxc0e5c2fd5f5a0a06@mail.gmail.com>
 	<9e4733910905140943u7f8e5151tbaba86938bf9e77e@mail.gmail.com>
 	<1242322832.31458.1911.camel@finisterre>
 	<9e4733910905141057t64c515a2n8473a26da852fdfd@mail.gmail.com>
-	<9e4733910905141115p2f682f0bwf16ae3eab5d22618@mail.gmail.com>
+	<20090514183850.GA13483@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 61F48244AD
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id E64CF10392D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 May 2009 20:49:29 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <9e4733910905141115p2f682f0bwf16ae3eab5d22618@mail.gmail.com>
+	Thu, 14 May 2009 20:56:33 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 4so1025386qwk.56
+	for <alsa-devel@alsa-project.org>; Thu, 14 May 2009 11:56:32 -0700 (PDT)
+In-Reply-To: <20090514183850.GA13483@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,17 +30,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 14, 2009 at 02:15:17PM -0400, Jon Smirl wrote:
+On Thu, May 14, 2009 at 2:38 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Thu, May 14, 2009 at 01:57:37PM -0400, Jon Smirl wrote:
+>
+>> Now I see what you mean. I need to make the codec into a device so
+>> that I can dynamically load and find it. On PowerPC the codecs don't
+>> have to be compiled in, they can be on an initrd.
+>
+> This is the case for all platforms, it's not in any way PowerPC specific.
+>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 The code in
+>> of_simple will find the right driver and get it into memory. The
+>> platform device is what triggers the kernel to go searching for the
+>> module on initrd.
+>
+> On every other platform the codec driver is linked to directly by the
+> machine driver so loading the machine driver will also cause the codec
+> driver to be loaded - at this stage of_simple isn't involved at all
+> except in that it has removed the usual way of getting the codec driver
+> loaded for AC97 devices.
+>
+>> This isn't platform specific, other platforms could implement this but
+>> they don't have anything like a device tree telling them which modules
+>> to load. A device tree is a probing mechanism for devices that can't
+>> be probed.
+>
+> Other platforms use platform devices in just the same way, they just
+> happen to set them up in a C file rather than a .dts file. =A0The
+> mechanisms for loading things after that are identical. =A0What's PowerPC
+> specific here is that you are trying to use this of-simple mechainsm and
+> that's defeating the way this is handled for AC97 codec drivers.
+>
+> Please re-read my comments about the specific problems with AC97 - this
+> is key here.
+>
 
-> I'm juggling too many balls. ASoC needs some more rework to make the
-> modules load dynamically.  The codecs need to implement .id_table.
+So I need to make fabric drivers for Efika and Phytec that statically
+link to the respective AC97 codecs? And the core is going to get
+updated so that I can remove these static links?
 
-ASoC is fine here, please take a look at drivers like wm8903 - the DAI
-registration functions are all about letting things take advantage of
-this.   I'll be insisting that all CODEC drivers do this at some point
-but it's not yet blocking anything else.  Like I say, AC97 is a bit
-special due to general lack of infrastructure for it.
+-- =
+
+Jon Smirl
+jonsmirl@gmail.com
