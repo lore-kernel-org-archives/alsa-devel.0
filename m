@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: AC97 reset fail after suspend
-Date: Thu, 14 May 2009 13:32:41 +0100
-Message-ID: <20090514123241.GL28291@sirena.org.uk>
-References: <200905080148.20137.sleep_walker@suse.cz>
-	<200905140357.35682.marek.vasut@gmail.com>
+From: "Michael (Micksa) Slade" <mslade@knobbits.org>
+Subject: Re: Testers wanted: New SB X-Fi driver
+Date: Thu, 14 May 2009 22:34:09 +1000
+Message-ID: <4A0C0FC1.1050709@knobbits.org>
+References: <s5h4ovovtwe.wl%tiwai@suse.de>
+	<4A0C0985.9040004@knobbits.org>	<4A0C0CF3.3000902@knobbits.org>
+	<s5hvdo3vpmu.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id CCBC5103916
+Received: from killface.knobbits.org (killface.knobbits.org [67.18.208.22])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4116B10394D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 May 2009 14:32:42 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200905140357.35682.marek.vasut@gmail.com>
+	Thu, 14 May 2009 14:34:16 +0200 (CEST)
+In-Reply-To: <s5hvdo3vpmu.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,24 +23,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: alsa-devel@alsa-project.org, Tomas 'Sleep_Walker' Cech <sleep_walker@suse.cz>, linux-arm-kernel@lists.arm.linux.org.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 14, 2009 at 03:57:35AM +0200, Marek Vasut wrote:
+Takashi Iwai wrote:
+> At Thu, 14 May 2009 22:22:11 +1000,
+> Michael (Micksa) Slade wrote:
+>   
+>>     Woo, worked first go! :)
+>>     
+>>     I have a "Titanium fata1ity Pro" (1102:000b/1102:0043), and compiled 
+>>     against Intrepid's current kernel (2.6.28-11).
+>>     
+>>     I have only recently subscribed to the list and was just about to ask 
+>>     what the deal was with the X-Fi driver.
+>>     
+>>     So mplayer, aplay and audacious all play things.  Clearly works 
+>>     perfectly then :)
+>>     
+>>     Does alsa have some sort of test suite or similar that I can run the 
+>>     card through?
+>>
+>> Oh, doesn't survive suspend/resume,
+>>     
+>
+> It's expected.  PM isn't supported yet with this driver.
+>
+>   
+>> and doesn't appear to work at 24bit.
+>>     
+>
+> That's bad.  How did you test it?
+>   
+Swtiched audacious to 24bit.  It very quietly plays a badly distorted 
+version of the song :)
 
-> The following patch fixes the issue and should be correct. It's indeed a 
-> regression that's not in wm9713, but is in wm9712. Please consider applying.
+How might I get a copy of the specs?  I want to try my hand at kernel 
+coding.  I hear it gets you chicks.
 
-Please CC maintainers on patches!
-
-> The following patch fixes problem with wm9712 codec being unable to resume from
-> sleep because it doesn't respond after AC97 port was coldreseted (which is done
-> in case the warmreset wasn't successful). The solution uses similar approach as
-> wm9713, that is, do one more warmreset after coldreset.
-
-Are you sure this is required?  The WM9713 needs this because the
-default state on reset is not to clock the AC97 link, a warm reset is
-needed to start the link.  I'll need to check but IIRC the WM9712 runs
-the link by default and I can't see any changes to this behaviour in the
-driver changelog.
+Mick.
