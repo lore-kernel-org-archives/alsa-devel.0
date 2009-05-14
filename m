@@ -1,21 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 1/1] ASoC: TWL4030: Wait RAMP_DELAY on
-	headsetl_event: POST_PMD
-Date: Thu, 14 May 2009 11:09:08 +0300
-Message-ID: <200905141109.09084.peter.ujfalusi@nokia.com>
-References: <1242040465-10835-1-git-send-email-peter.ujfalusi@nokia.com>
-	<200905140827.11625.peter.ujfalusi@nokia.com>
-	<20090514090808.14c0dfda.jhnikula@gmail.com>
+From: Karl Beldan <karl.beldan@gmail.com>
+Subject: [PATCH 1/4 v3] pxa2xx-i2s: Proper hw initialization
+Date: Thu, 14 May 2009 10:25:42 +0200
+Message-ID: <4A0BD586.8010406@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 24CF924520
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id 54ADC2433E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 May 2009 10:09:16 +0200 (CEST)
-In-Reply-To: <20090514090808.14c0dfda.jhnikula@gmail.com>
-Content-Disposition: inline
+	Thu, 14 May 2009 10:25:53 +0200 (CEST)
+Received: by ey-out-1920.google.com with SMTP id 26so282179eyw.56
+	for <alsa-devel@alsa-project.org>; Thu, 14 May 2009 01:25:52 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,31 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Jarkko Nikula <jhnikula@gmail.com>
-Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "anuj.aggarwal@ti.com" <anuj.aggarwal@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ext Mark Brown <broonie@opensource.wolfsonmicro.com>, "getarunks@gmail.com" <getarunks@gmail.com>
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: Russell King <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, Eric Miao <eric.miao@marvell.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Matthieu Dumont <matthieu.dumont@mobile-devices.fr>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 14 May 2009 09:08:08 ext Jarkko Nikula wrote:
-> My two cents: Would it be possible to implement 'fake' PGA or amplifier
-> into TWL outputs which only controls the power state of mixer and mux?
+Make sure we are in a know good state at end of probe :
+Reset FIFO logic and registers, and make sure REC and RPL functions
+along with FIFO service are disabled (SACR0_RST enables REC and RPL).
 
-With the 'fake PGA' on the headsetL:
-Startup has a click, going standby is quite smooth.
-The sequences with the twl4030 codec (soc-damp.c routings are reverted to b=
-e =
+Resetting loses current settings so remove reset from stream startup.
+Now reset occurs only at probe.
 
-the original) are for
-Startup:
-dac -> HS ramp up (HS enable, fake PGA) -> PGA
+Signed-off-by: Karl Beldan <karl.beldan@mobile-devices.fr>
+---
+ sound/soc/pxa/pxa2xx-i2s.c |   17 ++++++++++++++---
+ 1 files changed, 14 insertions(+), 3 deletions(-)
 
-Standby:
-HS ramp down (HS disable, fake PGA) -> PGA -> dac
+diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
+index 2f4b6e4..59cc4f5 100644
+--- a/sound/soc/pxa/pxa2xx-i2s.c
++++ b/sound/soc/pxa/pxa2xx-i2s.c
+@@ -106,10 +106,8 @@ static int pxa2xx_i2s_startup(struct snd_pcm_substream
+*substream,
+ 	if (IS_ERR(clk_i2s))
+ 		return PTR_ERR(clk_i2s);
 
-If the order of the startup can be somehow altered to be:
-dac -> PGA -> HS ramp up (HS enable, fake PGA)
+-	if (!cpu_dai->active) {
+-		SACR0 |= SACR0_RST;
++	if (!cpu_dai->active)
+ 		SACR0 = 0;
+-	}
 
-Than it would be good.
+ 	return 0;
+ }
+@@ -346,6 +344,19 @@ static int pxa2xx_i2s_probe(struct platform_device *dev)
+ 	if (ret != 0)
+ 		clk_put(clk_i2s);
 
--- =
++	/*
++	 * PXA Developer's Manual:
++	 * If SACR0[ENB] is toggled in the middle of a normal operation,
++	 * the SACR0[RST] bit must also be set and cleared to reset all
++	 * I2S controller registers.
++	 */
++	SACR0 = SACR0_RST;
++	SACR0 = 0;
++	/* Make sure RPL and REC are disabled */
++	SACR1 = SACR1_DRPL | SACR1_DREC;
++	/* Along with FIFO servicing */
++	SAIMR &= ~(SAIMR_RFS | SAIMR_TFS);
++
+ 	return ret;
+ }
 
-P=E9ter
+-- 
+1.6.3.rc1.34.g0be9b
+
+-- 
+Karl
