@@ -1,25 +1,22 @@
-From: mAdVax <madvax@free.fr>
-Subject: Re: emu10k1 TRAM access ?
-Date: Thu, 14 May 2009 14:47:16 +0200
-Message-ID: <4A0C12D4.5030806@free.fr>
-References: <4A0C115E.8010306@free.fr>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/1] ASoC: TWL4030: Wait
+	RAMP_DELAY?on	headsetl_event: POST_PMD
+Date: Thu, 14 May 2009 13:53:34 +0100
+Message-ID: <20090514125333.GA9471@rakim.wolfsonmicro.main>
+References: <1242040465-10835-1-git-send-email-peter.ujfalusi@nokia.com>
+	<200905141248.49418.peter.ujfalusi@nokia.com>
+	<20090514095621.GA6823@rakim.wolfsonmicro.main>
+	<200905141544.47934.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp23.services.sfr.fr (smtp23.services.sfr.fr [93.17.128.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id 448BD103965
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1424710396E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 May 2009 14:47:19 +0200 (CEST)
-Received: from filter.sfr.fr (localhost [127.0.0.1])
-	by msfrf2316.sfr.fr (SMTP Server) with ESMTP id D2F657000090
-	for <alsa-devel@alsa-project.org>;
-	Thu, 14 May 2009 14:47:16 +0200 (CEST)
-Received: from [192.168.1.102] (144.161.87-79.rev.gaoland.net [79.87.161.144])
-	by msfrf2316.sfr.fr (SMTP Server) with ESMTP id B651C700008C
-	for <alsa-devel@alsa-project.org>;
-	Thu, 14 May 2009 14:47:16 +0200 (CEST)
-In-Reply-To: <4A0C115E.8010306@free.fr>
+	Thu, 14 May 2009 14:53:35 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <200905141544.47934.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,13 +26,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "anuj.aggarwal@ti.com" <anuj.aggarwal@ti.com>, alsa-devel@alsa-project.org, "getarunks@gmail.com" <getarunks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-bUFkVmF4IGEgw6ljcml0IDoKCj4gRllJOiBJIGFscmVhZHkgcG9zdGVkIHRoaXMgbWVzc2FnZSB5
-ZXN0ZXJkYXkgYXMgYSBub24tbWVtYmVyLCBidXQgaXQgaGFzIAo+IG5vdCBiZWVuIG1vZGVyYXRl
-ZCAoSSBkb24ndCBnZXQgYW4gYW5zd2VyIDI0SCBsYXRlcikuCgpTb3JyeSwgZG91YmxlIHBvc3Qg
-OiBpIG1pc3NlZCBpdC4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+On Thu, May 14, 2009 at 03:44:47PM +0300, Peter Ujfalusi wrote:
+> On Thursday 14 May 2009 12:56:21 ext Mark Brown wrote:
+
+> > The event could check the current setup and do whatever's appropriate?
+
+> I have to think about this, but at first sight it does look awfully 
+> complicated thing to do (4 PGA, 7 output with mixers, 2+1 output mux)...
+
+It might help to have the mixers and muxes maintain some state when they
+change?  It's just a suggestion, I'm not familiar enough with the codec
+to know if it's a sensible one for this device or if it's more trouble
+than it's worth.
+
+> I think I don't want to fixate the ramp delay to any value (meaning that the 
+> delay would last around 50ms). This seams to be also board specific, so I 
+> would rather leave this to the user to find the best value for the given 
+> board.
+
+Ah, right.  Possibly worth making it platform data, I suppose, but
+that'd be a pain when experimenting to find the values.
