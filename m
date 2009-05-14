@@ -1,22 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/1] ASoC: TWL4030: Wait
-	RAMP_DELAY?on	headsetl_event: POST_PMD
-Date: Thu, 14 May 2009 13:53:34 +0100
-Message-ID: <20090514125333.GA9471@rakim.wolfsonmicro.main>
-References: <1242040465-10835-1-git-send-email-peter.ujfalusi@nokia.com>
-	<200905141248.49418.peter.ujfalusi@nokia.com>
-	<20090514095621.GA6823@rakim.wolfsonmicro.main>
-	<200905141544.47934.peter.ujfalusi@nokia.com>
+From: James Courtier-Dutton <james.dutton@gmail.com>
+Subject: Re: Testers wanted: New SB X-Fi driver
+Date: Thu, 14 May 2009 14:05:06 +0100
+Message-ID: <ad2655cb0905140605w64134817hd02c24912cc10661@mail.gmail.com>
+References: <s5h4ovovtwe.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1424710396E
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 902FD103973
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 May 2009 14:53:35 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200905141544.47934.peter.ujfalusi@nokia.com>
+	Thu, 14 May 2009 15:05:07 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id 16so415108fgg.21
+	for <alsa-devel@alsa-project.org>; Thu, 14 May 2009 06:05:07 -0700 (PDT)
+In-Reply-To: <s5h4ovovtwe.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,27 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "anuj.aggarwal@ti.com" <anuj.aggarwal@ti.com>, alsa-devel@alsa-project.org, "getarunks@gmail.com" <getarunks@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 14, 2009 at 03:44:47PM +0300, Peter Ujfalusi wrote:
-> On Thursday 14 May 2009 12:56:21 ext Mark Brown wrote:
+2009/5/14 Takashi Iwai <tiwai@suse.de>:
+> Hi,
+>
+> after some communications with Creative, I finally got a mergeable
+> version of their X-Fi driver. =A0It's not my crappy hack but by genuine
+> Creative :)
+>
 
-> > The event could check the current setup and do whatever's appropriate?
+It is good news that you managed to have productive communications
+with Creative.
+I did have a very good relationship with Creative and EMU until all my
+contacts left the company.
+It took me years to build up the relationship, but I did not have the
+time to start again from scratch.
+If you manage to get the open source NDA signed with them, ask them to
+contact me, informing me of such, and I can then pass all the
+datasheets I have on to you. I do need direct contact from them before
+I can do this though.
+The datasheets cover almost all Creative and EMU sound cards.
 
-> I have to think about this, but at first sight it does look awfully 
-> complicated thing to do (4 PGA, 7 output with mixers, 2+1 output mux)...
+Kind Regards
 
-It might help to have the mixers and muxes maintain some state when they
-change?  It's just a suggestion, I'm not familiar enough with the codec
-to know if it's a sensible one for this device or if it's more trouble
-than it's worth.
-
-> I think I don't want to fixate the ramp delay to any value (meaning that the 
-> delay would last around 50ms). This seams to be also board specific, so I 
-> would rather leave this to the user to find the best value for the given 
-> board.
-
-Ah, right.  Possibly worth making it platform data, I suppose, but
-that'd be a pain when experimenting to find the values.
+James
