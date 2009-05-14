@@ -1,19 +1,19 @@
 From: Jon Smirl <jonsmirl@gmail.com>
-Subject: [PATCH V1 12/13] Fabric bindings for STAC9766 on the
-	Efika
-Date: Wed, 13 May 2009 21:59:24 -0400
-Message-ID: <20090514015924.28145.57971.stgit@terra>
+Subject: [PATCH V1 13/13] Support for AC97 on Phytec pmc030
+	base board.
+Date: Wed, 13 May 2009 21:59:26 -0400
+Message-ID: <20090514015926.28145.93104.stgit@terra>
 References: <20090514015729.28145.30483.stgit@terra>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id 696F1243BF
+	by alsa0.perex.cz (Postfix) with ESMTP id 83B3D24388
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 May 2009 03:59:34 +0200 (CEST)
+	Thu, 14 May 2009 03:59:36 +0200 (CEST)
 Received: by yw-out-1718.google.com with SMTP id 4so720053ywq.2
-	for <alsa-devel@alsa-project.org>; Wed, 13 May 2009 18:59:34 -0700 (PDT)
+	for <alsa-devel@alsa-project.org>; Wed, 13 May 2009 18:59:36 -0700 (PDT)
 In-Reply-To: <20090514015729.28145.30483.stgit@terra>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,167 +28,45 @@ To: grant.likely@secretlab.ca, broonie@sirena.org.uk
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fabric bindings for STAC9766 on the Efika. This includes an example of a custom fabric driver.
+Support for AC97 on Phytec pmc030 base board. This uses the generic fabric driver binding.
 
 Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
 ---
- arch/powerpc/platforms/52xx/efika.c |    8 +++
- sound/soc/fsl/Kconfig               |    8 +++
- sound/soc/fsl/Makefile              |    3 +
- sound/soc/fsl/efika-audio-fabric.c  |   95 +++++++++++++++++++++++++++++++++++
- 4 files changed, 113 insertions(+), 1 deletions(-)
- create mode 100644 sound/soc/fsl/efika-audio-fabric.c
+ arch/powerpc/boot/dts/pcm030.dts |    8 ++++++++
+ sound/soc/fsl/Kconfig            |    7 +++++++
+ 2 files changed, 15 insertions(+), 0 deletions(-)
 
-diff --git a/arch/powerpc/platforms/52xx/efika.c b/arch/powerpc/platforms/52xx/efika.c
-index a2068fa..c7a6a48 100644
---- a/arch/powerpc/platforms/52xx/efika.c
-+++ b/arch/powerpc/platforms/52xx/efika.c
-@@ -211,12 +211,18 @@ static int __init efika_probe(void)
- 	return 1;
- }
- 
-+static void __init efika_declare_platform_devices(void)
-+{
-+	mpc52xx_declare_of_platform_devices();
-+	platform_device_register_simple("efika-audio-fabric", 0, NULL, 0);
-+}
+diff --git a/arch/powerpc/boot/dts/pcm030.dts b/arch/powerpc/boot/dts/pcm030.dts
+index 8958347..001c8ef 100644
+--- a/arch/powerpc/boot/dts/pcm030.dts
++++ b/arch/powerpc/boot/dts/pcm030.dts
+@@ -190,6 +190,14 @@
+ 			cell-index = <0>;
+ 			reg = <0x2000 0x100>;
+ 			interrupts = <2 1 0>;
 +
- define_machine(efika)
- {
- 	.name			= EFIKA_PLATFORM_NAME,
- 	.probe			= efika_probe,
- 	.setup_arch		= efika_setup_arch,
--	.init			= mpc52xx_declare_of_platform_devices,
-+	.init			= efika_declare_platform_devices,
- 	.show_cpuinfo		= efika_show_cpuinfo,
- 	.init_IRQ		= mpc52xx_init_irq,
- 	.get_irq		= mpc52xx_get_irq,
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			codec@0 {
++				compatible = "wlf,wm9712";
++				reg = <0x0>;
++			};
+ 		};
+ 
+ 		/* PSC2 port is used by CAN1/2 */
 diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index d8f63f5..266c6b7 100644
+index 266c6b7..11735e4 100644
 --- a/sound/soc/fsl/Kconfig
 +++ b/sound/soc/fsl/Kconfig
-@@ -40,4 +40,12 @@ config SND_SOC_MPC5200_AC97
+@@ -48,4 +48,11 @@ config SND_MPC52xx_SOC_EFIKA
  	help
- 	  Say Y here to support the MPC5200 PSCs in AC97 mode.
+ 	  Say Y if you want to add support for sound on the Efika.
  
-+config SND_MPC52xx_SOC_EFIKA
-+	tristate "SoC AC97 Audio support for bbplan Efika and STAC9766"
-+	depends on PPC_EFIKA
++config SND_MPC52xx_SOC_PCM030
++	tristate "SoC AC97 Audio support for Phytec pcm030 and WM9712"
++	depends on PPC_MPC5200_SIMPLE
 +	select SND_SOC_MPC5200_AC97
-+	select SND_SOC_STAC9766
++	select SND_SOC_WM9712
 +	help
-+	  Say Y if you want to add support for sound on the Efika.
-+
- 
-diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index 14631a1..f406470 100644
---- a/sound/soc/fsl/Makefile
-+++ b/sound/soc/fsl/Makefile
-@@ -15,3 +15,6 @@ obj-$(CONFIG_SND_MPC52xx_DMA) += mpc5200_dma.o
- obj-$(CONFIG_SND_SOC_MPC5200_I2S) += mpc5200_psc_i2s.o
- obj-$(CONFIG_SND_SOC_MPC5200_AC97) += mpc5200_psc_ac97.o
- 
-+# MPC5200 Machine Support
-+obj-$(CONFIG_SND_MPC52xx_SOC_EFIKA) += efika-audio-fabric.o
-+
-diff --git a/sound/soc/fsl/efika-audio-fabric.c b/sound/soc/fsl/efika-audio-fabric.c
-new file mode 100644
-index 0000000..56ae471
---- /dev/null
-+++ b/sound/soc/fsl/efika-audio-fabric.c
-@@ -0,0 +1,95 @@
-+/*
-+ * Efika driver for the PSC of the Freescale MPC52xx configured as AC97 interface
-+ *
-+ * Copyright 2008 Jon Smirl, Digispeaker
-+ * Author: Jon Smirl <jonsmirl@gmail.com>
-+ *
-+ * This file is licensed under the terms of the GNU General Public License
-+ * version 2. This program is licensed "as is" without any warranty of any
-+ * kind, whether express or implied.
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/interrupt.h>
-+#include <linux/device.h>
-+#include <linux/delay.h>
-+#include <linux/of_device.h>
-+#include <linux/of_platform.h>
-+#include <linux/dma-mapping.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/initval.h>
-+#include <sound/soc.h>
-+#include <sound/soc-of-simple.h>
-+
-+#include "mpc5200_dma.h"
-+#include "mpc5200_psc_ac97.h"
-+#include "../codecs/stac9766.h"
-+
-+static int efika_init(struct snd_soc_codec *codec)
-+{
-+	/* Skeleton driver showing framework for setting
-+	 * up board specific fabric drivers.
-+	 *
-+	 * set up Efika specific controls here
-+	 *
-+	 * Loading of this driver is trigger by
-+	 * platform_device_register_simple("efika-audio-fabric", 0, NULL, 0);
-+	 * in arch/powerpc/platforms/52xx/efika.c
-+	 */
-+	return 0;
-+}
-+
-+static int efika_stac9766_probe(struct platform_device *pdev)
-+{
-+	of_snd_soc_register_fabric("Efika", NULL, efika_init);
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+
-+static int efika_stac9766_suspend(struct platform_device *pdev,
-+	pm_message_t state)
-+{
-+	return 0;
-+}
-+
-+static int efika_stac9766_resume(struct platform_device *pdev)
-+{
-+	return 0;
-+}
-+
-+#else
-+#define efika_stac9766_suspend NULL
-+#define efika_stac9766_resume  NULL
-+#endif
-+
-+static struct platform_driver efika_fabric = {
-+	.probe	= efika_stac9766_probe,
-+	.suspend = efika_stac9766_suspend,
-+ 	.resume = efika_stac9766_resume,
-+	.driver	= {
-+		.name	= "efika-audio-fabric",
-+	},
-+};
-+
-+static __init int efika_fabric_init(void)
-+{
-+	return platform_driver_register(&efika_fabric);
-+}
-+
-+static __exit void efika_fabric_exit(void)
-+{
-+}
-+
-+module_init(efika_fabric_init);
-+module_exit(efika_fabric_exit);
-+
-+
-+MODULE_AUTHOR("Jon Smirl <jonsmirl@gmail.com>");
-+MODULE_DESCRIPTION(DRV_NAME ": mpc5200 Efika fabric driver");
-+MODULE_LICENSE("GPL");
-+
++	  Say Y if you want to add support for sound on the Phytec pcm030 baseboard.
