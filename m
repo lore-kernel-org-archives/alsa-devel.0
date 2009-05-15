@@ -1,66 +1,42 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: How to set TWL4030 to Option2
-Date: Fri, 15 May 2009 14:09:13 +0300
-Message-ID: <200905151409.13619.peter.ujfalusi@nokia.com>
-References: <2C7D3DF36ADFFC479B44490D912B616705F69E7BA4@dlee07.ent.ti.com>
-	<2C7D3DF36ADFFC479B44490D912B616705F69E7BAA@dlee07.ent.ti.com>
-	<4A0D4B37.9020003@samsung.com>
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Subject: Re: [PATCH] TXx9: Add ACLC support
+Date: Fri, 15 May 2009 15:45:36 +0200 (CEST)
+Message-ID: <alpine.LRH.2.00.0905151516300.32617@vixen.sonytel.be>
+References: <1242312605-2160-2-git-send-email-anemo@mba.ocn.ne.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id AB8D6243B9
-	for <alsa-devel@alsa-project.org>;
-	Fri, 15 May 2009 13:09:19 +0200 (CEST)
-In-Reply-To: <4A0D4B37.9020003@samsung.com>
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Joonyoung Shim <jy0922.shim@samsung.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Lopez Cruz,
-	Misael" <x0052729@ti.com>
+Content-Type: TEXT/PLAIN; charset=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <1242312605-2160-2-git-send-email-anemo@mba.ocn.ne.jp>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Cc: Linux/MIPS Development <linux-mips@linux-mips.org>, Ralf Baechle <ralf@linux-mips.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpZGF5IDE1IE1heSAyMDA5IDE0OjAwOjA3IGV4dCBKb29ueW91bmcgU2hpbSB3cm90ZToK
-PiBPbiA1LzE1LzIwMDkgNzowNSBQTSwgTG9wZXogQ3J1eiwgTWlzYWVsIHdyb3RlOgo+ID4+PiBJ
-biBjdXJyZW50IGNvZGUsIGFzIHlvdSBzYXksIHlvdSBoYXZlIHRvIGRpcmVjdGx5IGNoYW5nZQo+
-ID4+PiB0aGUgdmFsdWUgb2YgdGhlIHJlZyBjYWNoZSBmb3Igc2V0dGluZyB0byBvcHRpb24yLCBh
-bHNvCj4gPj4+IHlvdSBoYXZlIHRvIG1vZGlmeSB0aGUgUkVHX09QVElPTiBhbmQgUkVHX1ZPSUNF
-X0lGIHJlZyBmb3IKPiA+Pj4gdm9pY2UsIGJ1dCB0aGlzIGlzIHRlbXBvcmFyeSBtZXRob2QuCj4g
-Pj4KPiA+PiBUaGlzIGNhbiBiZSBkb25lIHdpdGggYSByZWdpc3RlciB3cml0ZSBmcm9tIHRoZSBE
-QUkgaW5pdCgpCj4gPj4gZnVuY3Rpb24gaW4gdGhlIG1hY2hpbmUgZHJpdmVyIGluIG9yZGVyIHRv
-IGF2b2lkIG1vZGlmeWluZwo+ID4+IHR3bDQwMzAuYyBpdHNlbGYuCj4gPgo+ID4gRm9yIGF1ZGlv
-IGFuZCB2b2ljZSBpbnRlcmZhY2UsIGZvbGxvd2luZyB0aGluZ3MgbmVlZCB0byBiZSBjb25maWd1
-cmVkOgo+ID4KPiA+IEF1ZGlvIGludGVyZmFjZToKPiA+IC0gT3V0cHV0IHBpbnMgc3RhdGU6IGhp
-Z2ggaW1wZW5kYW5jZSBvciBhcHBsaWNhdGlvbiBtb2RlCj4gPiAtIEVuYWJsZSBhdWRpbyBpbnRl
-cmZhY2UKPiA+Cj4gPiBWb2ljZSBpbnRlcmZhY2U6Cj4gPiAtIEVuYWJsZSB2b2ljZSBkYXRhIGlu
-cHV0Cj4gPiAtIEVuYWJsZSB2b2ljZSBkYXRhIG91dHB1dAo+ID4gLSBPdXRwdXQgcGlucyBzdGF0
-ZTogaGlnaCBpbXBlZGFuY2Ugb3IgYXBwbGljYXRpb24gbW9kZQo+ID4gLSBFbmFibGUgdm9pY2Ug
-aW50ZXJmYWNlCj4gPgo+ID4gSSB0aGluayB0aGF0IGludGVyZmFjZXMgY2FuIGJlIGVuYWJsZWQg
-aW4gREFJIGluaXQgYXMgTWFyayBzdWdnZXN0cywKPgo+IFllcywgYnV0IGkgd29ycnkgYWJvdXQg
-d2hldGhlciB0aGlzIHJlZyB2YWx1ZSBjYW4gYmUgY2hhbmdlZCBvbiB0aGUgZmx5Cj4gb3Igbm90
-LgoKSSBiZWxpZXZlIHRoaXMgbmVlZHMgY29kZWMgb2ZmL29uCgo+Cj4gPiBidXQgaW5wdXQvb3V0
-cHV0IHNob3VsZCBiZSBlbmFibGVkIGRlcGVuZGluZyBvbiB3aGV0aGVyIHdlIGFyZSBkb2luZwo+
-ID4gcGxheWJhY2svY2FwdHVyZSBvciBub3QsIGFuZCB0aGVuIHRoZXkgc2hvdWxkIGJlIGhhbmRs
-ZWQgaW4gdGhlIGNvZGVjCj4gPiBkcml2ZXIuCj4KPiBIbW0sIHRoZSB0d2w0MDMwIGNvZGVjIGNh
-biBkbyB0aGUgdm9pY2UgY29tbXVuaWNhdGlvbiBhdCB0aGUgc2FtZSB0aW1lCj4gd2hpbGUgZG9p
-bmcgcGxheWJhY2svY2FwdHVyZSwgaXMgbm90IGl0PwoKSSB0aGluayBoZSBtZWFucyB0aGUgYml0
-cyBpbiB0aGUgT1BUSU9OIHJlZ2lzdGVyLgpUaGUgT3B0aW9uMSBjb2RlIHRvZ2dsZXMgc29tZSBv
-ZiB0aGUgYml0cyBpbiBjYXNlIG9mIDQgY2hhbm5lbCBtb2RlLgpTYW1lIHRoaW5nIGNhbiBiZSBk
-b25lIGZvciBPcHRpb24yIHZvaWNlIG9wZXJhdGlvbiBJIHRoaW5rLgoKPgo+ID4gRm9yIHRoZSBj
-b2RlYyBvcGVyYXRpb24gbW9kZSBzZWxlY3Rpb24sIEkgc3RpbGwgdGhpbmsgUGV0ZXIncwo+ID4g
-YWR2aWNlIGlzIG1vcmUgYXBwcm9wcmlhdGUgYmVjYXVzZSBvcHRpb25zMSwyIGFyZSBub3QgcmVh
-bGx5IHRpZ2h0IHRvCj4gPiBEQUlzLiBGb3IgZXhhbXBsZSwgd2UgY2FuIGJlIGluIG9wdGlvbjIg
-KHZvaWNlL2F1ZGlvKSBhbmQgZG8KPiA+IHRyYW5zZmVyZW5jZXMgdXNpbmcgYm90aCBEQUlzOiBJ
-MlMgYW5kIFBDTS4KCi0tIApQw6l0ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hbHNhLWRldmVsCg==
+On Thu, 14 May 2009, Atsushi Nemoto wrote:
+> Add platform support for ACLC of TXx9 SoCs.
+
+I gave it a try on my RBTX4927, and after some fight^H^H^H^H^Hplaying w=
+ith the
+alsa tools, I could play sound using `speaker-test --test wav --channel=
+s 2'!
+
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+Techsoft Centre
+
+Technology and Software Centre Europe
+The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Bel=
+gium
+
+Phone:    +32 (0)2 700 8453
+=46ax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 =B7 RPR Brussels
+=46ortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
