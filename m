@@ -1,28 +1,20 @@
-From: Joonyoung Shim <jy0922.shim@samsung.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Subject: Re: How to set TWL4030 to Option2
-Date: Fri, 15 May 2009 20:00:07 +0900
-Message-ID: <4A0D4B37.9020003@samsung.com>
+Date: Fri, 15 May 2009 14:09:13 +0300
+Message-ID: <200905151409.13619.peter.ujfalusi@nokia.com>
 References: <2C7D3DF36ADFFC479B44490D912B616705F69E7BA4@dlee07.ent.ti.com>
-	<4A0D378E.5090004@samsung.com> <20090515094512.GB4449@sirena.org.uk>
 	<2C7D3DF36ADFFC479B44490D912B616705F69E7BAA@dlee07.ent.ti.com>
+	<4A0D4B37.9020003@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id D9113103971
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id AB8D6243B9
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 May 2009 13:00:09 +0200 (CEST)
-Received: from epmmp1 (mailout4.samsung.com [203.254.224.34])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KJO002WRMK70S@mailout1.samsung.com> for
-	alsa-devel@alsa-project.org; Fri, 15 May 2009 20:00:07 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KJO00KMMMK7C1@mmp1.samsung.com> for
-	alsa-devel@alsa-project.org; Fri, 15 May 2009 20:00:07 +0900 (KST)
-In-reply-to: <2C7D3DF36ADFFC479B44490D912B616705F69E7BAA@dlee07.ent.ti.com>
+	Fri, 15 May 2009 13:09:19 +0200 (CEST)
+In-Reply-To: <4A0D4B37.9020003@samsung.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,46 +24,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Lopez Cruz, Misael" <x0052729@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: ext Joonyoung Shim <jy0922.shim@samsung.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Lopez Cruz,
+	Misael" <x0052729@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 5/15/2009 7:05 PM, Lopez Cruz, Misael wrote:
->>> In current code, as you say, you have to directly change 
->>> the value of the reg cache for setting to option2, also
->>> you have to modify the REG_OPTION and REG_VOICE_IF reg for
->>> voice, but this is temporary method.
-> 
->> This can be done with a register write from the DAI init()
->> function in the machine driver in order to avoid modifying
->> twl4030.c itself.
-> 
-> For audio and voice interface, following things need to be configured:
-> 
-> Audio interface:
-> - Output pins state: high impendance or application mode
-> - Enable audio interface
-> 
-> Voice interface:
-> - Enable voice data input
-> - Enable voice data output
-> - Output pins state: high impedance or application mode
-> - Enable voice interface
-> 
-> I think that interfaces can be enabled in DAI init as Mark suggests,
-
-Yes, but i worry about whether this reg value can be changed on the fly
-or not.
-
-> but input/output should be enabled depending on whether we are doing
-> playback/capture or not, and then they should be handled in the codec
-> driver.
-
-Hmm, the twl4030 codec can do the voice communication at the same time
-while doing playback/capture, is not it?
-
-> 
-> For the codec operation mode selection, I still think Peter's
-> advice is more appropriate because options1,2 are not really tight to
-> DAIs. For example, we can be in option2 (voice/audio) and do
-> transferences using both DAIs: I2S and PCM.
+T24gRnJpZGF5IDE1IE1heSAyMDA5IDE0OjAwOjA3IGV4dCBKb29ueW91bmcgU2hpbSB3cm90ZToK
+PiBPbiA1LzE1LzIwMDkgNzowNSBQTSwgTG9wZXogQ3J1eiwgTWlzYWVsIHdyb3RlOgo+ID4+PiBJ
+biBjdXJyZW50IGNvZGUsIGFzIHlvdSBzYXksIHlvdSBoYXZlIHRvIGRpcmVjdGx5IGNoYW5nZQo+
+ID4+PiB0aGUgdmFsdWUgb2YgdGhlIHJlZyBjYWNoZSBmb3Igc2V0dGluZyB0byBvcHRpb24yLCBh
+bHNvCj4gPj4+IHlvdSBoYXZlIHRvIG1vZGlmeSB0aGUgUkVHX09QVElPTiBhbmQgUkVHX1ZPSUNF
+X0lGIHJlZyBmb3IKPiA+Pj4gdm9pY2UsIGJ1dCB0aGlzIGlzIHRlbXBvcmFyeSBtZXRob2QuCj4g
+Pj4KPiA+PiBUaGlzIGNhbiBiZSBkb25lIHdpdGggYSByZWdpc3RlciB3cml0ZSBmcm9tIHRoZSBE
+QUkgaW5pdCgpCj4gPj4gZnVuY3Rpb24gaW4gdGhlIG1hY2hpbmUgZHJpdmVyIGluIG9yZGVyIHRv
+IGF2b2lkIG1vZGlmeWluZwo+ID4+IHR3bDQwMzAuYyBpdHNlbGYuCj4gPgo+ID4gRm9yIGF1ZGlv
+IGFuZCB2b2ljZSBpbnRlcmZhY2UsIGZvbGxvd2luZyB0aGluZ3MgbmVlZCB0byBiZSBjb25maWd1
+cmVkOgo+ID4KPiA+IEF1ZGlvIGludGVyZmFjZToKPiA+IC0gT3V0cHV0IHBpbnMgc3RhdGU6IGhp
+Z2ggaW1wZW5kYW5jZSBvciBhcHBsaWNhdGlvbiBtb2RlCj4gPiAtIEVuYWJsZSBhdWRpbyBpbnRl
+cmZhY2UKPiA+Cj4gPiBWb2ljZSBpbnRlcmZhY2U6Cj4gPiAtIEVuYWJsZSB2b2ljZSBkYXRhIGlu
+cHV0Cj4gPiAtIEVuYWJsZSB2b2ljZSBkYXRhIG91dHB1dAo+ID4gLSBPdXRwdXQgcGlucyBzdGF0
+ZTogaGlnaCBpbXBlZGFuY2Ugb3IgYXBwbGljYXRpb24gbW9kZQo+ID4gLSBFbmFibGUgdm9pY2Ug
+aW50ZXJmYWNlCj4gPgo+ID4gSSB0aGluayB0aGF0IGludGVyZmFjZXMgY2FuIGJlIGVuYWJsZWQg
+aW4gREFJIGluaXQgYXMgTWFyayBzdWdnZXN0cywKPgo+IFllcywgYnV0IGkgd29ycnkgYWJvdXQg
+d2hldGhlciB0aGlzIHJlZyB2YWx1ZSBjYW4gYmUgY2hhbmdlZCBvbiB0aGUgZmx5Cj4gb3Igbm90
+LgoKSSBiZWxpZXZlIHRoaXMgbmVlZHMgY29kZWMgb2ZmL29uCgo+Cj4gPiBidXQgaW5wdXQvb3V0
+cHV0IHNob3VsZCBiZSBlbmFibGVkIGRlcGVuZGluZyBvbiB3aGV0aGVyIHdlIGFyZSBkb2luZwo+
+ID4gcGxheWJhY2svY2FwdHVyZSBvciBub3QsIGFuZCB0aGVuIHRoZXkgc2hvdWxkIGJlIGhhbmRs
+ZWQgaW4gdGhlIGNvZGVjCj4gPiBkcml2ZXIuCj4KPiBIbW0sIHRoZSB0d2w0MDMwIGNvZGVjIGNh
+biBkbyB0aGUgdm9pY2UgY29tbXVuaWNhdGlvbiBhdCB0aGUgc2FtZSB0aW1lCj4gd2hpbGUgZG9p
+bmcgcGxheWJhY2svY2FwdHVyZSwgaXMgbm90IGl0PwoKSSB0aGluayBoZSBtZWFucyB0aGUgYml0
+cyBpbiB0aGUgT1BUSU9OIHJlZ2lzdGVyLgpUaGUgT3B0aW9uMSBjb2RlIHRvZ2dsZXMgc29tZSBv
+ZiB0aGUgYml0cyBpbiBjYXNlIG9mIDQgY2hhbm5lbCBtb2RlLgpTYW1lIHRoaW5nIGNhbiBiZSBk
+b25lIGZvciBPcHRpb24yIHZvaWNlIG9wZXJhdGlvbiBJIHRoaW5rLgoKPgo+ID4gRm9yIHRoZSBj
+b2RlYyBvcGVyYXRpb24gbW9kZSBzZWxlY3Rpb24sIEkgc3RpbGwgdGhpbmsgUGV0ZXIncwo+ID4g
+YWR2aWNlIGlzIG1vcmUgYXBwcm9wcmlhdGUgYmVjYXVzZSBvcHRpb25zMSwyIGFyZSBub3QgcmVh
+bGx5IHRpZ2h0IHRvCj4gPiBEQUlzLiBGb3IgZXhhbXBsZSwgd2UgY2FuIGJlIGluIG9wdGlvbjIg
+KHZvaWNlL2F1ZGlvKSBhbmQgZG8KPiA+IHRyYW5zZmVyZW5jZXMgdXNpbmcgYm90aCBEQUlzOiBJ
+MlMgYW5kIFBDTS4KCi0tIApQw6l0ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
