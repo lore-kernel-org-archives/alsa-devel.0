@@ -1,19 +1,18 @@
-From: Ben Dooks <ben-alsa@fluff.org>
-Subject: Advice on ASoC support for series of boards
-Date: Fri, 15 May 2009 20:34:06 +0100
-Message-ID: <20090515193406.GD23895@trinity.fluff.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Advice on ASoC support for series of boards
+Date: Fri, 15 May 2009 20:56:53 +0100
+Message-ID: <20090515195653.GA16607@sirena.org.uk>
+References: <20090515193406.GD23895@trinity.fluff.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from trinity.fluff.org (trinity.fluff.org [89.16.178.74])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3541D1039BB
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id B0BF51039B9
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 May 2009 21:34:09 +0200 (CEST)
-Received: from ben by trinity.fluff.org with local (Exim 4.63)
-	(envelope-from <ben@trinity.fluff.org>) id 1M53AU-0005c7-VO
-	for alsa-devel@alsa-project.org; Fri, 15 May 2009 20:34:07 +0100
+	Fri, 15 May 2009 21:56:54 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <20090515193406.GD23895@trinity.fluff.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,22 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Ben Dooks <ben-alsa@fluff.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I would like some advice before I start on a project to move our
-series of boards to the ASoC framework.
+On Fri, May 15, 2009 at 08:34:06PM +0100, Ben Dooks wrote:
 
-All the boards shared the same I2S wiring and all but one have
-the same TI CODEC wired in similar configuration. The differences
-are in the presence and connection of a speaker AMP (GPIO controlled).
+> Is there a standard method for binding an AMP to an driver, or is it
+> necessary to have the AMPs in the driver itself? If not, what would
+> people recommend to be the best example of this?
 
-Is there a standard method for binding an AMP to an driver, or is it
-necessary to have the AMPs in the driver itself? If not, what would
-people recommend to be the best example of this?
+There's several drivers involved in an ASoC system - these things are
+generally handled in the machine driver.
 
--- 
-Ben
+For power control for things like amplifiers this is done by providing
+an event callback for one of the widgets for an output (eg, a
+SND_SOC_DAPM_SPK()) and doing whatever is required to enable or disalbe
+the device (usually updating a GPIO) in the callback.  This ensures that
+the power control is integrated with DAPM power sequencing.  See the Mic
+Jack handling in spitz.c for a mainline example of this.
 
-Q:      What's a light-year?
-A:      One-third less calories than a regular year.
+For non-power control (eg, a mute controlled by a GPIO) a regular
+control would be registered by the machine driver - the _EXT() controls
+ASoC provides are designed for use here, allowing callbacks to be
+registered to update GPIOs or do whatever other changes are required.
+Of course, it's also possible to register normal ALSA controls as normal
+without any ASoC specific stuff if desired.  Spitz also has some
+examples of this.
+
+I'm not sure if that answers your question?
