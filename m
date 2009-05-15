@@ -1,20 +1,27 @@
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH] TXx9: Add ACLC support
-Date: Fri, 15 May 2009 11:09:51 +0100
-Message-ID: <20090515100951.GB2821@linux-mips.org>
-References: <1242312605-2160-2-git-send-email-anemo@mba.ocn.ne.jp>
-	<20090515090118.GA7706@linux-mips.org>
-	<20090515091741.GA4449@sirena.org.uk>
+From: Joonyoung Shim <jy0922.shim@samsung.com>
+Subject: Re: How to set TWL4030 to Option2
+Date: Fri, 15 May 2009 19:13:06 +0900
+Message-ID: <4A0D4032.20506@samsung.com>
+References: <2C7D3DF36ADFFC479B44490D912B616705F69E7BA4@dlee07.ent.ti.com>
+	<4A0D378E.5090004@samsung.com> <20090515094512.GB4449@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from h5.dl5rb.org.uk (h5.dl5rb.org.uk [81.2.74.5])
-	by alsa0.perex.cz (Postfix) with ESMTP id AE8012433A
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 61B432433E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 May 2009 12:10:18 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20090515091741.GA4449@sirena.org.uk>
+	Fri, 15 May 2009 12:13:09 +0200 (CEST)
+Received: from epmmp2 (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KJO00DI4KDULB@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Fri, 15 May 2009 19:13:06 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KJO00M8IKDUJD@mmp2.samsung.com> for
+	alsa-devel@alsa-project.org; Fri, 15 May 2009 19:13:06 +0900 (KST)
+In-reply-to: <20090515094512.GB4449@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,23 +32,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: linux-mips@linux-mips.org, Atsushi Nemoto <anemo@mba.ocn.ne.jp>, alsa-devel@alsa-project.org
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "Lopez Cruz,
+	Misael" <x0052729@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 15, 2009 at 10:17:43AM +0100, Mark Brown wrote:
-
-> On Fri, May 15, 2009 at 10:01:19AM +0100, Ralf Baechle wrote:
-> > On Thu, May 14, 2009 at 11:50:05PM +0900, Atsushi Nemoto wrote:
+On 5/15/2009 6:45 PM, Mark Brown wrote:
+> On Fri, May 15, 2009 at 06:36:14PM +0900, Joonyoung Shim wrote:
 > 
-> > > Add platform support for ACLC of TXx9 SoCs.
+>> In current code, as you say, you have to directly change the value of
+>> the reg cache for setting to option2, also you have to modify the
+>> REG_OPTION and REG_VOICE_IF reg for voice, but this is temporary method.
 > 
-> > Thanks, queued up for 2.6.31 / linux-next.
+> This can be done with a register write from the DAI init() function in
+> the machine driver in order to avoid modifying twl4030.c itself.
 > 
-> These will need revision after fixing my review comments for the audio
-> drivers - the way the platform devices are set up needs to be changed so
-> that the resources are associated with devices for the CPU rather than
-> the machine driver that says how a given board is connected up.
 
-Ok; I re-queued the patch into my -mm tree until we declare it ripe.
-
-  Ralf
+Oh, i see, thanks. But because the startup() function of codec dai is
+called earlier than startup() function of machine, i think that we need
+an control to set option2.
