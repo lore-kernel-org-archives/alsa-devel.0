@@ -1,76 +1,53 @@
-From: Hal Murray <hmurray-8cQiHa/C+6Go9G/jEpaUCQ@public.gmane.org>
-Subject: Re: [RFC] ALSA vs. dedicated char device for a USB Audio Class
- gadget driver
-Date: Fri, 15 May 2009 13:15:18 -0700
-Message-ID: <20090515201519.7C347BCE6@ip-64-139-1-69.sjc.megapath.net>
-References: <laurent.pinchart@skynet.be>
+From: mAdVax <madvax@free.fr>
+Subject: Re: emu10k1 TRAM access ?
+Date: Fri, 15 May 2009 22:56:44 +0200
+Message-ID: <4A0DD70C.8050109@free.fr>
+References: <4A0C115E.8010306@free.fr> <s5hskj6a2rl.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: Message from Laurent Pinchart <laurent.pinchart-AgBVmzD5pcezQB+pC5nmwQ@public.gmane.org>
-   of "Fri, 15 May 2009 17:52:57 +0200." <200905151752.58040.laurent.pinchart-AgBVmzD5pcezQB+pC5nmwQ@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Laurent Pinchart <laurent.pinchart-AgBVmzD5pcezQB+pC5nmwQ@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Hal Murray <hmurray-8cQiHa/C+6Go9G/jEpaUCQ@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp23.services.sfr.fr (smtp23.services.sfr.fr [93.17.128.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id EBFEB2442B
+	for <alsa-devel@alsa-project.org>;
+	Fri, 15 May 2009 22:56:47 +0200 (CEST)
+In-Reply-To: <s5hskj6a2rl.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-> If I use a synchronous endpoint, isn't the number of samples per frame
-> determined by the nominal sampling rate and the nominal SOF frequency
-> ? With  the SOF clock running at 1kHz, I expect a synchronous endpoint
-> for a 16 bits  mono 48kHz stream to deliver exactly 48 frames (96
-> bytes) per USB frame. 
-
-Beware of the "exact" in there.  In real life, crystals have a tolerance.  
-The USB clock will not match the audio clock perfectly.  What should be 1 kHz 
-might be 1.00003 kHz or it might be 0.99997 kHz.
-
-If the USB clock in this example is slightly fast, you will get occasional 
-times when there are only 47 samples ready.  If it's slightly slow, you will 
-occasionally have 49 samples.
-
-That's slow/fast relative to the audio clock.  If the USB clock is 0.001% 
-slow but the audio clock is 0.002% slow, then the USB clock will be fast for 
-this discussion.
-
-
-This is a common problem in communications.  There are several techniques to 
-cope with it.
-
-The simplest is to make the transport mechanism have a bit of extra bandwidth 
-so you can always keep up.  It's just a matter of how often you use that 
-extra bandwidth.  In this case, you would allocate enough bandwidth for 49 
-samples and only use 48 most of the time.  An occasional USB frame would have 
-47 or 49.
-
-
-Another approach is to use big enough FIFO so you never get in trouble.  For 
-this to work, you need a limit on the length of the data stream.  For 
-example, suppose the longest song you want to send is 1000 seconds and both 
-clocks are accurate to 50 ppm (parts per million).  The max difference in 
-clocks is 100 ppm.  48 k samples/second * 1000 seconds is 48 million samples 
-total.  100 ppm means that the worst difference would be 4800 samples.  So if 
-the USB side waits until it gets 4800 samples before it starts forwarding 
-data, it won't run out if the audio clock is worst-case slow and the USB 
-clock is worst-case fast.  You also need buffering for another 4800 samples 
-in case the clock differences are reversed.  This adds a delay to get started 
-while you collect the 4800 samples.
-
-You can just drop or duplicate a sample whenever the clocks slip.
-
-You can derive both clocks from a common source.
-
-You can lock one clock to the other with a PLL (Phase Locked Loop).
-
-There are probably other approaches.
-
-
--- 
-These are my opinions, not necessarily my employer's.  I hate spam.
-
-
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+VGFrYXNoaSBJd2FpIGEgw6ljcml0IDoKPiBBdCBUaHUsIDE0IE1heSAyMDA5IDE0OjQxOjAyICsw
+MjAwLAo+IG1BZFZheCB3cm90ZToKPj4gSGVsbG8KPj4KPj4gSSB3b3VsZCBsaWtlIHRvIHNlbmQg
+c29tZSBkYXRhIHRvIGEgRFNQIHBhdGNoLiBJIGNhbiB1c2UgYWxzYSBjb250cm9scwo+PiAoZWFz
+eSkgYnV0IEkgbmVlZCBtb3JlIDogVFJBTSBhbmQgbG9va3VwIHRhYmxlLiBJIHJlYWQgbWFueSBs
+aW5lcyBvZgo+PiBjb2RlLCBidXQgYWxsIHRoaXMgaXMgc3RpbGwgcXVpdGUgb2JzY3VyZS4uLgo+
+PiBIZXJlIGFyZSAzIHF1ZXN0aW9ucyA6Cj4+Cj4+IEhvdyBjYW4gSSBmaWxsIHRoZSBUUkFNID8g
+KGZyb20gdXNlciBzcGFjZSkKPj4gSG93IGNhbiBJIGtub3cgd2hpY2ggVFJBTSBhcmVhIGhhcyBi
+ZWVuIGFsbG9jYXRlZCB0byBhIGdpdmVuIHBhdGNoID8KPj4gRG8gJ2xvb2t1cCB0YWJsZXMnIHdv
+cmsgPwo+Pgo+PiBTb21lIGNvZGUgc2FtcGxlcyB3aWxsIGJlIGdyZWF0bHkgYXBwcmVjaWF0ZWQg
+IDopCj4gCj4gV2VsbCwgaXQgZ290IGludG8gYWxyZWFkeSBteSBkYXJrIHBsYWNlIG9mIG1lbW9y
+eSwgYW5kIG15IGNhY2hlIGlzIHRvbwo+IHNtYWxsIHRvIGZldGNoIHNvb24uICBCdXQsIEkgcmVj
+b21tZW5kIHlvdSB0byB0YWtlIGEgbG9vayBhdAo+IGFsc2EtdG9vbHMvbGQxMGsxLiAgSXQncyB0
+aGUgY2VudHJhbCBwbGFjZSB0byBhY2Nlc3MgdGhlIGVtdTEwazEgRFNQLgoKRG9uZSA7KQpFaXRo
+ZXIgSSBtaXNzZWQgc29tZXRoaW5nLCBlaXRoZXIgbG9va3VwIHRhYmxlcyBhcmUgbm90IGltcGxl
+bWVudGVkLgoKVGhlIGNsaWVudCBwYXJ0IChsaWJsbyopIHVzZXMgZGlmZmVyZW50IHN0cnVjdCBm
+b3IgZGVsYXktbGluZXMgYW5kIGZvcgpsb29rdXAgdGFibGVzLCB0aGUgc2VydmVyIHBhcnQgKGxk
+KikgY29udGFpbnMgb25seSBtaW5vciByZWZlcmVuY2VzIHRvCnRyYW0gdHlwZSwgYnV0IHRoZSBk
+cml2ZXIgcGFydCBkb2VzIG5vdCBtYWtlIF9hbnlfIGRpZmZlcmVuY2UgKEFGQUkKdW5kZXJzdGFu
+ZCkuCgpJbiB0aGUgb2xkIGFzMTBrMSBkb2N1bWVudGF0aW9uIGF0IHNvdXJjZWZvcmdlLCBpdCBp
+cyBzYWlkIDoKPiBOb3RlLCBsb29rdXAgdGFibGVzIGN1cnJlbnRseSBkb24ndCB3b3JrCj4gKGJl
+Y2F1c2Ugd2UgZG9uJ3QgdW5kZXJzdGFuZCBob3cgdG8pCkJ1dCB0aGUgQWxzYSBkb2N1bWVudGF0
+aW9uIGRvZXMgbm90IHNheSBhbnl0aGluZy4KCkRvbid0IHlvdSAoYW55b25lKSBvbmx5IHJlbWVt
+YmVyIGlmIGxvb2t1cCB0YWJsZSBoYXMgYmVlbiBpbXBsZW1lbnRlZCA/CgpUaGFua3MgYWdhaW4K
+ClhhdmllcgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
+Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
