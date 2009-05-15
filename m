@@ -1,20 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Add TXx9 AC link controller driver
-Date: Fri, 15 May 2009 20:05:58 +0100
-Message-ID: <20090515190558.GA13050@sirena.org.uk>
-References: <1242312605-2160-1-git-send-email-anemo@mba.ocn.ne.jp>
-	<20090514185945.GO28291@sirena.org.uk>
-	<20090516.001202.173372394.anemo@mba.ocn.ne.jp>
+From: Ben Dooks <ben-alsa@fluff.org>
+Subject: Advice on ASoC support for series of boards
+Date: Fri, 15 May 2009 20:34:06 +0100
+Message-ID: <20090515193406.GD23895@trinity.fluff.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 486DF1039DE
+Received: from trinity.fluff.org (trinity.fluff.org [89.16.178.74])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3541D1039BB
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 May 2009 21:06:00 +0200 (CEST)
+	Fri, 15 May 2009 21:34:09 +0200 (CEST)
+Received: from ben by trinity.fluff.org with local (Exim 4.63)
+	(envelope-from <ben@trinity.fluff.org>) id 1M53AU-0005c7-VO
+	for alsa-devel@alsa-project.org; Fri, 15 May 2009 20:34:07 +0100
 Content-Disposition: inline
-In-Reply-To: <20090516.001202.173372394.anemo@mba.ocn.ne.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,25 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, ralf@linux-mips.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, May 16, 2009 at 12:12:02AM +0900, Atsushi Nemoto wrote:
+I would like some advice before I start on a project to move our
+series of boards to the ASoC framework.
 
-> OK, then I will move irq/mem resource stuff to the DAI driver and dma
-> resource stuff to the DMA driver.
+All the boards shared the same I2S wiring and all but one have
+the same TI CODEC wired in similar configuration. The differences
+are in the presence and connection of a speaker AMP (GPIO controlled).
 
-Either is fine - do whatever makes most sense for your system.
+Is there a standard method for binding an AMP to an driver, or is it
+necessary to have the AMPs in the driver itself? If not, what would
+people recommend to be the best example of this?
 
-> OTOH, I want to keep arch code as is.  There are some TXx9 SoC
-> variations and they can have different baseaddr/irq/dma.  I want to
-> leave these details in arch code and make ASoC drivers generic as
-> possible.
+-- 
+Ben
 
-This is the common situation for SoC CPUs - most silicon vendors reuse
-the same IPs in diffierent combinations on different CPUs.  The normal
-approach is to have the generic code for each SoC set up the resources
-for the devices that are present on that particular SoC.  This avoids
-the need for each board using the SoC to have to replicate the
-information.
+Q:      What's a light-year?
+A:      One-third less calories than a regular year.
