@@ -1,53 +1,76 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Advice on ASoC support for series of boards
-Date: Fri, 15 May 2009 20:56:53 +0100
-Message-ID: <20090515195653.GA16607@sirena.org.uk>
-References: <20090515193406.GD23895@trinity.fluff.org>
+From: Hal Murray <hmurray-8cQiHa/C+6Go9G/jEpaUCQ@public.gmane.org>
+Subject: Re: [RFC] ALSA vs. dedicated char device for a USB Audio Class
+ gadget driver
+Date: Fri, 15 May 2009 13:15:18 -0700
+Message-ID: <20090515201519.7C347BCE6@ip-64-139-1-69.sjc.megapath.net>
+References: <laurent.pinchart@skynet.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id B0BF51039B9
-	for <alsa-devel@alsa-project.org>;
-	Fri, 15 May 2009 21:56:54 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20090515193406.GD23895@trinity.fluff.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ben Dooks <ben-alsa@fluff.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: Message from Laurent Pinchart <laurent.pinchart-AgBVmzD5pcezQB+pC5nmwQ@public.gmane.org>
+   of "Fri, 15 May 2009 17:52:57 +0200." <200905151752.58040.laurent.pinchart-AgBVmzD5pcezQB+pC5nmwQ@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Laurent Pinchart <laurent.pinchart-AgBVmzD5pcezQB+pC5nmwQ@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Hal Murray <hmurray-8cQiHa/C+6Go9G/jEpaUCQ@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 15, 2009 at 08:34:06PM +0100, Ben Dooks wrote:
 
-> Is there a standard method for binding an AMP to an driver, or is it
-> necessary to have the AMPs in the driver itself? If not, what would
-> people recommend to be the best example of this?
+> If I use a synchronous endpoint, isn't the number of samples per frame
+> determined by the nominal sampling rate and the nominal SOF frequency
+> ? With  the SOF clock running at 1kHz, I expect a synchronous endpoint
+> for a 16 bits  mono 48kHz stream to deliver exactly 48 frames (96
+> bytes) per USB frame. 
 
-There's several drivers involved in an ASoC system - these things are
-generally handled in the machine driver.
+Beware of the "exact" in there.  In real life, crystals have a tolerance.  
+The USB clock will not match the audio clock perfectly.  What should be 1 kHz 
+might be 1.00003 kHz or it might be 0.99997 kHz.
 
-For power control for things like amplifiers this is done by providing
-an event callback for one of the widgets for an output (eg, a
-SND_SOC_DAPM_SPK()) and doing whatever is required to enable or disalbe
-the device (usually updating a GPIO) in the callback.  This ensures that
-the power control is integrated with DAPM power sequencing.  See the Mic
-Jack handling in spitz.c for a mainline example of this.
+If the USB clock in this example is slightly fast, you will get occasional 
+times when there are only 47 samples ready.  If it's slightly slow, you will 
+occasionally have 49 samples.
 
-For non-power control (eg, a mute controlled by a GPIO) a regular
-control would be registered by the machine driver - the _EXT() controls
-ASoC provides are designed for use here, allowing callbacks to be
-registered to update GPIOs or do whatever other changes are required.
-Of course, it's also possible to register normal ALSA controls as normal
-without any ASoC specific stuff if desired.  Spitz also has some
-examples of this.
+That's slow/fast relative to the audio clock.  If the USB clock is 0.001% 
+slow but the audio clock is 0.002% slow, then the USB clock will be fast for 
+this discussion.
 
-I'm not sure if that answers your question?
+
+This is a common problem in communications.  There are several techniques to 
+cope with it.
+
+The simplest is to make the transport mechanism have a bit of extra bandwidth 
+so you can always keep up.  It's just a matter of how often you use that 
+extra bandwidth.  In this case, you would allocate enough bandwidth for 49 
+samples and only use 48 most of the time.  An occasional USB frame would have 
+47 or 49.
+
+
+Another approach is to use big enough FIFO so you never get in trouble.  For 
+this to work, you need a limit on the length of the data stream.  For 
+example, suppose the longest song you want to send is 1000 seconds and both 
+clocks are accurate to 50 ppm (parts per million).  The max difference in 
+clocks is 100 ppm.  48 k samples/second * 1000 seconds is 48 million samples 
+total.  100 ppm means that the worst difference would be 4800 samples.  So if 
+the USB side waits until it gets 4800 samples before it starts forwarding 
+data, it won't run out if the audio clock is worst-case slow and the USB 
+clock is worst-case fast.  You also need buffering for another 4800 samples 
+in case the clock differences are reversed.  This adds a delay to get started 
+while you collect the 4800 samples.
+
+You can just drop or duplicate a sample whenever the clocks slip.
+
+You can derive both clocks from a common source.
+
+You can lock one clock to the other with a PLL (Phase Locked Loop).
+
+There are probably other approaches.
+
+
+-- 
+These are my opinions, not necessarily my employer's.  I hate spam.
+
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
