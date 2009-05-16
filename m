@@ -1,18 +1,20 @@
-From: mAdVax <madvax@free.fr>
-Subject: Re: emu10k1 TRAM access ?
-Date: Sat, 16 May 2009 12:32:53 +0200
-Message-ID: <4A0E9655.2000008@free.fr>
-References: <4A0C115E.8010306@free.fr> <s5hskj6a2rl.wl%tiwai@suse.de>
-	<4A0DD70C.8050109@free.fr>
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Subject: Re: [PATCH] ASoC: Add TXx9 AC link controller driver
+Date: Sat, 16 May 2009 22:45:41 +0900 (JST)
+Message-ID: <20090516.224541.39155366.anemo@mba.ocn.ne.jp>
+References: <20090514185945.GO28291@sirena.org.uk>
+	<20090516.001202.173372394.anemo@mba.ocn.ne.jp>
+	<20090515190558.GA13050@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp21.services.sfr.fr (smtp21.services.sfr.fr [93.17.128.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 35B8224420
+Received: from smtp.mba.ocn.ne.jp (mba.ocn.ne.jp [122.1.235.107])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1966324552
 	for <alsa-devel@alsa-project.org>;
-	Sat, 16 May 2009 12:32:56 +0200 (CEST)
-In-Reply-To: <4A0DD70C.8050109@free.fr>
+	Sat, 16 May 2009 15:45:44 +0200 (CEST)
+In-Reply-To: <20090515190558.GA13050@sirena.org.uk>
+	<1242312605-2160-2-git-send-email-anemo@mba.ocn.ne.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,18 +24,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: broonie@opensource.wolfsonmicro.com
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, ralf@linux-mips.org
 List-Id: alsa-devel@alsa-project.org
 
-bUFkVmF4IGEgw6ljcml0IDoKCiA+IERvbid0IHlvdSAoYW55b25lKSBvbmx5IHJlbWVtYmVyIGlm
-IGxvb2t1cCB0YWJsZSBoYXMgYmVlbiBpbXBsZW1lbnRlZCA/CgpJIGFuc3dlciB0byBteSBvd24g
-cXVlc3Rpb24uCkFjY29yZGluZyB0byBhbiBvbGQgcG9zdCBvbiBreCBmb3J1bSwgbG9va3VwIHRh
-YmxlcyBvbmx5IHdvcmsgb24gZW11MTBrMiAKY2hpcHMsIGFuZCBhcmUgbmV2ZXIgYmVlbiBpbXBs
-ZW1lbnRlZCBpbiBreCBkcml2ZXIuIEkgZmVhciB0aGF0IG5vYm9keSAKa25vd3MgaG93IHRvIGhh
-bmRsZSB0aGlzIHN0dWZmLgoKRW11MTBrMSBpcyBxdWl0ZSBvbGQuIFNob3VsZCBJIHN3aXRjaCB0
-byBYLUZpID8gQ2FuIHRoZSBEU1AgYmUgdXNlZCBieSAKdGhlIHVzZXIgPyBJbiBhIG5lYXIgZnV0
-dXJlID8KClJlZ2FyZHMsCgpYYXZpZXIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYWxzYS1kZXZlbAo=
+On Fri, 15 May 2009 20:05:58 +0100, Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+> > OTOH, I want to keep arch code as is.  There are some TXx9 SoC
+> > variations and they can have different baseaddr/irq/dma.  I want to
+> > leave these details in arch code and make ASoC drivers generic as
+> > possible.
+> 
+> This is the common situation for SoC CPUs - most silicon vendors reuse
+> the same IPs in diffierent combinations on different CPUs.  The normal
+> approach is to have the generic code for each SoC set up the resources
+> for the devices that are present on that particular SoC.  This avoids
+> the need for each board using the SoC to have to replicate the
+> information.
+
+Yes, and I tried to do so in "TXx9: Add ACLC support" patch.
+
+>  arch/mips/include/asm/txx9/generic.h  |    5 ++++
+>  arch/mips/include/asm/txx9/tx4927.h   |    2 +
+>  arch/mips/include/asm/txx9/tx4938.h   |    1 +
+>  arch/mips/include/asm/txx9/tx4939.h   |    1 +
+>  arch/mips/txx9/Kconfig                |    3 ++
+>  arch/mips/txx9/generic/setup.c        |   36 +++++++++++++++++++++++++++
+>  arch/mips/txx9/generic/setup_tx4927.c |   43 +++++++++++++++++++++++++++++++++
+>  arch/mips/txx9/generic/setup_tx4938.c |   11 ++++++++
+>  arch/mips/txx9/generic/setup_tx4939.c |    9 +++++++
+
+These are "the generic code for each SoC set up the resources for
+the devices that are present on that particular SoC".
+
+>  arch/mips/txx9/rbtx4927/setup.c       |    7 ++++-
+>  arch/mips/txx9/rbtx4938/setup.c       |    1 +
+>  arch/mips/txx9/rbtx4939/setup.c       |    1 +
+
+And these are setup codes for each boards.
+
+Is this acceptable?  I'm not sure whether you are saying Ack or Nack
+for this approach.
+
+---
+Atsushi Nemoto
