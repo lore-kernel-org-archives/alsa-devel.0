@@ -1,20 +1,17 @@
-From: =?UTF-8?Q?Vedran_Mileti=C4=87?= <rivanvx@gmail.com>
-Subject: Re: SiS SI7012 with ALC202 sound card not working on
-	Acer Aspire G600 in Ubuntu 9.04
-Date: Sat, 16 May 2009 10:14:42 +0200
-Message-ID: <fd3eb9bf0905160114h6e7225een5e7bae782c1a44e0@mail.gmail.com>
-References: <971484.37126.qm@web95103.mail.in2.yahoo.com>
+From: "Michael (Micksa) Slade" <mslade@knobbits.org>
+Subject: Re: Testers wanted: New SB X-Fi driver
+Date: Sat, 16 May 2009 19:34:28 +1000
+Message-ID: <4A0E88A4.2030206@knobbits.org>
+References: <s5h4ovovtwe.wl%tiwai@suse.de> <s5h7i0i9yng.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.147])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5B294244E8
+Received: from killface.knobbits.org (killface.knobbits.org [67.18.208.22])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8BE0C24393
 	for <alsa-devel@alsa-project.org>;
-	Sat, 16 May 2009 10:14:43 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 4so1590976qwk.56
-	for <alsa-devel@alsa-project.org>; Sat, 16 May 2009 01:14:42 -0700 (PDT)
-In-Reply-To: <971484.37126.qm@web95103.mail.in2.yahoo.com>
+	Sat, 16 May 2009 11:34:33 +0200 (CEST)
+In-Reply-To: <s5h7i0i9yng.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,50 +21,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: puli dilip <pulidilip@yahoo.co.in>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBNYXkgMTQsIDIwMDkgYXQgODoxMyBQTSwgcHVsaSBkaWxpcCA8cHVsaWRpbGlwQHlh
-aG9vLmNvLmluPiB3cm90ZToKPiBTaVMgU0k3MDEyIHdpdGggQUxDMjAyIHNvdW5kIGNhcmQgbm90
-IHdvcmtpbmcgb24gQWNlciBBc3BpcmUgRzYwMCBpbiBVYnVudHUgOS4wNAo+Cj4KPgo+Cj4KPgo+
-Cj4KPgo+Cj4KPiDCoCDCoCDCoENhcmQ6IFNpUyBTSTcwMTIgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAg4pSCCj4KPiDilIIgQ2hpcDogUmVhbHRlayBBTEMyMDIgcmV2IDAKPgo+IHRo
-aXMgaXMgdGFrZW4gZnJvbSBhbHNhbWl4ZXIKPiAwMDowMC4wIEhvc3QgYnJpZGdlOiBTaWxpY29u
-IEludGVncmF0ZWQgU3lzdGVtcyBbU2lTXSA2NTEgSG9zdCAocmV2IDAxKQo+Cj4gMDA6MDEuMCBQ
-Q0kgYnJpZGdlOiBTaWxpY29uIEludGVncmF0ZWQgU3lzdGVtcyBbU2lTXSBWaXJ0dWFsIFBDSS10
-by1QQ0kgYnJpZGdlIChBR1ApCj4KPiAwMDowMi4wIElTQSBicmlkZ2U6IFNpbGljb24gSW50ZWdy
-YXRlZCBTeXN0ZW1zIFtTaVNdIFNpUzk2MiBbTXVUSU9MIE1lZGlhIElPXSAocmV2IDA0KQo+Cj4g
-MDA6MDIuMSBTTUJ1czogU2lsaWNvbiBJbnRlZ3JhdGVkIFN5c3RlbXMgW1NpU10gU2lTOTYxLzIg
-U01CdXMgQ29udHJvbGxlcgo+Cj4gMDA6MDIuMyBGaXJlV2lyZSAoSUVFRSAxMzk0KTogU2lsaWNv
-biBJbnRlZ3JhdGVkIFN5c3RlbXMgW1NpU10gRmlyZVdpcmUgQ29udHJvbGxlcgo+Cj4gMDA6MDIu
-NSBJREUgaW50ZXJmYWNlOiBTaWxpY29uIEludGVncmF0ZWQgU3lzdGVtcyBbU2lTXSA1NTEzIFtJ
-REVdCj4KPiAwMDowMi43IE11bHRpbWVkaWEgYXVkaW8gY29udHJvbGxlcjogU2lsaWNvbiBJbnRl
-Z3JhdGVkIFN5c3RlbXMgW1NpU10gQUMnOTcgU291bmQgQ29udHJvbGxlciAocmV2IGEwKQo+Cj4g
-MDA6MDMuMCBVU0IgQ29udHJvbGxlcjogU2lsaWNvbiBJbnRlZ3JhdGVkIFN5c3RlbXMgW1NpU10g
-VVNCIDEuMSBDb250cm9sbGVyIChyZXYgMGYpCj4KPiAwMDowMy4xIFVTQiBDb250cm9sbGVyOiBT
-aWxpY29uIEludGVncmF0ZWQgU3lzdGVtcyBbU2lTXSBVU0IgMS4xIENvbnRyb2xsZXIgKHJldiAw
-ZikKPgo+IDAwOjAzLjIgVVNCIENvbnRyb2xsZXI6IFNpbGljb24gSW50ZWdyYXRlZCBTeXN0ZW1z
-IFtTaVNdIFVTQiAxLjEgQ29udHJvbGxlciAocmV2IDBmKQo+Cj4gMDA6MDMuMyBVU0IgQ29udHJv
-bGxlcjogU2lsaWNvbiBJbnRlZ3JhdGVkIFN5c3RlbXMgW1NpU10gVVNCIDIuMCBDb250cm9sbGVy
-Cj4KPiAwMDowNi4wIE11bHRpbWVkaWEgY29udHJvbGxlcjogUGhpbGlwcyBTZW1pY29uZHVjdG9y
-cyBTQUE3MTMwIFZpZGVvIEJyb2FkY2FzdCBEZWNvZGVyIChyZXYgMDEpCj4KPiAwMDowZi4wIEV0
-aGVybmV0IGNvbnRyb2xsZXI6IFJlYWx0ZWsgU2VtaWNvbmR1Y3RvciBDby4sIEx0ZC4gUlRMLTgx
-MzkvODEzOUMvODEzOUMrIChyZXYgMTApCj4KPiAwMTowMC4wIFZHQSBjb21wYXRpYmxlIGNvbnRy
-b2xsZXI6IFNpbGljb24gSW50ZWdyYXRlZCBTeXN0ZW1zIFtTaVNdIDY1eC9NNjUwLzc0MCBQQ0kv
-QUdQIFZHQSBEaXNwbGF5IEFkYXB0ZXIKPiBoZXJlIGkgYW0gZ2l2aW5nIGxpbmsgcGxlYXNlIGZp
-eCB0aGUgcHJvYmxlbQo+IGh0dHBzOi8vYW5zd2Vycy5sYXVuY2hwYWQubmV0L3VidW50dS8rc291
-cmNlL2Fsc2EtZHJpdmVyLytxdWVzdGlvbi83MDk3Mgo+Cj4KPgo+IMKgIMKgIMKgRXhwbG9yZSBh
-bmQgZGlzY292ZXIgZXhjaXRpbmcgaG9saWRheXMgYW5kIGdldGF3YXlzIHdpdGggWWFob28hIElu
-ZGlhIFRyYXZlbCBodHRwOi8vaW4udHJhdmVsLnlhaG9vLmNvbS8KPiBfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgoKVGhpcyBzZWVtcyBhd2Z1bGx5
-IGZhbWlsaWFyIC0gSSBoYWQgdGhlIHNhbWUgaXNzdWUgd2hlbiBpbnN0YWxsaW5nCkZlZG9yYSA2
-IG9uIHNvbWUgQVNVUyBsYXB0b3AgeWVhcnMgYWdvLgoKaHR0cHM6Ly9idWd6aWxsYS5yZWRoYXQu
-Y29tL3Nob3dfYnVnLmNnaT9pZD0xOTY1OTcKCk5vdCBzdXJlIGlmIGl0J3MgdGhlIHNhbWUgaXNz
-dWUsIHRob3VnaC4KClZlZHJhbiBNaWxldGnEhwpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwK
+Takashi Iwai wrote:
+> It seems that there is no critical issues, so far.
+> Thus I merged X-fi patch to sound GIT tree.  It'll appear in the
+> normal alsa-driver snapshot below, too.
+>     ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
+>   
+Should the hda driver still have the X-fi PCI ids?
+
+Mick.
