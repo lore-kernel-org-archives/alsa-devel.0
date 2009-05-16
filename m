@@ -1,19 +1,29 @@
-From: Daniel Chen <seven.steps@gmail.com>
-Subject: Re: Another successful X-Fi driver test.
-Date: Sat, 16 May 2009 15:56:23 -0400
-Message-ID: <604760770905161256v46379ffak23e00ff8d420931b@mail.gmail.com>
-References: <8de04f330905161225p519fa8bek5d718c469538b5c4@mail.gmail.com>
+From: Alexey Bazhin <baz@irc.msk.ru>
+Subject: Re: Testers wanted: New SB X-Fi driver
+Date: Sun, 17 May 2009 00:52:51 +0400
+Message-ID: <20090517005251.9ade4602.baz@irc.msk.ru>
+References: <s5h4ovovtwe.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5BCDA243B7
-	for <Alsa-devel@alsa-project.org>;
-	Sat, 16 May 2009 21:56:24 +0200 (CEST)
-Received: by yx-out-1718.google.com with SMTP id 6so1864348yxn.2
-	for <Alsa-devel@alsa-project.org>; Sat, 16 May 2009 12:56:23 -0700 (PDT)
-In-Reply-To: <8de04f330905161225p519fa8bek5d718c469538b5c4@mail.gmail.com>
+Received: from mail.mosuzedu.ru (mail.mosuzedu.ru [217.112.17.3])
+	by alsa0.perex.cz (Postfix) with ESMTP id 494C1246A4
+	for <alsa-devel@alsa-project.org>;
+	Sat, 16 May 2009 22:52:53 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.mosuzedu.ru (Postfix) with ESMTP id ED2FDAE06
+	for <alsa-devel@alsa-project.org>; Sun, 17 May 2009 00:52:52 +0400 (MSD)
+Received: from mail.mosuzedu.ru ([127.0.0.1])
+	by localhost (sakura.mosuzedu.ru [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id PAm-dN6iwL9A for <alsa-devel@alsa-project.org>;
+	Sun, 17 May 2009 00:52:52 +0400 (MSD)
+Received: from firefly.flat.yume.ru (cicada.yume.ru [217.172.19.143])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested) (Authenticated sender: baz@yume.ru)
+	by mail.mosuzedu.ru (Postfix) with ESMTPSA
+	for <alsa-devel@alsa-project.org>; Sun, 17 May 2009 00:52:52 +0400 (MSD)
+In-Reply-To: <s5h4ovovtwe.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,49 +33,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "A.Haq Abbad" <haqman@gmail.com>
-Cc: Alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The driver snapshot installs only alsa-driver. You shouldn't encounter any
-problems in 9.04 wrt kernel- userspace sync.
+On Thu, 14 May 2009 12:52:17 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-On May 16, 2009 3:26 PM, "A.Haq Abbad" <haqman@gmail.com> wrote:
+> Once after I get positive feedbacks (or fix after negative ones), I'm
+> going to merge it to the main tree so that it'll be in the next
+> kernel.  So, a quick test report would be greatly appreciated.
+As for me:
 
-Here are some details:
+aplay works fine with 16bit samples (doesn't tested 24bit)
 
-System:
-Intel Core 2 Duo E6600
-Asus P5W DH Motherboard
-X-Fi eXtreme Music
-Intel HD audio onboard
+mplayer plays first open stream glitchy, but if i open one more mplayer, and
+then close the first - it plays fine but prints error:
+[AO_ALSA] alsa-lib: pcm_hw.c:1321:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed: Invalid argument
+[AO_ALSA] alsa-lib: pcm_dmix.c:1058:(snd_pcm_dmix_open) unable to open slave
+[AO_ALSA] Playback open error: Invalid argument
 
-Software:
-Advanced Linux Sound Architecture Driver Version 1.0.20.
-Compiled on May 16 2009 for kernel 2.6.28-11-generic (SMP).
+Also ac3-passthrough works with this driver (finally!), but prints errors too:
+mplayer -ac hwac3 -ao alsa:device=hw=0.4 test.ac3
+[AO_ALSA] alsa-lib: conf.c:3843:(parse_args) Unknown parameter AES0
+[AO_ALSA] alsa-lib: conf.c:3969:(snd_config_expand) Parse arguments error: No such file or directory
+[AO_ALSA] alsa-lib: pcm.c:2196:(snd_pcm_open_noupdate) Unknown PCM hw:0,4,AES0=6
 
-Running Kubuntu 9.04, with default packages.
-
-All major audio players tested and work fine.
-Aduiocious does not work with 24bit mode as reported before.
-
-System is stable, no issues encountered yet!
-
-Recording through the mic works flawlessly.
-Sound from speakers seem clear.
-Switching between intel HD onboard audio and xfi
-works fine, both enabled on the same system.
-
-P.S
-I installed the file alsa-driver-unstable-snapshot.tar.gz
-now my alsa version is 1.0.20 instead of .18, does that
-cause major issues? I thought the package will only install the
-module snd-ctxfi, not the whole alsa! or is that not possible.
-
-Let me know if you want me to run specific test.
-
-Regards.
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+-- 
+ Alexey Bazhin
+  mailto:baz@irc.msk.ru
+  ICQ 125125882
