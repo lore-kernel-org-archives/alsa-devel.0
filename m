@@ -1,20 +1,20 @@
-From: =?ISO-8859-1?Q?Emilio_L=F3pez?= <buhitoescolar@gmail.com>
-Subject: Re: Regarding Sound on Acer Aspire 6935G
-Date: Sun, 17 May 2009 17:48:08 -0300
-Message-ID: <d54969c50905171348v12a58613sa8425f450e843eea@mail.gmail.com>
-References: <4b8c423b0905152051w7443e1b4u4080514a560fbb6c@mail.gmail.com>
-	<s5h4ovj7hva.wl%tiwai@suse.de>
+From: mAdVax <madvax@free.fr>
+Subject: Re: emu10k1 TRAM access ?
+Date: Sun, 17 May 2009 23:05:57 +0200
+Message-ID: <4A107C35.8050908@free.fr>
+References: <4A0C115E.8010306@free.fr>
+	<s5hskj6a2rl.wl%tiwai@suse.de>	<4A0DD70C.8050109@free.fr>
+	<4A0E9655.2000008@free.fr>	<s5h63g184pr.wl%tiwai@suse.de>	<loom.20090516T212123-884@post.gmane.org>
+	<53baa24a0905170848s4dae9a10wb15c07e09fc985fb@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.146])
-	by alsa0.perex.cz (Postfix) with ESMTP id A07C8245C8
+Received: from smtp22.services.sfr.fr (smtp22.services.sfr.fr [93.17.128.10])
+	by alsa0.perex.cz (Postfix) with ESMTP id 13BC5245D8
 	for <alsa-devel@alsa-project.org>;
-	Sun, 17 May 2009 22:48:09 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 4so1871485qwk.56
-	for <alsa-devel@alsa-project.org>; Sun, 17 May 2009 13:48:08 -0700 (PDT)
-In-Reply-To: <s5h4ovj7hva.wl%tiwai@suse.de>
+	Sun, 17 May 2009 23:05:59 +0200 (CEST)
+In-Reply-To: <53baa24a0905170848s4dae9a10wb15c07e09fc985fb@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,57 +24,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Karthik Ramgopal <applefreakpeeps@gmail.com>, alsa-devel@alsa-project.org
+To: Alex Austin <circuitsoft.alex@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I seem to have the same card looking at lspci -v, and I experience the same
-problems. My laptop is an Acer Aspire 6930, so maybe the Acer bioses are
-broken? I got the sound to work (with the controls mapped uncorrectly), but
-I still can't make the mic work. I'll try with that model, I also tried with
-acer and acer-aspire with no luck.
 
-Emilio
 
-2009/5/17 Takashi Iwai <tiwai@suse.de>
+Alex Austin a =E9crit :
+> On Sat, May 16, 2009 at 4:28 PM, mAdVax <madvax@free.fr> wrote:
+> =
 
-> At Sat, 16 May 2009 11:51:36 +0800,
-> Karthik Ramgopal wrote:
-> >
-> > Hi,
-> >        Even after enabling DEBUG using --with-debug option with configure
-> when
-> > compiling the alsa-driver snapshot leaves no more error messages in the
-> dmesg
-> > logs. The only message relating to HDA is:
-> >
-> > [   41.104817] hda-intel: IRQ timing workaround is activated for card #0.
-> > Suggest a bigger bdl_pos_adj.
-> >
-> > I just got the line-out output to work by toggling the surround volume. I
-> > still think it's a mapping problem. The headphone switch is turning the
-> > subwoofer on and off, and the surround volume is controlling the line-out
-> > volume.
->
-> OK, this implies that the BIOS setup is broken.
-> Did you try model=acer-aspire-4930g, BTW?
->
->
-> Takashi
->
-> > None of the line-in devices function and all of the amp-ins 0x0b to
-> > 0x0f are muted. Cannot find any verb to unmute them. hda-verb with
-> > SET_EAPD_BTLENABLE 2 at 0x15 is still needed at startup to fire up the
-> amps.
-> >
-> > Please help.
-> >
-> > Regards,
-> > Karthik
-> >
-> >
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+>> No other competitor with 'open' dsp ?
+> =
+
+> =
+
+> http://www.alsa-project.org/main/index.php/Special:Search?search=3D56301&=
+go=3DGo
+
+Thank you, but this one is not really better.
+This would be *great*, if the firmware was open source.
+But I cannot find any information about it.
