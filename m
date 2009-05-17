@@ -1,47 +1,58 @@
-From: mAdVax <madvax@free.fr>
-Subject: Re: emu10k1 TRAM access ?
-Date: Sun, 17 May 2009 23:05:57 +0200
-Message-ID: <4A107C35.8050908@free.fr>
-References: <4A0C115E.8010306@free.fr>
-	<s5hskj6a2rl.wl%tiwai@suse.de>	<4A0DD70C.8050109@free.fr>
-	<4A0E9655.2000008@free.fr>	<s5h63g184pr.wl%tiwai@suse.de>	<loom.20090516T212123-884@post.gmane.org>
-	<53baa24a0905170848s4dae9a10wb15c07e09fc985fb@mail.gmail.com>
+From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Subject: Re: [RFC] ALSA vs. dedicated char device for a USB Audio Class gadget
+ driver
+Date: Sun, 17 May 2009 17:28:20 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.0905171654500.20300-100000@netrider.rowland.org>
+References: <200905171925.23956.laurent.pinchart@skynet.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp22.services.sfr.fr (smtp22.services.sfr.fr [93.17.128.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id 13BC5245D8
-	for <alsa-devel@alsa-project.org>;
-	Sun, 17 May 2009 23:05:59 +0200 (CEST)
-In-Reply-To: <53baa24a0905170848s4dae9a10wb15c07e09fc985fb@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alex Austin <circuitsoft.alex@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <200905171925.23956.laurent.pinchart-AgBVmzD5pcezQB+pC5nmwQ@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Laurent Pinchart <laurent.pinchart-AgBVmzD5pcezQB+pC5nmwQ@public.gmane.org>
+Cc: Hal Murray <hmurray-8cQiHa/C+6Go9G/jEpaUCQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 17 May 2009, Laurent Pinchart wrote:
 
+> The applicable techniques require knowledge of both the audio clock and the 
+> SOF clock in a common place. My driver has no access to the audio clock. All 
+> it knows about is the SOF clock. 
 
-Alex Austin a =E9crit :
-> On Sat, May 16, 2009 at 4:28 PM, mAdVax <madvax@free.fr> wrote:
-> =
+This whole discussion is a little puzzling.
 
->> No other competitor with 'open' dsp ?
-> =
+The Gadget API doesn't provide any way to tie the buffer contents of
+Isochronous usb_request's to the frame number.  Here's what I mean:
+Suppose you want to transfer a new audio data buffer every frame.  You
+queue some requests, let's say
 
-> =
+	R0 for frame F0
+	R1 for frame F1
+	R2 for frame F2
+	etc.
 
-> http://www.alsa-project.org/main/index.php/Special:Search?search=3D56301&=
-go=3DGo
+But what happens if a communications error prevents R0 from being 
+delivered during F0?  That's the sort of thing you expect to happen 
+from time to time, and Isochronous streams are supposed to handle such 
+errors by simply ignoring them.  So ideally you'd like to forget about 
+the missing data, and go ahead with R1 during F1 and so on.
 
-Thank you, but this one is not really better.
-This would be *great*, if the firmware was open source.
-But I cannot find any information about it.
+But as far as I can see, the Gadget API doesn't provide any way to do
+this!  Depending on the implementation of the device controller driver,
+you might end up transferring R0 during F1, R1 during F2, and so on.  
+Everything would be misaligned from then on.  I don't see any solution
+to this problem.
+
+I'd like to answer your questions about synchronizing the USB audio 
+stream with an ALSA audio stream, but since I don't know anything about 
+how either audio protocol is supposed to work, I can't.  Suppose you 
+were trying to write a normal program that accepted data from an ALSA 
+microphone and sent it to an ALSA speaker; how would such a program 
+synchronize the input and output streams?
+
+Alan Stern
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
