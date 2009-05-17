@@ -1,56 +1,56 @@
-From: mAdVax <madvax@free.fr>
-Subject: Re: emu10k1 TRAM access ?
-Date: Sat, 16 May 2009 21:28:06 +0000 (UTC)
-Message-ID: <loom.20090516T212123-884@post.gmane.org>
-References: <4A0C115E.8010306@free.fr> <s5hskj6a2rl.wl%tiwai@suse.de>
-	<4A0DD70C.8050109@free.fr> <4A0E9655.2000008@free.fr>
-	<s5h63g184pr.wl%tiwai@suse.de>
+From: Julia Lawall <julia@diku.dk>
+Subject: [PATCH 3/3] sound: use dev_set_drvdata
+Date: Sun, 17 May 2009 11:29:21 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0905171129020.20440@pc-004.diku.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9F3FF246C7
-	for <alsa-devel@alsa-project.org>;
-	Sat, 16 May 2009 23:30:04 +0200 (CEST)
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1M5RSF-0007mC-25
-	for alsa-devel@alsa-project.org; Sat, 16 May 2009 21:30:03 +0000
-Received: from 144.161.87-79.rev.gaoland.net ([79.87.161.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sat, 16 May 2009 21:30:03 +0000
-Received: from madvax by 144.161.87-79.rev.gaoland.net with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sat, 16 May 2009 21:30:03 +0000
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1757378AbZEQJ35@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: timur@freescale.com, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-VGFrYXNoaSBJd2FpIDx0aXdhaSA8YXQ+IHN1c2UuZGU+IHdyaXRlczoKCj4gCj4gQXQgU2F0LCAx
-NiBNYXkgMjAwOSAxMjozMjo1MyArMDIwMCwKPiBtQWRWYXggd3JvdGU6Cj4gPiAKPiA+IG1BZFZh
-eCBhIMOpY3JpdCA6Cj4gPiAKPiA+ICA+IERvbid0IHlvdSAoYW55b25lKSBvbmx5IHJlbWVtYmVy
-IGlmIGxvb2t1cCB0YWJsZSBoYXMgYmVlbiBpbXBsZW1lbnRlZCA/Cj4gPiAKPiA+IEkgYW5zd2Vy
-IHRvIG15IG93biBxdWVzdGlvbi4KPiA+IEFjY29yZGluZyB0byBhbiBvbGQgcG9zdCBvbiBreCBm
-b3J1bSwgbG9va3VwIHRhYmxlcyBvbmx5IHdvcmsgb24gZW11MTBrMiAKPiA+IGNoaXBzLCBhbmQg
-YXJlIG5ldmVyIGJlZW4gaW1wbGVtZW50ZWQgaW4ga3ggZHJpdmVyLiBJIGZlYXIgdGhhdCBub2Jv
-ZHkgCj4gPiBrbm93cyBob3cgdG8gaGFuZGxlIHRoaXMgc3R1ZmYuCj4gPiAKPiA+IEVtdTEwazEg
-aXMgcXVpdGUgb2xkLiBTaG91bGQgSSBzd2l0Y2ggdG8gWC1GaSA/IENhbiB0aGUgRFNQIGJlIHVz
-ZWQgYnkgCj4gPiB0aGUgdXNlciA/IEluIGEgbmVhciBmdXR1cmUgPwo+IAo+IFRvIGJlIHdhcm5l
-ZCwgZW11MjBreCBoYXZlIG11Y2ggbGVzcyBvcGVuIGluZm9ybWF0aW9uIHRoYW4gZW11MTBrMS4u
-Lgo+IFRoZSBjdXJyZW50IGRyaXZlciBqdXN0IHN1cHBvcnRzIHRoZSBub3JtYWwgUENNLCBhbmQg
-bm8gcmVhbCBEU1AKPiBwYXJ0cyBhcmUgc3VwcG9ydGVkLgoKSSBzZWUuLi4gSXQncyBhIHNoYW1l
-LiBObyBvdGhlciBjb21wZXRpdG9yIHdpdGggJ29wZW4nIGRzcCA/CgpJJ20gc3RpY2tlZCB3aXRo
-IG15IEF1ZGlneSBmb3IgbG9uZy4gU2hlJ3Mgbm90IHNvIGJhZCwgYWZ0ZXIgYWxsIDspCgpUaGFu
-ayB5b3UKClhhdmllcgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+From: Julia Lawall <julia@diku.dk>
+
+Eliminate direct accesses to the driver_data field.
+cf 82ab13b26f15f49be45f15ccc96bfa0b81dfd015
+
+The semantic patch that makes this change is as follows:
+(http://www.emn.fr/x-info/coccinelle/)
+
+// <smpl>
+@@
+struct device *dev;
+expression E;
+type T;
+@@
+
+- dev->driver_data = (T)E
++ dev_set_drvdata(dev, E)
+
+@@
+struct device *dev;
+type T;
+@@
+
+- (T)dev->driver_data
++ dev_get_drvdata(dev)
+// </smpl>
+
+Signed-off-by: Julia Lawall <julia@diku.dk>
+
+---
+ sound/soc/fsl/fsl_ssi.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff -u -p a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -674,7 +674,7 @@ struct snd_soc_dai *fsl_ssi_create_dai(s
+ 	ssi_private->dev = ssi_info->dev;
+ 	ssi_private->asynchronous = ssi_info->asynchronous;
+ 
+-	ssi_private->dev->driver_data = fsl_ssi_dai;
++	dev_set_drvdata(ssi_private->dev, fsl_ssi_dai);
+ 
+ 	/* Initialize the the device_attribute structure */
+ 	dev_attr->attr.name = "ssi-stats";
