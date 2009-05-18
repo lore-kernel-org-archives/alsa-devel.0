@@ -1,19 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [RFC] ALSA vs. dedicated char device for a USB
- Audio Class gadget driver
-Date: Mon, 18 May 2009 10:39:24 +0200
-Message-ID: <4A111EBC.2010606@ladisch.de>
-References: <20090515201519.7C347BCE6@ip-64-139-1-69.sjc.megapath.net>
-	<200905171925.23956.laurent.pinchart@skynet.be>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 2/3] ASoC: TWL4030: Add control for
+	selecting codec operation mode
+Date: Mon, 18 May 2009 11:43:26 +0300
+Message-ID: <200905181143.26329.peter.ujfalusi@nokia.com>
+References: <2C7D3DF36ADFFC479B44490D912B616705F69E8124@dlee07.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id BA6CB244BF
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7196D244F1
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 May 2009 10:39:28 +0200 (CEST)
-In-Reply-To: <200905171925.23956.laurent.pinchart@skynet.be>
+	Mon, 18 May 2009 10:43:53 +0200 (CEST)
+In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705F69E8124@dlee07.ent.ti.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,43 +23,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Laurent Pinchart <laurent.pinchart@skynet.be>
-Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
+To: "ext Lopez Cruz, Misael" <x0052729@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Laurent Pinchart wrote:
-> The applicable techniques require knowledge of both the audio clock and the
-> SOF clock in a common place. My driver has no access to the audio clock. All
-> it knows about is the SOF clock.
-> 
-> There are only two options I can think of.
-> 
-> The first one is to use an asynchronous endpoint and sent the occasional
-> smaller or bigger packet (or duplicate/drop one sample). As the driver can't
-> access the audio clock it needs to derive the information from the amount of
-> data present in the ALSA ring buffer. To be honest I'm not sure if that will
-> be possible at all, as the application will write data at a non-constant rate.
+On Monday 18 May 2009 04:03:00 ext Lopez Cruz, Misael wrote:
+> Add a control for selecting the codec operation mode. TWL4030 codec
+> has two modes:
+> - Option 1. Audio only (4 audio DACs)
+> - Option 2. Voice/Audio (2 audio DACs and voice ADC/DAC)
+>
+> Control is restricted when a stream is ongoing, since codec's
+> operation mode cannot be changed on-the-fly.
+>
+> Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
+> ---
+>  sound/soc/codecs/twl4030.c |   47
+> ++++++++++++++++++++++++++++++++++++++++++++ 1 files changed, 47
+> insertions(+), 0 deletions(-)
+>
+> diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+> index e4d683d..671f777 100644
+> --- a/sound/soc/codecs/twl4030.c
+> +++ b/sound/soc/codecs/twl4030.c
+> @@ -814,6 +814,48 @@ static int snd_soc_put_volsw_r2_twl4030(struct
+> snd_kcontrol *kcontrol, return err;
+>  }
+>
+> +/* Codec operation modes */
+> +static const char *twl4030_op_modes_texts[] =3D {
+> +	"Option 2 (voice/audio)", "Option 1 (audio)"
+> +};
+> +
+> +static const struct soc_enum twl4030_op_modes_enum =3D
+> +	SOC_ENUM_SINGLE(TWL4030_REG_CODEC_MODE, 0,
+> +			ARRAY_SIZE(twl4030_op_modes_texts),
+> +			twl4030_op_modes_texts);
+> +
+> +int snd_soc_put_twl4030_opmode_enum_double(struct snd_kcontrol *kcontrol,
+> +	struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_codec *codec =3D snd_kcontrol_chip(kcontrol);
+> +	struct twl4030_priv *twl4030 =3D codec->private_data;
+> +	struct soc_enum *e =3D (struct soc_enum *)kcontrol->private_value;
+> +	unsigned short val;
+> +	unsigned short mask, bitmask;
+> +
+> +	for (bitmask =3D 1; bitmask < e->max; bitmask <<=3D 1)
+> +		;
+> +	if (ucontrol->value.enumerated.item[0] > e->max - 1)
+> +		return -EINVAL;
+> +
+> +	if (twl4030->configured) {
+> +		printk(KERN_ERR "twl4030 operation mode cannot be "
+> +			"changed on-the-fly\n");
+> +		return -EBUSY;
+> +	}
 
-The ALSA API assumes that the device controls the audio clock and that
-the application derives its own speed from that, not the other way
-round.
+I would move the checks earlier, to avoid unnecessary looping:
 
-> The second one, which sounds easier, at least on the driver side, is to use a
-> synchronous endpoint with a fixed packet size. The application will perform
-> rate matching (duplicating/dropping a sample or resampling the audio stream)
-> using the audio clock and the SOF clock. What I'm still unsure about is how
-> the application can access the audio clock and the SOF clock through ALSA, but
-> I suppose that's possible.
+	if (twl4030->configured) {
+		printk(KERN_ERR "twl4030 operation mode cannot be "
+			"changed on-the-fly\n");
+		return -EBUSY;
+	}
+	if (ucontrol->value.enumerated.item[0] > e->max - 1)
+		return -EINVAL;
 
-The ALSA API doesn't give you access to the SOF clock.
+	for (bitmask =3D 1; bitmask < e->max; bitmask <<=3D 1)
+		;
 
+> +
+> +	val =3D ucontrol->value.enumerated.item[0] << e->shift_l;
+> +	mask =3D (bitmask - 1) << e->shift_l;
+> +	if (e->shift_l !=3D e->shift_r) {
+> +		if (ucontrol->value.enumerated.item[1] > e->max - 1)
+> +			return -EINVAL;
+> +		val |=3D ucontrol->value.enumerated.item[1] << e->shift_r;
+> +		mask |=3D (bitmask - 1) << e->shift_r;
+> +	}
+> +
+> +	return snd_soc_update_bits(codec, e->reg, mask, val);
+> +}
+> +
+>  /*
+>   * FGAIN volume control:
+>   * from -62 to 0 dB in 1 dB steps (mute instead of -63 dB)
+> @@ -895,6 +937,11 @@ static const struct soc_enum twl4030_vibradir_enum =
+=3D
+>  			twl4030_vibradir_texts);
+>
+>  static const struct snd_kcontrol_new twl4030_snd_controls[] =3D {
+> +	/* Codec operation mode control */
+> +	SOC_ENUM_EXT("Codec Operation Mode", twl4030_op_modes_enum,
+> +		snd_soc_get_enum_double,
+> +		snd_soc_put_twl4030_opmode_enum_double),
+> +
+>  	/* Common playback gain controls */
+>  	SOC_DOUBLE_R_TLV("DAC1 Digital Fine Playback Volume",
+>  		TWL4030_REG_ARXL1PGA, TWL4030_REG_ARXR1PGA,
 
-What you want to do is not possible (or impracticably hard) with the
-ALSA API; I strongly suggest that you define your own API for your
-audio gadget driver so that SOF clock information is made available to
-the application, and that packet sizes can be directly controlled by the
-application.
+Otherwise I don't have any objections.
 
+-- =
 
-Best regards,
-Clemens
+P=E9ter
