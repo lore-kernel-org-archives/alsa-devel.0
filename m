@@ -1,19 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 1/3] ASoC: TWL4030: Enable/disable voice
-	digital filters
-Date: Mon, 18 May 2009 11:35:18 +0300
-Message-ID: <200905181135.18611.peter.ujfalusi@nokia.com>
-References: <2C7D3DF36ADFFC479B44490D912B616705F69E8123@dlee07.ent.ti.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [RFC] ALSA vs. dedicated char device for a USB
+ Audio Class gadget driver
+Date: Mon, 18 May 2009 10:39:24 +0200
+Message-ID: <4A111EBC.2010606@ladisch.de>
+References: <20090515201519.7C347BCE6@ip-64-139-1-69.sjc.megapath.net>
+	<200905171925.23956.laurent.pinchart@skynet.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 78ADC1037FD
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id BA6CB244BF
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 May 2009 10:35:24 +0200 (CEST)
-In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705F69E8123@dlee07.ent.ti.com>
-Content-Disposition: inline
+	Mon, 18 May 2009 10:39:28 +0200 (CEST)
+In-Reply-To: <200905171925.23956.laurent.pinchart@skynet.be>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,23 +23,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ext Lopez Cruz, Misael" <x0052729@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Laurent Pinchart <laurent.pinchart@skynet.be>
+Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 18 May 2009 04:02:31 ext Lopez Cruz, Misael wrote:
-> Enable TWL4030 VTXL/VTXR and VRX digital filters for uplink
-> and downlink paths, respectively.
->
-> This patch also corrects voice 8/16kHz mode selection bit
-> (SEL_16K) of CODEC_MODE register.
->
-> Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
+Laurent Pinchart wrote:
+> The applicable techniques require knowledge of both the audio clock and the
+> SOF clock in a common place. My driver has no access to the audio clock. All
+> it knows about is the SOF clock.
+> 
+> There are only two options I can think of.
+> 
+> The first one is to use an asynchronous endpoint and sent the occasional
+> smaller or bigger packet (or duplicate/drop one sample). As the driver can't
+> access the audio clock it needs to derive the information from the amount of
+> data present in the ALSA ring buffer. To be honest I'm not sure if that will
+> be possible at all, as the application will write data at a non-constant rate.
 
-Looks good, thanks.
+The ALSA API assumes that the device controls the audio clock and that
+the application derives its own speed from that, not the other way
+round.
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> The second one, which sounds easier, at least on the driver side, is to use a
+> synchronous endpoint with a fixed packet size. The application will perform
+> rate matching (duplicating/dropping a sample or resampling the audio stream)
+> using the audio clock and the SOF clock. What I'm still unsure about is how
+> the application can access the audio clock and the SOF clock through ALSA, but
+> I suppose that's possible.
 
--- =
+The ALSA API doesn't give you access to the SOF clock.
 
-P=E9ter
+
+What you want to do is not possible (or impracticably hard) with the
+ALSA API; I strongly suggest that you define your own API for your
+audio gadget driver so that SOF clock information is made available to
+the application, and that packet sizes can be directly controlled by the
+application.
+
+
+Best regards,
+Clemens
