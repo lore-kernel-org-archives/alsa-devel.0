@@ -1,19 +1,20 @@
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Subject: Re: [PATCH] ASoC: Add TXx9 AC link controller driver
- (v2)
-Date: Tue, 19 May 2009 00:25:42 +0900 (JST)
-Message-ID: <20090519.002542.39155238.anemo@mba.ocn.ne.jp>
-References: <1242655812-11155-1-git-send-email-anemo@mba.ocn.ne.jp>
-	<20090518142305.GE1629@sirena.org.uk>
+From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
+Subject: Re: [PATCH 0/2] ASoC: TWL4030: DAPM restructuring
+	and	Headset pop-attenuation fix
+Date: Mon, 18 May 2009 20:58:52 +0530
+Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB03056A148C@dbde02.ent.ti.com>
+References: <1242651725-15001-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20090518130928.GD1629@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.mba.ocn.ne.jp (mba.ocn.ne.jp [122.1.235.107])
-	by alsa0.perex.cz (Postfix) with ESMTP id 560012447E
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 828D810383B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 May 2009 17:25:45 +0200 (CEST)
-In-Reply-To: <20090518142305.GE1629@sirena.org.uk>
+	Mon, 18 May 2009 17:29:05 +0200 (CEST)
+In-Reply-To: <20090518130928.GD1629@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,168 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, ralf@linux-mips.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "getarunks@gmail.com" <getarunks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 18 May 2009 15:23:05 +0100, Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
-> > +static int txx9aclc_ac97_probe(struct platform_device *pdev,
-> > +			       struct snd_soc_dai *dai)
-...
-> > +	irq = platform_get_irq(aclc_pdev, 0);
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
+> Sent: Monday, May 18, 2009 6:39 PM
+> To: Peter Ujfalusi
+> Cc: alsa-devel@alsa-project.org; sakoman@gmail.com; Aggarwal, Anuj;
+> getarunks@gmail.com
+> Subject: Re: [alsa-devel] [PATCH 0/2] ASoC: TWL4030: DAPM restructuring
+> and Headset pop-attenuation fix
 > 
-> This isn't what I meant by moving the resources to the DAI and DMA
-> drivers.  You have moved the calls to read the resources to these
-> drivers (which is good) but the resources are still being obtained from
-> the main ASoC device rather than by themselves from the device code.
+> On Mon, May 18, 2009 at 04:02:03PM +0300, Peter Ujfalusi wrote:
 > 
-> There aren't too many platforms using this approach yet but take a look
-> at the way the pxa2xx-ac97 driver deals with registering the DAI (it
-> doesn't do anything with resources ATM) - you want to be registering
-> your DAI and grabbing the resources from a platform driver probe like it
-> does.
-
-Thank you for elaboration.  Then, this untested patch (on top of the
-last patch) is what you mean?  If yes, I will split this into arch
-part and driver part, and then update both patches.
-
-
- arch/mips/txx9/generic/setup.c    |    6 +++---
- arch/mips/txx9/rbtx4927/setup.c   |    1 +
- arch/mips/txx9/rbtx4938/setup.c   |    1 +
- arch/mips/txx9/rbtx4939/setup.c   |    1 +
- sound/soc/txx9/txx9aclc-ac97.c    |   28 +++++++++++++++++++++++++---
- sound/soc/txx9/txx9aclc-generic.c |    1 -
- 6 files changed, 31 insertions(+), 7 deletions(-)
-
-diff --git a/arch/mips/txx9/generic/setup.c b/arch/mips/txx9/generic/setup.c
-index bc358ab..7f91012 100644
---- a/arch/mips/txx9/generic/setup.c
-+++ b/arch/mips/txx9/generic/setup.c
-@@ -882,8 +882,8 @@ void __init txx9_aclc_init(unsigned long baseaddr, int irq,
- 			   unsigned int dma_chan_out,
- 			   unsigned int dma_chan_in)
- {
--#if defined(CONFIG_SND_SOC_TXX9ACLC_GENERIC) || \
--	defined(CONFIG_SND_SOC_TXX9ACLC_GENERIC_MODULE)
-+#if defined(CONFIG_SND_SOC_TXX9ACLC) || \
-+	defined(CONFIG_SND_SOC_TXX9ACLC_MODULE)
- 	unsigned int dma_base = dmac_id * TXX9_DMA_MAX_NR_CHANNELS;
- 	struct resource res[] = {
- 		{
-@@ -904,7 +904,7 @@ void __init txx9_aclc_init(unsigned long baseaddr, int irq,
- 		}
- 	};
- 	struct platform_device *pdev =
--		platform_device_alloc("txx9aclc-generic", -1);
-+		platform_device_alloc("txx9aclc-ac97", -1);
- 
- 	if (!pdev ||
- 	    platform_device_add_resources(pdev, res, ARRAY_SIZE(res)) ||
-diff --git a/arch/mips/txx9/rbtx4927/setup.c b/arch/mips/txx9/rbtx4927/setup.c
-index ece43db..ee468ea 100644
---- a/arch/mips/txx9/rbtx4927/setup.c
-+++ b/arch/mips/txx9/rbtx4927/setup.c
-@@ -344,6 +344,7 @@ static void __init rbtx4927_device_init(void)
- 		tx4938_dmac_init(0, 2);
- 		tx4938_aclc_init();
- 	}
-+	platform_device_register_simple("txx9aclc-generic", -1, NULL, 0);
- 	txx9_iocled_init(RBTX4927_LED_ADDR - IO_BASE, -1, 3, 1, "green", NULL);
- 	rbtx4927_gpioled_init();
- }
-diff --git a/arch/mips/txx9/rbtx4938/setup.c b/arch/mips/txx9/rbtx4938/setup.c
-index c0aa889..8da66e9 100644
---- a/arch/mips/txx9/rbtx4938/setup.c
-+++ b/arch/mips/txx9/rbtx4938/setup.c
-@@ -357,6 +357,7 @@ static void __init rbtx4938_device_init(void)
- 	tx4938_ata_init(RBTX4938_IRQ_IOC_ATA, 0, 1);
- 	tx4938_dmac_init(0, 2);
- 	tx4938_aclc_init();
-+	platform_device_register_simple("txx9aclc-generic", -1, NULL, 0);
- 	txx9_iocled_init(RBTX4938_LED_ADDR - IO_BASE, -1, 8, 1, "green", NULL);
- }
- 
-diff --git a/arch/mips/txx9/rbtx4939/setup.c b/arch/mips/txx9/rbtx4939/setup.c
-index 1d01126..d5ad5ab 100644
---- a/arch/mips/txx9/rbtx4939/setup.c
-+++ b/arch/mips/txx9/rbtx4939/setup.c
-@@ -500,6 +500,7 @@ static void __init rbtx4939_device_init(void)
- 	tx4939_rtc_init();
- 	tx4939_dmac_init(0, 2);
- 	tx4939_aclc_init();
-+	platform_device_register_simple("txx9aclc-generic", -1, NULL, 0);
- }
- 
- static void __init rbtx4939_setup(void)
-diff --git a/sound/soc/txx9/txx9aclc-ac97.c b/sound/soc/txx9/txx9aclc-ac97.c
-index 5e04409..f198104 100644
---- a/sound/soc/txx9/txx9aclc-ac97.c
-+++ b/sound/soc/txx9/txx9aclc-ac97.c
-@@ -155,11 +155,12 @@ static int txx9aclc_ac97_probe(struct platform_device *pdev,
- 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
- 	struct txx9aclc_soc_device *dev =
- 		container_of(socdev, struct txx9aclc_soc_device, soc_dev);
--	struct platform_device *aclc_pdev = dev->aclc_pdev;
-+	struct platform_device *aclc_pdev = to_platform_device(dai->dev);
- 	struct resource *r;
- 	int err;
- 	int irq;
- 
-+	dev->aclc_pdev = aclc_pdev;
- 	dev->irq = -1;
- 	irq = platform_get_irq(aclc_pdev, 0);
- 	if (irq < 0)
-@@ -225,14 +226,35 @@ struct snd_soc_dai txx9aclc_ac97_dai = {
- };
- EXPORT_SYMBOL_GPL(txx9aclc_ac97_dai);
- 
--static int __init txx9aclc_ac97_init(void)
-+static int __devinit txx9aclc_ac97_dev_probe(struct platform_device *pdev)
- {
-+	txx9aclc_ac97_dai.dev = &pdev->dev;
- 	return snd_soc_register_dai(&txx9aclc_ac97_dai);
- }
- 
--static void __exit txx9aclc_ac97_exit(void)
-+static int __devexit txx9aclc_ac97_dev_remove(struct platform_device *pdev)
- {
- 	snd_soc_unregister_dai(&txx9aclc_ac97_dai);
-+	return 0;
-+}
-+
-+static struct platform_driver txx9aclc_ac97_driver = {
-+	.probe		= txx9aclc_ac97_dev_probe,
-+	.remove		= __devexit_p(txx9aclc_ac97_dev_remove),
-+	.driver		= {
-+		.name	= "txx9aclc-ac97",
-+		.owner	= THIS_MODULE,
-+	},
-+};
-+
-+static int __init txx9aclc_ac97_init(void)
-+{
-+	return platform_driver_register(&txx9aclc_ac97_driver);
-+}
-+
-+static void __exit txx9aclc_ac97_exit(void)
-+{
-+	platform_driver_unregister(&txx9aclc_ac97_driver);
- }
- 
- module_init(txx9aclc_ac97_init);
-diff --git a/sound/soc/txx9/txx9aclc-generic.c b/sound/soc/txx9/txx9aclc-generic.c
-index d27aba6..3175de9 100644
---- a/sound/soc/txx9/txx9aclc-generic.c
-+++ b/sound/soc/txx9/txx9aclc-generic.c
-@@ -54,7 +54,6 @@ static int __init txx9aclc_generic_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 	platform_set_drvdata(soc_pdev, &dev->soc_dev);
- 	dev->soc_dev.dev = &soc_pdev->dev;
--	dev->aclc_pdev = pdev;
- 	ret = platform_device_add(soc_pdev);
- 	if (ret) {
- 		platform_device_put(soc_pdev);
-
----
-Atsushi Nemoto
+> > The following series aims to fix the Headset power on/off pop noise
+> problems.
+> 
+> Looks OK but given all the to and fro here I'd rather wait for some
+> testing to make sure it works well on other system.s
+[Aggarwal, Anuj] I tried this on OMAP3 EVM. Ramp delay values 0-3 produces minor glitches in the beginning & end, value 4 gave me the best result so far on my EVM, I will try with some other EVMs as well before finalizing it. 5 and others produce a beep in the beginning and end.
+Just one question, is there any side-effect of choosing a large ramp delay? For e.g. in my case, it could be 437ms (19.2MHz clock).
+> 
+> > I needed to move the APGA control from SND_SOC_DAPM_PGA to be
+> handled with
+> > _MIXER. Than adding a PGA to the headset outputs results correct power
+> > sequences.
+> 
+> TBH it sounds like this is actually a mixer anyway - typically mixers do
+> have some gain controls associated with them, the sort of PGA DAPM means
+> is more an output stage driver.  Typically these have much more control
+> of the gain and only one input and output.
