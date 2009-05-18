@@ -1,26 +1,21 @@
-From: "Lopez Cruz, Misael" <x0052729@ti.com>
-Subject: [PATCH 3/3] ASoC: SDP3430: Connect twl4030 voice DAI
-	to McBSP3
-Date: Sun, 17 May 2009 20:03:40 -0500
-Message-ID: <2C7D3DF36ADFFC479B44490D912B616705F69E8125@dlee07.ent.ti.com>
+From: Karthik Ramgopal <applefreakpeeps@gmail.com>
+Subject: Re: Regarding Sound on Acer Aspire 6935G
+Date: Mon, 18 May 2009 10:52:44 +0800
+Message-ID: <4b8c423b0905171952w5a28c6b3pe8d16fc6e9ccef50@mail.gmail.com>
+References: <4b8c423b0905152051w7443e1b4u4080514a560fbb6c@mail.gmail.com>
+	<s5h4ovj7hva.wl%tiwai@suse.de>
+	<d54969c50905171348v12a58613sa8425f450e843eea@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 03F7B1037F3
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.249])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2B9901037F3
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 May 2009 03:03:51 +0200 (CEST)
-Received: from dlep33.itg.ti.com ([157.170.170.112])
-	by bear.ext.ti.com (8.13.7/8.13.7) with ESMTP id n4I13hPs027422
-	for <alsa-devel@alsa-project.org>; Sun, 17 May 2009 20:03:48 -0500
-Received: from dlep20.itg.ti.com (localhost [127.0.0.1])
-	by dlep33.itg.ti.com (8.13.7/8.13.7) with ESMTP id n4I13hjI005017
-	for <alsa-devel@alsa-project.org>; Sun, 17 May 2009 20:03:43 -0500 (CDT)
-Received: from dsbe71.ent.ti.com (localhost [127.0.0.1])
-	by dlep20.itg.ti.com (8.12.11/8.12.11) with ESMTP id n4I13hkh013640
-	for <alsa-devel@alsa-project.org>; Sun, 17 May 2009 20:03:43 -0500 (CDT)
-Content-Language: en-US
+	Mon, 18 May 2009 04:52:45 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id k29so1293961rvb.32
+	for <alsa-devel@alsa-project.org>; Sun, 17 May 2009 19:52:44 -0700 (PDT)
+In-Reply-To: <d54969c50905171348v12a58613sa8425f450e843eea@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,157 +25,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: =?ISO-8859-1?Q?Emilio_L=F3pez?= <buhitoescolar@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Connect twl4030 voice DAI to McBSP3 in sdp3430 machine driver.
-Audio and voice DAI init functions are enabling corresponding
-interface by writting directly to AUDIO_IF and VOICE_IF codec
-registers, respectively.
+Yes I did try model=3Dacer-aspire-4930g. That gives me even lesser
+functionality than model=3Dauto (Surround volume can no longer be used to
+adjust line-out volume) I think the 4930G uses a ALC888 and the
+6935/6920/8920/8930 use a ALC889 (0x10ec0889) codec. Any way of obtaining
+the verbs from the Windows driver?
 
-Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
----
- sound/soc/omap/sdp3430.c |   93 +++++++++++++++++++++++++++++++++++++++++-----
- 1 files changed, 83 insertions(+), 10 deletions(-)
+Some more info (obtained by generally trying out verbs)
 
-diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
-index 1c79741..761065e 100644
---- a/sound/soc/omap/sdp3430.c
-+++ b/sound/soc/omap/sdp3430.c
-@@ -84,6 +84,49 @@ static struct snd_soc_ops sdp3430_ops = {
- 	.hw_params = sdp3430_hw_params,
- };
- 
-+static int sdp3430_hw_voice_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	int ret;
-+
-+	/* Set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai,
-+				SND_SOC_DAIFMT_DSP_A |
-+				SND_SOC_DAIFMT_IB_NF |
-+				SND_SOC_DAIFMT_CBS_CFM);
-+	if (ret) {
-+		printk(KERN_ERR "can't set codec DAI configuration\n");
-+		return ret;
-+	}
-+
-+	/* Set cpu DAI configuration */
-+	ret = snd_soc_dai_set_fmt(cpu_dai,
-+				SND_SOC_DAIFMT_DSP_A |
-+				SND_SOC_DAIFMT_IB_NF |
-+				SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0) {
-+		printk(KERN_ERR "can't set cpu DAI configuration\n");
-+		return ret;
-+	}
-+
-+	/* Set the codec system clock for DAC and ADC */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
-+					    SND_SOC_CLOCK_IN);
-+	if (ret < 0) {
-+		printk(KERN_ERR "can't set codec system clock\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops sdp3430_voice_ops = {
-+	.hw_params = sdp3430_hw_voice_params,
-+};
-+
- /* Headset jack */
- static struct snd_soc_jack hs_jack;
- 
-@@ -139,6 +182,7 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 
- static int sdp3430_twl4030_init(struct snd_soc_codec *codec)
- {
-+	unsigned short reg;
- 	int ret;
- 
- 	/* Add SDP3430 specific widgets */
-@@ -150,6 +194,11 @@ static int sdp3430_twl4030_init(struct snd_soc_codec *codec)
- 	/* Set up SDP3430 specific audio path audio_map */
- 	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
- 
-+	/* Enable audio interface */
-+	reg = codec->read(codec, TWL4030_REG_AUDIO_IF);
-+	reg |= TWL4030_AIF_EN;
-+	codec->write(codec, TWL4030_REG_AUDIO_IF, reg);
-+
- 	/* SDP3430 connected pins */
- 	snd_soc_dapm_enable_pin(codec, "Ext Mic");
- 	snd_soc_dapm_enable_pin(codec, "Ext Spk");
-@@ -192,22 +241,45 @@ static int sdp3430_twl4030_init(struct snd_soc_codec *codec)
- 	return ret;
- }
- 
-+static int sdp3430_twl4030_voice_init(struct snd_soc_codec *codec)
-+{
-+	unsigned short reg;
-+
-+	/* Enable voice interface */
-+	reg = codec->read(codec, TWL4030_REG_VOICE_IF);
-+	reg |= TWL4030_VIF_DIN_EN | TWL4030_VIF_DOUT_EN | TWL4030_VIF_EN;
-+	codec->write(codec, TWL4030_REG_VOICE_IF, reg);
-+
-+	return 0;
-+}
-+
-+
- /* Digital audio interface glue - connects codec <--> CPU */
--static struct snd_soc_dai_link sdp3430_dai = {
--	.name = "TWL4030",
--	.stream_name = "TWL4030",
--	.cpu_dai = &omap_mcbsp_dai[0],
--	.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
--	.init = sdp3430_twl4030_init,
--	.ops = &sdp3430_ops,
-+static struct snd_soc_dai_link sdp3430_dai[] = {
-+	{
-+		.name = "TWL4030 I2S",
-+		.stream_name = "TWL4030 Audio",
-+		.cpu_dai = &omap_mcbsp_dai[0],
-+		.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
-+		.init = sdp3430_twl4030_init,
-+		.ops = &sdp3430_ops,
-+	},
-+	{
-+		.name = "TWL4030 PCM",
-+		.stream_name = "TWL4030 Voice",
-+		.cpu_dai = &omap_mcbsp_dai[1],
-+		.codec_dai = &twl4030_dai[TWL4030_DAI_VOICE],
-+		.init = sdp3430_twl4030_voice_init,
-+		.ops = &sdp3430_voice_ops,
-+	},
- };
- 
- /* Audio machine driver */
- static struct snd_soc_card snd_soc_sdp3430 = {
- 	.name = "SDP3430",
- 	.platform = &omap_soc_platform,
--	.dai_link = &sdp3430_dai,
--	.num_links = 1,
-+	.dai_link = sdp3430_dai,
-+	.num_links = ARRAY_SIZE(sdp3430_dai),
- };
- 
- /* Audio subsystem */
-@@ -236,7 +308,8 @@ static int __init sdp3430_soc_init(void)
- 
- 	platform_set_drvdata(sdp3430_snd_device, &sdp3430_snd_devdata);
- 	sdp3430_snd_devdata.dev = &sdp3430_snd_device->dev;
--	*(unsigned int *)sdp3430_dai.cpu_dai->private_data = 1; /* McBSP2 */
-+	*(unsigned int *)sdp3430_dai[0].cpu_dai->private_data = 1; /* McBSP2 */
-+	*(unsigned int *)sdp3430_dai[1].cpu_dai->private_data = 2; /* McBSP3 */
- 
- 	ret = platform_device_add(sdp3430_snd_device);
- 	if (ret)
--- 
-1.5.4.3
+0x15 SET_EAPD_BTLENABLE 2 and 0x14 SET_EAPD_BTLENABLE 2 are both needed to
+get the amps fired
+
+0x14 SET_CONNECT_SEL 0x00 connects the laptop speakers and disconnects
+line-out
+0x14 SET_CONNECT_SEL 0x01 connects the line-out but laptop speakers continue
+to function
+
+0x15 SET_CONNECT_SEL 0x00 connects the laptop speakers and disconnects the
+subwoofer
+0x14 SET_CONNECT_SEL 0x01 connects the subwoofer but laptop speakers
+continue to function
+0x15 SET_PIN_WIDGET_CONTROL 0x00 turns off the line-out
+0x15 SET_PIN_WIDGET_CONTROL 0x40 turns on the line-out but laptop-speakers
+stay on
+0x15 SET_PIN_WIDGET_CONTROL 0xc0 Same as above but line-out volume is much
+higher
+
+0x0c SET_AMP_GAIN_MUTE 0x7080 (Mutes all channels)
+0x0c SET_AMP_GAIN_MUTE 0x7000 (Un-mutes all channels)
+
+The Realtek Linux driver had one ALC889 model entry for the M90V ALC889
+codec with model param as asus-dig. I tried that out. With that headphone
+jack sensing worked in the sense that as soon as a headphone was plugged in,
+the subwoofer turned off, though the front speakers were still on. I did get
+line-out volume though, it was very feeble. The internal mic still did not
+work and nor did an external one.
+
+Regards,
+Karthik
+
+On Mon, May 18, 2009 at 4:48 AM, Emilio L=F3pez <buhitoescolar@gmail.com>wr=
+ote:
+
+> I seem to have the same card looking at lspci -v, and I experience the sa=
+me
+> problems. My laptop is an Acer Aspire 6930, so maybe the Acer bioses are
+> broken? I got the sound to work (with the controls mapped uncorrectly), b=
+ut
+> I still can't make the mic work. I'll try with that model, I also tried w=
+ith
+> acer and acer-aspire with no luck.
+>
+> Emilio
+>
+> 2009/5/17 Takashi Iwai <tiwai@suse.de>
+>
+>> At Sat, 16 May 2009 11:51:36 +0800,
+>> Karthik Ramgopal wrote:
+>> >
+>> > Hi,
+>> >        Even after enabling DEBUG using --with-debug option with
+>> configure when
+>> > compiling the alsa-driver snapshot leaves no more error messages in the
+>> dmesg
+>> > logs. The only message relating to HDA is:
+>> >
+>> > [   41.104817] hda-intel: IRQ timing workaround is activated for card
+>> #0.
+>> > Suggest a bigger bdl_pos_adj.
+>> >
+>> > I just got the line-out output to work by toggling the surround volume.
+>> I
+>> > still think it's a mapping problem. The headphone switch is turning the
+>> > subwoofer on and off, and the surround volume is controlling the
+>> line-out
+>> > volume.
+>>
+>> OK, this implies that the BIOS setup is broken.
+>> Did you try model=3Dacer-aspire-4930g, BTW?
+>>
+>>
+>> Takashi
+>>
+>> > None of the line-in devices function and all of the amp-ins 0x0b to
+>> > 0x0f are muted. Cannot find any verb to unmute them. hda-verb with
+>> > SET_EAPD_BTLENABLE 2 at 0x15 is still needed at startup to fire up the
+>> amps.
+>> >
+>> > Please help.
+>> >
+>> > Regards,
+>> > Karthik
+>> >
+>> >
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+>
+>
