@@ -1,16 +1,16 @@
 From: "Lopez Cruz, Misael" <x0052729@ti.com>
-Subject: [PATCH 2/3 - RESEND] ASoC: TWL4030: Add control for
- selecting codec operation mode
-Date: Mon, 18 May 2009 11:52:55 -0500
-Message-ID: <2C7D3DF36ADFFC479B44490D912B616705F69E8403@dlee07.ent.ti.com>
+Subject: [PATCH 3/3 - RESEND] ASoC: SDP3430: Connect twl4030
+ voice DAI to McBSP3
+Date: Mon, 18 May 2009 11:53:04 -0500
+Message-ID: <2C7D3DF36ADFFC479B44490D912B616705F69E8406@dlee07.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2288E10384F
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id BCB4310386A
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 May 2009 18:53:05 +0200 (CEST)
+	Mon, 18 May 2009 18:53:17 +0200 (CEST)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,83 +25,133 @@ To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add a control for selecting the codec operation mode. TWL4030 codec
-has two modes:
-- Option 1. Audio only (4 audio DACs)
-- Option 2. Voice/Audio (2 audio DACs and voice ADC/DAC)
-
-Control is restricted when a stream is ongoing, since codec's
-operation mode cannot be changed on-the-fly.
+Connect twl4030 voice DAI to McBSP3 in sdp3430 machine driver.
+Voice DAI init function enables corresponding interface by
+writting directly to VOICE_IF codec register.
 
 Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
 ---
- sound/soc/codecs/twl4030.c |   47 ++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 47 insertions(+), 0 deletions(-)
+ sound/soc/omap/sdp3430.c |   87 ++++++++++++++++++++++++++++++++++++++++-----
+ 1 files changed, 77 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index e4d683d..8eca0f4 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -814,6 +814,48 @@ static int snd_soc_put_volsw_r2_twl4030(struct snd_kcontrol *kcontrol,
- 	return err;
- }
+diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
+index 1c79741..19966a7 100644
+--- a/sound/soc/omap/sdp3430.c
++++ b/sound/soc/omap/sdp3430.c
+@@ -84,6 +84,49 @@ static struct snd_soc_ops sdp3430_ops = {
+ 	.hw_params = sdp3430_hw_params,
+ };
  
-+/* Codec operation modes */
-+static const char *twl4030_op_modes_texts[] = {
-+	"Option 2 (voice/audio)", "Option 1 (audio)"
-+};
-+
-+static const struct soc_enum twl4030_op_modes_enum =
-+	SOC_ENUM_SINGLE(TWL4030_REG_CODEC_MODE, 0,
-+			ARRAY_SIZE(twl4030_op_modes_texts),
-+			twl4030_op_modes_texts);
-+
-+int snd_soc_put_twl4030_opmode_enum_double(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
++static int sdp3430_hw_voice_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
 +{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct twl4030_priv *twl4030 = codec->private_data;
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	unsigned short val;
-+	unsigned short mask, bitmask;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	int ret;
 +
-+	if (twl4030->configured) {
-+		printk(KERN_ERR "twl4030 operation mode cannot be "
-+			"changed on-the-fly\n");
-+		return -EBUSY;
++	/* Set codec DAI configuration */
++	ret = snd_soc_dai_set_fmt(codec_dai,
++				SND_SOC_DAIFMT_DSP_A |
++				SND_SOC_DAIFMT_IB_NF |
++				SND_SOC_DAIFMT_CBS_CFM);
++	if (ret) {
++		printk(KERN_ERR "can't set codec DAI configuration\n");
++		return ret;
 +	}
 +
-+	for (bitmask = 1; bitmask < e->max; bitmask <<= 1)
-+		;
-+	if (ucontrol->value.enumerated.item[0] > e->max - 1)
-+		return -EINVAL;
-+
-+	val = ucontrol->value.enumerated.item[0] << e->shift_l;
-+	mask = (bitmask - 1) << e->shift_l;
-+	if (e->shift_l != e->shift_r) {
-+		if (ucontrol->value.enumerated.item[1] > e->max - 1)
-+			return -EINVAL;
-+		val |= ucontrol->value.enumerated.item[1] << e->shift_r;
-+		mask |= (bitmask - 1) << e->shift_r;
++	/* Set cpu DAI configuration */
++	ret = snd_soc_dai_set_fmt(cpu_dai,
++				SND_SOC_DAIFMT_DSP_A |
++				SND_SOC_DAIFMT_IB_NF |
++				SND_SOC_DAIFMT_CBM_CFM);
++	if (ret < 0) {
++		printk(KERN_ERR "can't set cpu DAI configuration\n");
++		return ret;
 +	}
 +
-+	return snd_soc_update_bits(codec, e->reg, mask, val);
++	/* Set the codec system clock for DAC and ADC */
++	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
++					    SND_SOC_CLOCK_IN);
++	if (ret < 0) {
++		printk(KERN_ERR "can't set codec system clock\n");
++		return ret;
++	}
++
++	return 0;
 +}
 +
- /*
-  * FGAIN volume control:
-  * from -62 to 0 dB in 1 dB steps (mute instead of -63 dB)
-@@ -895,6 +937,11 @@ static const struct soc_enum twl4030_vibradir_enum =
- 			twl4030_vibradir_texts);
- 
- static const struct snd_kcontrol_new twl4030_snd_controls[] = {
-+	/* Codec operation mode control */
-+	SOC_ENUM_EXT("Codec Operation Mode", twl4030_op_modes_enum,
-+		snd_soc_get_enum_double,
-+		snd_soc_put_twl4030_opmode_enum_double),
++static struct snd_soc_ops sdp3430_voice_ops = {
++	.hw_params = sdp3430_hw_voice_params,
++};
 +
- 	/* Common playback gain controls */
- 	SOC_DOUBLE_R_TLV("DAC1 Digital Fine Playback Volume",
- 		TWL4030_REG_ARXL1PGA, TWL4030_REG_ARXR1PGA,
+ /* Headset jack */
+ static struct snd_soc_jack hs_jack;
+ 
+@@ -192,22 +235,45 @@ static int sdp3430_twl4030_init(struct snd_soc_codec *codec)
+ 	return ret;
+ }
+ 
++static int sdp3430_twl4030_voice_init(struct snd_soc_codec *codec)
++{
++	unsigned short reg;
++
++	/* Enable voice interface */
++	reg = codec->read(codec, TWL4030_REG_VOICE_IF);
++	reg |= TWL4030_VIF_DIN_EN | TWL4030_VIF_DOUT_EN | TWL4030_VIF_EN;
++	codec->write(codec, TWL4030_REG_VOICE_IF, reg);
++
++	return 0;
++}
++
++
+ /* Digital audio interface glue - connects codec <--> CPU */
+-static struct snd_soc_dai_link sdp3430_dai = {
+-	.name = "TWL4030",
+-	.stream_name = "TWL4030",
+-	.cpu_dai = &omap_mcbsp_dai[0],
+-	.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
+-	.init = sdp3430_twl4030_init,
+-	.ops = &sdp3430_ops,
++static struct snd_soc_dai_link sdp3430_dai[] = {
++	{
++		.name = "TWL4030 I2S",
++		.stream_name = "TWL4030 Audio",
++		.cpu_dai = &omap_mcbsp_dai[0],
++		.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
++		.init = sdp3430_twl4030_init,
++		.ops = &sdp3430_ops,
++	},
++	{
++		.name = "TWL4030 PCM",
++		.stream_name = "TWL4030 Voice",
++		.cpu_dai = &omap_mcbsp_dai[1],
++		.codec_dai = &twl4030_dai[TWL4030_DAI_VOICE],
++		.init = sdp3430_twl4030_voice_init,
++		.ops = &sdp3430_voice_ops,
++	},
+ };
+ 
+ /* Audio machine driver */
+ static struct snd_soc_card snd_soc_sdp3430 = {
+ 	.name = "SDP3430",
+ 	.platform = &omap_soc_platform,
+-	.dai_link = &sdp3430_dai,
+-	.num_links = 1,
++	.dai_link = sdp3430_dai,
++	.num_links = ARRAY_SIZE(sdp3430_dai),
+ };
+ 
+ /* Audio subsystem */
+@@ -236,7 +302,8 @@ static int __init sdp3430_soc_init(void)
+ 
+ 	platform_set_drvdata(sdp3430_snd_device, &sdp3430_snd_devdata);
+ 	sdp3430_snd_devdata.dev = &sdp3430_snd_device->dev;
+-	*(unsigned int *)sdp3430_dai.cpu_dai->private_data = 1; /* McBSP2 */
++	*(unsigned int *)sdp3430_dai[0].cpu_dai->private_data = 1; /* McBSP2 */
++	*(unsigned int *)sdp3430_dai[1].cpu_dai->private_data = 2; /* McBSP3 */
+ 
+ 	ret = platform_device_add(sdp3430_snd_device);
+ 	if (ret)
 -- 
 1.5.4.3
