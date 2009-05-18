@@ -1,18 +1,15 @@
-From: Noel Bourke <cros13@gmail.com>
+From: "Ralf Koslowski" <penny123@gmx.de>
 Subject: Testers wanted: New SB X-Fi driver
-Date: Mon, 18 May 2009 23:26:47 +0100
-Message-ID: <2eeb67a60905181526x22be771ek4b4277617b371563@mail.gmail.com>
+Date: Tue, 19 May 2009 00:35:56 +0200
+Message-ID: <20090518223556.110750@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
-	[209.85.221.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id D4832103828
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 28A2924535
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 May 2009 00:27:08 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so5902160qyk.16
-	for <alsa-devel@alsa-project.org>; Mon, 18 May 2009 15:27:07 -0700 (PDT)
+	Tue, 19 May 2009 00:35:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,14 +22,17 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+hi Takashi..my Sound Blaster X-Fi XtremeMusic works fine with ubuntu x86-64=
+ 9.10 alpha 1! but no 5.1;-(.either front, rear or center but not 	altogeth=
+er...
 
-I set this up with an Auzentech X-Fi Prelude.
-Driver works OK but sound seemed a bit off.
-According to speaker-test I seem to only
-have one audio channel!
+All the best! from germany
 
-Any thoughts?
+thanks, =
 
-Regards,
-             Noel
+Ralf
+-- =
+
+Neu: GMX FreeDSL Komplettanschluss mit DSL 6.000 Flatrate + Telefonanschlus=
+s f=FCr nur 17,95 Euro/mtl.!* http://dslspecial.gmx.de/freedsl-surfflat/?ac=
+=3DOM.AD.PD003K11308T4569a
