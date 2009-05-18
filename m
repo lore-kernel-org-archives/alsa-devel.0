@@ -1,21 +1,20 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 1/1] ASoC: TWL4030: Wait RAMP_DELAY?on
-	headsetl_event: POST_PMD
-Date: Mon, 18 May 2009 10:46:17 +0300
-Message-ID: <200905181046.17781.peter.ujfalusi@nokia.com>
-References: <1242040465-10835-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20090514125333.GA9471@rakim.wolfsonmicro.main>
-	<200905150930.08224.peter.ujfalusi@nokia.com>
+From: Cameron Stone <camerons.lists@cse.unsw.edu.au>
+Subject: Re: Support for USB-Audio devices with Multiple
+	configurations?
+Date: Mon, 18 May 2009 18:30:21 +1000
+Message-ID: <4A111C9D.4010301@cse.unsw.edu.au>
+References: <4A0BBAF4.6000108@cse.unsw.edu.au> <4A0D14BD.1050002@ladisch.de>
+	<4A0D2CC7.7000408@cse.unsw.edu.au> <4A0DA47E.1070607@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 14F10244C7
+Received: from tone.orchestra.cse.unsw.EDU.AU (tone.orchestra.cse.unsw.EDU.AU
+	[129.94.242.59])
+	by alsa0.perex.cz (Postfix) with ESMTP id E83CA1037F7
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 May 2009 09:46:45 +0200 (CEST)
-In-Reply-To: <200905150930.08224.peter.ujfalusi@nokia.com>
-Content-Disposition: inline
+	Mon, 18 May 2009 10:30:32 +0200 (CEST)
+In-Reply-To: <4A0DA47E.1070607@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,49 +24,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "anuj.aggarwal@ti.com" <anuj.aggarwal@ti.com>, "getarunks@gmail.com" <getarunks@gmail.com>, ext Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 15 May 2009 09:30:08 Ujfalusi Peter (Nokia-D/Tampere) wrote:
-> On Thursday 14 May 2009 15:53:34 ext Mark Brown wrote:
-> > It might help to have the mixers and muxes maintain some state when they
-> > change?  It's just a suggestion, I'm not familiar enough with the codec
-> > to know if it's a sensible one for this device or if it's more trouble
-> > than it's worth.
->
-> I have given this one a though and it might be not that problematic. What
-> I'm afraid is that there are some corner cases, which might need some
-> special attention.
+Clemens Ladisch wrote:
+> Cameron Stone wrote:
+>> Is it possible to have alternate settings with different numbers of
+>> channels?
+> 
+> Yes.  Each alternate setting has its own set of descriptors; you can
+> change _any_ parameter in those descriptors.
 
-I have tried this. Worked well with the playback stop/start, but than getti=
-ng =
+Great, I've got this working now.
 
-the loopbacks working again proven to be close to impossible...
-Anyway I have tried another approach, which seams to be working in all =
+However, how do I ask arecord to use a particular alternate setting? I'd
+like to have two alternate settings with the same number of channels,
+but different microphones enabled. Is that possible? I'm using the
+following command line (my USB mic array is card 1):
 
-scenarios for the twl4030 codec.
-It does not involve changes outside of the twl4030.c.
-I will clean up the code and send the patches for testing.
-In short:
-I have moved the APGA control from the SND_SOC_DAPM_PGA to SND_SOC_DAPM_MIX=
-ER, =
+$ arecord -Dplughw:1,0 test.wav -d 1 -c 4 -r 30
 
-also I have added another level of mixer for the digital path, which actual=
-ly =
+I have two alternate settings with 4 channels, and arecord seems to
+always choose the last one (the one with the highest alternate setting
+number. This could also be the alsa driver making this choice.
 
-controls the DAC state.
-Than I have SND_SOC_DAPM_PGA_E for the headset outputs.
+amixer can display and control the different interfaces using the
+second, but I can't find a command line option for arecord.
 
-Now the power up and power down order is correct and a minimal (almost no) =
-pop =
+Thanks,	
+	Cameron.
 
-can be heard on startup and on standby.
+FYI arecord -L returns:
 
-I know that this is kind of a hack, but there seams to be no other way to =
-
-handle the twl4030 codec power on/off sequences.
-
--- =
-
-P=E9ter
+front:CARD=NVidia,DEV=0
+    HDA NVidia, ALC662 Analog
+    Front speakers
+surround40:CARD=NVidia,DEV=0
+    HDA NVidia, ALC662 Analog
+    4.0 Surround output to Front and Rear speakers
+surround41:CARD=NVidia,DEV=0
+    HDA NVidia, ALC662 Analog
+    4.1 Surround output to Front, Rear and Subwoofer speakers
+surround50:CARD=NVidia,DEV=0
+    HDA NVidia, ALC662 Analog
+    5.0 Surround output to Front, Center and Rear speakers
+surround51:CARD=NVidia,DEV=0
+    HDA NVidia, ALC662 Analog
+    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
+surround71:CARD=NVidia,DEV=0
+    HDA NVidia, ALC662 Analog
+    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
+null
+    Discard all samples (playback) or generate zero samples (capture)
+front:CARD=Adaptor,DEV=0
+    8-Mic AVR Adaptor, USB Audio
+    Front speakers
+surround40:CARD=Adaptor,DEV=0
+    8-Mic AVR Adaptor, USB Audio
+    4.0 Surround output to Front and Rear speakers
+surround41:CARD=Adaptor,DEV=0
+    8-Mic AVR Adaptor, USB Audio
+    4.1 Surround output to Front, Rear and Subwoofer speakers
+surround50:CARD=Adaptor,DEV=0
+    8-Mic AVR Adaptor, USB Audio
+    5.0 Surround output to Front, Center and Rear speakers
+surround51:CARD=Adaptor,DEV=0
+    8-Mic AVR Adaptor, USB Audio
+    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
+surround71:CARD=Adaptor,DEV=0
+    8-Mic AVR Adaptor, USB Audio
+    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
+iec958:CARD=Adaptor,DEV=0
+    8-Mic AVR Adaptor, USB Audio
+    IEC958 (S/PDIF) Digital Audio Output
