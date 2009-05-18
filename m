@@ -1,74 +1,50 @@
-From: Laurent Pinchart <laurent.pinchart-AgBVmzD5pcezQB+pC5nmwQ@public.gmane.org>
-Subject: Re: [RFC] ALSA vs. dedicated char device for a USB Audio Class gadget driver
-Date: Mon, 18 May 2009 16:47:41 +0200
-Message-ID: <200905181647.41771.laurent.pinchart@skynet.be>
-References: <20090515201519.7C347BCE6@ip-64-139-1-69.sjc.megapath.net> <200905171925.23956.laurent.pinchart@skynet.be> <4A111EBC.2010606@ladisch.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.31
+Date: Mon, 18 May 2009 16:04:53 +0100
+Message-ID: <20090518150453.GA1576@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <4A111EBC.2010606-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2565A243C7
+	for <alsa-devel@alsa-project.org>;
+	Mon, 18 May 2009 17:04:55 +0200 (CEST)
 Content-Disposition: inline
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
+The following changes since commit 5b740ea975c4ce3da12ac21b56f9e43354ca4327:
+  Julia Lawall (1):
+        sound: use dev_set_drvdata
 
-On Monday 18 May 2009 10:39:24 Clemens Ladisch wrote:
-> Laurent Pinchart wrote:
-> > The applicable techniques require knowledge of both the audio clock and
-> > the SOF clock in a common place. My driver has no access to the audio
-> > clock. All it knows about is the SOF clock.
-> >
-> > There are only two options I can think of.
-> >
-> > The first one is to use an asynchronous endpoint and sent the occasional
-> > smaller or bigger packet (or duplicate/drop one sample). As the driver
-> > can't access the audio clock it needs to derive the information from the
-> > amount of data present in the ALSA ring buffer. To be honest I'm not sure
-> > if that will be possible at all, as the application will write data at a
-> > non-constant rate.
->
-> The ALSA API assumes that the device controls the audio clock and that
-> the application derives its own speed from that, not the other way
-> round.
+are available in the git repository at:
 
-That's a sensible requirement for a sound card. I now know that my use case is 
-out of ALSA's bounds :-)
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.31
 
-> > The second one, which sounds easier, at least on the driver side, is to
-> > use a synchronous endpoint with a fixed packet size. The application will
-> > perform rate matching (duplicating/dropping a sample or resampling the
-> > audio stream) using the audio clock and the SOF clock. What I'm still
-> > unsure about is how the application can access the audio clock and the
-> > SOF clock through ALSA, but I suppose that's possible.
->
-> The ALSA API doesn't give you access to the SOF clock.
+Mark Brown (4):
+      ASoC: Split DAPM power checks from sequencing of power changes
+      ASoC: Make DAPM sysfs entries non-optional
+      ASoC: Integrate bias management with DAPM power management
+      ASoC: Add debug trace for bias level transitions
 
-Does the ALSA API give applications access to the audio clock ? As Alan Stern 
-mention in his e-mail, does ALSA allow an application to resample audio from 
-an ALSA source (microphone on sound card 1) before sending it to an ALSA sink 
-(speaker on sound card 2) ?
+Misael Lopez Cruz (1):
+      ASoC: TWL4030: Enable/disable voice digital filters
 
-> What you want to do is not possible (or impracticably hard) with the
-> ALSA API; I strongly suggest that you define your own API for your
-> audio gadget driver so that SOF clock information is made available to
-> the application, and that packet sizes can be directly controlled by the
-> application.
-
-I'll have a look at that. ALSA was appealing because of the existing user base 
-and its ability to transfer audio data from/to userspace applications. I knew 
-it hasn't been designed with my use case in mind, so I didn't close to door to 
-using a custom API, but I still wanted to give it a try.
-
-Best regards,
-
-Laurent Pinchart
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+ include/sound/soc-dapm.h   |    5 +-
+ include/sound/soc.h        |    3 +
+ sound/soc/codecs/twl4030.c |   37 +++++++++
+ sound/soc/codecs/twl4030.h |    2 +-
+ sound/soc/soc-core.c       |   61 +++------------
+ sound/soc/soc-dapm.c       |  187 ++++++++++++++++++++++++++++++--------------
+ 6 files changed, 183 insertions(+), 112 deletions(-)
