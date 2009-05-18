@@ -1,28 +1,19 @@
-From: Karthik Ramgopal <applefreakpeeps@gmail.com>
-Subject: Re: Regarding Sound on Acer Aspire 6935G
-Date: Mon, 18 May 2009 17:55:48 +0800
-Message-ID: <4b8c423b0905180255h270c535aw5d7a2131c865c0a2@mail.gmail.com>
-References: <4b8c423b0905152051w7443e1b4u4080514a560fbb6c@mail.gmail.com>
-	<s5h4ovj7hva.wl%tiwai@suse.de>
-	<d54969c50905171348v12a58613sa8425f450e843eea@mail.gmail.com>
-	<s5hws8fdj65.wl%tiwai@suse.de>
-	<4b8c423b0905172344y551048cag9991a1dff9813d7f@mail.gmail.com>
-	<s5hr5ymew4h.wl%tiwai@suse.de>
-	<4b8c423b0905180144i62e4665eo24641ea6d2d7a717@mail.gmail.com>
-	<s5hljou92yv.wl%tiwai@suse.de>
-	<4b8c423b0905180229s373d8c2eq8f729147637bf11e@mail.gmail.com>
-	<s5hfxf292d2.wl%tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 3/3] ASoC: SDP3430: Connect twl4030 voice
+	DAI to McBSP3
+Date: Mon, 18 May 2009 13:04:56 +0300
+Message-ID: <200905181304.56360.peter.ujfalusi@nokia.com>
+References: <2C7D3DF36ADFFC479B44490D912B616705F69E8125@dlee07.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.243])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0702B24141
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 728312433E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 May 2009 11:55:49 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id k29so1355125rvb.32
-	for <alsa-devel@alsa-project.org>; Mon, 18 May 2009 02:55:48 -0700 (PDT)
-In-Reply-To: <s5hfxf292d2.wl%tiwai@suse.de>
+	Mon, 18 May 2009 12:05:42 +0200 (CEST)
+In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705F69E8125@dlee07.ent.ti.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,169 +23,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, =?ISO-8859-1?Q?Emilio_L=F3pez?= <buhitoescolar@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: "ext Lopez Cruz, Misael" <x0052729@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Yeah I checked.. I do see kernel messages with the new configuration. But
-the status has remained unchanged. Headphone switch still controls the
-subwoofer (turning on and off) and surround is used to change the line-out
-volume. No sign of any input device working. But the values in
-init_pin_configs do not change even after reconfigure.
+On Monday 18 May 2009 04:03:40 ext Lopez Cruz, Misael wrote:
+> Connect twl4030 voice DAI to McBSP3 in sdp3430 machine driver.
+> Audio and voice DAI init functions are enabling corresponding
+> interface by writting directly to AUDIO_IF and VOICE_IF codec
+> registers, respectively.
 
-Regards,
-Karthik
+>  static int sdp3430_twl4030_init(struct snd_soc_codec *codec)
+>  {
+> +	unsigned short reg;
+>  	int ret;
+>
+>  	/* Add SDP3430 specific widgets */
+> @@ -150,6 +194,11 @@ static int sdp3430_twl4030_init(struct snd_soc_codec
+> *codec) /* Set up SDP3430 specific audio path audio_map */
+>  	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
+>
+> +	/* Enable audio interface */
+> +	reg =3D codec->read(codec, TWL4030_REG_AUDIO_IF);
+> +	reg |=3D TWL4030_AIF_EN;
+> +	codec->write(codec, TWL4030_REG_AUDIO_IF, reg);
+> +
 
-On Mon, May 18, 2009 at 5:39 PM, Takashi Iwai <tiwai@suse.de> wrote:
+Well, this does not do anything (bad or good)... The Audio interface is =
 
-> At Mon, 18 May 2009 17:29:56 +0800,
-> Karthik Ramgopal wrote:
-> >
-> > Is there any way to verify that it has been overriden? Perhaps I should
-> run
-> > alsa-info.sh again to check?
+permanently enabled by default (by the default register array in the =
+
+twl4030.c).
+I have plans to do it dynamically, but it needs some more thinking, since t=
+he =
+
+digital loopback on the audio path needs also the audio interface to be =
+
+enabled.
+
+Is there a reason to do this at all?
+
+
+>  	/* SDP3430 connected pins */
+>  	snd_soc_dapm_enable_pin(codec, "Ext Mic");
+>  	snd_soc_dapm_enable_pin(codec, "Ext Spk");
+> @@ -192,22 +241,45 @@ static int sdp3430_twl4030_init(struct snd_soc_codec
+> *codec) return ret;
+>  }
 >
-> The values listed in /sys/class/sound/hw*/init_pin_configs are the
-> currently used pins.  But, this is updated only at the configuration
-> time, that is, either the module loading time or after you trigger
-> the reconfigure.
->
-> After the reconfigure, you must see the kernel messages with the
-> new configuration, i.e. the pin detection messages with the pin
-> configs you've set.
->
->
-> Takashi
->
->
-> > Regards,
-> > Karthik
-> >
-> > On Mon, May 18, 2009 at 5:26 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> >     At Mon, 18 May 2009 16:44:06 +0800,
-> >     Karthik Ramgopal wrote:
-> >     >
-> >     > Nothing seems to change after doing that also. Situation is same as
-> >     before.
-> >     > Though I noticed that the values of the init_pin_config was
-> different
-> >     from the
-> >     > one I specified.
-> >
-> >     Did you reconfigure?  Then init_pin_config should be overridden after
-> >     that.
-> >
-> >     > Need to still execute SET_EAPD_BTLENABLE 2 on 0x15 to fire up the
-> amps
-> >
-> >     It's a known issue as I mentioned.
-> >
-> >     Takashi
-> >
-> >     > Regards,
-> >     > Karthik
-> >     >
-> >     > On Mon, May 18, 2009 at 2:57 PM, Takashi Iwai <tiwai@suse.de>
-> wrote:
-> >     >
-> >     >     At Mon, 18 May 2009 14:44:48 +0800,
-> >     >     Karthik Ramgopal wrote:
-> >     >     >
-> >     >     > Hi,
-> >     >     >       Here is a list of ALC889 verbs for the 6920/6935 series
-> of
-> >     >     laptops. I
-> >     >     > got this from someone who has got the audio subsystem fully
-> >     working
-> >     >     (jack
-> >     >     > sensing+proper mapping+mic+SPDIF) with Mac OS X.
-> >     >     >
-> >     >     > NID 17 [Jack] Digital Out at Int HDMI
-> >     >     > Node - 0x11
-> >     >     > Pin Default - 0x18561130
-> >     >     > Verb - 01171C30 01171D11 01171E56 01171F18
-> >     >     >
-> >     >     > NID 18 [Fixed] Mic at Int ATAPI
-> >     >     > Node 0x12
-> >     >     > Pin Default - 0x99a3094e
-> >     >     > Verb - 01271C4E 01271D09 01271EA3 01271F99
-> >     >     >
-> >     >     > NID 20 [Fixed] Speaker at Int ATAPI
-> >     >     > Node - 0x14
-> >     >     > Pin Default - 0x99130110
-> >     >     > Verb - 01471C10 01471D01 01471E13 01471F99
-> >     >     >
-> >     >     > NID 21 [Jack] HP Out at Ext Front
-> >     >     > Node - 0x15
-> >     >     > Pin Default - 0x0221101f
-> >     >     > Verb - 01571C1F 01571D10 01571E21 01571F02
-> >     >     >
-> >     >     > NID 22 [N/A] Speaker at Ext Rear
-> >     >     > Node - 0x16
-> >     >     > Pin Default - 0x411111f0
-> >     >     > Verb - 01671CF0 01671D11 01671E11 01671F41
-> >     >     >
-> >     >     > NID 23 [N/A] Speaker at Ext Rear
-> >     >     > Node - 0x17
-> >     >     > Pin Default - 0x411111f0
-> >     >     > Verb - 01771CF0 01771D11 01771E11 01771F41
-> >     >     >
-> >     >     > NID 24 [Jack] Mic at Ext Front
-> >     >     > Node - 0x18
-> >     >     > Pin Default - 0x02a19c40
-> >     >     > Verb - 01871C40 01871D9C 01871EA1 01871F02
-> >     >     >
-> >     >     > NID 25 [N/A] Speaker at Ext Rear
-> >     >     > Node - 0x19
-> >     >     > Pin Default - 0x411111f0
-> >     >     > Verb - 01971CF0 01971D11 01971E11 01971F41
-> >     >     >
-> >     >     > NID 26 [Jack] Line In at Ext Front
-> >     >     > Node - 0x1A
-> >     >     > Pin Default - 0x02813441
-> >     >     > Verb - 01A71C41 01A71D34 01A71E81 01A71F02
-> >     >     >
-> >     >     > NID 27 [N/A] Speaker at Ext Rear
-> >     >     > Node - 0x1B
-> >     >     > Pin Default - 0x411111f0
-> >     >     > Verb - 01B71CF0 01B71D11 01B71E11 01B71F41
-> >     >     >
-> >     >     > NID 28 [N/A] Speaker at Ext Rear
-> >     >     > Node - 0x1C
-> >     >     > Pin Default - 0x411111f0
-> >     >     > Verb - 01C71CF0 01C71D11 01C71E11 01C71F41
-> >     >     >
-> >     >     > NID 29 [N/A] Speaker at Ext Rear
-> >     >     > Node - 0x1D
-> >     >     > Pin Default - 0x4016852d
-> >     >     > Verb - 01D71C2D 01D71D85 01D71E16 01D71F40
-> >     >     >
-> >     >     > NID 30 [Jack] SPDIF Out at Ext Front
-> >     >     > Node - 0x1E
-> >     >     > Pin Default - 0x02451120
-> >     >     > Verb - 01E71C20 01E71D11 01E71E45 01E71F02
-> >     >     >
-> >     >     > NID 31 [N/A] Speaker at Ext Rear
-> >     >     > Node - 0x1F
-> >     >     > Pin Default - 0x411111f0
-> >     >     > Verb - 01F71CF0 01F71D11 01F71E11 01F71F41
-> >     >     >
-> >     >     > Any use of these?
-> >     >
-> >     >     Set model=auto, try to write all these values to
-> >     >     /sys/class/sound/hwC0D*/user_pin_configs as root, such as
-> >     >            # echo 0x11 0x18561130 > /sys/class/sound/hwC0D0/
-> >     user_pin_configs
-> >     >
-> >     >     Then write 1 to /sys/class/sound/hwC0D*/reconfig.  It'll
-> reconfigure
-> >     >     the setup according to the new pin configuration.
-> >     >     The EAPD setting might be still missing, though.
-> >     >
-> >     >     Takashi
-> >     >
-> >     >
-> >
-> >
->
+> +static int sdp3430_twl4030_voice_init(struct snd_soc_codec *codec)
+> +{
+> +	unsigned short reg;
+> +
+> +	/* Enable voice interface */
+> +	reg =3D codec->read(codec, TWL4030_REG_VOICE_IF);
+> +	reg |=3D TWL4030_VIF_DIN_EN | TWL4030_VIF_DOUT_EN | TWL4030_VIF_EN;
+> +	codec->write(codec, TWL4030_REG_VOICE_IF, reg);
+> +
+> +	return 0;
+> +}
+
+Since you need to enable the voice interface, I think at the moment this is =
+
+the only way to do it.
+Later we can revisit this if we find a better way of doing it.
+
+-- =
+
+P=E9ter
