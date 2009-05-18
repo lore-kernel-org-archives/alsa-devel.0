@@ -1,20 +1,28 @@
-From: mAdVax <madvax@free.fr>
-Subject: Re: emu10k1 TRAM access ?
-Date: Tue, 19 May 2009 00:28:23 +0200
-Message-ID: <4A11E107.1060909@free.fr>
-References: <4A0C115E.8010306@free.fr>
-	<s5hskj6a2rl.wl%tiwai@suse.de>	<4A0DD70C.8050109@free.fr>
-	<4A0E9655.2000008@free.fr>	<s5h63g184pr.wl%tiwai@suse.de>	<loom.20090516T212123-884@post.gmane.org>	<53baa24a0905170848s4dae9a10wb15c07e09fc985fb@mail.gmail.com>	<4A107C35.8050908@free.fr>
-	<53baa24a0905181234o6aa2041ek650d7cc77bed1c73@mail.gmail.com>
+From: =?ISO-8859-1?Q?Emilio_L=F3pez?= <buhitoescolar@gmail.com>
+Subject: Re: Regarding Sound on Acer Aspire 6935G
+Date: Mon, 18 May 2009 20:00:56 -0300
+Message-ID: <d54969c50905181600g761b9af4h585a74c45684f1ca@mail.gmail.com>
+References: <4b8c423b0905152051w7443e1b4u4080514a560fbb6c@mail.gmail.com>
+	<s5h4ovj7hva.wl%tiwai@suse.de>
+	<d54969c50905171348v12a58613sa8425f450e843eea@mail.gmail.com>
+	<4b8c423b0905171952w5a28c6b3pe8d16fc6e9ccef50@mail.gmail.com>
+	<s5h63fzeypa.wl%tiwai@suse.de>
+	<4b8c423b0905172306g34beeb8focaa5c36422dd0f4e@mail.gmail.com>
+	<s5h3ab3ey8i.wl%tiwai@suse.de>
+	<4b8c423b0905172313o5c51b8e5ud6f9f35d1952132f@mail.gmail.com>
+	<4b8c423b0905172317r7314a345me83ae17cd0f20f5a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp22.services.sfr.fr (smtp22.services.sfr.fr [93.17.128.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2198524531
+Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
+	[209.85.221.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7656D2434E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 May 2009 00:28:26 +0200 (CEST)
-In-Reply-To: <53baa24a0905181234o6aa2041ek650d7cc77bed1c73@mail.gmail.com>
+	Tue, 19 May 2009 01:01:00 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so5923228qyk.16
+	for <alsa-devel@alsa-project.org>; Mon, 18 May 2009 16:00:59 -0700 (PDT)
+In-Reply-To: <4b8c423b0905172317r7314a345me83ae17cd0f20f5a@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,30 +32,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alex Austin <circuitsoft.alex@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Karthik Ramgopal <applefreakpeeps@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+I tried it, but it didn't work - I got an extra option that said 2/4/6
+channels, but it didn't do anything interesting apart from changing somehow
+the volume! The mic didn't work either.
 
-Alex Austin a =E9crit :
-> It's a 24-bit Freescale DSP. They've made it for years. There's plenty of
-> info if you know where to look. I don't think you necessarily need the st=
-ock
-> firmware for any of those cards. However, I haven't actually used any of
-> them. Only theory specifies whether the cards can be opened and used.
+2009/5/18 Karthik Ramgopal <applefreakpeeps@gmail.com>
 
-Yes, I can find info and tools for this chip. But i don't even know =
-
-where I would have to peek and poke samples. I would spend weeks =
-
-(months?) only to copy inputs to outputs.
-And if this have been easy, I'm sure some good hackers would have done =
-
-it years ago.
-
-I'm not a good hacker! And don't even have an Echo sound card.
-But i own an Audigy, and plan to buy some more ;)
-
-Regards
-
-Xavier
+> Emilio,
+>              People here <http://www.linlap.com/wiki/acer+aspire+6930>
+> claim to have got the 6930's audio fully working including jack sensing and
+> mic with realtek patched alsa driver. Check it out.
+>
+> Regards,
+> Karthik
+>
+> On Mon, May 18, 2009 at 2:13 PM, Karthik Ramgopal <
+> applefreakpeeps@gmail.com> wrote:
+>
+>> Hi,
+>>         So do we obtain all the init verbs and pinout info by hit and
+>> trial? or is there some documented way to systematically obtain it? to think
+>> of it I haven't even found a verb yet to mute just the laptop speakers
+>> leaving the line-out volume unmuted.
+>>
+>> Regards,
+>> Karthik
+>>
+>>
+>> On Mon, May 18, 2009 at 2:11 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>>
+>>> At Mon, 18 May 2009 14:06:52 +0800,
+>>> Karthik Ramgopal wrote:
+>>> >
+>>> > How to get this pin configuration information from Windows? I have a
+>>> list of
+>>> > Pin Config Override verbs which i obtained from the registry using
+>>> regedit.
+>>> > Are they of any use?
+>>>
+>>> No idea as I never used Windows nowadays by myself :)
+>>>
+>>>
+>>> Takashi
+>>>
+>>
+>>
+>
