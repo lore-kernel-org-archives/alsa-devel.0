@@ -1,18 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 1/2] ASoC: TWL4030: Change DAPM routings and
-	controls for DACs and PGAs
-Date: Mon, 18 May 2009 16:02:04 +0300
-Message-ID: <1242651725-15001-2-git-send-email-peter.ujfalusi@nokia.com>
-References: <1242651725-15001-1-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 0/2] ASoC: TWL4030: DAPM restructuring and
+	Headset pop-attenuation fix
+Date: Mon, 18 May 2009 16:02:03 +0300
+Message-ID: <1242651725-15001-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id C3A84103828
+	by alsa0.perex.cz (Postfix) with ESMTP id 608E5103844
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 May 2009 15:02:28 +0200 (CEST)
-In-Reply-To: <1242651725-15001-1-git-send-email-peter.ujfalusi@nokia.com>
+	Mon, 18 May 2009 15:02:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,216 +24,49 @@ To: alsa-devel@alsa-project.org
 Cc: sakoman@gmail.com, anuj.aggarwal@ti.com, getarunks@gmail.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Restructuring the twl4030 codec's DAPM routing to be able to handle the power
-sequences correctly.
+Hello,
 
-The twl4030 codec internal implementation have this order:
-DAC -> Analog PGA -> Mixer/Mux
+The following series aims to fix the Headset power on/off pop noise problems.
+
+Since the twl4030 codec internal implementation have this order in HW:
+DAC -> Analog PGA -> Mixer
 
 While the ASoC framework expects the following order:
 DAC -> Mixer -> Analog PGA
 
-This patch moves the Analog PGA handling from SND_SOC_DAPM_PGA to _MIXER and
-adds two levels of mixer to handle the digital and analog loopback
-functionality.
+I needed to move the APGA control from SND_SOC_DAPM_PGA to be handled with
+_MIXER. Than adding a PGA to the headset outputs results correct power
+sequences.
 
-Now the analog loopback does not powers on any of the DACs.
+This patch also separates the analog and digital loopback paths, so when the
+analog loopback is enabled none of the DACs will be powered on, while in case
+of digital loopback the corresponding DACs will be powered.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+These are internal changes, not visible for the user. I have tested it with my
+custom board with the headset soldered to HeadsetL, the pop noise is really small
+if any.
+
+The user must also set the correct ramp delay for the given board.
+On my board:
+MCLK = 38.4MHz
+RAMP_DELAY = 2 (109/81/55 ms) works best (meaning 55ms ramp
+delay), if it is shorter, than it clicks, if it is longer, than it does not
+click, but the beep tone can be observed.
+
+I hope that I have not missed anything with the patches, since these are forward
+ported from my working tree to sound-2.6:topic/asoc.
+
+I have applied the patch from Misael on top of the current topic/asoc, so the
+head was:
+ASoC: TWL4030: Enable/disable voice digital filters
+
+I believe that this should be able to minimize the pop noise on the headset
+outputs.
+
 ---
- sound/soc/codecs/twl4030.c |  141 ++++++++++++++++++++++----------------------
- 1 files changed, 71 insertions(+), 70 deletions(-)
+Peter Ujfalusi (2):
+  ASoC: TWL4030: Change DAPM routings and controls for DACs and PGAs
+  ASoC: TWL4030: Move the Headset pop-attenuation code to PGA event
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index e4d683d..990aa4a 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -1004,18 +1004,6 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 	SND_SOC_DAPM_DAC("DAC Voice", "Voice Playback",
- 			SND_SOC_NOPM, 0, 0),
- 
--	/* Analog PGAs */
--	SND_SOC_DAPM_PGA("ARXR1_APGA", TWL4030_REG_ARXR1_APGA_CTL,
--			0, 0, NULL, 0),
--	SND_SOC_DAPM_PGA("ARXL1_APGA", TWL4030_REG_ARXL1_APGA_CTL,
--			0, 0, NULL, 0),
--	SND_SOC_DAPM_PGA("ARXR2_APGA", TWL4030_REG_ARXR2_APGA_CTL,
--			0, 0, NULL, 0),
--	SND_SOC_DAPM_PGA("ARXL2_APGA", TWL4030_REG_ARXL2_APGA_CTL,
--			0, 0, NULL, 0),
--	SND_SOC_DAPM_PGA("VDL_APGA", TWL4030_REG_VDL_APGA_CTL,
--			0, 0, NULL, 0),
--
- 	/* Analog bypasses */
- 	SND_SOC_DAPM_SWITCH_E("Right1 Analog Loopback", SND_SOC_NOPM, 0, 0,
- 			&twl4030_dapm_abypassr1_control, bypass_event,
-@@ -1044,16 +1032,29 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 			&twl4030_dapm_dbypassv_control, bypass_event,
- 			SND_SOC_DAPM_POST_REG),
- 
--	SND_SOC_DAPM_MIXER("Analog R1 Playback Mixer", TWL4030_REG_AVDAC_CTL,
--			0, 0, NULL, 0),
--	SND_SOC_DAPM_MIXER("Analog L1 Playback Mixer", TWL4030_REG_AVDAC_CTL,
--			1, 0, NULL, 0),
--	SND_SOC_DAPM_MIXER("Analog R2 Playback Mixer", TWL4030_REG_AVDAC_CTL,
--			2, 0, NULL, 0),
--	SND_SOC_DAPM_MIXER("Analog L2 Playback Mixer", TWL4030_REG_AVDAC_CTL,
--			3, 0, NULL, 0),
--	SND_SOC_DAPM_MIXER("Analog Voice Playback Mixer", TWL4030_REG_AVDAC_CTL,
--			4, 0, NULL, 0),
-+	/* Digital mixers, power control for the physical DACs */
-+	SND_SOC_DAPM_MIXER("Digital R1 Playback Mixer",
-+			TWL4030_REG_AVDAC_CTL, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Digital L1 Playback Mixer",
-+			TWL4030_REG_AVDAC_CTL, 1, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Digital R2 Playback Mixer",
-+			TWL4030_REG_AVDAC_CTL, 2, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Digital L2 Playback Mixer",
-+			TWL4030_REG_AVDAC_CTL, 3, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Digital Voice Playback Mixer",
-+			TWL4030_REG_AVDAC_CTL, 4, 0, NULL, 0),
-+
-+	/* Analog mixers, power control for the physical PGAs */
-+	SND_SOC_DAPM_MIXER("Analog R1 Playback Mixer",
-+			TWL4030_REG_ARXR1_APGA_CTL, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Analog L1 Playback Mixer",
-+			TWL4030_REG_ARXL1_APGA_CTL, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Analog R2 Playback Mixer",
-+			TWL4030_REG_ARXR2_APGA_CTL, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Analog L2 Playback Mixer",
-+			TWL4030_REG_ARXL2_APGA_CTL, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Analog Voice Playback Mixer",
-+			TWL4030_REG_VDL_APGA_CTL, 0, 0, NULL, 0),
- 
- 	/* Output MIXER controls */
- 	/* Earpiece */
-@@ -1147,60 +1148,60 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- };
- 
- static const struct snd_soc_dapm_route intercon[] = {
--	{"Analog L1 Playback Mixer", NULL, "DAC Left1"},
--	{"Analog R1 Playback Mixer", NULL, "DAC Right1"},
--	{"Analog L2 Playback Mixer", NULL, "DAC Left2"},
--	{"Analog R2 Playback Mixer", NULL, "DAC Right2"},
--	{"Analog Voice Playback Mixer", NULL, "DAC Voice"},
--
--	{"ARXL1_APGA", NULL, "Analog L1 Playback Mixer"},
--	{"ARXR1_APGA", NULL, "Analog R1 Playback Mixer"},
--	{"ARXL2_APGA", NULL, "Analog L2 Playback Mixer"},
--	{"ARXR2_APGA", NULL, "Analog R2 Playback Mixer"},
--	{"VDL_APGA", NULL, "Analog Voice Playback Mixer"},
-+	{"Digital L1 Playback Mixer", NULL, "DAC Left1"},
-+	{"Digital R1 Playback Mixer", NULL, "DAC Right1"},
-+	{"Digital L2 Playback Mixer", NULL, "DAC Left2"},
-+	{"Digital R2 Playback Mixer", NULL, "DAC Right2"},
-+	{"Digital Voice Playback Mixer", NULL, "DAC Voice"},
-+
-+	{"Analog L1 Playback Mixer", NULL, "Digital L1 Playback Mixer"},
-+	{"Analog R1 Playback Mixer", NULL, "Digital R1 Playback Mixer"},
-+	{"Analog L2 Playback Mixer", NULL, "Digital L2 Playback Mixer"},
-+	{"Analog R2 Playback Mixer", NULL, "Digital R2 Playback Mixer"},
-+	{"Analog Voice Playback Mixer", NULL, "Digital Voice Playback Mixer"},
- 
- 	/* Internal playback routings */
- 	/* Earpiece */
--	{"Earpiece Mixer", "Voice", "VDL_APGA"},
--	{"Earpiece Mixer", "AudioL1", "ARXL1_APGA"},
--	{"Earpiece Mixer", "AudioL2", "ARXL2_APGA"},
--	{"Earpiece Mixer", "AudioR1", "ARXR1_APGA"},
-+	{"Earpiece Mixer", "Voice", "Analog Voice Playback Mixer"},
-+	{"Earpiece Mixer", "AudioL1", "Analog L1 Playback Mixer"},
-+	{"Earpiece Mixer", "AudioL2", "Analog L2 Playback Mixer"},
-+	{"Earpiece Mixer", "AudioR1", "Analog R1 Playback Mixer"},
- 	/* PreDrivL */
--	{"PredriveL Mixer", "Voice", "VDL_APGA"},
--	{"PredriveL Mixer", "AudioL1", "ARXL1_APGA"},
--	{"PredriveL Mixer", "AudioL2", "ARXL2_APGA"},
--	{"PredriveL Mixer", "AudioR2", "ARXR2_APGA"},
-+	{"PredriveL Mixer", "Voice", "Analog Voice Playback Mixer"},
-+	{"PredriveL Mixer", "AudioL1", "Analog L1 Playback Mixer"},
-+	{"PredriveL Mixer", "AudioL2", "Analog L2 Playback Mixer"},
-+	{"PredriveL Mixer", "AudioR2", "Analog R2 Playback Mixer"},
- 	/* PreDrivR */
--	{"PredriveR Mixer", "Voice", "VDL_APGA"},
--	{"PredriveR Mixer", "AudioR1", "ARXR1_APGA"},
--	{"PredriveR Mixer", "AudioR2", "ARXR2_APGA"},
--	{"PredriveR Mixer", "AudioL2", "ARXL2_APGA"},
-+	{"PredriveR Mixer", "Voice", "Analog Voice Playback Mixer"},
-+	{"PredriveR Mixer", "AudioR1", "Analog R1 Playback Mixer"},
-+	{"PredriveR Mixer", "AudioR2", "Analog R2 Playback Mixer"},
-+	{"PredriveR Mixer", "AudioL2", "Analog L2 Playback Mixer"},
- 	/* HeadsetL */
--	{"HeadsetL Mixer", "Voice", "VDL_APGA"},
--	{"HeadsetL Mixer", "AudioL1", "ARXL1_APGA"},
--	{"HeadsetL Mixer", "AudioL2", "ARXL2_APGA"},
-+	{"HeadsetL Mixer", "Voice", "Analog Voice Playback Mixer"},
-+	{"HeadsetL Mixer", "AudioL1", "Analog L1 Playback Mixer"},
-+	{"HeadsetL Mixer", "AudioL2", "Analog L2 Playback Mixer"},
- 	/* HeadsetR */
--	{"HeadsetR Mixer", "Voice", "VDL_APGA"},
--	{"HeadsetR Mixer", "AudioR1", "ARXR1_APGA"},
--	{"HeadsetR Mixer", "AudioR2", "ARXR2_APGA"},
-+	{"HeadsetR Mixer", "Voice", "Analog Voice Playback Mixer"},
-+	{"HeadsetR Mixer", "AudioR1", "Analog R1 Playback Mixer"},
-+	{"HeadsetR Mixer", "AudioR2", "Analog R2 Playback Mixer"},
- 	/* CarkitL */
--	{"CarkitL Mixer", "Voice", "VDL_APGA"},
--	{"CarkitL Mixer", "AudioL1", "ARXL1_APGA"},
--	{"CarkitL Mixer", "AudioL2", "ARXL2_APGA"},
-+	{"CarkitL Mixer", "Voice", "Analog Voice Playback Mixer"},
-+	{"CarkitL Mixer", "AudioL1", "Analog L1 Playback Mixer"},
-+	{"CarkitL Mixer", "AudioL2", "Analog L2 Playback Mixer"},
- 	/* CarkitR */
--	{"CarkitR Mixer", "Voice", "VDL_APGA"},
--	{"CarkitR Mixer", "AudioR1", "ARXR1_APGA"},
--	{"CarkitR Mixer", "AudioR2", "ARXR2_APGA"},
-+	{"CarkitR Mixer", "Voice", "Analog Voice Playback Mixer"},
-+	{"CarkitR Mixer", "AudioR1", "Analog R1 Playback Mixer"},
-+	{"CarkitR Mixer", "AudioR2", "Analog R2 Playback Mixer"},
- 	/* HandsfreeL */
--	{"HandsfreeL Mux", "Voice", "VDL_APGA"},
--	{"HandsfreeL Mux", "AudioL1", "ARXL1_APGA"},
--	{"HandsfreeL Mux", "AudioL2", "ARXL2_APGA"},
--	{"HandsfreeL Mux", "AudioR2", "ARXR2_APGA"},
-+	{"HandsfreeL Mux", "Voice", "Analog Voice Playback Mixer"},
-+	{"HandsfreeL Mux", "AudioL1", "Analog L1 Playback Mixer"},
-+	{"HandsfreeL Mux", "AudioL2", "Analog L2 Playback Mixer"},
-+	{"HandsfreeL Mux", "AudioR2", "Analog R2 Playback Mixer"},
- 	/* HandsfreeR */
--	{"HandsfreeR Mux", "Voice", "VDL_APGA"},
--	{"HandsfreeR Mux", "AudioR1", "ARXR1_APGA"},
--	{"HandsfreeR Mux", "AudioR2", "ARXR2_APGA"},
--	{"HandsfreeR Mux", "AudioL2", "ARXL2_APGA"},
-+	{"HandsfreeR Mux", "Voice", "Analog Voice Playback Mixer"},
-+	{"HandsfreeR Mux", "AudioR1", "Analog R1 Playback Mixer"},
-+	{"HandsfreeR Mux", "AudioR2", "Analog R2 Playback Mixer"},
-+	{"HandsfreeR Mux", "AudioL2", "Analog L2 Playback Mixer"},
- 	/* Vibra */
- 	{"Vibra Mux", "AudioL1", "DAC Left1"},
- 	{"Vibra Mux", "AudioR1", "DAC Right1"},
-@@ -1208,8 +1209,8 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{"Vibra Mux", "AudioR2", "DAC Right2"},
- 
- 	/* outputs */
--	{"OUTL", NULL, "ARXL2_APGA"},
--	{"OUTR", NULL, "ARXR2_APGA"},
-+	{"OUTL", NULL, "Analog L2 Playback Mixer"},
-+	{"OUTR", NULL, "Analog R2 Playback Mixer"},
- 	{"EARPIECE", NULL, "Earpiece Mixer"},
- 	{"PREDRIVEL", NULL, "PredriveL Mixer"},
- 	{"PREDRIVER", NULL, "PredriveR Mixer"},
-@@ -1273,9 +1274,9 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{"Left Digital Loopback", "Volume", "TX1 Capture Route"},
- 	{"Voice Digital Loopback", "Volume", "TX2 Capture Route"},
- 
--	{"Analog R2 Playback Mixer", NULL, "Right Digital Loopback"},
--	{"Analog L2 Playback Mixer", NULL, "Left Digital Loopback"},
--	{"Analog Voice Playback Mixer", NULL, "Voice Digital Loopback"},
-+	{"Digital R2 Playback Mixer", NULL, "Right Digital Loopback"},
-+	{"Digital L2 Playback Mixer", NULL, "Left Digital Loopback"},
-+	{"Digital Voice Playback Mixer", NULL, "Voice Digital Loopback"},
- 
- };
- 
--- 
-1.6.3
+ sound/soc/codecs/twl4030.c |  257 ++++++++++++++++++++++++++++----------------
+ 1 files changed, 162 insertions(+), 95 deletions(-)
