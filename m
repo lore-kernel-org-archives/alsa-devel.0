@@ -1,19 +1,18 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 2/2] ASoC: TWL4030: Move the Headset
-	pop-attenuation code to PGA event
-Date: Mon, 18 May 2009 16:02:05 +0300
-Message-ID: <1242651725-15001-3-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 1/2] ASoC: TWL4030: Change DAPM routings and
+	controls for DACs and PGAs
+Date: Mon, 18 May 2009 16:02:04 +0300
+Message-ID: <1242651725-15001-2-git-send-email-peter.ujfalusi@nokia.com>
 References: <1242651725-15001-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1242651725-15001-2-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 050AA1037E3
+	by alsa0.perex.cz (Postfix) with ESMTP id C3A84103828
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 May 2009 15:02:24 +0200 (CEST)
-In-Reply-To: <1242651725-15001-2-git-send-email-peter.ujfalusi@nokia.com>
+	Mon, 18 May 2009 15:02:28 +0200 (CEST)
+In-Reply-To: <1242651725-15001-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,218 +26,216 @@ To: alsa-devel@alsa-project.org
 Cc: sakoman@gmail.com, anuj.aggarwal@ti.com, getarunks@gmail.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds SND_SOC_DAPM_PGA_E to the headset path, which handles
-the headset ramp up and down sequences needed for the pop noise
-removal.
+Restructuring the twl4030 codec's DAPM routing to be able to handle the power
+sequences correctly.
 
-With this patch the order of the internal components in the twl4030
-codec is turned on and off in a correct order.
+The twl4030 codec internal implementation have this order:
+DAC -> Analog PGA -> Mixer/Mux
+
+While the ASoC framework expects the following order:
+DAC -> Mixer -> Analog PGA
+
+This patch moves the Analog PGA handling from SND_SOC_DAPM_PGA to _MIXER and
+adds two levels of mixer to handle the digital and analog loopback
+functionality.
+
+Now the analog loopback does not powers on any of the DACs.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
- sound/soc/codecs/twl4030.c |  116 ++++++++++++++++++++++++++++++++++---------
- 1 files changed, 91 insertions(+), 25 deletions(-)
+ sound/soc/codecs/twl4030.c |  141 ++++++++++++++++++++++----------------------
+ 1 files changed, 71 insertions(+), 70 deletions(-)
 
 diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 990aa4a..afe7879 100644
+index e4d683d..990aa4a 100644
 --- a/sound/soc/codecs/twl4030.c
 +++ b/sound/soc/codecs/twl4030.c
-@@ -130,6 +130,12 @@ struct twl4030_priv {
- 	unsigned int rate;
- 	unsigned int sample_bits;
- 	unsigned int channels;
+@@ -1004,18 +1004,6 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 	SND_SOC_DAPM_DAC("DAC Voice", "Voice Playback",
+ 			SND_SOC_NOPM, 0, 0),
+ 
+-	/* Analog PGAs */
+-	SND_SOC_DAPM_PGA("ARXR1_APGA", TWL4030_REG_ARXR1_APGA_CTL,
+-			0, 0, NULL, 0),
+-	SND_SOC_DAPM_PGA("ARXL1_APGA", TWL4030_REG_ARXL1_APGA_CTL,
+-			0, 0, NULL, 0),
+-	SND_SOC_DAPM_PGA("ARXR2_APGA", TWL4030_REG_ARXR2_APGA_CTL,
+-			0, 0, NULL, 0),
+-	SND_SOC_DAPM_PGA("ARXL2_APGA", TWL4030_REG_ARXL2_APGA_CTL,
+-			0, 0, NULL, 0),
+-	SND_SOC_DAPM_PGA("VDL_APGA", TWL4030_REG_VDL_APGA_CTL,
+-			0, 0, NULL, 0),
+-
+ 	/* Analog bypasses */
+ 	SND_SOC_DAPM_SWITCH_E("Right1 Analog Loopback", SND_SOC_NOPM, 0, 0,
+ 			&twl4030_dapm_abypassr1_control, bypass_event,
+@@ -1044,16 +1032,29 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 			&twl4030_dapm_dbypassv_control, bypass_event,
+ 			SND_SOC_DAPM_POST_REG),
+ 
+-	SND_SOC_DAPM_MIXER("Analog R1 Playback Mixer", TWL4030_REG_AVDAC_CTL,
+-			0, 0, NULL, 0),
+-	SND_SOC_DAPM_MIXER("Analog L1 Playback Mixer", TWL4030_REG_AVDAC_CTL,
+-			1, 0, NULL, 0),
+-	SND_SOC_DAPM_MIXER("Analog R2 Playback Mixer", TWL4030_REG_AVDAC_CTL,
+-			2, 0, NULL, 0),
+-	SND_SOC_DAPM_MIXER("Analog L2 Playback Mixer", TWL4030_REG_AVDAC_CTL,
+-			3, 0, NULL, 0),
+-	SND_SOC_DAPM_MIXER("Analog Voice Playback Mixer", TWL4030_REG_AVDAC_CTL,
+-			4, 0, NULL, 0),
++	/* Digital mixers, power control for the physical DACs */
++	SND_SOC_DAPM_MIXER("Digital R1 Playback Mixer",
++			TWL4030_REG_AVDAC_CTL, 0, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("Digital L1 Playback Mixer",
++			TWL4030_REG_AVDAC_CTL, 1, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("Digital R2 Playback Mixer",
++			TWL4030_REG_AVDAC_CTL, 2, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("Digital L2 Playback Mixer",
++			TWL4030_REG_AVDAC_CTL, 3, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("Digital Voice Playback Mixer",
++			TWL4030_REG_AVDAC_CTL, 4, 0, NULL, 0),
 +
-+	unsigned int sysclk;
-+
-+	/* Headset output state handling */
-+	unsigned int hsl_enabled;
-+	unsigned int hsr_enabled;
++	/* Analog mixers, power control for the physical PGAs */
++	SND_SOC_DAPM_MIXER("Analog R1 Playback Mixer",
++			TWL4030_REG_ARXR1_APGA_CTL, 0, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("Analog L1 Playback Mixer",
++			TWL4030_REG_ARXL1_APGA_CTL, 0, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("Analog R2 Playback Mixer",
++			TWL4030_REG_ARXR2_APGA_CTL, 0, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("Analog L2 Playback Mixer",
++			TWL4030_REG_ARXL2_APGA_CTL, 0, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("Analog Voice Playback Mixer",
++			TWL4030_REG_VDL_APGA_CTL, 0, 0, NULL, 0),
+ 
+ 	/* Output MIXER controls */
+ 	/* Earpiece */
+@@ -1147,60 +1148,60 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
  };
  
- /*
-@@ -564,39 +570,85 @@ static int handsfree_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
--static int headsetl_event(struct snd_soc_dapm_widget *w,
--		struct snd_kcontrol *kcontrol, int event)
-+static void headset_ramp(struct snd_soc_codec *codec, int ramp)
- {
- 	unsigned char hs_gain, hs_pop;
-+	struct twl4030_priv *twl4030 = codec->private_data;
-+	/* Base values for ramp delay calculation: 2^19 - 2^26 */
-+	unsigned int ramp_base[] = {524288, 1048576, 2097152, 4194304,
-+				    8388608, 16777216, 33554432, 67108864};
- 
--	/* Save the current volume */
--	hs_gain = twl4030_read_reg_cache(w->codec, TWL4030_REG_HS_GAIN_SET);
--	hs_pop = twl4030_read_reg_cache(w->codec, TWL4030_REG_HS_POPN_SET);
-+	hs_gain = twl4030_read_reg_cache(codec, TWL4030_REG_HS_GAIN_SET);
-+	hs_pop = twl4030_read_reg_cache(codec, TWL4030_REG_HS_POPN_SET);
- 
--	switch (event) {
--	case SND_SOC_DAPM_POST_PMU:
--		/* Do the anti-pop/bias ramp enable according to the TRM */
-+	if (ramp) {
-+		/* Headset ramp-up according to the TRM */
- 		hs_pop |= TWL4030_VMID_EN;
--		twl4030_write(w->codec, TWL4030_REG_HS_POPN_SET, hs_pop);
--		/* Is this needed? Can we just use whatever gain here? */
--		twl4030_write(w->codec, TWL4030_REG_HS_GAIN_SET,
--				(hs_gain & (~0x0f)) | 0x0a);
-+		twl4030_write(codec, TWL4030_REG_HS_POPN_SET, hs_pop);
-+		twl4030_write(codec, TWL4030_REG_HS_GAIN_SET, hs_gain);
- 		hs_pop |= TWL4030_RAMP_EN;
--		twl4030_write(w->codec, TWL4030_REG_HS_POPN_SET, hs_pop);
+ static const struct snd_soc_dapm_route intercon[] = {
+-	{"Analog L1 Playback Mixer", NULL, "DAC Left1"},
+-	{"Analog R1 Playback Mixer", NULL, "DAC Right1"},
+-	{"Analog L2 Playback Mixer", NULL, "DAC Left2"},
+-	{"Analog R2 Playback Mixer", NULL, "DAC Right2"},
+-	{"Analog Voice Playback Mixer", NULL, "DAC Voice"},
 -
--		/* Restore the original volume */
--		twl4030_write(w->codec, TWL4030_REG_HS_GAIN_SET, hs_gain);
--		break;
--	case SND_SOC_DAPM_POST_PMD:
--		/* Do the anti-pop/bias ramp disable according to the TRM */
-+		twl4030_write(codec, TWL4030_REG_HS_POPN_SET, hs_pop);
-+	} else {
-+		/* Headset ramp-down _not_ according to
-+		 * the TRM, but in a way that it is working */
- 		hs_pop &= ~TWL4030_RAMP_EN;
--		twl4030_write(w->codec, TWL4030_REG_HS_POPN_SET, hs_pop);
-+		twl4030_write(codec, TWL4030_REG_HS_POPN_SET, hs_pop);
-+		/* Wait ramp delay time + 1, so the VMID can settle */
-+		mdelay((ramp_base[(hs_pop & TWL4030_RAMP_DELAY) >> 2] /
-+			twl4030->sysclk) + 1);
- 		/* Bypass the reg_cache to mute the headset */
- 		twl4030_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE,
- 					hs_gain & (~0x0f),
- 					TWL4030_REG_HS_GAIN_SET);
+-	{"ARXL1_APGA", NULL, "Analog L1 Playback Mixer"},
+-	{"ARXR1_APGA", NULL, "Analog R1 Playback Mixer"},
+-	{"ARXL2_APGA", NULL, "Analog L2 Playback Mixer"},
+-	{"ARXR2_APGA", NULL, "Analog R2 Playback Mixer"},
+-	{"VDL_APGA", NULL, "Analog Voice Playback Mixer"},
++	{"Digital L1 Playback Mixer", NULL, "DAC Left1"},
++	{"Digital R1 Playback Mixer", NULL, "DAC Right1"},
++	{"Digital L2 Playback Mixer", NULL, "DAC Left2"},
++	{"Digital R2 Playback Mixer", NULL, "DAC Right2"},
++	{"Digital Voice Playback Mixer", NULL, "DAC Voice"},
 +
- 		hs_pop &= ~TWL4030_VMID_EN;
--		twl4030_write(w->codec, TWL4030_REG_HS_POPN_SET, hs_pop);
-+		twl4030_write(codec, TWL4030_REG_HS_POPN_SET, hs_pop);
-+	}
-+}
-+
-+static int headsetlpga_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct twl4030_priv *twl4030 = w->codec->private_data;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		/* Do the ramp-up only once */
-+		if (!twl4030->hsr_enabled)
-+			headset_ramp(w->codec, 1);
-+
-+		twl4030->hsl_enabled = 1;
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		/* Do the ramp-down only if both headsetL/R is disabled */
-+		if (!twl4030->hsr_enabled)
-+			headset_ramp(w->codec, 0);
-+
-+		twl4030->hsl_enabled = 0;
-+		break;
-+	}
-+	return 0;
-+}
-+
-+static int headsetrpga_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct twl4030_priv *twl4030 = w->codec->private_data;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		/* Do the ramp-up only once */
-+		if (!twl4030->hsl_enabled)
-+			headset_ramp(w->codec, 1);
-+
-+		twl4030->hsr_enabled = 1;
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		/* Do the ramp-down only if both headsetL/R is disabled */
-+		if (!twl4030->hsl_enabled)
-+			headset_ramp(w->codec, 0);
-+
-+		twl4030->hsr_enabled = 0;
- 		break;
- 	}
- 	return 0;
-@@ -1069,13 +1121,18 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 			&twl4030_dapm_predriver_controls[0],
- 			ARRAY_SIZE(twl4030_dapm_predriver_controls)),
- 	/* HeadsetL/R */
--	SND_SOC_DAPM_MIXER_E("HeadsetL Mixer", SND_SOC_NOPM, 0, 0,
-+	SND_SOC_DAPM_MIXER("HeadsetL Mixer", SND_SOC_NOPM, 0, 0,
- 			&twl4030_dapm_hsol_controls[0],
--			ARRAY_SIZE(twl4030_dapm_hsol_controls), headsetl_event,
-+			ARRAY_SIZE(twl4030_dapm_hsol_controls)),
-+	SND_SOC_DAPM_PGA_E("HeadsetL PGA", SND_SOC_NOPM,
-+			0, 0, NULL, 0, headsetlpga_event,
- 			SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
- 	SND_SOC_DAPM_MIXER("HeadsetR Mixer", SND_SOC_NOPM, 0, 0,
- 			&twl4030_dapm_hsor_controls[0],
- 			ARRAY_SIZE(twl4030_dapm_hsor_controls)),
-+	SND_SOC_DAPM_PGA_E("HeadsetR PGA", SND_SOC_NOPM,
-+			0, 0, NULL, 0, headsetrpga_event,
-+			SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
- 	/* CarkitL/R */
- 	SND_SOC_DAPM_MIXER("CarkitL Mixer", SND_SOC_NOPM, 0, 0,
- 			&twl4030_dapm_carkitl_controls[0],
-@@ -1180,10 +1237,12 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{"HeadsetL Mixer", "Voice", "Analog Voice Playback Mixer"},
- 	{"HeadsetL Mixer", "AudioL1", "Analog L1 Playback Mixer"},
- 	{"HeadsetL Mixer", "AudioL2", "Analog L2 Playback Mixer"},
-+	{"HeadsetL PGA", NULL, "HeadsetL Mixer"},
++	{"Analog L1 Playback Mixer", NULL, "Digital L1 Playback Mixer"},
++	{"Analog R1 Playback Mixer", NULL, "Digital R1 Playback Mixer"},
++	{"Analog L2 Playback Mixer", NULL, "Digital L2 Playback Mixer"},
++	{"Analog R2 Playback Mixer", NULL, "Digital R2 Playback Mixer"},
++	{"Analog Voice Playback Mixer", NULL, "Digital Voice Playback Mixer"},
+ 
+ 	/* Internal playback routings */
+ 	/* Earpiece */
+-	{"Earpiece Mixer", "Voice", "VDL_APGA"},
+-	{"Earpiece Mixer", "AudioL1", "ARXL1_APGA"},
+-	{"Earpiece Mixer", "AudioL2", "ARXL2_APGA"},
+-	{"Earpiece Mixer", "AudioR1", "ARXR1_APGA"},
++	{"Earpiece Mixer", "Voice", "Analog Voice Playback Mixer"},
++	{"Earpiece Mixer", "AudioL1", "Analog L1 Playback Mixer"},
++	{"Earpiece Mixer", "AudioL2", "Analog L2 Playback Mixer"},
++	{"Earpiece Mixer", "AudioR1", "Analog R1 Playback Mixer"},
+ 	/* PreDrivL */
+-	{"PredriveL Mixer", "Voice", "VDL_APGA"},
+-	{"PredriveL Mixer", "AudioL1", "ARXL1_APGA"},
+-	{"PredriveL Mixer", "AudioL2", "ARXL2_APGA"},
+-	{"PredriveL Mixer", "AudioR2", "ARXR2_APGA"},
++	{"PredriveL Mixer", "Voice", "Analog Voice Playback Mixer"},
++	{"PredriveL Mixer", "AudioL1", "Analog L1 Playback Mixer"},
++	{"PredriveL Mixer", "AudioL2", "Analog L2 Playback Mixer"},
++	{"PredriveL Mixer", "AudioR2", "Analog R2 Playback Mixer"},
+ 	/* PreDrivR */
+-	{"PredriveR Mixer", "Voice", "VDL_APGA"},
+-	{"PredriveR Mixer", "AudioR1", "ARXR1_APGA"},
+-	{"PredriveR Mixer", "AudioR2", "ARXR2_APGA"},
+-	{"PredriveR Mixer", "AudioL2", "ARXL2_APGA"},
++	{"PredriveR Mixer", "Voice", "Analog Voice Playback Mixer"},
++	{"PredriveR Mixer", "AudioR1", "Analog R1 Playback Mixer"},
++	{"PredriveR Mixer", "AudioR2", "Analog R2 Playback Mixer"},
++	{"PredriveR Mixer", "AudioL2", "Analog L2 Playback Mixer"},
+ 	/* HeadsetL */
+-	{"HeadsetL Mixer", "Voice", "VDL_APGA"},
+-	{"HeadsetL Mixer", "AudioL1", "ARXL1_APGA"},
+-	{"HeadsetL Mixer", "AudioL2", "ARXL2_APGA"},
++	{"HeadsetL Mixer", "Voice", "Analog Voice Playback Mixer"},
++	{"HeadsetL Mixer", "AudioL1", "Analog L1 Playback Mixer"},
++	{"HeadsetL Mixer", "AudioL2", "Analog L2 Playback Mixer"},
  	/* HeadsetR */
- 	{"HeadsetR Mixer", "Voice", "Analog Voice Playback Mixer"},
- 	{"HeadsetR Mixer", "AudioR1", "Analog R1 Playback Mixer"},
- 	{"HeadsetR Mixer", "AudioR2", "Analog R2 Playback Mixer"},
-+	{"HeadsetR PGA", NULL, "HeadsetR Mixer"},
+-	{"HeadsetR Mixer", "Voice", "VDL_APGA"},
+-	{"HeadsetR Mixer", "AudioR1", "ARXR1_APGA"},
+-	{"HeadsetR Mixer", "AudioR2", "ARXR2_APGA"},
++	{"HeadsetR Mixer", "Voice", "Analog Voice Playback Mixer"},
++	{"HeadsetR Mixer", "AudioR1", "Analog R1 Playback Mixer"},
++	{"HeadsetR Mixer", "AudioR2", "Analog R2 Playback Mixer"},
  	/* CarkitL */
- 	{"CarkitL Mixer", "Voice", "Analog Voice Playback Mixer"},
- 	{"CarkitL Mixer", "AudioL1", "Analog L1 Playback Mixer"},
-@@ -1214,8 +1273,8 @@ static const struct snd_soc_dapm_route intercon[] = {
+-	{"CarkitL Mixer", "Voice", "VDL_APGA"},
+-	{"CarkitL Mixer", "AudioL1", "ARXL1_APGA"},
+-	{"CarkitL Mixer", "AudioL2", "ARXL2_APGA"},
++	{"CarkitL Mixer", "Voice", "Analog Voice Playback Mixer"},
++	{"CarkitL Mixer", "AudioL1", "Analog L1 Playback Mixer"},
++	{"CarkitL Mixer", "AudioL2", "Analog L2 Playback Mixer"},
+ 	/* CarkitR */
+-	{"CarkitR Mixer", "Voice", "VDL_APGA"},
+-	{"CarkitR Mixer", "AudioR1", "ARXR1_APGA"},
+-	{"CarkitR Mixer", "AudioR2", "ARXR2_APGA"},
++	{"CarkitR Mixer", "Voice", "Analog Voice Playback Mixer"},
++	{"CarkitR Mixer", "AudioR1", "Analog R1 Playback Mixer"},
++	{"CarkitR Mixer", "AudioR2", "Analog R2 Playback Mixer"},
+ 	/* HandsfreeL */
+-	{"HandsfreeL Mux", "Voice", "VDL_APGA"},
+-	{"HandsfreeL Mux", "AudioL1", "ARXL1_APGA"},
+-	{"HandsfreeL Mux", "AudioL2", "ARXL2_APGA"},
+-	{"HandsfreeL Mux", "AudioR2", "ARXR2_APGA"},
++	{"HandsfreeL Mux", "Voice", "Analog Voice Playback Mixer"},
++	{"HandsfreeL Mux", "AudioL1", "Analog L1 Playback Mixer"},
++	{"HandsfreeL Mux", "AudioL2", "Analog L2 Playback Mixer"},
++	{"HandsfreeL Mux", "AudioR2", "Analog R2 Playback Mixer"},
+ 	/* HandsfreeR */
+-	{"HandsfreeR Mux", "Voice", "VDL_APGA"},
+-	{"HandsfreeR Mux", "AudioR1", "ARXR1_APGA"},
+-	{"HandsfreeR Mux", "AudioR2", "ARXR2_APGA"},
+-	{"HandsfreeR Mux", "AudioL2", "ARXL2_APGA"},
++	{"HandsfreeR Mux", "Voice", "Analog Voice Playback Mixer"},
++	{"HandsfreeR Mux", "AudioR1", "Analog R1 Playback Mixer"},
++	{"HandsfreeR Mux", "AudioR2", "Analog R2 Playback Mixer"},
++	{"HandsfreeR Mux", "AudioL2", "Analog L2 Playback Mixer"},
+ 	/* Vibra */
+ 	{"Vibra Mux", "AudioL1", "DAC Left1"},
+ 	{"Vibra Mux", "AudioR1", "DAC Right1"},
+@@ -1208,8 +1209,8 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	{"Vibra Mux", "AudioR2", "DAC Right2"},
+ 
+ 	/* outputs */
+-	{"OUTL", NULL, "ARXL2_APGA"},
+-	{"OUTR", NULL, "ARXR2_APGA"},
++	{"OUTL", NULL, "Analog L2 Playback Mixer"},
++	{"OUTR", NULL, "Analog R2 Playback Mixer"},
  	{"EARPIECE", NULL, "Earpiece Mixer"},
  	{"PREDRIVEL", NULL, "PredriveL Mixer"},
  	{"PREDRIVER", NULL, "PredriveR Mixer"},
--	{"HSOL", NULL, "HeadsetL Mixer"},
--	{"HSOR", NULL, "HeadsetR Mixer"},
-+	{"HSOL", NULL, "HeadsetL PGA"},
-+	{"HSOR", NULL, "HeadsetR PGA"},
- 	{"CARKITL", NULL, "CarkitL Mixer"},
- 	{"CARKITR", NULL, "CarkitR Mixer"},
- 	{"HFL", NULL, "HandsfreeL Mux"},
-@@ -1554,17 +1613,21 @@ static int twl4030_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 		int clk_id, unsigned int freq, int dir)
- {
- 	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct twl4030_priv *twl4030 = codec->private_data;
- 	u8 infreq;
+@@ -1273,9 +1274,9 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	{"Left Digital Loopback", "Volume", "TX1 Capture Route"},
+ 	{"Voice Digital Loopback", "Volume", "TX2 Capture Route"},
  
- 	switch (freq) {
- 	case 19200000:
- 		infreq = TWL4030_APLL_INFREQ_19200KHZ;
-+		twl4030->sysclk = 19200;
- 		break;
- 	case 26000000:
- 		infreq = TWL4030_APLL_INFREQ_26000KHZ;
-+		twl4030->sysclk = 26000;
- 		break;
- 	case 38400000:
- 		infreq = TWL4030_APLL_INFREQ_38400KHZ;
-+		twl4030->sysclk = 38400;
- 		break;
- 	default:
- 		printk(KERN_ERR "TWL4030 set sysclk: unknown rate %d\n",
-@@ -1953,6 +2016,9 @@ static int twl4030_probe(struct platform_device *pdev)
- 		kfree(codec);
- 		return -ENOMEM;
- 	}
-+	/* Set default sysclk (used by the headsetl/rpga_event callback for
-+	 * pop-attenuation) */
-+	twl4030->sysclk = 26000;
+-	{"Analog R2 Playback Mixer", NULL, "Right Digital Loopback"},
+-	{"Analog L2 Playback Mixer", NULL, "Left Digital Loopback"},
+-	{"Analog Voice Playback Mixer", NULL, "Voice Digital Loopback"},
++	{"Digital R2 Playback Mixer", NULL, "Right Digital Loopback"},
++	{"Digital L2 Playback Mixer", NULL, "Left Digital Loopback"},
++	{"Digital Voice Playback Mixer", NULL, "Voice Digital Loopback"},
  
- 	codec->private_data = twl4030;
- 	socdev->card->codec = codec;
+ };
+ 
 -- 
 1.6.3
