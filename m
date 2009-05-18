@@ -1,18 +1,20 @@
-From: Brendan Pike <spike@spykes.net>
-Subject: Re: Testers wanted: New SB X-Fi driver
-Date: Mon, 18 May 2009 17:09:04 -0400
-Message-ID: <20090518170904.742bf07c@darius>
-References: <4A108482.4050108@charter.net>
-	<s5hiqjy92r0.wl%tiwai@suse.de>
+From: mAdVax <madvax@free.fr>
+Subject: Re: emu10k1 TRAM access ?
+Date: Tue, 19 May 2009 00:28:23 +0200
+Message-ID: <4A11E107.1060909@free.fr>
+References: <4A0C115E.8010306@free.fr>
+	<s5hskj6a2rl.wl%tiwai@suse.de>	<4A0DD70C.8050109@free.fr>
+	<4A0E9655.2000008@free.fr>	<s5h63g184pr.wl%tiwai@suse.de>	<loom.20090516T212123-884@post.gmane.org>	<53baa24a0905170848s4dae9a10wb15c07e09fc985fb@mail.gmail.com>	<4A107C35.8050908@free.fr>
+	<53baa24a0905181234o6aa2041ek650d7cc77bed1c73@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.spykes.net (dsl.spykes.net [76.10.173.13])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9DE95103828
+Received: from smtp22.services.sfr.fr (smtp22.services.sfr.fr [93.17.128.10])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2198524531
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 May 2009 23:09:09 +0200 (CEST)
-In-Reply-To: <s5hiqjy92r0.wl%tiwai@suse.de>
+	Tue, 19 May 2009 00:28:26 +0200 (CEST)
+In-Reply-To: <53baa24a0905181234o6aa2041ek650d7cc77bed1c73@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,26 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alex Austin <circuitsoft.alex@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 18 May 2009 11:30:59 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
 
-> At Sun, 17 May 2009 14:41:22 -0700,
-> daedra wrote:
-> > 
-> > Is this driver the same source that creative released a few months back 
-> > or has it been updated to support more features?  Just Curious.
-> 
-> It has a few fixes / improvements since then, but no big functionality
-> changes.
-> 
-> 
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Alex Austin a =E9crit :
+> It's a 24-bit Freescale DSP. They've made it for years. There's plenty of
+> info if you know where to look. I don't think you necessarily need the st=
+ock
+> firmware for any of those cards. However, I haven't actually used any of
+> them. Only theory specifies whether the cards can be opened and used.
 
-The only big change is 7.1 support.
+Yes, I can find info and tools for this chip. But i don't even know =
+
+where I would have to peek and poke samples. I would spend weeks =
+
+(months?) only to copy inputs to outputs.
+And if this have been easy, I'm sure some good hackers would have done =
+
+it years ago.
+
+I'm not a good hacker! And don't even have an Echo sound card.
+But i own an Audigy, and plan to buy some more ;)
+
+Regards
+
+Xavier
