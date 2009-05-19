@@ -1,15 +1,19 @@
-From: =?iso-8859-1?Q?Kristoffer_Grundstr=F6m?= <khisbra@hotmail.com>
-Subject: About my issue with the sound on a Dell Dimension 4550.
-Date: Tue, 19 May 2009 23:57:31 +0200
-Message-ID: <COL104-W1746D092576AD4FE96B684A75B0@phx.gbl>
+From: Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: [PATCH] TXx9: Add ACLC support (v2)
+Date: Tue, 19 May 2009 23:11:56 +0100
+Message-ID: <20090519221156.GA29377@linux-mips.org>
+References: <1242738742-8432-1-git-send-email-anemo@mba.ocn.ne.jp>
+	<20090519185344.GB5127@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from col0-omc3-s3.col0.hotmail.com (col0-omc3-s3.col0.hotmail.com
-	[65.55.34.141]) by alsa0.perex.cz (Postfix) with ESMTP id 82B752436A
+Received: from h5.dl5rb.org.uk (h5.dl5rb.org.uk [81.2.74.5])
+	by alsa0.perex.cz (Postfix) with ESMTP id A337E2438A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 May 2009 23:57:33 +0200 (CEST)
+	Wed, 20 May 2009 00:12:11 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20090519185344.GB5127@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,12 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: linux-mips@linux-mips.org, Atsushi Nemoto <anemo@mba.ocn.ne.jp>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, May 19, 2009 at 07:53:44PM +0100, Mark Brown wrote:
 
-What is the problem? I really want to know if it's about to be fixed. I'm getting tired of having no sound.
+> On Tue, May 19, 2009 at 10:12:22PM +0900, Atsushi Nemoto wrote:
+> > Add platform support for ACLC of TXx9 SoCs.
+> > 
+> > Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+> 
+> For what it's worth:
+> 
+> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-https://qa.mandriva.com/show_bug.cgi?id=49048
+So applied then,
 
-/Kristoffer
+  Ralf
