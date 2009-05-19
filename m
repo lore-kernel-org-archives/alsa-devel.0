@@ -1,19 +1,19 @@
-From: William Pitcock <nenolod@sacredspiral.co.uk>
-Subject: Re: Testers wanted: New SB X-Fi driver
-Date: Mon, 18 May 2009 21:42:45 -0500
-Message-ID: <1242700965.8063.192.camel@petrie>
-References: <s5h4ovovtwe.wl%tiwai@suse.de> <s5h7i0i9yng.wl%tiwai@suse.de>
-	<4A0E88A4.2030206@knobbits.org> <s5h7i0h84sh.wl%tiwai@suse.de>
-	<4A10D968.8040108@knobbits.org> <s5h7i0feyta.wl%tiwai@suse.de>
-	<b51c9ebfaf68599c0e3ef12b594782d5.squirrel@linux.si4.org>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 2/3 - RESEND] ASoC: TWL4030: Add control
+	for selecting codec operation mode
+Date: Tue, 19 May 2009 08:26:37 +0300
+Message-ID: <200905190826.37962.peter.ujfalusi@nokia.com>
+References: <2C7D3DF36ADFFC479B44490D912B616705F69E8403@dlee07.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0564770810204205443=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from carpathia.dereferenced.org (unknown [64.71.161.129])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8080424377
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 537DB245FC
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 May 2009 04:42:47 +0200 (CEST)
-In-Reply-To: <b51c9ebfaf68599c0e3ef12b594782d5.squirrel@linux.si4.org>
+	Tue, 19 May 2009 07:26:46 +0200 (CEST)
+In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705F69E8403@dlee07.ent.ti.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,55 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: wodor@wodor.org
-Cc: alsa-devel@alsa-project.org
+To: "ext Lopez Cruz, Misael" <x0052729@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Monday 18 May 2009 19:52:55 ext Lopez Cruz, Misael wrote:
+> Add a control for selecting the codec operation mode. TWL4030 codec
+> has two modes:
+> - Option 1. Audio only (4 audio DACs)
+> - Option 2. Voice/Audio (2 audio DACs and voice ADC/DAC)
+>
+> Control is restricted when a stream is ongoing, since codec's
+> operation mode cannot be changed on-the-fly.
+>
+> Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
+> ---
 
---===============0564770810204205443==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-MFjQnwlNni8Xh2TgSt2g"
+> +int snd_soc_put_twl4030_opmode_enum_double(struct snd_kcontrol *kcontrol,
+> +	struct snd_ctl_elem_value *ucontrol)
+...
+> +	for (bitmask = 1; bitmask < e->max; bitmask <<= 1)
+> +		;
+> +	if (ucontrol->value.enumerated.item[0] > e->max - 1)
+> +		return -EINVAL;
 
+I would still switch these... I know that this is the sequence also in soc-
+core.c in the snd_soc_put_enum_double function.
 
---=-MFjQnwlNni8Xh2TgSt2g
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+If it is OK for Mark, than
 
-Hi,
-
-On Mon, 2009-05-18 at 08:06 +0200, wodor@wodor.org wrote:
-> Hi,
->=20
-> When this driver will support USB X-Fi Surround 5.1 ?
-
-Never.  That would be supported by snd-usb-audio.
-
-William
-
-
---=-MFjQnwlNni8Xh2TgSt2g
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEABECAAYFAkoSHKUACgkQoB+26npOQg579gCbBtDY9wcUij53wG/VDSoGUNB+
-w/oAni4LTiDFdYCs7zlBc8p8jm5gEIy6
-=nQhE
------END PGP SIGNATURE-----
-
---=-MFjQnwlNni8Xh2TgSt2g--
-
-
---===============0564770810204205443==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============0564770810204205443==--
+Acked-by: Peter Ujflausi <peter.ujfalusi@nokia.com>
