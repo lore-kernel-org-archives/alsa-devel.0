@@ -1,39 +1,52 @@
-From: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
-Subject: Re: [RFC] ALSA vs. dedicated char device for a USB Audio Class gadget
- driver
-Date: Tue, 19 May 2009 13:01:07 +0200
-Message-ID: <4A129173.6090205@ladisch.de>
-References: <20090515201519.7C347BCE6@ip-64-139-1-69.sjc.megapath.net> <200905171925.23956.laurent.pinchart@skynet.be> <4A111EBC.2010606@ladisch.de> <200905181647.41771.laurent.pinchart@skynet.be>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: POLLOUT warnings dropped by Pulseaudio
+Date: Tue, 19 May 2009 15:59:45 +0300
+Message-ID: <4A12AD41.3030101@pardus.org.tr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <200905181647.41771.laurent.pinchart-AgBVmzD5pcezQB+pC5nmwQ@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Laurent Pinchart <laurent.pinchart-AgBVmzD5pcezQB+pC5nmwQ@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id F3E502473B
+	for <alsa-devel@alsa-project.org>;
+	Tue, 19 May 2009 14:59:49 +0200 (CEST)
+Received: from [192.168.1.2] (unknown [88.249.178.198])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested) (Authenticated sender: ozan)
+	by pardus.org.tr (Postfix) with ESMTP id 58535669C631
+	for <alsa-devel@alsa-project.org>;
+	Tue, 19 May 2009 15:59:38 +0300 (EEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Laurent Pinchart wrote:
-> On Monday 18 May 2009 10:39:24 Clemens Ladisch wrote:
-> > The ALSA API doesn't give you access to the SOF clock.
-> 
-> Does the ALSA API give applications access to the audio clock ?
+Hi,
 
-ALSA wakes up the application (if it's blocked) whenever a sound card
-interrupt happens, i.e., at period boundaries.  At all times, you can
-get the current sample position by calling snd_pcm_delay().
+Pulseaudio keeps telling
 
-> As Alan Stern mention in his e-mail, does ALSA allow an application to
-> resample audio from an ALSA source (microphone on sound card 1) before
-> sending it to an ALSA sink (speaker on sound card 2) ?
+May 19 12:22:59 mecbuk pulseaudio[1630]: alsa-sink.c: ALSA woke us up to
+write new data to the device, but there was actually nothing to write!
+May 19 12:22:59 mecbuk pulseaudio[1630]: alsa-sink.c: Most likely this
+is a bug in the ALSA driver 'snd_hda_intel'. Please report this issue to
+the ALSA developers.
+May 19 12:22:59 mecbuk pulseaudio[1630]: alsa-sink.c: We were woken up
+with POLLOUT set -- however a subsequent snd_pcm_avail() returned 0 or
+another value < min_avail.
 
-It is possible, if the application monitors the speed of both devices.
+on quite every system (say 8 out of 10). I remember the long discussion
+thread about a few problems found and fixed in alsa-lib. Is there
+anything left to do, any way of helping by sending some debugging output
+or else, to fix those issues totally?
 
+Or should I silently ignore those messages?
 
-Best regards,
-Clemens
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks,
+Ozan Caglayan
