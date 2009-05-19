@@ -1,28 +1,21 @@
-From: =?ISO-8859-1?Q?Emilio_L=F3pez?= <buhitoescolar@gmail.com>
-Subject: Re: Regarding Sound on Acer Aspire 6935G
-Date: Mon, 18 May 2009 20:00:56 -0300
-Message-ID: <d54969c50905181600g761b9af4h585a74c45684f1ca@mail.gmail.com>
-References: <4b8c423b0905152051w7443e1b4u4080514a560fbb6c@mail.gmail.com>
-	<s5h4ovj7hva.wl%tiwai@suse.de>
-	<d54969c50905171348v12a58613sa8425f450e843eea@mail.gmail.com>
-	<4b8c423b0905171952w5a28c6b3pe8d16fc6e9ccef50@mail.gmail.com>
-	<s5h63fzeypa.wl%tiwai@suse.de>
-	<4b8c423b0905172306g34beeb8focaa5c36422dd0f4e@mail.gmail.com>
-	<s5h3ab3ey8i.wl%tiwai@suse.de>
-	<4b8c423b0905172313o5c51b8e5ud6f9f35d1952132f@mail.gmail.com>
-	<4b8c423b0905172317r7314a345me83ae17cd0f20f5a@mail.gmail.com>
+From: "Lopez Cruz, Misael" <x0052729@ti.com>
+Subject: Re: [PATCH 0/2] ASoC: TWL4030: DAPM
+	restructuring	and	Headset pop-attenuation fix
+Date: Mon, 18 May 2009 19:48:25 -0500
+Message-ID: <2C7D3DF36ADFFC479B44490D912B616705F69E87E2@dlee07.ent.ti.com>
+References: <1242651725-15001-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20090518130928.GD1629@sirena.org.uk>
+	<5A47E75E594F054BAF48C5E4FC4B92AB03056A148C@dbde02.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
-	[209.85.221.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7656D2434E
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id A31C72455A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 May 2009 01:01:00 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so5923228qyk.16
-	for <alsa-devel@alsa-project.org>; Mon, 18 May 2009 16:00:59 -0700 (PDT)
-In-Reply-To: <4b8c423b0905172317r7314a345me83ae17cd0f20f5a@mail.gmail.com>
+	Tue, 19 May 2009 02:48:37 +0200 (CEST)
+In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB03056A148C@dbde02.ent.ti.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,53 +25,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Karthik Ramgopal <applefreakpeeps@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "getarunks@gmail.com" <getarunks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-I tried it, but it didn't work - I got an extra option that said 2/4/6
-channels, but it didn't do anything interesting apart from changing somehow
-the volume! The mic didn't work either.
+> > > The following series aims to fix the Headset power on/off 
+> > > pop noise problems.
 
-2009/5/18 Karthik Ramgopal <applefreakpeeps@gmail.com>
+> > Looks OK but given all the to and fro here I'd rather wait for some 
+> > testing to make sure it works well on other system.s
 
-> Emilio,
->              People here <http://www.linlap.com/wiki/acer+aspire+6930>
-> claim to have got the 6930's audio fully working including jack sensing and
-> mic with realtek patched alsa driver. Check it out.
->
-> Regards,
-> Karthik
->
-> On Mon, May 18, 2009 at 2:13 PM, Karthik Ramgopal <
-> applefreakpeeps@gmail.com> wrote:
->
->> Hi,
->>         So do we obtain all the init verbs and pinout info by hit and
->> trial? or is there some documented way to systematically obtain it? to think
->> of it I haven't even found a verb yet to mute just the laptop speakers
->> leaving the line-out volume unmuted.
->>
->> Regards,
->> Karthik
->>
->>
->> On Mon, May 18, 2009 at 2:11 PM, Takashi Iwai <tiwai@suse.de> wrote:
->>
->>> At Mon, 18 May 2009 14:06:52 +0800,
->>> Karthik Ramgopal wrote:
->>> >
->>> > How to get this pin configuration information from Windows? I have a
->>> list of
->>> > Pin Config Override verbs which i obtained from the registry using
->>> regedit.
->>> > Are they of any use?
->>>
->>> No idea as I never used Windows nowadays by myself :)
->>>
->>>
->>> Takashi
->>>
->>
->>
->
+> [Aggarwal, Anuj] I tried this on OMAP3 EVM. Ramp delay values 
+> 0-3 produces minor glitches in the beginning & end, value 4 
+> gave me the best result so far on my EVM, I will try with 
+> some other EVMs as well before finalizing it. 5 and others 
+> produce a beep in the beginning and end.
+> Just one question, is there any side-effect of choosing a 
+> large ramp delay? For e.g. in my case, it could be 437ms 
+> (19.2MHz clock).
+
+I tested on SDP3430, the best ramp delay value for my board seems to
+be 3. Lower values give glitches and higher values present the beep
+sound. In general, it has been reduced.
+
+-Misa
