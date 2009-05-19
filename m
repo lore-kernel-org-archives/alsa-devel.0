@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3 - RESEND] ASoC: TWL4030: Add
-	control	for selecting codec operation mode
-Date: Tue, 19 May 2009 10:38:13 +0100
-Message-ID: <20090519093813.GD27195@sirena.org.uk>
-References: <2C7D3DF36ADFFC479B44490D912B616705F69E8403@dlee07.ent.ti.com>
-	<200905190826.37962.peter.ujfalusi@nokia.com>
+From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
+Subject: Re: [PATCH 1/1] ASoC: TWL4030: Fix Analog capture path
+	for AUXR
+Date: Tue, 19 May 2009 15:18:09 +0530
+Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB03056A1739@dbde02.ent.ti.com>
+References: <1242719463-17508-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1242719463-17508-2-git-send-email-peter.ujfalusi@nokia.com>
+	<20090519085006.GA24884@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0C1A2243EF
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 473EB243EF
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 May 2009 11:38:18 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200905190826.37962.peter.ujfalusi@nokia.com>
+	Tue, 19 May 2009 11:48:23 +0200 (CEST)
+In-Reply-To: <20090519085006.GA24884@rakim.wolfsonmicro.main>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,18 +25,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "ext Lopez Cruz, Misael" <x0052729@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 19, 2009 at 08:26:37AM +0300, Peter Ujfalusi wrote:
+What should be the quickest way to merge all the ASoC patches which have come after my 2.6.29-rc3 release? I have a found a solution for my tuck noise problem now but cannot apply the patch as it is, because the tip has moved ahead from my baseline by several commits. I cannot move my baseline so have to pull only sound/soc related patches.
 
-> If it is OK for Mark, than
+Is there any repository where I will find only asoc related patches? Or what should be the ideal way to handle this?
 
-> Acked-by: Peter Ujflausi <peter.ujfalusi@nokia.com>
+Thanks and Regards,
+Anuj Aggarwal
 
-Yes, it's fine - applied both, thanks.
-
-Misael, please CC me on ASoC patches.  In general you should always send
-a copy of kernel patches to the maintainer for the relevant bit of the
-kernel.
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
+> Sent: Tuesday, May 19, 2009 2:20 PM
+> To: Peter Ujfalusi
+> Cc: alsa-devel@alsa-project.org; sakoman@gmail.com; Aggarwal, Anuj
+> Subject: Re: [PATCH 1/1] ASoC: TWL4030: Fix Analog capture path for AUXR
+> 
+> On Tue, May 19, 2009 at 10:51:03AM +0300, Peter Ujfalusi wrote:
+> > AUXR is selected by bit 2 and not by bit 1 in the ANAMICR register.
+> >
+> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> 
+> Applied, thanks.
