@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/1] ASoC: TWL4030: Fix Analog capture path
-	for AUXR
-Date: Tue, 19 May 2009 09:50:06 +0100
-Message-ID: <20090519085006.GA24884@rakim.wolfsonmicro.main>
-References: <1242719463-17508-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1242719463-17508-2-git-send-email-peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH] soc: Correct print specifiers for	unsigneds
+Date: Tue, 19 May 2009 10:23:21 +0100
+Message-ID: <20090519092320.GC27195@sirena.org.uk>
+References: <4A11B87D.50505@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 35FBC24683
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id D8FBA2469E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 May 2009 10:50:08 +0200 (CEST)
+	Tue, 19 May 2009 11:23:23 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1242719463-17508-2-git-send-email-peter.ujfalusi@nokia.com>
+In-Reply-To: <4A11B87D.50505@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,13 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: sakoman@gmail.com, anuj.aggarwal@ti.com, alsa-devel@alsa-project.org
+To: Roel Kluin <roel.kluin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Andrew Morton <akpm@linux-foundation.org>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 19, 2009 at 10:51:03AM +0300, Peter Ujfalusi wrote:
-> AUXR is selected by bit 2 and not by bit 1 in the ANAMICR register.
+On Mon, May 18, 2009 at 09:35:25PM +0200, Roel Kluin wrote:
+> Unsigned variables should use `%u' rather than `%d'.
 > 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
 
-Applied, thanks.
+> This also comtains some changes that I already sent here
+> http://lkml.org/lkml/2009/5/11/497
+> Sorry for that, Is there some way to split these changes?
+
+The usual approach is to either maintain a patch queue so new patches
+are generated against a version with the previous patch applied or to
+start each new patch against the base tree.
+
+In this case I've already applied your first patch and I'm not sure
+which tree you're generating the patch against - I can't seem to apply
+the patch cleanly with either git or patch, I get conflicts in wm8400
+and wm8753.  ALSA patches should be generated against:
+
+     git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+
+Could you please regenerate against the topic/asoc branch of that tree?
+
+Also, please do try to CC maintainers on patches.  I'm fairly sure I've
+reminded you about this before.
