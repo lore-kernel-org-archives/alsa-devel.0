@@ -1,18 +1,21 @@
-From: wirechief <silvermachineman@gmail.com>
-Subject: Acer Aspire One codec: Realtek ALC272 not found in
-	ALSA-Configuration.txt Mic does not capture in alsamixer
-Date: Wed, 20 May 2009 10:03:47 -0400
-Message-ID: <fee9dc710905200703g1a8f4371g7e2c9b0f4a4fbe9@mail.gmail.com>
+From: Noel Bourke <cros13+alsa@gmail.com>
+Subject: Re: Testers wanted: New SB X-Fi driver
+Date: Wed, 20 May 2009 18:21:04 +0100
+Message-ID: <2eeb67a60905201021w28aee8d1yd3be960400b9fd77@mail.gmail.com>
+References: <2eeb67a60905181526x22be771ek4b4277617b371563@mail.gmail.com>
+	<s5htz3hk1o5.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.147])
-	by alsa0.perex.cz (Postfix) with ESMTP id 82DC210388F
+Received: from mail-qy0-f103.google.com (mail-qy0-f103.google.com
+	[209.85.221.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id D73042462D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 May 2009 16:03:48 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 4so253846qwk.56
-	for <alsa-devel@alsa-project.org>; Wed, 20 May 2009 07:03:47 -0700 (PDT)
+	Wed, 20 May 2009 19:21:27 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so873509qyk.16
+	for <alsa-devel@alsa-project.org>; Wed, 20 May 2009 10:21:26 -0700 (PDT)
+In-Reply-To: <s5htz3hk1o5.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,27 +25,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Host/Kernel/OS  "wirechief-notebook" running Linux
-2.6.30-020630rc5-generic i686 [ Jaunty 9.04 remix ]
-CPU Info        (1) Intel Atom N270 @ 512 KB cache flags( sse3 )
-clocked at [ 1333.000 MHz ]
-                (2) Intel Atom N270 @ 512 KB cache flags( sse3 )
-clocked at [ 800.000 MHz ]
-Videocard       Intel Mobile 945GME Express Integrated Graphics
-Controller  X.Org 1.6.0  [ 1024x600@60.0hz ]
-Network cards   Attansic Corp. L1e Gigabit Ethernet Adapter, at port: 1000
-                Atheros AR242x 802.11abg Wireless PCI Express Adapter
-Processes 154 | Uptime 2:44 | Memory 357.3/993.4MB | HDD Verbatim
-STORE N GO,ATA TOSHIBA MK1652GS,Generic- Multi-Card Size 166GB
-(1%used) | Client Shell | Infobash v3.11
+I'm getting the following output from that script...
+I took a look and couldn't find the problem.
 
-my alsa info report:
-http://www.alsa-project.org/db/?f=83ac843507b5450f5c4d3252a0082ef6f9c6f124
+alsa-info.sh: 365: [[: not found
+ALSA Information Script v 0.4.56
+--------------------------------
 
-I am not able to see a sound indication with : arecord -f cd -vv /dev/null
+This script will collect information about your ALSA installation and sound
+related hardware, to help diagnose your problem.
 
--- 
-Reach out and share life, care for others,
+Do you want to run this script? [y/n] : read: 365: Illegal option -e
+
+Thank you for using the ALSA-Info Script
+
+
+On Tue, May 19, 2009 at 08:11, Takashi Iwai <tiwai@suse.de> wrote:
+
+> At Mon, 18 May 2009 23:26:47 +0100,
+> Noel Bourke wrote:
+> >
+> > Hi Takashi,
+> >
+> > I set this up with an Auzentech X-Fi Prelude.
+> > Driver works OK but sound seemed a bit off.
+> > According to speaker-test I seem to only
+> > have one audio channel!
+> >
+> > Any thoughts?
+>
+> Please run alsa-info.sh with --no-upload option, and attach the
+> generated file.  This will show a bit more detailed driver
+> information.
+>
+>
+> thanks,
+>
+> Takashi
+>
