@@ -1,29 +1,18 @@
-From: Daniel Bankmann <daniel_bankmann@arcor.de>
-Subject: Testers wanted: New SB X-Fi driver
-Date: Tue, 19 May 2009 16:24:48 +0200
-Message-ID: <4A12C130.5090405@arcor.de>
+From: wirechief <silvermachineman@gmail.com>
+Subject: Acer Aspire One codec: Realtek ALC272 not found in
+	ALSA-Configuration.txt Mic does not capture in alsamixer
+Date: Wed, 20 May 2009 10:03:47 -0400
+Message-ID: <fee9dc710905200703g1a8f4371g7e2c9b0f4a4fbe9@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-in-10.arcor-online.net (mail-in-10.arcor-online.net
-	[151.189.21.50]) by alsa0.perex.cz (Postfix) with ESMTP id 79DC42477E
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.147])
+	by alsa0.perex.cz (Postfix) with ESMTP id 82DC210388F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 May 2009 16:24:46 +0200 (CEST)
-Received: from mail-in-01-z2.arcor-online.net (mail-in-01-z2.arcor-online.net
-	[151.189.8.13]) by mx.arcor.de (Postfix) with ESMTP id E5AD428F142
-	for <alsa-devel@alsa-project.org>;
-	Tue, 19 May 2009 16:24:45 +0200 (CEST)
-Received: from mail-in-06.arcor-online.net (mail-in-06.arcor-online.net
-	[151.189.21.46])
-	by mail-in-01-z2.arcor-online.net (Postfix) with ESMTP id D9F832BF5AC
-	for <alsa-devel@alsa-project.org>;
-	Tue, 19 May 2009 16:24:45 +0200 (CEST)
-Received: from [192.168.2.113] (p579B6936.dip.t-dialin.net [87.155.105.54])
-	(Authenticated sender: daniel_bankmann@arcor.de)
-	by mail-in-06.arcor-online.net (Postfix) with ESMTPA id BD66039A927
-	for <alsa-devel@alsa-project.org>;
-	Tue, 19 May 2009 16:24:45 +0200 (CEST)
+	Wed, 20 May 2009 16:03:48 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 4so253846qwk.56
+	for <alsa-devel@alsa-project.org>; Wed, 20 May 2009 07:03:47 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,14 +25,24 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+Host/Kernel/OS  "wirechief-notebook" running Linux
+2.6.30-020630rc5-generic i686 [ Jaunty 9.04 remix ]
+CPU Info        (1) Intel Atom N270 @ 512 KB cache flags( sse3 )
+clocked at [ 1333.000 MHz ]
+                (2) Intel Atom N270 @ 512 KB cache flags( sse3 )
+clocked at [ 800.000 MHz ]
+Videocard       Intel Mobile 945GME Express Integrated Graphics
+Controller  X.Org 1.6.0  [ 1024x600@60.0hz ]
+Network cards   Attansic Corp. L1e Gigabit Ethernet Adapter, at port: 1000
+                Atheros AR242x 802.11abg Wireless PCI Express Adapter
+Processes 154 | Uptime 2:44 | Memory 357.3/993.4MB | HDD Verbatim
+STORE N GO,ATA TOSHIBA MK1652GS,Generic- Multi-Card Size 166GB
+(1%used) | Client Shell | Infobash v3.11
 
-I just tested the newest driver version with Open Suse 11.1 and
-pae-kernel. I seems not to work probably, although the latest "official"
-driver by Creative worked more or less good.
+my alsa info report:
+http://www.alsa-project.org/db/?f=83ac843507b5450f5c4d3252a0082ef6f9c6f124
 
-The problem is, that always, when hearing some music or any other sound,
-the signal gets interrupted every few seconds. At the other side, the
-startup jingle for example is accompanied by a knock every few seconds.
+I am not able to see a sound indication with : arecord -f cd -vv /dev/null
 
-Any idea, or what information do you need to fix this?
+-- 
+Reach out and share life, care for others,
