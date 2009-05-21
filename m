@@ -1,23 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/2] ASoC: TWL4030: DAPM restructuring	and
-	Headset pop-attenuation fix
-Date: Thu, 21 May 2009 12:06:52 +0100
-Message-ID: <20090521110651.GA31524@rakim.wolfsonmicro.main>
-References: <1242651725-15001-1-git-send-email-peter.ujfalusi@nokia.com>
-	<5A47E75E594F054BAF48C5E4FC4B92AB03057419D3@dbde02.ent.ti.com>
-	<20090520085121.GA11459@rakim.wolfsonmicro.main>
-	<200905201212.52380.peter.ujfalusi@nokia.com>
-	<5A47E75E594F054BAF48C5E4FC4B92AB0305741EC9@dbde02.ent.ti.com>
+From: John Rigg <aldev@sound-man.co.uk>
+Subject: Re: About my issue with the sound on a Dell Dimension
+	4550.
+Date: Thu, 21 May 2009 16:26:29 +0100
+Message-ID: <20090521152629.GA2385@localhost>
+References: <COL104-W1746D092576AD4FE96B684A75B0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AFAFE1038AA
+Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2B12D2441F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 May 2009 13:06:53 +0200 (CEST)
+	Thu, 21 May 2009 17:10:36 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB0305741EC9@dbde02.ent.ti.com>
+In-Reply-To: <COL104-W1746D092576AD4FE96B684A75B0@phx.gbl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,18 +23,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "getarunks@gmail.com" <getarunks@gmail.com>
+To: Kristoffer =?iso-8859-1?Q?Grundstr=F6m?= <khisbra@hotmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 21, 2009 at 04:17:45PM +0530, Aggarwal, Anuj wrote:
+On Tue, May 19, 2009 at 11:57:31PM +0200, Kristoffer Grundstr=F6m wrote:
+> =
 
-> [Aggarwal, Anuj] I tried to look into the soc-dapm.h for the
-> appropriate platform/machine-domain specific widget which could do the
-> needful but could not find any. What is the correct way of handling
-> this? I want to pass the correct ramp value for my platform.
+> What is the problem? I really want to know if it's about to be fixed. I'm=
+ getting tired of having no sound.
+> =
 
-Provide standard platform data for the twl4030, which would need the
-driver patching to use that (and hopefully converted to the standard
-device model).  Or for the time being you can do a register write in the
-DAI init function, but the way forward is the platform data.
+> https://qa.mandriva.com/show_bug.cgi?id=3D49048
+>
+
+If it works in Ubuntu 8.10 and 9.04 but not in Mandriva
+(as described in the thread you linked to) the problem is caused
+by whatever is different between the two distros. Finding what that
+difference is would be a good first step. For example, what alsa driver
+versions (as reported by `cat /proc/asound/version') do the working and
+non-working distros use?
+
+John
