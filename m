@@ -1,21 +1,17 @@
-From: Cristian Morales Vega <cmorve69@yahoo.es>
-Subject: Re: snd_pcm_writei() return value
-Date: Thu, 21 May 2009 20:26:06 +0200
-Message-ID: <8235e6f40905211126y52ce14e9w42d81aa10f5e064@mail.gmail.com>
-References: <8235e6f40905211026x15a45c05p3061cfb323b329a6@mail.gmail.com>
-	<alpine.LNX.2.00.0905212006040.4067@eeebox2.perex-int.cz>
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: more on appl_ptr and DMA overrun at end of stream
+Date: Thu, 21 May 2009 14:44:27 -0400
+Message-ID: <9e4733910905211144mfdc2947mbeb8872affb201cf@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f175.google.com (mail-ew0-f175.google.com
-	[209.85.219.175])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5F0FC244D7
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id A499B244EA
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 May 2009 20:26:07 +0200 (CEST)
-Received: by ewy23 with SMTP id 23so1465141ewy.32
-	for <alsa-devel@alsa-project.org>; Thu, 21 May 2009 11:26:06 -0700 (PDT)
-In-Reply-To: <alpine.LNX.2.00.0905212006040.4067@eeebox2.perex-int.cz>
+	Thu, 21 May 2009 20:44:30 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 4so765078qwk.56
+	for <alsa-devel@alsa-project.org>; Thu, 21 May 2009 11:44:29 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,21 +21,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-MjAwOS81LzIxIEphcm9zbGF2IEt5c2VsYSA8cGVyZXhAcGVyZXguY3o+Ogo+IE9uIFRodSwgMjEg
-TWF5IDIwMDksIENyaXN0aWFuIE1vcmFsZXMgVmVnYSB3cm90ZToKPj4gPyBBbmQgc3RpbGwsIGlu
-IHRoaXMgY2FzZSBhbiBpbnRlcnJ1cHQgd291bGQgYmUgaGFuZGxlZCBieQo+PiBzbmRfcGNtX3Jl
-Y292ZXIoKSAod3JpdHRlbiA8IDApIG9yIGJ5IHRoZSAiZWxzZSIgY29kZT8KPgo+IC1FSU5UUiBp
-cyBqdXN0IG5vb3AgaW4gcmVjb3ZlcigpIGZ1bmN0aW9uOgo+Cj4gwqAgwqAgwqAgwqAgaWYgKGVy
-ciA9PSAtRUlOVFIpIMKgIMKgIMKgLyogbm90aGluZyB0byBkbywgY29udGludWUgKi8KPiDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gMDsKCkJ1dCBpZiBhbiBpbnRlcnJ1cHQgaGFwcGVu
-ZWQsIGl0IGNvdWxkIGJlIHRoYXQgc29tZSBzYW1wbGVzIHdlcmUKd3JpdHRlbiBhbmQgb3RoZXJz
-IG5vLCB0cnVlPyBJZiBvbmx5IC1FSU5UUiBpcyByZXR1cm5lZCwgaG93IEkga25vdwpob3cgbWFu
-eSBvZiB0aGVtIEkgc3RpbGwgbmVlZCB0byB3cml0ZT8gSWYgSSB3cml0ZSB0aGVtIGFsbCBhZ2Fp
-biB0aGUKc291bmQgb3V0cHV0IHdpbGwgYmUgZnVubnkuCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
-YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+I've been reading Lennart's article on glitch free audio....
+
+On my scatter/gather DMA hardware I generate an interrupt at the end
+of each period. On the last period this causes ALSA to issue a
+trigger(STOP). However, there is a latency from when that interrupt is
+generated and when ALSA does the trigger(STOP). During that latency my
+hardware starts playing the next buffer (which contains stale data).
+Playing stale data causes a noise burst. I fixed this by programming
+my DMA hardware to not overrun appl_ptr.
+
+There's another solution. ALSA already knows the stream ends
+mid-period and pads out the partial period with silence. If it simply
+padded out the next period with silence too the overrun problem would
+become non-audible and there would time to process trigger(STOP).
+
+If padding out two periods at end of stream is possible, it then
+becomes possible for me to turn off interrupts in my audio driver.
+
+-- 
+Jon Smirl
+jonsmirl@gmail.com
