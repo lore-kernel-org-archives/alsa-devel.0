@@ -1,19 +1,22 @@
-From: "Diego E." =?UTF-8?Q?=E2=80=9CFlameeyes=E2=80=9D_?=
-	=?ISO-8859-1?Q?Petten=F2?= <flameeyes@gmail.com>
-Subject: Re: [GIT branch] Fix envy24control on glibc-2.10
-Date: Thu, 21 May 2009 12:32:26 +0200
-Message-ID: <1242901946.23535.10.camel@yamato>
-References: <1242901293.23535.9.camel@yamato>
+From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
+Subject: Re: [PATCH 0/2] ASoC: TWL4030: DAPM restructuring	and
+ Headset pop-attenuation fix
+Date: Thu, 21 May 2009 16:17:45 +0530
+Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB0305741EC9@dbde02.ent.ti.com>
+References: <1242651725-15001-1-git-send-email-peter.ujfalusi@nokia.com>
+	<5A47E75E594F054BAF48C5E4FC4B92AB03057419D3@dbde02.ent.ti.com>
+	<20090520085121.GA11459@rakim.wolfsonmicro.main>
+	<200905201212.52380.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3152047011305364418=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id E594724610
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id B9DD51038CA
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 May 2009 12:32:31 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id 22so1152895fge.21
-	for <alsa-devel@alsa-project.org>; Thu, 21 May 2009 03:32:31 -0700 (PDT)
-In-Reply-To: <1242901293.23535.9.camel@yamato>
+	Thu, 21 May 2009 12:47:58 +0200 (CEST)
+In-Reply-To: <200905201212.52380.peter.ujfalusi@nokia.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,61 +26,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "getarunks@gmail.com" <getarunks@gmail.com>, ext Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+> -----Original Message-----
+> From: Peter Ujfalusi [mailto:peter.ujfalusi@nokia.com]
+> Sent: Wednesday, May 20, 2009 2:43 PM
+> To: alsa-devel@alsa-project.org
+> Cc: ext Mark Brown; Aggarwal, Anuj; sakoman@gmail.com;
+> getarunks@gmail.com
+> Subject: Re: [alsa-devel] [PATCH 0/2] ASoC: TWL4030: DAPM restructuring
+> and Headset pop-attenuation fix
+> =
 
---===============3152047011305364418==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-nuXnky9+jY3DsHDwi+Xz"
+> On Wednesday 20 May 2009 11:51:21 ext Mark Brown wrote:
+> >
+> > Applied - thanks for your hard work on this!
+> >
+> > BTW, I don't know if you noticed the DAPM changes I pushed the other
+> > day.  One commit in particular,
+> 452c5eaa0d5162e02ffee742ea17540887bc2904,
+> > might be interesting for TWL4030 - it changes things so that we're in
+> > BIAS_ON whenever there's a bias path active, not only when there's a DAC
+> > or ADC path.  I've got a feeling some of the pop/click stuff may mean
+> > that's not as useful as it might've been in the past.
+> =
 
+> I will look at this change.
+> BTW: I just got the Beagle board, it will take some time to get familiar =
+with
+> it, but than I can really use the latest and greatest of ASoC...
+> =
 
---=-nuXnky9+jY3DsHDwi+Xz
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> > > [Aggarwal, Anuj] Since different platforms are using different ramp
+> > > values, how should it be handled via the same codec source code? How
+> > > should this be done, without modifying the code base? Or should it be
+> > > done every time user wants to play an audio file?
+> >
+> > Since it's just a change in one parameter the driver should be able to
+> > arrange to get that configuration value provided to it via platform
+> > data.  It's still the same chip and needs the same driver, all that's
+> > changing is configuration information.
+> =
 
-Il giorno Thu, 21/05/2009 alle 12.21 +0200, Diego E. =E2=80=9CFlameeyes=E2=
-=80=9D Petten=C3=B2
-ha scritto:
-> I've pushed to git://git.flameeyes.eu/others/alsa/alsa-tools.git a
-> single commit to fix building of envy24control on glibc-2.10.
+> As for now, storing the mixer settings and restoring those at boot time w=
+ould
+> be the way.
+> I will look at the possibility to add platform data parameter to twl4030 =
+codec
+> to set the board specific initial ramp delay value.
+[Aggarwal, Anuj] I tried to look into the soc-dapm.h for the appropriate pl=
+atform/machine-domain specific widget which could do the needful but could =
+not find any. What is the correct way of handling this? I want to pass the =
+correct ramp value for my platform.
+> =
 
-Actually I also just pushed another commit with the same --as-needed fix
-as per 56970e8143b4d171a118d114b1ddfa7621401127 for hdspconf that
-somehow I missed the first time.
-
---=20
-Diego Elio Petten=C3=B2 =E2=80=94 =E2=80=9CFlameeyes=E2=80=9D
-http://blog.flameeyes.eu/
-
-If you found a .asc file in this mail and know not what it is,
-it's a GnuPG digital signature: http://www.gnupg.org/
-
-
---=-nuXnky9+jY3DsHDwi+Xz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Questa =?ISO-8859-1?Q?=E8?= una parte del messaggio
- firmata digitalmente
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.11 (GNU/Linux)
-
-iEYEABECAAYFAkoVLboACgkQe2h1+2mHVWMnJgCdG8CtLqWzNI/Jkhlz24jlQgeL
-+08AnR1O/IILcLRnDEVLsuGKqAWvNpyJ
-=068Q
------END PGP SIGNATURE-----
-
---=-nuXnky9+jY3DsHDwi+Xz--
-
-
---===============3152047011305364418==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============3152047011305364418==--
+> --
+> P=E9ter
