@@ -1,16 +1,19 @@
-From: "Lopez Cruz, Misael" <x0052729@ti.com>
-Subject: Disabling HFL/R outputs in twl4030
-Date: Fri, 22 May 2009 03:44:14 -0500
-Message-ID: <2C7D3DF36ADFFC479B44490D912B616705F6AC2661@dlee07.ent.ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/2 take2] SoC: TWL4030 and SDP3430 HS
+	ramp	configuration
+Date: Fri, 22 May 2009 10:28:07 +0100
+Message-ID: <20090522092807.GA20887@rakim.wolfsonmicro.main>
+References: <1242976396-7667-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id ABFD624442
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C496210380E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 May 2009 10:44:27 +0200 (CEST)
-Content-Language: en-US
+	Fri, 22 May 2009 11:28:08 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1242976396-7667-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,23 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: sakoman@gmail.com, anuj.aggarwal@ti.com, alsa-devel@alsa-project.org, getarunks@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-It seems that there is no way to disable handsfree L/R outputs for
-twl4030 codec. That means that:
-- handsfree amplifiers are turned-on even if we are not interested
-  in routing through handsfree
-- if the selected input of the handsfree mux is an active DAC
-  (streaming) sound will be produced on hf outputs and the only way
-  to silence them is routing from a different DAC, which doesn't
-  seem like the right solution
+On Fri, May 22, 2009 at 10:13:14AM +0300, Peter Ujfalusi wrote:
 
-Currently, handsfree amplifiers are turned-on when the HandsfreeL/R
-muxes are powered by the framework. I was thinking in adding a
-dapm switch to select whether or not handsfree amplifiers should
-be powered, but the switch probably is not the correct approach to
-handle this situation. Maybe a regular kcontrol could be the answer.
+> he following series adds support for platform dependent Headset pop removal
+> configuration for the twl4030 codec.
 
--Misa
+> Platform drivers can fill the twl4030_setup_data structure and pass it with
+> snd_soc_device->codec_data to the codec driver.
+
+I've applied both.  It'd be really good if you could look into
+converting the TWL4030 driver into a regular platform driver, probing
+via the normal methods, so it could get this data as regular platform
+data.
