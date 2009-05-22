@@ -1,25 +1,19 @@
-From: Chuck Ebbert <cebbert@redhat.com>
-Subject: [patch] ALSA: fix audio on HP TX25xx series notebooks
-Date: Thu, 21 May 2009 18:32:59 -0400
-Message-ID: <20090521183259.61dc1305@dhcp-100-2-144.bos.redhat.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH 2/2] ASoC: SDP4030: Use the twl4030_setup_data
+	for headset pop-removal
+Date: Fri, 22 May 2009 09:14:36 +0300
+Message-ID: <1242972876-31089-3-git-send-email-peter.ujfalusi@nokia.com>
+References: <1242972876-31089-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1242972876-31089-2-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.redhat.com (mx2.redhat.com [66.187.237.31])
-	by alsa0.perex.cz (Postfix) with ESMTP id F0F5E2456F
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 050EA24365
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 May 2009 00:33:28 +0200 (CEST)
-Received: from int-mx2.corp.redhat.com (int-mx2.corp.redhat.com [172.16.27.26])
-	by mx2.redhat.com (8.13.8/8.13.8) with ESMTP id n4LMXPqZ017936
-	for <alsa-devel@alsa-project.org>; Thu, 21 May 2009 18:33:27 -0400
-Received: from ns3.rdu.redhat.com (ns3.rdu.redhat.com [10.11.255.199])
-	by int-mx2.corp.redhat.com (8.13.1/8.13.1) with ESMTP id n4LMXOwt018358
-	for <alsa-devel@alsa-project.org>; Thu, 21 May 2009 18:33:25 -0400
-Received: from dhcp-100-2-144.bos.redhat.com (dhcp-100-2-144.bos.redhat.com
-	[10.16.2.144])
-	by ns3.rdu.redhat.com (8.13.8/8.13.8) with ESMTP id n4LMXN1v021816
-	for <alsa-devel@alsa-project.org>; Thu, 21 May 2009 18:33:24 -0400
+	Fri, 22 May 2009 08:14:44 +0200 (CEST)
+In-Reply-To: <1242972876-31089-2-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,23 +24,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: sakoman@gmail.com, anuj.aggarwal@ti.com, getarunks@gmail.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-ALSA: fix audio on HP TX25xx series notebooks
+With this patch the initial headset pop-removal related values are
+configured for the twl4030 codec (ramp delay and sysclk).
 
-Fixes https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4121
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+ sound/soc/omap/sdp3430.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
 
-Taken from https://bugzilla.redhat.com/show_bug.cgi?id=498060
-
-Signed-off-by: Adam Williamson <awilliam@redhat.com>
-
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -12058,6 +12058,7 @@
- 	SND_PCI_QUIRK(0x1028, 0x0253, "Dell OEM", ALC268_DELL),
- 	SND_PCI_QUIRK(0x1028, 0x02b0, "Dell Inspiron Mini9", ALC268_DELL),
- 	SND_PCI_QUIRK(0x103c, 0x30cc, "TOSHIBA", ALC268_TOSHIBA),
-+	SND_PCI_QUIRK(0x103c, 0x30f1, "HP TX25xx series", ALC268_TOSHIBA),
- 	SND_PCI_QUIRK(0x1043, 0x1205, "ASUS W7J", ALC268_3ST),
- 	SND_PCI_QUIRK(0x1179, 0xff10, "TOSHIBA A205", ALC268_TOSHIBA),
- 	SND_PCI_QUIRK(0x1179, 0xff50, "TOSHIBA A305", ALC268_TOSHIBA),
+diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
+index 19966a7..0256930 100644
+--- a/sound/soc/omap/sdp3430.c
++++ b/sound/soc/omap/sdp3430.c
+@@ -276,10 +276,17 @@ static struct snd_soc_card snd_soc_sdp3430 = {
+ 	.num_links = ARRAY_SIZE(sdp3430_dai),
+ };
+ 
++/* twl4030 setup */
++static struct twl4030_setup_data twl4030_setup = {
++	.ramp_delay_value = 3;
++	.sysclk = 26000;
++};
++
+ /* Audio subsystem */
+ static struct snd_soc_device sdp3430_snd_devdata = {
+ 	.card = &snd_soc_sdp3430,
+ 	.codec_dev = &soc_codec_dev_twl4030,
++	.codec_data = &twl4030_setup,
+ };
+ 
+ static struct platform_device *sdp3430_snd_device;
+-- 
+1.6.3
