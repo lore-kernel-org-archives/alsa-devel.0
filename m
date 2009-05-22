@@ -1,17 +1,20 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: Disabling HFL/R outputs in twl4030
-Date: Fri, 22 May 2009 12:48:28 +0300
-Message-ID: <200905221248.28656.peter.ujfalusi@nokia.com>
-References: <2C7D3DF36ADFFC479B44490D912B616705F6AC2661@dlee07.ent.ti.com>
+Subject: Re:
+ =?iso-8859-1?q?=5BPATCH_0/2_take2=5D_SoC=3A_TWL4030_?=
+ =?iso-8859-1?q?and_SDP3430_HS_ramp=09configuration?=
+Date: Fri, 22 May 2009 12:57:23 +0300
+Message-ID: <200905221257.23887.peter.ujfalusi@nokia.com>
+References: <1242976396-7667-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20090522092807.GA20887@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 130341038E4
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 19FD91038F6
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 May 2009 11:48:41 +0200 (CEST)
-In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705F6AC2661@dlee07.ent.ti.com>
+	Fri, 22 May 2009 11:57:43 +0200 (CEST)
+In-Reply-To: <20090522092807.GA20887@rakim.wolfsonmicro.main>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,61 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ext Lopez Cruz, Misael" <x0052729@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "anuj.aggarwal@ti.com" <anuj.aggarwal@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "getarunks@gmail.com" <getarunks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 22 May 2009 11:44:14 ext Lopez Cruz, Misael wrote:
-> It seems that there is no way to disable handsfree L/R outputs for
-> twl4030 codec. That means that:
-> - handsfree amplifiers are turned-on even if we are not interested
->   in routing through handsfree
-> - if the selected input of the handsfree mux is an active DAC
->   (streaming) sound will be produced on hf outputs and the only way
->   to silence them is routing from a different DAC, which doesn't
->   seem like the right solution
+On Friday 22 May 2009 12:28:07 ext Mark Brown wrote:
+> I've applied both.  It'd be really good if you could look into
+> converting the TWL4030 driver into a regular platform driver, probing
+> via the normal methods, so it could get this data as regular platform
+> data.
 
-Yes, I have also noticed this. Before the voice codec_dai integration it wa=
-s =
+Thanks, any pointers for such an implementation?
 
-possible to mute the HFL/R by setting it to Voice. Now with the voice =
+Do we need to convert the codec driver(s) to use the =
 
-codec_dai it is impossible to disable the HFL/R.
+platform_device_register/platform_driver_register, or is it more feasible t=
+o =
 
-I guess ASoC does not have support for per codec_dai DAPM routing, or let's =
-
-put it differently: binding DAPM controls to specific codec_dai.
-
->
-> Currently, handsfree amplifiers are turned-on when the HandsfreeL/R
-> muxes are powered by the framework. I was thinking in adding a
-> dapm switch to select whether or not handsfree amplifiers should
-> be powered, but the switch probably is not the correct approach to
-> handle this situation. Maybe a regular kcontrol could be the answer.
-
-It has to be DAPM switch for muting the HFL and the HFR.
-In order to execute the pop removal on the HF outputs the bits in the HF =
-
-registers has to be configured in a specific order (REF_EN, RAMP_EN, LOOP_E=
-N =
-
-and HB_EN)
-
-The DAPM switch should not change any register bits, but should have variab=
-le =
-
-in the twl4030_priv struct to change.
-
-I have the re-written HFL/R pop removal thing without the DAPM mute switch.=
- I =
-
-still need to test it on different HWs, but at least it does look promising=
- at =
-
-the moment.
-
->
-> -Misa
+convert the platform drivers (for example sound/soc/omap/omap3beagle.c)?
 
 -- =
 
