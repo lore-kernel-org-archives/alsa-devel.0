@@ -1,20 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/1] ASoC: TWL4030: Differentiate the
-	playback streams
-Date: Fri, 22 May 2009 15:24:47 +0100
-Message-ID: <20090522142447.GA5276@rakim.wolfsonmicro.main>
-References: <1242994335-12582-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1242994335-12582-2-git-send-email-peter.ujfalusi@nokia.com>
+From: =?UTF-8?B?UmFwaGHDq2wgRG91cnNlbmF1ZA==?= <rdoursenaud@free.fr>
+Subject: [PATCH 1/1] hdsp: right firmware path
+Date: Fri, 22 May 2009 16:46:13 +0200
+Message-ID: <4A16BAB5.3040604@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8A880103913
+Received: from smtp1.infomaniak.ch (smtp1.infomaniak.ch [84.16.68.89])
+	by alsa0.perex.cz (Postfix) with ESMTP id 61ADF103913
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 May 2009 16:24:49 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1242994335-12582-2-git-send-email-peter.ujfalusi@nokia.com>
+	Fri, 22 May 2009 16:46:17 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,14 +19,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: sakoman@gmail.com, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 22, 2009 at 03:12:15PM +0300, Peter Ujfalusi wrote:
-> Give unique stream names for the two playback streams so
-> DAPM can figure out which codec_dai is in use.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-
-Applied, thanks.
+LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEExCgpGcm9tOiBSYXBo
+YcOrbCBEb3Vyc2VuYXVkIDxyZG91cnNlbmF1ZEBmcmVlLmZyPgoKQ29ycmVjdCBmaXJtd2FyZSBw
+YXRoIHRvIHJlZmxlY3QgYWN0dWFsIGxvY2F0aW9uLgpUaGlzIHdhcyBjYXVzaW5nIGhvdHBsdWcg
+dG8gZmFpbC4KSW5zcGlyZWQgYnkgdGhlIGVtdTEwazEgbW9kdWxlLgoKU2lnbmVkLW9mZi1ieTog
+UmFwaGFlbCBEb3Vyc2VuYXVkIDxyZG91cnNlbmF1ZEBmcmVlLmZyPgotIC0tLQogc291bmQvcGNp
+L3JtZTk2NTIvaGRzcC5jIHwgICAyMiArKysrKysrKysrKysrKy0tLS0tLS0tCiAxIGZpbGVzIGNo
+YW5nZWQsIDE0IGluc2VydGlvbnMoKyksIDggZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291
+bmQvcGNpL3JtZTk2NTIvaGRzcC5jIGIvc291bmQvcGNpL3JtZTk2NTIvaGRzcC5jCmluZGV4IDMx
+NGU3MzUuLjQ4ZjU0MzQgMTAwNjQ0Ci0gLS0tIGEvc291bmQvcGNpL3JtZTk2NTIvaGRzcC5jCisr
+KyBiL3NvdW5kL3BjaS9ybWU5NjUyL2hkc3AuYwpAQCAtNTksMTEgKzU5LDE3IEBAIE1PRFVMRV9M
+SUNFTlNFKCJHUEwiKTsKIE1PRFVMRV9TVVBQT1JURURfREVWSUNFKCJ7e1JNRSBIYW1tZXJmYWxs
+LURTUH0sIgogCSAgICAgICAgIntSTUUgSERTUC05NjUyfSwiCiAJCSJ7Uk1FIEhEU1AtOTYzMn19
+Iik7CisKKyNkZWZpbmUgTVVMVElGQUNFX0ZJTEVOQU1FICJoZHNwbG9hZGVyL211bHRpZmFjZV9m
+aXJtd2FyZS5iaW4iCisjZGVmaW5lIE1VTFRJRkFDRV9SRVYxMV9GSUxFTkFNRSAiaGRzcGxvYWRl
+ci9tdWx0aWZhY2VfZmlybXdhcmVfcmV2MTEuYmluIgorI2RlZmluZSBESUdJRkFDRV9GSUxFTkFN
+RSAiaGRzcGxvYWRlci9kaWdpZmFjZV9maXJtd2FyZS5iaW4iCisjZGVmaW5lIERJR0lGQUNFX1JF
+VjExX0ZJTEVOQU1FICJoZHNwbG9hZGVyL2RpZ2lmYWNlX2Zpcm13YXJlX3JldjExLmJpbiIKKwog
+I2lmZGVmIEhEU1BfRldfTE9BREVSCi0gLU1PRFVMRV9GSVJNV0FSRSgibXVsdGlmYWNlX2Zpcm13
+YXJlLmJpbiIpOwotIC1NT0RVTEVfRklSTVdBUkUoIm11bHRpZmFjZV9maXJtd2FyZV9yZXYxMS5i
+aW4iKTsKLSAtTU9EVUxFX0ZJUk1XQVJFKCJkaWdpZmFjZV9maXJtd2FyZS5iaW4iKTsKLSAtTU9E
+VUxFX0ZJUk1XQVJFKCJkaWdpZmFjZV9maXJtd2FyZV9yZXYxMS5iaW4iKTsKK01PRFVMRV9GSVJN
+V0FSRShNVUxUSUZBQ0VfRklMRU5BTUUpOworTU9EVUxFX0ZJUk1XQVJFKE1VTFRJRkFDRV9SRVYx
+MV9GSUxFTkFNRSk7CitNT0RVTEVfRklSTVdBUkUoRElHSUZBQ0VfRklMRU5BTUUpOworTU9EVUxF
+X0ZJUk1XQVJFKERJR0lGQUNFX1JFVjExX0ZJTEVOQU1FKTsKICNlbmRpZgoKICNkZWZpbmUgSERT
+UF9NQVhfQ0hBTk5FTFMgICAgICAgIDI2CkBAIC00OTI4LDE1ICs0OTM0LDE1IEBAIHN0YXRpYyBp
+bnQgaGRzcF9yZXF1ZXN0X2Z3X2xvYWRlcihzdHJ1Y3QgaGRzcCAqaGRzcCkKIAlzd2l0Y2ggKGhk
+c3AtPmlvX3R5cGUpIHsKIAljYXNlIE11bHRpZmFjZToKIAkJaWYgKGhkc3AtPmZpcm13YXJlX3Jl
+diA9PSAweGEpCi0gLQkJCWZ3ZmlsZSA9ICJtdWx0aWZhY2VfZmlybXdhcmUuYmluIjsKKwkJCWZ3
+ZmlsZSA9IE1VTFRJRkFDRV9GSUxFTkFNRTsKIAkJZWxzZQotIC0JCQlmd2ZpbGUgPSAibXVsdGlm
+YWNlX2Zpcm13YXJlX3JldjExLmJpbiI7CisJCQlmd2ZpbGUgPSBNVUxUSUZBQ0VfUkVWMTFfRklM
+RU5BTUU7CiAJCWJyZWFrOwogCWNhc2UgRGlnaWZhY2U6CiAJCWlmIChoZHNwLT5maXJtd2FyZV9y
+ZXYgPT0gMHhhKQotIC0JCQlmd2ZpbGUgPSAiZGlnaWZhY2VfZmlybXdhcmUuYmluIjsKKwkJCWZ3
+ZmlsZSA9IERJR0lGQUNFX0ZJTEVOQU1FOwogCQllbHNlCi0gLQkJCWZ3ZmlsZSA9ICJkaWdpZmFj
+ZV9maXJtd2FyZV9yZXYxMS5iaW4iOworCQkJZndmaWxlID0gRElHSUZBQ0VfUkVWMTFfRklMRU5B
+TUU7CiAJCWJyZWFrOwogCWRlZmF1bHQ6CiAJCXNuZF9wcmludGsoS0VSTl9FUlIgIkhhbW1lcmZh
+bGwtRFNQOiBpbnZhbGlkIGlvX3R5cGUgJWRcbiIsCmhkc3AtPmlvX3R5cGUpOwotIC0tClJhcGhh
+w6tsIERvdXJzZW5hdWQKCi0tLS0tQkVHSU4gUEdQIFNJR05BVFVSRS0tLS0tClZlcnNpb246IEdu
+dVBHIHYxLjQuOSAoR05VL0xpbnV4KQpDb21tZW50OiBVc2luZyBHbnVQRyB3aXRoIE1vemlsbGEg
+LSBodHRwOi8vZW5pZ21haWwubW96ZGV2Lm9yZwoKaUVZRUFSRUNBQVlGQWtvV3VySUFDZ2tRYVpL
+bU5BZFhhVlZZWUFDZEV5aGVYMSs3c1ViV1VSU2NEUkZWNjZYVgpzNGdBbmlaSG5FZndSRzAxMlpR
+bWFEQWhEaE5YUWY5Wgo9RXg4agotLS0tLUVORCBQR1AgU0lHTkFUVVJFLS0tLS0KX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
