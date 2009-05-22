@@ -1,21 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Disabling HFL/R outputs in twl4030
-Date: Fri, 22 May 2009 12:26:17 +0100
-Message-ID: <20090522112616.GB8542@sirena.org.uk>
-References: <2C7D3DF36ADFFC479B44490D912B616705F6AC2661@dlee07.ent.ti.com>
-	<200905221248.28656.peter.ujfalusi@nokia.com>
-	<20090522103603.GA8542@sirena.org.uk>
-	<200905221403.28771.peter.ujfalusi@nokia.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH 1/1] ASoC: TWL4030: Differentiate the playback
+	streams
+Date: Fri, 22 May 2009 15:12:15 +0300
+Message-ID: <1242994335-12582-2-git-send-email-peter.ujfalusi@nokia.com>
+References: <1242994335-12582-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id DE1EC103907
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA58410390F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 May 2009 13:26:17 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200905221403.28771.peter.ujfalusi@nokia.com>
+	Fri, 22 May 2009 14:12:25 +0200 (CEST)
+In-Reply-To: <1242994335-12582-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "ext Lopez Cruz, Misael" <x0052729@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: sakoman@gmail.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 22, 2009 at 02:03:28PM +0300, Peter Ujfalusi wrote:
+Give unique stream names for the two playback streams so
+DAPM can figure out which codec_dai is in use.
 
-> So changing the stream names in the twl4030_dai:
-> for HiFi:
-> .stream_name = "HiFi Playback" and leave the "Capture"
-> and for voice:
-> .stream_name = "Voice Playback" and leave the "Capture"
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+ sound/soc/codecs/twl4030.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
 
-> Than changing the DAPM_DACs stream names for the HiFi stream:
-> "Right Front HiFi Playback", "Left Front HiFi Playback", "Right Rear HiFi 
-> Playback", "Left Rear HiFi Playback"
-
-> Should do the trick?
-
-I'd expect so, yes.
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 584507f..9197fdd 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -1092,13 +1092,13 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 	SND_SOC_DAPM_OUTPUT("VIBRA"),
+ 
+ 	/* DACs */
+-	SND_SOC_DAPM_DAC("DAC Right1", "Right Front Playback",
++	SND_SOC_DAPM_DAC("DAC Right1", "Right Front HiFi Playback",
+ 			SND_SOC_NOPM, 0, 0),
+-	SND_SOC_DAPM_DAC("DAC Left1", "Left Front Playback",
++	SND_SOC_DAPM_DAC("DAC Left1", "Left Front HiFi Playback",
+ 			SND_SOC_NOPM, 0, 0),
+-	SND_SOC_DAPM_DAC("DAC Right2", "Right Rear Playback",
++	SND_SOC_DAPM_DAC("DAC Right2", "Right Rear HiFi Playback",
+ 			SND_SOC_NOPM, 0, 0),
+-	SND_SOC_DAPM_DAC("DAC Left2", "Left Rear Playback",
++	SND_SOC_DAPM_DAC("DAC Left2", "Left Rear HiFi Playback",
+ 			SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_DAC("DAC Voice", "Voice Playback",
+ 			SND_SOC_NOPM, 0, 0),
+@@ -1937,7 +1937,7 @@ struct snd_soc_dai twl4030_dai[] = {
+ {
+ 	.name = "twl4030",
+ 	.playback = {
+-		.stream_name = "Playback",
++		.stream_name = "HiFi Playback",
+ 		.channels_min = 2,
+ 		.channels_max = 4,
+ 		.rates = TWL4030_RATES | SNDRV_PCM_RATE_96000,
+@@ -1953,7 +1953,7 @@ struct snd_soc_dai twl4030_dai[] = {
+ {
+ 	.name = "twl4030 Voice",
+ 	.playback = {
+-		.stream_name = "Playback",
++		.stream_name = "Voice Playback",
+ 		.channels_min = 1,
+ 		.channels_max = 1,
+ 		.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
+-- 
+1.6.3.1
