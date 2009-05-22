@@ -1,21 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re:
- =?iso-8859-1?q?=5BPATCH_0/2_take2=5D_SoC=3A_TWL4030_?=
- =?iso-8859-1?q?and_SDP3430_HS_ramp=09configuration?=
-Date: Fri, 22 May 2009 12:57:23 +0300
-Message-ID: <200905221257.23887.peter.ujfalusi@nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/2 take2] SoC: TWL4030 and SDP3430
+	HS	ramp?configuration
+Date: Fri, 22 May 2009 11:23:55 +0100
+Message-ID: <20090522102355.GD20887@rakim.wolfsonmicro.main>
 References: <1242976396-7667-1-git-send-email-peter.ujfalusi@nokia.com>
 	<20090522092807.GA20887@rakim.wolfsonmicro.main>
+	<200905221257.23887.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 19FD91038F6
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 692A91038F6
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 May 2009 11:57:43 +0200 (CEST)
-In-Reply-To: <20090522092807.GA20887@rakim.wolfsonmicro.main>
+	Fri, 22 May 2009 12:23:56 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <200905221257.23887.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,25 +25,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "anuj.aggarwal@ti.com" <anuj.aggarwal@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "getarunks@gmail.com" <getarunks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 22 May 2009 12:28:07 ext Mark Brown wrote:
-> I've applied both.  It'd be really good if you could look into
-> converting the TWL4030 driver into a regular platform driver, probing
-> via the normal methods, so it could get this data as regular platform
-> data.
+On Fri, May 22, 2009 at 12:57:23PM +0300, Peter Ujfalusi wrote:
+> On Friday 22 May 2009 12:28:07 ext Mark Brown wrote:
 
-Thanks, any pointers for such an implementation?
+> > I've applied both.  It'd be really good if you could look into
+> > converting the TWL4030 driver into a regular platform driver, probing
+> > via the normal methods, so it could get this data as regular platform
+> > data.
 
-Do we need to convert the codec driver(s) to use the =
+> Thanks, any pointers for such an implementation?
 
-platform_device_register/platform_driver_register, or is it more feasible t=
-o =
+wm8350 and wm8400 are similar chips with audio blocked in with other
+functionality.
 
-convert the platform drivers (for example sound/soc/omap/omap3beagle.c)?
+> Do we need to convert the codec driver(s) to use the 
+> platform_device_register/platform_driver_register, or is it more feasible to 
+> convert the platform drivers (for example sound/soc/omap/omap3beagle.c)?
 
--- =
-
-P=E9ter
+The idea is that the device registration gets done either in arch/arm
+or in drivers/mfd - the intention is to make things look much more like
+the standard device model.  For twl4030 I'd expect it to be done in
+drivers/mfd.
