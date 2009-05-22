@@ -1,15 +1,20 @@
-From: =?UTF-8?B?UmFwaGHDq2wgRG91cnNlbmF1ZA==?= <rdoursenaud@free.fr>
-Subject: [PATCH 1/1] hdsp: right firmware path
-Date: Fri, 22 May 2009 16:46:13 +0200
-Message-ID: <4A16BAB5.3040604@free.fr>
+From: Andreas Mohr <andi@lisas.de>
+Subject: [PATCH] Kill truncate warning by shortening
+	Sigmatel-specific AC97	control name
+Date: Fri, 22 May 2009 17:48:58 +0200
+Message-ID: <20090522154858.GA7406@rhlx01.hs-esslingen.de>
+References: <20090521182553.GA31805@rhlx01.hs-esslingen.de>
+	<s5h4ovdhd8x.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.infomaniak.ch (smtp1.infomaniak.ch [84.16.68.89])
-	by alsa0.perex.cz (Postfix) with ESMTP id 61ADF103913
+Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0C77D2415F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 May 2009 16:46:17 +0200 (CEST)
+	Fri, 22 May 2009 17:49:00 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5h4ovdhd8x.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,50 +24,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Andreas Mohr <andi@lisas.de>
 List-Id: alsa-devel@alsa-project.org
 
-LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEExCgpGcm9tOiBSYXBo
-YcOrbCBEb3Vyc2VuYXVkIDxyZG91cnNlbmF1ZEBmcmVlLmZyPgoKQ29ycmVjdCBmaXJtd2FyZSBw
-YXRoIHRvIHJlZmxlY3QgYWN0dWFsIGxvY2F0aW9uLgpUaGlzIHdhcyBjYXVzaW5nIGhvdHBsdWcg
-dG8gZmFpbC4KSW5zcGlyZWQgYnkgdGhlIGVtdTEwazEgbW9kdWxlLgoKU2lnbmVkLW9mZi1ieTog
-UmFwaGFlbCBEb3Vyc2VuYXVkIDxyZG91cnNlbmF1ZEBmcmVlLmZyPgotIC0tLQogc291bmQvcGNp
-L3JtZTk2NTIvaGRzcC5jIHwgICAyMiArKysrKysrKysrKysrKy0tLS0tLS0tCiAxIGZpbGVzIGNo
-YW5nZWQsIDE0IGluc2VydGlvbnMoKyksIDggZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291
-bmQvcGNpL3JtZTk2NTIvaGRzcC5jIGIvc291bmQvcGNpL3JtZTk2NTIvaGRzcC5jCmluZGV4IDMx
-NGU3MzUuLjQ4ZjU0MzQgMTAwNjQ0Ci0gLS0tIGEvc291bmQvcGNpL3JtZTk2NTIvaGRzcC5jCisr
-KyBiL3NvdW5kL3BjaS9ybWU5NjUyL2hkc3AuYwpAQCAtNTksMTEgKzU5LDE3IEBAIE1PRFVMRV9M
-SUNFTlNFKCJHUEwiKTsKIE1PRFVMRV9TVVBQT1JURURfREVWSUNFKCJ7e1JNRSBIYW1tZXJmYWxs
-LURTUH0sIgogCSAgICAgICAgIntSTUUgSERTUC05NjUyfSwiCiAJCSJ7Uk1FIEhEU1AtOTYzMn19
-Iik7CisKKyNkZWZpbmUgTVVMVElGQUNFX0ZJTEVOQU1FICJoZHNwbG9hZGVyL211bHRpZmFjZV9m
-aXJtd2FyZS5iaW4iCisjZGVmaW5lIE1VTFRJRkFDRV9SRVYxMV9GSUxFTkFNRSAiaGRzcGxvYWRl
-ci9tdWx0aWZhY2VfZmlybXdhcmVfcmV2MTEuYmluIgorI2RlZmluZSBESUdJRkFDRV9GSUxFTkFN
-RSAiaGRzcGxvYWRlci9kaWdpZmFjZV9maXJtd2FyZS5iaW4iCisjZGVmaW5lIERJR0lGQUNFX1JF
-VjExX0ZJTEVOQU1FICJoZHNwbG9hZGVyL2RpZ2lmYWNlX2Zpcm13YXJlX3JldjExLmJpbiIKKwog
-I2lmZGVmIEhEU1BfRldfTE9BREVSCi0gLU1PRFVMRV9GSVJNV0FSRSgibXVsdGlmYWNlX2Zpcm13
-YXJlLmJpbiIpOwotIC1NT0RVTEVfRklSTVdBUkUoIm11bHRpZmFjZV9maXJtd2FyZV9yZXYxMS5i
-aW4iKTsKLSAtTU9EVUxFX0ZJUk1XQVJFKCJkaWdpZmFjZV9maXJtd2FyZS5iaW4iKTsKLSAtTU9E
-VUxFX0ZJUk1XQVJFKCJkaWdpZmFjZV9maXJtd2FyZV9yZXYxMS5iaW4iKTsKK01PRFVMRV9GSVJN
-V0FSRShNVUxUSUZBQ0VfRklMRU5BTUUpOworTU9EVUxFX0ZJUk1XQVJFKE1VTFRJRkFDRV9SRVYx
-MV9GSUxFTkFNRSk7CitNT0RVTEVfRklSTVdBUkUoRElHSUZBQ0VfRklMRU5BTUUpOworTU9EVUxF
-X0ZJUk1XQVJFKERJR0lGQUNFX1JFVjExX0ZJTEVOQU1FKTsKICNlbmRpZgoKICNkZWZpbmUgSERT
-UF9NQVhfQ0hBTk5FTFMgICAgICAgIDI2CkBAIC00OTI4LDE1ICs0OTM0LDE1IEBAIHN0YXRpYyBp
-bnQgaGRzcF9yZXF1ZXN0X2Z3X2xvYWRlcihzdHJ1Y3QgaGRzcCAqaGRzcCkKIAlzd2l0Y2ggKGhk
-c3AtPmlvX3R5cGUpIHsKIAljYXNlIE11bHRpZmFjZToKIAkJaWYgKGhkc3AtPmZpcm13YXJlX3Jl
-diA9PSAweGEpCi0gLQkJCWZ3ZmlsZSA9ICJtdWx0aWZhY2VfZmlybXdhcmUuYmluIjsKKwkJCWZ3
-ZmlsZSA9IE1VTFRJRkFDRV9GSUxFTkFNRTsKIAkJZWxzZQotIC0JCQlmd2ZpbGUgPSAibXVsdGlm
-YWNlX2Zpcm13YXJlX3JldjExLmJpbiI7CisJCQlmd2ZpbGUgPSBNVUxUSUZBQ0VfUkVWMTFfRklM
-RU5BTUU7CiAJCWJyZWFrOwogCWNhc2UgRGlnaWZhY2U6CiAJCWlmIChoZHNwLT5maXJtd2FyZV9y
-ZXYgPT0gMHhhKQotIC0JCQlmd2ZpbGUgPSAiZGlnaWZhY2VfZmlybXdhcmUuYmluIjsKKwkJCWZ3
-ZmlsZSA9IERJR0lGQUNFX0ZJTEVOQU1FOwogCQllbHNlCi0gLQkJCWZ3ZmlsZSA9ICJkaWdpZmFj
-ZV9maXJtd2FyZV9yZXYxMS5iaW4iOworCQkJZndmaWxlID0gRElHSUZBQ0VfUkVWMTFfRklMRU5B
-TUU7CiAJCWJyZWFrOwogCWRlZmF1bHQ6CiAJCXNuZF9wcmludGsoS0VSTl9FUlIgIkhhbW1lcmZh
-bGwtRFNQOiBpbnZhbGlkIGlvX3R5cGUgJWRcbiIsCmhkc3AtPmlvX3R5cGUpOwotIC0tClJhcGhh
-w6tsIERvdXJzZW5hdWQKCi0tLS0tQkVHSU4gUEdQIFNJR05BVFVSRS0tLS0tClZlcnNpb246IEdu
-dVBHIHYxLjQuOSAoR05VL0xpbnV4KQpDb21tZW50OiBVc2luZyBHbnVQRyB3aXRoIE1vemlsbGEg
-LSBodHRwOi8vZW5pZ21haWwubW96ZGV2Lm9yZwoKaUVZRUFSRUNBQVlGQWtvV3VySUFDZ2tRYVpL
-bU5BZFhhVlZZWUFDZEV5aGVYMSs3c1ViV1VSU2NEUkZWNjZYVgpzNGdBbmlaSG5FZndSRzAxMlpR
-bWFEQWhEaE5YUWY5Wgo9RXg4agotLS0tLUVORCBQR1AgU0lHTkFUVVJFLS0tLS0KX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi,
+
+ChangeLog:
+
+Avoid
+ALSA sound/core/control.c:232: Control name 'Sigmatel Surround Phase Inversion Playback Switch' truncated
+ to 'Sigmatel Surround Phase Inversion Playback '
+bootup message by omitting weird Sigmatel prefix in this case; also fix
+up the related ca0106 mixer control removal part by using identical naming
+there.
+
+
+Patch runtime-tested on -rc6, then diffed, run through checkpatch.pl
+and readjusted accordingly.
+
+I guess that this is more or less what one should have done after your
+very fast reply...
+
+BTW, the "3D Control Sigmatel - Depth" vs. "3D Control - Switch" is even
+weirder naming, methinks.
+
+Thanks!!
+
+Signed-off-by: Andreas Mohr <andi@lisas.de>
+
+
+diff -uprN linux-2.6.30-rc6.orig/sound/pci/ac97/ac97_patch.c linux-2.6.30-rc6.patched/sound/pci/ac97/ac97_patch.c
+--- linux-2.6.30-rc6.orig/sound/pci/ac97/ac97_patch.c	2009-05-22 17:26:44.000000000 +0200
++++ linux-2.6.30-rc6.patched/sound/pci/ac97/ac97_patch.c	2009-05-22 17:35:20.000000000 +0200
+@@ -958,10 +958,13 @@ static int patch_sigmatel_stac9708_3d(st
+ }
+ 
+ static const struct snd_kcontrol_new snd_ac97_sigmatel_4speaker =
+-AC97_SINGLE("Sigmatel 4-Speaker Stereo Playback Switch", AC97_SIGMATEL_DAC2INVERT, 2, 1, 0);
++AC97_SINGLE("Sigmatel 4-Speaker Stereo Playback Switch",
++		AC97_SIGMATEL_DAC2INVERT, 2, 1, 0);
+ 
++/* "Sigmatel " removed due to excessive name length: */
+ static const struct snd_kcontrol_new snd_ac97_sigmatel_phaseinvert =
+-AC97_SINGLE("Sigmatel Surround Phase Inversion Playback Switch", AC97_SIGMATEL_DAC2INVERT, 3, 1, 0);
++AC97_SINGLE("Surround Phase Inversion Playback Switch",
++		AC97_SIGMATEL_DAC2INVERT, 3, 1, 0);
+ 
+ static const struct snd_kcontrol_new snd_ac97_sigmatel_controls[] = {
+ AC97_SINGLE("Sigmatel DAC 6dB Attenuate", AC97_SIGMATEL_ANALOG, 1, 1, 0),
+diff -uprN linux-2.6.30-rc6.orig/sound/pci/ca0106/ca0106_mixer.c linux-2.6.30-rc6.patched/sound/pci/ca0106/ca0106_mixer.c
+--- linux-2.6.30-rc6.orig/sound/pci/ca0106/ca0106_mixer.c	2009-05-22 17:26:59.000000000 +0200
++++ linux-2.6.30-rc6.patched/sound/pci/ca0106/ca0106_mixer.c	2009-05-22 17:11:57.000000000 +0200
+@@ -800,7 +800,7 @@ int __devinit snd_ca0106_mixer(struct sn
+ 		"Capture Volume",
+ 		"External Amplifier",
+ 		"Sigmatel 4-Speaker Stereo Playback Switch",
+-		"Sigmatel Surround Phase Inversion Playback ",
++		"Surround Phase Inversion Playback Switch",
+ 		NULL
+ 	};
+ 	static char *ca0106_rename_ctls[] = {
