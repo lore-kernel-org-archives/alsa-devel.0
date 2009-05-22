@@ -1,19 +1,14 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/2 take2] SoC: TWL4030 and SDP3430 HS
-	ramp	configuration
-Date: Fri, 22 May 2009 10:28:07 +0100
-Message-ID: <20090522092807.GA20887@rakim.wolfsonmicro.main>
-References: <1242976396-7667-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Werner Van Belle <werner@yellowcouch.org>
+Subject: Releasing a handle without closing ?
+Date: Fri, 22 May 2009 11:44:11 +0200
+Message-ID: <4A1673EB.3040500@yellowcouch.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6252101846214609066=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C496210380E
+Received: from sigtrans.org (sigtrans.org [213.239.213.249])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6875310380E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 May 2009 11:28:08 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1242976396-7667-1-git-send-email-peter.ujfalusi@nokia.com>
+	Fri, 22 May 2009 11:42:21 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,19 +18,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: sakoman@gmail.com, anuj.aggarwal@ti.com, alsa-devel@alsa-project.org, getarunks@gmail.com
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 22, 2009 at 10:13:14AM +0300, Peter Ujfalusi wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============6252101846214609066==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig035F64B1A0A09E96023F1761"
 
-> he following series adds support for platform dependent Headset pop removal
-> configuration for the twl4030 codec.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig035F64B1A0A09E96023F1761
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-> Platform drivers can fill the twl4030_setup_data structure and pass it with
-> snd_soc_device->codec_data to the codec driver.
+Hello,
 
-I've applied both.  It'd be really good if you could look into
-converting the TWL4030 driver into a regular platform driver, probing
-via the normal methods, so it could get this data as regular platform
-data.
+I have an intruiging problem. I have two processes: a parent and a
+child. The parent forks off the child (as can be expected, the opposite
+would be somewhat unsettling), after it allocated and started to write
+to a pcm device. As can be expected, the child will also have a link to
+this dsp device. The problem now is that the child wants to release the
+pcm handle without closing it. Is there any particular function offering
+such possibility ?
+
+Wkr,-
+
+--=20
+Dr. Werner Van Belle
+http://werner.yellowcouch.org/
+
+
+
+--------------enig035F64B1A0A09E96023F1761
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iEYEARECAAYFAkoWc+4ACgkQYJM5sO5rAR1x+QCeJiNMAU2fndKqs8D3kt09U3Zh
+zg0AnRn9AMc3+/pJyp9ekkzLvaXf1ETP
+=7y/X
+-----END PGP SIGNATURE-----
+
+--------------enig035F64B1A0A09E96023F1761--
+
+--===============6252101846214609066==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============6252101846214609066==--
