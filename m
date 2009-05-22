@@ -1,16 +1,18 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 0/2 take2] SoC: TWL4030 and SDP3430 HS ramp
-	configuration
-Date: Fri, 22 May 2009 10:13:14 +0300
-Message-ID: <1242976396-7667-1-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 1/2 take2] ASoC: TWL4030: Add support for
+	platform dependent configuration
+Date: Fri, 22 May 2009 10:13:15 +0300
+Message-ID: <1242976396-7667-2-git-send-email-peter.ujfalusi@nokia.com>
+References: <1242976396-7667-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 20F34243FF
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 56752103904
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 May 2009 09:13:47 +0200 (CEST)
+	Fri, 22 May 2009 09:13:49 +0200 (CEST)
+In-Reply-To: <1242976396-7667-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,31 +26,78 @@ To: alsa-devel@alsa-project.org
 Cc: sakoman@gmail.com, anuj.aggarwal@ti.com, getarunks@gmail.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+twl4030_setup_data structure can be passed from platform drivers to
+the codec via the snd_soc_device->codec_data pointer.
 
-I have found few typos in the patches, resending...
+Currently the setup data has support for the Headset pop-removal
+related configuration, which differs from board to board.
 
-he following series adds support for platform dependent Headset pop removal
-configuration for the twl4030 codec.
-
-Platform drivers can fill the twl4030_setup_data structure and pass it with
-snd_soc_device->codec_data to the codec driver.
-
-As an example - based on the feedback for the ramp_delay value variations - the
-sdp3430.c board is updated to pass the correct ramp settings.
-
-If you know for the other platforms using the twl4030 codec the correct HS ramp
-configuration, please update those files...
-
-Mark: This series needs the DAPM restructuring and HS pop removal related
-patches for twl4030 codec.
-
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
-Peter Ujfalusi (2):
-  ASoC: TWL4030: Add support for platform dependent configuration
-  ASoC: SDP4030: Use the twl4030_setup_data for headset pop-removal
-
  sound/soc/codecs/twl4030.c |   22 +++++++++++++++++++---
  sound/soc/codecs/twl4030.h |    5 +++++
- sound/soc/omap/sdp3430.c   |    7 +++++++
- 3 files changed, 31 insertions(+), 3 deletions(-)
+ 2 files changed, 24 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index f554672..584507f 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -1997,6 +1997,8 @@ static int twl4030_resume(struct platform_device *pdev)
+ static int twl4030_init(struct snd_soc_device *socdev)
+ {
+ 	struct snd_soc_codec *codec = socdev->card->codec;
++	struct twl4030_setup_data *setup = socdev->codec_data;
++	struct twl4030_priv *twl4030 = codec->private_data;
+ 	int ret = 0;
+
+ 	printk(KERN_INFO "TWL4030 Audio Codec init \n");
+@@ -2014,6 +2016,23 @@ static int twl4030_init(struct snd_soc_device *socdev)
+ 	if (codec->reg_cache == NULL)
+ 		return -ENOMEM;
+
++	/* Configuration for headset ramp delay from setup data */
++	if (setup) {
++		unsigned char hs_pop;
++
++		if (setup->sysclk)
++			twl4030->sysclk = setup->sysclk;
++		else
++			twl4030->sysclk = 26000;
++
++		hs_pop = twl4030_read_reg_cache(codec, TWL4030_REG_HS_POPN_SET);
++		hs_pop &= ~TWL4030_RAMP_DELAY;
++		hs_pop |= (setup->ramp_delay_value << 2);
++		twl4030_write_reg_cache(codec, TWL4030_REG_HS_POPN_SET, hs_pop);
++	} else {
++		twl4030->sysclk = 26000;
++	}
++
+ 	/* register pcms */
+ 	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
+ 	if (ret < 0) {
+@@ -2063,9 +2082,6 @@ static int twl4030_probe(struct platform_device *pdev)
+ 		kfree(codec);
+ 		return -ENOMEM;
+ 	}
+-	/* Set default sysclk (used by the headsetl/rpga_event callback for
+-	 * pop-attenuation) */
+-	twl4030->sysclk = 26000;
+
+ 	codec->private_data = twl4030;
+ 	socdev->card->codec = codec;
+diff --git a/sound/soc/codecs/twl4030.h b/sound/soc/codecs/twl4030.h
+index 9668bdf..48326e2 100644
+--- a/sound/soc/codecs/twl4030.h
++++ b/sound/soc/codecs/twl4030.h
+@@ -266,4 +266,9 @@
+ extern struct snd_soc_dai twl4030_dai[2];
+ extern struct snd_soc_codec_device soc_codec_dev_twl4030;
+
++struct twl4030_setup_data {
++	unsigned int ramp_delay_value;
++	unsigned int sysclk;
++};
++
+ #endif	/* End of __TWL4030_AUDIO_H__ */
+--
+1.6.3
