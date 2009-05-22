@@ -1,14 +1,18 @@
-From: Werner Van Belle <werner@yellowcouch.org>
-Subject: Releasing a handle without closing ?
-Date: Fri, 22 May 2009 11:44:11 +0200
-Message-ID: <4A1673EB.3040500@yellowcouch.org>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: Disabling HFL/R outputs in twl4030
+Date: Fri, 22 May 2009 12:48:28 +0300
+Message-ID: <200905221248.28656.peter.ujfalusi@nokia.com>
+References: <2C7D3DF36ADFFC479B44490D912B616705F6AC2661@dlee07.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6252101846214609066=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sigtrans.org (sigtrans.org [213.239.213.249])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6875310380E
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 130341038E4
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 May 2009 11:42:21 +0200 (CEST)
+	Fri, 22 May 2009 11:48:41 +0200 (CEST)
+In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705F6AC2661@dlee07.ent.ti.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,63 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "ext Lopez Cruz, Misael" <x0052729@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============6252101846214609066==
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig035F64B1A0A09E96023F1761"
+On Friday 22 May 2009 11:44:14 ext Lopez Cruz, Misael wrote:
+> It seems that there is no way to disable handsfree L/R outputs for
+> twl4030 codec. That means that:
+> - handsfree amplifiers are turned-on even if we are not interested
+>   in routing through handsfree
+> - if the selected input of the handsfree mux is an active DAC
+>   (streaming) sound will be produced on hf outputs and the only way
+>   to silence them is routing from a different DAC, which doesn't
+>   seem like the right solution
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig035F64B1A0A09E96023F1761
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Yes, I have also noticed this. Before the voice codec_dai integration it wa=
+s =
 
-Hello,
+possible to mute the HFL/R by setting it to Voice. Now with the voice =
 
-I have an intruiging problem. I have two processes: a parent and a
-child. The parent forks off the child (as can be expected, the opposite
-would be somewhat unsettling), after it allocated and started to write
-to a pcm device. As can be expected, the child will also have a link to
-this dsp device. The problem now is that the child wants to release the
-pcm handle without closing it. Is there any particular function offering
-such possibility ?
+codec_dai it is impossible to disable the HFL/R.
 
-Wkr,-
+I guess ASoC does not have support for per codec_dai DAPM routing, or let's =
 
---=20
-Dr. Werner Van Belle
-http://werner.yellowcouch.org/
+put it differently: binding DAPM controls to specific codec_dai.
 
+>
+> Currently, handsfree amplifiers are turned-on when the HandsfreeL/R
+> muxes are powered by the framework. I was thinking in adding a
+> dapm switch to select whether or not handsfree amplifiers should
+> be powered, but the switch probably is not the correct approach to
+> handle this situation. Maybe a regular kcontrol could be the answer.
 
+It has to be DAPM switch for muting the HFL and the HFR.
+In order to execute the pop removal on the HF outputs the bits in the HF =
 
---------------enig035F64B1A0A09E96023F1761
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+registers has to be configured in a specific order (REF_EN, RAMP_EN, LOOP_E=
+N =
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+and HB_EN)
 
-iEYEARECAAYFAkoWc+4ACgkQYJM5sO5rAR1x+QCeJiNMAU2fndKqs8D3kt09U3Zh
-zg0AnRn9AMc3+/pJyp9ekkzLvaXf1ETP
-=7y/X
------END PGP SIGNATURE-----
+The DAPM switch should not change any register bits, but should have variab=
+le =
 
---------------enig035F64B1A0A09E96023F1761--
+in the twl4030_priv struct to change.
 
---===============6252101846214609066==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I have the re-written HFL/R pop removal thing without the DAPM mute switch.=
+ I =
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+still need to test it on different HWs, but at least it does look promising=
+ at =
 
---===============6252101846214609066==--
+the moment.
+
+>
+> -Misa
+
+-- =
+
+P=E9ter
