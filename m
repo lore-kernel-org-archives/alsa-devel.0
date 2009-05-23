@@ -1,17 +1,17 @@
 From: "Demian Martin" <demianm@attglobal.net>
 Subject: Re: Alsa-devel Digest, Vol 27, Issue 124
-Date: Sat, 23 May 2009 23:26:11 GMT
-Message-ID: <403382338-1243121240-cardhu_decombobulator_blackberry.rim.net-1179411597-@bxe1265.bisx.prod.on.blackberry>
+Date: Sat, 23 May 2009 23:27:11 GMT
+Message-ID: <403382340-1243121275-cardhu_decombobulator_blackberry.rim.net-1496460068-@bxe1265.bisx.prod.on.blackberry>
 References: <mailman.1667.1243120399.2052.alsa-devel@alsa-project.org>
 Reply-To: demianm@attglobal.net
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp03.bis.na.blackberry.com (smtp03.bis.na.blackberry.com
-	[216.9.248.50]) by alsa0.perex.cz (Postfix) with ESMTP id 1F49710380B
+Received: from smtp07.bis.na.blackberry.com (smtp07.bis.na.blackberry.com
+	[216.9.248.54]) by alsa0.perex.cz (Postfix) with ESMTP id 382071037F0
 	for <alsa-devel@alsa-project.org>;
-	Sun, 24 May 2009 01:27:21 +0200 (CEST)
+	Sun, 24 May 2009 01:27:56 +0200 (CEST)
 In-Reply-To: <mailman.1667.1243120399.2052.alsa-devel@alsa-project.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
