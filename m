@@ -1,24 +1,17 @@
-From: Robert Krakora <rob.krakora@messagenetsystems.com>
-Subject: Re: 2.6.30: xruns caused by "ALSA: pcm - Safer
-	boundary checks"
-Date: Sat, 23 May 2009 17:34:54 -0400
-Message-ID: <b24e53350905231434h44fb22e7l8ecd845e0b202f20@mail.gmail.com>
-References: <20090522162709.2e04b688@dhcp-100-2-144.bos.redhat.com>
-	<s5hmy94x0sy.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0905231430400.4067@eeebox2.perex-int.cz>
-	<s5hk547el2j.wl%tiwai@suse.de>
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: [PATCH V2 0/9] mpc5200 audio rework for AC97
+Date: Sat, 23 May 2009 19:12:55 -0400
+Message-ID: <20090523231148.17919.46103.stgit@terra>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f206.google.com (mail-gx0-f206.google.com
-	[209.85.217.206])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1AF3724347
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 256652442F
 	for <alsa-devel@alsa-project.org>;
-	Sat, 23 May 2009 23:34:55 +0200 (CEST)
-Received: by gxk2 with SMTP id 2so4812491gxk.8
-	for <alsa-devel@alsa-project.org>; Sat, 23 May 2009 14:34:54 -0700 (PDT)
-In-Reply-To: <s5hk547el2j.wl%tiwai@suse.de>
+	Sun, 24 May 2009 01:12:56 +0200 (CEST)
+Received: by yw-out-1718.google.com with SMTP id 4so1843079ywq.2
+	for <alsa-devel@alsa-project.org>; Sat, 23 May 2009 16:12:56 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,65 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Chuck Ebbert <cebbert@redhat.com>
+To: grant.likely@secretlab.ca, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@sirena.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, May 23, 2009 at 2:22 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Sat, 23 May 2009 14:31:57 +0200 (CEST),
-> Jaroslav Kysela wrote:
->>
->> On Fri, 22 May 2009, Takashi Iwai wrote:
->>
->> > At Fri, 22 May 2009 16:27:09 -0400,
->> > Chuck Ebbert wrote:
->> >>
->> >> Bug report: https://bugzilla.redhat.com/show_bug.cgi?id=498858
->> >>
->> >> To reproduce, pause a video in mplayer and then hit play:
->> >>
->> >> ALSA sound/core/pcm_lib.c:263: hda_codec: hw_ptr skipping! [Q] (pos=11263,
->> >> delta=17400, period=1024, jdelta=21/362/0)
->> >
->> > Does the patch fix the problem?
->>
->> This patch does not look as a proper fix.
->
-> Hm, at which point?
-> It just skips the first unreliable jiffies check.
-> At least, it's interesting whether it works around the problem.
->
->
-> thanks,
->
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
->
+The following series implements audio support for the mpc5200. It adds an AC97 driver and STAC9766 codec driver. Board support for the Efika and Phytec pcm030 are also included. 
 
-Takashi:
+Mark is not enthused about soc-of-simple.c so rather than extend it for AC97 I altered the drivers to not use it. Instead they use the old way of manually binding everything. Mark would like to see OF binding more closely integrated to the core. Once a proper solution for OF binding is agreed upon it is easy to convert the existing drivers. A first step would be converting the existing codec drivers so that they can be dynamically loaded. 
 
-I have submitted
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4523 in regards
-to this problem.  I can recreated the xrun messages 100% of the time
-and the routine in question never recovers.  With a workaround
-suggested by Jaroslav, the xruns go away, but the calling process
-ramps up to 100% CPU utilization and unless you are on a dual or quad
-core machine there is quite a lockup.  I revert to the 1.0.19 pcmlib.c
-in the 1.0.20 driver and I see neither problem.  Thanks for all of
-your help Jaroslav.  If there is any way that I can help debug this
-problem, please let me know.
+Grant, please check over the spin locking on register access. I'm not clear on why and when the registers have to be protected.
 
-Best Regards,
+Once these basic drivers are in-kernel and more people are testing them, I can add more features like pause/resume, power management, etc based on feedback.
+
+I2S will get examined in more detail for the next kernel cycle. Our multi-channel prototype I2S hardware is just about working. Once I get the multi-channel hardware I will implement and heavily test a lot more I2S capability.
+
+---
+
+Jon Smirl (9):
+      Support for AC97 on Phytec pmc030 base board.
+      Fabric bindings for STAC9766 on the Efika
+      AC97 driver for mpc5200
+      Codec for STAC9766 used on the Efika
+      Main rewite of the mpc5200 audio DMA code
+      Add a few more mpc5200 PSC defines
+      Rename the PSC functions to DMA
+      Basic split of mpc5200 DMA code out from mpc5200_psc_i2s
+      Register the wm9712 DAIs on module load
+
+
+ sound/soc/fsl/Kconfig               |   31 +
+ sound/soc/fsl/Makefile              |    7 
+ sound/soc/fsl/efika-audio-fabric.c  |   94 ++++
+ sound/soc/fsl/mpc5200_dma.c         |  635 ++++++++++++++++++++++++++++++
+ sound/soc/fsl/mpc5200_dma.h         |   80 ++++
+ sound/soc/fsl/mpc5200_psc_ac97.c    |  394 ++++++++++++++++++
+ sound/soc/fsl/mpc5200_psc_ac97.h    |   15 +
+ sound/soc/fsl/mpc5200_psc_i2s.c     |  750 ++---------------------------------
+ sound/soc/fsl/mpc5200_psc_i2s.h     |   12 +
+ sound/soc/fsl/pcm030-audio-fabric.c |   94 ++++
+ 10 files changed, 1414 insertions(+), 698 deletions(-)
+ create mode 100644 sound/soc/fsl/efika-audio-fabric.c
+ create mode 100644 sound/soc/fsl/mpc5200_dma.c
+ create mode 100644 sound/soc/fsl/mpc5200_dma.h
+ create mode 100644 sound/soc/fsl/mpc5200_psc_ac97.c
+ create mode 100644 sound/soc/fsl/mpc5200_psc_ac97.h
+ create mode 100644 sound/soc/fsl/mpc5200_psc_i2s.h
+ create mode 100644 sound/soc/fsl/pcm030-audio-fabric.c
 
 -- 
-Rob Krakora
-Senior Software Engineer
-MessageNet Systems
-101 East Carmel Dr. Suite 105
-Carmel, IN 46032
-(317)566-1677 Ext. 206
-(317)663-0808 Fax
+Jon Smirl
+jonsmirl@gmail.com
