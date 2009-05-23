@@ -1,16 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Switch FSL SSI DAI over to
-	symmetric_rates
-Date: Sat, 23 May 2009 10:41:05 +0100
-Message-ID: <1243071665-5968-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Brad Parker <brad@heeltoe.com>
+Subject: force byte-swap at soc level before codec?
+Date: Sat, 23 May 2009 06:28:41 -0400
+Message-ID: <13717.1243074521@mini>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 53FCB24594
+Received: from mini.heeltoe.com (gateway.heeltoe.com [66.134.219.32])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3CC0F245BB
 	for <alsa-devel@alsa-project.org>;
-	Sat, 23 May 2009 11:41:14 +0200 (CEST)
+	Sat, 23 May 2009 12:28:44 +0200 (CEST)
+Received: from mini.heeltoe.com (localhost [127.0.0.1])
+	by mini.heeltoe.com (8.14.3/8.14.3/Debian-4) with ESMTP id
+	n4NASfHJ013722
+	for <alsa-devel@alsa-project.org>; Sat, 23 May 2009 06:28:41 -0400
+Received: from mini (brad@localhost)
+	by mini.heeltoe.com (8.14.3/8.14.3/Submit) with ESMTP id n4NASfer013718
+	for <alsa-devel@alsa-project.org>; Sat, 23 May 2009 06:28:41 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,50 +26,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The effect of symmetric_constraints should provide a standard way to
-enforce the use of the same sample rate for both directions.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/fsl/fsl_ssi.c |    9 +++------
- 1 files changed, 3 insertions(+), 6 deletions(-)
+Hi
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 47afaa9..93f0f38 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -375,18 +375,14 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
- 		struct snd_pcm_runtime *first_runtime =
- 			ssi_private->first_stream->runtime;
- 
--		if (!first_runtime->rate || !first_runtime->sample_bits) {
-+		if (!first_runtime->sample_bits) {
- 			dev_err(substream->pcm->card->dev,
--				"set sample rate and size in %s stream first\n",
-+				"set sample size in %s stream first\n",
- 				substream->stream == SNDRV_PCM_STREAM_PLAYBACK
- 				? "capture" : "playback");
- 			return -EAGAIN;
- 		}
- 
--		snd_pcm_hw_constraint_minmax(substream->runtime,
--			SNDRV_PCM_HW_PARAM_RATE,
--			first_runtime->rate, first_runtime->rate);
--
- 		/* If we're in synchronous mode, then we need to constrain
- 		 * the sample size as well.  We don't support independent sample
- 		 * rates in asynchronous mode.
-@@ -693,6 +689,7 @@ struct snd_soc_dai *fsl_ssi_create_dai(struct fsl_ssi_info *ssi_info)
- 	fsl_ssi_dai->name = ssi_private->name;
- 	fsl_ssi_dai->id = ssi_info->id;
- 	fsl_ssi_dai->dev = ssi_info->dev;
-+	fsl_ssi_dai->symmetric_rates = 1;
- 
- 	ret = snd_soc_register_dai(fsl_ssi_dai);
- 	if (ret != 0) {
--- 
-1.6.3.1
+I'm an ALSA SOC newbie.  I created a new SOC driver for a new ARM chip
+but I'm having endian issues at the codec.
+
+I started with the pxa soc code since I am failure with the pxa* i2s
+hardware.  The new code is working and data flows fine but due to
+hardware constraints the bytes arrive at the codec swapped.
+
+The codec claims S16_LE.  The i2s layer claims S16_LE as does the pcm
+layer inside soc.  The source data in user land is S16_LE.  But when the
+i2s hardware (which I can't change) does dma the bytes go to the codec
+in reverse order.
+
+So, I need a byte swap somewhere.  I verified this by sending constant
+data from user land via the oss compat layer (i.e. /dev/dsp).  If I swap
+them in userland they come out on the scope at the codec in the correct
+order.
+
+Any know the simplest way to do this?
+
+I've tried a bunch of ways but nothing seems to work correctly. It seems like
+ALSA already handles this as long as I tell the right thing from below.
+
+-brad
