@@ -1,20 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V2 5/9] Main rewite of the mpc5200
-	audio	DMA code
-Date: Sun, 24 May 2009 12:26:49 +0100
-Message-ID: <20090524112648.GE4933@sirena.org.uk>
+Subject: Re: [PATCH V2 6/9] Codec for STAC9766 used on the	Efika
+Date: Sun, 24 May 2009 12:46:35 +0100
+Message-ID: <20090524114635.GF4933@sirena.org.uk>
 References: <20090523231148.17919.46103.stgit@terra>
-	<20090523231305.17919.12239.stgit@terra>
+	<20090523231307.17919.5277.stgit@terra>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id D366F24363
+	by alsa0.perex.cz (Postfix) with ESMTP id C65CE2433A
 	for <alsa-devel@alsa-project.org>;
-	Sun, 24 May 2009 13:26:57 +0200 (CEST)
+	Sun, 24 May 2009 13:46:46 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20090523231305.17919.12239.stgit@terra>
+In-Reply-To: <20090523231307.17919.5277.stgit@terra>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,37 +27,65 @@ To: Jon Smirl <jonsmirl@gmail.com>
 Cc: grant.likely@secretlab.ca, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, May 23, 2009 at 07:13:05PM -0400, Jon Smirl wrote:
+On Sat, May 23, 2009 at 07:13:07PM -0400, Jon Smirl wrote:
+> AC97 codec for STAC9766 used on the Efika.
+> Datasheet: http://www.idt.com/products/getDoc.cfm?docID=13134007
+> 
+> Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
 
-This is all basically OK bearing in mind that I know nothing about the
-hardware.  A couple of things, though:
+This looks mostly good, a couple of issues below.  I'll apply the patch
+but please submit a followup patch for resume as discussed below.
 
-> +/* ---------------------------------------------------------------------
-> + * Sysfs attributes for debugging
-> + */
+> +static int ac97_digital_trigger(struct snd_pcm_substream *substream,
+> +								int cmd, struct snd_soc_dai *dai)
 
-These look like they may be better placed in debugfs?
+Very strange indentation here...
 
-> +EXPORT_SYMBOL_GPL(mpc5200_audio_dma_create);
-
-> +EXPORT_SYMBOL_GPL(mpc5200_audio_dma_destroy);
-
-> +static int __init mpc5200_soc_platform_init(void)
+> +static int stac9766_codec_resume(struct platform_device *pdev)
 > +{
-> +	/* Tell the ASoC OF helpers about it */
-> +	return snd_soc_register_platform(&mpc5200_audio_dma_platform);
-> +}
-> +module_init(mpc5200_soc_platform_init);
 
-> +static void __exit mpc5200_soc_platform_exit(void)
+> +	/* give the codec an AC97 warm reset to start the link */
+> +reset:
+> +	if (reset > 5) {
+> +		printk(KERN_ERR "stac9766 failed to resume");
+> +		return -EIO;
+> +	}
+> +	codec->ac97->bus->ops->warm_reset(codec->ac97);
+> +	id = soc_ac97_ops.read(codec->ac97, AC97_VENDOR_ID2);
+> +	if (id != 0x4c13) {
+> +		stac9766_reset(codec, 0);
+> +		reset++;
+> +		goto reset;
+> +	}
+
+As I said last time I'd this looks like it should be using the reset
+function that you've provided?  
+
+The loop is new since last time and seems very suspicious - are you sure
+that this is a CODEC problem that's being worked around and not an issue
+with the AC97 controller or with the specific system starting up the
+master clock for the CODEC after resume?  If it's an issue with the
+controler then it'd be better to fix it there so that all CODEC drivers
+get the benefit.  If it's a CODEC issue a comment explaining the problem
+would be helpful since it's not the sort of issue I'd expect to see in a
+CODEC.  The fact that it's not needed on initial boot suggests something
+controller or external clock related.
+
+Either way, it'd be much clearer to rewrite it using a for or while loop
+rather than a goto.  Please submit a followup patch fixing at least this
+issue.
+
+> +static int __init stac9766_modinit(void)
 > +{
-> +	snd_soc_unregister_platform(&mpc5200_audio_dma_platform);
+> +	return snd_soc_register_dais(stac9766_dai, ARRAY_SIZE(stac9766_dai));
 > +}
-> +module_exit(mpc5200_soc_platform_exit);
+> +module_init(stac9766_modinit);
+> +
+> +static void __exit stac9766_exit(void)
+> +{
+> +	snd_soc_unregister_dais(stac9766_dai, ARRAY_SIZE(stac9766_dai));
+> +}
+> +module_exit(stac9766_exit);
 
-This all looks a bit odd - I'd expect to see the platform registering
-with the core when it is probed rather than on module load.  Looking at
-the code it appears that you're automatically instantiating the DMA
-driver from the node for the DAI?  If that is the case then you ought
-to be calling the platform registration functions from the dma_create()
-and dma_destroy() functions instead.
+These are not needed for AC97 CODECs, ASoC doesn't wait for them to
+probe.  I'll apply a patch removing these.
