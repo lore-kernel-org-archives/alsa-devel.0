@@ -1,20 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V2 9/9] Support for AC97 on Phytec
-	pmc030	base board.
-Date: Sun, 24 May 2009 13:13:12 +0100
-Message-ID: <20090524121311.GI4933@sirena.org.uk>
-References: <20090523231148.17919.46103.stgit@terra>
-	<20090523231313.17919.93066.stgit@terra>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: Re: [PATCH] ALSA: hda - Add forced codec-slots for
+ ASUS W5Fm
+Date: Sun, 24 May 2009 16:41:16 +0300
+Message-ID: <4A194E7C.8060505@pardus.org.tr>
+References: <1243080004-32721-1-git-send-email-ozan@pardus.org.tr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id C84502415E
+Received: from pardus.org.tr (comar.uludag.org.tr [193.140.100.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2610E2440A
 	for <alsa-devel@alsa-project.org>;
-	Sun, 24 May 2009 14:13:19 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20090523231313.17919.93066.stgit@terra>
+	Sun, 24 May 2009 15:41:29 +0200 (CEST)
+In-Reply-To: <1243080004-32721-1-git-send-email-ozan@pardus.org.tr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,14 +22,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: grant.likely@secretlab.ca, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, May 23, 2009 at 07:13:13PM -0400, Jon Smirl wrote:
-> Support for AC97 on Phytec pmc030 base board. A wm9712 AC97 codec is used.
-> 
-> Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
-
-Same comments as for the previous driver - it's OK once the AC97 DAI
-driver goes in.
+QWRkIENDOgo+IEFTVVMgVzVGbSBuZWVkcyB0aGUgZml4ZWQgY29kZWMtc2xvdHMgdG8gcHJvYmUg
+dG8gb3ZlcnJpZGUgdGhlIEJJT1MKPiBwcm9ibGVtIGxpa2UgVzVGLgo+Cj4gVGVzdGVkLWJ5OiBB
+bHAgS8SxbMSxw6cgPGtpbGljLmFscEBnbWFpbC5jb20+Cj4gU2lnbmVkLW9mZi1ieTogT3phbiDD
+h2HEn2xheWFuIDxvemFuQHBhcmR1cy5vcmcudHI+Cj4gLS0tCj4gIHNvdW5kL3BjaS9oZGEvaGRh
+X2ludGVsLmMgfCAgICAxICsKPiAgMSBmaWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDAg
+ZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYyBi
+L3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMKPiBpbmRleCAyMWU5OWNmLi40NDE5ZTExIDEwMDY0
+NAo+IC0tLSBhL3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMKPiArKysgYi9zb3VuZC9wY2kvaGRh
+L2hkYV9pbnRlbC5jCj4gQEAgLTIxNDIsNiArMjE0Miw3IEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3Bj
+aV9xdWlyayBwcm9iZV9tYXNrX2xpc3RbXSBfX2RldmluaXRkYXRhID0gewo+ICAJU05EX1BDSV9R
+VUlSSygweDE3YzAsIDB4NDA4NSwgIk1lZGlvbiBNRDk2NjMwIiwgMHgwMSksCj4gIAkvKiBmb3Jj
+ZWQgY29kZWMgc2xvdHMgKi8KPiAgCVNORF9QQ0lfUVVJUksoMHgxMDQ2LCAweDEyNjIsICJBU1VT
+IFc1RiIsIDB4MTAzKSwKPiArCVNORF9QQ0lfUVVJUksoMHgxMDQzLCAweDEyNjIsICJBU1VTIFc1
+Rm0iLCAweDEwMyksCj4gIAl7fQo+ICB9Owo+ICAKPiAgIAoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
