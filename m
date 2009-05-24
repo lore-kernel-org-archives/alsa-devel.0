@@ -1,91 +1,43 @@
-From: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH V2 5/9] Main rewite of the mpc5200 audio DMA code
-Date: Sun, 24 May 2009 22:35:07 +0200
-Message-ID: <20090524203507.GA13491@pengutronix.de>
-References: <20090523231148.17919.46103.stgit@terra>
-	<20090523231305.17919.12239.stgit@terra>
-	<20090524185509.GA3561@pengutronix.de>
-	<9e4733910905241310n59952fd2oaafd7f1363db324@mail.gmail.com>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: Re: [PATCH] ALSA: hda - Add forced codec-slots
+ for	ASUS W5Fm
+Date: Mon, 25 May 2009 00:24:07 +0300
+Message-ID: <4A19BAF7.10502@pardus.org.tr>
+References: <1243080004-32721-1-git-send-email-ozan@pardus.org.tr>	<4A194E7C.8060505@pardus.org.tr>
+	<s5hr5yev43c.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0332467715=="
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
-In-Reply-To: <9e4733910905241310n59952fd2oaafd7f1363db324@mail.gmail.com>
-List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
-List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
-List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
-Mime-version: 1.0
-Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@sirena.org.uk
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from pardus.org.tr (comar.uludag.org.tr [193.140.100.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id AD4E324434
+	for <alsa-devel@alsa-project.org>;
+	Sun, 24 May 2009 23:24:03 +0200 (CEST)
+In-Reply-To: <s5hr5yev43c.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> Thanks, applied now with a minor fix (reordering the entry).
+>
+> But, looking at the change, it might be that the entry 1046:1262 could
+> be a typo.  It should be harmless, though :)
+>
+>   
+Yes it's strange that the vendor ID seems different from one variant to
+another.
 
---===============0332467715==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="vtzGhvizbBRQ85DL"
-Content-Disposition: inline
+BTW, is the 3rd parameter to the macro is used for DMI matching or is it
+just for informational purposes?
 
-
---vtzGhvizbBRQ85DL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, May 24, 2009 at 04:10:52PM -0400, Jon Smirl wrote:
-> On Sun, May 24, 2009 at 2:55 PM, Wolfram Sang <w.sang@pengutronix.de> wro=
-te:
-> >> Rewrite the mpc5200 audio DMA code to support both I2S and AC97. Make =
-it more robust.
-> >
-> > Why is it more robust?
->=20
-> I've implemented retries for when the AC97 hardware doesn't reset on
-> first try. About 10% of the time both the Efika and pcm030 AC97 codecs
-> don't reset on first try and need to be poked multiple times.  Failure
-> is indicated by not having the link clock start ticking. Every once in
-> a while even five pokes won't get the link started and I have to power
-> cycle.
->=20
-> I don't have an oscilloscope, after I get these basic drivers in maybe
-> someone can put a scope on this and figure out why reset is failing.
-> I've read the various datasheets and I believe my reset pulses have
-> the correct timings.
-
-That's good to know. In fact, I think a summary of this should go into the
-patch description.
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---vtzGhvizbBRQ85DL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkoZr3sACgkQD27XaX1/VRthugCgyMk6m3VXlus5di2EBlMApObO
-y1QAn1fvipzt6UkqglM5xC1JMll/iGbV
-=7EUQ
------END PGP SIGNATURE-----
-
---vtzGhvizbBRQ85DL--
-
---===============0332467715==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Linuxppc-dev mailing list
-Linuxppc-dev@ozlabs.org
-https://ozlabs.org/mailman/listinfo/linuxppc-dev
---===============0332467715==--
+Thanks,
