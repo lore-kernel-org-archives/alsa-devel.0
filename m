@@ -1,18 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Help on writing an ALSA ASoC Driver for WM8985
-Date: Mon, 25 May 2009 12:06:20 +0100
-Message-ID: <20090525110620.GG18290@sirena.org.uk>
-References: <D6546E3E62D77445A7E4B9A0FD70CDE007A551C6@FTBM01.ft.cct.grp>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: 2.6.30: xruns caused by "ALSA: pcm - Safer
+ boundary checks"
+Date: Mon, 25 May 2009 13:24:46 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.0905251318290.4067@eeebox2.perex-int.cz>
+References: <20090522162709.2e04b688@dhcp-100-2-144.bos.redhat.com>
+	<s5hmy94x0sy.wl%tiwai@suse.de>
+	<alpine.LNX.2.00.0905231430400.4067@eeebox2.perex-int.cz>
+	<s5hk547el2j.wl%tiwai@suse.de>
+	<alpine.LNX.2.00.0905251212130.4067@eeebox2.perex-int.cz>
+	<s5hprdxa2x8.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 55A1210385A
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 59C9D103870
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 May 2009 13:06:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <D6546E3E62D77445A7E4B9A0FD70CDE007A551C6@FTBM01.ft.cct.grp>
+	Mon, 25 May 2009 13:24:47 +0200 (CEST)
+In-Reply-To: <s5hprdxa2x8.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,47 +27,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Leung Chi Tat <ctleung@cct.com.hk>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Chuck Ebbert <cebbert@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 25, 2009 at 11:31:48AM +0800, Leung Chi Tat wrote:
+On Mon, 25 May 2009, Takashi Iwai wrote:
 
-> 	1. describing those important structures, e.g. struct soc_enum, struct snd_kcontrol_new, struct snd_soc_dapm_widget;
+> At Mon, 25 May 2009 12:19:19 +0200 (CEST),
+> Jaroslav Kysela wrote:
+>>
+>> On Sat, 23 May 2009, Takashi Iwai wrote:
+>>
+>>> At Sat, 23 May 2009 14:31:57 +0200 (CEST),
+>>> Jaroslav Kysela wrote:
+>>>>
+>>>> On Fri, 22 May 2009, Takashi Iwai wrote:
+>>>>
+>>>>> At Fri, 22 May 2009 16:27:09 -0400,
+>>>>> Chuck Ebbert wrote:
+>>>>>>
+>>>>>> Bug report: https://bugzilla.redhat.com/show_bug.cgi?id=498858
+>>>>>>
+>>>>>> To reproduce, pause a video in mplayer and then hit play:
+>>>>>>
+>>>>>> ALSA sound/core/pcm_lib.c:263: hda_codec: hw_ptr skipping! [Q] (pos=11263,
+>>>>>> delta=17400, period=1024, jdelta=21/362/0)
+>>>>>
+>>>>> Does the patch fix the problem?
+>>>>
+>>>> This patch does not look as a proper fix.
+>>>
+>>> Hm, at which point?
+>>> It just skips the first unreliable jiffies check.
+>>> At least, it's interesting whether it works around the problem.
+>>
+>> I meant that it is not necessary to introduce a next variable. This patch
+>> is more elegant:
+>>
+>> diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+>> index a2a792c..3eea98a 100644
+>> --- a/sound/core/pcm_lib.c
+>> +++ b/sound/core/pcm_lib.c
+>> @@ -1478,7 +1478,6 @@ static int snd_pcm_lib_ioctl_reset(struct snd_pcm_substream *substream,
+>>   		runtime->status->hw_ptr %= runtime->buffer_size;
+>>   	else
+>>   		runtime->status->hw_ptr = 0;
+>> -	runtime->hw_ptr_jiffies = jiffies;
+>>   	snd_pcm_stream_unlock_irqrestore(substream, flags);
+>>   	return 0;
+>>   }
+>> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+>> index fc6f98e..7faec82 100644
+>> --- a/sound/core/pcm_native.c
+>> +++ b/sound/core/pcm_native.c
+>> @@ -848,6 +848,7 @@ static void snd_pcm_post_start(struct snd_pcm_substream *substream, int state)
+>>   {
+>>   	struct snd_pcm_runtime *runtime = substream->runtime;
+>>   	snd_pcm_trigger_tstamp(substream);
+>> +	runtime->hw_ptr_jiffies = jiffies;
+>>   	runtime->status->state = state;
+>>   	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
+>>   	    runtime->silence_size > 0)
+>> @@ -961,6 +962,8 @@ static int snd_pcm_do_pause(struct snd_pcm_substream *substream, int push)
+>>   {
+>>   	if (substream->runtime->trigger_master != substream)
+>>   		return 0;
+>> +	/* skip one jiffies check */
+>> +	runtime->hw_ptr_jiffies = jiffies - HZ * 1000;
+>
+> This part is a bit tricky from readability POV, but I agree it's
+> better to avoid a new field.
 
-An enum is used to define an enumerated ALSA control.  A kcontrol is a
-generic ALSA control - there's nothing ASoC specific about it - and a
-DAPM widget is a thing for which there is power control.
+Perhaps a better comment might improve readability ;-)
 
-> 	2. what is/are the relationships among those important structures;
-> 	3. what is the differences between those controls for struct snd_kcontrol_new and struct snd_soc_dapm_widget;
+> However, one thing I thought in my patch is that it's safer *not* to
+> check the jiffies even for the first update after snd_pcm_start().
+> The potential problem we have now is that the first position check
+> might be too early when the device has a large FIFO or so.  By
+> skipping the first jiffies check, this could be worked around.
+> Usually the stream is stabilized and give periodic position updates
+> once when it's started.  But, after the first start, it's not always
+> stable enough.
 
-It'd be easier to answer this if you had some more specific questions?
-In general the answer is that things only go into DAPM if they have some
-relevance to power - that is, if they're a thing for which there is
-power control or if they control the routing of audio through the chip
-(and therefore let the core decide which parts of the chip need to be
-powered on).
+I would use runtime->delay to update the check margin (hdelta -= 
+runtime->delay) for such hardware instead this assumption. The 
+runtime->delay can be updated in the lowlevel driver - pointer() 
+callback. It will work for both fixed and variable FIFOs.
 
-As has already been suggested the easiest thing is probably to look at
-other CODEC drivers and compare what their drivers do with the
-datasheets.
+ 					Jaroslav
 
-> 	4. Should those sinks, sources, paths be defined in the arrays of struct snd_dapm_widget;
-
-Yes, all the things you have power control for should be there.
-
-> 	5. How can I select those defined paths through ALSA user-mode library as I can't find any examples in those ALSA tutorials;
-
-The controls are all visible as normal ALSA controls - there's nothing
-ASoC specific in the userspace API.  Look with an application such as
-amixer or alsamixer to see what's there.
-
-> Indeed, I'm right now trying to write a WM8985 driver for my s3c6400 based platform based on the kernel source v2.6.21 from Samsung.
-
-Note that this is rather old and there were a few issues in the example
-code with the way that the clocking was set up for the CPU - mostly due
-to direct access to the system clocking registers which could interfere
-with other drivers.  It might be worth looking at the very latest
-linux-next tree where there's a mostly complete implementation of audio
-support.
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
