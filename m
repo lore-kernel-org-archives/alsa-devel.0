@@ -1,21 +1,21 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Third time: Unlink PCM resource ?
-Date: Mon, 25 May 2009 23:54:09 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.0905252352590.4067@eeebox2.perex-int.cz>
-References: <4A1AB98B.9010604@yellowcouch.org> <s5hk54589xd.wl%tiwai@suse.de>
-	<4A1ADAEF.3070803@yellowcouch.org> <s5h8wklvyfc.wl%tiwai@suse.de>
-	<4A1AE302.8080702@yellowcouch.org> <s5h7i05vxol.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0905252036550.4067@eeebox2.perex-int.cz>
-	<4A1AF346.9040602@yellowcouch.org>
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: [PATCH V4 1/5] The macro spin_event_timeout() takes a
+	condition and	timeout value
+Date: Mon, 25 May 2009 18:15:07 -0400
+Message-ID: <20090525221507.21370.68301.stgit@terra>
+References: <20090525221406.21370.30326.stgit@terra>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id C4DAA24133
+Received: from mail-gx0-f158.google.com (mail-gx0-f158.google.com
+	[209.85.217.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id A2BB12434C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 May 2009 23:54:09 +0200 (CEST)
-In-Reply-To: <4A1AF346.9040602@yellowcouch.org>
+	Tue, 26 May 2009 00:15:07 +0200 (CEST)
+Received: by mail-gx0-f158.google.com with SMTP id 2so6650923gxk.8
+	for <alsa-devel@alsa-project.org>; Mon, 25 May 2009 15:15:07 -0700 (PDT)
+In-Reply-To: <20090525221406.21370.30326.stgit@terra>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,33 +25,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Werner Van Belle <werner@yellowcouch.org>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: grant.likely@secretlab.ca, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@sirena.org.uk, timur@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 25 May 2009, Werner Van Belle wrote:
+(in microseconds) as parameters.  It spins until either the condition is true
+or the timeout expires.  It returns the result of the condition when the loop
+was terminated.
 
-> Jaroslav Kysela wrote:
->> The question is if it's not better to free also allocated memory
->> associated to the pcm handle in child process - so snd_pcm_close()
->> call in child is not a bad idea.
->>
-> Okay, while you both have been discussing some internals, which I didn't
-> try yet, I created a demonstration program to illustrate the mixed
-> semantics of the 'sharing' versus 'not sharing' behavior of the dsp
-> devices. In the example the parent thread will play a sound, then the
-> child closes the dsp, which affects the playback in the parent (it
-> either hangs or skips all remaining samples). From this one would
-> conclude that the pcm device is fully shared between the two processes
-> (semantics I can live with). However, when the parent then tries to
-> reopen the device it cannot do so because the device is still 'busy'.
+This primary purpose of this macro is to poll on a hardware register until a
+status bit changes.  The timeout ensures that the loop still terminates if the
+bit doesn't change as expected.  This macro makes it easier for driver
+developers to perform this kind of operation properly.
 
-Your example program does not contain dsp_close() call in parent before 
-dsp_open(). That's reason why PCM device is blocked.
+Signed-off-by: Timur Tabi <timur@freescale.com>
+---
+ arch/powerpc/include/asm/delay.h |   33 +++++++++++++++++++++++++++++++++
+ 1 files changed, 33 insertions(+), 0 deletions(-)
 
- 						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+diff --git a/arch/powerpc/include/asm/delay.h b/arch/powerpc/include/asm/delay.h
+index f9200a6..fedf037 100644
+--- a/arch/powerpc/include/asm/delay.h
++++ b/arch/powerpc/include/asm/delay.h
+@@ -2,8 +2,11 @@
+ #define _ASM_POWERPC_DELAY_H
+ #ifdef __KERNEL__
+ 
++#include <asm/time.h>
++
+ /*
+  * Copyright 1996, Paul Mackerras.
++ * Copyright (C) 2009 Freescale Semiconductor, Inc. All rights reserved.
+  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License
+@@ -30,5 +33,35 @@ extern void udelay(unsigned long usecs);
+ #define mdelay(n)	udelay((n) * 1000)
+ #endif
+ 
++/**
++ * spin_event_timeout - spin until a condition gets true or a timeout elapses
++ * @condition: a C expression to evalate
++ * @timeout: timeout, in microseconds
++ * @delay: the number of microseconds to delay between eache evaluation of
++ *         @condition
++ * @rc: the last value of the condition
++ *
++ * The process spins until the condition evaluates to true (non-zero) or the
++ * timeout elapses.  Upon exit, @rc contains the value of the condition. This
++ * allows you to test the condition without incurring any side effects.
++ *
++ * This primary purpose of this macro is to poll on a hardware register
++ * until a status bit changes.  The timeout ensures that the loop still
++ * terminates even if the bit never changes.  The delay is for devices that
++ * need a delay in between successive reads.
++ *
++ * gcc will optimize out the if-statement if @delay is a constant.
++ */
++#define spin_event_timeout(condition, timeout, delay, rc)                   \
++{                                                                           \
++	unsigned long __loops = tb_ticks_per_usec * timeout;                \
++	unsigned long __start = get_tbl();                                  \
++	while ((rc = (condition)) && (tb_ticks_since(__start) <= __loops)) \
++		if (delay)                                                  \
++			udelay(delay);                                      \
++		else	                                                    \
++			cpu_relax();                                        \
++}
++
+ #endif /* __KERNEL__ */
+ #endif /* _ASM_POWERPC_DELAY_H */
