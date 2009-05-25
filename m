@@ -1,18 +1,20 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 2/3] ASoC: TWL4030: Add shadow register
-Date: Mon, 25 May 2009 10:44:38 +0300
-Message-ID: <1243237479-18631-3-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 3/3] ASoC: TWL4030: HandsfreeL/R mute DAPM
+	switch
+Date: Mon, 25 May 2009 10:44:39 +0300
+Message-ID: <1243237479-18631-4-git-send-email-peter.ujfalusi@nokia.com>
 References: <1243237479-18631-1-git-send-email-peter.ujfalusi@nokia.com>
 	<1243237479-18631-2-git-send-email-peter.ujfalusi@nokia.com>
+	<1243237479-18631-3-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id C1C6310384C
+	by alsa0.perex.cz (Postfix) with ESMTP id 75386103846
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 May 2009 09:44:52 +0200 (CEST)
-In-Reply-To: <1243237479-18631-2-git-send-email-peter.ujfalusi@nokia.com>
+	Mon, 25 May 2009 09:44:49 +0200 (CEST)
+In-Reply-To: <1243237479-18631-3-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,65 +28,74 @@ To: alsa-devel@alsa-project.org
 Cc: sakoman@gmail.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Shadow, non HW register for dealing with the HandsfreeL/R
-muting.
+Add DAPM switch for HeadsetL/R mute. Since all bits are are needed
+for the HFL/R pop removal to work the switch is using the SW_SHADOW
+no HW register for the HandsfreeL/R mute.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
- sound/soc/codecs/twl4030.c |    7 ++++++-
- sound/soc/codecs/twl4030.h |    7 ++++++-
- 2 files changed, 12 insertions(+), 2 deletions(-)
+ sound/soc/codecs/twl4030.c |   18 ++++++++++++++++--
+ 1 files changed, 16 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 17ddcb2..a59e817 100644
+index a59e817..ee24c84 100644
 --- a/sound/soc/codecs/twl4030.c
 +++ b/sound/soc/codecs/twl4030.c
-@@ -115,6 +115,7 @@ static const u8 twl4030_reg[TWL4030_CACHEREGNUM] = {
- 	0x00, /* REG_VIBRA_PWM_SET	(0x47)	*/
- 	0x00, /* REG_ANAMIC_GAIN	(0x48)	*/
- 	0x00, /* REG_MISC_SET_2		(0x49)	*/
-+	0x00, /* REG_SW_SHADOW		(0x50)	- Shadow, non HW register */
- };
+@@ -395,6 +395,10 @@ static const struct soc_enum twl4030_handsfreel_enum =
+ static const struct snd_kcontrol_new twl4030_dapm_handsfreel_control =
+ SOC_DAPM_ENUM("Route", twl4030_handsfreel_enum);
  
- /* codec private data */
-@@ -172,7 +173,11 @@ static int twl4030_write(struct snd_soc_codec *codec,
- 			unsigned int reg, unsigned int value)
- {
- 	twl4030_write_reg_cache(codec, reg, value);
--	return twl4030_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE, value, reg);
-+	if (likely(reg < TWL4030_REG_SW_SHADOW))
-+		return twl4030_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE, value,
-+					    reg);
-+	else
-+		return 0;
- }
- 
- static void twl4030_codec_enable(struct snd_soc_codec *codec, int enable)
-diff --git a/sound/soc/codecs/twl4030.h b/sound/soc/codecs/twl4030.h
-index 48326e2..e2315a1 100644
---- a/sound/soc/codecs/twl4030.h
-+++ b/sound/soc/codecs/twl4030.h
-@@ -92,8 +92,9 @@
- #define TWL4030_REG_VIBRA_PWM_SET	0x47
- #define TWL4030_REG_ANAMIC_GAIN		0x48
- #define TWL4030_REG_MISC_SET_2		0x49
-+#define TWL4030_REG_SW_SHADOW		0x50
- 
--#define TWL4030_CACHEREGNUM	(TWL4030_REG_MISC_SET_2 + 1)
-+#define TWL4030_CACHEREGNUM	(TWL4030_REG_SW_SHADOW + 1)
- 
- /* Bitfield Definitions */
- 
-@@ -260,6 +261,10 @@
- #define TWL4030_SMOOTH_ANAVOL_EN	0x02
- #define TWL4030_DIGMIC_LR_SWAP_EN	0x01
- 
-+/* TWL4030_REG_SW_SHADOW (0x50) Fields */
-+#define TWL4030_HFL_EN			0x01
-+#define TWL4030_HFR_EN			0x02
++/* Handsfree Left virtual mute */
++static const struct snd_kcontrol_new twl4030_dapm_handsfreelmute_control =
++	SOC_DAPM_SINGLE("Switch", TWL4030_REG_SW_SHADOW, 0, 1, 0);
 +
- #define TWL4030_DAI_HIFI		0
- #define TWL4030_DAI_VOICE		1
+ /* Handsfree Right */
+ static const char *twl4030_handsfreer_texts[] =
+ 		{"Voice", "AudioR1", "AudioR2", "AudioL2"};
+@@ -407,6 +411,10 @@ static const struct soc_enum twl4030_handsfreer_enum =
+ static const struct snd_kcontrol_new twl4030_dapm_handsfreer_control =
+ SOC_DAPM_ENUM("Route", twl4030_handsfreer_enum);
  
++/* Handsfree Right virtual mute */
++static const struct snd_kcontrol_new twl4030_dapm_handsfreermute_control =
++	SOC_DAPM_SINGLE("Switch", TWL4030_REG_SW_SHADOW, 1, 1, 0);
++
+ /* Vibra */
+ /* Vibra audio path selection */
+ static const char *twl4030_vibra_texts[] =
+@@ -1231,11 +1239,15 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 	/* HandsfreeL/R */
+ 	SND_SOC_DAPM_MUX("HandsfreeL Mux", SND_SOC_NOPM, 0, 0,
+ 		&twl4030_dapm_handsfreel_control),
++	SND_SOC_DAPM_SWITCH("HandsfreeL Switch", SND_SOC_NOPM, 0, 0,
++			&twl4030_dapm_handsfreelmute_control),
+ 	SND_SOC_DAPM_PGA_E("HandsfreeL PGA", SND_SOC_NOPM,
+ 			0, 0, NULL, 0, handsfreelpga_event,
+ 			SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
+ 	SND_SOC_DAPM_MUX("HandsfreeR Mux", SND_SOC_NOPM, 5, 0,
+ 		&twl4030_dapm_handsfreer_control),
++	SND_SOC_DAPM_SWITCH("HandsfreeR Switch", SND_SOC_NOPM, 0, 0,
++			&twl4030_dapm_handsfreermute_control),
+ 	SND_SOC_DAPM_PGA_E("HandsfreeR PGA", SND_SOC_NOPM,
+ 			0, 0, NULL, 0, handsfreerpga_event,
+ 			SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
+@@ -1346,13 +1358,15 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	{"HandsfreeL Mux", "AudioL1", "Analog L1 Playback Mixer"},
+ 	{"HandsfreeL Mux", "AudioL2", "Analog L2 Playback Mixer"},
+ 	{"HandsfreeL Mux", "AudioR2", "Analog R2 Playback Mixer"},
+-	{"HandsfreeL PGA", NULL, "HandsfreeL Mux"},
++	{"HandsfreeL Switch", "Switch", "HandsfreeL Mux"},
++	{"HandsfreeL PGA", NULL, "HandsfreeL Switch"},
+ 	/* HandsfreeR */
+ 	{"HandsfreeR Mux", "Voice", "Analog Voice Playback Mixer"},
+ 	{"HandsfreeR Mux", "AudioR1", "Analog R1 Playback Mixer"},
+ 	{"HandsfreeR Mux", "AudioR2", "Analog R2 Playback Mixer"},
+ 	{"HandsfreeR Mux", "AudioL2", "Analog L2 Playback Mixer"},
+-	{"HandsfreeR PGA", NULL, "HandsfreeR Mux"},
++	{"HandsfreeR Switch", "Switch", "HandsfreeR Mux"},
++	{"HandsfreeR PGA", NULL, "HandsfreeR Switch"},
+ 	/* Vibra */
+ 	{"Vibra Mux", "AudioL1", "DAC Left1"},
+ 	{"Vibra Mux", "AudioR1", "DAC Right1"},
 -- 
 1.6.3.1
