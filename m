@@ -1,19 +1,21 @@
-From: Werner Van Belle <werner@yellowcouch.org>
+From: Jaroslav Kysela <perex@perex.cz>
 Subject: Re: Third time: Unlink PCM resource ?
-Date: Mon, 25 May 2009 23:25:06 +0200
-Message-ID: <4A1B0CB2.2060103@yellowcouch.org>
-References: <4A1AB98B.9010604@yellowcouch.org>
-	<s5hk54589xd.wl%tiwai@suse.de>	<4A1ADAEF.3070803@yellowcouch.org>
-	<s5h8wklvyfc.wl%tiwai@suse.de>	<4A1AE302.8080702@yellowcouch.org>
-	<s5h7i05vxol.wl%tiwai@suse.de>
+Date: Mon, 25 May 2009 23:54:09 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.0905252352590.4067@eeebox2.perex-int.cz>
+References: <4A1AB98B.9010604@yellowcouch.org> <s5hk54589xd.wl%tiwai@suse.de>
+	<4A1ADAEF.3070803@yellowcouch.org> <s5h8wklvyfc.wl%tiwai@suse.de>
+	<4A1AE302.8080702@yellowcouch.org> <s5h7i05vxol.wl%tiwai@suse.de>
+	<alpine.LNX.2.00.0905252036550.4067@eeebox2.perex-int.cz>
+	<4A1AF346.9040602@yellowcouch.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2890305485013475188=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sigtrans.org (sigtrans.org [213.239.213.249])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5D9B32455A
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id C4DAA24133
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 May 2009 23:23:10 +0200 (CEST)
-In-Reply-To: <s5h7i05vxol.wl%tiwai@suse.de>
+	Mon, 25 May 2009 23:54:09 +0200 (CEST)
+In-Reply-To: <4A1AF346.9040602@yellowcouch.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,68 +25,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Werner Van Belle <werner@yellowcouch.org>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============2890305485013475188==
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigDFC977826A7FF182441019CB"
+On Mon, 25 May 2009, Werner Van Belle wrote:
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigDFC977826A7FF182441019CB
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+> Jaroslav Kysela wrote:
+>> The question is if it's not better to free also allocated memory
+>> associated to the pcm handle in child process - so snd_pcm_close()
+>> call in child is not a bad idea.
+>>
+> Okay, while you both have been discussing some internals, which I didn't
+> try yet, I created a demonstration program to illustrate the mixed
+> semantics of the 'sharing' versus 'not sharing' behavior of the dsp
+> devices. In the example the parent thread will play a sound, then the
+> child closes the dsp, which affects the playback in the parent (it
+> either hangs or skips all remaining samples). From this one would
+> conclude that the pcm device is fully shared between the two processes
+> (semantics I can live with). However, when the parent then tries to
+> reopen the device it cannot do so because the device is still 'busy'.
 
-Takashi Iwai wrote:
-> OK, I see the problem now, too.  In practice, you can get a file
-> descriptor from poll descriptor, but this doesn't cover all underlying
-> fds.  A new API function or an additional SND_PCM_* flag for
-> snd_pcm_open() would be needed, indeed.
->
-> In the latter case, it must be easy -- just pass O_CLOEXEC flag to
-> open() call...
->  =20
-That handles the close on exec well, but we are talking about forks
-here. There is not necessarily an exec involved in the child process.
+Your example program does not contain dsp_close() call in parent before 
+dsp_open(). That's reason why PCM device is blocked.
 
-Wkr,
+ 						Jaroslav
 
-Werner,-
-
---=20
-Dr. Werner Van Belle
-http://werner.yellowcouch.org/
-
-
-
---------------enigDFC977826A7FF182441019CB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iEYEARECAAYFAkobDLYACgkQYJM5sO5rAR2AaQCeLtIabi+SB61bpqGF6p+lrlpP
-eisAn0QZ/JX5B0NVDWF0vRaTMdJRylA5
-=783i
------END PGP SIGNATURE-----
-
---------------enigDFC977826A7FF182441019CB--
-
---===============2890305485013475188==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============2890305485013475188==--
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
