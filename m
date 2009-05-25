@@ -1,21 +1,20 @@
 From: Jon Smirl <jonsmirl@gmail.com>
 Subject: Re: [PATCH V3 2/4] AC97 driver for mpc5200
-Date: Mon, 25 May 2009 11:15:34 -0400
-Message-ID: <9e4733910905250815r4a6fa205s26531f08fe99131a@mail.gmail.com>
-References: <20090525013606.3073.86753.stgit@terra>
-	<20090525013849.3073.96729.stgit@terra>
-	<fa686aa40905242316j3e8b46e7mcc71dc34df209003@mail.gmail.com>
+Date: Mon, 25 May 2009 11:21:01 -0400
+Message-ID: <9e4733910905250821nf433121s6c161d3f2104b453@mail.gmail.com>
+References: <20090525013849.3073.96729.stgit@terra>
+	<20090525102647.GD18290@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.147])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0AF9124133
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.150])
+	by alsa0.perex.cz (Postfix) with ESMTP id 526AA2433E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 May 2009 17:15:35 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 4so1758371qwk.56
-	for <alsa-devel@alsa-project.org>; Mon, 25 May 2009 08:15:35 -0700 (PDT)
-In-Reply-To: <fa686aa40905242316j3e8b46e7mcc71dc34df209003@mail.gmail.com>
+	Mon, 25 May 2009 17:21:03 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 4so1759819qwk.56
+	for <alsa-devel@alsa-project.org>; Mon, 25 May 2009 08:21:02 -0700 (PDT)
+In-Reply-To: <20090525102647.GD18290@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,138 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Likely <grant.likely@secretlab.ca>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@sirena.org.uk
+To: grant.likely@secretlab.ca
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 25, 2009 at 2:16 AM, Grant Likely <grant.likely@secretlab.ca> w=
-rote:
-> On Sun, May 24, 2009 at 7:38 PM, Jon Smirl <jonsmirl@gmail.com> wrote:
->> +static unsigned short psc_ac97_read(struct snd_ac97 *ac97, unsigned sho=
-rt reg)
->> +{
->> + =A0 =A0 =A0 int timeout;
->> + =A0 =A0 =A0 unsigned int val;
->> +
->> + =A0 =A0 =A0 spin_lock(&psc_dma->lock);
->> +
->> + =A0 =A0 =A0 /* Wait for it to be ready */
->> + =A0 =A0 =A0 timeout =3D 1000;
->> + =A0 =A0 =A0 while ((--timeout) && (in_be16(&psc_dma->psc_regs->sr_csr.=
-status) &
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 MPC52xx_PSC_SR_CMDSEND))
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 udelay(10);
+On Mon, May 25, 2009 at 6:26 AM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+>> + =A0 =A0 =A0 =A0 =A0 =A0 spin_lock(&psc_dma->lock);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 out_be32(&psc_dma->psc_regs->ac97_slots, psc_d=
+ma->slots);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 spin_unlock(&psc_dma->lock);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 break;
 >
-> Holy unbounded latency Batman! =A0This code waits up to 10ms for a regist=
-er read!
->
-> I hate spinning, but if it must be done; I'd like to see it small.
-> What is the worst case latency? 125us for 8000Hz bus speed? =A0If you
-> must spin; can a cpu_relax() be used instead of the udelay() while
-> watch the timebase? =A0Timur recently posted a patch which makes this
-> easier.
->
-> http://patchwork.ozlabs.org/patch/27414/
->
-> They *should* be appearing in Ben's -next branch soon.
+> This locking looks wrong - I'd expect it to also cover the modification
+> of psc_dma->slots? =A0Otherwise it's hard to see what it buys you.
 
-
-The link always runs at 12.288Mhz. Each frame is 256 bits. Worst case
-you wait for two frames, 42us. If it doesn't respond in 42us the codec
-clock is not ticking ( a recurring problem I am running into). These
-codecs may be going into a sleep mode I don't understand, but this is
-not the right place to try and wake them up. I'll lower the retry
-counts to 10 instead of 1000.
-
-I played around with implementing this on a kernel thread with
-interrupts. It can be done but the code is a lot more complex.
-
-BTW, 8000Hz is implemented by slot stuffing. The link always runs at
-12.288Mhz. The DACs are double buffered. When a sample is transfered
-between buffers it sets a bit on the link back to the host, and the
-host sends the next sample in the appropriate slot.
-
-
->
->> +
->> + =A0 =A0 =A0 if (!timeout) {
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 pr_err("timeout on ac97 bus (rdy)\n");
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 0xffff;
->> + =A0 =A0 =A0 }
->> +
->> + =A0 =A0 =A0 /* Do the read */
->> + =A0 =A0 =A0 out_be32(&psc_dma->psc_regs->ac97_cmd, (1<<31) | ((reg & 0=
-x7f) << 24));
->> +
->> + =A0 =A0 =A0 /* Wait for the answer */
->> + =A0 =A0 =A0 timeout =3D 1000;
->> + =A0 =A0 =A0 while ((--timeout) && !(in_be16(&psc_dma->psc_regs->sr_csr=
-.status) &
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 MPC52xx_PSC_SR_DATA_VAL))
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 udelay(10);
->
-> ditto.
->
->> +static int psc_ac97_cold_reset_check(struct snd_ac97 *ac97)
->> +{
->> + =A0 =A0 =A0 int max_reset, timeout;
->> + =A0 =A0 =A0 struct mpc52xx_psc __iomem *regs =3D psc_dma->psc_regs;
->> +
->> + =A0 =A0 =A0 /* AC97 clock is generated by the codec.
->> + =A0 =A0 =A0 =A0* Ensure that it starts ticking after codec reset.
->> + =A0 =A0 =A0 =A0*/
->> + =A0 =A0 =A0 for (max_reset =3D 0; max_reset < 5; max_reset++) {
->> +
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Do a cold reset */
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 out_8(&regs->op1, MPC52xx_PSC_OP_RES);
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 udelay(10);
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 out_8(&regs->op0, MPC52xx_PSC_OP_RES);
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 udelay(50);
->
-> :-/ =A0Don't like, but don't know if there is an alternative.
->
->> +
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* PSC recover from cold reset
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* (cfr user manual, not sure if useful)
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*/
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 out_be32(&regs->sicr, in_be32(&regs->sicr)=
-);
->> +
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 psc_ac97_warm_reset(ac97);
->> +
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* first make sure AC97 clock is low */
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 for (timeout =3D 0; ((in_8(&regs->ipcr_acr=
-.ipcr) & 0x80) !=3D 0) &&
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (timeout <=
- 100); timeout++)
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 udelay(10);
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (timeout =3D=3D 100)
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 continue;
->> +
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* then wait for the transition to high */
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 for (timeout =3D 0; ((in_8(&regs->ipcr_acr=
-.ipcr) & 0x80) =3D=3D 0) &&
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (timeout <=
- 100); timeout++)
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 udelay(10);
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (timeout =3D=3D 100)
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 continue;
->
-> Using udelay makes this less accurate. =A0Only possible reason to use a
-> udelay is if the register cannot be polled at full speed (which is
-> possibly the case if it adds bus contention; but I don't think it is
-> an issue here).
->
-> g.
->
->
-> --
-> Grant Likely, B.Sc., P.Eng.
-> Secret Lab Technologies Ltd.
->
-
+Grant, why are you spin locking around register access?
 
 
 -- =
