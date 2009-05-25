@@ -1,7 +1,7 @@
 From: Mario Contreras <kenpuudenkiberserk@gmail.com>
 Subject: Fwd: Fwd: Fwd: Fwd: Testers wanted: New SB X-Fi driver
-Date: Mon, 25 May 2009 10:44:04 +0200
-Message-ID: <71efeafc0905250144p5221b020h35ab4ee4a5243733@mail.gmail.com>
+Date: Mon, 25 May 2009 11:14:51 +0200
+Message-ID: <71efeafc0905250214v79a42395o93b65227d7f4f12b@mail.gmail.com>
 References: <71efeafc0905250053x32b23773r104087c6f0ed3deb@mail.gmail.com>
 	<s5hy6slbonu.wl%tiwai@suse.de>
 	<71efeafc0905250107g668f155eu811b860d598be2c2@mail.gmail.com>
@@ -10,18 +10,19 @@ References: <71efeafc0905250053x32b23773r104087c6f0ed3deb@mail.gmail.com>
 	<s5htz39bnru.wl%tiwai@suse.de>
 	<71efeafc0905250130v6f427a00pfa0d503c53909cb7@mail.gmail.com>
 	<s5hprdxbmvd.wl%tiwai@suse.de>
+	<71efeafc0905250144p5221b020h35ab4ee4a5243733@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-bw0-f215.google.com (mail-bw0-f215.google.com
 	[209.85.218.215])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE1AA103836
+	by alsa0.perex.cz (Postfix) with ESMTP id 9F85E103836
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 May 2009 10:44:12 +0200 (CEST)
-Received: by bwz11 with SMTP id 11so3080597bwz.32
-	for <alsa-devel@alsa-project.org>; Mon, 25 May 2009 01:44:11 -0700 (PDT)
-In-Reply-To: <s5hprdxbmvd.wl%tiwai@suse.de>
+	Mon, 25 May 2009 11:14:52 +0200 (CEST)
+Received: by bwz11 with SMTP id 11so3099573bwz.32
+	for <alsa-devel@alsa-project.org>; Mon, 25 May 2009 02:14:51 -0700 (PDT)
+In-Reply-To: <71efeafc0905250144p5221b020h35ab4ee4a5243733@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,6 +34,42 @@ Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
+
+I have reinstalled only the alsa-driver and I've run aplay.
+
+With aplay -l I have this:
+
+**** Lista de PLAYBACK Dispositivos Hardware ****
+tarjeta 0: Intel [HDA Intel], dispositivo 0: ALC1200 Analog [ALC1200 Analog]
+  Subdispositivos: 1/1
+  Subdispositivo #0: subdevice #0
+tarjeta 1: HDMI [HDA ATI HDMI], dispositivo 3: ATI HDMI [ATI HDMI]
+  Subdispositivos: 1/1
+  Subdispositivo #0: subdevice #0
+tarjeta 2: Generic [HD-Audio Generic], dispositivo 0: CA0110 Analog [CA0110
+Analog]
+  Subdispositivos: 1/1
+  Subdispositivo #0: subdevice #0
+tarjeta 2: Generic [HD-Audio Generic], dispositivo 1: CA0110 Digital [CA0110
+Digital]
+  Subdispositivos: 1/1
+  Subdispositivo #0: subdevice #0
+
+Then, I executed aplay -D hw:2,0 foo.wav. And it returns this:
+
+Sonando WAVE 'foo.wav' : Signed 32 bit Little Endian, Ratio 44100 Hz,
+Est=E9reo
+aplay: pcm_write:1528: error de escritura: Error de entrada/salida
+
+If the language is a problem(sorry, I'm spanish), it means something like
+writting error: Input/output error. Thanks.
+
+---------- Forwarded message ----------
+From: Mario Contreras <kenpuudenkiberserk@gmail.com>
+Date: 2009/5/25
+Subject: Fwd: [alsa-devel] Fwd: Fwd: Fwd: Testers wanted: New SB X-Fi driver
+To: alsa-devel@alsa-project.org
+
 
 Ok, thank you very much. Only one question before I try this. Can I
 reinstall alsa ony compiling alsa-driver? I don't know if I have to
