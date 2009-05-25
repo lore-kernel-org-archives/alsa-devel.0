@@ -1,18 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd_pcm_writei() return value
-Date: Mon, 25 May 2009 09:49:04 +0200
-Message-ID: <4A1A4D70.4050903@ladisch.de>
-References: <8235e6f40905211026x15a45c05p3061cfb323b329a6@mail.gmail.com>	<alpine.LNX.2.00.0905212006040.4067@eeebox2.perex-int.cz>
-	<8235e6f40905211126y52ce14e9w42d81aa10f5e064@mail.gmail.com>
+From: Mario Contreras <kenpuudenkiberserk@gmail.com>
+Subject: Testers wanted: New SB X-Fi driver
+Date: Mon, 25 May 2009 09:53:17 +0200
+Message-ID: <71efeafc0905250053x32b23773r104087c6f0ed3deb@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id A0548103800
+Received: from mail-fx0-f170.google.com (mail-fx0-f170.google.com
+	[209.85.220.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2694610382A
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 May 2009 09:49:11 +0200 (CEST)
-In-Reply-To: <8235e6f40905211126y52ce14e9w42d81aa10f5e064@mail.gmail.com>
+	Mon, 25 May 2009 09:53:18 +0200 (CEST)
+Received: by fxm18 with SMTP id 18so3076250fxm.32
+	for <alsa-devel@alsa-project.org>; Mon, 25 May 2009 00:53:17 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,19 +22,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Cristian Morales Vega <cmorve69@yahoo.es>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Cristian Morales Vega wrote:
-> But if an interrupt happened, it could be that some samples were
-> written and others no, true? If only -EINTR is returned, how I know
-> how many of them I still need to write?
-
-If any samples have been written successfully, snd_pcm_writei() returns
-that number of samples.  You get a negative result only if no samples
-have been written.
-
-
-HTH
-Clemens
+Hello, I have this card. Will the unstable version work with my card? I have
+read it has a different chipset. I installed it a few days ago, but there
+wasn't any sound. I have Ubuntu 9.04. When I test it in sound preferences it
+freezes. I would like to test it. If I can be helpful, I'd appreciate you
+help me. Than you.
