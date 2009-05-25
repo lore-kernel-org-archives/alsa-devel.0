@@ -1,21 +1,18 @@
-From: =?UTF-8?Q?Vedran_Mileti=C4=87?= <rivanvx@gmail.com>
-Subject: Re: Fwd: Testers wanted: New SB X-Fi driver
-Date: Mon, 25 May 2009 10:10:31 +0200
-Message-ID: <fd3eb9bf0905250110h7549ecc0s272483bb7fc5c29a@mail.gmail.com>
-References: <71efeafc0905250053x32b23773r104087c6f0ed3deb@mail.gmail.com>
-	<s5hy6slbonu.wl%tiwai@suse.de>
-	<71efeafc0905250107g668f155eu811b860d598be2c2@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH 2/3 take2] ASoC: TWL4030: Add shadow register
+Date: Mon, 25 May 2009 11:12:12 +0300
+Message-ID: <1243239133-18996-3-git-send-email-peter.ujfalusi@nokia.com>
+References: <1243239133-18996-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1243239133-18996-2-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.148])
-	by alsa0.perex.cz (Postfix) with ESMTP id BB45D103836
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id AE75E103853
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 May 2009 10:10:52 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 4so1674653qwk.56
-	for <alsa-devel@alsa-project.org>; Mon, 25 May 2009 01:10:51 -0700 (PDT)
-In-Reply-To: <71efeafc0905250107g668f155eu811b860d598be2c2@mail.gmail.com>
+	Mon, 25 May 2009 10:12:22 +0200 (CEST)
+In-Reply-To: <1243239133-18996-2-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,21 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mario Contreras <kenpuudenkiberserk@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: sakoman@gmail.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBNYXkgMjUsIDIwMDkgYXQgMTA6MDcgQU0sIE1hcmlvIENvbnRyZXJhcwo8a2VucHV1
-ZGVua2liZXJzZXJrQGdtYWlsLmNvbT4gd3JvdGU6Cj4gSSdtIHNvcnJ5LCBJIG1hZGUgYSBtaXN0
-YWtlLiBJIHNlZW1zIHN0dXBpZC4uLjpQCj4KPiBNeSBjYXJkIGlzIHRoZSBYLUZJIFh0cmVtZSBB
-dWRpbyBQQ0ktRS4KPiBodHRwOi8vZXMuY3JlYXRpdmUuY29tL3Byb2R1Y3RzL3Byb2R1Y3QuYXNw
-P2NhdGVnb3J5PTY3MSZzdWJjYXRlZ29yeT02NzMmcHJvZHVjdD0xNjc3MAo+Cj4gSSdtIHNvcnJ5
-Li4uCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cj4KCkknbSBjZXJ0YWluIGl0IGhhcyBubyBlbXUyMGt4IGNoaXAuIEknbSBhZnJhaWQgdGhpcyBp
-cyBvbmx5IEhEQQpDcmVhdGl2ZSBjYXJkLi4uIHNvLCBpdCBzaG91bGQgd29yayB3aXRoIHNuZC1o
-ZGEtaW50ZWwgd2l0aApwYXRjaF9jcmVhdGl2ZS4KClZlZHJhbiBNaWxldGnEhwpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Shadow, non HW register for dealing with the HandsfreeL/R
+muting.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+ sound/soc/codecs/twl4030.c |    7 ++++++-
+ sound/soc/codecs/twl4030.h |    7 ++++++-
+ 2 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 17ddcb2..989446d 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -115,6 +115,7 @@ static const u8 twl4030_reg[TWL4030_CACHEREGNUM] = {
+ 	0x00, /* REG_VIBRA_PWM_SET	(0x47)	*/
+ 	0x00, /* REG_ANAMIC_GAIN	(0x48)	*/
+ 	0x00, /* REG_MISC_SET_2		(0x49)	*/
++	0x00, /* REG_SW_SHADOW		(0x4A)	- Shadow, non HW register */
+ };
+
+ /* codec private data */
+@@ -172,7 +173,11 @@ static int twl4030_write(struct snd_soc_codec *codec,
+ 			unsigned int reg, unsigned int value)
+ {
+ 	twl4030_write_reg_cache(codec, reg, value);
+-	return twl4030_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE, value, reg);
++	if (likely(reg < TWL4030_REG_SW_SHADOW))
++		return twl4030_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE, value,
++					    reg);
++	else
++		return 0;
+ }
+
+ static void twl4030_codec_enable(struct snd_soc_codec *codec, int enable)
+diff --git a/sound/soc/codecs/twl4030.h b/sound/soc/codecs/twl4030.h
+index 48326e2..fe5f395 100644
+--- a/sound/soc/codecs/twl4030.h
++++ b/sound/soc/codecs/twl4030.h
+@@ -92,8 +92,9 @@
+ #define TWL4030_REG_VIBRA_PWM_SET	0x47
+ #define TWL4030_REG_ANAMIC_GAIN		0x48
+ #define TWL4030_REG_MISC_SET_2		0x49
++#define TWL4030_REG_SW_SHADOW		0x4A
+
+-#define TWL4030_CACHEREGNUM	(TWL4030_REG_MISC_SET_2 + 1)
++#define TWL4030_CACHEREGNUM	(TWL4030_REG_SW_SHADOW + 1)
+
+ /* Bitfield Definitions */
+
+@@ -260,6 +261,10 @@
+ #define TWL4030_SMOOTH_ANAVOL_EN	0x02
+ #define TWL4030_DIGMIC_LR_SWAP_EN	0x01
+
++/* TWL4030_REG_SW_SHADOW (0x4A) Fields */
++#define TWL4030_HFL_EN			0x01
++#define TWL4030_HFR_EN			0x02
++
+ #define TWL4030_DAI_HIFI		0
+ #define TWL4030_DAI_VOICE		1
+
+--
+1.6.3.1
