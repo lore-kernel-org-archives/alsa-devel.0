@@ -1,20 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 2/3] ASoC: TWL4030: Add shadow register
-Date: Mon, 25 May 2009 11:05:44 +0300
-Message-ID: <200905251105.44988.peter.ujfalusi@nokia.com>
-References: <1243237479-18631-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1243237479-18631-3-git-send-email-peter.ujfalusi@nokia.com>
-	<s5h3aatd3nm.wl%tiwai@suse.de>
+From: Mario Contreras <kenpuudenkiberserk@gmail.com>
+Subject: Fwd:  Testers wanted: New SB X-Fi driver
+Date: Mon, 25 May 2009 10:07:17 +0200
+Message-ID: <71efeafc0905250107g668f155eu811b860d598be2c2@mail.gmail.com>
+References: <71efeafc0905250053x32b23773r104087c6f0ed3deb@mail.gmail.com>
+	<s5hy6slbonu.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id E312810382A
+Received: from mail-fx0-f170.google.com (mail-fx0-f170.google.com
+	[209.85.220.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id B71DB10382A
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 May 2009 10:05:48 +0200 (CEST)
-In-Reply-To: <s5h3aatd3nm.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Mon, 25 May 2009 10:07:17 +0200 (CEST)
+Received: by fxm18 with SMTP id 18so3084469fxm.32
+	for <alsa-devel@alsa-project.org>; Mon, 25 May 2009 01:07:17 -0700 (PDT)
+In-Reply-To: <s5hy6slbonu.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,42 +25,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Takashi Iwai <tiwai@suse.de>
-Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 25 May 2009 10:48:13 ext Takashi Iwai wrote:
-> At Mon, 25 May 2009 10:44:38 +0300,
->
-> Peter Ujfalusi wrote:
-> > Shadow, non HW register for dealing with the HandsfreeL/R
-> > muting.
-> >
-> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> > ---
-> >  sound/soc/codecs/twl4030.c |    7 ++++++-
-> >  sound/soc/codecs/twl4030.h |    7 ++++++-
-> >  2 files changed, 12 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-> > index 17ddcb2..a59e817 100644
-> > --- a/sound/soc/codecs/twl4030.c
-> > +++ b/sound/soc/codecs/twl4030.c
-> > @@ -115,6 +115,7 @@ static const u8 twl4030_reg[TWL4030_CACHEREGNUM] =
-=3D {
-> >  	0x00, /* REG_VIBRA_PWM_SET	(0x47)	*/
-> >  	0x00, /* REG_ANAMIC_GAIN	(0x48)	*/
-> >  	0x00, /* REG_MISC_SET_2		(0x49)	*/
-> > +	0x00, /* REG_SW_SHADOW		(0x50)	- Shadow, non HW register */
->
-> Isn't it 0x4a after 0x49?
+I'm sorry, I made a mistake. I seems stupid...:P
 
-Oops. Yes. Sorry. I'll resend...
+My card is the X-FI Xtreme Audio PCI-E.
+http://es.creative.com/products/product.asp?category=671&subcategory=673&product=16770
 
->
->
-> Takashi
-
--- =
-
-P=E9ter
+I'm sorry...
