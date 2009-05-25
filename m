@@ -1,21 +1,20 @@
-From: Jon Smirl <jonsmirl@gmail.com>
-Subject: [PATCH V4 5/5] Fabric bindings for STAC9766 on the
-	Efika
-Date: Mon, 25 May 2009 18:15:15 -0400
-Message-ID: <20090525221515.21370.28973.stgit@terra>
-References: <20090525221406.21370.30326.stgit@terra>
+From: Werner Van Belle <werner@yellowcouch.org>
+Subject: Re: Third time: Unlink PCM resource ?
+Date: Tue, 26 May 2009 00:29:35 +0200
+Message-ID: <4A1B1BCF.8050808@yellowcouch.org>
+References: <4A1AB98B.9010604@yellowcouch.org>
+	<s5hk54589xd.wl%tiwai@suse.de>	<4A1ADAEF.3070803@yellowcouch.org>
+	<s5h8wklvyfc.wl%tiwai@suse.de>	<4A1AE302.8080702@yellowcouch.org>
+	<s5h7i05vxol.wl%tiwai@suse.de>	<alpine.LNX.2.00.0905252036550.4067@eeebox2.perex-int.cz>	<4A1AF346.9040602@yellowcouch.org>
+	<alpine.LNX.2.00.0905252352590.4067@eeebox2.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3417745945709668641=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f158.google.com (mail-gx0-f158.google.com
-	[209.85.217.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5CDC52436D
+Received: from sigtrans.org (sigtrans.org [213.239.213.249])
+	by alsa0.perex.cz (Postfix) with ESMTP id 172A324369
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 May 2009 00:15:17 +0200 (CEST)
-Received: by mail-gx0-f158.google.com with SMTP id 2so6650923gxk.8
-	for <alsa-devel@alsa-project.org>; Mon, 25 May 2009 15:15:17 -0700 (PDT)
-In-Reply-To: <20090525221406.21370.30326.stgit@terra>
+	Tue, 26 May 2009 00:27:41 +0200 (CEST)
+In-Reply-To: <alpine.LNX.2.00.0905252352590.4067@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,138 +24,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: grant.likely@secretlab.ca, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@sirena.org.uk, timur@freescale.com
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Fabric bindings for STAC9766 AC97 codec on the Efika.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============3417745945709668641==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig0C2AD1A132E2D8AC697A12BC"
 
-Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
----
- sound/soc/fsl/Kconfig              |    8 +++
- sound/soc/fsl/Makefile             |    1 
- sound/soc/fsl/efika-audio-fabric.c |   90 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 99 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/fsl/efika-audio-fabric.c
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig0C2AD1A132E2D8AC697A12BC
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 79579ae..f571c6e 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -47,3 +47,11 @@ config SND_MPC52xx_SOC_PCM030
- 	help
- 	  Say Y if you want to add support for sound on the Phytec pcm030 baseboard.
- 
-+config SND_MPC52xx_SOC_EFIKA
-+	tristate "SoC AC97 Audio support for bbplan Efika and STAC9766"
-+	depends on PPC_EFIKA
-+	select SND_SOC_MPC5200_AC97
-+	select SND_SOC_STAC9766
-+	help
-+	  Say Y if you want to add support for sound on the Efika.
-+
-diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index 66d88c8..a83a739 100644
---- a/sound/soc/fsl/Makefile
-+++ b/sound/soc/fsl/Makefile
-@@ -17,4 +17,5 @@ obj-$(CONFIG_SND_SOC_MPC5200_AC97) += mpc5200_psc_ac97.o
- 
- # MPC5200 Machine Support
- obj-$(CONFIG_SND_MPC52xx_SOC_PCM030) += pcm030-audio-fabric.o
-+obj-$(CONFIG_SND_MPC52xx_SOC_EFIKA) += efika-audio-fabric.o
- 
-diff --git a/sound/soc/fsl/efika-audio-fabric.c b/sound/soc/fsl/efika-audio-fabric.c
-new file mode 100644
-index 0000000..85b0e75
---- /dev/null
-+++ b/sound/soc/fsl/efika-audio-fabric.c
-@@ -0,0 +1,90 @@
-+/*
-+ * Efika driver for the PSC of the Freescale MPC52xx
-+ * configured as AC97 interface
-+ *
-+ * Copyright 2008 Jon Smirl, Digispeaker
-+ * Author: Jon Smirl <jonsmirl@gmail.com>
-+ *
-+ * This file is licensed under the terms of the GNU General Public License
-+ * version 2. This program is licensed "as is" without any warranty of any
-+ * kind, whether express or implied.
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/interrupt.h>
-+#include <linux/device.h>
-+#include <linux/delay.h>
-+#include <linux/of_device.h>
-+#include <linux/of_platform.h>
-+#include <linux/dma-mapping.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/initval.h>
-+#include <sound/soc.h>
-+#include <sound/soc-of-simple.h>
-+
-+#include "mpc5200_dma.h"
-+#include "mpc5200_psc_ac97.h"
-+#include "../codecs/stac9766.h"
-+
-+static struct snd_soc_device device;
-+static struct snd_soc_card card;
-+
-+static struct snd_soc_dai_link efika_fabric_dai[] = {
-+{
-+	.name = "AC97",
-+	.stream_name = "AC97 Analog",
-+	.codec_dai = &stac9766_dai[STAC9766_DAI_AC97_ANALOG],
-+	.cpu_dai = &psc_ac97_dai[MPC5200_AC97_NORMAL],
-+},
-+{
-+	.name = "AC97",
-+	.stream_name = "AC97 IEC958",
-+	.codec_dai = &stac9766_dai[STAC9766_DAI_AC97_DIGITAL],
-+	.cpu_dai = &psc_ac97_dai[MPC5200_AC97_SPDIF],
-+},
-+};
-+
-+static __init int efika_fabric_init(void)
-+{
-+	struct platform_device *pdev;
-+	int rc;
-+
-+	if (!machine_is_compatible("bplan,efika"))
-+		return -ENODEV;
-+
-+	card.platform = &mpc5200_audio_dma_platform;
-+	card.name = "Efika";
-+	card.dai_link = efika_fabric_dai;
-+	card.num_links = ARRAY_SIZE(efika_fabric_dai);
-+
-+	device.card = &card;
-+	device.codec_dev = &soc_codec_dev_stac9766;
-+
-+	pdev = platform_device_alloc("soc-audio", 1);
-+	if (!pdev) {
-+		pr_err("efika_fabric_init: platform_device_alloc() failed\n");
-+		return -ENODEV;
-+	}
-+
-+	platform_set_drvdata(pdev, &device);
-+	device.dev = &pdev->dev;
-+
-+	rc = platform_device_add(pdev);
-+	if (rc) {
-+		pr_err("efika_fabric_init: platform_device_add() failed\n");
-+		return -ENODEV;
-+	}
-+	return 0;
-+}
-+
-+module_init(efika_fabric_init);
-+
-+
-+MODULE_AUTHOR("Jon Smirl <jonsmirl@gmail.com>");
-+MODULE_DESCRIPTION(DRV_NAME ": mpc5200 Efika fabric driver");
-+MODULE_LICENSE("GPL");
-+
+Jaroslav Kysela wrote:
+> Your example program does not contain dsp_close() call in parent before=
+=20
+> dsp_open(). That's reason why PCM device is blocked.
+>  =20
+That could make sense, but then the wave should not stop playing when
+the child process closes the dsp ?
+Currently the child process has no way to release the dsp without
+stopping the parent process during play.
+
+Werner,-
+
+--=20
+Dr. Werner Van Belle
+http://werner.yellowcouch.org/
+
+
+
+--------------enig0C2AD1A132E2D8AC697A12BC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iEYEARECAAYFAkobG9QACgkQYJM5sO5rAR1DeQCeIn8245Q/guMsQ8Xmhis/qMck
+M2sAnjeEOO3H30A7HYdLsJ+nh8+gHwGp
+=dZki
+-----END PGP SIGNATURE-----
+
+--------------enig0C2AD1A132E2D8AC697A12BC--
+
+--===============3417745945709668641==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3417745945709668641==--
