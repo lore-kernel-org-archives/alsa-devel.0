@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Help on writing an ALSA ASoC Driver for WM8985
-Date: Mon, 25 May 2009 13:54:03 +0100
-Message-ID: <20090525125403.GI18290@sirena.org.uk>
-References: <D6546E3E62D77445A7E4B9A0FD70CDE007A800E4@FTBM01.ft.cct.grp>
+From: Canella Matteo <Matteo.Canella@mta.it>
+Subject: period_size and .asoundrc
+Date: Mon, 25 May 2009 15:12:17 +0200
+Message-ID: <BD9F3F3F5A6CCF4BA032B9FED4DD312E8938AE@mta-digimail.MTA.INT>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7C49F24347
+Received: from cluster-a.mailcontrol.com (cluster-a.mailcontrol.com
+	[85.115.52.190]) by alsa0.perex.cz (Postfix) with ESMTP id 3295424384
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 May 2009 14:54:05 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <D6546E3E62D77445A7E4B9A0FD70CDE007A800E4@FTBM01.ft.cct.grp>
+	Mon, 25 May 2009 15:12:30 +0200 (CEST)
+Received: from mailserver.mta.int (mail.mta.it [89.96.171.250])
+	by rly04a.srv.mailcontrol.com (MailControl) with ESMTP id
+	n4PDCS50019396
+	for <alsa-devel@alsa-project.org>; Mon, 25 May 2009 14:12:28 +0100
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,21 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Leung Chi Tat <ctleung@cct.com.hk>
-Cc: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 25, 2009 at 08:47:31PM +0800, Leung Chi Tat wrote:
+Hi everybody,
+I'm writing a little software that play a tone on a pcm device.
+In the hw param initialization I'm hardcoding the "periods" and "period_size" values:
 
-> I'm right now studying the driver code for wm8980 codec (from the main
-> trunk of linux-2.6-asoc) as it seems to be more close to wm8985.  I
-> can't find any code for triggering those volume update bits after
-> modified those volume registers.   But, the wm8980 datasheet states
-> that we have to do so to make those volume updates properly.  Is there
-> some black magic in the code?
+                unsigned int periods = 4;
+                if (snd_pcm_hw_params_set_periods_near(buzzer_device.pcm_handle, buzzer_device.hwparams, &periods, 0) < 0) {
+                               fprintf(stderr, "Error setting periods.\n");
+                               return 1;
+                }
+                ///* set the period time */
+                period_size = 8192;
+                err = snd_pcm_hw_params_set_period_size_near(buzzer_device.pcm_handle, buzzer_device.hwparams, &period_size, 0);
+                if (err < 0) {
+                               printf("Unable to get period size for playback: %s\n", snd_strerror(err));
+                               return err;
+                }
 
-The normal approach for volume update bits is to set them when
-initialising the CODEC at startup - this is what the wm8990 driver is
-doing when it writes to the volume registers in wm8990_init().  This
-means that any further register writes which only change the volume
-field in the registers will also have the volume update bit set.
+I'd like to read this parameter form the .asoundrc file, so I'm wondering if there were API that does this task.
+
+Thanks
+
+Matteo Canella
