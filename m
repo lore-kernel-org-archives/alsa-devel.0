@@ -1,24 +1,16 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH V3 1/4] Main rewite of the mpc5200 audio
-	DMA code
-Date: Mon, 25 May 2009 07:22:37 -0600
-Message-ID: <fa686aa40905250622h3c2076c2l21a5dd9f29e5f78e@mail.gmail.com>
-References: <20090525013606.3073.86753.stgit@terra>
-	<20090525013847.3073.55951.stgit@terra>
-	<fa686aa40905242326y6a88af84n40f23759661a6cd0@mail.gmail.com>
-	<20090525093439.GA18290@sirena.org.uk>
+From: wei zhang <zhang.wei.qd@gmail.com>
+Subject: usb audio alsa driver
+Date: Mon, 25 May 2009 22:02:11 +0800
+Message-ID: <87731b90905250702u721c6e32o14f34c64c8b1ba02@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary=0016e644ba1a889844046abd0e0f
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f158.google.com (mail-gx0-f158.google.com
-	[209.85.217.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id B4BC8243AA
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id 81C9E1037F0
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 May 2009 15:22:58 +0200 (CEST)
-Received: by gxk2 with SMTP id 2so6181150gxk.8
-	for <alsa-devel@alsa-project.org>; Mon, 25 May 2009 06:22:57 -0700 (PDT)
-In-Reply-To: <20090525093439.GA18290@sirena.org.uk>
+	Mon, 25 May 2009 16:02:13 +0200 (CEST)
+Received: by yx-out-1718.google.com with SMTP id 6so2382482yxn.2
+	for <alsa-devel@alsa-project.org>; Mon, 25 May 2009 07:02:12 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,33 +20,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 25, 2009 at 3:34 AM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Mon, May 25, 2009 at 12:26:27AM -0600, Grant Likely wrote:
->> On Sun, May 24, 2009 at 7:38 PM, Jon Smirl <jonsmirl@gmail.com> wrote:
->
->> > +/* ------------------------------------------------------------------=
----
->> > + * Sysfs attributes for error monitoring
->> > + */
->
->> All this sysfs stuff should be dropped from this patch. =A0It is an
->> abuse of sysfs and I never should have written it this way. =A0Feel free
->> to put it in a separate patch so others can use it if they really need
->> it, but I'd like it to not be kept in mainline.
->
-> If this is going to be kept it should be in debugfs like I said in
-> response to the v2 posting.
+--0016e644ba1a889844046abd0e0f
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-exactly.
+hi
+I was for our devices under linux audio alsa driver, I encountered a lot of
+trouble now, please help me.
+My audio device is this: usb interface types, transmission of data through
+the INT endpoint, each 64 bytes, read out the PCM audio data stream, the
+sampling rate is 22,050, a single channel, I have the debugging information
+data crawlers , but I am under no voice in skype, you can tell me the
+possible reason? Or give me some recommendations, I am very anxious, I would
+like to thank.I sent my driver, please help me show you, thank you
 
-g.
+--0016e644ba1a889844046abd0e0f
+Content-Type: application/x-gzip; name="vpaudio.tar.gz"
+Content-Disposition: attachment; filename="vpaudio.tar.gz"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fv592k880
 
--- =
+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
+--0016e644ba1a889844046abd0e0f
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--0016e644ba1a889844046abd0e0f--
