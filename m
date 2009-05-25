@@ -1,21 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: 2.6.30: xruns caused by "ALSA: pcm - Safer
- boundary checks"
-Date: Mon, 25 May 2009 12:19:19 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.0905251212130.4067@eeebox2.perex-int.cz>
-References: <20090522162709.2e04b688@dhcp-100-2-144.bos.redhat.com>
-	<s5hmy94x0sy.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0905231430400.4067@eeebox2.perex-int.cz>
-	<s5hk547el2j.wl%tiwai@suse.de>
+From: Eric Miao <eric.y.miao@gmail.com>
+Subject: Re: [PATCH 1/2] pxa2xx-ac97-lib: move set_resetgpio to
+	pxa27x.c
+Date: Mon, 25 May 2009 18:21:40 +0800
+Message-ID: <f17812d70905250321y4b914bc8r24527b51ff0531e8@mail.gmail.com>
+References: <1243243219-23786-1-git-send-email-dbaryshkov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 980BB103839
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.147])
+	by alsa0.perex.cz (Postfix) with ESMTP id 18C17103839
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 May 2009 12:19:20 +0200 (CEST)
-In-Reply-To: <s5hk547el2j.wl%tiwai@suse.de>
+	Mon, 25 May 2009 12:21:40 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 4so1693131qwk.56
+	for <alsa-devel@alsa-project.org>; Mon, 25 May 2009 03:21:40 -0700 (PDT)
+In-Reply-To: <1243243219-23786-1-git-send-email-dbaryshkov@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,76 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Chuck Ebbert <cebbert@redhat.com>
+To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.miao@marvell.com>, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 23 May 2009, Takashi Iwai wrote:
-
-> At Sat, 23 May 2009 14:31:57 +0200 (CEST),
-> Jaroslav Kysela wrote:
->>
->> On Fri, 22 May 2009, Takashi Iwai wrote:
->>
->>> At Fri, 22 May 2009 16:27:09 -0400,
->>> Chuck Ebbert wrote:
->>>>
->>>> Bug report: https://bugzilla.redhat.com/show_bug.cgi?id=498858
->>>>
->>>> To reproduce, pause a video in mplayer and then hit play:
->>>>
->>>> ALSA sound/core/pcm_lib.c:263: hda_codec: hw_ptr skipping! [Q] (pos=11263,
->>>> delta=17400, period=1024, jdelta=21/362/0)
->>>
->>> Does the patch fix the problem?
->>
->> This patch does not look as a proper fix.
+On Mon, May 25, 2009 at 5:20 PM, Dmitry Eremin-Solenikov
+<dbaryshkov@gmail.com> wrote:
+> The code related to set_resetgpio is pxa27x specific and should
+> not be present in sound driver lib. Move it to appropriate place.
 >
-> Hm, at which point?
-> It just skips the first unreliable jiffies check.
-> At least, it's interesting whether it works around the problem.
+> The code is moved to arch/arm as it will be converted from (exported)
+> pxa_gpio_mode() calls to use MFP which are unexported to modules.
+>
 
-I meant that it is not necessary to introduce a next variable. This patch 
-is more elegant:
+Having thought a while about this, and based on Mark's previous comment,
+I'm thinking of moving this code to another place might not be the best choice,
+there are two other ways out from my POV:
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index a2a792c..3eea98a 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1478,7 +1478,6 @@ static int snd_pcm_lib_ioctl_reset(struct snd_pcm_substream *substream,
-  		runtime->status->hw_ptr %= runtime->buffer_size;
-  	else
-  		runtime->status->hw_ptr = 0;
--	runtime->hw_ptr_jiffies = jiffies;
-  	snd_pcm_stream_unlock_irqrestore(substream, flags);
-  	return 0;
-  }
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index fc6f98e..7faec82 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -848,6 +848,7 @@ static void snd_pcm_post_start(struct snd_pcm_substream *substream, int state)
-  {
-  	struct snd_pcm_runtime *runtime = substream->runtime;
-  	snd_pcm_trigger_tstamp(substream);
-+	runtime->hw_ptr_jiffies = jiffies;
-  	runtime->status->state = state;
-  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
-  	    runtime->silence_size > 0)
-@@ -961,6 +962,8 @@ static int snd_pcm_do_pause(struct snd_pcm_substream *substream, int push)
-  {
-  	if (substream->runtime->trigger_master != substream)
-  		return 0;
-+	/* skip one jiffies check */
-+	runtime->hw_ptr_jiffies = jiffies - HZ * 1000;
-  	return substream->ops->trigger(substream,
-  				       push ? SNDRV_PCM_TRIGGER_PAUSE_PUSH :
-  					      SNDRV_PCM_TRIGGER_PAUSE_RELEASE);
+1. having mfp.c export mfp_config() for external usage
+2. or having something like IrDA, i.e. platform specific hooks to make
+the driver code generic
 
+I personally prefer way 2) but don't have time for a clean solution yet,
+maybe you can help take a look into this. That would be nice.
 
- 				Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+- eric
