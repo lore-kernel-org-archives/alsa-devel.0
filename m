@@ -1,56 +1,65 @@
-From: Juergen Beisert <jbe@pengutronix.de>
-Subject: Re: [PATCH V2 5/9] Main rewite of the mpc5200 audio DMA code
-Date: Mon, 25 May 2009 09:56:27 +0200
-Message-ID: <200905250956.28206.jbe@pengutronix.de>
-References: <20090523231148.17919.46103.stgit@terra>
-	<20090524185509.GA3561@pengutronix.de>
-	<9e4733910905241310n59952fd2oaafd7f1363db324@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 2/3] ASoC: TWL4030: Add shadow register
+Date: Mon, 25 May 2009 11:05:44 +0300
+Message-ID: <200905251105.44988.peter.ujfalusi@nokia.com>
+References: <1243237479-18631-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1243237479-18631-3-git-send-email-peter.ujfalusi@nokia.com>
+	<s5h3aatd3nm.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
-In-Reply-To: <9e4733910905241310n59952fd2oaafd7f1363db324@mail.gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id E312810382A
+	for <alsa-devel@alsa-project.org>;
+	Mon, 25 May 2009 10:05:48 +0200 (CEST)
+In-Reply-To: <s5h3aatd3nm.wl%tiwai@suse.de>
 Content-Disposition: inline
-List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
-List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
-List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
-Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
-To: linuxppc-dev@ozlabs.org
-Cc: alsa-devel@alsa-project.org, broonie@sirena.org.uk
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ext Takashi Iwai <tiwai@suse.de>
+Cc: "sakoman@gmail.com" <sakoman@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Jon,
-
-On Sonntag, 24. Mai 2009, Jon Smirl wrote:
-> On Sun, May 24, 2009 at 2:55 PM, Wolfram Sang <w.sang@pengutronix.de> wrote:
-> >> Rewrite the mpc5200 audio DMA code to support both I2S and AC97. Make it
-> >> more robust.
-> >
-> > Why is it more robust?
+On Monday 25 May 2009 10:48:13 ext Takashi Iwai wrote:
+> At Mon, 25 May 2009 10:44:38 +0300,
 >
-> I've implemented retries for when the AC97 hardware doesn't reset on
-> first try. About 10% of the time both the Efika and pcm030 AC97 codecs
-> don't reset on first try and need to be poked multiple times.  Failure
-> is indicated by not having the link clock start ticking. Every once in
-> a while even five pokes won't get the link started and I have to power
-> cycle.
+> Peter Ujfalusi wrote:
+> > Shadow, non HW register for dealing with the HandsfreeL/R
+> > muting.
+> >
+> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> > ---
+> >  sound/soc/codecs/twl4030.c |    7 ++++++-
+> >  sound/soc/codecs/twl4030.h |    7 ++++++-
+> >  2 files changed, 12 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+> > index 17ddcb2..a59e817 100644
+> > --- a/sound/soc/codecs/twl4030.c
+> > +++ b/sound/soc/codecs/twl4030.c
+> > @@ -115,6 +115,7 @@ static const u8 twl4030_reg[TWL4030_CACHEREGNUM] =
+=3D {
+> >  	0x00, /* REG_VIBRA_PWM_SET	(0x47)	*/
+> >  	0x00, /* REG_ANAMIC_GAIN	(0x48)	*/
+> >  	0x00, /* REG_MISC_SET_2		(0x49)	*/
+> > +	0x00, /* REG_SW_SHADOW		(0x50)	- Shadow, non HW register */
+>
+> Isn't it 0x4a after 0x49?
 
-Do you know this (from our website)?
+Oops. Yes. Sorry. I'll resend...
 
-"The AC97 mixer needs a hardware patch to make it wake up from power down 
-mode. Download here the instruction how to do so."
+>
+>
+> Takashi
 
-http://www.pengutronix.de/oselas/bsp/phytec/download/phyCORE-MPC5200B-tiny/TN-015e_1.pdf
+-- =
 
-jbe
-
--- 
-Pengutronix e.K.                              | Juergen Beisert             |
-Linux Solutions for Science and Industry      | Phone: +49-8766-939 228     |
-Vertretung Sued/Muenchen, Germany             | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686              | http://www.pengutronix.de/  |
+P=E9ter
