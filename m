@@ -1,21 +1,21 @@
-From: Jon Smirl <jonsmirl@gmail.com>
-Subject: [PATCH V3 4/4] Fabric bindings for STAC9766 on the
-	Efika
-Date: Sun, 24 May 2009 21:38:53 -0400
-Message-ID: <20090525013853.3073.78627.stgit@terra>
-References: <20090525013606.3073.86753.stgit@terra>
+From: Troy Kisky <troy.kisky@boundarydevices.com>
+Subject: Question about snd_dma_buffer  bytes field
+Date: Sun, 24 May 2009 19:26:42 -0700
+Message-ID: <4A1A01E2.608@boundarydevices.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f158.google.com (mail-gx0-f158.google.com
-	[209.85.217.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id B943E24553
+Received: from smtpauth03.csee.onr.siteprotect.com
+	(smtpauth03.csee.onr.siteprotect.com [64.26.60.137])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6E6FA24583
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 May 2009 03:38:58 +0200 (CEST)
-Received: by mail-gx0-f158.google.com with SMTP id 2so5710560gxk.8
-	for <alsa-devel@alsa-project.org>; Sun, 24 May 2009 18:38:58 -0700 (PDT)
-In-Reply-To: <20090525013606.3073.86753.stgit@terra>
+	Mon, 25 May 2009 04:26:50 +0200 (CEST)
+Received: from [192.168.0.251] (unknown [67.42.45.38])
+	(Authenticated sender: troy.kisky@boundarydevices.com)
+	by smtpauth03.csee.onr.siteprotect.com (Postfix) with ESMTP id
+	1F4BF10380A3
+	for <alsa-devel@alsa-project.org>; Sun, 24 May 2009 21:26:45 -0500 (CDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,143 +25,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: grant.likely@secretlab.ca, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@sirena.org.uk
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Fabric bindings for STAC9766 AC97 codec on the Efika.
+Does
 
-Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
----
- sound/soc/fsl/Kconfig              |    8 +++
- sound/soc/fsl/Makefile             |    1 
- sound/soc/fsl/efika-audio-fabric.c |   95 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 104 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/fsl/efika-audio-fabric.c
+(substream->dma_buffer.bytes) need to equal (snd_pcm_lib_period_bytes(substream) * runtime->periods) ?
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 79579ae..f571c6e 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -47,3 +47,11 @@ config SND_MPC52xx_SOC_PCM030
- 	help
- 	  Say Y if you want to add support for sound on the Phytec pcm030 baseboard.
- 
-+config SND_MPC52xx_SOC_EFIKA
-+	tristate "SoC AC97 Audio support for bbplan Efika and STAC9766"
-+	depends on PPC_EFIKA
-+	select SND_SOC_MPC5200_AC97
-+	select SND_SOC_STAC9766
-+	help
-+	  Say Y if you want to add support for sound on the Efika.
-+
-diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index 66d88c8..a83a739 100644
---- a/sound/soc/fsl/Makefile
-+++ b/sound/soc/fsl/Makefile
-@@ -17,4 +17,5 @@ obj-$(CONFIG_SND_SOC_MPC5200_AC97) += mpc5200_psc_ac97.o
- 
- # MPC5200 Machine Support
- obj-$(CONFIG_SND_MPC52xx_SOC_PCM030) += pcm030-audio-fabric.o
-+obj-$(CONFIG_SND_MPC52xx_SOC_EFIKA) += efika-audio-fabric.o
- 
-diff --git a/sound/soc/fsl/efika-audio-fabric.c b/sound/soc/fsl/efika-audio-fabric.c
-new file mode 100644
-index 0000000..4b7ed2b
---- /dev/null
-+++ b/sound/soc/fsl/efika-audio-fabric.c
-@@ -0,0 +1,95 @@
-+/*
-+ * Efika driver for the PSC of the Freescale MPC52xx
-+ * configured as AC97 interface
-+ *
-+ * Copyright 2008 Jon Smirl, Digispeaker
-+ * Author: Jon Smirl <jonsmirl@gmail.com>
-+ *
-+ * This file is licensed under the terms of the GNU General Public License
-+ * version 2. This program is licensed "as is" without any warranty of any
-+ * kind, whether express or implied.
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/interrupt.h>
-+#include <linux/device.h>
-+#include <linux/delay.h>
-+#include <linux/of_device.h>
-+#include <linux/of_platform.h>
-+#include <linux/dma-mapping.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/initval.h>
-+#include <sound/soc.h>
-+#include <sound/soc-of-simple.h>
-+
-+#include "mpc5200_dma.h"
-+#include "mpc5200_psc_ac97.h"
-+#include "../codecs/stac9766.h"
-+
-+static struct snd_soc_device device;
-+static struct snd_soc_card card;
-+
-+static struct snd_soc_dai_link efika_fabric_dai[] = {
-+{
-+	.name = "AC97",
-+	.stream_name = "AC97 Analog",
-+	.codec_dai = &stac9766_dai[STAC9766_DAI_AC97_ANALOG],
-+	.cpu_dai = &psc_ac97_dai[MPC5200_AC97_NORMAL],
-+},
-+{
-+	.name = "AC97",
-+	.stream_name = "AC97 IEC958",
-+	.codec_dai = &stac9766_dai[STAC9766_DAI_AC97_DIGITAL],
-+	.cpu_dai = &psc_ac97_dai[MPC5200_AC97_SPDIF],
-+},
-+};
-+
-+static __init int efika_fabric_init(void)
-+{
-+	struct platform_device *pdev;
-+	int rc;
-+
-+	if (!machine_is_compatible("bplan,efika"))
-+		return -ENODEV;
-+
-+	card.platform = &mpc5200_audio_dma_platform;
-+	card.name = "Efika";
-+	card.dai_link = efika_fabric_dai;
-+	card.num_links = ARRAY_SIZE(efika_fabric_dai);
-+
-+	device.card = &card;
-+	device.codec_dev = &soc_codec_dev_stac9766;
-+
-+	pdev = platform_device_alloc("soc-audio", 1);
-+	if (!pdev) {
-+		pr_err("efika_fabric_init: platform_device_alloc() failed\n");
-+		return -ENODEV;
-+	}
-+
-+	platform_set_drvdata(pdev, &device);
-+	device.dev = &pdev->dev;
-+
-+	rc = platform_device_add(pdev);
-+	if (rc) {
-+		pr_err("efika_fabric_init: platform_device_add() failed\n");
-+		return -ENODEV;
-+	}
-+	return 0;
-+}
-+
-+static __exit void efika_fabric_exit(void)
-+{
-+}
-+
-+module_init(efika_fabric_init);
-+module_exit(efika_fabric_exit);
-+
-+
-+MODULE_AUTHOR("Jon Smirl <jonsmirl@gmail.com>");
-+MODULE_DESCRIPTION(DRV_NAME ": mpc5200 Efika fabric driver");
-+MODULE_LICENSE("GPL");
-+
+When this is not true, it seems like the buffer is not being filled correctly.
+
+
+for testing, this works
+	.buffer_bytes_max = 16 * 7 * 512,
+	.period_bytes_min = 32,
+	.period_bytes_max = 7 * 512,	/* This is size of ping + pong buffer*/
+
+and this doesn't.
+	.buffer_bytes_max = 16 * 7 * 512 + 512,
+	.period_bytes_min = 32,
+	.period_bytes_max = 7 * 512,	/* This is size of ping + pong buffer*/
+
+
+When playing back a sine wave, I can hear breaks.
+
+
+Thanks
+Troy
