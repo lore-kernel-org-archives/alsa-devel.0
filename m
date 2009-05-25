@@ -1,24 +1,16 @@
-From: Nathan Grennan <alsa-devel@cygnusx-1.org>
-Subject: Re: 2.6.30: xruns caused by "ALSA: pcm -
- Safer	boundary checks"
-Date: Sun, 24 May 2009 23:56:40 -0700
-Message-ID: <4A1A4128.9050305@cygnusx-1.org>
-References: <20090522162709.2e04b688@dhcp-100-2-144.bos.redhat.com>	<s5hmy94x0sy.wl%tiwai@suse.de>	<alpine.LNX.2.00.0905231430400.4067@eeebox2.perex-int.cz>	<s5hk547el2j.wl%tiwai@suse.de>	<b24e53350905231434h44fb22e7l8ecd845e0b202f20@mail.gmail.com>	<s5hprdy536s.wl%tiwai@suse.de>	<4A1A2902.1010403@cygnusx-1.org>
-	<s5hocthd9kb.wl%tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH 0/3] ASoC: TWL4030: Handsfree pop removal and
+	mute
+Date: Mon, 25 May 2009 10:44:36 +0300
+Message-ID: <1243237479-18631-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from katskitch.com (katskitch.com [67.222.134.222])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0900D103800
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0950D103800
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 May 2009 08:56:42 +0200 (CEST)
-Received: from proton.cygnusx-1.org (unknown [173.8.189.9])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by katskitch.com (Postfix) with ESMTPSA id D5BD8178079
-	for <alsa-devel@alsa-project.org>; Mon, 25 May 2009 01:56:40 -0500 (CDT)
-In-Reply-To: <s5hocthd9kb.wl%tiwai@suse.de>
+	Mon, 25 May 2009 09:44:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,10 +21,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: sakoman@gmail.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-  > Testing the patch would be helpful :)
-> 
+Hello,
 
-Will do
+The following series fixes the HandsfreeL/R pop removal sequence:
+The pop removal is moved from the MUX_E to PGA_E DAPM control and also
+the sequence is modified to match with the sequence described in the TRM.
+Note, that the power-down sequence is not described in the TRM, it has been
+implemented in a way that it should make sense.
+
+HandsetL/R mute: Since all bits are needed for the pop removal and they have to
+modified in a strict order/timing:
+I have added SW_SHADOW non HW register. This register at the moment only handles
+the HandsfreeL/R mute.
+
+---
+Peter Ujfalusi (3):
+  ASoC: TWL4030: Handsfree pop removal redesign
+  ASoC: TWL4030: Add shadow register
+  ASoC: TWL4030: HandsfreeL/R mute DAPM switch
+
+ sound/soc/codecs/twl4030.c |   99 +++++++++++++++++++++++++++++++++++---------
+ sound/soc/codecs/twl4030.h |    7 +++-
+ 2 files changed, 85 insertions(+), 21 deletions(-)
