@@ -1,19 +1,19 @@
 From: Jon Smirl <jonsmirl@gmail.com>
-Subject: [PATCH V5 1/5] powerpc: introduce macro
-	spin_event_timeout()
-Date: Tue, 26 May 2009 08:34:06 -0400
-Message-ID: <20090526123406.17472.79948.stgit@terra>
+Subject: [PATCH V5 3/5] AC97 driver for mpc5200
+Date: Tue, 26 May 2009 08:34:10 -0400
+Message-ID: <20090526123410.17472.15251.stgit@terra>
 References: <20090526123235.17472.73912.stgit@terra>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id DBA8824790
+Received: from mail-gx0-f158.google.com (mail-gx0-f158.google.com
+	[209.85.217.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1FC691038D1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 May 2009 14:34:09 +0200 (CEST)
-Received: by yw-out-1718.google.com with SMTP id 4so2769045ywq.2
-	for <alsa-devel@alsa-project.org>; Tue, 26 May 2009 05:34:08 -0700 (PDT)
+	Tue, 26 May 2009 14:34:13 +0200 (CEST)
+Received: by mail-gx0-f158.google.com with SMTP id 2so7273405gxk.8
+	for <alsa-devel@alsa-project.org>; Tue, 26 May 2009 05:34:12 -0700 (PDT)
 In-Reply-To: <20090526123235.17472.73912.stgit@terra>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,70 +27,409 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: grant.likely@secretlab.ca, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@sirena.org.uk, timur@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-The macro spin_event_timeout() takes a condition and timeout value
-(in microseconds) as parameters.  It spins until either the condition is true
-or the timeout expires.  It returns the result of the condition when the loop
-was terminated.
+AC97 driver for mpc5200
 
-This primary purpose of this macro is to poll on a hardware register until a
-status bit changes.  The timeout ensures that the loop still terminates if the
-bit doesn't change as expected.  This macro makes it easier for driver
-developers to perform this kind of operation properly.
+I've implemented retries for when the AC97 hardware doesn't reset on
+first try. About 10% of the time both the Efika and pcm030 AC97 codecs
+don't reset on first try and need to be poked multiple times.  Failure
+is indicated by not having the link clock start ticking. Every once in
+a while even five pokes won't get the link started and I have to power
+cycle.
 
-Signed-off-by: Timur Tabi <timur@freescale.com>
+Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
 ---
- arch/powerpc/include/asm/delay.h |   33 +++++++++++++++++++++++++++++++++
- 1 files changed, 33 insertions(+), 0 deletions(-)
+ sound/soc/fsl/Kconfig            |   11 +
+ sound/soc/fsl/Makefile           |    1 
+ sound/soc/fsl/mpc5200_psc_ac97.c |  331 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/fsl/mpc5200_psc_ac97.h |   15 ++
+ 4 files changed, 358 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/fsl/mpc5200_psc_ac97.c
+ create mode 100644 sound/soc/fsl/mpc5200_psc_ac97.h
 
-diff --git a/arch/powerpc/include/asm/delay.h b/arch/powerpc/include/asm/delay.h
-index f9200a6..af4a270 100644
---- a/arch/powerpc/include/asm/delay.h
-+++ b/arch/powerpc/include/asm/delay.h
-@@ -2,8 +2,11 @@
- #define _ASM_POWERPC_DELAY_H
- #ifdef __KERNEL__
- 
-+#include <asm/time.h>
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 1918c78..3bce952 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -29,3 +29,14 @@ config SND_SOC_MPC5200_I2S
+ 	select PPC_BESTCOMM_GEN_BD
+ 	help
+ 	  Say Y here to support the MPC5200 PSCs in I2S mode.
 +
- /*
-  * Copyright 1996, Paul Mackerras.
-+ * Copyright (C) 2009 Freescale Semiconductor, Inc. All rights reserved.
-  *
-  * This program is free software; you can redistribute it and/or
-  * modify it under the terms of the GNU General Public License
-@@ -30,5 +33,35 @@ extern void udelay(unsigned long usecs);
- #define mdelay(n)	udelay((n) * 1000)
- #endif
++config SND_SOC_MPC5200_AC97
++	tristate "Freescale MPC5200 PSC in AC97 mode driver"
++	depends on PPC_MPC52xx && PPC_BESTCOMM
++	select AC97_BUS
++	select SND_MPC52xx_DMA
++	select PPC_BESTCOMM_GEN_BD
++	help
++	  Say Y here to support the MPC5200 PSCs in AC97 mode.
++
++
+diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
+index 7731ef2..14631a1 100644
+--- a/sound/soc/fsl/Makefile
++++ b/sound/soc/fsl/Makefile
+@@ -13,4 +13,5 @@ obj-$(CONFIG_SND_SOC_MPC8610) += snd-soc-fsl-ssi.o snd-soc-fsl-dma.o
+ # MPC5200 Platform Support
+ obj-$(CONFIG_SND_MPC52xx_DMA) += mpc5200_dma.o
+ obj-$(CONFIG_SND_SOC_MPC5200_I2S) += mpc5200_psc_i2s.o
++obj-$(CONFIG_SND_SOC_MPC5200_AC97) += mpc5200_psc_ac97.o
  
-+/**
-+ * spin_event_timeout - spin until a condition gets true or a timeout elapses
-+ * @condition: a C expression to evalate
-+ * @timeout: timeout, in microseconds
-+ * @delay: the number of microseconds to delay between eache evaluation of
-+ *         @condition
-+ * @rc: the last value of the condition
+diff --git a/sound/soc/fsl/mpc5200_psc_ac97.c b/sound/soc/fsl/mpc5200_psc_ac97.c
+new file mode 100644
+index 0000000..9f2df15
+--- /dev/null
++++ b/sound/soc/fsl/mpc5200_psc_ac97.c
+@@ -0,0 +1,331 @@
++/*
++ * linux/sound/mpc5200-ac97.c -- AC97 support for the Freescale MPC52xx chip.
 + *
-+ * The process spins until the condition evaluates to true (non-zero) or the
-+ * timeout elapses.  Upon exit, @rc contains the value of the condition. This
-+ * allows you to test the condition without incurring any side effects.
++ * Copyright (C) 2009 Jon Smirl, Digispeaker
++ * Author: Jon Smirl <jonsmirl@gmail.com>
 + *
-+ * This primary purpose of this macro is to poll on a hardware register
-+ * until a status bit changes.  The timeout ensures that the loop still
-+ * terminates even if the bit never changes.  The delay is for devices that
-+ * need a delay in between successive reads.
-+ *
-+ * gcc will optimize out the if-statement if @delay is a constant.
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
 + */
-+#define spin_event_timeout(condition, timeout, delay, rc)                   \
-+{                                                                           \
-+	unsigned long __loops = tb_ticks_per_usec * timeout;                \
-+	unsigned long __start = get_tbl();                                  \
-+	while (!(rc = (condition)) && (tb_ticks_since(__start) <= __loops)) \
-+		if (delay)                                                  \
-+			udelay(delay);                                      \
-+		else	                                                    \
-+			cpu_relax();                                        \
++
++#include <linux/module.h>
++#include <linux/of_device.h>
++#include <linux/of_platform.h>
++
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++
++#include <asm/time.h>
++#include <asm/delay.h>
++#include <asm/mpc52xx_psc.h>
++
++#include "mpc5200_dma.h"
++#include "mpc5200_psc_ac97.h"
++
++#define DRV_NAME "mpc5200-psc-ac97"
++
++/* ALSA only supports a single AC97 device so static is recommend here */
++static struct psc_dma *psc_dma;
++
++static unsigned short psc_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
++{
++	int rc;
++	unsigned int val;
++
++	/* Wait for command send status zero = ready */
++	spin_event_timeout(!(in_be16(&psc_dma->psc_regs->sr_csr.status) &
++				MPC52xx_PSC_SR_CMDSEND), 100, 0, rc);
++	if (rc == 0) {
++		pr_err("timeout on ac97 bus (rdy)\n");
++		return -ENODEV;
++	}
++	/* Send the read */
++	out_be32(&psc_dma->psc_regs->ac97_cmd, (1<<31) | ((reg & 0x7f) << 24));
++
++	/* Wait for the answer */
++	spin_event_timeout((in_be16(&psc_dma->psc_regs->sr_csr.status) &
++				MPC52xx_PSC_SR_DATA_VAL), 100, 0, rc);
++	if (rc == 0) {
++		pr_err("timeout on ac97 read (val) %x\n",
++				in_be16(&psc_dma->psc_regs->sr_csr.status));
++		return -ENODEV;
++	}
++	/* Get the data */
++	val = in_be32(&psc_dma->psc_regs->ac97_data);
++	if (((val >> 24) & 0x7f) != reg) {
++		pr_err("reg echo error on ac97 read\n");
++		return -ENODEV;
++	}
++	val = (val >> 8) & 0xffff;
++
++	return (unsigned short) val;
 +}
 +
- #endif /* __KERNEL__ */
- #endif /* _ASM_POWERPC_DELAY_H */
++static void psc_ac97_write(struct snd_ac97 *ac97,
++				unsigned short reg, unsigned short val)
++{
++	int rc;
++
++	/* Wait for command status zero = ready */
++	spin_event_timeout(!(in_be16(&psc_dma->psc_regs->sr_csr.status) &
++				MPC52xx_PSC_SR_CMDSEND), 100, 0, rc);
++	if (rc == 0) {
++		pr_err("timeout on ac97 bus (write)\n");
++		return;
++	}
++	/* Write data */
++	out_be32(&psc_dma->psc_regs->ac97_cmd,
++			((reg & 0x7f) << 24) | (val << 8));
++}
++
++static void psc_ac97_warm_reset(struct snd_ac97 *ac97)
++{
++	int rc;
++	struct mpc52xx_psc __iomem *regs = psc_dma->psc_regs;
++
++	out_be32(&regs->sicr, psc_dma->sicr | MPC52xx_PSC_SICR_AWR);
++	spin_event_timeout(0, 3, 0, rc);
++	out_be32(&regs->sicr, psc_dma->sicr);
++}
++
++static void psc_ac97_cold_reset(struct snd_ac97 *ac97)
++{
++	int rc;
++	struct mpc52xx_psc __iomem *regs = psc_dma->psc_regs;
++
++	/* Do a cold reset */
++	out_8(&regs->op1, MPC52xx_PSC_OP_RES);
++	spin_event_timeout(0, 10, 0, rc);
++	out_8(&regs->op0, MPC52xx_PSC_OP_RES);
++	spin_event_timeout(0, 50, 0, rc);
++	psc_ac97_warm_reset(ac97);
++}
++
++struct snd_ac97_bus_ops soc_ac97_ops = {
++	.read		= psc_ac97_read,
++	.write		= psc_ac97_write,
++	.reset		= psc_ac97_cold_reset,
++	.warm_reset	= psc_ac97_warm_reset,
++};
++EXPORT_SYMBOL_GPL(soc_ac97_ops);
++
++static int psc_ac97_hw_analog_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *params,
++				 struct snd_soc_dai *cpu_dai)
++{
++	struct psc_dma *psc_dma = cpu_dai->private_data;
++
++	dev_dbg(psc_dma->dev, "%s(substream=%p) p_size=%i p_bytes=%i"
++		" periods=%i buffer_size=%i  buffer_bytes=%i channels=%i"
++		" rate=%i format=%i\n",
++		__func__, substream, params_period_size(params),
++		params_period_bytes(params), params_periods(params),
++		params_buffer_size(params), params_buffer_bytes(params),
++		params_channels(params), params_rate(params),
++		params_format(params));
++
++
++	if (substream->pstr->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		if (params_channels(params) == 1)
++			psc_dma->slots |= 0x00000100;
++		else
++			psc_dma->slots |= 0x00000300;
++	} else {
++		if (params_channels(params) == 1)
++			psc_dma->slots |= 0x01000000;
++		else
++			psc_dma->slots |= 0x03000000;
++	}
++	out_be32(&psc_dma->psc_regs->ac97_slots, psc_dma->slots);
++
++	return 0;
++}
++
++static int psc_ac97_hw_digital_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *params,
++				 struct snd_soc_dai *cpu_dai)
++{
++	struct psc_dma *psc_dma = cpu_dai->private_data;
++
++	if (params_channels(params) == 1)
++		out_be32(&psc_dma->psc_regs->ac97_slots, 0x01000000);
++	else
++		out_be32(&psc_dma->psc_regs->ac97_slots, 0x03000000);
++
++	return 0;
++}
++
++static int psc_ac97_trigger(struct snd_pcm_substream *substream, int cmd,
++							struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct psc_dma *psc_dma = rtd->dai->cpu_dai->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_STOP:
++		if (substream->pstr->stream == SNDRV_PCM_STREAM_CAPTURE)
++			psc_dma->slots &= 0xFFFF0000;
++		else
++			psc_dma->slots &= 0x0000FFFF;
++
++		out_be32(&psc_dma->psc_regs->ac97_slots, psc_dma->slots);
++		break;
++	}
++	return 0;
++}
++
++static int psc_ac97_probe(struct platform_device *pdev,
++					struct snd_soc_dai *cpu_dai)
++{
++	struct psc_dma *psc_dma = cpu_dai->private_data;
++	struct mpc52xx_psc __iomem *regs = psc_dma->psc_regs;
++
++	/* Go */
++	out_8(&regs->command, MPC52xx_PSC_TX_ENABLE | MPC52xx_PSC_RX_ENABLE);
++	return 0;
++}
++
++/* ---------------------------------------------------------------------
++ * ALSA SoC Bindings
++ *
++ * - Digital Audio Interface (DAI) template
++ * - create/destroy dai hooks
++ */
++
++/**
++ * psc_ac97_dai_template: template CPU Digital Audio Interface
++ */
++static struct snd_soc_dai_ops psc_ac97_analog_ops = {
++	.hw_params	= psc_ac97_hw_analog_params,
++	.trigger	= psc_ac97_trigger,
++};
++
++static struct snd_soc_dai_ops psc_ac97_digital_ops = {
++	.hw_params	= psc_ac97_hw_digital_params,
++};
++
++struct snd_soc_dai psc_ac97_dai[] = {
++{
++	.name   = "AC97",
++	.ac97_control = 1,
++	.probe	= psc_ac97_probe,
++	.playback = {
++		.channels_min   = 1,
++		.channels_max   = 6,
++		.rates          = SNDRV_PCM_RATE_8000_48000,
++		.formats = SNDRV_PCM_FMTBIT_S32_BE,
++	},
++	.capture = {
++		.channels_min   = 1,
++		.channels_max   = 2,
++		.rates          = SNDRV_PCM_RATE_8000_48000,
++		.formats = SNDRV_PCM_FMTBIT_S32_BE,
++	},
++	.ops = &psc_ac97_analog_ops,
++},
++{
++	.name   = "SPDIF",
++	.ac97_control = 1,
++	.playback = {
++		.channels_min   = 1,
++		.channels_max   = 2,
++		.rates          = SNDRV_PCM_RATE_32000 | \
++			SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_BE,
++	},
++	.ops = &psc_ac97_digital_ops,
++} };
++EXPORT_SYMBOL_GPL(psc_ac97_dai);
++
++
++
++/* ---------------------------------------------------------------------
++ * OF platform bus binding code:
++ * - Probe/remove operations
++ * - OF device match table
++ */
++static int __devinit psc_ac97_of_probe(struct of_device *op,
++				      const struct of_device_id *match)
++{
++	int rc, i;
++	struct snd_ac97 ac97;
++	struct mpc52xx_psc __iomem *regs;
++
++	rc = mpc5200_audio_dma_create(op);
++	if (rc != 0)
++		return rc;
++
++	for (i = 0; i < ARRAY_SIZE(psc_ac97_dai); i++)
++		psc_ac97_dai[i].dev = &op->dev;
++
++	rc = snd_soc_register_dais(psc_ac97_dai, ARRAY_SIZE(psc_ac97_dai));
++	if (rc != 0) {
++		dev_err(&op->dev, "Failed to register DAI\n");
++		return rc;
++	}
++
++	psc_dma = dev_get_drvdata(&op->dev);
++	regs = psc_dma->psc_regs;
++	ac97.private_data = psc_dma;
++
++	for (i = 0; i < ARRAY_SIZE(psc_ac97_dai); i++)
++		psc_ac97_dai[i].private_data = psc_dma;
++
++	psc_dma->imr = 0;
++	out_be16(&psc_dma->psc_regs->isr_imr.imr, psc_dma->imr);
++
++	/* Configure the serial interface mode to AC97 */
++	psc_dma->sicr = MPC52xx_PSC_SICR_SIM_AC97 | MPC52xx_PSC_SICR_ENAC97;
++	out_be32(&regs->sicr, psc_dma->sicr);
++
++	/* No slots active */
++	out_be32(&regs->ac97_slots, 0x00000000);
++
++	return 0;
++}
++
++static int __devexit psc_ac97_of_remove(struct of_device *op)
++{
++	return mpc5200_audio_dma_destroy(op);
++}
++
++/* Match table for of_platform binding */
++static struct of_device_id psc_ac97_match[] __devinitdata = {
++	{ .compatible = "fsl,mpc5200-psc-ac97", },
++	{ .compatible = "fsl,mpc5200b-psc-ac97", },
++	{}
++};
++MODULE_DEVICE_TABLE(of, psc_ac97_match);
++
++static struct of_platform_driver psc_ac97_driver = {
++	.match_table = psc_ac97_match,
++	.probe = psc_ac97_of_probe,
++	.remove = __devexit_p(psc_ac97_of_remove),
++	.driver = {
++		.name = "mpc5200-psc-ac97",
++		.owner = THIS_MODULE,
++	},
++};
++
++/* ---------------------------------------------------------------------
++ * Module setup and teardown; simply register the of_platform driver
++ * for the PSC in AC97 mode.
++ */
++static int __init psc_ac97_init(void)
++{
++	return of_register_platform_driver(&psc_ac97_driver);
++}
++module_init(psc_ac97_init);
++
++static void __exit psc_ac97_exit(void)
++{
++	of_unregister_platform_driver(&psc_ac97_driver);
++}
++module_exit(psc_ac97_exit);
++
++MODULE_AUTHOR("Jon Smirl <jonsmirl@gmail.com>");
++MODULE_DESCRIPTION("mpc5200 AC97 module");
++MODULE_LICENSE("GPL");
++
+diff --git a/sound/soc/fsl/mpc5200_psc_ac97.h b/sound/soc/fsl/mpc5200_psc_ac97.h
+new file mode 100644
+index 0000000..4bc18c3
+--- /dev/null
++++ b/sound/soc/fsl/mpc5200_psc_ac97.h
+@@ -0,0 +1,15 @@
++/*
++ * Freescale MPC5200 PSC in AC97 mode
++ * ALSA SoC Digital Audio Interface (DAI) driver
++ *
++ */
++
++#ifndef __SOUND_SOC_FSL_MPC52xx_PSC_AC97_H__
++#define __SOUND_SOC_FSL_MPC52xx_PSC_AC97_H__
++
++extern struct snd_soc_dai psc_ac97_dai[];
++
++#define MPC5200_AC97_NORMAL 0
++#define MPC5200_AC97_SPDIF 1
++
++#endif /* __SOUND_SOC_FSL_MPC52xx_PSC_AC97_H__ */
