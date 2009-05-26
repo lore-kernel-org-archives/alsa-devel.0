@@ -1,8 +1,8 @@
-From: Grant Likely <grant.likely@secretlab.ca>
+From: Timur Tabi <timur@freescale.com>
 Subject: Re: [PATCH V4 2/5] Main rewite of the mpc5200 audio
 	DMA code
-Date: Tue, 26 May 2009 10:56:03 -0600
-Message-ID: <fa686aa40905260956i6fc138f8x87250ceeb8385f6f@mail.gmail.com>
+Date: Tue, 26 May 2009 12:08:01 -0500
+Message-ID: <ed82fe3e0905261008n68672c6dk7bfc99e4cd614747@mail.gmail.com>
 References: <20090525221406.21370.30326.stgit@terra>
 	<20090525221509.21370.70182.stgit@terra>
 	<20090526110120.GA8969@sirena.org.uk>
@@ -12,13 +12,12 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f158.google.com (mail-gx0-f158.google.com
-	[209.85.217.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2B6231038AA
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id 558571038EB
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 May 2009 18:56:28 +0200 (CEST)
-Received: by gxk2 with SMTP id 2so7566317gxk.8
-	for <alsa-devel@alsa-project.org>; Tue, 26 May 2009 09:56:27 -0700 (PDT)
+	Tue, 26 May 2009 19:08:03 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 4so2139732qwk.56
+	for <alsa-devel@alsa-project.org>; Tue, 26 May 2009 10:08:02 -0700 (PDT)
 In-Reply-To: <9e4733910905260953i6337f8a9xc3cd1ff490cd3540@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,23 +29,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Jon Smirl <jonsmirl@gmail.com>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, timur@freescale.com
+Cc: Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 26, 2009 at 10:53 AM, Jon Smirl <jonsmirl@gmail.com> wrote:
-> On Tue, May 26, 2009 at 12:51 PM, Grant Likely
-> <grant.likely@secretlab.ca> wrote:
->> On Tue, May 26, 2009 at 5:01 AM, Mark Brown
->> <broonie@opensource.wolfsonmicro.com> wrote:
->>> On Mon, May 25, 2009 at 06:15:09PM -0400, Jon Smirl wrote:
->>>> Rewrite the mpc5200 audio DMA code to support both I2S and AC97.
->>>>
->>>> Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
->>>
->>> Grant, I'm OK with that if you are?
->>
->> Acked-by: Grant Likely <grant.likely@secretlab.ca>
->
+On Tue, May 26, 2009 at 11:53 AM, Jon Smirl <jonsmirl@gmail.com> wrote:
 > Put in the V5 version this one has this in the h file:
 >
 > -int psc_dma_trigger(struct snd_pcm_substream *substream, int cmd,
@@ -77,14 +63,11 @@ dai);
 > +/* whack this after Timur's patch is merged in to
 > arch/powerpc/include/asm/delay.h */
 
-sure, no problem if it will grease the merge.
-
-g.
-
-
-
+It won't be that simple.  V9 of my patch changes the number of
+parameters, so not only will you need to whack this copy of the macro,
+you'll also need to change the callers.
 
 -- =
 
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
+Timur Tabi
+Linux kernel developer at Freescale
