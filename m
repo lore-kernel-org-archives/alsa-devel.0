@@ -1,36 +1,41 @@
-From: =?ISO-8859-1?Q?Kristoffer_Grundstr=F6m?=
-	<kristoffer.grundstrom1983@gmail.com>
-Subject: Add info in my sound-issue with the front Jack.
-Date: Tue, 26 May 2009 20:15:38 +0200
-Message-ID: <4A1C31CA.8010101@gmail.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [alsa-devel] [PATCH V4 2/5] Main rewite of the mpc5200 audio
+	DMA code
+Date: Tue, 26 May 2009 21:21:47 +0100
+Message-ID: <20090526202146.GA4951@sirena.org.uk>
+References: <20090525221406.21370.30326.stgit@terra>
+	<20090525221509.21370.70182.stgit@terra>
+	<20090526110120.GA8969@sirena.org.uk>
+	<fa686aa40905260951g5115007fo3ef5eb1fb90998f3@mail.gmail.com>
+	<9e4733910905260953i6337f8a9xc3cd1ff490cd3540@mail.gmail.com>
+	<ed82fe3e0905261008n68672c6dk7bfc99e4cd614747@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f175.google.com (mail-ew0-f175.google.com
-	[209.85.219.175])
-	by alsa0.perex.cz (Postfix) with ESMTP id 35BED1038C2
-	for <alsa-devel@alsa-project.org>;
-	Tue, 26 May 2009 20:15:17 +0200 (CEST)
-Received: by ewy23 with SMTP id 23so4161869ewy.32
-	for <alsa-devel@alsa-project.org>; Tue, 26 May 2009 11:15:15 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
+Content-Disposition: inline
+In-Reply-To: <ed82fe3e0905261008n68672c6dk7bfc99e4cd614747@mail.gmail.com>
+List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
+List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
+List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
+Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+To: Timur Tabi <timur@freescale.com>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I added some possible info in my earlier bugreport about the front jack.
-Please visit this adress <https://qa.mandriva.com/show_bug.cgi?id=3D49048> =
+On Tue, May 26, 2009 at 12:08:01PM -0500, Timur Tabi wrote:
 
-and tell me if I've missed to add something.
+> It won't be that simple.  V9 of my patch changes the number of
+> parameters, so not only will you need to whack this copy of the macro,
+> you'll also need to change the callers.
 
-/Kristoffer Grundstr=F6m
-
-P.S. I changed my emailadress since I got spammessages in my mailbox. D.S.
+OK, in the interests of cutting down on the amount of review here I've
+applied v5 of the series and then marked the AC97 machine drivers as
+BROKEN for the time being - once everything lands in mainline we can
+make sure that the driver is in sync with the final spin_event_timeout()
+API and remove the BROKEN marking.
