@@ -1,21 +1,16 @@
-From: Nickolas Lloyd <ultrageek.lloyd@gmail.com>
-Subject: Re: [PATCH] snd-hda-intel: Jack Mode changes for
-	Sigmatel boards
-Date: Mon, 25 May 2009 18:07:29 +0000
-Message-ID: <4A1ADE61.2090702@gmail.com>
-References: <4A13F91D.8010102@gmail.com> <s5hvdnp5wdv.wl%tiwai@suse.de>
+From: "Leung Chi Tat" <ctleung@cct.com.hk>
+Subject: Re: Help on writing an ALSA ASoC Driver for WM8985
+Date: Tue, 26 May 2009 09:00:05 +0800
+Message-ID: <D6546E3E62D77445A7E4B9A0FD70CDE007A80111@FTBM01.ft.cct.grp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f158.google.com (mail-gx0-f158.google.com
-	[209.85.217.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1192324469
+Received: from smtp05.cct.com.hk (smtp05.cct.com.hk [210.0.232.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4F0A42446C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 May 2009 02:58:06 +0200 (CEST)
-Received: by gxk2 with SMTP id 2so6779568gxk.8
-	for <alsa-devel@alsa-project.org>; Mon, 25 May 2009 17:58:06 -0700 (PDT)
-In-Reply-To: <s5hvdnp5wdv.wl%tiwai@suse.de>
+	Tue, 26 May 2009 03:02:08 +0200 (CEST)
+Content-class: urn:content-classes:message
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,59 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Matthew Ranostay <mranostay@embeddedalley.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Hi,
->
-> sorry for the late review.  Some comments below.
->   
-No worries.  I know you're busy, and I appreciate your time and help :)
+Mark,
 
->> +        i = 3;
->> +    else
->> +        i = 2;
->> +
->> +    uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
->> +    uinfo->value.enumerated.items = i;
->> +    uinfo->count = 1;
->> +    if (uinfo->value.enumerated.item >= i)
->> +        uinfo->value.enumerated.item = i-1;
->>     
->
-> Didn't checkpatch.pl complain?  :)
->   
-It didn't actually.  What should it have complained about, so I can fix it?
-> Well, these two functions, stac92xx_vref_get() and stac92xx_get_vref()
-> are too confusing.  We have to rename one of them, at least, or at best
-> clean up a bit more.
-I agree.  stac92xx_vref_get() and stac92xx_vref_set() are a pair, so
-perhaps they should stay as they are, and stac92xx_get_vref() be renamed
-to stac92xx_get_default_vref() or something?
+I got it.  Once we set those volume update bits in wm8990_init(), those bits in the wm8985 register cache array, wm8985_reg[], will then  be set too.  So, whenever we write a new value to a volume register, wm8985_write() will then write the new value to the volume register and update the corresponding volume update bit also.  This is the trick.
 
->
-> Hmm, this code flow is too complex and hackish to follow.
-> There must be a better way.  For example, the complicated neted if
-> checks can be put out to a function.  The compiler is clever enough to
-> inline, and here is no critical code path for speed.
->
->
-> Could you fix and repost please?
->
->
-> thanks,
->
-> Takashi
->
->   
-I've added a function stac92xx_add_mic_jack_control() to take care of
-the if's and add the control.  The code is much cleaner now IMO.  Is
-this function name ok, and do you have any other thoughts?
+A Great Idea!
 
-I'll be posting the new patch soon so that you can actually look at that
-as well.
+Thank you so much!  
 
-Thanks,
-Nick
+Chitat
+
+
+On Mon, May 25, 2009 at 08:47:31PM +0800, Leung Chi Tat wrote:
+
+> I'm right now studying the driver code for wm8980 codec (from the main
+> trunk of linux-2.6-asoc) as it seems to be more close to wm8985.  I
+> can't find any code for triggering those volume update bits after
+> modified those volume registers.   But, the wm8980 datasheet states
+> that we have to do so to make those volume updates properly.  Is there
+> some black magic in the code?
+
+The normal approach for volume update bits is to set them when
+initialising the CODEC at startup - this is what the wm8990 driver is
+doing when it writes to the volume registers in wm8990_init().  This
+means that any further register writes which only change the volume
+field in the registers will also have the volume update bit set.
