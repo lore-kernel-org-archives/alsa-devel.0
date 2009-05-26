@@ -1,19 +1,22 @@
 From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH V5 3/5] AC97 driver for mpc5200
-Date: Tue, 26 May 2009 09:09:43 -0500
-Message-ID: <4A1BF827.6010409@freescale.com>
-References: <20090526123235.17472.73912.stgit@terra>
-	<20090526123410.17472.15251.stgit@terra>
+Subject: Re: [PATCH V4 1/5] The macro spin_event_timeout()
+ takes a condition and timeout value
+Date: Tue, 26 May 2009 09:20:22 -0500
+Message-ID: <4A1BFAA6.60309@freescale.com>
+References: <20090525221406.21370.30326.stgit@terra>
+	<ed82fe3e0905260432xdc9556cp74edc723eafe24f7@mail.gmail.com>
+	<alpine.LRH.2.00.0905261348160.4897@vixen.sonytel.be>
+	<200905261349.49832.arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from az33egw02.freescale.net (az33egw02.freescale.net
 	[192.88.158.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id E93721038D1
+	by alsa0.perex.cz (Postfix) with ESMTP id CF7B11038C7
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 May 2009 16:10:04 +0200 (CEST)
-In-Reply-To: <20090526123410.17472.15251.stgit@terra>
+	Tue, 26 May 2009 16:21:13 +0200 (CEST)
+In-Reply-To: <200905261349.49832.arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +26,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: grant.likely@secretlab.ca, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@sirena.org.uk
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@ozlabs.org, Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>, broonie@sirena.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Jon Smirl wrote:
+Arnd Bergmann wrote:
+> On Tuesday 26 May 2009, Geert Uytterhoeven wrote:
+>> However, you can still improve useability by making the macro return the rc,
+>> instead of letting the caller pass it, cfr. wait_event_timeout() and friends.
 
-> +static void psc_ac97_warm_reset(struct snd_ac97 *ac97)
-> +{
-> +	int rc;
-> +	struct mpc52xx_psc __iomem *regs = psc_dma->psc_regs;
-> +
-> +	out_be32(&regs->sicr, psc_dma->sicr | MPC52xx_PSC_SICR_AWR);
-> +	spin_event_timeout(0, 3, 0, rc);
+I had that originally, but somewhere during the seven revisions of my macro, it got lost.
 
-I still think you should use udelay() here.  spin_event_timeout(<constant>) will just reduce to a udelay() call anyway.  In addition, there's no "event" that you're waiting for.
+I'll post a v9 soon.  This version will take 3 parameters and return __ret, so Jon will need to change his code (sorry).
 
 -- 
 Timur Tabi
