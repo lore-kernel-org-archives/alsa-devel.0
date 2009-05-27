@@ -1,19 +1,19 @@
 From: Jon Smirl <jonsmirl@gmail.com>
-Subject: [PATCH V2] Modify mpc5200 AC97 driver to use V9
+Subject: [PATCH V3] Modify mpc5200 AC97 driver to use V9
 	of	spin_event_timeout()
-Date: Wed, 27 May 2009 00:30:18 -0400
-Message-ID: <20090527043018.4667.94590.stgit@terra>
+Date: Wed, 27 May 2009 01:06:19 -0400
+Message-ID: <20090527050619.26595.95343.stgit@terra>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-gx0-f158.google.com (mail-gx0-f158.google.com
 	[209.85.217.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id D06F0245CB
+	by alsa0.perex.cz (Postfix) with ESMTP id 2B80A24608
 	for <alsa-devel@alsa-project.org>;
-	Wed, 27 May 2009 06:30:19 +0200 (CEST)
-Received: by gxk2 with SMTP id 2so8282310gxk.8
-	for <alsa-devel@alsa-project.org>; Tue, 26 May 2009 21:30:18 -0700 (PDT)
+	Wed, 27 May 2009 07:06:21 +0200 (CEST)
+Received: by gxk2 with SMTP id 2so8307901gxk.8
+	for <alsa-devel@alsa-project.org>; Tue, 26 May 2009 22:06:20 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,6 +29,7 @@ List-Id: alsa-devel@alsa-project.org
 The function signature for spin_event_timeout() has changed in version V9.
 Adjust the mpc5200 AC97 driver to use the new function.
 v2 - switch back to udelay() for fixed timeouts.
+v3 - forgot about driver being market broken, fix typo
 
 Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
 ---
@@ -36,7 +37,7 @@ Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
  1 files changed, 14 insertions(+), 16 deletions(-)
 
 diff --git a/sound/soc/fsl/mpc5200_psc_ac97.c b/sound/soc/fsl/mpc5200_psc_ac97.c
-index 9f2df15..4342b51 100644
+index 9f2df15..794a247 100644
 --- a/sound/soc/fsl/mpc5200_psc_ac97.c
 +++ b/sound/soc/fsl/mpc5200_psc_ac97.c
 @@ -31,13 +31,13 @@ static struct psc_dma *psc_dma;
@@ -51,7 +52,7 @@ index 9f2df15..4342b51 100644
 -	spin_event_timeout(!(in_be16(&psc_dma->psc_regs->sr_csr.status) &
 -				MPC52xx_PSC_SR_CMDSEND), 100, 0, rc);
 -	if (rc == 0) {
-+	status= spin_event_timeout(!(in_be16(&psc_dma->psc_regs->sr_csr.status) &
++	status = spin_event_timeout(!(in_be16(&psc_dma->psc_regs->sr_csr.status) &
 +				MPC52xx_PSC_SR_CMDSEND), 100, 0);
 +	if (status == 0) {
  		pr_err("timeout on ac97 bus (rdy)\n");
@@ -111,6 +112,6 @@ index 9f2df15..4342b51 100644
 +	udelay(10);
  	out_8(&regs->op0, MPC52xx_PSC_OP_RES);
 -	spin_event_timeout(0, 50, 0, rc);
-+	udelat(50);
++	udelay(50);
  	psc_ac97_warm_reset(ac97);
  }
