@@ -1,14 +1,19 @@
 From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
 Subject: Re: Please help in adding ams-delta support to ASoC
-Date: Wed, 27 May 2009 16:33:22 +0200
-Message-ID: <4A1D4F32.5060002__13267.4180706546$1243434819$gmane$org@tis.icnet.pl>
+Date: Wed, 27 May 2009 16:52:46 +0200
+Message-ID: <4A1D53BE.6040805@tis.icnet.pl>
 References: <4A1BEBE3.8010306@tis.icnet.pl>
-	<20090527095949.51ed4b83.jhnikula@gmail.com>
+	<20090527104711.GA1970@sirena.org.uk>
+Reply-To: postmaster@icnet.pl
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20090527095949.51ed4b83.jhnikula@gmail.com>
+Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id A9B82244A0
+	for <alsa-devel@alsa-project.org>;
+	Wed, 27 May 2009 16:52:48 +0200 (CEST)
+In-Reply-To: <20090527104711.GA1970@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,96 +23,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-omap@vger.kernel.org, alsa-devel@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jarkko,
+Hi Mark,
 
-On Wed, 27 May 2009 08:59 Jarkko Nikula wrote:
-> On Tue, 26 May 2009 15:17:23 +0200
-> Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
->> -	.xcr2 = XPHASE | XFRLEN2(OMAP_MCBSP_WORD_8) |
->> -	    XWDLEN2(OMAP_MCBSP_WORD_16) | XDATDLY(0) | XFIG,
->> +	.xcr2 = XPHASE | XWDLEN2(OMAP_MCBSP_WORD_16) | XFRLEN2(0),
->>
-> XFIG is only difference (OMAP_MCBSP_WORD_8 = 0) -> transfer is aborted
-> in case of unexpected frame sync.
+On Wed, May 27, 2009 at 12:47, Mark Brown wrote:
+> On Tue, May 26, 2009 at 03:17:23PM +0200, Janusz Krzysztofik wrote:
+>> ... aplay  
+>> and arecord wait forever, cat to/from /dev/dsp breaks with hardware  
+> Do they really wait for ever or do they eventually time out?  The
+> default for both programs is to give up after 10 seconds if there's no
+> DMA happening.
 
-I tried commenting out RFIG and XFIG bits settings in 
-sound/soc/omap/omap-mcbsp.c - did not help.
+That was more than 10 seconds for sure.
 
->> -	.srgr1 = FWID(DEFAULT_BITPERSAMPLE - 1),
->> +	.srgr1 = CLKGDV(0),
->>
-> Width of frame sync signal set to 1 here -> DSP_B format because no
-> data delay set.
-
-That's what I have tried mostly.
-
->> -	.srgr2 = GSYNC | CLKSP | FSGM | FPER(DEFAULT_BITPERSAMPLE *
->> 2 - 1),
->> +       .srgr2 = GSYNC,
->>
->> -	.pcr0 = CLKXP | CLKRP,  /* mcbsp: slave */
->>
-> No CLKXM, CLKRM and FSGM set -> codec is providing the frame sync and
-> bit-clock signals -> SND_SOC_DAIFMT_CBM_CFM.
-
-This is my primary choice as well.
-
-> CLKXP and CLKRP not set -> rising edge of bit clock drives the
-> transitions. This with DSP_B indicates inverted bit clock so
-> SND_SOC_DAIFMT_IB_NF.
-
-I have given it a try this morning - no go.
-
-> I wonder why the frame sync period (FWID) wasn't set in that original
-> patch but probably McBSP is able to work without :-)
-
-from linux-2.6.29/sound/soc/omap/omap-mcbsp.c:
-         switch (mcbsp_data->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-         case SND_SOC_DAIFMT_I2S:
-                 regs->srgr2     |= FPER(wlen * 2 - 1);
-                 regs->srgr1     |= FWID(wlen - 1);
-                 break;
-         case SND_SOC_DAIFMT_DSP_B:
-                 regs->srgr2     |= FPER(wlen * channels - 1);
-                 regs->srgr1     |= FWID(0);
-                 break;
-         }
-
-So it looks like in case of SND_SOC_DAIFMT_DSP_B, FWID is not set, only 
-FPER. However, in the original patch, FPER was not set either.
-
->> ... aplay 
->> and arecord wait forever, cat to/from /dev/dsp breaks with hardware 
->> error messgae. DMA interrput counters stay at 0. However, codec 
+> ... A few comments below.
 > 
-> Looks like McBSP is not getting bit-clock and frame-sync signals from
-> the codec. Do you have any way to measure is the codec sending those?
+>> +#include <sound/ac97_codec.h>
+>> +#include <sound/initval.h>
+>> +#include <sound/soc.h>
+>> +
+>> +#include "cx20442.h"
+> 
+> Shouldn't need ac97_codec.h if it's not an AC97 CODEC.
 
-Well, I am not sure, but I'll try if nothing helps.
+Yes, I am going to clean up the code if it ever starts working.
 
-> Another possibility are the OMAP pins muxed for McBSP? I assume they
-> are if the bootloader is still the same
+>> +static int cx20442_soc_probe(struct platform_device *pdev)
+>> +{
+>> +	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+>> +	struct snd_soc_codec *codec;
+>> +	int ret = 0;
+>> +
+>> +	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
+>> +	if (codec == NULL)
+>> +		return -ENOMEM;
+>> +	mutex_init(&codec->mutex);
+>> +	codec->name = "CX20442";
+>> +	codec->owner = THIS_MODULE;
+>> +	codec->dai = &cx20442_dai;
+>> +	codec->num_dai = 1;
+> 
+> It'd be nice to switch this over to registering the CODEC as a platform
+> device rather than using the old style ASoC probing - see something line
+> WM8731 for a relatively simple example.
 
-I boot both kernels, working 2.6.16 and not working 2.6.30-rc5, with the 
-same u-boot.bin.
+OK, I'll follow it.
 
- > but worth to find check was
-> previous kernel doing any runtime remuxing for those pins with
-> omap_cfg_reg calls.
+>> +MODULE_DESCRIPTION("ASoC cx20442 driver");
+>> +MODULE_AUTHOR("Cliff Cai ");
+> 
+> You possibly want to update this one :)
 
-I was not able to find anything relevant.
+Sure.
 
-> ... OMAP1510 doesn't support DMA chaining so there are few
-> cpu_is_omap1510() code snippets in sound/soc/omap/omap-pcm.c which I
-> think I have only simulated using OMAP2420.
+> Basically, the CODEC driver looks fine from an ASoC point of view.
 
-I hope DMA chaining is not an issue here. If I remove the DMA chaining 
-workaround from the original patch, I get signle DMA interrupts, so that 
-is better than none that I get with my patch.
+Fine.
+
+>> +/*
+>> + * File:         sound/soc/codec/cx20442.h
+>> + * Based on:     sound/soc/codec/ad73311.h
+>> + * Author:       Cliff Cai <cliff.cai@analog.com>
+>> + *
+>> + * Created:      Thur Sep 25, 2008
+>> + * Description:  definitions for cx20442 registers
+>> + *
+>> + *
+>> + * Modified:
+>> + *               Copyright 2006 Analog Devices Inc.
+>> + *
+>> + * Bugs:         Enter bugs at http://blackfin.uclinux.org/
+> 
+> These comments have cut'n'paste issues too, and the register definitions
+> should all be removed.
+
+Yes, only extern struct declarations required here, I think.
+
+>> +static int ams_delta_startup(struct snd_pcm_substream *substream)
+>> +{
+>> +	ams_delta_latch2_write(AMS_DELTA_LATCH2_MODEM_CODEC, 0);
+>> +	return clk_enable(cx20442_mclk);
+>> +}
+>> +
+>> +static void ams_delta_shutdown(struct snd_pcm_substream *substream)
+>> +{
+>> +	clk_disable(cx20442_mclk);
+> 
+> Possibly not an issue with this device but you might want to move the
+> MCLK handling to your machine set_bias_level() function.  That will
+> mean that your MCLK will be left running for a while after audio stops,
+> ensuring that the DAC has had time to clock out the final sample.
+> Without that sometimes you can end up causing an audible artefact when
+> starting the next playback.
+
+OK, I'll look at this, but first I have to learn what MCLK really is ;)
 
 Thanks,
 Janusz
