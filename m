@@ -1,19 +1,15 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
-Subject: Re: skype and old alsa RC4 symbols
-Date: Wed, 27 May 2009 20:40:41 +0200
-Message-ID: <20090527184041.GA3549@aragorn.home.lxtec.de>
-References: <9e4733910904081455u181eecebi31837f490cfd85@mail.gmail.com>
-	<9e4733910904100913h8cd0466m21b3815030ad32fb@mail.gmail.com>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: Please help in adding ams-delta support to ASoC
+Date: Wed, 27 May 2009 20:58:53 +0200
+Message-ID: <200905272058.55404.jkrzyszt__16579.8400216319$1243450791$gmane$org@tis.icnet.pl>
+References: <4A1BEBE3.8010306@tis.icnet.pl>
+	<20090527095949.51ed4b83.jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpout.hostsharing.net (smtpout.hostsharing.net [83.223.95.99])
-	by alsa0.perex.cz (Postfix) with ESMTP id 065C62459F
-	for <alsa-devel@alsa-project.org>;
-	Wed, 27 May 2009 20:40:46 +0200 (CEST)
+In-Reply-To: <20090527095949.51ed4b83.jhnikula@gmail.com>
 Content-Disposition: inline
-In-Reply-To: <9e4733910904100913h8cd0466m21b3815030ad32fb@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,24 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Luke Yelavich <luke@audioslack.com>
+To: alsa-devel@alsa-project.org
+Cc: linux-omap@vger.kernel.org, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-* Jon Smirl [090410 12:13 -0400]
-> On Wed, Apr 8, 2009 at 5:55 PM, Jon Smirl <jonsmirl@gmail.com> wrote:
-> > I would like to run pulseaudio 9.15 contained in this ubuntu
-> > repository since it fixes my problems with S/PDIF
-> > https://launchpad.net/~themuso/+archive/ppa
-> 
-> I finally fixed this by hacking around to define -DUSE_VERSIONED_SYMBOLS.
-> 
-> Something is wrong in the build process for these packages.
+Hi,
 
-Isn't it the same to use --with-vesioned in ./configure options?
+Tired with hopeless looking for the correct mcbsp dai format, I took the 
+oposite direciton, trying to break what Mark Underwood had managed to get 
+working. Step by step, I got to exactly the same mcbsp register configuration 
+as used in the reference osk board, reverting all changes that Mark could 
+introduce, and the driver still worked as before. So it looks like playing 
+with mcbsp dai format is not the way to solve the problem.
 
-Elimar
+Wednesday 27 May 2009 07:57:27 Peter Ujfalusi wrote:
+> This means that the McBSP module is not transmitting/receiving any data.
+> Which suggests that the clocking is not working in your setup. Check the
+> slave master mode for the codec.
 
--- 
-  Learned men are the cisterns of knowledge, 
-  not the fountainheads ;-)
+Now I think I understand better what you mean. However, I don't know any way 
+of configuring the codec except for switching its pin connections from msbcp 
+to modem chip and back. I can find nothing relevant in the original patch 
+that could help.
+
+> Also worth checking the PIN configuration for the McBSP1 module, just in
+> case it is correct.
+
+Wednesday 27 May 2009 08:59:49 Jarkko Nikula wrote:
+> Looks like McBSP is not getting bit-clock and frame-sync signals from
+> the codec. Do you have any way to measure is the codec sending those?
+>
+> Another possibility are the OMAP pins muxed for McBSP? I assume they
+> are if the bootloader is still the same but worth to find check was
+> previous kernel doing any runtime remuxing for those pins with
+> omap_cfg_reg calls.
+
+So I am going to restart with checking if the original patch still works with 
+the latest kernel version supporting omap-alsa.
+
+Thanks for your help so far. Any hints are still welcome.
+
+Cheers,
+Janusz
+
+
