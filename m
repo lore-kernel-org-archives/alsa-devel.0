@@ -1,16 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.31
-Date: Wed, 27 May 2009 11:48:49 +0100
-Message-ID: <20090527104848.GA28075@rakim.wolfsonmicro.main>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH V2] Modify mpc5200 AC97 driver to use V9 of
+	spin_event_timeout()
+Date: Wed, 27 May 2009 06:39:54 -0500
+Message-ID: <ed82fe3e0905270439h4a068564keeb6c0905e958d2a@mail.gmail.com>
+References: <20090527043018.4667.94590.stgit@terra>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 72E4E246F8
+Received: from mail-qy0-f103.google.com (mail-qy0-f103.google.com
+	[209.85.221.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7D10A246F5
 	for <alsa-devel@alsa-project.org>;
-	Wed, 27 May 2009 12:48:50 +0200 (CEST)
-Content-Disposition: inline
+	Wed, 27 May 2009 13:39:55 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so6018803qyk.16
+	for <alsa-devel@alsa-project.org>; Wed, 27 May 2009 04:39:54 -0700 (PDT)
+In-Reply-To: <20090527043018.4667.94590.stgit@terra>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,42 +25,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: grant.likely@secretlab.ca, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@sirena.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 0f89bdcac61536c5cb2a095a514657019573afb4:
-  Peter Ujfalusi (1):
-        ASoC: TWL4030: HandsfreeL/R mute DAPM switch
+On Tue, May 26, 2009 at 11:30 PM, Jon Smirl <jonsmirl@gmail.com> wrote:
+> The function signature for spin_event_timeout() has changed in version V9.
+> Adjust the mpc5200 AC97 driver to use the new function.
+> v2 - switch back to udelay() for fixed timeouts.
+>
+> Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
 
-are available in the git repository at:
+Acked-by: Timur Tabi <timur@freescale.com>
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.31
-
-Jon Smirl (4):
-      ASoC: Main rewite of the mpc5200 audio DMA code
-      ASoC: AC97 driver for mpc5200
-      ASoC: Support for AC97 on Phytec pmc030 base board.
-      ASoC: Fabric bindings for STAC9766 on the Efika
-
-Mark Brown (2):
-      ASoC: Mark MPC5200 AC97 as BROKEN until PowerPC merge issues are resolved
-      ASoC: Switch FSL SSI DAI over to symmetric_rates
-
- sound/soc/fsl/Kconfig               |   28 +++-
- sound/soc/fsl/Makefile              |    5 +
- sound/soc/fsl/efika-audio-fabric.c  |   90 +++++++
- sound/soc/fsl/fsl_ssi.c             |    9 +-
- sound/soc/fsl/mpc5200_dma.c         |  442 ++++++++++++++++++++++-------------
- sound/soc/fsl/mpc5200_dma.h         |   33 ++--
- sound/soc/fsl/mpc5200_psc_ac97.c    |  331 ++++++++++++++++++++++++++
- sound/soc/fsl/mpc5200_psc_ac97.h    |   15 ++
- sound/soc/fsl/mpc5200_psc_i2s.c     |  247 ++++----------------
- sound/soc/fsl/mpc5200_psc_i2s.h     |   12 +
- sound/soc/fsl/pcm030-audio-fabric.c |   90 +++++++
- 11 files changed, 905 insertions(+), 397 deletions(-)
- create mode 100644 sound/soc/fsl/efika-audio-fabric.c
- create mode 100644 sound/soc/fsl/mpc5200_psc_ac97.c
- create mode 100644 sound/soc/fsl/mpc5200_psc_ac97.h
- create mode 100644 sound/soc/fsl/mpc5200_psc_i2s.h
- create mode 100644 sound/soc/fsl/pcm030-audio-fabric.c
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
