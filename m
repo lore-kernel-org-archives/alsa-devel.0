@@ -1,18 +1,16 @@
-From: Michael Leies <michael.leies@googlemail.com>
-Subject: ALC883 features
-Date: Thu, 28 May 2009 11:30:59 -0400
-Message-ID: <6d18452c0905280830q6d2b0477ve5a549aadaf583ad@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.31
+Date: Thu, 28 May 2009 19:04:30 +0100
+Message-ID: <20090528180430.GB4574@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f158.google.com (mail-gx0-f158.google.com
-	[209.85.217.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id DC5291038CC
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7CFAF1037F1
 	for <alsa-devel@alsa-project.org>;
-	Thu, 28 May 2009 17:31:05 +0200 (CEST)
-Received: by gxk2 with SMTP id 2so10223894gxk.8
-	for <alsa-devel@alsa-project.org>; Thu, 28 May 2009 08:31:04 -0700 (PDT)
+	Thu, 28 May 2009 20:04:37 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,33 +20,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The following changes since commit 08d15f034e94251606479d7ca9070994c2e2fcf0:
+  Mark Brown (1):
+        ASoC: Switch FSL SSI DAI over to symmetric_rates
 
-I'm new here.
+are available in the git repository at:
 
-I just bought a new computer from Dell with a Realtek ALC1200 (883?).
- After messing with alsa configurations and looking into the driver
-code a bit, I noted that a few features i'd like don't seem to be
-supported by the current driver.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.31
 
-1) Use of all 10 channels, only 8 are wired out to the 7.1 pcm device
-(forgive me if i lack the proper terminology for the moment).  From
-the 883 datasheet, and comments in 1.0.20 code it seems the last 2
-channels could be wired out as a separate PCM device.
+Chaithrika U S (1):
+      ASoC: Add dummy S/PDIF codec support
 
-2) Some more controls, specifically the ability to prevent the
-headphone jack from automuting the speakers.  And if its possible to
-wire out the missing two channels then perhaps some more controls for
-the new channels.
+Jon Smirl (1):
+      ASoC: Modify mpc5200 AC97 driver to use V9 of spin_event_timeout()
 
-I was wondering if there someone who might point me in the right
-direction to get started with fixing up these things in the driver.
+Mark Brown (1):
+      ASoC: Initialise dev for the dummy S/PDIF DAI
 
-Are my ambitions realistic, or am I barking up the tree of having to
-rewrite the whole HDA driver?
+Roel Kluin (1):
+      ASoC: correct print specifiers for unsigneds
 
-Thanks,
-Michael
+ sound/soc/atmel/playpaq_wm8510.c     |    2 +-
+ sound/soc/codecs/Kconfig             |    4 ++
+ sound/soc/codecs/Makefile            |    2 +
+ sound/soc/codecs/spdif_transciever.c |   71 ++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/spdif_transciever.h |   17 ++++++++
+ sound/soc/codecs/tlv320aic23.c       |    4 +-
+ sound/soc/codecs/uda134x.c           |    4 +-
+ sound/soc/codecs/wm8350.c            |    2 +-
+ sound/soc/codecs/wm8400.c            |    4 +-
+ sound/soc/codecs/wm8510.c            |    2 +-
+ sound/soc/codecs/wm8580.c            |    4 +-
+ sound/soc/codecs/wm8753.c            |    2 +-
+ sound/soc/codecs/wm8900.c            |    6 +-
+ sound/soc/codecs/wm8990.c            |    2 +-
+ sound/soc/codecs/wm9713.c            |    2 +-
+ sound/soc/fsl/mpc5200_psc_ac97.c     |   30 +++++++--------
+ sound/soc/pxa/pxa-ssp.c              |    4 +-
+ sound/soc/s3c24xx/s3c-i2s-v2.c       |    4 +-
+ sound/soc/sh/ssi.c                   |    2 +-
+ 19 files changed, 130 insertions(+), 38 deletions(-)
+ create mode 100644 sound/soc/codecs/spdif_transciever.c
+ create mode 100644 sound/soc/codecs/spdif_transciever.h
