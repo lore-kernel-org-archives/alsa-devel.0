@@ -1,18 +1,19 @@
 From: Chaithrika U S <chaithrika@ti.com>
-Subject: [PATCH v3 0/6] ARM: DaVinci: Audio support for DM646x
-Date: Thu, 28 May 2009 05:09:00 -0400
-Message-ID: <1243501740-28382-1-git-send-email-chaithrika@ti.com>
+Subject: [PATCH v3 1/6] ARM: DaVinci: ASoC: Adds McASP clock
+	support for TI DM646X processor
+Date: Thu, 28 May 2009 05:09:21 -0400
+Message-ID: <1243501761-28420-1-git-send-email-chaithrika@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8080D103870
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 784871038B7
 	for <alsa-devel@alsa-project.org>;
-	Thu, 28 May 2009 11:45:35 +0200 (CEST)
+	Thu, 28 May 2009 11:45:57 +0200 (CEST)
 Received: from dflp53.itg.ti.com ([128.247.5.6])
-	by arroyo.ext.ti.com (8.13.7/8.13.7) with ESMTP id n4S9jSot003209
-	for <alsa-devel@alsa-project.org>; Thu, 28 May 2009 04:45:34 -0500
+	by comal.ext.ti.com (8.13.7/8.13.7) with ESMTP id n4S9jn4W017655
+	for <alsa-devel@alsa-project.org>; Thu, 28 May 2009 04:45:54 -0500
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,48 +27,49 @@ To: alsa-devel@alsa-project.org
 Cc: Chaithrika U S <chaithrika@ti.com>, davinci-linux-open-source@linux.davincidsp.com, Naresh Medisetty <naresh@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Chaithrika U S <chaithrika@ti.com>
-
-Add audio support for DM646x
+Adds McASP clock support for the two instances of mcasp (mcasp0,mcasp1). This
+patch is part of the audio support for dm646x series.
 
 Signed-off-by: Naresh Medisetty <naresh@ti.com>
 Signed-off-by: Chaithrika U S <chaithrika@ti.com>
 ---
-This patch set adds audio support for DM646x
+This patch applies to the DaVinci git tree available at
+http://git.kernel.org/?p=linux/kernel/git/khilman/linux-davinci.git
 
-This updated version has included most of the review comments received for
-the previous version of the patch set.
+ arch/arm/mach-davinci/dm646x.c |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
 
-This series is dependent on the following patches submitted to the
-DaVinci mailing list:
-
-[PATCH v2 1/2] ARM: DaVinci: EDMA: Move queue related mappings to dm<soc>.c
-[PATCH v2 2/2] ARM: DaVinci: EDMA: Enable EDMA support for dm646x
-
-Patch 1: Adds McASP clock support for the two instances of mcasp(mcasp0,mcasp1)
-	 This patch applies to the DaVinci git tree available at
-	 http://git.kernel.org/?p=linux/kernel/git/khilman/linux-davinci.git
-
-Patch 2: Registers the platform devices for ASP on dm355, dm644x and dm646x
-	 This patch applies to the DaVinci git tree available at
-	 http://git.kernel.org/?p=linux/kernel/git/khilman/linux-davinci.git
-
-Patch 3: Introduces platform driver model for dm644x and dm355
-	 Applies against ALSA mainline - that's the topic/asoc
-	 branch of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
-
-Patch 4: Add dummy codec support
-	 Applies against ALSA mainline - that's the topic/asoc
-	 branch of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
-
-Patch 5: Adds driver support for the two instances of McASP on TI's DM646x
-	 Applies against ALSA mainline - that's the topic/asoc
-	 branch of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
-
-Patch 6: Add machine driver support for DM646x
-	 Applies against ALSA mainline - that's the topic/asoc
-	 branch of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
-
-
-These patches are based on the work done by Steve Chen <schen@mvista.com> and
-Pavel Kiryukhin <pkiryukhin@ru.mvista.com> on Monstavista 2.6.18 kernel.
+diff --git a/arch/arm/mach-davinci/dm646x.c b/arch/arm/mach-davinci/dm646x.c
+index f95b5e9..07c8d88 100644
+--- a/arch/arm/mach-davinci/dm646x.c
++++ b/arch/arm/mach-davinci/dm646x.c
+@@ -227,6 +227,18 @@ static struct clk gpio_clk = {
+ 	.lpsc = DM646X_LPSC_GPIO,
+ };
+ 
++static struct clk mcasp0_clk = {
++	.name = "mcasp0",
++	.parent = &pll1_sysclk3,
++	.lpsc = DM646X_LPSC_McASP0,
++};
++
++static struct clk mcasp1_clk = {
++	.name = "mcasp1",
++	.parent = &pll1_sysclk3,
++	.lpsc = DM646X_LPSC_McASP1,
++};
++
+ static struct clk aemif_clk = {
+ 	.name = "aemif",
+ 	.parent = &pll1_sysclk3,
+@@ -314,6 +326,8 @@ struct davinci_clk dm646x_clks[] = {
+ 	CLK(NULL, "uart2", &uart2_clk),
+ 	CLK("i2c_davinci.1", NULL, &i2c_clk),
+ 	CLK(NULL, "gpio", &gpio_clk),
++	CLK(NULL, "mcasp0", &mcasp0_clk),
++	CLK(NULL, "mcasp1", &mcasp1_clk),
+ 	CLK(NULL, "aemif", &aemif_clk),
+ 	CLK("davinci_emac.1", NULL, &emac_clk),
+ 	CLK(NULL, "pwm0", &pwm0_clk),
+-- 
+1.5.6
