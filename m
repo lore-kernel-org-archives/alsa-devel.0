@@ -1,19 +1,16 @@
 From: Chaithrika U S <chaithrika@ti.com>
-Subject: [PATCH v3 3/6] ARM: DaVinci: ASoC: Introduce platform
-	driver model for dm644x, dm355
-Date: Thu, 28 May 2009 05:10:11 -0400
-Message-ID: <1243501811-28495-1-git-send-email-chaithrika@ti.com>
+Subject: [PATCH v3 4/6] ARM: DaVinci: ASoC: Add dummy codec
+	support
+Date: Thu, 28 May 2009 05:10:50 -0400
+Message-ID: <1243501850-28531-1-git-send-email-chaithrika@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 788561038F8
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6C2381038ED
 	for <alsa-devel@alsa-project.org>;
-	Thu, 28 May 2009 11:46:46 +0200 (CEST)
-Received: from dflp53.itg.ti.com ([128.247.5.6])
-	by bear.ext.ti.com (8.13.7/8.13.7) with ESMTP id n4S9keS6023575
-	for <alsa-devel@alsa-project.org>; Thu, 28 May 2009 04:46:45 -0500
+	Thu, 28 May 2009 11:47:25 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,199 +21,168 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Chaithrika U S <chaithrika@ti.com>, davinci-linux-open-source@linux.davincidsp.com, Naresh Medisetty <naresh@ti.com>
+Cc: Chaithrika U S <chaithrika@ti.com>, davinci-linux-open-source@linux.davincidsp.com, Steve Chen <schen@mvista.com>, Naresh Medisetty <naresh@ti.com>, Pavel Kiryukhin <pkiryukhin@ru.mvista.com>
 List-Id: alsa-devel@alsa-project.org
 
-Introduce the platform driver model to get platform data for dm355 and dm644x.
-Register platform driver and acquire the resources in the probe function Since
-the platform specific code had been moved from machine driver to dm<soc>.c
+McASP on DM646x can operate in DIT (S/PDIF) where no codec is needed.
+This patch provides stub codec that can be used in these configurations.
+On DM646x EVM the McASP1 is connected to the S/PDIF out.
 
+Signed-off-by: Steve Chen <schen@mvista.com>
+Signed-off-by: Pavel Kiryukhin <pkiryukhin@ru.mvista.com>
 Signed-off-by: Naresh Medisetty <naresh@ti.com>
 Signed-off-by: Chaithrika U S <chaithrika@ti.com>
 ---
 This patch applies against ALSA mainline - that's the topic/asoc
 branch of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
 
- sound/soc/davinci/davinci-i2s.c |  115 ++++++++++++++++++++++-----------------
- 1 files changed, 66 insertions(+), 49 deletions(-)
+ sound/soc/codecs/Kconfig             |    4 ++
+ sound/soc/codecs/Makefile            |    2 +
+ sound/soc/codecs/spdif_transciever.c |   69 ++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/spdif_transciever.h |   17 ++++++++
+ 4 files changed, 92 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/codecs/spdif_transciever.c
+ create mode 100644 sound/soc/codecs/spdif_transciever.h
 
-diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
-index b1ea52f..dec7611 100644
---- a/sound/soc/davinci/davinci-i2s.c
-+++ b/sound/soc/davinci/davinci-i2s.c
-@@ -436,15 +436,39 @@ static int davinci_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 	return ret;
- }
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index cb07d9b..bbc97fd 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -18,6 +18,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_AK4535 if I2C
+ 	select SND_SOC_CS4270 if I2C
+ 	select SND_SOC_PCM3008
++	select SND_SOC_SPDIF
+ 	select SND_SOC_SSM2602 if I2C
+ 	select SND_SOC_STAC9766 if SND_SOC_AC97_BUS
+ 	select SND_SOC_TLV320AIC23 if I2C
+@@ -91,6 +92,9 @@ config SND_SOC_L3
+ config SND_SOC_PCM3008
+        tristate
  
--static int davinci_i2s_probe(struct platform_device *pdev,
--			     struct snd_soc_dai *dai)
-+#define DAVINCI_I2S_RATES	SNDRV_PCM_RATE_8000_96000
++config SND_SOC_SPDIF
++	tristate
 +
-+static struct snd_soc_dai_ops davinci_i2s_dai_ops = {
-+	.startup 	= davinci_i2s_startup,
-+	.trigger	= davinci_i2s_trigger,
-+	.hw_params	= davinci_i2s_hw_params,
-+	.set_fmt	= davinci_i2s_set_dai_fmt,
+ config SND_SOC_SSM2602
+ 	tristate
+ 
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 46c007c..8b75305 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -6,6 +6,7 @@ snd-soc-ak4535-objs := ak4535.o
+ snd-soc-cs4270-objs := cs4270.o
+ snd-soc-l3-objs := l3.o
+ snd-soc-pcm3008-objs := pcm3008.o
++snd-soc-spdif-objs := spdif_transciever.o
+ snd-soc-ssm2602-objs := ssm2602.o
+ snd-soc-stac9766-objs := stac9766.o
+ snd-soc-tlv320aic23-objs := tlv320aic23.o
+@@ -42,6 +43,7 @@ obj-$(CONFIG_SND_SOC_AK4535)	+= snd-soc-ak4535.o
+ obj-$(CONFIG_SND_SOC_CS4270)	+= snd-soc-cs4270.o
+ obj-$(CONFIG_SND_SOC_L3)	+= snd-soc-l3.o
+ obj-$(CONFIG_SND_SOC_PCM3008)	+= snd-soc-pcm3008.o
++obj-$(CONFIG_SND_SOC_SPDIF)	+= snd-soc-spdif.o
+ obj-$(CONFIG_SND_SOC_SSM2602)	+= snd-soc-ssm2602.o
+ obj-$(CONFIG_SND_SOC_STAC9766)	+= snd-soc-stac9766.o
+ obj-$(CONFIG_SND_SOC_TLV320AIC23)	+= snd-soc-tlv320aic23.o
+diff --git a/sound/soc/codecs/spdif_transciever.c b/sound/soc/codecs/spdif_transciever.c
+new file mode 100644
+index 0000000..118e976
+--- /dev/null
++++ b/sound/soc/codecs/spdif_transciever.c
+@@ -0,0 +1,69 @@
++/*
++ * ALSA SoC SPDIF DIT driver
++ *
++ *  This driver is used by controllers which can operate in DIT (SPDI/F) where
++ *  no codec is needed.  This file provides stub codec that can be used
++ *  in these configurations. TI DaVinci Audio controller uses this driver.
++ *
++ * Author:      Steve Chen,  <schen@mvista.com>
++ * Copyright:   (C) 2009 MontaVista Software, Inc., <source@mvista.com>
++ * Copyright:   (C) 2009  Texas Instruments, India
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
 +
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <sound/soc.h>
++#include <sound/pcm.h>
++
++#define STUB_RATES	SNDRV_PCM_RATE_8000_96000
++#define STUB_FORMATS	SNDRV_PCM_FMTBIT_S16_LE
++
++
++struct snd_soc_dai dit_stub_dai = {
++	.name		= "DIT",
++	.playback 	= {
++		.stream_name	= "Playback",
++		.channels_min	= 1,
++		.channels_max	= 384,
++		.rates		= STUB_RATES,
++		.formats	= STUB_FORMATS,
++	},
 +};
 +
-+struct snd_soc_dai davinci_i2s_dai = {
-+	.name = "davinci-i2s",
-+	.id = 0,
-+	.playback = {
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = DAVINCI_I2S_RATES,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+	.capture = {
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = DAVINCI_I2S_RATES,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+	.ops = &davinci_i2s_dai_ops,
++static int spdif_dit_probe(struct platform_device *pdev)
++{
++	return snd_soc_register_dai(&dit_stub_dai);
++}
 +
-+};
-+EXPORT_SYMBOL_GPL(davinci_i2s_dai);
-+
-+static int davinci_i2s_probe(struct platform_device *pdev)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_card *card = socdev->card;
--	struct snd_soc_dai *cpu_dai = card->dai_link->cpu_dai;
-+	struct evm_snd_platform_data *pdata = pdev->dev.platform_data;;
- 	struct davinci_mcbsp_dev *dev;
--	struct resource *mem, *ioarea;
--	struct evm_snd_platform_data *pdata;
-+	struct resource *mem, *ioarea, *res;
- 	int ret;
- 
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-@@ -466,9 +490,7 @@ static int davinci_i2s_probe(struct platform_device *pdev,
- 		goto err_release_region;
- 	}
- 
--	cpu_dai->private_data = dev;
--
--	dev->clk = clk_get(&pdev->dev, NULL);
-+	dev->clk = clk_get(&pdev->dev, pdata->clk_name);
- 	if (IS_ERR(dev->clk)) {
- 		ret = -ENODEV;
- 		goto err_free_mem;
-@@ -476,18 +498,35 @@ static int davinci_i2s_probe(struct platform_device *pdev,
- 	clk_enable(dev->clk);
- 
- 	dev->base = (void __iomem *)IO_ADDRESS(mem->start);
--	pdata = pdev->dev.platform_data;
- 
- 	dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK] = &davinci_i2s_pcm_out;
--	dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK]->channel = pdata->tx_dma_ch;
- 	dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK]->dma_addr =
- 	    (dma_addr_t)(io_v2p(dev->base) + DAVINCI_MCBSP_DXR_REG);
- 
- 	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE] = &davinci_i2s_pcm_in;
--	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE]->channel = pdata->rx_dma_ch;
- 	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE]->dma_addr =
- 	    (dma_addr_t)(io_v2p(dev->base) + DAVINCI_MCBSP_DRR_REG);
- 
-+	/* first TX, then RX */
-+	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-+	if (!res) {
-+		dev_err(&pdev->dev, "no DMA resource\n");
-+		goto err_free_mem;
-+	}
-+	dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK]->channel = res->start;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
-+	if (!res) {
-+		dev_err(&pdev->dev, "no DMA resource\n");
-+		goto err_free_mem;
-+	}
-+	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE]->channel = res->start;
-+
-+	davinci_i2s_dai.private_data = dev;
-+	ret = snd_soc_register_dai(&davinci_i2s_dai);
-+	if (ret != 0)
-+		goto err_free_mem;
-+
- 	return 0;
- 
- err_free_mem:
-@@ -498,62 +537,40 @@ err_release_region:
- 	return ret;
- }
- 
--static void davinci_i2s_remove(struct platform_device *pdev,
--			       struct snd_soc_dai *dai)
-+static int davinci_i2s_remove(struct platform_device *pdev)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_card *card = socdev->card;
--	struct snd_soc_dai *cpu_dai = card->dai_link->cpu_dai;
--	struct davinci_mcbsp_dev *dev = cpu_dai->private_data;
-+	struct davinci_mcbsp_dev *dev = davinci_i2s_dai.private_data;
- 	struct resource *mem;
- 
-+	snd_soc_unregister_dai(&davinci_i2s_dai);
- 	clk_disable(dev->clk);
- 	clk_put(dev->clk);
- 	dev->clk = NULL;
--
- 	kfree(dev);
--
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	release_mem_region(mem->start, (mem->end - mem->start) + 1);
--}
- 
--#define DAVINCI_I2S_RATES	SNDRV_PCM_RATE_8000_96000
++static int spdif_dit_remove(struct platform_device *pdev)
++{
++	snd_soc_unregister_dai(&dit_stub_dai);
 +	return 0;
 +}
- 
--static struct snd_soc_dai_ops davinci_i2s_dai_ops = {
--	.startup	= davinci_i2s_startup,
--	.trigger	= davinci_i2s_trigger,
--	.hw_params	= davinci_i2s_hw_params,
--	.set_fmt	= davinci_i2s_set_dai_fmt,
-+static struct platform_driver davinci_mcbsp_driver = {
-+	.probe		= davinci_i2s_probe,
-+	.remove		= davinci_i2s_remove,
++
++static struct platform_driver spdif_dit_driver = {
++	.probe		= spdif_dit_probe,
++	.remove		= spdif_dit_remove,
 +	.driver		= {
-+		.name	= "davinci-asp",
++		.name	= "spdif-dit",
 +		.owner	= THIS_MODULE,
 +	},
- };
- 
--struct snd_soc_dai davinci_i2s_dai = {
--	.name = "davinci-i2s",
--	.id = 0,
--	.probe = davinci_i2s_probe,
--	.remove = davinci_i2s_remove,
--	.playback = {
--		.channels_min = 2,
--		.channels_max = 2,
--		.rates = DAVINCI_I2S_RATES,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
--	.capture = {
--		.channels_min = 2,
--		.channels_max = 2,
--		.rates = DAVINCI_I2S_RATES,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
--	.ops = &davinci_i2s_dai_ops,
--};
--EXPORT_SYMBOL_GPL(davinci_i2s_dai);
--
- static int __init davinci_i2s_init(void)
- {
--	return snd_soc_register_dai(&davinci_i2s_dai);
-+	return platform_driver_register(&davinci_mcbsp_driver);
- }
- module_init(davinci_i2s_init);
- 
- static void __exit davinci_i2s_exit(void)
- {
--	snd_soc_unregister_dai(&davinci_i2s_dai);
-+	platform_driver_unregister(&davinci_mcbsp_driver);
- }
- module_exit(davinci_i2s_exit);
- 
++};
++
++static int __init dit_modinit(void)
++{
++	return platform_driver_register(&spdif_dit_driver);
++}
++
++static void __exit dit_exit(void)
++{
++	platform_driver_unregister(&spdif_dit_driver);
++}
++
++module_init(dit_modinit);
++module_exit(dit_exit);
++
+diff --git a/sound/soc/codecs/spdif_transciever.h b/sound/soc/codecs/spdif_transciever.h
+new file mode 100644
+index 0000000..296f2eb
+--- /dev/null
++++ b/sound/soc/codecs/spdif_transciever.h
+@@ -0,0 +1,17 @@
++/*
++ * ALSA SoC DIT/DIR driver header
++ *
++ * Author:      Steve Chen,  <schen@mvista.com>
++ * Copyright:   (C) 2008 MontaVista Software, Inc., <source@mvista.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef CODEC_STUBS_H
++#define CODEC_STUBS_H
++
++extern struct snd_soc_dai dit_stub_dai;
++
++#endif /* CODEC_STUBS_H */
 -- 
 1.5.6
