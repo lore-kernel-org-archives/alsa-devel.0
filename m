@@ -1,24 +1,27 @@
-From: John Rigg <aldev@sound-man.co.uk>
-Subject: Re: Add info in my sound-issue with the front Jack.
-Date: Fri, 29 May 2009 18:06:46 +0100
-Message-ID: <20090529170646.GA2768@localhost0.localdomain>
-References: <4A1C31CA.8010101@gmail.com>
+From: =?ISO-8859-1?Q?Emilio_L=F3pez?= <buhitoescolar@gmail.com>
+Subject: Re: Regarding Sound on Acer Aspire 6935G
+Date: Fri, 29 May 2009 14:35:37 -0300
+Message-ID: <d54969c50905291035v19ab019fsdf455a6410b827de@mail.gmail.com>
+References: <4b8c423b0905152051w7443e1b4u4080514a560fbb6c@mail.gmail.com>
+	<d54969c50905181600g761b9af4h585a74c45684f1ca@mail.gmail.com>
+	<s5hzld9k5zi.wl%tiwai@suse.de>
+	<d54969c50905230819m55f532c6kf8006b2455ccfee@mail.gmail.com>
+	<s5hmy93el7i.wl%tiwai@suse.de>
+	<d54969c50905231651s507ea7ddve40cdf62b0908687@mail.gmail.com>
+	<d54969c50905240951v2fd01b97j79d0c618bfdd4578@mail.gmail.com>
+	<d54969c50905271227y76eefde2x2e784cd391cd6729@mail.gmail.com>
+	<s5htz361d3i.wl%tiwai@suse.de> <s5hhbz61b8v.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7D5F824579
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.149])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2A94424598
 	for <alsa-devel@alsa-project.org>;
-	Fri, 29 May 2009 19:07:03 +0200 (CEST)
-Received: from localhost0.localdomain (unknown [78.32.150.178])
-	by mail3.uklinux.net (Postfix) with ESMTP id A2E451F66BC
-	for <alsa-devel@alsa-project.org>; Fri, 29 May 2009 18:07:02 +0100 (BST)
-Received: from anon by localhost0.localdomain with local (Exim 4.69)
-	(envelope-from <john@sound-man.co.uk>) id 1MA5Xa-0000jJ-Ta
-	for alsa-devel@alsa-project.org; Fri, 29 May 2009 18:06:46 +0100
-Content-Disposition: inline
-In-Reply-To: <4A1C31CA.8010101@gmail.com>
+	Fri, 29 May 2009 19:35:39 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 4so3394479qwk.56
+	for <alsa-devel@alsa-project.org>; Fri, 29 May 2009 10:35:37 -0700 (PDT)
+In-Reply-To: <s5hhbz61b8v.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,25 +31,121 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Karthik Ramgopal <applefreakpeeps@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 26, 2009 at 08:15:38PM +0200, Kristoffer Grundstr=F6m wrote:
-> I added some possible info in my earlier bugreport about the front jack.
-> Please visit this adress <https://qa.mandriva.com/show_bug.cgi?id=3D49048=
-> =
+2009/5/27 Takashi Iwai <tiwai@suse.de>
 
-> and tell me if I've missed to add something.
+> At Wed, 27 May 2009 22:54:09 +0200,
+> I wrote:
+> >
+> > At Wed, 27 May 2009 16:27:00 -0300,
+> > Emilio L=F3pez wrote:
+> > >
+> > > Did my last email arrive? Any idea on what might be going on?
+> >
+> > Sorry, no time for this right now.
+> > It's usually just a missing channel connection or the lack of
+> > the corresponding amp control.  In most cases, it's trivial if someone
+> > with a knowledge of HD-audio spec sees it...
+>
+> Just took a quick look now, I found that you didn't unmute "Side
+> Playback Switch" in the disabled case.  Do you mean that as
+> "disabled"?
 
 
-John Rigg previously wrote:
-> If it works in Ubuntu 8.10 and 9.04 but not in Mandriva
-> (as described in the thread you linked to) the problem is caused
-> by whatever is different between the two distros. Finding what that
-> difference is would be a good first step. For example, what alsa driver
-> versions (as reported by `cat /proc/asound/version') do the working and
-> non-working distros use?
+Disabled =3D Muted =3D Off, Enabled =3D Unmuted =3D On. So sound works on e=
+nabled,
+doesn't work on disabled.
 
-My guess is that it isn't an alsa bug.
+>
+>
+> I assume that these files are from the "old" driver with the bass
+> working as Side volume.  Is it correct?
 
-John
+
+Yes
+
+>
+>
+>
+> thanks,
+>
+> Takashi
+>
+
+Thanks for having a look at it :)
+
+Emilio
+
+
+
+
+
+>
+>
+> > Takashi
+> >
+> > >
+> > > Emilio
+> > >
+> > > 2009/5/24 Emilio L=F3pez <buhitoescolar@gmail.com>
+> > >
+> > >     Well, it seems my last email was too heavy with the 4 files
+> attached. I
+> > >     have uploaded them to drop.io, here is the link: http://drop.io/
+> > >     alsaonaceraspire6930
+> > >
+> > >     Thanks!
+> > >
+> > >     2009/5/23 Emilio L=F3pez <buhitoescolar@gmail.com>
+> > >
+> > >         Here you are, I ran alsa-info.sh in the old alsa (with
+> model=3Dacer) and
+> > >         saved the output of the script when side was enabled and
+> disabled,
+> > >         with volumes 0 and 100. Hope you can work out the problem with
+> this,
+> > >         do not hesitate to ask for more debug info if you need.
+> > >
+> > >         Thanks for all!
+> > >
+> > >         Emilio
+> > >
+> > >         PS: On my previous email (cited below) I wrote "Mic sensing"
+> > >         incorrectly, I wanted to write "headphones sensing".
+> > >
+> > >         2009/5/23 Takashi Iwai <tiwai@suse.de>
+> > >
+> > >             At Sat, 23 May 2009 12:19:12 -0300,
+> > >             Emilio L=F3pez wrote:
+> > >             >
+> > >             > I reinstalled 1.0.20 today and almost everything started
+> working
+> > >             when I set
+> > >             > model=3Dacer-aspire-4930g. Mic sensing works, my mic now
+> records
+> > >             too. But my
+> > >             > bass does not, and I cannot control it with "Side"
+> anymore.
+> > >             >
+> > >             > Any idea on how to fix it? The audio setup for this
+> laptop will
+> > >             be fully
+> > >             > working when I get the bass to play once again.
+> > >
+> > >             Could you check with the older version and what "Side"
+> control
+> > >             changes
+> > >             in hd-audio codec registers?  You can just get alsa-info.=
+sh
+> output
+> > >             before and after changing the "Side" control value.
+> > >
+> > >             thanks,
+> > >
+> > >             Takashi
+> > >
+> > >
+>
