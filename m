@@ -1,19 +1,16 @@
-From: Cameron Stone <camerons.lists@cse.unsw.edu.au>
-Subject: Re: Increasing maximum sampling frequency?
-Date: Fri, 29 May 2009 12:58:18 +1000
-Message-ID: <4A1F4F4A.508@cse.unsw.edu.au>
-References: <4A1DED36.4030008@cse.unsw.edu.au>
-	<75b66ecd0905271934m7299c4x43be0b79af24300d@mail.gmail.com>
-	<4A1E34BC.1070505@ladisch.de>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH 0/1] ASoC: TWL4030: Using codec_regcache in
+	twl4030_init_chip
+Date: Fri, 29 May 2009 09:22:36 +0300
+Message-ID: <1243578157-27690-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from note.orchestra.cse.unsw.EDU.AU (note.orchestra.cse.unsw.EDU.AU
-	[129.94.242.24]) by alsa0.perex.cz (Postfix) with ESMTP id C707A24156
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8500924471
 	for <alsa-devel@alsa-project.org>;
-	Fri, 29 May 2009 04:58:42 +0200 (CEST)
-In-Reply-To: <4A1E34BC.1070505@ladisch.de>
+	Fri, 29 May 2009 08:23:07 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,31 +20,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: sakoman@gmail.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
->> $ aplay -r 256 test.wav
->> Playing WAVE 'test.wav' : Unsigned 8 bit, Rate 256000 Hz, Mono
->> Warning: rate is not accurate (requested = 256000Hz, got = 192000Hz)
-> 
-> The automatic sample rate converter never uses a frequency higher than
-> 192 kHz.
-> 
-> This maximum frequency is defined in alsa-lib/include/pcm_plugin.h, but
-> you cannot change it without changing LINEAR_DIV and the algorithm in
-> alsa-lib/src/pcm_pcm_rate_linear.c.
-> 
-> Try resampling the .wav file before with sox.
+Hello,
 
-This works. Likewise, playing with "/usr/bin/play" from the sox toolkit
-also works fine.
+The twl4030_init_chip used the twl4030_reg array directly to set the default
+register values.
+In other places the defaults has been modified in the codec->reg_cache (prime
+example is the Headset ramp delay configuration).
 
-It seems that the only limiting going on is during playback, so I'm not
-terribly worried by this, as we're going to be looking at and processing
- these samples, not trying to listen to them. Humans can't hear above
-20kHz anyway, right?
+Switch using the codec->reg_cache in the twl4030_init_chip function, so updated
+defaults will be actually used.
 
-Thanks to everyone for their help on this.
+---
+Peter Ujfalusi (1):
+  ASoC: TWL4030: Use reg_cache in twl4030_init_chip
 
-Cameron.
+ sound/soc/codecs/twl4030.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
