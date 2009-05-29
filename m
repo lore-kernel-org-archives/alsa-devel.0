@@ -1,27 +1,21 @@
-From: =?ISO-8859-1?Q?Emilio_L=F3pez?= <buhitoescolar@gmail.com>
-Subject: Re: Regarding Sound on Acer Aspire 6935G
-Date: Fri, 29 May 2009 14:35:37 -0300
-Message-ID: <d54969c50905291035v19ab019fsdf455a6410b827de@mail.gmail.com>
-References: <4b8c423b0905152051w7443e1b4u4080514a560fbb6c@mail.gmail.com>
-	<d54969c50905181600g761b9af4h585a74c45684f1ca@mail.gmail.com>
-	<s5hzld9k5zi.wl%tiwai@suse.de>
-	<d54969c50905230819m55f532c6kf8006b2455ccfee@mail.gmail.com>
-	<s5hmy93el7i.wl%tiwai@suse.de>
-	<d54969c50905231651s507ea7ddve40cdf62b0908687@mail.gmail.com>
-	<d54969c50905240951v2fd01b97j79d0c618bfdd4578@mail.gmail.com>
-	<d54969c50905271227y76eefde2x2e784cd391cd6729@mail.gmail.com>
-	<s5htz361d3i.wl%tiwai@suse.de> <s5hhbz61b8v.wl%tiwai@suse.de>
+From: Nickolas Lloyd <ultrageek.lloyd@gmail.com>
+Subject: Re: [PATCH] snd-hda-intel: Jack Mode changes for
+	Sigmatel boards
+Date: Fri, 29 May 2009 13:16:55 +0000
+Message-ID: <4A1FE047.5050300@gmail.com>
+References: <4A13F91D.8010102@gmail.com>	<s5hvdnp5wdv.wl%tiwai@suse.de>	<4A1AEF14.1090608@gmail.com>	<s5hy6sj9fl0.wl%tiwai@suse.de>	<4A1D4AB0.40904@gmail.com>
+	<s5hy6sgv2cd.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.149])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2A94424598
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 00F0F24629
 	for <alsa-devel@alsa-project.org>;
-	Fri, 29 May 2009 19:35:39 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 4so3394479qwk.56
-	for <alsa-devel@alsa-project.org>; Fri, 29 May 2009 10:35:37 -0700 (PDT)
-In-Reply-To: <s5hhbz61b8v.wl%tiwai@suse.de>
+	Fri, 29 May 2009 22:07:31 +0200 (CEST)
+Received: by yx-out-1718.google.com with SMTP id 6so4312606yxn.2
+	for <alsa-devel@alsa-project.org>; Fri, 29 May 2009 13:07:31 -0700 (PDT)
+In-Reply-To: <s5hy6sgv2cd.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,120 +26,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Karthik Ramgopal <applefreakpeeps@gmail.com>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Matthew Ranostay <mranostay@embeddedalley.com>
 List-Id: alsa-devel@alsa-project.org
 
-2009/5/27 Takashi Iwai <tiwai@suse.de>
-
-> At Wed, 27 May 2009 22:54:09 +0200,
-> I wrote:
-> >
-> > At Wed, 27 May 2009 16:27:00 -0300,
-> > Emilio L=F3pez wrote:
-> > >
-> > > Did my last email arrive? Any idea on what might be going on?
-> >
-> > Sorry, no time for this right now.
-> > It's usually just a missing channel connection or the lack of
-> > the corresponding amp control.  In most cases, it's trivial if someone
-> > with a knowledge of HD-audio spec sees it...
->
-> Just took a quick look now, I found that you didn't unmute "Side
-> Playback Switch" in the disabled case.  Do you mean that as
-> "disabled"?
-
-
-Disabled =3D Muted =3D Off, Enabled =3D Unmuted =3D On. So sound works on e=
-nabled,
-doesn't work on disabled.
-
->
->
-> I assume that these files are from the "old" driver with the bass
-> working as Side volume.  Is it correct?
-
-
-Yes
-
->
+Takashi Iwai wrote:
+> That looks good.  Could you complete the patch, then let's merge
+> first?  We can tune up later after the merge (if any).
 >
 >
 > thanks,
 >
 > Takashi
 >
+>   
+Will do.  I've also changed stac92xx_get_vref() to
+stac92xx_get_default_vref() to hopefully avoid confusion with
+vref_get().  I'll be posting the (hopefully) final version of this patch
+shortly.
 
-Thanks for having a look at it :)
-
-Emilio
-
-
-
-
-
->
->
-> > Takashi
-> >
-> > >
-> > > Emilio
-> > >
-> > > 2009/5/24 Emilio L=F3pez <buhitoescolar@gmail.com>
-> > >
-> > >     Well, it seems my last email was too heavy with the 4 files
-> attached. I
-> > >     have uploaded them to drop.io, here is the link: http://drop.io/
-> > >     alsaonaceraspire6930
-> > >
-> > >     Thanks!
-> > >
-> > >     2009/5/23 Emilio L=F3pez <buhitoescolar@gmail.com>
-> > >
-> > >         Here you are, I ran alsa-info.sh in the old alsa (with
-> model=3Dacer) and
-> > >         saved the output of the script when side was enabled and
-> disabled,
-> > >         with volumes 0 and 100. Hope you can work out the problem with
-> this,
-> > >         do not hesitate to ask for more debug info if you need.
-> > >
-> > >         Thanks for all!
-> > >
-> > >         Emilio
-> > >
-> > >         PS: On my previous email (cited below) I wrote "Mic sensing"
-> > >         incorrectly, I wanted to write "headphones sensing".
-> > >
-> > >         2009/5/23 Takashi Iwai <tiwai@suse.de>
-> > >
-> > >             At Sat, 23 May 2009 12:19:12 -0300,
-> > >             Emilio L=F3pez wrote:
-> > >             >
-> > >             > I reinstalled 1.0.20 today and almost everything started
-> working
-> > >             when I set
-> > >             > model=3Dacer-aspire-4930g. Mic sensing works, my mic now
-> records
-> > >             too. But my
-> > >             > bass does not, and I cannot control it with "Side"
-> anymore.
-> > >             >
-> > >             > Any idea on how to fix it? The audio setup for this
-> laptop will
-> > >             be fully
-> > >             > working when I get the bass to play once again.
-> > >
-> > >             Could you check with the older version and what "Side"
-> control
-> > >             changes
-> > >             in hd-audio codec registers?  You can just get alsa-info.=
-sh
-> output
-> > >             before and after changing the "Side" control value.
-> > >
-> > >             thanks,
-> > >
-> > >             Takashi
-> > >
-> > >
->
+Thanks for all your help,
+Nick
