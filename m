@@ -1,19 +1,19 @@
-From: The Source <thesourcehim@gmail.com>
-Subject: Re: snd-ctxfi
-Date: Sat, 30 May 2009 20:22:46 +0400
-Message-ID: <4A215D56.7080601@gmail.com>
-References: <4A20A683.9010102@gmail.com> <s5hr5y7hy77.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3 5/6] ARM: DaVinci: ASoC: Add
+	mcasp	support for DM646x
+Date: Sat, 30 May 2009 17:26:48 +0100
+Message-ID: <20090530162647.GA19692@sirena.org.uk>
+References: <1243501868-28565-1-git-send-email-chaithrika@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7C10924854
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6F2E924857
 	for <alsa-devel@alsa-project.org>;
-	Sat, 30 May 2009 18:23:02 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id 22so199546fge.21
-	for <alsa-devel@alsa-project.org>; Sat, 30 May 2009 09:23:01 -0700 (PDT)
-In-Reply-To: <s5hr5y7hy77.wl%tiwai@suse.de>
+	Sat, 30 May 2009 18:26:50 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1243501868-28565-1-git-send-email-chaithrika@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,60 +23,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Chaithrika U S <chaithrika@ti.com>
+Cc: Pavel Kiryukhin <pkiryukhin@ru.mvista.com>, alsa-devel@alsa-project.org, Steve Chen <schen@mvista.com>, davinci-linux-open-source@linux.davincidsp.com, Naresh Medisetty <naresh@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 30.05.2009 11:00, Takashi Iwai wrote:
-> At Sat, 30 May 2009 07:22:43 +0400,
-> The Source wrote:
->    
->> Hello. I tested the snd-ctxfi driver and found no problems (except no
->> support for 5.1 and external console, but original ctxfi does not
->> support them either). A minor problem: kernel oops reporter periodically
->> pops up with message about using a timer in a wrong place.
->>      
-> Oh, that's bad.
->
->    
->> I'll post
->> here this message when I get it next time.
->>      
-> Yes, please, that'll be helpful.
->
->
-> thanks,
->
-> Takashi
->
->    
-Here's the message:
+On Thu, May 28, 2009 at 05:11:08AM -0400, Chaithrika U S wrote:
 
-BUG: sleeping function called from invalid context at mm/slub.c:1599
-in_atomic(): 0, irqs_disabled(): 1, pid: 32065, name: xine
-Pid: 32065, comm: xine Tainted: P           2.6.29.4-75.fc10.x86_64 #1
-Call Trace:
-  [<ffffffff81040685>] __might_sleep+0x105/0x10a
-  [<ffffffff810c9fae>] kmem_cache_alloc+0x32/0xe2
-  [<ffffffffa08e3110>] ct_vm_map+0xfa/0x19e [snd_ctxfi]
-  [<ffffffffa08e1a07>] ct_map_audio_buffer+0x4c/0x76 [snd_ctxfi]
-  [<ffffffffa08e2aa5>] atc_pcm_playback_prepare+0x1d7/0x2a8 [snd_ctxfi]
-  [<ffffffff8105ef3f>] ? up_read+0x9/0xb
-  [<ffffffff81186b61>] ? __up_read+0x7c/0x87
-  [<ffffffffa08e36a6>] ct_pcm_playback_prepare+0x39/0x60 [snd_ctxfi]
-  [<ffffffffa0886bcb>] snd_pcm_do_prepare+0x16/0x28 [snd_pcm]
-  [<ffffffffa08867c7>] snd_pcm_action_single+0x2d/0x5b [snd_pcm]
-  [<ffffffffa08881f3>] snd_pcm_action_nonatomic+0x52/0x6a [snd_pcm]
-  [<ffffffffa088a723>] snd_pcm_common_ioctl1+0x404/0xc79 [snd_pcm]
-  [<ffffffff810c52c8>] ? alloc_pages_current+0xb9/0xc2
-  [<ffffffff810c9402>] ? new_slab+0x1a5/0x1cb
-  [<ffffffff810ab9ea>] ? vma_prio_tree_insert+0x23/0xc1
-  [<ffffffffa088b411>] snd_pcm_playback_ioctl1+0x213/0x230 [snd_pcm]
-  [<ffffffff810b6c20>] ? mmap_region+0x397/0x4c9
-  [<ffffffffa088bd9b>] snd_pcm_playback_ioctl+0x2e/0x36 [snd_pcm]
-  [<ffffffff810ddc64>] vfs_ioctl+0x2a/0x78
-  [<ffffffff810de130>] do_vfs_ioctl+0x462/0x4a2
-  [<ffffffff81029cef>] ? default_spin_lock_flags+0x9/0xe
-  [<ffffffff81374647>] ? trace_hardirqs_off_thunk+0x3a/0x6c
-  [<ffffffff810de1c5>] sys_ioctl+0x55/0x77
-  [<ffffffff8101133a>] system_call_fastpath+0x16/0x1b
+> The codec on the DM646x EVM is AIC32 which is connected to Serializer0 and
+> Serializer1 of McASP0. The McASP0 consists of transmit and receive sections
+> that may operate synchronized, or completely independently with separate master
+> clocks, bit clocks, and frame syncs, and using different transmit modes with
+> different bit-stream formats.
+
+The particular configuration used for the EVM should not be relevant for
+the McASP driver.
+
+> +/* Left (even TDM Slot) Channel Status Register File*/
+> +#define DAVINCI_MCASP_DITCSRA_REG	0x100
+> +/* Right (odd TDM slot) Channel Status RegisterFile*/
+> +#define DAVINCI_MCASP_DITCSRB_REG	0x118
+
+Interesting spacing in the comments...
+
+> +	case DAVINCI_AUDIO_WORD_32:
+> +		fmt = 0x0F;
+> +		break;
+> +
+> +	default:
+> +		return -1;
+> +	}
+
+Should be a real error code.
+
+> +static void davinci_hw_param(struct snd_pcm_substream *substream)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct davinci_audio_dev *dev = rtd->dai->cpu_dai->private_data;
+
+It might be easier with a lot of these functions to just pass the
+davinci_audio_dev as a parameter.
+
+> +       if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> +               /* bit stream is MSB first  with no delay */
+> +               /* DSP_B mode */
+
+Your driver consistently refers to itself as an I2S driver but it
+appears that in actual fact it only implements DSP mode B.  This might
+be a bit confusing for users.
+
+> +	/* Set the TX format : 24 bit right rotation, 32 bit slot, Pad 0
+> +	   and LSB first */
+> +	mcasp_set_bits(dev->base + DAVINCI_MCASP_TXFMT_REG,
+> +						TXROT(6) | TXSSZ(15));
+
+I suspect looking at some of the indentation that you're writing this
+code with 4 character tabs.
+
+> +static int davinci_i2s_mcasp_probe(struct platform_device *pdev)
+> +{
+> +	struct evm_snd_platform_data *parray = pdev->dev.platform_data;
+> +	struct davinci_pcm_dma_params *dma_data;
+> +	struct resource *mem, *ioarea, *res;
+> +	struct evm_snd_platform_data *pdata;
+
+Why is the McASP driver using platform data called 'evm_snd_patform_data'?
+This suggests that there's some abstraction problem with the separation
+between the machine and McASP drivers.
+
+Are the two DAIs directly tied to each other in hardware?  If not it'd
+probably be better to have them registered as separate devices and probe
+separately so that if another chip comes along with a different set of
+DAIs it can be accommodated more readily - if the register interfaces
+stay consistent it may simply be a case of registering the new device.
+
+> +	ret = snd_soc_register_dais(davinci_iis_mcasp_dai,
+> +				ARRAY_SIZE(davinci_iis_mcasp_dai));
+> +	if (ret != 0)
+> +		goto err_release_region;
+
+You should initialise dev within the DAI to be the struct device for the
+platform driver you were probed with.  It might also be nice to tie this
+in to num_links somehow.
