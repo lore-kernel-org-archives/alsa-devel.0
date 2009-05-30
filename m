@@ -1,17 +1,20 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH 2/5] ALSA: snd_usb_caiaq: give better shortname
-Date: Sat, 30 May 2009 23:44:22 +0200
-Message-ID: <1243719865-26760-2-git-send-email-daniel@caiaq.de>
+Subject: [PATCH 5/5] ALSA: snd_usb_caiaq: bump version number
+Date: Sat, 30 May 2009 23:44:25 +0200
+Message-ID: <1243719865-26760-5-git-send-email-daniel@caiaq.de>
 References: <1243719865-26760-1-git-send-email-daniel@caiaq.de>
+	<1243719865-26760-2-git-send-email-daniel@caiaq.de>
+	<1243719865-26760-3-git-send-email-daniel@caiaq.de>
+	<1243719865-26760-4-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 79AC4243CE
+	by alsa0.perex.cz (Postfix) with ESMTP id 9B01E243E0
 	for <alsa-devel@alsa-project.org>;
-	Sat, 30 May 2009 23:44:36 +0200 (CEST)
-In-Reply-To: <1243719865-26760-1-git-send-email-daniel@caiaq.de>
+	Sat, 30 May 2009 23:44:42 +0200 (CEST)
+In-Reply-To: <1243719865-26760-4-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,35 +27,23 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Give the card an 'id' name which will prevent ALSA from calling
-choose_default_name(). This implementation only took the last part of a
-name containing whitespaces which for example caused 'Audio 4 DJ' to be
-shortened to 'DJ', which was not very descriptive.
-
-The implementation now takes the short name and removes all whitespaces
-from it which is much nicer.
-
 Signed-off-by: Daniel Mack <daniel@caiaq.de>
 ---
- sound/usb/caiaq/device.c |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
+ sound/usb/caiaq/device.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/sound/usb/caiaq/device.c b/sound/usb/caiaq/device.c
-index 9be0f2e..7fdecde 100644
+index 1970cdc..21201d5 100644
 --- a/sound/usb/caiaq/device.c
 +++ b/sound/usb/caiaq/device.c
-@@ -435,6 +435,12 @@ static int __devinit init_card(struct snd_usb_caiaqdev *dev)
- 	strcpy(card->driver, MODNAME);
- 	strcpy(card->shortname, dev->product_name);
+@@ -35,7 +35,7 @@
+ #include "input.h"
  
-+	/* fill card->id with a shortened version of the product string
-+	 * which does not contain any whitespaces */
-+	for (c = card->shortname, len = 0; *c && len < sizeof(card->id); c++)
-+		if (*c != ' ')
-+			card->id[len++] = *c;
-+
- 	len = snprintf(card->longname, sizeof(card->longname),
- 		       "%s %s (serial %s, ",
- 		       dev->vendor_name, dev->product_name, dev->serial);
+ MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
+-MODULE_DESCRIPTION("caiaq USB audio, version 1.3.14");
++MODULE_DESCRIPTION("caiaq USB audio, version 1.3.15");
+ MODULE_LICENSE("GPL");
+ MODULE_SUPPORTED_DEVICE("{{Native Instruments, RigKontrol2},"
+ 			 "{Native Instruments, RigKontrol3},"
 -- 
 1.6.3.1
