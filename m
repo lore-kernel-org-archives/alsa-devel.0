@@ -1,16 +1,11 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: [PATCH/RFC] alsa-info: add DMI data to the alsa-info
-	output
-Date: Sun, 31 May 2009 22:36:37 +0300
-Message-ID: <4A22DC45.6000008@pardus.org.tr>
+From: Andrea Borgia <andrea@borgia.bo.it>
+Subject: [PATCH - quirk for USB Aureon cards 1/1] Add quirk to
+ provide proper naming of the Terratec Aureon 5.1 MkII USB card
+Date: Sun, 31 May 2009 23:06:07 +0200
+Message-ID: <4A22F13F.6090707@borgia.bo.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6299302685747307788=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 232151037F0
-	for <alsa-devel@alsa-project.org>;
-	Sun, 31 May 2009 21:36:35 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,56 +15,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a working but not a clean/good patch for doing that because I'm
-not very good at shell scripting but I'm posting it just to give a
-possible idea.
+This is a multi-part message in MIME format.
+--===============6299302685747307788==
+Content-Type: text/x-diff;
+ name="0001-Add-quirk-to-provide-proper-naming-of-the-Terratec-A.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename*0="0001-Add-quirk-to-provide-proper-naming-of-the-Terratec-A.pa";
+ filename*1="tch"
 
-dmidecode should be run as root because it reads /dev/mem. If alsa-info
-is run as root, providing at least the system-manufacturer and
-system-product-name in the output will be very useful for distro
-maintainers.
 
-Thanks,
-Ozan Caglayan
+Signed-off-by: Andrea Borgia <andrea@borgia.bo.it>
 
-Index: alsa-info.sh
-===================================================================
---- alsa-info.sh        (revision 69253)
-+++ alsa-info.sh        (working copy)
-@@ -361,6 +361,18 @@
- ARTSINST=$(which artsd 2>/dev/null| sed 's|^[^/]*||' 2>/dev/null)
- JACKINST=$(which jackd 2>/dev/null| sed 's|^[^/]*||' 2>/dev/null)
+diff --git a/sound/usb/usbquirks.h b/sound/usb/usbquirks.h
+index 5d955aa..d84d6f3 100644
+--- a/sound/usb/usbquirks.h
++++ b/sound/usb/usbquirks.h
+@@ -1951,6 +1951,14 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 	}
+ },
+ {
++	USB_DEVICE_VENDOR_SPEC(0x0ccd, 0x0028),
++	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++		.vendor_name = "TerraTec",
++		.product_name = "Aureon 5.1 MkII",
++		.ifnum = QUIRK_NO_INTERFACE
++	}
++},
++{
+ 	USB_DEVICE(0x0ccd, 0x0035),
+ 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+ 		.vendor_name = "Miditech",
+-- 
+1.6.0.4
 
-+DMIDECODE=$(which dmidecode)
-+DMI_SYSTEM_MANUFACTURER="Not provided"
-+DMI_SYSTEM_PRODUCT_NAME="Not provided"
-+
-+if [ -f $DMIDECODE ]; then
-+    $DMIDECODE -q &> /dev/null
-+    if [ x$? != "x1" ]; then
-+        DMI_SYSTEM_MANUFACTURER=$($DMIDECODE -s system-manufacturer)
-+        DMI_SYSTEM_PRODUCT_NAME=$($DMIDECODE -s system-product-name)
-+    fi
-+fi
-+
- cat /proc/asound/modules 2>/dev/null|awk {'print
-$2'}>$TEMPDIR/alsamodules.tmp
- cat /proc/asound/cards >$TEMPDIR/alsacards.tmp
- lspci |grep -i "multi\|audio">$TEMPDIR/lspci.tmp
-@@ -391,6 +403,13 @@
- echo $DISTRO >> $FILE
- echo "" >> $FILE
- echo "" >> $FILE
-+echo "!!DMI Information" >> $FILE
-+echo "!!---------------" >> $FILE
-+echo "" >> $FILE
-+echo "Manufacturer:      $DMI_SYSTEM_MANUFACTURER" >> $FILE
-+echo "Product Name:      $DMI_SYSTEM_PRODUCT_NAME" >> $FILE
-+echo "" >> $FILE
-+echo "" >> $FILE
- echo "!!Kernel Information" >> $FILE
- echo "!!------------------" >> $FILE
- echo "" >> $FILE
+
+--===============6299302685747307788==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============6299302685747307788==--
