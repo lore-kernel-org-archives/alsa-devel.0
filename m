@@ -1,20 +1,16 @@
-From: Oscon <oscon@mail.datanet.hu>
-Subject: unknown card works
-Date: Sat, 30 May 2009 14:36:45 +0200
-Message-ID: <200905301436.46006.oscon@mail.datanet.hu>
+From: renidragsemaj@yahoo.com
+Subject: Recent breakages (was:  (no subject))
+Date: Sat, 30 May 2009 23:57:59 -0700 (PDT)
+Message-ID: <829874.32198.qm@web54503.mail.re2.yahoo.com>
+Reply-To: renidragsemaj@yahoo.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx8.datanet.hu (mx8.datanet.hu [194.149.13.161])
-	by alsa0.perex.cz (Postfix) with ESMTP id 102971037F4
+Received: from web54503.mail.re2.yahoo.com (web54503.mail.re2.yahoo.com
+	[206.190.49.153]) by alsa0.perex.cz (Postfix) with SMTP id 3898924389
 	for <alsa-devel@alsa-project.org>;
-	Sat, 30 May 2009 14:36:57 +0200 (CEST)
-Received: from oz466ebebb.adsl.datanet.hu (oz466ebebb.adsl.datanet.hu
-	[91.120.77.89]) by mx8.datanet.hu (DataNet) with ESMTP id 698FDEBF04
-	for <alsa-devel@alsa-project.org>;
-	Sat, 30 May 2009 14:36:55 +0200 (CEST)
-Content-Disposition: inline
+	Sun, 31 May 2009 08:58:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,75 +20,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: renidragsemaj@yahoo.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
 
-I have got a "retro" :) PCI analog tuner card.
+--- On Sat, 5/30/09, Takashi Iwai <tiwai@suse.de> wrote:
 
-id: unknown card 0x878-0x144f:0x3000
+>> Hi, someone recently submitted changes to the patch_sigmatel.c codec
+>> source. Whatever was done is breaking my patch for the HP dv4-1222nr
+>> laptop. I also strongly suspect that other code in the stac92hd71bxx
+>> function has been affected. There is no autodetect, there is no
+>> option for modprobe that will load that codec currently, to the best
+>> of my knowledge. I've tracked the difference to snapshot
+>> 20090529. Before that, I can get it to work, there and after refuses
+>> to work properly.
+>
+>Could you try to copy hda_intel.c from 1.0.20 and check whether this
+>fixes the problem?=A0 Most likely I broke something.
 
-board name:         Askey Computer Corp. MagicTView'99 
+You seem to have that right. I changed out that file like you said and it w=
+ent back to working. Now, only to find out what happened...
 
-digital audio rate: 48000 Hz (?)
+>>
+>> Also, there was a recent change to the
+>> stac92xx_hp_check_power_status function: While the change looks good
+>> for its intended purpose of localizing board changes to the
+>> switch/case statements in the stac92hd71bxx function, the
+>> implementor reversed the if/then selector: =
 
-------------------
+>
+>Fixed now.=A0 Thanks for checking!
 
-Other informations: / dmesg, modules.conf, lspci, system information (version 
-of kernel+alsa-utils)
+Thank you. It seems that I had two big booboos with this part of my post. 1=
+) Sorry about all those question marks: It looks like my cut and paste job =
+didn't go the way I planned. 2) I messed up and switched the old and new co=
+de in my post, but it looks like you caught my screw-up. The recent snapsho=
+t (20090531) has it right. *Don't change it back!* :)
 
-dmesg:
+Thank you,
+James Gardiner
 
-May 30 14:19:51 osconsfortress kernel: unknown card 0x878-0x144f:0x3000
-May 30 14:19:51 osconsfortress kernel: please mail id, board name, and, if it 
-works, the correct digital_rate option to <alsa-devel@alsa-project.org>
-May 30 14:19:51 osconsfortress kernel: Bt87x 0000:03:06.1: PCI INT A -> GSI 21 
-(level, low) -> IRQ 21
-May 30 14:19:51 osconsfortress kernel: bt87x0: Using board 0, analog, digital 
-(rate 48000 Hz)
 
---------------------
 
-modules.conf:
-
-options snd-bt87x index=2 enable=1 load_all=1 digital_rate=48000
-
---------------------
-
-lspci -vvv
-
-03:06.1 Multimedia controller: Brooktree Corporation Bt878 Audio Capture (rev 
-02)
-        Subsystem: Askey Computer Corp. MagicTView CPH060 - Audio
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- 
-Stepping- SERR+ FastB2B- DisINTx-
-        Status: Cap- 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- 
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-        Latency: 64 (1000ns min, 63750ns max)
-        Interrupt: pin A routed to IRQ 21
-        Region 0: Memory at f8ffe000 (32-bit, prefetchable) [size=4K]
-        Kernel driver in use: Bt87x
-
----------------------------
-System information:
-
-Debian Lenny
-
-kernel:
-root@osconsfortress:~# uname -a
-Linux osconsfortress 2.6.27-limbo #1 SMP Thu Mar 5 11:18:25 CET 2009 i686 
-GNU/Linux
-root@osconsfortress:~#
-
-(based on 2.6.27.10+grsec+layer7)
-
-root@osconsfortress:~# uptime
- 14:32:12 up 48 days, 19:41,  3 users,  load average: 0.28, 0.30, 0.35
-
-alsa-base :Version: 1.0.17.dfsg-4
-
---------------------
-
-Cheers,
-Oscon
+      =
