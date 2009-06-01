@@ -1,21 +1,19 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH 5/5] ALSA: snd_usb_caiaq: bump version number
-Date: Mon,  1 Jun 2009 21:36:27 +0200
-Message-ID: <1243884987-20256-5-git-send-email-daniel@caiaq.de>
-References: <s5h8wkbc2ro.wl%tiwai@suse.de>
-	<1243884987-20256-1-git-send-email-daniel@caiaq.de>
-	<1243884987-20256-2-git-send-email-daniel@caiaq.de>
-	<1243884987-20256-3-git-send-email-daniel@caiaq.de>
-	<1243884987-20256-4-git-send-email-daniel@caiaq.de>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: Re: [PATCH] alsa-info.sh: Provide system manufacturer
+ and product name from DMI
+Date: Mon, 01 Jun 2009 23:05:07 +0300
+Message-ID: <4A243473.4000202@pardus.org.tr>
+References: <1243855541-4838-1-git-send-email-ozan@pardus.org.tr>
+	<s5h3aajbzyw.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 22A9F245C8
+Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4372A245C9
 	for <alsa-devel@alsa-project.org>;
-	Mon,  1 Jun 2009 21:36:45 +0200 (CEST)
-In-Reply-To: <1243884987-20256-4-git-send-email-daniel@caiaq.de>
+	Mon,  1 Jun 2009 22:05:05 +0200 (CEST)
+In-Reply-To: <s5h3aajbzyw.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,26 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Daniel Mack <daniel@caiaq.de>
----
- sound/usb/caiaq/device.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/usb/caiaq/device.c b/sound/usb/caiaq/device.c
-index f7a1f88..bc33323 100644
---- a/sound/usb/caiaq/device.c
-+++ b/sound/usb/caiaq/device.c
-@@ -35,7 +35,7 @@
- #include "input.h"
- 
- MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
--MODULE_DESCRIPTION("caiaq USB audio, version 1.3.14");
-+MODULE_DESCRIPTION("caiaq USB audio, version 1.3.15");
- MODULE_LICENSE("GPL");
- MODULE_SUPPORTED_DEVICE("{{Native Instruments, RigKontrol2},"
- 			 "{Native Instruments, RigKontrol3},"
--- 
-1.6.3.1
+VGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IE1vbiwgIDEgSnVuIDIwMDkgMTQ6MjU6NDEgKzAzMDAs
+Cj4gT3phbiDDh2HEn2xheWFuIHdyb3RlOgo+ICAgCj4+IFRoaXMgY29tbWl0IGFkZHMgc3lzdGVt
+IG1hbnVmYWN0dXJlciBhbmQgcHJvZHVjdCBuYW1lIGluZm9ybWF0aW9ucwo+PiBhY3F1aXJlZCB1
+c2luZyBkbWlkZWNvZGUgdG8gdGhlIG91dHB1dCBvZiB0aGUgYWxzYS1pbmZvIHNjcmlwdC4KPj4K
+Pj4gTm90ZSB0aGF0IHRob3NlIGluZm9ybWF0aW9ucyB3aWxsIG9ubHkgYmUgYXZhaWxhYmxlIHdo
+ZW4gZG1pZGVjb2RlCj4+IHV0aWxpdHkgaXMgaW5zdGFsbGVkIGFuZCBhbHNhLWluZm8gaXMgcnVu
+IHdpdGggcm9vdCBwcml2aWxlZ2VzLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBPemFuIMOHYcSfbGF5
+YW4gPG96YW5AcGFyZHVzLm9yZy50cj4KPj4gICAgIAo+Cj4gVGhhbmtzLCBhcHBsaWVkIG5vdy4K
+PiAgIAoKTGVubmFydCBwcm9wb3NlZCB0byByZWFkIHRoZSBETUkgZGF0YSBmcm9tIHN5c2ZzIHdo
+aWNoIG1ha2VzIG11Y2ggbW9yZQpzZW5zZSBhcyB0aGUgcGF0Y2ggd29uJ3QgZGVwZW5kIG9uIHRo
+ZSB1c2Vyc3BhY2UgZG1pZGVjb2RlIHV0aWxpdHkgYW5kCnJvb3QgcHJpdmlsZWdlcy4KCkknbGwg
+Y2hhbmdlIGl0IGFuZCB0aGVuIHJlc2VuZCBpdCB0b21vcnJvdy4KClRoYW5rcwpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
