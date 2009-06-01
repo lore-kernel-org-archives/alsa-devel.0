@@ -1,16 +1,17 @@
-From: =?utf-8?q?Ozan=20=C3=87a=C4=9Flayan?= <ozan@pardus.org.tr>
-Subject: [PATCH] alsa-info.sh: Provide system manufacturer and
-	product name from DMI
-Date: Mon,  1 Jun 2009 14:25:41 +0300
-Message-ID: <1243855541-4838-1-git-send-email-ozan@pardus.org.tr>
+From: Daniel Bankmann <daniel_bankmann@arcor.de>
+Subject: Problems with X-Fi driver
+Date: Mon, 01 Jun 2009 14:10:37 +0200
+Message-ID: <4A23C53D.8070201@arcor.de>
+References: <mailman.1.1243850401.8236.alsa-devel@alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pardus.org.tr (comar.uludag.org.tr [193.140.100.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7D85D24442
+Received: from mail-in-13.arcor-online.net (mail-in-13.arcor-online.net
+	[151.189.21.53]) by alsa0.perex.cz (Postfix) with ESMTP id 3955B24478
 	for <alsa-devel@alsa-project.org>;
-	Mon,  1 Jun 2009 13:16:51 +0200 (CEST)
+	Mon,  1 Jun 2009 14:10:05 +0200 (CEST)
+In-Reply-To: <mailman.1.1243850401.8236.alsa-devel@alsa-project.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,39 +22,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, =?utf-8?q?Ozan=20=C3=87a=C4=9Flayan?= <ozan@pardus.org.tr>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBjb21taXQgYWRkcyBzeXN0ZW0gbWFudWZhY3R1cmVyIGFuZCBwcm9kdWN0IG5hbWUgaW5m
-b3JtYXRpb25zCmFjcXVpcmVkIHVzaW5nIGRtaWRlY29kZSB0byB0aGUgb3V0cHV0IG9mIHRoZSBh
-bHNhLWluZm8gc2NyaXB0LgoKTm90ZSB0aGF0IHRob3NlIGluZm9ybWF0aW9ucyB3aWxsIG9ubHkg
-YmUgYXZhaWxhYmxlIHdoZW4gZG1pZGVjb2RlCnV0aWxpdHkgaXMgaW5zdGFsbGVkIGFuZCBhbHNh
-LWluZm8gaXMgcnVuIHdpdGggcm9vdCBwcml2aWxlZ2VzLgoKU2lnbmVkLW9mZi1ieTogT3phbiDD
-h2HEn2xheWFuIDxvemFuQHBhcmR1cy5vcmcudHI+Ci0tLQogdXRpbHMvYWxzYS1pbmZvLnNoIHwg
-ICAxMyArKysrKysrKysrKysrCiAxIGZpbGVzIGNoYW5nZWQsIDEzIGluc2VydGlvbnMoKyksIDAg
-ZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvdXRpbHMvYWxzYS1pbmZvLnNoIGIvdXRpbHMvYWxz
-YS1pbmZvLnNoCmluZGV4IGYxNjYwZjguLjRiZTRlMDUgMTAwNzU1Ci0tLSBhL3V0aWxzL2Fsc2Et
-aW5mby5zaAorKysgYi91dGlscy9hbHNhLWluZm8uc2gKQEAgLTQwMCw2ICs0MDAsMTIgQEAgRVNE
-SU5TVD0kKHdoaWNoIGVzZCAyPi9kZXYvbnVsbHwgc2VkICdzfF5bXi9dKnx8JyAyPi9kZXYvbnVs
-bCkKIFBBSU5TVD0kKHdoaWNoIHB1bHNlYXVkaW8gMj4vZGV2L251bGx8IHNlZCAnc3xeW14vXSp8
-fCcgMj4vZGV2L251bGwpCiBBUlRTSU5TVD0kKHdoaWNoIGFydHNkIDI+L2Rldi9udWxsfCBzZWQg
-J3N8XlteL10qfHwnIDI+L2Rldi9udWxsKQogSkFDS0lOU1Q9JCh3aGljaCBqYWNrZCAyPi9kZXYv
-bnVsbHwgc2VkICdzfF5bXi9dKnx8JyAyPi9kZXYvbnVsbCkKK0RNSURFQ09ERT0kKHdoaWNoIGRt
-aWRlY29kZSAyPi9kZXYvbnVsbHwgc2VkICdzfF5bXi9dKnx8JyAyPi9kZXYvbnVsbCkKKworaWYg
-WyAteCAkRE1JREVDT0RFIF07IHRoZW4KKyAgICBETUlfU1lTVEVNX01BTlVGQUNUVVJFUj0kKCRE
-TUlERUNPREUgLXMgc3lzdGVtLW1hbnVmYWN0dXJlciAyPi9kZXYvbnVsbCkKKyAgICBETUlfU1lT
-VEVNX1BST0RVQ1RfTkFNRT0kKCRETUlERUNPREUgLXMgc3lzdGVtLXByb2R1Y3QtbmFtZSAyPi9k
-ZXYvbnVsbCkKK2ZpCiAKIGNhdCAvcHJvYy9hc291bmQvbW9kdWxlcyAyPi9kZXYvbnVsbHxhd2sg
-eydwcmludCAkMid9PiRURU1QRElSL2Fsc2Ftb2R1bGVzLnRtcAogY2F0IC9wcm9jL2Fzb3VuZC9j
-YXJkcyA+JFRFTVBESVIvYWxzYWNhcmRzLnRtcApAQCAtNDMxLDYgKzQzNywxMyBAQCBlY2hvICIi
-ID4+ICRGSUxFCiBlY2hvICRESVNUUk8gPj4gJEZJTEUKIGVjaG8gIiIgPj4gJEZJTEUKIGVjaG8g
-IiIgPj4gJEZJTEUKK2VjaG8gIiEhRE1JIEluZm9ybWF0aW9uIiA+PiAkRklMRQorZWNobyAiISEt
-LS0tLS0tLS0tLS0tLS0iID4+ICRGSUxFCitlY2hvICIiID4+ICRGSUxFCitlY2hvICJNYW51ZmFj
-dHVyZXI6ICAgICAgJERNSV9TWVNURU1fTUFOVUZBQ1RVUkVSIiA+PiAkRklMRQorZWNobyAiUHJv
-ZHVjdCBOYW1lOiAgICAgICRETUlfU1lTVEVNX1BST0RVQ1RfTkFNRSIgPj4gJEZJTEUKK2VjaG8g
-IiIgPj4gJEZJTEUKK2VjaG8gIiIgPj4gJEZJTEUKIGVjaG8gIiEhS2VybmVsIEluZm9ybWF0aW9u
-IiA+PiAkRklMRQogZWNobyAiISEtLS0tLS0tLS0tLS0tLS0tLS0iID4+ICRGSUxFCiBlY2hvICIi
-ID4+ICRGSUxFCi0tIAoxLjYuMwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-bHNhLWRldmVsCg==
+Takashi Iwai schrieb:
+> At Fri, 22 May 2009 11:54:47 +0200,
+> Daniel Bankmann wrote:
+>> Takashi Iwai schrieb:
+>>> At Thu, 21 May 2009 09:53:23 +0200,
+>>> Daniel Bankmann wrote:
+>>>> Hi!
+>>>>
+>>>> I just tested the newest driver version with Open Suse 11.1 and
+>>>> pae-kernel. I seems not to work probably, although the latest
+"official"
+>>>> driver by Creative worked more or less good.
+>>>>
+>>>> The problem is, that always, when hearing some music or any other
+sound,
+>>>> the signal gets interrupted every few seconds. At the other side, the
+>>>> startup jingle for example is accompanied by a knock every few seconds.
+>>>>
+>>>> Any idea, or what information do you need to fix this?
+>>> If you are using pulseaudio, try to upgrade to the one in Factory.
+>>> PA on 11.1 is really a crappy version, unfortunately.
+>>>
+>>>
+>>> Takashi
+>>>
+>> Hi,
+>>
+>> are you sure, that this is a problem with PA?
+>
+> Depends on your system setup.  As default, PA is used on KDE and GNOME,
+> regardless of h/w multi-stream functions.
+>
+>> Upgrading to the newest
+>> version or the one in Factory seems to be a bit tricky (because auf
+>> missing dependencies).
+>
+> You can upgrade the packages on OBS multimedia:libs repo.
+>
+>> Shouldn't the driver just work without PA and ESD installed? I tried
+>> that out, but the problem still resists.
+>
+> It's not the driver to decide whether to use PA or not.  It's the
+> upper part.
+>
+> If the problem still occurs without PA (and you make sure that you
+> don't use it), the issue is likely the hwptr update timing of the
+> ctxfi driver.   The recent PCM core has a more strict check, and
+> possibly ctxfi might not provide the correct DMA position.
+>
+> Anyway, please check the problem occurs with which apps more exactly.
+> At best, try to reproduce with aplay and speaker-test programs, i.e.
+> with less complexity.  And, please report back to alsa-devel ML.
+> (Note that your post may appear later after manual approvals if you
+>  aren't subscribed yet).
+>
+>
+> thanks,
+>
+> Takashi
+>
+
+Hi,
+
+so I tried reproducing this problem. Here's a link to a wav-file which
+includes tests with aplay and the starting/shutdown -jingle.
+
+I hope this can give you a better idea of my problem;)
+
+Daniel
+
+http://rapidshare.com/files/239574432/output_test.wav
