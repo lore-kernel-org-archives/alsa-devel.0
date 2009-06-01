@@ -1,26 +1,17 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: Re: [PATCH/RFC] alsa-info: add DMI data
- to	the	alsa-info output
-Date: Mon, 01 Jun 2009 16:01:17 +0300
-Message-ID: <4A23D11D.10001@pardus.org.tr>
-References: <4A22DC45.6000008@pardus.org.tr>
-	<20090601122812.GC32054@tango.0pointer.de>
+From: Naveen Krishna Ch <naveenkrishna.ch@gmail.com>
+Subject: ASoC: TWL4030 driver support multi channel playback
+Date: Mon, 1 Jun 2009 19:50:01 +0530
+Message-ID: <ef0d8a250906010720n144bb53bl4c6cc3e79e0f8db9@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pardus.org.tr (comar.uludag.org.tr [193.140.100.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0C5C4244A6
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.147])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0FEDC24509
 	for <alsa-devel@alsa-project.org>;
-	Mon,  1 Jun 2009 14:59:06 +0200 (CEST)
-Received: from [192.168.3.203] (uekae-subnet-out.ume.tubitak.gov.tr
-	[194.27.222.253])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested) (Authenticated sender: ozan)
-	by pardus.org.tr (Postfix) with ESMTP id 01ACB66B4CFB
-	for <alsa-devel@alsa-project.org>;
-	Mon,  1 Jun 2009 15:58:59 +0300 (EEST)
-In-Reply-To: <20090601122812.GC32054@tango.0pointer.de>
+	Mon,  1 Jun 2009 16:20:02 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 4so4057972qwk.56
+	for <alsa-devel@alsa-project.org>; Mon, 01 Jun 2009 07:20:01 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,16 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Lennart Poettering wrote On 01-06-2009 15:28:
->
-> Please note that this information is exported in sysfs anyway, in
-> /sys/class/dmi/id/*.
->
-> It would be much better to read that data from sysfs since it doesn't
-> need a kernel with /dev/mem, or root root priviliges or any other
-> software installed.
->   
+Hi Peter,
 
-That's nice, didn't know about that, will resend the patch, thanks!
+I am using linux 2.6.28 kernel,
+
+there is a requirement to support multi (4) channel play back .
+
+I guess TWL4030 ASoC driver now has full fledged support for both the
+DAC1(TX1) and  DAC2(TX2) paths
+in option 1 of codec operation.
+
+I am looking forward to back port the ASoC stuff drivers from 2.6.30 rc7  to
+2.6.28.
+
+Is there any better way of meeting the requirement with out back porting the
+stuff
+
+Suggestions please.
+
+Sorry for the english,,
+-- 
+Cheers
+(: Naveen Krishna Ch :)
