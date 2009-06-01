@@ -1,18 +1,16 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 1/1] ASoC: TWL4030: Check the interface format
-	for 4 channel mode
-Date: Mon,  1 Jun 2009 14:06:40 +0300
-Message-ID: <1243854400-20902-2-git-send-email-peter.ujfalusi@nokia.com>
-References: <1243854400-20902-1-git-send-email-peter.ujfalusi@nokia.com>
+From: =?utf-8?q?Ozan=20=C3=87a=C4=9Flayan?= <ozan@pardus.org.tr>
+Subject: [PATCH] alsa-info.sh: Provide system manufacturer and
+	product name from DMI
+Date: Mon,  1 Jun 2009 14:25:41 +0300
+Message-ID: <1243855541-4838-1-git-send-email-ozan@pardus.org.tr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE1CD2443B
+Received: from pardus.org.tr (comar.uludag.org.tr [193.140.100.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7D85D24442
 	for <alsa-devel@alsa-project.org>;
-	Mon,  1 Jun 2009 13:06:53 +0200 (CEST)
-In-Reply-To: <1243854400-20902-1-git-send-email-peter.ujfalusi@nokia.com>
+	Mon,  1 Jun 2009 13:16:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,40 +21,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: sakoman@gmail.com, broonie@opensource.wolfsonmicro.com
+Cc: tiwai@suse.de, =?utf-8?q?Ozan=20=C3=87a=C4=9Flayan?= <ozan@pardus.org.tr>
 List-Id: alsa-devel@alsa-project.org
 
-In addition to the operating mode check, also check the
-codec's interface format in case of four channel mode.
-If the codec is not in TDM (DSP_A) mode, return with error.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
----
- sound/soc/codecs/twl4030.c |   12 +++++++++---
- 1 files changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index df474a5..c53c7ca 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -1608,9 +1608,15 @@ static int twl4030_hw_params(struct snd_pcm_substream *substream,
- 
- 	 /* If the substream has 4 channel, do the necessary setup */
- 	if (params_channels(params) == 4) {
--		/* Safety check: are we in the correct operating mode? */
--		if ((twl4030_read_reg_cache(codec, TWL4030_REG_CODEC_MODE) &
--			TWL4030_OPTION_1))
-+		u8 format, mode;
-+
-+		format = twl4030_read_reg_cache(codec, TWL4030_REG_AUDIO_IF);
-+		mode = twl4030_read_reg_cache(codec, TWL4030_REG_CODEC_MODE);
-+
-+		/* Safety check: are we in the correct operating mode and
-+		 * the interface is in TDM mode? */
-+		if ((mode & TWL4030_OPTION_1) &&
-+		    ((format & TWL4030_AIF_FORMAT) == TWL4030_AIF_FORMAT_TDM))
- 			twl4030_tdm_enable(codec, substream->stream, 1);
- 		else
- 			return -EINVAL;
--- 
-1.6.3.1
+VGhpcyBjb21taXQgYWRkcyBzeXN0ZW0gbWFudWZhY3R1cmVyIGFuZCBwcm9kdWN0IG5hbWUgaW5m
+b3JtYXRpb25zCmFjcXVpcmVkIHVzaW5nIGRtaWRlY29kZSB0byB0aGUgb3V0cHV0IG9mIHRoZSBh
+bHNhLWluZm8gc2NyaXB0LgoKTm90ZSB0aGF0IHRob3NlIGluZm9ybWF0aW9ucyB3aWxsIG9ubHkg
+YmUgYXZhaWxhYmxlIHdoZW4gZG1pZGVjb2RlCnV0aWxpdHkgaXMgaW5zdGFsbGVkIGFuZCBhbHNh
+LWluZm8gaXMgcnVuIHdpdGggcm9vdCBwcml2aWxlZ2VzLgoKU2lnbmVkLW9mZi1ieTogT3phbiDD
+h2HEn2xheWFuIDxvemFuQHBhcmR1cy5vcmcudHI+Ci0tLQogdXRpbHMvYWxzYS1pbmZvLnNoIHwg
+ICAxMyArKysrKysrKysrKysrCiAxIGZpbGVzIGNoYW5nZWQsIDEzIGluc2VydGlvbnMoKyksIDAg
+ZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvdXRpbHMvYWxzYS1pbmZvLnNoIGIvdXRpbHMvYWxz
+YS1pbmZvLnNoCmluZGV4IGYxNjYwZjguLjRiZTRlMDUgMTAwNzU1Ci0tLSBhL3V0aWxzL2Fsc2Et
+aW5mby5zaAorKysgYi91dGlscy9hbHNhLWluZm8uc2gKQEAgLTQwMCw2ICs0MDAsMTIgQEAgRVNE
+SU5TVD0kKHdoaWNoIGVzZCAyPi9kZXYvbnVsbHwgc2VkICdzfF5bXi9dKnx8JyAyPi9kZXYvbnVs
+bCkKIFBBSU5TVD0kKHdoaWNoIHB1bHNlYXVkaW8gMj4vZGV2L251bGx8IHNlZCAnc3xeW14vXSp8
+fCcgMj4vZGV2L251bGwpCiBBUlRTSU5TVD0kKHdoaWNoIGFydHNkIDI+L2Rldi9udWxsfCBzZWQg
+J3N8XlteL10qfHwnIDI+L2Rldi9udWxsKQogSkFDS0lOU1Q9JCh3aGljaCBqYWNrZCAyPi9kZXYv
+bnVsbHwgc2VkICdzfF5bXi9dKnx8JyAyPi9kZXYvbnVsbCkKK0RNSURFQ09ERT0kKHdoaWNoIGRt
+aWRlY29kZSAyPi9kZXYvbnVsbHwgc2VkICdzfF5bXi9dKnx8JyAyPi9kZXYvbnVsbCkKKworaWYg
+WyAteCAkRE1JREVDT0RFIF07IHRoZW4KKyAgICBETUlfU1lTVEVNX01BTlVGQUNUVVJFUj0kKCRE
+TUlERUNPREUgLXMgc3lzdGVtLW1hbnVmYWN0dXJlciAyPi9kZXYvbnVsbCkKKyAgICBETUlfU1lT
+VEVNX1BST0RVQ1RfTkFNRT0kKCRETUlERUNPREUgLXMgc3lzdGVtLXByb2R1Y3QtbmFtZSAyPi9k
+ZXYvbnVsbCkKK2ZpCiAKIGNhdCAvcHJvYy9hc291bmQvbW9kdWxlcyAyPi9kZXYvbnVsbHxhd2sg
+eydwcmludCAkMid9PiRURU1QRElSL2Fsc2Ftb2R1bGVzLnRtcAogY2F0IC9wcm9jL2Fzb3VuZC9j
+YXJkcyA+JFRFTVBESVIvYWxzYWNhcmRzLnRtcApAQCAtNDMxLDYgKzQzNywxMyBAQCBlY2hvICIi
+ID4+ICRGSUxFCiBlY2hvICRESVNUUk8gPj4gJEZJTEUKIGVjaG8gIiIgPj4gJEZJTEUKIGVjaG8g
+IiIgPj4gJEZJTEUKK2VjaG8gIiEhRE1JIEluZm9ybWF0aW9uIiA+PiAkRklMRQorZWNobyAiISEt
+LS0tLS0tLS0tLS0tLS0iID4+ICRGSUxFCitlY2hvICIiID4+ICRGSUxFCitlY2hvICJNYW51ZmFj
+dHVyZXI6ICAgICAgJERNSV9TWVNURU1fTUFOVUZBQ1RVUkVSIiA+PiAkRklMRQorZWNobyAiUHJv
+ZHVjdCBOYW1lOiAgICAgICRETUlfU1lTVEVNX1BST0RVQ1RfTkFNRSIgPj4gJEZJTEUKK2VjaG8g
+IiIgPj4gJEZJTEUKK2VjaG8gIiIgPj4gJEZJTEUKIGVjaG8gIiEhS2VybmVsIEluZm9ybWF0aW9u
+IiA+PiAkRklMRQogZWNobyAiISEtLS0tLS0tLS0tLS0tLS0tLS0iID4+ICRGSUxFCiBlY2hvICIi
+ID4+ICRGSUxFCi0tIAoxLjYuMwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
