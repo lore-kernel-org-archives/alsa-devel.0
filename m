@@ -1,17 +1,19 @@
-From: Daniel Bankmann <daniel_bankmann@arcor.de>
-Subject: Problems with X-Fi driver
-Date: Mon, 01 Jun 2009 14:10:37 +0200
-Message-ID: <4A23C53D.8070201@arcor.de>
-References: <mailman.1.1243850401.8236.alsa-devel@alsa-project.org>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: [PATCH/RFC] alsa-info: add DMI data to
+	the	alsa-info output
+Date: Mon, 1 Jun 2009 14:28:12 +0200
+Message-ID: <20090601122812.GC32054@tango.0pointer.de>
+References: <4A22DC45.6000008@pardus.org.tr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-in-13.arcor-online.net (mail-in-13.arcor-online.net
-	[151.189.21.53]) by alsa0.perex.cz (Postfix) with ESMTP id 3955B24478
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 80CAC2448E
 	for <alsa-devel@alsa-project.org>;
-	Mon,  1 Jun 2009 14:10:05 +0200 (CEST)
-In-Reply-To: <mailman.1.1243850401.8236.alsa-devel@alsa-project.org>
+	Mon,  1 Jun 2009 14:28:42 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4A22DC45.6000008@pardus.org.tr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,77 +24,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai schrieb:
-> At Fri, 22 May 2009 11:54:47 +0200,
-> Daniel Bankmann wrote:
->> Takashi Iwai schrieb:
->>> At Thu, 21 May 2009 09:53:23 +0200,
->>> Daniel Bankmann wrote:
->>>> Hi!
->>>>
->>>> I just tested the newest driver version with Open Suse 11.1 and
->>>> pae-kernel. I seems not to work probably, although the latest
-"official"
->>>> driver by Creative worked more or less good.
->>>>
->>>> The problem is, that always, when hearing some music or any other
-sound,
->>>> the signal gets interrupted every few seconds. At the other side, the
->>>> startup jingle for example is accompanied by a knock every few seconds.
->>>>
->>>> Any idea, or what information do you need to fix this?
->>> If you are using pulseaudio, try to upgrade to the one in Factory.
->>> PA on 11.1 is really a crappy version, unfortunately.
->>>
->>>
->>> Takashi
->>>
->> Hi,
->>
->> are you sure, that this is a problem with PA?
->
-> Depends on your system setup.  As default, PA is used on KDE and GNOME,
-> regardless of h/w multi-stream functions.
->
->> Upgrading to the newest
->> version or the one in Factory seems to be a bit tricky (because auf
->> missing dependencies).
->
-> You can upgrade the packages on OBS multimedia:libs repo.
->
->> Shouldn't the driver just work without PA and ESD installed? I tried
->> that out, but the problem still resists.
->
-> It's not the driver to decide whether to use PA or not.  It's the
-> upper part.
->
-> If the problem still occurs without PA (and you make sure that you
-> don't use it), the issue is likely the hwptr update timing of the
-> ctxfi driver.   The recent PCM core has a more strict check, and
-> possibly ctxfi might not provide the correct DMA position.
->
-> Anyway, please check the problem occurs with which apps more exactly.
-> At best, try to reproduce with aplay and speaker-test programs, i.e.
-> with less complexity.  And, please report back to alsa-devel ML.
-> (Note that your post may appear later after manual approvals if you
->  aren't subscribed yet).
->
->
-> thanks,
->
-> Takashi
->
-
-Hi,
-
-so I tried reproducing this problem. Here's a link to a wav-file which
-includes tests with aplay and the starting/shutdown -jingle.
-
-I hope this can give you a better idea of my problem;)
-
-Daniel
-
-http://rapidshare.com/files/239574432/output_test.wav
+T24gU3VuLCAzMS4wNS4wOSAyMjozNiwgT3phbiDDh2HEn2xheWFuIChvemFuQHBhcmR1cy5vcmcu
+dHIpIHdyb3RlOgoKPiBUaGlzIGlzIGEgd29ya2luZyBidXQgbm90IGEgY2xlYW4vZ29vZCBwYXRj
+aCBmb3IgZG9pbmcgdGhhdCBiZWNhdXNlIEknbQo+IG5vdCB2ZXJ5IGdvb2QgYXQgc2hlbGwgc2Ny
+aXB0aW5nIGJ1dCBJJ20gcG9zdGluZyBpdCBqdXN0IHRvIGdpdmUgYQo+IHBvc3NpYmxlIGlkZWEu
+Cj4gCj4gZG1pZGVjb2RlIHNob3VsZCBiZSBydW4gYXMgcm9vdCBiZWNhdXNlIGl0IHJlYWRzIC9k
+ZXYvbWVtLiBJZiBhbHNhLWluZm8KPiBpcyBydW4gYXMgcm9vdCwgcHJvdmlkaW5nIGF0IGxlYXN0
+IHRoZSBzeXN0ZW0tbWFudWZhY3R1cmVyIGFuZAo+IHN5c3RlbS1wcm9kdWN0LW5hbWUgaW4gdGhl
+IG91dHB1dCB3aWxsIGJlIHZlcnkgdXNlZnVsIGZvciBkaXN0cm8KPiBtYWludGFpbmVycy4KClBs
+ZWFzZSBub3RlIHRoYXQgdGhpcyBpbmZvcm1hdGlvbiBpcyBleHBvcnRlZCBpbiBzeXNmcyBhbnl3
+YXksIGluCi9zeXMvY2xhc3MvZG1pL2lkLyouCgpJdCB3b3VsZCBiZSBtdWNoIGJldHRlciB0byBy
+ZWFkIHRoYXQgZGF0YSBmcm9tIHN5c2ZzIHNpbmNlIGl0IGRvZXNuJ3QKbmVlZCBhIGtlcm5lbCB3
+aXRoIC9kZXYvbWVtLCBvciByb290IHJvb3QgcHJpdmlsaWdlcyBvciBhbnkgb3RoZXIKc29mdHdh
+cmUgaW5zdGFsbGVkLgoKTGVubmFydAoKLS0gCkxlbm5hcnQgUG9ldHRlcmluZyAgICAgICAgICAg
+ICAgICAgICAgICAgIFJlZCBIYXQsIEluYy4KbGVubmFydCBbYXRdIHBvZXR0ZXJpbmcgW2RvdF0g
+bmV0Cmh0dHA6Ly8wcG9pbnRlci5uZXQvbGVubmFydC8gICAgICAgICAgIEdudVBHIDB4MUEwMTVD
+QzQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
