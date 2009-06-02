@@ -1,18 +1,21 @@
-From: Robert Krakora <rob.krakora@messagenetsystems.com>
-Subject: ALSA 1.0.20 Speex PCM Plugin
-Date: Tue, 2 Jun 2009 16:39:46 -0400
-Message-ID: <b24e53350906021339r55bef955od429a2ae0f867ec6@mail.gmail.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: ALSA patch Nvidia 8 channel hdmi audio
+Date: Wed, 3 Jun 2009 00:22:07 +0200
+Message-ID: <200906030022.07693.marek.vasut@gmail.com>
+References: <410e92830906021458x3d47a1d6jebba8bbe1150e76d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
-	[209.85.221.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id A4DB3243E0
+Received: from mail-fx0-f170.google.com (mail-fx0-f170.google.com
+	[209.85.220.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5A75C24475
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Jun 2009 22:39:47 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so11662078qyk.16
-	for <alsa-devel@alsa-project.org>; Tue, 02 Jun 2009 13:39:46 -0700 (PDT)
+	Wed,  3 Jun 2009 00:22:08 +0200 (CEST)
+Received: by fxm18 with SMTP id 18so9160980fxm.32
+	for <alsa-devel@alsa-project.org>; Tue, 02 Jun 2009 15:22:07 -0700 (PDT)
+In-Reply-To: <410e92830906021458x3d47a1d6jebba8bbe1150e76d@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,91 +25,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, alsa-user@lists.sourceforge.net
+To: Alan Alan <alanwww1@gmail.com>
+Cc: alsa-devel@alsa-project.org, Wei Ni <wni@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+I'm not the author of the patch, CCing alsa-devel and the original author.
 
-Has anyone successfully employed the ALSA 1.0.20 Speex PCM Plugin?  I
-followed the "speexdsp.txt" document under the 'doc' directory but the
-result was the following error:
-
-[root@vizioroom105 ~]# arecord -Dplug:mic poopy.wav
-Recording WAVE 'poopy.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
-ALSA lib pcm_params.c:2135:(snd1_pcm_hw_refine_slave) Slave PCM not usable
-arecord: set_params:957: Broken configuration for this PCM: no
-configurations available
-
-Here is my asound.conf:
-
-# MessageNet Systems ALSA sound configuration file
-# Allowing multiple playback and capture
-
-pcm.!default {
-   type plug
-   slave.pcm "duplex"
-}
-pcm.duplex {
-   type asym
-   playback.pcm "dmixer"
-   capture.pcm "analog_input"
-}
-pcm.dmixer {
-   type dmix
-   ipc_key 1024
-   ipc_perm 0666
-   slave {
-       pcm "hw:2,3"
-       period_time 0
-       period_size 1024
-       buffer_size 8192
-   }
-   bindings {
-      0 0
-      1 1
-   }
-}
-pcm.mic
-{
-  type speex
-  slave.pcm {
-      type hw
-      card 1
-  }
-  agc 1
-  agc_level 8000
-}
-pcm.analog_input
-{
-   type dsnoop
-   ipc_key 2048
-   ipc_perm 0666
-   slave{
-      pcm "hw:1,2"
-   }
-}
-pcm.dsp0 {
-   type plug
-   slave.pcm "dmixer"
-}
-ctl.mixer0 {
-   type hw
-   card 0
-}
-
-Here are the results of alsa-info.sh:
-
-http://www.alsa-project.org/db/?f=358e4d5d828dda3c44220382c8b480fd6019ab2a
-
-Thanks in advance.
-
-Best Regards,
-
--- 
-Rob Krakora
-Senior Software Engineer
-MessageNet Systems
-101 East Carmel Dr. Suite 105
-Carmel, IN 46032
-(317)566-1677 Ext. 206
-(317)663-0808 Fax
+On Tuesday 02 of June 2009 23:58:26 Alan Alan wrote:
+> Hi Marek !
+>
+> I just read your emailing with nvidia devs about alsa supporting 8 channel
+> lpcm over hdmi.
+>
+> I checked it out an i have to tell it is working awsome, except for a few
+> bugs:
+>
+> The channels are wrong mapped. Running a speakertest -Dhdmi -c6 gives the
+> following result (first where it should sound)
+> FL - FL
+> C - RL
+> FR - FR
+> RR - LFE
+> RL - C
+>
+> The other thing i realized that playback is limited to 16 bits 48 khz. I
+> think the minimum which is supported by nvidia hardware is 24bits 96 (or
+> 192) khz.
+> Why not ?
+>
+> Could you contact the devs as i don't know how to reach them.
+>
+> ps.: Mybe my build methot was not 100% ok ? I used 1.020 Alsa with the
+> oatched nvidia.c file. Anyway the amplifier shows multichannel LPCM and
+> that's great news.
