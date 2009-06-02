@@ -1,26 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 2/5] ALSA: snd_usb_caiaq: give better
- shortname
-Date: Tue, 2 Jun 2009 12:11:33 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.0906021210580.4067@eeebox2.perex-int.cz>
-References: <s5h8wkbc2ro.wl%tiwai@suse.de>
-	<1243884987-20256-1-git-send-email-daniel@caiaq.de>
-	<1243884987-20256-2-git-send-email-daniel@caiaq.de>
-	<alpine.LNX.2.00.0906012306460.4067@eeebox2.perex-int.cz>
-	<s5hmy8rms9j.wl%tiwai@suse.de>
-	<20090602072948.GO26148@buzzloop.caiaq.de>
-	<s5hfxejrs6k.wl%tiwai@suse.de>
-	<20090602093104.GC26160@buzzloop.caiaq.de>
-	<s5htz2zt15j.wl%tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: ASoC: TWL4030 driver support multi channel playback
+Date: Tue, 2 Jun 2009 13:25:33 +0300
+Message-ID: <200906021325.33879.peter.ujfalusi@nokia.com>
+References: <ef0d8a250906010720n144bb53bl4c6cc3e79e0f8db9@mail.gmail.com>
+	<20090602095845.GA20046@rakim.wolfsonmicro.main>
+	<ef0d8a250906020302q4c96dfb2y27dd5664c7f6ea9c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id ED003103835
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9147E103835
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Jun 2009 12:11:34 +0200 (CEST)
-In-Reply-To: <s5htz2zt15j.wl%tiwai@suse.de>
+	Tue,  2 Jun 2009 12:25:38 +0200 (CEST)
+In-Reply-To: <ef0d8a250906020302q4c96dfb2y27dd5664c7f6ea9c@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,42 +24,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: ext Naveen Krishna Ch <naveenkrishna.ch@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2 Jun 2009, Takashi Iwai wrote:
-
-> At Tue, 2 Jun 2009 11:31:04 +0200,
-> Daniel Mack wrote:
->>
->> On Tue, Jun 02, 2009 at 09:49:39AM +0200, Takashi Iwai wrote:
->>>> So what's your suggestion to fix the behaviour I was describing? Maybe a
->>>> combination of Jaroslav's collision detection together with a logic that
->>>> does not touch the id in case it was passed as module option?
->>>
->>> Sounds reasonable.  We may need just a number suffix if any collision
->>> occurs.
->>
->> What about that patch below? Works well in my tests here.
+On Tuesday 02 June 2009 13:02:38 ext Naveen Krishna Ch wrote:
+> 2009/6/2 Mark Brown <broonie@opensource.wolfsonmicro.com>
 >
-> Looks almost good, but we need to check
-> snd_info_check_reserved_words() too.
+> > On Tue, Jun 02, 2009 at 03:24:11PM +0530, Naveen Krishna Ch wrote:
+> > > I am done with the entire back porting of ASoC.
+> > >
+> > > I can see the dapm widgets getting ON/OFF and codec registers being
+> >
+> > changed.
+> >
+> > > But, there is no audio out.  Am i missing somthing
+> > >
+> > > A direct aplay should play the audio on the headset, right?
+
+By default the headset outputs should work (AudioL2 and AudioR2 is routed t=
+o =
+
+the output).
+Try with the following:
+aplay -f dat /dev/urandom
+If there is no noise, than from another terminal try to play with the alsa =
+
+mixers...
+
 >
-> I guess the routine in choose_default_id() can be reused for this
-> function, though.
+> >  As a first step I would check that there is data being
+> > transferred over the digital link to the CODEC, then look at the
+> > audio routing to ensure that the signal is routed to the output.
 >
-> Jaroslav seems working on this now, so maybe he could better cope
-> with you...
+> Thanks for suggestions..
 
-Daniel, could you test this patch?
+If aplay exits with timeout, than it means that the clocks are not running. =
 
-http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=5384d153538ef403c5ca51a6e0c8b85b735c877a
+You can check the HW/SW pointers if they are moving while the playback is =
 
- 					Thanks,
- 						Jaroslav
+running:
+cat /proc/asound/card0/pcm0p/sub0/status
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+-- =
+
+P=E9ter
