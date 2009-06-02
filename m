@@ -1,15 +1,17 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH 1/2] ALSA: snd_usb_caiaq: give better shortname
-Date: Tue,  2 Jun 2009 12:36:39 +0200
-Message-ID: <1243939000-3182-1-git-send-email-daniel@caiaq.de>
+Subject: [PATCH 2/2] ALSA: snd_usb_caiaq: bump version number
+Date: Tue,  2 Jun 2009 12:36:40 +0200
+Message-ID: <1243939000-3182-2-git-send-email-daniel@caiaq.de>
+References: <1243939000-3182-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id E47CD103835
+	by alsa0.perex.cz (Postfix) with ESMTP id 1BD50103881
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Jun 2009 12:37:15 +0200 (CEST)
+	Tue,  2 Jun 2009 12:37:19 +0200 (CEST)
+In-Reply-To: <1243939000-3182-1-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,62 +24,23 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-If not passed as module option, provide an own card ID with the newly
-introduced snd_set_card_id() call.
-
-This will prevent ALSA from calling choose_default_name() which only
-takes the last part of a name containing whitespaces. This for example
-caused 'Audio 4 DJ' to be shortened to 'DJ', which was not very
-descriptive.
-
-The implementation now takes the short name and removes all whitespaces
-from it which is much nicer.
-
 Signed-off-by: Daniel Mack <daniel@caiaq.de>
 ---
- sound/usb/caiaq/device.c |   21 +++++++++++++++++++--
- 1 files changed, 19 insertions(+), 2 deletions(-)
+ sound/usb/caiaq/device.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/sound/usb/caiaq/device.c b/sound/usb/caiaq/device.c
-index 15052e4..43bd0db 100644
+index 43bd0db..b9a2b31 100644
 --- a/sound/usb/caiaq/device.c
 +++ b/sound/usb/caiaq/device.c
-@@ -382,10 +382,10 @@ static int create_card(struct usb_device* usb_dev, struct snd_card **cardp)
+@@ -35,7 +35,7 @@
+ #include "input.h"
  
- static int __devinit init_card(struct snd_usb_caiaqdev *dev)
- {
--	char usbpath[32];
-+	char *c, usbpath[32];
- 	struct usb_device *usb_dev = dev->chip.dev;
- 	struct snd_card *card = dev->chip.card;
--	int err;
-+	int err, len;
- 
- 	if (usb_set_interface(usb_dev, 0, 1) != 0) {
- 		log("can't set alt interface.\n");
-@@ -427,6 +427,23 @@ static int __devinit init_card(struct snd_usb_caiaqdev *dev)
- 	strlcpy(card->driver, MODNAME, sizeof(card->driver));
- 	strlcpy(card->shortname, dev->product_name, sizeof(card->shortname));
- 
-+	/* if the id was not passed as module option, fill it with a shortened
-+	 * version of the product string which does not contain any
-+	 * whitespaces */
-+
-+	if (*card->id == '\0') {
-+		char id[sizeof(card->id)];
-+
-+		memset(id, 0, sizeof(id));
-+
-+		for (c = card->shortname, len = 0;
-+			*c && len < sizeof(card->id); c++)
-+			if (*c != ' ')
-+				id[len++] = *c;
-+
-+		snd_card_set_id(card, id);
-+	}
-+
- 	usb_make_path(usb_dev, usbpath, sizeof(usbpath));
- 	snprintf(card->longname, sizeof(card->longname),
- 		       "%s %s (%s)",
+ MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
+-MODULE_DESCRIPTION("caiaq USB audio, version 1.3.14");
++MODULE_DESCRIPTION("caiaq USB audio, version 1.3.15");
+ MODULE_LICENSE("GPL");
+ MODULE_SUPPORTED_DEVICE("{{Native Instruments, RigKontrol2},"
+ 			 "{Native Instruments, RigKontrol3},"
 -- 
 1.6.3.1
