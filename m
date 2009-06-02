@@ -1,8 +1,8 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH] ALSA: introduce snd_card_make_id_unique()
-	(was: ALSA:	snd_usb_caiaq: give better shortname)
-Date: Tue, 2 Jun 2009 12:10:59 +0200
-Message-ID: <20090602101059.GE26160@buzzloop.caiaq.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH 2/5] ALSA: snd_usb_caiaq: give better
+ shortname
+Date: Tue, 2 Jun 2009 12:11:33 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.0906021210580.4067@eeebox2.perex-int.cz>
 References: <s5h8wkbc2ro.wl%tiwai@suse.de>
 	<1243884987-20256-1-git-send-email-daniel@caiaq.de>
 	<1243884987-20256-2-git-send-email-daniel@caiaq.de>
@@ -16,11 +16,10 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 039B510380E
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id ED003103835
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Jun 2009 12:11:03 +0200 (CEST)
-Content-Disposition: inline
+	Tue,  2 Jun 2009 12:11:34 +0200 (CEST)
 In-Reply-To: <s5htz2zt15j.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -35,115 +34,38 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 02, 2009 at 11:50:32AM +0200, Takashi Iwai wrote:
-> > What about that patch below? Works well in my tests here.
-> 
+On Tue, 2 Jun 2009, Takashi Iwai wrote:
+
+> At Tue, 2 Jun 2009 11:31:04 +0200,
+> Daniel Mack wrote:
+>>
+>> On Tue, Jun 02, 2009 at 09:49:39AM +0200, Takashi Iwai wrote:
+>>>> So what's your suggestion to fix the behaviour I was describing? Maybe a
+>>>> combination of Jaroslav's collision detection together with a logic that
+>>>> does not touch the id in case it was passed as module option?
+>>>
+>>> Sounds reasonable.  We may need just a number suffix if any collision
+>>> occurs.
+>>
+>> What about that patch below? Works well in my tests here.
+>
 > Looks almost good, but we need to check
 > snd_info_check_reserved_words() too.
+>
+> I guess the routine in choose_default_id() can be reused for this
+> function, though.
+>
+> Jaroslav seems working on this now, so maybe he could better cope
+> with you...
 
-A new version to fix just that issue is below.
+Daniel, could you test this patch?
 
-Thanks,
-Daniel
+http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=5384d153538ef403c5ca51a6e0c8b85b735c877a
 
+ 					Thanks,
+ 						Jaroslav
 
->From f8925c51b08b15d95d060148e2ce639987374b87 Mon Sep 17 00:00:00 2001
-From: Daniel Mack <daniel@caiaq.de>
-Date: Tue, 2 Jun 2009 11:23:41 +0200
-Subject: [PATCH] ALSA: introduce snd_card_make_id_unique()
-
-Sound card drivers may choose their own way to provide a nice sound card
-ID, especially when the default behaviour taken by choose_default_name()
-is not appropriate. ALSA's IDs must be unique, so there is need for some
-core logic to ensure that.
-
-This patch adds the function snd_card_make_id_unique() to the ALSA core
-which lowlevel drivers can call to make sure the computed string isn't
-already taken.
-
-Signed-off-by: Daniel Mack <daniel@caiaq.de>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>
----
- include/sound/core.h |    1 +
- sound/core/init.c    |   53 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 54 insertions(+), 0 deletions(-)
-
-diff --git a/include/sound/core.h b/include/sound/core.h
-index 3dea798..01ea816 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -319,6 +319,7 @@ int snd_card_info_done(void);
- int snd_component_add(struct snd_card *card, const char *component);
- int snd_card_file_add(struct snd_card *card, struct file *file);
- int snd_card_file_remove(struct snd_card *card, struct file *file);
-+void snd_card_make_id_unique(struct snd_card *card);
- 
- #ifndef snd_card_set_dev
- #define snd_card_set_dev(card, devptr) ((card)->dev = (devptr))
-diff --git a/sound/core/init.c b/sound/core/init.c
-index fd56afe..bce2982 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -547,6 +547,59 @@ static void choose_default_id(struct snd_card *card)
- 	}
- }
- 
-+static int
-+card_id_is_ambiguous(struct snd_card *card, const char *id)
-+{
-+	int i;
-+
-+	for (i = 0; i < snd_ecards_limit; i++) {
-+		/* only run for exisiting cards but not for the
-+		 * one in question */
-+		if (i == card->number || !snd_cards[i])
-+			continue;
-+
-+		if (strcmp(snd_cards[i]->id, id) == 0)
-+			return 1;
-+	}
-+
-+	return 0;
-+}
-+
-+void
-+snd_card_make_id_unique(struct snd_card *card)
-+{
-+	int count = 1;
-+	char id[sizeof(card->id)];
-+
-+	if (*card->id == '\0')
-+		return;
-+
-+	/* if there's a reserved word in the card's chosen id, reset it
-+	 * to empty. choose_default_id() will then take care to generate
-+	 * an id for the card at a later point */
-+	if (!snd_info_check_reserved_words(card->id)) {
-+		*card->id = '\0';
-+		return;
-+	}
-+
-+	strlcpy(id, card->id, sizeof(id));
-+
-+	while (card_id_is_ambiguous(card, id)) {
-+		/* As we need to add some characters to the id, make
-+		 * sure there's enough room for it */
-+		int maxlen = sizeof(card->id) - (2 + (count / 10));
-+
-+		if (strlen(card->id) > maxlen)
-+			card->id[maxlen] = '\0';
-+
-+		snprintf(id, sizeof(id), "%s_%d", card->id, count);
-+		count++;
-+	}
-+
-+	strlcpy(card->id, id, sizeof(id));
-+}
-+EXPORT_SYMBOL_GPL(snd_card_make_id_unique);
-+
- #ifndef CONFIG_SYSFS_DEPRECATED
- static ssize_t
- card_id_show_attr(struct device *dev,
--- 
-1.6.3.1
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
