@@ -1,18 +1,18 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: [PATCH 4/5] ASoC: Blackfin: set the transfer size
-	according the ac97_frame size
-Date: Tue,  2 Jun 2009 00:18:56 -0400
-Message-ID: <1243916337-29953-4-git-send-email-vapier@gentoo.org>
-References: <1243916337-29953-1-git-send-email-vapier@gentoo.org>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: ASoC: TWL4030 driver support multi channel playback
+Date: Tue, 2 Jun 2009 08:16:41 +0300
+Message-ID: <200906020816.41806.peter.ujfalusi@nokia.com>
+References: <ef0d8a250906010720n144bb53bl4c6cc3e79e0f8db9@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id F067B24335
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0A16A243C5
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Jun 2009 06:19:10 +0200 (CEST)
-In-Reply-To: <1243916337-29953-1-git-send-email-vapier@gentoo.org>
+	Tue,  2 Jun 2009 07:17:05 +0200 (CEST)
+In-Reply-To: <ef0d8a250906010720n144bb53bl4c6cc3e79e0f8db9@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,40 +22,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: uclinux-dist-devel@blackfin.uclinux.org, Cliff Cai <cliff.cai@analog.com>, Bryan Wu <cooloney@kernel.org>
+To: ext Naveen Krishna Ch <naveenkrishna.ch@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Cliff Cai <cliff.cai@analog.com>
+Hello,
 
-Signed-off-by: Cliff Cai <cliff.cai@analog.com>
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-Signed-off-by: Bryan Wu <cooloney@kernel.org>
----
- sound/soc/blackfin/bf5xx-sport.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+On Monday 01 June 2009 17:20:01 ext Naveen Krishna Ch wrote:
+> Hi Peter,
+>
+> I am using linux 2.6.28 kernel,
+>
+> there is a requirement to support multi (4) channel play back .
+>
+> I guess TWL4030 ASoC driver now has full fledged support for both the
+> DAC1(TX1) and  DAC2(TX2) paths in option 1 of codec operation.
 
-diff --git a/sound/soc/blackfin/bf5xx-sport.c b/sound/soc/blackfin/bf5xx-sport.c
-index b7953c8..469ce7f 100644
---- a/sound/soc/blackfin/bf5xx-sport.c
-+++ b/sound/soc/blackfin/bf5xx-sport.c
-@@ -190,7 +190,7 @@ static inline int sport_hook_rx_dummy(struct sport_device *sport)
- 	desc = get_dma_next_desc_ptr(sport->dma_rx_chan);
- 	/* Copy the descriptor which will be damaged to backup */
- 	temp_desc = *desc;
--	desc->x_count = 0xa;
-+	desc->x_count = sport->dummy_count / 2;
- 	desc->y_count = 0;
- 	desc->next_desc_addr = sport->dummy_rx_desc;
- 	local_irq_restore(flags);
-@@ -309,7 +309,7 @@ static inline int sport_hook_tx_dummy(struct sport_device *sport)
- 	desc = get_dma_next_desc_ptr(sport->dma_tx_chan);
- 	/* Store the descriptor which will be damaged */
- 	temp_desc = *desc;
--	desc->x_count = 0xa;
-+	desc->x_count = sport->dummy_count / 2;
- 	desc->y_count = 0;
- 	desc->next_desc_addr = sport->dummy_tx_desc;
- 	local_irq_restore(flags);
--- 
-1.6.3.1
+Yes it does. It has support for TX1L/R, TX2L/R, RX1L/R and RX2L/R (four =
+
+channel playback and recording)
+
+>
+> I am looking forward to back port the ASoC stuff drivers from 2.6.30 rc7 =
+
+> to 2.6.28.
+>
+> Is there any better way of meeting the requirement with out back porting
+> the stuff
+
+Well, I think this is not going to be an easy ride. It is not that hard, bu=
+t =
+
+takes some time. I could think of two approaches to get the twl4030 codec w=
+ork =
+
+backported (plus one):
+1. Backport the the whole ASoC changes to 2.6.28
+2. Backport the twl4030 codec driver with minimal amount of ASoC changes
+3. Convince whoever you need to convince that you need to move to 2.6.30 ;)
+
+1. Since ASoC has been dramatically changed since 2.6.28 this is not going =
+to =
+
+be easy, but you will have the current ASoC features and it will be easier =
+to =
+
+follow upstream.
+2. Pick the changes to the twl4030 codec one-by-one apply it, compile the =
+
+result, if it breaks, take the needed patches to fix the errors. Fair amunt=
+ of =
+
+work, but you will end up a working twl4030 codec, but you need to backport =
+
+the new patches from upstream every time..
+3. This only exist in the ideal world.
+
+In overall, I think your best bet is 1) You can take the 2) if you really k=
+now =
+
+what you are doing...
+
+>
+> Suggestions please.
+>
+> Sorry for the english,,
+> --
+> Cheers
+> (: Naveen Krishna Ch :)
+
+-- =
+
+P=E9ter
