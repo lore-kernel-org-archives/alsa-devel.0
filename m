@@ -1,27 +1,24 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 2/5] ALSA: snd_usb_caiaq: give
-	better	shortname
-Date: Tue, 2 Jun 2009 11:55:25 +0200
-Message-ID: <20090602095525.GD26160@buzzloop.caiaq.de>
-References: <s5h8wkbc2ro.wl%tiwai@suse.de>
-	<1243884987-20256-1-git-send-email-daniel@caiaq.de>
-	<1243884987-20256-2-git-send-email-daniel@caiaq.de>
-	<alpine.LNX.2.00.0906012306460.4067@eeebox2.perex-int.cz>
-	<s5hmy8rms9j.wl%tiwai@suse.de>
-	<20090602072948.GO26148@buzzloop.caiaq.de>
-	<s5hfxejrs6k.wl%tiwai@suse.de>
-	<20090602093104.GC26160@buzzloop.caiaq.de>
-	<s5htz2zt15j.wl%tiwai@suse.de>
+From: Naveen Krishna Ch <naveenkrishna.ch@gmail.com>
+Subject: Re: ASoC: TWL4030 driver support multi channel playback
+Date: Tue, 2 Jun 2009 15:32:38 +0530
+Message-ID: <ef0d8a250906020302q4c96dfb2y27dd5664c7f6ea9c@mail.gmail.com>
+References: <ef0d8a250906010720n144bb53bl4c6cc3e79e0f8db9@mail.gmail.com>
+	<200906020816.41806.peter.ujfalusi@nokia.com>
+	<20090602093707.GB4046@sirena.org.uk>
+	<ef0d8a250906020254w3ecc60d2w7c196765e48eab25@mail.gmail.com>
+	<20090602095845.GA20046@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5436924501
+Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
+	[209.85.221.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 68FF624509
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Jun 2009 11:55:29 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5htz2zt15j.wl%tiwai@suse.de>
+	Tue,  2 Jun 2009 12:02:40 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so11035705qyk.16
+	for <alsa-devel@alsa-project.org>; Tue, 02 Jun 2009 03:02:39 -0700 (PDT)
+In-Reply-To: <20090602095845.GA20046@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,22 +28,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 02, 2009 at 11:50:32AM +0200, Takashi Iwai wrote:
-> > What about that patch below? Works well in my tests here.
-> 
-> Looks almost good, but we need to check
-> snd_info_check_reserved_words() too.
+2009/6/2 Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-Ok.
+> On Tue, Jun 02, 2009 at 03:24:11PM +0530, Naveen Krishna Ch wrote:
+>
+> > I am done with the entire back porting of ASoC.
+> >
+> > I can see the dapm widgets getting ON/OFF and codec registers being
+> changed.
+> >
+> > But, there is no audio out.  Am i missing somthing
+> >
+> > A direct aplay should play the audio on the headset, right?
+>
+> I am not familiar with the TWL4030, you should ask these questions on
+> the list.
 
-> I guess the routine in choose_default_id() can be reused for this
-> function, though.
+I hit reply (Instead of replyall) Sorry,
 
-Yes, choose_default_id() could be split up into some static functions
-which could then be used by my snd_card_make_id_unique() as well.
+>  As a first step I would check that there is data being
+> transferred over the digital link to the CODEC, then look at the
+> audio routing to ensure that the signal is routed to the output.
 
-Daniel
+Thanks for suggestions..
+
+
+
+-- 
+Cheers
+(: Naveen Krishna Ch :)
