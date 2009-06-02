@@ -1,28 +1,15 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 2/5] ALSA: snd_usb_caiaq: give
-	better	shortname
-Date: Tue, 2 Jun 2009 12:28:34 +0200
-Message-ID: <20090602102834.GF26160@buzzloop.caiaq.de>
-References: <s5h8wkbc2ro.wl%tiwai@suse.de>
-	<1243884987-20256-1-git-send-email-daniel@caiaq.de>
-	<1243884987-20256-2-git-send-email-daniel@caiaq.de>
-	<alpine.LNX.2.00.0906012306460.4067@eeebox2.perex-int.cz>
-	<s5hmy8rms9j.wl%tiwai@suse.de>
-	<20090602072948.GO26148@buzzloop.caiaq.de>
-	<s5hfxejrs6k.wl%tiwai@suse.de>
-	<20090602093104.GC26160@buzzloop.caiaq.de>
-	<s5htz2zt15j.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0906021210580.4067@eeebox2.perex-int.cz>
+Subject: [PATCH 1/2] ALSA: snd_usb_caiaq: give better shortname
+Date: Tue,  2 Jun 2009 12:36:39 +0200
+Message-ID: <1243939000-3182-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id A35E2103835
+	by alsa0.perex.cz (Postfix) with ESMTP id E47CD103835
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Jun 2009 12:28:37 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.00.0906021210580.4067@eeebox2.perex-int.cz>
+	Tue,  2 Jun 2009 12:37:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,25 +19,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 02, 2009 at 12:11:33PM +0200, Jaroslav Kysela wrote:
->> Looks almost good, but we need to check
->> snd_info_check_reserved_words() too.
->>
->> I guess the routine in choose_default_id() can be reused for this
->> function, though.
->>
->> Jaroslav seems working on this now, so maybe he could better cope
->> with you...
->
-> Daniel, could you test this patch?
->
-> http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=5384d153538ef403c5ca51a6e0c8b85b735c877a
+If not passed as module option, provide an own card ID with the newly
+introduced snd_set_card_id() call.
 
-Yep - same behaviour than with my patch. Let's take your's :)
+This will prevent ALSA from calling choose_default_name() which only
+takes the last part of a name containing whitespaces. This for example
+caused 'Audio 4 DJ' to be shortened to 'DJ', which was not very
+descriptive.
 
-Thanks,
-Daniel
+The implementation now takes the short name and removes all whitespaces
+from it which is much nicer.
+
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
+---
+ sound/usb/caiaq/device.c |   21 +++++++++++++++++++--
+ 1 files changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/sound/usb/caiaq/device.c b/sound/usb/caiaq/device.c
+index 15052e4..43bd0db 100644
+--- a/sound/usb/caiaq/device.c
++++ b/sound/usb/caiaq/device.c
+@@ -382,10 +382,10 @@ static int create_card(struct usb_device* usb_dev, struct snd_card **cardp)
+ 
+ static int __devinit init_card(struct snd_usb_caiaqdev *dev)
+ {
+-	char usbpath[32];
++	char *c, usbpath[32];
+ 	struct usb_device *usb_dev = dev->chip.dev;
+ 	struct snd_card *card = dev->chip.card;
+-	int err;
++	int err, len;
+ 
+ 	if (usb_set_interface(usb_dev, 0, 1) != 0) {
+ 		log("can't set alt interface.\n");
+@@ -427,6 +427,23 @@ static int __devinit init_card(struct snd_usb_caiaqdev *dev)
+ 	strlcpy(card->driver, MODNAME, sizeof(card->driver));
+ 	strlcpy(card->shortname, dev->product_name, sizeof(card->shortname));
+ 
++	/* if the id was not passed as module option, fill it with a shortened
++	 * version of the product string which does not contain any
++	 * whitespaces */
++
++	if (*card->id == '\0') {
++		char id[sizeof(card->id)];
++
++		memset(id, 0, sizeof(id));
++
++		for (c = card->shortname, len = 0;
++			*c && len < sizeof(card->id); c++)
++			if (*c != ' ')
++				id[len++] = *c;
++
++		snd_card_set_id(card, id);
++	}
++
+ 	usb_make_path(usb_dev, usbpath, sizeof(usbpath));
+ 	snprintf(card->longname, sizeof(card->longname),
+ 		       "%s %s (%s)",
+-- 
+1.6.3.1
