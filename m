@@ -1,19 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC: TWL4030 driver support multi channel	playback
-Date: Tue, 2 Jun 2009 10:37:07 +0100
-Message-ID: <20090602093707.GB4046@sirena.org.uk>
-References: <ef0d8a250906010720n144bb53bl4c6cc3e79e0f8db9@mail.gmail.com>
-	<200906020816.41806.peter.ujfalusi@nokia.com>
+Subject: Re: Please help in adding ams-delta support to ASoC
+Date: Tue, 2 Jun 2009 10:37:28 +0100
+Message-ID: <20090602093728.GB19390@rakim.wolfsonmicro.main>
+References: <4A1BEBE3.8010306@tis.icnet.pl>
+	<20090527104711.GA1970@sirena.org.uk>
+	<200906020925.58675.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2353C244FA
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E42681037FA
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Jun 2009 11:37:10 +0200 (CEST)
+	Tue,  2 Jun 2009 11:37:29 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <200906020816.41806.peter.ujfalusi@nokia.com>
+In-Reply-To: <200906020925.58675.jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,24 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: ext Naveen Krishna Ch <naveenkrishna.ch@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 02, 2009 at 08:16:41AM +0300, Peter Ujfalusi wrote:
+On Tue, Jun 02, 2009 at 09:24:39AM +0200, Janusz Krzysztofik wrote:
 
-> Well, I think this is not going to be an easy ride. It is not that hard, but 
-> takes some time. I could think of two approaches to get the twl4030 codec work 
-> backported (plus one):
-> 1. Backport the the whole ASoC changes to 2.6.28
-> 2. Backport the twl4030 codec driver with minimal amount of ASoC changes
-> 3. Convince whoever you need to convince that you need to move to 2.6.30 ;)
-> 
-> 1. Since ASoC has been dramatically changed since 2.6.28 this is not going to 
-> be easy, but you will have the current ASoC features and it will be easier to 
-> follow upstream.
+> I have choosen to register the codec device with 
+> platform_device_register_simple("cx20442-codec", ...) invoked form asoc 
+> machine driver, is this ok?
 
-I'd recommend just backporting ASoC in its entirety - it is relatively
-well insulated against changes in the rest of the kernel other that any
-arch code the machine drivers rely on so this process normally goes
-fairly smoothly.  It's much easier than trying a partial backport.
+Normally the platform device would be registered by the machine file
+under arch/arm but either works.
