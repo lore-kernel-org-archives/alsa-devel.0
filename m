@@ -1,21 +1,19 @@
-From: Hector Martin <hector@marcansoft.com>
-Subject: [PATCH] Acer Aspire 8930G support
-Date: Tue, 02 Jun 2009 08:58:03 +0200
-Message-ID: <4A24CD7B.4060809@marcansoft.com>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: Please help in adding ams-delta support to ASoC
+Date: Tue, 2 Jun 2009 09:24:39 +0200
+Message-ID: <200906020925.58675.jkrzyszt@tis.icnet.pl>
+References: <4A1BEBE3.8010306@tis.icnet.pl>
+	<20090527104711.GA1970@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050400020206070800020407"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.marcansoft.com (marcansoft.com [80.68.93.119])
-	by alsa0.perex.cz (Postfix) with ESMTP id BE75A24444
+Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9FAEA243D8
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Jun 2009 08:58:09 +0200 (CEST)
-Received: from [192.168.3.171] (49.Red-88-25-157.staticIP.rima-tde.net
-	[88.25.157.49])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by smtp.marcansoft.com (Postfix) with ESMTPSA id 5CD0664FCB
-	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Jun 2009 08:58:05 +0200 (CEST)
+	Tue,  2 Jun 2009 09:30:12 +0200 (CEST)
+In-Reply-To: <20090527104711.GA1970@sirena.org.uk>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,258 +23,342 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------050400020206070800020407
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Hi Mark,
 
-Getting this one to work has annoyed me to no end.
+Wednesday 27 May 2009 12:47:11 Mark Brown wrote:
+> On Tue, May 26, 2009 at 03:17:23PM +0200, Janusz Krzysztofik wrote:
+> > +static int cx20442_soc_probe(struct platform_device *pdev)
+> > +{
+> > +	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+> > +	struct snd_soc_codec *codec;
+> > +	int ret = 0;
+> > +
+> > +	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
+> > +	if (codec == NULL)
+> > +		return -ENOMEM;
+> > +	mutex_init(&codec->mutex);
+> > +	codec->name = "CX20442";
+> > +	codec->owner = THIS_MODULE;
+> > +	codec->dai = &cx20442_dai;
+> > +	codec->num_dai = 1;
+>
+> It'd be nice to switch this over to registering the CODEC as a platform
+> device rather than using the old style ASoC probing - see something line
+> WM8731 for a relatively simple example.
 
-Short story: this laptop has 5.1 built-in speakers which you *really*
-want to use (the not-so-"sub" woofer is what makes the audio above
-average for a laptop), so 6-channel support is important (plus a decent
-asound.conf to upmix stereo). It also has the 3 typical jacks that ought
-to have a selectable mode. And it's based on ALC889, which sucks.
+Tired with solving tha main problem of not getting any DMA interrupts, I have 
+followed your advices and modified my codec driver. I have used your wm8400 
+code as a template. The driver compiles and loads without errors, however I 
+have no way to verify if and how it works as long as the DMA issue persists. 
+I think the code is probably far from complete, but could you please have a 
+look at it for possible problems?
 
-Rationale/explanations:
+I have choosen to register the codec device with 
+platform_device_register_simple("cx20442-codec", ...) invoked form asoc 
+machine driver, is this ok?
 
-The const_channel_count stuff was added because, for a laptop like this,
-you always have 6 channels available (internal speakers) but still need
-to set the mode for the 3 external jacks. Therefore, the device always
-needs to be in 6-channel mode but there still needs to be a mixer
-control for the jack mode. You could use line/mic-in at the same time as
-the 6 internal speakers, for example. You might be tempted to make it
-even smarter by dynamically switching the max channel count when
-headphones are plugged in (therefore muting the internal speakers and
-reducing the physical channel count to the jack channel mode), but as a
-user I consider this to be harmful because I want the audio to blow up
-to 6 channels / upmixed as soon as I unplug the headphones, and having
-opened the device while in 2-channel mode would prevent this from
-working (and always making 6-channel mode available doesn't do any harm).
-
-The hardware needs EAPD turned on and the DACs routed to the internal
-speaker pins, so the patch adds those verbs.
-
-The ALC889 CLFE and subsequent (side/aux, here unused) DACs do NOT work
-by default, at least here. I wasted much time trying to talk to
-Realtek/pshou about this, but they just kept sending me useless updates
-to patch_realtek.c that did nothing relevant. In the end I gave up and
-brute forced the issue by trying to flip every bit in the proprietary
-coefficient registers, and eventually found the two magic registers that
-need to be cleared to enable all DACs. I have only heard Acer users
-complain, but that might be because ALC889 is pretty new and using 5.1
-(and noticing the missing center/lfe channels) might not be that common.
-If this is a generalized issue with all ALC889 systems then those verbs
-should probably be moved to a common verb array.
-
-The internal mic is untested and probably doesn't work.
-
-These settings will probably work for other Acer Gemstone laptops with
-the same 5.1 speaker config. When identified, those should be added to
-the PCI subsystem ID list.
-
--- 
-Hector Martin (hector@marcansoft.com)
-Public Key: http://www.marcansoft.com/marcan.asc
+Thanks,
+Janusz
 
 
---------------050400020206070800020407
-Content-Type: text/plain;
- name="alsa-aspire-8930g.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa-aspire-8930g.patch"
-
-Signed-off-by: Hector Martin <hector@marcansoft.com>
-
---- alsa-driver-1.0.20.8.g6254b.219.g5b2b1/alsa-kernel/pci/hda/patch_realtek_orig.c	2009-06-02 07:48:47.000000000 +0200
-+++ alsa-driver-1.0.20.8.g6254b.219.g5b2b1/alsa-kernel/pci/hda/patch_realtek.c	2009-06-02 08:32:29.000000000 +0200
-@@ -223,6 +223,7 @@
- 	ALC883_ACER,
- 	ALC883_ACER_ASPIRE,
- 	ALC888_ACER_ASPIRE_4930G,
-+	ALC888_ACER_ASPIRE_8930G,
- 	ALC883_MEDION,
- 	ALC883_MEDION_MD2,
- 	ALC883_LAPTOP_EAPD,
-@@ -313,6 +314,8 @@
- 	const struct hda_channel_mode *channel_mode;
- 	int num_channel_mode;
- 	int need_dac_fix;
-+	int const_channel_count;
-+	int ext_channel_count;
+Signed-off by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+-------------------------------
+diff -Npru a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+--- a/sound/soc/codecs/Kconfig	2009-05-12 21:13:59.000000000 +0200
++++ b/sound/soc/codecs/Kconfig	2009-06-01 22:31:15.000000000 +0200
+@@ -18,6 +18,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_AK4104 if SPI_MASTER
+ 	select SND_SOC_AK4535 if I2C
+ 	select SND_SOC_CS4270 if I2C
++	select SND_SOC_CX20442
+ 	select SND_SOC_PCM3008
+ 	select SND_SOC_SSM2602 if I2C
+ 	select SND_SOC_TLV320AIC23 if I2C
+@@ -84,6 +85,9 @@ config SND_SOC_AC97_CODEC
+ 	bool
+ 	depends on SND_SOC_CS4270
  
- 	/* PCM information */
- 	struct hda_pcm pcm_rec[3];	/* used in alc_build_pcms() */
-@@ -368,6 +371,7 @@
- 	unsigned int num_channel_mode;
- 	const struct hda_channel_mode *channel_mode;
- 	int need_dac_fix;
-+	int const_channel_count;
- 	unsigned int num_mux_defs;
- 	const struct hda_input_mux *input_mux;
- 	void (*unsol_event)(struct hda_codec *, unsigned int);
-@@ -462,7 +466,7 @@
- 	struct alc_spec *spec = codec->spec;
- 	return snd_hda_ch_mode_get(codec, ucontrol, spec->channel_mode,
- 				   spec->num_channel_mode,
--				   spec->multiout.max_channels);
-+				   spec->ext_channel_count);
- }
++config SND_SOC_CX20442
++	tristate
++
+ config SND_SOC_L3
+ 	tristate
  
- static int alc_ch_mode_put(struct snd_kcontrol *kcontrol,
-@@ -472,9 +476,12 @@
- 	struct alc_spec *spec = codec->spec;
- 	int err = snd_hda_ch_mode_put(codec, ucontrol, spec->channel_mode,
- 				      spec->num_channel_mode,
--				      &spec->multiout.max_channels);
--	if (err >= 0 && spec->need_dac_fix)
--		spec->multiout.num_dacs = spec->multiout.max_channels / 2;
-+				      &spec->ext_channel_count);
-+	if(err >= 0 && spec->const_channel_count == 0) {
-+		spec->multiout.max_channels = spec->ext_channel_count;
-+		if (spec->need_dac_fix)
-+			spec->multiout.num_dacs = spec->multiout.max_channels / 2;
-+	}
- 	return err;
- }
- 
-@@ -854,8 +861,13 @@
- 	spec->channel_mode = preset->channel_mode;
- 	spec->num_channel_mode = preset->num_channel_mode;
- 	spec->need_dac_fix = preset->need_dac_fix;
-+	spec->const_channel_count = preset->const_channel_count;
- 
--	spec->multiout.max_channels = spec->channel_mode[0].channels;
-+	if(preset->const_channel_count == 0)
-+		spec->multiout.max_channels = preset->const_channel_count;
-+	else
-+		spec->multiout.max_channels = spec->channel_mode[0].channels;
-+	spec->ext_channel_count = spec->channel_mode[0].channels;
- 
- 	spec->multiout.num_dacs = preset->num_dacs;
- 	spec->multiout.dac_nids = preset->dac_nids;
-@@ -1456,6 +1468,44 @@
- 	{ }
- };
- 
+diff -Npru a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+--- a/sound/soc/codecs/Makefile	2009-05-12 21:13:59.000000000 +0200
++++ b/sound/soc/codecs/Makefile	2009-06-01 22:33:32.000000000 +0200
+@@ -5,6 +5,7 @@
+ snd-soc-ak4104-objs := ak4104.o
+ snd-soc-ak4535-objs := ak4535.o
+ snd-soc-cs4270-objs := cs4270.o
++snd-soc-cx20442-objs := cx20442.o
+ snd-soc-l3-objs := l3.o
+ snd-soc-pcm3008-objs := pcm3008.o
+ snd-soc-ssm2602-objs := ssm2602.o
+@@ -37,6 +38,7 @@ snd-soc-wm9713-objs := wm9713.o
+ obj-$(CONFIG_SND_SOC_AK4104)	+= snd-soc-ak4104.o
+ obj-$(CONFIG_SND_SOC_AK4535)	+= snd-soc-ak4535.o
+ obj-$(CONFIG_SND_SOC_CS4270)	+= snd-soc-cs4270.o
++obj-$(CONFIG_SND_SOC_CX20442)	+= snd-soc-cx20442.o
+ obj-$(CONFIG_SND_SOC_L3)	+= snd-soc-l3.o
+ obj-$(CONFIG_SND_SOC_PCM3008)	+= snd-soc-pcm3008.o
+ obj-$(CONFIG_SND_SOC_SSM2602)	+= snd-soc-ssm2602.o
+diff -Npru a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
+--- a/sound/soc/codecs/cx20442.c	1970-01-01 01:00:00.000000000 +0100
++++ b/sound/soc/codecs/cx20442.c	2009-06-01 21:26:20.000000000 +0200
+@@ -0,0 +1,224 @@
 +/*
-+ * ALC888 Acer Aspire 8930G model
++ * cx20442.c  --  CX20442 ALSA Soc Audio driver
++ *
++ * Based on wm8400.c
++ * Copyright 2008, 2009 Wolfson Microelectronics PLC.
++ * Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
++ *
++ * Copyright 2009 Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
 + */
 +
-+static struct hda_verb alc888_acer_aspire_8930g_verbs[] = {
-+/* Front Mic: set to PIN_IN (empty by default) */
-+	{0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
-+/* Unselect Front Mic by default in input mixer 3 */
-+	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0xb)},
-+/* Enable unsolicited event for HP jack */
-+	{0x15, AC_VERB_SET_UNSOLICITED_ENABLE, ALC880_HP_EVENT | AC_USRSP_EN},
-+/* Connect Internal Front to Front */
-+	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-+	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+	{0x14, AC_VERB_SET_CONNECT_SEL, 0x00},
-+/* Connect Internal Rear to Rear */
-+	{0x1b, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-+	{0x1b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+	{0x1b, AC_VERB_SET_CONNECT_SEL, 0x01},
-+/* Connect Internal CLFE to CLFE */
-+	{0x16, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-+	{0x16, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+	{0x16, AC_VERB_SET_CONNECT_SEL, 0x02},
-+/* Connect HP out to Front */
-+	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-+	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+	{0x15, AC_VERB_SET_CONNECT_SEL, 0x00},
-+/* Enable all DACs */
-+	{0x20, AC_VERB_SET_COEF_INDEX, 0x03}, // DAC DISABLE/MUTE 1?
-+	{0x20, AC_VERB_SET_PROC_COEF, 0x0000}, // bits 1-5, when set, disable DAC nids 0x02-0x06 apparently. Init value 0x38
-+	{0x20, AC_VERB_SET_COEF_INDEX, 0x08}, // DAC DISABLE/MUTE 2?
-+	{0x20, AC_VERB_SET_PROC_COEF, 0x0000}, // some bit here disables the other DACs. Init value 0x4900
-+/* Enable amplifiers */
-+	{0x14, AC_VERB_SET_EAPD_BTLENABLE, 0x02},
-+	{0x15, AC_VERB_SET_EAPD_BTLENABLE, 0x02},
-+	{ }
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/initval.h>
++
++#include "cx20442.h"
++
++struct cx20442_priv {
++	struct snd_soc_codec codec;
++	struct work_struct work;
 +};
 +
- static struct hda_input_mux alc888_2_capture_sources[2] = {
- 	/* Front mic only available on one ADC */
- 	{
-@@ -1508,6 +1558,17 @@
- 	alc_automute_amp(codec);
- }
- 
-+static void alc888_acer_aspire_8930g_init_hook(struct hda_codec *codec)
++static int cx20442_add_controls(struct snd_soc_codec *codec)
 +{
-+	struct alc_spec *spec = codec->spec;
-+
-+	spec->autocfg.hp_pins[0] = 0x15;
-+	spec->autocfg.speaker_pins[0] = 0x14;
-+	spec->autocfg.speaker_pins[1] = 0x16;
-+	spec->autocfg.speaker_pins[2] = 0x1b;
-+	alc_automute_amp(codec);
++	return 0;
 +}
 +
- /*
-  * ALC880 3-stack model
-  *
-@@ -8708,6 +8769,7 @@
- 	[ALC883_ACER]		= "acer",
- 	[ALC883_ACER_ASPIRE]	= "acer-aspire",
- 	[ALC888_ACER_ASPIRE_4930G]	= "acer-aspire-4930g",
-+	[ALC888_ACER_ASPIRE_8930G]	= "acer-aspire-8930g",
- 	[ALC883_MEDION]		= "medion",
- 	[ALC883_MEDION_MD2]	= "medion-md2",
- 	[ALC883_LAPTOP_EAPD]	= "laptop-eapd",
-@@ -8746,6 +8808,8 @@
- 		ALC888_ACER_ASPIRE_4930G),
- 	SND_PCI_QUIRK(0x1025, 0x0166, "Acer Aspire 6530G",
- 		ALC888_ACER_ASPIRE_4930G),
-+	SND_PCI_QUIRK(0x1025, 0x0145, "Acer Aspire 8930G",
-+		ALC888_ACER_ASPIRE_8930G),
- 	/* default Acer -- disabled as it causes more problems.
- 	 *    model=auto should work fine now
- 	 */
-@@ -8959,6 +9023,27 @@
- 		.unsol_event = alc_automute_amp_unsol_event,
- 		.init_hook = alc888_acer_aspire_4930g_init_hook,
- 	},
-+	[ALC888_ACER_ASPIRE_8930G] = {
-+		.mixers = { alc888_base_mixer,
-+				alc883_chmode_mixer },
-+		.init_verbs = { alc883_init_verbs, alc880_gpio1_init_verbs,
-+				alc888_acer_aspire_8930g_verbs },
-+		.num_dacs = ARRAY_SIZE(alc883_dac_nids),
-+		.dac_nids = alc883_dac_nids,
-+		.num_adc_nids = ARRAY_SIZE(alc883_adc_nids_rev),
-+		.adc_nids = alc883_adc_nids_rev,
-+		.capsrc_nids = alc883_capsrc_nids_rev,
-+		.dig_out_nid = ALC883_DIGOUT_NID,
-+		.num_channel_mode = ARRAY_SIZE(alc883_3ST_6ch_modes),
-+		.channel_mode = alc883_3ST_6ch_modes,
-+		.need_dac_fix = 1,
-+		.const_channel_count = 6,
-+		.num_mux_defs =
-+			ARRAY_SIZE(alc888_2_capture_sources),
-+		.input_mux = alc888_2_capture_sources,
-+		.unsol_event = alc_automute_amp_unsol_event,
-+		.init_hook = alc888_acer_aspire_8930g_init_hook,
++static int cx20442_add_widgets(struct snd_soc_codec *codec)
++{
++	snd_soc_dapm_new_widgets(codec);
++	return 0;
++}
++
++static int cx20442_set_bias_level(struct snd_soc_codec *codec,
++				   enum snd_soc_bias_level level)
++{
++	codec->bias_level = level;
++	return 0;
++}
++
++#define CX20442_RATES SNDRV_PCM_RATE_8000
++
++#define CX20442_FORMATS SNDRV_PCM_FMTBIT_S16_LE
++
++struct snd_soc_dai cx20442_dai = {
++	.name = "CX20442",
++	.playback = {
++		.stream_name = "Playback",
++		.channels_min = 1,
++		.channels_max = 2,
++		.rates = CX20442_RATES,
++		.formats = CX20442_FORMATS,
 +	},
- 	[ALC883_MEDION] = {
- 		.mixers = { alc883_fivestack_mixer,
- 			    alc883_chmode_mixer },
-
---------------050400020206070800020407
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------050400020206070800020407--
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = 1,
++		.channels_max = 2,
++		.rates = CX20442_RATES,
++		.formats = CX20442_FORMATS,
++	},
++};
++EXPORT_SYMBOL_GPL(cx20442_dai);
++
++static struct snd_soc_codec *cx20442_codec;
++
++static int cx20442_probe(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec;
++	int ret;
++
++	if(!cx20442_codec) {
++		dev_err(&pdev->dev, "cx20442 not yet discovered\n");
++		return -ENODEV;
++	}
++	codec = cx20442_codec;
++
++	socdev->card->codec = codec;
++
++	/* register pcms */
++	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "failed to create pcms\n");
++		goto pcm_err;
++	}
++
++	cx20442_add_controls(codec);
++	cx20442_add_widgets(codec);
++
++	cx20442_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
++
++	ret = snd_soc_init_card(socdev);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "failed to register card\n");
++		goto card_err;
++	}
++
++	return ret;
++
++card_err:
++	snd_soc_free_pcms(socdev);
++	snd_soc_dapm_free(socdev);
++pcm_err:
++	return ret;
++}
++
++/* power down chip */
++static int cx20442_remove(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++
++	snd_soc_free_pcms(socdev);
++	snd_soc_dapm_free(socdev);
++
++	return 0;
++}
++
++struct snd_soc_codec_device soc_codec_dev_cx20442 = {
++	.probe = 	cx20442_probe,
++	.remove = 	cx20442_remove,
++};
++
++static int cx20442_codec_probe(struct platform_device *dev)
++{
++	struct cx20442_priv *priv;
++	int ret;
++	struct snd_soc_codec *codec;
++
++	priv = kzalloc(sizeof(struct cx20442_priv), GFP_KERNEL);
++	if (priv == NULL)
++		return -ENOMEM;
++
++	codec = &priv->codec;
++	codec->private_data = priv;
++	codec->control_data = dev->dev.driver_data;
++
++	codec->dev = &dev->dev;
++	cx20442_dai.dev = &dev->dev;
++
++	codec->name = "CX20442";
++	codec->owner = THIS_MODULE;
++	codec->bias_level = SND_SOC_BIAS_OFF;
++	codec->set_bias_level = cx20442_set_bias_level;
++	codec->dai = &cx20442_dai;
++	codec->num_dai = 1;
++	mutex_init(&codec->mutex);
++	INIT_LIST_HEAD(&codec->dapm_widgets);
++	INIT_LIST_HEAD(&codec->dapm_paths);
++
++	cx20442_codec = codec;
++
++	ret = snd_soc_register_codec(codec);
++	if (ret != 0) {
++		dev_err(&dev->dev, "Failed to register codec: %d\n", ret);
++		goto err;
++	}
++
++	ret = snd_soc_register_dai(&cx20442_dai);
++	if (ret != 0) {
++		dev_err(&dev->dev, "Failed to register DAI: %d\n", ret);
++		goto err_codec;
++	}
++
++	return 0;
++
++err_codec:
++	snd_soc_unregister_codec(codec);
++err:
++	cx20442_codec = NULL;
++	kfree(priv);
++	return ret;
++}
++
++static int __exit cx20442_codec_remove(struct platform_device *dev)
++{
++	struct cx20442_data *priv = cx20442_codec->private_data;
++
++	snd_soc_unregister_dai(&cx20442_dai);
++	snd_soc_unregister_codec(cx20442_codec);
++
++	kfree(priv);
++
++	cx20442_codec = NULL;
++
++	return 0;
++}
++
++static struct platform_driver cx20442_codec_driver = {
++	.driver = {
++		.name = "cx20442-codec",
++		.owner = THIS_MODULE,
++		},
++	.probe = cx20442_codec_probe,
++	.remove = __exit_p(cx20442_codec_remove),
++};
++
++static int __init cx20442_init(void)
++{
++	return platform_driver_register(&cx20442_codec_driver);
++}
++module_init(cx20442_init);
++
++static void __exit cx20442_exit(void)
++{
++	platform_driver_unregister(&cx20442_codec_driver);
++}
++module_exit(cx20442_exit);
++
++EXPORT_SYMBOL_GPL(soc_codec_dev_cx20442);
++
++MODULE_DESCRIPTION("ASoC CX20442 driver");
++MODULE_AUTHOR("Janusz Krzysztofik");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:cx20442-codec");
+diff -Npru a/sound/soc/codecs/cx20442.h b/sound/soc/codecs/cx20442.h
+--- a/sound/soc/codecs/cx20442.h	1970-01-01 01:00:00.000000000 +0100
++++ b/sound/soc/codecs/cx20442.h	2009-06-01 21:25:46.000000000 +0200
+@@ -0,0 +1,23 @@
++/*
++ * cx20442.h  --  audio driver for CX20442
++ *
++ * Based on wm8400.h
++ * Copyright 2008 Wolfson Microelectronics PLC.
++ * Author:Mark Brown <broonie@opensource.wolfsonmicro.com>
++ *
++ * Copyright 2009 Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ */
++
++#ifndef _CX20442_CODEC_H
++#define _CX20442_CODEC_H
++
++extern struct snd_soc_dai cx20442_dai;
++extern struct snd_soc_codec_device soc_codec_dev_cx20442;
++
++#endif
