@@ -1,16 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ALSA: Fix double locking of card list in
-	snd_card_register()
-Date: Wed,  3 Jun 2009 20:43:29 +0100
-Message-ID: <1244058209-18851-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Andrea Borgia <andrea@borgia.bo.it>
+Subject: Re: [PATCH - quirk for USB Aureon cards 1/1] Add quirk
+ to provide proper naming of the Terratec Aureon 5.1 MkII USB card
+Date: Wed, 03 Jun 2009 21:57:21 +0200
+Message-ID: <4A26D5A1.9010907@borgia.bo.it>
+References: <4A22F13F.6090707@borgia.bo.it>
+	<s5hprdofhj7.wl%tiwai@suse.de>	<4A2571D1.9070001@borgia.bo.it>
+	<s5hprdlyh5q.wl%tiwai@suse.de>	<4A267D3A.6000808@borgia.bo.it>
+	<s5hr5y1qpk1.wl%tiwai@suse.de>	<4A269DE6.7080107@borgia.bo.it>
+	<s5hoct5qo8f.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1028724491
+Received: from galactica.digitalpha.it
+	(host200-236-149-62.serverdedicati.aruba.it [62.149.236.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6387F244A6
 	for <alsa-devel@alsa-project.org>;
-	Wed,  3 Jun 2009 21:43:33 +0200 (CEST)
+	Wed,  3 Jun 2009 21:57:24 +0200 (CEST)
+In-Reply-To: <s5hoct5qo8f.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,100 +28,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The introduction of snd_card_set_id() added a lock on the card list
-to the old choose_default_id() function when using it to implement
-the new API call. This lock is needed to allow us to walk the list
-and check to see if our new name is a duplicate. Unfortunately this
-causes a lockup when called from snd_card_register() (in cases
-where no ID is supplied for the card) since the card list is already
-locked there.
+Takashi Iwai ha scritto:
 
-Fix this fairly hideously by factoring out the implementation and
-using a flag to indicate if the lock should be held. A better fix
-would probably be to refactor snd_card_register() to move the
-_set_id() outside the locking region but I can't immediately see
-anything I can convince myself is safe.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
+> Well, it's just an id string.  The only requirement is to be unique on
+> the running system.
 
-This patch isn't terribly nice but I figured it was a more useful report
-than just the deadlock.
+Although highly unlikely in this specific case, how about multiple
+identical cards on the same host? Does it still hold true?
 
- sound/core/init.c |   31 +++++++++++++++++++------------
- 1 files changed, 19 insertions(+), 12 deletions(-)
 
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 6557dd8..a578d05 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -476,15 +476,8 @@ int snd_card_free(struct snd_card *card)
- 
- EXPORT_SYMBOL(snd_card_free);
- 
--/**
-- *  snd_card_set_id - set card identification name
-- *  @card: soundcard structure
-- *  @nid: new identification string
-- *
-- *  This function sets the card identification and checks for name
-- *  collisions.
-- */
--void snd_card_set_id(struct snd_card *card, const char *nid)
-+static void snd_card_set_id_internal(struct snd_card *card, const char *nid,
-+				     int do_locking)
- {
- 	int i, len, idx_flag = 0, loops = SNDRV_CARDS;
- 	const char *spos, *src;
-@@ -529,14 +522,16 @@ void snd_card_set_id(struct snd_card *card, const char *nid)
-       		}
- 	      	if (!snd_info_check_reserved_words(id))
-       			goto __change;
--		mutex_lock(&snd_card_mutex);
-+		if (do_locking)
-+			mutex_lock(&snd_card_mutex);
- 		for (i = 0; i < snd_ecards_limit; i++) {
- 			if (snd_cards[i] && !strcmp(snd_cards[i]->id, id)) {
- 				mutex_unlock(&snd_card_mutex);
- 				goto __change;
- 			}
- 		}
--		mutex_unlock(&snd_card_mutex);
-+		if (do_locking)
-+			mutex_unlock(&snd_card_mutex);
- 		break;
- 
- 	      __change:
-@@ -561,6 +556,18 @@ void snd_card_set_id(struct snd_card *card, const char *nid)
- 	}
- }
- 
-+/**
-+ *  snd_card_set_id - set card identification name
-+ *  @card: soundcard structure
-+ *  @nid: new identification string
-+ *
-+ *  This function sets the card identification and checks for name
-+ *  collisions.
-+ */
-+void snd_card_set_id(struct snd_card *card, const char *nid)
-+{
-+	snd_card_set_id_internal(card, nid, 1);
-+}
- EXPORT_SYMBOL(snd_card_set_id);
- 
- #ifndef CONFIG_SYSFS_DEPRECATED
-@@ -657,7 +664,7 @@ int snd_card_register(struct snd_card *card)
- 		return 0;
- 	}
- 	if (card->id[0] == '\0')
--		snd_card_set_id(card, NULL);
-+		snd_card_set_id_internal(card, NULL, 0);
- 	snd_cards[card->number] = card;
- 	mutex_unlock(&snd_card_mutex);
- 	init_info_for_card(card);
--- 
-1.6.3.1
+> If this name is unacceptable (e.g. it's the name of my ex, it's a
+> patent infringement, or whatever reason), concatenate Aureon 5.1 and
+> MkII to a single word, then you'll get a different one.
+> Or, you could implement more codes to give a better id string with
+> the API function recently added...
+
+Where should I look for this super snazzy function? I'm curious, I
+already know how to add a quirk, let's learn something new :-)
+
+
+Andrea.
