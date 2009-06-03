@@ -1,18 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ALSA patch Nvidia 8 channel hdmi audio
-Date: Wed, 03 Jun 2009 09:22:50 +0200
-Message-ID: <4A2624CA.8020406@ladisch.de>
-References: <410e92830906021458x3d47a1d6jebba8bbe1150e76d@mail.gmail.com>	<200906030022.07693.marek.vasut@gmail.com>	<410e92830906021530l767478c4tae72c4b161583b6@mail.gmail.com>	<200906030200.54455.marek.vasut@gmail.com>
-	<15F501D1A78BD343BE8F4D8DB854566B058A63F1@hkemmail01.nvidia.com>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: Please help in adding ams-delta support to ASoC
+Date: Wed, 3 Jun 2009 09:24:12 +0200
+Message-ID: <200906030924.14230.jkrzyszt@tis.icnet.pl>
+References: <4A1BEBE3.8010306@tis.icnet.pl> <4A252A8E.9060602@tis.icnet.pl>
+	<20090602203214.9edb786d.jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id C271C24621
-	for <alsa-devel@alsa-project.org>;
-	Wed,  3 Jun 2009 09:22:41 +0200 (CEST)
-In-Reply-To: <15F501D1A78BD343BE8F4D8DB854566B058A63F1@hkemmail01.nvidia.com>
+In-Reply-To: <20090602203214.9edb786d.jhnikula@gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,24 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wei Ni <wni@nvidia.com>
-Cc: Peer Chen <pchen@nvidia.com>, Marek Vasut <marek.vasut@gmail.com>, alsa-devel@alsa-project.org, Alan Alan <alanwww1@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: linux-omap@vger.kernel.org, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Wei Ni wrote:
-> I used mplayer to test. The channels are mapped good.
-> Running mplayer -ao alsa:device=hw=0.3 6ch.wav
-> 
-> I tried to use speaker-test to test, but I can't get the hdmi device name.
-> I used speaker-test -Dsurround51:NVidia -c6, the sound output from the analog jack.
+Hi,
 
-speaker-test -Dhw:0,3 -c6
+Tuesday 02 June 2009 19:32:14 Jarkko Nikula wrote:
+> > It is not clear for me if MCLK
+> > is really used by the codec, or it is possible that it gets its
+> > master clock from an other, modem related source, and if this does
+> > really matter.
+>
+> Hmm. Are there any possibility that ams_delta_latch2_write requires
+> working MCLK for latch change?
 
-Or put a line
-  pcm.hdmi = "hw:0,3"
-into your ~/.asoundrc or the /etc/asound.conf file, then you can just
-use the device name "hdmi" everywhere.
+Looks like it doesn't. See below.
 
+> Probably you could use also older implementation to find out is the
+> MCLK required for codec by commenting out vc_mclk control.
 
-HTH
-Clemens
+Thanks! The origial driver with commented out clk_enable(vc_clk) and 
+clk_disable(vc_clk) still works for me, so MCLK is not required! If I only 
+knew what to do with this finding...
+
+> Just hack the same "static struct omap_mcbsp_reg_cfg mcbsp_regs =
+> { ..." in omap-mcbsp.c and pass that structure instead of
+> &mcbsp_data->regs to omap_mcbsp_config in omap_mcbsp_dai_hw_params.
+
+Done. Did not help. Again, I really don't know how to make use of this finding 
+except for looking in a different place.
+
+I tried to disassemble one of my deltas to get to those pins, but did not yet 
+find a way to do it without breaking its case. I'll ask at E3-hacking list.
+
+Thanks,
+Janusz
