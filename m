@@ -1,16 +1,18 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: *SPAM* Re: Please help in adding ams-delta support
-	to ASoC
-Date: Wed, 3 Jun 2009 10:28:45 +0200
-Message-ID: <200906031028.46717.jkrzyszt__28014.3635500737$1244017771$gmane$org@tis.icnet.pl>
-References: <4A1BEBE3.8010306@tis.icnet.pl> <4A25040A.4050506@tis.icnet.pl>
-	<200906030828.06933.peter.ujfalusi@nokia.com>
+From: Glyn Adgie <glyn@castro-design.co.uk>
+Subject: Sequencer timestamps for soft synth app
+Date: Wed, 03 Jun 2009 09:55:37 +0100
+Message-ID: <4A263A89.9020307@castro-design.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <200906030828.06933.peter.ujfalusi@nokia.com>
-Content-Disposition: inline
+Received: from server1.pc (87-194-16-81.bethere.co.uk [87.194.16.81])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6D73924643
+	for <alsa-devel@alsa-project.org>;
+	Wed,  3 Jun 2009 10:55:38 +0200 (CEST)
+Received: from glyn.pc (glyn.pc [192.168.4.20])
+	by server1.pc (Postfix) with ESMTP id C0F8A97D51
+	for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2009 09:55:37 +0100 (BST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,57 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Wednesday 03 June 2009 07:28:06 Peter Ujfalusi napisa=B3(a):
-> Looking at the code at commit: d8376cc482b241701f7606c81ad578b90853e175 on
-> l-o the comment about the need for the call the omap_stop_dma puzzled me.
+I have written a soft synth, which uses ALSA to get MIDI events, and 
+Jack to do audio output. MIDI events are fetched and processed at the 
+start of the Jack audio callback, then the Jack output buffers are 
+filled by the synth engine. The problem I have is that, if the Jack 
+buffer size is too large, the time resolution for MIDI events is too 
+coarse, and this has a severe effect on rhythms.
 
-Peter,
+I currently get around this by setting  up Jack for a buffer size of 64 
+frames, and a sample rate of 48 kHz, giving a timing resolution of 1.33 
+msec, which appears to be adequate. However, I might not always be able 
+to get the desired buffer size. If the Jack buffer is some multiple of 
+64 frames, the synth renders multiple 64 frame chunks until the buffer 
+is filled. This takes care of audio quality. However, MIDI timing 
+resolution suffers.
 
-It was omap_stop_alsa_sound_dma(), not just omap_stop_dma(), the was needed.
-In my opinion, the reason for that was not because it was calling =
+I am looking at using the event's timestamp, to decide when to process 
+an event. For example, I might have a Jack buffer of 256 frames, so I 
+want to work out whether to process an event right away, or after one 64 
+frame chunk, and so on. It would appear that, in order to make this 
+work, I need an initial timestamp, which I get at the start of the audio 
+callback. I then compare each event's timestamp, to determine where it 
+should be processed.
 
-omap_stop_dma(), but because it was clearing the audio_stream.started flag. =
+I cannot find an ALSA function for getting a timestamp. Perhaps I am 
+missing something, or trying to do the job in the wrong way.
 
-That way, subsequent audio_start_dma_chain() would not jump over =
+Regards
 
-omap_start_dma(). From my experience with the original driver, it worked mu=
-ch =
-
-better when calling omap_start_dma() unconditionally from =
-
-audio_start_dma_chain() instead of doing this with that =
-
-omap_stop_alsa_sound_dma() trick.
-
-> Can you try something like this:
->
-> diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-> index 6454e15..2df1792 100644
-> --- a/sound/soc/omap/omap-pcm.c
-> +++ b/sound/soc/omap/omap-pcm.c
-> @@ -67,6 +67,7 @@ static void omap_pcm_dma_irq(int ch, u16 stat, void
-> *data) spin_lock_irqsave(&prtd->lock, flags);
->                 if (prtd->period_index >=3D 0) {
->                         if (++prtd->period_index =3D=3D runtime->periods)=
- {
-> +                               omap_stop_dma(prtd->dma_ch);
->                                 prtd->period_index =3D 0;
->                                 omap_start_dma(prtd->dma_ch);
->                         }
-> @@ -191,6 +192,7 @@ static int omap_pcm_trigger(struct snd_pcm_substream
-> *substream, int cmd)
->         case SNDRV_PCM_TRIGGER_START:
->         case SNDRV_PCM_TRIGGER_RESUME:
->         case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> +               omap_stop_dma(prtd->dma_ch);
->                 prtd->period_index =3D 0;
->                 omap_start_dma(prtd->dma_ch);
->                 break;
-
-Never hurts. Unfortunatelly, it did not help, no single DMA interrupt again.
-
-Thanks,
-Janusz
+Glyn
