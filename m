@@ -1,22 +1,23 @@
-From: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [Uclinux-dist-devel] [PATCH 2/5] ASoC codec:
-	SSM2602: assign last substream to the master when shutting down
-Date: Wed, 3 Jun 2009 08:37:54 -0400
-Message-ID: <8bd0f97a0906030537y1e65aa7atec4b0c5cdf4ae2f@mail.gmail.com>
+From: Karl Beldan <karl.beldan@gmail.com>
+Subject: Re: [PATCH 1/5] ASoC codec: SSM2602: remove
+ unsupported sample rates
+Date: Wed, 03 Jun 2009 14:42:02 +0200
+Message-ID: <4A266F9A.9050503@gmail.com>
 References: <1243916337-29953-1-git-send-email-vapier@gentoo.org>
-	<1243916337-29953-2-git-send-email-vapier@gentoo.org>
-	<20090603105223.GE11507@sirena.org.uk>
+	<20090603102605.GB11507@sirena.org.uk> <4A266878.2070206@gmail.com>
+	<20090603121513.GB25676@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id D9879243AF
+Received: from mail-ew0-f175.google.com (mail-ew0-f175.google.com
+	[209.85.219.175])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5501F2434A
 	for <alsa-devel@alsa-project.org>;
-	Wed,  3 Jun 2009 14:37:55 +0200 (CEST)
-Received: by yw-out-1718.google.com with SMTP id 4so5809812ywq.2
-	for <alsa-devel@alsa-project.org>; Wed, 03 Jun 2009 05:37:54 -0700 (PDT)
-In-Reply-To: <20090603105223.GE11507@sirena.org.uk>
+	Wed,  3 Jun 2009 14:41:41 +0200 (CEST)
+Received: by ewy23 with SMTP id 23so9881267ewy.32
+	for <alsa-devel@alsa-project.org>; Wed, 03 Jun 2009 05:41:40 -0700 (PDT)
+In-Reply-To: <20090603121513.GB25676@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,18 +28,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Cliff Cai <cliff.cai@analog.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Mike Frysinger <vapier@gentoo.org>, Cliff Cai <cliff.cai@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBKdW4gMywgMjAwOSBhdCAwNjo1MiwgTWFyayBCcm93biB3cm90ZToKPiBIb3dldmVy
-LCBnaXZlbiB0aGF0IHRoaXMgZml4IGhhcyBtaXNzZWQgdHdvIGtlcm5lbCByZWxlYXNlcyBkdWUg
-dG8gdGhlCj4gdmVyeSBzbG93IHJhdGUgb2YgcmVzcG9uc2VzIHRvIHJldmlldyBjb21tZW50cyBJ
-J3ZlIGFwcGxpZWQgaXQgc28gdXNlcnMKPiBnZXQgdGhlIGJlbmVmaXQgb2YgdGhlIGJ1ZyBmaXgu
-Cgpub3Qgc3VyZSB3aGF0IHlvdSdyZSByZWZlcnJpbmcgdG8KCj7CoFRoaW5ncyB3b3VsZCBnbyBt
-b3JlIHNtb290aGx5IGlmIHlvdQo+IGNvdWxkIGdldCBuZXcgdmVyc2lvbnMgb2YgcGF0Y2hlcyBz
-dWJtaXR0ZWQgZmFzdGVyIGFmdGVyIHRoZSBvcmlnaW5hbAo+IHJldmlldy4KCnRoZSBwcmV2aW91
-cyBCbGFja2ZpbiBrZXJuZWwgbWFpbnRhaW5lciBjaGFuZ2VkIGpvYnMgc28gd2UndmUgYmVlbgp0
-cmFuc2l0aW9uaW5nLiAgcmVhbGl0eSBpcywgdGhpcyBkb2VzbnQgaGFwcGVuIG92ZXIgbml0ZS4K
-LW1pa2UKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Mark Brown wrote:
+> On Wed, Jun 03, 2009 at 02:11:36PM +0200, Karl Beldan wrote:
+> 
+>> These samples rates are supported by the codec, updating coeff_div
+>> would be a better move.
+> 
+> It looks like the driver only supports a limited subset of the chip
+> features as it is - there's also comments saying it supports asymmetric
+> configurations but currently the driver only does symmetric record and
+> playback setups.
+
+True. The comment was from me.
+The codec supports these rates and the driver only needs little
+modification to support them (just update an array - coeff_div).
+Though this commit is better than nothing, updating coeff_div seems IMO
+the thing to do. This change being trivial, the commit feels like a
+feature cut.
+
+-- 
+Karl
