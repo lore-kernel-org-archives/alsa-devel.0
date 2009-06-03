@@ -1,20 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 5/5] ASoC: Blackfin: document how
-	anomaly	05000250 is handled
-Date: Wed, 3 Jun 2009 11:30:25 +0100
-Message-ID: <20090603103025.GD11507@sirena.org.uk>
-References: <1243916337-29953-1-git-send-email-vapier@gentoo.org>
-	<1243916337-29953-5-git-send-email-vapier@gentoo.org>
+Subject: ASoC updates for 2.6.31
+Date: Wed, 3 Jun 2009 11:51:50 +0100
+Message-ID: <20090603105149.GA1198@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E747C243D4
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 61128243F7
 	for <alsa-devel@alsa-project.org>;
-	Wed,  3 Jun 2009 12:30:25 +0200 (CEST)
+	Wed,  3 Jun 2009 12:51:51 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1243916337-29953-5-git-send-email-vapier@gentoo.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,14 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Sonic Zhang <sonic.zhang@analog.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 02, 2009 at 12:18:57AM -0400, Mike Frysinger wrote:
-> From: Sonic Zhang <sonic.zhang@analog.com>
-> 
-> Signed-off-by: Sonic Zhang <sonic.zhang@analog.com>
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+The following changes since commit 203350c1a8e23adf17fd9a96d8bfc7adf63c1ff6:
+  Mark Brown (1):
+        ASoC: Initialise dev for the dummy S/PDIF DAI
 
-Applied, thanks.
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.31
+
+Cliff Cai (3):
+      ASoC: SSM2602: remove unsupported sample rates
+      ASoC: Blackfin: set the transfer size according the ac97_frame size
+      ASoC: SSM2602: assign last substream to the master when shutting down
+
+Peter Ujfalusi (2):
+      ASoC: TWL4030: Use reg_cache in twl4030_init_chip
+      ASoC: TWL4030: Check the interface format for 4 channel mode
+
+Sonic Zhang (1):
+      ASoC: Blackfin: document how anomaly 05000250 is handled
+
+ sound/soc/blackfin/bf5xx-ac97.c  |    9 +++++++++
+ sound/soc/blackfin/bf5xx-sport.c |    4 ++--
+ sound/soc/codecs/ssm2602.c       |   33 +++++++++++++++++++--------------
+ sound/soc/codecs/twl4030.c       |   16 +++++++++++-----
+ 4 files changed, 41 insertions(+), 21 deletions(-)
