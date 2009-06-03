@@ -1,22 +1,16 @@
-From: Marek Vasut <marek.vasut@gmail.com>
-Subject: Re: ALSA patch Nvidia 8 channel hdmi audio
-Date: Wed, 3 Jun 2009 02:00:54 +0200
-Message-ID: <200906030200.54455.marek.vasut@gmail.com>
-References: <410e92830906021458x3d47a1d6jebba8bbe1150e76d@mail.gmail.com>
-	<200906030022.07693.marek.vasut@gmail.com>
-	<410e92830906021530l767478c4tae72c4b161583b6@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: *SPAM* Re: Please help in adding ams-delta support
+	to ASoC
+Date: Wed, 3 Jun 2009 08:28:06 +0300
+Message-ID: <200906030828.06933.peter.ujfalusi__1903.65789826519$1244007045$gmane$org@nokia.com>
+References: <4A1BEBE3.8010306@tis.icnet.pl>
+	<20090601210413.7678bf42.jhnikula@gmail.com>
+	<4A25040A.4050506@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f170.google.com (mail-fx0-f170.google.com
-	[209.85.220.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id D3378244FD
-	for <alsa-devel@alsa-project.org>;
-	Wed,  3 Jun 2009 02:00:55 +0200 (CEST)
-Received: by fxm18 with SMTP id 18so9222272fxm.32
-	for <alsa-devel@alsa-project.org>; Tue, 02 Jun 2009 17:00:54 -0700 (PDT)
-In-Reply-To: <410e92830906021530l767478c4tae72c4b161583b6@mail.gmail.com>
+In-Reply-To: <4A25040A.4050506@tis.icnet.pl>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,50 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alan Alan <alanwww1@gmail.com>
-Cc: alsa-devel@alsa-project.org, Wei Ni <wni@nvidia.com>
+To: alsa-devel@alsa-project.org
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 03 of June 2009 00:30:04 Alan Alan wrote:
-> Thank's for the info.
-> How can i contact him ?
+Hello Janusz,
 
-He and alsa-devel mailing list are both in CC already, please preserve them 
-there or fix your mailer.
+On Tuesday 02 June 2009 13:50:50 ext Janusz Krzysztofik wrote:
+> Hi Jarkko,
 >
+> Jarkko Nikula wrote:
+> > Is the older implementation working at commit
+> > d8376cc482b241701f7606c81ad578b90853e175 in linux-omap, i.e. last
+> > commit before their removal?
 >
-> 2009/6/3 Marek Vasut <marek.vasut@gmail.com>
+> I have managed to check with that revision this morning and yes, the
+> driver is working.
 >
-> > I'm not the author of the patch, CCing alsa-devel and the original
-> > author.
-> >
-> > On Tuesday 02 of June 2009 23:58:26 Alan Alan wrote:
-> > > Hi Marek !
-> > >
-> > > I just read your emailing with nvidia devs about alsa supporting 8
-> >
-> > channel
-> >
-> > > lpcm over hdmi.
-> > >
-> > > I checked it out an i have to tell it is working awsome, except for a
-> > > few bugs:
-> > >
-> > > The channels are wrong mapped. Running a speakertest -Dhdmi -c6 gives
-> > > the following result (first where it should sound)
-> > > FL - FL
-> > > C - RL
-> > > FR - FR
-> > > RR - LFE
-> > > RL - C
-> > >
-> > > The other thing i realized that playback is limited to 16 bits 48 khz.
-> > > I think the minimum which is supported by nvidia hardware is 24bits 96
-> > > (or 192) khz.
-> > > Why not ?
-> > >
-> > > Could you contact the devs as i don't know how to reach them.
-> > >
-> > > ps.: Mybe my build methot was not 100% ok ? I used 1.020 Alsa with the
-> > > oatched nvidia.c file. Anyway the amplifier shows multichannel LPCM and
-> > > that's great news.
+> I'll try you other suggestions as soon as I get back home.
+
+Looking at the code at commit: d8376cc482b241701f7606c81ad578b90853e175 on =
+l-o =
+
+the comment about the need for the call the omap_stop_dma puzzled me.
+Can you try something like this:
+
+diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
+index 6454e15..2df1792 100644
+--- a/sound/soc/omap/omap-pcm.c
++++ b/sound/soc/omap/omap-pcm.c
+@@ -67,6 +67,7 @@ static void omap_pcm_dma_irq(int ch, u16 stat, void *data)
+                spin_lock_irqsave(&prtd->lock, flags);
+                if (prtd->period_index >=3D 0) {
+                        if (++prtd->period_index =3D=3D runtime->periods) {
++                               omap_stop_dma(prtd->dma_ch);
+                                prtd->period_index =3D 0;
+                                omap_start_dma(prtd->dma_ch);
+                        }
+@@ -191,6 +192,7 @@ static int omap_pcm_trigger(struct snd_pcm_substream =
+
+*substream, int cmd)
+        case SNDRV_PCM_TRIGGER_START:
+        case SNDRV_PCM_TRIGGER_RESUME:
+        case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++               omap_stop_dma(prtd->dma_ch);
+                prtd->period_index =3D 0;
+                omap_start_dma(prtd->dma_ch);
+                break;
+
+This is on top of sound-2.6:topic/asoc, but l-o should not be that differen=
+t.
+Call the omap_stop_dma before actually starting the dma, and call stop also =
+
+before restarting it.
+
+
+-- =
+
+P=E9ter
