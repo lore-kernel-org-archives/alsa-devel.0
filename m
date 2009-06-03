@@ -1,7 +1,7 @@
 From: Mike Frysinger <vapier-aBrp7R+bbdUdnm+yROfE0A@public.gmane.org>
-Subject: [PATCH 1/2] USB: audio: add USB audio class definitions
-Date: Wed,  3 Jun 2009 09:17:57 -0400
-Message-ID: <1244035078-1775-2-git-send-email-vapier@gentoo.org>
+Subject: [PATCH 2/2] USB: gadget: add USB Audio Gadget driver
+Date: Wed,  3 Jun 2009 09:17:58 -0400
+Message-ID: <1244035078-1775-3-git-send-email-vapier@gentoo.org>
 References: <1244035078-1775-1-git-send-email-vapier@gentoo.org>
 Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <1244035078-1775-1-git-send-email-vapier-aBrp7R+bbdUdnm+yROfE0A@public.gmane.org>
@@ -12,303 +12,1498 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Bryan Wu <cooloney-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 
+Funtions added:
+ - setup all the USB audio class device descriptors
+ - handle class specific setup request
+ - receive data from USB host by ISO transfer
+ - play audio data by ALSA sound card
+ - open and setup playback PCM interface
+ - set default playback PCM parameters
+ - provide playback functions for USB audio driver
+ - provide PCM parameters set/get functions
+
+Test on:
+ - Host: Ubuntu 8.10, kernel 2.6.27
+ - Gadget: EZKIT-BF548 with ASoC AD1980 codec
+
+Todo:
+ - add real Mute control code
+ - add real Volume control code
+ - maybe find another way to replace dynamic buffer handling
+   with static buffer allocation
+ - test on Windows system
+ - provide control interface to handle mute/volume control
+ - provide capture interface in the future
+ - test on BF527, other USB device controler and other audio codec
+
 Signed-off-by: Bryan Wu <cooloney-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 Signed-off-by: Mike Frysinger <vapier-aBrp7R+bbdUdnm+yROfE0A@public.gmane.org>
 ---
- include/linux/usb/audio.h |  265 ++++++++++++++++++++++++++++++++++++++++++++-
- 1 files changed, 263 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/Kconfig   |   14 +
+ drivers/usb/gadget/Makefile  |    2 +
+ drivers/usb/gadget/audio.c   |  302 ++++++++++++++++++
+ drivers/usb/gadget/f_audio.c |  707 ++++++++++++++++++++++++++++++++++++++++++
+ drivers/usb/gadget/u_audio.c |  319 +++++++++++++++++++
+ drivers/usb/gadget/u_audio.h |   56 ++++
+ 6 files changed, 1400 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/usb/gadget/audio.c
+ create mode 100644 drivers/usb/gadget/f_audio.c
+ create mode 100644 drivers/usb/gadget/u_audio.c
+ create mode 100644 drivers/usb/gadget/u_audio.h
 
-diff --git a/include/linux/usb/audio.h b/include/linux/usb/audio.h
-index 8cb025f..b5744bc 100644
---- a/include/linux/usb/audio.h
-+++ b/include/linux/usb/audio.h
-@@ -24,10 +24,75 @@
- #define USB_SUBCLASS_AUDIOCONTROL	0x01
- #define USB_SUBCLASS_AUDIOSTREAMING	0x02
- #define USB_SUBCLASS_MIDISTREAMING	0x03
-+#define USB_SUBCLASS_VENDOR_SPEC	0xff
+diff --git a/drivers/usb/gadget/Kconfig b/drivers/usb/gadget/Kconfig
+index 080bb1e..2e03a5f 100644
+--- a/drivers/usb/gadget/Kconfig
++++ b/drivers/usb/gadget/Kconfig
+@@ -566,6 +566,20 @@ config USB_ZERO_HNPTEST
+ 	  the "B-Peripheral" role, that device will use HNP to let this
+ 	  one serve as the USB host instead (in the "B-Host" role).
  
-+/* A.5 Audio Class-Specific AC interface Descriptor Subtypes*/
-+#define HEADER				0x01
-+#define INPUT_TERMINAL			0x02
-+#define OUTPUT_TERMINAL			0x03
-+#define MIXER_UNIT			0x04
-+#define SELECTOR_UNIT			0x05
-+#define FEATURE_UNIT			0x06
-+#define PROCESSING_UNIT			0x07
-+#define EXTENSION_UNIT			0x08
++config USB_AUDIO
++	tristate "Audio Gadget (EXPERIMENTAL)"
++	depends on SND
++	help
++	  Gadget Audio is compatible with USB Audio Class specification 1.0.
++	  It will include at least one AudioControl interface, zero or more
++	  AudioStream interface and zero or more MIDIStream interface.
 +
-+#define AS_GENERAL			0x01
-+#define FORMAT_TYPE			0x02
-+#define FORMAT_SPECIFIC			0x03
++	  Gadget Audio will use on-board ALSA (CONFIG_SND) audio card to
++	  playback or capture audio stream.
 +
-+#define EP_GENERAL			0x01
++	  Say "y" to link the driver statically, or "m" to build a
++	  dynamically linked module called "g_audio".
 +
-+#define MS_GENERAL			0x01
-+#define MIDI_IN_JACK			0x02
-+#define MIDI_OUT_JACK			0x03
-+
-+/* endpoint attributes */
-+#define EP_ATTR_MASK			0x0c
-+#define EP_ATTR_ASYNC			0x04
-+#define EP_ATTR_ADAPTIVE		0x08
-+#define EP_ATTR_SYNC			0x0c
-+
-+/* cs endpoint attributes */
-+#define EP_CS_ATTR_SAMPLE_RATE		0x01
-+#define EP_CS_ATTR_PITCH_CONTROL	0x02
-+#define EP_CS_ATTR_FILL_MAX		0x80
-+
-+/* Audio Class specific Request Codes */
-+#define USB_AUDIO_SET_INTF		0x21
-+#define USB_AUDIO_SET_ENDPOINT		0x22
-+#define USB_AUDIO_GET_INTF		0xa1
-+#define USB_AUDIO_GET_ENDPOINT		0xa2
-+
-+#define SET_	0x00
-+#define GET_	0x80
-+
-+#define _CUR	0x1
-+#define _MIN	0x2
-+#define _MAX	0x3
-+#define _RES	0x4
-+#define _MEM	0x5
-+
-+#define SET_CUR		(SET_ | _CUR)
-+#define GET_CUR		(GET_ | _CUR)
-+#define SET_MIN		(SET_ | _MIN)
-+#define GET_MIN		(GET_ | _MIN)
-+#define SET_MAX		(SET_ | _MAX)
-+#define GET_MAX		(GET_ | _MAX)
-+#define SET_RES		(SET_ | _RES)
-+#define GET_RES		(GET_ | _RES)
-+#define SET_MEM		(SET_ | _MEM)
-+#define GET_MEM		(GET_ | _MEM)
-+
-+#define GET_STAT	0xff
-+
-+#define USB_AC_TERMINAL_UNDEFINED	0x100
-+#define USB_AC_TERMINAL_STREAMING	0x101
-+#define USB_AC_TERMINAL_VENDOR_SPEC	0x1FF
-+
-+/* Terminal Control Selectors */
- /* 4.3.2  Class-Specific AC Interface Descriptor */
- struct usb_ac_header_descriptor {
--	__u8  bLength;			/* 8+n */
-+	__u8  bLength;			/* 8 + n */
- 	__u8  bDescriptorType;		/* USB_DT_CS_INTERFACE */
- 	__u8  bDescriptorSubtype;	/* USB_MS_HEADER */
- 	__le16 bcdADC;			/* 0x0100 */
-@@ -36,7 +101,7 @@ struct usb_ac_header_descriptor {
- 	__u8  baInterfaceNr[];		/* [n] */
- } __attribute__ ((packed));
+ config USB_ETH
+ 	tristate "Ethernet Gadget (with CDC Ethernet support)"
+ 	depends on NET
+diff --git a/drivers/usb/gadget/Makefile b/drivers/usb/gadget/Makefile
+index 39a51d7..4c223f9 100644
+--- a/drivers/usb/gadget/Makefile
++++ b/drivers/usb/gadget/Makefile
+@@ -26,6 +26,7 @@ obj-$(CONFIG_USB_CI13XXX)	+= ci13xxx_udc.o
+ # USB gadget drivers
+ #
+ g_zero-objs			:= zero.o
++g_audio-objs			:= audio.o
+ g_ether-objs			:= ether.o
+ g_serial-objs			:= serial.o
+ g_midi-objs			:= gmidi.o
+@@ -35,6 +36,7 @@ g_printer-objs			:= printer.o
+ g_cdc-objs			:= cdc2.o
  
--#define USB_DT_AC_HEADER_SIZE(n)	(8+(n))
-+#define USB_DT_AC_HEADER_SIZE(n)	(8 + (n))
- 
- /* As above, but more useful for defining your own descriptors: */
- #define DECLARE_USB_AC_HEADER_DESCRIPTOR(n) 			\
-@@ -50,4 +115,200 @@ struct usb_ac_header_descriptor_##n {				\
- 	__u8  baInterfaceNr[n];					\
- } __attribute__ ((packed))
- 
-+/* 4.3.2.1 Input Terminal Descriptor */
-+struct usb_input_terminal_descriptor {
-+	__u8  bLength;			/* in bytes: 12 */
-+	__u8  bDescriptorType;		/* CS_INTERFACE descriptor type */
-+	__u8  bDescriptorSubtype;	/* INPUT_TERMINAL descriptor subtype */
-+	__u8  bTerminalID;		/* Constant uniquely terminal ID */
-+	__le16 wTerminalType;		/* USB Audio Terminal Types */
-+	__u8  bAssocTerminal;		/* ID of the Output Terminal associated */
-+	__u8  bNrChannels;		/* Number of logical output channels */
-+	__le16 wChannelConfig;
-+	__u8  iChannelNames;
-+	__u8  iTerminal;
-+} __attribute__ ((packed));
+ obj-$(CONFIG_USB_ZERO)		+= g_zero.o
++obj-$(CONFIG_USB_AUDIO)		+= g_audio.o
+ obj-$(CONFIG_USB_ETH)		+= g_ether.o
+ obj-$(CONFIG_USB_GADGETFS)	+= gadgetfs.o
+ obj-$(CONFIG_USB_FILE_STORAGE)	+= g_file_storage.o
+diff --git a/drivers/usb/gadget/audio.c b/drivers/usb/gadget/audio.c
+new file mode 100644
+index 0000000..94de7e8
+--- /dev/null
++++ b/drivers/usb/gadget/audio.c
+@@ -0,0 +1,302 @@
++/*
++ * audio.c -- Audio gadget driver
++ *
++ * Copyright (C) 2008 Bryan Wu <cooloney-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
++ * Copyright (C) 2008 Analog Devices, Inc
++ *
++ * Enter bugs at http://blackfin.uclinux.org/
++ *
++ * Licensed under the GPL-2 or later.
++ */
 +
-+#define USB_DT_AC_INPUT_TERMINAL_SIZE			12
++/* #define VERBOSE_DEBUG */
 +
-+#define USB_AC_INPUT_TERMINAL_UNDEFINED			0x200
-+#define USB_AC_INPUT_TERMINAL_MICROPHONE		0x201
-+#define USB_AC_INPUT_TERMINAL_DESKTOP_MICROPHONE	0x202
-+#define USB_AC_INPUT_TERMINAL_PERSONAL_MICROPHONE	0x203
-+#define USB_AC_INPUT_TERMINAL_OMNI_DIR_MICROPHONE	0x204
-+#define USB_AC_INPUT_TERMINAL_MICROPHONE_ARRAY		0x205
-+#define USB_AC_INPUT_TERMINAL_PROC_MICROPHONE_ARRAY	0x206
++#include <linux/kernel.h>
++#include <linux/utsname.h>
 +
-+/* 4.3.2.2 Output Terminal Descriptor */
-+struct usb_output_terminal_descriptor {
-+	__u8  bLength;			/* in bytes: 9 */
-+	__u8  bDescriptorType;		/* CS_INTERFACE descriptor type */
-+	__u8  bDescriptorSubtype;	/* OUTPUT_TERMINAL descriptor subtype */
-+	__u8  bTerminalID;		/* Constant uniquely terminal ID */
-+	__le16 wTerminalType;		/* USB Audio Terminal Types */
-+	__u8  bAssocTerminal;		/* ID of the Input Terminal associated */
-+	__u8  bSourceID;		/* ID of the connected Unit or Terminal*/
-+	__u8  iTerminal;
-+} __attribute__ ((packed));
++#include "u_audio.h"
 +
-+#define USB_DT_AC_OUTPUT_TERMINAL_SIZE				9
++#define DRIVER_DESC		"Linux USB Audio Gadget"
++#define DRIVER_VERSION		"Dec 18, 2008"
 +
-+#define USB_AC_OUTPUT_TERMINAL_UNDEFINED			0x300
-+#define USB_AC_OUTPUT_TERMINAL_SPEAKER				0x301
-+#define USB_AC_OUTPUT_TERMINAL_HEADPHONES			0x302
-+#define USB_AC_OUTPUT_TERMINAL_HEAD_MOUNTED_DISPLAY_AUDIO	0x303
-+#define USB_AC_OUTPUT_TERMINAL_DESKTOP_SPEAKER			0x304
-+#define USB_AC_OUTPUT_TERMINAL_ROOM_SPEAKER			0x305
-+#define USB_AC_OUTPUT_TERMINAL_COMMUNICATION_SPEAKER		0x306
-+#define USB_AC_OUTPUT_TERMINAL_LOW_FREQ_EFFECTS_SPEAKER		0x307
++/*-------------------------------------------------------------------------*/
 +
-+/* Set bControlSize = 2 as default setting */
-+#define USB_DT_AC_FEATURE_UNIT_SIZE(ch)		(7 + ((ch) + 1) * 2)
++/*
++ * Kbuild is not very cooperative with respect to linking separately
++ * compiled library objects into one module.  So for now we won't use
++ * separate compilation ... ensuring init/exit sections work to shrink
++ * the runtime footprint, and giving us at least some parts of what
++ * a "gcc --combine ... part1.c part2.c part3.c ... " build would.
++ */
++#include "composite.c"
++#include "usbstring.c"
++#include "config.c"
++#include "epautoconf.c"
 +
-+/* As above, but more useful for defining your own descriptors: */
-+#define DECLARE_USB_AC_FEATURE_UNIT_DESCRIPTOR(ch) 		\
-+struct usb_ac_feature_unit_descriptor_##ch {			\
-+	__u8  bLength;						\
-+	__u8  bDescriptorType;					\
-+	__u8  bDescriptorSubtype;				\
-+	__u8  bUnitID;						\
-+	__u8  bSourceID;					\
-+	__u8  bControlSize;					\
-+	__le16 bmaControls[ch + 1];				\
-+	__u8  iFeature;						\
-+} __attribute__ ((packed))
++#include "u_audio.c"
++#include "f_audio.c"
 +
-+/* 4.5.2 Class-Specific AS Interface Descriptor */
-+struct usb_as_header_descriptor {
-+	__u8  bLength;			/* in bytes: 7 */
-+	__u8  bDescriptorType;		/* USB_DT_CS_INTERFACE */
-+	__u8  bDescriptorSubtype;	/* AS_GENERAL */
-+	__u8  bTerminalLink;		/* Terminal ID of connected Terminal */
-+	__u8  bDelay;			/* Delay introduced by the data path */
-+	__le16 wFormatTag;		/* The Audio Data Format */
-+} __attribute__ ((packed));
++/*-------------------------------------------------------------------------*/
 +
-+#define USB_DT_AS_HEADER_SIZE		7
++/* DO NOT REUSE THESE IDs with a protocol-incompatible driver!!  Ever!!
++ * Instead:  allocate your own, using normal USB-IF procedures.
++ */
 +
-+#define USB_AS_AUDIO_FORMAT_TYPE_I_UNDEFINED	0x0
-+#define USB_AS_AUDIO_FORMAT_TYPE_I_PCM		0x1
-+#define USB_AS_AUDIO_FORMAT_TYPE_I_PCM8		0x2
-+#define USB_AS_AUDIO_FORMAT_TYPE_I_IEEE_FLOAT	0x3
-+#define USB_AS_AUDIO_FORMAT_TYPE_I_ALAW		0x4
-+#define USB_AS_AUDIO_FORMAT_TYPE_I_MULAW	0x5
++/* Thanks to NetChip Technologies for donating this product ID. */
++#define AUDIO_VENDOR_NUM		0x0525	/* NetChip */
++#define AUDIO_PRODUCT_NUM		0xa4a1	/* Linux-USB Audio Gadget */
 +
-+struct usb_as_format_type_i_continuous_descriptor {
-+	__u8  bLength;			/* in bytes: 8 + (ns * 3) */
-+	__u8  bDescriptorType;		/* USB_DT_CS_INTERFACE */
-+	__u8  bDescriptorSubtype;	/* FORMAT_TYPE */
-+	__u8  bFormatType;		/* FORMAT_TYPE_1 */
-+	__u8  bNrChannels;		/* physical channels in the stream */
-+	__u8  bSubframeSize;		/* */
-+	__u8  bBitResolution;
-+	__u8  bSamFreqType;
-+	__u8  tLowerSamFreq[3];
-+	__u8  tUpperSamFreq[3];
-+} __attribute__ ((packed));
++/*-------------------------------------------------------------------------*/
 +
-+#define USB_AS_FORMAT_TYPE_I_CONTINUOUS_DESC_SIZE	14
++static struct usb_device_descriptor device_desc = {
++	.bLength =		sizeof device_desc,
++	.bDescriptorType =	USB_DT_DEVICE,
 +
-+struct usb_as_formate_type_i_discrete_descriptor {
-+	__u8  bLength;			/* in bytes: 8 + (ns * 3) */
-+	__u8  bDescriptorType;		/* USB_DT_CS_INTERFACE */
-+	__u8  bDescriptorSubtype;	/* FORMAT_TYPE */
-+	__u8  bFormatType;		/* FORMAT_TYPE_1 */
-+	__u8  bNrChannels;		/* physical channels in the stream */
-+	__u8  bSubframeSize;		/* */
-+	__u8  bBitResolution;
-+	__u8  bSamFreqType;
-+	__u8  tSamFreq[][3];
-+} __attribute__ ((packed));
++	.bcdUSB =		__constant_cpu_to_le16(0x200),
 +
-+#define DECLARE_USB_AS_FORMAT_TYPE_I_DISCRETE_DESC(n) 		\
-+struct usb_as_formate_type_i_discrete_descriptor_##n {		\
-+	__u8  bLength;						\
-+	__u8  bDescriptorType;					\
-+	__u8  bDescriptorSubtype;				\
-+	__u8  bFormatType;					\
-+	__u8  bNrChannels;					\
-+	__u8  bSubframeSize;					\
-+	__u8  bBitResolution;					\
-+	__u8  bSamFreqType;					\
-+	__u8  tSamFreq[n][3];					\
-+} __attribute__ ((packed))
++	.bDeviceClass =		USB_CLASS_PER_INTERFACE,
++	.bDeviceSubClass =	0,
++	.bDeviceProtocol =	0,
++	/* .bMaxPacketSize0 = f(hardware) */
 +
-+#define USB_AS_FORMAT_TYPE_I_DISCRETE_DESC_SIZE(n)	(8 + (n * 3))
-+
-+#define USB_AS_FORMAT_TYPE_UNDEFINED	0x0
-+#define USB_AS_FORMAT_TYPE_I		0x1
-+#define USB_AS_FORMAT_TYPE_II		0x2
-+#define USB_AS_FORMAT_TYPE_III		0x3
-+
-+#define USB_AS_ENDPOINT_ASYNC		(1 << 2)
-+#define USB_AS_ENDPOINT_ADAPTIVE	(2 << 2)
-+#define USB_AS_ENDPOINT_SYNC		(3 << 2)
-+
-+struct usb_as_iso_endpoint_descriptor {
-+	__u8  bLength;			/* in bytes: 7 */
-+	__u8  bDescriptorType;		/* USB_DT_CS_ENDPOINT */
-+	__u8  bDescriptorSubtype;	/* EP_GENERAL */
-+	__u8  bmAttributes;
-+	__u8  bLockDelayUnits;
-+	__le16 wLockDelay;
-+};
-+#define USB_AS_ISO_ENDPOINT_DESC_SIZE	7
-+
-+#define FU_CONTROL_UNDEFINED		0x00
-+#define MUTE_CONTROL			0x01
-+#define VOLUME_CONTROL			0x02
-+#define BASS_CONTROL			0x03
-+#define MID_CONTROL			0x04
-+#define TREBLE_CONTROL			0x05
-+#define GRAPHIC_EQUALIZER_CONTROL	0x06
-+#define AUTOMATIC_GAIN_CONTROL		0x07
-+#define DELAY_CONTROL			0x08
-+#define BASS_BOOST_CONTROL		0x09
-+#define LOUDNESS_CONTROL		0x0a
-+
-+#define FU_MUTE		(1 << (MUTE_CONTROL - 1))
-+#define FU_VOLUME	(1 << (VOLUME_CONTROL - 1))
-+#define FU_BASS		(1 << (BASS_CONTROL - 1))
-+#define FU_MID		(1 << (MID_CONTROL - 1))
-+#define FU_TREBLE	(1 << (TREBLE_CONTROL - 1))
-+#define FU_GRAPHIC_EQ	(1 << (GRAPHIC_EQUALIZER_CONTROL - 1))
-+#define FU_AUTO_GAIN	(1 << (AUTOMATIC_GAIN_CONTROL - 1))
-+#define FU_DELAY	(1 << (DELAY_CONTROL - 1))
-+#define FU_BASS_BOOST	(1 << (BASS_BOOST_CONTROL - 1))
-+#define FU_LOUDNESS	(1 << (LOUDNESS_CONTROL - 1))
-+
-+struct usb_audio_control {
-+	struct list_head list;
-+	const char *name;
-+	u8 type;
-+	int data[5];
-+	int (*set)(struct usb_audio_control *con, u8 cmd, int value);
-+	int (*get)(struct usb_audio_control *con, u8 cmd);
++	/* Vendor and product id defaults change according to what configs
++	 * we support.  (As does bNumConfigurations.)  These values can
++	 * also be overridden by module parameters.
++	 */
++	.idVendor =		__constant_cpu_to_le16(AUDIO_VENDOR_NUM),
++	.idProduct =		__constant_cpu_to_le16(AUDIO_PRODUCT_NUM),
++	/* .bcdDevice = f(hardware) */
++	/* .iManufacturer = DYNAMIC */
++	/* .iProduct = DYNAMIC */
++	/* NO SERIAL NUMBER */
++	.bNumConfigurations =	1,
 +};
 +
-+static inline int generic_set_cmd(struct usb_audio_control *con, u8 cmd, int value)
++static struct usb_otg_descriptor otg_descriptor = {
++	.bLength =		sizeof otg_descriptor,
++	.bDescriptorType =	USB_DT_OTG,
++
++	/* REVISIT SRP-only hardware is possible, although
++	 * it would not be called "OTG" ...
++	 */
++	.bmAttributes =		USB_OTG_SRP | USB_OTG_HNP,
++};
++
++static const struct usb_descriptor_header *otg_desc[] = {
++	(struct usb_descriptor_header *) &otg_descriptor,
++	NULL,
++};
++
++/*-------------------------------------------------------------------------*/
++
++/**
++ * Handle USB audio endpoint set/get command in setup class request
++ */
++
++static int audio_set_endpoint_req(struct usb_configuration *c,
++		const struct usb_ctrlrequest *ctrl)
 +{
-+	con->data[cmd] = value;
++	struct usb_composite_dev *cdev = c->cdev;
++	int			value = -EOPNOTSUPP;
++	u16			ep = le16_to_cpu(ctrl->wIndex);
++	u16			len = le16_to_cpu(ctrl->wLength);
++	u16			w_value = le16_to_cpu(ctrl->wValue);
++
++	DBG(cdev, "bRequest 0x%x, w_value 0x%04x, len %d, endpoint %d\n",
++			ctrl->bRequest, w_value, len, ep);
++
++	switch (ctrl->bRequest) {
++	case SET_CUR:
++		value = 0;
++		break;
++
++	case SET_MIN:
++		break;
++
++	case SET_MAX:
++		break;
++
++	case SET_RES:
++		break;
++
++	case SET_MEM:
++		break;
++
++	default:
++		break;
++	}
++
++	return value;
++}
++
++static int audio_get_endpoint_req(struct usb_configuration *c,
++		const struct usb_ctrlrequest *ctrl)
++{
++	struct usb_composite_dev *cdev = c->cdev;
++	int value = -EOPNOTSUPP;
++	u8 ep = ((le16_to_cpu(ctrl->wIndex) >> 8) & 0xFF);
++	u16 len = le16_to_cpu(ctrl->wLength);
++	u16 w_value = le16_to_cpu(ctrl->wValue);
++
++	DBG(cdev, "bRequest 0x%x, w_value 0x%04x, len %d, endpoint %d\n",
++			ctrl->bRequest, w_value, len, ep);
++
++	switch (ctrl->bRequest) {
++	case GET_CUR:
++	case GET_MIN:
++	case GET_MAX:
++	case GET_RES:
++		value = 3;
++		break;
++	case GET_MEM:
++		break;
++	default:
++		break;
++	}
++
++	return value;
++}
++
++static int
++audio_setup(struct usb_configuration *c, const struct usb_ctrlrequest *ctrl)
++{
++	struct usb_composite_dev *cdev = c->cdev;
++	struct usb_request *req = cdev->req;
++	int value = -EOPNOTSUPP;
++	u16 w_index = le16_to_cpu(ctrl->wIndex);
++	u16 w_value = le16_to_cpu(ctrl->wValue);
++	u16 w_length = le16_to_cpu(ctrl->wLength);
++
++	/* composite driver infrastructure handles everything except
++	 * Audio class messages; interface activation uses set_alt().
++	 */
++	switch (ctrl->bRequestType) {
++	case USB_AUDIO_SET_ENDPOINT:
++		value = audio_set_endpoint_req(c, ctrl);
++		break;
++
++	case USB_AUDIO_GET_ENDPOINT:
++		value = audio_get_endpoint_req(c, ctrl);
++		break;
++
++	default:
++		ERROR(cdev, "Invalid control req%02x.%02x v%04x i%04x l%d\n",
++			ctrl->bRequestType, ctrl->bRequest,
++			w_value, w_index, w_length);
++	}
++
++	/* respond with data transfer or status phase? */
++	if (value >= 0) {
++		DBG(cdev, "Audio req%02x.%02x v%04x i%04x l%d\n",
++			ctrl->bRequestType, ctrl->bRequest,
++			w_value, w_index, w_length);
++		req->zero = 0;
++		req->length = value;
++		value = usb_ep_queue(cdev->gadget->ep0, req, GFP_ATOMIC);
++		if (value < 0)
++			ERROR(cdev, "Audio response on err %d\n", value);
++	}
++
++	/* device either stalls (value < 0) or reports success */
++	return value;
++}
++
++/*-------------------------------------------------------------------------*/
++
++static int __init audio_do_config(struct usb_configuration *c)
++{
++	/* FIXME alloc iConfiguration string, set it in c->strings */
++
++	if (gadget_is_otg(c->cdev->gadget)) {
++		c->descriptors = otg_desc;
++		c->bmAttributes |= USB_CONFIG_ATT_WAKEUP;
++	}
++
++	audio_bind_config(c);
 +
 +	return 0;
 +}
 +
-+static inline int generic_get_cmd(struct usb_audio_control *con, u8 cmd)
-+{
-+	return con->data[cmd];
-+}
-+
-+struct usb_audio_control_selector {
-+	struct list_head list;
-+	struct list_head control;
-+	u8 id;
-+	const char *name;
-+	u8 type;
-+	struct usb_descriptor_header *desc;
++static struct usb_configuration audio_config_driver = {
++	.label			= DRIVER_DESC,
++	.bind			= audio_do_config,
++	.setup			= audio_setup,
++	.bConfigurationValue	= 1,
++	/* .iConfiguration = DYNAMIC */
++	.bmAttributes		= USB_CONFIG_ATT_SELFPOWER,
 +};
 +
- #endif /* __LINUX_USB_AUDIO_H */
++/*-------------------------------------------------------------------------*/
++
++static int __init audio_bind(struct usb_composite_dev *cdev)
++{
++	int			gcnum;
++	int			status;
++
++	gcnum = usb_gadget_controller_number(cdev->gadget);
++	if (gcnum >= 0)
++		device_desc.bcdDevice = cpu_to_le16(0x0300 | gcnum);
++	else {
++		ERROR(cdev, "controller '%s' not recognized; trying %s\n",
++			cdev->gadget->name,
++			audio_config_driver.label);
++		device_desc.bcdDevice =
++			__constant_cpu_to_le16(0x0300 | 0x0099);
++	}
++
++	/* device descriptor strings: manufacturer, product */
++	snprintf(manufacturer, sizeof manufacturer, "%s %s with %s",
++		init_utsname()->sysname, init_utsname()->release,
++		cdev->gadget->name);
++	status = usb_string_id(cdev);
++	if (status < 0)
++		goto fail;
++	strings_dev[STRING_MANUFACTURER_IDX].id = status;
++	device_desc.iManufacturer = status;
++
++	status = usb_string_id(cdev);
++	if (status < 0)
++		goto fail;
++	strings_dev[STRING_PRODUCT_IDX].id = status;
++	device_desc.iProduct = status;
++
++	status = usb_add_config(cdev, &audio_config_driver);
++	if (status < 0)
++		goto fail;
++
++	INFO(cdev, "%s, version: %s\n", DRIVER_DESC, DRIVER_VERSION);
++	return 0;
++
++fail:
++	return status;
++}
++
++static int __exit audio_unbind(struct usb_composite_dev *cdev)
++{
++	return 0;
++}
++
++static struct usb_composite_driver audio_driver = {
++	.name		= "g_audio",
++	.dev		= &device_desc,
++	.strings	= audio_strings,
++	.bind		= audio_bind,
++	.unbind		= __exit_p(audio_unbind),
++};
++
++static int __init init(void)
++{
++	return usb_composite_register(&audio_driver);
++}
++module_init(init);
++
++static void __exit cleanup(void)
++{
++	usb_composite_unregister(&audio_driver);
++}
++module_exit(cleanup);
++
++MODULE_DESCRIPTION(DRIVER_DESC);
++MODULE_AUTHOR("Bryan Wu <cooloney-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>");
++MODULE_LICENSE("GPL");
++
+diff --git a/drivers/usb/gadget/f_audio.c b/drivers/usb/gadget/f_audio.c
+new file mode 100644
+index 0000000..66527ba
+--- /dev/null
++++ b/drivers/usb/gadget/f_audio.c
+@@ -0,0 +1,707 @@
++/*
++ * f_audio.c -- USB Audio class function driver
++  *
++ * Copyright (C) 2008 Bryan Wu <cooloney-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
++ * Copyright (C) 2008 Analog Devices, Inc
++ *
++ * Enter bugs at http://blackfin.uclinux.org/
++ *
++ * Licensed under the GPL-2 or later.
++ */
++
++#include <linux/kernel.h>
++#include <linux/device.h>
++#include <asm/atomic.h>
++
++#include "u_audio.h"
++
++#define OUT_EP_MAX_PACKET_SIZE	200
++static int req_buf_size = OUT_EP_MAX_PACKET_SIZE;
++module_param(req_buf_size, int, S_IRUGO);
++MODULE_PARM_DESC(req_buf_size, "ISO OUT endpoint request buffer size");
++
++static int req_count = 256;
++module_param(req_count, int, S_IRUGO);
++MODULE_PARM_DESC(req_count, "ISO OUT endpoint request count");
++
++static int audio_buf_size = 48000;
++module_param(audio_buf_size, int, S_IRUGO);
++MODULE_PARM_DESC(audio_buf_size, "Audio buffer size");
++
++/*
++ * DESCRIPTORS ... most are static, but strings and full
++ * configuration descriptors are built on demand.
++ */
++
++/*
++ * We have two interfaces- AudioControl and AudioStreaming
++ * TODO: only supcard playback currently
++ */
++#define F_AUDIO_AC_INTERFACE	0
++#define F_AUDIO_AS_INTERFACE	1
++#define F_AUDIO_NUM_INTERFACES	2
++
++/* B.3.1  Standard AC Interface Descriptor */
++static struct usb_interface_descriptor ac_interface_desc __initdata = {
++	.bLength =		USB_DT_INTERFACE_SIZE,
++	.bDescriptorType =	USB_DT_INTERFACE,
++	.bNumEndpoints =	0,
++	.bInterfaceClass =	USB_CLASS_AUDIO,
++	.bInterfaceSubClass =	USB_SUBCLASS_AUDIOCONTROL,
++};
++
++DECLARE_USB_AC_HEADER_DESCRIPTOR(2);
++
++#define USB_DT_AC_HEADER_LENGH	USB_DT_AC_HEADER_SIZE(F_AUDIO_NUM_INTERFACES)
++/* B.3.2  Class-Specific AC Interface Descriptor */
++static struct usb_ac_header_descriptor_2 ac_header_desc = {
++	.bLength =		USB_DT_AC_HEADER_LENGH,
++	.bDescriptorType =	USB_DT_CS_INTERFACE,
++	.bDescriptorSubtype =	HEADER,
++	.bcdADC =		__constant_cpu_to_le16(0x0100),
++	.wTotalLength =		__constant_cpu_to_le16(USB_DT_AC_HEADER_LENGH),
++	.bInCollection =	F_AUDIO_NUM_INTERFACES,
++	.baInterfaceNr = {
++		[0] =		F_AUDIO_AC_INTERFACE,
++		[1] =		F_AUDIO_AS_INTERFACE,
++	}
++};
++
++#define INPUT_TERMINAL_ID	1
++static struct usb_input_terminal_descriptor input_terminal_desc = {
++	.bLength =		USB_DT_AC_INPUT_TERMINAL_SIZE,
++	.bDescriptorType =	USB_DT_CS_INTERFACE,
++	.bDescriptorSubtype =	INPUT_TERMINAL,
++	.bTerminalID =		INPUT_TERMINAL_ID,
++	.wTerminalType =	USB_AC_TERMINAL_STREAMING,
++	.bAssocTerminal =	0,
++	.wChannelConfig =	0x3,
++};
++
++DECLARE_USB_AC_FEATURE_UNIT_DESCRIPTOR(0);
++
++#define FEATURE_UNIT_ID		2
++static struct usb_ac_feature_unit_descriptor_0 feature_unit_desc = {
++	.bLength		= USB_DT_AC_FEATURE_UNIT_SIZE(0),
++	.bDescriptorType	= USB_DT_CS_INTERFACE,
++	.bDescriptorSubtype	= FEATURE_UNIT,
++	.bUnitID		= FEATURE_UNIT_ID,
++	.bSourceID		= INPUT_TERMINAL_ID,
++	.bControlSize		= 2,
++	.bmaControls[0]		= (FU_MUTE | FU_VOLUME),
++};
++
++static struct usb_audio_control mute_control = {
++	.list = LIST_HEAD_INIT(mute_control.list),
++	.name = "Mute Control",
++	.type = MUTE_CONTROL,
++	/* Todo: add real Mute control code */
++	.set = generic_set_cmd,
++	.get = generic_get_cmd,
++};
++
++static struct usb_audio_control volume_control = {
++	.list = LIST_HEAD_INIT(volume_control.list),
++	.name = "Volume Control",
++	.type = VOLUME_CONTROL,
++	/* Todo: add real Volume control code */
++	.set = generic_set_cmd,
++	.get = generic_get_cmd,
++};
++
++static struct usb_audio_control_selector feature_unit = {
++	.list = LIST_HEAD_INIT(feature_unit.list),
++	.id = FEATURE_UNIT_ID,
++	.name = "Mute & Volume Control",
++	.type = FEATURE_UNIT,
++	.desc = (struct usb_descriptor_header *)&feature_unit_desc,
++};
++
++#define OUTPUT_TERMINAL_ID	3
++static struct usb_output_terminal_descriptor output_terminal_desc = {
++	.bLength		= USB_DT_AC_OUTPUT_TERMINAL_SIZE,
++	.bDescriptorType	= USB_DT_CS_INTERFACE,
++	.bDescriptorSubtype	= OUTPUT_TERMINAL,
++	.bTerminalID		= OUTPUT_TERMINAL_ID,
++	.wTerminalType		= USB_AC_OUTPUT_TERMINAL_SPEAKER,
++	.bAssocTerminal		= FEATURE_UNIT_ID,
++	.bSourceID		= FEATURE_UNIT_ID,
++};
++
++/* B.4.1  Standard AS Interface Descriptor */
++static struct usb_interface_descriptor as_interface_alt_0_desc = {
++	.bLength =		USB_DT_INTERFACE_SIZE,
++	.bDescriptorType =	USB_DT_INTERFACE,
++	.bAlternateSetting =	0,
++	.bNumEndpoints =	0,
++	.bInterfaceClass =	USB_CLASS_AUDIO,
++	.bInterfaceSubClass =	USB_SUBCLASS_AUDIOSTREAMING,
++};
++
++static struct usb_interface_descriptor as_interface_alt_1_desc = {
++	.bLength =		USB_DT_INTERFACE_SIZE,
++	.bDescriptorType =	USB_DT_INTERFACE,
++	.bAlternateSetting =	1,
++	.bNumEndpoints =	1,
++	.bInterfaceClass =	USB_CLASS_AUDIO,
++	.bInterfaceSubClass =	USB_SUBCLASS_AUDIOSTREAMING,
++};
++
++/* B.4.2  Class-Specific AS Interface Descriptor */
++static struct usb_as_header_descriptor as_header_desc = {
++	.bLength =		USB_DT_AS_HEADER_SIZE,
++	.bDescriptorType =	USB_DT_CS_INTERFACE,
++	.bDescriptorSubtype =	AS_GENERAL,
++	.bTerminalLink =	INPUT_TERMINAL_ID,
++	.bDelay =		1,
++	.wFormatTag =		USB_AS_AUDIO_FORMAT_TYPE_I_PCM,
++};
++
++DECLARE_USB_AS_FORMAT_TYPE_I_DISCRETE_DESC(1);
++
++static struct usb_as_formate_type_i_discrete_descriptor_1 as_type_i_desc = {
++	.bLength =		USB_AS_FORMAT_TYPE_I_DISCRETE_DESC_SIZE(1),
++	.bDescriptorType =	USB_DT_CS_INTERFACE,
++	.bDescriptorSubtype =	FORMAT_TYPE,
++	.bFormatType =		USB_AS_FORMAT_TYPE_I,
++	.bSubframeSize =	2,
++	.bBitResolution =	16,
++	.bSamFreqType =		1,
++};
++
++/* Standard ISO OUT Endpoint Descriptor */
++static struct usb_endpoint_descriptor as_out_ep_desc __initdata = {
++	.bLength =		USB_DT_ENDPOINT_AUDIO_SIZE,
++	.bDescriptorType =	USB_DT_ENDPOINT,
++	.bEndpointAddress =	USB_DIR_OUT,
++	.bmAttributes =		USB_AS_ENDPOINT_ADAPTIVE
++				| USB_ENDPOINT_XFER_ISOC,
++	.wMaxPacketSize =	__constant_cpu_to_le16(OUT_EP_MAX_PACKET_SIZE),
++	.bInterval =		4,
++};
++
++/* Class-specific AS ISO OUT Endpoint Descriptor */
++static struct usb_as_iso_endpoint_descriptor as_iso_out_desc __initdata = {
++	.bLength =		USB_AS_ISO_ENDPOINT_DESC_SIZE,
++	.bDescriptorType =	USB_DT_CS_ENDPOINT,
++	.bDescriptorSubtype =	EP_GENERAL,
++	.bmAttributes = 	1,
++	.bLockDelayUnits =	1,
++	.wLockDelay =		__constant_cpu_to_le16(1),
++};
++
++static struct usb_descriptor_header *f_audio_desc[] __initdata = {
++	(struct usb_descriptor_header *)&ac_interface_desc,
++	(struct usb_descriptor_header *)&ac_header_desc,
++
++	(struct usb_descriptor_header *)&input_terminal_desc,
++	(struct usb_descriptor_header *)&output_terminal_desc,
++	(struct usb_descriptor_header *)&feature_unit_desc,
++
++	(struct usb_descriptor_header *)&as_interface_alt_0_desc,
++	(struct usb_descriptor_header *)&as_interface_alt_1_desc,
++	(struct usb_descriptor_header *)&as_header_desc,
++
++	(struct usb_descriptor_header *)&as_type_i_desc,
++
++	(struct usb_descriptor_header *)&as_out_ep_desc,
++	(struct usb_descriptor_header *)&as_iso_out_desc,
++	NULL,
++};
++
++/* string IDs are assigned dynamically */
++
++#define STRING_MANUFACTURER_IDX		0
++#define STRING_PRODUCT_IDX		1
++
++static char manufacturer[50];
++
++static struct usb_string strings_dev[] = {
++	[STRING_MANUFACTURER_IDX].s = manufacturer,
++	[STRING_PRODUCT_IDX].s = DRIVER_DESC,
++	{  } /* end of list */
++};
++
++static struct usb_gadget_strings stringtab_dev = {
++	.language	= 0x0409,	/* en-us */
++	.strings	= strings_dev,
++};
++
++static struct usb_gadget_strings *audio_strings[] = {
++	&stringtab_dev,
++	NULL,
++};
++
++/*
++ * This function is an ALSA sound card following USB Audio Class Spec 1.0.
++ */
++
++/*-------------------------------------------------------------------------*/
++struct f_audio_buf {
++	u8 *buf;
++	int actual;
++	struct list_head list;
++};
++
++static struct f_audio_buf *f_audio_buffer_alloc(int buf_size)
++{
++	struct f_audio_buf *copy_buf;
++
++	copy_buf = kzalloc(sizeof *copy_buf, GFP_ATOMIC);
++	if (!copy_buf)
++		return (struct f_audio_buf *)-ENOMEM;
++
++	copy_buf->buf = kzalloc(buf_size, GFP_ATOMIC);
++	if (!copy_buf->buf) {
++		kfree(copy_buf);
++		return (struct f_audio_buf *)-ENOMEM;
++	}
++
++	return copy_buf;
++}
++
++static void f_audio_buffer_free(struct f_audio_buf *audio_buf)
++{
++	kfree(audio_buf->buf);
++	kfree(audio_buf);
++}
++/*-------------------------------------------------------------------------*/
++
++struct f_audio {
++	struct gaudio			card;
++
++	/* endpoints handle full and/or high speeds */
++	struct usb_ep			*out_ep;
++	struct usb_endpoint_descriptor	*out_desc;
++
++	spinlock_t			lock;
++	struct f_audio_buf *copy_buf;
++	struct work_struct playback_work;
++	struct list_head play_queue;
++
++	/* Control Set command */
++	struct list_head cs;
++	u8 set_cmd;
++	struct usb_audio_control *set_con;
++};
++
++static inline struct f_audio *func_to_audio(struct usb_function *f)
++{
++	return container_of(f, struct f_audio, card.func);
++}
++
++/*-------------------------------------------------------------------------*/
++
++static void f_audio_playback_work(struct work_struct *data)
++{
++	struct f_audio *audio = container_of(data, struct f_audio,
++					playback_work);
++	struct f_audio_buf *play_buf;
++
++	spin_lock_irq(&audio->lock);
++	if (list_empty(&audio->play_queue)) {
++		spin_unlock_irq(&audio->lock);
++		return;
++	}
++	play_buf = list_first_entry(&audio->play_queue,
++			struct f_audio_buf, list);
++	list_del(&play_buf->list);
++	spin_unlock_irq(&audio->lock);
++
++	u_audio_playback(&audio->card, play_buf->buf, play_buf->actual);
++	f_audio_buffer_free(play_buf);
++
++	return;
++}
++
++static int f_audio_out_ep_complete(struct usb_ep *ep, struct usb_request *req)
++{
++	struct f_audio *audio = req->context;
++	struct usb_composite_dev *cdev = audio->card.func.config->cdev;
++	struct f_audio_buf *copy_buf = audio->copy_buf;
++	int err;
++
++	if (!copy_buf)
++		return -EINVAL;
++
++	/* Copy buffer is full, add it to the play_queue */
++	if (audio_buf_size - copy_buf->actual < req->actual) {
++		list_add_tail(&copy_buf->list, &audio->play_queue);
++		schedule_work(&audio->playback_work);
++		copy_buf = f_audio_buffer_alloc(audio_buf_size);
++		if (copy_buf < 0)
++			return -ENOMEM;
++	}
++
++	memcpy(copy_buf->buf + copy_buf->actual, req->buf, req->actual);
++	copy_buf->actual += req->actual;
++	audio->copy_buf = copy_buf;
++
++	err = usb_ep_queue(ep, req, GFP_ATOMIC);
++	if (err)
++		ERROR(cdev, "%s queue req: %d\n", ep->name, err);
++
++	return 0;
++
++}
++
++static void f_audio_complete(struct usb_ep *ep, struct usb_request *req)
++{
++	struct f_audio *audio = req->context;
++	int status = req->status;
++	u32 data = 0;
++	struct usb_ep *out_ep = audio->out_ep;
++
++	switch (status) {
++
++	case 0:				/* normal completion? */
++		if (ep == out_ep)
++			f_audio_out_ep_complete(ep, req);
++		else if (audio->set_con) {
++			memcpy(&data, req->buf, req->length);
++			audio->set_con->set(audio->set_con, audio->set_cmd,
++					le16_to_cpu(data));
++			audio->set_con = NULL;
++		}
++		break;
++	default:
++		break;
++	}
++}
++
++static int audio_set_intf_req(struct usb_function *f,
++		const struct usb_ctrlrequest *ctrl)
++{
++	struct f_audio		*audio = func_to_audio(f);
++	struct usb_composite_dev *cdev = f->config->cdev;
++	struct usb_request	*req = cdev->req;
++	u8			id = ((le16_to_cpu(ctrl->wIndex) >> 8) & 0xFF);
++	u16			len = le16_to_cpu(ctrl->wLength);
++	u16			w_value = le16_to_cpu(ctrl->wValue);
++	u8			con_sel = (w_value >> 8) & 0xFF;
++	u8			cmd = (ctrl->bRequest & 0x0F);
++	struct usb_audio_control_selector *cs;
++	struct usb_audio_control *con;
++
++	DBG(cdev, "bRequest 0x%x, w_value 0x%04x, len %d, entity %d\n",
++			ctrl->bRequest, w_value, len, id);
++
++	list_for_each_entry(cs, &audio->cs, list) {
++		if (cs->id == id) {
++			list_for_each_entry(con, &cs->control, list) {
++				if (con->type == con_sel) {
++					audio->set_con = con;
++					break;
++				}
++			}
++			break;
++		}
++	}
++
++	audio->set_cmd = cmd;
++	req->context = audio;
++	req->complete = f_audio_complete;
++
++	return len;
++}
++
++static int audio_get_intf_req(struct usb_function *f,
++		const struct usb_ctrlrequest *ctrl)
++{
++	struct f_audio		*audio = func_to_audio(f);
++	struct usb_composite_dev *cdev = f->config->cdev;
++	struct usb_request	*req = cdev->req;
++	int			value = -EOPNOTSUPP;
++	u8			id = ((le16_to_cpu(ctrl->wIndex) >> 8) & 0xFF);
++	u16			len = le16_to_cpu(ctrl->wLength);
++	u16			w_value = le16_to_cpu(ctrl->wValue);
++	u8			con_sel = (w_value >> 8) & 0xFF;
++	u8			cmd = (ctrl->bRequest & 0x0F);
++	struct usb_audio_control_selector *cs;
++	struct usb_audio_control *con;
++
++	DBG(cdev, "bRequest 0x%x, w_value 0x%04x, len %d, entity %d\n",
++			ctrl->bRequest, w_value, len, id);
++
++	list_for_each_entry(cs, &audio->cs, list) {
++		if (cs->id == id) {
++			list_for_each_entry(con, &cs->control, list) {
++				if (con->type == con_sel && con->get) {
++					value = con->get(con, cmd);
++					break;
++				}
++			}
++			break;
++		}
++	}
++
++	req->context = audio;
++	req->complete = f_audio_complete;
++	memcpy(req->buf, &value, len);
++
++	return len;
++}
++
++static int
++f_audio_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
++{
++	struct usb_composite_dev *cdev = f->config->cdev;
++	struct usb_request	*req = cdev->req;
++	int			value = -EOPNOTSUPP;
++	u16			w_index = le16_to_cpu(ctrl->wIndex);
++	u16			w_value = le16_to_cpu(ctrl->wValue);
++	u16			w_length = le16_to_cpu(ctrl->wLength);
++
++	/* composite driver infrastructure handles everything except
++	 * Audio class messages; interface activation uses set_alt().
++	 */
++	switch (ctrl->bRequestType) {
++	case USB_AUDIO_SET_INTF:
++		value = audio_set_intf_req(f, ctrl);
++		break;
++
++	case USB_AUDIO_GET_INTF:
++		value = audio_get_intf_req(f, ctrl);
++		break;
++
++	default:
++		ERROR(cdev, "invalid control req%02x.%02x v%04x i%04x l%d\n",
++			ctrl->bRequestType, ctrl->bRequest,
++			w_value, w_index, w_length);
++	}
++
++	/* respond with data transfer or status phase? */
++	if (value >= 0) {
++		DBG(cdev, "audio req%02x.%02x v%04x i%04x l%d\n",
++			ctrl->bRequestType, ctrl->bRequest,
++			w_value, w_index, w_length);
++		req->zero = 0;
++		req->length = value;
++		value = usb_ep_queue(cdev->gadget->ep0, req, GFP_ATOMIC);
++		if (value < 0)
++			ERROR(cdev, "audio response on err %d\n", value);
++	}
++
++	/* device either stalls (value < 0) or reports success */
++	return value;
++}
++
++static int f_audio_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
++{
++	struct f_audio		*audio = func_to_audio(f);
++	struct usb_composite_dev *cdev = f->config->cdev;
++	struct usb_ep *out_ep = audio->out_ep;
++	struct usb_request *req;
++	int i = 0, err = 0;
++
++	DBG(cdev, "intf %d, alt %d\n", intf, alt);
++
++	if (intf == 1) {
++		if (alt == 1) {
++			usb_ep_enable(out_ep, audio->out_desc);
++			out_ep->driver_data = audio;
++			audio->copy_buf = f_audio_buffer_alloc(audio_buf_size);
++
++			/*
++			 * allocate a bunch of read buffers
++			 * and queue them all at once.
++			 */
++			for (i = 0; i < req_count && err == 0; i++) {
++				req = usb_ep_alloc_request(out_ep, GFP_ATOMIC);
++				if (req) {
++					req->buf = kzalloc(req_buf_size,
++							GFP_ATOMIC);
++					if (req->buf) {
++						req->length = req_buf_size;
++						req->context = audio;
++						req->complete =
++							f_audio_complete;
++						err = usb_ep_queue(out_ep,
++							req, GFP_ATOMIC);
++						if (err)
++							ERROR(cdev,
++							"%s queue req: %d\n",
++							out_ep->name, err);
++					} else
++						err = -ENOMEM;
++				} else
++					err = -ENOMEM;
++			}
++
++		} else {
++			struct f_audio_buf *copy_buf = audio->copy_buf;
++			if (copy_buf) {
++				list_add_tail(&copy_buf->list,
++						&audio->play_queue);
++				schedule_work(&audio->playback_work);
++			}
++		}
++	}
++
++	return err;
++}
++
++static void f_audio_disable(struct usb_function *f)
++{
++	return;
++}
++
++/*-------------------------------------------------------------------------*/
++
++static void f_audio_build_desc(struct f_audio *audio)
++{
++	struct gaudio *card = &audio->card;
++	u8 *sam_freq;
++	int rate;
++
++	/* Set channel numbers */
++	input_terminal_desc.bNrChannels = u_audio_get_playback_channels(card);
++	as_type_i_desc.bNrChannels = u_audio_get_playback_channels(card);
++
++	/* Set sample rates */
++	rate = u_audio_get_playback_rate(card);
++	sam_freq = as_type_i_desc.tSamFreq[0];
++	memcpy(sam_freq, &rate, 3);
++
++	/* Todo: Set Sample bits and other parameters */
++
++	return;
++}
++
++/* audio function driver setup/binding */
++static int __init
++f_audio_bind(struct usb_configuration *c, struct usb_function *f)
++{
++	struct usb_composite_dev *cdev = c->cdev;
++	struct f_audio		*audio = func_to_audio(f);
++	int			status;
++	struct usb_ep		*ep;
++
++	f_audio_build_desc(audio);
++
++	/* allocate instance-specific interface IDs, and patch descriptors */
++	status = usb_interface_id(c, f);
++	if (status < 0)
++		goto fail;
++	ac_interface_desc.bInterfaceNumber = status;
++
++	status = usb_interface_id(c, f);
++	if (status < 0)
++		goto fail;
++	as_interface_alt_0_desc.bInterfaceNumber = status;
++	as_interface_alt_1_desc.bInterfaceNumber = status;
++
++	status = -ENODEV;
++
++	/* allocate instance-specific endpoints */
++	ep = usb_ep_autoconfig(cdev->gadget, &as_out_ep_desc);
++	if (!ep)
++		goto fail;
++	audio->out_ep = ep;
++	ep->driver_data = cdev;	/* claim */
++
++	status = -ENOMEM;
++
++	/* supcard all relevant hardware speeds... we expect that when
++	 * hardware is dual speed, all bulk-capable endpoints work at
++	 * both speeds
++	 */
++
++	/* copy descriptors, and track endpoint copies */
++	if (gadget_is_dualspeed(c->cdev->gadget)) {
++		c->highspeed = true;
++		f->hs_descriptors = usb_copy_descriptors(f_audio_desc);
++	} else
++		f->descriptors = usb_copy_descriptors(f_audio_desc);
++
++	return 0;
++
++fail:
++
++	return status;
++}
++
++static void
++f_audio_unbind(struct usb_configuration *c, struct usb_function *f)
++{
++	struct f_audio		*audio = func_to_audio(f);
++
++	usb_free_descriptors(f->descriptors);
++	kfree(audio);
++}
++
++/*-------------------------------------------------------------------------*/
++
++/* Todo: add more control selecotor dynamically */
++int __init control_selector_init(struct f_audio *audio)
++{
++	INIT_LIST_HEAD(&audio->cs);
++	list_add(&feature_unit.list, &audio->cs);
++
++	INIT_LIST_HEAD(&feature_unit.control);
++	list_add(&mute_control.list, &feature_unit.control);
++	list_add(&volume_control.list, &feature_unit.control);
++
++	volume_control.data[_CUR] = 0xffc0;
++	volume_control.data[_MIN] = 0xe3a0;
++	volume_control.data[_MAX] = 0xfff0;
++	volume_control.data[_RES] = 0x0030;
++
++	return 0;
++}
++
++/**
++ * audio_bind_config - add USB audio fucntion to a configuration
++ * @c: the configuration to supcard the USB audio function
++ * Context: single threaded during gadget setup
++ *
++ * Returns zero on success, else negative errno.
++ */
++int __init audio_bind_config(struct usb_configuration *c)
++{
++	struct f_audio *audio;
++	int status;
++
++	/* allocate and initialize one new instance */
++	audio = kzalloc(sizeof *audio, GFP_KERNEL);
++	if (!audio)
++		return -ENOMEM;
++
++	audio->card.func.name = "g_audio";
++	audio->card.gadget = c->cdev->gadget;
++
++	INIT_LIST_HEAD(&audio->play_queue);
++	spin_lock_init(&audio->lock);
++
++	/* set up ASLA audio devices */
++	status = gaudio_setup(&audio->card);
++	if (status < 0)
++		goto setup_fail;
++
++	audio->card.func.strings = audio_strings;
++	audio->card.func.bind = f_audio_bind;
++	audio->card.func.unbind = f_audio_unbind;
++	audio->card.func.set_alt = f_audio_set_alt;
++	audio->card.func.setup = f_audio_setup;
++	audio->card.func.disable = f_audio_disable;
++	audio->out_desc = &as_out_ep_desc;
++
++	control_selector_init(audio);
++
++	INIT_WORK(&audio->playback_work, f_audio_playback_work);
++
++	status = usb_add_function(c, &audio->card.func);
++	if (status)
++		goto add_fail;
++
++	INFO(c->cdev, "audio_buf_size %d, req_buf_size %d, req_count %d\n",
++		audio_buf_size, req_buf_size, req_count);
++
++	return status;
++
++add_fail:
++	gaudio_cleanup(&audio->card);
++setup_fail:
++	kfree(audio);
++	return status;
++}
+diff --git a/drivers/usb/gadget/u_audio.c b/drivers/usb/gadget/u_audio.c
+new file mode 100644
+index 0000000..0f3d22f
+--- /dev/null
++++ b/drivers/usb/gadget/u_audio.c
+@@ -0,0 +1,319 @@
++/*
++ * u_audio.c -- ALSA audio utilities for Gadget stack
++ *
++ * Copyright (C) 2008 Bryan Wu <cooloney-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
++ * Copyright (C) 2008 Analog Devices, Inc
++ *
++ * Enter bugs at http://blackfin.uclinux.org/
++ *
++ * Licensed under the GPL-2 or later.
++ */
++
++#include <linux/kernel.h>
++#include <linux/utsname.h>
++#include <linux/device.h>
++#include <linux/delay.h>
++#include <linux/ctype.h>
++#include <linux/random.h>
++#include <linux/syscalls.h>
++
++#include "u_audio.h"
++
++/*
++ * This component encapsulates the ALSA devices for USB audio gadget
++ */
++
++#define FILE_PCM_PLAYBACK	"/dev/snd/pcmC0D0p"
++#define FILE_PCM_CAPTURE	"/dev/snd/pcmC0D0c"
++#define FILE_CONTROL		"/dev/snd/controlC0"
++
++static char *fn_play = FILE_PCM_PLAYBACK;
++module_param(fn_play, charp, S_IRUGO);
++MODULE_PARM_DESC(fn_play, "Playback PCM device file name");
++
++static char *fn_cap = FILE_PCM_CAPTURE;
++module_param(fn_cap, charp, S_IRUGO);
++MODULE_PARM_DESC(fn_cap, "Capture PCM device file name");
++
++static char *fn_cntl = FILE_CONTROL;
++module_param(fn_cntl, charp, S_IRUGO);
++MODULE_PARM_DESC(fn_cntl, "Control device file name");
++
++/*-------------------------------------------------------------------------*/
++
++/**
++ * Some ALSA internal helper functions
++ */
++static int snd_interval_refine_set(struct snd_interval *i, unsigned int val)
++{
++	struct snd_interval t;
++	t.empty = 0;
++	t.min = t.max = val;
++	t.openmin = t.openmax = 0;
++	t.integer = 1;
++	return snd_interval_refine(i, &t);
++}
++
++static int _snd_pcm_hw_param_set(struct snd_pcm_hw_params *params,
++				 snd_pcm_hw_param_t var, unsigned int val,
++				 int dir)
++{
++	int changed;
++	if (hw_is_mask(var)) {
++		struct snd_mask *m = hw_param_mask(params, var);
++		if (val == 0 && dir < 0) {
++			changed = -EINVAL;
++			snd_mask_none(m);
++		} else {
++			if (dir > 0)
++				val++;
++			else if (dir < 0)
++				val--;
++			changed = snd_mask_refine_set(
++					hw_param_mask(params, var), val);
++		}
++	} else if (hw_is_interval(var)) {
++		struct snd_interval *i = hw_param_interval(params, var);
++		if (val == 0 && dir < 0) {
++			changed = -EINVAL;
++			snd_interval_none(i);
++		} else if (dir == 0)
++			changed = snd_interval_refine_set(i, val);
++		else {
++			struct snd_interval t;
++			t.openmin = 1;
++			t.openmax = 1;
++			t.empty = 0;
++			t.integer = 0;
++			if (dir < 0) {
++				t.min = val - 1;
++				t.max = val;
++			} else {
++				t.min = val;
++				t.max = val+1;
++			}
++			changed = snd_interval_refine(i, &t);
++		}
++	} else
++		return -EINVAL;
++	if (changed) {
++		params->cmask |= 1 << var;
++		params->rmask |= 1 << var;
++	}
++	return changed;
++}
++/*-------------------------------------------------------------------------*/
++
++/**
++ * Set default hardware params
++ */
++static int playback_default_hw_params(struct gaudio_snd_dev *snd)
++{
++	struct snd_pcm_substream *substream = snd->substream;
++	struct snd_pcm_hw_params *params;
++	snd_pcm_sframes_t result;
++
++       /*
++	* SNDRV_PCM_ACCESS_RW_INTERLEAVED,
++	* SNDRV_PCM_FORMAT_S16_LE
++	* CHANNELS: 2
++	* RATE: 48000
++	*/
++	snd->access = SNDRV_PCM_ACCESS_RW_INTERLEAVED;
++	snd->format = SNDRV_PCM_FORMAT_S16_LE;
++	snd->channels = 2;
++	snd->rate = 48000;
++
++	params = kzalloc(sizeof(*params), GFP_KERNEL);
++	if (!params)
++		return -ENOMEM;
++
++	_snd_pcm_hw_params_any(params);
++	_snd_pcm_hw_param_set(params, SNDRV_PCM_HW_PARAM_ACCESS,
++			snd->access, 0);
++	_snd_pcm_hw_param_set(params, SNDRV_PCM_HW_PARAM_FORMAT,
++			snd->format, 0);
++	_snd_pcm_hw_param_set(params, SNDRV_PCM_HW_PARAM_CHANNELS,
++			snd->channels, 0);
++	_snd_pcm_hw_param_set(params, SNDRV_PCM_HW_PARAM_RATE,
++			snd->rate, 0);
++
++	snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_DROP, NULL);
++	snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_HW_PARAMS, params);
++
++	result = snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_PREPARE, NULL);
++	if (result < 0) {
++		ERROR(snd->card,
++			"Preparing sound card failed: %d\n", (int)result);
++		kfree(params);
++		return result;
++	}
++
++	/* Store the hardware parameters */
++	snd->access = params_access(params);
++	snd->format = params_format(params);
++	snd->channels = params_channels(params);
++	snd->rate = params_rate(params);
++
++	kfree(params);
++
++	INFO(snd->card,
++		"Hardware params: access %x, format %x, channels %d, rate %d\n",
++		snd->access, snd->format, snd->channels, snd->rate);
++
++	return 0;
++}
++
++/**
++ * Playback audio buffer data by ALSA PCM device
++ */
++static size_t u_audio_playback(struct gaudio *card, void *buf, size_t count)
++{
++	struct gaudio_snd_dev	*snd = &card->playback;
++	struct snd_pcm_substream *substream = snd->substream;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	mm_segment_t old_fs;
++	ssize_t result;
++	snd_pcm_sframes_t frames;
++
++try_again:
++	if (runtime->status->state == SNDRV_PCM_STATE_XRUN ||
++		runtime->status->state == SNDRV_PCM_STATE_SUSPENDED) {
++		result = snd_pcm_kernel_ioctl(substream,
++				SNDRV_PCM_IOCTL_PREPARE, NULL);
++		if (result < 0) {
++			ERROR(card, "Preparing sound card failed: %d\n",
++					(int)result);
++			return result;
++		}
++	}
++
++	frames = bytes_to_frames(runtime, count);
++	old_fs = get_fs();
++	set_fs(KERNEL_DS);
++	result = snd_pcm_lib_write(snd->substream, buf, frames);
++	if (result != frames) {
++		ERROR(card, "Playback error: %d\n", (int)result);
++		set_fs(old_fs);
++		goto try_again;
++	}
++	set_fs(old_fs);
++
++	return 0;
++}
++
++static int u_audio_get_playback_channels(struct gaudio *card)
++{
++	return card->playback.channels;
++}
++
++static int u_audio_get_playback_rate(struct gaudio *card)
++{
++	return card->playback.rate;
++}
++
++/**
++ * Open ALSA PCM and control device files
++ * Initial the PCM or control device
++ */
++static int gaudio_open_snd_dev(struct gaudio *card)
++{
++	struct snd_pcm_file *pcm_file;
++	struct gaudio_snd_dev *snd;
++
++	if (!card)
++		return -ENODEV;
++
++	/* Open control device */
++	snd = &card->control;
++	snd->filp = filp_open(fn_cntl, O_RDWR, 0);
++	if (IS_ERR(snd->filp)) {
++		int ret = PTR_ERR(snd->filp);
++		ERROR(card, "unable to open sound control device file: %s\n",
++				fn_cntl);
++		snd->filp = NULL;
++		return ret;
++	}
++	snd->card = card;
++
++	/* Open PCM playback device and setup substream */
++	snd = &card->playback;
++	snd->filp = filp_open(fn_play, O_WRONLY, 0);
++	if (IS_ERR(snd->filp)) {
++		ERROR(card, "No such PCM playback device: %s\n", fn_play);
++		snd->filp = NULL;
++	}
++	pcm_file = snd->filp->private_data;
++	snd->substream = pcm_file->substream;
++	snd->card = card;
++	playback_default_hw_params(snd);
++
++	/* Open PCM capture device and setup substream */
++	snd = &card->capture;
++	snd->filp = filp_open(fn_cap, O_RDONLY, 0);
++	if (IS_ERR(snd->filp)) {
++		ERROR(card, "No such PCM capture device: %s\n", fn_cap);
++		snd->filp = NULL;
++	}
++	pcm_file = snd->filp->private_data;
++	snd->substream = pcm_file->substream;
++	snd->card = card;
++
++	return 0;
++}
++
++/**
++ * Close ALSA PCM and control device files
++ */
++static int gaudio_close_snd_dev(struct gaudio *gau)
++{
++	struct gaudio_snd_dev	*snd;
++
++	/* Close control device */
++	snd = &gau->control;
++	if (!IS_ERR(snd->filp))
++		filp_close(snd->filp, current->files);
++
++	/* Close PCM playback device and setup substream */
++	snd = &gau->playback;
++	if (!IS_ERR(snd->filp))
++		filp_close(snd->filp, current->files);
++
++	/* Close PCM capture device and setup substream */
++	snd = &gau->capture;
++	if (!IS_ERR(snd->filp))
++		filp_close(snd->filp, current->files);
++
++	return 0;
++}
++
++/**
++ * gaudio_setup - setup ALSA interface and preparing for USB transfer
++ *
++ * This sets up PCM, mixer or MIDI ALSA devices fore USB gadget using.
++ *
++ * Returns negative errno, or zero on success
++ */
++int __init gaudio_setup(struct gaudio *card)
++{
++	int	ret;
++
++	ret = gaudio_open_snd_dev(card);
++	if (ret)
++		ERROR(card, "we need at least one control device\n");
++
++	return ret;
++
++}
++
++/**
++ * gaudio_cleanup - remove ALSA device interface
++ *
++ * This is called to free all resources allocated by @gaudio_setup().
++ */
++void gaudio_cleanup(struct gaudio *card)
++{
++	if (card)
++		gaudio_close_snd_dev(card);
++}
++
+diff --git a/drivers/usb/gadget/u_audio.h b/drivers/usb/gadget/u_audio.h
+new file mode 100644
+index 0000000..cc8d159
+--- /dev/null
++++ b/drivers/usb/gadget/u_audio.h
+@@ -0,0 +1,56 @@
++/*
++ * u_audio.h -- interface to USB gadget "ALSA AUDIO" utilities
++ *
++ * Copyright (C) 2008 Bryan Wu <cooloney-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
++ * Copyright (C) 2008 Analog Devices, Inc
++ *
++ * Enter bugs at http://blackfin.uclinux.org/
++ *
++ * Licensed under the GPL-2 or later.
++ */
++
++#ifndef __U_AUDIO_H
++#define __U_AUDIO_H
++
++#include <linux/device.h>
++#include <linux/err.h>
++#include <linux/usb/audio.h>
++#include <linux/usb/composite.h>
++
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++
++#include "gadget_chips.h"
++
++/*
++ * This represents the USB side of an audio card device, managed by a USB
++ * function which provides control and stream interfaces.
++ */
++
++struct gaudio_snd_dev {
++	struct gaudio			*card;
++	struct file			*filp;
++	struct snd_pcm_substream	*substream;
++	int				access;
++	int				format;
++	int				channels;
++	int				rate;
++};
++
++struct gaudio {
++	struct usb_function		func;
++	struct usb_gadget		*gadget;
++
++	/* ALSA sound device interfaces */
++	struct gaudio_snd_dev		control;
++	struct gaudio_snd_dev		playback;
++	struct gaudio_snd_dev		capture;
++
++	/* TODO */
++};
++
++int gaudio_setup(struct gaudio *card);
++void gaudio_cleanup(struct gaudio *card);
++
++#endif /* __U_AUDIO_H */
 -- 
 1.6.3.1
 
