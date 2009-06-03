@@ -1,16 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.31
-Date: Wed, 3 Jun 2009 11:51:50 +0100
-Message-ID: <20090603105149.GA1198@rakim.wolfsonmicro.main>
+Subject: Re: [PATCH 2/5] ASoC codec: SSM2602: assign
+	last	substream to the master when shutting down
+Date: Wed, 3 Jun 2009 11:52:23 +0100
+Message-ID: <20090603105223.GE11507@sirena.org.uk>
+References: <1243916337-29953-1-git-send-email-vapier@gentoo.org>
+	<1243916337-29953-2-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 61128243F7
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 58FCB24402
 	for <alsa-devel@alsa-project.org>;
-	Wed,  3 Jun 2009 12:51:51 +0200 (CEST)
+	Wed,  3 Jun 2009 12:52:24 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <1243916337-29953-2-git-send-email-vapier@gentoo.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,32 +24,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Cliff Cai <cliff.cai@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 203350c1a8e23adf17fd9a96d8bfc7adf63c1ff6:
-  Mark Brown (1):
-        ASoC: Initialise dev for the dummy S/PDIF DAI
+On Tue, Jun 02, 2009 at 12:18:54AM -0400, Mike Frysinger wrote:
 
-are available in the git repository at:
+> -		snd_pcm_hw_constraint_minmax(substream->runtime,
+> -					     SNDRV_PCM_HW_PARAM_RATE,
+> -					     master_runtime->rate,
+> -					     master_runtime->rate);
+> -
+> -		snd_pcm_hw_constraint_minmax(substream->runtime,
+> -					     SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
+> -					     master_runtime->sample_bits,
+> -					     master_runtime->sample_bits);
+> +		if (master_runtime->rate != 0)
+> +			snd_pcm_hw_constraint_minmax(substream->runtime,
+> +						     SNDRV_PCM_HW_PARAM_RATE,
+> +						     master_runtime->rate,
+> +						     master_runtime->rate);
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.31
+> +
+> +		if (master_runtime->sample_bits != 0)
+> +			snd_pcm_hw_constraint_minmax(substream->runtime,
+> +						     SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
+> +						     master_runtime->sample_bits,
+> +						     master_runtime->sample_bits);
 
-Cliff Cai (3):
-      ASoC: SSM2602: remove unsupported sample rates
-      ASoC: Blackfin: set the transfer size according the ac97_frame size
-      ASoC: SSM2602: assign last substream to the master when shutting down
+This change is entirely unrelated to your changelog and should have been
+submitted as a separate patch.  It's preventing the use of the
+configuration from an unconfigured master which isn't what the patch is
+about).  It's also going over the 80 column limit.
 
-Peter Ujfalusi (2):
-      ASoC: TWL4030: Use reg_cache in twl4030_init_chip
-      ASoC: TWL4030: Check the interface format for 4 channel mode
+For the rate constraint you should switch to using the symmetric_rates 
+flag in the DAI which implements the equivalent constraints with no
+per-driver code.
 
-Sonic Zhang (1):
-      ASoC: Blackfin: document how anomaly 05000250 is handled
-
- sound/soc/blackfin/bf5xx-ac97.c  |    9 +++++++++
- sound/soc/blackfin/bf5xx-sport.c |    4 ++--
- sound/soc/codecs/ssm2602.c       |   33 +++++++++++++++++++--------------
- sound/soc/codecs/twl4030.c       |   16 +++++++++++-----
- 4 files changed, 41 insertions(+), 21 deletions(-)
+However, given that this fix has missed two kernel releases due to the
+very slow rate of responses to review comments I've applied it so users
+get the benefit of the bug fix.  Things would go more smoothly if you
+could get new versions of patches submitted faster after the original
+review.
