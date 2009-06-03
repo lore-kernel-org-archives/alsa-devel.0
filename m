@@ -1,18 +1,19 @@
-From: Roel Kluin <roel.kluin@gmail.com>
-Subject: [PATCH] burgundy: timeout message is off by one.
-Date: Thu, 04 Jun 2009 01:53:21 +0200
-Message-ID: <4A270CF1.4030902@gmail.com>
+From: komputes <komputes@gmail.com>
+Subject: Requesting opinions and experiences concerning laptops
+ and external microphones
+Date: Wed, 03 Jun 2009 17:53:29 -0400
+Message-ID: <4A26F0D9.8020506@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f215.google.com (mail-bw0-f215.google.com
-	[209.85.218.215])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7E3691038C3
+Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
+	[209.85.221.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0EE2C1038CF
 	for <alsa-devel@alsa-project.org>;
-	Wed,  3 Jun 2009 23:53:14 +0200 (CEST)
-Received: by bwz11 with SMTP id 11so331440bwz.32
-	for <alsa-devel@alsa-project.org>; Wed, 03 Jun 2009 14:53:14 -0700 (PDT)
+	Wed,  3 Jun 2009 23:53:41 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so522594qyk.16
+	for <alsa-devel@alsa-project.org>; Wed, 03 Jun 2009 14:53:41 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,29 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, Andrew Morton <akpm@linux-foundation.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Timeout message is off by one.
+I am trying to gather opinions and experiences from the ALSA developer
+community to understand what they expect to happen when they plug in an
+analog microphone into their laptops (which already has a built in mic).
 
-Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
----
-diff --git a/sound/ppc/burgundy.c b/sound/ppc/burgundy.c
-index 45a7629..d2c0a4e 100644
---- a/sound/ppc/burgundy.c
-+++ b/sound/ppc/burgundy.c
-@@ -46,12 +46,12 @@ snd_pmac_burgundy_extend_wait(struct snd_pmac *chip)
- 	timeout = 50;
- 	while (!(in_le32(&chip->awacs->codec_stat) & MASK_EXTEND) && timeout--)
- 		udelay(1);
--	if (! timeout)
-+	if (timeout < 0)
- 		printk(KERN_DEBUG "burgundy_extend_wait: timeout #1\n");
- 	timeout = 50;
- 	while ((in_le32(&chip->awacs->codec_stat) & MASK_EXTEND) && timeout--)
- 		udelay(1);
--	if (! timeout)
-+	if (timeout < 0)
- 		printk(KERN_DEBUG "burgundy_extend_wait: timeout #2\n");
- }
+I am looking for more of an official ALSA document which states how
+capture should change when an analogue microphone is plugged in; should
+it takeover from the internal microphone or not? Is there specification,
+standard, or "correct" behavior which is applied to this process?
+
+If I am not mistaking, the computer can detect a signal/message when the
+jack goes in, right? The expected behavior when plugging in headphones
+is that the headphones are detected, the speakers are muted and the
+audio is channeled to the headphones. Is this not applicable to external
+microphone and the internal microphone as well?
+
+-komputes
