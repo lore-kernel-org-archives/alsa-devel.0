@@ -1,21 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Fix possibly incorrect offset in
-	wm97xx-core
-Date: Thu, 4 Jun 2009 12:06:09 +0100
-Message-ID: <20090604110609.GH6983@rakim.wolfsonmicro.main>
-References: <200906032344.37640.marek.vasut@gmail.com>
-	<20090604084602.GA6983@rakim.wolfsonmicro.main>
-	<200906041159.02380.marek.vasut@gmail.com>
+From: Lex Wassenberg <lex.wassenberg@gmail.com>
+Subject: Sound streaming application: which device to use?
+Date: Thu, 4 Jun 2009 13:28:53 +0200
+Message-ID: <45c981ab0906040428v3910cbcfq7e3024b23f6653e1@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B09B0103929
+Received: from mail-bw0-f214.google.com (mail-bw0-f214.google.com
+	[209.85.218.214])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8561B103908
 	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Jun 2009 13:06:10 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200906041159.02380.marek.vasut@gmail.com>
+	Thu,  4 Jun 2009 13:28:54 +0200 (CEST)
+Received: by bwz10 with SMTP id 10so665755bwz.16
+	for <alsa-devel@alsa-project.org>; Thu, 04 Jun 2009 04:28:53 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,16 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Eric Miao <eric.y.miao@gmail.com>, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 04, 2009 at 11:59:02AM +0200, Marek Vasut wrote:
-> On Thursday 04 of June 2009 10:46:03 Mark Brown wrote:
+Hi all,
 
-> > Nack, the existing code reflects the behaviour of the silicon.
+I'm completely new to ALSA, so forgive me if these are newby questions.
 
-> The patch above reflects the behavior of my silicon (WM9712G) :-/
+I'm working on an application which receives sound chunks via an IP
+connection, and it should use the local sound card to make this sound
+audible. Up to now it used OSS, but there were some problems with
+that, so I'm busy with rewriting the application to ALSA. The sound is
+16-bit stereo, sampled at 8000 Hz, and it comes in chunks of 1024
+frames. I managed to get things more or less working, but there are
+still some things unclear to me.
 
-Could you expand on the behaviour you're seeing, please?  Also, what are
-the full markings on the chip?
+1. If I open the soundcard with device "default" or device "plughw" I
+get good sound, but the device "default" only accepts 1020 frames of
+every 1024 that I offer it (as can be seen from the return value of
+snd_pcm_writei() ). The device "plughw" nicely accepts all 1024
+frames. Why is this? In both cases I have set the sample rate to 8000
+via a call to snd_pcm_hw_params_set_rate_near() and the buffer size to
+2048 frames via snd_pcm_hw_params_set_buffer_size_near().
+
+2. If I use device "default", there seems to be no obligation to set
+the buffer size nor the period size, I still get good sound at the
+output. If I use "plughw", I have to set either the buffer size (2048
+frames) or the period size (1024 frames), otherwise I get distorted
+sound. If I set both (the buffer size being 2048 and the period size
+being 1024) I also get distorted sound. Why?
+
+3. If I set the buffer size twice the period size (as above), and ask
+the sizes back, ALSA nicely reports the buffer size as being twice the
+period size. But if I ask the buffer and period TIMES, they are
+reported as being the same: 128000 us!  Huh????
+
+4. The return value of snd_pcm_hw_params_set_rate_near() is sometimes
+8000, sometimes 7999, from the very same program. I would expect ALSA
+to always return the same value, be it what I request or not, but at
+least being deterministic. How can this be?
+
+5. There is another application running on the same target system,
+which will sometimes produce audible alarms. However, if my
+application is running that other application cannot generate the
+alarms, it produces a "resource busy" error. It is clear to me that my
+application is using the sound card exclusively, but how can I get it
+to allow other applications access to it too? I tried using the device
+"dmix", but then my sound is again very distorted.
+
+Hope that somebody can help me out.
+Thanks in advance.
+
+Lex
