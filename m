@@ -1,20 +1,21 @@
-From: Eric Miao <eric.y.miao@gmail.com>
-Subject: Re: [PATCH] Palm interrupt driven touchscreen driver
-Date: Thu, 4 Jun 2009 09:35:17 +0800
-Message-ID: <f17812d70906031835u5a650772wedcab94fd6f2ae2d@mail.gmail.com>
-References: <200906032341.03266.marek.vasut@gmail.com>
+From: "Cai, Cliff" <Cliff.Cai@analog.com>
+Subject: Re: [PATCH 3/5] ASoC: Blackfin: tweak how weinitialize
+	the SPORT
+Date: Thu, 4 Jun 2009 10:36:48 +0800
+Message-ID: <0F1B54C89D5F954D8535DB252AF412FA042577ED@chinexm1.ad.analog.com>
+References: <1243916337-29953-1-git-send-email-vapier@gentoo.org>
+	<1243916337-29953-3-git-send-email-vapier@gentoo.org>
+	<20090603102918.GA32595@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
-	[209.85.221.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8B2171037FF
+Received: from nwd2mail10.analog.com (nwd2mail10.analog.com [137.71.25.55])
+	by alsa0.perex.cz (Postfix) with ESMTP id 77D36103801
 	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Jun 2009 03:35:19 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so703586qyk.16
-	for <alsa-devel@alsa-project.org>; Wed, 03 Jun 2009 18:35:18 -0700 (PDT)
-In-Reply-To: <200906032341.03266.marek.vasut@gmail.com>
+	Thu,  4 Jun 2009 04:33:20 +0200 (CEST)
+Content-Class: urn:content-classes:message
+In-Reply-To: <20090603102918.GA32595@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,22 +25,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-arm-kernel@lists.arm.linux.org.uk
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Mike Frysinger <vapier@gentoo.org>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 4, 2009 at 5:41 AM, Marek Vasut <marek.vasut@gmail.com> wrote:
-> Hi,
+ 
+
+>-----Original Message-----
+>From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com] 
+>Sent: Wednesday, June 03, 2009 6:29 PM
+>To: Mike Frysinger
+>Cc: alsa-devel@alsa-project.org; 
+>uclinux-dist-devel@blackfin.uclinux.org; Cai, Cliff
+>Subject: Re: [alsa-devel] [PATCH 3/5] ASoC: Blackfin: tweak 
+>how weinitialize the SPORT
 >
-> this patch adds interrupt driven touchscreen driver. It's an addition to
-> mainstone-wm97xx, but does some reorganization of the code there.
+>On Tue, Jun 02, 2009 at 12:18:55AM -0400, Mike Frysinger wrote:
 >
-> Mark, it's the same patch we discussed on IRC, so it should be OK.
+>> @@ -199,7 +190,7 @@ static void bf5xx_i2s_shutdown(struct 
+>snd_pcm_substream *substream,
+>>  			       struct snd_soc_dai *dai)
+>>  {
+>>  	pr_debug("%s enter\n", __func__);
+>> -	bf5xx_i2s.counter--;
+>> +	bf5xx_i2s.configured = 0;
+>>  }
+>
+>Are you sure this works properly with simultaneous record and playback?
+>If one stops while the other is running then the configured 
+>flag will be cleared, meaning that the stopped stream can be 
+>restarted and used to reconfigure the DAI which appears to be 
+>what the code is trying to prevent.
+>
+>This should be using constraints to stop applications trying 
+>to reconfigure active streams - for the sample rate you just 
+>need to set symmetric_rates in the DAI.
 >
 
-Mark, the driver looks generic enough to me, is there some specific
-reason this remains named "mainstone-wm97xx.c"?
 
-I didn't look into the code too much, yet I'm wondering if it's possible
-to come up with a platform_data to cover the difference of boards
-and make this driver generic.
+This is not a problem of rate but format,I think combine the two flags
+will solve all the problems.
+The reason I write this patch is that I found when some oss-based
+applications open soundcard ,the startup callbacks will be called
+several times.
+So using the counter to record opened pcm streams is not reliable.
+
+Thanks
+
+Cliff 
