@@ -1,15 +1,27 @@
-From: Jean Delvare <khali@linux-fr.org>
-Subject: [PATCH] ALSA: Add missing __devexit_p() markers
-Date: Thu, 4 Jun 2009 10:46:43 +0200
-Message-ID: <20090604104643.443fbe52@hyperion.delvare>
+From: "Cai, Cliff" <Cliff.Cai@analog.com>
+Subject: Re: [Uclinux-dist-devel] [PATCH 2/5] ASoC codec:
+	SSM2602: assign last substream to the master when shutting down
+Date: Thu, 4 Jun 2009 16:50:40 +0800
+Message-ID: <0F1B54C89D5F954D8535DB252AF412FA04257C91@chinexm1.ad.analog.com>
+References: <1243916337-29953-1-git-send-email-vapier@gentoo.org>	
+	<1243916337-29953-2-git-send-email-vapier@gentoo.org>	
+	<20090603105223.GE11507@sirena.org.uk>	
+	<8bd0f97a0906030537y1e65aa7atec4b0c5cdf4ae2f@mail.gmail.com>	
+	<20090603145316.GA7315@rakim.wolfsonmicro.main>	
+	<8bd0f97a0906031826j647efa0bs1ffb6492cfd0ccd8@mail.gmail.com>	
+	<4A2782FE.3080103@gmail.com>
+	<8bd0f97a0906040122r2e4ca8feo69e6afb06140cef3@mail.gmail.com>
+	<4A278889.7060107@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from services.gcu-squad.org (zone0.gcu-squad.org [212.85.147.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id CD0891037ED
+Received: from nwd2mail10.analog.com (nwd2mail10.analog.com [137.71.25.55])
+	by alsa0.perex.cz (Postfix) with ESMTP id A6863103905
 	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Jun 2009 10:46:52 +0200 (CEST)
+	Thu,  4 Jun 2009 10:47:07 +0200 (CEST)
+Content-Class: urn:content-classes:message
+In-Reply-To: <4A278889.7060107@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,56 +31,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Kyle McMartin <kyle@mcmartin.ca>, Takashi Iwai <tiwai@suse.de>
+To: Karl Beldan <karl.beldan@gmail.com>, Mike Frysinger <vapier.adi@gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-3 ISA sound drivers lack their __devexit_p() markers, which would
-cause build failures when the kernel is built without hotplug support.
-
-Signed-off-by: Jean Delvare <khali@linux-fr.org>
-Cc: Kyle McMartin <kyle@mcmartin.ca>
-Cc: Takashi Iwai <tiwai@suse.de>
----
- sound/isa/es1688/es1688.c  |    2 +-
- sound/isa/gus/gusextreme.c |    2 +-
- sound/parisc/harmony.c     |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
---- linux-2.6.30-rc8.orig/sound/isa/es1688/es1688.c	2009-04-08 08:54:02.000000000 +0200
-+++ linux-2.6.30-rc8/sound/isa/es1688/es1688.c	2009-06-04 10:37:06.000000000 +0200
-@@ -193,7 +193,7 @@ static int __devexit snd_es1688_remove(s
- static struct isa_driver snd_es1688_driver = {
- 	.match		= snd_es1688_match,
- 	.probe		= snd_es1688_probe,
--	.remove		= snd_es1688_remove,
-+	.remove		= __devexit_p(snd_es1688_remove),
- #if 0	/* FIXME */
- 	.suspend	= snd_es1688_suspend,
- 	.resume		= snd_es1688_resume,
---- linux-2.6.30-rc8.orig/sound/isa/gus/gusextreme.c	2009-04-08 08:54:02.000000000 +0200
-+++ linux-2.6.30-rc8/sound/isa/gus/gusextreme.c	2009-06-04 10:37:13.000000000 +0200
-@@ -348,7 +348,7 @@ static int __devexit snd_gusextreme_remo
- static struct isa_driver snd_gusextreme_driver = {
- 	.match		= snd_gusextreme_match,
- 	.probe		= snd_gusextreme_probe,
--	.remove		= snd_gusextreme_remove,
-+	.remove		= __devexit_p(snd_gusextreme_remove),
- #if 0	/* FIXME */
- 	.suspend	= snd_gusextreme_suspend,
- 	.resume		= snd_gusextreme_resume,
---- linux-2.6.30-rc8.orig/sound/parisc/harmony.c	2009-04-08 08:54:03.000000000 +0200
-+++ linux-2.6.30-rc8/sound/parisc/harmony.c	2009-06-04 10:37:25.000000000 +0200
-@@ -1020,7 +1020,7 @@ static struct parisc_driver snd_harmony_
- 	.name = "harmony",
- 	.id_table = snd_harmony_devtable,
- 	.probe = snd_harmony_probe,
--	.remove = snd_harmony_remove,
-+	.remove = __devexit_p(snd_harmony_remove),
- };
  
- static int __init 
 
+>-----Original Message-----
+>From: Karl Beldan [mailto:karl.beldan@gmail.com] 
+>Sent: Thursday, June 04, 2009 4:41 PM
+>To: Mike Frysinger
+>Cc: Mark Brown; uclinux-dist-devel@blackfin.uclinux.org; 
+>alsa-devel@alsa-project.org; Cai, Cliff
+>Subject: Re: [alsa-devel] [Uclinux-dist-devel] [PATCH 2/5] 
+>ASoC codec: SSM2602: assign last substream to the master when 
+>shutting down
+>
+>Mike Frysinger wrote:
+>> On Thu, Jun 4, 2009 at 04:17, Karl Beldan wrote:
+>>> Mike Frysinger wrote:
+>>>> On Wed, Jun 3, 2009 at 10:53, Mark Brown wrote:
+>>>>> On Wed, Jun 03, 2009 at 08:37:54AM -0400, Mike Frysinger wrote:
+>>>>>> On Wed, Jun 3, 2009 at 06:52, Mark Brown wrote:
+>>>>>>> However, given that this fix has missed two kernel releases due 
+>>>>>>> to the very slow rate of responses to review comments I've 
+>>>>>>> applied it so users get the benefit of the bug fix.
+>>>>>> not sure what you're referring to
+>>>>> This looks like a respin of a fix which was originally submitted 
+>>>>> back in
+>>>>> 2.6.29 era or so.  IIRC there's been two or three 
+>versions, each of 
+>>>>> which needed fixes.
+>>>> it could be.  i was going by the changes that werent in 2.6.30.  i 
+>>>> thought i looked for previous submissions, but i must have missed 
+>>>> previous attempts.  i'm not familiar with alsa stuff, so i'm not 
+>>>> always sure when i need to bang on Cliff to get things fixed up 
+>>>> (changes split / better comments / etc...).
+>>> Anyways, this commit has been trying to fix something already fixed 
+>>> since the first submission and if you look at its effect on the 
+>>> current tree you will see duplicate code.
+>> 
+>> you're going to have to be a bit more specific.  i dont know 
+>alsa, so 
+>> when i looked at the change history, i saw framework conversions.
+>> about the only thing that might be related is faab5a32.  is 
+>that what 
+>> you're talking about ?
+>
+>Indeed.
+>The commit duplicates some code, IMO this should be discussed 
+>before going further.
 
--- 
-Jean Delvare
+Could you point it out,I don't know much about the changes of alsa in
+recent months.
+
+Thanks a lot.
+
+Cliff
