@@ -1,18 +1,18 @@
-From: Ian Molton <ian@mnementh.co.uk>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
 Subject: Re: [PATCH] Palm interrupt driven touchscreen driver
-Date: Thu, 04 Jun 2009 08:20:08 +0100
-Message-ID: <4A2775A8.2040604@mnementh.co.uk>
+Date: Thu, 4 Jun 2009 09:14:59 +0100
+Message-ID: <20090604081458.GA29926@n2100.arm.linux.org.uk>
 References: <200906032341.03266.marek.vasut@gmail.com>
-	<f17812d70906031835u5a650772wedcab94fd6f2ae2d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mnementh.co.uk (mail.mnementh.co.uk [173.45.232.4])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9948924403
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 21C6B2443D
 	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Jun 2009 09:20:19 +0200 (CEST)
-In-Reply-To: <f17812d70906031835u5a650772wedcab94fd6f2ae2d@mail.gmail.com>
+	Thu,  4 Jun 2009 10:15:11 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <200906032341.03266.marek.vasut@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +22,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric Miao <eric.y.miao@gmail.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-arm-kernel@lists.arm.linux.org.uk
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Eric Miao wrote:
+On Wed, Jun 03, 2009 at 11:41:03PM +0200, Marek Vasut wrote:
+> +#include <mach/gpio.h>
 
-> Mark, the driver looks generic enough to me, is there some specific
-> reason this remains named "mainstone-wm97xx.c"?
-> 
-> I didn't look into the code too much, yet I'm wondering if it's possible
-> to come up with a platform_data to cover the difference of boards
-> and make this driver generic.
-
-eseries can use this idea IIRC...
+should be linux/gpio.h
