@@ -1,49 +1,40 @@
-From: Alexander Beregalov <a.beregalov@gmail.com>
-Subject: [PATCH] hda_intel: fix build error when !PM
-Date: Thu,  4 Jun 2009 13:46:16 +0400
-Message-ID: <1244108776-20937-1-git-send-email-a.beregalov@gmail.com>
-Return-path: <linux-next-owner@vger.kernel.org>
-Sender: linux-next-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: linux-next@vger.kernel.org, Alexander Beregalov <a.beregalov@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] Fix possibly incorrect offset in
+	wm97xx-core
+Date: Thu, 4 Jun 2009 12:06:09 +0100
+Message-ID: <20090604110609.GH6983@rakim.wolfsonmicro.main>
+References: <200906032344.37640.marek.vasut@gmail.com>
+	<20090604084602.GA6983@rakim.wolfsonmicro.main>
+	<200906041159.02380.marek.vasut@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B09B0103929
+	for <alsa-devel@alsa-project.org>;
+	Thu,  4 Jun 2009 13:06:10 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <200906041159.02380.marek.vasut@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: Eric Miao <eric.y.miao@gmail.com>, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Fix this build error when CONFIG_PM is not set:
-ound/pci/hda/hda_intel.c: In function 'azx_bus_reset':
-sound/pci/hda/hda_intel.c:1270: error: implicit declaration of function 'snd_pcm_suspend_all'
-sound/pci/hda/hda_intel.c:1271: error: implicit declaration of function 'snd_hda_suspend'
-sound/pci/hda/hda_intel.c:1272: error: implicit declaration of function 'snd_hda_resume'
+On Thu, Jun 04, 2009 at 11:59:02AM +0200, Marek Vasut wrote:
+> On Thursday 04 of June 2009 10:46:03 Mark Brown wrote:
 
-Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
----
- sound/pci/hda/hda_intel.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+> > Nack, the existing code reflects the behaviour of the silicon.
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 9f44645..4e9ea70 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1260,17 +1260,20 @@ static void azx_stop_chip(struct azx *chip);
- static void azx_bus_reset(struct hda_bus *bus)
- {
- 	struct azx *chip = bus->private_data;
--	int i;
- 
- 	bus->in_reset = 1;
- 	azx_stop_chip(chip);
- 	azx_init_chip(chip);
-+#ifdef CONFIG_PM
- 	if (chip->initialized) {
-+		int i;
-+
- 		for (i = 0; i < AZX_MAX_PCMS; i++)
- 			snd_pcm_suspend_all(chip->pcm[i]);
- 		snd_hda_suspend(chip->bus);
- 		snd_hda_resume(chip->bus);
- 	}
-+#endif
- 	bus->in_reset = 0;
- }
- 
--- 
-1.6.3.1
+> The patch above reflects the behavior of my silicon (WM9712G) :-/
+
+Could you expand on the behaviour you're seeing, please?  Also, what are
+the full markings on the chip?
