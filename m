@@ -1,15 +1,22 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: Please help in adding ams-delta support to ASoC
-Date: Fri, 5 Jun 2009 16:55:31 +0300
-Message-ID: <20090605165531.7d0c4522.jhnikula__41197.8699070916$1244210167$gmane$org@gmail.com>
-References: <4A1BEBE3.8010306@tis.icnet.pl> <4A252A8E.9060602@tis.icnet.pl>
-	<20090602203214.9edb786d.jhnikula@gmail.com>
-	<200906030924.14230.jkrzyszt@tis.icnet.pl>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [PATCH 1/4] ASoC: pxa-ssp: enhance I2S and
+	add	Left_J support
+Date: Fri, 5 Jun 2009 19:26:30 +0200
+Message-ID: <20090605172630.GG26148@buzzloop.caiaq.de>
+References: <f17812d70906030533m49eb023bid19a80231921f59b@mail.gmail.com>
+	<20090603131819.GQ26148@buzzloop.caiaq.de>
+	<37b631400906040207o169abbc2ob33100879ac68911@mail.gmail.com>
+	<1719ee7f0906040244t3890b069s5039c3f0c8bbe09a@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <200906030924.14230.jkrzyszt@tis.icnet.pl>
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id DA6181037F4
+	for <alsa-devel@alsa-project.org>;
+	Fri,  5 Jun 2009 19:26:34 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1719ee7f0906040244t3890b069s5039c3f0c8bbe09a@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,45 +26,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-omap@vger.kernel.org, alsa-devel@vger.kernel.org
+To: Paul Shen <boshen9@gmail.com>
+Cc: alsa-devel@alsa-project.org, bshen9@marvell.com, eric.y.miao@gmail.com, linux-arm-kernel@lists.arm.linux.org.uk, broonie@sirena.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 3 Jun 2009 09:24:12 +0200
-Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
+Hi Paul,
 
-> Thanks! The origial driver with commented out clk_enable(vc_clk) and 
-> clk_disable(vc_clk) still works for me, so MCLK is not required! If I
-> only knew what to do with this finding...
+sorry for the delay.
+
+On Thu, Jun 04, 2009 at 05:44:55PM +0800, Paul Shen wrote:
+> > The tdm time slot configuration needs to be set again in my board support
+> > code just like in your example: snd_soc_set_tdm_slot(cpu_dai, 3, 2). And
+> > the PXA_SSP_DIV_SCR value needed to be doubled from 4 to 8.
+> >
+> I tested  with below  codes to set the cpu_dai  :
 > 
-Optimize out one needless clock :-)
+> format = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+>                          SND_SOC_DAIFMT_CBS_CFS | PXA_SSP_FRM_64FS;
 
-> > Just hack the same "static struct omap_mcbsp_reg_cfg mcbsp_regs =
-> > { ..." in omap-mcbsp.c and pass that structure instead of
-> > &mcbsp_data->regs to omap_mcbsp_config in omap_mcbsp_dai_hw_params.
-> 
-> Done. Did not help. Again, I really don't know how to make use of
-> this finding except for looking in a different place.
-> 
-Ok, so looks that McBSP settings have nothing to do.
+Ah - the PXA_SSP_FRM_64FS is the detail I missed. With that option set,
+my system works well, so I'm generally fine with the changes.
 
-I got one another idea, quite far also, but omap_set_dma_params helper
-function calls omap_set_dma_xxx_params functions in different order
-than older sound/arm/omap/omap-alsa-dma.c: audio_set_dma_params_play.
+However, I proposed a generic way (not pxa/ssp specific) to let the
+format flags carry the information about such frame format details some
+months ago and the approach was rejected because there are already too
+many ways to let the DAI know about this. In particular, the DIV_SCR
+(serial clock rate divider) is used to propagate the base frequency
+ratio and together with other options, you can find out the desired
+frame format.
 
-While I don't believe that call order has something to do on 1510
-versus other omaps, it's easy to try by changing call order in
-arch/arm/plat-omap/dma.c: omap_set_dma_params.
+In my implementation, the '32 bit over 64fs case' was detected with this
+condition in pxa_ssp_hw_params():
 
-Of course you could try to also copy transfer setup from
-audio_set_dma_params_play into omap_pcm_prepare. Use prtd->dma_ch as
-channel, runtime->dma_addr as a dma_ptr and
-snd_pcm_lib_period_bytes(substream) as a dma_size. That should make the
-DMA setup same than older implementation.
+  (scr == 4) && (snd_pcm_format_physical_width(params_format(params)) == 16)
 
-Hopefully these speculations would help you to find out at least one DMA
-interrupt.
+Now, SCR isn't used at all any more but instead PXA_SSP_FRM_WIDTH()
+handles the case. Eventually this might be a matter of taste, but if we
+go this way, why shouldn't that definitions be in ASoC's generic
+headers?
 
+Anyway, the code looks much cleaner now :)
 
--- 
-Jarkko
+Thanks,
+Daniel
