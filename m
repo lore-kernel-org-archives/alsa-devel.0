@@ -1,25 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Palm interrupt driven touchscreen driver
-Date: Fri, 5 Jun 2009 10:30:02 +0100
-Message-ID: <20090605093001.GA21128@rakim.wolfsonmicro.main>
-References: <200906032341.03266.marek.vasut@gmail.com>
-	<f17812d70906031835u5a650772wedcab94fd6f2ae2d@mail.gmail.com>
-	<20090604085407.GB6983@rakim.wolfsonmicro.main>
-	<alpine.LNX.2.00.0906041104080.4067@eeebox2.perex-int.cz>
-	<20090604093737.GF6983@rakim.wolfsonmicro.main>
-	<s5hiqjcqqo9.wl%tiwai@suse.de>
-	<20090604103807.GG6983@rakim.wolfsonmicro.main>
-	<s5hy6s7yrab.wl%tiwai@suse.de>
+From: Klaus Schulz <kls.schlz@googlemail.com>
+Subject: How to send control codes to a USB device?
+Date: Fri, 5 Jun 2009 11:36:57 +0200
+Message-ID: <d9690f190906050236m7ede411ft19cf7db04caec8ed@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 20B6124635
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.157])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2496F2463B
 	for <alsa-devel@alsa-project.org>;
-	Fri,  5 Jun 2009 11:30:03 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hy6s7yrab.wl%tiwai@suse.de>
+	Fri,  5 Jun 2009 11:36:57 +0200 (CEST)
+Received: by yw-out-1718.google.com with SMTP id 4so710798ywq.2
+	for <alsa-devel@alsa-project.org>; Fri, 05 Jun 2009 02:36:57 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,30 +21,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-arm-kernel@lists.arm.linux.org.uk
+To: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 05, 2009 at 11:16:12AM +0200, Takashi Iwai wrote:
+Hi there.
 
-> I couldn't find it.  But IIRC, the original patch was to add "int irq"
-> field to struct snd_ac97.  I would accept it because it can do any
-> harm.
+Is there a way to sent control codes to a USB device, without using a
+specific driver .
 
-Ah, yes - I do remember that proposal.  The problem with that is that it
-doesn't scale up to all the platform data you might want to pass in.
-The WM97xx battery and touchscreen drivers are the main things I'm
-interested in here - the platform data for the WM97xx touch driver is
-struct wm97xx_mach_ops in include/linux/wm97xx.h for example.
+I would like to try to set latency and output modes of my M-Audio Transit by
+sending a control code as additional part of the UDEV madfuload firmware
+initialzation.
 
-> But, adding a generic "void *driver_data" instead of "int irq" can
-> play a bad game.  It can be dangerous when the creator and the user of
-> this pointer are different drivers.  That was my argument.
+How can I do something like that?
 
-There is potential risk involved in these interfaces but it's the
-standard idiom for doing this on embedded systems.  The buses definitely
-don't want to know anything about the random data that drivers may need
-and since you're not dealing with pluggable or variable hardware in the
-same way as you do on PCs the risks of mismatched data aren't such a big
-deal - you'd generally only be able to encounter problems if you're
-building your own kernel.
+If this works in general I just need to figure out the required control
+codes.
+
+
+THX for your support
+Klaus
