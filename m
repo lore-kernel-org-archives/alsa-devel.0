@@ -1,28 +1,27 @@
-From: "Wei Ni" <wni@nvidia.com>
+From: Wu Fengguang <fengguang.wu@intel.com>
 Subject: Re: ALSA patch Nvidia 8 channel hdmi audio
-Date: Fri, 5 Jun 2009 10:38:02 +0800
-Message-ID: <15F501D1A78BD343BE8F4D8DB854566B058A63F7@hkemmail01.nvidia.com>
+Date: Fri, 5 Jun 2009 12:28:29 +0800
+Message-ID: <20090605042829.GA14167@localhost>
 References: <410e92830906021458x3d47a1d6jebba8bbe1150e76d@mail.gmail.com>
+	<200906030022.07693.marek.vasut@gmail.com>
+	<410e92830906021530l767478c4tae72c4b161583b6@mail.gmail.com>
+	<200906030200.54455.marek.vasut@gmail.com>
 	<15F501D1A78BD343BE8F4D8DB854566B058A63F1@hkemmail01.nvidia.com>
 	<410e92830906030100m5a3d045dsa856382fa2396e60@mail.gmail.com>
-	<s5heiu1ybsk.wl%tiwai@suse.de>
-	<410e92830906030234u49a1e618kdf2d1e0550f00cdc@mail.gmail.com>
-	<s5hab4psl2s.wl%tiwai@suse.de>
-	<410e92830906031628t64c4cbf3y104062f2147ea44d@mail.gmail.com>
-	<s5h63fcx4zr.wl%tiwai@suse.de>
-	<410e92830906032318v4ed6987cr41c8f73a8a54a9e6@mail.gmail.com>
-	<s5hy6s84iej.wl%tiwai@suse.de>
-	<410e92830906041620n1e911c3fjb4eafe6112996c4f@mail.gmail.com>
+	<15F501D1A78BD343BE8F4D8DB854566B058A63F2@hkemmail01.nvidia.com>
+	<s5h4ouxshq3.wl%tiwai@suse.de>
+	<15F501D1A78BD343BE8F4D8DB854566B058A63F3@hkemmail01.nvidia.com>
+	<s5hzlco4im2.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.112.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 700A724500
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 93E4F24552
 	for <alsa-devel@alsa-project.org>;
-	Fri,  5 Jun 2009 04:38:13 +0200 (CEST)
-Content-class: urn:content-classes:message
-In-Reply-To: <410e92830906041620n1e911c3fjb4eafe6112996c4f@mail.gmail.com>
+	Fri,  5 Jun 2009 06:28:34 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hzlco4im2.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,274 +31,248 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alan Alan <alanwww1@gmail.com>, Takashi Iwai <tiwai@suse.de>
-Cc: Peer Chen <pchen@nvidia.com>, Marek Vasut <marek.vasut@gmail.com>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Peer Chen <pchen@nvidia.com>, Marek Vasut <marek.vasut@gmail.com>, Wei Ni <wni@nvidia.com>, alsa-devel@alsa-project.org, Alan Alan <alanwww1@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Some HDTVs generally only support 32kHz-48kHz, and most (newer)
-receivers could be able to support 192kHz.
+On Thu, Jun 04, 2009 at 08:29:25AM +0200, Takashi Iwai wrote:
+> At Thu, 4 Jun 2009 14:05:52 +0800,
+> Wei Ni wrote:
+> > 
+> > Yes, my test wav file is from Windows.
+> > 
+> > I had used different player to test with my test wav file.
+> > The mplayer has no mapping problem, but other players map channels
+> > wrong.
+> > As you said, it seems that is caused by the difference of the ALSA and
+> > Windows.
+> 
+> I guess mplayer corrects the channel mapping automatically.
+> 
+> > Unfortunately, our nvidia codec doesn't support channel-slot assignment
+> > yet.
+> 
+> OK.
+> 
+> > How could we fix this problems, do you have any suggestions?
+> 
+> It's a bit difficult issue right now.  Usually we could "fix" the
+> channel mapping in alsa-lib configuration.  But, HD-audio has currently
+> a single alsa-lib configuration, and others may use the right channel
+> mapping.
+> 
+> I don't remember how is the case of Intel HDMI...  Can anyone check?
 
-In windows, the display driver will indicates which formats are
-supported in the CEA registers. 
+The codecs I tested - G35/G45/GM45 - does not support the channel-slot
+assignment. I guess future hardwares may support that.
 
-But the linux display driver will not do it.
+Thanks,
+Fengguang
 
- 
-
-Could you please add 
-
-                .rates = SNDRV_PCM_RATE_192000,
-
-                .maxbps = 24,
-
-And then try to play 192khz/24bit
-
- 
-
-I also will try it.
-
- 
-
-Thanks
-
-Wei.
-
- 
-
-From: Alan Alan [mailto:alanwww1@gmail.com] 
-Sent: Friday, June 05, 2009 7:21 AM
-To: Takashi Iwai
-Cc: Wei Ni; Peer Chen; Marek Vasut; alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] ALSA patch Nvidia 8 channel hdmi audio
-
- 
-
-I made a test on Windows. And it seems that my codec MCP7A does support
-up to 8channels 192khz, 24bits no problem.
-
-One important thing i noticed:
- If i plug the hdmi to the lcd TV, the windows control panel only shows
-up to 2ch, 48khz. When i plug it into the Onkyo-TXSR605 av receiver and
-reboot, only than it shows up the HD options.
-
-I enclosed a screenshout about it. When i press test button, the audio
-sounds in the receiver even with 192/24
-
-Strange thing here that on win, it does not even show the 88.2khz
-number. And sample rates depend on what device is plugged, but on alsa i
-always get the same output (48, 88.2khz) whatever device i plug on.
-
-
-
-
-2009/6/4 Takashi Iwai <tiwai@suse.de>
-
-At Thu, 4 Jun 2009 08:18:23 +0200,
-
-Alan Alan wrote:
+> If it also suffers from the same problem, the channel conversion rule
+> can be put in hdmi configuration statically as a temporary workaround.
+> 
+> We need a proper API to inform / change the channel mapping, anyway.
+> Then it'll be better adjustable...
 >
-> 2009/6/4 Takashi Iwai <tiwai@suse.de>
->
->     At Thu, 4 Jun 2009 01:28:24 +0200,
->     Alan Alan wrote:
->     >
->     > Hello Takashi !
->     >
->     > I tried to apply the patch that removes restrictions to 16bits
-48khz
->     format.
->     > Well now we have the following:
->     > 16bit 48khz                                     works
->     > 32bit 48khz                                     works
->     > 32bit 44khz, 96khz, 192khz              don't work
->     > 24bit 44khz, 48khz, 96khz, 192khz   don't work
->     > 16bit 44khz, 96khz, 192khz              don't work
->     >
->     > I only get
->     > Sample format not available for playback:
->     > Setting of hwparams failed:
->
->     As you can find in alsa-info output, it seems that the codec
-supports
->     only 48kHz and 88.2kHz, strangely.  I don't know whether it's a
->     (hardware) bug or not.
->
-> The codec surely supports up to 192khz as it works on Windows.
->
-> I think this line is completely wrong as here it says:
-
-It is not "wrong".  These are values that the codec reports, so it's
-more or less correct as the h/w information.
-
->   rates [0xc0]: 48000 88200
-
-Wei, is it right?  Or is anything missing here?
-
-
-
->     bits [0xf]: 8 16 20 24
->
-> 8, 20, 24bits are supported, but they all give an error message.
-
-24bit here means 24bit in 4 bytes, thus it's essentially 32bit format.
-24bit in 3 bytes format isn't supported on HD-audio.
-
-
-> 32 bits are not supposed to be supported but it works with 48 and
-88.2khz.
->
-> How can we change the software side to accept 96 or 192khz spample
-formats and
-> 24 bits ?
-
-As long as the codec reports so, it's no "software" problem.
-
-
-> I think it is not hardware limited and we just need to change the
-allowed
-> formats to be played.
-
-If it's just a hardware problem that reports wrong values, you can
-override the information, simply replacing the bits my patch disabled
-to the right values.
-
-
-
-Takashi
-
->
->     >
->     > I enclosed to pastebin my alsainfo script output.
->     >
->     > http://pastebin.com/m77dcfb3f
->     >
->     > Thanks for the help !
->     >
->     > 2009/6/3 Takashi Iwai <tiwai@suse.de>
->     >
->     >     At Wed, 3 Jun 2009 11:34:00 +0200,
->     >     Alan Alan wrote:
->     >     >
->     >     > Hello Takashi !
->     >     >
->     >     > What should this patch do ?
->     >
->     >     The patch removes the restriction patch_nvhdmi.c sets.
-Instead,
->     >     the driver tries to detect the supported format, rate, etc
-from the
->     >     codec widget information.
->     >
->     >     > Is it a cure for the 96, 192khz or 24bit sample playback
-problem ?
->     >
->     >     Possibly.
->     >
->     >     > If so, will it resample or natievly pass the stream to the
->     amplifier ?
->     >
->     >     It just enables the native support, possibly.
->     >
->     >     And, don't forget to give back the alsa-info.sh output (run
-with
->     >     --no-upload option).
->     >
->     >     Takashi
->     >
->     >     >
->     >     > Thank you
->     >     >
->     >     > Alan
->     >     >
->     >     > 2009/6/3 Takashi Iwai <tiwai@suse.de>
->     >     >
->     >     >     At Wed, 3 Jun 2009 10:00:24 +0200,
->     >     >     Alan Alan wrote:
->     >     >     >
->     >     >     > Hello Wei !
->     >     >     >
->     >     >     > Thanks for replying.
->     >     >     > I tested it with speaker-test and xbmc babylon. Both
-had
->     problems
->     >     with
->     >     >     > channel mapping.
->     >     >     > I used this command:
->     >     >     >
->     >     >     > speaker-test -Dhdmi -c6
->     >     >     > or
->     >     >     > speaker-test -Dhdmi -c8
->     >     >     >
->     >     >     > alternatively you could try
->     >     >     >
->     >     >     > speaker-test -Dhw:0,3 -c6
->     >     >     >
->     >     >     >
->     >     >     > I had to rund Xorg first and have the command from
-an xterm,
->     >     becasue
->     >     >     from a
->     >     >     > normal terminal it would not work.
->     >     >     > I think that is normal as a limitation of hdmi.
->     >     >     >
->     >     >     > What about the support for 24bits 192khz sound ?
->     >     >     >
->     >     >     > speaker-test -Dhdmi -c6  -r192000 does not work.
->     >     >
->     >     >     How about the patch below?
->     >     >
->     >     >     Also, could you give alsa-info.sh output?
->     >     >
->     >     >     Takashi
->     >     >
->     >     >     ---
->     >     >     diff --git a/sound/pci/hda/patch_nvhdmi.c
-b/sound/pci/hda/
->     >     patch_nvhdmi.c
->     >     >     index f5792e2..48443de 100644
->     >     >     --- a/sound/pci/hda/patch_nvhdmi.c
->     >     >     +++ b/sound/pci/hda/patch_nvhdmi.c
->     >     >     @@ -258,9 +258,11 @@ static struct hda_pcm_stream
->     >     >     nvhdmi_pcm_digital_playback_8ch = {
->     >     >            .channels_min = 2,
->     >     >            .channels_max = 8,
->     >     >            .nid = Nv_Master_Convert_nid,
->     >     >     +#if 0
->     >     >            .rates = SNDRV_PCM_RATE_48000,
->     >     >            .maxbps = 16,
->     >     >            .formats = SNDRV_PCM_FMTBIT_S16_LE,
->     >     >     +#endif
->     >     >            .ops = {
->     >     >                    .open = nvhdmi_dig_playback_pcm_open,
->     >     >                    .close =
-nvhdmi_dig_playback_pcm_close_8ch,
->     >     >     @@ -273,9 +275,11 @@ static struct hda_pcm_stream
->     >     >     nvhdmi_pcm_digital_playback_2ch = {
->     >     >            .channels_min = 2,
->     >     >            .channels_max = 2,
->     >     >            .nid = Nv_Master_Convert_nid,
->     >     >     +#if 0
->     >     >            .rates = SNDRV_PCM_RATE_48000,
->     >     >            .maxbps = 16,
->     >     >            .formats = SNDRV_PCM_FMTBIT_S16_LE,
->     >     >     +#endif
->     >     >            .ops = {
->     >     >                    .open = nvhdmi_dig_playback_pcm_open,
->     >     >                    .close =
-nvhdmi_dig_playback_pcm_close_2ch,
->     >     >
->     >     >
->     >
->     >
->
->
-
- 
-
-
------------------------------------------------------------------------------------
-This email message is for the sole use of the intended recipient(s) and may contain
-confidential information.  Any unauthorized review, use, disclosure or distribution
-is prohibited.  If you are not the intended recipient, please contact the sender by
-reply email and destroy all copies of the original message.
------------------------------------------------------------------------------------
+> > -----Original Message-----
+> > From: Takashi Iwai [mailto:tiwai@suse.de] 
+> > Sent: Wednesday, June 03, 2009 7:02 PM
+> > To: Wei Ni
+> > Cc: Alan Alan; Peer Chen; Marek Vasut; alsa-devel@alsa-project.org
+> > Subject: Re: [alsa-devel] ALSA patch Nvidia 8 channel hdmi audio
+> > 
+> > At Wed, 3 Jun 2009 18:25:09 +0800,
+> > Wei Ni wrote:
+> > > 
+> > > Hi, Alan
+> > > 
+> > > I reproduced this problems with speaker-test. The channels are wrong
+> > > mapped.
+> > > 
+> > > It's strange that if use mplayer to run, it looks ok.
+> > > 
+> > > I'm looking this problems, and try to find the root cause.
+> > 
+> > Actually, from historical reasons, the standard ALSA channel mapping
+> > for 5.1 is
+> >     FL/FR/RL/RR/C/LFE
+> > while Windows sets FL/FR/C/LFE/RL/RR.  If you play a WAV file assuming
+> > the latter channel assignment, it will be played like that.
+> > 
+> > Does the nvidia codec support channel-slot assignment (verb 0x734)?
+> > If yes, we can assign the channels freely to fix this...
+> > 
+> > 
+> > thanks,
+> > 
+> > Takashi
+> > 
+> > 
+> > > 
+> > >  
+> > > 
+> > > Thanks
+> > > 
+> > >  
+> > > 
+> > > From: Alan Alan [mailto:alanwww1@gmail.com] 
+> > > Sent: Wednesday, June 03, 2009 4:00 PM
+> > > To: Wei Ni
+> > > Cc: Marek Vasut; alsa-devel@alsa-project.org; Peer Chen
+> > > Subject: Re: ALSA patch Nvidia 8 channel hdmi audio
+> > > 
+> > >  
+> > > 
+> > > Hello Wei !
+> > > 
+> > > Thanks for replying.
+> > > I tested it with speaker-test and xbmc babylon. Both had problems with
+> > > channel mapping.
+> > > I used this command:
+> > > 
+> > > speaker-test -Dhdmi -c6
+> > > or
+> > > speaker-test -Dhdmi -c8
+> > > 
+> > > alternatively you could try 
+> > > 
+> > > speaker-test -Dhw:0,3 -c6
+> > > 
+> > > 
+> > > I had to rund Xorg first and have the command from an xterm, becasue
+> > > from a normal terminal it would not work.
+> > > I think that is normal as a limitation of hdmi.
+> > > 
+> > > What about the support for 24bits 192khz sound ?
+> > > 
+> > > speaker-test -Dhdmi -c6  -r192000 does not work.
+> > > 
+> > > Thanks for working on this.
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 2009/6/3 Wei Ni <wni@nvidia.com>
+> > > 
+> > > Hi, Marek and Alan
+> > > I'm a Nvidia engineer and develop this patch file.
+> > > 
+> > > I used mplayer to test. The channels are mapped good.
+> > > Running mplayer -ao alsa:device=hw=0.3 6ch.wav
+> > > 
+> > > I tried to use speaker-test to test, but I can't get the hdmi device
+> > > name.
+> > > I used speaker-test -Dsurround51:NVidia -c6, the sound output from the
+> > > analog jack.
+> > > Which device name should I use?
+> > > 
+> > > I use aplay -l, it show
+> > > **** List of PLAYBACK Hardware Devices ****
+> > > card 0: NVidia [HDA NVidia], device 0: ALC1200 Analog [ALC1200 Analog]
+> > >  Subdevices: 1/1
+> > >  Subdevice #0: subdevice #0
+> > > card 0: NVidia [HDA NVidia], device 1: ALC1200 Digital [ALC1200
+> > Digital]
+> > >  Subdevices: 1/1
+> > >  Subdevice #0: subdevice #0
+> > > card 0: NVidia [HDA NVidia], device 3: NVIDIA HDMI [NVIDIA HDMI]
+> > >  Subdevices: 1/1
+> > >  Subdevice #0: subdevice #0
+> > > 
+> > > Thanks
+> > > Wei.
+> > > 
+> > > 
+> > > -----Original Message-----
+> > > From: Marek Vasut [mailto:marek.vasut@gmail.com]
+> > > Sent: Wednesday, June 03, 2009 8:01 AM
+> > > To: Alan Alan
+> > > Cc: alsa-devel@alsa-project.org; Wei Ni
+> > > Subject: Re: ALSA patch Nvidia 8 channel hdmi audio
+> > > 
+> > > On Wednesday 03 of June 2009 00:30:04 Alan Alan wrote:
+> > > > Thank's for the info.
+> > > > How can i contact him ?
+> > > 
+> > > He and alsa-devel mailing list are both in CC already, please preserve
+> > > them
+> > > there or fix your mailer.
+> > > >
+> > > >
+> > > > 2009/6/3 Marek Vasut <marek.vasut@gmail.com>
+> > > >
+> > > > > I'm not the author of the patch, CCing alsa-devel and the original
+> > > > > author.
+> > > > >
+> > > > > On Tuesday 02 of June 2009 23:58:26 Alan Alan wrote:
+> > > > > > Hi Marek !
+> > > > > >
+> > > > > > I just read your emailing with nvidia devs about alsa supporting
+> > 8
+> > > > >
+> > > > > channel
+> > > > >
+> > > > > > lpcm over hdmi.
+> > > > > >
+> > > > > > I checked it out an i have to tell it is working awsome, except
+> > > for a
+> > > > > > few bugs:
+> > > > > >
+> > > > > > The channels are wrong mapped. Running a speakertest -Dhdmi -c6
+> > > gives
+> > > > > > the following result (first where it should sound)
+> > > > > > FL - FL
+> > > > > > C - RL
+> > > > > > FR - FR
+> > > > > > RR - LFE
+> > > > > > RL - C
+> > > > > >
+> > > > > > The other thing i realized that playback is limited to 16 bits
+> > 48
+> > > khz.
+> > > > > > I think the minimum which is supported by nvidia hardware is
+> > > 24bits 96
+> > > > > > (or 192) khz.
+> > > > > > Why not ?
+> > > > > >
+> > > > > > Could you contact the devs as i don't know how to reach them.
+> > > > > >
+> > > > > > ps.: Mybe my build methot was not 100% ok ? I used 1.020 Alsa
+> > with
+> > > the
+> > > > > > oatched nvidia.c file. Anyway the amplifier shows multichannel
+> > > LPCM and
+> > > > > > that's great news.
+> > > 
+> > > 
+> > > 
+> > > 
+> > >
+> > ------------------------------------------------------------------------
+> > > -----------
+> > > This email message is for the sole use of the intended recipient(s)
+> > and
+> > > may contain
+> > > confidential information.  Any unauthorized review, use, disclosure or
+> > > distribution
+> > > is prohibited.  If you are not the intended recipient, please contact
+> > > the sender by
+> > > reply email and destroy all copies of the original message.
+> > >
+> > ------------------------------------------------------------------------
+> > > -----------
+> > > 
+> > >  
+> > > 
+> > > _______________________________________________
+> > > Alsa-devel mailing list
+> > > Alsa-devel@alsa-project.org
+> > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > > 
+> > 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
