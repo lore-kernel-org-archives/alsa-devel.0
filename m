@@ -1,15 +1,15 @@
-From: Singaravelan Nallasellan <singaravelann@hotmail.com>
-Subject: Indirect Callback with ack is called with no data
-Date: Fri, 5 Jun 2009 11:49:07 +0000
-Message-ID: <BAY119-W8E3C7EC7BE9C8606E2D28B0480@phx.gbl>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: Please help in adding ams-delta support to ASoC
+Date: Fri, 5 Jun 2009 16:55:31 +0300
+Message-ID: <20090605165531.7d0c4522.jhnikula__41197.8699070916$1244210167$gmane$org@gmail.com>
+References: <4A1BEBE3.8010306@tis.icnet.pl> <4A252A8E.9060602@tis.icnet.pl>
+	<20090602203214.9edb786d.jhnikula@gmail.com>
+	<200906030924.14230.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bay0-omc2-s27.bay0.hotmail.com (bay0-omc2-s27.bay0.hotmail.com
-	[65.54.246.163]) by alsa0.perex.cz (Postfix) with ESMTP id 63F8E246BB
-	for <alsa-devel@alsa-project.org>;
-	Fri,  5 Jun 2009 13:49:13 +0200 (CEST)
+In-Reply-To: <200906030924.14230.jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,47 +20,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: linux-omap@vger.kernel.org, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 3 Jun 2009 09:24:12 +0200
+Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
 
- =
+> Thanks! The origial driver with commented out clk_enable(vc_clk) and 
+> clk_disable(vc_clk) still works for me, so MCLK is not required! If I
+> only knew what to do with this finding...
+> 
+Optimize out one needless clock :-)
+
+> > Just hack the same "static struct omap_mcbsp_reg_cfg mcbsp_regs =
+> > { ..." in omap-mcbsp.c and pass that structure instead of
+> > &mcbsp_data->regs to omap_mcbsp_config in omap_mcbsp_dai_hw_params.
+> 
+> Done. Did not help. Again, I really don't know how to make use of
+> this finding except for looking in a different place.
+> 
+Ok, so looks that McBSP settings have nothing to do.
+
+I got one another idea, quite far also, but omap_set_dma_params helper
+function calls omap_set_dma_xxx_params functions in different order
+than older sound/arm/omap/omap-alsa-dma.c: audio_set_dma_params_play.
+
+While I don't believe that call order has something to do on 1510
+versus other omaps, it's easy to try by changing call order in
+arch/arm/plat-omap/dma.c: omap_set_dma_params.
+
+Of course you could try to also copy transfer setup from
+audio_set_dma_params_play into omap_pcm_prepare. Use prtd->dma_ch as
+channel, runtime->dma_addr as a dma_ptr and
+snd_pcm_lib_period_bytes(substream) as a dma_size. That should make the
+DMA setup same than older implementation.
+
+Hopefully these speculations would help you to find out at least one DMA
+interrupt.
 
 
-I am using indirect callback mechanism inside ack. I see that ack does not =
-call my indirect callback pointer. Going through the code, I suspect that t=
-he appl_ptr is not being incremented and there is no data for the indirect =
-callback to be called. =
-
-
- =
-
-
-After few acks, I get the indirect callback called. =
-
-
- =
-
-
-With aplay, I am able to play the wav file. But with flash, there is not da=
-ta being sent to the driver.
-
- =
-
-
-Please help me with any clues.
-
- =
-
-
-Thanks in advance.
-
- =
-
-
-Sing
-
-_________________________________________________________________
-Insert movie times and more without leaving Hotmail=AE. =
-
-http://windowslive.com/Tutorial/Hotmail/QuickAdd?ocid=3DTXT_TAGLM_WL_HM_Tut=
-orial_QuickAdd_062009
+-- 
+Jarkko
