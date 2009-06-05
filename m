@@ -1,91 +1,41 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: Please help in adding ams-delta support to ASoC
-Date: Sat, 6 Jun 2009 00:28:00 +0200
-Message-ID: <200906060028.01600.jkrzyszt__21451.1361824863$1244240996$gmane$org@tis.icnet.pl>
-References: <4A1BEBE3.8010306@tis.icnet.pl>
-	<200906030924.14230.jkrzyszt@tis.icnet.pl>
-	<20090605165531.7d0c4522.jhnikula@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] Please help in adding ams-delta support to ASoC
+Date: Fri, 5 Jun 2009 23:45:34 +0100
+Message-ID: <20090605224532.GA12995@sirena.org.uk>
+References: <4A1BEBE3.8010306@tis.icnet.pl> <200906030924.14230.jkrzyszt@tis.icnet.pl> <20090605165531.7d0c4522.jhnikula@gmail.com> <200906060028.01600.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20090605165531.7d0c4522.jhnikula@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-omap@vger.kernel.org, alsa-devel@vger.kernel.org
+In-Reply-To: <200906060028.01600.jkrzyszt@tis.icnet.pl>
+Sender: linux-omap-owner@vger.kernel.org
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgSmFya2tvLAoKVGhhbmsgeW91IGZvciBzdGlsbCB0cnlpbmcgdG8gc3VwcG9ydCBteSBlZmZv
-cnRzLgoKRnJpZGF5IDA1IEp1bmUgMjAwOSAxNTo1NTozMSBKYXJra28gTmlrdWxhIG5hcGlzYcWC
-KGEpOgo+IE9wdGltaXplIG91dCBvbmUgbmVlZGxlc3MgY2xvY2sgOi0pCgo6LSkKCj4gT2ssIHNv
-IGxvb2tzIHRoYXQgTWNCU1Agc2V0dGluZ3MgaGF2ZSBub3RoaW5nIHRvIGRvLgoKVGhhdCB3YXMg
-d2hhdCBJIHdhcyBzdWdnZXN0aW5nIGJlZm9yZSBhcyB3ZWxsLCBidXQgbm93IEknbSBiYWNrIG5v
-dCBzbyBzdXJlLgoKPiBXaGlsZSBJIGRvbid0IGJlbGlldmUgdGhhdCBjYWxsIG9yZGVyIGhhcyBz
-b21ldGhpbmcgdG8gZG8gb24gMTUxMAo+IHZlcnN1cyBvdGhlciBvbWFwcywgaXQncyBlYXN5IHRv
-IHRyeSBieSBjaGFuZ2luZyBjYWxsIG9yZGVyIGluCj4gYXJjaC9hcm0vcGxhdC1vbWFwL2RtYS5j
-OiBvbWFwX3NldF9kbWFfcGFyYW1zLgo+Cj4gT2YgY291cnNlIHlvdSBjb3VsZCB0cnkgdG8gYWxz
-byBjb3B5IHRyYW5zZmVyIHNldHVwIGZyb20KPiBhdWRpb19zZXRfZG1hX3BhcmFtc19wbGF5IGlu
-dG8gb21hcF9wY21fcHJlcGFyZS4uLiBUaGF0IHNob3VsZCBtYWtlIHRoZQo+IERNQSBzZXR1cCBz
-YW1lIHRoYW4gb2xkZXIgaW1wbGVtZW50YXRpb24uCj4KPiBIb3BlZnVsbHkgdGhlc2Ugc3BlY3Vs
-YXRpb25zIHdvdWxkIGhlbHAgeW91IHRvIGZpbmQgb3V0IGF0IGxlYXN0IG9uZSBETUEKPiBpbnRl
-cnJ1cHQuCgpUcmllZCB0aGlzIGFsbCwgYW5kIGd1ZXNzIHdoYXQ/IFN0aWxsIG5vIHNpZ25sZSBk
-bWEgaW50ZXJydXB0IDooLgoKCkkgZGlzYXNzZW1ibGVkIG15IGRldmljZSBhbmQgZ290IHdpdGgg
-b3NzY2lsbG9zY29wZSBwcm9iZSBpbnNpZGUuIApVbmZvcnR1bmF0ZWxseSwgaXQgd2FzIG5vdCBw
-b3NzaWJsZSB0byBjaGVjayB3aGF0IHdhcyBnb2luZyBvbiBvbiBvbWFwIHBpbnMsIAphcyB0aG9z
-ZSB3ZXJlIGhpZGRlbi4gSG93ZXZlciwgSSB3YXMgYWJsZSB0byBsb29rIGF0IGNvZGVjIGFuZCBt
-b2RlbSBwaW5zLgoKVGhlIGNvZGVjIG1hc3RlciBjbG9jayBpbnB1dCBoYXMgfjJNSHogc3F1YXJl
-IHdhdmUgYXBwbGllZC4gVGhlIHNhbWUgd2F2ZWZvcm0gCmNhbiBiZSBmb3VuZCBvbiB0aGUgbW9k
-ZW0gbWFzdGVyIGNsb2NrIG91dHB1dCwgc28gSSB0aGluayB3ZSBjYW4gYmUgc3VyZSB0aGF0IAp0
-aGUgY29kZWMgZ2V0cyBpdHMgbWFzdGVyIGNsb2NrIGZyb20gdGhlIG1vZGVtLiBJIGFtIG5vdCBh
-YmxlIHRvIHZlcmlmeSBJZiAKdGhlIHNhbWUgc2lnbmFsIGlzIGFwcGxpZWQgb24gbWNic3AxIG1h
-c3RlciBjbG9jayBpbnB1dC4KClRoZXJlIGlzIH4zMzBrSHogc3F1YXJlIHdhdmUgb24gdGhlIGNv
-ZGVjIGJpdCBjbG9jayBvdXRwdXQuIEkgd2FzIG5vdCBhYmxlIHRvIAp2ZXJpZnkgaWYgdGhpcyBz
-aWduYWwgYXBwZWFycyBvbiBtb2RlbSBvciBtY2JzcDEgcGlucywgYXMgaXQgc2hvdWxkLgoKT24g
-dGhlIGNvZGVjIGZyYW1lIHN5bmMgb3V0cHV0LCBJIGNhbiBzZWUgfjEwa0h6IHN5bW1ldHJpYyBz
-cXVhcmUgd2F2ZSAoZmlsbGVkIApieSA1MCUpLCB0aGUgc2FtZSBvbiBtb2RlbSBmcmFtZSBzeW5j
-IGlucHV0LCBtY2JzcDEgc3RhdHVzIHVua25vd24uIFRoaXMgCnNoYXBlIHN1Z2dlc3RzIEkyUyBw
-cm90b2NvbCwgbm90IERTUF9CIGFzIHdlIGRlZHVjZWQgZnJvbSB0aGUgb3JpZ2luYWwgZHJpdmVy
-IApjb2RlLgoKClJldmlld2luZyB0aGUgY29kZSBvZiBkaWZmZXJlbnQgYXNvYyBvbWFwIGRyaXZl
-cnMgYW5kIG1jYnNwIGRvY3VtZW50YXRpb24gCmFnYWluIGFuZCBhZ2Fpbiwgc2V2ZXJhbCBxdWVz
-dGlvbnMgY29tZXMgb24gbWluZCwgbGlrZToKCjEuIFdoYXQgaXMgdGhlIGRlZmF1bHQgc2V0dGlu
-ZyBmb3IgbWNic3AgbWFzdGVyIGNsb2NrIHNvdXJjZT8gQXNzdW1pbmcgdGhhdCAKZGVmYXVsdCBy
-ZWdpc3RlciBiaXQgdmFsdWVzIGFyZSAwLCBPTUFQX01DQlNQX1NZU0NMS19DTEtTX0VYVCB3b3Vs
-ZCBiZSAKZGVmYXVsdCBmb3Igb21hcDEsIGFuZCB0aGVyZSB3b3VsZCBiZSBubyBkZWZhdWx0IGZv
-ciBvdGhlcnMuIFNvdXJjZXMgb3RoZXIgCnRoYW4gT01BUF9NQ0JTUF9TWVNDTEtfQ0xLU19FWFQg
-b3IgT01BUF9NQ0JTUF9TWVNDTEtfQ0xLU19GQ0xLIHJlcXVpcmUgCnNldHRpbmcgb2YgQ0xLU00g
-YW5kL29yIFNDTEtNRSB0byAxLCBhbmQgYm90aCBPTUFQX01DQlNQX1NZU0NMS19DTEtTX0VYVCBh
-bmQgCk9NQVBfTUNCU1BfU1lTQ0xLX0NMS1NfRkNMSyByZXF1aXJlIGFkZGl0aW9uYWwgb21hcF9j
-dHJsX3dyaXRlbCgpIGNhbGxzIG9uIApvbWFwMiBhbmQgaGlnaGVyLiBBbSBJIG1pc3NpbmcgYW55
-dGhpbmc/CgoyLiBXaHkgb21hcCBhc29jIGRyaXZlcnMsIGV4Y2VwdCBmb3Igb21hcDNwYW5kb3Jh
-LCBkbyBub3QgY2FsbCAKc25kX3NvY19kYWlfc2V0X3N5c2NsayhjcHVfZGFpLCAuLi4pPyBEb2Vz
-IGl0IG1lYW4gdGhhdCBvc2s5NTEyIHVzZXMgZGVmYXVsdCAKT01BUF9NQ0JTUF9TWVNDTEtfQ0xL
-U19FWFQ/IFdoYXQgZG9lcyBpdCBtZWFuIGZvciBvdGhlcnMgd2l0aG91dCBkZWZhdWx0PwoKYW5k
-IG1vcmUuCgoKQW55d2F5LCB3ZSBzdGlsbCBoYXZlIGF0IGxlYXN0IHR3byBwb3RlbnRpYWwgcmVh
-c29ucyBmb3IgbXkgZHJpdmVyIG5vdCAKd29ya2luZzogd3JvbmcgbWNic3AgY2xvY2tzIHNldHVw
-IG9yIGJyb2tlbiBtY2JzcCBkbWEgaGFuZGxpbmcuIE15IGxhc3QgaWRlYSAKd2FzIHRvIGNyZWF0
-ZSBhIGdlbmVyaWMgdGVzdCBkcml2ZXIgdGhhdCB3b3VsZCBub3QgdXNlIGFueSBleHRlcm5hbCBj
-bG9ja3MsIAppZSBjb25maWd1cmVkIHdpdGggT01BUF9NQ0JTUF9TWVNDTEtfQ0xLIGFuZCBTTkRf
-U09DX0RBSUZNVF9DQlNfQ0ZTLCByaWdodD8gClRoYXQgd2F5LCBpdCBzaG91bGQganVzdCB3b3Jr
-IHdpdGhvdXQgYW55IGhhcmR3YXJlIHN1cHBvcnQgZXhjZXB0IGZvciBtY2JzcCAKYW5kIG1heWJl
-IHdlIGNvdWxkIHRoZW4gZGVmaW5pdGVsbHkgdmVyaWZ5IGlmIGN1cnJlbnQgbWNic3AgYW5kIGRt
-YSBjb2RlIAp3b3JrcyBvbiBvbWFwMTUxMCBvciBub3QuIFRyeWluZyB0byBzZWxlY3QgYSB0ZW1w
-bGF0ZSBkcml2ZXIgdG8gYmFzZSB0aGUgdGVzdCAKZHJpdmVyIG9uLCBJIGZlbHQgaW50byB0aGVz
-ZSB0cm91YmxlcyB3aXRoIG1vcmUgYW5kIG1vcmUgcXVlc3Rpb25zIGNvbWluZyBvbiAKbWluZC4g
-SWYgeW91IHRoaW5rIG15IGlkZWEgaXMgd29ydGggb2YgdHJ5aW5nLCBjb3VsZCB5b3UgcGxlYXNl
-IGxvb2sgYXQgdGhpcyAKYW5kIGdpdmUgbWUgc29tZSBoaW50cz8KCkNoZWVycywKSmFudXN6Ci0t
-ClRvIHVuc3Vic2NyaWJlIGZyb20gdGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmli
-ZSBhbHNhLWRldmVsIiBpbgp0aGUgYm9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIu
-a2VybmVsLm9yZwpNb3JlIG1ham9yZG9tbyBpbmZvIGF0ICBodHRwOi8vdmdlci5rZXJuZWwub3Jn
-L21ham9yZG9tby1pbmZvLmh0bWwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+On Sat, Jun 06, 2009 at 12:28:00AM +0200, Janusz Krzysztofik wrote:
+
+> On the codec frame sync output, I can see ~10kHz symmetric square wave (filled 
+> by 50%), the same on modem frame sync input, mcbsp1 status unknown. This 
+> shape suggests I2S protocol, not DSP_B as we deduced from the original driver 
+> code.
+
+Not that this seems like an unreasonable conclusion but it's worth
+pointing out that the DSP modes only require the leading edge of the
+frame clock and that the falling edge can occur at any point before the
+next rising edge is due.
+
+> Anyway, we still have at least two potential reasons for my driver not 
+> working: wrong mcbsp clocks setup or broken mcbsp dma handling. My last idea 
+> was to create a generic test driver that would not use any external clocks, 
+> ie configured with OMAP_MCBSP_SYSCLK_CLK and SND_SOC_DAIFMT_CBS_CFS, right? 
+> That way, it should just work without any hardware support except for mcbsp 
+> and maybe we could then definitelly verify if current mcbsp and dma code 
+> works on omap1510 or not. Trying to select a template driver to base the test 
+> driver on, I felt into these troubles with more and more questions coming on 
+> mind. If you think my idea is worth of trying, could you please look at this 
+> and give me some hints?
+
+That approach is one I use all the time in driver development - isolate
+the device as much as possible and confirm that it can at least
+interoperate with itself.
