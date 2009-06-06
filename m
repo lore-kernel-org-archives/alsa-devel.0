@@ -1,19 +1,17 @@
-From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: [PATCH] ASoc: codec tlv320aic23 fix bogus divide by 0
-	message
-Date: Fri,  5 Jun 2009 19:15:58 -0700
-Message-ID: <1244254558-21114-1-git-send-email-troy.kisky@boundarydevices.com>
+From: erumusele Odigie <erumusele@gmail.com>
+Subject: Setting gain/volume of PCM capture or playback
+Date: Fri, 5 Jun 2009 19:22:55 -0700
+Message-ID: <edeadc8c0906051922m2b0d7e97we01bff33157d5197@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mpls-qmqp-02.inet.qwest.net (mpls-qmqp-02.inet.qwest.net
-	[63.231.195.113])
-	by alsa0.perex.cz (Postfix) with ESMTP id 24EC5243F9
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.241])
+	by alsa0.perex.cz (Postfix) with ESMTP id EAFBA243F4
 	for <alsa-devel@alsa-project.org>;
-	Sat,  6 Jun 2009 04:16:14 +0200 (CEST)
-In-Reply-To: <>
-References: <>
+	Sat,  6 Jun 2009 04:22:56 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c3so1044101ana.2
+	for <alsa-devel@alsa-project.org>; Fri, 05 Jun 2009 19:22:55 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,41 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, arunks@mistralsolutions.com, broonie@sirena.org.uk, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-Some code analyzer software mistakenly gives
-divide by 0 error messages for these lines.
-This patch will end its confusion.
+Hi,
 
-Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
----
- sound/soc/codecs/tlv320aic23.c |   10 +++++-----
- 1 files changed, 5 insertions(+), 5 deletions(-)
+I am new to programming with ALSA, and I would like to find out how to
+change the gain (capture or playback) for my PCM device in my C code.
 
-diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
-index 9fcbb9c..0b8dcb5 100644
---- a/sound/soc/codecs/tlv320aic23.c
-+++ b/sound/soc/codecs/tlv320aic23.c
-@@ -273,14 +273,14 @@ static const unsigned short sr_valid_mask[] = {
-  * Every divisor is a factor of 11*12
-  */
- #define SR_MULT (11*12)
--#define A(x) (x) ? (SR_MULT/x) : 0
-+#define A(x) (SR_MULT/x)
- static const unsigned char sr_adc_mult_table[] = {
--	A(2), A(2), A(12), A(12),  A(0), A(0), A(3), A(1),
--	A(2), A(2), A(11), A(11),  A(0), A(0), A(0), A(1)
-+	A(2), A(2), A(12), A(12),  0, 0, A(3), A(1),
-+	A(2), A(2), A(11), A(11),  0, 0, 0, A(1)
- };
- static const unsigned char sr_dac_mult_table[] = {
--	A(2), A(12), A(2), A(12),  A(0), A(0), A(3), A(1),
--	A(2), A(11), A(2), A(11),  A(0), A(0), A(0), A(1)
-+	A(2), A(12), A(2), A(12),  0, 0, A(3), A(1),
-+	A(2), A(11), A(2), A(11),  0, 0, 0, A(1)
- };
- 
- static unsigned get_score(int adc, int adc_l, int adc_h, int need_adc,
--- 
-1.5.4.3
+I am aware I am supposed to use the mixer API, possibly functions like:
+snd_mixer_selem_set_playback_volume()
+
+but I don't know how this function can be connected to my PCM
+structure/device.
+
+Please whoever answers this should kindly attach some sample code, or a link
+to sample code because I can't find any on line.
+
+Thanks a lot.
+
+Erumusele
