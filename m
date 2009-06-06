@@ -1,18 +1,19 @@
-From: Daniel Ribeiro <drwyrm@gmail.com>
-Subject: [RFC/PATCH] asoc: pxa-ssp.c -> enchance the I2S
-	enchancement :)
-Date: Sat, 06 Jun 2009 15:38:37 -0300
-Message-ID: <1244313517.6717.107.camel@brutus>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/4] ASoC: pxa-ssp: enhance I2S and
+	add	Left_J support
+Date: Sat, 6 Jun 2009 21:12:26 +0100
+Message-ID: <20090606201225.GA1029@sirena.org.uk>
+References: <f17812d70906030533m49eb023bid19a80231921f59b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2368525903574242167=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
-	[209.85.221.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id C780124384
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 01C0D103824
 	for <alsa-devel@alsa-project.org>;
-	Sat,  6 Jun 2009 20:38:43 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so3107593qyk.16
-	for <alsa-devel@alsa-project.org>; Sat, 06 Jun 2009 11:38:42 -0700 (PDT)
+	Sat,  6 Jun 2009 22:12:33 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <f17812d70906030533m49eb023bid19a80231921f59b@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,115 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: Paul Shen <boshen9@gmail.com>, Eric Miao <eric.y.miao@gmail.com>, Mark Brown <broonie@sirena.org.uk>, Philipp Zabel <philipp.zabel@gmail.com>
+To: Eric Miao <eric.y.miao@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Daniel Ribeiro <drwyrm@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Jun 03, 2009 at 08:33:42PM +0800, Eric Miao wrote:
 
---===============2368525903574242167==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-avC0LEbNl67CCk2LJQUu"
+> +/* frame size definitions for I2S and Left_J formats - default is
+> + * 32fs, other possibilities are 48fs, 64fs and 96fs
+> + */
+> +#define PXA_SSP_FRM_32FS	(0 << 16)
+> +#define PXA_SSP_FRM_48FS	(1 << 16)
+> +#define PXA_SSP_FRM_64FS	(2 << 16)
+> +#define PXA_SSP_FRM_96FS	(3 << 16)
+> +#define PXA_SSP_FRM_WIDTH(x)	(((((x) >> 16) & 0x3) + 2) << 4)
+> +
 
+I still haven't checked this on Zylonite but I wanted to mention these
+new DAI format bits just now - as previously discussed I'm not
+enthusiastic about this.  As well as the previous issues I raised with
+this approach I also meant to mention is that the use of a bitfield will
+inevitably restrict what can be expressed, causing real problems for
+some systems.  For example, the WM9081 supports systems using up to 3
+stereo TDM slots and up to 32 bit samples so could be used in a system
+which needs a 192fs bit clock.
 
---=-avC0LEbNl67CCk2LJQUu
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+If we did decide to adopt this approach then these defines should be in
+the ASoC headers rather than private to this driver - apart from
+anything else, there's every chance that additions to the standard bits
+could end up colliding with this.
 
-Hi, this patch is what i need to use Paul's pxa-ssp.c I2S enchancements
-on my board.
-
-Basically, it doesn't enforce the "fake" network mode, as i dont need
-it. And i need _real_ network mode, so i prefer to set SSCR0_MOD only
-when really using network mode.
-
-And it uses PXA_SSP_FRM_??FS to actually set SSCR0_DataSize() too. This
-allows me to use 32bit frames for 16 bit stereo audio. (No, I don't want
-to fake network mode for this, and SSCR0_MOD doesn't work as expected
-when PXA is slave).
-
-This patch is incremental to the recent patch from Paul Shen.
-
-Signed-off-by: Daniel Ribeiro <drwyrm@gmail.com>
-
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index ed0906e..762cb93 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -579,7 +579,7 @@ static int pxa_ssp_set_dai_fmt(struct snd_soc_dai
-*cpu_dai,
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
- 	case SND_SOC_DAIFMT_LEFT_J:
--		sscr0 |=3D SSCR0_PSP | SSCR0_MOD;
-+		sscr0 |=3D SSCR0_PSP;
- 		sscr1 |=3D SSCR1_RWOT | SSCR1_TRAIL;
-=20
- 		/* See hw_params() */
-@@ -655,7 +655,7 @@ static int pxa_ssp_hw_params(struct
-snd_pcm_substream *substream,
- 	int dma =3D 0, chn =3D params_channels(params);
- 	u32 sscr0;
- 	u32 sspsp;
--	int frame_width;
-+	int frame_width =3D 0;
- 	int width =3D snd_pcm_format_physical_width(params_format(params));
- 	int ttsa =3D ssp_read_reg(ssp, SSTSA) & 0xf;
-=20
-@@ -698,7 +698,6 @@ static int pxa_ssp_hw_params(struct
-snd_pcm_substream *substream,
- 		sscr0 |=3D (SSCR0_EDSS | SSCR0_DataSize(16));
- 		break;
- 	}
--	ssp_write_reg(ssp, SSCR0, sscr0);
-=20
- 	switch (priv->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
-@@ -742,6 +741,15 @@ static int pxa_ssp_hw_params(struct
-snd_pcm_substream *substream,
- 		break;
- 	}
-=20
-+	if (frame_width) {
-+		sscr0 &=3D ~(SSCR0_EDSS | SSCR0_DataSize(16));
-+		if (frame_width % 48 =3D=3D 0)
-+			sscr0 |=3D SSCR0_EDSS | SSCR0_DataSize(8);
-+		else
-+			sscr0 |=3D SSCR0_EDSS | SSCR0_DataSize(16);
-+	}
-+	ssp_write_reg(ssp, SSCR0, sscr0);
-+
- 	/* When we use a network mode, we always require TDM slots
- 	 * - complain loudly and fail if they've not been set up yet.
- 	 */
-
-
---=20
-Daniel Ribeiro
-
---=-avC0LEbNl67CCk2LJQUu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Esta =?ISO-8859-1?Q?=E9?= uma parte de mensagem
- assinada digitalmente
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEABECAAYFAkoqt6YACgkQw3OYl0G0liS9QACgn53nUYjZ6Zysqg5DrfsMlm/S
-Z68AniTu0W2FKKmfUWxRWujadP7jTocg
-=Nusp
------END PGP SIGNATURE-----
-
---=-avC0LEbNl67CCk2LJQUu--
-
-
---===============2368525903574242167==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============2368525903574242167==--
+I'm still not sure what the best way to handle this is due to the
+interaction with TDM mode.  The fact that TDM mode really wants to
+always explicitly specify the frame width in order to allow the sample
+size in each slot to vary suggests that one option would be to add a
+sample width parameter to set_tdm_slot() - given the very small number
+of in tree users it'd cause little disruption.  A set_sample_width()
+operation could also be added.
