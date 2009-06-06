@@ -1,23 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/4] ASoC: pxa-ssp: enhance I2S and
-	add	Left_J support
-Date: Fri, 5 Jun 2009 23:47:32 +0100
-Message-ID: <20090605224731.GA11747@sirena.org.uk>
-References: <f17812d70906030533m49eb023bid19a80231921f59b@mail.gmail.com>
-	<20090603131819.GQ26148@buzzloop.caiaq.de>
-	<37b631400906040207o169abbc2ob33100879ac68911@mail.gmail.com>
-	<1719ee7f0906040244t3890b069s5039c3f0c8bbe09a@mail.gmail.com>
-	<20090605172630.GG26148@buzzloop.caiaq.de>
+From: Troy Kisky <troy.kisky@boundarydevices.com>
+Subject: [PATCH] ASoc: codec tlv320aic23 fix bogus divide by 0
+	message
+Date: Fri,  5 Jun 2009 19:15:58 -0700
+Message-ID: <1244254558-21114-1-git-send-email-troy.kisky@boundarydevices.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3947B2448A
+Received: from mpls-qmqp-02.inet.qwest.net (mpls-qmqp-02.inet.qwest.net
+	[63.231.195.113])
+	by alsa0.perex.cz (Postfix) with ESMTP id 24EC5243F9
 	for <alsa-devel@alsa-project.org>;
-	Sat,  6 Jun 2009 00:47:39 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20090605172630.GG26148@buzzloop.caiaq.de>
+	Sat,  6 Jun 2009 04:16:14 +0200 (CEST)
+In-Reply-To: <>
+References: <>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,43 +23,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: Paul Shen <boshen9@gmail.com>, alsa-devel@alsa-project.org, bshen9@marvell.com, eric.y.miao@gmail.com, linux-arm-kernel@lists.arm.linux.org.uk
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, arunks@mistralsolutions.com, broonie@sirena.org.uk, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 05, 2009 at 07:26:30PM +0200, Daniel Mack wrote:
+Some code analyzer software mistakenly gives
+divide by 0 error messages for these lines.
+This patch will end its confusion.
 
-> Ah - the PXA_SSP_FRM_64FS is the detail I missed. With that option set,
-> my system works well, so I'm generally fine with the changes.
-> 
-> However, I proposed a generic way (not pxa/ssp specific) to let the
-> format flags carry the information about such frame format details some
-> months ago and the approach was rejected because there are already too
-> many ways to let the DAI know about this.
+Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
+---
+ sound/soc/codecs/tlv320aic23.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
-Indeed, and there's some potential lack of clarity with the interaction
-of settings in the DAI format with these other settings.
-
->                                           In particular, the DIV_SCR
-> (serial clock rate divider) is used to propagate the base frequency
-> ratio and together with other options, you can find out the desired
-> frame format.
-
-There's that, and there's also the TDM settings which provide
-essentially the same information - an overclocked bit clock is
-equivalent to a TDM mode where the first slot is in use.  It's not
-immediately clear to me what a combination of the two options ought to
-do.
-
-It's also a logically different bit of configuration - for most devices
-it only makes a difference to the device that's generating the clocks
-and wouldn't need to be specified for the other devices since they'd
-just ignore the extra clocks.  The DAI format specifies the format for
-the clocks, primarily the frame clocks, but does not currently handle
-their rates.
-
-> handles the case. Eventually this might be a matter of taste, but if we
-> go this way, why shouldn't that definitions be in ASoC's generic
-> headers?
-
-Definitely.
+diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
+index 9fcbb9c..0b8dcb5 100644
+--- a/sound/soc/codecs/tlv320aic23.c
++++ b/sound/soc/codecs/tlv320aic23.c
+@@ -273,14 +273,14 @@ static const unsigned short sr_valid_mask[] = {
+  * Every divisor is a factor of 11*12
+  */
+ #define SR_MULT (11*12)
+-#define A(x) (x) ? (SR_MULT/x) : 0
++#define A(x) (SR_MULT/x)
+ static const unsigned char sr_adc_mult_table[] = {
+-	A(2), A(2), A(12), A(12),  A(0), A(0), A(3), A(1),
+-	A(2), A(2), A(11), A(11),  A(0), A(0), A(0), A(1)
++	A(2), A(2), A(12), A(12),  0, 0, A(3), A(1),
++	A(2), A(2), A(11), A(11),  0, 0, 0, A(1)
+ };
+ static const unsigned char sr_dac_mult_table[] = {
+-	A(2), A(12), A(2), A(12),  A(0), A(0), A(3), A(1),
+-	A(2), A(11), A(2), A(11),  A(0), A(0), A(0), A(1)
++	A(2), A(12), A(2), A(12),  0, 0, A(3), A(1),
++	A(2), A(11), A(2), A(11),  0, 0, 0, A(1)
+ };
+ 
+ static unsigned get_score(int adc, int adc_l, int adc_h, int need_adc,
+-- 
+1.5.4.3
