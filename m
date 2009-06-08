@@ -1,21 +1,16 @@
-From: Manuel Lauss <mano@roarinelk.homelinux.net>
-Subject: Re: Audio driver for dbAu1250 Development board
-Date: Mon, 8 Jun 2009 08:06:16 +0200
-Message-ID: <20090608060616.GA20003@roarinelk.homelinux.net>
-References: <4A2793A6.9090800@tataelxsi.co.in>
-	<20090606131313.07e142f8@scarran.roarinelk.net>
-	<4A2C8C07.2060904@tataelxsi.co.in>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: Please help in adding ams-delta support to ASoC
+Date: Mon, 8 Jun 2009 09:40:28 +0300
+Message-ID: <20090608094028.415e6ec3.jhnikula__38390.1538597003$1244443241$gmane$org@gmail.com>
+References: <4A1BEBE3.8010306@tis.icnet.pl>
+	<200906030924.14230.jkrzyszt@tis.icnet.pl>
+	<20090605165531.7d0c4522.jhnikula@gmail.com>
+	<200906060028.01600.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from roarinelk.homelinux.net (fnoeppeil48.netpark.at
-	[217.175.205.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id AD027243C2
-	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Jun 2009 08:06:17 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4A2C8C07.2060904@tataelxsi.co.in>
+In-Reply-To: <200906060028.01600.jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,43 +20,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Manjunath A M <manjunatham@tataelxsi.co.in>
-Cc: alsa-devel@alsa-project.org, "nitinm76 at yahoo.com"@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: linux-omap@vger.kernel.org, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
+On Sat, 6 Jun 2009 00:28:00 +0200
+Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
 
-On Mon, Jun 08, 2009 at 09:26:55AM +0530, Manjunath A M wrote:
-> I need to use the kernel for DB1250 borad..with the patches that you are 
-> suggesting will audio work on this board??
+> Reviewing the code of different asoc omap drivers and mcbsp
+> documentation again and again, several questions comes on mind, like:
+> 
+> 1. What is the default setting for mcbsp master clock source?
+> Assuming that default register bit values are 0,
+> OMAP_MCBSP_SYSCLK_CLKS_EXT would be default for omap1, and there
+> would be no default for others. Sources other than
+> OMAP_MCBSP_SYSCLK_CLKS_EXT or OMAP_MCBSP_SYSCLK_CLKS_FCLK require
+> setting of CLKSM and/or SCLKME to 1, and both
+> OMAP_MCBSP_SYSCLK_CLKS_EXT and OMAP_MCBSP_SYSCLK_CLKS_FCLK require
+> additional omap_ctrl_writel() calls on omap2 and higher. Am I missing
+> anything?
+> 
+Actually there is no master in such but transfers are operated from
+internal bit-clock and frame sync signals which can be delivered either
+from outside (this is the typical McBSP slave configuration) or from
+internal sample rate generator (SRG) which can use multiple clock
+sources.
 
-Yes, I don't  have any problems with audio playback on my Db1200.  A note
-on I2S though:  you need to unmute the "HiFi Playback Switch" in alsamixer
-before starting playback, otherwise the WM8731 won't provide bitclock and
-you'll get timeout errors on playback.  AC97 works fine as-is.
+CLKXM and CLKRM selects the SRG for transfer bit-clock source and FSXM
+and FSRM selects the SRG for frame sync source respectively.
+
+Now if above bits are set and McBSP is used in master configuration,
+then CLKSM and SCLKME are used to select the SRG input clock. CLKS is
+one of those options and OMAP2 and later can use internal FCLK or
+external CLKS pin as a CLKS source.
+
+These are best explained in figures 6 and 7 in OMAP5912 McBSP
+documentation [1]. It applies to later omaps and IRCC it applies to
+1510 as well.
+
+> 2. Why omap asoc drivers, except for omap3pandora, do not call 
+> snd_soc_dai_set_sysclk(cpu_dai, ...)? Does it mean that osk9512 uses
+> default OMAP_MCBSP_SYSCLK_CLKS_EXT? What does it mean for others
+> without default?
+> 
+It is used to select SRG input clock when McBSP is master, i.e. when
+DAI is configured with SND_SOC_DAIFMT_CBS_CFS so it's null op for
+others since they don't use SRG.
+
+> Anyway, we still have at least two potential reasons for my driver
+> not working: wrong mcbsp clocks setup or broken mcbsp dma handling.
+> My last idea was to create a generic test driver that would not use
+> any external clocks, ie configured with OMAP_MCBSP_SYSCLK_CLK and
+> SND_SOC_DAIFMT_CBS_CFS, right? That way, it should just work without
+> any hardware support except for mcbsp and maybe we could then
+> definitelly verify if current mcbsp and dma code works on omap1510 or
+> not. Trying to select a template driver to base the test driver on, I
+> felt into these troubles with more and more questions coming on mind.
+> If you think my idea is worth of trying, could you please look at
+> this and give me some hints?
+> 
+This could be a bit risky and can damage your HW since both OMAP and
+codec are then driving the bit-clock and FS signals but you could try
+to configure McBSP as a master and use the internal clock source as its
+input.
+
+Basically it goes with current driver by passing SND_SOC_DAIFMT_CBS_CFS
+to snd_soc_dai_set_fmt(cpu_dai, ...) and by setting SRG source clock
+and divider:
+
+snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_SYSCLK_CLK, ...);
+snd_soc_dai_set_clkdiv(cpu_dai, OMAP_MCBSP_CLKGDV, divider);
+
+I think internal clock source is the same than CPU clock on 1510 but
+this is and exact divider value are not so important here since we only
+want to verify is the DMA operating.
+
+If you want to play safe you could try to find out how to mux those
+bit-clock and FS pins into GPIO inputs (if this is possible) so then it
+should not matter if also McBSP is the DAI master.
+
+So remember, this can be dangerous to your HW :-)
 
 
-> kindly provide me the link for patches that you are suggesting..
+-- 
+Jarkko
 
-At a minimum, apply these here in this order:
-http://marc.info/?l=linux-mips&m=124429033530426&w=2
-http://marc.info/?l=linux-mips&m=124440001201703&w=2
-http://marc.info/?l=linux-mips&m=124440013101823&w=2
-http://marc.info/?l=linux-mips&m=124440005401759&w=2   (Db1200 audio)
-
-The last two contain new DB1200 support and DB1200 audio system; they
-depend on the first two.
-
-
-
-These are part of 2 separate patchseries I posted to linux-mips over
-the weekend.  I'd by very grateful if you could give them a spin,
-Alchemy testers are very rare...
-
-These links point to the first patches in each series, apply them in
-this order:
-http://marc.info/?l=linux-mips&m=124429030830390&w=2
-http://marc.info/?l=linux-mips&m=124440000101690&w=2
-
-
-	Manuel Lauss
+1.
+http://focus.ti.com/general/docs/litabsmultiplefilelist.tsp?literatureNumber=spru762c
