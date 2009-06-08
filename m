@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 7/7] ASoC: Make DAPM power sequence lists local
-	variables
-Date: Mon,  8 Jun 2009 15:28:53 +0100
-Message-ID: <1244471333-6485-7-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 5/7] ASoC: Coalesce power updates for DAPM
+	widgets with events
+Date: Mon,  8 Jun 2009 15:28:51 +0100
+Message-ID: <1244471333-6485-5-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20090608142734.GA6137@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D92B52445C
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A06A724459
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Jun 2009 16:28:57 +0200 (CEST)
+	Mon,  8 Jun 2009 16:28:58 +0200 (CEST)
 In-Reply-To: <20090608142734.GA6137@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,86 +26,113 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-They are now only accessed within dapm_power_widgets() so can be local
-to that function.
-
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- include/sound/soc.h  |    2 --
- sound/soc/soc-dapm.c |   19 ++++++++-----------
- 2 files changed, 8 insertions(+), 13 deletions(-)
+ sound/soc/soc-dapm.c |   76 +++++++++++++++++++++++++++++++++++++++----------
+ 1 files changed, 60 insertions(+), 16 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index cf6111d..5964dd6 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -369,8 +369,6 @@ struct snd_soc_codec {
- 	enum snd_soc_bias_level bias_level;
- 	enum snd_soc_bias_level suspend_bias_level;
- 	struct delayed_work delayed_work;
--	struct list_head up_list;
--	struct list_head down_list;
- 
- 	/* codec DAI's */
- 	struct snd_soc_dai *dai;
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 7299ce4..1c30da1 100644
+index 9187db1..3fc791c 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -927,23 +927,22 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
+@@ -740,7 +740,7 @@ static void dapm_seq_run_coalesced(struct snd_soc_codec *codec,
+ 				   struct list_head *pending)
  {
- 	struct snd_soc_device *socdev = codec->socdev;
  	struct snd_soc_dapm_widget *w;
-+	LIST_HEAD(up_list);
-+	LIST_HEAD(down_list);
- 	int ret = 0;
- 	int power;
- 	int sys_power = 0;
+-	int reg, power;
++	int reg, power, ret;
+ 	unsigned int value = 0;
+ 	unsigned int mask = 0;
+ 	unsigned int cur_mask;
+@@ -764,13 +764,62 @@ static void dapm_seq_run_coalesced(struct snd_soc_codec *codec,
+ 		pop_dbg(codec->pop_time,
+ 			"pop test : Queue %s: reg=0x%x, 0x%x/0x%x\n",
+ 			w->name, reg, value, mask);
++
++		/* power up pre event */
++		if (w->power && w->event &&
++		    (w->event_flags & SND_SOC_DAPM_PRE_PMU)) {
++			pop_dbg(codec->pop_time, "pop test : %s PRE_PMU\n",
++				w->name);
++			ret = w->event(w, NULL, SND_SOC_DAPM_PRE_PMU);
++			if (ret < 0)
++				pr_err("%s: pre event failed: %d\n",
++				       w->name, ret);
++		}
++
++		/* power down pre event */
++		if (!w->power && w->event &&
++		    (w->event_flags & SND_SOC_DAPM_PRE_PMD)) {
++			pop_dbg(codec->pop_time, "pop test : %s PRE_PMD\n",
++				w->name);
++			ret = w->event(w, NULL, SND_SOC_DAPM_PRE_PMD);
++			if (ret < 0)
++				pr_err("%s: pre event failed: %d\n",
++				       w->name, ret);
++		}
++	}
++
++	if (reg >= 0) {
++		pop_dbg(codec->pop_time,
++			"pop test : Applying 0x%x/0x%x to %x in %dms\n",
++			value, mask, reg, codec->pop_time);
++		pop_wait(codec->pop_time);
++		snd_soc_update_bits(codec, reg, mask, value);
+ 	}
  
--	INIT_LIST_HEAD(&codec->up_list);
--	INIT_LIST_HEAD(&codec->down_list);
--
- 	/* Check which widgets we need to power and store them in
- 	 * lists indicating if they should be powered up or down.
- 	 */
- 	list_for_each_entry(w, &codec->dapm_widgets, list) {
- 		switch (w->id) {
- 		case snd_soc_dapm_pre:
--			dapm_seq_insert(w, &codec->down_list, dapm_down_seq);
-+			dapm_seq_insert(w, &down_list, dapm_down_seq);
- 			break;
- 		case snd_soc_dapm_post:
--			dapm_seq_insert(w, &codec->up_list, dapm_up_seq);
-+			dapm_seq_insert(w, &up_list, dapm_up_seq);
+-	pop_dbg(codec->pop_time,
+-		"pop test : Applying 0x%x/0x%x to %x in %dms\n",
+-		value, mask, reg, codec->pop_time);
+-	pop_wait(codec->pop_time);
+-	snd_soc_update_bits(codec, reg, mask, value);
++	list_for_each_entry(w, pending, power_list) {
++		/* power up post event */
++		if (w->power && w->event &&
++		    (w->event_flags & SND_SOC_DAPM_POST_PMU)) {
++			pop_dbg(codec->pop_time, "pop test : %s POST_PMU\n",
++				w->name);
++			ret = w->event(w,
++				       NULL, SND_SOC_DAPM_POST_PMU);
++			if (ret < 0)
++				pr_err("%s: post event failed: %d\n",
++				       w->name, ret);
++		}
++
++		/* power down post event */
++		if (!w->power && w->event &&
++		    (w->event_flags & SND_SOC_DAPM_POST_PMD)) {
++			pop_dbg(codec->pop_time, "pop test : %s POST_PMD\n",
++				w->name);
++			ret = w->event(w, NULL, SND_SOC_DAPM_POST_PMD);
++			if (ret < 0)
++				pr_err("%s: post event failed: %d\n",
++				       w->name, ret);
++		}
++	}
+ }
+ 
+ /* Apply a DAPM power sequence.
+@@ -843,16 +892,11 @@ static void dapm_seq_run(struct snd_soc_codec *codec, struct list_head *list,
  			break;
  
  		default:
-@@ -958,11 +957,9 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
- 				continue;
+-			/* If there's an event or an invalid register
+-			 * then run immediately, otherwise store the
+-			 * updates so that we can coalesce. */
+-			if (w->reg >= 0 && !w->event) {
+-				cur_sort = sort[w->id];
+-				cur_reg = w->reg;
+-				list_move(&w->power_list, &pending);
+-			} else {
+-				ret = dapm_generic_apply_power(w);
+-			}
++			/* Queue it up for application */
++			cur_sort = sort[w->id];
++			cur_reg = w->reg;
++			list_move(&w->power_list, &pending);
++			break;
+ 		}
  
- 			if (power)
--				dapm_seq_insert(w, &codec->up_list,
--						dapm_up_seq);
-+				dapm_seq_insert(w, &up_list, dapm_up_seq);
- 			else
--				dapm_seq_insert(w, &codec->down_list,
--						dapm_down_seq);
-+				dapm_seq_insert(w, &down_list, dapm_down_seq);
- 
- 			w->power = power;
- 			break;
-@@ -979,10 +976,10 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
- 	}
- 
- 	/* Power down widgets first; try to avoid amplifying pops. */
--	dapm_seq_run(codec, &codec->down_list, event, dapm_down_seq);
-+	dapm_seq_run(codec, &down_list, event, dapm_down_seq);
- 
- 	/* Now power up. */
--	dapm_seq_run(codec, &codec->up_list, event, dapm_up_seq);
-+	dapm_seq_run(codec, &up_list, event, dapm_up_seq);
- 
- 	/* If we just powered the last thing off drop to standby bias */
- 	if (codec->bias_level == SND_SOC_BIAS_PREPARE && !sys_power) {
+ 		if (ret < 0)
 -- 
 1.6.3.1
