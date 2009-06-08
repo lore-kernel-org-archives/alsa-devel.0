@@ -1,24 +1,21 @@
-From: "Ted T. Logan" <tedtheologian@gmail.com>
-Subject: Re: problems with fedora 11 and pulseaudio and svn
-	x-fi driver
-Date: Wed, 10 Jun 2009 11:23:30 -0500
-Message-ID: <1244651010.2065.1.camel@localhost.localdomain>
-References: <s5hy70xsl46.wl%tiwai@suse.de> <1223583478.5018.0.camel@home>
-	<s5hbpxt7zui.wl%tiwai@suse.de> <1223619975.4700.2.camel@home>
-	<1244623151.4093.3.camel@localhost.localdomain>
-	<1244623955.6367.0.camel@localhost.localdomain>
-	<s5hljo0mo7i.wl%tiwai@suse.de>
+From: Manjunath A M <manjunatham@tataelxsi.co.in>
+Subject: Re: Audio driver for dbAu1250 Development board
+Date: Mon, 08 Jun 2009 12:36:30 +0530
+Message-ID: <4A2CB876.1080701@tataelxsi.co.in>
+References: <4A2793A6.9090800@tataelxsi.co.in>
+	<20090606131313.07e142f8@scarran.roarinelk.net>
+	<4A2C8C07.2060904@tataelxsi.co.in>
+	<20090608060616.GA20003@roarinelk.homelinux.net>
+Reply-To: manjunatham@tataelxsi.co.in
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.147])
-	by alsa0.perex.cz (Postfix) with ESMTP id B44DA103817
+Received: from smtpin1.mailsecure.in (SMTPIN1.mailsecure.in [121.241.224.1])
+	by alsa0.perex.cz (Postfix) with ESMTP id 73B4E2442E
 	for <alsa-devel@alsa-project.org>;
-	Wed, 10 Jun 2009 18:23:35 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 9so495224qwj.56
-	for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2009 09:23:34 -0700 (PDT)
-In-Reply-To: <s5hljo0mo7i.wl%tiwai@suse.de>
+	Mon,  8 Jun 2009 09:06:32 +0200 (CEST)
+In-Reply-To: <20090608060616.GA20003@roarinelk.homelinux.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,56 +25,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Manuel Lauss <mano@roarinelk.homelinux.net>
+Cc: alsa-devel@alsa-project.org, "nitinm76 at yahoo.com"@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sorry:
-ftp://kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.bz2
 
-Every app I've tried it with:)
+Thanks a lot, surely will test and comeback to you!!!
 
-Sound Blaster X-Fi SB0670 PCI Sound Card with emu20k1 chipset.
+Regards
+Manjunath.AM
+
+Manuel Lauss wrote:
+> Hello!
+>
+> On Mon, Jun 08, 2009 at 09:26:55AM +0530, Manjunath A M wrote:
+>   
+>> I need to use the kernel for DB1250 borad..with the patches that you are 
+>> suggesting will audio work on this board??
+>>     
+>
+> Yes, I don't  have any problems with audio playback on my Db1200.  A note
+> on I2S though:  you need to unmute the "HiFi Playback Switch" in alsamixer
+> before starting playback, otherwise the WM8731 won't provide bitclock and
+> you'll get timeout errors on playback.  AC97 works fine as-is.
+>
+>
+>   
+>> kindly provide me the link for patches that you are suggesting..
+>>     
+>
+> At a minimum, apply these here in this order:
+> http://marc.info/?l=linux-mips&m=124429033530426&w=2
+> http://marc.info/?l=linux-mips&m=124440001201703&w=2
+> http://marc.info/?l=linux-mips&m=124440013101823&w=2
+> http://marc.info/?l=linux-mips&m=124440005401759&w=2   (Db1200 audio)
+>
+> The last two contain new DB1200 support and DB1200 audio system; they
+> depend on the first two.
+>
+>
+>
+> These are part of 2 separate patchseries I posted to linux-mips over
+> the weekend.  I'd by very grateful if you could give them a spin,
+> Alchemy testers are very rare...
+>
+> These links point to the first patches in each series, apply them in
+> this order:
+> http://marc.info/?l=linux-mips&m=124429030830390&w=2
+> http://marc.info/?l=linux-mips&m=124440000101690&w=2
+>
+>
+> 	Manuel Lauss
+>
+>   
 
 
-On Wed, 2009-06-10 at 11:29 +0200, Takashi Iwai wrote:
-
-> At Wed, 10 Jun 2009 03:52:35 -0500,
-> Ted T. Logan wrote:
-> > 
-> > I killed pulseaudio and the problem is the same as far as every few seconds,
-> > just a different sound.  it seems to be the xfi driver.
-> 
-> Please be more specific, what apps did you test and how, and on which
-> hardware, with which alsa-driver.  There is no svn alsa-driver at
-> all, at least, as I know of.
-> 
-> If it's emu20k1 chip (not emu20k2), try use_system_timer=1 module
-> option snd-ctxfi driver.  This will take the timer management back to
-> the old one using the system timer.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> > I did not have this problem with XFiDrv_Linux_Public_US_1.00.tar.gz
-> > however, I am trying to get away from that driver because of other issues.
-> > 
-> > Thanks!
-> > 
-> > On Wed, 2009-06-10 at 03:39 -0500, Ted T. Logan wrote:
-> > 
-> >     Hello,
-> >    
-> >     I upgraded to fedora 11 with PA 9.15 and got the svn alsa-driver and
-> >     installed it for the x-fi driver.
-> >    
-> >     The problem is, with pulseaudio, i get a pop every few seconds
-> >     like, every 3 seconds, "pop" and it does it over and over and over
-> >    
-> >     I seem to get no sound at all with the card if I bypass pulse
-> >    
-> >     What can I do?
-> > 
-> > 
+The information contained in this electronic message and any attachments to this message are intended for the exclusive 
+use of the addressee(s) and may contain proprietary, confidential or privileged information. If you are not the intended
+ recipient, you should not disseminate, distribute or copy this e-mail. Please notify the sender immediately and destroy
+ all copies of this message and any attachments contained in it.
