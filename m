@@ -1,24 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/7] Alchemy: DB1200 AC97+I2S audio	support.
-Date: Mon, 8 Jun 2009 11:20:18 +0100
-Message-ID: <20090608102018.GA6547@rakim.wolfsonmicro.main>
-References: <1244399944-29043-1-git-send-email-manuel.lauss@gmail.com>
-	<1244399944-29043-2-git-send-email-manuel.lauss@gmail.com>
-	<1244399944-29043-3-git-send-email-manuel.lauss@gmail.com>
-	<1244399944-29043-4-git-send-email-manuel.lauss@gmail.com>
-	<1244399944-29043-5-git-send-email-manuel.lauss@gmail.com>
-	<20090608092521.GA7858@sirena.org.uk>
-	<f861ec6f0906080243g6be8e613p7ab9c2df66576be8@mail.gmail.com>
+From: Daniel Ribeiro <drwyrm@gmail.com>
+Subject: Re: [PATCH] ASoC: Allow 32bits registers
+Date: Mon, 08 Jun 2009 08:01:54 -0300
+Message-ID: <1244458914.30582.12.camel@brutus>
+References: <1244353751.9532.5.camel@brutus>
+	<20090608095031.GB7858@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============2445948355466168302=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AC50D2448E
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.146])
+	by alsa0.perex.cz (Postfix) with ESMTP id 60D07244BC
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Jun 2009 12:20:19 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <f861ec6f0906080243g6be8e613p7ab9c2df66576be8@mail.gmail.com>
+	Mon,  8 Jun 2009 13:03:14 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 4so1532050qwk.56
+	for <alsa-devel@alsa-project.org>; Mon, 08 Jun 2009 04:03:13 -0700 (PDT)
+In-Reply-To: <20090608095031.GB7858@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,78 +23,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Manuel Lauss <manuel.lauss@googlemail.com>
-Cc: Linux-MIPS <linux-mips@linux-mips.org>, alsa-devel@alsa-project.org, Ralf Baechle <ralf@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, openezx-devel <openezx-devel@lists.openezx.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 08, 2009 at 11:43:41AM +0200, Manuel Lauss wrote:
-> On Mon, Jun 8, 2009 at 11:25 AM, Mark
-> Brown<broonie@opensource.wolfsonmicro.com> wrote:
 
-> > If this is going to go in during the merge window I'm happy for it to go
-> > in via the MIPS tree but otherwise I'd much rather it goes via ASoC in
-> > case API changes cause merge issues. =A0I don't know what you prefer,
-> > Ralf?
+--===============2445948355466168302==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-3DHqpjjol0fkk1oHbz+B"
 
-> I'd rather have it all go through the MIPS tree; this is the only patch of
-> 7 which touches files outside it, and it depends on another one to
-> apply cleanly.
 
-Well, like I say if it's going via MIPS I'd really prefer it to go in
-this merge window.  If not then I'd expect that splitting out the
-architecture parts from the machine driver as I suggested ought to deal
-with the merge issues.
+--=-3DHqpjjol0fkk1oHbz+B
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> I'd actually love to move this file to the actual board code, however due
-> to the way ASoC is organized this isn't at all possible.  This is one of =
-two
-> things I don't like about ASoC: the machine registration is extremely awk=
-ward
+Em Seg, 2009-06-08 =C3=A0s 10:50 +0100, Mark Brown escreveu:
+> On Sun, Jun 07, 2009 at 02:49:11AM -0300, Daniel Ribeiro wrote:
+> > Replace the remaining unsigned shorts with unsigned ints.
+> > Tested with pcap2 codec (25 bits registers).
+> >=20
+> > Signed-off-by: Daniel Ribeiro <drwyrm@gmail.com>
+>=20
+> Thanks, I've applied this.  Given that the merge window is *very* close
+> and this is a fairly high risk change (in that it could affect a lot of
+> drivers) I've created a for-2.6.32 branch and applied it there.  I think
+> the change is perfectly safe but I'd rather be cautious.
 
-The main problem long term with trying to move it into the architecture
-code is that the drivers for anything non-trivial get large enough to
-qualify as actual drivers - add a jack or two in there, or some more
-fancy clocking for example.  I also catch enough errors in the machine
-drivers I'm reviewing that I'm a bit nervous about reducing the level of
-review that they get.
+ACK. And no driver on mainline needs >16bits at the moment...
 
-At the minute the APIs are too fluid to make this realistic, anyway -
-you'd just get constant merge issues.
+> BTW, there was one unrelated coding style change in there.
 
-> compared to other platform drivers. (the other being that ASoC doesn't
-> support multiple machines [i.e. I could actually run both AC97 and I2S
-> simultaneously one of my boards, as independent sound cards])
+Oops, sorry. My 'vim' highlights most coding style mistakes, I changed
+it without noticing.
 
-I've got a board sitting on my desk here which has multiple sound
-systems.  Unfortunately the architecture code for it is a bit of a
-shambles at this point so it's more trouble to work on the platform
-than it's worth at the minute.
+--=20
+Daniel Ribeiro
 
-> >> +static struct resource psc1_res[] =3D {
+--=-3DHqpjjol0fkk1oHbz+B
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Esta =?ISO-8859-1?Q?=E9?= uma parte de mensagem
+ assinada digitalmente
 
-> > If you conver the I2S driver to use the standard device probing model
-> > this could all me moved into the architecture code rather than placed in
-> > machine drivers.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
 
-> Again, I'd love to, but can't: the AC97/I2S/DBDMA drivers extract base ad=
-dress
-> and DMA information from the platform device resource structure;  however
-> I can't just copy the resource info from the this db1200_sound platform_d=
-river
-> to the soc_audio platform driver because the driver core complains about
-> resource conflicts (two platform_devices sharing the same resources).
-> Unless I missed a flag which needs to be passed to the resource.flags mem=
-ber?
+iEYEABECAAYFAkos75sACgkQw3OYl0G0liQHKwCgm+BKRONutP4ksVZnTtuCEDHu
+3LsAn1ydo9yzh6kA5QyHGm0N1IYPoMFF
+=c8Vy
+-----END PGP SIGNATURE-----
 
-If you move the selection of the switch position to the architecture
-code then it can arrange to register only the device that is in use in
-the current configuration.  If the DMA and DAI drivers both need the
-same resources they can cooperate with each other - the system will only
-bring the card on-line once both the DMA and DAI driver are present.
+--=-3DHqpjjol0fkk1oHbz+B--
 
-I'd not be too concerned about having the machine driver be able to flip
-between the two at run time - it's unlikely to be a realistic concern
-for anything except reference boards and even with those it's relatively
-unlikely that anyone will be doing that on a regular basis.  The wins
-for general users of the driver should cause an overall reduction in
-pain.
+
+--===============2445948355466168302==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============2445948355466168302==--
