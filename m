@@ -1,171 +1,133 @@
-From: "chaithrika" <chaithrika@ti.com>
-Subject: Re: [PATCH v4 2/4] ARM: DaVinci: ASoC: Introduce
-	platform driver model for dm644x, dm355
-Date: Mon, 8 Jun 2009 16:49:48 +0530
-Message-ID: <010601c9e82b$0909e150$1b1da3f0$@com>
-References: <1244197703-30980-1-git-send-email-chaithrika@ti.com>
-	<4A296524.9050505@boundarydevices.com>
+From: Manuel Lauss <manuel.lauss@googlemail.com>
+Subject: Re: [alsa-devel] [PATCH 4/7] Alchemy: DB1200 AC97+I2S audio support.
+Date: Mon, 8 Jun 2009 13:25:57 +0200
+Message-ID: <f861ec6f0906080425i388a99a1kb89667c749a815c8@mail.gmail.com>
+References: <1244399944-29043-1-git-send-email-manuel.lauss@gmail.com>
+	 <1244399944-29043-2-git-send-email-manuel.lauss@gmail.com>
+	 <1244399944-29043-3-git-send-email-manuel.lauss@gmail.com>
+	 <1244399944-29043-4-git-send-email-manuel.lauss@gmail.com>
+	 <1244399944-29043-5-git-send-email-manuel.lauss@gmail.com>
+	 <20090608092521.GA7858@sirena.org.uk>
+	 <f861ec6f0906080243g6be8e613p7ab9c2df66576be8@mail.gmail.com>
+	 <20090608102018.GA6547@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 40A7E10380A
-	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Jun 2009 13:19:37 +0200 (CEST)
-Received: from dflp53.itg.ti.com ([128.247.5.6])
-	by comal.ext.ti.com (8.13.7/8.13.7) with ESMTP id n58BJVIJ008154
-	for <alsa-devel@alsa-project.org>; Mon, 8 Jun 2009 06:19:36 -0500
-Received: from tidmzi-ftp.india.ext.ti.com (localhost [127.0.0.1])
-	by dflp53.itg.ti.com (8.13.8/8.13.8) with SMTP id n58BJTvH008640
-	for <alsa-devel@alsa-project.org>; Mon, 8 Jun 2009 06:19:30 -0500 (CDT)
-Received: from symphonyindia.ti.com (symphony-ftp [192.168.247.11])
-	by tidmzi-ftp.india.ext.ti.com (Postfix) with SMTP id 971BA3886B
-	for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2009 16:46:50 +0530 (IST)
-In-Reply-To: <4A296524.9050505@boundarydevices.com>
-Content-Language: en-us
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Troy Kisky' <troy.kisky@boundarydevices.com>
-Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com, 'Naresh Medisetty' <naresh@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <20090608102018.GA6547@rakim.wolfsonmicro.main>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Linux-MIPS <linux-mips@linux-mips.org>, Ralf Baechle <ralf@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jun 06, 2009 at 00:04:12, Troy Kisky wrote:
-> Chaithrika U S wrote:
-> > Introduce the platform driver model to get platform data for dm355 and
-dm644x.
-> > Register platform driver and acquire the resources in the probe function
-Since
-> > the platform specific code had been moved from machine driver to
-dm<soc>.c
-> > 
-> > Signed-off-by: Naresh Medisetty <naresh@ti.com>
-> > Signed-off-by: Chaithrika U S <chaithrika@ti.com>
-> > ---
-> > This patch applies against ALSA mainline - that's the topic/asoc
-> > branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
-> > 
-> >  sound/soc/davinci/davinci-i2s.c |  117
-++++++++++++++++++++++-----------------
-> >  1 files changed, 67 insertions(+), 50 deletions(-)
-> > 
-> > diff --git a/sound/soc/davinci/davinci-i2s.c
-b/sound/soc/davinci/davinci-i2s.c
-> > index b1ea52f..500d2f5 100644
-> > --- a/sound/soc/davinci/davinci-i2s.c
-> > +++ b/sound/soc/davinci/davinci-i2s.c
-> > @@ -436,16 +436,40 @@ static int davinci_i2s_trigger(struct
-snd_pcm_substream *substream, int cmd,
-> >  	return ret;
-> >  }
-> >  
-> > -static int davinci_i2s_probe(struct platform_device *pdev,
-> > -			     struct snd_soc_dai *dai)
-> > +#define DAVINCI_I2S_RATES	SNDRV_PCM_RATE_8000_96000
-> > +
-> > +static struct snd_soc_dai_ops davinci_i2s_dai_ops = {
-> > +	.startup 	= davinci_i2s_startup,
-> > +	.trigger	= davinci_i2s_trigger,
-> > +	.hw_params	= davinci_i2s_hw_params,
-> > +	.set_fmt	= davinci_i2s_set_dai_fmt,
-> > +
-> > +};
-> > +
-> > +struct snd_soc_dai davinci_i2s_dai = {
-> > +	.name = "davinci-i2s",
-> > +	.id = 0,
-> > +	.playback = {
-> > +		.channels_min = 2,
-> > +		.channels_max = 2,
-> > +		.rates = DAVINCI_I2S_RATES,
-> > +		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-> > +	.capture = {
-> > +		.channels_min = 2,
-> > +		.channels_max = 2,
-> > +		.rates = DAVINCI_I2S_RATES,
-> > +		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-> > +	.ops = &davinci_i2s_dai_ops,
-> > +
-> > +};
-> > +EXPORT_SYMBOL_GPL(davinci_i2s_dai);
-> > +
-> > +static int davinci_i2s_probe(struct platform_device *pdev)
-> >  {
-> > -	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-> > -	struct snd_soc_card *card = socdev->card;
-> > -	struct snd_soc_dai *cpu_dai = card->dai_link->cpu_dai;
-> > +	struct snd_platform_data *pdata = pdev->dev.platform_data;
-> >  	struct davinci_mcbsp_dev *dev;
-> > -	struct resource *mem, *ioarea;
-> > -	struct evm_snd_platform_data *pdata;
-> > -	int ret;
-> > +	struct resource *mem, *ioarea, *res;
-> > +	int ret = 0;
-> 
-> I would leave this as int ret;
-OK.
+Hi Mark,
 
-> >  
-> >  	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> >  	if (!mem) {
-> > @@ -466,9 +490,7 @@ static int davinci_i2s_probe(struct platform_device
-*pdev,
-> >  		goto err_release_region;
-> >  	}
-> >  
-> > -	cpu_dai->private_data = dev;
-> > -
-> > -	dev->clk = clk_get(&pdev->dev, NULL);
-> > +	dev->clk = clk_get(&pdev->dev, pdata->clk_name);
-> >  	if (IS_ERR(dev->clk)) {
-> >  		ret = -ENODEV;
-> >  		goto err_free_mem;
-> > @@ -476,18 +498,35 @@ static int davinci_i2s_probe(struct
-platform_device *pdev,
-> >  	clk_enable(dev->clk);
-> >  
-> >  	dev->base = (void __iomem *)IO_ADDRESS(mem->start);
-> > -	pdata = pdev->dev.platform_data;
-> >  
-> >  	dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK] = &davinci_i2s_pcm_out;
-> > -	dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK]->channel =
-pdata->tx_dma_ch;
-> >  	dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK]->dma_addr =
-> >  	    (dma_addr_t)(io_v2p(dev->base) + DAVINCI_MCBSP_DXR_REG);
-> >  
-> >  	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE] = &davinci_i2s_pcm_in;
-> > -	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE]->channel =
-pdata->rx_dma_ch;
-> >  	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE]->dma_addr =
-> >  	    (dma_addr_t)(io_v2p(dev->base) + DAVINCI_MCBSP_DRR_REG);
-> >  
-> > +	/* first TX, then RX */
-> > +	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-> > +	if (!res) {
-> > +		dev_err(&pdev->dev, "no DMA resource\n");
-> 
-> And set ret = -EIO; or something similar here.
-> 
-> > +		goto err_free_mem;
-> > +	}
-> > +	dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK]->channel = res->start;
-> > +
-> > +	res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
-> > +	if (!res) {
-> > +		dev_err(&pdev->dev, "no DMA resource\n");
-> 
-> And here
-> 
+On Mon, Jun 8, 2009 at 12:20 PM, Mark
+Brown<broonie@opensource.wolfsonmicro.com> wrote:
+> On Mon, Jun 08, 2009 at 11:43:41AM +0200, Manuel Lauss wrote:
+>> On Mon, Jun 8, 2009 at 11:25 AM, Mark
+>> Brown<broonie@opensource.wolfsonmicro.com> wrote:
+>
+>> > If this is going to go in during the merge window I'm happy for it=
+ to go
+>> > in via the MIPS tree but otherwise I'd much rather it goes via ASo=
+C in
+>> > case API changes cause merge issues. =A0I don't know what you pref=
+er,
+>> > Ralf?
+>
+>> I'd rather have it all go through the MIPS tree; this is the only pa=
+tch of
+>> 7 which touches files outside it, and it depends on another one to
+>> apply cleanly.
+>
+> Well, like I say if it's going via MIPS I'd really prefer it to go in
+> this merge window. =A0If not then I'd expect that splitting out the
+> architecture parts from the machine driver as I suggested ought to de=
+al
+> with the merge issues.
 
-OK. I will update these.
+I'll split it in two:  pure ASoC part and pure board part.  Agreed?
 
-Thanks,
-Chaithrika
+
+>> I'd actually love to move this file to the actual board code, howeve=
+r due
+>> to the way ASoC is organized this isn't at all possible. =A0This is =
+one of two
+>> things I don't like about ASoC: the machine registration is extremel=
+y awkward
+>> compared to other platform drivers. (the other being that ASoC doesn=
+'t
+>> support multiple machines [i.e. I could actually run both AC97 and I=
+2S
+>> simultaneously one of my boards, as independent sound cards])
+>
+> I've got a board sitting on my desk here which has multiple sound
+> systems. =A0Unfortunately the architecture code for it is a bit of a
+> shambles at this point so it's more trouble to work on the platform
+> than it's worth at the minute.
+
+Alchemy's can have up to 4 PSCs with variable base addresses and variab=
+le
+functions.  Currently, ASoC can't handle more than 1 AC97 codec (no ide=
+a
+how to pass DAI private data to the ac97 callbacks), and I also don't s=
+ee how
+to handle for instance 2 I2S machines with a WM8731 attached to each
+(i.e. how do I tell ASoC that wm8731 at bus0/0x1b belongs to machine A
+ and wm8731 at bus0/0x1c belongs to machine B?)
+
+This isn't a problem with the DB1200, as AC97 and I2S are connected to
+the same PSC, but the DB1550 and DB1300 do have independent AC97 and
+I2S.
+
+
+>> >> +static struct resource psc1_res[] =3D {
+>
+>> > If you conver the I2S driver to use the standard device probing mo=
+del
+>> > this could all me moved into the architecture code rather than pla=
+ced in
+>> > machine drivers.
+>
+>> Again, I'd love to, but can't: the AC97/I2S/DBDMA drivers extract ba=
+se address
+>> and DMA information from the platform device resource structure; =A0=
+however
+>> I can't just copy the resource info from the this db1200_sound platf=
+orm_driver
+>> to the soc_audio platform driver because the driver core complains a=
+bout
+>> resource conflicts (two platform_devices sharing the same resources)=
+=2E
+>> Unless I missed a flag which needs to be passed to the resource.flag=
+s member?
+>
+> If you move the selection of the switch position to the architecture
+> code then it can arrange to register only the device that is in use i=
+n
+> the current configuration. =A0If the DMA and DAI drivers both need th=
+e
+> same resources they can cooperate with each other - the system will o=
+nly
+> bring the card on-line once both the DMA and DAI driver are present.
+
+I think you misuderstood me.  Could you point out an in-kernel machine =
+which
+already implements what you suggested?
+
+The AC97/I2S dai drivers (psc-ac97/psc-i2s) extract the base address of=
+ the PSC
+they're supposed to drive from the platform_device passed via the probe=
+()
+callbacks, these in turn are called when a "soc_audio" platform device
+is called.
+I need to set either the ac97 or I2S platform data for soc_audio based =
+on the
+switch setting.  I can't register a "db1200_audio" platform device in t=
+he board
+code which in turn registers the "soc_audio" device and have them share
+the PSC mmio/irq/dma resources.
+
+        Manuel Lauss
