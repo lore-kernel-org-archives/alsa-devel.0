@@ -1,15 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 4/7] ASoC: Sort specialised mixers and muxes
-	together
-Date: Mon,  8 Jun 2009 15:28:50 +0100
-Message-ID: <1244471333-6485-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 6/7] ASoC: Coalesce power updates for PGAs
+Date: Mon,  8 Jun 2009 15:28:52 +0100
+Message-ID: <1244471333-6485-6-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20090608142734.GA6137@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BDDD824459
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D885D2445B
 	for <alsa-devel@alsa-project.org>;
 	Mon,  8 Jun 2009 16:28:57 +0200 (CEST)
 In-Reply-To: <20090608142734.GA6137@rakim.wolfsonmicro.main>
@@ -26,67 +25,50 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The more flexible value muxes and named mixers don't need to be sorted
-differently from a power management point of view, they are different
-only in terms of the control interface and not in terms of seqencing
-behaviour.
+Handle gain ramping for PGAs so we can coalesce their power updates too.
+This is not ideal since we can't cope properly with gain ramping for
+stereo paths but that was the case without coalescing and gain ramping
+is relatively infrequently used so the effects are limited.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/soc-dapm.c |   34 +++++++++++++++++-----------------
- 1 files changed, 17 insertions(+), 17 deletions(-)
+ sound/soc/soc-dapm.c |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 66f07cd..9187db1 100644
+index 3fc791c..7299ce4 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -57,15 +57,15 @@ static int dapm_up_seq[] = {
- 	[snd_soc_dapm_micbias] = 2,
- 	[snd_soc_dapm_mic] = 3,
- 	[snd_soc_dapm_mux] = 4,
--	[snd_soc_dapm_value_mux] = 5,
--	[snd_soc_dapm_dac] = 6,
--	[snd_soc_dapm_mixer] = 7,
--	[snd_soc_dapm_mixer_named_ctl] = 8,
--	[snd_soc_dapm_pga] = 9,
--	[snd_soc_dapm_adc] = 10,
--	[snd_soc_dapm_hp] = 11,
--	[snd_soc_dapm_spk] = 12,
--	[snd_soc_dapm_post] = 13,
-+	[snd_soc_dapm_value_mux] = 4,
-+	[snd_soc_dapm_dac] = 5,
-+	[snd_soc_dapm_mixer] = 6,
-+	[snd_soc_dapm_mixer_named_ctl] = 6,
-+	[snd_soc_dapm_pga] = 7,
-+	[snd_soc_dapm_adc] = 8,
-+	[snd_soc_dapm_hp] = 9,
-+	[snd_soc_dapm_spk] = 10,
-+	[snd_soc_dapm_post] = 11,
- };
+@@ -786,6 +786,10 @@ static void dapm_seq_run_coalesced(struct snd_soc_codec *codec,
+ 				pr_err("%s: pre event failed: %d\n",
+ 				       w->name, ret);
+ 		}
++
++		/* Lower PGA volume to reduce pops */
++		if (w->id == snd_soc_dapm_pga && !w->power)
++			dapm_set_pga(w, w->power);
+ 	}
  
- static int dapm_down_seq[] = {
-@@ -75,14 +75,14 @@ static int dapm_down_seq[] = {
- 	[snd_soc_dapm_spk] = 3,
- 	[snd_soc_dapm_pga] = 4,
- 	[snd_soc_dapm_mixer_named_ctl] = 5,
--	[snd_soc_dapm_mixer] = 6,
--	[snd_soc_dapm_dac] = 7,
--	[snd_soc_dapm_mic] = 8,
--	[snd_soc_dapm_micbias] = 9,
--	[snd_soc_dapm_mux] = 10,
--	[snd_soc_dapm_value_mux] = 11,
--	[snd_soc_dapm_supply] = 12,
--	[snd_soc_dapm_post] = 13,
-+	[snd_soc_dapm_mixer] = 5,
-+	[snd_soc_dapm_dac] = 6,
-+	[snd_soc_dapm_mic] = 7,
-+	[snd_soc_dapm_micbias] = 8,
-+	[snd_soc_dapm_mux] = 9,
-+	[snd_soc_dapm_value_mux] = 9,
-+	[snd_soc_dapm_supply] = 10,
-+	[snd_soc_dapm_post] = 11,
- };
+ 	if (reg >= 0) {
+@@ -797,6 +801,10 @@ static void dapm_seq_run_coalesced(struct snd_soc_codec *codec,
+ 	}
  
- static void pop_wait(u32 pop_time)
+ 	list_for_each_entry(w, pending, power_list) {
++		/* Raise PGA volume to reduce pops */
++		if (w->id == snd_soc_dapm_pga && w->power)
++			dapm_set_pga(w, w->power);
++
+ 		/* power up post event */
+ 		if (w->power && w->event &&
+ 		    (w->event_flags & SND_SOC_DAPM_POST_PMU)) {
+@@ -886,8 +894,6 @@ static void dapm_seq_run(struct snd_soc_codec *codec, struct list_head *list,
+ 		case snd_soc_dapm_line:
+ 		case snd_soc_dapm_spk:
+ 			/* No register support currently */
+-		case snd_soc_dapm_pga:
+-			/* Don't coalsece these yet due to gain ramping */
+ 			ret = dapm_generic_apply_power(w);
+ 			break;
+ 
 -- 
 1.6.3.1
