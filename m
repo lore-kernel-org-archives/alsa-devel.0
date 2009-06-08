@@ -1,36 +1,49 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Default enabling of mixer controls
-Date: Mon, 8 Jun 2009 13:14:48 +0100
-Message-ID: <20090608121447.GD7858@sirena.org.uk>
-References: <5A47E75E594F054BAF48C5E4FC4B92AB030591A896@dbde02.ent.ti.com>
+From: Manuel Lauss <manuel.lauss@googlemail.com>
+Subject: Re: [alsa-devel] [PATCH 4/7] Alchemy: DB1200 AC97+I2S audio support.
+Date: Mon, 8 Jun 2009 14:21:18 +0200
+Message-ID: <f861ec6f0906080521y4443b888gb81a78305dfca5e2@mail.gmail.com>
+References: <1244399944-29043-1-git-send-email-manuel.lauss@gmail.com>
+	 <1244399944-29043-2-git-send-email-manuel.lauss@gmail.com>
+	 <1244399944-29043-3-git-send-email-manuel.lauss@gmail.com>
+	 <1244399944-29043-4-git-send-email-manuel.lauss@gmail.com>
+	 <1244399944-29043-5-git-send-email-manuel.lauss@gmail.com>
+	 <20090608092521.GA7858@sirena.org.uk>
+	 <f861ec6f0906080243g6be8e613p7ab9c2df66576be8@mail.gmail.com>
+	 <20090608102018.GA6547@rakim.wolfsonmicro.main>
+	 <f861ec6f0906080425i388a99a1kb89667c749a815c8@mail.gmail.com>
+	 <20090608115336.GA25827@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 09BE924367
-	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Jun 2009 14:14:49 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB030591A896@dbde02.ent.ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <20090608115336.GA25827@rakim.wolfsonmicro.main>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Linux-MIPS <linux-mips@linux-mips.org>, Ralf Baechle <ralf@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 08, 2009 at 05:40:56PM +0530, Aggarwal, Anuj wrote:
+Mark,
 
-> Right now, they both come disabled in the default configuration and I
-> have to enable them explicitly by issuing the amixer cset command. How
-> can I do that automatically?
+> You should convert the DAI drivers to probe as normal platform device=
+s
+> and attach the resources used by the CPU to those devices rather than
+> attaching the data to soc-audio. =A0pxa2xx-ac97 does this, as do the
+> PowerPC drivers and the s3c64xx-i2s driver. =A0The DaVinci drivers
+> currently on the davinci branch of my git for merge after the merge
+> window do this too.
 
-Register writes in the DAI init function will probably do the job,
-however the general advice is to leave this up to user space.
+I see now what you mean, but this is ugly as sin:
+I now need to register 2 platform devices in the board code: 1 for the =
+DAI
+(with resources mmio + irq) and 1 for the DMA engine (with ddma id reso=
+urces),
+or register the DMA engine device from within the AC97/I2S drivers.
+
+This is in my opinion even worse than the current scheme, which at leas=
+t allows
+me to group all PSC resources into one struct resource which all audio-=
+related
+drivers can share without too much uglyness.
+
+       Manuel Lauss
