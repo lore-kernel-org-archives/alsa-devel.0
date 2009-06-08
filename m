@@ -1,23 +1,19 @@
-From: Eric Miao <eric.y.miao@gmail.com>
-Subject: Re: [PATCH 1/4] ASoC: pxa-ssp: enhance I2S and add
-	Left_J support
-Date: Mon, 8 Jun 2009 22:13:25 +0800
-Message-ID: <f17812d70906080713i76073b32vd9cc2e9a7f2334@mail.gmail.com>
-References: <f17812d70906030533m49eb023bid19a80231921f59b@mail.gmail.com>
-	<20090606201225.GA1029@sirena.org.uk>
-	<74d0deb30906080512q29b9915fvec9b068bf4b2e126@mail.gmail.com>
+From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
+Subject: Re: Default enabling of mixer controls
+Date: Mon, 8 Jun 2009 19:54:00 +0530
+Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB030591A903@dbde02.ent.ti.com>
+References: <5A47E75E594F054BAF48C5E4FC4B92AB030591A896@dbde02.ent.ti.com>
+	<20090608121447.GD7858@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
-	[209.85.221.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5C47A243BD
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id CBC3E2438A
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Jun 2009 16:13:28 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so3971056qyk.16
-	for <alsa-devel@alsa-project.org>; Mon, 08 Jun 2009 07:13:26 -0700 (PDT)
-In-Reply-To: <74d0deb30906080512q29b9915fvec9b068bf4b2e126@mail.gmail.com>
+	Mon,  8 Jun 2009 16:24:09 +0200 (CEST)
+In-Reply-To: <20090608121447.GD7858@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,61 +23,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: pHilipp Zabel <philipp.zabel@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Daniel Ribeiro <drwyrm@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBKdW4gOCwgMjAwOSBhdCA4OjEyIFBNLCBwSGlsaXBwIFphYmVsPHBoaWxpcHAuemFi
-ZWxAZ21haWwuY29tPiB3cm90ZToKPiBPbiBTYXQsIEp1biA2LCAyMDA5IGF0IDEwOjEyIFBNLCBN
-YXJrCj4gQnJvd248YnJvb25pZUBvcGVuc291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+
-PiBPbiBXZWQsIEp1biAwMywgMjAwOSBhdCAwODozMzo0MlBNICswODAwLCBFcmljIE1pYW8gd3Jv
-dGU6Cj4+Cj4+PiArLyogZnJhbWUgc2l6ZSBkZWZpbml0aW9ucyBmb3IgSTJTIGFuZCBMZWZ0X0og
-Zm9ybWF0cyAtIGRlZmF1bHQgaXMKPj4+ICsgKiAzMmZzLCBvdGhlciBwb3NzaWJpbGl0aWVzIGFy
-ZSA0OGZzLCA2NGZzIGFuZCA5NmZzCj4+PiArICovCj4+PiArI2RlZmluZSBQWEFfU1NQX0ZSTV8z
-MkZTIMKgIMKgICgwIDw8IDE2KQo+Pj4gKyNkZWZpbmUgUFhBX1NTUF9GUk1fNDhGUyDCoCDCoCAo
-MSA8PCAxNikKPj4+ICsjZGVmaW5lIFBYQV9TU1BfRlJNXzY0RlMgwqAgwqAgKDIgPDwgMTYpCj4+
-PiArI2RlZmluZSBQWEFfU1NQX0ZSTV85NkZTIMKgIMKgICgzIDw8IDE2KQo+Pj4gKyNkZWZpbmUg
-UFhBX1NTUF9GUk1fV0lEVEgoeCkgKCgoKCh4KSA+PiAxNikgJiAweDMpICsgMikgPDwgNCkKPj4+
-ICsKPj4KPj4gSSBzdGlsbCBoYXZlbid0IGNoZWNrZWQgdGhpcyBvbiBaeWxvbml0ZSBidXQgSSB3
-YW50ZWQgdG8gbWVudGlvbiB0aGVzZQo+PiBuZXcgREFJIGZvcm1hdCBiaXRzIGp1c3Qgbm93IC0g
-YXMgcHJldmlvdXNseSBkaXNjdXNzZWQgSSdtIG5vdAo+PiBlbnRodXNpYXN0aWMgYWJvdXQgdGhp
-cy4KPgo+IEFncmVlZC4gQWxzbywgaWYgSSBoYWQgdG8gdXNlIHRoaXMgdG8gY29uZmlndXJlIG1h
-Z2ljaWFuIHdpdGggRFNQX0EKPiAocmlnaHQgbm93IGl0IHNheXMgSTJTIGFuZCBMRUZUX0ogb25s
-eSwgYnV0IHdoeSBsaW1pdCBpdCB0byB0aGF0PyksCj4gSSdkIG5lZWQgYW4gYWRkaXRpb25hbCBQ
-WEFfU1NQX0ZSTV8xNkZTLgo+CgpUaGF0IHNob3VsZG4ndCBiZSBhIHByb2JsZW0gLSBpdCBjYW4g
-anVzdCBiZSBhZGRlZC4KCj4+wqBBcyB3ZWxsIGFzIHRoZSBwcmV2aW91cyBpc3N1ZXMgSSByYWlz
-ZWQgd2l0aAo+PiB0aGlzIGFwcHJvYWNoIEkgYWxzbyBtZWFudCB0byBtZW50aW9uIGlzIHRoYXQg
-dGhlIHVzZSBvZiBhIGJpdGZpZWxkIHdpbGwKPj4gaW5ldml0YWJseSByZXN0cmljdCB3aGF0IGNh
-biBiZSBleHByZXNzZWQsIGNhdXNpbmcgcmVhbCBwcm9ibGVtcyBmb3IKPj4gc29tZSBzeXN0ZW1z
-LiDCoEZvciBleGFtcGxlLCB0aGUgV005MDgxIHN1cHBvcnRzIHN5c3RlbXMgdXNpbmcgdXAgdG8g
-Mwo+PiBzdGVyZW8gVERNIHNsb3RzIGFuZCB1cCB0byAzMiBiaXQgc2FtcGxlcyBzbyBjb3VsZCBi
-ZSB1c2VkIGluIGEgc3lzdGVtCj4+IHdoaWNoIG5lZWRzIGEgMTkyZnMgYml0IGNsb2NrLgo+Pgo+
-PiBJZiB3ZSBkaWQgZGVjaWRlIHRvIGFkb3B0IHRoaXMgYXBwcm9hY2ggdGhlbiB0aGVzZSBkZWZp
-bmVzIHNob3VsZCBiZSBpbgo+PiB0aGUgQVNvQyBoZWFkZXJzIHJhdGhlciB0aGFuIHByaXZhdGUg
-dG8gdGhpcyBkcml2ZXIgLSBhcGFydCBmcm9tCj4+IGFueXRoaW5nIGVsc2UsIHRoZXJlJ3MgZXZl
-cnkgY2hhbmNlIHRoYXQgYWRkaXRpb25zIHRvIHRoZSBzdGFuZGFyZCBiaXRzCj4+IGNvdWxkIGVu
-ZCB1cCBjb2xsaWRpbmcgd2l0aCB0aGlzLgo+Pgo+PiBJJ20gc3RpbGwgbm90IHN1cmUgd2hhdCB0
-aGUgYmVzdCB3YXkgdG8gaGFuZGxlIHRoaXMgaXMgZHVlIHRvIHRoZQo+PiBpbnRlcmFjdGlvbiB3
-aXRoIFRETSBtb2RlLiDCoFRoZSBmYWN0IHRoYXQgVERNIG1vZGUgcmVhbGx5IHdhbnRzIHRvCj4+
-IGFsd2F5cyBleHBsaWNpdGx5IHNwZWNpZnkgdGhlIGZyYW1lIHdpZHRoIGluIG9yZGVyIHRvIGFs
-bG93IHRoZSBzYW1wbGUKPj4gc2l6ZSBpbiBlYWNoIHNsb3QgdG8gdmFyeSBzdWdnZXN0cyB0aGF0
-IG9uZSBvcHRpb24gd291bGQgYmUgdG8gYWRkIGEKPj4gc2FtcGxlIHdpZHRoIHBhcmFtZXRlciB0
-byBzZXRfdGRtX3Nsb3QoKSAtIGdpdmVuIHRoZSB2ZXJ5IHNtYWxsIG51bWJlcgo+PiBvZiBpbiB0
-cmVlIHVzZXJzIGl0J2QgY2F1c2UgbGl0dGxlIGRpc3J1cHRpb24uIMKgQSBzZXRfc2FtcGxlX3dp
-ZHRoKCkKPj4gb3BlcmF0aW9uIGNvdWxkIGFsc28gYmUgYWRkZWQuCgpXZWxsLCB0aGUgcmVhbCBw
-cm9ibGVtIGlzIHRoYXQgaXQncyBxdWl0ZSBkaWZmaWN1bHQgdG8gYWJzdHJhY3QgYWxsCnRoZSBk
-aWZmZXJlbnQgZm9ybWF0cyBpbnRvIGEgc2luZ2xlIHN0cnVjdHVyZS4gSSdkIHByZWZlciB0byBo
-YXZlCnNvbWV0aGluZyBzcGVjaWZpYyBhdCB0aGUgYmVnaW5pbmcuCgo+Cj4gc2V0X3NhbXBsZV93
-aWR0aCBvciBzZXRfZnJhbWVfd2lkdGg/Cj4gSSdkIHByZWZlciBhIHNlcGFyYXRlIG9wZXJhdGlv
-biBvdmVyIGEgcGFyYW1ldGVyIHRvIHNldF90ZG1fc2xvdCBiZWNhdXNlCj4gaW4gbXkgc2V0dXAg
-SSBqdXN0IG5lZWQgdG8gZm9yY2UgdGhlIChTU1ApIGZyYW1lIHdpZHRoIHRvIDE2IGJpdHMuCj4g
-RW5hYmxpbmcgbmV0d29yayBtb2RlIGFuZCBjYWxsaW5nIHNldF90ZG1fc2xvdCguLiwxLDEpIHdv
-dWxkbid0IGJlCj4gbmVjZXNzYXJ5IGF0IGFsbCwgdGhlbi4KCkFzIHNhaWQsIGlmIHdlIGNhbiBp
-bnZlbnQgc29tZXRoaW5nIGxpa2UgYSBzaW5nbGUgc3RydWN0dXJlCm1ha2luZyBhbGwgZm9ybWF0
-cyBoYXBweSwgaXQgd2lsbCBiZSBnb29kLiBIb3dldmVyLCBiZWZvcmUKdGhhdCdzIHBvc3NpYmxl
-LCBJJ2QgcmVhbGx5IHByZWZlciBsZXNzIEFQSSBmb3IgdGhlIGZvcm1hdHMgYmVpbmcKZnVydGhl
-ciBpbnRyb2R1Y2VkLCBzbyB3ZSBnbyBubyBmdXJ0aGVyIGZyb20gdGhhdCBnb2FsLgoKPgo+IHJl
-Z2FyZHMKPiBQaGlsaXBwCj4KCgoKLS0gCkNoZWVycwotIGVyaWMKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+It is not working for me. 
+
+I wrote this small piece of code:
+
+static int omap3evm_twl4030_init(struct snd_soc_codec *codec)
+{
+	unsigned short reg;
+
+	printk (KERN_DEBUG "inside omap3evm_twl4030_init\n\n");
+	
+	/* Enable Analog Left Capture Route AUXL */
+	reg = codec->read(codec, TWL4030_REG_ANAMICL);
+	reg |= TWL4030_AUXL_EN;
+	codec->write(codec, TWL4030_REG_ANAMICL, reg);
+
+	/* Enable Analog Right Capture Route AUXR */
+	reg = codec->read(codec, TWL4030_REG_ANAMICR);
+	reg |= TWL4030_AUXR_EN;
+	codec->write(codec, TWL4030_REG_ANAMICR, reg);
+
+	return 0;
+}
+
+After that, if I do a get on Analog Left Capture Route AUXL (or the other),
+I am seeing that it has been turned ON. However, when I try to capture,
+It doesn't work. I have to disable it first and then re-enable it to
+capture properly.
+
+Any clues?
+
+Regards,
+Anuj Aggarwal
+
+> -----Original Message-----
+> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-
+> project.org] On Behalf Of Mark Brown
+> Sent: Monday, June 08, 2009 5:45 PM
+> To: Aggarwal, Anuj
+> Cc: alsa-devel@alsa-project.org
+> Subject: Re: [alsa-devel] Default enabling of mixer controls
+> 
+> On Mon, Jun 08, 2009 at 05:40:56PM +0530, Aggarwal, Anuj wrote:
+> 
+> > Right now, they both come disabled in the default configuration and I
+> > have to enable them explicitly by issuing the amixer cset command. How
+> > can I do that automatically?
+> 
+> Register writes in the DAI init function will probably do the job,
+> however the general advice is to leave this up to user space.
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
