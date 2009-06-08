@@ -1,18 +1,17 @@
-From: "Harsha, Priya" <priya.harsha@intel.com>
-Subject: Re: Indirect Callback with ack is called with no data
-Date: Mon, 8 Jun 2009 19:21:45 +0530
-Message-ID: <98769532B4BB14429434178695419EAE584F05F0@bgsmsx501.gar.corp.intel.com>
-References: <BAY119-W8E3C7EC7BE9C8606E2D28B0480@phx.gbl>
+From: Fausto Carvalho Marques SIlva <fausto@tse.gov.br>
+Subject: Re: Setting gain/volume of PCM capture or playback
+Date: Mon, 08 Jun 2009 10:59:18 -0300
+Message-ID: <4A2D1936.1010604@tse.gov.br>
+References: <edeadc8c0906051922m2b0d7e97we01bff33157d5197@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id E08152442E
+Received: from dexter.tse.gov.br (dexter.tse.gov.br [200.186.60.31])
+	by alsa0.perex.cz (Postfix) with ESMTP id 667C424436
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Jun 2009 15:51:58 +0200 (CEST)
-In-Reply-To: <BAY119-W8E3C7EC7BE9C8606E2D28B0480@phx.gbl>
-Content-Language: en-US
+	Mon,  8 Jun 2009 15:58:09 +0200 (CEST)
+In-Reply-To: <edeadc8c0906051922m2b0d7e97we01bff33157d5197@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,60 +21,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: erumusele Odigie <erumusele@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+I think you could do that way :
 
-I am facing this issue with flash.
+*****************************************************************
+    if (salsa_volume(hctl,"PCM Playback Volume",volume)) {
+        salsa_close(hctl);
+        return;
+    }
+*****************************************************************
 
-With aplay and paplay, the audio drivers are working perfectly ok.
+*****************************************************************
+static int salsa_volume(snd_hctl_t * hctl,char * device,int vol)
+{
+    int 
+err;                                                                                                                                                 
 
-With flash player, the audio stops after sometime. The reason is that flash player is not sending data. All the data sent from Flash has been played out and reported accurately as well in _pointer function.
+    snd_ctl_elem_id_t *id;
+    snd_ctl_elem_value_t *control;
 
-Can anyone help with any clues of flash player working with ALSA? 
+    snd_ctl_elem_id_alloca(&id);
+    snd_ctl_elem_id_set_name(id,device);
+    snd_ctl_elem_id_set_interface(id, SND_CTL_ELEM_IFACE_MIXER);
 
-This would really help.
+    snd_hctl_elem_t *elem = snd_hctl_find_elem(hctl, id);
 
-Thanks
-Harsha
+    snd_ctl_elem_value_alloca(&control);
+    snd_ctl_elem_value_set_id(control, id);
+
+    if (vol>= 0 && vol<=31) {
+        snd_ctl_elem_value_set_integer(control,1,vol);
+        snd_ctl_elem_value_set_integer(control,0,vol);
+    } else
+        return -1;
+
+    err = snd_hctl_elem_write(elem, control);
+
+    if (err < 0)
+        return -1;
+    return 0;
+}
+*****************************************************************
 
 
------Original Message-----
-From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Singaravelan Nallasellan
-Sent: Friday, June 05, 2009 5:19 PM
-To: alsa-devel@alsa-project.org
-Subject: [alsa-devel] Indirect Callback with ack is called with no data
+Helped??
+
+erumusele Odigie wrote:
+> Hi,
+>
+> I am new to programming with ALSA, and I would like to find out how to
+> change the gain (capture or playback) for my PCM device in my C code.
+>
+> I am aware I am supposed to use the mixer API, possibly functions like:
+> snd_mixer_selem_set_playback_volume()
+>
+> but I don't know how this function can be connected to my PCM
+> structure/device.
+>
+> Please whoever answers this should kindly attach some sample code, or a link
+> to sample code because I can't find any on line.
+>
+> Thanks a lot.
+>
+> Erumusele
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>   
 
 
- 
-
-I am using indirect callback mechanism inside ack. I see that ack does not call my indirect callback pointer. Going through the code, I suspect that the appl_ptr is not being incremented and there is no data for the indirect callback to be called. 
-
- 
-
-After few acks, I get the indirect callback called. 
-
- 
-
-With aplay, I am able to play the wav file. But with flash, there is not data being sent to the driver.
-
- 
-
-Please help me with any clues.
-
- 
-
-Thanks in advance.
-
- 
-
-Sing
-
-_________________________________________________________________
-Insert movie times and more without leaving Hotmail(r). 
-http://windowslive.com/Tutorial/Hotmail/QuickAdd?ocid=TXT_TAGLM_WL_HM_Tutorial_QuickAdd_062009
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+-- 
+Fausto Carvalho
+TSE/STI/CSELE/SEVIN
+61 3316-3527
