@@ -1,23 +1,22 @@
-From: Daniel Ribeiro <drwyrm@gmail.com>
-Subject: Re: [PATCH 1/4] ASoC: pxa-ssp: enhance I2S and add
- Left_J support
-Date: Mon, 08 Jun 2009 13:25:32 -0300
-Message-ID: <1244478332.30582.83.camel@brutus>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/4] ASoC: pxa-ssp: enhance I2S and
+	add	Left_J support
+Date: Mon, 8 Jun 2009 17:38:35 +0100
+Message-ID: <20090608163835.GA14026@rakim.wolfsonmicro.main>
 References: <f17812d70906030533m49eb023bid19a80231921f59b@mail.gmail.com>
 	<20090606201225.GA1029@sirena.org.uk>
 	<74d0deb30906080512q29b9915fvec9b068bf4b2e126@mail.gmail.com>
 	<20090608124045.GE7858@sirena.org.uk>
 	<74d0deb30906080858m7dc52cfaxfbb6366c529fc0e2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4232622924357744445=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
-	[209.85.221.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 68AC7103877
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D8039103877
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Jun 2009 18:26:54 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so4109571qyk.16
-	for <alsa-devel@alsa-project.org>; Mon, 08 Jun 2009 09:26:51 -0700 (PDT)
+	Mon,  8 Jun 2009 18:38:36 +0200 (CEST)
+Content-Disposition: inline
 In-Reply-To: <74d0deb30906080858m7dc52cfaxfbb6366c529fc0e2@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,57 +28,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: pHilipp Zabel <philipp.zabel@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Daniel Ribeiro <drwyrm@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Jun 08, 2009 at 05:58:54PM +0200, pHilipp Zabel wrote:
+> On Mon, Jun 8, 2009 at 2:40 PM, Mark
 
---===============4232622924357744445==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-b7nYZUZ53t0WSfr41b54"
+> > OOI which MUA are you using? =A0I've noticed several people with this v=
+ery
+> > odd word wrapping the past day.
 
+> This mail was sent with the Google Mail web interface.
 
---=-b7nYZUZ53t0WSfr41b54
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Ah.  Why am I not surprised. :/
 
-Em Seg, 2009-06-08 =C3=A0s 17:58 +0200, pHilipp Zabel escreveu:
+> > I'm inclined to go with sample here since it seems harder for the
+> > machine drivers to get wrong but I've not really thought it through yet?
+
 > I thought sample width is determined by the snd_pcm_hw_params. But
 > maybe I'm mixing up alsa sample width vs sample width on the wire?
+
+Essentially what we're doing here is providing a mechanism to specify a
+separate wire format.
+
 > I'm leaning towards set_frame_width because that's directly what I
 > want to do: override pxa_ssp_hw_params' standard decision to use
 > 32-bit frames for S16_LE stereo and set 16-bit frames instead.
 
-Actually, the current code is not doing this. It is using 32bit DMA, but
-with 16bit frame size on the wire for S16_LE stereo (unless you setup 2
-timeslots).
+Hrm.  Now I remember what you're doing - you're trying to essentially
+send your stereo stream as mono data due to your hardware either having
+a flip flop or an entertainingly non-standard CODEC which needs a frame
+sync per sample rather than per frame.
 
---=20
-Daniel Ribeiro
+> > OTOH I don't really see much difference between the two cases - it's
+> > just an extra couple of parameters on the end of the call.
 
---=-b7nYZUZ53t0WSfr41b54
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Esta =?ISO-8859-1?Q?=E9?= uma parte de mensagem
- assinada digitalmente
+> Technically there isn't. It just seems much more obvious to me to
+> write something like:
+>     /* nonstandard: 16-bit frames, even for 2x 16-bit stereo */
+>     if (params_format(params) =3D=3D ..._S16_LE)
+>         set_frame_size(16);
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
+Thing is, I'd expect this would be just as likely to cause the CPU to
+discard every other sample since it doesn't have enough clocks to clock
+out a stereo sample in the frame.
 
-iEYEABECAAYFAkotO3wACgkQw3OYl0G0liQvSwCgiw/soGQf4Umhjgb3H0R/VTs8
-2qUAn2B5LLHCBBEYGptaANTqwiuO/WNm
-=lGNf
------END PGP SIGNATURE-----
+It occurs to me that this is something that it might be better to work
+around this with a user space plugin which rewrites the sample formats
+on the way down to the driver so that it claims the stream is configured
+as mono even if it's stereo :/  Not sure how practical that is or if
+there's a sensible way to do that in kernel space.
 
---=-b7nYZUZ53t0WSfr41b54--
+> in the machine driver instead of:
+>     /* nonstandard: 16-bit frames, even for 2x 16-bit stereo
+>      * pxa_ssp_hw_params will check for TTSA=3D=3D1
+>      * and then set the frame size accordingly
+>      */
+>     set_tdm_slot(1,1);
+> especially as I don't really need network mode at all.
 
+Same issue with "it's a surprise it works" applies here.
 
---===============4232622924357744445==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============4232622924357744445==--
+That TDM configuration ought to disable network mode if the driver
+doesn't need it.
