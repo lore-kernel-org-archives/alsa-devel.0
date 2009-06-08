@@ -1,23 +1,26 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/4] ASoC: pxa-ssp: enhance I2S and
-	add	Left_J support
-Date: Mon, 8 Jun 2009 17:53:28 +0100
-Message-ID: <20090608165328.GB14026@rakim.wolfsonmicro.main>
+From: pHilipp Zabel <philipp.zabel@gmail.com>
+Subject: Re: [PATCH 1/4] ASoC: pxa-ssp: enhance I2S and add
+	Left_J support
+Date: Mon, 8 Jun 2009 19:18:16 +0200
+Message-ID: <74d0deb30906081018q903c68fuffc6c60d94ebd064@mail.gmail.com>
 References: <f17812d70906030533m49eb023bid19a80231921f59b@mail.gmail.com>
 	<20090606201225.GA1029@sirena.org.uk>
 	<74d0deb30906080512q29b9915fvec9b068bf4b2e126@mail.gmail.com>
 	<20090608124045.GE7858@sirena.org.uk>
-	<1244477000.30582.72.camel@brutus>
+	<74d0deb30906080858m7dc52cfaxfbb6366c529fc0e2@mail.gmail.com>
+	<20090608163835.GA14026@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EE54C244FF
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id F12C22451E
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Jun 2009 18:53:29 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1244477000.30582.72.camel@brutus>
+	Mon,  8 Jun 2009 19:18:16 +0200 (CEST)
+Received: by ewy23 with SMTP id 23so4385982ewy.32
+	for <alsa-devel@alsa-project.org>; Mon, 08 Jun 2009 10:18:16 -0700 (PDT)
+In-Reply-To: <20090608163835.GA14026@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,64 +30,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Ribeiro <drwyrm@gmail.com>
-Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, pHilipp Zabel <philipp.zabel@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Daniel Ribeiro <drwyrm@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 08, 2009 at 01:03:20PM -0300, Daniel Ribeiro wrote:
-> Em Seg, 2009-06-08 =E0s 13:40 +0100, Mark Brown escreveu:
+On Mon, Jun 8, 2009 at 6:38 PM, Mark
+Brown<broonie@opensource.wolfsonmicro.com> wrote:
+> On Mon, Jun 08, 2009 at 05:58:54PM +0200, pHilipp Zabel wrote:
+>> On Mon, Jun 8, 2009 at 2:40 PM, Mark
+>
+>> > OOI which MUA are you using? =A0I've noticed several people with this =
+very
+>> > odd word wrapping the past day.
+>
+>> This mail was sent with the Google Mail web interface.
+>
+> Ah. =A0Why am I not surprised. :/
+>
+>> > I'm inclined to go with sample here since it seems harder for the
+>> > machine drivers to get wrong but I've not really thought it through ye=
+t?
+>
+>> I thought sample width is determined by the snd_pcm_hw_params. But
+>> maybe I'm mixing up alsa sample width vs sample width on the wire?
+>
+> Essentially what we're doing here is providing a mechanism to specify a
+> separate wire format.
+>
+>> I'm leaning towards set_frame_width because that's directly what I
+>> want to do: override pxa_ssp_hw_params' standard decision to use
+>> 32-bit frames for S16_LE stereo and set 16-bit frames instead.
+>
+> Hrm. =A0Now I remember what you're doing - you're trying to essentially
+> send your stereo stream as mono data due to your hardware either having
+> a flip flop [...]
 
-> > I'm inclined to go with sample here since it seems harder for the
-> > machine drivers to get wrong but I've not really thought it through yet?
+Exactly.
 
-> But sample wouldn't cover all cases. eg, magician and ezx uses the same
-> sample size, but magician needs 16bit frames and ezx 32bits frames.
+>> > OTOH I don't really see much difference between the two cases - it's
+>> > just an extra couple of parameters on the end of the call.
+>
+>> Technically there isn't. It just seems much more obvious to me to
+>> write something like:
+>> =A0 =A0 /* nonstandard: 16-bit frames, even for 2x 16-bit stereo */
+>> =A0 =A0 if (params_format(params) =3D=3D ..._S16_LE)
+>> =A0 =A0 =A0 =A0 set_frame_size(16);
+>
+> Thing is, I'd expect this would be just as likely to cause the CPU to
+> discard every other sample since it doesn't have enough clocks to clock
+> out a stereo sample in the frame.
 
-See my reply to Philip - even with frame size his case is going to be
-very hard to cover in a standard fashion since it's not clear what to do
-when your frame clock is run too fast relative to your bit clock.  On
-the receive side a lot of devices are just going to discard incomplete
-stereo frames.
+Ah right, and it would. That's why I set up DMA to only transfer 16
+bits in this case. It's the reason for the existance of this snippet
+in pxa-ssp:
 
-> Just to confirm that I'm understanding the terminology here..
-> Sample size is SNDRV_PCM_FORMAT_*, and frame size is the actual distance
-> in clocks between each SSPFRM assertion. Is this correct?
+        /* Network mode with one active slot (ttsa =3D=3D 1) can be used
+         * to force 16-bit frame width on the wire (for S16_LE), even
+         * with two channels. Use 16-bit DMA transfers for this case.
+         */
+        if (((chn =3D=3D 2) && (ttsa !=3D 1)) || (width =3D=3D 32))
+                dma +=3D 2; /* 32-bit DMA offset is 2, 16-bit is 0 */
 
-That's pretty much my understanding - sample size is the number of bits
-clocked per mono sample on the wire and frame size is the number of bits
-clocked per cycle of the frame clock.
+Which makes me wonder, whether it wouldn't generally be more accurate
+to calculate the DMA transfer size as ssp_framewidth *
+number_of_active_slots. Decreasing the DMA transfer size instead of
+throwing away half the data (whether it is due to misconfiguration or
+due to a strange special case like mine) should be a sane default?
 
-> > OTOH I don't really see much difference between the two cases - it's
-> > just an extra couple of parameters on the end of the call.  That said,
+> It occurs to me that this is something that it might be better to work
+> around this with a user space plugin which rewrites the sample formats
+> on the way down to the driver so that it claims the stream is configured
+> as mono even if it's stereo :/ =A0Not sure how practical that is or if
+> there's a sensible way to do that in kernel space.
 
-> I agree with pHilipp, I don't need to set network mode for normal
-> operation, but i want to be able to use real network mode.
+Please, don't do this to me :)
+As it works the way it is now, I don't see how moving this to
+userspace improves things (except that you'd get rid of the two code
+lines quoted above).
 
-Network mode is just a detail of the implementation of the PXA here - it
-should not be visible outside the pxa-ssp driver.  Or to put it another
-way setting a tdm_slot of 1, 1 ought to result in the same behaviour as
-disabling TDM as far as the user is concerned.
+>> in the machine driver instead of:
+>> =A0 =A0 /* nonstandard: 16-bit frames, even for 2x 16-bit stereo
+>> =A0 =A0 =A0* pxa_ssp_hw_params will check for TTSA=3D=3D1
+>> =A0 =A0 =A0* and then set the frame size accordingly
+>> =A0 =A0 =A0*/
+>> =A0 =A0 set_tdm_slot(1,1);
+>> especially as I don't really need network mode at all.
+>
+> Same issue with "it's a surprise it works" applies here.
 
-> Using set_tdm_slot to setup this also seems awkward, because the dma
-> configuration to use is also affected by the frame size.
+See above, reducing the DMA transfer size works as expected.
 
-I'd not expect it to be?
+> That TDM configuration ought to disable network mode if the driver
+> doesn't need it.
 
-> And finally, set_tdm_mode doesn't cover all use cases, I may want to
-> receive on a timeslot and keep the TX line high impedance, or I may want
-> to use a different timeslot for TX...
+Ok.
 
-Yes, set_tdm_mode() needs separate RX and TX configuration regardless -
-if we added the framing configuration in there we should definitely make
-that change at that point.
-
-> My suggestion here is to make a clear distinction between normal mode
-> and network mode. We should not abuse SSCR0_MOD when we don't need it.
-> We should not require the machine driver to call set_tdm_slot when it
-> doesn't need to. And for frame sizes that really need SSCR0_MOD to be
-> set we should issue a warning telling that network mode was
-> "automatically" enabled.
-
-I'd like to see all these details handled within the driver - knowing if
-and when network mode are to be set up is the sort of thing that users
-ought to be able to rely on the driver for.
+regards
+Philipp
