@@ -1,27 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/7] Alchemy: DB1200 AC97+I2S audio	support.
-Date: Mon, 8 Jun 2009 16:24:20 +0100
-Message-ID: <20090608152420.GC6413@rakim.wolfsonmicro.main>
-References: <20090608092521.GA7858@sirena.org.uk>
-	<f861ec6f0906080243g6be8e613p7ab9c2df66576be8@mail.gmail.com>
-	<20090608102018.GA6547@rakim.wolfsonmicro.main>
-	<f861ec6f0906080425i388a99a1kb89667c749a815c8@mail.gmail.com>
-	<20090608115336.GA25827@rakim.wolfsonmicro.main>
-	<f861ec6f0906080521y4443b888gb81a78305dfca5e2@mail.gmail.com>
-	<20090608124411.GA3396@rakim.wolfsonmicro.main>
-	<f861ec6f0906080611i2c03709cg621aeb87d084dd00@mail.gmail.com>
-	<20090608134541.GA4765@rakim.wolfsonmicro.main>
-	<f861ec6f0906080748x4b9fd196m27c1ef3a8af9542d@mail.gmail.com>
+From: Dan Allongo <gongo2k1@gmail.com>
+Subject: Re: PATCH: C-Media 6206 USB Audio
+Date: Mon, 8 Jun 2009 11:37:15 -0400
+Message-ID: <194d079b0906080837q5d2e6e83vb0fcfab86008e1c0@mail.gmail.com>
+References: <194d079b0906071946n8a67312se5d23f7080496fea@mail.gmail.com>
+	<s5hd49fqo3z.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CDD34244AE
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id C5965244BF
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Jun 2009 17:24:21 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <f861ec6f0906080748x4b9fd196m27c1ef3a8af9542d@mail.gmail.com>
+	Mon,  8 Jun 2009 17:37:18 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id l33so741003rvb.32
+	for <alsa-devel@alsa-project.org>; Mon, 08 Jun 2009 08:37:16 -0700 (PDT)
+In-Reply-To: <s5hd49fqo3z.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,59 +24,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Manuel Lauss <manuel.lauss@googlemail.com>
-Cc: Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 08, 2009 at 04:48:23PM +0200, Manuel Lauss wrote:
+>From 888c94e4f714bdec2f0959a540721dd700fc8c88 Mon Sep 17 00:00:00 2001
+From: Dan Allongo <gongo2k1@gmail.com>
+Date: Mon, 8 Jun 2009 11:21:52 -0400
+Subject: [PATCH - CM6206 1/1]     modified:   sound/usb/usbaudio.c
 
-> What annoys me most is the need to actually have the machine code file
-> in the first place.  Or more precisely, the location of it.  It should
-> be located
-> where the rest of the board code lives.
+Added boot quirk for C-Media CM6206 device in snd_usb_audio_probe.
+The function snd_usb_cm6206_boot_quirk sets up six internal 16-bit
+registers in order to initialize the device. Values for the registers
+came from sniffing USB traffic under Windows since only four of the six
+are documented in the datasheet for CM106 and some reserved bits were
+also being set.
 
-Like I say, review and API changes are the main factors here at the
-minute.  You will also always get some machines that are substantial
-enough to warrant "real" drivers too due to having controls plus complex
-and configurable clocking and routing (few of these make it mainline
-ATM).
+Signed-off-by: Dan Allongo <gongo2k1@gmail.com>
 
-> The other thing is the "soc_audio" platform device itself.  Instead of reg-
-> istering a platform device for soc audio, how about a function call to
-> setup an asoc device.   Multiple calls create multiple alsa devices,
-> the argument describes the audio fabric.
+diff --git a/sound/usb/usbaudio.c b/sound/usb/usbaudio.c
+index a8ef2cb..94e43ee 100644
+--- a/sound/usb/usbaudio.c
++++ b/sound/usb/usbaudio.c
+@@ -3291,6 +3291,24 @@ static int snd_usb_cm106_boot_quirk(struct usb_device
+*dev)
+     return snd_usb_cm106_write_int_reg(dev, 2, 0x8004);
+ }
 
-This is waiting for the multiple card support - if you take a look at
-how the soc-audio device is implemented at the minute you'll see it
-calls a function snd_soc_register_card() that's currently not exported.
-Once multi-card support is there the interface to it will be changed a
-bit and it will be exposed directly to machine drivers and the soc-audio
-device will go away, though I'll leave it there for a while in order to
-provide a transition period for machine drivers.
++/*
++ * C-Media CM6206 is based on CM106 with two additional
++ * registers that are not documented in the data sheet.
++ * Values here are chosen based on sniffing USB traffic
++ * under Windows.
++ */
++static int snd_usb_cm6206_boot_quirk(struct usb_device *dev)
++{
++    int err, reg;
++    int val[] = {0x200c,0x3000,0xf800,0x143f,0x0000,0x3000};
++
++    for (reg = 0; reg < 6; reg++) {
++        if ((err = snd_usb_cm106_write_int_reg(dev, reg, val[reg])) < 0)
++            return err;
++    }
++
++    return err;
++}
 
-At the minute you can probably create multiple soc-audio devices and
-it's likely to work in some configurations but not supported.
+ /*
+  * Setup quirks
+@@ -3577,6 +3595,12 @@ static void *snd_usb_audio_probe(struct usb_device
+*dev,
+             goto __err_val;
+     }
 
-> > Please submit anyway but at some point someone is going to have to
-> > convert the driver - I'm intending to leave as long a transition period
-> > as I can but at some point it's going to block other enhancements.
++    /* C-Media CM6206 / CM106-Like Sound Device */
++    if (id == USB_ID(0x0d8c, 0x0102)) {
++        if (snd_usb_cm6206_boot_quirk(dev) < 0)
++            goto __err_val;
++    }
++
+     /*
+      * found a config.  now register to ALSA
+      */
+-- 
+1.5.6.5
 
-> I attached an untested patch (an addon to the patch which started this thread)
-> which does this.  Please have a look and tell me if this is what
-> suggested initially?
 
-Pretty much, though I suspect there's some confusion between the probe
-functions going on there (there's far too many of them in ASoC at the
-minute - I intend to streamline things a bit in the future but first I
-want to get the new models implemented).
 
-I'd expect it's possible to have standard platform devices declared in
-the CPU definitions for each PSC that the individual boards can just
-reference (rather than having to copy out the resources, which
-presumably are fixed for each CPU) but I'm not sure if that's idiomatic
-for MIPS code or not.  Most of ARM works that way.
+On Mon, Jun 8, 2009 at 1:41 AM, Takashi Iwai <tiwai@suse.de> wrote:
 
-I'd be tempted to not bother creating the separate device for the DMA
-driver in au1xpsc_pcm_add() but that's just my personal preference.
-
-Also, you've missed a name for your audio_dev.
+> At Sun, 7 Jun 2009 22:46:51 -0400,
+> Dan Allongo wrote:
+> >
+> > I've been posting on the alsa-users list and I think I finally have a
+> > working patch now that I'd like to submit.
+> > The C-Media 6206 device is based off of CM106 and just needed a boot
+> quirk
+> > added to set the registers properly for output.
+> > At least one other user can confirm that this patch works and that the
+> > SPDIF-out is also functioning now with this change.
+> > This is diff'd against today's snapshot so it should be good to go.
+> > Let me know if there's anything else that I need to do or change with
+> this.
+>
+> Thanks for the patch!  I'd like certainly to apply it, however...
+>
+> > +    return snd_usb_cm106_write_int_reg(dev, 0, 0x200c) +
+> > +        snd_usb_cm106_write_int_reg(dev, 1, 0x3000) +
+> > +        snd_usb_cm106_write_int_reg(dev, 2, 0xf800) +
+> > +        snd_usb_cm106_write_int_reg(dev, 3, 0x143f) +
+> > +        snd_usb_cm106_write_int_reg(dev, 4, 0x0000) +
+> > +        snd_usb_cm106_write_int_reg(dev, 5, 0x3000);
+>
+> Summing the return values here look weird.
+> You want to return an error code, right?  Then use a simple if
+> sequence, or write a loop there.
+>
+> Also, run $LINUX/scripts/checkpatch.pl to your patch and fix errors /
+> warnings suggested there.  Then please repost the patch with your
+> sign-off.
+>
+>
+> thanks,
+>
+> Takashi
+>
