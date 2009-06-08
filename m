@@ -1,49 +1,57 @@
-From: Manuel Lauss <manuel.lauss@googlemail.com>
-Subject: Re: [alsa-devel] [PATCH 4/7] Alchemy: DB1200 AC97+I2S audio support.
-Date: Mon, 8 Jun 2009 14:21:18 +0200
-Message-ID: <f861ec6f0906080521y4443b888gb81a78305dfca5e2@mail.gmail.com>
-References: <1244399944-29043-1-git-send-email-manuel.lauss@gmail.com>
-	 <1244399944-29043-2-git-send-email-manuel.lauss@gmail.com>
-	 <1244399944-29043-3-git-send-email-manuel.lauss@gmail.com>
-	 <1244399944-29043-4-git-send-email-manuel.lauss@gmail.com>
-	 <1244399944-29043-5-git-send-email-manuel.lauss@gmail.com>
-	 <20090608092521.GA7858@sirena.org.uk>
-	 <f861ec6f0906080243g6be8e613p7ab9c2df66576be8@mail.gmail.com>
-	 <20090608102018.GA6547@rakim.wolfsonmicro.main>
-	 <f861ec6f0906080425i388a99a1kb89667c749a815c8@mail.gmail.com>
-	 <20090608115336.GA25827@rakim.wolfsonmicro.main>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/4] ASoC: pxa-ssp: enhance I2S and
+	add	Left_J support
+Date: Mon, 8 Jun 2009 13:40:46 +0100
+Message-ID: <20090608124045.GE7858@sirena.org.uk>
+References: <f17812d70906030533m49eb023bid19a80231921f59b@mail.gmail.com>
+	<20090606201225.GA1029@sirena.org.uk>
+	<74d0deb30906080512q29b9915fvec9b068bf4b2e126@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <20090608115336.GA25827@rakim.wolfsonmicro.main>
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Linux-MIPS <linux-mips@linux-mips.org>, Ralf Baechle <ralf@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0088F243B5
+	for <alsa-devel@alsa-project.org>;
+	Mon,  8 Jun 2009 14:40:46 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <74d0deb30906080512q29b9915fvec9b068bf4b2e126@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: pHilipp Zabel <philipp.zabel@gmail.com>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Daniel Ribeiro <drwyrm@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
+On Mon, Jun 08, 2009 at 02:12:03PM +0200, pHilipp Zabel wrote:
+> On Sat, Jun 6, 2009 at 10:12 PM, Mark
+> Brown<broonie@opensource.wolfsonmicro.com> wrote:
 
-> You should convert the DAI drivers to probe as normal platform device=
-s
-> and attach the resources used by the CPU to those devices rather than
-> attaching the data to soc-audio. =A0pxa2xx-ac97 does this, as do the
-> PowerPC drivers and the s3c64xx-i2s driver. =A0The DaVinci drivers
-> currently on the davinci branch of my git for merge after the merge
-> window do this too.
+OOI which MUA are you using?  I've noticed several people with this very
+odd word wrapping the past day.
 
-I see now what you mean, but this is ugly as sin:
-I now need to register 2 platform devices in the board code: 1 for the =
-DAI
-(with resources mmio + irq) and 1 for the DMA engine (with ddma id reso=
-urces),
-or register the DMA engine device from within the AC97/I2S drivers.
+> > of in tree users it'd cause little disruption. ?A set_sample_width()
+> > operation could also be added.
 
-This is in my opinion even worse than the current scheme, which at leas=
-t allows
-me to group all PSC resources into one struct resource which all audio-=
-related
-drivers can share without too much uglyness.
+> set_sample_width or set_frame_width?
 
-       Manuel Lauss
+I'm inclined to go with sample here since it seems harder for the
+machine drivers to get wrong but I've not really thought it through yet?
+
+> I'd prefer a separate operation over a parameter to set_tdm_slot because
+> in my setup I just need to force the (SSP) frame width to 16 bits.
+> Enabling network mode and calling set_tdm_slot(..,1,1) wouldn't be
+> necessary at all, then.
+
+OTOH I don't really see much difference between the two cases - it's
+just an extra couple of parameters on the end of the call.  That said,
+it'd be much nicer if the driver were able to just do the right thing
+for DSP mode unless explicitly configured, there's not the issue you
+have with I2S where extra clocks would change the offset of the second
+channel within a stereo frame so it's much easier.
