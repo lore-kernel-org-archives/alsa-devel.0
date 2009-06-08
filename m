@@ -1,93 +1,109 @@
-From: Manuel Lauss <manuel.lauss@googlemail.com>
-Subject: Re: [alsa-devel] [PATCH 4/7] Alchemy: DB1200 AC97+I2S audio support.
-Date: Mon, 8 Jun 2009 15:11:39 +0200
-Message-ID: <f861ec6f0906080611i2c03709cg621aeb87d084dd00@mail.gmail.com>
-References: <1244399944-29043-2-git-send-email-manuel.lauss@gmail.com>
-	 <1244399944-29043-4-git-send-email-manuel.lauss@gmail.com>
-	 <1244399944-29043-5-git-send-email-manuel.lauss@gmail.com>
-	 <20090608092521.GA7858@sirena.org.uk>
-	 <f861ec6f0906080243g6be8e613p7ab9c2df66576be8@mail.gmail.com>
-	 <20090608102018.GA6547@rakim.wolfsonmicro.main>
-	 <f861ec6f0906080425i388a99a1kb89667c749a815c8@mail.gmail.com>
-	 <20090608115336.GA25827@rakim.wolfsonmicro.main>
-	 <f861ec6f0906080521y4443b888gb81a78305dfca5e2@mail.gmail.com>
-	 <20090608124411.GA3396@rakim.wolfsonmicro.main>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/7] Alchemy: DB1200 AC97+I2S audio	support.
+Date: Mon, 8 Jun 2009 14:45:41 +0100
+Message-ID: <20090608134541.GA4765@rakim.wolfsonmicro.main>
+References: <1244399944-29043-4-git-send-email-manuel.lauss@gmail.com>
+	<1244399944-29043-5-git-send-email-manuel.lauss@gmail.com>
+	<20090608092521.GA7858@sirena.org.uk>
+	<f861ec6f0906080243g6be8e613p7ab9c2df66576be8@mail.gmail.com>
+	<20090608102018.GA6547@rakim.wolfsonmicro.main>
+	<f861ec6f0906080425i388a99a1kb89667c749a815c8@mail.gmail.com>
+	<20090608115336.GA25827@rakim.wolfsonmicro.main>
+	<f861ec6f0906080521y4443b888gb81a78305dfca5e2@mail.gmail.com>
+	<20090608124411.GA3396@rakim.wolfsonmicro.main>
+	<f861ec6f0906080611i2c03709cg621aeb87d084dd00@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <20090608124411.GA3396@rakim.wolfsonmicro.main>
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Linux-MIPS <linux-mips@linux-mips.org>, Ralf Baechle <ralf@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B6A922442C
+	for <alsa-devel@alsa-project.org>;
+	Mon,  8 Jun 2009 15:45:44 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <f861ec6f0906080611i2c03709cg621aeb87d084dd00@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Manuel Lauss <manuel.lauss@googlemail.com>
+Cc: Linux-MIPS <linux-mips@linux-mips.org>, alsa-devel@alsa-project.org, Ralf Baechle <ralf@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+On Mon, Jun 08, 2009 at 03:11:39PM +0200, Manuel Lauss wrote:
 
->> I see now what you mean, but this is ugly as sin:
->> I now need to register 2 platform devices in the board code: 1 for t=
-he DAI
->> (with resources mmio + irq) and 1 for the DMA engine (with ddma id r=
-esources),
->> or register the DMA engine device from within the AC97/I2S drivers.
->
->> This is in my opinion even worse than the current scheme, which at l=
-east allows
->> me to group all PSC resources into one struct resource which all aud=
-io-related
->> drivers can share without too much uglyness.
->
-> If you trigger registration the DMA engine from within the I2S and AC=
-97
-> devices you can still group everything together like you want to so I
-> don't really see the problem - they're peering at a different device =
-for
-> the data but other than that things are unchanged. =A0At the minute y=
-ou're
-> loosing a lot of sharing by having this in the individual machine
-> drivers.
+> All 3 drivers are now platform_devices -- and now I still have the
+> same problem as
+> before: I can't really share the whole struct resource;  i need to allocate
+> a new resource struct, fill in the dma ids and register the dma device with it.
 
-All 3 drivers are now platform_devices -- and now I still have the
-same problem as
-before: I can't really share the whole struct resource;  i need to allo=
-cate
-a new resource struct, fill in the dma ids and register the dma device =
-with it.
+I don't understand the problem you're seeing here?  I don't see any
+fundamental difference between the before and after pictures in terms of
+what you're saying.  Note that there is no requirement that the DMA
+driver be a separate device - it can be if you want but if you want to
+make it part of the DAI driver that works too.  As I say, the DAI and
+DMA drivers can peer into each other's implementations as much as they
+like.  They're split up since on most CPUs the same DMA back end is used
+by all the DAIs the CPU supports so there's normally some opportunity
+for code sharing but they're never truly independent of each other.
 
-Btw, the davinci-evm in asoc-git also registers mmio and dma from withi=
-n
-the machine code.
+It's not terribly clear from what you're saying but it *sounds* like for
+your platform the DMA driver should be essentially a library for the DAI
+driver, registered by the DAI driver when it probes.  Otherwise could
+you please go into a bit more detail about what you mean when you say
+you need to "allocate a new resource struct..." and so on - when do you
+need to allocate the resource struct and why do you need to do this?
 
-I can't shake the feeling that there's something wrong with the whole a=
-soc
-device model (and that asoc was designed with pxa2xx devices in mind wh=
-ich
-have single audio units with fixed resources that the driver code can
-hardcode inside it).
+In the overwhelming majority of systems I've seen there are no resources
+associated with the actual machine driver itself - all the resources are
+for the DMA and DAI.
 
+> Btw, the davinci-evm in asoc-git also registers mmio and dma from within
+> the machine code.
 
-> Note that one of the possibilities once multiple sound card support i=
-s
-> introduced is that DAIs could be shared between multiple cards. =A0Th=
-is is
+Not in the davinci branch I pointed you at, there the drivers have been
+converted to use the standard device model for this.  The old DaVinci
+code you were looking at predates the ability to register things
+separately.
 
-I wrote the au1x audio drivers with this in mind: the DAI really descri=
-bes how
-to interact with a PSC; I didn't see any point in duplicating the dai
-description
-for each possible PSC.
+> I can't shake the feeling that there's something wrong with the whole asoc
+> device model (and that asoc was designed with pxa2xx devices in mind which
+> have single audio units with fixed resources that the driver code can
+> hardcode inside it).
 
+Could you articulate what your concerns are here in more detail?
 
-To put an end to this thread:  I really don't want to change the machin=
-e code
-or dai drivers at this time, because I have the feeling that it's a few=
- steps
-backwards.  If you don't agree with this then I'll leave the audio part=
-s out of
-the submission; I don't really care if it goes in or not, I just saw
-it as a nice
-sample machine driver for both AC97 and I2S on Alchemy.
+Previously I've heard a lot of people complaining (with reason) about
+the fact that it didn't use the standard device model at all, especially
+for the CODECs, but this is the first time I've ever heard any concerns
+about the standard device model.  The problems you're mentioning with
+hard coding things are problems which are for most people fixed by using
+the standard device model and passing the resources for the DAIs up from
+the architecture code using the standard mechanisms since it makes it
+trivial to add or move new instances of the same IP block.
 
+Doing this by putting everything into the machine drivers gets a bit
+tricky once you have multiple DAIs in play on a single card since it
+gets more error prone to tie the resources to the DAIs.
 
-        Manuel Lauss
+> To put an end to this thread:  I really don't want to change the machine code
+> or dai drivers at this time, because I have the feeling that it's a few steps
+> backwards.  If you don't agree with this then I'll leave the audio parts out of
+
+It'd be really good to try to understand and address your concerns now
+before we've been through the transition for more machines - the longer
+it's left the harder it will be to change.  The drivers don't have to
+change now, I just want to understand what your concerns are.
+
+> the submission; I don't really care if it goes in or not, I just saw
+> it as a nice
+> sample machine driver for both AC97 and I2S on Alchemy.
+
+Please submit anyway but at some point someone is going to have to
+convert the driver - I'm intending to leave as long a transition period
+as I can but at some point it's going to block other enhancements.
