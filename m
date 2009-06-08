@@ -1,24 +1,29 @@
-From: "Ted T. Logan" <tedtheologian@gmail.com>
-Subject: Re: problems with fedora 11 and pulseaudio and svn
-	x-fi driver
-Date: Wed, 10 Jun 2009 11:48:58 -0500
-Message-ID: <1244652538.3587.0.camel@localhost.localdomain>
-References: <s5hy70xsl46.wl%tiwai@suse.de> <1223583478.5018.0.camel@home>
-	<s5hbpxt7zui.wl%tiwai@suse.de> <1223619975.4700.2.camel@home>
-	<1244623151.4093.3.camel@localhost.localdomain>
-	<1244623955.6367.0.camel@localhost.localdomain>
-	<s5hljo0mo7i.wl%tiwai@suse.de>
+From: Manuel Lauss <manuel.lauss@googlemail.com>
+Subject: Re: [PATCH 4/7] Alchemy: DB1200 AC97+I2S audio support.
+Date: Mon, 8 Jun 2009 17:42:56 +0200
+Message-ID: <f861ec6f0906080842r3472f2ci4e1c309ee9a302cd@mail.gmail.com>
+References: <20090608092521.GA7858@sirena.org.uk>
+	<20090608102018.GA6547@rakim.wolfsonmicro.main>
+	<f861ec6f0906080425i388a99a1kb89667c749a815c8@mail.gmail.com>
+	<20090608115336.GA25827@rakim.wolfsonmicro.main>
+	<f861ec6f0906080521y4443b888gb81a78305dfca5e2@mail.gmail.com>
+	<20090608124411.GA3396@rakim.wolfsonmicro.main>
+	<f861ec6f0906080611i2c03709cg621aeb87d084dd00@mail.gmail.com>
+	<20090608134541.GA4765@rakim.wolfsonmicro.main>
+	<f861ec6f0906080748x4b9fd196m27c1ef3a8af9542d@mail.gmail.com>
+	<20090608152420.GC6413@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6B98D103817
+Received: from mail-bw0-f215.google.com (mail-bw0-f215.google.com
+	[209.85.218.215])
+	by alsa0.perex.cz (Postfix) with ESMTP id 25DD0244D8
 	for <alsa-devel@alsa-project.org>;
-	Wed, 10 Jun 2009 18:49:01 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 9so505994qwj.56
-	for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2009 09:49:00 -0700 (PDT)
-In-Reply-To: <s5hljo0mo7i.wl%tiwai@suse.de>
+	Mon,  8 Jun 2009 17:42:57 +0200 (CEST)
+Received: by bwz11 with SMTP id 11so3177185bwz.32
+	for <alsa-devel@alsa-project.org>; Mon, 08 Jun 2009 08:42:56 -0700 (PDT)
+In-Reply-To: <20090608152420.GC6413@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,51 +33,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-same problem after I added those options.  I'm listening to something in
-flash player right now and I have a click every 3 seconds.
+Hi Mark,
 
-On Wed, 2009-06-10 at 11:29 +0200, Takashi Iwai wrote:
+On Mon, Jun 8, 2009 at 5:24 PM, Mark
+Brown<broonie@opensource.wolfsonmicro.com> wrote:
+>> I attached an untested patch (an addon to the patch which started this t=
+hread)
+>> which does this. =A0Please have a look and tell me if this is what
+>> suggested initially?
+>
+> Pretty much, though I suspect there's some confusion between the probe
+> functions going on there (there's far too many of them in ASoC at the
+> minute - I intend to streamline things a bit in the future but first I
+> want to get the new models implemented).
+>
+> I'd expect it's possible to have standard platform devices declared in
+> the CPU definitions for each PSC that the individual boards can just
+> reference (rather than having to copy out the resources, which
+> presumably are fixed for each CPU) but I'm not sure if that's idiomatic
+> for MIPS code or not. =A0Most of ARM works that way.
+>
+> I'd be tempted to not bother creating the separate device for the DMA
+> driver in au1xpsc_pcm_add() but that's just my personal preference.
 
-> At Wed, 10 Jun 2009 03:52:35 -0500,
-> Ted T. Logan wrote:
-> > 
-> > I killed pulseaudio and the problem is the same as far as every few seconds,
-> > just a different sound.  it seems to be the xfi driver.
-> 
-> Please be more specific, what apps did you test and how, and on which
-> hardware, with which alsa-driver.  There is no svn alsa-driver at
-> all, at least, as I know of.
-> 
-> If it's emu20k1 chip (not emu20k2), try use_system_timer=1 module
-> option snd-ctxfi driver.  This will take the timer management back to
-> the old one using the system timer.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> > I did not have this problem with XFiDrv_Linux_Public_US_1.00.tar.gz
-> > however, I am trying to get away from that driver because of other issues.
-> > 
-> > Thanks!
-> > 
-> > On Wed, 2009-06-10 at 03:39 -0500, Ted T. Logan wrote:
-> > 
-> >     Hello,
-> >    
-> >     I upgraded to fedora 11 with PA 9.15 and got the svn alsa-driver and
-> >     installed it for the x-fi driver.
-> >    
-> >     The problem is, with pulseaudio, i get a pop every few seconds
-> >     like, every 3 seconds, "pop" and it does it over and over and over
-> >    
-> >     I seem to get no sound at all with the card if I bypass pulse
-> >    
-> >     What can I do?
-> > 
-> > 
+This patch was just a quick hack, I'll clean it up and develop it further in
+the coming days, then submit it to you after some testing.
+
+
+> Also, you've missed a name for your audio_dev.
+
+Nope, it's set in the following hunk depending on switch setting.
+
+
+Thanks a lot for your patience!
+        Manuel Lauss
