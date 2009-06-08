@@ -1,19 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v4 0/4] ARM: DaVinci: ASoC: Audio
-	support	for DM646x
-Date: Sun, 7 Jun 2009 20:36:23 +0100
-Message-ID: <20090607193622.GA18228@sirena.org.uk>
-References: <1244197668-30916-1-git-send-email-chaithrika@ti.com>
+From: "Cai, Cliff" <Cliff.Cai@analog.com>
+Subject: Re: [PATCH 3/5] ASoC: Blackfin: tweak howweinitialize
+	the SPORT
+Date: Mon, 8 Jun 2009 10:14:12 +0800
+Message-ID: <0F1B54C89D5F954D8535DB252AF412FA04292614@chinexm1.ad.analog.com>
+References: <1243916337-29953-1-git-send-email-vapier@gentoo.org>
+	<1243916337-29953-3-git-send-email-vapier@gentoo.org>
+	<20090603102918.GA32595@rakim.wolfsonmicro.main>
+	<0F1B54C89D5F954D8535DB252AF412FA042577ED@chinexm1.ad.analog.com>
+	<20090604105127.GA11496@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 32D3424660
+Received: from nwd2mail11.analog.com (nwd2mail11.analog.com [137.71.25.57])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8FFDF24486
 	for <alsa-devel@alsa-project.org>;
-	Sun,  7 Jun 2009 21:36:30 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1244197668-30916-1-git-send-email-chaithrika@ti.com>
+	Mon,  8 Jun 2009 04:10:39 +0200 (CEST)
+Content-Class: urn:content-classes:message
+In-Reply-To: <20090604105127.GA11496@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,23 +27,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Chaithrika U S <chaithrika@ti.com>
-Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com, Naresh Medisetty <naresh@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Mike Frysinger <vapier@gentoo.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 05, 2009 at 06:27:48AM -0400, Chaithrika U S wrote:
-> From: Chaithrika U S <chaithrika@ti.com>
-> 
-> Add audio support for DM646x
+ 
 
-This all looks good from an ASoC point of view - I've applied the ASoC
-patches (2-4) to a branch 'davinci' of:
+>-----Original Message-----
+>From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com] 
+>Sent: Thursday, June 04, 2009 6:51 PM
+>To: Cai, Cliff
+>Cc: Mike Frysinger; uclinux-dist-devel@blackfin.uclinux.org; 
+>alsa-devel@alsa-project.org
+>Subject: Re: [alsa-devel] [PATCH 3/5] ASoC: Blackfin: tweak 
+>howweinitialize the SPORT
+>
+>On Thu, Jun 04, 2009 at 10:36:48AM +0800, Cai, Cliff wrote:
+>
+>> This is not a problem of rate but format,I think combine the 
+>two flags 
+>> will solve all the problems.
+>
+>Ah, yes - I was remembering the ssm2602 driver which does do 
+>rate constraints.
+>
+>> The reason I write this patch is that I found when some oss-based 
+>> applications open soundcard ,the startup callbacks will be called 
+>> several times.
+>
+>All OSS applications do this, OSS has a separate ioctl for 
+>each configuration option so you get lots of configuration calls.
+>
+>> So using the counter to record opened pcm streams is not reliable.
+>
+>It's only hw_params() that get called repeatedly.
+>
+>I could be wrong but looking at the code I suspect you may 
+>just need to make the reconfiguration conditional on if it's a 
+>capture or playback stream and you'll be fine - at the minute 
+>you're configuring both RX and TX on every hw_params() but 
+>there are separate tcr2 and rcr2 registers that you write to.  
+>If you only wrote to the appropriate one then you wouldn't 
+>need to worry about interfering with another stream for that 
+>configuration.  There is the wdsize parameter for the SPORT as 
+>well but a brief glance at the code for that suggests that 
+>there are actually separate RX and TX configurations there too.
+>
+>If not then adding constraint code would help a lot.
 
-	git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git
+Yes,if RX and TX can be configured separately ,it would be much
+easier...
+But for full-duplex consideration,we now don't run RX and TX
+independently,
+I've tested the combining of "counter" and "configured" together to
+sovle the problem
+You mentioned by clearing "configured" when counter is 0.Once blackfin
+tree has been
+Updated to the head I will send you the patch.
 
-Please submit incremental updates for further merge issues such as that
-Troy raised against that branch.  Owing to the nearness of the merge
-window and the need to also merge the arch/arm changes I'll not push
-these upstream until after the merge window is over.
+Thanks a lot!
 
-Thanks!
+Cliff
