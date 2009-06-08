@@ -1,18 +1,20 @@
-From: Alexey Bazhin <baz@irc.msk.ru>
-Subject: Re: Testers wanted: New SB X-Fi driver
-Date: Mon, 8 Jun 2009 22:26:44 +0400
-Message-ID: <20090608222644.2e83519f.baz@irc.msk.ru>
-References: <4A2ABD52.8000600@googlemail.com>
-	<s5h4ourqkkk.wl%tiwai@suse.de>
+From: Gernot Kohlhaas <gernot.kohlhaas@googlemail.com>
+Subject: SB X-Fi driver fixes (Re: Testers wanted: New SB X-Fi
+ driver)
+Date: Mon, 08 Jun 2009 20:35:27 +0200
+Message-ID: <4A2D59EF.9080708@googlemail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.mosuzedu.ru (mail.mosuzedu.ru [217.112.17.3])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2DE1024548
+Received: from mail-fx0-f218.google.com (mail-fx0-f218.google.com
+	[209.85.220.218])
+	by alsa0.perex.cz (Postfix) with ESMTP id C3BBA24554
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Jun 2009 20:26:46 +0200 (CEST)
-In-Reply-To: <s5h4ourqkkk.wl%tiwai@suse.de>
+	Mon,  8 Jun 2009 20:35:29 +0200 (CEST)
+Received: by fxm18 with SMTP id 18so3368033fxm.32
+	for <alsa-devel@alsa-project.org>; Mon, 08 Jun 2009 11:35:29 -0700 (PDT)
+References: s5hbpoz3pbj.wl%tiwai@suse.de
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,63 +24,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Gernot Kohlhaas <gernot.kohlhaas@googlemail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 08 Jun 2009 08:57:31 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+Okay... Sorry... Forget what I just wrote...
+Seems to be my 20 to 51 solution with the mentioned LADSPA Low Pass Filter.
+"default" device is just playing fine.
 
-> At Sat, 06 Jun 2009 21:02:42 +0200,
-> Gernot Kohlhaas wrote:
-> > 
-> > Hi and thanks for this driver.
-> > It works great and even 6- and 8-Channel-Output is supported now.
-> > 
-> > The only two little things I noticed are:
-> > 1. Most programs are looking for "surround51" to use for
-> > multichannel sound. But this driver only provides the
-> > "default"-Device (in it's description it says:
-> > 
-> > aplay -L
-> > default:CARD=XFi
-> >     Creative X-Fi, Front/WaveIn
-> >     Default Audio Device
-> > 
-> > )
-> 
-> Use the latest alsa-lib snapshot.  The config file for X-Fi is already
-> there.
-Hmm... I see a definition for iec958 in SB-XFI.conf, but aplay -L
-doesn't list it for my card.
+my .asoundrc:
+pcm.xfi
+{
+  type hw
+  card 0
+  channels 6
+}
 
-root@mayonaka:~# aplay -L
-default:CARD=XFi
-    Creative X-Fi, Front/WaveIn
-    Default Audio Device
-front:CARD=XFi,DEV=0
-    Creative X-Fi, Front/WaveIn
-    Front speakers
-surround40:CARD=XFi,DEV=0
-    Creative X-Fi, Front/WaveIn
-    4.0 Surround output to Front and Rear speakers
-surround41:CARD=XFi,DEV=0
-    Creative X-Fi, Front/WaveIn
-    4.1 Surround output to Front, Rear and Subwoofer speakers
-surround50:CARD=XFi,DEV=0
-    Creative X-Fi, Front/WaveIn
-    5.0 Surround output to Front, Center and Rear speakers
-surround51:CARD=XFi,DEV=0
-    Creative X-Fi, Front/WaveIn
-    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
-surround71:CARD=XFi,DEV=0
-    Creative X-Fi, Front/WaveIn
-    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
-null
-    Discard all samples (playback) or generate zero samples (capture)
+ctl.xfi
+{
+  type hw
+  card 0
+}
 
+pcm.ch51dup {
+         slave.pcm "plug:lowpass51"
+         slave.channels 6
+         type route
+         ttable.0.0 1
+         ttable.1.1 1
+         ttable.0.2 1
+         ttable.1.3 1
+         ttable.0.4 0.5
+         ttable.1.4 0.5
+         ttable.0.5 1
+         ttable.1.5 1
+}
 
+pcm.lowpass51 {
+    type ladspa
+    slave.pcm default
+    path "/usr/lib/ladspa"
+    plugins {
+        0 {
+            id 1098 # Identity (Audio) (1098/identity_audio)
+            policy duplicate
+            input.bindings.0 "Input";
+            output.bindings.0 "Output";
+        }
+
+        1 {
+            id 1672
+            policy none
+            input.bindings.5 "Input";
+            output.bindings.5 "Output";
+            input {
+                controls [ 120 2 ]
+            }
+        }
+    }
+}
 -- 
- Alexey Bazhin
-  mailto:baz@irc.msk.ru
-  ICQ 125125882
+http://www.gnupp.de/verschluesselung/warum.html
+Key ID: 0x4C0B2250
+Key: http://home.arcor.de/mr_maniac/ANDERES/public.gpg
