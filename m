@@ -1,18 +1,26 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: M-Audio Transit: alsamixer shows 100% and -0.5db
- at the same time !?
-Date: Mon, 08 Jun 2009 13:39:57 +0200
-Message-ID: <4A2CF88D.8050203@ladisch.de>
-References: <d9690f190906080213g5103efd7mf2a9bdd7aeeb131@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/7] Alchemy: DB1200 AC97+I2S audio	support.
+Date: Mon, 8 Jun 2009 12:53:36 +0100
+Message-ID: <20090608115336.GA25827@rakim.wolfsonmicro.main>
+References: <1244399944-29043-1-git-send-email-manuel.lauss@gmail.com>
+	<1244399944-29043-2-git-send-email-manuel.lauss@gmail.com>
+	<1244399944-29043-3-git-send-email-manuel.lauss@gmail.com>
+	<1244399944-29043-4-git-send-email-manuel.lauss@gmail.com>
+	<1244399944-29043-5-git-send-email-manuel.lauss@gmail.com>
+	<20090608092521.GA7858@sirena.org.uk>
+	<f861ec6f0906080243g6be8e613p7ab9c2df66576be8@mail.gmail.com>
+	<20090608102018.GA6547@rakim.wolfsonmicro.main>
+	<f861ec6f0906080425i388a99a1kb89667c749a815c8@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 8DE511037F9
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B44EE24133
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Jun 2009 13:39:47 +0200 (CEST)
-In-Reply-To: <d9690f190906080213g5103efd7mf2a9bdd7aeeb131@mail.gmail.com>
+	Mon,  8 Jun 2009 13:53:37 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <f861ec6f0906080425i388a99a1kb89667c749a815c8@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,26 +30,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Klaus Schulz <kls.schlz@googlemail.com>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: Manuel Lauss <manuel.lauss@googlemail.com>
+Cc: Linux-MIPS <linux-mips@linux-mips.org>, alsa-devel@alsa-project.org, Ralf Baechle <ralf@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Klaus Schulz wrote:
-> My M-Audio Transit shows at 100% and 0.5db attentuation in alsamixer at the
-> same time.
+On Mon, Jun 08, 2009 at 01:25:57PM +0200, Manuel Lauss wrote:
+> On Mon, Jun 8, 2009 at 12:20 PM, Mark
+> Brown<broonie@opensource.wolfsonmicro.com> wrote:
 
-"100%" just means that the control has its maximum value.
+> > Well, like I say if it's going via MIPS I'd really prefer it to go in
+> > this merge window. =A0If not then I'd expect that splitting out the
+> > architecture parts from the machine driver as I suggested ought to deal
+> > with the merge issues.
 
-> See below printout.
+> I'll split it in two:  pure ASoC part and pure board part.  Agreed?
 
-This is not a printout of alsamixer.
+Yes, that's fine for me.
 
->   Front Left: Playback 254 [100%] [0.50dB] [on]
->   Front Right: Playback 254 [100%] [0.50dB] [on]
+> how to pass DAI private data to the ac97 callbacks), and I also don't see=
+ how
+> to handle for instance 2 I2S machines with a WM8731 attached to each
+> (i.e. how do I tell ASoC that wm8731 at bus0/0x1b belongs to machine A
+>  and wm8731 at bus0/0x1c belongs to machine B?)
 
-I can see neither "-0.5dB" nor "0.5dB attenuation" in there; it's 0.5 dB
-gain.  (If you actually run alsamixer, it gets labeled with "gain".)
+When multiple cards are supported the struct device for the CODEC will
+be used to distinguish between instances of the same device - this is
+why the DAI registration functions are being encouraged to use to
+provide a struct device, once the multi-card support is in place it will
+become much more important to have this information.
 
+> > If you move the selection of the switch position to the architecture
+> > code then it can arrange to register only the device that is in use in
+> > the current configuration. =A0If the DMA and DAI drivers both need the
+> > same resources they can cooperate with each other - the system will only
+> > bring the card on-line once both the DMA and DAI driver are present.
 
-Best regards,
-Clemens
+> I think you misuderstood me.  Could you point out an in-kernel machine wh=
+ich
+> already implements what you suggested?
+> The AC97/I2S dai drivers (psc-ac97/psc-i2s) extract the base address of t=
+he PSC
+> they're supposed to drive from the platform_device passed via the probe()
+> callbacks, these in turn are called when a "soc_audio" platform device
+> is called.
+
+Sure, that's exactly what I see you doing and what I'm suggesting that
+you change.
+
+> I need to set either the ac97 or I2S platform data for soc_audio based on=
+ the
+> switch setting.  I can't register a "db1200_audio" platform device in the=
+ board
+> code which in turn registers the "soc_audio" device and have them share
+> the PSC mmio/irq/dma resources.
+
+You should convert the DAI drivers to probe as normal platform devices
+and attach the resources used by the CPU to those devices rather than
+attaching the data to soc-audio.  pxa2xx-ac97 does this, as do the
+PowerPC drivers and the s3c64xx-i2s driver.  The DaVinci drivers
+currently on the davinci branch of my git for merge after the merge
+window do this too.
