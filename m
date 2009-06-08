@@ -1,19 +1,17 @@
-From: chaithrika@ti.com
-Subject: [PATCH] ARM: DaVinci: ASoc: Minor fixes to probe
-	function
-Date: Mon,  8 Jun 2009 06:49:41 -0400
-Message-ID: <1244458181-19101-1-git-send-email-chaithrika@ti.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: EMU 0404USB: Odd sample rate shown during playback.
+Date: Mon, 08 Jun 2009 13:39:50 +0200
+Message-ID: <4A2CF886.7040407@ladisch.de>
+References: <001636c5a907c27277046bd13e2e@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4F4E010383C
+Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id E503E2449B
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Jun 2009 13:29:12 +0200 (CEST)
-Received: from dflp53.itg.ti.com ([128.247.5.6])
-	by comal.ext.ti.com (8.13.7/8.13.7) with ESMTP id n58BT6Dr009495
-	for <alsa-devel@alsa-project.org>; Mon, 8 Jun 2009 06:29:11 -0500
+	Mon,  8 Jun 2009 13:39:44 +0200 (CEST)
+In-Reply-To: <001636c5a907c27277046bd13e2e@google.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,50 +21,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Chaithrika U S <chaithrika@ti.com>, davinci-linux-open-source@linux.davincidsp.com
+To: kls.schlz@googlemail.com
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Chaithrika U S <chaithrika@ti.com>
+kls.schlz@googlemail.com wrote:
+> On my M-Audio Transit though it remains 44.1 even though it says "async" at  
+> 16/44.1 in the stream0 file.
 
-Assign proper errors when platform resource claims fail.
+It could have a clock that happens to run at the same speed as your
+computer's.  Or it could be that it runs the ADC synchronously to the
+computer but says "async" so that it can deliver recorded SPDIF data at
+the source's speed.
 
-Signed-off-by: Chaithrika U S <chaithrika@ti.com>
----
-Applies to branch 'davinci' of:
-	git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git
 
- sound/soc/davinci/davinci-i2s.c |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
-index 500d2f5..2f11970 100644
---- a/sound/soc/davinci/davinci-i2s.c
-+++ b/sound/soc/davinci/davinci-i2s.c
-@@ -469,7 +469,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 	struct snd_platform_data *pdata = pdev->dev.platform_data;
- 	struct davinci_mcbsp_dev *dev;
- 	struct resource *mem, *ioarea, *res;
--	int ret = 0;
-+	int ret;
- 
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!mem) {
-@@ -511,6 +511,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
- 	if (!res) {
- 		dev_err(&pdev->dev, "no DMA resource\n");
-+		ret = -ENXIO;
- 		goto err_free_mem;
- 	}
- 	dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK]->channel = res->start;
-@@ -518,6 +519,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 	res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
- 	if (!res) {
- 		dev_err(&pdev->dev, "no DMA resource\n");
-+		ret = -ENXIO;
- 		goto err_free_mem;
- 	}
- 	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE]->channel = res->start;
--- 
-1.5.6
+Best regards,
+Clemens
