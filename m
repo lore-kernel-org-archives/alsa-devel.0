@@ -1,25 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/4] ASoC: pxa-ssp: enhance I2S and
-	add	Left_J support
-Date: Mon, 8 Jun 2009 19:06:56 +0100
-Message-ID: <20090608180656.GH7858@sirena.org.uk>
-References: <f17812d70906030533m49eb023bid19a80231921f59b@mail.gmail.com>
-	<20090606201225.GA1029@sirena.org.uk>
-	<74d0deb30906080512q29b9915fvec9b068bf4b2e126@mail.gmail.com>
-	<20090608124045.GE7858@sirena.org.uk>
-	<1244477000.30582.72.camel@brutus>
-	<20090608165328.GB14026@rakim.wolfsonmicro.main>
-	<1244481992.17327.22.camel@brutus>
+From: Gernot Kohlhaas <gernot.kohlhaas@googlemail.com>
+Subject: Re: SB X-Fi driver fixes (Re: Testers wanted: New SB
+ X-Fi	driver)
+Date: Mon, 08 Jun 2009 20:21:59 +0200
+Message-ID: <4A2D56C7.2090505@googlemail.com>
+References: <1244140942.4550.2.camel@polo-desktop>	<s5hbpp1zpt9.wl%tiwai@suse.de>	<1244376026.6985.5.camel@polo-desktop>	<s5hk53oowhz.wl%tiwai@suse.de>
+	<s5hbpoz3pbj.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4DC6824538
+Received: from mail-fx0-f218.google.com (mail-fx0-f218.google.com
+	[209.85.220.218])
+	by alsa0.perex.cz (Postfix) with ESMTP id ACF5E2453B
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Jun 2009 20:06:57 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1244481992.17327.22.camel@brutus>
+	Mon,  8 Jun 2009 20:22:01 +0200 (CEST)
+Received: by fxm18 with SMTP id 18so3357657fxm.32
+	for <alsa-devel@alsa-project.org>; Mon, 08 Jun 2009 11:22:01 -0700 (PDT)
+In-Reply-To: <s5hbpoz3pbj.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,56 +26,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Ribeiro <drwyrm@gmail.com>
-Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, pHilipp Zabel <philipp.zabel@gmail.com>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 08, 2009 at 02:26:32PM -0300, Daniel Ribeiro wrote:
-> Em Seg, 2009-06-08 ??s 17:53 +0100, Mark Brown escreveu:
+Hi!
 
-> > See my reply to Philip - even with frame size his case is going to be
-> > very hard to cover in a standard fashion since it's not clear what to do
+Works like a charme, except for some crashes I had...
+Three crashes two days ago (in audacious) and two in xmms.
+Sound keeps looping (a few ms) and my whole system is totally frozen.
+After that I can't find any usable output in my log-files (no output
+from the crash at all).
 
-> I don't see why. If we provide an API to setup the frame size this is
-> all magician needs.
+I'll play around a bit and see if I can crash it again.
 
-That depends on what you do with the excess data in a frame - what
-magician needs to do is to set the frame clock up to run at double rate
-compared to standard one.  Doing this by specifying the frame size means
-ignoring the rate of the incoming data rather than paying attention to
-the rate the data is supposed to have and therefore skipping the second
-channel but either of those two options would be a reasonable response.
+Anything I should try/look for?
 
-> If we assume that the standard is frame_size = sample_size * channels,
-> then there is no need for a frame size API at all. But then magician
-> case will not be supported correctly.
+BTW: Is there any way to achive Low Pass Filtering with "on-board"
+ALSA-Tools/Methods?
+ATM I am using a ladspa plugin that I specified in my .asoundrc.
 
-Think about TDM mode for a minute here - there a separate configuration
-for the sample size on the wire opens the way to using a lower sample
-size in a given timeslot than the timeslot supports, reducing the need
-for the CPU to rewrite data.  Or to put it another way, I can't see TDM
-mode working unless the sample size is constrained to always be exactly
-that desired so it seems sensible to have a standard way of doing that.
+Kernel: 2.6.29-gentoo-r5 x86_64
+gcc-4.3.3
+glibc-2.8_p20080602-r1
 
-> > Network mode is just a detail of the implementation of the PXA here - it
-> > should not be visible outside the pxa-ssp driver.  Or to put it another
-> > way setting a tdm_slot of 1, 1 ought to result in the same behaviour as
-> > disabling TDM as far as the user is concerned.
+lspci -vv
+05:00.0 Multimedia audio controller: Creative Labs SB X-Fi
+        Subsystem: Creative Labs X-Fi XtremeGamer FATAL1TY PRO
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B- DisINTx-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR- INTx-
+        Latency: 64 (1000ns min, 1250ns max), Cache Line Size: 32 bytes
+        Interrupt: pin A routed to IRQ 16
+        Region 0: I/O ports at ec00 [size=32]
+        Region 1: Memory at fea00000 (64-bit, non-prefetchable) [size=2M]
+        Region 3: Memory at f8000000 (64-bit, non-prefetchable) [size=64M]
+        Capabilities: [40] Power Management version 2
+                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [50] Message Signalled Interrupts: Mask- 64bit+
+Count=1/1 Enable-
+                Address: 0000000000000000  Data: 0000
+        Kernel driver in use: SB-XFi
+        Kernel modules: snd-ctxfi
 
-> But for pxa-ssp this is not the current behaviour.
-
-I think we can all agree that the current behaviour is fairly broken,
-it's kind of orphaned at the minute since nothing is using it.
-
-> > I'd like to see all these details handled within the driver - knowing if
-> > and when network mode are to be set up is the sort of thing that users
-> > ought to be able to rely on the driver for.
-
-> I can cook a patch.. All I need to know is:
-
-> Does it needs to support magician non-standard format? Or this will be
-> handled by userspace?
-
-I'd rather come up with a cleaner way of configuring the magician case
-that's explicit about what it's trying to achieve.  It doesn't need to
-be in user space, though.
+dmesg:
+SB-XFi 0000:05:00.0: PCI INT A -> GSI 16 (level, low) -> IRQ 16
+-- 
+http://www.gnupp.de/verschluesselung/warum.html
+Key ID: 0x4C0B2250
+Key: http://home.arcor.de/mr_maniac/ANDERES/public.gpg
