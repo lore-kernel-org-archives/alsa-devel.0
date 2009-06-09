@@ -1,21 +1,23 @@
-From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Subject: Re: Default enabling of mixer controls
-Date: Tue, 9 Jun 2009 09:15:24 +0530
-Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB030591A9D1@dbde02.ent.ti.com>
-References: <5A47E75E594F054BAF48C5E4FC4B92AB030591A896@dbde02.ent.ti.com>
-	<20090608121447.GD7858@sirena.org.uk>
-	<5A47E75E594F054BAF48C5E4FC4B92AB030591A903@dbde02.ent.ti.com>
-	<20090608143910.GA6413@rakim.wolfsonmicro.main>
+From: The Source <thesourcehim@gmail.com>
+Subject: Re: SB X-Fi driver fixes (Re: Testers wanted: New SB
+ X-Fi	driver)
+Date: Tue, 09 Jun 2009 07:50:33 +0400
+Message-ID: <4A2DDC09.3050705@gmail.com>
+References: <1244140942.4550.2.camel@polo-desktop>	<s5hbpp1zpt9.wl%tiwai@suse.de>	<1244376026.6985.5.camel@polo-desktop>	<s5hk53oowhz.wl%tiwai@suse.de>
+	<s5hbpoz3pbj.wl%tiwai@suse.de>	<4A2D56C7.2090505@googlemail.com>
+	<s5hws7m7cfd.wl%tiwai@suse.de>	<4A2D7181.3040108@googlemail.com>
+	<s5h63f6f8qo.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2913B2447A
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8CB252447F
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Jun 2009 05:45:35 +0200 (CEST)
-In-Reply-To: <20090608143910.GA6413@rakim.wolfsonmicro.main>
-Content-Language: en-US
+	Tue,  9 Jun 2009 05:50:37 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id 16so1133804fgg.21
+	for <alsa-devel@alsa-project.org>; Mon, 08 Jun 2009 20:50:36 -0700 (PDT)
+In-Reply-To: <s5h63f6f8qo.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,35 +27,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
-> Sent: Monday, June 08, 2009 8:09 PM
-> To: Aggarwal, Anuj
-> Cc: alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] Default enabling of mixer controls
-> 
-> On Mon, Jun 08, 2009 at 07:54:00PM +0530, Aggarwal, Anuj wrote:
-> 
-> > 	/* Enable Analog Left Capture Route AUXL */
-> > 	reg = codec->read(codec, TWL4030_REG_ANAMICL);
-> > 	reg |= TWL4030_AUXL_EN;
-> > 	codec->write(codec, TWL4030_REG_ANAMICL, reg);
-> 
-> > After that, if I do a get on Analog Left Capture Route AUXL (or the
-> other),
-> > I am seeing that it has been turned ON. However, when I try to capture,
-> > It doesn't work. I have to disable it first and then re-enable it to
-> > capture properly.
-> 
-> Hrm, you'll be missing some internal DAPM state updates.  Currently the
-> most direct way to do that would be to go through the actual control
-> interface and there's not a particularly nice way of doing that that
-> from the kernel that I'm aware of.
-> 
-> Is this not something you can have user space do?
-[Aggarwal, Anuj] Since this was by default enabled in my earlier codec driver, I wanted to make the change transparent to the end user. However,
-since the same can be done from user space too, it should not be a problem for my customer.
+On 09.06.2009 06:20, Takashi Iwai wrote:
+> At Mon, 08 Jun 2009 22:16:01 +0200,
+> Gernot Kohlhaas wrote:
+>    
+>> Takashi Iwai schrieb:
+>>      
+>>> Please check alsa-driver/HEAD and alsa-driver/alsa-kernel/HEAD
+>>> to identify which version you are using.  Update to the latest one,
+>>> too.
+>>> Also, don't forget to enable the debug option via --with-debug=full
+>>> to configure script.
+>>>        
+>> alsa-driver-snapshot downloaded today.
+>>
+>> alsa-driver/HEAD:
+>> dae8eb6334cc973b91a29a973108dcbba4ac24bf Fix ctatc.patch
+>> f89c50e8a567e1e34931dae07d8adc6cbe08e108 Add linux/math64.h compat header
+>> b387a66e3bdf25284ef2f57545d305735e4646e3 Add missing pci/ctxfi/cttimer.c
+>> 955ee62b99a82018196b9f668a5ee6606175109e Merge branch 'topic/maya44'
+>> 6254b0fa8631a8a2a83fbc3eff36b512d834118d alsa-info.sh: Provide system
+>> manufacturer and product name from DMI
+>> bbfb14518b44c3caba5c5bc351c9ee340a96d867 Add parsing of def_tristate to
+>> mod-deps
+>> 93e325ec42cbf842799bfbdf28b17c7f81f8089e Regenerated riptide.patch
+>> 5a4737e4e0ef6587e7f6ca84ccdc6f88c54cf18a Add soc/txx9 build stub
+>> bf12e88a905bfd49206eb2519a5519564e9a2b94 ctxfi - Fix build with older kernel
+>> dfec670bc3bd3351b61dcd40b4c2ced4f95b91d8 ctxfi - Add new PCI ids to
+>> pci_ids_compat.h.in
+>>
+>> alsa-driver/alsa-kernel/HEAD
+>> 299c425e12d437bd413aa45381cf035bbc67e545 Merge branch 'topic/ctxfi'
+>> 09521d2e3edd0bf02b66e5b8c13f1559f2d6958a ALSA: ctxfi - Fix wrong model
+>> id for UAA
+>> 549d272ac7d0d98c1fb3419108befb05f88605d7 Merge branch 'topic/ctxfi'
+>> 9470195a9cd13e6d90221b8b5d897e9232da8d28 ALSA: ctxfi - Clean up probe
+>> routines
+>> ec46e1d31cb6ff5bac6333c06b6b79c941368cb4 Merge branch 'topic/hda'
+>> f03ecf50534a81b06544c58a713076d59d54baf9 ALSA: hda - Fix the previous
+>> tagra-8ch patch
+>> 3885e40ccf9629f1cda4aac23f3d6c9c82fb875e Merge branch 'topic/hda'
+>> 64a8be74357477558183b43156c5536b642de134 ALSA: hda - Add 7.1 support for
+>> MSI GX620
+>> 318192e14f80bb883dfd06eb9ea8aa22e7353dd3 Merge branch
+>> 'topic/pcm-jiffies-check'
+>> c00701101b82f2bc61dfc259748ec6e5288af6a9 ALSA: pcm - A helper function
+>> to compose PCM stream name for debug prints
+>>
+>> The crash happened with alsa-driver-unstable-snapshot from 2009-06-07
+>> and with alsa-driver-snapshot from 2009-06-08.
+>>
+>> Still no usable output. Only dmesg gives me two more lines when loading
+>> the module:
+>> ALSA /usr/src/alsa-driver/pci/ctxfi/ctatc.c:1248: ctxfi: chip 20K1 model
+>> Unknown (1102:002c) is found
+>> SB-XFi 0000:05:00.0: PCI INT A ->  GSI 16 (level, low) ->  IRQ 16
+>> ALSA
+>> /usr/src/alsa-driver/pci/ctxfi/../../alsa-kernel/pci/ctxfi/cttimer.c:419:
+>> ctxfi: Use xfi-native timer
+>>
+>> With debug=full, the sound gets distorted every 1/3 second.
+>>
+>> The crash only happens in xmms and audacious, when my upmix-device is
+>> used (there I use a low pass filter via ladspa). When I use the default
+>> device, it just plays fine (but only plain stereo without subwoofer ;) ).
+>> I'll try to disable the low pass filter to see, if it works better.
+>>      
+> Also, do you mean that the default output works without 1/3 second
+> distortion?  Or, the distortion happens regardless of your PCM device
+> setup?
+>
+> I'd like to concentrate on debugging the default setup at first,
+> so better to reduce the risk of brokenness of ladspa plugin.
+> If you get any severe problems with the default setup, please let me
+> know more details.
+>
+>
+> thanks,
+>
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>    
+PA now works, thank you. Still 'ticks' with OpenAL though
