@@ -1,25 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC] Auto setup TDM when needed. Add
-	frame_width	and rx/tx masks to set_tdm_slots.
-Date: Tue, 9 Jun 2009 10:10:45 +0100
-Message-ID: <20090609091044.GA25490@sirena.org.uk>
+From: Eric Miao <eric.y.miao@gmail.com>
+Subject: Re: [PATCH 1/4] ASoC: pxa-ssp: enhance I2S and add
+	Left_J support
+Date: Tue, 9 Jun 2009 17:39:18 +0800
+Message-ID: <f17812d70906090239p5dee129egda49918b3862c0ca@mail.gmail.com>
 References: <f17812d70906030533m49eb023bid19a80231921f59b@mail.gmail.com>
 	<20090606201225.GA1029@sirena.org.uk>
 	<74d0deb30906080512q29b9915fvec9b068bf4b2e126@mail.gmail.com>
 	<20090608124045.GE7858@sirena.org.uk>
 	<1244477000.30582.72.camel@brutus>
 	<20090608165328.GB14026@rakim.wolfsonmicro.main>
-	<1244495244.17327.184.camel@brutus>
+	<1244481992.17327.22.camel@brutus>
+	<20090608180656.GH7858@sirena.org.uk>
+	<1244494349.17327.174.camel@brutus>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 185C6245AC
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.149])
+	by alsa0.perex.cz (Postfix) with ESMTP id 57236245C6
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Jun 2009 11:10:47 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1244495244.17327.184.camel@brutus>
+	Tue,  9 Jun 2009 11:39:19 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 4so1933214qwk.56
+	for <alsa-devel@alsa-project.org>; Tue, 09 Jun 2009 02:39:18 -0700 (PDT)
+In-Reply-To: <1244494349.17327.174.camel@brutus>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,47 +33,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Daniel Ribeiro <drwyrm@gmail.com>
-Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, pHilipp Zabel <philipp.zabel@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, pHilipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 08, 2009 at 06:07:24PM -0300, Daniel Ribeiro wrote:
-
-> Untested, RFC only version of patch.
-> (plus some minor copynpaste and whitespace fixes)
-
-> Am I on the right direction? :)
-
-Yes, looks sensible.  I've not checked the driver code at all.
-
-> +++ b/sound/soc/soc-core.c
-> @@ -2130,17 +2130,20 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_fmt);
->  /**
->   * snd_soc_dai_set_tdm_slot - configure DAI TDM.
->   * @dai: DAI
-> - * @mask: DAI specific mask representing used slots.
-> + * @tx_mask: DAI specific mask representing TX slots.
-> + * @rx_mask: DAI specific mask representing RX slots.
-
-I'd change the wording to be something like "bitmask representing active
-slots".
-
->  {
-> -	if (dai->ops->set_sysclk)
-> -		return dai->ops->set_tdm_slot(dai, mask, slots);
-> +	if (dai->ops->set_tdm_slot)
-
-Should check that there are ops too.
-
-> +		return dai->ops->set_tdm_slot(dai, tx_mask, rx_mask,
-> +				slots, frame_width);
-
-It might be nice to provide a default implementation for non-TDM if no
-implementation is provided but that could be done later if it makes
-sense.  I don't think it'll make much difference, though.
-
->  int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate)
->  {
-> -	if (dai->ops->set_sysclk)
-> +	if (dai->ops->set_tristate)
-
-Separate patch, please.  This is fixed already, though.
+MjAwOS82LzkgRGFuaWVsIFJpYmVpcm8gPGRyd3lybUBnbWFpbC5jb20+Ogo+IEVtIFNlZywgMjAw
+OS0wNi0wOCDDoHMgMTk6MDYgKzAxMDAsIE1hcmsgQnJvd24gZXNjcmV2ZXU6Cj4+IFRoaW5rIGFi
+b3V0IFRETSBtb2RlIGZvciBhIG1pbnV0ZSBoZXJlIC0gdGhlcmUgYSBzZXBhcmF0ZSBjb25maWd1
+cmF0aW9uCj4+IGZvciB0aGUgc2FtcGxlIHNpemUgb24gdGhlIHdpcmUgb3BlbnMgdGhlIHdheSB0
+byB1c2luZyBhIGxvd2VyIHNhbXBsZQo+PiBzaXplIGluIGEgZ2l2ZW4gdGltZXNsb3QgdGhhbiB0
+aGUgdGltZXNsb3Qgc3VwcG9ydHMsIHJlZHVjaW5nIHRoZSBuZWVkCj4+IGZvciB0aGUgQ1BVIHRv
+IHJld3JpdGUgZGF0YS4gIE9yIHRvIHB1dCBpdCBhbm90aGVyIHdheSwgSSBjYW4ndCBzZWUgVERN
+Cj4+IG1vZGUgd29ya2luZyB1bmxlc3MgdGhlIHNhbXBsZSBzaXplIGlzIGNvbnN0cmFpbmVkIHRv
+IGFsd2F5cyBiZSBleGFjdGx5Cj4+IHRoYXQgZGVzaXJlZCBzbyBpdCBzZWVtcyBzZW5zaWJsZSB0
+byBoYXZlIGEgc3RhbmRhcmQgd2F5IG9mIGRvaW5nIHRoYXQuCj4KPiBIdW0uLi4gTm93IEkgdW5k
+ZXJzdG9vZCB0aGlzLiBJZiBpIHdhbnQgdG8gdXNlIG5ldHdvcmsgbW9kZSB3aXRoIDIKPiBkaWZm
+ZXJlbnQgY29kZWNzLCBhbmQgdGhleSBkaWZmZXIgb24gdGhlIGV4cGVjdGVkIGZyYW1lX3NpemUg
+aSBoYXZlIHRvCj4gdXNlIHRoZSBzbWFsbGVyIGZyYW1lX3NpemUgZm9yIGJvdGggY29kZWNzLgo+
+Cj4gQW5kIGluZGVlZCwgaW4gdGhpcyBjYXNlIHRoZSBiZXN0IHBsYWNlIHRvIHNldHVwIHRoZSBm
+cmFtZSBzaXplIHdvdWxkIGJlCj4gb24gc2V0X3RkbV9zbG90KCkuCj4KPj4gSSdkIHJhdGhlciBj
+b21lIHVwIHdpdGggYSBjbGVhbmVyIHdheSBvZiBjb25maWd1cmluZyB0aGUgbWFnaWNpYW4gY2Fz
+ZQo+PiB0aGF0J3MgZXhwbGljaXQgYWJvdXQgd2hhdCBpdCdzIHRyeWluZyB0byBhY2hpZXZlLiAg
+SXQgZG9lc24ndCBuZWVkIHRvCj4+IGJlIGluIHVzZXIgc3BhY2UsIHRob3VnaC4KPgo+IEkgZG9u
+dCBrbm93IGhvdyB0byBkbyB0aGlzIG90aGVyIHRoYW4ganVzdCBjaGFuZ2luZyB0aGUgZnJhbWUg
+c2l6ZS4uLiA6KQo+CgpPSywgbm90IGhhdmluZyBlbm91Z2ggdGltZSB0byByZWFkIGFsbCB0aGlz
+IHRocmVhZCwgbGV0J3MgbWFrZSBzdXJlCmZpcnN0IHdlIGFyZSBvbiB0aGUgc2FtZSBmbG9vcjoK
+CmZyYW1lX3dpZHRoICA9IG51bWJlciBvZiBiaXQgY2xvY2tzIHBlciBmcmFtZQpzYW1wbGVfd2lk
+dGggPSBudW1iZXIgb2YgYml0cyBwZXIgc2FtcGxlCgpBbmQgdGhlIGFzc3VtcHRpb24gdGhhdAoK
+ZnJhbWVfd2lkdGggPSBzYW1wbGVfd2lkdGggKiBjaGFubmVsICggPSBMUkNMSyBmb3IgSTJTICkK
+CmlzIG5vIGxvbmdlciAoYW5kIGV2ZXIpIGNvcnJlY3QuCgpFLmcuIHRoZSBmcmFtZSB3aWR0aCBj
+b3VsZCBiZSA2NGZzLCBtZWFuaW5nIGEgd2hvbGUgZnJhbWUgaXMgY29uc2lzdGluZwpvZiA2NCBi
+aXRjbGtzIC0gdGhhdCdzIHNheWluZywgc2FtcGxlIHdpZHRoIGZyb20gMSAtIDY0IGFyZSBwb3Nz
+aWJsZSwKRm9yIHR5cGljYWwgMTYtYml0IHNhbXBsZSB3aWR0aCBJMlMgZm9ybWF0LCB0aGUgZW52
+ZWxvcGUgZm9yIGVhY2ggc2FtcGxlCmlzIDMyIGJpdGNsa3MsIGFuZCBvZmZzZXRpbmcgYnkgMSBi
+aXRjbGsgc3RhcnRzIHRoZSAxNi1iaXQgc2FtcGxlLgoKQW5kIHRoZSBURE0gbW9kZSBpcyBhY3R1
+YWxseSBzcGVjaWFsIGZvciBQWEEtU1NQIHRvIGVtdWxhdGUgdGhlIEkyUwpwcm90b2NvbCwgaXQn
+cyBubyB3YXkgZ2VuZXJpYyBURE0gaW4gYSBjb21tb24gc2Vuc2UuIFNvIHRhbGtpbmcgYWJvdXQK
+c2V0X3RkbV9zbG90cygpLCBJJ2QgcmVhbGx5IGxpa2UgdG8gaGlkZSBpbnRvIHRoZSBmb3JtYXQg
+c2V0dGluZyBjb2RlCm9mIEkyUy9MZWZ0X0ogdG8gYXZvaWQgZnVydGhlciBjb25mdXNpb24uCgpB
+bmQgSSBzdGlsbCBkaWRuJ3QgcXVpdGUgY2FwdHVyZSB0aGUgaXNzdWUgb2YgbWFnaWNpYW4uIFBo
+aWxsaXAsIGRvCnlvdSBoYXZlIGFueSBIVyByZWZlcmVuY2UgdG8gdGhlIGF1ZGlvIGNvZGVjIGFu
+ZCB0aGUgY29ubmVjdGlvbiBvbgptYWdpY2lhbj8KX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
