@@ -1,19 +1,22 @@
-From: Daniel Bankmann <daniel_bankmann@arcor.de>
-Subject: Re: Problems with X-Fi driver
-Date: Tue, 09 Jun 2009 19:01:24 +0200
-Message-ID: <4A2E9564.3010700@arcor.de>
-References: <mailman.1.1243850401.8236.alsa-devel@alsa-project.org>	<4A23C53D.8070201@arcor.de>	<s5htz2q7c4t.wl%tiwai@suse.de>	<4A2D7907.2070404@arcor.de>
-	<s5h8wk2fa8u.wl%tiwai@suse.de>
+From: Gernot Kohlhaas <gernot.kohlhaas@googlemail.com>
+Subject: Re: SB X-Fi driver fixes (Re: Testers wanted: New SB
+ X-Fi	driver)
+Date: Tue, 09 Jun 2009 19:11:02 +0200
+Message-ID: <4A2E97A6.3090301@googlemail.com>
+References: <1244140942.4550.2.camel@polo-desktop>	<s5hbpp1zpt9.wl%tiwai@suse.de>	<1244376026.6985.5.camel@polo-desktop>	<s5hk53oowhz.wl%tiwai@suse.de>	<s5hbpoz3pbj.wl%tiwai@suse.de>	<4A2D56C7.2090505@googlemail.com>	<s5hws7m7cfd.wl%tiwai@suse.de>	<4A2D7181.3040108@googlemail.com>	<s5h63f6f8qo.wl%tiwai@suse.de>	<4A2DF1EC.9060104@googlemail.com>	<s5hab4ix8wo.wl%tiwai@suse.de>	<4A2DF6BD.6060004@googlemail.com>	<s5h63f5ylee.wl%tiwai@suse.de>
+	<s5hk53l3f6p.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-in-13.arcor-online.net (mail-in-13.arcor-online.net
-	[151.189.21.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id A77CC103801
+Received: from mail-bw0-f215.google.com (mail-bw0-f215.google.com
+	[209.85.218.215])
+	by alsa0.perex.cz (Postfix) with ESMTP id E9C01103802
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Jun 2009 19:01:06 +0200 (CEST)
-In-Reply-To: <s5h8wk2fa8u.wl%tiwai@suse.de>
+	Tue,  9 Jun 2009 19:11:04 +0200 (CEST)
+Received: by bwz11 with SMTP id 11so151772bwz.32
+	for <alsa-devel@alsa-project.org>; Tue, 09 Jun 2009 10:11:03 -0700 (PDT)
+In-Reply-To: <s5hk53l3f6p.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,92 +31,83 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Takashi Iwai schrieb:
-> At Mon, 08 Jun 2009 22:48:07 +0200,
-> Daniel Bankmann wrote:
->> Takashi Iwai schrieb:
->>> At Mon, 01 Jun 2009 14:10:37 +0200,
->>> Daniel Bankmann wrote:
->>>> Takashi Iwai schrieb:
->>>>> At Fri, 22 May 2009 11:54:47 +0200,
->>>>> Daniel Bankmann wrote:
->>>>>> Takashi Iwai schrieb:
->>>>>>> At Thu, 21 May 2009 09:53:23 +0200,
->>>>>>> Daniel Bankmann wrote:
->>>>>>>> Hi!
->>>>>>>>
->>>>>>>> I just tested the newest driver version with Open Suse 11.1 and
->>>>>>>> pae-kernel. I seems not to work probably, although the latest
->>>> "official"
->>>>>>>> driver by Creative worked more or less good.
->>>>>>>>
->>>>>>>> The problem is, that always, when hearing some music or any other
->>>> sound,
->>>>>>>> the signal gets interrupted every few seconds. At the other side, the
->>>>>>>> startup jingle for example is accompanied by a knock every few seconds.
->>>>>>>>
->>>>>>>> Any idea, or what information do you need to fix this?
->>>>>>> If you are using pulseaudio, try to upgrade to the one in Factory.
->>>>>>> PA on 11.1 is really a crappy version, unfortunately.
->>>>>>>
->>>>>>>
->>>>>>> Takashi
->>>>>>>
->>>>>> Hi,
->>>>>>
->>>>>> are you sure, that this is a problem with PA?
->>>>> Depends on your system setup.  As default, PA is used on KDE and GNOME,
->>>>> regardless of h/w multi-stream functions.
->>>>>
->>>>>> Upgrading to the newest
->>>>>> version or the one in Factory seems to be a bit tricky (because auf
->>>>>> missing dependencies).
->>>>> You can upgrade the packages on OBS multimedia:libs repo.
->>>>>
->>>>>> Shouldn't the driver just work without PA and ESD installed? I tried
->>>>>> that out, but the problem still resists.
->>>>> It's not the driver to decide whether to use PA or not.  It's the
->>>>> upper part.
->>>>>
->>>>> If the problem still occurs without PA (and you make sure that you
->>>>> don't use it), the issue is likely the hwptr update timing of the
->>>>> ctxfi driver.   The recent PCM core has a more strict check, and
->>>>> possibly ctxfi might not provide the correct DMA position.
->>>>>
->>>>> Anyway, please check the problem occurs with which apps more exactly.
->>>>> At best, try to reproduce with aplay and speaker-test programs, i.e.
->>>>> with less complexity.  And, please report back to alsa-devel ML.
->>>>> (Note that your post may appear later after manual approvals if you
->>>>>  aren't subscribed yet).
->>>>>
->>>>>
->>>>> thanks,
->>>>>
->>>>> Takashi
->>>>>
->>>> Hi,
->>>>
->>>> so I tried reproducing this problem. Here's a link to a wav-file which
->>>> includes tests with aplay and the starting/shutdown -jingle.
->>>>
->>>> I hope this can give you a better idea of my problem;)
->>> Try the latest alsa-driver-snapshot.tar.gz.  It should be improved now
->>> unless you are using emu20k2, not emu20k1.
->>>
->>>
->>> Takashi
->>>
->> I'm sorry, it didn't change anything ( Although I'm using a "Extreme
->> Music" card with the emu20k1 chip)
-> 
-> Hm, weird.  Are you sure that you installed properly?
-> It works fine at least on my machine with openSUSE 11.1.
-> 
-> 
-> Takashi
-> 
-Sorry, I didn't know, that I was supposed to use the source tarball and
-not the rpm package. Now, after the first attempt messed up my whole
-kernel, it seems to work quite fine. Thanks so far.
-When will it be possible to use this version via rpm-packages?
+>> Hm, please double-check later.  I really don't see any possible cause
+>> of this.
+Okay... Newest alsa-driver-snapshot - no change. Still got these hiccups
+when compiling with --with-debug=full.
 
-Daniel
+>> OK, this implies either a spin deadlock or a dead-end in the irq
+>> handler.
+>>
+>> Anyway, please try the very latest alsa-driver-snapshot.  
+Sorry... No luck... It still crashes.
+
+>> If it still
+>> doesn't work, let me know whether use_system_timer=1 works around the
+>> crash.  
+Yes! With use_system_timer everything works fine!
+
+>> If yes, just try to comment out all spin_*() calls in
+>> cttimer.c.
+Sorry... Still crashes. Only use_system_timer worked so far...
+
+> Also, show your ~/.asoundrc setup so that I can try to reproduce
+> the same bug with my test machine.
+Here it is:
+pcm.xfi
+{
+        type hw
+        card 0
+  channels 6
+}
+
+ctl.xfi
+{
+        type hw
+        card 0
+}
+
+pcm.ch51dup {
+         slave.pcm "plug:lowpass51"
+         slave.channels 6
+         type route
+         ttable.0.0 1
+         ttable.1.1 1
+         ttable.0.2 1
+         ttable.1.3 1
+         ttable.0.4 0.5
+         ttable.1.4 0.5
+         ttable.0.5 1
+         ttable.1.5 1
+}
+
+pcm.lowpass51 {
+    type ladspa
+    slave.pcm default
+    path "/usr/lib/ladspa"
+    plugins {
+        0 {
+            id 1098 # Identity (Audio) (1098/identity_audio)
+            policy duplicate
+            input.bindings.0 "Input";
+            output.bindings.0 "Output";
+        }
+
+        1 {
+            id 1672
+            policy none
+            input.bindings.5 "Input";
+            output.bindings.5 "Output";
+            input {
+                controls [ 120 2 ]
+            }
+        }
+    }
+}
+
+Thanks!
+
+-- 
+http://www.gnupp.de/verschluesselung/warum.html
+Key ID: 0x4C0B2250
+Key: http://home.arcor.de/mr_maniac/ANDERES/public.gpg
