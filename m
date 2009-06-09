@@ -1,30 +1,21 @@
-From: Eric Miao <eric.y.miao@gmail.com>
-Subject: Re: [PATCH 1/4] ASoC: pxa-ssp: enhance I2S and add
-	Left_J support
-Date: Tue, 9 Jun 2009 17:41:25 +0800
-Message-ID: <f17812d70906090241yd97c1ceu72dd1a7c72604d3c@mail.gmail.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [PATCH 1/4] ASoC: pxa-ssp: enhance I2S and
+	add	Left_J support
+Date: Tue, 9 Jun 2009 11:54:28 +0200
+Message-ID: <20090609095427.GG26688@buzzloop.caiaq.de>
 References: <f17812d70906030533m49eb023bid19a80231921f59b@mail.gmail.com>
-	<20090606201225.GA1029@sirena.org.uk>
-	<74d0deb30906080512q29b9915fvec9b068bf4b2e126@mail.gmail.com>
-	<20090608124045.GE7858@sirena.org.uk>
-	<1244477000.30582.72.camel@brutus>
-	<20090608165328.GB14026@rakim.wolfsonmicro.main>
-	<1244481992.17327.22.camel@brutus>
-	<20090608180656.GH7858@sirena.org.uk>
-	<1244494349.17327.174.camel@brutus>
-	<f17812d70906090239p5dee129egda49918b3862c0ca@mail.gmail.com>
+	<1244276805.15998.102.camel@brutus>
+	<1719ee7f0906090239m578d1ab3j80a7ebc15f9cc51e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
-	[209.85.221.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 06DB9245C9
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 878EA1037F2
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Jun 2009 11:41:26 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so4812461qyk.16
-	for <alsa-devel@alsa-project.org>; Tue, 09 Jun 2009 02:41:25 -0700 (PDT)
-In-Reply-To: <f17812d70906090239p5dee129egda49918b3862c0ca@mail.gmail.com>
+	Tue,  9 Jun 2009 11:54:31 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1719ee7f0906090239m578d1ab3j80a7ebc15f9cc51e@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,52 +25,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Ribeiro <drwyrm@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, pHilipp Zabel <philipp.zabel@gmail.com>
+To: Paul Shen <boshen9@gmail.com>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Daniel Ribeiro <drwyrm@gmail.com>, Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBKdW4gOSwgMjAwOSBhdCA1OjM5IFBNLCBFcmljIE1pYW8gPGVyaWMueS5taWFvQGdt
-YWlsLmNvbT4gd3JvdGU6Cj4KPgo+IDIwMDkvNi85IERhbmllbCBSaWJlaXJvIDxkcnd5cm1AZ21h
-aWwuY29tPjoKPiA+IEVtIFNlZywgMjAwOS0wNi0wOCDDoHMgMTk6MDYgKzAxMDAsIE1hcmsgQnJv
-d24gZXNjcmV2ZXU6Cj4gPj4gVGhpbmsgYWJvdXQgVERNIG1vZGUgZm9yIGEgbWludXRlIGhlcmUg
-LSB0aGVyZSBhIHNlcGFyYXRlIGNvbmZpZ3VyYXRpb24KPiA+PiBmb3IgdGhlIHNhbXBsZSBzaXpl
-IG9uIHRoZSB3aXJlIG9wZW5zIHRoZSB3YXkgdG8gdXNpbmcgYSBsb3dlciBzYW1wbGUKPiA+PiBz
-aXplIGluIGEgZ2l2ZW4gdGltZXNsb3QgdGhhbiB0aGUgdGltZXNsb3Qgc3VwcG9ydHMsIHJlZHVj
-aW5nIHRoZSBuZWVkCj4gPj4gZm9yIHRoZSBDUFUgdG8gcmV3cml0ZSBkYXRhLiDCoE9yIHRvIHB1
-dCBpdCBhbm90aGVyIHdheSwgSSBjYW4ndCBzZWUgVERNCj4gPj4gbW9kZSB3b3JraW5nIHVubGVz
-cyB0aGUgc2FtcGxlIHNpemUgaXMgY29uc3RyYWluZWQgdG8gYWx3YXlzIGJlIGV4YWN0bHkKPiA+
-PiB0aGF0IGRlc2lyZWQgc28gaXQgc2VlbXMgc2Vuc2libGUgdG8gaGF2ZSBhIHN0YW5kYXJkIHdh
-eSBvZiBkb2luZyB0aGF0Lgo+ID4KPiA+IEh1bS4uLiBOb3cgSSB1bmRlcnN0b29kIHRoaXMuIElm
-IGkgd2FudCB0byB1c2UgbmV0d29yayBtb2RlIHdpdGggMgo+ID4gZGlmZmVyZW50IGNvZGVjcywg
-YW5kIHRoZXkgZGlmZmVyIG9uIHRoZSBleHBlY3RlZCBmcmFtZV9zaXplIGkgaGF2ZSB0bwo+ID4g
-dXNlIHRoZSBzbWFsbGVyIGZyYW1lX3NpemUgZm9yIGJvdGggY29kZWNzLgo+ID4KPiA+IEFuZCBp
-bmRlZWQsIGluIHRoaXMgY2FzZSB0aGUgYmVzdCBwbGFjZSB0byBzZXR1cCB0aGUgZnJhbWUgc2l6
-ZSB3b3VsZCBiZQo+ID4gb24gc2V0X3RkbV9zbG90KCkuCj4gPgo+ID4+IEknZCByYXRoZXIgY29t
-ZSB1cCB3aXRoIGEgY2xlYW5lciB3YXkgb2YgY29uZmlndXJpbmcgdGhlIG1hZ2ljaWFuIGNhc2UK
-PiA+PiB0aGF0J3MgZXhwbGljaXQgYWJvdXQgd2hhdCBpdCdzIHRyeWluZyB0byBhY2hpZXZlLiDC
-oEl0IGRvZXNuJ3QgbmVlZCB0bwo+ID4+IGJlIGluIHVzZXIgc3BhY2UsIHRob3VnaC4KPiA+Cj4g
-PiBJIGRvbnQga25vdyBob3cgdG8gZG8gdGhpcyBvdGhlciB0aGFuIGp1c3QgY2hhbmdpbmcgdGhl
-IGZyYW1lIHNpemUuLi4gOikKPiA+Cj4KPiBPSywgbm90IGhhdmluZyBlbm91Z2ggdGltZSB0byBy
-ZWFkIGFsbCB0aGlzIHRocmVhZCwgbGV0J3MgbWFrZSBzdXJlCj4gZmlyc3Qgd2UgYXJlIG9uIHRo
-ZSBzYW1lIGZsb29yOgo+Cj4gZnJhbWVfd2lkdGggwqA9IG51bWJlciBvZiBiaXQgY2xvY2tzIHBl
-ciBmcmFtZQo+IHNhbXBsZV93aWR0aCA9IG51bWJlciBvZiBiaXRzIHBlciBzYW1wbGUKPgo+IEFu
-ZCB0aGUgYXNzdW1wdGlvbiB0aGF0Cj4KPiBmcmFtZV93aWR0aCA9IHNhbXBsZV93aWR0aCAqIGNo
-YW5uZWwgKCA9IExSQ0xLIGZvciBJMlMgKQo+Cj4gaXMgbm8gbG9uZ2VyIChhbmQgZXZlcikgY29y
-cmVjdC4KPgo+IEUuZy4gdGhlIGZyYW1lIHdpZHRoIGNvdWxkIGJlIDY0ZnMsIG1lYW5pbmcgYSB3
-aG9sZSBmcmFtZSBpcyBjb25zaXN0aW5nCj4gb2YgNjQgYml0Y2xrcyAtIHRoYXQncyBzYXlpbmcs
-IHNhbXBsZSB3aWR0aCBmcm9tIDEgLSA2NCBhcmUgcG9zc2libGUsCgpzb3JyeSBmb3IgdGhlIEhU
-TUwgbWFpbCwgYW5kIGhlcmUgaXMgYSB0eXBvOiBzYW1wbGUgd2lkdGggc2hvdWxkIGJlIHdpdGhp
-biAxLTMyCgo+IEZvciB0eXBpY2FsIDE2LWJpdCBzYW1wbGUgd2lkdGggSTJTIGZvcm1hdCwgdGhl
-IGVudmVsb3BlIGZvciBlYWNoIHNhbXBsZQo+IGlzIDMyIGJpdGNsa3MsIGFuZCBvZmZzZXRpbmcg
-YnkgMSBiaXRjbGsgc3RhcnRzIHRoZSAxNi1iaXQgc2FtcGxlLgo+Cj4gQW5kIHRoZSBURE0gbW9k
-ZSBpcyBhY3R1YWxseSBzcGVjaWFsIGZvciBQWEEtU1NQIHRvIGVtdWxhdGUgdGhlIEkyUwo+IHBy
-b3RvY29sLCBpdCdzIG5vIHdheSBnZW5lcmljIFRETSBpbiBhIGNvbW1vbiBzZW5zZS4gU28gdGFs
-a2luZyBhYm91dAo+IHNldF90ZG1fc2xvdHMoKSwgSSdkIHJlYWxseSBsaWtlIHRvIGhpZGUgaW50
-byB0aGUgZm9ybWF0IHNldHRpbmcgY29kZQo+IG9mIEkyUy9MZWZ0X0ogdG8gYXZvaWQgZnVydGhl
-ciBjb25mdXNpb24uCj4KPiBBbmQgSSBzdGlsbCBkaWRuJ3QgcXVpdGUgY2FwdHVyZSB0aGUgaXNz
-dWUgb2YgbWFnaWNpYW4uIFBoaWxsaXAsIGRvCj4geW91IGhhdmUgYW55IEhXIHJlZmVyZW5jZSB0
-byB0aGUgYXVkaW8gY29kZWMgYW5kIHRoZSBjb25uZWN0aW9uIG9uCj4gbWFnaWNpYW4/CgoKCi0t
-CkNoZWVycwotIGVyaWMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+On Tue, Jun 09, 2009 at 05:39:53PM +0800, Paul Shen wrote:
+> Would you please give some informations about your platform ?
+> Thus I can test the patches with your method.
+
+Sure, here we go.
+
+We're using the following setup:
+
+ - PXA in master mode to BITCLK and LRCLK but external SSP clock
+ - 64fs frame format
+ - CS4270 codec
+
+Here's the code sniplet I use to configure the port using your latest
+patch set:
+
+
+	fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+		SND_SOC_DAIFMT_CBS_CFS | PXA_SSP_FRM_64FS;
+
+	/* setup the CODEC DAI */
+        ret = snd_soc_dai_set_fmt(codec_dai, fmt);
+        if (ret < 0)
+		return ret;
+
+	ret = snd_soc_dai_set_sysclk(codec_dai, 0, clk, 0);
+	if (ret < 0)
+		return ret;
+
+	/* setup the CPU DAI */
+	ret = snd_soc_dai_set_pll(cpu_dai, 0, 0, clk);
+	if (ret < 0)
+		return ret;
+
+        ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
+        if (ret < 0)
+                return ret;
+
+	ret = snd_soc_dai_set_clkdiv(cpu_dai, PXA_SSP_DIV_SCR, 4);
+        if (ret < 0)
+                return ret;
+
+	ret = snd_soc_dai_set_sysclk(cpu_dai, PXA_SSP_CLK_EXT, 0, 1);
+        if (ret < 0)
+                return ret;
+
+	snd_soc_dai_set_tdm_slot(cpu_dai, 3, 2);
+
+That gives me the following register values:
+
+	SSCR0 0xa10003ff
+	SSCR1 0x00e01d80
+	SSPSP 0x31a00084
+
+... which works fine for me. But the PXA is not really in a typical
+slave configuration, mostly because we had lots of strange issues when
+we tried that.
+
+Any more things I can provide?
+
+Thanks,
+Daniel
