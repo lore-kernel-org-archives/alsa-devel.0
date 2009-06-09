@@ -1,20 +1,14 @@
-From: Lex Wassenberg <lex.wassenberg@gmail.com>
-Subject: Re: Sound streaming application: which device to use?
-Date: Tue, 9 Jun 2009 16:01:59 +0200
-Message-ID: <45c981ab0906090701t209abbc6jda420e4e666c5198@mail.gmail.com>
-References: <45c981ab0906040428v3910cbcfq7e3024b23f6653e1@mail.gmail.com>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: Please help in adding ams-delta support to ASoC
+Date: Tue, 09 Jun 2009 17:00:49 +0200
+Message-ID: <4A2E7921.7090200__35454.8718933531$1244559684$gmane$org@tis.icnet.pl>
+References: <4A1BEBE3.8010306@tis.icnet.pl>	<200906030924.14230.jkrzyszt@tis.icnet.pl>	<20090605165531.7d0c4522.jhnikula@gmail.com>	<200906060028.01600.jkrzyszt@tis.icnet.pl>
+	<20090608094028.415e6ec3.jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f215.google.com (mail-bw0-f215.google.com
-	[209.85.218.215])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3AABB1037F7
-	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Jun 2009 16:02:00 +0200 (CEST)
-Received: by bwz11 with SMTP id 11so3903239bwz.32
-	for <alsa-devel@alsa-project.org>; Tue, 09 Jun 2009 07:01:59 -0700 (PDT)
-In-Reply-To: <45c981ab0906040428v3910cbcfq7e3024b23f6653e1@mail.gmail.com>
+In-Reply-To: <20090608094028.415e6ec3.jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,64 +19,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: linux-omap@vger.kernel.org, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 4, 2009 at 1:28 PM, Lex Wassenberg<lex.wassenberg@gmail.com> wr=
-ote:
-> Hi all,
->
-> I'm completely new to ALSA, so forgive me if these are newby questions.
->
-> I'm working on an application which receives sound chunks via an IP
-> connection, and it should use the local sound card to make this sound
-> audible. Up to now it used OSS, but there were some problems with
-> that, so I'm busy with rewriting the application to ALSA. The sound is
-> 16-bit stereo, sampled at 8000 Hz, and it comes in chunks of 1024
-> frames. I managed to get things more or less working, but there are
-> still some things unclear to me.
->
-> 1. If I open the soundcard with device "default" or device "plughw" I
-> get good sound, but the device "default" only accepts 1020 frames of
-> every 1024 that I offer it (as can be seen from the return value of
-> snd_pcm_writei() ). The device "plughw" nicely accepts all 1024
-> frames. Why is this? In both cases I have set the sample rate to 8000
-> via a call to snd_pcm_hw_params_set_rate_near() and the buffer size to
-> 2048 frames via snd_pcm_hw_params_set_buffer_size_near().
->
-> 2. If I use device "default", there seems to be no obligation to set
-> the buffer size nor the period size, I still get good sound at the
-> output. If I use "plughw", I have to set either the buffer size (2048
-> frames) or the period size (1024 frames), otherwise I get distorted
-> sound. If I set both (the buffer size being 2048 and the period size
-> being 1024) I also get distorted sound. Why?
->
-> 3. If I set the buffer size twice the period size (as above), and ask
-> the sizes back, ALSA nicely reports the buffer size as being twice the
-> period size. But if I ask the buffer and period TIMES, they are
-> reported as being the same: 128000 us! =A0Huh????
->
-> 4. The return value of snd_pcm_hw_params_set_rate_near() is sometimes
-> 8000, sometimes 7999, from the very same program. I would expect ALSA
-> to always return the same value, be it what I request or not, but at
-> least being deterministic. How can this be?
->
-> 5. There is another application running on the same target system,
-> which will sometimes produce audible alarms. However, if my
-> application is running that other application cannot generate the
-> alarms, it produces a "resource busy" error. It is clear to me that my
-> application is using the sound card exclusively, but how can I get it
-> to allow other applications access to it too? I tried using the device
-> "dmix", but then my sound is again very distorted.
->
-> Hope that somebody can help me out.
-> Thanks in advance.
->
-> Lex
->
+Jarkko Nikula wrote:
+> On Sat, 6 Jun 2009 00:28:00 +0200
+> Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
+>> My last idea was to create a generic test driver that would not use
+>> any external clocks, ie configured with OMAP_MCBSP_SYSCLK_CLK and
+>> SND_SOC_DAIFMT_CBS_CFS, right? That way, it should just work without
+>> any hardware support except for mcbsp and maybe we could then
+>> definitelly verify if current mcbsp and dma code works on omap1510 or
+>> not.
+>>
+> This could be a bit risky and can damage your HW since both OMAP and
+> codec are then driving the bit-clock and FS signals but you could try
+> to configure McBSP as a master and use the internal clock source as its
+> input.
 
-Is there nobody that can help me out on the questions above? I figured
-the answer to question 4 (passing a pointer to an uninitialized
-integer; I thought the integer was only used for reporting back, which
-is not true), but all other questions still stand. Nobody??
+I found that in OMAP5910, CLKR and FSR signals are not connected to any 
+pins, so I can safely set them as output. To make use of this feature, I 
+have modified sound/soc/omap/omap-mcbsp.c slightly:
 
-Lex
+diff -Npru linux-2.6.29/sound/soc/omap/omap-msbsp.c.orig 
+linux-2.6.29/sound/soc/omap/omap-mcbsp.c
+--- linux-2.6.29/sound/soc/omap/omap-mcbsp.c.orig       2009-06-09 
+02:16:32.000000000 +0200
++++ linux-2.6.29/sound/soc/omap/omap-mcbsp.c    2009-06-09 
+02:25:50.000000000 +0200
+@@ -341,8 +341,8 @@ static int omap_mcbsp_dai_set_dai_fmt(st
+         switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+         case SND_SOC_DAIFMT_CBS_CFS:
+                 /* McBSP master. Set FS and bit clocks as outputs */
+-               regs->pcr0      |= FSXM | FSRM |
+-                                  CLKXM | CLKRM;
++               regs->pcr0      |= FSRM |
++                                  CLKRM;
+                 /* Sample rate generator drives the FS */
+                 regs->srgr2     |= FSGM;
+                 break;
+
+> Basically it goes with current driver by passing SND_SOC_DAIFMT_CBS_CFS
+> to snd_soc_dai_set_fmt(cpu_dai, ...) and by setting SRG source clock
+> and divider:
+> 
+> snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_SYSCLK_CLK, ...);
+> snd_soc_dai_set_clkdiv(cpu_dai, OMAP_MCBSP_CLKGDV, divider);
+
+So I restored all that 12MHz mclk stuff that I had already removed as 
+redundant, then set up the following in oder to get internally generated 
+~256kHz CLKR and ~8kHz FSR:
+
++       /* Set cpu DAI configuration */
++       err = snd_soc_dai_set_fmt(cpu_dai,
++                                 SND_SOC_DAIFMT_I2S |
++                                 SND_SOC_DAIFMT_IB_IF |
++                                 SND_SOC_DAIFMT_CBS_CFS);
++       if (err < 0) {
++               printk(KERN_ERR "can't set cpu DAI configuration\n");
++               return err;
++       }
++
++       /* Set cpu DAI master clock source */
++       err =
++           snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_SYSCLK_CLK,
++                                       0, SND_SOC_CLOCK_IN);
++
++       if (err < 0) {
++               printk(KERN_ERR "can't set cpu DAI clock source\n");
++               return err;
++       }
++
++       /* Set cpu DAI master clock divisor */
++       err =
++           snd_soc_dai_set_clkdiv(cpu_dai, OMAP_MCBSP_CLKGDV, 47);
++
++       if (err < 0) {
++               printk(KERN_ERR "can't set cpu DAI clock divisor\n");
++               return err;
++       }
+
+Tried with both arecord and </dev/dsp, it looks like the problem still 
+persists, even with mcbsp internally generated clocking. I have also 
+tested a similiar mcbsp configuration with old driver for reference - it 
+works.
+
+Importand or not, I have to fine down my provious reports on what works 
+and what does not:
+
+- original patch applied with other ams-delta related patches
+   on linux-omap-2.6.16, as it was designed for:
+   - playback: works, with both aplay and >/dev/dsp,
+   - capture: works with </dev/dsp, gives null output with arecord
+
+- original patch ported to the last l-o commit supporting omap-alsa:
+   - playback: works as before,
+   - capture: both </dev/dsp and arecord give null output,
+     but DMA interrupts still work.
+
+- new driver on l-o: total hangup
+
+- new driver on mainline 2.6.30-rc5: no DMA interrupts.
+
+Thanks,
+Janusz
