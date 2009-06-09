@@ -1,28 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/4] ASoC: pxa-ssp: enhance I2S and
-	add	Left_J support
-Date: Tue, 9 Jun 2009 10:58:21 +0100
-Message-ID: <20090609095821.GA28220@sirena.org.uk>
+From: Daniel Ribeiro <drwyrm@gmail.com>
+Subject: Re: [PATCH 1/4] ASoC: pxa-ssp: enhance I2S and add
+ Left_J support
+Date: Tue, 09 Jun 2009 07:10:00 -0300
+Message-ID: <1244542200.1315.29.camel@brutus>
 References: <f17812d70906030533m49eb023bid19a80231921f59b@mail.gmail.com>
-	<20090606201225.GA1029@sirena.org.uk>
-	<74d0deb30906080512q29b9915fvec9b068bf4b2e126@mail.gmail.com>
-	<20090608124045.GE7858@sirena.org.uk>
-	<1244477000.30582.72.camel@brutus>
-	<20090608165328.GB14026@rakim.wolfsonmicro.main>
-	<1244481992.17327.22.camel@brutus>
-	<20090608180656.GH7858@sirena.org.uk>
-	<1244494349.17327.174.camel@brutus>
-	<f17812d70906090239p5dee129egda49918b3862c0ca@mail.gmail.com>
+	<1244276805.15998.102.camel@brutus>
+	<1719ee7f0906090239m578d1ab3j80a7ebc15f9cc51e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0341295932160745128=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E4E4E1037FC
+Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
+	[209.85.221.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id AD92A1037E3
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Jun 2009 11:58:21 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <f17812d70906090239p5dee129egda49918b3862c0ca@mail.gmail.com>
+	Tue,  9 Jun 2009 12:11:19 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so4823498qyk.16
+	for <alsa-devel@alsa-project.org>; Tue, 09 Jun 2009 03:11:19 -0700 (PDT)
+In-Reply-To: <1719ee7f0906090239m578d1ab3j80a7ebc15f9cc51e@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,48 +26,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric Miao <eric.y.miao@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Daniel Ribeiro <drwyrm@gmail.com>, pHilipp Zabel <philipp.zabel@gmail.com>
+To: Paul Shen <boshen9@gmail.com>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 09, 2009 at 05:39:18PM +0800, Eric Miao wrote:
 
-> OK, not having enough time to read all this thread, let's make sure
-> first we are on the same floor:
+--===============0341295932160745128==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-nyz8YDYE0HgteIJifiuV"
 
-> frame_width  = number of bit clocks per frame
-> sample_width = number of bits per sample
 
-Yes.
+--=-nyz8YDYE0HgteIJifiuV
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> And the assumption that
+Em Ter, 2009-06-09 =C3=A0s 17:39 +0800, Paul Shen escreveu:
+> Hi Daniel,
+>=20
+> Would you please give some informations about your platform ?
+> Thus I can test the patches with your method.
+...
+> Would you please give me code extract about your SSP, codec
+> configurations and clock setting?
 
-> frame_width = sample_width * channel ( = LRCLK for I2S )
+Hi Paul! :)
 
-> is no longer (and ever) correct.
+Im working to get Motorola EZX Phones[1] supported by mainline linux.
 
-Ish.  That's always been a minimum for most frame formats, though with
-programmable ports like the PXA SSP ports I2S normally makes it an exact
-requirement.  At the minute the magician is abusing a low frame width to
-produce a double rate frame clock but this is an abuse.
+Our audio codec is a proprietary PMIC, manufactured by TI for Motorola,
+named PCAP2(PTWL93017).
 
-> And the TDM mode is actually special for PXA-SSP to emulate the I2S
-> protocol, it's no way generic TDM in a common sense. So talking about
-> set_tdm_slots(), I'd really like to hide into the format setting code
-> of I2S/Left_J to avoid further confusion.
+The audio codec is connected to PXA SSP2, PXA SSP3, Baseband Processor
+and BCM20x5(bluetooth) in network mode.
 
-In terms of the ASoC APIs TDM mode should only be required in order to
-configure actual TDM.  Ideally the PXA driver should only ever require
-set_tdm_slot() for actual TDM configurations and setting up a single
-slot for TDM should be equivalent to never having called it at all.
+PXA is always the _slave_ of bitclock and frame, so I don't have to care
+about clock settings on PXA side, the codec always provides me the
+correct clock for the selected rate.
 
-It's use in the PXA code has always been a wart.
+You can find our code on git://git.openezx.org/openezx.git, ezx/current
+branch. (sound/soc/pxa/ezx.c and sound/soc/codecs/pcap2.c).
 
-> And I still didn't quite capture the issue of magician. Phillip, do
-> you have any HW reference to the audio codec and the connection on
-> magician?
+Most of our work is based on the 2.4 kernel source releases by
+motorola[2], and on the atlas(MC13783) PMIC documentation[3] from
+Freescale (used by Motorola on newer(MAGX) phones), as we don't have
+documentation for PCAP2.
 
-Essentially his hardware ends up requiring one frame clock per sample in
-a stereo stream - ie, a double rate frame clock.  I strongly expect that
-it is actually running in a DSP mode with one frame sync per sample
-rather than per frame.
+[1]http://wiki.openezx.org/Project_devices
+[2]https://opensource.motorola.com/
+[3]http://www.freescale.com/webapp/sps/site/prod_summary.jsp?code=3DMC13783=
+&webpageId=3D1098824671538699514881&nodeId=3D01435974404881
+
+--=20
+Daniel Ribeiro
+
+--=-nyz8YDYE0HgteIJifiuV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Esta =?ISO-8859-1?Q?=E9?= uma parte de mensagem
+ assinada digitalmente
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEABECAAYFAkouNPEACgkQw3OYl0G0liQuzgCeP/F2EtO4xo9og9rQBHy4Ltgn
+OCcAn19/JT192JBQHnQ7Og5lXV2UV6JR
+=WKH0
+-----END PGP SIGNATURE-----
+
+--=-nyz8YDYE0HgteIJifiuV--
+
+
+--===============0341295932160745128==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============0341295932160745128==--
