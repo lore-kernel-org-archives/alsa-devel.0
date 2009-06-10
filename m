@@ -1,19 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Automatically set TDM if needed
-	on	pxa-ssp and allow frame width override when using TDM.
-Date: Wed, 10 Jun 2009 13:18:44 +0100
-Message-ID: <20090610121844.GC14632@sirena.org.uk>
-References: <1244567590.7406.100.camel@brutus>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: Please help in adding ams-delta support to ASoC
+Date: Wed, 10 Jun 2009 14:20:01 +0200
+Message-ID: <4A2FA4F1.8070208__15449.4572816931$1244636423$gmane$org@tis.icnet.pl>
+References: <4A1BEBE3.8010306@tis.icnet.pl>
+	<200906101112.32635.peter.ujfalusi@nokia.com>
+	<200906101227.39856.jkrzyszt@tis.icnet.pl>
+	<200906101353.43411.peter.ujfalusi@nokia.com>
+Reply-To: postmaster@icnet.pl
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8854B24367
-	for <alsa-devel@alsa-project.org>;
-	Wed, 10 Jun 2009 14:18:45 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1244567590.7406.100.camel@brutus>
+In-Reply-To: <200906101353.43411.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,43 +21,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Ribeiro <drwyrm@gmail.com>
-Cc: Paul Shen <boshen9@gmail.com>, alsa-devel <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Philipp Zabel <philipp.zabel@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 09, 2009 at 02:13:10PM -0300, Daniel Ribeiro wrote:
-> * Extend set_tdm_slot to allow the user to arbitrarily set the frame
->   width and active TX/RX slots.
-> * Reset SSCR0_EDSS and SSCR0_DSS on pxa_ssp_set_dai_fmt.
-> * Makes SSCR0_MOD optional.
-> * Automatically sets network mode when needed if set_tdm_slot was
->   never called.
-> * Clears SSCR1_RWOT case SSCR0_MOD is set.
-> * Updates magician.c and wm9081.c for the new set_tdm_slot()
+Peter Ujfalusi wrote:
+> On Wednesday 10 June 2009 13:27:38 ext Janusz Krzysztofik wrote:
+>> Not only this. AFAICS, there is no way of specifying single phase stereo
+>> (with XPHASE/RPHASE unset), 2 words per frame (XFRLEN1/RFRLEN1(2 - 1)).
+>> Isn't this required for correct DSP_A/DSP_B support?
+> 
+> Sure it is possible:
+> 	format = mcbsp_data->fmt & SND_SOC_DAIFMT_FORMAT_MASK;
+> 	wpf = channels = params_channels(params);
+> 	switch (channels) {
+> 	case 2:
+> 		if (format == SND_SOC_DAIFMT_I2S) {
+> 			/* Use dual-phase frames */
+> 			regs->rcr2	|= RPHASE;
+> 			regs->xcr2	|= XPHASE;
+> 			/* Set 1 word per (McBSP) frame for phase1 and phase2 */
+> 			wpf--;
+> 			regs->rcr2	|= RFRLEN2(wpf - 1);
+> 			regs->xcr2	|= XFRLEN2(wpf - 1);
+> 		}
+> 	case 1:
+> 	case 4:
+> 		/* Set word per (McBSP) frame for phase1 */
+> 		regs->rcr1	|= RFRLEN1(wpf - 1);
+> 		regs->xcr1	|= XFRLEN1(wpf - 1);
+> 		break;
+> 	default:
+> 		/* Unsupported number of channels */
+> 		return -EINVAL;
+> 	}
+> 
+> wpf = channels == 2, format is not I2S --> RFRLEN1(wpf - 1), XFRLEN1(wpf - 1), 
+> RFRLEN1(2 - 1), XFRLEN1(2 - 1)
 
-Please split out the API change from the use of it in the PXA SSP driver
-- just include enough to keep it building, then send a second patch
-changing the internals of the SSP driver.  At the minute there's two
-different changes in here.
+OK, I see I have to update my base before commenting the code ;).
 
->  static int wm9081_set_tdm_slot(struct snd_soc_dai *dai,
-> -			       unsigned int mask, int slots)
-> +	unsigned int tx_mask, unsigned int rx_mask, int slots, int frame_width)
->  {
->  	struct snd_soc_codec *codec = dai->codec;
->  	unsigned int aif1 = wm9081_read(codec, WM9081_AUDIO_INTERFACE_1);
-> @@ -1219,7 +1219,7 @@ static int wm9081_set_tdm_slot(struct snd_soc_dai *dai,
->  
->  	aif1 |= (slots - 1) << WM9081_AIFDAC_TDM_MODE_SHIFT;
->  
-> -	switch (mask) {
-> +	switch (tx_mask) {
->  	case 1:
->  		break;
->  	case 2:
-
-This is wrong, the WM9081 is a DAC only part so it should be paying
-attention to the RX mask, not the TX one.  We also need to handle the
-sample size here.
-
-I've not checked the SSP code yet.
+Thanks,
+Janusz
