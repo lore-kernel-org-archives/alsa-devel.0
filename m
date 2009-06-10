@@ -1,19 +1,17 @@
-From: Simos Xenitellis <simos.lists@googlemail.com>
-Subject: [PATCH] ALSA: hda - add quirk for STAC92xx (SigmaTel
-	STAC9205)
-Date: Wed, 10 Jun 2009 16:33:31 +0100
-Message-ID: <598e9210906100833s14fcd322h8ec3c2c23336f16a@mail.gmail.com>
+From: sandip gangakhedkar <sandipfloyd@gmail.com>
+Subject: no sound in ubuntu 8.10 on AD1986 sound card
+Date: Wed, 10 Jun 2009 21:47:34 +0530
+Message-ID: <6208da1a0906100917y11b401d8y378af8d7d28e762d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f215.google.com (mail-bw0-f215.google.com
-	[209.85.218.215])
-	by alsa0.perex.cz (Postfix) with ESMTP id C5B7F103823
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 952CE103817
 	for <alsa-devel@alsa-project.org>;
-	Wed, 10 Jun 2009 17:33:54 +0200 (CEST)
-Received: by bwz11 with SMTP id 11so852255bwz.32
-	for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2009 08:33:54 -0700 (PDT)
+	Wed, 10 Jun 2009 18:17:55 +0200 (CEST)
+Received: by yw-out-1718.google.com with SMTP id 4so424760ywq.2
+	for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2009 09:17:54 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,38 +24,35 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A quirk is required for 8086:284b (rev 03) [Subsystem: 161f:2073].
-The following has been tested with Alsa 1.0.20 (git master).
+Hi all,
 
-Background details can be found at
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4561
-http://forum.ubuntu-gr.org/viewtopic.php?f=38&t=5290
+I am facing a very perplexing issue with sound in Ubuntu 8.10 which I have
+never encountered before with linux. I do not hear any sound from my
+speakers. The sound card is AD 1986 (Analog Devices) and it worked
+wonderfully without any hiccups before on 8.10 and other Ubuntu versions.
 
-Tested-by: Theodora Iliopoulou <th30dr@gmail.com>
-Signed-off-by: Simos Xenitellis <simos@gnome.org>
---
- sound/pci/hda/patch_sigmatel.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+My alsa-info script is here:
+http://www.alsa-project.org/db/?f=7f34b4e28d97178d7f709740f91ff66ea08a9468
 
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 42f944b..104d739 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -1590,6 +1590,8 @@ static struct snd_pci_quirk stac9200_cfg_tbl[] = {
-        /* SigmaTel reference board */
-        SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x2668,
-                      "DFI LanParty", STAC_REF),
-+        SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0xfb30,
-+                    "SigmaTel",STAC_9205_REF),
-        SND_PCI_QUIRK(PCI_VENDOR_ID_DFI, 0x3101,
-                      "DFI LanParty", STAC_REF),
-        /* Dell laptops have BIOS problem */
-@@ -5939,6 +5941,7 @@ static struct hda_codec_preset
-snd_hda_preset_sigmatel[] = {
-        { .id = 0x83847662, .name = "STAC9872AK", .patch = patch_stac9872 },
-        { .id = 0x83847664, .name = "CXD9872AKD", .patch = patch_stac9872 },
-        { .id = 0x838476a0, .name = "STAC9205", .patch = patch_stac9205 },
-+       { .id = 0x83847698, .name = "STAC9205", .patch = patch_stac9205 },
-        { .id = 0x838476a1, .name = "STAC9205D", .patch = patch_stac9205 },
-        { .id = 0x838476a2, .name = "STAC9204", .patch = patch_stac9205 },
-        { .id = 0x838476a3, .name = "STAC9204D", .patch = patch_stac9205 },
+I suspect pulseaudio is the culprit:
+Output of : /var/log/syslog | grep pulseaudio is here:
+http://paste.ubuntu.com/192629/
+
+Running : speaker-test -c2 -D hw:0,0 -t wav -l1 gives no sound.
+
+My motherboard is ASUS A8N-VM on a AMD 64 Athlon 3200 Desktop PC.The sound
+card is detected so no problems there.
+
+I have reinstalled ALSA, pulseaudio and all the related packages but to no
+avail.
+
+I am pretty sure this is not a problem of inadeuate support because sound
+was working before without any issues.
+
+Any ideas/suggestions on how to fix this problem will be greatly
+appreciated. I am also raising an email bug report at alsa-devel so anyone
+can canter around there and provide expert help :)
+
+Thanks,
+
+Sandip
