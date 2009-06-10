@@ -1,85 +1,379 @@
-From: Daniel Ribeiro <drwyrm@gmail.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Automatically set TDM if needed on
+From: pHilipp Zabel <philipp.zabel@gmail.com>
+Subject: Re: [PATCH] ASoC: Automatically set TDM if needed on
 	pxa-ssp and allow frame width override when using TDM.
-Date: Wed, 10 Jun 2009 11:39:54 -0300
-Message-ID: <1244644794.27053.210.camel@brutus>
+Date: Wed, 10 Jun 2009 16:44:28 +0200
+Message-ID: <74d0deb30906100744o328fcfeeh7a8c26c4796743ae@mail.gmail.com>
 References: <1244567590.7406.100.camel@brutus>
-	<20090610121844.GC14632@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0096448048=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.arm.linux.org.uk>
-In-Reply-To: <20090610121844.GC14632@sirena.org.uk>
-List-Unsubscribe: <http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=unsubscribe>
-List-Archive: <http://lists.arm.linux.org.uk/lurker/list/linux-arm-kernel.html>
-List-Post: <mailto:linux-arm-kernel@lists.arm.linux.org.uk>
-List-Help: <mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=help>
-List-Subscribe: <http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.arm.linux.org.uk
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.arm.linux.org.uk
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Paul Shen <boshen9@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9A8E724417
+	for <alsa-devel@alsa-project.org>;
+	Wed, 10 Jun 2009 16:44:30 +0200 (CEST)
+Received: by ewy23 with SMTP id 23so915130ewy.32
+	for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2009 07:44:29 -0700 (PDT)
+In-Reply-To: <1244567590.7406.100.camel@brutus>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Daniel Ribeiro <drwyrm@gmail.com>
+Cc: Paul Shen <boshen9@gmail.com>, alsa-devel <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Mark Brown <broonie@sirena.org.uk>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
+2009/6/9 Daniel Ribeiro <drwyrm@gmail.com>:
+> * Extend set_tdm_slot to allow the user to arbitrarily set the frame
+> =A0width and active TX/RX slots.
+> * Reset SSCR0_EDSS and SSCR0_DSS on pxa_ssp_set_dai_fmt.
+> * Makes SSCR0_MOD optional.
+> * Automatically sets network mode when needed if set_tdm_slot was
+> =A0never called.
+> * Clears SSCR1_RWOT case SSCR0_MOD is set.
+> * Updates magician.c and wm9081.c for the new set_tdm_slot()
+>
+> (Patch is based on Mark's for-2.6.32 branch)
+>
+> Signed-off-by: Daniel Ribeiro <drwyrm@gmail.com>
+>
+> ---
+> =A0include/sound/soc-dai.h =A0 | =A0 =A05 +
+> =A0sound/soc/codecs/wm9081.c | =A0 =A04 -
+> =A0sound/soc/pxa/magician.c =A0| =A0 =A02
+> =A0sound/soc/pxa/pxa-ssp.c =A0 | =A0119 ++++++++++++++++++++++++++++-----=
+-------------
+> =A0sound/soc/soc-core.c =A0 =A0 =A0| =A0 =A09 ++-
+> =A05 files changed, 85 insertions(+), 54 deletions(-)
+>
+> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+> index 352d7ee..f96cc36 100644
+> --- a/include/sound/soc-dai.h
+> +++ b/include/sound/soc-dai.h
+> @@ -106,7 +106,7 @@ int snd_soc_dai_set_pll(struct snd_soc_dai *dai,
+> =A0int snd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt);
+>
+> =A0int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
+> - =A0 =A0 =A0 unsigned int mask, int slots);
+> + =A0 =A0 =A0 unsigned int tx_mask, unsigned int rx_mask, int slots, int =
+frame_width);
+>
+> =A0int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate);
+>
+> @@ -140,7 +140,8 @@ struct snd_soc_dai_ops {
+> =A0 =A0 =A0 =A0 */
+> =A0 =A0 =A0 =A0int (*set_fmt)(struct snd_soc_dai *dai, unsigned int fmt);
+> =A0 =A0 =A0 =A0int (*set_tdm_slot)(struct snd_soc_dai *dai,
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 unsigned int mask, int slots);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 unsigned int tx_mask, unsigned int rx_mask,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 int slots, int frame_width);
+> =A0 =A0 =A0 =A0int (*set_tristate)(struct snd_soc_dai *dai, int tristate);
+>
+> =A0 =A0 =A0 =A0/*
+> diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
+> index 86fc57e..85c720a 100644
+> --- a/sound/soc/codecs/wm9081.c
+> +++ b/sound/soc/codecs/wm9081.c
+> @@ -1207,7 +1207,7 @@ static int wm9081_set_sysclk(struct snd_soc_dai *co=
+dec_dai,
+> =A0}
+>
+> =A0static int wm9081_set_tdm_slot(struct snd_soc_dai *dai,
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0unsigned int=
+ mask, int slots)
+> + =A0 =A0 =A0 unsigned int tx_mask, unsigned int rx_mask, int slots, int =
+frame_width)
+> =A0{
+> =A0 =A0 =A0 =A0struct snd_soc_codec *codec =3D dai->codec;
+> =A0 =A0 =A0 =A0unsigned int aif1 =3D wm9081_read(codec, WM9081_AUDIO_INTE=
+RFACE_1);
+> @@ -1219,7 +1219,7 @@ static int wm9081_set_tdm_slot(struct snd_soc_dai *=
+dai,
+>
+> =A0 =A0 =A0 =A0aif1 |=3D (slots - 1) << WM9081_AIFDAC_TDM_MODE_SHIFT;
+>
+> - =A0 =A0 =A0 switch (mask) {
+> + =A0 =A0 =A0 switch (tx_mask) {
+> =A0 =A0 =A0 =A0case 1:
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
+> =A0 =A0 =A0 =A0case 2:
+> diff --git a/sound/soc/pxa/magician.c b/sound/soc/pxa/magician.c
+> index c89a3cd..2345869 100644
+> --- a/sound/soc/pxa/magician.c
+> +++ b/sound/soc/pxa/magician.c
+> @@ -188,7 +188,7 @@ static int magician_playback_hw_params(struct snd_pcm=
+_substream *substream,
+> =A0 =A0 =A0 =A0if (ret < 0)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return ret;
+>
+> - =A0 =A0 =A0 ret =3D snd_soc_dai_set_tdm_slot(cpu_dai, 1, 1);
+> + =A0 =A0 =A0 ret =3D snd_soc_dai_set_tdm_slot(cpu_dai, 1, 1, 1, 16);
 
---===============0096448048==
-Content-Type: multipart/signed; micalg="pgp-sha1";
-	protocol="application/pgp-signature";
-	boundary="=-d3t20hypHByTL6smMWZM"
+This will have to depend on the sample width. For S24_LE/S32_LE,
+slot_width should be 32. Also the rx mask could be empty, the SSP link
+is tx only on magician
 
-
---=-d3t20hypHByTL6smMWZM
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Em Qua, 2009-06-10 =C3=A0s 13:18 +0100, Mark Brown escreveu:
-> Please split out the API change from the use of it in the PXA SSP driver
-> - just include enough to keep it building, then send a second patch
-> changing the internals of the SSP driver.  At the minute there's two
-> different changes in here.
-
-Ok.
-
-> This is wrong, the WM9081 is a DAC only part so it should be paying
-> attention to the RX mask, not the TX one.  We also need to handle the
-> sample size here.
-
-Ok, but I dont know how to handle slot_width for wm9081. Is a FIXME
-comment here enough for a first version? Its hard for me to get this
-working correctly on wm9081 as I dont have such hardware and PCAP2 only
-supports 16bits slots.
-
-> I've not checked the SSP code yet.
-
---=20
-Daniel Ribeiro
-
---=-d3t20hypHByTL6smMWZM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Esta =?ISO-8859-1?Q?=E9?= uma parte de mensagem
-	assinada digitalmente
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEABECAAYFAkovxboACgkQw3OYl0G0liRmggCffXZmLhOXz+hYCjHdIe1CbxU/
-tzcAn1QzLZBu5SwYTpP4Hfd63UivXkPP
-=QluB
------END PGP SIGNATURE-----
-
---=-d3t20hypHByTL6smMWZM--
-
-
-
---===============0096448048==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
--------------------------------------------------------------------
-List admin: http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel
-FAQ:        http://www.arm.linux.org.uk/mailinglists/faq.php
-Etiquette:  http://www.arm.linux.org.uk/mailinglists/etiquette.php
---===============0096448048==--
+> =A0 =A0 =A0 =A0if (ret < 0)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return ret;
+>
+> diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+> index 46d14f3..f0931e7 100644
+> --- a/sound/soc/pxa/pxa-ssp.c
+> +++ b/sound/soc/pxa/pxa-ssp.c
+> @@ -375,21 +375,34 @@ static int pxa_ssp_set_dai_pll(struct snd_soc_dai *=
+cpu_dai,
+> =A0* Set the active slots in TDM/Network mode
+> =A0*/
+> =A0static int pxa_ssp_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai,
+> - =A0 =A0 =A0 unsigned int mask, int slots)
+> + =A0 =A0 =A0 unsigned int tx_mask, unsigned int rx_mask, int slots, int =
+frame_width)
+> =A0{
+> =A0 =A0 =A0 =A0struct ssp_priv *priv =3D cpu_dai->private_data;
+> =A0 =A0 =A0 =A0struct ssp_device *ssp =3D priv->dev.ssp;
+> =A0 =A0 =A0 =A0u32 sscr0;
+>
+> - =A0 =A0 =A0 sscr0 =3D ssp_read_reg(ssp, SSCR0) & ~SSCR0_SlotsPerFrm(7);
+> + =A0 =A0 =A0 sscr0 =3D ssp_read_reg(ssp, SSCR0);
+> + =A0 =A0 =A0 sscr0 &=3D ~(SSCR0_MOD | SSCR0_SlotsPerFrm(7) | SSCR0_EDSS =
+| SSCR0_DSS);
+> +
+> + =A0 =A0 =A0 /* set frame width */
+> + =A0 =A0 =A0 if (frame_width > 16)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_EDSS | SSCR0_DataSize(fram=
+e_width - 16);
+> + =A0 =A0 =A0 else
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_DataSize(frame_width);
+> +
+> + =A0 =A0 =A0 if (slots > 1) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* enable network mode */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_MOD;
+>
+> - =A0 =A0 =A0 /* set number of active slots */
+> - =A0 =A0 =A0 sscr0 |=3D SSCR0_SlotsPerFrm(slots);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* set number of active slots */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_SlotsPerFrm(slots);
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* set active slot mask */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ssp_write_reg(ssp, SSTSA, tx_mask);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ssp_write_reg(ssp, SSRSA, rx_mask);
+> + =A0 =A0 =A0 }
+> =A0 =A0 =A0 =A0ssp_write_reg(ssp, SSCR0, sscr0);
+>
+> - =A0 =A0 =A0 /* set active slot mask */
+> - =A0 =A0 =A0 ssp_write_reg(ssp, SSTSA, mask);
+> - =A0 =A0 =A0 ssp_write_reg(ssp, SSRSA, mask);
+> =A0 =A0 =A0 =A0return 0;
+> =A0}
+>
+> @@ -439,8 +452,8 @@ static int pxa_ssp_set_dai_fmt(struct snd_soc_dai *cp=
+u_dai,
+> =A0 =A0 =A0 =A0}
+>
+> =A0 =A0 =A0 =A0/* reset port settings */
+> - =A0 =A0 =A0 sscr0 =3D ssp_read_reg(ssp, SSCR0) &
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 (SSCR0_ECS | =A0SSCR0_NCS | SSCR0_MOD | SSC=
+R0_ACS);
+> + =A0 =A0 =A0 sscr0 =3D ssp_read_reg(ssp, SSCR0) & (SSCR0_ECS | SSCR0_NCS=
+ | SSCR0_MOD |
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SSCR0_ACS | SSCR0_EDSS | SS=
+CR0_DSS);
+> =A0 =A0 =A0 =A0sscr1 =3D SSCR1_RxTresh(8) | SSCR1_TxTresh(7);
+> =A0 =A0 =A0 =A0sspsp =3D 0;
+>
+> @@ -487,7 +500,7 @@ static int pxa_ssp_set_dai_fmt(struct snd_soc_dai *cp=
+u_dai,
+> =A0 =A0 =A0 =A0case SND_SOC_DAIFMT_DSP_A:
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sspsp |=3D SSPSP_FSRT;
+> =A0 =A0 =A0 =A0case SND_SOC_DAIFMT_DSP_B:
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_MOD | SSCR0_PSP;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_PSP;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sscr1 |=3D SSCR1_TRAIL | SSCR1_RWOT;
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+> @@ -537,48 +550,70 @@ static int pxa_ssp_hw_params(struct snd_pcm_substre=
+am *substream,
+> =A0 =A0 =A0 =A0struct ssp_priv *priv =3D cpu_dai->private_data;
+> =A0 =A0 =A0 =A0struct ssp_device *ssp =3D priv->dev.ssp;
+> =A0 =A0 =A0 =A0int chn =3D params_channels(params);
+> - =A0 =A0 =A0 u32 sscr0;
+> - =A0 =A0 =A0 u32 sspsp;
+> + =A0 =A0 =A0 u32 sscr0, sscr1, sspsp;
+> =A0 =A0 =A0 =A0int width =3D snd_pcm_format_physical_width(params_format(=
+params));
+> - =A0 =A0 =A0 int ttsa =3D ssp_read_reg(ssp, SSTSA) & 0xf;
+> + =A0 =A0 =A0 int frame_width;
+> +
+> + =A0 =A0 =A0 /* check if the user explicitly set a frame_width */
+> + =A0 =A0 =A0 sscr0 =3D ssp_read_reg(ssp, SSCR0);
+> +
+> + =A0 =A0 =A0 if (sscr0 & (SSCR0_EDSS | SSCR0_DSS))
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 frame_width =3D (sscr0 & SSCR0_DSS) +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (sscr0 & SSCR0_EDSS ? 17 : =
+1);
+> + =A0 =A0 =A0 else
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 frame_width =3D width * chn;
+>
+> =A0 =A0 =A0 =A0/* generate correct DMA params */
+> =A0 =A0 =A0 =A0if (cpu_dai->dma_data)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0kfree(cpu_dai->dma_data);
+>
+> - =A0 =A0 =A0 /* Network mode with one active slot (ttsa =3D=3D 1) can be=
+ used
+> - =A0 =A0 =A0 =A0* to force 16-bit frame width on the wire (for S16_LE), =
+even
+> - =A0 =A0 =A0 =A0* with two channels. Use 16-bit DMA transfers for this c=
+ase.
+> - =A0 =A0 =A0 =A0*/
+> - =A0 =A0 =A0 cpu_dai->dma_data =3D ssp_get_dma_params(ssp,
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ((chn =3D=3D 2) && (ttsa !=
+=3D 1)) || (width =3D=3D 32),
+> + =A0 =A0 =A0 cpu_dai->dma_data =3D ssp_get_dma_params(ssp, frame_width >=
+ 16,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0substream->stream =3D=3D S=
+NDRV_PCM_STREAM_PLAYBACK);
+>
+> =A0 =A0 =A0 =A0/* we can only change the settings if the port is not in u=
+se */
+> - =A0 =A0 =A0 if (ssp_read_reg(ssp, SSCR0) & SSCR0_SSE)
+> + =A0 =A0 =A0 if (sscr0 & SSCR0_SSE)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return 0;
+>
+> - =A0 =A0 =A0 /* clear selected SSP bits */
+> - =A0 =A0 =A0 sscr0 =3D ssp_read_reg(ssp, SSCR0) & ~(SSCR0_DSS | SSCR0_ED=
+SS);
+> - =A0 =A0 =A0 ssp_write_reg(ssp, SSCR0, sscr0);
+> -
+> - =A0 =A0 =A0 /* bit size */
+> - =A0 =A0 =A0 sscr0 =3D ssp_read_reg(ssp, SSCR0);
+> - =A0 =A0 =A0 switch (params_format(params)) {
+> - =A0 =A0 =A0 case SNDRV_PCM_FORMAT_S16_LE:
+> + =A0 =A0 =A0 /* FIXME: What this is for? */
+> =A0#ifdef CONFIG_PXA3xx
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (cpu_is_pxa3xx())
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_FPCKE;
+> + =A0 =A0 =A0 if (width =3D=3D 16 && cpu_is_pxa3xx())
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_FPCKE;
+> =A0#endif
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_DataSize(16);
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> - =A0 =A0 =A0 case SNDRV_PCM_FORMAT_S24_LE:
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D (SSCR0_EDSS | SSCR0_DataSize(8));
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> - =A0 =A0 =A0 case SNDRV_PCM_FORMAT_S32_LE:
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D (SSCR0_EDSS | SSCR0_DataSize(16)=
+);
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> +
+> + =A0 =A0 =A0 if (!(sscr0 & (SSCR0_EDSS | SSCR0_DSS))) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Frame width not set yet, we are not usin=
+g network mode */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (frame_width > 16)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_EDSS | SSC=
+R0_DataSize(frame_width - 16);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 else
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_DataSize(f=
+rame_width);
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (frame_width > 32) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /*
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* Network mode is needed=
+ to support this frame_width
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* We assume that the wir=
+e is not networked and setup
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* a "fake" network mode =
+here.
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*/
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 int slots =3D frame_width /=
+ 32;
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_MOD;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_SlotsPerFr=
+m(slots);
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /*
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* Set active slots. Only=
+ set an active TX slot
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* if we are going to use=
+ it.
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*/
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ssp_write_reg(ssp, SSRSA, s=
+lots - 1);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (substream->stream =3D=
+=3D SNDRV_PCM_STREAM_PLAYBACK)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ssp_write_r=
+eg(ssp, SSTSA, slots - 1);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+> =A0 =A0 =A0 =A0}
+> +
+> + =A0 =A0 =A0 /* If SSCR0_MOD is set we can't use SSCR1_RWOT */
+> + =A0 =A0 =A0 if (sscr0 & SSCR0_MOD) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr1 =3D ssp_read_reg(ssp, SSCR1);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ssp_write_reg(ssp, SSCR1, sscr1 & ~SSCR1_RW=
+OT);
+> + =A0 =A0 =A0 }
+> +
+> =A0 =A0 =A0 =A0ssp_write_reg(ssp, SSCR0, sscr0);
+>
+> =A0 =A0 =A0 =A0switch (priv->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+> @@ -625,14 +660,6 @@ static int pxa_ssp_hw_params(struct snd_pcm_substrea=
+m *substream,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
+> =A0 =A0 =A0 =A0}
+>
+> - =A0 =A0 =A0 /* When we use a network mode, we always require TDM slots
+> - =A0 =A0 =A0 =A0* - complain loudly and fail if they've not been set up =
+yet.
+> - =A0 =A0 =A0 =A0*/
+> - =A0 =A0 =A0 if ((sscr0 & SSCR0_MOD) && !ttsa) {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_err(&ssp->pdev->dev, "No TDM timeslot c=
+onfigured\n");
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EINVAL;
+> - =A0 =A0 =A0 }
+> -
+> =A0 =A0 =A0 =A0dump_registers(ssp);
+>
+> =A0 =A0 =A0 =A0return 0;
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index e1a920c..69becf2 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -2133,17 +2133,20 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_fmt);
+> =A0/**
+> =A0* snd_soc_dai_set_tdm_slot - configure DAI TDM.
+> =A0* @dai: DAI
+> - * @mask: DAI specific mask representing used slots.
+> + * @tx_mask: bitmask representing active TX slots.
+> + * @rx_mask: bitmask representing active RX slots.
+> =A0* @slots: Number of slots in use.
+> + * @frame_width: Width in bits for each slot.
+> =A0*
+> =A0* Configures a DAI for TDM operation. Both mask and slots are codec an=
+d DAI
+> =A0* specific.
+> =A0*/
+> =A0int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
+> - =A0 =A0 =A0 unsigned int mask, int slots)
+> + =A0 =A0 =A0 unsigned int tx_mask, unsigned int rx_mask, int slots, int =
+frame_width)
+> =A0{
+> =A0 =A0 =A0 =A0if (dai->ops && dai->ops->set_tdm_slot)
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 return dai->ops->set_tdm_slot(dai, mask, sl=
+ots);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return dai->ops->set_tdm_slot(dai, tx_mask,=
+ rx_mask,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 slots, fram=
+e_width);
+> =A0 =A0 =A0 =A0else
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return -EINVAL;
+> =A0}
+>
+> --
+> Daniel Ribeiro
+>
