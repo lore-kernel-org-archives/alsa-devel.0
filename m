@@ -1,16 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: Please help in adding ams-delta support to ASoC
-Date: Wed, 10 Jun 2009 13:53:42 +0300
-Message-ID: <200906101353.43411.peter.ujfalusi__36062.2075423182$1244631312$gmane$org@nokia.com>
-References: <4A1BEBE3.8010306@tis.icnet.pl>
-	<200906101112.32635.peter.ujfalusi@nokia.com>
-	<200906101227.39856.jkrzyszt@tis.icnet.pl>
+From: Paul Shen <boshen9@gmail.com>
+Subject: Re: [PATCH] ASoC: Automatically set TDM if needed on
+	pxa-ssp and allow frame width override when using TDM.
+Date: Wed, 10 Jun 2009 19:44:59 +0800
+Message-ID: <1719ee7f0906100444l187377f4l9a91b0f24338e032@mail.gmail.com>
+References: <1244567590.7406.100.camel@brutus>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <200906101227.39856.jkrzyszt@tis.icnet.pl>
-Content-Disposition: inline
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 36C742434F
+	for <alsa-devel@alsa-project.org>;
+	Wed, 10 Jun 2009 13:45:00 +0200 (CEST)
+Received: by ewy23 with SMTP id 23so786703ewy.32
+	for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2009 04:44:59 -0700 (PDT)
+In-Reply-To: <1244567590.7406.100.camel@brutus>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,74 +25,377 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>
+To: Daniel Ribeiro <drwyrm@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Mark Brown <broonie@sirena.org.uk>, Philipp Zabel <philipp.zabel@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkbmVzZGF5IDEwIEp1bmUgMjAwOSAxMzoyNzozOCBleHQgSmFudXN6IEtyenlzenRvZmlr
-IHdyb3RlOgo+IE5vdCBvbmx5IHRoaXMuIEFGQUlDUywgdGhlcmUgaXMgbm8gd2F5IG9mIHNwZWNp
-Znlpbmcgc2luZ2xlIHBoYXNlIHN0ZXJlbwo+ICh3aXRoIFhQSEFTRS9SUEhBU0UgdW5zZXQpLCAy
-IHdvcmRzIHBlciBmcmFtZSAoWEZSTEVOMS9SRlJMRU4xKDIgLSAxKSkuCj4gSXNuJ3QgdGhpcyBy
-ZXF1aXJlZCBmb3IgY29ycmVjdCBEU1BfQS9EU1BfQiBzdXBwb3J0PwoKU3VyZSBpdCBpcyBwb3Nz
-aWJsZToKCWZvcm1hdCA9IG1jYnNwX2RhdGEtPmZtdCAmIFNORF9TT0NfREFJRk1UX0ZPUk1BVF9N
-QVNLOwoJd3BmID0gY2hhbm5lbHMgPSBwYXJhbXNfY2hhbm5lbHMocGFyYW1zKTsKCXN3aXRjaCAo
-Y2hhbm5lbHMpIHsKCWNhc2UgMjoKCQlpZiAoZm9ybWF0ID09IFNORF9TT0NfREFJRk1UX0kyUykg
-ewoJCQkvKiBVc2UgZHVhbC1waGFzZSBmcmFtZXMgKi8KCQkJcmVncy0+cmNyMgl8PSBSUEhBU0U7
-CgkJCXJlZ3MtPnhjcjIJfD0gWFBIQVNFOwoJCQkvKiBTZXQgMSB3b3JkIHBlciAoTWNCU1ApIGZy
-YW1lIGZvciBwaGFzZTEgYW5kIHBoYXNlMiAqLwoJCQl3cGYtLTsKCQkJcmVncy0+cmNyMgl8PSBS
-RlJMRU4yKHdwZiAtIDEpOwoJCQlyZWdzLT54Y3IyCXw9IFhGUkxFTjIod3BmIC0gMSk7CgkJfQoJ
-Y2FzZSAxOgoJY2FzZSA0OgoJCS8qIFNldCB3b3JkIHBlciAoTWNCU1ApIGZyYW1lIGZvciBwaGFz
-ZTEgKi8KCQlyZWdzLT5yY3IxCXw9IFJGUkxFTjEod3BmIC0gMSk7CgkJcmVncy0+eGNyMQl8PSBY
-RlJMRU4xKHdwZiAtIDEpOwoJCWJyZWFrOwoJZGVmYXVsdDoKCQkvKiBVbnN1cHBvcnRlZCBudW1i
-ZXIgb2YgY2hhbm5lbHMgKi8KCQlyZXR1cm4gLUVJTlZBTDsKCX0KCndwZiA9IGNoYW5uZWxzID09
-IDIsIGZvcm1hdCBpcyBub3QgSTJTIC0tPiBSRlJMRU4xKHdwZiAtIDEpLCBYRlJMRU4xKHdwZiAt
-IDEpLCAKUkZSTEVOMSgyIC0gMSksIFhGUkxFTjEoMiAtIDEpCgo+Cj4gPiBCdXQgeW91IHNob3Vs
-ZCBiZSBhYmxlIHRvIHVzZSB0aGUgcGxheWJhY2sgd2l0aCB0aGUgY3VycmVudCBBU29DLgo+Cj4g
-RGVmaW5pdGVsbHkgeWVzLiBJIGFtIGF3YXJlIHRoYXQgdGhlIGFib3ZlIGxpbWl0YXRpb25zIGhh
-dmUgbm90aGluZyB0byBkbwo+IHdpdGggdGhlIG1haW4gcHJvYmxlbSwgYXMgd2l0aCBjdXJyZW50
-IG1jYnNwIGNvZGUgSSBzaG91bGQgYWx3YXlzIGJlIGFibGUKPiB0byBnZXQgc29tZSBraW5kIG9m
-IG5vaXNlIGF0IGxlYXN0IHVzaW5nIG9uZSBvZiBzdXBwb3J0ZWQgZm9ybWF0cywgYXMgZmFyCj4g
-YXMgY2xvY2tpbmcgaXMgc2V0IHVwIGNvcnJlY3RseS4KPgo+ID4gLS0tIGEvYXJjaC9hcm0vcGxh
-dC1vbWFwL2RtYS5jCj4gPiArKysgYi9hcmNoL2FybS9wbGF0LW9tYXAvZG1hLmMKPiA+IEBAIC0y
-NjYsNiArMjY2LDggQEAgdm9pZCBvbWFwX3NldF9kbWFfdHJhbnNmZXJfcGFyYW1zKGludCBsY2gs
-IGludAo+ID4gZGF0YV90eXBlLCBpbnQgZWxlbV9jb3VudCwKPiA+ICAgICAgICAgICAgICAgICBj
-Y3IgJj0gfigxIDw8IDUpOwo+ID4gICAgICAgICAgICAgICAgIGlmIChzeW5jX21vZGUgPT0gT01B
-UF9ETUFfU1lOQ19GUkFNRSkKPiA+ICAgICAgICAgICAgICAgICAgICAgICAgIGNjciB8PSAxIDw8
-IDU7Cj4gPiArICAgICAgICAgICAgICAgaWYgKGRtYV90cmlnZ2VyKQo+ID4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgY2NyIHw9IGRtYV90cmlnZ2VyICYgMHgxZjsKPiA+ICAgICAgICAgICAgICAg
-ICBkbWFfd3JpdGUoY2NyLCBDQ1IobGNoKSk7Cj4gPgo+ID4gICAgICAgICAgICAgICAgIGNjciA9
-IGRtYV9yZWFkKENDUjIobGNoKSk7Cj4KPiBBcHBsaWVkLCBzb3JyeSwgZGlkIG5vdCBoZWxwICh3
-aXRoIGNhcHR1cmUsIHVubGlrZSBwbGF5YmFjaywgc2V0IHVwIGZvcgo+IGludGVybmFsIGNsb2Nr
-aW5nIGZvciBhcyBtdWNoIGRldmljZSBpc29sYXRpb24gYXMgcG9zc2libGUpLgoKSSB3b3VsZCBo
-YXZlIGd1ZXNzZWQgdGhpcywgc2luY2UgZXZlbiB3aGVuIHRoZSBETUEgd2FzIG5vdCBIVyBzeW5j
-ZWQsIGl0IGRpZCAKbm90IHNlbnQgYSBzaW5nbGUgYml0IHRvIHRoZSBNY0JTUCBEWFIxIHJlZ2lz
-dGVyLi4uCgpKdXN0IG91dCBvZiBjdXJpb3NpdHksIGNhbiB5b3UgdHJ5IHRoaXMgb25lIGFzIHdl
-bGw6CgotLS0gYS9zb3VuZC9zb2Mvb21hcC9vbWFwLW1jYnNwLmMKKysrIGIvc291bmQvc29jL29t
-YXAvb21hcC1tY2JzcC5jCkBAIC0xOTEsNiArMTkxLDcgQEAgc3RhdGljIGludCBvbWFwX21jYnNw
-X2RhaV90cmlnZ2VyKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAKKnN1YnN0cmVhbSwgaW50IGNt
-ZCwKICAgICAgICBjYXNlIFNORFJWX1BDTV9UUklHR0VSX1BBVVNFX1JFTEVBU0U6CiAgICAgICAg
-ICAgICAgICBpZiAoIW1jYnNwX2RhdGEtPmFjdGl2ZSsrKQogICAgICAgICAgICAgICAgICAgICAg
-ICBvbWFwX21jYnNwX3N0YXJ0KG1jYnNwX2RhdGEtPmJ1c19pZCk7CisgICAgICAgICAgICAgICBv
-bWFwX21jYnNwX3BvbGx3cml0ZShtY2JzcF9kYXRhLT5idXNfaWQsIDB4ZGI1NSk7CiAgICAgICAg
-ICAgICAgICBicmVhazsKCmJhc2ljYWxseSB3cml0ZSAweGRiNTUgdG8gdGhlIERYUjEgcmVnaXN0
-ZXIgKDB4ZGI1NSBpcyAxMTAxMTAxMTAxMDEwMTAxKQpXaXRoIHRoaXMsIGlmIE1jQlNQIGlzIG9w
-ZXJhdGluZyBjb3JyZWN0bHkgeW91IHNob3VsZCBiZSBzZWVpbmcgdGhpcyBwYXR0ZXJuIApnb2lu
-ZyB0byB0aGUgY29kZWMuIElmIGl0IGRvZXMsIHRoYW4gd2UgaGF2ZSBzb21lIHByb2JsZW1zIHdp
-dGggdGhlIE1jQlNQL0RNQSAKY29vcGVyYXRpb24sIGlmIHRoaXMgcGF0dGVybiBpcyBub3Qgc2Vl
-biBvbiB0aGUgYnVzLCB0aGFuIHRoZSBNY0JTUCBpcyBub3QgCnNoaWZ0aW5nIGRhdGEgb3V0IGZv
-ciBzb21lIHJlYXNvbi4KCj4KPiA+IEkgd291bGQgZXhwZWN0ZWQgdGhhdCBieSBqdXN0IGNvcHlp
-bmcgKEkga25vdyB0aGF0IHRoZXJlIGFyZSBvdGhlciB0aGluZ3MKPiA+IGludm9sdmVkKSB0aGUg
-b2xkIEFMU0EgYXJtIGRpcmVjdG9yeSB0byB0aGUgbGF0ZXN0IGtlcm5lbCBhbmQgY29tcGlsaW5n
-Cj4gPiBpdCBzaG91bGQgYmUgd29ya2luZy4uLiBJdCBzZWFtcyBJIHdhcyB3cm9uZy4KPgo+IEFu
-eXdheSwgaWYgeW91IGZpbmQgcG9ydGluZyBvbmUgb3IgYW5vdGhlciBmcmFtZXdvcmssIGJhY2sg
-b3IgZm9yd2FyZCwKPiBoZWxwZnVsbCBpbiBhbnkgd2F5LCBqdXN0IGxldCBtZSBrbm93LCBJIGNh
-biB0cnkuCgpJJ20gbm90IHN1cmUgaWYgaXQgY291bGQgcHJvdmUgYW55dGhpbmcgYXQgdGhlIGVu
-ZC4gVGhlcmUgYXJlIC0gSSB0aGluayAtIApvdGhlciBtb3ZpbmcgcGFydHMsIHdoaWNoIGNhbiBi
-cmVhayB0aGluZ3MuCgo+Cj4gVGhhbmtzLAo+IEphbnVzegoKLS0gClDDqXRlcgotLQpUbyB1bnN1
-YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgYWxzYS1k
-ZXZlbCIgaW4KdGhlIGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5lbC5v
-cmcKTW9yZSBtYWpvcmRvbW8gaW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpvcmRv
-bW8taW5mby5odG1sCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+2009/6/10 Daniel Ribeiro <drwyrm@gmail.com>:
+> * Extend set_tdm_slot to allow the user to arbitrarily set the frame
+> =A0width and active TX/RX slots.
+> * Reset SSCR0_EDSS and SSCR0_DSS on pxa_ssp_set_dai_fmt.
+> * Makes SSCR0_MOD optional.
+> * Automatically sets network mode when needed if set_tdm_slot was
+> =A0never called.
+> * Clears SSCR1_RWOT case SSCR0_MOD is set.
+> * Updates magician.c and wm9081.c for the new set_tdm_slot()
+>
+> (Patch is based on Mark's for-2.6.32 branch)
+>
+> Signed-off-by: Daniel Ribeiro <drwyrm@gmail.com>
+>
+> ---
+> =A0include/sound/soc-dai.h =A0 | =A0 =A05 +
+> =A0sound/soc/codecs/wm9081.c | =A0 =A04 -
+> =A0sound/soc/pxa/magician.c =A0| =A0 =A02
+> =A0sound/soc/pxa/pxa-ssp.c =A0 | =A0119 ++++++++++++++++++++++++++++-----=
+-------------
+> =A0sound/soc/soc-core.c =A0 =A0 =A0| =A0 =A09 ++-
+> =A05 files changed, 85 insertions(+), 54 deletions(-)
+>
+> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+> index 352d7ee..f96cc36 100644
+> --- a/include/sound/soc-dai.h
+> +++ b/include/sound/soc-dai.h
+> @@ -106,7 +106,7 @@ int snd_soc_dai_set_pll(struct snd_soc_dai *dai,
+> =A0int snd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt);
+>
+> =A0int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
+> - =A0 =A0 =A0 unsigned int mask, int slots);
+> + =A0 =A0 =A0 unsigned int tx_mask, unsigned int rx_mask, int slots, int =
+frame_width);
+>
+> =A0int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate);
+>
+> @@ -140,7 +140,8 @@ struct snd_soc_dai_ops {
+> =A0 =A0 =A0 =A0 */
+> =A0 =A0 =A0 =A0int (*set_fmt)(struct snd_soc_dai *dai, unsigned int fmt);
+> =A0 =A0 =A0 =A0int (*set_tdm_slot)(struct snd_soc_dai *dai,
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 unsigned int mask, int slots);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 unsigned int tx_mask, unsigned int rx_mask,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 int slots, int frame_width);
+> =A0 =A0 =A0 =A0int (*set_tristate)(struct snd_soc_dai *dai, int tristate);
+>
+> =A0 =A0 =A0 =A0/*
+> diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
+> index 86fc57e..85c720a 100644
+> --- a/sound/soc/codecs/wm9081.c
+> +++ b/sound/soc/codecs/wm9081.c
+> @@ -1207,7 +1207,7 @@ static int wm9081_set_sysclk(struct snd_soc_dai *co=
+dec_dai,
+> =A0}
+>
+> =A0static int wm9081_set_tdm_slot(struct snd_soc_dai *dai,
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0unsigned int=
+ mask, int slots)
+> + =A0 =A0 =A0 unsigned int tx_mask, unsigned int rx_mask, int slots, int =
+frame_width)
+> =A0{
+> =A0 =A0 =A0 =A0struct snd_soc_codec *codec =3D dai->codec;
+> =A0 =A0 =A0 =A0unsigned int aif1 =3D wm9081_read(codec, WM9081_AUDIO_INTE=
+RFACE_1);
+> @@ -1219,7 +1219,7 @@ static int wm9081_set_tdm_slot(struct snd_soc_dai *=
+dai,
+>
+> =A0 =A0 =A0 =A0aif1 |=3D (slots - 1) << WM9081_AIFDAC_TDM_MODE_SHIFT;
+>
+> - =A0 =A0 =A0 switch (mask) {
+> + =A0 =A0 =A0 switch (tx_mask) {
+> =A0 =A0 =A0 =A0case 1:
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
+> =A0 =A0 =A0 =A0case 2:
+> diff --git a/sound/soc/pxa/magician.c b/sound/soc/pxa/magician.c
+> index c89a3cd..2345869 100644
+> --- a/sound/soc/pxa/magician.c
+> +++ b/sound/soc/pxa/magician.c
+> @@ -188,7 +188,7 @@ static int magician_playback_hw_params(struct snd_pcm=
+_substream *substream,
+> =A0 =A0 =A0 =A0if (ret < 0)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return ret;
+>
+> - =A0 =A0 =A0 ret =3D snd_soc_dai_set_tdm_slot(cpu_dai, 1, 1);
+> + =A0 =A0 =A0 ret =3D snd_soc_dai_set_tdm_slot(cpu_dai, 1, 1, 1, 16);
+> =A0 =A0 =A0 =A0if (ret < 0)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return ret;
+>
+> diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+> index 46d14f3..f0931e7 100644
+> --- a/sound/soc/pxa/pxa-ssp.c
+> +++ b/sound/soc/pxa/pxa-ssp.c
+> @@ -375,21 +375,34 @@ static int pxa_ssp_set_dai_pll(struct snd_soc_dai *=
+cpu_dai,
+> =A0* Set the active slots in TDM/Network mode
+> =A0*/
+> =A0static int pxa_ssp_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai,
+> - =A0 =A0 =A0 unsigned int mask, int slots)
+> + =A0 =A0 =A0 unsigned int tx_mask, unsigned int rx_mask, int slots, int =
+frame_width)
+> =A0{
+> =A0 =A0 =A0 =A0struct ssp_priv *priv =3D cpu_dai->private_data;
+> =A0 =A0 =A0 =A0struct ssp_device *ssp =3D priv->dev.ssp;
+> =A0 =A0 =A0 =A0u32 sscr0;
+>
+> - =A0 =A0 =A0 sscr0 =3D ssp_read_reg(ssp, SSCR0) & ~SSCR0_SlotsPerFrm(7);
+> + =A0 =A0 =A0 sscr0 =3D ssp_read_reg(ssp, SSCR0);
+> + =A0 =A0 =A0 sscr0 &=3D ~(SSCR0_MOD | SSCR0_SlotsPerFrm(7) | SSCR0_EDSS =
+| SSCR0_DSS);
+> +
+> + =A0 =A0 =A0 /* set frame width */
+> + =A0 =A0 =A0 if (frame_width > 16)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_EDSS | SSCR0_DataSize(fram=
+e_width - 16);
+> + =A0 =A0 =A0 else
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_DataSize(frame_width);
+> +
+> + =A0 =A0 =A0 if (slots > 1) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* enable network mode */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_MOD;
+>
+Seems the frame_width has no  such relations with sampe width, the
+sample width is defined on runtime by the audio files.
+Make a example sample with  paly a often used 16bit sample width
+stereo aduio file.
+
+When you play 16bit audio sample with  2*16 bit frame ,
+         frame   --|____________|------------------|_____________|---
+         data      --<=3D=3D=3D=3D=3D=3D>-<=3D=3D=3D=3D=3D=3D>-<=3D=3D=3D=
+=3D=3D=3D>-
+         here the datasize should be SSCR0_DataSize(16), the frame size is =
+32
+
+also you can play 16bit audio sample with 2*32 frame,
+         frame
+--|_________________________|------------------------------------|____
+         data     --<=3D=3D=3D=3D=3D=3D>-------------------<=3D=3D=3D=3D=3D=
+=3D>-------------------<=3D=3D
+         here the datasize is also DataSize(16), but the frame size is 64.
+
+Do I misunderstand you?
+
+> - =A0 =A0 =A0 /* set number of active slots */
+> - =A0 =A0 =A0 sscr0 |=3D SSCR0_SlotsPerFrm(slots);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* set number of active slots */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_SlotsPerFrm(slots);
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* set active slot mask */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ssp_write_reg(ssp, SSTSA, tx_mask);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ssp_write_reg(ssp, SSRSA, rx_mask);
+> + =A0 =A0 =A0 }
+> =A0 =A0 =A0 =A0ssp_write_reg(ssp, SSCR0, sscr0);
+>
+> - =A0 =A0 =A0 /* set active slot mask */
+> - =A0 =A0 =A0 ssp_write_reg(ssp, SSTSA, mask);
+> - =A0 =A0 =A0 ssp_write_reg(ssp, SSRSA, mask);
+> =A0 =A0 =A0 =A0return 0;
+> =A0}
+>
+> @@ -439,8 +452,8 @@ static int pxa_ssp_set_dai_fmt(struct snd_soc_dai *cp=
+u_dai,
+> =A0 =A0 =A0 =A0}
+>
+> =A0 =A0 =A0 =A0/* reset port settings */
+> - =A0 =A0 =A0 sscr0 =3D ssp_read_reg(ssp, SSCR0) &
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 (SSCR0_ECS | =A0SSCR0_NCS | SSCR0_MOD | SSC=
+R0_ACS);
+> + =A0 =A0 =A0 sscr0 =3D ssp_read_reg(ssp, SSCR0) & (SSCR0_ECS | SSCR0_NCS=
+ | SSCR0_MOD |
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SSCR0_ACS | SSCR0_EDSS | SS=
+CR0_DSS);
+> =A0 =A0 =A0 =A0sscr1 =3D SSCR1_RxTresh(8) | SSCR1_TxTresh(7);
+> =A0 =A0 =A0 =A0sspsp =3D 0;
+>
+> @@ -487,7 +500,7 @@ static int pxa_ssp_set_dai_fmt(struct snd_soc_dai *cp=
+u_dai,
+> =A0 =A0 =A0 =A0case SND_SOC_DAIFMT_DSP_A:
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sspsp |=3D SSPSP_FSRT;
+> =A0 =A0 =A0 =A0case SND_SOC_DAIFMT_DSP_B:
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_MOD | SSCR0_PSP;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_PSP;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sscr1 |=3D SSCR1_TRAIL | SSCR1_RWOT;
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+> @@ -537,48 +550,70 @@ static int pxa_ssp_hw_params(struct snd_pcm_substre=
+am *substream,
+> =A0 =A0 =A0 =A0struct ssp_priv *priv =3D cpu_dai->private_data;
+> =A0 =A0 =A0 =A0struct ssp_device *ssp =3D priv->dev.ssp;
+> =A0 =A0 =A0 =A0int chn =3D params_channels(params);
+> - =A0 =A0 =A0 u32 sscr0;
+> - =A0 =A0 =A0 u32 sspsp;
+> + =A0 =A0 =A0 u32 sscr0, sscr1, sspsp;
+> =A0 =A0 =A0 =A0int width =3D snd_pcm_format_physical_width(params_format(=
+params));
+> - =A0 =A0 =A0 int ttsa =3D ssp_read_reg(ssp, SSTSA) & 0xf;
+> + =A0 =A0 =A0 int frame_width;
+> +
+> + =A0 =A0 =A0 /* check if the user explicitly set a frame_width */
+> + =A0 =A0 =A0 sscr0 =3D ssp_read_reg(ssp, SSCR0);
+> +
+> + =A0 =A0 =A0 if (sscr0 & (SSCR0_EDSS | SSCR0_DSS))
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 frame_width =3D (sscr0 & SSCR0_DSS) +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (sscr0 & SSCR0_EDSS ? 17 : =
+1);
+> + =A0 =A0 =A0 else
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 frame_width =3D width * chn;
+>
+> =A0 =A0 =A0 =A0/* generate correct DMA params */
+> =A0 =A0 =A0 =A0if (cpu_dai->dma_data)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0kfree(cpu_dai->dma_data);
+>
+> - =A0 =A0 =A0 /* Network mode with one active slot (ttsa =3D=3D 1) can be=
+ used
+> - =A0 =A0 =A0 =A0* to force 16-bit frame width on the wire (for S16_LE), =
+even
+> - =A0 =A0 =A0 =A0* with two channels. Use 16-bit DMA transfers for this c=
+ase.
+> - =A0 =A0 =A0 =A0*/
+> - =A0 =A0 =A0 cpu_dai->dma_data =3D ssp_get_dma_params(ssp,
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ((chn =3D=3D 2) && (ttsa !=
+=3D 1)) || (width =3D=3D 32),
+> + =A0 =A0 =A0 cpu_dai->dma_data =3D ssp_get_dma_params(ssp, frame_width >=
+ 16,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0substream->stream =3D=3D S=
+NDRV_PCM_STREAM_PLAYBACK);
+>
+> =A0 =A0 =A0 =A0/* we can only change the settings if the port is not in u=
+se */
+> - =A0 =A0 =A0 if (ssp_read_reg(ssp, SSCR0) & SSCR0_SSE)
+> + =A0 =A0 =A0 if (sscr0 & SSCR0_SSE)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return 0;
+>
+> - =A0 =A0 =A0 /* clear selected SSP bits */
+> - =A0 =A0 =A0 sscr0 =3D ssp_read_reg(ssp, SSCR0) & ~(SSCR0_DSS | SSCR0_ED=
+SS);
+> - =A0 =A0 =A0 ssp_write_reg(ssp, SSCR0, sscr0);
+> -
+> - =A0 =A0 =A0 /* bit size */
+> - =A0 =A0 =A0 sscr0 =3D ssp_read_reg(ssp, SSCR0);
+> - =A0 =A0 =A0 switch (params_format(params)) {
+> - =A0 =A0 =A0 case SNDRV_PCM_FORMAT_S16_LE:
+> + =A0 =A0 =A0 /* FIXME: What this is for? */
+> =A0#ifdef CONFIG_PXA3xx
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (cpu_is_pxa3xx())
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_FPCKE;
+> + =A0 =A0 =A0 if (width =3D=3D 16 && cpu_is_pxa3xx())
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_FPCKE;
+> =A0#endif
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_DataSize(16);
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> - =A0 =A0 =A0 case SNDRV_PCM_FORMAT_S24_LE:
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D (SSCR0_EDSS | SSCR0_DataSize(8));
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> - =A0 =A0 =A0 case SNDRV_PCM_FORMAT_S32_LE:
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D (SSCR0_EDSS | SSCR0_DataSize(16)=
+);
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> +
+> + =A0 =A0 =A0 if (!(sscr0 & (SSCR0_EDSS | SSCR0_DSS))) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Frame width not set yet, we are not usin=
+g network mode */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (frame_width > 16)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_EDSS | SSC=
+R0_DataSize(frame_width - 16);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 else
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_DataSize(f=
+rame_width);
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (frame_width > 32) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /*
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* Network mode is needed=
+ to support this frame_width
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* We assume that the wir=
+e is not networked and setup
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* a "fake" network mode =
+here.
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*/
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 int slots =3D frame_width /=
+ 32;
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_MOD;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr0 |=3D SSCR0_SlotsPerFr=
+m(slots);
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /*
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* Set active slots. Only=
+ set an active TX slot
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* if we are going to use=
+ it.
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*/
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ssp_write_reg(ssp, SSRSA, s=
+lots - 1);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (substream->stream =3D=
+=3D SNDRV_PCM_STREAM_PLAYBACK)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ssp_write_r=
+eg(ssp, SSTSA, slots - 1);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+> =A0 =A0 =A0 =A0}
+> +
+> + =A0 =A0 =A0 /* If SSCR0_MOD is set we can't use SSCR1_RWOT */
+> + =A0 =A0 =A0 if (sscr0 & SSCR0_MOD) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sscr1 =3D ssp_read_reg(ssp, SSCR1);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ssp_write_reg(ssp, SSCR1, sscr1 & ~SSCR1_RW=
+OT);
+> + =A0 =A0 =A0 }
+> +
+> =A0 =A0 =A0 =A0ssp_write_reg(ssp, SSCR0, sscr0);
+>
+> =A0 =A0 =A0 =A0switch (priv->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+> @@ -625,14 +660,6 @@ static int pxa_ssp_hw_params(struct snd_pcm_substrea=
+m *substream,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
+> =A0 =A0 =A0 =A0}
+>
+> - =A0 =A0 =A0 /* When we use a network mode, we always require TDM slots
+> - =A0 =A0 =A0 =A0* - complain loudly and fail if they've not been set up =
+yet.
+> - =A0 =A0 =A0 =A0*/
+> - =A0 =A0 =A0 if ((sscr0 & SSCR0_MOD) && !ttsa) {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_err(&ssp->pdev->dev, "No TDM timeslot c=
+onfigured\n");
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EINVAL;
+> - =A0 =A0 =A0 }
+> -
+> =A0 =A0 =A0 =A0dump_registers(ssp);
+>
+> =A0 =A0 =A0 =A0return 0;
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index e1a920c..69becf2 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -2133,17 +2133,20 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_fmt);
+> =A0/**
+> =A0* snd_soc_dai_set_tdm_slot - configure DAI TDM.
+> =A0* @dai: DAI
+> - * @mask: DAI specific mask representing used slots.
+> + * @tx_mask: bitmask representing active TX slots.
+> + * @rx_mask: bitmask representing active RX slots.
+> =A0* @slots: Number of slots in use.
+> + * @frame_width: Width in bits for each slot.
+> =A0*
+> =A0* Configures a DAI for TDM operation. Both mask and slots are codec an=
+d DAI
+> =A0* specific.
+> =A0*/
+> =A0int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
+> - =A0 =A0 =A0 unsigned int mask, int slots)
+> + =A0 =A0 =A0 unsigned int tx_mask, unsigned int rx_mask, int slots, int =
+frame_width)
+> =A0{
+> =A0 =A0 =A0 =A0if (dai->ops && dai->ops->set_tdm_slot)
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 return dai->ops->set_tdm_slot(dai, mask, sl=
+ots);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return dai->ops->set_tdm_slot(dai, tx_mask,=
+ rx_mask,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 slots, fram=
+e_width);
+> =A0 =A0 =A0 =A0else
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return -EINVAL;
+> =A0}
+>
+> --
+> Daniel Ribeiro
+>
+
+
+
+-- =
+
+Paul Shen
