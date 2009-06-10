@@ -1,17 +1,25 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: Please help in adding ams-delta support to ASoC
-Date: Wed, 10 Jun 2009 14:20:01 +0200
-Message-ID: <4A2FA4F1.8070208__15449.4572816931$1244636423$gmane$org@tis.icnet.pl>
-References: <4A1BEBE3.8010306@tis.icnet.pl>
-	<200906101112.32635.peter.ujfalusi@nokia.com>
-	<200906101227.39856.jkrzyszt@tis.icnet.pl>
-	<200906101353.43411.peter.ujfalusi@nokia.com>
-Reply-To: postmaster@icnet.pl
+From: "Sebastian Schneider" <Sebastian.Brian@gmx.de>
+Subject: Re: SB X-Fi driver fixes (Re: Testers wanted: New
+	SB	X-Fi	driver)
+Date: Wed, 10 Jun 2009 15:21:01 +0200
+Message-ID: <20090610132101.60670@gmx.net>
+References: <1244140942.4550.2.camel@polo-desktop>
+	<s5hbpp1zpt9.wl%tiwai@suse.de>	<1244376026.6985.5.camel@polo-desktop>
+	<s5hk53oowhz.wl%tiwai@suse.de> <s5hbpoz3pbj.wl%tiwai@suse.de>
+	<4A2D56C7.2090505@googlemail.com> <s5hws7m7cfd.wl%tiwai@suse.de>
+	<4A2D7181.3040108@googlemail.com> <s5h63f6f8qo.wl%tiwai@suse.de>
+	<4A2DF1EC.9060104@googlemail.com> <s5hab4ix8wo.wl%tiwai@suse.de>
+	<4A2DF6BD.6060004@googlemail.com> <s5h63f5ylee.wl%tiwai@suse.de>
+	<s5hk53l3f6p.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <200906101353.43411.peter.ujfalusi@nokia.com>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id A8FF7243B2
+	for <alsa-devel@alsa-project.org>;
+	Wed, 10 Jun 2009 15:21:03 +0200 (CEST)
+In-Reply-To: <s5hk53l3f6p.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,44 +30,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Peter Ujfalusi wrote:
-> On Wednesday 10 June 2009 13:27:38 ext Janusz Krzysztofik wrote:
->> Not only this. AFAICS, there is no way of specifying single phase stereo
->> (with XPHASE/RPHASE unset), 2 words per frame (XFRLEN1/RFRLEN1(2 - 1)).
->> Isn't this required for correct DSP_A/DSP_B support?
-> 
-> Sure it is possible:
-> 	format = mcbsp_data->fmt & SND_SOC_DAIFMT_FORMAT_MASK;
-> 	wpf = channels = params_channels(params);
-> 	switch (channels) {
-> 	case 2:
-> 		if (format == SND_SOC_DAIFMT_I2S) {
-> 			/* Use dual-phase frames */
-> 			regs->rcr2	|= RPHASE;
-> 			regs->xcr2	|= XPHASE;
-> 			/* Set 1 word per (McBSP) frame for phase1 and phase2 */
-> 			wpf--;
-> 			regs->rcr2	|= RFRLEN2(wpf - 1);
-> 			regs->xcr2	|= XFRLEN2(wpf - 1);
-> 		}
-> 	case 1:
-> 	case 4:
-> 		/* Set word per (McBSP) frame for phase1 */
-> 		regs->rcr1	|= RFRLEN1(wpf - 1);
-> 		regs->xcr1	|= XFRLEN1(wpf - 1);
-> 		break;
-> 	default:
-> 		/* Unsupported number of channels */
-> 		return -EINVAL;
-> 	}
-> 
-> wpf = channels == 2, format is not I2S --> RFRLEN1(wpf - 1), XFRLEN1(wpf - 1), 
-> RFRLEN1(2 - 1), XFRLEN1(2 - 1)
+I get lockups or something else with the driver. When I run mplayer and may=
+be youtube or amarok or something else which gives out any sounds, then I c=
+an only use the ALT+SUB combination to reboot my computer. I'm using the sn=
+apshot you recommend 2 days ago.
+-- =
 
-OK, I see I have to update my base before commenting the code ;).
-
-Thanks,
-Janusz
+GRATIS f=FCr alle GMX-Mitglieder: Die maxdome Movie-FLAT!
+Jetzt freischalten unter http://portal.gmx.net/de/go/maxdome01
