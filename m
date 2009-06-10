@@ -1,21 +1,22 @@
 From: Daniel Ribeiro <drwyrm@gmail.com>
 Subject: Re: [PATCH] ASoC: Automatically set TDM if needed on
  pxa-ssp and allow frame width override when using TDM.
-Date: Wed, 10 Jun 2009 11:17:11 -0300
-Message-ID: <1244643431.27053.203.camel@brutus>
+Date: Wed, 10 Jun 2009 11:17:29 -0300
+Message-ID: <1244643449.27053.204.camel@brutus>
 References: <1244567590.7406.100.camel@brutus>
 	<1719ee7f0906100444l187377f4l9a91b0f24338e032@mail.gmail.com>
+	<74d0deb30906100505q55185f32u513eadeeefc432a5@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6177693727184288336=="
+Content-Type: multipart/mixed; boundary="===============4629868909901347080=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
 	[209.85.221.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 37EAA243E0
+	by alsa0.perex.cz (Postfix) with ESMTP id 77850243FE
 	for <alsa-devel@alsa-project.org>;
-	Wed, 10 Jun 2009 16:17:19 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so1094017qyk.16
-	for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2009 07:17:19 -0700 (PDT)
-In-Reply-To: <1719ee7f0906100444l187377f4l9a91b0f24338e032@mail.gmail.com>
+	Wed, 10 Jun 2009 16:17:35 +0200 (CEST)
+Received: by mail-qy0-f171.google.com with SMTP id 1so1094017qyk.16
+	for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2009 07:17:35 -0700 (PDT)
+In-Reply-To: <74d0deb30906100505q55185f32u513eadeeefc432a5@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,62 +26,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Paul Shen <boshen9@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Mark Brown <broonie@sirena.org.uk>, Philipp Zabel <philipp.zabel@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
+To: pHilipp Zabel <philipp.zabel@gmail.com>
+Cc: Paul Shen <boshen9@gmail.com>, alsa-devel <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Mark Brown <broonie@sirena.org.uk>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6177693727184288336==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-/N+bxjzYFfQoWe8hVvdy"
+--===============4629868909901347080==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-sTMIGTKuNAA5JIa4RA4H"
 
 
---=-/N+bxjzYFfQoWe8hVvdy
+--=-sTMIGTKuNAA5JIa4RA4H
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Em Qua, 2009-06-10 =C3=A0s 19:44 +0800, Paul Shen escreveu:
-> Seems the frame_width has no  such relations with sampe width, the
-> sample width is defined on runtime by the audio files.
-> Make a example sample with  paly a often used 16bit sample width
-> stereo aduio file.
+Em Qua, 2009-06-10 =C3=A0s 14:05 +0200, pHilipp Zabel escreveu:
+> Hmm right, the real frame width is DataSize * slots. So maybe
+>        /* set data size */
+>        data_size =3D frame_width/slots;
+>        if (data_size > 16)
+>                sscr0 |=3D SSCR0_EDSS | SSCR0_DataSize(data_size - 16);
+>        else
+>                sscr0 |=3D SSCR0_DataSize(data_size);
+> would be more appropriate. Or have that parameter be sample_width
+> instead, as Mark initially proposed.
 
-> When you play 16bit audio sample with  2*16 bit frame ,
->          frame   --|____________|------------------|_____________|---
->          data      --<=3D=3D=3D=3D=3D=3D>-<=3D=3D=3D=3D=3D=3D>-<=3D=3D=3D=
-=3D=3D=3D>-
->          here the datasize should be SSCR0_DataSize(16), the frame size i=
-s 32
+Ack.
 
-No, the example above would be DataSize(32), SFRMWDTH(16). (LEFT_J?)
-
-Or it could be DataSize(16) and 2 active TDM Slots.
-
-But the point here is to not use SSCR0_MOD when its not needed
-(sample * chn <=3D 32), we need to support real networked configurations,
-set_tdm_slot() should only be called if you are really using network
-mode. eg:
-
-set_tdm_slots(3, 2) shouldn't ever be needed.
-
-> also you can play 16bit audio sample with 2*32 frame,
->          frame
-> --|_________________________|------------------------------------|____
->          data     --<=3D=3D=3D=3D=3D=3D>-------------------<=3D=3D=3D=3D=
-=3D=3D>-------------------<=3D=3D
->          here the datasize is also DataSize(16), but the frame size is 64=
-.
->=20
-> Do I misunderstand you?
-
-Sure you can waste bitclocks.. But we should try to only waste bitclocks
-when it is really needed, eg for I2S. The patch is not considering I2S
-yet.
-
+Naming it frame_width was not a good idea. Im using frame_width for the
+distance between each SFRM assertion when not networked and for the
+duration of each slot when networked. I will name it slot_width instead.
 
 --=20
 Daniel Ribeiro
 
---=-/N+bxjzYFfQoWe8hVvdy
+--=-sTMIGTKuNAA5JIa4RA4H
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Esta =?ISO-8859-1?Q?=E9?= uma parte de mensagem
  assinada digitalmente
@@ -88,15 +67,15 @@ Content-Description: Esta =?ISO-8859-1?Q?=E9?= uma parte de mensagem
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.9 (GNU/Linux)
 
-iEYEABECAAYFAkovwF0ACgkQw3OYl0G0liSk+QCghS4iKUWVlIjYOfXob7uX7eya
-akUAnRGPZ0aX2Nk66dfQm1NvS9rK39gK
-=1vVw
+iEYEABECAAYFAkovwHkACgkQw3OYl0G0liRvHwCfYTZfDqfPMlxipuo9iZLpsgnX
+TU8AnjZZjCE1V/tty8F5xqrr7HVAB+Rm
+=8aB+
 -----END PGP SIGNATURE-----
 
---=-/N+bxjzYFfQoWe8hVvdy--
+--=-sTMIGTKuNAA5JIa4RA4H--
 
 
---===============6177693727184288336==
+--===============4629868909901347080==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -107,4 +86,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============6177693727184288336==--
+--===============4629868909901347080==--
