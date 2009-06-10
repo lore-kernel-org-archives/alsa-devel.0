@@ -1,18 +1,15 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: Sound streaming application: which device to use?
-Date: Wed, 10 Jun 2009 12:02:10 +0200
-Message-ID: <4A2F84A2.9050503@insite.cz>
-References: <45c981ab0906040428v3910cbcfq7e3024b23f6653e1@mail.gmail.com>	<45c981ab0906090701t209abbc6jda420e4e666c5198@mail.gmail.com>	<75b66ecd0906091942vae43f8bq2162fe3832ec424e@mail.gmail.com>
-	<45c981ab0906100242g234bfa08u8137c58bd08b9960@mail.gmail.com>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: Please help in adding ams-delta support to ASoC
+Date: Wed, 10 Jun 2009 12:27:38 +0200
+Message-ID: <200906101227.39856.jkrzyszt__41639.1294486404$1244629717$gmane$org@tis.icnet.pl>
+References: <4A1BEBE3.8010306@tis.icnet.pl> <4A2E7D16.1010504@tis.icnet.pl>
+	<200906101112.32635.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.insite.cz (upc-plzen.insite.cz [84.242.100.8])
-	by alsa0.perex.cz (Postfix) with ESMTP id F3B6F103802
-	for <alsa-devel@alsa-project.org>;
-	Wed, 10 Jun 2009 12:02:11 +0200 (CEST)
-In-Reply-To: <45c981ab0906100242g234bfa08u8137c58bd08b9960@mail.gmail.com>
+In-Reply-To: <200906101112.32635.peter.ujfalusi@nokia.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,37 +19,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lex Wassenberg <lex.wassenberg@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Lex Wassenberg wrote:
-> On Wed, Jun 10, 2009 at 4:42 AM, Lee Revell<rlrevell@joe-job.com> wrote:
->> On Tue, Jun 9, 2009 at 10:01 AM, Lex Wassenberg<lex.wassenberg@gmail.com> wrote:
->>> Is there nobody that can help me out on the questions above? I figured
->>> the answer to question 4 (passing a pointer to an uninitialized
->>> integer; I thought the integer was only used for reporting back, which
->>> is not true), but all other questions still stand. Nobody??
->> You don't provide enough info.  What soundcard?  What distro?  What is
->> the output of  "aplay -v file.wav" when file.wav is the same audio
->> format your app uses?
->>
->> Lee
->>
-> 
-> The distro is OpenSuse 10.3 , the soundcard doesn't (or shouldn't)
-> matter: the application program knows nothing about the soundcard and
-> it doesn't want to either. It should just use that sound card that is
-> present on the machine where it runs. I thought that it would be ALSA
-> that takes care of the particularites of the underlying hardware.
-> That's why I programmed the device to be "default" or "plughw".
-> 
-> For the requested output of the aplay program I would first have to
-> find a wave file with the specific format.
-> 
-
-Just use sox, it will convert to any format you need. Details man sox, e.g.
-
-sox your.mp3 -r 44100 -b 16 new-44k-16.wav
-
-Pavel.
+SGkgUGV0ZXIsCgpXZWRuZXNkYXkgMTAgSnVuZSAyMDA5IDEwOjEyOjMyIFBldGVyIFVqZmFsdXNp
+IG5hcGlzYcWCKGEpOgo+IE9uIFR1ZXNkYXkgMDkgSnVuZSAyMDA5IDE4OjE3OjQyIGV4dCBKYW51
+c3ogS3J6eXN6dG9maWsgd3JvdGU6Cj4gPiArc3RhdGljIHN0cnVjdCBvbWFwX21jYnNwX3JlZ19j
+ZmcgbWNic3BfcmVncyA9IHsKPiA+ICsgICAgICAgLnNwY3IyID0gRlJFRSB8IFhJTlRNKDMpIHwg
+WFJTVCwKPiA+ICsgICAgICAgLnNwY3IxID0gUklOVE0oMykgfCBSUlNULAo+ID4gKyAgICAgICAu
+cmNyMSA9IFJGUkxFTjEoMiAtIDEpIHwgUldETEVOMShPTUFQX01DQlNQX1dPUkRfOCksCj4gPiAr
+ICAgICAgIC54Y3IxID0gWEZSTEVOMSgxIC0gMSkgfCBYV0RMRU4xKE9NQVBfTUNCU1BfV09SRF8x
+NiksCj4gPiArfTsKPiA+Cj4gPiBCVFcsIEkgY2FuJ3Qgc2VlIGFueSB3YXkgb2Ygc3BlY2lmeWlu
+ZyBhIHNpbWlsaWFyIG1jYnNwIHNldHVwIGluIG5ldwo+ID4gb21hcCBhc29jIGZyYW1ld29yay4K
+Pgo+IFllYWgsIDggYml0IGlzIG5vdCBzdXBwb3J0ZWQgLSBpbiBmYWN0IG9ubHkgMTYgYml0IGlz
+IHN1cHBvcnRlZCAtIHdpdGggQVNvQwo+IG9uIE9NQVAuCgpOb3Qgb25seSB0aGlzLiBBRkFJQ1Ms
+IHRoZXJlIGlzIG5vIHdheSBvZiBzcGVjaWZ5aW5nIHNpbmdsZSBwaGFzZSBzdGVyZW8gKHdpdGgg
+ClhQSEFTRS9SUEhBU0UgdW5zZXQpLCAyIHdvcmRzIHBlciBmcmFtZSAoWEZSTEVOMS9SRlJMRU4x
+KDIgLSAxKSkuIElzbid0IHRoaXMgCnJlcXVpcmVkIGZvciBjb3JyZWN0IERTUF9BL0RTUF9CIHN1
+cHBvcnQ/Cgo+IEJ1dCB5b3Ugc2hvdWxkIGJlIGFibGUgdG8gdXNlIHRoZSBwbGF5YmFjayB3aXRo
+IHRoZSBjdXJyZW50IEFTb0MuCgpEZWZpbml0ZWxseSB5ZXMuIEkgYW0gYXdhcmUgdGhhdCB0aGUg
+YWJvdmUgbGltaXRhdGlvbnMgaGF2ZSBub3RoaW5nIHRvIGRvIHdpdGggCnRoZSBtYWluIHByb2Js
+ZW0sIGFzIHdpdGggY3VycmVudCBtY2JzcCBjb2RlIEkgc2hvdWxkIGFsd2F5cyBiZSBhYmxlIHRv
+IGdldCAKc29tZSBraW5kIG9mIG5vaXNlIGF0IGxlYXN0IHVzaW5nIG9uZSBvZiBzdXBwb3J0ZWQg
+Zm9ybWF0cywgYXMgZmFyIGFzIApjbG9ja2luZyBpcyBzZXQgdXAgY29ycmVjdGx5LgoKPiAtLS0g
+YS9hcmNoL2FybS9wbGF0LW9tYXAvZG1hLmMKPiArKysgYi9hcmNoL2FybS9wbGF0LW9tYXAvZG1h
+LmMKPiBAQCAtMjY2LDYgKzI2Niw4IEBAIHZvaWQgb21hcF9zZXRfZG1hX3RyYW5zZmVyX3BhcmFt
+cyhpbnQgbGNoLCBpbnQKPiBkYXRhX3R5cGUsIGludCBlbGVtX2NvdW50LAo+ICAgICAgICAgICAg
+ICAgICBjY3IgJj0gfigxIDw8IDUpOwo+ICAgICAgICAgICAgICAgICBpZiAoc3luY19tb2RlID09
+IE9NQVBfRE1BX1NZTkNfRlJBTUUpCj4gICAgICAgICAgICAgICAgICAgICAgICAgY2NyIHw9IDEg
+PDwgNTsKPiArICAgICAgICAgICAgICAgaWYgKGRtYV90cmlnZ2VyKQo+ICsgICAgICAgICAgICAg
+ICAgICAgICAgIGNjciB8PSBkbWFfdHJpZ2dlciAmIDB4MWY7Cj4gICAgICAgICAgICAgICAgIGRt
+YV93cml0ZShjY3IsIENDUihsY2gpKTsKPgo+ICAgICAgICAgICAgICAgICBjY3IgPSBkbWFfcmVh
+ZChDQ1IyKGxjaCkpOwoKQXBwbGllZCwgc29ycnksIGRpZCBub3QgaGVscCAod2l0aCBjYXB0dXJl
+LCB1bmxpa2UgcGxheWJhY2ssIHNldCB1cCBmb3IgCmludGVybmFsIGNsb2NraW5nIGZvciBhcyBt
+dWNoIGRldmljZSBpc29sYXRpb24gYXMgcG9zc2libGUpLgoKIyBhcGxheSAtRCBodzowLDAgLWYg
+UzE2X0xFIC9kZXYvdXJhbmRvbQpQbGF5aW5nIHJhdyBkYXRhICcvZGV2L3VyYW5kb20nIDogU2ln
+bmVkIDE2IGJpdCBMaXR0bGUgRW5kaWFuLCBSYXRlIDgwMDAgSHosIApNb25vCm9tYXBfcGNtX3Ry
+aWdnZXIgU1RBUlQ6IERNQSBwb2ludGVyIGF0IDB4MTFkNGEwZDAKb21hcF9wY21fdHJpZ2dlciBT
+VE9QOiBETUEgcG9pbnRlciBhdCAweDExZDRhMGQwIGVycm9yCiMgYXJlY29yZCAtRCBodzowLDAg
+LWYgUzE2X0xFIC10IHJhdyAvZGV2L251bGwKUmVjb3JkaW5nIHJhdyBkYXRhICcvZGV2L251bGwn
+IDogU2lnbmVkIDE2IGJpdCBMaXR0bGUgRW5kaWFuLCBSYXRlIDgwMDAgSHosIApNb25vCm9tYXBf
+cGNtX3RyaWdnZXIgU1RBUlQ6IERNQSBwb2ludGVyIGF0IDB4ZTEwMWEwZDAKYXJlY29yZDogcGNt
+X3JlYWQ6MTUyOTogcmVhZCBlcnJvcjogSW5wdXQvb3V0cHV0IGVycm9yCm9tYXBfcGNtX3RyaWdn
+ZXIgU1RPUDogRE1BIHBvaW50ZXIgYXQgMHhlMTAxYTBkMAojIGNhdCAvZGV2L3VyYW5kb20gPi9k
+ZXYvZHNwCm9tYXBfcGNtX3RyaWdnZXIgU1RBUlQ6IERNQSBwb2ludGVyIGF0IDB4MTFkNGEwZDAK
+Y2F0OiB3cml0ZSBlcnJvcjogSW5wdXQvb3V0cHV0IGVycm9yCm9tYXBfcGNtX3RyaWdnZXIgU1RP
+UDogRE1BIHBvaW50ZXIgYXQgMHgxMWQ0YTBkMAojIGNhdCAvZGV2L2RzcCA+L2Rldi9udWxsCm9t
+YXBfcGNtX3RyaWdnZXIgU1RBUlQ6IERNQSBwb2ludGVyIGF0IDB4ZTEwMWEwZDAKY2F0OiByZWFk
+IGVycm9yOiBJbnB1dC9vdXRwdXQgZXJvbWFwX3BjbV90cmlnZ2VyIFNUT1A6IERNQSBwb2ludGVy
+IGF0IAoweGUxMDFhMGQwCnJvcgojCgpCVFcsIEkgaGF2ZSBmb3VuZCB0aGF0LCB3aGVuIGludm9r
+ZWQgd2l0aCB0aG9zZSAiLUQgaHc6MCwwIC1mIFNFMTZfTEUiIApvcHRpb25zLCBhcGxheS9hcmVj
+b3JkIGJlaGF2ZSBjb3JyZWN0bHksIGV4YWN0bHkgYXMgTWFyayBoYXMgcG9pbnRlZCBvdXQgb25j
+ZSAKYXQgdGhlIGJlZ2lubmluZyBvZiB0aGlzIGh1Z2UgdGhyZWFkLCBzdG9wcGluZyB0aGVtc2Vs
+dmVzIGFmdGVyIDEwIHNlY29uZHMgCndpdGggYW4gZXJyb3IgbWVzc2FnZSwgd2l0aG91dCBuZWVk
+IGZvciBeQy4KCj4gSSB3b3VsZCBleHBlY3RlZCB0aGF0IGJ5IGp1c3QgY29weWluZyAoSSBrbm93
+IHRoYXQgdGhlcmUgYXJlIG90aGVyIHRoaW5ncwo+IGludm9sdmVkKSB0aGUgb2xkIEFMU0EgYXJt
+IGRpcmVjdG9yeSB0byB0aGUgbGF0ZXN0IGtlcm5lbCBhbmQgY29tcGlsaW5nIGl0Cj4gc2hvdWxk
+IGJlIHdvcmtpbmcuLi4gSXQgc2VhbXMgSSB3YXMgd3JvbmcuCgpBbnl3YXksIGlmIHlvdSBmaW5k
+IHBvcnRpbmcgb25lIG9yIGFub3RoZXIgZnJhbWV3b3JrLCBiYWNrIG9yIGZvcndhcmQsIApoZWxw
+ZnVsbCBpbiBhbnkgd2F5LCBqdXN0IGxldCBtZSBrbm93LCBJIGNhbiB0cnkuCgpUaGFua3MsCkph
+bnVzegotLQpUbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5z
+dWJzY3JpYmUgYWxzYS1kZXZlbCIgaW4KdGhlIGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9t
+b0B2Z2VyLmtlcm5lbC5vcmcKTW9yZSBtYWpvcmRvbW8gaW5mbyBhdCAgaHR0cDovL3ZnZXIua2Vy
+bmVsLm9yZy9tYWpvcmRvbW8taW5mby5odG1sCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwK
