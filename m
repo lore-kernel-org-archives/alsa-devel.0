@@ -1,16 +1,17 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: Please help in adding ams-delta support to ASoC
-Date: Wed, 10 Jun 2009 20:05:35 +0200
-Message-ID: <200906102005.36323.jkrzyszt__44646.3577951819$1244657201$gmane$org@tis.icnet.pl>
-References: <4A1BEBE3.8010306@tis.icnet.pl>
-	<200906101227.39856.jkrzyszt@tis.icnet.pl>
-	<200906101353.43411.peter.ujfalusi@nokia.com>
+From: Daniel Ribeiro <drwyrm@gmail.com>
+Subject: [PATCH] ASoC: remove duplicated code on pxa-ssp.c
+Date: Wed, 10 Jun 2009 15:23:24 -0300
+Message-ID: <1244658204.25905.10.camel@brutus>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============2051292273554889201=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <200906101353.43411.peter.ujfalusi@nokia.com>
-Content-Disposition: inline
+Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
+	[209.85.221.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9A1E62443F
+	for <alsa-devel@alsa-project.org>;
+	Wed, 10 Jun 2009 20:23:30 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so1350896qyk.16
+	for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2009 11:23:30 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,58 +21,141 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>
+To: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@sirena.org.uk>
+Cc: Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-V2VkbmVzZGF5IDEwIEp1bmUgMjAwOSAxMjo1Mzo0MiBQZXRlciBVamZhbHVzaSBuYXBpc2HFgihh
-KToKPiBPbiBXZWRuZXNkYXkgMTAgSnVuZSAyMDA5IDEzOjI3OjM4IGV4dCBKYW51c3ogS3J6eXN6
-dG9maWsgd3JvdGU6Cj4gSnVzdCBvdXQgb2YgY3VyaW9zaXR5LCBjYW4geW91IHRyeSB0aGlzIG9u
-ZSBhcyB3ZWxsOgo+Cj4gLS0tIGEvc291bmQvc29jL29tYXAvb21hcC1tY2JzcC5jCj4gKysrIGIv
-c291bmQvc29jL29tYXAvb21hcC1tY2JzcC5jCj4gQEAgLTE5MSw2ICsxOTEsNyBAQCBzdGF0aWMg
-aW50IG9tYXBfbWNic3BfZGFpX3RyaWdnZXIoc3RydWN0Cj4gc25kX3BjbV9zdWJzdHJlYW0gKnN1
-YnN0cmVhbSwgaW50IGNtZCwKPiAgICAgICAgIGNhc2UgU05EUlZfUENNX1RSSUdHRVJfUEFVU0Vf
-UkVMRUFTRToKPiAgICAgICAgICAgICAgICAgaWYgKCFtY2JzcF9kYXRhLT5hY3RpdmUrKykKPiAg
-ICAgICAgICAgICAgICAgICAgICAgICBvbWFwX21jYnNwX3N0YXJ0KG1jYnNwX2RhdGEtPmJ1c19p
-ZCk7Cj4gKyAgICAgICAgICAgICAgIG9tYXBfbWNic3BfcG9sbHdyaXRlKG1jYnNwX2RhdGEtPmJ1
-c19pZCwgMHhkYjU1KTsKPiAgICAgICAgICAgICAgICAgYnJlYWs7Cj4KPiBiYXNpY2FsbHkgd3Jp
-dGUgMHhkYjU1IHRvIHRoZSBEWFIxIHJlZ2lzdGVyICgweGRiNTUgaXMgMTEwMTEwMTEwMTAxMDEw
-MSkKPiBXaXRoIHRoaXMsIGlmIE1jQlNQIGlzIG9wZXJhdGluZyBjb3JyZWN0bHkgeW91IHNob3Vs
-ZCBiZSBzZWVpbmcgdGhpcwo+IHBhdHRlcm4gZ29pbmcgdG8gdGhlIGNvZGVjLgoKUGV0ZXIsCgpJ
-IGFtIG5vdCBzdXJlIGhvdyBkaWQgeW91IGV4cGVjdCBtZSB0byBzZWUgdGhpcyBwYXR0ZXJuLiBP
-biBhIHNjb3BlIHNjcmVlbj8gClVuZm9ydW5hdGVsbHkgSSBoYWQgdG8gcmV0dXJuIHRoZSBzY29w
-ZSB0aGlzIG1vcm5pbmcuCgpJIGhhdmUgZnVydGhlciBtb2RpZmllZCB0aGUgY29kZSBsaWtlIHRo
-aXM6CgpAQCAtMjUsNiArMjUsNyBAQAogI2luY2x1ZGUgPGxpbnV4L2luaXQuaD4KICNpbmNsdWRl
-IDxsaW51eC9tb2R1bGUuaD4KICNpbmNsdWRlIDxsaW51eC9kZXZpY2UuaD4KKyNpbmNsdWRlIDxs
-aW51eC9yYW5kb20uaD4KICNpbmNsdWRlIDxzb3VuZC9jb3JlLmg+CiAjaW5jbHVkZSA8c291bmQv
-cGNtLmg+CiAjaW5jbHVkZSA8c291bmQvcGNtX3BhcmFtcy5oPgpAQCAtMTg2LDcgKzE4Niw3IEBA
-IHN0YXRpYyBpbnQgb21hcF9tY2JzcF9kYWlfdHJpZ2dlcihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJl
-YW0gCipzdWJzdHJlYW0sIGludCBjbWQsCiAgICAgICAgc3RydWN0IHNuZF9zb2NfcGNtX3J1bnRp
-bWUgKnJ0ZCA9IHN1YnN0cmVhbS0+cHJpdmF0ZV9kYXRhOwogICAgICAgIHN0cnVjdCBzbmRfc29j
-X2RhaSAqY3B1X2RhaSA9IHJ0ZC0+ZGFpLT5jcHVfZGFpOwogICAgICAgIHN0cnVjdCBvbWFwX21j
-YnNwX2RhdGEgKm1jYnNwX2RhdGEgPSB0b19tY2JzcChjcHVfZGFpLT5wcml2YXRlX2RhdGEpOwot
-ICAgICAgIGludCBlcnIgPSAwOworICAgICAgIGludCBpLCBlcnIgPSAwOwoKICAgICAgICBzd2l0
-Y2ggKGNtZCkgewogICAgICAgIGNhc2UgU05EUlZfUENNX1RSSUdHRVJfU1RBUlQ6CkBAIC0xOTEs
-NiArMTkxLDggQEAgc3RhdGljIGludCBvbWFwX21jYnNwX2RhaV90cmlnZ2VyKHN0cnVjdCBzbmRf
-cGNtX3N1YnN0cmVhbSAKKnN1YnN0cmVhbSwgaW50IGNtZCwKICAgICAgICBjYXNlIFNORFJWX1BD
-TV9UUklHR0VSX1BBVVNFX1JFTEVBU0U6CiAgICAgICAgICAgICAgICBpZiAoIW1jYnNwX2RhdGEt
-PmFjdGl2ZSsrKQogICAgICAgICAgICAgICAgICAgICAgICBvbWFwX21jYnNwX3N0YXJ0KG1jYnNw
-X2RhdGEtPmJ1c19pZCk7CisgICAgICAgICAgICAgICBmb3IgKGkgPSA4MDAwOyBpID4gMDsgaS0t
-KQorICAgICAgICAgICAgICAgICAgICAgICBvbWFwX21jYnNwX3BvbGx3cml0ZShtY2JzcF9kYXRh
-LT5idXNfaWQsICh1MTYpcmFuZG9tMzIKKCkpOwogICAgICAgICAgICAgICAgYnJlYWs7CgogICAg
-ICAgIGNhc2UgU05EUlZfUENNX1RSSUdHRVJfU1RPUDoKCmluIGhvcGUgSSBzaG91bGQgYmUgYWJs
-ZSB0byBoZWFyIGEgbm9pc2UgZm9yIG9uZSBzZWNvbmQsIHNob3VsZG4ndCBJLgoKPiBJZiBpdCBk
-b2VzLCB0aGFuIHdlIGhhdmUgc29tZSBwcm9ibGVtcyB3aXRoIHRoZSAKPiBNY0JTUC9ETUEgY29v
-cGVyYXRpb24sIGlmIHRoaXMgcGF0dGVybiBpcyBub3Qgc2VlbiBvbiB0aGUgYnVzLCB0aGFuIHRo
-ZQo+IE1jQlNQIGlzIG5vdCBzaGlmdGluZyBkYXRhIG91dCBmb3Igc29tZSByZWFzb24uCgpOb3cg
-YXBsYXkgcmV0dXJucyAxIHNlY29uZCBsYXRlciB0aGFuIGJlZm9yZSwgc28gSSBjb25jbHVkZSB0
-aGUgbG9vcCBpcyAKcHJvY2Vzc2VkIGNvcnJlY3RseS4gSG93ZXZlciwgSSBhbSBub3QgYWJsZSB0
-byBoZWFyIGEgc2luZ2xlIHJpcHBsZSBub3Igc2VlIAphbnkgZXJyb3IgbWVzc2FnZXMgZnJvbSBv
-bWFwX21jYnNwX3BvbGx3cml0ZSgpIDooLCBzbyBpdCBsb29rcyBsaWtlIHRoZSAKbGF0dGVyIGlz
-IG1vcmUgcHJvYmFibGUuCgpKYW51c3oKLS0KVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlzIGxpc3Q6
-IHNlbmQgdGhlIGxpbmUgInVuc3Vic2NyaWJlIGFsc2EtZGV2ZWwiIGluCnRoZSBib2R5IG9mIGEg
-bWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnCk1vcmUgbWFqb3Jkb21vIGluZm8g
-YXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8uaHRtbAoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--===============2051292273554889201==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-idu2MjpuMpeSECeQqV5T"
+
+
+--=-idu2MjpuMpeSECeQqV5T
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+* We don't need to write the registers twice, remove the first write.
+* DAIFMT_INV switch is duplicated inside DAIFMT_FORMAT switch, move it
+  out.
+
+(This patch is for Mark's for-2.6.32 branch, I have not checked if the
+code is duplicated on current 2.6.30)
+
+Signed-off-by: Daniel Ribeiro <drwyrm@gmail.com>
+
+---
+ sound/soc/pxa/pxa-ssp.c |   50 ++++++++++++++-----------------------------=
+---
+ 1 files changed, 15 insertions(+), 35 deletions(-)
+
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index 19c4540..e22c5ce 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -457,31 +457,27 @@ static int pxa_ssp_set_dai_fmt(struct snd_soc_dai *cp=
+u_dai,
+ 		return -EINVAL;
+ 	}
+=20
+-	ssp_write_reg(ssp, SSCR0, sscr0);
+-	ssp_write_reg(ssp, SSCR1, sscr1);
+-	ssp_write_reg(ssp, SSPSP, sspsp);
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		sspsp |=3D SSPSP_SFRMP;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		break;
++	case SND_SOC_DAIFMT_IB_IF:
++		sspsp |=3D SSPSP_SCMODE(2);
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		sspsp |=3D SSPSP_SCMODE(2) | SSPSP_SFRMP;
++		break;
++	default:
++		return -EINVAL;
++	}
+=20
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+ 		sscr0 |=3D SSCR0_PSP;
+ 		sscr1 |=3D SSCR1_RWOT | SSCR1_TRAIL;
+-
+ 		/* See hw_params() */
+-		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+-		case SND_SOC_DAIFMT_NB_NF:
+-			sspsp |=3D SSPSP_SFRMP;
+-			break;
+-		case SND_SOC_DAIFMT_NB_IF:
+-			break;
+-		case SND_SOC_DAIFMT_IB_IF:
+-			sspsp |=3D SSPSP_SCMODE(2);
+-			break;
+-		case SND_SOC_DAIFMT_IB_NF:
+-			sspsp |=3D SSPSP_SCMODE(2) | SSPSP_SFRMP;
+-			break;
+-		default:
+-			return -EINVAL;
+-		}
+ 		break;
+=20
+ 	case SND_SOC_DAIFMT_DSP_A:
+@@ -489,22 +485,6 @@ static int pxa_ssp_set_dai_fmt(struct snd_soc_dai *cpu=
+_dai,
+ 	case SND_SOC_DAIFMT_DSP_B:
+ 		sscr0 |=3D SSCR0_MOD | SSCR0_PSP;
+ 		sscr1 |=3D SSCR1_TRAIL | SSCR1_RWOT;
+-
+-		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+-		case SND_SOC_DAIFMT_NB_NF:
+-			sspsp |=3D SSPSP_SFRMP;
+-			break;
+-		case SND_SOC_DAIFMT_NB_IF:
+-			break;
+-		case SND_SOC_DAIFMT_IB_IF:
+-			sspsp |=3D SSPSP_SCMODE(2);
+-			break;
+-		case SND_SOC_DAIFMT_IB_NF:
+-			sspsp |=3D SSPSP_SCMODE(2) | SSPSP_SFRMP;
+-			break;
+-		default:
+-			return -EINVAL;
+-		}
+ 		break;
+=20
+ 	default:
+--=20
+tg: (a3ba169..) asoc/remove-code-duplication (depends on: asoc/upstream-for=
+-2.6.32)
+
+--=20
+Daniel Ribeiro
+
+--=-idu2MjpuMpeSECeQqV5T
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Esta =?ISO-8859-1?Q?=E9?= uma parte de mensagem
+ assinada digitalmente
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEABECAAYFAkov+hYACgkQw3OYl0G0liTJBQCfcJjoVIqEjgOrAUakaLPx1l1o
+adMAn1OlTj/0gbnXsMVJQuF2o33+CqkI
+=wtuW
+-----END PGP SIGNATURE-----
+
+--=-idu2MjpuMpeSECeQqV5T--
+
+
+--===============2051292273554889201==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============2051292273554889201==--
