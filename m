@@ -1,17 +1,18 @@
 From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
 Subject: Re: AC97 atmel
-Date: Thu, 11 Jun 2009 11:27:28 +0200
-Message-ID: <20090611112728.6c253b34@hcegtvedt.norway.atmel.com>
+Date: Thu, 11 Jun 2009 14:58:49 +0200
+Message-ID: <20090611145849.58dbb472@hcegtvedt.norway.atmel.com>
 References: <4A30C6C6.9090205@atmel.com>
+	<4A30FDBF.4030809@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from relay.atmel.no (relay.atmel.no [80.232.32.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 74F15103802
+	by alsa0.perex.cz (Postfix) with ESMTP id 7DBFF103802
 	for <alsa-devel@alsa-project.org>;
-	Thu, 11 Jun 2009 11:27:35 +0200 (CEST)
-In-Reply-To: <4A30C6C6.9090205@atmel.com>
+	Thu, 11 Jun 2009 14:58:52 +0200 (CEST)
+In-Reply-To: <4A30FDBF.4030809@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,22 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sedji Gaouaou <sedji.gaouaou@atmel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Sedji Gaouaou <sedji.gaouaou@atmel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 11 Jun 2009 10:56:38 +0200
+On Thu, 11 Jun 2009 14:51:11 +0200
 Sedji Gaouaou <sedji.gaouaou@atmel.com> wrote:
 
-> Hi,
+> Sorry to bother you again, but I've tried to compile the ac97c.c driver 
+> based on 
+> http://www.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git and 
+> doing so I've got some errors:
 > 
-> I have a patch which adds support for ATMEL AT91.
-> I would like to know on which branch should I base my patch (linux 
-> ketchup or 
-> http://www.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git).
+>    CC      sound/atmel/ac97c.o
+
+<snipp missing references to dw_dmac driver>
+
+> But if I use the linux-ketchup it will compile ok.
+> 
+> dw_dma_cyclic_prep is in drivers/dma/dw_dma.c on the linux-kecthup, but 
+> I can't find it on the git tree...
+> Am I missing something?
 > 
 
-ALSA stuff should be based on the latest stuff in Takashi Iwai's tree.
+Takashi Iwai has probably not updated his tree after Linus release the
+new kernel. Try pulling from both trees?
 
 -- 
 Best regards,
