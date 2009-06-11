@@ -1,16 +1,19 @@
-From: bill@tellytopia.com
-Subject: Re: SB X-Fi driver fixes (Re: Testers wanted:
-Date: Wed, 10 Jun 2009 23:14:00 -0700
-Message-ID: <20090610231400.511367190d6e5c5c661eac68a9a86d95.17a4937c08.wbe@email.secureserver.net>
+From: "Harsha, Priya" <priya.harsha@intel.com>
+Subject: Re: Indirect Callback with ack is called with no data
+Date: Thu, 11 Jun 2009 12:27:52 +0530
+Message-ID: <98769532B4BB14429434178695419EAE58576B7E@bgsmsx501.gar.corp.intel.com>
+References: <BAY119-W8E3C7EC7BE9C8606E2D28B0480@phx.gbl>
+	<98769532B4BB14429434178695419EAE584F05F0@bgsmsx501.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpoutwbe04.prod.mesa1.secureserver.net
-	(smtpoutwbe04.prod.mesa1.secureserver.net [208.109.78.206])
-	by alsa0.perex.cz (Postfix) with SMTP id 4970C1037F4
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id D96C8103807
 	for <alsa-devel@alsa-project.org>;
-	Thu, 11 Jun 2009 08:14:20 +0200 (CEST)
+	Thu, 11 Jun 2009 08:58:11 +0200 (CEST)
+In-Reply-To: <98769532B4BB14429434178695419EAE584F05F0@bgsmsx501.gar.corp.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,32 +23,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I am using the snd-ctxfi driver on a 64-bit version of fedora code 7.
-Is there anyone else working on a 64-bit system?
+Hi,
 
-There are some compile warnings during the compilation of the driver,
-but no errors.
-But no sound, either, so far.
+When I enabled Pulse audio I don't find this issue happening. I guess there is some magic that Pulse audio does to make Flash work properly. 
 
-I have also taken the 1.0.20 library, utils and tools sources from the
-Alsa main downloads.
+If anyone can help me understand why this is so, it would be great.
 
-In order to compile the utils I had to link the 64-bit sound libraries
-to /usr/lib/libasound.2.0.0, in other words:
-(cd /lib64; ln -s /usr/lib/libasound.2.0.0 libasound.2.0.0; ln -s
-/usr/lib/libasound.2.0.0 libasound.2)
-There is no /lib64/libasound.la
+Thanks,
+Harsha
 
-Also had to install xmlto (yum install xmlto).
 
-So far I have added the snd-hda-intel driver to the blacklist but still
-the Soundcard Detection shows snd-hda-intel.
-
-Any ideas, anyone?
-
-Regards
-Bill
+> -----Original Message-----
+> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-project.org]
+> On Behalf Of Harsha, Priya
+> Sent: Monday, June 08, 2009 7:22 PM
+> To: alsa-devel@alsa-project.org
+> Subject: Re: [alsa-devel] Indirect Callback with ack is called with no data
+> 
+> Hi,
+> 
+> I am facing this issue with flash.
+> 
+> With aplay and paplay, the audio drivers are working perfectly ok.
+> 
+> With flash player, the audio stops after sometime. The reason is that flash player is not
+> sending data. All the data sent from Flash has been played out and reported accurately as
+> well in _pointer function.
+> 
+> Can anyone help with any clues of flash player working with ALSA?
+> 
+> This would really help.
+> 
+> Thanks
+> Harsha
+> 
+> 
+> -----Original Message-----
+> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-project.org]
+> On Behalf Of Singaravelan Nallasellan
+> Sent: Friday, June 05, 2009 5:19 PM
+> To: alsa-devel@alsa-project.org
+> Subject: [alsa-devel] Indirect Callback with ack is called with no data
+> 
+> 
+> 
+> 
+> I am using indirect callback mechanism inside ack. I see that ack does not call my indirect
+> callback pointer. Going through the code, I suspect that the appl_ptr is not being
+> incremented and there is no data for the indirect callback to be called.
+> 
+> 
+> 
+> After few acks, I get the indirect callback called.
+> 
+> 
+> 
+> With aplay, I am able to play the wav file. But with flash, there is not data being sent to the
+> driver.
+> 
+> 
+> 
+> Please help me with any clues.
+> 
+> 
+> 
+> Thanks in advance.
+> 
+> 
+> 
+> Sing
+> 
+> _________________________________________________________________
+> Insert movie times and more without leaving Hotmail(r).
+> http://windowslive.com/Tutorial/Hotmail/QuickAdd?ocid=TXT_TAGLM_WL_HM_Tutori
+> al_QuickAdd_062009
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
