@@ -1,17 +1,20 @@
 From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
 Subject: Re: AC97 atmel
-Date: Thu, 11 Jun 2009 15:11:25 +0200
-Message-ID: <20090611151125.07557a92@hcegtvedt.norway.atmel.com>
+Date: Thu, 11 Jun 2009 15:58:39 +0200
+Message-ID: <20090611155839.475b0fca@hcegtvedt.norway.atmel.com>
 References: <4A30C6C6.9090205@atmel.com> <20090611130117.GE26509@sirena.org.uk>
+	<20090611151125.07557a92@hcegtvedt.norway.atmel.com>
+	<20090611132330.GA1555@rakim.wolfsonmicro.main>
+	<4A310984.7050008@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from relay.atmel.no (relay.atmel.no [80.232.32.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id B8209103812
+	by alsa0.perex.cz (Postfix) with ESMTP id 9FC6E10382D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 11 Jun 2009 15:11:25 +0200 (CEST)
-In-Reply-To: <20090611130117.GE26509@sirena.org.uk>
+	Thu, 11 Jun 2009 15:58:40 +0200 (CEST)
+In-Reply-To: <4A310984.7050008@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,27 +24,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Sedji Gaouaou <sedji.gaouaou@atmel.com>, alsa-devel@alsa-project.org
+To: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 11 Jun 2009 14:01:17 +0100
-Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
-
-> On Thu, Jun 11, 2009 at 10:56:38AM +0200, Sedji Gaouaou wrote:
-> 
-> > I would like to know on which branch should I base my patch (linux 
-> > ketchup or 
-> > http://www.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git).
-> 
-> What is "linux ketchup"?  I'm guessing it's an Ateml tree but the main
-> thing google is turning up is a script for automatically updating patch
-> sets.
-
-I was under the assumption that "linux ketchup" was Linus Torvalds
-tree? At least the dw_dmac stuff went into that tree for the 2.6.30
-release.
-
--- 
-Best regards,
-Hans-Christian Egtvedt
+T24gVGh1LCAxMSBKdW4gMjAwOSAxNTo0MToyNCArMDIwMApTZWRqaSBHYW91YW91IDxzZWRqaS5n
+YW91YW91QGF0bWVsLmNvbT4gd3JvdGU6Cgo+IE1hcmsgQnJvd24gYSDDqWNyaXQgOgo+ID4gCj4g
+PiBIcm0sIGxvb2tpbmcgYXQgdGhlIEtjb25maWcgaW4gMi42LjMwIHRoZSBkd19kbWFjIGNvZGUg
+aGFzIGEgaGFyZAo+ID4gZGVwZW5kZW5jeSBvbiBBVlIzMiB3aGljaCBpcyBwcm9iYWJseSB3aGF0
+J3MgY2F1c2luZyB0aGUgdHJvdWJsZSAtIEkKPiA+IGd1ZXNzIGEgcGF0Y2ggd2lsbCBhbHNvIGJl
+IG5lZWRlZCBmb3IgdGhhdCB0byBlbmFibGUgQVQ5MSBzdXBwb3J0Lgo+ID4gCj4gWWVzIGluZGVl
+ZCEgT24gQVQ5MSB3ZSBkb24ndCBoYXZlIGEgc3BlY2lmaWMgZG1hIHdoaWNoIGlzIGNhbGxlZCBw
+ZGMuCj4gU28gYmFzaWNhbGx5IEkgaGF2ZSBwdXQgYWxsIHRoZSBkbWEgZnVuY3Rpb25zIGludG8g
+aWYoY3B1X2lzX2FwNzAwMCgpKS4KPiBCdXQgSSBhbSBub3Qgc3VyZSB0aGlzIGlzIHRoZSBwcm9w
+ZXIgd2F5IG9mIGRvaW5nIGl0Li4uCj4KCkFoLCByaWdodCwgeW91IG5lZWQgdG8gaW1wbGVtZW50
+IGEgZGlmZmVyZW50IERNQSBsYXllciBpbiB0aGUgQUM5N0MKZHJpdmVyLCB0YWtlIGEgbG9vayBh
+dCB0aGUgYXRtZWwtbWNpIGRyaXZlciBmb3IgYW4gZXhhbXBsZSBvZiBob3cgdG8gZG8KdGhpcy4K
+CkkuZS4geW91J2xsIG5lZWQgc29tZSBiaWcgI2lmZGVmL2lmbmRlZiBzdHVmZiB0byBzd2l0Y2gg
+YmV0d2VlbiBkd19kbWFjCmFuZCB0aGUgcGRjIHdheSBvZiBkb2luZyBETUEuCgpJbiB0aGUgc291
+bmQvYXRtZWwvS2NvbmZpZyBhZGQgYSBkZXBlbmQgd2hpY2ggdHJpZ2dlcnMgdGhlIHNlbGVjdGVk
+IERNQQplbmdpbmUgZGVwZW5kaW5nIG9uIGFyY2hpdGVjdHVyZS4gT3IgeW91IGNvdWxkIG1ha2Ug
+dGhlIERNQSBlbmdpbmUKc2VsZWN0YWJsZSBpbiB0aGUgbWVudS4gQWx0aG91Z2gsIHRoaXMgaXMg
+aGFyZCB3aXJlZCBpbiBlYWNoIGRldmljZSwgc28KSSB3b3VsZCBnbyBmb3Igc29tZXRoaW5nIGxp
+a2U6Cgpjb25maWcgU09VTkRfQVRNRUxfQUM5N0NfUERDCmJvb2wKZGVwZW5kcyBvbiBBVDkxCgph
+bmQgdGhlbiB1c2UgQ09ORklHX1NPVU5EX0FUTUVMX0FDOTdDX1BEQyBpbiB0aGUgc291bmQvYXRt
+ZWwvYWM5N2MuYwpmaWxlIHRvIHN3aXRjaCBiZXR3ZWVuIHRoZSB0d28gRE1BIGVuZ2luZXMuCgpE
+aWQgSSBtYWtlIHNlbnNlPyBJIGFjdHVhbGx5IGhhZCBzb21ldGhpbmcgc2ltaWxhciBpbiB0aGUg
+ZHJpdmVyIGxvbmcKYWdvIGluIDIuNi4xOCBvciBlYXJsaWVyLiBCdXQgcmlwcGVkIGl0IG91dCBz
+aW5jZSB0aGUgQVA3IGRldmljZXMgaGFzCml0IG93biBETUEgY29udHJvbGxlciBmcm9tIERlc2ln
+bldhcmUgKGluIGFkZGl0aW9uIHRvIFBEQykgYW5kIG15IG1haW4KZm9jdXMgd2FzIGdldHRpbmcg
+dGhlIGRyaXZlciB0byB3b3JrLiBBZGRpbmcgQVQ5MSBzdXBwb3J0IHNob3VsZCBub3cgYmUKcXVp
+dGUgc21vb3RoLgoKLS0gCkJlc3QgcmVnYXJkcywKSGFucy1DaHJpc3RpYW4gRWd0dmVkdApfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
