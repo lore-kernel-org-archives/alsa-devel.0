@@ -1,18 +1,17 @@
-From: Dark Dragon <darkdrgn2k@gmail.com>
-Subject: Codec 1708b
-Date: Tue, 9 Jun 2009 23:42:42 -0400
-Message-ID: <9b75db150906092042x3d2b529es7b920aea1769c94b@mail.gmail.com>
+From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+Subject: Re: AC97 atmel
+Date: Thu, 11 Jun 2009 11:27:28 +0200
+Message-ID: <20090611112728.6c253b34@hcegtvedt.norway.atmel.com>
+References: <4A30C6C6.9090205@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f197.google.com (mail-pz0-f197.google.com
-	[209.85.222.197])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7B83624429
+Received: from relay.atmel.no (relay.atmel.no [80.232.32.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 74F15103802
 	for <alsa-devel@alsa-project.org>;
-	Wed, 10 Jun 2009 05:42:43 +0200 (CEST)
-Received: by pzk35 with SMTP id 35so427495pzk.16
-	for <alsa-devel@alsa-project.org>; Tue, 09 Jun 2009 20:42:42 -0700 (PDT)
+	Thu, 11 Jun 2009 11:27:35 +0200 (CEST)
+In-Reply-To: <4A30C6C6.9090205@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,14 +21,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I cant seem to get my m3873-vm asus motherboard to play Sorround Sound audio
-via digital (HDMI)
+On Thu, 11 Jun 2009 10:56:38 +0200
+Sedji Gaouaou <sedji.gaouaou@atmel.com> wrote:
 
-Profile at
-http://www.alsa-project.org/db/?f=26d1122ea384bc64805e516610c1bab3bea4d75c
+> Hi,
+> 
+> I have a patch which adds support for ATMEL AT91.
+> I would like to know on which branch should I base my patch (linux 
+> ketchup or 
+> http://www.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git).
+> 
 
-Works when playing sterio audio but "file now found" errors when trying to
-play sorround sound audio
+ALSA stuff should be based on the latest stuff in Takashi Iwai's tree.
+
+-- 
+Best regards,
+Hans-Christian Egtvedt
