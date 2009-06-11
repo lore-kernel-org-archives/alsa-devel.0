@@ -1,30 +1,19 @@
 From: Gustavo Vieira <gustavo@sagui.org>
-Subject: Re: No jack sense on Intel 82801I / IDT	92HD71B7X	in	a
-	HP	dv4
-Date: Thu, 11 Jun 2009 14:57:52 -0300
-Message-ID: <1244743072.2586.5.camel@nick-beta.sagui>
-References: <1239977111.3337.18.camel@nick-beta.sagui>
-	<s5hfxg7uysp.wl%tiwai@suse.de>
-	<1239985116.6105.2.camel@nick-beta.sagui>
-	<s5hzleftflh.wl%tiwai@suse.de> <s5htz4ntf6i.wl%tiwai@suse.de>
-	<1239990142.3580.8.camel@nick-beta.sagui>
-	<s5h7i1iqqy8.wl%tiwai@suse.de>
-	<1240101395.3333.9.camel@nick-beta.sagui>
-	<s5hskk3og7f.wl%tiwai@suse.de>
-	<1240945884.3559.2.camel@nick-beta.sagui>
-	<s5hbpqgq81y.wl%tiwai@suse.de>
-	<1243962611.3296.11.camel@hamlet.sagui>
-	<1244224121.3128.9.camel@hamlet.sagui> <s5hy6s6cvvp.wl%tiwai@suse.de>
-	<1244232805.3128.24.camel@hamlet.sagui> <s5hiqj9zqb0.wl%tiwai@suse.de>
+Subject: Re: HDA Intel IDT 92HD71B7X - HP Pavilion DV7-1299EF -
+ Subwoofer not Working
+Date: Thu, 11 Jun 2009 15:12:34 -0300
+Message-ID: <1244743954.2586.9.camel@nick-beta.sagui>
+References: <d3328e7b0906070752h448912f1lfc86468ce7335bac@mail.gmail.com>
+	<d3328e7b0906070757n12c70a38l3eaab08d1884ec75@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from horatio.sagui.org (horatio.sagui.org [69.12.222.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 18AA224666
+	by alsa0.perex.cz (Postfix) with ESMTP id C7C1324672
 	for <alsa-devel@alsa-project.org>;
-	Thu, 11 Jun 2009 19:58:53 +0200 (CEST)
-In-Reply-To: <s5hiqj9zqb0.wl%tiwai@suse.de>
+	Thu, 11 Jun 2009 20:13:36 +0200 (CEST)
+In-Reply-To: <d3328e7b0906070757n12c70a38l3eaab08d1884ec75@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,46 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: "Wael Nasreddine (a.k.a eMxyzptlk)" <mla@nasreddine.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-RW0gU8OhYiwgMjAwOS0wNi0wNiDDoHMgMTE6MDQgKzAyMDAsIFRha2FzaGkgSXdhaSBlc2NyZXZl
-dToKPiA+IEknbSBub3Qgc3VyZSB3aGF0IGludGVycnVwdCBJIHNob3VsZCBiZSBtb25pdG9yaW5n
-LCBidXQgdGhlIGxpbmUKPiB3aXRoCj4gPiAiSERBIEludGVsIiBhbHdheXMgc3RheXMgd2l0aCAw
-IGludGVycnVwdHMuIEFsc28sIG9ubHkgdGltZXIsIGk5MTUKPiBhbmQKPiA+IHJlc2NoZWR1bGlu
-ZyBpbnRlcnJ1cHRzIGFyZSBnZW5lcmF0ZWQuCj4gCj4gSG0sIGJ1dCB3aGVuIHlvdSBwbGF5IG9y
-IHJlY29yZCBzb21ldGhpbmcsIGludGVycnVwdHMgbXVzdCBiZQo+IGdlbmVyYXRlZCwgcmlnaHQ/
-CgpOby4gTm90IGF0IGFsbC4gSGVyZSBpcyB0aGUgb3V0cHV0IG9mIC9wcm9jL2ludGVycnVwdHMK
-CiAgICAgICAgICAgQ1BVMCAgICAgICBDUFUxICAgICAgIAogIDA6ICAgICAgMzc4NjQgICAgICAz
-ODE0NCAgIElPLUFQSUMtZWRnZSAgICAgIHRpbWVyCiAgMTogICAgICAgICAgNSAgICAgICAgNTEx
-ICAgSU8tQVBJQy1lZGdlICAgICAgaTgwNDIKICA4OiAgICAgICAgICA3ICAgICAgICAgIDkgICBJ
-Ty1BUElDLWVkZ2UgICAgICBydGMwCiAgOTogICAgICAgMTA0OCAgICAgICAgNjUyICAgSU8tQVBJ
-Qy1mYXN0ZW9pICAgYWNwaQogMTI6ICAgICAgICAgNTEgICAgICAgICA1NyAgIElPLUFQSUMtZWRn
-ZSAgICAgIGk4MDQyCiAxNjogICAgICAgICA1MyAgICAgICAgIDgwICAgSU8tQVBJQy1mYXN0ZW9p
-ICAgdWhjaV9oY2Q6dXNiMywgbW1jMCwKam1iMzh4X21zOnNsb3QwCiAxNzogICAgICAgICAgMCAg
-ICAgICAgICAwICAgSU8tQVBJQy1mYXN0ZW9pICAgdWhjaV9oY2Q6dXNiNAogMTg6ICAgICAgICAg
-IDAgICAgICAgICAgMyAgIElPLUFQSUMtZmFzdGVvaSAgIGVoY2lfaGNkOnVzYjEsCnVoY2lfaGNk
-OnVzYjcKIDIwOiAgICAgICAgIDMwICAgICAgIDI2MjggICBJTy1BUElDLWZhc3Rlb2kgICBlaGNp
-X2hjZDp1c2IyLAp1aGNpX2hjZDp1c2I1CiAyMjogICAgICAgICAgMCAgICAgICAgICAwICAgSU8t
-QVBJQy1mYXN0ZW9pICAgdWhjaV9oY2Q6dXNiNiwgSERBIEludGVsCiAyOTogICAgICAxMzAxNyAg
-ICAgICAxNTQ1ICAgUENJLU1TSS1lZGdlICAgICAgYWhjaQogMzA6ICAgICAgICAgIDEgICAgICAg
-MzUwMiAgIFBDSS1NU0ktZWRnZSAgICAgIGk5MTUKIDMxOiAgICAgICAgICAwICAgICAgIDI4OTQg
-ICBQQ0ktTVNJLWVkZ2UgICAgICBldGgwCk5NSTogICAgICAgICAgMCAgICAgICAgICAwICAgTm9u
-LW1hc2thYmxlIGludGVycnVwdHMKTE9DOiAgICAgIDQ2NjkwICAgICAgNDczNDEgICBMb2NhbCB0
-aW1lciBpbnRlcnJ1cHRzClJFUzogICAgICAxNDk1NyAgICAgIDE1MDQ0ICAgUmVzY2hlZHVsaW5n
-IGludGVycnVwdHMKQ0FMOiAgICAgICAgIDczICAgICAgICAgNjQgICBGdW5jdGlvbiBjYWxsIGlu
-dGVycnVwdHMKVExCOiAgICAgICAgMTkzICAgICAgICAxMTkgICBUTEIgc2hvb3Rkb3ducwpUUk06
-ICAgICAgICAgIDAgICAgICAgICAgMCAgIFRoZXJtYWwgZXZlbnQgaW50ZXJydXB0cwpUSFI6ICAg
-ICAgICAgIDAgICAgICAgICAgMCAgIFRocmVzaG9sZCBBUElDIGludGVycnVwdHMKU1BVOiAgICAg
-ICAgICAwICAgICAgICAgIDAgICBTcHVyaW91cyBpbnRlcnJ1cHRzCkVSUjogICAgICAgICAgMApN
-SVM6ICAgICAgICAgIDAKCkludGVycnVwdCAyMiBzdGF5cyBhbHdheXMgd2l0aCAwLiBFdmVuIHdo
-ZW4gY29ycmVjdGx5IHBsYXlpbmcgc291bmRzLiBJCnRlc3RlZCB0aGlzIG9uIGFub3RoZXIgbWFj
-aGluZSB3aXRoIEhELUF1ZGlvLCBhbmQgdGhlIGVxdWl2YWxlbnQKaW50ZXJydXB0IGluY3JlYXNl
-ZCB3aGVuIHBsYXlpbmcuIEFsc28sIGluIHRoaXMgb3RoZXIgc3lzdGVtIGludGVycnVwdCAwCih0
-aW1lcikgaXMgaGFyZGx5IGlzc3VlZCwgYnV0IGluIHRoaXMgbGFwdG9wIGl0IGlzIGZpcmluZyBh
-bGwgdGhlIHRpbWUuCgpIb3cgY2FuIHRoZSBkcml2ZXIgYmUgd29ya2luZyB3aXRob3V0IGludGVy
-cnVwdHM/CgpBYnJhw6dvcywKR3VzdGF2bwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+RW0gRG9tLCAyMDA5LTA2LTA3IMOgcyAxNjo1NyArMDIwMCwgV2FlbCBOYXNyZWRkaW5lIChhLmsu
+YSBlTXh5enB0bGspCmVzY3JldmV1Ogo+IExhc3QgbmlnaHQgSSBib3VnaHQgbXlzZWxmIGEgbmV3
+IGxhcHRvcCwgdGhlIEhQIFBhdmlsaW9uIERWNy0xMjk5RUYuCj4gCgpTb3JyeSBmb3IgaGlqYWNr
+aW5nIHlvdXIgdGhyZWFkLCBidXQgZG9lcyB0aGlzIGxhcHRvcCBtdXRlIHRoZSBzcGVha2VyCmlm
+IHlvdSBwbHVnIGluIHRoZSBoZWFkcGhvbmVzPwoKSSdtIGV4cGVyaWVuY2luZyBwcm9ibGVtcyB3
+aXRoIGphY2sgc2Vuc2luZyBpbiBhIFBhdmlsaW9uIERWNCB3aXRoIHRoZQpzYW1lIGNvZGVjIGFu
+ZCB3aGF0IHRvIGtub3cgaWYgdGhpcyBwcm9ibGVtIGlzIGdlbmVyYWwgdG8gdGhlIGNvZGVjIG9y
+CnNwZWNpZmljIHRvIG15IG1vZGVsLgoKQWJyYcOnb3MsCkd1c3Rhdm8KCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
