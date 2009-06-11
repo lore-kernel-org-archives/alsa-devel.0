@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: remove duplicated code on pxa-ssp.c
-Date: Thu, 11 Jun 2009 21:03:12 +0100
-Message-ID: <20090611200311.GA20245@sirena.org.uk>
-References: <1244658204.25905.10.camel@brutus>
+From: bill@tellytopia.com
+Subject: Re: SB X-Fi driver fixes (Re: Testers wanted:
+Date: Thu, 11 Jun 2009 14:28:02 -0700
+Message-ID: <20090611142802.511367190d6e5c5c661eac68a9a86d95.8d9643a890.wbe@email.secureserver.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 56DE5103851
+Received: from smtpoutwbe09.prod.mesa1.secureserver.net
+	(smtpoutwbe09.prod.mesa1.secureserver.net [208.109.78.21])
+	by alsa0.perex.cz (Postfix) with SMTP id EBEE82415B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 11 Jun 2009 22:03:19 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1244658204.25905.10.camel@brutus>
+	Thu, 11 Jun 2009 23:28:37 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,18 +20,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Ribeiro <drwyrm@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
+To: Gernot Kohlhaas <gernot.kohlhaas@googlemail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 10, 2009 at 03:23:24PM -0300, Daniel Ribeiro wrote:
-> * We don't need to write the registers twice, remove the first write.
-> * DAIFMT_INV switch is duplicated inside DAIFMT_FORMAT switch, move it
->   out.
-> 
-> (This patch is for Mark's for-2.6.32 branch, I have not checked if the
-> code is duplicated on current 2.6.30)
-> 
-> Signed-off-by: Daniel Ribeiro <drwyrm@gmail.com>
-
-Applied, thanks.
+WWVzLCBJIGhhdmUgbG9hZGVkIHRoZSBtb2R1bGUgc25kLWN0ZnhpIG1hbnkgdGltZXMsCmFuZCB1
+bmxvYWRlZCBzbmQtaGRhLWludGwuCkFsc28gYmxhY2tsaXN0ZWQgc25kLWhkYS1pbnRlbCwgYW5k
+IHB1dCBzbmQtY3R4ZmkgaW50byBtb2Rwcm9iZS5jb25mLgoKSSBnZXQgbW9yZSB3YXJuaW5ncyBv
+biBjb21waWxpbmcgdGhlIGRyaXZlciB0aGFuIHlvdSBkbyAtIHNlZSBiZWxvdy4KKHRoZSBtZXNz
+YWdlcyBiZWxvdyBhcmUgZnJvbSB0b2RheSBub3QgZnJvbSBUdWVzZGF5LiBUaGUgZHJpdmVyIHNv
+dXJjZQp3YXMgZG93bmxvYWRlZCB0aGlzIG1vcm5pbmcuKQoKRmVkb3JhIENvcmUgODoKW3Jvb3RA
+bG9jYWxob3N0IGFsc2EtZHJpdmVyLXVuc3RhYmxlXSMgdW5hbWUgLWEKTGludXggbG9jYWxob3N0
+LmxvY2FsZG9tYWluIDIuNi4yMy4xLTQyLmZjOCAjMSBTTVAgVHVlIE9jdCAzMCAxMzoxODozMwpF
+RFQgMjAwNyB4ODZfNjQgeDg2XzY0IHg4Nl82NCBHTlUvTGludXgKKHRoZSBtZXNzYWdlcyBiZWxv
+dyBhcmUgZnJvbSB0b2RheSBub3QgZnJvbSBUdWVzZGF5LiBUaGUgZHJpdmVyIHNvdXJjZQp3YXMg
+ZG93bmxvYWRlZCB0aGlzIG1vcm5pbmcuKQoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCmNv
+bmZpZ3VyZTogY3JlYXRpbmcgLi9jb25maWcuc3RhdHVzCmNvbmZpZy5zdGF0dXM6IGNyZWF0aW5n
+IHZlcnNpb24KY29uZmlnLnN0YXR1czogY3JlYXRpbmcgTWFrZWZpbGUuY29uZgpBIGNvdXBsZSBv
+ZiBkYXlzIGFnbyBJIGdvdCB0aGlzOgpjb25maWcuc3RhdHVzOiBXQVJOSU5HOiAgJ01ha2VmaWxl
+LmNvbmYuaW4nIHNlZW1zIHRvIGlnbm9yZSB0aGUKLS1kYXRhcm9vdGRpciBzZXR0aW5nCmJ1dCBu
+b3cgdGhpczoKJGFzX2VjaG8gIiRhc19tZTogV0FSTklORzogJGFjX2ZpbGVfaW5wdXRzIHNlZW1z
+IHRvIGlnbm9yZSB0aGUKLS1kYXRhcm9vdGRpciBzZXR0aW5nIiA+JjI7fQogCmNvbmZpZy5zdGF0
+dXM6IGNyZWF0aW5nIHNuZGRldmljZXMKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhlc2UgbWVzc2FnZXMg
+YXJlIGZyb20gdGhlICJtYWtlIjoKCiAgQ0MgW01dICAvcm9vdC9EZXNrdG9wL2Fsc2EtZHJpdmVy
+LXVuc3RhYmxlL3BjaS9jdHhmaS9jdGF0Yy5vCi9yb290L0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5z
+dGFibGUvcGNpL2N0eGZpL2N0YXRjLmM6IEluIGZ1bmN0aW9uCsOi4oKsy5xzcGRpZl9wYXNzdGhy
+dV9wbGF5YmFja19wcmVwYXJlw6LigqzihKI6Ci9yb290L0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5z
+dGFibGUvcGNpL2N0eGZpL2N0YXRjLmM6ODcyOiB3YXJuaW5nOgrDouKCrMucZXJyw6LigqzihKIg
+bWF5IGJlIHVzZWQgdW5pbml0aWFsaXplZCBpbiB0aGlzIGZ1bmN0aW9uCiAgQ0MgW01dICAvcm9v
+dC9EZXNrdG9wL2Fsc2EtZHJpdmVyLXVuc3RhYmxlL3BjaS9jdHhmaS9jdHZtZW0ubwogLi4uLi4u
+Li4uLgogIENDIFtNXSAgL3Jvb3QvRGVza3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZS9wY2kvaGRh
+L2hkYV9lbGQubwpJbiBmaWxlIGluY2x1ZGVkIGZyb20KL3Jvb3QvRGVza3RvcC9hbHNhLWRyaXZl
+ci11bnN0YWJsZS9wY2kvaGRhL2hkYV9lbGQuYzo0Ogovcm9vdC9EZXNrdG9wL2Fsc2EtZHJpdmVy
+LXVuc3RhYmxlL3BjaS9oZGEvLi4vLi4vYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfZWxkLmM6Cklu
+IGZ1bmN0aW9uIMOi4oKsy5xoZG1pX3VwZGF0ZV9lbGTDouKCrOKEojoKL3Jvb3QvRGVza3RvcC9h
+bHNhLWRyaXZlci11bnN0YWJsZS9wY2kvaGRhLy4uLy4uL2Fsc2Eta2VybmVsL3BjaS9oZGEvaGRh
+X2VsZC5jOjI4MToKd2FybmluZzogcGFzc2luZyBhcmd1bWVudCAxIG9mIMOi4oKsy5xnZXRfdW5h
+bGlnbmVkX2xlNjTDouKCrOKEogpkaXNjYXJkcyBxdWFsaWZpZXJzIGZyb20gcG9pbnRlciB0YXJn
+ZXQgdHlwZQovcm9vdC9EZXNrdG9wL2Fsc2EtZHJpdmVyLXVuc3RhYmxlL3BjaS9oZGEvLi4vLi4v
+YWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfZWxkLmM6Mjg0Ogp3YXJuaW5nOiBwYXNzaW5nIGFyZ3Vt
+ZW50IDEgb2Ygw6LigqzLnGdldF91bmFsaWduZWRfbGUxNsOi4oKs4oSiCmRpc2NhcmRzIHF1YWxp
+ZmllcnMgZnJvbSBwb2ludGVyIHRhcmdldCB0eXBlCi9yb290L0Rlc2t0b3AvYWxzYS1kcml2ZXIt
+dW5zdGFibGUvcGNpL2hkYS8uLi8uLi9hbHNhLWtlcm5lbC9wY2kvaGRhL2hkYV9lbGQuYzoyODU6
+Cndhcm5pbmc6IHBhc3NpbmcgYXJndW1lbnQgMSBvZiDDouKCrMucZ2V0X3VuYWxpZ25lZF9sZTE2
+w6LigqzihKIKZGlzY2FyZHMgcXVhbGlmaWVycyBmcm9tIHBvaW50ZXIgdGFyZ2V0IHR5cGUKICBD
+QyBbTV0gIC9yb290L0Rlc2t0b3AvYWxzYS1kcml2ZXItdW5zdGFibGUvcGNpL2hkYS9wYXRjaF9u
+dmhkbWkubwogLi4uLi4uLi4uCiAgQ0MgW01dICAvcm9vdC9EZXNrdG9wL2Fsc2EtZHJpdmVyLXVu
+c3RhYmxlL3BjaS9yaXB0aWRlL3JpcHRpZGUubwovcm9vdC9EZXNrdG9wL2Fsc2EtZHJpdmVyLXVu
+c3RhYmxlL3BjaS9yaXB0aWRlL3JpcHRpZGUuYzogSW4gZnVuY3Rpb24Kw6LigqzLnGFsc2FfY2Fy
+ZF9yaXB0aWRlX2luaXTDouKCrOKEojoKL3Jvb3QvRGVza3RvcC9hbHNhLWRyaXZlci11bnN0YWJs
+ZS9wY2kvcmlwdGlkZS9yaXB0aWRlLmM6MjIwNjogd2FybmluZzoKaWdub3JpbmcgcmV0dXJuIHZh
+bHVlIG9mIMOi4oKsy5xwY2lfcmVnaXN0ZXJfZHJpdmVyw6LigqzihKIsIGRlY2xhcmVkCndpdGgg
+YXR0cmlidXRlIHdhcm5fdW51c2VkX3Jlc3VsdAogIExEIFtNXSAgL3Jvb3QvRGVza3RvcC9hbHNh
+LWRyaXZlci11bnN0YWJsZS9wY2kvcmlwdGlkZS9zbmQtcmlwdGlkZS5vCiAuLi4uLi4uLi4uLgpO
+byBlcnJvcnMgYXQgZW5kOgogIExEIFtNXSAgL3Jvb3QvRGVza3RvcC9hbHNhLWRyaXZlci11bnN0
+YWJsZS91c2IvdXN4Mnkvc25kLXVzYi11c3gyeS5rbwptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9y
+eSBgL3Vzci9zcmMva2VybmVscy8yLjYuMjMuMS00Mi5mYzgteDg2XzY0Jwp1dGlscy9saW5rLW1v
+ZHVsZXMgL3Jvb3QvRGVza3RvcC9hbHNhLWRyaXZlci11bnN0YWJsZQoKQUxTQSBtb2R1bGVzIHdl
+cmUgc3VjY2Vzc2Z1bGx5IGNvbXBpbGVkLgoKW3Jvb3RAbG9jYWxob3N0IGFsc2EtZHJpdmVyLXVu
+c3RhYmxlXSMgCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
