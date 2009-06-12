@@ -1,19 +1,24 @@
-From: Matthias Diehl <matthias-diehl@web.de>
-Subject: x-fi drivers and ati hdmi sound
-Date: Thu, 11 Jun 2009 19:42:24 +0200
-Message-ID: <214091744@web.de>
+From: "Ted T. Logan" <tedtheologian@gmail.com>
+Subject: "ticks" with latest x-fi driver
+Date: Fri, 12 Jun 2009 11:46:14 -0500
+Message-ID: <1244825174.3570.1.camel@localhost.localdomain>
+References: <s5hy70xsl46.wl%tiwai@suse.de> <1223583478.5018.0.camel@home>
+	<s5hbpxt7zui.wl%tiwai@suse.de> <1223619975.4700.2.camel@home>
+	<1244623151.4093.3.camel@localhost.localdomain>
+	<1244623955.6367.0.camel@localhost.localdomain>
+	<s5hljo0mo7i.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fmmailgate04.web.de (fmmailgate04.web.de [217.72.192.242])
-	by alsa0.perex.cz (Postfix) with ESMTP id C5D0A10386F
+Received: from mail-gx0-f217.google.com (mail-gx0-f217.google.com
+	[209.85.217.217])
+	by alsa0.perex.cz (Postfix) with ESMTP id BD8E8103814
 	for <alsa-devel@alsa-project.org>;
-	Thu, 11 Jun 2009 19:42:26 +0200 (CEST)
-Received: from web.de
-	by fmmailgate04.web.de (Postfix) with SMTP id 1FE896158B56
-	for <alsa-devel@alsa-project.org>;
-	Thu, 11 Jun 2009 19:42:26 +0200 (CEST)
+	Fri, 12 Jun 2009 18:46:17 +0200 (CEST)
+Received: by gxk17 with SMTP id 17so3506624gxk.8
+	for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2009 09:46:16 -0700 (PDT)
+In-Reply-To: <s5hljo0mo7i.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,32 +28,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hey Takashi,
+Hello,
 
-i'm really looking forward to you newest x-fi "hack".
-i loaded the file >> ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/sna=
-pshot/alsa-driver-unstable-snapshot.tar.gz << and tried to install it but i=
- think there are problems with my graphics adapter (ati radeon hd 4870) whi=
-ch has a hdmi-soundchip onboard (hda intel).
+I do not have this problem with:
 
-i dont know how to deactivate the hdmi-soundchip on my graphics adapter.  =
+XFiDrv_Linux_Public_US_1.00.tar.gz
 
+but I tried the latest driver from:
 
-lspci | grep audio shows me when installing your driver next to the hdmi dr=
-iver:
-01:00.1 Audio device: ATI Technologies Inc HD48x0 audio
-05:00.0 Multimedia audio controller: Creative Labs SB X-Fi
+ftp://kernel.org/pub/linux/kernel/people/tiwai/snapshot/
 
-but there's no device to select in the audio options.
+and I get a "tick" every second or two during playback with ANY
+application.
 
-do you have any idea or help for me?
+Fedora 11.  sb0670 emu20k1.
 
-kind regards from germany,
-
-matthias
-____________________________________________________________
-Text: GRATIS f=FCr alle WEB.DE-Nutzer: Die maxdome Movie-FLAT!
-Jetzt freischalten unter http://movieflat.web.de
+What to do?
