@@ -1,16 +1,32 @@
-From: Robert Schweikert <rschweikert@novell.com>
-Subject: LSB inclusion of ALSA
-Date: Fri, 12 Jun 2009 13:56:32 -0400
-Message-ID: <4A3296D0.4080701@novell.com>
+From: Gustavo Maciel Dias Vieira <gustavo@sagui.org>
+Subject: Re: No jack sense on Intel 82801I /	IDT	92HD71B7X	in	a
+	HP	dv4
+Date: Fri, 12 Jun 2009 15:01:09 -0300
+Message-ID: <1244829669.3187.3.camel@hamlet.sagui>
+References: <1239977111.3337.18.camel@nick-beta.sagui>
+	<s5hfxg7uysp.wl%tiwai@suse.de>
+	<1239985116.6105.2.camel@nick-beta.sagui>
+	<s5hzleftflh.wl%tiwai@suse.de> <s5htz4ntf6i.wl%tiwai@suse.de>
+	<1239990142.3580.8.camel@nick-beta.sagui>
+	<s5h7i1iqqy8.wl%tiwai@suse.de>
+	<1240101395.3333.9.camel@nick-beta.sagui>
+	<s5hskk3og7f.wl%tiwai@suse.de>
+	<1240945884.3559.2.camel@nick-beta.sagui>
+	<s5hbpqgq81y.wl%tiwai@suse.de>
+	<1243962611.3296.11.camel@hamlet.sagui>
+	<1244224121.3128.9.camel@hamlet.sagui> <s5hy6s6cvvp.wl%tiwai@suse.de>
+	<1244232805.3128.24.camel@hamlet.sagui> <s5hiqj9zqb0.wl%tiwai@suse.de>
+	<1244743072.2586.5.camel@nick-beta.sagui>
+	<s5hljnyfu55.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from victor.provo.novell.com (victor.provo.novell.com
-	[137.65.250.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6C7101037EE
+Received: from horatio.sagui.org (horatio.sagui.org [69.12.222.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 36189103813
 	for <alsa-devel@alsa-project.org>;
-	Fri, 12 Jun 2009 19:56:50 +0200 (CEST)
+	Fri, 12 Jun 2009 20:01:17 +0200 (CEST)
+In-Reply-To: <s5hljnyfu55.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,60 +36,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-Currently ALSA is a trial use module for LSB
-(http://www.linuxfoundation.org/collaborate/workgroups/lsb) 4.0 and it
-is the intention to make ALSA mandatory with the LSB 4.1 release
-targeted for Q1 2010. One of the requirements of a mandatory module is
-the existence of a test suite for the module that covers a good chunk of
-the interfaces provided by the LSB spec. An initial exploratory look at
-the existing test cases showed that tests appear to be tied to hardware
-drivers and are interactive.
-
-Is this initial impression correct?
-
->From an LSB testing perspective, interface testing is  very important;
-i.e. I call the interface with the arguments required and I get the
-expected result back. Further the tests need to run in an automated
-fashion and produce a certain output (automated processing). The output
-can be created by retrofitting existing tests or by specifically writing
-tests within the LSB test framework.
-
-IMHO it would be best to have tests that are useful to both, the project
-and the LSB and in a best case scenario we wouldn't have to start over
-as the existing tests already cover a good part of the interface.
-
-With this as background there are a few questions that have been raised
-while discussing this during LSB workgroup sessions.
-
-1.) Is there interest from the community side to participate in this
-effort and accept patches?
-2.) Is it reasonable to expect that the existing tests can be used in
-some way by using a dummy sound device or a sound loop device to verify
-output?
-One requirement for LSB testing is that a test has only two states, pass
-or fail, and a recovery or try again mode is not supported. Further a
-test must pass or fail.
-3.) Would the community be more comfortable if this is an effort that
-creates new tests separate from the existing HW focused tests?
-4.) Is anyone interested in helping with this effort, writing tests,
-answering questions about ALSA for those not familiar with the interface
-and or sound in general?
-
-Comments, thoughts, etc. are much appreciated.
-
-Thanks,
-Robert
-
--- 
-Robert Schweikert                           MAY THE SOURCE BE WITH YOU
-Software Engineer Consultant                          LINUX
-rschweikert@novell.com 
-781-464-8147
-
-Novell
-Making IT Work As One
+RW0gUXVpLCAyMDA5LTA2LTExIMOgcyAyMToyNyArMDIwMCwgVGFrYXNoaSBJd2FpIGVzY3JldmV1
+Ogo+ID4gSW50ZXJydXB0IDIyIHN0YXlzIGFsd2F5cyB3aXRoIDAuIEV2ZW4gd2hlbiBjb3JyZWN0
+bHkgcGxheWluZwo+IHNvdW5kcy4gSQo+ID4gdGVzdGVkIHRoaXMgb24gYW5vdGhlciBtYWNoaW5l
+IHdpdGggSEQtQXVkaW8sIGFuZCB0aGUgZXF1aXZhbGVudAo+ID4gaW50ZXJydXB0IGluY3JlYXNl
+ZCB3aGVuIHBsYXlpbmcuIEFsc28sIGluIHRoaXMgb3RoZXIgc3lzdGVtCj4gaW50ZXJydXB0IDAK
+PiA+ICh0aW1lcikgaXMgaGFyZGx5IGlzc3VlZCwgYnV0IGluIHRoaXMgbGFwdG9wIGl0IGlzIGZp
+cmluZyBhbGwgdGhlCj4gdGltZS4KPiA+IAo+ID4gSG93IGNhbiB0aGUgZHJpdmVyIGJlIHdvcmtp
+bmcgd2l0aG91dCBpbnRlcnJ1cHRzPwo+IAo+IFRoYXQncyB3ZWlyZC4KPiAKPiBEaWQgeW91IHRy
+eSBlbmFibGVfbXNpPTEgbW9kdWxlIG9wdGlvbiwgQlRXPwoKSnVzdCB0cmllZCBub3cuIFRoZSBp
+bnRlcnJ1cHRzIHN0YXJ0ZWQgZmxvd2luZyBhbmQsIHRhZGEsIGphY2sgc2Vuc2UKd29ya3MhCgpU
+aGFua3MsIFRha2FzaGksIHRoYXQgc29sdmVzIGl0IGZvciBtZS4gSXMgdGhlcmUgYSB3YXkgdG8g
+YXV0b21hdGUgdGhpcwppbiB0aGUgZHJpdmVyIGZvciB0aGUgb3RoZXIgbGVzcyB0ZWNobmljYWxs
+eSBpbmNsaW5lZCB1c2Vycz8KCkFicmHDp29zLApHdXN0YXZvCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
