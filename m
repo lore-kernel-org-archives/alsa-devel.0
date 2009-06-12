@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Zoom2: Add machine driver for Zoom2
-	board
-Date: Fri, 12 Jun 2009 21:58:06 +0100
-Message-ID: <20090612205805.GA7125@sirena.org.uk>
-References: <2C7D3DF36ADFFC479B44490D912B616705F6CFA515@dlee07.ent.ti.com>
+From: louis@museresearch.com
+Subject: Timing of linked devices
+Date: Fri, 12 Jun 2009 15:52:03 -0700 (PDT)
+Message-ID: <49237.65.105.226.50.1244847123.squirrel@master.museresearch.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id B0A682433F
+Received: from master.museresearch.com (master.museresearch.com [69.59.28.231])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7E20E243FF
 	for <alsa-devel@alsa-project.org>;
-	Fri, 12 Jun 2009 22:58:13 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <2C7D3DF36ADFFC479B44490D912B616705F6CFA515@dlee07.ent.ti.com>
+	Sat, 13 Jun 2009 00:52:11 +0200 (CEST)
+Received: from localhost ([127.0.0.1] helo=master.museresearch.com)
+	by master.museresearch.com with esmtpa (Exim 4.69)
+	(envelope-from <louis@museresearch.com>) id 1MFFbP-00054y-Hh
+	for alsa-devel@alsa-project.org; Fri, 12 Jun 2009 15:52:03 -0700
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,13 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Lopez Cruz, Misael" <x0052729@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 11, 2009 at 05:35:27PM -0500, Lopez Cruz, Misael wrote:
-> Add support for Zoom2 board. Zoom2 machine driver
-> connects both codec DAIs (audio and voice) to omap3
-> McBSP ports in the following way:
+I am developing an application which opens both inputs and outputs for
+digital and s/pdif (so, 4 devices).  The sync IDs all match.  However,
+under certain conditions, I am receiving partial buffers from the input. 
+So, I have a few questions:
 
-Applied, thanks.
+Does linking input and output devices, from a programmer's perspective,
+mean that input is ready at precisely the same time that the device is
+ready to output a buffer?  Or, does it only mean that the ins and outs
+will be synchronized for each given buffer?  More to the point, will
+blocking on a write also accurately tell the program when the device is
+ready for a read (including under non-ideal circumstances like after a
+bunch of xruns)?
+
+And, in the case that I am doing a non-blocking read (pcm_read) from a
+buffer which is not yet ready, should I receive an outdated buffer, a
+blank buffer, or one which has both partially new and  partially old data?
+
+I am using ALSA 1.0.15 and the ICE1724 driver.
+
+Thanks in advance for your help!
+- Louis
