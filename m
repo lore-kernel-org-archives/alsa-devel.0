@@ -1,18 +1,19 @@
-From: Hector Martin <hector@marcansoft.com>
-Subject: Re: Request for Device ID addition : 6935G
-Date: Sat, 13 Jun 2009 18:11:15 +0200
-Message-ID: <4A33CFA3.7080402@marcansoft.com>
-References: <4b8c423b0906121924u757d590ay49e09f3fea3c99e@mail.gmail.com>
-	<s5hfxe4lf4l.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC PATCH] ASoC: au1x: platform
+	driver	restructuring
+Date: Sat, 13 Jun 2009 18:44:25 +0100
+Message-ID: <20090613174424.GA19484@sirena.org.uk>
+References: <4A33BEF0.6020602@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.marcansoft.com (marcansoft.com [80.68.93.119])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2295024591
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 79D1D245EC
 	for <alsa-devel@alsa-project.org>;
-	Sat, 13 Jun 2009 18:11:20 +0200 (CEST)
-In-Reply-To: <s5hfxe4lf4l.wl%tiwai@suse.de>
+	Sat, 13 Jun 2009 19:44:33 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4A33BEF0.6020602@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,38 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Karthik Ramgopal <applefreakpeeps@gmail.com>, alsa-devel@alsa-project.org
+To: Manuel Lauss <manuel.lauss@googlemail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Hector, does it work on your machine?  If yes, there should be a
-> slight difference between 6935G and 8930G...
-Yes, the DMIC works fine here (in mono mode).
+On Sat, Jun 13, 2009 at 05:00:00PM +0200, Manuel Lauss wrote:
 
-Karthik: please look in sound/pci/hda/patch_realtek.c and locate the
-alc889_acer_aspire_8930g_verbs array. At the end, where it talks about
-the "DMIC fix", find the last verb:
+> -static int au1xpsc_ac97_suspend(struct snd_soc_dai *dai)
+> +static int au1xpsc_ac97_suspend(struct platform_device *pdev, pm_message_t m)
+>  {
+>  	/* save interesting registers and disable PSC */
+>  	au1xpsc_ac97_workdata->pm[0] =
+> @@ -328,7 +366,7 @@ static int au1xpsc_ac97_suspend(struct snd_soc_dai *dai)
+>  	return 0;
+>  }
 
-{0x20, AC_VERB_SET_PROC_COEF, 0x0003},
+I'm don't think this is a good idea - it will remove any sequencing
+between the suspend of the various ASoC device components, meaning that
+the AC97 controller could suspend before the rest of ASoC.  This would
+break if ASoC then comes along and tries to suspend the CODEC over an
+AC97 link which has been disabled.  With I2S it's probably less serious
+but there's a risk of audio issues if the hardware does something dodgy
+when suspending or if the SoC is the clock master and the CODEC gets
+upset about having clocks stopping when it's using them.
 
-And change the value from 0x0003 to 0x0001 and see what that does.
+In order to do this properly I have a plan to add a calls into the ASoC
+core that the individual drivers can call when they get suspend and
+resume calls.  The core will suspend the entire ASoC device when it gets
+the first suspend call and will wait for all the suspended devices to
+resume before it resumes the ASoC device.  I've not actually added those
+calls yet, though.  I can add stubs quickly enough, though - I should
+probably do that just now so that we don't need a separate driver
+conversion step.
 
-If this works and you get some audio, make a stereo recording. You want
-both channels to be of equal volume.
-
-I suspect you have a mono mic on the left channel. I have a stereo
-sum/difference mic (WTF) with sum on the right channel, so I tweaked the
-setting to replicate the right channel to both. This would kill your
-audio if your microphone is just a mono one on the left channel. Setting
-0x0001 should get you standard stereo audio as it comes from the mic(s).
-I think setting 0x0002 should get you what you want (left channel
-replicated to both channels). If not, try setting 0x0000.
-
-Takashi: if I'm right, we'll need two model entries instead of one and
-we should probably split off the verb array into three (base, stereo
-sum/dif mic fix, mono mic fix).
-
--- 
-Hector Martin (hector@marcansoft.com)
-Public Key: http://www.marcansoft.com/marcan.asc
+One other thing I'd say is that before registering the DAIs you should
+assign the dev field in the DAI structure to be the struct device that
+was used to probe the DAI.
