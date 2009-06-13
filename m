@@ -1,9 +1,8 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [Uclinux-dist-devel] [PATCH 2/5] ASoC
-	codec:	SSM2602: assign last substream to the master when
-	shutting down
-Date: Sat, 13 Jun 2009 11:44:36 +0100
-Message-ID: <20090613104435.GA4795@sirena.org.uk>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Subject: Re: [Uclinux-dist-devel] [PATCH 2/5] ASoC codec:
+	SSM2602: assign last substream to the master when shutting down
+Date: Sat, 13 Jun 2009 06:47:17 -0400
+Message-ID: <8bd0f97a0906130347x74973be2nf5c26641a09c5e24@mail.gmail.com>
 References: <1243916337-29953-1-git-send-email-vapier@gentoo.org>
 	<1243916337-29953-2-git-send-email-vapier@gentoo.org>
 	<20090603105223.GE11507@sirena.org.uk>
@@ -12,16 +11,19 @@ References: <1243916337-29953-1-git-send-email-vapier@gentoo.org>
 	<8bd0f97a0906031826j647efa0bs1ffb6492cfd0ccd8@mail.gmail.com>
 	<20090604085921.GD6983@rakim.wolfsonmicro.main>
 	<ea2442770906130237s72ff15b3n1168eb3392231149@mail.gmail.com>
+	<20090613104435.GA4795@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9211F24426
+Received: from mail-gx0-f217.google.com (mail-gx0-f217.google.com
+	[209.85.217.217])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA00424429
 	for <alsa-devel@alsa-project.org>;
-	Sat, 13 Jun 2009 12:44:45 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <ea2442770906130237s72ff15b3n1168eb3392231149@mail.gmail.com>
+	Sat, 13 Jun 2009 12:47:37 +0200 (CEST)
+Received: by gxk17 with SMTP id 17so4251256gxk.8
+	for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2009 03:47:37 -0700 (PDT)
+In-Reply-To: <20090613104435.GA4795@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,24 +33,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Karl Beldan <karl.beldan@gmail.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Cliff Cai <cliff.cai@analog.com>, Mike Frysinger <vapier.adi@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Karl Beldan <karl.beldan@gmail.com>, uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Cliff Cai <cliff.cai@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jun 13, 2009 at 11:37:33AM +0200, Karl Beldan wrote:
-
-> This - f692fce - should not have reached upstream, how come ?
-
-The entire discussion of the patch occurred in response to my saying I'd
-applied it, with most of the discussion being a couple of days later
-after it'd have already gone into ALSA.  Since nobody asked to have it
-reverted or indicated that there was any actual problem other than a
-repitition of code it wasn't reverted.  For the most part repitition
-in ASoC would just be a no-op and therefore a code quality rather
-than behavioural issue.  As I indicated when accepting the patch I've
-lowered my standards there for blackfin due to the past issues with
-iteration speed (which Mike has already said will be being addressed
-now).
-
-I've now reverted the shutdown hunk of the patch where duplication will
-actually introduce a bug.
+T24gU2F0LCBKdW4gMTMsIDIwMDkgYXQgMDY6NDQsIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gU2F0
+LCBKdW4gMTMsIDIwMDkgYXQgMTE6Mzc6MzNBTSArMDIwMCwgS2FybCBCZWxkYW4gd3JvdGU6Cj4+
+IFRoaXMgLSBmNjkyZmNlIC0gc2hvdWxkIG5vdCBoYXZlIHJlYWNoZWQgdXBzdHJlYW0sIGhvdyBj
+b21lID8KPgo+IFRoZSBlbnRpcmUgZGlzY3Vzc2lvbiBvZiB0aGUgcGF0Y2ggb2NjdXJyZWQgaW4g
+cmVzcG9uc2UgdG8gbXkgc2F5aW5nIEknZAo+IGFwcGxpZWQgaXQsIHdpdGggbW9zdCBvZiB0aGUg
+ZGlzY3Vzc2lvbiBiZWluZyBhIGNvdXBsZSBvZiBkYXlzIGxhdGVyCj4gYWZ0ZXIgaXQnZCBoYXZl
+IGFscmVhZHkgZ29uZSBpbnRvIEFMU0EuIMKgU2luY2Ugbm9ib2R5IGFza2VkIHRvIGhhdmUgaXQK
+PiByZXZlcnRlZCBvciBpbmRpY2F0ZWQgdGhhdCB0aGVyZSB3YXMgYW55IGFjdHVhbCBwcm9ibGVt
+IG90aGVyIHRoYW4gYQo+IHJlcGl0aXRpb24gb2YgY29kZSBpdCB3YXNuJ3QgcmV2ZXJ0ZWQuIMKg
+Rm9yIHRoZSBtb3N0IHBhcnQgcmVwaXRpdGlvbgo+IGluIEFTb0Mgd291bGQganVzdCBiZSBhIG5v
+LW9wIGFuZCB0aGVyZWZvcmUgYSBjb2RlIHF1YWxpdHkgcmF0aGVyCj4gdGhhbiBiZWhhdmlvdXJh
+bCBpc3N1ZS4gwqBBcyBJIGluZGljYXRlZCB3aGVuIGFjY2VwdGluZyB0aGUgcGF0Y2ggSSd2ZQo+
+IGxvd2VyZWQgbXkgc3RhbmRhcmRzIHRoZXJlIGZvciBibGFja2ZpbiBkdWUgdG8gdGhlIHBhc3Qg
+aXNzdWVzIHdpdGgKPiBpdGVyYXRpb24gc3BlZWQgKHdoaWNoIE1pa2UgaGFzIGFscmVhZHkgc2Fp
+ZCB3aWxsIGJlIGJlaW5nIGFkZHJlc3NlZAo+IG5vdykuCj4KPiBJJ3ZlIG5vdyByZXZlcnRlZCB0
+aGUgc2h1dGRvd24gaHVuayBvZiB0aGUgcGF0Y2ggd2hlcmUgZHVwbGljYXRpb24gd2lsbAo+IGFj
+dHVhbGx5IGludHJvZHVjZSBhIGJ1Zy4KCmkgdGhpbmsgQ2xpZmYgdmVyaWZpZWQgdGhhdCB0aGUg
+b3RoZXIgcGFydCBvZiB0aGUgY2hhbmdlIHdhcyBubyBsb25nZXIKbmVlZGVkIGluIGhpcyB0ZXN0
+aW5nLCBzbyByZXZlcnRpbmcgdGhlIHdob2xlIHBhdGNoIGlzIGZpbmUuICB3ZSd2ZQpkb25lIHRo
+YXQgaW4gdGhlIEJsYWNrZmluIHRyZWUuCi1taWtlCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
+bGlzdGluZm8vYWxzYS1kZXZlbAo=
