@@ -1,20 +1,27 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC PATCH] ASoC: au1x: platform
-	driver	restructuring
-Date: Sat, 13 Jun 2009 21:43:16 +0100
-Message-ID: <20090613204315.GA3665@sirena.org.uk>
-References: <4A33BEF0.6020602@gmail.com> <20090613174424.GA19484@sirena.org.uk>
-	<f861ec6f0906131317tc0fff56k173e0bd17765b500@mail.gmail.com>
+From: =?ISO-8859-1?Q?Emilio_L=F3pez?= <buhitoescolar@gmail.com>
+Subject: Re: Regarding Sound on Acer Aspire 6935G
+Date: Sat, 13 Jun 2009 23:15:31 -0300
+Message-ID: <d54969c50906131915x22c8f30el46ee51faf2fafe20@mail.gmail.com>
+References: <4b8c423b0905152051w7443e1b4u4080514a560fbb6c@mail.gmail.com>
+	<d54969c50905240951v2fd01b97j79d0c618bfdd4578@mail.gmail.com>
+	<d54969c50905271227y76eefde2x2e784cd391cd6729@mail.gmail.com>
+	<s5htz361d3i.wl%tiwai@suse.de> <s5hhbz61b8v.wl%tiwai@suse.de>
+	<d54969c50905291035v19ab019fsdf455a6410b827de@mail.gmail.com>
+	<d54969c50906052020m1202230eveab8ecc18c4b06ae@mail.gmail.com>
+	<s5hhbytzq8z.wl%tiwai@suse.de>
+	<d54969c50906061058g69f7c856v8fde1d48e7ec7f79@mail.gmail.com>
+	<s5hiqj51xy3.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id EA21B243B8
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id A44712453A
 	for <alsa-devel@alsa-project.org>;
-	Sat, 13 Jun 2009 22:43:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <f861ec6f0906131317tc0fff56k173e0bd17765b500@mail.gmail.com>
+	Sun, 14 Jun 2009 04:15:33 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 9so1553011qwj.56
+	for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2009 19:15:32 -0700 (PDT)
+In-Reply-To: <s5hiqj51xy3.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,115 +31,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Manuel Lauss <manuel.lauss@googlemail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Karthik Ramgopal <applefreakpeeps@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jun 13, 2009 at 10:17:15PM +0200, Manuel Lauss wrote:
-> On Sat, Jun 13, 2009 at 7:44 PM, Mark
+2009/6/9 Takashi Iwai <tiwai@suse.de>
 
-> > I'm don't think this is a good idea - it will remove any sequencing
-> > between the suspend of the various ASoC device components, meaning that
-> > the AC97 controller could suspend before the rest of ASoC. =A0This would
+> At Sat, 6 Jun 2009 14:58:47 -0300,
+> Emilio L=F3pez wrote:
+> >
+> > Just tried with model acer-aspire-8930g on 1.0.20, it works the same as
+> > acer-aspire-4930g. Mic works, the "tuba" thing doesn't. Googling a bit I
+> found
+> > that acer-aspire-8930g is for ALC889, but mine is ALC888.
+> >
+> > I attach alsa-info.txt for this new model, just in case it's useful.
+>
+> OK, just to make things clear again:
+> you got the bass output controlled via "Side" volume when you pass
+> model=3Dacer.  Now the driver takes model=3Dacer-aspire-4930g as default,
+> and the bass doesn't work even if you change "Side" volume.
+>
+> Right?
 
-> Reverted back,
 
-OK, when you do resubmit you might want to check for the patch below
-should make it in shortly:
+Right
 
->From 831dc0f10f7b2a4856094ff160c018bf19f77527 Mon Sep 17 00:00:00 2001
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Date: Sat, 13 Jun 2009 19:55:02 +0100
-Subject: [PATCH] ASoC: Add stub suspend and resume calls for ASoC subdevices
 
-Now that ASoC subdevices can be regular devices they can have normal
-suspend and resume calls from their buses.  However, suspending them
-individually is not desirable since this can lead to problems such as
-pops and clicks from devices being suspended with their signals being
-amplified or clocks being stopped suddenly.
+>
+>
+> As far as I see, the connection of "Side" volume, i.e. the pin widget
+> 0x0f, is also done for 4930g.  So, there should be anything else.
+>
+> How about the patch below?  If it still doesn't work, please give both
+> the working (model=3Dacer) and non-working (w/o model), on both "Side"
+> is set to the same level.
 
-This will be resolved by having the normal device model suspend and
-resume calls call into ASoC which will suspend the entire card while any
-of its components are suspended.  At present this is not yet implemented
-but in order to aid the transition of drivers to the standard device
-model this patch adds API calls for the notifications.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- include/sound/soc.h  |    5 +++++
- sound/soc/soc-core.c |   39 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 44 insertions(+), 0 deletions(-)
+The patch completely muted my system - I don't have any playback working
+(didn't test headphones though)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 5297ba7..e6704c0 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -192,6 +192,11 @@ void snd_soc_unregister_platform(struct snd_soc_platfo=
-rm *platform);
- int snd_soc_register_codec(struct snd_soc_codec *codec);
- void snd_soc_unregister_codec(struct snd_soc_codec *codec);
- =
+Here is the alsa-infos you requested:
+model=3Dacer, working "side":
+http://files.getdropbox.com/u/553461/alsainfo-acer.txt
+model=3Dacer-aspire-4930g, with your patch applied (no playback):
+http://files.getdropbox.com/u/553461/alsainfo-acer-aspire-4930g%2Bpatch.txt
+model=3Dacer-aspire-4930g, unpatched build, "side" not working:
+http://files.getdropbox.com/u/553461/alsainfo-acer-aspire-4930g.txt
 
-+#ifdef CONFIG_PM
-+int snd_soc_suspend_device(struct device *dev);
-+int snd_soc_resume_device(struct device *dev);
-+#endif
-+
- /* pcm <-> DAI connect */
- void snd_soc_free_pcms(struct snd_soc_device *socdev);
- int snd_soc_new_pcms(struct snd_soc_device *socdev, int idx, const char *x=
-id);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e1a920c..4414117 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -788,6 +788,45 @@ static int soc_resume(struct platform_device *pdev)
- 	return 0;
- }
- =
+Thanks!
 
-+/**
-+ * snd_soc_suspend_device: Notify core of device suspend
-+ *
-+ * @dev: Device being suspended.
-+ *
-+ * In order to ensure that the entire audio subsystem is suspended in a
-+ * coordinated fashion ASoC devices should suspend themselves when
-+ * called by ASoC.  When the standard kernel suspend process asks the
-+ * device to suspend it should call this function to initiate a suspend
-+ * of the entire ASoC card.
-+ *
-+ * \note Currently this function is stubbed out.
-+ */
-+int snd_soc_suspend_device(struct device *dev)
-+{
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_suspend_device);
-+
-+/**
-+ * snd_soc_resume_device: Notify core of device resume
-+ *
-+ * @dev: Device being resumed.
-+ *
-+ * In order to ensure that the entire audio subsystem is resumed in a
-+ * coordinated fashion ASoC devices should resume themselves when called
-+ * by ASoC.  When the standard kernel resume process asks the device
-+ * to resume it should call this function.  Once all the components of
-+ * the card have notified that they are ready to be resumed the card
-+ * will be resumed.
-+ *
-+ * \note Currently this function is stubbed out.
-+ */
-+int snd_soc_resume_device(struct device *dev)
-+{
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_resume_device);
-+
- #else
- #define soc_suspend	NULL
- #define soc_resume	NULL
--- =
 
-1.6.3.1
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 337d2a5..372a02a 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -1467,6 +1467,9 @@ static struct hda_verb
+> alc888_acer_aspire_4930g_verbs[] =3D {
+>        {0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
+>        {0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
+>        {0x15, AC_VERB_SET_CONNECT_SEL, 0x00},
+> +        /* eanable EAPD? */
+> +       {0x20, AC_VERB_SET_COEF_INDEX, 0x07},
+> +       {0x20, AC_VERB_SET_PROC_COEF, 0x3050},
+>        { }
+>  };
+>
+>
+Emilio
