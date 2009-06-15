@@ -1,26 +1,27 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH,
-	RFC 3/3] pxa/magician: add I2C board info	and platform data for
-	UDA1380
-Date: Mon, 15 Jun 2009 11:26:52 +0100
-Message-ID: <20090615102652.GA13873@rakim.wolfsonmicro.main>
-References: <1244976692-5189-1-git-send-email-philipp.zabel@gmail.com>
-	<1244976692-5189-2-git-send-email-philipp.zabel@gmail.com>
-	<1244976692-5189-3-git-send-email-philipp.zabel@gmail.com>
-	<1244976692-5189-4-git-send-email-philipp.zabel@gmail.com>
-	<1244976692-5189-5-git-send-email-philipp.zabel@gmail.com>
-	<20090614150023.GC4482@sirena.org.uk>
-	<f17812d70906141906p4e5a2e28j2f95dcd8f0455660@mail.gmail.com>
+From: Joonyoung Shim <jy0922.shim@samsung.com>
+Subject: Re: ASoC: About amp driver
+Date: Mon, 15 Jun 2009 20:15:53 +0900
+Message-ID: <4A362D69.2010609@samsung.com>
+References: <4A35FE49.4090805@samsung.com>
+	<20090615090756.GA6106@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9A69C1037FD
+Received: from mailout5.samsung.com (mailout5.samsung.com [203.254.224.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1835224441
 	for <alsa-devel@alsa-project.org>;
-	Mon, 15 Jun 2009 12:26:53 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <f17812d70906141906p4e5a2e28j2f95dcd8f0455660@mail.gmail.com>
+	Mon, 15 Jun 2009 13:16:06 +0200 (CEST)
+Received: from epmmp1 (mailout5.samsung.com [203.254.224.35])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KLA007US1YHJS@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Mon, 15 Jun 2009 20:15:53 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KLA00FK31YHGL@mmp1.samsung.com> for
+	alsa-devel@alsa-project.org; Mon, 15 Jun 2009 20:15:53 +0900 (KST)
+In-reply-to: <20090615090756.GA6106@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,18 +31,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric Miao <eric.y.miao@gmail.com>
-Cc: alsa-devel@alsa-project.org, Philipp Zabel <philipp.zabel@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 15, 2009 at 10:06:21AM +0800, Eric Miao wrote:
+On 6/15/2009 6:07 PM, Mark Brown wrote:
+> On Mon, Jun 15, 2009 at 04:54:49PM +0900, Joonyoung Shim wrote:
+> 
+>> I have one question. Currently, the amp driver of ASoC is included in machine
+>> driver. (ex. neo1973_wm8753 machine driver)
+>> I want to use the same amp driver in more than one machine driver, but then the
+>> same amp driver code exists double in each machine driver.
+> 
+>> So, how about spliting between the amp driver and the machine driver? and Is it
+>> possible?
+> 
+> Put the generic bits of the amp driver in sound/soc/codecs (there won't
+> be much).  At the minute you'll need to glue it in in via the machine
+> driver in the same way that OpenMoko does, there's not really any
+> support for multiple devices in the analouge part of the audio
+> subsystem.  This is on my radar to deal with, I have some systems where
+> it is relevant, but it's not there yet.
 
-> Normally, I'll queue such patch in my pending branch and will be pushed
-> out until the other patch(es) with dependency has been merged upstream.
+This is heard me there is no way to split the amp driver from machine driver
+at the minute.
 
-That's fine for me.
+The lm4857 amp driver is a complete i2c driver seperated in neo1973_wm8753.c.
+It makes me confused that two complete drivers exist in a same file.
+The controls of the lm4857 amp driver is depended only by neo1973 machine
+driver because of registration through init() of snd_soc_dai_link.
+I considered following some modification to solve this dependency.
+For example, the amp_init field is added in snd_soc_dai_link struct and the
+machine driver assigns the init function of amp driver in amp_init field of
+dai_link, and snd_soc_init_card() calls amp_init() of dai_link as init() call
+in soc-core.
 
-Philipp, if you want to avoid bisection issues I'd suggest making the
-first patch shuffle the registration code into the ASoC machine driver
-then have your PXA patch shuffle that into arch/arm.  I did something
-similar for wm8731 when converting that.
+Is this wrong solution?
+
+Thank you for your reply.
