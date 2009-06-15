@@ -1,19 +1,20 @@
-From: WILMES Andreas <administrator@webspace.ms>
-Subject: Re: [Alsa-user] Problems with Soundblaster X-Fi
-Date: Mon, 15 Jun 2009 11:08:53 +0200
-Message-ID: <4A360FA5.6010604@webspace.ms>
-References: <4A35683E.70900@gmx.de> <4A3575BE.7090206@webspace.ms>
-	<4A360322.7060703@gmx.de>
+From: "chaithrika" <chaithrika@ti.com>
+Subject: Re: [PATCH v4 3/4] ARM: DaVinci: ASoC: Add mcasp
+	support for DM646x
+Date: Mon, 15 Jun 2009 14:40:24 +0530
+Message-ID: <01ac01c9ed99$1df78630$59e69290$@com>
+References: <1244197720-31006-1-git-send-email-chaithrika@ti.com>
+	<20090612013107.GA19074@denix.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailrelay006.isp.belgacom.be (mailrelay006.isp.belgacom.be
-	[195.238.6.172])
-	by alsa0.perex.cz (Postfix) with ESMTP id 58073103801
-	for <Alsa-devel@alsa-project.org>;
-	Mon, 15 Jun 2009 11:08:54 +0200 (CEST)
-In-Reply-To: <4A360322.7060703@gmx.de>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id CD311103803
+	for <alsa-devel@alsa-project.org>;
+	Mon, 15 Jun 2009 11:11:17 +0200 (CEST)
+In-Reply-To: <20090612013107.GA19074@denix.org>
+Content-Language: en-us
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,71 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Herrmann <daniel.herrmann1@gmx.de>
-Cc: Alsa-devel@alsa-project.org
+To: 'Denys Dmytriyenko' <denis@denix.org>
+Cc: alsa-devel@alsa-project.org, 'Pavel Kiryukhin' <pkiryukhin@ru.mvista.com>, davinci-linux-open-source@linux.davincidsp.com, 'Naresh Medisetty' <naresh@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Daniel Herrmann wrote:
-> WILMES Andreas schrieb:
->> Daniel Herrmann wrote:
->>  
->>> Hey all,
->>>
->>> i tried out the new devel-snapshot including alsa-support for my 
->>> Soundblaster x-Fi card.
->>>
->>> Installed it via ./configure; make; make install and rebooted.
->>>
->>> The driver didnt load at all.
->>>
->>> Trying to load the driver manually brings up the following message:
->>>
->>>    
->>>> modprobe snd-ctxfi
->>>>       
->>> FATAL: Error inserting snd_ctxfi 
->>> (/lib/modules/2.6.28-11-generic/kernel/sound/pci/ctxfi/snd-ctxfi.ko): 
->>> Unknown symbol in module, or unknown parameter
->>>
->>>    
->>>> dmesg shows the following:
->>>>       
->>> [ 2146.563073] snd_ctxfi: disagrees about version of symbol snd_ctl_add
->>> [ 2146.563081] snd_ctxfi: Unknown symbol snd_ctl_add
->>> [ 2146.563291] snd_ctxfi: disagrees about version of symbol snd_pcm_new
->>> [ 2146.563295] snd_ctxfi: Unknown symbol snd_pcm_new
->>> [ 2146.563482] snd_ctxfi: disagrees about version of symbol 
->>> snd_card_register
->>>
->>> [...] and so on, about 60 lines
->>>
->>> [ 3198.031060] snd_ctxfi: disagrees about version of symbol 
->>> snd_pcm_period_elapsed
->>> [ 3198.031063] snd_ctxfi: Unknown symbol snd_pcm_period_elapsed
->>>
->>>    
->>>> lspci | grep -i audio
->>>>       
->>> 00:0a.0 Multimedia audio controller: Creative Labs SB X-Fi
->>>
->>> Currently using Ubuntu 9.04 Jaunty with the current 
->>> 2.6.28-11-generic kernel
->>>
->>> Maybe anyone has an idea, why i cant install the driver?
->>> It worked for me before, but unfortunatly i had to reinstall ubuntu 
->>> after getting a weird dependeny problem in apt.
->>> Not shure why it doesn't do so now...
->>>
->>> Thanks in advance for your help and thanks for the great work you do!
->>>
->>>     
->> I had the same error. Then I rebooted and the error disappeared. Hope 
->> that will help.
->>   
-> Hm, i rebooted more than once - same error.
->
-> Daniel
->
-I deleted /usr/include/asm and I symlinked it to 
-/usr/src/linux-headers-2.6.28-11/include/asm-generic and I did a 
-recompile. After rebooting then the error disappeared.
+On Fri, Jun 12, 2009 at 07:01:07, Denys Dmytriyenko wrote:
+> Chaithrika,
+> 
+> On Fri, Jun 05, 2009 at 06:28:40AM -0400, Chaithrika U S wrote:
+> > Adds driver support for the two instances of McASP on TI's DM646x.
+> 
+> In patch #3 you removed struct evm_snd_platform_data:
+> 
+> > -struct evm_snd_platform_data {
+> > -	int tx_dma_ch;
+> > -	int rx_dma_ch;
+> > -};
+> 
+> That structure is still used in sound/soc/davinci/davinci-evm.c, until you
+fix 
+> it by patch #4:
+> 
+> > -static struct evm_snd_platform_data dm335evm_snd_data = {
+> > -       .tx_dma_ch      = DAVINCI_DMA_ASP1_TX,
+> > -       .rx_dma_ch      = DAVINCI_DMA_ASP1_RX,
+> 
+> That would break git-bisect...
+
+Denys,
+
+These patches have been merged. In the future, I will try to ensure that
+there 
+will not be a break when a patch series is submitted.
+
+> 
+> -- 
+> Denys
+> 
+
+
+Regards, 
+Chaithrika
