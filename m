@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/4] ASoC: Remove odd bit clock ratios for
-	WM8903
-Date: Mon, 15 Jun 2009 10:32:59 +0100
-Message-ID: <1245058382-30813-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/4] ASoC: Revert duplicated code in SSM2602
+	driver
+Date: Mon, 15 Jun 2009 10:33:00 +0100
+Message-ID: <1245058382-30813-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20090615093223.GA30743@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 59BA11037FD
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9824B103801
 	for <alsa-devel@alsa-project.org>;
 	Mon, 15 Jun 2009 11:33:03 +0200 (CEST)
 In-Reply-To: <20090615093223.GA30743@rakim.wolfsonmicro.main>
@@ -23,44 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, stable@kernel.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-These are not supported since performance can not be guaranteed
-when they are in use.
+The Blackfin submission was done as a patch against a different tree
+and contained a duplicate hunk which will cause us to loose track of the
+substream pointers when shutting down.  Remove one of the duplicated
+hunks.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: stable@kernel.org
 ---
- sound/soc/codecs/wm8903.c |    4 ----
+ sound/soc/codecs/ssm2602.c |    4 ----
  1 files changed, 0 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
-index d8a9222..e8d2e3e 100644
---- a/sound/soc/codecs/wm8903.c
-+++ b/sound/soc/codecs/wm8903.c
-@@ -1257,22 +1257,18 @@ static struct {
- 	int div;
- } bclk_divs[] = {
- 	{  10,  0 },
--	{  15,  1 },
- 	{  20,  2 },
- 	{  30,  3 },
- 	{  40,  4 },
- 	{  50,  5 },
--	{  55,  6 },
- 	{  60,  7 },
- 	{  80,  8 },
- 	{ 100,  9 },
--	{ 110, 10 },
- 	{ 120, 11 },
- 	{ 160, 12 },
- 	{ 200, 13 },
- 	{ 220, 14 },
- 	{ 240, 15 },
--	{ 250, 16 },
- 	{ 300, 17 },
- 	{ 320, 18 },
- 	{ 440, 19 },
+diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+index 1fc4c8e..c550750 100644
+--- a/sound/soc/codecs/ssm2602.c
++++ b/sound/soc/codecs/ssm2602.c
+@@ -375,10 +375,6 @@ static void ssm2602_shutdown(struct snd_pcm_substream *substream,
+ 	struct snd_soc_codec *codec = socdev->card->codec;
+ 	struct ssm2602_priv *ssm2602 = codec->private_data;
+ 
+-	if (ssm2602->master_substream == substream)
+-		ssm2602->master_substream = ssm2602->slave_substream;
+-
+-	ssm2602->slave_substream = NULL;
+ 	/* deactivate */
+ 	if (!codec->active)
+ 		ssm2602_write(codec, SSM2602_ACTIVE, 0);
 -- 
 1.6.3.1
