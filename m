@@ -1,27 +1,44 @@
-From: Eric Miao <eric.y.miao@gmail.com>
-Subject: Re: [PATCH,
-	RFC 3/3] pxa/magician: add I2C board info and platform data for
-	UDA1380
-Date: Mon, 15 Jun 2009 10:06:21 +0800
-Message-ID: <f17812d70906141906p4e5a2e28j2f95dcd8f0455660@mail.gmail.com>
-References: <1244976692-5189-1-git-send-email-philipp.zabel@gmail.com>
-	<1244976692-5189-2-git-send-email-philipp.zabel@gmail.com>
-	<1244976692-5189-3-git-send-email-philipp.zabel@gmail.com>
-	<1244976692-5189-4-git-send-email-philipp.zabel@gmail.com>
-	<1244976692-5189-5-git-send-email-philipp.zabel@gmail.com>
-	<20090614150023.GC4482@sirena.org.uk>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [PATCH 26/33] sound/ps3: Fix checkpatch issues
+Date: Mon, 15 Jun 2009 12:22:08 +1000
+Message-ID: <1245032528.19217.20.camel@pasglop>
+References: <1244644748-24211-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-2-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-3-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-4-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-5-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-6-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-7-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-8-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-9-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-10-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-11-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-12-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-13-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-14-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-15-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-16-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-17-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-18-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-19-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-20-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-21-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-22-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-23-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-24-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-25-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-26-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1244644748-24211-27-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<s5hk53kf89j.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
-	[209.85.221.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 84F5D24477
+Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
+	by alsa0.perex.cz (Postfix) with ESMTP id A080E24149
 	for <alsa-devel@alsa-project.org>;
-	Mon, 15 Jun 2009 04:06:24 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so4325113qyk.16
-	for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2009 19:06:21 -0700 (PDT)
-In-Reply-To: <20090614150023.GC4482@sirena.org.uk>
+	Mon, 15 Jun 2009 04:22:15 +0200 (CEST)
+In-Reply-To: <s5hk53kf89j.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,26 +48,161 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Philipp Zabel <philipp.zabel@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, cbe-oss-dev@ozlabs.org, James Bottomley <James.Bottomley@HansenPartnership.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCBKdW4gMTQsIDIwMDkgYXQgMTE6MDAgUE0sIE1hcmsKQnJvd248YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFN1biwgSnVuIDE0LCAyMDA5IGF0
-IDEyOjUxOjMyUE0gKzAyMDAsIFBoaWxpcHAgWmFiZWwgd3JvdGU6Cj4+IENvbmZpZ3VyZXMgSTJD
-IGFkZHJlc3MsIHBvd2VyL3Jlc2V0IEdQSU9zIGFuZCBEQUMgY2xvY2sgZnJvbSBXU1BMTC4KPj4K
-Pj4gU2lnbmVkLW9mZi1ieTogUGhpbGlwcCBaYWJlbCA8cGhpbGlwcC56YWJlbEBnbWFpbC5jb20+
-Cj4KPiBFcmljLCBJIGRvbid0IGtub3cgaG93IHlvdSB3YW50IHRvIGRlYWwgd2l0aCB0aGUgY3Jv
-c3MgdHJlZSBpc3N1ZXMgZm9yCj4gdGhpcyBwYXRjaD8gwqBJdCdzIHBhcnQgb2YgYSBjb252ZXJz
-aW9uIG9mIHRoZSBVREExMzgwIGRyaXZlciB0byB0aGUKPiBzdGFuZGFyZCBkZXZpY2UgbW9kZWwg
-c28gaXQnbGwgZGVwZW5kIG9uIEFTb0MgY2hhbmdlcyB0byB0aGUgVURBMTM4MAo+IGRyaXZlciBi
-dXQgb2J2aW91c2x5IHRoZXJlJ3MgYXJjaC9hcm0vbWFjaC1weGEgY2hhbmdlcyB0b28uCj4KPiBP
-bmUgd2F5IG9mIG1ha2luZyBzdXJlIHRoZXJlIGFyZW4ndCBhbnkgcHJvYmxlbSB3b3VsZCBiZSBm
-b3Igb25lIG9mIHVzCj4gdG8gYXBwbHkgYm90aCBwYXRjaGVzIHRvIGEgYnJhbmNoIHdoaWNoIGNh
-biB0aGVuIGJlIHB1bGxlZCBpbiB0byBib3RoCj4gdGhlIEFTb0MgYW5kIFBYQSB0cmVlcy4gwqBE
-b2VzIHRoYXQgc291bmQgc2FuZT8KCk5vcm1hbGx5LCBJJ2xsIHF1ZXVlIHN1Y2ggcGF0Y2ggaW4g
-bXkgcGVuZGluZyBicmFuY2ggYW5kIHdpbGwgYmUgcHVzaGVkCm91dCB1bnRpbCB0aGUgb3RoZXIg
-cGF0Y2goZXMpIHdpdGggZGVwZW5kZW5jeSBoYXMgYmVlbiBtZXJnZWQgdXBzdHJlYW0uCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Wed, 2009-06-10 at 16:55 +0200, Takashi Iwai wrote:
+> At Wed, 10 Jun 2009 16:39:01 +0200,
+> Geert Uytterhoeven wrote:
+> > 
+> > Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+> > Cc: alsa-devel@alsa-project.org
+> > Cc: Takashi Iwai <tiwai@suse.de>
+> 
+> Thanks, applied these three patches (26,27,28) to sound git tree.
+
+Are you sure they don't depend on the previous patches ? We're already
+having fallover from the SCSI tree merging some of them while I haven't
+merge the previous ones yet...
+
+Geert, there are several "procedural" issues with your series here: In
+addition to the whole thing being submitted too late that is :-)
+
+You don't have the same CC list on all patches. That is fine except that
+you also don't provide merge instructions after the signature, such as
+"this patch depends on XX from this series" etc...
+
+A bunch of them do have such dependencies. In fact, there's even a patch
+that changes something in the block layer (it's not a big deal, just
+adding an accessor, but I still -need- an Ack from Jens to merge it) and
+so I have to block all patches that depend on this one. But then, we
+have indirect dependencies where some patch don't apply because they
+touch the same file that was patched by the patch who had the dependency
+etc...
+
+I ended up stopping mid-way through the series. I'll push some of the
+patches to my -next branch tonight, and the rest once I get the Ack from
+Jens.
+
+I recommend all maintainers (scsi, alsa) just drop these patches for now
+and instead give me Ack's so I can merge them via the powerpc tree along
+with their respective dependencies. James, feel free to do a revert if
+you don't want to rebase, that will break bisect on ps3 for a little
+while, but that's the price Geert will have to pay for his mistakes :-)
+
+Cheers,
+Ben.
+
+> Takashi
+> 
+> > ---
+> >  sound/ppc/snd_ps3.c |   32 +++++++++++++++-----------------
+> >  1 files changed, 15 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/sound/ppc/snd_ps3.c b/sound/ppc/snd_ps3.c
+> > index f361c26..d660b0f 100644
+> > --- a/sound/ppc/snd_ps3.c
+> > +++ b/sound/ppc/snd_ps3.c
+> > @@ -165,8 +165,7 @@ static const struct snd_pcm_hardware snd_ps3_pcm_hw = {
+> >  	.fifo_size = PS3_AUDIO_FIFO_SIZE
+> >  };
+> >  
+> > -static struct snd_pcm_ops snd_ps3_pcm_spdif_ops =
+> > -{
+> > +static struct snd_pcm_ops snd_ps3_pcm_spdif_ops = {
+> >  	.open = snd_ps3_pcm_open,
+> >  	.close = snd_ps3_pcm_close,
+> >  	.prepare = snd_ps3_pcm_prepare,
+> > @@ -183,7 +182,7 @@ static int snd_ps3_verify_dma_stop(struct snd_ps3_card_info *card,
+> >  	int dma_ch, done, retries, stop_forced = 0;
+> >  	uint32_t status;
+> >  
+> > -	for (dma_ch = 0; dma_ch < 8; dma_ch ++) {
+> > +	for (dma_ch = 0; dma_ch < 8; dma_ch++) {
+> >  		retries = count;
+> >  		do {
+> >  			status = read_reg(PS3_AUDIO_KICK(dma_ch)) &
+> > @@ -259,9 +258,7 @@ static void snd_ps3_kick_dma(struct snd_ps3_card_info *card)
+> >  /*
+> >   * convert virtual addr to ioif bus addr.
+> >   */
+> > -static dma_addr_t v_to_bus(struct snd_ps3_card_info *card,
+> > -			   void * paddr,
+> > -			   int ch)
+> > +static dma_addr_t v_to_bus(struct snd_ps3_card_info *card, void *paddr, int ch)
+> >  {
+> >  	return card->dma_start_bus_addr[ch] +
+> >  		(paddr - card->dma_start_vaddr[ch]);
+> > @@ -321,7 +318,7 @@ static int snd_ps3_program_dma(struct snd_ps3_card_info *card,
+> >  	spin_lock_irqsave(&card->dma_lock, irqsave);
+> >  	for (ch = 0; ch < 2; ch++) {
+> >  		start_vaddr = card->dma_next_transfer_vaddr[0];
+> > -		for (stage = 0; stage < fill_stages; stage ++) {
+> > +		for (stage = 0; stage < fill_stages; stage++) {
+> >  			dma_ch = stage * 2 + ch;
+> >  			if (silent)
+> >  				dma_addr = card->null_buffer_start_dma_addr;
+> > @@ -619,7 +616,7 @@ static int snd_ps3_change_avsetting(struct snd_ps3_card_info *card)
+> >  			  PS3_AUDIO_AO_3WMCTRL_ASOEN(2) |
+> >  			  PS3_AUDIO_AO_3WMCTRL_ASOEN(3)),
+> >  			0);
+> > -	wmb(); 	/* ensure the hardware sees the change */
+> > +	wmb();	/* ensure the hardware sees the change */
+> >  	/* wait for actually stopped */
+> >  	retries = 1000;
+> >  	while ((read_reg(PS3_AUDIO_AO_3WMCTRL) &
+> > @@ -798,20 +795,20 @@ static struct snd_kcontrol_new spdif_ctls[] = {
+> >  	{
+> >  		.access = SNDRV_CTL_ELEM_ACCESS_READ,
+> >  		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
+> > -		.name = SNDRV_CTL_NAME_IEC958("",PLAYBACK,CON_MASK),
+> > +		.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, CON_MASK),
+> >  		.info = snd_ps3_spdif_mask_info,
+> >  		.get = snd_ps3_spdif_cmask_get,
+> >  	},
+> >  	{
+> >  		.access = SNDRV_CTL_ELEM_ACCESS_READ,
+> >  		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
+> > -		.name = SNDRV_CTL_NAME_IEC958("",PLAYBACK,PRO_MASK),
+> > +		.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, PRO_MASK),
+> >  		.info = snd_ps3_spdif_mask_info,
+> >  		.get = snd_ps3_spdif_pmask_get,
+> >  	},
+> >  	{
+> >  		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
+> > -		.name = SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT),
+> > +		.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
+> >  		.info = snd_ps3_spdif_mask_info,
+> >  		.get = snd_ps3_spdif_default_get,
+> >  		.put = snd_ps3_spdif_default_put,
+> > @@ -1020,11 +1017,12 @@ static int __init snd_ps3_driver_probe(struct ps3_system_bus_device *dev)
+> >  	 * its size should be lager than PS3_AUDIO_FIFO_STAGE_SIZE * 2
+> >  	 * PAGE_SIZE is enogh
+> >  	 */
+> > -	if (!(the_card.null_buffer_start_vaddr =
+> > -	      dma_alloc_coherent(&the_card.ps3_dev->core,
+> > -				 PAGE_SIZE,
+> > -				 &the_card.null_buffer_start_dma_addr,
+> > -				 GFP_KERNEL))) {
+> > +	the_card.null_buffer_start_vaddr =
+> > +		dma_alloc_coherent(&the_card.ps3_dev->core,
+> > +				   PAGE_SIZE,
+> > +				   &the_card.null_buffer_start_dma_addr,
+> > +				   GFP_KERNEL);
+> > +	if (!the_card.null_buffer_start_vaddr) {
+> >  		pr_info("%s: nullbuffer alloc failed\n", __func__);
+> >  		goto clean_preallocate;
+> >  	}
+> > @@ -1148,7 +1146,7 @@ static irqreturn_t snd_ps3_interrupt(int irq, void *dev_id)
+> >  				SND_PS3_DMA_FILLTYPE_SILENT_FIRSTFILL :
+> >  				SND_PS3_DMA_FILLTYPE_SILENT_RUNNING);
+> >  			snd_ps3_kick_dma(card);
+> > -			card->silent --;
+> > +			card->silent--;
+> >  		} else {
+> >  			snd_ps3_program_dma(card,
+> >  				(underflow_occured) ?
+> > -- 
+> > 1.6.2.4
+> > 
