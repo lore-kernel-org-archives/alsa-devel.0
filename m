@@ -1,120 +1,56 @@
-From: Arjan van de Ven <arjan@infradead.org>
-Subject: kerneloops.org report for the week of June 14 2009
-Date: Sun, 14 Jun 2009 17:33:31 -0700
-Message-ID: <20090614173331.18f01123@infradead.org>
+From: Eric Miao <eric.y.miao@gmail.com>
+Subject: Re: [PATCH,
+	RFC 3/3] pxa/magician: add I2C board info and platform data for
+	UDA1380
+Date: Mon, 15 Jun 2009 10:06:21 +0800
+Message-ID: <f17812d70906141906p4e5a2e28j2f95dcd8f0455660@mail.gmail.com>
+References: <1244976692-5189-1-git-send-email-philipp.zabel@gmail.com>
+	<1244976692-5189-2-git-send-email-philipp.zabel@gmail.com>
+	<1244976692-5189-3-git-send-email-philipp.zabel@gmail.com>
+	<1244976692-5189-4-git-send-email-philipp.zabel@gmail.com>
+	<1244976692-5189-5-git-send-email-philipp.zabel@gmail.com>
+	<20090614150023.GC4482@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org, tglx@tglx.de, alan@lxorguk.ukuu.org.uk, rjw@sisk.pl, netdev@vger.kernel.org, mingo@elte.hu, dwmw2@infradead.org, alsa-devel@alsa-project.org, dri-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
+	[209.85.221.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 84F5D24477
+	for <alsa-devel@alsa-project.org>;
+	Mon, 15 Jun 2009 04:06:24 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so4325113qyk.16
+	for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2009 19:06:21 -0700 (PDT)
+In-Reply-To: <20090614150023.GC4482@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-First, a word of thanks to the kernel.org team for helping to host the kerneloops.org database
-on a real machine rather than a small virtualized host. Performance and continuity will be a lot
-better in the new setup! 
-(as a result of the transition and hosting issues on the original server, there was a downtime of 
-two days, meaning that the total number of reports is lower than typical)
-
-
-New sightings this report include the XFI driver, the i915 gem code and the DMAR code.
-
-
-This week, a total of 4026 oopses and warnings have been reported
-for kernels 2.6.29 and later. Reports for kernels earlier than 2.6.29
-have been omitted from this report.
-
-Per file statistics
-830	drivers/gpu/drm/i915/i915_gem_tiling.c
-470	drivers/net/wireless/iwlwifi/iwl-sta.c
-303	kernel/time.c
-276	drivers/parport/procfs.c
-269	include/linux/slob_def.h
-187	include/linux/hrtimer.h
-138	arch/x86/kernel/cpu/mtrr/generic.c
-120	drivers/pci/dmar.c
-65	net/mac80211/rc80211_minstrel.c
-62	drivers/net/r8169.c
-37	net/ipv4/tcp.c
-34	fs/cifs/cifssmb.c
-
-
-Rank 1: i915_gem_set_tiling (warning)
-	Reported 830 times (3700 total reports)
-	[gem] Failure in the tiling code
-	This warning was last seen in version 2.6.30, and first seen in 2.6.29-rc2.
-	More info: http://www.kerneloops.org/searchweek.php?search=i915_gem_set_tiling
-
-Rank 2: iwl_set_dynamic_key (warning)
-	Reported 470 times (13682 total reports)
-	"no space for new kew" message.
-	This warning was last seen in version 2.6.30, and first seen in 2.6.27.
-	More info: http://www.kerneloops.org/searchweek.php?search=iwl_set_dynamic_key
-
-Rank 3: getnstimeofday (warning)
-	Reported 309 times (2446 total reports)
-	[suspend resume] getnstimeofday() is called before timekeeping is resumed
-	This warning was last seen in version 2.6.29.4, and first seen in 2.6.24.
-	More info: http://www.kerneloops.org/searchweek.php?search=getnstimeofday
-
-Rank 4: ct_vm_map (warning) - sleeping in atomic context
-	Reported 285 times (960 total reports)
-	Bug in the creative XFI driver (backported to Fedora)
-	This warning was last seen in version 2.6.29.4, and first seen in 2.6.29-rc4-git1.
-	More info: http://www.kerneloops.org/searchweek.php?search=ct_vm_map
-
-Rank 5: parport_device_proc_unregister (warning)
-	Reported 278 times (1810 total reports)
-        Alan has a fix for this on LKML
-	This warning was last seen in version 2.6.29.4, and first seen in 2.6.27.
-	More info: http://www.kerneloops.org/searchweek.php?search=parport_device_proc_unregister
-
-Rank 6: hres_timers_resume (warning)
-	Reported 188 times (1024 total reports)
-	[suspend resume] hres_timers_resume() is incorrectly called with interrupts on
-	This warning was last seen in version 2.6.30-rc6, and first seen in 2.6.24.7.
-	More info: http://www.kerneloops.org/searchweek.php?search=hres_timers_resume
-
-Rank 7: generic_get_mtrr (warning)
-	Reported 139 times (1009 total reports)
-	BIOS bug where the MTRRs are not set up correctly
-	This warning was last seen in version 2.6.30, and first seen in 2.6.25.3.
-	More info: http://www.kerneloops.org/searchweek.php?search=generic_get_mtrr
-
-Rank 8: dmar_table_init (warning)
-	Reported 121 times (507 total reports)
-	BIOS bug exposed via a WARN_ON
-	This warning was last seen in version 2.6.30-rc8, and first seen in 2.6.29.
-	More info: http://www.kerneloops.org/searchweek.php?search=dmar_table_init
-
-Rank 9: minstrel_get_rate (warning)
-	Reported 64 times (384 total reports)
-	Issue with the ath5k driver
-	This warning was last seen in version 2.6.30-rc3, and first seen in 2.6.27.12.
-	More info: http://www.kerneloops.org/searchweek.php?search=minstrel_get_rate
-
-Rank 10: dev_watchdog(r8169) (warning)
-	Reported 62 times (9116 total reports)
-	This warning was last seen in version 2.6.30-rc7, and first seen in 2.6.26.6.
-	More info: http://www.kerneloops.org/searchweek.php?search=dev_watchdog(r8169)
-
-Rank 11: nv_tx_done_optimized (warning)
-	Reported 61 times (2974 total reports)
-	the NV ethernet driver is getting caught with the new DMA API checks
-	This warning was last seen in version 2.6.30, and first seen in 2.6.29-rc3-git7.
-	More info: http://www.kerneloops.org/searchweek.php?search=nv_tx_done_optimized
-
-Rank 12: tcp_recvmsg (warning)
-	Reported 37 times (3797 total reports)
-	fixed in 2.6.30 (commit 775273131810caa41dfc7f9e552ea5d8508caf40)
-	This warning was last seen in version 2.6.30, and first seen in 2.6.25.
-	More info: http://www.kerneloops.org/searchweek.php?search=tcp_recvmsg
-
-
--- 
-Arjan van de Ven 	Intel Open Source Technology Centre
-For development, discussion and tips for power savings, 
-visit http://www.lesswatts.org
+T24gU3VuLCBKdW4gMTQsIDIwMDkgYXQgMTE6MDAgUE0sIE1hcmsKQnJvd248YnJvb25pZUBvcGVu
+c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFN1biwgSnVuIDE0LCAyMDA5IGF0
+IDEyOjUxOjMyUE0gKzAyMDAsIFBoaWxpcHAgWmFiZWwgd3JvdGU6Cj4+IENvbmZpZ3VyZXMgSTJD
+IGFkZHJlc3MsIHBvd2VyL3Jlc2V0IEdQSU9zIGFuZCBEQUMgY2xvY2sgZnJvbSBXU1BMTC4KPj4K
+Pj4gU2lnbmVkLW9mZi1ieTogUGhpbGlwcCBaYWJlbCA8cGhpbGlwcC56YWJlbEBnbWFpbC5jb20+
+Cj4KPiBFcmljLCBJIGRvbid0IGtub3cgaG93IHlvdSB3YW50IHRvIGRlYWwgd2l0aCB0aGUgY3Jv
+c3MgdHJlZSBpc3N1ZXMgZm9yCj4gdGhpcyBwYXRjaD8gwqBJdCdzIHBhcnQgb2YgYSBjb252ZXJz
+aW9uIG9mIHRoZSBVREExMzgwIGRyaXZlciB0byB0aGUKPiBzdGFuZGFyZCBkZXZpY2UgbW9kZWwg
+c28gaXQnbGwgZGVwZW5kIG9uIEFTb0MgY2hhbmdlcyB0byB0aGUgVURBMTM4MAo+IGRyaXZlciBi
+dXQgb2J2aW91c2x5IHRoZXJlJ3MgYXJjaC9hcm0vbWFjaC1weGEgY2hhbmdlcyB0b28uCj4KPiBP
+bmUgd2F5IG9mIG1ha2luZyBzdXJlIHRoZXJlIGFyZW4ndCBhbnkgcHJvYmxlbSB3b3VsZCBiZSBm
+b3Igb25lIG9mIHVzCj4gdG8gYXBwbHkgYm90aCBwYXRjaGVzIHRvIGEgYnJhbmNoIHdoaWNoIGNh
+biB0aGVuIGJlIHB1bGxlZCBpbiB0byBib3RoCj4gdGhlIEFTb0MgYW5kIFBYQSB0cmVlcy4gwqBE
+b2VzIHRoYXQgc291bmQgc2FuZT8KCk5vcm1hbGx5LCBJJ2xsIHF1ZXVlIHN1Y2ggcGF0Y2ggaW4g
+bXkgcGVuZGluZyBicmFuY2ggYW5kIHdpbGwgYmUgcHVzaGVkCm91dCB1bnRpbCB0aGUgb3RoZXIg
+cGF0Y2goZXMpIHdpdGggZGVwZW5kZW5jeSBoYXMgYmVlbiBtZXJnZWQgdXBzdHJlYW0uCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
