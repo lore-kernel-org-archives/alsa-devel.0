@@ -1,28 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC] I2S and LEFT_J (was: ASoC: pxa-ssp: enhance
-	I2S and add	Left_J support)
-Date: Mon, 15 Jun 2009 16:04:33 +0100
-Message-ID: <20090615150433.GF6106@sirena.org.uk>
-References: <20090608165328.GB14026@rakim.wolfsonmicro.main>
-	<1244481992.17327.22.camel@brutus>
-	<20090608180656.GH7858@sirena.org.uk>
-	<1244494349.17327.174.camel@brutus>
-	<f17812d70906090239p5dee129egda49918b3862c0ca@mail.gmail.com>
-	<1244672649.25905.70.camel@brutus>
-	<f17812d70906110634i623eb236ib277e164678a7a34@mail.gmail.com>
-	<1244730992.21356.50.camel@brutus>
-	<f17812d70906150145p763002det5e2699442673d532@mail.gmail.com>
-	<1245077824.24109.51.camel@brutus>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: Please help in adding ams-delta support to ASoC
+Date: Mon, 15 Jun 2009 18:16:33 +0300
+Message-ID: <20090615181633.4570426f.jhnikula__39595.3651321635$1245079020$gmane$org@gmail.com>
+References: <4A1BEBE3.8010306@tis.icnet.pl>
+	<200906030924.14230.jkrzyszt@tis.icnet.pl>
+	<20090605165531.7d0c4522.jhnikula@gmail.com>
+	<200906060028.01600.jkrzyszt@tis.icnet.pl>
+	<20090608094028.415e6ec3.jhnikula@gmail.com>
+	<4A2E7921.7090200@tis.icnet.pl> <4A364B1A.5040905@tis.icnet.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 445282439E
-	for <alsa-devel@alsa-project.org>;
-	Mon, 15 Jun 2009 17:04:34 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1245077824.24109.51.camel@brutus>
+In-Reply-To: <4A364B1A.5040905@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,20 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Ribeiro <drwyrm@gmail.com>
-Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, pHilipp Zabel <philipp.zabel@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: linux-omap@vger.kernel.org, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 15, 2009 at 11:57:04AM -0300, Daniel Ribeiro wrote:
+On Mon, 15 Jun 2009 15:22:34 +0200
+Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
 
-> For what it matters, the only difference on I2S/LEFT_J vs DSP_A/DSP_B
-> should be the SSPSFRM duration as it is needed to emulate the LRCLK.
+> > - original patch ported to the last l-o commit supporting omap-alsa:
+> >   - playback: works as before,
+> >   - capture: both </dev/dsp and arecord give null output,
+> >     but DMA interrupts still work.
+> 
+> Not that I would see it as a real progress, but to clarify things: I 
+> have managed to solve this particular problem with capture by
+> patching sound/arm/omap/omap-alsa.c (call omap_get_dma_dst_pos()
+> instead of omap_get_dma_src_pos() from audio_get_dma_pos() in case of
+> (stream_id == SNDRV_PCM_STREAM_CAPTURE)). The original code stopped
+> working after changes introduced to omap_get_dma_src_pos() with this
+> patch: http://marc.info/?l=linux-omap&m=121280267705523.
+> 
+Nice step forward. From quick look of the patch I see that patch is
+changing how the source and destination positions are read for omap1.
 
-Assuming no extra bit clocks.  Extra bit clocks do something different
-in I2S due to the fact that LRCLK falling edge is signifigcant.
+While I don't have idea can this explain the ceased DMA in 1510 but
+will the playback in original code work again if you change line
+"offset = dma_read (CPC(lch));" to "offset = dma_read(CSSA_L(lch));" in
+omap_get_dma_src_pos? Or read both CSSA_L and CSSA_U at once like code
+before?
 
-> (and of course, the fact that I2S/LEFT_J are stereo only and that
-> network mode can't be supported)
 
-You should be able to support at least modes using the first TDM
-timeslot I'd have thought.
+-- 
+Jarkko
