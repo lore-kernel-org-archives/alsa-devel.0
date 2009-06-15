@@ -1,18 +1,21 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: Please help in adding ams-delta support to ASoC
-Date: Mon, 15 Jun 2009 18:16:33 +0300
-Message-ID: <20090615181633.4570426f.jhnikula__39595.3651321635$1245079020$gmane$org@gmail.com>
-References: <4A1BEBE3.8010306@tis.icnet.pl>
-	<200906030924.14230.jkrzyszt@tis.icnet.pl>
-	<20090605165531.7d0c4522.jhnikula@gmail.com>
-	<200906060028.01600.jkrzyszt@tis.icnet.pl>
-	<20090608094028.415e6ec3.jhnikula@gmail.com>
-	<4A2E7921.7090200@tis.icnet.pl> <4A364B1A.5040905@tis.icnet.pl>
+From: Gernot Kohlhaas <gernot.kohlhaas@googlemail.com>
+Subject: Re: SB X-Fi driver fixes (Re: Testers wanted: New SB
+ X-Fi	driver)
+Date: Mon, 15 Jun 2009 18:17:08 +0200
+Message-ID: <4A367404.80900@googlemail.com>
+References: <1244140942.4550.2.camel@polo-desktop>	<s5hbpp1zpt9.wl%tiwai@suse.de>	<1244376026.6985.5.camel@polo-desktop>	<s5hk53oowhz.wl%tiwai@suse.de>	<s5hbpoz3pbj.wl%tiwai@suse.de>	<4A2D56C7.2090505@googlemail.com>	<s5hws7m7cfd.wl%tiwai@suse.de>	<4A2D7181.3040108@googlemail.com>	<s5h63f6f8qo.wl%tiwai@suse.de>	<4A2DF1EC.9060104@googlemail.com>	<s5hab4ix8wo.wl%tiwai@suse.de>	<4A2DF6BD.6060004@googlemail.com>	<s5h63f5ylee.wl%tiwai@suse.de>	<s5hk53l3f6p.wl%tiwai@suse.de>	<4A2E97A6.3090301@googlemail.com>
+	<s5hy6rtejri.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <4A364B1A.5040905@tis.icnet.pl>
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id E24C51037ED
+	for <alsa-devel@alsa-project.org>;
+	Mon, 15 Jun 2009 18:17:11 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id 16so1101522fgg.21
+	for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2009 09:17:10 -0700 (PDT)
+In-Reply-To: <s5hy6rtejri.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +25,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-omap@vger.kernel.org, alsa-devel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 15 Jun 2009 15:22:34 +0200
-Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
-
-> > - original patch ported to the last l-o commit supporting omap-alsa:
-> >   - playback: works as before,
-> >   - capture: both </dev/dsp and arecord give null output,
-> >     but DMA interrupts still work.
+Takashi Iwai schrieb:
+> At Tue, 09 Jun 2009 19:11:02 +0200,
+> Gernot Kohlhaas wrote:
+>>> Also, show your ~/.asoundrc setup so that I can try to reproduce
+>>> the same bug with my test machine.
+>> Here it is:
 > 
-> Not that I would see it as a real progress, but to clarify things: I 
-> have managed to solve this particular problem with capture by
-> patching sound/arm/omap/omap-alsa.c (call omap_get_dma_dst_pos()
-> instead of omap_get_dma_src_pos() from audio_get_dma_pos() in case of
-> (stream_id == SNDRV_PCM_STREAM_CAPTURE)). The original code stopped
-> working after changes introduced to omap_get_dma_src_pos() with this
-> patch: http://marc.info/?l=linux-omap&m=121280267705523.
+> Thanks, I could reproduce the problem now with your setup.
+> This is indeed a deadlock but in a different place due to the invalid
+> update of PCM substream.  I fixed it now.
+> Try the very latest alsa-driver-snapshot.
 > 
-Nice step forward. From quick look of the patch I see that patch is
-changing how the source and destination positions are read for omap1.
+> 
+> Takashi
+> 
 
-While I don't have idea can this explain the ceased DMA in 1510 but
-will the playback in original code work again if you change line
-"offset = dma_read (CPC(lch));" to "offset = dma_read(CSSA_L(lch));" in
-omap_get_dma_src_pos? Or read both CSSA_L and CSSA_U at once like code
-before?
 
+ALSA /usr/src/alsa-driver/pci/ctxfi/ctatc.c:1252: ctxfi: chip 20K1 model
+Unknown (1102:002c) is found
+SB-XFi 0000:05:00.0: PCI INT A -> GSI 16 (level, low) -> IRQ 16
+ALSA
+/usr/src/alsa-driver/pci/ctxfi/../../alsa-kernel/pci/ctxfi/cttimer.c:424:
+ctxfi: Use xfi-native timer
+
+No crashes. Everything's running fine now :)
+Thank you very much!
 
 -- 
-Jarkko
+http://www.gnupp.de/verschluesselung/warum.html
+Key ID: 0x4C0B2250
+Key: http://home.arcor.de/mr_maniac/ANDERES/public.gpg
