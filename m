@@ -1,17 +1,23 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Timing of linked devices
-Date: Mon, 15 Jun 2009 15:31:58 +0200
-Message-ID: <4A364D4E.3020908@ladisch.de>
-References: <49237.65.105.226.50.1244847123.squirrel@master.museresearch.com>
+From: "Wael Nasreddine (a.k.a eMxyzptlk)" <mla@nasreddine.com>
+Subject: Re: No jack sense on Intel 82801I / IDT 92HD71B7X in a
+	HP dv4
+Date: Mon, 15 Jun 2009 16:31:32 +0200
+Message-ID: <d3328e7b0906150731y70e4bb71ue0662a6f8dd99569@mail.gmail.com>
+References: <4A33803F.6050107@wanadoo.fr>
+	<d3328e7b0906130656w67e2046dqce261e9b83b4ea6b@mail.gmail.com>
+	<4A365A30.8070608@wanadoo.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 473A42445F
+Received: from mail-bw0-f215.google.com (mail-bw0-f215.google.com
+	[209.85.218.215])
+	by alsa0.perex.cz (Postfix) with ESMTP id EC06B2437F
 	for <alsa-devel@alsa-project.org>;
-	Mon, 15 Jun 2009 15:32:04 +0200 (CEST)
-In-Reply-To: <49237.65.105.226.50.1244847123.squirrel@master.museresearch.com>
+	Mon, 15 Jun 2009 16:31:54 +0200 (CEST)
+Received: by bwz11 with SMTP id 11so3556444bwz.32
+	for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2009 07:31:53 -0700 (PDT)
+In-Reply-To: <4A365A30.8070608@wanadoo.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,40 +27,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: louis@museresearch.com
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: =?UTF-8?B?SmVhbi1QaWVycmUgQW5kcsOp?= <jean-pierre.andre@wanadoo.fr>
 List-Id: alsa-devel@alsa-project.org
 
-louis@museresearch.com wrote:
-> I am developing an application which opens both inputs and outputs for
-> digital and s/pdif (so, 4 devices).  The sync IDs all match.  However,
-> under certain conditions, I am receiving partial buffers from the input. 
-> So, I have a few questions:
-> 
-> Does linking input and output devices, from a programmer's perspective,
-> mean that input is ready at precisely the same time that the device is
-> ready to output a buffer?
-
-No; linking just means that ALSA tries to start the streams at the same
-time.  If the sync IDs match, the hardware actually supports this.
-
-> Or, does it only mean that the ins and outs will be synchronized for
-> each given buffer?
-
-Not even that.  Linking streams does not guarantee that they run at the
-same speed.
-
-If two streams are handled by the same DMA controller and are using the
-same clock, they should be perfectly synchronous.  In the case of S/PDIF
-recording, the clock is determined by the sending device, so it is
-likely to be different from the other stream.
-
-> And, in the case that I am doing a non-blocking read (pcm_read) from a
-> buffer which is not yet ready, should I receive an outdated buffer, a
-> blank buffer, or one which has both partially new and partially old data?
-
-You get no data and error code -EAGAIN.
-
-
-HTH
-Clemens
+QWxsIHRoZSBpbmZvcm1hdGlvbiB5b3UgbmVlZCBhcmUgaGVyZSAtPgpodHRwOi8vd3d3LmFsc2Et
+cHJvamVjdC5vcmcvZGIvP2Y9NmI1ODhlYTUzYWY1Y2YyNzk0ZmI4YjQyMzkzMTE3MjI4MDliM2Mz
+NAoKMjAwOS82LzE1IEplYW4tUGllcnJlIEFuZHLDqSA8amVhbi1waWVycmUuYW5kcmVAd2FuYWRv
+by5mcj46Cj4gSGkgV2FlbCwKPgo+IFdhZWwgTmFzcmVkZGluZSAoYS5rLmEgZU14eXpwdGxrKSB3
+cm90ZToKPj4KPj4gSSBkb24ndCBrbm93IGlmIHRoaXMgY29uY2VybnMgbXkgc2l0dWF0aW9uICgK
+Pj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8y
+MDA5LUp1bmUvMDE4MjYyLmh0bWwKPj4gKSBvciBub3QuLgo+Pgo+PiBoZWFkcGhvbmVzIHdvcmsg
+Zm9yIG1lLCBmcm9udCBzcGVha2VyIHdvcmsgYnV0IExGRSBkb2Vzbid0IGFuZCB0aGUKPj4gSXJx
+MjIgc3RheXMgb24gMCB0b28KPj4KPj4gIyBjYXQgL3Byb2MvaW50ZXJydXB0cyB8IGdyZXAgJzIy
+OicKPj4gwqAyMjogwqAgwqAgwqAgwqAgwqAwIMKgIMKgIMKgIMKgIMKgMCDCoCBJTy1BUElDLWZh
+c3Rlb2kgwqAgdWhjaV9oY2Q6dXNiNiwgSERBIEludGVsCj4+Cj4+IFRha2FzaGkgdG9sZCBtZSB0
+byBwbGF5IHdpdGggaGRhLWFuYWx5c2VyIGFuZCBoZGEtdmVyYiB0aG91Z2ggSSBkb24ndAo+PiB3
+aGF0IHRvIGRvIHdpdGggaGRhLXZlcmIgYW5kIEkgZG9uJ3QgaWYgd2hhdCBoZGEtYW5hbHlzZXIg
+c2hvd2luZyBtZQo+PiBpcyB0aGUgY3VycmVudCBzaXR1YXRpb24gb3IgdGhlIGRlc2lyZWQgb25l
+Li4KPj4KPj4gVGhhbmtzCj4KPiBTbyBpdCBsb29rcyBsaWtlIHRoaXMgYSBnZW5lcmFsIHNpdHVh
+dGlvbiBvbiB0aGlzIGhhcmR3YXJlLgo+Cj4gSWYgeW91IGdldCBzb3VuZCwgYXQgbGVhc3QgZnJv
+bSB0aGUgZnJvbnQgc3BlYWtlcnMsCj4gd2l0aG91dCB0aGUgSVJRMjIgYmVpbmcgdHJpZ2dlcmVk
+LCB3aGF0IGFyZSB5b3VyCj4ga2VybmVsIGFuZCBhbHNhIHZlcnNpb25zLCB5b3VyIGJvb3QgcGFy
+YW1ldGVycyBhbmQKPiBhbHNhIChtb2Rwcm9iZSkgcGFyYW1ldGVycyA/Cj4KPiBJIGhhdmUgbm8g
+a25vd2xlZGdlIGFib3V0IHRoZSBoZGEtdmVyYiwgZXRjLgo+IHNvIEkgYW0gbm90IHRvIGhlbHAg
+eW91IG11Y2ggaW4gdGhpcyBhcmVhLgo+Cj4gUmVnYXJkcwo+Cj4gSmVhbi1QaWVycmUKPgo+Cj4K
+PgoKCgotLSAKV2FlbCBOYXNyZWRkaW5lCgpCbG9nICAgIDogaHR0cDovL3dhZWwubmFzcmVkZGlu
+ZS5jb20KRS1tYWlsICA6IHdhZWwubmFzcmVkZGluZUBnbWFpbC5jb20KZ1RhbGsgICA6IHdhZWwu
+bmFzcmVkZGluZUBnbWFpbC5jb20KVGVsICAgICA6ICszMy42LjMyLjk0LjcwLjEzClNreXBlICAg
+OiBlTXh5enB0bGsKVHdpdHRlciA6IEBlTXh5enB0bGsKClNhYmF5b24gTGludXggQ2hpZWYgRGV2
+ZWxvcG1lbnQgT2ZmaWNlciAtIGh0dHA6Ly93d3cuc2FiYXlvbmxpbnV4Lm9yZwoKUEdQOiAxMDI0
+RC9DOEREMThBMiAwNkY2IDE2MjIgNEJDOCA0Q0VCIEQ3MjQgIERFMTIgNTU2NSAzOTQ1IEM4REQg
+MThBMgoKLjogQW4gaW5maW5pdGUgbnVtYmVyIG9mIG1vbmtleXMgdHlwaW5nIGludG8gR05VIGVt
+YWNzLAogICB3b3VsZCBuZXZlciBtYWtlIGEgZ29vZCBwcm9ncmFtLiAoTC4gVG9ydmFsZHMgMTk5
+NSkgOi4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
