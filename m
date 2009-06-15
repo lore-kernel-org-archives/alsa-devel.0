@@ -1,8 +1,8 @@
-From: Daniel Mack <daniel@caiaq.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [RFC] I2S and LEFT_J (was: ASoC: pxa-ssp: enhance
 	I2S and add	Left_J support)
-Date: Mon, 15 Jun 2009 19:40:37 +0200
-Message-ID: <20090615174037.GH32700@buzzloop.caiaq.de>
+Date: Mon, 15 Jun 2009 19:00:16 +0100
+Message-ID: <20090615180016.GA20456@rakim.wolfsonmicro.main>
 References: <20090608180656.GH7858@sirena.org.uk>
 	<1244494349.17327.174.camel@brutus>
 	<f17812d70906090239p5dee129egda49918b3862c0ca@mail.gmail.com>
@@ -17,10 +17,10 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 78233103806
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 10EE3103805
 	for <alsa-devel@alsa-project.org>;
-	Mon, 15 Jun 2009 19:40:42 +0200 (CEST)
+	Mon, 15 Jun 2009 20:00:18 +0200 (CEST)
 Content-Disposition: inline
 In-Reply-To: <1245086420.24109.159.camel@brutus>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -33,63 +33,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Daniel Ribeiro <drwyrm@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, pHilipp Zabel <philipp.zabel@gmail.com>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, pHilipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 On Mon, Jun 15, 2009 at 02:20:20PM -0300, Daniel Ribeiro wrote:
+
 > But you have to consider that a codec that _requires_ 64 bits frames for
 > 2*16bits I2S audio is not exactly I2S compliant.
-> 
-> Quoting the specifications:
 
-[...]
+Implementors in "not having fully read standard" shocker!  :)
 
-Might be, but it's still up to the codec which further constrains it has
-for the digital side :)
+Actually, I suspect what's happened here is that whoever was designing
+the chip needed a synced clock at 64fs for their DAC or ADC, noticed
+that they could run the bitclock over speed to get that clock and
+decided to use that.  Most devices use a separate MCLK.
 
 > Anyway, my interpretation of the I2S specifications, is that we don't
 > need to do this enveloping thing at all. Codecs that requires this are
 > simply broken, and are _not_ considering LRCLK edges as they are
 > supposed to.
 
-Quoting from the CS4270 datasheet:
+Broken and nonexistant are unfortunately not synonyms.  Like I say,
+they're just using a subset of TDM mode configuration so it's not like
+there's no possible use for this outside of workarounds anyway.
 
-5.1.2 Master/Slave Mode 
-  The CS4270 supports operation in either Master Mode or Slave Mode. 
+> But...
 
-  In Master Mode, LRCK and SCLK are outputs and are synchronously
-  generated on-chip. LRCK is equal to Fs and SCLK is equal to 64x Fs. 
+> Transmitter is sending 16 bits samples, and the receiver expecting 32
+> bits samples. This is perfectly valid according to I2S, the receiver
+> would append zeros to the LSBs of each sample.
 
-  In Slave Mode, LRCK and SCLK are inputs, requiring external generation
-  that is synchronous to MCLK. It is recommended that SCLK be 48x or 64x
-  Fs to maximize system performance. 
+> Now, what if the transmitter is using network mode? The receiver would
+> interpret the 16 MSBs of the second slot as the 16 LSBs of the second
+> channel on the first slot. This would be noisy. ;)
 
-I can only guess what really happens internally, but the most obvious
-thing is that they need the additional clock cycles for internal
-real-time processing.
+> I prefer to just not support network mode with I2S. I2S was designed to
+> have a single transmitter and N receivers on the bus, or, in case of an
+> I2S network have LRCLK assertion on all slots, which the PXA-SSP port
+> can't do.
 
-> And finally, if the codec does this enveloping thing, it can't work if
-> PXA is slave of LRCLK. The PXA-SSP port is definitely not I2S compliant,
-> as it just ignores the LRCLK falling edge. We can workaround this using
-> network mode with 4 slots and with slots 1|3 active, but this implies
-> knowing the sample/frame width in advance, which by itself is an I2S
-> spec violation.
+There's plenty of ways to mess up your audio if you do something broken,
+I'm not overly concerned about this particular one over any of the
+others so preserving the option to set it up seems useful.  As far as
+your patch goes I think so long as it's clear how one would implement
+I2S TDM it's fine, I don't think it's essential to implement it in your
+patch since we don't have anything in-tree which needs it.
 
-Yes, that's true. For that very reason, we run the PXA in master mode,
-but clock the whole SSP engine from the SSPEXTCLK pin. So the PXA is
-master to LRCLK and BITCLK, but eventually it's still slave to an
-external and tunable clock.
-
-> I have hope that Daniel Mack's codec, which supposedly only works with
-> 64 bits frames _is_ I2S compliant, and he just got to the wrong
-> conclusion that it needs 64 bits frames after a lot of trial and error,
-> and failing to fix the real issue. (setting 16bits frames(DataSize(16))
-> for 2*16bit samples is simply wrong).
-
-I'm willing to give that another try now that the codec is in slave
-mode. But I fear there is some impact on the audio quality which I can't
-quickly measure here, so I'd really vote for offering the mode I'm
-currently using. Forbidding it due to API clearance even though it's
-supported by the hardware is a step backwards.
-
-Daniel
+Personally I don't need this mode, the systems I'm working with all have
+very much standards compliant CODECs which can be configured to use DSP
+modes if desired.
