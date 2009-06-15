@@ -1,103 +1,120 @@
-From: pHilipp Zabel <philipp.zabel@gmail.com>
-Subject: Re: [PATCH,
-	RFC 2/3] ASoC: UDA1380: register from board 	files,
-	configure via pdata
-Date: Sun, 14 Jun 2009 22:52:00 +0200
-Message-ID: <74d0deb30906141352x2503283dib19934ef9d97b13d@mail.gmail.com>
-References: <1244976692-5189-1-git-send-email-philipp.zabel@gmail.com>
-	<1244976692-5189-2-git-send-email-philipp.zabel@gmail.com>
-	<1244976692-5189-3-git-send-email-philipp.zabel@gmail.com>
-	<1244976692-5189-4-git-send-email-philipp.zabel@gmail.com>
-	<20090614145128.GB4482@sirena.org.uk>
+From: Arjan van de Ven <arjan@infradead.org>
+Subject: kerneloops.org report for the week of June 14 2009
+Date: Sun, 14 Jun 2009 17:33:31 -0700
+Message-ID: <20090614173331.18f01123@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f221.google.com (mail-ew0-f221.google.com
-	[209.85.219.221])
-	by alsa0.perex.cz (Postfix) with ESMTP id AAE0C2414D
-	for <alsa-devel@alsa-project.org>;
-	Sun, 14 Jun 2009 22:52:08 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so2156868ewy.32
-	for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2009 13:52:00 -0700 (PDT)
-In-Reply-To: <20090614145128.GB4482@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org, tglx@tglx.de, alan@lxorguk.ukuu.org.uk, rjw@sisk.pl, netdev@vger.kernel.org, mingo@elte.hu, dwmw2@infradead.org, alsa-devel@alsa-project.org, dri-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jun 14, 2009 at 4:51 PM, Mark
-Brown<broonie@opensource.wolfsonmicro.com> wrote:
-> On Sun, Jun 14, 2009 at 12:51:31PM +0200, Philipp Zabel wrote:
->> This patch removes the I2C board info registration from the codec driver.
->> Instead, device instantiation will be done via global i2c_board_info from
->> board files. At the same time, platform specific configuration is moved
->> to platform data and common power/reset GPIO handling moves into the
->> codec driver.
->
-> Thanks for doing this. =A0This should probably either be squashed in with
-> the arch patch that follows.
+Hi,
 
-Ok. If Eric agrees, I'll squash as you propose.
+First, a word of thanks to the kernel.org team for helping to host the kerneloops.org database
+on a real machine rather than a small virtualized host. Performance and continuity will be a lot
+better in the new setup! 
+(as a result of the transition and hosting issues on the original server, there was a downtime of 
+two days, meaning that the total number of reports is lower than typical)
 
->> +struct uda1380_platform_data {
->> + =A0 =A0 int gpio_power;
->> + =A0 =A0 int gpio_reset;
->> + =A0 =A0 int dac_clk;
->> +#define UDA1380_DAC_CLK_SYSCLK 0
->> +#define UDA1380_DAC_CLK_WSPLL =A01
->
-> Is it worth changing this to make both options non-zero so that there's
-> no possibility that it could be left zero by default?
 
-I think this is fine as-is: SYSCLK is the default setting for DAC
-clock input when the chip comes out of reset.
+New sightings this report include the XFI driver, the i915 gem code and the DMAR code.
 
->> +static int uda1380_add_i2c_device(struct platform_device *pdev)
->> =A0{
->
-> ...
->
->> =A0 =A0 =A0 ret =3D i2c_add_driver(&uda1380_i2c_driver);
->
-> If you're doing this conversion the ideal thing is to convert the driver
-> completely so that the driver is registered when the module loads and
-> does the DAI registration once the I2C device probes. =A0The I2C device
-> probe should also do any other initialisation that can be done without
-> the rest of the ASoC subsystem such as registering the GPIOs.
 
-Ok.
+This week, a total of 4026 oopses and warnings have been reported
+for kernels 2.6.29 and later. Reports for kernels earlier than 2.6.29
+have been omitted from this report.
 
-> This implies a bit more rearrangment of the registration functions -
-> most of the initialisation can stay in the I2C function but anything
-> that uses the entire ASoC device and the final instantiation of the card
-> should be moved into the ASoC probe function which will be called once
-> the entire card has started. =A0WM8731 is a good template to look at here.
+Per file statistics
+830	drivers/gpu/drm/i915/i915_gem_tiling.c
+470	drivers/net/wireless/iwlwifi/iwl-sta.c
+303	kernel/time.c
+276	drivers/parport/procfs.c
+269	include/linux/slob_def.h
+187	include/linux/hrtimer.h
+138	arch/x86/kernel/cpu/mtrr/generic.c
+120	drivers/pci/dmar.c
+65	net/mac80211/rc80211_minstrel.c
+62	drivers/net/r8169.c
+37	net/ipv4/tcp.c
+34	fs/cifs/cifssmb.c
 
-I'll look at WM8731 for guidance, thanks.
 
->> --- a/sound/soc/codecs/uda1380.h
->> +++ b/sound/soc/codecs/uda1380.h
->> @@ -8,9 +8,6 @@
->> =A0 * Copyright (c) 2005 Giorgio Padrin <giorgio@mandarinlogiq.org>
->> =A0 */
->>
->> -#ifndef _UDA1380_H
->> -#define _UDA1380_H
->> -
->
-> Best practice would be to keep these with a different name.
+Rank 1: i915_gem_set_tiling (warning)
+	Reported 830 times (3700 total reports)
+	[gem] Failure in the tiling code
+	This warning was last seen in version 2.6.30, and first seen in 2.6.29-rc2.
+	More info: http://www.kerneloops.org/searchweek.php?search=i915_gem_set_tiling
 
-uda1380.h is only a one-time private header file, but I won't say no
-to best practice.
+Rank 2: iwl_set_dynamic_key (warning)
+	Reported 470 times (13682 total reports)
+	"no space for new kew" message.
+	This warning was last seen in version 2.6.30, and first seen in 2.6.27.
+	More info: http://www.kerneloops.org/searchweek.php?search=iwl_set_dynamic_key
 
-cheers
-Philipp
+Rank 3: getnstimeofday (warning)
+	Reported 309 times (2446 total reports)
+	[suspend resume] getnstimeofday() is called before timekeeping is resumed
+	This warning was last seen in version 2.6.29.4, and first seen in 2.6.24.
+	More info: http://www.kerneloops.org/searchweek.php?search=getnstimeofday
+
+Rank 4: ct_vm_map (warning) - sleeping in atomic context
+	Reported 285 times (960 total reports)
+	Bug in the creative XFI driver (backported to Fedora)
+	This warning was last seen in version 2.6.29.4, and first seen in 2.6.29-rc4-git1.
+	More info: http://www.kerneloops.org/searchweek.php?search=ct_vm_map
+
+Rank 5: parport_device_proc_unregister (warning)
+	Reported 278 times (1810 total reports)
+        Alan has a fix for this on LKML
+	This warning was last seen in version 2.6.29.4, and first seen in 2.6.27.
+	More info: http://www.kerneloops.org/searchweek.php?search=parport_device_proc_unregister
+
+Rank 6: hres_timers_resume (warning)
+	Reported 188 times (1024 total reports)
+	[suspend resume] hres_timers_resume() is incorrectly called with interrupts on
+	This warning was last seen in version 2.6.30-rc6, and first seen in 2.6.24.7.
+	More info: http://www.kerneloops.org/searchweek.php?search=hres_timers_resume
+
+Rank 7: generic_get_mtrr (warning)
+	Reported 139 times (1009 total reports)
+	BIOS bug where the MTRRs are not set up correctly
+	This warning was last seen in version 2.6.30, and first seen in 2.6.25.3.
+	More info: http://www.kerneloops.org/searchweek.php?search=generic_get_mtrr
+
+Rank 8: dmar_table_init (warning)
+	Reported 121 times (507 total reports)
+	BIOS bug exposed via a WARN_ON
+	This warning was last seen in version 2.6.30-rc8, and first seen in 2.6.29.
+	More info: http://www.kerneloops.org/searchweek.php?search=dmar_table_init
+
+Rank 9: minstrel_get_rate (warning)
+	Reported 64 times (384 total reports)
+	Issue with the ath5k driver
+	This warning was last seen in version 2.6.30-rc3, and first seen in 2.6.27.12.
+	More info: http://www.kerneloops.org/searchweek.php?search=minstrel_get_rate
+
+Rank 10: dev_watchdog(r8169) (warning)
+	Reported 62 times (9116 total reports)
+	This warning was last seen in version 2.6.30-rc7, and first seen in 2.6.26.6.
+	More info: http://www.kerneloops.org/searchweek.php?search=dev_watchdog(r8169)
+
+Rank 11: nv_tx_done_optimized (warning)
+	Reported 61 times (2974 total reports)
+	the NV ethernet driver is getting caught with the new DMA API checks
+	This warning was last seen in version 2.6.30, and first seen in 2.6.29-rc3-git7.
+	More info: http://www.kerneloops.org/searchweek.php?search=nv_tx_done_optimized
+
+Rank 12: tcp_recvmsg (warning)
+	Reported 37 times (3797 total reports)
+	fixed in 2.6.30 (commit 775273131810caa41dfc7f9e552ea5d8508caf40)
+	This warning was last seen in version 2.6.30, and first seen in 2.6.25.
+	More info: http://www.kerneloops.org/searchweek.php?search=tcp_recvmsg
+
+
+-- 
+Arjan van de Ven 	Intel Open Source Technology Centre
+For development, discussion and tips for power savings, 
+visit http://www.lesswatts.org
