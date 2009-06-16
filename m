@@ -1,17 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: LSB inclusion of ALSA
-Date: Tue, 16 Jun 2009 13:59:45 +0200
-Message-ID: <4A378931.8010102@ladisch.de>
-References: <4A3296D0.4080701@novell.com>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: Please help in adding ams-delta support to ASoC
+Date: Tue, 16 Jun 2009 16:43:53 +0200
+Message-ID: <4A37AFA9.4080403__42808.585757348$1245163455$gmane$org@tis.icnet.pl>
+References: <4A1BEBE3.8010306@tis.icnet.pl>	<200906030924.14230.jkrzyszt@tis.icnet.pl>	<20090605165531.7d0c4522.jhnikula@gmail.com>	<200906060028.01600.jkrzyszt@tis.icnet.pl>	<20090608094028.415e6ec3.jhnikula@gmail.com>	<4A2E7921.7090200@tis.icnet.pl>	<4A364B1A.5040905@tis.icnet.pl>
+	<20090615181633.4570426f.jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id D5006245A4
-	for <alsa-devel@alsa-project.org>;
-	Tue, 16 Jun 2009 13:59:52 +0200 (CEST)
-In-Reply-To: <4A3296D0.4080701@novell.com>
+In-Reply-To: <20090615181633.4570426f.jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,76 +18,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Robert Schweikert <rschweikert@novell.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: linux-omap@vger.kernel.org, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Robert Schweikert wrote:
-> Currently ALSA is a trial use module for LSB
-> (http://www.linuxfoundation.org/collaborate/workgroups/lsb) 4.0 and it
-> is the intention to make ALSA mandatory with the LSB 4.1 release
-> targeted for Q1 2010. One of the requirements of a mandatory module is
-> the existence of a test suite for the module that covers a good chunk of
-> the interfaces provided by the LSB spec. An initial exploratory look at
-> the existing test cases showed that tests appear to be tied to hardware
-> drivers and are interactive.
+Jarkko Nikula wrote:
+> On Mon, 15 Jun 2009 15:22:34 +0200
+> Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
 > 
-> Is this initial impression correct?
+>>> - original patch ported to the last l-o commit supporting omap-alsa:
+>>>   - playback: works as before,
+>>>   - capture: both </dev/dsp and arecord give null output,
+>>>     but DMA interrupts still work.
+>> Not that I would see it as a real progress, but to clarify things: I 
+>> have managed to solve this particular problem with capture by
+>> patching sound/arm/omap/omap-alsa.c (call omap_get_dma_dst_pos()
+>> instead of omap_get_dma_src_pos() from audio_get_dma_pos() in case of
+>> (stream_id == SNDRV_PCM_STREAM_CAPTURE)). The original code stopped
+>> working after changes introduced to omap_get_dma_src_pos() with this
+>> patch: http://marc.info/?l=linux-omap&m=121280267705523.
+>>
+> Nice step forward. From quick look of the patch I see that patch is
+> changing how the source and destination positions are read for omap1.
+> 
+> While I don't have idea can this explain the ceased DMA in 1510 but
+> will the playback in original code work again if you change line
+> "offset = dma_read (CPC(lch));" to "offset = dma_read(CSSA_L(lch));" in
+> omap_get_dma_src_pos? Or read both CSSA_L and CSSA_U at once like code
+> before?
 
-Yes.
+Yes, it will, and even better than before, without undesirable scraps 
+repeated at the end. But that does not help in getting the new driver 
+handle mcbsp/dma correctly :(.
 
-> From an LSB testing perspective, interface testing is  very important;
-> i.e. I call the interface with the arguments required and I get the
-> expected result back.
+I can confirm that the old driver can set up mcbsp in a way that keeps 
+it shifting the contents of its input register, loaded with a pattern 
+using omap_mcbsp_pollwrite() as Peter suggested, even if I break dma by 
+commenting out all omap_start_dma() invocations. I have verified this by 
+detecting averaged voltage level changes on the codec input pin with a 
+simple multimeter (I still have not get access to a scope back).
 
-In the case of a hardware interface library like libasound, there is not
-always a result that comes back where it could by easily tested.
+Using the new driver, I am not able to detect similiar voltage changes, 
+whatever I do to get the mcbsp sending data to the codec over its serial 
+output. I have modified omap-mcbsp code with a hacked in probe hook that 
+initializes mcbsp at boot time exactly as the old driver does it - no 
+results.
 
-While many parts of the library can be tested without special hardware
-(config, sequencer+MIDI, timers), the parts that are most likely to be
-used (PCM, mixer) require at least some kernel driver and contain many
-functions that are used to handle hardware differences.
+After all, it is more and more likely that the problem is not dma, but 
+mcbsp just not shifting any data for some mysterious reason.
 
-> 1.) Is there interest from the community side to participate in this
-> effort and accept patches?
-
-I'm just an individual and cannot speak for "the community", whatever
-that is, but there is certainly interest to accept patches.
-
-> 2.) Is it reasonable to expect that the existing tests can be used in
-> some way by using a dummy sound device or a sound loop device to verify
-> output?
-
-There is a loopback driver, but it is not part of the LSB specification.
-This means that a test using this driver would not work with any
-alternate ALSA implementation.
-
-I can easily imagine LSB-compliant computers that do not have any sound
-card (e.g., most servers).  Even if the ALSA interface (i.e., libasound)
-is installed, some parts cannot be used in any meaningful way.  What is
-a test supposed to do in this case?  It could just exit with "pass",
-but this wouldn't actually _test_ much.
-
-(Hmmm, a dummy ALSA implementation that just returns -ENODEV when the
-application tries to open a device would be compliant, because it cannot
-be distinguished from the 'real' ALSA with no installed sound card.  :-)
-
-> 3.) Would the community be more comfortable if this is an effort that
-> creates new tests separate from the existing HW focused tests?
-
-The current interactive tests are mostly intended to test drivers, not
-the interface.  I don't think it would be desirable or even possible to
-integrate them into a test suite with strict pass/fail requirements.
-
-> 4.) Is anyone interested in helping with this effort, writing tests,
-> answering questions about ALSA for those not familiar with the interface
-> and or sound in general?
-
-Yes.
-
-Since most of libasound is somewhat undocumented (the doxygen reference
-is just a skeleton), I'm wondering who is going to write the tests ...
-
-
-Best regards,
-Clemens
+Thanks,
+Janusz
