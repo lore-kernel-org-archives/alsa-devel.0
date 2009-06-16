@@ -1,19 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] ASoC: pxa-ssp.c handle the I2S and
-	LEFT_J cases.
-Date: Tue, 16 Jun 2009 22:36:36 +0100
-Message-ID: <20090616213635.GA26502@sirena.org.uk>
-References: <1245113136.24109.562.camel@brutus>
+From: Guilherme <grlongo.ireland@gmail.com>
+Subject: Re: Playback open error: Device or resource busy
+Date: Tue, 16 Jun 2009 20:44:21 -0300
+Message-ID: <4A382E55.2050003@gmail.com>
+References: <4A36C12A.7070408@gmail.com> <4A376494.1080004@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E59BD2415F
+Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
+	[209.85.221.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 67A0524499
 	for <alsa-devel@alsa-project.org>;
-	Tue, 16 Jun 2009 23:36:48 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1245113136.24109.562.camel@brutus>
+	Wed, 17 Jun 2009 01:43:24 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so6080224qyk.16
+	for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2009 16:43:23 -0700 (PDT)
+In-Reply-To: <4A376494.1080004@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,17 +24,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Ribeiro <drwyrm@gmail.com>
-Cc: Paul Shen <boshen9@gmail.com>, alsa-devel <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
+To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 15, 2009 at 09:45:35PM -0300, Daniel Ribeiro wrote:
+Tks for your tip... however it seem that changing the device name =
 
->  arch/arm/mach-pxa/include/mach/regs-ssp.h |   14 ++--
+doesn't help, instead I get SEGFAULT
 
-Eric, are you happy for this change to go via ALSA?  It seems reasonable
-enough.
+static char *device =3D "plughw:0,0";        =
 
-I'm happy with these changes from a code review point of view, though
-as well as Eric's ack I'll do some more testing before I apply them.
-Thanks a lot for doing this work.
+Playback open error: Device or resource busy
+
+static char *device =3D "default";
+Segmentation fault
+
+
+I been through a great number of docs trying to find answers, but I =
+
+don't find any!
+
+Tks!
+
+-------------------
+
+Guilherme Longo
+Dept. Eng. da Computa=E7=E3o
+Unaerp
+
+Linux User - #484927
+
+*Before Asking
+http://www.istf.com.br/?page=3Dperguntas
+
+!- I'd rather die on my feet than live on my knees -!
+
+
+
+Clemens Ladisch wrote:
+> Guilherme wrote:
+>   =
+
+>> Playback device is plughw:0,0
+>> Playback open error: Device or resource busy
+>>     =
+
+>
+> That program should use "default" instead of "plughw:0,0".
+>
+>
+> HTH
+> Clemens
+>
+>   =
