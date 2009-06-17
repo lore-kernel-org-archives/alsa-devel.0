@@ -1,20 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] ASoC: pxa-ssp.c handle the I2S and
-	LEFT_J cases.
-Date: Wed, 17 Jun 2009 10:35:33 +0100
-Message-ID: <20090617093532.GA10550@sirena.org.uk>
-References: <1245113136.24109.562.camel@brutus>
-	<20090616213635.GA26502@sirena.org.uk> <4A385D00.4060601@gmail.com>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: OSS support
+Date: Wed, 17 Jun 2009 14:06:15 +0200
+Message-ID: <20090617120615.GA403@tango.0pointer.de>
+References: <4A38957C.5030905@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA0F224537
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 02E74103832
 	for <alsa-devel@alsa-project.org>;
-	Wed, 17 Jun 2009 11:35:34 +0200 (CEST)
+	Wed, 17 Jun 2009 14:06:44 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4A385D00.4060601@gmail.com>
+In-Reply-To: <4A38957C.5030905@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,18 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric Miao <eric.y.miao@gmail.com>
-Cc: Paul Shen <boshen9@gmail.com>, alsa-devel <alsa-devel@alsa-project.org>, Philipp Zabel <philipp.zabel@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Daniel Ribeiro <drwyrm@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 17, 2009 at 11:03:28AM +0800, Eric Miao wrote:
-> Mark Brown wrote:
+On Wed, 17.06.09 11:04, The Source (thesourcehim@gmail.com) wrote:
 
-> > I'm happy with these changes from a code review point of view, though
-> > as well as Eric's ack I'll do some more testing before I apply them.
-> > Thanks a lot for doing this work.
+> Is oss emulation still supported in latest alsa-driver snapshot? I 
+> installed that driver in Fedora 11 on both my static machine (X-Fi 
+> platinum fatality champion) and laptop (HDA Intel) and I don't have 
+> /dev/dsp or /dev/mixer. Should I compile the driver with some specific flag?
 
-> OK, I'll take some time to verify that on PXA3xx.
+OSS has long been obsolete. In F11 kernel OSS support is disabled by
+default. You have to edit the modprobe blacklist to reenable it again.
 
-If you could cover PXA32x that'd be really helpful - I have PXA300 here.
-They should be identical but more coverage is always better.
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
