@@ -1,19 +1,14 @@
-From: Stefan Kost <ensonic@hora-obscura.de>
-Subject: ICE1712 softdevices fixes
-Date: Wed, 17 Jun 2009 23:57:26 +0300
-Message-ID: <4A3958B6.7010205@hora-obscura.de>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: [PATCH] alsa-plugins/pulse: Implement 'pause'.
+Date: Wed, 17 Jun 2009 23:37:55 +0200
+Message-ID: <20090617213755.GB23735@tango.0pointer.de>
+References: <alpine.LFD.2.00.0906172120550.20793@troy-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5.welho.com (smtp5.welho.com [213.243.153.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id E067F243A5
-	for <alsa-devel@alsa-project.org>;
-	Wed, 17 Jun 2009 22:57:27 +0200 (CEST)
-Received: from [192.168.0.61] (cs27097184.pp.htv.fi [89.27.97.184])
-	by smtp5.welho.com (Postfix) with ESMTP id 9EDAA5BC036
-	for <alsa-devel@alsa-project.org>;
-	Wed, 17 Jun 2009 23:57:26 +0300 (EEST)
+Content-Disposition: inline
+In-Reply-To: <alpine.LFD.2.00.0906172120550.20793@troy-laptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,32 +18,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Troy Moure <twmoure@szypr.net>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, patch@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hi,
+On Wed, 17.06.09 21:55, Troy Moure (twmoure@szypr.net) wrote:
 
-> The following patches fixes the default device as they appear for =
+> Just cork or uncork the stream to pause or unpause it.
 
-> ICE1712-based cards. Without this cards, 'aplay -L' will show a series of
-> devices like surround40 and surround71 that are not meaningful for this c=
-ard,
-> and a front device that would not work.
-> =
+Looks mostly good to me, but:
 
-> Diego E. 'Flameeyes' Petten=F2 (2): Remove definition for surround sound
-> devices on ICE1712. Make the front:idx device work for ICE1712.
+> +static int pulse_pause(snd_pcm_ioplug_t * io, int enable)
+> +{
+> +	snd_pcm_pulse_t *pcm = io->private_data;
+> +	int err = 0;
+> +
+> +	assert (pcm);
+> +	assert (pcm->p);
+> +
+> +	pa_threaded_mainloop_lock(pcm->p->mainloop);
+> +
+> +	if (pcm->stream)
+> +		if (!pa_stream_cork(pcm->stream, enable, NULL, NULL))
+> +			err = -EIO;
 
+pa_stream_cork() will return a pa_operation object on success. The
+least you need to do is call pa_operation_unref() on it, which you can
+safely do right-away. Otherwise this will leak memory.
 
-thanks for making those. this was exactly what I needed to get pulseaudio
-working with my card again. I also agree that even though that my card (Hoo=
-ntech
-DSP 24) has 8/10 physical in/outs, those are essentially mono channels. The
-surround mapping seem to be more harm that use to me. If a musician indeed =
-wires
- 6 3.5 jack outs somehow to his 5.1 amp, then its probably okay to uncomment
-such mappings.
+Lennart
 
-So what about making diegos patches the default?
-
-Stefan
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
