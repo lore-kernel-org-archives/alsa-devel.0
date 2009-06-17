@@ -1,21 +1,15 @@
-From: Guilherme <grlongo.ireland@gmail.com>
-Subject: Re: sound device is buzy to run pcm.c
-Date: Wed, 17 Jun 2009 11:59:11 -0300
-Message-ID: <4A3904BF.5090101@gmail.com>
-References: <fa40cc720906142011s5c2547e9r33a484a554a89fae@mail.gmail.com>
-	<75b66ecd0906161944q40f471fdiae23c3290c866e85@mail.gmail.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: [PATCH] ALSA: snd_usb_caiaq: fix legacy input streaming
+Date: Wed, 17 Jun 2009 17:45:11 +0200
+Message-ID: <1245253511-7242-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
-	[209.85.221.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9A107103853
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D7C82414F
 	for <alsa-devel@alsa-project.org>;
-	Wed, 17 Jun 2009 16:58:58 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so458534qyk.16
-	for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2009 07:58:56 -0700 (PDT)
-In-Reply-To: <75b66ecd0906161944q40f471fdiae23c3290c866e85@mail.gmail.com>
+	Wed, 17 Jun 2009 17:45:21 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,60 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lee Revell <rlrevell@joe-job.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee, I noticed that and I killed the process.
+Seems that nobody recently tried the input on the very first supported
+sound card model, RK2. This patch fixes the byte offset to make it
+running again.
 
-After I have it killed, the program gimme segfault.....!
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
+---
+ sound/usb/caiaq/audio.c  |    5 +++--
+ sound/usb/caiaq/device.c |    2 +-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-;O( Ill check it in another machine to see what happens!
-
-Tks!
-
--------------------
-
-Guilherme Longo
-Dept. Eng. da Computa=E7=E3o
-Unaerp
-
-Linux User - #484927
-
-*Before Asking
-http://www.istf.com.br/?page=3Dperguntas
-
-!- I'd rather die on my feet than live on my knees -!
-
-
-
-Lee Revell wrote:
-> On Sun, Jun 14, 2009 at 11:11 PM, Guilherme Raymo
-> Longo<grlongo.ireland@gmail.com> wrote:
->   =
-
->> I tried to check if the device is really buzy:
->>
->> root@lap:/home/guilherme/Experimentos# lsof |grep snd
->> lsof: WARNING: can't stat() fuse.gvfs-fuse-daemon file system */
->> home/guilherme/*.gvfs
->>     Output information may be incomplete.
->> esd       5433  guilherme  mem       CHR     116,16                6947
->> /dev/snd/pcmC0D0p
->> esd       5433  guilherme    5r          CHR     116,33                6=
-787
->> /dev/snd/timer
->> esd       5433  guilherme    6w        CHR     116,16                6947
->> /dev/snd/pcmC0D0p
->> esd       5433  guilherme    7r         CHR      116,0                  =
-6987
->> /dev/snd/controlC0
->>
->> and it seems to be ok.
->>     =
-
->
-> Of course it's busy, esd has it open.
->
-> Lee
->
->   =
+diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
+index b144513..8f9b60c 100644
+--- a/sound/usb/caiaq/audio.c
++++ b/sound/usb/caiaq/audio.c
+@@ -199,8 +199,9 @@ static int snd_usb_caiaq_pcm_prepare(struct snd_pcm_substream *substream)
+ 		dev->period_out_count[index] = BYTES_PER_SAMPLE + 1;
+ 		dev->audio_out_buf_pos[index] = BYTES_PER_SAMPLE + 1;
+ 	} else {
+-		dev->period_in_count[index] = BYTES_PER_SAMPLE;
+-		dev->audio_in_buf_pos[index] = BYTES_PER_SAMPLE;
++		int in_pos = (dev->spec.data_alignment == 2) ? 0 : 2;
++		dev->period_in_count[index] = BYTES_PER_SAMPLE + in_pos;
++		dev->audio_in_buf_pos[index] = BYTES_PER_SAMPLE + in_pos;
+ 	}
+ 
+ 	if (dev->streaming)
+diff --git a/sound/usb/caiaq/device.c b/sound/usb/caiaq/device.c
+index 2240624..0e5db71 100644
+--- a/sound/usb/caiaq/device.c
++++ b/sound/usb/caiaq/device.c
+@@ -35,7 +35,7 @@
+ #include "input.h"
+ 
+ MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
+-MODULE_DESCRIPTION("caiaq USB audio, version 1.3.16");
++MODULE_DESCRIPTION("caiaq USB audio, version 1.3.17");
+ MODULE_LICENSE("GPL");
+ MODULE_SUPPORTED_DEVICE("{{Native Instruments, RigKontrol2},"
+ 			 "{Native Instruments, RigKontrol3},"
+-- 
+1.6.3.1
