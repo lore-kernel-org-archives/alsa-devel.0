@@ -1,22 +1,14 @@
-From: Sergey Lapin <slapin@ossfans.org>
-Subject: preventing SNDRV_PCM_STATE_XRUN
-Date: Thu, 18 Jun 2009 12:48:37 +0400
-Message-ID: <20090618084837.GA28278@build.ossfans.org>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: Progress in adding ams-delta support to ASoC?
+Date: Thu, 18 Jun 2009 12:02:10 +0300
+Message-ID: <200906181202.11414.peter.ujfalusi__27462.8316554756$1245315818$gmane$org@nokia.com>
+References: <4A1BEBE3.8010306@tis.icnet.pl> <4A37AFA9.4080403@tis.icnet.pl>
+	<4A38F9D6.5000803@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from build.ossfans.org (build.ossfans.org [67.223.233.67])
-	by alsa0.perex.cz (Postfix) with ESMTP id 72AE524347
-	for <alsa-devel@alsa-project.org>;
-	Thu, 18 Jun 2009 10:48:41 +0200 (CEST)
-Received: from build.ossfans.org ([127.0.0.1])
-	by build.ossfans.org (8.14.3/8.14.3/Debian-5) with ESMTP id
-	n5I8mcCc028309
-	for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2009 12:48:38 +0400
-Received: (from slapin@localhost)
-	by build.ossfans.org (8.14.3/8.14.3/Submit) id n5I8mcKj028308
-	for alsa-devel@alsa-project.org; Thu, 18 Jun 2009 12:48:38 +0400
+In-Reply-To: <4A38F9D6.5000803@tis.icnet.pl>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,16 +20,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, all!
-I have uncontrollable data stream which I need to play through kernel
-via ALSA snd_pcm_lib_write call. Everything is fine, but once
-a few seconds I get SNDRV_PCM_STATE_XRUN on stream and thus, -EPIPE.
-Sound glitches are minor, but annoying.
+On Wednesday 17 June 2009 17:12:38 ext Janusz Krzysztofik wrote:
+> Janusz Krzysztofik wrote:
+> > After all, it is more and more likely that the problem is not dma, but
+> > mcbsp just not shifting any data for some mysterious reason.
+>
+> I finally did what I should have already done before: learned about
+> dynamic debugging, turned it on and probably got the answer from
+> omap_msbsp_dump_reg(): all mcbsp1 register read operations returned
+> 0xffff. So it looks like I simply get no acccess to mcbsp1 at all. Now I
+> wonder if I can close this thread with a conclusion that mcbsp1 on
+> opam15xx is simply not yet supported by the mainline kernel that I have
+> based my work on.
 
-Is it possible to somehow prevent this from happenning? Is it possible
-to distinguish if my next chunk of data will fit?
+Hmmm, this is quite unexpected.
+Can you access to mcbsp2 or 3 registers, or only the mcbsp1 registers are n=
+ot =
 
-Thanks a lot,
-S.
+accessible?
+One thing that I have noticed is that the McBSP1 (and 3) is under the DSP =
+
+Public Peripherals, while McBSP2 is under MPU Public Peripherals (in =
+
+OMAP1510).
+I have to check it further what this actually means...
+
+>
+> Thanks,
+> Janusz
+
+-- =
+
+P=E9ter
