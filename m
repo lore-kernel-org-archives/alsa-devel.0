@@ -1,29 +1,16 @@
-From: Daniel Ribeiro <drwyrm@gmail.com>
-Subject: Re: [RFC] I2S and LEFT_J
-Date: Thu, 18 Jun 2009 09:30:58 -0300
-Message-ID: <1245328258.303.45.camel@brutus>
-References: <20090608165328.GB14026@rakim.wolfsonmicro.main>
-	<1244481992.17327.22.camel@brutus>
-	<20090608180656.GH7858@sirena.org.uk>
-	<1244494349.17327.174.camel@brutus>
-	<f17812d70906090239p5dee129egda49918b3862c0ca@mail.gmail.com>
-	<1244672649.25905.70.camel@brutus>
-	<f17812d70906110634i623eb236ib277e164678a7a34@mail.gmail.com>
-	<1244730992.21356.50.camel@brutus>
-	<f17812d70906150145p763002det5e2699442673d532@mail.gmail.com>
-	<1245077824.24109.51.camel@brutus>
-	<20090615150433.GF6106@sirena.org.uk>
-	<1245086420.24109.159.camel@brutus>  <4A39F3A5.5030109@gmail.com>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: [PATCH v2] alsa-plugins/pulse: Implement 'pause'.
+Date: Thu, 18 Jun 2009 16:40:42 +0200
+Message-ID: <20090618144042.GA28833@tango.0pointer.de>
+References: <alpine.LFD.2.00.0906172120550.20793@troy-laptop>
+	<20090617213755.GB23735@tango.0pointer.de>
+	<alpine.LFD.2.00.0906181444420.6800@troy-laptop>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4409758250591902344=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.147])
-	by alsa0.perex.cz (Postfix) with ESMTP id C205D24466
-	for <alsa-devel@alsa-project.org>;
-	Thu, 18 Jun 2009 14:31:05 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 9so494277qwj.56
-	for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2009 05:31:04 -0700 (PDT)
-In-Reply-To: <4A39F3A5.5030109@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <alpine.LFD.2.00.0906181444420.6800@troy-laptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,77 +20,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric Miao <eric.y.miao@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, pHilipp Zabel <philipp.zabel@gmail.com>
+To: Troy Moure <twmoure@szypr.net>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, patch@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 18.06.09 14:55, Troy Moure (twmoure@szypr.net) wrote:
 
---===============4409758250591902344==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-tEO9fJWMemRZ3Rj2ShD4"
+> > pa_stream_cork() will return a pa_operation object on success. The
+> > least you need to do is call pa_operation_unref() on it, which you can
+> > safely do right-away. Otherwise this will leak memory.
+> > 
+> > Lennart
+> 
+> Thanks, Lennart, for looking at the first verson I sent.  I've added a 
+> call to pa_operation_unref() as you suggested.
+
+Looks good to me now.
+
+> 
+>  pulse/pcm_pulse.c |   25 +++++++++++++++++++++++++
+>  1 files changed, 25 insertions(+), 0 deletions(-)
+> 
+> diff --git a/pulse/pcm_pulse.c b/pulse/pcm_pulse.c
+> index db8d1e1..c276839 100644
+> --- a/pulse/pcm_pulse.c
+> +++ b/pulse/pcm_pulse.c
+> @@ -739,6 +739,30 @@ static int pulse_close(snd_pcm_ioplug_t * io)
+>  	return 0;
+>  }
+>  
+> +static int pulse_pause(snd_pcm_ioplug_t * io, int enable)
+> +{
+> +	snd_pcm_pulse_t *pcm = io->private_data;
+> +	int err = 0;
+> +
+> +	assert (pcm);
+> +	assert (pcm->p);
+> +
+> +	pa_threaded_mainloop_lock(pcm->p->mainloop);
+> +
+> +	if (pcm->stream) {
+> +		pa_operation *o;
+> +		o = pa_stream_cork(pcm->stream, enable, NULL, NULL);
+> +		if (o)
+> +			pa_operation_unref(o);
+> +		else
+> +			err = -EIO;
+> +	}
+> +
+> +	pa_threaded_mainloop_unlock(pcm->p->mainloop);
+> +
+> +	return err;
+> +}
+> +
+>  static const snd_pcm_ioplug_callback_t pulse_playback_callback = {
+>  	.start = pulse_start,
+>  	.stop = pulse_stop,
+> @@ -750,6 +774,7 @@ static const snd_pcm_ioplug_callback_t pulse_playback_callback = {
+>  	.prepare = pulse_prepare,
+>  	.hw_params = pulse_hw_params,
+>  	.close = pulse_close,
+> +	.pause = pulse_pause
+>  };
+>  
+>  
 
 
---=-tEO9fJWMemRZ3Rj2ShD4
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Lennart
 
-Em Qui, 2009-06-18 =C3=A0s 15:58 +0800, Eric Miao escreveu:
-> Daniel,
->=20
-> Could you give me an example of how can I setup the I2S in-compatible
-> mode with S_16LE, 64bitfs with your current patch? Thanks.
-
-Hi Eric,
-
-If your codec can work with S16LE and 32bitfs, then i suggest you to use
-this mode. If not, then you need to setup TDM.
-
-For 2*16 on 32bitfs:
-Don't call set_tdm_slot().
-
-For 2*16 on 64bitfs:
-Call set_tdm_slot(5, 5, 4, 16).
-
-For 2*16 on 128bitfs:
-Call set_tdm_slot(0x11, 0x11, 8, 16).
-
-For 2*32 on 64bitfs:
-Don't call set_tdm_slot().
-
-For 2*32 on 128bitfs:
-Call set_tdm_slot(5, 5, 4, 32).
-
-Please note that I have _not_ tested the sample_width * channels !=3D
-frame_width cases(only possible on PXA3XX), and maybe we still need to
-amend these.
-
---=20
-Daniel Ribeiro
-
---=-tEO9fJWMemRZ3Rj2ShD4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Esta =?ISO-8859-1?Q?=E9?= uma parte de mensagem
- assinada digitalmente
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEABECAAYFAko6M3oACgkQw3OYl0G0liTZwwCeNCLlhYQyhT6Jxz2VDEBmbH2n
-upQAn2zOWp/CvNC8cU19ngAwJFd3TUZM
-=AdzG
------END PGP SIGNATURE-----
-
---=-tEO9fJWMemRZ3Rj2ShD4--
-
-
---===============4409758250591902344==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============4409758250591902344==--
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
