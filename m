@@ -1,31 +1,17 @@
-From: ZeroCluo <Zero.CLuo@gmail.com>
-Subject: Re: trace PCM data from usb bus to alsa lib
-Date: Thu, 18 Jun 2009 01:52:15 +0000 (UTC)
-Message-ID: <loom.20090618T014509-681@post.gmane.org>
-References: <loom.20090617T071323-969@post.gmane.org>
-	<s5h4ouf47cp.wl%tiwai@suse.de>
-	<34ae6efa0906170110u30dbe2deg58cf34b73a838116@mail.gmail.com>
-	<s5h1vpj46kl.wl%tiwai@suse.de>
-	<loom.20090617T082142-470@post.gmane.org>
-	<s5hab4626yx.wl%tiwai@suse.de>
+From: Karthik Ramgopal <applefreakpeeps@gmail.com>
+Subject: Regarding internal mic on Aspire 6935G
+Date: Thu, 18 Jun 2009 13:38:52 +0800
+Message-ID: <4b8c423b0906172238l36fd4740n62b2f9d9ac8b6cd3@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6CCC51037ED
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.241])
+	by alsa0.perex.cz (Postfix) with ESMTP id 544371037ED
 	for <alsa-devel@alsa-project.org>;
-	Thu, 18 Jun 2009 03:52:30 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1MH6nl-0002RW-65
-	for alsa-devel@alsa-project.org; Thu, 18 Jun 2009 01:52:30 +0000
-Received: from mail.sernet.com.cn ([202.102.106.2])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2009 01:52:29 +0000
-Received: from Zero.CLuo by mail.sernet.com.cn with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2009 01:52:29 +0000
+	Thu, 18 Jun 2009 07:38:53 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c3so368888ana.2
+	for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2009 22:38:52 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,19 +21,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, hector@marcansoft.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
+      Sorry for the confusion. My internal mic does work, but wierdly
+not in Gnome Sound recorder. Skype detects it just fine and I am able
+to talk without making any changes to the code. So, I guess 8930G and
+6935G are same after all.
 
-> Well, another question is whether the output result is correct.
-> Did you get broken output or so?
-> 
-> Takashi
-> 
+Thanks and Regards,
+Karthik
 
-
- First,thanks for your reply.
-
-Output should be correct.I can hear smooth voice. It real confuse me...
-
-Zero
+PS: Please also add the PCI ID's of 6920G (0x1025 0146) and 8920G
+(0x1025 0145) under the same quirk. They also use ALC889 chipset with
+the same pinconfig.
