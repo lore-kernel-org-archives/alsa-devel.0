@@ -1,18 +1,16 @@
-From: Karthik Ramgopal <applefreakpeeps@gmail.com>
-Subject: Re: Regarding internal mic on Aspire 6935G
-Date: Thu, 18 Jun 2009 17:14:31 +0800
-Message-ID: <4b8c423b0906180214y546f93c4pcb2bc9b142d47130@mail.gmail.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: Progress in adding ams-delta support to ASoC?
+Date: Thu, 18 Jun 2009 10:58:24 +0300
+Message-ID: <20090618075820.GG8482__24079.3405486786$1245321293$gmane$org@atomide.com>
+References: <4A1BEBE3.8010306@tis.icnet.pl> <4A37AFA9.4080403@tis.icnet.pl>
+	<4A38F9D6.5000803@tis.icnet.pl>
+	<200906181202.11414.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f197.google.com (mail-pz0-f197.google.com
-	[209.85.222.197])
-	by alsa0.perex.cz (Postfix) with ESMTP id 64DA42441D
-	for <alsa-devel@alsa-project.org>;
-	Thu, 18 Jun 2009 11:14:32 +0200 (CEST)
-Received: by pzk35 with SMTP id 35so868412pzk.16
-	for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2009 02:14:31 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <200906181202.11414.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,14 +20,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, hector@marcansoft.com
+To: alsa-devel@alsa-project.org
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>, ext Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-        How to check if it works in stereo or mono mode? I remember
-reading hector's entry on his blog that on account of some wierd
-sum/difference problem he had duplicated the + signal across both
-outputs so it was actually mono?
+* Peter Ujfalusi <peter.ujfalusi@nokia.com> [090618 12:03]:
+> On Wednesday 17 June 2009 17:12:38 ext Janusz Krzysztofik wrote:
+> > Janusz Krzysztofik wrote:
+> > > After all, it is more and more likely that the problem is not dma, but
+> > > mcbsp just not shifting any data for some mysterious reason.
+> >
+> > I finally did what I should have already done before: learned about
+> > dynamic debugging, turned it on and probably got the answer from
+> > omap_msbsp_dump_reg(): all mcbsp1 register read operations returned
+> > 0xffff. So it looks like I simply get no acccess to mcbsp1 at all. Now I
+> > wonder if I can close this thread with a conclusion that mcbsp1 on
+> > opam15xx is simply not yet supported by the mainline kernel that I have
+> > based my work on.
+> 
+> Hmmm, this is quite unexpected.
+> Can you access to mcbsp2 or 3 registers, or only the mcbsp1 registers are not 
+> accessible?
+> One thing that I have noticed is that the McBSP1 (and 3) is under the DSP 
+> Public Peripherals, while McBSP2 is under MPU Public Peripherals (in 
+> OMAP1510).
+> I have to check it further what this actually means...
+
+Hmmm, do you have the DSP code compiled (and loaded)?
+
+On omap1, DSP needs to be powered and idled before some mcbsp clocks can
+be used. Or at least needs to be powered up.
 
 Regards,
-Karthik
+
+Tony
