@@ -1,16 +1,14 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: Progress in adding ams-delta support to ASoC?
-Date: Thu, 18 Jun 2009 10:58:24 +0300
-Message-ID: <20090618075820.GG8482__24079.3405486786$1245321293$gmane$org@atomide.com>
-References: <4A1BEBE3.8010306@tis.icnet.pl> <4A37AFA9.4080403@tis.icnet.pl>
-	<4A38F9D6.5000803@tis.icnet.pl>
-	<200906181202.11414.peter.ujfalusi@nokia.com>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: Please help in adding ams-delta support to ASoC
+Date: Thu, 18 Jun 2009 13:40:56 +0200
+Message-ID: <4A3A27C8.60005__10436.9425135248$1245325307$gmane$org@tis.icnet.pl>
+References: <4A1BEBE3.8010306@tis.icnet.pl>	<200906030924.14230.jkrzyszt@tis.icnet.pl>	<20090605165531.7d0c4522.jhnikula@gmail.com>	<200906060028.01600.jkrzyszt@tis.icnet.pl>	<20090608094028.415e6ec3.jhnikula@gmail.com>	<4A2E7921.7090200@tis.icnet.pl>	<4A364B1A.5040905@tis.icnet.pl>	<20090615181633.4570426f.jhnikula@gmail.com>	<4A37AFA9.4080403@tis.icnet.pl>
+	<20090618090712.8f8ecd53.jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
-In-Reply-To: <200906181202.11414.peter.ujfalusi@nokia.com>
+In-Reply-To: <20090618090712.8f8ecd53.jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,36 +19,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>, ext Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: linux-omap@vger.kernel.org, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-* Peter Ujfalusi <peter.ujfalusi@nokia.com> [090618 12:03]:
-> On Wednesday 17 June 2009 17:12:38 ext Janusz Krzysztofik wrote:
-> > Janusz Krzysztofik wrote:
-> > > After all, it is more and more likely that the problem is not dma, but
-> > > mcbsp just not shifting any data for some mysterious reason.
-> >
-> > I finally did what I should have already done before: learned about
-> > dynamic debugging, turned it on and probably got the answer from
-> > omap_msbsp_dump_reg(): all mcbsp1 register read operations returned
-> > 0xffff. So it looks like I simply get no acccess to mcbsp1 at all. Now I
-> > wonder if I can close this thread with a conclusion that mcbsp1 on
-> > opam15xx is simply not yet supported by the mainline kernel that I have
-> > based my work on.
+Jarkko Nikula wrote:
+> Hmm, recall, did you try hacking the ASoC driver at the same commit
+> d8376cc482b241701f7606c81ad578b90853e175 where older driver still
+> exists and works? There has been ASoC OMAP fixes and changes since
+> then but nothing which can explain why it doesn't work now for 1510.
 > 
-> Hmmm, this is quite unexpected.
-> Can you access to mcbsp2 or 3 registers, or only the mcbsp1 registers are not 
-> accessible?
-> One thing that I have noticed is that the McBSP1 (and 3) is under the DSP 
-> Public Peripherals, while McBSP2 is under MPU Public Peripherals (in 
-> OMAP1510).
-> I have to check it further what this actually means...
+> There we would know that clock framework, register access etc. works for
+> McBSP on 1510.
 
-Hmmm, do you have the DSP code compiled (and loaded)?
+Yes, after realizing that possible lack of OMAP1510 McBSP1/3 / DSP 
+support in the mainline tree could be the reason of my problem, I got 
+back to omap tree. First I retried the new driver on commit 
+90e758af52ba803cba233fabee81176d99589f09 and confirmed the prevoiusly 
+seen hangup. I found that it was omap_mcbsp_request() never returning 
+back from.
 
-On omap1, DSP needs to be powered and idled before some mcbsp clocks can
-be used. Or at least needs to be powered up.
+Then I retired the same on the commit 
+d8376cc482b241701f7606c81ad578b90853e175 and got similiar hangup. Next, 
+I moved mcbsp initialization to a boot time hook and finally heard a 
+sound and got my first DMA interrupt!
 
-Regards,
+So it seams I have finally managed to take all necessary steps back, and 
+now I can go forward, I hope :).
 
-Tony
+Thanks,
+Janusz
