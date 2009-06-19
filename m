@@ -1,21 +1,21 @@
-From: Mike Frysinger <vapier.adi@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] New ASoC Drivers for ADI AD1938 codec
-Date: Fri, 19 Jun 2009 07:05:48 -0400
-Message-ID: <8bd0f97a0906190405k33503d8ekd74ec9ddbb2fde12@mail.gmail.com>
+Date: Fri, 19 Jun 2009 12:13:36 +0100
+Message-ID: <A40FAF28-889C-4322-A114-098EEA56FCE6@opensource.wolfsonmicro.com>
 References: <1245403695-20537-1-git-send-email-21cnbao@gmail.com>
 	<20090619104738.GF5270@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	<8bd0f97a0906190405k33503d8ekd74ec9ddbb2fde12@mail.gmail.com>
+	(sfid-20090619_120614_172883_1B2E9095)
+Mime-Version: 1.0 (iPhone Mail 7A341)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f185.google.com (mail-yx0-f185.google.com
-	[209.85.210.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id 08771244DD
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BC76310381A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Jun 2009 13:06:08 +0200 (CEST)
-Received: by yxe15 with SMTP id 15so1703098yxe.16
-	for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2009 04:06:08 -0700 (PDT)
-In-Reply-To: <20090619104738.GF5270@sirena.org.uk>
+	Fri, 19 Jun 2009 13:13:57 +0200 (CEST)
+In-Reply-To: <8bd0f97a0906190405k33503d8ekd74ec9ddbb2fde12@mail.gmail.com>
+	(sfid-20090619_120614_172883_1B2E9095)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,39 +25,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>, linux-kernel@vger.kernel.org, lrg@slimlogic.co.uk
+To: Mike Frysinger <vapier.adi@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Barry Song <21cnbao@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBKdW4gMTksIDIwMDkgYXQgMDY6NDcsIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gRnJp
-LCBKdW4gMTksIDIwMDkgYXQgMDU6Mjg6MTVQTSArMDgwMCwgQmFycnkgU29uZyB3cm90ZToKPj4g
-MS4gYWRkIEFEMTkzOCBjb2RlYyBkcml2ZXIgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgKGNv
-ZGVjKQo+PiAyLiBhZGQgYmxhY2tmaW4gU1BPUlQtVERNIERBSSBhbmQgUENNIGRyaXZlciAocGxh
-dGZvcm0pCj4+IDMuIGFkZCBiZjV4eCBib2FyZCB3aXRoIEFEMTkzOCBkcml2ZXIgwqAgwqAgwqAg
-wqAobWFjaGluZSkKPgo+IEFzIExpYW0gc2FpZCB5b3UgcmVhbGx5IG5lZWQgdG8gc3VibWl0IHRo
-aXMgYXMgYSBwYXRjaCBzZXJpZXMgcmF0aGVyCj4gdGhhbiBhcyBhIHNpbmdsZSBiaWcgcGF0Y2gg
-LSBhcyB5b3VyIGNvbW1pdCBsb2cgaGVyZSBpbmRpY2F0ZXMgeW91J3ZlCj4gZ290IHNldmVyYWwg
-ZGlmZmVyZW50IHRoaW5ncyBnb2luZyBvbiBoZXJlLgoKYmxhaCwgaSBoYWQgdGhpcyBxdWV1ZWQg
-bG9jYWxseSB3aXRoIGEgInRvZG86c3BsaXQiLiAgd2FudGVkIHRvIHdhaXQKZm9yIEJhcnJ5IHRv
-IGZpbmlzaCBkZXZlbG9waW5nIHRoZSBkcml2ZXIgZmlyc3QgdGhvdWdoLgoKYXQgYW55IHJhdGUs
-IGkgaGF0ZSB0byBzb3VuZCBsaWtlIGEgYnJva2VuIHJlY29yZCB3cnQgbXkgYWxzYQppZ25vcmFu
-Y2UsIGJ1dCBpJ20gdGhpbmtpbmcgdGhlIGxvZ2ljYWwgc3BsaXQgd291bGQgYmUgbGlrZSBCYXJy
-eQpudW1iZXJlZCBpdCAtLSBvbmUgcGF0Y2ggZm9yIHNvdW5kL2NvZGVjLywgb25lIHBhdGNoIGZv
-ciB0aGUgVERNCnRyYW5zcG9ydCwgYW5kIG9uZSBwYXRjaCBmb3IgaG9va2luZyB1cCB0aGUgQUQx
-OTM4IHRvIFRETS4KCj4+ICtzdGF0aWMgaW50IF9fZGV2aW5pdCBhZDE5Mzhfc3BpX3Byb2JlKHN0
-cnVjdCBzcGlfZGV2aWNlICpzcGkpCj4+ICt7Cj4+ICsgwqAgwqAgc3BpLT5kZXYucG93ZXIucG93
-ZXJfc3RhdGUgPSBQTVNHX09OOwo+PiArIMKgIMKgIGFkMTkzOF9zb2NkZXYtPmNhcmQtPmNvZGVj
-LT5jb250cm9sX2RhdGEgPSBzcGk7Cj4+ICsKPj4gKyDCoCDCoCByZXR1cm4gMDsKPj4gK30KPj4g
-Kwo+PiArc3RhdGljIGludCBfX2RldmV4aXQgYWQxOTM4X3NwaV9yZW1vdmUoc3RydWN0IHNwaV9k
-ZXZpY2UgKnNwaSkKPj4gK3sKPj4gKyDCoCDCoCByZXR1cm4gMDsKPj4gK30KPgo+IFlvdXIgZGV2
-aWNlIHByb2Jpbmcgc2hvdWxkIGFsbCBiZSByZXN0cnVjdHVyZWQgc28gdGhhdCB0aGUgU1BJIGRl
-dmljZQo+IGZvciB0aGUgQ09ERUMgaXMgcmVnaXN0ZXJlZCBhcyBhbnkgb3RoZXIgU1BJIGRldmlj
-ZSByYXRoZXIgdGhhbiBiZWluZwo+IHNldCB1cCBhcyBwYXJ0IG9mIHByb2JpbmcgdGhlIEFTb0Mg
-ZGV2aWNlLiDCoFNlZSB0aGUgd204NzMxIGRyaXZlciBmb3IKPiBhbiBleGFtcGxlIG9mIGRvaW5n
-IHRoaXMgZm9yIGEgU1BJIGRldmljZS4KPgo+IFRoaXMgd2lsbCByZXF1aXJlIHRoYXQgdGhlIGFy
-Y2ggY29kZSBmb3IgYW55IHN5c3RlbXMgd2l0aCB0aGUgYWQxOTM4Cj4gZG8gdGhlIHNldHVwIG9m
-IHRoZSBkZXZpY2UuCgpzbyBzaG91bGQgc291bmQvc29jL2JsYWNrZmluL2JmNXh4LWFkMTkzOC5j
-IGV2ZW4gZXhpc3QgaW4gdGhlIGZpcnN0IHBsYWNlID8KLW1pa2UKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 19 Jun 2009, at 12:05, Mike Frysinger <vapier.adi@gmail.com> wrote:
+
+> On Fri, Jun 19, 2009 at 06:47, Mark Brown wrote:
+>> On Fri, Jun 19, 2009 at 05:28:15PM +0800, Barry Song wrote:
+>>> 1. add AD1938 codec driver                   (codec)
+>>> 2. add blackfin SPORT-TDM DAI and PCM driver (platform)
+>>> 3. add bf5xx board with AD1938 driver        (machine)
+>>
+>> As Liam said you really need to submit this as a patch series rather
+>> than as a single big patch - as your commit log here indicates you've
+>> got several different things going on here.
+>
+> blah, i had this queued locally with a "todo:split".  wanted to wait
+> for Barry to finish developing the driver first though.
+>
+> at any rate, i hate to sound like a broken record wrt my alsa
+> ignorance, but i'm thinking the logical split would be like Barry
+> numbered it -- one patch for sound/codec/, one patch for the TDM
+> transport, and one patch for hooking up the AD1938 to TDM.
+
+Yes, though if the new DAI format had been required it would be worth  
+considering a separate patch for it.
+
+>
+>>> +static int __devinit ad1938_spi_probe(struct spi_device *spi)
+>>> +{
+>>> +     spi->dev.power.power_state = PMSG_ON;
+>>> +     ad1938_socdev->card->codec->control_data = spi;
+>>> +
+>>> +     return 0;
+>>> +}
+>>> +
+>>> +static int __devexit ad1938_spi_remove(struct spi_device *spi)
+>>> +{
+>>> +     return 0;
+>>> +}
+>>
+>> Your device probing should all be restructured so that the SPI device
+>> for the CODEC is registered as any other SPI device rather than being
+>> set up as part of probing the ASoC device.  See the wm8731 driver for
+>> an example of doing this for a SPI device.
+>>
+>> This will require that the arch code for any systems with the ad1938
+>> do the setup of the device.
+>
+> so should sound/soc/blackfin/bf5xx-ad1938.c even exist in the first  
+> place ?
+
+Yes. It is needed in order to specify how things are hooked up on a  
+given board.
