@@ -1,24 +1,20 @@
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: Re: Why analog loopback of sigmatel devices got
- removed?
-Date: Fri, 19 Jun 2009 17:55:14 +0300
-Message-ID: <1245423314.19535.0.camel@localhost>
-References: <1245369035.6830.27.camel@localhost>
-	<s5h1vpgg2d6.wl%tiwai@suse.de> <1245399701.8549.2.camel@localhost>
-	<s5hfxdweioc.wl%tiwai@suse.de> <1245411399.9708.3.camel@localhost>
-	<s5heitggzf4.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: RFC: Jack-detection control elements on HD-audio
+Date: Fri, 19 Jun 2009 17:37:44 +0100
+Message-ID: <20090619163743.GA7861@sirena.org.uk>
+References: <s5hk538ejj4.wl%tiwai@suse.de>
+	<20090619095322.GC5270@sirena.org.uk>
+	<s5h1vpgilhq.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f215.google.com (mail-bw0-f215.google.com
-	[209.85.218.215])
-	by alsa0.perex.cz (Postfix) with ESMTP id C44DC1038BB
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8501224574
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Jun 2009 16:55:19 +0200 (CEST)
-Received: by bwz11 with SMTP id 11so1883471bwz.32
-	for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2009 07:55:18 -0700 (PDT)
-In-Reply-To: <s5heitggzf4.wl%tiwai@suse.de>
+	Fri, 19 Jun 2009 18:37:45 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5h1vpgilhq.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,45 +25,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Maxim Levitsky <maximlevitsky@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lennart Poettering <mznyfn@0pointer.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2009-06-19 at 14:50 +0200, Takashi Iwai wrote:
-> At Fri, 19 Jun 2009 14:36:39 +0300,
-> Maxim Levitsky wrote:
-> > 
-> > On Fri, 2009-06-19 at 10:23 +0200, Takashi Iwai wrote:
-> > > At Fri, 19 Jun 2009 11:21:41 +0300,
-> > > Maxim Levitsky wrote:
-> > > > 
-> > > > On Fri, 2009-06-19 at 08:32 +0200, Takashi Iwai wrote:
-> > > > > At Fri, 19 Jun 2009 02:50:35 +0300,
-> > > > > Maxim Levitsky wrote:
-> > > > > > 
-> > > > > > Hi,
-> > > > > > 
-> > > > > > Due to lack of time, I didn't update kernel on my desktop system.
-> > > > > > Now I notice that analog loopback go removed. Why?
-> > > > > 
-> > > > > Because it harms than helps more often.  I've got tons of bug reports
-> > > > > and been upset just because users blindly set "Analog Loopback" mixer
-> > > > > switch and lost their sound output.  This is no mixer element that
-> > > > > behaves intuitively -- it shuts out PCM output instead of adding the
-> > > > > analog loopback like other hardwares.
-> > > > 
-> > > > Here it doesn't shut PCM.
-> > > > I just hear input in headphones, mixed with output.
-> > > > I suspect that this feature might not work correctly on newer devices
-> > > > that ones I have added.
-> > > 
-> > > Possibly...
-> > 
-> > Probably IDT removed the analog mixer in quest for better quality.
-> > 
-> > I think it should work fine for "STAC..." parts.
-> > 
-> > Anyway lets put it back at least for my STAC9227, OK?
-> 
-> You can still use it just by adjusting the sysfs (and in near future
-> via a patch file), so I'm not going to take it back for the default.
-Thanks....
+On Fri, Jun 19, 2009 at 12:08:49PM +0200, Takashi Iwai wrote:
+
+> Sorry, my wording was unclear.  Let me clarify: the input jack API is
+> there and used as is now.  What I meant as "supersedes" is that the
+> code to create and handle the input jack instances in HD-audio driver
+> is generalized to one and used together with the control API.
+
+Ah, OK - in that case it sounds like a great idea.  Normally superceding
+something implies replacing it (so ALSA supercedes OSS).
+
+> > > For example, you'll have "Jack HP-Out" (or a bit more verbose like
+> > > "Jack HP-Out at Ext Rear") control via control API as well as other
+> > > mixer controls.  This can notify when a jack is plugged/unplugged.
+
+> > Including the colours (where reported) is often very helpful for
+> > figuring out what's what.  The pictures manufacturers seem fond of using
+> > for describing the jack functions aren't always models of clarity to the
+> > general user.
+
+> Yes, HD-audio spec gives such information, too.
+
+It was HDA that I was thinking about.
+
+> However, the verbose information like a color doesn't fit into the id
+> string.  A better option would be through the additional TLV like dB
+> scale.  I just considered but didn't write up yet.
+
+Yeah, so long as the information is there it doesn't really matter how
+it gets there.
