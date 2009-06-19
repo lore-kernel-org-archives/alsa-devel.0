@@ -1,20 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: RFC: Jack-detection control elements on HD-audio
-Date: Fri, 19 Jun 2009 17:37:44 +0100
-Message-ID: <20090619163743.GA7861@sirena.org.uk>
-References: <s5hk538ejj4.wl%tiwai@suse.de>
-	<20090619095322.GC5270@sirena.org.uk>
-	<s5h1vpgilhq.wl%tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: RFC: PCM extra attributes
+Date: Fri, 19 Jun 2009 18:58:46 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.0906191840210.3983@eeebox2.perex-int.cz>
+References: <s5hiqiseiwj.wl%tiwai@suse.de>
+	<alpine.LNX.2.00.0906191031001.3983@eeebox2.perex-int.cz>
+	<s5hbpokegf9.wl%tiwai@suse.de>
+	<alpine.LNX.2.00.0906191202590.3983@eeebox2.perex-int.cz>
+	<alpine.LNX.2.00.0906191241060.3983@eeebox2.perex-int.cz>
+	<s5htz2ch4w6.wl%tiwai@suse.de>
+	<alpine.LNX.2.00.0906191305430.3983@eeebox2.perex-int.cz>
+	<s5hljnoh0o1.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8501224574
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2312024579
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Jun 2009 18:37:45 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5h1vpgilhq.wl%tiwai@suse.de>
+	Fri, 19 Jun 2009 18:58:47 +0200 (CEST)
+In-Reply-To: <s5hljnoh0o1.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,35 +29,170 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Lennart Poettering <mznyfn@0pointer.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 19, 2009 at 12:08:49PM +0200, Takashi Iwai wrote:
+On Fri, 19 Jun 2009, Takashi Iwai wrote:
 
-> Sorry, my wording was unclear.  Let me clarify: the input jack API is
-> there and used as is now.  What I meant as "supersedes" is that the
-> code to create and handle the input jack instances in HD-audio driver
-> is generalized to one and used together with the control API.
+> At Fri, 19 Jun 2009 13:14:15 +0200 (CEST),
+> Jaroslav Kysela wrote:
+>>
+>> On Fri, 19 Jun 2009, Takashi Iwai wrote:
+>>
+>>> At Fri, 19 Jun 2009 12:45:04 +0200 (CEST),
+>>> Jaroslav Kysela wrote:
+>>>>
+>>>> On Fri, 19 Jun 2009, Jaroslav Kysela wrote:
+>>>>
+>>>>> On Fri, 19 Jun 2009, Takashi Iwai wrote:
+>>>>>
+>>>>>> At Fri, 19 Jun 2009 10:47:30 +0200 (CEST),
+>>>>>> Jaroslav Kysela wrote:
+>>>>>>>
+>>>>>>> On Fri, 19 Jun 2009, Takashi Iwai wrote:
+>>>>>>>
+>>>>>>>> Hi,
+>>>>>>>>
+>>>>>>>> this is yet another topic I'm (currently) working on -- the addition
+>>>>>>>> of PCM ioctls to get/set some extra attributes.  Basically, it adds
+>>>>>>>> two simple ioctls for getting/setting extra attributes to the PCM
+>>>>>>>> substream.  The attribute has a sort of TLV form,
+>>>>>>>>
+>>>>>>>>  /* PCM extra attributes */
+>>>>>>>>  struct snd_pcm_attr {
+>>>>>>>>  	unsigned int type;	/* SNDRC_PCM_TYPE_ATTR_XXX */
+>>>>>>>>  	unsigned int len;	/* GET R: the max elements in value array
+>>>>>>>>  				 *     W: the actually written # elements
+>>>>>>>>  				 * SET R/W: # elements to store
+>>>>>>>>  				 */
+>>>>>>>>  	unsigned int value[0];	/* value(s) to read / write */
+>>>>>>>>  };
+>>>>>>>>
+>>>>>>>> And corresponding two ioctls
+>>>>>>>>  #define SNDRV_PCM_IOCTL_GET_ATTR	_IOWR('A', 0x14, struct snd_pcm_attr)
+>>>>>>>>  #define SNDRV_PCM_IOCTL_SET_ATTR	_IOWR('A', 0x15, struct snd_pcm_attr)
+>>>>>>>
+>>>>>>> I would prefer to implement similar TLV implementation as for the control
+>>>>>>> API. The amount of information for reading (get) will be small, so
+>>>>>>> filtering in this direction is not necessary. Also, common parts of
+>>>>>>> implementation (future merging of more TLVs to compounds) can be shared.
+>>>>>>
+>>>>>> Actually it's a sort of TLV.  You see exactly it in snd_pcm_attr
+>>>>>> struct, no? :)
+>>>>>>
+>>>>>> And, thinking twice after posting (that's a good effect of posting to
+>>>>>> ML, BTW), I feel that using a callback would be a better way, such as
+>>>>>> re-using the existing ops->ioctl with a new cmd tag rather than the
+>>>>>> statically assigned thing.
+>>>>>>
+>>>>>> A similar method like control TLV can be used, too.  However, a
+>>>>>> distinct from the existing control TLV is that this is intended for
+>>>>>> just one type of information while the control TLV is supposed to
+>>>>>> contain everything in a single shot.
+>>>>>>
+>>>>>> That is, this is a query with a key.  In that sense, sharing a small
+>>>>>> amount of control TLV code (about 10 lines) doesn't give a big
+>>>>>> benefit.  In anyways, it's a implementation detail, so one could
+>>>>>> optimize somehow, though...
+>>>>>
+>>>>> I don't mean current implementation. TLVs can be nested. In this case, we
+>>>>> need a set of functions which operates with TLVs (merging). These
+>>>>> functions can be shared. It's also possible to share TLV code in
+>>>>> the user space (search). But it's really implementation detail. We should
+>>>>> focus on ioctl definitions now.
+>>>>>
+>>>>> I would defined 'struct snd_pcm_attr' as 'struct snd_tlv' - it's same as
+>>>>> for control API.
+>>>>>
+>>>>> The control API has:
+>>>>>
+>>>>> SNDRV_CTL_IOCTL_TLV_READ	- read all static information
+>>>>> SNDRV_CTL_IOCTL_TLV_WRITE	- write static information (userspace controls)
+>>>>> SNDRV_CTL_IOCTL_TLV_COMMAND	- change some setup
+>>>>>
+>>>>> So, SNDRV_CTL_IOCTL_TLV_COMMAND == SNDRV_PCM_IOCTL_SET_ATTR in your
+>>>>> proposal.
+>>>>>
+>>>>> SNDRV_CTL_IOCTL_TLV_WRITE is not probably useable unless we have virtual
+>>>>> user-space PCM interface kernel implementation.
+>>>>>
+>>>>> SNDRV_CTL_IOCTL_TLV_READ might make sense for static-only information
+>>>>> which don't change between open()/close() syscalls for given substream.
+>>>>>
+>>>>> SNDRV_PCM_IOCTL_GET_ATTR cannot be mapped at this time. Might be something
+>>>>> like TLV_READONE, TLV_CONFIG, TLV_SETUP, TLV_GET or so - what's better
+>>>>> for COMMAND word, if we agree on common names for all kernel interfaces.
+>>>>
+>>>> BTW: It's also question, if to divide TLVs to static/configuration ones.
+>>>> TLV_READ might just return all TLVs and TLV_READONE filter only one, if
+>>>> user space does not want to obtain all information.
+>>>>
+>>>> I would like to preserve TLV_READ to obtain all TLVs for possible user
+>>>> space enumeration (for example for debugging purposes) rather that do a
+>>>> single query for all possible TLV types.
+>>>
+>>> I disagree with "all-in-on-TLV" strategy.  That makes life much harder.
+>>> Sorry, it's no go.
+>>
+>> Sorry, the implementation can be more simple than you think. Imagine just
+>> a TLV callback in the lowlevel driver and switch/case statement in the
+>> callback. We can define a special type in kernel that queries for all
+>> present TLV types (bitmap) and the ioctl TLV_READ implementation can just
+>> compose results from single queries. So, the code in the lowlevel driver
+>> will grow only with 4 (or less) lines:
+>>
+>>  	case TLV_TYPES:
+>>  		tlv.length = 4;
+>>  		tlv.data[0] = (1<<TLV_CHANNEL_MAP) | (1<<TLV_CONTROL_IDS);
+>>  		return 0;
+>
+> Sorry I can't draw a picture from your explanation.
+> How can it compose a "all-in-one" TLV at each time?
 
-Ah, OK - in that case it sounds like a great idea.  Normally superceding
-something implies replacing it (so ALSA supercedes OSS).
+The tlv_read ioctl will be something like this (simplified without 
+proper length and allocation handling):
 
-> > > For example, you'll have "Jack HP-Out" (or a bit more verbose like
-> > > "Jack HP-Out at Ext Rear") control via control API as well as other
-> > > mixer controls.  This can notify when a jack is plugged/unplugged.
+ 	tlv_types.type = TLV_TYPES;
+ 	tlv_callback(tlv_types);
+ 	idx = 0;
+ 	while (tlv_types[0] && (tlv_types[0] & (1 << idx)) != 0) {
+ 		tlv.type = idx;
+ 		tlv_callback(tlv);
+ 		merge_tlv(result, tlv);
+ 		tlv_types[0] &= ~(1 << idx);
+ 		idx++;
+ 	}
 
-> > Including the colours (where reported) is often very helpful for
-> > figuring out what's what.  The pictures manufacturers seem fond of using
-> > for describing the jack functions aren't always models of clarity to the
-> > general user.
+> What I'm talking is like the scenario below:
+>
+> - app open PCM, do hw_params
+> - app requires the channel map, get one
+> - app changes hw_params again, then get channel map again
+>
+> With "all-in-one" TLV, you have to read all the information at each
+> time you get channel maps because the channel map is to be generated
+> dynamically.  At each time, the kernel needs to gather all
+> information, compose into a single big TLV, and copy it.  Then
+> user-space decomposes the big TLV, look for a specific tag, then picks
+> up the value there.
+>
+> Why not simply query a value and get a value a la normal ioctl?
 
-> Yes, HD-audio spec gives such information, too.
+I'm talking about to have both "all-in-one" and single value ioctls. I see 
+your optimization when one value is required to read multiple times. I 
+just prefer to make things similar to the control interface (although 
+single value read is not implemented in current control API, but it might 
+be added later, if required). I would like to see also common naming in 
+interfaces like:
 
-It was HDA that I was thinking about.
+SNDRV_PCM_IOCTL_TLV_READ	# read all
+SNDRV_PCM_IOCTL_TLV_COMMAND	# write one or more TLVs (COMPOUND type)
+SNDRV_PCM_IOCTL_TLV_TREAD	# read only one TLV specified by type
+ 				# TREAD might be also READONE or so..
 
-> However, the verbose information like a color doesn't fit into the id
-> string.  A better option would be through the additional TLV like dB
-> scale.  I just considered but didn't write up yet.
+ 						Jaroslav
 
-Yeah, so long as the information is there it doesn't really matter how
-it gets there.
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
