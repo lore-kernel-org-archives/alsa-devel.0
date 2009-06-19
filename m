@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: RFC: new TLV types for dB range with min/max
-Date: Fri, 19 Jun 2009 10:33:46 +0100
-Message-ID: <20090619093345.GB5270@sirena.org.uk>
-References: <s5hocskekcm.wl%tiwai@suse.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] New ASoC Drivers for ADI AD1938 codec
+Date: Fri, 19 Jun 2009 10:35:50 +0100
+Message-ID: <1245404150.21421.272.camel@vega.slimlogic.co.uk>
+References: <1245403695-20537-1-git-send-email-21cnbao@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 62ED8244B7
+Received: from slimlogic.co.uk (slimlogic.co.uk [89.16.172.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id 37914244B9
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Jun 2009 11:33:52 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hocskekcm.wl%tiwai@suse.de>
+	Fri, 19 Jun 2009 11:36:02 +0200 (CEST)
+In-Reply-To: <1245403695-20537-1-git-send-email-21cnbao@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,19 +21,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Barry Song <21cnbao@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 19, 2009 at 09:47:05AM +0200, Takashi Iwai wrote:
+On Fri, 2009-06-19 at 17:28 +0800, Barry Song wrote:
+> 1. add AD1938 codec driver                   (codec)
+> 2. add blackfin SPORT-TDM DAI and PCM driver (platform)
+> 3. add bf5xx board with AD1938 driver        (machine)
+> Signed-off-by: Barry Song <21cnbao@gmail.com>
+> ---
+>  include/sound/soc-dai.h            |    1 +
+>  sound/soc/blackfin/Kconfig         |   46 +++-
+>  sound/soc/blackfin/Makefile        |    6 +
+>  sound/soc/blackfin/bf5xx-ad1938.c  |  178 ++++++++++++
+>  sound/soc/blackfin/bf5xx-tdm-pcm.c |  330 ++++++++++++++++++++++
+>  sound/soc/blackfin/bf5xx-tdm-pcm.h |   21 ++
+>  sound/soc/blackfin/bf5xx-tdm.c     |  295 +++++++++++++++++++
+>  sound/soc/blackfin/bf5xx-tdm.h     |   14 +
+>  sound/soc/codecs/Kconfig           |    4 +
+>  sound/soc/codecs/Makefile          |    2 +
+>  sound/soc/codecs/ad1938.c          |  548 ++++++++++++++++++++++++++++++++++++
+>  sound/soc/codecs/ad1938.h          |   68 +++++
+>  12 files changed, 1512 insertions(+), 1 deletions(-)
+>  create mode 100644 sound/soc/blackfin/bf5xx-ad1938.c
+>  create mode 100644 sound/soc/blackfin/bf5xx-tdm-pcm.c
+>  create mode 100644 sound/soc/blackfin/bf5xx-tdm-pcm.h
+>  create mode 100644 sound/soc/blackfin/bf5xx-tdm.c
+>  create mode 100644 sound/soc/blackfin/bf5xx-tdm.h
+>  create mode 100644 sound/soc/codecs/ad1938.c
+>  create mode 100644 sound/soc/codecs/ad1938.h
+> 
 
-> Since the step size may have a rounding error, this can accumulate to
-> a significant amount at the max value.
+Could you break this patch into smaller chunks. This should make it
+easier to review and apply.
 
-> A simple way to avoid this is to just give min and max values instead
-> of min and step values, and interpolate the middle.  For that, I
-> create two new TLV types.
+Thanks
 
-This is a good idea - it is also helpful for some of the ASoC devices
-which have dB scales with steps with 3 decimal places of resolution,
-using this makes writing the driver a bit easier.  Thanks for doing it.
+Liam 
