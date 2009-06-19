@@ -1,63 +1,73 @@
-From: Sam Morris <sam@robots.org.uk>
-Subject: Bug#517241: [alsa-devel] Laptop (Samsung Q45) speakers unmute when master channel is	unmuted even with headphones connected
-Date: Fri, 19 Jun 2009 15:08:32 +0100
-Message-ID: <1245420512.9036.3.camel@durandal>
-References: <20090502121442.GA14055@xerces> <s5hd4anddxy.wl%tiwai@suse.de>
-	 <1241521119.19946.0.camel@durandal> <s5h63gd2bjn.wl%tiwai@suse.de>
-	 <1245408989.9036.2.camel@durandal>  <s5hbpokgzaa.wl%tiwai@suse.de>
-Reply-To: Sam Morris <sam@robots.org.uk>, 517241@bugs.debian.org
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: Re: Why analog loopback of sigmatel devices got
+ removed?
+Date: Fri, 19 Jun 2009 17:55:14 +0300
+Message-ID: <1245423314.19535.0.camel@localhost>
+References: <1245369035.6830.27.camel@localhost>
+	<s5h1vpgg2d6.wl%tiwai@suse.de> <1245399701.8549.2.camel@localhost>
+	<s5hfxdweioc.wl%tiwai@suse.de> <1245411399.9708.3.camel@localhost>
+	<s5heitggzf4.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <bounce-debian-bugs-dist=glddb-debian-bugs-dist=m.gmane.org@lists.debian.org>
-Resent-To: debian-bugs-dist@lists.debian.org
-Resent-Message-ID: <handler.517241.B517241.12454205281252@bugs.debian.org>
-In-Reply-To: <s5hbpokgzaa.wl%tiwai@suse.de>
-List-Post: <mailto:debian-bugs-dist@lists.debian.org>
-List-Help: <mailto:debian-bugs-dist-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=unsubscribe>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bw0-f215.google.com (mail-bw0-f215.google.com
+	[209.85.218.215])
+	by alsa0.perex.cz (Postfix) with ESMTP id C44DC1038BB
+	for <alsa-devel@alsa-project.org>;
+	Fri, 19 Jun 2009 16:55:19 +0200 (CEST)
+Received: by bwz11 with SMTP id 11so1883471bwz.32
+	for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2009 07:55:18 -0700 (PDT)
+In-Reply-To: <s5heitggzf4.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: 517241@bugs.debian.org, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Maxim Levitsky <maximlevitsky@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2009-06-19 at 14:53 +0200, Takashi Iwai wrote:
-> At Fri, 19 Jun 2009 11:56:29 +0100,
-> Sam Morris wrote:
+On Fri, 2009-06-19 at 14:50 +0200, Takashi Iwai wrote:
+> At Fri, 19 Jun 2009 14:36:39 +0300,
+> Maxim Levitsky wrote:
 > > 
-> > On Thu, 2009-05-07 at 17:11 +0200, Takashi Iwai wrote:
-> > > At Tue, 05 May 2009 11:58:39 +0100,
-> > > Sam Morris wrote:
+> > On Fri, 2009-06-19 at 10:23 +0200, Takashi Iwai wrote:
+> > > At Fri, 19 Jun 2009 11:21:41 +0300,
+> > > Maxim Levitsky wrote:
 > > > > 
-> > > > On Tue, 2009-05-05 at 12:47 +0200, Takashi Iwai wrote:
-> > > > > At Sat, 2 May 2009 13:14:42 +0100,
-> > > > > Sam Morris wrote:
+> > > > On Fri, 2009-06-19 at 08:32 +0200, Takashi Iwai wrote:
+> > > > > At Fri, 19 Jun 2009 02:50:35 +0300,
+> > > > > Maxim Levitsky wrote:
 > > > > > > 
-> > > > > > Since Linux 2.6.28 and through to 2.6.30-rc4, the hda-intel driver has had a
-> > > > > > bug on my laptop (a Samsung Q45).
+> > > > > > Hi,
 > > > > > > 
-> > > > > > If I connect my headphones, the laptop's internal speakers are muted--fine. But 
-> > > > > > if I then mute and unmute the master mixer channel, the speakers come back to
-> > > > > > life, even though the headphones are still connected.
+> > > > > > Due to lack of time, I didn't update kernel on my desktop system.
+> > > > > > Now I notice that analog loopback go removed. Why?
 > > > > > 
-> > > > > Could you run alsa-info.sh with --no-upload option, and attach the
-> > > > > generated file?
+> > > > > Because it harms than helps more often.  I've got tons of bug reports
+> > > > > and been upset just because users blindly set "Analog Loopback" mixer
+> > > > > switch and lost their sound output.  This is no mixer element that
+> > > > > behaves intuitively -- it shuts out PCM output instead of adding the
+> > > > > analog loopback like other hardwares.
 > > > > 
-> > > > Here you go!
+> > > > Here it doesn't shut PCM.
+> > > > I just hear input in headphones, mixed with output.
+> > > > I suspect that this feature might not work correctly on newer devices
+> > > > that ones I have added.
 > > > 
-> > > Thanks.
-> > > 
-> > > What if you use model=auto option?
+> > > Possibly...
 > > 
-> > This is fixed in 2.6.30, but only if I use the model=auto option. :)
+> > Probably IDT removed the analog mixer in quest for better quality.
+> > 
+> > I think it should work fine for "STAC..." parts.
+> > 
+> > Anyway lets put it back at least for my STAC9227, OK?
 > 
-> What about with the later version, e.g. Linus git tree?
-> Or you can use sound git tree
->     git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
-> 
-> I think this was already fixed there.
-> 
-> 
-> Takashi
--- 
-Sam Morris <sam@robots.org.uk>
+> You can still use it just by adjusting the sysfs (and in near future
+> via a patch file), so I'm not going to take it back for the default.
+Thanks....
