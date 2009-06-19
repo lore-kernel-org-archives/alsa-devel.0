@@ -1,22 +1,23 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: Please help in adding ams-delta support to ASoC
-Date: Fri, 19 Jun 2009 13:20:37 +0200
-Message-ID: <4A3B7485.5060601__2780.93656893379$1245410466$gmane$org@tis.icnet.pl>
-References: <4A1BEBE3.8010306@tis.icnet.pl>	
-	<20090605165531.7d0c4522.jhnikula@gmail.com>	
-	<200906060028.01600.jkrzyszt@tis.icnet.pl>	
-	<20090608094028.415e6ec3.jhnikula@gmail.com>	
-	<4A2E7921.7090200@tis.icnet.pl> <4A364B1A.5040905@tis.icnet.pl>	
-	<20090615181633.4570426f.jhnikula@gmail.com>	
-	<4A37AFA9.4080403@tis.icnet.pl>	
-	<20090618090712.8f8ecd53.jhnikula@gmail.com>	
-	<4A3A27C8.60005@tis.icnet.pl>
-	<df7d0fbb0906182050x1f58da96u9bac334a363bbed0@mail.gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Subject: Re: [PATCH] New ASoC Drivers for ADI AD1938 codec
+Date: Fri, 19 Jun 2009 07:21:44 -0400
+Message-ID: <8bd0f97a0906190421q332f337cr1799c6b65bd06f0e@mail.gmail.com>
+References: <1245403695-20537-1-git-send-email-21cnbao@gmail.com>
+	<20090619104738.GF5270@sirena.org.uk>
+	<8bd0f97a0906190405k33503d8ekd74ec9ddbb2fde12@mail.gmail.com>
+	<A40FAF28-889C-4322-A114-098EEA56FCE6@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <df7d0fbb0906182050x1f58da96u9bac334a363bbed0@mail.gmail.com>
+Received: from mail-yx0-f185.google.com (mail-yx0-f185.google.com
+	[209.85.210.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id C7844244E4
+	for <alsa-devel@alsa-project.org>;
+	Fri, 19 Jun 2009 13:22:04 +0200 (CEST)
+Received: by yxe15 with SMTP id 15so1712644yxe.16
+	for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2009 04:22:04 -0700 (PDT)
+In-Reply-To: <A40FAF28-889C-4322-A114-098EEA56FCE6@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,51 +27,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-omap@vger.kernel.org, alsa-devel@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Barry Song <21cnbao@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Tony Lindgren wrote:
-> * Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> [090618 14:52]:
->> Tony Lindgren wrote:
->>> On omap1, DSP needs to be powered and idled before some mcbsp clocks can
->>> be used. Or at least needs to be powered up.
->> AFAICS there is no DSP code in mainline at all, so the answer is no, DSP  
->> was likely not powered up at all. For several weeks I was trying to do  
->> what was impossible :/. But fortunatelly, I have learned a lot ;).
-> 
-> We at least used to have code to power and idle the DSP even without the
-> dspgateway compiled in.. Sorry I don't remember the details. But most
-> likely you need to have the dspgateway patch enabled.
-
-Tony,
-Thanks for clarifying things.
-
-Arun K S wrote:
-> On Thu, Jun 18, 2009 at 4:40 AM, Janusz
-> Krzysztofik<jkrzyszt@tis.icnet.pl> wrote:
->> ... I retried the new driver on commit
->> 90e758af52ba803cba233fabee81176d99589f09 and confirmed the prevoiusly seen
->> hangup. I found that it was omap_mcbsp_request() never returning back from.
-> 
-> I faced the same issue while writing ASoC driver for tlv320aic23b codec.
-> 
-> You can have a look at this thread:
-> http://www.mail-archive.com/linux-omap@vger.kernel.org/msg03852.html
-> 
-> It may help.
-
-Arun,
-Thanks, it's good to hear not only me having this problem ;). So what is 
-the current status of your osk driver? What tree do you use, what extra 
-patches do you apply to make it actually working?
-
----------------------------
-
-After all, could someone please give me an advise, what tree, even with 
-buggy omap1510 mcbsp/dsp support, should I base my work on for best 
-results? Omap? Sound? Mainline? I mean not only easy getting the driver 
-working, but also giving it the best possible path into the mainline.
-
-Thanks,
-Janusz
+T24gRnJpLCBKdW4gMTksIDIwMDkgYXQgMDc6MTMsIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gMTkg
+SnVuIDIwMDksIGF0IDEyOjA1LCBNaWtlIEZyeXNpbmdlciB3cm90ZToKPj4gT24gRnJpLCBKdW4g
+MTksIDIwMDkgYXQgMDY6NDcsIE1hcmsgQnJvd24gd3JvdGU6Cj4+PiBPbiBGcmksIEp1biAxOSwg
+MjAwOSBhdCAwNToyODoxNVBNICswODAwLCBCYXJyeSBTb25nIHdyb3RlOgo+Pj4+IDEuIGFkZCBB
+RDE5MzggY29kZWMgZHJpdmVyIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIChjb2RlYykKPj4+
+PiAyLiBhZGQgYmxhY2tmaW4gU1BPUlQtVERNIERBSSBhbmQgUENNIGRyaXZlciAocGxhdGZvcm0p
+Cj4+Pj4gMy4gYWRkIGJmNXh4IGJvYXJkIHdpdGggQUQxOTM4IGRyaXZlciDCoCDCoCDCoCDCoCht
+YWNoaW5lKQo+Pj4KPj4+IEFzIExpYW0gc2FpZCB5b3UgcmVhbGx5IG5lZWQgdG8gc3VibWl0IHRo
+aXMgYXMgYSBwYXRjaCBzZXJpZXMgcmF0aGVyCj4+PiB0aGFuIGFzIGEgc2luZ2xlIGJpZyBwYXRj
+aCAtIGFzIHlvdXIgY29tbWl0IGxvZyBoZXJlIGluZGljYXRlcyB5b3UndmUKPj4+IGdvdCBzZXZl
+cmFsIGRpZmZlcmVudCB0aGluZ3MgZ29pbmcgb24gaGVyZS4KPj4KPj4gYmxhaCwgaSBoYWQgdGhp
+cyBxdWV1ZWQgbG9jYWxseSB3aXRoIGEgInRvZG86c3BsaXQiLiDCoHdhbnRlZCB0byB3YWl0Cj4+
+IGZvciBCYXJyeSB0byBmaW5pc2ggZGV2ZWxvcGluZyB0aGUgZHJpdmVyIGZpcnN0IHRob3VnaC4K
+Pj4KPj4gYXQgYW55IHJhdGUsIGkgaGF0ZSB0byBzb3VuZCBsaWtlIGEgYnJva2VuIHJlY29yZCB3
+cnQgbXkgYWxzYQo+PiBpZ25vcmFuY2UsIGJ1dCBpJ20gdGhpbmtpbmcgdGhlIGxvZ2ljYWwgc3Bs
+aXQgd291bGQgYmUgbGlrZSBCYXJyeQo+PiBudW1iZXJlZCBpdCAtLSBvbmUgcGF0Y2ggZm9yIHNv
+dW5kL2NvZGVjLywgb25lIHBhdGNoIGZvciB0aGUgVERNCj4+IHRyYW5zcG9ydCwgYW5kIG9uZSBw
+YXRjaCBmb3IgaG9va2luZyB1cCB0aGUgQUQxOTM4IHRvIFRETS4KPgo+IFllcywgdGhvdWdoIGlm
+IHRoZSBuZXcgREFJIGZvcm1hdCBoYWQgYmVlbiByZXF1aXJlZCBpdCB3b3VsZCBiZSB3b3J0aAo+
+IGNvbnNpZGVyaW5nIGEgc2VwYXJhdGUgcGF0Y2ggZm9yIGl0LgoKT0ssIEJhcnJ5IGNhbiBoYW5k
+bGUgdGhpcywgb3RoZXJ3aXNlIGknbGwgc3BsaXQgaXQgdXAgaW4gbXkgZ2l0IGFuZApzZW5kIGhp
+bSB0aGUgcmVwbyBpbmZvCgo+Pj4+ICtzdGF0aWMgaW50IF9fZGV2aW5pdCBhZDE5Mzhfc3BpX3By
+b2JlKHN0cnVjdCBzcGlfZGV2aWNlICpzcGkpCj4+Pj4gK3sKPj4+PiArIMKgIMKgIHNwaS0+ZGV2
+LnBvd2VyLnBvd2VyX3N0YXRlID0gUE1TR19PTjsKPj4+PiArIMKgIMKgIGFkMTkzOF9zb2NkZXYt
+PmNhcmQtPmNvZGVjLT5jb250cm9sX2RhdGEgPSBzcGk7Cj4+Pj4gKwo+Pj4+ICsgwqAgwqAgcmV0
+dXJuIDA7Cj4+Pj4gK30KPj4+PiArCj4+Pj4gK3N0YXRpYyBpbnQgX19kZXZleGl0IGFkMTkzOF9z
+cGlfcmVtb3ZlKHN0cnVjdCBzcGlfZGV2aWNlICpzcGkpCj4+Pj4gK3sKPj4+PiArIMKgIMKgIHJl
+dHVybiAwOwo+Pj4+ICt9Cj4+Pgo+Pj4gWW91ciBkZXZpY2UgcHJvYmluZyBzaG91bGQgYWxsIGJl
+IHJlc3RydWN0dXJlZCBzbyB0aGF0IHRoZSBTUEkgZGV2aWNlCj4+PiBmb3IgdGhlIENPREVDIGlz
+IHJlZ2lzdGVyZWQgYXMgYW55IG90aGVyIFNQSSBkZXZpY2UgcmF0aGVyIHRoYW4gYmVpbmcKPj4+
+IHNldCB1cCBhcyBwYXJ0IG9mIHByb2JpbmcgdGhlIEFTb0MgZGV2aWNlLiDCoFNlZSB0aGUgd204
+NzMxIGRyaXZlciBmb3IKPj4+IGFuIGV4YW1wbGUgb2YgZG9pbmcgdGhpcyBmb3IgYSBTUEkgZGV2
+aWNlLgo+Pj4KPj4+IFRoaXMgd2lsbCByZXF1aXJlIHRoYXQgdGhlIGFyY2ggY29kZSBmb3IgYW55
+IHN5c3RlbXMgd2l0aCB0aGUgYWQxOTM4Cj4+PiBkbyB0aGUgc2V0dXAgb2YgdGhlIGRldmljZS4K
+Pj4KPj4gc28gc2hvdWxkIHNvdW5kL3NvYy9ibGFja2Zpbi9iZjV4eC1hZDE5MzguYyBldmVuIGV4
+aXN0IGluIHRoZSBmaXJzdCBwbGFjZQo+PiA/Cj4KPiBZZXMuIEl0IGlzIG5lZWRlZCBpbiBvcmRl
+ciB0byBzcGVjaWZ5IGhvdyB0aGluZ3MgYXJlIGhvb2tlZCB1cCBvbiBhIGdpdmVuCj4gYm9hcmQu
+Cgp0byBsb29rIGF0IHRoZSB3bTg3MzEgdGhlbiwgdGhlc2UgYXJlIGdvb2QgZXhhbXBsZXMgb2Yg
+aG93IGl0J3MgZG9uZSA/CnNvdW5kL3NvYy9hdG1lbC9zYW05ZzIwX3dtODczMS5jCnNvdW5kL3Nv
+Yy9weGEvY29yZ2kuYwotbWlrZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
