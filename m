@@ -1,17 +1,17 @@
-From: "Lopez Cruz, Misael" <x0052729@ti.com>
-Subject: [PATCH 3/3] ASoC: TWL4030: Fix voice interface clock
-	masters
-Date: Fri, 19 Jun 2009 03:23:42 -0500
-Message-ID: <67059DBF19D7214F9C66BB0EA91BA90E3543F31E@dlee04.ent.ti.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: RFC: PCM extra attributes
+Date: Fri, 19 Jun 2009 10:47:30 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.0906191031001.3983@eeebox2.perex-int.cz>
+References: <s5hiqiseiwj.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8B2BB1038AC
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7D412103894
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Jun 2009 10:23:49 +0200 (CEST)
-Content-Language: en-US
+	Fri, 19 Jun 2009 10:47:32 +0200 (CEST)
+In-Reply-To: <s5hiqiseiwj.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,58 +21,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Voice interface of twl4030 codec supports: CBM_CFM and
-CBS_CFS. It doesn't support CBS_CFM.
+On Fri, 19 Jun 2009, Takashi Iwai wrote:
 
-Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
----
- sound/soc/codecs/twl4030.c |    2 +-
- sound/soc/omap/sdp3430.c   |    2 +-
- sound/soc/omap/zoom2.c     |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+> Hi,
+>
+> this is yet another topic I'm (currently) working on -- the addition
+> of PCM ioctls to get/set some extra attributes.  Basically, it adds
+> two simple ioctls for getting/setting extra attributes to the PCM
+> substream.  The attribute has a sort of TLV form,
+>
+>  /* PCM extra attributes */
+>  struct snd_pcm_attr {
+>  	unsigned int type;	/* SNDRC_PCM_TYPE_ATTR_XXX */
+>  	unsigned int len;	/* GET R: the max elements in value array
+>  				 *     W: the actually written # elements
+>  				 * SET R/W: # elements to store
+>  				 */
+>  	unsigned int value[0];	/* value(s) to read / write */
+>  };
+>
+> And corresponding two ioctls
+>  #define SNDRV_PCM_IOCTL_GET_ATTR	_IOWR('A', 0x14, struct snd_pcm_attr)
+>  #define SNDRV_PCM_IOCTL_SET_ATTR	_IOWR('A', 0x15, struct snd_pcm_attr)
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index fd5b30f..a6fb1d6 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -1969,7 +1969,7 @@ static int twl4030_voice_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 
- 	/* set master/slave audio interface */
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBS_CFM:
-+	case SND_SOC_DAIFMT_CBM_CFM:
- 		format &= ~(TWL4030_VIF_SLAVE_EN);
- 		break;
- 	case SND_SOC_DAIFMT_CBS_CFS:
-diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
-index b719e5d..c51594d 100644
---- a/sound/soc/omap/sdp3430.c
-+++ b/sound/soc/omap/sdp3430.c
-@@ -96,7 +96,7 @@ static int sdp3430_hw_voice_params(struct snd_pcm_substream *substream,
- 	ret = snd_soc_dai_set_fmt(codec_dai,
- 				SND_SOC_DAIFMT_DSP_A |
- 				SND_SOC_DAIFMT_IB_NF |
--				SND_SOC_DAIFMT_CBS_CFM);
-+				SND_SOC_DAIFMT_CBM_CFM);
- 	if (ret) {
- 		printk(KERN_ERR "can't set codec DAI configuration\n");
- 		return ret;
-diff --git a/sound/soc/omap/zoom2.c b/sound/soc/omap/zoom2.c
-index 17ae5c2..c84bc1c 100644
---- a/sound/soc/omap/zoom2.c
-+++ b/sound/soc/omap/zoom2.c
-@@ -89,7 +89,7 @@ static int zoom2_hw_voice_params(struct snd_pcm_substream *substream,
- 	ret = snd_soc_dai_set_fmt(codec_dai,
- 				SND_SOC_DAIFMT_DSP_A |
- 				SND_SOC_DAIFMT_IB_NF |
--				SND_SOC_DAIFMT_CBS_CFM);
-+				SND_SOC_DAIFMT_CBM_CFM);
- 	if (ret) {
- 		printk(KERN_ERR "can't set codec DAI configuration\n");
- 		return ret;
--- 
-1.5.4.3
+I would prefer to implement similar TLV implementation as for the control 
+API. The amount of information for reading (get) will be small, so 
+filtering in this direction is not necessary. Also, common parts of 
+implementation (future merging of more TLVs to compounds) can be shared.
+
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
