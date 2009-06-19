@@ -1,23 +1,23 @@
-From: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [PATCH] New ASoC Drivers for ADI AD1938 codec
-Date: Fri, 19 Jun 2009 07:21:44 -0400
-Message-ID: <8bd0f97a0906190421q332f337cr1799c6b65bd06f0e@mail.gmail.com>
-References: <1245403695-20537-1-git-send-email-21cnbao@gmail.com>
-	<20090619104738.GF5270@sirena.org.uk>
-	<8bd0f97a0906190405k33503d8ekd74ec9ddbb2fde12@mail.gmail.com>
-	<A40FAF28-889C-4322-A114-098EEA56FCE6@opensource.wolfsonmicro.com>
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: Re: Why analog loopback of sigmatel devices got
+ removed?
+Date: Fri, 19 Jun 2009 14:36:39 +0300
+Message-ID: <1245411399.9708.3.camel@localhost>
+References: <1245369035.6830.27.camel@localhost>
+	<s5h1vpgg2d6.wl%tiwai@suse.de> <1245399701.8549.2.camel@localhost>
+	<s5hfxdweioc.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f185.google.com (mail-yx0-f185.google.com
-	[209.85.210.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id C7844244E4
+Received: from mail-fx0-f226.google.com (mail-fx0-f226.google.com
+	[209.85.220.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id B5B9E244EA
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Jun 2009 13:22:04 +0200 (CEST)
-Received: by yxe15 with SMTP id 15so1712644yxe.16
-	for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2009 04:22:04 -0700 (PDT)
-In-Reply-To: <A40FAF28-889C-4322-A114-098EEA56FCE6@opensource.wolfsonmicro.com>
+	Fri, 19 Jun 2009 13:36:43 +0200 (CEST)
+Received: by fxm26 with SMTP id 26so1051780fxm.32
+	for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2009 04:36:43 -0700 (PDT)
+In-Reply-To: <s5hfxdweioc.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,50 +27,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Barry Song <21cnbao@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Maxim Levitsky <maximlevitsky@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBKdW4gMTksIDIwMDkgYXQgMDc6MTMsIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gMTkg
-SnVuIDIwMDksIGF0IDEyOjA1LCBNaWtlIEZyeXNpbmdlciB3cm90ZToKPj4gT24gRnJpLCBKdW4g
-MTksIDIwMDkgYXQgMDY6NDcsIE1hcmsgQnJvd24gd3JvdGU6Cj4+PiBPbiBGcmksIEp1biAxOSwg
-MjAwOSBhdCAwNToyODoxNVBNICswODAwLCBCYXJyeSBTb25nIHdyb3RlOgo+Pj4+IDEuIGFkZCBB
-RDE5MzggY29kZWMgZHJpdmVyIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIChjb2RlYykKPj4+
-PiAyLiBhZGQgYmxhY2tmaW4gU1BPUlQtVERNIERBSSBhbmQgUENNIGRyaXZlciAocGxhdGZvcm0p
-Cj4+Pj4gMy4gYWRkIGJmNXh4IGJvYXJkIHdpdGggQUQxOTM4IGRyaXZlciDCoCDCoCDCoCDCoCht
-YWNoaW5lKQo+Pj4KPj4+IEFzIExpYW0gc2FpZCB5b3UgcmVhbGx5IG5lZWQgdG8gc3VibWl0IHRo
-aXMgYXMgYSBwYXRjaCBzZXJpZXMgcmF0aGVyCj4+PiB0aGFuIGFzIGEgc2luZ2xlIGJpZyBwYXRj
-aCAtIGFzIHlvdXIgY29tbWl0IGxvZyBoZXJlIGluZGljYXRlcyB5b3UndmUKPj4+IGdvdCBzZXZl
-cmFsIGRpZmZlcmVudCB0aGluZ3MgZ29pbmcgb24gaGVyZS4KPj4KPj4gYmxhaCwgaSBoYWQgdGhp
-cyBxdWV1ZWQgbG9jYWxseSB3aXRoIGEgInRvZG86c3BsaXQiLiDCoHdhbnRlZCB0byB3YWl0Cj4+
-IGZvciBCYXJyeSB0byBmaW5pc2ggZGV2ZWxvcGluZyB0aGUgZHJpdmVyIGZpcnN0IHRob3VnaC4K
-Pj4KPj4gYXQgYW55IHJhdGUsIGkgaGF0ZSB0byBzb3VuZCBsaWtlIGEgYnJva2VuIHJlY29yZCB3
-cnQgbXkgYWxzYQo+PiBpZ25vcmFuY2UsIGJ1dCBpJ20gdGhpbmtpbmcgdGhlIGxvZ2ljYWwgc3Bs
-aXQgd291bGQgYmUgbGlrZSBCYXJyeQo+PiBudW1iZXJlZCBpdCAtLSBvbmUgcGF0Y2ggZm9yIHNv
-dW5kL2NvZGVjLywgb25lIHBhdGNoIGZvciB0aGUgVERNCj4+IHRyYW5zcG9ydCwgYW5kIG9uZSBw
-YXRjaCBmb3IgaG9va2luZyB1cCB0aGUgQUQxOTM4IHRvIFRETS4KPgo+IFllcywgdGhvdWdoIGlm
-IHRoZSBuZXcgREFJIGZvcm1hdCBoYWQgYmVlbiByZXF1aXJlZCBpdCB3b3VsZCBiZSB3b3J0aAo+
-IGNvbnNpZGVyaW5nIGEgc2VwYXJhdGUgcGF0Y2ggZm9yIGl0LgoKT0ssIEJhcnJ5IGNhbiBoYW5k
-bGUgdGhpcywgb3RoZXJ3aXNlIGknbGwgc3BsaXQgaXQgdXAgaW4gbXkgZ2l0IGFuZApzZW5kIGhp
-bSB0aGUgcmVwbyBpbmZvCgo+Pj4+ICtzdGF0aWMgaW50IF9fZGV2aW5pdCBhZDE5Mzhfc3BpX3By
-b2JlKHN0cnVjdCBzcGlfZGV2aWNlICpzcGkpCj4+Pj4gK3sKPj4+PiArIMKgIMKgIHNwaS0+ZGV2
-LnBvd2VyLnBvd2VyX3N0YXRlID0gUE1TR19PTjsKPj4+PiArIMKgIMKgIGFkMTkzOF9zb2NkZXYt
-PmNhcmQtPmNvZGVjLT5jb250cm9sX2RhdGEgPSBzcGk7Cj4+Pj4gKwo+Pj4+ICsgwqAgwqAgcmV0
-dXJuIDA7Cj4+Pj4gK30KPj4+PiArCj4+Pj4gK3N0YXRpYyBpbnQgX19kZXZleGl0IGFkMTkzOF9z
-cGlfcmVtb3ZlKHN0cnVjdCBzcGlfZGV2aWNlICpzcGkpCj4+Pj4gK3sKPj4+PiArIMKgIMKgIHJl
-dHVybiAwOwo+Pj4+ICt9Cj4+Pgo+Pj4gWW91ciBkZXZpY2UgcHJvYmluZyBzaG91bGQgYWxsIGJl
-IHJlc3RydWN0dXJlZCBzbyB0aGF0IHRoZSBTUEkgZGV2aWNlCj4+PiBmb3IgdGhlIENPREVDIGlz
-IHJlZ2lzdGVyZWQgYXMgYW55IG90aGVyIFNQSSBkZXZpY2UgcmF0aGVyIHRoYW4gYmVpbmcKPj4+
-IHNldCB1cCBhcyBwYXJ0IG9mIHByb2JpbmcgdGhlIEFTb0MgZGV2aWNlLiDCoFNlZSB0aGUgd204
-NzMxIGRyaXZlciBmb3IKPj4+IGFuIGV4YW1wbGUgb2YgZG9pbmcgdGhpcyBmb3IgYSBTUEkgZGV2
-aWNlLgo+Pj4KPj4+IFRoaXMgd2lsbCByZXF1aXJlIHRoYXQgdGhlIGFyY2ggY29kZSBmb3IgYW55
-IHN5c3RlbXMgd2l0aCB0aGUgYWQxOTM4Cj4+PiBkbyB0aGUgc2V0dXAgb2YgdGhlIGRldmljZS4K
-Pj4KPj4gc28gc2hvdWxkIHNvdW5kL3NvYy9ibGFja2Zpbi9iZjV4eC1hZDE5MzguYyBldmVuIGV4
-aXN0IGluIHRoZSBmaXJzdCBwbGFjZQo+PiA/Cj4KPiBZZXMuIEl0IGlzIG5lZWRlZCBpbiBvcmRl
-ciB0byBzcGVjaWZ5IGhvdyB0aGluZ3MgYXJlIGhvb2tlZCB1cCBvbiBhIGdpdmVuCj4gYm9hcmQu
-Cgp0byBsb29rIGF0IHRoZSB3bTg3MzEgdGhlbiwgdGhlc2UgYXJlIGdvb2QgZXhhbXBsZXMgb2Yg
-aG93IGl0J3MgZG9uZSA/CnNvdW5kL3NvYy9hdG1lbC9zYW05ZzIwX3dtODczMS5jCnNvdW5kL3Nv
-Yy9weGEvY29yZ2kuYwotbWlrZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+On Fri, 2009-06-19 at 10:23 +0200, Takashi Iwai wrote:
+> At Fri, 19 Jun 2009 11:21:41 +0300,
+> Maxim Levitsky wrote:
+> > 
+> > On Fri, 2009-06-19 at 08:32 +0200, Takashi Iwai wrote:
+> > > At Fri, 19 Jun 2009 02:50:35 +0300,
+> > > Maxim Levitsky wrote:
+> > > > 
+> > > > Hi,
+> > > > 
+> > > > Due to lack of time, I didn't update kernel on my desktop system.
+> > > > Now I notice that analog loopback go removed. Why?
+> > > 
+> > > Because it harms than helps more often.  I've got tons of bug reports
+> > > and been upset just because users blindly set "Analog Loopback" mixer
+> > > switch and lost their sound output.  This is no mixer element that
+> > > behaves intuitively -- it shuts out PCM output instead of adding the
+> > > analog loopback like other hardwares.
+> > 
+> > Here it doesn't shut PCM.
+> > I just hear input in headphones, mixed with output.
+> > I suspect that this feature might not work correctly on newer devices
+> > that ones I have added.
+> 
+> Possibly...
+
+Probably IDT removed the analog mixer in quest for better quality.
+
+I think it should work fine for "STAC..." parts.
+
+Anyway lets put it back at least for my STAC9227, OK?
+
+Best regards,
+	Maxim Levitsky
