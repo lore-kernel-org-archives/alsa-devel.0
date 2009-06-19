@@ -1,20 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: RFC: PCM extra attributes
-Date: Fri, 19 Jun 2009 12:45:04 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.0906191241060.3983@eeebox2.perex-int.cz>
-References: <s5hiqiseiwj.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0906191031001.3983@eeebox2.perex-int.cz>
-	<s5hbpokegf9.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0906191202590.3983@eeebox2.perex-int.cz>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] New ASoC Drivers for ADI AD1938 codec
+Date: Fri, 19 Jun 2009 11:47:39 +0100
+Message-ID: <20090619104738.GF5270@sirena.org.uk>
+References: <1245403695-20537-1-git-send-email-21cnbao@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 276EA1038C3
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 854CE244CD
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Jun 2009 12:45:05 +0200 (CEST)
-In-Reply-To: <alpine.LNX.2.00.0906191202590.3983@eeebox2.perex-int.cz>
+	Fri, 19 Jun 2009 12:47:46 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1245403695-20537-1-git-send-email-21cnbao@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,102 +22,223 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Barry Song <21cnbao@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Mike Frysinger <vapier.adi@gmail.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 19 Jun 2009, Jaroslav Kysela wrote:
+On Fri, Jun 19, 2009 at 05:28:15PM +0800, Barry Song wrote:
+> 1. add AD1938 codec driver                   (codec)
+> 2. add blackfin SPORT-TDM DAI and PCM driver (platform)
+> 3. add bf5xx board with AD1938 driver        (machine)
 
-> On Fri, 19 Jun 2009, Takashi Iwai wrote:
->
->> At Fri, 19 Jun 2009 10:47:30 +0200 (CEST),
->> Jaroslav Kysela wrote:
->>>
->>> On Fri, 19 Jun 2009, Takashi Iwai wrote:
->>>
->>>> Hi,
->>>>
->>>> this is yet another topic I'm (currently) working on -- the addition
->>>> of PCM ioctls to get/set some extra attributes.  Basically, it adds
->>>> two simple ioctls for getting/setting extra attributes to the PCM
->>>> substream.  The attribute has a sort of TLV form,
->>>>
->>>>  /* PCM extra attributes */
->>>>  struct snd_pcm_attr {
->>>>  	unsigned int type;	/* SNDRC_PCM_TYPE_ATTR_XXX */
->>>>  	unsigned int len;	/* GET R: the max elements in value array
->>>>  				 *     W: the actually written # elements
->>>>  				 * SET R/W: # elements to store
->>>>  				 */
->>>>  	unsigned int value[0];	/* value(s) to read / write */
->>>>  };
->>>>
->>>> And corresponding two ioctls
->>>>  #define SNDRV_PCM_IOCTL_GET_ATTR	_IOWR('A', 0x14, struct snd_pcm_attr)
->>>>  #define SNDRV_PCM_IOCTL_SET_ATTR	_IOWR('A', 0x15, struct snd_pcm_attr)
->>>
->>> I would prefer to implement similar TLV implementation as for the control
->>> API. The amount of information for reading (get) will be small, so
->>> filtering in this direction is not necessary. Also, common parts of
->>> implementation (future merging of more TLVs to compounds) can be shared.
->>
->> Actually it's a sort of TLV.  You see exactly it in snd_pcm_attr
->> struct, no? :)
->>
->> And, thinking twice after posting (that's a good effect of posting to
->> ML, BTW), I feel that using a callback would be a better way, such as
->> re-using the existing ops->ioctl with a new cmd tag rather than the
->> statically assigned thing.
->>
->> A similar method like control TLV can be used, too.  However, a
->> distinct from the existing control TLV is that this is intended for
->> just one type of information while the control TLV is supposed to
->> contain everything in a single shot.
->>
->> That is, this is a query with a key.  In that sense, sharing a small
->> amount of control TLV code (about 10 lines) doesn't give a big
->> benefit.  In anyways, it's a implementation detail, so one could
->> optimize somehow, though...
->
-> I don't mean current implementation. TLVs can be nested. In this case, we
-> need a set of functions which operates with TLVs (merging). These
-> functions can be shared. It's also possible to share TLV code in
-> the user space (search). But it's really implementation detail. We should
-> focus on ioctl definitions now.
->
-> I would defined 'struct snd_pcm_attr' as 'struct snd_tlv' - it's same as
-> for control API.
->
-> The control API has:
->
-> SNDRV_CTL_IOCTL_TLV_READ	- read all static information
-> SNDRV_CTL_IOCTL_TLV_WRITE	- write static information (userspace controls)
-> SNDRV_CTL_IOCTL_TLV_COMMAND	- change some setup
->
-> So, SNDRV_CTL_IOCTL_TLV_COMMAND == SNDRV_PCM_IOCTL_SET_ATTR in your
-> proposal.
->
-> SNDRV_CTL_IOCTL_TLV_WRITE is not probably useable unless we have virtual
-> user-space PCM interface kernel implementation.
->
-> SNDRV_CTL_IOCTL_TLV_READ might make sense for static-only information
-> which don't change between open()/close() syscalls for given substream.
->
-> SNDRV_PCM_IOCTL_GET_ATTR cannot be mapped at this time. Might be something
-> like TLV_READONE, TLV_CONFIG, TLV_SETUP, TLV_GET or so - what's better
-> for COMMAND word, if we agree on common names for all kernel interfaces.
+As Liam said you really need to submit this as a patch series rather
+than as a single big patch - as your commit log here indicates you've
+got several different things going on here.
 
-BTW: It's also question, if to divide TLVs to static/configuration ones. 
-TLV_READ might just return all TLVs and TLV_READONE filter only one, if 
-user space does not want to obtain all information.
+> +++ b/include/sound/soc-dai.h
+> @@ -30,6 +30,7 @@ struct snd_pcm_substream;
+>  #define SND_SOC_DAIFMT_DSP_A		3 /* L data msb after FRM LRC */
+>  #define SND_SOC_DAIFMT_DSP_B		4 /* L data msb during FRM LRC */
+>  #define SND_SOC_DAIFMT_AC97		5 /* AC97 */
+> +#define SND_SOC_DAIFMT_SPORT_TDM	6 /* SPORT TDM for ADI parts */
 
-I would like to preserve TLV_READ to obtain all TLVs for possible user 
-space enumeration (for example for debugging purposes) rather that do a 
-single query for all possible TLV types.
+If you're going to add a new DAI format that really needs more
+explanation than this explaining what the DAI format is.  It'd be very
+surprising to see hardware needing a new format.
 
- 					Jaroslav
+Looking at the datasheet for the ad1938 it appears that the actual
+format here is just normal I2S with TDM.  This does not need a new DAI
+format or new CPU DAI, you just need to add suport for TDM to the
+Blackfin I2S driver.  The format is fairly standard and implemented by a
+number of other devices.
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+See set_tdm_slot() for setting up the higher channel counts - there's
+some ongoing revisions to that API so you'll want to also ensure that
+the code is set up so that it can cope with specification of the sample
+width for each slot in set_tdm_slot().
+
+Given this I've only looked at the CODEC driver below.
+
+> diff --git a/sound/soc/codecs/ad1938.c b/sound/soc/codecs/ad1938.c
+> new file mode 100644
+> index 0000000..9aa78e1
+> --- /dev/null
+> +++ b/sound/soc/codecs/ad1938.c
+
+> + *
+> + *  Revision history
+> + *    4 June 2009   Initial version.
+
+Don't include this, git provides code history for us.
+
+> +struct snd_soc_device *ad1938_socdev;
+> +
+> +/* dac de-emphasis enum control */
+> +static const char *ad1938_deemp[] = {"flat", "48kHz", "44.1kHz", "32kHz"};
+
+For consistency with other drivers "flat" should be "None".
+
+> +/* AD1938 volume/mute/de-emphasis etc. controls */
+> +static const struct snd_kcontrol_new ad1938_snd_controls[] = {
+> +	/* DAC volume control */
+> +	SOC_SINGLE("DAC L1 Volume", AD1938_DAC_L1_VOL, 0, 0xFF, 1),
+> +	SOC_SINGLE("DAC R1 Volume", AD1938_DAC_R1_VOL, 0, 0xFF, 1),
+
+These (and the other stereo pairs below) should be SOC_DOUBLE_R().  This
+allows ALSA to represent them as stereo controls to applications rather
+than as two separate controls.  You should also provide TLV information
+so actually SOC_DOUBLE_R_TLV() if possible.
+
+> +	/* DAC mute control */
+> +	SOC_SINGLE("DAC L1 Switch", AD1938_DAC_CHNL_MUTE, 0, 1, 1),
+> +	SOC_SINGLE("DAC R1 Switch", AD1938_DAC_CHNL_MUTE, 1, 1, 1),
+
+These should be stereo controls too - SOC_DOUBLE() since they're in the
+same register.
+
+> +	/* ADC mute control */
+> +	SOC_SINGLE("ADC L1 Switch", AD1938_ADC_CTRL0, ADC0_MUTE, 1, 1),
+> +	SOC_SINGLE("ADC R1 Switch", AD1938_ADC_CTRL0, ADC1_MUTE, 1, 1),
+
+These too.
+
+> +	/* DAC de-emphasis */
+> +	SOC_ENUM("Playback Deemphasis", ad1938_enum[0]),
+
+Don't put your enums in an array, use named variables for them.  This
+makes drivers easier to maintian when you get a lot of enums.
+
+> +static int ad1938_add_controls(struct snd_soc_codec *codec)
+> +{
+> +	int err, i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(ad1938_snd_controls); i++) {
+> +		err = snd_ctl_add(codec->card,
+> +				snd_soc_cnew(&ad1938_snd_controls[i], codec, NULL));
+
+Use snd_soc_add_controls() here - you can replace the entire function
+with a call to that.
+
+> +/* dac/adc/pll poweron/off functions */
+> +static int ad1938_dac_powerctrl(struct snd_soc_codec *codec, int cmd)
+> +{
+> +	int reg;
+> +
+> +	reg = codec->read(codec, AD1938_DAC_CTRL0);
+> +	if (cmd)
+> +		reg &= ~DAC_POWERDOWN;
+> +	else
+> +		reg |= DAC_POWERDOWN;
+> +	codec->write(codec, AD1938_DAC_CTRL0, reg);
+
+This should be handled by DAPM - either have a single DAC widget
+representing all the channels (since you don't appear to have
+independant control anyway) or have a bunch of dummy DAC widgets and a
+supply widget representing the actual power control.  The same thing
+applies to the ADCs.
+
+> +static int ad1938_set_pll(struct snd_soc_dai *codec_dai,
+> +		int pll_id, unsigned int freq_in, unsigned int freq_out)
+> +{
+> +	struct snd_soc_codec *codec = codec_dai->codec;
+> +
+> +	if (freq_out)
+> +		ad1938_pll_powerctrl(codec, 1);
+> +	else {
+> +		/* playing while recording, framework will poweroff-poweron pll redundantly */
+> +		if ((!codec_dai->capture.active) && (!codec_dai->playback.active))
+> +			ad1938_pll_powerctrl(codec, 0);
+> +	}
+
+Hrm.  This appears to completely ignore the frequencies supplied for the
+PLL and just provide power control.  I suspect that you can just handle
+the PLL as a SND_SOC_DAPM_SUPPLY(), there seems to be no need to expose
+the set_pll() operation and make machine drivers call it given that
+there isn't any frequency configuration going on.
+
+> +static int ad1938_mute(struct snd_soc_dai *dai, int mute)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +
+> +	if (!mute)
+> +		codec->write(codec, AD1938_DAC_CHNL_MUTE, 0);
+> +	else
+> +		codec->write(codec, AD1938_DAC_CHNL_MUTE, 0xff);
+> +
+> +	return 0;
+> +}
+
+This isn't going to play well with the explicit mute controls you've got
+above - it's writing to the same register bits without any coordination.
+One or the other set of controls ought to be removed.
+
+> +static int ad1938_tdm_set(struct snd_soc_codec *codec)
+> +{
+> +	codec->write(codec, AD1938_DAC_CTRL0, (codec->read(codec, AD1938_DAC_CTRL0) &
+> +				(~DAC_SERFMT_MASK)) | DAC_SERFMT_TDM);
+> +	codec->write(codec, AD1938_DAC_CTRL1, 0x84); /* invert bclk, 256bclk/frame, latch in mid */
+> +	codec->write(codec, AD1938_ADC_CTRL1, 0x43); /* sata delay=1, adc aux mode */
+> +	codec->write(codec, AD1938_ADC_CTRL2, 0x6F); /* left high, driver on rising edge */
+> +
+> +	return 0;
+> +}
+
+If you use set_tdm_slot() then the BCLK/frame ratio will be set by that.
+
+Inversion of BCLK (and any other clocks) should be handled by the
+set_dai_fmt() operation based on the machine driver request rather than
+done unconditionally.
+
+> +	/* bit size */
+> +	switch (params_format(params)) {
+> +	case SNDRV_PCM_FORMAT_S16_LE:
+> +		word_len = 3;
+> +		break;
+
+Once you implement set_tdm_slot() you should allow the word length to be
+configured there if it's called or otherwise keep this code here - see
+Daniel Ribeiro's patche "change set_tdm_slot api to allow slot_width
+override" posted to the ALSA list this week.
+
+> +static int __devinit ad1938_spi_probe(struct spi_device *spi)
+> +{
+> +	spi->dev.power.power_state = PMSG_ON;
+> +	ad1938_socdev->card->codec->control_data = spi;
+> +
+> +	return 0;
+> +}
+> +
+> +static int __devexit ad1938_spi_remove(struct spi_device *spi)
+> +{
+> +	return 0;
+> +}
+
+Your device probing should all be restructured so that the SPI device
+for the CODEC is registered as any other SPI device rather than being
+set up as part of probing the ASoC device.  See the wm8731 driver for
+an example of doing this for a SPI device.
+
+This will require that the arch code for any systems with the ad1938
+do the setup of the device.
+
+> +	.name = "AD1938",
+> +	.playback = {
+> +		.stream_name = "Playback",
+> +		.channels_min = 2,
+> +		.channels_max = 8,
+> +		.rates = SNDRV_PCM_RATE_48000,
+> +		.formats = SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE, },
+
+Please keep your lines to under 80 columns.
+
+> +#define AD1938_PLL_CLK_CTRL0    0
+> +#define PLL_POWERDOWN           0x01
+> +#define AD1938_PLL_CLK_CTRL1    1
+> +#define AD1938_DAC_CTRL0        2
+> +#define DAC_POWERDOWN           0x01
+> +#define DAC_SERFMT_MASK		0xC0
+> +#define DAC_SERFMT_STEREO	(0 << 6)
+> +#define DAC_SERFMT_TDM		(1 << 6)
+
+These defines need namespacing if they're going to appear in the headers
+- everything should have the AD1938_ prefix.
