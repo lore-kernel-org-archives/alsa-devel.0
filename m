@@ -1,13 +1,14 @@
 From: "Lopez Cruz, Misael" <x0052729@ti.com>
-Subject: [PATCH 2/3] ASoC: TWL4030: Add AVADC Clock Priority
-Date: Fri, 19 Jun 2009 03:23:42 -0500
-Message-ID: <67059DBF19D7214F9C66BB0EA91BA90E3543F31D@dlee04.ent.ti.com>
+Subject: [PATCH 1/3] ASoC: TWL4030: Enable voice filters for
+	voice sidetone
+Date: Fri, 19 Jun 2009 03:23:41 -0500
+Message-ID: <67059DBF19D7214F9C66BB0EA91BA90E3543F31C@dlee04.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8657A10389D
+	by alsa0.perex.cz (Postfix) with ESMTP id 8684A1038A6
 	for <alsa-devel@alsa-project.org>;
 	Fri, 19 Jun 2009 10:23:49 +0200 (CEST)
 Content-Language: en-US
@@ -24,44 +25,112 @@ To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-AVDAC clk priority allows to determine the path ADC must
-be connected when the codec is in option2 and both audio
-and voice paths are enabled.
+Digital voice loopback (sidetone) requires voice filters
+to be enabled: VTXL, VTXR, VRX.
 
 Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
 ---
- sound/soc/codecs/twl4030.c |   12 ++++++++++++
- 1 files changed, 12 insertions(+), 0 deletions(-)
+ sound/soc/codecs/twl4030.c |   67 +++++++++++++++++++++++++-------------------
+ 1 files changed, 38 insertions(+), 29 deletions(-)
 
 diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 780217a..fd5b30f 100644
+index 4dbb853..780217a 100644
 --- a/sound/soc/codecs/twl4030.c
 +++ b/sound/soc/codecs/twl4030.c
-@@ -1036,6 +1036,16 @@ static DECLARE_TLV_DB_SCALE(digital_capture_tlv, 0, 100, 0);
-  */
- static DECLARE_TLV_DB_SCALE(input_gain_tlv, 0, 600, 0);
+@@ -332,6 +332,28 @@ static void twl4030_power_down(struct snd_soc_codec *codec)
+ 	twl4030_codec_enable(codec, 0);
+ }
  
-+/* AVADC clock priority */
-+static const char *twl4030_avadc_clk_priority_texts[] = {
-+	"Voice high priority", "Audio high priority"
-+};
++/* In case of voice mode, the RX1 L(VRX) for downlink and the TX2 L/R
++ * (VTXL, VTXR) for uplink has to be enabled/disabled. */
++static void twl4030_voice_enable(struct snd_soc_codec *codec, int direction,
++				int enable)
++{
++	u8 reg, mask;
 +
-+static const struct soc_enum twl4030_avadc_clk_priority_enum =
-+	SOC_ENUM_SINGLE(TWL4030_REG_AVADC_CTL, 2,
-+			ARRAY_SIZE(twl4030_avadc_clk_priority_texts),
-+			twl4030_avadc_clk_priority_texts);
++	reg = twl4030_read_reg_cache(codec, TWL4030_REG_OPTION);
 +
- static const char *twl4030_rampdelay_texts[] = {
- 	"27/20/14 ms", "55/40/27 ms", "109/81/55 ms", "218/161/109 ms",
- 	"437/323/218 ms", "874/645/437 ms", "1748/1291/874 ms",
-@@ -1137,6 +1147,8 @@ static const struct snd_kcontrol_new twl4030_snd_controls[] = {
- 	SOC_DOUBLE_TLV("Analog Capture Volume", TWL4030_REG_ANAMIC_GAIN,
- 		0, 3, 5, 0, input_gain_tlv),
++	if (direction == SNDRV_PCM_STREAM_PLAYBACK)
++		mask = TWL4030_ARXL1_VRX_EN;
++	else
++		mask = TWL4030_ATXL2_VTXL_EN | TWL4030_ATXR2_VTXR_EN;
++
++	if (enable)
++		reg |= mask;
++	else
++		reg &= ~mask;
++
++	twl4030_write(codec, TWL4030_REG_OPTION, reg);
++}
++
+ /* Earpiece */
+ static const struct snd_kcontrol_new twl4030_dapm_earpiece_controls[] = {
+ 	SOC_DAPM_SINGLE("Voice", TWL4030_REG_EAR_CTL, 0, 1, 0),
+@@ -712,7 +734,22 @@ static int bypass_event(struct snd_soc_dapm_widget *w,
  
-+	SOC_ENUM("AVADC Clock Priority", twl4030_avadc_clk_priority_enum),
-+
- 	SOC_ENUM("HS ramp delay", twl4030_rampdelay_enum),
+ 	reg = twl4030_read_reg_cache(w->codec, m->reg);
  
- 	SOC_ENUM("Vibra H-bridge mode", twl4030_vibradirmode_enum),
+-	if (m->reg <= TWL4030_REG_ARXR2_APGA_CTL) {
++	if (m->reg == TWL4030_REG_VSTPGA) {
++		/* Voice digital bypass */
++		if (reg) {
++			twl4030->bypass_state |= (1 << 5);
++			twl4030_voice_enable(w->codec,
++					SNDRV_PCM_STREAM_PLAYBACK, 1);
++			twl4030_voice_enable(w->codec,
++					SNDRV_PCM_STREAM_CAPTURE, 1);
++		} else {
++			twl4030->bypass_state &= ~(1 << 5);
++			twl4030_voice_enable(w->codec,
++					SNDRV_PCM_STREAM_PLAYBACK, 0);
++			twl4030_voice_enable(w->codec,
++					SNDRV_PCM_STREAM_CAPTURE, 0);
++		}
++	} else if (m->reg <= TWL4030_REG_ARXR2_APGA_CTL) {
+ 		/* Analog bypass */
+ 		if (reg & (1 << m->shift))
+ 			twl4030->bypass_state |=
+@@ -726,12 +763,6 @@ static int bypass_event(struct snd_soc_dapm_widget *w,
+ 			twl4030->bypass_state |= (1 << 4);
+ 		else
+ 			twl4030->bypass_state &= ~(1 << 4);
+-	} else if (m->reg == TWL4030_REG_VSTPGA) {
+-		/* Voice digital bypass */
+-		if (reg)
+-			twl4030->bypass_state |= (1 << 5);
+-		else
+-			twl4030->bypass_state &= ~(1 << 5);
+ 	} else {
+ 		/* Digital bypass */
+ 		if (reg & (0x7 << m->shift))
+@@ -1806,28 +1837,6 @@ static int twl4030_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	return 0;
+ }
+ 
+-/* In case of voice mode, the RX1 L(VRX) for downlink and the TX2 L/R
+- * (VTXL, VTXR) for uplink has to be enabled/disabled. */
+-static void twl4030_voice_enable(struct snd_soc_codec *codec, int direction,
+-				int enable)
+-{
+-	u8 reg, mask;
+-
+-	reg = twl4030_read_reg_cache(codec, TWL4030_REG_OPTION);
+-
+-	if (direction == SNDRV_PCM_STREAM_PLAYBACK)
+-		mask = TWL4030_ARXL1_VRX_EN;
+-	else
+-		mask = TWL4030_ATXL2_VTXL_EN | TWL4030_ATXR2_VTXR_EN;
+-
+-	if (enable)
+-		reg |= mask;
+-	else
+-		reg &= ~mask;
+-
+-	twl4030_write(codec, TWL4030_REG_OPTION, reg);
+-}
+-
+ static int twl4030_voice_startup(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
 -- 
 1.5.4.3
