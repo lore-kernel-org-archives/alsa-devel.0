@@ -1,54 +1,63 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: LSB inclusion of ALSA
-Date: Fri, 19 Jun 2009 15:43:33 +0200
-Message-ID: <4A3B9605.1070303@ladisch.de>
-References: <4A3296D0.4080701@novell.com> <4A378931.8010102@ladisch.de>
-	<s5h3a9z46ne.wl%tiwai@suse.de> <4A38AED6.4060009@ladisch.de>
-	<20090619124544.GF31377@mit.edu>
+From: Sam Morris <sam@robots.org.uk>
+Subject: Bug#517241: [alsa-devel] Laptop (Samsung Q45) speakers unmute when master channel is	unmuted even with headphones connected
+Date: Fri, 19 Jun 2009 15:08:32 +0100
+Message-ID: <1245420512.9036.3.camel@durandal>
+References: <20090502121442.GA14055@xerces> <s5hd4anddxy.wl%tiwai@suse.de>
+	 <1241521119.19946.0.camel@durandal> <s5h63gd2bjn.wl%tiwai@suse.de>
+	 <1245408989.9036.2.camel@durandal>  <s5hbpokgzaa.wl%tiwai@suse.de>
+Reply-To: Sam Morris <sam@robots.org.uk>, 517241@bugs.debian.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 946F51038E9
-	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Jun 2009 15:43:36 +0200 (CEST)
-In-Reply-To: <20090619124544.GF31377@mit.edu>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Theodore Tso <tytso@mit.edu>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Robert Schweikert <rschweikert@novell.com>
+Return-path: <bounce-debian-bugs-dist=glddb-debian-bugs-dist=m.gmane.org@lists.debian.org>
+Resent-To: debian-bugs-dist@lists.debian.org
+Resent-Message-ID: <handler.517241.B517241.12454205281252@bugs.debian.org>
+In-Reply-To: <s5hbpokgzaa.wl%tiwai@suse.de>
+List-Post: <mailto:debian-bugs-dist@lists.debian.org>
+List-Help: <mailto:debian-bugs-dist-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=unsubscribe>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: 517241@bugs.debian.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Theodore Tso wrote:
-> On Wed, Jun 17, 2009 at 10:52:38AM +0200, Clemens Ladisch wrote:
-> > Takashi Iwai wrote:
-> > > Another candidate is alsa-lib file plugin (and null plugin).  They can
-> > > be used to simulate in a certain level of I/O.
+On Fri, 2009-06-19 at 14:53 +0200, Takashi Iwai wrote:
+> At Fri, 19 Jun 2009 11:56:29 +0100,
+> Sam Morris wrote:
 > > 
-> > I don't think that LSB guarantees the availability of these plugins
-> > either.  (And they don't get the timing correct, but maybe we don't care
-> > about that.)
+> > On Thu, 2009-05-07 at 17:11 +0200, Takashi Iwai wrote:
+> > > At Tue, 05 May 2009 11:58:39 +0100,
+> > > Sam Morris wrote:
+> > > > 
+> > > > On Tue, 2009-05-05 at 12:47 +0200, Takashi Iwai wrote:
+> > > > > At Sat, 2 May 2009 13:14:42 +0100,
+> > > > > Sam Morris wrote:
+> > > > > > 
+> > > > > > Since Linux 2.6.28 and through to 2.6.30-rc4, the hda-intel driver has had a
+> > > > > > bug on my laptop (a Samsung Q45).
+> > > > > > 
+> > > > > > If I connect my headphones, the laptop's internal speakers are muted--fine. But 
+> > > > > > if I then mute and unmute the master mixer channel, the speakers come back to
+> > > > > > life, even though the headphones are still connected.
+> > > > > 
+> > > > > Could you run alsa-info.sh with --no-upload option, and attach the
+> > > > > generated file?
+> > > > 
+> > > > Here you go!
+> > > 
+> > > Thanks.
+> > > 
+> > > What if you use model=auto option?
+> > 
+> > This is fixed in 2.6.30, but only if I use the model=auto option. :)
 > 
-> That's not necessarily fatal, *if* the LSB sound tests can include the
-> plugin in question.  Is the plugin interface a stable, published
-> interface?  That is, is it guaranteed to remain stable from release to
-> release of ALSA?
-
-Yes.
-
-However, the plugin interface itself is not part of LSB.  If there were
-some alternative ALSA implementation that wanted to be LSB conformant,
-the test would not work.  (There are currently two alternatives, both
-named "SALSA", but neither one implements the full interface.)
-
-
-Best regards,
-Clemens
+> What about with the later version, e.g. Linus git tree?
+> Or you can use sound git tree
+>     git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+> 
+> I think this was already fixed there.
+> 
+> 
+> Takashi
+-- 
+Sam Morris <sam@robots.org.uk>
