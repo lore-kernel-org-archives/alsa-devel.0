@@ -1,19 +1,22 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: RFC: Jack-detection control elements on HD-audio
-Date: Fri, 19 Jun 2009 14:34:29 +0200
-Message-ID: <20090619123429.GB5785@tango.0pointer.de>
-References: <s5hk538ejj4.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0906191048150.3983@eeebox2.perex-int.cz>
+From: James Courtier-Dutton <james.dutton@gmail.com>
+Subject: Re: RFC: PCM extra attributes
+Date: Fri, 19 Jun 2009 13:43:08 +0100
+Message-ID: <ad2655cb0906190543r6f92b679ke4212db0739fbb69@mail.gmail.com>
+References: <s5hiqiseiwj.wl%tiwai@suse.de>
+	<ad2655cb0906190458x4852f6b7m46b8df170d3921eb@mail.gmail.com>
+	<s5hmy84h14b.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id A935D244D8
+Received: from mail-fx0-f226.google.com (mail-fx0-f226.google.com
+	[209.85.220.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id 31B8110381B
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Jun 2009 14:34:54 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.00.0906191048150.3983@eeebox2.perex-int.cz>
+	Fri, 19 Jun 2009 14:43:09 +0200 (CEST)
+Received: by fxm26 with SMTP id 26so1090475fxm.32
+	for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2009 05:43:09 -0700 (PDT)
+In-Reply-To: <s5hmy84h14b.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,96 +26,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 19.06.09 10:54, Jaroslav Kysela (perex@perex.cz) wrote:
-
-Heya,
-
-> > yet another thing I've worked recently on is a bit more generalized
-> > framework for jack-sense reporting for HD-audio.  This supersedes the
-> > existing jack-sense reporting via the input layer.  In addition, it
-> > gives the corresponding control elements.
-> >
-> > For example, you'll have "Jack HP-Out" (or a bit more verbose like
-> > "Jack HP-Out at Ext Rear") control via control API as well as other
-> > mixer controls.  This can notify when a jack is plugged/unplugged.
-> > But, another big win is that you can read the current pin sense just
-> > by reading this element.
-> 
-> Before definining such extension, I would really see to define standard 
-> control names in Documentation/ControlNames.txt file. It seems to me that 
-> most new drivers does not follow suggested naming. The document should be 
-> reviewed, of course.
-
-Oh yes, please!
-
-I have recently reworked PA to control the mixer a bit more
-comprehensively, including doing input source selection stuff and
-suchlike. For that I made a little survey on all current drivers how
-they name things. Was a bit disappointing, for example for "Input
-Source"/"Capture Source" we have at least
-options by these names:
-
-Analog
-Analog Inputs
-AOUT
-Aux
-AUX
-Aux0
-Aux1
-Aux2
-Aux3
-Aux In
-AUX IN
-Cam Mic
-Digital Mic
-Digital Mic 1
-Digital Mic 2
-D-Mic
-Docking-Station
-Dock Mic
-e-Mic
-E-Mic
-ExtMic
-Ext Mic
-FM
-Front Mic
-Front Microphone
-iMic
-i-Mic
-Input1
-Input2
-Int DMic
-Internal Mic
-Internal Microphone
-IntMic
-Int Mic
-Line
-LineIn
-Line In
-Line-In
-Line/Mic
-Mic
-Mic1
-Mic2
-Mic/Line
-Microphone
-Rear Mic
-TV Tuner
-Unknown1
-Unknown2
-Video
-
-Shouldn't be too difficult to agree on standard names for most of
-these.
-
-I'll post abit more about my findings later.
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+2009/6/19 Takashi Iwai <tiwai@suse.de>:
+>
+> The alsamixer view isn't the issue I'm concerned.
+> These spontaneous controls should be IFACE_PCM in the first place.
+> They shouldn't be IFACE_MIXER. =A0For example, IEC958 status bits can be
+> associated to a dedicated PCM substream.
+>
+Would an option could be to stream the IEC958 status bits with the PCM stre=
+am?
+I.e. As an extra channel of the PCM multichannel stream.
+Another option could be to stream the gain control values with the PCM stre=
+am.
+I.e. Instead of attributes attached to the PCM, stream those
+attributes with the PCM stream.
