@@ -1,21 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] New ASoC Drivers for ADI AD1938 codec
-Date: Fri, 19 Jun 2009 12:13:36 +0100
-Message-ID: <A40FAF28-889C-4322-A114-098EEA56FCE6@opensource.wolfsonmicro.com>
-References: <1245403695-20537-1-git-send-email-21cnbao@gmail.com>
-	<20090619104738.GF5270@sirena.org.uk>
-	<8bd0f97a0906190405k33503d8ekd74ec9ddbb2fde12@mail.gmail.com>
-	(sfid-20090619_120614_172883_1B2E9095)
-Mime-Version: 1.0 (iPhone Mail 7A341)
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: RFC: PCM extra attributes
+Date: Fri, 19 Jun 2009 13:14:15 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.0906191305430.3983@eeebox2.perex-int.cz>
+References: <s5hiqiseiwj.wl%tiwai@suse.de>
+	<alpine.LNX.2.00.0906191031001.3983@eeebox2.perex-int.cz>
+	<s5hbpokegf9.wl%tiwai@suse.de>
+	<alpine.LNX.2.00.0906191202590.3983@eeebox2.perex-int.cz>
+	<alpine.LNX.2.00.0906191241060.3983@eeebox2.perex-int.cz>
+	<s5htz2ch4w6.wl%tiwai@suse.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BC76310381A
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 07E5210381A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Jun 2009 13:13:57 +0200 (CEST)
-In-Reply-To: <8bd0f97a0906190405k33503d8ekd74ec9ddbb2fde12@mail.gmail.com>
-	(sfid-20090619_120614_172883_1B2E9095)
+	Fri, 19 Jun 2009 13:14:16 +0200 (CEST)
+In-Reply-To: <s5htz2ch4w6.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,57 +26,122 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier.adi@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Barry Song <21cnbao@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 19 Jun 2009, at 12:05, Mike Frysinger <vapier.adi@gmail.com> wrote:
+On Fri, 19 Jun 2009, Takashi Iwai wrote:
 
-> On Fri, Jun 19, 2009 at 06:47, Mark Brown wrote:
->> On Fri, Jun 19, 2009 at 05:28:15PM +0800, Barry Song wrote:
->>> 1. add AD1938 codec driver                   (codec)
->>> 2. add blackfin SPORT-TDM DAI and PCM driver (platform)
->>> 3. add bf5xx board with AD1938 driver        (machine)
+> At Fri, 19 Jun 2009 12:45:04 +0200 (CEST),
+> Jaroslav Kysela wrote:
 >>
->> As Liam said you really need to submit this as a patch series rather
->> than as a single big patch - as your commit log here indicates you've
->> got several different things going on here.
->
-> blah, i had this queued locally with a "todo:split".  wanted to wait
-> for Barry to finish developing the driver first though.
->
-> at any rate, i hate to sound like a broken record wrt my alsa
-> ignorance, but i'm thinking the logical split would be like Barry
-> numbered it -- one patch for sound/codec/, one patch for the TDM
-> transport, and one patch for hooking up the AD1938 to TDM.
-
-Yes, though if the new DAI format had been required it would be worth  
-considering a separate patch for it.
-
->
->>> +static int __devinit ad1938_spi_probe(struct spi_device *spi)
->>> +{
->>> +     spi->dev.power.power_state = PMSG_ON;
->>> +     ad1938_socdev->card->codec->control_data = spi;
->>> +
->>> +     return 0;
->>> +}
->>> +
->>> +static int __devexit ad1938_spi_remove(struct spi_device *spi)
->>> +{
->>> +     return 0;
->>> +}
+>> On Fri, 19 Jun 2009, Jaroslav Kysela wrote:
 >>
->> Your device probing should all be restructured so that the SPI device
->> for the CODEC is registered as any other SPI device rather than being
->> set up as part of probing the ASoC device.  See the wm8731 driver for
->> an example of doing this for a SPI device.
+>>> On Fri, 19 Jun 2009, Takashi Iwai wrote:
+>>>
+>>>> At Fri, 19 Jun 2009 10:47:30 +0200 (CEST),
+>>>> Jaroslav Kysela wrote:
+>>>>>
+>>>>> On Fri, 19 Jun 2009, Takashi Iwai wrote:
+>>>>>
+>>>>>> Hi,
+>>>>>>
+>>>>>> this is yet another topic I'm (currently) working on -- the addition
+>>>>>> of PCM ioctls to get/set some extra attributes.  Basically, it adds
+>>>>>> two simple ioctls for getting/setting extra attributes to the PCM
+>>>>>> substream.  The attribute has a sort of TLV form,
+>>>>>>
+>>>>>>  /* PCM extra attributes */
+>>>>>>  struct snd_pcm_attr {
+>>>>>>  	unsigned int type;	/* SNDRC_PCM_TYPE_ATTR_XXX */
+>>>>>>  	unsigned int len;	/* GET R: the max elements in value array
+>>>>>>  				 *     W: the actually written # elements
+>>>>>>  				 * SET R/W: # elements to store
+>>>>>>  				 */
+>>>>>>  	unsigned int value[0];	/* value(s) to read / write */
+>>>>>>  };
+>>>>>>
+>>>>>> And corresponding two ioctls
+>>>>>>  #define SNDRV_PCM_IOCTL_GET_ATTR	_IOWR('A', 0x14, struct snd_pcm_attr)
+>>>>>>  #define SNDRV_PCM_IOCTL_SET_ATTR	_IOWR('A', 0x15, struct snd_pcm_attr)
+>>>>>
+>>>>> I would prefer to implement similar TLV implementation as for the control
+>>>>> API. The amount of information for reading (get) will be small, so
+>>>>> filtering in this direction is not necessary. Also, common parts of
+>>>>> implementation (future merging of more TLVs to compounds) can be shared.
+>>>>
+>>>> Actually it's a sort of TLV.  You see exactly it in snd_pcm_attr
+>>>> struct, no? :)
+>>>>
+>>>> And, thinking twice after posting (that's a good effect of posting to
+>>>> ML, BTW), I feel that using a callback would be a better way, such as
+>>>> re-using the existing ops->ioctl with a new cmd tag rather than the
+>>>> statically assigned thing.
+>>>>
+>>>> A similar method like control TLV can be used, too.  However, a
+>>>> distinct from the existing control TLV is that this is intended for
+>>>> just one type of information while the control TLV is supposed to
+>>>> contain everything in a single shot.
+>>>>
+>>>> That is, this is a query with a key.  In that sense, sharing a small
+>>>> amount of control TLV code (about 10 lines) doesn't give a big
+>>>> benefit.  In anyways, it's a implementation detail, so one could
+>>>> optimize somehow, though...
+>>>
+>>> I don't mean current implementation. TLVs can be nested. In this case, we
+>>> need a set of functions which operates with TLVs (merging). These
+>>> functions can be shared. It's also possible to share TLV code in
+>>> the user space (search). But it's really implementation detail. We should
+>>> focus on ioctl definitions now.
+>>>
+>>> I would defined 'struct snd_pcm_attr' as 'struct snd_tlv' - it's same as
+>>> for control API.
+>>>
+>>> The control API has:
+>>>
+>>> SNDRV_CTL_IOCTL_TLV_READ	- read all static information
+>>> SNDRV_CTL_IOCTL_TLV_WRITE	- write static information (userspace controls)
+>>> SNDRV_CTL_IOCTL_TLV_COMMAND	- change some setup
+>>>
+>>> So, SNDRV_CTL_IOCTL_TLV_COMMAND == SNDRV_PCM_IOCTL_SET_ATTR in your
+>>> proposal.
+>>>
+>>> SNDRV_CTL_IOCTL_TLV_WRITE is not probably useable unless we have virtual
+>>> user-space PCM interface kernel implementation.
+>>>
+>>> SNDRV_CTL_IOCTL_TLV_READ might make sense for static-only information
+>>> which don't change between open()/close() syscalls for given substream.
+>>>
+>>> SNDRV_PCM_IOCTL_GET_ATTR cannot be mapped at this time. Might be something
+>>> like TLV_READONE, TLV_CONFIG, TLV_SETUP, TLV_GET or so - what's better
+>>> for COMMAND word, if we agree on common names for all kernel interfaces.
 >>
->> This will require that the arch code for any systems with the ad1938
->> do the setup of the device.
+>> BTW: It's also question, if to divide TLVs to static/configuration ones.
+>> TLV_READ might just return all TLVs and TLV_READONE filter only one, if
+>> user space does not want to obtain all information.
+>>
+>> I would like to preserve TLV_READ to obtain all TLVs for possible user
+>> space enumeration (for example for debugging purposes) rather that do a
+>> single query for all possible TLV types.
 >
-> so should sound/soc/blackfin/bf5xx-ad1938.c even exist in the first  
-> place ?
+> I disagree with "all-in-on-TLV" strategy.  That makes life much harder.
+> Sorry, it's no go.
 
-Yes. It is needed in order to specify how things are hooked up on a  
-given board.
+Sorry, the implementation can be more simple than you think. Imagine just 
+a TLV callback in the lowlevel driver and switch/case statement in the 
+callback. We can define a special type in kernel that queries for all 
+present TLV types (bitmap) and the ioctl TLV_READ implementation can just 
+compose results from single queries. So, the code in the lowlevel driver 
+will grow only with 4 (or less) lines:
+
+ 	case TLV_TYPES:
+ 		tlv.length = 4;
+ 		tlv.data[0] = (1<<TLV_CHANNEL_MAP) | (1<<TLV_CONTROL_IDS);
+ 		return 0;
+
+ 						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
