@@ -1,42 +1,32 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ASoC: Blackfin: convert internal
-	names	from bf52x to bf5xx
-Date: Sat, 20 Jun 2009 19:51:23 +0100
-Message-ID: <20090620185123.GD4509@sirena.org.uk>
+From: Mike Frysinger <vapier.adi-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Blackfin:
+	convert internal names from bf52x to bf5xx
+Date: Sat, 20 Jun 2009 15:05:34 -0400
+Message-ID: <8bd0f97a0906201205k554f04dawe54bcee8a321633c@mail.gmail.com>
 References: <1245511797-19460-1-git-send-email-vapier@gentoo.org>
+	<20090620185123.GD4509@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E35FE2440C
-	for <alsa-devel@alsa-project.org>;
-	Sat, 20 Jun 2009 20:51:29 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1245511797-19460-1-git-send-email-vapier@gentoo.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <barry.song@analog.com>
+Return-path: <uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+In-Reply-To: <20090620185123.GD4509-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+List-Unsubscribe: <https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://blackfin.uclinux.org/pipermail/uclinux-dist-devel>
+List-Post: <mailto:uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=subscribe>
+Sender: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+Errors-To: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+To: Mark Brown <broonie-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Cc: uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Barry Song <barry.song-OyLXuOCK7orQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jun 20, 2009 at 11:29:56AM -0400, Mike Frysinger wrote:
-> From: Barry Song <barry.song@analog.com>
-> 
-> These drivers aren't BF52x specific, so don't use bf52x in the names.
+On Sat, Jun 20, 2009 at 14:51, Mark Brown wrote:
+> Given that these machine drivers cover so many different systems you
+> probably want to remove a lot of the Kconfig settings and make
+> everything take platform data specifying how the system is set up.
 
-Applied for 2.6.32.
-
-Given that these machine drivers cover so many different systems you
-probably want to remove a lot of the Kconfig settings and make
-everything take platform data specifying how the system is set up.  At
-the minute there's a relatively large amount of manual kernel
-configuration required to get things up and running on a given board
-which isn't ideal.
+that is the current plan
+-mike
