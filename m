@@ -1,20 +1,18 @@
-From: "Harsha, Priya" <priya.harsha@intel.com>
-Subject: Re: submitting patches to ALSA
-Date: Sat, 20 Jun 2009 08:37:03 +0530
-Message-ID: <98769532B4BB14429434178695419EAE5B7F85FD@bgsmsx501.gar.corp.intel.com>
-References: <BAY119-W8E3C7EC7BE9C8606E2D28B0480@phx.gbl>
-	<98769532B4BB14429434178695419EAE5B719DC3@bgsmsx501.gar.corp.intel.com>
-	<s5hws78emcn.wl%tiwai@suse.de>
+From: Igor Chernyshev <igor.ch75+alsa@gmail.com>
+Subject: Patch for suspend/resume in ICE1724 for Audiotrak
+	Prodigy HD2
+Date: Fri, 19 Jun 2009 23:37:16 -0700
+Message-ID: <75570e410906192337p1e9aea9cn9edbea987f6ffbb4@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 73CA524452
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3E98924501
 	for <alsa-devel@alsa-project.org>;
-	Sat, 20 Jun 2009 05:07:09 +0200 (CEST)
-In-Reply-To: <s5hws78emcn.wl%tiwai@suse.de>
-Content-Language: en-US
+	Sat, 20 Jun 2009 08:37:17 +0200 (CEST)
+Received: by yw-out-1718.google.com with SMTP id 4so950068ywq.2
+	for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2009 23:37:16 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,79 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Takashi.
+Hi Alsa Developers!
 
-I have tested it already with aplay, papaly and firefox flash, etc,.
+I've built a small HTPC and had to add suspend/resume support in ice1724
+driver. There seem to be 3 existing bugs related to that:
 
-Regarding the firmware binary, need I send it as a part of the patch in the email or can I be upload it in a common location where anyone can access it?
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4413
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3748
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2314
 
-Also, I am waiting for few dependant drivers to be submitted for upstream before I can submit my patches otherwise it would break.
+Due to hardware (un)availability, I only enabled the fix for Audiotrak
+Prodigy HD2 card, which is installed in my HTPC. However, most of my code
+should be reusable in the future on other ice1724-based cards as well (as
+long as people add card-specific peices of code). The fix is currently based
+on ALSA 1.0.20 and works on my MythBuntu 9.04 HTPC (using 2.6.28-11 kernel).
+
+The following files have been modified:
+  alsa-kernel/pci/ice1712/ice1712.h
+  alsa-kernel/pci/ice1712/ice1724.c
+  alsa-kernel/pci/ice1712/prodigy_hifi.c
+
+Now, I'm a complete newbie in Linux development and not sure I can safely
+rebuild latest Linux Kernel under MythBuntu, etc. Are there any resources
+for people like me to read? I want to provide the patch without destroying
+my computer a hunder times, but also make it more convenient and safer for
+ALSA maintainers.
 
 Thanks,
-Harsha
-
-
-
------Original Message-----
-From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Takashi Iwai
-Sent: Friday, June 19, 2009 12:34 PM
-To: Harsha, Priya
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] submitting patches to ALSA
-
-At Thu, 18 Jun 2009 21:33:54 +0530,
-Harsha, Priya wrote:
-> 
-> Hi,
-> 
-> This is the first time I am planning to submit patches to ALSA. Are
-> there any tips/rules I need to follow?
-
-In general, the rule for LKML is applied here, too.
-
-> I have followed the general guidelines like checkpatch, testing with
-> different debug configs etc.
-
-Great.
-
-> I have a few questions;
-> 1. Against which kernel tree should I create patches to submit to
-> ALSA devel mailing list?
-
-Try to apply always to the latest tree, e.g. sound git tree below
-	git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
-
-> 2. I have to download firmware as a part of my driver. This firmware
-> file is freely distributable. How should I share the firmware binary
-> file when I send the patches? The firmware binary file would reside
-> in /lib/firmware
-
-The firmware file would be either in alsa-firmware package or in
-linux-firmware package.  First you can put it to alsa-firmware
-package, and we can push them to the upstream linux-firmware package
-once after your driver gets merged.
-
-> 3. Is there anything else I need to send to the mailing list in
-> addition to the patches?
-
-A good series of patches is self-explanatory :)
-
-> 4. Are there any test suits that I can use to test the driver?
-
-It's a timely question.  We want to discuss this, especially per
-request from LSB.  In short answer: no test suits for the time being.
-Most people tested with aplay and speaker-test as standard test
-programs.
-
-
-thanks,
-
-Takashi
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Igor
