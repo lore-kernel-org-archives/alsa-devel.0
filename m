@@ -1,18 +1,16 @@
 From: Mike Frysinger <vapier@gentoo.org>
-Subject: [PATCH] ASoC: Blackfin: keep better track of SPORT
-	configuration state
-Date: Sat, 20 Jun 2009 11:29:05 -0400
-Message-ID: <1245511745-19381-1-git-send-email-vapier@gentoo.org>
-References: <0F1B54C89D5F954D8535DB252AF412FA04292614@chinexm1.ad.analog.com>
+Subject: [PATCH] ASoC: Blackfin: convert internal names from
+	bf52x to bf5xx
+Date: Sat, 20 Jun 2009 11:29:56 -0400
+Message-ID: <1245511797-19460-1-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id D415724474
+	by alsa0.perex.cz (Postfix) with ESMTP id 9DCCE24475
 	for <alsa-devel@alsa-project.org>;
-	Sat, 20 Jun 2009 17:29:24 +0200 (CEST)
-In-Reply-To: <0F1B54C89D5F954D8535DB252AF412FA04292614@chinexm1.ad.analog.com>
+	Sat, 20 Jun 2009 17:30:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,58 +21,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: uclinux-dist-devel@blackfin.uclinux.org, Cliff Cai <cliff.cai@analog.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, Barry Song <barry.song@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Cliff Cai <cliff.cai@analog.com>
+From: Barry Song <barry.song@analog.com>
 
-Do not let the SPORT be reconfigured until there are no more active
-streams.  Then we can let the system reprogram the SPORT state.
+These drivers aren't BF52x specific, so don't use bf52x in the names.
 
-Signed-off-by: Cliff Cai <cliff.cai@analog.com>
+Signed-off-by: Barry Song <barry.song@analog.com>
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- sound/soc/blackfin/bf5xx-i2s.c |    7 ++++++-
- 1 files changed, 6 insertions(+), 1 deletions(-)
+ sound/soc/blackfin/bf5xx-ad73311.c |   16 ++++++++--------
+ sound/soc/blackfin/bf5xx-ssm2602.c |   16 ++++++++--------
+ 2 files changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/blackfin/bf5xx-i2s.c b/sound/soc/blackfin/bf5xx-i2s.c
-index 9648244..0e8af48 100644
---- a/sound/soc/blackfin/bf5xx-i2s.c
-+++ b/sound/soc/blackfin/bf5xx-i2s.c
-@@ -50,6 +50,7 @@ struct bf5xx_i2s_port {
- 	u16 tcr2;
- 	u16 rcr2;
- 	int counter;
-+	int configured;
+diff --git a/sound/soc/blackfin/bf5xx-ad73311.c b/sound/soc/blackfin/bf5xx-ad73311.c
+index edfbdc0..9825b71 100644
+--- a/sound/soc/blackfin/bf5xx-ad73311.c
++++ b/sound/soc/blackfin/bf5xx-ad73311.c
+@@ -203,23 +203,23 @@ static struct snd_soc_device bf5xx_ad73311_snd_devdata = {
+ 	.codec_dev = &soc_codec_dev_ad73311,
  };
  
- static struct bf5xx_i2s_port bf5xx_i2s;
-@@ -168,7 +169,7 @@ static int bf5xx_i2s_hw_params(struct snd_pcm_substream *substream,
- 		break;
- 	}
+-static struct platform_device *bf52x_ad73311_snd_device;
++static struct platform_device *bf5xx_ad73311_snd_device;
  
--	if (bf5xx_i2s.counter == 1) {
-+	if (!bf5xx_i2s.configured) {
- 		/*
- 		 * TX and RX are not independent,they are enabled at the
- 		 * same time, even if only one side is running. So, we
-@@ -177,6 +178,7 @@ static int bf5xx_i2s_hw_params(struct snd_pcm_substream *substream,
- 		 *
- 		 * CPU DAI:slave mode.
- 		 */
-+		bf5xx_i2s.configured = 1;
- 		ret = sport_config_rx(sport_handle, bf5xx_i2s.rcr1,
- 				      bf5xx_i2s.rcr2, 0, 0);
- 		if (ret) {
-@@ -200,6 +202,9 @@ static void bf5xx_i2s_shutdown(struct snd_pcm_substream *substream,
+ static int __init bf5xx_ad73311_init(void)
+ {
+ 	int ret;
+ 
+ 	pr_debug("%s enter\n", __func__);
+-	bf52x_ad73311_snd_device = platform_device_alloc("soc-audio", -1);
+-	if (!bf52x_ad73311_snd_device)
++	bf5xx_ad73311_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!bf5xx_ad73311_snd_device)
+ 		return -ENOMEM;
+ 
+-	platform_set_drvdata(bf52x_ad73311_snd_device, &bf5xx_ad73311_snd_devdata);
+-	bf5xx_ad73311_snd_devdata.dev = &bf52x_ad73311_snd_device->dev;
+-	ret = platform_device_add(bf52x_ad73311_snd_device);
++	platform_set_drvdata(bf5xx_ad73311_snd_device, &bf5xx_ad73311_snd_devdata);
++	bf5xx_ad73311_snd_devdata.dev = &bf5xx_ad73311_snd_device->dev;
++	ret = platform_device_add(bf5xx_ad73311_snd_device);
+ 
+ 	if (ret)
+-		platform_device_put(bf52x_ad73311_snd_device);
++		platform_device_put(bf5xx_ad73311_snd_device);
+ 
+ 	return ret;
+ }
+@@ -227,7 +227,7 @@ static int __init bf5xx_ad73311_init(void)
+ static void __exit bf5xx_ad73311_exit(void)
  {
  	pr_debug("%s enter\n", __func__);
- 	bf5xx_i2s.counter--;
-+	/* No active stream, SPORT is allowed to be configured again. */
-+	if (!bf5xx_i2s.counter)
-+		bf5xx_i2s.configured = 0;
+-	platform_device_unregister(bf52x_ad73311_snd_device);
++	platform_device_unregister(bf5xx_ad73311_snd_device);
  }
  
- static int bf5xx_i2s_probe(struct platform_device *pdev,
+ module_init(bf5xx_ad73311_init);
+diff --git a/sound/soc/blackfin/bf5xx-ssm2602.c b/sound/soc/blackfin/bf5xx-ssm2602.c
+index bc0cdde..3a00fa4 100644
+--- a/sound/soc/blackfin/bf5xx-ssm2602.c
++++ b/sound/soc/blackfin/bf5xx-ssm2602.c
+@@ -148,24 +148,24 @@ static struct snd_soc_device bf5xx_ssm2602_snd_devdata = {
+ 	.codec_data = &bf5xx_ssm2602_setup,
+ };
+ 
+-static struct platform_device *bf52x_ssm2602_snd_device;
++static struct platform_device *bf5xx_ssm2602_snd_device;
+ 
+ static int __init bf5xx_ssm2602_init(void)
+ {
+ 	int ret;
+ 
+ 	pr_debug("%s enter\n", __func__);
+-	bf52x_ssm2602_snd_device = platform_device_alloc("soc-audio", -1);
+-	if (!bf52x_ssm2602_snd_device)
++	bf5xx_ssm2602_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!bf5xx_ssm2602_snd_device)
+ 		return -ENOMEM;
+ 
+-	platform_set_drvdata(bf52x_ssm2602_snd_device,
++	platform_set_drvdata(bf5xx_ssm2602_snd_device,
+ 				&bf5xx_ssm2602_snd_devdata);
+-	bf5xx_ssm2602_snd_devdata.dev = &bf52x_ssm2602_snd_device->dev;
+-	ret = platform_device_add(bf52x_ssm2602_snd_device);
++	bf5xx_ssm2602_snd_devdata.dev = &bf5xx_ssm2602_snd_device->dev;
++	ret = platform_device_add(bf5xx_ssm2602_snd_device);
+ 
+ 	if (ret)
+-		platform_device_put(bf52x_ssm2602_snd_device);
++		platform_device_put(bf5xx_ssm2602_snd_device);
+ 
+ 	return ret;
+ }
+@@ -173,7 +173,7 @@ static int __init bf5xx_ssm2602_init(void)
+ static void __exit bf5xx_ssm2602_exit(void)
+ {
+ 	pr_debug("%s enter\n", __func__);
+-	platform_device_unregister(bf52x_ssm2602_snd_device);
++	platform_device_unregister(bf5xx_ssm2602_snd_device);
+ }
+ 
+ module_init(bf5xx_ssm2602_init);
 -- 
 1.6.3.1
