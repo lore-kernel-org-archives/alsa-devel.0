@@ -1,18 +1,20 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: [PATCH] ASoC: Blackfin: update the bf5xx_i2s_resume
-	parameters
-Date: Sat, 20 Jun 2009 11:29:57 -0400
-Message-ID: <1245511797-19460-2-git-send-email-vapier@gentoo.org>
-References: <1245511797-19460-1-git-send-email-vapier@gentoo.org>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: Blackfin: keep better track of	SPORT
+	configuration state
+Date: Sat, 20 Jun 2009 19:41:18 +0100
+Message-ID: <20090620184118.GB4509@sirena.org.uk>
+References: <0F1B54C89D5F954D8535DB252AF412FA04292614@chinexm1.ad.analog.com>
+	<1245511745-19381-1-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 50DB624478
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1D665243F5
 	for <alsa-devel@alsa-project.org>;
-	Sat, 20 Jun 2009 17:30:11 +0200 (CEST)
-In-Reply-To: <1245511797-19460-1-git-send-email-vapier@gentoo.org>
+	Sat, 20 Jun 2009 20:41:26 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1245511745-19381-1-git-send-email-vapier@gentoo.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,33 +24,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: uclinux-dist-devel@blackfin.uclinux.org, Barry Song <barry.song@analog.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Cliff Cai <cliff.cai@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Barry Song <barry.song@analog.com>
+On Sat, Jun 20, 2009 at 11:29:05AM -0400, Mike Frysinger wrote:
+> From: Cliff Cai <cliff.cai@analog.com>
+> 
+> Do not let the SPORT be reconfigured until there are no more active
+> streams.  Then we can let the system reprogram the SPORT state.
 
-Latest ASoC only passes snd_soc_dai to the resume function.
+Applied.
 
-Signed-off-by: Barry Song <barry.song@analog.com>
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
- sound/soc/blackfin/bf5xx-i2s.c |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/blackfin/bf5xx-i2s.c b/sound/soc/blackfin/bf5xx-i2s.c
-index 0e8af48..af06904 100644
---- a/sound/soc/blackfin/bf5xx-i2s.c
-+++ b/sound/soc/blackfin/bf5xx-i2s.c
-@@ -249,8 +249,7 @@ static int bf5xx_i2s_suspend(struct snd_soc_dai *dai)
- 	return 0;
- }
- 
--static int bf5xx_i2s_resume(struct platform_device *pdev,
--			    struct snd_soc_dai *dai)
-+static int bf5xx_i2s_resume(struct snd_soc_dai *dai)
- {
- 	int ret;
- 	struct sport_device *sport =
--- 
-1.6.3.1
+Please remember to CC maintainers on patches, especially if not starting
+a new thread for them.
