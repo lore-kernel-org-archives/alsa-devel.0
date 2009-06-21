@@ -1,66 +1,68 @@
-From: Simon Arlott <simon@fire.lp0.eu>
-Subject: [PATCH] via82xx: add option to disable 500ms delay in snd_via82xx_codec_wait
-Date: Sun, 21 Jun 2009 19:50:48 +0100
-Message-ID: <4A3E8108.5010001@simon.arlott.org.uk>
+From: =?ISO-8859-1?Q?Emilio_L=F3pez?= <buhitoescolar@gmail.com>
+Subject: Re: Regarding Sound on Acer Aspire 6935G
+Date: Sun, 21 Jun 2009 19:01:42 -0300
+Message-ID: <d54969c50906211501l7c6ae730l1082f8ed3894d196@mail.gmail.com>
+References: <4b8c423b0905152051w7443e1b4u4080514a560fbb6c@mail.gmail.com>
+	<s5hhbz61b8v.wl%tiwai@suse.de>
+	<d54969c50905291035v19ab019fsdf455a6410b827de@mail.gmail.com>
+	<d54969c50906052020m1202230eveab8ecc18c4b06ae@mail.gmail.com>
+	<s5hhbytzq8z.wl%tiwai@suse.de>
+	<d54969c50906061058g69f7c856v8fde1d48e7ec7f79@mail.gmail.com>
+	<s5hiqj51xy3.wl%tiwai@suse.de>
+	<d54969c50906131915x22c8f30el46ee51faf2fafe20@mail.gmail.com>
+	<d54969c50906201723k66b7965and680ffcc798e61de@mail.gmail.com>
+	<s5h63eq9cxp.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755423AbZFUSvC@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, perex@perex.cz, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
+	[209.85.221.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 560BF24367
+	for <alsa-devel@alsa-project.org>;
+	Mon, 22 Jun 2009 00:01:43 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so3362003qyk.16
+	for <alsa-devel@alsa-project.org>; Sun, 21 Jun 2009 15:01:42 -0700 (PDT)
+In-Reply-To: <s5h63eq9cxp.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Karthik Ramgopal <applefreakpeeps@gmail.com>, Tony Vroon <tony@linx.net>, ALSA development ML <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-There's a large 500ms delay in snd_via82xx_codec_wait() that, at least
-on my hardware, appears to be unnecessary. The rest of the init of
-the card works without logging any warnings or errors and both audio
-and mixer settings work.
+2009/6/21 Takashi Iwai <tiwai@suse.de>
 
-This adds an "nodelay" parameter to disable this (undocumented in the
-code) large delay improving bootup time by 489-500ms.
+> At Sat, 20 Jun 2009 21:23:30 -0300,
+> Emilio L=F3pez wrote:
+> >
+> > Any news on this Takashi?
+>
+> Tony Vroon just submitted a patch for 6530G with LFE support.
+> Could you try model=3Dacer-aspire-6530g with the very latest
+> alsa-driver-snapshot tarball?
 
-[    1.034217] initcall alsa_card_via82xx_init+0x0/0x16 returned 0 after 505757 usecs
-vs.
-[    0.533136] initcall alsa_card_via82xx_init+0x0/0x16 returned 0 after 15915 usecs
 
-Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
----
- sound/pci/via82xx.c |    6 +++++-
- 1 files changed, 5 insertions(+), 1 deletions(-)
+I just tried with the snapshot, still no bass sound :/ I'll try again later,
+just in case the tarball still hasn't got the patch.
 
-diff --git a/sound/pci/via82xx.c b/sound/pci/via82xx.c
-index 1ef58c5..949fcaf 100644
---- a/sound/pci/via82xx.c
-+++ b/sound/pci/via82xx.c
-@@ -85,6 +85,7 @@ static int joystick;
- static int ac97_clock = 48000;
- static char *ac97_quirk;
- static int dxs_support;
-+static int nodelay;
- 
- module_param(index, int, 0444);
- MODULE_PARM_DESC(index, "Index value for VIA 82xx bridge.");
-@@ -102,6 +103,8 @@ module_param(ac97_quirk, charp, 0444);
- MODULE_PARM_DESC(ac97_quirk, "AC'97 workaround for strange hardware.");
- module_param(dxs_support, int, 0444);
- MODULE_PARM_DESC(dxs_support, "Support for DXS channels (0 = auto, 1 = enable, 2 = disable, 3 = 48k only, 4 = no VRA, 5 = enable any sample rate)");
-+module_param(nodelay, int, 0444);
-+MODULE_PARM_DESC(nodelay, "Disable 500ms init delay");
- 
- /* just for backward compatibility */
- static int enable;
-@@ -549,7 +552,8 @@ static void snd_via82xx_codec_wait(struct snd_ac97 *ac97)
- 	int err;
- 	err = snd_via82xx_codec_ready(chip, ac97->num);
- 	/* here we need to wait fairly for long time.. */
--	msleep(500);
-+	if (!nodelay)
-+		msleep(500);
- }
- 
- static void snd_via82xx_codec_write(struct snd_ac97 *ac97,
--- 
-1.6.3.1
+BTW, can you have a look at the logs I sent earlier?
 
--- 
-Simon Arlott
+Thanks!
+
+Emilio
+
+
+
+>
+>
+> thanks,
+>
+> Takashi
+>
