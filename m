@@ -1,27 +1,18 @@
-From: =?ISO-8859-1?Q?Emilio_L=F3pez?= <buhitoescolar@gmail.com>
-Subject: Re: Regarding Sound on Acer Aspire 6935G
-Date: Sat, 20 Jun 2009 21:23:30 -0300
-Message-ID: <d54969c50906201723k66b7965and680ffcc798e61de@mail.gmail.com>
-References: <4b8c423b0905152051w7443e1b4u4080514a560fbb6c@mail.gmail.com>
-	<d54969c50905271227y76eefde2x2e784cd391cd6729@mail.gmail.com>
-	<s5htz361d3i.wl%tiwai@suse.de> <s5hhbz61b8v.wl%tiwai@suse.de>
-	<d54969c50905291035v19ab019fsdf455a6410b827de@mail.gmail.com>
-	<d54969c50906052020m1202230eveab8ecc18c4b06ae@mail.gmail.com>
-	<s5hhbytzq8z.wl%tiwai@suse.de>
-	<d54969c50906061058g69f7c856v8fde1d48e7ec7f79@mail.gmail.com>
-	<s5hiqj51xy3.wl%tiwai@suse.de>
-	<d54969c50906131915x22c8f30el46ee51faf2fafe20@mail.gmail.com>
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: Proposal for more reliable audio DMA.
+Date: Sat, 20 Jun 2009 22:06:07 -0400
+Message-ID: <9e4733910906201906y78f76545sc3cdfe9b45a8db5f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.147])
-	by alsa0.perex.cz (Postfix) with ESMTP id CFD082458B
+Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
+	[209.85.221.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id A398824410
 	for <alsa-devel@alsa-project.org>;
-	Sun, 21 Jun 2009 02:23:31 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 9so1272739qwj.56
-	for <alsa-devel@alsa-project.org>; Sat, 20 Jun 2009 17:23:30 -0700 (PDT)
-In-Reply-To: <d54969c50906131915x22c8f30el46ee51faf2fafe20@mail.gmail.com>
+	Sun, 21 Jun 2009 04:06:08 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so3082754qyk.16
+	for <alsa-devel@alsa-project.org>; Sat, 20 Jun 2009 19:06:07 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,87 +22,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Karthik Ramgopal <applefreakpeeps@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Any news on this Takashi?
+This algorithm is fairly similar to what currently exists in ALSA with
+a few modifications. I'm trying to come up with guaranteed way to play
+glitch free audio. Does this algorithm work or could it be modified to
+work?
 
-2009/6/13 Emilio L=F3pez <buhitoescolar@gmail.com>
+The main change is to track a high resolution timer as the means of
+estimating where in the buffer to insert new, low latency data. This
+tracking is done in a timer tick interrupt. Jiffies are too coarse and
+not all hardware allows you to ask the current DMA position.
 
->
->
-> 2009/6/9 Takashi Iwai <tiwai@suse.de>
->
->> At Sat, 6 Jun 2009 14:58:47 -0300,
->> Emilio L=F3pez wrote:
->> >
->> > Just tried with model acer-aspire-8930g on 1.0.20, it works the same as
->> > acer-aspire-4930g. Mic works, the "tuba" thing doesn't. Googling a bit=
- I
->> found
->> > that acer-aspire-8930g is for ALC889, but mine is ALC888.
->> >
->> > I attach alsa-info.txt for this new model, just in case it's useful.
->>
->> OK, just to make things clear again:
->> you got the bass output controlled via "Side" volume when you pass
->> model=3Dacer.  Now the driver takes model=3Dacer-aspire-4930g as default,
->> and the bass doesn't work even if you change "Side" volume.
->>
->> Right?
->
->
-> Right
->
->
->>
->>
->> As far as I see, the connection of "Side" volume, i.e. the pin widget
->> 0x0f, is also done for 4930g.  So, there should be anything else.
->>
->> How about the patch below?  If it still doesn't work, please give both
->> the working (model=3Dacer) and non-working (w/o model), on both "Side"
->> is set to the same level.
->
->
-> The patch completely muted my system - I don't have any playback working
-> (didn't test headphones though)
->
-> Here is the alsa-infos you requested:
-> model=3Dacer, working "side":
-> http://files.getdropbox.com/u/553461/alsainfo-acer.txt
-> model=3Dacer-aspire-4930g, with your patch applied (no playback):
-> http://files.getdropbox.com/u/553461/alsainfo-acer-aspire-4930g%2Bpatch.t=
-xt
-> model=3Dacer-aspire-4930g, unpatched build, "side" not working:
-> http://files.getdropbox.com/u/553461/alsainfo-acer-aspire-4930g.txt
->
-> Thanks!
->
->
->>
->>
->> thanks,
->>
->> Takashi
->>
->> ---
->> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek=
-.c
->> index 337d2a5..372a02a 100644
->> --- a/sound/pci/hda/patch_realtek.c
->> +++ b/sound/pci/hda/patch_realtek.c
->> @@ -1467,6 +1467,9 @@ static struct hda_verb
->> alc888_acer_aspire_4930g_verbs[] =3D {
->>        {0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
->>        {0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
->>        {0x15, AC_VERB_SET_CONNECT_SEL, 0x00},
->> +        /* eanable EAPD? */
->> +       {0x20, AC_VERB_SET_COEF_INDEX, 0x07},
->> +       {0x20, AC_VERB_SET_PROC_COEF, 0x3050},
->>        { }
->>  };
->>
->>
-> Emilio
+The other change is to keep all of the buffers filled with silence if
+there isn't any pending data. (not doing this caused problem in my
+mpc5200 AC97 driver)
+
+Three buffers are used as a way to deterministically bound the DMA
+pointer without needing interrupts.
+
+---
+
+Use three chained buffers.
+Buffer size is samples/tick (or maybe 1.5 samples/tick)
+Initialize buffers to silence.
+Set end of buffer three to automatically terminate DMA
+
+Set FIFO to minimum bus allows
+Fill buffer one with samples available, start playing.
+
+On timer tick call into driver..
+If buffer one has finished playing move it to third position.
+New last buffer is set to automatically stop DMA.
+Return swap status to ALSA
+If swapped, fill buffer three with silence or pending data
+It is important to fill this buffer with silence if there is no pending data
+
+The size of the buffers needs to be large enough to cover worst case
+timer tick latency. Buffer two has to be large enough to ensure that
+the tick routine will notice buffer one has been played before buffer
+three starts.
+
+If two buffers have been completed when the tick runs, let the third
+buffer finish without swapping. Since you don't know where you are in
+the third buffer, it is unsafe to swap at this point.
+
+Playing the last buffer causes the end of buffer interrupt to happen.
+Callback into ALSA to alert it of the underrun and need to restart DMA.
+If this callback happens, make the buffers larger.
+
+Long term observation of buffer completion status in tick handler will allow
+accurate computation of samples/HPET unit. Record high accuracy timer
+(HPET) on tick.
+
+New low latency data that arrives can be inserted into the buffers dynamically.
+Use the high resolution timer source to estimate where to place it.
+Minimum FIFO ensures low latency play.
+
+Design a minimum power mode.
+Allows a huge FIFO to be loaded (like 128KB).
+Call into driver to reset to minimum latency, small FIFO mode.
+
+Advantages:
+
+1) If ALSA goes away, hardware will stop on it's own with no noise.
+2) No need to know the current position of DMA hardware.
+3) Both low and high latency modes.
+4) Audio interrupts only generated as error condition
+5) Behavior is deterministic. Nothing is left to guess work.
+
+
+-- 
+Jon Smirl
+jonsmirl@gmail.com
