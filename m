@@ -1,20 +1,22 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 2/3] ASoC: TWL4030: Add AVADC Clock Priority
-Date: Mon, 22 Jun 2009 09:36:44 +0300
-Message-ID: <200906220936.44711.peter.ujfalusi@nokia.com>
-References: <67059DBF19D7214F9C66BB0EA91BA90E3543F31D@dlee04.ent.ti.com>
-	<20090619100016.GE5270@sirena.org.uk>
-	<67059DBF19D7214F9C66BB0EA91BA90E3543F5CE@dlee04.ent.ti.com>
+From: "Harsha, Priya" <priya.harsha@intel.com>
+Subject: Re: submitting patches to ALSA
+Date: Mon, 22 Jun 2009 12:34:55 +0530
+Message-ID: <98769532B4BB14429434178695419EAE5B89FFDC@bgsmsx501.gar.corp.intel.com>
+References: <BAY119-W8E3C7EC7BE9C8606E2D28B0480@phx.gbl>
+	<98769532B4BB14429434178695419EAE5B719DC3@bgsmsx501.gar.corp.intel.com>
+	<s5hws78emcn.wl%tiwai@suse.de>
+	<98769532B4BB14429434178695419EAE5B7F85FD@bgsmsx501.gar.corp.intel.com>
+	<s5heitfpdiu.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id F01A42456A
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id A828F24156
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Jun 2009 08:36:48 +0200 (CEST)
-In-Reply-To: <67059DBF19D7214F9C66BB0EA91BA90E3543F5CE@dlee04.ent.ti.com>
-Content-Disposition: inline
+	Mon, 22 Jun 2009 09:05:54 +0200 (CEST)
+In-Reply-To: <s5heitfpdiu.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,35 +26,111 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ext Lopez Cruz, Misael" <x0052729@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 19 June 2009 20:57:39 ext Lopez Cruz, Misael wrote:
-> > > +/* AVADC clock priority */
-> > > +static const char *twl4030_avadc_clk_priority_texts[] =3D {
-> > > +	"Voice high priority", "Audio high priority"
-> > > +};
-> > > +
-> >
-> > It'd probably be better to say "Hifi" (or whatever spelling
-> > the rest of the driver uses) rather than "Audio" here.  Audio
-> > is a bit confusing since obviously the voice data is audio
-> > data too, it's just a different path through the CODEC with
-> > different characteristics.  The same thing has been done
-> > elsewhere in the driver.
->
-> Agree, "HiFi" is being used in codec DAI definition so I'll
-> use that too.
->
-> I'll wait for Peter's comments before resending the patch.
+Its independent of the sound stuff but the driver will just not get enumerated and will not be able to function with 2 other dependant drivers which are required for the platform.
 
-Please change the Audio to HiFi, otherwise it is OK.
+Thanks,
+Harsha
 
->
+
+
+-----Original Message-----
+From: Takashi Iwai [mailto:tiwai@suse.de] 
+Sent: Saturday, June 20, 2009 1:01 PM
+To: Harsha, Priya
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] submitting patches to ALSA
+
+At Sat, 20 Jun 2009 08:37:03 +0530,
+Harsha, Priya wrote:
+> 
+> Thanks Takashi.
+> 
+> I have tested it already with aplay, papaly and firefox flash, etc,.
+> 
+> Regarding the firmware binary, need I send it as a part of the patch
+> in the email or can I be upload it in a common location where anyone
+> can access it?
+
+Just as you like.  I don't care in which way.
+
+> Also, I am waiting for few dependant drivers to be submitted for
+> upstream before I can submit my patches otherwise it would break.
+
+Oh, is it completely independent from the sound stuff, or could it be
+a part of a big change including the sound driver?
+
+
+thanks,
+
+Takashi
+
+> 
 > Thanks,
-> Misa
-
--- =
-
-P=E9ter
+> Harsha
+> 
+> 
+> 
+> -----Original Message-----
+> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Takashi Iwai
+> Sent: Friday, June 19, 2009 12:34 PM
+> To: Harsha, Priya
+> Cc: alsa-devel@alsa-project.org
+> Subject: Re: [alsa-devel] submitting patches to ALSA
+> 
+> At Thu, 18 Jun 2009 21:33:54 +0530,
+> Harsha, Priya wrote:
+> > 
+> > Hi,
+> > 
+> > This is the first time I am planning to submit patches to ALSA. Are
+> > there any tips/rules I need to follow?
+> 
+> In general, the rule for LKML is applied here, too.
+> 
+> > I have followed the general guidelines like checkpatch, testing with
+> > different debug configs etc.
+> 
+> Great.
+> 
+> > I have a few questions;
+> > 1. Against which kernel tree should I create patches to submit to
+> > ALSA devel mailing list?
+> 
+> Try to apply always to the latest tree, e.g. sound git tree below
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+> 
+> > 2. I have to download firmware as a part of my driver. This firmware
+> > file is freely distributable. How should I share the firmware binary
+> > file when I send the patches? The firmware binary file would reside
+> > in /lib/firmware
+> 
+> The firmware file would be either in alsa-firmware package or in
+> linux-firmware package.  First you can put it to alsa-firmware
+> package, and we can push them to the upstream linux-firmware package
+> once after your driver gets merged.
+> 
+> > 3. Is there anything else I need to send to the mailing list in
+> > addition to the patches?
+> 
+> A good series of patches is self-explanatory :)
+> 
+> > 4. Are there any test suits that I can use to test the driver?
+> 
+> It's a timely question.  We want to discuss this, especially per
+> request from LSB.  In short answer: no test suits for the time being.
+> Most people tested with aplay and speaker-test as standard test
+> programs.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
