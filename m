@@ -1,18 +1,16 @@
-From: Roel Kluin <roel.kluin@gmail.com>
-Subject: [PATCH] sound: remove redundant tests on unsigned
-Date: Mon, 22 Jun 2009 17:58:27 +0200
-Message-ID: <4A3FAA23.9050307@gmail.com>
+From: "Lopez Cruz, Misael" <x0052729@ti.com>
+Subject: [PATCH] ASoC: TWL4030: Add AVADC Clock Priority
+Date: Mon, 22 Jun 2009 10:51:52 -0500
+Message-ID: <67059DBF19D7214F9C66BB0EA91BA90E3543FA5E@dlee04.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f226.google.com (mail-fx0-f226.google.com
-	[209.85.220.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8F0CE24477
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id C60AE244DD
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Jun 2009 15:57:55 +0200 (CEST)
-Received: by fxm26 with SMTP id 26so2592170fxm.32
-	for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2009 06:57:55 -0700 (PDT)
+	Mon, 22 Jun 2009 17:52:01 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,71 +20,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, lrg@slimlogic.co.uk
-Cc: alsa-devel@alsa-project.org, Andrew Morton <akpm@linux-foundation.org>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-reg and channel_id are unsigned. When negative they are wrapped and caught by
-the other test.
+AVDAC clk priority allows to determine the path ADC must
+be connected when the codec is in option2 and both HiFi
+and Voice paths are enabled.
 
-Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
 ---
- sound/pci/ca0106/ca0106_proc.c |    2 +-
- sound/pci/emu10k1/emu10k1x.c   |    3 +--
- sound/pci/emu10k1/emuproc.c    |    2 +-
- sound/soc/codecs/tlv320aic23.c |    2 +-
- 4 files changed, 4 insertions(+), 5 deletions(-)
+ sound/soc/codecs/twl4030.c |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
 
-diff --git a/sound/pci/ca0106/ca0106_proc.c b/sound/pci/ca0106/ca0106_proc.c
-index c62b7d1..2deac54 100644
---- a/sound/pci/ca0106/ca0106_proc.c
-+++ b/sound/pci/ca0106/ca0106_proc.c
-@@ -304,7 +304,7 @@ static void snd_ca0106_proc_reg_write32(struct snd_info_entry *entry,
-         while (!snd_info_get_line(buffer, line, sizeof(line))) {
-                 if (sscanf(line, "%x %x", &reg, &val) != 2)
-                         continue;
--                if ((reg < 0x40) && (reg >=0) && (val <= 0xffffffff) ) {
-+		if ((reg < 0x40) && (val <= 0xffffffff)) {
- 			spin_lock_irqsave(&emu->emu_lock, flags);
- 			outl(val, emu->port + (reg & 0xfffffffc));
- 			spin_unlock_irqrestore(&emu->emu_lock, flags);
-diff --git a/sound/pci/emu10k1/emu10k1x.c b/sound/pci/emu10k1/emu10k1x.c
-index 4d3ad79..957b130 100644
---- a/sound/pci/emu10k1/emu10k1x.c
-+++ b/sound/pci/emu10k1/emu10k1x.c
-@@ -1040,8 +1040,7 @@ static void snd_emu10k1x_proc_reg_write(struct snd_info_entry *entry,
- 		if (sscanf(line, "%x %x %x", &reg, &channel_id, &val) != 3)
- 			continue;
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 780217a..42cdcce 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -1036,6 +1036,16 @@ static DECLARE_TLV_DB_SCALE(digital_capture_tlv, 0, 100, 0);
+  */
+ static DECLARE_TLV_DB_SCALE(input_gain_tlv, 0, 600, 0);
  
--		if ((reg < 0x49) && (reg >= 0) && (val <= 0xffffffff) 
--		    && (channel_id >= 0) && (channel_id <= 2) )
-+		if ((reg < 0x49) && (val <= 0xffffffff) && (channel_id <= 2))
- 			snd_emu10k1x_ptr_write(emu, reg, channel_id, val);
- 	}
- }
-diff --git a/sound/pci/emu10k1/emuproc.c b/sound/pci/emu10k1/emuproc.c
-index 216f974..6ad3825 100644
---- a/sound/pci/emu10k1/emuproc.c
-+++ b/sound/pci/emu10k1/emuproc.c
-@@ -527,7 +527,7 @@ static void snd_emu_proc_ptr_reg_write(struct snd_info_entry *entry,
- 	while (!snd_info_get_line(buffer, line, sizeof(line))) {
- 		if (sscanf(line, "%x %x %x", &reg, &channel_id, &val) != 3)
- 			continue;
--		if ((reg < 0xa0) && (reg >= 0) && (val <= 0xffffffff) && (channel_id >= 0) && (channel_id <= 3) )
-+		if ((reg < 0xa0) && (val <= 0xffffffff) && (channel_id <= 3))
- 			snd_ptr_write(emu, iobase, reg, channel_id, val);
- 	}
- }
-diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
-index 0b8dcb5..6f8cd8d 100644
---- a/sound/soc/codecs/tlv320aic23.c
-+++ b/sound/soc/codecs/tlv320aic23.c
-@@ -85,7 +85,7 @@ static int tlv320aic23_write(struct snd_soc_codec *codec, unsigned int reg,
- 	 * of data into val
- 	 */
++/* AVADC clock priority */
++static const char *twl4030_avadc_clk_priority_texts[] = {
++	"Voice high priority", "HiFi high priority"
++};
++
++static const struct soc_enum twl4030_avadc_clk_priority_enum =
++	SOC_ENUM_SINGLE(TWL4030_REG_AVADC_CTL, 2,
++			ARRAY_SIZE(twl4030_avadc_clk_priority_texts),
++			twl4030_avadc_clk_priority_texts);
++
+ static const char *twl4030_rampdelay_texts[] = {
+ 	"27/20/14 ms", "55/40/27 ms", "109/81/55 ms", "218/161/109 ms",
+ 	"437/323/218 ms", "874/645/437 ms", "1748/1291/874 ms",
+@@ -1137,6 +1147,8 @@ static const struct snd_kcontrol_new twl4030_snd_controls[] = {
+ 	SOC_DOUBLE_TLV("Analog Capture Volume", TWL4030_REG_ANAMIC_GAIN,
+ 		0, 3, 5, 0, input_gain_tlv),
  
--	if ((reg < 0 || reg > 9) && (reg != 15)) {
-+	if ((reg > 9) && (reg != 15)) {
- 		printk(KERN_WARNING "%s Invalid register R%u\n", __func__, reg);
- 		return -1;
- 	}
++	SOC_ENUM("AVADC Clock Priority", twl4030_avadc_clk_priority_enum),
++
+ 	SOC_ENUM("HS ramp delay", twl4030_rampdelay_enum),
+ 
+ 	SOC_ENUM("Vibra H-bridge mode", twl4030_vibradirmode_enum),
+-- 
+1.5.4.3
