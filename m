@@ -1,20 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] New ASoC Drivers for ADI AD1938 codec
-Date: Mon, 22 Jun 2009 11:57:28 +0100
-Message-ID: <20090622105727.GA29144@opensource.wolfsonmicro.com>
-References: <1245403695-20537-1-git-send-email-21cnbao@gmail.com>
-	<20090619104738.GF5270@sirena.org.uk>
-	<3c17e3570906212008n6071e987sbcd4b9377364ae78@mail.gmail.com>
+From: Ben Dooks <ben-alsa@fluff.org>
+Subject: ASoC CODEC power management on reboot
+Date: Mon, 22 Jun 2009 12:13:23 +0100
+Message-ID: <20090622111323.GM14476@trinity.fluff.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E9BF524342
+Received: from trinity.fluff.org (trinity.fluff.org [89.16.178.74])
+	by alsa0.perex.cz (Postfix) with ESMTP id D302324368
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Jun 2009 12:57:31 +0200 (CEST)
+	Mon, 22 Jun 2009 13:13:23 +0200 (CEST)
+Received: from ben by trinity.fluff.org with local (Exim 4.63)
+	(envelope-from <ben@trinity.fluff.org>) id 1MIhSl-0004Zh-7T
+	for alsa-devel@alsa-project.org; Mon, 22 Jun 2009 12:13:23 +0100
 Content-Disposition: inline
-In-Reply-To: <3c17e3570906212008n6071e987sbcd4b9377364ae78@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,47 +23,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?utf-8?B?5a6L5a6d5Y2O?= <21cnbao@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Mike Frysinger <vapier.adi@gmail.com>, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBKdW4gMjIsIDIwMDkgYXQgMTE6MDg6MjdBTSArMDgwMCwg5a6L5a6d5Y2OIHdyb3Rl
-OgoKW1BsZWFzZSByZXBseSBpbi1saW5lLCBpbnRlcnNwZXJzaW5nIHlvdXIgbmV3IHRleHQgaW50
-byB0aGUgbWVzc2FnZQp5b3UncmUgcmVwbHlpbmcgdG8gLSBpdCBtYWtlcyB0aGUgZGlzY3Vzc2lv
-biBtdWNoIGVhc2llciB0byBmb2xsb3cuXQoKPiBIaSBNYXJrLAo+ICoqKkZvciB0aGUgbmV3IERB
-SSBmb3JtYXQKPiBBY2NvcmRpbmcgdG8gSTJTIHNwZWMsIGl0IGRvZXNuJ3QgZGVmaW5pdGUgYSBJ
-MlMgd2l0aCBURE0gYXMgYSBzdGFuZGFyZCBJMlMuCj4gaHR0cDovL3d3dy5ueHAuY29tL2Fjcm9i
-YXRfZG93bmxvYWQvdmFyaW91cy9JMlNCVVMucGRmCgpJdCdzIGEgZGUgZmFjdG8gc3RhbmRhcmQg
-LSBzZXZlcmFsIG90aGVyIHZlbmRvcnMgaW1wbGVtZW50IFRETSBpbgpleGFjdGx5IHRoZSBzYW1l
-IGZhc2hpb24uICBJZiB5b3UgdGhpbmsgYWJvdXQgaXQgdGhpcyBpcyBhIG5hdHVyYWwgd2F5CnRv
-IGhhbmRsZSBURE0gaW4gSTJTLgoKPiBJdCBsb29rcyBsaWtlIHlvdSBhcmUgYWRtaXR0aW5nIHRo
-aXMga2luZCBvZiB0aW1pbmcgaW50byBJMlMgREFJIHRvbzoKPiBodHRwOi8vaTMuNi5jbi9jdmJu
-bS84Zi8zZC8wOC8yNjhhNDU2MGUwZGFhMWI0MWQ2OWI4MjQxOWRhMDZlMS5qcGcKPiBJIHRoaW5r
-IEkgY2FuIGZvbGxvdyBpdCB0b28uCgpUaGUgdGltaW5nIHlvdSdyZSBzaG93aW5nIHRoZXJlIGlz
-IGVzc2VudGlhbGx5IGEgRFNQIG1vZGUgd2l0aCB0aGUgbGVmdAphbmQgcmlnaHQgY2hhbm5lbHMg
-YWx0ZXJuYXRpbmcgcmF0aGVyIHRoYW4gYW4gSTJTIHN0eWxlIHdoZXJlIHRoZQpwb2xhcml0eSBv
-ZiB0aGUgTFJDTEsgc2lnbmFsIGluZGljYXRlcyBpZiB0aGUgZGF0YSB0cmFuc21pdHRlZCBhdCB0
-aGUKc2FtZSB0aW1lIGlzIGZvciB0aGUgbGVmdCBvciByaWdodCBjaGFubmVsLiAgSSdkIG5lZWQg
-dG8gdGhpbmsgYWJvdXQgaXQKaW4gc2xpZ2h0bHkgbW9yZSBkZXRhaWwgYnV0IHByb2JhYmx5IGl0
-IGlzIGFjdHVhbGx5IGEgRFNQIG1vZGUgLSB3aXRoCnRoZSBEU1AgbW9kZXMgb25seSBvbmUgZWRn
-ZSBvZiB0aGUgZnJhbWUgc3luYyBpcyB1c2VkIHNvIHRoZSBvdGhlciBlZGdlCmNhbiBiZSBhbnl3
-aGVyZSBlbHNlIHdpdGhpbiB0aGUgZnJhbWUuCgo+IER1ZSB0byBteSB0ZXN0IGJvYXJkcywgYXQg
-cHJlc2VudCwgdGhlIEFEMTkzOCBpcyB3b3JraW5nIGluIGFuZCBzdXBwb3J0aW5nCj4gVERNIHRp
-bWluZyBsaWtlIHRoZSBkaWFncmFtOgo+IGh0dHA6Ly9pMy42LmNuL2N2Ym5tLzJmL2UyL2YyLzAz
-YWUyYjUxYzRlOTA3NDk5NzJlNzBiZjg4N2Y5MjZmLmpwZwo+IEl0IGxvb2tzIGxpa2UgRFNQIG1v
-ZGUgd2l0aCBURE0sIHNvIGNhbiBJIHBhdGggcmVsYXRlZCBjb2RlcyBpbnRvCj4gU05EX1NPQ19E
-QUlGTVRfRFNQIHN3aXRjaD8KClllcywgdGhhdCdzIERTUCBtb2RlLgoKPiAqKipGb3Igdm9sdW1l
-IGNvbnRyb2xzIGJhc2VkIG9uIHN0ZXJlbyBwYWlycwo+IEV2ZW4gdGhvdWdoIERBQzEtREFDOCBh
-cmUgbmFtZWQgYXMgREFDTDEsREFDUjEsIERBQ0wyLERBQ1IyLi4uLCBidXQgdGhlCj4gREFDTHgg
-YW5kIERBQ1J4IGFyZSBub3QgYWx3YXlzIGluIGEgcGFpciwgaW4gZmFjdCwgdGhleSBhcmUgaW5k
-ZXBlbmRlbnQuIEFzCj4gYSBjb2RlYyBzdXBwb3J0aW5nIDggY2hhbm5lbHMsIGl0IGNhbiBiZSBj
-b25maWdlZCBpbnRvIDIsIDIuMSwgNC4xLCA1LjEsCj4gNi4xLCA3LjEsIGhvdyB0byBoYW5kbGUg
-dGhlIHBhaXJzPwoKVGhhdCdzIGZhaXJseSBzdGFuZGFyZCBhbmQgbm90IHJlYWxseSBhIHByYWN0
-aWNhbCBwcm9ibGVtLiAgU2luY2UKYXBwbGljYXRpb25zIGNhbiBhZGRyZXNzIGVhY2ggY2hhbm5l
-bCBvZiBhIHN0ZXJlbyBjb250cm9sIGluZGVwZW5kYW50bHkKdGhleSBkb24ndCBsb29zZSBhbnkg
-Y29udHJvbCBmcm9tIGdyb3VwaW5nIHRoZSBjaGFubmVscyB0b2dldGhlci4KSGF2aW5nIHRoZSBz
-dGVyZW8gY29udHJvbHMganVzdCBtYWtlcyBpdCBhIGJpdCBlYXNpZXIgd2hlbiB0aGV5IGFyZSB1
-c2VkCnRoYXQgd2F5LgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+I've run into a problem where when the system reboots the audio
+starts playing random data. I suspect that this is due to the CODEC
+being left powered and when the during/after the reset process the
+GPIO lines which form the I2S bus are left floating.
+
+Should the ASoC (possibly DAPM) layer sort out powering down the CODEC
+before reboot, or should it be down to the codec or the mapping driver
+to do this?
+
+-- 
+Ben
+
+Q:      What's a light-year?
+A:      One-third less calories than a regular year.
