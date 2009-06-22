@@ -1,28 +1,23 @@
-From: Tony Vroon <tony@vroon.org>
-Subject: Re: Regarding Sound on Acer Aspire 6935G
-Date: Mon, 22 Jun 2009 23:44:36 +0100
-Message-ID: <1245710676.441.9.camel@localhost>
-References: <4b8c423b0905152051w7443e1b4u4080514a560fbb6c@mail.gmail.com>
-	<d54969c50906131915x22c8f30el46ee51faf2fafe20@mail.gmail.com>
-	<d54969c50906201723k66b7965and680ffcc798e61de@mail.gmail.com>
-	<s5h63eq9cxp.wl%tiwai@suse.de>
-	<d54969c50906211501l7c6ae730l1082f8ed3894d196@mail.gmail.com>
-	<1245622318.21943.0.camel@localhost>
-	<d54969c50906211624w1b701a92xbe1e396356c72a7c@mail.gmail.com>
-	<1245628845.13319.10.camel@localhost>
-	<d54969c50906221044x1f8070b0s1fe802f08c63e7@mail.gmail.com>
-	<s5h3a9sm8oa.wl%tiwai@suse.de>
-	<d54969c50906221451o6e92044cj3da24df67e55268b@mail.gmail.com>
-	<1245707939.441.5.camel@localhost>  <s5hfxdrex0w.wl%tiwai@suse.de>
-	<1245709097.441.7.camel@localhost>
+From: Stefan Krastanov <krastanov.stefan@gmail.com>
+Subject: Re: alc889
+Date: Tue, 23 Jun 2009 00:54:15 +0200
+Message-ID: <cb66509f0906221554n1c38674by6df8cdd086c3b243@mail.gmail.com>
+References: <cb66509f0906200559o764a06e8i714cfd08ee908575@mail.gmail.com>
+	<s5h7hz4cjhl.wl%tiwai@suse.de>
+	<cb66509f0906221505r79950d30i73d1cdd4d0910e45@mail.gmail.com>
+	<s5heitbewqx.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3314535000436933632=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganymede.vroon.org (ganymede.vroon.org [195.66.242.11])
-	by alsa0.perex.cz (Postfix) with ESMTP id 864CE246BC
+Received: from mail-bw0-f215.google.com (mail-bw0-f215.google.com
+	[209.85.218.215])
+	by alsa0.perex.cz (Postfix) with ESMTP id 85AB8246B8
 	for <alsa-devel@alsa-project.org>;
-	Tue, 23 Jun 2009 00:44:43 +0200 (CEST)
-In-Reply-To: <1245709097.441.7.camel@localhost>
+	Tue, 23 Jun 2009 00:54:16 +0200 (CEST)
+Received: by bwz11 with SMTP id 11so3692986bwz.32
+	for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2009 15:54:15 -0700 (PDT)
+In-Reply-To: <s5heitbewqx.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,57 +27,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Karthik Ramgopal <applefreakpeeps@gmail.com>, ALSA development ML <alsa-devel@alsa-project.org>, Emilio =?ISO-8859-1?Q?L=F3pez?= <buhitoescolar@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+With model=fujitsu-pi2515
+    - jack sensing works (great!!!)
+    - still no control over sub-woofer
+    - there is some noise, but maybe is just the quality of my hardware
 
---===============3314535000436933632==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-YjYdWnPEcC+Q6WTC7iGM"
+with model=fujitsu-xa3530
+    - no jack sensing
+    - the mixers are really mixed up - one slider controls one side of front
+speakers and other side of headphones
+    - there is some(not sure) control over sub-woofer volume
 
+when I was using 3-stack-dig there were two slider (LFE and another one)
+that booth controlled the sub-woofer and there was third - "side" that was
+not controlling anything.
 
---=-YjYdWnPEcC+Q6WTC7iGM
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+If there is a way to add a sub-woofer control to fujitsu-pi2515 it would be
+great - if it's too much too ask from you to do it, can you tell me where to
+start looking for a documented way to create a patch for a new type of
+model? (fujitsu-xi for example as it's the model of my laptop) I'm allready
+reading the other docs that you told me about.
 
-On Mon, 2009-06-22 at 23:18 +0100, Tony Vroon wrote:
-> It quite likely is, I got tired of 4930g not working right and cleared
-> it all out. I've been granted remote access to the 6530g in question,
-> and hope to submit a patch to you in the next 20 minutes.
+Best regadrs
+Stefan Krastanov
 
-I'm getting overruns and corrupt data galore.
-arecord outputs miles and miles of:
-overrun!!! (at least -1245709895929.816 ms long)
+2009/6/23 Takashi Iwai <tiwai@suse.de>
 
-Please advise.
-
-Regards,
-Tony V.
-
---=-YjYdWnPEcC+Q6WTC7iGM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
-
-iEYEABECAAYFAkpACVQACgkQp5vW4rUFj5pu9wCfY4VqY5pFl26WHTxhJzA4WHBp
-59MAn0u/MZoe+HPZJyf+9DGq1YGfOPhO
-=hC9Q
------END PGP SIGNATURE-----
-
---=-YjYdWnPEcC+Q6WTC7iGM--
-
-
---===============3314535000436933632==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============3314535000436933632==--
+> At Tue, 23 Jun 2009 00:05:42 +0200,
+> Stefan Krastanov wrote:
+> >
+> > Hello,
+> >
+> > Thank you for your fast response, I appreciate it, knowing you don't have
+> all
+> > that free time.
+> >
+> > As I have said my hardware configuration is: laptop with alc889 soundcard
+> >                                                                    - two
+> front
+> > speakers
+> >                                                                    - one
+> > sub-woofer
+> >                                                                    - one
+> > internal microphone
+> >                                                                    -
+> jacks
+> > with jacksensing (tested on windows) - mic, line-in, headphones
+> >                                                                    -
+> digital
+> > IO
+> >                                                                    -
+> > potentiometer for volume control
+> >
+> > I installed the latest snapshot using ubuntu's automated script (I
+> manually
+> > verified that it's the latest) and used model=auto. The results were the
+> same
+> > when I tried it few months ago:
+> >    - "Front" controls the front speakers                            OK
+> >    - "Front" also controls headphones
+> problem
+> >    - "Headphones" slider does not control anything           problem
+> >    - No control slider for the build-in sub-woofer                problem
+> >    - microphones working (external and internal)               OK
+> >    - potentiometer for volume control not working             problem
+> >    - Line-in not tested, digital IO not tested                      not
+> tested
+> >    - jack sensing on the headphones is not working          problem
+> >    - jack sensing on microphone and line in not tested      not tested
+> >
+> > Attached to the message you can find the output from alsa-info.
+>
+> Hm, how about model=fujitsu-pi2515 or model=fujitsu-xa3530 option?
+> Just a wild guess from the PCI SSID, though.
+>
+>
+> Takashi
+>
