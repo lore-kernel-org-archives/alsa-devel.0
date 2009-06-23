@@ -1,24 +1,23 @@
-From: Tony Vroon <tony@linx.net>
-Subject: Re: Regarding Sound on Acer Aspire 6935G
-Date: Tue, 23 Jun 2009 23:40:09 +0100
-Message-ID: <1245796809.3640.10.camel@localhost>
-References: <4b8c423b0905152051w7443e1b4u4080514a560fbb6c@mail.gmail.com>
-	<s5h3a9sm8oa.wl%tiwai@suse.de>
-	<d54969c50906221451o6e92044cj3da24df67e55268b@mail.gmail.com>
-	<1245707939.441.5.camel@localhost> <s5hfxdrex0w.wl%tiwai@suse.de>
-	<1245709097.441.7.camel@localhost> <1245710676.441.9.camel@localhost>
-	<d54969c50906221614k5e12f5edt8973f7bb8e69592c@mail.gmail.com>
-	<1245712854.441.11.camel@localhost>
-	<d54969c50906221623j4fd17c6yb7fc2c9316d11766@mail.gmail.com>
-	<d54969c50906231105k251880eahbf82cf74b699c7d8@mail.gmail.com>
+From: Igor Chernyshev <igor.ch75+alsa@gmail.com>
+Subject: Re: Patch for suspend/resume in ICE1724 for Audiotrak
+	Prodigy HD2
+Date: Tue, 23 Jun 2009 15:50:44 -0700
+Message-ID: <75570e410906231550g47bffd92gfaa24d988bbcdca2@mail.gmail.com>
+References: <75570e410906192337p1e9aea9cn9edbea987f6ffbb4@mail.gmail.com>
+	<s5h3a9scja2.wl%tiwai@suse.de>
+	<75570e410906221246l3125dega728835cb407ba4@mail.gmail.com>
+	<s5hprcvb4nz.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9168296218594320953=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gold.linx.net (gold.linx.net [195.66.232.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id E7C3124552
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.247])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1518724563
 	for <alsa-devel@alsa-project.org>;
-	Wed, 24 Jun 2009 00:40:12 +0200 (CEST)
-In-Reply-To: <d54969c50906231105k251880eahbf82cf74b699c7d8@mail.gmail.com>
+	Wed, 24 Jun 2009 00:50:45 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c38so188397ana.2
+	for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2009 15:50:45 -0700 (PDT)
+In-Reply-To: <s5hprcvb4nz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,76 +27,327 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Emilio =?ISO-8859-1?Q?L=F3pez?= <buhitoescolar@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Karthik Ramgopal <applefreakpeeps@gmail.com>, ALSA development ML <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+>> + =A0 =A0 unsigned long pm_saved_route;
+>
+> This shouldn't be long but int. =A0Long can be 64bit unnecessarily.
 
---===============9168296218594320953==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-rVn3aAf3zfYt5dZRMhOo"
+Done. However, note that existing code uses results of
+"inl(ICEMT1724(ice, ROUTE_PLAYBACK))" as both int and long.
+
+>> + =A0 =A0 case SNDRV_PCM_TRIGGER_SUSPEND:
+>> + =A0 =A0 case SNDRV_PCM_TRIGGER_RESUME:
+>> + =A0 =A0 =A0 =A0 =A0 =A0 break;
+>
+> At least, TRIGGER_SUSPEND neees to stop the PCM stream.
+
+Consolidated with SNDRV_PCM_TRIGGER_STOP processing.
+
+>> + =A0 =A0 outb(VT1724_MULTI_FIFO_ERR, ICEMT1724(ice, DMA_INT_MASK));
+>> +
+>
+> This is fine, but you need to remove __devinit from this function.
+
+Done.
+
+>> + =A0 =A0 if (ice->ac97)
+>> + =A0 =A0 =A0 =A0 =A0 =A0 snd_ac97_suspend(ice->ac97);
+>
+> No need for NULL check here. =A0All these check NULL by themselves.
+
+Removed all 4 checks (pcm's and ac97).
+
+>> + =A0 =A0 =A0 =A0 =A0 =A0 spin_unlock_irq(&ice->reg_lock);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 snd_vt1724_set_pro_rate(ice, ice->pro_rate_def=
+ault, 1);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 spin_lock_irq(&ice->reg_lock);
+>> + =A0 =A0 }
+>
+> These are basically no need to protect with spinlock, at least,
+> in this function...
+
+Removed locking in "resume" only.
+
+> Last but not least, try to run $LINUX/scripts/checkpatch.pl to your
+> patch once and fix the issues suggested there.
+
+Thanks for the pointer. Fixed 3 code style problems. It also complains
+about missing "signed off" line, but I hope that line here will
+suffice:
+
+Signed-off-by: Igor Chernyshev <igor.ch75+alsa at gmail.com>
+
+Here is the updated patch file:
+---------------------------------------------
+diff -uN alsa-driver-1.0.20.orig/alsa-kernel/pci/ice1712/ice1712.h
+alsa-driver-1.0.20/alsa-kernel/pci/ice1712/ice1712.h
+--- alsa-driver-1.0.20.orig/alsa-kernel/pci/ice1712/ice1712.h	2009-05-06
+00:06:04.000000000 -0700
++++ alsa-driver-1.0.20/alsa-kernel/pci/ice1712/ice1712.h	2009-06-23
+14:20:56.000000000 -0700
+@@ -378,6 +378,15 @@
+ 	unsigned char (*set_mclk)(struct snd_ice1712 *ice, unsigned int rate);
+ 	void (*set_spdif_clock)(struct snd_ice1712 *ice);
+
++#ifdef CONFIG_PM
++	int (*pm_suspend)(struct snd_ice1712 *);
++	int (*pm_resume)(struct snd_ice1712 *);
++	int pm_suspend_enabled:1;
++	int pm_saved_is_spdif_master:1;
++	unsigned int pm_saved_spdif_ctrl;
++	unsigned char pm_saved_spdif_cfg;
++	unsigned int pm_saved_route;
++#endif
+ };
 
 
---=-rVn3aAf3zfYt5dZRMhOo
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+diff -uN alsa-driver-1.0.20.orig/alsa-kernel/pci/ice1712/ice1724.c
+alsa-driver-1.0.20/alsa-kernel/pci/ice1712/ice1724.c
+--- alsa-driver-1.0.20.orig/alsa-kernel/pci/ice1712/ice1724.c	2009-05-06
+00:06:04.000000000 -0700
++++ alsa-driver-1.0.20/alsa-kernel/pci/ice1712/ice1724.c	2009-06-23
+14:47:23.000000000 -0700
+@@ -558,6 +558,7 @@
 
-On Tue, 2009-06-23 at 15:05 -0300, Emilio L=C3=B3pez wrote:
-> I had a little free time, so I decided to play a little with alsa. I
-> copied the mic verbs from the old model to this new one and it seems
-> to be working fine. Here is the patch for that
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 		spin_lock(&ice->reg_lock);
+ 		old =3D inb(ICEMT1724(ice, DMA_CONTROL));
+ 		if (cmd =3D=3D SNDRV_PCM_TRIGGER_START)
+@@ -568,6 +569,10 @@
+ 		spin_unlock(&ice->reg_lock);
+ 		break;
 
-Takashi, please feel free to apply this. Especially the PIN_IN selector
-is obviously correct, and if this fixes the 6935 it should work on the
-6930.
-Unfortunately the 6930 (which isn't mine) will be out of the country as
-of tomorrow.
++	case SNDRV_PCM_TRIGGER_RESUME:
++		/* apps will have to restart stream */
++		break;
++
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -2251,7 +2256,7 @@
+ 	msleep(10);
+ }
 
-Emilio, you may want to resubmit with a Signed-Off-By line etc. There's
-a Documentation/SubmittingPatches in the kernel source that explains all
-the little details.
+-static int __devinit snd_vt1724_chip_init(struct snd_ice1712 *ice)
++static int snd_vt1724_chip_init(struct snd_ice1712 *ice)
+ {
+ 	outb(ice->eeprom.data[ICE_EEP2_SYSCONF], ICEREG1724(ice, SYS_CFG));
+ 	outb(ice->eeprom.data[ICE_EEP2_ACLINK], ICEREG1724(ice, AC97_CFG));
+@@ -2266,6 +2271,14 @@
 
-> Now, the only 'broken' thing is jack sensing, it just mutes front, but
-> not LFE. I guess this is an easy to fix issue.
+ 	outb(0, ICEREG1724(ice, POWERDOWN));
 
-Now that you've got your hands dirty you might want to fix that one as
-well :)
-You'll want to mute/unmute node 0x17 (the "tuba") in addition to 0x14 in
-the jack sense handler. Might as well handle 0x16 now that you're at it,
-the codec graph suggests this is a speaker of some kind as well. Copy
-alc888_acer_aspire_4930g_init_hook into a new 6930g_init_hook, and look
-at 8930g to see how to do multiple speaker nodes.
++	/* MPU_RX and TX irq masks are cleared later dynamically */
++	outb(VT1724_IRQ_MPU_RX | VT1724_IRQ_MPU_TX , ICEREG1724(ice, IRQMASK));
++
++	/* don't handle FIFO overrun/underruns (just yet),
++	 * since they cause machine lockups
++	 */
++	outb(VT1724_MULTI_FIFO_ERR, ICEMT1724(ice, DMA_INT_MASK));
++
+ 	return 0;
+ }
 
-That's basically it. Hacking on patch_realtek.c is quite doable.
+@@ -2407,6 +2420,8 @@
+ 	snd_vt1724_proc_init(ice);
+ 	synchronize_irq(pci->irq);
 
-> Emilio
++	card->private_data =3D ice;
++
+ 	err =3D pci_request_regions(pci, "ICE1724");
+ 	if (err < 0) {
+ 		kfree(ice);
+@@ -2435,14 +2450,6 @@
+ 		return -EIO;
+ 	}
 
-Regards,
-Tony V.
+-	/* MPU_RX and TX irq masks are cleared later dynamically */
+-	outb(VT1724_IRQ_MPU_RX | VT1724_IRQ_MPU_TX , ICEREG1724(ice, IRQMASK));
+-
+-	/* don't handle FIFO overrun/underruns (just yet),
+-	 * since they cause machine lockups
+-	 */
+-	outb(VT1724_MULTI_FIFO_ERR, ICEMT1724(ice, DMA_INT_MASK));
+-
+ 	err =3D snd_device_new(card, SNDRV_DEV_LOWLEVEL, ice, &ops);
+ 	if (err < 0) {
+ 		snd_vt1724_free(ice);
+@@ -2626,11 +2633,96 @@
+ 	pci_set_drvdata(pci, NULL);
+ }
 
---=-rVn3aAf3zfYt5dZRMhOo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
++#ifdef CONFIG_PM
++static int snd_vt1724_suspend(struct pci_dev *pci, pm_message_t state)
++{
++	struct snd_card *card =3D pci_get_drvdata(pci);
++	struct snd_ice1712 *ice =3D card->private_data;
++
++	if (!ice->pm_suspend_enabled)
++		return 0;
++
++	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
++
++	snd_pcm_suspend_all(ice->pcm);
++	snd_pcm_suspend_all(ice->pcm_pro);
++	snd_pcm_suspend_all(ice->pcm_ds);
++	snd_ac97_suspend(ice->ac97);
++
++	spin_lock_irq(&ice->reg_lock);
++	ice->pm_saved_is_spdif_master =3D ice->is_spdif_master(ice);
++	ice->pm_saved_spdif_ctrl =3D inw(ICEMT1724(ice, SPDIF_CTRL));
++	ice->pm_saved_spdif_cfg =3D inb(ICEREG1724(ice, SPDIF_CFG));
++	ice->pm_saved_route =3D inl(ICEMT1724(ice, ROUTE_PLAYBACK));
++	spin_unlock_irq(&ice->reg_lock);
++
++	if (ice->pm_suspend)
++		ice->pm_suspend(ice);
++
++	pci_disable_device(pci);
++	pci_save_state(pci);
++	pci_set_power_state(pci, pci_choose_state(pci, state));
++	return 0;
++}
++
++static int snd_vt1724_resume(struct pci_dev *pci)
++{
++	struct snd_card *card =3D pci_get_drvdata(pci);
++	struct snd_ice1712 *ice =3D card->private_data;
++
++	if (!ice->pm_suspend_enabled)
++		return 0;
++
++	pci_set_power_state(pci, PCI_D0);
++	pci_restore_state(pci);
++
++	if (pci_enable_device(pci) < 0) {
++		snd_card_disconnect(card);
++		return -EIO;
++	}
++
++	pci_set_master(pci);
++
++	snd_vt1724_chip_reset(ice);
++
++	if (snd_vt1724_chip_init(ice) < 0) {
++		snd_card_disconnect(card);
++		return -EIO;
++	}
++
++	if (ice->pm_resume)
++		ice->pm_resume(ice);
++
++	if (ice->pm_saved_is_spdif_master) {
++		/* switching to external clock via SPDIF */
++		ice->set_spdif_clock(ice);
++	} else {
++		/* internal on-card clock */
++		snd_vt1724_set_pro_rate(ice, ice->pro_rate_default, 1);
++	}
++
++	update_spdif_bits(ice, ice->pm_saved_spdif_ctrl);
++
++	outb(ice->pm_saved_spdif_cfg, ICEREG1724(ice, SPDIF_CFG));
++	outl(ice->pm_saved_route, ICEMT1724(ice, ROUTE_PLAYBACK));
++
++	if (ice->ac97)
++		snd_ac97_resume(ice->ac97);
++
++	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
++	return 0;
++}
++#endif
++
+ static struct pci_driver driver =3D {
+ 	.name =3D "ICE1724",
+ 	.id_table =3D snd_vt1724_ids,
+ 	.probe =3D snd_vt1724_probe,
+ 	.remove =3D __devexit_p(snd_vt1724_remove),
++#ifdef CONFIG_PM
++	.suspend =3D snd_vt1724_suspend,
++	.resume =3D snd_vt1724_resume,
++#endif
+ };
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
+ static int __init alsa_card_ice1724_init(void)
+diff -uN alsa-driver-1.0.20.orig/alsa-kernel/pci/ice1712/prodigy_hifi.c
+alsa-driver-1.0.20/alsa-kernel/pci/ice1712/prodigy_hifi.c
+--- alsa-driver-1.0.20.orig/alsa-kernel/pci/ice1712/prodigy_hifi.c	2009-05-=
+06
+00:06:04.000000000 -0700
++++ alsa-driver-1.0.20/alsa-kernel/pci/ice1712/prodigy_hifi.c	2009-06-23
+14:58:35.000000000 -0700
+@@ -1077,7 +1077,7 @@
+ /*
+  * initialize the chip
+  */
+-static int __devinit prodigy_hd2_init(struct snd_ice1712 *ice)
++static void ak4396_init(struct snd_ice1712 *ice)
+ {
+ 	static unsigned short ak4396_inits[] =3D {
+ 		AK4396_CTRL1,	   0x87,   /* I2S Normal Mode, 24 bit */
+@@ -1087,9 +1087,37 @@
+ 		AK4396_RCH_ATT,	 0x00,
+ 	};
 
-iEYEABECAAYFAkpBWckACgkQp5vW4rUFj5rt2wCgp2vnd3X05VwNF38u1UtbdgT4
-Ce0AoJZlxxWIXhfR0oMFGKruLKxj1Uxh
-=Ta8c
------END PGP SIGNATURE-----
+-	struct prodigy_hifi_spec *spec;
+ 	unsigned int i;
 
---=-rVn3aAf3zfYt5dZRMhOo--
++	/* initialize ak4396 codec */
++	/* reset codec */
++	ak4396_write(ice, AK4396_CTRL1, 0x86);
++	msleep(100);
++	ak4396_write(ice, AK4396_CTRL1, 0x87);
++
++	for (i =3D 0; i < ARRAY_SIZE(ak4396_inits); i +=3D 2)
++		ak4396_write(ice, ak4396_inits[i], ak4396_inits[i+1]);
++}
++
++#ifdef CONFIG_PM
++static int __devinit prodigy_hd2_resume(struct snd_ice1712 *ice)
++{
++	/* initialize ak4396 codec and restore previous mixer volumes */
++	struct prodigy_hifi_spec *spec =3D ice->spec;
++	int i;
++	mutex_lock(&ice->gpio_mutex);
++	ak4396_init(ice);
++	for (i =3D 0; i < 2; i++)
++		ak4396_write(ice, AK4396_LCH_ATT + i, spec->vol[i] & 0xff);
++	mutex_unlock(&ice->gpio_mutex);
++	return 0;
++}
++#endif
++
++static int __devinit prodigy_hd2_init(struct snd_ice1712 *ice)
++{
++	struct prodigy_hifi_spec *spec;
++
+ 	ice->vt1720 =3D 0;
+ 	ice->vt1724 =3D 1;
 
+@@ -1112,14 +1140,12 @@
+ 		return -ENOMEM;
+ 	ice->spec =3D spec;
 
---===============9168296218594320953==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-	/* initialize ak4396 codec */
+-	/* reset codec */
+-	ak4396_write(ice, AK4396_CTRL1, 0x86);
+-	msleep(100);
+-	ak4396_write(ice, AK4396_CTRL1, 0x87);
+-			=
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+-	for (i =3D 0; i < ARRAY_SIZE(ak4396_inits); i +=3D 2)
+-		ak4396_write(ice, ak4396_inits[i], ak4396_inits[i+1]);
++#ifdef CONFIG_PM
++	ice->pm_resume =3D &prodigy_hd2_resume;
++	ice->pm_suspend_enabled =3D 1;
++#endif
++
++	ak4396_init(ice);
 
---===============9168296218594320953==--
+ 	return 0;
+ }
