@@ -1,20 +1,22 @@
-From: Ben Dooks <ben-alsa@fluff.org>
-Subject: Re: ASoC CODEC power management on reboot
-Date: Tue, 23 Jun 2009 20:39:05 +0100
-Message-ID: <20090623193905.GA29142@trinity.fluff.org>
-References: <20090622111323.GM14476@trinity.fluff.org>
-	<20090622113249.GA15884@sirena.org.uk>
-	<20090622121823.GA4495@sirena.org.uk>
+From: "Lopez Cruz, Misael" <x0052729@ti.com>
+Subject: Re: [PATCH 1/3] ASoC: TWL4030: Enable voice
+	filters	for voice sidetone
+Date: Tue, 23 Jun 2009 14:45:02 -0500
+Message-ID: <67059DBF19D7214F9C66BB0EA91BA90E3555FEAD@dlee04.ent.ti.com>
+References: <67059DBF19D7214F9C66BB0EA91BA90E3543F31C@dlee04.ent.ti.com>
+	<200906230838.20351.peter.ujfalusi@nokia.com>
+	<20090623101615.GG5422@sirena.org.uk>
+	<200906231618.35877.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from trinity.fluff.org (trinity.fluff.org [89.16.178.74])
-	by alsa0.perex.cz (Postfix) with ESMTP id 948FE24406
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5404F24406
 	for <alsa-devel@alsa-project.org>;
-	Tue, 23 Jun 2009 21:39:17 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20090622121823.GA4495@sirena.org.uk>
+	Tue, 23 Jun 2009 21:45:13 +0200 (CEST)
+In-Reply-To: <200906231618.35877.peter.ujfalusi@nokia.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,141 +26,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Ben Dooks <ben-alsa@fluff.org>, alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>, ext Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 22, 2009 at 01:18:26PM +0100, Mark Brown wrote:
-> On Mon, Jun 22, 2009 at 12:32:50PM +0100, Mark Brown wrote:
-> > On Mon, Jun 22, 2009 at 12:13:23PM +0100, Ben Dooks wrote:
-> 
-> > > Should the ASoC (possibly DAPM) layer sort out powering down the CODEC
-> > > before reboot, or should it be down to the codec or the mapping driver
-> > > to do this?
-> 
-> > Core.
-> 
-> Please try this (completely untested) patch:
-> 
-> >From 506921be0ce5b96c3761c771a9356f2c53bd6628 Mon Sep 17 00:00:00 2001
-> From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Date: Mon, 22 Jun 2009 13:16:51 +0100
-> Subject: [PATCH] ASoC: Add a shutdown callback
-> 
-> Ensure that the audio subsystem is powered down cleanly when the system
-> shuts down by providing a shutdown operation. This ensures that all the
-> components have been returned to an off state cleanly which should avoid
-> audio issues from partially charged capacitors or noise on digital inputs
-> if the system is restarted quickly.
 
-Right, so far this seems to have worked.
- 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Tested-by: Ben Dooks <ben-linux@fluff.org>
+> On Tuesday 23 June 2009 13:16:16 ext Mark Brown wrote:
+> > On Tue, Jun 23, 2009 at 08:38:20AM +0300, Peter Ujfalusi wrote:
+> > > Now if you start an audio playback (which will enable the =
 
-> ---
->  include/sound/soc-dapm.h |    1 +
->  sound/soc/soc-core.c     |   16 ++++++++++++++++
->  sound/soc/soc-dapm.c     |   29 +++++++++++++++++++++++++++++
->  3 files changed, 46 insertions(+), 0 deletions(-)
-> 
-> diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-> index ec8a45f..35814ce 100644
-> --- a/include/sound/soc-dapm.h
-> +++ b/include/sound/soc-dapm.h
-> @@ -279,6 +279,7 @@ int snd_soc_dapm_add_routes(struct snd_soc_codec *codec,
->  /* dapm events */
->  int snd_soc_dapm_stream_event(struct snd_soc_codec *codec, char *stream,
->  	int event);
-> +void snd_soc_dapm_shutdown(struct snd_soc_device *socdev);
->  
->  /* dapm sys fs - used by the core */
->  int snd_soc_dapm_sys_add(struct device *dev);
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index 4414117..55d45c4 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -1020,6 +1020,21 @@ static int soc_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> +static void soc_shutdown(struct platform_device *pdev)
-> +{
-> +	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-> +	struct snd_soc_card *card = socdev->card;
-> +
-> +	if (!card->instantiated)
-> +		return;
-> +
-> +	/* Flush out pmdown_time work - we actually do want to run it
-> +	 * now, we're shutting down so no imminent restart. */
-> +	run_delayed_work(&card->delayed_work);
-> +
-> +	snd_soc_dapm_shutdown(socdev);
-> +}
-> +
->  /* ASoC platform driver */
->  static struct platform_driver soc_driver = {
->  	.driver		= {
-> @@ -1030,6 +1045,7 @@ static struct platform_driver soc_driver = {
->  	.remove		= soc_remove,
->  	.suspend	= soc_suspend,
->  	.resume		= soc_resume,
-> +	.shutdown	= soc_shutdown,
->  };
->  
->  /* create a new pcm */
-> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-> index 6534359..b9129ef 100644
-> --- a/sound/soc/soc-dapm.c
-> +++ b/sound/soc/soc-dapm.c
-> @@ -2032,6 +2032,35 @@ void snd_soc_dapm_free(struct snd_soc_device *socdev)
->  }
->  EXPORT_SYMBOL_GPL(snd_soc_dapm_free);
->  
-> +/*
-> + * snd_soc_dapm_shutdown - callback for system shutdown
-> + */
-> +void snd_soc_dapm_shutdown(struct snd_soc_device *socdev)
-> +{
-> +	struct snd_soc_codec *codec = socdev->card->codec;
-> +	struct snd_soc_dapm_widget *w;
-> +	LIST_HEAD(down_list);
-> +	int powerdown = 0;
-> +
-> +	list_for_each_entry(w, &codec->dapm_widgets, list) {
-> +		if (w->power) {
-> +			dapm_seq_insert(w, &down_list, dapm_down_seq);
-> +			powerdown = 1;
-> +		}
-> +	}
-> +
-> +	/* If there were no widgets to power down we're already in
-> +	 * standby.
-> +	 */
-> +	if (powerdown) {
-> +		snd_soc_dapm_set_bias_level(socdev, SND_SOC_BIAS_PREPARE);
-> +		dapm_seq_run(codec, &down_list, 0, dapm_down_seq);
-> +		snd_soc_dapm_set_bias_level(socdev, SND_SOC_BIAS_STANDBY);
-> +	}
-> +
-> +	snd_soc_dapm_set_bias_level(socdev, SND_SOC_BIAS_OFF);
-> +}
-> +
->  /* Module information */
->  MODULE_AUTHOR("Liam Girdwood, lrg@slimlogic.co.uk");
->  MODULE_DESCRIPTION("Dynamic Audio Power Management core for ALSA SoC");
-> -- 
-> 1.6.3.1
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > > ARXL1, even if we are in Option2), than you stop it: the
+> > > ARXL1 (which is VRX in Option2) bit will be turned off...
+> > > Now I'm not sure how this will be handled by
+> > > the ASoC core.
+> > > What I mean is: One path enabled this bit, than another =
 
--- 
--- 
-Ben
+> > > path also enables the same bit, than it disables it. Will
+> > > the first path notice it? Or will it think that the bit
+> > > is still enabled?
 
-Q:      What's a light-year?
-A:      One-third less calories than a regular year.
+> > Sounds like a possible case for a supply widget, though the =
+
+> > fact that you've got both option 1 and option 2 is fun.
+
+> Well I use the fun word for a bit different things...
+> I have to check what actually the supply widget supposed to =
+
+> be doing and what is it for.
+
+> > If the driver were a proper platform driver you could select
+> > between option 1 and option 2 in platform data (assuming
+> > that's sensible) and register different widgets
+> > depending on which was in use.
+
+If we register widgets based on an option passed through platform
+data, then we won't be able to switch between options, right?
+I think switching between option1/2 during runtime is needed,
+otherwise 4-channels and voice support will be mutually exclusive.
+
+> I have been looking at this. It does not seamed that =
+
+> complicated. I had written some of the code, but than it
+> turned out a bit more complicated:
+> In twl4030 series the Vibra interface also reside inside of =
+
+> the CODEC part.
+> in short: twl4030 is a MFD, than the TWL4030 codec itself =
+
+> also and MFD..
+> So in order to get this in a proper way, this should be =
+
+> handled somehow (another 'fake' MFD for the twl4030 codec/vibra
+> perhaps).
+
+> This is still in my list, but certainly need more time to get =
+
+> a reasonable good implementation. =
+
+
+> -- =
+
+> P=E9ter
