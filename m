@@ -1,23 +1,19 @@
-From: =?UTF-8?B?5a6L5a6d5Y2O?= <21cnbao@gmail.com>
-Subject: Re: [PATCH] New ASoC Drivers for ADI AD1938 codec
-Date: Mon, 22 Jun 2009 21:00:08 +0800
-Message-ID: <3c17e3570906220600l3471b6f0rc29c674b4a5ec2df@mail.gmail.com>
-References: <1245403695-20537-1-git-send-email-21cnbao@gmail.com>
-	<20090619104738.GF5270@sirena.org.uk>
-	<3c17e3570906212008n6071e987sbcd4b9377364ae78@mail.gmail.com>
-	<20090622105727.GA29144@opensource.wolfsonmicro.com>
+From: Shapeshifter <sphaerodactylus@gmail.com>
+Subject: USB microphone not working. No sound,
+	although device visible.
+Date: Tue, 23 Jun 2009 22:05:22 +0200
+Message-ID: <4A413582.30605@archlinux.us>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f185.google.com (mail-yx0-f185.google.com
-	[209.85.210.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id 833F724423
+Received: from mail-fx0-f226.google.com (mail-fx0-f226.google.com
+	[209.85.220.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id 766C32445E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Jun 2009 15:00:42 +0200 (CEST)
-Received: by yxe15 with SMTP id 15so3857643yxe.16
-	for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2009 06:00:30 -0700 (PDT)
-In-Reply-To: <20090622105727.GA29144@opensource.wolfsonmicro.com>
+	Tue, 23 Jun 2009 22:06:01 +0200 (CEST)
+Received: by fxm26 with SMTP id 26so351415fxm.32
+	for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2009 13:06:01 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,54 +23,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Mike Frysinger <vapier.adi@gmail.com>, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-MjAwOS82LzIyIE1hcmsgQnJvd24gPGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29t
-PgoKPiBPbiBNb24sIEp1biAyMiwgMjAwOSBhdCAxMTowODoyN0FNICswODAwLCDlrovlrp3ljY4g
-d3JvdGU6Cj4KPiBbUGxlYXNlIHJlcGx5IGluLWxpbmUsIGludGVyc3BlcnNpbmcgeW91ciBuZXcg
-dGV4dCBpbnRvIHRoZSBtZXNzYWdlCj4geW91J3JlIHJlcGx5aW5nIHRvIC0gaXQgbWFrZXMgdGhl
-IGRpc2N1c3Npb24gbXVjaCBlYXNpZXIgdG8gZm9sbG93Ll0KPgo+ID4gSGkgTWFyaywKPiA+ICoq
-KkZvciB0aGUgbmV3IERBSSBmb3JtYXQKPiA+IEFjY29yZGluZyB0byBJMlMgc3BlYywgaXQgZG9l
-c24ndCBkZWZpbml0ZSBhIEkyUyB3aXRoIFRETSBhcyBhIHN0YW5kYXJkCj4gSTJTLgo+ID4gaHR0
-cDovL3d3dy5ueHAuY29tL2Fjcm9iYXRfZG93bmxvYWQvdmFyaW91cy9JMlNCVVMucGRmCj4KPiBJ
-dCdzIGEgZGUgZmFjdG8gc3RhbmRhcmQgLSBzZXZlcmFsIG90aGVyIHZlbmRvcnMgaW1wbGVtZW50
-IFRETSBpbgo+IGV4YWN0bHkgdGhlIHNhbWUgZmFzaGlvbi4gIElmIHlvdSB0aGluayBhYm91dCBp
-dCB0aGlzIGlzIGEgbmF0dXJhbCB3YXkKPiB0byBoYW5kbGUgVERNIGluIEkyUy4KPgo+ID4gSXQg
-bG9va3MgbGlrZSB5b3UgYXJlIGFkbWl0dGluZyB0aGlzIGtpbmQgb2YgdGltaW5nIGludG8gSTJT
-IERBSSB0b286Cj4gPiBodHRwOi8vaTMuNi5jbi9jdmJubS84Zi8zZC8wOC8yNjhhNDU2MGUwZGFh
-MWI0MWQ2OWI4MjQxOWRhMDZlMS5qcGcKPiA+IEkgdGhpbmsgSSBjYW4gZm9sbG93IGl0IHRvby4K
-Pgo+IFRoZSB0aW1pbmcgeW91J3JlIHNob3dpbmcgdGhlcmUgaXMgZXNzZW50aWFsbHkgYSBEU1Ag
-bW9kZSB3aXRoIHRoZSBsZWZ0Cj4gYW5kIHJpZ2h0IGNoYW5uZWxzIGFsdGVybmF0aW5nIHJhdGhl
-ciB0aGFuIGFuIEkyUyBzdHlsZSB3aGVyZSB0aGUKPiBwb2xhcml0eSBvZiB0aGUgTFJDTEsgc2ln
-bmFsIGluZGljYXRlcyBpZiB0aGUgZGF0YSB0cmFuc21pdHRlZCBhdCB0aGUKPiBzYW1lIHRpbWUg
-aXMgZm9yIHRoZSBsZWZ0IG9yIHJpZ2h0IGNoYW5uZWwuICBJJ2QgbmVlZCB0byB0aGluayBhYm91
-dCBpdAo+IGluIHNsaWdodGx5IG1vcmUgZGV0YWlsIGJ1dCBwcm9iYWJseSBpdCBpcyBhY3R1YWxs
-eSBhIERTUCBtb2RlIC0gd2l0aAo+IHRoZSBEU1AgbW9kZXMgb25seSBvbmUgZWRnZSBvZiB0aGUg
-ZnJhbWUgc3luYyBpcyB1c2VkIHNvIHRoZSBvdGhlciBlZGdlCj4gY2FuIGJlIGFueXdoZXJlIGVs
-c2Ugd2l0aGluIHRoZSBmcmFtZS4KPgo+ID4gRHVlIHRvIG15IHRlc3QgYm9hcmRzLCBhdCBwcmVz
-ZW50LCB0aGUgQUQxOTM4IGlzIHdvcmtpbmcgaW4gYW5kCj4gc3VwcG9ydGluZwo+ID4gVERNIHRp
-bWluZyBsaWtlIHRoZSBkaWFncmFtOgo+ID4gaHR0cDovL2kzLjYuY24vY3Zibm0vMmYvZTIvZjIv
-MDNhZTJiNTFjNGU5MDc0OTk3MmU3MGJmODg3ZjkyNmYuanBnCj4gPiBJdCBsb29rcyBsaWtlIERT
-UCBtb2RlIHdpdGggVERNLCBzbyBjYW4gSSBwYXRoIHJlbGF0ZWQgY29kZXMgaW50bwo+ID4gU05E
-X1NPQ19EQUlGTVRfRFNQIHN3aXRjaD8KPgo+IFllcywgdGhhdCdzIERTUCBtb2RlLgoKCkJhc2Vk
-IG9uIHRoZSAiZGUgZmFjdG8gIiwgSSB0aGluayBJIHdpbGwgbWVyZ2UgVERNIHJlbGF0ZWQgY29k
-ZXMgaW50bwpibGFja2ZpbiBJMlMgREFJIGRpcmVjdGx5LgoKPgo+Cj4gPiAqKipGb3Igdm9sdW1l
-IGNvbnRyb2xzIGJhc2VkIG9uIHN0ZXJlbyBwYWlycwo+ID4gRXZlbiB0aG91Z2ggREFDMS1EQUM4
-IGFyZSBuYW1lZCBhcyBEQUNMMSxEQUNSMSwgREFDTDIsREFDUjIuLi4sIGJ1dCB0aGUKPiA+IERB
-Q0x4IGFuZCBEQUNSeCBhcmUgbm90IGFsd2F5cyBpbiBhIHBhaXIsIGluIGZhY3QsIHRoZXkgYXJl
-IGluZGVwZW5kZW50Lgo+IEFzCj4gPiBhIGNvZGVjIHN1cHBvcnRpbmcgOCBjaGFubmVscywgaXQg
-Y2FuIGJlIGNvbmZpZ2VkIGludG8gMiwgMi4xLCA0LjEsIDUuMSwKPiA+IDYuMSwgNy4xLCBob3cg
-dG8gaGFuZGxlIHRoZSBwYWlycz8KPgo+IFRoYXQncyBmYWlybHkgc3RhbmRhcmQgYW5kIG5vdCBy
-ZWFsbHkgYSBwcmFjdGljYWwgcHJvYmxlbS4gIFNpbmNlCj4gYXBwbGljYXRpb25zIGNhbiBhZGRy
-ZXNzIGVhY2ggY2hhbm5lbCBvZiBhIHN0ZXJlbyBjb250cm9sIGluZGVwZW5kYW50bHkKPiB0aGV5
-IGRvbid0IGxvb3NlIGFueSBjb250cm9sIGZyb20gZ3JvdXBpbmcgdGhlIGNoYW5uZWxzIHRvZ2V0
-aGVyLgo+IEhhdmluZyB0aGUgc3RlcmVvIGNvbnRyb2xzIGp1c3QgbWFrZXMgaXQgYSBiaXQgZWFz
-aWVyIHdoZW4gdGhleSBhcmUgdXNlZAo+IHRoYXQgd2F5Lgo+CgpTbywgZG9lcyBpdCBtZWFuIEkg
-bmVlZCB0byBzdXBwb3J0IGJvdGggc2luZ2xlIGFuZCBwYWlyIHNpbmNlIHdlIGRvbid0IGtub3cK
-aG93IHVzZXJzIHdpbGwgdXNlIGl0PyBJZiBJIG9ubHkgY3JlYXRlIDQgcGFpcnMsIGhvdyBjb3Vs
-ZCB1c2VycyBjb250cm9sCmNoYW5uZWxzIG5vdCBpbiBhbnkgcGFpcj8KX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi there. Following problem, details below:
+
+PROBLEM:
+
+I can't record anything using the microphone which is integrated into my
+USB webcam. The cam shows up as a device, and I can adjust the only
+available mixer which is for <Mic> in [Capture]. It's not muted and it's
+maxed out.
+
+DETAILS and PASTES:
+
+Alsa-info output:
+http://www.alsa-project.org/db/?f=f12fd357bc269d27ebdb4b5d562227bbe22a1086
+
+You might notice the device comes up as [default]. If I run...
+
+$ arecord -Dplughw:1,0 -f cd -vv /dev/null
+or
+$ arecord -Ddefault -f cd -vv /dev/null
+
+then it out puts a lot of stuff (both the same) which I pasted in the
+below pastebin, but at the bottom it doesn't show any #'s and %'s to
+indicate the volume. The blue light on the webcam also turns on. If I
+save to a file instead of /dev/null and aplay it, it's just silence.
+Here's the output from the above command:
+http://pastie.org/521697
+
+Although if I run
+
+$ arecord -Dhw:1,0 -f cd -vv /dev/null
+
+then it fails with:
+
+-> Recording WAVE '/dev/null' : Signed 16 bit Little Endian, Rate 44100
+Hz, Stereo
+-> arecord: set_params:984: Channels count non available"
+
+I made a screenshot illustrating that everything is turned up and unmuted:
+http://omploader.org/vMXZldg
+
+ALREADY TRIED:
+
+- Switching the two devices so that 0 becomes the webcam and 1 the
+intel-hda through modprobe.conf but that had no other effect other than
+the switching.
+- Playing a lot with the device, muting, triplechecking volumes etc. etc.
+- Trying recording something in audacity. First time, the light goes on
+but it doesn't record, on subsequent tries, audacity spits an error
+stating "error opening sound device".
+- Trying it in linphone, light turns on, but other party can't hear
+anything.
+
+
+
+
+Any ideas how to fix hits? Btw, it used to work in ubuntu 9.04 for some
+reason. Tried it on two Archlinux boxes, it's exactly the same on both.
+But everything works really, everything is very up to date (I'm sure
+ubuntu has older versions of stuff). Well, all the info is in the
+alsa-info link above. Hope I can work this out!
+
+Thanks for any input!
+
+Regards.
