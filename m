@@ -1,27 +1,20 @@
-From: =?ISO-8859-1?Q?Emilio_L=F3pez?= <buhitoescolar@gmail.com>
-Subject: Re: Regarding Sound on Acer Aspire 6935G
-Date: Tue, 23 Jun 2009 15:05:37 -0300
-Message-ID: <d54969c50906231105k251880eahbf82cf74b699c7d8@mail.gmail.com>
-References: <4b8c423b0905152051w7443e1b4u4080514a560fbb6c@mail.gmail.com>
-	<s5h3a9sm8oa.wl%tiwai@suse.de>
-	<d54969c50906221451o6e92044cj3da24df67e55268b@mail.gmail.com>
-	<1245707939.441.5.camel@localhost> <s5hfxdrex0w.wl%tiwai@suse.de>
-	<1245709097.441.7.camel@localhost> <1245710676.441.9.camel@localhost>
-	<d54969c50906221614k5e12f5edt8973f7bb8e69592c@mail.gmail.com>
-	<1245712854.441.11.camel@localhost>
-	<d54969c50906221623j4fd17c6yb7fc2c9316d11766@mail.gmail.com>
+From: Ben Dooks <ben-alsa@fluff.org>
+Subject: Re: ASoC CODEC power management on reboot
+Date: Tue, 23 Jun 2009 20:39:05 +0100
+Message-ID: <20090623193905.GA29142@trinity.fluff.org>
+References: <20090622111323.GM14476@trinity.fluff.org>
+	<20090622113249.GA15884@sirena.org.uk>
+	<20090622121823.GA4495@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
-	[209.85.221.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6B4C024355
+Received: from trinity.fluff.org (trinity.fluff.org [89.16.178.74])
+	by alsa0.perex.cz (Postfix) with ESMTP id 948FE24406
 	for <alsa-devel@alsa-project.org>;
-	Tue, 23 Jun 2009 20:05:39 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so337749qyk.16
-	for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2009 11:05:37 -0700 (PDT)
-In-Reply-To: <d54969c50906221623j4fd17c6yb7fc2c9316d11766@mail.gmail.com>
+	Tue, 23 Jun 2009 21:39:17 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20090622121823.GA4495@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,58 +24,141 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tony Vroon <tony@linx.net>
-Cc: Takashi Iwai <tiwai@suse.de>, Karthik Ramgopal <applefreakpeeps@gmail.com>, ALSA development ML <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Ben Dooks <ben-alsa@fluff.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I had a little free time, so I decided to play a little with alsa. I
-copied the mic verbs from the old model to this new one and it seems
-to be working fine. Here is the patch for that
+On Mon, Jun 22, 2009 at 01:18:26PM +0100, Mark Brown wrote:
+> On Mon, Jun 22, 2009 at 12:32:50PM +0100, Mark Brown wrote:
+> > On Mon, Jun 22, 2009 at 12:13:23PM +0100, Ben Dooks wrote:
+> 
+> > > Should the ASoC (possibly DAPM) layer sort out powering down the CODEC
+> > > before reboot, or should it be down to the codec or the mapping driver
+> > > to do this?
+> 
+> > Core.
+> 
+> Please try this (completely untested) patch:
+> 
+> >From 506921be0ce5b96c3761c771a9356f2c53bd6628 Mon Sep 17 00:00:00 2001
+> From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Date: Mon, 22 Jun 2009 13:16:51 +0100
+> Subject: [PATCH] ASoC: Add a shutdown callback
+> 
+> Ensure that the audio subsystem is powered down cleanly when the system
+> shuts down by providing a shutdown operation. This ensures that all the
+> components have been returned to an off state cleanly which should avoid
+> audio issues from partially charged capacitors or noise on digital inputs
+> if the system is restarted quickly.
 
-diff -wur alsa-driver/sound/pci/hda/patch_realtek.c
-alsa-driver-patched/sound/pci/hda/patch_realtek.c
---- alsa-driver/sound/pci/hda/patch_realtek.c	2009-06-22
-12:50:12.000000000 -0300
-+++ alsa-driver-patched/sound/pci/hda/patch_realtek.c	2009-06-23
-14:57:40.511853856 -0300
-@@ -1471,6 +1471,10 @@
- static struct hda_verb alc888_acer_aspire_6530g_verbs[] =3D {
- /* Bias voltage on for external mic port */
- 	{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN | PIN_VREF80},
-+/* Front Mic: set to PIN_IN (empty by default) */
-+	{0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
-+/* Unselect Front Mic by default in input mixer 3 */
-+	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0xb)},
- /* Enable unsolicited event for HP jack */
- 	{0x15, AC_VERB_SET_UNSOLICITED_ENABLE, ALC880_HP_EVENT | AC_USRSP_EN},
- /* Enable speaker output */
+Right, so far this seems to have worked.
+ 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Tested-by: Ben Dooks <ben-linux@fluff.org>
 
-Now, the only 'broken' thing is jack sensing, it just mutes front, but
-not LFE. I guess this is an easy to fix issue.
+> ---
+>  include/sound/soc-dapm.h |    1 +
+>  sound/soc/soc-core.c     |   16 ++++++++++++++++
+>  sound/soc/soc-dapm.c     |   29 +++++++++++++++++++++++++++++
+>  3 files changed, 46 insertions(+), 0 deletions(-)
+> 
+> diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+> index ec8a45f..35814ce 100644
+> --- a/include/sound/soc-dapm.h
+> +++ b/include/sound/soc-dapm.h
+> @@ -279,6 +279,7 @@ int snd_soc_dapm_add_routes(struct snd_soc_codec *codec,
+>  /* dapm events */
+>  int snd_soc_dapm_stream_event(struct snd_soc_codec *codec, char *stream,
+>  	int event);
+> +void snd_soc_dapm_shutdown(struct snd_soc_device *socdev);
+>  
+>  /* dapm sys fs - used by the core */
+>  int snd_soc_dapm_sys_add(struct device *dev);
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 4414117..55d45c4 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -1020,6 +1020,21 @@ static int soc_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> +static void soc_shutdown(struct platform_device *pdev)
+> +{
+> +	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+> +	struct snd_soc_card *card = socdev->card;
+> +
+> +	if (!card->instantiated)
+> +		return;
+> +
+> +	/* Flush out pmdown_time work - we actually do want to run it
+> +	 * now, we're shutting down so no imminent restart. */
+> +	run_delayed_work(&card->delayed_work);
+> +
+> +	snd_soc_dapm_shutdown(socdev);
+> +}
+> +
+>  /* ASoC platform driver */
+>  static struct platform_driver soc_driver = {
+>  	.driver		= {
+> @@ -1030,6 +1045,7 @@ static struct platform_driver soc_driver = {
+>  	.remove		= soc_remove,
+>  	.suspend	= soc_suspend,
+>  	.resume		= soc_resume,
+> +	.shutdown	= soc_shutdown,
+>  };
+>  
+>  /* create a new pcm */
+> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> index 6534359..b9129ef 100644
+> --- a/sound/soc/soc-dapm.c
+> +++ b/sound/soc/soc-dapm.c
+> @@ -2032,6 +2032,35 @@ void snd_soc_dapm_free(struct snd_soc_device *socdev)
+>  }
+>  EXPORT_SYMBOL_GPL(snd_soc_dapm_free);
+>  
+> +/*
+> + * snd_soc_dapm_shutdown - callback for system shutdown
+> + */
+> +void snd_soc_dapm_shutdown(struct snd_soc_device *socdev)
+> +{
+> +	struct snd_soc_codec *codec = socdev->card->codec;
+> +	struct snd_soc_dapm_widget *w;
+> +	LIST_HEAD(down_list);
+> +	int powerdown = 0;
+> +
+> +	list_for_each_entry(w, &codec->dapm_widgets, list) {
+> +		if (w->power) {
+> +			dapm_seq_insert(w, &down_list, dapm_down_seq);
+> +			powerdown = 1;
+> +		}
+> +	}
+> +
+> +	/* If there were no widgets to power down we're already in
+> +	 * standby.
+> +	 */
+> +	if (powerdown) {
+> +		snd_soc_dapm_set_bias_level(socdev, SND_SOC_BIAS_PREPARE);
+> +		dapm_seq_run(codec, &down_list, 0, dapm_down_seq);
+> +		snd_soc_dapm_set_bias_level(socdev, SND_SOC_BIAS_STANDBY);
+> +	}
+> +
+> +	snd_soc_dapm_set_bias_level(socdev, SND_SOC_BIAS_OFF);
+> +}
+> +
+>  /* Module information */
+>  MODULE_AUTHOR("Liam Girdwood, lrg@slimlogic.co.uk");
+>  MODULE_DESCRIPTION("Dynamic Audio Power Management core for ALSA SoC");
+> -- 
+> 1.6.3.1
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-Emilio
+-- 
+-- 
+Ben
 
-2009/6/22 Emilio L=F3pez <buhitoescolar@gmail.com>
->
-> I can test patches if you'd like
->
-> 2009/6/22 Tony Vroon <tony@linx.net>
->>
->> On Mon, 2009-06-22 at 20:14 -0300, Emilio L=F3pez wrote:
->> > The mic worked with model=3Dacer-aspire-4930g, maybe you can "copy" the
->> > information from that model or something?
->>
->> Will have to see whether copying both internal-mic related verbs from
->> the 4930g model helps, indeed. I found the arecord message rather
->> disconcerting though.
->> Also, while I have remote access to he 6530g its owner is not feeling
->> well and she can't help me run further tests.
->>
->> Sorry, no further patches tonight.
->>
->> Regards,
->> Tony V.
->>
->> P.S. And I blame my e-mail client for swapping my From address around
->> randomly.
->
+Q:      What's a light-year?
+A:      One-third less calories than a regular year.
