@@ -1,18 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Can a phone hook switch follow alsa jack model?
-Date: Tue, 23 Jun 2009 23:22:56 +0100
-Message-ID: <20090623222255.GA5617@sirena.org.uk>
-References: <4A40D896.8010208@tis.icnet.pl>
+From: Tony Vroon <tony@linx.net>
+Subject: Re: Regarding Sound on Acer Aspire 6935G
+Date: Tue, 23 Jun 2009 23:40:09 +0100
+Message-ID: <1245796809.3640.10.camel@localhost>
+References: <4b8c423b0905152051w7443e1b4u4080514a560fbb6c@mail.gmail.com>
+	<s5h3a9sm8oa.wl%tiwai@suse.de>
+	<d54969c50906221451o6e92044cj3da24df67e55268b@mail.gmail.com>
+	<1245707939.441.5.camel@localhost> <s5hfxdrex0w.wl%tiwai@suse.de>
+	<1245709097.441.7.camel@localhost> <1245710676.441.9.camel@localhost>
+	<d54969c50906221614k5e12f5edt8973f7bb8e69592c@mail.gmail.com>
+	<1245712854.441.11.camel@localhost>
+	<d54969c50906221623j4fd17c6yb7fc2c9316d11766@mail.gmail.com>
+	<d54969c50906231105k251880eahbf82cf74b699c7d8@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9168296218594320953=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6EFE02453C
+Received: from gold.linx.net (gold.linx.net [195.66.232.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id E7C3124552
 	for <alsa-devel@alsa-project.org>;
-	Wed, 24 Jun 2009 00:23:03 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4A40D896.8010208@tis.icnet.pl>
+	Wed, 24 Jun 2009 00:40:12 +0200 (CEST)
+In-Reply-To: <d54969c50906231105k251880eahbf82cf74b699c7d8@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,44 +28,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, linux-input@vger.kernel.org
+To: Emilio =?ISO-8859-1?Q?L=F3pez?= <buhitoescolar@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Karthik Ramgopal <applefreakpeeps@gmail.com>, ALSA development ML <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 23, 2009 at 03:28:54PM +0200, Janusz Krzysztofik wrote:
 
-> After my initial attempt to add support for the switch using gpio-keys 
-> driver, I am no longer sure if it is a good idea to follow the keyboard 
-> model, that the driver has been designed after, for driving a switch 
-> that has nothing to do with keyboards and may required a different approach.
+--===============9168296218594320953==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-rVn3aAf3zfYt5dZRMhOo"
 
-That approach was quite common in the past.
 
-> However, I am not sure if the switch in question matches the alsa jack 
-> model closely enough. I see the switch usage not as simple as turning 
-> handset microphone/speaker on or off. It can be used for other purposes 
-> as well, like accepting a phone call or actually dialing a number that 
-> has been just typed in. Furthermore, it can be used to turn off a 
-> speakerphone function, while, in turn, the related handset 
-> microphone/speaker pair can be turned off not only with this switch, but 
-> with a handsfree button as well, for example.
+--=-rVn3aAf3zfYt5dZRMhOo
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-That can all be accomodated within the ASoC jack framework (I'm assuming
-you'll be doing an ASoC rather than generic ALSA driver).  You get the
-input device just the same as you get with gpio-keys so you can do stuff
-in user space, the main difference is that you can also arrange for some
-of the power management within ASoC to be hooked up with the jack
-automatically as well.
+On Tue, 2009-06-23 at 15:05 -0300, Emilio L=C3=B3pez wrote:
+> I had a little free time, so I decided to play a little with alsa. I
+> copied the mic verbs from the old model to this new one and it seems
+> to be working fine. Here is the patch for that
 
-With what you're describing above I'd tie the mic and speaker in the
-headset to DAPM automatically.
+Takashi, please feel free to apply this. Especially the PIN_IN selector
+is obviously correct, and if this fixes the 6935 it should work on the
+6930.
+Unfortunately the 6930 (which isn't mine) will be out of the country as
+of tomorrow.
 
-> All that extra functionality looks like belonging to userspace rather 
-> then kernel, not like other alsa jack implementations that seem to do 
-> all the job of switching media paths inside the kernel. That is why I am 
-> not sure if the jack model is suitable for the purpose.
+Emilio, you may want to resubmit with a Signed-Off-By line etc. There's
+a Documentation/SubmittingPatches in the kernel source that explains all
+the little details.
 
-The switching in kernel for ASoC should generally be confined to marking
-outputs as powered or unpowered - things like marking a headphone jack
-as disabled when there's nothing plugged in to it that can be done
-unconditionally.  Everything else should get punted to user space.
+> Now, the only 'broken' thing is jack sensing, it just mutes front, but
+> not LFE. I guess this is an easy to fix issue.
+
+Now that you've got your hands dirty you might want to fix that one as
+well :)
+You'll want to mute/unmute node 0x17 (the "tuba") in addition to 0x14 in
+the jack sense handler. Might as well handle 0x16 now that you're at it,
+the codec graph suggests this is a speaker of some kind as well. Copy
+alc888_acer_aspire_4930g_init_hook into a new 6930g_init_hook, and look
+at 8930g to see how to do multiple speaker nodes.
+
+That's basically it. Hacking on patch_realtek.c is quite doable.
+
+> Emilio
+
+Regards,
+Tony V.
+
+--=-rVn3aAf3zfYt5dZRMhOo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.12 (GNU/Linux)
+
+iEYEABECAAYFAkpBWckACgkQp5vW4rUFj5rt2wCgp2vnd3X05VwNF38u1UtbdgT4
+Ce0AoJZlxxWIXhfR0oMFGKruLKxj1Uxh
+=Ta8c
+-----END PGP SIGNATURE-----
+
+--=-rVn3aAf3zfYt5dZRMhOo--
+
+
+--===============9168296218594320953==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============9168296218594320953==--
