@@ -1,16 +1,23 @@
-From: Martin Egge <mailinglists@martin.egge.info>
-Subject: Samsung P50 Heaphone Jack-Sense not working with
-	latest ALSA
-Date: Tue, 23 Jun 2009 14:25:39 +0200
-Message-ID: <200906231425.47946.mailinglists@martin.egge.info>
+From: Steve Sakoman <steve@sakoman.com>
+Subject: Re: [PATCH 3/3] ASoC: TWL4030: Fix voice interface
+ clock masters
+Date: Tue, 23 Jun 2009 06:10:16 -0700
+Message-ID: <1245762616.10335.16.camel@tera>
+References: <67059DBF19D7214F9C66BB0EA91BA90E3543F31E@dlee04.ent.ti.com>
+	<200906220935.27903.peter.ujfalusi@nokia.com>
+	<20090622102505.GA4730@sirena.org.uk>
+	<200906231010.38207.peter.ujfalusi@nokia.com>
+Reply-To: steve@sakoman.com
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7874441982800965658=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
-	[212.227.126.187])
-	by alsa0.perex.cz (Postfix) with ESMTP id 05C22246F8
+Received: from mx09.roch.ny.frontiernet.net (mx09.roch.ny.frontiernet.net
+	[66.133.183.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id A95A124716
 	for <alsa-devel@alsa-project.org>;
-	Tue, 23 Jun 2009 14:25:56 +0200 (CEST)
+	Tue, 23 Jun 2009 15:10:06 +0200 (CEST)
+In-Reply-To: <200906231010.38207.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,82 +27,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ext Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============7874441982800965658==
-Content-Type: multipart/signed;
-  boundary="nextPart2627349.fDkGMpSud1";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+On Tue, 2009-06-23 at 10:10 +0300, Peter Ujfalusi wrote:
+> Hello Mark,
+> 
+> On Monday 22 June 2009 13:25:07 ext Mark Brown wrote:
+> > On Mon, Jun 22, 2009 at 09:35:27AM +0300, Peter Ujfalusi wrote:
+> > > On Friday 19 June 2009 11:23:42 ext Lopez Cruz, Misael wrote:
+> > > > Voice interface of twl4030 codec supports: CBM_CFM and
+> > > > CBS_CFS. It doesn't support CBS_CFM.
+> > >
+> > > Acked-By: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> >
+> > Applied, thanks.
+> >
+> > Peter, you might want to submit a MAINTAINERS entry for TWL4030 - you're
+> > doing a lot of good review there.
+> 
+> Do you mean something like this:
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 1ae5a81..1c04143 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -5523,6 +5523,13 @@ M:       dsaxena@plexity.net
+>  S:     Maintained
+>  F:     drivers/char/hw_random/omap-rng.c
+> 
+> +TI TWL4030 SERIES SOC CODEC DRIVER
+> +P:     Peter Ujflausi
+> +M:     peter.ujfalusi@nokia.com
+> +L:     alsa-devel@alsa-project.org
+> +S:     Maintained
+> +F:     sound/soc/codecs/twl4030*
+> +
+>  TIPC NETWORK LAYER
+>  P:     Per Liden
+>  M:     per.liden@ericsson.com
+> 
+> It would be a honor...
+> But before sending such a patch, I guess Steve Sakoman should give his 
+> blessing to it (he is the original author of the twl4030 codec driver). Or 
+> perhaps someone else also?
 
---nextPart2627349.fDkGMpSud1
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+You definitely have my blessing!  You've done great work :-)
 
-Hi,
-
-last year Takashi did help me to get the digital output and the=20
-internal/external mic up and running on my Samsung P50 notebook with an=20
-integrated Intel Corporation 82801G (ICH7 Family) High Definition=20
-Audio Controller.=20
-
-Some time ago I switched from Ubuntu 7.10 to 8.10 and a new problem with th=
-e=20
-soundcard occurred. The Headphone/Line-Out Jack-Sense is not working. When =
-I=20
-plug in my Headphones the internal speakers of the notebook aren't switched=
-=20
-off. I've ignored that problem for a long time but now I'm willing to chang=
-e=20
-this.
-
-I've already upgraded my system to ALSA 1.0.20 with a script provided in th=
-e=20
-Ubuntu Forums [2]. I've used the build-in support for the latest snapshots=
-=20
-provided at [3] of the script. But the problem still exists.
-
-Can anyone (perhaps Takashi again) help me?
-
-
-You can find all ALSA related information about my system at [4].
-
-Regards,
-Martin
-
-
-[1] http://tinyurl.com/mkw8mz
-[2] http://ubuntuforums.org/showthread.php?p=3D6589810#post6589810
-[3] http://tinyurl.com/5ux2nf
-[4] http://pastebin.ca/1471032
-
---nextPart2627349.fDkGMpSud1
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEABECAAYFAkpAycMACgkQVG/GfU56d2wJpACfSQ2xdodhAryEt6cJirl264uG
-iu4Anip+TqtX1jFGkSHpEBxRW/50GHnU
-=7gP7
------END PGP SIGNATURE-----
-
---nextPart2627349.fDkGMpSud1--
-
---===============7874441982800965658==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============7874441982800965658==--
+Steve
