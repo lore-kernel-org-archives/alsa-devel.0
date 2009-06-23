@@ -1,21 +1,11 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 1/3] ASoC: TWL4030: Enable voice filters
-	for voice sidetone
-Date: Tue, 23 Jun 2009 16:18:35 +0300
-Message-ID: <200906231618.35877.peter.ujfalusi@nokia.com>
-References: <67059DBF19D7214F9C66BB0EA91BA90E3543F31C@dlee04.ent.ti.com>
-	<200906230838.20351.peter.ujfalusi@nokia.com>
-	<20090623101615.GG5422@sirena.org.uk>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Can a phone hook switch follow alsa jack model?
+Date: Tue, 23 Jun 2009 15:28:54 +0200
+Message-ID: <4A40D896.8010208__10824.9262361371$1245763791$gmane$org@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 36D1424721
-	for <alsa-devel@alsa-project.org>;
-	Tue, 23 Jun 2009 15:18:50 +0200 (CEST)
-In-Reply-To: <20090623101615.GG5422@sirena.org.uk>
-Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,49 +15,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "ext Lopez Cruz, Misael" <x0052729@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 23 June 2009 13:16:16 ext Mark Brown wrote:
-> On Tue, Jun 23, 2009 at 08:38:20AM +0300, Peter Ujfalusi wrote:
-> > Now if you start an audio playback (which will enable the ARXL1, even if
-> > we are in Option2), than you stop it: the ARXL1 (which is VRX in Option=
-2)
-> > bit will be turned off... Now I'm not sure how this will be handled by
-> > the ASoC core.
-> > What I mean is: One path enabled this bit, than another path also enabl=
-es
-> > the same bit, than it disables it. Will the first path notice it? Or wi=
-ll
-> > it think that the bit is still enabled?
->
-> Sounds like a possible case for a supply widget, though the fact that
-> you've got both option 1 and option 2 is fun.
-Well I use the fun word for a bit different things...
-I have to check what actually the supply widget supposed to be doing and wh=
-at =
+Hi,
 
-is it for.
+I am wondering if it is a good idea to create support for a phone hook 
+switch, or a handset pick up switch, like that found on Amstrad E3 
+(Delta) videophone, using alsa jack framework.
 
-> If the driver were a
-> proper platform driver you could select between option 1 and option 2 in
-> platform data (assuming that's sensible) and register different widgets
-> depending on which was in use.
-I have been looking at this. It does not seamed that complicated. I had =
+After my initial attempt to add support for the switch using gpio-keys 
+driver, I am no longer sure if it is a good idea to follow the keyboard 
+model, that the driver has been designed after, for driving a switch 
+that has nothing to do with keyboards and may required a different approach.
 
-written some of the code, but than it turned out a bit more complicated:
-In twl4030 series the Vibra interface also reside inside of the CODEC part.
-in short: twl4030 is a MFD, than the TWL4030 codec itself also and MFD..
-So in order to get this in a proper way, this should be handled somehow =
+OTOH, the switch is closely related to a handset, and handsets can be 
+seen as sound devices, can't they? So maybe alsa jack would fit better 
+than keyboard?
 
-(another 'fake' MFD for the twl4030 codec/vibra perhaps).
+However, I am not sure if the switch in question matches the alsa jack 
+model closely enough. I see the switch usage not as simple as turning 
+handset microphone/speaker on or off. It can be used for other purposes 
+as well, like accepting a phone call or actually dialing a number that 
+has been just typed in. Furthermore, it can be used to turn off a 
+speakerphone function, while, in turn, the related handset 
+microphone/speaker pair can be turned off not only with this switch, but 
+with a handsfree button as well, for example.
 
-This is still in my list, but certainly need more time to get a reasonable =
+All that extra functionality looks like belonging to userspace rather 
+then kernel, not like other alsa jack implementations that seem to do 
+all the job of switching media paths inside the kernel. That is why I am 
+not sure if the jack model is suitable for the purpose.
 
-good implementation. =
+Thanks,
+Janusz
 
-
--- =
-
-P=E9ter
