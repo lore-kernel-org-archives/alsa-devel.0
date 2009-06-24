@@ -1,18 +1,23 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: Can a phone hook switch follow alsa jack model?
-Date: Wed, 24 Jun 2009 15:28:11 +0200
-Message-ID: <4A4229EB.2090606@tis.icnet.pl>
-References: <4A40D896.8010208@tis.icnet.pl>
-	<20090623222255.GA5617@sirena.org.uk>
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: Re: Proposal for more reliable audio DMA.
+Date: Wed, 24 Jun 2009 10:10:35 -0400
+Message-ID: <9e4733910906240710y2e5bdb21qfbd03af256094c3f@mail.gmail.com>
+References: <9e4733910906201906y78f76545sc3cdfe9b45a8db5f@mail.gmail.com>
+	<ad2655cb0906220927o68628357u223119b76e3967e4@mail.gmail.com>
+	<9e4733910906220943pd00fbaao2e2c92690e96d46a@mail.gmail.com>
+	<20090623095444.GC5422@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id A75C0103814
+Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
+	[209.85.221.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id B9D3C247CB
 	for <alsa-devel@alsa-project.org>;
-	Wed, 24 Jun 2009 15:28:18 +0200 (CEST)
-In-Reply-To: <20090623222255.GA5617@sirena.org.uk>
+	Wed, 24 Jun 2009 16:10:36 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so953024qyk.16
+	for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2009 07:10:35 -0700 (PDT)
+In-Reply-To: <20090623095444.GC5422@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,62 +28,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, linux-input@vger.kernel.org
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, James Courtier-Dutton <james.dutton@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+On Tue, Jun 23, 2009 at 5:54 AM, Mark
+Brown<broonie@opensource.wolfsonmicro.com> wrote:
+> On Mon, Jun 22, 2009 at 12:43:52PM -0400, Jon Smirl wrote:
+>> On Mon, Jun 22, 2009 at 12:27 PM, James
+>
+>> > DMA transfers on sound cards are a ring buffer. There is no automatic
+>> > stop feature.
+>
+>> I don't about all hardware, but all of the hardware I've worked with
+>> works both ways, ring or stop at the end.
+>
+>> DMA transfers for network packets wouldn't work in the ring buffer
+>> model, you need the stop at the end capability.
+>
+> Remember, you're working with a general purpose SoC which shares the DMA
+> controller with a large selection of other hardware. =A0A DMA controller
+> that's part of a sound device and can't be used in anything else doesn't
+> need to worry about any other applications.
+>
 
-Mark Brown wrote:
-> On Tue, Jun 23, 2009 at 03:28:54PM +0200, Janusz Krzysztofik wrote:
->> However, I am not sure if the switch in question matches the alsa jack 
->> model closely enough. I see the switch usage not as simple as turning 
->> handset microphone/speaker on or off. It can be used for other purposes 
->> as well, like accepting a phone call or actually dialing a number that 
->> has been just typed in. Furthermore, it can be used to turn off a 
->> speakerphone function, while, in turn, the related handset 
->> microphone/speaker pair can be turned off not only with this switch, but 
->> with a handsfree button as well, for example.
-> 
-> That can all be accomodated within the ASoC jack framework (I'm assuming
-> you'll be doing an ASoC rather than generic ALSA driver).
+>From what I have observed the current ALSA DMA design does not
+reliably deal with over/underrun.  On the hardware I'm using it is
+possible to construct a system which will always behave predictably
+but I can't build it using the ALSA driver interface.
 
-Right, thanks for pointing out the difference.
+These issues probably indicates that the DMA interface between ALSA
+and the driver has been designed at the wrong level. For example those
+timers trying to fix glitches in HDA belong down in the HDA driver,
+not the core. Why did my DMA code needs to peak back into ALSA core at
+appl pointer?  The proliferation of flags on the DMA interface is also
+an indication that it is too low level.
 
->  You get the
-> input device just the same as you get with gpio-keys so you can do stuff
-> in user space,
+I'm still working on solutions for my embedded application but I may
+be forced to add private IOCTLs to the driver and by-pass ASLA.  That
+will work for me since I'm not building a general purpose system.
 
-Yes, that was quite simple :). For now, I used SND_JACK_HEADSET report 
-type. Don't you think that a new type like SND_JACK_PHONE_HOOK or 
-SND_JACK_PHONE_HANDSET should be defined for the purpose? Even if 
-HEADSET may not be very different from HANDSET, corresponding 
-SW_HEADPHONE_INSERT and SW_MICROPHONE_INSERT event names seem have very 
-little to do with picking up a phone.
 
-> the main difference is that you can also arrange for some
-> of the power management within ASoC to be hooked up with the jack
-> automatically as well.
-> 
-> With what you're describing above I'd tie the mic and speaker in the
-> headset to DAPM automatically.
 
-OK, I'll try to follow your advice when I'm ready with a method of 
-switching my microphones/speakers.
+-- =
 
->> All that extra functionality looks like belonging to userspace rather 
->> then kernel, not like other alsa jack implementations that seem to do 
->> all the job of switching media paths inside the kernel. That is why I am 
->> not sure if the jack model is suitable for the purpose.
-> 
-> The switching in kernel for ASoC should generally be confined to marking
-> outputs as powered or unpowered - things like marking a headphone jack
-> as disabled when there's nothing plugged in to it that can be done
-> unconditionally.  Everything else should get punted to user space.
-
-So, if I want to follow the ASoC jack model, my in-kernel hook switch 
-handler should only power on/off the handset, not touching the 
-speakerphone at all. The latter should be controlled from userspace. 
-Please correct me if I am missing something.
-
-Thanks,
-Janusz
+Jon Smirl
+jonsmirl@gmail.com
