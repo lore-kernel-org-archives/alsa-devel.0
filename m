@@ -1,29 +1,23 @@
 From: =?ISO-8859-1?Q?Emilio_L=F3pez?= <buhitoescolar@gmail.com>
-Subject: Re: Regarding Sound on Acer Aspire 6935G
-Date: Wed, 24 Jun 2009 16:33:26 -0300
-Message-ID: <d54969c50906241233kc51e746r691bd48c2e961a71@mail.gmail.com>
-References: <4b8c423b0905152051w7443e1b4u4080514a560fbb6c@mail.gmail.com>
-	<d54969c50906221614k5e12f5edt8973f7bb8e69592c@mail.gmail.com>
-	<1245712854.441.11.camel@localhost>
-	<d54969c50906221623j4fd17c6yb7fc2c9316d11766@mail.gmail.com>
-	<d54969c50906231105k251880eahbf82cf74b699c7d8@mail.gmail.com>
-	<1245796809.3640.10.camel@localhost>
-	<d54969c50906231800p2f507c48h9e6977cc7d03461f@mail.gmail.com>
-	<d54969c50906231832w48ce7315uc5cf8b3f81534c76@mail.gmail.com>
-	<s5hbpoem7c3.wl%tiwai@suse.de>
-	<d54969c50906241124o456a4938p173b9fbbd9cd46b3@mail.gmail.com>
+Subject: Re: Acer Aspire 7730G support
+Date: Wed, 24 Jun 2009 17:39:02 -0300
+Message-ID: <d54969c50906241339u7a4a41cbvbc66643e794436b9@mail.gmail.com>
+References: <376f0d430906240509w7b8e23d4m92e3fc99fabd528@mail.gmail.com>
+	<s5heit9ajvk.wl%tiwai@suse.de>
+	<376f0d430906240941k699e494cr325f1c091a609f19@mail.gmail.com>
+	<376f0d430906241052i1e37904bo9c90b98e0dca6077@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
 	[209.85.221.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2C4DF24821
+	by alsa0.perex.cz (Postfix) with ESMTP id EBC6E248B1
 	for <alsa-devel@alsa-project.org>;
-	Wed, 24 Jun 2009 21:33:28 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so1292283qyk.16
-	for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2009 12:33:27 -0700 (PDT)
-In-Reply-To: <d54969c50906241124o456a4938p173b9fbbd9cd46b3@mail.gmail.com>
+	Wed, 24 Jun 2009 22:39:04 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so1357586qyk.16
+	for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2009 13:39:03 -0700 (PDT)
+In-Reply-To: <376f0d430906241052i1e37904bo9c90b98e0dca6077@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,68 +27,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Karthik Ramgopal <applefreakpeeps@gmail.com>, Tony Vroon <tony@linx.net>, ALSA development ML <alsa-devel@alsa-project.org>
+To: Denis Kup <dener.kup@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Well, I finally got it to work. I had to triplicate the
-"spec->autocfg.hp_pins", I don't know why, but it made it work.
+2009/6/24 Denis Kup <dener.kup@gmail.com>:
+> 2009/6/24 Denis Kup <dener.kup@gmail.com>:
+>> 2009/6/24 Takashi Iwai <tiwai@suse.de>:
+>>> At Wed, 24 Jun 2009 16:09:58 +0400,
+>>> Denis Kup wrote:
+>>>>
+>>>> Hey, when i first installed alsa to my laptop, there no sound from
+>>>> subwoofer, jacks were map very strange (2 surrounds for ex.). I try
+>>>> all models from the list, but all don't support my subwoofer. After a
+>>>> weak of hard work i made a patch that enables ACER_ASPIRE_7730G model
+>>>> for my laptop. It have ALC888S, 3 jacks, 6 channels, stereo internal
+>>>> frontal speakers and internal subwoofer.You can see acer.com for more
+>>>> info about hardware and jacks.
+>>>>
+>>>> It's the changes i made to /alsa-kernel/pci/hda/patch_realtek.c:
+>>>
+>>> Can you try Emilio's patch recently posted (and pass
+>>> model=3Dacer-aspire-6530g) with the very latest alsa-driver-snapshot?
+>>> This essentially includes your changes. =A0It's in:
+>>> =A0From: Emilio L=F3pez <buhitoescolar@gmail.com>
+>>> =A0Subject: Re: [alsa-devel] Regarding Sound on Acer Aspire 6935G
+>>> =A0Date: Tue, 23 Jun 2009 22:32:45 -0300
+>>> =A0Message-ID: <d54969c50906231832w48ce7315uc5cf8b3f81534c76@mail.gmail=
+.com>
+>>>
+>>>> After changing file i install driver, and it automatically detect its
+>>>> model (maybe there are old settings from previous install, so i dont
+>>>> 100% sure that it was detected). With this settings subwoofer works
+>>>> perfect, internal stereo and subwoofer mute when headphone are plugged
+>>>> all works, except 1 thing: subwoofer uses center channel instead LFE.
+>>>> To fix it i use such asound.conf file:
+>>> ...
+>>>> Is there any chance to swap Center and LFE in patch_realtek.c?
+>>>
+>>> Unlikely as ALC888* doesn't support the channel-swap feature (although
+>>> some other ALC codecs do).
+>>>
+>>>
+>>> thanks,
+>>>
+>>> Takashi
+>>>
+>>
+>> You are talking about that
+>> http://mailman.alsa-project.org/pipermail/alsa-devel/2009-June/018815.ht=
+ml
+>> ?? Its right link to drivers http://www.alsa-project.org/snapshot/ ??
+>> And there is easier way to apply patches than manually adding strings
+>> to files?
+>>
+>
+> I manage with installing. I use alsa-driver-snapshot.tar.gz
+> http://ftp.kernel.org/pub/linux/kernel/people/tiwai/alsa/alsa-driver/
+> and this Amilo changes
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2009-June/018815.html
+> .=A0 But this patch has smaller functionality against i have. There is
+> advantages and disadvantages of both patches:
+>
+> My patch:
+> + 1) when black jack plugged, internal speakers and subwoofer mute
+> + 2) there is 3 maps for jacks: (black/pink/blue) 2ch: front/ext mic/
+> (something i dont know, it should be line in), 4ch: front/ ext mic/
+> side 6ch: front/ CLFE / side; (its changes in channel mode option in
+> mixer)
+> + 3) internal mic works
+> + 4) there are separate boost mic channels for internal and external mics
+> - 5) internal subwoofer controls with Center channel in mixer
+> ? 6) i dont know how line in works (i will check it when reinstall to my =
+patch)
+> ? 7) i dont know how spdif works, because i have not any spdif speakers i=
+n house
+>
+> Amilo patch:
+> - 1) when black jack pluged, only internal speaker mutes, subwoofer
+> continue to work (it has no meaning when i listen to music in
+> headphones)
 
-Here is the patch:
+I posted a new patch some time ago, can you try it?
 
-From: Emilio L=F3pez <buhitoescolar@gmail.com>
+> - 2) there is only 1 map for jacks: front/ext mic/ (something i dont
+> know, it should be line in)
 
-Fix recording from internal microphone, make jack sensing mute all the
-internal speakers.
+My laptop, Aspire 6930, has a black jack (headphones), a pink one
+(external mic) and a light blue one (line in). What's the difference
+with your laptop?
 
-Signed-off-by: Emilio L=F3pez <buhitoescolar@gmail.com>
-Tested-by: Emilio L=F3pez <buhitoescolar@gmail.com>
+> - 3) there no side and center channels
 
----
+Subwoofer is LFE, the other speaker is Front. Is any other speaker missing?
 
-diff -uprN alsa-driver/sound/pci/hda/patch_realtek.c
-alsa-driver-patched/sound/pci/hda/patch_realtek.c
---- alsa-driver/sound/pci/hda/patch_realtek.c	2009-06-22
-12:50:12.000000000 -0300
-+++ alsa-driver-patched/sound/pci/hda/patch_realtek.c	2009-06-24
-16:22:51.258368878 -0300
-@@ -1471,6 +1471,10 @@ static struct hda_verb alc888_acer_aspir
- static struct hda_verb alc888_acer_aspire_6530g_verbs[] =3D {
- /* Bias voltage on for external mic port */
- 	{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN | PIN_VREF80},
-+/* Front Mic: set to PIN_IN (empty by default) */
-+	{0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
-+/* Unselect Front Mic by default in input mixer 3 */
-+	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0xb)},
- /* Enable unsolicited event for HP jack */
- 	{0x15, AC_VERB_SET_UNSOLICITED_ENABLE, ALC880_HP_EVENT | AC_USRSP_EN},
- /* Enable speaker output */
-@@ -1639,6 +1643,19 @@ static void alc888_acer_aspire_4930g_ini
- 	alc_automute_amp(codec);
- }
+> - 3) internal mic dont work
 
-+static void alc888_acer_aspire_6530g_init_hook(struct hda_codec *codec)
-+{
-+	struct alc_spec *spec =3D codec->spec;
-+
-+	spec->autocfg.hp_pins[0] =3D 0x15;
-+	spec->autocfg.hp_pins[1] =3D 0x15;
-+	spec->autocfg.hp_pins[2] =3D 0x15;
-+	spec->autocfg.speaker_pins[0] =3D 0x14;
-+	spec->autocfg.speaker_pins[1] =3D 0x16;
-+	spec->autocfg.speaker_pins[2] =3D 0x17;
-+	alc_automute_amp(codec);
-+}
-+
- static void alc889_acer_aspire_8930g_init_hook(struct hda_codec *codec)
- {
- 	struct alc_spec *spec =3D codec->spec;
-@@ -9317,7 +9334,7 @@ static struct alc_config_preset alc883_p
- 			ARRAY_SIZE(alc888_2_capture_sources),
- 		.input_mux =3D alc888_acer_aspire_6530_sources,
- 		.unsol_event =3D alc_automute_amp_unsol_event,
--		.init_hook =3D alc888_acer_aspire_4930g_init_hook,
-+		.init_hook =3D alc888_acer_aspire_6530g_init_hook,
- 	},
- 	[ALC888_ACER_ASPIRE_8930G] =3D {
- 		.mixers =3D { alc888_base_mixer,
+It works here, did you choose "Int mic" and raised the volume to max?
+
+> - 4) there no line in in input source menu in mixer
+> + 5) Subwoofer controls with LFE channel in mixer
+> ? 7) i dont know how spdif works, because i have not any spdif speakers i=
+n house
+
+Same here, unfortunately.
+
+BTW, I'm Emilio, with "E" hehe
