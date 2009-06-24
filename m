@@ -1,22 +1,20 @@
-From: Susan Cragin <susancragin@earthlink.net>
-Subject: Re: Should my Creative X-fi card be loading the
- snd-hda-intel module
-Date: Wed, 24 Jun 2009 14:51:22 -0400 (GMT-04:00)
-Message-ID: <32424532.1245869482713.JavaMail.root@elwamui-huard.atl.sa.earthlink.net>
-Reply-To: Susan Cragin <susancragin@earthlink.net>
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: Re: Proposal for more reliable audio DMA.
+Date: Wed, 24 Jun 2009 15:07:17 -0400
+Message-ID: <9e4733910906241207m50340ef5gd63fc4527e50b861@mail.gmail.com>
+References: <378E7985-7CD3-4009-AA14-127391A819F2@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from elasmtp-spurfowl.atl.sa.earthlink.net
-	(elasmtp-spurfowl.atl.sa.earthlink.net [209.86.89.66])
-	by alsa0.perex.cz (Postfix) with ESMTP id 024842484F
+Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
+	[209.85.221.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0786A24859
 	for <alsa-devel@alsa-project.org>;
-	Wed, 24 Jun 2009 20:51:24 +0200 (CEST)
-Received: from [209.86.224.35] (helo=elwamui-huard.atl.sa.earthlink.net)
-	by elasmtp-spurfowl.atl.sa.earthlink.net with esmtpa (Exim 4.67)
-	(envelope-from <susancragin@earthlink.net>) id 1MJXZ4-0001aw-Nv
-	for alsa-devel@alsa-project.org; Wed, 24 Jun 2009 14:51:22 -0400
+	Wed, 24 Jun 2009 21:07:17 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so1266117qyk.16
+	for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2009 12:07:17 -0700 (PDT)
+In-Reply-To: <378E7985-7CD3-4009-AA14-127391A819F2@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,42 +24,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel mailing list <alsa-devel@alsa-project.org>, James Courtier-Dutton <james.dutton@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Bill,
-My creative x-fi card used to work great with the daily build, and the module I mentioned. 
-I've been away for it for a couple of months because I need sound for wine programs and there were issues with wine sound, and I just got back. 
-I was surprised to see such a big step backward. 
-When I was last using a daily build, both unstable and stable worked for me. 
-Susan
+On Wed, Jun 24, 2009 at 12:28 PM, Mark
+Brown<broonie@opensource.wolfsonmicro.com> wrote:
+> On 24 Jun 2009, at 17:07, Jon Smirl <jonsmirl@gmail.com> wrote:
+>
+>> Trying to directly expose the ring buffer to the app seems like a good
+>>
+>> way to avoid a copy, but it isn't achieving that. pulse is not
+>> decoding audio straight into the ring buffer, it decodes first and
+>> then copies into the buffer. Pulse is using the timers to estimate the
+>> destination for the copy. =A0Move this copy down into the drivers, the
+>> drivers know the correct destination for the copy.
+>
+> Pulse isn't just doing straight playback, a large part of what it's there
+> for is to do software mixing. When you have multiple sources active pulse=
+ is
+> going to be forced to do the copy as part of the mixing process so putting
+> that bit of the buffer management in kernel won't help in the way you thi=
+nk
+> it does. Part of what's going on here is that the kernel code is trying to
+> give userspace access to the data for as long as possible.
+>
 
-Susan,
-I also had a CA110-IBG chip on my Creative X-Fi.
-Never could get it to work, not under Ubuntu or Fedora, not with the Creative-supplied driver and also not with ctxfi.
-So we dropped that card and went to using an Asus PCI-e sound card instead.
- 
-As for what module should load, here is what Takashi said on June 11:
- 
-Are you sure that your board has really emu20k1 or emu20k2 chip?
-X-Fi isn't always with these chips. Some are HD-audio only (thus
-snd-hda-intel is the right driver) and some are with CA0106 chip.
+Does this work as a use case?
 
- 
+Pulse is playing music in the background.  A game want to do a laser blast.
 
-    -------- Original Message --------
-    Shouldn't it be loading snd-hda-codec-ca0110 instead?
-    I am using the 6/24 stable snapshot.
+Pulse has already sent a buffer into kernel for the background music.
+Pulse makes a new buffer that contains the background mixed with the laser.
+It sends this new buffer into the kernel and says play with minimum latency.
 
-    lspci -vv gives me this.
+The problem is knowing which sample in the background music to start
+mixing the low latency laser blast into. ALSA will need to know this
+index to figure out where to switch onto the replacement buffer. This
+offset is dynamic and it depends on how much work pulse is doing.
 
-    05:00.0 Audio device: Creative Labs [SB X-Fi Xtreme Audio] CA0110-IBG
-    Subsystem: Creative Labs Device 0018
-    Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR+ FastB2B- DisINTx-
-    Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 64 (500ns min, 5000ns max)
-    Interrupt: pin A routed to IRQ 18
-    Region 0: Memory at fdffc000 (32-bit, non-prefetchable) [size=16K]
-    Capabilities: <access denied>
-    Kernel driver in use: HDA Intel
-    Kernel modules: snd-hda-intel
+So you need two things. An estimate of the current playing sample and
+an estimate of the system latency to know where to start mixing.
+
+Estimating the current sample can be done accurately by using a high
+frequency, free running counter. Drift can be compensated for by
+recording the count when the hardware accurately knows what sample it
+is on. Knowing how many samples to delay before mixing is a function
+of app latency and it needs to be measured in a feedback loop.
+
+I'm starting to think the OSS model is right and mixing belongs in the kern=
+el
+
+-- =
+
+Jon Smirl
+jonsmirl@gmail.com
