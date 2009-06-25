@@ -1,92 +1,120 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH 20/19] sound: Use PCI_VDEVICE for CREATIVE and ECTIVA
-Date: Wed, 24 Jun 2009 23:18:02 -0700
-Message-ID: <1245910682.395.14.camel@Joe-Laptop.home>
-References: <cover.1245906151.git.joe@perches.com>
-	 <e27f875baa15d3d3e34c2a005cea9d702e822c57.1245906153.git.joe@perches.com>
-	 <s5hocscna17.wl%tiwai@suse.de> <1245908832.395.5.camel@Joe-Laptop.home>
-	 <s5hmy7wn9gr.wl%tiwai@suse.de>
+From: Martin Egge <mailinglists@martin.egge.info>
+Subject: Re:
+ =?iso-8859-1?q?Samsung_P50_Heaphone_Jack-Sense_not_w?=
+ =?iso-8859-1?q?orking_with=09latest_ALSA?=
+Date: Thu, 25 Jun 2009 08:35:08 +0200
+Message-ID: <200906250835.15497.mailinglists@martin.egge.info>
+References: <200906231425.47946.mailinglists@martin.egge.info>
+	<200906241714.55484.mailinglists@martin.egge.info>
+	<s5hprct8xhp.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1752989AbZFYGST@vger.kernel.org>
-In-Reply-To: <s5hmy7wn9gr.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============3043752207846603290=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.8])
+	by alsa0.perex.cz (Postfix) with ESMTP id 027EE24ACD
+	for <alsa-devel@alsa-project.org>;
+	Thu, 25 Jun 2009 08:35:21 +0200 (CEST)
+In-Reply-To: <s5hprct8xhp.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2009-06-25 at 07:55 +0200, Takashi Iwai wrote:
-> Heh, but it's obvious when you read the commend in the entry :)
+--===============3043752207846603290==
+Content-Type: multipart/signed;
+  boundary="nextPart1530245.cY4ofGHVGl";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Scripts are automatic.  Now you want me to work...
+--nextPart1530245.cY4ofGHVGl
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-> Anyway, could you change that entry and repost?  Nno need to repost
-> all in the series, of course :)
+Hi Takashi,
 
-Here's a patch on top of the others to use CREATIVE and ECTIVA
+Am Mittwoch 24 Juni 2009 schrieb Takashi Iwai:
+> At Wed, 24 Jun 2009 17:14:38 +0200,
+> Martin Egge wrote:
+> > Am Mittwoch 24 Juni 2009 schrieb Takashi Iwai:
+> > > Does the patch below work?  It's against the latest alsa-driver, not
+> > > 1.0.20 nor 2.6.30.
+> > >
+> > > ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driv=
+er
+> > >-sna pshot.tar.gz
+> >
+> > The patch could not be applied.
+>
+> It's a patch to the kernel tree.
+> Apply it on alsa-kernel directory with -p2.
 
-Signed-off-by: Joe Perches <joe@perches.com>
+That's what I did some minutes ago:
 
- sound/pci/ca0106/ca0106_main.c |    2 +-
- sound/pci/emu10k1/emu10k1.c    |    6 +++---
- sound/pci/emu10k1/emu10k1x.c   |    2 +-
- sound/pci/ens1370.c            |    2 +-
- 4 files changed, 6 insertions(+), 6 deletions(-)
+$> wget --no-cache -nd=20
+ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-
+snapshot.tar.gz
+$> tar xzf alsa-driver-snapshot.tar.gz
+$> cd alsa-driver/alsa-kernel/
+$> patch -p2 < ../../patch.txt
 
-diff --git a/sound/pci/ca0106/ca0106_main.c b/sound/pci/ca0106/ca0106_main.c
-index 57b992a..f24bf1e 100644
---- a/sound/pci/ca0106/ca0106_main.c
-+++ b/sound/pci/ca0106/ca0106_main.c
-@@ -1876,7 +1876,7 @@ static int snd_ca0106_resume(struct pci_dev *pci)
- 
- // PCI IDs
- static struct pci_device_id snd_ca0106_ids[] = {
--	{ 0x1102, 0x0007, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0 },	/* Audigy LS or Live 24bit */
-+	{ PCI_VDEVICE(CREATIVE, 0x0007), 0 },	/* Audigy LS or Live 24bit */
- 	{ 0, }
- };
- MODULE_DEVICE_TABLE(pci, snd_ca0106_ids);
-diff --git a/sound/pci/emu10k1/emu10k1.c b/sound/pci/emu10k1/emu10k1.c
-index c7f3b99..168af67 100644
---- a/sound/pci/emu10k1/emu10k1.c
-+++ b/sound/pci/emu10k1/emu10k1.c
-@@ -77,9 +77,9 @@ MODULE_PARM_DESC(subsystem, "Force card subsystem model.");
-  * Class 0401: 1102:0008 (rev 00) Subsystem: 1102:1001 -> Audigy2 Value  Model:SB0400
-  */
- static struct pci_device_id snd_emu10k1_ids[] = {
--	{ 0x1102, 0x0002, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0 },	/* EMU10K1 */
--	{ 0x1102, 0x0004, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 1 },	/* Audigy */
--	{ 0x1102, 0x0008, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 1 },	/* Audigy 2 Value SB0400 */
-+	{ PCI_VDEVICE(CREATIVE, 0x0002), 0 },	/* EMU10K1 */
-+	{ PCI_VDEVICE(CREATIVE, 0x0004), 1 },	/* Audigy */
-+	{ PCI_VDEVICE(CREATIVE, 0x0008), 1 },	/* Audigy 2 Value SB0400 */
- 	{ 0, }
- };
- 
-diff --git a/sound/pci/emu10k1/emu10k1x.c b/sound/pci/emu10k1/emu10k1x.c
-index 4d3ad79..36e08bd 100644
---- a/sound/pci/emu10k1/emu10k1x.c
-+++ b/sound/pci/emu10k1/emu10k1x.c
-@@ -1607,7 +1607,7 @@ static void __devexit snd_emu10k1x_remove(struct pci_dev *pci)
- 
- // PCI IDs
- static struct pci_device_id snd_emu10k1x_ids[] = {
--	{ 0x1102, 0x0006, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0 },	/* Dell OEM version (EMU10K1) */
-+	{ PCI_VDEVICE(CREATIVE, 0x0006), 0 },	/* Dell OEM version (EMU10K1) */
- 	{ 0, }
- };
- MODULE_DEVICE_TABLE(pci, snd_emu10k1x_ids);
-diff --git a/sound/pci/ens1370.c b/sound/pci/ens1370.c
-index d589bbc..2b82c5c 100644
---- a/sound/pci/ens1370.c
-+++ b/sound/pci/ens1370.c
-@@ -450,7 +450,7 @@ static struct pci_device_id snd_audiopci_ids[] = {
- #ifdef CHIP1371
- 	{ PCI_VDEVICE(ENSONIQ, 0x1371), 0, },	/* ES1371 */
- 	{ PCI_VDEVICE(ENSONIQ, 0x5880), 0, },	/* ES1373 - CT5880 */
--	{ 0x1102, 0x8938, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0, },	/* Ectiva EV1938 */
-+	{ PCI_VDEVICE(ECTIVA, 0x8938), 0, },	/* Ectiva EV1938 */
- #endif
- 	{ 0, }
- };
+That's what I get:
+
+patching file pci/hda/patch_analog.c
+Hunk #1 FAILED at 72.
+Hunk #2 FAILED at 670.
+Hunk #3 succeeded at 702 with fuzz 1.
+Hunk #4 FAILED at 757.
+Hunk #5 FAILED at 798.
+Hunk #6 FAILED at 808.
+Hunk #7 succeeded at 940 with fuzz 1.
+Hunk #8 FAILED at 971.
+Hunk #9 FAILED at 983.
+Hunk #10 FAILED at 1006.
+Hunk #11 FAILED at 1094.
+Hunk #12 FAILED at 1108.
+Hunk #13 FAILED at 1123.
+Hunk #14 FAILED at 1156.
+12 out of 14 hunks FAILED -- saving rejects to file pci/hda/patch_analog.c.=
+rej
+
+So, what went wrong?
+
+Martin
+
+--nextPart1530245.cY4ofGHVGl
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEABECAAYFAkpDGpwACgkQVG/GfU56d2yhaACfUBM9BlSxE1IUHCTO7j3TIIIT
+ygIAn1nK44TtvBV1DclWdWUdsFs9tzwL
+=xF/f
+-----END PGP SIGNATURE-----
+
+--nextPart1530245.cY4ofGHVGl--
+
+--===============3043752207846603290==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3043752207846603290==--
