@@ -1,20 +1,18 @@
-From: Naveen Krishna Ch <naveenkrishna.ch@gmail.com>
-Subject: Re: [PATCH 0/1] Add maintainer for the twl4030 codec
-Date: Thu, 25 Jun 2009 16:04:59 +0530
-Message-ID: <ef0d8a250906250334h41255665x67f075652b519c45@mail.gmail.com>
-References: <1245925569-23641-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: Reg: Implementation of GSM digital audio path
+Date: Thu, 25 Jun 2009 13:35:08 +0300
+Message-ID: <200906251335.08412.peter.ujfalusi@nokia.com>
+References: <1cbe56070906250247j30e63925k3acbff5a5a3e3df8@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
-	[209.85.221.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE148103838
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id E0ED4103874
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Jun 2009 12:35:00 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so1722324qyk.16
-	for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2009 03:35:00 -0700 (PDT)
-In-Reply-To: <1245925569-23641-1-git-send-email-peter.ujfalusi@nokia.com>
+	Thu, 25 Jun 2009 12:35:12 +0200 (CEST)
+In-Reply-To: <1cbe56070906250247j30e63925k3acbff5a5a3e3df8@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,50 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, steve@sakoman.com
+To: alsa-devel@alsa-project.org
+Cc: ext shariff <shariffsinbox@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-2009/6/25 Peter Ujfalusi <peter.ujfalusi@nokia.com>
+On Thursday 25 June 2009 12:47:54 ext shariff wrote:
+> Hi all,
+>
+>         Iam working on OMAP3 based custom board. On our board, GSM digital
+> audio path is connected to McBSP3 and
+> TWL4030 digital audio path is connected to McBSP2.
+>
+> I want to implement a module that transfers GSM audio data and store audio
+> data into some buffer and redirect it to TWL4030 audio codec through
+> McBSP2.
+>
+> I question is how can I implement this in ASoC?
+>
+> I studied ASoC framework, but I am unable to understand where to implement
+> my stuff.
 
-> Hello,
->
-> Mark Brown kindly asked me to send the following patch to add myself to the
-> MAINTAINERS file for the twl4030 series soc codec driver.
->
-> I have thought about it and here is the patch.
->
-> Thank you Mark for the suggestion, I would not have sent this patch
-> otherwise.
-> Thanks for Steve Sakoman to write the initial twl4030 codec driver.
->
-> I'll try my best with the maintainer responsibility!
+I think the following should do something like that:
 
+arecord -Dplughw:0.0 | aplay -Dplughw:0.1
+or
+arecord -Dhw:0.0 | aplay -Dhw:0.1
 
-I have been seeing your posts Since your first reply to
-me regarding the twl4030 codec driver.  Where you have
-started off with Steve Sakoman's initial work.
+I don't know what is the order of the PCMs with the twl4030 codec on your =
 
-Your support was excellent, Hope to see more ...
-Congrats Peter..
+board, this is with the assumption:
+plughw:0.0 - Voice PCM (McBSP3)
+plughw:0.1 - Digital audio PCM (McBSP2)
+
+You might want to try the --rate parameter for arecord to use 16KHz recordi=
+ng =
+
+from the Voice interface..
 
 >
->
-> ---
-> Peter Ujfalusi (1):
->  MAINTAINERS: Add entry for twl4030 series soc codec driver
->
->  MAINTAINERS |    7 +++++++
->  1 files changed, 7 insertions(+), 0 deletions(-)
->
+> Regards,
+> Shariff
 > _______________________________________________
 > Alsa-devel mailing list
 > Alsa-devel@alsa-project.org
 > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
 
+-- =
 
-
--- 
-Shine bright,
-(: Naveen Krishna Ch :)
+P=E9ter
