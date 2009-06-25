@@ -1,21 +1,25 @@
-From: Robert Hancock <hancockrwd@gmail.com>
-Subject: Re: Proposal for more reliable audio DMA.
-Date: Wed, 24 Jun 2009 23:36:02 -0600
-Message-ID: <4A430CC2.9050003@gmail.com>
-References: <378E7985-7CD3-4009-AA14-127391A819F2@opensource.wolfsonmicro.com>	<9e4733910906241207m50340ef5gd63fc4527e50b861@mail.gmail.com>	<s5hprctmj5x.wl%tiwai@suse.de>
-	<9e4733910906242126v30add6d5r150f992aed6694dd@mail.gmail.com>
+From: Igor Chernyshev <igor.ch75+alsa@gmail.com>
+Subject: Re: Patch for suspend/resume in ICE1724 for Audiotrak
+	Prodigy HD2
+Date: Wed, 24 Jun 2009 23:15:50 -0700
+Message-ID: <75570e410906242315m4432d7cfk450e23d039d0b9a4@mail.gmail.com>
+References: <75570e410906192337p1e9aea9cn9edbea987f6ffbb4@mail.gmail.com>
+	<s5h3a9scja2.wl%tiwai@suse.de>
+	<75570e410906221246l3125dega728835cb407ba4@mail.gmail.com>
+	<s5hprcvb4nz.wl%tiwai@suse.de>
+	<75570e410906231550g47bffd92gfaa24d988bbcdca2@mail.gmail.com>
+	<s5hljni9byq.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f217.google.com (mail-gx0-f217.google.com
-	[209.85.217.217])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8A1DC24A61
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id 47E1624AB4
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Jun 2009 07:35:24 +0200 (CEST)
-Received: by gxk17 with SMTP id 17so2062355gxk.8
-	for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2009 22:35:23 -0700 (PDT)
-In-Reply-To: <9e4733910906242126v30add6d5r150f992aed6694dd@mail.gmail.com>
+	Thu, 25 Jun 2009 08:15:51 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c37so353191anc.2
+	for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2009 23:15:50 -0700 (PDT)
+In-Reply-To: <s5hljni9byq.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,46 +29,351 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, James Courtier-Dutton <james.dutton@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/24/2009 10:26 PM, Jon Smirl wrote:
-> On Wed, Jun 24, 2009 at 5:11 PM, Takashi Iwai<tiwai@suse.de>  wrote:
->>> The problem is knowing which sample in the background music to start
->>> mixing the low latency laser blast into.
->> That's why querying the accurate hwptr is important in PA.
->
-> I'm still not convinced that all of this logic should be exposed to
-> PA. Exposing these details is what makes ALSA hard to use. We should
-> be able to better isolate user space from this. If mixing were moved
-> into the kernel these details could be hidden.  The in-kernel code
-> could then be customized for various sound DMA hardware. This would
-> also go a long ways toward getting rid of latency issues by removing
-> the need for real-time response from PA.
+Takashi,
 
-Mixing really does not belong in the kernel. Moving it there doesn't 
-remove any complication or problem, it just moves it to a different 
-place where it's more difficult to program and less debuggable. Most 
-OSes (Windows included) are moving in the direction of moving mixing out 
-of the kernel, not into it.
+below is the same patch based on the latest snapshot.
 
-For what PulseAudio is trying to do, it needs this kind of information 
-because it wants to be able to rewrite the buffer the card is reading 
-out of at any time, and it needs to be able to know how far along in the 
-buffer the card has read so it knows where it can start rewriting. It's 
-somewhat complicated for sure, but most normal applications don't have 
-to deal with these kinds of details.
+Thanks,
+Igor
 
+On Wed, Jun 24, 2009 at 3:13 AM, Takashi Iwai<tiwai@suse.de> wrote:
+> At Tue, 23 Jun 2009 15:50:44 -0700,
+> Igor Chernyshev wrote:
+>>
+>> >> + =A0 =A0 unsigned long pm_saved_route;
+>> >
+>> > This shouldn't be long but int. =A0Long can be 64bit unnecessarily.
+>>
+>> Done. However, note that existing code uses results of
+>> "inl(ICEMT1724(ice, ROUTE_PLAYBACK))" as both int and long.
+>>
+>> >> + =A0 =A0 case SNDRV_PCM_TRIGGER_SUSPEND:
+>> >> + =A0 =A0 case SNDRV_PCM_TRIGGER_RESUME:
+>> >> + =A0 =A0 =A0 =A0 =A0 =A0 break;
+>> >
+>> > At least, TRIGGER_SUSPEND neees to stop the PCM stream.
+>>
+>> Consolidated with SNDRV_PCM_TRIGGER_STOP processing.
+>>
+>> >> + =A0 =A0 outb(VT1724_MULTI_FIFO_ERR, ICEMT1724(ice, DMA_INT_MASK));
+>> >> +
+>> >
+>> > This is fine, but you need to remove __devinit from this function.
+>>
+>> Done.
+>>
+>> >> + =A0 =A0 if (ice->ac97)
+>> >> + =A0 =A0 =A0 =A0 =A0 =A0 snd_ac97_suspend(ice->ac97);
+>> >
+>> > No need for NULL check here. =A0All these check NULL by themselves.
+>>
+>> Removed all 4 checks (pcm's and ac97).
+>>
+>> >> + =A0 =A0 =A0 =A0 =A0 =A0 spin_unlock_irq(&ice->reg_lock);
+>> >> + =A0 =A0 =A0 =A0 =A0 =A0 snd_vt1724_set_pro_rate(ice, ice->pro_rate_=
+default, 1);
+>> >> + =A0 =A0 =A0 =A0 =A0 =A0 spin_lock_irq(&ice->reg_lock);
+>> >> + =A0 =A0 }
+>> >
+>> > These are basically no need to protect with spinlock, at least,
+>> > in this function...
+>>
+>> Removed locking in "resume" only.
+>>
+>> > Last but not least, try to run $LINUX/scripts/checkpatch.pl to your
+>> > patch once and fix the issues suggested there.
+>>
+>> Thanks for the pointer. Fixed 3 code style problems. It also complains
+>> about missing "signed off" line, but I hope that line here will
+>> suffice:
+>>
+>> Signed-off-by: Igor Chernyshev <igor.ch75+alsa at gmail.com>
 >
-> My hardware doesn't have the capability of querying the hwptr and the
-> hwptr speed is not linear because of the FIFO and burst transfers.
-> Non-linear speed means I can't use a clock to estimate hwptr. I do
-> however have the capability of directing the DMA into a new buffer.
-> Another thing I could try is setting up DMA descriptor chain blocks
-> for every 16 bytes. These descriptors get marked as they are used and
-> they don't have to cause an interrupt.
+> Thanks, this looks better. =A0But, I got some rejects when applying
+> to the latest tree, and I guess your patch is based on 1.0.20 release.
 >
-> We are evaluating a processor change from PPC to ARM so all of this
-> may change for me.
+> Please try to rebase to the latest alsa-driver snapshot and repost
+> the patch, either against sound git tree or alsa-driver-snapshot
+> tarball below:
+> =A0git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+> =A0ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-drive=
+r-snapshot.tar.gz
 >
+>
+> thanks,
+>
+> Takashi
+>
+
+diff -uN alsa-driver.orig/alsa-kernel/pci/ice1712/ice1712.h
+alsa-driver/alsa-kernel/pci/ice1712/ice1712.h
+--- alsa-driver.orig/alsa-kernel/pci/ice1712/ice1712.h	2009-06-24
+15:05:06.000000000 -0700
++++ alsa-driver/alsa-kernel/pci/ice1712/ice1712.h	2009-06-24
+21:51:53.000000000 -0700
+@@ -379,6 +379,15 @@
+ 	unsigned char (*set_mclk)(struct snd_ice1712 *ice, unsigned int rate);
+ 	void (*set_spdif_clock)(struct snd_ice1712 *ice);
+
++#ifdef CONFIG_PM
++	int (*pm_suspend)(struct snd_ice1712 *);
++	int (*pm_resume)(struct snd_ice1712 *);
++	int pm_suspend_enabled:1;
++	int pm_saved_is_spdif_master:1;
++	unsigned int pm_saved_spdif_ctrl;
++	unsigned char pm_saved_spdif_cfg;
++	unsigned int pm_saved_route;
++#endif
+ };
+
+
+diff -uN alsa-driver.orig/alsa-kernel/pci/ice1712/ice1724.c
+alsa-driver/alsa-kernel/pci/ice1712/ice1724.c
+--- alsa-driver.orig/alsa-kernel/pci/ice1712/ice1724.c	2009-06-24
+15:05:06.000000000 -0700
++++ alsa-driver/alsa-kernel/pci/ice1712/ice1724.c	2009-06-24
+22:13:25.000000000 -0700
+@@ -560,6 +560,7 @@
+
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 		spin_lock(&ice->reg_lock);
+ 		old =3D inb(ICEMT1724(ice, DMA_CONTROL));
+ 		if (cmd =3D=3D SNDRV_PCM_TRIGGER_START)
+@@ -570,6 +571,10 @@
+ 		spin_unlock(&ice->reg_lock);
+ 		break;
+
++	case SNDRV_PCM_TRIGGER_RESUME:
++		/* apps will have to restart stream */
++		break;
++
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -2272,7 +2277,7 @@
+ 	msleep(10);
+ }
+
+-static int __devinit snd_vt1724_chip_init(struct snd_ice1712 *ice)
++static int snd_vt1724_chip_init(struct snd_ice1712 *ice)
+ {
+ 	outb(ice->eeprom.data[ICE_EEP2_SYSCONF], ICEREG1724(ice, SYS_CFG));
+ 	outb(ice->eeprom.data[ICE_EEP2_ACLINK], ICEREG1724(ice, AC97_CFG));
+@@ -2287,6 +2292,14 @@
+
+ 	outb(0, ICEREG1724(ice, POWERDOWN));
+
++	/* MPU_RX and TX irq masks are cleared later dynamically */
++	outb(VT1724_IRQ_MPU_RX | VT1724_IRQ_MPU_TX , ICEREG1724(ice, IRQMASK));
++
++	/* don't handle FIFO overrun/underruns (just yet),
++	 * since they cause machine lockups
++	 */
++	outb(VT1724_MULTI_FIFO_ERR, ICEMT1724(ice, DMA_INT_MASK));
++
+ 	return 0;
+ }
+
+@@ -2431,6 +2444,8 @@
+ 	snd_vt1724_proc_init(ice);
+ 	synchronize_irq(pci->irq);
+
++	card->private_data =3D ice;
++
+ 	err =3D pci_request_regions(pci, "ICE1724");
+ 	if (err < 0) {
+ 		kfree(ice);
+@@ -2459,14 +2474,6 @@
+ 		return -EIO;
+ 	}
+
+-	/* MPU_RX and TX irq masks are cleared later dynamically */
+-	outb(VT1724_IRQ_MPU_RX | VT1724_IRQ_MPU_TX , ICEREG1724(ice, IRQMASK));
+-
+-	/* don't handle FIFO overrun/underruns (just yet),
+-	 * since they cause machine lockups
+-	 */
+-	outb(VT1724_MULTI_FIFO_ERR, ICEMT1724(ice, DMA_INT_MASK));
+-
+ 	err =3D snd_device_new(card, SNDRV_DEV_LOWLEVEL, ice, &ops);
+ 	if (err < 0) {
+ 		snd_vt1724_free(ice);
+@@ -2650,11 +2657,96 @@
+ 	pci_set_drvdata(pci, NULL);
+ }
+
++#ifdef CONFIG_PM
++static int snd_vt1724_suspend(struct pci_dev *pci, pm_message_t state)
++{
++	struct snd_card *card =3D pci_get_drvdata(pci);
++	struct snd_ice1712 *ice =3D card->private_data;
++
++	if (!ice->pm_suspend_enabled)
++		return 0;
++
++	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
++
++	snd_pcm_suspend_all(ice->pcm);
++	snd_pcm_suspend_all(ice->pcm_pro);
++	snd_pcm_suspend_all(ice->pcm_ds);
++	snd_ac97_suspend(ice->ac97);
++
++	spin_lock_irq(&ice->reg_lock);
++	ice->pm_saved_is_spdif_master =3D ice->is_spdif_master(ice);
++	ice->pm_saved_spdif_ctrl =3D inw(ICEMT1724(ice, SPDIF_CTRL));
++	ice->pm_saved_spdif_cfg =3D inb(ICEREG1724(ice, SPDIF_CFG));
++	ice->pm_saved_route =3D inl(ICEMT1724(ice, ROUTE_PLAYBACK));
++	spin_unlock_irq(&ice->reg_lock);
++
++	if (ice->pm_suspend)
++		ice->pm_suspend(ice);
++
++	pci_disable_device(pci);
++	pci_save_state(pci);
++	pci_set_power_state(pci, pci_choose_state(pci, state));
++	return 0;
++}
++
++static int snd_vt1724_resume(struct pci_dev *pci)
++{
++	struct snd_card *card =3D pci_get_drvdata(pci);
++	struct snd_ice1712 *ice =3D card->private_data;
++
++	if (!ice->pm_suspend_enabled)
++		return 0;
++
++	pci_set_power_state(pci, PCI_D0);
++	pci_restore_state(pci);
++
++	if (pci_enable_device(pci) < 0) {
++		snd_card_disconnect(card);
++		return -EIO;
++	}
++
++	pci_set_master(pci);
++
++	snd_vt1724_chip_reset(ice);
++
++	if (snd_vt1724_chip_init(ice) < 0) {
++		snd_card_disconnect(card);
++		return -EIO;
++	}
++
++	if (ice->pm_resume)
++		ice->pm_resume(ice);
++
++	if (ice->pm_saved_is_spdif_master) {
++		/* switching to external clock via SPDIF */
++		ice->set_spdif_clock(ice);
++	} else {
++		/* internal on-card clock */
++		snd_vt1724_set_pro_rate(ice, ice->pro_rate_default, 1);
++	}
++
++	update_spdif_bits(ice, ice->pm_saved_spdif_ctrl);
++
++	outb(ice->pm_saved_spdif_cfg, ICEREG1724(ice, SPDIF_CFG));
++	outl(ice->pm_saved_route, ICEMT1724(ice, ROUTE_PLAYBACK));
++
++	if (ice->ac97)
++		snd_ac97_resume(ice->ac97);
++
++	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
++	return 0;
++}
++#endif
++
+ static struct pci_driver driver =3D {
+ 	.name =3D "ICE1724",
+ 	.id_table =3D snd_vt1724_ids,
+ 	.probe =3D snd_vt1724_probe,
+ 	.remove =3D __devexit_p(snd_vt1724_remove),
++#ifdef CONFIG_PM
++	.suspend =3D snd_vt1724_suspend,
++	.resume =3D snd_vt1724_resume,
++#endif
+ };
+
+ static int __init alsa_card_ice1724_init(void)
+diff -uN alsa-driver.orig/alsa-kernel/pci/ice1712/prodigy_hifi.c
+alsa-driver/alsa-kernel/pci/ice1712/prodigy_hifi.c
+--- alsa-driver.orig/alsa-kernel/pci/ice1712/prodigy_hifi.c	2009-06-24
+15:05:06.000000000 -0700
++++ alsa-driver/alsa-kernel/pci/ice1712/prodigy_hifi.c	2009-06-24
+22:00:04.000000000 -0700
+@@ -1077,7 +1077,7 @@
+ /*
+  * initialize the chip
+  */
+-static int __devinit prodigy_hd2_init(struct snd_ice1712 *ice)
++static void ak4396_init(struct snd_ice1712 *ice)
+ {
+ 	static unsigned short ak4396_inits[] =3D {
+ 		AK4396_CTRL1,	   0x87,   /* I2S Normal Mode, 24 bit */
+@@ -1087,9 +1087,37 @@
+ 		AK4396_RCH_ATT,	 0x00,
+ 	};
+
+-	struct prodigy_hifi_spec *spec;
+ 	unsigned int i;
+
++	/* initialize ak4396 codec */
++	/* reset codec */
++	ak4396_write(ice, AK4396_CTRL1, 0x86);
++	msleep(100);
++	ak4396_write(ice, AK4396_CTRL1, 0x87);
++
++	for (i =3D 0; i < ARRAY_SIZE(ak4396_inits); i +=3D 2)
++		ak4396_write(ice, ak4396_inits[i], ak4396_inits[i+1]);
++}
++
++#ifdef CONFIG_PM
++static int __devinit prodigy_hd2_resume(struct snd_ice1712 *ice)
++{
++	/* initialize ak4396 codec and restore previous mixer volumes */
++	struct prodigy_hifi_spec *spec =3D ice->spec;
++	int i;
++	mutex_lock(&ice->gpio_mutex);
++	ak4396_init(ice);
++	for (i =3D 0; i < 2; i++)
++		ak4396_write(ice, AK4396_LCH_ATT + i, spec->vol[i] & 0xff);
++	mutex_unlock(&ice->gpio_mutex);
++	return 0;
++}
++#endif
++
++static int __devinit prodigy_hd2_init(struct snd_ice1712 *ice)
++{
++	struct prodigy_hifi_spec *spec;
++
+ 	ice->vt1720 =3D 0;
+ 	ice->vt1724 =3D 1;
+
+@@ -1112,14 +1140,12 @@
+ 		return -ENOMEM;
+ 	ice->spec =3D spec;
+
+-	/* initialize ak4396 codec */
+-	/* reset codec */
+-	ak4396_write(ice, AK4396_CTRL1, 0x86);
+-	msleep(100);
+-	ak4396_write(ice, AK4396_CTRL1, 0x87);
+-			=
+
+-	for (i =3D 0; i < ARRAY_SIZE(ak4396_inits); i +=3D 2)
+-		ak4396_write(ice, ak4396_inits[i], ak4396_inits[i+1]);
++#ifdef CONFIG_PM
++	ice->pm_resume =3D &prodigy_hd2_resume;
++	ice->pm_suspend_enabled =3D 1;
++#endif
++
++	ak4396_init(ice);
+
+ 	return 0;
+ }
