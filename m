@@ -1,64 +1,46 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: [alsa-devel] Can a phone hook switch follow alsa jack model?
-Date: Thu, 25 Jun 2009 14:48:38 +0200
-Message-ID: <4A437226.4090202@tis.icnet.pl>
-References: <4A40D896.8010208@tis.icnet.pl> <20090623222255.GA5617@sirena.org.uk> <4A4229EB.2090606@tis.icnet.pl> <20090625110508.GF17812@sirena.org.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC updates for 2.6.32
+Date: Thu, 25 Jun 2009 13:49:19 +0100
+Message-ID: <20090625124918.GA8856@sirena.org.uk>
+References: <20090625102141.GA17812@sirena.org.uk>
+	<s5hmy7wa9bt.wl%tiwai@suse.de>
+	<20090625110121.GE17812@sirena.org.uk>
+	<s5heit8a4q3.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <20090625110508.GF17812@sirena.org.uk>
-Sender: linux-input-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Jonathan McDowell <noodles@earth.li>
-Cc: alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, linux-input@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6C3C110383F
+	for <alsa-devel@alsa-project.org>;
+	Thu, 25 Jun 2009 14:49:30 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5heit8a4q3.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2009-06-25 13:05, Mark Brown wrote:
-> On Wed, Jun 24, 2009 at 03:28:11PM +0200, Janusz Krzysztofik wrote:
-> 
->> type. Don't you think that a new type like SND_JACK_PHONE_HOOK or 
->> SND_JACK_PHONE_HANDSET should be defined for the purpose? Even if 
->> HEADSET may not be very different from HANDSET, corresponding 
->> SW_HEADPHONE_INSERT and SW_MICROPHONE_INSERT event names seem have very 
->> little to do with picking up a phone.
-> 
-> Possibly, TBH I had thought I'd seen something for off-hook when I
-> looked at this originally but I can't seem to spot it now.
+On Thu, Jun 25, 2009 at 02:16:20PM +0200, Takashi Iwai wrote:
 
-As I am not native English, please somebody help me to choose best 
-names, both SW_... event name and SND_JACK_... jack type.
+> upstream is merged into ASoC, the whole upstream commits are shown
+> first, then following ASoC commits.  When ASoC is merged into an
+> upstream, then the result becomes reversed.  So, it's clear that the
+> merge started from that upstream point.
 
-During my previous, gpio-keys based attempt, I submitted a patch that 
-added new SW_HANDSET_PICK_UP event definition to include/linux/input.h. 
-Even if not accepted because of no acompanying code that would make use 
-of it, there were no other comments, especially on the name I have 
-choosen. However, there were another name proposed by ams-delta board 
-maintainer, Jonathan McDowell - SW_PHONE_HOOK. Even if my wording may 
-better match those already existing ..._INSERT names, I am not sure 
-which one should I use.
+Meh, OK. 
 
-Please also note that SND_JACK_HEADSET, that I temporarily use for now, 
-is an alias for SND_JACK_HEADPHONE | SND_JACK_MICROPHONE. Those two can 
-be seen as matching what a handset actually is. On headset jack 
-insert/remove, two distinct reports/events are generated, one for a 
-microphone, and one for a headphone. Should this schema be used with a 
-handset? Even if it were possible to turn any of handset microphone or 
-headphone individually, would it make any sense?
-
-Sorry for bothering you with all this stuff, but I'd like the changes to 
-existing code I am going to propose, if any, be as much reusable as 
-possible.
-
->> So, if I want to follow the ASoC jack model, my in-kernel hook switch 
->> handler should only power on/off the handset, not touching the 
->> speakerphone at all. The latter should be controlled from userspace. 
->> Please correct me if I am missing something.
-> 
-> That's my initial guess - I've not looked at your particular hardware
-> so it may not end up being the best way of dealing with your system but
-> from what you said it was the approach that sprang to mind.
-
-Mark,
-Thanks for now, all that seems clear enough for me.
-Janusz
-
+It'd help me in future if you could either give some warning of the
+upstream merges or do them only immediately after pulling.  The issue
+here from my point of view is that you've already merged up 2.6.31 into
+your branch and I routinely pull in changes on the topic branch for
+obvious reasons.  I have this process semi-automated (and want to get it
+more so) so some warning would help.
