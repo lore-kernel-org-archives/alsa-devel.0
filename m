@@ -1,29 +1,21 @@
-From: =?ISO-8859-1?Q?Emilio_L=F3pez?= <buhitoescolar@gmail.com>
-Subject: Re: Regarding Sound on Acer Aspire 6935G
-Date: Wed, 24 Jun 2009 18:45:03 -0300
-Message-ID: <d54969c50906241445t670343elef6f64949de9675e@mail.gmail.com>
-References: <4b8c423b0905152051w7443e1b4u4080514a560fbb6c@mail.gmail.com>
-	<d54969c50906221623j4fd17c6yb7fc2c9316d11766@mail.gmail.com>
-	<d54969c50906231105k251880eahbf82cf74b699c7d8@mail.gmail.com>
-	<1245796809.3640.10.camel@localhost>
-	<d54969c50906231800p2f507c48h9e6977cc7d03461f@mail.gmail.com>
-	<d54969c50906231832w48ce7315uc5cf8b3f81534c76@mail.gmail.com>
-	<s5hbpoem7c3.wl%tiwai@suse.de>
-	<d54969c50906241124o456a4938p173b9fbbd9cd46b3@mail.gmail.com>
-	<d54969c50906241233kc51e746r691bd48c2e961a71@mail.gmail.com>
-	<s5hljnhmiak.wl%tiwai@suse.de>
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: Re: Proposal for more reliable audio DMA.
+Date: Thu, 25 Jun 2009 00:26:16 -0400
+Message-ID: <9e4733910906242126v30add6d5r150f992aed6694dd@mail.gmail.com>
+References: <378E7985-7CD3-4009-AA14-127391A819F2@opensource.wolfsonmicro.com>
+	<9e4733910906241207m50340ef5gd63fc4527e50b861@mail.gmail.com>
+	<s5hprctmj5x.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
-	[209.85.221.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id E930F248EE
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id B037724A5D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 24 Jun 2009 23:45:06 +0200 (CEST)
-Received: by qyk1 with SMTP id 1so1411872qyk.16
-	for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2009 14:45:04 -0700 (PDT)
-In-Reply-To: <s5hljnhmiak.wl%tiwai@suse.de>
+	Thu, 25 Jun 2009 06:26:17 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 5so632089qwf.56
+	for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2009 21:26:16 -0700 (PDT)
+In-Reply-To: <s5hprctmj5x.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,39 +26,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Karthik Ramgopal <applefreakpeeps@gmail.com>, Tony Vroon <tony@linx.net>, ALSA development ML <alsa-devel@alsa-project.org>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, James Courtier-Dutton <james.dutton@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-2009/6/24 Takashi Iwai <tiwai@suse.de>:
-> At Wed, 24 Jun 2009 16:33:26 -0300,
-> Emilio L=F3pez wrote:
->>
->> Well, I finally got it to work. I had to triplicate the
->> "spec->autocfg.hp_pins", I don't know why, but it made it work.
+On Wed, Jun 24, 2009 at 5:11 PM, Takashi Iwai<tiwai@suse.de> wrote:
+>> The problem is knowing which sample in the background music to start
+>> mixing the low latency laser blast into.
 >
-> Hmm, does the patch below help?
+> That's why querying the accurate hwptr is important in PA.
 
-Yes! Now, with just one "spec->autocfg.hp_pins", it works fine :) I
-guess you can include the patch now
-.
->
->
-> Takashi
->
-> ---
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 3345331..12cc340 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -1401,6 +1401,7 @@ static void alc_automute_amp(struct hda_codec *code=
-c)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0nid =3D spec->autocfg.hp_pins[i];
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (!nid)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 snd_hda_codec_read(codec, nid, 0, AC_VERB_S=
-ET_PIN_SENSE, 0);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0val =3D snd_hda_codec_read(codec, nid, 0,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 AC_VERB_GET_PIN_SENSE, 0);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (val & AC_PINSENSE_PRESENCE) {
->
+I'm still not convinced that all of this logic should be exposed to
+PA. Exposing these details is what makes ALSA hard to use. We should
+be able to better isolate user space from this. If mixing were moved
+into the kernel these details could be hidden.  The in-kernel code
+could then be customized for various sound DMA hardware. This would
+also go a long ways toward getting rid of latency issues by removing
+the need for real-time response from PA.
+
+My hardware doesn't have the capability of querying the hwptr and the
+hwptr speed is not linear because of the FIFO and burst transfers.
+Non-linear speed means I can't use a clock to estimate hwptr. I do
+however have the capability of directing the DMA into a new buffer.
+Another thing I could try is setting up DMA descriptor chain blocks
+for every 16 bytes. These descriptors get marked as they are used and
+they don't have to cause an interrupt.
+
+We are evaluating a processor change from PPC to ARM so all of this
+may change for me.
+
+-- 
+Jon Smirl
+jonsmirl@gmail.com
