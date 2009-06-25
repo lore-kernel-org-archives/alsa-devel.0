@@ -1,17 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 1/1] MAINTAINERS: Add entry for twl4030 series
-	soc codec driver
-Date: Thu, 25 Jun 2009 13:26:09 +0300
-Message-ID: <1245925569-23641-2-git-send-email-peter.ujfalusi@nokia.com>
+From: Naveen Krishna Ch <naveenkrishna.ch@gmail.com>
+Subject: Re: [PATCH 0/1] Add maintainer for the twl4030 codec
+Date: Thu, 25 Jun 2009 16:04:59 +0530
+Message-ID: <ef0d8a250906250334h41255665x67f075652b519c45@mail.gmail.com>
 References: <1245925569-23641-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5998E103877
+Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
+	[209.85.221.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id CE148103838
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Jun 2009 12:26:36 +0200 (CEST)
+	Thu, 25 Jun 2009 12:35:00 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so1722324qyk.16
+	for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2009 03:35:00 -0700 (PDT)
 In-Reply-To: <1245925569-23641-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,35 +24,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, steve@sakoman.com
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, steve@sakoman.com
 List-Id: alsa-devel@alsa-project.org
 
-New MAINTAINERS entry for twl4030 series soc codec driver
-with Peter Ujfalusi as maintainer.
+2009/6/25 Peter Ujfalusi <peter.ujfalusi@nokia.com>
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
----
- MAINTAINERS |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
+> Hello,
+>
+> Mark Brown kindly asked me to send the following patch to add myself to the
+> MAINTAINERS file for the twl4030 series soc codec driver.
+>
+> I have thought about it and here is the patch.
+>
+> Thank you Mark for the suggestion, I would not have sent this patch
+> otherwise.
+> Thanks for Steve Sakoman to write the initial twl4030 codec driver.
+>
+> I'll try my best with the maintainer responsibility!
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 1ae5a81..031a70d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5523,6 +5523,13 @@ M:	dsaxena@plexity.net
- S:	Maintained
- F:	drivers/char/hw_random/omap-rng.c
- 
-+TI TWL4030 SERIES SOC CODEC DRIVER
-+P:	Peter Ujfalusi
-+M:	peter.ujfalusi@nokia.com
-+L:	alsa-devel@alsa-project.org
-+S:	Maintained
-+F:	sound/soc/codecs/twl4030*
-+
- TIPC NETWORK LAYER
- P:	Per Liden
- M:	per.liden@ericsson.com
+
+I have been seeing your posts Since your first reply to
+me regarding the twl4030 codec driver.  Where you have
+started off with Steve Sakoman's initial work.
+
+Your support was excellent, Hope to see more ...
+Congrats Peter..
+
+>
+>
+> ---
+> Peter Ujfalusi (1):
+>  MAINTAINERS: Add entry for twl4030 series soc codec driver
+>
+>  MAINTAINERS |    7 +++++++
+>  1 files changed, 7 insertions(+), 0 deletions(-)
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+
+
+
 -- 
-1.6.3.3
+Shine bright,
+(: Naveen Krishna Ch :)
