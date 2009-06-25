@@ -1,17 +1,19 @@
 From: Harish Kumar <harishkumarb7@gmail.com>
-Subject: IMX31 Audio Driver issue
-Date: Thu, 25 Jun 2009 14:22:14 +0530
-Message-ID: <7df11cd50906250152u500a6a06ud7093d996c3e2b67@mail.gmail.com>
+Subject: Fwd: IMX31 Audio Driver issue
+Date: Thu, 25 Jun 2009 15:47:03 +0530
+Message-ID: <7df11cd50906250317n7c5550f1k1fe62abe0ef7fca@mail.gmail.com>
+References: <7df11cd50906250152u500a6a06ud7093d996c3e2b67@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=00163630efc925b297046d2857c6
+Content-Type: multipart/mixed; boundary=0016362835de6d2e10046d298684
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f217.google.com (mail-gx0-f217.google.com
-	[209.85.217.217])
-	by alsa0.perex.cz (Postfix) with ESMTP id 91B4924B5D
+Received: from mail-yx0-f189.google.com (mail-yx0-f189.google.com
+	[209.85.210.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id D61471037F2
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Jun 2009 10:52:16 +0200 (CEST)
-Received: by gxk17 with SMTP id 17so2168403gxk.8
-	for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2009 01:52:15 -0700 (PDT)
+	Thu, 25 Jun 2009 12:17:04 +0200 (CEST)
+Received: by yxe27 with SMTP id 27so459996yxe.16
+	for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2009 03:17:03 -0700 (PDT)
+In-Reply-To: <7df11cd50906250152u500a6a06ud7093d996c3e2b67@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,7 +26,7 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---00163630efc925b297046d2857c6
+--0016362835de6d2e10046d298684
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
@@ -67,7 +69,7 @@ attached.
 Thanks & Regards
 Harish Kumar.B
 
---00163630efc925b297046d2857c6
+--0016362835de6d2e10046d298684
 Content-Type: text/plain; charset=US-ASCII; name="imx audio capture.txt"
 Content-Disposition: attachment; filename="imx audio capture.txt"
 Content-Transfer-Encoding: base64
@@ -856,7 +858,7 @@ L3VuaXRfdGVzdHMvYXVkaW84azE2Uy53YXYKSGkuLi4KcGxheWluZyBvbiAvZGV2L3NvdW5kL2Fk
 c3AgKFNTSTEpCkNvbmZpZ3VyYXRpb24gOiAxNiA4MDAwIDIKYXVkaW8gZHJpdmVyIHdyaXRlIGVy
 cm9yOiBJbnB1dC9vdXRwdXQgZXJyb3IKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
 ICAgICAgICAgICAgICAgCgoK
---00163630efc925b297046d2857c6
+--0016362835de6d2e10046d298684
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -867,4 +869,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---00163630efc925b297046d2857c6--
+--0016362835de6d2e10046d298684--
