@@ -1,17 +1,19 @@
-From: "Lopez Cruz, Misael" <x0052729@ti.com>
-Subject: [PATCH] ASoC: Remove word "Switch" from Handsfree
-	switch name
-Date: Thu, 25 Jun 2009 12:36:14 -0500
-Message-ID: <67059DBF19D7214F9C66BB0EA91BA90E35607E71@dlee04.ent.ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: txx9aclc: dynamically
+	allocate	dmaengine devname
+Date: Thu, 25 Jun 2009 21:05:13 +0100
+Message-ID: <20090625200512.GA16600@sirena.org.uk>
+References: <1245937018-4830-1-git-send-email-anemo@mba.ocn.ne.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id B4A342435C
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2123A24474
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Jun 2009 19:36:25 +0200 (CEST)
-Content-Language: en-US
+	Thu, 25 Jun 2009 22:05:16 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1245937018-4830-1-git-send-email-anemo@mba.ocn.ne.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,59 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SoC dapm adds the suffix "Switch" to SND_SOC_DAPM_SWITCH controls,
-removing word "Switch" from HandsfreeL/HandsfreeR widget name
-for avoiding to duplicate it.
+On Thu, Jun 25, 2009 at 10:36:58PM +0900, Atsushi Nemoto wrote:
+> Use kasprintf to allocate temporary devname string instead of a
+> fixed size string.
+> This fixes "FIXME" introduced on removal of BUS_ID_SIZE.
 
-Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
----
- sound/soc/codecs/twl4030.c |   12 ++++++------
- 1 files changed, 6 insertions(+), 6 deletions(-)
+> Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index df42fa2..49ceb62 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -1258,14 +1258,14 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 	/* HandsfreeL/R */
- 	SND_SOC_DAPM_MUX("HandsfreeL Mux", SND_SOC_NOPM, 0, 0,
- 		&twl4030_dapm_handsfreel_control),
--	SND_SOC_DAPM_SWITCH("HandsfreeL Switch", SND_SOC_NOPM, 0, 0,
-+	SND_SOC_DAPM_SWITCH("HandsfreeL", SND_SOC_NOPM, 0, 0,
- 			&twl4030_dapm_handsfreelmute_control),
- 	SND_SOC_DAPM_PGA_E("HandsfreeL PGA", SND_SOC_NOPM,
- 			0, 0, NULL, 0, handsfreelpga_event,
- 			SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
- 	SND_SOC_DAPM_MUX("HandsfreeR Mux", SND_SOC_NOPM, 5, 0,
- 		&twl4030_dapm_handsfreer_control),
--	SND_SOC_DAPM_SWITCH("HandsfreeR Switch", SND_SOC_NOPM, 0, 0,
-+	SND_SOC_DAPM_SWITCH("HandsfreeR", SND_SOC_NOPM, 0, 0,
- 			&twl4030_dapm_handsfreermute_control),
- 	SND_SOC_DAPM_PGA_E("HandsfreeR PGA", SND_SOC_NOPM,
- 			0, 0, NULL, 0, handsfreerpga_event,
-@@ -1377,15 +1377,15 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{"HandsfreeL Mux", "AudioL1", "Analog L1 Playback Mixer"},
- 	{"HandsfreeL Mux", "AudioL2", "Analog L2 Playback Mixer"},
- 	{"HandsfreeL Mux", "AudioR2", "Analog R2 Playback Mixer"},
--	{"HandsfreeL Switch", "Switch", "HandsfreeL Mux"},
--	{"HandsfreeL PGA", NULL, "HandsfreeL Switch"},
-+	{"HandsfreeL", "Switch", "HandsfreeL Mux"},
-+	{"HandsfreeL PGA", NULL, "HandsfreeL"},
- 	/* HandsfreeR */
- 	{"HandsfreeR Mux", "Voice", "Analog Voice Playback Mixer"},
- 	{"HandsfreeR Mux", "AudioR1", "Analog R1 Playback Mixer"},
- 	{"HandsfreeR Mux", "AudioR2", "Analog R2 Playback Mixer"},
- 	{"HandsfreeR Mux", "AudioL2", "Analog L2 Playback Mixer"},
--	{"HandsfreeR Switch", "Switch", "HandsfreeR Mux"},
--	{"HandsfreeR PGA", NULL, "HandsfreeR Switch"},
-+	{"HandsfreeR", "Switch", "HandsfreeR Mux"},
-+	{"HandsfreeR PGA", NULL, "HandsfreeR"},
- 	/* Vibra */
- 	{"Vibra Mux", "AudioL1", "DAC Left1"},
- 	{"Vibra Mux", "AudioR1", "DAC Right1"},
--- 
-1.5.4.3
+Applied, thanks.
