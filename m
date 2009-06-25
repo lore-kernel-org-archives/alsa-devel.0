@@ -1,23 +1,18 @@
-From: "Didier \"Ptitjes\"" <ptitjes@free.fr>
-Subject: Support for MSM7 in ASoC
-Date: Thu, 25 Jun 2009 12:23:07 +0200
-Message-ID: <4A43500B.5050605@free.fr>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Proposal for more reliable audio DMA.
+Date: Thu, 25 Jun 2009 11:25:49 +0100
+Message-ID: <20090625102548.GB17812@sirena.org.uk>
+References: <9e4733910906241207m50340ef5gd63fc4527e50b861@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp21.services.sfr.fr (smtp21.services.sfr.fr [93.17.128.1])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6FA31103837
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id AE0FC103859
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Jun 2009 12:23:10 +0200 (CEST)
-Received: from filter.sfr.fr (localhost [127.0.0.1])
-	by msfrf2118.sfr.fr (SMTP Server) with ESMTP id CA3AE700009C
-	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Jun 2009 12:23:07 +0200 (CEST)
-Received: from [192.168.1.200] (212.73.198-77.rev.gaoland.net [77.198.73.212])
-	by msfrf2118.sfr.fr (SMTP Server) with ESMTP id AECA0700008C
-	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Jun 2009 12:23:07 +0200 (CEST)
+	Thu, 25 Jun 2009 12:25:55 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <9e4733910906241207m50340ef5gd63fc4527e50b861@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,20 +22,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel mailing list <alsa-devel@alsa-project.org>, James Courtier-Dutton <james.dutton@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
+On Wed, Jun 24, 2009 at 03:07:17PM -0400, Jon Smirl wrote:
+> On Wed, Jun 24, 2009 at 12:28 PM, Mark
+> Brown<broonie@opensource.wolfsonmicro.com> wrote:
 
-I'm working together with FreeSmartphone.org and SHR. We would like to
-support the MSM7-based phones.
+> > it does. Part of what's going on here is that the kernel code is trying to
+> > give userspace access to the data for as long as possible.
 
-We already have the modem working, but audio is a show-stopper for us,
-as actual implementation of the audio subsystem in Android is in binary
-form, and does not us Alsa !!!
+> The problem is knowing which sample in the background music to start
+> mixing the low latency laser blast into. ALSA will need to know this
+> index to figure out where to switch onto the replacement buffer. This
+> offset is dynamic and it depends on how much work pulse is doing.
 
-Can someone look at the specs for the MSM7200A specs and tell whether it
-could be difficult to support its audio subsystem ?
+Of course, some hardware is not going to allow the DMA controller to be
+reprogrammed while active so would need to either wait for a buffer
+boundary or update the data in the current buffer as is currently done.
 
-Thanks for your help,
-Didier.
+> I'm starting to think the OSS model is right and mixing belongs in the kernel
+
+This isn't a kernel/user problem.  Exactly the same issues come up if
+the code pushing data into the driver is in the kernel, it'll still want
+as much information as possible about what the current status is.
+
+Moving any non-hardware stuff into the kernel would create more problems
+than it solves.  Remember that ALSA supports arbitrary plugin stacks -
+users could be doing signal processing on the data post mix, for example
+doing soft EQ or 3D enhancement.  Some of this can be done pre-mix but
+it'll always be less efficient and in some cases would interfere with
+the operation of the algorithms.
+
+Remember also that hardware output is just one option for ALSA.  You can
+also have output plugins that do things like send data over the network.
