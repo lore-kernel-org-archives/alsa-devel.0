@@ -1,26 +1,17 @@
-From: James Courtier-Dutton <james.dutton@gmail.com>
-Subject: Re: Proposal for more reliable audio DMA.
-Date: Thu, 25 Jun 2009 16:26:39 +0100
-Message-ID: <ad2655cb0906250826w4745bf3ao3989e5768a28ee08@mail.gmail.com>
-References: <9e4733910906201906y78f76545sc3cdfe9b45a8db5f@mail.gmail.com>
-	<ad2655cb0906220927o68628357u223119b76e3967e4@mail.gmail.com>
-	<9e4733910906220943pd00fbaao2e2c92690e96d46a@mail.gmail.com>
-	<20090623095444.GC5422@sirena.org.uk>
-	<9e4733910906240710y2e5bdb21qfbd03af256094c3f@mail.gmail.com>
-	<s5hvdml8zmw.wl%tiwai@suse.de>
-	<9e4733910906240814j3dc920dfy6b9c795e7f2339e9@mail.gmail.com>
+From: "Lopez Cruz, Misael" <x0052729@ti.com>
+Subject: [PATCH] ASoC: Remove word "Switch" from Handsfree
+	switch name
+Date: Thu, 25 Jun 2009 12:36:14 -0500
+Message-ID: <67059DBF19D7214F9C66BB0EA91BA90E35607E71@dlee04.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f226.google.com (mail-fx0-f226.google.com
-	[209.85.220.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id C503D24C81
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id B4A342435C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Jun 2009 17:26:40 +0200 (CEST)
-Received: by fxm26 with SMTP id 26so1747939fxm.32
-	for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2009 08:26:39 -0700 (PDT)
-In-Reply-To: <9e4733910906240814j3dc920dfy6b9c795e7f2339e9@mail.gmail.com>
+	Thu, 25 Jun 2009 19:36:25 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,30 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-2009/6/24 Jon Smirl <jonsmirl@gmail.com>:
-> If it is so that it can write into the buffer with minimal latency
-> there are other ways to accomplish that. The simplest is to just add
-> an entry into ALSA core that says, play this buffer with minimal
-> latency. That would let the transfer be pushed down into the specific
-> driver and that driver could handle it in an optimal way.
->
-"minimal latency" is not the only requirement.
-Another is "play this sample at a predictable time." in order to
-ensure it plays in sync with video for example.
-The real problem is ensuring that the application reacts in time to
-fill up the buffer before it empties. So, the ideal would be a way to
-ensure that "process X gets woken just before the buffer empties". One
-way to trigger this is via the sound card hardware interrupt, another
-is by using the global timer to wake one up at a particular time.
-Using the timer is probably better because the wake up is then more
-granular, but one then needs a way to sync the timer with the hardware
-clock on the sound card.
-I would like a kernel scheduling api that could reliably do "wake me
-up at nanosecond X" but none exists. I can do "nanosleep(X)" which
-will maybe wake me up in X nanoseconds, but it is not very reliable.
-Another useful scheduling api would be "make sure process X is woken
-up after me".
+SoC dapm adds the suffix "Switch" to SND_SOC_DAPM_SWITCH controls,
+removing word "Switch" from HandsfreeL/HandsfreeR widget name
+for avoiding to duplicate it.
+
+Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
+---
+ sound/soc/codecs/twl4030.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index df42fa2..49ceb62 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -1258,14 +1258,14 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 	/* HandsfreeL/R */
+ 	SND_SOC_DAPM_MUX("HandsfreeL Mux", SND_SOC_NOPM, 0, 0,
+ 		&twl4030_dapm_handsfreel_control),
+-	SND_SOC_DAPM_SWITCH("HandsfreeL Switch", SND_SOC_NOPM, 0, 0,
++	SND_SOC_DAPM_SWITCH("HandsfreeL", SND_SOC_NOPM, 0, 0,
+ 			&twl4030_dapm_handsfreelmute_control),
+ 	SND_SOC_DAPM_PGA_E("HandsfreeL PGA", SND_SOC_NOPM,
+ 			0, 0, NULL, 0, handsfreelpga_event,
+ 			SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
+ 	SND_SOC_DAPM_MUX("HandsfreeR Mux", SND_SOC_NOPM, 5, 0,
+ 		&twl4030_dapm_handsfreer_control),
+-	SND_SOC_DAPM_SWITCH("HandsfreeR Switch", SND_SOC_NOPM, 0, 0,
++	SND_SOC_DAPM_SWITCH("HandsfreeR", SND_SOC_NOPM, 0, 0,
+ 			&twl4030_dapm_handsfreermute_control),
+ 	SND_SOC_DAPM_PGA_E("HandsfreeR PGA", SND_SOC_NOPM,
+ 			0, 0, NULL, 0, handsfreerpga_event,
+@@ -1377,15 +1377,15 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	{"HandsfreeL Mux", "AudioL1", "Analog L1 Playback Mixer"},
+ 	{"HandsfreeL Mux", "AudioL2", "Analog L2 Playback Mixer"},
+ 	{"HandsfreeL Mux", "AudioR2", "Analog R2 Playback Mixer"},
+-	{"HandsfreeL Switch", "Switch", "HandsfreeL Mux"},
+-	{"HandsfreeL PGA", NULL, "HandsfreeL Switch"},
++	{"HandsfreeL", "Switch", "HandsfreeL Mux"},
++	{"HandsfreeL PGA", NULL, "HandsfreeL"},
+ 	/* HandsfreeR */
+ 	{"HandsfreeR Mux", "Voice", "Analog Voice Playback Mixer"},
+ 	{"HandsfreeR Mux", "AudioR1", "Analog R1 Playback Mixer"},
+ 	{"HandsfreeR Mux", "AudioR2", "Analog R2 Playback Mixer"},
+ 	{"HandsfreeR Mux", "AudioL2", "Analog L2 Playback Mixer"},
+-	{"HandsfreeR Switch", "Switch", "HandsfreeR Mux"},
+-	{"HandsfreeR PGA", NULL, "HandsfreeR Switch"},
++	{"HandsfreeR", "Switch", "HandsfreeR Mux"},
++	{"HandsfreeR PGA", NULL, "HandsfreeR"},
+ 	/* Vibra */
+ 	{"Vibra Mux", "AudioL1", "DAC Left1"},
+ 	{"Vibra Mux", "AudioR1", "DAC Right1"},
+-- 
+1.5.4.3
