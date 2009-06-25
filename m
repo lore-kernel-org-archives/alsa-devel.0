@@ -1,19 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC updates for 2.6.32
-Date: Thu, 25 Jun 2009 12:01:21 +0100
-Message-ID: <20090625110121.GE17812@sirena.org.uk>
-References: <20090625102141.GA17812@sirena.org.uk>
-	<s5hmy7wa9bt.wl%tiwai@suse.de>
+Subject: Re: Can a phone hook switch follow alsa jack model?
+Date: Thu, 25 Jun 2009 12:05:08 +0100
+Message-ID: <20090625110508.GF17812@sirena.org.uk>
+References: <4A40D896.8010208@tis.icnet.pl>
+	<20090623222255.GA5617@sirena.org.uk>
+	<4A4229EB.2090606@tis.icnet.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 04F721037F2
+	by alsa0.perex.cz (Postfix) with ESMTP id 09E6B1037F2
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Jun 2009 13:01:28 +0200 (CEST)
+	Thu, 25 Jun 2009 13:05:15 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hmy7wa9bt.wl%tiwai@suse.de>
+In-Reply-To: <4A4229EB.2090606@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,30 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 25, 2009 at 12:36:54PM +0200, Takashi Iwai wrote:
+On Wed, Jun 24, 2009 at 03:28:11PM +0200, Janusz Krzysztofik wrote:
+> Mark Brown wrote:
 
-> You don't need to merge my branch now onto yours.  Instead, I'll merge
-> your branch first.  In that way without back-merging the upstream, the
-> history will be more straightforward.  That's what I learned
-> recently.
+> type. Don't you think that a new type like SND_JACK_PHONE_HOOK or 
+> SND_JACK_PHONE_HANDSET should be defined for the purpose? Even if 
+> HEADSET may not be very different from HANDSET, corresponding 
+> SW_HEADPHONE_INSERT and SW_MICROPHONE_INSERT event names seem have very 
+> little to do with picking up a phone.
 
-Could you explain the problem here in more detail?  I don't see the
-difference this is going to make here - your topic/asoc branch already
-contains the upstream merge and all that should happen if I reset my
-history is that the metadata for the merge commit changes.  With the
-current branches your pull would just generate a fast forward.
+Possibly, TBH I had thought I'd seen something for off-hook when I
+looked at this originally but I can't seem to spot it now.
 
-The issue I'm aware of is with constantly pulling up mainline or other
-merged branches into the topic branch during normal development since
-that creates a merge heavy history which is harder to read and bisect
-but that's not what's happened here.
+> So, if I want to follow the ASoC jack model, my in-kernel hook switch 
+> handler should only power on/off the handset, not touching the 
+> speakerphone at all. The latter should be controlled from userspace. 
+> Please correct me if I am missing something.
 
-> Could you take your branch back before merging the upstream?
-> Then I'll merge yours, and you can go forward cleanly after that.
-
-I should be able to do that, but like I say I'm not sure I understand
-the problem.
+That's my initial guess - I've not looked at your particular hardware
+so it may not end up being the best way of dealing with your system but
+from what you said it was the approach that sprang to mind.
