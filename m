@@ -1,20 +1,22 @@
-From: "Lopez Cruz, Misael" <x0052729@ti.com>
-Subject: Re: [PATCH] ASoC: Remove word "Switch" from Handsfree
-	switch name
-Date: Fri, 26 Jun 2009 10:39:58 -0500
-Message-ID: <67059DBF19D7214F9C66BB0EA91BA90E356082BA@dlee04.ent.ti.com>
-References: <67059DBF19D7214F9C66BB0EA91BA90E35607E71@dlee04.ent.ti.com>
-	<200906260907.07628.peter.ujfalusi@nokia.com>
+From: Baek Chang <baeksan@ccrma.stanford.edu>
+Subject: Re: routing audio stream to multiple devices
+Date: Fri, 26 Jun 2009 09:35:49 -0700
+Message-ID: <aceb60a00906260935q5ac79ed2v1f2ef3722c40d627@mail.gmail.com>
+References: <aceb60a00906251846v2f9607dcp8f89c4379f7bc097@mail.gmail.com>
+	<d54969c50906251857n7e0073c8h9ae61943da6c5ca@mail.gmail.com>
+	<aceb60a00906251950m427a1ecg82ba038561d54c6e@mail.gmail.com>
+	<d54969c50906252002q328bd6cja94210a6af9eacd6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 86481248CD
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.242])
+	by alsa0.perex.cz (Postfix) with ESMTP id C6CC12412E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 26 Jun 2009 17:40:10 +0200 (CEST)
-In-Reply-To: <200906260907.07628.peter.ujfalusi@nokia.com>
-Content-Language: en-US
+	Fri, 26 Jun 2009 18:35:54 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c37so872259anc.2
+	for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2009 09:35:53 -0700 (PDT)
+In-Reply-To: <d54969c50906252002q328bd6cja94210a6af9eacd6@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,24 +26,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: =?ISO-8859-1?Q?Emilio_L=F3pez?= <buhitoescolar@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> On Thursday 25 June 2009 20:36:14 ext Lopez Cruz, Misael wrote:
-> > SoC dapm adds the suffix "Switch" to SND_SOC_DAPM_SWITCH controls, 
-> > removing word "Switch" from HandsfreeL/HandsfreeR widget name for 
-> > avoiding to duplicate it.
+I'm trying to acheive this with dmix and alsa.  I know that pulseaudio can
+do this, but we are getting rid of pulseaudio on our embedded system and I
+am trying to find a solution with alsa.  I'll take a look at the dmix docs,
+thanks!
+
+Baek
+
+
+On Thu, Jun 25, 2009 at 8:02 PM, Emilio L=F3pez <buhitoescolar@gmail.com>wr=
+ote:
+
+> I don't really know how to do this on dmix, nor I do know much about
+> alsa or dmix. But I'm quite certain this is achieveable with
+> pulseaudio; I have done it once using the GUI they provide.
+>
+> Might be of help if you still want to use dmix:
+> http://alsa.opensrc.org/index.php/Dmix
+>
+> 2009/6/25 Baek Chang <baeksan@ccrma.stanford.edu>:
+> > I am trying to do this with dmix, but I can't seem to find a clear cut
+> > solution to this?  I was under the impression that editing my asound.co=
+nf
+> > could acheive this?  Basically, it seems that you have to make a stream=
+ a
+> > slave to two different devices.  Is this possible?
 > >
-> > Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
-> > ---
-> >  sound/soc/codecs/twl4030.c |   12 ++++++------
-> >  1 files changed, 6 insertions(+), 6 deletions(-)
+> > Thanks
+> > Baek
+> >
+> > On Thu, Jun 25, 2009 at 6:57 PM, Emilio L=F3pez <buhitoescolar@gmail.co=
+m>
+> > wrote:
+> >>
+> >> You can achieve this with pulseaudio, and maybe with alsa's dmix.
+> >>
+> >> 2009/6/25 Baek Chang <baeksan@ccrma.stanford.edu>:
+> >> > I was wondering if it was possible to route a single audio stream to
+> >> > multiple alsa devices or plugins?
+> >> >
+> >> > For example, I am playing a song and want it to stream to both my
+> sound
+> >> > card
+> >> > at hw:0 and a bluetooth device, an alsa plugin.  Is this possible?  =
+It
+> >> > seems
+> >> > that configuring asound.conf only lets you route streams serially to=
+ a
+> >> > single device at a time.  Any info would be greatly appreciated.
+> >> >
+> >> > Thanks in advance
+> >> > Baek
+> >> >
+> >> > --
+> >> > Baek Chang
+> >> > baeksan@ccrma.stanford.edu
+> >> > 407-267-6701
+> >> > _______________________________________________
+> >> > Alsa-devel mailing list
+> >> > Alsa-devel@alsa-project.org
+> >> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >> >
+> >>
+> >
+> >
+> >
+> > --
+> > Baek Chang
+> > baeksan@ccrma.stanford.edu
+> > 407-267-6701
+> >
+>
+>
 
-> Can you add the TWL4030 to the patch name in the future? It 
-> is much easier to spot it in that way.
 
-I'm sorry I forgot it. I'll take care of that next time.
+-- =
 
-> Thank you!
-> Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Baek Chang
+baeksan@ccrma.stanford.edu
+407-267-6701
