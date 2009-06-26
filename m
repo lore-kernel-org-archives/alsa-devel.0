@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Remove word "Switch" from Handsfree
- switch name
-Date: Fri, 26 Jun 2009 10:40:38 +0100
-Message-ID: <20090626094037.GB5415@sirena.org.uk>
-References: <67059DBF19D7214F9C66BB0EA91BA90E35607E71@dlee04.ent.ti.com>
-	<200906260907.07628.peter.ujfalusi@nokia.com>
+Subject: Re: IMX31 Audio Driver issue
+Date: Fri, 26 Jun 2009 10:46:36 +0100
+Message-ID: <20090626094636.GC5415@sirena.org.uk>
+References: <7df11cd50906250152u500a6a06ud7093d996c3e2b67@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2AB0E247DB
+	by alsa0.perex.cz (Postfix) with ESMTP id 83AC7247E6
 	for <alsa-devel@alsa-project.org>;
-	Fri, 26 Jun 2009 11:40:47 +0200 (CEST)
+	Fri, 26 Jun 2009 11:46:42 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <200906260907.07628.peter.ujfalusi@nokia.com>
+In-Reply-To: <7df11cd50906250152u500a6a06ud7093d996c3e2b67@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,17 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "ext Lopez Cruz, Misael" <x0052729@ti.com>
+To: Harish Kumar <harishkumarb7@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 26, 2009 at 09:07:07AM +0300, Peter Ujfalusi wrote:
-> On Thursday 25 June 2009 20:36:14 ext Lopez Cruz, Misael wrote:
+On Thu, Jun 25, 2009 at 02:22:14PM +0530, Harish Kumar wrote:
 
-> > SoC dapm adds the suffix "Switch" to SND_SOC_DAPM_SWITCH controls,
-> > removing word "Switch" from HandsfreeL/HandsfreeR widget name
-> > for avoiding to duplicate it.
+> Hi... playing on /dev/sound/adsp
+> (SSI1) Configuration : 16 8000 2
+> audio driver write error: Input/output error
+> audio driver write error: Input/output error a
 
-> Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+It looks like DMA is not happening.  Probably the problem is that the
+system clocking is wrong, most likely as a result of the audio clocking
+being wrong.  Check that you are seeing signals on the BCLK and LRCLK
+and that your audio mux setup is correct.
 
-Applied, thanks.
+You're probably better off asking whoever provided the BSP to you for
+support, there is no i.MX31 audio support in standard Linux.
