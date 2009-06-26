@@ -1,13 +1,15 @@
-From: Michael Tokarev <mjt@tls.msk.ru>
-Subject: Re: PC speaker beeps in 2.6.30?
-Date: Fri, 26 Jun 2009 10:03:54 +0400
-Message-ID: <4A4464CA.4060006__40388.8632696637$1245997408$gmane$org@msgid.tls.msk.ru>
-References: <4A365DA6.8000102@msgid.tls.msk.ru>
+From: Tony Vroon <tony@linx.net>
+Subject: [PATCH] Line In for Acer Inspire 6530G model
+Date: Fri, 26 Jun 2009 09:27:50 +0100 (BST)
+Message-ID: <20090626082750.6D1B210092@gold.linx.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <4A365DA6.8000102@msgid.tls.msk.ru>
+Received: from gold.linx.net (gold.linx.net [195.66.232.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3B0962479D
+	for <alsa-devel@alsa-project.org>;
+	Fri, 26 Jun 2009 10:27:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -17,36 +19,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: alsa-devel@vger.kernel.org, linux-input <linux-input@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Emilio =?ISO-8859-1?Q?L=F3pez?= <buhitoescolar@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-[Adding some more Cc's...]
+The Line In connector is set up as PIN_IN by default, using 
+VREF_HIZ. It is connected to both ADCs, so add it to both 
+input selectors.
+Also add the ability to use the input mix (on a SoundBlaster 
+one would call this "What You Hear").
 
-Am I the only concerned about this?  My 2.6.30 is still
-silent w.r.t. old good PC speaker beeps, and I wasn't
-able to make it to produce any sound.  Yes, as pointed
-out by others there is a control now, in alsa, and I
-can hear ugly and scary beeps from my stereo speakers
-(when they're turned on and when the control is un-muted).
-But that's.. not a solution/answer to the original
-question... ;)
+Signed-off-by: Tony Vroon <tony@linx.net>
 
-Thanks!
-
-Michael Tokarev wrote at Mon, 15 Jun 2009 18:41:42 +0400:
-> Anyone know what happened with PC speaker in 2.6.30?
-> Basically, it does not work anymore here, with the
-> config which is very similar to the one used for
-> previous 2.6.29 kernel (where PC speaker worked).
-> At least I don't see any relevant differences and
-> the (seemengly) relevant symbols -- which are
-> INPUT_PCSPKR and PCSPKR_PLATFORM -- are both set
-> to 'y' for both 2.6.29 and 2.6.30.
-> 
-> Help? :)
-> 
-> Thanks.
-> 
-> /mjt
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 3345331..67dd883 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -1560,18 +1560,22 @@ static struct hda_input_mux alc888_2_capture_sources[2] = {
+ static struct hda_input_mux alc888_acer_aspire_6530_sources[2] = {
+ 	/* Interal mic only available on one ADC */
+ 	{
+-		.num_items = 3,
++		.num_items = 5,
+ 		.items = {
+ 			{ "Ext Mic", 0x0 },
++			{ "Line In", 0x2 },
+ 			{ "CD", 0x4 },
++			{ "Input Mix", 0xa },
+ 			{ "Int Mic", 0xb },
+ 		},
+ 	},
+ 	{
+-		.num_items = 2,
++		.num_items = 4,
+ 		.items = {
+ 			{ "Ext Mic", 0x0 },
++			{ "Line In", 0x2 },
+ 			{ "CD", 0x4 },
++			{ "Input Mix", 0xa },
+ 		},
+ 	}
+ };
+@@ -8189,6 +8193,8 @@ static struct snd_kcontrol_new alc888_acer_aspire_6530_mixer[] = {
+ 	HDA_BIND_MUTE("Front Playback Switch", 0x0c, 2, HDA_INPUT),
+ 	HDA_CODEC_VOLUME("LFE Playback Volume", 0x0f, 0x0, HDA_OUTPUT),
+ 	HDA_BIND_MUTE("LFE Playback Switch", 0x0f, 2, HDA_INPUT),
++	HDA_CODEC_VOLUME("Line Playback Volume", 0x0b, 0x02, HDA_INPUT),
++	HDA_CODEC_MUTE("Line Playback Switch", 0x0b, 0x02, HDA_INPUT),
+ 	HDA_CODEC_VOLUME("CD Playback Volume", 0x0b, 0x04, HDA_INPUT),
+ 	HDA_CODEC_MUTE("CD Playback Switch", 0x0b, 0x04, HDA_INPUT),
+ 	HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x0, HDA_INPUT),
