@@ -1,80 +1,49 @@
-From: "Harsha, Priya" <priya.harsha@intel.com>
-Subject: Re: snd_pcm_lib_read1 timeout
-Date: Sat, 27 Jun 2009 13:13:49 +0530
-Message-ID: <98769532B4BB14429434178695419EAE5B9FD70A@bgsmsx501.gar.corp.intel.com>
+From: Michael Tokarev <mjt@tls.msk.ru>
+Subject: Re: [alsa-devel] PC speaker beeps in 2.6.30?
+Date: Sat, 27 Jun 2009 14:33:26 +0400
+Message-ID: <4A45F576.7070909@msgid.tls.msk.ru>
+References: <4A365DA6.8000102@msgid.tls.msk.ru>	<4A4464CA.4060006@msgid.tls.msk.ru> <s5hws6y86wl.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8B4952458B
-	for <alsa-devel@alsa-project.org>;
-	Sat, 27 Jun 2009 09:43:55 +0200 (CEST)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <s5hws6y86wl.wl%tiwai@suse.de>
+Sender: linux-input-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, alsa-devel@vger.kernel.org, linux-input <linux-input@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-I found another clue to this but can anyone please explain what could be going wrong?
+Takashi Iwai wrote:
+> At Fri, 26 Jun 2009 10:03:54 +0400,
+> Michael Tokarev wrote:
+>> [Adding some more Cc's...]
+>>
+>> Am I the only concerned about this?  My 2.6.30 is still
+>> silent w.r.t. old good PC speaker beeps, and I wasn't
+>> able to make it to produce any sound.  Yes, as pointed
+>> out by others there is a control now, in alsa, and I
+>> can hear ugly and scary beeps from my stereo speakers
+>> (when they're turned on and when the control is un-muted).
+>> But that's.. not a solution/answer to the original
+>> question... ;)
+> 
+> Try 2.6.31-rc1.  There was a fix regarding beep frequency.
 
-The execution enters into the following function 
+You mean this one:
 
->static int snd_pcm_update_hw_ptr_interrupt(struct snd_pcm_substream >*substream)
->{
->	....
->	new_hw_ptr = hw_base + pos;
-this gets updated correctly
->	...
->	hdelta = new_hw_ptr - old_hw_ptr;
->	jdelta = jiffies - runtime->hw_ptr_jiffies;
-as far as I don't get into the following loop, am good...the moment I get into this loop my new_hw_ptr gets modified and it does not progress in capture. Any clues?
->	if (((hdelta * HZ) / runtime->rate) > jdelta + HZ/100) {
->		delta = jdelta /
->			(((runtime->period_size * HZ) / runtime->rate)
->								+ HZ/100);
->		hw_ptr_error(substream,
->			     "hw_ptr skipping! [Q] "
->			     "(pos=%ld, delta=%ld, period=%ld, "
->			     "jdelta=%lu/%lu/%lu)\n",
->			     (long)pos, (long)hdelta,
->			     (long)runtime->period_size, jdelta,
->			     ((hdelta * HZ) / runtime->rate), delta);
->		hw_ptr_interrupt = runtime->hw_ptr_interrupt +
->				   runtime->period_size * delta;
->		if (hw_ptr_interrupt >= runtime->boundary)
->			hw_ptr_interrupt -= runtime->boundary;
->		/* rebase to interrupt position */
->		hw_base = new_hw_ptr = hw_ptr_interrupt;
->		/* align hw_base to buffer_size */
->		hw_base -= hw_base % runtime->buffer_size;
->		delta = 0;
->	}
->      ...
->}
+commit fa7979663190240b838ab8c8bad7f59e618bf77c
+Author: Takashi Iwai <tiwai@suse.de>
+Date:   Tue May 19 12:50:04 2009 +0200
 
-Thanks,
-Harsha
+     ALSA: hda - Fix digital beep tone calculation
 
-______________________________________
-From: Harsha, Priya 
-Sent: Saturday, June 27, 2009 9:18 AM
-To: alsa-devel@alsa-project.org
-Subject: snd_pcm_lib_read1 timeout
+?
 
-Hi,
+Note it's about alsa/hda beep.  Probably to make my new
+"alsa beeps" less scary.  But I'm asking about PC speaker --
+see the $subject line.  I'm missing PC speaker beeps, not
+alsa beeps.
 
-I have a basic question;
+Thanks!
 
-There is a schedule_timeout() in snd_pcm_lib_read1 -> wait_for_avail_min. When and where does this timeout get signaled? What would be the reason that this timeout happens?
-
-
-Thanks,
-Harsha
+/mjt
