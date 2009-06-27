@@ -1,15 +1,15 @@
 From: Ondrej Zary <linux@rainbow-software.org>
-Subject: cmi8330: fix MPU-401 PnP init copy&paste bug
-Date: Sat, 27 Jun 2009 16:17:08 +0200
-Message-ID: <200906271617.09778.linux@rainbow-software.org>
+Subject: cmi8330: revert comments about AD1848 back
+Date: Sat, 27 Jun 2009 16:26:35 +0200
+Message-ID: <200906271626.36466.linux@rainbow-software.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.atlantis.sk (mail.atlantis.sk [80.94.52.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 93778246F1
+	by alsa0.perex.cz (Postfix) with ESMTP id E5B28246F7
 	for <alsa-devel@alsa-project.org>;
-	Sat, 27 Jun 2009 16:17:19 +0200 (CEST)
+	Sat, 27 Jun 2009 16:26:40 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,21 +23,46 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fix copy&paste bug in PnP MPU-401 initialization.
+In ALSA 1.0.20, the comments were changed to say CMI8330 instead of AD1848.
+The CMI8330 chip includes two codecs - AD1848 and SB16, so the comments were
+correct and are misleading now. Revert them back.
 
 Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
 
 --- linux-2.6.30-orig/sound/isa/cmi8330.c	2009-06-10 05:05:27.000000000 +0200
-+++ linux-test/sound/isa/cmi8330.c	2009-06-27 13:37:56.000000000 +0200
-@@ -338,7 +338,7 @@
- 		return -EBUSY;
++++ linux-test/sound/isa/cmi8330.c	2009-06-27 16:20:51.000000000 +0200
+@@ -35,7 +35,7 @@
+  *
+  *  This card has two mixers and two PCM devices.  I've cheesed it such
+  *  that recording and playback can be done through the same device.
+- *  The driver "magically" routes the capturing to the CMI8330 codec,
++ *  The driver "magically" routes the capturing to the AD1848 codec,
+  *  and playback to the SB16 codec.  This allows for full-duplex mode
+  *  to some extent.
+  *  The utilities in alsa-utils are aware of both devices, so passing
+@@ -345,7 +345,7 @@
  
- 	acard->mpu = pnp_request_card_device(card, id->devs[2].id, NULL);
--	if (acard->play == NULL)
-+	if (acard->mpu == NULL)
+ 	err = pnp_activate_dev(pdev);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR "CMI8330/C3D PnP configure failure\n");
++		snd_printk(KERN_ERR "CMI8330/C3D (AD1848) PnP configure failure\n");
  		return -EBUSY;
+ 	}
+ 	wssport[dev] = pnp_port_start(pdev, 0);
+@@ -527,11 +527,11 @@
+ 			     wssdma[dev], -1,
+ 			     WSS_HW_DETECT, 0, &acard->wss);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR PFX "(CMI8330) device busy??\n");
++		snd_printk(KERN_ERR PFX "(AD1848) device busy??\n");
+ 		return err;
+ 	}
+ 	if (acard->wss->hardware != WSS_HW_CMI8330) {
+-		snd_printk(KERN_ERR PFX "(CMI8330) not found during probe\n");
++		snd_printk(KERN_ERR PFX "(AD1848) not found during probe\n");
+ 		return -ENODEV;
+ 	}
  
- 	pdev = acard->cap;
 
 -- 
 Ondrej Zary
