@@ -1,21 +1,22 @@
-From: Andreas Nuesslein <nutz@unfoog.de>
-Subject: No sound with nVidia Corporation MCP79 High Definition
- Audio (rev b1) (Macbook Pro 5, 5)
-Date: Sat, 27 Jun 2009 03:16:54 +0200
-Message-ID: <20090627031654.22d8f25b@honshu.wg15>
+From: Guilherme <grlongo.ireland@gmail.com>
+Subject: Re: Understanding _snd_pcm_channel_area Struct (PCM
+ Interface)!
+Date: Fri, 26 Jun 2009 23:56:43 -0300
+Message-ID: <4A458A6B.2070305@gmail.com>
+References: <4A3DEAF9.80508@free.fr>	<4A406AD3.2050002@gmail.com>
+	<s5hljnjb3so.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1043307246665209761=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx.unfoog.de (dom0kun.ath.cx [78.46.99.229])
-	by alsa0.perex.cz (Postfix) with ESMTP id 357E8243D2
+Received: from mail-qy0-f171.google.com (mail-qy0-f171.google.com
+	[209.85.221.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4269424445
 	for <alsa-devel@alsa-project.org>;
-	Sat, 27 Jun 2009 03:16:47 +0200 (CEST)
-Received: from honshu.wg15 (port-87-234-90-241.dynamic.qsc.de [87.234.90.241])
-	(using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
-	(No client certificate requested)
-	by mx.unfoog.de (Postfix) with ESMTPSA id B4B253AF298
-	for <alsa-devel@alsa-project.org>;
-	Sat, 27 Jun 2009 03:16:46 +0200 (CEST)
+	Sat, 27 Jun 2009 04:55:46 +0200 (CEST)
+Received: by qyk1 with SMTP id 1so3277348qyk.16
+	for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2009 19:55:44 -0700 (PDT)
+In-Reply-To: <s5hljnjb3so.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,80 +26,113 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============1043307246665209761==
-Content-Type: multipart/signed; micalg=PGP-SHA1;
- boundary="Sig_/zPA=wVZqsM2Ia9zV9GVB==N"; protocol="application/pgp-signature"
+Takashi...
 
---Sig_/zPA=wVZqsM2Ia9zV9GVB==N
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The base_address and the step sounds pretty clear to me.... just the =
 
-I just got a macbookpro (mid2009 version) with a new nvidia chipset.
+offset I could not understand.
 
-there is no sound at all. neither via the built-in speakers nor via
-out-jack.
+What the difference in being  .first =3D 0 or .first =3D 2??? Could you =
 
-i tried aplay -D myfile.wav with everything from aplay -L  as well.
+provide please a more in depth explanation. I tried really hard find =
 
-i also tried a recent snapshot (alsa-driver-20090626.tar.bz2) as well
-as gentoo ebuilds alsa-headers-9999 and alsa-driver-9999 (which uses
-git to pull recent versions).
+this but there is nothing related in the documentation.
 
-so here's a little information i can gather:
+area[0].addr =3D base_address;
+	addr[0].first =3D 0;
+	addr[0].step =3D 4;
+	addr[1].addr =3D base_address;
+	addr[1].first =3D 2;
+	addr[1].step =3D 4;
 
-$ lspci -s 00:08.0 -v
-00:08.0 Audio device: nVidia Corporation MCP79 High Definition Audio
-(rev b1) Subsystem: nVidia Corporation Device cb79
-        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 23
-        Memory at d3480000 (32-bit, non-prefetchable) [size=3D16K]
-        Capabilities: <access denied>
-        Kernel driver in use: HDA Intel
-        Kernel modules: snd-hda-intel
+P.S. being a stereo or a mono pipeline I understand... just the way the off=
+set works that is not so clear to me.
+
+Thanks in advanced!
 
 
-alsa-info:
-http://www.alsa-project.org/db/?f=3D80e89b82fec184b68a88b9ed4128544a276775fc
+Tks!
 
-modinfo snd-hda-intel:
-http://www.nopaste.com/p/a3B7miINP
+-------------------
 
-i also found a thread about that problem (w/o solution obviously):
+Guilherme Longo
+Dept. Eng. da Computa=E7=E3o
+Unaerp
 
-http://www.uluga.ubuntuforums.org/showthread.php?t=3D1188849&page=3D2
+Linux User - #484927
+
+*Before Asking
+http://www.istf.com.br/?page=3Dperguntas
+
+!- I'd rather die on my feet than live on my knees -!
 
 
-hope that's all information necessary.
 
-if i can i'd love to help in some way.
+Takashi Iwai wrote:
+> At Tue, 23 Jun 2009 02:40:35 -0300,
+> Guilherme wrote:
+>   =
 
-thanks
+>> Hi all.
+>>
+>> I am a bit confused on what I get with this function.
+>> I finished my first project but I did not understand what exactly the
+>>
+>> _snd_pcm_channel_area at
+>>
+>>  http://www.alsa-project.org/alsa-doc/alsa-lib/struct__snd__pcm__channel=
+__area.html
+>>
+>> does.
+>>
+>> There are 3 fields in the documentation.
+>>
+>> addr, first and step.
+>>
+>> It seems that addr is the memory address of the channel samples... so =
 
---Sig_/zPA=wVZqsM2Ia9zV9GVB==N
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Disposition: attachment; filename=signature.asc
+>> far so good. The "step" is the distance between 2 sample (but I am not =
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
+>> sure) and the least, "first", I could not figure out what does it means.
+>>     =
 
-iEYEARECAAYFAkpFcwYACgkQGIPRDsWq365fdgCfYnHqqEzx0ttqSbDnwiBQ4Dny
-aWAAn2sxDW3Ct2BjIUsIKUv4l8tXgEgc
-=bSXM
------END PGP SIGNATURE-----
-
---Sig_/zPA=wVZqsM2Ia9zV9GVB==N--
-
---===============1043307246665209761==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============1043307246665209761==--
+>
+> This information is needed to understand how the multi-channel samples
+> are assigned in a stream.  The first is the offset of the channel
+> position to the given addr.  The step is the bytes to the next sample
+> of that channel.
+>
+> For example, suppose you have a 2-channel stereo interleaved stream
+> with 16bit samples.  Then you'll have an array of snd_pcm_channel_area
+> with two elements, for left and right channels, containing like
+>
+> 	area[0].addr =3D base_address;
+> 	addr[0].first =3D 0;
+> 	addr[0].step =3D 4;
+> 	addr[1].addr =3D base_address;
+> 	addr[1].first =3D 2;
+> 	addr[1].step =3D 4;
+>
+> Both channels share the same base address but have the different
+> "first" offset bytes.  The step size is 4 =3D #chanel * sample-size.
+>
+> For a non-interleaved stereo stream, it'll look like
+>
+> 	addr[0].addr =3D base_addr_0;
+> 	addr[0].first =3D 0;
+> 	addr[0].step =3D 2;
+> 	addr[1].addr =3D base_addr_1;
+> 	addr[1].first =3D 0;
+> 	addr[1].step =3D 2;
+>
+> Thus it looks like two mono streams with 16bit samples.
+>
+>
+> HTH,
+>
+> Takashi
+>
+>   =
