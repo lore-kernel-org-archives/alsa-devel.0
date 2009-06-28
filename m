@@ -1,29 +1,26 @@
-From: "Kurt J. Bosch" <kjb-temp-2006@gmx.de>
-Subject: Re: PC speaker beeps in 2.6.30?
-Date: Sun, 28 Jun 2009 13:09:26 +0200
-Message-ID: <h27j15$g1d$1@ger.gmane.org>
-References: <4A365DA6.8000102@msgid.tls.msk.ru>	<4A4464CA.4060006@msgid.tls.msk.ru>
-	<s5hws6y86wl.wl%tiwai@suse.de>	<20090628063908.GA2089@math.berkeley.edu>
-	<s5h4ou0n468.wl%tiwai@suse.de>
+From: Bjoern Olausson <lkmlist@gmail.com>
+Subject: Re: SB X-Fi driver fixes (Re: Testers wanted: New SB
+	X-Fi driver)
+Date: Sun, 28 Jun 2009 15:07:54 +0200
+Message-ID: <5501535d0906280607t5d8017bbp6210dd54ec55eed2@mail.gmail.com>
+References: <1244140942.4550.2.camel@polo-desktop>
+	<s5h63f6f8qo.wl%tiwai@suse.de> <4A2DF1EC.9060104@googlemail.com>
+	<s5hab4ix8wo.wl%tiwai@suse.de> <4A2DF6BD.6060004@googlemail.com>
+	<s5h63f5ylee.wl%tiwai@suse.de> <s5hk53l3f6p.wl%tiwai@suse.de>
+	<4A2E97A6.3090301@googlemail.com> <s5hy6rtejri.wl%tiwai@suse.de>
+	<4A367404.80900@googlemail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 681BB243C2
+Received: from mail-bw0-f210.google.com (mail-bw0-f210.google.com
+	[209.85.218.210])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5665724450
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 Jun 2009 13:20:03 +0200 (CEST)
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1MKsQU-0003WU-Ad
-	for alsa-devel@alsa-project.org; Sun, 28 Jun 2009 11:20:02 +0000
-Received: from agsb-5d869ee5.pool.einsundeins.de ([93.134.158.229])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 28 Jun 2009 11:20:02 +0000
-Received: from kjb-temp-2006 by agsb-5d869ee5.pool.einsundeins.de with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 28 Jun 2009 11:20:02 +0000
-In-Reply-To: <s5h4ou0n468.wl%tiwai@suse.de>
+	Sun, 28 Jun 2009 15:07:56 +0200 (CEST)
+Received: by bwz6 with SMTP id 6so205068bwz.32
+	for <alsa-devel@alsa-project.org>; Sun, 28 Jun 2009 06:07:55 -0700 (PDT)
+In-Reply-To: <4A367404.80900@googlemail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,54 +30,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2009-06-28 10:38, Takashi Iwai wrote:
-> At Sat, 27 Jun 2009 23:39:08 -0700,
-> Paul Vojta wrote:
->>
->> On Sat, Jun 27, 2009 at 09:36:42AM +0200, Takashi Iwai wrote:
->>> At Fri, 26 Jun 2009 10:03:54 +0400,
->>> Michael Tokarev wrote:
->>>>
->>>> [Adding some more Cc's...]
->>>>
->>>> Am I the only concerned about this?  My 2.6.30 is still
->>>> silent w.r.t. old good PC speaker beeps, and I wasn't
->>>> able to make it to produce any sound.  Yes, as pointed
->>>> out by others there is a control now, in alsa, and I
->>>> can hear ugly and scary beeps from my stereo speakers
->>>> (when they're turned on and when the control is un-muted).
->>>> But that's.. not a solution/answer to the original
->>>> question... ;)
->>>
->>> Try 2.6.31-rc1.  There was a fix regarding beep frequency.
->>
->> Not necessarily.  Based on the OP's original post, as well as his mails
->> to the LKML (Google the subject line to find them), he has a desktop
->> system with external powered speakers connected to a sound card, and also
->> a small PC speaker inside the system case.  He wants to hear the beeps
->> coming out of the small speaker, since the external speakers (and/or sound
->> card) are not always turned on.
+On Mon, Jun 15, 2009 at 18:17, Gernot
+Kohlhaas<gernot.kohlhaas@googlemail.com> wrote:
 >
-> To avoid someone misunderstanding: the beep routed through HD-audio
-> can also go to the built-in speaker.  It's just mixed up with the
-> normal audio output, and the volume is controlled via ALSA mixer
-> volume element.
+> No crashes. Everything's running fine now :)
+> Thank you very much!
 >
-> But, once after it's hooked up to the codec, the beep can't be output
-> separately to the speaker.  It's always with other audio signal to the
-> same output target.
->
-> Or, on some systems (mostly laptops), the beep is hooked up to the
-> codec automatically no matter whether you set
-> CONFIG_SND_HDA_INPUT_BEEP once when the codec chip is initialized.
-> So, the behavior depends pretty much on the hardware implementation.
->
-I face the same problem as the OP since kernel 2.6.30 on ArchLinux on
-a desktop machine. I was able to get beep working through the built in
-speaker again by doing a 'modprobe -r pcspkr' followed by a
-'modprobe pcspkr' after sysinit. It seems there is some kind of
-struggle goinig on here between alsa and pcspkr. Isn't there any
-kernel line or modules configuration option to disable the alsa pc-beep?
+
+Just want to confirm that my card (listed below) works so far (with
+2.6.31-rc1-git3)
+
+On the first module load I got a mesage (I can't remember exactly)
+something like that:
+"XFI" "??" "  " ""
+Unknown hardware... and something with initialization method, but I
+could'nt reproduce this message.
+
+But the first tests with aplay (using all sorts of samplerates) were promising!
+
+01:00.0 Multimedia audio controller: Creative Labs SB X-Fi
+        Subsystem: Creative Labs X-Fi Platinum
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B- DisINTx-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium
+>TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+        Latency: 64 (1000ns min, 1250ns max), Cache Line Size: 16
+bytes
+        Interrupt: pin A routed to IRQ 11
+        Region 0: I/O ports at 8c00 [size=32]
+        Region 1: Memory at eb800000 (64-bit, non-prefetchable)
+[size=2M]
+        Region 3: Memory at e4000000 (64-bit, non-prefetchable)
+[size=64M]
+        Capabilities: [40] Power Management version 2
+                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [50] Message Signalled Interrupts: Mask- 64bit+
+Count=1/1 Enable-
+                Address: 0000000000000000  Data: 0000
+
+01:00.0 0401: 1102:0005
+        Subsystem: 1102:0021
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B- DisINTx-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium
+>TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+        Latency: 64 (1000ns min, 1250ns max), Cache Line Size: 16
+bytes
+        Interrupt: pin A routed to IRQ 11
+        Region 0: I/O ports at 8c00 [size=32]
+        Region 1: Memory at eb800000 (64-bit, non-prefetchable)
+[size=2M]
+        Region 3: Memory at e4000000 (64-bit, non-prefetchable)
+[size=64M]
+        Capabilities: [40] Power Management version 2
+                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [50] Message Signalled Interrupts: Mask- 64bit+
+Count=1/1 Enable-
+                Address: 0000000000000000  Data: 0000
+
+Thanks a lot
+
+kind regrads
+Bjoern
