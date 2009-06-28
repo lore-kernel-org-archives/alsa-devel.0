@@ -1,21 +1,20 @@
-From: Jon Smirl <jonsmirl@gmail.com>
-Subject: Re: [PATCH 2/2] sound/soc: remove BROKEN from Efika
-	and pcm030 fabric drivers
-Date: Sun, 28 Jun 2009 14:06:50 -0400
-Message-ID: <9e4733910906281106s5ecdfd4fl7a54de3a605823ec@mail.gmail.com>
-References: <20090628074109.26905.9927.stgit@localhost.localdomain>
-	<20090628074158.26905.36950.stgit@localhost.localdomain>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH] [RFC] ASoC: OMAP: fix OMAP1510 broken PCM
+ pointer callback
+Date: Sun, 28 Jun 2009 22:37:32 +0300
+Message-ID: <20090628223732.53954402.jhnikula@gmail.com>
+References: <200906280021.05931.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.150])
-	by alsa0.perex.cz (Postfix) with ESMTP id A1618245B7
+Received: from ey-out-2122.google.com (ey-out-2122.google.com [74.125.78.27])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7870F24612
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 Jun 2009 20:06:50 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 5so1607770qwf.56
-	for <alsa-devel@alsa-project.org>; Sun, 28 Jun 2009 11:06:50 -0700 (PDT)
-In-Reply-To: <20090628074158.26905.36950.stgit@localhost.localdomain>
+	Sun, 28 Jun 2009 21:36:53 +0200 (CEST)
+Received: by ey-out-2122.google.com with SMTP id 22so30535eye.47
+	for <alsa-devel@alsa-project.org>; Sun, 28 Jun 2009 12:36:52 -0700 (PDT)
+In-Reply-To: <200906280021.05931.jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,61 +24,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Likely <grant.likely@secretlab.ca>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@sirena.org.uk, timur@freescale.com
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: Tony Lindgren <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jun 28, 2009 at 3:42 AM, Grant Likely<grant.likely@secretlab.ca> wr=
-ote:
-> From: Grant Likely <grant.likely@secretlab.ca>
->
-> The needed spin_event_timeout() macro is now merged in from the
-> powerpc tree, so these drivers are no longer broken. =A0This reverts
-> commit 0c0e09e21a9e7bc6ca54e06ef3d497255ca26383 (ASoC: Mark MPC5200
-> AC97 as BROKEN until PowerPC merge issues are resolved)
->
-> Tested against 2.6.31-rc1.
->
-> Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
+On Sun, 28 Jun 2009 00:21:05 +0200
+Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
 
-Acked-by: Jon Smirl <jonsmirl@gmail.com>
-
+> This patch tries to work around the problem of broken OMAP1510 PCM
+> playback pointer calculation by replacing DMA function call that
+> incorrectly tries to read the value form DMA hardware with a value
+> computed locally from an already maintained variable
+> omap_runtime_data.period_index.
+> 
+> Tested on OMAP5910 based Amstrad Delta (E3) using work in progress
+> ASoC driver.
+> 
+> Based on linux-2.6-asoc.git v2.6.31-rc1.
+> 
+> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
 > ---
->
-> =A0sound/soc/fsl/Kconfig | =A0 =A04 ++--
-> =A01 files changed, 2 insertions(+), 2 deletions(-)
->
->
-> diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-> index 5661876..8cb65cc 100644
-> --- a/sound/soc/fsl/Kconfig
-> +++ b/sound/soc/fsl/Kconfig
-> @@ -41,7 +41,7 @@ config SND_SOC_MPC5200_AC97
->
-> =A0config SND_MPC52xx_SOC_PCM030
-> =A0 =A0 =A0 =A0tristate "SoC AC97 Audio support for Phytec pcm030 and WM9=
-712"
-> - =A0 =A0 =A0 depends on PPC_MPC5200_SIMPLE && BROKEN
-> + =A0 =A0 =A0 depends on PPC_MPC5200_SIMPLE
-> =A0 =A0 =A0 =A0select SND_SOC_MPC5200_AC97
-> =A0 =A0 =A0 =A0select SND_SOC_WM9712
-> =A0 =A0 =A0 =A0help
-> @@ -50,7 +50,7 @@ config SND_MPC52xx_SOC_PCM030
->
-> =A0config SND_MPC52xx_SOC_EFIKA
-> =A0 =A0 =A0 =A0tristate "SoC AC97 Audio support for bbplan Efika and STAC=
-9766"
-> - =A0 =A0 =A0 depends on PPC_EFIKA && BROKEN
-> + =A0 =A0 =A0 depends on PPC_EFIKA
-> =A0 =A0 =A0 =A0select SND_SOC_MPC5200_AC97
-> =A0 =A0 =A0 =A0select SND_SOC_STAC9766
-> =A0 =A0 =A0 =A0help
->
->
+> It seems that on OMAP1510, DMA Channel Progress Counter registers 
+> (DMA_CPC_CH[0-8]) always contain values derived from DMA channels
+> destination port address, even if constant, and there are no DMA
+> registers available that would follow DMA channels source port
+> address. Because of this limitation, current implementation of
+> omap_get_dma_src_pos() for OMAP1510 is broken and doesn't seem to be
+> easy correctable.
+> 
+Hi
+
+Before going into workaround, did you try to change function
+omap_get_dma_src_pos to read CSSA_L instead of CPC in
+arch/arm/plat-omap/dma.c that I was speculating in mail below?
+
+http://mailman.alsa-project.org/pipermail/alsa-devel/2009-June/018569.html
+
+While CPC seems to be correct [1], you mentioned before that patch below
+broke the older ALSA driver so it's worth to find out if the problem
+can be corrected by simple one line fix (or two if omap_get_dma_dst_pos
+need to be fixed as well).
+
+http://marc.info/?l=linux-omap&m=121280267705523
 
 
+-- 
+Jarkko
 
--- =
-
-Jon Smirl
-jonsmirl@gmail.com
+1. http://www.google.com/search?q=spru674
