@@ -1,75 +1,73 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH 62/62] sound: Remove unnecessary semicolons
-Date: Sun, 28 Jun 2009 09:27:07 -0700
-Message-ID: <abb8165c1dd4442d61748f23a8033d8bc8fc8be0.1246173683.git.joe@perches.com>
-References: <cover.1246173664.git.joe@perches.com>
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755969AbZF1Qny@vger.kernel.org>
-In-Reply-To: <cover.1246173664.git.joe@perches.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: trivial@kernel.org, Andrew Morton <akpm@linux-foundation.org>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel@alsa-project.org
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: Re: [PATCH 1/2] alsa/soc: Fix typo in MPC5200 PSC AC97
+	driver Kconfig
+Date: Sun, 28 Jun 2009 14:06:32 -0400
+Message-ID: <9e4733910906281106o6d61a6a6uef9023068415ec5e@mail.gmail.com>
+References: <20090628074109.26905.9927.stgit@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.150])
+	by alsa0.perex.cz (Postfix) with ESMTP id CD957245A5
+	for <alsa-devel@alsa-project.org>;
+	Sun, 28 Jun 2009 20:06:33 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 5so1607770qwf.56
+	for <alsa-devel@alsa-project.org>; Sun, 28 Jun 2009 11:06:32 -0700 (PDT)
+In-Reply-To: <20090628074109.26905.9927.stgit@localhost.localdomain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@sirena.org.uk, timur@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- sound/oss/sys_timer.c               |    3 ---
- sound/soc/codecs/wm9081.c           |    2 +-
- sound/soc/pxa/pxa-ssp.c             |    2 +-
- sound/soc/s3c24xx/s3c24xx_uda134x.c |    2 +-
- 4 files changed, 3 insertions(+), 6 deletions(-)
+On Sun, Jun 28, 2009 at 3:41 AM, Grant Likely<grant.likely@secretlab.ca> wr=
+ote:
+> From: Grant Likely <grant.likely@secretlab.ca>
+>
+> ALSA SoC drivers should be specify SND_SOC_AC97_BUS instead, not AC97_BUS.
+> Without SND_SOC_AC97_BUS defined, an AC97 device will not get correctly
+> registered on the AC97 bus, which prevents thinks like the WM9712
+> touchscreen driver from getting probed.
+>
+> Tested against 2.6.31-rc1.
+>
+> Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
 
-diff --git a/sound/oss/sys_timer.c b/sound/oss/sys_timer.c
-index 1075344..8db6aef 100644
---- a/sound/oss/sys_timer.c
-+++ b/sound/oss/sys_timer.c
-@@ -100,9 +100,6 @@ def_tmr_open(int dev, int mode)
- 	curr_tempo = 60;
- 	curr_timebase = 100;
- 	opened = 1;
--
--	;
--
- 	{
- 		def_tmr.expires = (1) + jiffies;
- 		add_timer(&def_tmr);
-diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
-index 86fc57e..220eebc 100644
---- a/sound/soc/codecs/wm9081.c
-+++ b/sound/soc/codecs/wm9081.c
-@@ -1079,7 +1079,7 @@ static int wm9081_hw_params(struct snd_pcm_substream *substream,
- 		       - wm9081->fs);
- 	for (i = 1; i < ARRAY_SIZE(clk_sys_rates); i++) {
- 		cur_val = abs((wm9081->sysclk_rate /
--			       clk_sys_rates[i].ratio) - wm9081->fs);;
-+			       clk_sys_rates[i].ratio) - wm9081->fs);
- 		if (cur_val < best_val) {
- 			best = i;
- 			best_val = cur_val;
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index 19c4540..af87986 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -351,7 +351,7 @@ static int pxa_ssp_set_dai_pll(struct snd_soc_dai *cpu_dai,
- 			do_div(tmp, freq_out);
- 			val = tmp;
- 
--			val = (val << 16) | 64;;
-+			val = (val << 16) | 64;
- 			ssp_write_reg(ssp, SSACDD, val);
- 
- 			ssacd |= (0x6 << 4);
-diff --git a/sound/soc/s3c24xx/s3c24xx_uda134x.c b/sound/soc/s3c24xx/s3c24xx_uda134x.c
-index 8e79a41..c215d32 100644
---- a/sound/soc/s3c24xx/s3c24xx_uda134x.c
-+++ b/sound/soc/s3c24xx/s3c24xx_uda134x.c
-@@ -67,7 +67,7 @@ static int s3c24xx_uda134x_startup(struct snd_pcm_substream *substream)
- {
- 	int ret = 0;
- #ifdef ENFORCE_RATES
--	struct snd_pcm_runtime *runtime = substream->runtime;;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
- #endif
- 
- 	mutex_lock(&clk_lock);
--- 
-1.6.3.1.10.g659a0.dirty
+Acked-by: Jon Smirl <jonsmirl@gmail.com>
+
+> ---
+>
+> =A0sound/soc/fsl/Kconfig | =A0 =A02 +-
+> =A01 files changed, 1 insertions(+), 1 deletions(-)
+>
+>
+> diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+> index 5dbebf8..5661876 100644
+> --- a/sound/soc/fsl/Kconfig
+> +++ b/sound/soc/fsl/Kconfig
+> @@ -33,7 +33,7 @@ config SND_SOC_MPC5200_I2S
+> =A0config SND_SOC_MPC5200_AC97
+> =A0 =A0 =A0 =A0tristate "Freescale MPC5200 PSC in AC97 mode driver"
+> =A0 =A0 =A0 =A0depends on PPC_MPC52xx && PPC_BESTCOMM
+> - =A0 =A0 =A0 select AC97_BUS
+> + =A0 =A0 =A0 select SND_SOC_AC97_BUS
+> =A0 =A0 =A0 =A0select SND_MPC52xx_DMA
+> =A0 =A0 =A0 =A0select PPC_BESTCOMM_GEN_BD
+> =A0 =A0 =A0 =A0help
+>
+>
+
+
+
+-- =
+
+Jon Smirl
+jonsmirl@gmail.com
