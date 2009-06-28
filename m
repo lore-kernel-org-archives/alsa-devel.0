@@ -1,41 +1,86 @@
-From: Bob Copeland <me@bobcopeland.com>
-Subject: Re: kerneloops.org report for the week of June 14 2009
-Date: Sun, 28 Jun 2009 05:11:54 -0400
-Message-ID: <b6c5339f0906280211n21287f68p6455890fd860c44@mail.gmail.com>
-References: <20090614173331.18f01123@infradead.org>
-	 <b6c5339f0906181008v1cd4b06aof866ea9a91d2eb84@mail.gmail.com>
-	 <20090618223238.4d6b6707@infradead.org>
+From: "Kurt J. Bosch" <kjb-temp-2006@gmx.de>
+Subject: Re: PC speaker beeps in 2.6.30?
+Date: Sun, 28 Jun 2009 13:09:26 +0200
+Message-ID: <h27j15$g1d$1@ger.gmane.org>
+References: <4A365DA6.8000102@msgid.tls.msk.ru>	<4A4464CA.4060006@msgid.tls.msk.ru>
+	<s5hws6y86wl.wl%tiwai@suse.de>	<20090628063908.GA2089@math.berkeley.edu>
+	<s5h4ou0n468.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754806AbZF1JMG@vger.kernel.org>
-In-Reply-To: <20090618223238.4d6b6707@infradead.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arjan van de Ven <arjan@infradead.org>
-Cc: linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, tglx@tglx.de, alan@lxorguk.ukuu.org.uk, rjw@sisk.pl, netdev@vger.kernel.org, mingo@elte.hu, dwmw2@infradead.org, alsa-devel@alsa-project.org, dri-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 681BB243C2
+	for <alsa-devel@alsa-project.org>;
+	Sun, 28 Jun 2009 13:20:03 +0200 (CEST)
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1MKsQU-0003WU-Ad
+	for alsa-devel@alsa-project.org; Sun, 28 Jun 2009 11:20:02 +0000
+Received: from agsb-5d869ee5.pool.einsundeins.de ([93.134.158.229])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sun, 28 Jun 2009 11:20:02 +0000
+Received: from kjb-temp-2006 by agsb-5d869ee5.pool.einsundeins.de with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sun, 28 Jun 2009 11:20:02 +0000
+In-Reply-To: <s5h4ou0n468.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 19, 2009 at 1:32 AM, Arjan van de Ven<arjan@infradead.org> =
-wrote:
-> On Thu, 18 Jun 2009 13:08:39 -0400
-> Bob Copeland <me@bobcopeland.com> wrote:
->> > Rank 9: minstrel_get_rate (warning)
+On 2009-06-28 10:38, Takashi Iwai wrote:
+> At Sat, 27 Jun 2009 23:39:08 -0700,
+> Paul Vojta wrote:
 >>
->> I believe this is fixed by http://lkml.org/lkml/2009/6/5/269, now
->> in pre-2.6.31. =A0Hmm, odd though, we should be seeing reports from
->> other wireless drivers since it's a general memory corruption
->> unrelated to ath5k (but not all use the mac80211 rate controllers).
+>> On Sat, Jun 27, 2009 at 09:36:42AM +0200, Takashi Iwai wrote:
+>>> At Fri, 26 Jun 2009 10:03:54 +0400,
+>>> Michael Tokarev wrote:
+>>>>
+>>>> [Adding some more Cc's...]
+>>>>
+>>>> Am I the only concerned about this?  My 2.6.30 is still
+>>>> silent w.r.t. old good PC speaker beeps, and I wasn't
+>>>> able to make it to produce any sound.  Yes, as pointed
+>>>> out by others there is a control now, in alsa, and I
+>>>> can hear ugly and scary beeps from my stereo speakers
+>>>> (when they're turned on and when the control is un-muted).
+>>>> But that's.. not a solution/answer to the original
+>>>> question... ;)
+>>>
+>>> Try 2.6.31-rc1.  There was a fix regarding beep frequency.
+>>
+>> Not necessarily.  Based on the OP's original post, as well as his mails
+>> to the LKML (Google the subject line to find them), he has a desktop
+>> system with external powered speakers connected to a sound card, and also
+>> a small PC speaker inside the system case.  He wants to hear the beeps
+>> coming out of the small speaker, since the external speakers (and/or sound
+>> card) are not always turned on.
 >
-> well.. out of the 534 reports or so that I have by now... 525 have
-> ath5k loaded.....
+> To avoid someone misunderstanding: the beep routed through HD-audio
+> can also go to the built-in speaker.  It's just mixed up with the
+> normal audio output, and the volume is controlled via ALSA mixer
+> volume element.
 >
-> it's not 100% but it'd pretty close.
-
-Indeed, I can replicate this now, looks like some kind of race conditio=
-n
-since it's looking for a rate in the 5 ghz band while I'm communicating
-with a 2 ghz AP (during a scan perhaps?).  The warning is harmless but
-there is some underlying issue to be fixed.
-
---=20
-Bob Copeland %% www.bobcopeland.com
+> But, once after it's hooked up to the codec, the beep can't be output
+> separately to the speaker.  It's always with other audio signal to the
+> same output target.
+>
+> Or, on some systems (mostly laptops), the beep is hooked up to the
+> codec automatically no matter whether you set
+> CONFIG_SND_HDA_INPUT_BEEP once when the codec chip is initialized.
+> So, the behavior depends pretty much on the hardware implementation.
+>
+I face the same problem as the OP since kernel 2.6.30 on ArchLinux on
+a desktop machine. I was able to get beep working through the built in
+speaker again by doing a 'modprobe -r pcspkr' followed by a
+'modprobe pcspkr' after sysinit. It seems there is some kind of
+struggle goinig on here between alsa and pcspkr. Isn't there any
+kernel line or modules configuration option to disable the alsa pc-beep?
