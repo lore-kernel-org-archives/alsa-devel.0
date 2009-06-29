@@ -1,19 +1,22 @@
-From: Paul Fertser <fercerpav@gmail.com>
-Subject: External PCM hook SO is dlclosed after calling install,
-	making it	hard to have hooks in it
-Date: Tue, 30 Jun 2009 02:11:01 +0400
-Message-ID: <20090629221101.GD23025@home.pavel.comp>
+From: Paul Vojta <vojta@math.berkeley.edu>
+Subject: Re: PC speaker beeps in 2.6.30?
+Date: Mon, 29 Jun 2009 16:24:14 -0700
+Message-ID: <20090629232414.GA4234@math.berkeley.edu>
+References: <4A365DA6.8000102@msgid.tls.msk.ru>
+	<4A4464CA.4060006@msgid.tls.msk.ru> <s5hws6y86wl.wl%tiwai@suse.de>
+	<20090628063908.GA2089@math.berkeley.edu>
+	<s5h4ou0n468.wl%tiwai@suse.de> <h27j15$g1d$1@ger.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id 79D1210380C
+Received: from panda.math.berkeley.edu (panda.Math.Berkeley.EDU
+	[128.32.238.142])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6228524967
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 Jun 2009 00:11:54 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id 13so574640fge.21
-	for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2009 15:11:53 -0700 (PDT)
+	Tue, 30 Jun 2009 01:24:17 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <h27j15$g1d$1@ger.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,35 +26,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Joerg Reisenweber <joerg@openmoko.org>
+To: "Kurt J. Bosch" <kjb-temp-2006@gmx.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sun, Jun 28, 2009 at 01:09:26PM +0200, Kurt J. Bosch wrote:
+> On 2009-06-28 10:38, Takashi Iwai wrote:
+> > At Sat, 27 Jun 2009 23:39:08 -0700,
+> > Paul Vojta wrote:
+> >>
+> >> On Sat, Jun 27, 2009 at 09:36:42AM +0200, Takashi Iwai wrote:
+> >>> At Fri, 26 Jun 2009 10:03:54 +0400,
+> >>> Michael Tokarev wrote:
+> >>>>
+> >>>> [Adding some more Cc's...]
+> >>>>
+> >>>> Am I the only concerned about this?  My 2.6.30 is still
+> >>>> silent w.r.t. old good PC speaker beeps, and I wasn't
+> >>>> able to make it to produce any sound.  Yes, as pointed
+> >>>> out by others there is a control now, in alsa, and I
+> >>>> can hear ugly and scary beeps from my stereo speakers
+> >>>> (when they're turned on and when the control is un-muted).
+> >>>> But that's.. not a solution/answer to the original
+> >>>> question... ;)
+> >>>
+> >>> Try 2.6.31-rc1.  There was a fix regarding beep frequency.
+> >>
+> >> Not necessarily.  Based on the OP's original post, as well as his mails
+> >> to the LKML (Google the subject line to find them), he has a desktop
+> >> system with external powered speakers connected to a sound card, and also
+> >> a small PC speaker inside the system case.  He wants to hear the beeps
+> >> coming out of the small speaker, since the external speakers (and/or sound
+> >> card) are not always turned on.
+> >
+> > To avoid someone misunderstanding: the beep routed through HD-audio
+> > can also go to the built-in speaker.  It's just mixed up with the
+> > normal audio output, and the volume is controlled via ALSA mixer
+> > volume element.
+> >
+> > But, once after it's hooked up to the codec, the beep can't be output
+> > separately to the speaker.  It's always with other audio signal to the
+> > same output target.
+> >
+> > Or, on some systems (mostly laptops), the beep is hooked up to the
+> > codec automatically no matter whether you set
+> > CONFIG_SND_HDA_INPUT_BEEP once when the codec chip is initialized.
+> > So, the behavior depends pretty much on the hardware implementation.
+> >
+> I face the same problem as the OP since kernel 2.6.30 on ArchLinux on
+> a desktop machine. I was able to get beep working through the built in
+> speaker again by doing a 'modprobe -r pcspkr' followed by a
+> 'modprobe pcspkr' after sysinit. It seems there is some kind of
+> struggle goinig on here between alsa and pcspkr. Isn't there any
+> kernel line or modules configuration option to disable the alsa pc-beep?
 
-I've tried to implement an external shared object to be able to
-execute arbitrary functions on PCM device opening and closing. After
-quite some source code reading i had an almost working but segfaulting
-example. This segfault is because snd_dlclose is called right after
-calling a hook install function and therefore i can't snd_pcm_hook_add
-functions from the same shared object. To me it looks like a bug but
-probably i just don't see how this functionality is intended to be
-used. Takashi, git-blame showed that it's you who stuffed this dlclose
-call that bothers me ;)
+Hm... apparently not.  Probably there should be a module option for this, though.
 
-TIA
-
-Background information:
-
-We're working on audio subsystem for OpenMoko Freerunner. It's an idea
-of Joerg Reisenweber to have virtual alsa devices for every reasonable
-use-case (like dedicated device for stereout, dedicated device for
-recording from gsm etc), for that we need a hook on every device
-opening and closing mostly to set up routing inside WM8753
-codec. ctl_elems is not enough because we need a more complex locking
-scheme (with priorities, some kind of callbacks to the apps using
-particular devices etc) and other flexibility.
-
--- 
-Be free, use free (http://www.gnu.org/philosophy/free-sw.html) software!
-mailto:fercerpav@gmail.com
+--Paul Vojta, vojta@math.berkeley.edu
