@@ -1,46 +1,42 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] Can a phone hook switch follow alsa jack model?
-Date: Mon, 29 Jun 2009 15:32:15 +0100
-Message-ID: <20090629143215.GA23835@rakim.wolfsonmicro.main>
-References: <4A40D896.8010208@tis.icnet.pl>
- <20090623222255.GA5617@sirena.org.uk>
- <4A4229EB.2090606@tis.icnet.pl>
- <20090625110508.GF17812@sirena.org.uk>
- <4A437226.4090202@tis.icnet.pl>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: IMX31 Audio Driver issue
+Date: Mon, 29 Jun 2009 17:47:06 +0200
+Message-ID: <20090629154706.GH29236@buzzloop.caiaq.de>
+References: <7df11cd50906250152u500a6a06ud7093d996c3e2b67@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id D6A9B24834
+	for <alsa-devel@alsa-project.org>;
+	Mon, 29 Jun 2009 17:47:10 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4A437226.4090202@tis.icnet.pl>
-Sender: linux-omap-owner@vger.kernel.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: Jonathan McDowell <noodles@earth.li>, alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, linux-input@vger.kernel.org
+In-Reply-To: <7df11cd50906250152u500a6a06ud7093d996c3e2b67@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Harish Kumar <harishkumarb7@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 25, 2009 at 02:48:38PM +0200, Janusz Krzysztofik wrote:
+On Thu, Jun 25, 2009 at 02:22:14PM +0530, Harish Kumar wrote:
+> I am using a imx31 based board from Garz & fricke. I need to configure the
+> audio driver from the linux 2.6.23 BSP available. I configured the audio
+> driver by selecting the SSI, ALSA & PMIC Audio options in the kernel
+> configuration. The PMIC Audio card is listing /proc/asound/cards and all the
+> necessary devices are created using the udev available on the rootfs.
 
-> During my previous, gpio-keys based attempt, I submitted a patch
-> that added new SW_HANDSET_PICK_UP event definition to
-> include/linux/input.h. Even if not accepted because of no
+The PMIC stuff for MX3 was not yet merged upstream, so what you got is
+probably some hackish pieces taken from any of Freescale's BSPs. Very
+hard to give any valuable hint, though.
 
-Something like hook switch would be a more common name - the switch is
-closed when the phone is on hook.
+Is anyone working on some clean and sane patches for this hardware?
 
-> comments, especially on the name I have choosen. However, there were
-> another name proposed by ams-delta board maintainer, Jonathan
-> McDowell - SW_PHONE_HOOK. Even if my wording may better match those
-> already existing ..._INSERT names, I am not sure which one should I
-> use.
-
-The _INSERT isn't at all appropriate since there's nothing being
-inserted here - the _INSERT names refer to the fact that something is
-being plugged in to a jack.
-
-> Please also note that SND_JACK_HEADSET, that I temporarily use for
-> now, is an alias for SND_JACK_HEADPHONE | SND_JACK_MICROPHONE. Those
-> two can be seen as matching what a handset actually is. On headset
-> jack insert/remove, two distinct reports/events are generated, one
-
-OTOH a phone going on hook tends to mean something rather different in
-UI terms to having something plugged into a jack - it's part of the
-normal flow of making a phone call.
+Daniel
