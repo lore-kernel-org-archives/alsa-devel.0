@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: IMX31 Audio Driver issue
-Date: Mon, 29 Jun 2009 16:51:20 +0100
-Message-ID: <20090629155119.GG11855@sirena.org.uk>
-References: <7df11cd50906250152u500a6a06ud7093d996c3e2b67@mail.gmail.com>
-	<20090629154706.GH29236@buzzloop.caiaq.de>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: Can a phone hook switch follow alsa jack model?
+Date: Mon, 29 Jun 2009 18:35:58 +0200
+Message-ID: <200906291835.59534.jkrzyszt@tis.icnet.pl>
+References: <4A40D896.8010208@tis.icnet.pl> <4A437226.4090202@tis.icnet.pl>
+	<20090629143215.GA23835@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1913F24837
+Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id CEEF924862
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Jun 2009 17:51:22 +0200 (CEST)
+	Mon, 29 Jun 2009 18:36:55 +0200 (CEST)
+In-Reply-To: <20090629143215.GA23835@rakim.wolfsonmicro.main>
 Content-Disposition: inline
-In-Reply-To: <20090629154706.GH29236@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,16 +23,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Harish Kumar <harishkumarb7@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: linux-input@vger.kernel.org, alsa-devel@alsa-project.org, Jonathan McDowell <noodles@earth.li>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 29, 2009 at 05:47:06PM +0200, Daniel Mack wrote:
+On Monday 29 June 2009 16:32:15 Mark Brown wrote:
+> On Thu, Jun 25, 2009 at 02:48:38PM +0200, Janusz Krzysztofik wrote:
+> > During my previous, gpio-keys based attempt, I submitted a patch
+> > that added new SW_HANDSET_PICK_UP event definition to
+> > include/linux/input.h. Even if not accepted because of no
+>
+> Something like hook switch would be a more common name - the switch is
+> closed when the phone is on hook.
 
-> Is anyone working on some clean and sane patches for this hardware?
+I guess so.
 
-Freescale have some patches in the Ubuntu Jaunty kernel (2.6.28 based)
-which didn't look screamingly awful, at least not for the audio side.  I
-got them building but didn't get round to kicking the SDMA code yet.
-Last I heard from the Ubuntu guys they were supposed to be trying to
-upstream but I've not seen any sign of that yet.
+> > comments, especially on the name I have choosen. However, there were
+> > another name proposed by ams-delta board maintainer, Jonathan
+> > McDowell - SW_PHONE_HOOK. Even if my wording may better match those
+> > already existing ..._INSERT names, I am not sure which one should I
+> > use.
+>
+> The _INSERT isn't at all appropriate since there's nothing being
+> inserted here - the _INSERT names refer to the fact that something is
+> being plugged in to a jack.
+
+Sure, that's why I tried to replace _INSERT with _PICK_UP, that probably can 
+closely refer to what can happen to a handset, while still following the 
+general trend of ending switch related event names with action names.
+
+> > Please also note that SND_JACK_HEADSET, that I temporarily use for
+> > now, is an alias for SND_JACK_HEADPHONE | SND_JACK_MICROPHONE. Those
+> > two can be seen as matching what a handset actually is. On headset
+> > jack insert/remove, two distinct reports/events are generated, one
+>
+> OTOH a phone going on hook tends to mean something rather different in
+> UI terms to having something plugged into a jack - it's part of the
+> normal flow of making a phone call.
+
+That's how I argued once in my message to Jonathan:
+> I have choosen a different name to distinguish the switch actual function
+> from what we know from telephony world as a switch that connects a phone to
+> a line in response to a handset pick up.
+
+Mark,
+Thanks for sharing your thoughts. I am not going to waste your time on this 
+linguistic debate any more. For now, I keep on using SND_JACK_HEADSET unless 
+somebody happens to hit upon a better idea. If there are no other votes, I 
+will try to work out a consistent set of symbols using one or another of 
+already considered names that would best match current naming schema.
+
+Cheers,
+Janusz
