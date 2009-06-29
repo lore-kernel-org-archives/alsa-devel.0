@@ -1,19 +1,18 @@
-From: Nicolas George <nicolas.george@normalesup.org>
-Subject: Bug #4560: USB webcam Philips SPC 530NC micro not
-	working
-Date: Mon, 29 Jun 2009 12:35:42 +0200
-Message-ID: <20090629103542.GA19029@phare.normalesup.org>
+From: Daniel Drake <dsd@laptop.org>
+Subject: Conexant CX20582 HDA codec support
+Date: Mon, 29 Jun 2009 13:10:53 +0100
+Message-ID: <1246277454.2182.6.camel@polyethylene>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7368939368001932284=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nef2.ens.fr (nef2.ens.fr [129.199.96.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 99C44103812
+Received: from mail-ew0-f226.google.com (mail-ew0-f226.google.com
+	[209.85.219.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3BEB3103812
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Jun 2009 12:35:44 +0200 (CEST)
-Received: from phare.normalesup.org (phare.normalesup.org [129.199.129.80])
-	by nef2.ens.fr (8.13.6/1.01.28121999) with ESMTP id n5TAZgnw057480
-	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Jun 2009 12:35:42 +0200 (CEST)
+	Mon, 29 Jun 2009 14:10:59 +0200 (CEST)
+Received: by ewy26 with SMTP id 26so3307565ewy.32
+	for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2009 05:10:58 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,64 +25,49 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============7368939368001932284==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xHFwDpU9dbj6ez1V"
-Content-Disposition: inline
+I'm working on some sound issues with the new OLPC XO-1.5 alpha board.
+This laptop is now based on a VIA VX855 chipset and our board includes a
+CX20582-10Q HDA codec. We are running kernel v2.6.30.
+
+We have a few issues, which are:
+
+1. Volume range is ridiculous, you can go all the way down to -74dB
+gain.  Beyond -42dB you can barely hear anything from the speakers, and
+I note that all my other systems only go down as far as -46.5dB.
+
+2. No microphone automute. The internal microphone continues recording
+sound while there is an external one plugged in.
+
+3. No speaker automute. The internal speakers continue playing sound
+while there are headphones plugged in.
+
+4. Mixer arrangement is odd. There are 3 microphones: Mic, Mic 1, and
+Mic 2. Mic (the default) records nothing. Mic 1 and Mic 2 both seem to
+behave the same, and record from both internal and external microphones.
 
 
---xHFwDpU9dbj6ez1V
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I looked into adding some quirks into patch_conexant.c to hopefully
+solve some of the above. However I note that there is no support for the
+CX20582, hence the generic HDA parser is being used. How has support for
+the other CX chips been developed -- are datasheets always required?
+(I'll try and get hold of one anyway)
 
-Hi.
+Here is some more info.
+codec dump
+http://dev.laptop.org/~dsd/20090629/codec0.txt
 
-Some time ago, I submitted a bug about the integrated micro of the USB
-webcam Philips SPC 530NC:
+codec graph
+http://dev.laptop.org/~dsd/20090629/codecgraph.svg
 
-record: pcm_read:1617: read error: Input/output error
+lspci entry
+http://dev.laptop.org/~dsd/20090629/lspci-entry.txt
 
-This is bug #4560:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D4560
+verbose dmesg from probing
+http://dev.laptop.org/~dsd/20090629/dmesg-probe.txt
 
-I would really appreciate if someone familiar with the USB audio system
-could give it some attention.
 
-It is probably very similar to bug #3927. Raymond seems to have been able to
-help somewhat, but the command that is said to work for the reporter does
-not work for me.
-
-Regards,
-
---=20
-  Nicolas George
-
---xHFwDpU9dbj6ez1V
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkpImP4ACgkQsGPZlzblTJPATQCgrbf+c+jFD5nAOA0ZMPIoi9jg
-r+IAn2VF5xJxxZ/VV4kg+QIfLPA6bgmP
-=F2f3
------END PGP SIGNATURE-----
-
---xHFwDpU9dbj6ez1V--
-
---===============7368939368001932284==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============7368939368001932284==--
+Any thoughts/input appreciated!
+Thanks,
+Daniel
