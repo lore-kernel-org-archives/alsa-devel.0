@@ -1,21 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH] [RFC] ASoC: OMAP: fix OMAP1510 broken PCM
-	pointer callback
-Date: Mon, 29 Jun 2009 09:37:58 +0300
-Message-ID: <200906290937.58786.peter.ujfalusi@nokia.com>
-References: <200906280021.05931.jkrzyszt@tis.icnet.pl>
-	<20090628223732.53954402.jhnikula@gmail.com>
-	<200906290008.59640.jkrzyszt@tis.icnet.pl>
+From: Martin Egge <mailinglists@martin.egge.info>
+Subject: Re:
+ =?iso-8859-15?q?Samsung_P50_Heaphone_Jack-Sense_not_?=
+ =?iso-8859-15?q?working_with=09latest_ALSA?=
+Date: Mon, 29 Jun 2009 08:43:05 +0200
+Message-ID: <200906290843.06029.mailinglists@martin.egge.info>
+References: <200906231425.47946.mailinglists@martin.egge.info>
+	<200906250835.15497.mailinglists@martin.egge.info>
+	<s5hiqikn6uj.wl%tiwai@suse.de>
+	(sfid-20090625_085651_193723_71F458B0)
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============4999784287694585627=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 857C32480F
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.10])
+	by alsa0.perex.cz (Postfix) with ESMTP id 333EC103806
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Jun 2009 08:38:11 +0200 (CEST)
-In-Reply-To: <200906290008.59640.jkrzyszt@tis.icnet.pl>
-Content-Disposition: inline
+	Mon, 29 Jun 2009 08:43:14 +0200 (CEST)
+In-Reply-To: <s5hiqikn6uj.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,84 +25,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: Tony Lindgren <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 29 June 2009 01:08:59 ext Janusz Krzysztofik wrote:
+--===============4999784287694585627==
+Content-Type: multipart/signed;
+  boundary="nextPart10224404.sQk4VFM8K2";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+
+--nextPart10224404.sQk4VFM8K2
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+Hi Takashi,
+
+Am Donnerstag 25 Juni 2009 schrieb Takashi Iwai:
+> At Thu, 25 Jun 2009 08:35:08 +0200,
 >
-> AFAIK, both CSSA_L and CDSA_L DMA registers are static. Loaded by CPU with
-> 16 LSB of initial source and destination port addresses respectively, they
-> are never updated by the DMA engine itself. That's why they can't be used
-> for transfer progress indication unless updated by CPU.
+> Martin Egge wrote:
+> [...]
+> > So, what went wrong?
 >
-> The old omap-alsa driver was just updating them, intentionally or not, by
-> reprogramming and restarting DMA every PCM period. That's why calculating
-> PCM pointers from CSSA_L/CDSA_L worked.
->
-> ASoC OMAP driver transfers whole PCM buffer with single DMA transfer, so =
-it
-> doesn't need to update DMA source/destination port address after initial
-> playback/capture setup, even if restarting DMA, and actually never does
-> this. Calculating PCM pointers from CSSA_L/CDSA_L registers without
-> updating them every period would then be wrong.
->
-> For capture, reading CPC, that follows destination port address progress,
-> just works fine (for both old and new driver). For playback, similar
-> hardware functionality seems to be missing, so it has to be emulated in
-> software if required.
+> You must have saved the patch file wrongly.  Maybe your MUA broke
+> text lines badly.
 
-Hmmm, I had taken a look at the 2.4.21 kernel sources, which I have laying =
+It seems that my webmail interface (Squirrelmail) has messed up spaces and=
+=20
+tabulators.
 
-around in my disk from an old project which used OMAP1510. The OSS audio co=
-de =
+> Below is an attachment of the same patch.  Try this again.
 
-does use the CPC register for determining the DMA progress both for playbac=
-k =
+Great Thanks. This time I could apply the patch. The patch has solved my=20
+problem.
 
-and recording. I know that the audio was working OK on that board, since we =
 
-had doom running there.
-The difference that I can see is that the OSS code also configured the =
+Martin
 
-CCR:SYNC(4:0) bits as well.
-Looking at the DMA_CPC register description in the OMAP1510 TRM: it list tw=
-o =
+--nextPart10224404.sQk4VFM8K2
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-cases on how it behaves and both require the DMA_CCR:SYNC !=3D 0...
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
 
-The current DMA code for OMAP1510 just plain ignores the DMA_CCR:SYNC for s=
-ome =
+iEYEABECAAYFAkpIYnkACgkQVG/GfU56d2zIMwCfQrX5A7QWjoGiBER5nJl+y0kA
+x6wAnRJuwcXxTg4u5G2kaTUojI1OkXPr
+=yEsY
+-----END PGP SIGNATURE-----
 
-reason.
-Can you try the following patch:
+--nextPart10224404.sQk4VFM8K2--
 
-iff --git a/arch/arm/plat-omap/dma.c b/arch/arm/plat-omap/dma.c
-index 7fc8c04..38874e4 100644
---- a/arch/arm/plat-omap/dma.c
-+++ b/arch/arm/plat-omap/dma.c
-@@ -266,6 +266,8 @@ void omap_set_dma_transfer_params(int lch, int data_typ=
-e, =
+--===============4999784287694585627==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-int elem_count,
-                ccr &=3D ~(1 << 5);
-                if (sync_mode =3D=3D OMAP_DMA_SYNC_FRAME)
-                        ccr |=3D 1 << 5;
-+               if (dma_trigger)
-+                       ccr |=3D dma_trigger & 0x1f;
-                dma_write(ccr, CCR(lch));
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-                ccr =3D dma_read(CCR2(lch));
-
-Than can you print out in case of playback both the destination and source =
-
-addresses supplied to the DMA, than in the pointer callback also print out =
-the =
-
-value returned by the omap_get_dma_src_pos function to see if this actually =
-
-helps?
-
--- =
-
-P=E9ter
+--===============4999784287694585627==--
