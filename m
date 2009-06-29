@@ -1,22 +1,19 @@
-From: Paul Vojta <vojta@math.berkeley.edu>
-Subject: Re: PC speaker beeps in 2.6.30?
-Date: Mon, 29 Jun 2009 16:24:14 -0700
-Message-ID: <20090629232414.GA4234@math.berkeley.edu>
-References: <4A365DA6.8000102@msgid.tls.msk.ru>
-	<4A4464CA.4060006@msgid.tls.msk.ru> <s5hws6y86wl.wl%tiwai@suse.de>
-	<20090628063908.GA2089@math.berkeley.edu>
-	<s5h4ou0n468.wl%tiwai@suse.de> <h27j15$g1d$1@ger.gmane.org>
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: [PATCH] alsa/soc: add locking to mpc5200-psc-ac97
+	driver
+Date: Mon, 29 Jun 2009 17:42:21 -0600
+Message-ID: <20090629234214.12670.9082.stgit@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from panda.math.berkeley.edu (panda.Math.Berkeley.EDU
-	[128.32.238.142])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6228524967
+Received: from mail-px0-f200.google.com (mail-px0-f200.google.com
+	[209.85.216.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id CD7A41037F3
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 Jun 2009 01:24:17 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <h27j15$g1d$1@ger.gmane.org>
+	Tue, 30 Jun 2009 01:42:25 +0200 (CEST)
+Received: by pxi38 with SMTP id 38so1313190pxi.16
+	for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2009 16:42:24 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,60 +23,113 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Kurt J. Bosch" <kjb-temp-2006@gmx.de>
-Cc: alsa-devel@alsa-project.org
+To: jonsmirl@gmail.com, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@sirena.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jun 28, 2009 at 01:09:26PM +0200, Kurt J. Bosch wrote:
-> On 2009-06-28 10:38, Takashi Iwai wrote:
-> > At Sat, 27 Jun 2009 23:39:08 -0700,
-> > Paul Vojta wrote:
-> >>
-> >> On Sat, Jun 27, 2009 at 09:36:42AM +0200, Takashi Iwai wrote:
-> >>> At Fri, 26 Jun 2009 10:03:54 +0400,
-> >>> Michael Tokarev wrote:
-> >>>>
-> >>>> [Adding some more Cc's...]
-> >>>>
-> >>>> Am I the only concerned about this?  My 2.6.30 is still
-> >>>> silent w.r.t. old good PC speaker beeps, and I wasn't
-> >>>> able to make it to produce any sound.  Yes, as pointed
-> >>>> out by others there is a control now, in alsa, and I
-> >>>> can hear ugly and scary beeps from my stereo speakers
-> >>>> (when they're turned on and when the control is un-muted).
-> >>>> But that's.. not a solution/answer to the original
-> >>>> question... ;)
-> >>>
-> >>> Try 2.6.31-rc1.  There was a fix regarding beep frequency.
-> >>
-> >> Not necessarily.  Based on the OP's original post, as well as his mails
-> >> to the LKML (Google the subject line to find them), he has a desktop
-> >> system with external powered speakers connected to a sound card, and also
-> >> a small PC speaker inside the system case.  He wants to hear the beeps
-> >> coming out of the small speaker, since the external speakers (and/or sound
-> >> card) are not always turned on.
-> >
-> > To avoid someone misunderstanding: the beep routed through HD-audio
-> > can also go to the built-in speaker.  It's just mixed up with the
-> > normal audio output, and the volume is controlled via ALSA mixer
-> > volume element.
-> >
-> > But, once after it's hooked up to the codec, the beep can't be output
-> > separately to the speaker.  It's always with other audio signal to the
-> > same output target.
-> >
-> > Or, on some systems (mostly laptops), the beep is hooked up to the
-> > codec automatically no matter whether you set
-> > CONFIG_SND_HDA_INPUT_BEEP once when the codec chip is initialized.
-> > So, the behavior depends pretty much on the hardware implementation.
-> >
-> I face the same problem as the OP since kernel 2.6.30 on ArchLinux on
-> a desktop machine. I was able to get beep working through the built in
-> speaker again by doing a 'modprobe -r pcspkr' followed by a
-> 'modprobe pcspkr' after sysinit. It seems there is some kind of
-> struggle goinig on here between alsa and pcspkr. Isn't there any
-> kernel line or modules configuration option to disable the alsa pc-beep?
+From: Grant Likely <grant.likely@secretlab.ca>
 
-Hm... apparently not.  Probably there should be a module option for this, though.
+AC97 bus register read/write hooks need to provide locking, but the
+mpc5200-psc-ac97 driver does not.  This patch adds a mutex around
+the register access routines.
 
---Paul Vojta, vojta@math.berkeley.edu
+Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
+---
+
+ sound/soc/fsl/mpc5200_dma.c      |    1 +
+ sound/soc/fsl/mpc5200_dma.h      |    1 +
+ sound/soc/fsl/mpc5200_psc_ac97.c |   17 ++++++++++++++++-
+ 3 files changed, 18 insertions(+), 1 deletions(-)
+
+
+diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
+index efec33a..f0a2d40 100644
+--- a/sound/soc/fsl/mpc5200_dma.c
++++ b/sound/soc/fsl/mpc5200_dma.c
+@@ -456,6 +456,7 @@ int mpc5200_audio_dma_create(struct of_device *op)
+ 		return -ENODEV;
+ 
+ 	spin_lock_init(&psc_dma->lock);
++	mutex_init(&psc_dma->mutex);
+ 	psc_dma->id = be32_to_cpu(*prop);
+ 	psc_dma->irq = irq;
+ 	psc_dma->psc_regs = regs;
+diff --git a/sound/soc/fsl/mpc5200_dma.h b/sound/soc/fsl/mpc5200_dma.h
+index 2000803..8d396bb 100644
+--- a/sound/soc/fsl/mpc5200_dma.h
++++ b/sound/soc/fsl/mpc5200_dma.h
+@@ -55,6 +55,7 @@ struct psc_dma {
+ 	unsigned int irq;
+ 	struct device *dev;
+ 	spinlock_t lock;
++	struct mutex mutex;
+ 	u32 sicr;
+ 	uint sysclk;
+ 	int imr;
+diff --git a/sound/soc/fsl/mpc5200_psc_ac97.c b/sound/soc/fsl/mpc5200_psc_ac97.c
+index 794a247..7eb5499 100644
+--- a/sound/soc/fsl/mpc5200_psc_ac97.c
++++ b/sound/soc/fsl/mpc5200_psc_ac97.c
+@@ -34,13 +34,20 @@ static unsigned short psc_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
+ 	int status;
+ 	unsigned int val;
+ 
++	mutex_lock(&psc_dma->mutex);
++
+ 	/* Wait for command send status zero = ready */
+ 	status = spin_event_timeout(!(in_be16(&psc_dma->psc_regs->sr_csr.status) &
+ 				MPC52xx_PSC_SR_CMDSEND), 100, 0);
+ 	if (status == 0) {
+ 		pr_err("timeout on ac97 bus (rdy)\n");
++		mutex_unlock(&psc_dma->mutex);
+ 		return -ENODEV;
+ 	}
++
++	/* Force clear the data valid bit */
++	in_be32(&psc_dma->psc_regs->ac97_data);
++
+ 	/* Send the read */
+ 	out_be32(&psc_dma->psc_regs->ac97_cmd, (1<<31) | ((reg & 0x7f) << 24));
+ 
+@@ -50,16 +57,19 @@ static unsigned short psc_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
+ 	if (status == 0) {
+ 		pr_err("timeout on ac97 read (val) %x\n",
+ 				in_be16(&psc_dma->psc_regs->sr_csr.status));
++		mutex_unlock(&psc_dma->mutex);
+ 		return -ENODEV;
+ 	}
+ 	/* Get the data */
+ 	val = in_be32(&psc_dma->psc_regs->ac97_data);
+ 	if (((val >> 24) & 0x7f) != reg) {
+ 		pr_err("reg echo error on ac97 read\n");
++		mutex_unlock(&psc_dma->mutex);
+ 		return -ENODEV;
+ 	}
+ 	val = (val >> 8) & 0xffff;
+ 
++	mutex_unlock(&psc_dma->mutex);
+ 	return (unsigned short) val;
+ }
+ 
+@@ -68,16 +78,21 @@ static void psc_ac97_write(struct snd_ac97 *ac97,
+ {
+ 	int status;
+ 
++	mutex_lock(&psc_dma->mutex);
++
+ 	/* Wait for command status zero = ready */
+ 	status = spin_event_timeout(!(in_be16(&psc_dma->psc_regs->sr_csr.status) &
+ 				MPC52xx_PSC_SR_CMDSEND), 100, 0);
+ 	if (status == 0) {
+ 		pr_err("timeout on ac97 bus (write)\n");
+-		return;
++		goto out;
+ 	}
+ 	/* Write data */
+ 	out_be32(&psc_dma->psc_regs->ac97_cmd,
+ 			((reg & 0x7f) << 24) | (val << 8));
++
++ out:
++	mutex_unlock(&psc_dma->mutex);
+ }
+ 
+ static void psc_ac97_warm_reset(struct snd_ac97 *ac97)
