@@ -1,23 +1,25 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH] alsa/soc: add locking to mpc5200-psc-ac97
-	driver
-Date: Tue, 30 Jun 2009 10:53:26 -0600
-Message-ID: <fa686aa40906300953n28016d4v179a1c7ed3198399@mail.gmail.com>
-References: <20090629234214.12670.9082.stgit@localhost.localdomain>
-	<9e4733910906291726h5cd5bdf8ve7e946aef855ac07@mail.gmail.com>
-	<20090630085917.GA13961@sirena.org.uk>
+From: VDR User <user.vdr@gmail.com>
+Subject: Re: Problems with snd-hda-intel and Asus M2NPV-VM.
+	Please help!
+Date: Tue, 30 Jun 2009 10:30:25 -0700
+Message-ID: <a3ef07920906301030p7f84d4c4xe6c0590f436b4de9@mail.gmail.com>
+References: <a3ef07920906241108u786a6c89j80f2ad89eebf7dcd@mail.gmail.com>
+	<a3ef07920906241134m2f84ac06pef7465ce356f893f@mail.gmail.com>
+	<s5hvdmfv6s6.wl%tiwai@suse.de>
+	<a3ef07920906291028q670ed146t1451650d0c2a4713@mail.gmail.com>
+	<s5hzlbq83o8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f198.google.com (mail-pz0-f198.google.com
-	[209.85.222.198])
-	by alsa0.perex.cz (Postfix) with ESMTP id 51C0824341
+Received: from mail-vw0-f189.google.com (mail-vw0-f189.google.com
+	[209.85.212.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0E86F243FE
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 Jun 2009 18:53:48 +0200 (CEST)
-Received: by pzk36 with SMTP id 36so228344pzk.16
-	for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2009 09:53:46 -0700 (PDT)
-In-Reply-To: <20090630085917.GA13961@sirena.org.uk>
+	Tue, 30 Jun 2009 19:30:26 +0200 (CEST)
+Received: by vwj27 with SMTP id 27so99869vwj.16
+	for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2009 10:30:26 -0700 (PDT)
+In-Reply-To: <s5hzlbq83o8.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,27 +29,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 30, 2009 at 2:59 AM, Mark
-Brown<broonie@opensource.wolfsonmicro.com> wrote:
-> On Mon, Jun 29, 2009 at 08:26:12PM -0400, Jon Smirl wrote:
+On Tue, Jun 30, 2009 at 2:35 AM, Takashi Iwai<tiwai@suse.de> wrote:
+> At Mon, 29 Jun 2009 10:28:24 -0700,
+> VDR User wrote:
+>>
+>> On Mon, Jun 29, 2009 at 12:27 AM, Takashi Iwai<tiwai@suse.de> wrote:
+>> > Try the very latest alsa-driver snapshot before doing any debugging.
+>> > =A0 =A0ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/als=
+a-driver-snapshot.tar.gz
+>> >
+>> > If this still doesn't work, run alsa-info.sh with --no-upload option,
+>> > and attach the generated file. =A0I'll start checking after this.
+>>
+>> Thanks for your reply! =A0I have downloaded the link, compiled, and
+>> installed. =A0Results are the same, spdif is not working.
 >
->> Does your touchscreen driver use this mutex? Or was this mutex needed
->> just for the AC97 driver?
+> How did you play via SPDIF exactly?
+> Doesn't the following work (even without model option)?
 >
-> It's in the register accesses so everything accessing the chip registers
-> will use it.
+> =A0 =A0 =A0 =A0% aplay -Dplug:spdif some-48k-samples.wav
 
-The mutexes are needed.  The ac97 bus doesn't have any knowledge about
-what codec(s) will be wired up to it so it must protect against
-multiple access.  In my case both the wm9712 audio codec driver and
-the wm9712 touchscreen driver perform register accesses.
+I have tried that exact command and also using -Dplug:iec958, without
+success.  I tried both as user and using sudo from console and console
+with x loaded.  Also with/without the model option and position_fix=3D1
+option.  Is it possible the revision of the MCP51 I have is not
+supported (yet)?  Please let me know anything further I can do to help
+figure this out.
 
-g.
-
--- 
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
+Many thanks!
+-Derek
