@@ -1,63 +1,40 @@
-From: "Rafael J. Wysocki" <rjw@sisk.pl>
-Subject: Re: Problems with snd-hda-intel on hp 6930p (2.6.30)
-Date: Tue, 30 Jun 2009 16:15:37 +0200
-Message-ID: <200906301615.38244.rjw@sisk.pl>
-References: <200906292037.09597.rjw@sisk.pl> <s5h1vp29ifp.wl%tiwai@suse.de> <200906301529.56598.rjw@sisk.pl>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] alsa/soc: add locking to mpc5200-psc-ac97
+	driver
+Date: Tue, 30 Jun 2009 14:53:22 +0100
+Message-ID: <20090630135321.GF13961@sirena.org.uk>
+References: <20090629234214.12670.9082.stgit@localhost.localdomain>
+	<20090630061847.GA24164@pengutronix.de>
+	<9e4733910906300642o4f1c0e2cn45423c426e3aff7e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-2"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756090AbZF3OPk@vger.kernel.org>
-In-Reply-To: <200906301529.56598.rjw@sisk.pl>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id E092F2439C
+	for <alsa-devel@alsa-project.org>;
+	Tue, 30 Jun 2009 15:53:27 +0200 (CEST)
 Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+In-Reply-To: <9e4733910906300642o4f1c0e2cn45423c426e3aff7e@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Wolfram Sang <w.sang@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 30 June 2009, Rafael J. Wysocki wrote:
-> On Tuesday 30 June 2009, Takashi Iwai wrote:
-> > At Mon, 29 Jun 2009 20:37:09 +0200,
-> > Rafael J. Wysocki wrote:
-> > > 
-> > > Hi Takashi,
-> > > 
-> > > I have a problem with snd-hda-intel from 2.6.30 on an hp EliteBook 6930p, which
-> > > is that the sound is not audible, although everything appears to work just
-> > > fine.  Except maybe that when the box is rebooted and KDE (3.5) is started,
-> > > the master control is "muted" and the led indicator next to the keyboard shows
-> > > "no sound".  Then, changing the "muted" status of the master control doesn't
-> > > change the state of the led indicator and vice versa (the two things appear to
-> > > be totally independent of each other).
-> > > 
-> > > Can you please tell me what I can do to debug this issue?
-> > 
-> > Could you run alsa-info.sh with --no-upload option on both "muted"
-> > and "not muted" states, and attach the generated files?
-> 
-> Sure.  In the meantime it turned out that after a power off and cold boot the
-> status of the master control is 'on', but the led indicator shows 'no sound', so
-> there are 5 outputs:
-> * alsa-info-postboot.txt - after power off and cold boot
-> * alsa-info-led.txt - led indicator switched to 'on' when it was in the
->   alsa-info-postboot.txt state
-> Now I switched to AC power and rebooted the box without powering off:
-> * alsa-info-muted.txt - initial state with the 'muted' master control
-> * alsa-info-on.txt - master control switched to 'on' when it was in the
->   alsa-info-muted.txt state
-> * alsa-info.txt - led indicator switched to 'on' when it was in the
->   alsa-info-on.txt state
-> 
-> > If it's a regression (heh :), please give alsa-info.sh output on
-> > older kernels.
-> 
-> No, it's not a regression.  At least not from 2.6.27.
-> 
-> Please let me know if you need more information.
+On Tue, Jun 30, 2009 at 09:42:06AM -0400, Jon Smirl wrote:
 
-One more thing.  The headphones output actually works regardless of the
-led indicator status, so only the built-in speakers output seems to be
-affected.
+> Wolfram, do you have any way to test the on the Phytec hardware? The
+> WM9712 on the baseboard supports a touchscreen, is it brought out to a
+> header?
 
-Thanks,
-Rafael
+You can probably test adequately by writing a dummy AC97 driver that
+sits in a thread and does reads (which should be all that's required to
+test the interaction).
