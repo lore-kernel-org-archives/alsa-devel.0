@@ -1,24 +1,19 @@
-From: =?ISO-8859-1?Q?Juan_Jes=FAs_Garc=EDa_de_Soria_Lucena?=
-	<skandalfo@gmail.com>
-Subject: Re: [PATCH] Line In for Acer Inspire 6530G model
-Date: Tue, 30 Jun 2009 21:56:34 +0200
-Message-ID: <b0bb99640906301256g64ee3aa1yc66364d3800c934a@mail.gmail.com>
-References: <20090626082750.6D1B210092@gold.linx.net>
-	<s5hzlbrv76f.wl%tiwai@suse.de>
-	<d54969c50906292054j77aa8dd5ha0e2954b1e793f38@mail.gmail.com>
-	<b0bb99640906292307o13c2d842nbf3a078590cee911@mail.gmail.com>
-	<s5h8wjai600.wl%tiwai@suse.de>
+From: "Rafael J. Wysocki" <rjw@sisk.pl>
+Subject: Re: Problems with snd-hda-intel on hp 6930p (2.6.30)
+Date: Wed, 1 Jul 2009 00:47:38 +0200
+Message-ID: <200907010047.39525.rjw@sisk.pl>
+References: <200906292037.09597.rjw@sisk.pl> <200906301615.38244.rjw@sisk.pl>
+	<s5h8wj994do.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-2122.google.com (ey-out-2122.google.com [74.125.78.25])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2CC7210386B
+Received: from ogre.sisk.pl (ogre.sisk.pl [217.79.144.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id F1B82244BA
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 Jun 2009 21:56:35 +0200 (CEST)
-Received: by ey-out-2122.google.com with SMTP id 22so105248eye.47
-	for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2009 12:56:34 -0700 (PDT)
-In-Reply-To: <s5h8wjai600.wl%tiwai@suse.de>
+	Wed,  1 Jul 2009 00:47:31 +0200 (CEST)
+In-Reply-To: <s5h8wj994do.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,59 +24,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Tony Vroon <tony@linx.net>, alsa-devel@alsa-project.org, =?ISO-8859-1?Q?Emilio_L=F3pez?= <buhitoescolar@gmail.com>
+Cc: alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Wow!
+On Tuesday 30 June 2009, Takashi Iwai wrote:
+> At Tue, 30 Jun 2009 16:15:37 +0200,
+> Rafael J. Wysocki wrote:
+> > 
+> > On Tuesday 30 June 2009, Rafael J. Wysocki wrote:
+> > > On Tuesday 30 June 2009, Takashi Iwai wrote:
+> > > > At Mon, 29 Jun 2009 20:37:09 +0200,
+> > > > Rafael J. Wysocki wrote:
+> > > > > 
+> > > > > Hi Takashi,
+> > > > > 
+> > > > > I have a problem with snd-hda-intel from 2.6.30 on an hp EliteBook 6930p, which
+> > > > > is that the sound is not audible, although everything appears to work just
+> > > > > fine.  Except maybe that when the box is rebooted and KDE (3.5) is started,
+> > > > > the master control is "muted" and the led indicator next to the keyboard shows
+> > > > > "no sound".  Then, changing the "muted" status of the master control doesn't
+> > > > > change the state of the led indicator and vice versa (the two things appear to
+> > > > > be totally independent of each other).
+> > > > > 
+> > > > > Can you please tell me what I can do to debug this issue?
+> > > > 
+> > > > Could you run alsa-info.sh with --no-upload option on both "muted"
+> > > > and "not muted" states, and attach the generated files?
+> > > 
+> > > Sure.  In the meantime it turned out that after a power off and cold boot the
+> > > status of the master control is 'on', but the led indicator shows 'no sound', so
+> > > there are 5 outputs:
+> > > * alsa-info-postboot.txt - after power off and cold boot
+> > > * alsa-info-led.txt - led indicator switched to 'on' when it was in the
+> > >   alsa-info-postboot.txt state
+> > > Now I switched to AC power and rebooted the box without powering off:
+> > > * alsa-info-muted.txt - initial state with the 'muted' master control
+> > > * alsa-info-on.txt - master control switched to 'on' when it was in the
+> > >   alsa-info-muted.txt state
+> > > * alsa-info.txt - led indicator switched to 'on' when it was in the
+> > >   alsa-info-on.txt state
+> > > 
+> > > > If it's a regression (heh :), please give alsa-info.sh output on
+> > > > older kernels.
+> > > 
+> > > No, it's not a regression.  At least not from 2.6.27.
+> > > 
+> > > Please let me know if you need more information.
+> > 
+> > One more thing.  The headphones output actually works regardless of the
+> > led indicator status, so only the built-in speakers output seems to be
+> > affected.
+> 
+> How can you turn on/off LED?
 
-El 30 de junio de 2009 08:35, Takashi Iwai<tiwai@suse.de> escribi=F3:
-> The alsa-driver snapshot tarball can be found at
->  ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-=
-snapshot.tar.gz
+There's a button switch attached to it (basically, you press the led and the
+status changes :-)).
 
-I installed the snapshot, rebooted, plugged in both a CD player into
-the line in and an external mic, launched
+> From your explanation, it seems not directly bound with the audio mute.
 
-   (arecord | aplay) &
+That's correct, it seems independent.
 
-and then started playing with the alsamixer controls.
+> Anyway, try model=mobile or model=laptop for snd-hda-intel module
+> option.  Does the speaker work?
 
-I can confirm that pluggin in headphones mute all the speakers. Also
-the LFE level controls the bass speaker correctly.
+I'll check tomorrow, the box is at my university office.
 
-I played with the "Capture" / "Input Source" pair of controls, and can
-confirm that "Internal Mic", "External Mic" and "Line In" work ok. I'm
-not sure about how to test the "CD" and "Input Mix" options.
-
-I couldn't do anything about "Capture 1" / "Input Source 1". Has it
-anything to do with the second capture device I get from arecord -l?
-
-
-skandalfo@rimmer:~$ arecord -l
-**** Lista de CAPTURE Dispositivos Hardware ****
-tarjeta 0: SB [HDA ATI SB], dispositivo 0: ALC888 Analog [ALC888 Analog]
-  Subdispositivos: 1/1
-  Subdispositivo #0: subdevice #0
-tarjeta 0: SB [HDA ATI SB], dispositivo 2: ALC888 Analog [ALC888 Analog]
-  Subdispositivos: 1/1
-  Subdispositivo #0: subdevice #0
-
-
-I tried to perform the same tests with arecord -Dhw:0,2 but it
-complained about no appropriate sample format, so I suppose I was
-trying something stupid.
-
-
-In any case, congratulations, and lots of thanks for your good work.
-My laptop now sounds much better :-D
-
-
-Best regards,
-
-   Juan Jesus.
-
-
--- =
-
-Dream small if success is enough for you; dream big if you need to
-change the world.
+Thanks,
+Rafael
