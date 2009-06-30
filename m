@@ -1,20 +1,24 @@
-From: Daniel Drake <dsd@laptop.org>
-Subject: Re: Conexant CX20582 HDA codec support
-Date: Tue, 30 Jun 2009 19:48:33 +0100
-Message-ID: <1246387713.5695.20.camel@polyethylene>
-References: <1246277454.2182.6.camel@polyethylene>
-	<s5hskhjnqzc.wl%tiwai@suse.de>
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: Re: [PATCH] alsa/soc: add locking to mpc5200-psc-ac97
+	driver
+Date: Tue, 30 Jun 2009 13:08:30 -0600
+Message-ID: <fa686aa40906301208p38f5c8deqc21ad8e423f0f4a8@mail.gmail.com>
+References: <20090629234214.12670.9082.stgit@localhost.localdomain>
+	<20090630061847.GA24164@pengutronix.de>
+	<fa686aa40906300950m15b7d48av953c0c738f6bf0e7@mail.gmail.com>
+	<9e4733910906301133n4928cfc4h3ce4ee2aef53fa73@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-2122.google.com (ey-out-2122.google.com [74.125.78.27])
-	by alsa0.perex.cz (Postfix) with ESMTP id A5E1A103893
+Received: from mail-qy0-f185.google.com (mail-qy0-f185.google.com
+	[209.85.221.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id 223C4103856
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 Jun 2009 20:48:38 +0200 (CEST)
-Received: by ey-out-2122.google.com with SMTP id 22so94072eye.47
-	for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2009 11:48:37 -0700 (PDT)
-In-Reply-To: <s5hskhjnqzc.wl%tiwai@suse.de>
+	Tue, 30 Jun 2009 21:08:51 +0200 (CEST)
+Received: by qyk15 with SMTP id 15so387368qyk.16
+	for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2009 12:08:50 -0700 (PDT)
+In-Reply-To: <9e4733910906301133n4928cfc4h3ce4ee2aef53fa73@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,68 +28,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Wolfram Sang <w.sang@pengutronix.de>, broonie@sirena.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Tue, Jun 30, 2009 at 12:33 PM, Jon Smirl<jonsmirl@gmail.com> wrote:
+> On Tue, Jun 30, 2009 at 12:50 PM, Grant Likely<grant.likely@secretlab.ca>=
+ wrote:
+>> On Tue, Jun 30, 2009 at 12:18 AM, Wolfram Sang<w.sang@pengutronix.de> wr=
+ote:
+>>>> +
+>>>> + =A0 =A0 /* Force clear the data valid bit */
+>>>> + =A0 =A0 in_be32(&psc_dma->psc_regs->ac97_data);
+>>>> +
+>>>
+>>> No mutex involved here. I think this is either a separate patch or it n=
+eeds at
+>>> least to be mentioned in the patch description.
+>>
+>> Oops, that was sloppy. =A0Yes, I'll put this into a separate patch. =A0T=
+hanks.
+>
+> Now that you have added the mutexes, do you ever need to force clear
+> the valid bit?
+> Maybe log an error if this happens so that we can track down why.
 
-On Mon, 2009-06-29 at 14:50 +0200, Takashi Iwai wrote:
-> Ideally, yes.
-> If the codec tree looks similar as other Conexant codecs, you can adapt
-> patch_conexant.c...
+I know exactly why it happened.  spin_event_timeout() had a bug that
+would cause it to report a false positive timeout.  The bug is fixed
+and queued for merging.
 
+However, I still think this explicit clear should be applied.  It is
+just a cheap register read and it prevents the driver from getting
+wedged after a timeout does event, for whatever reason.
 
-Thanks for the quick explanations to all my issues. Makes sense.
+g.
 
-Our contacts at Conexant pointed us to this file:
-http://www.linuxant.com/alsa-driver/alsa-driver-linuxant-1.0.19ppch12-1.noarch.rpm.zip
+-- =
 
-The patch_conexant.c inside includes support for CX20582 ("Pebble") and
-a few more. Complete list:
-
-	{ .id = 0x14f15061, .name = "CX2058? (Pebble)",
-	  .patch = patch_cxtppch },
-	{ .id = 0x14f15066, .name = "CX20582 (Pebble)",
-	  .patch = patch_cxtppch },
-	{ .id = 0x14f15067, .name = "CX20583 (Pebble 56-LQFP)",
-	  .patch = patch_cxtppch },
-	{ .id = 0x14f15068, .name = "CX20584 (Pebble)",
-	  .patch = patch_cxtppch },
-	{ .id = 0x14f15069, .name = "CX20585 (Pebble 56-QFN)",
-	  .patch = patch_cxtppch },
-	{ .id = 0x14f15070, .name = "CX20592 (Pelican)",
-	  .patch = patch_cxtppch },
-	{ .id = 0x14f15071, .name = "CX20593 (Pelican 56-LQFP)",
-	  .patch = patch_cxtppch },
-	{ .id = 0x14f15072, .name = "CX20594 (Pelican)",
-	  .patch = patch_cxtppch },
-	{ .id = 0x14f15073, .name = "CX20595 (Pelican 56-QFN)",
-	  .patch = patch_cxtppch },
-	{ .id = 0x14f15074, .name = "CX2059? (Pelican)",
-	  .patch = patch_cxtppch },
-	{ .id = 0x14f150D0, .name = "CX20688 (Cabo)",
-	  .patch = patch_cxtppch },
-	{ .id = 0x14f150D4, .name = "CX20692 (Huntington)",
-	  .patch = patch_cxtppch },
-	{ .id = 0x14f150D5, .name = "CX20693 (Huntington)",
-	  .patch = patch_cxtppch },
-	{ .id = 0x14f150D6, .name = "CX20694 (Huntington)",
-	  .patch = patch_cxtppch },
-	{ .id = 0x14f150D7, .name = "CX20695 (Huntington)",
-	  .patch = patch_cxtppch },
-	{ .id = 0x14f12bfa, .mfg = 2, .name = "HSF",
-	  .patch = patch_cxthsfmodem },
-	{ .id = 0x14f12c06, .mfg = 2, .name = "HSF",
-	  .patch = patch_cxthsfmodem },
-	{ .id = 0x14f10000, .mask = 0xffff0000, .mfg = 2, .name = "HSF",
-	  .patch = patch_cxthsfmodem },
-
-Perhaps a useful link to keep around in future if other people come
-along looking for new codec support...
-
-Over the next few days, I plan to extract the CX20584 support, get it
-working on the XO-1.5 and then send you a patch.
-
-Thanks,
-Daniel
+Grant Likely, B.Sc., P.Eng.
+Secret Lab Technologies Ltd.
