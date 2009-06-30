@@ -1,17 +1,18 @@
-From: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
-Subject: [PATCH] ALSA: hda - move 8086:fb30 quirk (stac9205) to
-	the proper section
-Date: Sat, 4 Jul 2009 01:44:59 -0300
-Message-ID: <200907040144.59279.herton@mandriva.com.br>
+From: "Kurt J. Bosch" <kjb-temp-2006@gmx.de>
+Subject: Re: PC speaker beeps in 2.6.30?
+Date: Tue, 30 Jun 2009 13:31:07 +0200
+Message-ID: <4A49F77B.7060104@gmx.de>
+References: <4A365DA6.8000102@msgid.tls.msk.ru>	<4A4464CA.4060006@msgid.tls.msk.ru>	<s5hws6y86wl.wl%tiwai@suse.de>	<20090628063908.GA2089@math.berkeley.edu>	<s5h4ou0n468.wl%tiwai@suse.de>	<h27j15$g1d$1@ger.gmane.org>	<20090629232414.GA4234@math.berkeley.edu>
+	<s5hfxdii7rd.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perninha.conectiva.com.br (perninha.conectiva.com.br
-	[200.140.247.100])
-	by alsa0.perex.cz (Postfix) with ESMTP id 43C5324A8D
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 8BC631037E3
 	for <alsa-devel@alsa-project.org>;
-	Sat,  4 Jul 2009 06:45:03 +0200 (CEST)
+	Tue, 30 Jun 2009 13:31:09 +0200 (CEST)
+In-Reply-To: <s5hfxdii7rd.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,30 +26,72 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
----
- sound/pci/hda/patch_sigmatel.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 14f3c3e..826b1a0 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -1590,8 +1590,6 @@ static struct snd_pci_quirk stac9200_cfg_tbl[] = {
- 	/* SigmaTel reference board */
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x2668,
- 		      "DFI LanParty", STAC_REF),
--	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0xfb30,
--		      "SigmaTel",STAC_9205_REF),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_DFI, 0x3101,
- 		      "DFI LanParty", STAC_REF),
- 	/* Dell laptops have BIOS problem */
-@@ -2344,6 +2342,8 @@ static struct snd_pci_quirk stac9205_cfg_tbl[] = {
- 	/* SigmaTel reference board */
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x2668,
- 		      "DFI LanParty", STAC_9205_REF),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0xfb30,
-+		      "SigmaTel", STAC_9205_REF),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_DFI, 0x3101,
- 		      "DFI LanParty", STAC_9205_REF),
- 	/* Dell */
+On 2009-06-30 07:57, Takashi Iwai wrote:
+> At Mon, 29 Jun 2009 16:24:14 -0700,
+> Paul Vojta wrote:
+>>
+>> On Sun, Jun 28, 2009 at 01:09:26PM +0200, Kurt J. Bosch wrote:
+>>> On 2009-06-28 10:38, Takashi Iwai wrote:
+>>>> At Sat, 27 Jun 2009 23:39:08 -0700,
+>>>> Paul Vojta wrote:
+>>>>>
+>>>>> On Sat, Jun 27, 2009 at 09:36:42AM +0200, Takashi Iwai wrote:
+>>>>>> At Fri, 26 Jun 2009 10:03:54 +0400,
+>>>>>> Michael Tokarev wrote:
+>>>>>>>
+>>>>>>> [Adding some more Cc's...]
+>>>>>>>
+>>>>>>> Am I the only concerned about this?  My 2.6.30 is still
+>>>>>>> silent w.r.t. old good PC speaker beeps, and I wasn't
+>>>>>>> able to make it to produce any sound.  Yes, as pointed
+>>>>>>> out by others there is a control now, in alsa, and I
+>>>>>>> can hear ugly and scary beeps from my stereo speakers
+>>>>>>> (when they're turned on and when the control is un-muted).
+>>>>>>> But that's.. not a solution/answer to the original
+>>>>>>> question... ;)
+>>>>>>
+>>>>>> Try 2.6.31-rc1.  There was a fix regarding beep frequency.
+>>>>>
+>>>>> Not necessarily.  Based on the OP's original post, as well as his mails
+>>>>> to the LKML (Google the subject line to find them), he has a desktop
+>>>>> system with external powered speakers connected to a sound card, and also
+>>>>> a small PC speaker inside the system case.  He wants to hear the beeps
+>>>>> coming out of the small speaker, since the external speakers (and/or sound
+>>>>> card) are not always turned on.
+>>>>
+>>>> To avoid someone misunderstanding: the beep routed through HD-audio
+>>>> can also go to the built-in speaker.  It's just mixed up with the
+>>>> normal audio output, and the volume is controlled via ALSA mixer
+>>>> volume element.
+>>>>
+>>>> But, once after it's hooked up to the codec, the beep can't be output
+>>>> separately to the speaker.  It's always with other audio signal to the
+>>>> same output target.
+>>>>
+>>>> Or, on some systems (mostly laptops), the beep is hooked up to the
+>>>> codec automatically no matter whether you set
+>>>> CONFIG_SND_HDA_INPUT_BEEP once when the codec chip is initialized.
+>>>> So, the behavior depends pretty much on the hardware implementation.
+>>>>
+>>> I face the same problem as the OP since kernel 2.6.30 on ArchLinux on
+>>> a desktop machine. I was able to get beep working through the built in
+>>> speaker again by doing a 'modprobe -r pcspkr' followed by a
+>>> 'modprobe pcspkr' after sysinit. It seems there is some kind of
+>>> struggle goinig on here between alsa and pcspkr. Isn't there any
+>>> kernel line or modules configuration option to disable the alsa pc-beep?
+>>
+>> Hm... apparently not.  Probably there should be a module option for this, though.
+>
+> In the latest sound git tree, you can use "patch" file (passed via
+> module option) to specify codec-specific setup.
+> It's for 2.6.32, though.
+>
+Sounds rather complicated to me. :)
+ALSA's snd-hda-intel is stealing the beeps allready 'owned' by pcspkr. 
+It does
+this every time it gets [re]loaded. Doing so while lacking a 
+configuration option
+to disable that behavior is a bug IMHO. (If you use beep to get some alarm
+notification from hardware sensors or such you will depend on stereo 
+speakers
+connected and powered on.) Do I miss something ?
