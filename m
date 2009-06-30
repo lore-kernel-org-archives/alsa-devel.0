@@ -1,18 +1,18 @@
 From: "Kurt J. Bosch" <kjb-temp-2006@gmx.de>
 Subject: Re: PC speaker beeps in 2.6.30?
-Date: Tue, 30 Jun 2009 17:35:00 +0200
-Message-ID: <4A4A30A4.5080809@gmx.de>
-References: <4A365DA6.8000102@msgid.tls.msk.ru>	<4A4464CA.4060006@msgid.tls.msk.ru>	<s5hws6y86wl.wl%tiwai@suse.de>	<20090628063908.GA2089@math.berkeley.edu>	<s5h4ou0n468.wl%tiwai@suse.de>	<h27j15$g1d$1@ger.gmane.org>	<20090629232414.GA4234@math.berkeley.edu>	<s5hfxdii7rd.wl%tiwai@suse.de>	<4A49F77B.7060104@gmx.de>
-	<s5hr5x1993a.wl%tiwai@suse.de>
+Date: Tue, 30 Jun 2009 18:31:30 +0200
+Message-ID: <4A4A3DE2.9050206@gmx.de>
+References: <4A365DA6.8000102@msgid.tls.msk.ru>	<4A4464CA.4060006@msgid.tls.msk.ru>	<s5hws6y86wl.wl%tiwai@suse.de>	<20090628063908.GA2089@math.berkeley.edu>	<s5h4ou0n468.wl%tiwai@suse.de>	<h27j15$g1d$1@ger.gmane.org>	<20090629232414.GA4234@math.berkeley.edu>	<s5hfxdii7rd.wl%tiwai@suse.de>	<4A49F77B.7060104@gmx.de>	<s5hr5x1993a.wl%tiwai@suse.de>	<4A4A30A4.5080809@gmx.de>
+	<s5hskhh7ms9.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id A012D103841
+	by alsa0.perex.cz (Postfix) with SMTP id 74FF3103860
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 Jun 2009 17:35:02 +0200 (CEST)
-In-Reply-To: <s5hr5x1993a.wl%tiwai@suse.de>
+	Tue, 30 Jun 2009 18:31:31 +0200 (CEST)
+In-Reply-To: <s5hskhh7ms9.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,92 +26,115 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2009-06-30 14:53, Takashi Iwai wrote:
-> At Tue, 30 Jun 2009 13:31:07 +0200,
+On 2009-06-30 17:40, Takashi Iwai wrote:
+> At Tue, 30 Jun 2009 17:35:00 +0200,
 > Kurt J. Bosch wrote:
 >>
->> On 2009-06-30 07:57, Takashi Iwai wrote:
->>> At Mon, 29 Jun 2009 16:24:14 -0700,
->>> Paul Vojta wrote:
+>> On 2009-06-30 14:53, Takashi Iwai wrote:
+>>> At Tue, 30 Jun 2009 13:31:07 +0200,
+>>> Kurt J. Bosch wrote:
 >>>>
->>>> On Sun, Jun 28, 2009 at 01:09:26PM +0200, Kurt J. Bosch wrote:
->>>>> On 2009-06-28 10:38, Takashi Iwai wrote:
->>>>>> At Sat, 27 Jun 2009 23:39:08 -0700,
->>>>>> Paul Vojta wrote:
->>>>>>>
->>>>>>> On Sat, Jun 27, 2009 at 09:36:42AM +0200, Takashi Iwai wrote:
->>>>>>>> At Fri, 26 Jun 2009 10:03:54 +0400,
->>>>>>>> Michael Tokarev wrote:
+>>>> On 2009-06-30 07:57, Takashi Iwai wrote:
+>>>>> At Mon, 29 Jun 2009 16:24:14 -0700,
+>>>>> Paul Vojta wrote:
+>>>>>>
+>>>>>> On Sun, Jun 28, 2009 at 01:09:26PM +0200, Kurt J. Bosch wrote:
+>>>>>>> On 2009-06-28 10:38, Takashi Iwai wrote:
+>>>>>>>> At Sat, 27 Jun 2009 23:39:08 -0700,
+>>>>>>>> Paul Vojta wrote:
 >>>>>>>>>
->>>>>>>>> [Adding some more Cc's...]
+>>>>>>>>> On Sat, Jun 27, 2009 at 09:36:42AM +0200, Takashi Iwai wrote:
+>>>>>>>>>> At Fri, 26 Jun 2009 10:03:54 +0400,
+>>>>>>>>>> Michael Tokarev wrote:
+>>>>>>>>>>>
+>>>>>>>>>>> [Adding some more Cc's...]
+>>>>>>>>>>>
+>>>>>>>>>>> Am I the only concerned about this?  My 2.6.30 is still
+>>>>>>>>>>> silent w.r.t. old good PC speaker beeps, and I wasn't
+>>>>>>>>>>> able to make it to produce any sound.  Yes, as pointed
+>>>>>>>>>>> out by others there is a control now, in alsa, and I
+>>>>>>>>>>> can hear ugly and scary beeps from my stereo speakers
+>>>>>>>>>>> (when they're turned on and when the control is un-muted).
+>>>>>>>>>>> But that's.. not a solution/answer to the original
+>>>>>>>>>>> question... ;)
+>>>>>>>>>>
+>>>>>>>>>> Try 2.6.31-rc1.  There was a fix regarding beep frequency.
 >>>>>>>>>
->>>>>>>>> Am I the only concerned about this?  My 2.6.30 is still
->>>>>>>>> silent w.r.t. old good PC speaker beeps, and I wasn't
->>>>>>>>> able to make it to produce any sound.  Yes, as pointed
->>>>>>>>> out by others there is a control now, in alsa, and I
->>>>>>>>> can hear ugly and scary beeps from my stereo speakers
->>>>>>>>> (when they're turned on and when the control is un-muted).
->>>>>>>>> But that's.. not a solution/answer to the original
->>>>>>>>> question... ;)
+>>>>>>>>> Not necessarily.  Based on the OP's original post, as well as his mails
+>>>>>>>>> to the LKML (Google the subject line to find them), he has a desktop
+>>>>>>>>> system with external powered speakers connected to a sound card, and also
+>>>>>>>>> a small PC speaker inside the system case.  He wants to hear the beeps
+>>>>>>>>> coming out of the small speaker, since the external speakers (and/or sound
+>>>>>>>>> card) are not always turned on.
 >>>>>>>>
->>>>>>>> Try 2.6.31-rc1.  There was a fix regarding beep frequency.
->>>>>>>
->>>>>>> Not necessarily.  Based on the OP's original post, as well as his mails
->>>>>>> to the LKML (Google the subject line to find them), he has a desktop
->>>>>>> system with external powered speakers connected to a sound card, and also
->>>>>>> a small PC speaker inside the system case.  He wants to hear the beeps
->>>>>>> coming out of the small speaker, since the external speakers (and/or sound
->>>>>>> card) are not always turned on.
+>>>>>>>> To avoid someone misunderstanding: the beep routed through HD-audio
+>>>>>>>> can also go to the built-in speaker.  It's just mixed up with the
+>>>>>>>> normal audio output, and the volume is controlled via ALSA mixer
+>>>>>>>> volume element.
+>>>>>>>>
+>>>>>>>> But, once after it's hooked up to the codec, the beep can't be output
+>>>>>>>> separately to the speaker.  It's always with other audio signal to the
+>>>>>>>> same output target.
+>>>>>>>>
+>>>>>>>> Or, on some systems (mostly laptops), the beep is hooked up to the
+>>>>>>>> codec automatically no matter whether you set
+>>>>>>>> CONFIG_SND_HDA_INPUT_BEEP once when the codec chip is initialized.
+>>>>>>>> So, the behavior depends pretty much on the hardware implementation.
+>>>>>>>>
+>>>>>>> I face the same problem as the OP since kernel 2.6.30 on ArchLinux on
+>>>>>>> a desktop machine. I was able to get beep working through the built in
+>>>>>>> speaker again by doing a 'modprobe -r pcspkr' followed by a
+>>>>>>> 'modprobe pcspkr' after sysinit. It seems there is some kind of
+>>>>>>> struggle goinig on here between alsa and pcspkr. Isn't there any
+>>>>>>> kernel line or modules configuration option to disable the alsa pc-beep?
 >>>>>>
->>>>>> To avoid someone misunderstanding: the beep routed through HD-audio
->>>>>> can also go to the built-in speaker.  It's just mixed up with the
->>>>>> normal audio output, and the volume is controlled via ALSA mixer
->>>>>> volume element.
->>>>>>
->>>>>> But, once after it's hooked up to the codec, the beep can't be output
->>>>>> separately to the speaker.  It's always with other audio signal to the
->>>>>> same output target.
->>>>>>
->>>>>> Or, on some systems (mostly laptops), the beep is hooked up to the
->>>>>> codec automatically no matter whether you set
->>>>>> CONFIG_SND_HDA_INPUT_BEEP once when the codec chip is initialized.
->>>>>> So, the behavior depends pretty much on the hardware implementation.
->>>>>>
->>>>> I face the same problem as the OP since kernel 2.6.30 on ArchLinux on
->>>>> a desktop machine. I was able to get beep working through the built in
->>>>> speaker again by doing a 'modprobe -r pcspkr' followed by a
->>>>> 'modprobe pcspkr' after sysinit. It seems there is some kind of
->>>>> struggle goinig on here between alsa and pcspkr. Isn't there any
->>>>> kernel line or modules configuration option to disable the alsa pc-beep?
->>>>
->>>> Hm... apparently not.  Probably there should be a module option for this, though.
+>>>>>> Hm... apparently not.  Probably there should be a module option for this, though.
+>>>>>
+>>>>> In the latest sound git tree, you can use "patch" file (passed via
+>>>>> module option) to specify codec-specific setup.
+>>>>> It's for 2.6.32, though.
+>>>>>
+>>>> Sounds rather complicated to me. :)
+>>>> ALSA's snd-hda-intel is stealing the beeps allready 'owned' by pcspkr.
 >>>
->>> In the latest sound git tree, you can use "patch" file (passed via
->>> module option) to specify codec-specific setup.
->>> It's for 2.6.32, though.
+>>> It just adds another beep input device.
 >>>
->> Sounds rather complicated to me. :)
->> ALSA's snd-hda-intel is stealing the beeps allready 'owned' by pcspkr.
+>> If that is true both should sound in parallel and then I had to file a bug
+>> against ArchLinux ?
 >
-> It just adds another beep input device.
->
-If that is true both should sound in parallel and then I had to file a bug
-against ArchLinux ?
+> It's a feature.
 
->> It does
->> this every time it gets [re]loaded. Doing so while lacking a
->> configuration option
->> to disable that behavior is a bug IMHO.
+If one module stealing functionality from the other an vice versa is a 
+feature
+now than I think Linux became some kind of funny video game (like pong) 
+now. LoL
 >
-> There is a configuration option.
+>>>> It does
+>>>> this every time it gets [re]loaded. Doing so while lacking a
+>>>> configuration option
+>>>> to disable that behavior is a bug IMHO.
+>>>
+>>> There is a configuration option.
+>>>
+>> But not for the kernel cmdline, right. ;)
 >
-But not for the kernel cmdline, right. ;)
+> But you can do it via patch module option (in the later kernel).
+>
+Later kernel ? That's why I keep the earlier kernel packages for
+downgrading. ;)
+>
+>>>> (If you use beep to get some alarm
+>>>> notification from hardware sensors or such you will depend on stereo
+>>>> speakers
+>>>> connected and powered on.) Do I miss something ?
+>>>
+>>> Yes.
+>>>
+>> Patching drivers and building my own kernels again as in the old days ?
+>
+> Why not?
 
->> (If you use beep to get some alarm
->> notification from hardware sensors or such you will depend on stereo
->> speakers
->> connected and powered on.) Do I miss something ?
->
-> Yes.
->
-Patching drivers and building my own kernels again as in the old days ?
+Do you build all your machines (including type writers ans dish washers)
+yourself ? :D
+
+Have fun ! Cheers kujub
