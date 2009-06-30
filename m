@@ -1,17 +1,22 @@
-From: Tony Vroon <tony@vroon.org>
+From: Daniel Drake <dsd@laptop.org>
 Subject: Re: Conexant CX20582 HDA codec support
-Date: Tue, 30 Jun 2009 20:23:09 +0100
-Message-ID: <1246389789.11792.3.camel@localhost>
+Date: Tue, 30 Jun 2009 20:27:26 +0100
+Message-ID: <1246390046.5695.21.camel@polyethylene>
 References: <1246277454.2182.6.camel@polyethylene>
 	<s5hskhjnqzc.wl%tiwai@suse.de> <1246387713.5695.20.camel@polyethylene>
+	<1246389789.11792.3.camel@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5003245853253544875=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganymede.vroon.org (ganymede.vroon.org [195.66.242.11])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9AEB8103893
+Received: from mail-ew0-f226.google.com (mail-ew0-f226.google.com
+	[209.85.219.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id 83DEA103893
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 Jun 2009 21:23:21 +0200 (CEST)
-In-Reply-To: <1246387713.5695.20.camel@polyethylene>
+	Tue, 30 Jun 2009 21:27:29 +0200 (CEST)
+Received: by ewy26 with SMTP id 26so491525ewy.32
+	for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2009 12:27:29 -0700 (PDT)
+In-Reply-To: <1246389789.11792.3.camel@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,59 +26,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Drake <dsd@laptop.org>
+To: Tony Vroon <tony@vroon.org>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2009-06-30 at 20:23 +0100, Tony Vroon wrote:
+> Daniel, if the license is favourable I'd rather extract it all.
+> Is it alright if I have a look at this for you on Thursday? (I might
+> have time tomorrow but I can't guarantee it; I'll be in data centres
+> most of the day)
 
---===============5003245853253544875==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-Sxd+EF0LoyOLVcRbbFJS"
+Please go ahead :)
+The code will need a little clean up, I think.
 
-
---=-Sxd+EF0LoyOLVcRbbFJS
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, 2009-06-30 at 19:48 +0100, Daniel Drake wrote:
-> Our contacts at Conexant pointed us to this file:
-> http://www.linuxant.com/alsa-driver/alsa-driver-linuxant-1.0.19ppch12-1.n=
-oarch.rpm.zip
->=20
-> The patch_conexant.c inside includes support for CX20582 ("Pebble") and
-> a few more.
-
-Daniel, if the license is favourable I'd rather extract it all.
-Is it alright if I have a look at this for you on Thursday? (I might
-have time tomorrow but I can't guarantee it; I'll be in data centres
-most of the day)
-
-Regards,
-Tony V.
-
---=-Sxd+EF0LoyOLVcRbbFJS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.11 (GNU/Linux)
-
-iEYEABECAAYFAkpKZh0ACgkQp5vW4rUFj5qt1gCeLh/2sVomWjcg9+djuPZjfLC8
-a2sAoKhUeN8lxr2BEvpsXQlsslCB4mns
-=Iotr
------END PGP SIGNATURE-----
-
---=-Sxd+EF0LoyOLVcRbbFJS--
-
-
---===============5003245853253544875==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============5003245853253544875==--
+Daniel
