@@ -1,24 +1,17 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH] alsa/soc: add locking to mpc5200-psc-ac97
-	driver
-Date: Tue, 30 Jun 2009 13:08:30 -0600
-Message-ID: <fa686aa40906301208p38f5c8deqc21ad8e423f0f4a8@mail.gmail.com>
-References: <20090629234214.12670.9082.stgit@localhost.localdomain>
-	<20090630061847.GA24164@pengutronix.de>
-	<fa686aa40906300950m15b7d48av953c0c738f6bf0e7@mail.gmail.com>
-	<9e4733910906301133n4928cfc4h3ce4ee2aef53fa73@mail.gmail.com>
+From: Tony Vroon <tony@vroon.org>
+Subject: Re: Conexant CX20582 HDA codec support
+Date: Tue, 30 Jun 2009 20:23:09 +0100
+Message-ID: <1246389789.11792.3.camel@localhost>
+References: <1246277454.2182.6.camel@polyethylene>
+	<s5hskhjnqzc.wl%tiwai@suse.de> <1246387713.5695.20.camel@polyethylene>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============5003245853253544875=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f185.google.com (mail-qy0-f185.google.com
-	[209.85.221.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id 223C4103856
+Received: from ganymede.vroon.org (ganymede.vroon.org [195.66.242.11])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9AEB8103893
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 Jun 2009 21:08:51 +0200 (CEST)
-Received: by qyk15 with SMTP id 15so387368qyk.16
-	for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2009 12:08:50 -0700 (PDT)
-In-Reply-To: <9e4733910906301133n4928cfc4h3ce4ee2aef53fa73@mail.gmail.com>
+	Tue, 30 Jun 2009 21:23:21 +0200 (CEST)
+In-Reply-To: <1246387713.5695.20.camel@polyethylene>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,42 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Wolfram Sang <w.sang@pengutronix.de>, broonie@sirena.org.uk
+To: Daniel Drake <dsd@laptop.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 30, 2009 at 12:33 PM, Jon Smirl<jonsmirl@gmail.com> wrote:
-> On Tue, Jun 30, 2009 at 12:50 PM, Grant Likely<grant.likely@secretlab.ca>=
- wrote:
->> On Tue, Jun 30, 2009 at 12:18 AM, Wolfram Sang<w.sang@pengutronix.de> wr=
-ote:
->>>> +
->>>> + =A0 =A0 /* Force clear the data valid bit */
->>>> + =A0 =A0 in_be32(&psc_dma->psc_regs->ac97_data);
->>>> +
->>>
->>> No mutex involved here. I think this is either a separate patch or it n=
-eeds at
->>> least to be mentioned in the patch description.
->>
->> Oops, that was sloppy. =A0Yes, I'll put this into a separate patch. =A0T=
-hanks.
->
-> Now that you have added the mutexes, do you ever need to force clear
-> the valid bit?
-> Maybe log an error if this happens so that we can track down why.
 
-I know exactly why it happened.  spin_event_timeout() had a bug that
-would cause it to report a false positive timeout.  The bug is fixed
-and queued for merging.
+--===============5003245853253544875==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-Sxd+EF0LoyOLVcRbbFJS"
 
-However, I still think this explicit clear should be applied.  It is
-just a cheap register read and it prevents the driver from getting
-wedged after a timeout does event, for whatever reason.
 
-g.
+--=-Sxd+EF0LoyOLVcRbbFJS
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
--- =
+On Tue, 2009-06-30 at 19:48 +0100, Daniel Drake wrote:
+> Our contacts at Conexant pointed us to this file:
+> http://www.linuxant.com/alsa-driver/alsa-driver-linuxant-1.0.19ppch12-1.n=
+oarch.rpm.zip
+>=20
+> The patch_conexant.c inside includes support for CX20582 ("Pebble") and
+> a few more.
 
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
+Daniel, if the license is favourable I'd rather extract it all.
+Is it alright if I have a look at this for you on Thursday? (I might
+have time tomorrow but I can't guarantee it; I'll be in data centres
+most of the day)
+
+Regards,
+Tony V.
+
+--=-Sxd+EF0LoyOLVcRbbFJS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
+
+iEYEABECAAYFAkpKZh0ACgkQp5vW4rUFj5qt1gCeLh/2sVomWjcg9+djuPZjfLC8
+a2sAoKhUeN8lxr2BEvpsXQlsslCB4mns
+=Iotr
+-----END PGP SIGNATURE-----
+
+--=-Sxd+EF0LoyOLVcRbbFJS--
+
+
+--===============5003245853253544875==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============5003245853253544875==--
