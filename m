@@ -1,16 +1,24 @@
-From: Kevin Goodsell <kevin-list-alsa-devel@omegacrash.net>
-Subject: load_for_all_cards bug
-Date: Tue, 30 Jun 2009 12:37:10 -0700
-Message-ID: <4A4A6966.20804@omegacrash.net>
+From: =?ISO-8859-1?Q?Juan_Jes=FAs_Garc=EDa_de_Soria_Lucena?=
+	<skandalfo@gmail.com>
+Subject: Re: [PATCH] Line In for Acer Inspire 6530G model
+Date: Tue, 30 Jun 2009 21:56:34 +0200
+Message-ID: <b0bb99640906301256g64ee3aa1yc66364d3800c934a@mail.gmail.com>
+References: <20090626082750.6D1B210092@gold.linx.net>
+	<s5hzlbrv76f.wl%tiwai@suse.de>
+	<d54969c50906292054j77aa8dd5ha0e2954b1e793f38@mail.gmail.com>
+	<b0bb99640906292307o13c2d842nbf3a078590cee911@mail.gmail.com>
+	<s5h8wjai600.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nightcrawler (dsl081-160-116.sea1.dsl.speakeasy.net
-	[64.81.160.116])
-	by alsa0.perex.cz (Postfix) with ESMTP id 054D91038BD
+Received: from ey-out-2122.google.com (ey-out-2122.google.com [74.125.78.25])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2CC7210386B
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 Jun 2009 21:37:17 +0200 (CEST)
+	Tue, 30 Jun 2009 21:56:35 +0200 (CEST)
+Received: by ey-out-2122.google.com with SMTP id 22so105248eye.47
+	for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2009 12:56:34 -0700 (PDT)
+In-Reply-To: <s5h8wjai600.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,51 +28,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Tony Vroon <tony@linx.net>, alsa-devel@alsa-project.org, =?ISO-8859-1?Q?Emilio_L=F3pez?= <buhitoescolar@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-(I originally tried to send this via the moderator without subscribing 
-to the list, but it never went through and I never received a moderator 
-response. Apparently this list is set up as moderated, but nobody is 
-actually moderating it.)
+Wow!
 
-Summary: load_for_all_cards fails with existing configuration elements
+El 30 de junio de 2009 08:35, Takashi Iwai<tiwai@suse.de> escribi=F3:
+> The alsa-driver snapshot tarball can be found at
+>  ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-=
+snapshot.tar.gz
 
-In snd_config_hook_load_for_all_cards, the first call to 
-snd_config_search attempts to locate an existing configuration node with 
-the name of the driver.  Typically none is found, and everything is 
-good. However, if such a node is located, the next line assumes it is a 
-leaf node with type 'string' and calls snd_config_get_string to fetch 
-the string value. If this fails, the entire hook is abandoned.
+I installed the snapshot, rebooted, plugged in both a CD player into
+the line in and an external mic, launched
 
-Because of this, setting something like the following in asoundrc:
+   (arecord | aplay) &
 
-cards.<driver name>.foo 0
+and then started playing with the alsamixer controls.
 
-is sufficient to disable the entire card-specific configuration.
+I can confirm that pluggin in headphones mute all the speakers. Also
+the LFE level controls the bass speaker correctly.
 
-As a concrete example, I have a HDA-Intel sound card. dmix.conf includes 
-a way to set period_size, period_time, and periods by using 
-configuration elements of the form cards.<driver name>.pcm.dmix.<var>. 
-In ~/.asoundrc I add
+I played with the "Capture" / "Input Source" pair of controls, and can
+confirm that "Internal Mic", "External Mic" and "Line In" work ok. I'm
+not sure about how to test the "CD" and "Input Mix" options.
 
-cards.HDA-Intel.pcm.dmix.period_size 1024
+I couldn't do anything about "Capture 1" / "Input Source 1". Has it
+anything to do with the second capture device I get from arecord -l?
 
-This will cause HDA-Intel.conf to fail to load, and the pcm defined in 
-default.conf will fail to find the device-specific pcm 
-cards.HDA-Intel.pcm.default, and fall back on the default pcm using 
-plughw.  By attempting to configure dmix, I have disabled it.
 
-Fixing this may just be a matter of changing the line in 
-snd_config_hook_load_for_all_cards from:
+skandalfo@rimmer:~$ arecord -l
+**** Lista de CAPTURE Dispositivos Hardware ****
+tarjeta 0: SB [HDA ATI SB], dispositivo 0: ALC888 Analog [ALC888 Analog]
+  Subdispositivos: 1/1
+  Subdispositivo #0: subdevice #0
+tarjeta 0: SB [HDA ATI SB], dispositivo 2: ALC888 Analog [ALC888 Analog]
+  Subdispositivos: 1/1
+  Subdispositivo #0: subdevice #0
 
-if (snd_config_search(root, fdriver, &n) >= 0) {
 
-to:
+I tried to perform the same tests with arecord -Dhw:0,2 but it
+complained about no appropriate sample format, so I suppose I was
+trying something stupid.
 
-if (snd_config_search(root, fdriver, &n) >= 0 && n->type != 
-SND_CONFIG_TYPE_COMPOUND) {
 
-I have not tested this.
+In any case, congratulations, and lots of thanks for your good work.
+My laptop now sounds much better :-D
 
--Kevin
+
+Best regards,
+
+   Juan Jesus.
+
+
+-- =
+
+Dream small if success is enough for you; dream big if you need to
+change the world.
