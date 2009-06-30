@@ -1,18 +1,16 @@
-From: "Kurt J. Bosch" <kjb-temp-2006@gmx.de>
-Subject: Re: PC speaker beeps in 2.6.30?
-Date: Tue, 30 Jun 2009 18:31:30 +0200
-Message-ID: <4A4A3DE2.9050206@gmx.de>
-References: <4A365DA6.8000102@msgid.tls.msk.ru>	<4A4464CA.4060006@msgid.tls.msk.ru>	<s5hws6y86wl.wl%tiwai@suse.de>	<20090628063908.GA2089@math.berkeley.edu>	<s5h4ou0n468.wl%tiwai@suse.de>	<h27j15$g1d$1@ger.gmane.org>	<20090629232414.GA4234@math.berkeley.edu>	<s5hfxdii7rd.wl%tiwai@suse.de>	<4A49F77B.7060104@gmx.de>	<s5hr5x1993a.wl%tiwai@suse.de>	<4A4A30A4.5080809@gmx.de>
-	<s5hskhh7ms9.wl%tiwai@suse.de>
+From: Matthias Diehl <mdiehl.os@gmx.de>
+Subject: Testers wanted: New SB X-Fi driver
+Date: Tue, 30 Jun 2009 19:55:44 +0200
+Message-ID: <1246384544.6380.6.camel@ubuntu.ubuntu-domain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 74FF3103860
+	by alsa0.perex.cz (Postfix) with SMTP id 12F652443F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 Jun 2009 18:31:31 +0200 (CEST)
-In-Reply-To: <s5hskhh7ms9.wl%tiwai@suse.de>
+	Tue, 30 Jun 2009 19:55:49 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,119 +20,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On 2009-06-30 17:40, Takashi Iwai wrote:
-> At Tue, 30 Jun 2009 17:35:00 +0200,
-> Kurt J. Bosch wrote:
->>
->> On 2009-06-30 14:53, Takashi Iwai wrote:
->>> At Tue, 30 Jun 2009 13:31:07 +0200,
->>> Kurt J. Bosch wrote:
->>>>
->>>> On 2009-06-30 07:57, Takashi Iwai wrote:
->>>>> At Mon, 29 Jun 2009 16:24:14 -0700,
->>>>> Paul Vojta wrote:
->>>>>>
->>>>>> On Sun, Jun 28, 2009 at 01:09:26PM +0200, Kurt J. Bosch wrote:
->>>>>>> On 2009-06-28 10:38, Takashi Iwai wrote:
->>>>>>>> At Sat, 27 Jun 2009 23:39:08 -0700,
->>>>>>>> Paul Vojta wrote:
->>>>>>>>>
->>>>>>>>> On Sat, Jun 27, 2009 at 09:36:42AM +0200, Takashi Iwai wrote:
->>>>>>>>>> At Fri, 26 Jun 2009 10:03:54 +0400,
->>>>>>>>>> Michael Tokarev wrote:
->>>>>>>>>>>
->>>>>>>>>>> [Adding some more Cc's...]
->>>>>>>>>>>
->>>>>>>>>>> Am I the only concerned about this?  My 2.6.30 is still
->>>>>>>>>>> silent w.r.t. old good PC speaker beeps, and I wasn't
->>>>>>>>>>> able to make it to produce any sound.  Yes, as pointed
->>>>>>>>>>> out by others there is a control now, in alsa, and I
->>>>>>>>>>> can hear ugly and scary beeps from my stereo speakers
->>>>>>>>>>> (when they're turned on and when the control is un-muted).
->>>>>>>>>>> But that's.. not a solution/answer to the original
->>>>>>>>>>> question... ;)
->>>>>>>>>>
->>>>>>>>>> Try 2.6.31-rc1.  There was a fix regarding beep frequency.
->>>>>>>>>
->>>>>>>>> Not necessarily.  Based on the OP's original post, as well as his mails
->>>>>>>>> to the LKML (Google the subject line to find them), he has a desktop
->>>>>>>>> system with external powered speakers connected to a sound card, and also
->>>>>>>>> a small PC speaker inside the system case.  He wants to hear the beeps
->>>>>>>>> coming out of the small speaker, since the external speakers (and/or sound
->>>>>>>>> card) are not always turned on.
->>>>>>>>
->>>>>>>> To avoid someone misunderstanding: the beep routed through HD-audio
->>>>>>>> can also go to the built-in speaker.  It's just mixed up with the
->>>>>>>> normal audio output, and the volume is controlled via ALSA mixer
->>>>>>>> volume element.
->>>>>>>>
->>>>>>>> But, once after it's hooked up to the codec, the beep can't be output
->>>>>>>> separately to the speaker.  It's always with other audio signal to the
->>>>>>>> same output target.
->>>>>>>>
->>>>>>>> Or, on some systems (mostly laptops), the beep is hooked up to the
->>>>>>>> codec automatically no matter whether you set
->>>>>>>> CONFIG_SND_HDA_INPUT_BEEP once when the codec chip is initialized.
->>>>>>>> So, the behavior depends pretty much on the hardware implementation.
->>>>>>>>
->>>>>>> I face the same problem as the OP since kernel 2.6.30 on ArchLinux on
->>>>>>> a desktop machine. I was able to get beep working through the built in
->>>>>>> speaker again by doing a 'modprobe -r pcspkr' followed by a
->>>>>>> 'modprobe pcspkr' after sysinit. It seems there is some kind of
->>>>>>> struggle goinig on here between alsa and pcspkr. Isn't there any
->>>>>>> kernel line or modules configuration option to disable the alsa pc-beep?
->>>>>>
->>>>>> Hm... apparently not.  Probably there should be a module option for this, though.
->>>>>
->>>>> In the latest sound git tree, you can use "patch" file (passed via
->>>>> module option) to specify codec-specific setup.
->>>>> It's for 2.6.32, though.
->>>>>
->>>> Sounds rather complicated to me. :)
->>>> ALSA's snd-hda-intel is stealing the beeps allready 'owned' by pcspkr.
->>>
->>> It just adds another beep input device.
->>>
->> If that is true both should sound in parallel and then I had to file a bug
->> against ArchLinux ?
+> At Tue, 30 Jun 2009 16:10:45 +0200,
+> Matthias Diehl wrote:
+> > 
+> > hi,
+> > 
+> > i guess you dont speak german, do you? well, i'll try it in 
+> english ;-)
+> > 
+> > i tried to install your newest x-fi "hack" in ubuntu 9.04 64bit. 
+> it's an x-fi extreme music. i downloaded this snapshot:
+>> 
 >
-> It's a feature.
+ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-unstable-snapshot.tar.gz
+>
+> Use alsa-driver-snapshot.tar.gz instead of the unstable one.
+>
+> > while the installation process there are some warnings. after 
+> replacing the demon.conf and reboot there was no sound. 
+> > 
+> > then i noticed the sentence "Note that the ctxfi driver might 
+> conflict with the HD-audio driver" in the description. i think my
+> problem is the hdmi soundchip from my graphics adapter (sapphire 
+> radeon hd 4870) which was automatically installed at the 
+> ubuntu-installation 
+> ("hda intel sound").
+>
+> You are likely looking at irrelevant things.
+>
+> There are several variants of X-Fi boards. Many of them are equipped
+> with emu20k1 or emu20k2 chip. Some of these models can behave as
+> HD-audio compatible, too. These are supported by snd-ctxfi driver.
+>
+> In addition, there is X-Fi models that are without emu20k1/emu20k2
+> chips. Some of them (CA0110-IBG) behave only as a HD-audio device,
+> and some others are with CA0106 chip. The former is supported by
+> snd-hda-intel driver and the latter by snd-ca0106 driver.
+>
+> So, they cannot be deactivated. The only question is whether you have
+> emu20k1/emu20k2 chip on your board. And this can be checked when you
+> load snd-ctxfi driver. If the driver is properly loaded and the
+> card instance is created (see /proc/asound/cards), then it's good.
+> Otherwise, your board is no such one. You need other drivers.
+>
+> Please ask further questions on alsa-devel ML (you can add me to Cc,
+> though) so that other people with your board can advice better.
+>
+>
+> HTH,
+>
+> Takashi
 
-If one module stealing functionality from the other an vice versa is a 
-feature
-now than I think Linux became some kind of funny video game (like pong) 
-now. LoL
->
->>>> It does
->>>> this every time it gets [re]loaded. Doing so while lacking a
->>>> configuration option
->>>> to disable that behavior is a bug IMHO.
->>>
->>> There is a configuration option.
->>>
->> But not for the kernel cmdline, right. ;)
->
-> But you can do it via patch module option (in the later kernel).
->
-Later kernel ? That's why I keep the earlier kernel packages for
-downgrading. ;)
->
->>>> (If you use beep to get some alarm
->>>> notification from hardware sensors or such you will depend on stereo
->>>> speakers
->>>> connected and powered on.) Do I miss something ?
->>>
->>> Yes.
->>>
->> Patching drivers and building my own kernels again as in the old days ?
->
-> Why not?
+hi there,
 
-Do you build all your machines (including type writers ans dish washers)
-yourself ? :D
+i now tried to install the stable version, but i have still no sound.
+here's what lspci | grep audio says:
+01:00.1 Audio device: ATI Technologies Inc HD48x0 audio
+05:00.0 Multimedia audio controller: Creative Labs SB X-Fi
 
-Have fun ! Cheers kujub
+lsmod | grep snd says:
+snd_hda_intel         557492  1 
+snd_pcm_oss            52352  0 
+snd_mixer_oss          24960  2 snd_pcm_oss
+snd_pcm                99336  2 snd_hda_intel,snd_pcm_oss
+snd_seq_dummy          11524  0 
+snd_seq_oss            41984  0 
+snd_seq_midi           15744  0 
+snd_rawmidi            33920  1 snd_seq_midi
+snd_seq_midi_event     16512  2 snd_seq_oss,snd_seq_midi
+snd_seq                66272  6 snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq_midi_event
+snd_timer              34064  2 snd_pcm,snd_seq
+snd_seq_device         16276  5 snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_rawmidi,snd_seq
+snd                    78792  9 snd_hda_intel,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_seq_oss,snd_rawmidi,snd_seq,snd_timer,snd_seq_device
+soundcore              16800  2 snd
+snd_page_alloc         18704  2 snd_hda_intel,snd_pcm
+
+cat /proc/asound/cards says: 
+ 0 [HDMI           ]: HDA-Intel - HDA ATI HDMI
+                      HDA ATI HDMI at 0xf7dfc000 irq 17
+
+i hope, someone can help me ...
+greetings from germany,
+matthias
