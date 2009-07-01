@@ -1,47 +1,113 @@
-From: Florian Faber <faber@faberman.de>
-Subject: Re: laptop multichannel ethernet OR PCMCIA sound cards
-Date: Thu, 02 Jul 2009 00:21:46 +0200
-Message-ID: <4A4BE17A.700@faberman.de>
-References: <1246420893.7599.7.camel@flatmax>	<4A4B394E.7090707@audioscience.com>
-	<1a1fefe78f92c38beb5a8185afb3bad5.squirrel@sonic.nal.gov.au>
+From: "Rafael J. Wysocki" <rjw@sisk.pl>
+Subject: Re: Problems with snd-hda-intel on hp 6930p (2.6.30)
+Date: Thu, 2 Jul 2009 00:46:54 +0200
+Message-ID: <200907020046.54521.rjw@sisk.pl>
+References: <200906292037.09597.rjw@sisk.pl> <200907011800.28687.rjw@sisk.pl> <s5h3a9g75a0.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from india820.server4you.de (india820.server4you.de [85.25.152.101])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9202624406
-	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Jul 2009 00:21:58 +0200 (CEST)
-In-Reply-To: <1a1fefe78f92c38beb5a8185afb3bad5.squirrel@sonic.nal.gov.au>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: flaxma@nal.gov.au
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755394AbZGAWqZ@vger.kernel.org>
+In-Reply-To: <s5h3a9g75a0.wl%tiwai@suse.de>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Matt,
+On Wednesday 01 July 2009, Takashi Iwai wrote:
+> At Wed, 1 Jul 2009 18:00:28 +0200,
+> Rafael J. Wysocki wrote:
+> > 
+> > On Tuesday 30 June 2009, Takashi Iwai wrote:
+> > > At Tue, 30 Jun 2009 16:15:37 +0200,
+> > > Rafael J. Wysocki wrote:
+> > > > 
+> > > > On Tuesday 30 June 2009, Rafael J. Wysocki wrote:
+> > > > > On Tuesday 30 June 2009, Takashi Iwai wrote:
+> > > > > > At Mon, 29 Jun 2009 20:37:09 +0200,
+> > > > > > Rafael J. Wysocki wrote:
+> > > > > > > 
+> > > > > > > Hi Takashi,
+> > > > > > > 
+> > > > > > > I have a problem with snd-hda-intel from 2.6.30 on an hp EliteBook 6930p, which
+> > > > > > > is that the sound is not audible, although everything appears to work just
+> > > > > > > fine.  Except maybe that when the box is rebooted and KDE (3.5) is started,
+> > > > > > > the master control is "muted" and the led indicator next to the keyboard shows
+> > > > > > > "no sound".  Then, changing the "muted" status of the master control doesn't
+> > > > > > > change the state of the led indicator and vice versa (the two things appear to
+> > > > > > > be totally independent of each other).
+> > > > > > > 
+> > > > > > > Can you please tell me what I can do to debug this issue?
+> > > > > > 
+> > > > > > Could you run alsa-info.sh with --no-upload option on both "muted"
+> > > > > > and "not muted" states, and attach the generated files?
+> > > > > 
+> > > > > Sure.  In the meantime it turned out that after a power off and cold boot the
+> > > > > status of the master control is 'on', but the led indicator shows 'no sound', so
+> > > > > there are 5 outputs:
+> > > > > * alsa-info-postboot.txt - after power off and cold boot
+> > > > > * alsa-info-led.txt - led indicator switched to 'on' when it was in the
+> > > > >   alsa-info-postboot.txt state
+> > > > > Now I switched to AC power and rebooted the box without powering off:
+> > > > > * alsa-info-muted.txt - initial state with the 'muted' master control
+> > > > > * alsa-info-on.txt - master control switched to 'on' when it was in the
+> > > > >   alsa-info-muted.txt state
+> > > > > * alsa-info.txt - led indicator switched to 'on' when it was in the
+> > > > >   alsa-info-on.txt state
+> > > > > 
+> > > > > > If it's a regression (heh :), please give alsa-info.sh output on
+> > > > > > older kernels.
+> > > > > 
+> > > > > No, it's not a regression.  At least not from 2.6.27.
+> > > > > 
+> > > > > Please let me know if you need more information.
+> > > > 
+> > > > One more thing.  The headphones output actually works regardless of the
+> > > > led indicator status, so only the built-in speakers output seems to be
+> > > > affected.
+> > > 
+> > > How can you turn on/off LED?  From your explanation, it seems not
+> > > directly bound with the audio mute.
+> > > 
+> > > Anyway, try model=mobile or model=laptop for snd-hda-intel module
+> > > option.  Does the speaker work?
+> > 
+> > Yes, it works with both model=laptop and model=mobile.
+> 
+> OK, I added the following patch to sound git tree.
 
-> A little more background ... we are implementing research algorithms for
-> hearing aids ... so ... we have many mic inputs and stereo output ...
-> [..]
-> So we are still open to better USB/Firewire hardware, however would prefer
-> more bandwidth and hopefully less latency to the device. This is why I
-> asked about ethernet and possible PCMCIA.
+Thanks!
 
-http://lad.linuxaudio.org/events/2009_cdm/Friday/07_Grimm/index.html
+I had to give the box back to the owner.  I'll verify the patch if I can get
+access to it once again. :-)
 
-All these topics were covered in this lecture on this year's LAC, with
-some measurements etc.
+Best,
+Rafael
 
 
-Flo
--- 
-Machines can do the work, so people have time to think.
-public key DA43FEF4          x-hkp://wwwkeys.eu.pgp.net
+> ===
+> From ff84847171508a3c76eb7e483204d1be7738729b Mon Sep 17 00:00:00 2001
+> From: Takashi Iwai <tiwai@suse.de>
+> Date: Wed, 1 Jul 2009 18:08:01 +0200
+> Subject: [PATCH] ALSA: hda - Add quirk for HP 6930p
+> 
+> Added a quirk model=laptop for HP 6930p (103c:30dc) with AD1984A codec.
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/pci/hda/patch_analog.c |    1 +
+>  1 files changed, 1 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
+> index 84cc49c..85e8618 100644
+> --- a/sound/pci/hda/patch_analog.c
+> +++ b/sound/pci/hda/patch_analog.c
+> @@ -3966,6 +3966,7 @@ static struct snd_pci_quirk ad1884a_cfg_tbl[] = {
+>  	SND_PCI_QUIRK(0x103c, 0x3037, "HP 2230s", AD1884A_LAPTOP),
+>  	SND_PCI_QUIRK(0x103c, 0x3056, "HP", AD1884A_MOBILE),
+>  	SND_PCI_QUIRK_MASK(0x103c, 0xfff0, 0x3070, "HP", AD1884A_MOBILE),
+> +	SND_PCI_QUIRK_MASK(0x103c, 0xfff0, 0x30d0, "HP laptop", AD1884A_LAPTOP),
+>  	SND_PCI_QUIRK_MASK(0x103c, 0xfff0, 0x30e0, "HP laptop", AD1884A_LAPTOP),
+>  	SND_PCI_QUIRK_MASK(0x103c, 0xff00, 0x3600, "HP laptop", AD1884A_LAPTOP),
+>  	SND_PCI_QUIRK(0x17aa, 0x20ac, "Thinkpad X300", AD1884A_THINKPAD),
