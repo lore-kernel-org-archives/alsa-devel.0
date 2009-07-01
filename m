@@ -1,83 +1,75 @@
-From: Andreas =?iso-8859-1?q?N=FC=DFlein?= <nutz@unfoog.de>
-Subject: Re: No sound with nVidia Corporation MCP79 High
-	Definition Audio (rev b1) (Macbook Pro 5, 5)
-Date: Wed, 1 Jul 2009 17:00:42 +0200
-Message-ID: <200907011700.43178.nutz@unfoog.de>
-References: <4A493A56.1050504@gmail.com> <s5heit2i7pi.wl%tiwai@suse.de>
+From: "Rafael J. Wysocki" <rjw@sisk.pl>
+Subject: Re: Problems with snd-hda-intel on hp 6930p (2.6.30)
+Date: Wed, 1 Jul 2009 18:00:28 +0200
+Message-ID: <200907011800.28687.rjw@sisk.pl>
+References: <200906292037.09597.rjw@sisk.pl> <200906301615.38244.rjw@sisk.pl> <s5h8wj994do.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx.unfoog.de (dom0kun.ath.cx [78.46.99.229])
-	by alsa0.perex.cz (Postfix) with ESMTP id 381A224426
-	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Jul 2009 17:00:54 +0200 (CEST)
-Received: from panama.localnet (port-87-234-90-241.dynamic.qsc.de
-	[87.234.90.241])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx.unfoog.de (Postfix) with ESMTPSA id 88CD73AF4F2
-	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Jul 2009 17:00:43 +0200 (CEST)
-In-Reply-To: <s5heit2i7pi.wl%tiwai@suse.de>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754684AbZGAQAQ@vger.kernel.org>
+In-Reply-To: <s5h8wj994do.wl%tiwai@suse.de>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tuesday 30 June 2009, Takashi Iwai wrote:
+> At Tue, 30 Jun 2009 16:15:37 +0200,
+> Rafael J. Wysocki wrote:
+> > 
+> > On Tuesday 30 June 2009, Rafael J. Wysocki wrote:
+> > > On Tuesday 30 June 2009, Takashi Iwai wrote:
+> > > > At Mon, 29 Jun 2009 20:37:09 +0200,
+> > > > Rafael J. Wysocki wrote:
+> > > > > 
+> > > > > Hi Takashi,
+> > > > > 
+> > > > > I have a problem with snd-hda-intel from 2.6.30 on an hp EliteBook 6930p, which
+> > > > > is that the sound is not audible, although everything appears to work just
+> > > > > fine.  Except maybe that when the box is rebooted and KDE (3.5) is started,
+> > > > > the master control is "muted" and the led indicator next to the keyboard shows
+> > > > > "no sound".  Then, changing the "muted" status of the master control doesn't
+> > > > > change the state of the led indicator and vice versa (the two things appear to
+> > > > > be totally independent of each other).
+> > > > > 
+> > > > > Can you please tell me what I can do to debug this issue?
+> > > > 
+> > > > Could you run alsa-info.sh with --no-upload option on both "muted"
+> > > > and "not muted" states, and attach the generated files?
+> > > 
+> > > Sure.  In the meantime it turned out that after a power off and cold boot the
+> > > status of the master control is 'on', but the led indicator shows 'no sound', so
+> > > there are 5 outputs:
+> > > * alsa-info-postboot.txt - after power off and cold boot
+> > > * alsa-info-led.txt - led indicator switched to 'on' when it was in the
+> > >   alsa-info-postboot.txt state
+> > > Now I switched to AC power and rebooted the box without powering off:
+> > > * alsa-info-muted.txt - initial state with the 'muted' master control
+> > > * alsa-info-on.txt - master control switched to 'on' when it was in the
+> > >   alsa-info-muted.txt state
+> > > * alsa-info.txt - led indicator switched to 'on' when it was in the
+> > >   alsa-info-on.txt state
+> > > 
+> > > > If it's a regression (heh :), please give alsa-info.sh output on
+> > > > older kernels.
+> > > 
+> > > No, it's not a regression.  At least not from 2.6.27.
+> > > 
+> > > Please let me know if you need more information.
+> > 
+> > One more thing.  The headphones output actually works regardless of the
+> > led indicator status, so only the built-in speakers output seems to be
+> > affected.
+> 
+> How can you turn on/off LED?  From your explanation, it seems not
+> directly bound with the audio mute.
+> 
+> Anyway, try model=mobile or model=laptop for snd-hda-intel module
+> option.  Does the speaker work?
 
-so i tried to find some information in OS X and after a while i stumbled upon a 
-document "Info.plist", to which i was pointed by OS X's build-in hardware 
-info-utility, somehwere in /System/Library/Extensions/AppleHDA.kext/....  
+Yes, it works with both model=laptop and model=mobile.
 
-http://nopaste.org/p/aRCCwdDXqb
-
-also some information right out of the apple tool, eventhough i don't think 
-that it's worth anything:
-Intel High Definition Audio:                                                                         
-  Device ID:    0x10DECB79
-  Audio ID:     77        
-  Available Devices:      
-  Headphone:              
-  Connection:   Combo     
-  Speaker:                
-  Connection:   Internal  
-  Line In:                
-  Connection:   Combo     
-  Internal Microphone:    
-  Connection:   Internal  
-  S/P-DIF Out:            
-  Connection:   Combo     
-  External Microphone:    
-  Connection:   Combo   
-
-
-On Tuesday 30 June 2009 07:58:17 Takashi Iwai wrote:
-> At Mon, 29 Jun 2009 16:04:06 -0600,
->
-> Sean Burke wrote:
-> > A quick google shows that the vendor ID is Cirrus Logic. The Boot Camp
-> > driver set does include installers for Cirrus audio cards. I don't have
-> > Windows installed on here, so I can't check to see if it is indeed the
-> > Cirrus drivers that get installed. What can be done to facilitate the
-> > implementation of this codec?
->
-> I guess it's CS4206 codec.  CS4207 has a different id.
-
-out of the Info.plist:
-<string>Cirrus Logic CS4206</string>                          
-<key>CodecID</key>
-
-
-so again: if i can, i'd love to help.
-
-
-thanks a lot
+Thanks,
+Rafael
