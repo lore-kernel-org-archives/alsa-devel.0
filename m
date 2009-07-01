@@ -1,19 +1,25 @@
-From: "Rafael J. Wysocki" <rjw@sisk.pl>
-Subject: Re: Problems with snd-hda-intel on hp 6930p (2.6.30)
-Date: Wed, 1 Jul 2009 00:47:38 +0200
-Message-ID: <200907010047.39525.rjw@sisk.pl>
-References: <200906292037.09597.rjw@sisk.pl> <200906301615.38244.rjw@sisk.pl>
-	<s5h8wj994do.wl%tiwai@suse.de>
+From: Matt Flax <flatmax@nal.gov.au>
+Subject: laptop multichannel ethernet OR PCMCIA sound cards
+Date: Wed, 01 Jul 2009 14:01:33 +1000
+Message-ID: <1246420893.7599.7.camel@flatmax>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ogre.sisk.pl (ogre.sisk.pl [217.79.144.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id F1B82244BA
+Received: from sonic.nal.gov.au (sonic.nal.gov.au [203.6.243.10])
+	by alsa0.perex.cz (Postfix) with SMTP id 31E93244FD
 	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Jul 2009 00:47:31 +0200 (CEST)
-In-Reply-To: <s5h8wj994do.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Wed,  1 Jul 2009 06:01:51 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by sonic.nal.gov.au (Postfix) with ESMTP id B1EBC2360073
+	for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2009 14:01:49 +1000 (EST)
+Received: from sonic.nal.gov.au ([127.0.0.1])
+	by localhost (sonic.nal.gov.au [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id s2tSqzktu5Kv for <alsa-devel@alsa-project.org>;
+	Wed,  1 Jul 2009 14:01:49 +1000 (EST)
+Received: from [203.6.243.130] (flatmax.nal.gov.au [203.6.243.130])
+	by sonic.nal.gov.au (Postfix) with ESMTP id 26B742360057
+	for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2009 14:01:48 +1000 (EST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,71 +29,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 30 June 2009, Takashi Iwai wrote:
-> At Tue, 30 Jun 2009 16:15:37 +0200,
-> Rafael J. Wysocki wrote:
-> > 
-> > On Tuesday 30 June 2009, Rafael J. Wysocki wrote:
-> > > On Tuesday 30 June 2009, Takashi Iwai wrote:
-> > > > At Mon, 29 Jun 2009 20:37:09 +0200,
-> > > > Rafael J. Wysocki wrote:
-> > > > > 
-> > > > > Hi Takashi,
-> > > > > 
-> > > > > I have a problem with snd-hda-intel from 2.6.30 on an hp EliteBook 6930p, which
-> > > > > is that the sound is not audible, although everything appears to work just
-> > > > > fine.  Except maybe that when the box is rebooted and KDE (3.5) is started,
-> > > > > the master control is "muted" and the led indicator next to the keyboard shows
-> > > > > "no sound".  Then, changing the "muted" status of the master control doesn't
-> > > > > change the state of the led indicator and vice versa (the two things appear to
-> > > > > be totally independent of each other).
-> > > > > 
-> > > > > Can you please tell me what I can do to debug this issue?
-> > > > 
-> > > > Could you run alsa-info.sh with --no-upload option on both "muted"
-> > > > and "not muted" states, and attach the generated files?
-> > > 
-> > > Sure.  In the meantime it turned out that after a power off and cold boot the
-> > > status of the master control is 'on', but the led indicator shows 'no sound', so
-> > > there are 5 outputs:
-> > > * alsa-info-postboot.txt - after power off and cold boot
-> > > * alsa-info-led.txt - led indicator switched to 'on' when it was in the
-> > >   alsa-info-postboot.txt state
-> > > Now I switched to AC power and rebooted the box without powering off:
-> > > * alsa-info-muted.txt - initial state with the 'muted' master control
-> > > * alsa-info-on.txt - master control switched to 'on' when it was in the
-> > >   alsa-info-muted.txt state
-> > > * alsa-info.txt - led indicator switched to 'on' when it was in the
-> > >   alsa-info-on.txt state
-> > > 
-> > > > If it's a regression (heh :), please give alsa-info.sh output on
-> > > > older kernels.
-> > > 
-> > > No, it's not a regression.  At least not from 2.6.27.
-> > > 
-> > > Please let me know if you need more information.
-> > 
-> > One more thing.  The headphones output actually works regardless of the
-> > led indicator status, so only the built-in speakers output seems to be
-> > affected.
-> 
-> How can you turn on/off LED?
 
-There's a button switch attached to it (basically, you press the led and the
-status changes :-)).
+We are after an ultra low latency connection to a multichannel in/out
+sound card for a laptop. We want a portable system and don't want to
+network to a different computer to achieve this goal.
 
-> From your explanation, it seems not directly bound with the audio mute.
+As we are after ultra low latency, we are interested in both PCMCIA and
+ethernet (gigabit) solutions.
 
-That's correct, it seems independent.
+Is anyone aware of any such ultra low latency hardware ?
 
-> Anyway, try model=mobile or model=laptop for snd-hda-intel module
-> option.  Does the speaker work?
+Can anyone suggest any other solution for a laptop which is portable and
+not based on ethernet or PCMCIA ?
 
-I'll check tomorrow, the box is at my university office.
+I think that USB and firewire are good, but want even lower latency to
+the hardware if possible.
 
-Thanks,
-Rafael
+thanks
+-- 
+Matt Flax, BE, BSc, PhD
+Research Engineer
+
+National Acoustic Laboratories
+A Division of Australian Hearing
+
+126 Greville Street
+Chatswood NSW 2067 Australia
+P +61 2 9412 6985
+F +61 2 9411 8273
+
+Please consider the environment before printing this email
