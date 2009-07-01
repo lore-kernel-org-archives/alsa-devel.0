@@ -1,26 +1,18 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH] alsa/soc: add locking to mpc5200-psc-ac97
-	driver
-Date: Wed, 1 Jul 2009 08:44:58 -0600
-Message-ID: <fa686aa40907010744i21beefb2pa088a63fc5bae3d1@mail.gmail.com>
-References: <20090629234214.12670.9082.stgit@localhost.localdomain>
-	<20090630061847.GA24164@pengutronix.de>
-	<9e4733910906300642o4f1c0e2cn45423c426e3aff7e@mail.gmail.com>
-	<20090701085633.GB3144@pengutronix.de>
-	<9e4733910907010632g10706084o66720d4616e40865@mail.gmail.com>
-	<20090701135547.GD3144@pengutronix.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: can't find snd_card_next!
+Date: Wed, 01 Jul 2009 16:53:43 +0200
+Message-ID: <4A4B7877.2060602@ladisch.de>
+References: <20090626082750.6D1B210092@gold.linx.net>	<s5hzlbrv76f.wl%tiwai@suse.de>	<d54969c50906292054j77aa8dd5ha0e2954b1e793f38@mail.gmail.com>	<b0bb99640906292307o13c2d842nbf3a078590cee911@mail.gmail.com>	<s5h8wjai600.wl%tiwai@suse.de>	<b0bb99640906301256g64ee3aa1yc66364d3800c934a@mail.gmail.com>	<1246392149.11792.8.camel@localhost>
+	<4A4B739C.7050001@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f176.google.com (mail-pz0-f176.google.com
-	[209.85.222.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5337924488
+Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id C2EC52447F
 	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Jul 2009 16:45:20 +0200 (CEST)
-Received: by pzk6 with SMTP id 6so2896pzk.16
-	for <alsa-devel@alsa-project.org>; Wed, 01 Jul 2009 07:45:18 -0700 (PDT)
-In-Reply-To: <20090701135547.GD3144@pengutronix.de>
+	Wed,  1 Jul 2009 16:53:32 +0200 (CEST)
+In-Reply-To: <4A4B739C.7050001@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,31 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@sirena.org.uk
+To: Guilherme <grlongo.ireland@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 1, 2009 at 7:55 AM, Wolfram Sang<w.sang@pengutronix.de> wrote:
->
->> > Sorry, I didn't get it: Shall I test something specific?
->>
->> I don't own a touchscreen.
->>
->> AFAIK no one has ever plugged a touchscreen into the PCM-973 to see if
->> works since there hasn't been a driver previously.
->> Just do a general
->> test so that you can tell customers that it works.
->
-> I am not sure, we have a suitable touchscreen. Also, I am afraid this is a bit
-> too much to do besides my regular day work right now. Sorry.
+Guilherme wrote:
+> I studing the aplay program and there is a function that I can't find in 
+> any header.
+> Ive tried asound.h and asoundlib.h among other but without success!
+> [...]
+> Where is the snd_card_next() function?
 
-I've now tested this on a client's board which uses the pcm030 with a
-custom base board (based on the development board) which uses the same
-codec.  It works there.  I don't have a discrete touchscreen to wire
-up to the PCM-973 though.
+$ grep snd_card_next /usr/include/alsa/*
+/usr/include/alsa/control.h:int snd_card_next(int *card);
 
-g.
 
--- 
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
+HTH
+Clemens
