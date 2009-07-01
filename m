@@ -1,27 +1,21 @@
-From: VDR User <user.vdr@gmail.com>
-Subject: Re: Problems with snd-hda-intel and Asus M2NPV-VM.
-	Please help!
-Date: Wed, 1 Jul 2009 07:26:40 -0700
-Message-ID: <a3ef07920907010726o6e06dd8dn25b33d4ee5b6c42c@mail.gmail.com>
-References: <a3ef07920906241108u786a6c89j80f2ad89eebf7dcd@mail.gmail.com>
-	<a3ef07920906241134m2f84ac06pef7465ce356f893f@mail.gmail.com>
-	<s5hvdmfv6s6.wl%tiwai@suse.de>
-	<a3ef07920906291028q670ed146t1451650d0c2a4713@mail.gmail.com>
-	<s5hzlbq83o8.wl%tiwai@suse.de>
-	<a3ef07920906301030p7f84d4c4xe6c0590f436b4de9@mail.gmail.com>
-	<s5heit1bjki.wl%tiwai@suse.de>
+From: Guilherme <grlongo.ireland@gmail.com>
+Subject: can't find snd_card_next!
+Date: Wed, 01 Jul 2009 11:33:00 -0300
+Message-ID: <4A4B739C.7050001@gmail.com>
+References: <20090626082750.6D1B210092@gold.linx.net>	<s5hzlbrv76f.wl%tiwai@suse.de>	<d54969c50906292054j77aa8dd5ha0e2954b1e793f38@mail.gmail.com>	<b0bb99640906292307o13c2d842nbf3a078590cee911@mail.gmail.com>	<s5h8wjai600.wl%tiwai@suse.de>	<b0bb99640906301256g64ee3aa1yc66364d3800c934a@mail.gmail.com>
+	<1246392149.11792.8.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f189.google.com (mail-vw0-f189.google.com
-	[209.85.212.189])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4BEF12446C
+Received: from mail-px0-f200.google.com (mail-px0-f200.google.com
+	[209.85.216.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8CD442447A
 	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Jul 2009 16:26:41 +0200 (CEST)
-Received: by vwj27 with SMTP id 27so392487vwj.16
-	for <alsa-devel@alsa-project.org>; Wed, 01 Jul 2009 07:26:40 -0700 (PDT)
-In-Reply-To: <s5heit1bjki.wl%tiwai@suse.de>
+	Wed,  1 Jul 2009 16:31:50 +0200 (CEST)
+Received: by pxi38 with SMTP id 38so791121pxi.16
+	for <alsa-devel@alsa-project.org>; Wed, 01 Jul 2009 07:31:49 -0700 (PDT)
+In-Reply-To: <1246392149.11792.8.camel@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,28 +25,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 30, 2009 at 12:36 PM, Takashi Iwai<tiwai@suse.de> wrote:
->> =A0Is it possible the revision of the MCP51 I have is not
->> supported (yet)? =A0Please let me know anything further I can do to help
->> figure this out.
->
-> Well, the question is rather how the hardware is implemented.
-> The SPDIF and HDMI implementation depends pretty much on the hardware.
-> For example, HDMI has to be activated by a video driver (e.g. X) even
-> for the audio transfer.
->
-> So, if the codec registers look good, I can't say more than that.
-> Only hardware vendors could advise...
-
-My mainboard doesn't have HDMI out but it did come with an HDTV module
-for HDTV output, could it still be that something in my xorg.conf is
-missing that is causing this not to work?  How can I tell (or could
-you tell by my logs) if the codec registers are good?  I'm not sure
-how to proceed from here aside of buying a new mainboard.
-
-Best regards,
-Derek
+SGkgYWxsIQoKSSBzdHVkaW5nIHRoZSBhcGxheSBwcm9ncmFtIGFuZCB0aGVyZSBpcyBhIGZ1bmN0
+aW9uIHRoYXQgSSBjYW4ndCBmaW5kIGluIAphbnkgaGVhZGVyLgpJdmUgdHJpZWQgYXNvdW5kLmgg
+YW5kIGFzb3VuZGxpYi5oIGFtb25nIG90aGVyIGJ1dCB3aXRob3V0IHN1Y2Nlc3MhCgpUaGlzIGlz
+IHRoZSBjb2RlOgoKICAgIGNhcmQgPSAtMTsKICAgIGlmIChzbmRfY2FyZF9uZXh0KCZjYXJkKSA8
+IDAgfHwgY2FyZCA8IDApIHsKICAgICAgICBlcnJvcihfKCJubyBzb3VuZGNhcmRzIGZvdW5kLi4u
+IikpOwogICAgICAgIHJldHVybjsKICAgIH0KCldoZXJlIGlzIHRoZSBzbmRfY2FyZF9uZXh0KCkg
+ZnVuY3Rpb24/CgpUaGFua3MgYWxsIQoKVGtzIQoKLS0tLS0tLS0tLS0tLS0tLS0tLQoKR3VpbGhl
+cm1lIExvbmdvCkRlcHQuIEVuZy4gZGEgQ29tcHV0YcOnw6NvClVuYWVycAoKTGludXggVXNlciAt
+ICM0ODQ5MjcKCipCZWZvcmUgQXNraW5nCmh0dHA6Ly93d3cuaXN0Zi5jb20uYnIvP3BhZ2U9cGVy
+Z3VudGFzCgohLSBJJ2QgcmF0aGVyIGRpZSBvbiBteSBmZWV0IHRoYW4gbGl2ZSBvbiBteSBrbmVl
+cyAtIQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
