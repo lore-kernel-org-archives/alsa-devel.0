@@ -1,26 +1,24 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [RFC] I2S and LEFT_J
-Date: Wed, 1 Jul 2009 14:17:21 +0200
-Message-ID: <20090701121721.GB19257@buzzloop.caiaq.de>
-References: <f17812d70906110634i623eb236ib277e164678a7a34@mail.gmail.com>
-	<1244730992.21356.50.camel@brutus>
-	<f17812d70906150145p763002det5e2699442673d532@mail.gmail.com>
-	<1245077824.24109.51.camel@brutus>
-	<20090615150433.GF6106@sirena.org.uk>
-	<1245086420.24109.159.camel@brutus>
-	<4A39F3A5.5030109@gmail.com> <1245328258.303.45.camel@brutus>
-	<20090622221430.GH29236@buzzloop.caiaq.de>
-	<1246062508.10360.358.camel@brutus>
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: Re: [PATCH] alsa/soc: add locking to mpc5200-psc-ac97
+	driver
+Date: Wed, 1 Jul 2009 09:32:46 -0400
+Message-ID: <9e4733910907010632g10706084o66720d4616e40865@mail.gmail.com>
+References: <20090629234214.12670.9082.stgit@localhost.localdomain>
+	<20090630061847.GA24164@pengutronix.de>
+	<9e4733910906300642o4f1c0e2cn45423c426e3aff7e@mail.gmail.com>
+	<20090701085633.GB3144@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9588B24384
+Received: from mail-vw0-f189.google.com (mail-vw0-f189.google.com
+	[209.85.212.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id C51482433A
 	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Jul 2009 14:17:24 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1246062508.10360.358.camel@brutus>
+	Wed,  1 Jul 2009 15:32:47 +0200 (CEST)
+Received: by vwj27 with SMTP id 27so368929vwj.16
+	for <alsa-devel@alsa-project.org>; Wed, 01 Jul 2009 06:32:46 -0700 (PDT)
+In-Reply-To: <20090701085633.GB3144@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,49 +28,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Ribeiro <drwyrm@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, pHilipp Zabel <philipp.zabel@gmail.com>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Cc: Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@sirena.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hi Daniel,
+On Wed, Jul 1, 2009 at 4:56 AM, Wolfram Sang<w.sang@pengutronix.de> wrote:
+> Hi Jon,
+>
+>> Wolfram, do you have any way to test the on the Phytec hardware? The
+>> WM9712 on the baseboard supports a touchscreen, is it brought out to a
+>> header?
+>
+> Sorry, I didn't get it: Shall I test something specific?
 
-On Fri, Jun 26, 2009 at 09:28:28PM -0300, Daniel Ribeiro wrote:
-> Em Ter, 2009-06-23 =E0s 00:14 +0200, Daniel Mack escreveu:
-> > Without network mode, these are the register values that do what I need:
-> > =
+I don't own a touchscreen.
 
-> >   SSCR0 0x2100037F
-> >   SSCR1 0x00C01d08
-> >   SSPSP 0x31a08084
-> >   (SSTSA/SSRSA don't matter in this case)
-> =
+AFAIK no one has ever plugged a touchscreen into the PCM-973 to see if
+works since there hasn't been a driver previously. Just do a general
+test so that you can tell customers that it works.
 
-> Thanks for the testing. If you don't mind, can you please replace the
-> third patch, and try this one instead?
+>
+> The touchscreen connector is X19 BTW (assuming a PCM-973 baseboard).
+>
+> Regards,
+>
+> =A0 Wolfram
+>
+> --
+> Pengutronix e.K. =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | Wo=
+lfram Sang =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0|
+> Industrial Linux Solutions =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | http://www.p=
+engutronix.de/ =A0|
+>
+> -----BEGIN PGP SIGNATURE-----
+> Version: GnuPG v1.4.9 (GNU/Linux)
+>
+> iEYEARECAAYFAkpLJMEACgkQD27XaX1/VRs/cwCgn7p7ffxr8WGoW7MwALkBMKtD
+> VtYAoIa5/viinyvFF5cQP3BvH9WP3a5I
+> =3DZrq3
+> -----END PGP SIGNATURE-----
+>
+>
 
-Jup, applied now.
 
-> Use set_tdm_slot(5, 5, 4, 16), if this works for you we can just drop
-> the pxa3xx special case and use SSCR0_FSRT and network mode for both
-> pxa2xx and pxa3xx.
 
-That gives an asynchronous LRCLK again.
+-- =
 
-> If not, use set_tdm_slot(1, 1, 1, 16), and tweak the
-> (slots =3D=3D 1 && slot_width =3D=3D 16) special case as needed. This con=
-dition
-> should give you a config without SSCR0_MOD, and you should be able to
-> match the register values above.
-
-Unfortunately it doesn't. The resulting register values are
-
-  SSCR0 0x200003ff
-  SSCR1 0x00e01d80
-  SSPSP 0x31a00084
-
-and the LRCLK does not toggle any more at all, and hence DMA is not
-happening. I couldn't do more investigation on this right now, but the
-value dump might help. Let me know if I can do more tests.
-
-Thanks,
-Daniel
+Jon Smirl
+jonsmirl@gmail.com
