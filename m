@@ -1,18 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.32
-Date: Wed, 1 Jul 2009 21:59:53 +0100
-Message-ID: <20090701205952.GA12339@sirena.org.uk>
-References: <20090701204503.GA11465@sirena.org.uk>
+From: flaxma@nal.gov.au
+Subject: Re: laptop multichannel ethernet OR PCMCIA sound cards
+Date: Thu, 2 Jul 2009 08:18:16 +1000
+Message-ID: <1a1fefe78f92c38beb5a8185afb3bad5.squirrel@sonic.nal.gov.au>
+References: <1246420893.7599.7.camel@flatmax>
+	<4A4B394E.7090707@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 451512414D
+Received: from sonic.nal.gov.au (sonic.nal.gov.au [203.6.243.10])
+	by alsa0.perex.cz (Postfix) with SMTP id B880124402
 	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Jul 2009 23:00:05 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20090701204503.GA11465@sirena.org.uk>
+	Thu,  2 Jul 2009 00:18:18 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by sonic.nal.gov.au (Postfix) with ESMTP id D40072360078
+	for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2009 08:18:16 +1000 (EST)
+Received: from sonic.nal.gov.au ([127.0.0.1])
+	by localhost (sonic.nal.gov.au [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id YodSJFDyGnmz for <alsa-devel@alsa-project.org>;
+	Thu,  2 Jul 2009 08:18:16 +1000 (EST)
+Received: from sonic.nal.gov.au (localhost [127.0.0.1])
+	by sonic.nal.gov.au (Postfix) with ESMTP id 4BBA02360057
+	for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2009 08:18:16 +1000 (EST)
+In-Reply-To: <4A4B394E.7090707@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,51 +32,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 62b1653e29d8f359c4c7e045b965dc963459473d:
-  Takashi Iwai (1):
-        Merge branch 'for-2.6.32' of git://git.kernel.org/.../broonie/sound-2.6 into topic/asoc
+HI, yes
 
-are available in the git repository at:
+A little more background ... we are implementing research algorithms for
+hearing aids ... so ... we have many mic inputs and stereo output ...
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.32
+we want a digital interface to the laptop.
 
-Atsushi Nemoto (1):
-      ASoC: txx9aclc: dynamically allocate dmaengine devname
+Need 6 analog inputs
+Need 2 analog outputs
 
-Grant Likely (2):
-      ASoC: Fix typo in MPC5200 PSC AC97 driver Kconfig
-      ASoC: remove BROKEN from Efika and pcm030 fabric drivers
+Need minimal latency both in and out as it is a collect/process/output
+system.
 
-Janusz Krzysztofik (1):
-      ASoC: OMAP: fix OMAP1510 broken PCM pointer callback
+Sample rates anything between 22050 Hz and 48 kHz is good at this point.
 
-Lopez Cruz, Misael (1):
-      ASoC: Remove word "Switch" from Handsfree switch name
+At the moment we can get about 3 ms with an off the shelf firewire/usb card
+ @ 48 kHz, however when we load the CPU with DSP algorithms, we sometimes
+need to bump up the frame size and thus the latency goes up ...
+We are running a realtime patched kernel.
 
-Mark Brown (6):
-      ASoC: Fix widget powerdown on shutdown
-      ASoC: Fix WM8961 suspend function type
-      ASoC: Convert to dev_pm_ops
-      ASoC: Only disable pxa2xx-i2s clocks if we enabled them
-      ASoC: Add WM8523 CODEC driver
-      Merge branch 'for-2.6.31' into for-2.6.32
+I have found that there is about 2/3 of the latency in hardware buffers.
 
- sound/soc/codecs/Kconfig   |    4 +
- sound/soc/codecs/Makefile  |    2 +
- sound/soc/codecs/twl4030.c |   12 +-
- sound/soc/codecs/wm8523.c  |  755 ++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/wm8523.h  |  160 ++++++++++
- sound/soc/codecs/wm8961.c  |    2 +-
- sound/soc/fsl/Kconfig      |    6 +-
- sound/soc/omap/omap-pcm.c  |   11 +-
- sound/soc/pxa/pxa2xx-i2s.c |    7 +-
- sound/soc/soc-core.c       |   30 ++-
- sound/soc/soc-dapm.c       |    1 +
- sound/soc/txx9/txx9aclc.c  |   10 +-
- 12 files changed, 970 insertions(+), 30 deletions(-)
- create mode 100644 sound/soc/codecs/wm8523.c
- create mode 100644 sound/soc/codecs/wm8523.h
+So we are still open to better USB/Firewire hardware, however would prefer
+more bandwidth and hopefully less latency to the device. This is why I
+asked about ethernet and possible PCMCIA.
+
+Matt
+
+> Matt Flax wrote:
+>> We are after an ultra low latency connection to a multichannel in/out
+>> sound card for a laptop. We want a portable system and don't want to
+>> network to a different computer to achieve this goal.
+>>
+>> As we are after ultra low latency, we are interested in both PCMCIA and
+>> ethernet (gigabit) solutions.
+>>
+>> Is anyone aware of any such ultra low latency hardware ?
+>
+> Can you define what you require.
+>
+> Do you want analog or digital audio I/O?
+>
+> Do you need low latency in, out or both?
+>
+> What samplerates do you need?
+>
+> What latency would be acceptable (say how many milliseconds or
+> microseconds).
+>
+> regards
+>
+> Eliot
+>
+>
+>
+>
