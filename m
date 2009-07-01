@@ -1,86 +1,58 @@
-From: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH] alsa/soc: add locking to mpc5200-psc-ac97 driver
-Date: Wed, 1 Jul 2009 15:55:47 +0200
-Message-ID: <20090701135547.GD3144@pengutronix.de>
-References: <20090629234214.12670.9082.stgit@localhost.localdomain>
-	<20090630061847.GA24164@pengutronix.de>
-	<9e4733910906300642o4f1c0e2cn45423c426e3aff7e@mail.gmail.com>
-	<20090701085633.GB3144@pengutronix.de>
-	<9e4733910907010632g10706084o66720d4616e40865@mail.gmail.com>
+From: VDR User <user.vdr@gmail.com>
+Subject: Re: Problems with snd-hda-intel and Asus M2NPV-VM.
+	Please help!
+Date: Wed, 1 Jul 2009 07:26:40 -0700
+Message-ID: <a3ef07920907010726o6e06dd8dn25b33d4ee5b6c42c@mail.gmail.com>
+References: <a3ef07920906241108u786a6c89j80f2ad89eebf7dcd@mail.gmail.com>
+	<a3ef07920906241134m2f84ac06pef7465ce356f893f@mail.gmail.com>
+	<s5hvdmfv6s6.wl%tiwai@suse.de>
+	<a3ef07920906291028q670ed146t1451650d0c2a4713@mail.gmail.com>
+	<s5hzlbq83o8.wl%tiwai@suse.de>
+	<a3ef07920906301030p7f84d4c4xe6c0590f436b4de9@mail.gmail.com>
+	<s5heit1bjki.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3212641120018517790=="
-Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <9e4733910907010632g10706084o66720d4616e40865@mail.gmail.com>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Mime-version: 1.0
-Sender: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org
-Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@sirena.org.uk
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vw0-f189.google.com (mail-vw0-f189.google.com
+	[209.85.212.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4BEF12446C
+	for <alsa-devel@alsa-project.org>;
+	Wed,  1 Jul 2009 16:26:41 +0200 (CEST)
+Received: by vwj27 with SMTP id 27so392487vwj.16
+	for <alsa-devel@alsa-project.org>; Wed, 01 Jul 2009 07:26:40 -0700 (PDT)
+In-Reply-To: <s5heit1bjki.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Jun 30, 2009 at 12:36 PM, Takashi Iwai<tiwai@suse.de> wrote:
+>> =A0Is it possible the revision of the MCP51 I have is not
+>> supported (yet)? =A0Please let me know anything further I can do to help
+>> figure this out.
+>
+> Well, the question is rather how the hardware is implemented.
+> The SPDIF and HDMI implementation depends pretty much on the hardware.
+> For example, HDMI has to be activated by a video driver (e.g. X) even
+> for the audio transfer.
+>
+> So, if the codec registers look good, I can't say more than that.
+> Only hardware vendors could advise...
 
---===============3212641120018517790==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="E7i4zwmWs5DOuDSH"
-Content-Disposition: inline
+My mainboard doesn't have HDMI out but it did come with an HDTV module
+for HDTV output, could it still be that something in my xorg.conf is
+missing that is causing this not to work?  How can I tell (or could
+you tell by my logs) if the codec registers are good?  I'm not sure
+how to proceed from here aside of buying a new mainboard.
 
-
---E7i4zwmWs5DOuDSH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-
-> > Sorry, I didn't get it: Shall I test something specific?
->=20
-> I don't own a touchscreen.
->=20
-> AFAIK no one has ever plugged a touchscreen into the PCM-973 to see if
-> works since there hasn't been a driver previously. Just do a general
-> test so that you can tell customers that it works.
-
-I am not sure, we have a suitable touchscreen. Also, I am afraid this is a =
-bit
-too much to do besides my regular day work right now. Sorry.
-
-Regards,
-
-   Wolfram
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---E7i4zwmWs5DOuDSH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkpLauIACgkQD27XaX1/VRuHkgCfQBUB+eOLtjAUJKPPycUSJbel
-XI0An2UFV8g4eyBvAenVSORdom3omvIQ
-=HKx1
------END PGP SIGNATURE-----
-
---E7i4zwmWs5DOuDSH--
-
---===============3212641120018517790==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Linuxppc-dev mailing list
-Linuxppc-dev@lists.ozlabs.org
-https://lists.ozlabs.org/listinfo/linuxppc-dev
---===============3212641120018517790==--
+Best regards,
+Derek
