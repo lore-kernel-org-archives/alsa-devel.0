@@ -1,87 +1,63 @@
-From: michael <michael@evidence.eu.com>
-Subject: Re: [PATCH 2/2] ASoC: add locking to mpc5200-psc-ac97 driver
-Date: Thu, 02 Jul 2009 21:08:27 +0200
-Message-ID: <4A4D05AB.1090306@evidence.eu.com>
-References: <20090702175719.15773.58956.stgit@localhost.localdomain>
-	<20090702175725.15773.37291.stgit@localhost.localdomain>
+From: pl bossart <bossart.nospam@gmail.com>
+Subject: Re: RFC: Jack-detection control elements on HD-audio
+Date: Thu, 2 Jul 2009 17:27:52 -0500
+Message-ID: <6160a5130907021527t1eda60edx4646dacab586a276@mail.gmail.com>
+References: <s5hk538ejj4.wl%tiwai@suse.de>
+	<20090619095322.GC5270@sirena.org.uk> <s5h1vpgilhq.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <20090702175725.15773.37291.stgit@localhost.localdomain>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Sender: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org
-Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org
-To: Grant Likely <grant.likely@secretlab.ca>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@sirena.org.uk
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yx0-f177.google.com (mail-yx0-f177.google.com
+	[209.85.210.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0D7391037F4
+	for <alsa-devel@alsa-project.org>;
+	Fri,  3 Jul 2009 00:27:53 +0200 (CEST)
+Received: by yxe7 with SMTP id 7so529343yxe.16
+	for <alsa-devel@alsa-project.org>; Thu, 02 Jul 2009 15:27:53 -0700 (PDT)
+In-Reply-To: <s5h1vpgilhq.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Lennart Poettering <mznyfn@0pointer.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Takashi,
+I looked at your code for jack sensing and I am really confused on how
+these evolutions will be used.
+It seems to me these additions with the new control apply only to the
+HDAudio case. Meaning if Lennart modifies PulseAudio to read the jack
+sensing information from the new control, Lennart's code will not work
+on embedded platforms which rely on ASoC and plain snd_jack_report /
+input layer (or any non-HDAudio based solution for that matter), and
+we don't have a generic way to providing the jack information to
+PulseAudio.
+I had a private discussion with Mark where he stated that ASoC would
+not change, and would automatically benefit from this additional
+control. That does not seem to be the case.
+Either I am missing something (not an unlikely scenario, I am
+light-years from my comfort zone here) or everyone is on a different
+wavelength.
+Thanks for your feedback,
+Cheers
+- Pierre
 
-Grant Likely wrote:
-> From: Grant Likely <grant.likely@secretlab.ca>
+On Fri, Jun 19, 2009 at 5:08 AM, Takashi Iwai<tiwai@suse.de> wrote:
+>> It'd be nice to keep the input API interface as well - one of the
+>> reasons I carried on with the existing input interface was that the
+>> existing userspace stuff I found was using the input API in one way or
+>> another. =A0In the embedded space it appears to have often been convenie=
+nt
+>> for people to read jack sense from a GPIO as part of a GPIO keyboard
+>> they're already using which was part of the reason it was never really
+>> joined up with ALSA in the past.
 >
-> AC97 bus register read/write hooks need to provide locking, but the
-> mpc5200-psc-ac97 driver does not.  This patch adds a mutex around
-> the register access routines.
->
-> Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
-> ---
->
->  sound/soc/fsl/mpc5200_dma.c      |    1 +
->  sound/soc/fsl/mpc5200_dma.h      |    1 +
->  sound/soc/fsl/mpc5200_psc_ac97.c |   13 ++++++++++++-
->  3 files changed, 14 insertions(+), 1 deletions(-)
->
->
-> diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
-> index efec33a..f0a2d40 100644
-> --- a/sound/soc/fsl/mpc5200_dma.c
-> +++ b/sound/soc/fsl/mpc5200_dma.c
-> @@ -456,6 +456,7 @@ int mpc5200_audio_dma_create(struct of_device *op)
->  		return -ENODEV;
->  
->  	spin_lock_init(&psc_dma->lock);
-> +	mutex_init(&psc_dma->mutex);
->  	psc_dma->id = be32_to_cpu(*prop);
->  	psc_dma->irq = irq;
->  	psc_dma->psc_regs = regs;
-> diff --git a/sound/soc/fsl/mpc5200_dma.h b/sound/soc/fsl/mpc5200_dma.h
-> index 2000803..8d396bb 100644
-> --- a/sound/soc/fsl/mpc5200_dma.h
-> +++ b/sound/soc/fsl/mpc5200_dma.h
-> @@ -55,6 +55,7 @@ struct psc_dma {
->  	unsigned int irq;
->  	struct device *dev;
->  	spinlock_t lock;
-> +	struct mutex mutex;
->  	u32 sicr;
->  	uint sysclk;
->  	int imr;
-> diff --git a/sound/soc/fsl/mpc5200_psc_ac97.c b/sound/soc/fsl/mpc5200_psc_ac97.c
-> index 9b8503f..7eb5499 100644
-> --- a/sound/soc/fsl/mpc5200_psc_ac97.c
-> +++ b/sound/soc/fsl/mpc5200_psc_ac97.c
-> @@ -34,11 +34,14 @@ static unsigned short psc_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
->  	int status;
->  	unsigned int val;
->  
-> +	mutex_lock(&psc_dma->mutex);
-> +
->  	/* Wait for command send status zero = ready */
->  	status = spin_event_timeout(!(in_be16(&psc_dma->psc_regs->sr_csr.status) &
->  				MPC52xx_PSC_SR_CMDSEND), 100, 0);
->  	if (status == 0) {
->  		pr_err("timeout on ac97 bus (rdy)\n");
-> +		mutex_unlock(&psc_dma->mutex);
->  		return -ENODEV;
->   
-maybe define an err variable and and a goto out.
-
-Michael
+> Don't worry, it's kept as is. =A0The control elements are just
+> additions.
