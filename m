@@ -1,113 +1,123 @@
-From: "Rafael J. Wysocki" <rjw@sisk.pl>
-Subject: Re: Problems with snd-hda-intel on hp 6930p (2.6.30)
-Date: Thu, 2 Jul 2009 00:46:54 +0200
-Message-ID: <200907020046.54521.rjw@sisk.pl>
-References: <200906292037.09597.rjw@sisk.pl> <200907011800.28687.rjw@sisk.pl> <s5h3a9g75a0.wl%tiwai@suse.de>
+From: "Candelaria Villareal, Jorge" <x0107209@ti.com>
+Subject: [PATCH] ASoC: TWL4030: Add EXTMUTE to reduce pop-noise
+	effect
+Date: Wed, 1 Jul 2009 19:17:43 -0500
+Message-ID: <2256F256009DAA4CBE661E9F41EAC84B52037758@dlee01.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755394AbZGAWqZ@vger.kernel.org>
-In-Reply-To: <s5h3a9g75a0.wl%tiwai@suse.de>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id AAB5B244B3
+	for <alsa-devel@alsa-project.org>;
+	Thu,  2 Jul 2009 02:17:54 +0200 (CEST)
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 01 July 2009, Takashi Iwai wrote:
-> At Wed, 1 Jul 2009 18:00:28 +0200,
-> Rafael J. Wysocki wrote:
-> > 
-> > On Tuesday 30 June 2009, Takashi Iwai wrote:
-> > > At Tue, 30 Jun 2009 16:15:37 +0200,
-> > > Rafael J. Wysocki wrote:
-> > > > 
-> > > > On Tuesday 30 June 2009, Rafael J. Wysocki wrote:
-> > > > > On Tuesday 30 June 2009, Takashi Iwai wrote:
-> > > > > > At Mon, 29 Jun 2009 20:37:09 +0200,
-> > > > > > Rafael J. Wysocki wrote:
-> > > > > > > 
-> > > > > > > Hi Takashi,
-> > > > > > > 
-> > > > > > > I have a problem with snd-hda-intel from 2.6.30 on an hp EliteBook 6930p, which
-> > > > > > > is that the sound is not audible, although everything appears to work just
-> > > > > > > fine.  Except maybe that when the box is rebooted and KDE (3.5) is started,
-> > > > > > > the master control is "muted" and the led indicator next to the keyboard shows
-> > > > > > > "no sound".  Then, changing the "muted" status of the master control doesn't
-> > > > > > > change the state of the led indicator and vice versa (the two things appear to
-> > > > > > > be totally independent of each other).
-> > > > > > > 
-> > > > > > > Can you please tell me what I can do to debug this issue?
-> > > > > > 
-> > > > > > Could you run alsa-info.sh with --no-upload option on both "muted"
-> > > > > > and "not muted" states, and attach the generated files?
-> > > > > 
-> > > > > Sure.  In the meantime it turned out that after a power off and cold boot the
-> > > > > status of the master control is 'on', but the led indicator shows 'no sound', so
-> > > > > there are 5 outputs:
-> > > > > * alsa-info-postboot.txt - after power off and cold boot
-> > > > > * alsa-info-led.txt - led indicator switched to 'on' when it was in the
-> > > > >   alsa-info-postboot.txt state
-> > > > > Now I switched to AC power and rebooted the box without powering off:
-> > > > > * alsa-info-muted.txt - initial state with the 'muted' master control
-> > > > > * alsa-info-on.txt - master control switched to 'on' when it was in the
-> > > > >   alsa-info-muted.txt state
-> > > > > * alsa-info.txt - led indicator switched to 'on' when it was in the
-> > > > >   alsa-info-on.txt state
-> > > > > 
-> > > > > > If it's a regression (heh :), please give alsa-info.sh output on
-> > > > > > older kernels.
-> > > > > 
-> > > > > No, it's not a regression.  At least not from 2.6.27.
-> > > > > 
-> > > > > Please let me know if you need more information.
-> > > > 
-> > > > One more thing.  The headphones output actually works regardless of the
-> > > > led indicator status, so only the built-in speakers output seems to be
-> > > > affected.
-> > > 
-> > > How can you turn on/off LED?  From your explanation, it seems not
-> > > directly bound with the audio mute.
-> > > 
-> > > Anyway, try model=mobile or model=laptop for snd-hda-intel module
-> > > option.  Does the speaker work?
-> > 
-> > Yes, it works with both model=laptop and model=mobile.
-> 
-> OK, I added the following patch to sound git tree.
+According to TRM, an external FET controlled by a 1.8V output signal
+can be used to reduce the pop-noise heard when the audio amplifier is
+switched on. It is suggested that GPIO6 of TWL4030 be used, but any
+other gpio can be used instead. This is indicated in machine driver
+with the following twl4030_setup_data members:
 
-Thanks!
+-hs_extmute. Set to 1 if board has support for EXTMUTE.
 
-I had to give the box back to the owner.  I'll verify the patch if I can get
-access to it once again. :-)
+-set_hs_extmute. Set to a callback funcion to control an external gpio
+line. Set to NULL if MUTE[GPIO6] pin is used.
 
-Best,
-Rafael
+Codec driver takes care of enabling and disabling this output during
+the headset pop attenuation sequence.
 
+Also add a delay to let VMID settle in ramp up sequence.
 
-> ===
-> From ff84847171508a3c76eb7e483204d1be7738729b Mon Sep 17 00:00:00 2001
-> From: Takashi Iwai <tiwai@suse.de>
-> Date: Wed, 1 Jul 2009 18:08:01 +0200
-> Subject: [PATCH] ALSA: hda - Add quirk for HP 6930p
-> 
-> Added a quirk model=laptop for HP 6930p (103c:30dc) with AD1984A codec.
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/pci/hda/patch_analog.c |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
-> 
-> diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
-> index 84cc49c..85e8618 100644
-> --- a/sound/pci/hda/patch_analog.c
-> +++ b/sound/pci/hda/patch_analog.c
-> @@ -3966,6 +3966,7 @@ static struct snd_pci_quirk ad1884a_cfg_tbl[] = {
->  	SND_PCI_QUIRK(0x103c, 0x3037, "HP 2230s", AD1884A_LAPTOP),
->  	SND_PCI_QUIRK(0x103c, 0x3056, "HP", AD1884A_MOBILE),
->  	SND_PCI_QUIRK_MASK(0x103c, 0xfff0, 0x3070, "HP", AD1884A_MOBILE),
-> +	SND_PCI_QUIRK_MASK(0x103c, 0xfff0, 0x30d0, "HP laptop", AD1884A_LAPTOP),
->  	SND_PCI_QUIRK_MASK(0x103c, 0xfff0, 0x30e0, "HP laptop", AD1884A_LAPTOP),
->  	SND_PCI_QUIRK_MASK(0x103c, 0xff00, 0x3600, "HP laptop", AD1884A_LAPTOP),
->  	SND_PCI_QUIRK(0x17aa, 0x20ac, "Thinkpad X300", AD1884A_THINKPAD),
+Signed-off-by: Jorge Eduardo Candelaria <x0107209@ti.com>
+---
+ sound/soc/codecs/twl4030.c |   27 +++++++++++++++++++++++++++
+ sound/soc/codecs/twl4030.h |    2 ++
+ 2 files changed, 29 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 06a95f2..4e9e0e1 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -620,6 +620,9 @@ static int handsfreerpga_event(struct snd_soc_dapm_widget *w,
+ 
+ static void headset_ramp(struct snd_soc_codec *codec, int ramp)
+ {
++	struct snd_soc_device *socdev = codec->socdev;
++	struct twl4030_setup_data *setup = socdev->codec_data;
++
+ 	unsigned char hs_gain, hs_pop;
+ 	struct twl4030_priv *twl4030 = codec->private_data;
+ 	/* Base values for ramp delay calculation: 2^19 - 2^26 */
+@@ -629,6 +632,17 @@ static void headset_ramp(struct snd_soc_codec *codec, int ramp)
+ 	hs_gain = twl4030_read_reg_cache(codec, TWL4030_REG_HS_GAIN_SET);
+ 	hs_pop = twl4030_read_reg_cache(codec, TWL4030_REG_HS_POPN_SET);
+ 
++	/* Enable external mute control, this dramatically reduces
++	 * the pop-noise */
++	if (setup && setup->hs_extmute) {
++		if (setup->set_hs_extmute) {
++			setup->set_hs_extmute(1);
++		} else {
++			hs_pop |= TWL4030_EXTMUTE;
++			twl4030_write(codec, TWL4030_REG_HS_POPN_SET, hs_pop);
++		}
++	}
++
+ 	if (ramp) {
+ 		/* Headset ramp-up according to the TRM */
+ 		hs_pop |= TWL4030_VMID_EN;
+@@ -636,6 +650,9 @@ static void headset_ramp(struct snd_soc_codec *codec, int ramp)
+ 		twl4030_write(codec, TWL4030_REG_HS_GAIN_SET, hs_gain);
+ 		hs_pop |= TWL4030_RAMP_EN;
+ 		twl4030_write(codec, TWL4030_REG_HS_POPN_SET, hs_pop);
++		/* Wait ramp delay time + 1, so the VMID can settle */
++		mdelay((ramp_base[(hs_pop & TWL4030_RAMP_DELAY) >> 2] /
++			twl4030->sysclk) + 1);
+ 	} else {
+ 		/* Headset ramp-down _not_ according to
+ 		 * the TRM, but in a way that it is working */
+@@ -652,6 +669,16 @@ static void headset_ramp(struct snd_soc_codec *codec, int ramp)
+ 		hs_pop &= ~TWL4030_VMID_EN;
+ 		twl4030_write(codec, TWL4030_REG_HS_POPN_SET, hs_pop);
+ 	}
++
++	/* Disable external mute */
++	if (setup && setup->hs_extmute) {
++		if (setup->set_hs_extmute) {
++			setup->set_hs_extmute(0);
++		} else {
++			hs_pop &= ~TWL4030_EXTMUTE;
++			twl4030_write(codec, TWL4030_REG_HS_POPN_SET, hs_pop);
++		}
++	}
+ }
+ 
+ static int headsetlpga_event(struct snd_soc_dapm_widget *w,
+diff --git a/sound/soc/codecs/twl4030.h b/sound/soc/codecs/twl4030.h
+index fe5f395..2b4bfa2 100644
+--- a/sound/soc/codecs/twl4030.h
++++ b/sound/soc/codecs/twl4030.h
+@@ -274,6 +274,8 @@ extern struct snd_soc_codec_device soc_codec_dev_twl4030;
+ struct twl4030_setup_data {
+ 	unsigned int ramp_delay_value;
+ 	unsigned int sysclk;
++	unsigned int hs_extmute:1;
++	void (*set_hs_extmute)(int mute);
+ };
+ 
+ #endif	/* End of __TWL4030_AUDIO_H__ */
+-- 
+1.6.0.4
