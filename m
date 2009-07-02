@@ -1,20 +1,19 @@
-From: Andreas =?iso-8859-1?q?N=FC=DFlein?= <nutz@unfoog.de>
-Subject: Re: No sound with nVidia Corporation MCP79 High
-	Definition Audio (rev b1) (Macbook Pro 5, 5)
-Date: Thu, 2 Jul 2009 19:37:43 +0200
-Message-ID: <200907021937.43936.nutz@unfoog.de>
-References: <4A493A56.1050504@gmail.com> <200907021254.51495.nutz@unfoog.de>
-	<s5h1voz5iq1.wl%tiwai@suse.de>
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: [PATCH 1/2] ASoC: Fix mpc5200-psc-ac97 to ensure the
+	data ready bit	is cleared
+Date: Thu, 02 Jul 2009 11:57:19 -0600
+Message-ID: <20090702175719.15773.58956.stgit@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx.unfoog.de (dom0kun.ath.cx [78.46.99.229])
-	by alsa0.perex.cz (Postfix) with ESMTP id 58068244AA
+Received: from mail-px0-f177.google.com (mail-px0-f177.google.com
+	[209.85.216.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id 710E4244C0
 	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Jul 2009 19:37:53 +0200 (CEST)
-In-Reply-To: <s5h1voz5iq1.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Thu,  2 Jul 2009 19:57:23 +0200 (CEST)
+Received: by pxi7 with SMTP id 7so201522pxi.16
+	for <alsa-devel@alsa-project.org>; Thu, 02 Jul 2009 10:57:22 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,48 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@sirena.org.uk
+Cc: w.sang@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 02 July 2009 15:15:34 you wrote:
-> At Thu, 2 Jul 2009 12:54:47 +0200,
->
-> Andreas N=FC=DFlein wrote:
-> > but i can't get any sound eventhough all channels are unmuted and turned
-> > up to 100.
-> >
-> > i also aplay -Dfoo file.wav again, where foo =3D
-> > default,front,surround40,.... , but i always get: aplay: main:608: audio
-> > open error: Invalid argument
->
-> The error is strange.  Did you build with --enable-dynamic-minors
-> configure option?
->
-> Otherwise the codec registers look OK.
->
+From: Grant Likely <grant.likely@secretlab.ca>
+
+When doing register reads, it is possible for there to be a stale
+data ready bit set which will cause subsequent reads to return
+prematurely with incorrect data.  This patch fixes the issues by
+ensuring stale data is cleared before starting another transaction.
+
+Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
+---
+
+ sound/soc/fsl/mpc5200_psc_ac97.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
 
-hmmm.. well whenever i really build this manually ( ./configure --with-
-cards=3Dhda-intel && make && sudo make install)  i can't load the modules, =
-
-because i get:
-[ 1526.091642] snd: Unknown symbol unregister_sound_special                =
-                                          =
-
-[ 1526.092374] snd: Unknown symbol register_sound_special_device  =
-
-
-however when i edited the gentoo-ebuild to use your snapshot, i'm able to =
-
-compile and load the driver but get said error. =
-
-
-do you have an idea why i'm getting this Unknown symbol -error?  should i =
-
-build alsa-headers myself as well? right now that's built via gentoo-ebuild.
-
-i'll try to copy the ebuild instructions, step by step until i get it runni=
-ng =
-
-manually.
+diff --git a/sound/soc/fsl/mpc5200_psc_ac97.c b/sound/soc/fsl/mpc5200_psc_ac97.c
+index 794a247..9b8503f 100644
+--- a/sound/soc/fsl/mpc5200_psc_ac97.c
++++ b/sound/soc/fsl/mpc5200_psc_ac97.c
+@@ -41,6 +41,10 @@ static unsigned short psc_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
+ 		pr_err("timeout on ac97 bus (rdy)\n");
+ 		return -ENODEV;
+ 	}
++
++	/* Force clear the data valid bit */
++	in_be32(&psc_dma->psc_regs->ac97_data);
++
+ 	/* Send the read */
+ 	out_be32(&psc_dma->psc_regs->ac97_cmd, (1<<31) | ((reg & 0x7f) << 24));
