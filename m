@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC] Alsa mixer over serial port
-Date: Thu, 2 Jul 2009 14:32:21 +0100
-Message-ID: <20090702133220.GA22321@sirena.org.uk>
-References: <4A4CB5CF.2020703@tis.icnet.pl>
+From: Andreas =?iso-8859-1?q?N=FC=DFlein?= <nutz@unfoog.de>
+Subject: Re: No sound with nVidia Corporation MCP79 High
+	Definition Audio (rev b1) (Macbook Pro 5, 5)
+Date: Thu, 2 Jul 2009 19:37:43 +0200
+Message-ID: <200907021937.43936.nutz@unfoog.de>
+References: <4A493A56.1050504@gmail.com> <200907021254.51495.nutz@unfoog.de>
+	<s5h1voz5iq1.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2918E2434A
+Received: from mx.unfoog.de (dom0kun.ath.cx [78.46.99.229])
+	by alsa0.perex.cz (Postfix) with ESMTP id 58068244AA
 	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Jul 2009 15:32:22 +0200 (CEST)
+	Thu,  2 Jul 2009 19:37:53 +0200 (CEST)
+In-Reply-To: <s5h1voz5iq1.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <4A4CB5CF.2020703@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,20 +24,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-serial@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 02, 2009 at 03:27:43PM +0200, Janusz Krzysztofik wrote:
+On Thursday 02 July 2009 15:15:34 you wrote:
+> At Thu, 2 Jul 2009 12:54:47 +0200,
+>
+> Andreas N=FC=DFlein wrote:
+> > but i can't get any sound eventhough all channels are unmuted and turned
+> > up to 100.
+> >
+> > i also aplay -Dfoo file.wav again, where foo =3D
+> > default,front,surround40,.... , but i always get: aplay: main:608: audio
+> > open error: Invalid argument
+>
+> The error is strange.  Did you build with --enable-dynamic-minors
+> configure option?
+>
+> Otherwise the codec registers look OK.
+>
 
-> I can see two ways of getting this working:
-> 1) add a new line discipline that would take control over the serial 
-> line and convert it to an alsa mixer,
-> 2) create a low level driver that would replace standard serial stuff 
-> completely (like snd-serial-u16550 does, for example).
 
-> Please advise which one is better.
+hmmm.. well whenever i really build this manually ( ./configure --with-
+cards=3Dhda-intel && make && sudo make install)  i can't load the modules, =
 
-ASoC doesn't really care for itself - it just needs the upper layer
-interface, how exactly the driver ineteracts with the device is not
-important to ASoC.
+because i get:
+[ 1526.091642] snd: Unknown symbol unregister_sound_special                =
+                                          =
+
+[ 1526.092374] snd: Unknown symbol register_sound_special_device  =
+
+
+however when i edited the gentoo-ebuild to use your snapshot, i'm able to =
+
+compile and load the driver but get said error. =
+
+
+do you have an idea why i'm getting this Unknown symbol -error?  should i =
+
+build alsa-headers myself as well? right now that's built via gentoo-ebuild.
+
+i'll try to copy the ebuild instructions, step by step until i get it runni=
+ng =
+
+manually.
