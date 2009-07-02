@@ -1,17 +1,15 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Help required with debugging
-Date: Thu, 2 Jul 2009 10:08:35 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.0907020951500.6728@eeebox2.perex-int.cz>
-References: <98769532B4BB14429434178695419EAE5BAEB764@bgsmsx501.gar.corp.intel.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: [PATCH] ALSA: snd_usb_caiaq: reparent sound device
+Date: Thu,  2 Jul 2009 10:46:35 +0200
+Message-ID: <1246524395-10285-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3DBF324635
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6E9EE245A8
 	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Jul 2009 10:08:37 +0200 (CEST)
-In-Reply-To: <98769532B4BB14429434178695419EAE5BAEB764@bgsmsx501.gar.corp.intel.com>
+	Thu,  2 Jul 2009 10:47:57 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,34 +19,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Harsha, Priya" <priya.harsha@intel.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2 Jul 2009, Harsha, Priya wrote:
+The sound device instance needs to be a child of the USB interface, not
+the USB device. Newer udev versions pay attention to that.
 
-> Why is runtime->hw_ptr_jiffies updated in hw_ptr()? This should be only 
-> updated in the interrupt context right?
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
+Reported-by: Lennart Poettering <lennart@poettering.net>
+---
+ sound/usb/caiaq/device.c |   10 ++++++----
+ 1 files changed, 6 insertions(+), 4 deletions(-)
 
-The idea of hw_ptr_jiffies is to have a check if real-time clock in sync 
-with the DMA buffer position. If your hardware does block transfers and is 
-not able to return fine position in period set SNDRV_PCM_INFO_BATCH flag. 
-But it's rather a workaround than a proper fix, because timestamps are 
-updated but the ring buffer position is not moved (which brokes the idea 
-to have a relation between the ring buffer position and the real-time 
-clock).
-
-I think that this sort of drivers might require to implement the 
-SNDRV_PCM_POS_KEEP return value in case when position does not change from 
-last read to notify midlevel PCM code that they're not able to handle fine 
-pointer resolution.
-
-Also, hardware with large FIFOs should update properly runtime->delay 
-value now.
-
- 						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+diff --git a/sound/usb/caiaq/device.c b/sound/usb/caiaq/device.c
+index 0e5db71..de38108 100644
+--- a/sound/usb/caiaq/device.c
++++ b/sound/usb/caiaq/device.c
+@@ -35,7 +35,7 @@
+ #include "input.h"
+ 
+ MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
+-MODULE_DESCRIPTION("caiaq USB audio, version 1.3.17");
++MODULE_DESCRIPTION("caiaq USB audio, version 1.3.18");
+ MODULE_LICENSE("GPL");
+ MODULE_SUPPORTED_DEVICE("{{Native Instruments, RigKontrol2},"
+ 			 "{Native Instruments, RigKontrol3},"
+@@ -349,7 +349,9 @@ static void __devinit setup_card(struct snd_usb_caiaqdev *dev)
+ 		log("Unable to set up control system (ret=%d)\n", ret);
+ }
+ 
+-static int create_card(struct usb_device* usb_dev, struct snd_card **cardp)
++static int create_card(struct usb_device *usb_dev,
++		       struct usb_interface *intf,
++		       struct snd_card **cardp)
+ {
+ 	int devnum;
+ 	int err;
+@@ -374,7 +376,7 @@ static int create_card(struct usb_device* usb_dev, struct snd_card **cardp)
+ 	dev->chip.usb_id = USB_ID(le16_to_cpu(usb_dev->descriptor.idVendor),
+ 				  le16_to_cpu(usb_dev->descriptor.idProduct));
+ 	spin_lock_init(&dev->spinlock);
+-	snd_card_set_dev(card, &usb_dev->dev);
++	snd_card_set_dev(card, &intf->dev);
+ 
+ 	*cardp = card;
+ 	return 0;
+@@ -461,7 +463,7 @@ static int __devinit snd_probe(struct usb_interface *intf,
+ 	struct snd_card *card;
+ 	struct usb_device *device = interface_to_usbdev(intf);
+ 
+-	ret = create_card(device, &card);
++	ret = create_card(device, intf, &card);
+ 
+ 	if (ret < 0)
+ 		return ret;
+-- 
+1.6.3.1
