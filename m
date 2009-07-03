@@ -1,15 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH] [RFC 10/13] Intel SST sound card vendor2 module
-Date: Fri,  3 Jul 2009 11:53:44 +0530
-Message-ID: <1246602224-11147-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH] [RFC 11/13] Intel SST sound card vendor2 module
+Date: Fri,  3 Jul 2009 11:54:03 +0530
+Message-ID: <1246602243-11259-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2837B1038D3
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 085C81038CD
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Jul 2009 08:14:43 +0200 (CEST)
+	Fri,  3 Jul 2009 08:15:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,26 +28,26 @@ and configurations. The MID platform supports three
 different vendor implementation of PMIC.
 The sound card, ie all analog components like DAC,
 ADC, mixer settings are different for three vendors. This
-patch implements these settings for one of the vendor.
+patch implements these settings for one of the vendor
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Harsha Priya <priya.harsha@intel.com>
 Signed-off-by: R Dharageswari <dharageswari.r@intel.com>
 
-	new file:   sound/pci/sst/intelmid_v1_control.c
+	new file:   sound/pci/sst/intelmid_v2_control.c
 ---
- sound/pci/sst/intelmid_v1_control.c |  637 +++++++++++++++++++++++++++++++++++
- 1 files changed, 637 insertions(+), 0 deletions(-)
- create mode 100644 sound/pci/sst/intelmid_v1_control.c
+ sound/pci/sst/intelmid_v2_control.c |  629 +++++++++++++++++++++++++++++++++++
+ 1 files changed, 629 insertions(+), 0 deletions(-)
+ create mode 100644 sound/pci/sst/intelmid_v2_control.c
 
-diff --git a/sound/pci/sst/intelmid_v1_control.c b/sound/pci/sst/intelmid_v1_control.c
+diff --git a/sound/pci/sst/intelmid_v2_control.c b/sound/pci/sst/intelmid_v2_control.c
 new file mode 100644
-index 0000000..32c2c51
+index 0000000..21e3cdb
 --- /dev/null
-+++ b/sound/pci/sst/intelmid_v1_control.c
-@@ -0,0 +1,637 @@
++++ b/sound/pci/sst/intelmid_v2_control.c
+@@ -0,0 +1,629 @@
 +/*
-+ *  intelmid_v1_control.c - Intel SST Driver for audio engine
++ *  intelmid_v2_control.c - Intel Sound card driver for MID
 + *
 + *  Copyright (C) 2008-09 Intel Corp
 + *  Authors:	Vinod Koul <vinod.koul@intel.com>
@@ -97,591 +97,583 @@ index 0000000..32c2c51
 +#include "intelmid_snd_control.h"
 +
 +#include <asm/ipc_defs.h>
-+enum _reg_v2 {
-+
-+	MASTER_CLOCK_PRESCALAR  = 0x205,
-+	SET_MASTER_AND_LR_CLK1	= 0x20b,
-+	SET_MASTER_AND_LR_CLK2	= 0x20c,
-+	MASTER_MODE_AND_DATA_DELAY = 0x20d,
-+	DIGITAL_INTERFACE_TO_DAI2 = 0x20e,
-+	CLK_AND_FS1 = 0x208,
-+	CLK_AND_FS2 = 0x209,
-+	DAI2_TO_DAC_HP = 0x210,
-+	HP_OP_SINGLE_ENDED = 0x224,
-+	ENABLE_OPDEV_CTRL = 0x226,
-+	ENABLE_DEV_AND_USE_XTAL = 0x227,
-+
-+	/* Max audio subsystem (PQ49) MAX 8921 */
-+	AS_IP_MODE_CTL = 0xF9,
-+	AS_LEFT_SPKR_VOL_CTL = 0xFA, /* Mono Earpiece volume control */
-+	AS_RIGHT_SPKR_VOL_CTL = 0xFB,
-+	AS_LEFT_HP_VOL_CTL = 0xFC,
-+	AS_RIGHT_HP_VOL_CTL = 0xFD,
-+	AS_OP_MIX_CTL = 0xFE,
-+	AS_CONFIG = 0xFF,
-+
-+	/* Headphone volume control & mute registers */
-+	VOL_CTRL_LT = 0x21c,
-+	VOL_CTRL_RT = 0x21d,
-+
++enum reg_v3 {
++	VAUDIOCNT = 0x51,
++	VOICEPORT1 = 0x100,
++	VOICEPORT2 = 0x101,
++	AUDIOPORT1 = 0x102,
++	AUDIOPORT2 = 0x103,
++	ADCSAMPLERATE = 0x104,
++	DMICCTRL1 = 0x105,
++	DMICCTRL2 = 0x106,
++	MICCTRL = 0x107,
++	MICSELVOL = 0x108,
++	LILSEL = 0x109,
++	LIRSEL = 0x10a,
++	VOICEVOL = 0x10b,
++	AUDIOLVOL = 0x10c,
++	AUDIORVOL = 0x10d,
++	LMUTE = 0x10e,
++	RMUTE = 0x10f,
++	POWERCTRL1 = 0x110,
++	POWERCTRL2 = 0x111,
++	DRVPOWERCTRL = 0x112,
++	VREFPLL = 0x113,
++	PCMBUFCTRL = 0x114,
++	SOFTMUTE = 0x115,
++	DTMFPATH = 0x116,
++	DTMFVOL = 0x117,
++	DTMFFREQ = 0x118,
++	DTMFHFREQ = 0x119,
++	DTMFLFREQ = 0x11a,
++	DTMFCTRL = 0x11b,
++	DTMFASON = 0x11c,
++	DTMFASOFF = 0x11d,
++	DTMFASINUM = 0x11e,
++	CLASSDVOL = 0x11f,
++	VOICEDACAVOL = 0x120,
++	AUDDACAVOL = 0x121,
++	LOMUTEVOL = 0x122,
++	HPLVOL = 0x123,
++	HPRVOL = 0x124,
++	MONOVOL = 0x125,
++	LINEOUTMIXVOL = 0x126,
++	EPMIXVOL = 0x127,
++	LINEOUTLSEL = 0x128,
++	LINEOUTRSEL = 0x129,
++	EPMIXOUTSEL = 0x12a,
++	HPLMIXSEL = 0x12b,
++	HPRMIXSEL = 0x12c,
++	LOANTIPOP = 0x12d,
 +};
 +
-+/* Headphone volume control values in dB */
-+int mx_hp_vol[MAX_HP_VOL_INDX_PMIC_VENDOR1] =
++
++int nc_init_card(void)
 +{
-+	(+6),
-+	(+6),	/* +5.5,  commented as this is not an integer */
-+	(+5),
-+	(+5),     /* +4.5,  commented as this is not an integer */
-+	(+4),
-+	(+4),     /* +3.5,  commented as this is not an integer */
-+	(+3),
-+	(+2),
-+	(+1),
-+	0,
-+	(-1),
-+	(-2),
-+	(-3),
-+	(-4),
-+	(-5),
-+	(-6),
-+	(-8),
-+	(-10),
-+	(-12),
-+	(-14),
-+	(-16),
-+	(-18),
-+	(-20),
-+	(-22),
-+	(-26),
-+	(-30),
-+	(-34),
-+	(-38),
-+	(-42),
-+	(-46),
-+	(-50),
-+	(-54),
-+	(-58),
-+	(-62),
-+	(-66),
-+	(-70),
-+	(-74),
-+	(-78),
-+	(-82),
-+	(-84)
-+}; /* mx_hp_vol[] */
++	struct sc_reg_access sc_access[] = {
 +
-+/* Mono Earpiece volume control values in dB */
-+int mx_ep_vol[MAX_EP_VOL_INDX_PMIC_VENDOR1] =
-+{
-+	(-75),
-+	(-71),
-+	(-67),
-+	(-63),
-+	(-59),
-+	(-55),
-+	(-51),
-+	(-47),
-+	(-44),
-+	(-41),
-+	(-38),
-+	(-35),
-+	(-32),
-+	(-29),
-+	(-26),
-+	(-23),
-+	(-21),
-+	(-19),
-+	(-17),
-+	(-15),
-+	(-13),
-+	(-11),
-+	(-9),
-+	(-7),
-+	(-6),
-+	(-5),
-+	(-4),
-+	(-3),
-+	(-2),
-+	(-1),
-+	(0)
-+}; /* mx_ep_vol[] */
-+
-+int mx_init_card(void)
-+{
-+
-+	struct sc_reg_access sc_access[17] = {{0,},};
-+	int retval = 0;
-+	sst_dbg("mx initializing card...\n");
-+
-+	sc_access[0].reg_addr = MASTER_CLOCK_PRESCALAR;
-+	sc_access[0].value = 0x10;
-+	sc_access[1].reg_addr = SET_MASTER_AND_LR_CLK1;
-+	sc_access[1].value = 0x60;
-+	sc_access[2].reg_addr = SET_MASTER_AND_LR_CLK2;
-+	sc_access[2].value = 0x00;
-+	sc_access[3].reg_addr = MASTER_MODE_AND_DATA_DELAY ;
-+	sc_access[3].value = 0x90;
-+	sc_access[4].reg_addr = DIGITAL_INTERFACE_TO_DAI2;
-+	sc_access[4].value = 0x51;
-+	sc_access[5].reg_addr = CLK_AND_FS1;
-+	sc_access[5].value = 0x90;
-+	sc_access[6].reg_addr = CLK_AND_FS2;
-+	sc_access[6].value = 0x51;/*Mx fix for 50Mhz*/
-+	sc_access[7].reg_addr = DAI2_TO_DAC_HP;
-+	sc_access[7].value = 0x21;
-+	sc_access[8].reg_addr = VOL_CTRL_LT;
-+	sc_access[8].value = 0x09;
-+	sc_access[9].reg_addr = VOL_CTRL_RT;
-+	sc_access[9].value = 0x00;
-+	sc_access[10].reg_addr = HP_OP_SINGLE_ENDED;
-+	sc_access[10].value = 0x04;
-+	sc_access[11].reg_addr = ENABLE_OPDEV_CTRL;
-+	sc_access[11].value = 0x0c;
-+	sc_access[12].reg_addr = ENABLE_DEV_AND_USE_XTAL ;
-+	sc_access[12].value = 0x88;
-+	/* mono earpiece - default register configuration */
-+	/* Input mode control - zero crossing detection
-+		* enabled */
-+	sc_access[13].reg_addr = AS_IP_MODE_CTL;
-+	sc_access[13].value = 0x40;
-+
-+	/* Left speaker volume (Mono EP) (-6) dB */
-+	sc_access[14].reg_addr = AS_LEFT_SPKR_VOL_CTL;
-+	sc_access[14].value = 0x19;
-+
-+	/* output mixer -INA1 + INA2 enabled */
-+	sc_access[15].reg_addr = AS_OP_MIX_CTL;
-+	sc_access[15].value = 0x60;
-+	/* configuration - Disable the audio subsytem (Max 8921) */
-+	sc_access[16].reg_addr = AS_CONFIG;
-+	sc_access[16].value = 0x00;
-+
-+	retval = sst_sc_reg_access(sc_access, PMIC_WRITE, 17);
-+	if (0 != retval) {
-+		sst_dbg("pmic communication failed \n");
-+		return retval;
-+	}
-+
-+	sst_dbg("mx Initilaisation complete!!\n");
++		{VAUDIOCNT, 0x27, 0},
++		{VOICEPORT1, 0xd5, 0},
++		{VOICEPORT2, 0x08, 0},
++		{AUDIOPORT1, 0x98, 0},
++		{AUDIOPORT2, 0x09, 0},
++		{AUDIOLVOL, 0x0e, 0},
++		{AUDIORVOL, 0x0e, 0},
++		{LMUTE, 0x03, 0},
++		{RMUTE, 0x03, 0},
++		{POWERCTRL1, 0xff, 0},
++		{POWERCTRL2, 0xff, 0},
++		{DRVPOWERCTRL, 0xff, 0},
++		{VREFPLL, 0xff , 0},
++		{HPLMIXSEL, 0xef, 0},
++		{HPRMIXSEL, 0xf7, 0},
++		{VAUDIOCNT, 0x27, 0},
++		{PCMBUFCTRL, 0x13, 0},
++		{DTMFPATH, 0x02, 0},
++		{DTMFCTRL, 0x00, 0},
++		{VOICEPORT1, 0xd5, 0},
++		{VOICEPORT2, 0x08, 0},
++		{VREFPLL, 0x3f, 0},
++		{POWERCTRL1, 0xff, 0},
++		{POWERCTRL2, 0xff, 0},
++		{DRVPOWERCTRL, 0xff, 0},
++		{HPLMIXSEL, 0xde, 0},
++		{HPRMIXSEL, 0xde, 0},
++		{VOICEVOL, 0x0e, 0},
++		{LMUTE, 0x01, 0},
++		{AUDIOPORT1, 0xa8, 0},
++		{AUDIOPORT2, 0x17, 0},
++		{AUDIOLVOL, 0x0e, 0},
++		{AUDIORVOL, 0x0e, 0},
++		{LMUTE, 0x03, 0},
++		{RMUTE, 0x03, 0},
++		{HPLMIXSEL, 0xef, 0},
++		{HPRMIXSEL, 0xf7, 0},
++	};
++	sst_sc_reg_access(sc_access, PMIC_WRITE, 37);
++	sst_dbg("complete!!\n");
 +	return 0;
 +}
 +
-+int mx_init_capture_card(void)
++int nc_init_capture_card(void)
 +{
++	struct sc_reg_access sc_access_capture[] = {
++		/*voice port enabling workaorund*/
++		{0x03A, 0x05, 0x00},
++		{0x051, 0x27, 0x00},
++		{0x113, 0x3A, 0x00},
++		{0x100, 0x90, 0x00},
++		{0x101, 0x07, 0x00},
++		{0x114, 0x33, 0x00},
++		{0x107, 0x10, 0x00},
++		{0x104, 0x83, 0x00},
++		{0x12B, 0xDE, 0x00},
++		{0x12C, 0xDE, 0x00},
++		{0x108, 0x53, 0x00},
++		{0x10A, 0x0C, 0x00},
++		{0x10B, 0x0E, 0x00},
++		{0x123, 0x0C, 0x00},
++		{0x124, 0x0C, 0x00},
++		{0x10E, 0x03, 0x00},
++		{0x10F, 0x03, 0x00},
++		{0x110, 0xD4, 0x00},
++		{0x111, 0x0C, 0x00},
++		{0x112, 0x06, 0x00},
++
++		/*audio port*/
++		{0x051, 0x27, 0x00},
++		{0x113, 0x35, 0x00},
++		{0x102, 0x90, 0x00},
++		{0x103, 0x00, 0x00},
++		{0x114, 0x33, 0x00},
++		{0x107, 0x11, 0x00},
++		{0x104, 0x83, 0x00},
++		{0x12B, 0xE6, 0x00},
++		{0x12C, 0xE6, 0x00},
++		{0x108, 0x53, 0x00},
++		{0x10A, 0x0C, 0x00},
++		{0x10B, 0x0E, 0x00},
++		{0x123, 0x0C, 0x00},
++		{0x124, 0x0C, 0x00},
++		{0x10E, 0x03, 0x00},
++		{0x10F, 0x03, 0x00},
++		{0x110, 0xFF, 0x00},
++		{0x111, 0x0C, 0x00},
++		{0x112, 0x06, 0x00},
++	};
++	sst_dbg("calling capture init\n");
++	sst_sc_reg_access(sc_access_capture, PMIC_WRITE, 39);
++	sst_dbg("complete!!\n");
 +	return 0;
 +}
 +
-+void mx_set_pcm_params(int sfreq, int word_size)
++void nc_set_pcm_params(int sfreq, int word_size)
 +{
-+	int config1 = 0, config2 = 0;
-+	int retval = 0;
-+	struct sc_reg_access sc_access[4] = {{0,},};
++	int config2 = 0;
++	struct sc_reg_access sc_access;
 +
-+	switch (sfreq) {
-+	case 8000:
-+		config1 = 0x10;
-+		config2 = 0x00;
-+		break;
-+	case 11025:
-+		config1 = 0x16;
-+		config2 = 0x0d;
-+		break;
-+	case 12000:
-+		config1 = 0x18;
-+		config2 = 0x00;
-+		break;
-+	case 16000:
-+		config1 = 0x20;
-+		config2 = 0x00;
-+		break;
-+	case 22050:
-+		config1 = 0x2c;
-+		config2 = 0x1a;
-+		break;
-+	case 24000:
-+		config1 = 0x30;
-+		config2 = 0x00;
-+		break;
-+	case 32000:
-+		config1 = 0x40;
-+		config2 = 0x00;
-+		break;
-+	case 44100:
-+		config1 = 0x58;
-+		config2 = 0x33;
-+		break;
-+	case 48000:
-+		config1 = 0x60;
-+		config2 = 0x00;
-+		break;
-+	}
-+
-+	sc_access[0].reg_addr =	SET_MASTER_AND_LR_CLK1;
-+	sc_access[0].value = config1;
-+	sc_access[1].reg_addr = SET_MASTER_AND_LR_CLK2;
-+	sc_access[1].value = config2;
 +	switch (word_size) {
 +	case 16:
-+		config1 = 0x51;
-+		config2 = 0x31;
++		switch (sfreq) {
++		case 8000:
++			config2 = 0x00;
++			break;
++		case 11025:
++			config2 = 0x01;
++			break;
++		case 12000:
++			config2 = 0x02;
++			break;
++		case 16000:
++			config2 = 0x03;
++			break;
++		case 22050:
++			config2 = 0x04;
++			break;
++		case 24000:
++			config2 = 0x05;
++			break;
++		case 32000:
++			config2 = 0x07;
++			break;
++		case 44100:
++			config2 = 0x08;
++			break;
++		case 48000:
++			config2 = 0x09;
++			break;
++		}
++		sst_dbg("word_size = %d\n", word_size);
++		sc_access.reg_addr = AUDIOPORT1;
++		sc_access.value = 0x98;
++		sst_sc_reg_access(&sc_access, PMIC_WRITE, 1);
++		sc_access.reg_addr = AUDIOPORT2;
++		sc_access.value = config2;
++		sst_sc_reg_access(&sc_access, PMIC_WRITE, 1);
 +		break;
 +	case 24:
-+		config1 = 0x52;
-+		config2 = 0x32;
++		switch (sfreq) {
++		case 8000:
++			config2 = 0x10;
++			break;
++		case 11025:
++			config2 = 0x11;
++			break;
++		case 12000:
++			config2 = 0x12;
++			break;
++		case 16000:
++			config2 = 0x13;
++			break;
++		case 22050:
++			config2 = 0x14;
++			break;
++		case 24000:
++			config2 = 0x15;
++			break;
++		case 32000:
++			config2 = 0x17;
++			break;
++		case 44100:
++			config2 = 0x18;
++			break;
++		case 48000:
++			config2 = 0x19;
++			break;
++		}
++		sst_dbg("word_size = %d\n", word_size);
++		sc_access.reg_addr = AUDIOPORT1;
++		sc_access.value = 0xAB;
++		sst_sc_reg_access(&sc_access, PMIC_WRITE, 1);
++		sc_access.reg_addr = AUDIOPORT2;
++		sc_access.value = config2;
++		sst_sc_reg_access(&sc_access, PMIC_WRITE, 1);
 +		break;
++
 +	}
-+
-+	sst_dbg("config1 = %x\n", config1);
-+	sst_dbg("config2 = %x\n", config2);
-+	sc_access[2].reg_addr = DIGITAL_INTERFACE_TO_DAI2;
-+	sc_access[2].value = config1;
-+	sc_access[3].reg_addr = CLK_AND_FS2;
-+	sc_access[3].value = config2;
-+	retval = sst_sc_reg_access(sc_access, PMIC_WRITE, 4);
-+	if (0 != retval)
-+		sst_dbg("pmic communication failed \n");
++	sst_dbg("config2 = 0x%x\n", config2);
 +	return;
-+} /* mx_set_pcm_params */
 +
-+int mx_set_selected_output_dev(int dev_id)
++}
++int nc_set_selected_output_dev(int value)
 +{
-+	struct sc_reg_access sc_access[4] = {{0,},};
 +	int retval = 0;
++	struct sc_reg_access sc_access_MHS[] = {
++	{RMUTE, 0X02, 0},
++	{POWERCTRL2, 0Xff, 0},
++	{DRVPOWERCTRL, 0xff, 0},
++	{VREFPLL, 0xff, 0},
++	{LMUTE, 0x02, 0},
++	{HPLMIXSEL, 0x00, 0},
++	{HPRMIXSEL, 0x00, 0},
++	{POWERCTRL1, 0xFF, 0},
++	{AUDIOLVOL, 0x00, 0},
++	{AUDIORVOL, 0x00, 0},
++	{LOMUTEVOL, 0x00, 0}
++	};
 +
-+	sst_dbg("mx_set_selected_input_dev dev_id:0x%x\n", dev_id);
-+	switch (dev_id) {
-+	case INTERNAL_SPKR:
++	struct sc_reg_access sc_access_SH[] = {
++		{LMUTE, 0x03, 0x00},
++		{RMUTE, 0x02, 0x00}
++	};
++
++	struct sc_reg_access sc_access_IS[] = {
++		{LMUTE, 0x05, 0x00},
++		{RMUTE, 0x04, 0x00}
++	};
++
++
++	sst_dbg("nc set selected output:%d", value);
++
++	switch (value) {
++	case STEREO_HEADPHONE:
++		retval = sst_sc_reg_access(sc_access_SH, PMIC_WRITE, 2);
 +		break;
 +
-+	case STEREO_HEADPHONE:
-+		/* Enable stereo headphones  - Begin */
-+		/* Volume Left Un-Mute */
-+		sc_access[0].reg_addr = VOL_CTRL_LT;
-+		sc_access[0].value = 0x00;
-+		sc_access[0].mask = MASK6;
-+		/* Volume right Un-Mute */
-+		sc_access[1].reg_addr = VOL_CTRL_RT;
-+		sc_access[1].value = 0x00;
-+		sc_access[1].mask = MASK6;
-+		/* Enable stereo headphones  - End */
-+
-+		/* Disable Mono earpiece - Begin */
-+		/* configuration - AS Disable */
-+		sc_access[2].reg_addr = AS_CONFIG;
-+		sc_access[2].value = 0x00;
-+		sc_access[2].mask = MASK7;
-+
-+		/* Line output (L&R) Disable */
-+		sc_access[3].reg_addr = ENABLE_OPDEV_CTRL;
-+		sc_access[3].value = 0x00;
-+		sc_access[3].mask = MASK4|MASK5;
-+		retval = sst_sc_reg_access(sc_access, PMIC_READ_MODIFY, 4);
-+		if (0 != retval)
-+			return retval;
-+		/* Disable Mono earpiece - End */
++	case INTERNAL_SPKR:
++		retval = sst_sc_reg_access(sc_access_IS, PMIC_WRITE, 2);
 +		break;
 +
 +	case MONO_HS:
-+		/* select mono earpiece - Begin */
-+		/* configuration - AS enable, left speaker enable */
-+		sc_access[0].reg_addr = AS_CONFIG;
-+		sc_access[0].value = 0xA0;
-+		sc_access[0].mask = (MASK5|MASK7);
-+		/* Line output (L&R), DAC output (L&R) enable */
-+		sc_access[1].reg_addr = ENABLE_OPDEV_CTRL;
-+		sc_access[1].value = 0x3C;
-+		sc_access[1].mask = (MASK2|MASK3|MASK4|MASK5);
-+		retval = sst_sc_reg_access(sc_access, PMIC_READ_MODIFY, 2);
-+		if (0 != retval)
-+			return retval;
-+		/* select mono earpiece -end */
++		retval = sst_sc_reg_access(sc_access_MHS, PMIC_WRITE, 11);
 +		break;
-+	} /* switch (dev_id) */
-+
-+	return retval;
-+} /* mx_set_selected_output_dev */
-+
-+int mx_set_selected_input_dev(int value)
-+{
-+	return 0;
-+} /* mx_set_selected_input_dev */
-+
-+int mx_set_mute(int dev_id, int value)
-+{
-+	struct sc_reg_access sc_access[1] = {{0,},};
-+	int retval = 0;
-+
-+	sst_dbg("mx_set_mute dev_id:0x%x , value:%d \n", dev_id, value);
-+
-+	/* MAD passes value:0 for mute, value:1 for unmute */
-+	switch (dev_id) {
-+	case PMIC_SND_INPUT_MUTE_LINE_IN:
-+		break;
-+
-+	case PMIC_SND_INPUT_MUTE_MIC1:
-+		break;
-+
-+	case PMIC_SND_INPUT_MUTE_MIC2:
-+		break;
-+
-+	case PMIC_SND_INPUT_MUTE_DMIC:
-+		break;
-+
-+	case PMIC_SND_LEFT_SPEAKER_MUTE:
-+		break;
-+
-+	case PMIC_SND_RIGHT_SPEAKER_MUTE:
-+		break;
-+
-+	case PMIC_SND_LEFT_HP_MUTE:
-+		sc_access[0].reg_addr =	VOL_CTRL_LT;
-+		if (value == MUTE)
-+			sc_access[0].value = 0x40;
-+		else
-+			sc_access[0].value = 0x00;
-+		sc_access[0].mask = MASK6;
-+		retval = sst_sc_reg_access(sc_access, PMIC_READ_MODIFY, 1);
-+		break;
-+
-+	case PMIC_SND_RIGHT_HP_MUTE:
-+		sc_access[0].reg_addr = VOL_CTRL_RT;
-+		if (value == MUTE)
-+			sc_access[0].value = 0x40;
-+		else
-+			sc_access[0].value = 0x00;
-+		sc_access[0].mask = MASK6;
-+		retval = sst_sc_reg_access(sc_access, PMIC_READ_MODIFY, 1);
-+		break;
-+
-+	case PMIC_SND_MONO_EARPIECE_MUTE:
-+		sc_access[0].reg_addr = AS_LEFT_SPKR_VOL_CTL;
-+		if (value == MUTE)
-+			sc_access[0].value = 0x00;
-+		else
-+			sc_access[0].value = 0x19;
-+		sc_access[0].mask = (MASK0|MASK1|MASK2|MASK3|MASK4);
-+		retval = sst_sc_reg_access(sc_access, PMIC_READ_MODIFY, 1);
-+		break;
-+	} /* switch (dev_id) */
-+
-+	return retval;
-+} /* mx_set_mute */
-+
-+int mx_set_vol(int dev_id, int value)
-+{
-+	struct sc_reg_access sc_access[1] = {{0,},};
-+	int retval = 0, i;
-+
-+	sst_dbg("mx_set_vol dev_id:0x%x , value:%d \n", dev_id, value);
-+	switch (dev_id) {
-+	case PMIC_SND_INPUT_VOL_MIC1:
-+	case PMIC_SND_INPUT_VOL_MIC2:
-+		break;
-+	case PMIC_SND_INPUT_VOL_DMIC:
-+		break;
-+	case PMIC_SND_LEFT_SPEAKER_VOL:
-+		break;
-+	case PMIC_SND_RIGHT_SPEAKER_VOL:
-+		break;
-+	case PMIC_SND_LEFT_HP_VOL:
-+		for (i = 0; i < MAX_HP_VOL_INDX_PMIC_VENDOR1; i++) {
-+			if (value >= mx_hp_vol[i]) {
-+				sc_access[0].value = i;
-+				break;  /* exit out of the for loop */
-+			} /* if(value >= mx_hp_vol[i]) */
-+
-+		} /* for(i=0; i< MAX_HP_VOL_INDX_PMIC_VENDOR1; i++) */
-+		sc_access[0].reg_addr = VOL_CTRL_LT;
-+		sc_access[0].mask = (MASK0|MASK1|MASK2|MASK3|MASK4|MASK5);
-+		break;
-+	case PMIC_SND_RIGHT_HP_VOL:
-+		for (i = 0; i < MAX_HP_VOL_INDX_PMIC_VENDOR1; i++) {
-+			if (value >= mx_hp_vol[i]) {
-+				sc_access[0].value = i;
-+				break;  /* exit out of the for loop */
-+			} /* if(value >= mx_hp_vol[i]) */
-+		} /* for(i=0; i< MAX_HP_VOL_INDX_PMIC_VENDOR1; i++) */
-+		sc_access[0].reg_addr = VOL_CTRL_RT;
-+		sc_access[0].mask = (MASK0|MASK1|MASK2|MASK3|MASK4|MASK5);
-+		break;
-+	case PMIC_SND_MONO_EARPIECE_VOL:
-+		for (i = 0; i < MAX_EP_VOL_INDX_PMIC_VENDOR1; i++) {
-+			if (value <= mx_ep_vol[i]) {
-+				sc_access[0].value = i;
-+				break;  /* exit out of the for loop */
-+			} /* if(value >= mx_ep_vol[i]) */
-+		} /* for(i=0; i< MAX_EP_VOL_INDX_PMIC_VENDOR1; i++) */
-+		sc_access[0].reg_addr = AS_LEFT_SPKR_VOL_CTL;
-+		sc_access[0].mask = (MASK0|MASK1|MASK2|MASK3|MASK4);
-+		break;
-+	} /* switch (dev_id) */
-+	retval = sst_sc_reg_access(sc_access, PMIC_READ_MODIFY, 1);
-+	return retval;
-+} /* mx_set_vol */
-+
-+
-+int mx_get_selected_input_dev(int *value)
-+{
-+	return 0;
-+} /* mx_get_selected_input_dev */
-+
-+int mx_get_selected_output_dev(int *value)
-+{
-+	struct sc_reg_access sc_access[1] = {{0,},};
-+	int retval = 0, temp_value;
-+
-+	sc_access[0].reg_addr = AS_CONFIG;
-+	retval = sst_sc_reg_access(sc_access, PMIC_READ, 1);
-+	if (0 != retval) {
-+		/*pmic communication fails*/
-+		sst_err("pmic commn failed \n");
-+		return retval;
++	default:
++		sst_err("rcvd illegal request:");
++		return -EINVAL;
 +	}
-+	temp_value = sc_access[0].value;
-+	if (0 == temp_value)
-+		/* Max 8921 is disabled hence Mono earpiece is disabled */
-+		*value = STEREO_HEADPHONE;
-+	else
-+		*value = MONO_HS;
-+	return 0;
-+} /* mx_get_selected_output_dev */
++	return retval;
++}
 +
-+int mx_get_mute(int dev_id, int *value)
++int nc_set_mute(int dev_id, int value)
 +{
-+	struct sc_reg_access sc_access[1] = {{0,},};
-+	int retval = 0, temp_value;
++	int retval = 0;
++	struct sc_reg_access sc_access;
 +
++	sst_dbg("set device id::%d\n", dev_id);
++	sst_dbg("set device value::%d\n", value);
 +	switch (dev_id) {
-+	case PMIC_SND_INPUT_MUTE_LINE_IN:
-+		break;
-+
 +	case PMIC_SND_INPUT_MUTE_MIC1:
++		sst_dbg("PMIC_SND_INPUT_MUTE_MIC1: value::%d", value);
++		if (value == UNMUTE) {
++			/* unmute the system, set the 6th bit to one */
++			sc_access.value = 0x00;
++		} else {
++			/* mute the system, reset the 6th bit to zero */
++			sc_access.value = 0x40;
++		}
++		sc_access.reg_addr = LILSEL;
++		sc_access.mask = MASK6;
 +		break;
-+
 +	case PMIC_SND_INPUT_MUTE_MIC2:
++		sst_dbg("PMIC_SND_INPUT_MUTE_MIC2: value::%d", value);
++		if (value == UNMUTE) {
++			/* unmute the system, set the 6th bit to one */
++			sc_access.value = 0x00;
++		} else {
++			/* mute the system, reset the 6th bit to zero */
++			sc_access.value = 0x40;
++		}
++		sc_access.reg_addr = LIRSEL;
++		sc_access.mask = MASK6;
 +		break;
-+
 +	case PMIC_SND_INPUT_MUTE_DMIC:
++		sst_dbg("PMIC_SND_INPUT_MUTE_DMIC: value::%d", value);
++		if (value == UNMUTE) {
++			/* unmute the system, set the 6th bit to one */
++			sc_access.value = 0x00;
++		} else {
++			/* mute the system, reset the 6th bit to zero */
++			sc_access.value = 0x40;
++		}
++		sc_access.reg_addr = DMICCTRL1;
++		sc_access.mask = MASK6;
 +		break;
-+
-+	case PMIC_SND_LEFT_SPEAKER_MUTE:
-+		break;
-+
-+	case PMIC_SND_RIGHT_SPEAKER_MUTE:
-+		break;
-+
 +	case PMIC_SND_LEFT_HP_MUTE:
-+		sc_access[0].reg_addr = VOL_CTRL_LT;
-+		retval = sst_sc_reg_access(sc_access, PMIC_READ, 1);
-+		if (0 != retval) {
-+			/*pmic communication fails*/
-+			sst_err("pmic commn failed \n");
-+			return retval;
-+		}
-+		temp_value = sc_access[0].value & (MASK6);
-+		if (0 == temp_value)
-+			*value = UNMUTE;
-+		else
-+			*value = MUTE;
-+		break;
 +	case PMIC_SND_RIGHT_HP_MUTE:
-+		sc_access[0].reg_addr = VOL_CTRL_RT;
-+		retval = sst_sc_reg_access(sc_access, PMIC_READ, 1);
-+		if (0 != retval) {
-+			/*pmic communication fails*/
-+			sst_err("pmic commn failed \n");
-+			return retval;
-+		}
-+		temp_value = sc_access[0].value &
-+				(MASK6);
-+		if (0 == temp_value)
-+			*value = UNMUTE;
++		if (value == UNMUTE)
++			sc_access.value = 0x0;
 +		else
-+			*value = MUTE;
++			sc_access.value = 0x04;
++		if (dev_id == PMIC_SND_LEFT_HP_MUTE) {
++			sc_access.reg_addr = LMUTE;
++			sst_dbg("PMIC_SND_LEFT_HP_MUTE:: value::%d\n",
++					sc_access.value);
++		} else {
++			sc_access.reg_addr = RMUTE;
++			sst_dbg("PMIC_SND_RIGHT_HP_MUTE:: value::%d\n",
++					sc_access.value);
++		}
++		sc_access.mask = MASK2;
 +		break;
 +	case PMIC_SND_MONO_EARPIECE_MUTE:
-+		sc_access[0].reg_addr =	AS_LEFT_SPKR_VOL_CTL;
-+		retval = sst_sc_reg_access(sc_access, PMIC_READ, 1);
-+		if (0 != retval) {
-+			/*pmic communication fails*/
-+			sst_err("pmic commn failed \n");
-+			return retval;
-+		}
-+		temp_value = sc_access[0].value &
-+			(MASK0|MASK1|MASK2|MASK3|MASK4);
-+
-+		if (0 == temp_value)
-+			*value = UNMUTE;
++		if (value == UNMUTE)
++			sc_access.value = 0x00;
 +		else
-+			*value = MUTE;
++			sc_access.value = 0x02;
++		sc_access.reg_addr = LMUTE;
++		sst_dbg("PMIC_SND_MONO_EARPIECE_MUTE::%d\n", sc_access.value);
++		sc_access.mask = MASK1;
 +		break;
-+	} /* switch (dev_id) */
-+
-+	sst_dbg("dev id:0x%2x, :0x%2x \n", dev_id, *value);
++	default:
++		sst_dbg("Invalid Device_id\n");
++		return -EINVAL;
++	}
++	retval = sst_sc_reg_access(&sc_access, PMIC_READ_MODIFY, 1);
 +	return retval;
-+} /* mx_get_mute */
 +
-+int mx_get_vol(int dev_id, int *value)
++}
++
++int nc_set_vol(int dev_id, int value)
 +{
-+	struct sc_reg_access sc_access[1] = {{0,},};
-+	int retval = 0, temp_value = 0;
++	int retval = 0, MAX_VOL = 6;
++	struct sc_reg_access sc_access;
++
++	sst_dbg("set volume:%d", dev_id);
++	switch (dev_id) {
++	case PMIC_SND_INPUT_VOL_MIC1:
++		sst_dbg("PMIC_SND_INPUT_VOL_MIC1:: value::%d", value);
++		sc_access.value = abs(value);
++		sc_access.reg_addr = LILSEL;
++		sc_access.mask = MASK0|MASK1|MASK2|MASK3|MASK4|MASK5;
++		break;
++	case PMIC_SND_INPUT_VOL_MIC2:
++		sst_dbg("PMIC_SND_INPUT_VOL_MIC2:: value::%d", value);
++		sc_access.value = abs(value);
++		sc_access.reg_addr = LIRSEL;
++		sc_access.mask = MASK0|MASK1|MASK2|MASK3|MASK4|MASK5;
++		break;
++	case PMIC_SND_INPUT_VOL_DMIC:
++		sst_dbg("PMIC_SND_INPUT_VOL_DMIC:: value::%d", value);
++		sc_access.value =  abs(value);
++		sc_access.reg_addr = DMICCTRL1;
++		sc_access.mask = MASK0|MASK1|MASK3|MASK4|MASK5|MASK6;
++		break;
++	case PMIC_SND_INPUT_VOL_RIGHT_LINE_IN:
++		break;
++	case PMIC_SND_INPUT_VOL_LEFT_LINE_IN:
++		break;
++	case PMIC_SND_LEFT_HP_VOL:
++		sc_access.value = MAX_VOL - value;
++		sst_dbg("PMIC_SND_LEFT_HP_VOL:%d", value);
++		sc_access.reg_addr  = HPLVOL;
++		sc_access.mask = (MASK0|MASK1|MASK2|MASK3|MASK4);
++		break;
++
++	case PMIC_SND_RIGHT_HP_VOL:
++		sc_access.value = MAX_VOL-value;
++		sst_dbg("PMIC_SND_RIGHT_HP_VOL: value::%d\n", value);
++		sc_access.reg_addr  = HPRVOL;
++		sc_access.mask = (MASK0|MASK1|MASK2|MASK3|MASK4);
++		break;
++
++	case PMIC_SND_MONO_EARPIECE_VOL:
++		sc_access.value = MAX_VOL-value;
++		sst_dbg("PMIC_MONO_EARPIECE_VOL: value::%d", value);
++		sc_access.reg_addr = MONOVOL;
++		sc_access.mask = (MASK0|MASK1|MASK2|MASK3|MASK4);
++		break;
++	default:
++		sst_dbg("Invalid Device_id\n");
++		return -EINVAL;;
++
++	}
++	/*sst_sc_read_modify(&reg_adrs, &difference, 1);*/
++	retval = sst_sc_reg_access(&sc_access, PMIC_READ_MODIFY, 1);
++	return retval;
++}
++
++int nc_set_selected_input_dev(int value)
++{
++	struct sc_reg_access sc_access[3];
++	int retval = 0;
++	u8 num_val;
++
++	sst_dbg("nc set selected input:%d", value);
++
++	switch (value) {
++	case MIC1:
++		sst_dbg("MIC1\n");
++		sc_access[0].reg_addr = LILSEL;
++		sc_access[0].mask = MASK7;
++		sc_access[0].value = 0x00;
++		num_val = 1;
++		break;
++
++	case MIC2:
++		sst_dbg("MIC2\n");
++		sc_access[0].reg_addr = LIRSEL;
++		sc_access[0].value = 0x06;
++		sc_access[0].mask = MASK0|MASK1|MASK2|MASK3|MASK4|
++							MASK5|MASK6|MASK7;
++
++		sc_access[1].reg_addr = MICSELVOL;
++		sc_access[1].value = 0x13;
++		sc_access[1].mask = MASK0|MASK1|MASK4 ;
++
++		sc_access[2].reg_addr = MICCTRL;
++		sc_access[2].value = 0x10;
++		sc_access[2].mask = MASK4;
++		num_val = 3;
++
++		break;
++
++	case DMIC:
++		sst_dbg("DMIC\n");
++		sc_access[0].reg_addr = DMICCTRL1;
++		sc_access[0].value = 0x40;
++		sc_access[0].mask = MASK6;
++		num_val = 1;
++
++		break;
++	default:
++		sst_err("rcvd illegal request:");
++		return -EINVAL;
++	}
++	retval = sst_sc_reg_access(sc_access, PMIC_READ_MODIFY, num_val);
++	return retval;
++}
++
++int nc_get_selected_output_dev(int *value)
++{
++	return 0;
++}
++
++int nc_get_mute(int dev_id, int *value)
++{
++	int retval = 0, mask = 0;
++	struct sc_reg_access sc_access = {0,};
++
++	sst_dbg("get mute::%d\n", dev_id);
++
++	switch (dev_id) {
++	case PMIC_SND_INPUT_MUTE_MIC1:
++		sst_dbg("PMIC_SND_INPUT_MUTE_MIC1\n");
++		sc_access.reg_addr = LILSEL;
++		mask = MASK6;
++		break;
++	case PMIC_SND_INPUT_MUTE_MIC2:
++		sst_dbg("PMIC_SND_INPUT_MUTE_MIC2\n");
++		sc_access.reg_addr = LIRSEL;
++		mask = MASK6;
++		break;
++	case PMIC_SND_LEFT_HP_MUTE:
++	case PMIC_SND_RIGHT_HP_MUTE:
++		mask = MASK2;
++		sst_dbg("PMIC_SN_LEFT/RIGHT_HP_MUTE\n");
++		if (dev_id == PMIC_SND_RIGHT_HP_MUTE)
++			sc_access.reg_addr = RMUTE;
++		else
++			sc_access.reg_addr = LMUTE;
++		break;
++
++	case PMIC_SND_MONO_EARPIECE_MUTE:
++		sst_dbg("PMIC_MONO_EARPIECE_MUTE\n");
++		sc_access.reg_addr = RMUTE;
++		mask = MASK1;
++		break;
++	default:
++		sst_dbg("Invalid Device_id\n");
++		return -EINVAL;
++
++	}
++	retval = sst_sc_reg_access(&sc_access, PMIC_READ_MODIFY, 1);
++	sst_dbg("reg value = %d\n", sc_access.value);
++	if (retval != 0)
++		return retval;
++	*value = (sc_access.value) & mask;
++	if (*value)
++		*value = 0;
++	else
++		*value = 1;
++	sst_dbg("value returned = 0x%x\n", *value);
++	return retval;
++}
++
++int nc_get_vol(int dev_id, int *value)
++{
++	int retval = 0, mask = 0, MAX_VOL = 6;
++	struct sc_reg_access sc_access = {0,};
 +
 +	switch (dev_id) {
 +	case PMIC_SND_INPUT_VOL_MIC1:
++		sst_dbg("PMIC_SND_INPUT_VOL_MIC1\n");
++		sc_access.reg_addr =  LILSEL;
++		mask = (MASK0|MASK1|MASK2|MASK3|MASK4|MASK5);
++		break;
 +	case PMIC_SND_INPUT_VOL_MIC2:
++		sst_dbg("PMIC_SND_INPUT_VOL_MIC2\n");
++		sc_access.reg_addr =  LIRSEL;
++		mask = (MASK0|MASK1|MASK2|MASK3|MASK4|MASK5);
 +		break;
 +	case PMIC_SND_INPUT_VOL_DMIC:
-+		break;
-+	case PMIC_SND_LEFT_SPEAKER_VOL:
-+		break;
-+	case PMIC_SND_RIGHT_SPEAKER_VOL:
++		sst_dbg("PMIC_SND_INPUT_VOL_DMIC\n");
 +		break;
 +	case PMIC_SND_LEFT_HP_VOL:
-+		sc_access[0].reg_addr = VOL_CTRL_LT;
-+		retval = sst_sc_reg_access(sc_access, PMIC_READ, 1);
-+		if (0 != retval) {
-+			/*pmic communication fails*/
-+			sst_err("pmic commn failed \n");
-+			return retval;
-+		}
-+		temp_value = sc_access[0].value
-+			& (MASK0|MASK1|MASK2|MASK3|MASK4|MASK5);
-+		*value = mx_hp_vol[temp_value];
++		sst_dbg("GET_VOLUME_PMIC_LEFT_HP_VOL\n");
++		sc_access.reg_addr = HPLVOL;
++		mask = (MASK0|MASK1|MASK2|MASK3|MASK4);
 +		break;
 +	case PMIC_SND_RIGHT_HP_VOL:
-+		sc_access[0].reg_addr = VOL_CTRL_RT;
-+		retval = sst_sc_reg_access(sc_access, PMIC_READ, 1);
-+		if (0 != retval) {
-+			/*pmic communication fails*/
-+			sst_err("pmic commn failed \n");
-+			return retval;
-+		}
-+		temp_value = sc_access[0].value
-+			& (MASK0|MASK1|MASK2|MASK3|MASK4|MASK5);
-+		*value = mx_hp_vol[temp_value];
++		sst_dbg("GET_VOLUME_PMIC_RIGHT_HP_VOL\n");
++		sc_access.reg_addr = HPRVOL;
++		mask = (MASK0|MASK1|MASK2|MASK3|MASK4);
 +		break;
 +	case PMIC_SND_MONO_EARPIECE_VOL:
-+		sc_access[0].reg_addr = AS_LEFT_SPKR_VOL_CTL;
-+		retval = sst_sc_reg_access(sc_access, PMIC_READ, 1);
-+		if (0 != retval) {
-+			/*pmic communication fails*/
-+			sst_err("pmic commn failed \n");
-+			return retval;
-+		}
-+		temp_value = sc_access[0].value
-+			& (MASK0|MASK1|MASK2|MASK3|MASK4);
-+		*value = mx_ep_vol[temp_value];
++		sst_dbg("GET_VOLUME_MONOEARPIECE_VOL\n");
++		sc_access.reg_addr = MONOVOL;
++		mask = (MASK0|MASK1|MASK2|MASK3|MASK4);
 +		break;
-+	} /* switch (dev_id) */
++	default:
++		sst_dbg("Invalid Device_id = %d\n", dev_id);
++		return -EINVAL;
 +
-+	sst_dbg("value read from the register:0x%2x\n", temp_value);
-+	sst_dbg("dev_id:0x%2x , volume:0x%2x in dB\n", dev_id, *value);
-+
++	}
++	retval = sst_sc_reg_access(&sc_access, PMIC_READ, 1);
++	*value = (sc_access.value) & mask;
++	*value = MAX_VOL - *value;
++	sst_dbg("value returned = 0x%x\n", *value);
 +	return retval;
-+} /* mx_get_vol() */
-+
-+
++}
 +
 -- 
 1.5.4.5
