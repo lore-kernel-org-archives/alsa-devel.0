@@ -1,15 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH] [RFC 5/13] Intel SST driver interface module
-Date: Fri,  3 Jul 2009 12:33:58 +0530
-Message-ID: <1246604638-12896-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH] [RFC 6/13] Intel SST driver dsp engine
+	interface module
+Date: Fri,  3 Jul 2009 12:34:39 +0530
+Message-ID: <1246604679-12917-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id C4BD02476D
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id DC7B210392B
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Jul 2009 08:54:57 +0200 (CEST)
+	Fri,  3 Jul 2009 08:55:37 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,42 +21,415 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, R Dharageswari <dharageswari.r@intel.com>, Harsha Priya <priya.harsha@intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, Harsha Priya <priya.harsha@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds the SST driver interface modules. Interface
-module is the one which talks to other layers of SST drivers.
-intel_sst_interface.c - This file implements the MAD driver
-registration and de registration functions. SST driver is also
-a character driver that allows players/middleware to communicate
-with SST driver. All char driver routines are implemented here.
-The ioctls used by middleware to open/close, control and
-configure stream and transfer the data are implemented here
+This adds the IPC module which uses Inter process mechanism
+to communicate between driver & SST engine (DSP processor).
+To communicate between IA processor and DSP, IPC doorbell
+registers are used. A write to these registers triggers
+an interrupt to other side. The format of messages
+and "mailbox" for message payload is defined in intel_lpe_fw_ipc.h
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Harsha Priya <priya.harsha@intel.com>
-Signed-off-by: R Dharageswari <dharageswari.r@intel.com>
 
-	new file:   sound/pci/sst/intel_sst_interface.c
+	new file:   sound/pci/sst/intel_sst_fw_ipc.h
+	new file:   sound/pci/sst/intel_sst_ipc.c
 ---
- sound/pci/sst/intel_sst_interface.c | 1359 +++++++++++++++++++++++++++++++++++
- 1 files changed, 1359 insertions(+), 0 deletions(-)
- create mode 100644 sound/pci/sst/intel_sst_interface.c
+ sound/pci/sst/intel_sst_fw_ipc.h |  368 ++++++++++++++++++++++++++
+ sound/pci/sst/intel_sst_ipc.c    |  536 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 904 insertions(+), 0 deletions(-)
+ create mode 100644 sound/pci/sst/intel_sst_fw_ipc.h
+ create mode 100644 sound/pci/sst/intel_sst_ipc.c
 
-diff --git a/sound/pci/sst/intel_sst_interface.c b/sound/pci/sst/intel_sst_interface.c
+diff --git a/sound/pci/sst/intel_sst_fw_ipc.h b/sound/pci/sst/intel_sst_fw_ipc.h
 new file mode 100644
-index 0000000..f8cefa5
+index 0000000..6520e4e
 --- /dev/null
-+++ b/sound/pci/sst/intel_sst_interface.c
-@@ -0,0 +1,1359 @@
++++ b/sound/pci/sst/intel_sst_fw_ipc.h
+@@ -0,0 +1,368 @@
++#ifndef __INTEL_SST_FW_IPC_H__
++#define __INTEL_SST_FW_IPC_H__
 +/*
-+ *  intel_sst_interface.c - Intel SST Driver for audio engine
++*  intel_sst_fw_ipc.h - Intel SST Driver for audio engine
++*
++*  Copyright (C) 2008-09 	Intel Corporation
++*  Author:	Vinod Koul <vinod.koul@intel.com>
++*  		Harsha Priya <priya.harsha@intel.com>
++*  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++*
++*  This program is free software; you can redistribute it and/or modify
++*  it under the terms of the GNU General Public License as published by
++*  the Free Software Foundation; version 2 of the License.
++*
++*  This program is distributed in the hope that it will be useful, but
++*  WITHOUT ANY WARRANTY; without even the implied warranty of
++*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++*  General Public License for more details.
++*
++*  You should have received a copy of the GNU General Public License along
++*  with this program; if not, write to the Free Software Foundation, Inc.,
++*  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
++*
++* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++*
++*  This driver exposes the audio engine functionalities to the ALSA
++*	and middleware.
++*  This file has definitions shared between the firmware and driver
++*/
++
++#define MAX_NUM_STREAMS 		4
++#define MAX_DBG_RW_BYTES		80
++#define MAX_NUM_SCATTER_BUFFERS		8
++#define MAX_LOOP_BACK_DWORDS		8
++/* IPC base address and mailbox, timestamp offsets */
++#define SST_MAILBOX_SIZE		0x0400
++#define SST_MAILBOX_SEND		0x0000
++#define SST_MAILBOX_RCV 		0x0804
++#define SST_TIME_STAMP 			0x1800
++#define SST_RESERVED_OFFSET		0x1840
++#define SST_CHEKPOINT_OFFSET		0x1C00
++#define REPLY_MSG 		0x80
++
++/* Message ID's for IPC messages */
++/* Bits B7: SST or IA/SC ; B6-B4: Msg Category; B3-B0: Msg Type */
++
++/* I2L Firmware/Codec Download msgs */
++#define IPC_IA_PREP_LIB_DNLD		0x01
++#define IPC_IA_LIB_DNLD_CMPLT		0x02
++
++#define IPC_IA_SET_PMIC_TYPE 		0x03
++#define IPC_IA_GET_FW_VERSION 		0x04
++#define IPC_IA_GET_FW_BUILD_INF		0x05
++#define IPC_IA_GET_FW_INFO		0x06
++
++/* I2L Codec Config/control msgs */
++#define IPC_IA_SET_CODEC_PARAMS		0x10
++#define IPC_IA_GET_CODEC_PARAMS		0x11
++#define IPC_IA_SET_PPP_PARAMS		0x12
++#define IPC_IA_GET_PPP_PARAMS		0x13
++#define IPC_IA_PLAY_FRAMES		0x14
++#define IPC_IA_CAPT_FRAMES		0x15
++#define IPC_IA_PLAY_VOICE		0x16
++#define IPC_IA_CAPT_VOICE		0x17
++#define IPC_IA_DECODE_FRAMES		0x18
++
++/* I2L Stream config/control msgs */
++#define IPC_IA_ALLOC_STREAM		0x20 /* Allocate a stream ID */
++#define IPC_IA_FREE_STREAM		0x21 /* Free the stream ID */
++#define IPC_IA_SET_STREAM_PARAMS 	0x22
++#define IPC_IA_GET_STREAM_PARAMS 	0x23
++#define IPC_IA_PAUSE_STREAM		0x24
++#define IPC_IA_RESUME_STREAM		0x25
++#define IPC_IA_DROP_STREAM		0x26
++#define IPC_IA_DRAIN_STREAM		0x27 /* Short msg with str_id */
++#define IPC_IA_TARGET_DEV_SELECT	0x28
++#define IPC_IA_CONTROL_ROUTING		0x29
++
++/* Debug msgs */
++#define IPC_IA_DBG_MEM_READ		0x40
++#define IPC_IA_DBG_MEM_WRITE		0x41
++#define IPC_IA_DBG_LOOP_BACK		0x42
++
++/* L2I Firmware/Codec Download msgs */
++#define IPC_IA_FW_INIT_CMPLT		0x81
++
++/* L2I Codec Config/control msgs */
++#define IPC_SST_GET_PLAY_FRAMES		0x90 /* Request IA more data */
++#define IPC_SST_GET_CAPT_FRAMES		0x91 /* Request IA more data */
++#define IPC_SST_BUF_UNDER_RUN		0x92 /* PB Under run and stopped */
++#define IPC_SST_BUF_OVER_RUN		0x93 /* CAP Under run and stopped */
++#define IPC_SST_DRAIN_END		0x94 /* PB Drain complete and stopped */
++#define IPC_SST_CHNGE_SSP_PARAMS 	0x95 /* PB SSP parameters changed */
++#define IPC_SST_STREAM_PROCESS_FATAL_ERR 0x96/*error in processing a stream*/
++#define IPC_SST_PERIOD_ELAPSED		0x97 /*period elapsed*/
++#define IPC_IA_TARGET_DEV_CHNGD 	0x98 /* error in processing a stream */
++
++/* L2S messages */
++#define IPC_SC_DDR_LINK_UP		0xC0
++#define IPC_SC_DDR_LINK_DOWN		0xC1
++
++/* L2I Error reporting msgs */
++#define IPC_IA_MEM_ALLOC_FAIL		0xE0
++#define IPC_IA_PROC_ERR 		0xE1 /* error in processing a
++					stream can be used by playback and
++					capture modules */
++
++/* L2I Debug msgs*/
++#define IPC_IA_PRINT_STRING		0xF0
++
++/* Command Response or Acknowledge message to any IPC message will have
++ * same message ID and stream ID information which is sent.
++ * There is no specific Ack message ID. The data field is used as response
++ * meaning.
++ */
++enum ackData {
++	IPC_ACK_SUCCESS = 0,
++	IPC_ACK_FAILURE
++};
++
++
++enum sst_error_codes {
++	/* Error code,response to msgId: Description */
++	/* Common error codes */
++	SST_SUCCESS = 0,	/*Success*/
++	SST_ERR_INVALID_STREAM_ID, /*Invalid stream ID */
++	SST_ERR_INVALID_MSG_ID,	/*Invalid message ID */
++	SST_ERR_INVALID_STREAM_OP, /*Invalid stream operation request */
++	SST_ERR_INVALID_PARAMS,	/*Invalid params */
++	SST_ERR_INVALID_CODEC,	/*Invalid codec type */
++	SST_ERR_INVALID_MEDIA_TYPE, /*Invalid media type */
++	SST_ERR_STREAM_ERR,  /*ANY: Stream control or config or
++					processing error */
++
++	/* IPC specific error codes */
++	SST_IPC_ERR_CALL_BACK_NOT_REGD, /*Call back for msg not regd*/
++	SST_IPC_ERR_STREAM_NOT_ALLOCATED, /*Stream is not allocated */
++	SST_IPC_ERR_STREAM_ALLOC_FAILED, /*ALLOC:Stream alloc failed*/
++	SST_IPC_ERR_GET_STREAM_FAILED, /*ALLOC:Get stream id failed*/
++	SST_ERR_MOD_NOT_AVAIL, /* SET/GET: Mod(AEC/AGC/ALC) not available */
++	SST_ERR_MOD_DNLD_RQD, /* SET/GET: Mod(AEC/AGC/ALC) download required*/
++	SST_ERR_STREAM_STOPPED,		/* ANY: Stream is in stopped state */
++	SST_ERR_STREAM_IN_USE, /* ANY: Stream is already in use */
++
++	/* Capture specific error codes*/
++	SST_CAP_ERR_INCMPLTE_CAPTURE_MSG,/*ANY:Incomplete message */
++	SST_CAP_ERR_CAPTURE_FAIL, /*ANY:Capture op failed */
++	SST_CAP_ERR_GET_DDR_NEW_SGLIST, /*AR: Meena */
++	SST_CAP_ERR_UNDER_RUN,	/* lack of input data */
++	SST_CAP_ERR_OVERFLOW,	/* lack of output space */
++
++	/* Playback specific error codes*/
++	SST_PB_ERR_INCMPLTE_PLAY_MSG, /* ANY: Incomplete message */
++	SST_PB_ERR_PLAY_FAIL, /* ANY: Playback operation failed */
++	SST_PB_ERR_GET_DDR_NEW_SGLIST, /* AR: Ashok */
++
++	/* Codec manager specific error codes*/
++	SST_LIB_ERR_LIB_DNLD_REQUIRED, /* ALLOC: Codec download required */
++	SST_LIB_ERR_LIB_NOT_SUPPORTED, /* Library is not supported */
++
++	/* Library manager specific error codes*/
++	SST_SCC_ERR_PREP_DNLD_FAILED, /* Failed to prepare for codec download */
++	SST_SCC_ERR_LIB_DNLD_RES_FAILED, /* Lib download resume failed */
++	/* Scheduler specific error codes*/
++	SST_SCH_ERR_FAIL, /* REPORT: */
++
++	/* DMA specific error codes */
++	SST_DMA_ERR_NO_CHNL_AVAILABLE, /* DMA Ch not available*/
++	SST_DMA_ERR_INVALID_INPUT_PARAMS, /* Invalid input params */
++	SST_DMA_ERR_CHNL_ALREADY_SUSPENDED, /* Ch is suspended */
++	SST_DMA_ERR_CHNL_ALREADY_STARTED, /* Ch already started */
++	SST_DMA_ERR_CHNL_NOT_ENABLED, /* Ch not enabled */
++	SST_DMA_ERR_TRANSFER_FAILED, /* Transfer failed */
++	SST_SSP_ERR_ALREADY_ENABLED, /* REPORT: SSP already enabled*/
++	SST_SSP_ERR_ALREADY_DISABLED, /* REPORT: SSP already disabled*/
++	SST_SSP_ERR_NOT_INITIALIZED,
++
++	/* Other error codes */
++	SST_ERR_MOD_INIT_FAIL,	/* Firmware Module init failed */
++
++	/* FW init error codes */
++	SST_RDR_ERR_IO_DEV_SEL_NOT_ALLOWED,
++	SST_RDR_ERR_ROUTE_ALREADY_STARTED,
++	SST_RDR_PREP_CODEC_DNLD_FAILED,
++
++	/* Memory debug error codes */
++	SST_ERR_DBG_MEM_READ_FAIL,
++	SST_ERR_DBG_MEM_WRITE_FAIL,
++
++
++};
++
++enum dbg_mem_data_type {
++	/* Data type of debug read/write */
++	DATA_TYPE_U32,
++	DATA_TYPE_U16,
++	DATA_TYPE_U8,
++};
++
++/* CAUTION NOTE: All IPC message body must be multiple of 32 bits.*/
++
++/* IPC Header */
++union ipc_header {
++	struct {
++		u32  msg_id:8; /* Message ID - Max 256 Message Types */
++		u32  str_id:3; /* Undefined for SC communication */
++		u32  large:1;	/* Large Message if large = 1 */
++		u32  reserved:4;/* Reserved for future use */
++		u32  data:14;	/* Ack/Info for msg, size of msg in Mailbox */
++		u32  done:1; /* bit 30 */
++		u32  busy:1; /* bit 31 */
++	} part;
++	u32 full;
++} __attribute__ ((packed));
++
++struct ipc_header_fw_init {
++	struct snd_sst_fw_version fw_version;/* Firmware version details*/
++	u16 result;	/* Fw init result */
++	u8 module_id; /* Module ID in case of error */
++	u8 debug_info; /* Debug info from Module ID in case of fail */
++} __attribute__ ((packed));
++
++/* Firmware build info */
++struct sst_fw_build_info {
++	unsigned char  date[16];	/* Firmware build date */
++	unsigned char  time[16];	/* Firmware build time */
++} __attribute__ ((packed));
++
++/* Address and size info of a frame buffer in DDR */
++struct sst_address_info {
++	u32 addr; /* Address at IA */
++	u32 size; /* Size of the buffer */
++} __attribute__ ((packed));
++
++/* Time stamp */
++struct snd_sst_tstamp {
++	u64 samples_processed;
++	u64 samples_rendered;
++	u32 sampling_frequency;
++};
++
++/* Frame info to play or capture */
++struct sst_frame_info {
++	u16  num_entries; /*  number of entries to follow */
++	u16  rsrvd;
++	struct sst_address_info  addr[MAX_NUM_SCATTER_BUFFERS];
++} __attribute__ ((packed));
++
++/* Frames info for decode */
++struct snd_sst_decode_info {
++	struct snd_sst_dbufs frames_in;
++	struct snd_sst_dbufs frames_out;
++} __attribute__ ((packed));
++/* SST to IA print debug message*/
++struct ipc_sst_ia_print_params {
++	u32 	string_size;	/* Max value is 160 */
++	u8	prt_string[160]; /* Null terminated Char string */
++} __attribute__ ((packed));
++/* Voice data message  */
++struct snd_sst_voice_data {
++	u16 num_bytes;		/* Number of valid voice data bytes */
++	u8  pcm_wd_size; 	/* 0=8 bit, 1=16 bit 2=32 bit*/
++	u8  reserved;		/* Reserved */
++	u8  voice_data_buf[0]; 	/* Voice data buffer in bytes, little endian */
++} __attribute__ ((packed));
++
++/* SST to IA memory read debug message  */
++struct ipc_sst_ia_dbg_mem_rw  {
++	u16  num_bytes; /* Maximum of MAX_DBG_RW_BYTES */
++	u16  data_type; /* enum: dbg_mem_data_type */
++	u32  address;	/* Memory address of data memory of data_type */
++	u8	rw_bytes[MAX_DBG_RW_BYTES];/* Maximum of 64 bytes can be RW */
++} __attribute__ ((packed));
++
++struct ipc_sst_ia_dbg_loop_back {
++	u16 num_dwords; /* Maximum of MAX_DBG_RW_BYTES */
++	u16 increment_val;/* Increments dwords by this value, 0- no increment */
++	u32 lpbk_dwords[MAX_LOOP_BACK_DWORDS];/* Maximum of 8 dwords loopback */
++} __attribute__ ((packed));
++
++/* Stream type params struture for Alloc stream */
++struct snd_sst_str_type {
++	u8 codec_type;		/* Codec type */
++	u8 str_type;		/* 1 = voice 2 = music */
++	u8 operation;		/* Playback or Capture */
++	u8 protected_str;	/* 0=Non DRM, 1=DRM */
++	u8 pvt_id;		/* Driver Private ID */
++	u8 reserved;		/* Reserved */
++	u16 result;		/* Result used for acknowledgment */
++} __attribute__ ((packed));
++
++/* Library info structure */
++struct module_info {
++	u32 lib_version;
++	u32 lib_type;
++	u32 media_type;
++	u8  lib_name[12];
++	u32 lib_caps;
++	unsigned char  b_date[16]; /* Lib build date */
++	unsigned char  b_time[16]; /* Lib build time */
++} __attribute__ ((packed));
++
++/* Library slot info */
++struct lib_slot_info {
++	u8  slot_num; /* 1 or 2*/
++	u8  reserved1;
++	u16 reserved2;
++	u32 iram_size; /* slot size in IRAM */
++	u32 dram_size; /* slot size in DRAM */
++	u32 iram_offset; /* starting offset of slot in IRAM */
++	u32 dram_offset; /* starting offset of slot in DRAM */
++} __attribute__ ((packed));
++
++struct snd_sst_lib_download {
++	struct module_info lib_info; /* library info type, capabilities etc*/
++	struct lib_slot_info slot_info; /* slot info to be downloaded */
++	u32 mod_entry_pt;
++};
++
++struct snd_sst_lib_download_info {
++	struct snd_sst_lib_download dload_lib;
++	u16 result;	/* Result used for acknowledgment */
++	u8 pvt_id; /*Private ID*/
++	u8 reserved;  /*for alignment*/
++};
++
++/* Alloc stream params structure */
++struct snd_sst_alloc_params {
++	struct snd_sst_str_type str_type;
++	struct snd_sst_stream_params stream_params;
++};
++
++struct snd_sst_fw_get_stream_params {
++	struct snd_sst_str_type str_type;
++	struct snd_sst_params codec_params;
++	struct snd_sst_pmic_config pcm_params;
++};
++
++/* Alloc stream response message */
++struct snd_sst_alloc_response {
++	struct snd_sst_str_type str_type; /* Stream type for allocation*/
++	struct snd_sst_lib_download lib_dnld; /*Valid only for codec dnld*/
++};
++
++/*struct ipc_msg_body {
++	 union {
++		 CODEC_PARAM_STRUCTURES;
++		 PPP_PARAM_STRUCTURES;
++		 struct snd_sst_alloc_params alloc_params;
++		 struct snd_sst_alloc_response alloc_response;
++		 struct snd_sst_stream_params stream_params;
++		 struct sst_frame_info frames_info;
++		 struct ipc_sst_ia_print_params print_params;
++		 struct ipc_sst_ia_dbg_mem_rw dbg_mem_rw;
++		 struct ipc_sst_ia_dbg_loop_back loop_back;
++		 struct pmic_pcm_params ssp_params;
++	 } u;
++};*/
++
++
++
++struct ipc_post {
++	struct list_head node;
++	union ipc_header header; /* driver specific */
++	char *mailbox_data;
++};
++
++#endif /*__INTEL_SST_FW_IPC_H__*/
+diff --git a/sound/pci/sst/intel_sst_ipc.c b/sound/pci/sst/intel_sst_ipc.c
+new file mode 100644
+index 0000000..98b4031
+--- /dev/null
++++ b/sound/pci/sst/intel_sst_ipc.c
+@@ -0,0 +1,536 @@
++/*
++ *  intel_sst_ipc.c - Intel SST Driver for audio engine
 + *
 + *  Copyright (C) 2008-09 	Intel Corporation
 + *  Authors:	Vinod Koul <vinod.koul@intel.com>
 + *  		Harsha Priya <priya.harsha@intel.com>
-+ *  		R Dharageswari <dharageswari.r@intel.com>
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + *
 + *  This program is free software; you can redistribute it and/or modify
 + *  it under the terms of the GNU General Public License as published by
@@ -71,1341 +445,519 @@ index 0000000..f8cefa5
 + *  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 + *
 + * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ *  This driver exposes the audio engine functionalities to the ALSA
-+ *	and middleware.
-+ *  Upper layer interfaces (MAD driver, MMF) to SST driver
++ *
++ *  This file defines all ipc functions
 + */
 +
 +#include <linux/cdev.h>
 +#include <linux/pci.h>
 +#include <linux/kernel.h>
-+#include <linux/init.h>
 +#include <linux/module.h>
 +#include <linux/syscalls.h>
-+#include <linux/fs.h>
 +#include <linux/file.h>
-+#include <linux/fcntl.h>
-+#include <linux/uaccess.h>
 +#include <linux/interrupt.h>
 +#include <linux/list.h>
-+#include <linux/slab.h>
-+#include <linux/mm.h>
 +#include <linux/workqueue.h>
-+#include <linux/pci.h>
++#include <linux/mutex.h>
 +#include <linux/firmware.h>
-+#include <asm/div64.h>
-+#include <linux/ioctl.h>
 +#include <sound/intel_sst.h>
 +#include <sound/intel_sst_ioctl.h>
 +#include "intel_sst_fw_ipc.h"
 +#include "intel_sst_common.h"
 +#include "intel_sst_pvt.h"
-+#ifdef CONFIG_SST_OSPM_SUPPORT
-+#include <linux/intel_mid.h>
-+#endif
 +
-+
-+int sst_download_fw(void)
++void sst_send_loop_test(int loop_no)
 +{
-+	int retval = 0;
-+	const struct firmware *fw_sst;
++	struct ipc_post *msg = NULL;
++	struct ipc_sst_ia_dbg_loop_back loop_msg;
++	static int large_num;
 +
-+	sst_dbg("SST Downloading FW now...\n");
-+	retval = request_firmware(&fw_sst,
-+				SST_FW_STD_FILENAME,
-+				&sst_ops->pci->dev);
-+	if (0 != retval) {
-+		sst_err("fw load failed %d \n", retval);
-+		return retval;
++	sst_dbg("Loop testing %d \n", loop_no);
++
++	if (large_num >= 4) {
++		sst_dbg("Loop testing complete.....\n");
++		return;
 +	}
-+	sst_ops->alloc_block[0].sst_id = 0xFF;
-+	sst_load_fw(fw_sst, NULL);
-+	retval = sst_wait_timeout(sst_ops, &sst_ops->alloc_block[0]);
-+	release_firmware(fw_sst);
-+	sst_ops->alloc_block[0].sst_id = BLOCK_UNINIT;
-+	return retval;
-+}
++	if (loop_no >= 4) {
++		/*large loop*/
++		large_num++;
++		sst_dbg("Large msg \n");
++		if (0 != sst_create_large_msg(&msg))
++			return;
 +
-+/**
-+* intel_sst_open - opens a handle to driver
-+* @i_node:	inode structure
-+* @file_ptr:pointer to file
-+*
-+* This function is called by OS when a user space component
-+* tries to get a driver handle. Only one handle at a time
-+* will be allowed
-+*/
-+int intel_sst_open(struct inode *i_node, struct file *file_ptr)
-+{
-+	dev_t device = i_node->i_rdev;
-+	unsigned int retval = 0;
-+	struct ioctl_pvt_data *data = NULL;
-+
-+	if (sst_ops->pmic_state != PMIC_SND_INIT_DONE) {
-+		sst_err("Sound card not availble \n");
-+		return -EIO;
++		loop_msg.increment_val = 1;
++		loop_msg.lpbk_dwords[0] = 0x11111111;
++		loop_msg.lpbk_dwords[1] = 0x22222222;
++		loop_msg.lpbk_dwords[2] = 0x33333333;
++		loop_msg.lpbk_dwords[3] = 0x44444444;
++		loop_msg.num_dwords = 4;
++		sst_fill_header(&msg->header, IPC_IA_DBG_LOOP_BACK, 1, loop_no);
++		msg->header.part.data = sizeof(u32) + sizeof(loop_msg);
++		memcpy(msg->mailbox_data, &msg->header, sizeof(u32));
++		memcpy(msg->mailbox_data + sizeof(u32),
++				&loop_msg, sizeof(loop_msg));
++	} else {
++		/*short loop*/
++		sst_dbg("Loop Short msg \n");
++		if (0 != sst_create_short_msg(&msg))
++			return;
++		sst_fill_header(&msg->header, IPC_IA_DBG_LOOP_BACK, 0, loop_no);
 +	}
-+
-+	if (SST_UN_INIT == sst_ops->sst_state) {
-+		/*FW is not downloaded*/
-+		retval = sst_download_fw();
-+		if (retval != 0) {
-+			sst_err("FW download failed...abort\n");
-+			return -ENODEV;
-+		}
-+	}
-+	if (device == MKDEV(INTEL_SST_MAJOR, 0)) {
-+		/*app open*/
-+		if (sst_ops->active_cnt < MAX_ENC_STREAM) {
-+			data = kzalloc(sizeof(*data), GFP_KERNEL);
-+			if (NULL == data)
-+				return -ENOMEM;
-+			sst_ops->active_cnt++;
-+			sst_ops->stream_cnt++;
-+			data->pvt_id = sst_assign_pvt_id(sst_ops);
-+			data->str_id = 0;
-+			file_ptr->private_data = (void *)data;
-+			sst_dbg("sst id allocated = %d!\n", data->pvt_id);
-+		} else
-+			retval = -EACCES;
-+	} else if (device == MKDEV(INTEL_SST_MAJOR, 1)) {
-+		/*audio manager open*/
-+		if (sst_ops->am_cnt < MAX_AM_HANDLES) {
-+			sst_ops->am_cnt++;
-+			sst_dbg("AM handle opened...\n");
-+		} else
-+			retval = -EACCES;
-+	} else
-+		retval = -EINVAL;
-+	return retval;
-+}
-+
-+/**
-+* intel_sst_release - releases a handle to driver
-+* @i_node:	inode structure
-+* @file_ptr:	pointer to file
-+*
-+* This function is called by OS when a user space component
-+* tries to release a driver handle.
-+*/
-+int intel_sst_release(struct inode *i_node, struct file *file_ptr)
-+{
-+	dev_t device = i_node->i_rdev;
-+	struct ioctl_pvt_data *data =
-+			(struct ioctl_pvt_data *)file_ptr->private_data;
-+
-+	sst_dbg("Release called \n");
-+	if (device == MKDEV(INTEL_SST_MAJOR, 0)) {
-+		/*app close*/
-+		sst_dbg("Closing app handle \n");
-+		sst_ops->active_cnt--;
-+		sst_ops->stream_cnt--;
-+		if (0 != sst_free_stream(data->str_id)) {
-+			if (sst_validate_strid(data->str_id) == 0)
-+				sst_clean_stream(
-+					&sst_ops->streams[data->str_id]);
-+		}
-+		kfree(data);
-+	} else if (device == MKDEV(INTEL_SST_MAJOR, 1))
-+		/*audio manager close*/
-+		sst_dbg("AM handle closed \n");
-+		sst_ops->am_cnt--;
-+	return 0;
-+}
-+
-+int intel_sst_mmap(struct file *file_ptr, struct vm_area_struct *vma)
-+{
-+	int retval = 0, length = 0;
-+	struct ioctl_pvt_data *data =
-+		(struct ioctl_pvt_data *)file_ptr->private_data;
-+	int str_id = data->str_id;
-+	void *mem_area = NULL;
-+
-+	retval = sst_validate_strid(str_id);
-+	if (retval != 0)
-+		return -EINVAL;
-+
-+	length = vma->vm_end - vma->vm_start;
-+	sst_dbg("called for stream %d length 0x%x\n", str_id, length);
-+
-+	if (length > sst_ops->mmap_len)
-+		return -ENOMEM;
-+	if (sst_ops->mmap_mem == NULL)
-+		return -EIO;
-+
-+	/* round it up to the page bondary */
-+	mem_area = (void *)((((unsigned long)sst_ops->mmap_mem) + PAGE_SIZE - 1)
-+			& PAGE_MASK);
-+
-+	/* map the whole physically contiguous area in one piece */
-+	retval = remap_pfn_range(vma,
-+			vma->vm_start,
-+			virt_to_phys((void *)mem_area) >> PAGE_SHIFT,
-+			length,
-+			vma->vm_page_prot);
-+	if (retval != 0) {
-+		sst_ops->streams[str_id].mmapped = false;
-+		sst_err("mapping failed %d", retval);
-+	} else
-+		sst_ops->streams[str_id].mmapped = true;
-+
-+	sst_dbg("mmap ret 0x%x \n", retval);
-+	return retval;
-+}
-+/**
-+* intel_sst_write- send data to play out
-+*/
-+int intel_sst_mmap_play_capture(u32 str_id, struct snd_sst_buffs *mmap_buf)
-+{
-+	struct sst_stream_bufs *bufs = NULL;
-+	int retval = 0, i;
-+	struct stream_info *stream = NULL;
-+	struct snd_sst_buff_entry *buf_entry = NULL;
-+
-+	sst_dbg("called for str_id %d \n", str_id);
-+	retval = sst_validate_strid(str_id);
-+	if (retval != 0) {
-+		sst_err("val failed %d", retval);
-+		return -EINVAL;
-+	}
-+	BUG_ON(!mmap_buf);
-+
-+	stream = &sst_ops->streams[str_id];
-+	if (stream->mmapped != true) {
-+		sst_err("stream not mapped!!!");
-+		return -EIO;
-+	}
-+
-+	if (stream->status != STREAM_RUNNING &&
-+			stream->status != STREAM_INIT) {
-+		sst_err("BAD REQUEST!, stream state is %d\n", stream->status);
-+		return -EBADRQC;
-+	}
-+
-+	sst_dbg("new buffers count %d status %d\n",
-+			mmap_buf->entries, stream->status);
-+	buf_entry = mmap_buf->buff;
-+	for (i = 0; i < mmap_buf->entries; i++) {
-+		BUG_ON(!buf_entry);
-+		bufs = kzalloc(sizeof(*bufs), GFP_KERNEL);
-+		if (bufs == NULL)
-+			return -ENOMEM;
-+		bufs->size = buf_entry->size;
-+		bufs->offset = buf_entry->buffer.offset;
-+		bufs->addr = sst_ops->mmap_mem;
-+		bufs->in_use = false;
-+		buf_entry++;
-+		/*locking here*/
-+		mutex_lock(&stream->lock);
-+		list_add_tail(&bufs->node, &stream->bufs);
-+		mutex_unlock(&stream->lock);
-+	}
-+
-+	mutex_lock(&stream->lock);
-+	stream->data_blk.condition = false;
-+	stream->data_blk.ret_code = 0;
-+	if (stream->status == STREAM_INIT && stream->prev != STREAM_UN_INIT) {
-+		stream->prev = stream->status;
-+		stream->status = STREAM_RUNNING;
-+		if (stream->ops == STREAM_OPS_PLAYBACK) {
-+			sst_dbg("play frames...\n");
-+			if (sst_play_frame(str_id) < 0) {
-+				sst_err("play frames failed \n");
-+				mutex_unlock(&stream->lock);
-+				return -EIO;
-+			}
-+		} else if (stream->ops == STREAM_OPS_CAPTURE) {
-+			sst_dbg("capture frames...\n");
-+			if (sst_capture_frame(str_id) < 0) {
-+				sst_err("capture frames failed \n");
-+				mutex_unlock(&stream->lock);
-+				return -EIO;
-+			}
-+		}
-+	}
-+	mutex_unlock(&stream->lock);
-+	/*Block the call for reply*/
-+	if (0 == list_empty(&stream->bufs)) {
-+		sst_dbg("ioctl waiting...\n");
-+		stream->data_blk.on = true;
-+		retval = sst_wait_interruptible(sst_ops, &stream->data_blk);
-+	}
-+
-+	sst_dbg("end of play/rec ioctl!!\n");
-+	return retval;
-+}
-+
-+int sst_play_capture(struct stream_info *stream, int str_id)
-+{
-+	int retval;
-+
-+	stream->data_blk.condition = false;
-+	stream->data_blk.ret_code = 0;
-+	mutex_lock(&stream->lock);
-+	if (stream->status == STREAM_INIT && stream->prev != STREAM_UN_INIT) {
-+		/*stream is started*/
-+		stream->prev = stream->status;
-+		stream->status = STREAM_RUNNING;
-+	}
-+
-+	if (stream->status == STREAM_INIT && stream->prev == STREAM_UN_INIT) {
-+		/*stream is not started yet*/
-+		sst_err("Stream isnt started yet state %d, prev %d \n",
-+			stream->status, stream->prev);
-+	} else if (stream->status == STREAM_RUNNING) {
-+		/*stream is started*/
-+		if (stream->ops == STREAM_OPS_PLAYBACK) {
-+			if (sst_play_frame(str_id) < 0) {
-+				sst_err("play frames failed \n");
-+				mutex_unlock(&stream->lock);
-+				return -EIO;
-+			}
-+		} else if (stream->ops == STREAM_OPS_CAPTURE) {
-+			if (sst_capture_frame(str_id) < 0) {
-+				sst_err("capture frames failed \n");
-+				mutex_unlock(&stream->lock);
-+				return -EIO;
-+			}
-+		}
-+	} else
-+		sst_err("Stream state %d invalid will still block, prev %d\n",
-+			stream->status, stream->prev);
-+	mutex_unlock(&stream->lock);
-+	/*Block the call for reply*/
-+	sst_dbg("write waiting...\n");
-+	stream->data_blk.on = true;
-+	retval = sst_wait_interruptible(sst_ops, &stream->data_blk);
-+	if (retval != 0) {
-+		stream->status = STREAM_INIT;
-+		sst_dbg("wait returned error...\n");
-+	}
-+	return retval;
-+}
-+
-+int snd_sst_fill_kernel_list(struct stream_info *stream,
-+			const struct iovec *iovec, unsigned long nr_segs,
-+			struct list_head *copy_to_list)
-+{
-+	struct sst_stream_bufs *stream_bufs = NULL;
-+	unsigned long index, data_not_copied, mmap_len;
-+	unsigned char *bufp;
-+	unsigned long size, copied_size;
-+	int retval = 0, add_to_list = 0;
-+	static int sent_offset;
-+	static unsigned long sent_index;
-+
-+	stream_bufs = kzalloc(sizeof(*stream_bufs), GFP_KERNEL);
-+	if (stream_bufs == NULL) {
-+		sst_err("memory allocation failed \n");
-+		return -ENOMEM;
-+	}
-+
-+	mmap_len = sst_ops->mmap_len;
-+	stream_bufs->addr = sst_ops->mmap_mem;
-+	bufp = stream->cur_ptr;
-+
-+	sst_dbg("mmap_len - %lx\n", mmap_len);
-+	copied_size = 0;
-+
-+	if (stream->sg_index == 0)
-+		sent_index = sent_offset = 0;
-+
-+	for (index = stream->sg_index; index < nr_segs; index++) {
-+		stream->sg_index = index;
-+		sst_dbg("index - %lx, cur_ptr - %p\n", index, stream->cur_ptr);
-+		sst_dbg("base - %p, size - 0x%x\n", iovec[index].iov_base,
-+				iovec[index].iov_len);
-+		sst_dbg("bufp - %p\n", bufp);
-+		if (stream->cur_ptr == NULL)
-+			bufp = iovec[index].iov_base;
-+
-+		size = ((unsigned long)iovec[index].iov_base
-+			+ iovec[index].iov_len) - (unsigned long) bufp;
-+
-+		sst_dbg("size - %lx\n", size);
-+		if ((copied_size + size) > mmap_len)
-+			size = mmap_len - copied_size;
-+
-+		sst_dbg("size - %lx\n", size);
-+
-+		if (stream->ops == STREAM_OPS_PLAYBACK) {
-+			sst_dbg("Playback stream copying now....\n");
-+			data_not_copied = copy_from_user(
-+				(void *)(stream_bufs->addr + copied_size),
-+				bufp, size);
-+			if (data_not_copied > 0) {
-+				/*Clean up the list and return error code */
-+				sst_err("copy from user not copied -%ld\n",
-+					data_not_copied);
-+				retval = -EIO;
-+				break;
-+			}
-+		} else {
-+			struct snd_sst_user_cap_list *entry =
-+				kzalloc(sizeof(*entry), GFP_KERNEL);
-+
-+			if (entry == NULL) {
-+				sst_err("mem alloacation failed \n");
-+				return -ENOMEM;
-+			}
-+			entry->iov_index = index;
-+			entry->iov_offset = (unsigned long) bufp -
-+					(unsigned long)iovec[index].iov_base;
-+			entry->offset = copied_size;
-+			entry->size = size;
-+			sst_dbg("ENTRY:ioindx %d,iooff %ld,koff %ld,ksz %ld \n",
-+				entry->iov_index, entry->iov_offset,
-+				entry->offset, entry->size);
-+			list_add_tail(&entry->node, copy_to_list);
-+		}
-+
-+		sst_dbg("cur_ptr - %lx\n", (unsigned long) stream->cur_ptr);
-+		stream->cur_ptr = bufp + size;
-+
-+		if (((unsigned long)iovec[index].iov_base
-+					+ iovec[index].iov_len) ==
-+					(unsigned long)stream->cur_ptr) {
-+			stream->cur_ptr = NULL;
-+			stream->sg_index++;
-+		}
-+
-+		copied_size += size;
-+		sst_dbg("copied_size - %lx\n", copied_size);
-+		if ((copied_size >= mmap_len) ||
-+				(stream->sg_index == nr_segs)) {
-+			add_to_list = 1;
-+		}
-+
-+		if (add_to_list) {
-+			stream_bufs->in_use = false;
-+			stream_bufs->size = copied_size;
-+			/*locking here*/
-+			mutex_lock(&stream->lock);
-+			list_add_tail(&stream_bufs->node, &stream->bufs);
-+			mutex_unlock(&stream->lock);
-+			break;
-+		}
-+	}
-+	return retval;
-+}
-+
-+int snd_sst_copy_userbuf_capture(struct stream_info *stream,
-+			const struct iovec *iovec,
-+			struct list_head *copy_to_list)
-+{
-+	struct snd_sst_user_cap_list *entry, *_entry;
-+	struct sst_stream_bufs *kbufs = NULL, *_kbufs;
-+	int retval = 0;
-+	unsigned long data_not_copied;
-+
-+	/*copy sent buffers*/
-+	sst_dbg("capture stream copying to user now...\n");
-+	list_for_each_entry_safe(kbufs, _kbufs, &stream->bufs, node) {
-+		if (kbufs->in_use == true) {
-+			/*copy to user*/
-+			list_for_each_entry_safe(entry, _entry,
-+						copy_to_list, node) {
-+				sst_dbg("filling now... \n");
-+				sst_dbg("iindx %d,ioff %ld,koff %ld,ksz %ld \n",
-+					entry->iov_index, entry->iov_offset,
-+					entry->offset, entry->size);
-+				sst_dbg("Copying at %p size %lx\n",
-+					iovec[entry->iov_index].iov_base +
-+						entry->iov_offset,
-+					entry->size);
-+				data_not_copied = copy_to_user((void *)
-+					iovec[entry->iov_index].iov_base +
-+						entry->iov_offset,
-+					kbufs->addr + entry->offset,
-+					entry->size);
-+				if (data_not_copied > 0) {
-+					/*Clean up the list and return error*/
-+					sst_err("copy to user err -%ld\n",
-+						data_not_copied);
-+					retval = -EIO;
-+					break;
-+				}
-+				list_del(&entry->node);
-+				kfree(entry);
-+			}
-+			sst_dbg("coming out of loop\n");
-+		}
-+	}
-+	sst_dbg("end of cap copy\n");
-+	return retval;
-+}
-+/*
-+ * snd_sst_userbufs_play_cap - constructs the list from user buffers
-+ * @iovec:      pointer to iovec structure
-+ * @nr_segs:    number entries in the iovec structure
-+ * @str_id:	stream id
-+ * @stream:   	pointer to stream_info structure
-+ * This function will traverse the user list and copy the data to the kernel
-+ * space buffers.
-+ */
-+int snd_sst_userbufs_play_cap(const struct iovec *iovec,
-+			unsigned long nr_segs, unsigned int str_id,
-+			struct stream_info *stream)
-+{
-+	int retval = 0;
-+	LIST_HEAD(copy_to_list);
-+
-+
-+	retval = snd_sst_fill_kernel_list(stream, iovec, nr_segs,
-+		       &copy_to_list);
-+
-+	retval = sst_play_capture(stream, str_id);
-+	if (retval < 0)
-+		return retval;
-+
-+	if (stream->ops == STREAM_OPS_CAPTURE) {
-+		retval = snd_sst_copy_userbuf_capture(stream, iovec,
-+				&copy_to_list);
-+	}
-+	return retval;
-+}
-+
-+int intel_sst_read_write(unsigned int str_id, char __user *buf, size_t count)
-+{
-+	int retval = 0;
-+	struct stream_info *stream = NULL;
-+	struct iovec iovec;
-+	unsigned long nr_segs;
-+
-+	retval = sst_validate_strid(str_id);
-+	if (retval != 0)
-+		return -EINVAL;
-+	stream = &sst_ops->streams[str_id];
-+	if (stream->mmapped == true) {
-+		sst_err("user write & stream is mapped!!!");
-+		return -EIO;
-+	}
-+	if (count == 0) {
-+		sst_err("args invalid %d", retval);
-+		return -EINVAL;
-+	}
-+	/*copy user buf details*/
-+	if (stream->status != STREAM_RUNNING && stream->status != STREAM_INIT) {
-+		sst_err("BAD REQUEST!\n");
-+		return -EBADRQC;
-+	}
-+	sst_dbg("new buffers %p, copy size %d, status %d\n" ,
-+			buf, (int) count, (int) stream->status);
-+
-+	stream->buf_type = SST_BUF_USER_STATIC;
-+	iovec.iov_base = (void *)buf;
-+	iovec.iov_len  = count;
-+	nr_segs = 1;
-+
-+	do {
-+		retval = snd_sst_userbufs_play_cap(&iovec, nr_segs,
-+						str_id, stream);
-+
-+		if (retval < 0)
-+			break;
-+
-+	} while (stream->sg_index < nr_segs);
-+
-+	stream->sg_index = 0;
-+	stream->cur_ptr = NULL;
-+	return retval;
-+}
-+
-+int intel_sst_write(struct file *file_ptr, const char __user *buf,
-+			size_t count, loff_t *offset)
-+{
-+	struct ioctl_pvt_data *data =
-+			(struct ioctl_pvt_data *)file_ptr->private_data;
-+	int str_id = data->str_id;
-+
-+	sst_dbg("called for %d\n", str_id);
-+	return intel_sst_read_write(str_id, (char __user *)buf, count);
-+}
-+
-+/*
-+ *
-+ *  intel_sst_aio_write- send data to play out
-+ *
-+ */
-+ssize_t intel_sst_aio_write(struct kiocb *kiocb, const struct iovec *iov,
-+			unsigned long nr_segs, loff_t  offset)
-+{
-+	int retval = 0;
-+	struct ioctl_pvt_data *data =
-+			(struct ioctl_pvt_data *)kiocb->ki_filp->private_data;
-+	int str_id = data->str_id;
-+	struct stream_info *stream = NULL;
-+
-+	sst_dbg("entry - %ld\n", nr_segs);
-+
-+	if (is_sync_kiocb(kiocb) == false) {
-+		sst_dbg("aio_read from user space is not allowed\n");
-+		return -EINVAL;
-+	}
-+
-+	sst_dbg("called for str_id %d \n", str_id);
-+	retval = sst_validate_strid(str_id);
-+	if (retval != 0)
-+		return -EINVAL;
-+	stream = &sst_ops->streams[str_id];
-+	if (stream->mmapped == true) {
-+		sst_err("user write & stream is mapped!!!");
-+		return -EIO;
-+	}
-+	if (stream->status != STREAM_RUNNING && stream->status != STREAM_INIT) {
-+		sst_err("BAD REQUEST!\n");
-+		return -EBADRQC;
-+	}
-+	sst_dbg("new segs %ld, offset %d, status %d\n" ,
-+			nr_segs, (int) offset, (int) stream->status);
-+	stream->buf_type = SST_BUF_USER_STATIC;
-+	do {
-+		retval = snd_sst_userbufs_play_cap(iov, nr_segs,
-+						str_id, stream);
-+		if (retval < 0)
-+			break;
-+
-+	} while (stream->sg_index < nr_segs);
-+
-+	stream->sg_index = 0;
-+	stream->cur_ptr = NULL;
-+
-+	return retval;
-+}
-+
-+/*
-+* intel_sst_read- get captured data
-+*/
-+int intel_sst_read(struct file *file_ptr, char __user *buf,
-+			size_t count, loff_t *offset)
-+{
-+	struct ioctl_pvt_data *data =
-+			(struct ioctl_pvt_data *)file_ptr->private_data;
-+	int str_id = data->str_id;
-+
-+	sst_dbg("called for %d\n", str_id);
-+	return intel_sst_read_write(str_id, buf, count);
-+}
-+
-+ssize_t intel_sst_aio_read(struct kiocb *kiocb, const struct iovec *iov,
-+			 unsigned long nr_segs, loff_t offset)
-+{
-+	int retval = 0;
-+	struct ioctl_pvt_data *data =
-+			(struct ioctl_pvt_data *)kiocb->ki_filp->private_data;
-+	int str_id = data->str_id;
-+	struct stream_info *stream = NULL;
-+
-+	sst_dbg("entry - %ld\n", nr_segs);
-+
-+	if (is_sync_kiocb(kiocb) == false) {
-+		sst_dbg("aio_read from user space is not allowed\n");
-+		return -EINVAL;
-+	}
-+
-+	sst_dbg("called for str_id %d \n", str_id);
-+	retval = sst_validate_strid(str_id);
-+	if (retval != 0)
-+		return -EINVAL;
-+	stream = &sst_ops->streams[str_id];
-+	if (stream->mmapped == true) {
-+		sst_err("user write & stream is mapped!!!");
-+		return -EIO;
-+	}
-+	if (stream->status != STREAM_RUNNING && stream->status != STREAM_INIT) {
-+		sst_err("BAD REQUEST!\n");
-+		return -EBADRQC;
-+	}
-+	sst_dbg("new segs %ld, offset %d, status %d\n" ,
-+			nr_segs, (int) offset, (int) stream->status);
-+	stream->buf_type = SST_BUF_USER_STATIC;
-+	do {
-+		retval = snd_sst_userbufs_play_cap(iov, nr_segs,
-+						str_id, stream);
-+		if (retval < 0)
-+			break;
-+
-+	} while (stream->sg_index < nr_segs);
-+
-+	stream->sg_index = 0;
-+	stream->cur_ptr = NULL;
-+
-+	return retval;
-+}
-+
-+int sst_get_stream_allocated(struct snd_sst_params *str_param,
-+			u32 block, u32 pvt_id)
-+{
-+	int retval = 0;
-+
-+	retval = sst_alloc_stream((char *) &str_param->sparams, str_param->ops,
-+				str_param->codec, pvt_id);
-+	if (0 != retval) {
-+		sst_err("sst_alloc_stream failed %d", retval);
-+		goto err;
-+	}
-+	/*Block the call for reply*/
-+	retval = sst_wait_timeout(sst_ops, &sst_ops->alloc_block[block]);
-+err:	return retval;
-+}
-+
-+void set_port_params(struct snd_sst_params *str_param,
-+				enum snd_sst_stream_ops ops)
-+{
-+	int sfreq = str_param->sparams.uc.pcm_params.sfreq;
-+	int word_size = str_param->sparams.uc.pcm_params.pcm_wd_sz;
-+
-+	sst_dbg("sampling frequency = %d wd_size = %d \n", sfreq, word_size);
-+
-+	if (ops == STREAM_OPS_PLAYBACK) {
-+		sst_dbg("Setting playback path and port settings...\n");
-+		sst_ops->scard_ops.init_card();
-+		sst_ops->scard_ops.set_pcm_params(sfreq, word_size);
-+	} else if (ops == STREAM_OPS_CAPTURE) {
-+		sst_dbg("Setting capture path...\n");
-+		if (sst_ops->scard_ops.init_card_capture != NULL)
-+			sst_ops->scard_ops.init_card_capture();
-+	}
++	list_add_tail(&msg->node, &sst_ops->ipc_dispatch_list);
++	sst_post_message(&sst_ops->ipc_post_msg_wq);
 +	return;
 +}
 +
-+int sst_get_stream(struct snd_sst_params *str_param, u32 pvt_id)
++void sst_send_pmic_type(void)
 +{
-+	int i = 0, retval = 0;
++	struct ipc_post *msg = NULL;
 +
-+	/*stream is not allocated, we are allocating*/
-+	i = sst_get_block_stream(sst_ops);
-+	sst_dbg("alloc block allocated = %d\n", i);
-+	if (i < 0)
-+		return -ENOMEM;
-+	sst_ops->alloc_block[i].sst_id = pvt_id;
++	sst_dbg("...called\n");
 +
-+	retval = sst_get_stream_allocated(str_param, i, pvt_id);
-+	if (retval == -(SST_LIB_ERR_LIB_DNLD_REQUIRED)) {
-+		/*codec download is required*/
-+		struct snd_sst_alloc_response *response =
-+				sst_ops->alloc_block[i].ops_block.data;
-+		sst_dbg("Codec is required.... trying that\n");
-+		retval = sst_load_library(&response->lib_dnld,
-+				str_param->ops, pvt_id);
-+		kfree(response);
++	if (0 != sst_create_short_msg(&msg))
++		return;
 +
-+		if (retval == 0) {
-+			sst_dbg("codec was downloaded sucesfully \n");
-+			sst_dbg("try alloac again\n");
-+			sst_ops->alloc_block[i].ops_block.condition = false;
++	sst_fill_header(&msg->header, IPC_IA_SET_PMIC_TYPE, 0, 0);
++	msg->header.part.data = sst_ops->pmic_vendor;
++	list_add_tail(&msg->node, &sst_ops->ipc_dispatch_list);
++	sst_post_message(&sst_ops->ipc_post_msg_wq);
++	return;
++}
 +
-+			retval = sst_get_stream_allocated(str_param, i, pvt_id);
++void sst_get_fw_version(void)
++{
++	struct ipc_post *msg = NULL;
 +
-+			if (retval <= 0)
-+				goto err;
-+			set_port_params(str_param, str_param->ops);
++	sst_dbg("...called\n");
 +
-+			sst_dbg("Allocation done stream id %d \n", retval);
-+		} else {
-+			sst_dbg("codec download failed \n");
-+			retval = -EIO;
-+			goto err;
-+		}
-+	} else if  (retval <= 0)
-+		goto err;
-+	else
-+		set_port_params(str_param, str_param->ops);
++	if (0 != sst_create_short_msg(&msg))
++		return;
 +
-+err:
-+	sst_ops->alloc_block[i].sst_id = BLOCK_UNINIT;
-+	return retval;
++	sst_fill_header(&msg->header, IPC_IA_GET_FW_VERSION, 0, 0);
++	list_add_tail(&msg->node, &sst_ops->ipc_dispatch_list);
++	sst_post_message(&sst_ops->ipc_post_msg_wq);
++	if (0 != sst_create_short_msg(&msg))
++		return;
++
++	sst_fill_header(&msg->header, IPC_IA_GET_FW_BUILD_INF, 0, 0);
++	list_add_tail(&msg->node, &sst_ops->ipc_dispatch_list);
++	sst_post_message(&sst_ops->ipc_post_msg_wq);
++	return;
 +}
 +
 +/**
-+* intel_sst_ioctl - recieves the device ioctl's
-+* @i_node:	inode structure
-+* @file_ptr:	pointer to file
-+* @cmd: 	Ioctl cmd
-+* @arg:		data
++* sst_post_message - Posts message to SST
++* @work:	Pointer to work structure
 +*
-+* This function is called by OS when a user space component
-+* sends an Ioctl to SST driver
++* This function is called by any component in driver which
++* wants to send an IPC message. This will post message only if
++* busy bit is free
 +*/
-+int intel_sst_ioctl(struct inode *i_node, struct file *file_ptr,
-+				unsigned int cmd, unsigned long arg)
++void sst_post_message(struct work_struct *work)
 +{
-+	int retval = 0, i = 0;
-+	struct ioctl_pvt_data *data = (struct ioctl_pvt_data *)
-+			file_ptr->private_data;
-+	int str_id = data->str_id, minor;
++	struct ipc_post *msg;
++	union ipc_header header;
++	union  interrupt_reg imr;
++	imr.full = 0;
 +
-+	dev_t device = i_node->i_rdev;
-+
-+	if (device == MKDEV(INTEL_SST_MAJOR, 0))
-+		minor = 0;
-+	else if (device == MKDEV(INTEL_SST_MAJOR, 1))
-+		minor = 1;
-+	else
-+		return -EINVAL;
-+
-+	if (SST_FW_RUNNING != sst_ops->sst_state) {
-+		sst_err("SST Not runng %d\n", sst_ops->sst_state);
-+		return -EBUSY;
-+	}
-+	switch (_IOC_NR(cmd)) {
-+	case _IOC_NR(SNDRV_SST_STREAM_PAUSE):
-+		sst_dbg("SNDRV_SST_IOCTL_PAUSE recieved for %d!\n", str_id);
-+		if (minor != 0) {
-+			retval = -EINVAL;
-+			break;
-+		}
-+		retval = sst_pause_stream(str_id);
-+		break;
-+
-+	case _IOC_NR(SNDRV_SST_STREAM_RESUME):
-+		sst_dbg("SNDRV_SST_IOCTL_RESUME recieved!\n");
-+		if (minor != 0) {
-+			retval = -EINVAL;
-+			break;
-+		}
-+		retval = sst_resume_stream(str_id);
-+		break;
-+
-+	case _IOC_NR(SNDRV_SST_STREAM_SET_PARAMS): {
-+		struct snd_sst_params *str_param = (struct snd_sst_params *)arg;
-+
-+		sst_dbg("IOCTL_SET_PARAMS recieved!\n");
-+		if (minor != 0) {
-+			retval = -EINVAL;
-+			break;
-+		}
-+		sst_print_params(&str_param->sparams);
-+
-+		if (str_id == 0) {
-+			retval = sst_get_stream(str_param, data->pvt_id);
-+			if (retval > 0) {
-+				data->str_id = retval;
-+				retval = 0;
-+			} else {
-+				if (retval == -SST_ERR_INVALID_PARAMS)
-+					retval = -EINVAL;
-+			}
-+		} else {
-+			sst_dbg("SET_STREAM_PARAMS recieved!\n");
-+			/*allocated set params only*/
-+			retval = sst_set_stream_param(str_id, str_param);
-+			/*Block the call for reply*/
-+			if (retval == 0) {
-+				int sfreq = 0, word_size = 0;
-+				sfreq =	str_param->sparams.uc.pcm_params.sfreq;
-+				word_size = str_param->sparams.
-+						uc.pcm_params.pcm_wd_sz;
-+				retval = sst_wait_timeout(sst_ops,
-+					&sst_ops->alloc_block[i]);
-+				sst_dbg("SST sampling frequency= %d\n" , sfreq);
-+				sst_ops->scard_ops.set_pcm_params(sfreq,
-+							word_size);
-+			}
-+		}
-+		break;
++	sst_dbg("..called \n");
++	mutex_lock(&sst_ops->list_lock);
++	/*check list*/
++	if (0 != list_empty(&sst_ops->ipc_dispatch_list)) {
++		/*list is empty, mask imr*/
++		sst_dbg(" Empty msg queue... masking \n");
++		imr.full = readl(sst_ops->shim + SST_IMRX);
++		imr.part.done_interrupt = 1;
++		writel(imr.full, sst_ops->shim + SST_IMRX);
++		mutex_unlock(&sst_ops->list_lock);
++		return;
 +	}
 +
-+	case _IOC_NR(SNDRV_SST_MMAP_PLAY):
-+	case _IOC_NR(SNDRV_SST_MMAP_CAPTURE):
-+		sst_dbg("SNDRV_SST_MMAP_PLAY/CAPTURE recieved!\n");
-+		if (minor != 0) {
-+			retval = -EINVAL;
-+			break;
-+		}
-+		retval = intel_sst_mmap_play_capture(str_id,
-+				(struct snd_sst_buffs *)arg);
-+		break;
-+
-+	case _IOC_NR(SNDRV_SST_STREAM_DROP):
-+		sst_dbg("SNDRV_SST_IOCTL_DROP recieved!\n");
-+		if (minor != 0) {
-+			retval = -EINVAL;
-+			break;
-+		}
-+		retval = sst_drop_stream(str_id);
-+		break;
-+
-+	case _IOC_NR(SNDRV_SST_STREAM_GET_TSTAMP): {
-+		unsigned long long *ms = (unsigned long long *)arg;
-+		struct snd_sst_tstamp tstamp = {0};
-+		unsigned long long time = 0, freq = 0;
-+		unsigned long mod = 0;
-+
-+		sst_dbg("SNDRV_SST_STREAM_GET_TSTAMP recieved!\n");
-+		if (minor != 0) {
-+			retval = -EINVAL;
-+			break;
-+		}
-+		memcpy_fromio(&tstamp,
-+			((void *)(sst_ops->mailbox + SST_TIME_STAMP)
-+			+(str_id * sizeof(tstamp))),
-+			sizeof(tstamp));
-+		time = tstamp.samples_rendered;
-+		sst_dbg("samples rendered! = 0x%llx\n", time);
-+		freq = (unsigned long long) tstamp.sampling_frequency;
-+		sst_dbg("freq = %llx\n", freq);
-+		mod = do_div(time, freq);
-+		sst_dbg("mod = 0x%lx\n", mod);
-+		sst_dbg("sec = 0x%llx\n", time);
-+		time = time * 1000;
-+		sst_dbg("msec = 0x%llx\n", time);
-+		retval = copy_to_user(ms, &time, sizeof(*ms));
-+		if (retval != 0)
-+			sst_err("copy failed = %d\n", retval);
-+		break;
++	/*check busy bit*/
++	header.full = readl(sst_ops->shim + SST_IPCX);
++	if (1 == header.part.busy) {
++		/*busy, unmask*/
++		sst_dbg("Busy not free... unmasking\n");
++		imr.full = readl(sst_ops->shim + SST_IMRX);
++		imr.part.done_interrupt = 0;
++		writel(imr.full, sst_ops->shim + SST_IMRX);
++		mutex_unlock(&sst_ops->list_lock);
++		return;
 +	}
++	/*copy msg from list*/
++	msg = list_entry(sst_ops->ipc_dispatch_list.next,
++			struct ipc_post, node);
++	list_del(&msg->node);
++	sst_dbg("Post message: header = %x\n", msg->header.full);
++	sst_dbg("size: = %x\n", msg->header.part.data);
++	if (1 == msg->header.part.large)
++		memcpy_toio(sst_ops->mailbox + SST_MAILBOX_SEND,
++			msg->mailbox_data, msg->header.part.data);
++	writel(msg->header.full, sst_ops->shim + SST_IPCX);
++	mutex_unlock(&sst_ops->list_lock);
 +
-+	case _IOC_NR(SNDRV_SST_STREAM_START):{
-+		struct stream_info *stream = NULL;
++	kfree(msg->mailbox_data);
++	kfree(msg);
++	sst_dbg("...done\n");
++	return;
++}
 +
-+		sst_dbg("SNDRV_SST_STREAM_START recieved!\n");
-+		if (minor != 0) {
-+			retval = -EINVAL;
++void sst_clear_interrupt(void)
++{
++	union interrupt_reg 	isr;
++	union interrupt_reg 	imr;
++	union ipc_header 	clear_ipc;
++
++	sst_dbg("sst clearing interrupt \n");
++	imr.full = readl(sst_ops->shim + SST_IMRX);
++	isr.full = readl(sst_ops->shim + SST_ISRX);
++	/* write 1 to clear */;
++	isr.part.busy_interrupt = 1;
++	writel(isr.full, sst_ops->shim + SST_ISRX);
++	/*Set IA done bit*/
++	clear_ipc.full = readl(sst_ops->shim + SST_IPCD);
++	clear_ipc.part.busy = 0;
++	clear_ipc.part.done = 1;
++	clear_ipc.part.data = IPC_ACK_SUCCESS;
++	writel(clear_ipc.full, sst_ops->shim + SST_IPCD);
++	/*un mask busy interrupt*/
++	imr.part.busy_interrupt = 0;
++	writel(imr.full, sst_ops->shim + SST_IMRX);
++}
++
++/**
++* sst_process_message - Processes message from SST
++* @work:	Pointer to work structure
++*
++* This function is scheduled by ISR
++* It take a msg from process_queue and does action based on msg
++*/
++void sst_process_message(struct work_struct *work)
++{
++	struct sst_ipc_msg_wq *msg =
++			container_of(work, struct sst_ipc_msg_wq, wq);
++	int str_id = msg->header.part.str_id;
++
++	sst_dbg("called \n");
++
++	/*based on msg in list call respective handler*/
++	switch (msg->header.part.msg_id) {
++	case IPC_SST_BUF_UNDER_RUN:
++	case IPC_SST_BUF_OVER_RUN:
++		if (sst_validate_strid(str_id) != 0) {
++			sst_err("stream id %d invalid\n", str_id);
 +			break;
 +		}
-+		retval = sst_validate_strid(str_id);
-+		if (retval !=  0)
++		sst_err("Buffer under/overrun for %d\n",
++				msg->header.part.str_id);
++		sst_dbg("Got Underrun & not to send data...ignore\n");
++		break;
++
++	case IPC_SST_GET_PLAY_FRAMES:
++	{
++		struct stream_info *stream ;
++
++		if (sst_validate_strid(str_id) != 0) {
++			sst_err("stream id %d invalid\n", str_id);
 +			break;
++		}
++		/*call sst_play_frame*/
 +		stream = &sst_ops->streams[str_id];
-+		mutex_lock(&stream->lock);
-+		if (stream->status == STREAM_INIT) {
-+			sst_dbg("calling play frames...\n");
-+			stream->prev = stream->status;
-+			stream->status = STREAM_RUNNING;
-+			if (stream->ops == STREAM_OPS_PLAYBACK) {
-+				retval = sst_play_frame(str_id);
-+#ifdef CONFIG_SST_OSPM_SUPPORT
-+				sst_ospm_send_event(
-+					OSPM_EVENT_SUBSYS_START_PLAY);
-+#endif
-+			} else if (stream->ops == STREAM_OPS_CAPTURE)
-+				retval = sst_capture_frame(str_id);
-+			else {
-+				sst_err("Invalid ops 0x%x\n", stream->ops);
-+				retval = -EINVAL;
-+				mutex_unlock(&sst_ops->streams[str_id].lock);
-+				break;
-+			}
-+			if (retval < 0) {
-+				sst_err("play/capture frames failed \n");
-+				stream->status = STREAM_INIT;
-+				mutex_unlock(&sst_ops->streams[str_id].lock);
-+				break;
-+			}
-+		} else {
-+			sst_err("Invalid start for stream %d state 0x%x\n",
-+					str_id, stream->status);
-+			retval = -EINVAL;
-+		}
++		sst_dbg("sst_play_frames for %d\n", msg->header.part.str_id);
++		mutex_lock(&sst_ops->streams[str_id].lock);
++		sst_play_frame(msg->header.part.str_id);
 +		mutex_unlock(&sst_ops->streams[str_id].lock);
 +		break;
 +	}
-+	case _IOC_NR(SNDRV_SST_SET_TARGET_DEVICE): {
-+		struct snd_sst_target_device *target_device = NULL;
 +
-+		sst_info("SNDRV_SST_SET_TARGET_PLAYBACK DEVICE recieved!\n");
-+		target_device =	(struct snd_sst_target_device *)arg;
-+		BUG_ON(!target_device);
-+		if (minor != 1) {
-+			sst_err("called for non AM handle minor %d\n", minor);
-+			retval = -EINVAL;
++	case IPC_SST_PERIOD_ELAPSED:
++	{
++		struct snd_sst_tstamp fw_tstamp = {0,};
++		struct stream_info *stream ;
++
++		if (sst_validate_strid(str_id) != 0) {
++			sst_err("stream id %d invalid\n", str_id);
 +			break;
 +		}
-+		retval = sst_target_device_select(target_device);
-+		if (0 != retval)
-+			return retval;
-+		break;
++		stream = &sst_ops->streams[str_id];
 +
++		sst_dbg("Period elapsed \n");
++		memcpy_fromio(&fw_tstamp,
++			((void *)(sst_ops->mailbox + SST_TIME_STAMP) +
++			(str_id * sizeof(fw_tstamp))),
++			sizeof(fw_tstamp));
++		sst_dbg("samples played = %lld\n", fw_tstamp.samples_processed);
++		sst_dbg("diff in mesg = %d\n", msg->header.part.data);
++		sst_clear_interrupt();
++		if (stream->period_elapsed)
++			stream->period_elapsed(stream->pcm_substream);
++		return;
 +	}
 +
-+	case _IOC_NR(SNDRV_SST_DRIVER_INFO): {
-+		struct snd_sst_driver_info *info =
-+			(struct snd_sst_driver_info *)arg;
-+		sst_dbg("SNDRV_SST_DRIVER_INFO recived \n");
-+		info->version = SST_VERSION_NUM;
-+		/*hard coding, shud get sumhow later*/
-+		info->active_pcm_streams = sst_ops->stream_cnt -
-+						sst_ops->active_cnt;
-+		info->active_enc_streams = sst_ops->active_cnt;
-+		info->max_pcm_streams = MAX_ACTIVE_STREAM - MAX_ENC_STREAM;
-+		info->max_enc_streams = MAX_ENC_STREAM;
-+		info->buf_per_stream = sst_ops->mmap_len;
++	case IPC_SST_GET_CAPT_FRAMES:
++		/*call sst_capture_frame*/
++		if (sst_validate_strid(str_id) != 0) {
++			sst_err("stream id %d invalid\n", str_id);
++			break;
++		}
++		sst_dbg("sst_capture_frames for %d\n", msg->header.part.str_id);
++		mutex_lock(&sst_ops->streams[str_id].lock);
++		if (sst_ops->streams[str_id].ops == STREAM_OPS_CAPTURE &&
++				sst_ops->streams[str_id].mmapped == false &&
++				sst_ops->streams[str_id].codec !=
++							SST_CODEC_TYPE_PCM) {
++			sst_dbg("waking up block for copy...\n");
++			sst_ops->streams[str_id].data_blk.ret_code = 0;
++			sst_ops->streams[str_id].data_blk.condition = true;
++			sst_ops->streams[str_id].data_blk.on = false;
++			wake_up(&sst_ops->wait_queue);
++		} else
++			sst_capture_frame(msg->header.part.str_id);
++		mutex_unlock(&sst_ops->streams[str_id].lock);
++		break;
++
++	case IPC_IA_PRINT_STRING:
++		sst_dbg("been asked to print something by fw\n");
++		/*TBD*/
++		break;
++
++	case IPC_IA_FW_INIT_CMPLT: {
++		/*send next data to FW*/
++		struct ipc_header_fw_init *init =
++			(struct ipc_header_fw_init *)msg->mailbox;
++
++		sst_dbg("*** FW Init msg came*** \n");
++		if (0 == init->result) {
++			sst_ops->sst_state = SST_FW_RUNNING;
++			sst_info("FW Version %x.%x \n",
++				init->fw_version.major, init->fw_version.minor);
++			sst_info("Build No %x Type %x \n",
++				init->fw_version.build, init->fw_version.type);
++#ifdef SND_LOOP_TEST
++			sst_send_loop_test(0);
++#endif
++			sst_send_pmic_type();
++			sst_get_fw_version();
++		} else {
++			sst_ops->sst_state = SST_ERROR;
++			sst_dbg("FW Init failed, Error %x\n", init->result);
++			sst_dbg("FW Init failed, Module %x, Debug Info %x \n",
++				init->module_id, init->debug_info);
++		}
++		sst_dbg("Waking up... open\n");
++		sst_wake_up_alloc_block(sst_ops, 0xFF, 0, NULL);
 +		break;
 +	}
++
++	case IPC_SST_STREAM_PROCESS_FATAL_ERR:
++		if (sst_validate_strid(str_id) != 0) {
++			sst_err("stream id %d invalid\n", str_id);
++			break;
++		}
++			sst_err(" codec fatal error %x for stream %d... \n",
++				msg->header.full, msg->header.part.str_id);
++			sst_err("Dropping the stream \n");
++			sst_drop_stream(msg->header.part.str_id);
++		break;
 +
 +	default:
-+		sst_dbg("IOCTL not supported yet !\n");
-+		retval = -ENOTTY;
++		/*Illegal case*/
++		sst_err("Unhandled case msg_id %x message %x\n",
++				msg->header.part.msg_id, msg->header.full);
 +	}
-+	sst_dbg("...complete ret code = %d\n", retval);
-+
-+	return retval;
++	sst_clear_interrupt();
++	return;
 +}
 +
-+/*
-+	MAD Routines
-+*/
-+
 +/**
-+* sst_control_set - Set Control params
-+* @control_list:	list of controls to be set
++* sst_process_reply - Processes reply message from SST
++* @work:	Pointer to work structure
 +*
-+* This function is called by MID sound card driver to set
-+* SST/Sound card controls. This is registered with MID driver
++* This function is scheduled by ISR
++* It take a reply msg from response_queue and
++* does action based on msg
 +*/
-+int sst_control_set(int control_element, void *value)
++void sst_process_reply(struct work_struct *work)
 +{
-+	int retval = 0, str_id = 0;
++	struct sst_ipc_msg_wq *msg =
++			container_of(work, struct sst_ipc_msg_wq, wq);
++	int str_id = msg->header.part.str_id;
++	struct stream_info *str_info = NULL;
 +
-+	if (SST_UN_INIT == sst_ops->sst_state) {
-+		/*FW is not downloaded*/
-+		sst_dbg("DSP Downloading FW now...\n");
-+		retval = sst_download_fw();
-+		if (retval != 0) {
-+			sst_err("FW download failed = 0x%x, abort\n", retval);
-+			return retval;
++	sst_dbg("called for %x \n", msg->header.full);
++
++	switch (msg->header.part.msg_id) {
++	case IPC_IA_DROP_STREAM:
++	case IPC_IA_PAUSE_STREAM:
++	case IPC_IA_RESUME_STREAM:
++	case IPC_IA_SET_STREAM_PARAMS:
++		if (0 == msg->header.part.data) {
++			sst_dbg("Msg succedded %x \n", msg->header.part.msg_id);
++		} else {
++			sst_err("Msg %x reply error %x \n",
++					msg->header.part.msg_id,
++					msg->header.part.data);
 +		}
-+	}
++		if (sst_validate_strid(str_id) != 0) {
++			sst_err("stream id %d invalid\n", str_id);
++			break;
++		}
 +
-+	switch (control_element) {
-+	case SST_SND_ALLOC: {
-+		struct snd_sst_params *str_param = NULL;
-+		int pcm_id = sst_assign_pvt_id(sst_ops);
-+
-+		str_param = (struct snd_sst_params *)value;
-+		BUG_ON(!str_param);
-+		sst_print_params(&str_param->sparams);
-+		retval = sst_get_stream(str_param, pcm_id);
-+		if (retval >= 0)
-+			sst_ops->stream_cnt++;
-+#ifdef CONFIG_SST_OSPM_SUPPORT
-+		if (str_param->ops == STREAM_OPS_PLAYBACK)
-+			sst_ospm_send_event(OSPM_EVENT_SUBSYS_START_PLAY);
-+#endif
-+
-+		break;
-+	}
-+
-+	case SST_SND_PAUSE:
-+		retval = sst_pause_stream(*(int *)value);
-+		break;
-+
-+	case SST_SND_RESUME:
-+	    retval = sst_resume_stream(*(int *)value);
-+		break;
-+
-+	case SST_SND_DROP:
-+		retval = sst_drop_stream(*(int *)value);
-+		break;
-+
-+	case SST_SND_FREE: {
-+		struct stream_info *stream = NULL;
-+
-+		str_id = *(int *)value;
-+		stream = &sst_ops->streams[str_id];
-+		retval = sst_free_stream(str_id);
-+		if (retval == 0) {
-+			stream->pcm_substream = NULL;
-+			stream->period_elapsed = NULL;
-+			sst_ops->stream_cnt--;
++		str_info = &sst_ops->streams[str_id];
++		str_info->ctrl_blk.ret_code = msg->header.part.data;
++		if (str_info->ctrl_blk.on == true) {
++			str_info->ctrl_blk.condition = true;
++			wake_up(&sst_ops->wait_queue);
 +		}
 +		break;
-+	}
 +
-+	case SST_SND_STREAM_INIT: {
-+		struct pcm_stream_info *str_info = NULL;
-+		struct stream_info *stream = NULL;
-+
-+		sst_dbg("stream init called\n");
-+		str_info = (struct pcm_stream_info *)value;
-+		str_id = str_info->str_id;
-+		retval = sst_validate_strid(str_id);
-+		if (retval !=  0)
++	case IPC_IA_FREE_STREAM:
++		if (0 == msg->header.part.data) {
++			sst_dbg("Stream %d freed\n", str_id);
++		} else {
++			sst_err("Free for %d returned error %x\n",
++					str_id, msg->header.part.data);
++		}
++		break;
++	case IPC_IA_GET_STREAM_PARAMS: {
++		if (sst_validate_strid(str_id) != 0) {
++			sst_err("stream id %d invalid\n", str_id);
 +			break;
-+
-+		stream = &sst_ops->streams[str_id];
-+		sst_dbg("setting the period ptrs\n");
-+		stream->pcm_substream = str_info->mad_substream;
-+		stream->period_elapsed = str_info->period_elapsed;
++		}
++		if (0 == msg->header.part.data) {
++			struct snd_sst_stream_params *params = NULL;
++			params = kzalloc(sizeof(*params), GFP_KERNEL);
++			if (NULL == params) {
++				sst_err("mem allocation failed\n");
++				break;
++			}
++			memcpy(params, &msg->mailbox, sizeof(*params));
++			str_info = &sst_ops->streams[str_id];
++			str_info->get_parameters = params;
++		} else {
++			sst_err("Msg %x reply error %x \n",
++				msg->header.part.msg_id, msg->header.part.data);
++		}
 +		break;
 +	}
 +
-+	case SST_SND_BUFFER_POINTER: {
-+		struct pcm_stream_info *buf_ptr;
-+		struct snd_sst_tstamp fw_tstamp = {0,};
-+		struct stream_info *stream = NULL;
-+
-+		sst_dbg("buffer pointer query\n");
-+
-+		buf_ptr = (struct pcm_stream_info *)value;
-+		str_id = buf_ptr->str_id;
-+		retval = sst_validate_strid(str_id);
-+		if (retval !=  0)
++	case IPC_IA_ALLOC_STREAM: {
++		/*map to stream, call play*/
++		struct snd_sst_alloc_response *resp =
++				(struct snd_sst_alloc_response *)msg->mailbox;
++		if (0 != resp->str_type.result) {
++			/*error case*/
++			struct snd_sst_alloc_response *lib = NULL;
++			sst_err("error alloc stream = %x \n",
++					resp->str_type.result);
++			if (resp->str_type.result ==
++					SST_LIB_ERR_LIB_DNLD_REQUIRED) {
++				lib = kzalloc(sizeof(*lib), GFP_ATOMIC);
++				if (NULL == lib) {
++					sst_err("mem allocation failed \n");
++					break;
++				}
++				memcpy(lib, msg->mailbox, sizeof(*lib));
++				/*library needs to be downloaded*/
++				sst_dbg("Codec Download required \n");
++			}
++			sst_wake_up_alloc_block(sst_ops, resp->str_type.pvt_id,
++					(-resp->str_type.result), lib);
 +			break;
-+		stream = &sst_ops->streams[str_id];
++		}
++		sst_alloc_stream_response(str_id, &resp->str_type);
++		break;
++	}
 +
-+		if (stream->pcm_substream == NULL)
++	case IPC_IA_DBG_LOOP_BACK:
++		/*Debug loop back msg*/
++		sst_dbg("Loop back came \n");
++		if (0 != msg->header.part.data)
++			sst_dbg("Possible error if not large \n");
++		sst_dbg("Loop ID: %d\n", str_id);
++		if (msg->header.part.large) {
++			struct ipc_sst_ia_dbg_loop_back *loop_msg =
++				(struct ipc_sst_ia_dbg_loop_back *)msg->mailbox;
++			int i;
++			sst_dbg("Got large loop back: Words %d\n",
++						loop_msg->num_dwords);
++			for (i = 0; i < loop_msg->num_dwords; i++) {
++				sst_dbg("Loop Word %d = %d \n", i,
++					loop_msg->lpbk_dwords[i]);
++			}
++		}
++		sst_send_loop_test((str_id + 1));
++		break;
++
++	case IPC_IA_PLAY_FRAMES:
++	case IPC_IA_CAPT_FRAMES:
++		if (sst_validate_strid(str_id) != 0) {
++			sst_err("stream id %d invalid\n", str_id);
 +			break;
-+		memcpy_fromio(&fw_tstamp,
-+			((void *)(sst_ops->mailbox + SST_TIME_STAMP)
-+			+(str_id * sizeof(fw_tstamp))),
-+			sizeof(fw_tstamp));
++		}
++		sst_dbg("Ack for play/capt frames recived \n");
++		break;
 +
-+		sst_dbg("strid = %d\n", str_id);
-+
-+		if (stream->ops == STREAM_OPS_PLAYBACK)
-+			buf_ptr->buffer_ptr = fw_tstamp.samples_rendered;
++	case IPC_IA_PREP_LIB_DNLD: {
++		struct snd_sst_str_type *str_type =
++			(struct snd_sst_str_type *)msg->mailbox;
++		sst_dbg("Prep Lib download %x\n", msg->header.part.msg_id);
++		if (0 !=  str_type->result)
++			sst_err("Error in prep lib download 0x%x\n",
++					str_type->result);
 +		else
-+			buf_ptr->buffer_ptr = fw_tstamp.samples_processed;
-+		sst_dbg("samples played = %ld\n",
-+				buf_ptr->buffer_ptr);
++			sst_dbg("Need to download codec now...\n");
++		str_type->result = 0;
++		sst_wake_up_alloc_block(sst_ops, str_type->pvt_id,
++				str_type->result, NULL);
++		break;
++	}
++
++	case IPC_IA_LIB_DNLD_CMPLT: {
++		struct snd_sst_lib_download_info *resp =
++			(struct snd_sst_lib_download_info *)msg->mailbox;
++		int retval = resp->result;
++
++		sst_dbg("Lib download cmplt %x\n", msg->header.part.msg_id);
++		if (0 !=  retval)
++			sst_err("Error in lib dload %x\n", resp->result);
++		else {
++			sst_dbg("Codec download complete...\n");
++			sst_info("Dloaded codec Type %d Ver %d Built %s: %s\n",
++				resp->dload_lib.lib_info.lib_type,
++				resp->dload_lib.lib_info.lib_version,
++				resp->dload_lib.lib_info.b_date,
++				resp->dload_lib.lib_info.b_time);
++		}
++		sst_wake_up_alloc_block(sst_ops, resp->pvt_id, retval, NULL);
++		break;
++	}
++
++	case IPC_IA_GET_FW_VERSION: {
++		struct snd_sst_fw_version *version =
++				(struct snd_sst_fw_version *)msg->mailbox;
++		sst_info("***LOADED SST FW VERSION*** = %2d.%02d\n",
++				version->major, version->minor);
++		sst_info("Build No %x Type %x \n",
++				version->build, version->type);
++		break;
++	}
++	case IPC_IA_GET_FW_BUILD_INF: {
++		struct sst_fw_build_info *build =
++			(struct sst_fw_build_info *)msg->mailbox;
++		sst_info("Build date %s Time %s\n",
++				build->date, build->time);
 +		break;
 +	}
 +
 +	default:
 +		/*Illegal case*/
-+		sst_err("illegal req\n");
-+		return -EINVAL;
++		sst_err("process reply :default case = %x\n",
++					msg->header.full);
++
 +	}
-+	sst_dbg("...complete ret code = %d\n", retval);
-+
-+	return retval;
-+}
-+
-+
-+/**
-+* sst_send_data_to_HW - send data buffers
-+* @buffer_data:		user buffer
-+*
-+* This function is called by MID sound card driver to send buffer
-+* to HW. This is registered with MID driver
-+*/
-+int sst_send_buffer_to_HW(int str_id, struct stream_buffer *mad_buf)
-+{
-+	/*recvd a buffer map it to stream*/
-+	/*this is a PCM stream and playback*/
-+	int retval = 0;
-+	bool flag_add = false;
-+	struct sst_stream_bufs *sst_buf = NULL;
-+	struct stream_info *stream = NULL;
-+
-+	if (NULL == mad_buf ||
-+			0 == mad_buf->addr ||
-+			0 == mad_buf->length) {
-+		sst_err("Null Ptr or buf size = 0\n");
-+		return -EINVAL;
-+	}
-+
-+	if (SST_FW_RUNNING != sst_ops->sst_state) {
-+		sst_err("SST Not runng: %d\n", sst_ops->sst_state);
-+		return -EBUSY;
-+	}
-+
-+	retval = sst_validate_strid(str_id);
-+	if (retval < 0)
-+		return -EINVAL;
-+
-+	stream = &sst_ops->streams[str_id];
-+	sst_dbg("stream status = %d strid=%d\n", stream->status, str_id);
-+	sst_dbg("stream codec = %d, prevstate=%d\n",
-+			stream->codec, stream->prev);
-+	if (stream->status == STREAM_UN_INIT) {
-+		sst_err("BAD REQUEST!\n");
-+		return -EBADRQC;
-+	}
-+	sst_dbg("received addr=0x%x size = 0x%x\n",
-+			(unsigned int)mad_buf->addr, mad_buf->length);
-+	/*list is not empty*/
-+	list_for_each_entry(sst_buf, &stream->bufs, node) {
-+		if (sst_buf->in_use == true)
-+			continue;
-+		else if ((int) mad_buf->addr !=
-+				(int)sst_buf->addr + sst_buf->size)
-+			continue;
-+		else {
-+			sst_buf->size += mad_buf->length;
-+			flag_add = true;
-+			sst_dbg("inc addr = 0x%p, base = 0x%x inc_val = 0x%x\n",
-+				sst_buf->addr, sst_buf->size, mad_buf->length);
-+			break;
-+		}
-+	}
-+
-+	if (flag_add == false) {
-+		sst_buf = kzalloc(sizeof(*sst_buf), GFP_ATOMIC);
-+		if (sst_buf == NULL)
-+			return -ENOMEM;
-+		sst_buf->size = mad_buf->length;
-+		sst_buf->addr = (void *)mad_buf->addr;
-+		sst_buf->offset = 0;
-+		sst_buf->in_use = false;
-+		list_add_tail(&sst_buf->node, &stream->bufs);
-+		flag_add = true;
-+		sst_dbg("entry added addr = 0x%x size = 0x%x\n",
-+				(unsigned int)mad_buf->addr, mad_buf->length);
-+	}
-+
-+	if (stream->status == STREAM_INIT) {
-+		sst_dbg("play/capt frames...\n");
-+		stream->prev = stream->status;
-+		stream->status = STREAM_RUNNING;
-+		stream->data_blk.on = false;
-+		if (stream->ops == STREAM_OPS_PLAYBACK)
-+			retval = sst_play_frame(str_id);
-+		else if (stream->ops == STREAM_OPS_CAPTURE)
-+			retval = sst_capture_frame(str_id);
-+		else
-+			return -EINVAL;
-+		if (retval < 0) {
-+			sst_err("play/capture frames failed \n");
-+			return -EIO;
-+		}
-+	}
-+
-+	return retval;
-+}
-+
-+struct intel_sst_card_ops sst_pmic_ops = {
-+	.control_set = sst_control_set,
-+	.send_buffer = sst_send_buffer_to_HW,
-+};
-+
-+/**
-+* register_sst_card- function for sound card to register
-+*@card:     pointer to structure of operations
-+* This function is called card driver loads and is ready for registration
-+*/
-+int register_sst_card(struct intel_sst_card_ops *card)
-+{
-+
-+	if (NULL == card ||
-+		NULL == card->module_name) {
-+			sst_err(" Null Pointer Passed\n");
-+			return -EINVAL;
-+	}
-+
-+	if (PMIC_SND_UN_INIT == sst_ops->pmic_state) {
-+		/*register this driver*/
-+		if (0 == (strncmp(SST_CARD_NAMES, card->module_name,
-+				strlen(SST_CARD_NAMES)))) {
-+			sst_ops->pmic_vendor = card->vendor_id;
-+			sst_ops->scard_ops =  *card->scard_ops;
-+			sst_pmic_ops.module_name = card->module_name;
-+			sst_ops->pmic_state = PMIC_SND_INIT_DONE;
-+			card->control_set = sst_pmic_ops.control_set;
-+			card->send_buffer = sst_pmic_ops.send_buffer;
-+			return 0;
-+		} else {
-+			sst_err("strcmp failed %s \n", card->module_name);
-+			return -EINVAL;
-+		}
-+
-+	} else {
-+		/*already registered a driver*/
-+		sst_err("Repeat for register..denied\n");
-+		return -EBADRQC;
-+	}
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(register_sst_card);
-+
-+/**
-+* unregister_sst_card- function for sound card to un-register
-+*@card:     pointer to structure of operations
-+* This function is called when card driver unloads
-+*/
-+void unregister_sst_card(struct intel_sst_card_ops *card)
-+{
-+	if (sst_pmic_ops.module_name == card->module_name) {
-+		/*unreg*/
-+		sst_pmic_ops.module_name = "";
-+		sst_ops->pmic_state = PMIC_SND_UN_INIT;
-+		sst_dbg("Unregistered %s\n", card->module_name);
-+	}
++	sst_clear_interrupt();
 +	return;
 +}
-+EXPORT_SYMBOL_GPL(unregister_sst_card);
-+
-+int lpe_mask_periphral_intr(enum lpe_periphral device)
-+{
-+	union sst_pimr_reg pimr = {{0},};
-+	if (sst_ops == NULL)
-+		return -EIO;
-+
-+	pimr.full = readl(sst_ops->shim + SST_PIMR);
-+
-+	switch (device) {
-+	case LPE_DMA:
-+		pimr.part.dmac_sc = 1;
-+		writel(pimr.full, sst_ops->shim + SST_PIMR);
-+		break;
-+
-+	case LPE_SSP0:
-+		break;
-+
-+	case LPE_SSP1:
-+		break;
-+
-+	default:
-+		break;
-+	}
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(lpe_mask_periphral_intr);
-+
-+int lpe_unmask_periphral_intr(enum lpe_periphral device)
-+{
-+	union sst_pimr_reg pimr = {{0},};
-+	if (sst_ops == NULL)
-+		return -EIO;
-+
-+	pimr.full = readl(sst_ops->shim + SST_PIMR);
-+
-+	switch (device) {
-+	case LPE_DMA:
-+		pimr.part.dmac_sc = 0;
-+		writel(pimr.full, sst_ops->shim + SST_PIMR);
-+		break;
-+
-+	case LPE_SSP0:
-+		break;
-+
-+	case LPE_SSP1:
-+		break;
-+
-+	default:
-+		break;
-+	}
-+	return 0;
-+
-+}
-+EXPORT_SYMBOL_GPL(lpe_unmask_periphral_intr);
-+
-+int lpe_periphral_intr_status(enum lpe_periphral device, int *status)
-+{
-+	union sst_pisr_reg pisr = {{0},};
-+	if (sst_ops == NULL)
-+		return -EIO;
-+
-+	pisr.full = readl(sst_ops->shim + SST_PISR);
-+
-+	switch (device) {
-+	case LPE_DMA:
-+		*status = pisr.part.dmac;
-+		break;
-+
-+	case LPE_SSP0:
-+		break;
-+
-+	case LPE_SSP1:
-+		break;
-+
-+	default:
-+		break;
-+	}
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(lpe_periphral_intr_status);
 -- 
 1.5.4.5
