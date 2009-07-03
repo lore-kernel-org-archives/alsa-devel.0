@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Fix wm8753 register cache size and
-	initialization
-Date: Fri, 3 Jul 2009 10:32:50 +0100
-Message-ID: <20090703093250.GA29130@rakim.wolfsonmicro.main>
-References: <1246574768-11447-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH 1/2] ASoC: Fix mpc5200-psc-ac97 to ensure
+ the data ready bit is cleared
+Date: Fri, 3 Jul 2009 10:59:37 +0100
+Message-ID: <20090703095936.GA14330@rakim.wolfsonmicro.main>
+References: <20090702175719.15773.58956.stgit@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9ADE0247BE
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 27478247EE
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Jul 2009 11:32:51 +0200 (CEST)
+	Fri,  3 Jul 2009 11:59:39 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1246574768-11447-1-git-send-email-lars@metafoo.de>
+In-Reply-To: <20090702175719.15773.58956.stgit@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,26 +23,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, w.sang@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 03, 2009 at 12:46:08AM +0200, Lars-Peter Clausen wrote:
+On Thu, Jul 02, 2009 at 11:57:19AM -0600, Grant Likely wrote:
+> From: Grant Likely <grant.likely@secretlab.ca>
+> 
+> When doing register reads, it is possible for there to be a stale
+> data ready bit set which will cause subsequent reads to return
+> prematurely with incorrect data.  This patch fixes the issues by
+> ensuring stale data is cleared before starting another transaction.
 
-> The register cache size is of by one. There are 63 registers in use but the
-> register cache size has only space for 62.
-
-Only 62 of the registers are cached - please see the register cache
-access code.
-
-> Furthermore the codec's reg_cache_size is of by another one. Since the wm8753
-> register cache uses one-based indexing we have to add one to its size.
-
-I'm not 100% sure what you mean here but I suspect you're misreading the
-register cache access code?
-
-> Register cache initialization only copied the first sizeof(void*) elements leaving the others
-> uninitialized. Fix it by using the size of the reg cache template.
-
-This fix is good (but should use wm8753->reg_cache for the size).  I'll
-fix this.
+Applied both, thanks.
