@@ -1,15 +1,12 @@
-From: Louis Lee <lwhlee@hotmail.com>
-Subject: ALSA SoC driver playback twice as fast as desired
-Date: Thu, 2 Jul 2009 16:24:17 -0600
-Message-ID: <COL102-W20FDDBC628826434E806E9D02F0@phx.gbl>
+From: Kenneth Johansson <kenneth@southpole.se>
+Subject: [PATCH] Sample generation on big endian platforms was
+	broken.
+Date: Fri, 03 Jul 2009 16:19:31 +0200
+Message-ID: <1246630771.7922.25.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from col0-omc3-s1.col0.hotmail.com (col0-omc3-s1.col0.hotmail.com
-	[65.55.34.139]) by alsa0.perex.cz (Postfix) with ESMTP id CEAB024603
-	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Jul 2009 00:24:31 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,19 +16,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Has not worked since commit 3d1fa924906996463ac33cba5b5143f762d913cf
 
-  I've been developing an ALSA SoC driver for the past 3 weeks.
+Signed-off-by: Kenneth Johansson <kenneth@southpole.se>
+---
+ test/pcm.c |   24 ++++++++++++++----------
+ 1 files changed, 14 insertions(+), 10 deletions(-)
 
-  The codec is a wolfsom WM8973 on a Freescale i.MX27 development platform.
-  I've added SPI support to the existing (using i.MX27 platform SPI API -- not exactly portable) codec in the GIT repository.  In addition I wrote up the DAI (I2S over SSI bus) and the PCM portion of the driver which handles DMA transfers.
-  I written the driver to reduce the number of factors to reduce the number of factors that would be causing any problems.  The files being played are all encoded for 48kHz.  The PLLs, MCLK and BCLK settings are all set to assume a sample rate of 48KHz.  Even the file is a mono file.
-  However, when attempting to play the file back using SoX or aplay a self generated sine file made to play for 5 seconds always plays twice as fast.  The windows chimes file for instance (which is a 2 x 16 bit audio file) when played as a single channel file -- essentially doubling the play time (0.6 to 1.2 seconds) -- will end up playing properly.  The timer displayed by SoX is correct for that file.  However, when the file is played back it is obviously being pumped through too fast.
-  I'm out of ideas as to where to look.  The DAI interface is set as a I2S slave.  The clock is mastered by the Codec (WM8974).  I've set up min_channels and max_channels to be 1 whereever possible.  On a scope the clocking seems to be at the right speed.  Why is it sound is playing twice as fast?  Any ideas?  Any help is appreciated.
-  WM8974 is a mono codec.  The SSI bus on the i.MX27 is set to I2S slave mode with a 16 bit word length.  The word length on the codec is set to 16 bits.  The audio interface on the codec is set to I2S, sample rate coded to do only 48kHz.
-THANK YOU
-_________________________________________________________________
-We are your photos. Share us now with Windows Live Photos.
-http://go.microsoft.com/?linkid=9666047
+diff --git a/test/pcm.c b/test/pcm.c
+index ee27422..9b8a923 100644
+--- a/test/pcm.c
++++ b/test/pcm.c
+@@ -34,14 +34,11 @@ static void generate_sine(const
+snd_pcm_channel_area_t *areas,
+ 	static double max_phase = 2. * M_PI;
+ 	double phase = *_phase;
+ 	double step = max_phase*freq/(double)rate;
+-	double res;
++	int res;
+ 	unsigned char *samples[channels], *tmp;
+ 	int steps[channels];
+-	unsigned int chn, byte;
+-	union {
+-		int i;
+-		unsigned char c[4];
+-	} ires;
++	unsigned int chn;
++
+ 	unsigned int maxval = (1 << (snd_pcm_format_width(format) - 1)) - 1;
+ 	int bps = snd_pcm_format_width(format) / 8;  /* bytes per sample */
+ 	
+@@ -62,11 +59,18 @@ static void generate_sine(const
+snd_pcm_channel_area_t *areas,
+ 	/* fill the channel areas */
+ 	while (count-- > 0) {
+ 		res = sin(phase) * maxval;
+-		ires.i = res;
+-		tmp = ires.c;
+ 		for (chn = 0; chn < channels; chn++) {
+-			for (byte = 0; byte < (unsigned int)bps; byte++)
+-				*(samples[chn] + byte) = tmp[byte];
++			/* Generate data in native endian format */
++			switch(bps){
++			case 1:
++				*(samples[chn]) = res;
++				break;
++			case 2:
++				*(short*)(samples[chn]) = res;
++				break;
++			case 4:
++				*(int*)(samples[chn]) = res;
++			}
+ 			samples[chn] += steps[chn];
+ 		}
+ 		phase += step;
+-- 
+1.6.1.GIT
