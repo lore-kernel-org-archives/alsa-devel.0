@@ -1,16 +1,16 @@
-From: "Candelaria Villareal, Jorge" <x0107209@ti.com>
-Subject: [PATCH] ASoC: Zoom2: Update twl4030_setup_data
-	parameters
-Date: Thu, 2 Jul 2009 19:04:07 -0500
-Message-ID: <2256F256009DAA4CBE661E9F41EAC84B5214663B@dlee01.ent.ti.com>
+From: "Lopez Cruz, Misael" <x0052729@ti.com>
+Subject: [PATCH] ASoC: TWL4030: Add tristate callbacks for HiFi
+	and Voice
+Date: Thu, 2 Jul 2009 22:11:40 -0500
+Message-ID: <67059DBF19D7214F9C66BB0EA91BA90E39685527@dlee04.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0B07524645
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 02E7724700
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Jul 2009 02:04:19 +0200 (CEST)
+	Fri,  3 Jul 2009 05:11:52 +0200 (CEST)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,73 +22,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add support for EXTMUTE in Zoom2 machine driver. This is necessary
-to further reduce pop noise problem. Signal EXTMUTE is connected to
-signal GPIO 153 in Zoom2 board.
+Add "set_tristate" callbacks for HiFi and Voice DAIs.
+Machine drivers can enable and disable tristate for each
+DAI with "snd_soc_dai_set_tristate" function provided by
+SoC core.
 
-In addition, change ramp delay value to 3 (218/161/109 ms). With
-previous ramp delay value, pop noise was louder. With a longer value
-the beep tone can be observed.
-
-Signed-off-by: Jorge Eduardo Candelaria <x0107209@ti.com>
+Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
 ---
- sound/soc/omap/zoom2.c |   17 +++++++++++++++--
- 1 files changed, 15 insertions(+), 2 deletions(-)
+ sound/soc/codecs/twl4030.c |   28 ++++++++++++++++++++++++++++
+ 1 files changed, 28 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/omap/zoom2.c b/sound/soc/omap/zoom2.c
-index be2e307..ec549a4 100644
---- a/sound/soc/omap/zoom2.c
-+++ b/sound/soc/omap/zoom2.c
-@@ -35,7 +35,8 @@
- #include "omap-pcm.h"
- #include "../codecs/twl4030.h"
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 6da94ca..ffeb53f 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -1849,6 +1849,19 @@ static int twl4030_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	return 0;
+ }
  
--#define ZOOM2_HEADSET_MUX_GPIO	(OMAP_MAX_GPIO_LINES + 15)
-+#define ZOOM2_HEADSET_MUX_GPIO		(OMAP_MAX_GPIO_LINES + 15)
-+#define ZOOM2_HEADSET_EXTMUTE_GPIO	153
- 
- static int zoom2_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params)
-@@ -234,10 +235,18 @@ static struct snd_soc_card snd_soc_zoom2 = {
- 	.num_links = ARRAY_SIZE(zoom2_dai),
- };
- 
-+/* EXTMUTE callback function */
-+void zoom2_set_hs_extmute(int mute)
++static int twl4030_set_tristate(struct snd_soc_dai *dai, int tristate)
 +{
-+	gpio_set_value(ZOOM2_HEADSET_EXTMUTE_GPIO, mute);
++	struct snd_soc_codec *codec = dai->codec;
++	u8 reg = twl4030_read_reg_cache(codec, TWL4030_REG_VOICE_IF);
++
++	if (tristate)
++		reg |= TWL4030_AIF_TRI_EN;
++	else
++		reg &= ~TWL4030_AIF_TRI_EN;
++
++	return twl4030_write(codec, TWL4030_REG_AUDIO_IF, reg);
 +}
 +
- /* twl4030 setup */
- static struct twl4030_setup_data twl4030_setup = {
--	.ramp_delay_value = 2,	/* 81 ms */
-+	.ramp_delay_value = 3,	/* 161 ms */
- 	.sysclk = 26000,
-+	.hs_extmute = 1,
-+	.set_hs_extmute = zoom2_set_hs_extmute,
+ /* In case of voice mode, the RX1 L(VRX) for downlink and the TX2 L/R
+  * (VTXL, VTXR) for uplink has to be enabled/disabled. */
+ static void twl4030_voice_enable(struct snd_soc_codec *codec, int direction,
+@@ -2023,6 +2036,19 @@ static int twl4030_voice_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	return 0;
+ }
+ 
++static int twl4030_voice_set_tristate(struct snd_soc_dai *dai, int tristate)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	u8 reg = twl4030_read_reg_cache(codec, TWL4030_REG_VOICE_IF);
++
++	if (tristate)
++		reg |= TWL4030_VIF_TRI_EN;
++	else
++		reg &= ~TWL4030_VIF_TRI_EN;
++
++	return twl4030_write(codec, TWL4030_REG_VOICE_IF, reg);
++}
++
+ #define TWL4030_RATES	 (SNDRV_PCM_RATE_8000_48000)
+ #define TWL4030_FORMATS	 (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FORMAT_S24_LE)
+ 
+@@ -2032,6 +2058,7 @@ static struct snd_soc_dai_ops twl4030_dai_ops = {
+ 	.hw_params	= twl4030_hw_params,
+ 	.set_sysclk	= twl4030_set_dai_sysclk,
+ 	.set_fmt	= twl4030_set_dai_fmt,
++	.set_tristate	= twl4030_set_tristate,
  };
  
- /* Audio subsystem */
-@@ -277,6 +286,9 @@ static int __init zoom2_soc_init(void)
- 	BUG_ON(gpio_request(ZOOM2_HEADSET_MUX_GPIO, "hs_mux") < 0);
- 	gpio_direction_output(ZOOM2_HEADSET_MUX_GPIO, 0);
+ static struct snd_soc_dai_ops twl4030_dai_voice_ops = {
+@@ -2040,6 +2067,7 @@ static struct snd_soc_dai_ops twl4030_dai_voice_ops = {
+ 	.hw_params	= twl4030_voice_hw_params,
+ 	.set_sysclk	= twl4030_voice_set_dai_sysclk,
+ 	.set_fmt	= twl4030_voice_set_dai_fmt,
++	.set_tristate	= twl4030_voice_set_tristate,
+ };
  
-+	BUG_ON(gpio_request(ZOOM2_HEADSET_EXTMUTE_GPIO, "ext_mute") < 0);
-+	gpio_direction_output(ZOOM2_HEADSET_EXTMUTE_GPIO, 0);
-+
- 	return 0;
- 
- err1:
-@@ -290,6 +302,7 @@ module_init(zoom2_soc_init);
- static void __exit zoom2_soc_exit(void)
- {
- 	gpio_free(ZOOM2_HEADSET_MUX_GPIO);
-+	gpio_free(ZOOM2_HEADSET_EXTMUTE_GPIO);
- 
- 	platform_device_unregister(zoom2_snd_device);
- }
+ struct snd_soc_dai twl4030_dai[] = {
 -- 
-1.6.0.4
+1.5.4.3
