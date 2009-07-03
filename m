@@ -1,23 +1,23 @@
 From: Kenneth Johansson <kenneth@southpole.se>
 Subject: Re: [PATCH] Sample generation on big endian platforms
 	was broken.
-Date: Fri, 03 Jul 2009 17:58:50 +0200
-Message-ID: <1246636730.7922.67.camel@localhost.localdomain>
+Date: Fri, 03 Jul 2009 19:04:20 +0200
+Message-ID: <1246640660.31770.18.camel@localhost.localdomain>
 References: <1246630771.7922.25.camel@localhost.localdomain>
 	<s5hab3lj0fb.wl%tiwai@suse.de>
 	<1246632695.7922.34.camel@localhost.localdomain>
 	<s5h4ottizg8.wl%tiwai@suse.de>
 	<1246633897.7922.39.camel@localhost.localdomain>
-	<s5hws6phjk8.wl%tiwai@suse.de>
+	<s5hws6phjk8.wl%tiwai@suse.de>  <s5hmy7lhiyl.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.southpole.se (mail.southpole.se [193.12.106.18])
-	by alsa0.perex.cz (Postfix) with ESMTP id AF8F924935
+	by alsa0.perex.cz (Postfix) with ESMTP id C623824963
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Jul 2009 17:58:59 +0200 (CEST)
-In-Reply-To: <s5hws6phjk8.wl%tiwai@suse.de>
+	Fri,  3 Jul 2009 19:04:28 +0200 (CEST)
+In-Reply-To: <s5hmy7lhiyl.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,75 +31,18 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2009-07-03 at 17:28 +0200, Takashi Iwai wrote:
-> At Fri, 03 Jul 2009 17:11:37 +0200,
-> Kenneth Johansson wrote:
-> > 
-> > On Fri, 2009-07-03 at 17:00 +0200, Takashi Iwai wrote:
-> > > At Fri, 03 Jul 2009 16:51:35 +0200,
-> > > Kenneth Johansson wrote:
-> > > > 
-> > > > On Fri, 2009-07-03 at 16:39 +0200, Takashi Iwai wrote:
-> > > > > At Fri, 03 Jul 2009 16:19:31 +0200,
-> > > > > Kenneth Johansson wrote:
-> > > > > > 
-> > > > > > Has not worked since commit 3d1fa924906996463ac33cba5b5143f762d913cf
-> > > > > > 
-> > > > > > Signed-off-by: Kenneth Johansson <kenneth@southpole.se>
-> > > > > 
-> > > > > Hrm, sorry, but your version is also broken as doing type-punning.
-> > > > > The code has to be rewritten completely...
-> > > > > 
-> > > > > 
-> > > > > Takashi
-> > > > 
-> > > > hmm I think you have to explain this. now it works on both little/big
-> > > > endian without any explicit byte moves.
-> > > > 
-> > > > It did not understand what problem you see.
-> > > 
-> > > You can't cast from a char pointer to another type (e.g. short) and
-> > > read the value.  This is called "type-punning" and doesn't work
-> > > properly with the recent GCC (depending on the optimization and
-> > > code parsing) since it handles strict-aliasing.
-> > > 
-> > > See GCC info for details.
-> > > 
-> > > 
-> > > Takashi
-> > 
-> > But there is no aliasing problem in that code. The memory is only
-> > accessed(written in this case) using one type.
+On Fri, 2009-07-03 at 17:41 +0200, Takashi Iwai wrote:
+
+> ... and the code doesn't handle the case of 3 byte format, too.
 > 
-> One type?
 > 
-> +			switch(bps){
-> +			case 1:
-> +				*(samples[chn]) = res;
-> +				break;
-> +			case 2:
-> +				*(short*)(samples[chn]) = res;
-> +				break;
-> +			case 4:
-> +				*(int*)(samples[chn]) = res;
-> +			}
+> Takashi
+> 
 
-But only one of them will ever be used. whenever this function is
-entered the pointer is only using one type ever. the memory is never
-accessed with any other type and it's only using this one pointer. 
+Soo ? there is a lot of formats this code can't generate. It's a test
+program and I doubt anybody has ever tried to change the output format
+since it has never worked for most formats.
 
-What exactly do you think the compiler can do ?? it's not like it can
-cache the samples[chn] value that is the char pointer and make a
-constant pointer out of it. There is no mixed type accesses. 
-
-Aliasing happens when two pointers of different type point to the same
-memory. then you can have funny things happening if you access the
-memory from the two pointers. 
-
-There is no pointer aliasing here there is only one pointer. We just
-change the type of this one pointer in the one place it's used.
-
-Is it aliasing with itself ? would the write magically happen in some
-other size or not at all what ??  
-
-could you point me to some documentation for this I'm not getting it.
+but if you want to add support for 3 bytes then there is no way around
+having two different storage methods one for BIG and one for LITTLE
+endian machines.
