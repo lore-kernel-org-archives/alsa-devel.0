@@ -1,21 +1,23 @@
 From: Kenneth Johansson <kenneth@southpole.se>
 Subject: Re: [PATCH] Sample generation on big endian platforms
 	was broken.
-Date: Fri, 03 Jul 2009 17:11:37 +0200
-Message-ID: <1246633897.7922.39.camel@localhost.localdomain>
+Date: Fri, 03 Jul 2009 17:58:50 +0200
+Message-ID: <1246636730.7922.67.camel@localhost.localdomain>
 References: <1246630771.7922.25.camel@localhost.localdomain>
 	<s5hab3lj0fb.wl%tiwai@suse.de>
 	<1246632695.7922.34.camel@localhost.localdomain>
 	<s5h4ottizg8.wl%tiwai@suse.de>
+	<1246633897.7922.39.camel@localhost.localdomain>
+	<s5hws6phjk8.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.southpole.se (mail.southpole.se [193.12.106.18])
-	by alsa0.perex.cz (Postfix) with ESMTP id D442E24910
+	by alsa0.perex.cz (Postfix) with ESMTP id AF8F924935
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Jul 2009 17:11:45 +0200 (CEST)
-In-Reply-To: <s5h4ottizg8.wl%tiwai@suse.de>
+	Fri,  3 Jul 2009 17:58:59 +0200 (CEST)
+In-Reply-To: <s5hws6phjk8.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,38 +31,75 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2009-07-03 at 17:00 +0200, Takashi Iwai wrote:
-> At Fri, 03 Jul 2009 16:51:35 +0200,
+On Fri, 2009-07-03 at 17:28 +0200, Takashi Iwai wrote:
+> At Fri, 03 Jul 2009 17:11:37 +0200,
 > Kenneth Johansson wrote:
 > > 
-> > On Fri, 2009-07-03 at 16:39 +0200, Takashi Iwai wrote:
-> > > At Fri, 03 Jul 2009 16:19:31 +0200,
+> > On Fri, 2009-07-03 at 17:00 +0200, Takashi Iwai wrote:
+> > > At Fri, 03 Jul 2009 16:51:35 +0200,
 > > > Kenneth Johansson wrote:
 > > > > 
-> > > > Has not worked since commit 3d1fa924906996463ac33cba5b5143f762d913cf
+> > > > On Fri, 2009-07-03 at 16:39 +0200, Takashi Iwai wrote:
+> > > > > At Fri, 03 Jul 2009 16:19:31 +0200,
+> > > > > Kenneth Johansson wrote:
+> > > > > > 
+> > > > > > Has not worked since commit 3d1fa924906996463ac33cba5b5143f762d913cf
+> > > > > > 
+> > > > > > Signed-off-by: Kenneth Johansson <kenneth@southpole.se>
+> > > > > 
+> > > > > Hrm, sorry, but your version is also broken as doing type-punning.
+> > > > > The code has to be rewritten completely...
+> > > > > 
+> > > > > 
+> > > > > Takashi
 > > > > 
-> > > > Signed-off-by: Kenneth Johansson <kenneth@southpole.se>
+> > > > hmm I think you have to explain this. now it works on both little/big
+> > > > endian without any explicit byte moves.
+> > > > 
+> > > > It did not understand what problem you see.
 > > > 
-> > > Hrm, sorry, but your version is also broken as doing type-punning.
-> > > The code has to be rewritten completely...
+> > > You can't cast from a char pointer to another type (e.g. short) and
+> > > read the value.  This is called "type-punning" and doesn't work
+> > > properly with the recent GCC (depending on the optimization and
+> > > code parsing) since it handles strict-aliasing.
+> > > 
+> > > See GCC info for details.
 > > > 
 > > > 
 > > > Takashi
 > > 
-> > hmm I think you have to explain this. now it works on both little/big
-> > endian without any explicit byte moves.
-> > 
-> > It did not understand what problem you see.
+> > But there is no aliasing problem in that code. The memory is only
+> > accessed(written in this case) using one type.
 > 
-> You can't cast from a char pointer to another type (e.g. short) and
-> read the value.  This is called "type-punning" and doesn't work
-> properly with the recent GCC (depending on the optimization and
-> code parsing) since it handles strict-aliasing.
+> One type?
 > 
-> See GCC info for details.
-> 
-> 
-> Takashi
+> +			switch(bps){
+> +			case 1:
+> +				*(samples[chn]) = res;
+> +				break;
+> +			case 2:
+> +				*(short*)(samples[chn]) = res;
+> +				break;
+> +			case 4:
+> +				*(int*)(samples[chn]) = res;
+> +			}
 
-But there is no aliasing problem in that code. The memory is only
-accessed(written in this case) using one type.
+But only one of them will ever be used. whenever this function is
+entered the pointer is only using one type ever. the memory is never
+accessed with any other type and it's only using this one pointer. 
+
+What exactly do you think the compiler can do ?? it's not like it can
+cache the samples[chn] value that is the char pointer and make a
+constant pointer out of it. There is no mixed type accesses. 
+
+Aliasing happens when two pointers of different type point to the same
+memory. then you can have funny things happening if you access the
+memory from the two pointers. 
+
+There is no pointer aliasing here there is only one pointer. We just
+change the type of this one pointer in the one place it's used.
+
+Is it aliasing with itself ? would the write magically happen in some
+other size or not at all what ??  
+
+could you point me to some documentation for this I'm not getting it.
