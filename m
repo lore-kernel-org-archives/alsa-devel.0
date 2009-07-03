@@ -1,22 +1,17 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH 2/2] ASoC: add locking to mpc5200-psc-ac97
-	driver
-Date: Fri, 3 Jul 2009 01:12:16 -0600
-Message-ID: <fa686aa40907030012ge9f6f98v574daf1651bc2115@mail.gmail.com>
-References: <20090702175719.15773.58956.stgit@localhost.localdomain>
-	<20090702175725.15773.37291.stgit@localhost.localdomain>
-	<4A4D05AB.1090306@evidence.eu.com>
+From: "Lopez Cruz, Misael" <x0052729@ti.com>
+Subject: [PATCH] ASoC: TWL4030: Add tristate callbacks for HiFi
+	and Voice
+Date: Fri, 3 Jul 2009 02:21:39 -0500
+Message-ID: <67059DBF19D7214F9C66BB0EA91BA90E39685562@dlee04.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.150])
-	by alsa0.perex.cz (Postfix) with ESMTP id 62088103926
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id D3EDC10392D
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Jul 2009 09:12:37 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 5so1072622qwf.56
-	for <alsa-devel@alsa-project.org>; Fri, 03 Jul 2009 00:12:36 -0700 (PDT)
-In-Reply-To: <4A4D05AB.1090306@evidence.eu.com>
+	Fri,  3 Jul 2009 09:21:47 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,83 +21,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: michael <michael@evidence.eu.com>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@sirena.org.uk
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 2, 2009 at 1:08 PM, michael<michael@evidence.eu.com> wrote:
-> Hi,
->
-> Grant Likely wrote:
->>
->> From: Grant Likely <grant.likely@secretlab.ca>
->>
->> AC97 bus register read/write hooks need to provide locking, but the
->> mpc5200-psc-ac97 driver does not. =A0This patch adds a mutex around
->> the register access routines.
->>
->> Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
->> ---
->>
->> =A0sound/soc/fsl/mpc5200_dma.c =A0 =A0 =A0| =A0 =A01 +
->> =A0sound/soc/fsl/mpc5200_dma.h =A0 =A0 =A0| =A0 =A01 +
->> =A0sound/soc/fsl/mpc5200_psc_ac97.c | =A0 13 ++++++++++++-
->> =A03 files changed, 14 insertions(+), 1 deletions(-)
->>
->>
->> diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
->> index efec33a..f0a2d40 100644
->> --- a/sound/soc/fsl/mpc5200_dma.c
->> +++ b/sound/soc/fsl/mpc5200_dma.c
->> @@ -456,6 +456,7 @@ int mpc5200_audio_dma_create(struct of_device *op)
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return -ENODEV;
->> =A0 =A0 =A0 =A0 =A0spin_lock_init(&psc_dma->lock);
->> + =A0 =A0 =A0 mutex_init(&psc_dma->mutex);
->> =A0 =A0 =A0 =A0psc_dma->id =3D be32_to_cpu(*prop);
->> =A0 =A0 =A0 =A0psc_dma->irq =3D irq;
->> =A0 =A0 =A0 =A0psc_dma->psc_regs =3D regs;
->> diff --git a/sound/soc/fsl/mpc5200_dma.h b/sound/soc/fsl/mpc5200_dma.h
->> index 2000803..8d396bb 100644
->> --- a/sound/soc/fsl/mpc5200_dma.h
->> +++ b/sound/soc/fsl/mpc5200_dma.h
->> @@ -55,6 +55,7 @@ struct psc_dma {
->> =A0 =A0 =A0 =A0unsigned int irq;
->> =A0 =A0 =A0 =A0struct device *dev;
->> =A0 =A0 =A0 =A0spinlock_t lock;
->> + =A0 =A0 =A0 struct mutex mutex;
->> =A0 =A0 =A0 =A0u32 sicr;
->> =A0 =A0 =A0 =A0uint sysclk;
->> =A0 =A0 =A0 =A0int imr;
->> diff --git a/sound/soc/fsl/mpc5200_psc_ac97.c
->> b/sound/soc/fsl/mpc5200_psc_ac97.c
->> index 9b8503f..7eb5499 100644
->> --- a/sound/soc/fsl/mpc5200_psc_ac97.c
->> +++ b/sound/soc/fsl/mpc5200_psc_ac97.c
->> @@ -34,11 +34,14 @@ static unsigned short psc_ac97_read(struct snd_ac97
->> *ac97, unsigned short reg)
->> =A0 =A0 =A0 =A0int status;
->> =A0 =A0 =A0 =A0unsigned int val;
->> =A0+ =A0 =A0 =A0 mutex_lock(&psc_dma->mutex);
->> +
->> =A0 =A0 =A0 =A0/* Wait for command send status zero =3D ready */
->> =A0 =A0 =A0 =A0status =3D
->> spin_event_timeout(!(in_be16(&psc_dma->psc_regs->sr_csr.status) &
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0MPC52xx_P=
-SC_SR_CMDSEND), 100, 0);
->> =A0 =A0 =A0 =A0if (status =3D=3D 0) {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0pr_err("timeout on ac97 bus (rdy)\n");
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 mutex_unlock(&psc_dma->mutex);
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return -ENODEV;
->>
->
-> maybe define an err variable and and a goto out.
+Add "set_tristate" callbacks for HiFi and Voice DAIs.
+Machine drivers can enable and disable tristate for each
+DAI with "snd_soc_dai_set_tristate" function.
 
-My first iteration did that, but after looking at it I decided I like
-this better and it adds (slightly) fewer lines of code.
+Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
+---
+ sound/soc/codecs/twl4030.c |   28 ++++++++++++++++++++++++++++
+ 1 files changed, 28 insertions(+), 0 deletions(-)
 
-g.
-
--- =
-
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 6da94ca..818fb37 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -1849,6 +1849,19 @@ static int twl4030_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	return 0;
+ }
+ 
++static int twl4030_set_tristate(struct snd_soc_dai *dai, int tristate)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	u8 reg = twl4030_read_reg_cache(codec, TWL4030_REG_AUDIO_IF);
++
++	if (tristate)
++		reg |= TWL4030_AIF_TRI_EN;
++	else
++		reg &= ~TWL4030_AIF_TRI_EN;
++
++	return twl4030_write(codec, TWL4030_REG_AUDIO_IF, reg);
++}
++
+ /* In case of voice mode, the RX1 L(VRX) for downlink and the TX2 L/R
+  * (VTXL, VTXR) for uplink has to be enabled/disabled. */
+ static void twl4030_voice_enable(struct snd_soc_codec *codec, int direction,
+@@ -2023,6 +2036,19 @@ static int twl4030_voice_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	return 0;
+ }
+ 
++static int twl4030_voice_set_tristate(struct snd_soc_dai *dai, int tristate)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	u8 reg = twl4030_read_reg_cache(codec, TWL4030_REG_VOICE_IF);
++
++	if (tristate)
++		reg |= TWL4030_VIF_TRI_EN;
++	else
++		reg &= ~TWL4030_VIF_TRI_EN;
++
++	return twl4030_write(codec, TWL4030_REG_VOICE_IF, reg);
++}
++
+ #define TWL4030_RATES	 (SNDRV_PCM_RATE_8000_48000)
+ #define TWL4030_FORMATS	 (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FORMAT_S24_LE)
+ 
+@@ -2032,6 +2058,7 @@ static struct snd_soc_dai_ops twl4030_dai_ops = {
+ 	.hw_params	= twl4030_hw_params,
+ 	.set_sysclk	= twl4030_set_dai_sysclk,
+ 	.set_fmt	= twl4030_set_dai_fmt,
++	.set_tristate	= twl4030_set_tristate,
+ };
+ 
+ static struct snd_soc_dai_ops twl4030_dai_voice_ops = {
+@@ -2040,6 +2067,7 @@ static struct snd_soc_dai_ops twl4030_dai_voice_ops = {
+ 	.hw_params	= twl4030_voice_hw_params,
+ 	.set_sysclk	= twl4030_voice_set_dai_sysclk,
+ 	.set_fmt	= twl4030_voice_set_dai_fmt,
++	.set_tristate	= twl4030_voice_set_tristate,
+ };
+ 
+ struct snd_soc_dai twl4030_dai[] = {
+-- 
+1.5.4.3
