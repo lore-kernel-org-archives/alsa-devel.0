@@ -1,31 +1,31 @@
 From: Christian Esken <esken@kde.org>
 Subject: Re: Testers wanted: New SB X-Fi driver
-Date: Sat, 4 Jul 2009 23:27:04 +0200
-Message-ID: <200907042327.05365.esken@kde.org>
-References: <1246384544.6380.6.camel@ubuntu.ubuntu-domain>
+Date: Sun, 5 Jul 2009 00:19:55 +0200
+Message-ID: <200907050019.56283.esken@kde.org>
+References: <200906271405.45651.esken@kde.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-in-02.arcor-online.net (mail-in-02.arcor-online.net
-	[151.189.21.42]) by alsa0.perex.cz (Postfix) with ESMTP id A4C6F24BC3
+Received: from mail-in-08.arcor-online.net (mail-in-08.arcor-online.net
+	[151.189.21.48]) by alsa0.perex.cz (Postfix) with ESMTP id 6429624BE5
 	for <alsa-devel@alsa-project.org>;
-	Sat,  4 Jul 2009 23:27:09 +0200 (CEST)
-Received: from mail-in-09-z2.arcor-online.net (mail-in-09-z2.arcor-online.net
-	[151.189.8.21]) by mx.arcor.de (Postfix) with ESMTP id 018D23FE4BC
+	Sun,  5 Jul 2009 00:20:00 +0200 (CEST)
+Received: from mail-in-04-z2.arcor-online.net (mail-in-04-z2.arcor-online.net
+	[151.189.8.16]) by mx.arcor.de (Postfix) with ESMTP id 08FD62AED60
 	for <alsa-devel@alsa-project.org>;
-	Sat,  4 Jul 2009 23:27:07 +0200 (CEST)
-Received: from mail-in-17.arcor-online.net (mail-in-17.arcor-online.net
-	[151.189.21.57])
-	by mail-in-09-z2.arcor-online.net (Postfix) with ESMTP id 02F2028F79A
+	Sun,  5 Jul 2009 00:19:59 +0200 (CEST)
+Received: from mail-in-09.arcor-online.net (mail-in-09.arcor-online.net
+	[151.189.21.49])
+	by mail-in-04-z2.arcor-online.net (Postfix) with ESMTP id 01A94ADBAE
 	for <alsa-devel@alsa-project.org>;
-	Sat,  4 Jul 2009 23:27:07 +0200 (CEST)
+	Sun,  5 Jul 2009 00:19:59 +0200 (CEST)
 Received: from firefly.localnet (dslb-084-062-067-006.pools.arcor-ip.net
 	[84.62.67.6])
-	by mail-in-17.arcor-online.net (Postfix) with ESMTPS id 93BD33B260C
+	by mail-in-09.arcor-online.net (Postfix) with ESMTPS id 863E11AF86A
 	for <alsa-devel@alsa-project.org>;
-	Sat,  4 Jul 2009 23:27:06 +0200 (CEST)
-In-Reply-To: <1246384544.6380.6.camel@ubuntu.ubuntu-domain>
+	Sun,  5 Jul 2009 00:19:58 +0200 (CEST)
+In-Reply-To: <200906271405.45651.esken@kde.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -38,29 +38,49 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Am Dienstag 30 Juni 2009 19:55:44 schrieb Matthias Diehl:
-> > At Tue, 30 Jun 2009 16:10:45 +0200,
-> >
-> > Matthias Diehl wrote:
-> > > hi,
-> > >
-> > > i guess you dont speak german, do you? well, i'll try it in
-> >
-> > english ;-)
-> >
-> > > i tried to install your newest x-fi "hack" in ubuntu 9.04 64bit.
+Am Samstag 27 Juni 2009 14:05:45 schrieb Christian Esken:
+> Hello,
+>
+> unfortunately I cannot playback anything (PCM) with the new SB X-Fi driver.
+>   Driver: ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-
+> driver-snapshot.tar.bz2
+>   Distribution: openSuSE 11.1
+>   Kernel: 2.6.27.23-0.1-xen
+>
+> My card is a "X-Fi Titanium" (PCI device code: 1102:000b). The card is
+> recognized by the driver, and any mixer (alsamixer, kmix) also recognizes
+> the card.
+>
+> But playing back isn't possible. I tried speaker-test, audacity, amarok and
+> aplay. Most applications  hang, some also produce an error in the
+> /var/log/messages (see
+> below).
+>
+> I then used "./configure --with-debug=full --with-cards=ctxfi" due to the
+> possible hd-audio conflict, but it didn't make a difference.
+>
+> Is there anything else I could try?
 
-Interesting enough, I don't manage to get it working under 64 ("SuSE 11.1, 64 
-Bit, Xen") bit either. Could you check if you also see something in your 
-syslog (e.g. /var/log/messages) when running speaker-test ? 
+I tested the same openSuSE version with a non-Xen 64 bit kernel, and it 
+doesn't work either.
 
-When I tested the same on the same hardware  on "Kubuntu  Karmic alpha 2, 32 
-bit", I get sound.
+And I tried with this:
+  Driver: alsa-driver-20090704.tar.bz2
+  Distribution: Kubuntu Karmic Alpha-2
+  Kernel: 2.6.30  (32 Bit)
 
-It might be an indication of a either:
-- a 32/64 bit issue
-- the kernel version (Kubuntu karmic ships with 2.6.30)
-- Xen vs non-Xen
-- something else
+Under the latter setup the X-Fi Titanium works (Simple 2 channel test with 
+speaker-test, audacity, amarok). :-))
+
+What I now know/believe is this:
+- Alsa driver : not responisible (it works)
+- My Computer hardware : not responsible (it works)
+ - Xen kernel: quite likely not responsible
+ - Kernel < 2.6.30: Probably responsible
+ - 64 Bit: Probably responsible
+- Other less likely stuff like NVIDIA driver (nv vs nvidia): Could be checked
+
+I will now check other combinations. Next will be Kernel 2.6.30 (64 bit), 
+using openSUSE 11.2-Milestone3.
 
    Christian
