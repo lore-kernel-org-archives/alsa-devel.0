@@ -1,19 +1,31 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: Re: [RFC] cmi8330: Add basic CMI8329 support
-Date: Sat, 4 Jul 2009 22:25:44 +0200
-Message-ID: <200907042225.45499.linux@rainbow-software.org>
-References: <200906271707.32687.linux@rainbow-software.org>
-	<s5hab3rwo8u.wl%tiwai@suse.de>
+From: Christian Esken <esken@kde.org>
+Subject: Re: Testers wanted: New SB X-Fi driver
+Date: Sat, 4 Jul 2009 23:27:04 +0200
+Message-ID: <200907042327.05365.esken@kde.org>
+References: <1246384544.6380.6.camel@ubuntu.ubuntu-domain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.atlantis.sk (mail.atlantis.sk [80.94.52.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id E649824B9E
+Received: from mail-in-02.arcor-online.net (mail-in-02.arcor-online.net
+	[151.189.21.42]) by alsa0.perex.cz (Postfix) with ESMTP id A4C6F24BC3
 	for <alsa-devel@alsa-project.org>;
-	Sat,  4 Jul 2009 22:25:53 +0200 (CEST)
-In-Reply-To: <s5hab3rwo8u.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Sat,  4 Jul 2009 23:27:09 +0200 (CEST)
+Received: from mail-in-09-z2.arcor-online.net (mail-in-09-z2.arcor-online.net
+	[151.189.8.21]) by mx.arcor.de (Postfix) with ESMTP id 018D23FE4BC
+	for <alsa-devel@alsa-project.org>;
+	Sat,  4 Jul 2009 23:27:07 +0200 (CEST)
+Received: from mail-in-17.arcor-online.net (mail-in-17.arcor-online.net
+	[151.189.21.57])
+	by mail-in-09-z2.arcor-online.net (Postfix) with ESMTP id 02F2028F79A
+	for <alsa-devel@alsa-project.org>;
+	Sat,  4 Jul 2009 23:27:07 +0200 (CEST)
+Received: from firefly.localnet (dslb-084-062-067-006.pools.arcor-ip.net
+	[84.62.67.6])
+	by mail-in-17.arcor-online.net (Postfix) with ESMTPS id 93BD33B260C
+	for <alsa-devel@alsa-project.org>;
+	Sat,  4 Jul 2009 23:27:06 +0200 (CEST)
+In-Reply-To: <1246384544.6380.6.camel@ubuntu.ubuntu-domain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,263 +36,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 29 June 2009 08:25:05 Takashi Iwai wrote:
-> At Sat, 27 Jun 2009 17:07:31 +0200,
->
-> Ondrej Zary wrote:
-> > Add basic support for CMI8329 cards. It seems to be very similar to
-> > CMI8330, but the PnP devices are different:
-> >  - AD1848 (WSS) and SB16 device IDs are swapped
-> >  - the OPL3 port is contained in SB16 device, not AD1848 (WSS)
-> >  - there is A@@0001 device (looks like some control interface - it has
-> > only one 8-bit I/O address)
->
-> Does CMI8329 have the very same device ids?
-> If "A@@00" is 8329-specific, you can prepend an entry like
->
-> 	{.id = "CMI0001", .devs = {{"@X@0001"}, {"@@@0001"}, {"@H@0001"},
-> {"A@@001"}},
->
-> (Note the first two are swapped.)
+Am Dienstag 30 Juni 2009 19:55:44 schrieb Matthias Diehl:
+> > At Tue, 30 Jun 2009 16:10:45 +0200,
+> >
+> > Matthias Diehl wrote:
+> > > hi,
+> > >
+> > > i guess you dont speak german, do you? well, i'll try it in
+> >
+> > english ;-)
+> >
+> > > i tried to install your newest x-fi "hack" in ubuntu 9.04 64bit.
 
-Yes, A@@0001 is 8329-specific. Thanks for suggestion, it works.
+Interesting enough, I don't manage to get it working under 64 ("SuSE 11.1, 64 
+Bit, Xen") bit either. Could you check if you also see something in your 
+syslog (e.g. /var/log/messages) when running speaker-test ? 
 
-> > Is my detection code correct, shouldn't the struct pnp_dev returned
-> > pnp_request_card_device() be released somehow?
->
-> I guess so.  But looks like a non-critical issue.
+When I tested the same on the same hardware  on "Kubuntu  Karmic alpha 2, 32 
+bit", I get sound.
 
-With additional entry, the detection code can be simplified (see patch).
+It might be an indication of a either:
+- a 32/64 bit issue
+- the kernel version (Kubuntu karmic ships with 2.6.30)
+- Xen vs non-Xen
+- something else
 
-> > Also the mixer seems to be a bit different - master volume does not work
-> > currently.
->
-> This is a problem...  Does "SB Master" play any role?
-
-Unfortunately not. Mixer elements enabled by defining ENABLE_SB_MIXER do not 
-work. I don't know anything about mixer element arrangement in the I/O space.
-The 3D and loudness switches have no effect as they're probably supported 
-only on CMI8330 (that's why it's called CMI8330/C3D).
-
-
-Add basic support for CMI8329 cards. Makes PCM and OPL3 work.
-Does not break CMI8330 (tested).
-
-Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
-
---- linux-test/sound/isa/cmi8330.c	2009-06-27 16:32:13.000000000 +0200
-+++ linux-2.6.30-pentium/sound/isa/cmi8330.c	2009-07-04 21:58:35.000000000 +0200
-@@ -1,5 +1,5 @@
- /*
-- *  Driver for C-Media's CMI8330 soundcards.
-+ *  Driver for C-Media's CMI8330 and CMI8329 soundcards.
-  *  Copyright (c) by George Talusan <gstalusan@uwaterloo.ca>
-  *    http://www.undergrad.math.uwaterloo.ca/~gstalusa
-  *
-@@ -64,7 +64,7 @@
- /*
-  */
- MODULE_AUTHOR("George Talusan <gstalusan@uwaterloo.ca>");
--MODULE_DESCRIPTION("C-Media CMI8330");
-+MODULE_DESCRIPTION("C-Media CMI8330/CMI8329");
- MODULE_LICENSE("GPL");
- MODULE_SUPPORTED_DEVICE("{{C-Media,CMI8330,isapnp:{CMI0001,@@@0001,@X@0001}}}");
- 
-@@ -86,38 +86,38 @@
- static int mpuirq[SNDRV_CARDS] = SNDRV_DEFAULT_IRQ;
- 
- module_param_array(index, int, NULL, 0444);
--MODULE_PARM_DESC(index, "Index value for CMI8330 soundcard.");
-+MODULE_PARM_DESC(index, "Index value for CMI8330/CMI8329 soundcard.");
- module_param_array(id, charp, NULL, 0444);
--MODULE_PARM_DESC(id, "ID string  for CMI8330 soundcard.");
-+MODULE_PARM_DESC(id, "ID string  for CMI8330/CMI8329 soundcard.");
- module_param_array(enable, bool, NULL, 0444);
--MODULE_PARM_DESC(enable, "Enable CMI8330 soundcard.");
-+MODULE_PARM_DESC(enable, "Enable CMI8330/CMI8329 soundcard.");
- #ifdef CONFIG_PNP
- module_param_array(isapnp, bool, NULL, 0444);
- MODULE_PARM_DESC(isapnp, "PnP detection for specified soundcard.");
- #endif
- 
- module_param_array(sbport, long, NULL, 0444);
--MODULE_PARM_DESC(sbport, "Port # for CMI8330 SB driver.");
-+MODULE_PARM_DESC(sbport, "Port # for CMI8330/CMI8329 SB driver.");
- module_param_array(sbirq, int, NULL, 0444);
--MODULE_PARM_DESC(sbirq, "IRQ # for CMI8330 SB driver.");
-+MODULE_PARM_DESC(sbirq, "IRQ # for CMI8330/CMI8329 SB driver.");
- module_param_array(sbdma8, int, NULL, 0444);
--MODULE_PARM_DESC(sbdma8, "DMA8 for CMI8330 SB driver.");
-+MODULE_PARM_DESC(sbdma8, "DMA8 for CMI8330/CMI8329 SB driver.");
- module_param_array(sbdma16, int, NULL, 0444);
--MODULE_PARM_DESC(sbdma16, "DMA16 for CMI8330 SB driver.");
-+MODULE_PARM_DESC(sbdma16, "DMA16 for CMI8330/CMI8329 SB driver.");
- 
- module_param_array(wssport, long, NULL, 0444);
--MODULE_PARM_DESC(wssport, "Port # for CMI8330 WSS driver.");
-+MODULE_PARM_DESC(wssport, "Port # for CMI8330/CMI8329 WSS driver.");
- module_param_array(wssirq, int, NULL, 0444);
--MODULE_PARM_DESC(wssirq, "IRQ # for CMI8330 WSS driver.");
-+MODULE_PARM_DESC(wssirq, "IRQ # for CMI8330/CMI8329 WSS driver.");
- module_param_array(wssdma, int, NULL, 0444);
--MODULE_PARM_DESC(wssdma, "DMA for CMI8330 WSS driver.");
-+MODULE_PARM_DESC(wssdma, "DMA for CMI8330/CMI8329 WSS driver.");
- 
- module_param_array(fmport, long, NULL, 0444);
--MODULE_PARM_DESC(fmport, "FM port # for CMI8330 driver.");
-+MODULE_PARM_DESC(fmport, "FM port # for CMI8330/CMI8329 driver.");
- module_param_array(mpuport, long, NULL, 0444);
--MODULE_PARM_DESC(mpuport, "MPU-401 port # for CMI8330 driver.");
-+MODULE_PARM_DESC(mpuport, "MPU-401 port # for CMI8330/CMI8329 driver.");
- module_param_array(mpuirq, int, NULL, 0444);
--MODULE_PARM_DESC(mpuirq, "IRQ # for CMI8330 MPU-401 port.");
-+MODULE_PARM_DESC(mpuirq, "IRQ # for CMI8330/CMI8329 MPU-401 port.");
- #ifdef CONFIG_PNP
- static int isa_registered;
- static int pnp_registered;
-@@ -156,6 +156,11 @@
- 
- typedef int (*snd_pcm_open_callback_t)(struct snd_pcm_substream *);
- 
-+enum card_type {
-+	CMI8330,
-+	CMI8329
-+};
-+
- struct snd_cmi8330 {
- #ifdef CONFIG_PNP
- 	struct pnp_dev *cap;
-@@ -172,11 +177,14 @@
- 		snd_pcm_open_callback_t open;
- 		void *private_data; /* sb or wss */
- 	} streams[2];
-+
-+	enum card_type type;
- };
- 
- #ifdef CONFIG_PNP
- 
- static struct pnp_card_device_id snd_cmi8330_pnpids[] = {
-+	{ .id = "CMI0001", .devs = { { "@X@0001" }, { "@@@0001" }, { "@H@0001" }, { "A@@0001" } } },
- 	{ .id = "CMI0001", .devs = { { "@@@0001" }, { "@X@0001" }, { "@H@0001" } } },
- 	{ .id = "" }
- };
-@@ -304,7 +312,7 @@
- 	unsigned int idx;
- 	int err;
- 
--	strcpy(card->mixername, "CMI8330/C3D");
-+	strcpy(card->mixername, (acard->type == CMI8329) ? "CMI8329" : "CMI8330/C3D");
- 
- 	for (idx = 0; idx < ARRAY_SIZE(snd_cmi8330_controls); idx++) {
- 		err = snd_ctl_add(card,
-@@ -329,6 +337,9 @@
- 	struct pnp_dev *pdev;
- 	int err;
- 
-+	/* CMI8329 has a device with ID A@@0001, CMI8330 does not */
-+	acard->type = (id->devs[3].id[0]) ? CMI8329 : CMI8330;
-+
- 	acard->cap = pnp_request_card_device(card, id->devs[0].id, NULL);
- 	if (acard->cap == NULL)
- 		return -EBUSY;
-@@ -345,34 +356,36 @@
- 
- 	err = pnp_activate_dev(pdev);
- 	if (err < 0) {
--		snd_printk(KERN_ERR "CMI8330/C3D (AD1848) PnP configure failure\n");
-+		snd_printk(KERN_ERR "AD1848 PnP configure failure\n");
- 		return -EBUSY;
- 	}
- 	wssport[dev] = pnp_port_start(pdev, 0);
- 	wssdma[dev] = pnp_dma(pdev, 0);
- 	wssirq[dev] = pnp_irq(pdev, 0);
--	fmport[dev] = pnp_port_start(pdev, 1);
-+	if (acard->type == CMI8330)
-+		fmport[dev] = pnp_port_start(pdev, 1);
- 
- 	/* allocate SB16 resources */
- 	pdev = acard->play;
- 
- 	err = pnp_activate_dev(pdev);
- 	if (err < 0) {
--		snd_printk(KERN_ERR "CMI8330/C3D (SB16) PnP configure failure\n");
-+		snd_printk(KERN_ERR "SB16 PnP configure failure\n");
- 		return -EBUSY;
- 	}
- 	sbport[dev] = pnp_port_start(pdev, 0);
- 	sbdma8[dev] = pnp_dma(pdev, 0);
- 	sbdma16[dev] = pnp_dma(pdev, 1);
- 	sbirq[dev] = pnp_irq(pdev, 0);
-+	if (acard->type == CMI8329)
-+		fmport[dev] = pnp_port_start(pdev, 1);
- 
- 	/* allocate MPU-401 resources */
- 	pdev = acard->mpu;
- 
- 	err = pnp_activate_dev(pdev);
- 	if (err < 0) {
--		snd_printk(KERN_ERR
--			   "CMI8330/C3D (MPU-401) PnP configure failure\n");
-+		snd_printk(KERN_ERR "MPU-401 PnP configure failure\n");
- 		return -EBUSY;
- 	}
- 	mpuport[dev] = pnp_port_start(pdev, 0);
-@@ -430,9 +443,9 @@
- 		snd_cmi8330_capture_open
- 	};
- 
--	if ((err = snd_pcm_new(card, "CMI8330", 0, 1, 1, &pcm)) < 0)
-+	if ((err = snd_pcm_new(card, (chip->type == CMI8329) ? "CMI8329" : "CMI8330", 0, 1, 1, &pcm)) < 0)
- 		return err;
--	strcpy(pcm->name, "CMI8330");
-+	strcpy(pcm->name, (chip->type == CMI8329) ? "CMI8329" : "CMI8330");
- 	pcm->private_data = chip;
- 	
- 	/* SB16 */
-@@ -527,11 +540,11 @@
- 			     wssdma[dev], -1,
- 			     WSS_HW_DETECT, 0, &acard->wss);
- 	if (err < 0) {
--		snd_printk(KERN_ERR PFX "(AD1848) device busy??\n");
-+		snd_printk(KERN_ERR PFX "AD1848 device busy??\n");
- 		return err;
- 	}
- 	if (acard->wss->hardware != WSS_HW_CMI8330) {
--		snd_printk(KERN_ERR PFX "(AD1848) not found during probe\n");
-+		snd_printk(KERN_ERR PFX "AD1848 not found during probe\n");
- 		return -ENODEV;
- 	}
- 
-@@ -541,11 +554,11 @@
- 				    sbdma8[dev],
- 				    sbdma16[dev],
- 				    SB_HW_AUTO, &acard->sb)) < 0) {
--		snd_printk(KERN_ERR PFX "(SB16) device busy??\n");
-+		snd_printk(KERN_ERR PFX "SB16 device busy??\n");
- 		return err;
- 	}
- 	if (acard->sb->hardware != SB_HW_16) {
--		snd_printk(KERN_ERR PFX "(SB16) not found during probe\n");
-+		snd_printk(KERN_ERR PFX "SB16 not found during probe\n");
- 		return err;
- 	}
- 
-@@ -585,8 +598,8 @@
- 				mpuport[dev]);
- 	}
- 
--	strcpy(card->driver, "CMI8330/C3D");
--	strcpy(card->shortname, "C-Media CMI8330/C3D");
-+	strcpy(card->driver, (acard->type == CMI8329) ? "CMI8329" : "CMI8330/C3D");
-+	strcpy(card->shortname, (acard->type == CMI8329) ? "C-Media CMI8329" : "C-Media CMI8330/C3D");
- 	sprintf(card->longname, "%s at 0x%lx, irq %d, dma %d",
- 		card->shortname,
- 		acard->wss->port,
-
-
--- 
-Ondrej Zary
+   Christian
