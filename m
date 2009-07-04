@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] [RFC 1/13] Intel SST drivers documentation
-Date: Sat, 4 Jul 2009 13:09:54 +0100
-Message-ID: <20090704120954.GA13988@sirena.org.uk>
-References: <1246604310-12812-1-git-send-email-vinod.koul@intel.com>
+From: "Harsha, Priya" <priya.harsha@intel.com>
+Subject: Re: Help required with debugging
+Date: Sat, 4 Jul 2009 19:22:21 +0530
+Message-ID: <98769532B4BB14429434178695419EAE5BB71F61@bgsmsx501.gar.corp.intel.com>
+References: <98769532B4BB14429434178695419EAE5BAEB764@bgsmsx501.gar.corp.intel.com>
+	<alpine.LNX.2.00.0907020951500.6728@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id A5216103802
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 01920103812
 	for <alsa-devel@alsa-project.org>;
-	Sat,  4 Jul 2009 14:09:55 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1246604310-12812-1-git-send-email-vinod.koul@intel.com>
+	Sat,  4 Jul 2009 15:52:28 +0200 (CEST)
+In-Reply-To: <alpine.LNX.2.00.0907020951500.6728@eeebox2.perex-int.cz>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,58 +23,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Harsha Priya <priya.harsha@intel.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 03, 2009 at 12:28:30PM +0530, Vinod Koul wrote:
 
-> +There are 3 sound cards that Intel SST hardware supports and enables.
-> +Intel SST is the only hardware in the platform that can render to sound card.
-> +These sound cards are exposed and mapped through Intel MID driver which is an
-> +ALSA driver. This driver uses Intel SST driver to send data and controls to the
-> +hardware.
 
-Looking at the code I'm a bit confused about the way things are
-structured in hardware terms here.  Do you have any documentation (even
-fairly high level stuff) or what exactly a "vendor" is that you could
-refer to?  The reason I ask is that a lot of what's going on here sounds
-much like the typical embedded hardware supported by the ASoC framework
-in the kernel in which case I worry that these drivers may run into many
-of the issues which ASoC solves.
+>-----Original Message-----
+>From: Jaroslav Kysela [mailto:perex@perex.cz]
+>Sent: Thursday, July 02, 2009 1:39 PM
+>To: Harsha, Priya
+>Cc: alsa-devel@alsa-project.org; tiwai@suse.de
+>Subject: Re: [alsa-devel] Help required with debugging
+>
+>On Thu, 2 Jul 2009, Harsha, Priya wrote:
+>
+>> Why is runtime->hw_ptr_jiffies updated in hw_ptr()? This should be only
+>> updated in the interrupt context right?
+>
+>The idea of hw_ptr_jiffies is to have a check if real-time clock in sync
+>with the DMA buffer position. If your hardware does block transfers and is
+>not able to return fine position in period set SNDRV_PCM_INFO_BATCH flag.
+Thanks a lot. Setting the runtime->hw.info = SNDRV_PCM_INFO_BATCH in the ops->prepare(), helps getting past the issue. Its true that the hardware is doing a batch transfer of period_size into the dma_buffer of ALSA.
 
-The bit that particularly jumps out at me is that what the vendor
-drivers are providing appears to be very much like an ASoC CODEC driver
-with bits of an ASoC machine driver.  They define register maps with
-register names that look very much like those I'd expect to see in audio
-CODECs, define some controls for those and do similar things in the
-various ALSA API callbacks they get.
-
-The main potential difference that I can see is that it looks like all
-the register access to the child devices is indirected via the DSP/PMIC,
-though it doesn't look like it's abstracted at all - it seems like it's
-just write through if it's anything.  Most embedded systems would have
-the CODECs hooked directly to the CPU.  It also looks like your vendor
-ID information is only 3 bits which seems very limited and makes me
-question my analysis.
-
-Like I say, I don't fully grasp how the hardware looks so I may be
-completely off-base here.
-
-> +To make use of the low power playback feature, the application or framework
-> +needs to open a Intel SST driver handle and send the encoded stream
-> +like MP3, AAC or WMA through this driver to play out. If its a PCM stream
-
-Just thinking back to my previous comment about the DSP possibly being
-general purpose - even if it is not possible to use this DSP for other
-things the offloaded media decode here is something that other devices
-support.  We should try to come up with a general purpose API for using
-this which isn't driver-specific so that applications are able to make
-use of the functionality without having to code up ways to talk to lots
-of different drivers.
-
-For simplicity it may be best to arrange the patch series so that you've
-got a driver without the offloaded decode support and then build the
-offloaded decode support on top of that.  This should make it easier to
-review the more standard ALSA functionality and may help get that code
-in more quickly.
+>But it's rather a workaround than a proper fix, because timestamps are
+>updated but the ring buffer position is not moved (which brokes the idea
+>to have a relation between the ring buffer position and the real-time
+>clock).
+Actually the firmware does not update the timestamp till the period size is reached, i.e., the firmware increments the timestamp with period_size and transfers the same to the dma_buffer.
+>
+>I think that this sort of drivers might require to implement the
+>SNDRV_PCM_POS_KEEP return value in case when position does not change from
+>last read to notify midlevel PCM code that they're not able to handle fine
+>pointer resolution.
+I don't find this return value in the ALSA code, can you help me with more details of what needs to be returned and where.
+>
+>Also, hardware with large FIFOs should update properly runtime->delay
+>value now.
+I am not finding a field called delay in runtime structure. Where can I find it...and is there a documentation/comment on what this value needs to hold?
+>
+> 						Jaroslav
+>
+>-----
+>Jaroslav Kysela <perex@perex.cz>
+>Linux Kernel Sound Maintainer
+>ALSA Project, Red Hat, Inc.
