@@ -1,28 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V1 10/11] ASoC: DaVinci: i2s don't limit
- rates
-Date: Sun, 5 Jul 2009 12:57:46 +0100
-Message-ID: <20090705115746.GB5334@sirena.org.uk>
-References: <1246761001-21982-2-git-send-email-troy.kisky@boundarydevices.com>
-	<1246761001-21982-3-git-send-email-troy.kisky@boundarydevices.com>
-	<1246761001-21982-4-git-send-email-troy.kisky@boundarydevices.com>
-	<1246761001-21982-5-git-send-email-troy.kisky@boundarydevices.com>
-	<1246761001-21982-6-git-send-email-troy.kisky@boundarydevices.com>
-	<1246761001-21982-7-git-send-email-troy.kisky@boundarydevices.com>
-	<1246761001-21982-8-git-send-email-troy.kisky@boundarydevices.com>
-	<1246761001-21982-9-git-send-email-troy.kisky@boundarydevices.com>
-	<1246761001-21982-10-git-send-email-troy.kisky@boundarydevices.com>
-	<1246761001-21982-11-git-send-email-troy.kisky@boundarydevices.com>
+From: Guilherme Longo <grlongo.ireland@gmail.com>
+Subject: performance between access mothods!
+Date: Sun, 05 Jul 2009 09:03:23 -0300
+Message-ID: <4A50968B.6030201@gmail.com>
+References: <1246761001-21982-1-git-send-email-troy.kisky@boundarydevices.com>
+	<20090705114122.GA5334@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 85DDB24366
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id C1FA524377
 	for <alsa-devel@alsa-project.org>;
-	Sun,  5 Jul 2009 13:57:55 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1246761001-21982-11-git-send-email-troy.kisky@boundarydevices.com>
+	Sun,  5 Jul 2009 14:03:27 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 5so1557994qwf.56
+	for <alsa-devel@alsa-project.org>; Sun, 05 Jul 2009 05:03:27 -0700 (PDT)
+In-Reply-To: <20090705114122.GA5334@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,21 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Troy Kisky <troy.kisky@boundarydevices.com>
-Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jul 04, 2009 at 07:30:00PM -0700, Troy Kisky wrote:
-> If the codec is master, we support anything
-> that the codec supports.
+Hi all!
 
-Hrm, tricky - the rate configuration doesn't depend on what is master so
-this could cause confusion if the codec is slave.
+I came across a doubt regarding the the access mode between application 
+and PCM device.
+It is a hardware parameter related property and there are 5 different 
+types available:
 
-> -#define DAVINCI_I2S_RATES	SNDRV_PCM_RATE_8000_96000
-> +#define DAVINCI_I2S_RATES	(SNDRV_PCM_RATE_8000_96000 |\
-> +	SNDRV_PCM_RATE_5512 | SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS)
+SND_PCM_ACCESS_MMAP_INTERLEAVED
+SND_PCM_ACCESS_MMAP_NONINTERLEAVED
+SND_PCM_ACCESS_MMAP_COMPLEX
+SND_PCM_ACCESS_RW_INTERLEAVED
+SND_PCM_ACCESS_RW_NONINTERLEAVED
 
-Note that the ASoC core doesn't support _KNOT or _CONTINUOUS (at least
-not properly) so the only thing you should get from this is 5512.  Is
-that really worth worrying about the master/slave problem?
+taking in account that these first 3 parameters has direct communication 
+with the memory, that means a higher speed operation? And the fact of 
+the interleaved has all the samples mixed together , makes any 
+difference in performance in comparison to the noninterleaved that has 
+samples stored on different buffers?
+
+Thanks in advanced
