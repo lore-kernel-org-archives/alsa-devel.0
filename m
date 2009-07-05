@@ -1,16 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Remove use of hw_read from TLV320AIC3x
-	driver
-Date: Sun,  5 Jul 2009 17:47:50 +0100
-Message-ID: <1246812470-10050-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Duke Grable <kejento@gmail.com>
+Subject: Re: Testers wanted: New SB X-Fi driver
+Date: Sun, 5 Jul 2009 12:10:55 -0700
+Message-ID: <4812c8250907051210m3102e07evf96bb36e6752fde4@mail.gmail.com>
+References: <4812c8250907050138w586919d4vd23d71b4ae14e1dc@mail.gmail.com>
+	<4A50977E.6000602@googlemail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id D14D424414
-	for <alsa-devel@alsa-project.org>;
-	Sun,  5 Jul 2009 18:48:00 +0200 (CEST)
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.146])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1E8581037F2
+	for <Alsa-devel@alsa-project.org>;
+	Sun,  5 Jul 2009 21:11:15 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 5so1615086qwf.56
+	for <Alsa-devel@alsa-project.org>; Sun, 05 Jul 2009 12:11:15 -0700 (PDT)
+In-Reply-To: <4A50977E.6000602@googlemail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,61 +24,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>, Troy Kisky <troy.kisky@boundarydevices.com>, Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The TLV320AIC3x driver is currently the only user of the CODEC hw_read
-operation and is jumping through some hoops in order to do so.  In order
-to support future refactoring to make the hw_read operation more usable
-unwrap the usage in this driver to avoid its use.
+It seems like my problem was even stranger than that. For some reason the
+only mute option for it under kmix or pulseaudio are through their taskbar
+icons. If I remember correctly, I set my mic as master then unmuted it
+through the one of icon's menu. That made it possible to hear my mic through
+my speaker. Then a program called "gamix" solved my recording issues. Pretty
+interesting. Loving these drivers either way though.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
+Thanks,
+Duke
 
-I don't have any hardware I can test this on so it'd be good if someone
-with suitable hardware could give it a spin.  Daniel, you wrote the code
-that does the readbacks so I guess you're most likely to have a good
-test setup for this?
+On Sun, Jul 5, 2009 at 5:07 AM, Gernot Kohlhaas <
+gernot.kohlhaas@googlemail.com> wrote:
 
- sound/soc/codecs/tlv320aic3x.c |   11 ++---------
- 1 files changed, 2 insertions(+), 9 deletions(-)
-
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index ab099f4..0cf401f 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -145,8 +145,8 @@ static int aic3x_read(struct snd_soc_codec *codec, unsigned int reg,
- 		      u8 *value)
- {
- 	*value = reg & 0xff;
--	if (codec->hw_read(codec->control_data, value, 1) != 1)
--		return -EIO;
-+
-+	value[0] = i2c_smbus_read_byte_data(codec->control_data, value[0]);
- 
- 	aic3x_write_reg_cache(codec, reg, *value);
- 	return 0;
-@@ -1316,12 +1316,6 @@ static struct i2c_driver aic3x_i2c_driver = {
- 	.id_table = aic3x_i2c_id,
- };
- 
--static int aic3x_i2c_read(struct i2c_client *client, u8 *value, int len)
--{
--	value[0] = i2c_smbus_read_byte_data(client, value[0]);
--	return (len == 1);
--}
--
- static int aic3x_add_i2c_device(struct platform_device *pdev,
- 				 const struct aic3x_setup_data *setup)
- {
-@@ -1394,7 +1388,6 @@ static int aic3x_probe(struct platform_device *pdev)
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- 	if (setup->i2c_address) {
- 		codec->hw_write = (hw_write_t) i2c_master_send;
--		codec->hw_read = (hw_read_t) aic3x_i2c_read;
- 		ret = aic3x_add_i2c_device(pdev, setup);
- 	}
- #else
--- 
-1.6.3.3
+> Hi!
+> Try to unmute the "Line-In" Playback-device.
+>
+> Duke Grable schrieb:
+> > Hello!
+> >
+> > I stumbled upon these X-Fi drivers recently and ended up giving them a
+> try.
+> > So far they work flawlessly, except for microphone input... I'm wondering
+> if
+> > this is either just unimplemented, or if it's just an issue of
+> > configuration? My sound card is an "X-Fi XtremeGamer" and my distro is
+> the
+> > latest version of openSuSe (2.6.27.23-0.1-default
+> > ). Let me know if I'm missing anything!
+> >
+> > Thanks,
+> > Duke
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >
+>
+>
+> --
+> http://www.gnupp.de/verschluesselung/warum.html
+> Key ID: 0x4C0B2250
+> Key: http://home.arcor.de/mr_maniac/ANDERES/public.gpg
+>
