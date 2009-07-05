@@ -1,20 +1,27 @@
-From: Gernot Kohlhaas <gernot.kohlhaas@googlemail.com>
-Subject: Re: Testers wanted: New SB X-Fi driver
-Date: Sun, 05 Jul 2009 14:07:26 +0200
-Message-ID: <4A50977E.6000602@googlemail.com>
-References: <4812c8250907050138w586919d4vd23d71b4ae14e1dc@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH V1 08/11] ASoc: DaVinci: i2s,
+ Improve underrun, support mono
+Date: Sun, 5 Jul 2009 13:12:05 +0100
+Message-ID: <20090705121205.GC5334@sirena.org.uk>
+References: <1246761001-21982-1-git-send-email-troy.kisky@boundarydevices.com>
+	<1246761001-21982-2-git-send-email-troy.kisky@boundarydevices.com>
+	<1246761001-21982-3-git-send-email-troy.kisky@boundarydevices.com>
+	<1246761001-21982-4-git-send-email-troy.kisky@boundarydevices.com>
+	<1246761001-21982-5-git-send-email-troy.kisky@boundarydevices.com>
+	<1246761001-21982-6-git-send-email-troy.kisky@boundarydevices.com>
+	<1246761001-21982-7-git-send-email-troy.kisky@boundarydevices.com>
+	<1246761001-21982-8-git-send-email-troy.kisky@boundarydevices.com>
+	<1246761001-21982-9-git-send-email-troy.kisky@boundarydevices.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f226.google.com (mail-fx0-f226.google.com
-	[209.85.220.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9DAB624386
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3CDE9243A0
 	for <alsa-devel@alsa-project.org>;
-	Sun,  5 Jul 2009 14:07:28 +0200 (CEST)
-Received: by fxm26 with SMTP id 26so3137971fxm.32
-	for <alsa-devel@alsa-project.org>; Sun, 05 Jul 2009 05:07:28 -0700 (PDT)
-In-Reply-To: <4812c8250907050138w586919d4vd23d71b4ae14e1dc@mail.gmail.com>
+	Sun,  5 Jul 2009 14:12:12 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1246761001-21982-9-git-send-email-troy.kisky@boundarydevices.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,33 +31,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Duke Grable <kejento@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Troy Kisky <troy.kisky@boundarydevices.com>
+Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
-Try to unmute the "Line-In" Playback-device.
+On Sat, Jul 04, 2009 at 07:29:58PM -0700, Troy Kisky wrote:
+> This patch will reduce the number of underruns by
+> shifting out 32 bit values instead of 16 bit. It also
+> adds mono support.
 
-Duke Grable schrieb:
-> Hello!
-> 
-> I stumbled upon these X-Fi drivers recently and ended up giving them a try.
-> So far they work flawlessly, except for microphone input... I'm wondering if
-> this is either just unimplemented, or if it's just an issue of
-> configuration? My sound card is an "X-Fi XtremeGamer" and my distro is the
-> latest version of openSuSe (2.6.27.23-0.1-default
-> ). Let me know if I'm missing anything!
-> 
-> Thanks,
-> Duke
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+> +	if (channels == 2) {
+> +		/* Combining both channels into 1 element can allow x10 the
+> +		 * amount of time between servicing the dma channel, increase
+> +		 * effiency, and reduce the chance of overrun/underrun. But,
+> +		 * it will result in the left & right channels being swapped.
+> +		 * So, you may want to let the codec know to swap them back.
 
+This seems dodgy.  The end resule sounds like a win but if it's going to
+introduce a L/R swap then that's going to catch people out and not all
+CODECs will have the ability to revert the swap.  On the other hand, the 
+efficiency wins sound worthwhile from your description.  Is it possible
+to make this behaviour optional?
 
--- 
-http://www.gnupp.de/verschluesselung/warum.html
-Key ID: 0x4C0B2250
-Key: http://home.arcor.de/mr_maniac/ANDERES/public.gpg
+I'm going to be doing some work on digital routing and mixing soon, it
+may make sense to hold off on this change and see if it can be
+integrated with those changes - it sounds like the sort of thing that we
+ought to be able to represent better.  There's a bunch of other stuff
+which could be done with better core support in that area.
+
+> +		 *
+> +		 * It may be x10 instead of x2 because the clock from the codec
+> +		 * may run at mclk speed (ie. tlvaic23b), independent of the
+> +		 * sample rate. So, having an entire frame at once means it can
+> +		 * be serviced at the sample rate instead of the mclk speed.
+
+I'm also having a really hard time following this bit of the comment,
+mostly I think because I'm not sure what clock you're talking about
+here.
