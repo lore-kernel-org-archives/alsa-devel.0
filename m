@@ -1,8 +1,8 @@
 From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: [PATCH V1 09/11] ASoC: DaVinci: i2s,
-	add davinci_i2s_prepare and shutdown
-Date: Sat,  4 Jul 2009 19:29:59 -0700
-Message-ID: <1246761001-21982-10-git-send-email-troy.kisky@boundarydevices.com>
+Subject: [PATCH V1 07/11] ASoC: DaVinci: i2s,
+	fix mcbsp_word_length update
+Date: Sat,  4 Jul 2009 19:29:57 -0700
+Message-ID: <1246761001-21982-8-git-send-email-troy.kisky@boundarydevices.com>
 References: <1246761001-21982-1-git-send-email-troy.kisky@boundarydevices.com>
 	<1246761001-21982-2-git-send-email-troy.kisky@boundarydevices.com>
 	<1246761001-21982-3-git-send-email-troy.kisky@boundarydevices.com>
@@ -10,18 +10,16 @@ References: <1246761001-21982-1-git-send-email-troy.kisky@boundarydevices.com>
 	<1246761001-21982-5-git-send-email-troy.kisky@boundarydevices.com>
 	<1246761001-21982-6-git-send-email-troy.kisky@boundarydevices.com>
 	<1246761001-21982-7-git-send-email-troy.kisky@boundarydevices.com>
-	<1246761001-21982-8-git-send-email-troy.kisky@boundarydevices.com>
-	<1246761001-21982-9-git-send-email-troy.kisky@boundarydevices.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mpls-qmqp-05.inet.qwest.net (mpls-qmqp-05.inet.qwest.net
-	[63.231.195.116])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4FCA210384F
+Received: from mpls-qmqp-03.inet.qwest.net (mpls-qmqp-03.inet.qwest.net
+	[63.231.195.114])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4B909103820
 	for <alsa-devel@alsa-project.org>;
 	Sun,  5 Jul 2009 04:30:12 +0200 (CEST)
-In-Reply-To: <1246761001-21982-9-git-send-email-troy.kisky@boundarydevices.com>
+In-Reply-To: <1246761001-21982-7-git-send-email-troy.kisky@boundarydevices.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,76 +33,130 @@ To: alsa-devel@alsa-project.org
 Cc: davinci-linux-open-source@linux.davincidsp.com, broonie@sirena.org.uk, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-If the codec is master then prepare should call
-mcbsp_start, not trigger.
+Code previously just "ors" in this field without clearing
+first. Fix, by never reading this register.
 
 Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
 ---
- sound/soc/davinci/davinci-i2s.c |   28 +++++++++++++++++++++++++++-
- 1 files changed, 27 insertions(+), 1 deletions(-)
+ sound/soc/davinci/davinci-i2s.c |   50 ++++++++++++++++++++++----------------
+ 1 files changed, 29 insertions(+), 21 deletions(-)
 
 diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
-index a2ad53e..f3e7bf8 100644
+index 5b31b56..6fa1b6a 100644
 --- a/sound/soc/davinci/davinci-i2s.c
 +++ b/sound/soc/davinci/davinci-i2s.c
-@@ -470,6 +470,20 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+@@ -63,6 +63,7 @@
+ #define DAVINCI_MCBSP_RCR_RWDLEN1(v)	((v) << 5)
+ #define DAVINCI_MCBSP_RCR_RFRLEN1(v)	((v) << 8)
+ #define DAVINCI_MCBSP_RCR_RDATDLY(v)	((v) << 16)
++#define DAVINCI_MCBSP_RCR_RFIG		(1 << 18)
+ #define DAVINCI_MCBSP_RCR_RWDLEN2(v)	((v) << 21)
+ 
+ #define DAVINCI_MCBSP_XCR_XWDLEN1(v)	((v) << 5)
+@@ -104,6 +105,9 @@ static struct davinci_pcm_dma_params davinci_i2s_pcm_in = {
+ 
+ struct davinci_mcbsp_dev {
+ 	void __iomem			*base;
++#define MOD_DSP_A	0
++#define MOD_DSP_B	1
++	int				mode;
+ 	u32				pcr;
+ 	struct clk			*clk;
+ 	struct davinci_pcm_dma_params	*dma_params[2];
+@@ -225,12 +229,11 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 	struct davinci_mcbsp_dev *dev = cpu_dai->private_data;
+ 	unsigned int pcr;
+ 	unsigned int srgr;
+-	unsigned int rcr;
+-	unsigned int xcr;
+ 	srgr = DAVINCI_MCBSP_SRGR_FSGM |
+ 		DAVINCI_MCBSP_SRGR_FPER(DEFAULT_BITPERSAMPLE * 2 - 1) |
+ 		DAVINCI_MCBSP_SRGR_FWID(DEFAULT_BITPERSAMPLE - 1);
+ 
++	/* set master/slave audio interface */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+ 		/* cpu is master */
+@@ -255,11 +258,8 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		return -EINVAL;
+ 	}
+ 
+-	rcr = DAVINCI_MCBSP_RCR_RFRLEN1(1);
+-	xcr = DAVINCI_MCBSP_XCR_XFIG | DAVINCI_MCBSP_XCR_XFRLEN1(1);
++	/* interface format */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+-	case SND_SOC_DAIFMT_DSP_B:
+-		break;
+ 	case SND_SOC_DAIFMT_I2S:
+ 		/* Davinci doesn't support TRUE I2S, but some codecs will have
+ 		 * the left and right channels contiguous. This allows
+@@ -279,8 +279,10 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		 */
+ 		fmt ^= SND_SOC_DAIFMT_NB_IF;
+ 	case SND_SOC_DAIFMT_DSP_A:
+-		rcr |= DAVINCI_MCBSP_RCR_RDATDLY(1);
+-		xcr |= DAVINCI_MCBSP_XCR_XDATDLY(1);
++		dev->mode = MOD_DSP_A;
++		break;
++	case SND_SOC_DAIFMT_DSP_B:
++		dev->mode = MOD_DSP_B;
+ 		break;
+ 	default:
+ 		printk(KERN_ERR "%s:bad format\n", __func__);
+@@ -342,8 +344,6 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SRGR_REG, srgr);
+ 	dev->pcr = pcr;
+ 	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_PCR_REG, pcr);
+-	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_RCR_REG, rcr);
+-	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_XCR_REG, xcr);
  	return 0;
  }
  
-+static int davinci_i2s_prepare(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct davinci_mcbsp_dev *dev = rtd->dai->cpu_dai->private_data;
-+	int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
-+	davinci_mcbsp_stop(dev, playback);
-+	if ((dev->pcr & DAVINCI_MCBSP_PCR_FSXM) == 0) {
-+		/* codec is master */
-+		davinci_mcbsp_start(dev, substream);
-+	}
-+	return 0;
-+}
-+
- static int davinci_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 			       struct snd_soc_dai *dai)
- {
-@@ -477,6 +491,8 @@ static int davinci_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 	struct davinci_mcbsp_dev *dev = rtd->dai->cpu_dai->private_data;
- 	int ret = 0;
- 	int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
-+	if ((dev->pcr & DAVINCI_MCBSP_PCR_FSXM) == 0)
-+		return 0;	/* return if codec is master */
+@@ -377,6 +377,15 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	srgr |= DAVINCI_MCBSP_SRGR_FPER(snd_interval_value(i) - 1);
+ 	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SRGR_REG, srgr);
  
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -492,10 +508,18 @@ static int davinci_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 	default:
- 		ret = -EINVAL;
++	rcr = DAVINCI_MCBSP_RCR_RFIG;
++	xcr = DAVINCI_MCBSP_XCR_XFIG;
++	if (dev->mode == MOD_DSP_B) {
++		rcr |= DAVINCI_MCBSP_RCR_RDATDLY(0);
++		xcr |= DAVINCI_MCBSP_XCR_XDATDLY(0);
++	} else {
++		rcr |= DAVINCI_MCBSP_RCR_RDATDLY(1);
++		xcr |= DAVINCI_MCBSP_XCR_XDATDLY(1);
++	}
+ 	/* Determine xfer data type */
+ 	switch (params_format(params)) {
+ 	case SNDRV_PCM_FORMAT_S8:
+@@ -396,19 +405,18 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
  	}
--
- 	return ret;
+ 
+-	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+-		rcr = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_RCR_REG);
+-		rcr |= DAVINCI_MCBSP_RCR_RWDLEN1(mcbsp_word_length) |
+-			       DAVINCI_MCBSP_RCR_RWDLEN2(mcbsp_word_length);
+-		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_RCR_REG, rcr);
++	rcr |= DAVINCI_MCBSP_RCR_RFRLEN1(1);
++	xcr |= DAVINCI_MCBSP_XCR_XFRLEN1(1);
+ 
+-	} else {
+-		xcr = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_XCR_REG);
+-		xcr |= DAVINCI_MCBSP_XCR_XWDLEN1(mcbsp_word_length) |
+-				DAVINCI_MCBSP_XCR_XWDLEN2(mcbsp_word_length);
+-		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_XCR_REG, xcr);
++	rcr |= DAVINCI_MCBSP_RCR_RWDLEN1(mcbsp_word_length) |
++		DAVINCI_MCBSP_RCR_RWDLEN2(mcbsp_word_length);
++	xcr |= DAVINCI_MCBSP_XCR_XWDLEN1(mcbsp_word_length) |
++		DAVINCI_MCBSP_XCR_XWDLEN2(mcbsp_word_length);
+ 
+-	}
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_XCR_REG, xcr);
++	else
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_RCR_REG, rcr);
+ 	return 0;
  }
  
-+static void davinci_i2s_shutdown(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct davinci_mcbsp_dev *dev = rtd->dai->cpu_dai->private_data;
-+	int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
-+	davinci_mcbsp_stop(dev, playback);
-+}
-+
- static int davinci_i2s_probe(struct platform_device *pdev,
- 			     struct snd_soc_dai *dai)
- {
-@@ -581,6 +605,8 @@ static void davinci_i2s_remove(struct platform_device *pdev,
- 
- static struct snd_soc_dai_ops davinci_i2s_dai_ops = {
- 	.startup	= davinci_i2s_startup,
-+	.shutdown	= davinci_i2s_shutdown,
-+	.prepare	= davinci_i2s_prepare,
- 	.trigger	= davinci_i2s_trigger,
- 	.hw_params	= davinci_i2s_hw_params,
- 	.set_fmt	= davinci_i2s_set_dai_fmt,
 -- 
 1.5.6.3
