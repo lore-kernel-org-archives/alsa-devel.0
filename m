@@ -1,72 +1,54 @@
-From: Duke Grable <kejento@gmail.com>
-Subject: Re: Testers wanted: New SB X-Fi driver
-Date: Sun, 5 Jul 2009 12:10:55 -0700
-Message-ID: <4812c8250907051210m3102e07evf96bb36e6752fde4@mail.gmail.com>
-References: <4812c8250907050138w586919d4vd23d71b4ae14e1dc@mail.gmail.com>
-	<4A50977E.6000602@googlemail.com>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: [alsa-devel] [RFC] Alsa mixer over serial port
+Date: Sun, 5 Jul 2009 22:55:21 +0200
+Message-ID: <200907052255.22846.jkrzyszt@tis.icnet.pl>
+References: <4A4CB5CF.2020703@tis.icnet.pl> <20090702133220.GA22321@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.146])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1E8581037F2
-	for <Alsa-devel@alsa-project.org>;
-	Sun,  5 Jul 2009 21:11:15 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 5so1615086qwf.56
-	for <Alsa-devel@alsa-project.org>; Sun, 05 Jul 2009 12:11:15 -0700 (PDT)
-In-Reply-To: <4A50977E.6000602@googlemail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-serial-owner@vger.kernel.org>
+In-Reply-To: <20090702133220.GA22321@sirena.org.uk>
+Content-Disposition: inline
+Sender: linux-serial-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-serial@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-It seems like my problem was even stranger than that. For some reason the
-only mute option for it under kmix or pulseaudio are through their taskbar
-icons. If I remember correctly, I set my mic as master then unmuted it
-through the one of icon's menu. That made it possible to hear my mic through
-my speaker. Then a program called "gamix" solved my recording issues. Pretty
-interesting. Loving these drivers either way though.
+Thursday 02 July 2009 15:32:21 Mark Brown napisa=C5=82(a):
+> On Thu, Jul 02, 2009 at 03:27:43PM +0200, Janusz Krzysztofik wrote:
+> > I can see two ways of getting this working:
+> > 1) add a new line discipline that would take control over the seria=
+l
+> > line and convert it to an alsa mixer,
+> > 2) create a low level driver that would replace standard serial stu=
+ff
+> > completely (like snd-serial-u16550 does, for example).
+> >
+> > Please advise which one is better.
+>
+> ASoC doesn't really care for itself - it just needs the upper layer
+> interface, how exactly the driver ineteracts with the device is not
+> important to ASoC.
+
+Mark, thanks.
+
+As there are no other votes, I choose line discipline. Generic form of=20
+required userspace support is already provided with util-linux-ng and i=
+t=20
+seems much better to use established low level driver code than reinven=
+t a=20
+new one ;).
+
+I hope there will be no problem getting a new line discipline registere=
+d with=20
+include/linux/tty.h, even if it turns out that the code using it is ded=
+icated=20
+to a specific device not found on any other board than my Amstrad E3.
 
 Thanks,
-Duke
-
-On Sun, Jul 5, 2009 at 5:07 AM, Gernot Kohlhaas <
-gernot.kohlhaas@googlemail.com> wrote:
-
-> Hi!
-> Try to unmute the "Line-In" Playback-device.
->
-> Duke Grable schrieb:
-> > Hello!
-> >
-> > I stumbled upon these X-Fi drivers recently and ended up giving them a
-> try.
-> > So far they work flawlessly, except for microphone input... I'm wondering
-> if
-> > this is either just unimplemented, or if it's just an issue of
-> > configuration? My sound card is an "X-Fi XtremeGamer" and my distro is
-> the
-> > latest version of openSuSe (2.6.27.23-0.1-default
-> > ). Let me know if I'm missing anything!
-> >
-> > Thanks,
-> > Duke
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >
->
->
-> --
-> http://www.gnupp.de/verschluesselung/warum.html
-> Key ID: 0x4C0B2250
-> Key: http://home.arcor.de/mr_maniac/ANDERES/public.gpg
->
+Janusz
+--
+To unsubscribe from this list: send the line "unsubscribe linux-serial"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
