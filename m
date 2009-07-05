@@ -1,20 +1,20 @@
-From: Guilherme Longo <grlongo.ireland@gmail.com>
-Subject: performance between access mothods!
-Date: Sun, 05 Jul 2009 09:03:23 -0300
-Message-ID: <4A50968B.6030201@gmail.com>
-References: <1246761001-21982-1-git-send-email-troy.kisky@boundarydevices.com>
-	<20090705114122.GA5334@sirena.org.uk>
+From: Gernot Kohlhaas <gernot.kohlhaas@googlemail.com>
+Subject: Re: Testers wanted: New SB X-Fi driver
+Date: Sun, 05 Jul 2009 14:07:26 +0200
+Message-ID: <4A50977E.6000602@googlemail.com>
+References: <4812c8250907050138w586919d4vd23d71b4ae14e1dc@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.144])
-	by alsa0.perex.cz (Postfix) with ESMTP id C1FA524377
+Received: from mail-fx0-f226.google.com (mail-fx0-f226.google.com
+	[209.85.220.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9DAB624386
 	for <alsa-devel@alsa-project.org>;
-	Sun,  5 Jul 2009 14:03:27 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 5so1557994qwf.56
-	for <alsa-devel@alsa-project.org>; Sun, 05 Jul 2009 05:03:27 -0700 (PDT)
-In-Reply-To: <20090705114122.GA5334@sirena.org.uk>
+	Sun,  5 Jul 2009 14:07:28 +0200 (CEST)
+Received: by fxm26 with SMTP id 26so3137971fxm.32
+	for <alsa-devel@alsa-project.org>; Sun, 05 Jul 2009 05:07:28 -0700 (PDT)
+In-Reply-To: <4812c8250907050138w586919d4vd23d71b4ae14e1dc@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,26 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Duke Grable <kejento@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all!
+Hi!
+Try to unmute the "Line-In" Playback-device.
 
-I came across a doubt regarding the the access mode between application 
-and PCM device.
-It is a hardware parameter related property and there are 5 different 
-types available:
+Duke Grable schrieb:
+> Hello!
+> 
+> I stumbled upon these X-Fi drivers recently and ended up giving them a try.
+> So far they work flawlessly, except for microphone input... I'm wondering if
+> this is either just unimplemented, or if it's just an issue of
+> configuration? My sound card is an "X-Fi XtremeGamer" and my distro is the
+> latest version of openSuSe (2.6.27.23-0.1-default
+> ). Let me know if I'm missing anything!
+> 
+> Thanks,
+> Duke
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
 
-SND_PCM_ACCESS_MMAP_INTERLEAVED
-SND_PCM_ACCESS_MMAP_NONINTERLEAVED
-SND_PCM_ACCESS_MMAP_COMPLEX
-SND_PCM_ACCESS_RW_INTERLEAVED
-SND_PCM_ACCESS_RW_NONINTERLEAVED
 
-taking in account that these first 3 parameters has direct communication 
-with the memory, that means a higher speed operation? And the fact of 
-the interleaved has all the samples mixed together , makes any 
-difference in performance in comparison to the noninterleaved that has 
-samples stored on different buffers?
-
-Thanks in advanced
+-- 
+http://www.gnupp.de/verschluesselung/warum.html
+Key ID: 0x4C0B2250
+Key: http://home.arcor.de/mr_maniac/ANDERES/public.gpg
