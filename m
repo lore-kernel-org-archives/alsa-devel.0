@@ -1,15 +1,15 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: [PATCH] cmi8330: find OPL3 port automatically
-Date: Mon, 6 Jul 2009 22:08:04 +0200
-Message-ID: <200907062208.05543.linux@rainbow-software.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.31
+Date: Mon, 6 Jul 2009 21:49:01 +0100
+Message-ID: <20090706204900.GC4348@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.atlantis.sk (mail.atlantis.sk [80.94.52.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id D77E2244B2
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4BF6E244E4
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Jul 2009 22:08:15 +0200 (CEST)
+	Mon,  6 Jul 2009 22:49:07 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,50 +20,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-My CMI8329 had OPL3 port specified in SB16 resources. But now I found out that 
-it was my modification of the card's PnP EEPROM a couple of years ago (can be 
-done using C9SETROM.EXE utility). I did it because the OPL3 port was 
-completely missing from PnP data. It seems to be hardwired to 0x388 on 
-CMI8329.
+The following changes since commit da9ff1f796e81976935407251815838bef9868d4:
+  Mark Brown (1):
+        ASoC: Only disable pxa2xx-i2s clocks if we enabled them
 
+are available in the git repository at:
 
-Find OPL3 port automatically by searching in WSS and SB16 resources. If not 
-found, assume that it's hardwired to 0x388.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.31
 
+Grant Likely (2):
+      ASoC: Fix mpc5200-psc-ac97 to ensure the data ready bit is cleared
+      ASoC: add locking to mpc5200-psc-ac97 driver
 
-Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+Lars-Peter Clausen (1):
+      ASoC: Fix wm8753 register cache size and initialization
 
---- linux-test/sound/isa/cmi8330.c	2009-07-06 21:18:06.000000000 +0200
-+++ linux-2.6.30-pentium/sound/isa/cmi8330.c	2009-07-06 21:45:29.000000000 
-+0200
-@@ -362,7 +362,7 @@
- 	wssport[dev] = pnp_port_start(pdev, 0);
- 	wssdma[dev] = pnp_dma(pdev, 0);
- 	wssirq[dev] = pnp_irq(pdev, 0);
--	if (acard->type == CMI8330)
-+	if (pnp_port_start(pdev, 1))
- 		fmport[dev] = pnp_port_start(pdev, 1);
- 
- 	/* allocate SB16 resources */
-@@ -377,8 +377,13 @@
- 	sbdma8[dev] = pnp_dma(pdev, 0);
- 	sbdma16[dev] = pnp_dma(pdev, 1);
- 	sbirq[dev] = pnp_irq(pdev, 0);
--	if (acard->type == CMI8329)
--		fmport[dev] = pnp_port_start(pdev, 1);
-+	/* On CMI8239, the OPL3 port might be present in SB16 PnP resources */
-+	if (fmport[dev] == SNDRV_AUTO_PORT) {
-+		if (pnp_port_start(pdev, 1))
-+			fmport[dev] = pnp_port_start(pdev, 1);
-+		else
-+			fmport[dev] = 0x388;	/* Or hardwired */
-+	}
- 
- 	/* allocate MPU-401 resources */
- 	pdev = acard->mpu;
+Mark Brown (1):
+      ASoC: Fix register cache initialisation for WM8753
 
--- 
-Ondrej Zary
+ sound/soc/codecs/wm8753.c        |    6 +++---
+ sound/soc/fsl/mpc5200_dma.c      |    1 +
+ sound/soc/fsl/mpc5200_dma.h      |    1 +
+ sound/soc/fsl/mpc5200_psc_ac97.c |   17 ++++++++++++++++-
+ 4 files changed, 21 insertions(+), 4 deletions(-)
