@@ -1,26 +1,24 @@
 From: Kevin Hilman <khilman@deeprootsystems.com>
-Subject: Re: [PATCH 1/2] ASoC: davinci: update after EDMA
-	interface changes
-Date: Mon, 06 Jul 2009 15:35:59 -0700
-Message-ID: <87zlbhjv74.fsf@deeprootsystems.com>
-References: <1246917723-27071-1-git-send-email-khilman@deeprootsystems.com>
-	<1246917723-27071-2-git-send-email-khilman@deeprootsystems.com>
-	<20090706220859.GF25548@sirena.org.uk>
-	<87d48dlaju.fsf@deeprootsystems.com>
-	<20090706222512.GH25548@sirena.org.uk>
+Subject: Re: davinci-i2c,pcm updates
+Date: Mon, 06 Jul 2009 15:51:25 -0700
+Message-ID: <87k52ljuhe.fsf@deeprootsystems.com>
+References: <1246761001-21982-1-git-send-email-troy.kisky@boundarydevices.com>
+	<20090705114122.GA5334@sirena.org.uk>
+	<4A526CED.7050606@boundarydevices.com>
+	<20090706214149.GC25548@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pz0-f188.google.com (mail-pz0-f188.google.com
 	[209.85.222.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4F36D24550
+	by alsa0.perex.cz (Postfix) with ESMTP id 253772455D
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Jul 2009 00:36:02 +0200 (CEST)
-Received: by pzk26 with SMTP id 26so1625480pzk.16
-	for <alsa-devel@alsa-project.org>; Mon, 06 Jul 2009 15:36:01 -0700 (PDT)
-In-Reply-To: <20090706222512.GH25548@sirena.org.uk> (Mark Brown's message of
-	"Mon\, 6 Jul 2009 23\:25\:12 +0100")
+	Tue,  7 Jul 2009 00:51:28 +0200 (CEST)
+Received: by pzk26 with SMTP id 26so1630463pzk.16
+	for <alsa-devel@alsa-project.org>; Mon, 06 Jul 2009 15:51:28 -0700 (PDT)
+In-Reply-To: <20090706214149.GC25548@sirena.org.uk> (Mark Brown's message of
+	"Mon\, 6 Jul 2009 22\:41\:49 +0100")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,28 +29,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Sudhakar Rajashekhara <sudhakar.raj@ti.com>, davinci-linux-open-source@linux.davincidsp.com
+Cc: Chaithrika U S <chaithrika@ti.com>, alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
 Mark Brown <broonie@opensource.wolfsonmicro.com> writes:
 
-> On Mon, Jul 06, 2009 at 03:19:01PM -0700, Kevin Hilman wrote:
+> On Mon, Jul 06, 2009 at 02:30:21PM -0700, Troy Kisky wrote:
 >
->> So should I queue this up along with my changes, or do you want to
->> merge this into asoc?
+>> ARM: DaVinci: Interface changes visible to EDMA clients
 >
-> It needs to go along with your changes at least to preserve bisect (it
-> should really be in the same commit that changes the API from that point
-> of view).  
+>> But the last patch in series needs rebased on to this. Unfortunately,
+>> this patch is not yet in your for-2.6.32 branch. So, unless this patch
+>> is going to merge first, I show remove the need for this patch???
+>
+> Unless you can make your changes such that the above patch will merge in
+> cleanly there's no point - we'll need to deal with the cross tree merge
+> issues somehow.  That'll require coordination with Kevin; probably the
+> best approach is to make a small branch which can be merged into both
+> trees but that may be too involved.
 
-OK, it was originally part of the same patch, but I separated it out
-thinking that the sound/* part would go upstream separately.
-
-I'll merge it back into the original commit and update davinci-next.
-
-> But see my reply to Troy's post - he's got some further ASoC
-> changes which depend on the new API and complicate matters a little.
-
-OK, will reply there.
+For now, how about making anything that has arch/arm dependencies
+apply to the 'davinci-next' branch of DaVinci git.
 
 Kevin
