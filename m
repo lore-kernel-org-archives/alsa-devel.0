@@ -1,23 +1,21 @@
-From: Sean Burke <leftmostcat@gmail.com>
-Subject: Re: No sound with nVidia Corporation MCP79 High
- Definition Audio (rev b1) (Macbook Pro 5, 5)
-Date: Mon, 06 Jul 2009 11:16:35 -0600
-Message-ID: <4A523173.5030100@gmail.com>
-References: <4A493A56.1050504@gmail.com>
-	<200907061723.18123.nutz@unfoog.de>	<s5h8wj1kea7.wl%tiwai@suse.de>
-	<200907061753.47013.nutz@unfoog.de> <s5h4otpkcz2.wl%tiwai@suse.de>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: Model quirks and duplicate device IDs
+Date: Mon, 06 Jul 2009 21:56:57 +0300
+Message-ID: <4A5248F9.1050607@pardus.org.tr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f188.google.com (mail-pz0-f188.google.com
-	[209.85.222.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2F11324390
+Received: from lider.pardus.org.tr (lider.pardus.org.tr [193.140.100.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id A99EE24450
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Jul 2009 19:16:47 +0200 (CEST)
-Received: by pzk26 with SMTP id 26so1485706pzk.16
-	for <alsa-devel@alsa-project.org>; Mon, 06 Jul 2009 10:16:45 -0700 (PDT)
-In-Reply-To: <s5h4otpkcz2.wl%tiwai@suse.de>
+	Mon,  6 Jul 2009 20:56:54 +0200 (CEST)
+Received: from [192.168.1.2] (unknown [88.249.178.198])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested) (Authenticated sender: ozan)
+	by lider.pardus.org.tr (Postfix) with ESMTPSA id 02B6DA7ADA2
+	for <alsa-devel@alsa-project.org>;
+	Mon,  6 Jul 2009 21:56:25 +0300 (EEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,46 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: =?ISO-8859-1?Q?Andreas_N=FC=DFlein?= <nutz@unfoog.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Scr=EDobh Takashi Iwai:
-> At Mon, 6 Jul 2009 17:53:46 +0200,
-> Andreas N=FC=DFlein wrote:
->   =
+Hi,
 
->>> The missing pin configuration initialization was already fixed by
->>> the driver overriding it after checking PCI SSID (which is different
->>> from the codec SSID).  So, this should be no problem.
->>>
->>> However, the reason why the analog output doesn't work might be
->>> different from that.  There might be something else missing, but I
->>> don't know.
->>>
->>>
->>> Takashi
->>>       =
+A user reports that toshiba model is working fine with its
+laptop(Subsystem: 152d:0763). I checked the patch_realtek file and saw
+that the exact ID was mapped against ALC268_ACER 2 years ago for ALSA
+issue #3343.
 
->> oh =3D(
->>
->>
->> hmm.. anything i can do?  would it help if i tried changing values rando=
-mly =
+Both laptops are not-so-popular local brands and checking against 152d
+points to:
 
->> with hda-analyzer.py?
->>     =
+152d  QUANTA Computer Inc
 
->
-> Well, did the driver without my change work more or less with
-> the analog audio, or have you never gotten the analog output?
-> You can use the generic parser (i.e. the state without cirrus patch)
-> by passing model=3Dgeneric option to snd-hda-intel.
->   =
+according to the pci.ids database.
 
-For my part, nothing worked with the generic driver. I can't confirm
-digital out, but I can confirm that the kfree error is gone. What
-options are open for figuring out what remains?
+So how should we act on those situations seen that we can't match against DMI data(which would possibly be crap on those laptops)?
 
-
-Sean
+Thanks,
+Ozan Caglayan
