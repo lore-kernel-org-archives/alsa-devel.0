@@ -1,18 +1,16 @@
-From: Louis Lee <lwhlee@hotmail.com>
-Subject: Re: ALSA SoC driver playback twice as fast as desired
-Date: Mon, 6 Jul 2009 14:03:31 -0600
-Message-ID: <COL102-W384376C56DD69BA58C7D8BD02B0@phx.gbl>
-References: <COL102-W20FDDBC628826434E806E9D02F0@phx.gbl>
-	<20090704094943.GB10490@sirena.org.uk>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [PATCH] cmi8330: find OPL3 port automatically
+Date: Mon, 6 Jul 2009 22:08:04 +0200
+Message-ID: <200907062208.05543.linux@rainbow-software.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from col0-omc4-s15.col0.hotmail.com (col0-omc4-s15.col0.hotmail.com
-	[65.55.34.217]) by alsa0.perex.cz (Postfix) with ESMTP id D8FD0244A8
+Received: from mail.atlantis.sk (mail.atlantis.sk [80.94.52.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id D77E2244B2
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Jul 2009 22:03:35 +0200 (CEST)
-In-Reply-To: <20090704094943.GB10490@sirena.org.uk>
+	Mon,  6 Jul 2009 22:08:15 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,42 +20,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: ALSA Devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+My CMI8329 had OPL3 port specified in SB16 resources. But now I found out that 
+it was my modification of the card's PnP EEPROM a couple of years ago (can be 
+done using C9SETROM.EXE utility). I did it because the OPL3 port was 
+completely missing from PnP data. It seems to be hardwired to 0x388 on 
+CMI8329.
 
-> Date: Sat, 4 Jul 2009 10:49:43 +0100
-> From: broonie@opensource.wolfsonmicro.com
-> To: lwhlee@hotmail.com
-> CC: alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] ALSA SoC driver playback twice as fast as desired
-> 
-> On Thu, Jul 02, 2009 at 04:24:17PM -0600, Louis Lee wrote:
-> 
-> >   I'm out of ideas as to where to look.  The DAI interface is set as a I2S slave.  The clock is mastered by the Codec (WM8974).  I've set up min_channels and max_channels to be 1 whereever possible.  On a scope the clocking seems to be at the right speed.  Why is it sound is playing twice as fast?  Any ideas?  Any help is appreciated.
-> >   WM8974 is a mono codec.  The SSI bus on the i.MX27 is set to I2S slave mode with a 16 bit word length.  The word length on the codec is set to 16 bits.  The audio interface on the codec is set to I2S, sample rate coded to do only 48kHz.
-> 
-> If you're running in I2S mode try playing back a stereo file instead -
-> you'll need to adjust the capabilities of all the DAIs to say they
-> support stereo.  I suspect that the CPU side is trying to play back
-> stereo data and so plays back two samples for every frame (one in the
-> left channel and one in the right channel) which would give double speed
-> playback.
-> 
-> For mono data it's easier to use one of the DSP modes.
 
-Hi Mark,
+Find OPL3 port automatically by searching in WSS and SB16 resources. If not 
+found, assume that it's hardwired to 0x388.
 
-  I set the DAI to support Stereo and magically it plays the files properly with the correct timing!!
 
-  I took your recommendation as well.  I setup the SSI and code in DSP mode instead of I2S mode and everything plays back fine as expected.
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
 
-  Thanks for your help, I'd have never figured that out!
+--- linux-test/sound/isa/cmi8330.c	2009-07-06 21:18:06.000000000 +0200
++++ linux-2.6.30-pentium/sound/isa/cmi8330.c	2009-07-06 21:45:29.000000000 
++0200
+@@ -362,7 +362,7 @@
+ 	wssport[dev] = pnp_port_start(pdev, 0);
+ 	wssdma[dev] = pnp_dma(pdev, 0);
+ 	wssirq[dev] = pnp_irq(pdev, 0);
+-	if (acard->type == CMI8330)
++	if (pnp_port_start(pdev, 1))
+ 		fmport[dev] = pnp_port_start(pdev, 1);
+ 
+ 	/* allocate SB16 resources */
+@@ -377,8 +377,13 @@
+ 	sbdma8[dev] = pnp_dma(pdev, 0);
+ 	sbdma16[dev] = pnp_dma(pdev, 1);
+ 	sbirq[dev] = pnp_irq(pdev, 0);
+-	if (acard->type == CMI8329)
+-		fmport[dev] = pnp_port_start(pdev, 1);
++	/* On CMI8239, the OPL3 port might be present in SB16 PnP resources */
++	if (fmport[dev] == SNDRV_AUTO_PORT) {
++		if (pnp_port_start(pdev, 1))
++			fmport[dev] = pnp_port_start(pdev, 1);
++		else
++			fmport[dev] = 0x388;	/* Or hardwired */
++	}
+ 
+ 	/* allocate MPU-401 resources */
+ 	pdev = acard->mpu;
 
-Regards,
-Louis
-
-_________________________________________________________________
-We are your photos. Share us now with Windows Live Photos.
-http://go.microsoft.com/?linkid=9666047
+-- 
+Ondrej Zary
