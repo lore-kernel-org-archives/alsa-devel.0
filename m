@@ -1,20 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: davinci-i2c,pcm updates
-Date: Mon, 6 Jul 2009 22:41:49 +0100
-Message-ID: <20090706214149.GC25548@sirena.org.uk>
-References: <1246761001-21982-1-git-send-email-troy.kisky@boundarydevices.com>
-	<20090705114122.GA5334@sirena.org.uk>
-	<4A526CED.7050606@boundarydevices.com>
+Subject: ASoC updates for 2.6.32
+Date: Mon, 6 Jul 2009 22:42:31 +0100
+Message-ID: <20090706214231.GD25548@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 37CDD24533
+	by alsa0.perex.cz (Postfix) with ESMTP id 8341924533
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Jul 2009 23:41:58 +0200 (CEST)
+	Mon,  6 Jul 2009 23:42:37 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4A526CED.7050606@boundarydevices.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,28 +20,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Troy Kisky <troy.kisky@boundarydevices.com>
-Cc: khilman@deeprootsystems.com, Chaithrika U S <chaithrika@ti.com>, alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 06, 2009 at 02:30:21PM -0700, Troy Kisky wrote:
+The following changes since commit 2115d2c17369df4b70fd161623a40ce98c261989:
+  Mark Brown (1):
+        Merge branch 'for-2.6.31' into for-2.6.32
 
-> ARM: DaVinci: Interface changes visible to EDMA clients
+are available in the git repository at:
 
-> But the last patch in series needs rebased on to this. Unfortunately,
-> this patch is not yet in your for-2.6.32 branch. So, unless this patch
-> is going to merge first, I show remove the need for this patch???
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.32
 
-Unless you can make your changes such that the above patch will merge in
-cleanly there's no point - we'll need to deal with the cross tree merge
-issues somehow.  That'll require coordination with Kevin; probably the
-best approach is to make a small branch which can be merged into both
-trees but that may be too involved.
+Candelaria Villareal, Jorge (2):
+      ASoC: TWL4030: Add EXTMUTE to reduce pop-noise effect
+      ASoC: Zoom2: Update twl4030_setup_data parameters
 
-The other options are to punt on the patch until after the merges have
-happened, cherry pick a small number of commits over in one direction or
-another to preserve buildability or just accept that DaVinci ASoC will
-need to be built from -next for this merge window.  Since pretty much
-everyone working on DaVinci appears to be using the DaVinci tree rather
-than mainline at the minute the latter option isn't as bad as it could
-be.  I'm not sure what works best for you guys?
+Grant Likely (2):
+      ASoC: Fix mpc5200-psc-ac97 to ensure the data ready bit is cleared
+      ASoC: add locking to mpc5200-psc-ac97 driver
+
+Lars-Peter Clausen (1):
+      ASoC: Fix wm8753 register cache size and initialization
+
+Lopez Cruz, Misael (1):
+      ASoC: TWL4030: Add tristate callbacks for HiFi and Voice
+
+Mark Brown (7):
+      ASoC: Fix register cache initialisation for WM8753
+      ASoC: Add CODEC volatile register operation
+      ASoC: Fix leaks in WM8731 probe error handling
+      ASoC: Fix WM8960 leaks on probe failure
+      ASoC: Fix leaks in WM8988 registration error handling
+      ASoC: Remove unused AK4535 hardware read functionality
+      Merge branch 'for-2.6.31' into for-2.6.32
+
+Troy Kisky (8):
+      ASoC: DaVinci: i2s, remove MOD_REG_BIT macro
+      ASoC: DaVinci: i2s toggle clock to complete reset
+      ASoc: DaVinci: i2s, minor cleanup
+      ASoC: DaVinci: i2s cleanup
+      ASoC: DaVinci: i2s, only start sample generator if needed
+      ASoC: DaVinci: i2s, minor cleanup of davinci_i2s_startup
+      ASoC: DaVinci: i2s, fix mcbsp_word_length update
+      ASoC: DaVinci: i2s, add davinci_i2s_prepare and shutdown
+
+ include/sound/soc.h              |    2 +
+ sound/soc/codecs/ak4535.c        |   16 ---
+ sound/soc/codecs/twl4030.c       |   55 ++++++++++
+ sound/soc/codecs/twl4030.h       |    2 +
+ sound/soc/codecs/wm8731.c        |   17 ++-
+ sound/soc/codecs/wm8753.c        |    6 +-
+ sound/soc/codecs/wm8960.c        |   16 ++-
+ sound/soc/codecs/wm8988.c        |    8 +-
+ sound/soc/davinci/davinci-i2s.c  |  220 ++++++++++++++++++++++----------------
+ sound/soc/fsl/mpc5200_dma.c      |    1 +
+ sound/soc/fsl/mpc5200_dma.h      |    1 +
+ sound/soc/fsl/mpc5200_psc_ac97.c |   17 +++-
+ sound/soc/omap/zoom2.c           |   17 +++-
+ sound/soc/soc-core.c             |   17 +++
+ 14 files changed, 268 insertions(+), 127 deletions(-)
