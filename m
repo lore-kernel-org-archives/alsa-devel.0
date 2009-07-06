@@ -1,52 +1,46 @@
-From: "Rongrong Cao" <rrcao@ambarella.com>
-Subject: [PATCH] sound dapm: fix check for external widgets bug (based on linux-2.6.30.1)
-Date: Mon, 6 Jul 2009 05:55:27 -0700
-Message-ID: <90B0CE4312136749B97EBEAF5764F87403C8F2D3@ambarella-ex.ambarella.net>
+From: Guilherme Longo <grlongo.ireland@gmail.com>
+Subject: snd_pcm_format_set_silence parameter
+Date: Mon, 06 Jul 2009 10:26:44 -0300
+Message-ID: <4A51FB94.80802@gmail.com>
+References: <1246761001-21982-1-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-2-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-3-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-4-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-5-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-6-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-7-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-8-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-9-git-send-email-troy.kisky@boundarydevices.com>	<1246878557.3192.25.camel@linux-1lbu>
+	<20090706115442.GA8925@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754870AbZGFNKs@vger.kernel.org>
-Content-class: urn:content-classes:message
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, trivial@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-px0-f192.google.com (mail-px0-f192.google.com
+	[209.85.216.192])
+	by alsa0.perex.cz (Postfix) with ESMTP id C0122245C3
+	for <alsa-devel@alsa-project.org>;
+	Mon,  6 Jul 2009 15:26:49 +0200 (CEST)
+Received: by pxi30 with SMTP id 30so466683pxi.16
+	for <alsa-devel@alsa-project.org>; Mon, 06 Jul 2009 06:26:48 -0700 (PDT)
+In-Reply-To: <20090706115442.GA8925@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-=46rom: Rongrong Cao rrcao@ambarella.com
 
-This patch is based on linux-2.6.30.1
-In SOC DAPM layer of SOUND subsystem, when add signal route (in the fun=
-ction snd_soc_dapm_add_route() ),=20
-the original code has wrong logic when dapm layer check each widget whe=
-ther an external one.
+Mates,
 
------------------------------------------------------------------------=
-----------------------------------
+What exactly does snd_pcm_format_set_silence is useful for???
 
---- linux-2.6.30.1/sound/soc/soc-dapm.c.orig    2009-07-06 19:48:43.000=
-000000 +0800
-+++ linux-2.6.30.1/sound/soc/soc-dapm.c 2009-07-06 19:03:15.000000000 +=
-0800
-@@ -983,8 +983,8 @@ static int snd_soc_dapm_add_route(struct
-        if (wsink->id =3D=3D snd_soc_dapm_input) {
-                if (wsource->id =3D=3D snd_soc_dapm_micbias ||
-                        wsource->id =3D=3D snd_soc_dapm_mic ||
--                       wsink->id =3D=3D snd_soc_dapm_line ||
--                       wsink->id =3D=3D snd_soc_dapm_output)
-+                       wsource->id =3D=3D snd_soc_dapm_line ||
-+                       wsource->id =3D=3D snd_soc_dapm_output)
-                        wsink->ext =3D 1;
-        }
-        if (wsource->id =3D=3D snd_soc_dapm_output) {
 
------------------------------------------------------------------------=
-----------------------------------
+That is the code:
 
-Signed-off-by: Rongrong Cao rrcao@ambarella.com
+if (count < chunk_size)    {
+        snd_pcm_format_set_silence(hwparams.format, data + count * 
+bits_per_frame / 8, (chunk_size - count) * hwparams.channels);
+        count = chunk_size;
+    }
 
-********************
-Best regards!
-Allen (Rongrong) Cao
-Ambarella Shanghai Ltd.
-Tel:=A0=A0 (86-21) 50942311
-=46ax:=A0 (86-21) 50942321
+Could I get some help?
+Thanks
