@@ -1,19 +1,21 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: Wrong sample rate user space -> kernel space?
-Date: Tue, 7 Jul 2009 17:24:57 +0200
-Message-ID: <20090707152457.GO19257@buzzloop.caiaq.de>
-References: <20090707142942.GV18340@buzzloop.caiaq.de>
-	<4A536548.70300@ladisch.de>
+From: Susan Cragin <susancragin@earthlink.net>
+Subject: No incoming sound indigo iox
+Date: Tue, 7 Jul 2009 11:28:08 -0400 (EDT)
+Message-ID: <30136324.1246980488566.JavaMail.root@elwamui-ovcar.atl.sa.earthlink.net>
+Reply-To: Susan Cragin <susancragin@earthlink.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 624CB24493
+Received: from elasmtp-banded.atl.sa.earthlink.net
+	(elasmtp-banded.atl.sa.earthlink.net [209.86.89.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0D9602449E
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Jul 2009 17:25:00 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4A536548.70300@ladisch.de>
+	Tue,  7 Jul 2009 17:28:12 +0200 (CEST)
+Received: from [209.86.224.44] (helo=elwamui-ovcar.atl.sa.earthlink.net)
+	by elasmtp-banded.atl.sa.earthlink.net with esmtpa (Exim 4.67)
+	(envelope-from <susancragin@earthlink.net>) id 1MOCaW-0000Ab-Kt
+	for alsa-devel@alsa-project.org; Tue, 07 Jul 2009 11:28:08 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,28 +25,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 07, 2009 at 05:10:00PM +0200, Clemens Ladisch wrote:
-> Daniel Mack wrote:
-> > On a PXA embedded board, the sample rate propagation from user space to
-> > kernel space seems to be wrong.
-> > 
-> > When I start aplay (v1.0.19) from userspace like this ...
-> > 
-> >     # aplay -f dat /dev/urandom 
-> >     Playing raw data '/dev/urandom' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
-> > 
-> > ... params_rate(params) in my snd_soc_ops .hw_params callback returns
-> > 88200, not 48000.
-> 
-> It might be possible that userspace converts the sample rate because it
-> thinks that the driver doesn't support 48 kHz.
-> 
-> Is there a converter plugin in the output of "aplay -f dat -v /dev/urandom"?
+I just purchased the indigoaudio iox. 
+Outgoing shows up on Volume Control, incoming does not.
+In Audacity, incoming shows up as: ALSA: Indigo IOx (hw:1,0)
+but recording does not work. 
 
-Argh. Of course, you're right. Sorry for the noise. Literally ;)
+Here's the catch. My problem may be due to my kernel. 
+I am running Ubuntu-Studio and have the 29.5-2-rt experimental kernel, which is the 5-1 recompiled with alsadriver support for 30 kernels. 
+So you may just tell me to go away until the kernel's better, but I don't think the kernel is the problem. 
 
-Daniel
+FYI
+winecfg says:
+fixme:mixer:ALSA_MixerInit No master control found on Indigo IOx, disabling mixer
