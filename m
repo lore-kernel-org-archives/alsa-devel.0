@@ -1,18 +1,19 @@
 From: "Harsha, Priya" <priya.harsha@intel.com>
-Subject: Re: [PATCH] [RFC 3/13] Intel SST driver include headers
-Date: Tue, 7 Jul 2009 11:33:23 +0530
-Message-ID: <98769532B4BB14429434178695419EAE5BBC220A@bgsmsx501.gar.corp.intel.com>
-References: <1246604545-12854-1-git-send-email-vinod.koul@intel.com>
-	<s5hiqia2ftw.wl%tiwai@suse.de>
+Subject: Re: [PATCH] [RFC 4/13] Intel SST driver common
+	private	headers
+Date: Tue, 7 Jul 2009 11:37:35 +0530
+Message-ID: <98769532B4BB14429434178695419EAE5BBC222C@bgsmsx501.gar.corp.intel.com>
+References: <1246604612-12875-1-git-send-email-vinod.koul@intel.com>
+	<s5hhbxu2fk4.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 46B2E246A3
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9D5372469E
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Jul 2009 08:05:21 +0200 (CEST)
-In-Reply-To: <s5hiqia2ftw.wl%tiwai@suse.de>
+	Tue,  7 Jul 2009 08:08:11 +0200 (CEST)
+In-Reply-To: <s5hhbxu2fk4.wl%tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,43 +28,43 @@ To: Takashi Iwai <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->> +/* Firmware Version info */
->> +struct snd_sst_fw_version {
->> +	__u8 build;	/* build number*/
->> +	__u8 minor;	/* minor number*/
->> +	__u8 major;	/* major number*/
->> +	__u8 type; /* build type*/
->> +};
->> +
->> +/* Port info structure */
->> +struct snd_sst_port_info {
->> +	__u16 port_type;
+>> +/*
+>> +SST shim registers to structure mapping
+>> +*/
+>> +union config_status_reg {
+>> +	struct {
+>> +		u32 rsvd0:1;
+>> +		u32 sst_reset:1;
+>> +		u32 hw_rsvd:3;
+>> +		u32 sst_clk:2;
+>> +		u32 bypass:3;
+>> +		u32 run_stall:1;
+>> +		u32 rsvd:21;
+>> +	} part;
+>> +	u32 full;
 >
->Just wondering -- is there big-endian support?
-We have not tested this on big-endian, Could you tell us that should we make it endian safe?
+>A union with bit fields is very bad for portability.
+>If it's used as a communication parameter, don't use it.
+>Just pass u32 and get/set via normal bit and/or operations.
+
+We communicate with firmare using a 32 bit register only. The bits of 32 bit register mean different things. So this structure is just a way for use to read/write it using .full and manuplate using .part.field. 
+I am not sure I understand where it fails in portability. Can you please help elaborate a little here?
+
+
+>> +struct snd_sst_user_cap_list {
+>> +	unsigned int iov_index; /*index of iov*/
+>> +	unsigned long iov_offset; /*offset in iov*/
+>> +	unsigned long offset; /*offset in kmem*/
+>> +	unsigned long size; /*size copied*/
+>
+>Sure to use long here?
+No. we will correct it to use u64
+
 
 >
->> +struct snd_sst_vol {
->> +	unsigned int	stream_id;
->> +	int		volume;
->> +	unsigned long	ramp_duration;
->
->Are you sure to use long?
->Long can be different between 32 and 64bit architectures.
-We will change it to u32.
-
->
->> +struct snd_sst_buff_entry {
->> +	union {
->> +		void *user;
->> +		unsigned int offset;
->> +	} buffer;
->
->Is it OK?
->The pointer and int can be different sizes.
-void* user - is the pointer to the buffer
-unsigned int offset - is the offset inside the buffer area.
-Not sure if I understand your comment. Please let us know if there is any issue you see with this structure.
+>Well, all these shouldn't be inline if you have no concrete reason
+>to inline them.  It's no C++ template.  Better to put as normal functions.
+Sure. Will change them accordingly.
 
 Thanks,
 Harsha
