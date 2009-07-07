@@ -1,20 +1,20 @@
 From: "Harsha, Priya" <priya.harsha@intel.com>
-Subject: Re: [PATCH] [RFC 2/13] Intel SST driver
-Date: Tue, 7 Jul 2009 11:54:57 +0530
-Message-ID: <98769532B4BB14429434178695419EAE5BBC22A0@bgsmsx501.gar.corp.intel.com>
-References: <1246604493-12833-1-git-send-email-vinod.koul@intel.com>
-	<s5hk52q2g5k.wl%tiwai@suse.de>
-	<98769532B4BB14429434178695419EAE5BBC21F2@bgsmsx501.gar.corp.intel.com>
-	<s5hprcdaunp.wl%tiwai@suse.de>
+Subject: Re: [PATCH] [RFC 3/13] Intel SST driver include headers
+Date: Tue, 7 Jul 2009 11:59:37 +0530
+Message-ID: <98769532B4BB14429434178695419EAE5BBC22D0@bgsmsx501.gar.corp.intel.com>
+References: <1246604545-12854-1-git-send-email-vinod.koul@intel.com>
+	<s5hiqia2ftw.wl%tiwai@suse.de>
+	<98769532B4BB14429434178695419EAE5BBC220A@bgsmsx501.gar.corp.intel.com>
+	<s5hocrxauik.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id E5187246C4
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 07F1B246B6
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Jul 2009 08:25:29 +0200 (CEST)
-In-Reply-To: <s5hprcdaunp.wl%tiwai@suse.de>
+	Tue,  7 Jul 2009 08:29:55 +0200 (CEST)
+In-Reply-To: <s5hocrxauik.wl%tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,44 +30,54 @@ Cc: "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-de
 List-Id: alsa-devel@alsa-project.org
 
 >>
->> >(snip)
->> >> +#ifndef CONFIG_SST_IPC_NOT_INCLUDED
->> >> +#include <asm/ipc_defs.h>
->> >> +#endif
+>> >> +/* Firmware Version info */
+>> >> +struct snd_sst_fw_version {
+>> >> +	__u8 build;	/* build number*/
+>> >> +	__u8 minor;	/* minor number*/
+>> >> +	__u8 major;	/* major number*/
+>> >> +	__u8 type; /* build type*/
+>> >> +};
+>> >> +
+>> >> +/* Port info structure */
+>> >> +struct snd_sst_port_info {
+>> >> +	__u16 port_type;
 >> >
->> >What is this file?
->> This file has the function definitions to communicate to the sound
->> card. The sound card is a part of PMIC chip. The sound card
->> registers are not accessible by CPU directly. There is a platform
->> driver that enables to communicate to the sound card. Audio driver
->> uses this header file of that diver to communicate to the sound
->> card. This is one of the dependant drivers for audio driver. This is
->> being submitted upstream by Intel as well.
+>> >Just wondering -- is there big-endian support?
+>> We have not tested this on big-endian, Could you tell us that should
+>> we make it endian safe?
 >
->Hm, OK, but then don't forget to remove ifdef after that part is
->merged.  An ifdef around the include file isn't recommended at all.
+>When a field is more than one byte, you'd need endian conversion at
+>read/write.  I didn't find it thus I suspected it.
+So, does it look safe to keep the code as such? We are using the bit field in union only for ease of setting/getting bit values and not for communication.
 
-Sure. Will remove them once the dependent drivers are merged.
-
+>
+>
+>> >> +struct snd_sst_vol {
+>> >> +	unsigned int	stream_id;
+>> >> +	int		volume;
+>> >> +	unsigned long	ramp_duration;
+>> >
+>> >Are you sure to use long?
+>> >Long can be different between 32 and 64bit architectures.
+>> We will change it to u32.
 >>
 >> >
->> >> +#ifdef CONFIG_SST_OSPM_SUPPORT
+>> >> +struct snd_sst_buff_entry {
+>> >> +	union {
+>> >> +		void *user;
+>> >> +		unsigned int offset;
+>> >> +	} buffer;
 >> >
->> >Can't be simple CONFIG_PM?
->> No. OSPM is new power management module being developed for the
->> platform. The code defined under this #def is to provide support
->> from audio stack to this new power management module. This is also
->> being up streamed by Intel.
+>> >Is it OK?
+>> >The pointer and int can be different sizes.
+>> void* user - is the pointer to the buffer
+>> unsigned int offset - is the offset inside the buffer area.
+>> Not sure if I understand your comment. Please let us know if there
+>> is any issue you see with this structure.
 >
->I understand the underlying platform isn't merged so we need another
->ifdef.  But, once after it got merged, no reason to keep another
->special config, right?
->
->Keeping own kconfigs look easy but this will increase maintenance
->labor a lot later.  If it's a power-management, using only CONFIG_PM
->would make the life happier.
-
-Yes. These configs would go when the dependant power management module is merged. 
+>A pointer can be 64bit while offset is always 32bit.
+>If they don't have to share the same space, why need to be a union?
+I think I will give more clear explanation here before this structure declaration. I know its confusing. Basically we support both mmap and user buffers. When user buffers are passed to the driver then void *user field is used and when mmap buffers are passed to the driver, the offset in the mmap buffer is passed in this structure. Either mmap buffer's offset or user buffer address will be used and not both.
 
 Thanks,
 Harsha
