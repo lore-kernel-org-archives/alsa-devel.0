@@ -1,17 +1,29 @@
-From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: [PATCH] ASoC: DaVinci: pcm,
-	don't play 1st sound period twice
-Date: Tue,  7 Jul 2009 17:36:06 -0700
-Message-ID: <1247013366-32737-1-git-send-email-troy.kisky@boundarydevices.com>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Problems with snd-hda-intel and Asus M2NPV-VM.
+	Please help!
+Date: Tue, 7 Jul 2009 22:14:00 -0400
+Message-ID: <75b66ecd0907071914n5e29c83co168b6b0ca91357f5@mail.gmail.com>
+References: <a3ef07920906241108u786a6c89j80f2ad89eebf7dcd@mail.gmail.com>
+	<a3ef07920906241134m2f84ac06pef7465ce356f893f@mail.gmail.com>
+	<s5hvdmfv6s6.wl%tiwai@suse.de>
+	<a3ef07920906291028q670ed146t1451650d0c2a4713@mail.gmail.com>
+	<s5hzlbq83o8.wl%tiwai@suse.de>
+	<a3ef07920906301030p7f84d4c4xe6c0590f436b4de9@mail.gmail.com>
+	<s5heit1bjki.wl%tiwai@suse.de>
+	<a3ef07920907010726o6e06dd8dn25b33d4ee5b6c42c@mail.gmail.com>
+	<a3ef07920907060844o50d8be15s16bc1bca8acf72b6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mpls-qmqp-03.inet.qwest.net (mpls-qmqp-03.inet.qwest.net
-	[63.231.195.114])
-	by alsa0.perex.cz (Postfix) with ESMTP id 310D5244EE
+Received: from mail-vw0-f189.google.com (mail-vw0-f189.google.com
+	[209.85.212.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id EE881245AE
 	for <alsa-devel@alsa-project.org>;
-	Wed,  8 Jul 2009 02:36:19 +0200 (CEST)
+	Wed,  8 Jul 2009 04:14:01 +0200 (CEST)
+Received: by vwj27 with SMTP id 27so3818658vwj.16
+	for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2009 19:14:00 -0700 (PDT)
+In-Reply-To: <a3ef07920907060844o50d8be15s16bc1bca8acf72b6@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,30 +33,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: davinci-linux-open-source@linux.davincidsp.com, broonie@sirena.org.uk, Troy Kisky <troy.kisky@boundarydevices.com>
+To: VDR User <user.vdr@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Update the dma link with correct data as soon as
-the master channel has copied it. Otherwise, the
-1st period will play twice.
+On Mon, Jul 6, 2009 at 11:44 AM, VDR User<user.vdr@gmail.com> wrote:
+>> My mainboard doesn't have HDMI out but it did come with an HDTV module
+>> for HDTV output, could it still be that something in my xorg.conf is
+>> missing that is causing this not to work? =A0How can I tell (or could
+>> you tell by my logs) if the codec registers are good? =A0I'm not sure
+>> how to proceed from here aside of buying a new mainboard.
+>
+> Anyone? =A0Any suggestions at all?
 
-Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
----
- sound/soc/davinci/davinci-pcm.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+This probably cannot work in a headless environment.  Thanks to DRM,
+the video driver has to do some magic to make HDMI work.
 
-diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
-index a059965..8fd0c3c 100644
---- a/sound/soc/davinci/davinci-pcm.c
-+++ b/sound/soc/davinci/davinci-pcm.c
-@@ -206,6 +206,7 @@ static int davinci_pcm_prepare(struct snd_pcm_substream *substream)
- 	/* Copy self-linked parameter RAM entry into master channel */
- 	edma_read_slot(prtd->slave_lch, &temp);
- 	edma_write_slot(prtd->master_lch, &temp);
-+	davinci_pcm_enqueue_dma(substream);
- 
- 	return 0;
- }
--- 
-1.5.6.3
+I assume your video card is Nvidia.  Even though you plan to run
+headless you probably have to set up X server with proprietary nvidia
+driver to have any chance of this working.
+
+Lee
