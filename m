@@ -1,20 +1,24 @@
 From: "Harsha, Priya" <priya.harsha@intel.com>
 Subject: Re: [PATCH] [RFC 8/13] Intel SST sound card driver
-Date: Wed, 8 Jul 2009 11:14:07 +0530
-Message-ID: <98769532B4BB14429434178695419EAE5BC0AF65@bgsmsx501.gar.corp.intel.com>
+Date: Wed, 8 Jul 2009 11:14:38 +0530
+Message-ID: <98769532B4BB14429434178695419EAE5BC0AF6A@bgsmsx501.gar.corp.intel.com>
 References: <1246604775-12960-1-git-send-email-vinod.koul@intel.com>
-	<20090704105743.GD10490@sirena.org.uk>
-	<98769532B4BB14429434178695419EAE5BBC230C@bgsmsx501.gar.corp.intel.com>
-	<20090707114227.GD14393@rakim.wolfsonmicro.main>
+	<s5hzlblhk4v.wl%tiwai@suse.de>
+	<98769532B4BB14429434178695419EAE5BBC2280@bgsmsx501.gar.corp.intel.com>
+	<s5heistasy0.wl%tiwai@suse.de>
+	<98769532B4BB14429434178695419EAE5BBC23A6@bgsmsx501.gar.corp.intel.com>
+	<s5hab3harxd.wl%tiwai@suse.de>
+	<98769532B4BB14429434178695419EAE5BBC23C9@bgsmsx501.gar.corp.intel.com>
+	<s5h63e5ar8y.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9FAA81037F4
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0A17E10387A
 	for <alsa-devel@alsa-project.org>;
-	Wed,  8 Jul 2009 07:45:11 +0200 (CEST)
-In-Reply-To: <20090707114227.GD14393@rakim.wolfsonmicro.main>
+	Wed,  8 Jul 2009 07:45:23 +0200 (CEST)
+In-Reply-To: <s5h63e5ar8y.wl%tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,41 +29,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
 
 >-----Original Message-----
->From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
->Sent: Tuesday, July 07, 2009 5:12 PM
+>From: Takashi Iwai [mailto:tiwai@suse.de]
+>Sent: Tuesday, July 07, 2009 12:56 PM
 >To: Harsha, Priya
 >Cc: Koul, Vinod; alsa-devel@alsa-project.org
 >Subject: Re: [alsa-devel] [PATCH] [RFC 8/13] Intel SST sound card driver
 >
->On Tue, Jul 07, 2009 at 12:05:45PM +0530, Harsha, Priya wrote:
->> >-----Original Message-----
->> >From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
+>At Tue, 7 Jul 2009 12:46:38 +0530,
+>Harsha, Priya wrote:
+>>
+>> >> >> >
+>> >> >> >> +	.access 	=	SNDRV_CTL_ELEM_ACCESS_READWRITE,
+>> >> >> >> +	.info 		=	snd_intelmad_line_volume_info,
+>> >> >> >> +	.get 		=	snd_intelmad_volume_get,
+>> >> >> >> +	.put		=	snd_intelmad_volume_set,
+>> >> >> >
+>> >> >> >Can it have the dB information via TLV?
+>> >> >> No. It actually differs across the 3 sound cards supported and it's
+>> >> >> not a direct TLV that can be used.
+>> >> >
+>> >> >Then you'd set a static TLV entry after creating the ctl element
+>> >> >instance, or return a TLV entry dynamically via the tlv callback.
+>> >> Sorry I misunderstood. The value that is passed in min and max is in
+>> >> dB.
+>> >> For min and max values, it's a static dB value that I return. But
+>> >> when the volume adjustments need to be done, based on the value
+>> >> given by ALSA, I set the sound card registers to reflect that dB
+>> >> value.
+>> >
+>> >The value to be set is always raw.  That is, alsa-lib computes the
+>> >raw value from the given dB value based on the TLV information (dB
+>> >min/max), supposing the volume scale is logarithmic.
+>> >
+>> >Isn't it the case for you?
+>> Yes. I set the raw min and max values in db. And alsa-lib computes
+>> the volume value to be set (which is in between the min and max) and
+>> provides the same to the driver. The driver sets the corresponding
+>> sound card registers to reflect the same. In our case, the scale is
+>> not logarithmic in couple of sound cards and the vendor abstraction
+>> file would need to take care of the same to set the registers
+>> correctly.
 >
->> >ALSA core has an interface for representing jacks to user space which
->> >should be used here - see include/sound/jack.h.
->
->> Thanks for the note. I shall look into it further. Can you suggest any
->> example ALSA driver that uses this functionality so that I can have a
->
->A lot of the HDA drivers use it and there's a wrapper for ASoC too -
->it's fairly likely that if you're running a current kernel your desktop
->PC will support this interface already.  Searching the kernel source for
->snd_jack_new() should turn up everything there is at the minute.
->
->> reference. Also quick question around this, can I use this jack.h to
->> event the user space?
->
->Yes, the jacks currently appear as input devices to applications.
->Takashi was also considering adding some ALSA-specific ways of reading
->the state to go alongside these.
-If I create a jack sense device, how would an application use it? Currently do we have any mechanism in ALSA to send events to user space when a jack is detected? If not, would it be ok if I stick to netlink events for now. We have a platform specific daemon that is being developed that listens on netlink events and that is why the driver sends them. 
+>Then it can't be exported as the existing TLV.  The currently defined
+>TLV types are logarithmic, linear, and combinations.
+>I think it's better to fix the driver side to be logarithmic.
+Ok. I will work on it.
 
 Thanks,
 Harsha
