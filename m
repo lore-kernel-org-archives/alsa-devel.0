@@ -1,23 +1,19 @@
-From: "Ted T. Logan" <tedtheologian@gmail.com>
-Subject: Re: Testers wanted: New SB X-Fi driver - still has
- clicks on sb0670
-Date: Wed, 08 Jul 2009 13:59:51 -0500
-Message-ID: <1247079591.7729.18.camel@localhost.localdomain>
-References: <4812c8250907050138w586919d4vd23d71b4ae14e1dc@mail.gmail.com>
-	<1247021134.3439.2.camel@localhost.localdomain>
-	<s5hr5wr4szi.wl%tiwai@suse.de>  <s5hk52j4rom.wl%tiwai@suse.de>
+From: Chris Lasher <chris.lasher@gmail.com>
+Subject: Choosing correct nid and xindex for hda_intel realtek
+	patch for MacBook 5.1
+Date: Wed, 8 Jul 2009 15:03:08 -0400
+Message-ID: <128a885f0907081203p467526amb93ee124443c6693@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f217.google.com (mail-gx0-f217.google.com
-	[209.85.217.217])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2F1D224451
+Received: from mail-qy0-f185.google.com (mail-qy0-f185.google.com
+	[209.85.221.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2B51A24454
 	for <alsa-devel@alsa-project.org>;
-	Wed,  8 Jul 2009 20:59:15 +0200 (CEST)
-Received: by gxk17 with SMTP id 17so3613399gxk.8
-	for <alsa-devel@alsa-project.org>; Wed, 08 Jul 2009 11:59:14 -0700 (PDT)
-In-Reply-To: <s5hk52j4rom.wl%tiwai@suse.de>
+	Wed,  8 Jul 2009 21:03:30 +0200 (CEST)
+Received: by qyk15 with SMTP id 15so5408811qyk.16
+	for <alsa-devel@alsa-project.org>; Wed, 08 Jul 2009 12:03:28 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,37 +23,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-It's never worked with your driver
+I'm trying to fix support for my MacBook 5.1. A patch by Kacper is getting
+me part of the way there but it seems my pin configuration is different than
+his model of MacBook. I'm trying to wire up my pins to his correctly. I am
+trying to figure out the bits of snd_kcontrol_new (in
+alsa-driver-1.0.19/alsa-kernel/pci/hda/patch_realtek.c) for the
+HDA_CODEC_VOLUME and HDA_BIND_MUTE. There is:
+string_description, nid , xindex, HDA_INPUT/HDA_OUTPUT
 
+I'm trying to figure out how to choose the correct values for nid and
+xindex. Actually, I'm really wondering how to identify the right xindex for
+a given nid, as I realize the nid's come from the Node #s from the output of
+/proc/asound/card0/codec#0.
 
-only with this one:
+I also need some assistance with regards to the hda_verb settings for
+modifying the alc885_mb5_init_verbs section; if anyone can offer pointers
+there, I'd appreciate it.
 
- XFiDrv_Linux_Public_US_1.00.tar.gz
+This is directly related to Bug #337314 in Launchpad
+https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/337314?comments=all
+and
+ALSA bug 4432:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4432
 
+Kacper's patch is linked to in both bug reports.
 
-On Wed, 2009-07-08 at 08:25 +0200, Takashi Iwai wrote:
+The output of my soundcard's codec#0 is attached to the Launchpad report
+https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/337314/comments/110
 
-> At Wed, 08 Jul 2009 07:57:21 +0200,
-> I wrote:
-> > 
-> > At Tue, 07 Jul 2009 21:45:34 -0500,
-> > Ted T. Logan wrote:
-> > > 
-> > > The newest snapshot still has the same clicks with my xfi card, over and
-> > > over and over and over and over and over
-> > > 
-> > > sb0670 chipset.
-> > > 
-> > > what to do?
-> > 
-> > Please bisect.
-> 
-> ... if it's difficult, give the date it worked (at best, show HEAD and 
-> alsa-kernel/HEAD files included in the tarball) and it regressed.
-> 
-> 
-> Takashi
+The output from a soundcard that does seem to have full support by Kacper's
+patch is available at
+https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/337314/comments/130
+
+Any help would be much appreciated.
+
+Thanks,
+Chris
