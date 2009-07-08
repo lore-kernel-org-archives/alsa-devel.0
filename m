@@ -1,53 +1,57 @@
-From: "Rongrong Cao" <rrcao@ambarella.com>
-Subject: [PATCH for-2.6.32] sound dapm: fix checking for external widgets bug
-Date: Tue, 7 Jul 2009 23:11:46 -0700
-Message-ID: <90B0CE4312136749B97EBEAF5764F87403C8F77A@ambarella-ex.ambarella.net>
+From: William Weston <weston@sysex.net>
+Subject: [Patch] hda-intel: Add quirks for RTL888 & RV630/M76
+ based MSI GX710
+Date: Tue, 7 Jul 2009 23:25:01 -0700 (PDT)
+Message-ID: <alpine.LFD.2.00.0906210513170.28136@astarte.lysdexia.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1759374AbZGHGMB@vger.kernel.org>
-Content-class: urn:content-classes:message
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, trivial@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from astarte.lysdexia.org (unknown [207.55.232.252])
+	by alsa0.perex.cz (Postfix) with ESMTP id 63E661037F7
+	for <alsa-devel@alsa-project.org>;
+	Wed,  8 Jul 2009 08:25:07 +0200 (CEST)
+Received: from astarte.lysdexia.org (astarte.lysdexia.org [207.55.232.252])
+	by astarte.lysdexia.org (8.14.2/8.14.2) with ESMTP id n686P1q2012709
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <alsa-devel@alsa-project.org>; Tue, 7 Jul 2009 23:25:01 -0700
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-=46rom: Rongrong Cao rrcao@ambarella.com
+Hello,
 
-This patch is based on for-2.6.32
-In SOC DAPM layer of SOUND subsystem, when add signal route (in the fun=
-ction snd_soc_dapm_add_route() ),=20
-the original code has wrong logic when dapm layer check each widget whe=
-ther an external one.
+This patch is for yet another MSI laptop that needs the quirk to 
+init the autosense on the headphone jack properly.
 
------------------------------------------------------------------------=
-----------------------------------
+Best Regards,
+--ww
 
---- for-2.6.32/sound/soc/soc-dapm.c.orig        2009-07-08 13:33:41.000=
-000000 +0800
-+++ for-2.6.32/sound/soc/soc-dapm.c     2009-07-08 13:34:50.000000000 +=
-0800
-@@ -1290,8 +1290,8 @@ static int snd_soc_dapm_add_route(struct
-        if (wsink->id =3D=3D snd_soc_dapm_input) {
-                if (wsource->id =3D=3D snd_soc_dapm_micbias ||
-                        wsource->id =3D=3D snd_soc_dapm_mic ||
--                       wsink->id =3D=3D snd_soc_dapm_line ||
--                       wsink->id =3D=3D snd_soc_dapm_output)
-+                       wsource->id =3D=3D snd_soc_dapm_line ||
-+                       wsource->id =3D=3D snd_soc_dapm_output)
-                        wsink->ext =3D 1;
-        }
-        if (wsource->id =3D=3D snd_soc_dapm_output) {
-
------------------------------------------------------------------------=
-----------------------------------
-
-Signed-off-by: Rongrong Cao <rrcao@ambarella.com>
-
-
-********************
-Best regards!
-Allen (Rongrong) Cao
-Ambarella Shanghai Ltd.
-Tel:=A0=A0 (86-21) 50942311
-=46ax:=A0 (86-21) 50942321
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index bf4b78a..4301680 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9111,6 +9111,7 @@ static struct snd_pci_quirk alc883_cfg_tbl[] = {
+  	SND_PCI_QUIRK(0x1462, 0x3fc3, "MSI", ALC883_TARGA_DIG),
+  	SND_PCI_QUIRK(0x1462, 0x3fcc, "MSI", ALC883_TARGA_DIG),
+  	SND_PCI_QUIRK(0x1462, 0x3fdf, "MSI", ALC883_TARGA_DIG),
++	SND_PCI_QUIRK(0x1462, 0x42cd, "MSI GX710", ALC883_TARGA_DIG),
+  	SND_PCI_QUIRK(0x1462, 0x4314, "MSI", ALC883_TARGA_DIG),
+  	SND_PCI_QUIRK(0x1462, 0x4319, "MSI", ALC883_TARGA_DIG),
+  	SND_PCI_QUIRK(0x1462, 0x4324, "MSI", ALC883_TARGA_DIG),
+@@ -9124,6 +9125,7 @@ static struct snd_pci_quirk alc883_cfg_tbl[] = {
+  	SND_PCI_QUIRK(0x1462, 0x7327, "MSI", ALC883_6ST_DIG),
+  	SND_PCI_QUIRK(0x1462, 0x7350, "MSI", ALC883_6ST_DIG),
+  	SND_PCI_QUIRK(0x1462, 0xa422, "MSI", ALC883_TARGA_2ch_DIG),
++	SND_PCI_QUIRK(0x1462, 0xaa08, "MSI GX710", ALC883_TARGA_2ch_DIG),
+  	SND_PCI_QUIRK(0x147b, 0x1083, "Abit IP35-PRO", ALC883_6ST_DIG),
+  	SND_PCI_QUIRK(0x1558, 0x0721, "Clevo laptop M720R", ALC883_CLEVO_M720),
+  	SND_PCI_QUIRK(0x1558, 0x0722, "Clevo laptop M720SR", ALC883_CLEVO_M720),
