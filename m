@@ -1,20 +1,30 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: [PATCH 1/4] alsa-info.sh: Do not automatically
-	upload alsa info
-Date: Wed, 8 Jul 2009 21:25:07 +0800
-Message-ID: <20090708132507.GA19706@localhost>
-References: <20090708130722.723912338@intel.com>
-	<20090708131503.905317376@intel.com>
+From: VDR User <user.vdr@gmail.com>
+Subject: Re: Problems with snd-hda-intel and Asus M2NPV-VM.
+	Please help!
+Date: Wed, 8 Jul 2009 06:47:03 -0700
+Message-ID: <a3ef07920907080647x16160ab2u52b0f9eac2f8d5f6@mail.gmail.com>
+References: <a3ef07920906241108u786a6c89j80f2ad89eebf7dcd@mail.gmail.com>
+	<a3ef07920906241134m2f84ac06pef7465ce356f893f@mail.gmail.com>
+	<s5hvdmfv6s6.wl%tiwai@suse.de>
+	<a3ef07920906291028q670ed146t1451650d0c2a4713@mail.gmail.com>
+	<s5hzlbq83o8.wl%tiwai@suse.de>
+	<a3ef07920906301030p7f84d4c4xe6c0590f436b4de9@mail.gmail.com>
+	<s5heit1bjki.wl%tiwai@suse.de>
+	<a3ef07920907010726o6e06dd8dn25b33d4ee5b6c42c@mail.gmail.com>
+	<a3ef07920907060844o50d8be15s16bc1bca8acf72b6@mail.gmail.com>
+	<75b66ecd0907071914n5e29c83co168b6b0ca91357f5@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 415CB103899
+Received: from mail-vw0-f189.google.com (mail-vw0-f189.google.com
+	[209.85.212.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id B603B103899
 	for <alsa-devel@alsa-project.org>;
-	Wed,  8 Jul 2009 15:25:15 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20090708131503.905317376@intel.com>
+	Wed,  8 Jul 2009 15:47:08 +0200 (CEST)
+Received: by vwj27 with SMTP id 27so4023642vwj.16
+	for <alsa-devel@alsa-project.org>; Wed, 08 Jul 2009 06:47:04 -0700 (PDT)
+In-Reply-To: <75b66ecd0907071914n5e29c83co168b6b0ca91357f5@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,108 +34,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBKdWwgMDgsIDIwMDkgYXQgMDk6MDc6MjNQTSArMDgwMCwgV3UsIEZlbmdndWFuZyB3
-cm90ZToKPiAtIHRoZSBncmVldGluZyBkaWFsb2cgaW5mb3JtcyB0aGF0IHRoZSBzY3JpcHQgY29s
-bGVjdHMgaW5mbywgd2FpdHMKPiAgIGZvciBPSyBidXR0b24uIEl0IGFmZm9yZHMgYSBjb25jcmV0
-ZSBsaXN0aW5nIG9mIGluZm9ybWF0aW9uIHRvIGNvbGxlY3Q6Cj4gICAvcHJvYy9hc291bmQvLCBh
-cGxheSwgZXRjLiBUaGlzIG5vdCBvbmx5IHNob3dzIHJlc3BlY3QgZm9yIHVzZXIgcHJpdmFjeSwK
-PiAgIGJ1dCBhbHNvIHNlcnZlcyBhcyBiYXNpYyBkZWJ1Z2dpbmcgdGlwcyBmb3IgQUxTQSBuZXdi
-aWVzLgo+IC0gd2hlbiAtLXVwbG9hZCBvcHRpb24gaXMgZ2l2ZW4sIHRoZSBkYXRhIHdpbGwgYmUg
-YXV0b21hdGljYWxseSB1cGxvYWRlZC4KPiAtIHdoZW4gLS1uby11cGxvYWQgb3B0aW9uIGlzIGdp
-dmVuLCB0aGUgZGF0YSBpcyBqdXN0IHN0b3JlZCBsb2NhbGx5IGFuZCBxdWl0Lgo+IC0gd2hlbiBu
-ZWl0aGVyIG9wdGlvbnMgYXJlIGdpdmVuLCBzaG93IGEgZGlhbG9nIHRvIGFzayB0byB1cGxvYWQg
-b3Igbm90Lgo+IAo+IFRoZSBhYm92ZSBpZGVhcyBtb3N0bHkgY29tZSBmcm9tIFRha2FzaGkuCgpX
-aXRoIHRoaXMgcGF0Y2ggdGhlIGRpYWxvZ3Mgd2lsbCBsb29rIGxpa2U6CiAgICAgICAgICAgICAg
-ICAgICAgICAgCiDilIzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIBBTFNBLUluZm8gc2NyaXB0IHYgMC40LjU2
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSQCiDilIIgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICDi
-lIIgIAog4pSCIFRoaXMgc2NyaXB0IHZpc2l0cyB0aGUgZm9sbG93aW5nIGNvbW1hbmRzL2ZpbGVz
-IHRvIGNvbGxlY3QgZGlhZ25vc3RpYyAgICAgICAg4pSCICAKIOKUgiBpbmZvcm1hdGlvbiBhYm91
-dCB5b3VyIEFMU0EgaW5zdGFsbGF0aW9uIGFuZCBzb3VuZCByZWxhdGVkIGhhcmR3YXJlLiAgICAg
-ICAgIOKUgiAgCiDilIIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICDilIIgIAog4pSCICAgbHNwY2kgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAg4pSCICAKIOKUgiAgIGxzbW9kICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIOKUgiAgCiDilIIgICBhcGxh
-eSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICDilIIgIAog4pSCICAgYW1peGVyICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg4pSCICAKIOKUgiAg
-IGFsc2FjdGwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIOKUgiAgCiDilIIgICAvcHJvYy9hc291bmQvICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICDilIIgIAog
-4pSCICAgL3N5cy9jbGFzcy9zb3VuZC8gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAg4pSCICAKIOKUgiAgIH4vLmFzb3VuZHJjIChldGMuKSAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIOKU
-giAgCiDilIIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICDilIIgIAog4pSCIFNlZSAnLi9hbHNhLWluZm8u
-c2ggLS1oZWxwJyBmb3IgY29tbWFuZCBsaW5lIG9wdGlvbnMuICAgICAgICAgICAgICAgICAgICAg
-ICAg4pSCICAKIOKUgiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIOKUgiAgCiDilIIgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICDilIIgIAog4pSc4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSkICAKIOKUgiAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgPCAgT0sgID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIOKU
-giAgCiDilJTilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilIDilIDilJggIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAoKICAgICAgICAg
-ICAgICAgICAgICAgICAgCiDilIzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIBJbmZvcm1hdGlvbiBj
-b2xsZWN0ZWTilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilJAKIOKUgiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIOKUgiAgCiDilIIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICDilIIgIAog4pSCIEF1
-dG9tYXRpY2FsbHkgdXBsb2FkIEFMU0EgaW5mb3JtYXRpb24gdG8gd3d3LmFsc2EtcHJvamVjdC5v
-cmc/ICAgICAgICAgICAgICAg4pSCICAKIOKUgiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIOKUgiAgCiDi
-lIIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICDilIIgIAog4pSCICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg4pSC
-ICAKIOKUnOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
-gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
-gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
-gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
-gOKUgOKUgOKUgOKUgOKUpCAgCiDilIIgICAgICAgICAgICAgICA8IFVQTE9BRCAvIFNIQVJFID4g
-ICAgICAgIDwgIFNBVkUgTE9DQUxMWSAgPiAgICAgICAgICAgICAgICAgICDilIIgIAog4pSU4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSYICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgCgogICAgICAgICAg
-IOKUjOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgElu
-Zm9ybWF0aW9uIGNvbGxlY3RlZOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
-gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUkAogICAgICAgICAgIOKUgiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICDilIIgIAogICAgICAgICAg
-IOKUgiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICDilIIgIAogICAgICAgICAgIOKUgiBZb3VyIEFMU0EgaW5mb3JtYXRpb24gaXMgaW4gL3Rt
-cC9hbHNhLWluZm8udHh0ICAgICAgICAgICDilIIgIAogICAgICAgICAgIOKUgiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICDilIIgIAogICAg
-ICAgICAgIOKUgiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICDilIIgIAogICAgICAgICAgIOKUgiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICDilIIgIAogICAgICAgICAgIOKUnOKUgOKU
-gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
-gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
-gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
-pCAgCiAgICAgICAgICAg4pSCICAgICAgICAgICAgICAgICAgICAgICAgIDwgIE9LICA+ICAgICAg
-ICAgICAgICAgICAgICAgICAgIOKUgiAgCiAgICAgICAgICAg4pSU4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSYICAKICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIAoKVGhhbmtzLApGZW5nZ3VhbmcKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+On Tue, Jul 7, 2009 at 7:14 PM, Lee Revell<rlrevell@joe-job.com> wrote:
+> On Mon, Jul 6, 2009 at 11:44 AM, VDR User<user.vdr@gmail.com> wrote:
+>>> My mainboard doesn't have HDMI out but it did come with an HDTV module
+>>> for HDTV output, could it still be that something in my xorg.conf is
+>>> missing that is causing this not to work? =A0How can I tell (or could
+>>> you tell by my logs) if the codec registers are good? =A0I'm not sure
+>>> how to proceed from here aside of buying a new mainboard.
+>>
+>> Anyone? =A0Any suggestions at all?
+>
+> This probably cannot work in a headless environment. =A0Thanks to DRM,
+> the video driver has to do some magic to make HDMI work.
+>
+> I assume your video card is Nvidia. =A0Even though you plan to run
+> headless you probably have to set up X server with proprietary nvidia
+> driver to have any chance of this working.
+
+As I've said, my mainboard doesn't have HDMI, it has DVI.  But I'm not
+using the on-board video anyway.  I've got an Nvidia video card
+capable of vdpau which has SPDIF_IN so I'm going from the SPDIF_OUT on
+the mainboard into that. It's true that I have to have Xorg set up but
+that's all.  No desktop/windows manager.  The only software the box
+has installed is: Xorg, lirc, VDR, mplayer-nogui, Nvidia video drivers
+(of course!), xine-lib + vdr-xine.  I have another box running the
+same setup (different mainboard though, where spdif IS working) and it
+runs great.
+
+The problem isn't what I'm trying to do, I already know the setup
+works fine.  The problem is that alsa is broken for the chipset
+(AD1989a) on that mainboard since the exact same setup works on a
+different mainboard/chipset (ALC883).
