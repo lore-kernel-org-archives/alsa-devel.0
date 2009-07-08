@@ -1,21 +1,17 @@
 From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: Re: [PATCH V1 11/11] ASoC: DaVinci: pcm,
- fix underruns by using sram
-Date: Tue, 07 Jul 2009 12:21:22 -0700
-Message-ID: <4A53A032.6030205@boundarydevices.com>
-References: <1246761001-21982-5-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-6-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-7-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-8-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-9-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-10-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-11-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-12-git-send-email-troy.kisky@boundarydevices.com>	<20090705130352.GE5334@sirena.org.uk>	<4A52A081.9070003@boundarydevices.com>	<20090707093132.GB14393@rakim.wolfsonmicro.main>
-	<4A539CDE.20508@boundarydevices.com>
-	<4A539E89.5090907@boundarydevices.com>
+Subject: [PATCH] ASoC: DaVinci: pcm,
+	don't play 1st sound period twice
+Date: Tue,  7 Jul 2009 17:36:06 -0700
+Message-ID: <1247013366-32737-1-git-send-email-troy.kisky@boundarydevices.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpauth01.csee.onr.siteprotect.com
-	(smtpauth01.csee.onr.siteprotect.com [64.26.60.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2980D24450
+Received: from mpls-qmqp-03.inet.qwest.net (mpls-qmqp-03.inet.qwest.net
+	[63.231.195.114])
+	by alsa0.perex.cz (Postfix) with ESMTP id 310D5244EE
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Jul 2009 21:21:24 +0200 (CEST)
-In-Reply-To: <4A539E89.5090907@boundarydevices.com>
+	Wed,  8 Jul 2009 02:36:19 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com
+To: alsa-devel@alsa-project.org
+Cc: davinci-linux-open-source@linux.davincidsp.com, broonie@sirena.org.uk, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-Troy Kisky wrote:
-> Troy Kisky wrote:
->> Mark Brown wrote:
->>
->> Even when using SDRAM, there is still another advantage to double buffering.
->> That is tolerating very long interrupt latency on dma completion. The current
->> code sets up the next periods dma transfer on dma completion. This could easily
->> lead to underruns. So, even in this case, I think double buffering is worth
->> the extra dma engine copy.
->>
-> I overstated my case, it still would not "easily" happen.
-In fact, I now agree with you :^)
+Update the dma link with correct data as soon as
+the master channel has copied it. Otherwise, the
+1st period will play twice.
 
-Thanks
-Troy
+Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
+---
+ sound/soc/davinci/davinci-pcm.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
+index a059965..8fd0c3c 100644
+--- a/sound/soc/davinci/davinci-pcm.c
++++ b/sound/soc/davinci/davinci-pcm.c
+@@ -206,6 +206,7 @@ static int davinci_pcm_prepare(struct snd_pcm_substream *substream)
+ 	/* Copy self-linked parameter RAM entry into master channel */
+ 	edma_read_slot(prtd->slave_lch, &temp);
+ 	edma_write_slot(prtd->master_lch, &temp);
++	davinci_pcm_enqueue_dma(substream);
+ 
+ 	return 0;
+ }
+-- 
+1.5.6.3
