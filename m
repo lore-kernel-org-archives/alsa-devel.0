@@ -1,19 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/4] alsa-info.sh updates
-Date: Thu, 9 Jul 2009 18:19:00 +0100
-Message-ID: <20090709171859.GG7988@sirena.org.uk>
-References: <20090708130722.723912338@intel.com> <s5h7hyhpzox.wl%tiwai@suse.de>
-	<604760770907091003n599204d6yb393b709f878b631@mail.gmail.com>
+From: Louis Lee <lwhlee@hotmail.com>
+Subject: While recording from mono codec twice as much data is
+	received
+Date: Thu, 9 Jul 2009 15:27:17 -0600
+Message-ID: <COL102-W427E3B6FA3A27688387EAED0260@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 34A75245A5
+Received: from col0-omc3-s7.col0.hotmail.com (col0-omc3-s7.col0.hotmail.com
+	[65.55.34.145]) by alsa0.perex.cz (Postfix) with ESMTP id F1B6824487
 	for <alsa-devel@alsa-project.org>;
-	Thu,  9 Jul 2009 19:19:01 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <604760770907091003n599204d6yb393b709f878b631@mail.gmail.com>
+	Thu,  9 Jul 2009 23:27:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,16 +20,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Chen <seven.steps@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: ALSA Devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 09, 2009 at 01:03:22PM -0400, Daniel Chen wrote:
-> On Thu, Jul 9, 2009 at 12:51 PM, Takashi Iwai<tiwai@suse.de> wrote:
-> > Anyone still against changing the default behavior not to upload?
 
-> For some time the default behaviour for interactive debugging in
-> various IRC channels has been to use --no-upload, so no, no protest
-> from me.
-
-It's also good from a general privacy point of view.
+Hi everyone,
+  I am able to do playback from 8 kHz samples to 48 kHz samples properly.
+  However, when recording using the exact same setup for the data interface I am not getting favorable results.  For instance, if I record for 5 seconds I get output in a file for 10 seconds of audio (arecord or sox).  This results in my recording being stretched.  I change the DAI to stereo capture and record two channels and the recorded output comes back correctly (5 seconds recorded is 5 seconds).
+  I'm using a wolfsom WM8974.  I'm developing using ASoC framework (can I call it that?) reusing the WM8974 codec from the Linux GIT repository.  The development is using a i.MX27.  Data interface is a SSI bus in DSP mode.  I believe my PCM code is correct since it works for playback.
+  I'm stuck now.  From my understanding the clocks are setup the same way for both playback and capture.  Has anyone ran into this problem before?  The WM8974 is a mono codec so I should not have to set the DAI to stereo in order to capture data properly.
+  Any help is appreciated.
+Best regards,Louis
+_________________________________________________________________
+Attention all humans. We are your photos. Free us.
+http://go.microsoft.com/?linkid=9666046
