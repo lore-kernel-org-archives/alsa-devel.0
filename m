@@ -1,16 +1,18 @@
-From: Andiry Brienza <andiry.xu@amd.com>
-Subject: [PATCH]HDA: Disable AMD SB600 64bit address support
-	only
-Date: Wed, 8 Jul 2009 13:55:31 +0800
-Message-ID: <1247032531.3802.14.camel@brienza-desktop>
+From: okias <d.okias@gmail.com>
+Subject: targa and targa-2ch fix for 2.6.31
+Date: Thu, 9 Jul 2009 18:00:37 +0200
+Message-ID: <c2673ca60907090900x3673abb1ocd63b6a606c600aa@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from SG2EHSOBE002.bigfish.com (sg2ehsobe002.messaging.microsoft.com
-	[207.46.51.76]) by alsa0.perex.cz (Postfix) with ESMTP id C3B8D10381A
+Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
+	[209.85.218.217])
+	by alsa0.perex.cz (Postfix) with ESMTP id C46C62455D
 	for <alsa-devel@alsa-project.org>;
-	Wed,  8 Jul 2009 07:55:59 +0200 (CEST)
+	Thu,  9 Jul 2009 18:00:38 +0200 (CEST)
+Received: by bwz17 with SMTP id 17so258868bwz.32
+	for <alsa-devel@alsa-project.org>; Thu, 09 Jul 2009 09:00:37 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,39 +23,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, libin.yang@amd.com, shane.huang@amd.com
 List-Id: alsa-devel@alsa-project.org
 
-HDA driver disabled HD audio 64bit address support for all AMD SB600/SB700/SB800
-platforms with commit 09240cf429505891d6123ce14a29f58f2a60121e due to one SB600
-issue reported by community, but we do not see the similar issue on SB700/SB800
-platforms. This patch is to refine the workaround for SB600 only.
+Simplify ALC882_TARGA and return gpio3 to ALC883_TARGA_DIG and
+ALC883_TARGA_2ch_DIG, which I accidentally removed in commit id
+64a8be74357477558183b43156c5536b642de134
 
-Signed-off-by: Andiry Xu <andiry.xu@amd.com>
+Signed-off-by: David Heidelberger <d.okias@gmail.com>
 
-diff -ruN a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
---- a/sound/pci/hda/hda_intel.c	2009-07-01 17:14:23.000000000 +0800
-+++ b/sound/pci/hda/hda_intel.c	2009-07-08 10:24:35.000000000 +0800
-@@ -2322,9 +2322,19 @@
- 	gcap = azx_readw(chip, GCAP);
- 	snd_printdd(SFX "chipset global capabilities = 0x%x\n", gcap);
- 
--	/* ATI chips seems buggy about 64bit DMA addresses */
--	if (chip->driver_type == AZX_DRIVER_ATI)
--		gcap &= ~ICH6_GCAP_64OK;
-+	/* disable SB600 64bit support for safety */
-+	if ((chip->driver_type == AZX_DRIVER_ATI) ||
-+	    (chip->driver_type == AZX_DRIVER_ATIHDMI)) {
-+		struct pci_dev *p_smbus;
-+		p_smbus = pci_get_device(PCI_VENDOR_ID_ATI,
-+					 PCI_DEVICE_ID_ATI_SBX00_SMBUS,
-+					 NULL);
-+		if (p_smbus) {
-+			if (p_smbus->revision < 0x30)
-+				gcap &= ~ICH6_GCAP_64OK;
-+			pci_dev_put(p_smbus);
-+		}
-+	}
- 
- 	/* allow 64bit DMA address if supported by H/W */
- 	if ((gcap & ICH6_GCAP_64OK) && !pci_set_dma_mask(pci, DMA_BIT_MASK(64)))
+---
+
+--- sound/pci/hda/patch_realtek.c	2009-07-09 17:36:37.593323363 +0200
++++ sound/pci/hda/patch_realtek.c	2009-07-09 17:57:31.014574807 +0200
+@@ -6895,9 +6895,6 @@ static struct hda_verb alc882_targa_verb
+ 	{0x1b, AC_VERB_SET_CONNECT_SEL, 0x00}, /* HP */
+
+ 	{0x14, AC_VERB_SET_UNSOLICITED_ENABLE, ALC880_HP_EVENT | AC_USRSP_EN},
+-	{0x01, AC_VERB_SET_GPIO_MASK, 0x03},
+-	{0x01, AC_VERB_SET_GPIO_DIRECTION, 0x03},
+-	{0x01, AC_VERB_SET_GPIO_DATA, 0x03},
+ 	{ } /* end */
+ };
+
+@@ -7217,7 +7214,8 @@ static struct alc_config_preset alc882_p
+ 	},
+ 	[ALC882_TARGA] = {
+ 		.mixers = { alc882_targa_mixer, alc882_chmode_mixer },
+-		.init_verbs = { alc882_init_verbs, alc882_targa_verbs},
++		.init_verbs = { alc882_init_verbs, alc880_gpio3_init_verbs,
++				alc882_targa_verbs},
+ 		.num_dacs = ARRAY_SIZE(alc882_dac_nids),
+ 		.dac_nids = alc882_dac_nids,
+ 		.dig_out_nid = ALC882_DIGOUT_NID,
+@@ -9212,7 +9210,8 @@ static struct alc_config_preset alc883_p
+ 	},
+ 	[ALC883_TARGA_DIG] = {
+ 		.mixers = { alc883_targa_mixer, alc883_chmode_mixer },
+-		.init_verbs = { alc883_init_verbs, alc883_targa_verbs},
++		.init_verbs = { alc883_init_verbs, alc880_gpio3_init_verbs,
++				alc883_targa_verbs},
+ 		.num_dacs = ARRAY_SIZE(alc883_dac_nids),
+ 		.dac_nids = alc883_dac_nids,
+ 		.dig_out_nid = ALC883_DIGOUT_NID,
+@@ -9225,7 +9224,8 @@ static struct alc_config_preset alc883_p
+ 	},
+ 	[ALC883_TARGA_2ch_DIG] = {
+ 		.mixers = { alc883_targa_2ch_mixer},
+-		.init_verbs = { alc883_init_verbs, alc883_targa_verbs},
++		.init_verbs = { alc883_init_verbs, alc880_gpio3_init_verbs,
++				alc883_targa_verbs},
+ 		.num_dacs = ARRAY_SIZE(alc883_dac_nids),
+ 		.dac_nids = alc883_dac_nids,
+ 		.adc_nids = alc883_adc_nids_alt,
+
+
+-- 
+Jabber/XMPP: okias@isgeek.info
+SIP VoIP: sip:17474537254@proxy01.sipphone.com
