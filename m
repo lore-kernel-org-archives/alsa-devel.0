@@ -1,20 +1,16 @@
-From: Andreas =?iso-8859-1?q?N=FC=DFlein?= <nutz@unfoog.de>
-Subject: Re: No sound with nVidia Corporation MCP79 High
-	Definition Audio (rev b1) (Macbook Pro 5, 5)
-Date: Fri, 10 Jul 2009 02:29:51 +0200
-Message-ID: <200907100229.51499.nutz@unfoog.de>
-References: <4A493A56.1050504@gmail.com> <s5hk52i5noe.wl%tiwai@suse.de>
-	<200907100227.58051.nutz@unfoog.de>
+From: "Harsha, Priya" <priya.harsha@intel.com>
+Subject: runtime->boundary
+Date: Fri, 10 Jul 2009 12:00:09 +0530
+Message-ID: <98769532B4BB14429434178695419EAE5BC87F67@bgsmsx501.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx.unfoog.de (dom0kun.ath.cx [78.46.99.229])
-	by alsa0.perex.cz (Postfix) with ESMTP id B7B5124382
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8DFA6244B3
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jul 2009 02:29:47 +0200 (CEST)
-In-Reply-To: <200907100227.58051.nutz@unfoog.de>
-Content-Disposition: inline
+	Fri, 10 Jul 2009 08:30:39 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,15 +20,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-> however i found this, while google-ing  on datasheetarchive.com:
-> http://nutz.unfoog.de/cs4206.pdf
->
+Can anyone help explain what is runtime->boundary and what is the value that is set for this? It seems to be a pretty huge value when I try and print it.
 
-i just realized that this is an old document - datasheetarchive labeled it as 
-cs4206 though :S
+Also in snd_pcm_indiret_capture_transfer, I see this code snippet;
 
-sorry
+
+If (diff < runtime->boundary /2)
+	diff += runtime->boundary
+
+what is the reason for the same? If its for handling ring buffer wrapping, should I be setting my runtime->boundary to rumtime->buffer_size in the driver code?
+
+Thanks,
+Harsha
