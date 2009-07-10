@@ -1,21 +1,19 @@
-From: Guilherme Longo <grlongo.ireland@gmail.com>
-Subject: Re: [Jack-Devel] Says: server is not connected,
- even though it has been!
-Date: Fri, 10 Jul 2009 11:18:28 -0300
-Message-ID: <4A574DB4.7010906@gmail.com>
-References: <4A5715FA.2010605@gmail.com> <4A5722F1.6060707@boosthardware.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH for-2.6.32] sound dapm: fix checking for
+ external widgets bug
+Date: Fri, 10 Jul 2009 20:19:26 +0100
+Message-ID: <20090710191925.GA5916@sirena.org.uk>
+References: <90B0CE4312136749B97EBEAF5764F87403C8F77A@ambarella-ex.ambarella.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f192.google.com (mail-px0-f192.google.com
-	[209.85.216.192])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9D6DA246B8
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id D9535243F9
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jul 2009 16:18:35 +0200 (CEST)
-Received: by pxi30 with SMTP id 30so607302pxi.16
-	for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2009 07:18:34 -0700 (PDT)
-In-Reply-To: <4A5722F1.6060707@boosthardware.com>
+	Fri, 10 Jul 2009 21:19:34 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <90B0CE4312136749B97EBEAF5764F87403C8F77A@ambarella-ex.ambarella.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,88 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Patrick Shirkey <pshirkey@boosthardware.com>, alsa-devel@alsa-project.org
+To: Rongrong Cao <rrcao@ambarella.com>
+Cc: alsa-devel@alsa-project.org, trivial@kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Yes Patrick.... same user for both
+On Tue, Jul 07, 2009 at 11:11:46PM -0700, Rongrong Cao wrote:
+> From: Rongrong Cao rrcao@ambarella.com
 
-Really strange, isn't it!
+> This patch is based on for-2.6.32
+> In SOC DAPM layer of SOUND subsystem, when add signal route (in the function snd_soc_dapm_add_route() ), 
+> the original code has wrong logic when dapm layer check each widget whether an external one.
 
-Patrick Shirkey wrote:
->
-> On 07/10/2009 05:20 PM, Guilherme Longo wrote:
->> Hi all!
->>
->> I couldn't find where this problem comes from.
->
-> Hi,
->
-> Sorry, to ask the obvious but, are you running as the same user for 
-> the server and the simple_client?
->
->
-> Patrick Shirkey
-> Boost Hardware Ltd
->
->
->
->> I am connecting jack with the command:
->>
->> jackd -d alsa  -d default
->>
->> and appears right below:
->>
->> bash-3.1# jackd -d alsa -d default
->> jackdmp 1.9.2
->> Copyright 2001-2005 Paul Davis and others.
->> Copyright 2004-2008 Grame.
->> jackdmp comes with ABSOLUTELY NO WARRANTY
->> This is free software, and you are welcome to redistribute it
->> under certain conditions; see the file COPYING for details
->> JACK server starting in non-realtime mode
->> creating alsa driver ... 
->> default|default|1024|2|48000|0|0|nomon|swmeter|-|32bit
->> Using ALSA driver EMU10K1 running on SB Live [Unknown] (rev.10, 
->> serial:0x80671102) at 0xd000, irq 18
->> configuring for 48000Hz, period = 1024 frames (21.3 ms), buffer = 2 
->> periods
->> ALSA: final selected sample format for capture: 32bit float 
->> little-endian
->> You appear to be using the ALSA software "plug" layer, probably
->> a result of using the "default" ALSA device. This is less
->> efficient than it could be. Consider using a hardware device
->> instead rather than using the plug layer. Usually the name of the
->> hardware device that corresponds to the first soun
->> ALSA: use 2 periods for capture
->> ALSA: final selected sample format for playback: 32bit float 
->> little-endian
->> You appear to be using the ALSA software "plug" layer, probably
->> a result of using the "default" ALSA device. This is less
->> efficient than it could be. Consider using a hardware device
->> instead rather than using the plug layer. Usually the name of the
->> hardware device that corresponds to the first soun
->> ALSA: use 2 periods for playback
->>
->>
->> In another terminal, I am running a simple_cliente, and when I run it 
->> with the code:
->>
->> quart$: simple_client audiofile
->> jack server not running?
->>
->> It is resulting of:
->>
->> if ((client = jack_client_open(argv[1], JackNoStartServer, NULL)) == 
->> 0) {
->>                  fprintf (stderr, "jack server not running?\n");
->>                  return 1;
->>          }
->>
->>
->> Plz, can I get som help here.
->> Tks.
->> _______________________________________________
->> Jack-Devel mailing list
->> Jack-Devel@lists.jackaudio.org
->> http://lists.jackaudio.org/listinfo.cgi/jack-devel-jackaudio.org
->
+This still doesn't apply.  It looks like your MUA is corrupting the
+patch - it's MIME encoded everything and replaced all the tabs with
+spaces which is causing all the patch application programs I have to get
+confused.  Documentation/email-clients.txt has some suggestions on how
+to configure various MUAs to send patches cleanly.  Personally I always
+use git send-email.  You probably also want to have a look at the
+instructions in Documentation/SubmittingPatches with regard to the
+formatting of your patch - the main thing being that the Signed-off-by
+should go before the patch content.
+
+In any case, I've manually applied the patch so no need to resubmit it.
+
+I also notice that you've CCed trivial@kernel.org.  Please don't do that
+except for things that can't possibly cause bugs - a change like this
+doesn't really qualify since while the code clearly looks buggy it's
+always possible that the code is just obscure.
