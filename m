@@ -1,17 +1,20 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: No incoming sound indigo iox
-Date: Fri, 10 Jul 2009 00:42:40 +0200
-Message-ID: <20090710004240.560acade@Jay>
-References: <30136324.1246980488566.JavaMail.root@elwamui-ovcar.atl.sa.earthlink.net>
+From: Andreas =?iso-8859-1?q?N=FC=DFlein?= <nutz@unfoog.de>
+Subject: Re: No sound with nVidia Corporation MCP79 High
+	Definition Audio (rev b1) (Macbook Pro 5, 5)
+Date: Fri, 10 Jul 2009 02:27:57 +0200
+Message-ID: <200907100227.58051.nutz@unfoog.de>
+References: <4A493A56.1050504@gmail.com> <200907081811.29710.nutz@unfoog.de>
+	<s5hk52i5noe.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out113.alice.it (smtp-out113.alice.it [85.37.17.113])
-	by alsa0.perex.cz (Postfix) with ESMTP id AC377244FB
+Received: from mx.unfoog.de (dom0kun.ath.cx [78.46.99.229])
+	by alsa0.perex.cz (Postfix) with ESMTP id 02A0824382
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jul 2009 00:45:01 +0200 (CEST)
-In-Reply-To: <30136324.1246980488566.JavaMail.root@elwamui-ovcar.atl.sa.earthlink.net>
+	Fri, 10 Jul 2009 02:27:56 +0200 (CEST)
+In-Reply-To: <s5hk52i5noe.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,35 +24,230 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Susan Cragin <susancragin@earthlink.net>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 7 Jul 2009 11:28:08 -0400 (EDT)
-Susan Cragin <susancragin@earthlink.net> wrote:
-
-> I just purchased the indigoaudio iox.
-> Outgoing shows up on Volume Control, incoming does not.
-> In Audacity, incoming shows up as: ALSA: Indigo IOx (hw:1,0)
-> but recording does not work.
+On Thursday 09 July 2009 09:18:57 you wrote:
+> At Wed, 8 Jul 2009 18:11:29 +0200,
 >
-> Here's the catch. My problem may be due to my kernel.
-> I am running Ubuntu-Studio and have the 29.5-2-rt experimental kernel, which is the 5-1 recompiled with alsadriver support for 30 kernels.
-> So you may just tell me to go away until the kernel's better, but I don't think the kernel is the problem.
+> Andreas N=FC=DFlein wrote:
+> > On Wednesday 08 July 2009 16:49:34 you wrote:
+> > > At Tue, 07 Jul 2009 12:53:48 +0200,
+> > >
+> > > I wrote:
+> > > > At Tue, 7 Jul 2009 11:49:57 +0200,
+> > > >
+> > > > Andreas N=FC=DFlein wrote:
+> > > > > On Tuesday 07 July 2009 08:00:19 you wrote:
+> > > > > > At Mon, 6 Jul 2009 22:14:56 +0200,
+> > > > > >
+> > > > > > Andreas N=FC=DFlein wrote:
+> > > > > > > On Monday 06 July 2009 21:26:18 you wrote:
+> > > > > > > > At Mon, 06 Jul 2009 11:16:35 -0600,
+> > > > > > > >
+> > > > > > > > Sean Burke wrote:
+> > > > > > > > > Scr=EDobh Takashi Iwai:
+> > > > > > > > > > At Mon, 6 Jul 2009 17:53:46 +0200,
+> > > > > > > > > >
+> > > > > > > > > > Andreas N=FC=DFlein wrote:
+> > > > > > > > > >>> The missing pin configuration initialization was
+> > > > > > > > > >>> already fixed by the driver overriding it after
+> > > > > > > > > >>> checking PCI SSID (which is different from the codec
+> > > > > > > > > >>> SSID).  So, this should be no problem.
+> > > > > > > > > >>>
+> > > > > > > > > >>> However, the reason why the analog output doesn't work
+> > > > > > > > > >>> might be different from that.  There might be somethi=
+ng
+> > > > > > > > > >>> else missing, but I don't know.
+> > > > > > > > > >>>
+> > > > > > > > > >>>
+> > > > > > > > > >>> Takashi
+> > > > > > > > > >>
+> > > > > > > > > >> oh =3D(
+> > > > > > > > > >>
+> > > > > > > > > >>
+> > > > > > > > > >> hmm.. anything i can do?  would it help if i tried
+> > > > > > > > > >> changing values randomly with hda-analyzer.py?
+> > > > > > > > > >
+> > > > > > > > > > Well, did the driver without my change work more or less
+> > > > > > > > > > with the analog audio, or have you never gotten the
+> > > > > > > > > > analog output? You can use the generic parser (i.e. the
+> > > > > > > > > > state without cirrus patch) by passing model=3Dgeneric
+> > > > > > > > > > option to snd-hda-intel.
+> > > > > > > > >
+> > > > > > > > > For my part, nothing worked with the generic driver. I
+> > > > > > > > > can't confirm digital out, but I can confirm that the kfr=
+ee
+> > > > > > > > > error is gone. What options are open for figuring out what
+> > > > > > > > > remains?
+> > > > > > > >
+> > > > > > > > Easy things to test are GPIO bits.  Run hda-verb like
+> > > > > > > >
+> > > > > > > > 	hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_MASK 0x0f
+> > > > > > > > 	hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DATA 0x0f
+> > > > > > > > or
+> > > > > > > > 	hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DIR 0x0f
+> > > > > > > > 	hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DATA 0x0f
+> > > > > > > >
+> > > > > > > > etc.  CS4206 seems to have 4 GPIO lines, and each bit (0-3)
+> > > > > > > > corresponds to each GPIO.  In many case, GPIO0 or GPIO1
+> > > > > > > > corresponds to the amplifier (EAPD) bit.
+> > > > > > > > Define the GPIO direction of each GPIO bit by SET_GPIO_DIR,
+> > > > > > > > and turn on/off the GPIO bits by SET_GPIO_DATA.  Running
+> > > > > > > > hda-verb /dev/snd/hwC0D0 0x01 GET_GPIO_DATA 0
+> > > > > > > > will show the current GPIO data bits.  Or you can check it =
+in
+> > > > > > > > codec#* proc file.
+> > > > > > > >
+> > > > > > > >
+> > > > > > > > Takashi
+> > > > > > >
+> > > > > > > w000000000000000000000000000000000t! =3D)
+> > > > > > >
+> > > > > > > takashi, thank you _so_ much!
+> > > > > > >
+> > > > > > > after running all 4 of those:
+> > > > > > > > 	hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_MASK 0x0f
+> > > > > > > > 	hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DATA 0x0f
+> > > > > > > > or
+> > > > > > > > 	hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DIR 0x0f
+> > > > > > > > 	hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DATA 0x0f
+> > > > > > >
+> > > > > > > i suddendly had sound!! :D :D :D :D :D :D :D
+> > > > > > > only via speakers  though - there is no sound via headphones
+> > > > > > > right now.
+> > > > > > >
+> > > > > > > mixer channels:
+> > > > > > > - Master (with Mutebutton), PCM and Front (also with Mute) all
+> > > > > > > work =3D) - i don't know what surround would do (or it's extra
+> > > > > > > switch) - headphones-volumes and mute button don't affect the
+> > > > > > > speakers, which is good =3D)
+> > > > > > >
+> > > > > > >
+> > > > > > > is there a way to reset what i did with hda-verb, so that i c=
+an
+> > > > > > > figure out which combination it was exactly?
+> > > > > >
+> > > > > > You can just change the value 0x0f to a different value.
+> > > > > > At least, you can try commands like
+> > > > > >  	hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DATA 0x01
+> > > > > >  	hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DATA 0x02
+> > > > > >  	hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DATA 0x04
+> > > > > >  	hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DATA 0x08
+> > > > > > and check the speaker output at each time.
+> > > > > > Also, check the GPIO direction,
+> > > > > >  	hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DIR 0x01
+> > > > > >  	hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DATA 0x01
+> > > > > >  	hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DIR 0x02
+> > > > > >  	hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DATA 0x02
+> > > > > > 	...
+> > > > > >
+> > > > > > Regarding the headphone: is the speaker muted when you plug in
+> > > > > > the headphone?  If not, it's likely an issue of the jack
+> > > > > > detection.  If the speaker is muted but no headphone output, it=
+'s
+> > > > > > a missing initialization (or wrong GPIO setup).
+> > > > > >
+> > > > > >
+> > > > > > Takashi
+> > > > >
+> > > > > so here are my findings so far:
+> > > > >
+> > > > > hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DATA 0x08
+> > > > >
+> > > > >
+> > > > > is sufficient to turn on the right functionality for the speakers;
+> > > > > meaning: - 'front speaker'-channel actually controls the two front
+> > > > > speakers within the macbookpro - even controlling left and right
+> > > > > channel seperately works  =3D) - 'surround' mute-switch and
+> > > > > volume-control (why are those not within on thing btw?) also work
+> > > > > and control a third speaker in the mac, which really seems
+> > > > > responsibly for surround :)
+> > > > >
+> > > > > headphones do not yet work, however i made a diff of
+> > > > > "/proc/asound/card0/codec#0" with and without something plugged i=
+n:
+> > > >
+> > > > OK, so actually the driver works as expected, but the hardware
+> > > > doesn't behave as expected.  For muting the speaker, something else
+> > > > (like toggling that GPIO) is needed.
+> > > >
+> > > > The mystery about the silent HP output still remains, though.
+> > >
+> > > One another thing we can try is to use only one PCM stream instead of
+> > > multi streams.  For example, try the patch below.  This will enable
+> > > only the pin for the headphone, thus only one DAC is used.
+> > >
+> > >
+> > > Takashi
+> > >
+> > > ---
+> > > diff --git a/sound/pci/hda/patch_cirrus.c
+> > > b/sound/pci/hda/patch_cirrus.c index 57251d7..d7f52b1 100644
+> > > --- a/sound/pci/hda/patch_cirrus.c
+> > > +++ b/sound/pci/hda/patch_cirrus.c
+> > > @@ -1086,13 +1086,17 @@ struct cs_pincfg {
+> > >
+> > >  static struct cs_pincfg mbp55_pincfgs[] =3D {
+> > >  	{ 0x09, 0x012b4030 },
+> > > -	{ 0x0a, 0x90100121 },
+> > > -	{ 0x0b, 0x90100120 },
+> > > +	// { 0x0a, 0x90100121 },
+> > > +	{ 0x0a, 0x400000f0 },
+> > > +	// { 0x0b, 0x90100120 },
+> > > +	{ 0x0b, 0x400000f0 },
+> > >  	{ 0x0c, 0x400000f0 },
+> > > -	{ 0x0d, 0x90a00110 },
+> > > +	// { 0x0d, 0x90a00110 },
+> > > +	{ 0x0d, 0x400000f0 },
+> > >  	{ 0x0e, 0x400000f0 },
+> > >  	{ 0x0f, 0x400000f0 },
+> > > -	{ 0x10, 0x014be040 },
+> > > +	// { 0x10, 0x014be040 },
+> > > +	{ 0x10, 0x400000f0 },
+> > >  	{ 0x12, 0x400000f0 },
+> > >  	{ 0x15, 0x400000f0 },
+> > >  	{} /* terminator */
+> >
+> > =3D( no  - that doesn't work either
+> >
+> > (there is obivously no sound via built-in speakers either anymore)
+>
+> Hmm, then I have really no clue.
+> At best, you can try again GPIO pins and reverting COEF setup by my
+> earlier patch, and try some more adjustments of widgets amp or pinctl
+> via hda-verb or hda-analyzer...
+>
+>
+> Takashi
 
-I don't know what's going wrong. I have the same card and it works. I
-didn't try audacity, though. Please do this simple test:
 
-arecord -Dplughw:1 -fcd file.wav
+still no luck on my end =3D(
 
+however i found this, while google-ing  on datasheetarchive.com:
+http://nutz.unfoog.de/cs4206.pdf
 
-> FYI
-> winecfg says:
-> fixme:mixer:ALSA_MixerInit No master control found on Indigo IOx, disabling mixer
-
-It hasn't a master volume control. None of the mixer controls of indigo
-cards affect recording.
+there's a lot of stuff about the pins and all that. maybe this is helpfull?
 
 
--- 
-Giuliano.
+is there anything i can do, though?  like: try a bunch of different keys/co=
+des =
+
+somewhere? =
+
+
+to get this right: Node[0x09] is getting "sound" just like 0x0a and 0x0b; 0=
+x0a =
+
+passes the sound to 0x03 (which is surround) and 0x0b passes it to 0x04 (wh=
+ich =
+
+is front speaker).
+0x09 should pass the sound to 0x02, then? and is that definitely working, =
+
+making 0x02 the problem? or is maybe 0x09 wrong somehow already?  i don't =
+
+really get the alsa-interna yet. =3D(
+
+thanks
+andy
