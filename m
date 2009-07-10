@@ -1,19 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: While recording from mono codec twice as much	data
-	is received
-Date: Fri, 10 Jul 2009 10:29:24 +0100
-Message-ID: <20090710092924.GH7988@sirena.org.uk>
-References: <COL102-W427E3B6FA3A27688387EAED0260@phx.gbl>
+From: arif setiawan <n.arif.setiawan@gmail.com>
+Subject: save alsa buffer
+Date: Fri, 10 Jul 2009 16:31:48 +0700
+Message-ID: <c697747b0907100231p363e654lbcb9bce14f14a667@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 32FD324591
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id 31FBD2459D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jul 2009 11:29:25 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <COL102-W427E3B6FA3A27688387EAED0260@phx.gbl>
+	Fri, 10 Jul 2009 11:31:51 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id l33so187163rvb.32
+	for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2009 02:31:49 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,28 +21,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Louis Lee <lwhlee@hotmail.com>
-Cc: ALSA Devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 09, 2009 at 03:27:17PM -0600, Louis Lee wrote:
+Hi,
 
->   However, when recording using the exact same setup for the data
->   interface I am not getting favorable results.  For instance, if I
->   record for 5 seconds I get output in a file for 10 seconds of audio
->   (arecord or sox).  This results in my recording being stretched.  I
->   change the DAI to stereo capture and record two channels and the
->   recorded output comes back correctly (5 seconds recorded is 5
->   seconds).
+I am trying to save content of alsa buffer to file for playing it in
+Matlab.I choose Matlab for prototyping. I run full duplex ALSA based on code
+from
+http://www.bel.fi/~alankila/blog/2005/08/21/Full Duplex
+ALSA.html<http://www.bel.fi/%7Ealankila/blog/2005/08/21/Full%20Duplex%20ALSA.html>
 
-This suggests that either the CODEC is configured to run at twice the
-expected sample rate or that there are enough bit clocks being generated
-for stereo data and the CPU DAI is trying to record data for each bit
-clock cycle.  Is the CPU or the CODEC the clock master in your system?
+I run alsa on Beagleboard. I want to save buffer content to a file, but it
+failed with error: Segmentation fault when reach fclose(fp).
+I want to know what kind of data that ALSA processes so I can implement my
+LPC vocoder.
 
->   I'm stuck now.  From my understanding the clocks are setup the same
->   way for both playback and capture.  Has anyone ran into this problem
->   before?  The WM8974 is a mono codec so I should not have to set the
->   DAI to stereo in order to capture data properly.
+Thank you.
 
-It should be possible to do what you want, yes.
+Best regards,
+
+Arif
