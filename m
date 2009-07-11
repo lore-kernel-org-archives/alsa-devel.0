@@ -1,56 +1,39 @@
-From: "Rongrong Cao" <rrcao@ambarella.com>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggZm9yLTIuNi4zMl0gc291bmQgZGFw?=
-	=?utf-8?B?bTogZml4IGNoZWNraW5nIGZvciBleHRlcm5hbCB3aWQ=?=
-	=?utf-8?B?Z2V0cyBidWc=?=
-Date: Fri, 10 Jul 2009 22:51:25 -0700
-Message-ID: <90B0CE4312136749B97EBEAF5764F87403CF756C@ambarella-ex.ambarella.net>
-References: <90B0CE4312136749B97EBEAF5764F87403C8F77A@ambarella-ex.ambarella.net> <20090710191925.GA5916@sirena.org.uk>
+From: apriori@dkc-clan.de
+Subject: Let's discuss the state of Audio on Linux - OSS and
+ ALSA people
+Date: Sat, 11 Jul 2009 16:45:09 +0200
+Message-ID: <1058878.1568581247323509430.JavaMail.servlet@kundenserver>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754171AbZGKFvm@vger.kernel.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <20090710191925.GA5916@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, trivial@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de
+	[212.227.126.186])
+	by alsa0.perex.cz (Postfix) with ESMTP id B6E9424396
+	for <alsa-devel@alsa-project.org>;
+	Sat, 11 Jul 2009 16:45:09 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksIE1hcmsNCg0KSSdtIHNvcnJ5IGZvciBzZW5kaW5nIHRoZSB1bnF1YWxpZmllZCBwYXRjaGVz
-IHR3byB0aW1lcy4NCkl0J3MgbXkgZmlyc3QgdGltZSB0byBzdWJtaXQgcGF0Y2ggaW50byBrZXJu
-ZWxzLCBzbyBJJ20gaW4gbGFjayBvZiB0aGUgc3VibWl0dGluZyBleHBlcmllbmNlcy4NCg0KSSds
-bCByZWFkIHRoZSBkb2N1bWVudHMgY2FyZWZ1bGx5LCBhbmQgSSB3YW50IHRvIHN1Ym1pdCBhIGNv
-ZGVjKENTMjRMNTEpIGRyaXZlciBwYXRjaCBpbiByZWNlbnRseQ0KZnV0dXJlLiBJIGhvcGUgZXZl
-cnl0aGluZyB3aWxsIGdvIHdpdGggYSBzd2luZyBhdCB0aGF0IHRpbWUuDQoNClRoYW5rcyENCg0K
-KioqKioqKioqKioqKioqKioqKioNCkJlc3QgcmVnYXJkcyENCkFsbGVuIChSb25ncm9uZykgQ2Fv
-DQpBbWJhcmVsbGEgU2hhbmdoYWkgTHRkLg0KVGVsOsKgwqAgKDg2LTIxKSA1MDk0MjMxMQ0KRmF4
-OsKgICg4Ni0yMSkgNTA5NDIzMjENCg0KDQotLS0tLemCruS7tuWOn+S7ti0tLS0tDQrlj5Hku7bk
-uro6IE1hcmsgQnJvd24gW21haWx0bzpicm9vbmllQG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNv
-bV0gDQrlj5HpgIHml7bpl7Q6IDIwMDnlubQ35pyIMTHml6UgMzoxOQ0K5pS25Lu25Lq6OiBSb25n
-cm9uZyBDYW8NCuaKhOmAgTogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBsaW51eC1rZXJu
-ZWxAdmdlci5rZXJuZWwub3JnOyB0cml2aWFsQGtlcm5lbC5vcmcNCuS4u+mimDogUmU6IFtQQVRD
-SCBmb3ItMi42LjMyXSBzb3VuZCBkYXBtOiBmaXggY2hlY2tpbmcgZm9yIGV4dGVybmFsIHdpZGdl
-dHMgYnVnDQoNCk9uIFR1ZSwgSnVsIDA3LCAyMDA5IGF0IDExOjExOjQ2UE0gLTA3MDAsIFJvbmdy
-b25nIENhbyB3cm90ZToNCj4gRnJvbTogUm9uZ3JvbmcgQ2FvIHJyY2FvQGFtYmFyZWxsYS5jb20N
-Cg0KPiBUaGlzIHBhdGNoIGlzIGJhc2VkIG9uIGZvci0yLjYuMzINCj4gSW4gU09DIERBUE0gbGF5
-ZXIgb2YgU09VTkQgc3Vic3lzdGVtLCB3aGVuIGFkZCBzaWduYWwgcm91dGUgKGluIHRoZSBmdW5j
-dGlvbiBzbmRfc29jX2RhcG1fYWRkX3JvdXRlKCkgKSwgDQo+IHRoZSBvcmlnaW5hbCBjb2RlIGhh
-cyB3cm9uZyBsb2dpYyB3aGVuIGRhcG0gbGF5ZXIgY2hlY2sgZWFjaCB3aWRnZXQgd2hldGhlciBh
-biBleHRlcm5hbCBvbmUuDQoNClRoaXMgc3RpbGwgZG9lc24ndCBhcHBseS4gIEl0IGxvb2tzIGxp
-a2UgeW91ciBNVUEgaXMgY29ycnVwdGluZyB0aGUNCnBhdGNoIC0gaXQncyBNSU1FIGVuY29kZWQg
-ZXZlcnl0aGluZyBhbmQgcmVwbGFjZWQgYWxsIHRoZSB0YWJzIHdpdGgNCnNwYWNlcyB3aGljaCBp
-cyBjYXVzaW5nIGFsbCB0aGUgcGF0Y2ggYXBwbGljYXRpb24gcHJvZ3JhbXMgSSBoYXZlIHRvIGdl
-dA0KY29uZnVzZWQuICBEb2N1bWVudGF0aW9uL2VtYWlsLWNsaWVudHMudHh0IGhhcyBzb21lIHN1
-Z2dlc3Rpb25zIG9uIGhvdw0KdG8gY29uZmlndXJlIHZhcmlvdXMgTVVBcyB0byBzZW5kIHBhdGNo
-ZXMgY2xlYW5seS4gIFBlcnNvbmFsbHkgSSBhbHdheXMNCnVzZSBnaXQgc2VuZC1lbWFpbC4gIFlv
-dSBwcm9iYWJseSBhbHNvIHdhbnQgdG8gaGF2ZSBhIGxvb2sgYXQgdGhlDQppbnN0cnVjdGlvbnMg
-aW4gRG9jdW1lbnRhdGlvbi9TdWJtaXR0aW5nUGF0Y2hlcyB3aXRoIHJlZ2FyZCB0byB0aGUNCmZv
-cm1hdHRpbmcgb2YgeW91ciBwYXRjaCAtIHRoZSBtYWluIHRoaW5nIGJlaW5nIHRoYXQgdGhlIFNp
-Z25lZC1vZmYtYnkNCnNob3VsZCBnbyBiZWZvcmUgdGhlIHBhdGNoIGNvbnRlbnQuDQoNCkluIGFu
-eSBjYXNlLCBJJ3ZlIG1hbnVhbGx5IGFwcGxpZWQgdGhlIHBhdGNoIHNvIG5vIG5lZWQgdG8gcmVz
-dWJtaXQgaXQuDQoNCkkgYWxzbyBub3RpY2UgdGhhdCB5b3UndmUgQ0NlZCB0cml2aWFsQGtlcm5l
-bC5vcmcuICBQbGVhc2UgZG9uJ3QgZG8gdGhhdA0KZXhjZXB0IGZvciB0aGluZ3MgdGhhdCBjYW4n
-dCBwb3NzaWJseSBjYXVzZSBidWdzIC0gYSBjaGFuZ2UgbGlrZSB0aGlzDQpkb2Vzbid0IHJlYWxs
-eSBxdWFsaWZ5IHNpbmNlIHdoaWxlIHRoZSBjb2RlIGNsZWFybHkgbG9va3MgYnVnZ3kgaXQncw0K
-YWx3YXlzIHBvc3NpYmxlIHRoYXQgdGhlIGNvZGUgaXMganVzdCBvYnNjdXJlLg0K
+Hi all.
+
+I would like to encourage all ALSA devs and users to talk about the current state of audio on linux together with the Open Sound System devs at:
+
+http://www.4front-tech.com/forum/viewtopic.php?t=3199
+
+I recommend to take this offer since we all and the linux development would definetly benefit if both core audio system developer team would finally have a talk with each other. For the sake of information and knowledge please don't fill up the thread with off-topic comments or bashing comments to either sound system
+if it doesn't clearly state (in detail) 1) what is wrong and 2) what could be done better and 3) how it could
+be done better. Criticism should be done in a constructive way.
+
+Looking forward to see you in the dicussion
+
+apriori
