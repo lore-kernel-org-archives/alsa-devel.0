@@ -1,62 +1,56 @@
-From: Louis Lee <lwhlee@hotmail.com>
-Subject: Re: While recording from mono codec twice as much	data
- is received
-Date: Fri, 10 Jul 2009 14:53:52 -0600
-Message-ID: <COL102-W38BFFD26634F8E68389469D0270@phx.gbl>
-References: <COL102-W427E3B6FA3A27688387EAED0260@phx.gbl>
-	<20090710092924.GH7988@sirena.org.uk>
+From: "Rongrong Cao" <rrcao@ambarella.com>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggZm9yLTIuNi4zMl0gc291bmQgZGFw?=
+	=?utf-8?B?bTogZml4IGNoZWNraW5nIGZvciBleHRlcm5hbCB3aWQ=?=
+	=?utf-8?B?Z2V0cyBidWc=?=
+Date: Fri, 10 Jul 2009 22:51:25 -0700
+Message-ID: <90B0CE4312136749B97EBEAF5764F87403CF756C@ambarella-ex.ambarella.net>
+References: <90B0CE4312136749B97EBEAF5764F87403C8F77A@ambarella-ex.ambarella.net> <20090710191925.GA5916@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from col0-omc4-s3.col0.hotmail.com (col0-omc4-s3.col0.hotmail.com
-	[65.55.34.205]) by alsa0.perex.cz (Postfix) with ESMTP id A8540244AA
-	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jul 2009 22:53:59 +0200 (CEST)
-In-Reply-To: <20090710092924.GH7988@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: ALSA Devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754171AbZGKFvm@vger.kernel.org>
+Content-class: urn:content-classes:message
+In-Reply-To: <20090710191925.GA5916@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, trivial@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-> Date: Fri, 10 Jul 2009 10:29:24 +0100
-> <snip...>
-> 
-> On Thu, Jul 09, 2009 at 03:27:17PM -0600, Louis Lee wrote:
-> 
-> >   However, when recording using the exact same setup for the data
-> >   interface I am not getting favorable results.  For instance, if I
-> >   record for 5 seconds I get output in a file for 10 seconds of audio
-> >   (arecord or sox).  This results in my recording being stretched.  I
-> >   change the DAI to stereo capture and record two channels and the
-> >   recorded output comes back correctly (5 seconds recorded is 5
-> >   seconds).
-> 
-> This suggests that either the CODEC is configured to run at twice the
-> expected sample rate or that there are enough bit clocks being generated
-> for stereo data and the CPU DAI is trying to record data for each bit
-> clock cycle.  Is the CPU or the CODEC the clock master in your system?
-> 
-Mark, thanks again for your insights.  I believe the sample rate is correct.I can see it on the scope and FRAME frequency is equivalent to thesample rate.  I ran into a bit of a problem though.  If you are right aboutthat each bit in the clock cycle is being recorded I think I have just enoughbits in my clock for stereo data.  If I reduce it though I run into theproblem where I don't have enough bits to clock through all my data. :(
-This probably seems like a complete noob question.  How exactly do I modify the CPU DAI to not account for each bit in the clock cycle?
-The CODEC is the clock master in my system.
-Thanks Mark!  You have been tremendous help.
-> >   I'm stuck now.  From my understanding the clocks are setup the same
-> >   way for both playback and capture.  Has anyone ran into this problem
-> >   before?  The WM8974 is a mono codec so I should not have to set the
-> >   DAI to stereo in order to capture data properly.
-> 
-> It should be possible to do what you want, yes.
-_________________________________________________________________
-Attention all humans. We are your photos. Free us.
-http://go.microsoft.com/?linkid=9666047
+SGksIE1hcmsNCg0KSSdtIHNvcnJ5IGZvciBzZW5kaW5nIHRoZSB1bnF1YWxpZmllZCBwYXRjaGVz
+IHR3byB0aW1lcy4NCkl0J3MgbXkgZmlyc3QgdGltZSB0byBzdWJtaXQgcGF0Y2ggaW50byBrZXJu
+ZWxzLCBzbyBJJ20gaW4gbGFjayBvZiB0aGUgc3VibWl0dGluZyBleHBlcmllbmNlcy4NCg0KSSds
+bCByZWFkIHRoZSBkb2N1bWVudHMgY2FyZWZ1bGx5LCBhbmQgSSB3YW50IHRvIHN1Ym1pdCBhIGNv
+ZGVjKENTMjRMNTEpIGRyaXZlciBwYXRjaCBpbiByZWNlbnRseQ0KZnV0dXJlLiBJIGhvcGUgZXZl
+cnl0aGluZyB3aWxsIGdvIHdpdGggYSBzd2luZyBhdCB0aGF0IHRpbWUuDQoNClRoYW5rcyENCg0K
+KioqKioqKioqKioqKioqKioqKioNCkJlc3QgcmVnYXJkcyENCkFsbGVuIChSb25ncm9uZykgQ2Fv
+DQpBbWJhcmVsbGEgU2hhbmdoYWkgTHRkLg0KVGVsOsKgwqAgKDg2LTIxKSA1MDk0MjMxMQ0KRmF4
+OsKgICg4Ni0yMSkgNTA5NDIzMjENCg0KDQotLS0tLemCruS7tuWOn+S7ti0tLS0tDQrlj5Hku7bk
+uro6IE1hcmsgQnJvd24gW21haWx0bzpicm9vbmllQG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNv
+bV0gDQrlj5HpgIHml7bpl7Q6IDIwMDnlubQ35pyIMTHml6UgMzoxOQ0K5pS25Lu25Lq6OiBSb25n
+cm9uZyBDYW8NCuaKhOmAgTogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBsaW51eC1rZXJu
+ZWxAdmdlci5rZXJuZWwub3JnOyB0cml2aWFsQGtlcm5lbC5vcmcNCuS4u+mimDogUmU6IFtQQVRD
+SCBmb3ItMi42LjMyXSBzb3VuZCBkYXBtOiBmaXggY2hlY2tpbmcgZm9yIGV4dGVybmFsIHdpZGdl
+dHMgYnVnDQoNCk9uIFR1ZSwgSnVsIDA3LCAyMDA5IGF0IDExOjExOjQ2UE0gLTA3MDAsIFJvbmdy
+b25nIENhbyB3cm90ZToNCj4gRnJvbTogUm9uZ3JvbmcgQ2FvIHJyY2FvQGFtYmFyZWxsYS5jb20N
+Cg0KPiBUaGlzIHBhdGNoIGlzIGJhc2VkIG9uIGZvci0yLjYuMzINCj4gSW4gU09DIERBUE0gbGF5
+ZXIgb2YgU09VTkQgc3Vic3lzdGVtLCB3aGVuIGFkZCBzaWduYWwgcm91dGUgKGluIHRoZSBmdW5j
+dGlvbiBzbmRfc29jX2RhcG1fYWRkX3JvdXRlKCkgKSwgDQo+IHRoZSBvcmlnaW5hbCBjb2RlIGhh
+cyB3cm9uZyBsb2dpYyB3aGVuIGRhcG0gbGF5ZXIgY2hlY2sgZWFjaCB3aWRnZXQgd2hldGhlciBh
+biBleHRlcm5hbCBvbmUuDQoNClRoaXMgc3RpbGwgZG9lc24ndCBhcHBseS4gIEl0IGxvb2tzIGxp
+a2UgeW91ciBNVUEgaXMgY29ycnVwdGluZyB0aGUNCnBhdGNoIC0gaXQncyBNSU1FIGVuY29kZWQg
+ZXZlcnl0aGluZyBhbmQgcmVwbGFjZWQgYWxsIHRoZSB0YWJzIHdpdGgNCnNwYWNlcyB3aGljaCBp
+cyBjYXVzaW5nIGFsbCB0aGUgcGF0Y2ggYXBwbGljYXRpb24gcHJvZ3JhbXMgSSBoYXZlIHRvIGdl
+dA0KY29uZnVzZWQuICBEb2N1bWVudGF0aW9uL2VtYWlsLWNsaWVudHMudHh0IGhhcyBzb21lIHN1
+Z2dlc3Rpb25zIG9uIGhvdw0KdG8gY29uZmlndXJlIHZhcmlvdXMgTVVBcyB0byBzZW5kIHBhdGNo
+ZXMgY2xlYW5seS4gIFBlcnNvbmFsbHkgSSBhbHdheXMNCnVzZSBnaXQgc2VuZC1lbWFpbC4gIFlv
+dSBwcm9iYWJseSBhbHNvIHdhbnQgdG8gaGF2ZSBhIGxvb2sgYXQgdGhlDQppbnN0cnVjdGlvbnMg
+aW4gRG9jdW1lbnRhdGlvbi9TdWJtaXR0aW5nUGF0Y2hlcyB3aXRoIHJlZ2FyZCB0byB0aGUNCmZv
+cm1hdHRpbmcgb2YgeW91ciBwYXRjaCAtIHRoZSBtYWluIHRoaW5nIGJlaW5nIHRoYXQgdGhlIFNp
+Z25lZC1vZmYtYnkNCnNob3VsZCBnbyBiZWZvcmUgdGhlIHBhdGNoIGNvbnRlbnQuDQoNCkluIGFu
+eSBjYXNlLCBJJ3ZlIG1hbnVhbGx5IGFwcGxpZWQgdGhlIHBhdGNoIHNvIG5vIG5lZWQgdG8gcmVz
+dWJtaXQgaXQuDQoNCkkgYWxzbyBub3RpY2UgdGhhdCB5b3UndmUgQ0NlZCB0cml2aWFsQGtlcm5l
+bC5vcmcuICBQbGVhc2UgZG9uJ3QgZG8gdGhhdA0KZXhjZXB0IGZvciB0aGluZ3MgdGhhdCBjYW4n
+dCBwb3NzaWJseSBjYXVzZSBidWdzIC0gYSBjaGFuZ2UgbGlrZSB0aGlzDQpkb2Vzbid0IHJlYWxs
+eSBxdWFsaWZ5IHNpbmNlIHdoaWxlIHRoZSBjb2RlIGNsZWFybHkgbG9va3MgYnVnZ3kgaXQncw0K
+YWx3YXlzIHBvc3NpYmxlIHRoYXQgdGhlIGNvZGUgaXMganVzdCBvYnNjdXJlLg0K
