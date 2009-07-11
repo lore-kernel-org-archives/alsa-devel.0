@@ -1,17 +1,18 @@
-From: apriori@dkc-clan.de
-Subject: Let's discuss the state of Audio on Linux - OSS and
- ALSA people
-Date: Sat, 11 Jul 2009 16:45:09 +0200
-Message-ID: <1058878.1568581247323509430.JavaMail.servlet@kundenserver>
+From: Christian Paredes <merc248@gmail.com>
+Subject: Testers wanted: New SB X-Fi driver
+Date: Sat, 11 Jul 2009 13:39:06 -0700
+Message-ID: <2444fd7e0907111339mff44f4cvfacc1e26c46a0ed9@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
-	[212.227.126.186])
-	by alsa0.perex.cz (Postfix) with ESMTP id B6E9424396
-	for <alsa-devel@alsa-project.org>;
-	Sat, 11 Jul 2009 16:45:09 +0200 (CEST)
+Received: from mail-qy0-f185.google.com (mail-qy0-f185.google.com
+	[209.85.221.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2924024593
+	for <Alsa-devel@alsa-project.org>;
+	Sat, 11 Jul 2009 22:39:07 +0200 (CEST)
+Received: by qyk15 with SMTP id 15so1218609qyk.16
+	for <Alsa-devel@alsa-project.org>; Sat, 11 Jul 2009 13:39:06 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,19 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all.
+Hi everyone,
 
-I would like to encourage all ALSA devs and users to talk about the current state of audio on linux together with the Open Sound System devs at:
+So I have an Auzentech X-Fi Forte PCI-E card, and I got it to output
+sound through the side and center/LFE channels.  When I output sound
+through the center channel, it is correctly routed to the center
+channel, but when sound is output to the LFE channel, it is output to
+both of my front speakers.
 
-http://www.4front-tech.com/forum/viewtopic.php?t=3199
+I am running on kernel 2.6.28, fresh install of Ubuntu 9.04.  This
+also happens on kernel 2.6.30 on Arch Linux.
 
-I recommend to take this offer since we all and the linux development would definetly benefit if both core audio system developer team would finally have a talk with each other. For the sake of information and knowledge please don't fill up the thread with off-topic comments or bashing comments to either sound system
-if it doesn't clearly state (in detail) 1) what is wrong and 2) what could be done better and 3) how it could
-be done better. Criticism should be done in a constructive way.
+Let me know what sort of information you guys need!
 
-Looking forward to see you in the dicussion
+Thanks,
 
-apriori
+Christian
