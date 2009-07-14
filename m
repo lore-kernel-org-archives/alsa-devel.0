@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC updates for 2.6.32
-Date: Mon, 13 Jul 2009 23:28:32 +0100
-Message-ID: <20090713222832.GA30127@sirena.org.uk>
-References: <20090710192542.GB5916@sirena.org.uk>
+From: arif setiawan <n.arif.setiawan@gmail.com>
+Subject: Alsa buffer
+Date: Tue, 14 Jul 2009 08:55:58 +0700
+Message-ID: <c697747b0907131855m64537b16ra2d1e24189a0381f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 73B242452C
+Received: from mail-px0-f192.google.com (mail-px0-f192.google.com
+	[209.85.216.192])
+	by alsa0.perex.cz (Postfix) with ESMTP id EF931245E5
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Jul 2009 00:28:40 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20090710192542.GB5916@sirena.org.uk>
+	Tue, 14 Jul 2009 03:55:59 +0200 (CEST)
+Received: by pxi30 with SMTP id 30so1885001pxi.16
+	for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2009 18:55:58 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,49 +22,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 942c435ba79fd263a922bb114d56eccab6250662:
-  Mark Brown (1):
-        ASoC: Add WM8993 CODEC driver
+Hi,
 
-are available in the git repository at:
+I'm trying to get meaningful voice from ALSA buffer. I read tutorial on
+http://www.suse.de/~mana/alsa090_howto.html<http://www.suse.de/%7Emana/alsa090_howto.html>and
+realize that if alsa use 16 bit format value then I have to byte shift
+to store it in 8 bit unsigned char buffer. I see this in sine wave generator
+in tutorial. To confirm it, I try to save the output into file and open it
+in Matlab. I want to know if this is correct, because when I try saving alsa
+buffer on a from recording I still get noise not the voice.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.32
+Thank you.
 
-Daniel Mack (1):
-      ASoC: Fix NULL pointer dereference in __pxa2xx_pcm_hw_free
+Best regards,
 
-Kevin Hilman (2):
-      ASoC: spdif codec: enable use by modules
-      ASoC: spdif: set module licence to GPL
+Arif
 
-Mark Brown (7):
-      ASoC: Limit WM8731 to symmetric rates
-      ASoC: Use CODEC as clock master on AT91SAM9G20-EK
-      ASoC: Disable microphone input for AT91SAM9G20-EK by default
-      ASoC: Configure WM8731 SYSCLK at startup on AT91SAM9G20-EK
-      ASoC: Add pop delay debug at end of DAPM sequencing
-      ASoC: WM8510 has a single frame clock so needs symmetric rates
-      Merge branch 'for-2.6.31' into for-2.6.32
 
-Peter Meerwald (1):
-      ASoC: fixes multiple typos in comments, no functional change
+This is my implementation :
 
-Roel Kluin (1):
-      ASoC: Keep index within stac9766_reg[]
+int main()
+{
+    int nchannel = 1;
+    int periodsize = 8192;
+    int frame_size = nchannel * (16 / 8);
+    int num_frames = periodsize / frame_size;
 
-Rongrong Cao (1):
-      ASoC: fix checking for external widgets bug
+    unsigned char *data;
+    int l2;
+    short s;
 
- include/sound/soc-dai.h              |   26 +++---
- sound/arm/pxa2xx-pcm-lib.c           |    2 +-
- sound/soc/atmel/sam9g20_wm8731.c     |  138 ++++++---------------------------
- sound/soc/codecs/spdif_transciever.c |    3 +
- sound/soc/codecs/stac9766.c          |    4 +-
- sound/soc/codecs/wm8510.c            |    1 +
- sound/soc/codecs/wm8731.c            |    1 +
- sound/soc/soc-dapm.c                 |    7 +-
- 8 files changed, 51 insertions(+), 131 deletions(-)
+    data = (unsigned char *)malloc(periodsize);
+
+    // fill the buffer
+    for(l2 = 0; l2 < num_frames; l2++)
+    {
+        s1 = (l2 % 128) * 100 - 5000;
+        data[2*l2] = (unsigned char)s1;
+        data[2*l2+1] = s1 >> 8;
+    }
+
+    // directly save
+    FILE *fp1 = fopen("sineout1", "w");
+
+    for (int i = 0; i < periodsize; i++)
+    {
+        fprintf_s(fp1, "%d\n", data[i]);
+    }
+
+    fclose(fp1);
+
+    // with bit shifting from char to short
+    FILE *fp2 = fopen("sineout2", "w");
+
+    for (int i = 0; i < num_frames; i++)
+    {
+        short newval = data[2*i+1] << 8;
+        newval += data[2*i];
+
+        fprintf_s(fp2, "%d\n", newval);
+    }
+
+    fclose(fp2);
+
+    return 0;
+}
