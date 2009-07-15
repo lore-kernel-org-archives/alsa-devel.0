@@ -1,10 +1,10 @@
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Subject: [PATCH 01/06] Fix compilation warning for sound/soc/codecs/wm8400.c
-Date: Wed, 15 Jul 2009 07:48:30 +0530
-Message-ID: <20090715021826.4032.63752.sendpatchset@subratamodak.linux.ibm.com>
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751275AbZGOCSv@vger.kernel.org>
+Subject: [PATCH 06/06] Fix compilation warning for sound/drivers/serial/u16550.c
+Date: Wed, 15 Jul 2009 07:51:28 +0530
+Message-ID: <20090715022125.4481.17259.sendpatchset@subratamodak.linux.ibm.com>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751768AbZGOCVs@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <erex@perex.cz>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Takashi Iwai <iwai@suse.de>
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Isaku Yamahata <yamahata@private.email.ne.jp>, Jaroslav Kysela <perex@perex.cz>, George Hansper <ghansper@apana.org.au>
 Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>, David Howells <dhowells@redhat.com>, Subrata Modak <subrata@linux.vnet.ibm.com>, Balbir Singh <balbir@linux.vnet.ibm.com>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
@@ -14,16 +14,16 @@ http://lkml.org/lkml/2009/7/9/109,
 Signed-off-by: Subrata Modak<subrata@linux.vnet.ibm.com>,
 ---
 
---- a/sound/soc/codecs/wm8400.c	2009-06-15 07:52:31.000000000 +0530
-+++ b/sound/soc/codecs/wm8400.c	2009-07-15 05:35:00.000000000 +0530
-@@ -1015,7 +1015,7 @@ static int wm8400_set_dai_pll(struct snd
+--- a/sound/drivers/serial-u16550.c	2009-05-20 10:48:23.000000000 +0530
++++ b/sound/drivers/serial-u16550.c	2009-07-15 06:46:48.000000000 +0530
+@@ -902,7 +902,7 @@ static int __devinit snd_uart16550_rmidi
+ static int __devinit snd_serial_probe(struct platform_device *devptr)
  {
- 	struct snd_soc_codec *codec = codec_dai->codec;
- 	struct wm8400_priv *wm8400 = codec->private_data;
--	struct fll_factors factors;
-+	struct fll_factors uninitialized_var(factors);
- 	int ret;
- 	u16 reg;
+ 	struct snd_card *card;
+-	struct snd_uart16550 *uart;
++	struct snd_uart16550 *uninitialized_var(uart);
+ 	int err;
+ 	int dev = devptr->id;
  
 
 ---
