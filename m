@@ -1,16 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.32
-Date: Wed, 15 Jul 2009 11:25:41 +0100
-Message-ID: <20090715102538.GA27594@rakim.wolfsonmicro.main>
+From: Frashman <frashman@freenet.de>
+Subject: Testers wanted: New SB X-Fi driver
+Date: Wed, 15 Jul 2009 12:55:23 +0200
+Message-ID: <4A5DB59B.2010407@freenet.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D91B81037F3
+Received: from mout1.freenet.de (mout1.freenet.de [195.4.92.91])
+	by alsa0.perex.cz (Postfix) with ESMTP id 29FBD1037EE
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Jul 2009 12:25:43 +0200 (CEST)
-Content-Disposition: inline
+	Wed, 15 Jul 2009 12:55:44 +0200 (CEST)
+Received: from [195.4.92.11] (helo=1.mx.freenet.de)
+	by mout1.freenet.de with esmtpa (ID frashman@freenet.de) (port 25)
+	(Exim 4.69 #92) id 1MR29G-0006fC-LD
+	for alsa-devel@alsa-project.org; Wed, 15 Jul 2009 12:55:42 +0200
+Received: from [2001:638:904:ffc8::2:8] (port=51416
+	helo=[IPv6:2001:638:904:ffc8:21d:7dff:fe08:4813])
+	by 1.mx.freenet.de with esmtpsa (ID frashman@freenet.de)
+	(TLSv1:AES256-SHA:256) (port 465) (Exim 4.69 #93) id 1MR29G-0000cF-Az
+	for alsa-devel@alsa-project.org; Wed, 15 Jul 2009 12:55:42 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,28 +28,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit ba3b64b976f91067710ef1a87b9b445406910e8f:
-  Mark Brown (1):
-        Merge branch 'for-2.6.31' into for-2.6.32
+Hi Takashi,
 
-are available in the git repository at:
+first of all, thank you for developing this driver.
+I tested it today. It works, so far.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.32
+But two annoying things. As you mentioned, I got problems, if the 
+onboard sound modules are loaded. Then i get no sound out auf my xfi.
+If I disable the loading of snd-hda-intel modules while booting, then it 
+works.
 
-Cliff Cai (2):
-      ASoC: Blackfin AC97: fix resume handling
-      ASoC: Blackfin I2S: fix resume handling
+The second problem is, that SIDE and SURROUND connectors are 
+interchanged. I'm absolutly sure, it works fine under windows and the 
+connector colors are also correct.
 
-Mark Brown (2):
-      ASoC: Fix sample rate lookup in WM8993
-      ASoC: Error out if we can't determine a suitable WM9081 sysclk
+If I run speaker-test -c8 the SIDE Speakers sounds come out of my REAR 
+(SURROUND) Speakers, while nothing is coming out of my rear speakers, if 
+i'm using speaker-test -c6
 
- sound/soc/blackfin/bf5xx-ac97.c |   10 +++-------
- sound/soc/blackfin/bf5xx-i2s.c  |    8 ++------
- sound/soc/codecs/wm8993.c       |    3 ++-
- sound/soc/codecs/wm9081.c       |    8 ++++++++
- 4 files changed, 15 insertions(+), 14 deletions(-)
+
+Here lspci:
+
+$ lspci
+00:00.0 Host bridge: ATI Technologies Inc RD780 Northbridge only dual 
+slot PCI-e_GFX and HT1 K8 part
+00:02.0 PCI bridge: ATI Technologies Inc RD790 PCI to PCI bridge 
+(external gfx0 port A)
+00:04.0 PCI bridge: ATI Technologies Inc RD790 PCI to PCI bridge (PCI 
+express gpp port A)
+00:0a.0 PCI bridge: ATI Technologies Inc RD790 PCI to PCI bridge (PCI 
+express gpp port F)
+00:12.0 SATA controller: ATI Technologies Inc SB600 Non-Raid-5 SATA
+00:13.0 USB Controller: ATI Technologies Inc SB600 USB (OHCI0)
+00:13.1 USB Controller: ATI Technologies Inc SB600 USB (OHCI1)
+00:13.2 USB Controller: ATI Technologies Inc SB600 USB (OHCI2)
+00:13.3 USB Controller: ATI Technologies Inc SB600 USB (OHCI3)
+00:13.4 USB Controller: ATI Technologies Inc SB600 USB (OHCI4)
+00:13.5 USB Controller: ATI Technologies Inc SB600 USB Controller (EHCI)
+00:14.0 SMBus: ATI Technologies Inc SBx00 SMBus Controller (rev 14)
+00:14.1 IDE interface: ATI Technologies Inc SB600 IDE
+00:14.2 Audio device: ATI Technologies Inc SBx00 Azalia (Intel HDA)
+00:14.3 ISA bridge: ATI Technologies Inc SB600 PCI to LPC Bridge
+00:14.4 PCI bridge: ATI Technologies Inc SBx00 PCI to PCI Bridge
+00:18.0 Host bridge: Advanced Micro Devices [AMD] K8 [Athlon64/Opteron] 
+HyperTransport Technology Configuration
+00:18.1 Host bridge: Advanced Micro Devices [AMD] K8 [Athlon64/Opteron] 
+Address Map
+00:18.2 Host bridge: Advanced Micro Devices [AMD] K8 [Athlon64/Opteron] 
+DRAM Controller
+00:18.3 Host bridge: Advanced Micro Devices [AMD] K8 [Athlon64/Opteron] 
+Miscellaneous Control
+01:00.0 VGA compatible controller: ATI Technologies Inc RV770 [Radeon HD 
+4850]
+01:00.1 Audio device: ATI Technologies Inc HD48x0 audio
+02:00.0 Audio device: Creative Labs X-Fi Titanium series [EMU20k2] (rev 03)
+03:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. 
+RTL8111/8168B PCI Express Gigabit Ethernet controller (rev 01)
+04:06.0 Multimedia video controller: Brooktree Corporation Bt878 Video 
+Capture (rev 11)
+04:06.1 Multimedia controller: Brooktree Corporation Bt878 Audio Capture 
+(rev 11)
+04:0e.0 FireWire (IEEE 1394): Texas Instruments TSB43AB23 
+IEEE-1394a-2000 Controller (PHY/Link)
+
+
+
+Thank you so far,
+Frashman
