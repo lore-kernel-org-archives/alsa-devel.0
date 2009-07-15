@@ -1,17 +1,17 @@
-From: stan <gryt2@q.com>
-Subject: Re: Alsa buffer
-Date: Tue, 14 Jul 2009 12:10:10 -0700
-Message-ID: <BLU0-SMTP8480B94F50876BCF7BCF31EE230@phx.gbl>
-References: <c697747b0907131855m64537b16ra2d1e24189a0381f@mail.gmail.com>
+From: "Candelaria Villareal, Jorge" <x0107209@ti.com>
+Subject: [PATCH] ASoC: SDP3430: Add support for EXTMUTE using
+	TWL GPIO6
+Date: Tue, 14 Jul 2009 20:04:08 -0500
+Message-ID: <2256F256009DAA4CBE661E9F41EAC84B533409F1@dlee01.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from blu0-omc3-s19.blu0.hotmail.com (blu0-omc3-s19.blu0.hotmail.com
-	[65.55.116.94]) by alsa0.perex.cz (Postfix) with ESMTP id E181A24368
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id F1FCE243A1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Jul 2009 21:09:22 +0200 (CEST)
-In-Reply-To: <c697747b0907131855m64537b16ra2d1e24189a0381f@mail.gmail.com>
+	Wed, 15 Jul 2009 03:04:18 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,50 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 14 Jul 2009 08:55:58 +0700
-arif setiawan <n.arif.setiawan@gmail.com> wrote:
+Board sdp3430 has hardware support for EXTMUTE using TWL4030 GPIO6
+line, controlled by register INTBR_PMBR1. Machine driver takes care
+of enabling gpio line through i2c and codec driver manipulates the
+line during headset ramp up/down sequence.
 
-> into file and open it in Matlab. I want to know if this is correct,
-> because when I try saving alsa buffer on a from recording I still get
-> noise not the voice.
-> 
+Signed-off-by: Jorge Eduardo Candelaria <x0107209@ti.com>
+---
+ sound/soc/omap/sdp3430.c |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
 
->     // directly save
->     FILE *fp1 = fopen("sineout1", "w");
-FILE *fp1 = fopen("sineout1", "wb");
-> 
->     for (int i = 0; i < periodsize; i++)
->     {
->         fprintf_s(fp1, "%d\n", data[i]);
-You are printing formatted text data here, it needs to be binary.
-fwrite
->     }
-> 
->     fclose(fp1);
-> 
->     // with bit shifting from char to short
->     FILE *fp2 = fopen("sineout2", "w");
-FILE *fp2 = fopen("sineout2", "wb");
-> 
->     for (int i = 0; i < num_frames; i++)
->     {
->         short newval = data[2*i+1] << 8;
->         newval += data[2*i];
-> 
->         fprintf_s(fp2, "%d\n", newval);
-You are printing formatted text data here, it needs to be binary.
-fwrite
->     }
-> 
->     fclose(fp2);
-> 
->     return 0;
-> }
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
+index c51594d..f7e5b74 100644
+--- a/sound/soc/omap/sdp3430.c
++++ b/sound/soc/omap/sdp3430.c
+@@ -24,6 +24,7 @@
+ 
+ #include <linux/clk.h>
+ #include <linux/platform_device.h>
++#include <linux/i2c/twl4030.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/soc.h>
+@@ -39,6 +40,9 @@
+ #include "omap-pcm.h"
+ #include "../codecs/twl4030.h"
+ 
++#define TWL4030_INTBR_PMBR1	0x0D
++#define EXTMUTE(value)		(value << 2)
++
+ static struct snd_soc_card snd_soc_sdp3430;
+ 
+ static int sdp3430_hw_params(struct snd_pcm_substream *substream,
+@@ -280,6 +284,7 @@ static struct snd_soc_card snd_soc_sdp3430 = {
+ static struct twl4030_setup_data twl4030_setup = {
+ 	.ramp_delay_value = 3,
+ 	.sysclk = 26000,
++	.hs_extmute = 1,
+ };
+ 
+ /* Audio subsystem */
+@@ -312,6 +317,10 @@ static int __init sdp3430_soc_init(void)
+ 	*(unsigned int *)sdp3430_dai[0].cpu_dai->private_data = 1; /* McBSP2 */
+ 	*(unsigned int *)sdp3430_dai[1].cpu_dai->private_data = 2; /* McBSP3 */
+ 
++	/* Set TWL4030 GPIO6 as EXTMUTE signal */
++	twl4030_i2c_write_u8(TWL4030_MODULE_INTBR, EXTMUTE(0x02),
++							TWL4030_MODULE_INTBR);
++
+ 	ret = platform_device_add(sdp3430_snd_device);
+ 	if (ret)
+ 		goto err1;
+-- 
+1.6.0.4
