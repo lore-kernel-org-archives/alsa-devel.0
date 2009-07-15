@@ -1,20 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 01/06] Fix compilation warning for
- sound/soc/codecs/wm8400.c
-Date: Wed, 15 Jul 2009 09:28:26 +0100
-Message-ID: <20090715082826.GA8689@rakim.wolfsonmicro.main>
-References: <20090715021826.4032.63752.sendpatchset@subratamodak.linux.ibm.com>
-	<1247633018.2437.5.camel@ht.satnam>
+Subject: Re: [PATCH] ASoC: MAX9877: add MAX9877 amp driver
+Date: Wed, 15 Jul 2009 11:01:34 +0100
+Message-ID: <20090715100133.GA18019@sirena.org.uk>
+References: <4A5C2829.50402@samsung.com>
+	<20090714095426.GA16295@rakim.wolfsonmicro.main>
+	<4A5D2F60.9090101@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B33C91037F9
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2D7A024550
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Jul 2009 10:28:29 +0200 (CEST)
+	Wed, 15 Jul 2009 12:01:57 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1247633018.2437.5.camel@ht.satnam>
+In-Reply-To: <4A5D2F60.9090101@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,17 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaswinder Singh Rajput <jaswinder@kernel.org>
-Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>, alsa-devel@alsa-project.org, Subrata Modak <subrata@linux.vnet.ibm.com>, Takashi Iwai <iwai@suse.de>, LKML <linux-kernel@vger.kernel.org>, David Howells <dhowells@redhat.com>, Jaroslav Kysela <erex@perex.cz>, Balbir Singh <balbir@linux.vnet.ibm.com>
+To: Joonyoung Shim <jy0922.shim@samsung.com>
+Cc: alsa-devel@alsa-project.org, kyungmin.park@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 15, 2009 at 10:13:38AM +0530, Jaswinder Singh Rajput wrote:
-> Hello Subrata,
+On Wed, Jul 15, 2009 at 10:22:40AM +0900, Joonyoung Shim wrote:
+> On 7/14/2009 6:54 PM, Mark Brown wrote:
 
-> This kind of warnings born due to not handling the variables properly.
-> Please try to understand the root cause of this warning, just shutting
-> this warning is of no use.
+> >> +	SOC_SINGLE_EXT_TLV("MAX9877 Amp HP Left Playback Volume",
+> >> +			MAX9877_HPL_VOLUME, 0, 31, 0,
+> >> +			max9877_get_reg, max9877_set_reg, max9877_output_tlv),
+> >> +	SOC_SINGLE_EXT_TLV("MAX9877 Amp HP Right Playback Volume",
+> >> +			MAX9877_HPR_VOLUME, 0, 31, 0,
+> >> +			max9877_get_reg, max9877_set_reg, max9877_output_tlv),
 
-...as I said last time you submitted rougly the same patch.  Please also
-remember that sometimes these problems are false positives caused by
-issues with the compiler flow analysis (as appears to be the case here).
+> > Ideally these would be a SOC_DOUBLE_EXT_TLV() but we don't have that yet
+> > - would you mind sending a patch for that?
+
+> I think these would be a SOC_DOUBLE_R_EXT_TLV() because HP Left register 
+> and HP Right register are different. If this is right, i will send a 
+> patch for this.
+
+Yes, that sounds right (though if you want to add both macros I won't
+stop you!).
