@@ -1,53 +1,40 @@
-From: Jaswinder Singh Rajput <jaswinder@kernel.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 01/06] Fix compilation warning for
  sound/soc/codecs/wm8400.c
-Date: Wed, 15 Jul 2009 10:13:38 +0530
-Message-ID: <1247633018.2437.5.camel@ht.satnam>
+Date: Wed, 15 Jul 2009 09:28:26 +0100
+Message-ID: <20090715082826.GA8689@rakim.wolfsonmicro.main>
 References: <20090715021826.4032.63752.sendpatchset@subratamodak.linux.ibm.com>
+	<1247633018.2437.5.camel@ht.satnam>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751848AbZGOEoc@vger.kernel.org>
-In-Reply-To: <20090715021826.4032.63752.sendpatchset@subratamodak.linux.ibm.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: Jaroslav Kysela <erex@perex.cz>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Takashi Iwai <iwai@suse.de>, Sachin P Sant <sachinp@linux.vnet.ibm.com>, David Howells <dhowells@redhat.com>, Balbir Singh <balbir@linux.vnet.ibm.com>, LKML <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B33C91037F9
+	for <alsa-devel@alsa-project.org>;
+	Wed, 15 Jul 2009 10:28:29 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1247633018.2437.5.camel@ht.satnam>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jaswinder Singh Rajput <jaswinder@kernel.org>
+Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>, alsa-devel@alsa-project.org, Subrata Modak <subrata@linux.vnet.ibm.com>, Takashi Iwai <iwai@suse.de>, LKML <linux-kernel@vger.kernel.org>, David Howells <dhowells@redhat.com>, Jaroslav Kysela <erex@perex.cz>, Balbir Singh <balbir@linux.vnet.ibm.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Subrata,
+On Wed, Jul 15, 2009 at 10:13:38AM +0530, Jaswinder Singh Rajput wrote:
+> Hello Subrata,
 
-On Wed, 2009-07-15 at 07:48 +0530, Subrata Modak wrote:
-> Following fix is inspired by David Howells fix few days back:
-> http://lkml.org/lkml/2009/7/9/109,
-> 
+> This kind of warnings born due to not handling the variables properly.
+> Please try to understand the root cause of this warning, just shutting
+> this warning is of no use.
 
-Please check further of this thread :
-
-http://marc.info/?l=linux-kernel&m=124756210124518&w=2
-
-
-> Signed-off-by: Subrata Modak<subrata@linux.vnet.ibm.com>,
-> ---
-> 
-> --- a/sound/soc/codecs/wm8400.c	2009-06-15 07:52:31.000000000 +0530
-> +++ b/sound/soc/codecs/wm8400.c	2009-07-15 05:35:00.000000000 +0530
-> @@ -1015,7 +1015,7 @@ static int wm8400_set_dai_pll(struct snd
->  {
->  	struct snd_soc_codec *codec = codec_dai->codec;
->  	struct wm8400_priv *wm8400 = codec->private_data;
-> -	struct fll_factors factors;
-> +	struct fll_factors uninitialized_var(factors);
->  	int ret;
->  	u16 reg;
->  
-> 
-
-This kind of warnings born due to not handling the variables properly.
-Please try to understand the root cause of this warning, just shutting
-this warning is of no use.
-
-Please revise your patches, If you face any problems let me know.
-
-Thanks,
---
-JSR
+...as I said last time you submitted rougly the same patch.  Please also
+remember that sometimes these problems are false positives caused by
+issues with the compiler flow analysis (as appears to be the case here).
