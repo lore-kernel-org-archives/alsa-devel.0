@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] Blackfin I2S(TDM) CPU DAI driver
-Date: Thu, 16 Jul 2009 11:34:40 +0100
-Message-ID: <20090716103439.GA25339@rakim.wolfsonmicro.main>
-References: <1247731207-26743-1-git-send-email-21cnbao@gmail.com>
-	<1247731207-26743-3-git-send-email-21cnbao@gmail.com>
+From: Frank <frashman@freenet.de>
+Subject: Re: Testers wanted: New SB X-Fi driver
+Date: Thu, 16 Jul 2009 12:37:04 +0200
+Message-ID: <4A5F02D0.5080200@freenet.de>
+References: <4A5DB59B.2010407@freenet.de> <s5hvdltnfrp.wl%tiwai@suse.de>
+	<4A5F016F.1030305@freenet.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 17F8A246A0
+Received: from mout5.freenet.de (mout5.freenet.de [195.4.92.95])
+	by alsa0.perex.cz (Postfix) with ESMTP id 09A59246A6
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Jul 2009 12:34:44 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1247731207-26743-3-git-send-email-21cnbao@gmail.com>
+	Thu, 16 Jul 2009 12:37:08 +0200 (CEST)
+In-Reply-To: <4A5F016F.1030305@freenet.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +22,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 16, 2009 at 04:00:06PM +0800, Barry Song wrote:
-> Signed-off-by: Barry Song <21cnbao@gmail.com>
-> Even though TDM mode can be as part of I2S DAI, but there
-> are so much difference in configuration and data flow,
-> it's very ugly to integrate I2S and TDM into a module.
+Oh sorry ... I mean ... SIDE and SURROUND (==REAR) are swapped!
 
-It'll be a day or two before I have the bandwidth to properly review the
-code here but one thing that springs to mind reading the commit message: 
-is the 2 channel I2S case not just a special case of the TDM mode?  Is
-it just that the extra work required for being able to handle TDM has a
-big runtime cost in buffer allocation or something and so treating it as
-a special case of TDM introduces unacceptable overheads.  I'd just like
-to better understand what the problems are here, I'm perfectly willing
-to believe that this is a sensible solution.
+Frashman schrieb:
+>
+>
+> Takashi Iwai schrieb:
+>> At Wed, 15 Jul 2009 12:55:23 +0200,
+>> Frashman wrote:
+>>  
+>>> Hi Takashi,
+>>>
+>>> first of all, thank you for developing this driver.
+>>> I tested it today. It works, so far.
+>>>
+>>> But two annoying things. As you mentioned, I got problems, if the 
+>>> onboard sound modules are loaded. Then i get no sound out auf my xfi.
+>>>     
+>>
+>> It's likely the collision of PCI device ID.
+>> Some X-Fi models support both HD-audio and emu20kx-native modes.  The
+>> modes are switched by some magical sequence.
+>>
+>> Anyway, please run alsa-info.sh with --no-upload option, and attach
+>> the generated file.
+>>   
+> I let the kernel auto probe all sound modules and generated then the 
+> alsa-info.txt
+> It's attached.
+>>  
+>>> If I disable the loading of snd-hda-intel modules while booting, 
+>>> then it works.
+>>>
+>>> The second problem is, that SIDE and SURROUND connectors are 
+>>> interchanged. I'm absolutly sure, it works fine under windows and 
+>>> the connector colors are also correct.
+>>>
+>>> If I run speaker-test -c8 the SIDE Speakers sounds come out of my 
+>>> REAR (SURROUND) Speakers, while nothing is coming out of my rear 
+>>> speakers, if i'm using speaker-test -c6
+>>>     
+>>
+>> So, the side channels (channel 7 & 8) and the rear channels (3 & 4)
+>> are swapped when running with 8 channel mode?
+>>   
+> The REAR and SURROUND channels are swapped in 4, 6 and 8channel mode 
+> ... so they always swapped. (speaker-test)
+> AND because there are swapped in 6channel mode too .... there is 
+> nothing coming out of the rear channels, if I connect everything 
+> right. I double checked it with windows and with cable colors.
+>
+>
+> Sincerely,
+> Frashman
+>> Takashi
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>   
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
