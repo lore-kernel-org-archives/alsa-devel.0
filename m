@@ -1,18 +1,15 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: New Audio Driver Design
-Date: Wed, 15 Jul 2009 22:22:08 +0200
-Message-ID: <20090715202208.GA13236@buzzloop.caiaq.de>
-References: <1b68c6790907132152pbfc1995k3be854627cb77f3e@mail.gmail.com>
+From: Barry Song <21cnbao@gmail.com>
+Subject: [PATCH 0/3] new support for ad1938 codec
+Date: Thu, 16 Jul 2009 16:00:04 +0800
+Message-ID: <1247731207-26743-1-git-send-email-21cnbao@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9937224338
+Received: from nwd2mail11.analog.com (nwd2mail11.analog.com [137.71.25.57])
+	by alsa0.perex.cz (Postfix) with ESMTP id 72F5C24631
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Jul 2009 22:22:11 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1b68c6790907132152pbfc1995k3be854627cb77f3e@mail.gmail.com>
+	Thu, 16 Jul 2009 09:58:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,25 +19,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jassi brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 14, 2009 at 01:52:12PM +0900, jassi brar wrote:
->   I am to write an ALSA driver for my SOC which has a dedicated DSP
-> subsystem which can
-> be loaded with decoder instructions and parameteres, and then we load it
-> with encoded data. The dsp then decodes the data and sends it to the PCM
-> controller.
+Hi Liam&Mark,
+The following series add support for ad1938 codec
 
-Are these decoder instruction something you need to do at runtime? Or
-would it suffice to provide them once when the driver is probed?
+*PATCH 1: ad1938 codec driver
 
-For the first case, you could use the ALSA control interface, in
-particular the SNDRV_CTL_ELEM_BYTES type.
+*PATCH 2: blackfin I2S(in TDM mode) DAI driver
+Even though TDM mode can be as part of I2S DAI, but there are so much
+difference in configuration and data flow,
+it's very ugly to integrate I2S and TDM into a module. So we use the DAI
+type, but split normal I2S and TDM into individual files.
 
-For the latter, you might want to have a look at the firmware framework
-and read Documentation/firmware_class/README.
+*PATCH 3: board driver to connect bf5xx with ad1938
 
-Hope that helps,
-Daniel
+--
+Thanks,
+Barry
