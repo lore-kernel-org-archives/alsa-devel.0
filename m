@@ -1,59 +1,84 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.32
-Date: Thu, 16 Jul 2009 13:06:32 +0100
-Message-ID: <20090716120632.GC26350@rakim.wolfsonmicro.main>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7EAA810385C
-	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Jul 2009 14:06:33 +0200 (CEST)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Subject: Re:[PATCH 01/06] Fix compilation warning for sound/soc/codecs/wm8400.c
+Date: Thu, 16 Jul 2009 18:40:01 +0530
+Message-ID: <20090716130958.28045.71072.sendpatchset@subratamodak.linux.ibm.com>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756315AbZGPNKc@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaswinder Singh Rajput <jaswinder@kernel.org>, Jaroslav Kysela <erex@perex.cz>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>, David Howells <dhowells@redhat.com>, Subrata Modak <subrata@linux.vnet.ibm.com>, Balbir Singh <balbir@linux.vnet.ibm.com>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 4b75e9476737dffef44a66818a4a481edd2512a1:
-  Mark Brown (1):
-        ASoC: Error out if we can't determine a suitable WM9081 sysclk
+Hey,
 
-are available in the git repository at:
+>On Wed, 2009-07-15 at 10:13 +0530, Jaswinder Singh Rajput wrote:
+>Hello Subrata,
+> 
+> On Wed, 2009-07-15 at 07:48 +0530, Subrata Modak wrote:
+> > Following fix is inspired by David Howells fix few days back:
+> > http://lkml.org/lkml/2009/7/9/109,
+> > 
+> 
+> Please check further of this thread :
+> 
+> http://marc.info/?l=linux-kernel&m=124756210124518&w=2
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.32
+Does the above really apply here ?
 
-Barry Song (1):
-      ASoC: new ad1938 codec driver based on asoc
+> 
+> 
+> > Signed-off-by: Subrata Modak<subrata@linux.vnet.ibm.com>,
+> > ---
+> > 
+> > --- a/sound/soc/codecs/wm8400.c	2009-06-15 07:52:31.000000000 +0530
+> > +++ b/sound/soc/codecs/wm8400.c	2009-07-15 05:35:00.000000000 +0530
+> > @@ -1015,7 +1015,7 @@ static int wm8400_set_dai_pll(struct snd
+> >  {
+> >  	struct snd_soc_codec *codec = codec_dai->codec;
+> >  	struct wm8400_priv *wm8400 = codec->private_data;
+> > -	struct fll_factors factors;
+> > +	struct fll_factors uninitialized_var(factors);
+> >  	int ret;
+> >  	u16 reg;
+> >  
+> > 
+> 
+> This kind of warnings born due to not handling the variables properly.
+> Please try to understand the root cause of this warning, just shutting
+> this warning is of no use.
+> 
+> Please revise your patches, If you face any problems let me know.
+> 
 
-Joonyoung Shim (3):
-      ASoC: add SOC_DOUBLE_EXT_TLV control type
-      ASoC: add SOC_DOUBLE_R_EXT_TLV control type
-      ASoC: MAX9877: add MAX9877 amp driver
+How about the following brutal shutdown ?
+---
 
-Kevin Hilman (1):
-      ASoC: davinci: don't use clock names
+--- a/sound/soc/codecs/wm8400.c	2009-07-16 16:21:37.000000000 +0530
++++ b/sound/soc/codecs/wm8400.c	2009-07-16 18:28:48.000000000 +0530
+@@ -1015,7 +1015,7 @@ static int wm8400_set_dai_pll(struct snd
+ {
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+ 	struct wm8400_priv *wm8400 = codec->private_data;
+-	struct fll_factors factors;
++	struct fll_factors factors = {};
+ 	int ret;
+ 	u16 reg;
+ 
+---
 
- include/sound/soc.h               |   22 ++
- sound/soc/codecs/Kconfig          |    9 +
- sound/soc/codecs/Makefile         |    8 +
- sound/soc/codecs/ad1938.c         |  652 +++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/ad1938.h         |  100 ++++++
- sound/soc/codecs/max9877.c        |  270 +++++++++++++++
- sound/soc/codecs/max9877.h        |   37 ++
- sound/soc/davinci/davinci-i2s.c   |    2 +-
- sound/soc/davinci/davinci-mcasp.c |    2 +-
- 9 files changed, 1100 insertions(+), 2 deletions(-)
- create mode 100644 sound/soc/codecs/ad1938.c
- create mode 100644 sound/soc/codecs/ad1938.h
- create mode 100644 sound/soc/codecs/max9877.c
- create mode 100644 sound/soc/codecs/max9877.h
+As i found that:
+
+1024 
+1025         if (freq_out != 0) {
+1026                 ret = fll_factors(wm8400, &factors, freq_in, freq_out);
+1027                 if (ret != 0)
+1028                         return ret;
+1029         }
+1030 
+
+'factors' will get initialized here, as, 'freq_out' will probably never have
+a '0' value. So, 'fll_factors()' will actually overwrite values in 'factors'
+even after the initial brutal assignment:
+	"struct fll_factors factors = {}"
+
+Regards--
+Subrata
