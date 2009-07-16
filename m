@@ -1,21 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: While recording from mono codec twice as much	data
-	is received
-Date: Thu, 16 Jul 2009 19:26:51 +0100
-Message-ID: <20090716182651.GA11099@opensource.wolfsonmicro.com>
-References: <COL102-W427E3B6FA3A27688387EAED0260@phx.gbl>
-	<20090710092924.GH7988@sirena.org.uk>
-	<COL102-W38BFFD26634F8E68389469D0270@phx.gbl>
+From: "Ted T. Logan" <tedtheologian@gmail.com>
+Subject: Re: Testers wanted: New SB X-Fi driver
+Date: Thu, 16 Jul 2009 13:30:12 -0500
+Message-ID: <1247769012.20483.0.camel@localhost.localdomain>
+References: <4A5DB59B.2010407@freenet.de>  <s5hvdltnfrp.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0BA2724731
+Received: from mail-yx0-f177.google.com (mail-yx0-f177.google.com
+	[209.85.210.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id 456FB24738
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Jul 2009 20:26:51 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <COL102-W38BFFD26634F8E68389469D0270@phx.gbl>
+	Thu, 16 Jul 2009 20:28:19 +0200 (CEST)
+Received: by yxe7 with SMTP id 7so489504yxe.16
+	for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2009 11:28:18 -0700 (PDT)
+In-Reply-To: <s5hvdltnfrp.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,30 +24,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Louis Lee <lwhlee@hotmail.com>
-Cc: ALSA Devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Frashman <frashman@freenet.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 10, 2009 at 02:53:52PM -0600, Louis Lee wrote:
+Takashi, please, what must I do to get your xfi driver to stop clicking?
 
-> Mark, thanks again for your insights.  I believe the sample rate is
-> correct.I can see it on the scope and FRAME frequency is equivalent to
-> thesample rate.  I ran into a bit of a problem though.  If you are right
+On Thu, 2009-07-16 at 11:22 +0200, Takashi Iwai wrote:
 
-Yup, sounds correct.
-
-> aboutthat each bit in the clock cycle is being recorded I think I have
-> just enoughbits in my clock for stereo data.  If I reduce it though I
-> run into theproblem where I don't have enough bits to clock through all
-> my data. :(
-
-I'm not sure what you mean here - do you have more bits than you have
-data or is there data that you don't want to record?
-
-> This probably seems like a complete noob question.  How exactly do I
-> modify the CPU DAI to not account for each bit in the clock cycle?
-
-The best API for this if the CPU driver supports it is set_tdm_slot()
-but it does depend on what the hardware can do and what the driver
-supports.  I'm afraid I'm not too familiar with i.MX2x specifics here
-(or the particular BSP that you've got).
+> At Wed, 15 Jul 2009 12:55:23 +0200,
+> Frashman wrote:
+> > 
+> > Hi Takashi,
+> > 
+> > first of all, thank you for developing this driver.
+> > I tested it today. It works, so far.
+> > 
+> > But two annoying things. As you mentioned, I got problems, if the 
+> > onboard sound modules are loaded. Then i get no sound out auf my xfi.
+> 
+> It's likely the collision of PCI device ID.
+> Some X-Fi models support both HD-audio and emu20kx-native modes.  The
+> modes are switched by some magical sequence.
+> 
+> Anyway, please run alsa-info.sh with --no-upload option, and attach
+> the generated file.
+> 
+> > If I disable the loading of snd-hda-intel modules while booting, then it 
+> > works.
+> > 
+> > The second problem is, that SIDE and SURROUND connectors are 
+> > interchanged. I'm absolutly sure, it works fine under windows and the 
+> > connector colors are also correct.
+> > 
+> > If I run speaker-test -c8 the SIDE Speakers sounds come out of my REAR 
+> > (SURROUND) Speakers, while nothing is coming out of my rear speakers, if 
+> > i'm using speaker-test -c6
+> 
+> So, the side channels (channel 7 & 8) and the rear channels (3 & 4)
+> are swapped when running with 8 channel mode?
+> 
+> 
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
