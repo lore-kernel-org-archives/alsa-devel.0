@@ -1,84 +1,55 @@
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Subject: Re:[PATCH 01/06] Fix compilation warning for sound/soc/codecs/wm8400.c
-Date: Thu, 16 Jul 2009 18:40:01 +0530
-Message-ID: <20090716130958.28045.71072.sendpatchset@subratamodak.linux.ibm.com>
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756315AbZGPNKc@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaswinder Singh Rajput <jaswinder@kernel.org>, Jaroslav Kysela <erex@perex.cz>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>, David Howells <dhowells@redhat.com>, Subrata Modak <subrata@linux.vnet.ibm.com>, Balbir Singh <balbir@linux.vnet.ibm.com>, LKML <linux-kernel@vger.kernel.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 01/06] Fix compilation warning for
+ sound/soc/codecs/wm8400.c
+Date: Thu, 16 Jul 2009 14:23:08 +0100
+Message-ID: <20090716132308.GC9656@rakim.wolfsonmicro.main>
+References: <20090716130958.28045.71072.sendpatchset@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D829110385E
+	for <alsa-devel@alsa-project.org>;
+	Thu, 16 Jul 2009 15:23:09 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20090716130958.28045.71072.sendpatchset@subratamodak.linux.ibm.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, LKML <linux-kernel@vger.kernel.org>, David Howells <dhowells@redhat.com>, Jaswinder Singh Rajput <jaswinder@kernel.org>, Jaroslav Kysela <erex@perex.cz>, Balbir Singh <balbir@linux.vnet.ibm.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hey,
+On Thu, Jul 16, 2009 at 06:40:01PM +0530, Subrata Modak wrote:
 
->On Wed, 2009-07-15 at 10:13 +0530, Jaswinder Singh Rajput wrote:
->Hello Subrata,
-> 
-> On Wed, 2009-07-15 at 07:48 +0530, Subrata Modak wrote:
-> > Following fix is inspired by David Howells fix few days back:
-> > http://lkml.org/lkml/2009/7/9/109,
-> > 
-> 
-> Please check further of this thread :
-> 
-> http://marc.info/?l=linux-kernel&m=124756210124518&w=2
+> How about the following brutal shutdown ?
 
-Does the above really apply here ?
+No, this is the patch you originally submitted.  You are missing the
+point here - your patches are all just papering over the warning and
+won't help at all if there is an actual problem.
 
-> 
-> 
-> > Signed-off-by: Subrata Modak<subrata@linux.vnet.ibm.com>,
-> > ---
-> > 
-> > --- a/sound/soc/codecs/wm8400.c	2009-06-15 07:52:31.000000000 +0530
-> > +++ b/sound/soc/codecs/wm8400.c	2009-07-15 05:35:00.000000000 +0530
-> > @@ -1015,7 +1015,7 @@ static int wm8400_set_dai_pll(struct snd
-> >  {
-> >  	struct snd_soc_codec *codec = codec_dai->codec;
-> >  	struct wm8400_priv *wm8400 = codec->private_data;
-> > -	struct fll_factors factors;
-> > +	struct fll_factors uninitialized_var(factors);
-> >  	int ret;
-> >  	u16 reg;
-> >  
-> > 
-> 
-> This kind of warnings born due to not handling the variables properly.
-> Please try to understand the root cause of this warning, just shutting
-> this warning is of no use.
-> 
-> Please revise your patches, If you face any problems let me know.
-> 
+> 'factors' will get initialized here, as, 'freq_out' will probably never have
+> a '0' value. So, 'fll_factors()' will actually overwrite values in 'factors'
+> even after the initial brutal assignment:
+> 	"struct fll_factors factors = {}"
 
-How about the following brutal shutdown ?
----
+This is pretty much the point of the warning when it's valid - it's
+trying to catch situations where there is a code path where the variable
+is used without being initialised.  If you just blindly initialise the
+variable as you are doing then the warning goes away but any problematic
+code remains so the situation is worse.
 
---- a/sound/soc/codecs/wm8400.c	2009-07-16 16:21:37.000000000 +0530
-+++ b/sound/soc/codecs/wm8400.c	2009-07-16 18:28:48.000000000 +0530
-@@ -1015,7 +1015,7 @@ static int wm8400_set_dai_pll(struct snd
- {
- 	struct snd_soc_codec *codec = codec_dai->codec;
- 	struct wm8400_priv *wm8400 = codec->private_data;
--	struct fll_factors factors;
-+	struct fll_factors factors = {};
- 	int ret;
- 	u16 reg;
- 
----
-
-As i found that:
-
-1024 
-1025         if (freq_out != 0) {
-1026                 ret = fll_factors(wm8400, &factors, freq_in, freq_out);
-1027                 if (ret != 0)
-1028                         return ret;
-1029         }
-1030 
-
-'factors' will get initialized here, as, 'freq_out' will probably never have
-a '0' value. So, 'fll_factors()' will actually overwrite values in 'factors'
-even after the initial brutal assignment:
-	"struct fll_factors factors = {}"
-
-Regards--
-Subrata
+In this case I suspect that whatever compiler you are using (none of
+those I've tried with seem to be doing this) isn't able to figure out
+that if we skip initialising the variable then we use exactly the same
+condition to return from the function before we try to use the variable.
+For something like this the warning can normally be worked around by
+changing the control flow so that the compiler is able to figure out
+that things are safe.
