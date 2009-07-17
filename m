@@ -1,18 +1,19 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: Re: [BUG] NULL pointer dereference in patch_sigmatel.c
-Date: Fri, 17 Jul 2009 13:35:39 +0300
-Message-ID: <4A6053FB.4040302@pardus.org.tr>
-References: <4A5F84D6.5040708@pardus.org.tr>	<s5h1vofac2z.wl%tiwai@suse.de>	<4A604A2D.3080706@pardus.org.tr>
-	<s5hvdlr8w6q.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/2] Add possibility to control the
+	GPIO_STATUS shift
+Date: Fri, 17 Jul 2009 11:32:53 +0100
+Message-ID: <20090717103253.GF3439@rakim.wolfsonmicro.main>
+References: <200907171001.16889.marek.vasut@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lider.pardus.org.tr (lider.uludag.org.tr [193.140.100.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 72DC41038D6
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B4D271038DE
 	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Jul 2009 12:32:46 +0200 (CEST)
-In-Reply-To: <s5hvdlr8w6q.wl%tiwai@suse.de>
+	Fri, 17 Jul 2009 12:32:54 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <200907171001.16889.marek.vasut@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,14 +23,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Marek Vasut <marek.vasut@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote On 17-07-2009 13:01:
-> Yes, but there are two different snapshots there, the stable one
-> (alsa-driver-snapshot.tar.gz) and the unstable one
-> (alsa-driver-unstable-snapshot.tar.gz).
->   
+On Fri, Jul 17, 2009 at 10:01:16AM +0200, Marek Vasut wrote:
 
-Yep I'm always using the ones with timestamps, never the unstable one.
+> This patch allows tweaking the behaviour of GPIO_STATUS register
+> shift quirk that's in wm97xx-core. The problem with GPIO_STATUS 
+> register being shifted by one doesn't appear on all hardware it 
+> seems and causes problems with accelerated touchscreen drivers on
+> Palm hardware. Therefore an accelerated touchscreen driver can select
+> if the shift is/isn't happening on the hardware.                     
+
+Again, this isn't an ALSA patch.
+
+I've done some checking internally and I'm very suspicous that what's
+going on here is actually the masking of some other bug elsewhere in the
+system.  Which CPU are the systems you're observing this on using?
+There is at least one special case in the current code for GPIO register
+readbacks in the PXA AC97 driver code and there have been a number of
+interoperabilty issues in that area...
