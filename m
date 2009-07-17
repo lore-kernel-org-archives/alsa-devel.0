@@ -1,96 +1,140 @@
-From: Christopher Arndt <chris.arndt@web.de>
-Subject: pyalsa: synchronizing queue with MIDI clock events
-Date: Fri, 17 Jul 2009 14:54:00 +0200
-Message-ID: <4A607468.7010300@web.de>
+From: Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH 2/2] Add possibility to control the GPIO_STATUS shift
+Date: Fri, 17 Jul 2009 16:45:21 +0200
+Message-ID: <200907171645.21352.marek.vasut@gmail.com>
+References: <200907171001.16889.marek.vasut@gmail.com> <200907171353.59356.marek.vasut@gmail.com> <20090717121159.GA20904@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fmmailgate03.web.de (fmmailgate03.web.de [217.72.192.234])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6799F1038CF
-	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Jul 2009 14:54:33 +0200 (CEST)
-Received: from smtp06.web.de (fmsmtp06.dlan.cinetic.de [172.20.5.172])
-	by fmmailgate03.web.de (Postfix) with ESMTP id B7A8810643116
-	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Jul 2009 14:53:47 +0200 (CEST)
-Received: from [87.79.56.112] (helo=minimax.paddyland.lan)
-	by smtp06.web.de with asmtp (TLSv1:AES256-SHA:256)
-	(WEB.DE 4.110 #277) id 1MRmwd-0001jH-00
-	for alsa-devel@alsa-project.org; Fri, 17 Jul 2009 14:53:47 +0200
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_B6IYKPKVVLTGNGU"
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <20090717121159.GA20904@rakim.wolfsonmicro.main>
+Sender: linux-input-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: linux-input@vger.kernel.org, alsa-devel@alsa-project.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi everybody,
+--Boundary-00=_B6IYKPKVVLTGNGU
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-this is my first post on this list, so please excuse me, should it not
-be the right place to post this.
+Dne P=C3=A1 17. =C4=8Dervence 2009 14:11:59 Mark Brown napsal(a):
+> On Fri, Jul 17, 2009 at 01:53:59PM +0200, Marek Vasut wrote:
+> > Dne P=C3=A1 17. =C4=8Dervence 2009 13:43:12 Mark Brown napsal(a):
+> > > The same way your current patch does it.  I'm just saying you should
+> > > change the way the configuration is passed in so that it is clear that
+> > > this is only useful for WM1613.
+> >
+> > But there might appear some other chips that have this issue.
+>
+> Then they can get handled the same way - it might be an idea to have the
+> data that's passed in be a chip number to allow for this.
 
-I started exploring programming the ALSA sequencer via the pyalsa Python
-interface, i.e the alsaseq module. I wrote a small utility that reads
-MIDI events from one port, filters/processes them and writes it to
-another. This allows for routing by channel, note range, controller
-number etc. and to filter out, replace or add MIDI events.
+Will this one be more to your liking ?
 
-Now to synchronize the queue tempo to incoming MIDI clock events, to be
-able implement synchronized delays or arpeggiators,  I use the method in
-the code shown below. This works ok, but I notice that the measured BPM
-oscillates +-1 BPM around the value displayed by the clock source (my
-synth's sequencer) if I measure/average only a few (~10) ticks or do not
- round the result to an integer value.
+--Boundary-00=_B6IYKPKVVLTGNGU
+Content-Type: text/x-patch;
+  charset="UTF-8";
+  name="0002-Add-possibility-to-control-the-GPIO_STATUS-shift.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="0002-Add-possibility-to-control-the-GPIO_STATUS-shift.patch"
 
-Is this the right approach? What is a sensible number of ticks to take
-into account for measurement? Should I use another reference timer than
-Python's time.time() function? Is pyalsa generally suitable for this
-kind of application even on older/weaker hardware (e.g. a NSLU2)?
+=46rom 1ea286d088993e05b5b374a08ee6f933242d3561 Mon Sep 17 00:00:00 2001
+=46rom: Marek Vasut <marek.vasut@gmail.com>
+Date: Thu, 4 Jun 2009 21:56:59 +0200
+Subject: [PATCH 2/2] Add possibility to control the GPIO_STATUS shift
 
-Any comments or suggestions for improvement would be very much appreciated!
+This patch allows tweaking the behaviour of GPIO_STATUS register
+shift quirk that's in wm97xx-core. The problem with GPIO_STATUS
+register being shifted by one doesn't appear on all hardware it
+seems and causes problems with accelerated touchscreen drivers on
+Palm hardware. Therefore an accelerated touchscreen driver can select
+if the shift is/isn't happening on the hardware.
+
+Signed-off-by: Marek Vasut <marek.vasut@gmail.com>
+=2D--
+ drivers/input/touchscreen/mainstone-wm97xx.c |    3 +++
+ drivers/input/touchscreen/wm97xx-core.c      |    6 ++++--
+ include/linux/wm97xx.h                       |    7 +++++++
+ 3 files changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/input/touchscreen/mainstone-wm97xx.c b/drivers/input/t=
+ouchscreen/mainstone-wm97xx.c
+index de02f87..e000ab3 100644
+=2D-- a/drivers/input/touchscreen/mainstone-wm97xx.c
++++ b/drivers/input/touchscreen/mainstone-wm97xx.c
+@@ -198,6 +198,9 @@ static int wm97xx_acc_startup(struct wm97xx *wm)
+ 	if (machine_is_palmt5() || machine_is_palmtx() || machine_is_palmld()) {
+ 		pen_int =3D 1;
+ 		irq =3D 27;
++		/* There is some obscure mutant of WM9712 interbred with WM9713
++		 * used on Palm HW */
++		wm->variant =3D WM97xx_WM1613;
+ 	} else if (machine_is_mainstone() && pen_int)
+ 		irq =3D 4;
+=20
+diff --git a/drivers/input/touchscreen/wm97xx-core.c b/drivers/input/touchs=
+creen/wm97xx-core.c
+index 2957d48..252eb11 100644
+=2D-- a/drivers/input/touchscreen/wm97xx-core.c
++++ b/drivers/input/touchscreen/wm97xx-core.c
+@@ -204,7 +204,7 @@ void wm97xx_set_gpio(struct wm97xx *wm, u32 gpio,
+ 	else
+ 		reg &=3D ~gpio;
+=20
+=2D	if (wm->id =3D=3D WM9712_ID2)
++	if (wm->id =3D=3D WM9712_ID2 && wm->variant !=3D WM97xx_WM1613)
+ 		wm97xx_reg_write(wm, AC97_GPIO_STATUS, reg << 1);
+ 	else
+ 		wm97xx_reg_write(wm, AC97_GPIO_STATUS, reg);
+@@ -307,7 +307,7 @@ static void wm97xx_pen_irq_worker(struct work_struct *w=
+ork)
+ 					 WM97XX_GPIO_13);
+ 		}
+=20
+=2D		if (wm->id =3D=3D WM9712_ID2)
++		if (wm->id =3D=3D WM9712_ID2 && wm->variant !=3D WM97xx_WM1613)
+ 			wm97xx_reg_write(wm, AC97_GPIO_STATUS, (status &
+ 						~WM97XX_GPIO_13) << 1);
+ 		else
+@@ -582,6 +582,8 @@ static int wm97xx_probe(struct device *dev)
+=20
+ 	wm->id =3D wm97xx_reg_read(wm, AC97_VENDOR_ID2);
+=20
++	wm->variant =3D WM97xx_GENERIC;
++
+ 	dev_info(wm->dev, "detected a wm97%02x codec\n", wm->id & 0xff);
+=20
+ 	switch (wm->id & 0xff) {
+diff --git a/include/linux/wm97xx.h b/include/linux/wm97xx.h
+index 6f69968..0c98781 100644
+=2D-- a/include/linux/wm97xx.h
++++ b/include/linux/wm97xx.h
+@@ -16,6 +16,12 @@
+ #include <linux/platform_device.h>
+=20
+ /*
++ * WM97xx variants
++ */
++#define	WM97xx_GENERIC			0x0000
++#define	WM97xx_WM1613			0x1613
++
++/*
+  * WM97xx AC97 Touchscreen registers
+  */
+ #define AC97_WM97XX_DIGITISER1		0x76
+@@ -283,6 +289,7 @@ struct wm97xx {
+ 	unsigned pen_is_down:1;		/* Pen is down */
+ 	unsigned aux_waiting:1;		/* aux measurement waiting */
+ 	unsigned pen_probably_down:1;	/* used in polling mode */
++	u16 variant;			/* WM97xx chip variant */
+ 	u16 suspend_mode;               /* PRP in suspend mode */
+ };
+=20
+=2D-=20
+1.6.3.3
 
 
-Chris
-
-
-class MidiProcessor(object):
-
-    def run(self):
-        # This is simplified to only show the general logic
-        while True:
-            events = self.sequencer.receive_events(
-                timeout=RECEIVE_TIMEOUT, maxevents=1)
-            for event in events:
-                if event.type == SEQ_EVENT_CLOCK:
-                    self.sync_queue(event)
-                else:
-                    # do other MIDI processing / routing
-
-    def sync_queue(self, event):
-        """Sync queue tempo to incoming MIDI clock events."""
-        # list to collect the timestamps of the last few ticks
-        lt = self._last_ticks
-        lt.append(time.time())
-        ltlen = len(lt)
-        if ltlen > 1:
-            # calculate & set bpm: calculate difference between
-            # the times the last few ticks were received and average
-            # all results
-            avg_delta = sum(
-                 [y-x for x,y in zip(lt, lt[1:])]) / (ltlen-1)
-            # tick length is a 24th of a quarter note
-            bpm = round(60 / avg_delta / 24)
-            if bpm != self.bpm:
-                self.bpm = bpm
-                self.sequencer.queue_tempo(self.queue,
-                    tempo=int(6e7 / self.bpm), ppq=self.ppq)
-        # only remember last 24 received ticks
-        # (length of a quarter note)
-        if ltlen > 24:
-            lt.pop(0)
+--Boundary-00=_B6IYKPKVVLTGNGU--
