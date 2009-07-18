@@ -1,19 +1,15 @@
-From: Sindre =?iso-8859-1?b?QWFt5XM=?= <aamas@stud.ntnu.no>
-Subject: Re: snd_pcm_avail_update returns bogus values with	the
-	OSS	PCM plugin
-Date: Fri, 17 Jul 2009 21:50:15 +0200
-Message-ID: <20090717215015.jbhnniazpwso048k@webmail.ntnu.no>
-References: <20090710102955.eaqs4fpsows0swwg@webmail.ntnu.no>
-	<s5htz1b8w1y.wl%tiwai@suse.de>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: [PATCH] alsa-info.sh: include 1 line of dmesg context
+Date: Sat, 18 Jul 2009 10:28:13 +0800
+Message-ID: <20090718022812.GA10524@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bene1.itea.ntnu.no (bene1.itea.ntnu.no [129.241.56.56])
-	by alsa0.perex.cz (Postfix) with ESMTP id C3661103913
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 054232449F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Jul 2009 21:50:17 +0200 (CEST)
-In-Reply-To: <s5htz1b8w1y.wl%tiwai@suse.de>
+	Sat, 18 Jul 2009 04:28:22 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,46 +24,24 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Quoting Takashi Iwai <tiwai@suse.de>:
+So as to include possible ALSA messages without the common keywords,
+as well as be more confident on the completeness/coverage of the report. 
 
-> At Fri, 10 Jul 2009 10:29:55 +0200,
-> Sindre Aam=E5s wrote:
->>
->> Hi.
->>
->> For the attached test case snd_pcm_avail_update returns values higher
->> than the buffer size when run with the OSS PCM plugin. Output of
->> alsa-info.sh is at
->> http://www.alsa-project.org/db/?f=3D77a873e55d5d6ca50d67a035a9d6b7e10cca=
-179d .
->
-> This is obviously a bug in OSS plugin (who thought of using this
-> plugin seriously? :)
->
-> The oneliner below should fix the problem.
->
->
-> thanks,
->
-> Takashi
->
-> ---
+It also shows nice '--' separators between the dmesg ranges.
 
-Thanks! That largely fixes it.
+Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
+---
+ utils/alsa-info.sh |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-There's still a problem when OSS doesn't support the requested
-period size, however. It tends to use a larger fragment size if
-the one requested is too small. The real fragment size isn't
-generally returned by SNDCTL_DSP_SETFRAGMENT, but needs to be
-queried for with SNDCTL_DSP_GETOSPACE/SNDCTL_DSP_GETISPACE.
-
-There may not be a nice solution for this, since there's no way
-to get a list/range of supported fragment sizes. It's a bit
-troublesome though, as it seems ALSA picks a small period size
-if it can, and the minimum allowed by the OSS plugin is often
-smaller than OSS supports, which means that all clients that
-don't restrict the minimum period size will typically be
-affected.
-
-thanks,
-Sindre
+--- alsa-driver.orig/utils/alsa-info.sh
++++ alsa-driver/utils/alsa-info.sh
+@@ -247,7 +247,7 @@ withdmesg() {
+ 	echo "!!ALSA/HDA dmesg" >> $FILE
+ 	echo "!!------------------" >> $FILE
+ 	echo "" >> $FILE
+-	dmesg | grep -E 'ALSA|HDA|HDMI|sound|hda.codec|hda.intel' >> $FILE
++	dmesg | grep -C1 -E 'ALSA|HDA|HDMI|sound|hda.codec|hda.intel' >> $FILE
+ 	echo "" >> $FILE
+ 	echo "" >> $FILE
+ }
