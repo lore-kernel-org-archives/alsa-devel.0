@@ -1,20 +1,25 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] clean-up according to feedback
-Date: Mon, 20 Jul 2009 11:35:48 +0100
-Message-ID: <20090720103548.GA5215@sirena.org.uk>
-References: <1248085684-12552-1-git-send-email-21cnbao@gmail.com>
-	<1248085684-12552-2-git-send-email-21cnbao@gmail.com>
-	<s5h7hy37ikp.wl%tiwai@suse.de>
+From: Christopher Arndt <chris.arndt@web.de>
+Subject: Re: pyalsa: synchronizing queue with MIDI clock events
+Date: Mon, 20 Jul 2009 14:31:00 +0200
+Message-ID: <4A646384.7050505@web.de>
+References: <4A607468.7010300@web.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2D979245C1
+Received: from fmmailgate02.web.de (fmmailgate02.web.de [217.72.192.227])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6F9B71037EE
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Jul 2009 12:35:52 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5h7hy37ikp.wl%tiwai@suse.de>
+	Mon, 20 Jul 2009 14:32:35 +0200 (CEST)
+Received: from smtp08.web.de (fmsmtp08.dlan.cinetic.de [172.20.5.216])
+	by fmmailgate02.web.de (Postfix) with ESMTP id A2EC410BD3E27
+	for <alsa-devel@alsa-project.org>;
+	Mon, 20 Jul 2009 14:31:01 +0200 (CEST)
+Received: from [78.34.101.174] (helo=minimax.paddyland.lan)
+	by smtp08.web.de with asmtp (TLSv1:AES256-SHA:256)
+	(WEB.DE 4.110 #277) id 1MSs1F-0007W7-00
+	for alsa-devel@alsa-project.org; Mon, 20 Jul 2009 14:31:01 +0200
+In-Reply-To: <4A607468.7010300@web.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,17 +29,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 20, 2009 at 12:30:14PM +0200, Takashi Iwai wrote:
-> Barry Song wrote:
+No pyalsa or MIDI experts here?
 
-> > Signed-off-by: Barry Song <21cnbao@gmail.com>
 
-> Could you give a proper changelog and subject lines at each post please?
-> Both are very important for later reviews.
-
-Yes, please.  If you could also answer the questions I asked about why
-you're creating a new DAI that'd be helpful.
+Chris
