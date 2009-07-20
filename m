@@ -1,7 +1,7 @@
 From: "Ted T. Logan" <tedtheologian@gmail.com>
 Subject: Re: Testers wanted: New SB X-Fi driver
-Date: Mon, 20 Jul 2009 12:32:00 -0500
-Message-ID: <1248111120.6517.21.camel@localhost.localdomain>
+Date: Mon, 20 Jul 2009 12:33:24 -0500
+Message-ID: <1248111204.6517.22.camel@localhost.localdomain>
 References: <4A5DB59B.2010407@freenet.de> <s5hvdltnfrp.wl%tiwai@suse.de>
 	<1247769012.20483.0.camel@localhost.localdomain>
 	<4A5F7D6C.9020606@dmx.com>
@@ -13,12 +13,12 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.247])
-	by alsa0.perex.cz (Postfix) with ESMTP id 331262440C
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8038C2440C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Jul 2009 19:32:17 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c37so1227827anc.2
-	for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2009 10:32:15 -0700 (PDT)
+	Mon, 20 Jul 2009 19:33:41 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c37so1228273anc.2
+	for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2009 10:33:40 -0700 (PDT)
 In-Reply-To: <s5hiqhnc3u8.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,16 +30,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Frashman <frashman@freenet.de>, alsa-devel@alsa-project.org, "John L. Utz III" <jutz@dmx.com>
+Cc: Frashman <frashman@freenet.de>, alsa-devel@alsa-project.org, jutz@dmx.com
 List-Id: alsa-devel@alsa-project.org
 
-http://opensource.creative.com/soundcard.html has 1.18
+Sorry,
 
-
-http://ccftp.creative.com/manualdn/Drivers/AVP/10792/0x0343D29A/XFiDrv_Linux_Public_US_1.00.tar.gz
-
-I think the difference is the 1.00 is newer, but just listed at a
-different location or something.
+Meant to mention the OSS Drivers from 4front from a while back also
+worked without clicking.
 
 On Mon, 2009-07-20 at 07:37 +0200, Takashi Iwai wrote:
 
@@ -57,7 +54,7 @@ On Mon, 2009-07-20 at 07:37 +0200, Takashi Iwai wrote:
 > 
 > > and this one works without clicks.
 > > 
-> > 
+> > XFiDrv_Linux_Public_US_1.00.tar.gz
 > 
 > So, do both versions work on yours?
 > What are the differences between them?
