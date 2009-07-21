@@ -1,23 +1,23 @@
 From: Marek Vasut <marek.vasut@gmail.com>
 Subject: Re: [PATCH] Allow passing platform_data to devices
 	attached to AC97 bus
-Date: Wed, 22 Jul 2009 00:39:00 +0200
-Message-ID: <200907220039.00790.marek.vasut@gmail.com>
+Date: Wed, 22 Jul 2009 00:40:56 +0200
+Message-ID: <200907220040.57052.marek.vasut@gmail.com>
 References: <200907211633.14388.marek.vasut@gmail.com>
-	<200907220013.12824.marek.vasut@gmail.com>
 	<20090721223334.GE7547@n2100.arm.linux.org.uk>
+	<200907220039.00790.marek.vasut@gmail.com>
 Mime-Version: 1.0
 Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_EOkZKhFN2bZ+TW/"
+  boundary="Boundary-00=_5PkZKGLF2+U6F0c"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f226.google.com (mail-fx0-f226.google.com
 	[209.85.220.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id B82FB10388C
+	by alsa0.perex.cz (Postfix) with ESMTP id 8967C10388C
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Jul 2009 00:39:23 +0200 (CEST)
-Received: by fxm26 with SMTP id 26so3145384fxm.32
-	for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2009 15:39:23 -0700 (PDT)
-In-Reply-To: <20090721223334.GE7547@n2100.arm.linux.org.uk>
+	Wed, 22 Jul 2009 00:41:22 +0200 (CEST)
+Received: by fxm26 with SMTP id 26so3146145fxm.32
+	for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2009 15:41:22 -0700 (PDT)
+In-Reply-To: <200907220039.00790.marek.vasut@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,41 +31,44 @@ To: Russell King - ARM Linux <linux@arm.linux.org.uk>
 Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, cbou@mail.ru, dwmw2@infradead.org, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
---Boundary-00=_EOkZKhFN2bZ+TW/
+--Boundary-00=_5PkZKGLF2+U6F0c
 Content-Type: text/plain;
   charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-Dne St 22. =C4=8Dervence 2009 00:33:34 Russell King - ARM Linux napsal(a):
-> On Wed, Jul 22, 2009 at 12:13:12AM +0200, Marek Vasut wrote:
-> > +		ret =3D set_irq_type(gpio_to_irq(pdata->charge_gpio),
-> > +				IRQ_TYPE_EDGE_BOTH);
-> > +		if (ret)
-> > +			goto err2;
-> > +		ret =3D request_irq(gpio_to_irq(pdata->charge_gpio),
-> > +				wm97xx_chrg_irq, IRQF_DISABLED,
-> > +				"AC Detect", 0);
+Dne St 22. =C4=8Dervence 2009 00:39:00 Marek Vasut napsal(a):
+> Dne St 22. =C4=8Dervence 2009 00:33:34 Russell King - ARM Linux napsal(a):
+> > On Wed, Jul 22, 2009 at 12:13:12AM +0200, Marek Vasut wrote:
+> > > +		ret =3D set_irq_type(gpio_to_irq(pdata->charge_gpio),
+> > > +				IRQ_TYPE_EDGE_BOTH);
+> > > +		if (ret)
+> > > +			goto err2;
+> > > +		ret =3D request_irq(gpio_to_irq(pdata->charge_gpio),
+> > > +				wm97xx_chrg_irq, IRQF_DISABLED,
+> > > +				"AC Detect", 0);
+> >
+> > This should be done as one call to request_irq().
+> >
+> > Why?
+> >
+> > If the IRQ is already in use by something else, calling set_irq_type()
+> > will stamp on that other user, enforcing the change of configuration.
+> > request_irq() will then fail, leaving the IRQ configuration buggered.
+> >
+> > Combining the two allows request_irq() to fail if the IRQ line is busy.
+> > If it isn't busy, it will configure the IRQ line prior to enabling the
+> > IRQ.  If the IRQ is shared and sharing is permitted, it will fail if
+> > the configuration is not compatible with the existing IRQ configuration.
+> >
+> > set_irq_type() should only be used very sparingly and when there's no
+> > other option.
 >
-> This should be done as one call to request_irq().
->
-> Why?
->
-> If the IRQ is already in use by something else, calling set_irq_type()
-> will stamp on that other user, enforcing the change of configuration.
-> request_irq() will then fail, leaving the IRQ configuration buggered.
->
-> Combining the two allows request_irq() to fail if the IRQ line is busy.
-> If it isn't busy, it will configure the IRQ line prior to enabling the
-> IRQ.  If the IRQ is shared and sharing is permitted, it will fail if
-> the configuration is not compatible with the existing IRQ configuration.
->
-> set_irq_type() should only be used very sparingly and when there's no
-> other option.
+> Sorry, I removed that, this patch should be OK.
 
-Sorry, I removed that, this patch should be OK.
+Argh, I forget to fix the goto label.
 
---Boundary-00=_EOkZKhFN2bZ+TW/
+--Boundary-00=_5PkZKGLF2+U6F0c
 Content-Type: text/x-patch;
   charset="UTF-8";
   name="0003-Convert-WM97xx-driver-to-use-platform_data.patch"
@@ -225,7 +228,7 @@ _device *dev)
 +				wm97xx_chrg_irq, IRQF_DISABLED,
 +				"AC Detect", 0);
 +		if (ret)
-+			goto err3;
++			goto err2;
  		props++;	/* POWER_SUPPLY_PROP_STATUS */
  	}
 =20
@@ -353,7 +356,7 @@ index 9681d1a..0000000
 1.6.3.3
 
 
---Boundary-00=_EOkZKhFN2bZ+TW/
+--Boundary-00=_5PkZKGLF2+U6F0c
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -364,4 +367,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---Boundary-00=_EOkZKhFN2bZ+TW/--
+--Boundary-00=_5PkZKGLF2+U6F0c--
