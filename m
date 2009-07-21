@@ -1,19 +1,15 @@
-From: javier Martin <javier.martin@vista-silicon.com>
-Subject: ASoC: Correct a bug with "ADC Inversion Switch" in
-	wm8974 codec.
-Date: Tue, 21 Jul 2009 11:15:06 +0200
-Message-ID: <eedb5540907210215s620537cciaf5e5bd5cdee74c9@mail.gmail.com>
+From: Alexey Fisher <bug-track@fisher-privat.net>
+Subject: how to quirk max capture level?
+Date: Tue, 21 Jul 2009 11:51:52 +0200
+Message-ID: <4A658FB8.9070005@fisher-privat.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f222.google.com (mail-ew0-f222.google.com
-	[209.85.219.222])
-	by alsa0.perex.cz (Postfix) with ESMTP id 077B124392
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 3D70C243DD
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Jul 2009 11:15:08 +0200 (CEST)
-Received: by ewy22 with SMTP id 22so2955169ewy.32
-	for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2009 02:15:08 -0700 (PDT)
+	Tue, 21 Jul 2009 11:51:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,35 +19,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This corrects a bug with ADC Inversion Switch in wm8974 codec.
+hallo all,
+i have Logitech QuickCam E3500 ... with little issue.
+Setting capture volume to more then 94% will mute this device... no 
+capture will be possible. This device has same issue with windows vista. 
+So best way to handle it, is usbquirks.h , but i do not know any way to 
+set max level.
 
-Signed-off-by: Javier Martin <javier.martin@vista-silicon.com>
 
----
-diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
-index f26c8d0..38a0c44 100644
---- a/sound/soc/codecs/wm8974.c
-+++ b/sound/soc/codecs/wm8974.c
-@@ -162,7 +162,7 @@ SOC_SINGLE_TLV("PCM Volume", WM8974_DACVOL, 0,
-255, 0, digital_tlv),
+amixer report this device like:
+=========================================
+Simple mixer control 'Mic',0
+   Capabilities: cvolume cvolume-joined cswitch cswitch-joined
+   Capture channels: Mono
+   Limits: Capture 0 - 3072
+   Mono: Capture 2950 [96%] [23.00dB] [on]
+==========================================
 
- SOC_SINGLE("High Pass Filter Switch", WM8974_ADC, 8, 1, 0),
- SOC_SINGLE("High Pass Cut Off", WM8974_ADC, 4, 7, 0),
--SOC_SINGLE("ADC Inversion Switch", WM8974_COMP, 0, 1, 0),
-+SOC_SINGLE("ADC Inversion Switch", WM8974_ADC, 0, 1, 0),
+here is alsa-info.sh output:
+http://www.alsa-project.org/db/?f=ecd6ea8c7a37c7aa036c88026885f324ef2ab067
 
- SOC_SINGLE_TLV("Capture Volume", WM8974_ADCVOL,  0, 255, 0, digital_tlv),
+As you can see it report it's limits 0-3072 .. but real limit is 0-2943.
 
--- 
-Javier Martin
-Vista Silicon S.L.
-Universidad de Cantabria
-CDTUC - FASE C - Oficina S-345
-Avda de los Castros s/n
-39005- Santander. Cantabria. Spain
-+34 942 25 32 60
-www.vista-silicon.com
+Please if any one has some idea, meail me.
+
+Regards,
+     Alexey
