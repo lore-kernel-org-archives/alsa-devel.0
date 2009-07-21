@@ -1,22 +1,22 @@
 From: Marek Vasut <marek.vasut@gmail.com>
 Subject: Re: [PATCH] Allow passing platform_data to devices
 	attached to AC97 bus
-Date: Tue, 21 Jul 2009 21:51:05 +0200
-Message-ID: <200907212151.05301.marek.vasut@gmail.com>
+Date: Tue, 21 Jul 2009 22:24:21 +0200
+Message-ID: <200907212224.22131.marek.vasut@gmail.com>
 References: <200907211633.14388.marek.vasut@gmail.com>
 	<200907211740.01287.marek.vasut@gmail.com>
 	<20090721183056.GB28955@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_pwhZKkh0ueGb1oY"
+  boundary="Boundary-00=_2PiZKAn/+oO7osM"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f226.google.com (mail-bw0-f226.google.com
-	[209.85.218.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id 394AA1037F1
+Received: from mail-fx0-f226.google.com (mail-fx0-f226.google.com
+	[209.85.220.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9E3BA10380E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Jul 2009 21:51:25 +0200 (CEST)
-Received: by bwz26 with SMTP id 26so1977753bwz.32
-	for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2009 12:51:24 -0700 (PDT)
+	Tue, 21 Jul 2009 22:24:47 +0200 (CEST)
+Received: by fxm26 with SMTP id 26so3081005fxm.32
+	for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2009 13:24:47 -0700 (PDT)
 In-Reply-To: <20090721183056.GB28955@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,7 +31,7 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: Takashi Iwai <tiwai@suse.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
---Boundary-00=_pwhZKkh0ueGb1oY
+--Boundary-00=_2PiZKAn/+oO7osM
 Content-Type: text/plain;
   charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
@@ -47,10 +47,10 @@ Dne =C3=9At 21. =C4=8Dervence 2009 20:30:56 Mark Brown napsal(a):
 >
 > I think Takashi asked for this to be done as an inline?  I tend to agree
 > with him.
+Ok, this one fixes one more issue. Should be fine now. Please consider appl=
+ying.
 
-Ok, this one should be better then? Mark, thanks for guiding me :-)
-
---Boundary-00=_pwhZKkh0ueGb1oY
+--Boundary-00=_2PiZKAn/+oO7osM
 Content-Type: text/x-patch;
   charset="UTF-8";
   name="0001-Allow-passing-platform_data-to-devices-attached-to-A.patch"
@@ -61,7 +61,8 @@ Content-Disposition: attachment;
 =46rom 082f09b9f3c1bbf3240610dc89baba33d47787b7 Mon Sep 17 00:00:00 2001
 =46rom: Marek Vasut <marek.vasut@gmail.com>
 Date: Tue, 21 Jul 2009 16:22:29 +0200
-Subject: [PATCH] Allow passing platform_data to devices attached to AC97 bus
+Subject: [PATCH 1/5] Allow passing platform_data to devices attached to AC9=
+7 bus
 
 This patch allows passing platform_data to devices attached to AC97 bus
 (like touchscreens, battery measurement chips ...).
@@ -83,7 +84,8 @@ ime *runtime);
  extern struct bus_type ac97_bus_type;
 =20
 +/* AC97 platform_data adding function */
-+inline void snd_ac97_dev_add_pdata(struct snd_ac97 *ac97, void *data)
++static inline void snd_ac97_dev_add_pdata(struct snd_ac97 *ac97, void *dat=
+a)
 +{
 +	ac97->dev.platform_data =3D data;
 +}
@@ -122,7 +124,7 @@ index 1d70829..0b12fe5 100644
 1.6.3.3
 
 
---Boundary-00=_pwhZKkh0ueGb1oY
+--Boundary-00=_2PiZKAn/+oO7osM
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -133,4 +135,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---Boundary-00=_pwhZKkh0ueGb1oY--
+--Boundary-00=_2PiZKAn/+oO7osM--
