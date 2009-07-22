@@ -1,23 +1,17 @@
-From: Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH 4/4] Convert all platforms to pass
-	platform_data to wm97xx battery
-Date: Wed, 22 Jul 2009 13:05:44 +0200
-Message-ID: <200907221305.44952.marek.vasut@gmail.com>
-References: <200907211633.14388.marek.vasut@gmail.com>
-	<20090721223424.GA21147@oksana.dev.rtsoft.ru>
-	<200907221301.04239.marek.vasut@gmail.com>
+From: Alexey Fisher <bug-track@fisher-privat.net>
+Subject: [PATCH] Volume control quirk for QuickCam E 3500
+Date: Wed, 22 Jul 2009 13:28:58 +0200
+Message-ID: <1248262138-4544-1-git-send-email-bug-track@fisher-privat.net>
+References: <s5hocrd0zfp.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_IKvZKGqY3qaTF0Q"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f226.google.com (mail-fx0-f226.google.com
-	[209.85.220.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id B72C81038BC
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 324D41038CB
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Jul 2009 13:06:06 +0200 (CEST)
-Received: by fxm26 with SMTP id 26so114883fxm.32
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2009 04:06:06 -0700 (PDT)
-In-Reply-To: <200907221301.04239.marek.vasut@gmail.com>
+	Wed, 22 Jul 2009 13:29:05 +0200 (CEST)
+In-Reply-To: <s5hocrd0zfp.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,405 +21,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: avorontsov@ru.mvista.com
-Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>, Robert Jarzmik <robert.jarzmik@free.fr>, Mark Brown <broonie@opensource.wolfsonmicro.com>, cbou@mail.ru, Eric Miao <eric.y.miao@gmail.com>, dwmw2@infradead.org, linux-arm-kernel@lists.arm.linux.org.uk
+To: tiwai@suse.de, clemens@ladisch.de, alsa-devel@alsa-project.org
+Cc: Alexey Fisher <bug-track@fisher-privat.net>
 List-Id: alsa-devel@alsa-project.org
 
---Boundary-00=_IKvZKGqY3qaTF0Q
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+- E3500 report cval->max more than it actually can handel, so if you
+set 95% capture level it will be silently muted.
+- Betwen cval->min and cval-max(real) is 2940 control units,
+but real are only 7 with cval->res = 384.
+- Alsa can't handel less than 10 controls, so make it more
+and set cval->res = 192.
 
-Dne St 22. =C4=8Dervence 2009 13:01:03 Marek Vasut napsal(a):
-> Ok,
-> Im sending the set again.
-And this does the platform conversion. Depends on 3/4 and should be Acked b=
-y=20
-Robert. So please.
+Signed-off-by: Alexey Fisher <bug-track@fisher-privat.net>
+---
+ sound/usb/usbmixer.c |   23 ++++++++++++++++++-----
+ 1 files changed, 18 insertions(+), 5 deletions(-)
 
-Thanks for your patience (especially yours, Mark)
-
---Boundary-00=_IKvZKGqY3qaTF0Q
-Content-Type: text/x-patch;
-  charset="UTF-8";
-  name="0004-Convert-all-platforms-to-pass-platform_data-to-wm97x.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="0004-Convert-all-platforms-to-pass-platform_data-to-wm97x.patch"
-
-=46rom 0ccf06e47672e0cc1795c18c701b6db79bdc2eea Mon Sep 17 00:00:00 2001
-=46rom: Marek Vasut <marek.vasut@gmail.com>
-Date: Tue, 21 Jul 2009 19:22:13 +0200
-Subject: [PATCH 4/4] Convert all platforms to pass platform_data to wm97xx =
-battery
-
-Signed-off-by: Marek Vasut <marek.vasut@gmail.com>
-=2D--
- arch/arm/mach-pxa/mioa701.c |    7 ++++++-
- arch/arm/mach-pxa/palmld.c  |   19 ++++++++++---------
- arch/arm/mach-pxa/palmt5.c  |   19 ++++++++++---------
- arch/arm/mach-pxa/palmte2.c |   20 ++++++++++++--------
- arch/arm/mach-pxa/palmtx.c  |   19 ++++++++++---------
- arch/arm/mach-pxa/palmz72.c |   20 ++++++++++++--------
- arch/arm/mach-pxa/treo680.c |    1 -
- 7 files changed, 60 insertions(+), 45 deletions(-)
-
-diff --git a/arch/arm/mach-pxa/mioa701.c b/arch/arm/mach-pxa/mioa701.c
-index 3cab452..803917d 100644
-=2D-- a/arch/arm/mach-pxa/mioa701.c
-+++ b/arch/arm/mach-pxa/mioa701.c
-@@ -34,7 +34,7 @@
- #include <linux/irq.h>
- #include <linux/pda_power.h>
- #include <linux/power_supply.h>
-=2D#include <linux/wm97xx_batt.h>
-+#include <linux/wm97xx.h>
- #include <linux/mtd/physmap.h>
- #include <linux/usb/gpio_vbus.h>
- #include <linux/regulator/max1586.h>
-@@ -660,6 +660,10 @@ static struct wm97xx_batt_info mioa701_battery_data =
-=3D {
- 	.batt_name	=3D "mioa701_battery",
- };
-=20
-+static struct wm97xx_pdata mioa701_wm97xx_pdata =3D {
-+	.batt_pdata	=3D &mioa701_battery_data,
-+};
+diff --git a/sound/usb/usbmixer.c b/sound/usb/usbmixer.c
+index 5c48199..1e587f5 100644
+--- a/sound/usb/usbmixer.c
++++ b/sound/usb/usbmixer.c
+@@ -1000,20 +1000,33 @@ static void build_feature_ctl(struct mixer_build *state, unsigned char *desc,
+ 		break;
+ 	}
+ 
+-	/* quirk for UDA1321/N101 */
+-	/* note that detection between firmware 2.1.1.7 (N101) and later 2.1.1.21 */
+-	/* is not very clear from datasheets */
+-	/* I hope that the min value is -15360 for newer firmware --jk */
++	/* volume control quirks */
+ 	switch (state->chip->usb_id) {
+ 	case USB_ID(0x0471, 0x0101):
+ 	case USB_ID(0x0471, 0x0104):
+ 	case USB_ID(0x0471, 0x0105):
+ 	case USB_ID(0x0672, 0x1041):
++	/* quirk for UDA1321/N101.
++	 * note that detection between firmware 2.1.1.7 (N101)
++	 * and later 2.1.1.21 is not very clear from datasheets.
++	 * I hope that the min value is -15360 for newer firmware --jk
++	 */
+ 		if (!strcmp(kctl->id.name, "PCM Playback Volume") &&
+ 		    cval->min == -15616) {
+-			snd_printk(KERN_INFO "using volume control quirk for the UDA1321/N101 chip\n");
++			snd_printk(KERN_INFO
++				 "set volume quirk for UDA1321/N101 chip\n");
+ 			cval->max = -256;
+ 		}
 +
- /*
-  * Voltage regulation
-  */
-@@ -728,6 +732,7 @@ struct i2c_pxa_platform_data i2c_pdata =3D {
-=20
- static pxa2xx_audio_ops_t mioa701_ac97_info =3D {
- 	.reset_gpio =3D 95,
-+	.codec_pdata =3D { &mioa701_wm97xx_pdata, },
- };
-=20
- /*
-diff --git a/arch/arm/mach-pxa/palmld.c b/arch/arm/mach-pxa/palmld.c
-index 1ad029d..bcf5b46 100644
-=2D-- a/arch/arm/mach-pxa/palmld.c
-+++ b/arch/arm/mach-pxa/palmld.c
-@@ -22,7 +22,7 @@
- #include <linux/pda_power.h>
- #include <linux/pwm_backlight.h>
- #include <linux/gpio.h>
-=2D#include <linux/wm97xx_batt.h>
-+#include <linux/wm97xx.h>
- #include <linux/power_supply.h>
- #include <linux/sysdev.h>
- #include <linux/mtd/mtd.h>
-@@ -406,9 +406,9 @@ static struct platform_device power_supply =3D {
- };
-=20
- /*************************************************************************=
-*****
-=2D * WM97xx battery
-+ * WM97xx audio, battery
-  *************************************************************************=
-*****/
-=2Dstatic struct wm97xx_batt_info wm97xx_batt_pdata =3D {
-+static struct wm97xx_batt_pdata palmld_batt_pdata =3D {
- 	.batt_aux	=3D WM97XX_AUX_ID3,
- 	.temp_aux	=3D WM97XX_AUX_ID2,
- 	.charge_gpio	=3D -1,
-@@ -422,15 +422,17 @@ static struct wm97xx_batt_info wm97xx_batt_pdata =3D {
- 	.batt_name	=3D "main-batt",
- };
-=20
-=2D/***********************************************************************=
-*******
-=2D * aSoC audio
-=2D ***********************************************************************=
-*******/
-=2Dstatic struct palm27x_asoc_info palmld_asoc_pdata =3D {
-=2D	.jack_gpio	=3D GPIO_NR_PALMLD_EARPHONE_DETECT,
-+static struct wm97xx_pdata palmld_wm97xx_pdata =3D {
-+	.batt_pdata	=3D &palmld_batt_pdata,
- };
-=20
- static pxa2xx_audio_ops_t palmld_ac97_pdata =3D {
- 	.reset_gpio	=3D 95,
-+	.codec_pdata	=3D { &palmld_wm97xx_pdata, },
-+};
++	case USB_ID(0x046d, 0x09a4):
++		if (!strcmp(kctl->id.name, "Mic Capture Volume")) {
++			snd_printk(KERN_INFO
++				"set volume quirk for QuickCam E3500\n");
++			cval->min = 6080;
++			cval->max = 8768;
++			cval->res = 192;
++		}
 +
-+static struct palm27x_asoc_info palmld_asoc_pdata =3D {
-+	.jack_gpio	=3D GPIO_NR_PALMLD_EARPHONE_DETECT,
- };
-=20
- static struct platform_device palmld_asoc =3D {
-@@ -536,7 +538,6 @@ static void __init palmld_init(void)
- 	pxa_set_ac97_info(&palmld_ac97_pdata);
- 	pxa_set_ficp_info(&palmld_ficp_platform_data);
- 	pxa_set_keypad_info(&palmld_keypad_platform_data);
-=2D	wm97xx_bat_set_pdata(&wm97xx_batt_pdata);
-=20
- 	platform_add_devices(devices, ARRAY_SIZE(devices));
- }
-diff --git a/arch/arm/mach-pxa/palmt5.c b/arch/arm/mach-pxa/palmt5.c
-index 2dd7ce2..3e8b21d 100644
-=2D-- a/arch/arm/mach-pxa/palmt5.c
-+++ b/arch/arm/mach-pxa/palmt5.c
-@@ -24,7 +24,7 @@
- #include <linux/pda_power.h>
- #include <linux/pwm_backlight.h>
- #include <linux/gpio.h>
-=2D#include <linux/wm97xx_batt.h>
-+#include <linux/wm97xx.h>
- #include <linux/power_supply.h>
- #include <linux/usb/gpio_vbus.h>
-=20
-@@ -317,9 +317,9 @@ static struct platform_device power_supply =3D {
- };
-=20
- /*************************************************************************=
-*****
-=2D * WM97xx battery
-+ * WM97xx audio, battery
-  *************************************************************************=
-*****/
-=2Dstatic struct wm97xx_batt_info wm97xx_batt_pdata =3D {
-+static struct wm97xx_batt_pdata palmt5_batt_pdata =3D {
- 	.batt_aux	=3D WM97XX_AUX_ID3,
- 	.temp_aux	=3D WM97XX_AUX_ID2,
- 	.charge_gpio	=3D -1,
-@@ -333,15 +333,17 @@ static struct wm97xx_batt_info wm97xx_batt_pdata =3D {
- 	.batt_name	=3D "main-batt",
- };
-=20
-=2D/***********************************************************************=
-*******
-=2D * aSoC audio
-=2D ***********************************************************************=
-*******/
-=2Dstatic struct palm27x_asoc_info palmt5_asoc_pdata =3D {
-=2D	.jack_gpio	=3D GPIO_NR_PALMT5_EARPHONE_DETECT,
-+static struct wm97xx_pdata palmt5_wm97xx_pdata =3D {
-+	.batt_pdata	=3D &palmt5_batt_pdata,
- };
-=20
- static pxa2xx_audio_ops_t palmt5_ac97_pdata =3D {
- 	.reset_gpio	=3D 95,
-+	.codec_pdata	=3D { &palmt5_wm97xx_pdata, },
-+};
-+
-+static struct palm27x_asoc_info palmt5_asoc_pdata =3D {
-+	.jack_gpio	=3D GPIO_NR_PALMT5_EARPHONE_DETECT,
- };
-=20
- static struct platform_device palmt5_asoc =3D {
-@@ -426,7 +428,6 @@ static void __init palmt5_init(void)
- 	pxa_set_ac97_info(&palmt5_ac97_pdata);
- 	pxa_set_ficp_info(&palmt5_ficp_platform_data);
- 	pxa_set_keypad_info(&palmt5_keypad_platform_data);
-=2D	wm97xx_bat_set_pdata(&wm97xx_batt_pdata);
-=20
- 	platform_add_devices(devices, ARRAY_SIZE(devices));
- }
-diff --git a/arch/arm/mach-pxa/palmte2.c b/arch/arm/mach-pxa/palmte2.c
-index 277c406..21c241b 100644
-=2D-- a/arch/arm/mach-pxa/palmte2.c
-+++ b/arch/arm/mach-pxa/palmte2.c
-@@ -23,7 +23,7 @@
- #include <linux/pda_power.h>
- #include <linux/pwm_backlight.h>
- #include <linux/gpio.h>
-=2D#include <linux/wm97xx_batt.h>
-+#include <linux/wm97xx.h>
- #include <linux/power_supply.h>
- #include <linux/usb/gpio_vbus.h>
-=20
-@@ -290,9 +290,9 @@ static struct platform_device power_supply =3D {
- };
-=20
- /*************************************************************************=
-*****
-=2D * WM97xx battery
-+ * WM97xx audio, battery
-  *************************************************************************=
-*****/
-=2Dstatic struct wm97xx_batt_info wm97xx_batt_pdata =3D {
-+static struct wm97xx_batt_info palmte2_batt_pdata =3D {
- 	.batt_aux	=3D WM97XX_AUX_ID3,
- 	.temp_aux	=3D WM97XX_AUX_ID2,
- 	.charge_gpio	=3D -1,
-@@ -306,9 +306,14 @@ static struct wm97xx_batt_info wm97xx_batt_pdata =3D {
- 	.batt_name	=3D "main-batt",
- };
-=20
-=2D/***********************************************************************=
-*******
-=2D * aSoC audio
-=2D ***********************************************************************=
-*******/
-+static struct wm97xx_pdata palmte2_wm97xx_pdata =3D {
-+	.batt_pdata	=3D &palmte2_batt_pdata,
-+};
-+
-+static pxa2xx_audio_ops_t palmte2_ac97_pdata =3D {
-+	.codec_pdata	=3D { &palmte2_wm97xx_pdata, },
-+};
-+
- static struct palm27x_asoc_info palmte2_asoc_pdata =3D {
- 	.jack_gpio	=3D GPIO_NR_PALMTE2_EARPHONE_DETECT,
- };
-@@ -376,9 +381,8 @@ static void __init palmte2_init(void)
- 	set_pxa_fb_info(&palmte2_lcd_screen);
- 	pxa_set_mci_info(&palmte2_mci_platform_data);
- 	palmte2_udc_init();
-=2D	pxa_set_ac97_info(NULL);
-+	pxa_set_ac97_info(&palmte2_ac97_pdata);
- 	pxa_set_ficp_info(&palmte2_ficp_platform_data);
-=2D	wm97xx_bat_set_pdata(&wm97xx_batt_pdata);
-=20
- 	platform_add_devices(devices, ARRAY_SIZE(devices));
- }
-diff --git a/arch/arm/mach-pxa/palmtx.c b/arch/arm/mach-pxa/palmtx.c
-index f1e248c..554b3da 100644
-=2D-- a/arch/arm/mach-pxa/palmtx.c
-+++ b/arch/arm/mach-pxa/palmtx.c
-@@ -25,7 +25,7 @@
- #include <linux/pda_power.h>
- #include <linux/pwm_backlight.h>
- #include <linux/gpio.h>
-=2D#include <linux/wm97xx_batt.h>
-+#include <linux/wm97xx.h>
- #include <linux/power_supply.h>
- #include <linux/usb/gpio_vbus.h>
- #include <linux/mtd/nand.h>
-@@ -340,9 +340,9 @@ static struct platform_device power_supply =3D {
- };
-=20
- /*************************************************************************=
-*****
-=2D * WM97xx battery
-+ * WM97xx audio, battery
-  *************************************************************************=
-*****/
-=2Dstatic struct wm97xx_batt_info wm97xx_batt_pdata =3D {
-+static struct wm97xx_batt_pdata palmtx_batt_pdata =3D {
- 	.batt_aux	=3D WM97XX_AUX_ID3,
- 	.temp_aux	=3D WM97XX_AUX_ID2,
- 	.charge_gpio	=3D -1,
-@@ -356,15 +356,17 @@ static struct wm97xx_batt_info wm97xx_batt_pdata =3D {
- 	.batt_name	=3D "main-batt",
- };
-=20
-=2D/***********************************************************************=
-*******
-=2D * aSoC audio
-=2D ***********************************************************************=
-*******/
-=2Dstatic struct palm27x_asoc_info palmtx_asoc_pdata =3D {
-=2D	.jack_gpio	=3D GPIO_NR_PALMTX_EARPHONE_DETECT,
-+static struct wm97xx_pdata palmtx_wm97xx_pdata =3D {
-+	.batt_pdata	=3D &palmtx_batt_pdata,
- };
-=20
- static pxa2xx_audio_ops_t palmtx_ac97_pdata =3D {
- 	.reset_gpio	=3D 95,
-+	.codec_pdata	=3D { &palmtx_wm97xx_pdata, },
-+};
-+
-+static struct palm27x_asoc_info palmtx_asoc_pdata =3D {
-+	.jack_gpio	=3D GPIO_NR_PALMTX_EARPHONE_DETECT,
- };
-=20
- static struct platform_device palmtx_asoc =3D {
-@@ -538,7 +540,6 @@ static void __init palmtx_init(void)
- 	pxa_set_ac97_info(&palmtx_ac97_pdata);
- 	pxa_set_ficp_info(&palmtx_ficp_platform_data);
- 	pxa_set_keypad_info(&palmtx_keypad_platform_data);
-=2D	wm97xx_bat_set_pdata(&wm97xx_batt_pdata);
-=20
- 	platform_add_devices(devices, ARRAY_SIZE(devices));
- }
-diff --git a/arch/arm/mach-pxa/palmz72.c b/arch/arm/mach-pxa/palmz72.c
-index c2bf493..b769447 100644
-=2D-- a/arch/arm/mach-pxa/palmz72.c
-+++ b/arch/arm/mach-pxa/palmz72.c
-@@ -27,7 +27,7 @@
- #include <linux/pda_power.h>
- #include <linux/pwm_backlight.h>
- #include <linux/gpio.h>
-=2D#include <linux/wm97xx_batt.h>
-+#include <linux/wm97xx.h>
- #include <linux/power_supply.h>
- #include <linux/usb/gpio_vbus.h>
-=20
-@@ -343,9 +343,9 @@ static struct platform_device power_supply =3D {
- };
-=20
- /*************************************************************************=
-*****
-=2D * WM97xx battery
-+ * WM97xx audio, battery
-  *************************************************************************=
-*****/
-=2Dstatic struct wm97xx_batt_info wm97xx_batt_pdata =3D {
-+static struct wm97xx_batt_info palmz72_batt_pdata =3D {
- 	.batt_aux	=3D WM97XX_AUX_ID3,
- 	.temp_aux	=3D WM97XX_AUX_ID2,
- 	.charge_gpio	=3D -1,
-@@ -359,9 +359,14 @@ static struct wm97xx_batt_info wm97xx_batt_pdata =3D {
- 	.batt_name	=3D "main-batt",
- };
-=20
-=2D/***********************************************************************=
-*******
-=2D * aSoC audio
-=2D ***********************************************************************=
-*******/
-+static struct wm97xx_pdata palmz72_wm97xx_pdata =3D {
-+	.batt_pdata	=3D &palmz72_batt_pdata,
-+};
-+
-+static pxa2xx_audio_ops_t palmz72_ac97_pdata =3D {
-+	.codec_pdata	=3D { &palmz72_wm97xx_pdata, },
-+};
-+
- static struct platform_device palmz72_asoc =3D {
- 	.name =3D "palm27x-asoc",
- 	.id   =3D -1,
-@@ -494,10 +499,9 @@ static void __init palmz72_init(void)
- 	set_pxa_fb_info(&palmz72_lcd_screen);
- 	pxa_set_mci_info(&palmz72_mci_platform_data);
- 	palmz72_udc_init();
-=2D	pxa_set_ac97_info(NULL);
-+	pxa_set_ac97_info(&palmz72_ac97_pdata);
- 	pxa_set_ficp_info(&palmz72_ficp_platform_data);
- 	pxa_set_keypad_info(&palmz72_keypad_platform_data);
-=2D	wm97xx_bat_set_pdata(&wm97xx_batt_pdata);
-=20
- 	platform_add_devices(devices, ARRAY_SIZE(devices));
- }
-diff --git a/arch/arm/mach-pxa/treo680.c b/arch/arm/mach-pxa/treo680.c
-index f537265..f9acb12 100644
-=2D-- a/arch/arm/mach-pxa/treo680.c
-+++ b/arch/arm/mach-pxa/treo680.c
-@@ -19,7 +19,6 @@
- #include <linux/pda_power.h>
- #include <linux/pwm_backlight.h>
- #include <linux/gpio.h>
-=2D#include <linux/wm97xx_batt.h>
- #include <linux/power_supply.h>
- #include <linux/sysdev.h>
- #include <linux/w1-gpio.h>
-=2D-=20
+ 	}
+ 
+ 	snd_printdd(KERN_INFO "[%d] FU [%s] ch = %d, val = %d/%d/%d\n",
+-- 
 1.6.3.3
-
-
---Boundary-00=_IKvZKGqY3qaTF0Q
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---Boundary-00=_IKvZKGqY3qaTF0Q--
