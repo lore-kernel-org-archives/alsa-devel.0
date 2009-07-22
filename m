@@ -1,22 +1,19 @@
-From: Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH 2/4] Allow passing platform_data for pxa2xx-ac97
-Date: Wed, 22 Jul 2009 13:02:40 +0200
-Message-ID: <200907221302.40893.marek.vasut@gmail.com>
-References: <200907211633.14388.marek.vasut@gmail.com>
-	<20090721223424.GA21147@oksana.dev.rtsoft.ru>
-	<200907221301.04239.marek.vasut@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC] [PATCH 3/3] ASoC: add support for Amstrad	E3
+	(Delta) machine
+Date: Wed, 22 Jul 2009 12:03:28 +0100
+Message-ID: <20090722110328.GB7622@sirena.org.uk>
+References: <200907220523.01107.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_QHvZKXYFxlGCfDI"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f226.google.com (mail-fx0-f226.google.com
-	[209.85.220.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id A5FF01038B3
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id AE0531038C3
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Jul 2009 13:03:03 +0200 (CEST)
-Received: by fxm26 with SMTP id 26so113222fxm.32
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2009 04:03:02 -0700 (PDT)
-In-Reply-To: <200907221301.04239.marek.vasut@gmail.com>
+	Wed, 22 Jul 2009 13:03:29 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <200907220523.01107.jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,147 +23,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: avorontsov@ru.mvista.com
-Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>, Robert Jarzmik <robert.jarzmik@free.fr>, Mark Brown <broonie@opensource.wolfsonmicro.com>, cbou@mail.ru, Eric Miao <eric.y.miao@gmail.com>, dwmw2@infradead.org, linux-arm-kernel@lists.arm.linux.org.uk
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: alsa-devel@alsa-project.org, Jonathan McDowell <noodles@earth.li>, Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, e3-hacking@earth.li, Arun KS <arunks@mistralsolutions.com>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
---Boundary-00=_QHvZKXYFxlGCfDI
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+On Wed, Jul 22, 2009 at 05:22:59AM +0200, Janusz Krzysztofik wrote:
 
-Dne St 22. =C4=8Dervence 2009 13:01:03 Marek Vasut napsal(a):
-> Ok,
-> Im sending the set again.
+> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+> ---
+> CPU DAI parameters best matching the codec DAI has been selected out
+> empirically for best user experience.
 
---Boundary-00=_QHvZKXYFxlGCfDI
-Content-Type: text/x-patch;
-  charset="UTF-8";
-  name="0002-Allow-passing-platform_data-for-pxa2xx-ac97.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="0002-Allow-passing-platform_data-for-pxa2xx-ac97.patch"
+Again, all the documentation you've got here could quite happily go in
+the commit message and there's a bunch of checkpatch issues.
 
-=46rom 76c511499fa6115cdd7dd4c2fbf436b38cb7b8a1 Mon Sep 17 00:00:00 2001
-=46rom: Marek Vasut <marek.vasut@gmail.com>
-Date: Tue, 21 Jul 2009 16:22:29 +0200
-Subject: [PATCH 2/4] Allow passing platform_data for pxa2xx-ac97
+> +#include <sound/soc-dapm.h>
+> +#include <sound/jack.h>
 
-This patch adds support for passing platform data to ac97 bus devices
-from PXA2xx-AC97 driver..
+ASoC will pull that one in for you, not that it really matters.
 
-Signed-off-by: Marek Vasut <marek.vasut@gmail.com>
-=2D--
- arch/arm/mach-pxa/include/mach/audio.h |    3 +++
- include/sound/ac97_codec.h             |    3 +++
- sound/arm/pxa2xx-ac97.c                |    3 +++
- sound/soc/pxa/pxa2xx-ac97.c            |    7 ++++++-
- 4 files changed, 15 insertions(+), 1 deletions(-)
+> +	/* Setup pins after corresponding bits if changed */
+> +	if ((bool)snd_soc_dapm_get_pin_status(codec, "Speaker") !=
+> +			(bool)(function & (1 << AMS_DELTA_SPEAKER))) {
 
-diff --git a/arch/arm/mach-pxa/include/mach/audio.h b/arch/arm/mach-pxa/inc=
-lude/mach/audio.h
-index 16eb025..a3449e3 100644
-=2D-- a/arch/arm/mach-pxa/include/mach/audio.h
-+++ b/arch/arm/mach-pxa/include/mach/audio.h
-@@ -3,10 +3,12 @@
-=20
- #include <sound/core.h>
- #include <sound/pcm.h>
-+#include <sound/ac97_codec.h>
-=20
- /*
-  * @reset_gpio: AC97 reset gpio (normally gpio113 or gpio95)
-  *              a -1 value means no gpio will be used for reset
-+ * @codec_pdata: AC97 codec platform_data
-=20
-  * reset_gpio should only be specified for pxa27x CPUs where a silicon
-  * bug prevents correct operation of the reset line. If not specified,
-@@ -20,6 +22,7 @@ typedef struct {
- 	void (*resume)(void *);
- 	void *priv;
- 	int reset_gpio;
-+	void *codec_pdata[AC97_BUS_MAX_DEVICES];
- } pxa2xx_audio_ops_t;
-=20
- extern void pxa_set_ac97_info(pxa2xx_audio_ops_t *ops);
-diff --git a/include/sound/ac97_codec.h b/include/sound/ac97_codec.h
-index 9b1c098..3dae3f7 100644
-=2D-- a/include/sound/ac97_codec.h
-+++ b/include/sound/ac97_codec.h
-@@ -32,6 +32,9 @@
- #include "control.h"
- #include "info.h"
-=20
-+/* maximum number of devices on the AC97 bus */
-+#define	AC97_BUS_MAX_DEVICES	4
-+
- /*
-  *  AC'97 codec registers
-  */
-diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
-index c570ebd..cfab74e 100644
-=2D-- a/sound/arm/pxa2xx-ac97.c
-+++ b/sound/arm/pxa2xx-ac97.c
-@@ -170,6 +170,8 @@ static int __devinit pxa2xx_ac97_probe(struct platform_=
-device *dev)
- 	struct snd_ac97_bus *ac97_bus;
- 	struct snd_ac97_template ac97_template;
- 	int ret;
-+	pxa2xx_audio_ops_t *pdata =3D dev->dev.platform_data;
-+	int id =3D dev->id < 0 ? 0 : dev->id;
-=20
- 	ret =3D snd_card_create(SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
- 			      THIS_MODULE, 0, &card);
-@@ -200,6 +202,7 @@ static int __devinit pxa2xx_ac97_probe(struct platform_=
-device *dev)
- 	snprintf(card->longname, sizeof(card->longname),
- 		 "%s (%s)", dev->dev.driver->name, card->mixername);
-=20
-+	snd_ac97_dev_add_pdata(ac97_bus->codec[id], pdata->codec_pdata[id]);
- 	snd_card_set_dev(card, &dev->dev);
- 	ret =3D snd_card_register(card);
- 	if (ret =3D=3D 0) {
-diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
-index d9c94d7..dea18ee 100644
-=2D-- a/sound/soc/pxa/pxa2xx-ac97.c
-+++ b/sound/soc/pxa/pxa2xx-ac97.c
-@@ -22,6 +22,7 @@
- #include <mach/hardware.h>
- #include <mach/regs-ac97.h>
- #include <mach/dma.h>
-+#include <mach/audio.h>
-=20
- #include "pxa2xx-pcm.h"
- #include "pxa2xx-ac97.h"
-@@ -241,9 +242,13 @@ EXPORT_SYMBOL_GPL(soc_ac97_ops);
- static int __devinit pxa2xx_ac97_dev_probe(struct platform_device *pdev)
- {
- 	int i;
-+	pxa2xx_audio_ops_t *pdata =3D pdev->dev.platform_data;
-=20
-=2D	for (i =3D 0; i < ARRAY_SIZE(pxa_ac97_dai); i++)
-+	for (i =3D 0; i < ARRAY_SIZE(pxa_ac97_dai); i++) {
- 		pxa_ac97_dai[i].dev =3D &pdev->dev;
-+		pxa_ac97_dai[i].ac97_pdata =3D pdata->codec_pdata
-+					[pdev->id < 0 ? 0 : pdev->id];
-+	}
-=20
- 	/* Punt most of the init to the SoC probe; we may need the machine
- 	 * driver to do interesting things with the clocking to get us up
-=2D-=20
-1.6.3.3
+Don't like these casts...  why are they needed?
 
+> +static const struct snd_kcontrol_new ams_delta_audio_controls[] = {
+> +	SOC_ENUM_EXT("Audio Function", ams_delta_audio_enum[0],
+> +			ams_delta_get_audio_mode, ams_delta_set_audio_mode),
+> +};
 
---Boundary-00=_QHvZKXYFxlGCfDI
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Is it possible to control all the functions of the audio mode
+independantly or are only certain combinations possible?
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> +static struct snd_soc_jack_gpio ams_delta_hook_switch_gpios[];
+> +static struct snd_soc_jack_pin ams_delta_hook_switch_pins[] = {
+> +	{
+> +		.pin = "Mouthpiece",
+> +		.mask = SND_JACK_MICROPHONE,
+> +	},
+> +	{
+> +		.pin = "Earphone",
+> +		.mask = SND_JACK_HEADPHONE,
+> +	},
+> +	{
+> +		.pin = "Speaker",
+> +		.mask = SND_JACK_HEADPHONE,
+> +		.invert = 1,
+> +	},
+> +	{
+> +		.pin = "Microphone",
+> +		.mask = SND_JACK_MICROPHONE,
+> +		.invert = 1,
+> +	},
+> +};
 
---Boundary-00=_QHvZKXYFxlGCfDI--
+I guess microphone and speaker are for speakerphone mode while
+mouthpiece and earpiece are a headset?  Might be nice to come up with
+names that make the paring a bit clearer, or possibly just put a comment
+in there.
+
+> +/* To actually apply any modem controlled configuration changes to the codec,
+> + * we must connect codec DAI pins to the modem for a moment.  Be carefull
+> + * not to interfere with digital mute function that shares the same hardware. */
+> +static struct timer_list cx81801_timer;
+> +static bool cx81801_cmd_pending = 0;
+> +static bool ams_delta_muted;
+> +
+> +static void cx81801_timeout(unsigned long data)
+> +{
+> +	/* REVISIT - locking? */
+
+Yeah, locking is probably a good idea :)
+
+> +		/* Set DAPM pins after hook switch present state */
+> +#if 0
+> +		/* Fails for switch state matching initial gpio->state = 0 */
+> +		snd_soc_jack_report(&ams_delta_ams_delta_hook_switch, 
+> +			gpio_get_value(ams_delta_hook_switch_gpios[0].gpio) ?
+> +					0 : SND_JACK_HEADSET, SND_JACK_HEADSET);
+
+Hrm.  We should just fix that so that adding a pin forces a sync rather
+than just doing a report.  The GPIO jack wrapper ought to just do
+everything you need without any code in the machine driver.
+
+> +
+> +	/* REVISIT - Don't know how to do that */
+> +	/*
+> +	 * Remove controls that we expose when over the modem control available:
+> +	 * - virtual audio mode switch,
+> +	 * - hook switch to DAPM pins links
+> +	 */
+
+You can't do that.  Rather than adding and removing the controls
+dynamically I'd suggest hiding the controls from applications while
+they're inactive - this will also avoid any renumbering which might
+confuse them.  However, that API isn't in mainline yet.
+
+Takashi, there is a patch adding a snd_ctl_activate_id() call in your
+unstable tree which hasn't made it into mainline and should help here -
+would there be any problem merging it?  I've got another use case for it
+in ASoC that I'm hoping to find time to look at soon.
+
+> +	/* Add board specific DAPM controls */
+> +	if (!snd_soc_dapm_new_controls(codec, ams_delta_dapm_widgets,
+> +				ARRAY_SIZE(ams_delta_dapm_widgets))) {
+> +		if (!snd_soc_dapm_add_routes(codec, ams_delta_audio_map,
+> +					ARRAY_SIZE(ams_delta_audio_map))) {
+
+The error handling here is a bit odd...
+
+> +	/* Add hook switch */
+> +	if (!snd_soc_jack_new(&ams_delta_audio_card, "hook_switch",
+> +				SND_JACK_HEADSET, &ams_delta_hook_switch)) {
+> +		if (!snd_soc_jack_add_gpios(&ams_delta_hook_switch,
+> +					ARRAY_SIZE(ams_delta_hook_switch_gpios),
+> +					ams_delta_hook_switch_gpios)) {
+> +#ifdef CONFIG_GPIO_SYSFS
+> +			/* Expose hook switch over sysfs if configured */
+> +			gpio_export(ams_delta_hook_switch_gpios[0].gpio, false);
+> +#endif
+
+The gpio_export() should be in the ASoC GPIO code rather than here, I'd
+expect - care to cook up a patch?
