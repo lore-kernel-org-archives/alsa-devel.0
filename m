@@ -1,15 +1,17 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH] ALSA: snd_usb_caiaq: add support for Audio2DJ
-Date: Wed, 22 Jul 2009 14:13:35 +0200
-Message-ID: <1248264815-10041-1-git-send-email-daniel@caiaq.de>
+From: Alexey Fisher <bug-track@fisher-privat.net>
+Subject: [PATCH] Volume control quirk for QuickCam E 3500
+Date: Wed, 22 Jul 2009 14:18:33 +0200
+Message-ID: <1248265113-9972-1-git-send-email-bug-track@fisher-privat.net>
+References: <s5hfxcp0wtx.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 469E31038D0
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id D06CE24464
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Jul 2009 14:13:46 +0200 (CEST)
+	Wed, 22 Jul 2009 14:18:38 +0200 (CEST)
+In-Reply-To: <s5hfxcp0wtx.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,89 +21,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: tiwai@suse.de, clemens@ladisch.de, alsa-devel@alsa-project.org
+Cc: Alexey Fisher <bug-track@fisher-privat.net>
 List-Id: alsa-devel@alsa-project.org
 
-This adds support for Native Instrument's freshly announced Audio2DJ
-sound device hardware. Version number bumped to 1.3.19.
+- E3500 report cval->max more than it actually can handel, so if you
+set 95% capture level it will be silently muted.
+- Betwen cval->min and cval-max(real) is 2940 control units,
+but real are only 7 with cval->res = 384.
+- Alsa can't handel less than 10 controls, so make it more
+and set cval->res = 192.
 
-Signed-off-by: Daniel Mack <daniel@caiaq.de>
-Cc: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Alexey Fisher <bug-track@fisher-privat.net>
 ---
- sound/usb/Kconfig        |    1 +
- sound/usb/caiaq/audio.c  |    1 +
- sound/usb/caiaq/device.c |    8 +++++++-
- sound/usb/caiaq/device.h |    1 +
- 4 files changed, 10 insertions(+), 1 deletions(-)
+ sound/usb/usbmixer.c |   28 +++++++++++++++++++++++-----
+ 1 files changed, 23 insertions(+), 5 deletions(-)
 
-diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
-index 523aec1..73525c0 100644
---- a/sound/usb/Kconfig
-+++ b/sound/usb/Kconfig
-@@ -48,6 +48,7 @@ config SND_USB_CAIAQ
- 	    * Native Instruments Kore Controller
- 	    * Native Instruments Kore Controller 2
- 	    * Native Instruments Audio Kontrol 1
-+	    * Native Instruments Audio 2 DJ
- 	    * Native Instruments Audio 4 DJ
- 	    * Native Instruments Audio 8 DJ
- 	    * Native Instruments Guitar Rig Session I/O
-diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
-index 8f9b60c..121af06 100644
---- a/sound/usb/caiaq/audio.c
-+++ b/sound/usb/caiaq/audio.c
-@@ -646,6 +646,7 @@ int snd_usb_caiaq_audio_init(struct snd_usb_caiaqdev *dev)
- 	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_GUITARRIGMOBILE):
- 		dev->samplerates |= SNDRV_PCM_RATE_192000;
- 		/* fall thru */
-+	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_AUDIO2DJ):
- 	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_AUDIO4DJ):
- 	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_AUDIO8DJ):
- 		dev->samplerates |= SNDRV_PCM_RATE_88200;
-diff --git a/sound/usb/caiaq/device.c b/sound/usb/caiaq/device.c
-index de38108..83e6c13 100644
---- a/sound/usb/caiaq/device.c
-+++ b/sound/usb/caiaq/device.c
-@@ -35,13 +35,14 @@
- #include "input.h"
+diff --git a/sound/usb/usbmixer.c b/sound/usb/usbmixer.c
+index 5c48199..79e5b6d 100644
+--- a/sound/usb/usbmixer.c
++++ b/sound/usb/usbmixer.c
+@@ -1000,20 +1000,38 @@ static void build_feature_ctl(struct mixer_build *state, unsigned char *desc,
+ 		break;
+ 	}
  
- MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
--MODULE_DESCRIPTION("caiaq USB audio, version 1.3.18");
-+MODULE_DESCRIPTION("caiaq USB audio, version 1.3.19");
- MODULE_LICENSE("GPL");
- MODULE_SUPPORTED_DEVICE("{{Native Instruments, RigKontrol2},"
- 			 "{Native Instruments, RigKontrol3},"
- 			 "{Native Instruments, Kore Controller},"
- 			 "{Native Instruments, Kore Controller 2},"
- 			 "{Native Instruments, Audio Kontrol 1},"
-+			 "{Native Instruments, Audio 2 DJ},"
- 			 "{Native Instruments, Audio 4 DJ},"
- 			 "{Native Instruments, Audio 8 DJ},"
- 			 "{Native Instruments, Session I/O},"
-@@ -121,6 +122,11 @@ static struct usb_device_id snd_usb_id_table[] = {
- 		.idVendor =     USB_VID_NATIVEINSTRUMENTS,
- 		.idProduct =    USB_PID_AUDIO4DJ
- 	},
-+	{
-+		.match_flags =  USB_DEVICE_ID_MATCH_DEVICE,
-+		.idVendor =     USB_VID_NATIVEINSTRUMENTS,
-+		.idProduct =    USB_PID_AUDIO2DJ
-+	},
- 	{ /* terminator */ }
- };
+-	/* quirk for UDA1321/N101 */
+-	/* note that detection between firmware 2.1.1.7 (N101) and later 2.1.1.21 */
+-	/* is not very clear from datasheets */
+-	/* I hope that the min value is -15360 for newer firmware --jk */
++	/* volume control quirks */
+ 	switch (state->chip->usb_id) {
+ 	case USB_ID(0x0471, 0x0101):
++		break;
+ 	case USB_ID(0x0471, 0x0104):
++		break;
+ 	case USB_ID(0x0471, 0x0105):
++		break;
+ 	case USB_ID(0x0672, 0x1041):
++	/* quirk for UDA1321/N101.
++	 * note that detection between firmware 2.1.1.7 (N101)
++	 * and later 2.1.1.21 is not very clear from datasheets.
++	 * I hope that the min value is -15360 for newer firmware --jk
++	 */
+ 		if (!strcmp(kctl->id.name, "PCM Playback Volume") &&
+ 		    cval->min == -15616) {
+-			snd_printk(KERN_INFO "using volume control quirk for the UDA1321/N101 chip\n");
++			snd_printk(KERN_INFO
++				 "set volume quirk for UDA1321/N101 chip\n");
+ 			cval->max = -256;
+ 		}
++		break;
++
++	case USB_ID(0x046d, 0x09a4):
++		if (!strcmp(kctl->id.name, "Mic Capture Volume")) {
++			snd_printk(KERN_INFO
++				"set volume quirk for QuickCam E3500\n");
++			cval->min = 6080;
++			cval->max = 8768;
++			cval->res = 192;
++		}
++		break;
++
+ 	}
  
-diff --git a/sound/usb/caiaq/device.h b/sound/usb/caiaq/device.h
-index ece7351..44e3edf 100644
---- a/sound/usb/caiaq/device.h
-+++ b/sound/usb/caiaq/device.h
-@@ -10,6 +10,7 @@
- #define USB_PID_KORECONTROLLER	0x4711
- #define USB_PID_KORECONTROLLER2	0x4712
- #define USB_PID_AK1		0x0815
-+#define USB_PID_AUDIO2DJ	0x041c
- #define USB_PID_AUDIO4DJ	0x0839
- #define USB_PID_AUDIO8DJ	0x1978
- #define USB_PID_SESSIONIO	0x1915
+ 	snd_printdd(KERN_INFO "[%d] FU [%s] ch = %d, val = %d/%d/%d\n",
 -- 
-1.6.3.1
+1.6.3.3
