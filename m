@@ -1,21 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC] [PATCH 3/3] ASoC: add support for Amstrad E3
- (Delta) machine
-Date: Wed, 22 Jul 2009 13:19:26 +0100
-Message-ID: <20090722121925.GE21171@rakim.wolfsonmicro.main>
-References: <200907220523.01107.jkrzyszt@tis.icnet.pl>
-	<20090722110328.GB7622@sirena.org.uk>
-	<s5hhbx50wwl.wl%tiwai@suse.de>
+From: Chaithrika U S <chaithrika@ti.com>
+Subject: [PATCH] ASoC: tlv320aic3x: Enable PLL when not bypassed
+Date: Wed, 22 Jul 2009 07:45:04 -0400
+Message-ID: <1248263104-12142-1-git-send-email-chaithrika@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6E1D724466
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 79F6A1038CE
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Jul 2009 14:19:27 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hhbx50wwl.wl%tiwai@suse.de>
+	Wed, 22 Jul 2009 14:36:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,25 +19,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Jonathan McDowell <noodles@earth.li>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, e3-hacking@earth.li, Arun KS <arunks@mistralsolutions.com>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: alsa-devel@alsa-project.org
+Cc: khilman@deeprootsystems.com, Chaithrika U S <chaithrika@ti.com>, davinci-linux-open-source@linux.davincidsp.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 22, 2009 at 01:39:22PM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
+PLL was not being enabled when it was not bypassed. This patch
+enables the PLL when it is used. Additionally, it disables the PLL
+when it is bypassed.
 
-> > > +	/* Setup pins after corresponding bits if changed */
-> > > +	if ((bool)snd_soc_dapm_get_pin_status(codec, "Speaker") !=
-> > > +			(bool)(function & (1 << AMS_DELTA_SPEAKER))) {
+Without this patch, the audio on TI DM646x EVM and DM355 EVM
+does not work properly. The bit clocks and the frame sync signals
+from the codec are not correct and hence the playback/record are faster
+than usual for most sample rates. The reason for this was that the PLL
+was not enabled when it was not bypassed.
 
-> > Don't like these casts...  why are they needed?
+Tested on DM6467 EVM, playback tested on DM355 EVM.
 
-> Because the right side is the bit operation?
+Signed-off-by: Chaithrika U S <chaithrika@ti.com>
+---
+Applies to master branch of ALSA GIT tree at
+http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=summary
 
-Ick, yes.
+ sound/soc/codecs/tlv320aic3x.c |   11 ++++++++++-
+ 1 files changed, 10 insertions(+), 1 deletions(-)
 
-> The cast doesn't look nice, though...
-
-Indeed.  I'd suggest rewriting to try to do less in the if statement - a
-helper function seems to be in order here since the same code is
-repeated several times with different pins and bitmasks.
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index ab099f4..cb0d1bf 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -767,6 +767,7 @@ static int aic3x_hw_params(struct snd_pcm_substream *substream,
+ 	int codec_clk = 0, bypass_pll = 0, fsref, last_clk = 0;
+ 	u8 data, r, p, pll_q, pll_p = 1, pll_r = 1, pll_j = 1;
+ 	u16 pll_d = 1;
++	u8 reg;
+ 
+ 	/* select data word length */
+ 	data =
+@@ -801,8 +802,16 @@ static int aic3x_hw_params(struct snd_pcm_substream *substream,
+ 		pll_q &= 0xf;
+ 		aic3x_write(codec, AIC3X_PLL_PROGA_REG, pll_q << PLLQ_SHIFT);
+ 		aic3x_write(codec, AIC3X_GPIOB_REG, CODEC_CLKIN_CLKDIV);
+-	} else
++		/* disable PLL if it is bypassed */
++		reg = aic3x_read_reg_cache(codec, AIC3X_PLL_PROGA_REG);
++		aic3x_write(codec, AIC3X_PLL_PROGA_REG, reg & ~PLL_ENABLE);
++
++	} else {
+ 		aic3x_write(codec, AIC3X_GPIOB_REG, CODEC_CLKIN_PLLDIV);
++		/* enable PLL when it is used */
++		reg = aic3x_read_reg_cache(codec, AIC3X_PLL_PROGA_REG);
++		aic3x_write(codec, AIC3X_PLL_PROGA_REG, reg | PLL_ENABLE);
++	}
+ 
+ 	/* Route Left DAC to left channel input and
+ 	 * right DAC to right channel input */
+-- 
+1.5.6
