@@ -1,60 +1,78 @@
-From: Don Alexander <e3-dev@roosoft.ltd.uk>
-Subject: Re: [E3-hacking] [RFC] [PATCH 0/3] Add support for Amstrad E3 (Delta)
- audio to ASoC
-Date: Wed, 22 Jul 2009 08:51:56 +0100
-Message-ID: <4A66C51C.7020900@roosoft.ltd.uk>
-References: <200907220522.15134.jkrzyszt@tis.icnet.pl>
-Reply-To: e3-dev@roosoft.ltd.uk
+From: Alexey Fisher <bug-track@fisher-privat.net>
+Subject: [PATCH] Volume control quirk for QuickCam E 3500
+Date: Wed, 22 Jul 2009 11:16:17 +0200
+Message-ID: <1248254177-10959-1-git-send-email-bug-track@fisher-privat.net>
+References: <s5hljmhvgol.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-serial-owner@vger.kernel.org>
-In-Reply-To: <200907220522.15134.jkrzyszt@tis.icnet.pl>
-Sender: linux-serial-owner@vger.kernel.org
-To: Discussion of the Amstrad E3 emailer hardware/software <e3-hacking@earth.li>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Alan Cox <alan@lxorguk.ukuu.org.uk>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, Jonathan McDowell <noodles@earth.li>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Arun KS <arunks@mistralsolutions.com>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, Jarkko Nikula <jhnikula@gmail.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 502861037E3
+	for <alsa-devel@alsa-project.org>;
+	Wed, 22 Jul 2009 11:16:25 +0200 (CEST)
+In-Reply-To: <s5hljmhvgol.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, clemens@ladisch.de, alsa-devel@alsa-project.org
+Cc: Alexey Fisher <bug-track@fisher-privat.net>
 List-Id: alsa-devel@alsa-project.org
 
-Janusz Krzysztofik wrote:
-> This series of patches adds support for audio device found on Amstrad E3 
-> (Delta) videophone to ASoC.
->
-> 1/3:	ASoC: Add support for Conexant CX20442-11 voice modem codec
-> 2/3:	TTY: Add definition of a new line discipline required by Amstrad E3
-> 	(Delta) ASoC driver
-> 3/3:	ASoC: add support for Amstrad E3 (Delta) machine
-> 4/3:	OMAP1: Readd basic support for DSP initialization
->
-> Created and tested against linux-2.5.31-rc3.
-> Applies and works with linux-omap-2.6 commit 
-> 7c5cb7862d32cb344be7831d466535d5255e35ac as well
->
-> Patch 4/3 is a temporary solution that should help interested parties in 
-> testing the driver or even making use of it before an official DSP support 
-> gets back to the omap or mainline tree.
->
-> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
->
-> _______________________________________________
-> e3-hacking mailing list
-> e3-hacking@earth.li
-> http://www.earth.li/cgi-bin/mailman/listinfo/e3-hacking
->
->   
-Good job Jarkko ! :) Busy with a few other things atm but will dust off
-the old E3 and take a poke at it when I can. It maybe boxed but it is
-not forgotten :)
+- E3500 report cval->max more than it actually can handel, so if you
+set 95% capture level it will be silently muted.
+- Betwen cval->min and cval-max(real) is 2940 control units,
+but real are only 7 with cval->res = 384.
+- Alsa can't handel less than 10 controls, so make it more
+and set cval->res = 192.
 
-Cheers,
+Signed-off-by: Alexey Fisher <bug-track@fisher-privat.net>
+---
+ sound/usb/usbmixer.c |   16 ++++++++++++----
+ 1 files changed, 12 insertions(+), 4 deletions(-)
 
-
-
+diff --git a/sound/usb/usbmixer.c b/sound/usb/usbmixer.c
+index 5c48199..cda9d7c 100644
+--- a/sound/usb/usbmixer.c
++++ b/sound/usb/usbmixer.c
+@@ -1000,20 +1000,28 @@ static void build_feature_ctl(struct mixer_build *state, unsigned char *desc,
+ 		break;
+ 	}
+ 
+-	/* quirk for UDA1321/N101 */
+-	/* note that detection between firmware 2.1.1.7 (N101) and later 2.1.1.21 */
+-	/* is not very clear from datasheets */
+-	/* I hope that the min value is -15360 for newer firmware --jk */
++	/* volume control quirks */
+ 	switch (state->chip->usb_id) {
+ 	case USB_ID(0x0471, 0x0101):
+ 	case USB_ID(0x0471, 0x0104):
+ 	case USB_ID(0x0471, 0x0105):
+ 	case USB_ID(0x0672, 0x1041):
++	/* quirk for UDA1321/N101 */
++	/* note that detection between firmware 2.1.1.7 (N101) and later 2.1.1.21 */
++	/* is not very clear from datasheets */
++	/* I hope that the min value is -15360 for newer firmware --jk */
+ 		if (!strcmp(kctl->id.name, "PCM Playback Volume") &&
+ 		    cval->min == -15616) {
+ 			snd_printk(KERN_INFO "using volume control quirk for the UDA1321/N101 chip\n");
+ 			cval->max = -256;
+ 		}
++	case USB_ID(0x046d, 0x09a4):
++		if (!strcmp(kctl->id.name, "Mic Capture Volume")) {
++			snd_printk(KERN_INFO "using volume control quirk for the QuickCam E 3500\n");
++			cval->min = 6080;
++			cval->max = 8768;
++			cval->res = 192;
++		}
+ 	}
+ 
+ 	snd_printdd(KERN_INFO "[%d] FU [%s] ch = %d, val = %d/%d/%d\n",
 -- 
-==
-
-Don Alexander
-
-E3 Development & tweaking ;)
-
-RooSoft Ltd
-
+1.6.3.3
