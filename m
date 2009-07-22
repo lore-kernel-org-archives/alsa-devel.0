@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC] [PATCH 1/3] ASoC: Add support for
-	Conexant	CX20442-11 voice modem codec
-Date: Wed, 22 Jul 2009 11:10:28 +0100
-Message-ID: <20090722101027.GA7622@sirena.org.uk>
-References: <200907220522.29221.jkrzyszt@tis.icnet.pl>
+From: Alexey Fisher <bug-track@fisher-privat.net>
+Subject: Re: [PATCH] Mixer quirk for QuickCam E 3500
+Date: Wed, 22 Jul 2009 12:37:10 +0200
+Message-ID: <4A66EBD6.9000703@fisher-privat.net>
+References: <1248210642-5054-1-git-send-email-bug-track@fisher-privat.net>	<s5hr5w9vhnn.wl%tiwai@suse.de>
+	<4A6639DA.6020500@fisher-privat.net>	<s5hljmhvgol.wl%tiwai@suse.de>
+	<4A66A07D.4010105@fisher-privat.net> <s5hws6112qe.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6F0D2103816
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 0A56A103867
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Jul 2009 12:10:29 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200907220522.29221.jkrzyszt@tis.icnet.pl>
+	Wed, 22 Jul 2009 12:37:12 +0200 (CEST)
+In-Reply-To: <s5hws6112qe.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,38 +23,146 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: alsa-devel@alsa-project.org, Jonathan McDowell <noodles@earth.li>, Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, e3-hacking@earth.li, Arun KS <arunks@mistralsolutions.com>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 22, 2009 at 05:22:28AM +0200, Janusz Krzysztofik wrote:
-> This patch adds support for Conexant CX20442-11 voice modem codec, suitable
-> for use by the ASoC board driver for Amstrad E3 (Delta) videophone. Related
-> sound card driver will follow.
+Takashi Iwai schrieb:
+> At Wed, 22 Jul 2009 07:15:41 +0200,
+> Alexey Fisher wrote:
+>> Takashi Iwai schrieb:
+>>> At Tue, 21 Jul 2009 23:57:46 +0200,
+>>> Alexey Fisher wrote:
+>>>> Takashi Iwai schrieb:
+>>>>> At Tue, 21 Jul 2009 23:10:42 +0200,
+>>>>> Alexey Fisher wrote:
+>>>>>> 1. E3500 report cval->max more than it actually can handel, so if you
+>>>>>> set 95% capture level it will be muted.
+>>>>>> 2. betwen cval->min and cval-max(real) is 2940 control units,
+>>>>>> but real are only 7.
+>>>>>> 3. we found only 7 real control units, with cval->res = 384,
+>>>>>> but alsa can't handel less than 10 controls, so make it more
+>>>>>> and set cval->res = 192.
+>>>>>>
+>>>>>> Signed-off-by: Alexey Fisher <bug-track@fisher-privat.net>
+>>>>> Thanks for the patch.  The added code looks almost good.
+>>>>> But, it's better to put your code into another place, e.g. a bit
+>>>>> later so that you don't insert it between the comment and the other
+>>>>> code.  Also, if you use switch(), you need break.
+>>>>>
+>>>>> In your case, simply put a new if () block with a proper comment
+>>>>> after that switch() block.  It's not necessarily merged into a single
+>>>>> switch.  The compiler should be clever enough.
+>>>>>
+>>>>> Also, try to keep the patch checkpatch.pl-clean.  Run it once before
+>>>>> submitting your patch.
+>>>>>
+>>>>> Could you fix these and repost?
+>>>>>
+>>>>>
+>>>>> thanks,
+>>>>>
+>>>>> Takashi
+>>>>>
+>>>>>> ---
+>>>>>>  sound/usb/usbmixer.c |    7 +++++++
+>>>>>>  1 files changed, 7 insertions(+), 0 deletions(-)
+>>>>>>
+>>>>>> diff --git a/sound/usb/usbmixer.c b/sound/usb/usbmixer.c
+>>>>>> index 4bd3a7a..72562ee 100644
+>>>>>> --- a/sound/usb/usbmixer.c
+>>>>>> +++ b/sound/usb/usbmixer.c
+>>>>>> @@ -995,6 +995,13 @@ static void build_feature_ctl(struct mixer_build *state, unsigned char *desc,
+>>>>>>  	/* is not very clear from datasheets */
+>>>>>>  	/* I hope that the min value is -15360 for newer firmware --jk */
+>>>>>>  	switch (state->chip->usb_id) {
+>>>>>> +	case USB_ID(0x046d, 0x09a4):
+>>>>>> +		if (!strcmp(kctl->id.name, "Mic Capture Volume")) {
+>>>>>> +			snd_printk(KERN_INFO "using volume control quirk for the QuickCam E3500\n");
+>>>>>> +			cval->min = 6080;
+>>>>>> +			cval->max = 8768;
+>>>>>> +			cval->res = 192;
+>>>>>> +		}
+>>>>>>  	case USB_ID(0x0471, 0x0101):
+>>>>>>  	case USB_ID(0x0471, 0x0104):
+>>>>>>  	case USB_ID(0x0471, 0x0105):
+>>>> There is some thing wrong with this. After suspend and resume this quirk 
+>>>> not working. Even replug the cam not help, only reloading of 
+>>>> snd_usb_sound will do it work again.
+>>> But isn't it irrelevant with your patch?
+>>>
+>>>
+>>> Takashi
+>> it should be irrelevant, but some times it doesn't use this quirk. Seems 
+>> like it depend on my usb.. so if quirk is not used there passably (if 
+>> capture level set to more then 90%) will be no sound on this cam.
+>>
+>> here is example. On this port it's working fine:
+>> ===========================================================================
+>> [ 1197.141867] ALSA sound/usb/usbaudio.c:2802: 17:3:1: add audio 
+>> endpoint 0x86
+>> [ 1198.144187] ALSA sound/usb/usbaudio.c:1295: 17:3:1: cannot get freq 
+>> at ep 0x86
+>> [ 1198.144344] ALSA sound/usb/usbmixer.c:1017: [5] FU [Mic Capture 
+>> Switch] ch = 1, val = 0/1/1
+>> [ 1198.917814] ALSA sound/usb/usbmixer.c:1000: using volume control 
+>> quirk for the QuickCam E3500
+>> [ 1198.917818] ALSA sound/usb/usbmixer.c:1017: [5] FU [Mic Capture 
+>> Volume] ch = 1, val = 6080/8768/192
+>> [ 1198.972148] ALSA sound/usb/usbaudio.c:1349: setting usb interface 3:1
+>> [ 1198.999384] ALSA sound/usb/usbaudio.c:1349: setting usb interface 3:1
+>> ==================================================================================
+>>
+>> and quirk is applied:
+>> =================================================================
+>> amixer -D hw:1
+>> Simple mixer control 'Mic',0
+>>    Capabilities: cvolume cvolume-joined cswitch cswitch-joined
+>>    Capture channels: Mono
+>>    Limits: Capture 0 - 14
+>>    Mono: Capture 14 [100%] [34.25dB] [on]
+>> ======================================================================
+>>
+>>
+>>
+>> On this port it's looks different:
+>> ==================================================================
+>> [  434.298740] ALSA sound/usb/usbaudio.c:2802: 16:3:1: add audio 
+>> endpoint 0x86
+>> [  435.296189] ALSA sound/usb/usbaudio.c:1288: 16:3:1: cannot set freq 
+>> 16000 to ep 0x86
+>> [  435.296346] ALSA sound/usb/usbmixer.c:1017: [5] FU [Mic Capture 
+>> Switch] ch = 1, val = 0/1/1
+>> [  436.055930] ALSA sound/usb/usbmixer.c:374: cannot get ctl value: req 
+>> = 0x83, wValue = 0x200, wIndex = 0x502, type = 4
+>> [  436.055936] ALSA sound/usb/usbmixer.c:730: 5:2: cannot get min/max 
+>> values for control 2 (id 5)
+>> [  436.055954] ALSA sound/usb/usbmixer.c:1000: using volume control 
+>> quirk for the QuickCam E3500
+>> [  436.055957] ALSA sound/usb/usbmixer.c:1017: [5] FU [Mic Capture 
+>> Volume] ch = 1, val = 6080/8768/192
+>> [  436.107018] ALSA sound/usb/usbaudio.c:1349: setting usb interface 3:1
+>> [  436.133640] ALSA sound/usb/usbaudio.c:1349: setting usb interface 3:1
+>> ========================================================================
+>>
+>> and quirk is not working:
+>> =========================================================
+>> amixer -D hw:1
+>> Simple mixer control 'Mic',0
+>>    Capabilities: cvolume cvolume-joined cswitch cswitch-joined
+>>    Capture channels: Mono
+>>    Limits: Capture 0 - 3072
+>>    Mono: Capture 3072 [100%] [23.00dB] [on]
+>> ============================================================
+>>
+>> this can't  be reproduce with every plug in.. but some port have better 
+>> possibility to get error. On this kind of port  the setting can be 
+>> changed after resume.
+> 
+> Hm, then it means that chip->usb_id has a different number.
+> Could you check with printk?
 
-> Created and tested against linux-2.6.31-rc3.
-> Applies and works with linux-omap-2.6 commit
-> 7c5cb7862d32cb344be7831d466535d5255e35ac as well.
-
-> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-
-This patch is basically fine from an ASoC point of view so I've applied
-it.
-
-You'll want to run checkpatch over it and send a followup fixing the
-issues it identifies.  Looking at this I suspect that it may be possible
-to refactor things so that more of the line discipline interaction is
-pushed down into the CODEC driver but that can also be done as a
-followup.
-
-Since this (and all the other descriptive text that follows it):
-
-> This codec is an optional part of the Conexant SmartV three chip modem design.
-> As such, documentation for its proprietary digital audio interface is not
-> available. However, on Amstrad Delta board, thanks to Mark Underwood who
-
-...is useful documentation I've pulled it into the commit message.  It
-would also be nice to add some documentation somewhere explaining how
-the hw_write() function is expected to be set up since it's a little
-surprising (if the line discipline stuff were pushed down into the code
-that'd become a lot more obvious).
+ From the second dmesg you can see, the quirk was applyed. But for some 
+reason overwrite after it did get_min_max. i did some debuging with 
+printk but was not able to reproduce this issue. So will leave this 
+until i have some more time.
