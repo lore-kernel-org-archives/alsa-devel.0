@@ -1,17 +1,20 @@
-From: Alexey Fisher <bug-track@fisher-privat.net>
-Subject: [PATCH] Volume control quirk for QuickCam E 3500
-Date: Wed, 22 Jul 2009 14:57:54 +0200
-Message-ID: <1248267474-10438-1-git-send-email-bug-track@fisher-privat.net>
-References: <s5hbpnc28bt.wl%tiwai@suse.de>
+From: "chaithrika" <chaithrika@ti.com>
+Subject: Re: [PATCH] ASoC: tlv320aic3x: Enable PLL when not
+	bypassed
+Date: Wed, 22 Jul 2009 18:30:09 +0530
+Message-ID: <01ff01ca0acc$580a8110$081f8330$@com>
+References: <1248263104-12142-1-git-send-email-chaithrika@ti.com>
+	<20090722124214.GA28188@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 7B6031038ED
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7B1F71038F6
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Jul 2009 14:58:09 +0200 (CEST)
-In-Reply-To: <s5hbpnc28bt.wl%tiwai@suse.de>
+	Wed, 22 Jul 2009 15:01:08 +0200 (CEST)
+In-Reply-To: <20090722124214.GA28188@rakim.wolfsonmicro.main>
+Content-Language: en-us
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,66 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, clemens@ladisch.de, alsa-devel@alsa-project.org
-Cc: Alexey Fisher <bug-track@fisher-privat.net>
+To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
+Cc: khilman@deeprootsystems.com, alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com
 List-Id: alsa-devel@alsa-project.org
 
-- E3500 report cval->max more than it actually can handel, so if you
-set 95% capture level it will be silently muted.
-- Betwen cval->min and cval-max(real) is 2940 control units,
-but real are only 7 with cval->res = 384.
-- Alsa can't handel less than 10 controls, so make it more
-and set cval->res = 192.
+On Wed, Jul 22, 2009 at 18:12:14, Mark Brown wrote:
+> On Wed, Jul 22, 2009 at 07:45:04AM -0400, Chaithrika U S wrote:
+> > PLL was not being enabled when it was not bypassed. This patch
+> > enables the PLL when it is used. Additionally, it disables the PLL
+> > when it is bypassed.
+> > 
+> > Without this patch, the audio on TI DM646x EVM and DM355 EVM
+> > does not work properly. The bit clocks and the frame sync signals
+> > from the codec are not correct and hence the playback/record are faster
+> > than usual for most sample rates. The reason for this was that the PLL
+> > was not enabled when it was not bypassed.
+> 
+> Looks reasonable though I've no knowledge of the CODEC.  Sounds like
+> this is needed in 2.6.31?
+> 
 
-Signed-off-by: Alexey Fisher <bug-track@fisher-privat.net>
----
- sound/usb/usbmixer.c |   25 ++++++++++++++++++++-----
- 1 files changed, 20 insertions(+), 5 deletions(-)
+Yes, it is needed in 2.6.31.
 
-diff --git a/sound/usb/usbmixer.c b/sound/usb/usbmixer.c
-index 5c48199..ab5a3ac 100644
---- a/sound/usb/usbmixer.c
-+++ b/sound/usb/usbmixer.c
-@@ -1000,20 +1000,35 @@ static void build_feature_ctl(struct mixer_build *state, unsigned char *desc,
- 		break;
- 	}
- 
--	/* quirk for UDA1321/N101 */
--	/* note that detection between firmware 2.1.1.7 (N101) and later 2.1.1.21 */
--	/* is not very clear from datasheets */
--	/* I hope that the min value is -15360 for newer firmware --jk */
-+	/* volume control quirks */
- 	switch (state->chip->usb_id) {
- 	case USB_ID(0x0471, 0x0101):
- 	case USB_ID(0x0471, 0x0104):
- 	case USB_ID(0x0471, 0x0105):
- 	case USB_ID(0x0672, 0x1041):
-+	/* quirk for UDA1321/N101.
-+	 * note that detection between firmware 2.1.1.7 (N101)
-+	 * and later 2.1.1.21 is not very clear from datasheets.
-+	 * I hope that the min value is -15360 for newer firmware --jk
-+	 */
- 		if (!strcmp(kctl->id.name, "PCM Playback Volume") &&
- 		    cval->min == -15616) {
--			snd_printk(KERN_INFO "using volume control quirk for the UDA1321/N101 chip\n");
-+			snd_printk(KERN_INFO
-+				 "set volume quirk for UDA1321/N101 chip\n");
- 			cval->max = -256;
- 		}
-+		break;
-+
-+	case USB_ID(0x046d, 0x09a4):
-+		if (!strcmp(kctl->id.name, "Mic Capture Volume")) {
-+			snd_printk(KERN_INFO
-+				"set volume quirk for QuickCam E3500\n");
-+			cval->min = 6080;
-+			cval->max = 8768;
-+			cval->res = 192;
-+		}
-+		break;
-+
- 	}
- 
- 	snd_printdd(KERN_INFO "[%d] FU [%s] ch = %d, val = %d/%d/%d\n",
--- 
-1.6.3.3
+Regards, 
+Chaithrika
