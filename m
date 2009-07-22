@@ -1,17 +1,19 @@
-From: Nicolas Krieger <khenyh@gmail.com>
-Subject: Blocked in snd_pcm_open
-Date: Wed, 22 Jul 2009 12:01:26 +0200
-Message-ID: <3afeb4060907220301l7fc817dblf860aa61c887dedc@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC] [PATCH 1/3] ASoC: Add support for
+	Conexant	CX20442-11 voice modem codec
+Date: Wed, 22 Jul 2009 11:10:28 +0100
+Message-ID: <20090722101027.GA7622@sirena.org.uk>
+References: <200907220522.29221.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7FEB51037E3
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6F0D2103816
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Jul 2009 12:01:46 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id 13so864740fge.21
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2009 03:01:46 -0700 (PDT)
+	Wed, 22 Jul 2009 12:10:29 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <200907220522.29221.jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,136 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: alsa-devel@alsa-project.org, Jonathan McDowell <noodles@earth.li>, Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, e3-hacking@earth.li, Arun KS <arunks@mistralsolutions.com>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Wed, Jul 22, 2009 at 05:22:28AM +0200, Janusz Krzysztofik wrote:
+> This patch adds support for Conexant CX20442-11 voice modem codec, suitable
+> for use by the ASoC board driver for Amstrad E3 (Delta) videophone. Related
+> sound card driver will follow.
 
-I don't know if I am in the right place to expose my problem, if not, excuse
-me.
+> Created and tested against linux-2.6.31-rc3.
+> Applies and works with linux-omap-2.6 commit
+> 7c5cb7862d32cb344be7831d466535d5255e35ac as well.
 
-I have a problem with snd_pcm_open function. The program seems to be blocked
-and gdb output shows this is happening while using snd_pcm_open.
-I am upgrading a program that reads videos so as to use alsa now. On my
-computer, there is no problem. But the problem appears on test computer.
+> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
 
-My questions are :
+This patch is basically fine from an ASoC point of view so I've applied
+it.
 
-   - is it only a configuration problem (.asoundrc) ?
-   - if not, what else could it be ?
+You'll want to run checkpatch over it and send a followup fixing the
+issues it identifies.  Looking at this I suspect that it may be possible
+to refactor things so that more of the line discipline interaction is
+pushed down into the CODEC driver but that can also be done as a
+followup.
 
+Since this (and all the other descriptive text that follows it):
 
+> This codec is an optional part of the Conexant SmartV three chip modem design.
+> As such, documentation for its proprietary digital audio interface is not
+> available. However, on Amstrad Delta board, thanks to Mark Underwood who
 
-
-_rc = snd_pcm_open(&_handle, "defaultTEST", SND_PCM_STREAM_PLAYBACK,
-SND_PCM_NONBLOCK); <= this is line *42 in ../../src/CAudio.cpp* in gdb
-output
-
-
-This a part of gdb when the progam is blocked :
-
-*0x009877a2 in _dl_sysinfo_int80 () from /lib/ld-linux.so.2
-(gdb) bt
-#0  0x009877a2 in _dl_sysinfo_int80 () from /lib/ld-linux.so.2
-#1  0x00bdbd4b in __open_nocancel () from /lib/tls/libpthread.so.0
-#2  0xf6fedb9d in open () from /usr/lib/libesddsp.so.0
-#3  0x04e7e5f2 in snd_pcm_hw_open () from /lib/libasound.so.2
-#4  0x04e7ea90 in _snd_pcm_hw_open () from /lib/libasound.so.2
-#5  0x04e70893 in snd_pcm_close () from /lib/libasound.so.2
-#6  0x04e70e78 in snd_pcm_close () from /lib/libasound.so.2
-#7  0x04e710c9 in snd_pcm_open_slave () from /lib/libasound.so.2
-#8  0x04ea4541 in snd_pcm_dmix_open () from /lib/libasound.so.2
-#9  0x04ea4aea in _snd_pcm_dmix_open () from /lib/libasound.so.2
-#10 0x04e70893 in snd_pcm_close () from /lib/libasound.so.2
-#11 0x04e70e78 in snd_pcm_close () from /lib/libasound.so.2
-#12 0x04e710c9 in snd_pcm_open_slave () from /lib/libasound.so.2
-#13 0x04ea8186 in _snd_pcm_asym_open () from /lib/libasound.so.2
-#14 0x04e70893 in snd_pcm_close () from /lib/libasound.so.2
-#15 0x04e70e78 in snd_pcm_close () from /lib/libasound.so.2
-#16 0x04e710c9 in snd_pcm_open_slave () from /lib/libasound.so.2
-#17 0x04e8e1de in _snd_pcm_plug_open () from /lib/libasound.so.2
-#18 0x04e70893 in snd_pcm_close () from /lib/libasound.so.2
-#19 0x04e70e78 in snd_pcm_close () from /lib/libasound.so.2
-#20 0x08065543 in CAudio::openDevice (this=0x87795e0,
-sampleRate=@0x8884558<https://messagerie.si.c-s.fr/horde/imp/message.php?index=988#>,
-nbChannels=@0x888455c<https://messagerie.si.c-s.fr/horde/imp/message.php?index=988#>,
-devicename=@0xfeee8670<https://messagerie.si.c-s.fr/horde/imp/message.php?index=988#>)
-at ../../src/CAudio.cpp:42*
-
-
-
-
-.asoundrc I am using :
-
-*pcm.card0 {
-    type hw
-    card 0
-    device 0
-}
-
-pcm.card1 {
-    type hw
-    card 1
-    device 0
-}
-
-pcm.dmixerDEF {
-    type dmix
-    ipc_key 1025
-    slave {
-        pcm card0
-        period_time 0
-        period_size 2048
-        buffer_size 32768
-        rate 44100
-    }
-    bindings {
-        0 0
-        1 1
-    }
-}
-
-pcm.dmixerTEST {
-    type dmix
-    ipc_key 1027
-    slave {
-        pcm card1
-        format S16_LE
-        period_time 0
-        period_size 2048
-        buffer_size 32768
-        rate 44100
-    }
-    #bindings {
-    #    0 0
-    #    1 1
-    #}
-}
-
-pcm.DEF {
-    type asym
-
-    playback.pcm "dmixerDEF"
-    capture.pcm "card0"
-}
-
-pcm.TEST {
-    type asym
-
-    playback.pcm "dmixerTEST"
-    capture.pcm "card1"
-}
-
-
-pcm.!default {
-    type plug
-    slave.pcm "DEF"
-}
-
-pcm.defaultTEST {
-    type plug
-    slave.pcm "TEST"
-}*
-
-
-Nicolas Krieger
+...is useful documentation I've pulled it into the commit message.  It
+would also be nice to add some documentation somewhere explaining how
+the hw_write() function is expected to be set up since it's a little
+surprising (if the line discipline stuff were pushed down into the code
+that'd become a lot more obvious).
