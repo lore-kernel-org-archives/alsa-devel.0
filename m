@@ -1,22 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Allow passing platform_data to devices
- attached to AC97 bus
-Date: Wed, 22 Jul 2009 11:40:29 +0100
-Message-ID: <20090722104029.GC21171@rakim.wolfsonmicro.main>
-References: <200907211633.14388.marek.vasut@gmail.com>
-	<200907211740.01287.marek.vasut@gmail.com>
-	<20090721183056.GB28955@sirena.org.uk>
-	<200907212151.05301.marek.vasut@gmail.com>
+From: Alexey Fisher <bug-track@fisher-privat.net>
+Subject: [PATCH] Volume control quirk for QuickCam E 3500
+Date: Wed, 22 Jul 2009 12:42:56 +0200
+Message-ID: <1248259376-5204-1-git-send-email-bug-track@fisher-privat.net>
+References: <s5hy6qh12rs.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 973A21038A1
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 66ACF1038A1
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Jul 2009 12:40:30 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200907212151.05301.marek.vasut@gmail.com>
+	Wed, 22 Jul 2009 12:43:03 +0200 (CEST)
+In-Reply-To: <s5hy6qh12rs.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,15 +21,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel@lists.arm.linux.org.uk
+To: tiwai@suse.de, clemens@ladisch.de, alsa-devel@alsa-project.org
+Cc: Alexey Fisher <bug-track@fisher-privat.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 21, 2009 at 09:51:05PM +0200, Marek Vasut wrote:
+- E3500 report cval->max more than it actually can handel, so if you
+set 95% capture level it will be silently muted.
+- Betwen cval->min and cval-max(real) is 2940 control units,
+but real are only 7 with cval->res = 384.
+- Alsa can't handel less than 10 controls, so make it more
+and set cval->res = 192.
 
-> Ok, this one should be better then? Mark, thanks for guiding me :-)
+Signed-off-by: Alexey Fisher <bug-track@fisher-privat.net>
+---
+ sound/usb/usbmixer.c |   23 ++++++++++++++++++-----
+ 1 files changed, 18 insertions(+), 5 deletions(-)
 
-There's so many patches flying around here that I've completely lost
-track of what the current state of play is.  Could you please repost as
-a new patch series, ideally as a normal submission with meaningful per
-patch subject headers.
+diff --git a/sound/usb/usbmixer.c b/sound/usb/usbmixer.c
+index 5c48199..c87bcd1 100644
+--- a/sound/usb/usbmixer.c
++++ b/sound/usb/usbmixer.c
+@@ -1000,20 +1000,33 @@ static void build_feature_ctl(struct mixer_build *state, unsigned char *desc,
+ 		break;
+ 	}
+ 
+-	/* quirk for UDA1321/N101 */
+-	/* note that detection between firmware 2.1.1.7 (N101) and later 2.1.1.21 */
+-	/* is not very clear from datasheets */
+-	/* I hope that the min value is -15360 for newer firmware --jk */
++	/* volume control quirks */
+ 	switch (state->chip->usb_id) {
+ 	case USB_ID(0x0471, 0x0101):
+ 	case USB_ID(0x0471, 0x0104):
+ 	case USB_ID(0x0471, 0x0105):
+ 	case USB_ID(0x0672, 0x1041):
++	/* quirk for UDA1321/N101.
++	 * note that detection between firmware 2.1.1.7 (N101) 
++	 * and later 2.1.1.21 is not very clear from datasheets.
++	 * I hope that the min value is -15360 for newer firmware --jk
++	 */
+ 		if (!strcmp(kctl->id.name, "PCM Playback Volume") &&
+ 		    cval->min == -15616) {
+-			snd_printk(KERN_INFO "using volume control quirk for the UDA1321/N101 chip\n");
++			snd_printk(KERN_INFO
++				 "set volume quirk for UDA1321/N101 chip\n");
+ 			cval->max = -256;
+ 		}
++
++	case USB_ID(0x046d, 0x09a4):
++		if (!strcmp(kctl->id.name, "Mic Capture Volume")) {
++			snd_printk(KERN_INFO
++				"set volume quirk for QuickCam E3500\n");
++			cval->min = 6080;
++			cval->max = 8768;
++			cval->res = 192;
++		}
++
+ 	}
+ 
+ 	snd_printdd(KERN_INFO "[%d] FU [%s] ch = %d, val = %d/%d/%d\n",
+-- 
+1.6.3.3
