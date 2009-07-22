@@ -1,23 +1,23 @@
 From: Marek Vasut <marek.vasut@gmail.com>
 Subject: [PATCH 1/4] Allow passing platform_data to devices
 	attached to AC97 bus
-Date: Wed, 22 Jul 2009 12:59:13 +0200
-Message-ID: <200907221259.13644.marek.vasut@gmail.com>
+Date: Wed, 22 Jul 2009 13:01:03 +0200
+Message-ID: <200907221301.04239.marek.vasut@gmail.com>
 References: <200907211633.14388.marek.vasut@gmail.com>
-	<200907212151.05301.marek.vasut@gmail.com>
-	<20090722104029.GC21171@rakim.wolfsonmicro.main>
+	<200907220013.12824.marek.vasut@gmail.com>
+	<20090721223424.GA21147@oksana.dev.rtsoft.ru>
 Mime-Version: 1.0
 Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_BEvZKna0/PLXW7C"
+  boundary="Boundary-00=_wFvZKcPTrhVja/b"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-bw0-f226.google.com (mail-bw0-f226.google.com
 	[209.85.218.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id CF95E10389F
+	by alsa0.perex.cz (Postfix) with ESMTP id 1B0F710389F
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Jul 2009 12:59:32 +0200 (CEST)
-Received: by bwz26 with SMTP id 26so109615bwz.32
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2009 03:59:32 -0700 (PDT)
-In-Reply-To: <20090722104029.GC21171@rakim.wolfsonmicro.main>
+	Wed, 22 Jul 2009 13:01:23 +0200 (CEST)
+Received: by bwz26 with SMTP id 26so110676bwz.32
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2009 04:01:22 -0700 (PDT)
+In-Reply-To: <20090721223424.GA21147@oksana.dev.rtsoft.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,27 +27,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel@lists.arm.linux.org.uk
+To: avorontsov@ru.mvista.com
+Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>, Robert Jarzmik <robert.jarzmik@free.fr>, Mark Brown <broonie@opensource.wolfsonmicro.com>, cbou@mail.ru, Eric Miao <eric.y.miao@gmail.com>, dwmw2@infradead.org, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
---Boundary-00=_BEvZKna0/PLXW7C
+--Boundary-00=_wFvZKcPTrhVja/b
 Content-Type: text/plain;
   charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-Dne St 22. =C4=8Dervence 2009 12:40:29 Mark Brown napsal(a):
-> On Tue, Jul 21, 2009 at 09:51:05PM +0200, Marek Vasut wrote:
-> > Ok, this one should be better then? Mark, thanks for guiding me :-)
->
-> There's so many patches flying around here that I've completely lost
-> track of what the current state of play is.  Could you please repost as
-> a new patch series, ideally as a normal submission with meaningful per
-> patch subject headers.
+Ok,
+Im sending the set again.
 
-
---Boundary-00=_BEvZKna0/PLXW7C
+--Boundary-00=_wFvZKcPTrhVja/b
 Content-Type: text/x-patch;
   charset="UTF-8";
   name="0001-Allow-passing-platform_data-to-devices-attached-to-A.patch"
@@ -129,7 +122,7 @@ index 1d70829..7cb0917 100644
 1.6.3.3
 
 
---Boundary-00=_BEvZKna0/PLXW7C
+--Boundary-00=_wFvZKcPTrhVja/b
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -140,4 +133,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---Boundary-00=_BEvZKna0/PLXW7C--
+--Boundary-00=_wFvZKcPTrhVja/b--
