@@ -1,22 +1,28 @@
-From: rom1dep <rom1dep@gmail.com>
-Subject: Re: [snd_via82xx] EAGAIN on snd_pcm_prepare after
-	EPIPE on mmap_commit
-Date: Thu, 23 Jul 2009 19:23:39 +0200
-Message-ID: <494d907f0907231023h26829d85ub13caec4a56ddec8@mail.gmail.com>
-References: <494d907f0907230821ga09abcflb770b020b21b3735@mail.gmail.com>
-	<s5hocrbwgu6.wl%tiwai@suse.de>
+From: "Ted T. Logan" <tedtheologian@gmail.com>
+Subject: Re: Testers wanted: New SB X-Fi driver
+Date: Thu, 23 Jul 2009 12:53:29 -0500
+Message-ID: <1248371610.28982.0.camel@localhost.localdomain>
+References: <4A5DB59B.2010407@freenet.de> <s5hvdltnfrp.wl%tiwai@suse.de>
+	<1247769012.20483.0.camel@localhost.localdomain>
+	<4A5F7D6C.9020606@dmx.com>
+	<1248017721.30034.2.camel@localhost.localdomain>
+	<s5h3a8sll15.wl%tiwai@suse.de>
+	<1248285229.4822.1.camel@localhost.localdomain>
+	<s5hprbspl6c.wl%tiwai@suse.de>
+	<1248291625.4061.0.camel@localhost.localdomain>
+	<s5h1vo8x8y3.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f226.google.com (mail-fx0-f226.google.com
-	[209.85.220.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id A50C31037F2
-	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Jul 2009 19:24:00 +0200 (CEST)
-Received: by fxm26 with SMTP id 26so1022430fxm.32
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2009 10:24:00 -0700 (PDT)
-In-Reply-To: <s5hocrbwgu6.wl%tiwai@suse.de>
+Received: from mail-yx0-f177.google.com (mail-yx0-f177.google.com
+	[209.85.210.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id CBC55103A1C
+	for <Alsa-devel@alsa-project.org>;
+	Thu, 23 Jul 2009 19:53:51 +0200 (CEST)
+Received: by yxe7 with SMTP id 7so1830847yxe.16
+	for <Alsa-devel@alsa-project.org>; Thu, 23 Jul 2009 10:53:50 -0700 (PDT)
+In-Reply-To: <s5h1vo8x8y3.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,34 +33,145 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-MjAwOS83LzIzIFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT46Cj4gQXQgVGh1LCAyMyBKdWwg
-MjAwOSAxNzoyMTo0NCArMDIwMCwKPiByb20xZGVwIHdyb3RlOgo+Pgo+PiBIZWxsbyAhCj4+IEkg
-YW0gZW5jb3VudGVyaW5nIHNvbWUgaXNzdWVzIHdpdGggcHVsc2VhdWRpbyA6IGFmdGVyIHNvbWUg
-dGltZSBhbmQKPj4gZm9yIG5vIGV2aWRlbnQgcmVhc29uIFBBIHN0b3BzIHJvdXRpbmcgdGhlIHNv
-dW5kLgo+PiBUaGF0J3Mgd2hhdCBJIGdldCB3aXRoICRwdWxzZWF1ZGlvIC12dnYgOgo+PiBodHRw
-Oi8vcGFzdGViaW4ubWFuZHJpdmEuY29tLzEzNjQ4IChnb3QgZnJvbSBhIDIuNi4yOS42X21kdiBr
-ZXJuZWwpCj4+IHJ1bm5pbmcgJHBhY21kIGxpc3Qtc2lua3Mgd2hlbiBzdHVjayBnaXZlcyA6Cj4+
-IGh0dHA6Ly9wYXN0ZWJpbi5tYW5kcml2YS5jb20vMTM2NDkKPj4KPj4gT3VyIHB1bHNlYXVkaW8g
-aW50ZWdyYXRvciBDb2xpbiBHdXRocmllIGNvbmNsdWRlZCA6Cj4+ICJPSywgc28gd2hhdCBpcyBo
-YXBwZW5pbmcgaXMgdGhhdCBzb21lIGFsc2EgbGV2ZWwgcHJvYmxlbSBpcyBvY2N1cnJpbmcKPj4g
-KGR1ZSB0byBtbWFwKS4gUHVsc2UgdHJpZXMgdG8gcmVjb3ZlciBmcm9tIHRoaXMgYnV0IGNhbm5v
-dC4gVGhlIGFsc2EKPj4gc2luayAoYW5kIHRoZSB3aG9sZSBjYXJkKSBpcyBzdWJzZXF1ZW50bHkg
-dW5sb2FkZWQgZHVlIHRvIHRoaXMgZmF0YWwKPj4gZXJyb3IuIgo+PiBBbmQgbm93Li4gYSBxdWlj
-ayBwYXN0ZSBmcm9tIGlyYyA6Cj4+ICJbMDA6NDQ6MjBdIDxjb2xpbmc+IEp1bCAyMiAxNDowNDoy
-OSA8bWV6Y2FsZXJvPiDCoCDCoCBjb2xpbmc6IGRyaXZlcgo+PiBpc3N1ZSBpIGFtIHByZXR0eSBz
-dXJlCj4+IFswMDo0NDoyMF0gPGNvbGluZz4gSnVsIDIyIDE0OjA0OjMzIDxtZXpjYWxlcm8+IMKg
-IMKgIGkgc2F3IHRoYXQgYmVmb3JlIG9uY2UKPj4gWzAwOjQ0OjIwXSA8Y29saW5nPiBKdWwgMjIg
-MTQ6MDQ6NTUgPG1lemNhbGVybz4gwqAgwqAgY29saW5nOiBpLmUuCj4+IEVBR0FJTiBvbiBzbmRf
-cGNtX3ByZXBhcmUgYWZ0ZXIgRVBJUEUgb24gbW1hcF9jb21taXQKPgo+IFRoaXMgaXMgb2RkLiDC
-oEVBR0FJTiBpcyByZXR1cm5lZCBvbmx5IGF0IG9wZW4sIHJlYWQvd3JpdGUgYW5kIGRyYWluCj4g
-aW9jdGxzLgo+Cj4gQ291bGQgeW91IHRyYWNrIHdpdGggc3RyYWNlPwo+Cj4KPiBUYWthc2hpCj4K
-Ckl0IHdhc24ndCBlYXN5IDogdGhhdCBiaWcgb3V0cHV0IG1hZGUgbXkgY29uZmlnIHN3YXAgYW5k
-IGZpbmFsbHkKcHVsc2VhdWRpbyBsZWF2ZSBmb3IgIkU6IGNwdWxpbWl0LmM6IFJlY2VpdmVkIHJl
-cXVlc3QgdG8gdGVybWluYXRlIGR1ZQp0byBDUFUgb3ZlcmxvYWQuIgpidXQgOgpodHRwOi8vcGFz
-dGViaW4ubWFuZHJpdmEuY29tLzEzNjY1Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYWxzYS1kZXZlbAo=
+Ah ok, sorry.
+
+I just know that, from what I can see, there are no plans for them to
+develop the driver anymore and was looking for something for the future,
+that's why I'm hoping to get my card working with your driver. Also, I
+get no sound at all with your driver when I tell it to do surround.
+
+On Thu, 2009-07-23 at 07:30 +0200, Takashi Iwai wrote:
+
+> At Wed, 22 Jul 2009 14:40:25 -0500,
+> Ted T. Logan wrote:
+> > 
+> > I should contact the creative guys about using your driver?
+> 
+> This isn't *my* driver at all.
+> The driver code is originally given by Creative guys.
+> 
+> 
+> Takashi
+> 
+> > 
+> > On Wed, 2009-07-22 at 21:33 +0200, Takashi Iwai wrote:
+> > 
+> >     At Wed, 22 Jul 2009 12:53:49 -0500,
+> >     Ted T. Logan wrote:
+> >     > 
+> >     > Takashi,
+> >     > 
+> >     > Fwiw, I reinstalled my kernel to get the old alsa modules back
+> >     > Linux home 2.6.29.5-191.fc11.i586 #1 SMP Tue Jun 16 23:11:39 EDT 2009 i686
+> >     > i686 i386 GNU/Linux
+> >     > 
+> >     > and reinstalled this driver:
+> >     > XFiDrv_Linux_Public_US_1.00
+> >     > 
+> >     > and I am able to use my xfi again without clicks.  Unfortunately, this driver
+> >     > seems to be no longer developed and has some other issues such as with skype
+> >     > and pulseaudio.  I'd REALLY prefer to use your driver but I'm not quite sure
+> >     > what to do.
+> >     
+> >     Then you should  contact with Creative guys.
+> >     They provided the driver after all.
+> >     The addresses can be obtained in GIT changelog.
+> > 
+> >     Takashi
+> >     
+> >     > 
+> >     > On Sun, 2009-07-19 at 18:01 +0200, Takashi Iwai wrote:
+> >     > 
+> >     >     At Sun, 19 Jul 2009 10:35:21 -0500,
+> >     >     Ted T. Logan wrote:
+> >     >     > 
+> >     >     > Maybe you haven't been following the thread.  I've been trying to debug the
+> >     >     > problem.  As I mentioned to Takashi, there's not a point where it broke, it
+> >     >     > never worked with this driver.
+> >     >     > There have always been clicks.
+> >     >     > 
+> >     >     > However, it does not have clicks with the following driver:
+> >     >     > XFiDrv_Linux_Public_US_1.00.tar.gz
+> >     >     > 
+> >     >     > Sending out condescending messages like this after I was responding to the
+> >     >     > "testers wanted" mailer which said all cards should be supported now is
+> >     >     > completely unproductive.
+> >     >     
+> >     >     Well, the current situation is that I've got no other report but you
+> >     >     regarding the specific problem.  There is a known issue with openal,
+> >     >     accordingly, but not all apps.  So, this is very likely a different
+> >     >     issue.
+> >     >     
+> >     >     Actually, it's still the phase to gather all information to know which
+> >     >     part exactly is problematic.  If you find any other guys that have the
+> >     >     exact same problem, let me know.  It would make easier to find out a
+> >     >     problem pattern, either for finding out the culprit or reproducing the
+> >     >     problem.
+> >     >     
+> >     >     Or, you can do trial-and-error by comparing the driver above and the
+> >     >     current one (maybe the first committed version is easier to compare).
+> >     >     This can't be done without the real hardware, so it's actually up to
+> >     >     you how to fix the issue...
+> >     > 
+> >     >     Takashi
+> >     >     
+> >     >     > 
+> >     >     > On Thu, 2009-07-16 at 12:20 -0700, John L. Utz III wrote:
+> >     >     > 
+> >     >     >     Debug the problem, write code that fixes it and then send in a patch.
+> >     >     >     That's why this is the alsa *developers* mailing list.
+> >     >     >     
+> >     >     >     Ted T. Logan wrote:
+> >     >     >     > Takashi, please, what must I do to get your xfi driver to stop clicking?
+> >     >     >     > 
+> >     >     >     > On Thu, 2009-07-16 at 11:22 +0200, Takashi Iwai wrote:
+> >     >     >     > 
+> >     >     >     >> At Wed, 15 Jul 2009 12:55:23 +0200,
+> >     >     >     >> Frashman wrote:
+> >     >     >     >>> Hi Takashi,
+> >     >     >     >>>
+> >     >     >     >>> first of all, thank you for developing this driver.
+> >     >     >     >>> I tested it today. It works, so far.
+> >     >     >     >>>
+> >     >     >     >>> But two annoying things. As you mentioned, I got problems, if the 
+> >     >     >     >>> onboard sound modules are loaded. Then i get no sound out auf my xfi.
+> >     >     >     >> It's likely the collision of PCI device ID.
+> >     >     >     >> Some X-Fi models support both HD-audio and emu20kx-native modes.  The
+> >     >     >     >> modes are switched by some magical sequence.
+> >     >     >     >>
+> >     >     >     >> Anyway, please run alsa-info.sh with --no-upload option, and attach
+> >     >     >     >> the generated file.
+> >     >     >     >>
+> >     >     >     >>> If I disable the loading of snd-hda-intel modules while booting, then it 
+> >     >     >     >>> works.
+> >     >     >     >>>
+> >     >     >     >>> The second problem is, that SIDE and SURROUND connectors are 
+> >     >     >     >>> interchanged. I'm absolutly sure, it works fine under windows and the 
+> >     >     >     >>> connector colors are also correct.
+> >     >     >     >>>
+> >     >     >     >>> If I run speaker-test -c8 the SIDE Speakers sounds come out of my REAR 
+> >     >     >     >>> (SURROUND) Speakers, while nothing is coming out of my rear speakers, if 
+> >     >     >     >>> i'm using speaker-test -c6
+> >     >     >     >> So, the side channels (channel 7 & 8) and the rear channels (3 & 4)
+> >     >     >     >> are swapped when running with 8 channel mode?
+> >     >     >     >>
+> >     >     >     >>
+> >     >     >     >> Takashi
+> >     >     >     >> _______________________________________________
+> >     >     >     >> Alsa-devel mailing list
+> >     >     >     >> Alsa-devel@alsa-project.org
+> >     >     >     >> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >     >     >     > _______________________________________________
+> >     >     >     > Alsa-devel mailing list
+> >     >     >     > Alsa-devel@alsa-project.org
+> >     >     >     > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >     >     >     > 
+> >     >     > 
+> >     >     > 
+> >     > 
+> >     > 
+> > 
+> > 
