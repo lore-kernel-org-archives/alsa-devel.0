@@ -1,23 +1,22 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: multi-channel playback regression
-Date: Thu, 23 Jul 2009 13:31:26 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.0907231330350.17096@eeebox2.perex-int.cz>
-References: <20090723065345.GA1884@localhost> <s5hskgnx4qm.wl%tiwai@suse.de>
-	<20090723072253.GA15878@localhost> <s5hprbrx3dd.wl%tiwai@suse.de>
-	<20090723075620.GA21405@localhost>
-	<alpine.LNX.2.00.0907231008540.17096@eeebox2.perex-int.cz>
-	<s5hhbx3x10h.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0907231037520.17096@eeebox2.perex-int.cz>
-	<s5hy6qfy6we.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/4] Convert WM97xx driver to use
+	platform_data
+Date: Thu, 23 Jul 2009 12:49:00 +0100
+Message-ID: <20090723114900.GE6673@rakim.wolfsonmicro.main>
+References: <200907211633.14388.marek.vasut@gmail.com>
+	<20090721223424.GA21147@oksana.dev.rtsoft.ru>
+	<200907221301.04239.marek.vasut@gmail.com>
+	<200907221304.16534.marek.vasut@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id A06671037F2
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2E4A7244F4
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Jul 2009 13:31:27 +0200 (CEST)
-In-Reply-To: <s5hy6qfy6we.wl%tiwai@suse.de>
+	Thu, 23 Jul 2009 13:49:02 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <200907221304.16534.marek.vasut@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,48 +26,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wu Fengguang <fengguang.wu@intel.com>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>, Robert Jarzmik <robert.jarzmik@free.fr>, cbou@mail.ru, Eric Miao <eric.y.miao@gmail.com>, avorontsov@ru.mvista.com, dwmw2@infradead.org, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 23 Jul 2009, Takashi Iwai wrote:
+On Wed, Jul 22, 2009 at 01:04:16PM +0200, Marek Vasut wrote:
 
-> At Thu, 23 Jul 2009 10:39:04 +0200 (CEST),
-> Jaroslav Kysela wrote:
->>
->> On Thu, 23 Jul 2009, Takashi Iwai wrote:
->>
->>> At Thu, 23 Jul 2009 10:14:27 +0200 (CEST),
->>> Jaroslav Kysela wrote:
->>>>
->>>> On Thu, 23 Jul 2009, Wu Fengguang wrote:
->>>>
->>>>>> Is this with the patched (as is on sound git tree) kernel?
->>>>>
->>>>> Yes, it's unmodified latest git tree.
->>>>>
->>>>>> What if changing from #if 1 to #if 0?
->>>>>
->>>>> This makes 8-channel playback work again.
->>>>
->>>> Can we check if we running under VMWare at runtime?
->>>
->>> No idea.  But, an option to allow to choose manually might be usefl
->>> for other broken hardwares that require a similar fallback like
->>> VMware, although this doesn't conflict with the automatic detection
->>> of vmware.
->>
->> Yes, maybe a sysfs attribute might be useful.
->
-> How about the patch below?
-> This is in sound-unstable tree fix/pcm-hwptr-debug branch.
+> diff --git a/drivers/input/touchscreen/wm97xx-core.c b/drivers/input/touchscreen/wm97xx-core.c
+> index 252eb11..f944918 100644
+> --- a/drivers/input/touchscreen/wm97xx-core.c
+> +++ b/drivers/input/touchscreen/wm97xx-core.c
+> @@ -561,6 +561,7 @@ static void wm97xx_ts_input_close(struct input_dev *idev)
+>  static int wm97xx_probe(struct device *dev)
+>  {
+>  	struct wm97xx *wm;
+> +	struct wm97xx_pdata *pdata = dev->platform_data;
+>  	int ret = 0, id = 0;
+>  
+>  	wm = kzalloc(sizeof(struct wm97xx), GFP_KERNEL);
 
-Acked-by: Jaroslav Kysela <perex@perex.cz>
+> +++ b/drivers/power/wm97xx_battery.c
+> @@ -22,17 +22,19 @@
+>  #include <linux/spinlock.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/gpio.h>
+> -#include <linux/wm97xx_batt.h>
+> +#include <linux/irq.h>
 
- 				Thanks,
- 					Jaroslav
+...
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+> +static irqreturn_t wm97xx_chrg_irq(int irq, void *data)
+> +{
+> +	schedule_work(&bat_work);
+> +	return IRQ_HANDLED;
+> +}
+> +
+
+> -	if (pdata->charge_gpio >= 0 && gpio_is_valid(pdata->charge_gpio)) {
+> +	if (gpio_is_valid(pdata->charge_gpio)) {
+>  		ret = gpio_request(pdata->charge_gpio, "BATT CHRG");
+>  		if (ret)
+>  			goto err;
+>  		ret = gpio_direction_input(pdata->charge_gpio);
+>  		if (ret)
+>  			goto err2;
+> +		ret = request_irq(gpio_to_irq(pdata->charge_gpio),
+> +				wm97xx_chrg_irq, IRQF_DISABLED,
+> +				"AC Detect", 0);
+> +		if (ret)
+> +			goto err2;
+>  		props++;	/* POWER_SUPPLY_PROP_STATUS */
+
+None of these hunks appear to be related to the change in where the
+platform data is coming from and should be split out, as should all the
+error handling code which follows.
+
+> -void __init wm97xx_bat_set_pdata(struct wm97xx_batt_info *data)
+> -{
+> -	pdata = data;
+> -}
+> -EXPORT_SYMBOL_GPL(wm97xx_bat_set_pdata);
+> -
+
+This change and the removal of the old structure should ideally be
+included in the commit which converts all the users to avoid build
+errors during bisection.  I'd say it's OK to have the driver just print
+a warning or something if someone boots the affected kernel during the
+transition period.
