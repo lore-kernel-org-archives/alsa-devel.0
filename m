@@ -1,15 +1,24 @@
-From: "Laurent ." <sid6582@msn.com>
-Subject: Help with multichannel High Speed USB audio device
-Date: Thu, 23 Jul 2009 17:54:36 -0700
-Message-ID: <SNT121-W363BA2CA76A9BB36ABA8A6B2190@phx.gbl>
+From: Joonyoung Shim <jy0922.shim@samsung.com>
+Subject: ASoC: about the array to cache registers
+Date: Fri, 24 Jul 2009 16:06:43 +0900
+Message-ID: <4A695D83.8060202@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from snt0-omc3-s34.snt0.hotmail.com (snt0-omc3-s34.snt0.hotmail.com
-	[65.55.90.173]) by alsa0.perex.cz (Postfix) with ESMTP id C2827103A41
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id 39F6B103A66
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Jul 2009 02:54:38 +0200 (CEST)
+	Fri, 24 Jul 2009 09:10:47 +0200 (CEST)
+Received: from epmmp2 (mailout4.samsung.com [203.254.224.34])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KN900ATDYF73S@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Fri, 24 Jul 2009 16:06:43 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KN900IU5YF7B6@mmp2.samsung.com> for
+	alsa-devel@alsa-project.org; Fri, 24 Jul 2009 16:06:43 +0900 (KST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,58 +29,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: kyungmin.park@samsung.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
+
+Many ASoC codec drivers have an array to cache registers.
+The array is not used any longer after memcpy to codec->reg_cache.
+I think that memcpy is unnecessary, and it a waste of the memory.
+
+How about continue using the array instead of memcpy?
+
+For example, i modified such following patch in wm8731.c
 
 
-
-
-
-
-
-Dear list,
-
-I made an embedded device that has a CODEC with 6 inputs connected to an AR=
-M9
-micro-controller that has an integrated high-speed USB controller.
-Now, I need to write the USB code on that micro-controller so that i can ca=
-pture those
-channels in real-time at 24bits / 48 KHz with low latency (ie. sub 10ms), o=
-n a computer.
-
-I only need my device to work with Linux, and if possible, I would like to =
-avoid writing a device
-driver on the Linux-side.
-
-Is there already such a USB audio driver available that I could nearly use =
-"as is" and to which
-i would conform ?
-
-Would you have some general guideline on how to write the high-speed USB de=
-vice code ?
-
-Would you have any comment on the following :
-
-For simplicity, my device is going to be the "clock master" of the system s=
-ince it is already has
-the exact clock that drives the CODEC.
-I will maintain a circular buffer of samples (well, frames of samples) comi=
-ng from the CODEC.
-Each time a new frame arrives, i put the samples in the buffer and increase=
- a counter so
-i know how many frames of samples I have in the buffer, ready to be sent.
-Each USB micro-frame (125ms/8000Hz), I send all the bytes corresponding to =
-the frames that
-I have in the circular buffer.
-In average, 6*3*48000/8000 =3D 108, but I presume that could jitter slightl=
-y, which should not
-be a problem at all.
-
-Thanks in advance,
-Laurent
-
-_________________________________________________________________
-Windows Live=99 Hotmail=AE: Celebrate the moment with your favorite sports =
-pics. Check it out.
-http://www.windowslive.com/Online/Hotmail/Campaign/QuickAdd?ocid=3DTXT_TAGL=
-M_WL_QA_HM_sports_photos_072009&cat=3Dsports
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index 1560028..43f8de3 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -36,7 +36,6 @@ struct snd_soc_codec_device soc_codec_dev_wm8731;
+ /* codec private data */
+ struct wm8731_priv {
+ 	struct snd_soc_codec codec;
+-	u16 reg_cache[WM8731_CACHEREGNUM];
+ 	unsigned int sysclk;
+ };
+ 
+@@ -50,7 +49,7 @@ static int wm8731_spi_write(struct spi_device *spi, const char *data, int len);
+  * using 2 wire for device control, so we cache them instead.
+  * There is no point in caching the reset register
+  */
+-static const u16 wm8731_reg[WM8731_CACHEREGNUM] = {
++static u16 wm8731_reg[WM8731_CACHEREGNUM] = {
+     0x0097, 0x0097, 0x0079, 0x0079,
+     0x000a, 0x0008, 0x009f, 0x000a,
+     0x0000, 0x0000
+@@ -586,9 +585,7 @@ static int wm8731_register(struct wm8731_priv *wm8731)
+ 	codec->dai = &wm8731_dai;
+ 	codec->num_dai = 1;
+ 	codec->reg_cache_size = WM8731_CACHEREGNUM;
+-	codec->reg_cache = &wm8731->reg_cache;
+-
+-	memcpy(codec->reg_cache, wm8731_reg, sizeof(wm8731_reg));
++	codec->reg_cache = &wm8731_reg;
+ 
+ 	ret = wm8731_reset(codec);
+ 	if (ret < 0) {
