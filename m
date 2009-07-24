@@ -1,24 +1,16 @@
-From: Jon Smirl <jonsmirl@gmail.com>
-Subject: Re: ASoC: PATCH: mpc5200_psc_ac97 (was Re: AC97 on
-	pcm030 board with WM9712 codec)
-Date: Fri, 24 Jul 2009 10:22:24 -0400
-Message-ID: <9e4733910907240722v7ac2529bqed278cd72c3ec3e1@mail.gmail.com>
-References: <1248132551.6532.267.camel@riker>
-	<20090721090104.GA12667@rakim.wolfsonmicro.main>
-	<1248207844.27542.16.camel@riker>
-	<20090721230836.GC3472@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.32
+Date: Fri, 24 Jul 2009 15:33:41 +0100
+Message-ID: <20090724143341.GA2691@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f177.google.com (mail-yx0-f177.google.com
-	[209.85.210.177])
-	by alsa0.perex.cz (Postfix) with ESMTP id 02112103AA4
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E547624600
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Jul 2009 16:22:25 +0200 (CEST)
-Received: by yxe7 with SMTP id 7so2866475yxe.16
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2009 07:22:25 -0700 (PDT)
-In-Reply-To: <20090721230836.GC3472@opensource.wolfsonmicro.com>
+	Fri, 24 Jul 2009 16:33:42 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,29 +20,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: John Bonesio <bones@secretlab.ca>, Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, Eric Schumann <E.Schumann@phytec.de>, Eric Millbrandt <emillbrandt@dekaresearch.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 21, 2009 at 7:08 PM, Mark
-Brown<broonie@opensource.wolfsonmicro.com> wrote:
-> On Tue, Jul 21, 2009 at 01:24:04PM -0700, John Bonesio wrote:
->
->> Reset was failing with the original udelay(50) between the code in
->> psc_ac97_cold_reset() and the call to psc_ac97_warm_reset(). Through testing
->> it was found that a delay of 1ms was necessary for the cold_reset code to
->> consistently complete successfully.
+The following changes since commit 416c8fe3cdcd2d46a6ca12d8ec6143c62d8569d9:
+  Takashi Iwai (1):
+        ASoC: Kill direct accesses to driver_data
 
-Something is funky between the mpc5200 and the wm9712 when doing a
-cold reset. Increasing this delay seems to fix it but it shouldn't be
-needed per the wm9712 datasheet. The only way to know 100% for sure
-what is going on is to put a scope (I don't have one) on the reset
-line and the SDATAOUT or SYNC lines. Maybe SDATAOUT or SYNC initially
-bounce around and delaying for 1ms waits until after the balancing
-stops.  Datasheet says pulse only needs to be 1us.
+are available in the git repository at:
 
-But if the 1ms delays fixes things I'm all for it.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.32
 
--- 
-Jon Smirl
-jonsmirl@gmail.com
+Candelaria Villareal, Jorge (1):
+      ASoC: SDP3430: Add support for EXTMUTE using TWL GPIO6
+
+Chaithrika U S (1):
+      ASoC: tlv320aic3x: Enable PLL when not bypassed
+
+Janusz Krzysztofik (2):
+      ASoC: Add support for Conexant CX20442-11 voice modem codec
+      ASoC: Jack handling enhancements as suggested by subsystem maintainer
+
+John Bonesio (1):
+      ASoC: MPC5200: Increase the delay time between resets
+
+Joonyoung Shim (2):
+      ASoC: MAX9877: separate callback functions
+      ASoC: MAX9877: fix write operation for register
+
+Lopez Cruz, Misael (1):
+      ASoC: OMAP: Staticise pcm creation function of omap-pcm
+
+Marek Vasut (2):
+      ALSA: Allow passing platform_data to devices attached to AC97 bus
+      ASoC: Switch palm27x-asoc to jack detection api
+
+Mark Brown (4):
+      ASoC: Bodge around GCC 4.4.0 flow analysis bug in GCC 4.4.0
+      ASoC: Fix FLL reference clock division setup in WM8993
+      ASoC: Fix checkpatch issues in AD1938
+      Merge branch 'for-2.6.31' into for-2.6.32
+
+ include/sound/ac97_codec.h       |    6 +
+ include/sound/soc-dai.h          |    1 +
+ sound/soc/codecs/Kconfig         |    3 +
+ sound/soc/codecs/Makefile        |    2 +
+ sound/soc/codecs/ad1938.c        |  156 ++++++++--------
+ sound/soc/codecs/cx20442.c       |  395 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/cx20442.h       |   19 ++
+ sound/soc/codecs/max9877.c       |  110 +++++++----
+ sound/soc/codecs/tlv320aic3x.c   |   11 +-
+ sound/soc/codecs/wm8400.c        |    9 +-
+ sound/soc/codecs/wm8993.c        |    2 +
+ sound/soc/fsl/mpc5200_psc_ac97.c |    3 +-
+ sound/soc/omap/omap-pcm.c        |    2 +-
+ sound/soc/omap/sdp3430.c         |    9 +
+ sound/soc/pxa/palm27x.c          |  204 +++++++-------------
+ sound/soc/soc-core.c             |    6 +-
+ sound/soc/soc-jack.c             |   20 ++-
+ 17 files changed, 703 insertions(+), 255 deletions(-)
+ create mode 100644 sound/soc/codecs/cx20442.c
+ create mode 100644 sound/soc/codecs/cx20442.h
