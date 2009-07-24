@@ -1,18 +1,18 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Is snd_pcm_hw_params_set_period_time_near the same
- as sampling period?
-Date: Fri, 24 Jul 2009 10:50:48 +0200
-Message-ID: <4A6975E8.2030208@ladisch.de>
-References: <4A6880B0.3000903@gmail.com>
+Subject: Re: ich10 usb_host vs snd_usb_audio Hercules -
+	irq	broadcast.
+Date: Fri, 24 Jul 2009 10:52:59 +0200
+Message-ID: <4A69766B.7090209@ladisch.de>
+References: <4A68A52D.8050409@fisher-privat.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id C6FE6103A51
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id AE9C6103A70
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Jul 2009 10:50:41 +0200 (CEST)
-In-Reply-To: <4A6880B0.3000903@gmail.com>
+	Fri, 24 Jul 2009 10:52:45 +0200 (CEST)
+In-Reply-To: <4A68A52D.8050409@fisher-privat.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,26 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Guilherme Longo <grlongo.ireland@gmail.com>
+To: Alexey Fisher <bug-track@fisher-privat.net>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Guilherme Longo wrote:
-> I am trying to understand a piece of a code  I am  studing .
-> What does exactly the functions snd_pcm_hw_params_set_period_time_near  
-> sets?
+Alexey Fisher wrote:
+> i found some time to investigate the issue with my "Hercules USB 5.1 
+> Cannel Audio Adapter". The issue is pretty tricky and depend to host 
+> hardware, in my situation this is Intel DG45ID board.
+> 
+> Symptoms are: if i use this sound adapter after some time i'll get:
+> irq 16: nobody cared ... Disabling IRQ #16.
 
-The period time.
-
-> In my understand period time should be the time between 2 consecutive 
-> samples,
-
-In ALSA, a period is the interval between consecutive interrupts from
-the sound card; this is the same as a fragment in OSS.
-
-When the application tries to write/read more than than would be
-available, ALSA waits until the next period boundary before checking
-again.
+The USB audio driver does not manage USB interrupts; this is probably
+a problem with the USB controller driver or, more likely, with the
+interrupt routing.
 
 
 HTH
