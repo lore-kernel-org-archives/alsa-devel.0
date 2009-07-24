@@ -1,24 +1,18 @@
-From: Joonyoung Shim <jy0922.shim@samsung.com>
-Subject: ASoC: about the array to cache registers
-Date: Fri, 24 Jul 2009 16:06:43 +0900
-Message-ID: <4A695D83.8060202@samsung.com>
+From: javier Martin <javier.martin@vista-silicon.com>
+Subject: DMA HW bug in MX2x platforms?
+Date: Fri, 24 Jul 2009 09:37:33 +0200
+Message-ID: <eedb5540907240037u2cb8fbfap84f02727621261d9@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id 39F6B103A66
+Received: from mail-ew0-f222.google.com (mail-ew0-f222.google.com
+	[209.85.219.222])
+	by alsa0.perex.cz (Postfix) with ESMTP id EFC8D103A51
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Jul 2009 09:10:47 +0200 (CEST)
-Received: from epmmp2 (mailout4.samsung.com [203.254.224.34])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KN900ATDYF73S@mailout1.samsung.com> for
-	alsa-devel@alsa-project.org; Fri, 24 Jul 2009 16:06:43 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KN900IU5YF7B6@mmp2.samsung.com> for
-	alsa-devel@alsa-project.org; Fri, 24 Jul 2009 16:06:43 +0900 (KST)
+	Fri, 24 Jul 2009 09:37:34 +0200 (CEST)
+Received: by ewy22 with SMTP id 22so1556714ewy.32
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2009 00:37:33 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,50 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: kyungmin.park@samsung.com, broonie@opensource.wolfsonmicro.com
+To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+I am currently working on an ASoC driver for mx2x platforms. I am
+porting an old working ASoC driver for 2.6.22 + Freescale BSP kernel
+to current 2.6.30 kernel.
 
-Many ASoC codec drivers have an array to cache registers.
-The array is not used any longer after memcpy to codec->reg_cache.
-I think that memcpy is unnecessary, and it a waste of the memory.
+Among other things, I had to translate old Freescale's DMA api to the
+one provided in 2.6.30 for i.mx2x platforms.
 
-How about continue using the array instead of memcpy?
+Here I will describe the problem that I am having:
+in "aplay" I am using (buffer_size/period_size=4), each
+(2*period_size) samples I have some erroneous ones that should come
+(buffer_size) samples later, and this relation is valid for several
+values with (buffer_size/period_size=4).
 
-For example, i modified such following patch in wm8731.c
+I have a trace log with all details for DMA transfers that I have
+compared for both 2.6.22 and new 2.6.30 and they are identical. Some
+people has also told me that there could be a problem with DMA in mx2x
+platforms.
 
+Do you have knowledge of this kind of problem? Is there a new DMA
+version for mx2x in any git repository?
 
-diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index 1560028..43f8de3 100644
---- a/sound/soc/codecs/wm8731.c
-+++ b/sound/soc/codecs/wm8731.c
-@@ -36,7 +36,6 @@ struct snd_soc_codec_device soc_codec_dev_wm8731;
- /* codec private data */
- struct wm8731_priv {
- 	struct snd_soc_codec codec;
--	u16 reg_cache[WM8731_CACHEREGNUM];
- 	unsigned int sysclk;
- };
- 
-@@ -50,7 +49,7 @@ static int wm8731_spi_write(struct spi_device *spi, const char *data, int len);
-  * using 2 wire for device control, so we cache them instead.
-  * There is no point in caching the reset register
-  */
--static const u16 wm8731_reg[WM8731_CACHEREGNUM] = {
-+static u16 wm8731_reg[WM8731_CACHEREGNUM] = {
-     0x0097, 0x0097, 0x0079, 0x0079,
-     0x000a, 0x0008, 0x009f, 0x000a,
-     0x0000, 0x0000
-@@ -586,9 +585,7 @@ static int wm8731_register(struct wm8731_priv *wm8731)
- 	codec->dai = &wm8731_dai;
- 	codec->num_dai = 1;
- 	codec->reg_cache_size = WM8731_CACHEREGNUM;
--	codec->reg_cache = &wm8731->reg_cache;
--
--	memcpy(codec->reg_cache, wm8731_reg, sizeof(wm8731_reg));
-+	codec->reg_cache = &wm8731_reg;
- 
- 	ret = wm8731_reset(codec);
- 	if (ret < 0) {
+-- 
+Javier Martin
+Vista Silicon S.L.
+Universidad de Cantabria
+CDTUC - FASE C - Oficina S-345
+Avda de los Castros s/n
+39005- Santander. Cantabria. Spain
++34 942 25 32 60
+www.vista-silicon.com
