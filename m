@@ -1,17 +1,17 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: get two mono channel from stereo line
-Date: Fri, 24 Jul 2009 11:09:35 +0200
-Message-ID: <4A697A4F.6000809@ladisch.de>
-References: <c697747b0907232107k749c413bx2a88ccc97505447b@mail.gmail.com>
+Subject: Re: Help with multichannel High Speed USB audio device
+Date: Fri, 24 Jul 2009 11:12:48 +0200
+Message-ID: <4A697B10.1020601@ladisch.de>
+References: <SNT121-W363BA2CA76A9BB36ABA8A6B2190@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id A0F78103A6E
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 28758103A7B
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Jul 2009 11:09:21 +0200 (CEST)
-In-Reply-To: <c697747b0907232107k749c413bx2a88ccc97505447b@mail.gmail.com>
+	Fri, 24 Jul 2009 11:12:34 +0200 (CEST)
+In-Reply-To: <SNT121-W363BA2CA76A9BB36ABA8A6B2190@phx.gbl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,68 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: arif setiawan <n.arif.setiawan@gmail.com>
+To: "Laurent ." <sid6582@msn.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-arif setiawan wrote:
-> We have a beagleboard with one audio line-in and one audio line-out. From
-> the documentation both are stereo line. Now we want to use four mono audio
-> line for our system. two input from radio and microphone, two output to
-> radio and speaker. We use ALSA and we would like to know how we can achieve
-> this either by plugin or programming alsa.
+Laurent . wrote:
+> I made an embedded device that has a CODEC with 6 inputs connected to an ARM9
+> micro-controller that has an integrated high-speed USB controller.
+> Now, I need to write the USB code on that micro-controller so that i can capture those
+> channels in real-time at 24bits / 48 KHz with low latency (ie. sub 10ms), on a computer.
+> 
+> I only need my device to work with Linux, and if possible, I would like to avoid writing a device
+> driver on the Linux-side.
+> 
+> Is there already such a USB audio driver available that I could nearly use "as is" and to which
+> i would conform ?
 
-Try something like this:
+Yes, snd-usb-audio.
 
-pcm_slave.stereo {
-	pcm "hw:0,0"	# or whatever your device is
-	channels 2
-}
+> Would you have some general guideline on how to write the high-speed USB device code ?
 
-pcm.left {
-	type asym
-	playback.pcm {
-		type plug
-		slave.pcm {
-			type dshare
-			slave stereo
-			ipc_key 200907241
-			bindings [ 0 ]
-		}
-	}
-	capture.pcm {
-		type plug
-		slave.pcm {
-			type dsnoop
-			slave stereo
-			ipc_key 200907242
-			bindings [ 0 ]
-		}
-	}
-}
+Just conform to the USB (2.0) and USB Audio (1.0) specifications.
 
-pcm.right {
-	type asym
-	playback.pcm {
-		type plug
-		slave.pcm {
-			type dshare
-			slave stereo
-			ipc_key 20090724
-			bindings [ 1 ]
-		}
-	}
-	capture.pcm {
-		type plug
-		slave.pcm {
-			type dsnoop
-			slave stereo
-			ipc_key 200907242
-			bindings [ 1 ]
-		}
-	}
-}
+> For simplicity, my device is going to be the "clock master" of the system since it is already has
+> the exact clock that drives the CODEC.
+
+So you'd use an asynchronous endpoint.
 
 
-HTH
+Best regards,
 Clemens
