@@ -1,24 +1,21 @@
-From: "Wael Nasreddine (a.k.a eMxyzptlk)" <mla@nasreddine.com>
-Subject: Re: HDA Intel IDT 92HD71B7X - HP Pavilion DV7-1299EF -
-	Subwoofer not Working
-Date: Sat, 25 Jul 2009 21:44:46 +0200
-Message-ID: <d3328e7b0907251244q788d706cne6720d0726e7eef4@mail.gmail.com>
-References: <d3328e7b0906070752h448912f1lfc86468ce7335bac@mail.gmail.com>
-	<d3328e7b0906070757n12c70a38l3eaab08d1884ec75@mail.gmail.com>
-	<1244743954.2586.9.camel@nick-beta.sagui>
-	<d3328e7b0906111131s6eccb55fu4ecfa0ee597772db@mail.gmail.com>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH 4/4] Convert all platforms to pass
+	platform_data to wm97xx battery
+Date: Sat, 25 Jul 2009 22:55:14 +0200
+Message-ID: <87ws5wfpot.fsf@free.fr>
+References: <200907211633.14388.marek.vasut@gmail.com>
+	<200907221305.44952.marek.vasut@gmail.com> <87ocrczj22.fsf@free.fr>
+	<200907222030.42984.marek.vasut@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f226.google.com (mail-fx0-f226.google.com
-	[209.85.220.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id A86B324838
+Received: from smtp4-g21.free.fr (smtp4-g21.free.fr [212.27.42.4])
+	by alsa0.perex.cz (Postfix) with ESMTP id E17FE2486A
 	for <alsa-devel@alsa-project.org>;
-	Sat, 25 Jul 2009 21:45:07 +0200 (CEST)
-Received: by fxm26 with SMTP id 26so2085140fxm.32
-	for <alsa-devel@alsa-project.org>; Sat, 25 Jul 2009 12:45:06 -0700 (PDT)
-In-Reply-To: <d3328e7b0906111131s6eccb55fu4ecfa0ee597772db@mail.gmail.com>
+	Sat, 25 Jul 2009 22:55:25 +0200 (CEST)
+In-Reply-To: <200907222030.42984.marek.vasut@gmail.com> (Marek Vasut's message
+	of "Wed\, 22 Jul 2009 20\:30\:42 +0200")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,42 +25,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Gustavo Vieira <gustavo@sagui.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, cbou@mail.ru, Eric Miao <eric.y.miao@gmail.com>, avorontsov@ru.mvista.com, dwmw2@infradead.org, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-SSBzdGlsbCBnb3Qgbm8gc29sdXRpb24gZm9yIHRoaXMgcHJvYmxlbSwgZ3V5cyBwbGVhc2UgSEVM
-UCEhIEkgcmVtb3ZlZApjb21wbGV0ZWx5IFdpbmRvd3MsIGFuZCBJIGNhbid0IGV2ZW4gZW5qb3kg
-bXVzaWMgbm9yIGEgbW92aWUhIQoKT24gVGh1LCBKdW4gMTEsIDIwMDkgYXQgODozMSBQTSwgV2Fl
-bCBOYXNyZWRkaW5lIChhLmsuYSBlTXh5enB0bGspIDwKbWxhQG5hc3JlZGRpbmUuY29tPiB3cm90
-ZToKCj4gWWVzIGl0IGRvZXMgbXV0ZSB0aGUgc3BlYWtlcnMgb25jZSBJIHBsdWcgaW4gaGVhZHBo
-b25lcy4uCj4KPgo+IE9uIFRodSwgSnVuIDExLCAyMDA5IGF0IDg6MTIgUE0sIEd1c3Rhdm8gVmll
-aXJhIDxndXN0YXZvQHNhZ3VpLm9yZz4gd3JvdGU6Cj4KPj4gRW0gRG9tLCAyMDA5LTA2LTA3IMOg
-cyAxNjo1NyArMDIwMCwgV2FlbCBOYXNyZWRkaW5lIChhLmsuYSBlTXh5enB0bGspCj4+IGVzY3Jl
-dmV1Ogo+PiA+IExhc3QgbmlnaHQgSSBib3VnaHQgbXlzZWxmIGEgbmV3IGxhcHRvcCwgdGhlIEhQ
-IFBhdmlsaW9uIERWNy0xMjk5RUYuCj4+ID4KPj4KPj4gU29ycnkgZm9yIGhpamFja2luZyB5b3Vy
-IHRocmVhZCwgYnV0IGRvZXMgdGhpcyBsYXB0b3AgbXV0ZSB0aGUgc3BlYWtlcgo+PiBpZiB5b3Ug
-cGx1ZyBpbiB0aGUgaGVhZHBob25lcz8KPj4KPj4gSSdtIGV4cGVyaWVuY2luZyBwcm9ibGVtcyB3
-aXRoIGphY2sgc2Vuc2luZyBpbiBhIFBhdmlsaW9uIERWNCB3aXRoIHRoZQo+PiBzYW1lIGNvZGVj
-IGFuZCB3aGF0IHRvIGtub3cgaWYgdGhpcyBwcm9ibGVtIGlzIGdlbmVyYWwgdG8gdGhlIGNvZGVj
-IG9yCj4+IHNwZWNpZmljIHRvIG15IG1vZGVsLgo+Pgo+PiBBYnJhw6dvcywKPj4gR3VzdGF2bwo+
-Pgo+Pgo+Pgo+Cj4KPiAtLQo+IFdhZWwgTmFzcmVkZGluZQo+Cj4gQmxvZyAgICA6IGh0dHA6Ly93
-YWVsLm5hc3JlZGRpbmUuY29tCj4gRS1tYWlsICA6IHdhZWwubmFzcmVkZGluZUBnbWFpbC5jb20K
-PiBnVGFsayAgIDogd2FlbC5uYXNyZWRkaW5lQGdtYWlsLmNvbQo+IFRlbCAgICAgOiArMzMuNi4z
-Mi45NC43MC4xMwo+IFNreXBlICAgOiBlTXh5enB0bGsKPiBUd2l0dGVyIDogQGVNeHl6cHRsawo+
-Cj4gU2FiYXlvbiBMaW51eCBDaGllZiBEZXZlbG9wbWVudCBPZmZpY2VyIC0gaHR0cDovL3d3dy5z
-YWJheW9ubGludXgub3JnCj4KPiBQR1A6IDEwMjREL0M4REQxOEEyIDA2RjYgMTYyMiA0QkM4IDRD
-RUIgRDcyNCAgREUxMiA1NTY1IDM5NDUgQzhERCAxOEEyCj4KPiAuOiBBbiBpbmZpbml0ZSBudW1i
-ZXIgb2YgbW9ua2V5cyB0eXBpbmcgaW50byBHTlUgZW1hY3MsCj4gICB3b3VsZCBuZXZlciBtYWtl
-IGEgZ29vZCBwcm9ncmFtLiAoTC4gVG9ydmFsZHMgMTk5NSkgOi4KPgo+CgoKLS0gCldhZWwgTmFz
-cmVkZGluZQoKQmxvZyAgICA6IGh0dHA6Ly93YWVsLm5hc3JlZGRpbmUuY29tCkUtbWFpbCAgOiB3
-YWVsLm5hc3JlZGRpbmVAZ21haWwuY29tCmdUYWxrICAgOiB3YWVsLm5hc3JlZGRpbmVAZ21haWwu
-Y29tClRlbCAgICAgOiArMzMuNi4zMi45NC43MC4xMwpTa3lwZSAgIDogZU14eXpwdGxrClR3aXR0
-ZXIgOiBAZU14eXpwdGxrCgpTYWJheW9uIExpbnV4IENoaWVmIERldmVsb3BtZW50IE9mZmljZXIg
-LSBodHRwOi8vd3d3LnNhYmF5b25saW51eC5vcmcKClBHUDogMTAyNEQvQzhERDE4QTIgMDZGNiAx
-NjIyIDRCQzggNENFQiBENzI0ICBERTEyIDU1NjUgMzk0NSBDOEREIDE4QTIKCi46IEFuIGluZmlu
-aXRlIG51bWJlciBvZiBtb25rZXlzIHR5cGluZyBpbnRvIEdOVSBlbWFjcywKICB3b3VsZCBuZXZl
-ciBtYWtlIGEgZ29vZCBwcm9ncmFtLiAoTC4gVG9ydmFsZHMgMTk5NSkgOi4KX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Marek Vasut <marek.vasut@gmail.com> writes:
+>
+> Thanks! Here's a fixed patch.
+>
+For the mioa701 part :
+Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+
+Cheers.
+
+-- 
+Robert
