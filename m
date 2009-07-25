@@ -1,20 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] board driver to connect bf5xx with
-	ad1938
-Date: Sat, 25 Jul 2009 13:49:51 +0100
-Message-ID: <20090725124951.GB7284@opensource.wolfsonmicro.com>
-References: <1248286234-6053-1-git-send-email-21cnbao@gmail.com>
-	<1248286234-6053-3-git-send-email-21cnbao@gmail.com>
+From: rom1dep <rom1dep@gmail.com>
+Subject: Re: [snd_via82xx] EAGAIN on snd_pcm_prepare after
+	EPIPE on mmap_commit
+Date: Sat, 25 Jul 2009 17:31:15 +0200
+Message-ID: <494d907f0907250831k759ec48y2a53cc323e4d8b5d@mail.gmail.com>
+References: <494d907f0907230821ga09abcflb770b020b21b3735@mail.gmail.com>
+	<s5hocrbwgu6.wl%tiwai@suse.de>
+	<494d907f0907231023h26829d85ub13caec4a56ddec8@mail.gmail.com>
+	<h4cmh8$fip$2@ger.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 70EB11037F8
+Received: from mail-bw0-f226.google.com (mail-bw0-f226.google.com
+	[209.85.218.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id 20C5C1037EE
 	for <alsa-devel@alsa-project.org>;
-	Sat, 25 Jul 2009 14:49:52 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1248286234-6053-3-git-send-email-21cnbao@gmail.com>
+	Sat, 25 Jul 2009 17:31:36 +0200 (CEST)
+Received: by bwz26 with SMTP id 26so530250bwz.32
+	for <alsa-devel@alsa-project.org>; Sat, 25 Jul 2009 08:31:35 -0700 (PDT)
+In-Reply-To: <h4cmh8$fip$2@ger.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,14 +28,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 23, 2009 at 02:10:34AM +0800, Barry Song wrote:
-> Signed-off-by: Barry Song <21cnbao@gmail.com>
-> 
-> Changes from the last patch version:
-> Fix the wrong mask in set tdm slot
-
-This is all OK.
+MjAwOS83LzI0IENvbGluIEd1dGhyaWUgPGdtYW5lQGNvbGluLmd1dGhyLmllPjoKPiAnVHdhcyBi
+cmlsbGlnLCBhbmQgcm9tMWRlcCBhdCAyMy8wNy8wOSAxODoyMyBkaWQgZ3lyZSBhbmQgZ2ltYmxl
+Ogo+PiAyMDA5LzcvMjMgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPjoKPj4+IEF0IFRodSwg
+MjMgSnVsIDIwMDkgMTc6MjE6NDQgKzAyMDAsCj4+PiByb20xZGVwIHdyb3RlOgo+Pj4+IEhlbGxv
+ICEKPj4+PiBJIGFtIGVuY291bnRlcmluZyBzb21lIGlzc3VlcyB3aXRoIHB1bHNlYXVkaW8gOiBh
+ZnRlciBzb21lIHRpbWUgYW5kCj4+Pj4gZm9yIG5vIGV2aWRlbnQgcmVhc29uIFBBIHN0b3BzIHJv
+dXRpbmcgdGhlIHNvdW5kLgo+Pj4+IFRoYXQncyB3aGF0IEkgZ2V0IHdpdGggJHB1bHNlYXVkaW8g
+LXZ2diA6Cj4+Pj4gaHR0cDovL3Bhc3RlYmluLm1hbmRyaXZhLmNvbS8xMzY0OCAoZ290IGZyb20g
+YSAyLjYuMjkuNl9tZHYga2VybmVsKQo+Pj4+IHJ1bm5pbmcgJHBhY21kIGxpc3Qtc2lua3Mgd2hl
+biBzdHVjayBnaXZlcyA6Cj4+Pj4gaHR0cDovL3Bhc3RlYmluLm1hbmRyaXZhLmNvbS8xMzY0OQo+
+Pj4+Cj4+Pj4gT3VyIHB1bHNlYXVkaW8gaW50ZWdyYXRvciBDb2xpbiBHdXRocmllIGNvbmNsdWRl
+ZCA6Cj4+Pj4gIk9LLCBzbyB3aGF0IGlzIGhhcHBlbmluZyBpcyB0aGF0IHNvbWUgYWxzYSBsZXZl
+bCBwcm9ibGVtIGlzIG9jY3VycmluZwo+Pj4+IChkdWUgdG8gbW1hcCkuIFB1bHNlIHRyaWVzIHRv
+IHJlY292ZXIgZnJvbSB0aGlzIGJ1dCBjYW5ub3QuIFRoZSBhbHNhCj4+Pj4gc2luayAoYW5kIHRo
+ZSB3aG9sZSBjYXJkKSBpcyBzdWJzZXF1ZW50bHkgdW5sb2FkZWQgZHVlIHRvIHRoaXMgZmF0YWwK
+Pj4+PiBlcnJvci4iCj4+Pj4gQW5kIG5vdy4uIGEgcXVpY2sgcGFzdGUgZnJvbSBpcmMgOgo+Pj4+
+ICJbMDA6NDQ6MjBdIDxjb2xpbmc+IEp1bCAyMiAxNDowNDoyOSA8bWV6Y2FsZXJvPiDCoCDCoCBj
+b2xpbmc6IGRyaXZlcgo+Pj4+IGlzc3VlIGkgYW0gcHJldHR5IHN1cmUKPj4+PiBbMDA6NDQ6MjBd
+IDxjb2xpbmc+IEp1bCAyMiAxNDowNDozMyA8bWV6Y2FsZXJvPiDCoCDCoCBpIHNhdyB0aGF0IGJl
+Zm9yZSBvbmNlCj4+Pj4gWzAwOjQ0OjIwXSA8Y29saW5nPiBKdWwgMjIgMTQ6MDQ6NTUgPG1lemNh
+bGVybz4gwqAgwqAgY29saW5nOiBpLmUuCj4+Pj4gRUFHQUlOIG9uIHNuZF9wY21fcHJlcGFyZSBh
+ZnRlciBFUElQRSBvbiBtbWFwX2NvbW1pdAo+Pj4gVGhpcyBpcyBvZGQuIMKgRUFHQUlOIGlzIHJl
+dHVybmVkIG9ubHkgYXQgb3BlbiwgcmVhZC93cml0ZSBhbmQgZHJhaW4KPj4+IGlvY3Rscy4KPj4+
+Cj4+PiBDb3VsZCB5b3UgdHJhY2sgd2l0aCBzdHJhY2U/Cj4+Pgo+Pj4KPj4+IFRha2FzaGkKPj4+
+Cj4+Cj4+IEl0IHdhc24ndCBlYXN5IDogdGhhdCBiaWcgb3V0cHV0IG1hZGUgbXkgY29uZmlnIHN3
+YXAgYW5kIGZpbmFsbHkKPj4gcHVsc2VhdWRpbyBsZWF2ZSBmb3IgIkU6IGNwdWxpbWl0LmM6IFJl
+Y2VpdmVkIHJlcXVlc3QgdG8gdGVybWluYXRlIGR1ZQo+PiB0byBDUFUgb3ZlcmxvYWQuIgo+PiBi
+dXQgOgo+PiBodHRwOi8vcGFzdGViaW4ubWFuZHJpdmEuY29tLzEzNjY1Cj4KPiBZb3UgcHJvYmFi
+bHkgd2FudCB0byByZXBvc3QgdXNpbmcgYSBkaWZmZXJlbnQgcGFzdGViaW4uLi4gb3VyIHN0dXBp
+ZCBvbmUKPiBjdXRzIHRoZSBwb3N0cyBzaG9ydCBhdCBzb21lIHBvaW50bGVzc2x5IGxvdyB2YWx1
+ZS4uLiBJJ3ZlIGFza2VkIGFib3V0Cj4gdGhpcyB0byBnZXQgaXQgbWFkZSBiaWdnZXIgYnV0IEkg
+ZG9uJ3Qga25vdyB3aG8gbG9va3MgYWZ0ZXIgaXQuIEknZAo+IHJlY29tbWVuZCBwYXN0ZWJpbi5j
+b20uCj4KPiBDb2wKCk9yIG5vdCA6KSB0aGUgdG90YWwgc3RyYWNlIHRha2VzIDQzTW8sIEkga2Vw
+dCBhIGZldyBiZWZvcmUgYW5kIGEgZmV3CmFmdGVyIHB1bHNlYXVkaW8ncyAib29wcyIKSWYgaXQn
+cyBub3QgZW5vdWdoIEkgY2FuIHBhc3RlIG1vcmUgb24gYW5vdGhlciBwYXN0ZWJpbiBidXQgdGhh
+dCdzIGEKdGVycmlibHkgYmlnIG91dHB1dC4uLgoKPgo+Cj4gLS0KPgo+IENvbGluIEd1dGhyaWUK
+PiBnbWFuZShhdCljb2xpbi5ndXRoci5pZQo+IGh0dHA6Ly9jb2xpbi5ndXRoci5pZS8KPgo+IERh
+eSBKb2I6Cj4gwqAgVHJpYmFsb2dpYyBMaW1pdGVkIFtodHRwOi8vd3d3LnRyaWJhbG9naWMubmV0
+L10KPiBPcGVuIFNvdXJjZToKPiDCoCBNYW5kcml2YSBMaW51eCBDb250cmlidXRvciBbaHR0cDov
+L3d3dy5tYW5kcml2YS5jb20vXQo+IMKgIFB1bHNlQXVkaW8gSGFja2VyIFtodHRwOi8vd3d3LnB1
+bHNlYXVkaW8ub3JnL10KPiDCoCBUcmFjIEhhY2tlciBbaHR0cDovL3RyYWMuZWRnZXdhbGwub3Jn
+L10KPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4g
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
