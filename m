@@ -1,22 +1,18 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: Re: [PATCH 1/2] blackfin I2S(TDM mode) CPU DAI driver
-Date: Mon, 27 Jul 2009 18:00:48 +0800
-Message-ID: <3c17e3570907270300u7ccc47b5q9d0fd9039080deb3@mail.gmail.com>
-References: <1248286234-6053-1-git-send-email-21cnbao@gmail.com>
-	<1248286234-6053-2-git-send-email-21cnbao@gmail.com>
-	<20090725124909.GA7284@opensource.wolfsonmicro.com>
+From: Mads Kiilerich <mads@kiilerich.com>
+Subject: Re: Support for ALC662 on FUJITSU SIEMENS AMILO Li3710
+Date: Mon, 27 Jul 2009 12:04:22 +0200
+Message-ID: <4A6D7BA6.4020402@kiilerich.com>
+References: <4A6B8D20.6070601@kiilerich.com>	<s5hskgjddzq.wl%tiwai@suse.de>	<4A6C94D0.8040705@kiilerich.com>
+	<s5hd47m7iv2.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f211.google.com (mail-gx0-f211.google.com
-	[209.85.217.211])
-	by alsa0.perex.cz (Postfix) with ESMTP id AFCCB2437F
+Received: from smtp.knis.dk (smtp.knis.dk [213.150.52.155])
+	by alsa0.perex.cz (Postfix) with ESMTP id 799862437F
 	for <alsa-devel@alsa-project.org>;
-	Mon, 27 Jul 2009 12:00:50 +0200 (CEST)
-Received: by gxk7 with SMTP id 7so5077173gxk.8
-	for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2009 03:00:48 -0700 (PDT)
-In-Reply-To: <20090725124909.GA7284@opensource.wolfsonmicro.com>
+	Mon, 27 Jul 2009 12:04:25 +0200 (CEST)
+In-Reply-To: <s5hd47m7iv2.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,109 +22,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTWFyaywKCjIwMDkvNy8yNSBNYXJrIEJyb3duIDxicm9vbmllQG9wZW5zb3VyY2Uud29sZnNv
-bm1pY3JvLmNvbT46Cj4gT24gVGh1LCBKdWwgMjMsIDIwMDkgYXQgMDI6MTA6MzNBTSArMDgwMCwg
-QmFycnkgU29uZyB3cm90ZToKPgo+PiBPbiB0aGUgb25lIGhhbmQsIEkyUyBhbmQgVERNIG1lYW5z
-IHR3byBjb21wbGV0ZWx5IGRpZmZlcmVudCBpbnRlcmZhY2UKPj4gY29uZmlndXJhdGlvbiB0byBi
-bGFja2ZpbiwgcmVzdWx0cyBpbiBjb21wbGV0ZWx5IGRpZmZlcmVudCBoYXJkd2FyZQo+PiBjb25m
-aWd1cmF0aW9uLCBETUEgZGVzY3JpcHRpb24gYW5kIGRhdGEgdHJhbnNmZXIgZmxvdy4gTWVyZ2lu
-ZyB0aGVtIGFzIGEKPj4gd2hvbGUgd2lsbCBiZSB2ZXJ5IHVnbHkgYW5kIGRpZmZpY3VsdCB0byBt
-YWludGFpbi4KPgo+IEknbSBzdGlsbCBhIGJpdCBjb25mdXNlZCBhYm91dCB3aHkgdGhpcyBpcyBy
-ZXF1aXJlZCAtIEknbSBub3Qgc3VyZSB3aGVyZQo+IHRoZSByZXF1aXJlbWVudCBmb3IgdGhlIGNo
-YW5nZXMgaW4gdGhlIERNQSBsYXlvdXQgY29tZSBmcm9tLgo+Cj4gTG9va2luZyBhdCB0aGUgY29k
-ZSBpdCBhcHBlYXJzIHRoYXQgdGhlIG1haW4gZGlmZmVyZW5jZSBpcyB0aGF0IHlvdXIgVERNCj4g
-bW9kZSBhbHdheXMgY29uZmlndXJlcyB0aGUgRE1BIGxheW91dCBmb3IgOCBjaGFubmVsIGJsb2Nr
-cy4gwqBUaGlzCkkyUyBpcyBub3QgYSBzcGVjaWFsIGNhc2Ugb2YgVERNIHdpdGggb25seSBsZWZ0
-IGFuZCByaWdodCB0d28gc2xvdHMKZm9yIFNQT1JUIGludGVyZmFjZS4gSTJTIGNvb3JkaW5hdGVz
-IHdpdGggVERNIGluIFNQT1JULCBidXQgbm90IGEgcGFydApvZiBURE0uIFRETSByZXF1aXJlIGRp
-ZmZlcmVudCBoYXJkd2FyZSBjb25maWd1cmF0aW9uIHdpdGggSTJTLCBub3QKb25seSBkaWZmZXJl
-bnQgc2xvdCBudW1iZXIuCk9uZSBpcyAiU3RlcmVvIFNlcmlhbCBPcGVyYXRpb24iIG1vZGUgb2Yg
-U1BPUlQsIHRoZSBvdGhlciBvbmUgaXMKIk11bHRpY2hhbm5lbCBPcGVyYXRpb24iIG1vZGUuIFRo
-ZXkgYXJlIGluY29tcGF0aWJsZSBhdCB0aGUgc2FtZSB0aW1lLgo+IGFwcGVhcnMgdG8gYmUgYmVj
-YXVzZSB0aGUgU1BPUlQgY29kZSByZXF1aXJlcyB0aGF0IHlvdSBzcGVjaWZ5IHRoZSBibG9jawo+
-IHNpemUgc3RhdGljYWxseSB3aGVuIHlvdSBjYWxsIHNwb3J0X2luaXQoKS4gwqBMb29raW5nIGF0
-IHRoZSBjb2RlIGl0Cj4gc2VlbXMgbGlrZSB0aGUgU1BPUlQgaGFyZHdhcmUgaXMgY2FwYWJsZSBv
-ZiBjaGFuZ2luZyB0aGUgbWVtb3J5IGxheW91dAo+IG9uIHRoZSBmbHkgKGF0IGxlYXN0LCBhbGwg
-dGhpcyBzdHVmZiBhcHBlYXJzIHRvIGJlIHdyaXR0ZW4gZG93biBieQo+IHNvZnR3YXJlIGF0IHZh
-cmlvdXMgcG9pbnRzIGR1cmluZyBzZXR1cCBzbyBJJ2QgZXhwZWN0IGl0IHRvIGJlIGNoYW5nYWJs
-ZQo+IGF0IHJ1bnRpbWUpIGFuZCB0aGF0IHRoZSByZXN0cmljdGlvbnMgaGVyZSBhcmUgZHVlIHRv
-IHRoZSBTUE9SVCBBUEkKPiByYXRoZXIgdGhhbiB0aGUgaGFyZHdhcmUgaXRzZWxmPwo+Cj4gSWYg
-dGhhdCBpcyB0aGUgY2FzZSB0aGVuIHdvdWxkIGl0IG5vdCBiZSBiZXR0ZXIgdG8gcmVmYWN0b3Ig
-dGhlIFNQT1JUCj4gQVBJIHNvIHRoYXQgaXQgaXMgY2FwYWJsZSBvZiBjaGFuZ2luZyB0aGUgY29u
-ZmlndXJhdGlvbiBvbiB0aGUgZmx5IGFuZAo+IHRoZW4gdXBkYXRlIHRoZSBleGlzdGluZyBJMlMg
-ZHJpdmVyIHRvIGJlIGFibGUgdG8gdGFrZSBhZHZhbnRhZ2Ugb2YKPiB0aGF0PyDCoFRoaXMgd291
-bGQgcmVkdWNlIHRoZSBhbW91bnQgb2YgY29kZSBkdXBsaWNhdGlvbiBoZXJlIGFuZCBJJ2QKPiBl
-eHBlY3QgaXQgdG8gYWxzbyBtYWtlIHRoaW5ncyBydW4gbW9yZSBlZmZpY2llbnRseSB3aGVuIGxl
-c3MgdGhhbiA4Cj4gY2hhbm5lbHMgYXJlIGluIHVzZSBpbiBURE0gbW9kZS4KTWFpbmx5IGR1ZSB0
-byBoYXJkd2FyZSwgaXQncyByZWFsbHkgZGlmZmljdWx0IGZvciB1cyB0byBjb250cm9sIHRoZQpt
-ZW1vcnkgbGF5b3V0IG9uIHRoZSBmbHkuIFRoYXQgY2F1c2VzIG11Y2ggdHJvdWJsZSBpbiBoYXJk
-d2FyZSBhbmQKZHJpdmVyIHJlbGlhYmlsaXR5LiBEYXRhc2hlZXQgY2xhaW1zIERNQSBidWZmZXIg
-c2hvdWxkIGJlIGZpeGVkIHdoaWxlClNQT1JUIGlzIGVuYWJsZWQsIGJ1dCBhbHNvIGNsYWltcyB0
-aGUgbGF5b3V0IG1heSBiZSBjaGFuZ2VkIHdoaWxlClNQT1JUIGlzIGRpc2FibGVkLiBTbyBpdCdz
-IG1heWJlIHBvc3NpYmxlIGZvciB1cyB0byBjaGFuZ2UgdGhlIFNQT1JUCmFwaSB0byBzdXBwb3J0
-IHRoZSBjb25maWd1cmF0aW9uIG9uIHRoZSBmbHkgd2l0aCBhIFNQT1JUIHNodXRkb3duLAp0aGVu
-IGkycywgdGRtIGV2ZW4gYWM5NyBjYW4gYWxsIHVzZSB0aGVtIHRvIHJlZHVjZSB0aGUgYW1vdW50
-IG9mIGNvZGUKZHVwbGljYXRpb24uIEJ1dCBpdCBuZWVkIG11Y2ggd29yayBvbiBkZWJ1Z2dpbmcg
-YW5kIHRlc3RpbmcgdG8gbWFrZSBpdAp3b3JrIGFuZCByZWxpYWJsZS4gU28gaG93IGFib3V0IHRv
-IHBhdGNoIGl0IGxhdGVyIGFzIGFuIGluZGl2aWR1YWwKcHJvamVjdCBzaW5jZSB0aGUgY2hhbmdl
-cyB3aWxsIGludm9sdmUgc3BvcnQsIGkycywgYWM5NyBhbmQgdGRtPwo+Cj4+IE9uIHRoZSBvdGhl
-ciBoYW5kLCBoYXJkd2FyZSBib2FyZCBjb25uZWN0aW9uIGRlY2lkZXMgdGhlIEkyUy9URE0gbW9k
-ZQo+PiBkaXJlY3RseS4gSXQncyBuZWVkbGVzcyB0byBzd2l0Y2ggYmV0d2VlbiBJMlMgYW5kIFRE
-TSBkeW5hbWljYWxseS4gRm9yCj4+IFRETSBtb2RlLCBib2FyZCBkcml2ZXIgY2FuIHJlZmVyIHRv
-IHRoZSBURE0gaW5zdGFuY2UsIGZvciBJMlMgbW9kZSwKPgo+IEFyZSB5b3Ugc2F5aW5nIHRoYXQg
-YSBwaHlzaWNhbGx5IGRpZmZlcmVudCBTUE9SVCBvciBvdGhlciBoYXJkd2FyZQo+IGNvbmZpZ3Vy
-YXRpb24gb24gdGhlIENQVSBpcyByZXF1aXJlZCB0byB1c2UgVERNIG1vZGU/IMKgVGhlIGltcHJl
-c3Npb24KPiBnaXZlbiBieSB0aGUgZHJpdmVycyBoYXMgYWx3YXlzIGJlZW4gdGhhdCB0aGlzIGlz
-IHNvbWUga2luZCBvZiBnZW5lcmljCj4gc3luY2hyb25vdXMgc2VyaWFsIHBvcnQgYW5kIHRoZSB3
-YXkgdGhlIFNQT1JUIG51bWJlciBpcyBzZXQgdXAgc2VlbXMgdG8KPiBzdXBwb3J0IHRoYXQuIMKg
-Q291bGQgeW91IGdvIGludG8gbW9yZSBkZXRhaWwgaGVyZSwgcGxlYXNlIC0gdGhpcyB3b3VsZAo+
-IGJlIGEgdmVyeSB1bnVzdWFsIGltcGxlbWVudGF0aW9uIGRlY2lzaW9uIGZvciBhIENQVS4KSGVy
-ZSBJIG1lYW5zIHRoZSBkaWZmZXJlbnQgaGFyZHdhcmUgY29uZmlndXJhdGlvbiwgYW5kIHRoZSBz
-ZW1hbnRpYyBvZgpwaW5zIGhhcyBzb21lIGRpZmZlcmVuY2VzIHRvbyBmb3IgSTJTIGFuZCBURE0u
-Cj4KPj4gKyDCoCDCoCBpZiAoc3BvcnRfaGFuZGxlICE9IE5VTEwpCj4+ICsgwqAgwqAgwqAgwqAg
-wqAgwqAgcnVudGltZS0+cHJpdmF0ZV9kYXRhID0gc3BvcnRfaGFuZGxlOwo+PiArIMKgIMKgIGVs
-c2Ugewo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHByX2Vycigic3BvcnRfaGFuZGxlIGlzIE5VTExc
-biIpOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiAtMTsKPj4gKyDCoCDCoCB9Cj4KPiBT
-aG91bGQgcmV0dXJuIGEgcmVhbCBlcnJvciBjb2RlIGhlcmUuCj4KRml4ZWQKPj4gK2ludCBiZjV4
-eF9wY21fdGRtX25ldyhzdHJ1Y3Qgc25kX2NhcmQgKmNhcmQsIHN0cnVjdCBzbmRfc29jX2RhaSAq
-ZGFpLAo+PiArIMKgIMKgIHN0cnVjdCBzbmRfcGNtICpwY20pCj4+ICt7Cj4KPiBUaGlzIHNob3Vs
-ZCBiZSBzdGF0aWM7IGFueSBmdW5jdGlvbnMgdGhhdCBhcmUgZXhwb3J0ZWQgdmlhIG9wZXJhdGlv
-bnMKPiBzdHJ1Y3R1cmVzIHNob3VsZCBiZSBzdGF0aWMuCkZpeGVkCj4KPj4gK3N0YXRpYyBpbnQg
-YmY1eHhfdGRtX2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwK
-Pj4gKyDCoCDCoCBzdHJ1Y3Qgc25kX3BjbV9od19wYXJhbXMgKnBhcmFtcywKPj4gKyDCoCDCoCBz
-dHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSkKPj4gK3sKPj4gKyDCoCDCoCBpbnQgcmV0ID0gMDsKPj4g
-Kwo+PiArIMKgIMKgIGJmNXh4X3RkbS50Y3IyICY9IH4weDFmOwo+PiArIMKgIMKgIGJmNXh4X3Rk
-bS5yY3IyICY9IH4weDFmOwo+PiArIMKgIMKgIHN3aXRjaCAocGFyYW1zX2Zvcm1hdChwYXJhbXMp
-KSB7Cj4+ICsgwqAgwqAgY2FzZSBTTkRSVl9QQ01fRk9STUFUX1MzMl9MRToKPj4gKyDCoCDCoCDC
-oCDCoCDCoCDCoCBiZjV4eF90ZG0udGNyMiB8PSAzMTsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBi
-ZjV4eF90ZG0ucmNyMiB8PSAzMTsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBzcG9ydF9oYW5kbGUt
-Pndkc2l6ZSA9IDQ7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgYnJlYWs7Cj4+ICsgwqAgwqAgwqAg
-wqAgwqAgwqAgLyogYXQgcHJlc2VudCwgd2Ugb25seSBzdXBwb3J0IDMyYml0IHRyYW5zZmVyICov
-Cj4+ICsgwqAgwqAgZGVmYXVsdDoKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBwcl9lcnIoIm5vdCBz
-dXBwb3J0ZWQgUENNIGZvcm1hdCB5ZXRcbiIpOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIGJyZWFr
-Owo+Cj4gVGhpcyBzaG91bGQgcmV0dXJuIGFuIGVycm9yLgpGaXhlZAo+Cj4+ICtzdGF0aWMgaW50
-IF9fZGV2aW5pdCBiZmluX3RkbV9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+
-PiArewo+PiArIMKgIMKgIGludCByZXQgPSAwOwo+PiArCj4+ICsgwqAgwqAgaWYgKHBlcmlwaGVy
-YWxfcmVxdWVzdF9saXN0KCZzcG9ydF9yZXFbc3BvcnRfbnVtXVswXSwgInNvYy1hdWRpbyIpKSB7
-Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgcHJfZXJyKCJSZXF1ZXN0aW5nIFBlcmlwaGVyYWxzIGZh
-aWxlZFxuIik7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIC1FRkFVTFQ7Cj4+ICsgwqAg
-wqAgfQo+Cj4+ICtzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBiZmluX3RkbV9kcml2ZXIg
-PSB7Cj4+ICsgwqAgwqAgLnByb2JlIMKgPSBiZmluX3RkbV9wcm9iZSwKPj4gKyDCoCDCoCAucmVt
-b3ZlID0gX19kZXZleGl0X3AoYmZpbl90ZG1fcmVtb3ZlKSwKPj4gKyDCoCDCoCAuZHJpdmVyID0g
-ewo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIC5uYW1lIMKgID0gImJmaW4tc3BvcnQiLAo+PiArIMKg
-IMKgIMKgIMKgIMKgIMKgIC5vd25lciDCoD0gVEhJU19NT0RVTEUsCj4+ICsgwqAgwqAgfSwKPj4g
-K307Cj4KPiBUaGlzIGlzbid0IGEgZ29vZCBuYW1lIGZvciB0aGUgZHJpdmVyIC0gYWxsIG9mIHRo
-ZSBCbGFja2ZpbiBDUFUgYXVkaW8KPiBkcml2ZXJzIGFuZCBwcm9iYWJseSBzb21lIG90aGVycyB1
-c2UgYSBTUE9SVCBzbyB0aGUgc2FtZSBkcml2ZXIgbmFtZQo+IHdvdWxkIGFwcGx5IGZvciBlYWNo
-IG9mIHRoZW0uIMKgSWYgbW9yZSB0aGFuIG9uZSBvZiB0aGVzZSBkcml2ZXJzIGNob3NlCj4gdGhl
-IHNhbWUgbmFtZSB0aGVuIHlvdSdkIG5vdCBiZSBhYmxlIHRvIGhhdmUgYm90aCBkcml2ZXJzIGlu
-IHRoZSBrZXJuZWwKPiBhdCBvbmNlLiDCoFRoZSBkcml2ZXIgbmFtZSBzaG91bGQgYmUgc29tZXRo
-aW5nIHRoYXQncyBzcGVjaWZpYyB0byB0aGUKPiBkZXZpY2UgeW91J3JlIHRyeWluZyB0byByZWdp
-c3Rlciwgc3VjaCBhcyBiZmluLXRkbS4KPgpGaXhlZAoKVGhhbmtzCkJhcnJ5Cl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Takashi Iwai wrote, On 07/27/2009 08:14 AM:
+> At Sun, 26 Jul 2009 19:39:28 +0200,
+> Mads Kiilerich wrote:
+>    
+>> Takashi Iwai wrote, On 07/26/2009 10:50 AM:
+>>      
+>>> At Sun, 26 Jul 2009 00:54:24 +0200,
+>>> Mads Kiilerich wrote:
+>>>
+>>>        
+>>>> On a friends FUJITSU SIEMENS AMILO Li3710 10601011427 sound didn't work
+>>>> with kernel-PAE-2.6.29.6-213.fc11.i686
+>>>>
+>>>>          
+>>> How about with the latest alsa-driver snapshot?
+>>>       ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
+>>>
+>>>        
+>> Thanks.
+>>
+>> I looked at your sound-2.6.git tree and found no quirk for this card
+>> (AFAICS) and assumed that it hadn't been reported and fixed yet.
+>>      
+> When no quirk is set, the automatic mode is used as default.
+> And, it's possible that the automatic mode has been fixed in the
+> upstream.  That's why I asked to test with the latest one.
+> We should avoid any device-specific quirk as much as possible, but
+> rather fix the automatic parser.
+>    
+
+Ok, if you think that would be possible. I assumed that it was broken 
+beond repair.
+
+>> I am a developer, but for alsa I am a user, no expert, and honestly I
+>> don't plan to become one. Can you give a pointer to a description of how
+>> can I test the snapshot? On Fedora 11?
+>>
+>> (http://www.alsa-project.org/main/index.php/Main_Page  has a "How do I
+>> install the ALSA driver from source" link, but it just points to the
+>> download page without any explanation.)
+>>      
+> Did you take a look at INSTALL file in alsa-driver?
+>    
+
+alsa-driver-snapshot.tar.gz README says "integrated to 2.6+ kernels", so 
+I assumed that this somehow only applied to 2.4 - which obviously would 
+be very strange.
+
+I missed the big overview. It seems like it would have been helpful to 
+me (and the next guy) if something like the following blurb could be 
+found somewhere - in README or INSTALL or from the "How do I install the 
+ALSA driver from source" link or on 
+http://www.alsa-project.org/main/index.php/Driver_Compilation :
+
+"ALSA project develops both Linux kernel drivers as well as support 
+libraries and tools for user-space. The kernel drivers are also included 
+in vanilla Linux kernels, and usually the stock drivers are fine and 
+should be used. It is however also possible to build the alsa-driver 
+kernel modules for an existing compiled kernel and replace its drivers, 
+for example from alsa-driver-snapshot.tar.gz to get the latest ALSA 
+development and fixes. Note that the modules will have to be rebuild 
+when a new kernel is installed."
+
+
+INSTALL is very demotivating for use with distribution kernels. It would 
+be helpful if you could add something like:
+
+"On Fedora 11 (with PAE kernels) it works fine, but you need the package 
+kernel-PAE-devel of the same version as the running kernel-PAE."
+
+http://www.linlap.com/wiki/configuring+the+audio+and+updating+alsa+for+fedora+10 
+might also be helpful.
+
+I assume something similar applies to Suse.
+
+>>> Also, please give alsa-info.sh output.  Run with --no-upload and attach
+>>> the generated file.
+>>>
+>>>        
+>> I became aware of that command after having visited my friend. I have
+>> output of dmesg and  lshal and lspci - is that sufficient?
+>>      
+> No
+
+Ok, thanks for the hints to help me understand.
+
+I will try alsa-drivers-snapshot and alsa-info.sh next time I get access 
+to that computer - that will probably take more than a month.
+
+/Mads
