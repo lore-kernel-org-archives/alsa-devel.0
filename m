@@ -1,17 +1,19 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: [PATCH] ASoC: CX20442: fix issues pointed out by
-	subsystem maintainer
-Date: Tue, 28 Jul 2009 20:24:12 +0200
-Message-ID: <200907282024.13630.jkrzyszt@tis.icnet.pl>
+From: jack craig <jackc@linuxlighthouse.com>
+Subject: pulseaudio workaround for alsa-driver bug
+Date: Tue, 28 Jul 2009 11:46:55 -0700
+Message-ID: <4A6F479F.7080804@linuxlighthouse.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 529A3246FA
+Received: from linuxlighthouse.com (gate.linuxlighthouse.com [63.249.90.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id 61F562471F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 28 Jul 2009 20:24:46 +0200 (CEST)
-Content-Disposition: inline
+	Tue, 28 Jul 2009 20:46:59 +0200 (CEST)
+Received: from ws.linuxlighthouse.com (ws.linuxlighthouse.com [192.168.2.20])
+	(authenticated bits=0)
+	by linuxlighthouse.com (8.14.3/8.14.3) with ESMTP id n6SIktRF010679
+	for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2009 11:46:56 -0700
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,86 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch fixes some checkpatch identified issues and adds a comment about
-line discipline interaction to my driver code, as requested by Mark on my
-inital submission (thank you Mark for applying my imperfect patch anyway).
-It also fixes MODULE_ALIAS mismatch as used in my machine driver.
+Hi alsa-developers,
 
-Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
----
-In my next attempt, I'll try to satisfy Mark's request for pushing down the
-line discipline code, now existing in my machine driver, to the codec driver.
+I wanted to report my recent issues with audio on fc11.
 
---- linux-2.6.31-rc3/sound/soc/codecs/cx20442.c.orig	2009-07-22 04:56:45.000000000 +0200
-+++ linux-2.6.31-rc3/sound/soc/codecs/cx20442.c	2009-07-22 21:46:41.000000000 +0200
-@@ -132,7 +132,7 @@ enum v253_vls {
- 
- static int cx20442_pm_to_v253_vls(u8 value)
- {
--	switch(value & ~(1 << CX20442_AGC)) {
-+	switch (value & ~(1 << CX20442_AGC)) {
- 	case 0:
- 		return V253_VLS_T;
- 	case (1 << CX20442_SPKOUT):
-@@ -152,7 +152,7 @@ static int cx20442_pm_to_v253_vls(u8 val
- }
- static int cx20442_pm_to_v253_vsp(u8 value)
- {
--	switch(value & ~(1 << CX20442_AGC)) {
-+	switch (value & ~(1 << CX20442_AGC)) {
- 	case (1 << CX20442_SPKOUT):
- 	case (1 << CX20442_MIC):
- 	case (1 << CX20442_SPKOUT) | (1 << CX20442_MIC):
-@@ -171,6 +171,9 @@ static int cx20442_write(struct snd_soc_
- 	if (reg >= codec->reg_cache_size)
- 		return -EINVAL;
- 
-+	/* hw_write and control_data pointers required for talking to the modem
-+	 * are expected to be set by the machine driver's line discipline
-+	 * initialization code */
- 	if (!codec->hw_write || !codec->control_data)
- 		return -EIO;
- 
-@@ -182,7 +185,7 @@ static int cx20442_write(struct snd_soc_
- 		return vls;
- 
- 	vsp = cx20442_pm_to_v253_vsp(value);
--	if (vsp < 0 )
-+	if (vsp < 0)
- 		return vsp;
- 
- 	if ((vls == V253_VLS_T) ||
-@@ -232,7 +235,7 @@ static int cx20442_codec_probe(struct pl
- 	struct snd_soc_codec *codec;
- 	int ret;
- 
--	if(!cx20442_codec) {
-+	if (!cx20442_codec) {
- 		dev_err(&pdev->dev, "cx20442 not yet discovered\n");
- 		return -ENODEV;
- 	}
-@@ -310,13 +313,13 @@ static int cx20442_register(struct cx204
- 
- 	ret = snd_soc_register_codec(codec);
- 	if (ret != 0) {
--		//dev_err(&dev->dev, "Failed to register codec: %d\n", ret);
-+		dev_err(&codec->dev, "Failed to register codec: %d\n", ret);
- 		goto err;
- 	}
- 
- 	ret = snd_soc_register_dai(&cx20442_dai);
- 	if (ret != 0) {
--		//dev_err(&dev->dev, "Failed to register DAI: %d\n", ret);
-+		dev_err(&codec->dev, "Failed to register DAI: %d\n", ret);
- 		goto err_codec;
- 	}
- 
-@@ -392,4 +395,4 @@ module_exit(cx20442_exit);
- MODULE_DESCRIPTION("ASoC CX20442-11 voice modem codec driver");
- MODULE_AUTHOR("Janusz Krzysztofik");
- MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:cx20442-codec");
-+MODULE_ALIAS("platform:cx20442");
+after an update from fc10, my audio started failing. not the failure to 
+year any audio,
+but instead, it would start off fine and then tail spin. i am using 
+mplayer to
+play an internet asf stream to the local audio.
+
+the stream processing failure is described in 
+https://bugzilla.redhat.com/show_bug.cgi?id=514213
+
+i was able to get a workaround from the #pulseaudio guys, but!
+
+they encouraged me to report my experience and its fix to you to 
+encourage the fix of this snd_pcm_delay() defect.
+
+if you get a driver fix for this, i am happy to try it out when its ready.
+
+thx, jackc...
+
+-- 
+    jack craig
+       jackc@LinuxLightHouse.com
+          831-684-1375 (Office)
+             831-596-6924 (cell)
+                IM: jackcraigaptos (AIM)
+
+_________________________________
+This email has been ClamScanned !
+     www.LinuxLightHouse.com
