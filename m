@@ -1,23 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] blackfin I2S(TDM mode) CPU DAI driver
-Date: Mon, 27 Jul 2009 17:35:26 +0100
-Message-ID: <20090727163526.GA19543@rakim.wolfsonmicro.main>
-References: <1248286234-6053-1-git-send-email-21cnbao@gmail.com>
-	<1248286234-6053-2-git-send-email-21cnbao@gmail.com>
-	<20090725124909.GA7284@opensource.wolfsonmicro.com>
-	<3c17e3570907270300u7ccc47b5q9d0fd9039080deb3@mail.gmail.com>
-	<20090727144052.GA8900@rakim.wolfsonmicro.main>
-	<3c17e3570907270932j638365f3rbbca0360a3b8c3e5@mail.gmail.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH 2/4] Allow passing platform_data for
+	pxa2xx-ac97
+Date: Tue, 28 Jul 2009 07:28:20 +0200
+Message-ID: <200907280728.21372.marek.vasut@gmail.com>
+References: <200907211633.14388.marek.vasut@gmail.com>
+	<200907231616.13101.marek.vasut@gmail.com>
+	<200907232039.37952.marek.vasut@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 860A124371
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5FC17244FA
 	for <alsa-devel@alsa-project.org>;
-	Mon, 27 Jul 2009 18:35:27 +0200 (CEST)
+	Tue, 28 Jul 2009 07:28:37 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id e21so947594fga.21
+	for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2009 22:28:36 -0700 (PDT)
+In-Reply-To: <200907232039.37952.marek.vasut@gmail.com>
 Content-Disposition: inline
-In-Reply-To: <3c17e3570907270932j638365f3rbbca0360a3b8c3e5@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,27 +27,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>, Robert Jarzmik <robert.jarzmik@free.fr>, cbou@mail.ru, Eric Miao <eric.y.miao@gmail.com>, avorontsov@ru.mvista.com, dwmw2@infradead.org, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 28, 2009 at 12:32:01AM +0800, Barry Song wrote:
-> 2009/7/27 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-
-> > ...are you sure there's a different meaning for the external pins - what
-> > are these differences? =A0If they're not just related to the number of =
-bit
-> > clock cycles per frame clock then are you sure it will interoperate with
-> > other DSP mode devices?
-
-> For I2S mode, each SPORT has two sets of independent transmit and
-> receive pins. Every set of pins support a stereo receive or transmit.
-
-> For TDM mode, the main characteristic is using time-sharing to a set
-> of pins. A typical connection for TDM is like "tdm.gif". Only
-> tx/rx/clk/sync are connected to codec.  And in codec side, DSDATA1
-
-OK, that's not really a difference as far as ASoC is concerned - all the
-pins have their normal meanings, it's just that your I2S mode permits
-additional data lines (presumably your TDM mode could also be set up to
-use multiple data lines).  None of the pins change meaning.
+RG5lIMSMdCAyMy4gxI1lcnZlbmNlIDIwMDkgMjA6Mzk6MzcgTWFyZWsgVmFzdXQgbmFwc2FsKGEp
+Ogo+IERuZSDEjHQgMjMuIMSNZXJ2ZW5jZSAyMDA5IDE2OjE2OjEyIE1hcmVrIFZhc3V0IG5hcHNh
+bChhKToKPiA+IERuZSDEjHQgMjMuIMSNZXJ2ZW5jZSAyMDA5IDEyOjI3OjQxIE1hcmsgQnJvd24g
+bmFwc2FsKGEpOgo+ID4gPiBPbiBXZWQsIEp1bCAyMiwgMjAwOSBhdCAwMTowMjo0MFBNICswMjAw
+LCBNYXJlayBWYXN1dCB3cm90ZToKPiA+ID4gPiAgCXN0cnVjdCBzbmRfYWM5N19idXMgKmFjOTdf
+YnVzOwo+ID4gPiA+ICAJc3RydWN0IHNuZF9hYzk3X3RlbXBsYXRlIGFjOTdfdGVtcGxhdGU7Cj4g
+PiA+ID4gIAlpbnQgcmV0Owo+ID4gPiA+ICsJcHhhMnh4X2F1ZGlvX29wc190ICpwZGF0YSA9IGRl
+di0+ZGV2LnBsYXRmb3JtX2RhdGE7Cj4gPiA+ID4gKwlpbnQgaWQgPSBkZXYtPmlkIDwgMCA/IDAg
+OiBkZXYtPmlkOwo+ID4gPgo+ID4gPiBkZXYgaGVyZSBpcyB0aGUgQUM5NyBjb250cm9sbGVyIGRl
+dmljZSAtIGlmIHRoZXJlJ3MgbW9yZSB0aGFuIG9uZSBBQzk3Cj4gPiA+IGNvbnRyb2xsZXIgaW4g
+dGhlIHN5c3RlbSB0aGV5IGNhbiBlYWNoIGhhdmUgdGhlIGZvdXIgY2hpbGQgZGV2aWNlcy4gIE9u
+Cj4gPiA+IHRoZSBvdGhlciBoYW5kLCBJIGRvbid0IHRoaW5rIGFueSBvZiB0aGUgUFhBIHByb2Nl
+c3NvcnMgaGF2ZSBtb3JlIHRoYW4KPiA+ID4gb25lIEFDOTcgY29udHJvbGxlciBzbyBpdCdsbCBu
+ZXZlciBhY3R1YWxseSBoYXZlIGFueSBpbXBhY3QuCj4gPiA+Cj4gPiA+IEkgdGhpbmsgdGhlIGJl
+c3QgdGhpbmcgZm9yIG5vdyBpcyB0byBlaXRoZXIgd2FybiBpZiBhbnl0aGluZyBleGNlcHQgdGhl
+Cj4gPiA+IHByaW1hcnkgY29kZWMgaGFzIHBsYXRmb3JtIGRhdGEgb3IgY2hhbmdlIHRoZSBwbGF0
+Zm9ybSBkYXRhIHRvIGhhdmUgYQo+ID4gPiB2YXJpYWJsZSBzb21ldGhpbmcgbGlrZSBwcmltYXJ5
+X2F1ZGlvX3BkYXRhLiAgVGhlIGRyaXZlciBkb2Vzbid0IGFwcGVhcgo+ID4gPiB0byBzdXBwb3J0
+IHNlY29uZGFyeSBjb2RlY3MgYW55d2F5Lgo+ID4KPiA+IE9rLCBoZXJlJ3MgYSBmaXhlZCBwYXRj
+aC4KPgo+IEFyZ2gsIG9uZSBtb3JlIGl0ZXJhdGlvbiBoZXJlLiBUaGVyZSB3YXMgYSB0eXBvIGlu
+IHRoZSBwcmV2aW91cyBwYXRjaC4KPiBTb3JyeS4KCkhpLCB3ZWxsIC4uLiBhbnkgdXBkYXRlcyA/
+IEVyaWMsIGlzIHRoaXMgcGF0Y2ggb2sgd2l0aCB5b3UgPwpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
