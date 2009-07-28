@@ -1,17 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Huawei K3715 UMTS stick and alsa
-Date: Tue, 28 Jul 2009 09:36:30 +0200
-Message-ID: <4A6EAA7E.4090207@ladisch.de>
-References: <20090726224300.GA26953@titan.makhutov-it.de>
+From: Shilpa Kedar Walvekar <shilpa.walvekar@coreobjects.com>
+Subject: Using Alsa for AD1981b on 9263
+Date: Tue, 28 Jul 2009 14:00:21 +0530
+Message-ID: <33A0EEB8D50198449794A1AB9DEB1E01866417C950@copuex01.coreobjects.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id AAC68245BA
-	for <alsa-devel@alsa-project.org>;
-	Tue, 28 Jul 2009 09:36:15 +0200 (CEST)
-In-Reply-To: <20090726224300.GA26953@titan.makhutov-it.de>
+Received: from colaex01.coreobjects.com (mailus.coreobjects.com [67.89.120.9])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3A5BE245F7
+	for <Alsa-devel@alsa-project.org>;
+	Tue, 28 Jul 2009 10:30:30 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,29 +20,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Artem Makhutov <artem@makhutov.org>
-Cc: alsa-devel@alsa-project.org
+To: "Alsa-devel@alsa-project.org" <Alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Artem Makhutov wrote:
-> i am wondering if it is possible to write a quirk in usbquirks.h for a Huawei
-> K3715 UMTS stick to make the audio interfaces available in linux.
+Hi,
 
-What kind of audio does this UMTS stick have?
+I am using AT91SAM9263 evaluation kit with AD1981b codec. I want to use alsa to play and record audio on this kit.
 
-> This two interfaces are used for audio (I have sniffed in Windows):
-> 
-> bEndpointAddress     0x83  EP 3 IN
-> bEndpointAddress     0x02  EP 2 OUT
+I tried to install the alsa library, alsa-oss, alsa-util. Alsa driver was part of kernel (2.6.27). I did, ./configure && make && make install for library, oss and util. Now when I try to do aplay -l following happens:
+aplay: device_list:223: no soundcards found...
 
-The lsusb output shows that these are bulk endpoints.  The snd-usb-audio
-driver is designed for isochronous endpoints; a simple quirk would not
-suffice.
+Don't know what is happening. Am I missing any step? What else should be done?
+Please help me asap.
 
-> The payload of this interfaces is 320 bytes.
-
-How many bytes per second?
-
-
-Best regards,
-Clemens
+Regards,
+--Shilpa.
