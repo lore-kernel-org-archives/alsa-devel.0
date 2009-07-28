@@ -1,16 +1,18 @@
-From: Shilpa Kedar Walvekar <shilpa.walvekar@coreobjects.com>
-Subject: Using Alsa for AD1981b on 9263
-Date: Tue, 28 Jul 2009 16:59:12 +0530
-Message-ID: <33A0EEB8D50198449794A1AB9DEB1E01866417CA0C@copuex01.coreobjects.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Using Alsa for AD1981b on 9263
+Date: Tue, 28 Jul 2009 12:39:07 +0100
+Message-ID: <20090728113906.GC26452@sirena.org.uk>
+References: <33A0EEB8D50198449794A1AB9DEB1E01866417CA0C@copuex01.coreobjects.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from colaex01.coreobjects.com (mailus.coreobjects.com [67.89.120.9])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8138F24663
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8F3CB10381A
 	for <Alsa-devel@alsa-project.org>;
-	Tue, 28 Jul 2009 13:34:54 +0200 (CEST)
-Content-Language: en-US
+	Tue, 28 Jul 2009 13:39:07 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <33A0EEB8D50198449794A1AB9DEB1E01866417CA0C@copuex01.coreobjects.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,66 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Alsa-devel@alsa-project.org" <Alsa-devel@alsa-project.org>
+To: Shilpa Kedar Walvekar <shilpa.walvekar@coreobjects.com>
+Cc: "Alsa-devel@alsa-project.org" <Alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Tue, Jul 28, 2009 at 04:59:12PM +0530, Shilpa Kedar Walvekar wrote:
 
-Addition to my earlier post:
+> **** List of PLAYBACK Hardware Devices ****
+> ALSA lib conf.c:2700:(snd_config_hooks_call) Cannot open shared library (null)
+> ALSA lib conf.c:3079:(snd_config_update_r) hooks failed, removing configuration
+> aplay: device_list:232: control open (0): No such file or directory
 
-We are using AT91SAM9263 evaluation kit with on-board AD1981b codec. We are using Linux kernel version 2.6.27 with patches available on http://linux4sam.com. We found from the forum that we need to use ALSA for playing and recording audio using this codec.
+> We are not able to get if module is getting loaded, then why aplay doesn't list the device?
 
-So we downloaded
-Alsa-lib-1.0.20
-Alsa-oss-1.0.20
-Alsa-utils-1.0.20
+> Please help us to get the audio codec working.
 
-We installed above using:
-./configure && make && make install
-
-We then downloaded alsa-driver-1.0.20 and installed it using below:
-./configure --with-cards=atmel-ac97c --with-kernel=../../linux-2.6.27 --with-build=../../linux-2.6.27 && make ARCH=arm && make install-modules
-
-Driver was compiled and installed successfully.
-
-We found following:
-# cat /proc/asound/cards
- 0 [AC97           ]: ac97c - Atmel AC97
-                      Atmel AC97 Controller at 0xfffa0000, irq 18
-
-# lsmod
-Module                  Size  Used by    Not tainted
-snd_at91_ac97           8420  0
-snd_ac97_codec         99904  1 snd_at91_ac97
-snd_soc_atmel_pcm       4484  0
-snd_soc_core           30852  1 snd_soc_atmel_pcm
-snd_pcm                60772  4 snd_at91_ac97,snd_ac97_codec,snd_soc_atmel_pcm,s
-nd_soc_core
-snd_page_alloc          6056  1 snd_pcm
-snd_timer              19588  1 snd_pcm
-snd                    47700  5 snd_at91_ac97,snd_ac97_codec,snd_soc_core,snd_pc
-m,snd_timer
-soundcore               6052  1 snd
-ac97_bus                1568  1 snd_ac97_codec
-
-# cat /home/.asoundrc
-pcm.!default { type hw card 0 } ctl.!default { type hw card 0 }
-
-We have following devices in /dev/snd
-# cat /dev/snd/
-/dev/snd/controlC0  /dev/snd/controlC3  /dev/snd/hwC0D2     /dev/snd/timer
-/dev/snd/controlC1  /dev/snd/hwC0D0     /dev/snd/hwC0D3
-/dev/snd/controlC2  /dev/snd/hwC0D1     /dev/snd/seq
-
-# aplay -l
-**** List of PLAYBACK Hardware Devices ****
-ALSA lib conf.c:2700:(snd_config_hooks_call) Cannot open shared library (null)
-ALSA lib conf.c:3079:(snd_config_update_r) hooks failed, removing configuration
-aplay: device_list:232: control open (0): No such file or directory
-
-We are not able to get if module is getting loaded, then why aplay doesn't list the device?
-
-Please help us to get the audio codec working.
-
-Regards,
---Shilpa.
+This is a toolchain problem.  Normally it's that the uclibc toolchain
+Atmel use by default doesn't support symbol versioning which means you
+have to pass a configure option to ALSA to disable symbol versioning but
+you're likely to get better help from an Atmel-specific place.
