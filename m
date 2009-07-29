@@ -1,358 +1,760 @@
-From: Jelle de Jong <jelledejong@powercraft.nl>
-Subject: Re: my udev rules are breaking my dmixer setup why?
-Date: Wed, 29 Jul 2009 12:44:37 +0200
-Message-ID: <4A702815.6060701@powercraft.nl>
-References: <4916FAB7.7050206@powercraft.nl>
-	<s5hhc6ezo3g.wl%tiwai@suse.de>	<491953A4.8070509@powercraft.nl>
-	<s5hljvqr1jr.wl%tiwai@suse.de>	<Pine.LNX.4.61.0811111151260.13649@tm8103.perex-int.cz>	<4919C148.3060706@powercraft.nl>
-	<Pine.LNX.4.61.0811111845330.13649@tm8103.perex-int.cz>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: [RFC] [PATCH 3/3 v2] ASoC: add support for Amstrad E3 (Delta) machine
+Date: Wed, 29 Jul 2009 13:18:53 +0200
+Message-ID: <200907291318.54897.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050702050305010801040809"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay01.cambriumhosting.nl (relay01.cambriumhosting.nl
-	[217.19.16.173])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9A043103867
-	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Jul 2009 12:44:40 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.61.0811111845330.13649@tm8103.perex-int.cz>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-serial-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-serial-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, Jarkko Nikula <jhnikula@gmail.com>, Jonathan McDowell <noodles@earth.li>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, e3-hacking@earth.li, Arun KS <arunks@mistralsolutions.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------050702050305010801040809
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+This patch adds machine support for Amstrad E3 (Delta) videophone to ASoC.
 
-On 11/11/08 18:55, Jaroslav Kysela wrote:
-> On Tue, 11 Nov 2008, Jelle de Jong wrote:
->
->> Jaroslav Kysela wrote:
->>> On Tue, 11 Nov 2008, Takashi Iwai wrote:
->>>
->>>>> Almost all devices can be managed with udev rules, that is where the
->>>>> system is designed for, there are also alsa rules in there, if they
->>>>> don't work what is wrong then? is it an alsa issue, or udev, what are
->>>>> the dependencies when alsa uses hardware. How are the /dev/snd/* devices
->>>>> used and what is the /proc/asound/* for ?
->>>> The card index mechanism in ALSA was introduced much before udev
->>>> was born.  It's just a legacy mechanism, but it's hard to kill without
->>>> breaking the running system, unfortunately.
->>>
->>> Note that you can identify your card via the text identification (check
->>> /proc/asound/cards to get it in []). You can set this identification in
->>> the module insert time and use for example 'hw:Intel' in your apps without
->>> bothering with indexes.
->>>
->>> The missing part is the modification of this text identification using
->>> sysfs at runtime for udev. Some time ago, I was trying to add this setup
->>> to /sys/class/sound, but the sysfs core code was not prepared for this
->>> change. I'll try to check the situation again.
->>>
->>
->> As response to:
->> http://mailman.alsa-project.org/pipermail/alsa-devel/2008-November/012366.html
->>
->> I am not sure if it is good practice to repose to an RFC if so please
->> tell me then we will continue the discussion in the RFC thread.
->>
->> Thank you Jaroslav for creating the patch this is really appreciated, if
->> all things work I will send you some dutch stroopwafels :-D
->>
->> I am just curious how you patch can be used with udev? What did you have
->> in mind?
->>
->> Would something like this be possible:
->>
->> SUBSYSTEM=="sound", ACTION="add" KERNELS=="3-1",
->> NAME="snd/by-id/audiodevice0"
->> SUBSYSTEM=="sound", ACTION="add" KERNELS=="3-2",
->> NAME="snd/by-id/audiodevice1"
->
-> No, something like this:
->
-> SUBSYSTEM=="sound", ACTION=="add", KERNEL=="controlC*", KERNELS=="3-2", \
->    ATTR{device/id}="audiodevice1"
->
->> pcm.!default {
->>     type plug
->>     slave.pcm dmixer
->> }
->> pcm.dmixer {
->>     type dmix
->>     ipc_key 1024
->>     slave.pcm hw:audiodevice0
->> }
->
-> This looks OK.
->
-> 					Jaroslav
->
+Created and tested against linux-2.6.31-rc3.
+Applies and works with linux-omap-2.6 commit
+7c5cb7862d32cb344be7831d466535d5255e35ac as well.
 
-Hello everybody,
+Depends on:
+1) latest version of the CX20442 codec driver that exposes v253_ops
+   structure[1],
+2) patch 2/3 form this series: TTY: Add definition of a new line
+   discipline required by Amstrad E3 (Delta) ASoC driver[2].
 
-It has been a while and I have been waiting until the patch made it into 
-Debian and now it finally has, so I started testing and it seems to work 
-that the patch works and I am very grateful for it.
+CPU DAI parameters best matching the codec DAI has been selected out
+empirically for best user experience.
 
-I still have list of issues, but I will make new treads for them now.
+Board specific audio function control (with related DAPM widgets) has been
+modeled after empirically discovered codec capabilities.
 
-Thanks again,
+Unlike other ASoC machine drivers, this one makes use of a codec provided line
+discipline that is required for talking to a modem chip that can control the
+codec behavoiur. As the line discipline operations must call board specific
+bits as well, the machine driver registers its own line discipline ops, not
+the codec provided, and then calls those codec provided from inside its own
+callbacks.
+If some kind of a glue, like a bus over a tty, exsited that could help in
+runtime detection of a modem (bus adapter) over a more generic line discipline
+(bus driver)[3], the line discipline code could be probably designed in a
+more generic way.
 
-Best regards,
+In order to work at all, this driver requires a working McBSP1. On OMAP1510
+based machines (not sure if other OMAP1 variants as well), where McBSP1 is a
+DSP public peripheral, that means the kernel must provide basic DSP support,
+ie. omap_dsp_init(), in order to power up the DSP. This used to be included in
+linux-omap-2.6 tree up to commit 2512fd29db4eb09e82d182596304c7aaf76d2c5c.
+Without that, the driver would not work, ie. not shift in/out any bits over
+the CPU DAI[4]. This limitation is not board, but CPU specific, and may apply
+to other code that makes use of McBSP1/McBSP3 on affected machines. I provide
+an extra patch (4/3) as a temporary solution.
 
-Jelle de Jong
+To work correctly in playback mode, this driver requires my prevoiusly
+submitted patch that corrects pcm pointer calculation for OMAP1510 based
+machines[5] (already included in linux-2.6.31-rc3).
 
---------------050702050305010801040809
-Content-Type: text/x-log;
- name="alsa-debug.log"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="alsa-debug.log"
+To support codec controls, this driver requires my previously submitted patch
+that adds support for modem found on Amstrad Delta[6].
 
-http://mailman.alsa-project.org/pipermail/alsa-devel/2008-November/012366.html
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2009-July/019780.html
+[2] http://www.spinics.net/lists/linux-serial/msg01862.html
+[3] http://www.spinics.net/lists/linux-serial/msg01856.html
+[4] http://www.spinics.net/lists/linux-omap/msg15114.html
+[5] http://mailman.alsa-project.org/pipermail/alsa-devel/2009-June/018950.html
+[6] http://www.spinics.net/lists/linux-omap/msg15432.html
 
-------------------------------------------------------------------------
+Credits to:
+Mark Underwood - for his initial, omap-alsa based sound driver for
+this machine,
+Mark Brown - for his help, patience and excellent subsytem maintainer support.
 
-echo 'SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.1", KERNEL=="controlC[0-9]", NAME="snd/controlC4"
-SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.2", KERNEL=="controlC[0-9]", NAME="snd/controlC5"
-SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.3", KERNEL=="controlC[0-9]", NAME="snd/controlC6"
-SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.4", KERNEL=="controlC[0-9]", NAME="snd/controlC7"
+Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+---
 
-SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.1", KERNEL=="pcmC[0-9]D0c", NAME="snd/pcmC4D0c"
-SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.2", KERNEL=="pcmC[0-9]D0c", NAME="snd/pcmC5D0c"
-SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.3", KERNEL=="pcmC[0-9]D0c", NAME="snd/pcmC6D0c"
-SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.4", KERNEL=="pcmC[0-9]D0c", NAME="snd/pcmC7D0c"
-
-SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.1", KERNEL=="pcmC[0-9]D0p", NAME="snd/pcmC4D0p"
-SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.2", KERNEL=="pcmC[0-9]D0p", NAME="snd/pcmC5D0p"
-SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.3", KERNEL=="pcmC[0-9]D0p", NAME="snd/pcmC6D0p"
-SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.4", KERNEL=="pcmC[0-9]D0p", NAME="snd/pcmC7D0p"
-
-SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.1", KERNEL=="controlC[0-9]", ATTR{device/id}="audiodevice1"
-SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.2", KERNEL=="controlC[0-9]", ATTR{device/id}="audiodevice2"
-SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.3", KERNEL=="controlC[0-9]", ATTR{device/id}="audiodevice3"
-SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.4", KERNEL=="controlC[0-9]", ATTR{device/id}="audiodevice4"' | sudo tee /etc/udev/rules.d/10-persistent-sound.rules
-sudo chmod 600 /etc/udev/rules.d/10-persistent-sound.rules
-sudo cat /etc/udev/rules.d/10-persistent-sound.rules
-
-------------------------------------------------------------------------
-
-echo 'SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.1", MODE="0660", OWNER="root", GROUP="jelle"
-SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.2", MODE="0660", OWNER="root", GROUP="jelle"
-SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.3", MODE="0660", OWNER="root", GROUP="jelle"
-SUBSYSTEM=="sound", ACTION=="add", KERNELS=="1-2.4", MODE="0660", OWNER="root", GROUP="jelle"' | sudo tee /etc/udev/rules.d/92-persistent-sound.rules
-sudo chmod 600 /etc/udev/rules.d/92-persistent-sound.rules
-sudo cat /etc/udev/rules.d/92-persistent-sound.rules
-
-------------------------------------------------------------------------
-
-sudo udevadm control --reload-rules
-tail -n 1000 /var/log/syslog
-
-Jul 27 12:48:38 debian-eeepc udevd[1001]: invalid rule '/etc/udev/rules.d/10-persistent-sound.rules:16'
-Jul 27 12:48:38 debian-eeepc udevd[1001]: invalid ATTRS operation
-Jul 27 12:48:38 debian-eeepc udevd[1001]: invalid rule '/etc/udev/rules.d/10-persistent-sound.rules:17'
-Jul 27 12:48:38 debian-eeepc udevd[1001]: invalid ATTRS operation
-Jul 27 12:48:38 debian-eeepc udevd[1001]: invalid rule '/etc/udev/rules.d/10-persistent-sound.rules:18'
-Jul 27 12:48:38 debian-eeepc udevd[1001]: invalid ATTRS operation
-Jul 27 12:48:38 debian-eeepc udevd[1001]: invalid rule '/etc/udev/rules.d/10-persistent-sound.rules:19'
-------------------------------------------------------------------------
-
-$ ls -hal /dev/snd/
-total 0
-drwxr-xr-x   2 root root       400 2009-07-27 12:29 .
-drwxr-xr-x  14 root root      4.2K 2009-07-27 12:29 ..
-crw-rw----+  1 root audio 116,   0 2009-07-27 12:18 controlC0
-crw-rw----+  1 root jelle 116,  32 2009-07-27 12:29 controlC1
-crw-rw----+  1 root jelle 116,  64 2009-07-27 12:29 controlC2
-crw-rw----+  1 root jelle 116,  96 2009-07-27 12:29 controlC3
-crw-rw----+  1 root jelle 116, 128 2009-07-27 12:29 controlC4
-crw-rw----+  1 root audio 116,   4 2009-07-27 12:18 hwC0D0
-crw-rw----+  1 root audio 116,  24 2009-07-27 12:18 pcmC0D0c
-crw-rw----+  1 root audio 116,  16 2009-07-27 12:18 pcmC0D0p
-crw-rw----+  1 root jelle 116,  56 2009-07-27 12:29 pcmC1D0c
-crw-rw----+  1 root jelle 116,  48 2009-07-27 12:29 pcmC1D0p
-crw-rw----+  1 root jelle 116,  88 2009-07-27 12:29 pcmC2D0c
-crw-rw----+  1 root jelle 116,  80 2009-07-27 12:29 pcmC2D0p
-crw-rw----   1 root jelle 116, 120 2009-07-27 12:29 pcmC3D0c
-crw-rw----+  1 root jelle 116, 112 2009-07-27 12:29 pcmC3D0p
-crw-rw----+  1 root jelle 116, 152 2009-07-27 12:29 pcmC4D0c
-crw-rw----+  1 root jelle 116, 144 2009-07-27 12:29 pcmC4D0p
-crw-rw----+  1 root audio 116,   1 2009-07-27 12:18 seq
-crw-rw----+  1 root audio 116,  33 2009-07-27 12:18 timer
-
-$ cat /proc/asound/cards
- 0 [Intel          ]: HDA-Intel - HDA Intel
-                      HDA Intel at 0xf7eb8000 irq 16
- 1 [default        ]: USB-Audio - USB  AUDIO
-                      USB  AUDIO   at usb-0000:00:1d.7-2.1, full speed
- 2 [default_1      ]: USB-Audio - USB  AUDIO
-                      USB  AUDIO   at usb-0000:00:1d.7-2.2, full speed
- 3 [default_2      ]: USB-Audio - USB  AUDIO
-                      USB  AUDIO   at usb-0000:00:1d.7-2.3, full speed
- 4 [default_3      ]: USB-Audio - USB  AUDIO
-                      USB  AUDIO   at usb-0000:00:1d.7-2.4, full speed
-
-------------------------------------------------------------------------
-
-$ udevinfo info --attribute-walk --name=/dev/snd/controlC2
-the program '/bin/bash' called 'udevinfo', it should use 'udevadm info <options>', this will stop working in a future release
-
-Udevadm info starts with the device specified by the devpath and then
-walks up the chain of parent devices. It prints for every device
-found, all possible attributes in the udev rules key format.
-A rule to match, can be composed by the attributes of the device
-and the attributes from one single parent device.
-
-  looking at device '/devices/pci0000:00/0000:00:1d.7/usb1/1-2/1-2.2/1-2.2:1.0/sound/card2/controlC2':
-    KERNEL=="controlC2"
-    SUBSYSTEM=="sound"
-    DRIVER==""
-
-  looking at parent device '/devices/pci0000:00/0000:00:1d.7/usb1/1-2/1-2.2/1-2.2:1.0/sound/card2':
-    KERNELS=="card2"
-    SUBSYSTEMS=="sound"
-    DRIVERS==""
-    ATTRS{id}=="default_1"
-    ATTRS{number}=="2"
-
-  looking at parent device '/devices/pci0000:00/0000:00:1d.7/usb1/1-2/1-2.2/1-2.2:1.0':
-    KERNELS=="1-2.2:1.0"
-    SUBSYSTEMS=="usb"
-    DRIVERS=="snd-usb-audio"
-    ATTRS{bInterfaceNumber}=="00"
-    ATTRS{bAlternateSetting}==" 0"
-    ATTRS{bNumEndpoints}=="00"
-    ATTRS{bInterfaceClass}=="01"
-    ATTRS{bInterfaceSubClass}=="01"
-    ATTRS{bInterfaceProtocol}=="00"
-    ATTRS{modalias}=="usb:v1130pF211d010Bdc00dsc00dp00ic01isc01ip00"
-    ATTRS{supports_autosuspend}=="0"
-
-  looking at parent device '/devices/pci0000:00/0000:00:1d.7/usb1/1-2/1-2.2':
-    KERNELS=="1-2.2"
-    SUBSYSTEMS=="usb"
-    DRIVERS=="usb"
-    ATTRS{configuration}==""
-    ATTRS{bNumInterfaces}==" 5"
-    ATTRS{bConfigurationValue}=="1"
-    ATTRS{bmAttributes}=="80"
-    ATTRS{bMaxPower}=="500mA"
-    ATTRS{urbnum}=="11825"
-    ATTRS{idVendor}=="1130"
-    ATTRS{idProduct}=="f211"
-    ATTRS{bcdDevice}=="010b"
-    ATTRS{bDeviceClass}=="00"
-    ATTRS{bDeviceSubClass}=="00"
-    ATTRS{bDeviceProtocol}=="00"
-    ATTRS{bNumConfigurations}=="1"
-    ATTRS{bMaxPacketSize0}=="8"
-    ATTRS{speed}=="12"
-    ATTRS{busnum}=="1"
-    ATTRS{devnum}=="21"
-    ATTRS{version}==" 1.10"
-    ATTRS{maxchild}=="0"
-    ATTRS{quirks}=="0x0"
-    ATTRS{authorized}=="1"
-    ATTRS{product}=="USB  AUDIO  "
-
-  looking at parent device '/devices/pci0000:00/0000:00:1d.7/usb1/1-2':
-    KERNELS=="1-2"
-    SUBSYSTEMS=="usb"
-    DRIVERS=="usb"
-    ATTRS{configuration}==""
-    ATTRS{bNumInterfaces}==" 1"
-    ATTRS{bConfigurationValue}=="1"
-    ATTRS{bmAttributes}=="e0"
-    ATTRS{bMaxPower}=="100mA"
-    ATTRS{urbnum}=="65"
-    ATTRS{idVendor}=="058f"
-    ATTRS{idProduct}=="6254"
-    ATTRS{bcdDevice}=="0100"
-    ATTRS{bDeviceClass}=="09"
-    ATTRS{bDeviceSubClass}=="00"
-    ATTRS{bDeviceProtocol}=="01"
-    ATTRS{bNumConfigurations}=="1"
-    ATTRS{bMaxPacketSize0}=="64"
-    ATTRS{speed}=="480"
-    ATTRS{busnum}=="1"
-    ATTRS{devnum}=="19"
-    ATTRS{version}==" 2.00"
-    ATTRS{maxchild}=="4"
-    ATTRS{quirks}=="0x0"
-    ATTRS{authorized}=="1"
-
-  looking at parent device '/devices/pci0000:00/0000:00:1d.7/usb1':
-    KERNELS=="usb1"
-    SUBSYSTEMS=="usb"
-    DRIVERS=="usb"
-    ATTRS{configuration}==""
-    ATTRS{bNumInterfaces}==" 1"
-    ATTRS{bConfigurationValue}=="1"
-    ATTRS{bmAttributes}=="e0"
-    ATTRS{bMaxPower}=="  0mA"
-    ATTRS{urbnum}=="108"
-    ATTRS{idVendor}=="1d6b"
-    ATTRS{idProduct}=="0002"
-    ATTRS{bcdDevice}=="0206"
-    ATTRS{bDeviceClass}=="09"
-    ATTRS{bDeviceSubClass}=="00"
-    ATTRS{bDeviceProtocol}=="00"
-    ATTRS{bNumConfigurations}=="1"
-    ATTRS{bMaxPacketSize0}=="64"
-    ATTRS{speed}=="480"
-    ATTRS{busnum}=="1"
-    ATTRS{devnum}=="1"
-    ATTRS{version}==" 2.00"
-    ATTRS{maxchild}=="8"
-    ATTRS{quirks}=="0x0"
-    ATTRS{authorized}=="1"
-    ATTRS{manufacturer}=="Linux 2.6.30-1-686 ehci_hcd"
-    ATTRS{product}=="EHCI Host Controller"
-    ATTRS{serial}=="0000:00:1d.7"
-    ATTRS{authorized_default}=="1"
-
-  looking at parent device '/devices/pci0000:00/0000:00:1d.7':
-    KERNELS=="0000:00:1d.7"
-    SUBSYSTEMS=="pci"
-    DRIVERS=="ehci_hcd"
-    ATTRS{vendor}=="0x8086"
-    ATTRS{device}=="0x27cc"
-    ATTRS{subsystem_vendor}=="0x1043"
-    ATTRS{subsystem_device}=="0x830f"
-    ATTRS{class}=="0x0c0320"
-    ATTRS{irq}=="23"
-    ATTRS{local_cpus}=="ffffffff"
-    ATTRS{local_cpulist}=="0-31"
-    ATTRS{modalias}=="pci:v00008086d000027CCsv00001043sd0000830Fbc0Csc03i20"
-    ATTRS{broken_parity_status}=="0"
-    ATTRS{msi_bus}==""
-
-  looking at parent device '/devices/pci0000:00':
-    KERNELS=="pci0000:00"
-    SUBSYSTEMS==""
-    DRIVERS==""
-
-
---------------050702050305010801040809
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------050702050305010801040809--
+--- linux-2.6.31-rc3/sound/soc/omap/Kconfig.orig	2009-07-04 16:40:00.000000000 +0200
++++ linux-2.6.31-rc3/sound/soc/omap/Kconfig	2009-07-22 01:06:51.000000000 +0200
+@@ -15,6 +15,14 @@ config SND_OMAP_SOC_N810
+ 	help
+ 	  Say Y if you want to add support for SoC audio on Nokia N810.
+ 
++config SND_OMAP_SOC_AMS_DELTA
++	tristate "SoC Audio support for Amstrad E3 (Delta) videophone"
++	depends on SND_OMAP_SOC && MACH_AMS_DELTA
++	select SND_OMAP_SOC_MCBSP
++	select SND_SOC_CX20442
++	help
++	  Say Y if you want to add support for SoC audio on Amstrad Delta.
++
+ config SND_OMAP_SOC_OSK5912
+ 	tristate "SoC Audio support for omap osk5912"
+ 	depends on SND_OMAP_SOC && MACH_OMAP_OSK && I2C
+--- linux-2.6.31-rc3/sound/soc/omap/Makefile.orig	2009-07-04 16:40:00.000000000 +0200
++++ linux-2.6.31-rc3/sound/soc/omap/Makefile	2009-07-22 01:06:51.000000000 +0200
+@@ -7,6 +7,7 @@ obj-$(CONFIG_SND_OMAP_SOC_MCBSP) += snd-
+ 
+ # OMAP Machine Support
+ snd-soc-n810-objs := n810.o
++snd-soc-ams-delta-objs := ams-delta.o
+ snd-soc-osk5912-objs := osk5912.o
+ snd-soc-overo-objs := overo.o
+ snd-soc-omap2evm-objs := omap2evm.o
+@@ -16,6 +17,7 @@ snd-soc-omap3pandora-objs := omap3pandor
+ snd-soc-omap3beagle-objs := omap3beagle.o
+ 
+ obj-$(CONFIG_SND_OMAP_SOC_N810) += snd-soc-n810.o
++obj-$(CONFIG_SND_OMAP_SOC_AMS_DELTA) += snd-soc-ams-delta.o
+ obj-$(CONFIG_SND_OMAP_SOC_OSK5912) += snd-soc-osk5912.o
+ obj-$(CONFIG_SND_OMAP_SOC_OVERO) += snd-soc-overo.o
+ obj-$(CONFIG_MACH_OMAP2EVM) += snd-soc-omap2evm.o
+--- /dev/null	2009-07-27 16:01:44.916962115 +0200
++++ linux-2.6.31-rc3/sound/soc/omap/ams-delta.c	2009-07-29 12:11:57.000000000 +0200
+@@ -0,0 +1,646 @@
++/*
++ * ams-delta.c  --  SoC audio for Amstrad E3 (Delta) videophone
++ *
++ * Copyright (C) 2009 Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
++ *
++ * Initially based on sound/soc/omap/osk5912.x
++ * Copyright (C) 2008 Mistral Solutions
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
++ * 02110-1301 USA
++ *
++ */
++
++#include <linux/gpio.h>
++#include <linux/spinlock.h>
++#include <linux/tty.h>
++
++#include <sound/soc-dapm.h>
++#include <sound/jack.h>
++
++#include <asm/mach-types.h>
++
++#include <mach/board-ams-delta.h>
++#include <mach/mcbsp.h>
++
++#include "omap-mcbsp.h"
++#include "omap-pcm.h"
++#include "../codecs/cx20442.h"
++
++
++/* Board specific DAPM widgets */
++ const struct snd_soc_dapm_widget ams_delta_dapm_widgets[] = {
++	/* Handset */
++	SND_SOC_DAPM_MIC("Mouthpiece", NULL),
++	SND_SOC_DAPM_HP("Earpiece", NULL),
++	/* Handsfree/Speakerphone */
++	SND_SOC_DAPM_MIC("Microphone", NULL),
++	SND_SOC_DAPM_SPK("Speaker", NULL),
++};
++
++/* How they are connected to codec pins */
++static const struct snd_soc_dapm_route ams_delta_audio_map[] = {
++	{"TELIN", NULL, "Mouthpiece"},
++	{"Earpiece", NULL, "TELOUT"},
++
++	{"MIC", NULL, "Microphone"},
++	{"Speaker", NULL, "SPKOUT"},
++};
++
++/*
++ * Controls, functional after the modem line discipline is activated.
++ */
++
++/* Virtual switch: audio input/output constellations */
++static const char *ams_delta_audio_mode[] =
++	{"Mixed", "Handset", "Handsfree", "Speakerphone"};
++
++/* Selection <-> pin translation */
++#define AMS_DELTA_MOUTHPIECE	0
++#define AMS_DELTA_EARPIECE	1
++#define AMS_DELTA_MICROPHONE	2
++#define AMS_DELTA_SPEAKER	3
++#define AMS_DELTA_AGC		4
++
++#define AMS_DELTA_MIXED		((1 << AMS_DELTA_EARPIECE) | \
++						(1 << AMS_DELTA_MICROPHONE))
++#define AMS_DELTA_HANDSET	((1 << AMS_DELTA_MOUTHPIECE) | \
++						(1 << AMS_DELTA_EARPIECE))
++#define AMS_DELTA_HANDSFREE	((1 << AMS_DELTA_MICROPHONE) | \
++						(1 << AMS_DELTA_SPEAKER))
++#define AMS_DELTA_SPEAKERPHONE	(AMS_DELTA_HANDSFREE | (1 << AMS_DELTA_AGC))
++
++unsigned short ams_delta_audio_mode_pins[] = {
++	AMS_DELTA_MIXED,
++	AMS_DELTA_HANDSET,
++	AMS_DELTA_HANDSFREE,
++	AMS_DELTA_SPEAKERPHONE,
++};
++
++static unsigned short ams_delta_audio_agc;
++
++static int ams_delta_set_audio_mode(struct snd_kcontrol *kcontrol,
++					struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
++	struct soc_enum *control = (struct soc_enum *)kcontrol->private_value;
++	unsigned short pins;
++	int pin, changed = 0;
++
++	/* Refuse any mode changes if we are not able to control the codec. */
++	if (!codec->control_data)
++		return -EUNATCH;
++
++	if (ucontrol->value.enumerated.item[0] >= control->max)
++		return -EINVAL;
++
++	mutex_lock(&codec->mutex);
++
++	/* Translate selection to bitmap */
++	pins = ams_delta_audio_mode_pins[ucontrol->value.enumerated.item[0]];
++
++	/* Setup pins after corresponding bits if changed */
++	pin = !!(pins & (1 << AMS_DELTA_MOUTHPIECE));
++	if (pin != snd_soc_dapm_get_pin_status(codec, "Mouthpiece")) {
++		changed = 1;
++		if (pin)
++			snd_soc_dapm_enable_pin(codec, "Mouthpiece");
++		else
++			snd_soc_dapm_disable_pin(codec, "Mouthpiece");
++	}
++	pin = !!(pins & (1 << AMS_DELTA_EARPIECE));
++	if (pin != snd_soc_dapm_get_pin_status(codec, "Earpiece")) {
++		changed = 1;
++		if (pin)
++			snd_soc_dapm_enable_pin(codec, "Earpiece");
++		else
++			snd_soc_dapm_disable_pin(codec, "Earpiece");
++	}
++	pin = !!(pins & (1 << AMS_DELTA_MICROPHONE));
++	if (pin != snd_soc_dapm_get_pin_status(codec, "Microphone")) {
++		changed = 1;
++		if (pin)
++			snd_soc_dapm_enable_pin(codec, "Microphone");
++		else
++			snd_soc_dapm_disable_pin(codec, "Microphone");
++	}
++	pin = !!(pins & (1 << AMS_DELTA_SPEAKER));
++	if (pin != snd_soc_dapm_get_pin_status(codec, "Speaker")) {
++		changed = 1;
++		if (pin)
++			snd_soc_dapm_enable_pin(codec, "Speaker");
++		else
++			snd_soc_dapm_disable_pin(codec, "Speaker");
++	}
++	pin = !!(pins & (1 << AMS_DELTA_AGC));
++	if (pin != ams_delta_audio_agc) {
++		ams_delta_audio_agc = pin;
++		changed = 1;
++		if (pin)
++			snd_soc_dapm_enable_pin(codec, "AGCIN");
++		else
++			snd_soc_dapm_disable_pin(codec, "AGCIN");
++	}
++	if (changed)
++		snd_soc_dapm_sync(codec);
++
++	mutex_unlock(&codec->mutex);
++
++	return changed;
++}
++
++static int ams_delta_get_audio_mode(struct snd_kcontrol *kcontrol,
++					struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
++	unsigned short pins, mode;
++
++	pins = ((snd_soc_dapm_get_pin_status(codec, "Mouthpiece") <<
++							AMS_DELTA_MOUTHPIECE) |
++			(snd_soc_dapm_get_pin_status(codec, "Earpiece") <<
++							AMS_DELTA_EARPIECE));
++	if (pins)
++		pins |= (snd_soc_dapm_get_pin_status(codec, "Microphone") <<
++							AMS_DELTA_MICROPHONE);
++	else
++		pins = ((snd_soc_dapm_get_pin_status(codec, "Microphone") <<
++							AMS_DELTA_MICROPHONE) |
++			(snd_soc_dapm_get_pin_status(codec, "Speaker") <<
++							AMS_DELTA_SPEAKER) |
++			(ams_delta_audio_agc << AMS_DELTA_AGC));
++
++	for (mode = 0; mode < ARRAY_SIZE(ams_delta_audio_mode); mode++)
++		if (pins == ams_delta_audio_mode_pins[mode])
++			break;
++
++	if (mode >= ARRAY_SIZE(ams_delta_audio_mode))
++		return -EINVAL;
++
++	ucontrol->value.enumerated.item[0] = mode;
++
++	return 0;
++}
++
++static const struct soc_enum ams_delta_audio_enum[] = {
++	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(ams_delta_audio_mode),
++						ams_delta_audio_mode),
++};
++
++static const struct snd_kcontrol_new ams_delta_audio_controls[] = {
++	SOC_ENUM_EXT("Audio Mode", ams_delta_audio_enum[0],
++			ams_delta_get_audio_mode, ams_delta_set_audio_mode),
++};
++
++/* Hook switch */
++static struct snd_soc_jack ams_delta_hook_switch;
++static struct snd_soc_jack_gpio ams_delta_hook_switch_gpios[] = {
++	{
++		.gpio = 4,
++		.name = "hook_switch",
++		.report = SND_JACK_HEADSET,
++		.invert = 1,
++		.debounce_time = 150,
++	}
++};
++
++/* After we are able to control the codec over the modem,
++ * the hook switch can be used for dynamic DAPM reconfiguration. */
++static struct snd_soc_jack_pin ams_delta_hook_switch_pins[] = {
++	/* Handset */
++	{
++		.pin = "Mouthpiece",
++		.mask = SND_JACK_MICROPHONE,
++	},
++	{
++		.pin = "Earpiece",
++		.mask = SND_JACK_HEADPHONE,
++	},
++	/* Handsfree */
++	{
++		.pin = "Microphone",
++		.mask = SND_JACK_MICROPHONE,
++		.invert = 1,
++	},
++	{
++		.pin = "Speaker",
++		.mask = SND_JACK_HEADPHONE,
++		.invert = 1,
++	},
++};
++
++
++/*
++ * Modem line discipline, required for making above controls functional.
++ * Activated from userspace with ldattach, possibly invoked from udev rule.
++ */
++
++/* To actually apply any modem controlled configuration changes to the codec,
++ * we must connect codec DAI pins to the modem for a moment.  Be carefull not
++ * to interfere with our digital mute function that shares the same hardware. */
++static struct timer_list cx81801_timer;
++static bool cx81801_cmd_pending;
++static bool ams_delta_muted;
++static spinlock_t ams_delta_lock = SPIN_LOCK_UNLOCKED;
++
++static void cx81801_timeout(unsigned long data)
++{
++	int muted;
++
++	spin_lock(&ams_delta_lock);
++	cx81801_cmd_pending = 0;
++	muted = ams_delta_muted;
++	spin_unlock(&ams_delta_lock);
++
++	/* Reconnect the codec DAI back from the modem to the CPU DAI
++	 * only if digital mute still off */
++	if (!muted)
++		ams_delta_latch2_write(AMS_DELTA_LATCH2_MODEM_CODEC, 0);
++}
++
++/* Line discipline .open() */
++static int cx81801_open(struct tty_struct *tty)
++{
++	return v253_ops.open(tty);
++}
++
++/* Line discipline .close() */
++static void cx81801_close(struct tty_struct *tty)
++{
++	struct snd_soc_codec *codec = tty->disc_data;
++
++	del_timer_sync(&cx81801_timer);
++
++	v253_ops.close(tty);
++
++	/* Prevent the hook switch from further changing the DAPM pins */
++	INIT_LIST_HEAD(&ams_delta_hook_switch.pins);
++
++	/* Revert back to default audio input/output constellation */
++	snd_soc_dapm_disable_pin(codec, "Mouthpiece");
++	snd_soc_dapm_enable_pin(codec, "Earpiece");
++	snd_soc_dapm_enable_pin(codec, "Microphone");
++	snd_soc_dapm_disable_pin(codec, "Speaker");
++	snd_soc_dapm_disable_pin(codec, "AGCIN");
++	snd_soc_dapm_sync(codec);
++}
++
++/* Line discipline .hangup() */
++static int cx81801_hangup(struct tty_struct *tty)
++{
++	cx81801_close(tty);
++	return 0;
++}
++
++/* Line discipline .recieve_buf() */
++static void cx81801_receive(struct tty_struct *tty,
++				const unsigned char *cp, char *fp, int count)
++{
++	struct snd_soc_codec *codec = tty->disc_data;
++	const unsigned char *c;
++	int apply, ret;
++
++	if (!codec->control_data) {
++		/* First modem response, complete setup procedure */
++
++		/* Initialize timer used for config pulse generation */
++		setup_timer(&cx81801_timer, cx81801_timeout, 0);
++
++		v253_ops.receive_buf(tty, cp, fp, count);
++
++		/* Link hook switch to DAPM pins */
++		ret = snd_soc_jack_add_pins(&ams_delta_hook_switch,
++					ARRAY_SIZE(ams_delta_hook_switch_pins),
++					ams_delta_hook_switch_pins);
++		if (ret)
++			dev_warn(codec->socdev->card->dev,
++				"Failed to link hook switch to DAPM pins, "
++				"will continue with hook switch unlinked.\n");
++
++		return;
++	}
++
++	v253_ops.receive_buf(tty, cp, fp, count);
++
++	for (c = &cp[count - 1]; c >= cp; c--) {
++		if (*c != '\r')
++			continue;
++		/* Complete modem response received, apply config to codec */
++
++		spin_lock_bh(&ams_delta_lock);
++		mod_timer(&cx81801_timer, jiffies + msecs_to_jiffies(150));
++		apply = !ams_delta_muted && !cx81801_cmd_pending;
++		cx81801_cmd_pending = 1;
++		spin_unlock_bh(&ams_delta_lock);
++
++		/* Apply config pulse by connecting the codec to the modem
++		 * if not already done */
++		if (apply)
++			ams_delta_latch2_write(AMS_DELTA_LATCH2_MODEM_CODEC,
++						AMS_DELTA_LATCH2_MODEM_CODEC);
++		break;
++	}
++}
++
++/* Line discipline .write_wakeup() */
++static void cx81801_wakeup(struct tty_struct *tty)
++{
++	v253_ops.write_wakeup(tty);
++}
++
++static struct tty_ldisc_ops cx81801_ops = {
++	.magic = TTY_LDISC_MAGIC,
++	.name = "cx81801",
++	.owner = THIS_MODULE,
++	.open = cx81801_open,
++	.close = cx81801_close,
++	.hangup = cx81801_hangup,
++	.receive_buf = cx81801_receive,
++	.write_wakeup = cx81801_wakeup,
++};
++
++
++/*
++ * Even if not very usefull, the sound card can still work without any of the
++ * above functonality activated.  You can still control its audio input/output
++ * constellation and speakerphone gain from userspace by issueing AT commands
++ * over the modem port.
++ */
++
++static int ams_delta_hw_params(struct snd_pcm_substream *substream,
++			 struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++
++	/* Set cpu DAI configuration */
++	return snd_soc_dai_set_fmt(rtd->dai->cpu_dai,
++				   SND_SOC_DAIFMT_DSP_A |
++				   SND_SOC_DAIFMT_NB_NF |
++				   SND_SOC_DAIFMT_CBM_CFM);
++}
++
++static struct snd_soc_ops ams_delta_ops = {
++	.hw_params = ams_delta_hw_params,
++};
++
++
++/* Board specific codec bias level control */
++static int ams_delta_set_bias_level(struct snd_soc_card *card,
++					enum snd_soc_bias_level level)
++{
++	struct snd_soc_codec *codec = card->codec;
++
++	switch (level) {
++	case SND_SOC_BIAS_ON:
++	case SND_SOC_BIAS_PREPARE:
++	case SND_SOC_BIAS_STANDBY:
++		if (codec->bias_level == SND_SOC_BIAS_OFF)
++			ams_delta_latch2_write(AMS_DELTA_LATCH2_MODEM_NRESET,
++						AMS_DELTA_LATCH2_MODEM_NRESET);
++		break;
++	case SND_SOC_BIAS_OFF:
++		if (codec->bias_level != SND_SOC_BIAS_OFF)
++			ams_delta_latch2_write(AMS_DELTA_LATCH2_MODEM_NRESET,
++						0);
++	}
++	codec->bias_level = level;
++
++	return 0;
++}
++
++/* Digital mute implemented using modem/CPU multiplexer.
++ * Shares hardware with codec config pulse generation */
++static bool ams_delta_muted = 1;
++
++static int ams_delta_digital_mute(struct snd_soc_dai *dai, int mute)
++{
++	int apply;
++
++	if (ams_delta_muted == mute)
++		return 0;
++
++	spin_lock_bh(&ams_delta_lock);
++	ams_delta_muted = mute;
++	apply = !cx81801_cmd_pending;
++	spin_unlock_bh(&ams_delta_lock);
++
++	if (apply)
++		ams_delta_latch2_write(AMS_DELTA_LATCH2_MODEM_CODEC,
++				mute ? AMS_DELTA_LATCH2_MODEM_CODEC : 0);
++	return 0;
++}
++
++/* Our codec DAI probably doesn't have its own .ops structure */
++static struct snd_soc_dai_ops ams_delta_dai_ops = {
++	.digital_mute = ams_delta_digital_mute,
++};
++
++/* Will be used if the codec ever has its own digital_mute function */
++static int ams_delta_startup(struct snd_pcm_substream *substream)
++{
++	return ams_delta_digital_mute(NULL, 0);
++}
++
++static void ams_delta_shutdown(struct snd_pcm_substream *substream)
++{
++	ams_delta_digital_mute(NULL, 1);
++}
++
++
++/*
++ * Card initialization
++ */
++
++static int ams_delta_cx20442_init(struct snd_soc_codec *codec)
++{
++	struct snd_soc_dai *codec_dai = codec->dai;
++	struct snd_soc_card *card = codec->socdev->card;
++	int ret;
++	/* Codec is ready, now add/activate board specific controls */
++
++	/* Set up digital mute if not provided by the codec */
++	if (!codec_dai->ops) {
++		codec_dai->ops = &ams_delta_dai_ops;
++	} else if (!codec_dai->ops->digital_mute) {
++		codec_dai->ops->digital_mute = ams_delta_digital_mute;
++	} else {
++		ams_delta_ops.startup = ams_delta_startup;
++		ams_delta_ops.shutdown = ams_delta_shutdown;
++	}
++
++	/* Set codec bias level */
++	ams_delta_set_bias_level(card, SND_SOC_BIAS_STANDBY);
++
++	/* Add hook switch - can be used to control the codec from userspace
++	 * even if line discipline fails */
++	ret = snd_soc_jack_new(card, "hook_switch",
++				SND_JACK_HEADSET, &ams_delta_hook_switch);
++	if (ret)
++		dev_warn(card->dev,
++				"Failed to allocate resources for hook switch, "
++				"will continue without one.\n");
++	else {
++		ret = snd_soc_jack_add_gpios(&ams_delta_hook_switch,
++					ARRAY_SIZE(ams_delta_hook_switch_gpios),
++					ams_delta_hook_switch_gpios);
++		if (ret)
++			dev_warn(card->dev,
++				"Failed to set up hook switch GPIO line, "
++				"will continue with hook switch inactive.\n");
++	}
++
++	/* Register optional line discipline for over the modem control */
++	ret = tty_register_ldisc(N_AMSDELTA, &cx81801_ops);
++	if (ret) {
++		dev_warn(card->dev,
++				"Failed to register line discipline, "
++				"will continue without any controls.\n");
++		return 0;
++	}
++
++	/* Add board specific DAPM widgets and routes */
++	ret = snd_soc_dapm_new_controls(codec, ams_delta_dapm_widgets,
++					ARRAY_SIZE(ams_delta_dapm_widgets));
++	if (ret) {
++		dev_warn(card->dev,
++				"Failed to register DAPM controls, "
++				"will continue without any.\n");
++		return 0;
++	}
++
++	ret = snd_soc_dapm_add_routes(codec, ams_delta_audio_map,
++					ARRAY_SIZE(ams_delta_audio_map));
++	if (ret) {
++		dev_warn(card->dev,
++				"Failed to set up DAPM routes, "
++				"will continue with codec default map.\n");
++		return 0;
++	}
++
++	/* Set up initial pin constellation */
++	snd_soc_dapm_disable_pin(codec, "Mouthpiece");
++	snd_soc_dapm_enable_pin(codec, "Earpiece");
++	snd_soc_dapm_enable_pin(codec, "Microphone");
++	snd_soc_dapm_disable_pin(codec, "Speaker");
++	snd_soc_dapm_disable_pin(codec, "AGCIN");
++	snd_soc_dapm_disable_pin(codec, "AGCOUT");
++	snd_soc_dapm_sync(codec);
++
++	/* Add virtual switch */
++	ret = snd_soc_add_controls(codec, ams_delta_audio_controls,
++					ARRAY_SIZE(ams_delta_audio_controls));
++	if (ret)
++		dev_warn(card->dev,
++				"Failed to register audio mode control, "
++				"will continue without it.\n");
++
++	return 0;
++}
++
++/* DAI glue - connects codec <--> CPU */
++static struct snd_soc_dai_link ams_delta_dai_link = {
++	.name = "CX20442",
++	.stream_name = "CX20442",
++	.cpu_dai = &omap_mcbsp_dai[0],
++	.codec_dai = &cx20442_dai,
++	.init = ams_delta_cx20442_init,
++	.ops = &ams_delta_ops,
++};
++
++/* Audio card driver */
++static struct snd_soc_card ams_delta_audio_card = {
++	.name = "AMS_DELTA",
++	.platform = &omap_soc_platform,
++	.dai_link = &ams_delta_dai_link,
++	.num_links = 1,
++	.set_bias_level = ams_delta_set_bias_level,
++};
++
++/* Audio subsystem */
++static struct snd_soc_device ams_delta_snd_soc_device = {
++	.card = &ams_delta_audio_card,
++	.codec_dev = &cx20442_codec_dev,
++};
++
++/* Module init/exit */
++static struct platform_device *ams_delta_audio_platform_device;
++static struct platform_device *cx20442_platform_device;
++
++static int __init ams_delta_module_init(void)
++{
++	int ret;
++
++	if (!(machine_is_ams_delta()))
++		return -ENODEV;
++
++	ams_delta_audio_platform_device =
++			platform_device_alloc("soc-audio", -1);
++	if (!ams_delta_audio_platform_device)
++		return -ENOMEM;
++
++	platform_set_drvdata(ams_delta_audio_platform_device,
++				&ams_delta_snd_soc_device);
++	ams_delta_snd_soc_device.dev = &ams_delta_audio_platform_device->dev;
++	*(unsigned int *)ams_delta_dai_link.cpu_dai->private_data = OMAP_MCBSP1;
++
++	ret = platform_device_add(ams_delta_audio_platform_device);
++	if (ret)
++		goto err;
++
++	/*
++	 * Codec platform device could be registered from elsewhere (board?),
++	 * but I do it here as it makes sense only if used with the card.
++	 */
++	cx20442_platform_device = platform_device_register_simple("cx20442",
++								-1, NULL, 0);
++	return 0;
++err:
++	platform_device_put(ams_delta_audio_platform_device);
++	return ret;
++}
++module_init(ams_delta_module_init);
++
++static void __exit ams_delta_module_exit(void)
++{
++	struct snd_soc_codec *codec;
++	struct tty_struct *tty;
++
++	if (ams_delta_audio_card.codec) {
++		codec = ams_delta_audio_card.codec;
++
++		if (codec->control_data) {
++			tty = codec->control_data;
++
++			tty_hangup(tty);
++		}
++	}
++
++	if (tty_unregister_ldisc(N_AMSDELTA) != 0)
++		dev_warn(&ams_delta_audio_platform_device->dev,
++			"failed to unregister AMSDELTA line discipline\n");
++
++	snd_soc_jack_free_gpios(&ams_delta_hook_switch,
++			ARRAY_SIZE(ams_delta_hook_switch_gpios),
++			ams_delta_hook_switch_gpios);
++
++	/* Keep modem power on */
++	ams_delta_set_bias_level(&ams_delta_audio_card, SND_SOC_BIAS_STANDBY);
++
++	platform_device_unregister(cx20442_platform_device);
++	platform_device_unregister(ams_delta_audio_platform_device);
++}
++module_exit(ams_delta_module_exit);
++
++MODULE_AUTHOR("Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>");
++MODULE_DESCRIPTION("ALSA SoC driver for Amstrad E3 (Delta) videophone");
++MODULE_LICENSE("GPL");
