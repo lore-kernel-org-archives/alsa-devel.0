@@ -1,29 +1,23 @@
-From: Jelle de Jong <jelledejong@powercraft.nl>
-Subject: how to configure .asoundrc to make arecord use a
-	default device
-Date: Wed, 29 Jul 2009 14:46:54 +0200
-Message-ID: <4A7044BE.5040509@powercraft.nl>
+From: "Christian Steffen" <c-steffen@web.de>
+Subject: clicking noise with Sigmatel STAC9202
+Date: Wed, 29 Jul 2009 15:06:02 +0200
+Message-ID: <000501ca104d$533e2bb0$f9ba8310$@de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080703040708090100060905"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay02.cambriumhosting.nl (relay02.cambriumhosting.nl
-	[217.19.16.174])
-	by alsa0.perex.cz (Postfix) with ESMTP id A6C8A103875
+Received: from fmmailgate02.web.de (fmmailgate02.web.de [217.72.192.227])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3839F103884
 	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Jul 2009 14:46:56 +0200 (CEST)
-Received: from relay02.cambriumhosting.nl (localhost [127.0.0.1])
-	by relay02.cambriumhosting.nl (Postfix) with ESMTP id 4B47160001F7
+	Wed, 29 Jul 2009 15:06:04 +0200 (CEST)
+Received: from smtp08.web.de (fmsmtp08.dlan.cinetic.de [172.20.5.216])
+	by fmmailgate02.web.de (Postfix) with ESMTP id 12AB710EAEFBC
 	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Jul 2009 14:46:55 +0200 (CEST)
-Received: from ashley.powercraft.nl (84-245-3-195.dsl.cambrium.nl
-	[84.245.3.195])
-	by relay02.cambriumhosting.nl (Postfix) with ESMTP id 2DABB60000AC
-	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Jul 2009 14:46:55 +0200 (CEST)
-Received: from [192.168.1.234] (unknown [192.168.1.234])
-	by ashley.powercraft.nl (Postfix) with ESMTPSA id F285B23BC305
-	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Jul 2009 14:46:54 +0200 (CEST)
+	Wed, 29 Jul 2009 15:06:03 +0200 (CEST)
+Received: from [92.228.211.91] (helo=Crusoe)
+	by smtp08.web.de with asmtp (WEB.DE 4.110 #277) id 1MW8r4-0005hU-00
+	for alsa-devel@alsa-project.org; Wed, 29 Jul 2009 15:06:02 +0200
+Content-Language: de
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,116 +30,50 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------080703040708090100060905
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Hello to all subscribers,
 
-Hello everybody,
 
-I am having some issues making arecord use the default device for 
-recording. Could somebody help me get a working .asoundrc configuration?
+I'm new to this list and will start directly with my problem:
 
-I attached all information in the attachment and also made temporary 
-hyperlink: http://debian.pastebin.com/m52601230
+I'm running some ubuntu linux on a device called "o2 Joggler", which is a
+digital picture frame with touchscreen control.
+Its chipsets are from intel, the cpu is an intel atom, and the other
+hardware devices are controlled by an Intel System Controller Hub "Poulsbo".
 
-It works with:
-arecord -v -f S16_LE -r 44100 -D audiodevice0 ~/record0.wav
-but it does not work with:
-arecord -v -f S16_LE -r 44100 ~/record0.wav
+I'm running kernel 2.6.30 and the newest alsa version 1.0.20.
 
-background:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2008-November/012366.html
+This is lscpi output:
+>>00:1b.0 Audio Device: Intel Corporation System Controller Hub (SCH
+Poulsbo) HD Audio Controller (rev 07)
 
-Thanks in advance,
+cat proc/asound/cards:
+>>0 [MID     ]: HDA-Intel - HDA Intel MID
+>>              HDA Intel MID at 0xd01c000 irq 16
 
-Best regards,
+The Codec is a
+>>Sigmatel STAC9202
 
-Jelle de Jong
 
---------------080703040708090100060905
-Content-Type: text/plain;
- name="udev-alsa-setup-debug.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="udev-alsa-setup-debug.txt"
+My problem is, that sound is working, but has constant clicking noise in the
+background, also if the sound is completely muted.
+First I thought this sound would come from some hdd or whatever, but the
+device has no mechanical parts. But this is what it sounds like - Irregular
+clicking noise.
 
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tCgojIGxzIC1oYWwgL2Rldi9zbmQvCnRvdGFsIDAKZHJ3eHIt
-eHIteCAgMiByb290IHJvb3QgICAgICAgMzIwIDIwMDktMDctMjkgMTA6MjEgLgpkcnd4ci14
-ci14IDE0IHJvb3Qgcm9vdCAgICAgIDQuOUsgMjAwOS0wNy0yOSAxMjoyNiAuLgpjcnctcnct
-LS0tICAxIHJvb3QgdXNlcjAgMTE2LCAgIDAgMjAwOS0wNy0yOSAxMDoyMSBjb250cm9sQzAK
-Y3J3LXJ3LS0tLSAgMSByb290IHVzZXIxIDExNiwgIDMyIDIwMDktMDctMjkgMTA6MjEgY29u
-dHJvbEMxCmNydy1ydy0tLS0gIDEgcm9vdCB1c2VyMiAxMTYsICA2NCAyMDA5LTA3LTI5IDEw
-OjIxIGNvbnRyb2xDMgpjcnctcnctLS0tICAxIHJvb3QgdXNlcjMgMTE2LCAgOTYgMjAwOS0w
-Ny0yOSAxMDoyMSBjb250cm9sQzMKY3J3LXJ3LS0tLSAgMSByb290IHVzZXIwIDExNiwgIDI0
-IDIwMDktMDctMjkgMTA6MjEgcGNtQzBEMGMKY3J3LXJ3LS0tLSAgMSByb290IHVzZXIwIDEx
-NiwgIDE2IDIwMDktMDctMjkgMTE6MjYgcGNtQzBEMHAKY3J3LXJ3LS0tLSAgMSByb290IHVz
-ZXIxIDExNiwgIDU2IDIwMDktMDctMjkgMTA6MjEgcGNtQzFEMGMKY3J3LXJ3LS0tLSAgMSBy
-b290IHVzZXIxIDExNiwgIDQ4IDIwMDktMDctMjkgMTA6NDAgcGNtQzFEMHAKY3J3LXJ3LS0t
-LSAgMSByb290IHVzZXIyIDExNiwgIDg4IDIwMDktMDctMjkgMTA6MjEgcGNtQzJEMGMKY3J3
-LXJ3LS0tLSAgMSByb290IHVzZXIyIDExNiwgIDgwIDIwMDktMDctMjkgMTI6MjYgcGNtQzJE
-MHAKY3J3LXJ3LS0tLSAgMSByb290IHVzZXIzIDExNiwgMTIwIDIwMDktMDctMjkgMTA6MjEg
-cGNtQzNEMGMKY3J3LXJ3LS0tLSAgMSByb290IHVzZXIzIDExNiwgMTEyIDIwMDktMDctMjkg
-MTA6MzcgcGNtQzNEMHAKY3J3LXJ3LS0tLSAgMSByb290IGF1ZGlvIDExNiwgICAxIDIwMDkt
-MDctMjkgMTA6MjEgc2VxCmNydy1ydy0tLS0gIDEgcm9vdCBhdWRpbyAxMTYsICAzMyAyMDA5
-LTA3LTI5IDEwOjIxIHRpbWVyCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCiMgY2F0IC9wcm9jL2Fz
-b3VuZC9jYXJkcwogMCBbYXVkaW9kZXZpY2UwICAgXTogVVNCLUF1ZGlvIC0gQy1NZWRpYSBV
-U0IgQXVkaW8gRGV2aWNlCiAgICAgICAgICAgICAgICAgICAgICBDLU1lZGlhIFVTQiBBdWRp
-byBEZXZpY2UgICAgYXQgdXNiLTAwMDA6MDA6MTMuMC0xLCBmdWxsIHNwZWVkCiAxIFthdWRp
-b2RldmljZTEgICBdOiBVU0ItQXVkaW8gLSBDLU1lZGlhIFVTQiBBdWRpbyBEZXZpY2UKICAg
-ICAgICAgICAgICAgICAgICAgIEMtTWVkaWEgVVNCIEF1ZGlvIERldmljZSAgICBhdCB1c2It
-MDAwMDowMDoxMy4wLTIsIGZ1bGwgc3BlZWQKIDIgW2F1ZGlvZGV2aWNlMiAgIF06IFVTQi1B
-dWRpbyAtIEMtTWVkaWEgVVNCIEF1ZGlvIERldmljZQogICAgICAgICAgICAgICAgICAgICAg
-Qy1NZWRpYSBVU0IgQXVkaW8gRGV2aWNlICAgIGF0IHVzYi0wMDAwOjAwOjEzLjMtMSwgZnVs
-bCBzcGVlZAogMyBbYXVkaW9kZXZpY2UzICAgXTogVVNCLUF1ZGlvIC0gQy1NZWRpYSBVU0Ig
-QXVkaW8gRGV2aWNlCiAgICAgICAgICAgICAgICAgICAgICBDLU1lZGlhIFVTQiBBdWRpbyBE
-ZXZpY2UgICAgYXQgdXNiLTAwMDA6MDA6MTMuMy0yLCBmdWxsIHNwZWVkCgotLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0KCiMgY2F0IC9ob21lL3VzZXIwLy5hc291bmRyYwpwY20uIWRlZmF1bHQgewog
-ICB0eXBlIHBsdWcKICAgc2xhdmUucGNtIGRtaXhlcgp9CnBjbS5kbWl4ZXIgewogICB0eXBl
-IGRtaXgKICAgaXBjX2tleSAyMDQ4CiAgIHNsYXZlLnBjbSBodzphdWRpb2RldmljZTAKfQpj
-dGwuZG1peGVyIHsKICAgdHlwZSBodwogICBjYXJkIGF1ZGlvZGV2aWNlMAp9CnBjbS5kc3Ag
-ewogICAgdHlwZSBwbHVnCiAgICBzbGF2ZS5wY20gZG1peGVyCn0KY3RsLm1peGVyIHsKICAg
-IHR5cGUgaHcKICAgIGNhcmQgYXVkaW9kZXZpY2UwCn0KCi0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoK
-c3UgdXNlcjAKCiMgVGhpcyBpcyB0aGUgaXNzdWUuIGhvdyBjYW4gSSBjb25maWd1cmUgdGhl
-IGFzb3VuZHJjIHNvIHRoYXQgYXJlY29yZAojIHVzZXMgYXVkaW9kZXZpY2UwIGJ5IGRlZmF1
-bHQgbGlrZSBzcGVha2VyLXRlc3QgYWxyZWFkeSBkb2VzIGZvciBwbGF5aW5nLgoKJCBhcmVj
-b3JkIC12IC1mIFMxNl9MRSAtciA0NDEwMCB+L3JlY29yZDEud2F2CkFMU0EgbGliIHBjbV9k
-bWl4LmM6OTQ3OihzbmRfcGNtX2RtaXhfb3BlbikgVGhlIGRtaXggcGx1Z2luIHN1cHBvcnRz
-IG9ubHkgcGxheWJhY2sgc3RyZWFtCmFyZWNvcmQ6IG1haW46NjA4OiBhdWRpbyBvcGVuIGVy
-cm9yOiBJbnZhbGlkIGFyZ3VtZW50CgokIGFyZWNvcmQgLXYgLWYgUzE2X0xFIC1yIDQ0MTAw
-IC1EIGh3OmF1ZGlvZGV2aWNlMCB+L3JlY29yZDAud2F2ClJlY29yZGluZyBXQVZFICcvaG9t
-ZS91c2VyMC9yZWNvcmQwLndhdicgOiBTaWduZWQgMTYgYml0IExpdHRsZSBFbmRpYW4sIFJh
-dGUgNDQxMDAgSHosIE1vbm8KSGFyZHdhcmUgUENNIGNhcmQgMCAnQy1NZWRpYSBVU0IgQXVk
-aW8gRGV2aWNlICAgJyBkZXZpY2UgMCBzdWJkZXZpY2UgMApJdHMgc2V0dXAgaXM6CiAgc3Ry
-ZWFtICAgICAgIDogQ0FQVFVSRQogIGFjY2VzcyAgICAgICA6IFJXX0lOVEVSTEVBVkVECiAg
-Zm9ybWF0ICAgICAgIDogUzE2X0xFCiAgc3ViZm9ybWF0ICAgIDogU1RECiAgY2hhbm5lbHMg
-ICAgIDogMQogIHJhdGUgICAgICAgICA6IDQ0MTAwCiAgZXhhY3QgcmF0ZSAgIDogNDQxMDAg
-KDQ0MTAwLzEpCiAgbXNiaXRzICAgICAgIDogMTYKICBidWZmZXJfc2l6ZSAgOiAyMjA1MAog
-IHBlcmlvZF9zaXplICA6IDU1MTMKICBwZXJpb2RfdGltZSAgOiAxMjUwMTEKICB0c3RhbXBf
-bW9kZSAgOiBOT05FCiAgcGVyaW9kX3N0ZXAgIDogMQogIGF2YWlsX21pbiAgICA6IDU1MTMK
-ICBwZXJpb2RfZXZlbnQgOiAwCiAgc3RhcnRfdGhyZXNob2xkICA6IDEKICBzdG9wX3RocmVz
-aG9sZCAgIDogMjIwNTAKICBzaWxlbmNlX3RocmVzaG9sZDogMAogIHNpbGVuY2Vfc2l6ZSA6
-IDAKICBib3VuZGFyeSAgICAgOiA2MjA2NTIzMjM2NDY5OTY0ODAwCiAgYXBwbF9wdHIgICAg
-IDogMAogIGh3X3B0ciAgICAgICA6IDAKXkNBYm9ydGVkIGJ5IHNpZ25hbCBJbnRlcnJ1cHQu
-Li4KCiQgbHMgLWhhbCB+L3JlY29yZCoud2F2Ci1ydy1yLS0tLS0gMSB1c2VyMCB1c2VyMCAx
-LjhNIDIwMDktMDctMjkgMTI6NTYgL2hvbWUvdXNlcjAvcmVjb3JkMC53YQoKLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tCgpzdSAtYyAic3BlYWtlci10ZXN0IC1jIDIgJiBzcGVha2VyLXRlc3QgLWMg
-MiAmIiB1c2VyMAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCg==
---------------080703040708090100060905
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This noise immediately starts during boot up as soon as the module is loaded
+and before X11 has started.
+I already tried options like "position_fix=1 or 2" and different
+"model="-options with no success.
+"position_fix" didn't do anything at all and different model-options have
+muted the device completely.
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---------------080703040708090100060905--
+Has someone any idea to get this working?
+The device comes with an own (hardly) closed linux which runs a 2.6.24
+kernel - here sound is working with no problems at all.
+
+If you need further info, let me know.
+
+
+Thanks in advance, best!
+Christian 
