@@ -1,18 +1,21 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: pulseaudio workaround for alsa-driver bug
-Date: Wed, 29 Jul 2009 09:47:52 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.0907290947190.4225@eeebox2.perex-int.cz>
-References: <4A6F479F.7080804@linuxlighthouse.com>
-	<s5h4oswm0xl.wl%tiwai@suse.de>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: Using Alsa for AD1981b on 9263
+Date: Wed, 29 Jul 2009 10:08:07 +0100
+Message-ID: <200907291008.07528.gineera@aspect135.co.uk>
+References: <33A0EEB8D50198449794A1AB9DEB1E01866417CA0C@copuex01.coreobjects.com>
+	<20090728113906.GC26452@sirena.org.uk>
+	<33A0EEB8D50198449794A1AB9DEB1E01866417CB9C@copuex01.coreobjects.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id D39AF10383F
+Received: from ttsmtp.cpwnetworks.com (ttsmtp-4.cpwnetworks.com
+	[62.24.128.245])
+	by alsa0.perex.cz (Postfix) with ESMTP id 667E5103847
 	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Jul 2009 09:47:52 +0200 (CEST)
-In-Reply-To: <s5h4oswm0xl.wl%tiwai@suse.de>
+	Wed, 29 Jul 2009 10:57:15 +0200 (CEST)
+In-Reply-To: <33A0EEB8D50198449794A1AB9DEB1E01866417CB9C@copuex01.coreobjects.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,45 +25,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: jack craig <jackc@linuxlighthouse.com>, alsa-devel@alsa-project.org
+To: Shilpa Kedar Walvekar <shilpa.walvekar@coreobjects.com>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 29 Jul 2009, Takashi Iwai wrote:
-
-> At Tue, 28 Jul 2009 11:46:55 -0700,
-> jack craig wrote:
->>
->> Hi alsa-developers,
->>
->> I wanted to report my recent issues with audio on fc11.
->>
->> after an update from fc10, my audio started failing. not the failure to
->> year any audio,
->> but instead, it would start off fine and then tail spin. i am using
->> mplayer to
->> play an internet asf stream to the local audio.
->>
->> the stream processing failure is described in
->> https://bugzilla.redhat.com/show_bug.cgi?id=514213
->>
->> i was able to get a workaround from the #pulseaudio guys, but!
->>
->> they encouraged me to report my experience and its fix to you to
->> encourage the fix of this snd_pcm_delay() defect.
+On Wednesday 29 July 2009 08:31, Shilpa Kedar Walvekar wrote:
+> Hi Mark,
 >
-> Could you please summarize and post together?  In that way, we can
-> better discuss on ML.
+> I built the alsa lib with " --without-versioned". But still if I give aplay
+> -l, I get following:
+>
+> # aplay -l
+> **** List of PLAYBACK Hardware Devices ****
+> ALSA lib conf.c:2700:(snd_config_hooks_call) Cannot open shared library
+> (null) ALSA lib conf.c:3079:(snd_config_update_r) hooks failed, removing
+> configuration aplay: device_list:232: control open (0): No such file or
+> directory
+>
+> Atmel is not responding for this issue. I have already placed a query on
+> Atmel forum as well. But no reply from there.
 
-It seems that this issue is already fixed in mainstream:
+During my work using ALSA on ARM the Alsa-lib configure option was
 
-https://bugzilla.redhat.com/show_bug.cgi?id=506075
+	--with-versioned=no
 
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=f708eb1d71dc8ffb184da9f0bc53461c6dc10653
+but maybe either works.  There are a couple of other possibilities here:-
 
- 						Jaroslav
+http://mailman.alsa-project.org/pipermail/alsa-devel/2008-August/009898.html
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+HTH
+
+Alan
