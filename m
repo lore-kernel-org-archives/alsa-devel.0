@@ -1,19 +1,18 @@
-From: Artem Makhutov <artem@makhutov.org>
-Subject: Re: Huawei K3715 UMTS stick and alsa
-Date: Wed, 29 Jul 2009 11:33:31 +0200
-Message-ID: <20090729093331.GB26953@titan.makhutov-it.de>
-References: <20090726224300.GA26953@titan.makhutov-it.de>
-	<4A6EAA7E.4090207@ladisch.de>
+From: Roel Kluin <roel.kluin@gmail.com>
+Subject: [PATCH] aedsp16: Buffer overflow
+Date: Wed, 29 Jul 2009 11:46:59 +0200
+Message-ID: <4A701A93.1060709@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bane.moelleritberatung.de (bane.moelleritberatung.de
-	[77.37.2.25]) by alsa0.perex.cz (Postfix) with ESMTP id E2618103852
+Received: from mail-ew0-f228.google.com (mail-ew0-f228.google.com
+	[209.85.219.228])
+	by alsa0.perex.cz (Postfix) with ESMTP id F3C9B103867
 	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Jul 2009 11:33:31 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4A6EAA7E.4090207@ladisch.de>
+	Wed, 29 Jul 2009 11:44:07 +0200 (CEST)
+Received: by ewy28 with SMTP id 28so702932ewy.32
+	for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2009 02:44:07 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,57 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: fizban@tin.it, alsa-devel@alsa-project.org, Andrew Morton <akpm@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+DSPVersion is declared as char[3], but the sprintf writes at least 4 bytes
+including terminating null.
 
-On Tue, Jul 28, 2009 at 09:36:30AM +0200, Clemens Ladisch wrote:
-> Artem Makhutov wrote:
-> > i am wondering if it is possible to write a quirk in usbquirks.h for a Huawei
-> > K3715 UMTS stick to make the audio interfaces available in linux.
-> 
-> What kind of audio does this UMTS stick have?
+Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+---
+Found with Parfait, http://research.sun.com/projects/parfait/
 
-This is a good question. In Windows you can use the Huawei "Mobile Partner"
-software to make voice calls using the UMTS stick. You just start the software
-and can dial a phone number from there. Then you can use your Headset and/or
-Noteboot Microphone to talk with the other partie.
+on line 498:
+static char     DSPVersion[CARDVERLEN + 1] __initdata = {0, };
+
+diff --git a/sound/oss/aedsp16.c b/sound/oss/aedsp16.c
+index 3ee9900..35b5912 100644
+--- a/sound/oss/aedsp16.c
++++ b/sound/oss/aedsp16.c
+@@ -325,8 +325,9 @@
+ /*
+  * Size of character arrays that store name and version of sound card
+  */
+-#define CARDNAMELEN 15		/* Size of the card's name in chars     */
+-#define CARDVERLEN  2		/* Size of the card's version in chars  */
++#define CARDNAMELEN	15	/* Size of the card's name in chars     */
++#define CARDVERLEN	10	/* Size of the card's version in chars	*/
++#define CARDVERDIGITS	2	/* Number of digits in the version	*/
  
-> > This two interfaces are used for audio (I have sniffed in Windows):
-> > 
-> > bEndpointAddress     0x83  EP 3 IN
-> > bEndpointAddress     0x02  EP 2 OUT
-> 
-> The lsusb output shows that these are bulk endpoints.  The snd-usb-audio
-> driver is designed for isochronous endpoints; a simple quirk would not
-> suffice.
-
-Ok, thank you for the info.
-
-I did some more tests and have seen that Windows is creating 3 serial ports
-(COM15, COM16, COM17) for the UMTS stick. It sends the AT commands to COM17 and
-(I believe) receives and sends audio over COM16. It is not possible to send any
-AT commands to COM16.
-
-If you create a dialup connection then COM15 will be used for it.
-
-In Linux the option module is also creating 3 serial ports (/dev/ttyUSB0,
-/dev/ttyUSB1 and /dev/ttyUSB2).
-
-I have done some small test with some AT commands using Windows and was trying
-to get audio to COM16 without the "Mobile Partner" software. But it did not
-worked.
-
-> > The payload of this interfaces is 320 bytes.
-> 
-> How many bytes per second?
-
-Unfortunately I did not had much time to do more detailed test.
-I will do some more test and will report this.
-
-Thanks and best regards, Artem
-
-PS: What is a good software for doing USB reverse engineering?
-I have seen usb-robot and USB Snoopy on Linux, but USB Snoopy is from the year 2000...
+ #if defined(CONFIG_SC6600)
+ /*
+@@ -410,7 +411,7 @@
+ 
+ static int      soft_cfg __initdata = 0;	/* bitmapped config */
+ static int      soft_cfg_mss __initdata = 0;	/* bitmapped mss config */
+-static int      ver[CARDVERLEN] __initdata = {0, 0};	/* DSP Ver:
++static int      ver[CARDVERDIGITS] __initdata = {0, 0};	/* DSP Ver:
+ 						   hi->ver[0] lo->ver[1] */
+ 
+ #if defined(CONFIG_SC6600)
+@@ -957,7 +958,7 @@ static int __init aedsp16_dsp_version(int port)
+ 	 * string is finished.
+ 	 */
+ 		ver[len++] = ret;
+-	  } while (len < CARDVERLEN);
++	  } while (len < CARDVERDIGITS);
+ 	sprintf(DSPVersion, "%d.%d", ver[0], ver[1]);
+ 
+ 	DBG(("success.\n"));
