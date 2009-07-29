@@ -1,22 +1,18 @@
-From: =?ISO-8859-1?Q?Sune_M=F8lgaard?= <sune@molgaard.org>
-Subject: Master channel is only mono
-Date: Wed, 29 Jul 2009 17:11:59 +0200
-Message-ID: <4A7066BF.9000603@molgaard.org>
+From: stan <gryt2@q.com>
+Subject: Re: how to configure .asoundrc to make arecord use a
+ default device
+Date: Wed, 29 Jul 2009 08:28:40 -0700
+Message-ID: <BLU0-SMTP84CC10D8E05E93F48EBC3DEE120@phx.gbl>
+References: <4A7044BE.5040509@powercraft.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.nfit.au.dk (nfitmail.nfit.au.dk [130.225.31.129])
-	by alsa0.perex.cz (Postfix) with ESMTP id 801CE24921
+Received: from blu0-omc3-s24.blu0.hotmail.com (blu0-omc3-s24.blu0.hotmail.com
+	[65.55.116.99]) by alsa0.perex.cz (Postfix) with ESMTP id 4799F103849
 	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Jul 2009 17:12:19 +0200 (CEST)
-Received: from mfe04.daimi.au.dk (localhost [127.0.0.1])
-	by smtp.nfit.au.dk (Postfix) with ESMTP id 93D471D2F5B
-	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Jul 2009 17:12:18 +0200 (CEST)
-Received: from [62.199.96.168] ([62.199.96.168]) (authenticated bits=0)
-	by mfe04.daimi.au.dk (8.13.8/8.13.8) with ESMTP id n6TFC02c012969
-	for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2009 17:12:14 +0200
+	Wed, 29 Jul 2009 17:27:20 +0200 (CEST)
+In-Reply-To: <4A7044BE.5040509@powercraft.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,23 +25,20 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-As per gnubien's advice on #alsa on irc.freenode.net, I have run =
+On Wed, 29 Jul 2009 14:46:54 +0200
+Jelle de Jong <jelledejong@powercraft.nl> wrote:
 
-alsa-info.sh - the URL is =
+> Hello everybody,
+> 
+> I am having some issues making arecord use the default device for 
+> recording. Could somebody help me get a working .asoundrc
+> configuration?
 
-http://www.alsa-project.org/db/?f=3Dfbe93f301ca214007e66c521cd6c41a17a604c7=
-9 .
+> It works with:
+> arecord -v -f S16_LE -r 44100 -D audiodevice0 ~/record0.wav
+> but it does not work with:
+> arecord -v -f S16_LE -r 44100 ~/record0.wav
 
-My problem is that the master channel for my card is shown to be mono =
+Make audiodevice0 your default device
 
-only, which I don't think seems right...
-
-Also, sound in general is rather low.
-
-My system is a very new Dell Studio laptop - I have loaded snd-hda-intel =
-
-with mode=3Ddell-m6 as per the kernel documentation.
-
-Best regards,
-
-Sune M=F8lgaard
+http://www.alsa-project.org/main/index.php/Asoundrc#The_default_plugin
