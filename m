@@ -1,19 +1,18 @@
-From: Shilpa Kedar Walvekar <shilpa.walvekar@coreobjects.com>
-Subject: Re: Using Alsa for AD1981b on 9263
-Date: Wed, 29 Jul 2009 13:01:18 +0530
-Message-ID: <33A0EEB8D50198449794A1AB9DEB1E01866417CB9C@copuex01.coreobjects.com>
-References: <33A0EEB8D50198449794A1AB9DEB1E01866417CA0C@copuex01.coreobjects.com>
-	<20090728113906.GC26452@sirena.org.uk>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: pulseaudio workaround for alsa-driver bug
+Date: Wed, 29 Jul 2009 09:47:52 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.0907290947190.4225@eeebox2.perex-int.cz>
+References: <4A6F479F.7080804@linuxlighthouse.com>
+	<s5h4oswm0xl.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from colaex01.coreobjects.com (mailus.coreobjects.com [67.89.120.9])
-	by alsa0.perex.cz (Postfix) with ESMTP id 18520103853
-	for <Alsa-devel@alsa-project.org>;
-	Wed, 29 Jul 2009 09:33:13 +0200 (CEST)
-In-Reply-To: <20090728113906.GC26452@sirena.org.uk>
-Content-Language: en-US
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id D39AF10383F
+	for <alsa-devel@alsa-project.org>;
+	Wed, 29 Jul 2009 09:47:52 +0200 (CEST)
+In-Reply-To: <s5h4oswm0xl.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,45 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Alsa-devel@alsa-project.org" <Alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: jack craig <jackc@linuxlighthouse.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+On Wed, 29 Jul 2009, Takashi Iwai wrote:
 
-I built the alsa lib with " --without-versioned". But still if I give aplay -l, I get following:
+> At Tue, 28 Jul 2009 11:46:55 -0700,
+> jack craig wrote:
+>>
+>> Hi alsa-developers,
+>>
+>> I wanted to report my recent issues with audio on fc11.
+>>
+>> after an update from fc10, my audio started failing. not the failure to
+>> year any audio,
+>> but instead, it would start off fine and then tail spin. i am using
+>> mplayer to
+>> play an internet asf stream to the local audio.
+>>
+>> the stream processing failure is described in
+>> https://bugzilla.redhat.com/show_bug.cgi?id=514213
+>>
+>> i was able to get a workaround from the #pulseaudio guys, but!
+>>
+>> they encouraged me to report my experience and its fix to you to
+>> encourage the fix of this snd_pcm_delay() defect.
+>
+> Could you please summarize and post together?  In that way, we can
+> better discuss on ML.
 
-# aplay -l
-**** List of PLAYBACK Hardware Devices ****
-ALSA lib conf.c:2700:(snd_config_hooks_call) Cannot open shared library (null)
-ALSA lib conf.c:3079:(snd_config_update_r) hooks failed, removing configuration
-aplay: device_list:232: control open (0): No such file or directory
+It seems that this issue is already fixed in mainstream:
 
-Atmel is not responding for this issue. I have already placed a query on Atmel forum as well. But no reply from there.
+https://bugzilla.redhat.com/show_bug.cgi?id=506075
 
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=f708eb1d71dc8ffb184da9f0bc53461c6dc10653
 
-Thanks & Regards,
---Shilpa.
+ 						Jaroslav
 
-
------Original Message-----
-From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
-Sent: Tuesday, July 28, 2009 5:09 PM
-To: Shilpa Kedar Walvekar
-Cc: Alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Using Alsa for AD1981b on 9263
-
-On Tue, Jul 28, 2009 at 04:59:12PM +0530, Shilpa Kedar Walvekar wrote:
-
-> **** List of PLAYBACK Hardware Devices ****
-> ALSA lib conf.c:2700:(snd_config_hooks_call) Cannot open shared library (null)
-> ALSA lib conf.c:3079:(snd_config_update_r) hooks failed, removing configuration
-> aplay: device_list:232: control open (0): No such file or directory
-
-> We are not able to get if module is getting loaded, then why aplay doesn't list the device?
-
-> Please help us to get the audio codec working.
-
-This is a toolchain problem.  Normally it's that the uclibc toolchain
-Atmel use by default doesn't support symbol versioning which means you
-have to pass a configure option to ALSA to disable symbol versioning but
-you're likely to get better help from an Atmel-specific place.
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
