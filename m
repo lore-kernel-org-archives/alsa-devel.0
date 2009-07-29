@@ -1,25 +1,19 @@
-From: "Jason Bell" <j.bell@cqu.edu.au>
-Subject: Chat 50 at usb-0000:00:1a.7-4.3 audio issues
-Date: Wed, 29 Jul 2009 12:43:40 +1000
-Message-ID: <AFC5FC5923CF194BA8CCD128CAFF92110D712F80@UNIMAIL.staff.ad.cqu.edu.au>
+From: John Bonesio <bones@secretlab.ca>
+Subject: [PATCH] ASoC: MPC5200: Changed how appl_ptr is
+	initialized
+Date: Tue, 28 Jul 2009 22:26:51 -0700
+Message-ID: <20090729052608.20653.62429.stgit@riker>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx.cqu.edu.au (hawk.cqu.edu.au [138.77.5.14])
-	by alsa0.perex.cz (Postfix) with ESMTP id 13A12248B0
+Received: from mail-pz0-f188.google.com (mail-pz0-f188.google.com
+	[209.85.222.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5819F103842
 	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Jul 2009 04:43:47 +0200 (CEST)
-Received: from [127.0.0.1] (helo=hawk.cqu.edu.au)
-	by mx.cqu.edu.au with esmtp (Exim 4.63)
-	(envelope-from <j.bell@cqu.edu.au>) id 1MVz8p-0003lN-MH
-	for alsa-devel@alsa-project.org; Wed, 29 Jul 2009 12:43:43 +1000
-Received: from UNIMAIL.staff.ad.cqu.edu.au (romulus.staff.ad.cqu.edu.au
-	[138.77.34.92])
-	by hawk.cqu.edu.au (8.14.2/8.14.2) with ESMTP id n6T2hbcg014447
-	for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2009 12:43:43 +1000 (EST)
-	(envelope-from j.bell@cqu.edu.au)
-Content-class: urn:content-classes:message
+	Wed, 29 Jul 2009 07:27:01 +0200 (CEST)
+Received: by pzk26 with SMTP id 26so352266pzk.16
+	for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2009 22:27:00 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,67 +23,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Grant Likely <grant.likely@secretlab.ca>, Jon Smirl <jonsmirl@gmail.com>, Eric Millbrandt <emillbrandt@dekaresearch.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-G'day ASLA Developers
+Hello,
 
-I am hoping that someone might be able to assist me with an audio issue
-I am having.
+I've been working in the ALSA SOC area for the MPC5200. I've noticed that
+in the routine psc_dma_trigger() in sound/soc/fsl/mpc5200_dma.c there are
+times when the computed value for s->appl_ptr ends up wrapping negative. This
+occurs when
+    s->runtime->control->appl_ptr
+is less than
+    runtime->period_size * runtime->periods
 
-Recently I have begun using the Dell T3500 precisions as an Video
-Conferencing machine (using the Access Grid and EVO Software). 
+It seemed like this would occur at then of the data stream or when the data
+stream is small (smaller than runtime->period_size * runtime->periods).
 
-Information on hardware specs, etc can be found at
-http://www.alsa-project.org/db/?f=7f33770c89802b0ab3132f21914cc6ca7f6626
-37
+As far as I can tell, s->appl_ptr is supposed to be the previous value of
+s->runtime->control->appl_ptr, so the driver can send out the right number
+of bytes (from previous appl_ptr to current appl_ptr) to avoid pops and clicks
+at the end of the audio.
 
-Unfortunately, I have issues when using either a clearone Chat50 or
-Chat150 (these are essentially speaker phone devices [See
-http://www.clearone.com/products/product.php?cat=9&prod=94 for device
-description]) with the speaker audio being distorted and static, cracks
-and popping type sounds being introduced.  The microphone audio quality
-is fine.  These issues were seen using Fedora 10 and Fedora 11.
+So it appears the assumption in this code is wrong, that the previous
+s->runtime->control->appl_ptr is always
+rumtime->period_size * runtime->periods bytes prior to the current
+s->runtime->control->appl_ptr.
 
-I tried upgrading to the latest ALSA drivers and "testing" kernels
-without any success (on a previous Fedora 10 install).  It was found
-(still in the initial stages of testings) that if I plugged the Chat50
-device into a USB hub, rather than directly into the Machine, the audio
-issues disappeared (at least for some of the software). 
+I took out this code and instead added code to intialize s->appl_ptr to 0
+in psc_dma_open().
 
-It should also be noted that I have a number of Dell T3400 series
-machines that don't experience these issues.
+Does this fix seem right?
 
-Additionally is should be mentioned that the T3400 uses the ICH9 chipset
-family whereas the T3500 uses the ICH10 chipset family which includes
-the USB controller.
+- John
 
-Just wondering if there is anything I can do to resolve this issue?
+The computation for appl_ptr in the trigger() routine made a bad assumption
+when the stream is at the end of the file and there is not
+(periods * period_size) bytes remaining in the data.
 
-Many thanks in advance,
-Jason.
+This causes playback issues when the total stream size is less than this
+amount, as the s->appl_ptr wrapps negative and the data is never played.
 
---------------------------------------------
-Jason Bell, B.I.T. (Honours)
+Signed-off-by: John Bonesio <bones@secretlab.ca>
+---
 
-Research Systems Support Officer
-Information Technology Division 
-CQ University Australia
+ sound/soc/fsl/mpc5200_dma.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
 
-Australian Research Collaboration Service
-http://www.arcs.org.au/
-
-E-mail : j.bell@cqu.edu.au
-         jason.bell@arcs.org.au
-Work   : +61 7 4930 9229
-Mobile : 0409 630897
-Postal : Building 19
-         Central Queensland University
-         Bruce Highway
-         Rockhampton, Queensland, Australia, 4702
---------------------------------------------
-Patience is a virtue.
-
-But if I wanted Patience,
-I would have become a Doctor.
---------------------------------------------
+diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
+index b2eba27..cfe0ea4 100644
+--- a/sound/soc/fsl/mpc5200_dma.c
++++ b/sound/soc/fsl/mpc5200_dma.c
+@@ -181,8 +181,6 @@ static int psc_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		 * end of stream and not over running it.
+ 		 */
+ 		s->runtime = runtime;
+-		s->appl_ptr = s->runtime->control->appl_ptr -
+-				(runtime->period_size * runtime->periods);
+ 
+ 		/* Fill up the bestcomm bd queue and enable DMA.
+ 		 * This will begin filling the PSC's fifo.
+@@ -287,6 +285,7 @@ static int psc_dma_open(struct snd_pcm_substream *substream)
+ 	}
+ 
+ 	s->stream = substream;
++	s->appl_ptr = 0;
+ 	return 0;
+ }
