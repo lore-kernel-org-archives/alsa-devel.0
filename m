@@ -1,15 +1,25 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.32
-Date: Tue, 28 Jul 2009 22:43:41 +0100
-Message-ID: <20090728214341.GE4505@sirena.org.uk>
+From: Luke Yelavich <themuso@ubuntu.com>
+Subject: Assert when attempting to use pulseaudio git master
+ with the a52 plugin.
+Date: Wed, 29 Jul 2009 10:16:23 +1000
+Message-ID: <20090729001623.GA4187@strigy.yelavich.home>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id C8629247A2
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 256F824857
 	for <alsa-devel@alsa-project.org>;
-	Tue, 28 Jul 2009 23:43:47 +0200 (CEST)
+	Wed, 29 Jul 2009 02:16:31 +0200 (CEST)
+Received: from hutte.canonical.com ([91.189.90.181])
+	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
+	id 1MVwqL-00053F-VK
+	for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2009 01:16:29 +0100
+Received: from ppp121-44-101-58.lns10.syd6.internode.on.net ([121.44.101.58]
+	helo=localhost) by hutte.canonical.com with esmtpsa
+	(TLS-1.0:DHE_RSA_AES_128_CBC_SHA1:16) (Exim 4.69)
+	(envelope-from <themuso@ubuntu.com>) id 1MVwqL-0008KK-6g
+	for alsa-devel@alsa-project.org; Wed, 29 Jul 2009 01:16:29 +0100
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,36 +30,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 4ce2f2fe61002ab35c9333d52c95b5ff9e949f50:
-  Marek Vasut (1):
-        ASoC: Switch palm27x-asoc to jack detection api
+Hi all
+I would like to bring to your attention a bug in the a52 plugin when working with pulseaudio. The full details are found in the ALSA bug tracker: https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=4649
 
-are available in the git repository at:
+I am happy for follow ups to be in the bug or on this list.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.32
+Thanks
 
-Barry Song (2):
-      ASoC: blackfin I2S(TDM mode) CPU DAI driver
-      ASoC: board driver to connect bf5xx with ad1938
-
-Janusz Krzysztofik (1):
-      ASoC: CX20442: fix issues pointed out by subsystem maintainer
-
- sound/soc/blackfin/Kconfig         |   23 +++-
- sound/soc/blackfin/Makefile        |    6 +
- sound/soc/blackfin/bf5xx-ad1938.c  |  142 +++++++++++++++
- sound/soc/blackfin/bf5xx-tdm-pcm.c |  330 ++++++++++++++++++++++++++++++++++
- sound/soc/blackfin/bf5xx-tdm-pcm.h |   21 +++
- sound/soc/blackfin/bf5xx-tdm.c     |  343 ++++++++++++++++++++++++++++++++++++
- sound/soc/blackfin/bf5xx-tdm.h     |   14 ++
- sound/soc/codecs/cx20442.c         |   17 +-
- 8 files changed, 888 insertions(+), 8 deletions(-)
- create mode 100644 sound/soc/blackfin/bf5xx-ad1938.c
- create mode 100644 sound/soc/blackfin/bf5xx-tdm-pcm.c
- create mode 100644 sound/soc/blackfin/bf5xx-tdm-pcm.h
- create mode 100644 sound/soc/blackfin/bf5xx-tdm.c
- create mode 100644 sound/soc/blackfin/bf5xx-tdm.h
+Luke
