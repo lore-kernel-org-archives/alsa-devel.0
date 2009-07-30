@@ -1,8 +1,8 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCH 09/20] OMAP3: McBSP: Lower the maximum
-	buffersize for McBSP1, 3, 4, 5
-Date: Thu, 30 Jul 2009 15:49:32 +0300
-Message-ID: <1248958183-15015-10-git-send-email-eduardo.valentin__40852.4179518738$1248959110$gmane$org@nokia.com>
+Subject: [PATCH 14/20] OMAP: McBSP: Disable all wakeups upon
+	exit
+Date: Thu, 30 Jul 2009 15:49:37 +0300
+Message-ID: <1248958183-15015-15-git-send-email-eduardo.valentin__10299.502607859$1248959118$gmane$org@nokia.com>
 References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-2-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-3-git-send-email-eduardo.valentin@nokia.com>
@@ -12,11 +12,16 @@ References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-7-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-8-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-9-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-10-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-11-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-12-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-13-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-14-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1248958183-15015-9-git-send-email-eduardo.valentin@nokia.com>
+In-Reply-To: <1248958183-15015-14-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,61 +32,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>, Eero Nurkkala <ext-eero.nurkkala@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 
-Do not allow applications to use the full buffer found on
-McBSP1,3,4,5. Using the full buffer in threshold mode causes
-the McBSP buffer to run dry, which can be observed as channels
-are switching (in reality the channels are shifting).
+Quite a few wakeups were left on while the McBSP
+was being closed. This patch leaves no single wakeup
+enabled.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Signed-off-by: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+Acked-by: Eduardo Valentin <eduardo.valentin@nokia.com>
 ---
- arch/arm/mach-omap2/mcbsp.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+ arch/arm/plat-omap/mcbsp.c |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/mach-omap2/mcbsp.c b/arch/arm/mach-omap2/mcbsp.c
-index f837114..7d22caf 100644
---- a/arch/arm/mach-omap2/mcbsp.c
-+++ b/arch/arm/mach-omap2/mcbsp.c
-@@ -129,7 +129,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
- 		.rx_irq		= INT_24XX_MCBSP1_IRQ_RX,
- 		.tx_irq		= INT_24XX_MCBSP1_IRQ_TX,
- 		.ops		= &omap2_mcbsp_ops,
--		.buffer_size	= 0x7F,
-+		.buffer_size	= 0x6F,
- 	},
- 	{
- 		.phys_base	= OMAP34XX_MCBSP2_BASE,
-@@ -147,7 +147,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
- 		.rx_irq		= INT_24XX_MCBSP3_IRQ_RX,
- 		.tx_irq		= INT_24XX_MCBSP3_IRQ_TX,
- 		.ops		= &omap2_mcbsp_ops,
--		.buffer_size	= 0x7F,
-+		.buffer_size	= 0x6F,
- 	},
- 	{
- 		.phys_base	= OMAP34XX_MCBSP4_BASE,
-@@ -156,7 +156,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
- 		.rx_irq		= INT_24XX_MCBSP4_IRQ_RX,
- 		.tx_irq		= INT_24XX_MCBSP4_IRQ_TX,
- 		.ops		= &omap2_mcbsp_ops,
--		.buffer_size	= 0x7F,
-+		.buffer_size	= 0x6F,
- 	},
- 	{
- 		.phys_base	= OMAP34XX_MCBSP5_BASE,
-@@ -165,7 +165,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
- 		.rx_irq		= INT_24XX_MCBSP5_IRQ_RX,
- 		.tx_irq		= INT_24XX_MCBSP5_IRQ_TX,
- 		.ops		= &omap2_mcbsp_ops,
--		.buffer_size	= 0x7F,
-+		.buffer_size	= 0x6F,
- 	},
- };
- #define OMAP34XX_MCBSP_PDATA_SZ		ARRAY_SIZE(omap34xx_mcbsp_pdata)
+diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
+index cb4a455..3c6b98e 100644
+--- a/arch/arm/plat-omap/mcbsp.c
++++ b/arch/arm/plat-omap/mcbsp.c
+@@ -430,7 +430,6 @@ EXPORT_SYMBOL(omap_mcbsp_request);
+ void omap_mcbsp_free(unsigned int id)
+ {
+ 	struct omap_mcbsp *mcbsp;
+-	u16 wakeupen;
+ 
+ 	if (!omap_mcbsp_check_valid_id(id)) {
+ 		printk(KERN_ERR "%s: Invalid id (%d)\n", __func__, id + 1);
+@@ -452,9 +451,7 @@ void omap_mcbsp_free(unsigned int id)
+ 		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03) | CLOCKACTIVITY(0x03));
+ 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
+ 
+-		wakeupen = OMAP_MCBSP_READ(mcbsp->io_base, WAKEUPEN);
+-		wakeupen &= ~WAKEUPEN_ALL;
+-		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, wakeupen);
++		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, 0);
+ 	}
+ #endif
+ 
 -- 
 1.6.2.GIT
 
