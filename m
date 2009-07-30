@@ -1,20 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 00/20] OMAP ASoC changes in DMA utilization
-Date: Thu, 30 Jul 2009 20:11:01 +0100
-Message-ID: <20090730191101.GA23214@rakim.wolfsonmicro.main>
-References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
-	<20090730135257.GE9975@sirena.org.uk>
-	<20090730215546.4e184112.jhnikula@gmail.com>
+From: Artem Makhutov <artem@makhutov.org>
+Subject: Re: Huawei K3715 UMTS stick and alsa
+Date: Fri, 31 Jul 2009 00:38:37 +0200
+Message-ID: <4A7220ED.6050406@makhutov.org>
+References: <20090726224300.GA26953@titan.makhutov-it.de>	<4A6EAA7E.4090207@ladisch.de>
+	<20090729093331.GB26953@titan.makhutov-it.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A4C9A2414D
+Received: from bane.moelleritberatung.de (bane.moelleritberatung.de
+	[77.37.2.25]) by alsa0.perex.cz (Postfix) with ESMTP id 22EBF24470
 	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Jul 2009 21:11:02 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20090730215546.4e184112.jhnikula@gmail.com>
+	Fri, 31 Jul 2009 00:38:41 +0200 (CEST)
+In-Reply-To: <20090729093331.GB26953@titan.makhutov-it.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,31 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>, alsa-devel@alsa-project.org, Eduardo Valentin <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 30, 2009 at 09:55:46PM +0300, Jarkko Nikula wrote:
-> On Thu, 30 Jul 2009 14:52:57 +0100
-> Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+Hello,
 
-> > I'm OK with the ASoC changes.  It looks like there are some
-> > dependencies on the OMAP changes in there so they should probably go
-> > via the OMAP tree?
+Artem Makhutov schrieb:
+> [...]
+> I have done some small test with some AT commands using Windows and was trying
+> to get audio to COM16 without the "Mobile Partner" software. But it did not
+> worked.
+> 
+>>> The payload of this interfaces is 320 bytes.
+>> How many bytes per second?
 
-> Is Peter available or having a vacation? He would have better
-> possibilities to say and test the PM changes. Now omap_pcm_pointer is
-> very accurate and I would like that it remains accurate unless user
-> especially wants low-power over it.
+The phone is sending 320 bytes every 20ms. So one second of call is 
+16000 bytes.
 
-No idea; I've not seen him recently but there's not been much TWL4030 or
-OMAP activity so that's not surprising.  It'd be nice (but not essential)
-to be able to automatically dial back the accuracy when given enormous
-buffers to play since that's normally a good indication that the data is
-non-critical.
+I finally managed to write the captured payload data to a file.
+I can playback the audio now using
 
-> My wife and kids are having vacation so my ability to review, test and
-> understand those more fundamental changes is somewhat reduced.
+aplay -r 8000 -c 1 -f S16_LE test.wav
 
-I've no OMAP hardware I can readily do anything with so you're probably
-still ahead of me for the OMAP-specifics.
+If you send the AT-Command "AT^CVOICE?" to the card then it will answer 
+with "^CVOICE:0,8000,16,20" it is also possible to change this setting. 
+So I think that the card should be able to output other audio formats 
+too (like 3G wideband audio), but I have not tested this command out.
+
+The next thing to do is to find out how to make the UMTS-Card output 
+sound without using the "Mobile Partner" application.
+
+Regards, Artem
