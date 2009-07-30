@@ -1,20 +1,25 @@
-From: Stelian Pop <stelian@popies.net>
-Subject: Re: [PATCH] Enable HP output on nVidia
-	Corporation	MCP79 HDA (rev b1) (Macbook Pro 5, 5)
-Date: Thu, 30 Jul 2009 15:05:43 +0200
-Message-ID: <20090730130543.GB11216@calypso>
-References: <20090730124426.GA11216@calypso> <s5h1vnyfi9b.wl%tiwai@suse.de>
-Reply-To: Stelian Pop <stelian@popies.net>
+From: Eduardo Valentin <eduardo.valentin@nokia.com>
+Subject: Re: [PATCH 11/20] OMAP: McBSP: Add link DMA mode
+	selection
+Date: Thu, 30 Jul 2009 16:28:08 +0300
+Message-ID: <20090730132808.GA22978__20867.123528342$1249108115$gmane$org@esdhcp037198.research.nokia.com>
+References: <1248958183-15015-4-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-5-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-6-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-7-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-8-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-9-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-10-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-11-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-12-git-send-email-eduardo.valentin@nokia.com>
+	<20090730130442.GD9975@sirena.org.uk>
+Reply-To: eduardo.valentin@nokia.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sd-11162.dedibox.fr (sd-11162.dedibox.fr [88.191.70.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4DD1310391E
-	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Jul 2009 15:05:44 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5h1vnyfi9b.wl%tiwai@suse.de>
+In-Reply-To: <20090730130442.GD9975@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,21 +29,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Andreas =?iso-8859-1?Q?N=FC=DFlein?= <nutz@unfoog.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 30, 2009 at 02:49:20PM +0200, Takashi Iwai wrote:
+On Thu, Jul 30, 2009 at 03:04:42PM +0200, ext Mark Brown wrote:
+> On Thu, Jul 30, 2009 at 03:49:34PM +0300, Eduardo Valentin wrote:
+> 
+> > It adds a new sysfs file, where the user can configure the mcbsp mode to use.
+> > If the mcbsp channel is in use, it does not allow the change.
+> > Than in omap_pcm_open we can call the omap_mcbsp_get_opmode to get the mode,
+> > store it, than use it to implement the different modes.
+> 
+> Is this really something that people would want to tweak at runtime
+> (except for test purposes)?
 
-> Great, this is *the* missing piece!
+Yes, test purposes, bug also, the same link could be sometime used for low-power
+playback while sometime for low-latency processing where as accurate as
+possible DMA pointer position info is needed.
 
-Yup. Everything seems to work fine now.
 
-> I'm going to merge the hda-cirrus patch back to the (stable) sound GIT
-> tree so that it'll be merged into the next 2.6.32 kernel.
 
-Cool. Thanks !
-
-Stelian.
 -- 
-Stelian Pop <stelian@popies.net>
+Eduardo Valentin
