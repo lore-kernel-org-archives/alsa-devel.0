@@ -1,49 +1,43 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: [RFC] [PATCH 3/3 v2] ASoC: add support for Amstrad E3 (Delta) machine
-Date: Thu, 30 Jul 2009 11:12:52 +0200
-Message-ID: <200907301112.53525.jkrzyszt@tis.icnet.pl>
-References: <200907291318.54897.jkrzyszt@tis.icnet.pl>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: [PATCH] ALSA: Write outside array bounds
+Date: Thu, 30 Jul 2009 11:57:04 +0100
+Message-ID: <200907301157.04296.gineera@aspect135.co.uk>
+References: <4A702387.8090908@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <200907291318.54897.jkrzyszt@tis.icnet.pl>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ttsmtp.cpwnetworks.com (ttsmtp-3.cpwnetworks.com
+	[62.24.128.244])
+	by alsa0.perex.cz (Postfix) with ESMTP id 156881038DB
+	for <alsa-devel@alsa-project.org>;
+	Thu, 30 Jul 2009 12:45:51 +0200 (CEST)
+In-Reply-To: <4A702387.8090908@gmail.com>
 Content-Disposition: inline
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, alsa-devel@alsa-project.org, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Roel Kluin <roel.kluin@gmail.com>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Wednesday 29 July 2009 13:18:53 Janusz Krzysztofik napisa=C5=82(a):
-> This patch adds machine support for Amstrad E3 (Delta) videophone to =
-ASoC.
+On Wednesday 29 July 2009 11:25, Roel Kluin wrote:
+> e->sad[] is declared with size ELD_MAX_SAD (16), but the guard allows
+> the range 0-31
 >
-> Created and tested against linux-2.6.31-rc3.
+> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+> ---
+> Found with Parfait, http://research.sun.com/projects/parfait/
 
-I am aware that I have forgot to correct one checkpatch indicated issue=
-=2E Sorry
-for this.  If there are no other changes to the locking bits suggested,=
- the
-issue will be corrected this way:
+I've been looking for this tool to evaluate; is it available publically, or do 
+you have 'privilaged access'?
 
-Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
----
+Thanks
 
---- linux-2.6.31-rc3/sound/soc/omap/ams-delta.c.orig    2009-07-30 11:0=
-1:37.000000000 +0200
-+++ linux-2.6.31-rc3/sound/soc/omap/ams-delta.c 2009-07-30 00:52:34.000=
-000000 +0200
-@@ -251,7 +251,7 @@ static struct snd_soc_jack_pin ams_delta
- static struct timer_list cx81801_timer;
- static bool cx81801_cmd_pending;
- static bool ams_delta_muted;
--static spinlock_t ams_delta_lock =3D SPIN_LOCK_UNLOCKED;
-+static DEFINE_SPINLOCK(ams_delta_lock);
-
- static void cx81801_timeout(unsigned long data)
- {
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Alan
