@@ -1,8 +1,7 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCH 14/20] OMAP: McBSP: Disable all wakeups upon
-	exit
-Date: Thu, 30 Jul 2009 15:49:37 +0300
-Message-ID: <1248958183-15015-15-git-send-email-eduardo.valentin__10299.502607859$1248959118$gmane$org@nokia.com>
+Subject: [PATCH 18/20] ASoC: OMAP: Enable DMA burst mode
+Date: Thu, 30 Jul 2009 15:49:41 +0300
+Message-ID: <1248958183-15015-19-git-send-email-eduardo.valentin__12758.2879541025$1248959135$gmane$org@nokia.com>
 References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-2-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-3-git-send-email-eduardo.valentin@nokia.com>
@@ -17,11 +16,15 @@ References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-12-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-13-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-14-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-15-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-16-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-17-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-18-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1248958183-15015-14-git-send-email-eduardo.valentin@nokia.com>
+In-Reply-To: <1248958183-15015-18-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,43 +35,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>, Eero Nurkkala <ext-eero.nurkkala@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
-
-Quite a few wakeups were left on while the McBSP
-was being closed. This patch leaves no single wakeup
-enabled.
-
-Signed-off-by: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
-Acked-by: Eduardo Valentin <eduardo.valentin@nokia.com>
+Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
 ---
- arch/arm/plat-omap/mcbsp.c |    5 +----
- 1 files changed, 1 insertions(+), 4 deletions(-)
+ sound/soc/omap/omap-pcm.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
-diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-index cb4a455..3c6b98e 100644
---- a/arch/arm/plat-omap/mcbsp.c
-+++ b/arch/arm/plat-omap/mcbsp.c
-@@ -430,7 +430,6 @@ EXPORT_SYMBOL(omap_mcbsp_request);
- void omap_mcbsp_free(unsigned int id)
- {
- 	struct omap_mcbsp *mcbsp;
--	u16 wakeupen;
+diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
+index a18b3bf..a30e7a0 100644
+--- a/sound/soc/omap/omap-pcm.c
++++ b/sound/soc/omap/omap-pcm.c
+@@ -184,6 +184,9 @@ static int omap_pcm_prepare(struct snd_pcm_substream *substream)
  
- 	if (!omap_mcbsp_check_valid_id(id)) {
- 		printk(KERN_ERR "%s: Invalid id (%d)\n", __func__, id + 1);
-@@ -452,9 +451,7 @@ void omap_mcbsp_free(unsigned int id)
- 		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03) | CLOCKACTIVITY(0x03));
- 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
+ 	omap_enable_dma_irq(prtd->dma_ch, OMAP_DMA_FRAME_IRQ);
  
--		wakeupen = OMAP_MCBSP_READ(mcbsp->io_base, WAKEUPEN);
--		wakeupen &= ~WAKEUPEN_ALL;
--		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, wakeupen);
-+		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, 0);
- 	}
- #endif
++	omap_set_dma_src_burst_mode(prtd->dma_ch, OMAP_DMA_DATA_BURST_16);
++	omap_set_dma_dest_burst_mode(prtd->dma_ch, OMAP_DMA_DATA_BURST_16);
++
+ 	return 0;
+ }
  
 -- 
 1.6.2.GIT
