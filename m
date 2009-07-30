@@ -1,10 +1,9 @@
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCH 16/20] ASoC: OMAP: Use McBSP threshold again
-Date: Thu, 30 Jul 2009 15:49:39 +0300
-Message-ID: <1248958183-15015-17-git-send-email-eduardo.valentin__20053.565564058$1248959346$gmane$org@nokia.com>
-References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-2-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-3-git-send-email-eduardo.valentin@nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 11/20] OMAP: McBSP: Add link DMA mode
+	selection
+Date: Thu, 30 Jul 2009 14:04:42 +0100
+Message-ID: <20090730130442.GD9975__4078.19542238048$1248959362$gmane$org@sirena.org.uk>
+References: <1248958183-15015-3-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-4-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-5-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-6-git-send-email-eduardo.valentin@nokia.com>
@@ -14,15 +13,12 @@ References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-10-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-11-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-12-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-13-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-14-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-15-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-16-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1248958183-15015-16-git-send-email-eduardo.valentin@nokia.com>
+Content-Disposition: inline
+In-Reply-To: <1248958183-15015-12-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,117 +29,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+Cc: linux-omap@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>, alsa-devel@vger.kernel.org, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Now this patch implements again the McBSP threshold
-usage for OMAP ASoC.
+On Thu, Jul 30, 2009 at 03:49:34PM +0300, Eduardo Valentin wrote:
 
-We figured out that there is no need to have so much
-SW control in order to have DMA in idle state during
-audio streaming. Configuring McBSP threshold value
-and DMA to FRAME_SYNC are sufficient.
+> It adds a new sysfs file, where the user can configure the mcbsp mode to use.
+> If the mcbsp channel is in use, it does not allow the change.
+> Than in omap_pcm_open we can call the omap_mcbsp_get_opmode to get the mode,
+> store it, than use it to implement the different modes.
 
-Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
----
- sound/soc/omap/omap-pcm.c |   37 +++++++++++++++++++++++++++++++++++--
- 1 files changed, 35 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-index 84a1950..03cb420 100644
---- a/sound/soc/omap/omap-pcm.c
-+++ b/sound/soc/omap/omap-pcm.c
-@@ -28,10 +28,11 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- 
-+#include <mach/mcbsp.h>
- #include <mach/dma.h>
- #include "omap-pcm.h"
- 
--static const struct snd_pcm_hardware omap_pcm_hardware = {
-+static struct snd_pcm_hardware omap_pcm_hardware = {
- 	.info			= SNDRV_PCM_INFO_MMAP |
- 				  SNDRV_PCM_INFO_MMAP_VALID |
- 				  SNDRV_PCM_INFO_INTERLEAVED |
-@@ -135,6 +136,7 @@ static int omap_pcm_prepare(struct snd_pcm_substream *substream)
- 	struct omap_runtime_data *prtd = runtime->private_data;
- 	struct omap_pcm_dma_data *dma_data = prtd->dma_data;
- 	struct omap_dma_channel_params dma_params;
-+	int sync_mode;
- 
- 	/* return if this is a bufferless transfer e.g.
- 	 * codec <--> BT codec or GSM modem -- lg FIXME */
-@@ -142,13 +144,19 @@ static int omap_pcm_prepare(struct snd_pcm_substream *substream)
- 		return 0;
- 
- 	memset(&dma_params, 0, sizeof(dma_params));
-+
-+	if (cpu_is_omap34xx())
-+		sync_mode = OMAP_DMA_SYNC_FRAME;
-+	else
-+		sync_mode = OMAP_DMA_SYNC_ELEMENT;
-+
- 	/*
- 	 * Note: Regardless of interface data formats supported by OMAP McBSP
- 	 * or EAC blocks, internal representation is always fixed 16-bit/sample
- 	 */
- 	dma_params.data_type			= OMAP_DMA_DATA_TYPE_S16;
- 	dma_params.trigger			= dma_data->dma_req;
--	dma_params.sync_mode			= OMAP_DMA_SYNC_ELEMENT;
-+	dma_params.sync_mode			= sync_mode;
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		dma_params.src_amode		= OMAP_DMA_AMODE_POST_INC;
- 		dma_params.dst_amode		= OMAP_DMA_AMODE_CONSTANT;
-@@ -183,8 +191,11 @@ static int omap_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct omap_runtime_data *prtd = runtime->private_data;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	unsigned long flags;
- 	int ret = 0;
-+	unsigned int bus_id = *(unsigned int *)rtd->dai->cpu_dai->private_data;
-+	u16 samples = snd_pcm_lib_period_bytes(substream) >> 1;
- 
- 	spin_lock_irqsave(&prtd->lock, flags);
- 	switch (cmd) {
-@@ -192,6 +203,12 @@ static int omap_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		prtd->period_index = 0;
-+		/* Configure McBSP internal buffer usage */
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			omap_mcbsp_set_tx_threshold(bus_id, samples - 1);
-+		else
-+			omap_mcbsp_set_rx_threshold(bus_id, samples - 1);
-+
- 		omap_start_dma(prtd->dma_ch);
- 		break;
- 
-@@ -235,7 +252,23 @@ static int omap_pcm_open(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct omap_runtime_data *prtd;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	unsigned int bus_id = *(unsigned int *)rtd->dai->cpu_dai->private_data;
- 	int ret;
-+	int max_period;
-+
-+	if (cpu_is_omap34xx()) {
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			max_period = omap_mcbsp_get_max_tx_threshold(bus_id);
-+		else
-+			max_period = omap_mcbsp_get_max_rx_threshold(bus_id);
-+		max_period++;
-+		max_period <<= 1;
-+	} else {
-+		omap_pcm_hardware.period_bytes_max = 64 * 1024;
-+	}
-+
-+	omap_pcm_hardware.period_bytes_max = max_period;
- 
- 	snd_soc_set_runtime_hwparams(substream, &omap_pcm_hardware);
- 
--- 
-1.6.2.GIT
-
+Is this really something that people would want to tweak at runtime
+(except for test purposes)?
