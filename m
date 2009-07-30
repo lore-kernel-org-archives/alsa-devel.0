@@ -1,8 +1,8 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCH 20/20] ASoC: Always syncronize audio transfers
-	on frames
-Date: Thu, 30 Jul 2009 15:49:43 +0300
-Message-ID: <1248958183-15015-21-git-send-email-eduardo.valentin__30465.8623681918$1248959149$gmane$org@nokia.com>
+Subject: [PATCH 19/20] ASoC: OMAP: Use DMA operating mode of
+	McBSP
+Date: Thu, 30 Jul 2009 15:49:42 +0300
+Message-ID: <1248958183-15015-20-git-send-email-eduardo.valentin__1731.40031188286$1248959168$gmane$org@nokia.com>
 References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-2-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-3-git-send-email-eduardo.valentin@nokia.com>
@@ -22,12 +22,11 @@ References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-17-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-18-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-19-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-20-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1248958183-15015-20-git-send-email-eduardo.valentin@nokia.com>
+In-Reply-To: <1248958183-15015-19-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -38,71 +37,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>, Eero Nurkkala <ext-eero.nurkkala@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
-
-All these steps are required for ASoC to behave correctly.
-This is, no RFIG or XFIG (Not defined in 34xx), correct
-initiliazation of rccr and xccr. They are format dependent,
-for example TDM audio has different values than I2S or
-DSP_A. Also the omap_mcbsp_xmit_enable and/or
-omap_mcbsp_recv_enable must be called right after the
-DMA has started. This provides no longer L and R channels
-switching at random.
-
-Signed-off-by: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
 ---
- sound/soc/omap/omap-mcbsp.c |   16 ++++++++++++++--
- 1 files changed, 14 insertions(+), 2 deletions(-)
+ sound/soc/omap/omap-pcm.c |   21 +++++++++++++++++----
+ 1 files changed, 17 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index a5d46a7..0272d3f 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -191,6 +191,11 @@ static int omap_mcbsp_dai_trigger(struct snd_pcm_substream *substream, int cmd,
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		if (!mcbsp_data->active++)
- 			omap_mcbsp_start(mcbsp_data->bus_id);
-+		/* Make sure data transfer is frame synchronized */
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			omap_mcbsp_xmit_enable(mcbsp_data->bus_id, 1);
-+		else
-+			omap_mcbsp_recv_enable(mcbsp_data->bus_id, 1);
- 		break;
+diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
+index a30e7a0..f4903e0 100644
+--- a/sound/soc/omap/omap-pcm.c
++++ b/sound/soc/omap/omap-pcm.c
+@@ -51,6 +51,7 @@ struct omap_runtime_data {
+ 	struct omap_pcm_dma_data	*dma_data;
+ 	int				dma_ch;
+ 	int				period_index;
++	int				dma_op_mode;
+ };
  
- 	case SNDRV_PCM_TRIGGER_STOP:
-@@ -321,8 +326,11 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 	/* Generic McBSP register settings */
- 	regs->spcr2	|= XINTM(3) | FREE;
- 	regs->spcr1	|= RINTM(3);
--	regs->rcr2	|= RFIG;
--	regs->xcr2	|= XFIG;
-+	/* RFIG and XFIG are not defined in 34xx */
-+	if (!cpu_is_omap34xx()) {
-+		regs->rcr2	|= RFIG;
-+		regs->xcr2	|= XFIG;
-+	}
- 	if (cpu_is_omap2430() || cpu_is_omap34xx()) {
- 		regs->xccr = DXENDLY(1) | XDMAEN;
- 		regs->rccr = RFULL_CYCLE | RDMAEN;
-@@ -333,11 +341,15 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		/* 1-bit data delay */
- 		regs->rcr2	|= RDATDLY(1);
- 		regs->xcr2	|= XDATDLY(1);
-+		regs->rccr	|= RFULL_CYCLE | RDMAEN | RDISABLE;
-+		regs->xccr	|= (DXENDLY(1) | XDMAEN | XDISABLE);
- 		break;
- 	case SND_SOC_DAIFMT_DSP_A:
- 		/* 1-bit data delay */
- 		regs->rcr2      |= RDATDLY(1);
- 		regs->xcr2      |= XDATDLY(1);
-+		regs->rccr	|= RFULL_CYCLE | RDMAEN | RDISABLE;
-+		regs->xccr	|= (DXENDLY(1) | XDMAEN | XDISABLE);
- 		/* Invert FS polarity configuration */
- 		temp_fmt ^= SND_SOC_DAIFMT_NB_IF;
- 		break;
+ static void omap_pcm_dma_irq(int ch, u16 stat, void *data)
+@@ -145,7 +146,9 @@ static int omap_pcm_prepare(struct snd_pcm_substream *substream)
+ 
+ 	memset(&dma_params, 0, sizeof(dma_params));
+ 
+-	if (cpu_is_omap34xx())
++	/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
++	if (cpu_is_omap34xx() &&
++			(prtd->dma_op_mode == MCBSP_DMA_MODE_THRESHOLD))
+ 		sync_mode = OMAP_DMA_SYNC_FRAME;
+ 	else
+ 		sync_mode = OMAP_DMA_SYNC_ELEMENT;
+@@ -198,9 +201,16 @@ static int omap_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	unsigned long flags;
+ 	int ret = 0;
+ 	unsigned int bus_id = *(unsigned int *)rtd->dai->cpu_dai->private_data;
+-	u16 samples = snd_pcm_lib_period_bytes(substream) >> 1;
++	u16 samples;
+ 
+ 	spin_lock_irqsave(&prtd->lock, flags);
++
++	/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
++	if (prtd->dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
++		samples = snd_pcm_lib_period_bytes(substream) >> 1;
++	else
++		samples = 1;
++
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+@@ -257,10 +267,12 @@ static int omap_pcm_open(struct snd_pcm_substream *substream)
+ 	struct omap_runtime_data *prtd;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	unsigned int bus_id = *(unsigned int *)rtd->dai->cpu_dai->private_data;
++	int dma_op_mode = omap_mcbsp_get_dma_op_mode(bus_id);
+ 	int ret;
+ 	int max_period;
+ 
+-	if (cpu_is_omap34xx()) {
++	/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
++	if (cpu_is_omap34xx() && (dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)) {
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 			max_period = omap_mcbsp_get_max_tx_threshold(bus_id);
+ 		else
+@@ -268,7 +280,7 @@ static int omap_pcm_open(struct snd_pcm_substream *substream)
+ 		max_period++;
+ 		max_period <<= 1;
+ 	} else {
+-		omap_pcm_hardware.period_bytes_max = 64 * 1024;
++		max_period = 64 * 1024;
+ 	}
+ 
+ 	omap_pcm_hardware.period_bytes_max = max_period;
+@@ -286,6 +298,7 @@ static int omap_pcm_open(struct snd_pcm_substream *substream)
+ 		ret = -ENOMEM;
+ 		goto out;
+ 	}
++	prtd->dma_op_mode = dma_op_mode;
+ 	spin_lock_init(&prtd->lock);
+ 	runtime->private_data = prtd;
+ 
 -- 
 1.6.2.GIT
 
