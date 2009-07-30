@@ -1,37 +1,63 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 00/20] OMAP ASoC changes in DMA utilization
-Date: Thu, 30 Jul 2009 14:52:57 +0100
-Message-ID: <20090730135257.GE9975@sirena.org.uk>
-References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
+From: Julia Lawall <julia@diku.dk>
+Subject: [PATCH 5/5] sound/aoa: Add kmalloc NULL tests
+Date: Thu, 30 Jul 2009 16:11:24 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0907301610550.8734@ask.diku.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5B9661037F8
-	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Jul 2009 15:52:58 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eduardo Valentin <eduardo.valentin@nokia.com>
-Cc: alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751494AbZG3OL1@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: johannes@sipsolutions.net, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 30, 2009 at 03:49:23PM +0300, Eduardo Valentin wrote:
+From: Julia Lawall <julia@diku.dk>
 
-> Patches 1-15 are McBSP changes and, for this reason, are intended to
-> be include in linux-omap tree.
-> Patches 16-20 are OMAP ASoC driver changes, so, they are for alsa-devel.
+Check that the result of kzalloc is not NULL before a dereference.
 
-I'm OK with the ASoC changes.  It looks like there are some dependencies
-on the OMAP changes in there so they should probably go via the OMAP
-tree?
+The semantic match that finds this problem is as follows:
+(http://www.emn.fr/x-info/coccinelle/)
+
+// <smpl>
+@@
+expression *x;
+identifier f;
+constant char *C;
+@@
+
+x = \(kmalloc\|kcalloc\|kzalloc\)(...);
+... when != x == NULL
+    when != x != NULL
+    when != (x || ...)
+(
+kfree(x)
+|
+f(...,C,...,x,...)
+|
+*f(...,x,...)
+|
+*x->f
+)
+// </smpl>
+
+Signed-off-by: Julia Lawall <julia@diku.dk>
+
+---
+ sound/aoa/core/gpio-pmf.c           |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/sound/aoa/core/gpio-pmf.c b/sound/aoa/core/gpio-pmf.c
+index 5ca2220..b4439ce 100644
+--- a/sound/aoa/core/gpio-pmf.c
++++ b/sound/aoa/core/gpio-pmf.c
+@@ -182,6 +182,12 @@ static int pmf_set_notify(struct gpio_runtime *rt,
+ 	if (!old && notify) {
+ 		irq_client = kzalloc(sizeof(struct pmf_irq_client),
+ 				     GFP_KERNEL);
++		if (!irq_client) {
++			err = -ENOMEM;
++			printk(KERN_ERR "snd-aoa: gpio layer failed to"
++				" register %s irq (%d)\n", name, err);
++			goto out_unlock;
++		}
+ 		irq_client->data = notif;
+ 		irq_client->handler = pmf_handle_notify_irq;
+ 		irq_client->owner = THIS_MODULE;
