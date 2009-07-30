@@ -1,11 +1,20 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCH 00/20] OMAP ASoC changes in DMA utilization
-Date: Thu, 30 Jul 2009 15:49:23 +0300
-Message-ID: <1248958183-15015-1-git-send-email-eduardo.valentin__3417.79814702949$1248959037$gmane$org@nokia.com>
+Subject: [PATCH 07/20] OMAP: McBSP: Add transmit/receive
+	threshold handler
+Date: Thu, 30 Jul 2009 15:49:30 +0300
+Message-ID: <1248958183-15015-8-git-send-email-eduardo.valentin__4988.75161069936$1248959045$gmane$org@nokia.com>
+References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-2-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-3-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-4-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-5-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-6-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-7-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <1248958183-15015-7-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,58 +28,107 @@ To: alsa-devel@alsa-project.org
 Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hellos guys,
+This patch adds a way to handle transmit/receive threshold.
+It export to mcbsp users a callback registration procedure.
 
+Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
+---
+ arch/arm/plat-omap/include/mach/mcbsp.h |   13 ++++++++
+ arch/arm/plat-omap/mcbsp.c              |   50 +++++++++++++++++++++++++++++++
+ 2 files changed, 63 insertions(+), 0 deletions(-)
 
-This series provides a way to allow DMA go to idle while performing
-playback/capture in OMAP3 devices using ASoC driver.
-
-The idea behind it is to do not use DMA element mode, but frame mode.
-In addition to that, it also configures McBSP threshold accordingly to
-alsa period. Also, McBSP wakeup signals are configured to generate
-wakeups for threshold events.
-
-Besides that, this series also include a way to allow choosing between
-element mode or the frame mode added here.
-
-Patches 1-15 are McBSP changes and, for this reason, are intended to
-be include in linux-omap tree.
-Patches 16-20 are OMAP ASoC driver changes, so, they are for alsa-devel.
-
-BR,
-
-Eduardo Valentin (11):
-  OMAP: McBSP: Change wakeup signals
-  OMAP: McBSP: Add IRQEN, IRQSTATUS, THRESHOLD2 and THRESHOLD1
-    registers.
-  OMAP: McBSP: Use appropriate value for startup delay
-  OMAP: McBSP: Add transmit/receive threshold handler
-  OMAP: McBSP: Create and export max_(r|t)x_thres property
-  OMAP: McBSP: Rename thres sysfs symbols
-  OMAP: McBSP: Configure NO IDLE mode for DMA mode different of
-    threshold
-  ASoC: OMAP: Use McBSP threshold again
-  ASoC: OMAP: Make DMA 64 aligned
-  ASoC: OMAP: Enable DMA burst mode
-  ASoC: OMAP: Use DMA operating mode of McBSP
-
-Eero Nurkkala (7):
-  OMAP: McBSP: Provide functions for ASoC frame syncronization
-  OMAP: McBSP: Wakeups utilized
-  OMAP: McBSP: Retain McBSP FCLK clockactivity
-  OMAP: McBSP: Do not enable wakeups for no-idle mode
-  OMAP: McBSP: Disable all wakeups upon exit
-  OMAP: McBSP: Let element DMA mode hit retention also
-  ASoC: Always syncronize audio transfers on frames
-
-Peter Ujfalusi (2):
-  OMAP3: McBSP: Lower the maximum buffersize for McBSP1,3,4,5
-  OMAP: McBSP: Add link DMA mode selection
-
- arch/arm/mach-omap2/mcbsp.c             |    5 +
- arch/arm/plat-omap/include/mach/mcbsp.h |   54 +++++
- arch/arm/plat-omap/mcbsp.c              |  343 ++++++++++++++++++++++++++++++-
- sound/soc/omap/omap-mcbsp.c             |   16 ++-
- sound/soc/omap/omap-pcm.c               |   57 +++++-
- 5 files changed, 468 insertions(+), 7 deletions(-)
+diff --git a/arch/arm/plat-omap/include/mach/mcbsp.h b/arch/arm/plat-omap/include/mach/mcbsp.h
+index e3b300c..26bcab8 100644
+--- a/arch/arm/plat-omap/include/mach/mcbsp.h
++++ b/arch/arm/plat-omap/include/mach/mcbsp.h
+@@ -259,6 +259,10 @@
+ #define ENAWAKEUP		0x0004
+ #define SOFTRST			0x0002
+ 
++/********************** McBSP IRQSTATUS bit definitions ********************/
++#define IRQST_XRDY		(1<<10)
++#define IRQST_RRDY		(1<<3)
++
+ /********************** McBSP WAKEUPEN bit definitions *********************/
+ #define XEMPTYEOFEN		0x4000
+ #define XRDYEN			0x0400
+@@ -405,6 +409,15 @@ int omap_mcbsp_init(void);
+ void omap_mcbsp_register_board_cfg(struct omap_mcbsp_platform_data *config,
+ 					int size);
+ void omap_mcbsp_config(unsigned int id, const struct omap_mcbsp_reg_cfg * config);
++#ifdef CONFIG_ARCH_OMAP34XX
++void omap_mcbsp_set_tx_threshold(unsigned int id, u16 threshold);
++void omap_mcbsp_set_rx_threshold(unsigned int id, u16 threshold);
++#else
++static inline void omap_mcbsp_set_tx_threshold(unsigned int id, u16 threshold)
++{ }
++static inline void omap_mcbsp_set_rx_threshold(unsigned int id, u16 threshold)
++{ }
++#endif
+ int omap_mcbsp_request(unsigned int id);
+ void omap_mcbsp_free(unsigned int id);
+ void omap_mcbsp_start(unsigned int id);
+diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
+index 373926d..60e9254 100644
+--- a/arch/arm/plat-omap/mcbsp.c
++++ b/arch/arm/plat-omap/mcbsp.c
+@@ -198,6 +198,56 @@ void omap_mcbsp_config(unsigned int id, const struct omap_mcbsp_reg_cfg *config)
+ }
+ EXPORT_SYMBOL(omap_mcbsp_config);
+ 
++#ifdef CONFIG_ARCH_OMAP34XX
++/*
++ * omap_mcbsp_set_tx_threshold configures how to deal
++ * with transmit threshold. the threshold value and handler can be
++ * configure in here.
++ */
++void omap_mcbsp_set_tx_threshold(unsigned int id, u16 threshold)
++{
++	struct omap_mcbsp *mcbsp;
++	void __iomem *io_base;
++
++	if (!cpu_is_omap34xx())
++		return;
++
++	if (!omap_mcbsp_check_valid_id(id)) {
++		printk(KERN_ERR "%s: Invalid id (%d)\n", __func__, id + 1);
++		return;
++	}
++	mcbsp = id_to_mcbsp_ptr(id);
++	io_base = mcbsp->io_base;
++
++	OMAP_MCBSP_WRITE(io_base, THRSH2, threshold);
++}
++EXPORT_SYMBOL(omap_mcbsp_set_tx_threshold);
++
++/*
++ * omap_mcbsp_set_rx_threshold configures how to deal
++ * with receive threshold. the threshold value and handler can be
++ * configure in here.
++ */
++void omap_mcbsp_set_rx_threshold(unsigned int id, u16 threshold)
++{
++	struct omap_mcbsp *mcbsp;
++	void __iomem *io_base;
++
++	if (!cpu_is_omap34xx())
++		return;
++
++	if (!omap_mcbsp_check_valid_id(id)) {
++		printk(KERN_ERR "%s: Invalid id (%d)\n", __func__, id + 1);
++		return;
++	}
++	mcbsp = id_to_mcbsp_ptr(id);
++	io_base = mcbsp->io_base;
++
++	OMAP_MCBSP_WRITE(io_base, THRSH1, threshold);
++}
++EXPORT_SYMBOL(omap_mcbsp_set_rx_threshold);
++#endif
++
+ /*
+  * We can choose between IRQ based or polled IO.
+  * This needs to be called before omap_mcbsp_request().
+-- 
+1.6.2.GIT
 
