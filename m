@@ -1,19 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: jack: Fix race in
- snd_soc_jack_add_gpios
-Date: Fri, 31 Jul 2009 22:31:10 +0100
-Message-ID: <20090731213108.GA6335@sirena.org.uk>
-References: <1249067725-25791-1-git-send-email-lars@metafoo.de>
+Subject: Re: [RFC] [PATCH 3/3 v2] ASoC: add support for Amstrad
+ E3 (Delta) machine
+Date: Fri, 31 Jul 2009 22:38:12 +0100
+Message-ID: <20090731213812.GB6335@sirena.org.uk>
+References: <200907291318.54897.jkrzyszt@tis.icnet.pl>
+	<200907301112.53525.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 85D00246EF
+	by alsa0.perex.cz (Postfix) with ESMTP id 0029C246F1
 	for <alsa-devel@alsa-project.org>;
-	Fri, 31 Jul 2009 23:31:18 +0200 (CEST)
+	Fri, 31 Jul 2009 23:38:18 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1249067725-25791-1-git-send-email-lars@metafoo.de>
+In-Reply-To: <200907301112.53525.jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,14 +24,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Alan Cox <alan@lxorguk.ukuu.org.uk>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 31, 2009 at 09:15:25PM +0200, Lars-Peter Clausen wrote:
-> The irq can fire as soon as it has been requested, thus all fields accessed
-> from within the irq handler must be initialized prior to requesting the irq.
+On Thu, Jul 30, 2009 at 11:12:52AM +0200, Janusz Krzysztofik wrote:
 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> I am aware that I have forgot to correct one checkpatch indicated issue. Sorry
+> for this.  If there are no other changes to the locking bits suggested, the
+> issue will be corrected this way:
 
-Applied, thanks.
+I've applied this (squashed into the original patch), together with your
+other two ASoC patches and the TTY patch.  If you want to change the
+name of the line discipline please send a followup patch before the next
+merge window.
+
+Thanks for your work on this, and on getting the OMAP1 support working.
