@@ -1,15 +1,16 @@
 From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: [PATCH 3/4] pulse: unify destruction of snd_pulse_t
-Date: Fri, 31 Jul 2009 16:02:05 +0200
-Message-ID: <20090731140205.GA31215@omega>
+Subject: [PATCH 4/4] pulse: call pa_threaded_mainloop_wait() to
+	handle	spurious wakeups
+Date: Fri, 31 Jul 2009 16:02:21 +0200
+Message-ID: <20090731140221.GA31245@omega>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4C40210392F
+	by alsa0.perex.cz (Postfix) with ESMTP id E4731103940
 	for <alsa-devel@alsa-project.org>;
-	Fri, 31 Jul 2009 16:02:06 +0200 (CEST)
+	Fri, 31 Jul 2009 16:02:21 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,63 +24,38 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+pa_threaded_mainloop_wait() can wake up for no reason, according to the
+specs of the underlying POSIX ptrhead_cond_wait() docs, so we need to
+call it in a loop here which should be cleaner anyway.
 ---
- pulse/pulse.c |   31 ++++++++++++-------------------
- 1 files changed, 12 insertions(+), 19 deletions(-)
+ pulse/pulse.c |   13 ++++++++++---
+ 1 files changed, 10 insertions(+), 3 deletions(-)
 
 diff --git a/pulse/pulse.c b/pulse/pulse.c
-index dd17384..ae66b0c 100644
+index ae66b0c..6f58a7e 100644
 --- a/pulse/pulse.c
 +++ b/pulse/pulse.c
-@@ -217,36 +217,29 @@ snd_pulse_t *pulse_new(void)
- 	return p;
+@@ -262,10 +262,17 @@ int pulse_connect(snd_pulse_t * p, const char *server)
+ 	if (err < 0)
+ 		goto error;
  
- fail:
-+	pulse_free(p);
-+
-+	return NULL;
-+}
-+
-+void pulse_free(snd_pulse_t * p)
-+{
- 	if (p->mainloop)
- 		pa_threaded_mainloop_stop(p->mainloop);
+-	pa_threaded_mainloop_wait(p->mainloop);
++	for (;;) {
++		pa_context_state_t state = pa_context_get_state(p->context);
  
--	if (p->context)
-+	if (p->context) {
-+		pa_context_disconnect(p->context);
- 		pa_context_unref(p->context);
+-	if (pa_context_get_state(p->context) != PA_CONTEXT_READY)
+-		goto error;
++		if (!PA_CONTEXT_IS_GOOD(state))
++			goto error;
++
++		if (state == PA_CONTEXT_READY)
++			break;
++
++		pa_threaded_mainloop_wait(p->mainloop);
 +	}
  
- 	if (p->mainloop)
- 		pa_threaded_mainloop_free(p->mainloop);
+ 	pa_threaded_mainloop_unlock(p->mainloop);
  
--	if (p->main_fd >= 0)
--		close(p->main_fd);
--
- 	if (p->thread_fd >= 0)
- 		close(p->thread_fd);
- 
--	free(p);
--
--	return NULL;
--}
--
--void pulse_free(snd_pulse_t * p)
--{
--	pa_threaded_mainloop_stop(p->mainloop);
--
--	pa_context_disconnect(p->context);
--	pa_context_unref(p->context);
--	pa_threaded_mainloop_free(p->mainloop);
--
--	close(p->thread_fd);
--	close(p->main_fd);
-+	if (p->main_fd >= 0)
-+		close(p->main_fd);
- 
- 	free(p);
- }
 -- 
 1.6.3.3
 
