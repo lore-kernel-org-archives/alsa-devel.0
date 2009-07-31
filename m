@@ -1,24 +1,27 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH 09/20] OMAP3: McBSP: Lower the maximum
- buffersize for McBSP1, 3, 4, 5
-Date: Fri, 31 Jul 2009 20:26:11 +0300
-Message-ID: <20090731202611.c689c31c.jhnikula__2551.74923590875$1249061132$gmane$org@gmail.com>
-References: <1248958183-15015-2-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-3-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-4-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-5-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-6-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-7-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-8-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-9-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-10-git-send-email-eduardo.valentin@nokia.com>
-	<20090730215721.a899e2f4.jhnikula@gmail.com>
-	<20090731075823.GB27083@esdhcp037198.research.nokia.com>
+From: Christopher Arndt <chris.arndt@web.de>
+Subject: pyalsa: SeqEvent.time strangeness (Was: synchronizing
+ queue with MIDI clock events)
+Date: Fri, 31 Jul 2009 20:26:27 +0200
+Message-ID: <4A733753.60808@web.de>
+References: <4A607468.7010300@web.de> <4A65C370.3030205@ladisch.de>
+	<4A65EADE.70007@web.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20090731075823.GB27083@esdhcp037198.research.nokia.com>
+Received: from fmmailgate03.web.de (fmmailgate03.web.de [217.72.192.234])
+	by alsa0.perex.cz (Postfix) with ESMTP id 67743245FD
+	for <alsa-devel@alsa-project.org>;
+	Fri, 31 Jul 2009 20:26:20 +0200 (CEST)
+Received: from smtp07.web.de (fmsmtp07.dlan.cinetic.de [172.20.5.215])
+	by fmmailgate03.web.de (Postfix) with ESMTP id 1079710931CD9
+	for <alsa-devel@alsa-project.org>;
+	Fri, 31 Jul 2009 20:26:19 +0200 (CEST)
+Received: from [195.14.198.185] (helo=minimax.paddyland.lan)
+	by smtp07.web.de with asmtp (TLSv1:AES256-SHA:256)
+	(WEB.DE 4.110 #277) id 1MWwo6-0005nT-00
+	for alsa-devel@alsa-project.org; Fri, 31 Jul 2009 20:26:19 +0200
+In-Reply-To: <4A65EADE.70007@web.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,44 +32,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 31 Jul 2009 10:58:23 +0300
-Eduardo Valentin <eduardo.valentin@nokia.com> wrote:
+Christopher Arndt schrieb:
+>> You can tell ALSA to timestamp all events that are received; just call
+>> the snd_seq_port_info_set_timestamping() function and set a queue that
+>> is running, then you'll get the queue's current time in each event.
+>> This isn't implemented in pyalsa, but you can set this for a specific
+>> connection with the queue, time_update, and time_real parameters of the
+>> connect_ports function.
 
-> On Thu, Jul 30, 2009 at 08:57:21PM +0200, ext Jarkko Nikula wrote:
-> > On Thu, 30 Jul 2009 15:49:32 +0300
-> > Eduardo Valentin <eduardo.valentin@nokia.com> wrote:
-> > 
-> > > From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> > > 
-> > > Do not allow applications to use the full buffer found on
-> > > McBSP1,3,4,5. Using the full buffer in threshold mode causes
-> > > the McBSP buffer to run dry, which can be observed as channels
-> > > are switching (in reality the channels are shifting).
-> > > 
-> > ...
-> > > --- a/arch/arm/mach-omap2/mcbsp.c
-> > > +++ b/arch/arm/mach-omap2/mcbsp.c
-> > > @@ -129,7 +129,7 @@ static struct omap_mcbsp_platform_data
-> > > omap34xx_mcbsp_pdata[] = { .rx_irq		=
-> > > INT_24XX_MCBSP1_IRQ_RX, .tx_irq		=
-> > > INT_24XX_MCBSP1_IRQ_TX, .ops		= &omap2_mcbsp_ops,
-> > > -		.buffer_size	= 0x7F,
-> > > +		.buffer_size	= 0x6F,
-> > >  	},
-> > 
-> > Is it possible that also McBSP2 would require that maximum burst
-> > transmit size should be 0x10 smaller than size of internal
-> > buffer/fifo?
-> 
-> That's already not at full size. There is room for 1024+256 places on
-> mcbsp2.
-> 
-True, but I was wondering can this same problem occur also on McBSP2 if
-using proper size threshold? Like size near the McBSP2 audio buffer
-(1024x32) or near the TX buffer (256x32).
+I've tested this now and encountered a very strange bevahior of the
+event time set by the queue:
 
--- 
-Jarkko
+a) SeqEvent.time seems to be in milliseconds instead of seconds as would
+be expected by the ALSA documentation and looking at the source of
+pyalsa.alsaseq.
+
+5) Consecutive timestamp go up to ~1000,00 and then seem to wrap around
+and start from zereo again.
+
+I have created a small test program, which demonstrates this:
+
+http://paste.chrisarndt.de/paste/fa8ca7201bc7419f9e001315ca02b1ef
+
+It outputs the time of each MIDI clock signal it receives and whether it
+is in tick  or real time and whether it's absolute (= from the start of
+the queue) or relative (to the preceding event). Here's some output from
+the script:
+
+MIDI CLOCK 0.0 ABS REAL
+MIDI CLOCK 23.697488 ABS REAL
+MIDI CLOCK 48.701538 ABS REAL
+MIDI CLOCK 73.70515 ABS REAL
+MIDI CLOCK 98.705762 ABS REAL
+MIDI CLOCK 123.709812 ABS REAL
+MIDI CLOCK 148.702424 ABS REAL
+MIDI CLOCK 173.707474 ABS REAL
+MIDI CLOCK 198.711086 ABS REAL
+[...]
+MIDI CLOCK 898.73904 ABS REAL
+MIDI CLOCK 923.74909 ABS REAL
+MIDI CLOCK 948.744702 ABS REAL
+MIDI CLOCK 973.742314 ABS REAL
+MIDI CLOCK 998.749364 ABS REAL
+MIDI CLOCK 24.738976 ABS REAL
+MIDI CLOCK 49.741026 ABS REAL
+MIDI CLOCK 74.743638 ABS REAL
+MIDI CLOCK 99.74725 ABS REAL
+
+As you can see, once the time would exceed 1000.0 it seems to start from
+zero again. This happens only when the queue sets the event times to
+REAL. When ticks are used, the increase infinitely, as expected.
+
+I fail to understand why this is and what I am doing wrong. I would
+expect SeqEvent.time to be in seconds and always ascending until I stop
+the queue. Please, somebody enlighten me!
+
+
+Chris
