@@ -1,27 +1,15 @@
-From: Christopher Arndt <chris.arndt@web.de>
-Subject: pyalsa: SeqEvent.time strangeness (Was: synchronizing
- queue with MIDI clock events)
-Date: Fri, 31 Jul 2009 20:26:27 +0200
-Message-ID: <4A733753.60808@web.de>
-References: <4A607468.7010300@web.de> <4A65C370.3030205@ladisch.de>
-	<4A65EADE.70007@web.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: jack: Fix race in snd_soc_jack_add_gpios
+Date: Fri, 31 Jul 2009 21:15:25 +0200
+Message-ID: <1249067725-25791-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fmmailgate03.web.de (fmmailgate03.web.de [217.72.192.234])
-	by alsa0.perex.cz (Postfix) with ESMTP id 67743245FD
+Received: from smtp-out-063.synserver.de (smtp-out-063.synserver.de
+	[212.40.180.63]) by alsa0.perex.cz (Postfix) with SMTP id 696AF24662
 	for <alsa-devel@alsa-project.org>;
-	Fri, 31 Jul 2009 20:26:20 +0200 (CEST)
-Received: from smtp07.web.de (fmsmtp07.dlan.cinetic.de [172.20.5.215])
-	by fmmailgate03.web.de (Postfix) with ESMTP id 1079710931CD9
-	for <alsa-devel@alsa-project.org>;
-	Fri, 31 Jul 2009 20:26:19 +0200 (CEST)
-Received: from [195.14.198.185] (helo=minimax.paddyland.lan)
-	by smtp07.web.de with asmtp (TLSv1:AES256-SHA:256)
-	(WEB.DE 4.110 #277) id 1MWwo6-0005nT-00
-	for alsa-devel@alsa-project.org; Fri, 31 Jul 2009 20:26:19 +0200
-In-Reply-To: <4A65EADE.70007@web.de>
+	Fri, 31 Jul 2009 21:15:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,63 +19,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Christopher Arndt schrieb:
->> You can tell ALSA to timestamp all events that are received; just call
->> the snd_seq_port_info_set_timestamping() function and set a queue that
->> is running, then you'll get the queue's current time in each event.
->> This isn't implemented in pyalsa, but you can set this for a specific
->> connection with the queue, time_update, and time_real parameters of the
->> connect_ports function.
+The irq can fire as soon as it has been requested, thus all fields accessed
+from within the irq handler must be initialized prior to requesting the irq.
 
-I've tested this now and encountered a very strange bevahior of the
-event time set by the queue:
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+The patch is against alsa-kernel/master but I guess something similar should also
+go into 2.6.31.
 
-a) SeqEvent.time seems to be in milliseconds instead of seconds as would
-be expected by the ALSA documentation and looking at the source of
-pyalsa.alsaseq.
+ sound/soc/soc-jack.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-5) Consecutive timestamp go up to ~1000,00 and then seem to wrap around
-and start from zereo again.
-
-I have created a small test program, which demonstrates this:
-
-http://paste.chrisarndt.de/paste/fa8ca7201bc7419f9e001315ca02b1ef
-
-It outputs the time of each MIDI clock signal it receives and whether it
-is in tick  or real time and whether it's absolute (= from the start of
-the queue) or relative (to the preceding event). Here's some output from
-the script:
-
-MIDI CLOCK 0.0 ABS REAL
-MIDI CLOCK 23.697488 ABS REAL
-MIDI CLOCK 48.701538 ABS REAL
-MIDI CLOCK 73.70515 ABS REAL
-MIDI CLOCK 98.705762 ABS REAL
-MIDI CLOCK 123.709812 ABS REAL
-MIDI CLOCK 148.702424 ABS REAL
-MIDI CLOCK 173.707474 ABS REAL
-MIDI CLOCK 198.711086 ABS REAL
-[...]
-MIDI CLOCK 898.73904 ABS REAL
-MIDI CLOCK 923.74909 ABS REAL
-MIDI CLOCK 948.744702 ABS REAL
-MIDI CLOCK 973.742314 ABS REAL
-MIDI CLOCK 998.749364 ABS REAL
-MIDI CLOCK 24.738976 ABS REAL
-MIDI CLOCK 49.741026 ABS REAL
-MIDI CLOCK 74.743638 ABS REAL
-MIDI CLOCK 99.74725 ABS REAL
-
-As you can see, once the time would exceed 1000.0 it seems to start from
-zero again. This happens only when the queue sets the event times to
-REAL. When ticks are used, the increase infinitely, as expected.
-
-I fail to understand why this is and what I am doing wrong. I would
-expect SeqEvent.time to be in seconds and always ascending until I stop
-the queue. Please, somebody enlighten me!
-
-
-Chris
+diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
+index 4aa7d8f..1d455ab 100644
+--- a/sound/soc/soc-jack.c
++++ b/sound/soc/soc-jack.c
+@@ -221,6 +221,9 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 		if (ret)
+ 			goto err;
+ 
++		INIT_WORK(&gpios[i].work, gpio_work);
++		gpios[i].jack = jack;
++
+ 		ret = request_irq(gpio_to_irq(gpios[i].gpio),
+ 				gpio_handler,
+ 				IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
+@@ -234,9 +237,6 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 		gpio_export(gpios[i].gpio, false);
+ #endif
+ 
+-		INIT_WORK(&gpios[i].work, gpio_work);
+-		gpios[i].jack = jack;
+-
+ 		/* Update initial jack status */
+ 		snd_soc_jack_gpio_detect(&gpios[i]);
+ 	}
+-- 
+1.5.6.5
