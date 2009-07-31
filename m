@@ -1,22 +1,37 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC] [PATCH 3/3 v2] ASoC: add support for Amstrad E3 (Delta)
- machine
-Date: Fri, 31 Jul 2009 10:52:34 +0100
-Message-ID: <20090731095234.GB10844@rakim.wolfsonmicro.main>
-References: <200907291318.54897.jkrzyszt@tis.icnet.pl>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: DMA HW bug in MX2x platforms?
+Date: Fri, 31 Jul 2009 11:52:51 +0200
+Message-ID: <20090731095251.GF13236@buzzloop.caiaq.de>
+References: <eedb5540907240037u2cb8fbfap84f02727621261d9@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 36A71243F2
+	for <alsa-devel@alsa-project.org>;
+	Fri, 31 Jul 2009 11:52:54 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <200907291318.54897.jkrzyszt@tis.icnet.pl>
-Sender: linux-omap-owner@vger.kernel.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Jarkko Nikula <jhnikula@gmail.com>, Jonathan McDowell <noodles@earth.li>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, e3-hacking@earth.li, Arun KS <arunks@mistralsolutions.com>
+In-Reply-To: <eedb5540907240037u2cb8fbfap84f02727621261d9@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: javier Martin <javier.martin@vista-silicon.com>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 29, 2009 at 01:18:53PM +0200, Janusz Krzysztofik wrote:
+On Fri, Jul 24, 2009 at 09:37:33AM +0200, javier Martin wrote:
+> I am currently working on an ASoC driver for mx2x platforms. I am
+> porting an old working ASoC driver for 2.6.22 + Freescale BSP kernel
+> to current 2.6.30 kernel.
 
-> 2) patch 2/3 form this series: TTY: Add definition of a new line
->    discipline required by Amstrad E3 (Delta) ASoC driver[2].
+Will the SSI/I2S part be compatible to mx3 platforms or are the register
+set too different?
 
-The ASoC parts of this all look OK - what's the status of the TTY patch?
+Daniel
