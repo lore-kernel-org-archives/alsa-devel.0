@@ -1,25 +1,22 @@
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: Re: [PATCH 11/20] OMAP: McBSP: Add link DMA mode
-	selection
-Date: Thu, 30 Jul 2009 16:28:08 +0300
-Message-ID: <20090730132808.GA22978__20867.123528342$1249108115$gmane$org@esdhcp037198.research.nokia.com>
-References: <1248958183-15015-4-git-send-email-eduardo.valentin@nokia.com>
+From: <ext-Eero.Nurkkala@nokia.com>
+Subject: Re: [PATCH 06/20] OMAP: McBSP: Use appropriate value
+ for startup delay
+Date: Fri, 31 Jul 2009 09:21:30 +0200
+Message-ID: <1FFEF31EBAA4F64B80D33027D4297760047DF3D65A__1809.15360474518$1249108174$gmane$org@NOK-EUMSG-02.mgdnok.nokia.com>
+References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-2-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-3-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-4-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-5-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-6-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-7-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-8-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-9-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-10-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-11-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-12-git-send-email-eduardo.valentin@nokia.com>
-	<20090730130442.GD9975@sirena.org.uk>
-Reply-To: eduardo.valentin@nokia.com
+	<1248958183-15015-7-git-send-email-eduardo.valentin@nokia.com>,
+	<20090730215642.2f509757.jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
-In-Reply-To: <20090730130442.GD9975@sirena.org.uk>
+In-Reply-To: <20090730215642.2f509757.jhnikula@gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,25 +27,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>
+Cc: linux-omap@vger.kernel.org, peter.ujfalusi@nokia.com, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 30, 2009 at 03:04:42PM +0200, ext Mark Brown wrote:
-> On Thu, Jul 30, 2009 at 03:49:34PM +0300, Eduardo Valentin wrote:
-> 
-> > It adds a new sysfs file, where the user can configure the mcbsp mode to use.
-> > If the mcbsp channel is in use, it does not allow the change.
-> > Than in omap_pcm_open we can call the omap_mcbsp_get_opmode to get the mode,
-> > store it, than use it to implement the different modes.
-> 
-> Is this really something that people would want to tweak at runtime
-> (except for test purposes)?
 
-Yes, test purposes, bug also, the same link could be sometime used for low-power
-playback while sometime for low-latency processing where as accurate as
-possible DMA pointer position info is needed.
+Jarkko Nikula [jhnikula@gmail.com] wrote:
+> Are you sure this change is necessary? CLKSRG is kind of master clock
+> to McBSP so original stetson guessed (?) 100 us should be fine for all
+> serial links where bit clock is higher than 20 kHz.
 
+The McBSP / DMA stuff doesn't really work properly, when PM is enabled
+to full extent. The first DMA goes in _before_ the omap_mcbsp_start(),
+so the higher delay compensates DMA misbehavior in a way...
 
+.. L/R channels also may switch at random initially with full PM enabled.
+So the L/R fix is only working, if no PM is enabled (sigh).
 
--- 
-Eduardo Valentin
+Need to make that work fine (no L/R switching and early no DMA completions)
+to get rid of the higher, 500us, timeout. Maybe try not having 
+XCCR/RCCR dma enable bit initially, but enabling them at omap_mcbsp_start()?
+(I'd try if I wasn't also on vacation).
+
+- Eero
