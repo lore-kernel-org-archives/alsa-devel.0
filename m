@@ -1,16 +1,15 @@
 From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: [PATCH 2/4] pulse: use PA_CONTEXT_IS_GOOD where
-	applicable
-Date: Fri, 31 Jul 2009 16:01:52 +0200
-Message-ID: <20090731140152.GA31185@omega>
+Subject: [PATCH 3/4] pulse: unify destruction of snd_pulse_t
+Date: Fri, 31 Jul 2009 16:02:05 +0200
+Message-ID: <20090731140205.GA31215@omega>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id D17B1103928
+	by alsa0.perex.cz (Postfix) with ESMTP id 4C40210392F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 31 Jul 2009 16:01:53 +0200 (CEST)
+	Fri, 31 Jul 2009 16:02:06 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,51 +23,63 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-PA_CONTEXT_IS_GOOD is a safer way to check whether a context is still
-valid.
-
-This patch also bumps the version requirement of libpulse to 0.9.11.
 ---
- configure.in  |    2 +-
- pulse/pulse.c |    5 ++---
- 2 files changed, 3 insertions(+), 4 deletions(-)
+ pulse/pulse.c |   31 ++++++++++++-------------------
+ 1 files changed, 12 insertions(+), 19 deletions(-)
 
-diff --git a/configure.in b/configure.in
-index 36740e9..f8bc669 100644
---- a/configure.in
-+++ b/configure.in
-@@ -30,7 +30,7 @@ AC_ARG_ENABLE([pulseaudio],
-       AS_HELP_STRING([--disable-pulseaudio], [Disable building of pulseaudio plugin]))
- 
- if test "x$enable_pulseaudio" != "xno"; then
--  PKG_CHECK_MODULES(pulseaudio, [libpulse >= 0.9.2], [HAVE_PULSE=yes], [HAVE_PULSE=no])
-+  PKG_CHECK_MODULES(pulseaudio, [libpulse >= 0.9.11], [HAVE_PULSE=yes], [HAVE_PULSE=no])
- fi
- AM_CONDITIONAL(HAVE_PULSE, test x$HAVE_PULSE = xyes)
- 
 diff --git a/pulse/pulse.c b/pulse/pulse.c
-index 95d8dde..dd17384 100644
+index dd17384..ae66b0c 100644
 --- a/pulse/pulse.c
 +++ b/pulse/pulse.c
-@@ -38,7 +38,7 @@ int pulse_check_connection(snd_pulse_t * p)
+@@ -217,36 +217,29 @@ snd_pulse_t *pulse_new(void)
+ 	return p;
  
- 	state = pa_context_get_state(p->context);
+ fail:
++	pulse_free(p);
++
++	return NULL;
++}
++
++void pulse_free(snd_pulse_t * p)
++{
+ 	if (p->mainloop)
+ 		pa_threaded_mainloop_stop(p->mainloop);
  
--	if (state != PA_CONTEXT_READY)
-+	if (!PA_CONTEXT_IS_GOOD(state))
- 		return -EIO;
+-	if (p->context)
++	if (p->context) {
++		pa_context_disconnect(p->context);
+ 		pa_context_unref(p->context);
++	}
  
- 	return 0;
-@@ -127,8 +127,7 @@ int pulse_wait_stream_state(snd_pulse_t * p, pa_stream * stream,
- 		if (state == target)
- 			break;
+ 	if (p->mainloop)
+ 		pa_threaded_mainloop_free(p->mainloop);
  
--		if (state == PA_STREAM_FAILED ||
--		    state == PA_STREAM_TERMINATED)
-+		if (!PA_STREAM_IS_GOOD(state))
- 			return -EIO;
+-	if (p->main_fd >= 0)
+-		close(p->main_fd);
+-
+ 	if (p->thread_fd >= 0)
+ 		close(p->thread_fd);
  
- 		pa_threaded_mainloop_wait(p->mainloop);
+-	free(p);
+-
+-	return NULL;
+-}
+-
+-void pulse_free(snd_pulse_t * p)
+-{
+-	pa_threaded_mainloop_stop(p->mainloop);
+-
+-	pa_context_disconnect(p->context);
+-	pa_context_unref(p->context);
+-	pa_threaded_mainloop_free(p->mainloop);
+-
+-	close(p->thread_fd);
+-	close(p->main_fd);
++	if (p->main_fd >= 0)
++		close(p->main_fd);
+ 
+ 	free(p);
+ }
 -- 
 1.6.3.3
 
