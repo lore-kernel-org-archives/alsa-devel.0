@@ -1,26 +1,19 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] [RFC 8/13] Intel SST sound card driver
-Date: Sat, 1 Aug 2009 10:46:27 +0100
-Message-ID: <20090801094626.GA7979@sirena.org.uk>
-References: <1246604775-12960-1-git-send-email-vinod.koul@intel.com>
-	<20090704105743.GD10490@sirena.org.uk>
-	<98769532B4BB14429434178695419EAE5BBC230C@bgsmsx501.gar.corp.intel.com>
-	<20090707114227.GD14393@rakim.wolfsonmicro.main>
-	<98769532B4BB14429434178695419EAE5BC0AF65@bgsmsx501.gar.corp.intel.com>
-	<20090708094619.GA7420@rakim.wolfsonmicro.main>
-	<98769532B4BB14429434178695419EAE5F2A3EBB@bgsmsx501.gar.corp.intel.com>
-	<20090717101804.GD3439@rakim.wolfsonmicro.main>
-	<98769532B4BB14429434178695419EAE5F76A259@bgsmsx501.gar.corp.intel.com>
+Subject: Re: [PATCH] ASoC: MPC5200: Support for buffer wrap
+ around
+Date: Sat, 1 Aug 2009 10:57:12 +0100
+Message-ID: <20090801095712.GC7979@sirena.org.uk>
+References: <20090731230311.17686.46431.stgit@riker>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id CD0B824914
+	by alsa0.perex.cz (Postfix) with ESMTP id 962C624382
 	for <alsa-devel@alsa-project.org>;
-	Sat,  1 Aug 2009 11:46:34 +0200 (CEST)
+	Sat,  1 Aug 2009 11:57:20 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <98769532B4BB14429434178695419EAE5F76A259@bgsmsx501.gar.corp.intel.com>
+In-Reply-To: <20090731230311.17686.46431.stgit@riker>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,18 +23,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Harsha, Priya" <priya.harsha@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: John Bonesio <bones@secretlab.ca>
+Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, Eric Millbrandt <emillbrandt@dekaresearch.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 01, 2009 at 08:45:31AM +0530, Harsha, Priya wrote:
-> In my probe function, after adding the controls, I added the following code
-> 
-> 	retval = snd_jack_new(intelmaddata->card, "Headphone",
-> 				SND_JACK_HEADPHONE, &jack);
+On Fri, Jul 31, 2009 at 04:08:55PM -0700, John Bonesio wrote:
+> We've encountered strange behavior in the alsamixer settings using the wm9712
+> codec. If we unmute the headphone output and then unmute the PCM output, the
+> headphone output gets reset to mute in the hardware register. At this point
+> the hardware register does not match the value in the register cache.
 
-> But I do not see any jacks in /dev/input.... Am I missing anything?
+Which specific controls are you looking at here?
 
-It's hard to say without seeing the whole driver but you do need to
-create the jack before you instantiate the sound card - it will be
-created along with all the other controls and PCMs.
+> I've spent some time debugging this, and the headphone setting is set outside
+> of any code path that would call the ac97_write() routine. As best as I can
+> tell, there is something strange going on in hardware.
+
+> I've provided this patch that works around the problem.
+
+Like Grant says I suspect this isn't the patch you meant...
+
+> Have any of you seen this before? Is this patch the right approach?
+
+I've never heard of that before and the WM9712 is very widely deployed
+so if it were a hardware issue in the CODEC I'd imagine it would have
+come up.  On the other hand, it's not beyond the bounds of possibility.
+If you could post the patch showing exactly what you're doing I could
+probably say more.
+
+If you could get a scope on the bus that might be interesting...
