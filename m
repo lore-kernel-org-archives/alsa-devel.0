@@ -1,21 +1,25 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH] ASoC: MPC5200: Support for buffer wrap
-	around
-Date: Fri, 31 Jul 2009 19:57:34 -0600
-Message-ID: <fa686aa40907311857j6c1f14eftcee349f693eaa3ed@mail.gmail.com>
-References: <20090731230311.17686.46431.stgit@riker>
+From: "Harsha, Priya" <priya.harsha@intel.com>
+Subject: Re: [PATCH] [RFC 8/13] Intel SST sound card driver
+Date: Sat, 1 Aug 2009 08:45:31 +0530
+Message-ID: <98769532B4BB14429434178695419EAE5F76A259@bgsmsx501.gar.corp.intel.com>
+References: <1246604775-12960-1-git-send-email-vinod.koul@intel.com>
+	<20090704105743.GD10490@sirena.org.uk>
+	<98769532B4BB14429434178695419EAE5BBC230C@bgsmsx501.gar.corp.intel.com>
+	<20090707114227.GD14393@rakim.wolfsonmicro.main>
+	<98769532B4BB14429434178695419EAE5BC0AF65@bgsmsx501.gar.corp.intel.com>
+	<20090708094619.GA7420@rakim.wolfsonmicro.main>
+	<98769532B4BB14429434178695419EAE5F2A3EBB@bgsmsx501.gar.corp.intel.com>
+	<20090717101804.GD3439@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f188.google.com (mail-yw0-f188.google.com
-	[209.85.211.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2AD98247D7
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id DFDAE2480E
 	for <alsa-devel@alsa-project.org>;
-	Sat,  1 Aug 2009 03:57:35 +0200 (CEST)
-Received: by ywh26 with SMTP id 26so2842765ywh.5
-	for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2009 18:57:34 -0700 (PDT)
-In-Reply-To: <20090731230311.17686.46431.stgit@riker>
+	Sat,  1 Aug 2009 05:15:36 +0200 (CEST)
+In-Reply-To: <20090717101804.GD3439@rakim.wolfsonmicro.main>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,86 +29,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John Bonesio <bones@secretlab.ca>
-Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Millbrandt <emillbrandt@dekaresearch.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday, July 31, 2009, John Bonesio <bones@secretlab.ca> wrote:
-> We've encountered strange behavior in the alsamixer settings using the wm=
-9712
-> codec. If we unmute the headphone output and then unmute the PCM output, =
-the
-> headphone output gets reset to mute in the hardware register. At this poi=
-nt
-> the hardware register does not match the value in the register cache.
->
-> I've spent some time debugging this, and the headphone setting is set out=
-side
-> of any code path that would call the ac97_write() routine. As best as I c=
-an
-> tell, there is something strange going on in hardware.
->
-> I've provided this patch that works around the problem.
->
-> Have any of you seen this before? Is this patch the right approach?
->
-> - John
->
-> The code in psc_dma_bcom_enqueue_tx() didn't account for the fact that
-> s->runtime->control->appl_ptr can wrap around to the beginning of the
-> buffer. This change fixes this problem.
->
-> Signed-off-by: John Bonesio <bones@secretlab.ca>
+In my probe function, after adding the controls, I added the following code
 
-Hey John,
+	retval = snd_jack_new(intelmaddata->card, "Headphone",
+				SND_JACK_HEADPHONE, &jack);
+	if (retval < 0)
+		return retval;
+	jack->private_data = jack;
+	snd_jack_report(jack, jack->type);
 
-It would appear that you've attached the wrong patch.
+	retval = snd_jack_new(intelmaddata->card, "Headset",
+				SND_JACK_HEADSET, &jack);
+	if (retval < 0)
+		return retval;
+	jack->private_data = jack;
+	snd_jack_report(jack, jack->type);
 
-g.
+But I do not see any jacks in /dev/input.... Am I missing anything?
 
-> ---
+Thanks,
+Harsha.
+>-----Original Message-----
+>From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
+>Sent: Friday, July 17, 2009 3:48 PM
+>To: Harsha, Priya
+>Cc: Koul, Vinod; alsa-devel@alsa-project.org
+>Subject: Re: [alsa-devel] [PATCH] [RFC 8/13] Intel SST sound card driver
 >
-> =A0sound/soc/fsl/mpc5200_dma.c | =A0 17 +++++++++++++++++
-> =A01 files changed, 17 insertions(+), 0 deletions(-)
+>On Fri, Jul 17, 2009 at 12:31:25PM +0530, Harsha, Priya wrote:
 >
-> diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
-> index cfe0ea4..2551c58 100644
-> --- a/sound/soc/fsl/mpc5200_dma.c
-> +++ b/sound/soc/fsl/mpc5200_dma.c
-> @@ -70,6 +70,23 @@ static void psc_dma_bcom_enqueue_next_buffer(struct ps=
-c_dma_stream *s)
+>> I was looking into creating jack sense device. I see that I can create
+>> jack sense for headphones/headset/mic etc,. but if I want to send events
+>> like long press and short press of headset keys, can I use this same
+>> framework in someway? Is there any way to event these kinds of actions
+>> to user space through ALSA?
 >
-> =A0static void psc_dma_bcom_enqueue_tx(struct psc_dma_stream *s)
-> =A0{
-> + =A0 =A0 =A0 if (s->appl_ptr > s->runtime->control->appl_ptr) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /*
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* In this case s->runtime->control->appl=
-_ptr has wrapped around.
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* Play the data to the end of the bounda=
-ry, then wrap our own
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* appl_ptr back around.
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*/
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 while (s->appl_ptr < s->runtime->boundary) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (bcom_queue_full(s->bcom=
-_task))
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return;
-> +
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 s->appl_ptr +=3D s->period_=
-size;
-> +
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 psc_dma_bcom_enqueue_next_b=
-uffer(s);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 s->appl_ptr -=3D s->runtime->boundary;
-> + =A0 =A0 =A0 }
-> +
->  =A0 =A0 =A0 =A0while (s->appl_ptr < s->runtime->control->appl_ptr) {
+>The intention was that buttons would be reported as normal buttons,
+>probably BTN_MISC.  Nobody has merged a driver with short detection yet
+>so it's not been added to the jack API yet but that's a fairly trivial
+>mapping.
 >
->  =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (bcom_queue_full(s->bcom_task))
->
->
-
--- =
-
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
+>Within the input API buttons just have pressed and released states so as
+>unless there's something I'm not aware of you'll need to manually create
+>different press lengths with a timer.
