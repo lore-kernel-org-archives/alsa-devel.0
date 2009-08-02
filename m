@@ -1,28 +1,20 @@
-From: "Wael Nasreddine (a.k.a eMxyzptlk)" <mla@nasreddine.com>
-Subject: Re: Fwd: HDA Intel IDT 92HD71B7X - HP Pavilion
-	DV7-1299EF - Subwoofer not Working
-Date: Sun, 2 Aug 2009 01:15:29 +0200
-Message-ID: <d3328e7b0908011615s702472f7p57df601cad00049f@mail.gmail.com>
-References: <d3328e7b0906070752h448912f1lfc86468ce7335bac@mail.gmail.com>
-	<d3328e7b0906070757n12c70a38l3eaab08d1884ec75@mail.gmail.com>
-	<1244743954.2586.9.camel@nick-beta.sagui>
-	<d3328e7b0906111131s6eccb55fu4ecfa0ee597772db@mail.gmail.com>
-	<d3328e7b0907251244q788d706cne6720d0726e7eef4@mail.gmail.com>
-	<s5hab2q9sig.wl%tiwai@suse.de>
-	<d3328e7b0907281107p3d589c62u25b5160029c50997@mail.gmail.com>
-	<s5h7hxsm113.wl%tiwai@suse.de>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: [PATCH] hda: add IbexPeak/Clarkdale HDMI
+	model	with static cvt/pin number
+Date: Sun, 2 Aug 2009 11:39:57 +0800
+Message-ID: <20090802033957.GA11657@localhost>
+References: <20090801122700.GA17330@localhost>
+	<alpine.LNX.2.00.0908011515340.21927@eeebox2.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
-	[209.85.220.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id 977C41037EA
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 292602437F
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Aug 2009 01:15:50 +0200 (CEST)
-Received: by fxm3 with SMTP id 3so1432622fxm.32
-	for <alsa-devel@alsa-project.org>; Sat, 01 Aug 2009 16:15:49 -0700 (PDT)
-In-Reply-To: <s5h7hxsm113.wl%tiwai@suse.de>
+	Sun,  2 Aug 2009 05:40:11 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <alpine.LNX.2.00.0908011515340.21927@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,63 +24,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Gustavo Vieira <gustavo@sagui.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBKdWwgMjksIDIwMDkgYXQgODo1NSBBTSwgVGFrYXNoaSBJd2FpPHRpd2FpQHN1c2Uu
-ZGU+IHdyb3RlOgo+IEF0IFR1ZSwgMjggSnVsIDIwMDkgMjA6MDc6MjkgKzAyMDAsCj4gV2FlbCBO
-YXNyZWRkaW5lIChhLmsuYSBlTXh5enB0bGspIHdyb3RlOgo+Pgo+PiBPbiBNb24sIEp1bCAyNywg
-MjAwOSBhdCAzOjE1IFBNLCBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+IHdyb3RlOgo+Pgo+
-PiDCoCDCoCBBdCBTYXQsIDI1IEp1bCAyMDA5IDIxOjQ0OjQ2ICswMjAwLAo+PiDCoCDCoCBXYWVs
-IE5hc3JlZGRpbmUgKGEuay5hIGVNeHl6cHRsaykgd3JvdGU6Cj4+IMKgIMKgID4KPj4gwqAgwqAg
-PiBJIHN0aWxsIGdvdCBubyBzb2x1dGlvbiBmb3IgdGhpcyBwcm9ibGVtLAo+Pgo+PiDCoCDCoCBX
-aGljaCBwcm9ibGVtPwo+PiDCoCDCoCBJdCdkIGJlIGhlbHBmdWwgaWYgeW91IGdpdmUgYSBwcm9i
-bGVtIHN1bW1hcnkgYW5kIHdoYXQgeW91J3ZlIGRvbmUKPj4gwqAgwqAgdW50aWwgbm93IChhbmQg
-ZG9uJ3QgZG8gdG9wLXBvc3RpbmcpLi4uCj4+Cj4+IMKgIMKgIHRoYW5rcywKPj4KPj4gwqAgwqAg
-VGFrYXNoaQo+Pgo+PiBIaSBUYWthc2hpLAo+Pgo+PiBJJ20gc29ycnkgSSBkaWRuJ3Qgbm90aWNl
-IHRoYXQgdGhlIHByb2JsZW0gd2Fzbid0IHF1b3RlZCBpbiBteSBsYXN0IG1lc3NhZ2UsCj4+IGFu
-eXdheSB0aGUgd2hvbGUgdG9waWMgaXMgaW5jbHVkZWQgaW4gdGhlIGZvcndhcmRlZCBtZXNzYWdl
-IGJlbG93LCBJIHRyaWVkCj4+IHVzaW5nIGhkYS12ZXJiIGFuZCBoZGEtYW5hbHl6ZXIsIGxpa2Ug
-eW91IHN1Z2dlc3RlZCBpbiBvbmUgb2YgeW91ciBlbWFpbHMsIGJ1dAo+PiBzaW5jZSBJIGRvbid0
-IGV2ZW4ga25vdyB3aGF0IEknbSBsb29raW5nIGZvciBub3Igd2hhdCB0byB0cnksIEkgZGlkIG5v
-dCBnb3QKPj4gdG9vIGZhciEKPj4KPj4gV2hhdCBlbHNlIGRvIHlvdSBzdWdnZXN0PyBBcmUgeW91
-IGF3YXJlIG9mIGFueW9uZSBoYXZpbmcgYSBzaW1pbGFyIGlzc3VlIEkgY2FuCj4+IHF1ZXJ5IHRv
-IGhlbHAgbWUgZmlndXJlIGl0IG91dCA/Cj4KPiBGaXJzdCBvZmYsIHRyeSB0aGUgdmVyeSBsYXRl
-c3QgYWxzYS1kcml2ZXIgc25hcHNob3QuCj4gwqBmdHA6Ly9mdHAua2VybmVsLm9yZy9wdWIvbGlu
-dXgva2VybmVsL3Blb3BsZS90aXdhaS9zbmFwc2hvdC9hbHNhLWRyaXZlci1zbmFwc2hvdC50YXIu
-Z3oKPgo+IFRoZSBwcm9ibGVtIGlzIHRoYXQgQklPUyBzZXRzIG9ubHkgb25lIHN0ZXJlbyBzcGVh
-a2VyIGluIHRoZSBwaW4KPiBjb25maWd1cmF0aW9uLCBzbyB0aGUgZHJpdmVyIGNhbm5vdCBrbm93
-IHdoYXQgdG8gZG8gd2l0aCBhbm90aGVyCj4gc3BlYWtlci4gwqBJbiBzaG9ydCwgaXQncyBhIEJJ
-T1MgYnVnLgo+Cj4gVG8gb3ZlcmNvbWUgdGhhdCwgeW91IG5lZWQgdG8gZmlndXJlIG91dCB3aGlj
-aCBwaW4gY29ycmVzcG9uZHMgdG8gdGhlCj4gc3BlYWtlci4gwqBUaGUgcmVzdCBhdmFpbGFibGUg
-KGFuYWxvZykgb3V0cHV0IHBpbnMgYXJlIDB4MGYgYW5kIDB4MTQuCj4gU2V0IHRoZXNlIGFzIG91
-dHB1dCBwaW5zLCBhbmQgY29ubmVjdCB0byBEQUMuIMKgRm9yIGV4YW1wbGUsCj4KPiDCoCDCoCDC
-oCDCoCMgaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MGYgU0VUX1BJTl9XSUQgMHg0MAo+IMKg
-IMKgIMKgIMKgIyBoZGEtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHgwZiBTRVRfQ09OTiAwCj4KPiB3
-aGljaCBlbmFibGVzIHRoZSBvdXRwdXQgb2YgdGhlIHBpbiAweDBmLCB0aGVuIGNvbm5lY3RzIHRv
-IHRoZSBmaXJzdAo+IERBQyAoPSAweDEwKS4gwqBTaW1pbGFybHksCj4KPiDCoCDCoCDCoCDCoCMg
-aGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MTQgU0VUX1BJTl9XSUQgMHg0MAo+IMKgIMKgIMKg
-IMKgIyBoZGEtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHgxNSBTRVRfQ09OTiAwCj4KPiB3aGljaCBl
-bmFibGVzIHRoZSBvdXRwdXQgb2YgdGhlIHBpbiAweDE0LCB0aGVuIGNoYW5nZXMgdGhlIGNvbm5l
-Y3Rpb24KPiBvZiBpdHMgbXV4ICgweDE1KSB0byB0aGUgZmlyc3QgREFDICgweDEwKS4KPgo+IElm
-IHRoZXNlIGRvbid0IGhlbHAsIGl0J3MgcG9zc2libGUgdGhhdCBzb21lIEdQSU8gYml0cyBwbGF5
-IGFueSByb2xlLgo+IFBsYXkgd2l0aCBHUElPIGJpdHMsIHdoaWNoIGNhbiBiZSBhbHNvIGNoYW5n
-ZWQgdmlhIGhkYS12ZXJiLgo+Cj4KPiBUYWthc2hpCj4KClRha2FzaGksCgpJIHRyaWVkIHdoYXQg
-eW91IGhhdmUgc3VnZ2VzdGVkLCBJIHBsYXllZCB3aXRoIHRoZSBwaW5zIGEgYml0IHRyaWVkCm90
-aGVyIGNvbWJpbmF0aW9ucyBhcyB3ZWxsIChBbGwgb24gdGhlIGxhdGVzdCBhbHNhIHNuYXBzaG90
-KSBidXQgSQpzdGlsbCBoYXZlIHRoZSBzYW1lIHByb2JsZW0sIHRoZSBzb3VuZCBjb21lcyB1cCBm
-cm9tIG9ubHkgdGhlIGxlZnQKc3BlYWtlci4uCgpDb3VsZCB5b3UgYmUgYSBsaXR0bGUgbW9yZSBz
-cGVjaWZpYyBhYm91dCB0aGUgR1BJTyBiaXRzPz8KClRoYW5rIHlvdSBzbyBtdWNoIGZvciBoZWxw
-aW5nIG1lISEKClJlZ2FyZHMsCldhZWwKCi0tIApXYWVsIE5hc3JlZGRpbmUKCkJsb2cgICAgOiBo
-dHRwOi8vd2FlbC5uYXNyZWRkaW5lLmNvbQpFLW1haWwgIDogd2FlbC5uYXNyZWRkaW5lQGdtYWls
-LmNvbQpnVGFsayAgIDogd2FlbC5uYXNyZWRkaW5lQGdtYWlsLmNvbQpUZWwgICAgIDogKzMzLjYu
-MzIuOTQuNzAuMTMKU2t5cGUgICA6IGVNeHl6cHRsawpUd2l0dGVyIDogQGVNeHl6cHRsawoKU2Fi
-YXlvbiBMaW51eCBDaGllZiBEZXZlbG9wbWVudCBPZmZpY2VyIC0gaHR0cDovL3d3dy5zYWJheW9u
-bGludXgub3JnCgpQR1A6IDEwMjREL0M4REQxOEEyIDA2RjYgMTYyMiA0QkM4IDRDRUIgRDcyNCAg
-REUxMiA1NTY1IDM5NDUgQzhERCAxOEEyCgouOiBBbiBpbmZpbml0ZSBudW1iZXIgb2YgbW9ua2V5
-cyB0eXBpbmcgaW50byBHTlUgZW1hY3MsCiAgIHdvdWxkIG5ldmVyIG1ha2UgYSBnb29kIHByb2dy
-YW0uIChMLiBUb3J2YWxkcyAxOTk1KSA6LgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+On Sat, Aug 01, 2009 at 09:17:10PM +0800, Jaroslav Kysela wrote:
+> On Sat, 1 Aug 2009, Wu Fengguang wrote:
+> 
+> > -#define CVT_NID		0x02	/* audio converter */
+> > -#define PIN_NID		0x03	/* HDMI output pin */
+> > +static hda_nid_t cvt_nid;	/* audio converter */
+> > +static hda_nid_t pin_nid;	/* HDMI output pin */
+> 
+> I don't like to use static variables here. I would recommend to use a 
+> runtime structure to store these values.
+
+Good idea. But let's keep this first step simple?  I'll do the
+conversion in subsequent patches. I'd like to add some hda_hdmi struct
+into the hda_codec structure. Like this one. What do you think?
+
+Thanks,
+Fengguang
+
+---
+ sound/pci/hda/hda_codec.h |   21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+--- sound-2.6.orig/sound/pci/hda/hda_codec.h
++++ sound-2.6/sound/pci/hda/hda_codec.h
+@@ -555,6 +555,7 @@ static inline unsigned int snd_array_ind
+ 
+ struct hda_bus;
+ struct hda_beep;
++struct hda_hdmi;
+ struct hda_codec;
+ struct hda_pcm;
+ struct hda_pcm_stream;
+@@ -788,6 +789,9 @@ struct hda_codec {
+ 	unsigned short spdif_ctls;	/* SPDIF control bits */
+ 	unsigned int spdif_in_enable;	/* SPDIF input enable? */
+ 	hda_nid_t *slave_dig_outs; /* optional digital out slave widgets */
++
++	struct hda_hdmi	hdmi;
++
+ 	struct snd_array init_pins;	/* initial (BIOS) pin configurations */
+ 	struct snd_array driver_pins;	/* pin configs set by codec parser */
+ 
+@@ -823,6 +827,23 @@ enum {
+ 	HDA_INPUT, HDA_OUTPUT
+ };
+ 
++/*
++ * The HDMI/DisplayPort configuration can be highly dynamic. A graphics device
++ * could support two independent pipes, each of them can be connected to one or
++ * more monitors (DVI, HDMI or DisplayPort).
++ *
++ * The HDA correspondence of pipes/monitors are converter/pin nodes.
++ */
++#define HDA_HDMI_CVTS	2
++#define HDA_HDMI_PINS	3
++struct hda_hdmi {
++	int num_cvts;
++	hda_nid_t cvt[HDA_HDMI_CVTS];
++	int num_pins;
++	hda_nid_t pin[HDA_HDMI_PINS];
++	/* the converter each pin connects to */
++	hda_nid_t pin_cvt[HDA_HDMI_PINS];
++};
+ 
+ /*
+  * constructors
