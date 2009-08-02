@@ -1,71 +1,31 @@
 From: Lubomir Rintel <lkundrak@v3.sk>
-Subject: [PATCH] Tell user that stream to be rewound is suspended
-Date: Sun,  2 Aug 2009 18:14:44 +0200
-Message-ID: <1249229684-8292-1-git-send-email-lkundrak@v3.sk>
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753089AbZHBQY1@vger.kernel.org>
+Subject: Re: [PATCH] Tell user that stream to be rewound is suspended
+Date: Sun, 02 Aug 2009 18:32:57 +0200
+Message-ID: <1249230777.4890.6.camel@localhost.localdomain>
+References: <1249229684-8292-1-git-send-email-lkundrak@v3.sk>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753155AbZHBQwO@vger.kernel.org>
+In-Reply-To: <1249229684-8292-1-git-send-email-lkundrak@v3.sk>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lennart Poettering <mzjro@0pointer.net>, stable@kernel.org, alsa-devel@alsa-project.org, Lubomir Rintel <lkundrak@v3.sk>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lennart Poettering <mzjro@0pointer.net>, stable@kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Return STRPIPE instead of EBADF when userspace attempts to rewind
-of forward a stream that was suspended in meanwhile, so that it
-can be recovered by snd_pcm_recover().
+On Sun, 2009-08-02 at 18:14 +0200, Lubomir Rintel wrote:
+> Return STRPIPE instead of EBADF when userspace attempts to rewind
+> of forward a stream that was suspended in meanwhile, so that it
+> can be recovered by snd_pcm_recover().
+> 
+> This was causing Pulseaudio to unload the ALSA sink module under a race
+> condition when it attempted to rewind the stream right after resume from
+> suspend, before writing to the stream which would cause it to revive the
+> stream otherwise. Tested to work with Pulseaudio patched to attempt to
+> snd_pcm_recover() upon receiving an error from snd_pcm_rewind().
 
-This was causing Pulseaudio to unload the ALSA sink module under a race
-condition when it attempted to rewind the stream right after resume from
-suspend, before writing to the stream which would cause it to revive the
-stream otherwise. Tested to work with Pulseaudio patched to attempt to
-snd_pcm_recover() upon receiving an error from snd_pcm_rewind().
+The userspace part is filed here:
+http://www.pulseaudio.org/ticket/616
 
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
----
- sound/core/pcm_native.c |   12 ++++++++++++
- 1 files changed, 12 insertions(+), 0 deletions(-)
-
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index ac2150e..d89c816 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -2208,6 +2208,9 @@ static snd_pcm_sframes_t snd_pcm_playback_rewind(struct snd_pcm_substream *subst
- 	case SNDRV_PCM_STATE_XRUN:
- 		ret = -EPIPE;
- 		goto __end;
-+	case SNDRV_PCM_STATE_SUSPENDED:
-+		ret = -ESTRPIPE;
-+		goto __end;
- 	default:
- 		ret = -EBADFD;
- 		goto __end;
-@@ -2253,6 +2256,9 @@ static snd_pcm_sframes_t snd_pcm_capture_rewind(struct snd_pcm_substream *substr
- 	case SNDRV_PCM_STATE_XRUN:
- 		ret = -EPIPE;
- 		goto __end;
-+	case SNDRV_PCM_STATE_SUSPENDED:
-+		ret = -ESTRPIPE;
-+		goto __end;
- 	default:
- 		ret = -EBADFD;
- 		goto __end;
-@@ -2299,6 +2305,9 @@ static snd_pcm_sframes_t snd_pcm_playback_forward(struct snd_pcm_substream *subs
- 	case SNDRV_PCM_STATE_XRUN:
- 		ret = -EPIPE;
- 		goto __end;
-+	case SNDRV_PCM_STATE_SUSPENDED:
-+		ret = -ESTRPIPE;
-+		goto __end;
- 	default:
- 		ret = -EBADFD;
- 		goto __end;
-@@ -2345,6 +2354,9 @@ static snd_pcm_sframes_t snd_pcm_capture_forward(struct snd_pcm_substream *subst
- 	case SNDRV_PCM_STATE_XRUN:
- 		ret = -EPIPE;
- 		goto __end;
-+	case SNDRV_PCM_STATE_SUSPENDED:
-+		ret = -ESTRPIPE;
-+		goto __end;
- 	default:
- 		ret = -EBADFD;
- 		goto __end;
 -- 
-1.6.2.5
+"Excuse all the blood" -- Dead
