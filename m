@@ -1,20 +1,27 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: [PATCH v2] hda: add IbexPeak/Clarkdale HDMI model
-	with static	cvt/pin number
-Date: Mon, 3 Aug 2009 14:59:10 +0800
-Message-ID: <20090803065910.GA10219@localhost>
-References: <20090801122700.GA17330@localhost>
-	<20090802084855.GA22895@localhost> <s5hvdl58k5u.wl%tiwai@suse.de>
+From: "Harsha, Priya" <priya.harsha@intel.com>
+Subject: Re: [PATCH] [RFC 8/13] Intel SST sound card driver
+Date: Mon, 3 Aug 2009 12:45:08 +0530
+Message-ID: <98769532B4BB14429434178695419EAE5F76AC7D@bgsmsx501.gar.corp.intel.com>
+References: <1246604775-12960-1-git-send-email-vinod.koul@intel.com>
+	<20090704105743.GD10490@sirena.org.uk>
+	<98769532B4BB14429434178695419EAE5BBC230C@bgsmsx501.gar.corp.intel.com>
+	<20090707114227.GD14393@rakim.wolfsonmicro.main>
+	<98769532B4BB14429434178695419EAE5BC0AF65@bgsmsx501.gar.corp.intel.com>
+	<20090708094619.GA7420@rakim.wolfsonmicro.main>
+	<98769532B4BB14429434178695419EAE5F2A3EBB@bgsmsx501.gar.corp.intel.com>
+	<20090717101804.GD3439@rakim.wolfsonmicro.main>
+	<98769532B4BB14429434178695419EAE5F76A259@bgsmsx501.gar.corp.intel.com>
+	<20090801094626.GA7979@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5E92B245F9
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6F8D62461A
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Aug 2009 08:59:15 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hvdl58k5u.wl%tiwai@suse.de>
+	Mon,  3 Aug 2009 09:16:48 +0200 (CEST)
+In-Reply-To: <20090801094626.GA7979@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,298 +31,335 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jaroslav Kysela <jkysela@redhat.com>
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 03, 2009 at 02:51:25PM +0800, Takashi Iwai wrote:
-> At Sun, 2 Aug 2009 16:48:55 +0800,
-> Wu Fengguang wrote:
-> > 
-> > The new IbexPeak HDMI codec has 3 pin nodes and 2 converter nodes.
-> > Here we assume only the first ones will be used.
-> > 
-> > Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
-> > ---
-> > 
-> > Comparing with v1, the only change is the rename of codec from "P55"
-> > to "Q57". The dynamic data structure will be introduced by future
-> > patches.
-> 
-> OK, applied now.
+I tried but still finding the same issue...the probe function and the related functions are as follows... please let me know if you see any issues
 
-Thank you!
+___________
 
-> The needed change would be pretty easy, just change cvt_nid to
-> spec->cvt_nid, etc...
+/* Driver Init/exit functionalities */
+/**
+* snd_intelmad_pcm- to setup pcm for the card
+* @card:  pointer to the sound card structure
+*@intelmaddata: pointer to internal context
+* This function is called from probe function to set up pcm params and functions
+*/
+static int __devinit snd_intelmad_pcm(struct snd_card *card,
+				struct snd_intelmad *intelmaddata)
+{
+	struct snd_pcm *pcm;
+	int i, ret_val = 0;
+	char name[32] = INTEL_MAD;
 
-Ah OK. I'll put the members into intel_hdmi_spec instead of the
-planned hda_codec.
+	WARN_ON(!card);
+	WARN_ON(!intelmaddata);
+
+	for (i = 0; i < MAX_DEVICES; i++) {
+		ret_val = snd_pcm_new(card, name, i, PLAYBACK_COUNT,
+				CAPTURE_COUNT, &pcm);
+		if (0 != ret_val)
+			break;
+		/* setup the ops for playback and capture streams */
+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
+				&snd_intelmad_playback_ops);
+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
+				&snd_intelmad_capture_ops);
+		/* setup private data which can be retrieved when required */
+		pcm->private_data = intelmaddata;
+		pcm->info_flags = 0;
+		strncpy(pcm->name, card->shortname, strlen(card->shortname));
+		/* allocate dma pages for ALSA stream operations */
+		snd_pcm_lib_preallocate_pages_for_all(pcm,
+			SNDRV_DMA_TYPE_CONTINUOUS,
+			snd_dma_continuous_data(GFP_KERNEL),
+			MIN_BUFFER, MAX_BUFFER);
+	}
+	return ret_val;
+}
+/**
+* snd_intelmad_mixer- to setup mixer settings of the card
+*@intelmaddata: pointer to internal context
+* This function is called from probe function to set up mixer controls
+*/
+static int __devinit snd_intelmad_mixer(struct snd_intelmad *intelmaddata)
+{
+	struct snd_card *card = NULL;
+	unsigned int idx;
+	int ret_val = 0;
+	char *mixername = "IntelMAD Controls";
+
+	WARN_ON(!intelmaddata);
+
+	card = intelmaddata->card;
+
+	strncpy(card->mixername, mixername, strlen(mixername));
+	/* add all widget controls and expose the same */
+	for (idx = 0; idx < ARRAY_SIZE(snd_intelmad_controls); idx++) {
+		ret_val = snd_ctl_add(card,
+				snd_ctl_new1(&snd_intelmad_controls[idx],
+				intelmaddata));
+		sst_dbg("mixer[idx]=%d added \n", idx);
+		if (ret_val) {
+			sst_err("adding of control failed index = %d\n", idx);
+			break;
+		}
+	}
+	return ret_val;
+}
+static int __devinit snd_intelmad_register_irq(
+					struct snd_intelmad *intelmaddata)
+{
+	int ret_val = 0;
+	u32 regbase = AUDINT_BASE, regsize = 8;
+
+	/* interpret irq field */
+	sst_dbg("irq = 0x%x\n", intelmaddata->irq);
+
+	if ((intelmaddata->irq) & PMIC_SOUND_IRQ_TYPE_MASK) {
+		/* irq -> GPE_ID */
+		intelmaddata->irq = intelmaddata->irq &
+				(~PMIC_SOUND_IRQ_TYPE_MASK);
+		sst_dbg("gpe = 0x%x\n", intelmaddata->irq);
+		ret_val = request_gpe(intelmaddata->irq,
+				(gpio_function_t)snd_intelmad_intr_handler,
+				intelmaddata, 0);
+		if (ret_val) {
+			sst_dbg("cannot register gpe\n");
+			return ret_val;
+		}
+
+	} else {
+		/* irq -> system irq */
+		ret_val = request_irq(intelmaddata->irq,
+					snd_intelmad_intr_handler,
+					IRQF_SHARED, DRIVER_NAME,
+					intelmaddata);
+		if (ret_val) {
+			sst_dbg("cannot register IRQ\n");
+			return ret_val;
+		}
+	}
+
+	intelmaddata->int_base = ioremap_nocache(regbase, regsize);
+	return ret_val;
+}
+
+static int __devinit snd_intelmad_sst_register(
+			struct snd_intelmad *intelmaddata)
+{
+	int ret_val;
+	struct sc_reg_access pmic_reg = {0,};
+
+	pmic_reg.reg_addr = 0;
+	ret_val = sst_sc_reg_access(&pmic_reg, PMIC_READ, 1);
+
+	if (ret_val)
+		return ret_val;
+
+	vendor_id = pmic_reg.value & (MASK2|MASK1|MASK0);
+	sst_info("orginal reg n extrated vendor id  = 0x%x %d\n",
+		pmic_reg.value, vendor_id);
+	if (vendor_id < 0 || vendor_id > 2) {
+		sst_err("vendor card not supported!!\n");
+		return -EIO;
+	}
+	intelmaddata->sstdrv_ops->module_name = SST_CARD_NAMES;
+	intelmaddata->sstdrv_ops->vendor_id = vendor_id;
+	intelmaddata->sstdrv_ops->scard_ops = &v[vendor_id];
+
+	/* registering with SST driver to get access to SST APIs to use */
+	ret_val = register_sst_card(intelmaddata->sstdrv_ops);
+	if (ret_val) {
+		sst_err("sst card registration failed\n");
+		return ret_val;
+	}
+
+	vendor_id = intelmaddata->sstdrv_ops->vendor_id;
+	intelmaddata->pmic_status = PMIC_UNINIT;
+	return ret_val;
+}
+
+/**
+* snd_intelmad_create- called from probe to create a snd device
+*@intelmaddata :  pointer to the internal context
+*@card :  pointer to the sound card
+* This function is called when driver module is started
+*/
+static int __devinit snd_intelmad_create(
+		struct snd_intelmad *intelmaddata,
+		struct snd_card *card)
+{
+	int ret_val;
+	static struct snd_device_ops ops = {
+		.dev_free =	snd_intelmad_dev_free,
+	};
+
+	WARN_ON(!intelmaddata);
+	WARN_ON(!card);
+	/* ALSA api to register for the device */
+	ret_val = snd_device_new(card, SNDRV_DEV_LOWLEVEL, intelmaddata, &ops);
+	return ret_val;
+}
+	
+/**
+* snd_intelmad_jack- to setup jack settings of the card
+*@intelmaddata: pointer to internal context
+* This function is called from probe function to set up mixer controls
+*/
+static int __devinit snd_intelmad_jack(struct snd_intelmad *intelmaddata)
+{
+	struct snd_jack *jack;
+	int retval;
+
+	jack = &intelmaddata->jack[0];
+	retval = snd_jack_new(intelmaddata->card, "Headphone",
+				SND_JACK_HEADPHONE, &jack);
+	if (retval < 0)
+		return retval;
+	jack->private_data = jack;
+	snd_jack_report(jack, jack->type);
+
+	jack = &intelmaddata->jack[1];
+	retval = snd_jack_new(intelmaddata->card, "Headset",
+				SND_JACK_HEADSET, &jack);
+	if (retval < 0)
+		return retval;
+	jack->private_data = jack;
+	snd_jack_report(jack, jack->type);
+
+	return retval;
+}
+
+/**
+* snd_intelmad_probe- function registred for init
+*@spi :  pointer to the spi device context
+* This function is called when the device is initialized
+*/
+int __devinit snd_intelmad_probe(struct spi_device *spi)
+{
+	struct snd_card *card;
+	int ret_val = 0;
+	struct snd_intelmad *intelmaddata;
+
+	sst_dbg("called \n");
+
+	/* allocate memory for saving internal context and working */
+	intelmaddata = kzalloc(sizeof(*intelmaddata), GFP_KERNEL);
+	if (NULL == intelmaddata)
+		return -ENOMEM;
+
+	/* allocate memory for LPE API set */
+	intelmaddata->sstdrv_ops = kzalloc(sizeof(struct intel_sst_card_ops),
+					GFP_KERNEL);
+	if (!intelmaddata->sstdrv_ops) {
+		sst_err("mem alloctn fail \n");
+		kfree(intelmaddata);
+		return -ENOMEM;
+	}
+
+	/* create a card instance with ALSA framework */
+	ret_val = snd_card_create(card_index, card_id, THIS_MODULE, 0, &card);
+	if (ret_val) {
+		sst_err("snd_card_create fail \n");
+		goto free_allocs;
+	}
+
+	intelmaddata->spi = spi;
+	intelmaddata->irq = spi->irq;
+	dev_set_drvdata(&spi->dev, intelmaddata);
+	intelmaddata->card = card;
+	intelmaddata->card_id = card_id;
+	intelmaddata->card_index = card_index;
+	strncpy(card->driver, INTEL_MAD, strlen(INTEL_MAD));
+	strncpy(card->shortname, INTEL_MAD, strlen(INTEL_MAD));
+
+
+	ret_val = snd_intelmad_pcm(card, intelmaddata);
+	if (ret_val) {
+		sst_err("snd_intelmad_pcm failed\n");
+		goto free_allocs;
+	}
+
+	ret_val = snd_intelmad_mixer(intelmaddata);
+	if (ret_val) {
+		sst_err("snd_intelmad_mixer failed\n");
+		goto free_allocs;
+	}
+
+	ret_val = snd_intelmad_jack(intelmaddata);
+	if (ret_val) {
+		sst_err("snd_intelmad_jack failed\n");
+		goto free_allocs;
+	}
+
+#ifdef REG_IRQ
+	ret_val = snd_intelmad_register_irq(intelmaddata);
+	if (ret_val) {
+		sst_err("snd_intelmad_register_irq fail\n");
+		goto free_allocs;
+	}
+	/*ret_val = snd_intelmad_register_netlink();
+		if (ret_val) {
+			sst_dbg("...complete\n");
+			return ret_val;
+	}*/
+#endif
+
+	/* internal function call to register device with ALSA */
+	ret_val = snd_intelmad_create(intelmaddata, card);
+	if (ret_val) {
+		sst_err("snd_intelmad_create failed\n");
+		goto free_allocs;
+	}
+	card->private_data = &intelmaddata;
+	snd_card_set_dev(card, &spi->dev);
+	ret_val = snd_card_register(card);
+	if (ret_val)
+		goto free_allocs;
+
+
+	intelmaddata->sstdrv_ops->module_name = SST_CARD_NAMES;
+	/* registering with LPE driver to get access to SST APIs to use */
+	ret_val = snd_intelmad_sst_register(intelmaddata);
+	if (!ret_val) {
+		ret_val = intelmaddata->sstdrv_ops->scard_ops->init_card();
+		intelmaddata->pmic_status = PMIC_INIT;
+		sst_dbg("...complete\n");
+		return ret_val;
+	}
+
+	sst_err("registering with LPE failed \n");
+
+free_allocs:
+	/* TODO: unregister IRQ */
+	sst_err("probe failed\n");
+	/* snd_card_free(card); */
+	kfree(intelmaddata->sstdrv_ops);
+	kfree(intelmaddata);
+	return ret_val;
+}
 
 Thanks,
-Fengguang
+Harsha.
 
-> > 
-> >  sound/pci/hda/patch_intelhdmi.c |  104 +++++++++++++++---------------
-> >  1 file changed, 52 insertions(+), 52 deletions(-)
-> > 
-> > --- sound-2.6.orig/sound/pci/hda/patch_intelhdmi.c
-> > +++ sound-2.6/sound/pci/hda/patch_intelhdmi.c
-> > @@ -33,8 +33,8 @@
-> >  #include "hda_codec.h"
-> >  #include "hda_local.h"
-> >  
-> > -#define CVT_NID		0x02	/* audio converter */
-> > -#define PIN_NID		0x03	/* HDMI output pin */
-> > +static hda_nid_t cvt_nid;	/* audio converter */
-> > +static hda_nid_t pin_nid;	/* HDMI output pin */
-> >  
-> >  #define INTEL_HDMI_EVENT_TAG		0x08
-> >  
-> > @@ -44,30 +44,6 @@ struct intel_hdmi_spec {
-> >  	struct hdmi_eld sink_eld;
-> >  };
-> >  
-> > -static struct hda_verb pinout_enable_verb[] = {
-> > -	{PIN_NID, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-> > -	{} /* terminator */
-> > -};
-> > -
-> > -static struct hda_verb unsolicited_response_verb[] = {
-> > -	{PIN_NID, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
-> > -						  INTEL_HDMI_EVENT_TAG},
-> > -	{}
-> > -};
-> > -
-> > -static struct hda_verb def_chan_map[] = {
-> > -	{CVT_NID, AC_VERB_SET_HDMI_CHAN_SLOT, 0x00},
-> > -	{CVT_NID, AC_VERB_SET_HDMI_CHAN_SLOT, 0x11},
-> > -	{CVT_NID, AC_VERB_SET_HDMI_CHAN_SLOT, 0x22},
-> > -	{CVT_NID, AC_VERB_SET_HDMI_CHAN_SLOT, 0x33},
-> > -	{CVT_NID, AC_VERB_SET_HDMI_CHAN_SLOT, 0x44},
-> > -	{CVT_NID, AC_VERB_SET_HDMI_CHAN_SLOT, 0x55},
-> > -	{CVT_NID, AC_VERB_SET_HDMI_CHAN_SLOT, 0x66},
-> > -	{CVT_NID, AC_VERB_SET_HDMI_CHAN_SLOT, 0x77},
-> > -	{}
-> > -};
-> > -
-> > -
-> >  struct hdmi_audio_infoframe {
-> >  	u8 type; /* 0x84 */
-> >  	u8 ver;  /* 0x01 */
-> > @@ -244,11 +220,12 @@ static void hdmi_write_dip_byte(struct h
-> >  static void hdmi_enable_output(struct hda_codec *codec)
-> >  {
-> >  	/* Unmute */
-> > -	if (get_wcaps(codec, PIN_NID) & AC_WCAP_OUT_AMP)
-> > -		snd_hda_codec_write(codec, PIN_NID, 0,
-> > +	if (get_wcaps(codec, pin_nid) & AC_WCAP_OUT_AMP)
-> > +		snd_hda_codec_write(codec, pin_nid, 0,
-> >  				AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
-> >  	/* Enable pin out */
-> > -	snd_hda_sequence_write(codec, pinout_enable_verb);
-> > +	snd_hda_codec_write(codec, pin_nid, 0,
-> > +			    AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
-> >  }
-> >  
-> >  /*
-> > @@ -256,8 +233,8 @@ static void hdmi_enable_output(struct hd
-> >   */
-> >  static void hdmi_start_infoframe_trans(struct hda_codec *codec)
-> >  {
-> > -	hdmi_set_dip_index(codec, PIN_NID, 0x0, 0x0);
-> > -	snd_hda_codec_write(codec, PIN_NID, 0, AC_VERB_SET_HDMI_DIP_XMIT,
-> > +	hdmi_set_dip_index(codec, pin_nid, 0x0, 0x0);
-> > +	snd_hda_codec_write(codec, pin_nid, 0, AC_VERB_SET_HDMI_DIP_XMIT,
-> >  						AC_DIPXMIT_BEST);
-> >  }
-> >  
-> > @@ -266,20 +243,20 @@ static void hdmi_start_infoframe_trans(s
-> >   */
-> >  static void hdmi_stop_infoframe_trans(struct hda_codec *codec)
-> >  {
-> > -	hdmi_set_dip_index(codec, PIN_NID, 0x0, 0x0);
-> > -	snd_hda_codec_write(codec, PIN_NID, 0, AC_VERB_SET_HDMI_DIP_XMIT,
-> > +	hdmi_set_dip_index(codec, pin_nid, 0x0, 0x0);
-> > +	snd_hda_codec_write(codec, pin_nid, 0, AC_VERB_SET_HDMI_DIP_XMIT,
-> >  						AC_DIPXMIT_DISABLE);
-> >  }
-> >  
-> >  static int hdmi_get_channel_count(struct hda_codec *codec)
-> >  {
-> > -	return 1 + snd_hda_codec_read(codec, CVT_NID, 0,
-> > +	return 1 + snd_hda_codec_read(codec, cvt_nid, 0,
-> >  					AC_VERB_GET_CVT_CHAN_COUNT, 0);
-> >  }
-> >  
-> >  static void hdmi_set_channel_count(struct hda_codec *codec, int chs)
-> >  {
-> > -	snd_hda_codec_write(codec, CVT_NID, 0,
-> > +	snd_hda_codec_write(codec, cvt_nid, 0,
-> >  					AC_VERB_SET_CVT_CHAN_COUNT, chs - 1);
-> >  
-> >  	if (chs != hdmi_get_channel_count(codec))
-> > @@ -294,7 +271,7 @@ static void hdmi_debug_channel_mapping(s
-> >  	int slot;
-> >  
-> >  	for (i = 0; i < 8; i++) {
-> > -		slot = snd_hda_codec_read(codec, CVT_NID, 0,
-> > +		slot = snd_hda_codec_read(codec, cvt_nid, 0,
-> >  						AC_VERB_GET_HDMI_CHAN_SLOT, i);
-> >  		printk(KERN_DEBUG "HDMI: ASP channel %d => slot %d\n",
-> >  						slot >> 4, slot & 0x7);
-> > @@ -307,7 +284,7 @@ static void hdmi_parse_eld(struct hda_co
-> >  	struct intel_hdmi_spec *spec = codec->spec;
-> >  	struct hdmi_eld *eld = &spec->sink_eld;
-> >  
-> > -	if (!snd_hdmi_get_eld(eld, codec, PIN_NID))
-> > +	if (!snd_hdmi_get_eld(eld, codec, pin_nid))
-> >  		snd_hdmi_show_eld(eld);
-> >  }
-> >  
-> > @@ -322,11 +299,11 @@ static void hdmi_debug_dip_size(struct h
-> >  	int i;
-> >  	int size;
-> >  
-> > -	size = snd_hdmi_get_eld_size(codec, PIN_NID);
-> > +	size = snd_hdmi_get_eld_size(codec, pin_nid);
-> >  	printk(KERN_DEBUG "HDMI: ELD buf size is %d\n", size);
-> >  
-> >  	for (i = 0; i < 8; i++) {
-> > -		size = snd_hda_codec_read(codec, PIN_NID, 0,
-> > +		size = snd_hda_codec_read(codec, pin_nid, 0,
-> >  						AC_VERB_GET_HDMI_DIP_SIZE, i);
-> >  		printk(KERN_DEBUG "HDMI: DIP GP[%d] buf size is %d\n", i, size);
-> >  	}
-> > @@ -340,15 +317,15 @@ static void hdmi_clear_dip_buffers(struc
-> >  	int size;
-> >  	int pi, bi;
-> >  	for (i = 0; i < 8; i++) {
-> > -		size = snd_hda_codec_read(codec, PIN_NID, 0,
-> > +		size = snd_hda_codec_read(codec, pin_nid, 0,
-> >  						AC_VERB_GET_HDMI_DIP_SIZE, i);
-> >  		if (size == 0)
-> >  			continue;
-> >  
-> > -		hdmi_set_dip_index(codec, PIN_NID, i, 0x0);
-> > +		hdmi_set_dip_index(codec, pin_nid, i, 0x0);
-> >  		for (j = 1; j < 1000; j++) {
-> > -			hdmi_write_dip_byte(codec, PIN_NID, 0x0);
-> > -			hdmi_get_dip_index(codec, PIN_NID, &pi, &bi);
-> > +			hdmi_write_dip_byte(codec, pin_nid, 0x0);
-> > +			hdmi_get_dip_index(codec, pin_nid, &pi, &bi);
-> >  			if (pi != i)
-> >  				snd_printd(KERN_INFO "dip index %d: %d != %d\n",
-> >  						bi, pi, i);
-> > @@ -376,9 +353,9 @@ static void hdmi_fill_audio_infoframe(st
-> >  		sum += params[i];
-> >  	ai->checksum = - sum;
-> >  
-> > -	hdmi_set_dip_index(codec, PIN_NID, 0x0, 0x0);
-> > +	hdmi_set_dip_index(codec, pin_nid, 0x0, 0x0);
-> >  	for (i = 0; i < sizeof(ai); i++)
-> > -		hdmi_write_dip_byte(codec, PIN_NID, params[i]);
-> > +		hdmi_write_dip_byte(codec, pin_nid, params[i]);
-> >  }
-> >  
-> >  /*
-> > @@ -465,6 +442,8 @@ static int hdmi_setup_channel_allocation
-> >  static void hdmi_setup_channel_mapping(struct hda_codec *codec,
-> >  					struct hdmi_audio_infoframe *ai)
-> >  {
-> > +	int i;
-> > +
-> >  	if (!ai->CA)
-> >  		return;
-> >  
-> > @@ -473,7 +452,11 @@ static void hdmi_setup_channel_mapping(s
-> >  	 * ALSA sequence is front/surr/clfe/side?
-> >  	 */
-> >  
-> > -	snd_hda_sequence_write(codec, def_chan_map);
-> > +	for (i = 0; i < 8; i++)
-> > +		snd_hda_codec_write(codec, cvt_nid, 0,
-> > +				    AC_VERB_SET_HDMI_CHAN_SLOT,
-> > +				    (i << 4) | i);
-> > +
-> >  	hdmi_debug_channel_mapping(codec);
-> >  }
-> >  
-> > @@ -597,7 +580,6 @@ static struct hda_pcm_stream intel_hdmi_
-> >  	.substreams = 1,
-> >  	.channels_min = 2,
-> >  	.channels_max = 8,
-> > -	.nid = CVT_NID, /* NID to query formats and rates and setup streams */
-> >  	.ops = {
-> >  		.open    = intel_hdmi_playback_pcm_open,
-> >  		.close   = intel_hdmi_playback_pcm_close,
-> > @@ -613,6 +595,9 @@ static int intel_hdmi_build_pcms(struct 
-> >  	codec->num_pcms = 1;
-> >  	codec->pcm_info = info;
-> >  
-> > +	/* NID to query formats and rates and setup streams */
-> > +	intel_hdmi_pcm_playback.nid = cvt_nid;
-> > +
-> >  	info->name = "INTEL HDMI";
-> >  	info->pcm_type = HDA_PCM_TYPE_HDMI;
-> >  	info->stream[SNDRV_PCM_STREAM_PLAYBACK] = intel_hdmi_pcm_playback;
-> > @@ -636,8 +621,9 @@ static int intel_hdmi_init(struct hda_co
-> >  {
-> >  	hdmi_enable_output(codec);
-> >  
-> > -	snd_hda_sequence_write(codec, unsolicited_response_verb);
-> > -
-> > +	snd_hda_codec_write(codec, pin_nid, 0,
-> > +			    AC_VERB_SET_UNSOLICITED_ENABLE,
-> > +			    AC_USRSP_EN | INTEL_HDMI_EVENT_TAG);
-> >  	return 0;
-> >  }
-> >  
-> > @@ -657,7 +643,7 @@ static struct hda_codec_ops intel_hdmi_p
-> >  	.unsol_event		= intel_hdmi_unsol_event,
-> >  };
-> >  
-> > -static int patch_intel_hdmi(struct hda_codec *codec)
-> > +static int do_patch_intel_hdmi(struct hda_codec *codec)
-> >  {
-> >  	struct intel_hdmi_spec *spec;
-> >  
-> > @@ -667,7 +653,7 @@ static int patch_intel_hdmi(struct hda_c
-> >  
-> >  	spec->multiout.num_dacs = 0;	  /* no analog */
-> >  	spec->multiout.max_channels = 8;
-> > -	spec->multiout.dig_out_nid = CVT_NID;
-> > +	spec->multiout.dig_out_nid = cvt_nid;
-> >  
-> >  	codec->spec = spec;
-> >  	codec->patch_ops = intel_hdmi_patch_ops;
-> > @@ -679,13 +665,27 @@ static int patch_intel_hdmi(struct hda_c
-> >  	return 0;
-> >  }
-> >  
-> > +static int patch_intel_hdmi(struct hda_codec *codec)
-> > +{
-> > +	cvt_nid = 0x02;
-> > +	pin_nid = 0x03;
-> > +	return do_patch_intel_hdmi(codec);
-> > +}
-> > +
-> > +static int patch_intel_hdmi_ibexpeak(struct hda_codec *codec)
-> > +{
-> > +	cvt_nid = 0x02;
-> > +	pin_nid = 0x04;
-> > +	return do_patch_intel_hdmi(codec);
-> > +}
-> > +
-> >  static struct hda_codec_preset snd_hda_preset_intelhdmi[] = {
-> >  	{ .id = 0x808629fb, .name = "G45 DEVCL",  .patch = patch_intel_hdmi },
-> >  	{ .id = 0x80862801, .name = "G45 DEVBLC", .patch = patch_intel_hdmi },
-> >  	{ .id = 0x80862802, .name = "G45 DEVCTG", .patch = patch_intel_hdmi },
-> >  	{ .id = 0x80862803, .name = "G45 DEVELK", .patch = patch_intel_hdmi },
-> >  	{ .id = 0x80862804, .name = "G45 DEVIBX", .patch = patch_intel_hdmi },
-> > -	{ .id = 0x80860054, .name = "G45 DEVIBX", .patch = patch_intel_hdmi },
-> > +	{ .id = 0x80860054, .name = "Q57 DEVIBX", .patch = patch_intel_hdmi_ibexpeak },
-> >  	{ .id = 0x10951392, .name = "SiI1392 HDMI",     .patch = patch_intel_hdmi },
-> >  	{} /* terminator */
-> >  };
-> > 
+>-----Original Message-----
+>From: Mark Brown [mailto:broonie@sirena.org.uk]
+>Sent: Saturday, August 01, 2009 3:16 PM
+>To: Harsha, Priya
+>Cc: alsa-devel@alsa-project.org
+>Subject: Re: [alsa-devel] [PATCH] [RFC 8/13] Intel SST sound card driver
+>
+>On Sat, Aug 01, 2009 at 08:45:31AM +0530, Harsha, Priya wrote:
+>> In my probe function, after adding the controls, I added the following
+>code
+>>
+>> 	retval = snd_jack_new(intelmaddata->card, "Headphone",
+>> 				SND_JACK_HEADPHONE, &jack);
+>
+>> But I do not see any jacks in /dev/input.... Am I missing anything?
+>
+>It's hard to say without seeing the whole driver but you do need to
+>create the jack before you instantiate the sound card - it will be
+>created along with all the other controls and PCMs.
