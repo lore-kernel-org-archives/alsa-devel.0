@@ -1,20 +1,25 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 1/3] ASoC: change set_tdm_slot api to allow
-	slot_width	override.
-Date: Wed, 5 Aug 2009 01:42:17 +0200
-Message-ID: <20090804234217.GX19257@buzzloop.caiaq.de>
-References: <1245113071.24109.559.camel@brutus>
-	<20090804205545.GB29518@sirena.org.uk>
+From: Eduardo Valentin <eduardo.valentin@nokia.com>
+Subject: Re: [PATCH 09/20] OMAP3: McBSP: Lower the maximum
+ buffersize for McBSP1, 3, 4, 5
+Date: Mon, 3 Aug 2009 11:11:07 +0300
+Message-ID: <20090803081107.GA1333__36607.3710764342$1249453168$gmane$org@esdhcp037198.research.nokia.com>
+References: <1248958183-15015-4-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-5-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-6-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-7-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-8-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-9-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-10-git-send-email-eduardo.valentin@nokia.com>
+	<20090730215721.a899e2f4.jhnikula@gmail.com>
+	<20090731075823.GB27083@esdhcp037198.research.nokia.com>
+	<20090731202611.c689c31c.jhnikula@gmail.com>
+Reply-To: eduardo.valentin@nokia.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id DDB1810380D
-	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Aug 2009 01:42:20 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20090804205545.GB29518@sirena.org.uk>
+In-Reply-To: <20090731202611.c689c31c.jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,57 +29,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Paul Shen <boshen9@gmail.com>, alsa-devel <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>, Daniel Ribeiro <drwyrm@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 04, 2009 at 09:55:45PM +0100, Mark Brown wrote:
-> On Mon, Jun 15, 2009 at 09:44:31PM -0300, Daniel Ribeiro wrote:
-> > Extend set_tdm_slot to allow the user to arbitrarily set the frame width
-> > and active TX/RX slots.
+On Fri, Jul 31, 2009 at 07:26:11PM +0200, ext Jarkko Nikula wrote:
+> On Fri, 31 Jul 2009 10:58:23 +0300
+> Eduardo Valentin <eduardo.valentin@nokia.com> wrote:
 > 
-> > Updates magician.c and wm9081.c for the new set_tdm_slot(). wm9081.c
-> > still doesn't handle the slot_width override.
-> 
-> > While being there, correct an incorrect use of SlotsPerFrm(7) use in
-> > bitmask on pxa-ssp.c (SSCR0_SlotsPerFrm(x) is (((x) - 1) << 24)) ).
-> 
-> > (this series is meant for Mark's for-2.6.32 branch)
-> 
-> > Signed-off-by: Daniel Ribeiro <drwyrm@gmail.com>
-> 
-> So.  These have been sitting for quite some time now.  Unfortunately I
-> went on holiday immediately after it was last submitted my Zylonite
-> system has been bricked for pretty much all of the time since then so
-> I've been remiss in following up.  Sorry about that, my bad.
-> 
-> My inclination here is to apply these changes - they look like a clear
-> win for pretty much every machine except Daniel Mack's out of tree
-> system which needs the 64 bit TDM slots.  It's a shame to break that but
-> there seems to be such a clear advantage from the changes, especially
-> the new set_tdm_slot() API, that it seems like a win overall.  I've got
-> a feeling that the fix for that system may have to be allowing the
-> machine driver to rewrite the hw_params for the CPU driver to lie about
-> the data format.
+> > On Thu, Jul 30, 2009 at 08:57:21PM +0200, ext Jarkko Nikula wrote:
+> > > On Thu, 30 Jul 2009 15:49:32 +0300
+> > > Eduardo Valentin <eduardo.valentin@nokia.com> wrote:
+> > > 
+> > > > From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> > > > 
+> > > > Do not allow applications to use the full buffer found on
+> > > > McBSP1,3,4,5. Using the full buffer in threshold mode causes
+> > > > the McBSP buffer to run dry, which can be observed as channels
+> > > > are switching (in reality the channels are shifting).
+> > > > 
+> > > ...
+> > > > --- a/arch/arm/mach-omap2/mcbsp.c
+> > > > +++ b/arch/arm/mach-omap2/mcbsp.c
+> > > > @@ -129,7 +129,7 @@ static struct omap_mcbsp_platform_data
+> > > > omap34xx_mcbsp_pdata[] = { .rx_irq		=
+> > > > INT_24XX_MCBSP1_IRQ_RX, .tx_irq		=
+> > > > INT_24XX_MCBSP1_IRQ_TX, .ops		= &omap2_mcbsp_ops,
+> > > > -		.buffer_size	= 0x7F,
+> > > > +		.buffer_size	= 0x6F,
+> > > >  	},
+> > > 
+> > > Is it possible that also McBSP2 would require that maximum burst
+> > > transmit size should be 0x10 smaller than size of internal
+> > > buffer/fifo?
+> > 
+> > That's already not at full size. There is room for 1024+256 places on
+> > mcbsp2.
+> > 
+> True, but I was wondering can this same problem occur also on McBSP2 if
+> using proper size threshold? Like size near the McBSP2 audio buffer
+> (1024x32) or near the TX buffer (256x32).
 
-Hmm. I like to stress that I appreciate the efford taken to clean up all
-the API around this, and I would like to give my 'tested-by' on the
-patches.
+Yes, it can happen with mcbsp2 also if you use all places (1024+256).
 
-However, if it is about cleaning up things properly, we should make sure
-the system does what it's been told to do, and with Daniel Ribeiro's
-patches, it unfortunately doesn't yet. I'm only blaming the utterly
-broken PXA register set for that, but that should be fixed before the
-whole series goes in. And I'm quite sure I'm not the only user of 64 bit
-TDM slots, even though I might be the only one having discussed that.
+> 
+> -- 
+> Jarkko
 
-Daniel, could you resend the latest version of your patches? I hope to
-find some time to again test them, find the differences in the register
-bits and amend them in a way that they actually do what is needed for my
-system.
-
-And btw - the code for the system I'm working on will be release
-eventually, of course, and hopefully even be merged mainline. 
-
-Thanks,
-Daniel
+-- 
+Eduardo Valentin
