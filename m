@@ -1,11 +1,9 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
 Subject: Re: [PATCH 09/20] OMAP3: McBSP: Lower the maximum
  buffersize for McBSP1, 3, 4, 5
-Date: Mon, 3 Aug 2009 11:11:07 +0300
-Message-ID: <20090803081107.GA1333__36607.3710764342$1249453168$gmane$org@esdhcp037198.research.nokia.com>
-References: <1248958183-15015-4-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-5-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-6-git-send-email-eduardo.valentin@nokia.com>
+Date: Mon, 3 Aug 2009 11:36:19 +0300
+Message-ID: <20090803083619.GB1333__28795.7093133175$1249453187$gmane$org@esdhcp037198.research.nokia.com>
+References: <1248958183-15015-6-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-7-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-8-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-9-git-send-email-eduardo.valentin@nokia.com>
@@ -13,13 +11,15 @@ References: <1248958183-15015-4-git-send-email-eduardo.valentin@nokia.com>
 	<20090730215721.a899e2f4.jhnikula@gmail.com>
 	<20090731075823.GB27083@esdhcp037198.research.nokia.com>
 	<20090731202611.c689c31c.jhnikula@gmail.com>
+	<20090803081107.GA1333@esdhcp037198.research.nokia.com>
+	<20090803113638.f82699b2.jhnikula@gmail.com>
 Reply-To: eduardo.valentin@nokia.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Content-Disposition: inline
-In-Reply-To: <20090731202611.c689c31c.jhnikula@gmail.com>
+In-Reply-To: <20090803113638.f82699b2.jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,48 +33,28 @@ To: alsa-devel@alsa-project.org
 Cc: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 31, 2009 at 07:26:11PM +0200, ext Jarkko Nikula wrote:
-> On Fri, 31 Jul 2009 10:58:23 +0300
+On Mon, Aug 03, 2009 at 10:36:38AM +0200, ext Jarkko Nikula wrote:
+> On Mon, 3 Aug 2009 11:11:07 +0300
 > Eduardo Valentin <eduardo.valentin@nokia.com> wrote:
 > 
-> > On Thu, Jul 30, 2009 at 08:57:21PM +0200, ext Jarkko Nikula wrote:
-> > > On Thu, 30 Jul 2009 15:49:32 +0300
-> > > Eduardo Valentin <eduardo.valentin@nokia.com> wrote:
-> > > 
-> > > > From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> > > > 
-> > > > Do not allow applications to use the full buffer found on
-> > > > McBSP1,3,4,5. Using the full buffer in threshold mode causes
-> > > > the McBSP buffer to run dry, which can be observed as channels
-> > > > are switching (in reality the channels are shifting).
-> > > > 
-> > > ...
-> > > > --- a/arch/arm/mach-omap2/mcbsp.c
-> > > > +++ b/arch/arm/mach-omap2/mcbsp.c
-> > > > @@ -129,7 +129,7 @@ static struct omap_mcbsp_platform_data
-> > > > omap34xx_mcbsp_pdata[] = { .rx_irq		=
-> > > > INT_24XX_MCBSP1_IRQ_RX, .tx_irq		=
-> > > > INT_24XX_MCBSP1_IRQ_TX, .ops		= &omap2_mcbsp_ops,
-> > > > -		.buffer_size	= 0x7F,
-> > > > +		.buffer_size	= 0x6F,
-> > > >  	},
-> > > 
-> > > Is it possible that also McBSP2 would require that maximum burst
-> > > transmit size should be 0x10 smaller than size of internal
-> > > buffer/fifo?
+> > > True, but I was wondering can this same problem occur also on McBSP2 if
+> > > using proper size threshold? Like size near the McBSP2 audio buffer
+> > > (1024x32) or near the TX buffer (256x32).
 > > 
-> > That's already not at full size. There is room for 1024+256 places on
-> > mcbsp2.
+> > Yes, it can happen with mcbsp2 also if you use all places (1024+256).
 > > 
-> True, but I was wondering can this same problem occur also on McBSP2 if
-> using proper size threshold? Like size near the McBSP2 audio buffer
-> (1024x32) or near the TX buffer (256x32).
+> So should the patch then take into account McBSP2 also?
 
-Yes, it can happen with mcbsp2 also if you use all places (1024+256).
+hmmm.. But I've seen the problem only if you use 1024+256 for mcbsp2 (0x500) or
+very close to that (0x4F0). I haven't seen this problem using 0x3FF, as currently is.
 
 > 
 > -- 
 > Jarkko
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 -- 
 Eduardo Valentin
