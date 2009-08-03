@@ -1,21 +1,25 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH - amixer] listen to D-Bus for volume-up,
-	volume-down and mute signals.
-Date: Mon, 3 Aug 2009 13:17:47 +0100
-Message-ID: <20090803121747.GD5959@sirena.org.uk>
-References: <1249296201-6930-1-git-send-email-stlman@poczta.fm>
-	<s5hocqxcgqb.wl%tiwai@suse.de> <4A76D239.70202@poczta.fm>
-	<s5hiqh5ccyr.wl%tiwai@suse.de>
+From: Christopher Arndt <chris.arndt@web.de>
+Subject: Re: pyalsa: SeqEvent.time strangeness
+Date: Mon, 03 Aug 2009 14:21:54 +0200
+Message-ID: <4A76D662.9030002@web.de>
+References: <4A607468.7010300@web.de>	<4A65C370.3030205@ladisch.de>	<4A65EADE.70007@web.de>	<4A733753.60808@web.de>
+	<4A76D01F.1090603@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------050400010701050109050500"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6A33224680
+Received: from fmmailgate01.web.de (fmmailgate01.web.de [217.72.192.221])
+	by alsa0.perex.cz (Postfix) with ESMTP id 574FB245C3
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Aug 2009 14:17:49 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hiqh5ccyr.wl%tiwai@suse.de>
+	Mon,  3 Aug 2009 14:22:48 +0200 (CEST)
+Received: from smtp06.web.de (fmsmtp06.dlan.cinetic.de [172.20.5.172])
+	by fmmailgate01.web.de (Postfix) with ESMTP id 997F510F80893
+	for <alsa-devel@alsa-project.org>;
+	Mon,  3 Aug 2009 14:21:41 +0200 (CEST)
+Received: from [84.44.236.118] (helo=minimax.paddyland.lan)
+	by smtp06.web.de with asmtp (TLSv1:AES256-SHA:256)
+	(WEB.DE 4.110 #277) id 1MXwXt-0007hB-00
+	for alsa-devel@alsa-project.org; Mon, 03 Aug 2009 14:21:41 +0200
+In-Reply-To: <4A76D01F.1090603@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,23 +29,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, Lukasz Stelmach <stlman@poczta.fm>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 03, 2009 at 02:13:16PM +0200, Takashi Iwai wrote:
-> Lukasz Stelmach wrote:
+This is a multi-part message in MIME format.
+--------------050400010701050109050500
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> > No worries ;) there is --with(out)--dbus option for configure to
-> > disable all this code which is enough for initrd because most often
-> > (AFAIK) initrd binaries are not the same that in the live system.
+Clemens Ladisch schrieb:
+> Christopher Arndt wrote:
+>> I've tested this now and encountered a very strange bevahior of the
+>> event time set by the queue:
+> 
+> Apparently, you are the first one who tried to use this.  Fixed now:
+> http://git.alsa-project.org/?p=alsa-python.git;a=commitdiff;h=9a7dea33dddeb2d9d7693257323d43ccffbffed2
 
-> Usually same binaries are used for initrd nowadays in many distros.
-> So, configure option doesn't help.
+Excelllent! The test script now produces correct results.
+Thanks for the fix!
 
-> And, I really prefer this as a separate daemon, so it be as small as
-> possible.  Seeing amixer as a daemon is somewhat strange...
+Might I suggest another patch to pyalsa? This would allow to use
+developers to use "python setup.py develop" to install their git version
+as a Python egg-link and makes it much easier to use pyalasa with
+virtual Python environments.
 
-I tend to agree, merging it into amixer seems kind of arbatrary.  Such a
-daemon (and its dbus interface) may also be useful for handling things
-like scenario management so I can see it growing over time.
+
+Chris
+
+--------------050400010701050109050500
+Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
+ name="setuptools.diff"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="setuptools.diff"
+
+ZGlmZiAtLWdpdCBhL3NldHVwLnB5IGIvc2V0dXAucHkKaW5kZXggZmE3ZjJkNi4uYzJiNjM4
+OSAxMDA3NTUKLS0tIGEvc2V0dXAucHkKKysrIGIvc2V0dXAucHkKQEAgLTMsNyArMywxMCBA
+QAogCiBpbXBvcnQgb3MKIGltcG9ydCBzeXMKLWZyb20gZGlzdHV0aWxzLmNvcmUgaW1wb3J0
+IHNldHVwLCBFeHRlbnNpb24KK3RyeToKKyAgICBmcm9tIHNldHVwdG9vbHMgaW1wb3J0IHNl
+dHVwLCBFeHRlbnNpb24KK2V4Y2VwdCBJbXBvcnRFcnJvcjoKKyAgICBmcm9tIGRpc3R1dGls
+cy5jb3JlIGltcG9ydCBzZXR1cCwgRXh0ZW5zaW9uCiAKIFZFUlNJT049JzEuMC4yMCcKIAo=
+--------------050400010701050109050500
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------050400010701050109050500--
