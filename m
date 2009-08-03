@@ -1,31 +1,45 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC] [PATCH] ASoC: OMAP: full duplex mode fix
-Date: Mon, 3 Aug 2009 10:43:47 +0100
-Message-ID: <20090803094346.GA7820@rakim.wolfsonmicro.main>
-References: <200908030332.06727.jkrzyszt@tis.icnet.pl>
- <20090803112950.3fb6cda9.jhnikula@gmail.com>
+From: arif setiawan <n.arif.setiawan@gmail.com>
+Subject: ALSA -LADSPA buffer
+Date: Mon, 3 Aug 2009 16:48:10 +0700
+Message-ID: <c697747b0908030248y3e8d74ado3747f16986ee6a83@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20090803112950.3fb6cda9.jhnikula@gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, e3-hacking@earth.li
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yx0-f176.google.com (mail-yx0-f176.google.com
+	[209.85.210.176])
+	by alsa0.perex.cz (Postfix) with ESMTP id CCD96246AB
+	for <alsa-devel@alsa-project.org>;
+	Mon,  3 Aug 2009 11:48:11 +0200 (CEST)
+Received: by yxe6 with SMTP id 6so1861389yxe.16
+	for <alsa-devel@alsa-project.org>; Mon, 03 Aug 2009 02:48:10 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 03, 2009 at 11:29:50AM +0300, Jarkko Nikula wrote:
-> Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
+Hi all,
 
-> > +		else
-> > +			/* looks like playback already in progress,
-> > +			 * start capture by taking it out of error condition */
-> > +			omap_mcbsp_pollread(mcbsp_data->bus_id, &buf);
+I have some questions about ALSA - LADSPA data exchange in ALSA plugin. As I
+understand it, LADSPA only use 32 bit floating point, while ALSA can use
+many types of buffer, S8, S16_LE and so on. My question is how this buffer
+converted?
 
-> Minor note: See preferred style for multi-line comments in
-> Documentation/CodingStyle. I'm not 100 % sure about the braces but I
-> think they are also preferred if there are indented comment lines with
-> the single code line.
+As I work with OMAP processor I want to use DSP for signal processing. We
+want the LADSPA plugin connect to the DSP and get plugin advantage. But DSP
+only work on fixed point arithmatic, so we need to convert the 32 bit float
+in LADSPA to an integer type buffer. I think I can achieve it by following
+ALSA-LADSPA buffer conversion. How I can do this?
 
-Indeed; only omit the braces if the *only* thing in the block is a
-single statement.
+Thank you for your help.
+
+Best regards,
+
+Arif
