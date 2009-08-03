@@ -1,72 +1,100 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: [PATCH - amixer] listen to D-Bus for volume-up,
-	volume-down and mute signals.
-Date: Mon, 3 Aug 2009 18:29:00 +0200
-Message-ID: <20090803162900.GB7298@tango.0pointer.de>
-References: <1249296201-6930-1-git-send-email-stlman@poczta.fm>
-	<s5hocqxcgqb.wl%tiwai@suse.de> <4A76D239.70202@poczta.fm>
-	<s5hiqh5ccyr.wl%tiwai@suse.de>
+From: Arun KS <arunks@mistralsolutions.com>
+Subject: Re: [RFC] [PATCH] ASoC: OMAP: full duplex mode fix
+Date: Mon, 3 Aug 2009 10:57:26 -0700
+Message-ID: <dfeb90390908031057u2a3b81a0ob4194006f26babc6@mail.gmail.com>
+References: <200908030332.06727.jkrzyszt@tis.icnet.pl>
+	 <20090803112950.3fb6cda9.jhnikula@gmail.com>
+	 <4A76ED80.6040001@tis.icnet.pl>
+	 <dfeb90390908031053o14b4583fh83e4306253a13944@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id E2D38247A7
-	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Aug 2009 18:29:27 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hiqh5ccyr.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Lukasz Stelmach <stlman@poczta.fm>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <dfeb90390908031053o14b4583fh83e4306253a13944@mail.gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: Jarkko Nikula <jhnikula@gmail.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, e3-hacking@earth.li, Jesslyn Abdul Salam <jesslyn.abdulsalam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAwMy4wOC4wOSAxNDoxMywgVGFrYXNoaSBJd2FpICh0aXdhaUBzdXNlLmRlKSB3cm90
-ZToKCj4gPiA+PiBUaGUgcGF0Y2ggaW50cm9kdWNlcyBELUJ1cyBzdXBwb3J0IGluIGFtaXhlci4g
-V2l0aCAtLWRidXMgb3B0aW9uIGdpdmVuIGFtaXhlcgo+ID4gPj4gd29ya3MgY29udGluaW91c2x5
-IChsaWtlIHdpdGggdGhlIC0tc3RkaW4pIHdhaXRpbmcgZm9yCj4gPiA+PiBvcmcuZnJlZWRlc2t0
-b3AuSGFsLkRldmljZS5Db25kaXRpb24gd2l0aCB0aGUgZmlyc3QgYXJndW1lbnQgIkJ1dHRvblBy
-ZXNzZWQiCj4gPiA+PiBhbmQgdGhlIHNlY29uZCBiZWluZyBvbmUgb2Y6ICJ2b2x1bWUtdXAiLCAi
-dm9sdW1lLWRvd24iIGFuZCAibXV0ZSIuIFRoZXNlCj4gPiA+PiBhcmUgZW1taXRlZCBieSB0aGUg
-SEFMIGlucHV0IGhlbHBlci4gQSBzaW5nbGUgYW1peGVyIHByb2Nlc3MgY2FuIGNvbnRyb2xsCj4g
-PiA+PiBvbmUgbWl4ZXIgaXRlbS4gVGhlcmUgYXJlIG9wdGlvbnMgdG8gY2hvb3NlIGEgc3BlY2lm
-aWMgaXRlbSB0byBjb250cm9sbCwKPiA+ID4+IGFuIGlucHV0IGRldmljZSB0byBsaXN0ZW4gYW5k
-IGEgc2luZ2xlIGFkanVzdG1lbnQgc3RlcCBzaXplLgo+ID4gPj4KPiA+ID4+IFNpZ25lZC1vZmYt
-Ynk6IMWBdWthc3ogU3RlbG1hY2ggPHN0bG1hbkBwb2N6dGEuZm0+Cj4gPiA+IAo+ID4gPiBUaGFu
-a3MgZm9yIHRoZSBwYXRjaC4KPiA+ID4gCj4gPiA+IFRoZSBhcHByb2FjaCBpcyBpbnRlcmVzdGlu
-ZywgYnV0IEknbSBub3Qgc3VyZSB3aGV0aGVyIHdlIHNob3VsZCBwdXQKPiA+ID4gYWxsIGludG8g
-YW1peGVyIGluIHRoaXMgd2F5IHNpbmNlIHdlIGRvbid0IHdhbnQgZXh0cmEgbGlicmFyeQo+ID4g
-PiBkZXBlbmRlbmN5LiAgKE5vdGU6IGFtaXhlciBjb3VsZCBiZSB1c2VkIGluIGluaXRyZC4pCj4g
-PiA+IEkgdGhpbmsgaXQncyBiZXR0ZXIgdG8gc3BsaXQgdGhlIGNvZGUgYW5kIG1ha2UgaXQgYXMg
-YW4gaW5kaXZpZHVhbAo+ID4gPiBkYWVtb24gaW5zdGVhZCBvZiBhZGRpdGlvbmFsIG9wdGlvbnMg
-b2YgYW1peGVyLgo+ID4gCj4gPiBObyB3b3JyaWVzIDspIHRoZXJlIGlzIC0td2l0aChvdXQpLS1k
-YnVzIG9wdGlvbiBmb3IgY29uZmlndXJlIHRvCj4gPiBkaXNhYmxlIGFsbCB0aGlzIGNvZGUgd2hp
-Y2ggaXMgZW5vdWdoIGZvciBpbml0cmQgYmVjYXVzZSBtb3N0IG9mdGVuCj4gPiAoQUZBSUspIGlu
-aXRyZCBiaW5hcmllcyBhcmUgbm90IHRoZSBzYW1lIHRoYXQgaW4gdGhlIGxpdmUgc3lzdGVtLgo+
-IAo+IFVzdWFsbHkgc2FtZSBiaW5hcmllcyBhcmUgdXNlZCBmb3IgaW5pdHJkIG5vd2FkYXlzIGlu
-IG1hbnkgZGlzdHJvcy4KPiBTbywgY29uZmlndXJlIG9wdGlvbiBkb2Vzbid0IGhlbHAuCj4gCj4g
-QW5kLCBJIHJlYWxseSBwcmVmZXIgdGhpcyBhcyBhIHNlcGFyYXRlIGRhZW1vbiwgc28gaXQgYmUg
-YXMgc21hbGwgYXMKPiBwb3NzaWJsZS4gIFNlZWluZyBhbWl4ZXIgYXMgYSBkYWVtb24gaXMgc29t
-ZXdoYXQgc3RyYW5nZS4uLgoKQWxzbywgSEFMIGlzIG9ic29sZXRlZCBieSB1ZGV2IHRoZXNlIGRh
-eXMuIEFkZGluZyBuZXcgSEFMIHN1cHBvcnQgdG8Kc29mdHdhcmUgYXQgdGhpcyBwb2ludCBpbiB0
-aW1lIGlzIGNlcnRhaW5seSBhIGJhZCBpZGVhLiBPbiBGZWRvcmEgMTIKd2UgaGF2ZSBub3cgY29u
-c2lkZXJhYmx5IGR1bWJlZCBkb3duIEhBTC4gSXQgaXMgb25seSBzaGlwcGVkIGFzIGNvbXBhdApr
-bHVkZ2UgZm9yIHVzZXIgYXBwbGljYXRpb25zLiBBbmQgd2l0aCBvdGhlciBkaXN0cm9zIHRoaXMg
-aXNuJ3QgbXVjaCBkaWZmcmVudDoKCmh0dHBzOi8vd2lraS51YnVudHUuY29tL0hhbHNlY3RvbXkK
-CkZpbmFsbHksIHN0dWZmIGxpa2UgdGhpcyByZWFsbHkgYmVsb25ncyBpbiB0aGUgdXNlciBzZXNz
-aW9ucyBzbyB0aGF0Ck9TRCBmZWVkYmFjayBhbmQgc28gb24gY2FuIGJlIHNob3duLiBJbiBmYWN0
-IG1vc3QgZGVza3RvcHMgZG8gaW5jbHVkZQphIHRvb2wgZm9yIHRoaXMgYW55d2F5LgoKTGVubmFy
-dAoKLS0gCkxlbm5hcnQgUG9ldHRlcmluZyAgICAgICAgICAgICAgICAgICAgICAgIFJlZCBIYXQs
-IEluYy4KbGVubmFydCBbYXRdIHBvZXR0ZXJpbmcgW2RvdF0gbmV0Cmh0dHA6Ly8wcG9pbnRlci5u
-ZXQvbGVubmFydC8gICAgICAgICAgIEdudVBHIDB4MUEwMTVDQzQKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+CCing Jesslyn Abdul Salam <jesslyn.abdulsalam@gmail.com>
+
+Hope he has one osk.
+
+On Mon, Aug 3, 2009 at 10:53 AM, Arun KS <arunks@mistralsolutions.com> =
+wrote:
+>
+>
+> On Mon, Aug 3, 2009 at 7:00 AM, Janusz Krzysztofik <jkrzyszt@tis.icne=
+t.pl> wrote:
+>>
+>> Jarkko Nikula wrote:
+>>>
+>>> On Mon, 3 Aug 2009 03:32:04 +0200
+>>> Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
+>>>
+>>>> This patch tries to correct the problem of full duplex mode not wo=
+rking
+>>>> over a single McBSP based CPU DAI.
+>>>>
+>>>> Created against linux-2.6.31-rc5.
+>>>> Tested on Amstrad Delta.
+>>>>
+>>> Do you have some specific test case how to trigger this? I haven't
+>>> seen this on 2420 or 34xx (e.g. with 'arecord -d 1 -f dat |aplay') =
+but
+>>> I have no doubt that this can happen on 1510. At least this doesn't
+>>> cause any harm on Beagle so I'm fine with the fix.
+>>
+>> Hi,
+>> I made more testing on my OMAP1510 and found out that I could get yo=
+ur example usage working without my patch, but only if started like thi=
+s:
+>>
+>> =A0 =A0 =A0 =A0arecord -D hw:0,0 -f S16_LE|aplay -D hw:0,0
+>>
+>> If I start the same with "-D hw:0,0" omitted from aplay, it doesn't =
+work any longer, waiting forever. It definitelly doesn't work if I star=
+t capture and playback one after another, no matter which one goes firs=
+t (record while playing or play while recording). So it looks like star=
+ting both streams simultaneously can do the job, but a short delay brea=
+ks it.
+>>
+>> With my patch, it seems to work fine for me in all cases.
+>>
+>> Jarkko, have you ever tried it on your OMAP2/3 with parallel playbac=
+k and capture started one after another, not simultaneously?
+>>
+>> Arun, can your snd-soc-osk9512 work on OMAP1610 in full duplex mode =
+without any limitations?
+>
+>
+> Janusz,
+>
+> Haven't done testing in full duplex mode.
+> I don't have access to osk5912 board now. If someone has got osk and =
+do the testing it ll be good. It=A0 ll take at least another 2 more mon=
+th for me to do the testing on osk.
+>
+> Regards,
+> Arun
+>
+>>
+>>
+>> If the problem appears to be OMAP1510 or AMS_DELTA specific, I can a=
+dd a check for a machine or cpu type to avoid braking unaffected machin=
+es.
+>>
+>> Thanks,
+>> Janusz
+>>
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe linux-omap=
+" in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
