@@ -1,58 +1,73 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [RFC] [PATCH] ASoC: OMAP: full duplex mode fix
-Date: Mon, 3 Aug 2009 18:14:05 +0300
-Message-ID: <20090803181405.6249b843.jhnikula@gmail.com>
-References: <200908030332.06727.jkrzyszt@tis.icnet.pl>
-	<20090803112950.3fb6cda9.jhnikula@gmail.com>
-	<4A76ED80.6040001@tis.icnet.pl>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/8] ASoC: Remove unused AK4535 hardware read
+	functionality
+Date: Mon,  3 Aug 2009 17:09:44 +0100
+Message-ID: <1249315790-22814-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1249315790-22814-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <4A76ED80.6040001@tis.icnet.pl>
-Sender: linux-omap-owner@vger.kernel.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: Arun K S <arunks@mistralsolutions.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, e3-hacking@earth.li
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7D70C24792
+	for <alsa-devel@alsa-project.org>;
+	Mon,  3 Aug 2009 18:09:54 +0200 (CEST)
+In-Reply-To: <1249315790-22814-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 03 Aug 2009 16:00:32 +0200
-Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
+Nothing uses it and the existing hw_read operation needs to be
+refectored so it's easier to remove it rather than work with it.
+Support can be re-added if the code requires volatile registers.
 
-> Hi,
-> I made more testing on my OMAP1510 and found out that I could get your 
-> example usage working without my patch, but only if started like this:
-> 
-> 	arecord -D hw:0,0 -f S16_LE|aplay -D hw:0,0
-> 
-> If I start the same with "-D hw:0,0" omitted from aplay, it doesn't work 
-> any longer, waiting forever. It definitelly doesn't work if I start 
-> capture and playback one after another, no matter which one goes first 
-> (record while playing or play while recording). So it looks like 
-> starting both streams simultaneously can do the job, but a short delay 
-> breaks it.
-> 
-> With my patch, it seems to work fine for me in all cases.
-> 
-So it looks that McBSP-DMA for another stream cease to work if there is
-more than certain delay between first stream start and second one but
-omap_mcbsp_pollwrite or _pollread will clear the error condition. Can
-you debug is this due clearing the possible XSYNC_ERR, waiting for
-transmit/receive confirmation or playing with data registers there?
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/ak4535.c |   16 ----------------
+ 1 files changed, 0 insertions(+), 16 deletions(-)
 
-> Jarkko, have you ever tried it on your OMAP2/3 with parallel playback 
-> and capture started one after another, not simultaneously?
-> 
-Yes I have. Like recording into file (arecord /dev/shm/foo) and start
-playing it after some time (aplay /dev/shm/foo) or playing a file and
-start recording into another.
-
-> If the problem appears to be OMAP1510 or AMS_DELTA specific, I can add a 
-> check for a machine or cpu type to avoid braking unaffected machines.
-> 
-I'm thinking can your platform show some existing problem not noted
-before... but yes, check for 1510 would be bit safer now and is also
-kind of revisit comment why 1510 needs special handling.
-
-
+diff --git a/sound/soc/codecs/ak4535.c b/sound/soc/codecs/ak4535.c
+index dd33802..0abec0d 100644
+--- a/sound/soc/codecs/ak4535.c
++++ b/sound/soc/codecs/ak4535.c
+@@ -59,21 +59,6 @@ static inline unsigned int ak4535_read_reg_cache(struct snd_soc_codec *codec,
+ 	return cache[reg];
+ }
+ 
+-static inline unsigned int ak4535_read(struct snd_soc_codec *codec,
+-	unsigned int reg)
+-{
+-	u8 data;
+-	data = reg;
+-
+-	if (codec->hw_write(codec->control_data, &data, 1) != 1)
+-		return -EIO;
+-
+-	if (codec->hw_read(codec->control_data, &data, 1) != 1)
+-		return -EIO;
+-
+-	return data;
+-};
+-
+ /*
+  * write ak4535 register cache
+  */
+@@ -635,7 +620,6 @@ static int ak4535_probe(struct platform_device *pdev)
+ #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ 	if (setup->i2c_address) {
+ 		codec->hw_write = (hw_write_t)i2c_master_send;
+-		codec->hw_read = (hw_read_t)i2c_master_recv;
+ 		ret = ak4535_add_i2c_device(pdev, setup);
+ 	}
+ #endif
 -- 
-Jarkko
+1.6.3.3
