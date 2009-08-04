@@ -1,23 +1,19 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH - amixer] listen to D-Bus for volume-up,
- volume-down and mute signals.
-Date: Mon, 03 Aug 2009 20:29:23 +0100
-Message-ID: <1249327763.4248.138.camel@vega.slimlogic.co.uk>
-References: <1249296201-6930-1-git-send-email-stlman@poczta.fm>
-	<s5hocqxcgqb.wl%tiwai@suse.de> <4A76D239.70202@poczta.fm>
-	<s5hiqh5ccyr.wl%tiwai@suse.de> <20090803121747.GD5959@sirena.org.uk>
-	<4A771774.8040408@poczta.fm>
-	<20090803170222.GA23621@rakim.wolfsonmicro.main>
-	<4A771F89.3010103@poczta.fm>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH] ASoC: SDP3430: Add support for EXTMUTE
+	using TWL GPIO6
+Date: Tue, 4 Aug 2009 09:58:15 +0300
+Message-ID: <200908040958.15673.peter.ujfalusi@nokia.com>
+References: <2256F256009DAA4CBE661E9F41EAC84B533409F1@dlee01.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from slimlogic.co.uk (slimlogic.co.uk [89.16.172.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5898C24371
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id E6946245B4
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Aug 2009 00:35:56 +0200 (CEST)
-In-Reply-To: <4A771F89.3010103@poczta.fm>
+	Tue,  4 Aug 2009 08:58:26 +0200 (CEST)
+In-Reply-To: <2256F256009DAA4CBE661E9F41EAC84B533409F1@dlee01.ent.ti.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,43 +23,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lukasz Stelmach <stlman@poczta.fm>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, stefan <stefan@datenfreihafen.org>
+To: "ext Candelaria Villareal, Jorge" <x0107209@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2009-08-03 at 19:34 +0200, Lukasz Stelmach wrote:
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
-> 
-> Mark Brown pisze:
-> > On Mon, Aug 03, 2009 at 06:59:32PM +0200, Lukasz Stelmach wrote:
-> >> Mark Brown pisze:
-> > 
-> >>> I tend to agree, merging it into amixer seems kind of arbatrary.  Such a
-> >>> daemon (and its dbus interface) may also be useful for handling things
-> >>> like scenario management so I can see it growing over time.
-> > 
-> >> Scenario management? Could you please say something more what I
-> >> have not been missing for so long ;-)
-> > 
-> > See http://www.slimlogic.co.uk/?p=40
-> 
-> Thanks. That's definitely not anything I had in mind doing that patch.
-> 
+On Wednesday 15 July 2009 04:04:08 ext Candelaria Villareal, Jorge wrote:
+> Board sdp3430 has hardware support for EXTMUTE using TWL4030 GPIO6
+> line, controlled by register INTBR_PMBR1. Machine driver takes care
+> of enabling gpio line through i2c and codec driver manipulates the
+> line during headset ramp up/down sequence.
+>
+> +#define TWL4030_INTBR_PMBR1	0x0D
+> +#define EXTMUTE(value)		(value << 2)
 
-We are about to start another sprint on the scenario manager in
-September. Eventual aim would be to merge in into alsa-lib and salsa for
-audio hardware control abstraction. i.e. abstract per device/card
-hardware audio mixers/muxes/gains/attenuations/switches settings into a
-generic and meaningful scenario (or use case) e.g. "Headset Phone Call".
+This is confusing, should it be something like this?:
+#define GPIO6_PWM0_MUX(value)		(value << 2)
 
-dbus integration is something that interests me. Please take a look at
-the scenario lib public header and let me know if the API fits into your
-design.
+> +	/* Set TWL4030 GPIO6 as EXTMUTE signal */
+> +	twl4030_i2c_write_u8(TWL4030_MODULE_INTBR, EXTMUTE(0x02),
+> +							TWL4030_MODULE_INTBR);
 
-http://git.slimlogic.co.uk/?p=alsa-scenario.git;a=blob;f=include/ascenario.h;h=fd341133a601e121978054d5b2064a7a1b2d78b7;hb=8bd7f83d847424eb44704cf1649974b2fda8d8f1
+I think you meant this:
+twl4030_i2c_write_u8(TWL4030_MODULE_INTBR, EXTMUTE(0x02),
+							TWL4030_INTBR_PMBR1);
+
+Furthermore, since you are modifying pin muxing register, I think it is saf=
+er =
+
+to do something like this here to avoid changing other pin's function:
+
+u8 pin_mux;
+
+twl4030_i2c_read_u8(TWL4030_MODULE_INTBR, &pin_mux,
+							TWL4030_INTBR_PMBR1);
+pin_mux &=3D ~GPIO6_PWM0_MUX(0x3);
+pin_mux |=3D GPIO6_PWM0_MUX(0x2);
+twl4030_i2c_write_u8(TWL4030_MODULE_INTBR, pin_mux,
+							TWL4030_INTBR_PMBR1);
 
 
-Thanks
+-- =
 
-Liam 
+P=E9ter
