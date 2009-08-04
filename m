@@ -1,24 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: pyalsa: SeqEvent.time strangeness
-Date: Tue, 04 Aug 2009 15:03:03 +0200
-Message-ID: <4A783187.1070600@ladisch.de>
-References: <4A607468.7010300@web.de>	<4A65C370.3030205@ladisch.de>	<4A65EADE.70007@web.de>	<4A733753.60808@web.de>	<4A76D01F.1090603@ladisch.de>	<4A76D662.9030002@web.de>	<4A78033F.5020504@ladisch.de>
-	<4A78170B.7070400@web.de>
+From: javier Martin <javier.martin@vista-silicon.com>
+Subject: ASoC: Patches for Freescale MXC SoCs (SSI,
+	DMA and 	machine).
+Date: Tue, 4 Aug 2009 17:17:47 +0200
+Message-ID: <eedb5540908040817g15c981f8ye8aac6d4b253317f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 2AFE32413F
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 306F424404
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Aug 2009 15:02:52 +0200 (CEST)
-Received: from compute1.internal (compute1.internal [10.202.2.41])
-	by out1.messagingengine.com (Postfix) with ESMTP id C5A803BEAC7
-	for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2009 09:02:48 -0400 (EDT)
-Received: from [10.1.2.136] (srv004.schk01.int.dmc-one.com [85.232.8.141])
-	by mail.messagingengine.com (Postfix) with ESMTPSA id BD1D813E00
-	for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2009 09:02:30 -0400 (EDT)
-In-Reply-To: <4A78170B.7070400@web.de>
+	Tue,  4 Aug 2009 17:17:48 +0200 (CEST)
+Received: by ewy23 with SMTP id 23so563551ewy.32
+	for <alsa-devel@alsa-project.org>; Tue, 04 Aug 2009 08:17:47 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,19 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Christopher Arndt wrote:
-> Clemens Ladisch schrieb:
-> > Please provide a Signed-off-by line.
-> 
-> Please forgive my ignorance, but what is that? I'm unfamiliar with the
-> alsa development process.
+Here comes a series of three patches which currently add audio support
+for MX1x and MX2x platforms.
 
-It's originally a Linux kernel development process thing, but we use it
-for all of ALSA.  See section 12 of
-<http://git.alsa-project.org/?p=alsa-kernel.git;a=blob;f=Documentation/SubmittingPatches;hb=HEAD>.
+It has been tested in our custom Visstrim_m10 board based on an i.MX27
+processor.
 
+All patches are based on stable 2.6.30 kernel and each patch applies
+over the previous one.
 
-HTH
-Clemens
+[alsa-devel] [PATCH 1/3] ASoC: add DMA platform driver for MX1x and MX2x
+[alsa-devel] [PATCH 2/3] ASoC: add DAI platform ssi driver for MXC
+[alsa-devel] [PATCH 3/3] ASoC: add machine driver for i.mx27_visstrim_m10 board
+
+-- 
+Javier Martin
+Vista Silicon S.L.
+Universidad de Cantabria
+CDTUC - FASE C - Oficina S-345
+Avda de los Castros s/n
+39005- Santander. Cantabria. Spain
++34 942 25 32 60
+www.vista-silicon.com
