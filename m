@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] ASoC: add DAI platform ssi driver for
- MXC
-Date: Tue, 4 Aug 2009 21:17:11 +0100
-Message-ID: <20090804201711.GG4342@sirena.org.uk>
-References: <eedb5540908040817tc85e5e3j172fb18bcd8e6da0@mail.gmail.com>
+Subject: Re: ASoC: Patches for Freescale MXC SoCs (SSI,
+ DMA and 	machine).
+Date: Tue, 4 Aug 2009 21:26:58 +0100
+Message-ID: <20090804202657.GH4342@sirena.org.uk>
+References: <eedb5540908040817g15c981f8ye8aac6d4b253317f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4A51524422
+	by alsa0.perex.cz (Postfix) with ESMTP id 157DE243C0
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Aug 2009 22:17:18 +0200 (CEST)
+	Tue,  4 Aug 2009 22:27:11 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <eedb5540908040817tc85e5e3j172fb18bcd8e6da0@mail.gmail.com>
+In-Reply-To: <eedb5540908040817g15c981f8ye8aac6d4b253317f@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,12 +27,19 @@ To: javier Martin <javier.martin@vista-silicon.com>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 04, 2009 at 05:17:58PM +0200, javier Martin wrote:
-> This adds support for DAI platform for the SSI present in MXC platforms.
-> 
-> It currently does not support i.MX3, the only thing necessary to do
-> this is to export DMA data for i.MX3 interface which I haven't done
-> because I don't have a i.MX3 based board available.
+On Tue, Aug 04, 2009 at 05:17:47PM +0200, javier Martin wrote:
 
-This patch appears to have been mangled by line wrapping - could you
-please resend with that fixed or as an attachment?
+> Here comes a series of three patches which currently add audio support
+> for MX1x and MX2x platforms.
+
+As I indicated in reply to the individual patches these are all
+basically OK.  Given the level of demand for thist stuff and the fact
+that it's floating around in various forms out of tree for some
+considerable time I'm inclined to try to push it for 2.6.32.
+
+Unfortunately while I do have some more recent i.MX hardware I don't
+have any i.MX2x hardware.  This means that if I do any work on this I'd
+be coding blind for the i.MX2x stuff which could be a bit risky.
+
+Thanks a lot for taking the time to do this work, I'm sure there's a
+bunch of people out there who'd be very happy to see this code merged.
