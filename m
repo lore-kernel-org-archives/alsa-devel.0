@@ -1,19 +1,19 @@
 From: javier Martin <javier.martin@vista-silicon.com>
-Subject: [PATCH 1/3] ASoC: add DMA platform driver for MX1x and
-	MX2x
-Date: Tue, 4 Aug 2009 17:17:52 +0200
-Message-ID: <eedb5540908040817kbd91dc0r40927c0bd67c51d4@mail.gmail.com>
+Subject: [PATCH 3/3] ASoC: add machine driver for
+	i.mx27_visstrim_m10 board
+Date: Tue, 4 Aug 2009 17:18:02 +0200
+Message-ID: <eedb5540908040818j3ba586ceq124016bb7eb9d7b5@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
 	[209.85.219.223])
-	by alsa0.perex.cz (Postfix) with ESMTP id CCACC24404
+	by alsa0.perex.cz (Postfix) with ESMTP id 910612440D
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Aug 2009 17:17:52 +0200 (CEST)
+	Tue,  4 Aug 2009 17:18:02 +0200 (CEST)
 Received: by mail-ew0-f223.google.com with SMTP id 23so563551ewy.32
-	for <alsa-devel@alsa-project.org>; Tue, 04 Aug 2009 08:17:52 -0700 (PDT)
+	for <alsa-devel@alsa-project.org>; Tue, 04 Aug 2009 08:18:02 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,607 +27,372 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-This adds support for DMA platform valid for i.MX1 and i.MX2 platforms.
+This adds support for i.mx27_visstrim_sm10 board machine driver which
+uses an i.mx27 processor plus a wm8974 codec.
 
-This is not valid for i.MX3 since it doesn't share the same DMA
-interface than i.MX1 and i.MX2.
-
-It has been tested on i.MX27 board.
+It has been tested on a visstrim_sm10 board.
 
 Signed-off-by: Javier Martin <javier.martin@vista-silicon.com>
 ---
- sound/soc/Makefile          |    1 +
- sound/soc/imx/Kconfig       |   11 +
- sound/soc/imx/Makefile      |    4 +
- sound/soc/imx/mx1_mx2-pcm.c |  487 +++++++++++++++++++++++++++++++++++++++++++
- sound/soc/imx/mx1_mx2-pcm.h |   48 +++++
- 5 files changed, 551 insertions(+), 0 deletions(-)
+ sound/soc/imx/Kconfig          |    8 +
+ sound/soc/imx/Makefile         |    4 +
+ sound/soc/imx/mx27vis_wm8974.c |  317 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 329 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 0237879..8120b52 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -11,3 +11,4 @@ obj-$(CONFIG_SND_SOC)	+= omap/
- obj-$(CONFIG_SND_SOC)	+= pxa/
- obj-$(CONFIG_SND_SOC)	+= s3c24xx/
- obj-$(CONFIG_SND_SOC)	+= sh/
-+obj-$(CONFIG_SND_SOC)   += imx/
 diff --git a/sound/soc/imx/Kconfig b/sound/soc/imx/Kconfig
-new file mode 100644
-index 0000000..a1bf053
---- /dev/null
+index 886dadd..2c6f568 100644
+--- a/sound/soc/imx/Kconfig
 +++ b/sound/soc/imx/Kconfig
-@@ -0,0 +1,11 @@
-+config SND_MX1_MX2_SOC
-+	tristate "SoC Audio for Freecale i.MX1x i.MX2x CPUs"
-+	depends on (ARCH_MX2 || ARCH_MX1) && SND
-+	select SND_PCM
+@@ -9,5 +9,13 @@ config SND_MX1_MX2_SOC
+ config SND_MXC_SOC_SSI
+ 	tristate
+
++config SND_SOC_MX27VIS_WM8974
++	tristate "SoC Audio support for MX27 - WM8974 Visstrim_sm10 board"
++	depends on SND_MX1_MX2_SOC && MACH_MX27 && MACH_IMX27_VISSTRIM_M10
++	select SND_MXC_SOC_SSI
++	select SND_SOC_WM8974
 +	help
-+	  Say Y or M if you want to add support for codecs attached to
-+	  the MX1 or MX2 SSI interface.
-+
-+
-+
-+
++	  Say Y if you want to add support for SoC audio on Visstrim SM10
++	  board with WM8974.
+
+
 diff --git a/sound/soc/imx/Makefile b/sound/soc/imx/Makefile
-new file mode 100644
-index 0000000..c390f0f
---- /dev/null
+index 6552cb2..c2ffd2c 100644
+--- a/sound/soc/imx/Makefile
 +++ b/sound/soc/imx/Makefile
-@@ -0,0 +1,4 @@
-+# i.MX Platform Support
-+snd-soc-mx1_mx2-objs := mx1_mx2-pcm.o
+@@ -4,3 +4,7 @@ snd-soc-mxc-ssi-objs := mxc-ssi.o
+
+ obj-$(CONFIG_SND_MX1_MX2_SOC) += snd-soc-mx1_mx2.o
+ obj-$(CONFIG_SND_MXC_SOC_SSI) += snd-soc-mxc-ssi.o
 +
-+obj-$(CONFIG_SND_MX1_MX2_SOC) += snd-soc-mx1_mx2.o
-diff --git a/sound/soc/imx/mx1_mx2-pcm.c b/sound/soc/imx/mx1_mx2-pcm.c
++# i.MX Machine Support
++snd-soc-mx27vis-wm8974-objs := mx27vis_wm8974.o
++obj-$(CONFIG_SND_SOC_MX27VIS_WM8974) += snd-soc-mx27vis-wm8974.o
+diff --git a/sound/soc/imx/mx27vis_wm8974.c b/sound/soc/imx/mx27vis_wm8974.c
 new file mode 100644
-index 0000000..94807f8
+index 0000000..e4dcb53
 --- /dev/null
-+++ b/sound/soc/imx/mx1_mx2-pcm.c
-@@ -0,0 +1,487 @@
++++ b/sound/soc/imx/mx27vis_wm8974.c
+@@ -0,0 +1,317 @@
 +/*
-+ * mx1_mx2-pcm.c -- ALSA SoC interface for Freescale i.MX1x, i.MX2x CPUs
++ * mx27vis_wm8974.c  --  SoC audio for mx27vis
 + *
 + * Copyright 2009 Vista Silicon S.L.
 + * Author: Javier Martin
 + *         javier.martin@vista-silicon.com
 + *
-+ * Based on mxc-pcm.c by Liam Girdwood.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
 + *
 + */
 +
 +#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/dma-mapping.h>
++#include <linux/moduleparam.h>
++#include <linux/device.h>
++#include <linux/i2c.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
 +#include <sound/soc.h>
-+#include <asm/dma.h>
-+#include <mach/hardware.h>
-+#include <mach/dma-mx1-mx2.h>
++#include <sound/soc-dapm.h>
 +
++
++#include "../codecs/wm8974.h"
 +#include "mx1_mx2-pcm.h"
++#include "mxc-ssi.h"
++#include <mach/gpio.h>
++#include <mach/iomux.h>
++
++#define IGNORED_ARG 0
 +
 +
-+static const struct snd_pcm_hardware mx1_mx2_pcm_hardware = {
-+	.info			= (SNDRV_PCM_INFO_INTERLEAVED |
-+				   SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+				   SNDRV_PCM_INFO_MMAP |
-+				   SNDRV_PCM_INFO_MMAP_VALID),
-+	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
-+	.buffer_bytes_max	= 32 * 1024,
-+	.period_bytes_min	= 64,
-+	.period_bytes_max	= 8 * 1024,
-+	.periods_min		= 2,
-+	.periods_max		= 255,
-+	.fifo_size		= 0,
-+};
-+
-+struct mx1_mx2_runtime_data {
-+	int dma_ch;
-+	int active;
-+	unsigned int period;
-+	unsigned int periods;
-+	int tx_spin;
-+	spinlock_t dma_lock;
-+	struct mx1_mx2_pcm_dma_params *dma_params;
-+};
-+
++static struct snd_soc_card mx27vis;
 +
 +/**
-+  * This function stops the current dma transfer for playback
-+  * and clears the dma pointers.
-+  *
-+  * @param	substream	pointer to the structure of the current stream.
-+  *
++  * This function connects SSI1 (HPCR1) as slave to
++  * SSI1 external signals (PPCR1)
++  * As slave, HPCR1 must set TFSDIR and TCLKDIR as inputs from
++  * port 4
 +  */
-+static int audio_stop_dma(struct snd_pcm_substream *substream)
++void audmux_connect_1_4(void)
 +{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct mx1_mx2_runtime_data *prtd = runtime->private_data;
-+	unsigned long flags;
++	pr_debug("AUDMUX: normal operation mode\n");
++	/* Reset HPCR1 and PPCR1 */
 +
-+	spin_lock_irqsave(&prtd->dma_lock, flags);
++	DAM_HPCR1 = 0x00000000;
++	DAM_PPCR1 = 0x00000000;
 +
-+	pr_debug("%s\n", __func__);
++	/* set to synchronous */
++	DAM_HPCR1 |= AUDMUX_HPCR_SYN;
++	DAM_PPCR1 |= AUDMUX_PPCR_SYN;
 +
-+	prtd->active = 0;
-+	prtd->period = 0;
-+	prtd->periods = 0;
 +
-+	/* this stops the dma channel and clears the buffer ptrs */
++	/* set Rx sources 1 <--> 4 */
++	DAM_HPCR1 |= AUDMUX_HPCR_RXDSEL(3); /* port 4 */
++	DAM_PPCR1 |= AUDMUX_PPCR_RXDSEL(0); /* port 1 */
 +
-+	imx_dma_disable(prtd->dma_ch);
++	/* set Tx frame and Clock direction and source  4 --> 1 output */
++	DAM_HPCR1 |= AUDMUX_HPCR_TFSDIR | AUDMUX_HPCR_TCLKDIR;
++	DAM_HPCR1 |= AUDMUX_HPCR_TFCSEL(3); /* TxDS and TxCclk from port 4 */
 +
-+	spin_unlock_irqrestore(&prtd->dma_lock, flags);
-+
-+	return 0;
++	return;
 +}
 +
-+/**
-+  * This function is called whenever a new audio block needs to be
-+  * transferred to the codec. The function receives the address and the size
-+  * of the new block and start a new DMA transfer.
-+  *
-+  * @param	substream	pointer to the structure of the current stream.
-+  *
-+  */
-+static int dma_new_period(struct snd_pcm_substream *substream)
++static int mx27vis_hifi_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
 +{
-+	struct snd_pcm_runtime *runtime =  substream->runtime;
-+	struct mx1_mx2_runtime_data *prtd = runtime->private_data;
-+	unsigned int dma_size;
-+	unsigned int offset;
-+	int ret = 0;
-+	dma_addr_t mem_addr;
-+	unsigned int dev_addr;
-+
-+	if (prtd->active) {
-+		dma_size = frames_to_bytes(runtime, runtime->period_size);
-+		offset = dma_size * prtd->period;
-+
-+		pr_debug("%s: period (%d) out of (%d)\n", __func__,
-+			prtd->period,
-+			runtime->periods);
-+		pr_debug("period_size %d frames\n offset %d bytes\n",
-+			(unsigned int)runtime->period_size,
-+			offset);
-+		pr_debug("dma_size %d bytes\n", dma_size);
-+
-+		snd_BUG_ON(dma_size > mx1_mx2_pcm_hardware.period_bytes_max);
-+
-+		mem_addr = (dma_addr_t)(runtime->dma_addr + offset);
-+		dev_addr = prtd->dma_params->per_address;
-+		pr_debug("%s: mem_addr is %x\n dev_addr is %x\n",
-+				 __func__, mem_addr, dev_addr);
-+
-+		ret = imx_dma_setup_single(prtd->dma_ch, mem_addr,
-+					dma_size, dev_addr,
-+					prtd->dma_params->transfer_type);
-+		if (ret < 0) {
-+			printk(KERN_ERR "Error configuring DMA\n");
-+			return ret;
-+		}
-+		imx_dma_enable(prtd->dma_ch);
-+
-+		pr_debug("%s: transfer enabled\nmem_addr = %x\n",
-+			__func__, (unsigned int) mem_addr);
-+		pr_debug("dev_addr = %x\ndma_size = %d\n",
-+			(unsigned int) dev_addr, dma_size);
-+
-+		prtd->tx_spin = 1; /* FGA little trick to retrieve DMA pos */
-+		prtd->period++;
-+		prtd->period %= runtime->periods;
-+    }
-+	return ret;
-+}
-+
-+
-+/**
-+  * This is a callback which will be called
-+  * when a TX transfer finishes. The call occurs
-+  * in interrupt context.
-+  *
-+  * @param	dat	pointer to the structure of the current stream.
-+  *
-+  */
-+static void audio_dma_irq(int channel, void *data)
-+{
-+	struct snd_pcm_substream *substream;
-+	struct snd_pcm_runtime *runtime;
-+	struct mx1_mx2_runtime_data *prtd;
-+	unsigned int dma_size;
-+	unsigned int previous_period;
-+	unsigned int offset;
-+
-+	substream = data;
-+	runtime = substream->runtime;
-+	prtd = runtime->private_data;
-+	previous_period  = prtd->periods;
-+	dma_size = frames_to_bytes(runtime, runtime->period_size);
-+	offset = dma_size * previous_period;
-+
-+	prtd->tx_spin = 0;
-+	prtd->periods++;
-+	prtd->periods %= runtime->periods;
-+
-+	pr_debug("%s: irq per %d offset %x\n", __func__, prtd->periods, offset);
-+
-+	/*
-+	  * If we are getting a callback for an active stream then we inform
-+	  * the PCM middle layer we've finished a period
-+	  */
-+	if (prtd->active)
-+		snd_pcm_period_elapsed(substream);
-+
-+	/*
-+	  * Trig next DMA transfer
-+	  */
-+	dma_new_period(substream);
-+}
-+
-+/**
-+  * This function configures the hardware to allow audio
-+  * playback operations. It is called by ALSA framework.
-+  *
-+  * @param	substream	pointer to the structure of the current stream.
-+  *
-+  * @return              0 on success, -1 otherwise.
-+  */
-+static int
-+snd_mx1_mx2_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime =  substream->runtime;
-+	struct mx1_mx2_runtime_data *prtd = runtime->private_data;
-+
-+	prtd->period = 0;
-+	prtd->periods = 0;
-+
-+	return 0;
-+}
-+
-+static int mx1_mx2_pcm_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *hw_params)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int ret;
-+
-+	ret = snd_pcm_lib_malloc_pages(substream,
-+					params_buffer_bytes(hw_params));
-+	if (ret < 0) {
-+		printk(KERN_ERR "%s: failed to malloc pcm pages\n", __func__);
-+		return ret;
-+	}
-+
-+	pr_debug("%s: snd_imx1_mx2_audio_hw_params runtime->dma_addr 0x(%x)\n",
-+		__func__, (unsigned int)runtime->dma_addr);
-+	pr_debug("%s: snd_imx1_mx2_audio_hw_params runtime->dma_area 0x(%x)\n",
-+		__func__, (unsigned int)runtime->dma_area);
-+	pr_debug("%s: snd_imx1_mx2_audio_hw_params runtime->dma_bytes 0x(%x)\n",
-+		__func__, (unsigned int)runtime->dma_bytes);
-+
-+	return ret;
-+}
-+
-+static int mx1_mx2_pcm_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct mx1_mx2_runtime_data *prtd = runtime->private_data;
-+
-+	imx_dma_free(prtd->dma_ch);
-+
-+	snd_pcm_lib_free_pages(substream);
-+
-+	return 0;
-+}
-+
-+static int mx1_mx2_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct mx1_mx2_runtime_data *prtd = substream->runtime->private_data;
-+	int ret = 0;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		prtd->tx_spin = 0;
-+		/* requested stream startup */
-+		prtd->active = 1;
-+		pr_debug("%s: starting dma_new_period\n", __func__);
-+		ret = dma_new_period(substream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		/* requested stream shutdown */
-+		pr_debug("%s: stopping dma transfer\n", __func__);
-+		ret = audio_stop_dma(substream);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static snd_pcm_uframes_t
-+mx1_mx2_pcm_pointer(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct mx1_mx2_runtime_data *prtd = runtime->private_data;
-+	unsigned int offset = 0;
-+
-+	/* tx_spin value is used here to check if a transfer is active */
-+	if (prtd->tx_spin) {
-+		offset = (runtime->period_size * (prtd->periods)) +
-+						(runtime->period_size >> 1);
-+		if (offset >= runtime->buffer_size)
-+			offset = runtime->period_size >> 1;
-+	} else {
-+		offset = (runtime->period_size * (prtd->periods));
-+		if (offset >= runtime->buffer_size)
-+			offset = 0;
-+	}
-+	pr_debug("%s: pointer offset %x\n", __func__, offset);
-+
-+	return offset;
-+}
-+
-+static int mx1_mx2_pcm_open(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct mx1_mx2_runtime_data *prtd;
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct mx1_mx2_pcm_dma_params *dma_data = rtd->dai->cpu_dai->dma_data;
-+	int ret;
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	unsigned int pll_out = 0, bclk = 0, fmt = 0, mclk = 0;
++	int ret = 0;
 +
-+	snd_soc_set_runtime_hwparams(substream, &mx1_mx2_pcm_hardware);
-+
-+	ret = snd_pcm_hw_constraint_integer(runtime,
-+					SNDRV_PCM_HW_PARAM_PERIODS);
-+	if (ret < 0)
-+		return ret;
-+
-+	prtd = kzalloc(sizeof(struct mx1_mx2_runtime_data), GFP_KERNEL);
-+	if (prtd == NULL) {
-+		ret = -ENOMEM;
-+		goto out;
++	/*
++	 * The WM8974 is better at generating accurate audio clocks than the
++	 * MX27 SSI controller, so we will use it as master when we can.
++	 */
++	switch (params_rate(params)) {
++	case 8000:
++		fmt = SND_SOC_DAIFMT_CBM_CFM;
++		mclk = WM8974_MCLKDIV_12;
++		pll_out = 24576000;
++		break;
++	case 16000:
++		fmt = SND_SOC_DAIFMT_CBM_CFM;
++		pll_out = 12288000;
++		break;
++	case 48000:
++		fmt = SND_SOC_DAIFMT_CBM_CFM;
++		bclk = WM8974_BCLKDIV_4;
++		pll_out = 12288000;
++		break;
++	case 96000:
++		fmt = SND_SOC_DAIFMT_CBM_CFM;
++		bclk = WM8974_BCLKDIV_2;
++		pll_out = 12288000;
++		break;
++	case 11025:
++		fmt = SND_SOC_DAIFMT_CBM_CFM;
++		bclk = WM8974_BCLKDIV_16;
++		pll_out = 11289600;
++		break;
++	case 22050:
++		fmt = SND_SOC_DAIFMT_CBM_CFM;
++		bclk = WM8974_BCLKDIV_8;
++		pll_out = 11289600;
++		break;
++	case 44100:
++		fmt = SND_SOC_DAIFMT_CBM_CFM;
++		bclk = WM8974_BCLKDIV_4;
++		mclk = WM8974_MCLKDIV_2;
++		pll_out = 11289600;
++		break;
++	case 88200:
++		fmt = SND_SOC_DAIFMT_CBM_CFM;
++		bclk = WM8974_BCLKDIV_2;
++		pll_out = 11289600;
++		break;
 +	}
 +
-+	runtime->private_data = prtd;
-+
-+	if (!dma_data)
-+		return -ENODEV;
-+
-+	prtd->dma_params = dma_data;
-+
-+	pr_debug("%s: Requesting dma channel (%s)\n", __func__,
-+						prtd->dma_params->name);
-+	prtd->dma_ch = imx_dma_request_by_prio(prtd->dma_params->name,
-+						DMA_PRIO_HIGH);
-+	if (prtd->dma_ch < 0) {
-+		printk(KERN_ERR "Error requesting dma channel\n");
-+		return ret;
-+	}
-+	imx_dma_config_burstlen(prtd->dma_ch,
-+				prtd->dma_params->watermark_level);
-+
-+	ret = imx_dma_config_channel(prtd->dma_ch,
-+			prtd->dma_params->per_config,
-+			prtd->dma_params->mem_config,
-+			prtd->dma_params->event_id, 0);
-+
-+	if (ret) {
-+		pr_debug(KERN_ERR "Error configuring dma channel %d\n",
-+			prtd->dma_ch);
-+		return ret;
-+	}
-+
-+	pr_debug("%s: Setting tx dma callback function\n", __func__);
-+	ret = imx_dma_setup_handlers(prtd->dma_ch,
-+				audio_dma_irq, NULL,
-+				(void *)substream);
++	/* set codec DAI configuration */
++	ret = codec_dai->ops->set_fmt(codec_dai,
++		SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_IF |
++		SND_SOC_DAIFMT_SYNC | fmt);
 +	if (ret < 0) {
-+		printk(KERN_ERR "Error setting dma callback function\n");
++		printk(KERN_ERR "Error from codec DAI configuration\n");
 +		return ret;
 +	}
++
++	/* set cpu DAI configuration */
++	ret = cpu_dai->ops->set_fmt(cpu_dai,
++		SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++		SND_SOC_DAIFMT_SYNC | fmt);
++	if (ret < 0) {
++		printk(KERN_ERR "Error from cpu DAI configuration\n");
++		return ret;
++	}
++
++	/* Put DC field of STCCR to 1 (not zero) */
++	ret = cpu_dai->ops->set_tdm_slot(cpu_dai, 0, 2);
++
++	/* set the SSI system clock as input */
++	ret = cpu_dai->ops->set_sysclk(cpu_dai, IMX_SSP_SYS_CLK, 0,
++		SND_SOC_CLOCK_IN);
++	if (ret < 0) {
++		printk(KERN_ERR "Error when setting system SSI clk\n");
++		return ret;
++	}
++
++	/* set codec BCLK division for sample rate */
++	ret = codec_dai->ops->set_clkdiv(codec_dai, WM8974_BCLKDIV, bclk);
++	if (ret < 0) {
++		printk(KERN_ERR "Error when setting BCLK division\n");
++		return ret;
++	}
++
++
++	/* codec PLL input is 25 MHz */
++	ret = codec_dai->ops->set_pll(codec_dai, IGNORED_ARG,
++					25000000, pll_out);
++	if (ret < 0) {
++		printk(KERN_ERR "Error when setting PLL input\n");
++		return ret;
++	}
++
++	/*set codec MCLK division for sample rate */
++	ret = codec_dai->ops->set_clkdiv(codec_dai, WM8974_MCLKDIV, mclk);
++	if (ret < 0) {
++		printk(KERN_ERR "Error when setting MCLK division\n");
++		return ret;
++	}
++
 +	return 0;
-+
-+ out:
-+	return ret;
 +}
 +
-+static int mx1_mx2_pcm_close(struct snd_pcm_substream *substream)
++static int mx27vis_hifi_hw_free(struct snd_pcm_substream *substream)
 +{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct mx1_mx2_runtime_data *prtd = runtime->private_data;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
 +
-+	kfree(prtd);
-+
-+	return 0;
++	/* disable the PLL */
++	return codec_dai->ops->set_pll(codec_dai, IGNORED_ARG, 0, 0);
 +}
 +
-+static int mx1_mx2_pcm_mmap(struct snd_pcm_substream *substream,
-+				struct vm_area_struct *vma)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	return dma_mmap_writecombine(substream->pcm->card->dev, vma,
-+				     runtime->dma_area,
-+				     runtime->dma_addr,
-+				     runtime->dma_bytes);
-+}
-+
-+struct snd_pcm_ops mx1_mx2_pcm_ops = {
-+	.open		= mx1_mx2_pcm_open,
-+	.close		= mx1_mx2_pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= mx1_mx2_pcm_hw_params,
-+	.hw_free	= mx1_mx2_pcm_hw_free,
-+	.prepare	= snd_mx1_mx2_prepare,
-+	.trigger	= mx1_mx2_pcm_trigger,
-+	.pointer	= mx1_mx2_pcm_pointer,
-+	.mmap		= mx1_mx2_pcm_mmap,
++/*
++ * mx27vis WM8974 HiFi DAI opserations.
++ */
++static struct snd_soc_ops mx27vis_hifi_ops = {
++	.hw_params = mx27vis_hifi_hw_params,
++	.hw_free = mx27vis_hifi_hw_free,
 +};
 +
-+static u64 mx1_mx2_pcm_dmamask = 0xffffffff;
 +
-+static int mx1_mx2_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
++static int mx27vis_suspend(struct platform_device *pdev, pm_message_t state)
 +{
-+	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
-+	struct snd_dma_buffer *buf = &substream->dma_buffer;
-+	size_t size = mx1_mx2_pcm_hardware.buffer_bytes_max;
-+	buf->dev.type = SNDRV_DMA_TYPE_DEV;
-+	buf->dev.dev = pcm->card->dev;
-+	buf->private_data = NULL;
++	return 0;
++}
 +
-+	/* Reserve uncached-buffered memory area for DMA */
-+	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
-+					   &buf->addr, GFP_KERNEL);
++static int mx27vis_resume(struct platform_device *pdev)
++{
++	return 0;
++}
 +
-+	pr_debug("%s: preallocate_dma_buffer: area=%p, addr=%p, size=%d\n",
-+		__func__, (void *) buf->area, (void *) buf->addr, size);
++static int mx27vis_probe(struct platform_device *pdev)
++{
++	int ret = 0;
 +
-+	if (!buf->area)
++	ret = get_ssi_clk(0, &pdev->dev);
++
++	if (ret < 0) {
++		printk(KERN_ERR "%s: cant get ssi clock\n", __func__);
++		return ret;
++	}
++
++
++	return 0;
++}
++
++static int mx27vis_remove(struct platform_device *pdev)
++{
++	put_ssi_clk(0);
++	return 0;
++}
++
++static struct snd_soc_dai_link mx27vis_dai[] = {
++{ /* Hifi Playback*/
++	.name = "WM8974",
++	.stream_name = "WM8974 HiFi",
++	.cpu_dai = &imx_ssi_pcm_dai[0],
++	.codec_dai = &wm8974_dai,
++	.ops = &mx27vis_hifi_ops,
++},
++};
++
++static struct snd_soc_card mx27vis = {
++	.name = "mx27vis",
++	.platform = &mx1_mx2_soc_platform,
++	.probe = mx27vis_probe,
++	.remove = mx27vis_remove,
++	.suspend_pre = mx27vis_suspend,
++	.resume_post = mx27vis_resume,
++	.dai_link = mx27vis_dai,
++	.num_links = ARRAY_SIZE(mx27vis_dai),
++};
++
++static struct snd_soc_device mx27vis_snd_devdata = {
++	.card = &mx27vis,
++	.codec_dev = &soc_codec_dev_wm8974,
++};
++
++static struct platform_device *mx27vis_snd_device;
++
++/* Temporal definition of board specific behaviour */
++void gpio_ssi_active(int ssi_num)
++{
++	int ret = 0;
++
++	unsigned int ssi1_pins[] = {
++		PC20_PF_SSI1_FS,
++		PC21_PF_SSI1_RXD,
++		PC22_PF_SSI1_TXD,
++		PC23_PF_SSI1_CLK,
++	};
++	unsigned int ssi2_pins[] = {
++		PC24_PF_SSI2_FS,
++		PC25_PF_SSI2_RXD,
++		PC26_PF_SSI2_TXD,
++		PC27_PF_SSI2_CLK,
++	};
++	if (ssi_num == 0)
++		ret = mxc_gpio_setup_multiple_pins(ssi1_pins,
++				ARRAY_SIZE(ssi1_pins), "USB OTG");
++	else
++		ret = mxc_gpio_setup_multiple_pins(ssi2_pins,
++				ARRAY_SIZE(ssi2_pins), "USB OTG");
++	if (ret)
++		printk(KERN_ERR "Error requesting ssi %x pins\n", ssi_num);
++}
++
++
++static int __init mx27vis_init(void)
++{
++	int ret;
++
++	mx27vis_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!mx27vis_snd_device)
 +		return -ENOMEM;
 +
-+	buf->bytes = size;
-+	return 0;
-+}
++	platform_set_drvdata(mx27vis_snd_device, &mx27vis_snd_devdata);
++	mx27vis_snd_devdata.dev = &mx27vis_snd_device->dev;
++	ret = platform_device_add(mx27vis_snd_device);
 +
-+static void mx1_mx2_pcm_free_dma_buffers(struct snd_pcm *pcm)
-+{
-+	struct snd_pcm_substream *substream;
-+	struct snd_dma_buffer *buf;
-+	int stream;
-+
-+	for (stream = 0; stream < 2; stream++) {
-+		substream = pcm->streams[stream].substream;
-+		if (!substream)
-+			continue;
-+
-+		buf = &substream->dma_buffer;
-+		if (!buf->area)
-+			continue;
-+
-+		dma_free_writecombine(pcm->card->dev, buf->bytes,
-+				      buf->area, buf->addr);
-+		buf->area = NULL;
-+	}
-+}
-+
-+int mx1_mx2_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
-+	struct snd_pcm *pcm)
-+{
-+	int ret = 0;
-+
-+	if (!card->dev->dma_mask)
-+		card->dev->dma_mask = &mx1_mx2_pcm_dmamask;
-+	if (!card->dev->coherent_dma_mask)
-+		card->dev->coherent_dma_mask = 0xffffffff;
-+
-+	if (dai->playback.channels_min) {
-+		ret = mx1_mx2_pcm_preallocate_dma_buffer(pcm,
-+			SNDRV_PCM_STREAM_PLAYBACK);
-+		pr_debug("%s: preallocate playback buffer\n", __func__);
-+		if (ret)
-+			goto out;
++	if (ret) {
++		printk(KERN_ERR "ASoC: Platform device allocation failed\n");
++		platform_device_put(mx27vis_snd_device);
 +	}
 +
-+	if (dai->capture.channels_min) {
-+		ret = mx1_mx2_pcm_preallocate_dma_buffer(pcm,
-+			SNDRV_PCM_STREAM_CAPTURE);
-+		pr_debug("%s: preallocate capture buffer\n", __func__);
-+		if (ret)
-+			goto out;
-+	}
-+ out:
++	/* WM8974 uses SSI1 (HPCR1) via AUDMUX port 4 for audio (PPCR1) */
++	gpio_ssi_active(0);
++	audmux_connect_1_4();
++
 +	return ret;
 +}
 +
-+struct snd_soc_platform mx1_mx2_soc_platform = {
-+	.name		= "mx1_mx2-audio",
-+	.pcm_ops 	= &mx1_mx2_pcm_ops,
-+	.pcm_new	= mx1_mx2_pcm_new,
-+	.pcm_free	= mx1_mx2_pcm_free_dma_buffers,
-+};
-+EXPORT_SYMBOL_GPL(mx1_mx2_soc_platform);
-+
-+static int __init mx1_mx2_soc_platform_init(void)
++static void __exit mx27vis_exit(void)
 +{
-+	return snd_soc_register_platform(&mx1_mx2_soc_platform);
++	/* We should call some "ssi_gpio_inactive()" properly */
 +}
-+module_init(mx1_mx2_soc_platform_init);
 +
-+static void __exit mx1_mx2_soc_platform_exit(void)
-+{
-+	snd_soc_unregister_platform(&mx1_mx2_soc_platform);
-+}
-+module_exit(mx1_mx2_soc_platform_exit);
++module_init(mx27vis_init);
++module_exit(mx27vis_exit);
++
 +
 +MODULE_AUTHOR("Javier Martin, javier.martin@vista-silicon.com");
-+MODULE_DESCRIPTION("Freescale i.MX2x, i.MX1x PCM DMA module");
++MODULE_DESCRIPTION("ALSA SoC WM8974 mx27vis");
 +MODULE_LICENSE("GPL");
-diff --git a/sound/soc/imx/mx1_mx2-pcm.h b/sound/soc/imx/mx1_mx2-pcm.h
-new file mode 100644
-index 0000000..e1e3a3f
---- /dev/null
-+++ b/sound/soc/imx/mx1_mx2-pcm.h
-@@ -0,0 +1,48 @@
-+/*
-+ * mx1_mx2-pcm.h :- ASoC platform header for Freescale i.MX1x, i.MX2x
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef _MXC_PCM_H
-+#define _MXC_PCM_H
-+
-+/* AUDMUX register definitions */
-+#define AUDMUX_IO_BASE_ADDR	IO_ADDRESS(AUDMUX_BASE_ADDR)
-+
-+#define DAM_HPCR1	(*((volatile u32 *)(AUDMUX_IO_BASE_ADDR + 0x00)))
-+#define DAM_HPCR2	(*((volatile u32 *)(AUDMUX_IO_BASE_ADDR + 0x04)))
-+#define DAM_HPCR3	(*((volatile u32 *)(AUDMUX_IO_BASE_ADDR + 0x08)))
-+#define DAM_PPCR1	(*((volatile u32 *)(AUDMUX_IO_BASE_ADDR + 0x10)))
-+#define DAM_PPCR2	(*((volatile u32 *)(AUDMUX_IO_BASE_ADDR + 0x14)))
-+#define DAM_PPCR3	(*((volatile u32 *)(AUDMUX_IO_BASE_ADDR + 0x1C)))
-+
-+#define AUDMUX_HPCR_TFSDIR	(1 << 31)
-+#define AUDMUX_HPCR_TCLKDIR	(1 << 30)
-+#define AUDMUX_HPCR_TFCSEL(x)	(((x) & 0xff) << 26)
-+#define AUDMUX_HPCR_RXDSEL(x)	(((x) & 0x7) << 13)
-+#define AUDMUX_HPCR_SYN		(1 << 12)
-+
-+#define AUDMUX_PPCR_TFSDIR	(1 << 31)
-+#define AUDMUX_PPCR_TCLKDIR	(1 << 30)
-+#define AUDMUX_PPCR_TFCSEL(x)	(((x) & 0xff) << 26)
-+#define AUDMUX_PPCR_RXDSEL(x)	(((x) & 0x7) << 13)
-+#define AUDMUX_PPCR_SYN		(1 << 12)
-+
-+/* DMA information for mx1_mx2 platforms */
-+struct mx1_mx2_pcm_dma_params {
-+	char *name;			/* stream identifier */
-+	unsigned int transfer_type;	/* READ or WRITE DMA transfer */
-+	dma_addr_t per_address;		/* physical address of SSI fifo */
-+	int event_id;			/* fixed DMA number for SSI fifo */
-+	int watermark_level;		/* SSI fifo watermark level */
-+	int per_config;			/* DMA Config flags for peripheral */
-+	int mem_config;			/* DMA Config flags for RAM */
-+ };
-+
-+/* platform data */
-+extern struct snd_soc_platform mx1_mx2_soc_platform;
-+
-+#endif
---
-
+---
 
 -- 
 Javier Martin
