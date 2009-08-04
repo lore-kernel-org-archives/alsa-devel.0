@@ -1,45 +1,74 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC: Patches for Freescale MXC SoCs (SSI,
- DMA and 	machine).
-Date: Tue, 4 Aug 2009 21:26:58 +0100
-Message-ID: <20090804202657.GH4342@sirena.org.uk>
-References: <eedb5540908040817g15c981f8ye8aac6d4b253317f@mail.gmail.com>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: [RFC] [PATCH] ASoC: OMAP: full duplex mode fix
+Date: Tue, 4 Aug 2009 22:46:09 +0200
+Message-ID: <200908042246.09919.jkrzyszt@tis.icnet.pl>
+References: <200908030332.06727.jkrzyszt@tis.icnet.pl> <4A76ED80.6040001@tis.icnet.pl> <20090803181405.6249b843.jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 157DE243C0
-	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Aug 2009 22:27:11 +0200 (CEST)
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20090803181405.6249b843.jhnikula@gmail.com>
 Content-Disposition: inline
-In-Reply-To: <eedb5540908040817g15c981f8ye8aac6d4b253317f@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: javier Martin <javier.martin@vista-silicon.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: Arun K S <arunks@mistralsolutions.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Tony Lindgren <tony@atomide.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 04, 2009 at 05:17:47PM +0200, javier Martin wrote:
+Monday 03 August 2009 17:14:05 Jarkko Nikula wrote:
+> So it looks that McBSP-DMA for another stream cease to work if there is
+> more than certain delay between first stream start and second one but
+> omap_mcbsp_pollwrite or _pollread will clear the error condition. Can
+> you debug is this due clearing the possible XSYNC_ERR, waiting for
+> transmit/receive confirmation or playing with data registers there?
 
-> Here comes a series of three patches which currently add audio support
-> for MX1x and MX2x platforms.
+I have temporarily modified those omap_mcbsp_pollwrite/_pollread() to do 
+nothing but reporting, put them into omap_mcbsp_dai_trigger() as before and 
+additionally into a newly created and registered omap_mcbsp_dai_prepare(), 
+called before omap_start_dma(), and got the following result:
 
-As I indicated in reply to the individual patches these are all
-basically OK.  Given the level of demand for thist stuff and the fact
-that it's floating around in various forms out of tree for some
-considerable time I'm inclined to try to push it for 2.6.32.
+For both playback start while capturing and capture start while playing, 
+XSYNC_ERR/RSYNC_ERR is clear and XRDY/RRDY is ready, respectively, both 
+before and after omap_start_dma(). No DMA transfer is actually started, so 
+the operation fails with i/o error.
 
-Unfortunately while I do have some more recent i.MX hardware I don't
-have any i.MX2x hardware.  This means that if I do any work on this I'd
-be coding blind for the i.MX2x stuff which could be a bit risky.
+My interpretation based on my SPRU592 and SPRU674 understanding:
 
-Thanks a lot for taking the time to do this work, I'm sure there's a
-bunch of people out there who'd be very happy to see this code merged.
+While starting the first stream, omap_mcbsp_start(), called by 
+omap_mcbsp_dai_trigger(), instructs McBSP to start shifting bits in both 
+directions, no matter which one has just been requested. After that, the 
+direction, for which a corresponding DMA transfer has just been started from 
+omap_pcm_trigger() with omap_start_dma(), starts doing its job, while the 
+opposite direction, after shifting in one word in case of capture, issues a 
+DMA event that is missed and waits for an I/O to occur.
+
+Then, when omap_pcm_trigger() starts DMA for the opposite direction, the DMA 
+controller, configured for synchronized transfer, waits for a corresponding 
+DMA event before it performs its first I/O operation. That event already 
+occurred far before and will not occur again, so the transfer will not start 
+without any intervention. This time, omap_mcbsp_start() is not called again 
+for an already started hardware action (correct), so there is no chance for 
+the transfer to start that way.
+
+With my patch, performing an I/O operation by calling 
+omap_mcbsp_pollwrite/_pollread() forces McBSP to issue next DMA event, that 
+initiates the transfer.
+
+While starting both streams (semi)simultaneously, it may happen that the DMA 
+event for the opposite direction will occur after the DMA has just been 
+started for that direction as well and will not be missed, so both streams 
+will run correctly.
+
+Does it make sense, or am I missing something?
+
+If my analysis is correct, the best solution I can see would be starting McBSP 
+transfer for one direction only, not both, so the opposite direction can be 
+started when needed. That requires deeper and wider OMAP knowledge and a 
+change in omap_mcbsp_start() API though. I am not in a position to deal with 
+this myself, I'm afraid.
+
+Thanks,
+Janusz
+
+PS: Not CCing arch/arm/plat-omap/mcbsp.c author as his email address is 
+probably out-of-date.
