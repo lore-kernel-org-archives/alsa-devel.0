@@ -1,74 +1,58 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: [RFC] [PATCH] ASoC: OMAP: full duplex mode fix
-Date: Tue, 4 Aug 2009 22:46:09 +0200
-Message-ID: <200908042246.09919.jkrzyszt@tis.icnet.pl>
-References: <200908030332.06727.jkrzyszt@tis.icnet.pl> <4A76ED80.6040001@tis.icnet.pl> <20090803181405.6249b843.jhnikula@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3] ASoC: change set_tdm_slot api to allow
+ slot_width override.
+Date: Tue, 4 Aug 2009 21:55:45 +0100
+Message-ID: <20090804205545.GB29518@sirena.org.uk>
+References: <1245113071.24109.559.camel@brutus>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20090803181405.6249b843.jhnikula@gmail.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1DA312444A
+	for <alsa-devel@alsa-project.org>;
+	Tue,  4 Aug 2009 22:55:52 +0200 (CEST)
 Content-Disposition: inline
-Sender: linux-omap-owner@vger.kernel.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: Arun K S <arunks@mistralsolutions.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Tony Lindgren <tony@atomide.com>
+In-Reply-To: <1245113071.24109.559.camel@brutus>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Daniel Ribeiro <drwyrm@gmail.com>
+Cc: Paul Shen <boshen9@gmail.com>, alsa-devel <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Monday 03 August 2009 17:14:05 Jarkko Nikula wrote:
-> So it looks that McBSP-DMA for another stream cease to work if there is
-> more than certain delay between first stream start and second one but
-> omap_mcbsp_pollwrite or _pollread will clear the error condition. Can
-> you debug is this due clearing the possible XSYNC_ERR, waiting for
-> transmit/receive confirmation or playing with data registers there?
+On Mon, Jun 15, 2009 at 09:44:31PM -0300, Daniel Ribeiro wrote:
+> Extend set_tdm_slot to allow the user to arbitrarily set the frame width
+> and active TX/RX slots.
 
-I have temporarily modified those omap_mcbsp_pollwrite/_pollread() to do 
-nothing but reporting, put them into omap_mcbsp_dai_trigger() as before and 
-additionally into a newly created and registered omap_mcbsp_dai_prepare(), 
-called before omap_start_dma(), and got the following result:
+> Updates magician.c and wm9081.c for the new set_tdm_slot(). wm9081.c
+> still doesn't handle the slot_width override.
 
-For both playback start while capturing and capture start while playing, 
-XSYNC_ERR/RSYNC_ERR is clear and XRDY/RRDY is ready, respectively, both 
-before and after omap_start_dma(). No DMA transfer is actually started, so 
-the operation fails with i/o error.
+> While being there, correct an incorrect use of SlotsPerFrm(7) use in
+> bitmask on pxa-ssp.c (SSCR0_SlotsPerFrm(x) is (((x) - 1) << 24)) ).
 
-My interpretation based on my SPRU592 and SPRU674 understanding:
+> (this series is meant for Mark's for-2.6.32 branch)
 
-While starting the first stream, omap_mcbsp_start(), called by 
-omap_mcbsp_dai_trigger(), instructs McBSP to start shifting bits in both 
-directions, no matter which one has just been requested. After that, the 
-direction, for which a corresponding DMA transfer has just been started from 
-omap_pcm_trigger() with omap_start_dma(), starts doing its job, while the 
-opposite direction, after shifting in one word in case of capture, issues a 
-DMA event that is missed and waits for an I/O to occur.
+> Signed-off-by: Daniel Ribeiro <drwyrm@gmail.com>
 
-Then, when omap_pcm_trigger() starts DMA for the opposite direction, the DMA 
-controller, configured for synchronized transfer, waits for a corresponding 
-DMA event before it performs its first I/O operation. That event already 
-occurred far before and will not occur again, so the transfer will not start 
-without any intervention. This time, omap_mcbsp_start() is not called again 
-for an already started hardware action (correct), so there is no chance for 
-the transfer to start that way.
+So.  These have been sitting for quite some time now.  Unfortunately I
+went on holiday immediately after it was last submitted my Zylonite
+system has been bricked for pretty much all of the time since then so
+I've been remiss in following up.  Sorry about that, my bad.
 
-With my patch, performing an I/O operation by calling 
-omap_mcbsp_pollwrite/_pollread() forces McBSP to issue next DMA event, that 
-initiates the transfer.
+My inclination here is to apply these changes - they look like a clear
+win for pretty much every machine except Daniel Mack's out of tree
+system which needs the 64 bit TDM slots.  It's a shame to break that but
+there seems to be such a clear advantage from the changes, especially
+the new set_tdm_slot() API, that it seems like a win overall.  I've got
+a feeling that the fix for that system may have to be allowing the
+machine driver to rewrite the hw_params for the CPU driver to lie about
+the data format.
 
-While starting both streams (semi)simultaneously, it may happen that the DMA 
-event for the opposite direction will occur after the DMA has just been 
-started for that direction as well and will not be missed, so both streams 
-will run correctly.
-
-Does it make sense, or am I missing something?
-
-If my analysis is correct, the best solution I can see would be starting McBSP 
-transfer for one direction only, not both, so the opposite direction can be 
-started when needed. That requires deeper and wider OMAP knowledge and a 
-change in omap_mcbsp_start() API though. I am not in a position to deal with 
-this myself, I'm afraid.
-
-Thanks,
-Janusz
-
-PS: Not CCing arch/arm/plat-omap/mcbsp.c author as his email address is 
-probably out-of-date.
+I'll try to do that this week.
