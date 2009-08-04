@@ -1,19 +1,19 @@
-From: "John L. Utz III" <jutz@dmx.com>
-Subject: Re: Controling wave amplitude using alsa api !! (pcm
- interface ???????)
-Date: Tue, 04 Aug 2009 10:08:12 -0700
-Message-ID: <4A786AFC.3030809@dmx.com>
-References: <eedb5540908040818j3ba586ceq124016bb7eb9d7b5@mail.gmail.com>
-	<4A7863EB.5090207@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3] ASoC: add DMA platform driver for MX1x
+ and MX2x
+Date: Tue, 4 Aug 2009 20:00:39 +0100
+Message-ID: <20090804190039.GB4342@sirena.org.uk>
+References: <eedb5540908040817kbd91dc0r40927c0bd67c51d4@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0DBA8244BD
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 136892439C
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Aug 2009 19:08:25 +0200 (CEST)
-In-Reply-To: <4A7863EB.5090207@gmail.com>
+	Tue,  4 Aug 2009 21:00:47 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <eedb5540908040817kbd91dc0r40927c0bd67c51d4@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,43 +23,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Guilherme Longo <grlongo.ireland@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: javier Martin <javier.martin@vista-silicon.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Guilherme Longo wrote:
-> Hi all!
+On Tue, Aug 04, 2009 at 05:17:52PM +0200, javier Martin wrote:
+> This adds support for DMA platform valid for i.MX1 and i.MX2 platforms.
 > 
-> Mates, I am following the example PCM.C that I found at alsa web site. 
-> its a sine wave generator.
-> I am looking for a control that alsa provides to control the amplitude 
-> of the wave.
+> This is not valid for i.MX3 since it doesn't share the same DMA
+> interface than i.MX1 and i.MX2.
 > 
-> As I could found so for, there is just frequency control... I didn't 
-> find any amplitude control.
+> It has been tested on i.MX27 board.
 
-This line int pcm.c is not amplitude control?
+> Signed-off-by: Javier Martin <javier.martin@vista-silicon.com>
 
-unsigned int maxval = (1 << (snd_pcm_format_width(format) - 1)) - 1;
+This looks basically good.  I'll need to check to make sure it's up to
+date against the more current code but if there's anything wrong there
+it'll be fairly minor stuff.
 
-it's an int, so you probably need to alter this a bit to allow you to
-have arbitrary control over the amplitude (ie: multiply by a float less
-than 1.0)
+> +	depends on (ARCH_MX2 || ARCH_MX1) && SND
 
-HTH
+No need to depend on SND, the menu will stop the configuration being
+visible if it's not selected.
 
-johnu
+> +		ret = imx_dma_setup_single(prtd->dma_ch, mem_addr,
+> +					dma_size, dev_addr,
+> +					prtd->dma_params->transfer_type);
+> +		if (ret < 0) {
+> +			printk(KERN_ERR "Error configuring DMA\n");
+> +			return ret;
+> +		}
 
+It'd be nice to print out ret here - the same thing applies in quite a
+few other places in the driver.
 
-> * I don't want to control the volume using alsamixer or even my sound... 
-> I want to generate a wave with predefined amplitude.
-> 
-> Does anyone could give me a little help??
-> 
-> Thanks a lot!
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+> +#ifndef _MXC_PCM_H
+> +#define _MXC_PCM_H
+> +
+> +/* AUDMUX register definitions */
+> +#define AUDMUX_IO_BASE_ADDR	IO_ADDRESS(AUDMUX_BASE_ADDR)
+> +
+> +#define DAM_HPCR1	(*((volatile u32 *)(AUDMUX_IO_BASE_ADDR + 0x00)))
+> +#define DAM_HPCR2	(*((volatile u32 *)(AUDMUX_IO_BASE_ADDR + 0x04)))
+> +#define DAM_HPCR3	(*((volatile u32 *)(AUDMUX_IO_BASE_ADDR + 0x08)))
+> +#define DAM_PPCR1	(*((volatile u32 *)(AUDMUX_IO_BASE_ADDR + 0x10)))
+> +#define DAM_PPCR2	(*((volatile u32 *)(AUDMUX_IO_BASE_ADDR + 0x14)))
+> +#define DAM_PPCR3	(*((volatile u32 *)(AUDMUX_IO_BASE_ADDR + 0x1C)))
+> +
+> +#define AUDMUX_HPCR_TFSDIR	(1 << 31)
+> +#define AUDMUX_HPCR_TCLKDIR	(1 << 30)
+> +#define AUDMUX_HPCR_TFCSEL(x)	(((x) & 0xff) << 26)
+> +#define AUDMUX_HPCR_RXDSEL(x)	(((x) & 0x7) << 13)
+> +#define AUDMUX_HPCR_SYN		(1 << 12)
+> +
+> +#define AUDMUX_PPCR_TFSDIR	(1 << 31)
+> +#define AUDMUX_PPCR_TCLKDIR	(1 << 30)
+> +#define AUDMUX_PPCR_TFCSEL(x)	(((x) & 0xff) << 26)
+> +#define AUDMUX_PPCR_RXDSEL(x)	(((x) & 0x7) << 13)
+> +#define AUDMUX_PPCR_SYN		(1 << 12)
+
+Hrm.  I suspect these should be under arch/arm somewhere; they're not
+actually used by this driver so could be removed.
