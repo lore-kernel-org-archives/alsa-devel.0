@@ -1,19 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH] ASoC: SDP3430: Add support for EXTMUTE
-	using TWL GPIO6
-Date: Tue, 4 Aug 2009 09:58:15 +0300
-Message-ID: <200908040958.15673.peter.ujfalusi@nokia.com>
-References: <2256F256009DAA4CBE661E9F41EAC84B533409F1@dlee01.ent.ti.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: pyalsa: SeqEvent.time strangeness
+Date: Tue, 04 Aug 2009 11:45:35 +0200
+Message-ID: <4A78033F.5020504@ladisch.de>
+References: <4A607468.7010300@web.de>	<4A65C370.3030205@ladisch.de>	<4A65EADE.70007@web.de>	<4A733753.60808@web.de>	<4A76D01F.1090603@ladisch.de>
+	<4A76D662.9030002@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id E6946245B4
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 979D324349
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Aug 2009 08:58:26 +0200 (CEST)
-In-Reply-To: <2256F256009DAA4CBE661E9F41EAC84B533409F1@dlee01.ent.ti.com>
-Content-Disposition: inline
+	Tue,  4 Aug 2009 11:45:26 +0200 (CEST)
+In-Reply-To: <4A76D662.9030002@web.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,45 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ext Candelaria Villareal, Jorge" <x0107209@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: Christopher Arndt <chris.arndt@web.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 15 July 2009 04:04:08 ext Candelaria Villareal, Jorge wrote:
-> Board sdp3430 has hardware support for EXTMUTE using TWL4030 GPIO6
-> line, controlled by register INTBR_PMBR1. Machine driver takes care
-> of enabling gpio line through i2c and codec driver manipulates the
-> line during headset ramp up/down sequence.
->
-> +#define TWL4030_INTBR_PMBR1	0x0D
-> +#define EXTMUTE(value)		(value << 2)
+Christopher Arndt wrote:
+> Might I suggest another patch to pyalsa?
 
-This is confusing, should it be something like this?:
-#define GPIO6_PWM0_MUX(value)		(value << 2)
-
-> +	/* Set TWL4030 GPIO6 as EXTMUTE signal */
-> +	twl4030_i2c_write_u8(TWL4030_MODULE_INTBR, EXTMUTE(0x02),
-> +							TWL4030_MODULE_INTBR);
-
-I think you meant this:
-twl4030_i2c_write_u8(TWL4030_MODULE_INTBR, EXTMUTE(0x02),
-							TWL4030_INTBR_PMBR1);
-
-Furthermore, since you are modifying pin muxing register, I think it is saf=
-er =
-
-to do something like this here to avoid changing other pin's function:
-
-u8 pin_mux;
-
-twl4030_i2c_read_u8(TWL4030_MODULE_INTBR, &pin_mux,
-							TWL4030_INTBR_PMBR1);
-pin_mux &=3D ~GPIO6_PWM0_MUX(0x3);
-pin_mux |=3D GPIO6_PWM0_MUX(0x2);
-twl4030_i2c_write_u8(TWL4030_MODULE_INTBR, pin_mux,
-							TWL4030_INTBR_PMBR1);
+Please provide a Signed-off-by line.
 
 
--- =
-
-P=E9ter
+Best regards,
+Clemens
