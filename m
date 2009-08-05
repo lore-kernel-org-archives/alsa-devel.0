@@ -1,20 +1,20 @@
-From: Lukasz Stelmach <stlman@poczta.fm>
-Subject: Re: [PATCH - amixer] listen to D-Bus for volume-up,
- volume-down and mute signals.
-Date: Mon, 03 Aug 2009 18:59:32 +0200
-Message-ID: <4A771774.8040408@poczta.fm>
-References: <1249296201-6930-1-git-send-email-stlman@poczta.fm>
-	<s5hocqxcgqb.wl%tiwai@suse.de> <4A76D239.70202@poczta.fm>
-	<s5hiqh5ccyr.wl%tiwai@suse.de>
-	<20090803121747.GD5959@sirena.org.uk>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [RFC] [PATCH] ASoC: OMAP: full duplex mode fix
+Date: Wed, 5 Aug 2009 09:45:21 +0300
+Message-ID: <200908050945.22160.peter.ujfalusi@nokia.com>
+References: <200908030332.06727.jkrzyszt@tis.icnet.pl>
+	<20090803181405.6249b843.jhnikula@gmail.com>
+	<200908042246.09919.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------000805050700070302090104"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
-	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id F154A243B5
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3058F10383F
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Aug 2009 01:10:59 +0200 (CEST)
-In-Reply-To: <20090803121747.GD5959@sirena.org.uk>
+	Wed,  5 Aug 2009 08:45:30 +0200 (CEST)
+In-Reply-To: <200908042246.09919.jkrzyszt@tis.icnet.pl>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,79 +24,131 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: ext Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Arun K S <arunks@mistralsolutions.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------000805050700070302090104
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Tuesday 04 August 2009 23:46:09 ext Janusz Krzysztofik wrote:
 
-Mark Brown pisze:
-> On Mon, Aug 03, 2009 at 02:13:16PM +0200, Takashi Iwai wrote:
->> Lukasz Stelmach wrote:
->=20
->>> No worries ;) there is --with(out)--dbus option for configure to
->>> disable all this code which is enough for initrd because most often
->>> (AFAIK) initrd binaries are not the same that in the live system.
->=20
->> Usually same binaries are used for initrd nowadays in many distros.
->> So, configure option doesn't help.
->=20
->> And, I really prefer this as a separate daemon, so it be as small as
->> possible.  Seeing amixer as a daemon is somewhat strange...
->=20
-> I tend to agree, merging it into amixer seems kind of arbatrary.  Such =
-a
-> daemon (and its dbus interface) may also be useful for handling things
-> like scenario management so I can see it growing over time.
+> I have temporarily modified those omap_mcbsp_pollwrite/_pollread() to do
+> nothing but reporting, put them into omap_mcbsp_dai_trigger() as before a=
+nd
+> additionally into a newly created and registered omap_mcbsp_dai_prepare(),
+> called before omap_start_dma(), and got the following result:
+>
+> For both playback start while capturing and capture start while playing,
+> XSYNC_ERR/RSYNC_ERR is clear
+> and XRDY/RRDY is ready,
 
-Scenario management? Could you please say something more what I
-have not been missing for so long ;-)
+This means that XRDY/RRDY is set (1)?
 
-- --
-By=C5=82o mi bardzo mi=C5=82o.               Czwarta pospolita kl=C4=99sk=
-a, [...]
->=C5=81ukasz<                 Ju=C5=BC nie katolicka lecz z=C5=82odziejsk=
-a.  (c)PP
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.11 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+> respectively, both
+> before and after omap_start_dma(). No DMA transfer is actually started, so
+> the operation fails with i/o error.
 
-iEYEARECAAYFAkp3F3QACgkQNdzY8sm9K9wLpgCcC46pzInBHGBIHXmB8fCWqkel
-QDQAmwTvtJHJuHMkqQv4GvEfKGzfUFhR
-=3DJ5+H
------END PGP SIGNATURE-----
+In case of playback start while capture: What is the state of the XEMPTY bi=
+t =
 
+(SPCR2:2)? Is it 0? It should.
 
-----------------------------------------------------------------------
-Zostan Dziewczyna lub Chlopakiem lata!
-Wygraj skuter >> http://link.interia.pl/f22a7=20
+>
+> My interpretation based on my SPRU592 and SPRU674 understanding:
+>
+> While starting the first stream, omap_mcbsp_start(), called by
+> omap_mcbsp_dai_trigger(), instructs McBSP to start shifting bits in both
+> directions, no matter which one has just been requested. After that, the
+> direction, for which a corresponding DMA transfer has just been started
+> from omap_pcm_trigger() with omap_start_dma(), starts doing its job, while
+> the opposite direction, after shifting in one word in case of capture,
+> issues a DMA event that is missed and waits for an I/O to occur.
+>
+> Then, when omap_pcm_trigger() starts DMA for the opposite direction, the
+> DMA controller, configured for synchronized transfer, waits for a
+> corresponding DMA event before it performs its first I/O operation. That
+> event already occurred far before and will not occur again, so the transf=
+er
+> will not start without any intervention. This time, omap_mcbsp_start() is
+> not called again for an already started hardware action (correct), so the=
+re
+> is no chance for the transfer to start that way.
 
---------------000805050700070302090104
-Content-Type: text/x-vcard; charset=utf-8;
- name="stlman.vcf"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="stlman.vcf"
+I think the reason is quite simple: on OMAP1 the DMA request is edge sensit=
+ive =
 
-YmVnaW46dmNhcmQNCmZuO3F1b3RlZC1wcmludGFibGU6PUM1PTgxdWthc3ogU3RlbG1hY2gN
-Cm47cXVvdGVkLXByaW50YWJsZTpTdGVsbWFjaDs9QzU9ODF1a2Fzeg0KZW1haWw7aW50ZXJu
-ZXQ6c3RsbWFuQHBvY3p0YS5mbQ0KeC1tb3ppbGxhLWh0bWw6RkFMU0UNCnZlcnNpb246Mi4x
-DQplbmQ6dmNhcmQNCg0K
---------------000805050700070302090104
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+(compared to OMAP2 and OMAP3 where it is level based). This means:
+When you start the capture, both RX and TX is started. Since the playback i=
+s not =
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+running, no data will be written to the DXR register, McBSP asserts the DMA =
 
---------------000805050700070302090104--
+request line, but since there is no DMA configured for playback it  stays h=
+igh =
+
+(and McBSP will shift out 0). Now if you start the playback (using DMA) the=
+ DMA =
+
+engine waits for a pulse on the request line, which will not occur, the req=
+uest =
+
+line is asserted, so the DMA will not start pushing any data to the McBSP D=
+XR =
+
+register.
+Now if you force write to the DXR register, than it de-asserts the DMA requ=
+est =
+
+line, when the DXR -> XSR copy has been done, McBSP asserts the DMA request =
+
+line, which will kick the DMA engine to push data to DXR register and the =
+
+playback will start.
+
+>
+> With my patch, performing an I/O operation by calling
+> omap_mcbsp_pollwrite/_pollread() forces McBSP to issue next DMA event, th=
+at
+> initiates the transfer.
+
+The danger with the pollwrite/pollread is:
+If the stream is not mono, than you kind of ensure a certain channel shift =
+
+(channel switch in case of stereo stream).
+
+>
+> While starting both streams (semi)simultaneously, it may happen that the
+> DMA event for the opposite direction will occur after the DMA has just be=
+en
+> started for that direction as well and will not be missed, so both streams
+> will run correctly.
+
+Yep, this is kind of a race condition (in a good way): Most likely both DMA=
+ has =
+
+been started before the McBSP ports asserted their DMA request lines, so th=
+e DMA =
+
+engine will push or read the data correctly.
+
+>
+> Does it make sense, or am I missing something?
+>
+> If my analysis is correct, the best solution I can see would be starting
+> McBSP transfer for one direction only, not both, so the opposite direction
+> can be started when needed. That requires deeper and wider OMAP knowledge
+> and a change in omap_mcbsp_start() API though. I am not in a position to
+> deal with this myself, I'm afraid.
+
+I agree, this would be the best solution for the problem.
+
+>
+> Thanks,
+> Janusz
+>
+> PS: Not CCing arch/arm/plat-omap/mcbsp.c author as his email address is
+> probably out-of-date.
+
+-- =
+
+P=E9ter
