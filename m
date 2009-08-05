@@ -1,50 +1,60 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: [PATCH - amixer] listen to D-Bus for volume-up,
-	volume-down and mute signals.
-Date: Wed, 5 Aug 2009 14:58:26 +0200
-Message-ID: <20090805125826.GA30624@tango.0pointer.de>
-References: <1249296201-6930-1-git-send-email-stlman@poczta.fm>
-	<s5hocqxcgqb.wl%tiwai@suse.de> <4A76D239.70202@poczta.fm>
-	<s5hiqh5ccyr.wl%tiwai@suse.de>
-	<20090803162900.GB7298@tango.0pointer.de>
-	<4A771E6D.9020108@poczta.fm>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: [RFC] [PATCH] ASoC: OMAP: full duplex mode fix
+Date: Wed, 05 Aug 2009 15:14:42 +0200
+Message-ID: <4A7985C2.1040403@tis.icnet.pl>
+References: <200908030332.06727.jkrzyszt@tis.icnet.pl> <20090803181405.6249b843.jhnikula@gmail.com> <200908042246.09919.jkrzyszt@tis.icnet.pl> <200908050945.22160.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3285724418
-	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Aug 2009 14:58:52 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4A771E6D.9020108@poczta.fm>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <200908050945.22160.peter.ujfalusi@nokia.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: Jarkko Nikula <jhnikula@gmail.com>, Arun K S <arunks@mistralsolutions.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Tony Lindgren <tony@atomide.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 03.08.09 19:29, Lukasz Stelmach (stlman@poczta.fm) wrote:
+Hi,
 
-> > In fact most desktops do include a tool for this anyway.
+Peter Ujfalusi wrote:
+> On Tuesday 04 August 2009 23:46:09 ext Janusz Krzysztofik wrote:
 > 
-> I don't use any of the bloated desktop environments and I couldn't
-> find a tool that does the job. Can you name one and I promise
-> I won't trouble any one here with my ideas. If you don't... I won't
-> be bothering you too much either ;-)
+>> For both playback start while capturing and capture start while playing,
+>> XSYNC_ERR/RSYNC_ERR is clear
+>> and XRDY/RRDY is ready,
+> 
+> This means that XRDY/RRDY is set (1)?
 
-Hmm, you consider GNOME/KDE bloat but then use that as an excuse to
-add bloat to amixer?
+Yes, trasmit/recieve confirmed at first while(!(readw(...) & XRDY/RRDY)) 
+attempt.
 
-Lennart
+> In case of playback start while capture: What is the state of the XEMPTY bit 
+> (SPCR2:2)? Is it 0? It should.
 
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Have not checked, but will do for completness.
+
+> I think the reason is quite simple: on OMAP1 the DMA request is edge sensitive 
+> (compared to OMAP2 and OMAP3 where it is level based). This means:
+
+Good recap.
+
+> The danger with the pollwrite/pollread is:
+> If the stream is not mono, than you kind of ensure a certain channel shift 
+> (channel switch in case of stereo stream).
+
+Good point, I was trying break all not mono.
+
+>> If my analysis is correct, the best solution I can see would be starting
+>> McBSP transfer for one direction only, not both, so the opposite direction
+>> can be started when needed. That requires deeper and wider OMAP knowledge
+>> and a change in omap_mcbsp_start() API though. I am not in a position to
+>> deal with this myself, I'm afraid.
+> 
+> I agree, this would be the best solution for the problem.
+
+I was also considering omap_mcbsp_restart(id, direction) as a more 
+conservative solution, but now, after Jarkko has subbmitted his patch on 
+omap_mcbsp_start(), it's not an option any longer, I think.
+
+Cheers,
+Janusz
+
