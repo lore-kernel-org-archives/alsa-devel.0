@@ -1,23 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: MPC5200: Support for buffer wrap
- around
-Date: Wed, 5 Aug 2009 22:11:02 +0100
-Message-ID: <20090805211102.GB5686@sirena.org.uk>
-References: <20090729153844.18131.68062.stgit@riker>
-	<1249490672.4582.65.camel@riker>
-	<20090805170519.GA26086@rakim.wolfsonmicro.main>
-	<fa686aa40908051105sad236fj29301d1b11ece0d7@mail.gmail.com>
-	<9e4733910908051134n1ff97b47udb7645b6a714e4e3@mail.gmail.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH] ALSA: ASoC: cs4270: move power management
+ hooks to	snd_soc_codec_device
+Date: Wed, 05 Aug 2009 16:11:48 -0500
+Message-ID: <4A79F594.6010709@freescale.com>
+References: <1249497036-9073-1-git-send-email-daniel@caiaq.de>
+	<20090805183700.GA6727@rakim.wolfsonmicro.main>
+	<20090805185043.GP13236@buzzloop.caiaq.de>
+	<20090805210428.GA5686@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id DCCC42462D
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7FF06103811
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Aug 2009 23:11:12 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <9e4733910908051134n1ff97b47udb7645b6a714e4e3@mail.gmail.com>
+	Wed,  5 Aug 2009 23:12:02 +0200 (CEST)
+In-Reply-To: <20090805210428.GA5686@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,21 +26,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>, John Bonesio <bones@secretlab.ca>, alsa-devel@alsa-project.org, Eric Millbrandt <emillbrandt@dekaresearch.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 05, 2009 at 02:34:38PM -0400, Jon Smirl wrote:
-> On Wed, Aug 5, 2009 at 2:05 PM, Grant Likely<grant.likely@secretlab.ca> wrote:
+Mark Brown wrote:
+> On Wed, Aug 05, 2009 at 08:50:43PM +0200, Daniel Mack wrote:
+> 
+>> Like that?
+> 
+> Yes, I'm fine with this - I'll wait for Timur's review before applying,
+> though.
 
-> > Acked-by: Grant Likely <grant.likely@secretlab.ca>
+I have no way of testing this, and I don't have the bandwidth these days anyway, so go ahead and apply it.  I trust you guys.
 
-> It looks ok to me. I have my hardware torn up so I can't run anything.
-> I am rebuilding it to work on I2S.
-
-Applied, thanks.
-
-> I wish the upper layers would deal with appl_ptr instead of making the
-> drivers do it.
-
-wv :)
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
