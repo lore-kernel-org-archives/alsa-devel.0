@@ -1,18 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] alsa-python: Add support for setuptools
-Date: Wed, 05 Aug 2009 15:30:55 +0200
-Message-ID: <4A79898F.4050805@ladisch.de>
-References: <4A607468.7010300@web.de>	<4A65C370.3030205@ladisch.de>	<4A65EADE.70007@web.de>	<4A733753.60808@web.de>	<4A76D01F.1090603@ladisch.de>	<4A76D662.9030002@web.de>	<4A78033F.5020504@ladisch.de>	<4A78170B.7070400@web.de>	<4A783187.1070600@ladisch.de>
-	<4A7986BD.7070605@web.de>
+From: =?ISO-8859-1?Q?Andreas_Bie=DFmann?= <biessmann@corscience.de>
+Subject: Re: Question to sophisticated alsa developer
+Date: Wed, 05 Aug 2009 16:02:07 +0200
+Message-ID: <4A7990DF.2060606@corscience.de>
+References: <4A796779.6030204@corscience.de>
+	<9e4733910908050546w3c268db9h7ccd4fa37ecd0099@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 93B5910389E
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.8])
+	by alsa0.perex.cz (Postfix) with ESMTP id 43A2D1037FD
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Aug 2009 15:30:46 +0200 (CEST)
-In-Reply-To: <4A7986BD.7070605@web.de>
+	Wed,  5 Aug 2009 16:02:12 +0200 (CEST)
+In-Reply-To: <9e4733910908050546w3c268db9h7ccd4fa37ecd0099@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,14 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Christopher Arndt <chris.arndt@web.de>
+To: Jon Smirl <jonsmirl@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Christopher Arndt wrote:
-> This patch adds support for setuptools to the setup.py file of python-alsa.
+Hi Jon,
 
-Applied now.  Thanks!
+Jon Smirl schrieb:
+> When the last sample plays it generates an interrupt. ALSA sends a
+> STOP back after this interrupt. But the audio hardware continues
+> playing between this interrupt and receiving the STOP. Since the last
+> valid sample generated the interrupt, the hardware is playing garbage
+> (stale data) while waiting on the STOP. Probably  500us worth of stale
+> data.,
 
+This sounds correct an I will investigate this. But I wonder why the
+stale data does not appear when I use aplay without dmix layer. Have you
+some explanation for this?
 
-Clemens
+regards
+
+Andreas Bie=DFmann
