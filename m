@@ -1,16 +1,23 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 01/20] OMAP: McBSP: Provide functions for
-	ASoC frame syncronization
-Date: Wed, 5 Aug 2009 10:18:09 +0300
-Message-ID: <200908051018.09304.peter.ujfalusi@nokia.com>
-References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-2-git-send-email-eduardo.valentin@nokia.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [RFC] [PATCH] ASoC: OMAP: full duplex mode fix
+Date: Wed, 5 Aug 2009 10:21:49 +0300
+Message-ID: <20090805102149.bfcafa35.jhnikula@gmail.com>
+References: <200908030332.06727.jkrzyszt@tis.icnet.pl>
+	<4A76ED80.6040001@tis.icnet.pl>
+	<20090803181405.6249b843.jhnikula@gmail.com>
+	<200908042246.09919.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1248958183-15015-2-git-send-email-eduardo.valentin@nokia.com>
-Content-Disposition: inline
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4EDF72415E
+	for <alsa-devel@alsa-project.org>;
+	Wed,  5 Aug 2009 09:20:38 +0200 (CEST)
+Received: by ewy23 with SMTP id 23so1097243ewy.32
+	for <alsa-devel@alsa-project.org>; Wed, 05 Aug 2009 00:20:38 -0700 (PDT)
+In-Reply-To: <200908042246.09919.jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,114 +27,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Arun K S <arunks@mistralsolutions.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 30 July 2009 15:49:24 Valentin Eduardo (Nokia-D/Helsinki) wrote:
-> From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
->
-> ASoC has an annoying bug letting either L or R channel to be
-> played on L channel. In other words, L and R channels can
-> switch at random. This provides McBSP funtionality that may
-> be used to fix this feature.
->
-> Signed-off-by: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
-> ---
->  arch/arm/plat-omap/include/mach/mcbsp.h |    2 +
->  arch/arm/plat-omap/mcbsp.c              |   52
-> +++++++++++++++++++++++++++++++ 2 files changed, 54 insertions(+), 0
-> deletions(-)
->
-> diff --git a/arch/arm/plat-omap/include/mach/mcbsp.h
-> b/arch/arm/plat-omap/include/mach/mcbsp.h index bb154ea..77191c5 100644
-> --- a/arch/arm/plat-omap/include/mach/mcbsp.h
-> +++ b/arch/arm/plat-omap/include/mach/mcbsp.h
-> @@ -389,6 +389,8 @@ int omap_mcbsp_request(unsigned int id);
->  void omap_mcbsp_free(unsigned int id);
->  void omap_mcbsp_start(unsigned int id);
->  void omap_mcbsp_stop(unsigned int id);
-> +void omap_mcbsp_xmit_enable(unsigned int id, u8 enable);
-> +void omap_mcbsp_recv_enable(unsigned int id, u8 enable);
->  void omap_mcbsp_xmit_word(unsigned int id, u32 word);
->  u32 omap_mcbsp_recv_word(unsigned int id);
->
-> diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-> index efa0e01..84cc323 100644
-> --- a/arch/arm/plat-omap/mcbsp.c
-> +++ b/arch/arm/plat-omap/mcbsp.c
-> @@ -398,6 +398,58 @@ void omap_mcbsp_stop(unsigned int id)
->  }
->  EXPORT_SYMBOL(omap_mcbsp_stop);
->
-> +void omap_mcbsp_xmit_enable(unsigned int id, u8 enable)
-> +{
-> +	struct omap_mcbsp *mcbsp;
-> +	void __iomem *io_base;
-> +	u16 w;
-> +
-> +	if (!(cpu_is_omap2430() || cpu_is_omap34xx()))
-> +		return;
-> +
-> +	if (!omap_mcbsp_check_valid_id(id)) {
-> +		printk(KERN_ERR "%s: Invalid id (%d)\n", __func__, id + 1);
-> +		return;
-> +	}
-> +
-> +	mcbsp =3D id_to_mcbsp_ptr(id);
-> +	io_base =3D mcbsp->io_base;
-> +
-> +	w =3D OMAP_MCBSP_READ(io_base, XCCR);
-> +
-> +	if (enable)
-> +		OMAP_MCBSP_WRITE(io_base, XCCR, w & ~(XDISABLE));
-> +	else
-> +		OMAP_MCBSP_WRITE(io_base, XCCR, w | XDISABLE);
+Thanks for good debuging!
 
-Have you tried to play with the SPCR2:XRST bit instead of the XCCR:XDISABLE?
-It places the transmitter to reset, thus disabling it also, furthermore it =
-is =
+On Tue, 4 Aug 2009 22:46:09 +0200
+Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
 
-available on OMAP1 as well, so we can use the same code there as well...
+> For both playback start while capturing and capture start while playing, 
+> XSYNC_ERR/RSYNC_ERR is clear and XRDY/RRDY is ready, respectively, both 
+> before and after omap_start_dma(). No DMA transfer is actually started, so 
+> the operation fails with i/o error.
+> 
+> My interpretation based on my SPRU592 and SPRU674 understanding:
+> 
+FYI: there is also SPRU708 for OMAP5910 McBSP.
 
-> +}
-> +EXPORT_SYMBOL(omap_mcbsp_xmit_enable);
-> +
-> +void omap_mcbsp_recv_enable(unsigned int id, u8 enable)
-> +{
-> +	struct omap_mcbsp *mcbsp;
-> +	void __iomem *io_base;
-> +	u16 w;
-> +
-> +	if (!(cpu_is_omap2430() || cpu_is_omap34xx()))
-> +		return;
-> +
-> +	if (!omap_mcbsp_check_valid_id(id)) {
-> +		printk(KERN_ERR "%s: Invalid id (%d)\n", __func__, id + 1);
-> +		return;
-> +	}
-> +
-> +	mcbsp =3D id_to_mcbsp_ptr(id);
-> +	io_base =3D mcbsp->io_base;
-> +
-> +	w =3D OMAP_MCBSP_READ(io_base, RCCR);
-> +
-> +	if (enable)
-> +		OMAP_MCBSP_WRITE(io_base, RCCR, w & ~(RDISABLE));
-> +	else
-> +		OMAP_MCBSP_WRITE(io_base, RCCR, w | RDISABLE);
+> While starting the first stream, omap_mcbsp_start(), called by 
+> omap_mcbsp_dai_trigger(), instructs McBSP to start shifting bits in both 
+> directions, no matter which one has just been requested. After that, the 
+> direction, for which a corresponding DMA transfer has just been started from 
+> omap_pcm_trigger() with omap_start_dma(), starts doing its job, while the 
+> opposite direction, after shifting in one word in case of capture, issues a 
+> DMA event that is missed and waits for an I/O to occur.
+> 
+> Then, when omap_pcm_trigger() starts DMA for the opposite direction, the DMA 
+> controller, configured for synchronized transfer, waits for a corresponding 
+> DMA event before it performs its first I/O operation. That event already 
+> occurred far before and will not occur again, so the transfer will not start 
+> without any intervention. This time, omap_mcbsp_start() is not called again 
+> for an already started hardware action (correct), so there is no chance for 
+> the transfer to start that way.
+> 
+This sounds very logical explanation. I didn't find any information how
+the DMA request (or event as stated in those documents) from McBSP of
+the 1510/5910 is de-asserted but it very likely looks by your
+observations that it's just an event which can be missed if the DMA is
+not configured when it happens.
 
-Same goes here: can you try the SPCR1:RRST bit here instead of the =
+In later OMAP's it looks that the DMA request is level sensite (I
+didn't check) and will clear only after the data register is accessed by
+the DMA since the problem doesn't occur there.
 
-RCCR:RDISABLE?
+> If my analysis is correct, the best solution I can see would be starting McBSP 
+> transfer for one direction only, not both, so the opposite direction can be 
+> started when needed. That requires deeper and wider OMAP knowledge and a 
+> change in omap_mcbsp_start() API though. I am not in a position to deal with 
+> this myself, I'm afraid.
+> 
+I favor this change. Actually I remember I was thinking shortly to
+change API of omap_mcbsp_start and _stop more than year back or so but
+didn't find it necessary back then.
 
-> +}
-> +EXPORT_SYMBOL(omap_mcbsp_recv_enable);
-> +
->  /* polled mcbsp i/o operations */
->  int omap_mcbsp_pollwrite(unsigned int id, u16 buf)
->  {
+I think change will be trivial. Basically two new arguments indicating
+are the TX/RX active and let the first/last caller to deal with
+sample-rate generator and frame sync activation/de-activation.
 
--- =
+This API change would also clean-up these two patches:
 
-P=E9ter
+http://mailman.alsa-project.org/pipermail/alsa-devel/2009-July/019821.html
+http://mailman.alsa-project.org/pipermail/alsa-devel/2009-July/019826.html
+
+> PS: Not CCing arch/arm/plat-omap/mcbsp.c author as his email address is 
+> probably out-of-date.
+
+Yes it is (s/nokia.com/intel.com/).
+
+
+-- 
+Jarkko
