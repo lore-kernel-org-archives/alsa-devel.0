@@ -1,18 +1,16 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: Re: [BUG] NULL pointer dereference in patch_sigmatel.c
-Date: Thu, 06 Aug 2009 14:38:23 +0300
-Message-ID: <4A7AC0AF.3060805@pardus.org.tr>
-References: <4A5F84D6.5040708@pardus.org.tr>	<s5h1vofac2z.wl%tiwai@suse.de>
-	<s5hy6qn8wyj.wl%tiwai@suse.de>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH 02/20] OMAP: McBSP: Wakeups utilized
+Date: Thu, 6 Aug 2009 15:00:47 +0300
+Message-ID: <20090806120047.GH2358__30548.6647681848$1249560075$gmane$org@atomide.com>
+References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-2-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-3-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lider.pardus.org.tr (lider.uludag.org.tr [193.140.100.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id B33EC243EC
-	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Aug 2009 13:35:10 +0200 (CEST)
-In-Reply-To: <s5hy6qn8wyj.wl%tiwai@suse.de>
+Content-Disposition: inline
+In-Reply-To: <1248958183-15015-3-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,88 +20,125 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: linux-omap@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>, alsa-devel@vger.kernel.org, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGFrYXNoaSBJd2FpIHdyb3RlIE9uIDE3LTA3LTIwMDkgMTI6NDU6Cj4gQXQgRnJpLCAxNyBKdWwg
-MjAwOSAxMTozMzowOCArMDIwMCwKPiBJIHdyb3RlOgo+ICAgCj4+IEF0IFRodSwgMTYgSnVsIDIw
-MDkgMjI6NTE6NTAgKzAzMDAsCj4+IE96YW4gw4dhxJ9sYXlhbiB3cm90ZToKPj4gICAgIAo+Pj4g
-SGksCj4+Pgo+Pj4gT25lIG9mIG91ciB1c2VycyBpcyBoYXZpbmcgYSBOVUxMIHB0ciBkZXJlZmVy
-ZW5jZSB1cG9uIGxvYWRpbmcgdGhlCj4+PiBzbmRfaGRhX2ludGVsIG1vZHVsZSB3aXRoIDIwMDkw
-NjI0J3Mgc25hcHNob3QuIFRoZXJlJ3Mgb25seSBvbmUgY29tbWl0Cj4+PiBhZnRlciB0aGF0IGRh
-dGUgaW4gcGF0Y2hfc2lnbWF0ZWwuYyBzbyBJIGRpZG4ndCB0ZWxsIGhpbSB0byB0cnkgd2l0aCB0
-aGUKPj4+IGxhdGVzdCBzbmFwc2hvdCBidXQgaWYgeW91IHRoaW5rIHRoYXQgdGhlIGJ1ZyBtYXkg
-YmUgcmVsYXRlZCB0byBhbm90aGVyCj4+PiBwYXJ0IG9mIHRoZSBBTFNBIGNvZGViYXNlLCBJIGNh
-biBtYWtlIGhpbSB0cnkgdGhlIGxhdGVzdCBzbmFwc2hvdC4KPj4+ICAgICAgIAo+PiBJIHN1cHBv
-c2UgeW91IGFyZSB1c2luZyB1bnN0YWJsZSB0cmVlLCByaWdodD8KPj4gICAgIAo+Cj4gTG9va2lu
-ZyB0aHJvdWdoIHRoZSBzdGFjayB0cmFjZSwgaXQncyBub3QuLi4KPgo+IEJ1dCwgSSBkb24ndCBz
-ZWUgYW55IHByb2JsZW0gaW4gdGhlIGN1cnJlbnQgY29kZS4gIEl0IGNvdWxkIGJlIGEgYnVnCj4g
-aW4gdGhlIHdyYXBwZXIgZm9yIG9sZGVyIGtlcm5lbHMuICBBbnl3YXksIGNoZWNraW5nIHdpdGgg
-dGhlIHZlcnkgbGF0ZXN0Cj4gc25hcHNob3Qgd291bGQgYmUgaGVscGZ1bC4KPiAgIAoKSGkgYWdh
-aW4uCgpXZSd2ZSBoYWQgYW5vdGhlciBOVUxMIHB0ciBkZXJlZiB3aXRoIHRoZSB2ZXJ5IHNhbWUg
-MjAwOTA2MjQgc25hcHNob3Qgb24KMi42LjI1LjIwLiBUaGUgY29kZWNzIGFyZSBub3QgdGhlIHNh
-bWUsIHRoaXMgaXMgYSBjb25leGFudCBvbmUuCgpJJ3ZlIG5vdyBjb21waWxlZCBhbmQgdHJpZWQg
-MjAwOTA4MDUgc25hcHNob3QgYW5kIGl0J3MgdGhlIHNhbWUuIFNvIHllcywKSSB0aGluayB0aGF0
-IHRoZXJlJ3MgYSBwcm9ibGVtIHdpdGggdGhlIHdyYXBwZXIgb3IgYW55dGhpbmcgZWxzZSBidXQg
-bm90CnRoZSBkcml2ZXIgY29kZSBpdHNlbGYgYmVjYXVzZSBib3RoIGxhcHRvcHMgYXJlIHZlcnkg
-cG9wdWxhciBtb2RlbHMsCnRoZXJlIHdvdWxkIGF0IGxlYXN0IHNvbWVvbmUgZXhjZXB0IG1lIHRv
-IG5vdGljZSB0aGF0LgoKU2VlbiB0aGF0IEkndmUgbm93IGhhdmUgYSBmYXVsdHkgY29tcHV0ZXIg
-YXQgbXkgaGFuZCwgSSBjYW4gaGVscApkZWJ1Z2dpbmcgdGhlIGlzc3VlIGJ1dCBkb24ndCBrbm93
-IGV4YWN0bHkgaG93LiBTZW5kaW5nIHRoZSBkbWVzZyBvdXRwdXQKYm9vdGVkIHdpdGggMjAwOTA4
-MDUgc25hcHNob3QuCgpUaGFua3MsCgpCVUc6IHVuYWJsZSB0byBoYW5kbGUga2VybmVsIE5VTEwg
-cG9pbnRlciBkZXJlZmVyZW5jZSBhdCAwMDAwMDA3NApJUDogWzxmOTNjYmRhOT5dIDpzbmRfaGRh
-X2NvZGVjX2NvbmV4YW50OmN4dDUwNTFfaW5pdCsweDkwLzB4MWVhCipwZGUgPSAwMDAwMDAwMMK3
-Ck9vcHM6IDAwMDIgWyMxXSBTTVDCtwpNb2R1bGVzIGxpbmtlZCBpbjogc25kX2hkYV9jb2RlY19j
-b25leGFudCBzbmRfaGRhX2ludGVsKCspIHNuZF9oZGFfY29kZWMKc25kX2h3ZGVwIHNuZF9zZXFf
-ZHVtbXkgc25kX3NlcV9vc3Mgc25kX3NlcV9taWRpX2V2ZW50IGFyYzQgc25kX3NlcSBlY2IKc25k
-X3NlcV9kZXZpY2UgdXZjdmlkZW8gc25kX3BjbV9vc3Mgc25kX21peGVyX29zcyBzbmRfcGNtCiBj
-b21wYXRfaW9jdGwzMiBpd2wzOTQ1IHJma2lsbCBzbmRfdGltZXIgdGhlcm1hbCBudmlkaWEoUCkg
-cHJvY2Vzc29yIHNuZApzb3VuZGNvcmUgYWMgcnRjX2Ntb3MgdmlkZW9kZXYgcnRjX2NvcmUgc2Ro
-Y2kgcnRjX2xpYiBmaXJtd2FyZV9jbGFzcyB3bWkKdmlkZW8gb3V0cHV0IHNuZF9wYWdlX2FsbG9j
-IGJhdHRlcnkgYnV0dG9uIGlUQ09fd2R0IG1hYzgKMDIxMSBoY2lfdXNiIGxlZF9jbGFzcyBza3ky
-IHVzYmhpZCBtbWNfY29yZSBjZmc4MDIxMSBpbnRlbF9hZ3AKdjRsMV9jb21wYXQgam95ZGV2IGlU
-Q09fdmVuZG9yX3N1cHBvcnQgaTJjX2k4MDEgYmx1ZXRvb3RoIHNlcmlvX3JhdwphZ3BnYXJ0IGky
-Y19jb3JlIGhpZCBmZl9tZW1sZXNzIHNnIGV4dDMgamJkIG1iY2FjaGUgc2RfbW9kIHNyX21vZCBj
-ZHJvbQogYXRhX3BpaXggdWhjaV9oY2QgcGF0YV9hY3BpIGVoY2lfaGNkIHVzYmNvcmUgb2hjaTEz
-OTQgaWVlZTEzOTQKYXRhX2dlbmVyaWMgYWhjaSBsaWJhdGEgc2NzaV9tb2QgZG9jawoKUGlkOiAy
-NzgsIGNvbW06IG1vZHByb2JlIFRhaW50ZWQ6IFAgICAgICAgICAoMi42LjI1LjIwLTExNCAjMSkK
-RUlQOiAwMDYwOls8ZjkzY2JkYTk+XSBFRkxBR1M6IDAwMjEwMjQ2IENQVTogMQpFSVAgaXMgYXQg
-Y3h0NTA1MV9pbml0KzB4OTAvMHgxZWEgW3NuZF9oZGFfY29kZWNfY29uZXhhbnRdCkVBWDogMDAw
-MDAwMDAgRUJYOiBmN2I3MDAxNiBFQ1g6IDAwMDAwMDAwIEVEWDogZjdhNzZhMDAKRVNJOiBmN2I3
-ODAwMCBFREk6IDAwMDAwMDAwIEVCUDogZjc5ODdkNGMgRVNQOiBmNzk4N2QxOAogRFM6IDAwN2Ig
-RVM6IDAwN2IgRlM6IDAwZDggR1M6IDAwMzMgU1M6IDAwNjgKUHJvY2VzcyBtb2Rwcm9iZSAocGlk
-OiAyNzgsIHRpPWY3OTg2MDAwIHRhc2s9Zjc5ODQwMDAgdGFzay50aT1mNzk4NjAwMCkKU3RhY2s6
-IGY3OTQ0ZTAwIGY3YTc2YzAwIGY3OGE0MTk0IGY3OGE0MTM0IGY5M2NmYTIwIDAwMDAwMDAwIGY3
-OGE0MDAwCmY3Yjc4MDAwwrcKICAgICAgIDAwMDAwMDAyIDAwMWMwMDAxIGY3Yjc4MDAwIGY3OTQ0
-ZTAwIGY3ODUyMzJjIGY3OTg3ZDU4IGY5M2I5NmVjCmY3Yjc4MDAwwrcKICAgICAgIGY3OTg3ZDZj
-IGY5M2JhMjk4IGY3ODUyMzI0IGY3OTQ0ZTAwIDAwMDAwMDAwIGY3OTg3ZGNjIGY5M2FlMmU4CjAw
-MDAwMDAwwrcKQ2FsbCBUcmFjZToKIFs8ZjkzYjk2ZWM+XSA/IHNuZF9oZGFfY29kZWNfYnVpbGRf
-Y29udHJvbHMrMHgyMC8weDNkIFtzbmRfaGRhX2NvZGVjXQogWzxmOTNiYTI5OD5dID8gc25kX2hk
-YV9idWlsZF9jb250cm9scysweDE4LzB4NjcgW3NuZF9oZGFfY29kZWNdCiBbPGY5M2FlMmU4Pl0g
-PyBhenhfcHJvYmUrMHg4NjMvMHg4ZmIgW3NuZF9oZGFfaW50ZWxdCiBbPGY5M2FkOTFhPl0gPyBh
-enhfc2VuZF9jbWQrMHgwLzB4MTI2IFtzbmRfaGRhX2ludGVsXQogWzxmOTNhZDczMz5dID8gYXp4
-X2dldF9yZXNwb25zZSsweDAvMHgxZTcgW3NuZF9oZGFfaW50ZWxdCiBbPGY5M2FjZjUwPl0gPyBh
-enhfYXR0YWNoX3BjbV9zdHJlYW0rMHgwLzB4MTVjIFtzbmRfaGRhX2ludGVsXQogWzxmOTNhY2Mw
-Nj5dID8gYXp4X2J1c19yZXNldCsweDAvMHg1NiBbc25kX2hkYV9pbnRlbF0KIFs8ZjkzYWNhYWU+
-XSA/IGF6eF9wb3dlcl9ub3RpZnkrMHgwLzB4NTcgW3NuZF9oZGFfaW50ZWxdCiBbPGMwMWU3YTM3
-Pl0gPyBwY2lfZGV2aWNlX3Byb2JlKzB4MzkvMHg1OQogWzxjMDI0Mzk1Zj5dID8gZHJpdmVyX3By
-b2JlX2RldmljZSsweGEwLzB4MTM2CiBbPGMwMjQzYTUwPl0gPyBfX2RyaXZlcl9hdHRhY2grMHg1
-Yi8weDkxCiBbPGMwMjQzMzNjPl0gPyBidXNfZm9yX2VhY2hfZGV2KzB4M2IvMHg2MwogWzxjMDI0
-MzgwND5dID8gZHJpdmVyX2F0dGFjaCsweDE0LzB4MTYKIFs8YzAyNDM5ZjU+XSA/IF9fZHJpdmVy
-X2F0dGFjaCsweDAvMHg5MQogWzxjMDI0MmQzYT5dID8gYnVzX2FkZF9kcml2ZXIrMHg5ZC8weDFi
-YQogWzxjMDI0M2JjND5dID8gZHJpdmVyX3JlZ2lzdGVyKzB4NDcvMHhhNwogWzxjMDE2ODY4MT5d
-ID8gX192dW5tYXArMHg5My8weDliCiBbPGMwMWU3YmVjPl0gPyBfX3BjaV9yZWdpc3Rlcl9kcml2
-ZXIrMHgzNS8weDYxCiBbPGY4ODYwMDE3Pl0gPyBhbHNhX2NhcmRfYXp4X2luaXQrMHgxNy8weDE5
-IFtzbmRfaGRhX2ludGVsXQogWzxjMDE0MWY5Yz5dID8gc3lzX2luaXRfbW9kdWxlKzB4MThhZC8w
-eDE5Y2EKIFs8YzAxNzViYzk+XSA/IHN5c19yZWFkKzB4M2IvMHg2MAogWzxjMDEwNDliND5dID8g
-c3lzZW50ZXJfcGFzdF9lc3ArMHg2ZC8weGE1CiA9PT09PT09PT09PT09PT09PT09PT09PQpDb2Rl
-OiAwMCAwMCBjNyA4MCBiNCAwMSAwMCAwMCAyMCAwMCAwMCAwMCAwNSBhOCAwMSAwMCAwMCBlOCA2
-ZCBiNiBmZSBmZgo4NSBjMCA4OSBjMiA3NCAxYyA2NiA4OSAxOCAzMSBmZiBjNyA0MCAwNCAwMSAw
-MCAwMCAwMCA4YiA0MCAwOCA8ODk+IDUwCjc0IDhiIDQyIDA4IGM3IDQwIDc4IDE4IGIxIDNjIGY5
-IDhiIDQ1IGRjIDMxIGRiIDhiIDRlIDYwwrcKRUlQOiBbPGY5M2NiZGE5Pl0gY3h0NTA1MV9pbml0
-KzB4OTAvMHgxZWEgW3NuZF9oZGFfY29kZWNfY29uZXhhbnRdClNTOkVTUCAwMDY4OmY3OTg3ZDE4
-Ci0tLVsgZW5kIHRyYWNlIGMyODk5YTBkOTQzNjU0MDggXS0tLQoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+* Eduardo Valentin <eduardo.valentin@nokia.com> [090730 16:01]:
+> From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+> 
+> This patch enables the smart idle mode while
+> McBPS is being utilized. Once it's done,
+> force idle mode is taken instead. Apart of it,
+> it also configures what signals will wake mcbsp up.
+> 
+> Signed-off-by: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+> Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
+> ---
+>  arch/arm/plat-omap/include/mach/mcbsp.h |   17 +++++++++++++++
+>  arch/arm/plat-omap/mcbsp.c              |   35 +++++++++++++++++++++++++++++++
+>  2 files changed, 52 insertions(+), 0 deletions(-)
+> 
+> diff --git a/arch/arm/plat-omap/include/mach/mcbsp.h b/arch/arm/plat-omap/include/mach/mcbsp.h
+> index 77191c5..758ad5c 100644
+> --- a/arch/arm/plat-omap/include/mach/mcbsp.h
+> +++ b/arch/arm/plat-omap/include/mach/mcbsp.h
+> @@ -134,6 +134,7 @@
+>  #define OMAP_MCBSP_REG_XCERG	0x74
+>  #define OMAP_MCBSP_REG_XCERH	0x78
+>  #define OMAP_MCBSP_REG_SYSCON	0x8C
+> +#define OMAP_MCBSP_REG_WAKEUPEN	0xA8
+>  #define OMAP_MCBSP_REG_XCCR	0xAC
+>  #define OMAP_MCBSP_REG_RCCR	0xB0
+>  
+> @@ -249,8 +250,24 @@
+>  #define RDISABLE		0x0001
+>  
+>  /********************** McBSP SYSCONFIG bit definitions ********************/
+> +#define SIDLEMODE(value)	((value)<<3)
+> +#define ENAWAKEUP		0x0004
+>  #define SOFTRST			0x0002
+>  
+> +/********************** McBSP WAKEUPEN bit definitions *********************/
+> +#define XEMPTYEOFEN		0x4000
+> +#define XRDYEN			0x0400
+> +#define XEOFEN			0x0200
+> +#define XFSXEN			0x0100
+> +#define XSYNCERREN		0x0080
+> +#define RRDYEN			0x0008
+> +#define REOFEN			0x0004
+> +#define RFSREN			0x0002
+> +#define RSYNCERREN		0x0001
+> +#define WAKEUPEN_ALL		(XEMPTYEOFEN | XRDYEN | XEOFEN | XFSXEN | \
+> +				 XSYNCERREN | RRDYEN | REOFEN | RFSREN | \
+> +				 RSYNCERREN)
+> +
+>  /* we don't do multichannel for now */
+>  struct omap_mcbsp_reg_cfg {
+>  	u16 spcr2;
+> diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
+> index 84cc323..b64896b 100644
+> --- a/arch/arm/plat-omap/mcbsp.c
+> +++ b/arch/arm/plat-omap/mcbsp.c
+> @@ -257,6 +257,23 @@ int omap_mcbsp_request(unsigned int id)
+>  	clk_enable(mcbsp->iclk);
+>  	clk_enable(mcbsp->fclk);
+>  
+> +#ifdef CONFIG_ARCH_OMAP34XX
+> +	/*
+> +	 * Enable wakup behavior, smart idle and all wakeups
+> +	 * REVISIT: some wakeups may be unnecessary
+> +	 */
+> +	if (cpu_is_omap34xx()) {
+> +		u16 syscon;
+> +
+> +		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
+> +		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03));
+> +		syscon |= (ENAWAKEUP | SIDLEMODE(0x02));
+> +		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
+> +
+> +		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, WAKEUPEN_ALL);
+> +	}
+> +#endif
+> +
+>  	/*
+>  	 * Make sure that transmitter, receiver and sample-rate generator are
+>  	 * not running before activating IRQs.
+> @@ -295,6 +312,7 @@ EXPORT_SYMBOL(omap_mcbsp_request);
+>  void omap_mcbsp_free(unsigned int id)
+>  {
+>  	struct omap_mcbsp *mcbsp;
+> +	u16 wakeupen;
+>  
+>  	if (!omap_mcbsp_check_valid_id(id)) {
+>  		printk(KERN_ERR "%s: Invalid id (%d)\n", __func__, id + 1);
+> @@ -305,6 +323,23 @@ void omap_mcbsp_free(unsigned int id)
+>  	if (mcbsp->pdata && mcbsp->pdata->ops && mcbsp->pdata->ops->free)
+>  		mcbsp->pdata->ops->free(id);
+>  
+> +#ifdef CONFIG_ARCH_OMAP34XX
+> +	/*
+> +	 * Disable wakup behavior, smart idle and all wakeups
+> +	 */
+> +	if (cpu_is_omap34xx()) {
+> +		u16 syscon;
+> +
+> +		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
+> +		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03));
+> +		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
+> +
+> +		wakeupen = OMAP_MCBSP_READ(mcbsp->io_base, WAKEUPEN);
+> +		wakeupen &= ~WAKEUPEN_ALL;
+> +		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, wakeupen);
+> +	}
+> +#endif
+> +
+>  	clk_disable(mcbsp->fclk);
+>  	clk_disable(mcbsp->iclk);
+
+Looks like you should not need the ifdefs here, cpu_is_omap34xx() already
+optimizes the code out if not selected.
+
+Regards,
+
+Tony
