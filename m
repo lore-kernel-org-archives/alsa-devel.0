@@ -1,20 +1,23 @@
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: Re: [PATCH 02/20] OMAP: McBSP: Wakeups utilized
-Date: Thu, 6 Aug 2009 15:00:43 +0300
-Message-ID: <20090806120043.GC14093__30162.3550280512$1249626272$gmane$org@esdhcp037198.research.nokia.com>
+From: <ext-Eero.Nurkkala@nokia.com>
+Subject: Re: [PATCH 07/20] OMAP: McBSP: Add transmit/receive
+	threshold	handler
+Date: Thu, 6 Aug 2009 14:20:24 +0200
+Message-ID: <1FFEF31EBAA4F64B80D33027D4297760047F6AED00__9517.43985428966$1249626283$gmane$org@NOK-EUMSG-02.mgdnok.nokia.com>
 References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-2-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-3-git-send-email-eduardo.valentin@nokia.com>
-	<20090730215602.8fdcbaf1.jhnikula@gmail.com>
-	<20090731075622.GA27083@esdhcp037198.research.nokia.com>
-	<20090806120525.GJ2358@atomide.com>
-Reply-To: eduardo.valentin@nokia.com
+	<1248958183-15015-4-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-5-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-6-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-7-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-8-git-send-email-eduardo.valentin@nokia.com>,
+	<20090806121039.GL2358@atomide.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
-In-Reply-To: <20090806120525.GJ2358@atomide.com>
+In-Reply-To: <20090806121039.GL2358@atomide.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,42 +28,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>
+Cc: linux-omap@vger.kernel.org, peter.ujfalusi@nokia.com, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 06, 2009 at 02:05:25PM +0200, ext Tony Lindgren wrote:
-> * Eduardo Valentin <eduardo.valentin@nokia.com> [090731 11:08]:
-> > On Thu, Jul 30, 2009 at 08:56:02PM +0200, ext Jarkko Nikula wrote:
-> > > On Thu, 30 Jul 2009 15:49:25 +0300
-> > > Eduardo Valentin <eduardo.valentin@nokia.com> wrote:
-> > > 
-> > > > --- a/arch/arm/plat-omap/mcbsp.c
-> > > > +++ b/arch/arm/plat-omap/mcbsp.c
-> > > > @@ -257,6 +257,23 @@ int omap_mcbsp_request(unsigned int id)
-> > > >  	clk_enable(mcbsp->iclk);
-> > > >  	clk_enable(mcbsp->fclk);
-> > > >  
-> > > > +#ifdef CONFIG_ARCH_OMAP34XX
-> > > > +	/*
-> > > 
-> > > I'm sure there is a way to avoid all of these added ifdefs in this patch
-> > > and in patches 7 and 8 as well.
-> > 
-> > hmmm.. these ifdef's are required because I've put the extra field (for
-> > 34xx only) inside an ifdef on their declaration in mcbsp.h. We can remove it
-> > there, but will leave a few extra bytes on !omap3xx binaries.
+
+>>
+>> +/********************** McBSP IRQSTATUS bit definitions ********************/
+>> +#define IRQST_XRDY           (1<<10)
+>> +#define IRQST_RRDY           (1<<3)
+>> +
+>>  /********************** McBSP WAKEUPEN bit definitions *********************/
+>>  #define XEMPTYEOFEN          0x4000
+>>  #define XRDYEN                       0x0400
+>
+> Please add spaces around << defines above.
 > 
-> Hmm which field are you talking about? The define does not matter, and the
-> u16 syscon also gets optimized out if 34xx is not selected.
-
-dma_op_mode. see patch 0012.
-
+> Regards,
 > 
 > Tony
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
--- 
-Eduardo Valentin
+No spaces are used in this file at such declarations:
+http://git.kernel.org/?p=linux/kernel/git/tmlind/linux-omap-2.6.git;a=blob;f=arch/arm/plat-omap/include/mach/mcbsp.h;h=bb154ea76769509a7937c4ba472e8d04c5bf41d3;hb=HEAD
+
+to follow the file format exactly, it'd need to be in form of 0x ?
+
+- Eero
