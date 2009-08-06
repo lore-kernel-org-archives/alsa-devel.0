@@ -1,20 +1,17 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
-Subject: Re: [Pkg-alsa-devel] Bug#539454: libasound2: Division
- by zero in pcm_rate.c when period_size->min == 0
-Date: Thu, 6 Aug 2009 21:40:04 +0200
-Message-ID: <20090806194004.GD3257@aragorn.home.lxtec.de>
-References: <1249093791.23117.18.camel@dark-knight>
+From: Troy Kisky <troy.kisky@boundarydevices.com>
+Subject: [PATCH 1/5] ASoC: DaVinci: i2s: don't bounce through
+	rtd to get dai
+Date: Thu,  6 Aug 2009 16:55:31 -0700
+Message-ID: <1249602935-1267-1-git-send-email-troy.kisky@boundarydevices.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpout.hostsharing.net (smtpout.hostsharing.net
-	[83.223.95.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id C6B5D10380A
+Received: from mpls-qmqp-02.inet.qwest.net (mpls-qmqp-02.inet.qwest.net
+	[63.231.195.113])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6C3FC10380E
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Aug 2009 21:40:06 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1249093791.23117.18.camel@dark-knight>
+	Fri,  7 Aug 2009 01:55:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,92 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John Lindgren <john.lindgren@tds.net>, 539454@bugs.debian.org
-Cc: alsa-devel <alsa-devel@alsa-project.org>, control@bugs.debian.org
+To: davinci-linux-open-source@linux.davincidsp.com
+Cc: alsa-devel@alsa-project.org, broonie@sirena.org.uk, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-forwarded 539454 alsa-devel@alsa-project.org
-tags 539454 + patch
+dai is a parameter to the functions, so use it instead of
+looking it up.
 
-thanks
+Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
+---
+ sound/soc/davinci/davinci-i2s.c |   14 +++++---------
+ 1 files changed, 5 insertions(+), 9 deletions(-)
 
-Hi,
-
-this is Debian bug 539454. It would be better to fix it in general.
-Patching the Debian Package isn't a reasonable solution.
-
-Thanks
-Elimar
-
-
-* John Lindgren [090731 22:29 -0400]
-> Package: libasound2
-> Version: 1.0.20-2
-> Severity: important
-> Tags: patch
-> 
-> 
-> System: Dell Inspiron 1200
-> Card: Intel ICH6
-> Chip: SigmaTel STAC9752,53
-> 
-> 
-> Steps to reproduce:
-> 
-> 1. Disable dmix: mv /usr/share/alsa/cards/ICH4.conf /usr/share/alsa/cards/ICH4.conf.0
-> 2. Restart ALSA: /etc/rcS.d/S50alsa-utils restart
-> 3. Clear Audacity configuration: rm -r ~/.audacity*
-> 4. Run Audacity 1.3.7-3 in Valgrind: valgrind --tool=none audacity
-> 5. Choose "OK" in the "Audacity First Run" dialog.
-> 
-> 
-> Valgrind output:
-> 
-> ==26237== Process terminating with default action of signal 8 (SIGFPE)
-> ==26237==  Integer divide by zero at address 0x64D1CD56
-> ==26237==    at 0x4CAD600: snd_pcm_rate_hw_refine_cchange (pcm_rate.c:189)
-> ==26237==    by 0x4C97B2E: snd1_pcm_hw_refine_slave (pcm_params.c:2182)
-> ==26237==    by 0x4CAD7D5: snd_pcm_rate_hw_refine (pcm_rate.c:222)
-> ==26237==    by 0x4C96015: snd_pcm_hw_refine (pcm_params.c:2264)
-> ==26237==    by 0x4CA116B: snd1_pcm_generic_hw_refine (pcm_generic.c:98)
-> ==26237==    by 0x4C97B0D: snd1_pcm_hw_refine_slave (pcm_params.c:2158)
-> ==26237==    by 0x4CC0E25: snd_pcm_lfloat_hw_refine (pcm_lfloat.c:261)
-> ==26237==    by 0x4C96015: snd_pcm_hw_refine (pcm_params.c:2264)
-> ==26237==    by 0x4C99068: sndrv_pcm_hw_params (pcm_params.c:2290)
-> ==26237==    by 0x4CB209C: snd_pcm_plug_hw_params (pcm_plug.c:1045)
-> ==26237==    by 0x4C9921D: sndrv_pcm_hw_params (pcm_params.c:2299)
-> ==26237==    by 0x4C947B0: snd_pcm_hw_params (pcm.c:822)
-> 
-> 
-> Diagnosis:
-> 
-> pcm_rate.c:189 reads:
-> 
->         if ((buffer_size->min / period_size->min) * period_size->min == buffer_size->min) {
-> 
-> When using the ICH4 driver without dmix, period_size->min == 0. Handle
-> this by changing pcm_rate.c:189 to:
-> 
->         if (period_size->min > 0 && (buffer_size->min / period_size->min) * period_size->min == buffer_size->min) {
-> 
-> With this change, Audacity starts without problems.
-
-Patch against native 1.0.20:
-
-diff -Naurd a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
---- a/src/pcm/pcm_rate.c	2009-05-06 09:07:23.000000000 +0200
-+++ b/src/pcm/pcm_rate.c	2009-08-06 21:34:23.000000000 +0200
-@@ -186,7 +186,7 @@
- 		if (!snd_interval_checkempty(period_size) &&
- 		    period_size->openmin && period_size->openmax &&
- 		    period_size->min + 1 == period_size->max) {
--		    	if ((buffer_size->min / period_size->min) * period_size->min == buffer_size->min) {
-+			if (period_size->min > 0 && (buffer_size->min / period_size->min) * period_size->min == buffer_size->min) {
- 		    		snd_interval_set_value(period_size, period_size->min);
- 		    	} else if ((buffer_size->max / period_size->max) * period_size->max == buffer_size->max) {
- 		    		snd_interval_set_value(period_size, period_size->max);
-
-
+diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
+index e5cd97b..2a56fb7 100644
+--- a/sound/soc/davinci/davinci-i2s.c
++++ b/sound/soc/davinci/davinci-i2s.c
+@@ -353,9 +353,8 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+ 				 struct snd_pcm_hw_params *params,
+ 				 struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct davinci_pcm_dma_params *dma_params = rtd->dai->cpu_dai->dma_data;
+-	struct davinci_mcbsp_dev *dev = rtd->dai->cpu_dai->private_data;
++	struct davinci_pcm_dma_params *dma_params = dai->dma_data;
++	struct davinci_mcbsp_dev *dev = dai->private_data;
+ 	struct snd_interval *i = NULL;
+ 	int mcbsp_word_length;
+ 	unsigned int rcr, xcr, srgr;
+@@ -425,8 +424,7 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+ static int davinci_i2s_prepare(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct davinci_mcbsp_dev *dev = rtd->dai->cpu_dai->private_data;
++	struct davinci_mcbsp_dev *dev = dai->private_data;
+ 	int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+ 	davinci_mcbsp_stop(dev, playback);
+ 	if ((dev->pcr & DAVINCI_MCBSP_PCR_FSXM) == 0) {
+@@ -439,8 +437,7 @@ static int davinci_i2s_prepare(struct snd_pcm_substream *substream,
+ static int davinci_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			       struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct davinci_mcbsp_dev *dev = rtd->dai->cpu_dai->private_data;
++	struct davinci_mcbsp_dev *dev = dai->private_data;
+ 	int ret = 0;
+ 	int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+ 	if ((dev->pcr & DAVINCI_MCBSP_PCR_FSXM) == 0)
+@@ -466,8 +463,7 @@ static int davinci_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ static void davinci_i2s_shutdown(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct davinci_mcbsp_dev *dev = rtd->dai->cpu_dai->private_data;
++	struct davinci_mcbsp_dev *dev = dai->private_data;
+ 	int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+ 	davinci_mcbsp_stop(dev, playback);
+ }
 -- 
-  Experience is something you don't get until 
-  just after you need it!
+1.5.6.3
