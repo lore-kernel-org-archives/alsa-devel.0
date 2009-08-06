@@ -1,18 +1,19 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: Re: [BUG] NULL pointer dereference in patch_sigmatel.c
-Date: Thu, 06 Aug 2009 16:41:27 +0300
-Message-ID: <4A7ADD87.4030109@pardus.org.tr>
-References: <4A5F84D6.5040708@pardus.org.tr>	<s5h1vofac2z.wl%tiwai@suse.de>
-	<s5hy6qn8wyj.wl%tiwai@suse.de>
+From: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+Subject: Re: [PATCH] AC97 atmel: add support for AT91(common
+	with AVR32).
+Date: Thu, 06 Aug 2009 15:48:27 +0200
+Message-ID: <4A7ADF2B.4080807@atmel.com>
+References: <s5h1voooj8u.wl%tiwai@suse.de>
+	<1247231207-22922-1-git-send-email-sedji.gaouaou@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lider.pardus.org.tr (lider.uludag.org.tr [193.140.100.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 381DD244BF
+Received: from atmel-es2.atmel.fr (mail.atmel.fr [81.80.104.162])
+	by alsa0.perex.cz (Postfix) with ESMTP id 002DC244C5
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Aug 2009 15:38:08 +0200 (CEST)
-In-Reply-To: <s5hy6qn8wyj.wl%tiwai@suse.de>
+	Thu,  6 Aug 2009 15:48:47 +0200 (CEST)
+In-Reply-To: <1247231207-22922-1-git-send-email-sedji.gaouaou@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,55 +23,740 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VGFrYXNoaSBJd2FpIHdyb3RlIE9uIDE3LTA3LTIwMDkgMTI6NDU6Cj4gQXQgRnJpLCAxNyBKdWwg
-MjAwOSAxMTozMzowOCArMDIwMCwKPiBJIHdyb3RlOgo+ICAgCj4+IEF0IFRodSwgMTYgSnVsIDIw
-MDkgMjI6NTE6NTAgKzAzMDAsCj4+IE96YW4gw4dhxJ9sYXlhbiB3cm90ZToKPj4gICAgIAo+Pj4g
-SGksCj4+Pgo+Pj4gT25lIG9mIG91ciB1c2VycyBpcyBoYXZpbmcgYSBOVUxMIHB0ciBkZXJlZmVy
-ZW5jZSB1cG9uIGxvYWRpbmcgdGhlCj4+PiBzbmRfaGRhX2ludGVsIG1vZHVsZSB3aXRoIDIwMDkw
-NjI0J3Mgc25hcHNob3QuIFRoZXJlJ3Mgb25seSBvbmUgY29tbWl0Cj4+PiBhZnRlciB0aGF0IGRh
-dGUgaW4gcGF0Y2hfc2lnbWF0ZWwuYyBzbyBJIGRpZG4ndCB0ZWxsIGhpbSB0byB0cnkgd2l0aCB0
-aGUKPj4+IGxhdGVzdCBzbmFwc2hvdCBidXQgaWYgeW91IHRoaW5rIHRoYXQgdGhlIGJ1ZyBtYXkg
-YmUgcmVsYXRlZCB0byBhbm90aGVyCj4+PiBwYXJ0IG9mIHRoZSBBTFNBIGNvZGViYXNlLCBJIGNh
-biBtYWtlIGhpbSB0cnkgdGhlIGxhdGVzdCBzbmFwc2hvdC4KPj4+ICAgICAgIAo+PiBJIHN1cHBv
-c2UgeW91IGFyZSB1c2luZyB1bnN0YWJsZSB0cmVlLCByaWdodD8KPj4gICAgIAo+Cj4gTG9va2lu
-ZyB0aHJvdWdoIHRoZSBzdGFjayB0cmFjZSwgaXQncyBub3QuLi4KPiAgIAoKT2theSBJJ3ZlIGZv
-dW5kZWQgdGhlIHByb2JsZW0uIEhlcmUncyB0aGUgcmVsZXZhbnQgY29kZSBwb3J0aW9uIHRoYXQK
-SSd2ZSBnb3QgZnJvbSBnZGI6CgooZ2RiKSBsaXN0ICpjeHQ1MDUxX2luaXQrMHg5MAoweGRmNCBp
-cyBpbiBjeHQ1MDUxX2luaXQKKC92YXIvcGlzaS9hbHNhLWRyaXZlci0xLjAuMjBfMjAwOTA4MDUt
-NDEvd29yay9hbHNhLWRyaXZlci9wY2kvaGRhLy4uLy4uL2Fsc2Eta2VybmVsL3BjaS9oZGEvcGF0
-Y2hfY29uZXhhbnQuYzozODQpLgozNzkgICAgICAgICAgICAgamFjay0+dHlwZSA9IHR5cGU7CjM4
-MAozODEgICAgICAgICAgICAgZXJyID0gc25kX2phY2tfbmV3KGNvZGVjLT5idXMtPmNhcmQsIG5h
-bWUsIHR5cGUsCiZqYWNrLT5qYWNrKTsKMzgyICAgICAgICAgICAgIGlmIChlcnIgPCAwKQozODMg
-ICAgICAgICAgICAgICAgICAgICByZXR1cm4gZXJyOwozODQgICAgICAgICAgICAgamFjay0+amFj
-ay0+cHJpdmF0ZV9kYXRhID0gamFjazsKMzg1ICAgICAgICAgICAgIGphY2stPmphY2stPnByaXZh
-dGVfZnJlZSA9IGNvbmV4YW50X2ZyZWVfamFja19wcml2OwozODYgICAgICAgICAgICAgcmV0dXJu
-IDA7CjM4NyAgICAgfQozODgKCmFuZCB0aGVuIEkndmUgY2hlY2tlZCB0aGUgbWFpbmxpbmUgbGlu
-dXMtMi42IGFuZCBmb3VuZCBvdXQgdGhlIGZvbGxvd2luZwpjb21taXQ6Cgpjb21taXQgOTVjMDkw
-OTk2MWJjNWZmMThjNzhiMmFiMGQwOTNjZGRjMGE4YjBiNQpBdXRob3I6IFRha2FzaGkgSXdhaSA8
-dGl3YWlAc3VzZS5kZT4KRGF0ZTogICBUdWUgQXByIDE0IDE2OjE1OjI5IDIwMDkgKzAyMDAKCiAg
-ICBBTFNBOiBoZGEgLSBBdm9pZCBjYWxsIG9mIHNuZF9qYWNrX3JlcG9ydCBhdCByZWxlYXNlCgog
-ICAgRG9uJ3QgY2FsbCBzbmRfamFja19yZXBvcnQgYXQgcmVsZWFzZSBvZiBzaWdtYXRlbCBhbmQg
-Y29uZXhuYXQgY29kZWNzCiAgICB3aGljaCByZXN1bHRzIGluIE9vcHMgYXQgdW5sb2FkaW5nIHRo
-ZSBtb2R1bGUuCgogICAgVGhlIE9vcHMgaXMgdHJpZ2dlcmVkIGJ5IHRoZSBwb3dlci11cCBzZXF1
-ZW5jZSBkdXJpbmcgdGhlIGZyZWUgZHVlIHRvCiAgICB0aGUgcGluY2ZnIHJlc3RvcmF0aW9uLiAg
-U2luY2UgdGhlIHBvd2VyLXVwIHNlcXVlbmNlIGlzIGludm9sdmVkIHdpdGgKICAgIHRoZSB1bnNv
-bCBoYW5kbGluZywgdGhlIGphY2sgcmVwb3J0aW5nIG1heSBiZSBpc3N1ZWQgZHVyaW5nIHRoYXQu
-CiAgICBUaGUgT29wcyBvY2N1cnMgd2l0aCB0aGlzIGphY2sgcmVwb3J0aW5nIGJlY2F1c2UgdGhl
-IGphY2sgaW5zdGFuY2VzCiAgICBoYXZlIGJlZW4gYWxyZWFkeSByZWxlYXNlZCBidXQgdGhlIGNv
-ZGVjIGRvZXNuJ3QgZG8gdGhlIHByb3BlcgogICAgYm9vay1rZWVwaW5nLgoKICAgIFRoaXMgcGF0
-Y2ggYWRkcyB0aGUgYm9vay1rZWVwaW5nIG9mIGphY2sgaW5zdGFuY2VzIHRvIGF2b2lkIHRoZSBh
-Y2Nlc3MKICAgIHRvIGJvZ3VzIHBvaW50ZXJzLgoKUmV2ZXJ0aW5nIHRoaXMgZml4ZWQgdGhlIHBy
-b2JsZW0gb24gdGhlIG1hY2hpbmUgd2hpY2ggaGFzIHRoZSBjb25leGFudApjeCBjb2RlYy4gU2Vl
-biB0aGF0IHRoZSBjb21taXQgcGF0Y2hlcyBhbHNvIHRoZSBzaWdtYXRlbCBvbmUsIGl0CmV4cGxh
-aW5zIHRoZSBvdGhlciBvb3BzIGluIHRoZSBiZWdpbm5pbmcgb2YgdGhpcyB0aHJlYWQuCgpJJ20g
-bm90IGN1cnJlbnRseSBhYmxlIHRvIHRlc3QgdGhlIHR3byBtYWNoaW5lcyBvbiBhIG5ld2VyIGtl
-cm5lbCB0aGFuCjIuNi4yNS4yMCBzbyBJIGRvbid0IGtub3cgaWYgdGhlIHByb2JsZW0gaXMgaW4g
-dGhlIGNvZGUgb3IgaW4gdGhlCndyYXBwZXJzL0FCSS1BUEkgcGF0Y2hlcyBpbiBhbHNhLWRyaXZl
-ciwgZXRjLgoKUmVnYXJkcywKT3phbgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+Hi,
+
+I was wondering what is the status of this patch?
+
+Regards,
+Sedji
+
+Sedji Gaouaou a =E9crit :
+> This patch add AC97 support for ATMEL AT91 boards, using the AVR32 code.
+> It is based on Takashi git tree(sound-2.6/for-next).
+> =
+
+> Regards,
+> Sedji
+> =
+
+> Signed-off-by: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+> ---
+>  sound/atmel/Kconfig |    2 +-
+>  sound/atmel/ac97c.c |  354 +++++++++++++++++++++++++++++++++++++--------=
+------
+>  2 files changed, 262 insertions(+), 94 deletions(-)
+> =
+
+> diff --git a/sound/atmel/Kconfig b/sound/atmel/Kconfig
+> index 6c228a9..94de43a 100644
+> --- a/sound/atmel/Kconfig
+> +++ b/sound/atmel/Kconfig
+> @@ -12,7 +12,7 @@ config SND_ATMEL_AC97C
+>  	tristate "Atmel AC97 Controller (AC97C) driver"
+>  	select SND_PCM
+>  	select SND_AC97_CODEC
+> -	depends on DW_DMAC && AVR32
+> +	depends on (DW_DMAC && AVR32) || ARCH_AT91
+>  	help
+>  	  ALSA sound driver for the Atmel AC97 controller.
+>  =
+
+> diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
+> index 0c0f877..54d1365 100644
+> --- a/sound/atmel/ac97c.c
+> +++ b/sound/atmel/ac97c.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/device.h>
+>  #include <linux/dmaengine.h>
+>  #include <linux/dma-mapping.h>
+> +#include <linux/atmel_pdc.h>
+>  #include <linux/init.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/module.h>
+> @@ -31,6 +32,10 @@
+>  =
+
+>  #include <linux/dw_dmac.h>
+>  =
+
+> +#include <mach/cpu.h>
+> +#include <mach/hardware.h>
+> +#include <mach/gpio.h>
+> +
+>  #include "ac97c.h"
+>  =
+
+>  enum {
+> @@ -63,6 +68,7 @@ struct atmel_ac97c {
+>  	u64				cur_format;
+>  	unsigned int			cur_rate;
+>  	unsigned long			flags;
+> +	int				period;
+>  	/* Serialize access to opened variable */
+>  	spinlock_t			lock;
+>  	void __iomem			*regs;
+> @@ -241,10 +247,13 @@ static int atmel_ac97c_playback_hw_params(struct sn=
+d_pcm_substream *substream,
+>  					params_buffer_bytes(hw_params));
+>  	if (retval < 0)
+>  		return retval;
+> -	/* snd_pcm_lib_malloc_pages returns 1 if buffer is changed. */
+> -	if (retval =3D=3D 1)
+> -		if (test_and_clear_bit(DMA_TX_READY, &chip->flags))
+> -			dw_dma_cyclic_free(chip->dma.tx_chan);
+> +
+> +	if (cpu_is_at32ap7000()) {
+> +		/* snd_pcm_lib_malloc_pages returns 1 if buffer is changed. */
+> +		if (retval =3D=3D 1)
+> +			if (test_and_clear_bit(DMA_TX_READY, &chip->flags))
+> +				dw_dma_cyclic_free(chip->dma.tx_chan);
+> +	}
+>  =
+
+>  	/* Set restrictions to params. */
+>  	mutex_lock(&opened_mutex);
+> @@ -263,12 +272,14 @@ static int atmel_ac97c_capture_hw_params(struct snd=
+_pcm_substream *substream,
+>  =
+
+>  	retval =3D snd_pcm_lib_malloc_pages(substream,
+>  					params_buffer_bytes(hw_params));
+> -	if (retval < 0)
+> -		return retval;
+> -	/* snd_pcm_lib_malloc_pages returns 1 if buffer is changed. */
+> -	if (retval =3D=3D 1)
+> -		if (test_and_clear_bit(DMA_RX_READY, &chip->flags))
+> -			dw_dma_cyclic_free(chip->dma.rx_chan);
+> +	if (cpu_is_at32ap7000()) {
+> +		if (retval < 0)
+> +			return retval;
+> +		/* snd_pcm_lib_malloc_pages returns 1 if buffer is changed. */
+> +		if (retval =3D=3D 1)
+> +			if (test_and_clear_bit(DMA_RX_READY, &chip->flags))
+> +				dw_dma_cyclic_free(chip->dma.rx_chan);
+> +	}
+>  =
+
+>  	/* Set restrictions to params. */
+>  	mutex_lock(&opened_mutex);
+> @@ -282,16 +293,20 @@ static int atmel_ac97c_capture_hw_params(struct snd=
+_pcm_substream *substream,
+>  static int atmel_ac97c_playback_hw_free(struct snd_pcm_substream *substr=
+eam)
+>  {
+>  	struct atmel_ac97c *chip =3D snd_pcm_substream_chip(substream);
+> -	if (test_and_clear_bit(DMA_TX_READY, &chip->flags))
+> -		dw_dma_cyclic_free(chip->dma.tx_chan);
+> +	if (cpu_is_at32ap7000()) {
+> +		if (test_and_clear_bit(DMA_TX_READY, &chip->flags))
+> +			dw_dma_cyclic_free(chip->dma.tx_chan);
+> +	}
+>  	return snd_pcm_lib_free_pages(substream);
+>  }
+>  =
+
+>  static int atmel_ac97c_capture_hw_free(struct snd_pcm_substream *substre=
+am)
+>  {
+>  	struct atmel_ac97c *chip =3D snd_pcm_substream_chip(substream);
+> -	if (test_and_clear_bit(DMA_RX_READY, &chip->flags))
+> -		dw_dma_cyclic_free(chip->dma.rx_chan);
+> +	if (cpu_is_at32ap7000()) {
+> +		if (test_and_clear_bit(DMA_RX_READY, &chip->flags))
+> +			dw_dma_cyclic_free(chip->dma.rx_chan);
+> +	}
+>  	return snd_pcm_lib_free_pages(substream);
+>  }
+>  =
+
+> @@ -299,9 +314,11 @@ static int atmel_ac97c_playback_prepare(struct snd_p=
+cm_substream *substream)
+>  {
+>  	struct atmel_ac97c *chip =3D snd_pcm_substream_chip(substream);
+>  	struct snd_pcm_runtime *runtime =3D substream->runtime;
+> +	int block_size =3D frames_to_bytes(runtime, runtime->period_size);
+>  	unsigned long word =3D ac97c_readl(chip, OCA);
+>  	int retval;
+>  =
+
+> +	chip->period =3D 0;
+>  	word &=3D ~(AC97C_CH_MASK(PCM_LEFT) | AC97C_CH_MASK(PCM_RIGHT));
+>  =
+
+>  	/* assign channels to AC97C channel A */
+> @@ -324,7 +341,8 @@ static int atmel_ac97c_playback_prepare(struct snd_pc=
+m_substream *substream)
+>  =
+
+>  	switch (runtime->format) {
+>  	case SNDRV_PCM_FORMAT_S16_LE:
+> -		word |=3D AC97C_CMR_CEM_LITTLE;
+> +		if (cpu_is_at32ap7000())
+> +			word |=3D AC97C_CMR_CEM_LITTLE;
+>  		break;
+>  	case SNDRV_PCM_FORMAT_S16_BE: /* fall through */
+>  		word &=3D ~(AC97C_CMR_CEM_LITTLE);
+> @@ -363,9 +381,18 @@ static int atmel_ac97c_playback_prepare(struct snd_p=
+cm_substream *substream)
+>  		dev_dbg(&chip->pdev->dev, "could not set rate %d Hz\n",
+>  				runtime->rate);
+>  =
+
+> -	if (!test_bit(DMA_TX_READY, &chip->flags))
+> -		retval =3D atmel_ac97c_prepare_dma(chip, substream,
+> -				DMA_TO_DEVICE);
+> +	if (cpu_is_at32ap7000()) {
+> +		if (!test_bit(DMA_TX_READY, &chip->flags))
+> +			retval =3D atmel_ac97c_prepare_dma(chip, substream,
+> +					DMA_TO_DEVICE);
+> +	} else {
+> +		/* Initialize and start the PDC */
+> +		writel(runtime->dma_addr, chip->regs + ATMEL_PDC_TPR);
+> +		writel(block_size / 2, chip->regs + ATMEL_PDC_TCR);
+> +		writel(runtime->dma_addr + block_size,
+> +				chip->regs + ATMEL_PDC_TNPR);
+> +		writel(block_size / 2, chip->regs + ATMEL_PDC_TNCR);
+> +	}
+>  =
+
+>  	return retval;
+>  }
+> @@ -374,9 +401,11 @@ static int atmel_ac97c_capture_prepare(struct snd_pc=
+m_substream *substream)
+>  {
+>  	struct atmel_ac97c *chip =3D snd_pcm_substream_chip(substream);
+>  	struct snd_pcm_runtime *runtime =3D substream->runtime;
+> +	int block_size =3D frames_to_bytes(runtime, runtime->period_size);
+>  	unsigned long word =3D ac97c_readl(chip, ICA);
+>  	int retval;
+>  =
+
+> +	chip->period =3D 0;
+>  	word &=3D ~(AC97C_CH_MASK(PCM_LEFT) | AC97C_CH_MASK(PCM_RIGHT));
+>  =
+
+>  	/* assign channels to AC97C channel A */
+> @@ -415,11 +444,15 @@ static int atmel_ac97c_capture_prepare(struct snd_p=
+cm_substream *substream)
+>  	word |=3D AC97C_CSR_OVRUN;
+>  =
+
+>  	ac97c_writel(chip, CAMR, word);
+> -
+>  	/* Enable channel A event interrupt */
+>  	word =3D ac97c_readl(chip, IMR);
+>  	word |=3D AC97C_SR_CAEVT;
+> -	ac97c_writel(chip, IER, word);
+> +	ac97c_writel(chip, IER, /*word*/AC97C_SR_CAEVT);
+> +
+> +	/* Enable channel A event interrupt */
+> +	/*word =3D ac97c_readl(chip, IMR);
+> +	word |=3D AC97C_SR_CAEVT;
+> +	ac97c_writel(chip, IER, word);*/
+>  =
+
+>  	/* set variable rate if needed */
+>  	if (runtime->rate !=3D 48000) {
+> @@ -438,9 +471,18 @@ static int atmel_ac97c_capture_prepare(struct snd_pc=
+m_substream *substream)
+>  		dev_dbg(&chip->pdev->dev, "could not set rate %d Hz\n",
+>  				runtime->rate);
+>  =
+
+> -	if (!test_bit(DMA_RX_READY, &chip->flags))
+> -		retval =3D atmel_ac97c_prepare_dma(chip, substream,
+> -				DMA_FROM_DEVICE);
+> +	if (cpu_is_at32ap7000()) {
+> +		if (!test_bit(DMA_RX_READY, &chip->flags))
+> +			retval =3D atmel_ac97c_prepare_dma(chip, substream,
+> +					DMA_FROM_DEVICE);
+> +	} else {
+> +		/* Initialize and start the PDC */
+> +		writel(runtime->dma_addr, chip->regs + ATMEL_PDC_RPR);
+> +		writel(block_size / 2, chip->regs + ATMEL_PDC_RCR);
+> +		writel(runtime->dma_addr + block_size,
+> +				chip->regs + ATMEL_PDC_RNPR);
+> +		writel(block_size / 2, chip->regs + ATMEL_PDC_RNCR);
+> +	}
+>  =
+
+>  	return retval;
+>  }
+> @@ -449,7 +491,7 @@ static int
+>  atmel_ac97c_playback_trigger(struct snd_pcm_substream *substream, int cm=
+d)
+>  {
+>  	struct atmel_ac97c *chip =3D snd_pcm_substream_chip(substream);
+> -	unsigned long camr;
+> +	unsigned long camr, ptcr =3D 0;
+>  	int retval =3D 0;
+>  =
+
+>  	camr =3D ac97c_readl(chip, CAMR);
+> @@ -458,15 +500,22 @@ atmel_ac97c_playback_trigger(struct snd_pcm_substre=
+am *substream, int cmd)
+>  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE: /* fall through */
+>  	case SNDRV_PCM_TRIGGER_RESUME: /* fall through */
+>  	case SNDRV_PCM_TRIGGER_START:
+> -		retval =3D dw_dma_cyclic_start(chip->dma.tx_chan);
+> -		if (retval)
+> -			goto out;
+> -		camr |=3D AC97C_CMR_CENA;
+> +		if (cpu_is_at32ap7000()) {
+> +			retval =3D dw_dma_cyclic_start(chip->dma.tx_chan);
+> +			if (retval)
+> +				goto out;
+> +		} else {
+> +			ptcr =3D ATMEL_PDC_TXTEN;
+> +		}
+> +		camr |=3D AC97C_CMR_CENA | AC97C_CSR_ENDTX;
+>  		break;
+>  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH: /* fall through */
+>  	case SNDRV_PCM_TRIGGER_SUSPEND: /* fall through */
+>  	case SNDRV_PCM_TRIGGER_STOP:
+> -		dw_dma_cyclic_stop(chip->dma.tx_chan);
+> +		if (cpu_is_at32ap7000())
+> +			dw_dma_cyclic_stop(chip->dma.tx_chan);
+> +		else
+> +			ptcr =3D ATMEL_PDC_TXTDIS;
+>  		if (chip->opened <=3D 1)
+>  			camr &=3D ~AC97C_CMR_CENA;
+>  		break;
+> @@ -476,6 +525,8 @@ atmel_ac97c_playback_trigger(struct snd_pcm_substream=
+ *substream, int cmd)
+>  	}
+>  =
+
+>  	ac97c_writel(chip, CAMR, camr);
+> +	if (!cpu_is_at32ap7000())
+> +		writel(ptcr, chip->regs + ATMEL_PDC_PTCR);
+>  out:
+>  	return retval;
+>  }
+> @@ -484,7 +535,7 @@ static int
+>  atmel_ac97c_capture_trigger(struct snd_pcm_substream *substream, int cmd)
+>  {
+>  	struct atmel_ac97c *chip =3D snd_pcm_substream_chip(substream);
+> -	unsigned long camr;
+> +	unsigned long camr, ptcr =3D 0;
+>  	int retval =3D 0;
+>  =
+
+>  	camr =3D ac97c_readl(chip, CAMR);
+> @@ -493,15 +544,22 @@ atmel_ac97c_capture_trigger(struct snd_pcm_substrea=
+m *substream, int cmd)
+>  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE: /* fall through */
+>  	case SNDRV_PCM_TRIGGER_RESUME: /* fall through */
+>  	case SNDRV_PCM_TRIGGER_START:
+> -		retval =3D dw_dma_cyclic_start(chip->dma.rx_chan);
+> -		if (retval)
+> -			goto out;
+> +		if (cpu_is_at32ap7000()) {
+> +			retval =3D dw_dma_cyclic_start(chip->dma.rx_chan);
+> +			if (retval)
+> +				goto out;
+> +		} else {
+> +			ptcr =3D ATMEL_PDC_RXTEN;
+> +		}
+>  		camr |=3D AC97C_CMR_CENA;
+>  		break;
+>  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH: /* fall through */
+>  	case SNDRV_PCM_TRIGGER_SUSPEND: /* fall through */
+>  	case SNDRV_PCM_TRIGGER_STOP:
+> -		dw_dma_cyclic_stop(chip->dma.rx_chan);
+> +		if (cpu_is_at32ap7000())
+> +			dw_dma_cyclic_stop(chip->dma.rx_chan);
+> +		else
+> +			ptcr =3D ATMEL_PDC_RXTDIS;
+>  		if (chip->opened <=3D 1)
+>  			camr &=3D ~AC97C_CMR_CENA;
+>  		break;
+> @@ -511,6 +569,8 @@ atmel_ac97c_capture_trigger(struct snd_pcm_substream =
+*substream, int cmd)
+>  	}
+>  =
+
+>  	ac97c_writel(chip, CAMR, camr);
+> +	if (!cpu_is_at32ap7000())
+> +		writel(ptcr, chip->regs + ATMEL_PDC_PTCR);
+>  out:
+>  	return retval;
+>  }
+> @@ -523,7 +583,10 @@ atmel_ac97c_playback_pointer(struct snd_pcm_substrea=
+m *substream)
+>  	snd_pcm_uframes_t	frames;
+>  	unsigned long		bytes;
+>  =
+
+> -	bytes =3D dw_dma_get_src_addr(chip->dma.tx_chan);
+> +	if (cpu_is_at32ap7000())
+> +		bytes =3D dw_dma_get_src_addr(chip->dma.tx_chan);
+> +	else
+> +		bytes =3D readl(chip->regs + ATMEL_PDC_TPR);
+>  	bytes -=3D runtime->dma_addr;
+>  =
+
+>  	frames =3D bytes_to_frames(runtime, bytes);
+> @@ -540,7 +603,10 @@ atmel_ac97c_capture_pointer(struct snd_pcm_substream=
+ *substream)
+>  	snd_pcm_uframes_t	frames;
+>  	unsigned long		bytes;
+>  =
+
+> -	bytes =3D dw_dma_get_dst_addr(chip->dma.rx_chan);
+> +	if (cpu_is_at32ap7000())
+> +		bytes =3D dw_dma_get_dst_addr(chip->dma.rx_chan);
+> +	else
+> +		bytes =3D readl(chip->regs + ATMEL_PDC_RPR);
+>  	bytes -=3D runtime->dma_addr;
+>  =
+
+>  	frames =3D bytes_to_frames(runtime, bytes);
+> @@ -578,20 +644,67 @@ static irqreturn_t atmel_ac97c_interrupt(int irq, v=
+oid *dev)
+>  	u32			sr     =3D ac97c_readl(chip, SR);
+>  	u32			casr   =3D ac97c_readl(chip, CASR);
+>  	u32			cosr   =3D ac97c_readl(chip, COSR);
+> +	u32			camr   =3D ac97c_readl(chip, CAMR);
+>  =
+
+>  	if (sr & AC97C_SR_CAEVT) {
+> -		dev_info(&chip->pdev->dev, "channel A event%s%s%s%s%s%s\n",
+> +		struct snd_pcm_runtime *runtime;
+> +		int offset, next_period, block_size;
+> +		dev_dbg(&chip->pdev->dev, "channel A event%s%s%s%s%s%s\n",
+>  				casr & AC97C_CSR_OVRUN   ? " OVRUN"   : "",
+>  				casr & AC97C_CSR_RXRDY   ? " RXRDY"   : "",
+>  				casr & AC97C_CSR_UNRUN   ? " UNRUN"   : "",
+>  				casr & AC97C_CSR_TXEMPTY ? " TXEMPTY" : "",
+>  				casr & AC97C_CSR_TXRDY   ? " TXRDY"   : "",
+>  				!casr                    ? " NONE"    : "");
+> +		if (!cpu_is_at32ap7000()) {
+> +			if ((casr & camr) & AC97C_CSR_ENDTX) {
+> +				runtime =3D chip->playback_substream->runtime;
+> +				block_size =3D frames_to_bytes(runtime,
+> +						runtime->period_size);
+> +				chip->period++;
+> +
+> +				if (chip->period =3D=3D runtime->periods)
+> +					chip->period =3D 0;
+> +				next_period =3D chip->period + 1;
+> +				if (next_period =3D=3D runtime->periods)
+> +					next_period =3D 0;
+> +
+> +				offset =3D block_size * next_period;
+> +
+> +				writel(runtime->dma_addr + offset,
+> +						chip->regs + ATMEL_PDC_TNPR);
+> +				writel(block_size / 2,
+> +						chip->regs + ATMEL_PDC_TNCR);
+> +
+> +				snd_pcm_period_elapsed(
+> +						chip->playback_substream);
+> +			}
+> +			if ((casr & camr) & AC97C_CSR_ENDRX) {
+> +				runtime =3D chip->capture_substream->runtime;
+> +				block_size =3D frames_to_bytes(runtime,
+> +						runtime->period_size);
+> +				chip->period++;
+> +
+> +				if (chip->period =3D=3D runtime->periods)
+> +					chip->period =3D 0;
+> +				next_period =3D chip->period + 1;
+> +				if (next_period =3D=3D runtime->periods)
+> +					next_period =3D 0;
+> +
+> +				offset =3D block_size * next_period;
+> +
+> +				writel(runtime->dma_addr + offset,
+> +						chip->regs + ATMEL_PDC_RNPR);
+> +				writel(block_size / 2,
+> +						chip->regs + ATMEL_PDC_RNCR);
+> +				snd_pcm_period_elapsed(chip->capture_substream);
+> +			}
+> +		}
+>  		retval =3D IRQ_HANDLED;
+>  	}
+>  =
+
+>  	if (sr & AC97C_SR_COEVT) {
+> -		dev_info(&chip->pdev->dev, "codec channel event%s%s%s%s%s\n",
+> +		dev_dbg(&chip->pdev->dev, "codec channel event%s%s%s%s%s\n",
+>  				cosr & AC97C_CSR_OVRUN   ? " OVRUN"   : "",
+>  				cosr & AC97C_CSR_RXRDY   ? " RXRDY"   : "",
+>  				cosr & AC97C_CSR_TXEMPTY ? " TXEMPTY" : "",
+> @@ -608,15 +721,50 @@ static irqreturn_t atmel_ac97c_interrupt(int irq, v=
+oid *dev)
+>  	return retval;
+>  }
+>  =
+
+> +static struct ac97_pcm at91_ac97_pcm_defs[] __devinitdata =3D {
+> +	/* Playback */
+> +	{
+> +		.exclusive =3D 1,
+> +		.r =3D { {
+> +			.slots =3D ((1 << AC97_SLOT_PCM_LEFT)
+> +				  | (1 << AC97_SLOT_PCM_RIGHT)),
+> +		} },
+> +	},
+> +	/* PCM in */
+> +	{
+> +		.stream =3D 1,
+> +		.exclusive =3D 1,
+> +		.r =3D { {
+> +			.slots =3D ((1 << AC97_SLOT_PCM_LEFT)
+> +					| (1 << AC97_SLOT_PCM_RIGHT)),
+> +		} }
+> +	},
+> +	/* Mic in */
+> +	{
+> +		.stream =3D 1,
+> +		.exclusive =3D 1,
+> +		.r =3D { {
+> +			.slots =3D (1<<AC97_SLOT_MIC),
+> +		} }
+> +	},
+> +};
+> +
+>  static int __devinit atmel_ac97c_pcm_new(struct atmel_ac97c *chip)
+>  {
+>  	struct snd_pcm		*pcm;
+>  	struct snd_pcm_hardware	hw =3D atmel_ac97c_hw;
+> -	int			capture, playback, retval;
+> +	int			capture, playback, retval, err;
+>  =
+
+>  	capture =3D test_bit(DMA_RX_CHAN_PRESENT, &chip->flags);
+>  	playback =3D test_bit(DMA_TX_CHAN_PRESENT, &chip->flags);
+>  =
+
+> +	if (!cpu_is_at32ap7000()) {
+> +		err =3D snd_ac97_pcm_assign(chip->ac97_bus,
+> +				ARRAY_SIZE(at91_ac97_pcm_defs),
+> +				at91_ac97_pcm_defs);
+> +		if (err)
+> +			return err;
+> +	}
+>  	retval =3D snd_pcm_new(chip->card, chip->card->shortname,
+>  			chip->pdev->id, playback, capture, &pcm);
+>  	if (retval)
+> @@ -775,7 +923,12 @@ static int __devinit atmel_ac97c_probe(struct platfo=
+rm_device *pdev)
+>  		return -ENXIO;
+>  	}
+>  =
+
+> -	pclk =3D clk_get(&pdev->dev, "pclk");
+> +	if (cpu_is_at32ap7000()) {
+> +		pclk =3D clk_get(&pdev->dev, "pclk");
+> +	} else {
+> +		pclk =3D clk_get(&pdev->dev, "ac97_clk");
+> +	}
+> +
+>  	if (IS_ERR(pclk)) {
+>  		dev_dbg(&pdev->dev, "no peripheral clock\n");
+>  		return PTR_ERR(pclk);
+> @@ -844,43 +997,52 @@ static int __devinit atmel_ac97c_probe(struct platf=
+orm_device *pdev)
+>  		goto err_ac97_bus;
+>  	}
+>  =
+
+> -	if (pdata->rx_dws.dma_dev) {
+> -		struct dw_dma_slave *dws =3D &pdata->rx_dws;
+> -		dma_cap_mask_t mask;
+> +	if (cpu_is_at32ap7000()) {
+> +		if (pdata->rx_dws.dma_dev) {
+> +			struct dw_dma_slave *dws =3D &pdata->rx_dws;
+> +			dma_cap_mask_t mask;
+>  =
+
+> -		dws->rx_reg =3D regs->start + AC97C_CARHR + 2;
+> +			dws->rx_reg =3D regs->start + AC97C_CARHR + 2;
+>  =
+
+> -		dma_cap_zero(mask);
+> -		dma_cap_set(DMA_SLAVE, mask);
+> +			dma_cap_zero(mask);
+> +			dma_cap_set(DMA_SLAVE, mask);
+>  =
+
+> -		chip->dma.rx_chan =3D dma_request_channel(mask, filter, dws);
+> +			chip->dma.rx_chan =3D dma_request_channel(mask, filter,
+> +					dws);
+>  =
+
+> -		dev_info(&chip->pdev->dev, "using %s for DMA RX\n",
+> +			dev_info(&chip->pdev->dev, "using %s for DMA RX\n",
+>  				dev_name(&chip->dma.rx_chan->dev->device));
+> -		set_bit(DMA_RX_CHAN_PRESENT, &chip->flags);
+> -	}
+> +			set_bit(DMA_RX_CHAN_PRESENT, &chip->flags);
+> +		}
+>  =
+
+> -	if (pdata->tx_dws.dma_dev) {
+> -		struct dw_dma_slave *dws =3D &pdata->tx_dws;
+> -		dma_cap_mask_t mask;
+> +		if (pdata->tx_dws.dma_dev) {
+> +			struct dw_dma_slave *dws =3D &pdata->tx_dws;
+> +			dma_cap_mask_t mask;
+>  =
+
+> -		dws->tx_reg =3D regs->start + AC97C_CATHR + 2;
+> +			dws->tx_reg =3D regs->start + AC97C_CATHR + 2;
+>  =
+
+> -		dma_cap_zero(mask);
+> -		dma_cap_set(DMA_SLAVE, mask);
+> +			dma_cap_zero(mask);
+> +			dma_cap_set(DMA_SLAVE, mask);
+>  =
+
+> -		chip->dma.tx_chan =3D dma_request_channel(mask, filter, dws);
+> +			chip->dma.tx_chan =3D dma_request_channel(mask, filter,
+> +					dws);
+>  =
+
+> -		dev_info(&chip->pdev->dev, "using %s for DMA TX\n",
+> +			dev_info(&chip->pdev->dev, "using %s for DMA TX\n",
+>  				dev_name(&chip->dma.tx_chan->dev->device));
+> -		set_bit(DMA_TX_CHAN_PRESENT, &chip->flags);
+> -	}
+> +			set_bit(DMA_TX_CHAN_PRESENT, &chip->flags);
+> +		}
+>  =
+
+> -	if (!test_bit(DMA_RX_CHAN_PRESENT, &chip->flags) &&
+> -			!test_bit(DMA_TX_CHAN_PRESENT, &chip->flags)) {
+> -		dev_dbg(&pdev->dev, "DMA not available\n");
+> -		retval =3D -ENODEV;
+> -		goto err_dma;
+> +		if (!test_bit(DMA_RX_CHAN_PRESENT, &chip->flags) &&
+> +				!test_bit(DMA_TX_CHAN_PRESENT, &chip->flags)) {
+> +			dev_dbg(&pdev->dev, "DMA not available\n");
+> +			retval =3D -ENODEV;
+> +			goto err_dma;
+> +		}
+> +	} else {
+> +		/* Just pretend that we have DMA channel(for at91 i is actually
+> +		 * the PDC */
+> +		set_bit(DMA_RX_CHAN_PRESENT, &chip->flags);
+> +		set_bit(DMA_TX_CHAN_PRESENT, &chip->flags);
+>  	}
+>  =
+
+>  	retval =3D atmel_ac97c_pcm_new(chip);
+> @@ -897,20 +1059,22 @@ static int __devinit atmel_ac97c_probe(struct plat=
+form_device *pdev)
+>  =
+
+>  	platform_set_drvdata(pdev, card);
+>  =
+
+> -	dev_info(&pdev->dev, "Atmel AC97 controller at 0x%p\n",
+> -			chip->regs);
+> +	dev_info(&pdev->dev, "Atmel AC97 controller at 0x%p, irq =3D %d\n",
+> +			chip->regs, irq);
+>  =
+
+>  	return 0;
+>  =
+
+>  err_dma:
+> -	if (test_bit(DMA_RX_CHAN_PRESENT, &chip->flags))
+> -		dma_release_channel(chip->dma.rx_chan);
+> -	if (test_bit(DMA_TX_CHAN_PRESENT, &chip->flags))
+> -		dma_release_channel(chip->dma.tx_chan);
+> -	clear_bit(DMA_RX_CHAN_PRESENT, &chip->flags);
+> -	clear_bit(DMA_TX_CHAN_PRESENT, &chip->flags);
+> -	chip->dma.rx_chan =3D NULL;
+> -	chip->dma.tx_chan =3D NULL;
+> +	if (cpu_is_at32ap7000()) {
+> +		if (test_bit(DMA_RX_CHAN_PRESENT, &chip->flags))
+> +			dma_release_channel(chip->dma.rx_chan);
+> +		if (test_bit(DMA_TX_CHAN_PRESENT, &chip->flags))
+> +			dma_release_channel(chip->dma.tx_chan);
+> +		clear_bit(DMA_RX_CHAN_PRESENT, &chip->flags);
+> +		clear_bit(DMA_TX_CHAN_PRESENT, &chip->flags);
+> +		chip->dma.rx_chan =3D NULL;
+> +		chip->dma.tx_chan =3D NULL;
+> +	}
+>  err_ac97_bus:
+>  	snd_card_set_dev(card, NULL);
+>  =
+
+> @@ -934,12 +1098,13 @@ static int atmel_ac97c_suspend(struct platform_dev=
+ice *pdev, pm_message_t msg)
+>  	struct snd_card *card =3D platform_get_drvdata(pdev);
+>  	struct atmel_ac97c *chip =3D card->private_data;
+>  =
+
+> -	if (test_bit(DMA_RX_READY, &chip->flags))
+> -		dw_dma_cyclic_stop(chip->dma.rx_chan);
+> -	if (test_bit(DMA_TX_READY, &chip->flags))
+> -		dw_dma_cyclic_stop(chip->dma.tx_chan);
+> +	if (cpu_is_at32ap7000()) {
+> +		if (test_bit(DMA_RX_READY, &chip->flags))
+> +			dw_dma_cyclic_stop(chip->dma.rx_chan);
+> +		if (test_bit(DMA_TX_READY, &chip->flags))
+> +			dw_dma_cyclic_stop(chip->dma.tx_chan);
+> +	}
+>  	clk_disable(chip->pclk);
+> -
+>  	return 0;
+>  }
+>  =
+
+> @@ -949,11 +1114,12 @@ static int atmel_ac97c_resume(struct platform_devi=
+ce *pdev)
+>  	struct atmel_ac97c *chip =3D card->private_data;
+>  =
+
+>  	clk_enable(chip->pclk);
+> -	if (test_bit(DMA_RX_READY, &chip->flags))
+> -		dw_dma_cyclic_start(chip->dma.rx_chan);
+> -	if (test_bit(DMA_TX_READY, &chip->flags))
+> -		dw_dma_cyclic_start(chip->dma.tx_chan);
+> -
+> +	if (cpu_is_at32ap7000()) {
+> +		if (test_bit(DMA_RX_READY, &chip->flags))
+> +			dw_dma_cyclic_start(chip->dma.rx_chan);
+> +		if (test_bit(DMA_TX_READY, &chip->flags))
+> +			dw_dma_cyclic_start(chip->dma.tx_chan);
+> +	}
+>  	return 0;
+>  }
+>  #else
+> @@ -978,14 +1144,16 @@ static int __devexit atmel_ac97c_remove(struct pla=
+tform_device *pdev)
+>  	iounmap(chip->regs);
+>  	free_irq(chip->irq, chip);
+>  =
+
+> -	if (test_bit(DMA_RX_CHAN_PRESENT, &chip->flags))
+> -		dma_release_channel(chip->dma.rx_chan);
+> -	if (test_bit(DMA_TX_CHAN_PRESENT, &chip->flags))
+> -		dma_release_channel(chip->dma.tx_chan);
+> -	clear_bit(DMA_RX_CHAN_PRESENT, &chip->flags);
+> -	clear_bit(DMA_TX_CHAN_PRESENT, &chip->flags);
+> -	chip->dma.rx_chan =3D NULL;
+> -	chip->dma.tx_chan =3D NULL;
+> +	if (cpu_is_at32ap7000()) {
+> +		if (test_bit(DMA_RX_CHAN_PRESENT, &chip->flags))
+> +			dma_release_channel(chip->dma.rx_chan);
+> +		if (test_bit(DMA_TX_CHAN_PRESENT, &chip->flags))
+> +			dma_release_channel(chip->dma.tx_chan);
+> +		clear_bit(DMA_RX_CHAN_PRESENT, &chip->flags);
+> +		clear_bit(DMA_TX_CHAN_PRESENT, &chip->flags);
+> +		chip->dma.rx_chan =3D NULL;
+> +		chip->dma.tx_chan =3D NULL;
+> +	}
+>  =
+
+>  	snd_card_set_dev(card, NULL);
+>  	snd_card_free(card);
