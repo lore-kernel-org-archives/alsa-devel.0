@@ -1,8 +1,8 @@
 From: Tony Lindgren <tony@atomide.com>
 Subject: Re: [PATCH 07/20] OMAP: McBSP: Add transmit/receive
 	threshold	handler
-Date: Thu, 6 Aug 2009 15:10:39 +0300
-Message-ID: <20090806121039.GL2358__26828.3283141956$1249560849$gmane$org@atomide.com>
+Date: Thu, 6 Aug 2009 15:24:25 +0300
+Message-ID: <20090806122425.GM2358__35612.9372296438$1249561501$gmane$org@atomide.com>
 References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-2-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-3-git-send-email-eduardo.valentin@nokia.com>
@@ -10,13 +10,13 @@ References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-5-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-6-git-send-email-eduardo.valentin@nokia.com>
 	<1248958183-15015-7-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-8-git-send-email-eduardo.valentin@nokia.com>
+	<1FFEF31EBAA4F64B80D33027D4297760047F6AED00@NOK-EUMSG-02.mgdnok.nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Content-Disposition: inline
-In-Reply-To: <1248958183-15015-8-git-send-email-eduardo.valentin@nokia.com>
+In-Reply-To: <1FFEF31EBAA4F64B80D33027D4297760047F6AED00@NOK-EUMSG-02.mgdnok.nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,37 +27,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: linux-omap@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>, alsa-devel@vger.kernel.org, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+Cc: linux-omap@vger.kernel.org, eduardo.valentin@nokia.com, alsa-devel@vger.kernel.org, peter.ujfalusi@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-* Eduardo Valentin <eduardo.valentin@nokia.com> [090730 16:01]:
-> This patch adds a way to handle transmit/receive threshold.
-> It export to mcbsp users a callback registration procedure.
+* ext-Eero.Nurkkala@nokia.com <ext-Eero.Nurkkala@nokia.com> [090806 15:22]:
 > 
-> Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
-> ---
->  arch/arm/plat-omap/include/mach/mcbsp.h |   13 ++++++++
->  arch/arm/plat-omap/mcbsp.c              |   50 +++++++++++++++++++++++++++++++
->  2 files changed, 63 insertions(+), 0 deletions(-)
+> >>
+> >> +/********************** McBSP IRQSTATUS bit definitions ********************/
+> >> +#define IRQST_XRDY           (1<<10)
+> >> +#define IRQST_RRDY           (1<<3)
+> >> +
+> >>  /********************** McBSP WAKEUPEN bit definitions *********************/
+> >>  #define XEMPTYEOFEN          0x4000
+> >>  #define XRDYEN                       0x0400
+> >
+> > Please add spaces around << defines above.
+> > 
+> > Regards,
+> > 
+> > Tony
 > 
-> diff --git a/arch/arm/plat-omap/include/mach/mcbsp.h b/arch/arm/plat-omap/include/mach/mcbsp.h
-> index e3b300c..26bcab8 100644
-> --- a/arch/arm/plat-omap/include/mach/mcbsp.h
-> +++ b/arch/arm/plat-omap/include/mach/mcbsp.h
-> @@ -259,6 +259,10 @@
->  #define ENAWAKEUP		0x0004
->  #define SOFTRST			0x0002
->  
-> +/********************** McBSP IRQSTATUS bit definitions ********************/
-> +#define IRQST_XRDY		(1<<10)
-> +#define IRQST_RRDY		(1<<3)
-> +
->  /********************** McBSP WAKEUPEN bit definitions *********************/
->  #define XEMPTYEOFEN		0x4000
->  #define XRDYEN			0x0400
+> No spaces are used in this file at such declarations:
+> http://git.kernel.org/?p=linux/kernel/git/tmlind/linux-omap-2.6.git;a=blob;f=arch/arm/plat-omap/include/mach/mcbsp.h;h=bb154ea76769509a7937c4ba472e8d04c5bf41d3;hb=HEAD
+> 
+> to follow the file format exactly, it'd need to be in form of 0x ?
 
-Please add spaces around << defines above.
-
-Regards,
+OK, never mind then, it could be done in a clean-up patch later on.
 
 Tony
