@@ -1,22 +1,18 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 07/20] OMAP: McBSP: Add transmit/receive
-	threshold	handler
-Date: Thu, 6 Aug 2009 15:24:25 +0300
-Message-ID: <20090806122425.GM2358__35612.9372296438$1249561501$gmane$org@atomide.com>
-References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-2-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-3-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-4-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-5-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-6-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-7-git-send-email-eduardo.valentin@nokia.com>
-	<1FFEF31EBAA4F64B80D33027D4297760047F6AED00@NOK-EUMSG-02.mgdnok.nokia.com>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: Re: [BUG] NULL pointer dereference in patch_sigmatel.c
+Date: Thu, 06 Aug 2009 16:41:27 +0300
+Message-ID: <4A7ADD87.4030109@pardus.org.tr>
+References: <4A5F84D6.5040708@pardus.org.tr>	<s5h1vofac2z.wl%tiwai@suse.de>
+	<s5hy6qn8wyj.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
-In-Reply-To: <1FFEF31EBAA4F64B80D33027D4297760047F6AED00@NOK-EUMSG-02.mgdnok.nokia.com>
+Received: from lider.pardus.org.tr (lider.uludag.org.tr [193.140.100.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 381DD244BF
+	for <alsa-devel@alsa-project.org>;
+	Thu,  6 Aug 2009 15:38:08 +0200 (CEST)
+In-Reply-To: <s5hy6qn8wyj.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,32 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-omap@vger.kernel.org, eduardo.valentin@nokia.com, alsa-devel@vger.kernel.org, peter.ujfalusi@nokia.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-* ext-Eero.Nurkkala@nokia.com <ext-Eero.Nurkkala@nokia.com> [090806 15:22]:
-> 
-> >>
-> >> +/********************** McBSP IRQSTATUS bit definitions ********************/
-> >> +#define IRQST_XRDY           (1<<10)
-> >> +#define IRQST_RRDY           (1<<3)
-> >> +
-> >>  /********************** McBSP WAKEUPEN bit definitions *********************/
-> >>  #define XEMPTYEOFEN          0x4000
-> >>  #define XRDYEN                       0x0400
-> >
-> > Please add spaces around << defines above.
-> > 
-> > Regards,
-> > 
-> > Tony
-> 
-> No spaces are used in this file at such declarations:
-> http://git.kernel.org/?p=linux/kernel/git/tmlind/linux-omap-2.6.git;a=blob;f=arch/arm/plat-omap/include/mach/mcbsp.h;h=bb154ea76769509a7937c4ba472e8d04c5bf41d3;hb=HEAD
-> 
-> to follow the file format exactly, it'd need to be in form of 0x ?
-
-OK, never mind then, it could be done in a clean-up patch later on.
-
-Tony
+VGFrYXNoaSBJd2FpIHdyb3RlIE9uIDE3LTA3LTIwMDkgMTI6NDU6Cj4gQXQgRnJpLCAxNyBKdWwg
+MjAwOSAxMTozMzowOCArMDIwMCwKPiBJIHdyb3RlOgo+ICAgCj4+IEF0IFRodSwgMTYgSnVsIDIw
+MDkgMjI6NTE6NTAgKzAzMDAsCj4+IE96YW4gw4dhxJ9sYXlhbiB3cm90ZToKPj4gICAgIAo+Pj4g
+SGksCj4+Pgo+Pj4gT25lIG9mIG91ciB1c2VycyBpcyBoYXZpbmcgYSBOVUxMIHB0ciBkZXJlZmVy
+ZW5jZSB1cG9uIGxvYWRpbmcgdGhlCj4+PiBzbmRfaGRhX2ludGVsIG1vZHVsZSB3aXRoIDIwMDkw
+NjI0J3Mgc25hcHNob3QuIFRoZXJlJ3Mgb25seSBvbmUgY29tbWl0Cj4+PiBhZnRlciB0aGF0IGRh
+dGUgaW4gcGF0Y2hfc2lnbWF0ZWwuYyBzbyBJIGRpZG4ndCB0ZWxsIGhpbSB0byB0cnkgd2l0aCB0
+aGUKPj4+IGxhdGVzdCBzbmFwc2hvdCBidXQgaWYgeW91IHRoaW5rIHRoYXQgdGhlIGJ1ZyBtYXkg
+YmUgcmVsYXRlZCB0byBhbm90aGVyCj4+PiBwYXJ0IG9mIHRoZSBBTFNBIGNvZGViYXNlLCBJIGNh
+biBtYWtlIGhpbSB0cnkgdGhlIGxhdGVzdCBzbmFwc2hvdC4KPj4+ICAgICAgIAo+PiBJIHN1cHBv
+c2UgeW91IGFyZSB1c2luZyB1bnN0YWJsZSB0cmVlLCByaWdodD8KPj4gICAgIAo+Cj4gTG9va2lu
+ZyB0aHJvdWdoIHRoZSBzdGFjayB0cmFjZSwgaXQncyBub3QuLi4KPiAgIAoKT2theSBJJ3ZlIGZv
+dW5kZWQgdGhlIHByb2JsZW0uIEhlcmUncyB0aGUgcmVsZXZhbnQgY29kZSBwb3J0aW9uIHRoYXQK
+SSd2ZSBnb3QgZnJvbSBnZGI6CgooZ2RiKSBsaXN0ICpjeHQ1MDUxX2luaXQrMHg5MAoweGRmNCBp
+cyBpbiBjeHQ1MDUxX2luaXQKKC92YXIvcGlzaS9hbHNhLWRyaXZlci0xLjAuMjBfMjAwOTA4MDUt
+NDEvd29yay9hbHNhLWRyaXZlci9wY2kvaGRhLy4uLy4uL2Fsc2Eta2VybmVsL3BjaS9oZGEvcGF0
+Y2hfY29uZXhhbnQuYzozODQpLgozNzkgICAgICAgICAgICAgamFjay0+dHlwZSA9IHR5cGU7CjM4
+MAozODEgICAgICAgICAgICAgZXJyID0gc25kX2phY2tfbmV3KGNvZGVjLT5idXMtPmNhcmQsIG5h
+bWUsIHR5cGUsCiZqYWNrLT5qYWNrKTsKMzgyICAgICAgICAgICAgIGlmIChlcnIgPCAwKQozODMg
+ICAgICAgICAgICAgICAgICAgICByZXR1cm4gZXJyOwozODQgICAgICAgICAgICAgamFjay0+amFj
+ay0+cHJpdmF0ZV9kYXRhID0gamFjazsKMzg1ICAgICAgICAgICAgIGphY2stPmphY2stPnByaXZh
+dGVfZnJlZSA9IGNvbmV4YW50X2ZyZWVfamFja19wcml2OwozODYgICAgICAgICAgICAgcmV0dXJu
+IDA7CjM4NyAgICAgfQozODgKCmFuZCB0aGVuIEkndmUgY2hlY2tlZCB0aGUgbWFpbmxpbmUgbGlu
+dXMtMi42IGFuZCBmb3VuZCBvdXQgdGhlIGZvbGxvd2luZwpjb21taXQ6Cgpjb21taXQgOTVjMDkw
+OTk2MWJjNWZmMThjNzhiMmFiMGQwOTNjZGRjMGE4YjBiNQpBdXRob3I6IFRha2FzaGkgSXdhaSA8
+dGl3YWlAc3VzZS5kZT4KRGF0ZTogICBUdWUgQXByIDE0IDE2OjE1OjI5IDIwMDkgKzAyMDAKCiAg
+ICBBTFNBOiBoZGEgLSBBdm9pZCBjYWxsIG9mIHNuZF9qYWNrX3JlcG9ydCBhdCByZWxlYXNlCgog
+ICAgRG9uJ3QgY2FsbCBzbmRfamFja19yZXBvcnQgYXQgcmVsZWFzZSBvZiBzaWdtYXRlbCBhbmQg
+Y29uZXhuYXQgY29kZWNzCiAgICB3aGljaCByZXN1bHRzIGluIE9vcHMgYXQgdW5sb2FkaW5nIHRo
+ZSBtb2R1bGUuCgogICAgVGhlIE9vcHMgaXMgdHJpZ2dlcmVkIGJ5IHRoZSBwb3dlci11cCBzZXF1
+ZW5jZSBkdXJpbmcgdGhlIGZyZWUgZHVlIHRvCiAgICB0aGUgcGluY2ZnIHJlc3RvcmF0aW9uLiAg
+U2luY2UgdGhlIHBvd2VyLXVwIHNlcXVlbmNlIGlzIGludm9sdmVkIHdpdGgKICAgIHRoZSB1bnNv
+bCBoYW5kbGluZywgdGhlIGphY2sgcmVwb3J0aW5nIG1heSBiZSBpc3N1ZWQgZHVyaW5nIHRoYXQu
+CiAgICBUaGUgT29wcyBvY2N1cnMgd2l0aCB0aGlzIGphY2sgcmVwb3J0aW5nIGJlY2F1c2UgdGhl
+IGphY2sgaW5zdGFuY2VzCiAgICBoYXZlIGJlZW4gYWxyZWFkeSByZWxlYXNlZCBidXQgdGhlIGNv
+ZGVjIGRvZXNuJ3QgZG8gdGhlIHByb3BlcgogICAgYm9vay1rZWVwaW5nLgoKICAgIFRoaXMgcGF0
+Y2ggYWRkcyB0aGUgYm9vay1rZWVwaW5nIG9mIGphY2sgaW5zdGFuY2VzIHRvIGF2b2lkIHRoZSBh
+Y2Nlc3MKICAgIHRvIGJvZ3VzIHBvaW50ZXJzLgoKUmV2ZXJ0aW5nIHRoaXMgZml4ZWQgdGhlIHBy
+b2JsZW0gb24gdGhlIG1hY2hpbmUgd2hpY2ggaGFzIHRoZSBjb25leGFudApjeCBjb2RlYy4gU2Vl
+biB0aGF0IHRoZSBjb21taXQgcGF0Y2hlcyBhbHNvIHRoZSBzaWdtYXRlbCBvbmUsIGl0CmV4cGxh
+aW5zIHRoZSBvdGhlciBvb3BzIGluIHRoZSBiZWdpbm5pbmcgb2YgdGhpcyB0aHJlYWQuCgpJJ20g
+bm90IGN1cnJlbnRseSBhYmxlIHRvIHRlc3QgdGhlIHR3byBtYWNoaW5lcyBvbiBhIG5ld2VyIGtl
+cm5lbCB0aGFuCjIuNi4yNS4yMCBzbyBJIGRvbid0IGtub3cgaWYgdGhlIHByb2JsZW0gaXMgaW4g
+dGhlIGNvZGUgb3IgaW4gdGhlCndyYXBwZXJzL0FCSS1BUEkgcGF0Y2hlcyBpbiBhbHNhLWRyaXZl
+ciwgZXRjLgoKUmVnYXJkcywKT3phbgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwK
