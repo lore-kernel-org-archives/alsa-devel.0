@@ -1,57 +1,115 @@
-From: <ext-Eero.Nurkkala@nokia.com>
-Subject: RE: [alsa-devel] [PATCH 11/20] OMAP: McBSP: Add link DMA mode
- selection
-Date: Thu, 6 Aug 2009 20:15:40 +0200
-Message-ID: <1FFEF31EBAA4F64B80D33027D4297760047F6AED01@NOK-EUMSG-02.mgdnok.nokia.com>
-References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
- <1248958183-15015-12-git-send-email-eduardo.valentin@nokia.com>
- <20090805103900.5ad89efe.jhnikula@gmail.com>,<200908051158.57440.peter.ujfalusi@nokia.com>
+From: Elimar Riesebieter <riesebie@lxtec.de>
+Subject: Re: [Pkg-alsa-devel] Bug#539454: libasound2: Division
+ by zero in pcm_rate.c when period_size->min == 0
+Date: Thu, 6 Aug 2009 21:40:04 +0200
+Message-ID: <20090806194004.GD3257@aragorn.home.lxtec.de>
+References: <1249093791.23117.18.camel@dark-knight>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <200908051158.57440.peter.ujfalusi@nokia.com>
-Content-Language: en-US
-Sender: linux-omap-owner@vger.kernel.org
-To: peter.ujfalusi@nokia.com, alsa-devel@alsa-project.org
-Cc: jhnikula@gmail.com, linux-omap@vger.kernel.org, alsa-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtpout.hostsharing.net (smtpout.hostsharing.net
+	[83.223.95.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id C6B5D10380A
+	for <alsa-devel@alsa-project.org>;
+	Thu,  6 Aug 2009 21:40:06 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1249093791.23117.18.camel@dark-knight>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: John Lindgren <john.lindgren@tds.net>, 539454@bugs.debian.org
+Cc: alsa-devel <alsa-devel@alsa-project.org>, control@bugs.debian.org
 List-Id: alsa-devel@alsa-project.org
 
+forwarded 539454 alsa-devel@alsa-project.org
+tags 539454 + patch
 
->>
->> I would say the default mode for the omap34xx should be also element=
- as
->> it keeps the omap_pcm_pointer behavior the same than currently and
->> avoids possible regression.
->=20
-> Yes, the default mode should be the element mode in my opinion as wel=
-l.
->=20
-> --
-> P=E9ter
+thanks
+
+Hi,
+
+this is Debian bug 539454. It would be better to fix it in general.
+Patching the Debian Package isn't a reasonable solution.
+
+Thanks
+Elimar
 
 
-Well, the element mode is fine for !McBSP2. One doesn't really loose th=
-e
-buffer pointer accuracy, because you can get the last DMA irq timestamp
-with SNDRV_PCM_IOCTL_TTSTAMP (and compare that to current time).
-The accuracy is not far off from the element mode? (If you read the DMA
-portion of TRM, I think there were some issues as well)
+* John Lindgren [090731 22:29 -0400]
+> Package: libasound2
+> Version: 1.0.20-2
+> Severity: important
+> Tags: patch
+> 
+> 
+> System: Dell Inspiron 1200
+> Card: Intel ICH6
+> Chip: SigmaTel STAC9752,53
+> 
+> 
+> Steps to reproduce:
+> 
+> 1. Disable dmix: mv /usr/share/alsa/cards/ICH4.conf /usr/share/alsa/cards/ICH4.conf.0
+> 2. Restart ALSA: /etc/rcS.d/S50alsa-utils restart
+> 3. Clear Audacity configuration: rm -r ~/.audacity*
+> 4. Run Audacity 1.3.7-3 in Valgrind: valgrind --tool=none audacity
+> 5. Choose "OK" in the "Audacity First Run" dialog.
+> 
+> 
+> Valgrind output:
+> 
+> ==26237== Process terminating with default action of signal 8 (SIGFPE)
+> ==26237==  Integer divide by zero at address 0x64D1CD56
+> ==26237==    at 0x4CAD600: snd_pcm_rate_hw_refine_cchange (pcm_rate.c:189)
+> ==26237==    by 0x4C97B2E: snd1_pcm_hw_refine_slave (pcm_params.c:2182)
+> ==26237==    by 0x4CAD7D5: snd_pcm_rate_hw_refine (pcm_rate.c:222)
+> ==26237==    by 0x4C96015: snd_pcm_hw_refine (pcm_params.c:2264)
+> ==26237==    by 0x4CA116B: snd1_pcm_generic_hw_refine (pcm_generic.c:98)
+> ==26237==    by 0x4C97B0D: snd1_pcm_hw_refine_slave (pcm_params.c:2158)
+> ==26237==    by 0x4CC0E25: snd_pcm_lfloat_hw_refine (pcm_lfloat.c:261)
+> ==26237==    by 0x4C96015: snd_pcm_hw_refine (pcm_params.c:2264)
+> ==26237==    by 0x4C99068: sndrv_pcm_hw_params (pcm_params.c:2290)
+> ==26237==    by 0x4CB209C: snd_pcm_plug_hw_params (pcm_plug.c:1045)
+> ==26237==    by 0x4C9921D: sndrv_pcm_hw_params (pcm_params.c:2299)
+> ==26237==    by 0x4C947B0: snd_pcm_hw_params (pcm.c:822)
+> 
+> 
+> Diagnosis:
+> 
+> pcm_rate.c:189 reads:
+> 
+>         if ((buffer_size->min / period_size->min) * period_size->min == buffer_size->min) {
+> 
+> When using the ICH4 driver without dmix, period_size->min == 0. Handle
+> this by changing pcm_rate.c:189 to:
+> 
+>         if (period_size->min > 0 && (buffer_size->min / period_size->min) * period_size->min == buffer_size->min) {
+> 
+> With this change, Audacity starts without problems.
 
-Don't want to be piccy, but McBSP2 with element mode is more or less li=
-ke
-a "joke"? As there's a large HW bugger, why not take advantage of it..w=
-hy=20
-"bypass"  it as default?
+Patch against native 1.0.20:
 
-=46or !McBSP2, it doesn't even pay to have the threshold mode at all, b=
-ecause
-the effect on PM is actually adverse - too frequent wakeups will cause =
-more
-adverse net effect on PM (IIRC) @ VBAT.
+diff -Naurd a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
+--- a/src/pcm/pcm_rate.c	2009-05-06 09:07:23.000000000 +0200
++++ b/src/pcm/pcm_rate.c	2009-08-06 21:34:23.000000000 +0200
+@@ -186,7 +186,7 @@
+ 		if (!snd_interval_checkempty(period_size) &&
+ 		    period_size->openmin && period_size->openmax &&
+ 		    period_size->min + 1 == period_size->max) {
+-		    	if ((buffer_size->min / period_size->min) * period_size->min == buffer_size->min) {
++			if (period_size->min > 0 && (buffer_size->min / period_size->min) * period_size->min == buffer_size->min) {
+ 		    		snd_interval_set_value(period_size, period_size->min);
+ 		    	} else if ((buffer_size->max / period_size->max) * period_size->max == buffer_size->max) {
+ 		    		snd_interval_set_value(period_size, period_size->max);
 
-- Eero --
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+-- 
+  Experience is something you don't get until 
+  just after you need it!
