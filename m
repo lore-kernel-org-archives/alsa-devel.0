@@ -1,19 +1,18 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: PROC_COEF/PROC_INDEX question
-Date: Fri, 7 Aug 2009 18:12:12 +0800
-Message-ID: <20090807101212.GA5825@localhost>
-References: <20090807093859.GA2155@localhost> <s5hmy6cyn2t.wl%tiwai@suse.de>
-	<20090807100121.GA4295@localhost> <s5hfxc4ym5t.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Audio support for Simtec Hermes
+Date: Fri, 7 Aug 2009 11:19:33 +0100
+Message-ID: <20090807101932.GC639@sirena.org.uk>
+References: <20090806230200.627626438@fluff.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6FF5310385D
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 557F61038E1
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Aug 2009 12:12:15 +0200 (CEST)
+	Fri,  7 Aug 2009 12:19:33 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hfxc4ym5t.wl%tiwai@suse.de>
+In-Reply-To: <20090806230200.627626438@fluff.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,78 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Ben Dooks <ben@simtec.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 07, 2009 at 06:05:02PM +0800, Takashi Iwai wrote:
-> At Fri, 7 Aug 2009 18:01:21 +0800,
-> Wu Fengguang wrote:
-> > 
-> > On Fri, Aug 07, 2009 at 05:45:14PM +0800, Takashi Iwai wrote:
-> > > At Fri, 7 Aug 2009 17:38:59 +0800,
-> > > Wu Fengguang wrote:
-> > > > 
-> > > > Hello,
-> > > > 
-> > > > I'm not sure of the usage for GET_PROC_COEF/GET_COEF_INDEX, and found
-> > > > that their return value is unstable (changing all the time) for codec:
-> > > > 
-> > > >         Codec: Realtek ALC888
-> > > >         Address: 2
-> > > >         Function Id: 0x1
-> > > >         Vendor Id: 0x10ec0888
-> > > >         Subsystem Id: 0x80860023
-> > > >         Revision Id: 0x100202
-> > > > 
-> > > > For example:
-> > > > 
-> > > > # hda-verb /dev/snd/hwC0D2 0x20 GET_PROC_COEF 0 
-> > > > nid = 0x20, verb = 0xc00, param = 0x0
-> > > > value = 0x80
-> > > > # hda-verb /dev/snd/hwC0D2 0x20 GET_COEF_INDEX 0
-> > > > nid = 0x20, verb = 0xd00, param = 0x0
-> > > > value = 0xe
-> > > > # hda-verb /dev/snd/hwC0D2 0x20 GET_PROC_COEF 0 
-> > > > nid = 0x20, verb = 0xc00, param = 0x0
-> > > > value = 0x9c00
-> > > > # hda-verb /dev/snd/hwC0D2 0x20 GET_COEF_INDEX 0
-> > > > nid = 0x20, verb = 0xd00, param = 0x0
-> > > > value = 0xf
-> > > > 
-> > > > I wonder if this is the normal case?
-> > > 
-> > > AFAIK, depending on the mode, the index is incremented automatically.
-> > 
-> > Ah, yes. That's in line with the above data.
-> > 
-> > When repeatingly call  GET_PROC_COEF, it returns some 'random' values:
-> > 
-> >         # hda-verb /dev/snd/hwC0D2 0x20 GET_PROC_COEF 0
-> >         nid = 0x20, verb = 0xc00, param = 0x0
-> >         value = 0x4f
-> >         # hda-verb /dev/snd/hwC0D2 0x20 GET_PROC_COEF 0
-> >         nid = 0x20, verb = 0xc00, param = 0x0
-> >         value = 0x8000
-> >         # hda-verb /dev/snd/hwC0D2 0x20 GET_PROC_COEF 0
-> >         nid = 0x20, verb = 0xc00, param = 0x0
-> >         value = 0x2520
-> >         # hda-verb /dev/snd/hwC0D2 0x20 GET_PROC_COEF 0
-> >         nid = 0x20, verb = 0xc00, param = 0x0
-> >         value = 0x3e00
-> 
-> I guess it's not random but just the value of the next index.
-> 
-> > But when repeatingly call GET_COEF_INDEX, it returns the same value:
-> > 
-> >         # hda-verb /dev/snd/hwC0D2 0x20 GET_COEF_INDEX 0
-> >         nid = 0x20, verb = 0xd00, param = 0x0
-> >         value = 0xd
-> >         # hda-verb /dev/snd/hwC0D2 0x20 GET_COEF_INDEX 0
-> >         nid = 0x20, verb = 0xd00, param = 0x0
-> >         value = 0xd
-> 
-> Reading the index itself doesn't increment the index.  Reading
-> the coef value increases the index.  So is my understanding.
+On Fri, Aug 07, 2009 at 12:02:00AM +0100, Ben Dooks wrote:
 
-OK, so the coef read has some 'side effects', hehe.
+> +
+> +	/* Speaker is connected to LINEOUT{LN,LP,RN,RP} */
+> +};
+
+Missing routes?  The comment should at least be a bit clearer about why
+they're not there.
+
+> +	snd_soc_dapm_enable_pin(codec, "Headphone Jack");
+> +	snd_soc_dapm_enable_pin(codec, "Line In");
+> +	snd_soc_dapm_enable_pin(codec, "Line Out");
+> +	snd_soc_dapm_enable_pin(codec, "Mic Jack");
+
+This is not required since pins are enabled by default but it's OK to
+leave this here for documentation.
+
+> +static struct aic3x_setup_data codec_setup = {
+> +	.i2c_bus	= 0,
+> +	.i2c_already	= 1,
+> +};
+> +
+
+This patch should have been submitted after your previous patch to the
+CODEC driver since it depends on it.
+
+> +static int __devinit simtec_audio_hermes_probe(struct platform_device *pd)
+> +{
+> +	dev_info(&pd->dev, "probing....\n");
+> +	return simtec_audio_core_probe(pd, &simtec_snd_devdata_aic33);
+> +}
+
+Please remove the printk() here.
