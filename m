@@ -1,22 +1,20 @@
-From: James Courtier-Dutton <james.dutton@gmail.com>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
 Subject: Re: [BUG] NULL pointer dereference in patch_sigmatel.c
-Date: Fri, 7 Aug 2009 11:21:37 +0100
-Message-ID: <ad2655cb0908070321n4577180du913e2a950166b32d@mail.gmail.com>
-References: <4A5F84D6.5040708@pardus.org.tr> <s5h1vofac2z.wl%tiwai@suse.de>
-	<s5hy6qn8wyj.wl%tiwai@suse.de> <4A7ADD87.4030109@pardus.org.tr>
-	<s5hfxc5114w.wl%tiwai@suse.de> <4A7BF4F7.20405@pardus.org.tr>
-	<ad2655cb0908070243h6318dbdep80d90a08fa6c435b@mail.gmail.com>
+Date: Fri, 07 Aug 2009 13:36:46 +0300
+Message-ID: <4A7C03BE.7040300@pardus.org.tr>
+References: <4A5F84D6.5040708@pardus.org.tr>
+	<s5h1vofac2z.wl%tiwai@suse.de>	<s5hy6qn8wyj.wl%tiwai@suse.de>
+	<4A7ADD87.4030109@pardus.org.tr>	<s5hfxc5114w.wl%tiwai@suse.de>
+	<4A7BF4F7.20405@pardus.org.tr>	<ad2655cb0908070243h6318dbdep80d90a08fa6c435b@mail.gmail.com>
 	<s5hiqh0ymkn.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6D5DE1038E1
+Received: from lider.pardus.org.tr (lider.uludag.org.tr [193.140.100.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id F18EC1038F2
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Aug 2009 12:21:38 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id e21so361084fga.21
-	for <alsa-devel@alsa-project.org>; Fri, 07 Aug 2009 03:21:38 -0700 (PDT)
+	Fri,  7 Aug 2009 12:33:26 +0200 (CEST)
 In-Reply-To: <s5hiqh0ymkn.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,21 +26,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, James Courtier-Dutton <james.dutton@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-2009/8/7 Takashi Iwai <tiwai@suse.de>:
->> > 0xf777a614
->> > 0x00000000
->> > BUG: unable to handle kernel NULL pointer dereference at 00000074
->> > IP: [<f93f2d97>] :snd_hda_codec_conexant:conexant_add_jack+0x57/0x81
->> > *pde =3D 00000000=B7
->> > Oops: 0000 [#1] SMP
->> >
->>
->
-> Well, it's fairly obvious that jack->jack is NULL as the second
-> output is NULL, and the third one hits Oops.
->
-
-Oh yes, I missed the 0xf777a614 and 0x00000000
+VGFrYXNoaSBJd2FpIHdyb3RlIE9uIDA3LTA4LTIwMDkgMTI6NTY6Cj4gQXQgRnJpLCA3IEF1ZyAy
+MDA5IDEwOjQzOjA3ICswMTAwLAo+IEphbWVzIENvdXJ0aWVyLUR1dHRvbiB3cm90ZToKPiAgIAo+
+PiAyMDA5LzgvNyBPemFuIMOHYcSfbGF5YW4gPG96YW5AcGFyZHVzLm9yZy50cj46Cj4+ICAgICAK
+Pj4+IEFkZGVkIHRoZSBmb2xsb3dpbmcgbGluZXM6Cj4+Pgo+Pj4gcHJpbnRrKEtFUk5fSU5GTyAi
+MHglcFxuIiwgamFjayk7Cj4+PiBwcmludGsoS0VSTl9JTkZPICIweCVwXG4iLCBqYWNrLT5qYWNr
+KTsKPj4+IHByaW50ayhLRVJOX0lORk8gIjB4JXBcbiIsIGphY2stPmphY2stPnByaXZhdGVfZGF0
+YSk7Cj4+Pgo+Pj4gZG1lc2c6Cj4+Pgo+Pj4gTlZSTTogbG9hZGluZyBOVklESUEgVU5JWCB4ODYg
+S2VybmVsIE1vZHVsZSAgMTgwLjUxICBUaHUgQXByIDE2IDE5OjAyOjE1Cj4+PiBQRFQgMjAwOQo+
+Pj4gQUNQSTogUENJIEludGVycnVwdCAwMDAwOjAwOjFiLjBbQV0gLT4gR1NJIDIyIChsZXZlbCwg
+bG93KSAtPiBJUlEgMjIKPj4+IFBDSTogU2V0dGluZyBsYXRlbmN5IHRpbWVyIG9mIGRldmljZSAw
+MDAwOjAwOjFiLjAgdG8gNjQKPj4+IDB4Zjc3N2E2MTQKPj4+IDB4MDAwMDAwMDAKPj4+IEJVRzog
+dW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlIGF0IDAwMDAw
+MDc0Cj4+PiBJUDogWzxmOTNmMmQ5Nz5dIDpzbmRfaGRhX2NvZGVjX2NvbmV4YW50OmNvbmV4YW50
+X2FkZF9qYWNrKzB4NTcvMHg4MQo+Pj4gKnBkZSA9IDAwMDAwMDAwwrcKPj4+IE9vcHM6IDAwMDAg
+WyMxXSBTTVAKPj4+Cj4+PiAgICAgICAKPj4gTmVlZCBtb3JlIG9mIHRoZSBkbWVzZyBvdXRwdXQu
+Cj4+IEkuZS4gdG8gc2VlIHdoaWNoIHByaW50IHN0YXRlbWVudHMgc3VjY2VlZGVkLgo+PiBBbHRl
+cm5hdGl2ZWx5LCBhdHRhY2ggdGhlIHNuZF9oZGEua28gc28gb25lIGNhbiBzZWUgd2hlcmUgaW4g
+dGhhdCBmaWxlCj4+IG9mZnNldCAweDU3IGlzLgo+PiBCdXQgYSBtb3JlIHVzZWZ1bCBwcmludCB3
+b3VsZCBiZToKPj4gaWYgKCFqYWNrKSBwcmludGsoS0VSTl9JTkZPICJqYWNrIG51bGxcbiIpOwo+
+PiBlbHNlIGlmICghKGphY2stPmphY2spKSBwcmludGsoS0VSTl9JTkZPICJqYWNrLT5qYWNrIG51
+bGxcbiIpOwo+PiBlbHNlIGlmICghKGphY2stPmphY2stPnByaXZhdGVfZGF0YSkpIHByaW50ayhL
+RVJOX0lORk8KPj4gImphY2stPmphY2stPnByaXZhdGVfZGF0YSBudWxsXG4iKTsKPj4gICAgIAo+
+Cj4gV2VsbCwgaXQncyBmYWlybHkgb2J2aW91cyB0aGF0IGphY2stPmphY2sgaXMgTlVMTCBhcyB0
+aGUgc2Vjb25kCj4gb3V0cHV0IGlzIE5VTEwsIGFuZCB0aGUgdGhpcmQgb25lIGhpdHMgT29wcy4K
+Pgo+IE96YW4sIGNvdWxkIHlvdSBjaGVjayB3aGV0aGVyIENPTkZJR19TTkRfSkFDSyBpcyBzZXQg
+aW4KPiBzdGFjOTJ4eF9hZGRfamFjaywgZS5nLiBsaWtlIGJlbG93Pwo+Cj4gICAKTm9wZSBpdCBz
+ZWVtcyB0aGF0IGl0J3Mgbm90IHNldCBhcyB0aGUgI2Vycm9yIHByYWdtYSBpcyBleGVjdXRlZC4g
+SQpsb29rZWQgaW50byB0aGUgY29uZmlndXJlIHNjcmlwdCBhbmQgZm91bmQgdGhlIGZvbGxvd2lu
+ZzoKCiAgaWYgYWxzYV9jaGVja19rY29uZmlnX29wdGlvbiAiaGRhLWlucHV0LWphY2siOyB0aGVu
+CiAgICBpZiAoIHRlc3QgIiRDT05GSUdfU05EX1BDSSIgPSAieSIgLW8gIiRDT05GSUdfU05EX1BD
+SSIgPSAibSIgKSAmJgogICAgICAoIHRlc3QgIiRDT05GSUdfU05EX0hEQV9JTlRFTCIgPSAieSIg
+LW8gIiRDT05GSUdfU05EX0hEQV9JTlRFTCIgPQoibSIgKSAmJgogICAgICAoIHRlc3QgIiRDT05G
+SUdfSU5QVVQiID0gInkiIC1vICIkQ09ORklHX0lOUFVUIiA9ICJtIiApOyB0aGVuCiAgICAgIHRl
+c3QgIiRrdmVyc2lvbi4ka3BhdGNobGV2ZWwiID0gIjIuNiIgLWEgJGtzdWJsZXZlbCAtZ2UgMjcg
+JiYKQ09ORklHX1NORF9KQUNLPSJ5IgogICAgICBDT05GSUdfU05EX0hEQV9JTlBVVF9KQUNLPSJ5
+IgogIGZpCgpTTkRfSkFDSyBpcyBzZXQgaWYgc3VibGV2ZWwgPj0gMjcgYnV0IFNORF9IREFfSU5Q
+VVRfSkFDSyBpcyBzZXQKcmVnYXJkbGVzcyBvZiBhbnl0aGluZy4gV2h5IHRoZSBsb3dlciBsaW1p
+dCBpcyAyNyBmb3IgdGhhdCBmdW5jdGlvbmFsaXR5PwoKCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
