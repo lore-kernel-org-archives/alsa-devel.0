@@ -1,79 +1,105 @@
-From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: Re: [PATCH 1/2] ASoC: DaVinci: McASP driver enhacements
-Date: Fri, 07 Aug 2009 12:59:05 -0700
-Message-ID: <4A7C8789.40408@boundarydevices.com>
-References: <1249654062-23634-1-git-send-email-chaithrika@ti.com>
+From: =?utf-8?q?Uwe=20Kleine-K=C3=B6nig?=
+	<u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 2/6] s3c2443-ac97: convert semaphore to mutex
+Date: Fri,  7 Aug 2009 22:42:37 +0200
+Message-ID: <1249677761-19470-2-git-send-email-u.kleine-koenig@pengutronix.de>
+References: <20090807203939.GA19374@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpauth00.csee.onr.siteprotect.com
-	(smtpauth00.csee.onr.siteprotect.com [64.26.60.144])
-	by alsa0.perex.cz (Postfix) with ESMTP id 49AB624156
-	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Aug 2009 21:59:20 +0200 (CEST)
-In-Reply-To: <1249654062-23634-1-git-send-email-chaithrika@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Chaithrika U S <chaithrika@ti.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, davinci-linux-open-source@linux.davincidsp.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S933963AbZHGUnE@vger.kernel.org>
+In-Reply-To: <20090807203939.GA19374@pengutronix.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, rt-users <linux-rt-users@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Ben Dooks <ben-linux@fluff.org>, Timur Tabi <timur@freescale.com>, Eric Miao <eric.miao@marvell.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Chaithrika U S wrote:
-> ---
->  sound/soc/davinci/davinci-mcasp.c |  113 ++++++++++++++++++++++++++++++++++--
->  sound/soc/davinci/davinci-mcasp.h |    5 ++
->  sound/soc/davinci/davinci-pcm.c   |    4 +-
->  sound/soc/davinci/davinci-pcm.h   |    1 +
->  4 files changed, 115 insertions(+), 8 deletions(-)
+This fixes a build failure for 2.6.31-rc4-rt1 (ARCH=3Darm, s3c2410_defc=
+onfig):
 
-.....
-> diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
-> index 8fd0c3c..1e2dfd0 100644
-> --- a/sound/soc/davinci/davinci-pcm.c
-> +++ b/sound/soc/davinci/davinci-pcm.c
-> @@ -67,6 +67,7 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
->  	dma_addr_t src, dst;
->  	unsigned short src_bidx, dst_bidx;
->  	unsigned int data_type;
-> +	unsigned short acnt;
->  	unsigned int count;
->  
->  	period_size = snd_pcm_lib_period_bytes(substream);
-> @@ -91,11 +92,12 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
->  		dst_bidx = data_type;
->  	}
->  
-> +	acnt = prtd->params->acnt;
->  	edma_set_src(lch, src, INCR, W8BIT);
->  	edma_set_dest(lch, dst, INCR, W8BIT);
->  	edma_set_src_index(lch, src_bidx, 0);
->  	edma_set_dest_index(lch, dst_bidx, 0);
-> -	edma_set_transfer_params(lch, data_type, count, 1, 0, ASYNC);
-> +	edma_set_transfer_params(lch, acnt, count, 1, 0, ASYNC);
+	  CC [M]  sound/soc/s3c24xx/s3c2443-ac97.o
+	sound/soc/s3c24xx/s3c2443-ac97.c:50: warning: type defaults to 'int' i=
+n declaration of 'DECLARE_MUTEX'
+	sound/soc/s3c24xx/s3c2443-ac97.c:50: warning: parameter names (without=
+ types) in function declaration
+	sound/soc/s3c24xx/s3c2443-ac97.c: In function 's3c2443_ac97_read':
+	sound/soc/s3c24xx/s3c2443-ac97.c:59: error: 'ac97_mutex' undeclared (f=
+irst use in this function)
+	sound/soc/s3c24xx/s3c2443-ac97.c:59: error: (Each undeclared identifie=
+r is reported only once
+	sound/soc/s3c24xx/s3c2443-ac97.c:59: error: for each function it appea=
+rs in.)
+	sound/soc/s3c24xx/s3c2443-ac97.c: In function 's3c2443_ac97_write':
+	sound/soc/s3c24xx/s3c2443-ac97.c:93: error: 'ac97_mutex' undeclared (f=
+irst use in this function)
 
-Since I see no change to davinci-i2s, I think this will break any platform which
-uses davinci-i2s.
+Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Ben Dooks <ben-linux@fluff.org>
+Cc: Timur Tabi <timur@freescale.com>
+Cc: Eric Miao <eric.miao@marvell.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
+---
+ sound/soc/s3c24xx/s3c2443-ac97.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
->  
->  	prtd->period++;
->  	if (unlikely(prtd->period >= runtime->periods))
-> diff --git a/sound/soc/davinci/davinci-pcm.h b/sound/soc/davinci/davinci-pcm.h
-> index eb4287f..63d9625 100644
-> --- a/sound/soc/davinci/davinci-pcm.h
-> +++ b/sound/soc/davinci/davinci-pcm.h
-> @@ -19,6 +19,7 @@
->  struct davinci_pcm_dma_params {
->  	char *name;			/* stream identifier */
->  	int channel;			/* sync dma channel ID */
-> +	unsigned short acnt;
->  	dma_addr_t dma_addr;		/* device physical address for DMA */
->  	enum dma_event_q eventq_no;	/* event queue number */
->  	unsigned char data_type;	/* xfer data type */
+diff --git a/sound/soc/s3c24xx/s3c2443-ac97.c b/sound/soc/s3c24xx/s3c24=
+43-ac97.c
+index 3f03d5d..bf16f20 100644
+--- a/sound/soc/s3c24xx/s3c2443-ac97.c
++++ b/sound/soc/s3c24xx/s3c2443-ac97.c
+@@ -47,7 +47,7 @@ static struct s3c24xx_ac97_info s3c24xx_ac97;
+=20
+ static DECLARE_COMPLETION(ac97_completion);
+ static u32 codec_ready;
+-static DECLARE_MUTEX(ac97_mutex);
++static DEFINE_MUTEX(ac97_mutex);
+=20
+ static unsigned short s3c2443_ac97_read(struct snd_ac97 *ac97,
+ 	unsigned short reg)
+@@ -56,7 +56,7 @@ static unsigned short s3c2443_ac97_read(struct snd_ac=
+97 *ac97,
+ 	u32 ac_codec_cmd;
+ 	u32 stat, addr, data;
+=20
+-	down(&ac97_mutex);
++	mutex_lock(&ac97_mutex);
+=20
+ 	codec_ready =3D S3C_AC97_GLBSTAT_CODECREADY;
+ 	ac_codec_cmd =3D readl(s3c24xx_ac97.regs + S3C_AC97_CODEC_CMD);
+@@ -79,7 +79,7 @@ static unsigned short s3c2443_ac97_read(struct snd_ac=
+97 *ac97,
+ 		printk(KERN_ERR "s3c24xx-ac97: req addr =3D %02x,"
+ 				" rep addr =3D %02x\n", reg, addr);
+=20
+-	up(&ac97_mutex);
++	mutex_unlock(&ac97_mutex);
+=20
+ 	return (unsigned short)data;
+ }
+@@ -90,7 +90,7 @@ static void s3c2443_ac97_write(struct snd_ac97 *ac97,=
+ unsigned short reg,
+ 	u32 ac_glbctrl;
+ 	u32 ac_codec_cmd;
+=20
+-	down(&ac97_mutex);
++	mutex_lock(&ac97_mutex);
+=20
+ 	codec_ready =3D S3C_AC97_GLBSTAT_CODECREADY;
+ 	ac_codec_cmd =3D readl(s3c24xx_ac97.regs + S3C_AC97_CODEC_CMD);
+@@ -109,7 +109,7 @@ static void s3c2443_ac97_write(struct snd_ac97 *ac9=
+7, unsigned short reg,
+ 	ac_codec_cmd |=3D S3C_AC97_CODEC_CMD_READ;
+ 	writel(ac_codec_cmd, s3c24xx_ac97.regs + S3C_AC97_CODEC_CMD);
+=20
+-	up(&ac97_mutex);
++	mutex_unlock(&ac97_mutex);
+=20
+ }
+=20
+--=20
+1.6.3.3
