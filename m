@@ -1,18 +1,25 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Fixed module builds of soc/fsl/*.c
-Date: Fri, 7 Aug 2009 15:45:41 +0100
-Message-ID: <20090807144540.GH639@sirena.org.uk>
-References: <s5heirny98v.wl%tiwai@suse.de>
+From: John Bonesio <bones@secretlab.ca>
+Subject: Re: MPC5200/WM9712 mute problem
+Date: Fri, 07 Aug 2009 07:48:42 -0700
+Message-ID: <1249656522.5844.89.camel@riker>
+References: <20090731230311.17686.46431.stgit@riker>
+	<9e4733910908010647k3a4a22c5jf9b9eda482f016b1@mail.gmail.com>
+	<1249139096.4582.13.camel@riker> <20090802114950.GA1778@sirena.org.uk>
+	<1249489853.4582.58.camel@riker> <20090805170305.GC16844@sirena.org.uk>
+	<1249579721.5844.88.camel@riker>
+	<20090807095601.GA8175@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3FB96103870
+Received: from mail-pz0-f175.google.com (mail-pz0-f175.google.com
+	[209.85.222.175])
+	by alsa0.perex.cz (Postfix) with ESMTP id A66611038B1
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Aug 2009 16:45:42 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5heirny98v.wl%tiwai@suse.de>
+	Fri,  7 Aug 2009 16:48:47 +0200 (CEST)
+Received: by pzk5 with SMTP id 5so1644604pzk.23
+	for <alsa-devel@alsa-project.org>; Fri, 07 Aug 2009 07:48:46 -0700 (PDT)
+In-Reply-To: <20090807095601.GA8175@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,64 +29,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, Eric Millbrandt <emillbrandt@dekaresearch.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 07, 2009 at 04:44:00PM +0200, Takashi Iwai wrote:
-> JFYI, I merged the patch below now.
+On Fri, 2009-08-07 at 10:56 +0100, Mark Brown wrote:
+> On Thu, Aug 06, 2009 at 10:28:41AM -0700, John Bonesio wrote:
+> 
+> > I'm open to more suggestions or thoughts on the approach I've taken so
+> > far.
+> 
+> The approach you've been taking sounds reasonable; at this point I'd be
+> looking at trying to confirm that the controller is doing what's been
+> asked of it.  Checking that the CODEC power rails are all within spec
+> and looking at other bits in the same register may also be useful.
+> 
+> Is the system otherwise idle when the problem occurs?
 
-Thanks.  CCing in Jon, who wrote the drivers, for info.
-
-> From afc5e65245255a268ab22a20477ed2c9f2cdfcd3 Mon Sep 17 00:00:00 2001
-> From: Takashi Iwai <tiwai@suse.de>
-> Date: Fri, 7 Aug 2009 16:33:53 +0200
-> Subject: ASoC: Add missing DRV_NAME definitions for fsl/* drivers
-> 
-> Module builds are broken due to missing DRV_NAME for
-> efika-audio-fabric and pcm030-audio-fabric.
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/soc/fsl/efika-audio-fabric.c  |    2 ++
->  sound/soc/fsl/pcm030-audio-fabric.c |    2 ++
->  2 files changed, 4 insertions(+), 0 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/efika-audio-fabric.c b/sound/soc/fsl/efika-audio-fabric.c
-> index 85b0e75..3326e2a 100644
-> --- a/sound/soc/fsl/efika-audio-fabric.c
-> +++ b/sound/soc/fsl/efika-audio-fabric.c
-> @@ -30,6 +30,8 @@
->  #include "mpc5200_psc_ac97.h"
->  #include "../codecs/stac9766.h"
->  
-> +#define DRV_NAME "efika-audio-fabric"
-> +
->  static struct snd_soc_device device;
->  static struct snd_soc_card card;
->  
-> diff --git a/sound/soc/fsl/pcm030-audio-fabric.c b/sound/soc/fsl/pcm030-audio-fabric.c
-> index 8766f7a..b928ef7 100644
-> --- a/sound/soc/fsl/pcm030-audio-fabric.c
-> +++ b/sound/soc/fsl/pcm030-audio-fabric.c
-> @@ -30,6 +30,8 @@
->  #include "mpc5200_psc_ac97.h"
->  #include "../codecs/wm9712.h"
->  
-> +#define DRV_NAME "pcm030-audio-fabric"
-> +
->  static struct snd_soc_device device;
->  static struct snd_soc_card card;
->  
-> -- 
-> 1.6.3.3
-> 
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
-
--- 
-"You grabbed my hand and we fell into it, like a daydream - or a fever."
+Yes the system is idle - just me fiddling with the mute settings.
