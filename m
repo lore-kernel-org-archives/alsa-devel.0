@@ -1,17 +1,18 @@
-From: Ben Dooks <ben@simtec.co.uk>
-Subject: tlv320aic3x: Allow driver to use already registered
-	i2c device
-Date: Fri, 07 Aug 2009 00:02:05 +0100
-Message-ID: <20090806230204.992074844@fluff.org.uk>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: [PATCH][2.6.31-rc5] ARM: OMAP: McBSP: Fix ASoC on
+	OMAP1510 by fixing API of omap_mcbsp_start/stop
+Date: Fri,  7 Aug 2009 09:59:47 +0300
+Message-ID: <1249628387-7372-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from kira.home.fluff.org (aeryn.fluff.org.uk [87.194.8.8])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5EB6310380E
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.146])
+	by alsa0.perex.cz (Postfix) with ESMTP id 37B3E2441D
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Aug 2009 01:02:05 +0200 (CEST)
-Content-Disposition: inline; filename=dbg-tlv320aic33.patch
+	Fri,  7 Aug 2009 08:58:51 +0200 (CEST)
+Received: by ey-out-1920.google.com with SMTP id 13so403606eye.56
+	for <alsa-devel@alsa-project.org>; Thu, 06 Aug 2009 23:58:50 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,76 +22,188 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add the ability for the driver to use an already registered i2c device
-instead of creating one of them itself. Add the field i2c_already field
-to the setup data and not set the i2c bus address the driver will then
-use the device already setup.
+Simultaneous audio playback and capture on OMAP1510 can cause that second
+stream is stalled if there is enough delay between startup of the audio
+streams.
 
-Signed-off-by: Ben Dooks <ben@simtec.co.uk>
+Current implementation of the omap_mcbsp_start is starting both transmitter
+and receiver at the same time and it is called only for firstly started
+audio stream from the OMAP McBSP based ASoC DAI driver.
 
+Since DMA request lines on OMAP1510 are edge sensitive, the DMA request is
+missed if there is no DMA transfer set up at that time when the first word
+after McBSP startup is transmitted. The problem hasn't noted before since
+later OMAPs are using level sensitive DMA request lines.
+
+Fix the problem by changing API of omap_mcbsp_start and omap_mcbsp_stop by
+allowing to start and stop individually McBSP transmitter and receiver
+logics. Then call those functions individually for both audio playback
+and capture streams. This ensures that DMA transfer is setup before
+transmitter or receiver is started.
+
+Thanks to Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> for detailed problem
+analysis and Peter Ujfalusi <peter.ujfalusi@nokia.com> for info about DMA
+request line behavior differences between the OMAP generations.
+
+Reported-and-tested-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Tony Lindgren <tony@atomide.com>
 ---
- sound/soc/codecs/tlv320aic3x.c |    9 ++++++++-
- sound/soc/codecs/tlv320aic3x.h |    1 +
- 2 files changed, 9 insertions(+), 1 deletion(-)
+ arch/arm/plat-omap/include/mach/mcbsp.h |    4 +-
+ arch/arm/plat-omap/mcbsp.c              |   50 +++++++++++++++++++-----------
+ sound/soc/omap/omap-mcbsp.c             |   10 +++---
+ 3 files changed, 39 insertions(+), 25 deletions(-)
 
-Index: b/sound/soc/codecs/tlv320aic3x.c
-===================================================================
---- a/sound/soc/codecs/tlv320aic3x.c	2009-08-06 11:53:30.000000000 +0100
-+++ b/sound/soc/codecs/tlv320aic3x.c	2009-08-06 15:29:45.000000000 +0100
-@@ -1310,6 +1310,7 @@ static int aic3x_i2c_remove(struct i2c_c
+diff --git a/arch/arm/plat-omap/include/mach/mcbsp.h b/arch/arm/plat-omap/include/mach/mcbsp.h
+index bb154ea..57249bb 100644
+--- a/arch/arm/plat-omap/include/mach/mcbsp.h
++++ b/arch/arm/plat-omap/include/mach/mcbsp.h
+@@ -387,8 +387,8 @@ void omap_mcbsp_register_board_cfg(struct omap_mcbsp_platform_data *config,
+ void omap_mcbsp_config(unsigned int id, const struct omap_mcbsp_reg_cfg * config);
+ int omap_mcbsp_request(unsigned int id);
+ void omap_mcbsp_free(unsigned int id);
+-void omap_mcbsp_start(unsigned int id);
+-void omap_mcbsp_stop(unsigned int id);
++void omap_mcbsp_start(unsigned int id, int tx, int rx);
++void omap_mcbsp_stop(unsigned int id, int tx, int rx);
+ void omap_mcbsp_xmit_word(unsigned int id, u32 word);
+ u32 omap_mcbsp_recv_word(unsigned int id);
  
- static const struct i2c_device_id aic3x_i2c_id[] = {
- 	{ "tlv320aic3x", 0 },
-+	{ "tlv320aic33", 0 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, aic3x_i2c_id);
-@@ -1405,6 +1406,10 @@ static int aic3x_probe(struct platform_d
- 		codec->hw_write = (hw_write_t) i2c_master_send;
- 		codec->hw_read = (hw_read_t) aic3x_i2c_read;
- 		ret = aic3x_add_i2c_device(pdev, setup);
-+	} else if (setup->i2c_already) {
-+		codec->hw_write = (hw_write_t) i2c_master_send;
-+		codec->hw_read = (hw_read_t) aic3x_i2c_read;
-+		i2c_add_driver(&aic3x_i2c_driver);
- 	}
- #else
- 	/* Add other interfaces here */
-@@ -1421,6 +1426,7 @@ static int aic3x_remove(struct platform_
+diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
+index efa0e01..a3d2313 100644
+--- a/arch/arm/plat-omap/mcbsp.c
++++ b/arch/arm/plat-omap/mcbsp.c
+@@ -328,14 +328,15 @@ void omap_mcbsp_free(unsigned int id)
+ EXPORT_SYMBOL(omap_mcbsp_free);
+ 
+ /*
+- * Here we start the McBSP, by enabling the sample
+- * generator, both transmitter and receivers,
+- * and the frame sync.
++ * Here we start the McBSP, by enabling transmitter, receiver or both.
++ * If no transmitter or receiver is active prior calling, then sample-rate
++ * generator and frame sync are started.
+  */
+-void omap_mcbsp_start(unsigned int id)
++void omap_mcbsp_start(unsigned int id, int tx, int rx)
  {
- 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
- 	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct aic3x_setup_data *setup = socdev->codec_data;
+ 	struct omap_mcbsp *mcbsp;
+ 	void __iomem *io_base;
++	int idle;
+ 	u16 w;
  
- 	/* power down chip */
- 	if (codec->control_data)
-@@ -1429,7 +1435,8 @@ static int aic3x_remove(struct platform_
- 	snd_soc_free_pcms(socdev);
- 	snd_soc_dapm_free(socdev);
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
--	i2c_unregister_device(codec->control_data);
-+	if (setup && !setup->i2c_already)
-+		i2c_unregister_device(codec->control_data);
- 	i2c_del_driver(&aic3x_i2c_driver);
- #endif
- 	kfree(codec->private_data);
-Index: b/sound/soc/codecs/tlv320aic3x.h
-===================================================================
---- a/sound/soc/codecs/tlv320aic3x.h	2009-08-06 11:53:30.000000000 +0100
-+++ b/sound/soc/codecs/tlv320aic3x.h	2009-08-06 12:11:03.000000000 +0100
-@@ -283,6 +283,7 @@ int aic3x_button_pressed(struct snd_soc_
+ 	if (!omap_mcbsp_check_valid_id(id)) {
+@@ -348,32 +349,40 @@ void omap_mcbsp_start(unsigned int id)
+ 	mcbsp->rx_word_length = (OMAP_MCBSP_READ(io_base, RCR1) >> 5) & 0x7;
+ 	mcbsp->tx_word_length = (OMAP_MCBSP_READ(io_base, XCR1) >> 5) & 0x7;
  
- struct aic3x_setup_data {
- 	int i2c_bus;
-+	unsigned char i2c_already;	/* i2c device already registered */
- 	unsigned short i2c_address;
- 	unsigned int gpio_func[2];
- };
-
+-	/* Start the sample generator */
+-	w = OMAP_MCBSP_READ(io_base, SPCR2);
+-	OMAP_MCBSP_WRITE(io_base, SPCR2, w | (1 << 6));
++	idle = !((OMAP_MCBSP_READ(io_base, SPCR2) |
++		  OMAP_MCBSP_READ(io_base, SPCR1)) & 1);
++
++	if (idle) {
++		/* Start the sample generator */
++		w = OMAP_MCBSP_READ(io_base, SPCR2);
++		OMAP_MCBSP_WRITE(io_base, SPCR2, w | (1 << 6));
++	}
+ 
+ 	/* Enable transmitter and receiver */
+ 	w = OMAP_MCBSP_READ(io_base, SPCR2);
+-	OMAP_MCBSP_WRITE(io_base, SPCR2, w | 1);
++	OMAP_MCBSP_WRITE(io_base, SPCR2, w | (tx & 1));
+ 
+ 	w = OMAP_MCBSP_READ(io_base, SPCR1);
+-	OMAP_MCBSP_WRITE(io_base, SPCR1, w | 1);
++	OMAP_MCBSP_WRITE(io_base, SPCR1, w | (rx & 1));
+ 
+ 	udelay(100);
+ 
+-	/* Start frame sync */
+-	w = OMAP_MCBSP_READ(io_base, SPCR2);
+-	OMAP_MCBSP_WRITE(io_base, SPCR2, w | (1 << 7));
++	if (idle) {
++		/* Start frame sync */
++		w = OMAP_MCBSP_READ(io_base, SPCR2);
++		OMAP_MCBSP_WRITE(io_base, SPCR2, w | (1 << 7));
++	}
+ 
+ 	/* Dump McBSP Regs */
+ 	omap_mcbsp_dump_reg(id);
+ }
+ EXPORT_SYMBOL(omap_mcbsp_start);
+ 
+-void omap_mcbsp_stop(unsigned int id)
++void omap_mcbsp_stop(unsigned int id, int tx, int rx)
+ {
+ 	struct omap_mcbsp *mcbsp;
+ 	void __iomem *io_base;
++	int idle;
+ 	u16 w;
+ 
+ 	if (!omap_mcbsp_check_valid_id(id)) {
+@@ -386,15 +395,20 @@ void omap_mcbsp_stop(unsigned int id)
+ 
+ 	/* Reset transmitter */
+ 	w = OMAP_MCBSP_READ(io_base, SPCR2);
+-	OMAP_MCBSP_WRITE(io_base, SPCR2, w & ~(1));
++	OMAP_MCBSP_WRITE(io_base, SPCR2, w & ~(tx & 1));
+ 
+ 	/* Reset receiver */
+ 	w = OMAP_MCBSP_READ(io_base, SPCR1);
+-	OMAP_MCBSP_WRITE(io_base, SPCR1, w & ~(1));
++	OMAP_MCBSP_WRITE(io_base, SPCR1, w & ~(rx & 1));
+ 
+-	/* Reset the sample rate generator */
+-	w = OMAP_MCBSP_READ(io_base, SPCR2);
+-	OMAP_MCBSP_WRITE(io_base, SPCR2, w & ~(1 << 6));
++	idle = !((OMAP_MCBSP_READ(io_base, SPCR2) |
++		  OMAP_MCBSP_READ(io_base, SPCR1)) & 1);
++
++	if (idle) {
++		/* Reset the sample rate generator */
++		w = OMAP_MCBSP_READ(io_base, SPCR2);
++		OMAP_MCBSP_WRITE(io_base, SPCR2, w & ~(1 << 6));
++	}
+ }
+ EXPORT_SYMBOL(omap_mcbsp_stop);
+ 
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index a5d46a7..6a837ff 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -183,21 +183,21 @@ static int omap_mcbsp_dai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+ 	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
+-	int err = 0;
++	int err = 0, play = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		if (!mcbsp_data->active++)
+-			omap_mcbsp_start(mcbsp_data->bus_id);
++		mcbsp_data->active++;
++		omap_mcbsp_start(mcbsp_data->bus_id, play, !play);
+ 		break;
+ 
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		if (!--mcbsp_data->active)
+-			omap_mcbsp_stop(mcbsp_data->bus_id);
++		omap_mcbsp_stop(mcbsp_data->bus_id, play, !play);
++		mcbsp_data->active--;
+ 		break;
+ 	default:
+ 		err = -EINVAL;
 -- 
-Ben (ben@fluff.org, http://www.fluff.org/)
-
-  'a smiley only costs 4 bytes'
+1.6.3.3
