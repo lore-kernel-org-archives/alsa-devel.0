@@ -1,21 +1,19 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: Re: [BUG] NULL pointer dereference in patch_sigmatel.c
-Date: Fri, 07 Aug 2009 13:36:46 +0300
-Message-ID: <4A7C03BE.7040300@pardus.org.tr>
-References: <4A5F84D6.5040708@pardus.org.tr>
-	<s5h1vofac2z.wl%tiwai@suse.de>	<s5hy6qn8wyj.wl%tiwai@suse.de>
-	<4A7ADD87.4030109@pardus.org.tr>	<s5hfxc5114w.wl%tiwai@suse.de>
-	<4A7BF4F7.20405@pardus.org.tr>	<ad2655cb0908070243h6318dbdep80d90a08fa6c435b@mail.gmail.com>
-	<s5hiqh0ymkn.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/5] ASoC: DaVinci: i2s: don't bounce
+	through rtd to	get dai
+Date: Fri, 7 Aug 2009 11:41:44 +0100
+Message-ID: <20090807104144.GF639@sirena.org.uk>
+References: <1249602935-1267-1-git-send-email-troy.kisky@boundarydevices.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lider.pardus.org.tr (lider.uludag.org.tr [193.140.100.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id F18EC1038F2
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 13C1F10390B
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Aug 2009 12:33:26 +0200 (CEST)
-In-Reply-To: <s5hiqh0ymkn.wl%tiwai@suse.de>
+	Fri,  7 Aug 2009 12:41:46 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1249602935-1267-1-git-send-email-troy.kisky@boundarydevices.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,48 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, James Courtier-Dutton <james.dutton@gmail.com>
+To: Troy Kisky <troy.kisky@boundarydevices.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VGFrYXNoaSBJd2FpIHdyb3RlIE9uIDA3LTA4LTIwMDkgMTI6NTY6Cj4gQXQgRnJpLCA3IEF1ZyAy
-MDA5IDEwOjQzOjA3ICswMTAwLAo+IEphbWVzIENvdXJ0aWVyLUR1dHRvbiB3cm90ZToKPiAgIAo+
-PiAyMDA5LzgvNyBPemFuIMOHYcSfbGF5YW4gPG96YW5AcGFyZHVzLm9yZy50cj46Cj4+ICAgICAK
-Pj4+IEFkZGVkIHRoZSBmb2xsb3dpbmcgbGluZXM6Cj4+Pgo+Pj4gcHJpbnRrKEtFUk5fSU5GTyAi
-MHglcFxuIiwgamFjayk7Cj4+PiBwcmludGsoS0VSTl9JTkZPICIweCVwXG4iLCBqYWNrLT5qYWNr
-KTsKPj4+IHByaW50ayhLRVJOX0lORk8gIjB4JXBcbiIsIGphY2stPmphY2stPnByaXZhdGVfZGF0
-YSk7Cj4+Pgo+Pj4gZG1lc2c6Cj4+Pgo+Pj4gTlZSTTogbG9hZGluZyBOVklESUEgVU5JWCB4ODYg
-S2VybmVsIE1vZHVsZSAgMTgwLjUxICBUaHUgQXByIDE2IDE5OjAyOjE1Cj4+PiBQRFQgMjAwOQo+
-Pj4gQUNQSTogUENJIEludGVycnVwdCAwMDAwOjAwOjFiLjBbQV0gLT4gR1NJIDIyIChsZXZlbCwg
-bG93KSAtPiBJUlEgMjIKPj4+IFBDSTogU2V0dGluZyBsYXRlbmN5IHRpbWVyIG9mIGRldmljZSAw
-MDAwOjAwOjFiLjAgdG8gNjQKPj4+IDB4Zjc3N2E2MTQKPj4+IDB4MDAwMDAwMDAKPj4+IEJVRzog
-dW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlIGF0IDAwMDAw
-MDc0Cj4+PiBJUDogWzxmOTNmMmQ5Nz5dIDpzbmRfaGRhX2NvZGVjX2NvbmV4YW50OmNvbmV4YW50
-X2FkZF9qYWNrKzB4NTcvMHg4MQo+Pj4gKnBkZSA9IDAwMDAwMDAwwrcKPj4+IE9vcHM6IDAwMDAg
-WyMxXSBTTVAKPj4+Cj4+PiAgICAgICAKPj4gTmVlZCBtb3JlIG9mIHRoZSBkbWVzZyBvdXRwdXQu
-Cj4+IEkuZS4gdG8gc2VlIHdoaWNoIHByaW50IHN0YXRlbWVudHMgc3VjY2VlZGVkLgo+PiBBbHRl
-cm5hdGl2ZWx5LCBhdHRhY2ggdGhlIHNuZF9oZGEua28gc28gb25lIGNhbiBzZWUgd2hlcmUgaW4g
-dGhhdCBmaWxlCj4+IG9mZnNldCAweDU3IGlzLgo+PiBCdXQgYSBtb3JlIHVzZWZ1bCBwcmludCB3
-b3VsZCBiZToKPj4gaWYgKCFqYWNrKSBwcmludGsoS0VSTl9JTkZPICJqYWNrIG51bGxcbiIpOwo+
-PiBlbHNlIGlmICghKGphY2stPmphY2spKSBwcmludGsoS0VSTl9JTkZPICJqYWNrLT5qYWNrIG51
-bGxcbiIpOwo+PiBlbHNlIGlmICghKGphY2stPmphY2stPnByaXZhdGVfZGF0YSkpIHByaW50ayhL
-RVJOX0lORk8KPj4gImphY2stPmphY2stPnByaXZhdGVfZGF0YSBudWxsXG4iKTsKPj4gICAgIAo+
-Cj4gV2VsbCwgaXQncyBmYWlybHkgb2J2aW91cyB0aGF0IGphY2stPmphY2sgaXMgTlVMTCBhcyB0
-aGUgc2Vjb25kCj4gb3V0cHV0IGlzIE5VTEwsIGFuZCB0aGUgdGhpcmQgb25lIGhpdHMgT29wcy4K
-Pgo+IE96YW4sIGNvdWxkIHlvdSBjaGVjayB3aGV0aGVyIENPTkZJR19TTkRfSkFDSyBpcyBzZXQg
-aW4KPiBzdGFjOTJ4eF9hZGRfamFjaywgZS5nLiBsaWtlIGJlbG93Pwo+Cj4gICAKTm9wZSBpdCBz
-ZWVtcyB0aGF0IGl0J3Mgbm90IHNldCBhcyB0aGUgI2Vycm9yIHByYWdtYSBpcyBleGVjdXRlZC4g
-SQpsb29rZWQgaW50byB0aGUgY29uZmlndXJlIHNjcmlwdCBhbmQgZm91bmQgdGhlIGZvbGxvd2lu
-ZzoKCiAgaWYgYWxzYV9jaGVja19rY29uZmlnX29wdGlvbiAiaGRhLWlucHV0LWphY2siOyB0aGVu
-CiAgICBpZiAoIHRlc3QgIiRDT05GSUdfU05EX1BDSSIgPSAieSIgLW8gIiRDT05GSUdfU05EX1BD
-SSIgPSAibSIgKSAmJgogICAgICAoIHRlc3QgIiRDT05GSUdfU05EX0hEQV9JTlRFTCIgPSAieSIg
-LW8gIiRDT05GSUdfU05EX0hEQV9JTlRFTCIgPQoibSIgKSAmJgogICAgICAoIHRlc3QgIiRDT05G
-SUdfSU5QVVQiID0gInkiIC1vICIkQ09ORklHX0lOUFVUIiA9ICJtIiApOyB0aGVuCiAgICAgIHRl
-c3QgIiRrdmVyc2lvbi4ka3BhdGNobGV2ZWwiID0gIjIuNiIgLWEgJGtzdWJsZXZlbCAtZ2UgMjcg
-JiYKQ09ORklHX1NORF9KQUNLPSJ5IgogICAgICBDT05GSUdfU05EX0hEQV9JTlBVVF9KQUNLPSJ5
-IgogIGZpCgpTTkRfSkFDSyBpcyBzZXQgaWYgc3VibGV2ZWwgPj0gMjcgYnV0IFNORF9IREFfSU5Q
-VVRfSkFDSyBpcyBzZXQKcmVnYXJkbGVzcyBvZiBhbnl0aGluZy4gV2h5IHRoZSBsb3dlciBsaW1p
-dCBpcyAyNyBmb3IgdGhhdCBmdW5jdGlvbmFsaXR5PwoKCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Thu, Aug 06, 2009 at 04:55:31PM -0700, Troy Kisky wrote:
+> dai is a parameter to the functions, so use it instead of
+> looking it up.
+
+> Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
+
+I've applied this and patch 1, thanks.  The other patches look OK at
+first glance but I've not reviewed them properly yet.
