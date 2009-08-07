@@ -1,19 +1,16 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: Re: [BUG] NULL pointer dereference in patch_sigmatel.c
-Date: Fri, 07 Aug 2009 12:33:43 +0300
-Message-ID: <4A7BF4F7.20405@pardus.org.tr>
-References: <4A5F84D6.5040708@pardus.org.tr>
-	<s5h1vofac2z.wl%tiwai@suse.de>	<s5hy6qn8wyj.wl%tiwai@suse.de>
-	<4A7ADD87.4030109@pardus.org.tr> <s5hfxc5114w.wl%tiwai@suse.de>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: PROC_COEF/PROC_INDEX question
+Date: Fri, 7 Aug 2009 17:38:59 +0800
+Message-ID: <20090807093859.GA2155@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lider.pardus.org.tr (lider.uludag.org.tr [193.140.100.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9804210382A
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 899BC103883
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Aug 2009 11:30:23 +0200 (CEST)
-In-Reply-To: <s5hfxc5114w.wl%tiwai@suse.de>
+	Fri,  7 Aug 2009 11:39:03 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,50 +20,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-VGFrYXNoaSBJd2FpIHdyb3RlIE9uIDA2LTA4LTIwMDkgMTc6MTM6Cj4gQXQgVGh1LCAwNiBBdWcg
-MjAwOSAxNjo0MToyNyArMDMwMCwKPiBPemFuIMOHYcSfbGF5YW4gd3JvdGU6Cj4gICAKPj4gVGFr
-YXNoaSBJd2FpIHdyb3RlIE9uIDE3LTA3LTIwMDkgMTI6NDU6Cj4+ICAgICAKPj4+IEF0IEZyaSwg
-MTcgSnVsIDIwMDkgMTE6MzM6MDggKzAyMDAsCj4+PiBJIHdyb3RlOgo+Pj4gICAKPj4+ICAgICAg
-IAo+Pj4+IEF0IFRodSwgMTYgSnVsIDIwMDkgMjI6NTE6NTAgKzAzMDAsCj4+Pj4gT3phbiDDh2HE
-n2xheWFuIHdyb3RlOgo+Pj4+ICAgICAKPj4+PiAgICAgICAgIAo+Pj4+PiBIaSwKPj4+Pj4KPj4+
-Pj4gT25lIG9mIG91ciB1c2VycyBpcyBoYXZpbmcgYSBOVUxMIHB0ciBkZXJlZmVyZW5jZSB1cG9u
-IGxvYWRpbmcgdGhlCj4+Pj4+IHNuZF9oZGFfaW50ZWwgbW9kdWxlIHdpdGggMjAwOTA2MjQncyBz
-bmFwc2hvdC4gVGhlcmUncyBvbmx5IG9uZSBjb21taXQKPj4+Pj4gYWZ0ZXIgdGhhdCBkYXRlIGlu
-IHBhdGNoX3NpZ21hdGVsLmMgc28gSSBkaWRuJ3QgdGVsbCBoaW0gdG8gdHJ5IHdpdGggdGhlCj4+
-Pj4+IGxhdGVzdCBzbmFwc2hvdCBidXQgaWYgeW91IHRoaW5rIHRoYXQgdGhlIGJ1ZyBtYXkgYmUg
-cmVsYXRlZCB0byBhbm90aGVyCj4+Pj4+IHBhcnQgb2YgdGhlIEFMU0EgY29kZWJhc2UsIEkgY2Fu
-IG1ha2UgaGltIHRyeSB0aGUgbGF0ZXN0IHNuYXBzaG90Lgo+Pj4+PiAgICAgICAKPj4+Pj4gICAg
-ICAgICAgIAo+Pj4+IEkgc3VwcG9zZSB5b3UgYXJlIHVzaW5nIHVuc3RhYmxlIHRyZWUsIHJpZ2h0
-Pwo+Pj4+ICAgICAKPj4+PiAgICAgICAgIAo+Pj4gTG9va2luZyB0aHJvdWdoIHRoZSBzdGFjayB0
-cmFjZSwgaXQncyBub3QuLi4KPj4+ICAgCj4+PiAgICAgICAKPj4gT2theSBJJ3ZlIGZvdW5kZWQg
-dGhlIHByb2JsZW0uIEhlcmUncyB0aGUgcmVsZXZhbnQgY29kZSBwb3J0aW9uIHRoYXQKPj4gSSd2
-ZSBnb3QgZnJvbSBnZGI6Cj4+Cj4+IChnZGIpIGxpc3QgKmN4dDUwNTFfaW5pdCsweDkwCj4+IDB4
-ZGY0IGlzIGluIGN4dDUwNTFfaW5pdAo+PiAoL3Zhci9waXNpL2Fsc2EtZHJpdmVyLTEuMC4yMF8y
-MDA5MDgwNS00MS93b3JrL2Fsc2EtZHJpdmVyL3BjaS9oZGEvLi4vLi4vYWxzYS1rZXJuZWwvcGNp
-L2hkYS9wYXRjaF9jb25leGFudC5jOjM4NCkuCj4+IDM3OSAgICAgICAgICAgICBqYWNrLT50eXBl
-ID0gdHlwZTsKPj4gMzgwCj4+IDM4MSAgICAgICAgICAgICBlcnIgPSBzbmRfamFja19uZXcoY29k
-ZWMtPmJ1cy0+Y2FyZCwgbmFtZSwgdHlwZSwKPj4gJmphY2stPmphY2spOwo+PiAzODIgICAgICAg
-ICAgICAgaWYgKGVyciA8IDApCj4+IDM4MyAgICAgICAgICAgICAgICAgICAgIHJldHVybiBlcnI7
-Cj4+IDM4NCAgICAgICAgICAgICBqYWNrLT5qYWNrLT5wcml2YXRlX2RhdGEgPSBqYWNrOwo+PiAz
-ODUgICAgICAgICAgICAgamFjay0+amFjay0+cHJpdmF0ZV9mcmVlID0gY29uZXhhbnRfZnJlZV9q
-YWNrX3ByaXY7Cj4+IDM4NiAgICAgICAgICAgICByZXR1cm4gMDsKPj4gMzg3ICAgICB9Cj4+IDM4
-OAo+PiAgICAgCj4KPiBTbywgZWl0aGVyIGphY2sgb3IgamFjay0+amFjayBpcyBhIHdyb25nIHZh
-bHVlLCBsaWtlbHkgTlVMTC4gIENvdWxkCj4geW91IGFkZCBhIGRlYnVnIHByaW50IHRvIHZlcmlm
-eSB0aGF0Pwo+ICAgCgpBZGRlZCB0aGUgZm9sbG93aW5nIGxpbmVzOgoKcHJpbnRrKEtFUk5fSU5G
-TyAiMHglcFxuIiwgamFjayk7CnByaW50ayhLRVJOX0lORk8gIjB4JXBcbiIsIGphY2stPmphY2sp
-OwpwcmludGsoS0VSTl9JTkZPICIweCVwXG4iLCBqYWNrLT5qYWNrLT5wcml2YXRlX2RhdGEpOwoK
-ZG1lc2c6CgpOVlJNOiBsb2FkaW5nIE5WSURJQSBVTklYIHg4NiBLZXJuZWwgTW9kdWxlICAxODAu
-NTEgIFRodSBBcHIgMTYgMTk6MDI6MTUKUERUIDIwMDkKQUNQSTogUENJIEludGVycnVwdCAwMDAw
-OjAwOjFiLjBbQV0gLT4gR1NJIDIyIChsZXZlbCwgbG93KSAtPiBJUlEgMjIKUENJOiBTZXR0aW5n
-IGxhdGVuY3kgdGltZXIgb2YgZGV2aWNlIDAwMDA6MDA6MWIuMCB0byA2NAoweGY3NzdhNjE0CjB4
-MDAwMDAwMDAKQlVHOiB1bmFibGUgdG8gaGFuZGxlIGtlcm5lbCBOVUxMIHBvaW50ZXIgZGVyZWZl
-cmVuY2UgYXQgMDAwMDAwNzQKSVA6IFs8ZjkzZjJkOTc+XSA6c25kX2hkYV9jb2RlY19jb25leGFu
-dDpjb25leGFudF9hZGRfamFjaysweDU3LzB4ODEKKnBkZSA9IDAwMDAwMDAwwrcKT29wczogMDAw
-MCBbIzFdIFNNUAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+Hello,
+
+I'm not sure of the usage for GET_PROC_COEF/GET_COEF_INDEX, and found
+that their return value is unstable (changing all the time) for codec:
+
+        Codec: Realtek ALC888
+        Address: 2
+        Function Id: 0x1
+        Vendor Id: 0x10ec0888
+        Subsystem Id: 0x80860023
+        Revision Id: 0x100202
+
+For example:
+
+# hda-verb /dev/snd/hwC0D2 0x20 GET_PROC_COEF 0 
+nid = 0x20, verb = 0xc00, param = 0x0
+value = 0x80
+# hda-verb /dev/snd/hwC0D2 0x20 GET_COEF_INDEX 0
+nid = 0x20, verb = 0xd00, param = 0x0
+value = 0xe
+# hda-verb /dev/snd/hwC0D2 0x20 GET_PROC_COEF 0 
+nid = 0x20, verb = 0xc00, param = 0x0
+value = 0x9c00
+# hda-verb /dev/snd/hwC0D2 0x20 GET_COEF_INDEX 0
+nid = 0x20, verb = 0xd00, param = 0x0
+value = 0xf
+
+I wonder if this is the normal case?
+
+Thanks,
+Fengguang
