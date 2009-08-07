@@ -1,83 +1,83 @@
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: Re: [alsa-devel] [PATCH 11/20] OMAP: McBSP: Add link DMA mode
- selection
-Date: Fri, 7 Aug 2009 16:11:02 +0300
-Message-ID: <20090807131102.GA18380@esdhcp037198.research.nokia.com>
-References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
- <1248958183-15015-12-git-send-email-eduardo.valentin@nokia.com>
- <20090805103900.5ad89efe.jhnikula@gmail.com>
- <200908051158.57440.peter.ujfalusi@nokia.com>
- <1FFEF31EBAA4F64B80D33027D4297760047F6AED01@NOK-EUMSG-02.mgdnok.nokia.com>
-Reply-To: eduardo.valentin@nokia.com
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: Re: [BUG] NULL pointer dereference in patch_sigmatel.c
+Date: Fri, 07 Aug 2009 16:39:19 +0300
+Message-ID: <4A7C2E87.1060102@pardus.org.tr>
+References: <4A5F84D6.5040708@pardus.org.tr>	<s5h1vofac2z.wl%tiwai@suse.de>	<s5hy6qn8wyj.wl%tiwai@suse.de>	<4A7ADD87.4030109@pardus.org.tr>	<s5hfxc5114w.wl%tiwai@suse.de>	<4A7BF4F7.20405@pardus.org.tr>	<ad2655cb0908070243h6318dbdep80d90a08fa6c435b@mail.gmail.com>	<s5hiqh0ymkn.wl%tiwai@suse.de>	<4A7C03BE.7040300@pardus.org.tr>
+	<s5hd477zyo1.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1FFEF31EBAA4F64B80D33027D4297760047F6AED01@NOK-EUMSG-02.mgdnok.nokia.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
-Cc: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "jhnikula@gmail.com" <jhnikula@gmail.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lider.pardus.org.tr (lider.uludag.org.tr [193.140.100.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 83024103801
+	for <alsa-devel@alsa-project.org>;
+	Fri,  7 Aug 2009 15:36:00 +0200 (CEST)
+In-Reply-To: <s5hd477zyo1.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, James Courtier-Dutton <james.dutton@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello guys,
-
-On Thu, Aug 06, 2009 at 08:15:40PM +0200, Nurkkala Eero.An (EXT-Offcode=
-/Oulu) wrote:
->=20
-> >>
-> >> I would say the default mode for the omap34xx should be also eleme=
-nt as
-> >> it keeps the omap_pcm_pointer behavior the same than currently and
-> >> avoids possible regression.
-> >=20
-> > Yes, the default mode should be the element mode in my opinion as w=
-ell.
-> >=20
-> > --
-> > P=E9ter
->=20
->=20
-> Well, the element mode is fine for !McBSP2. One doesn't really loose =
-the
-> buffer pointer accuracy, because you can get the last DMA irq timesta=
-mp
-> with SNDRV_PCM_IOCTL_TTSTAMP (and compare that to current time).
-> The accuracy is not far off from the element mode? (If you read the D=
-MA
-> portion of TRM, I think there were some issues as well)
->=20
-> Don't want to be piccy, but McBSP2 with element mode is more or less =
-like
-> a "joke"? As there's a large HW bugger, why not take advantage of it.=
-=2Ewhy=20
-> "bypass"  it as default?
->=20
-> For !McBSP2, it doesn't even pay to have the threshold mode at all, b=
-ecause
-> the effect on PM is actually adverse - too frequent wakeups will caus=
-e more
-> adverse net effect on PM (IIRC) @ VBAT.
-
-I agree with Eero in this point. We can set mcbsp2 default op mode to t=
-hreshold.
-
-I think we are even here :) two believe that must be element mode by de=
-fault,
-while two want default threshold (at least for mcbsp2). We need another=
- opinion.
-
->=20
-> - Eero --
-> To unsubscribe from this list: send the line "unsubscribe alsa-devel"=
- in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
---=20
-Eduardo Valentin
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+VGFrYXNoaSBJd2FpIHdyb3RlIE9uIDA3LTA4LTIwMDkgMTM6NDk6Cj4gQXQgRnJpLCAwNyBBdWcg
+MjAwOSAxMzozNjo0NiArMDMwMCwKPiBPemFuIMOHYcSfbGF5YW4gd3JvdGU6Cj4gICAKPj4gVGFr
+YXNoaSBJd2FpIHdyb3RlIE9uIDA3LTA4LTIwMDkgMTI6NTY6Cj4+ICAgICAKPj4+IEF0IEZyaSwg
+NyBBdWcgMjAwOSAxMDo0MzowNyArMDEwMCwKPj4+IEphbWVzIENvdXJ0aWVyLUR1dHRvbiB3cm90
+ZToKPj4+ICAgCj4+PiAgICAgICAKPj4+PiAyMDA5LzgvNyBPemFuIMOHYcSfbGF5YW4gPG96YW5A
+cGFyZHVzLm9yZy50cj46Cj4+Pj4gICAgIAo+Pj4+ICAgICAgICAgCj4+Pj4+IEFkZGVkIHRoZSBm
+b2xsb3dpbmcgbGluZXM6Cj4+Pj4+Cj4+Pj4+IHByaW50ayhLRVJOX0lORk8gIjB4JXBcbiIsIGph
+Y2spOwo+Pj4+PiBwcmludGsoS0VSTl9JTkZPICIweCVwXG4iLCBqYWNrLT5qYWNrKTsKPj4+Pj4g
+cHJpbnRrKEtFUk5fSU5GTyAiMHglcFxuIiwgamFjay0+amFjay0+cHJpdmF0ZV9kYXRhKTsKPj4+
+Pj4KPj4+Pj4gZG1lc2c6Cj4+Pj4+Cj4+Pj4+IE5WUk06IGxvYWRpbmcgTlZJRElBIFVOSVggeDg2
+IEtlcm5lbCBNb2R1bGUgIDE4MC41MSAgVGh1IEFwciAxNiAxOTowMjoxNQo+Pj4+PiBQRFQgMjAw
+OQo+Pj4+PiBBQ1BJOiBQQ0kgSW50ZXJydXB0IDAwMDA6MDA6MWIuMFtBXSAtPiBHU0kgMjIgKGxl
+dmVsLCBsb3cpIC0+IElSUSAyMgo+Pj4+PiBQQ0k6IFNldHRpbmcgbGF0ZW5jeSB0aW1lciBvZiBk
+ZXZpY2UgMDAwMDowMDoxYi4wIHRvIDY0Cj4+Pj4+IDB4Zjc3N2E2MTQKPj4+Pj4gMHgwMDAwMDAw
+MAo+Pj4+PiBCVUc6IHVuYWJsZSB0byBoYW5kbGUga2VybmVsIE5VTEwgcG9pbnRlciBkZXJlZmVy
+ZW5jZSBhdCAwMDAwMDA3NAo+Pj4+PiBJUDogWzxmOTNmMmQ5Nz5dIDpzbmRfaGRhX2NvZGVjX2Nv
+bmV4YW50OmNvbmV4YW50X2FkZF9qYWNrKzB4NTcvMHg4MQo+Pj4+PiAqcGRlID0gMDAwMDAwMDDC
+two+Pj4+PiBPb3BzOiAwMDAwIFsjMV0gU01QCj4+Pj4+Cj4+Pj4+ICAgICAgIAo+Pj4+PiAgICAg
+ICAgICAgCj4+Pj4gTmVlZCBtb3JlIG9mIHRoZSBkbWVzZyBvdXRwdXQuCj4+Pj4gSS5lLiB0byBz
+ZWUgd2hpY2ggcHJpbnQgc3RhdGVtZW50cyBzdWNjZWVkZWQuCj4+Pj4gQWx0ZXJuYXRpdmVseSwg
+YXR0YWNoIHRoZSBzbmRfaGRhLmtvIHNvIG9uZSBjYW4gc2VlIHdoZXJlIGluIHRoYXQgZmlsZQo+
+Pj4+IG9mZnNldCAweDU3IGlzLgo+Pj4+IEJ1dCBhIG1vcmUgdXNlZnVsIHByaW50IHdvdWxkIGJl
+Ogo+Pj4+IGlmICghamFjaykgcHJpbnRrKEtFUk5fSU5GTyAiamFjayBudWxsXG4iKTsKPj4+PiBl
+bHNlIGlmICghKGphY2stPmphY2spKSBwcmludGsoS0VSTl9JTkZPICJqYWNrLT5qYWNrIG51bGxc
+biIpOwo+Pj4+IGVsc2UgaWYgKCEoamFjay0+amFjay0+cHJpdmF0ZV9kYXRhKSkgcHJpbnRrKEtF
+Uk5fSU5GTwo+Pj4+ICJqYWNrLT5qYWNrLT5wcml2YXRlX2RhdGEgbnVsbFxuIik7Cj4+Pj4gICAg
+IAo+Pj4+ICAgICAgICAgCj4+PiBXZWxsLCBpdCdzIGZhaXJseSBvYnZpb3VzIHRoYXQgamFjay0+
+amFjayBpcyBOVUxMIGFzIHRoZSBzZWNvbmQKPj4+IG91dHB1dCBpcyBOVUxMLCBhbmQgdGhlIHRo
+aXJkIG9uZSBoaXRzIE9vcHMuCj4+Pgo+Pj4gT3phbiwgY291bGQgeW91IGNoZWNrIHdoZXRoZXIg
+Q09ORklHX1NORF9KQUNLIGlzIHNldCBpbgo+Pj4gc3RhYzkyeHhfYWRkX2phY2ssIGUuZy4gbGlr
+ZSBiZWxvdz8KPj4+Cj4+PiAgIAo+Pj4gICAgICAgCj4+IE5vcGUgaXQgc2VlbXMgdGhhdCBpdCdz
+IG5vdCBzZXQgYXMgdGhlICNlcnJvciBwcmFnbWEgaXMgZXhlY3V0ZWQuIEkKPj4gbG9va2VkIGlu
+dG8gdGhlIGNvbmZpZ3VyZSBzY3JpcHQgYW5kIGZvdW5kIHRoZSBmb2xsb3dpbmc6Cj4+Cj4+ICAg
+aWYgYWxzYV9jaGVja19rY29uZmlnX29wdGlvbiAiaGRhLWlucHV0LWphY2siOyB0aGVuCj4+ICAg
+ICBpZiAoIHRlc3QgIiRDT05GSUdfU05EX1BDSSIgPSAieSIgLW8gIiRDT05GSUdfU05EX1BDSSIg
+PSAibSIgKSAmJgo+PiAgICAgICAoIHRlc3QgIiRDT05GSUdfU05EX0hEQV9JTlRFTCIgPSAieSIg
+LW8gIiRDT05GSUdfU05EX0hEQV9JTlRFTCIgPQo+PiAibSIgKSAmJgo+PiAgICAgICAoIHRlc3Qg
+IiRDT05GSUdfSU5QVVQiID0gInkiIC1vICIkQ09ORklHX0lOUFVUIiA9ICJtIiApOyB0aGVuCj4+
+ICAgICAgIHRlc3QgIiRrdmVyc2lvbi4ka3BhdGNobGV2ZWwiID0gIjIuNiIgLWEgJGtzdWJsZXZl
+bCAtZ2UgMjcgJiYKPj4gQ09ORklHX1NORF9KQUNLPSJ5Igo+PiAgICAgICBDT05GSUdfU05EX0hE
+QV9JTlBVVF9KQUNLPSJ5Igo+PiAgIGZpCj4+Cj4+IFNORF9KQUNLIGlzIHNldCBpZiBzdWJsZXZl
+bCA+PSAyNyBidXQgU05EX0hEQV9JTlBVVF9KQUNLIGlzIHNldAo+PiByZWdhcmRsZXNzIG9mIGFu
+eXRoaW5nLiBXaHkgdGhlIGxvd2VyIGxpbWl0IGlzIDI3IGZvciB0aGF0IGZ1bmN0aW9uYWxpdHk/
+Cj4+ICAgICAKPgo+IEJlY2F1c2Ugb2Yga2VybmVsIEFQSSBjaGFuZ2UsIGl0IGNhbid0IGJlIGJ1
+aWx0IHdpdGggb2xkZXIga2VybmVscy4KPgo+IFRoZSBwYXRjaCBiZWxvdyBzaG91bGQgZml4IHRo
+ZSBwcm9ibGVtLiAgR2l2ZSBpdCBhIHRyeS4KPgo+ICAgClRoZSBwYXRjaCBiZWxvdyBkb2Vzbid0
+IHVuZGVmIENPTkZJR19TTkRfSERBX0lOUFVUX0pBQ0sgYWZ0ZXIKY29uZmlndXJpbmcuIEFjdHVh
+bGx5IHRoZXJlIGFyZSBjb25maWcxLmgqIGFuZCBjb25maWcuaCogYW5kIGJvdGgKY29udGFpbnMg
+ZGVmL3VuZGVmcyBmb3IgKkpBQ0sqIHN0dWZmLiBCdXQgSSdsbCB1bmRlZmluZSBpdCBhZnRlcgpj
+b25maWd1cmUgYW5kIHRoZW4gY29tcGlsZSB0byBzZWUgaXQgdGhlIGVycm9yIGdvZXMuCgpJIGRv
+bid0IGhhdmUgdGhlIGNvbXB1dGVyIHJpZ2h0IG5vdywgd2lsbCBjb250aW51ZSB0byBkZWJ1ZyBN
+b25kYXkuCgoKVGhhbmtzLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
