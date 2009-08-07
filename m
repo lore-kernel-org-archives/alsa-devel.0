@@ -1,20 +1,26 @@
 From: Jon Smirl <jonsmirl@gmail.com>
-Subject: Re: Fixed module builds of soc/fsl/*.c
-Date: Fri, 7 Aug 2009 11:07:17 -0400
-Message-ID: <9e4733910908070807x2c1ef0det834fb60ad8b38f73@mail.gmail.com>
-References: <s5heirny98v.wl%tiwai@suse.de> <20090807144540.GH639@sirena.org.uk>
+Subject: Re: MPC5200/WM9712 mute problem
+Date: Fri, 7 Aug 2009 11:16:12 -0400
+Message-ID: <9e4733910908070816x4aa3ab8nc79fd65dd56efca0@mail.gmail.com>
+References: <20090731230311.17686.46431.stgit@riker>
+	<9e4733910908010647k3a4a22c5jf9b9eda482f016b1@mail.gmail.com>
+	<1249139096.4582.13.camel@riker> <20090802114950.GA1778@sirena.org.uk>
+	<1249489853.4582.58.camel@riker>
+	<20090805170305.GC16844@sirena.org.uk>
+	<1249579721.5844.88.camel@riker>
+	<20090807095601.GA8175@rakim.wolfsonmicro.main>
+	<1249656522.5844.89.camel@riker>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f181.google.com (mail-yw0-f181.google.com
-	[209.85.211.181])
-	by alsa0.perex.cz (Postfix) with ESMTP id 490F31038D8
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.248])
+	by alsa0.perex.cz (Postfix) with ESMTP id 78E5D1038D8
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Aug 2009 17:07:19 +0200 (CEST)
-Received: by ywh11 with SMTP id 11so2279317ywh.16
-	for <alsa-devel@alsa-project.org>; Fri, 07 Aug 2009 08:07:18 -0700 (PDT)
-In-Reply-To: <20090807144540.GH639@sirena.org.uk>
+	Fri,  7 Aug 2009 17:16:14 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c37so434336anc.2
+	for <alsa-devel@alsa-project.org>; Fri, 07 Aug 2009 08:16:12 -0700 (PDT)
+In-Reply-To: <1249656522.5844.89.camel@riker>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,75 +30,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: John Bonesio <bones@secretlab.ca>
+Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Millbrandt <emillbrandt@dekaresearch.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 7, 2009 at 10:45 AM, Mark
-Brown<broonie@opensource.wolfsonmicro.com> wrote:
-> On Fri, Aug 07, 2009 at 04:44:00PM +0200, Takashi Iwai wrote:
->> JFYI, I merged the patch below now.
+On Fri, Aug 7, 2009 at 10:48 AM, John Bonesio<bones@secretlab.ca> wrote:
+> On Fri, 2009-08-07 at 10:56 +0100, Mark Brown wrote:
+>> On Thu, Aug 06, 2009 at 10:28:41AM -0700, John Bonesio wrote:
+>>
+>> > I'm open to more suggestions or thoughts on the approach I've taken so
+>> > far.
+>>
+>> The approach you've been taking sounds reasonable; at this point I'd be
+>> looking at trying to confirm that the controller is doing what's been
+>> asked of it. =A0Checking that the CODEC power rails are all within spec
+>> and looking at other bits in the same register may also be useful.
+
+You can turn on an interrupt that gets triggered when the register
+wire completes. That would give you a clue if too many register writes
+are happening.
+
+A DSO or logical analyzer would make this much faster to isolate.
+
+>>
+>> Is the system otherwise idle when the problem occurs?
 >
-> Thanks. =A0CCing in Jon, who wrote the drivers, for info.
-
-Looks fine. We always build them into the kernel. I forgot to check
-the standalone build.
-
-
->> From afc5e65245255a268ab22a20477ed2c9f2cdfcd3 Mon Sep 17 00:00:00 2001
->> From: Takashi Iwai <tiwai@suse.de>
->> Date: Fri, 7 Aug 2009 16:33:53 +0200
->> Subject: ASoC: Add missing DRV_NAME definitions for fsl/* drivers
->>
->> Module builds are broken due to missing DRV_NAME for
->> efika-audio-fabric and pcm030-audio-fabric.
->>
->> Signed-off-by: Takashi Iwai <tiwai@suse.de>
->> ---
->> =A0sound/soc/fsl/efika-audio-fabric.c =A0| =A0 =A02 ++
->> =A0sound/soc/fsl/pcm030-audio-fabric.c | =A0 =A02 ++
->> =A02 files changed, 4 insertions(+), 0 deletions(-)
->>
->> diff --git a/sound/soc/fsl/efika-audio-fabric.c b/sound/soc/fsl/efika-au=
-dio-fabric.c
->> index 85b0e75..3326e2a 100644
->> --- a/sound/soc/fsl/efika-audio-fabric.c
->> +++ b/sound/soc/fsl/efika-audio-fabric.c
->> @@ -30,6 +30,8 @@
->> =A0#include "mpc5200_psc_ac97.h"
->> =A0#include "../codecs/stac9766.h"
->>
->> +#define DRV_NAME "efika-audio-fabric"
->> +
->> =A0static struct snd_soc_device device;
->> =A0static struct snd_soc_card card;
->>
->> diff --git a/sound/soc/fsl/pcm030-audio-fabric.c b/sound/soc/fsl/pcm030-=
-audio-fabric.c
->> index 8766f7a..b928ef7 100644
->> --- a/sound/soc/fsl/pcm030-audio-fabric.c
->> +++ b/sound/soc/fsl/pcm030-audio-fabric.c
->> @@ -30,6 +30,8 @@
->> =A0#include "mpc5200_psc_ac97.h"
->> =A0#include "../codecs/wm9712.h"
->>
->> +#define DRV_NAME "pcm030-audio-fabric"
->> +
->> =A0static struct snd_soc_device device;
->> =A0static struct snd_soc_card card;
->>
->> --
->> 1.6.3.3
->>
->>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
+> Yes the system is idle - just me fiddling with the mute settings.
 >
-> --
-> "You grabbed my hand and we fell into it, like a daydream - or a fever."
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >
 
 
