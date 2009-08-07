@@ -1,26 +1,21 @@
-From: Jon Smirl <jonsmirl@gmail.com>
-Subject: Re: MPC5200/WM9712 mute problem
-Date: Fri, 7 Aug 2009 11:16:12 -0400
-Message-ID: <9e4733910908070816x4aa3ab8nc79fd65dd56efca0@mail.gmail.com>
-References: <20090731230311.17686.46431.stgit@riker>
-	<9e4733910908010647k3a4a22c5jf9b9eda482f016b1@mail.gmail.com>
-	<1249139096.4582.13.camel@riker> <20090802114950.GA1778@sirena.org.uk>
-	<1249489853.4582.58.camel@riker>
-	<20090805170305.GC16844@sirena.org.uk>
-	<1249579721.5844.88.camel@riker>
-	<20090807095601.GA8175@rakim.wolfsonmicro.main>
-	<1249656522.5844.89.camel@riker>
+From: "Candelaria Villareal, Jorge" <x0107209@ti.com>
+Subject: Re: [PATCH] ASoC: SDP3430: Add support for EXTMUTE
+ using TWL GPIO6
+Date: Fri, 7 Aug 2009 10:33:09 -0500
+Message-ID: <2256F256009DAA4CBE661E9F41EAC84B6DDDA396@dlee01.ent.ti.com>
+References: <2256F256009DAA4CBE661E9F41EAC84B533409F1@dlee01.ent.ti.com>
+	<200908040958.15673.peter.ujfalusi@nokia.com>
+	<200908070852.16561.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.248])
-	by alsa0.perex.cz (Postfix) with ESMTP id 78E5D1038D8
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id CF79B1038AB
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Aug 2009 17:16:14 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c37so434336anc.2
-	for <alsa-devel@alsa-project.org>; Fri, 07 Aug 2009 08:16:12 -0700 (PDT)
-In-Reply-To: <1249656522.5844.89.camel@riker>
+	Fri,  7 Aug 2009 17:33:20 +0200 (CEST)
+In-Reply-To: <200908070852.16561.peter.ujfalusi@nokia.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,42 +25,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John Bonesio <bones@secretlab.ca>
-Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Millbrandt <emillbrandt@dekaresearch.com>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 7, 2009 at 10:48 AM, John Bonesio<bones@secretlab.ca> wrote:
-> On Fri, 2009-08-07 at 10:56 +0100, Mark Brown wrote:
->> On Thu, Aug 06, 2009 at 10:28:41AM -0700, John Bonesio wrote:
->>
->> > I'm open to more suggestions or thoughts on the approach I've taken so
->> > far.
->>
->> The approach you've been taking sounds reasonable; at this point I'd be
->> looking at trying to confirm that the controller is doing what's been
->> asked of it. =A0Checking that the CODEC power rails are all within spec
->> and looking at other bits in the same register may also be useful.
+ 
 
-You can turn on an interrupt that gets triggered when the register
-wire completes. That would give you a clue if too many register writes
-are happening.
+> -----Original Message-----
+> From: Peter Ujfalusi [mailto:peter.ujfalusi@nokia.com] 
+> Sent: Friday, August 07, 2009 12:52 AM
+> To: alsa-devel@alsa-project.org
+> Cc: Candelaria Villareal, Jorge; broonie@opensource.wolfsonmicro.com
+> Subject: Re: [alsa-devel] [PATCH] ASoC: SDP3430: Add support 
+> for EXTMUTE using TWL GPIO6
+> 
+> On Tuesday 04 August 2009 09:58:15 Ujfalusi Peter 
+> (Nokia-D/Tampere) wrote:
+> > On Wednesday 15 July 2009 04:04:08 ext Candelaria 
+> Villareal, Jorge wrote:
+> > > Board sdp3430 has hardware support for EXTMUTE using TWL4030 GPIO6
+> > > line, controlled by register INTBR_PMBR1. Machine driver 
+> takes care
+> > > of enabling gpio line through i2c and codec driver manipulates the
+> > > line during headset ramp up/down sequence.
+> > >
+> > > +#define TWL4030_INTBR_PMBR1	0x0D
+> > > +#define EXTMUTE(value)		(value << 2)
+> >
+> > This is confusing, should it be something like this?:
+> > #define GPIO6_PWM0_MUX(value)		(value << 2)
+> 
+> If you intend to change this, than GPIO6_PWM0_MUX sounds 
+> weird as well, in this 
+> way it should be GPIO6_PWM0_EXTMUTE_MUX, which not so nice...
+> TWL4030_GPIO6_MUX() seams much better...
+> 
 
-A DSO or logical analyzer would make this much faster to isolate.
+How about naming the field as it is named in TRM, GPIO6_PWM0_MUTE.
 
->>
->> Is the system otherwise idle when the problem occurs?
->
-> Yes the system is idle - just me fiddling with the mute settings.
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
-
-
-
--- =
-
-Jon Smirl
-jonsmirl@gmail.com
+That way, if there is any confusion TWL4030 TRM should be able to
+clear any doubts. Also, it states clearly whicho mode correspond to
+each value.
