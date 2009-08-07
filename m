@@ -1,19 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH][2.6.31-rc5] ARM: OMAP: McBSP: Fix ASoC on
-	OMAP1510 by fixing API of omap_mcbsp_start/stop
-Date: Fri, 7 Aug 2009 11:52:47 +0300
-Message-ID: <200908071152.47243.peter.ujfalusi@nokia.com>
-References: <1249628387-7372-1-git-send-email-jhnikula@gmail.com>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: Re: [BUG] NULL pointer dereference in patch_sigmatel.c
+Date: Fri, 07 Aug 2009 12:33:43 +0300
+Message-ID: <4A7BF4F7.20405@pardus.org.tr>
+References: <4A5F84D6.5040708@pardus.org.tr>
+	<s5h1vofac2z.wl%tiwai@suse.de>	<s5hy6qn8wyj.wl%tiwai@suse.de>
+	<4A7ADD87.4030109@pardus.org.tr> <s5hfxc5114w.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id F24C0103898
+Received: from lider.pardus.org.tr (lider.uludag.org.tr [193.140.100.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9804210382A
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Aug 2009 10:53:10 +0200 (CEST)
-In-Reply-To: <1249628387-7372-1-git-send-email-jhnikula@gmail.com>
-Content-Disposition: inline
+	Fri,  7 Aug 2009 11:30:23 +0200 (CEST)
+In-Reply-To: <s5hfxc5114w.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,43 +23,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 07 August 2009 09:59:47 ext Jarkko Nikula wrote:
-> Simultaneous audio playback and capture on OMAP1510 can cause that second
-> stream is stalled if there is enough delay between startup of the audio
-> streams.
->
-> Current implementation of the omap_mcbsp_start is starting both transmitter
-> and receiver at the same time and it is called only for firstly started
-> audio stream from the OMAP McBSP based ASoC DAI driver.
->
-> Since DMA request lines on OMAP1510 are edge sensitive, the DMA request is
-> missed if there is no DMA transfer set up at that time when the first word
-> after McBSP startup is transmitted. The problem hasn't noted before since
-> later OMAPs are using level sensitive DMA request lines.
->
-> Fix the problem by changing API of omap_mcbsp_start and omap_mcbsp_stop by
-> allowing to start and stop individually McBSP transmitter and receiver
-> logics. Then call those functions individually for both audio playback
-> and capture streams. This ensures that DMA transfer is setup before
-> transmitter or receiver is started.
->
-> Thanks to Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> for detailed problem
-> analysis and Peter Ujfalusi <peter.ujfalusi@nokia.com> for info about DMA
-> request line behavior differences between the OMAP generations.
->
-> Reported-and-tested-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: Tony Lindgren <tony@atomide.com>
-> ---
->  arch/arm/plat-omap/include/mach/mcbsp.h |    4 +-
->  arch/arm/plat-omap/mcbsp.c              |   50
-> +++++++++++++++++++----------- sound/soc/omap/omap-mcbsp.c             |  
-> 10 +++---
->  3 files changed, 39 insertions(+), 25 deletions(-)
-
-Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+VGFrYXNoaSBJd2FpIHdyb3RlIE9uIDA2LTA4LTIwMDkgMTc6MTM6Cj4gQXQgVGh1LCAwNiBBdWcg
+MjAwOSAxNjo0MToyNyArMDMwMCwKPiBPemFuIMOHYcSfbGF5YW4gd3JvdGU6Cj4gICAKPj4gVGFr
+YXNoaSBJd2FpIHdyb3RlIE9uIDE3LTA3LTIwMDkgMTI6NDU6Cj4+ICAgICAKPj4+IEF0IEZyaSwg
+MTcgSnVsIDIwMDkgMTE6MzM6MDggKzAyMDAsCj4+PiBJIHdyb3RlOgo+Pj4gICAKPj4+ICAgICAg
+IAo+Pj4+IEF0IFRodSwgMTYgSnVsIDIwMDkgMjI6NTE6NTAgKzAzMDAsCj4+Pj4gT3phbiDDh2HE
+n2xheWFuIHdyb3RlOgo+Pj4+ICAgICAKPj4+PiAgICAgICAgIAo+Pj4+PiBIaSwKPj4+Pj4KPj4+
+Pj4gT25lIG9mIG91ciB1c2VycyBpcyBoYXZpbmcgYSBOVUxMIHB0ciBkZXJlZmVyZW5jZSB1cG9u
+IGxvYWRpbmcgdGhlCj4+Pj4+IHNuZF9oZGFfaW50ZWwgbW9kdWxlIHdpdGggMjAwOTA2MjQncyBz
+bmFwc2hvdC4gVGhlcmUncyBvbmx5IG9uZSBjb21taXQKPj4+Pj4gYWZ0ZXIgdGhhdCBkYXRlIGlu
+IHBhdGNoX3NpZ21hdGVsLmMgc28gSSBkaWRuJ3QgdGVsbCBoaW0gdG8gdHJ5IHdpdGggdGhlCj4+
+Pj4+IGxhdGVzdCBzbmFwc2hvdCBidXQgaWYgeW91IHRoaW5rIHRoYXQgdGhlIGJ1ZyBtYXkgYmUg
+cmVsYXRlZCB0byBhbm90aGVyCj4+Pj4+IHBhcnQgb2YgdGhlIEFMU0EgY29kZWJhc2UsIEkgY2Fu
+IG1ha2UgaGltIHRyeSB0aGUgbGF0ZXN0IHNuYXBzaG90Lgo+Pj4+PiAgICAgICAKPj4+Pj4gICAg
+ICAgICAgIAo+Pj4+IEkgc3VwcG9zZSB5b3UgYXJlIHVzaW5nIHVuc3RhYmxlIHRyZWUsIHJpZ2h0
+Pwo+Pj4+ICAgICAKPj4+PiAgICAgICAgIAo+Pj4gTG9va2luZyB0aHJvdWdoIHRoZSBzdGFjayB0
+cmFjZSwgaXQncyBub3QuLi4KPj4+ICAgCj4+PiAgICAgICAKPj4gT2theSBJJ3ZlIGZvdW5kZWQg
+dGhlIHByb2JsZW0uIEhlcmUncyB0aGUgcmVsZXZhbnQgY29kZSBwb3J0aW9uIHRoYXQKPj4gSSd2
+ZSBnb3QgZnJvbSBnZGI6Cj4+Cj4+IChnZGIpIGxpc3QgKmN4dDUwNTFfaW5pdCsweDkwCj4+IDB4
+ZGY0IGlzIGluIGN4dDUwNTFfaW5pdAo+PiAoL3Zhci9waXNpL2Fsc2EtZHJpdmVyLTEuMC4yMF8y
+MDA5MDgwNS00MS93b3JrL2Fsc2EtZHJpdmVyL3BjaS9oZGEvLi4vLi4vYWxzYS1rZXJuZWwvcGNp
+L2hkYS9wYXRjaF9jb25leGFudC5jOjM4NCkuCj4+IDM3OSAgICAgICAgICAgICBqYWNrLT50eXBl
+ID0gdHlwZTsKPj4gMzgwCj4+IDM4MSAgICAgICAgICAgICBlcnIgPSBzbmRfamFja19uZXcoY29k
+ZWMtPmJ1cy0+Y2FyZCwgbmFtZSwgdHlwZSwKPj4gJmphY2stPmphY2spOwo+PiAzODIgICAgICAg
+ICAgICAgaWYgKGVyciA8IDApCj4+IDM4MyAgICAgICAgICAgICAgICAgICAgIHJldHVybiBlcnI7
+Cj4+IDM4NCAgICAgICAgICAgICBqYWNrLT5qYWNrLT5wcml2YXRlX2RhdGEgPSBqYWNrOwo+PiAz
+ODUgICAgICAgICAgICAgamFjay0+amFjay0+cHJpdmF0ZV9mcmVlID0gY29uZXhhbnRfZnJlZV9q
+YWNrX3ByaXY7Cj4+IDM4NiAgICAgICAgICAgICByZXR1cm4gMDsKPj4gMzg3ICAgICB9Cj4+IDM4
+OAo+PiAgICAgCj4KPiBTbywgZWl0aGVyIGphY2sgb3IgamFjay0+amFjayBpcyBhIHdyb25nIHZh
+bHVlLCBsaWtlbHkgTlVMTC4gIENvdWxkCj4geW91IGFkZCBhIGRlYnVnIHByaW50IHRvIHZlcmlm
+eSB0aGF0Pwo+ICAgCgpBZGRlZCB0aGUgZm9sbG93aW5nIGxpbmVzOgoKcHJpbnRrKEtFUk5fSU5G
+TyAiMHglcFxuIiwgamFjayk7CnByaW50ayhLRVJOX0lORk8gIjB4JXBcbiIsIGphY2stPmphY2sp
+OwpwcmludGsoS0VSTl9JTkZPICIweCVwXG4iLCBqYWNrLT5qYWNrLT5wcml2YXRlX2RhdGEpOwoK
+ZG1lc2c6CgpOVlJNOiBsb2FkaW5nIE5WSURJQSBVTklYIHg4NiBLZXJuZWwgTW9kdWxlICAxODAu
+NTEgIFRodSBBcHIgMTYgMTk6MDI6MTUKUERUIDIwMDkKQUNQSTogUENJIEludGVycnVwdCAwMDAw
+OjAwOjFiLjBbQV0gLT4gR1NJIDIyIChsZXZlbCwgbG93KSAtPiBJUlEgMjIKUENJOiBTZXR0aW5n
+IGxhdGVuY3kgdGltZXIgb2YgZGV2aWNlIDAwMDA6MDA6MWIuMCB0byA2NAoweGY3NzdhNjE0CjB4
+MDAwMDAwMDAKQlVHOiB1bmFibGUgdG8gaGFuZGxlIGtlcm5lbCBOVUxMIHBvaW50ZXIgZGVyZWZl
+cmVuY2UgYXQgMDAwMDAwNzQKSVA6IFs8ZjkzZjJkOTc+XSA6c25kX2hkYV9jb2RlY19jb25leGFu
+dDpjb25leGFudF9hZGRfamFjaysweDU3LzB4ODEKKnBkZSA9IDAwMDAwMDAwwrcKT29wczogMDAw
+MCBbIzFdIFNNUAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
