@@ -1,37 +1,24 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/5] ASoC: DaVinci: i2s: don't bounce
-	through rtd to	get dai
-Date: Fri, 7 Aug 2009 11:41:44 +0100
-Message-ID: <20090807104144.GF639@sirena.org.uk>
-References: <1249602935-1267-1-git-send-email-troy.kisky@boundarydevices.com>
+Subject: Re: [PATCH 0/2] Give the N_AMSDELTA line discipline more generic
+ name
+Date: Fri, 7 Aug 2009 11:47:53 +0100
+Message-ID: <20090807104753.GA9002@rakim.wolfsonmicro.main>
+References: <200908061306.27639.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 13C1F10390B
-	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Aug 2009 12:41:46 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-serial-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1249602935-1267-1-git-send-email-troy.kisky@boundarydevices.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Troy Kisky <troy.kisky@boundarydevices.com>
-Cc: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org
+In-Reply-To: <200908061306.27639.jkrzyszt@tis.icnet.pl>
+Sender: linux-serial-owner@vger.kernel.org
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, e3-hacking@earth.li, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 06, 2009 at 04:55:31PM -0700, Troy Kisky wrote:
-> dai is a parameter to the functions, so use it instead of
-> looking it up.
+On Thu, Aug 06, 2009 at 01:06:26PM +0200, Janusz Krzysztofik wrote:
 
-> Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
+> As the line discipline is conceived to be registered from a machine driver, 
+> there should be no conflicts, even if used by several different drivers that 
+> happen to be be built-in side-by-side.
 
-I've applied this and patch 1, thanks.  The other patches look OK at
-first glance but I've not reviewed them properly yet.
+I've applied the patches but squashed them down into one to avoid broken
+builds when doing bisection.
