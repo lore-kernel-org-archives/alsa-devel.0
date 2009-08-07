@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH][2.6.31-rc5] ARM: OMAP: McBSP: Fix ASoC on
- OMAP1510 by fixing API of omap_mcbsp_start/stop
-Date: Fri, 7 Aug 2009 10:58:46 +0100
-Message-ID: <20090807095846.GB8175@rakim.wolfsonmicro.main>
-References: <1249628387-7372-1-git-send-email-jhnikula@gmail.com>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: PROC_COEF/PROC_INDEX question
+Date: Fri, 7 Aug 2009 18:01:21 +0800
+Message-ID: <20090807100121.GA4295@localhost>
+References: <20090807093859.GA2155@localhost> <s5hmy6cyn2t.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8876F1038FD
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 58B091038FE
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Aug 2009 11:58:47 +0200 (CEST)
+	Fri,  7 Aug 2009 12:01:24 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1249628387-7372-1-git-send-email-jhnikula@gmail.com>
+In-Reply-To: <s5hmy6cyn2t.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,13 +22,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 07, 2009 at 09:59:47AM +0300, Jarkko Nikula wrote:
-> Simultaneous audio playback and capture on OMAP1510 can cause that second
-> stream is stalled if there is enough delay between startup of the audio
-> streams.
+On Fri, Aug 07, 2009 at 05:45:14PM +0800, Takashi Iwai wrote:
+> At Fri, 7 Aug 2009 17:38:59 +0800,
+> Wu Fengguang wrote:
+> > 
+> > Hello,
+> > 
+> > I'm not sure of the usage for GET_PROC_COEF/GET_COEF_INDEX, and found
+> > that their return value is unstable (changing all the time) for codec:
+> > 
+> >         Codec: Realtek ALC888
+> >         Address: 2
+> >         Function Id: 0x1
+> >         Vendor Id: 0x10ec0888
+> >         Subsystem Id: 0x80860023
+> >         Revision Id: 0x100202
+> > 
+> > For example:
+> > 
+> > # hda-verb /dev/snd/hwC0D2 0x20 GET_PROC_COEF 0 
+> > nid = 0x20, verb = 0xc00, param = 0x0
+> > value = 0x80
+> > # hda-verb /dev/snd/hwC0D2 0x20 GET_COEF_INDEX 0
+> > nid = 0x20, verb = 0xd00, param = 0x0
+> > value = 0xe
+> > # hda-verb /dev/snd/hwC0D2 0x20 GET_PROC_COEF 0 
+> > nid = 0x20, verb = 0xc00, param = 0x0
+> > value = 0x9c00
+> > # hda-verb /dev/snd/hwC0D2 0x20 GET_COEF_INDEX 0
+> > nid = 0x20, verb = 0xd00, param = 0x0
+> > value = 0xf
+> > 
+> > I wonder if this is the normal case?
+> 
+> AFAIK, depending on the mode, the index is incremented automatically.
 
-Applied, thanks.
+Ah, yes. That's in line with the above data.
+
+When repeatingly call  GET_PROC_COEF, it returns some 'random' values:
+
+        # hda-verb /dev/snd/hwC0D2 0x20 GET_PROC_COEF 0
+        nid = 0x20, verb = 0xc00, param = 0x0
+        value = 0x4f
+        # hda-verb /dev/snd/hwC0D2 0x20 GET_PROC_COEF 0
+        nid = 0x20, verb = 0xc00, param = 0x0
+        value = 0x8000
+        # hda-verb /dev/snd/hwC0D2 0x20 GET_PROC_COEF 0
+        nid = 0x20, verb = 0xc00, param = 0x0
+        value = 0x2520
+        # hda-verb /dev/snd/hwC0D2 0x20 GET_PROC_COEF 0
+        nid = 0x20, verb = 0xc00, param = 0x0
+        value = 0x3e00
+
+But when repeatingly call GET_COEF_INDEX, it returns the same value:
+
+        # hda-verb /dev/snd/hwC0D2 0x20 GET_COEF_INDEX 0
+        nid = 0x20, verb = 0xd00, param = 0x0
+        value = 0xd
+        # hda-verb /dev/snd/hwC0D2 0x20 GET_COEF_INDEX 0
+        nid = 0x20, verb = 0xd00, param = 0x0
+        value = 0xd
+
+Thanks,
+Fengguang
