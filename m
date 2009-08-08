@@ -1,38 +1,19 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
-Subject: alsamixer -a basic
-Date: Sat, 8 Aug 2009 16:55:48 +0200
-Message-ID: <20090808145547.GD3204@aragorn.home.lxtec.de>
+From: "Pedro I. Sanchez" <psanchez@fosstel.com>
+Subject: Typo in soc/atmel/sam9g20_wm8731.c
+Date: Sat, 08 Aug 2009 13:02:16 -0400
+Message-ID: <4A7DAF98.2040906@fosstel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8913707292472497471=="
+Content-Type: multipart/mixed; boundary="------------070005010805080203040506"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpout.hostsharing.net (smtpout.hostsharing.net
-	[83.223.95.103]) by alsa0.perex.cz (Postfix) with ESMTP id 0C18A245CE
+Received: from a2s40.a2hosting.com (a2s40.a2hosting.com [74.126.24.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2AE852465C
 	for <alsa-devel@alsa-project.org>;
-	Sat,  8 Aug 2009 16:55:50 +0200 (CEST)
-Received: from h01.hostsharing.net (h01.hostsharing.net [83.223.95.29])
-	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by smtpout.hostsharing.net (Postfix) with ESMTPS id 3975450664
-	for <alsa-devel@alsa-project.org>; Sat,  8 Aug 2009 14:55:50 +0000 (UTC)
-Received: from mail.home.lxtec.de (p5B144CCC.dip.t-dialin.net [91.20.76.204])
-	(using TLSv1 with cipher AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by h01.hostsharing.net (Postfix) with ESMTP id 13EB11035FA7C
-	for <alsa-devel@alsa-project.org>;
-	Sat,  8 Aug 2009 16:55:50 +0200 (CEST)
-Received: from localhost ([127.0.0.1])
-	by mail.home.lxtec.de with esmtp (Exim 4.69 1 (LXTEC))
-	id 1MZnKn-0005Wc-1K
-	for <alsa-devel@alsa-project.org>; Sat, 08 Aug 2009 16:55:49 +0200
-Received: from mail.home.lxtec.de ([127.0.0.1])
-	by localhost (baumbart.home.lxtec.de [127.0.0.1]) (amavisd-new,
-	port 10024)
-	with ESMTP id b-M1OHd7EyaW for <alsa-devel@alsa-project.org>;
-	Sat,  8 Aug 2009 16:55:48 +0200 (CEST)
-Received: from aragorn.home.lxtec.de ([192.168.200.203] ident=Debian-exim)
-	by mail.home.lxtec.de with esmtps (Exim 4.69 1 (LXTEC))
-	id 1MZnKm-0005WV-Gx
-	for <alsa-devel@alsa-project.org>; Sat, 08 Aug 2009 16:55:48 +0200
+	Sat,  8 Aug 2009 19:02:28 +0200 (CEST)
+Received: from [207.35.173.122] (helo=[192.168.215.229])
+	by a2s40.a2hosting.com with esmtpsa (TLSv1:AES256-SHA:256)
+	(Exim 4.69) (envelope-from <psanchez@fosstel.com>)
+	id 1MZpJL-0008UT-FC
+	for alsa-devel@alsa-project.org; Sat, 08 Aug 2009 13:02:27 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -42,54 +23,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------070005010805080203040506
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
---===============8913707292472497471==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5/uDoXvLw7AC5HRs"
-Content-Disposition: inline
+Hello,
+
+This is a patch to fix what I believe is a typo in this file.
+
+---
+  sound/soc/atmel/sam9g20_wm8731.c |    2 +-
+  1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/atmel/sam9g20_wm8731.c 
+b/sound/soc/atmel/sam9g20_wm8731.c
+index 173a239..baa42f3 100644
+--- a/sound/soc/atmel/sam9g20_wm8731.c
++++ b/sound/soc/atmel/sam9g20_wm8731.c
+@@ -341,7 +341,7 @@ static int __init at91sam9g20ek_init(void)
+  	}
+
+  	pllb = clk_get(NULL, "pllb");
+-	if (IS_ERR(mclk)) {
++	if (IS_ERR(pllb)) {
+  		printk(KERN_ERR "ASoC: Failed to get PLLB\n");
+  		ret = PTR_ERR(mclk);
+  		goto err_mclk;
+
+--------------070005010805080203040506
+Content-Type: text/x-vcard; charset=utf-8;
+ name="psanchez.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="psanchez.vcf"
+
+begin:vcard
+fn:Pedro I. Sanchez
+n:Sanchez;Pedro I.
+email;internet:psanchez@fosstel.com
+tel;work:+1 613 216 7513
+tel;cell:+1 613 818 2465
+x-mozilla-html:FALSE
+url:http://fosstel.com
+version:2.1
+end:vcard
 
 
---5/uDoXvLw7AC5HRs
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-
-alsa-lib 1.0.20
-
-running alsamixer -a basic gives:
-ALSA lib python.c:991:(alsa_mixer_simple_finit) Unable to find python modul=
-e '/usr/lib/alsa-lib/smixer/python/main.py'
-
-How do I build smixer/python/main.py ?
-
-Elimar
-
-
-
---=20
-  On the keyboard of life you have always
-  to keep a finger at the escape key;-)
-
---5/uDoXvLw7AC5HRs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkp9kfMACgkQ3Ig8bsVPf7AksQCgv8baDfoEejvUsTuhCiWkMLMH
-R1YAoJFSbIHHm0+rXmnqbcyB6Cn5o+Bn
-=9VJO
------END PGP SIGNATURE-----
-
---5/uDoXvLw7AC5HRs--
-
---===============8913707292472497471==
+--------------070005010805080203040506
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -100,4 +84,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============8913707292472497471==--
+--------------070005010805080203040506--
