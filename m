@@ -1,17 +1,18 @@
 From: Jon Smirl <jonsmirl@gmail.com>
-Subject: Implementing sync start
-Date: Sat, 8 Aug 2009 14:16:09 -0400
-Message-ID: <9e4733910908081116p221e606cma31a95b06d9b5be6@mail.gmail.com>
+Subject: ASoC: PCM formats for AC97
+Date: Sat, 8 Aug 2009 14:44:48 -0400
+Message-ID: <9e4733910908081144s27f4b7fes1e22f838a203c3cf@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id A31BF246AE
+Received: from mail-yw0-f203.google.com (mail-yw0-f203.google.com
+	[209.85.211.203])
+	by alsa0.perex.cz (Postfix) with ESMTP id 918C82434B
 	for <alsa-devel@alsa-project.org>;
-	Sat,  8 Aug 2009 20:16:10 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c37so678682anc.2
-	for <alsa-devel@alsa-project.org>; Sat, 08 Aug 2009 11:16:09 -0700 (PDT)
+	Sat,  8 Aug 2009 20:44:49 +0200 (CEST)
+Received: by ywh41 with SMTP id 41so3324594ywh.23
+	for <alsa-devel@alsa-project.org>; Sat, 08 Aug 2009 11:44:48 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,82 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: alsa-devel mailing list <alsa-devel@alsa-project.org>, Grant Likely <grant.likely@secretlab.ca>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-I'm implementing sync start as Takashi described...
----------------
-If the hardware supports the simultaneous triggering of multiple
-streams, add the sync support to the driver.  Namely,
-- Add SNDRV_PCM_INFO_SYNC_START flag to PCM info field
-- Call snd_pcm_set_sync(substream) at each open callback
-- In the trigger callback, check all bundled streams via
- snd_pcm_group_for_each_entry().  Mark all the streams but the
- current one via snd_pcm_trigger_done().
- Then start all streams at once.
- Ditto for stop and pause.
--------------
+Tell me if this is right and I'll do a patch....
 
-Is there a simple way to test this with something like a mono sine wav
-file? A aplay mono.wav and then use and ALSA conf to copy the sine to
-all channels and then sync start them.
+-----------------------------------------------------------
+The current mpc5200 code has:
 
------------
+static const struct snd_pcm_hardware psc_dma_hardware = {
+	.formats = SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_BE |
+		SNDRV_PCM_FMTBIT_S24_BE | SNDRV_PCM_FMTBIT_S32_BE,
 
-brutefit has this routine for sync start, does this look correct?
-
-int
-bfio_synch_start(void)
+struct snd_soc_dai psc_ac97_dai[] = {
 {
-    snd_pcm_status_t *status;
-    int err, n;
+	.playback = {
+		.formats = SNDRV_PCM_FMTBIT_S32_BE,
 
-    if (base_handle == NULL) {
-        return 0;
-    }
+I think I have this backwards, the ac97 driver can take 8/16/24/32
+it's the Bestcomm program that doesn't know about anything except 32b.
+So if we wrote new Bestcomm programs that expanded bytes from memory
+out into 32b DMA register writes, we could support 8/16b formats.
 
-    /* FIXME: the SND_PCM_STATE_RUNNING code would not be needed if the
-       bfio_write autostart hack was not there */
-    snd_pcm_status_alloca(&status);
+The correct formats would be:
+static const struct snd_pcm_hardware psc_dma_hardware = {
+	.formats = SNDRV_PCM_FMTBIT_S32_BE,
 
-    if (link_handles) {
-        if ((err = snd_pcm_status(base_handle, status)) < 0) {
-            fprintf(stderr, "ALSA I/O: Could not get status: %s.\n",
-                    snd_strerror(err));
-            return -1;
-        }
-        if (snd_pcm_status_get_state(status) == SND_PCM_STATE_RUNNING) {
-            return 0;
-        }
-        if ((err = snd_pcm_start(base_handle)) < 0) {
-            fprintf(stderr, "ALSA I/O: Could not start audio: %s.\n",
-                    snd_strerror(err));
-            return -1;
-        }
-        return 0;
-    }
+struct snd_soc_dai psc_ac97_dai[] = {
+{
+	.playback = {
+		.formats = SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_BE |
+			SNDRV_PCM_FMTBIT_S24_BE | SNDRV_PCM_FMTBIT_S32_BE,
 
-    FOR_IN_AND_OUT {
-        for (n = 0; n < n_handles[IO]; n++) {
-            if ((err = snd_pcm_status(handles[IO][n], status)) < 0) {
-                fprintf(stderr, "ALSA I/O: Could not get status: %s.\n",
-                        snd_strerror(err));
-                return -1;
-            }
-            if (snd_pcm_status_get_state(status) == SND_PCM_STATE_RUNNING) {
-                continue;
-            }
+After implementing new Bestcomm programs....
 
-            if ((err = snd_pcm_start(handles[IO][n])) < 0) {
-                fprintf(stderr, "ALSA I/O: Could not start audio: %s.\n",
-                        snd_strerror(err));
-                return -1;
-            }
-        }
-    }
-    return 0;
-}
+static const struct snd_pcm_hardware psc_dma_hardware = {
+	.formats = SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_BE |
+		SNDRV_PCM_FMTBIT_S24_BE | SNDRV_PCM_FMTBIT_S32_BE,
 
+-----------------------------------------------------------
+A related issue in soc-dai.h:
+
+#define SND_SOC_STD_AC97_FMTS (SNDRV_PCM_FMTBIT_S16_LE |\
+                               SNDRV_PCM_FMTBIT_S32_LE |\
+                               SNDRV_PCM_FMTBIT_S32_BE)
+
+shouldn't this be
+#define SND_SOC_STD_AC97_FMTS (SNDRV_PCM_FMTBIT_S16 |\
+                               SNDRV_PCM_FMTBIT_S32)
+
+The first form says the AC97 hardware can take both endians, but it
+doesn't take both endians it takes the endian matching the machine it
+is attached to.
+Don't the standard AC97 formats also include 8 and 24b?
 
 -- 
 Jon Smirl
