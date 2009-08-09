@@ -1,17 +1,19 @@
-From: James Courtier-Dutton <james.dutton@gmail.com>
-Subject: Problems with gain controls
-Date: Sun, 9 Aug 2009 11:28:46 +0100
-Message-ID: <ad2655cb0908090328j3e3dff83p68f7d55060590326@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC: at91sam9260-PCM1808/TAS5709-based board
+ driver
+Date: Sun, 9 Aug 2009 11:36:24 +0100
+Message-ID: <20090809103624.GB4773@sirena.org.uk>
+References: <4A7DB844.3030303@fosstel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.159])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4DF6824354
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 91F452415B
 	for <alsa-devel@alsa-project.org>;
-	Sun,  9 Aug 2009 12:28:48 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id e21so581165fga.21
-	for <alsa-devel@alsa-project.org>; Sun, 09 Aug 2009 03:28:47 -0700 (PDT)
+	Sun,  9 Aug 2009 12:36:31 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4A7DB844.3030303@fosstel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,18 +23,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Pedro Sanchez <psanchez@fosstel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sat, Aug 08, 2009 at 01:39:16PM -0400, Pedro Sanchez wrote:
 
-Does anyone know how to disable pulse from making any changes to the
-alsa hardware mixer controls?
-I would prefer pulse to use software gain controls, and not touch the
-alsamixer levels.
-pulse seems to do a very bizarre thing. The single master gain control
- within pulse changes both the alsamixer PCM and Master controls.
+> So my first question is, is this two-files step the right approach?
+> am I in the right track? I'm using the 2.6.30 kernel.
 
-Kind Regards
-
-James
+Yes, this is the correct approach.
