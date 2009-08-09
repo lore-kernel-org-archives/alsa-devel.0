@@ -1,21 +1,19 @@
 From: Jon Smirl <jonsmirl@gmail.com>
-Subject: Re: ASoC: PCM formats for AC97
-Date: Sun, 9 Aug 2009 09:32:22 -0400
-Message-ID: <9e4733910908090632m1178daceya0269966fde54529@mail.gmail.com>
-References: <9e4733910908081144s27f4b7fes1e22f838a203c3cf@mail.gmail.com>
-	<20090809104830.GC4773@sirena.org.uk>
+Subject: Re: ASoC: at91sam9260-PCM1808/TAS5709-based board
+	driver
+Date: Sun, 9 Aug 2009 09:35:06 -0400
+Message-ID: <9e4733910908090635j29db4ebn64f92c2176f3cb85@mail.gmail.com>
+References: <4A7DB844.3030303@fosstel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary=0016368325b496439a0470b58914
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f203.google.com (mail-yw0-f203.google.com
-	[209.85.211.203])
-	by alsa0.perex.cz (Postfix) with ESMTP id 90D7C24342
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.249])
+	by alsa0.perex.cz (Postfix) with ESMTP id 997A924342
 	for <alsa-devel@alsa-project.org>;
-	Sun,  9 Aug 2009 15:32:23 +0200 (CEST)
-Received: by ywh41 with SMTP id 41so3700020ywh.23
-	for <alsa-devel@alsa-project.org>; Sun, 09 Aug 2009 06:32:22 -0700 (PDT)
-In-Reply-To: <20090809104830.GC4773@sirena.org.uk>
+	Sun,  9 Aug 2009 15:35:07 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c37so785398anc.2
+	for <alsa-devel@alsa-project.org>; Sun, 09 Aug 2009 06:35:06 -0700 (PDT)
+In-Reply-To: <4A7DB844.3030303@fosstel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,58 +23,238 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@sirena.org.uk>
-Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: Pedro Sanchez <psanchez@fosstel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Aug 9, 2009 at 6:48 AM, Mark Brown<broonie@sirena.org.uk> wrote:
-> On Sat, Aug 08, 2009 at 02:44:48PM -0400, Jon Smirl wrote:
->
->> I think I have this backwards, the ac97 driver can take 8/16/24/32
->> it's the Bestcomm program that doesn't know about anything except 32b.
->
-> Remember, you need to consider the I2S driver as well.
->
->> #define SND_SOC_STD_AC97_FMTS (SNDRV_PCM_FMTBIT_S16_LE |\
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0SNDRV_PCM=
-_FMTBIT_S32_LE |\
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0SNDRV_PCM=
-_FMTBIT_S32_BE)
->> shouldn't this be
->
->> #define SND_SOC_STD_AC97_FMTS (SNDRV_PCM_FMTBIT_S16 |\
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0SNDRV_PCM=
-_FMTBIT_S32)
->
->> The first form says the AC97 hardware can take both endians, but it
->> doesn't take both endians it takes the endian matching the machine it
->> is attached to.
->
-> No, it can take any endianess - the wire format is fixed. =A0The layout of
-> the data in memory is of little interest to the CODEC. =A0The formats used
-> will be restricted by the CPU driver, the values there are essentially
-> functioning as a wildcard match.
+--0016368325b496439a0470b58914
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-I agree with you, but I think the second form better indicates the
-wildcard than the first form. It makes it look like endianess is not a
-factor.
-
-If you had used the second form I wouldn't have had a problem bringing
-up a powerpc driver.
-
->> Don't the standard AC97 formats also include 8 and 24b?
+On Sat, Aug 8, 2009 at 1:39 PM, Pedro Sanchez<psanchez@fosstel.com> wrote:
+> Hello,
 >
-> They'll include whatever the controller is happy to render down onto the
-> bus. =A0That's just the ones that people have needed so far.
+> I have to develop a driver for a custom board based on the at91sam9260 with
+> a PCM1808/TAS5709 chipset combo. I am addressing the PCM1808 first because
+> it is a simpler device. Since I'm new to ASoC I'm looking for some help in
+> this list on how to go about writing this driver.
 
-We could add 8/24b now so to make thing easier on the next driver developer.
+I attached a PCM1690 driver I'm currently working on.
 
 
 >
+> So far I have identified two files that I need to work on (other than the
+> needed kconfig modifications). First is the codec driver at
+> sound/soc/codecs/PCM1808.[c|h] which is based on the existent pcm3008
+> driver; I believe I'm fine with this.
+>
+> The second file is the machine driver at sound/soc/atmel/myBoard.c. I'm
+> using sam9g20_wm8731.c as reference, on which I believe I found a typo which
+> I reported in a separated e-mail.
+>
+> So my first question is, is this two-files step the right approach? am I in
+> the right track? I'm using the 2.6.30 kernel.
+>
+> Other questions will come and I hope I will get some cycles from you to help
+> me direct my work. Of course I'll be glad to submit my driver work for
+> inclusion in the kernel if it proves useful.
+>
+> Regards,
+>
+> --
+> Pedro
+>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>
 
 
 
--- =
-
+-- 
 Jon Smirl
 jonsmirl@gmail.com
+
+--0016368325b496439a0470b58914
+Content-Type: text/x-csrc; charset=US-ASCII; name="pcm1690.c"
+Content-Disposition: attachment; filename="pcm1690.c"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fy5tfuvm1
+
+LyoKICogVGV4YXMgSW5zdHJ1bWVudHMgUENNMTY5MCBsb3cgcG93ZXIgYXVkaW8gQ09ERUMKICog
+QUxTQSBTb0MgQ09ERUMgZHJpdmVyCiAqCiAqIENvcHlyaWdodCAoQykgSm9uIFNtaXJsIDxqb25z
+bWlybEBnbWFpbC5jb20+CiAqLwojZGVmaW5lIERFQlVHCgojaW5jbHVkZSA8bGludXgvbW9kdWxl
+Lmg+CiNpbmNsdWRlIDxsaW51eC9tb2R1bGVwYXJhbS5oPgojaW5jbHVkZSA8bGludXgvaW5pdC5o
+PgojaW5jbHVkZSA8bGludXgvZGVsYXkuaD4KI2luY2x1ZGUgPGxpbnV4L3BtLmg+CiNpbmNsdWRl
+IDxsaW51eC9kZXZpY2UuaD4KI2luY2x1ZGUgPGxpbnV4L3N5c2ZzLmg+CiNpbmNsdWRlIDxsaW51
+eC9pMmMuaD4KI2luY2x1ZGUgPHNvdW5kL2NvcmUuaD4KI2luY2x1ZGUgPHNvdW5kL3BjbS5oPgoj
+aW5jbHVkZSA8c291bmQvcGNtX3BhcmFtcy5oPgojaW5jbHVkZSA8c291bmQvc29jLmg+CiNpbmNs
+dWRlIDxzb3VuZC9zb2MtZGFwbS5oPgojaW5jbHVkZSA8c291bmQvc29jLW9mLXNpbXBsZS5oPgoj
+aW5jbHVkZSA8c291bmQvdGx2Lmg+CiNpbmNsdWRlIDxzb3VuZC9pbml0dmFsLmg+CgojaW5jbHVk
+ZSAicGNtMTY5MC5oIgoKI2RlZmluZSBQQ00xNjkwX1JFR19NQVggMHgxMAoKLyogcGNtMTY5MCBk
+cml2ZXIgcHJpdmF0ZSBkYXRhICovCnN0cnVjdCBwY20xNjkwX3ByaXYgewoJc3RydWN0IGkyY19j
+bGllbnQgKmNsaWVudDsKCXN0cnVjdCBzbmRfc29jX2NvZGVjIGNvZGVjOwoKCS8qIHBlcmZvcm1h
+bmNlIHNoYWRvdyBvZiBpMmMgcmVnaXN0ZXJzICovCgl1OCByZWdfY2FjaGVbUENNMTY5MF9SRUdf
+TUFYXTsKfTsKCi8qIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogKiBSZWdpc3RlciBhY2Nlc3Mgcm91dGluZXMKICov
+CgpzdGF0aWMgdW5zaWduZWQgaW50IHBjbTE2OTBfcmVnX3JlYWQoc3RydWN0IHNuZF9zb2NfY29k
+ZWMgKmNvZGVjLCB1bnNpZ25lZCBpbnQgcmVnKQp7CglzdHJ1Y3QgcGNtMTY5MF9wcml2ICpwcml2
+ID0gY29kZWMtPnByaXZhdGVfZGF0YTsKCXU4IHZhbHVlLCByID0gcmVnICsgMHg0MDsgLyogSFcg
+cmVncyBzdGFydCBhdCAweDQwICovCglpbnQgcmM7CglzdHJ1Y3QgaTJjX21zZyBtc2dzWzJdID0g
+ewoJCXsuYWRkciA9IHByaXYtPmNsaWVudC0+YWRkciwgLmZsYWdzID0gMCwgLmxlbiA9IDEsIC5i
+dWYgPSAmcn0sCgkJey5hZGRyID0gcHJpdi0+Y2xpZW50LT5hZGRyLCAuZmxhZ3MgPSBJMkNfTV9S
+RCwgLmxlbiA9IDEsIC5idWYgPSAmdmFsdWV9Cgl9OwoKCXJjID0gaTJjX3RyYW5zZmVyKHByaXYt
+PmNsaWVudC0+YWRhcHRlciwgbXNncywgQVJSQVlfU0laRShtc2dzKSk7CglpZiAocmMgIT0gMikg
+ewoJCWRldl9lcnIoJnByaXYtPmNsaWVudC0+ZGV2LCAiJXM6IHJjPSVkIHJlZz0lMDJ4IHJjICE9
+IHNpemVcbiIsCgkJCV9fZnVuY19fLCByYywgcik7CgkJcmV0dXJuIC0xOwoJfQoJcHJpdi0+cmVn
+X2NhY2hlW3JlZ10gPSB2YWx1ZTsKCXJldHVybiB2YWx1ZTsKfQoKc3RhdGljIGludCBwY20xNjkw
+X3JlZ193cml0ZShzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMsIHVuc2lnbmVkIGludCByZWcs
+IHVuc2lnbmVkIGludCB2YWx1ZSkKewoJc3RydWN0IHBjbTE2OTBfcHJpdiAqcHJpdiA9IGNvZGVj
+LT5wcml2YXRlX2RhdGE7Cgl1OCBidWZbMl07CglpbnQgcmM7CgoJcHJpdi0+cmVnX2NhY2hlW3Jl
+Z10gPSB2YWx1ZTsKCglidWZbMF0gPSByZWcgKyAweDQwOwoJYnVmWzFdID0gdmFsdWU7CgoJcmMg
+PSBpMmNfbWFzdGVyX3NlbmQocHJpdi0+Y2xpZW50LCBidWYsIHNpemVvZiBidWYpOwoJaWYgKHJj
+ICE9IHNpemVvZiBidWYpIHsKCQlkZXZfZXJyKCZwcml2LT5jbGllbnQtPmRldiwKCQkJIiVzOiBy
+Yz0lZCByZWc9JTAyeCBzaXplICUwMnggcmMgIT0gc2l6ZVxuIiwKCQkJX19mdW5jX18sIHJjLCBy
+ZWcsIHNpemVvZiBidWYpOwoJCXJldHVybiAtRUlPOwoJfQoJcmV0dXJuIDA7Cn0KCi8qIC0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLQogKiBEaWdpdGFsIEF1ZGlvIEludGVyZmFjZSBPcGVyYXRpb25zCiAqLwpzdGF0aWMg
+aW50IHBjbTE2OTBfaHdfcGFyYW1zKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFt
+LAoJCQkgICBzdHJ1Y3Qgc25kX3BjbV9od19wYXJhbXMgKnBhcmFtcywKCQkJICAgc3RydWN0IHNu
+ZF9zb2NfZGFpICpkYWkpCnsKCXN0cnVjdCBzbmRfc29jX3BjbV9ydW50aW1lICpydGQgPSBzdWJz
+dHJlYW0tPnByaXZhdGVfZGF0YTsKCXN0cnVjdCBzbmRfc29jX2RldmljZSAqc29jZGV2ID0gcnRk
+LT5zb2NkZXY7CglzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMgPSBzb2NkZXYtPmNhcmQtPmNv
+ZGVjOwoJc3RydWN0IHBjbTE2OTBfcHJpdiAqcHJpdiA9IGNvZGVjLT5wcml2YXRlX2RhdGE7CgoJ
+ZGV2X2RiZygmcHJpdi0+Y2xpZW50LT5kZXYsICJwY20xNjkwX2h3X3BhcmFtcyhzdWJzdHJlYW09
+JXAsIHBhcmFtcz0lcClcbiIsCgkJc3Vic3RyZWFtLCBwYXJhbXMpOwoJZGV2X2RiZygmcHJpdi0+
+Y2xpZW50LT5kZXYsICJyYXRlPSVpIGZvcm1hdD0laVxuIiwgcGFyYW1zX3JhdGUocGFyYW1zKSwK
+CQlwYXJhbXNfZm9ybWF0KHBhcmFtcykpOwoKCXJldHVybiAwOwp9CgovKioKICogcGNtMTY5MF9t
+dXRlIC0gTXV0ZSBjb250cm9sIHRvIHJlZHVjZSBub2lzZSB3aGVuIGNoYW5naW5nIGF1ZGlvIGZv
+cm1hdAogKi8Kc3RhdGljIGludCBwY20xNjkwX211dGUoc3RydWN0IHNuZF9zb2NfZGFpICpkYWks
+IGludCBtdXRlKQp7CglzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMgPSBkYWktPmNvZGVjOwoJ
+c3RydWN0IHBjbTE2OTBfcHJpdiAqcHJpdiA9IGNvZGVjLT5wcml2YXRlX2RhdGE7CgoJZGV2X2Ri
+ZygmcHJpdi0+Y2xpZW50LT5kZXYsICJwY20xNjkwX211dGUoZGFpPSVwLCBtdXRlPSVpKVxuIiwK
+CQlkYWksIG11dGUpOwoKCXJldHVybiAwOwp9CgovKiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICogRGlnaXRhbCBB
+dWRpbyBJbnRlcmZhY2UgRGVmaW5pdGlvbgogKi8KCnN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlf
+b3BzIHBjbTE2OTBfZGFpX29wcyA9IHsKCS5od19wYXJhbXMgPSBwY20xNjkwX2h3X3BhcmFtcywK
+CS5kaWdpdGFsX211dGUgPSBwY20xNjkwX211dGUsCn07CgpzdHJ1Y3Qgc25kX3NvY19kYWkgcGNt
+MTY5MF9kYWkgPSB7CgkubmFtZSA9ICJwY20xNjkwIiwKCS5wbGF5YmFjayA9IHsKCQkuc3RyZWFt
+X25hbWUgPSAiUGxheWJhY2siLAoJCS5jaGFubmVsc19taW4gPSAyLAoJCS5jaGFubmVsc19tYXgg
+PSAyLAoJCS5yYXRlcyA9IFBDTTE2OTBfUkFURVMsCgkJLmZvcm1hdHMgPSBQQ00xNjkwX0ZPUk1B
+VFMsCgl9LAoJLm9wcyA9ICZwY20xNjkwX2RhaV9vcHMsCn07CkVYUE9SVF9TWU1CT0xfR1BMKHBj
+bTE2OTBfZGFpKTsKCi8qIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogKiBBTFNBIGNvbnRyb2xzCiAqLwoKc3RhdGlj
+IGNvbnN0IERFQ0xBUkVfVExWX0RCX0xJTkVBUihtYXN0ZXJfdGx2LCAtNjMwMCwgMCk7CgoKc3Rh
+dGljIGNvbnN0IHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3IHBjbTE2OTBfc25kX2NvbnRyb2xzW10g
+PSB7CgpTT0NfU0lOR0xFX1RMVigiQ2ggMSBWb2x1bWUiLCAweDgsIDAsIDB4N2YsIDAsIG1hc3Rl
+cl90bHYpLApTT0NfU0lOR0xFX1RMVigiQ2ggMiBWb2x1bWUiLCAweDksIDAsIDB4N2YsIDAsIG1h
+c3Rlcl90bHYpLApTT0NfU0lOR0xFX1RMVigiQ2ggMyBWb2x1bWUiLCAweGEsIDAsIDB4N2YsIDAs
+IG1hc3Rlcl90bHYpLApTT0NfU0lOR0xFX1RMVigiQ2ggNCBWb2x1bWUiLCAweGIsIDAsIDB4N2Ys
+IDAsIG1hc3Rlcl90bHYpLApTT0NfU0lOR0xFX1RMVigiQ2ggNSBWb2x1bWUiLCAweGMsIDAsIDB4
+N2YsIDAsIG1hc3Rlcl90bHYpLApTT0NfU0lOR0xFX1RMVigiQ2ggNiBWb2x1bWUiLCAweGQsIDAs
+IDB4N2YsIDAsIG1hc3Rlcl90bHYpLApTT0NfU0lOR0xFX1RMVigiQ2ggNyBWb2x1bWUiLCAweGUs
+IDAsIDB4N2YsIDAsIG1hc3Rlcl90bHYpLApTT0NfU0lOR0xFX1RMVigiQ2ggOCBWb2x1bWUiLCAw
+eGYsIDAsIDB4N2YsIDAsIG1hc3Rlcl90bHYpLAoKfTsKCgovKiAtLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICogU29D
+IENPREVDIHBvcnRpb24gb2YgZHJpdmVyOiBwcm9iZSBhbmQgcmVsZWFzZSByb3V0aW5lcwogKi8K
+c3RhdGljIGludCBwY20xNjkwX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCnsK
+CXN0cnVjdCBzbmRfc29jX2RldmljZSAqc29jZGV2ID0gcGxhdGZvcm1fZ2V0X2RydmRhdGEocGRl
+dik7CglzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWM7CglzdHJ1Y3Qgc25kX2tjb250cm9sICpr
+Y29udHJvbDsKCXN0cnVjdCBwY20xNjkwX3ByaXYgKnByaXY7CglpbnQgaSwgcmV0LCBlcnI7CgoJ
+ZGV2X2luZm8oJnBkZXYtPmRldiwgIlByb2JpbmcgcGNtMTY5MCBTb0MgQ09ERUMgZHJpdmVyXG4i
+KTsKCWRldl9kYmcoJnBkZXYtPmRldiwgInNvY2Rldj0lcFxuIiwgc29jZGV2KTsKCWRldl9kYmco
+JnBkZXYtPmRldiwgImNvZGVjX2RhdGE9JXBcbiIsIHNvY2Rldi0+Y29kZWNfZGF0YSk7CgoJLyog
+RmV0Y2ggdGhlIHJlbGV2YW50IHBjbTE2OTAgcHJpdmF0ZSBkYXRhIGhlcmUgKGl0J3MgYWxyZWFk
+eSBiZWVuCgkgKiBzdG9yZWQgaW4gdGhlIC5jb2RlYyBwb2ludGVyKSAqLwoJcHJpdiA9IHNvY2Rl
+di0+Y29kZWNfZGF0YTsKCWlmIChwcml2ID09IE5VTEwpIHsKCQlkZXZfZXJyKCZwZGV2LT5kZXYs
+ICJwY20xNjkwOiBtaXNzaW5nIGNvZGVjIHBvaW50ZXJcbiIpOwoJCXJldHVybiAtRU5PREVWOwoJ
+fQoJY29kZWMgPSAmcHJpdi0+Y29kZWM7Cglzb2NkZXYtPmNhcmQtPmNvZGVjID0gY29kZWM7CgoJ
+ZGV2X2RiZygmcGRldi0+ZGV2LCAiUmVnaXN0ZXJpbmcgUENNcywgZGV2PSVwLCBzb2NkZXYtPmRl
+dj0lcFxuIiwKCQkmcGRldi0+ZGV2LCBzb2NkZXYtPmRldik7CgkvKiByZWdpc3RlciBwY21zICov
+CglyZXQgPSBzbmRfc29jX25ld19wY21zKHNvY2RldiwgU05EUlZfREVGQVVMVF9JRFgxLCBTTkRS
+Vl9ERUZBVUxUX1NUUjEpOwoJaWYgKHJldCA8IDApIHsKCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJw
+Y20xNjkwOiBmYWlsZWQgdG8gY3JlYXRlIHBjbXNcbiIpOwoJCXJldHVybiAtRU5PREVWOwoJfQoK
+CS8qIHJlZ2lzdGVyIGNvbnRyb2xzICovCglkZXZfZGJnKCZwZGV2LT5kZXYsICJSZWdpc3Rlcmlu
+ZyBjb250cm9sc1xuIik7Cglmb3IgKGkgPSAwOyBpIDwgQVJSQVlfU0laRShwY20xNjkwX3NuZF9j
+b250cm9scyk7IGkrKykgewoJCWtjb250cm9sID0gc25kX2N0bF9uZXcxKCZwY20xNjkwX3NuZF9j
+b250cm9sc1tpXSwgY29kZWMpOwoJCWVyciA9IHNuZF9jdGxfYWRkKGNvZGVjLT5jYXJkLCBrY29u
+dHJvbCk7CgkJaWYgKGVyciA8IDApCgkJCWRldl9lcnIoJnBkZXYtPmRldiwgInBjbTE2OTA6IGZh
+aWxlZCB0byBjcmVhdGUgY29udHJvbCAleFxuIiwgZXJyKTsKCX0KCgkvKiBDT0RFQyBpcyBzZXR1
+cCwgd2UgY2FuIHJlZ2lzdGVyIHRoZSBjYXJkIG5vdyAqLwoJZGV2X2RiZygmcGRldi0+ZGV2LCAi
+UmVnaXN0ZXJpbmcgY2FyZFxuIik7CglyZXQgPSBzbmRfc29jX2luaXRfY2FyZChzb2NkZXYpOwoJ
+aWYgKHJldCA8IDApIHsKCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJwY20xNjkwOiBmYWlsZWQgdG8g
+cmVnaXN0ZXIgY2FyZFxuIik7CgkJZ290byBjYXJkX2VycjsKCX0KCXJldHVybiAwOwoKIGNhcmRf
+ZXJyOgoJc25kX3NvY19mcmVlX3BjbXMoc29jZGV2KTsKCXJldHVybiByZXQ7Cn0KCnN0YXRpYyBp
+bnQgcGNtMTY5MF9yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKewoJc3RydWN0
+IHNuZF9zb2NfZGV2aWNlICpzb2NkZXYgPSBwbGF0Zm9ybV9nZXRfZHJ2ZGF0YShwZGV2KTsKCXNu
+ZF9zb2NfZnJlZV9wY21zKHNvY2Rldik7CglyZXR1cm4gMDsKfQoKc3RydWN0IHNuZF9zb2NfY29k
+ZWNfZGV2aWNlIHBjbTE2OTBfc29jX2NvZGVjX2RldiA9IHsKCS5wcm9iZSA9IHBjbTE2OTBfcHJv
+YmUsCgkucmVtb3ZlID0gcGNtMTY5MF9yZW1vdmUsCn07CkVYUE9SVF9TWU1CT0xfR1BMKHBjbTE2
+OTBfc29jX2NvZGVjX2Rldik7CgovKiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICogaTJjIGRldmljZSBwb3J0aW9u
+IG9mIGRyaXZlcjogcHJvYmUgYW5kIHJlbGVhc2Ugcm91dGluZXMgYW5kIGkyYwogKiAJCQkJIGRy
+aXZlciByZWdpc3RyYXRpb24uCiAqLwpzdGF0aWMgaW50IHBjbTE2OTBfaTJjX3Byb2JlKHN0cnVj
+dCBpMmNfY2xpZW50ICpjbGllbnQsCgkJCQljb25zdCBzdHJ1Y3QgaTJjX2RldmljZV9pZCAqaWQp
+CnsKCXN0cnVjdCBwY20xNjkwX3ByaXYgKnByaXY7CgoJZGV2X2RiZygmY2xpZW50LT5kZXYsICJw
+cm9iaW5nIHBjbTE2OTAgaTJjIGRldmljZVxuIik7CgoJLyogQWxsb2NhdGUgZHJpdmVyIGRhdGEg
+Ki8KCXByaXYgPSBremFsbG9jKHNpemVvZiAqcHJpdiwgR0ZQX0tFUk5FTCk7CglpZiAoIXByaXYp
+CgkJcmV0dXJuIC1FTk9NRU07CgoJLyogSW5pdGlhbGl6ZSB0aGUgZHJpdmVyIGRhdGEgKi8KCXBy
+aXYtPmNsaWVudCA9IGNsaWVudDsKCWkyY19zZXRfY2xpZW50ZGF0YShjbGllbnQsIHByaXYpOwoK
+CS8qIFNldHVwIHdoYXQgd2UgY2FuIGluIHRoZSBjb2RlYyBzdHJ1Y3R1cmUgc28gdGhhdCB0aGUg
+cmVnaXN0ZXIKCSAqIGFjY2VzcyBmdW5jdGlvbnMgd2lsbCB3b3JrIGFzIGV4cGVjdGVkLiAgTW9y
+ZSB3aWxsIGJlIGZpbGxlZAoJICogb3V0IHdoZW4gaXQgaXMgcHJvYmVkIGJ5IHRoZSBTb0MgQ09E
+RUMgcGFydCBvZiB0aGlzIGRyaXZlciAqLwoJcHJpdi0+Y29kZWMucHJpdmF0ZV9kYXRhID0gcHJp
+djsKCXByaXYtPmNvZGVjLm5hbWUgPSAicGNtMTY5MCI7Cglwcml2LT5jb2RlYy5vd25lciA9IFRI
+SVNfTU9EVUxFOwoJcHJpdi0+Y29kZWMuZGFpID0gJnBjbTE2OTBfZGFpOwoJcHJpdi0+Y29kZWMu
+bnVtX2RhaSA9IDE7Cglwcml2LT5jb2RlYy5yZWFkID0gcGNtMTY5MF9yZWdfcmVhZDsKCXByaXYt
+PmNvZGVjLndyaXRlID0gcGNtMTY5MF9yZWdfd3JpdGU7Cglwcml2LT5jb2RlYy5yZWdfY2FjaGVf
+c2l6ZSA9IFBDTTE2OTBfUkVHX01BWDsKCgltdXRleF9pbml0KCZwcml2LT5jb2RlYy5tdXRleCk7
+CglJTklUX0xJU1RfSEVBRCgmcHJpdi0+Y29kZWMuZGFwbV93aWRnZXRzKTsKCUlOSVRfTElTVF9I
+RUFEKCZwcml2LT5jb2RlYy5kYXBtX3BhdGhzKTsKCglkZXZfZGJnKCZjbGllbnQtPmRldiwgIkky
+QyBkZXZpY2UgaW5pdGlhbGl6ZWRcbiIpOwoJcmV0dXJuIDA7Cn0KCnN0YXRpYyBpbnQgcGNtMTY5
+MF9pMmNfcmVtb3ZlKHN0cnVjdCBpMmNfY2xpZW50ICpjbGllbnQpCnsKCXN0cnVjdCBwY20xNjkw
+X3ByaXYgKnByaXYgPSBkZXZfZ2V0X2RydmRhdGEoJmNsaWVudC0+ZGV2KTsKCglrZnJlZShwcml2
+KTsKCglyZXR1cm4gMDsKfQoKc3RhdGljIGNvbnN0IHN0cnVjdCBpMmNfZGV2aWNlX2lkIHBjbTE2
+OTBfZGV2aWNlX2lkW10gPSB7Cgl7ICJwY20xNjkwIiwgMCB9LAoJeyB9Cn07Ck1PRFVMRV9ERVZJ
+Q0VfVEFCTEUoaTJjLCBwY20xNjkwX2RldmljZV9pZCk7CgpzdGF0aWMgc3RydWN0IGkyY19kcml2
+ZXIgcGNtMTY5MF9kcml2ZXIgPSB7CgkuZHJpdmVyCQk9IHsKCQkubmFtZQk9ICJwY20xNjkwIiwK
+CQkub3duZXIJPSBUSElTX01PRFVMRSwKCX0sCgkucHJvYmUJCT0gcGNtMTY5MF9pMmNfcHJvYmUs
+CgkucmVtb3ZlCQk9IF9fZGV2ZXhpdF9wKHBjbTE2OTBfaTJjX3JlbW92ZSksCgkuaWRfdGFibGUJ
+PSBwY20xNjkwX2RldmljZV9pZCwKfTsKCnN0YXRpYyBfX2luaXQgaW50IHBjbTE2OTBfZHJpdmVy
+X2luaXQodm9pZCkKewoJc25kX3NvY19yZWdpc3Rlcl9kYWkoJnBjbTE2OTBfZGFpKTsKCXJldHVy
+biBpMmNfYWRkX2RyaXZlcigmcGNtMTY5MF9kcml2ZXIpOwp9CgpzdGF0aWMgX19leGl0IHZvaWQg
+cGNtMTY5MF9kcml2ZXJfZXhpdCh2b2lkKQp7CglpMmNfZGVsX2RyaXZlcigmcGNtMTY5MF9kcml2
+ZXIpOwp9Cgptb2R1bGVfaW5pdChwY20xNjkwX2RyaXZlcl9pbml0KTsKbW9kdWxlX2V4aXQocGNt
+MTY5MF9kcml2ZXJfZXhpdCk7CgpNT0RVTEVfQVVUSE9SKCJKb24gU21pcmwiKTsKTU9EVUxFX0RF
+U0NSSVBUSU9OKCJQQ00xNjkwIGNvZGVjIG1vZHVsZSIpOwpNT0RVTEVfTElDRU5TRSgiR1BMIik7
+Cg==
+--0016368325b496439a0470b58914
+Content-Type: text/x-chdr; charset=US-ASCII; name="pcm1690.h"
+Content-Disposition: attachment; filename="pcm1690.h"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fy5tglny2
+
+LyoKICogVGV4YXMgSW5zdHJ1bWVudHMgUENNMTY5MCBsb3cgcG93ZXIgYXVkaW8gQ09ERUMKICog
+QUxTQSBTb0MgQ09ERUMgZHJpdmVyCiAqCiAqIENvcHlyaWdodCAoQykgSm9uIFNtaXJsIDxqb25z
+bWlybEBnbWFpbC5jb20+CiAqLwoKCiNkZWZpbmUgUENNMTY5MF9SQVRFUyAoU05EUlZfUENNX1JB
+VEVfMzIwMDAgfFwKCQkJCVNORFJWX1BDTV9SQVRFXzQ0MTAwIHwgU05EUlZfUENNX1JBVEVfNDgw
+MDAgfFwKCQkJCVNORFJWX1BDTV9SQVRFXzg4MjAwIHwgU05EUlZfUENNX1JBVEVfOTYwMDAgfFwK
+CQkJCVNORFJWX1BDTV9SQVRFXzE3NjQwMCB8IFNORFJWX1BDTV9SQVRFXzE5MjAwMCkKI2RlZmlu
+ZSBQQ00xNjkwX0ZPUk1BVFMgU05EUlZfUENNX0ZNVEJJVF9TMzIKCmV4dGVybiBzdHJ1Y3Qgc25k
+X3NvY19kYWkgcGNtMTY5MF9kYWk7CmV4dGVybiBzdHJ1Y3Qgc25kX3NvY19jb2RlY19kZXZpY2Ug
+cGNtMTY5MF9zb2NfY29kZWNfZGV2Owo=
+--0016368325b496439a0470b58914
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--0016368325b496439a0470b58914--
