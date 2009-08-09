@@ -1,21 +1,20 @@
-From: Jon Smirl <jonsmirl@gmail.com>
-Subject: Re: ASoC: at91sam9260-PCM1808/TAS5709-based board
-	driver
-Date: Sun, 9 Aug 2009 09:37:03 -0400
-Message-ID: <9e4733910908090637g4b9eaf19ud1b46de354664df2@mail.gmail.com>
-References: <4A7DB844.3030303@fosstel.com>
-	<9e4733910908090635j29db4ebn64f92c2176f3cb85@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC: PCM formats for AC97
+Date: Sun, 9 Aug 2009 15:37:47 +0100
+Message-ID: <20090809143747.GA9121@sirena.org.uk>
+References: <9e4733910908081144s27f4b7fes1e22f838a203c3cf@mail.gmail.com>
+	<20090809104830.GC4773@sirena.org.uk>
+	<9e4733910908090632m1178daceya0269966fde54529@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=0016e645b76893e1660470b59059
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f203.google.com (mail-yw0-f203.google.com
-	[209.85.211.203])
-	by alsa0.perex.cz (Postfix) with ESMTP id BF25524342
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id CF7B72436B
 	for <alsa-devel@alsa-project.org>;
-	Sun,  9 Aug 2009 15:37:04 +0200 (CEST)
-Received: by ywh41 with SMTP id 41so3701828ywh.23
-	for <alsa-devel@alsa-project.org>; Sun, 09 Aug 2009 06:37:03 -0700 (PDT)
-In-Reply-To: <9e4733910908090635j29db4ebn64f92c2176f3cb85@mail.gmail.com>
+	Sun,  9 Aug 2009 16:37:48 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <9e4733910908090632m1178daceya0269966fde54529@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,171 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pedro Sanchez <psanchez@fosstel.com>
-Cc: alsa-devel@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---0016e645b76893e1660470b59059
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+On Sun, Aug 09, 2009 at 09:32:22AM -0400, Jon Smirl wrote:
 
-On Sun, Aug 9, 2009 at 9:35 AM, Jon Smirl<jonsmirl@gmail.com> wrote:
-> On Sat, Aug 8, 2009 at 1:39 PM, Pedro Sanchez<psanchez@fosstel.com> wrote:
->> Hello,
->>
->> I have to develop a driver for a custom board based on the at91sam9260 with
->> a PCM1808/TAS5709 chipset combo. I am addressing the PCM1808 first because
->> it is a simpler device. Since I'm new to ASoC I'm looking for some help in
->> this list on how to go about writing this driver.
->
-> I attached a PCM1690 driver I'm currently working on.
+> I agree with you, but I think the second form better indicates the
+> wildcard than the first form. It makes it look like endianess is not a
+> factor.
 
-The attached fabric driver show how to use it.
-
->
->
->>
->> So far I have identified two files that I need to work on (other than the
->> needed kconfig modifications). First is the codec driver at
->> sound/soc/codecs/PCM1808.[c|h] which is based on the existent pcm3008
->> driver; I believe I'm fine with this.
->>
->> The second file is the machine driver at sound/soc/atmel/myBoard.c. I'm
->> using sam9g20_wm8731.c as reference, on which I believe I found a typo which
->> I reported in a separated e-mail.
->>
->> So my first question is, is this two-files step the right approach? am I in
->> the right track? I'm using the 2.6.30 kernel.
->>
->> Other questions will come and I hope I will get some cycles from you to help
->> me direct my work. Of course I'll be glad to submit my driver work for
->> inclusion in the kernel if it proves useful.
->>
->> Regards,
->>
->> --
->> Pedro
->>
->>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
->>
->
->
->
-> --
-> Jon Smirl
-> jonsmirl@gmail.com
->
-
-
-
--- 
-Jon Smirl
-jonsmirl@gmail.com
-
---0016e645b76893e1660470b59059
-Content-Type: text/x-csrc; charset=US-ASCII; name="dspeak01-audio-fabric.c"
-Content-Disposition: attachment; filename="dspeak01-audio-fabric.c"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fy5tj32g2
-
-LyoKICogc291bmQvc29jL2ZzbC9kc3BlYWswMV9mYWJyaWMuYyAtLSBUaGUgQUxTQSBnbHVlIGZh
-YnJpYyBmb3IgRGlnaXNwZWFrZXIgZHNwZWFrMDEKICoKICogQ29weXJpZ2h0IDIwMDggSm9uIFNt
-aXJsLCBEaWdpc3BlYWtlcgogKiBBdXRob3I6IEpvbiBTbWlybCA8am9uc21pcmxAZ21haWwuY29t
-PgogKgogKiBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1
-dGUgaXQgYW5kL29yIG1vZGlmeQogKiBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5l
-cmFsIFB1YmxpYyBMaWNlbnNlIHZlcnNpb24gMiBhcwogKiBwdWJsaXNoZWQgYnkgdGhlIEZyZWUg
-U29mdHdhcmUgRm91bmRhdGlvbi4KICovCgojaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+CiNpbmNs
-dWRlIDxsaW51eC9vZl9kZXZpY2UuaD4KI2luY2x1ZGUgPGxpbnV4L29mX3BsYXRmb3JtLmg+CiNp
-bmNsdWRlIDxsaW51eC9vZl9pMmMuaD4KI2luY2x1ZGUgPGxpbnV4L29mX2dwaW8uaD4KCiNpbmNs
-dWRlIDxzb3VuZC9zb2MuaD4KI2luY2x1ZGUgPHNvdW5kL3NvYy1vZi1zaW1wbGUuaD4KCiNpbmNs
-dWRlICIuLi9jb2RlY3MvcGNtMTY5MC5oIgojaW5jbHVkZSAibXBjNTIwMF9kbWEuaCIKI2luY2x1
-ZGUgIm1wYzUyMDBfcHNjX2kycy5oIgoKc3RhdGljIGludCBkc3BlYWswMV9mYWJyaWNfc3RhcnR1
-cChzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKewoJcHJpbnRrKCJkc3BlYWsw
-MV9mYWJyaWNfc3RhcnR1cFxuIik7CglyZXR1cm4gMDsKfQoKc3RhdGljIHZvaWQgZHNwZWFrMDFf
-ZmFicmljX3NodXRkb3duKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQp7Cglw
-cmludGsoImRzcGVhazAxX2ZhYnJpY19zaHV0ZG93blxuIik7Cn0KCnN0YXRpYyBpbnQgZHNwZWFr
-MDFfZmFicmljX2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwg
-c3RydWN0IHNuZF9wY21faHdfcGFyYW1zICpwYXJhbXMpCnsKCXVpbnQgcmF0ZTsKCWludCByZXQ7
-CglzdHJ1Y3Qgc25kX3NvY19wY21fcnVudGltZSAqcnRkID0gc3Vic3RyZWFtLT5wcml2YXRlX2Rh
-dGE7CglzdHJ1Y3Qgc25kX3NvY19kYWkgKmNwdV9kYWkgPSBydGQtPmRhaS0+Y3B1X2RhaTsKCglw
-cmludGsoImRzcGVhazAxX2ZhYnJpY19od19wYXJhbXNcbiIpOwoKCXN3aXRjaCAocGFyYW1zX3Jh
-dGUocGFyYW1zKSkgewoJY2FzZSAxMTAyNToKCWNhc2UgMjIwNTA6CgljYXNlIDQ0MTAwOgoJY2Fz
-ZSA4ODIwMDoKCWNhc2UgMTc2NDAwOgoJCXJhdGUgPSAyMjU3OTIwMDsKCQlicmVhazsKCWRlZmF1
-bHQ6CgkJcmF0ZSA9IDI0NTc2MDAwOwoJCWJyZWFrOwoJfQoKCXJldCA9IHNuZF9zb2NfZGFpX3Nl
-dF9zeXNjbGsoY3B1X2RhaSwgTVBDNTJ4eF9DTEtfSU5URVJOQUwsIHJhdGUsIFNORF9TT0NfQ0xP
-Q0tfT1VUKTsKCWlmIChyZXQgPCAwKQoJCXJldHVybiByZXQ7CgoJcmV0dXJuIDA7Cn0KCnN0YXRp
-YyBpbnQgZHNwZWFrMDFfZmFicmljX2h3X2ZyZWUoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpz
-dWJzdHJlYW0pCnsKCXByaW50aygiZHNwZWFrMDFfZmFicmljX2h3X2ZyZWVcbiIpOwoJcmV0dXJu
-IDA7Cn0KCnN0YXRpYyBpbnQgZHNwZWFrMDFfZmFicmljX3ByZXBhcmUoc3RydWN0IHNuZF9wY21f
-c3Vic3RyZWFtICpzdWJzdHJlYW0pCnsKCXByaW50aygiZHNwZWFrMDFfZmFicmljX3ByZXBhcmVc
-biIpOwoJcmV0dXJuIDA7Cn0KCnN0YXRpYyBpbnQgZHNwZWFrMDFfZmFicmljX3RyaWdnZXIoc3Ry
-dWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sIGludCB0cmlnZ2VyKQp7CglwcmludGso
-ImRzcGVhazAxX2ZhYnJpY190cmlnZ2VyXG4iKTsKCXJldHVybiAwOwp9CgpzdGF0aWMgc3RydWN0
-IHNuZF9zb2Nfb3BzIGRzcGVhazAxX2ZhYnJpY19vcHMgPSB7Cgkuc3RhcnR1cCA9IGRzcGVhazAx
-X2ZhYnJpY19zdGFydHVwLAoJLnNodXRkb3duID0gZHNwZWFrMDFfZmFicmljX3NodXRkb3duLAoJ
-Lmh3X3BhcmFtcyA9IGRzcGVhazAxX2ZhYnJpY19od19wYXJhbXMsCgkuaHdfZnJlZSA9IGRzcGVh
-azAxX2ZhYnJpY19od19mcmVlLAoJLnByZXBhcmUgPSBkc3BlYWswMV9mYWJyaWNfcHJlcGFyZSwK
-CS50cmlnZ2VyID0gZHNwZWFrMDFfZmFicmljX3RyaWdnZXIsCn07CgpzdGF0aWMgc3RydWN0IHNu
-ZF9zb2NfZGV2aWNlIGRldmljZTsKc3RhdGljIHN0cnVjdCBzbmRfc29jX2NhcmQgY2FyZDsKCnN0
-YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlfbGluayBkc3BlYWswMV9mYWJyaWNfZGFpW10gPSB7CnsK
-CS5uYW1lID0gIkkyUy0wIiwKCS5zdHJlYW1fbmFtZSA9ICJJMlMtMCIsCgkuY29kZWNfZGFpID0g
-JnBjbTE2OTBfZGFpLAoJLm9wcyA9ICZkc3BlYWswMV9mYWJyaWNfb3BzLAp9LAp7CgkubmFtZSA9
-ICJJMlMtMSIsCgkuc3RyZWFtX25hbWUgPSAiSTJTLTEiLAoJLmNvZGVjX2RhaSA9ICZwY20xNjkw
-X2RhaSwKCS5vcHMgPSAmZHNwZWFrMDFfZmFicmljX29wcywKfSwKfTsKCnN0YXRpYyBpbnQgZHNw
-ZWFrMDFfZmFicmljX2dwaW9fcmVzZXQ7CnN0YXRpYyBpbnQgZHNwZWFrMDFfZmFicmljX2dwaW9f
-bXV0ZTsKCnN0YXRpYyBfX2luaXQgaW50IGRzcGVhazAxX2ZhYnJpY19pbml0X2dwaW8oc3RydWN0
-IG9mX2RldmljZSAqb3AsIHN0cnVjdCBkZXZpY2Vfbm9kZSAqbnAsIGludCBpLCBpbnQgc3RhdGUp
-CnsKCWludCByYzsKCWludCBncGlvOwoKCWdwaW8gPSBvZl9nZXRfZ3BpbyhucCwgaSk7CglpZiAo
-Z3BpbyA+PSAwKSB7CgkJcmMgPSBncGlvX3JlcXVlc3QoZ3BpbywgZGV2X25hbWUoJm9wLT5kZXYp
-KTsKCQlpZiAocmMpIHsKCQkJZGV2X2Vycigmb3AtPmRldiwgImNhbid0IHJlcXVlc3QgRHNwZWFr
-MDEgZ3BpbyAjJWQgcmMgJWRcbiIsIGksIHJjKTsKCQkJcmV0dXJuIHJjOwoJCX0KCQlncGlvX2Rp
-cmVjdGlvbl9vdXRwdXQoZ3Bpbywgc3RhdGUpOwoJfSBlbHNlCgkJaWYgKGdwaW8gPT0gLUVJTlZB
-TCkgewoJCQlkZXZfZXJyKCZvcC0+ZGV2LCAiRHNwZWFrMDEgZ3BpbyAjJWQgaXMgaW52YWxpZFxu
-IiwgaSk7CgkJfQoJcmV0dXJuIGdwaW87Cn0KCnN0YXRpYyBfX2luaXQgaW50IGRzcGVhazAxX2Zh
-YnJpY19pbml0KHZvaWQpCnsKCXN0cnVjdCBvZl9kZXZpY2UgKm9wOwoJc3RydWN0IGRldmljZV9u
-b2RlICpucDsKCXN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXY7CglzdHJ1Y3QgaTJjX2NsaWVu
-dCAqaTJjX2RldjsKCWludCByYzsKCglpZiAoIW1hY2hpbmVfaXNfY29tcGF0aWJsZSgiZGlnaXNw
-ZWFrZXIsZHNwZWFrMDEiKSkKCQlyZXR1cm4gLUVOT0RFVjsKCgljYXJkLnBsYXRmb3JtID0gJm1w
-YzUyMDBfYXVkaW9fZG1hX3BsYXRmb3JtOwoJY2FyZC5uYW1lID0gIkRpZ2lzcGVha2VyIjsKCWNh
-cmQuZGFpX2xpbmsgPSBkc3BlYWswMV9mYWJyaWNfZGFpOwoJZHNwZWFrMDFfZmFicmljX2RhaVsw
-XS5jcHVfZGFpID0gcHNjX2kyc19kYWlbMF07Cglkc3BlYWswMV9mYWJyaWNfZGFpWzFdLmNwdV9k
-YWkgPSBwc2NfaTJzX2RhaVsxXTsKCgljYXJkLm51bV9saW5rcyA9IEFSUkFZX1NJWkUoZHNwZWFr
-MDFfZmFicmljX2RhaSk7CgoJZGV2aWNlLmNhcmQgPSAmY2FyZDsKCWRldmljZS5jb2RlY19kZXYg
-PSAmcGNtMTY5MF9zb2NfY29kZWNfZGV2OwoKCS8qIENoZWNrIGZvciB0aGUgY29kZWMgaGFuZGxl
-LiAgICovCgoJb3AgPSB0b19vZl9kZXZpY2UocHNjX2kyc19kYWlbMF0tPmRldik7CglucCA9IG9m
-X3BhcnNlX3BoYW5kbGUob3AtPm5vZGUsICJjb2RlYy1oYW5kbGUiLCAwKTsKCWlmIChucCkgewoJ
-CWkyY19kZXYgPSBvZl9maW5kX2kyY19kZXZpY2VfYnlfbm9kZShucCk7CgkJZGV2aWNlLmNvZGVj
-X2RhdGEgPSBpMmNfZ2V0X2NsaWVudGRhdGEoaTJjX2Rldik7CgoJCWRzcGVhazAxX2ZhYnJpY19n
-cGlvX3Jlc2V0ID0gZHNwZWFrMDFfZmFicmljX2luaXRfZ3BpbyhvcCwgbnAsIDAsIDEpOwoJCWlm
-IChkc3BlYWswMV9mYWJyaWNfZ3Bpb19yZXNldCA8IDApCgkJCXJldHVybiBkc3BlYWswMV9mYWJy
-aWNfZ3Bpb19yZXNldDsKCQlkc3BlYWswMV9mYWJyaWNfZ3Bpb19tdXRlID0gZHNwZWFrMDFfZmFi
-cmljX2luaXRfZ3BpbyhvcCwgbnAsIDEsIDEpOwoJCWlmIChkc3BlYWswMV9mYWJyaWNfZ3Bpb19t
-dXRlIDwgMCkKCQkJcmV0dXJuIGRzcGVhazAxX2ZhYnJpY19ncGlvX211dGU7Cgl9CglwZGV2ID0g
-cGxhdGZvcm1fZGV2aWNlX2FsbG9jKCJzb2MtYXVkaW8iLCAxKTsKCWlmICghcGRldikgewoJCXBy
-X2VycigiZHNwZWFrMDFfZmFicmljX2luaXQ6IHBsYXRmb3JtX2RldmljZV9hbGxvYygpIGZhaWxl
-ZFxuIik7CgkJcmV0dXJuIC1FTk9ERVY7Cgl9CgoJcGxhdGZvcm1fc2V0X2RydmRhdGEocGRldiwg
-JmRldmljZSk7CglkZXZpY2UuZGV2ID0gJnBkZXYtPmRldjsKCglyYyA9IHBsYXRmb3JtX2Rldmlj
-ZV9hZGQocGRldik7CglpZiAocmMpIHsKCQlwcl9lcnIoImRzcGVhazAxX2ZhYnJpY19pbml0OiBw
-bGF0Zm9ybV9kZXZpY2VfYWRkKCkgZmFpbGVkXG4iKTsKCQlyZXR1cm4gLUVOT0RFVjsKCX0KCXJl
-dHVybiAwOwp9CgpzdGF0aWMgX19leGl0IHZvaWQgZHNwZWFrMDFfZmFicmljX2V4aXQodm9pZCkK
-ewp9Cgptb2R1bGVfaW5pdChkc3BlYWswMV9mYWJyaWNfaW5pdCk7Cm1vZHVsZV9leGl0KGRzcGVh
-azAxX2ZhYnJpY19leGl0KTsKCgovKiBNb2R1bGUgaW5mb3JtYXRpb24gKi8KTU9EVUxFX0FVVEhP
-UigiSm9uIFNtaXJsIik7Ck1PRFVMRV9ERVNDUklQVElPTigiQVNPQyBEaWdpc3BlYWtlciBmYWJy
-aWMgbW9kdWxlIik7Ck1PRFVMRV9MSUNFTlNFKCJHUEwiKTsK
---0016e645b76893e1660470b59059
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---0016e645b76893e1660470b59059--
+You need to specify both - the controller may be able to handle data in
+either endianness, not just the native format.
