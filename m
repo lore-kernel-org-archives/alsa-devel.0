@@ -1,25 +1,18 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: Re: [BUG] NULL pointer dereference in patch_sigmatel.c
-Date: Mon, 10 Aug 2009 10:01:03 +0300
-Message-ID: <4A7FC5AF.5050105@pardus.org.tr>
-References: <4A5F84D6.5040708@pardus.org.tr>
-	<s5h1vofac2z.wl%tiwai@suse.de>	<s5hy6qn8wyj.wl%tiwai@suse.de>
-	<4A7ADD87.4030109@pardus.org.tr>	<s5hfxc5114w.wl%tiwai@suse.de>
-	<4A7BF4F7.20405@pardus.org.tr>	<ad2655cb0908070243h6318dbdep80d90a08fa6c435b@mail.gmail.com>	<s5hiqh0ymkn.wl%tiwai@suse.de>
-	<4A7C03BE.7040300@pardus.org.tr>	<s5hd477zyo1.wl%tiwai@suse.de>
-	<4A7C2E87.1060102@pardus.org.tr>	<s5hljlvyc8m.wl%tiwai@suse.de>
-	<4A7EBCB7.8010104@pardus.org.tr>	<s5h63cwvpbd.wl%tiwai@suse.de>
-	<4A7F556E.9060809@pardus.org.tr>	<s5hiqgwns6n.wl%tiwai@suse.de>
-	<s5hhbwgnrqw.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Implementing sync start
+Date: Mon, 10 Aug 2009 09:40:58 +0200
+Message-ID: <4A7FCF0A.1000806@ladisch.de>
+References: <9e4733910908081116p221e606cma31a95b06d9b5be6@mail.gmail.com>	<9e4733910908082007n5d2e7f48g453b1f2e3c6eb23e@mail.gmail.com>	<9e4733910908091913j63debfefja44e8e04e278e087@mail.gmail.com>
+	<9e4733910908091919o617eb1b8r44436cd87a6873ff@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lider.pardus.org.tr (lider.uludag.org.tr [193.140.100.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id C9D59103808
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 6513210383B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Aug 2009 08:57:39 +0200 (CEST)
-In-Reply-To: <s5hhbwgnrqw.wl%tiwai@suse.de>
+	Mon, 10 Aug 2009 09:40:49 +0200 (CEST)
+In-Reply-To: <9e4733910908091919o617eb1b8r44436cd87a6873ff@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,17 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote On 10-08-2009 08:48:
->
-> Doh, sorry a totally broken patch.  The fixed one is below.
->
-> I could reproduce the bug with the emulator, and this patch fixes the
-> issue.  Updated sound GIT tree and snapshot now.
->   
+Jon Smirl wrote:
+> Here's how I implemented sync start/stop.......
 
-Both conexant one and the sigmatel one are now fixed. Thanks for all the
-efforts :)
+Have a look at oxygen_trigger() in sound/pci/oxygen/oxygen_pcm.c for a
+working sync start/stop implementation.
+
+> 	snd_pcm_group_for_each_entry(substream, sub) {
+> 
+> 		rtd = substream->private_data;
+
+There is no guarantee the all linked substreams belong to the same card
+or the same driver; you have to check that first and ignore streams you
+don't know about.
+
+> 		if (sub != substream)
+> 			snd_pcm_trigger_done(substream, sub);
+
+You can just call snd_pcm_trigger_done() for every substream you handle.
+
+> 		...
+> 	}
+> 	return 0;
+
+There is no common code for the two substreams.
+Is your hardware actually capable of starting them at exactly the same
+time?
+
+
+Best regards,
+Clemens
