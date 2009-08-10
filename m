@@ -1,19 +1,23 @@
-From: James Courtier-Dutton <james.dutton@gmail.com>
-Subject: Re: issue at 44.1 Khz capturing
-Date: Mon, 10 Aug 2009 11:14:44 +0100
-Message-ID: <ad2655cb0908100314g45b39d6x21da633b625b216f@mail.gmail.com>
-References: <98769532B4BB14429434178695419EAE5F937821@bgsmsx501.gar.corp.intel.com>
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: Re: Implementing sync start
+Date: Mon, 10 Aug 2009 07:45:35 -0400
+Message-ID: <9e4733910908100445u3ea02395y9dc39b73ad41cb6b@mail.gmail.com>
+References: <9e4733910908081116p221e606cma31a95b06d9b5be6@mail.gmail.com>
+	<9e4733910908082007n5d2e7f48g453b1f2e3c6eb23e@mail.gmail.com>
+	<9e4733910908091913j63debfefja44e8e04e278e087@mail.gmail.com>
+	<9e4733910908091919o617eb1b8r44436cd87a6873ff@mail.gmail.com>
+	<4A7FCF0A.1000806@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8C1C4103851
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id 26B3E1037F9
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Aug 2009 12:14:44 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id e21so696011fga.21
-	for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2009 03:14:44 -0700 (PDT)
-In-Reply-To: <98769532B4BB14429434178695419EAE5F937821@bgsmsx501.gar.corp.intel.com>
+	Mon, 10 Aug 2009 13:45:36 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c37so945590anc.2
+	for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2009 04:45:35 -0700 (PDT)
+In-Reply-To: <4A7FCF0A.1000806@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,28 +27,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Harsha, Priya" <priya.harsha@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2009/8/10 Harsha, Priya <priya.harsha@intel.com>:
-> Hi,
+On Mon, Aug 10, 2009 at 3:40 AM, Clemens Ladisch<clemens@ladisch.de> wrote:
+> Jon Smirl wrote:
+>> Here's how I implemented sync start/stop.......
 >
-> I am using arecord for capturing data. When I try to record at 8 or 48 KHz, it's perfectly fine. But when I try to record at 44.1 Khz, there are spikes in the recorded data for every buffer. When I tried to tap the data captured at the firmware/hardware end, it's smooth but the same data when is checked from the user space after being recorded, it has spikes. On further analysis, looks like for every buffer recorded there is either 1 sample recorded extra or 1 sample dropped. But when I printed out the values passed from the pointer function, they are exactly at the intervals of 5513 bytes.
+> Have a look at oxygen_trigger() in sound/pci/oxygen/oxygen_pcm.c for a
+> working sync start/stop implementation.
 >
-> Can anyone give me any clue as to what is going wrong? I am using indirect_* functions in the driver code. Is there any buffer size round off that is giving this error? Can I handle something in the driver to avoid this?
+>> =A0 =A0 =A0 snd_pcm_group_for_each_entry(substream, sub) {
+>>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 rtd =3D substream->private_data;
+>
+> There is no guarantee the all linked substreams belong to the same card
+> or the same driver; you have to check that first and ignore streams you
+> don't know about.
+
+ok
+
+>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (sub !=3D substream)
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 snd_pcm_trigger_done(substre=
+am, sub);
+>
+> You can just call snd_pcm_trigger_done() for every substream you handle.
+
+ok
+
+>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 ...
+>> =A0 =A0 =A0 }
+>> =A0 =A0 =A0 return 0;
+>
+> There is no common code for the two substreams.
+> Is your hardware actually capable of starting them at exactly the same
+> time?
+
+Sync start is working. This is in the loop and starts the streams:
+   bcom_enable(s->bcom_task);
+s is set to two different values in the loop.
+
+I'm having problems with the drain error on stop.
+
+>
+>
+> Best regards,
+> Clemens
 >
 
-A lot of sound card hardware cannot work at anything other than 48kHz.
-alsa is therefore resampling to the applications rate. In this case
-trying to get 44.1kHz.
-It is very difficult with the current alsa architecture to get good
-quality resampling.
-I would advise you to record at 48kHz and use something like SOX
-afterwards, to get 44.1kHz. Note that also sound cards are not good at
-playing 44.1kHz because the same resampling happens. So keeping
-everything at 48kHz now days is probably best.
 
-Kind Regards
 
-James
+-- =
+
+Jon Smirl
+jonsmirl@gmail.com
