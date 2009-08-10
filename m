@@ -1,19 +1,18 @@
-From: "Harsha, Priya" <priya.harsha@intel.com>
-Subject: Re: issue at 44.1 Khz capturing
-Date: Mon, 10 Aug 2009 18:42:47 +0530
-Message-ID: <98769532B4BB14429434178695419EAE5F937AC6@bgsmsx501.gar.corp.intel.com>
-References: <98769532B4BB14429434178695419EAE5F937821@bgsmsx501.gar.corp.intel.com>
-	<4A8009B5.5020305@ladisch.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Implementing sync start
+Date: Mon, 10 Aug 2009 15:30:35 +0200
+Message-ID: <4A8020FB.7080302@ladisch.de>
+References: <9e4733910908081116p221e606cma31a95b06d9b5be6@mail.gmail.com>	<9e4733910908091913j63debfefja44e8e04e278e087@mail.gmail.com>	<9e4733910908091919o617eb1b8r44436cd87a6873ff@mail.gmail.com>	<4A7FCF0A.1000806@ladisch.de>	<9e4733910908100445u3ea02395y9dc39b73ad41cb6b@mail.gmail.com>	<4A800B47.6020201@ladisch.de>	<9e4733910908100524w510ba17ep2d6482cdfad57597@mail.gmail.com>	<4A8012B4.5000009@ladisch.de>	<9e4733910908100541y495f491cy7a25351a8c36f3dd@mail.gmail.com>	<20090810124350.GB24947@sirena.org.uk>
+	<9e4733910908100546r5fa2e189s12ff72c3217c271a@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 630B8103873
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 8A12B1038AA
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Aug 2009 15:15:27 +0200 (CEST)
-In-Reply-To: <4A8009B5.5020305@ladisch.de>
-Content-Language: en-US
+	Mon, 10 Aug 2009 15:30:25 +0200 (CEST)
+In-Reply-To: <9e4733910908100546r5fa2e189s12ff72c3217c271a@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,32 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-I see that the buffer allocated is 22050 bytes (and not 22052 bytes). Yes the hardware supports buffers which are not multiple of period size.
+Jon Smirl wrote:
+> Does this link them?
+> snd_pcm_set_sync(substream); in open()
 
-Can I forcefully set my buffer size to 22052 bytes and allocate using snd_pcm_lib_malloc_pages and try? Will that help?	 
+No; this sets the substream's sync ID which tells userspace applications
+that the driver actually supports sync start together with other
+substreams with the same ID.
 
-Thanks,
-Harsha.
->-----Original Message-----
->From: Clemens Ladisch [mailto:clemens@ladisch.de]
->Sent: Monday, August 10, 2009 5:21 PM
->To: Harsha, Priya
->Cc: alsa-devel@alsa-project.org
->Subject: Re: [alsa-devel] issue at 44.1 Khz capturing
->
->Harsha, Priya wrote:
->> ... But when I printed out the values passed from the pointer function,
->> they are exactly at the intervals of 5513 bytes.
->
->What is the exact buffer size?  Half a second would be 22050 bytes
->(frames?), while four of your periods are 22052 bytes.
->Does your hardware support buffers whose length is not an integer
->multiple of the period size?
->
->
->Best regards,
->Clemens
+Linking is done by an application with snd_pcm_link().  The driver does
+not get a notification of this; it notices this only in the trigger
+callback, where the loop goes over more than one substream.
+
+> and then remove this loop in trigger?
+> snd_pcm_group_for_each_entry(substream, sub) {
+> 			snd_pcm_trigger_done(substream, sub);
+
+Why would you want to remove this loop?
+
+The snd_pcm_group_for_each_entry() iterates over all substreams that are
+linked.  The ALSA code that calls the trigger callback has a similar
+loop and calls .trigger for any streams for which snd_pcm_trigger_done()
+has not yet been called.
+
+
+HTH
+Clemens
