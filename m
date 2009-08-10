@@ -1,18 +1,18 @@
 From: "chaithrika" <chaithrika@ti.com>
 Subject: Re: [PATCH 1/2] ASoC: DaVinci: McASP driver enhacements
-Date: Mon, 10 Aug 2009 10:28:26 +0530
-Message-ID: <020101ca1977$323fe010$96bfa030$@com>
+Date: Mon, 10 Aug 2009 10:37:58 +0530
+Message-ID: <020201ca1978$86fb5a70$94f20f50$@com>
 References: <1249654062-23634-1-git-send-email-chaithrika@ti.com>
-	<4A7C8789.40408@boundarydevices.com>
+	<20090808081158.GC4519@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id B9F9D1037F3
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id BBD30103802
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Aug 2009 06:59:59 +0200 (CEST)
-In-Reply-To: <4A7C8789.40408@boundarydevices.com>
+	Mon, 10 Aug 2009 07:09:28 +0200 (CEST)
+In-Reply-To: <20090808081158.GC4519@sirena.org.uk>
 Content-Language: en-us
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,75 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Troy Kisky' <troy.kisky@boundarydevices.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, davinci-linux-open-source@linux.davincidsp.com
+To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
+Cc: khilman@deeprootsystems.com, alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 08, 2009 at 01:29:05, Troy Kisky wrote:
-> Chaithrika U S wrote:
-> > ---
-> >  sound/soc/davinci/davinci-mcasp.c |  113
-++++++++++++++++++++++++++++++++++--
-> >  sound/soc/davinci/davinci-mcasp.h |    5 ++
-> >  sound/soc/davinci/davinci-pcm.c   |    4 +-
-> >  sound/soc/davinci/davinci-pcm.h   |    1 +
-> >  4 files changed, 115 insertions(+), 8 deletions(-)
+On Sat, Aug 08, 2009 at 13:41:58, Mark Brown wrote:
+> On Fri, Aug 07, 2009 at 10:07:42AM -0400, Chaithrika U S wrote:
 > 
-> .....
-> > diff --git a/sound/soc/davinci/davinci-pcm.c
-b/sound/soc/davinci/davinci-pcm.c
-> > index 8fd0c3c..1e2dfd0 100644
-> > --- a/sound/soc/davinci/davinci-pcm.c
-> > +++ b/sound/soc/davinci/davinci-pcm.c
-> > @@ -67,6 +67,7 @@ static void davinci_pcm_enqueue_dma(struct
-snd_pcm_substream *substream)
-> >  	dma_addr_t src, dst;
-> >  	unsigned short src_bidx, dst_bidx;
-> >  	unsigned int data_type;
-> > +	unsigned short acnt;
-> >  	unsigned int count;
-> >  
-> >  	period_size = snd_pcm_lib_period_bytes(substream);
-> > @@ -91,11 +92,12 @@ static void davinci_pcm_enqueue_dma(struct
-snd_pcm_substream *substream)
-> >  		dst_bidx = data_type;
-> >  	}
-> >  
-> > +	acnt = prtd->params->acnt;
-> >  	edma_set_src(lch, src, INCR, W8BIT);
-> >  	edma_set_dest(lch, dst, INCR, W8BIT);
-> >  	edma_set_src_index(lch, src_bidx, 0);
-> >  	edma_set_dest_index(lch, dst_bidx, 0);
-> > -	edma_set_transfer_params(lch, data_type, count, 1, 0, ASYNC);
-> > +	edma_set_transfer_params(lch, acnt, count, 1, 0, ASYNC);
-> 
-> Since I see no change to davinci-i2s, I think this will break any platform
-which
-> uses davinci-i2s.
-> 
-Yes, I agree. I have missed out the changes got davinci-i2s.
-I will submit a patch for this.
+> > This patch adds support for FIFO configuration.The platform member has a
 
-Thanks,
+> > version field which differentiates the McASP on different SoCs. The
+patch 
+> > also adds another DAI format to the driver.
+> 
+> You really should split out the DAI format addition into another patch -
+> there's no code overlap between that and the rest of your changes.
+OK. I will post a separate patch for this change.
+
+> Aside from the issue Troy raised everything seems fine except for one
+OK. I will submit a patch for that issue.
+
+> small issue:
+> 
+> > +
+> > +	/* McASP FIFO related */
+> > +	u8	txnumevt;
+> > +	u8	rxnumevt;
+> 
+> These names don't seem particularly obvious.  If they were chosen to
+> match the datasheet name then it probably won't be a problem but
+> otherwise something more like tx_fifo_depth might be easier for people
+> to figure out.
+> 
+Currently, the names are as per the peripheral datasheet. So, will 
+retain the same name.
+
+Regards, 
 Chaithrika
-
-
-> >  
-> >  	prtd->period++;
-> >  	if (unlikely(prtd->period >= runtime->periods))
-> > diff --git a/sound/soc/davinci/davinci-pcm.h
-b/sound/soc/davinci/davinci-pcm.h
-> > index eb4287f..63d9625 100644
-> > --- a/sound/soc/davinci/davinci-pcm.h
-> > +++ b/sound/soc/davinci/davinci-pcm.h
-> > @@ -19,6 +19,7 @@
-> >  struct davinci_pcm_dma_params {
-> >  	char *name;			/* stream identifier */
-> >  	int channel;			/* sync dma channel ID */
-> > +	unsigned short acnt;
-> >  	dma_addr_t dma_addr;		/* device physical address for DMA
-*/
-> >  	enum dma_event_q eventq_no;	/* event queue number */
-> >  	unsigned char data_type;	/* xfer data type */
-> 
-> 
