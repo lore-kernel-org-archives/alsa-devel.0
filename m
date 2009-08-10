@@ -1,18 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Implementing sync start
-Date: Mon, 10 Aug 2009 13:57:59 +0200
-Message-ID: <4A800B47.6020201@ladisch.de>
-References: <9e4733910908081116p221e606cma31a95b06d9b5be6@mail.gmail.com>	<9e4733910908082007n5d2e7f48g453b1f2e3c6eb23e@mail.gmail.com>	<9e4733910908091913j63debfefja44e8e04e278e087@mail.gmail.com>	<9e4733910908091919o617eb1b8r44436cd87a6873ff@mail.gmail.com>	<4A7FCF0A.1000806@ladisch.de>
-	<9e4733910908100445u3ea02395y9dc39b73ad41cb6b@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.32
+Date: Mon, 10 Aug 2009 13:13:24 +0100
+Message-ID: <20090810121324.GA27983@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id AB42610384D
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AC27010384E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Aug 2009 13:57:43 +0200 (CEST)
-In-Reply-To: <9e4733910908100445u3ea02395y9dc39b73ad41cb6b@mail.gmail.com>
+	Mon, 10 Aug 2009 14:13:30 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,34 +20,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jon Smirl wrote:
-> On Mon, Aug 10, 2009 at 3:40 AM, Clemens Ladisch<clemens@ladisch.de> wrote:
->> There is no common code for the two substreams.
->> Is your hardware actually capable of starting them at exactly the same
->> time?
-> 
-> Sync start is working. This is in the loop and starts the streams:
->    bcom_enable(s->bcom_task);
-> s is set to two different values in the loop.
+The following changes since commit b7b8f9bf0cd73b90561e8123fd5ec28f4539c419:
+  Janusz Krzysztofik (1):
+        TTY/ASoC: Rename N_AMSDELTA line discipline to N_V253
 
-But you are calling bcom_enable() twice, once for each stream.  The same
-would happen if you didn't implement sync start and let ALSA handle the
-linked streams.
+are available in the git repository at:
 
-Sync start/stop is intended for hardware that can actually start two
-streams at _exactly_ the same time, by, e.g., writing a value with two
-bits set to a register.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2=
+.6.32
 
-> I'm having problems with the drain error on stop.
-> ALSA sound/core/pcm_native.c:1499: playback drain error (DMA or IRQ trouble?)
+Chaithrika U S (1):
+      ASoC: DaVinci: Support Audio on DA830 EVM
 
-ALSA did not get the snd_pcm_period_elapsed() call (or the correct
-pointer value) for the last samples.
+Mark Brown (3):
+      ASoC: Convert WM8776 to use factored out register cache code
+      ASoC: Define more formats for the AC97 CODECs
+      ASoC: Drop unneeded declaration of removed wm8731 SPI write function
 
+Uwe Kleine-K=F6nig (1):
+      ASoC: s3c2443-ac97: convert semaphore to mutex
 
-HTH
-Clemens
+ include/sound/soc-dai.h          |    8 ++++-
+ sound/soc/codecs/wm8731.c        |    3 --
+ sound/soc/codecs/wm8776.c        |   59 +++++++---------------------------=
+---
+ sound/soc/davinci/Kconfig        |   11 +++++++
+ sound/soc/davinci/Makefile       |    1 +
+ sound/soc/davinci/davinci-evm.c  |   33 +++++++++++++++++++++
+ sound/soc/s3c24xx/s3c2443-ac97.c |   10 +++---
+ 7 files changed, 68 insertions(+), 57 deletions(-)
