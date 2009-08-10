@@ -1,20 +1,22 @@
 From: Jon Smirl <jonsmirl@gmail.com>
 Subject: Re: Implementing sync start
-Date: Sun, 9 Aug 2009 22:13:42 -0400
-Message-ID: <9e4733910908091913j63debfefja44e8e04e278e087@mail.gmail.com>
+Date: Sun, 9 Aug 2009 22:19:37 -0400
+Message-ID: <9e4733910908091919o617eb1b8r44436cd87a6873ff@mail.gmail.com>
 References: <9e4733910908081116p221e606cma31a95b06d9b5be6@mail.gmail.com>
 	<9e4733910908082007n5d2e7f48g453b1f2e3c6eb23e@mail.gmail.com>
+	<9e4733910908091913j63debfefja44e8e04e278e087@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id DE3922465F
+Received: from mail-yw0-f203.google.com (mail-yw0-f203.google.com
+	[209.85.211.203])
+	by alsa0.perex.cz (Postfix) with ESMTP id 526F62466B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Aug 2009 04:13:43 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c37so877561anc.2
-	for <alsa-devel@alsa-project.org>; Sun, 09 Aug 2009 19:13:43 -0700 (PDT)
-In-Reply-To: <9e4733910908082007n5d2e7f48g453b1f2e3c6eb23e@mail.gmail.com>
+	Mon, 10 Aug 2009 04:19:38 +0200 (CEST)
+Received: by ywh41 with SMTP id 41so4030895ywh.23
+	for <alsa-devel@alsa-project.org>; Sun, 09 Aug 2009 19:19:37 -0700 (PDT)
+In-Reply-To: <9e4733910908091913j63debfefja44e8e04e278e087@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,102 +29,113 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I found the problem causing static. The MCLK was not programmed
-properly when both channels are active.
+Here's how I implemented sync start/stop.......
 
-How do you do sync stop? or do you do sync stop?
-I'm getting this error when stopping the streams. The streams have
-been sync started.
+/**
+ * psc_dma_trigger: start and stop the DMA transfer.
+ *
+ * This function is called by ALSA to start, stop, pause, and resume the DMA
+ * transfer of data.
+ */
+static int psc_dma_trigger(struct snd_pcm_substream *sub, int cmd)
+{
+	struct snd_soc_pcm_runtime *rtd;
+	struct psc_dma *psc_dma;
+	struct snd_pcm_runtime *runtime;
+	struct psc_dma_stream *s;
+	struct snd_pcm_substream *substream;
+	struct mpc52xx_psc __iomem *regs;
+	u16 imr;
+	unsigned long flags;
+	int i;
 
-ALSA sound/core/pcm_native.c:1499: playback drain error (DMA or IRQ trouble?)
+	snd_pcm_group_for_each_entry(substream, sub) {
 
-root@phyCORE:~ aplay -D quad2 startup.wav
-mpc5200-psc-i2s f0002000.i2s: psc_dma_open(substream=c3862c00)
-dspeak01_fabric_startup
-asoc: pcm1690 <-> i2s-0 info:
-asoc: rate mask 0x1ee0
-asoc: min ch 2 max ch 2
-asoc: min rate 32000 max rate 192000
-mpc5200-psc-i2s f0002200.i2s: psc_dma_open(substream=c3862d00)
-dspeak01_fabric_startup
-asoc: pcm1690 <-> i2s-1 info:
-asoc: rate mask 0x1ee0
-asoc: min ch 2 max ch 2
-asoc: min rate 32000 max rate 192000
-Playing WAVE 'startup.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
-dspeak01_fabric_hw_params
-mpc5200-psc-i2s f0002000.i2s: psc_i2s_set_sysclk(cpu_dai=c390d540,
-freq=22579200, dir=1, mclk=0)
-JDS - clock enable 1 23
-pcm1690 0-004c: pcm1690_hw_params(substream=c3862c00, params=c396c400)
-pcm1690 0-004c: rate=44100 format=11
-mpc5200-psc-i2s f0002000.i2s: psc_i2s_hw_params(substream=c3862c00)
-p_size=5513 p_bytes=44104 periods=4 buffer_size=22052
-buffer_bytes=176416
-mpc5200-psc-i2s f0002000.i2s: psc_i2s_hw_params(substream=c3862c00)
-rate=44100 sysclk=22579200 framesync=64 bitclk=8 reg=3F070000
-mpc5200-psc-i2s f0002000.i2s: psc_i2s_hw_params exit
-dspeak01_fabric_prepare subdevice #0
-soc-audio soc-audio.1: Setting bias prepare
-DAPM pcm1690 snd_soc_dapm_stream_event
-pcm1690 0-004c: pcm1690_mute(dai=c0403230, mute=0)
-dspeak01_fabric_hw_params
-mpc5200-psc-i2s f0002200.i2s: psc_i2s_set_sysclk(cpu_dai=c390dc00,
-freq=22579200, dir=1, mclk=1)
-pcm1690 0-004c: pcm1690_hw_params(substream=c3862d00, params=c396c400)
-pcm1690 0-004c: rate=44100 format=11
-mpc5200-psc-i2s f0002200.i2s: psc_i2s_hw_params(substream=c3862d00)
-p_size=5513 p_bytes=44104 periods=4 buffer_size=22052
-buffer_bytes=176416
-mpc5200-psc-i2s f0002200.i2s: psc_i2s_hw_params(substream=c3862d00)
-rate=44100 sysclk=22579200 framesync=64 bitclk=8 reg=3F070000
-mpc5200-psc-i2s f0002200.i2s: psc_i2s_hw_params exit
-dspeak01_fabric_prepare subdevice #0
-soc-audio soc-audio.1: Setting bias prepare
-DAPM pcm1690 snd_soc_dapm_stream_event
-pcm1690 0-004c: pcm1690_mute(dai=c0403230, mute=0)
-dspeak01_fabric_prepare subdevice #0
-soc-audio soc-audio.1: Setting bias prepare
-DAPM pcm1690 snd_soc_dapm_stream_event
-pcm1690 0-004c: pcm1690_mute(dai=c0403230, mute=0)
-dspeak01_fabric_prepare subdevice #0
-soc-audio soc-audio.1: Setting bias prepare
-DAPM pcm1690 snd_soc_dapm_stream_event
-pcm1690 0-004c: pcm1690_mute(dai=c0403230, mute=0)
-dspeak01_fabric_prepare subdevice #0
-soc-audio soc-audio.1: Setting bias prepare
-DAPM pcm1690 snd_soc_dapm_stream_event
-pcm1690 0-004c: pcm1690_mute(dai=c0403230, mute=0)
-dspeak01_fabric_prepare subdevice #0
-soc-audio soc-audio.1: Setting bias prepare
-DAPM pcm1690 snd_soc_dapm_stream_event
-pcm1690 0-004c: pcm1690_mute(dai=c0403230, mute=0)
-mpc5200-psc-i2s f0002000.i2s: psc_dma_trigger(substream=c3862c00,
-cmd=1) stream_id=0
-mpc5200-psc-i2s f0002200.i2s: psc_dma_trigger(substream=c3862c00,
-cmd=1) stream_id=0
-mpc5200-psc-i2s f0002000.i2s: psc_dma_trigger(substream=c3862c00,
-cmd=0) stream_id=0
-mpc5200-psc-i2s f0002200.i2s: psc_dma_trigger(substream=c3862c00,
-cmd=0) stream_id=0
-ALSA sound/core/pcm_native.c:1499: playback drain error (DMA or IRQ trouble?)
-mpc5200-psc-i2s f0002000.i2s: psc_dma_trigger(substream=c3862d00,
-cmd=0) stream_id=0
-mpc5200-psc-i2s f0002200.i2s: psc_dma_trigger(substream=c3862d00,
-cmd=0) stream_id=0
-dspeak01_fabric_hw_free
-dspeak01_fabric_hw_free
-dspeak01_fabric_hw_free
-pcm1690 0-004c: pcm1690_mute(dai=c0403230, mute=1)
-dspeak01_fabric_shutdown
-mpc5200-psc-i2s f0002000.i2s: psc_dma_close(substream=c3862c00)
-dspeak01_fabric_hw_free
-pcm1690 0-004c: pcm1690_mute(dai=c0403230, mute=1)
-dspeak01_fabric_shutdown
-mpc5200-psc-i2s f0002200.i2s: psc_dma_close(substream=c3862d00)
-root@phyCORE:~ pop wq checking: Playback status: inactive waiting: yes
-soc-audio soc-audio.1: Setting bias prepare
-DAPM pcm1690 snd_soc_dapm_stream_event
+		rtd = substream->private_data;
+		psc_dma = rtd->dai->cpu_dai->private_data;
+		runtime = substream->runtime;
+		regs = psc_dma->psc_regs;
+
+		dev_dbg(psc_dma->dev, "psc_dma_trigger(substream=%p, cmd=%i)"
+			" stream_id=%i\n",
+			sub, cmd, substream->pstr->stream);
+
+		if (substream->pstr->stream == SNDRV_PCM_STREAM_CAPTURE)
+			s = &psc_dma->capture;
+		else
+			s = &psc_dma->playback;
+
+		switch (cmd) {
+		case SNDRV_PCM_TRIGGER_START:
+			s->period_bytes = frames_to_bytes(runtime,
+							  runtime->period_size);
+			s->period_start = virt_to_phys(runtime->dma_area);
+			s->period_end = s->period_start +
+					(s->period_bytes * runtime->periods);
+			s->period_next_pt = s->period_start;
+			s->period_current_pt = s->period_start;
+			s->period_size = runtime->period_size;
+			s->active = 1;
+
+			/* track appl_ptr so that we have a better chance of detecting
+			 * end of stream and not over running it.
+			 */
+			s->runtime = runtime;
+			s->appl_ptr = s->runtime->control->appl_ptr -
+					(runtime->period_size * runtime->periods);
+
+			/* Fill up the bestcomm bd queue and enable DMA.
+			 * This will begin filling the PSC's fifo.
+			 */
+			spin_lock_irqsave(&psc_dma->lock, flags);
+
+			if (substream->pstr->stream == SNDRV_PCM_STREAM_CAPTURE) {
+				bcom_gen_bd_rx_reset(s->bcom_task);
+				for (i = 0; i < runtime->periods; i++)
+					if (!bcom_queue_full(s->bcom_task))
+						psc_dma_bcom_enqueue_next_buffer(s);
+			} else {
+				bcom_gen_bd_tx_reset(s->bcom_task);
+				psc_dma_bcom_enqueue_tx(s);
+			}
+
+			bcom_enable(s->bcom_task);
+			spin_unlock_irqrestore(&psc_dma->lock, flags);
+
+			out_8(&regs->command, MPC52xx_PSC_RST_ERR_STAT);
+
+			break;
+
+		case SNDRV_PCM_TRIGGER_STOP:
+			s->active = 0;
+
+			spin_lock_irqsave(&psc_dma->lock, flags);
+			bcom_disable(s->bcom_task);
+			if (substream->pstr->stream == SNDRV_PCM_STREAM_CAPTURE)
+				bcom_gen_bd_rx_reset(s->bcom_task);
+			else
+				bcom_gen_bd_tx_reset(s->bcom_task);
+			spin_unlock_irqrestore(&psc_dma->lock, flags);
+
+			break;
+
+		default:
+			dev_dbg(psc_dma->dev, "invalid command\n");
+			return -EINVAL;
+		}
+		if (sub != substream)
+			snd_pcm_trigger_done(substream, sub);
+
+		/* Update interrupt enable settings */
+		imr = 0;
+		if (psc_dma->playback.active)
+			imr |= MPC52xx_PSC_IMR_TXEMP;
+		if (psc_dma->capture.active)
+			imr |= MPC52xx_PSC_IMR_ORERR;
+		out_be16(&regs->isr_imr.imr, psc_dma->imr | imr);
+	}
+	return 0;
+}
 
 
 
