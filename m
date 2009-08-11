@@ -1,16 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.32
-Date: Tue, 11 Aug 2009 17:31:06 +0100
-Message-ID: <20090811163106.GA3603@rakim.wolfsonmicro.main>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: hda-emu codec information files
+Date: Tue, 11 Aug 2009 19:56:37 +0300
+Message-ID: <4A81A2C5.7080809@pardus.org.tr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E807724CCA
+Received: from lider.pardus.org.tr (lider.uludag.org.tr [193.140.100.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id CA48824CDF
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Aug 2009 18:31:08 +0200 (CEST)
-Content-Disposition: inline
+	Tue, 11 Aug 2009 18:56:34 +0200 (CEST)
+Received: from [192.168.1.2] (unknown [88.249.178.198])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested) (Authenticated sender: ozan)
+	by lider.pardus.org.tr (Postfix) with ESMTPSA id E066FA7ABCF
+	for <alsa-devel@alsa-project.org>;
+	Tue, 11 Aug 2009 19:53:14 +0300 (EEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,32 +25,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit e0c48a18f76415d3ec1ac28e5f7a0df10e2f3d8c:
-  Mark Brown (1):
-        ASoC: Drop unneeded declaration of removed wm8731 SPI write function
+Hi,
 
-are available in the git repository at:
+I'm able to collect a lot of alsa-info from a bunch of netbook/laptop
+and desktop boards. I can send them as a patch series if it will help
+debug problems
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.32
-
-Daniel Ribeiro (1):
-      ASoC: change set_tdm_slot api to allow slot_width override.
-
-Mark Brown (2):
-      Merge commit 'a5479e389e989acfeca9c32eeb0083d086202280' into for-2.6.32
-      ASoC: Update WM9081 for tdm_slot() API change
-
-Randy Dunlap (1):
-      ASoC: fix I2C build errors
-
- include/sound/soc-dai.h   |    5 ++-
- sound/soc/codecs/wm9081.c |   63 ++++++++++++++++++++++++++------------------
- sound/soc/pxa/magician.c  |    2 +-
- sound/soc/pxa/pxa-ssp.c   |   27 ++++++++++++++-----
- sound/soc/soc-cache.c     |    4 +-
- sound/soc/soc-core.c      |    9 ++++--
- 6 files changed, 69 insertions(+), 41 deletions(-)
+Thanks
+Ozan
