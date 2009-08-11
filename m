@@ -1,17 +1,25 @@
-From: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: hard freezes with hdsp with cardbus/pci adapter
-	card
-Date: Tue, 11 Aug 2009 07:06:19 +0200
-Message-ID: <20090811050619.GA12438@pengutronix.de>
-References: <h5q3ur$13e$1@ger.gmane.org>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH 11/20] OMAP: McBSP: Add link DMA mode
+ selection
+Date: Tue, 11 Aug 2009 09:04:57 +0300
+Message-ID: <20090811090457.d89afd3e.jhnikula@gmail.com>
+References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-12-git-send-email-eduardo.valentin@nokia.com>
+	<20090805103900.5ad89efe.jhnikula@gmail.com>
+	<200908051158.57440.peter.ujfalusi@nokia.com>
+	<1FFEF31EBAA4F64B80D33027D4297760047F6AED01@NOK-EUMSG-02.mgdnok.nokia.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0356126169414248694=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 5203524A18
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id EE97D103811
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Aug 2009 07:06:29 +0200 (CEST)
-In-Reply-To: <h5q3ur$13e$1@ger.gmane.org>
+	Tue, 11 Aug 2009 08:03:35 +0200 (CEST)
+Received: by ewy23 with SMTP id 23so3827757ewy.32
+	for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2009 23:03:34 -0700 (PDT)
+In-Reply-To: <1FFEF31EBAA4F64B80D33027D4297760047F6AED01@NOK-EUMSG-02.mgdnok.nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,55 +29,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tim Blechmann <tim@klingt.org>
-Cc: alsa-devel@alsa-project.org, linux-pcmcia@lists.infradead.org
+To: ext-Eero.Nurkkala@nokia.com
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, peter.ujfalusi@nokia.com, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Sorry for the late reply.
 
---===============0356126169414248694==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="envbJBWh7q8WU6mo"
-Content-Disposition: inline
+On Thu, 6 Aug 2009 20:15:40 +0200
+<ext-Eero.Nurkkala@nokia.com> wrote:
+
+> Well, the element mode is fine for !McBSP2. One doesn't really loose the
+> buffer pointer accuracy, because you can get the last DMA irq timestamp
+> with SNDRV_PCM_IOCTL_TTSTAMP (and compare that to current time).
+> The accuracy is not far off from the element mode? (If you read the DMA
+> portion of TRM, I think there were some issues as well)
+> 
+Well the threshold mode makes the offset returned from omap_pcm_pointer
+to behave gradually as the threshold size is set. This would affect a SW
+which is doing sub-period processing like mixing audio n samples ahead
+the current DMA pointer. Of course HW buffer in McBSP2 adds static
+latency but otherwise processing is similar compared to other ports and
+OMAPs.
+
+I would like to see this new threshold based transfer functionality to
+be integrated so that projects can take the advantage of it and helps
+generic PM development too but I don't want that it would cause any
+regression now. Later on it is easy to switch threshold based transfer
+to be the default for McBSP2 on OMAP3 but it's safer to keep current
+mode default over one kernel release.
+
+> For !McBSP2, it doesn't even pay to have the threshold mode at all, because
+> the effect on PM is actually adverse - too frequent wakeups will cause more
+> adverse net effect on PM (IIRC) @ VBAT.
+> 
+This is good information and integrating these functionalities allow to
+collect more. Without regression of course :-)
 
 
---envbJBWh7q8WU6mo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-> i have the suspicion, that it is related to the combination of the hdsp
-> with the cardbus controller of the adapter card ...
-
-Full bootlog please.
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---envbJBWh7q8WU6mo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkqA/EsACgkQD27XaX1/VRuQEQCgmYqdKULde/OaVILlH4jwhGNi
-uTsAn3AP/U2VaK27ae6g90Z1JN2VbEPF
-=UYyd
------END PGP SIGNATURE-----
-
---envbJBWh7q8WU6mo--
-
---===============0356126169414248694==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============0356126169414248694==--
+-- 
+Jarkko
