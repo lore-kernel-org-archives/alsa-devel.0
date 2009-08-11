@@ -1,7 +1,8 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv2 18/20] ASoC: OMAP: Enable DMA burst mode
-Date: Tue, 11 Aug 2009 16:05:29 +0300
-Message-ID: <1249995931-26015-19-git-send-email-eduardo.valentin__22681.2588320628$1249998017$gmane$org@nokia.com>
+Subject: [PATCHv2 19/20] ASoC: Add runtime check for RFIG and
+	XFIG
+Date: Tue, 11 Aug 2009 16:05:30 +0300
+Message-ID: <1249995931-26015-20-git-send-email-eduardo.valentin__14427.3761231036$1249998027$gmane$org@nokia.com>
 References: <1249995931-26015-1-git-send-email-eduardo.valentin@nokia.com>
 	<1249995931-26015-2-git-send-email-eduardo.valentin@nokia.com>
 	<1249995931-26015-3-git-send-email-eduardo.valentin@nokia.com>
@@ -20,11 +21,12 @@ References: <1249995931-26015-1-git-send-email-eduardo.valentin@nokia.com>
 	<1249995931-26015-16-git-send-email-eduardo.valentin@nokia.com>
 	<1249995931-26015-17-git-send-email-eduardo.valentin@nokia.com>
 	<1249995931-26015-18-git-send-email-eduardo.valentin@nokia.com>
+	<1249995931-26015-19-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1249995931-26015-18-git-send-email-eduardo.valentin@nokia.com>
+In-Reply-To: <1249995931-26015-19-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,30 +37,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+Cc: "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, Eero Nurkkala <ext-eero.nurkkala@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
+From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 
-Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
+This is, no RFIG or XFIG (Not defined in 34xx), correct
+initiliazation of rccr and xccr.
+
+Signed-off-by: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 ---
- sound/soc/omap/omap-pcm.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+ sound/soc/omap/omap-mcbsp.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-index b41a18b..4506603 100644
---- a/sound/soc/omap/omap-pcm.c
-+++ b/sound/soc/omap/omap-pcm.c
-@@ -185,6 +185,9 @@ static int omap_pcm_prepare(struct snd_pcm_substream *substream)
- 
- 	omap_enable_dma_irq(prtd->dma_ch, OMAP_DMA_FRAME_IRQ);
- 
-+	omap_set_dma_src_burst_mode(prtd->dma_ch, OMAP_DMA_DATA_BURST_16);
-+	omap_set_dma_dest_burst_mode(prtd->dma_ch, OMAP_DMA_DATA_BURST_16);
-+
- 	return 0;
- }
- 
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index 42a1956..2d96548 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -358,8 +358,11 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 	/* Generic McBSP register settings */
+ 	regs->spcr2	|= XINTM(3) | FREE;
+ 	regs->spcr1	|= RINTM(3);
+-	regs->rcr2	|= RFIG;
+-	regs->xcr2	|= XFIG;
++	/* RFIG and XFIG are not defined in 34xx */
++	if (!cpu_is_omap34xx()) {
++		regs->rcr2	|= RFIG;
++		regs->xcr2	|= XFIG;
++	}
+ 	if (cpu_is_omap2430() || cpu_is_omap34xx()) {
+ 		regs->xccr = DXENDLY(1) | XDMAEN;
+ 		regs->rccr = RFULL_CYCLE | RDMAEN;
 -- 
 1.6.2.GIT
 
