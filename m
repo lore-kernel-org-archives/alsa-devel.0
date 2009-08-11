@@ -1,15 +1,16 @@
 From: Chaithrika U S <chaithrika@ti.com>
-Subject: (no subject)
-Date: Tue, 11 Aug 2009 17:02:27 -0400
-Message-ID: <1250024547-27161-1-git-send-email-chaithrika@ti.com>
+Subject: [PATCH] ARM: DaVinci: Audio support for
+	DA850/OMAP-L138 EVM
+Date: Tue, 11 Aug 2009 17:03:25 -0400
+Message-ID: <1250024605-27215-1-git-send-email-chaithrika@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5E61D1037F2
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id BF6CD24364
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Aug 2009 13:33:33 +0200 (CEST)
+	Tue, 11 Aug 2009 13:34:29 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
