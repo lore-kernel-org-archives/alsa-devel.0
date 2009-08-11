@@ -1,15 +1,14 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv2 02/20] OMAP: McBSP: Add IRQEN, IRQSTATUS,
-	THRESHOLD2 and THRESHOLD1 registers.
-Date: Tue, 11 Aug 2009 16:05:13 +0300
-Message-ID: <1249995931-26015-3-git-send-email-eduardo.valentin__10977.3821234286$1249997840$gmane$org@nokia.com>
+Subject: [PATCHv2 01/20] OMAP: McBSP: Provide functions for
+	ASoC frame syncronization
+Date: Tue, 11 Aug 2009 16:05:12 +0300
+Message-ID: <1249995931-26015-2-git-send-email-eduardo.valentin__3516.68658336184$1249997858$gmane$org@nokia.com>
 References: <1249995931-26015-1-git-send-email-eduardo.valentin@nokia.com>
-	<1249995931-26015-2-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1249995931-26015-2-git-send-email-eduardo.valentin@nokia.com>
+In-Reply-To: <1249995931-26015-1-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,31 +19,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+Cc: "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, Eero Nurkkala <ext-eero.nurkkala@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
+From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 
-Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
+ASoC has an annoying bug letting either L or R channel to be
+played on L channel. In other words, L and R channels can
+switch at random. This provides McBSP funtionality that may
+be used to fix this feature.
+
+Signed-off-by: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 ---
- arch/arm/plat-omap/include/mach/mcbsp.h |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
+ arch/arm/plat-omap/include/mach/mcbsp.h |    2 +
+ arch/arm/plat-omap/mcbsp.c              |   52 +++++++++++++++++++++++++++++++
+ 2 files changed, 54 insertions(+), 0 deletions(-)
 
 diff --git a/arch/arm/plat-omap/include/mach/mcbsp.h b/arch/arm/plat-omap/include/mach/mcbsp.h
-index 77191c5..51908fb 100644
+index bb154ea..77191c5 100644
 --- a/arch/arm/plat-omap/include/mach/mcbsp.h
 +++ b/arch/arm/plat-omap/include/mach/mcbsp.h
-@@ -134,6 +134,10 @@
- #define OMAP_MCBSP_REG_XCERG	0x74
- #define OMAP_MCBSP_REG_XCERH	0x78
- #define OMAP_MCBSP_REG_SYSCON	0x8C
-+#define OMAP_MCBSP_REG_THRSH2	0x90
-+#define OMAP_MCBSP_REG_THRSH1	0x94
-+#define OMAP_MCBSP_REG_IRQST	0xA0
-+#define OMAP_MCBSP_REG_IRQEN	0xA4
- #define OMAP_MCBSP_REG_XCCR	0xAC
- #define OMAP_MCBSP_REG_RCCR	0xB0
+@@ -389,6 +389,8 @@ int omap_mcbsp_request(unsigned int id);
+ void omap_mcbsp_free(unsigned int id);
+ void omap_mcbsp_start(unsigned int id);
+ void omap_mcbsp_stop(unsigned int id);
++void omap_mcbsp_xmit_enable(unsigned int id, u8 enable);
++void omap_mcbsp_recv_enable(unsigned int id, u8 enable);
+ void omap_mcbsp_xmit_word(unsigned int id, u32 word);
+ u32 omap_mcbsp_recv_word(unsigned int id);
  
+diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
+index efa0e01..84cc323 100644
+--- a/arch/arm/plat-omap/mcbsp.c
++++ b/arch/arm/plat-omap/mcbsp.c
+@@ -398,6 +398,58 @@ void omap_mcbsp_stop(unsigned int id)
+ }
+ EXPORT_SYMBOL(omap_mcbsp_stop);
+ 
++void omap_mcbsp_xmit_enable(unsigned int id, u8 enable)
++{
++	struct omap_mcbsp *mcbsp;
++	void __iomem *io_base;
++	u16 w;
++
++	if (!(cpu_is_omap2430() || cpu_is_omap34xx()))
++		return;
++
++	if (!omap_mcbsp_check_valid_id(id)) {
++		printk(KERN_ERR "%s: Invalid id (%d)\n", __func__, id + 1);
++		return;
++	}
++
++	mcbsp = id_to_mcbsp_ptr(id);
++	io_base = mcbsp->io_base;
++
++	w = OMAP_MCBSP_READ(io_base, XCCR);
++
++	if (enable)
++		OMAP_MCBSP_WRITE(io_base, XCCR, w & ~(XDISABLE));
++	else
++		OMAP_MCBSP_WRITE(io_base, XCCR, w | XDISABLE);
++}
++EXPORT_SYMBOL(omap_mcbsp_xmit_enable);
++
++void omap_mcbsp_recv_enable(unsigned int id, u8 enable)
++{
++	struct omap_mcbsp *mcbsp;
++	void __iomem *io_base;
++	u16 w;
++
++	if (!(cpu_is_omap2430() || cpu_is_omap34xx()))
++		return;
++
++	if (!omap_mcbsp_check_valid_id(id)) {
++		printk(KERN_ERR "%s: Invalid id (%d)\n", __func__, id + 1);
++		return;
++	}
++
++	mcbsp = id_to_mcbsp_ptr(id);
++	io_base = mcbsp->io_base;
++
++	w = OMAP_MCBSP_READ(io_base, RCCR);
++
++	if (enable)
++		OMAP_MCBSP_WRITE(io_base, RCCR, w & ~(RDISABLE));
++	else
++		OMAP_MCBSP_WRITE(io_base, RCCR, w | RDISABLE);
++}
++EXPORT_SYMBOL(omap_mcbsp_recv_enable);
++
+ /* polled mcbsp i/o operations */
+ int omap_mcbsp_pollwrite(unsigned int id, u16 buf)
+ {
 -- 
 1.6.2.GIT
 
