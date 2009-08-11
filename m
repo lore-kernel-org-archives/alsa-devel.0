@@ -1,29 +1,11 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv2 16/20] ASoC: OMAP: Use DMA operating mode of
-	McBSP
-Date: Tue, 11 Aug 2009 16:05:27 +0300
-Message-ID: <1249995931-26015-17-git-send-email-eduardo.valentin__6974.07647171548$1249997999$gmane$org@nokia.com>
-References: <1249995931-26015-1-git-send-email-eduardo.valentin@nokia.com>
-	<1249995931-26015-2-git-send-email-eduardo.valentin@nokia.com>
-	<1249995931-26015-3-git-send-email-eduardo.valentin@nokia.com>
-	<1249995931-26015-4-git-send-email-eduardo.valentin@nokia.com>
-	<1249995931-26015-5-git-send-email-eduardo.valentin@nokia.com>
-	<1249995931-26015-6-git-send-email-eduardo.valentin@nokia.com>
-	<1249995931-26015-7-git-send-email-eduardo.valentin@nokia.com>
-	<1249995931-26015-8-git-send-email-eduardo.valentin@nokia.com>
-	<1249995931-26015-9-git-send-email-eduardo.valentin@nokia.com>
-	<1249995931-26015-10-git-send-email-eduardo.valentin@nokia.com>
-	<1249995931-26015-11-git-send-email-eduardo.valentin@nokia.com>
-	<1249995931-26015-12-git-send-email-eduardo.valentin@nokia.com>
-	<1249995931-26015-13-git-send-email-eduardo.valentin@nokia.com>
-	<1249995931-26015-14-git-send-email-eduardo.valentin@nokia.com>
-	<1249995931-26015-15-git-send-email-eduardo.valentin@nokia.com>
-	<1249995931-26015-16-git-send-email-eduardo.valentin@nokia.com>
+Subject: [PATCHv2 00/20] OMAP ASoC changes in DMA utilization
+Date: Tue, 11 Aug 2009 16:05:11 +0300
+Message-ID: <1249995931-26015-1-git-send-email-eduardo.valentin__29992.5302308568$1249998003$gmane$org@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1249995931-26015-16-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,107 +19,62 @@ To: alsa-devel@alsa-project.org
 Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
+Hello guys,
 
-Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
----
- sound/soc/omap/omap-mcbsp.c |    8 ++++++--
- sound/soc/omap/omap-pcm.c   |   13 +++++++++++--
- sound/soc/omap/omap-pcm.h   |    1 +
- 3 files changed, 18 insertions(+), 4 deletions(-)
+Here is version 2 of this series. There were lots of little changes
+and also one significant change.
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 8d8500f..42a1956 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -166,6 +166,7 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
- 		err = omap_mcbsp_request(bus_id);
- 
- 	if (cpu_is_omap343x()) {
-+		int dma_op_mode = omap_mcbsp_get_dma_op_mode(bus_id);
- 		int max_period;
- 
- 		/*
-@@ -187,7 +188,8 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
- 		max_period++;
- 		max_period <<= 1;
- 
--		snd_pcm_hw_constraint_minmax(substream->runtime,
-+		if (dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
-+			snd_pcm_hw_constraint_minmax(substream->runtime,
- 						SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
- 						32, max_period);
- 	}
-@@ -246,7 +248,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
- 	struct omap_mcbsp_reg_cfg *regs = &mcbsp_data->regs;
- 	int dma, bus_id = mcbsp_data->bus_id, id = cpu_dai->id;
--	int wlen, channels, wpf;
-+	int wlen, channels, wpf, dma_mode = MCBSP_DMA_MODE_ELEMENT;
- 	unsigned long port;
- 	unsigned int format;
- 
-@@ -262,6 +264,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 	} else if (cpu_is_omap343x()) {
- 		dma = omap24xx_dma_reqs[bus_id][substream->stream];
- 		port = omap34xx_mcbsp_port[bus_id][substream->stream];
-+		dma_mode = omap_mcbsp_get_dma_op_mode(bus_id);
- 		omap_mcbsp_dai_dma_params[id][substream->stream].set_threshold =
- 						omap_mcbsp_set_threshold;
- 	} else {
-@@ -271,6 +274,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 		substream->stream ? "Audio Capture" : "Audio Playback";
- 	omap_mcbsp_dai_dma_params[id][substream->stream].dma_req = dma;
- 	omap_mcbsp_dai_dma_params[id][substream->stream].port_addr = port;
-+	omap_mcbsp_dai_dma_params[id][substream->stream].dma_op_mode = dma_mode;
- 	cpu_dai->dma_data = &omap_mcbsp_dai_dma_params[id][substream->stream];
- 
- 	if (mcbsp_data->configured) {
-diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-index 0c1ba0f..d8f52e8 100644
---- a/sound/soc/omap/omap-pcm.c
-+++ b/sound/soc/omap/omap-pcm.c
-@@ -144,7 +144,9 @@ static int omap_pcm_prepare(struct snd_pcm_substream *substream)
- 
- 	memset(&dma_params, 0, sizeof(dma_params));
- 
--	if (cpu_is_omap34xx())
-+	/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
-+	if (cpu_is_omap34xx() &&
-+			(dma_data->dma_op_mode == MCBSP_DMA_MODE_THRESHOLD))
- 		sync_mode = OMAP_DMA_SYNC_FRAME;
- 	else
- 		sync_mode = OMAP_DMA_SYNC_ELEMENT;
-@@ -193,9 +195,16 @@ static int omap_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	struct omap_pcm_dma_data *dma_data = prtd->dma_data;
- 	unsigned long flags;
- 	int ret = 0;
--	int samples = snd_pcm_lib_period_bytes(substream) >> 1;
-+	int samples;
- 
- 	spin_lock_irqsave(&prtd->lock, flags);
-+
-+	/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
-+	if (dma_data->dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
-+		samples = snd_pcm_lib_period_bytes(substream) >> 1;
-+	else
-+		samples = 1;
-+
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
-diff --git a/sound/soc/omap/omap-pcm.h b/sound/soc/omap/omap-pcm.h
-index 6fda34d..4b77487 100644
---- a/sound/soc/omap/omap-pcm.h
-+++ b/sound/soc/omap/omap-pcm.h
-@@ -29,6 +29,7 @@ struct omap_pcm_dma_data {
- 	char		*name;		/* stream identifier */
- 	int		dma_req;	/* DMA request line */
- 	unsigned long	port_addr;	/* transmit/receive register */
-+	int		dma_op_mode;	/* DMA operation mode: element, frame */
- 	void (*set_threshold)(struct snd_pcm_substream *substream, int thres);
- };
- 
--- 
-1.6.2.GIT
+Here is a changelog:
+- I tried to avoid additional ifdefs in mcbsp code
+- The WAKEUPEN_ALL macro was removed
+- I added a REVISIT prefix for the additional delay on mcbsp start
+- New added constants are now following mcbsp.h style
+- While reading DMA operation mode of mcbsp, now it prints also some help
+text to explain the meaning of each value (even though you still write numbers).
+
+Besides, I re-wrote the code for ASoC part, now the threshold and dma
+op mode usage are un-glued from mcbsp code. I tried to do not leave
+omap-pcm.c dirty, but, there was still one needed callback for setting
+the mcbsp threshold, as that needs to be done before DMA is started.
+
+In this series I've left THRESHOLD mode as default for mcbsp 2 only.
+But as I saw in previous comments, this is still an open issue :-)
+
+Comments, as usual are welcome.
+
+Eduardo Valentin (11):
+  OMAP: McBSP: Add IRQEN, IRQSTATUS, THRESHOLD2 and THRESHOLD1
+    registers.
+  OMAP: McBSP: Use appropriate value for startup delay
+  OMAP: McBSP: Add transmit/receive threshold handler
+  OMAP: McBSP: Create and export max_(r|t)x_thres property
+  OMAP: McBSP: Rename thres sysfs symbols
+  OMAP: McBSP: Change wakeup signals
+  OMAP: McBSP: Configure NO IDLE mode for DMA mode different of
+    threshold
+  ASoC: OMAP: Use McBSP threshold to playback and capture
+  ASoC: OMAP: Use DMA operating mode of McBSP
+  ASoC: OMAP: Make DMA 64 aligned
+  ASoC: OMAP: Enable DMA burst mode
+
+Eero Nurkkala (7):
+  OMAP: McBSP: Provide functions for ASoC frame syncronization
+  OMAP: McBSP: Wakeups utilized
+  OMAP: McBSP: Retain McBSP FCLK clockactivity
+  OMAP: McBSP: Do not enable wakeups for no-idle mode
+  OMAP: McBSP: Let element DMA mode hit retention also
+  ASoC: Add runtime check for RFIG and XFIG
+  ASoC: Always syncronize audio transfers on frames
+
+Peter Ujfalusi (2):
+  OMAP3: McBSP: Lower the maximum buffersize for McBSP1,3,4,5
+  OMAP: McBSP: Add link DMA mode selection
+
+ arch/arm/mach-omap2/mcbsp.c             |    5 +
+ arch/arm/plat-omap/include/mach/mcbsp.h |   49 ++++
+ arch/arm/plat-omap/mcbsp.c              |  375 ++++++++++++++++++++++++++++++-
+ sound/soc/omap/omap-mcbsp.c             |   67 +++++-
+ sound/soc/omap/omap-pcm.c               |   33 +++-
+ sound/soc/omap/omap-pcm.h               |    2 +
+ 6 files changed, 517 insertions(+), 14 deletions(-)
 
