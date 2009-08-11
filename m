@@ -1,25 +1,17 @@
-From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: Re: [PATCH 5/5] ASoC: DaVinci: pcm,
- fix underruns by using sram
-Date: Mon, 10 Aug 2009 17:32:19 -0700
-Message-ID: <4A80BC13.2040808@boundarydevices.com>
-References: <1249602935-1267-1-git-send-email-troy.kisky@boundarydevices.com>
-	<1249602935-1267-2-git-send-email-troy.kisky@boundarydevices.com>
-	<1249602935-1267-3-git-send-email-troy.kisky@boundarydevices.com>
-	<1249602935-1267-4-git-send-email-troy.kisky@boundarydevices.com>
-	<1249602935-1267-5-git-send-email-troy.kisky@boundarydevices.com>
-	<4A7B8C02.6020902@boundarydevices.com>
-	<20090808091708.GG4519@sirena.org.uk>
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: hard freezes with hdsp with cardbus/pci adapter
+	card
+Date: Tue, 11 Aug 2009 07:06:19 +0200
+Message-ID: <20090811050619.GA12438@pengutronix.de>
+References: <h5q3ur$13e$1@ger.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0356126169414248694=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpauth03.csee.onr.siteprotect.com
-	(smtpauth03.csee.onr.siteprotect.com [64.26.60.137])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9B3B610380C
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 5203524A18
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Aug 2009 02:32:37 +0200 (CEST)
-In-Reply-To: <20090808091708.GG4519@sirena.org.uk>
+	Tue, 11 Aug 2009 07:06:29 +0200 (CEST)
+In-Reply-To: <h5q3ur$13e$1@ger.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,31 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org
+To: Tim Blechmann <tim@klingt.org>
+Cc: alsa-devel@alsa-project.org, linux-pcmcia@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Thu, Aug 06, 2009 at 07:05:54PM -0700, Troy Kisky wrote:
-> 
->> This is allocated too late for the "ensure that buffer size is a multiple of period size"
->> constraint.
-> 
->> I have a patch after fixing other feedback.
-> 
-> It looks good to me - I've no issues with the patch except for the one I
-> mentioned last time about considering ignoring the data in SRAM when
-> reporting the current position but I'm happy either way.  The patch will
-> run into the cross tree issues with the platform data like the channel
-> combining one, probably best to submit patches against Kevin's tree for
-> now (or wait until after the merge window).
-> 
-> Have you tested with PulseAudio?  If not it'd be worth giving it a spin
-> - it's one of the more demanding applications.
-> 
-I haven't tested with PulseAudio, and I don't have time to look into it currently.
-Any volunteers?
 
-On question I had concerns davinci_pcm_hardware. It is currently for both playback
-and capture. Since allocate_sram contains "davinci_pcm_hardware.period_bytes_max = size;,"
-should I change davinci_pcm_hardware to playback_pcm_hardware, capture_pcm_hardware?
+--===============0356126169414248694==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="envbJBWh7q8WU6mo"
+Content-Disposition: inline
+
+
+--envbJBWh7q8WU6mo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+> i have the suspicion, that it is related to the combination of the hdsp
+> with the cardbus controller of the adapter card ...
+
+Full bootlog please.
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--envbJBWh7q8WU6mo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkqA/EsACgkQD27XaX1/VRuQEQCgmYqdKULde/OaVILlH4jwhGNi
+uTsAn3AP/U2VaK27ae6g90Z1JN2VbEPF
+=UYyd
+-----END PGP SIGNATURE-----
+
+--envbJBWh7q8WU6mo--
+
+--===============0356126169414248694==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============0356126169414248694==--
