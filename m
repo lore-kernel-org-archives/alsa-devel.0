@@ -1,8 +1,7 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv2 08/20] OMAP: McBSP: Add link DMA mode
-	selection
-Date: Tue, 11 Aug 2009 16:05:19 +0300
-Message-ID: <1249995931-26015-9-git-send-email-eduardo.valentin__49940.4862909161$1249998124$gmane$org@nokia.com>
+Subject: [PATCHv2 09/20] OMAP: McBSP: Wakeups utilized
+Date: Tue, 11 Aug 2009 16:05:20 +0300
+Message-ID: <1249995931-26015-10-git-send-email-eduardo.valentin__44022.2037061632$1249998129$gmane$org@nokia.com>
 References: <1249995931-26015-1-git-send-email-eduardo.valentin@nokia.com>
 	<1249995931-26015-2-git-send-email-eduardo.valentin@nokia.com>
 	<1249995931-26015-3-git-send-email-eduardo.valentin@nokia.com>
@@ -11,11 +10,12 @@ References: <1249995931-26015-1-git-send-email-eduardo.valentin@nokia.com>
 	<1249995931-26015-6-git-send-email-eduardo.valentin@nokia.com>
 	<1249995931-26015-7-git-send-email-eduardo.valentin@nokia.com>
 	<1249995931-26015-8-git-send-email-eduardo.valentin@nokia.com>
+	<1249995931-26015-9-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1249995931-26015-8-git-send-email-eduardo.valentin@nokia.com>
+In-Reply-To: <1249995931-26015-9-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,176 +26,136 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, Eero Nurkkala <ext-eero.nurkkala@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 
-It adds a new sysfs file, where the user can configure the mcbsp mode to use.
-If the mcbsp channel is in use, it does not allow the change.
-Than in omap_pcm_open we can call the omap_mcbsp_get_opmode to get the mode,
-store it, than use it to implement the different modes.
+This patch enables the smart idle mode while
+McBPS is being utilized. Once it's done,
+force idle mode is taken instead. Apart of it,
+it also configures what signals will wake mcbsp up.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Signed-off-by: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
 ---
- arch/arm/plat-omap/include/mach/mcbsp.h |    8 +++
- arch/arm/plat-omap/mcbsp.c              |   82 +++++++++++++++++++++++++++++++
- 2 files changed, 90 insertions(+), 0 deletions(-)
+ arch/arm/plat-omap/include/mach/mcbsp.h |   17 +++++++++++
+ arch/arm/plat-omap/mcbsp.c              |   46 +++++++++++++++++++++++++++++++
+ 2 files changed, 63 insertions(+), 0 deletions(-)
 
 diff --git a/arch/arm/plat-omap/include/mach/mcbsp.h b/arch/arm/plat-omap/include/mach/mcbsp.h
-index 51a6655..9b2b03e 100644
+index 9b2b03e..2c5612a 100644
 --- a/arch/arm/plat-omap/include/mach/mcbsp.h
 +++ b/arch/arm/plat-omap/include/mach/mcbsp.h
-@@ -255,6 +255,11 @@
+@@ -138,6 +138,7 @@
+ #define OMAP_MCBSP_REG_THRSH1	0x94
+ #define OMAP_MCBSP_REG_IRQST	0xA0
+ #define OMAP_MCBSP_REG_IRQEN	0xA4
++#define OMAP_MCBSP_REG_WAKEUPEN	0xA8
+ #define OMAP_MCBSP_REG_XCCR	0xAC
+ #define OMAP_MCBSP_REG_RCCR	0xB0
+ 
+@@ -253,6 +254,8 @@
+ #define RDISABLE		0x0001
+ 
  /********************** McBSP SYSCONFIG bit definitions ********************/
++#define SIDLEMODE(value)	((value)<<3)
++#define ENAWAKEUP		0x0004
  #define SOFTRST			0x0002
  
-+/********************** McBSP DMA operating modes **************************/
-+#define MCBSP_DMA_MODE_ELEMENT		0
-+#define MCBSP_DMA_MODE_THRESHOLD	1
-+#define MCBSP_DMA_MODE_FRAME		2
+ /********************** McBSP DMA operating modes **************************/
+@@ -260,6 +263,20 @@
+ #define MCBSP_DMA_MODE_THRESHOLD	1
+ #define MCBSP_DMA_MODE_FRAME		2
+ 
++/********************** McBSP WAKEUPEN bit definitions *********************/
++#define XEMPTYEOFEN		0x4000
++#define XRDYEN			0x0400
++#define XEOFEN			0x0200
++#define XFSXEN			0x0100
++#define XSYNCERREN		0x0080
++#define RRDYEN			0x0008
++#define REOFEN			0x0004
++#define RFSREN			0x0002
++#define RSYNCERREN		0x0001
++#define WAKEUPEN_ALL		(XEMPTYEOFEN | XRDYEN | XEOFEN | XFSXEN | \
++				 XSYNCERREN | RRDYEN | REOFEN | RFSREN | \
++				 RSYNCERREN)
 +
  /* we don't do multichannel for now */
  struct omap_mcbsp_reg_cfg {
  	u16 spcr2;
-@@ -385,6 +390,7 @@ struct omap_mcbsp {
- 	struct clk *iclk;
- 	struct clk *fclk;
- #ifdef CONFIG_ARCH_OMAP34XX
-+	int dma_op_mode;
- 	u16 max_tx_thres;
- 	u16 max_rx_thres;
- #endif
-@@ -401,6 +407,7 @@ void omap_mcbsp_set_tx_threshold(unsigned int id, u16 threshold);
- void omap_mcbsp_set_rx_threshold(unsigned int id, u16 threshold);
- u16 omap_mcbsp_get_max_tx_threshold(unsigned int id);
- u16 omap_mcbsp_get_max_rx_threshold(unsigned int id);
-+int omap_mcbsp_get_dma_op_mode(unsigned int id);
- #else
- static inline void omap_mcbsp_set_tx_threshold(unsigned int id, u16 threshold)
- { }
-@@ -408,6 +415,7 @@ static inline void omap_mcbsp_set_rx_threshold(unsigned int id, u16 threshold)
- { }
- static inline u16 omap_mcbsp_get_max_tx_threshold(unsigned int id) { return 0; }
- static inline u16 omap_mcbsp_get_max_rx_threshold(unsigned int id) { return 0; }
-+static inline int omap_mcbsp_get_dma_op_mode(unsigned int id) { return 0; }
- #endif
- int omap_mcbsp_request(unsigned int id);
- void omap_mcbsp_free(unsigned int id);
 diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-index 13e7ce3..23c1b1c 100644
+index 23c1b1c..a8de72b 100644
 --- a/arch/arm/plat-omap/mcbsp.c
 +++ b/arch/arm/plat-omap/mcbsp.c
-@@ -282,6 +282,29 @@ u16 omap_mcbsp_get_max_rx_threshold(unsigned int id)
- 	return mcbsp->max_rx_thres;
+@@ -305,6 +305,46 @@ int omap_mcbsp_get_dma_op_mode(unsigned int id)
+ 	return dma_op_mode;
  }
- EXPORT_SYMBOL(omap_mcbsp_get_max_rx_threshold);
+ EXPORT_SYMBOL(omap_mcbsp_get_dma_op_mode);
 +
-+/*
-+ * omap_mcbsp_get_dma_op_mode just return the current configured
-+ * operating mode for the mcbsp channel
-+ */
-+int omap_mcbsp_get_dma_op_mode(unsigned int id)
++static inline void omap34xx_mcbsp_request(struct omap_mcbsp *mcbsp)
 +{
-+	struct omap_mcbsp *mcbsp;
-+	int dma_op_mode;
++	/*
++	 * Enable wakup behavior, smart idle and all wakeups
++	 * REVISIT: some wakeups may be unnecessary
++	 */
++	if (cpu_is_omap34xx()) {
++		u16 syscon;
 +
-+	if (!omap_mcbsp_check_valid_id(id)) {
-+		printk(KERN_ERR "%s: Invalid id (%u)\n", __func__, id + 1);
-+		return -ENODEV;
++		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
++		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03));
++		syscon |= (ENAWAKEUP | SIDLEMODE(0x02));
++		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
++
++		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, WAKEUPEN_ALL);
 +	}
-+	mcbsp = id_to_mcbsp_ptr(id);
-+
-+	spin_lock_irq(&mcbsp->lock);
-+	dma_op_mode = mcbsp->dma_op_mode;
-+	spin_unlock_irq(&mcbsp->lock);
-+
-+	return dma_op_mode;
 +}
-+EXPORT_SYMBOL(omap_mcbsp_get_dma_op_mode);
++
++static inline void omap34xx_mcbsp_free(struct omap_mcbsp *mcbsp)
++{
++	/*
++	 * Disable wakup behavior, smart idle and all wakeups
++	 */
++	if (cpu_is_omap34xx()) {
++		u16 syscon;
++		u16 wakeupen;
++
++		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
++		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03));
++		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
++
++		wakeupen = OMAP_MCBSP_READ(mcbsp->io_base, WAKEUPEN);
++		wakeupen &= ~WAKEUPEN_ALL;
++		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, wakeupen);
++	}
++}
++#else
++static inline void omap34xx_mcbsp_request(struct omap_mcbsp *mcbsp) {}
++static inline void omap34xx_mcbsp_free(struct omap_mcbsp *mcbsp) {}
  #endif
  
  /*
-@@ -1063,9 +1086,65 @@ static DEVICE_ATTR(prop, 0644, prop##_show, prop##_store);
- THRESHOLD_PROP_BUILDER(max_tx_thres);
- THRESHOLD_PROP_BUILDER(max_rx_thres);
+@@ -366,6 +406,9 @@ int omap_mcbsp_request(unsigned int id)
+ 	clk_enable(mcbsp->iclk);
+ 	clk_enable(mcbsp->fclk);
  
-+static ssize_t dma_op_mode_show(struct device *dev,
-+			struct device_attribute *attr, char *buf)
-+{
-+	struct omap_mcbsp *mcbsp = dev_get_drvdata(dev);
-+	int dma_op_mode;
++	/* Do procedure specific to omap34xx arch, if applicable */
++	omap34xx_mcbsp_request(mcbsp);
 +
-+	spin_lock_irq(&mcbsp->lock);
-+	dma_op_mode = mcbsp->dma_op_mode;
-+	spin_unlock_irq(&mcbsp->lock);
-+
-+	return sprintf(buf, "current mode: %d\n"
-+			"possible mode values are:\n"
-+			"%d - %s\n"
-+			"%d - %s\n"
-+			"%d - %s\n",
-+			dma_op_mode,
-+			MCBSP_DMA_MODE_ELEMENT, "element mode",
-+			MCBSP_DMA_MODE_THRESHOLD, "threshold mode",
-+			MCBSP_DMA_MODE_FRAME, "frame mode");
-+}
-+
-+static ssize_t dma_op_mode_store(struct device *dev,
-+				struct device_attribute *attr,
-+				const char *buf, size_t size)
-+{
-+	struct omap_mcbsp *mcbsp = dev_get_drvdata(dev);
-+	unsigned long val;
-+	int status;
-+
-+	status = strict_strtoul(buf, 0, &val);
-+	if (status)
-+		return status;
-+
-+	spin_lock_irq(&mcbsp->lock);
-+
-+	if (!mcbsp->free) {
-+		size = -EBUSY;
-+		goto unlock;
-+	}
-+
-+	if (val > MCBSP_DMA_MODE_FRAME || val < MCBSP_DMA_MODE_ELEMENT) {
-+		size = -EINVAL;
-+		goto unlock;
-+	}
-+
-+	mcbsp->dma_op_mode = val;
-+
-+unlock:
-+	spin_unlock_irq(&mcbsp->lock);
-+
-+	return size;
-+}
-+
-+static DEVICE_ATTR(dma_op_mode, 0644, dma_op_mode_show, dma_op_mode_store);
-+
- static const struct attribute *additional_attrs[] = {
- 	&dev_attr_max_tx_thres.attr,
- 	&dev_attr_max_rx_thres.attr,
-+	&dev_attr_dma_op_mode.attr,
- 	NULL,
- };
+ 	/*
+ 	 * Make sure that transmitter, receiver and sample-rate generator are
+ 	 * not running before activating IRQs.
+@@ -414,6 +457,9 @@ void omap_mcbsp_free(unsigned int id)
+ 	if (mcbsp->pdata && mcbsp->pdata->ops && mcbsp->pdata->ops->free)
+ 		mcbsp->pdata->ops->free(id);
  
-@@ -1085,9 +1164,12 @@ static inline void __devexit omap_additional_remove(struct device *dev)
++	/* Do procedure specific to omap34xx arch, if applicable */
++	omap34xx_mcbsp_free(mcbsp);
++
+ 	clk_disable(mcbsp->fclk);
+ 	clk_disable(mcbsp->iclk);
  
- static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp)
- {
-+	mcbsp->dma_op_mode = MCBSP_DMA_MODE_ELEMENT;
- 	if (cpu_is_omap34xx()) {
- 		mcbsp->max_tx_thres = max_thres(mcbsp);
- 		mcbsp->max_rx_thres = max_thres(mcbsp);
-+		if (mcbsp->id == 2)
-+			mcbsp->dma_op_mode = MCBSP_DMA_MODE_THRESHOLD;
- 		if (omap_additional_add(mcbsp->dev))
- 			dev_warn(mcbsp->dev,
- 				"Unable to create additional controls\n");
 -- 
 1.6.2.GIT
 
