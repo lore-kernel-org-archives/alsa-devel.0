@@ -1,80 +1,75 @@
-From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
-Subject: Re: [alsa-devel] [PATCH 11/20] OMAP: McBSP: Add link DMA mode
- selection
-Date: Tue, 11 Aug 2009 09:18:01 +0300
-Message-ID: <1249971481.16045.17.camel@eenurkka-desktop>
-References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
-	 <1248958183-15015-12-git-send-email-eduardo.valentin@nokia.com>
-	 <20090805103900.5ad89efe.jhnikula@gmail.com>
-	 <200908051158.57440.peter.ujfalusi@nokia.com>
-	 <1FFEF31EBAA4F64B80D33027D4297760047F6AED01@NOK-EUMSG-02.mgdnok.nokia.com>
-	 <20090811090457.d89afd3e.jhnikula@gmail.com>
-Reply-To: ext-eero.nurkkala@nokia.com
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH 16/20] ASoC: OMAP: Use McBSP threshold again
+Date: Tue, 11 Aug 2009 08:34:45 +0300
+Message-ID: <20090811083445.3d5ee595.jhnikula@gmail.com>
+References: <1248958183-15015-9-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-10-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-11-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-12-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-13-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-14-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-15-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-16-git-send-email-eduardo.valentin@nokia.com>
+	<1248958183-15015-17-git-send-email-eduardo.valentin@nokia.com>
+	<20090805104856.ff3e0f31.jhnikula@gmail.com>
+	<20090810085355.GA23461@esdhcp037198.research.nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20090811090457.d89afd3e.jhnikula@gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: ext Jarkko Nikula <jhnikula@gmail.com>
-Cc: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <20090810085355.GA23461@esdhcp037198.research.nokia.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2009-08-11 at 08:04 +0200, ext Jarkko Nikula wrote:
-> Sorry for the late reply.
+On Mon, 10 Aug 2009 11:53:55 +0300
+Eduardo Valentin <eduardo.valentin@nokia.com> wrote:
+
+> > Oops, didn't notice this before. This will hard glue the DMA and McBSP
+> > together. Even currently there is only McBSP based DAI link driver,
+> > there can be others as well. EAC DAI for OMAP2420 would be necessary
+> > for instance if one wants to develop ASoC support for Nokia N800. Nokia
+> > N810 could use that too.
 > 
-> On Thu, 6 Aug 2009 20:15:40 +0200
-> <ext-Eero.Nurkkala@nokia.com> wrote:
+> True. And the same comment is valid for the patch which adds op mode selection.
+> My idea to un-glue them is to put some callbacks in omap_mcbsp_data of omap-mcbsp.c,
+> and share it as something more generic, so that they can be called from omap-pcm.c.
 > 
-> > Well, the element mode is fine for !McBSP2. One doesn't really loose the
-> > buffer pointer accuracy, because you can get the last DMA irq timestamp
-> > with SNDRV_PCM_IOCTL_TTSTAMP (and compare that to current time).
-> > The accuracy is not far off from the element mode? (If you read the DMA
-> > portion of TRM, I think there were some issues as well)
-> > 
-> Well the threshold mode makes the offset returned from omap_pcm_pointer
-> to behave gradually as the threshold size is set. This would affect a SW
-> which is doing sub-period processing like mixing audio n samples ahead
-> the current DMA pointer. Of course HW buffer in McBSP2 adds static
-> latency but otherwise processing is similar compared to other ports and
-> OMAPs.
+> Something like:
 > 
-> I would like to see this new threshold based transfer functionality to
-> be integrated so that projects can take the advantage of it and helps
-> generic PM development too but I don't want that it would cause any
-> regression now. Later on it is easy to switch threshold based transfer
-> to be the default for McBSP2 on OMAP3 but it's safer to keep current
-> mode default over one kernel release.
+> struct omap_dma_data {
+> 	unsigned int			bus_id;
+> 	unsigned int			fmt;
+> 	/*
+> 	 * Flags indicating is the bus already activated and configured by
+> 	 * another substream
+> 	 */
+> 	int				active;
+> 	int				configured;
+> 	/* threshold callbacks can be added then here */
+> 	void				*data; /* struct omap_mcbsp_reg_cfg	regs; can go here */
+> };
 > 
-
-What regression are you addressing to? Of course in OMAP2s there could
-be issues I'm not aware of. But does this have any effect on them?
-(isn't this only OMAP3).
-
-There's regression indeed with McBSP2 as it is. The same regression is
-available for you, even with the element mode; See, the problem is the
-large HW buffer, and I think there's efforts to fix those issues; for
-example: http://bugzilla.gnome.org/show_bug.cgi?id=545807
-That is causing the "known regression", it's not really the
-threshold/dma mode. (of course I'm probably not aware of all)
-
-If one wishes to perform runtime mixing of several channels etc, it's
-known to the men in the art that of course the McBSP buffer latency, was
-it in element or threshold mode, is required to be calculated so that
-the time until the sample is played, need to be considered. That can be
-done easily with either of the threshold/element mode.
-
-DMA transfers may also have delays due to DMA controller scheduling
-(other channels present). Thus, there's always some unpredictable, but
-rather tiny, delays.
-
-
-> > For !McBSP2, it doesn't even pay to have the threshold mode at all, because
-> > the effect on PM is actually adverse - too frequent wakeups will cause more
-> > adverse net effect on PM (IIRC) @ VBAT.
-> > 
-> This is good information and integrating these functionalities allow to
-> collect more. Without regression of course :-)
+> And this goes in omap-pcm.h.
 > 
+> what do you think??
 > 
+I'm thinking is it just enough to share sync_mode between the
+omap-pcm.c and omap-mcbsp.c? For me it looks that both period_bytes_max
+(by using snd_pcm_hw_constraint_minmax) adjustment and threshold
+setting can be done in omap-mcbsp.c. Then there is no need to invent
+any callbacks to the omap_dma_data (for now) and omap-pcm.c remains
+cleanear as the threshold is not so much DMA programming specific.
 
+
+-- 
+Jarkko
