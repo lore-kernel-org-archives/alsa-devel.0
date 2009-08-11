@@ -1,7 +1,8 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv2 07/20] OMAP: McBSP: Rename thres sysfs symbols
-Date: Tue, 11 Aug 2009 16:05:18 +0300
-Message-ID: <1249995931-26015-8-git-send-email-eduardo.valentin__9221.6387544342$1249998078$gmane$org@nokia.com>
+Subject: [PATCHv2 14/20] OMAP: McBSP: Let element DMA mode hit
+	retention also
+Date: Tue, 11 Aug 2009 16:05:25 +0300
+Message-ID: <1249995931-26015-15-git-send-email-eduardo.valentin__16248.892065096$1249998094$gmane$org@nokia.com>
 References: <1249995931-26015-1-git-send-email-eduardo.valentin@nokia.com>
 	<1249995931-26015-2-git-send-email-eduardo.valentin@nokia.com>
 	<1249995931-26015-3-git-send-email-eduardo.valentin@nokia.com>
@@ -9,11 +10,18 @@ References: <1249995931-26015-1-git-send-email-eduardo.valentin@nokia.com>
 	<1249995931-26015-5-git-send-email-eduardo.valentin@nokia.com>
 	<1249995931-26015-6-git-send-email-eduardo.valentin@nokia.com>
 	<1249995931-26015-7-git-send-email-eduardo.valentin@nokia.com>
+	<1249995931-26015-8-git-send-email-eduardo.valentin@nokia.com>
+	<1249995931-26015-9-git-send-email-eduardo.valentin@nokia.com>
+	<1249995931-26015-10-git-send-email-eduardo.valentin@nokia.com>
+	<1249995931-26015-11-git-send-email-eduardo.valentin@nokia.com>
+	<1249995931-26015-12-git-send-email-eduardo.valentin@nokia.com>
+	<1249995931-26015-13-git-send-email-eduardo.valentin@nokia.com>
+	<1249995931-26015-14-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1249995931-26015-7-git-send-email-eduardo.valentin@nokia.com>
+In-Reply-To: <1249995931-26015-14-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,77 +32,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+Cc: "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, Eero Nurkkala <ext-eero.nurkkala@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
+From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 
-This patch renames the symbols that handles threshold
-sysfs properties. This way we can add more sysfs properties
-to them.
+The device no longer hits retention if element DMA
+mode is taken for at least the duration of the
+serial console timeout. Force element DMA mode to
+shut down through smartidle.
 
-Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
+Signed-off-by: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+Acked-by: Eduardo Valentin <eduardo.valentin@nokia.com>
 ---
- arch/arm/plat-omap/mcbsp.c |   20 ++++++++++----------
- 1 files changed, 10 insertions(+), 10 deletions(-)
+ arch/arm/plat-omap/mcbsp.c |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
 
 diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-index 2c97051..13e7ce3 100644
+index 208f422..50a9fea 100644
 --- a/arch/arm/plat-omap/mcbsp.c
 +++ b/arch/arm/plat-omap/mcbsp.c
-@@ -1063,24 +1063,24 @@ static DEVICE_ATTR(prop, 0644, prop##_show, prop##_store);
- THRESHOLD_PROP_BUILDER(max_tx_thres);
- THRESHOLD_PROP_BUILDER(max_rx_thres);
+@@ -343,6 +343,15 @@ static inline void omap34xx_mcbsp_free(struct omap_mcbsp *mcbsp)
  
--static const struct attribute *threshold_attrs[] = {
-+static const struct attribute *additional_attrs[] = {
- 	&dev_attr_max_tx_thres.attr,
- 	&dev_attr_max_rx_thres.attr,
- 	NULL,
- };
+ 		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
+ 		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03) | CLOCKACTIVITY(0x03));
++		/*
++		 * HW bug workaround - If no_idle mode is taken, we need to
++		 * go to smart_idle before going to always_idle, or the
++		 * device will not hit retention anymore.
++		 */
++		syscon |= SIDLEMODE(0x02);
++		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
++
++		syscon &= ~(SIDLEMODE(0x03));
+ 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
  
--static const struct attribute_group threshold_attr_group = {
--	.attrs = (struct attribute **)threshold_attrs,
-+static const struct attribute_group additional_attr_group = {
-+	.attrs = (struct attribute **)additional_attrs,
- };
- 
--static inline int __devinit omap_thres_add(struct device *dev)
-+static inline int __devinit omap_additional_add(struct device *dev)
- {
--	return sysfs_create_group(&dev->kobj, &threshold_attr_group);
-+	return sysfs_create_group(&dev->kobj, &additional_attr_group);
- }
- 
--static inline void __devexit omap_thres_remove(struct device *dev)
-+static inline void __devexit omap_additional_remove(struct device *dev)
- {
--	sysfs_remove_group(&dev->kobj, &threshold_attr_group);
-+	sysfs_remove_group(&dev->kobj, &additional_attr_group);
- }
- 
- static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp)
-@@ -1088,9 +1088,9 @@ static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp)
- 	if (cpu_is_omap34xx()) {
- 		mcbsp->max_tx_thres = max_thres(mcbsp);
- 		mcbsp->max_rx_thres = max_thres(mcbsp);
--		if (omap_thres_add(mcbsp->dev))
-+		if (omap_additional_add(mcbsp->dev))
- 			dev_warn(mcbsp->dev,
--				"Unable to create threshold controls\n");
-+				"Unable to create additional controls\n");
- 	} else {
- 		mcbsp->max_tx_thres = -EINVAL;
- 		mcbsp->max_rx_thres = -EINVAL;
-@@ -1100,7 +1100,7 @@ static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp)
- static inline void __devexit omap34xx_device_exit(struct omap_mcbsp *mcbsp)
- {
- 	if (cpu_is_omap34xx())
--		omap_thres_remove(mcbsp->dev);
-+		omap_additional_remove(mcbsp->dev);
- }
- #else
- static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp) {}
+ 		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, 0);
 -- 
 1.6.2.GIT
 
