@@ -1,21 +1,29 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: [RFC][PATCH 3/3 v2] ASoC: OMAP: Enhance OMAP1510
-	DMA progress software counter
-Date: Tue, 11 Aug 2009 11:30:20 +0200
-Message-ID: <200908111130.21935.jkrzyszt@tis.icnet.pl>
-References: <200908101050.08074.jkrzyszt@tis.icnet.pl>
-	<200908110107.11485.jkrzyszt@tis.icnet.pl>
-	<20090811094248.3b869f09.jhnikula@gmail.com>
+From: Tim Blechmann <tim@klingt.org>
+Subject: Re: hard freezes with hdsp with cardbus/pci adapter
+	card
+Date: Tue, 11 Aug 2009 11:47:36 +0200
+Message-ID: <4A813E38.5030007@klingt.org>
+References: <h5q3ur$13e$1@ger.gmane.org>	<20090811050619.GA12438@pengutronix.de>	<4A811076.6000603@klingt.org>
+	<4A811D1B.2020709@klingt.org>
+	<20090811092526.GA3163@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3855540679279112727=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9B54124B2E
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id E721024B37
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Aug 2009 11:36:48 +0200 (CEST)
-In-Reply-To: <20090811094248.3b869f09.jhnikula@gmail.com>
-Content-Disposition: inline
+	Tue, 11 Aug 2009 11:47:53 +0200 (CEST)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1ManxP-0006mI-3r
+	for alsa-devel@alsa-project.org; Tue, 11 Aug 2009 09:47:51 +0000
+Received: from 85-127-248-0.dynamic.xdsl-line.inode.at ([85.127.248.0])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2009 09:47:51 +0000
+Received: from tim by 85-127-248-0.dynamic.xdsl-line.inode.at with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2009 09:47:51 +0000
+In-Reply-To: <20090811092526.GA3163@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,54 +33,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.arm.linux.org.uk" <linux-arm-kernel@lists.arm.linux.org.uk>
+To: alsa-devel@alsa-project.org
+Cc: linux-pcmcia@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jarkko,
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============3855540679279112727==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigD5C22CB3A3D2DE27D99905B6"
 
-Tuesday 11 August 2009 08:42:48 Jarkko Nikula wrote:
-> On Tue, 11 Aug 2009 01:07:10 +0200
-> Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
-> > Enhance period index accuracy, particularly just before buffer rewind, by
-> > making use of DMA interrupt status flags in addition to simply counting
-> > up interrupts.
-> >
-> > Corrections since v1:
-> > 1. Fix buggy DMA interrupt handling in case of multiple status flags set
-> > in parallel.
-> > 2. Enable OMAP_DMA_LAST_IRQ only for playback on OMAP1510.
-> >
-> > -	}
-> > +	} else if (stat == OMAP_DMA_LAST_IRQ)
-> > +		return;
->
-> Is this test needed? This interrupt is set only for playback on
-> omap1510 so this looks null-op.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigD5C22CB3A3D2DE27D99905B6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-You're right, I have put it here before limiting the flag request to playback 
-on OMAP1510 only. So it can be omitted, but only if we assume we are always 
-called exactly as requested. It is not needed unless the flag is ever 
-requested (by mistake?) by other arch/arm/plat-omap/dma.c bits and passed on 
-by omap1_dma_handle_ch() that passes all flags without checking if requested. 
-But then, shouldn't we start from always checking for OMAP_DMA_FRAME_IRQ set?
+On 08/11/2009 11:25 AM, Wolfram Sang wrote:
+> Hi Tim,
+>=20
+>> hm, actually, i think the issue is related to the pci latency of the
+>> cardbus controller.
+>=20
+> Looks like it:
+>=20
+> http://lkml.indiana.edu/hypermail/linux/kernel/0404.1/0602.html
+>=20
+> Do you know if the increased latency is needed for all bridges, not jus=
+t ENE?
+> (I'd assume so...)
 
-> > -	omap_enable_dma_irq(prtd->dma_ch, OMAP_DMA_FRAME_IRQ);
-> > +	if ((cpu_is_omap1510()) &&
-> > +			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK))
-> > +		omap_enable_dma_irq(prtd->dma_ch, OMAP_DMA_FRAME_IRQ |
-> > +							OMAP_DMA_LAST_IRQ);
->
-> Indent OMAP_DMA_LAST_IRQ with tab(s) and spaces to the same column
-> than OMAP_DMA_FRAME_IRQ. Looks nicer then.
+i remember that issue, it had different symptoms (distorted sound) ...
+the ene bridge seems to be the only cardbus bridge, that requires the
+increased latency, but maybe other controllers are just more robust and
+don't completely freeze the system
 
-OK, will fix it.
+cheers, tim
 
-> Should the 
-> OMAP_DMA_BLOCK_IRQ to be set since it is handled in omap_pcm_dma_irq?
+--=20
+tim@klingt.org
+http://tim.klingt.org
 
-This one is already requested from inside omap_request_dma() and used inside 
-omap1_dma_handle_ch() in addition to passing it to us.
+Happiness is a byproduct of function, purpose, and conflict; those who
+seek happiness for itself seek victory without war.
+  William S. Burroughs
 
-Cheers,
-Janusz
+
+--------------enigD5C22CB3A3D2DE27D99905B6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkqBPjgACgkQdL+4qsZfVsub8wCePVS0XpQYZy0HcieQ+gKXZRJI
+Y0gAniyy7ImZpr7pxtm1xY4hebUiZp+H
+=2HCn
+-----END PGP SIGNATURE-----
+
+--------------enigD5C22CB3A3D2DE27D99905B6--
+
+
+--===============3855540679279112727==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3855540679279112727==--
