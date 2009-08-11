@@ -1,24 +1,15 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: Re: [PATCH 16/20] ASoC: OMAP: Use McBSP threshold again
-Date: Tue, 11 Aug 2009 09:22:48 +0300
-Message-ID: <20090811062248.GA6027__3097.2971268513$1249997831$gmane$org@esdhcp037198.research.nokia.com>
-References: <1248958183-15015-11-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-12-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-13-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-14-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-15-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-16-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-17-git-send-email-eduardo.valentin@nokia.com>
-	<20090805104856.ff3e0f31.jhnikula@gmail.com>
-	<20090810085355.GA23461@esdhcp037198.research.nokia.com>
-	<20090811083445.3d5ee595.jhnikula@gmail.com>
-Reply-To: eduardo.valentin@nokia.com
+Subject: [PATCHv2 02/20] OMAP: McBSP: Add IRQEN, IRQSTATUS,
+	THRESHOLD2 and THRESHOLD1 registers.
+Date: Tue, 11 Aug 2009 16:05:13 +0300
+Message-ID: <1249995931-26015-3-git-send-email-eduardo.valentin__10977.3821234286$1249997840$gmane$org@nokia.com>
+References: <1249995931-26015-1-git-send-email-eduardo.valentin@nokia.com>
+	<1249995931-26015-2-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
-In-Reply-To: <20090811083445.3d5ee595.jhnikula@gmail.com>
+In-Reply-To: <1249995931-26015-2-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,85 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 11, 2009 at 07:34:45AM +0200, ext Jarkko Nikula wrote:
-> On Mon, 10 Aug 2009 11:53:55 +0300
-> Eduardo Valentin <eduardo.valentin@nokia.com> wrote:
-> 
-> > > Oops, didn't notice this before. This will hard glue the DMA and McBSP
-> > > together. Even currently there is only McBSP based DAI link driver,
-> > > there can be others as well. EAC DAI for OMAP2420 would be necessary
-> > > for instance if one wants to develop ASoC support for Nokia N800. Nokia
-> > > N810 could use that too.
-> > 
-> > True. And the same comment is valid for the patch which adds op mode selection.
-> > My idea to un-glue them is to put some callbacks in omap_mcbsp_data of omap-mcbsp.c,
-> > and share it as something more generic, so that they can be called from omap-pcm.c.
-> > 
-> > Something like:
-> > 
-> > struct omap_dma_data {
-> > 	unsigned int			bus_id;
-> > 	unsigned int			fmt;
-> > 	/*
-> > 	 * Flags indicating is the bus already activated and configured by
-> > 	 * another substream
-> > 	 */
-> > 	int				active;
-> > 	int				configured;
-> > 	/* threshold callbacks can be added then here */
-> > 	void				*data; /* struct omap_mcbsp_reg_cfg	regs; can go here */
-> > };
-> > 
-> > And this goes in omap-pcm.h.
+From: Eduardo Valentin <eduardo.valentin@nokia.com>
 
+Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
+---
+ arch/arm/plat-omap/include/mach/mcbsp.h |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-Ok, I was wrong here. My point was to add new stuff in here:
-struct omap_pcm_dma_data {
-	char		*name;		/* stream identifier */
-	int		dma_req;	/* DMA request line */
-	unsigned long	port_addr;	/* transmit/receive register */
-
-	/* additional things go here */
-};
-
-This one is already shared.
-
-> > 
-> > what do you think??
-> > 
-> I'm thinking is it just enough to share sync_mode between the
-> omap-pcm.c and omap-mcbsp.c? For me it looks that both period_bytes_max
-> (by using snd_pcm_hw_constraint_minmax) adjustment and threshold
-> setting can be done in omap-mcbsp.c. Then there is no need to invent
-> any callbacks to the omap_dma_data (for now) and omap-pcm.c remains
-> cleanear as the threshold is not so much DMA programming specific.
-
-True, that would become cleaner.
-
-But, there are some points to re-think here. Max threshold value is
-dependent on mcbsp instance (and possibly, on omap version as well,
-if something change for next omap versions). The way max threshold is
-implemented now, it comes first from board file, then you can query it
-using new added function in this series.
-
-So far nothing prevent us to move max threshold usage to omap-mcbsp.c.
-But at open time, we add a restriction to make buffer size a multiple of
-period size. And I think to properly make this, we need max threshold
-value in advance, as we the idea is to bind periods with thresholds.
-
-A similar issue may happen whilst setting current threshold value.
-We want to set it before starting DMA. And that value must be bind to
-chosen period size for that stream. In which place we can do that in omap-mcbsp.c?
-
-Thoughts?
-
-> 
-> 
-> -- 
-> Jarkko
-
+diff --git a/arch/arm/plat-omap/include/mach/mcbsp.h b/arch/arm/plat-omap/include/mach/mcbsp.h
+index 77191c5..51908fb 100644
+--- a/arch/arm/plat-omap/include/mach/mcbsp.h
++++ b/arch/arm/plat-omap/include/mach/mcbsp.h
+@@ -134,6 +134,10 @@
+ #define OMAP_MCBSP_REG_XCERG	0x74
+ #define OMAP_MCBSP_REG_XCERH	0x78
+ #define OMAP_MCBSP_REG_SYSCON	0x8C
++#define OMAP_MCBSP_REG_THRSH2	0x90
++#define OMAP_MCBSP_REG_THRSH1	0x94
++#define OMAP_MCBSP_REG_IRQST	0xA0
++#define OMAP_MCBSP_REG_IRQEN	0xA4
+ #define OMAP_MCBSP_REG_XCCR	0xAC
+ #define OMAP_MCBSP_REG_RCCR	0xB0
+ 
 -- 
-Eduardo Valentin
+1.6.2.GIT
+
