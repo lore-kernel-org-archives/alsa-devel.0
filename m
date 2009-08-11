@@ -1,24 +1,22 @@
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: Re: [PATCH 16/20] ASoC: OMAP: Use McBSP threshold again
-Date: Mon, 10 Aug 2009 11:53:55 +0300
-Message-ID: <20090810085355.GA23461__38042.6816213459$1249971514$gmane$org@esdhcp037198.research.nokia.com>
-References: <1248958183-15015-9-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-10-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-11-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-12-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-13-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-14-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-15-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-16-git-send-email-eduardo.valentin@nokia.com>
-	<1248958183-15015-17-git-send-email-eduardo.valentin@nokia.com>
-	<20090805104856.ff3e0f31.jhnikula@gmail.com>
-Reply-To: eduardo.valentin@nokia.com
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [RFC][PATCH 3/3 v2] ASoC: OMAP: Enhance OMAP1510
+ DMA progress software counter
+Date: Tue, 11 Aug 2009 09:42:48 +0300
+Message-ID: <20090811094248.3b869f09.jhnikula@gmail.com>
+References: <200908101050.08074.jkrzyszt@tis.icnet.pl>
+	<200908110107.11485.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
-In-Reply-To: <20090805104856.ff3e0f31.jhnikula@gmail.com>
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 80CD724A34
+	for <alsa-devel@alsa-project.org>;
+	Tue, 11 Aug 2009 08:41:26 +0200 (CEST)
+Received: by ewy23 with SMTP id 23so3842312ewy.32
+	for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2009 23:41:25 -0700 (PDT)
+In-Reply-To: <200908110107.11485.jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,75 +26,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.arm.linux.org.uk" <linux-arm-kernel@lists.arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jarkko,
+On Tue, 11 Aug 2009 01:07:10 +0200
+Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
 
-On Wed, Aug 05, 2009 at 09:48:56AM +0200, ext Jarkko Nikula wrote:
-> On Thu, 30 Jul 2009 15:49:39 +0300
-> Eduardo Valentin <eduardo.valentin@nokia.com> wrote:
+> Enhance period index accuracy, particularly just before buffer rewind, by
+> making use of DMA interrupt status flags in addition to simply counting up
+> interrupts.
 > 
-> > Now this patch implements again the McBSP threshold
-> > usage for OMAP ASoC.
-> > 
-> > We figured out that there is no need to have so much
-> > SW control in order to have DMA in idle state during
-> > audio streaming. Configuring McBSP threshold value
-> > and DMA to FRAME_SYNC are sufficient.
-> > 
-> > Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
-> > ---
-> >  sound/soc/omap/omap-pcm.c |   37 +++++++++++++++++++++++++++++++++++--
-> >  1 files changed, 35 insertions(+), 2 deletions(-)
-> > 
-> > @@ -192,6 +203,12 @@ static int omap_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
-> >  	case SNDRV_PCM_TRIGGER_RESUME:
-> >  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> >  		prtd->period_index = 0;
-> > +		/* Configure McBSP internal buffer usage */
-> > +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> > +			omap_mcbsp_set_tx_threshold(bus_id, samples - 1);
-> > +		else
-> > +			omap_mcbsp_set_rx_threshold(bus_id, samples - 1);
-> > +
-> >  		omap_start_dma(prtd->dma_ch);
-> >  		break;
-> >  
-> Oops, didn't notice this before. This will hard glue the DMA and McBSP
-> together. Even currently there is only McBSP based DAI link driver,
-> there can be others as well. EAC DAI for OMAP2420 would be necessary
-> for instance if one wants to develop ASoC support for Nokia N800. Nokia
-> N810 could use that too.
-
-True. And the same comment is valid for the patch which adds op mode selection.
-My idea to un-glue them is to put some callbacks in omap_mcbsp_data of omap-mcbsp.c,
-and share it as something more generic, so that they can be called from omap-pcm.c.
-
-Something like:
-
-struct omap_dma_data {
-	unsigned int			bus_id;
-	unsigned int			fmt;
-	/*
-	 * Flags indicating is the bus already activated and configured by
-	 * another substream
-	 */
-	int				active;
-	int				configured;
-	/* threshold callbacks can be added then here */
-	void				*data; /* struct omap_mcbsp_reg_cfg	regs; can go here */
-};
-
-And this goes in omap-pcm.h.
-
-what do you think??
-
+> Corrections since v1:
+> 1. Fix buggy DMA interrupt handling in case of multiple status flags set in
+>    parallel.
+> 2. Enable OMAP_DMA_LAST_IRQ only for playback on OMAP1510.
 > 
+> This patch applies on top of patch 2 from this series:
+> [RFC][PATCH 2/3] ASoC: OMAP: Make use of DMA channel self linking on OMAP1510
 > 
-> -- 
-> Jarkko
+> Created against linux-2.6.31-rc5.
+> 
+> Tested on Amstrad Delta.
+> 
+> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+> 
+> ---
+> --- linux-2.6.31-rc5/sound/soc/omap/omap-pcm.c.orig	2009-08-10 22:41:25.000000000 +0200
+> +++ linux-2.6.31-rc5/sound/soc/omap/omap-pcm.c	2009-08-10 23:15:46.000000000 +0200
+> @@ -68,13 +68,27 @@ static void omap_pcm_dma_irq(int ch, u16
+>  		 * that can be used by omap_pcm_pointer() instead.
+>  		 */
+>  		spin_lock_irqsave(&prtd->lock, flags);
+> +		if ((stat == OMAP_DMA_LAST_IRQ) &&
+> +				(prtd->period_index == runtime->periods - 1)) {
+> +			/* we are in sync, do nothing */
+> +			spin_unlock_irqrestore(&prtd->lock, flags);
+> +			return;
+> +		}
+>  		if (prtd->period_index >= 0) {
+> -			if (++prtd->period_index == runtime->periods) {
+> +			if (stat & OMAP_DMA_BLOCK_IRQ) {
+> +				/* end of buffer reached, loop back */
+> +				prtd->period_index = 0;
+> +			} else if (stat & OMAP_DMA_LAST_IRQ) {
+> +				/* update the counter for the last period */
+> +				prtd->period_index = runtime->periods - 1;
+> +			} else if (++prtd->period_index >= runtime->periods) {
+> +				/* end of buffer missed? loop back */
+>  				prtd->period_index = 0;
+>  			}
+>  		}
+>  		spin_unlock_irqrestore(&prtd->lock, flags);
+> -	}
+> +	} else if (stat == OMAP_DMA_LAST_IRQ)
+> +		return;
+>  
+Is this test needed? This interrupt is set only for playback on
+omap1510 so this looks null-op.
+
+>  	snd_pcm_period_elapsed(substream);
+>  }
+> @@ -175,7 +189,12 @@ static int omap_pcm_prepare(struct snd_p
+>  	dma_params.frame_count	= runtime->periods;
+>  	omap_set_dma_params(prtd->dma_ch, &dma_params);
+>  
+> -	omap_enable_dma_irq(prtd->dma_ch, OMAP_DMA_FRAME_IRQ);
+> +	if ((cpu_is_omap1510()) &&
+> +			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK))
+> +		omap_enable_dma_irq(prtd->dma_ch, OMAP_DMA_FRAME_IRQ |
+> +							OMAP_DMA_LAST_IRQ);
+
+Indent OMAP_DMA_LAST_IRQ with tab(s) and spaces to the same column
+than OMAP_DMA_FRAME_IRQ. Looks nicer then. Should the
+OMAP_DMA_BLOCK_IRQ to be set since it is handled in omap_pcm_dma_irq?
+
 
 -- 
-Eduardo Valentin
+Jarkko
