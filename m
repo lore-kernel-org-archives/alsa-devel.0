@@ -1,20 +1,22 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 2/3] ASoC: pxa-ssp.c,
-	Automatically set TDM when needed
-Date: Wed, 12 Aug 2009 20:17:24 +0200
-Message-ID: <20090812181724.GZ19257@buzzloop.caiaq.de>
-References: <1249570519-32622-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1249570519-32622-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Kevin Hilman <khilman@deeprootsystems.com>
+Subject: Re: [PATCH v2] ARM: DaVinci: Audio support for DA830
+	EVM
+Date: Wed, 12 Aug 2009 11:29:55 -0700
+Message-ID: <87bpmkubq4.fsf@deeprootsystems.com>
+References: <1250024519-27100-1-git-send-email-chaithrika@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id EF3C2245C6
+Received: from mail-pz0-f175.google.com (mail-pz0-f175.google.com
+	[209.85.222.175])
+	by alsa0.perex.cz (Postfix) with ESMTP id 113E52438C
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 Aug 2009 20:17:33 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1249570519-32622-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Wed, 12 Aug 2009 20:30:02 +0200 (CEST)
+Received: by pzk5 with SMTP id 5so145100pzk.23
+	for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2009 11:29:58 -0700 (PDT)
+In-Reply-To: <1250024519-27100-1-git-send-email-chaithrika@ti.com> (Chaithrika
+	U. S.'s message of "Tue\, 11 Aug 2009 17\:01\:59 -0400")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,162 +26,233 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Paul Shen <boshen9@gmail.com>, alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Daniel Ribeiro <drwyrm@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>
+To: Chaithrika U S <chaithrika@ti.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com, broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Ok, I spent some time in debugging this again, and here are my
-findings.
+Chaithrika U S <chaithrika@ti.com> writes:
 
-Again, to summarize what this is all about - what I need the code to
-produce is the following output:
-
-	- syncronous LRCLK
-	- 64fs on I2SCLK
-	- I2S data on the first 16bits of each LRCLK edge
-	-> http://caiaq.de/download/tmp/2.png
-
-So I applied all three patches and added the following call to my board
-support code:
-
-	snd_soc_dai_set_tdm_slot(cpu_dai, 3, 3, 2, 16);
-
-Which translates into "give me 2 slots with 16 bits each, and distribute
-them over the timeline as a 0-1-0-1 pattern". Which is exactly what I
-need, right?
-
-But unfortunately, the code didn't make the SSP port do that. I ended up
-having a asynchronous clock and the data somewhere where I wouldn't have
-expected them: http://caiaq.de/download/tmp/1.png
-
-I did some minor modifications to the patches 2/3 and 3/3 which made it
-work for me eventually - find them inline.
-
-Not sure whether I got the theory about the API right, and of course I
-didn't test on any other hardware than the one I have.
-
-
-On Thu, Aug 06, 2009 at 03:55:18PM +0100, Mark Brown wrote:
-> * Automatically sets TDM mode for frame_width larger than 32 bits, if
->   the user doesn't setup the TDM slots with set_tdm_slot().
-> * Reset SSCR0_EDSS and SSCR0_DSS on pxa_ssp_set_dai_fmt.
-> * Makes SSCR0_MOD optional.
-> * Clears SSCR1_RWOT case SSCR0_MOD is set.
-> 
-> Signed-off-by: Daniel Ribeiro <drwyrm@gmail.com>
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Define resources for McASP1 used on DA830/OMAP-L137 EVM, add platform
+> device defintion, initialization function.
+> Additionally, this patch also adds version and FIFO related
+> members to platform data structure.
+>
+> Signed-off-by: Chaithrika U S <chaithrika@ti.com>
 > ---
->  sound/soc/pxa/pxa-ssp.c |   92 +++++++++++++++++++++++++++--------------------
->  1 files changed, 53 insertions(+), 39 deletions(-)
-> 
-> diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-> index 5b9ed64..d60492e 100644
-> --- a/sound/soc/pxa/pxa-ssp.c
-> +++ b/sound/soc/pxa/pxa-ssp.c
+> Applies to DaVinci GIT tree.
+> In this version of the patch, the init fucntion, resource and platform device
+> definitions have neen moved to the devices-da8xx.c file.
 
-[...]
+Looks fine.
 
-> @@ -532,48 +532,70 @@ static int pxa_ssp_hw_params(struct snd_pcm_substream *substream,
->  	struct ssp_priv *priv = cpu_dai->private_data;
->  	struct ssp_device *ssp = priv->dev.ssp;
->  	int chn = params_channels(params);
-> -	u32 sscr0;
-> -	u32 sspsp;
-> +	u32 sscr0, sscr1, sspsp;
->  	int width = snd_pcm_format_physical_width(params_format(params));
-> -	int ttsa = ssp_read_reg(ssp, SSTSA) & 0xf;
-> +	int slot_width, frame_width = 0;
-> +
-> +	/* check if the user explicitly set a slot_width */
-> +	sscr0 = ssp_read_reg(ssp, SSCR0);
-> +
-> +	if (sscr0 & (SSCR0_EDSS | SSCR0_DSS))
-> +		slot_width = (sscr0 & SSCR0_DSS) +
-> +			(sscr0 & SSCR0_EDSS ? 17 : 1);
-> +	else
-> +		frame_width = slot_width = width * chn;
+I'll merge these two 'ARM: DaVinci: *' patches via DaVinci git (after
+changing the subject prefix to just davinci:)
+
+Merging them via davinci git will prevent conflicts in linux-next because
+these are touching code that is being changed from multiple directions.
+
+Kevin
+
+
+>  arch/arm/mach-davinci/board-da830-evm.c    |   27 +++++++++++++++++++++
+>  arch/arm/mach-davinci/da830.c              |    7 +++--
+>  arch/arm/mach-davinci/devices-da8xx.c      |   36 ++++++++++++++++++++++++++++
+>  arch/arm/mach-davinci/include/mach/asp.h   |   15 +++++++++++
+>  arch/arm/mach-davinci/include/mach/da8xx.h |    3 ++
+>  5 files changed, 85 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/arm/mach-davinci/board-da830-evm.c b/arch/arm/mach-davinci/board-da830-evm.c
+> index 9025669..a45340d 100644
+> --- a/arch/arm/mach-davinci/board-da830-evm.c
+> +++ b/arch/arm/mach-davinci/board-da830-evm.c
+> @@ -23,6 +23,7 @@
+>  #include <mach/irqs.h>
+>  #include <mach/cp_intc.h>
+>  #include <mach/da8xx.h>
+> +#include <mach/asp.h>
 >  
->  	/* generate correct DMA params */
->  	if (cpu_dai->dma_data)
->  		kfree(cpu_dai->dma_data);
+>  #define DA830_EVM_PHY_MASK		0x0
+>  #define DA830_EVM_MDIO_FREQUENCY	2200000	/* PHY bus frequency */
+> @@ -51,6 +52,25 @@ static struct davinci_uart_config da830_evm_uart_config __initdata = {
+>  	.enabled_uarts = 0x7,
+>  };
 >  
-> -	/* Network mode with one active slot (ttsa == 1) can be used
-> -	 * to force 16-bit frame width on the wire (for S16_LE), even
-> -	 * with two channels. Use 16-bit DMA transfers for this case.
-> -	 */
-> -	cpu_dai->dma_data = ssp_get_dma_params(ssp,
-> -			((chn == 2) && (ttsa != 1)) || (width == 32),
-> +	cpu_dai->dma_data = ssp_get_dma_params(ssp, slot_width > 16,
->  			substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
-
-The condition for the width4 parameter needs to be
-(slot_width * slots) > 16 for me. With that parameter set to 0, audio
-plays at half speed on my system.
-
-And in patch 3/3,
-
-
-> diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-> index d60492e..aac85fe 100644
-> --- a/sound/soc/pxa/pxa-ssp.c
-> +++ b/sound/soc/pxa/pxa-ssp.c
-
-[...]
-
-> @@ -561,6 +543,59 @@ static int pxa_ssp_hw_params(struct snd_pcm_substream *substream,
->  		sscr0 |= SSCR0_FPCKE;
->  #endif
+> +static u8 da830_iis_serializer_direction[] = {
+> +	RX_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
+> +	INACTIVE_MODE,	TX_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
+> +	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
+> +};
+> +
+> +static struct snd_platform_data da830_evm_snd_data = {
+> +	.tx_dma_offset  = 0x2000,
+> +	.rx_dma_offset  = 0x2000,
+> +	.op_mode        = DAVINCI_MCASP_IIS_MODE,
+> +	.num_serializer = ARRAY_SIZE(da830_iis_serializer_direction),
+> +	.tdm_slots      = 2,
+> +	.serial_dir     = da830_iis_serializer_direction,
+> +	.eventq_no      = EVENTQ_0,
+> +	.version	= MCASP_VERSION_2,
+> +	.txnumevt	= 1,
+> +	.rxnumevt	= 1,
+> +};
+> +
+>  static __init void da830_evm_init(void)
+>  {
+>  	struct davinci_soc_info *soc_info = &davinci_soc_info;
+> @@ -93,6 +113,13 @@ static __init void da830_evm_init(void)
+>  	davinci_serial_init(&da830_evm_uart_config);
+>  	i2c_register_board_info(1, da830_evm_i2c_devices,
+>  			ARRAY_SIZE(da830_evm_i2c_devices));
+> +
+> +	ret = da8xx_pinmux_setup(da830_mcasp1_pins);
+> +	if (ret)
+> +		pr_warning("da830_evm_init: mcasp1 mux setup failed: %d\n",
+> +				ret);
+> +
+> +	da8xx_init_mcasp(1, &da830_evm_snd_data);
+>  }
 >  
-> +	sspsp = ssp_read_reg(ssp, SSPSP);
-> +	switch (priv->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-> +	case SND_SOC_DAIFMT_I2S:
-> +		/*
-> +		 * I2S and LEFT_J are stereo only, we have to send data for
-> +		 * both channels.
-> +		 */
-> +		if (chn == 1)
-> +			frame_width *= 2;
+>  #ifdef CONFIG_SERIAL_8250_CONSOLE
+> diff --git a/arch/arm/mach-davinci/da830.c b/arch/arm/mach-davinci/da830.c
+> index 3a9b634..19b2748 100644
+> --- a/arch/arm/mach-davinci/da830.c
+> +++ b/arch/arm/mach-davinci/da830.c
+> @@ -23,6 +23,7 @@
+>  #include <mach/common.h>
+>  #include <mach/time.h>
+>  #include <mach/da8xx.h>
+> +#include <mach/asp.h>
+>  
+>  #include "clock.h"
+>  #include "mux.h"
+> @@ -411,9 +412,9 @@ static struct davinci_clk da830_clks[] = {
+>  	CLK("eqep.0",		NULL,		&eqep0_clk),
+>  	CLK("eqep.1",		NULL,		&eqep1_clk),
+>  	CLK("da830_lcdc",	NULL,		&lcdc_clk),
+> -	CLK("soc-audio.0",	NULL,		&mcasp0_clk),
+> -	CLK("soc-audio.1",	NULL,		&mcasp1_clk),
+> -	CLK("soc-audio.2",	NULL,		&mcasp2_clk),
+> +	CLK("davinci-mcasp.0",	NULL,		&mcasp0_clk),
+> +	CLK("davinci-mcasp.1",	NULL,		&mcasp1_clk),
+> +	CLK("davinci-mcasp.2",	NULL,		&mcasp2_clk),
+>  	CLK("musb_hdrc",	NULL,		&usb20_clk),
+>  	CLK(NULL,		"aemif",	&aemif_clk),
+>  	CLK(NULL,		"aintc",	&aintc_clk),
+> diff --git a/arch/arm/mach-davinci/devices-da8xx.c b/arch/arm/mach-davinci/devices-da8xx.c
+> index 11c0971..fe0baaf 100644
+> --- a/arch/arm/mach-davinci/devices-da8xx.c
+> +++ b/arch/arm/mach-davinci/devices-da8xx.c
+> @@ -281,7 +281,43 @@ static struct platform_device da8xx_emac_device = {
+>  	.resource	= da8xx_emac_resources,
+>  };
+>  
+> +static struct resource da830_mcasp1_resources[] = {
+> +	{
+> +		.name	= "mcasp1",
+> +		.start	= DAVINCI_DA830_MCASP1_REG_BASE,
+> +		.end	= DAVINCI_DA830_MCASP1_REG_BASE + (SZ_1K * 12) - 1,
+> +		.flags	= IORESOURCE_MEM,
+> +	},
+> +	/* TX event */
+> +	{
+> +		.start	= DAVINCI_DA830_DMA_MCASP1_AXEVT,
+> +		.end	= DAVINCI_DA830_DMA_MCASP1_AXEVT,
+> +		.flags	= IORESOURCE_DMA,
+> +	},
+> +	/* RX event */
+> +	{
+> +		.start	= DAVINCI_DA830_DMA_MCASP1_AREVT,
+> +		.end	= DAVINCI_DA830_DMA_MCASP1_AREVT,
+> +		.flags	= IORESOURCE_DMA,
+> +	},
+> +};
 > +
-> +		/*
-> +		 * If the user did not use network mode, we assume the codec
-> +		 * is I2S compliant.
-> +		 */
-> +		if (frame_width > 0) {
-> +			sspsp |= SSPSP_SFRMWDTH(frame_width / 2);
-> +			sspsp |= SSPSP_FSRT;
-> +		} else {
-> +			/*
-> +			 * Otherwise we assume that it is a single TDM slot, and
-> +			 * the user is abusing set_tdm_slot to support an
-> +			 * out of spec codec.
-> +			 */
-> +			int slots = ((sscr0 & SSCR0_SlotsPerFrm(8)) >> 24) + 1;
+> +static struct platform_device da830_mcasp1_device = {
+> +	.name		= "davinci-mcasp",
+> +	.id		= 1,
+> +	.num_resources	= ARRAY_SIZE(da830_mcasp1_resources),
+> +	.resource	= da830_mcasp1_resources,
+> +};
 > +
-> +			/* PXA2XX doesn't support DMYSTOP > 3 */
-> +			if (slot_width != (width * 2) && !cpu_is_pxa3xx())
-> +				return -EINVAL;
+>  int __init da8xx_register_emac(void)
+>  {
+>  	return platform_device_register(&da8xx_emac_device);
+>  }
 > +
-> +			sspsp |= SSPSP_DMYSTRT(1);
-> +			sspsp |= SSPSP_DMYSTOP(
-> +					(slot_width * slots) / 2 - width - 1);
-> +			sspsp |= SSPSP_SFRMWDTH((slot_width * slots) / 2);
-
-These two calculations are wrong my case. What works here is
-
-	sspsp |= SSPSP_DMYSTOP(
-			(slot_width * slots * chn) / 2 - width - 1);
-	sspsp |= SSPSP_SFRMWDTH((slot_width * slots * chn) / 2);
-
-... which is another multiplication by factor 2. But I'm not sure if I
-got the wrong variable with value 2 :)
-
-I then end up having the following register contents:
-
-	SSCR0 0xa10003ff
-	SSCR1 0x00601d08
-	SSPSP 0x31a00084
-	SSACD 0x00000060
-	SSTSA 0x00000003
-	SSRSA 0x00000003
-
-Daniel
+> +void __init da8xx_init_mcasp(int id, struct snd_platform_data *pdata)
+> +{
+> +	if (id == 1) { /* DA830/OMAP-L137 has 3 instances of McASP */
+> +		da830_mcasp1_device.dev.platform_data = pdata;
+> +		platform_device_register(&da830_mcasp1_device);
+> +	}
+> +}
+> diff --git a/arch/arm/mach-davinci/include/mach/asp.h b/arch/arm/mach-davinci/include/mach/asp.h
+> index cdf1f44..f3c97ac 100644
+> --- a/arch/arm/mach-davinci/include/mach/asp.h
+> +++ b/arch/arm/mach-davinci/include/mach/asp.h
+> @@ -15,6 +15,9 @@
+>  #define	DAVINCI_DM646X_MCASP0_REG_BASE		0x01D01000
+>  #define DAVINCI_DM646X_MCASP1_REG_BASE		0x01D01800
+>  
+> +/* Bases of da830 McASP1 register banks */
+> +#define DAVINCI_DA830_MCASP1_REG_BASE	0x01D04000
+> +
+>  /* EDMA channels of dm644x and dm355 */
+>  #define DAVINCI_DMA_ASP0_TX	2
+>  #define DAVINCI_DMA_ASP0_RX	3
+> @@ -26,6 +29,10 @@
+>  #define	DAVINCI_DM646X_DMA_MCASP0_AREVT0	9
+>  #define	DAVINCI_DM646X_DMA_MCASP1_AXEVT1	12
+>  
+> +/* EDMA channels of da830 McASP1 */
+> +#define	DAVINCI_DA830_DMA_MCASP1_AREVT	2
+> +#define	DAVINCI_DA830_DMA_MCASP1_AXEVT	3
+> +
+>  /* Interrupts */
+>  #define DAVINCI_ASP0_RX_INT	IRQ_MBRINT
+>  #define DAVINCI_ASP0_TX_INT	IRQ_MBXINT
+> @@ -43,6 +50,14 @@ struct snd_platform_data {
+>  	u8 op_mode;
+>  	u8 num_serializer;
+>  	u8 *serial_dir;
+> +	u8 version;
+> +	u8 txnumevt;
+> +	u8 rxnumevt;
+> +};
+> +
+> +enum {
+> +	MCASP_VERSION_1 = 0,	/* DM646x */
+> +	MCASP_VERSION_2,	/* DA8xx/OMAPL1x */
+>  };
+>  
+>  #define INACTIVE_MODE	0
+> diff --git a/arch/arm/mach-davinci/include/mach/da8xx.h b/arch/arm/mach-davinci/include/mach/da8xx.h
+> index a8cb570..30c5c40 100644
+> --- a/arch/arm/mach-davinci/include/mach/da8xx.h
+> +++ b/arch/arm/mach-davinci/include/mach/da8xx.h
+> @@ -15,6 +15,7 @@
+>  #include <mach/edma.h>
+>  #include <mach/i2c.h>
+>  #include <mach/emac.h>
+> +#include <mach/asp.h>
+>  
+>  /*
+>   * The cp_intc interrupt controller for the da8xx isn't in the same
+> @@ -65,6 +66,7 @@ int da8xx_register_edma(void);
+>  int da8xx_register_i2c(int instance, struct davinci_i2c_platform_data *pdata);
+>  int da8xx_register_watchdog(void);
+>  int da8xx_register_emac(void);
+> +void __init da8xx_init_mcasp(int id, struct snd_platform_data *pdata);
+>  
+>  extern struct platform_device da8xx_serial_device;
+>  extern struct emac_platform_data da8xx_emac_pdata;
+> @@ -100,6 +102,7 @@ extern const short da850_uart2_pins[];
+>  extern const short da850_i2c0_pins[];
+>  extern const short da850_i2c1_pins[];
+>  extern const short da850_cpgmac_pins[];
+> +extern const short da850_mcasp_pins[];
+>  
+>  int da8xx_pinmux_setup(const short pins[]);
+>  
+> -- 
+> 1.5.6
