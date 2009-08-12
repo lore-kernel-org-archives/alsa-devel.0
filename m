@@ -1,17 +1,16 @@
-From: =?UTF-8?Q?Mantas_Pilipavi=C4=8Dius?= <eruditas@gmail.com>
-Subject: Intel card master and PCM channels doesn't work
-Date: Thu, 13 Aug 2009 00:39:48 +0300
-Message-ID: <e82c434a0908121439l13465a8ct74a3c7919bc1ce06@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC update for 2.6.32
+Date: Wed, 12 Aug 2009 22:45:53 +0100
+Message-ID: <20090812214552.GB4731@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.144])
-	by alsa0.perex.cz (Postfix) with ESMTP id AF98D246C2
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id C4E1A246C5
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 Aug 2009 23:39:49 +0200 (CEST)
-Received: by ey-out-1920.google.com with SMTP id 13so105174eye.56
-	for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2009 14:39:49 -0700 (PDT)
+	Wed, 12 Aug 2009 23:45:59 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,10 +20,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-http://www.alsa-project.org/db/?f=afa01dd48ed59d895d18407af62dbd1fa138686c
-Everything works great, I can play the sound, but PCM and Master channels
-don't work, so I can't increase or decrease volume. Only thing I can do is
-mute/unmute PCM channel
+The following changes since commit e0026beac0f1a6253488478b3f022ff243b012b9:
+  Mark Brown (1):
+        ASoC: Update WM9081 for tdm_slot() API change
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.32
+
+Mark Brown (1):
+      ASoC: Update AD1938 for new TDM slot API
+
+ sound/soc/codecs/ad1938.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
