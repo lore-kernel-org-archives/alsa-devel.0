@@ -1,19 +1,20 @@
 From: Barry Song <21cnbao@gmail.com>
-Subject: [PATCH 2/3] add set_tdm_slot in tdm dai to define the
-	relationship between audio channel and tdm slot
-Date: Wed, 12 Aug 2009 12:32:53 +0800
-Message-ID: <1250051574-25119-3-git-send-email-21cnbao@gmail.com>
+Subject: [PATCH 3/3] new board driver to connect bfin-5xx with
+	ad1836 codec
+Date: Wed, 12 Aug 2009 12:32:54 +0800
+Message-ID: <1250051574-25119-4-git-send-email-21cnbao@gmail.com>
 References: <1250051574-25119-1-git-send-email-21cnbao@gmail.com>
 	<1250051574-25119-2-git-send-email-21cnbao@gmail.com>
+	<1250051574-25119-3-git-send-email-21cnbao@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from nwd2mail11.analog.com (nwd2mail11.analog.com [137.71.25.57])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2577024DD7
+	by alsa0.perex.cz (Postfix) with ESMTP id AA97A24DD8
 	for <alsa-devel@alsa-project.org>;
 	Wed, 12 Aug 2009 06:31:07 +0200 (CEST)
-In-Reply-To: <1250051574-25119-2-git-send-email-21cnbao@gmail.com>
+In-Reply-To: <1250051574-25119-3-git-send-email-21cnbao@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,151 +28,194 @@ To: broonie@opensource.wolfsonmicro.com
 Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-For ad1938, the audio channel n just uses slot n, but for ad1836, it's
-different, channel 0 uses slot 0, channel 1 uses slot 4, channels 2 uses
-slot1, ... So add set_tdm_slot entry and use the mask field to define
-the relationship between audio channel and slot number.
-
 Signed-off-by: Barry Song <21cnbao@gmail.com>
 ---
- sound/soc/blackfin/bf5xx-ad1938.c  |    5 +++++
- sound/soc/blackfin/bf5xx-tdm-pcm.c |   12 +++++++++---
- sound/soc/blackfin/bf5xx-tdm.c     |   18 ++++++++++--------
- sound/soc/blackfin/bf5xx-tdm.h     |   10 ++++++++++
- 4 files changed, 34 insertions(+), 11 deletions(-)
+ sound/soc/blackfin/Kconfig        |    8 ++
+ sound/soc/blackfin/Makefile       |    2 +
+ sound/soc/blackfin/bf5xx-ad1836.c |  138 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 148 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/blackfin/bf5xx-ad1836.c
 
-diff --git a/sound/soc/blackfin/bf5xx-ad1938.c b/sound/soc/blackfin/bf5xx-ad1938.c
-index 08269e9..6844098 100644
---- a/sound/soc/blackfin/bf5xx-ad1938.c
-+++ b/sound/soc/blackfin/bf5xx-ad1938.c
-@@ -73,6 +73,11 @@ static int bf5xx_ad1938_hw_params(struct snd_pcm_substream *substream,
- 		SND_SOC_DAIFMT_IB_IF | SND_SOC_DAIFMT_CBM_CFM);
- 	if (ret < 0)
- 		return ret;
-+	
-+	/* set cpu DAI slots, 8 channels, mask is defined as slot seq */
-+	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x76543210, 8);
-+	if (ret < 0)
-+		return ret;
+diff --git a/sound/soc/blackfin/Kconfig b/sound/soc/blackfin/Kconfig
+index 8a4de4d..ac927ff 100644
+--- a/sound/soc/blackfin/Kconfig
++++ b/sound/soc/blackfin/Kconfig
+@@ -88,6 +88,14 @@ config SND_BF5XX_SOC_AC97
+ 	select SND_SOC_AC97_BUS
+ 	select SND_BF5XX_SOC_SPORT
  
- 	/* set codec DAI slots, 8 channels, all channels are enabled */
- 	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xFF, 8);
-diff --git a/sound/soc/blackfin/bf5xx-tdm-pcm.c b/sound/soc/blackfin/bf5xx-tdm-pcm.c
-index ccb5e82..044ef45 100644
---- a/sound/soc/blackfin/bf5xx-tdm-pcm.c
-+++ b/sound/soc/blackfin/bf5xx-tdm-pcm.c
-@@ -43,7 +43,7 @@
- #include "bf5xx-tdm.h"
- #include "bf5xx-sport.h"
- 
--#define PCM_BUFFER_MAX  0x10000
-+#define PCM_BUFFER_MAX  0x8000
- #define FRAGMENT_SIZE_MIN  (4*1024)
- #define FRAGMENTS_MIN  2
- #define FRAGMENTS_MAX  32
-@@ -177,6 +177,9 @@ out:
- static int bf5xx_pcm_copy(struct snd_pcm_substream *substream, int channel,
- 	snd_pcm_uframes_t pos, void *buf, snd_pcm_uframes_t count)
- {
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct sport_device *sport = runtime->private_data;
-+	struct bf5xx_tdm_port *tdm_port = sport->private_data;
- 	unsigned int *src;
- 	unsigned int *dst;
- 	int i;
-@@ -186,9 +189,11 @@ static int bf5xx_pcm_copy(struct snd_pcm_substream *substream, int channel,
- 		dst = (unsigned int *)substream->runtime->dma_area;
- 
- 		dst += pos * 8;
++config SND_BF5XX_SOC_AD1836
++	tristate "SoC AD1836 Audio support for BF5xx"
++	depends on SND_BF5XX_TDM
++	select SND_BF5XX_SOC_TDM
++	select SND_SOC_AD1836
++	help
++	  Say Y if you want to add support for SoC audio on BF5xx STAMP/EZKIT.
 +
- 		while (count--) {
- 			for (i = 0; i < substream->runtime->channels; i++)
--				*(dst + i) = *src++;
-+				*(dst + (((tdm_port->slot_seq >>
-+					(4 * i)) & 0xF))) = *src++;
- 			dst += 8;
- 		}
- 	} else {
-@@ -198,7 +203,8 @@ static int bf5xx_pcm_copy(struct snd_pcm_substream *substream, int channel,
- 		src += pos * 8;
- 		while (count--) {
- 			for (i = 0; i < substream->runtime->channels; i++)
--				*dst++ = *(src+i);
-+				*dst++ = *(src + (((tdm_port->slot_seq >>
-+					(4 * i)) & 0xF)));
- 			src += 8;
- 		}
- 	}
-diff --git a/sound/soc/blackfin/bf5xx-tdm.c b/sound/soc/blackfin/bf5xx-tdm.c
-index 3096bad..091e178 100644
---- a/sound/soc/blackfin/bf5xx-tdm.c
-+++ b/sound/soc/blackfin/bf5xx-tdm.c
-@@ -46,14 +46,6 @@
- #include "bf5xx-sport.h"
- #include "bf5xx-tdm.h"
+ config SND_BF5XX_SOC_AD1980
+ 	tristate "SoC AD1980/1 Audio support for BF5xx"
+ 	depends on SND_BF5XX_AC97
+diff --git a/sound/soc/blackfin/Makefile b/sound/soc/blackfin/Makefile
+index f4d7607..87e3042 100644
+--- a/sound/soc/blackfin/Makefile
++++ b/sound/soc/blackfin/Makefile
+@@ -16,11 +16,13 @@ obj-$(CONFIG_SND_BF5XX_SOC_I2S) += snd-soc-bf5xx-i2s.o
+ obj-$(CONFIG_SND_BF5XX_SOC_TDM) += snd-soc-bf5xx-tdm.o
  
--struct bf5xx_tdm_port {
--	u16 tcr1;
--	u16 rcr1;
--	u16 tcr2;
--	u16 rcr2;
--	int configured;
--};
--
- static struct bf5xx_tdm_port bf5xx_tdm;
- static int sport_num = CONFIG_SND_BF5XX_SPORT_NUM;
+ # Blackfin Machine Support
++snd-ad1836-objs := bf5xx-ad1836.o
+ snd-ad1980-objs := bf5xx-ad1980.o
+ snd-ssm2602-objs := bf5xx-ssm2602.o
+ snd-ad73311-objs := bf5xx-ad73311.o
+ snd-ad1938-objs := bf5xx-ad1938.o
  
-@@ -181,6 +173,13 @@ static void bf5xx_tdm_shutdown(struct snd_pcm_substream *substream,
- 		bf5xx_tdm.configured = 0;
- }
- 
-+static int bf5xx_tdm_set_tdm_slot(struct snd_soc_dai *dai,
-+		unsigned int mask, int slots)
++obj-$(CONFIG_SND_BF5XX_SOC_AD1836) += snd-ad1836.o
+ obj-$(CONFIG_SND_BF5XX_SOC_AD1980) += snd-ad1980.o
+ obj-$(CONFIG_SND_BF5XX_SOC_SSM2602) += snd-ssm2602.o
+ obj-$(CONFIG_SND_BF5XX_SOC_AD73311) += snd-ad73311.o
+diff --git a/sound/soc/blackfin/bf5xx-ad1836.c b/sound/soc/blackfin/bf5xx-ad1836.c
+new file mode 100644
+index 0000000..aa367ae
+--- /dev/null
++++ b/sound/soc/blackfin/bf5xx-ad1836.c
+@@ -0,0 +1,138 @@
++/*
++ * File:         sound/soc/blackfin/bf5xx-ad1836.c
++ * Author:       Barry Song <Barry.Song@analog.com>
++ *
++ * Created:      Aug 4 2009
++ * Description:  Board driver for ad1836 sound chip
++ *
++ * Bugs:         Enter bugs at http://blackfin.uclinux.org/
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/device.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/pcm_params.h>
++
++#include <asm/blackfin.h>
++#include <asm/cacheflush.h>
++#include <asm/irq.h>
++#include <asm/dma.h>
++#include <asm/portmux.h>
++
++#include "../codecs/ad1836.h"
++#include "bf5xx-sport.h"
++
++#include "bf5xx-tdm-pcm.h"
++#include "bf5xx-tdm.h"
++
++static struct snd_soc_card bf5xx_ad1836;
++
++static int bf5xx_ad1836_startup(struct snd_pcm_substream *substream)
 +{
-+	bf5xx_tdm.slot_seq = mask;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++
++	cpu_dai->private_data = sport_handle;
 +	return 0;
 +}
 +
- #ifdef CONFIG_PM
- static int bf5xx_tdm_suspend(struct snd_soc_dai *dai)
- {
-@@ -235,6 +234,7 @@ static struct snd_soc_dai_ops bf5xx_tdm_dai_ops = {
- 	.hw_params      = bf5xx_tdm_hw_params,
- 	.set_fmt        = bf5xx_tdm_set_dai_fmt,
- 	.shutdown       = bf5xx_tdm_shutdown,
-+	.set_tdm_slot   = bf5xx_tdm_set_tdm_slot,
- };
- 
- struct snd_soc_dai bf5xx_tdm_dai = {
-@@ -300,6 +300,8 @@ static int __devinit bfin_tdm_probe(struct platform_device *pdev)
- 		pr_err("Failed to register DAI: %d\n", ret);
- 		goto sport_config_err;
- 	}
++static int bf5xx_ad1836_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
++	int ret = 0;
++	/* set cpu DAI configuration */
++	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_DSP_A |
++		SND_SOC_DAIFMT_IB_IF | SND_SOC_DAIFMT_CBM_CFM);
++	if (ret < 0)
++		return ret;
 +
-+	sport_handle->private_data = &bf5xx_tdm;
- 	return 0;
- 
- sport_config_err:
-diff --git a/sound/soc/blackfin/bf5xx-tdm.h b/sound/soc/blackfin/bf5xx-tdm.h
-index 618ec3d..701c769 100644
---- a/sound/soc/blackfin/bf5xx-tdm.h
-+++ b/sound/soc/blackfin/bf5xx-tdm.h
-@@ -9,6 +9,16 @@
- #ifndef _BF5XX_TDM_H
- #define _BF5XX_TDM_H
- 
-+struct bf5xx_tdm_port {
-+	u16 tcr1;
-+	u16 rcr1;
-+	u16 tcr2;
-+	u16 rcr2;
-+	/* which slot used for the corresponding audio channel? */
-+	int slot_seq;
-+	int configured;
++	/* set codec DAI configuration */
++	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_DSP_A |
++		SND_SOC_DAIFMT_IB_IF | SND_SOC_DAIFMT_CBM_CFM);
++	if (ret < 0)
++		return ret;
++
++	/* set cpu DAI slots, 8 channels, mask is defined as slot seq */
++	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0x73625140, 8);
++	if (ret < 0)
++		return ret;
++
++	/* set codec DAI slots, 8 channels, all channels are enabled */
++	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xFF, 8);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++static struct snd_soc_ops bf5xx_ad1836_ops = {
++	.startup = bf5xx_ad1836_startup,
++	.hw_params = bf5xx_ad1836_hw_params,
 +};
 +
- extern struct snd_soc_dai bf5xx_tdm_dai;
- 
- #endif
++static struct snd_soc_dai_link bf5xx_ad1836_dai = {
++	.name = "ad1836",
++	.stream_name = "AD1836",
++	.cpu_dai = &bf5xx_tdm_dai,
++	.codec_dai = &ad1836_dai,
++	.ops = &bf5xx_ad1836_ops,
++};
++
++static struct snd_soc_card bf5xx_ad1836 = {
++	.name = "bf5xx_ad1836",
++	.platform = &bf5xx_tdm_soc_platform,
++	.dai_link = &bf5xx_ad1836_dai,
++	.num_links = 1,
++};
++
++static struct snd_soc_device bf5xx_ad1836_snd_devdata = {
++	.card = &bf5xx_ad1836,
++	.codec_dev = &soc_codec_dev_ad1836,
++};
++
++static struct platform_device *bfxx_ad1836_snd_device;
++
++static int __init bf5xx_ad1836_init(void)
++{
++	int ret;
++
++	bfxx_ad1836_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!bfxx_ad1836_snd_device)
++		return -ENOMEM;
++
++	platform_set_drvdata(bfxx_ad1836_snd_device, &bf5xx_ad1836_snd_devdata);
++	bf5xx_ad1836_snd_devdata.dev = &bfxx_ad1836_snd_device->dev;
++	ret = platform_device_add(bfxx_ad1836_snd_device);
++
++	if (ret)
++		platform_device_put(bfxx_ad1836_snd_device);
++
++	return ret;
++}
++
++static void __exit bf5xx_ad1836_exit(void)
++{
++	platform_device_unregister(bfxx_ad1836_snd_device);
++}
++
++module_init(bf5xx_ad1836_init);
++module_exit(bf5xx_ad1836_exit);
++
++/* Module information */
++MODULE_AUTHOR("Barry Song");
++MODULE_DESCRIPTION("ALSA SoC AD1836 board driver");
++MODULE_LICENSE("GPL");
++
 -- 
 1.5.6.3
