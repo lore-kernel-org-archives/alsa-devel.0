@@ -1,19 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] new ad1836 codec driver based on asoc
-Date: Wed, 12 Aug 2009 14:46:45 +0100
-Message-ID: <20090812134645.GC11898@rakim.wolfsonmicro.main>
-References: <1250051574-25119-1-git-send-email-21cnbao@gmail.com>
-	<1250051574-25119-2-git-send-email-21cnbao@gmail.com>
+From: =?utf-8?q?Ozan=20=C3=87a=C4=9Flayan?= <ozan@pardus.org.tr>
+Subject: [PATCH] alsa-info: Use sysfs if available instead of
+	dmidecode
+Date: Wed, 12 Aug 2009 16:51:41 +0300
+Message-ID: <1250085101-16113-1-git-send-email-ozan@pardus.org.tr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 571452446C
+Received: from lider.pardus.org.tr (lider.uludag.org.tr [193.140.100.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 327B32449E
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 Aug 2009 15:46:46 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1250051574-25119-2-git-send-email-21cnbao@gmail.com>
+	Wed, 12 Aug 2009 15:48:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,75 +20,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 12, 2009 at 12:32:52PM +0800, Barry Song wrote:
-> There has been  an ad1836 driver in sound/blackfin based on traditional alsa.
-> The new driver is based on asoc. The architecture of ad1836 codec driver
-> is very much like ad1938.
-
-This is mostly good, a few relatively minor issues though.
-
-> +	SOC_DOUBLE_R("DAC3  Volume", AD1836_DAC_L3_VOL,
-> +			AD1836_DAC_R3_VOL, 0, 0x3FF, 0),
-
-You've got an extra space in the volume control names which I'd expect
-to confuse user space.
-
-> +       { "DAC1OUT", "DAC1 Switch", "DAC" },
-> +       { "DAC2OUT", "DAC2 Switch", "DAC" },
-
-I'm surprised this works since the switches weren't declared as DAPM
-controls but if the core supports it that's OK.
-
-> +static int ad1836_set_tdm_slot(struct snd_soc_dai *dai,
-> +		unsigned int mask, int slots)
-> +{
-
-This needs updating for the new set_tdm_slot() API but given that
-there's only one possible configuration I'd suggest just removing it -
-the function does nothing other than check its arguments.
-
-> +	reg = codec->read(codec, AD1836_DAC_CTRL1);
-> +	reg = (reg & (~AD1836_DAC_WORD_LEN_MASK)) | word_len;
-> +	codec->write(codec, AD1836_DAC_CTRL1, reg);
-
-Not essential but snd_soc_update_bits() does the read/modify/write cycle
-for you.
-
-> +static struct spi_driver ad1836_spi_driver = {
-> +	.driver = {
-> +		.name	= "ad1836-spi",
-
-Just "ad1836" - the fact that it's controlled via SPI is clear from the
-fact that this is a struct spi_driver.
-
-> +	ret = snd_soc_register_codec(codec);
-> +	if (ret != 0) {
-> +		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = snd_soc_register_dai(&ad1836_dai);
-> +	if (ret != 0) {
-> +		dev_err(codec->dev, "Failed to register DAI: %d\n", ret);
-> +		snd_soc_unregister_codec(codec);
-> +		return ret;
-> +	}
-
-Should also be freeing the private data structure on error.
-
-> +struct snd_soc_codec_device soc_codec_dev_ad1836 = {
-> +	.probe = 	ad1836_probe,
-> +	.remove = 	ad1836_remove,
-> +	/* The power management of ad1836 is very simple. There are
-> +	 * only adc&dac 2 components to control. Dapm handles them.
-> +	 */
-> +	.suspend =      NULL,
-> +	.resume =       NULL,
-
-The power control will be handled by DAPM but your driver still needs to
-restore things like the volume settings - when the driver is powered off
-the register settings will be forgotten.
+VXNpbmcgc3lzZnMgZm9yIGFjcXVpcmluZyBETUkgZGF0YSByZXF1aXJlcyBubyByb290IHByaXZp
+bGVnZXMuIFVzZQppdCBpZiBhdmFpbGFibGUgaW5zdGVhZCBvZiBkbWlkZWNvZGUuCgpTaWduZWQt
+b2ZmLWJ5OiBPemFuIMOHYcSfbGF5YW4gPG96YW5AcGFyZHVzLm9yZy50cj4KLS0tCiB1dGlscy9h
+bHNhLWluZm8uc2ggfCAgICA3ICsrKysrKy0KIDEgZmlsZXMgY2hhbmdlZCwgNiBpbnNlcnRpb25z
+KCspLCAxIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3V0aWxzL2Fsc2EtaW5mby5zaCBiL3V0
+aWxzL2Fsc2EtaW5mby5zaAppbmRleCAwYWIxZGRmLi44ZjQwMWMwIDEwMDc1NQotLS0gYS91dGls
+cy9hbHNhLWluZm8uc2gKKysrIGIvdXRpbHMvYWxzYS1pbmZvLnNoCkBAIC00MTcsNyArNDE3LDEy
+IEBAIEFSVFNJTlNUPSQod2hpY2ggYXJ0c2QgMj4vZGV2L251bGx8IHNlZCAnc3xeW14vXSp8fCcg
+Mj4vZGV2L251bGwpCiBKQUNLSU5TVD0kKHdoaWNoIGphY2tkIDI+L2Rldi9udWxsfCBzZWQgJ3N8
+XlteL10qfHwnIDI+L2Rldi9udWxsKQogRE1JREVDT0RFPSQod2hpY2ggZG1pZGVjb2RlIDI+L2Rl
+di9udWxsfCBzZWQgJ3N8XlteL10qfHwnIDI+L2Rldi9udWxsKQogCi1pZiBbIC14ICRETUlERUNP
+REUgXTsgdGhlbgorI0NoZWNrIGZvciBETUkgZGF0YQoraWYgWyAtZCAvc3lzL2NsYXNzL2RtaS9p
+ZCBdOyB0aGVuCisgICAgIyBObyByb290IHByaXZpbGVnZXMgYXJlIHJlcXVpcmVkIHdoZW4gdXNp
+bmcgc3lzZnMgbWV0aG9kCisgICAgRE1JX1NZU1RFTV9NQU5VRkFDVFVSRVI9JChjYXQgL3N5cy9j
+bGFzcy9kbWkvaWQvc3lzX3ZlbmRvciAyPi9kZXYvbnVsbCkKKyAgICBETUlfU1lTVEVNX1BST0RV
+Q1RfTkFNRT0kKGNhdCAvc3lzL2NsYXNzL2RtaS9pZC9wcm9kdWN0X25hbWUgMj4vZGV2L251bGwp
+CitlbGlmIFsgLXggJERNSURFQ09ERSBdOyB0aGVuCiAgICAgRE1JX1NZU1RFTV9NQU5VRkFDVFVS
+RVI9JCgkRE1JREVDT0RFIC1zIHN5c3RlbS1tYW51ZmFjdHVyZXIgMj4vZGV2L251bGwpCiAgICAg
+RE1JX1NZU1RFTV9QUk9EVUNUX05BTUU9JCgkRE1JREVDT0RFIC1zIHN5c3RlbS1wcm9kdWN0LW5h
+bWUgMj4vZGV2L251bGwpCiBmaQotLSAKMS42LjMuNAoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
