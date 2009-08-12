@@ -1,16 +1,18 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: [RFC][PATCH] ARM: OMAP: McBSP: Use register cache
-Date: Wed, 12 Aug 2009 12:39:25 +0200
-Message-ID: <200908121239.26346.jkrzyszt@tis.icnet.pl>
+From: Tim Blechmann <tim@klingt.org>
+Subject: [PATCH] alsa: hdsp - allow proc reporting with
+	disconnected io box
+Date: Wed, 12 Aug 2009 13:00:13 +0200
+Message-ID: <4A82A0BD.9060700@klingt.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3652562198187085032=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6460924EE5
+Received: from klingt.org (mail.klingt.org [86.59.21.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8508C24150
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 Aug 2009 12:40:47 +0200 (CEST)
-Content-Disposition: inline
+	Wed, 12 Aug 2009 13:00:21 +0200 (CEST)
+Received: from [192.168.178.3] (localhost [127.0.0.1]) (authenticated bits=0)
+	by klingt.org (8.14.3/8.14.3/Debian-9) with ESMTP id n7CB0Hpg010772
+	for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2009 13:00:19 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,332 +22,153 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tony Lindgren <tony@atomide.com>, Jarkko Nikula <jhnikula@gmail.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.arm.linux.org.uk" <linux-arm-kernel@lists.arm.linux.org.uk>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Change the way McBSP registers are updated: use cached values instead of
-relying upon those read back from the device.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============3652562198187085032==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig247C1F1870B6D84FE0F0F416"
 
-With this patch, I have finally managed to get rid of all random
-playback/recording hangups on my OMAP1510 based Amstrad Delta (buggy?)
-hardware. Before that, I could suspect that values read back from McBSP
-registers before updating them happened to be errornous.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig247C1F1870B6D84FE0F0F416
+Content-Type: multipart/mixed;
+ boundary="------------060501040203040607080504"
 
-I think there is one important point that makes this patch worth of applying,
-apart from my hardware quality. With the current code, if it ever happens to
-any machine, no matter if OMAP1510 or newer, to read incorrect value from a
-McBSP register, this wrong value will get written back without any checking.
-That can lead to hardware damage if, for example, an input pin is turned into
-output as a result.
+This is a multi-part message in MIME format.
+--------------060501040203040607080504
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Created against linux-2.6.31-rc5
 
-Tested on Amstrad Delta
+the hdsp driver refuses to report any information via the proc
+interface, if the io box is not connected. with this patch, the
+content of the control and status registers is printed before the
+iobox check.
 
-Signed-off-by: Janusz Krzysztofik
-
+Signed-off-by: Tim Blechmann <tim@klingt.org>
 ---
---- linux-2.6.31-rc5/arch/arm/plat-omap/include/mach/mcbsp.h.orig	2009-08-11 23:43:25.000000000 +0200
-+++ linux-2.6.31-rc5/arch/arm/plat-omap/include/mach/mcbsp.h	2009-08-11 23:45:46.000000000 +0200
-@@ -377,6 +377,8 @@ struct omap_mcbsp {
- 	struct omap_mcbsp_platform_data *pdata;
- 	struct clk *iclk;
- 	struct clk *fclk;
-+
-+	struct omap_mcbsp_reg_cfg reg_cache;
- };
- extern struct omap_mcbsp **mcbsp_ptr;
- extern int omap_mcbsp_count;
---- linux-2.6.31-rc5/arch/arm/plat-omap/mcbsp.c.orig	2009-08-11 23:43:25.000000000 +0200
-+++ linux-2.6.31-rc5/arch/arm/plat-omap/mcbsp.c	2009-08-11 23:45:35.000000000 +0200
-@@ -91,6 +91,7 @@ static void omap_mcbsp_dump_reg(u8 id)
- static irqreturn_t omap_mcbsp_tx_irq_handler(int irq, void *dev_id)
- {
- 	struct omap_mcbsp *mcbsp_tx = dev_id;
-+	struct omap_mcbsp_reg_cfg *reg_cache = &mcbsp_tx->reg_cache;
- 	u16 irqst_spcr2;
- 
- 	irqst_spcr2 = OMAP_MCBSP_READ(mcbsp_tx->io_base, SPCR2);
-@@ -101,7 +102,7 @@ static irqreturn_t omap_mcbsp_tx_irq_han
- 			irqst_spcr2);
- 		/* Writing zero to XSYNC_ERR clears the IRQ */
- 		OMAP_MCBSP_WRITE(mcbsp_tx->io_base, SPCR2,
--			irqst_spcr2 & ~(XSYNC_ERR));
-+			reg_cache->spcr2 &= ~(XSYNC_ERR));
- 	} else {
- 		complete(&mcbsp_tx->tx_irq_completion);
- 	}
-@@ -112,6 +113,7 @@ static irqreturn_t omap_mcbsp_tx_irq_han
- static irqreturn_t omap_mcbsp_rx_irq_handler(int irq, void *dev_id)
- {
- 	struct omap_mcbsp *mcbsp_rx = dev_id;
-+	struct omap_mcbsp_reg_cfg *reg_cache = &mcbsp_rx->reg_cache;
- 	u16 irqst_spcr1;
- 
- 	irqst_spcr1 = OMAP_MCBSP_READ(mcbsp_rx->io_base, SPCR1);
-@@ -122,7 +124,7 @@ static irqreturn_t omap_mcbsp_rx_irq_han
- 			irqst_spcr1);
- 		/* Writing zero to RSYNC_ERR clears the IRQ */
- 		OMAP_MCBSP_WRITE(mcbsp_rx->io_base, SPCR1,
--			irqst_spcr1 & ~(RSYNC_ERR));
-+			reg_cache->spcr1 &= ~(RSYNC_ERR));
- 	} else {
- 		complete(&mcbsp_rx->tx_irq_completion);
- 	}
-@@ -167,6 +169,7 @@ static void omap_mcbsp_rx_dma_callback(i
- void omap_mcbsp_config(unsigned int id, const struct omap_mcbsp_reg_cfg *config)
- {
- 	struct omap_mcbsp *mcbsp;
-+	struct omap_mcbsp_reg_cfg *reg_cache;
- 	void __iomem *io_base;
- 
- 	if (!omap_mcbsp_check_valid_id(id)) {
-@@ -174,26 +177,27 @@ void omap_mcbsp_config(unsigned int id, 
+ sound/pci/rme9652/hdsp.c |   37 ++++++++++++++++++++-----------------
+ 1 files changed, 20 insertions(+), 17 deletions(-)
+
+--------------060501040203040607080504
+Content-Type: text/x-patch;
+ name="0001-alsa-hdsp-allow-proc-reporting-with-disconnected-io-.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename*0="0001-alsa-hdsp-allow-proc-reporting-with-disconnected-io-.pa";
+ filename*1="tch"
+
+diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
+index 3362065..e5b77b8 100644
+--- a/sound/pci/rme9652/hdsp.c
++++ b/sound/pci/rme9652/hdsp.c
+@@ -3357,17 +3357,33 @@ snd_hdsp_proc_read(struct snd_info_entry *entry, =
+struct snd_info_buffer *buffer)
+ 	char *clock_source;
+ 	int x;
+=20
++	status =3D hdsp_read(hdsp, HDSP_statusRegister);
++	status2 =3D hdsp_read(hdsp, HDSP_status2Register);
+=20
++	snd_iprintf(buffer, "%s (Card #%d)\n", hdsp->card_name,
++		    hdsp->card->number + 1);
++	snd_iprintf(buffer, "Buffers: capture %p playback %p\n",
++		    hdsp->capture_buffer, hdsp->playback_buffer);
++	snd_iprintf(buffer, "IRQ: %d Registers bus: 0x%lx VM: 0x%lx\n",
++		    hdsp->irq, hdsp->port, (unsigned long)hdsp->iobase);
++	snd_iprintf(buffer, "Control register: 0x%x\n", hdsp->control_register)=
+;
++	snd_iprintf(buffer, "Control2 register: 0x%x\n",
++		    hdsp->control2_register);
++	snd_iprintf(buffer, "Status register: 0x%x\n", status);
++	snd_iprintf(buffer, "Status2 register: 0x%x\n", status2);
+=20
+-	if (hdsp_check_for_iobox (hdsp)) {
+-		snd_iprintf(buffer, "No I/O box connected.\nPlease connect one and upl=
+oad firmware.\n");
++	if (hdsp_check_for_iobox(hdsp)) {
++		snd_iprintf(buffer, "No I/O box connected.\n"
++			    "Please connect one and upload firmware.\n");
  		return;
+-        }
++	}
+=20
+ 	if (hdsp_check_for_firmware(hdsp, 0)) {
+ 		if (hdsp->state & HDSP_FirmwareCached) {
+ 			if (snd_hdsp_load_firmware_from_cache(hdsp) !=3D 0) {
+-				snd_iprintf(buffer, "Firmware loading from cache failed, please uplo=
+ad manually.\n");
++				snd_iprintf(buffer, "Firmware loading from "
++					    "cache failed, "
++					    "please upload manually.\n");
+ 				return;
+ 			}
+ 		} else {
+@@ -3384,18 +3400,6 @@ snd_hdsp_proc_read(struct snd_info_entry *entry, s=
+truct snd_info_buffer *buffer)
+ 		}
  	}
- 	mcbsp = id_to_mcbsp_ptr(id);
-+	reg_cache = &mcbsp->reg_cache;
- 
- 	io_base = mcbsp->io_base;
- 	dev_dbg(mcbsp->dev, "Configuring McBSP%d  phys_base: 0x%08lx\n",
- 			mcbsp->id, mcbsp->phys_base);
- 
- 	/* We write the given config */
--	OMAP_MCBSP_WRITE(io_base, SPCR2, config->spcr2);
--	OMAP_MCBSP_WRITE(io_base, SPCR1, config->spcr1);
--	OMAP_MCBSP_WRITE(io_base, RCR2, config->rcr2);
--	OMAP_MCBSP_WRITE(io_base, RCR1, config->rcr1);
--	OMAP_MCBSP_WRITE(io_base, XCR2, config->xcr2);
--	OMAP_MCBSP_WRITE(io_base, XCR1, config->xcr1);
--	OMAP_MCBSP_WRITE(io_base, SRGR2, config->srgr2);
--	OMAP_MCBSP_WRITE(io_base, SRGR1, config->srgr1);
--	OMAP_MCBSP_WRITE(io_base, MCR2, config->mcr2);
--	OMAP_MCBSP_WRITE(io_base, MCR1, config->mcr1);
--	OMAP_MCBSP_WRITE(io_base, PCR0, config->pcr0);
-+	OMAP_MCBSP_WRITE(io_base, SPCR2, reg_cache->spcr2 = config->spcr2);
-+	OMAP_MCBSP_WRITE(io_base, SPCR1, reg_cache->spcr1 = config->spcr1);
-+	OMAP_MCBSP_WRITE(io_base, RCR2, reg_cache->rcr2 = config->rcr2);
-+	OMAP_MCBSP_WRITE(io_base, RCR1, reg_cache->rcr1 = config->rcr1);
-+	OMAP_MCBSP_WRITE(io_base, XCR2, reg_cache->xcr2 = config->xcr2);
-+	OMAP_MCBSP_WRITE(io_base, XCR1, reg_cache->xcr1 = config->xcr1);
-+	OMAP_MCBSP_WRITE(io_base, SRGR2, reg_cache->srgr2 = config->srgr2);
-+	OMAP_MCBSP_WRITE(io_base, SRGR1, reg_cache->srgr1 = config->srgr1);
-+	OMAP_MCBSP_WRITE(io_base, MCR2, reg_cache->mcr2 = config->mcr2);
-+	OMAP_MCBSP_WRITE(io_base, MCR1, reg_cache->mcr1 = config->mcr1);
-+	OMAP_MCBSP_WRITE(io_base, PCR0, reg_cache->pcr0 = config->pcr0);
- 	if (cpu_is_omap2430() || cpu_is_omap34xx()) {
--		OMAP_MCBSP_WRITE(io_base, XCCR, config->xccr);
--		OMAP_MCBSP_WRITE(io_base, RCCR, config->rccr);
-+		OMAP_MCBSP_WRITE(io_base, XCCR, reg_cache->xccr = config->xccr);
-+		OMAP_MCBSP_WRITE(io_base, RCCR, reg_cache->rccr = config->rccr);
- 	}
- }
- EXPORT_SYMBOL(omap_mcbsp_config);
-@@ -232,6 +236,7 @@ EXPORT_SYMBOL(omap_mcbsp_set_io_type);
- int omap_mcbsp_request(unsigned int id)
- {
- 	struct omap_mcbsp *mcbsp;
-+	struct omap_mcbsp_reg_cfg *reg_cache;
- 	int err;
- 
- 	if (!omap_mcbsp_check_valid_id(id)) {
-@@ -239,6 +244,7 @@ int omap_mcbsp_request(unsigned int id)
- 		return -ENODEV;
- 	}
- 	mcbsp = id_to_mcbsp_ptr(id);
-+	reg_cache = &mcbsp->reg_cache;
- 
- 	spin_lock(&mcbsp->lock);
- 	if (!mcbsp->free) {
-@@ -261,8 +267,8 @@ int omap_mcbsp_request(unsigned int id)
- 	 * Make sure that transmitter, receiver and sample-rate generator are
- 	 * not running before activating IRQs.
- 	 */
--	OMAP_MCBSP_WRITE(mcbsp->io_base, SPCR1, 0);
--	OMAP_MCBSP_WRITE(mcbsp->io_base, SPCR2, 0);
-+	OMAP_MCBSP_WRITE(mcbsp->io_base, SPCR1, reg_cache->spcr1 = 0);
-+	OMAP_MCBSP_WRITE(mcbsp->io_base, SPCR2, reg_cache->spcr2 = 0);
- 
- 	if (mcbsp->io_type == OMAP_MCBSP_IRQ_IO) {
- 		/* We need to get IRQs here */
-@@ -335,42 +341,38 @@ EXPORT_SYMBOL(omap_mcbsp_free);
- void omap_mcbsp_start(unsigned int id, int tx, int rx)
- {
- 	struct omap_mcbsp *mcbsp;
-+	struct omap_mcbsp_reg_cfg *reg_cache;
- 	void __iomem *io_base;
- 	int idle;
--	u16 w;
- 
- 	if (!omap_mcbsp_check_valid_id(id)) {
- 		printk(KERN_ERR "%s: Invalid id (%d)\n", __func__, id + 1);
- 		return;
- 	}
- 	mcbsp = id_to_mcbsp_ptr(id);
-+	reg_cache = &mcbsp->reg_cache;
- 	io_base = mcbsp->io_base;
- 
--	mcbsp->rx_word_length = (OMAP_MCBSP_READ(io_base, RCR1) >> 5) & 0x7;
--	mcbsp->tx_word_length = (OMAP_MCBSP_READ(io_base, XCR1) >> 5) & 0x7;
-+	mcbsp->rx_word_length = (reg_cache->rcr1 >> 5) & 0x7;
-+	mcbsp->tx_word_length = (reg_cache->xcr1 >> 5) & 0x7;
- 
--	idle = !((OMAP_MCBSP_READ(io_base, SPCR2) |
--		OMAP_MCBSP_READ(io_base, SPCR1)) & 1);
-+	idle = !((reg_cache->spcr2 | reg_cache->spcr1) & 1);
- 
- 	if (idle) {
- 		/* Start the sample generator */
--		w = OMAP_MCBSP_READ(io_base, SPCR2);
--		OMAP_MCBSP_WRITE(io_base, SPCR2, w | (1 << 6));
-+		OMAP_MCBSP_WRITE(io_base, SPCR2, reg_cache->spcr2 |= (1 << 6));
- 	}
- 
- 	/* Enable transmitter and receiver */
--	w = OMAP_MCBSP_READ(io_base, SPCR2);
--	OMAP_MCBSP_WRITE(io_base, SPCR2, w | (tx & 1));
-+	OMAP_MCBSP_WRITE(io_base, SPCR2, reg_cache->spcr2 |= (tx & 1));
- 
--	w = OMAP_MCBSP_READ(io_base, SPCR1);
--	OMAP_MCBSP_WRITE(io_base, SPCR1, w | (rx & 1));
-+	OMAP_MCBSP_WRITE(io_base, SPCR1, reg_cache->spcr1 |= (rx & 1));
- 
- 	udelay(100);
- 
- 	if (idle) {
- 		/* Start frame sync */
--		w = OMAP_MCBSP_READ(io_base, SPCR2);
--		OMAP_MCBSP_WRITE(io_base, SPCR2, w | (1 << 7));
-+		OMAP_MCBSP_WRITE(io_base, SPCR2, reg_cache->spcr2 |= (1 << 7));
- 	}
- 
- 	/* Dump McBSP Regs */
-@@ -381,9 +383,9 @@ EXPORT_SYMBOL(omap_mcbsp_start);
- void omap_mcbsp_stop(unsigned int id, int tx, int rx)
- {
- 	struct omap_mcbsp *mcbsp;
-+	struct omap_mcbsp_reg_cfg *reg_cache;
- 	void __iomem *io_base;
- 	int idle;
--	u16 w;
- 
- 	if (!omap_mcbsp_check_valid_id(id)) {
- 		printk(KERN_ERR "%s: Invalid id (%d)\n", __func__, id + 1);
-@@ -391,23 +393,20 @@ void omap_mcbsp_stop(unsigned int id, in
- 	}
- 
- 	mcbsp = id_to_mcbsp_ptr(id);
-+	reg_cache = &mcbsp->reg_cache;
- 	io_base = mcbsp->io_base;
- 
- 	/* Reset transmitter */
--	w = OMAP_MCBSP_READ(io_base, SPCR2);
--	OMAP_MCBSP_WRITE(io_base, SPCR2, w & ~(tx & 1));
-+	OMAP_MCBSP_WRITE(io_base, SPCR2, reg_cache->spcr2 &= ~(tx & 1));
- 
- 	/* Reset receiver */
--	w = OMAP_MCBSP_READ(io_base, SPCR1);
--	OMAP_MCBSP_WRITE(io_base, SPCR1, w & ~(rx & 1));
-+	OMAP_MCBSP_WRITE(io_base, SPCR1, reg_cache->spcr1 &= ~(rx & 1));
- 
--	idle = !((OMAP_MCBSP_READ(io_base, SPCR2) |
--		OMAP_MCBSP_READ(io_base, SPCR1)) & 1);
-+	idle = !((reg_cache->spcr2 | reg_cache->spcr1) & 1);
- 
- 	if (idle) {
- 		/* Reset the sample rate generator */
--		w = OMAP_MCBSP_READ(io_base, SPCR2);
--		OMAP_MCBSP_WRITE(io_base, SPCR2, w & ~(1 << 6));
-+		OMAP_MCBSP_WRITE(io_base, SPCR2, reg_cache->spcr2 &= ~(1 << 6));
- 	}
- }
- EXPORT_SYMBOL(omap_mcbsp_stop);
-@@ -557,6 +556,7 @@ EXPORT_SYMBOL(omap_mcbsp_recv_word);
- int omap_mcbsp_spi_master_xmit_word_poll(unsigned int id, u32 word)
- {
- 	struct omap_mcbsp *mcbsp;
-+	struct omap_mcbsp_reg_cfg *reg_cache;
- 	void __iomem *io_base;
- 	omap_mcbsp_word_length tx_word_length;
- 	omap_mcbsp_word_length rx_word_length;
-@@ -567,6 +567,7 @@ int omap_mcbsp_spi_master_xmit_word_poll
- 		return -ENODEV;
- 	}
- 	mcbsp = id_to_mcbsp_ptr(id);
-+	reg_cache = &mcbsp->reg_cache;
- 	io_base = mcbsp->io_base;
- 	tx_word_length = mcbsp->tx_word_length;
- 	rx_word_length = mcbsp->rx_word_length;
-@@ -580,9 +581,11 @@ int omap_mcbsp_spi_master_xmit_word_poll
- 		spcr2 = OMAP_MCBSP_READ(io_base, SPCR2);
- 		if (attempts++ > 1000) {
- 			/* We must reset the transmitter */
--			OMAP_MCBSP_WRITE(io_base, SPCR2, spcr2 & (~XRST));
-+			OMAP_MCBSP_WRITE(io_base, SPCR2,
-+					reg_cache->spcr2 &= (~XRST));
- 			udelay(10);
--			OMAP_MCBSP_WRITE(io_base, SPCR2, spcr2 | XRST);
-+			OMAP_MCBSP_WRITE(io_base, SPCR2,
-+					reg_cache->spcr2 |= XRST);
- 			udelay(10);
- 			dev_err(mcbsp->dev, "McBSP%d transmitter not "
- 				"ready\n", mcbsp->id);
-@@ -601,9 +604,11 @@ int omap_mcbsp_spi_master_xmit_word_poll
- 		spcr1 = OMAP_MCBSP_READ(io_base, SPCR1);
- 		if (attempts++ > 1000) {
- 			/* We must reset the receiver */
--			OMAP_MCBSP_WRITE(io_base, SPCR1, spcr1 & (~RRST));
-+			OMAP_MCBSP_WRITE(io_base, SPCR1,
-+					reg_cache->spcr1 &= (~RRST));
- 			udelay(10);
--			OMAP_MCBSP_WRITE(io_base, SPCR1, spcr1 | RRST);
-+			OMAP_MCBSP_WRITE(io_base, SPCR1,
-+					reg_cache->spcr1 |= RRST);
- 			udelay(10);
- 			dev_err(mcbsp->dev, "McBSP%d receiver not "
- 				"ready\n", mcbsp->id);
-@@ -623,6 +628,7 @@ EXPORT_SYMBOL(omap_mcbsp_spi_master_xmit
- int omap_mcbsp_spi_master_recv_word_poll(unsigned int id, u32 *word)
- {
- 	struct omap_mcbsp *mcbsp;
-+	struct omap_mcbsp_reg_cfg *reg_cache;
- 	u32 clock_word = 0;
- 	void __iomem *io_base;
- 	omap_mcbsp_word_length tx_word_length;
-@@ -635,6 +641,7 @@ int omap_mcbsp_spi_master_recv_word_poll
- 	}
- 
- 	mcbsp = id_to_mcbsp_ptr(id);
-+	reg_cache = &mcbsp->reg_cache;
- 	io_base = mcbsp->io_base;
- 
- 	tx_word_length = mcbsp->tx_word_length;
-@@ -649,9 +656,11 @@ int omap_mcbsp_spi_master_recv_word_poll
- 		spcr2 = OMAP_MCBSP_READ(io_base, SPCR2);
- 		if (attempts++ > 1000) {
- 			/* We must reset the transmitter */
--			OMAP_MCBSP_WRITE(io_base, SPCR2, spcr2 & (~XRST));
-+			OMAP_MCBSP_WRITE(io_base, SPCR2,
-+					reg_cache->spcr2 &= (~XRST));
- 			udelay(10);
--			OMAP_MCBSP_WRITE(io_base, SPCR2, spcr2 | XRST);
-+			OMAP_MCBSP_WRITE(io_base, SPCR2,
-+					reg_cache->spcr2 |= XRST);
- 			udelay(10);
- 			dev_err(mcbsp->dev, "McBSP%d transmitter not "
- 				"ready\n", mcbsp->id);
-@@ -670,9 +679,11 @@ int omap_mcbsp_spi_master_recv_word_poll
- 		spcr1 = OMAP_MCBSP_READ(io_base, SPCR1);
- 		if (attempts++ > 1000) {
- 			/* We must reset the receiver */
--			OMAP_MCBSP_WRITE(io_base, SPCR1, spcr1 & (~RRST));
-+			OMAP_MCBSP_WRITE(io_base, SPCR1,
-+					reg_cache->spcr1 &= (~RRST));
- 			udelay(10);
--			OMAP_MCBSP_WRITE(io_base, SPCR1, spcr1 | RRST);
-+			OMAP_MCBSP_WRITE(io_base, SPCR1,
-+					reg_cache->spcr1 |= RRST);
- 			udelay(10);
- 			dev_err(mcbsp->dev, "McBSP%d receiver not "
- 				"ready\n", mcbsp->id);
+=20
+-	status =3D hdsp_read(hdsp, HDSP_statusRegister);
+-	status2 =3D hdsp_read(hdsp, HDSP_status2Register);
+-
+-	snd_iprintf(buffer, "%s (Card #%d)\n", hdsp->card_name, hdsp->card->num=
+ber + 1);
+-	snd_iprintf(buffer, "Buffers: capture %p playback %p\n",
+-		    hdsp->capture_buffer, hdsp->playback_buffer);
+-	snd_iprintf(buffer, "IRQ: %d Registers bus: 0x%lx VM: 0x%lx\n",
+-		    hdsp->irq, hdsp->port, (unsigned long)hdsp->iobase);
+-	snd_iprintf(buffer, "Control register: 0x%x\n", hdsp->control_register)=
+;
+-	snd_iprintf(buffer, "Control2 register: 0x%x\n", hdsp->control2_registe=
+r);
+-	snd_iprintf(buffer, "Status register: 0x%x\n", status);
+-	snd_iprintf(buffer, "Status2 register: 0x%x\n", status2);
+ 	snd_iprintf(buffer, "FIFO status: %d\n", hdsp_read(hdsp, HDSP_fifoStatu=
+s) & 0xff);
+ 	snd_iprintf(buffer, "MIDI1 Output status: 0x%x\n", hdsp_read(hdsp, HDSP=
+_midiStatusOut0));
+ 	snd_iprintf(buffer, "MIDI1 Input status: 0x%x\n", hdsp_read(hdsp, HDSP_=
+midiStatusIn0));
+@@ -3416,7 +3420,6 @@ snd_hdsp_proc_read(struct snd_info_entry *entry, st=
+ruct snd_info_buffer *buffer)
+=20
+ 	snd_iprintf(buffer, "\n");
+=20
+-
+ 	switch (hdsp_clock_source(hdsp)) {
+ 	case HDSP_CLOCK_SOURCE_AUTOSYNC:
+ 		clock_source =3D "AutoSync";
+
+
+--------------060501040203040607080504--
+
+--------------enig247C1F1870B6D84FE0F0F416
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkqCoL0ACgkQdL+4qsZfVsuLxACfb0F/rolmVuDSfCqjkQpZNBBx
+oi8An3vlgIUG1QnyyxT/YribDDsOA7HS
+=oKLn
+-----END PGP SIGNATURE-----
+
+--------------enig247C1F1870B6D84FE0F0F416--
+
+--===============3652562198187085032==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3652562198187085032==--
