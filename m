@@ -1,21 +1,18 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv3 08/20] OMAP: McBSP: Add link DMA mode
-	selection
-Date: Thu, 13 Aug 2009 17:35:21 +0300
-Message-ID: <1250174133-451-9-git-send-email-eduardo.valentin__45337.3658041984$1250175154$gmane$org@nokia.com>
+Subject: [PATCHv3 05/20] OMAP: McBSP: Create and export
+	max_(r|t)x_thres property
+Date: Thu, 13 Aug 2009 17:35:18 +0300
+Message-ID: <1250174133-451-6-git-send-email-eduardo.valentin__10163.6541229256$1250175164$gmane$org@nokia.com>
 References: <1250174133-451-1-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-2-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-3-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-4-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-5-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-6-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-7-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-8-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1250174133-451-8-git-send-email-eduardo.valentin@nokia.com>
+In-Reply-To: <1250174133-451-5-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,175 +26,257 @@ To: alsa-devel@alsa-project.org
 Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+This patch export through sysfs two properties to configure
+maximum threshold for transmission and reception on each
+mcbsp instance. Also, it exports two helper functions to
+allow mcbsp users to read this values.
 
-It adds a new sysfs file, where the user can configure the mcbsp mode to use.
-If the mcbsp channel is in use, it does not allow the change.
-Than in omap_pcm_open we can call the omap_mcbsp_get_opmode to get the mode,
-store it, than use it to implement the different modes.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
 ---
- arch/arm/plat-omap/include/mach/mcbsp.h |    8 +++
- arch/arm/plat-omap/mcbsp.c              |   84 +++++++++++++++++++++++++++++++
- 2 files changed, 92 insertions(+), 0 deletions(-)
+ arch/arm/mach-omap2/mcbsp.c             |    5 +
+ arch/arm/plat-omap/include/mach/mcbsp.h |   11 +++
+ arch/arm/plat-omap/mcbsp.c              |  122 +++++++++++++++++++++++++++++++
+ 3 files changed, 138 insertions(+), 0 deletions(-)
 
+diff --git a/arch/arm/mach-omap2/mcbsp.c b/arch/arm/mach-omap2/mcbsp.c
+index a5c0f04..f837114 100644
+--- a/arch/arm/mach-omap2/mcbsp.c
++++ b/arch/arm/mach-omap2/mcbsp.c
+@@ -129,6 +129,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+ 		.rx_irq		= INT_24XX_MCBSP1_IRQ_RX,
+ 		.tx_irq		= INT_24XX_MCBSP1_IRQ_TX,
+ 		.ops		= &omap2_mcbsp_ops,
++		.buffer_size	= 0x7F,
+ 	},
+ 	{
+ 		.phys_base	= OMAP34XX_MCBSP2_BASE,
+@@ -137,6 +138,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+ 		.rx_irq		= INT_24XX_MCBSP2_IRQ_RX,
+ 		.tx_irq		= INT_24XX_MCBSP2_IRQ_TX,
+ 		.ops		= &omap2_mcbsp_ops,
++		.buffer_size	= 0x3FF,
+ 	},
+ 	{
+ 		.phys_base	= OMAP34XX_MCBSP3_BASE,
+@@ -145,6 +147,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+ 		.rx_irq		= INT_24XX_MCBSP3_IRQ_RX,
+ 		.tx_irq		= INT_24XX_MCBSP3_IRQ_TX,
+ 		.ops		= &omap2_mcbsp_ops,
++		.buffer_size	= 0x7F,
+ 	},
+ 	{
+ 		.phys_base	= OMAP34XX_MCBSP4_BASE,
+@@ -153,6 +156,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+ 		.rx_irq		= INT_24XX_MCBSP4_IRQ_RX,
+ 		.tx_irq		= INT_24XX_MCBSP4_IRQ_TX,
+ 		.ops		= &omap2_mcbsp_ops,
++		.buffer_size	= 0x7F,
+ 	},
+ 	{
+ 		.phys_base	= OMAP34XX_MCBSP5_BASE,
+@@ -161,6 +165,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+ 		.rx_irq		= INT_24XX_MCBSP5_IRQ_RX,
+ 		.tx_irq		= INT_24XX_MCBSP5_IRQ_TX,
+ 		.ops		= &omap2_mcbsp_ops,
++		.buffer_size	= 0x7F,
+ 	},
+ };
+ #define OMAP34XX_MCBSP_PDATA_SZ		ARRAY_SIZE(omap34xx_mcbsp_pdata)
 diff --git a/arch/arm/plat-omap/include/mach/mcbsp.h b/arch/arm/plat-omap/include/mach/mcbsp.h
-index 51a6655..9b2b03e 100644
+index c3dac63..51a6655 100644
 --- a/arch/arm/plat-omap/include/mach/mcbsp.h
 +++ b/arch/arm/plat-omap/include/mach/mcbsp.h
-@@ -255,6 +255,11 @@
- /********************** McBSP SYSCONFIG bit definitions ********************/
- #define SOFTRST			0x0002
+@@ -348,6 +348,9 @@ struct omap_mcbsp_platform_data {
+ 	u8 dma_rx_sync, dma_tx_sync;
+ 	u16 rx_irq, tx_irq;
+ 	struct omap_mcbsp_ops *ops;
++#ifdef CONFIG_ARCH_OMAP34XX
++	u16 buffer_size;
++#endif
+ };
  
-+/********************** McBSP DMA operating modes **************************/
-+#define MCBSP_DMA_MODE_ELEMENT		0
-+#define MCBSP_DMA_MODE_THRESHOLD	1
-+#define MCBSP_DMA_MODE_FRAME		2
-+
- /* we don't do multichannel for now */
- struct omap_mcbsp_reg_cfg {
- 	u16 spcr2;
-@@ -385,6 +390,7 @@ struct omap_mcbsp {
+ struct omap_mcbsp {
+@@ -381,6 +384,10 @@ struct omap_mcbsp {
+ 	struct omap_mcbsp_platform_data *pdata;
  	struct clk *iclk;
  	struct clk *fclk;
++#ifdef CONFIG_ARCH_OMAP34XX
++	u16 max_tx_thres;
++	u16 max_rx_thres;
++#endif
+ };
+ extern struct omap_mcbsp **mcbsp_ptr;
+ extern int omap_mcbsp_count;
+@@ -392,11 +399,15 @@ void omap_mcbsp_config(unsigned int id, const struct omap_mcbsp_reg_cfg * config
  #ifdef CONFIG_ARCH_OMAP34XX
-+	int dma_op_mode;
- 	u16 max_tx_thres;
- 	u16 max_rx_thres;
- #endif
-@@ -401,6 +407,7 @@ void omap_mcbsp_set_tx_threshold(unsigned int id, u16 threshold);
+ void omap_mcbsp_set_tx_threshold(unsigned int id, u16 threshold);
  void omap_mcbsp_set_rx_threshold(unsigned int id, u16 threshold);
- u16 omap_mcbsp_get_max_tx_threshold(unsigned int id);
- u16 omap_mcbsp_get_max_rx_threshold(unsigned int id);
-+int omap_mcbsp_get_dma_op_mode(unsigned int id);
++u16 omap_mcbsp_get_max_tx_threshold(unsigned int id);
++u16 omap_mcbsp_get_max_rx_threshold(unsigned int id);
  #else
  static inline void omap_mcbsp_set_tx_threshold(unsigned int id, u16 threshold)
  { }
-@@ -408,6 +415,7 @@ static inline void omap_mcbsp_set_rx_threshold(unsigned int id, u16 threshold)
+ static inline void omap_mcbsp_set_rx_threshold(unsigned int id, u16 threshold)
  { }
- static inline u16 omap_mcbsp_get_max_tx_threshold(unsigned int id) { return 0; }
- static inline u16 omap_mcbsp_get_max_rx_threshold(unsigned int id) { return 0; }
-+static inline int omap_mcbsp_get_dma_op_mode(unsigned int id) { return 0; }
++static inline u16 omap_mcbsp_get_max_tx_threshold(unsigned int id) { return 0; }
++static inline u16 omap_mcbsp_get_max_rx_threshold(unsigned int id) { return 0; }
  #endif
  int omap_mcbsp_request(unsigned int id);
  void omap_mcbsp_free(unsigned int id);
 diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-index 13e7ce3..6a4a621 100644
+index 4efc6d7..2c97051 100644
 --- a/arch/arm/plat-omap/mcbsp.c
 +++ b/arch/arm/plat-omap/mcbsp.c
-@@ -282,6 +282,29 @@ u16 omap_mcbsp_get_max_rx_threshold(unsigned int id)
- 	return mcbsp->max_rx_thres;
+@@ -246,6 +246,42 @@ void omap_mcbsp_set_rx_threshold(unsigned int id, u16 threshold)
+ 	OMAP_MCBSP_WRITE(io_base, THRSH1, threshold);
  }
- EXPORT_SYMBOL(omap_mcbsp_get_max_rx_threshold);
+ EXPORT_SYMBOL(omap_mcbsp_set_rx_threshold);
 +
 +/*
-+ * omap_mcbsp_get_dma_op_mode just return the current configured
-+ * operating mode for the mcbsp channel
++ * omap_mcbsp_get_max_tx_thres just return the current configured
++ * maximum threshold for transmission
 + */
-+int omap_mcbsp_get_dma_op_mode(unsigned int id)
++u16 omap_mcbsp_get_max_tx_threshold(unsigned int id)
 +{
 +	struct omap_mcbsp *mcbsp;
-+	int dma_op_mode;
 +
 +	if (!omap_mcbsp_check_valid_id(id)) {
-+		printk(KERN_ERR "%s: Invalid id (%u)\n", __func__, id + 1);
++		printk(KERN_ERR "%s: Invalid id (%d)\n", __func__, id + 1);
 +		return -ENODEV;
 +	}
 +	mcbsp = id_to_mcbsp_ptr(id);
 +
-+	spin_lock_irq(&mcbsp->lock);
-+	dma_op_mode = mcbsp->dma_op_mode;
-+	spin_unlock_irq(&mcbsp->lock);
-+
-+	return dma_op_mode;
++	return mcbsp->max_tx_thres;
 +}
-+EXPORT_SYMBOL(omap_mcbsp_get_dma_op_mode);
++EXPORT_SYMBOL(omap_mcbsp_get_max_tx_threshold);
++
++/*
++ * omap_mcbsp_get_max_rx_thres just return the current configured
++ * maximum threshold for reception
++ */
++u16 omap_mcbsp_get_max_rx_threshold(unsigned int id)
++{
++	struct omap_mcbsp *mcbsp;
++
++	if (!omap_mcbsp_check_valid_id(id)) {
++		printk(KERN_ERR "%s: Invalid id (%d)\n", __func__, id + 1);
++		return -ENODEV;
++	}
++	mcbsp = id_to_mcbsp_ptr(id);
++
++	return mcbsp->max_rx_thres;
++}
++EXPORT_SYMBOL(omap_mcbsp_get_max_rx_threshold);
  #endif
  
  /*
-@@ -1063,9 +1086,65 @@ static DEVICE_ATTR(prop, 0644, prop##_show, prop##_store);
- THRESHOLD_PROP_BUILDER(max_tx_thres);
- THRESHOLD_PROP_BUILDER(max_rx_thres);
+@@ -991,6 +1027,86 @@ void omap_mcbsp_set_spi_mode(unsigned int id,
+ }
+ EXPORT_SYMBOL(omap_mcbsp_set_spi_mode);
  
-+static ssize_t dma_op_mode_show(struct device *dev,
-+			struct device_attribute *attr, char *buf)
++#ifdef CONFIG_ARCH_OMAP34XX
++#define max_thres(m)			(mcbsp->pdata->buffer_size)
++#define valid_threshold(m, val)		((val) <= max_thres(m))
++#define THRESHOLD_PROP_BUILDER(prop)					\
++static ssize_t prop##_show(struct device *dev,				\
++			struct device_attribute *attr, char *buf)	\
++{									\
++	struct omap_mcbsp *mcbsp = dev_get_drvdata(dev);		\
++									\
++	return sprintf(buf, "%u\n", mcbsp->prop);			\
++}									\
++									\
++static ssize_t prop##_store(struct device *dev,				\
++				struct device_attribute *attr,		\
++				const char *buf, size_t size)		\
++{									\
++	struct omap_mcbsp *mcbsp = dev_get_drvdata(dev);		\
++	unsigned long val;						\
++	int status;							\
++									\
++	status = strict_strtoul(buf, 0, &val);				\
++	if (status)							\
++		return status;						\
++									\
++	if (!valid_threshold(mcbsp, val))				\
++		return -EDOM;						\
++									\
++	mcbsp->prop = val;						\
++	return size;							\
++}									\
++									\
++static DEVICE_ATTR(prop, 0644, prop##_show, prop##_store);
++
++THRESHOLD_PROP_BUILDER(max_tx_thres);
++THRESHOLD_PROP_BUILDER(max_rx_thres);
++
++static const struct attribute *threshold_attrs[] = {
++	&dev_attr_max_tx_thres.attr,
++	&dev_attr_max_rx_thres.attr,
++	NULL,
++};
++
++static const struct attribute_group threshold_attr_group = {
++	.attrs = (struct attribute **)threshold_attrs,
++};
++
++static inline int __devinit omap_thres_add(struct device *dev)
 +{
-+	struct omap_mcbsp *mcbsp = dev_get_drvdata(dev);
-+	int dma_op_mode;
-+
-+	spin_lock_irq(&mcbsp->lock);
-+	dma_op_mode = mcbsp->dma_op_mode;
-+	spin_unlock_irq(&mcbsp->lock);
-+
-+	return sprintf(buf, "current mode: %d\n"
-+			"possible mode values are:\n"
-+			"%d - %s\n"
-+			"%d - %s\n"
-+			"%d - %s\n",
-+			dma_op_mode,
-+			MCBSP_DMA_MODE_ELEMENT, "element mode",
-+			MCBSP_DMA_MODE_THRESHOLD, "threshold mode",
-+			MCBSP_DMA_MODE_FRAME, "frame mode");
++	return sysfs_create_group(&dev->kobj, &threshold_attr_group);
 +}
 +
-+static ssize_t dma_op_mode_store(struct device *dev,
-+				struct device_attribute *attr,
-+				const char *buf, size_t size)
++static inline void __devexit omap_thres_remove(struct device *dev)
 +{
-+	struct omap_mcbsp *mcbsp = dev_get_drvdata(dev);
-+	unsigned long val;
-+	int status;
-+
-+	status = strict_strtoul(buf, 0, &val);
-+	if (status)
-+		return status;
-+
-+	spin_lock_irq(&mcbsp->lock);
-+
-+	if (!mcbsp->free) {
-+		size = -EBUSY;
-+		goto unlock;
-+	}
-+
-+	if (val > MCBSP_DMA_MODE_FRAME || val < MCBSP_DMA_MODE_ELEMENT) {
-+		size = -EINVAL;
-+		goto unlock;
-+	}
-+
-+	mcbsp->dma_op_mode = val;
-+
-+unlock:
-+	spin_unlock_irq(&mcbsp->lock);
-+
-+	return size;
++	sysfs_remove_group(&dev->kobj, &threshold_attr_group);
 +}
 +
-+static DEVICE_ATTR(dma_op_mode, 0644, dma_op_mode_show, dma_op_mode_store);
++static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp)
++{
++	if (cpu_is_omap34xx()) {
++		mcbsp->max_tx_thres = max_thres(mcbsp);
++		mcbsp->max_rx_thres = max_thres(mcbsp);
++		if (omap_thres_add(mcbsp->dev))
++			dev_warn(mcbsp->dev,
++				"Unable to create threshold controls\n");
++	} else {
++		mcbsp->max_tx_thres = -EINVAL;
++		mcbsp->max_rx_thres = -EINVAL;
++	}
++}
 +
- static const struct attribute *additional_attrs[] = {
- 	&dev_attr_max_tx_thres.attr,
- 	&dev_attr_max_rx_thres.attr,
-+	&dev_attr_dma_op_mode.attr,
- 	NULL,
- };
++static inline void __devexit omap34xx_device_exit(struct omap_mcbsp *mcbsp)
++{
++	if (cpu_is_omap34xx())
++		omap_thres_remove(mcbsp->dev);
++}
++#else
++static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp) {}
++static inline void __devexit omap34xx_device_exit(struct omap_mcbsp *mcbsp) {}
++#endif /* CONFIG_ARCH_OMAP34XX */
++
+ /*
+  * McBSP1 and McBSP3 are directly mapped on 1610 and 1510.
+  * 730 has only 2 McBSP, and both of them are MPU peripherals.
+@@ -1061,6 +1177,10 @@ static int __devinit omap_mcbsp_probe(struct platform_device *pdev)
+ 	mcbsp->dev = &pdev->dev;
+ 	mcbsp_ptr[id] = mcbsp;
+ 	platform_set_drvdata(pdev, mcbsp);
++
++	/* Initialize mcbsp properties for OMAP34XX if needed / applicable */
++	omap34xx_device_init(mcbsp);
++
+ 	return 0;
  
-@@ -1085,9 +1164,14 @@ static inline void __devexit omap_additional_remove(struct device *dev)
+ err_fclk:
+@@ -1084,6 +1204,8 @@ static int __devexit omap_mcbsp_remove(struct platform_device *pdev)
+ 				mcbsp->pdata->ops->free)
+ 			mcbsp->pdata->ops->free(mcbsp->id);
  
- static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp)
- {
-+	mcbsp->dma_op_mode = MCBSP_DMA_MODE_ELEMENT;
- 	if (cpu_is_omap34xx()) {
- 		mcbsp->max_tx_thres = max_thres(mcbsp);
- 		mcbsp->max_rx_thres = max_thres(mcbsp);
-+		/*
-+		 * REVISIT: Set dmap_op_mode to THRESHOLD as default
-+		 * for mcbsp2 instances.
-+		 */
- 		if (omap_additional_add(mcbsp->dev))
- 			dev_warn(mcbsp->dev,
- 				"Unable to create additional controls\n");
++		omap34xx_device_exit(mcbsp);
++
+ 		clk_disable(mcbsp->fclk);
+ 		clk_disable(mcbsp->iclk);
+ 		clk_put(mcbsp->fclk);
 -- 
 1.6.2.GIT
 
