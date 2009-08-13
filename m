@@ -1,18 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 1/2] ASoC: TWL4030: Fix for capture mixer
-	strings
-Date: Thu, 13 Aug 2009 15:59:33 +0300
-Message-ID: <1250168374-24280-2-git-send-email-peter.ujfalusi@nokia.com>
-References: <1250168374-24280-1-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 0/2] ASoC: TWL4030: Cosmetic and PM related
+	changes
+Date: Thu, 13 Aug 2009 15:59:32 +0300
+Message-ID: <1250168374-24280-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0E19D24532
+	by alsa0.perex.cz (Postfix) with ESMTP id EBB3324531
 	for <alsa-devel@alsa-project.org>;
 	Thu, 13 Aug 2009 14:59:43 +0200 (CEST)
-In-Reply-To: <1250168374-24280-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,101 +24,34 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Change the strings related to capture in order to be
-interpreted correctly by alsamixer and possible other
-UI based mixer applications.
+Hello,
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+I'm not sure, if the first patch is acceptable by ASoC standards, but:
+Before the patch the analog capture path strings ended up like this at the end:
+"Analog Left Capture Route Main mic Switch"
+These switches showed up in the playback tab of alsamixer, which was not nice.
+After the patch the strings will be like this:
+"Analog Left Main mic Capture Route"
+Which show up correctly in alsamixer as "Analog Left Main mic" under the
+capture tab.
+
+The second patch cleans up the output amplifier mute/un-mute by adding PGA_E to
+all output pins, which were handled by the twl4030_codec_mute function.
+Since those gain controls attached to the outputs are not in DAPM domain (yet?)
+and they have to be muted/turned off when they are not needed.
+Previously all of these (Earpiece PreDrivL/R, CarkitL/R) muted/un-muted at the
+same time without checking if the output actually is needed, there could be
+cases when the output amplifier is enabled but no actual audio data is routed
+there, which could leak some noise on the output.
+
+I know about the changes in core that makes this hassle with the mute
+unnecesary (the core sets the BIAS_ON also when any bypass path is active),
+I'll be looking at that next.
+
 ---
- sound/soc/codecs/twl4030.c |   46 +++++++++++++++++++++++--------------------
- 1 files changed, 25 insertions(+), 21 deletions(-)
+Peter Ujfalusi (2):
+  ASoC: TWL4030: Fix for capture mixer strings
+  ASoC: TWL4030: Introduce PGAs for outputs
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 818fb37..c64e314 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -443,16 +443,20 @@ SOC_DAPM_ENUM("Route", twl4030_vibrapath_enum);
- 
- /* Left analog microphone selection */
- static const struct snd_kcontrol_new twl4030_dapm_analoglmic_controls[] = {
--	SOC_DAPM_SINGLE("Main mic", TWL4030_REG_ANAMICL, 0, 1, 0),
--	SOC_DAPM_SINGLE("Headset mic", TWL4030_REG_ANAMICL, 1, 1, 0),
--	SOC_DAPM_SINGLE("AUXL", TWL4030_REG_ANAMICL, 2, 1, 0),
--	SOC_DAPM_SINGLE("Carkit mic", TWL4030_REG_ANAMICL, 3, 1, 0),
-+	SOC_DAPM_SINGLE("Main mic Capture Route",
-+			TWL4030_REG_ANAMICL, 0, 1, 0),
-+	SOC_DAPM_SINGLE("Headset mic Capture Route",
-+			TWL4030_REG_ANAMICL, 1, 1, 0),
-+	SOC_DAPM_SINGLE("AUXL Capture Route",
-+			TWL4030_REG_ANAMICL, 2, 1, 0),
-+	SOC_DAPM_SINGLE("Carkit mic Capture Route",
-+			TWL4030_REG_ANAMICL, 3, 1, 0),
- };
- 
- /* Right analog microphone selection */
- static const struct snd_kcontrol_new twl4030_dapm_analogrmic_controls[] = {
--	SOC_DAPM_SINGLE("Sub mic", TWL4030_REG_ANAMICR, 0, 1, 0),
--	SOC_DAPM_SINGLE("AUXR", TWL4030_REG_ANAMICR, 2, 1, 0),
-+	SOC_DAPM_SINGLE("Sub mic Capture Route", TWL4030_REG_ANAMICR, 0, 1, 0),
-+	SOC_DAPM_SINGLE("AUXR Capture Route", TWL4030_REG_ANAMICR, 2, 1, 0),
- };
- 
- /* TX1 L/R Analog/Digital microphone selection */
-@@ -1327,11 +1331,11 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 		SND_SOC_DAPM_POST_REG),
- 
- 	/* Analog input mixers for the capture amplifiers */
--	SND_SOC_DAPM_MIXER("Analog Left Capture Route",
-+	SND_SOC_DAPM_MIXER("Analog Left",
- 		TWL4030_REG_ANAMICL, 4, 0,
- 		&twl4030_dapm_analoglmic_controls[0],
- 		ARRAY_SIZE(twl4030_dapm_analoglmic_controls)),
--	SND_SOC_DAPM_MIXER("Analog Right Capture Route",
-+	SND_SOC_DAPM_MIXER("Analog Right",
- 		TWL4030_REG_ANAMICR, 4, 0,
- 		&twl4030_dapm_analogrmic_controls[0],
- 		ARRAY_SIZE(twl4030_dapm_analogrmic_controls)),
-@@ -1435,16 +1439,16 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{"VIBRA", NULL, "Vibra Route"},
- 
- 	/* Capture path */
--	{"Analog Left Capture Route", "Main mic", "MAINMIC"},
--	{"Analog Left Capture Route", "Headset mic", "HSMIC"},
--	{"Analog Left Capture Route", "AUXL", "AUXL"},
--	{"Analog Left Capture Route", "Carkit mic", "CARKITMIC"},
-+	{"Analog Left", "Main mic Capture Route", "MAINMIC"},
-+	{"Analog Left", "Headset mic Capture Route", "HSMIC"},
-+	{"Analog Left", "AUXL Capture Route", "AUXL"},
-+	{"Analog Left", "Carkit mic Capture Route", "CARKITMIC"},
- 
--	{"Analog Right Capture Route", "Sub mic", "SUBMIC"},
--	{"Analog Right Capture Route", "AUXR", "AUXR"},
-+	{"Analog Right", "Sub mic Capture Route", "SUBMIC"},
-+	{"Analog Right", "AUXR Capture Route", "AUXR"},
- 
--	{"ADC Physical Left", NULL, "Analog Left Capture Route"},
--	{"ADC Physical Right", NULL, "Analog Right Capture Route"},
-+	{"ADC Physical Left", NULL, "Analog Left"},
-+	{"ADC Physical Right", NULL, "Analog Right"},
- 
- 	{"Digimic0 Enable", NULL, "DIGIMIC0"},
- 	{"Digimic1 Enable", NULL, "DIGIMIC1"},
-@@ -1468,11 +1472,11 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{"ADC Virtual Right2", NULL, "TX2 Capture Route"},
- 
- 	/* Analog bypass routes */
--	{"Right1 Analog Loopback", "Switch", "Analog Right Capture Route"},
--	{"Left1 Analog Loopback", "Switch", "Analog Left Capture Route"},
--	{"Right2 Analog Loopback", "Switch", "Analog Right Capture Route"},
--	{"Left2 Analog Loopback", "Switch", "Analog Left Capture Route"},
--	{"Voice Analog Loopback", "Switch", "Analog Left Capture Route"},
-+	{"Right1 Analog Loopback", "Switch", "Analog Right"},
-+	{"Left1 Analog Loopback", "Switch", "Analog Left"},
-+	{"Right2 Analog Loopback", "Switch", "Analog Right"},
-+	{"Left2 Analog Loopback", "Switch", "Analog Left"},
-+	{"Voice Analog Loopback", "Switch", "Analog Left"},
- 
- 	{"Analog R1 Playback Mixer", NULL, "Right1 Analog Loopback"},
- 	{"Analog L1 Playback Mixer", NULL, "Left1 Analog Loopback"},
--- 
-1.6.4
+ sound/soc/codecs/twl4030.c |  155 ++++++++++++++++++++++++--------------------
+ 1 files changed, 85 insertions(+), 70 deletions(-)
