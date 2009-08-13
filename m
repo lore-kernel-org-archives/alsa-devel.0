@@ -1,21 +1,11 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv3 09/20] OMAP: McBSP: Wakeups utilized
-Date: Thu, 13 Aug 2009 17:35:22 +0300
-Message-ID: <1250174133-451-10-git-send-email-eduardo.valentin__40667.3398254954$1250174987$gmane$org@nokia.com>
-References: <1250174133-451-1-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-2-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-3-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-4-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-5-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-6-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-7-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-8-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-9-git-send-email-eduardo.valentin@nokia.com>
+Subject: [PATCHv3 00/20] OMAP ASoC changes in DMA utilization
+Date: Thu, 13 Aug 2009 17:35:13 +0300
+Message-ID: <1250174133-451-1-git-send-email-eduardo.valentin__1899.68255949697$1250174993$gmane$org@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1250174133-451-9-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,136 +16,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, Eero Nurkkala <ext-eero.nurkkala@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+Hello again guys,
 
-This patch enables the smart idle mode while
-McBPS is being utilized. Once it's done,
-force idle mode is taken instead. Apart of it,
-it also configures what signals will wake mcbsp up.
+Here is version 3 of these changes. I've changed just 2
+things:
+- all mcbsp instances are in element mode by default
+- moved all mcbsp related code to omap-mcbsp.c
+(although a single callback is still needed)
 
-Signed-off-by: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
-Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
----
- arch/arm/plat-omap/include/mach/mcbsp.h |   17 +++++++++++
- arch/arm/plat-omap/mcbsp.c              |   46 +++++++++++++++++++++++++++++++
- 2 files changed, 63 insertions(+), 0 deletions(-)
+Jarkko, I think we can add your patch for reading strings
+for dma op mode later on.
 
-diff --git a/arch/arm/plat-omap/include/mach/mcbsp.h b/arch/arm/plat-omap/include/mach/mcbsp.h
-index 9b2b03e..2c5612a 100644
---- a/arch/arm/plat-omap/include/mach/mcbsp.h
-+++ b/arch/arm/plat-omap/include/mach/mcbsp.h
-@@ -138,6 +138,7 @@
- #define OMAP_MCBSP_REG_THRSH1	0x94
- #define OMAP_MCBSP_REG_IRQST	0xA0
- #define OMAP_MCBSP_REG_IRQEN	0xA4
-+#define OMAP_MCBSP_REG_WAKEUPEN	0xA8
- #define OMAP_MCBSP_REG_XCCR	0xAC
- #define OMAP_MCBSP_REG_RCCR	0xB0
- 
-@@ -253,6 +254,8 @@
- #define RDISABLE		0x0001
- 
- /********************** McBSP SYSCONFIG bit definitions ********************/
-+#define SIDLEMODE(value)	((value)<<3)
-+#define ENAWAKEUP		0x0004
- #define SOFTRST			0x0002
- 
- /********************** McBSP DMA operating modes **************************/
-@@ -260,6 +263,20 @@
- #define MCBSP_DMA_MODE_THRESHOLD	1
- #define MCBSP_DMA_MODE_FRAME		2
- 
-+/********************** McBSP WAKEUPEN bit definitions *********************/
-+#define XEMPTYEOFEN		0x4000
-+#define XRDYEN			0x0400
-+#define XEOFEN			0x0200
-+#define XFSXEN			0x0100
-+#define XSYNCERREN		0x0080
-+#define RRDYEN			0x0008
-+#define REOFEN			0x0004
-+#define RFSREN			0x0002
-+#define RSYNCERREN		0x0001
-+#define WAKEUPEN_ALL		(XEMPTYEOFEN | XRDYEN | XEOFEN | XFSXEN | \
-+				 XSYNCERREN | RRDYEN | REOFEN | RFSREN | \
-+				 RSYNCERREN)
-+
- /* we don't do multichannel for now */
- struct omap_mcbsp_reg_cfg {
- 	u16 spcr2;
-diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-index 6a4a621..eb2147d 100644
---- a/arch/arm/plat-omap/mcbsp.c
-+++ b/arch/arm/plat-omap/mcbsp.c
-@@ -305,6 +305,46 @@ int omap_mcbsp_get_dma_op_mode(unsigned int id)
- 	return dma_op_mode;
- }
- EXPORT_SYMBOL(omap_mcbsp_get_dma_op_mode);
-+
-+static inline void omap34xx_mcbsp_request(struct omap_mcbsp *mcbsp)
-+{
-+	/*
-+	 * Enable wakup behavior, smart idle and all wakeups
-+	 * REVISIT: some wakeups may be unnecessary
-+	 */
-+	if (cpu_is_omap34xx()) {
-+		u16 syscon;
-+
-+		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
-+		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03));
-+		syscon |= (ENAWAKEUP | SIDLEMODE(0x02));
-+		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
-+
-+		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, WAKEUPEN_ALL);
-+	}
-+}
-+
-+static inline void omap34xx_mcbsp_free(struct omap_mcbsp *mcbsp)
-+{
-+	/*
-+	 * Disable wakup behavior, smart idle and all wakeups
-+	 */
-+	if (cpu_is_omap34xx()) {
-+		u16 syscon;
-+		u16 wakeupen;
-+
-+		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
-+		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03));
-+		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
-+
-+		wakeupen = OMAP_MCBSP_READ(mcbsp->io_base, WAKEUPEN);
-+		wakeupen &= ~WAKEUPEN_ALL;
-+		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, wakeupen);
-+	}
-+}
-+#else
-+static inline void omap34xx_mcbsp_request(struct omap_mcbsp *mcbsp) {}
-+static inline void omap34xx_mcbsp_free(struct omap_mcbsp *mcbsp) {}
- #endif
- 
- /*
-@@ -366,6 +406,9 @@ int omap_mcbsp_request(unsigned int id)
- 	clk_enable(mcbsp->iclk);
- 	clk_enable(mcbsp->fclk);
- 
-+	/* Do procedure specific to omap34xx arch, if applicable */
-+	omap34xx_mcbsp_request(mcbsp);
-+
- 	/*
- 	 * Make sure that transmitter, receiver and sample-rate generator are
- 	 * not running before activating IRQs.
-@@ -414,6 +457,9 @@ void omap_mcbsp_free(unsigned int id)
- 	if (mcbsp->pdata && mcbsp->pdata->ops && mcbsp->pdata->ops->free)
- 		mcbsp->pdata->ops->free(id);
- 
-+	/* Do procedure specific to omap34xx arch, if applicable */
-+	omap34xx_mcbsp_free(mcbsp);
-+
- 	clk_disable(mcbsp->fclk);
- 	clk_disable(mcbsp->iclk);
- 
--- 
-1.6.2.GIT
+BR,
+
+Eduardo Valentin (11):
+  OMAP: McBSP: Add IRQEN, IRQSTATUS, THRESHOLD2 and THRESHOLD1
+    registers.
+  OMAP: McBSP: Use appropriate value for startup delay
+  OMAP: McBSP: Add transmit/receive threshold handler
+  OMAP: McBSP: Create and export max_(r|t)x_thres property
+  OMAP: McBSP: Rename thres sysfs symbols
+  OMAP: McBSP: Change wakeup signals
+  OMAP: McBSP: Configure NO IDLE mode for DMA mode different of
+    threshold
+  ASoC: OMAP: Make DMA 64 aligned
+  ASoC: OMAP: Enable DMA burst mode
+  ASoC: OMAP: Use McBSP threshold to playback and capture
+  ASoC: OMAP: Use DMA operating mode of McBSP
+
+Eero Nurkkala (7):
+  OMAP: McBSP: Provide functions for ASoC frame syncronization
+  OMAP: McBSP: Wakeups utilized
+  OMAP: McBSP: Retain McBSP FCLK clockactivity
+  OMAP: McBSP: Do not enable wakeups for no-idle mode
+  OMAP: McBSP: Let element DMA mode hit retention also
+  ASoC: Add runtime check for RFIG and XFIG
+  ASoC: Always syncronize audio transfers on frames
+
+Peter Ujfalusi (2):
+  OMAP3: McBSP: Lower the maximum buffersize for McBSP1,3,4,5
+  OMAP: McBSP: Add link DMA mode selection
+
+ arch/arm/mach-omap2/mcbsp.c             |    5 +
+ arch/arm/plat-omap/include/mach/mcbsp.h |   49 ++++
+ arch/arm/plat-omap/mcbsp.c              |  377 ++++++++++++++++++++++++++++++-
+ sound/soc/omap/omap-mcbsp.c             |   77 ++++++-
+ sound/soc/omap/omap-pcm.c               |   14 +-
+ sound/soc/omap/omap-pcm.h               |    2 +
+ 6 files changed, 511 insertions(+), 13 deletions(-)
 
