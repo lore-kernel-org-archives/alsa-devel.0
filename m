@@ -1,21 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 11/20] OMAP: McBSP: Add link DMA mode
-	selection
-Date: Thu, 13 Aug 2009 09:01:24 +0300
-Message-ID: <200908130901.25420.peter.ujfalusi@nokia.com>
-References: <1248958183-15015-1-git-send-email-eduardo.valentin@nokia.com>
-	<20090812144547.eb4bf7f2.jhnikula@gmail.com>
-	<1250077713.16045.31.camel@eenurkka-desktop>
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: Re: [RFC] Break up the patch_sigmatel.c
+Date: Thu, 13 Aug 2009 10:34:37 +0300
+Message-ID: <1250148877.8641.19.camel@localhost.localdomain>
+References: <1250109345.7974.10.camel@localhost.localdomain>
+	<s5hd47046zr.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 35A0B248C0
+Received: from mail-fx0-f214.google.com (mail-fx0-f214.google.com
+	[209.85.220.214])
+	by alsa0.perex.cz (Postfix) with ESMTP id C0355243D9
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Aug 2009 08:01:34 +0200 (CEST)
-In-Reply-To: <1250077713.16045.31.camel@eenurkka-desktop>
-Content-Disposition: inline
+	Thu, 13 Aug 2009 09:34:42 +0200 (CEST)
+Received: by fxm10 with SMTP id 10so502928fxm.45
+	for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2009 00:34:42 -0700 (PDT)
+In-Reply-To: <s5hd47046zr.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,56 +25,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 12 August 2009 14:48:33 Nurkkala Eero.An (EXT-Offcode/Oulu) wr=
-ote:
-> On Wed, 2009-08-12 at 13:45 +0200, ext Jarkko Nikula wrote:
-> > The threshold based transfer will cause that omap_pcm_pointer will
-> > loose a bit its accuracy. Probably irrelevant but still better to play
-> > safe at least over one kernel release before making it default.
->
-> No, it doesn't loose accuracy =3D) It's as accurate with both modes.
-> The difference is, that the other does things in bursts;
+On Thu, 2009-08-13 at 07:28 +0200, Takashi Iwai wrote: 
+> At Wed, 12 Aug 2009 23:35:45 +0300,
+> Maxim Levitsky wrote:
+> > 
+> > Hi folks,
+> > 
+> > I own an stac9227 and with latest kernel, it doesn't output any sound
+> > via front headphones. (this a is desktop)
+> 
+> OK, that could be my recent changes.
+> Could you give alsa-info.sh output, at best, on the working and
+> non-working states?
 
-In element mode it is kind of easy to estimate where the hardware actually =
-in =
+Oh, its was my mistake.
+in short I thought that I installed the alsa git tree, but it turns out
+that I was using the kernel drivers. alsa git drivers doesn't have this
+bug anymore.
 
-the playback case (aplay -f dat /dev/zero):
+The long explanation of this my mistake was that I first installed alsa
+drivers, but forgot, and installed kernel, which overwrite them.
 
-omap_pcm_pointer returns 669, than the HW is around
-669-512=3D157 (plus few samples).
 
-In threshold mode you only know that the HW is playing in between 0-512, =
+> 
+> > I don't want to bother you with details, etc, I will fix that myself. I
+> > have good knowledge of the device.
+> > 
+> > However, the mess that is patch_sigmatel.c seems to be doubled. 
+> > its huge file, and there are loads on new codecs added.
+> > 
+> > I have a suggestion, to break it up into smaller files.
+> > I especially want to move all 'data' from it to header file, and sort it
+> > by model. 
+> 
+> The "data" shouldn't be in header files in general...
+> 
+> > Maybe move pin configs to separate file.
+> 
+> This could be good.
+> 
+> > Also I know that stac9200 is quite old, and uses many different support
+> > functions. I could move these in another file as well.
+> > 
+> > In other words, I want to break it up into several (5 maybe) files,
+> > while not touching the code itself (I so that later maybe)
+> > 
+> > Since it is quite dirty and hard work, I want to ask if you agree.
+> 
+> It's open source, feel free to do it.
 
-512-1024 somewhere.
+nice, I actually asked about this just for one reason, back when I send
+my patches to this driver, I think I tried to do something similar, but
+it was rejected or so.
 
-I know neither of these are accurate and these examples are quite =
 
-oversimplified, but there is a difference and that difference is quite =
+And another note.
+Back in time, when I knew that driver well, back and front outputs were
+handled by same DAC, and it happened to be DAC0. This DAC is connected
+via analog loopback to ADC0.
 
-significant.
+Now front output is connected to another DAC, so loopback works only for
+back output. However I can control the volume of front and back channels
+separately, and don't know which feature I need more now (I don't use my
+tv card often any more nowadays)
 
-> that's called evolution rather than regression =3D)
+Maybe add a codec hint for that?
 
-Note that evolution can also introduce regression...
 
-> That's how things will be in the future =3D)
 
-I agree with you on this, since the threshold mode provides quite good powe=
-r =
 
-saving benefits.
-But on the other hand it would be still better to keep the element mode as =
+> 
+> > Btw, half of static data can be retrieved from codec by querying it
+> > (like dac,adc,pin node ids)
+> 
+> Yes.
+> 
+Indeed.
 
-default for at least one release cycle.
-If no report is coming about problems, than we can make the threshold mode =
-for =
 
-McBSP2 as the default
+I think that the best solution to all hda problems, it once and for all
+write a generic driver for all codecs, and put pin configs in, a
+'firmware' file (this is already done?)
 
--- =
+Most of things can be retrieved from verb responses + pin configs
 
-P=E9ter
+
+Why not?
+
+
+Thanks,
+	Best regards,
+		Maxim Levitsky
+
+> 
+> 
+> thanks,
+> 
+> Takashi
