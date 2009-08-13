@@ -1,8 +1,8 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv3 20/20] ASoC: OMAP: Use DMA operating mode of
-	McBSP
-Date: Thu, 13 Aug 2009 17:35:33 +0300
-Message-ID: <1250174133-451-21-git-send-email-eduardo.valentin__26612.9922857091$1250175024$gmane$org@nokia.com>
+Subject: [PATCHv3 11/20] OMAP: McBSP: Retain McBSP FCLK
+	clockactivity
+Date: Thu, 13 Aug 2009 17:35:24 +0300
+Message-ID: <1250174133-451-12-git-send-email-eduardo.valentin__41583.9854664684$1250175037$gmane$org@nokia.com>
 References: <1250174133-451-1-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-2-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-3-git-send-email-eduardo.valentin@nokia.com>
@@ -14,20 +14,11 @@ References: <1250174133-451-1-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-9-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-10-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-11-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-12-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-13-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-14-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-15-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-16-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-17-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-18-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-19-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-20-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1250174133-451-20-git-send-email-eduardo.valentin@nokia.com>
+In-Reply-To: <1250174133-451-11-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -38,64 +29,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, Eero Nurkkala <ext-eero.nurkkala@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
----
- sound/soc/omap/omap-mcbsp.c |   18 +++++++++++++++---
- 1 files changed, 15 insertions(+), 3 deletions(-)
+From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 8a7b5ef..4369622 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -144,7 +144,14 @@ static void omap_mcbsp_set_threshold(struct snd_pcm_substream *substream)
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
- 	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
--	int samples = snd_pcm_lib_period_bytes(substream) >> 1;
-+	int dma_op_mode = omap_mcbsp_get_dma_op_mode(mcbsp_data->bus_id);
-+	int samples;
-+
-+	/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
-+	if (dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
-+		samples = snd_pcm_lib_period_bytes(substream) >> 1;
-+	else
-+		samples = 1;
+FCLK may get autogated so that it prevents the McBSP
+to work properly. It is the bit 9 that must be set
+for maintaining the McBSP FCLK.
+
+Signed-off-by: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
+Acked-by: Jarkko Nikula <jarkko.nikula@nokia.com>
+---
+ arch/arm/plat-omap/include/mach/mcbsp.h |    1 +
+ arch/arm/plat-omap/mcbsp.c              |    6 +++---
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/plat-omap/include/mach/mcbsp.h b/arch/arm/plat-omap/include/mach/mcbsp.h
+index 776ea4d..895f001 100644
+--- a/arch/arm/plat-omap/include/mach/mcbsp.h
++++ b/arch/arm/plat-omap/include/mach/mcbsp.h
+@@ -254,6 +254,7 @@
+ #define RDISABLE		0x0001
  
- 	/* Configure McBSP internal buffer usage */
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-@@ -166,6 +173,7 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
- 		err = omap_mcbsp_request(bus_id);
+ /********************** McBSP SYSCONFIG bit definitions ********************/
++#define CLOCKACTIVITY(value)	((value)<<8)
+ #define SIDLEMODE(value)	((value)<<3)
+ #define ENAWAKEUP		0x0004
+ #define SOFTRST			0x0002
+diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
+index c2fd038..1db2ebc 100644
+--- a/arch/arm/plat-omap/mcbsp.c
++++ b/arch/arm/plat-omap/mcbsp.c
+@@ -316,8 +316,8 @@ static inline void omap34xx_mcbsp_request(struct omap_mcbsp *mcbsp)
+ 		u16 syscon;
  
- 	if (cpu_is_omap343x()) {
-+		int dma_op_mode = omap_mcbsp_get_dma_op_mode(bus_id);
- 		int max_period;
+ 		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
+-		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03));
+-		syscon |= (ENAWAKEUP | SIDLEMODE(0x02));
++		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03) | CLOCKACTIVITY(0x03));
++		syscon |= (ENAWAKEUP | SIDLEMODE(0x02) | CLOCKACTIVITY(0x02));
+ 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
  
- 		/*
-@@ -187,7 +195,8 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
- 		max_period++;
- 		max_period <<= 1;
+ 		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, XRDYEN | RRDYEN);
+@@ -333,7 +333,7 @@ static inline void omap34xx_mcbsp_free(struct omap_mcbsp *mcbsp)
+ 		u16 syscon;
  
--		snd_pcm_hw_constraint_minmax(substream->runtime,
-+		if (dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
-+			snd_pcm_hw_constraint_minmax(substream->runtime,
- 						SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
- 						32, max_period);
- 	}
-@@ -269,7 +278,10 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 		port = omap34xx_mcbsp_port[bus_id][substream->stream];
- 		omap_mcbsp_dai_dma_params[id][substream->stream].set_threshold =
- 						omap_mcbsp_set_threshold;
--		sync_mode = OMAP_DMA_SYNC_FRAME;
-+		/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
-+		if (omap_mcbsp_get_dma_op_mode(bus_id) ==
-+						MCBSP_DMA_MODE_THRESHOLD)
-+			sync_mode = OMAP_DMA_SYNC_FRAME;
- 	} else {
- 		return -ENODEV;
- 	}
+ 		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
+-		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03));
++		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03) | CLOCKACTIVITY(0x03));
+ 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
+ 
+ 		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, 0);
 -- 
 1.6.2.GIT
 
