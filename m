@@ -1,25 +1,27 @@
-From: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [Uclinux-dist-devel] [PATCH 1/3] new ad1836 codec
-	driver based on asoc
-Date: Thu, 13 Aug 2009 05:22:18 -0400
-Message-ID: <8bd0f97a0908130222x7ad7e57bw5d61c9ec6c826dde@mail.gmail.com>
-References: <1250051574-25119-1-git-send-email-21cnbao@gmail.com>
-	<1250051574-25119-2-git-send-email-21cnbao@gmail.com>
-	<20090812134645.GC11898@rakim.wolfsonmicro.main>
-	<3c17e3570908122041m29a1843agd0f9fd0e415181c3@mail.gmail.com>
-	<20090813090801.GA31504@sirena.org.uk>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: ALSA and MP3
+Date: Thu, 13 Aug 2009 10:23:49 +0100
+Message-ID: <h60m38$hkk$1@ger.gmane.org>
+References: <8aaaf9230908130118hec83f4awe28fb5e53b5e02a6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f176.google.com (mail-yx0-f176.google.com
-	[209.85.210.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id 25CBC243D1
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 47E9C243D2
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Aug 2009 11:22:39 +0200 (CEST)
-Received: by yxe6 with SMTP id 6so804084yxe.16
-	for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2009 02:22:38 -0700 (PDT)
-In-Reply-To: <20090813090801.GA31504@sirena.org.uk>
+	Thu, 13 Aug 2009 11:24:03 +0200 (CEST)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1MbWXR-0001VQ-HB
+	for alsa-devel@alsa-project.org; Thu, 13 Aug 2009 09:24:01 +0000
+Received: from brent.tribalogic.net ([78.86.109.144])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2009 09:24:01 +0000
+Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2009 09:24:01 +0000
+In-Reply-To: <8aaaf9230908130118hec83f4awe28fb5e53b5e02a6@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,31 +31,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBBdWcgMTMsIDIwMDkgYXQgMDU6MDgsIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gVGh1
-LCBBdWcgMTMsIDIwMDkgYXQgMTE6NDE6MTNBTSArMDgwMCwgQmFycnkgU29uZyB3cm90ZToKPj4g
-T24gV2VkLCBBdWcgMTIsIDIwMDkgYXQgOTo0NiBQTSwgTWFyayBCcm93biB3cm90ZToKPj4gPiBK
-dXN0ICJhZDE4MzYiIC0gdGhlIGZhY3QgdGhhdCBpdCdzIGNvbnRyb2xsZWQgdmlhIFNQSSBpcyBj
-bGVhciBmcm9tIHRoZQo+PiA+IGZhY3QgdGhhdCB0aGlzIGlzIGEgc3RydWN0IHNwaV9kcml2ZXIu
-Cj4+Cj4+IEkgYWdyZWUgdGhlIHNwaSBzdHJ1Y3R1cmUgaW1wbGllcyB0aGUgbWVhbmluZyBvZiBz
-cGkuIMKgQnV0IGZpbGVzIGluCj4+IGFyY2gvYmxhY2tmaW4vbWFjaC4uLiBhcmUgdXNpbmcgbmFt
-ZXMgbGlrZSAieHh4LXNwaSIgZm9yIGFsbW9zdCBhbGwKPj4gc3BpIGRldmljZXMuIEhvdyBhYm91
-dCBrZWVwaW5nIHRoZSBjb2hlcmVuY2U/Cj4KPiBPaCBkZWFyLiDCoExvb2tzIGxpa2UgeW91J3Zl
-IGVzc2VudGlhbGx5IGdvdCBhIGNob2ljZSBiZXR3ZWVuIGJlaW5nCj4gY29uc2lzdGVudCB3aXRo
-IHRoZSByZXN0IG9mIHRoZSB3b3JsZCBhbmQgYmVpbmcgY29uc2lzdGVudCB3aXRoIHdoYXQgdGhl
-Cj4gYmxhY2tmaW4gc3R1ZmYgaXMgZG9pbmcuCgppdCByZWFsbHkgaXNudCB0aGF0IGJhZC4gIHRo
-ZSBkcml2ZXJzIHRoYXQgdXNlICItc3BpIiBzdWZmaXg6CiAgICAgICAgICAgICAgICAubW9kYWxp
-YXMgPSAiYWQxODM2LXNwaSIsICAgIyBhdWRpbwogICAgICAgICAgICAgICAgLm1vZGFsaWFzID0g
-ImFkMTkzOC1zcGkiLCAgICMgYXVkaW8KICAgICAgICAgICAgICAgIC5tb2RhbGlhcyA9ICJhZDcx
-NDctc3BpIiwgICAjIGlucHV0CiAgICAgICAgICAgICAgICAubW9kYWxpYXMgPSAiYWQ5OTYwLXNw
-aSIsICAgIyBkZWFkCiAgICAgICAgICAgICAgICAubW9kYWxpYXMgPSAiYmZpbi1scTAzNXExLXNw
-aSIsICAjIHZpZGVvCiAgICAgICAgICAgICAgICAubW9kYWxpYXMgPSAiZnhvLXNwaSIsICAgIyBk
-ZWFkCiAgICAgICAgICAgICAgICAubW9kYWxpYXMgPSAiZnhzLXNwaSIsICAgIyBkZWFkCgpkcm9w
-cGluZyB0aGUgZGVhZCBkZXZpY2VzIGxlYXZlcyB1cyB3aXRoIDQgZHJpdmVycyB0byBmaXgsIHR3
-byBvZgp3aGljaCBhcmUgYXVkaW8uICBzaG91bGQgYmUgZWFzeSBmb3IgdXMgdG8gZml4LgotbWlr
-ZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+'Twas brillig, and gammay at 13/08/09 09:18 did gyre and gimble:
+> Hello,
+> I am looking at making this product use case possible:
+> Audio samples are streamed over wire/wireless from a source device to a sink
+> device. The streaming format is in mp3. On the source device I need to
+> capture locally played mp3 samples and stream to the sink device. The sink
+> device takes care of uncompressing and playback.
+> 
+> Can we capture compressed mp3 streams directly using ALSA? It is possible to
+> capture uncompressed PCM samples using file plug or by other means in
+> ALSA. While it is possible to directly read from the mp3 file, I would
+> rather grap the samples that a media player sends out because a) it takes
+> care of timing b) I can control the media player to play/pause the stream
+> and for playlist management. For the user it is transperent - he/she will
+> use only the local media player to control the streaming.
+> 
+> I am not sure if this lies in the domain of ALSA at all - as I understand
+> once we are in ALSA we are dealing with only PCM. In such case, please give
+> me some pointers where I can look at to make this possible. I am using
+> mplayer, but can also look at other types (non-GUI, command-line based). Can
+> we do this in a non-media player specific way?
+
+Sounds like something that is much more in the gstreamer domain I think.
+
+For general purpose interaction with network devices generally for 
+desktop audio systems, pulseaudio is more appropriate (it already 
+interacts with UPnP devices, native pulseaudio servers and Apple RAOP 
+Airtunes devices over the network). It does not deal with codecs at 
+present however, but some kind of work in that area will probably have 
+to be done eventually (tho' it wont do any encoding/decoding by itself - 
+it would always hand over to e.g. gstreamer for this job).
+
+Jump on IRC and have a chat over at #gstreamer or #pulseaudio for 
+inspiration.
+
+Col
+
+-- 
+
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+   Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+   Mandriva Linux Contributor [http://www.mandriva.com/]
+   PulseAudio Hacker [http://www.pulseaudio.org/]
+   Trac Hacker [http://trac.edgewall.org/]
