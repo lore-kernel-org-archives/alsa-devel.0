@@ -1,20 +1,22 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 2/3] ASoC: pxa-ssp.c,
-	Automatically set TDM when needed
-Date: Thu, 13 Aug 2009 03:28:59 +0200
-Message-ID: <20090813012858.GR13639@buzzloop.caiaq.de>
-References: <1249570519-32622-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1249570519-32622-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Barry Song <21cnbao@gmail.com>
+Subject: Re: [PATCH 1/3] new ad1836 codec driver based on asoc
+Date: Thu, 13 Aug 2009 11:41:13 +0800
+Message-ID: <3c17e3570908122041m29a1843agd0f9fd0e415181c3@mail.gmail.com>
+References: <1250051574-25119-1-git-send-email-21cnbao@gmail.com>
+	<1250051574-25119-2-git-send-email-21cnbao@gmail.com>
+	<20090812134645.GC11898@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 53247247E5
+Received: from mail-yw0-f203.google.com (mail-yw0-f203.google.com
+	[209.85.211.203])
+	by alsa0.perex.cz (Postfix) with ESMTP id 23ED924864
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Aug 2009 03:29:17 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1249570519-32622-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Thu, 13 Aug 2009 05:41:34 +0200 (CEST)
+Received: by ywh41 with SMTP id 41so726358ywh.23
+	for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2009 20:41:33 -0700 (PDT)
+In-Reply-To: <20090812134645.GC11898@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,80 +27,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Paul Shen <boshen9@gmail.com>, alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Daniel Ribeiro <drwyrm@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 06, 2009 at 03:55:18PM +0100, Mark Brown wrote:
-> * Automatically sets TDM mode for frame_width larger than 32 bits, if
->   the user doesn't setup the TDM slots with set_tdm_slot().
-> * Reset SSCR0_EDSS and SSCR0_DSS on pxa_ssp_set_dai_fmt.
-> * Makes SSCR0_MOD optional.
-> * Clears SSCR1_RWOT case SSCR0_MOD is set.
-> 
-> Signed-off-by: Daniel Ribeiro <drwyrm@gmail.com>
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/pxa/pxa-ssp.c |   92 +++++++++++++++++++++++++++--------------------
->  1 files changed, 53 insertions(+), 39 deletions(-)
-> 
-> diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-> index 5b9ed64..d60492e 100644
-> --- a/sound/soc/pxa/pxa-ssp.c
-> +++ b/sound/soc/pxa/pxa-ssp.c
-
-[...]
-
-> @@ -532,48 +532,70 @@ static int pxa_ssp_hw_params(struct snd_pcm_substream *substream,
->  	struct ssp_priv *priv = cpu_dai->private_data;
->  	struct ssp_device *ssp = priv->dev.ssp;
->  	int chn = params_channels(params);
-> -	u32 sscr0;
-> -	u32 sspsp;
-> +	u32 sscr0, sscr1, sspsp;
->  	int width = snd_pcm_format_physical_width(params_format(params));
-> -	int ttsa = ssp_read_reg(ssp, SSTSA) & 0xf;
-> +	int slot_width, frame_width = 0;
-> +
-> +	/* check if the user explicitly set a slot_width */
-> +	sscr0 = ssp_read_reg(ssp, SSCR0);
-> +
-> +	if (sscr0 & (SSCR0_EDSS | SSCR0_DSS))
-> +		slot_width = (sscr0 & SSCR0_DSS) +
-> +			(sscr0 & SSCR0_EDSS ? 17 : 1);
-> +	else
-> +		frame_width = slot_width = width * chn;
->  
->  	/* generate correct DMA params */
->  	if (cpu_dai->dma_data)
->  		kfree(cpu_dai->dma_data);
->  
-> -	/* Network mode with one active slot (ttsa == 1) can be used
-> -	 * to force 16-bit frame width on the wire (for S16_LE), even
-> -	 * with two channels. Use 16-bit DMA transfers for this case.
-> -	 */
-> -	cpu_dai->dma_data = ssp_get_dma_params(ssp,
-> -			((chn == 2) && (ttsa != 1)) || (width == 32),
-> +	cpu_dai->dma_data = ssp_get_dma_params(ssp, slot_width > 16,
->  			substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
->  
->  	/* we can only change the settings if the port is not in use */
-> -	if (ssp_read_reg(ssp, SSCR0) & SSCR0_SSE)
-> +	if (sscr0 & SSCR0_SSE)
->  		return 0;
->  
-> -	/* clear selected SSP bits */
-> -	sscr0 = ssp_read_reg(ssp, SSCR0) & ~(SSCR0_DSS | SSCR0_EDSS);
-> -	ssp_write_reg(ssp, SSCR0, sscr0);
-> -
-> -	/* bit size */
-> -	sscr0 = ssp_read_reg(ssp, SSCR0);
-> -	switch (params_format(params)) {
-> -	case SNDRV_PCM_FORMAT_S16_LE:
->  #ifdef CONFIG_PXA3xx
-> -		if (cpu_is_pxa3xx())
-> -			sscr0 |= SSCR0_FPCKE;
-> +	if (slot_width == 16 && cpu_is_pxa3xx())
-
-And I forgot to mention that this should read ">= 16".
-
-Daniel
+T24gV2VkLCBBdWcgMTIsIDIwMDkgYXQgOTo0NiBQTSwgTWFyawpCcm93bjxicm9vbmllQG9wZW5z
+b3VyY2Uud29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gV2VkLCBBdWcgMTIsIDIwMDkgYXQg
+MTI6MzI6NTJQTSArMDgwMCwgQmFycnkgU29uZyB3cm90ZToKPj4gVGhlcmUgaGFzIGJlZW4gwqBh
+biBhZDE4MzYgZHJpdmVyIGluIHNvdW5kL2JsYWNrZmluIGJhc2VkIG9uIHRyYWRpdGlvbmFsIGFs
+c2EuCj4+IFRoZSBuZXcgZHJpdmVyIGlzIGJhc2VkIG9uIGFzb2MuIFRoZSBhcmNoaXRlY3R1cmUg
+b2YgYWQxODM2IGNvZGVjIGRyaXZlcgo+PiBpcyB2ZXJ5IG11Y2ggbGlrZSBhZDE5MzguCj4KPiBU
+aGlzIGlzIG1vc3RseSBnb29kLCBhIGZldyByZWxhdGl2ZWx5IG1pbm9yIGlzc3VlcyB0aG91Z2gu
+Cj4KPj4gKyDCoCDCoCBTT0NfRE9VQkxFX1IoIkRBQzMgwqBWb2x1bWUiLCBBRDE4MzZfREFDX0wz
+X1ZPTCwKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBBRDE4MzZfREFDX1IzX1ZP
+TCwgMCwgMHgzRkYsIDApLAo+Cj4gWW91J3ZlIGdvdCBhbiBleHRyYSBzcGFjZSBpbiB0aGUgdm9s
+dW1lIGNvbnRyb2wgbmFtZXMgd2hpY2ggSSdkIGV4cGVjdAo+IHRvIGNvbmZ1c2UgdXNlciBzcGFj
+ZS4KRml4ZWQuCj4KPj4gKyDCoCDCoCDCoCB7ICJEQUMxT1VUIiwgIkRBQzEgU3dpdGNoIiwgIkRB
+QyIgfSwKPj4gKyDCoCDCoCDCoCB7ICJEQUMyT1VUIiwgIkRBQzIgU3dpdGNoIiwgIkRBQyIgfSwK
+Pgo+IEknbSBzdXJwcmlzZWQgdGhpcyB3b3JrcyBzaW5jZSB0aGUgc3dpdGNoZXMgd2VyZW4ndCBk
+ZWNsYXJlZCBhcyBEQVBNCj4gY29udHJvbHMgYnV0IGlmIHRoZSBjb3JlIHN1cHBvcnRzIGl0IHRo
+YXQncyBPSy4KPgo+PiArc3RhdGljIGludCBhZDE4MzZfc2V0X3RkbV9zbG90KHN0cnVjdCBzbmRf
+c29jX2RhaSAqZGFpLAo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHVuc2lnbmVkIGludCBtYXNrLCBp
+bnQgc2xvdHMpCj4+ICt7Cj4KPiBUaGlzIG5lZWRzIHVwZGF0aW5nIGZvciB0aGUgbmV3IHNldF90
+ZG1fc2xvdCgpIEFQSSBidXQgZ2l2ZW4gdGhhdAo+IHRoZXJlJ3Mgb25seSBvbmUgcG9zc2libGUg
+Y29uZmlndXJhdGlvbiBJJ2Qgc3VnZ2VzdCBqdXN0IHJlbW92aW5nIGl0IC0KPiB0aGUgZnVuY3Rp
+b24gZG9lcyBub3RoaW5nIG90aGVyIHRoYW4gY2hlY2sgaXRzIGFyZ3VtZW50cy4KPgpGaXhlZAo+
+PiArIMKgIMKgIHJlZyA9IGNvZGVjLT5yZWFkKGNvZGVjLCBBRDE4MzZfREFDX0NUUkwxKTsKPj4g
+KyDCoCDCoCByZWcgPSAocmVnICYgKH5BRDE4MzZfREFDX1dPUkRfTEVOX01BU0spKSB8IHdvcmRf
+bGVuOwo+PiArIMKgIMKgIGNvZGVjLT53cml0ZShjb2RlYywgQUQxODM2X0RBQ19DVFJMMSwgcmVn
+KTsKPgo+IE5vdCBlc3NlbnRpYWwgYnV0IHNuZF9zb2NfdXBkYXRlX2JpdHMoKSBkb2VzIHRoZSBy
+ZWFkL21vZGlmeS93cml0ZSBjeWNsZQo+IGZvciB5b3UuCj4KRml4ZWQKPj4gK3N0YXRpYyBzdHJ1
+Y3Qgc3BpX2RyaXZlciBhZDE4MzZfc3BpX2RyaXZlciA9IHsKPj4gKyDCoCDCoCAuZHJpdmVyID0g
+ewo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIC5uYW1lIMKgID0gImFkMTgzNi1zcGkiLAo+Cj4gSnVz
+dCAiYWQxODM2IiAtIHRoZSBmYWN0IHRoYXQgaXQncyBjb250cm9sbGVkIHZpYSBTUEkgaXMgY2xl
+YXIgZnJvbSB0aGUKPiBmYWN0IHRoYXQgdGhpcyBpcyBhIHN0cnVjdCBzcGlfZHJpdmVyLgo+Ckkg
+YWdyZWUgdGhlIHNwaSBzdHJ1Y3R1cmUgaW1wbGllcyB0aGUgbWVhbmluZyBvZiBzcGkuICBCdXQg
+ZmlsZXMgaW4KYXJjaC9ibGFja2Zpbi9tYWNoLi4uIGFyZSB1c2luZyBuYW1lcyBsaWtlICJ4eHgt
+c3BpIiBmb3IgYWxtb3N0IGFsbApzcGkgZGV2aWNlcy4gSG93IGFib3V0IGtlZXBpbmcgdGhlIGNv
+aGVyZW5jZT8KCj4+ICsgwqAgwqAgcmV0ID0gc25kX3NvY19yZWdpc3Rlcl9jb2RlYyhjb2RlYyk7
+Cj4+ICsgwqAgwqAgaWYgKHJldCAhPSAwKSB7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgZGV2X2Vy
+cihjb2RlYy0+ZGV2LCAiRmFpbGVkIHRvIHJlZ2lzdGVyIGNvZGVjOiAlZFxuIiwgcmV0KTsKPj4g
+KyDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gcmV0Owo+PiArIMKgIMKgIH0KPj4gKwo+PiArIMKg
+IMKgIHJldCA9IHNuZF9zb2NfcmVnaXN0ZXJfZGFpKCZhZDE4MzZfZGFpKTsKPj4gKyDCoCDCoCBp
+ZiAocmV0ICE9IDApIHsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBkZXZfZXJyKGNvZGVjLT5kZXYs
+ICJGYWlsZWQgdG8gcmVnaXN0ZXIgREFJOiAlZFxuIiwgcmV0KTsKPj4gKyDCoCDCoCDCoCDCoCDC
+oCDCoCBzbmRfc29jX3VucmVnaXN0ZXJfY29kZWMoY29kZWMpOwo+PiArIMKgIMKgIMKgIMKgIMKg
+IMKgIHJldHVybiByZXQ7Cj4+ICsgwqAgwqAgfQo+Cj4gU2hvdWxkIGFsc28gYmUgZnJlZWluZyB0
+aGUgcHJpdmF0ZSBkYXRhIHN0cnVjdHVyZSBvbiBlcnJvci4KPgpGaXhlZAo+PiArc3RydWN0IHNu
+ZF9zb2NfY29kZWNfZGV2aWNlIHNvY19jb2RlY19kZXZfYWQxODM2ID0gewo+PiArIMKgIMKgIC5w
+cm9iZSA9IMKgIMKgIMKgIMKgYWQxODM2X3Byb2JlLAo+PiArIMKgIMKgIC5yZW1vdmUgPSDCoCDC
+oCDCoCBhZDE4MzZfcmVtb3ZlLAo+PiArIMKgIMKgIC8qIFRoZSBwb3dlciBtYW5hZ2VtZW50IG9m
+IGFkMTgzNiBpcyB2ZXJ5IHNpbXBsZS4gVGhlcmUgYXJlCj4+ICsgwqAgwqAgwqAqIG9ubHkgYWRj
+JmRhYyAyIGNvbXBvbmVudHMgdG8gY29udHJvbC4gRGFwbSBoYW5kbGVzIHRoZW0uCj4+ICsgwqAg
+wqAgwqAqLwo+PiArIMKgIMKgIC5zdXNwZW5kID0gwqAgwqAgwqBOVUxMLAo+PiArIMKgIMKgIC5y
+ZXN1bWUgPSDCoCDCoCDCoCBOVUxMLAo+Cj4gVGhlIHBvd2VyIGNvbnRyb2wgd2lsbCBiZSBoYW5k
+bGVkIGJ5IERBUE0gYnV0IHlvdXIgZHJpdmVyIHN0aWxsIG5lZWRzIHRvCj4gcmVzdG9yZSB0aGlu
+Z3MgbGlrZSB0aGUgdm9sdW1lIHNldHRpbmdzIC0gd2hlbiB0aGUgZHJpdmVyIGlzIHBvd2VyZWQg
+b2ZmCj4gdGhlIHJlZ2lzdGVyIHNldHRpbmdzIHdpbGwgYmUgZm9yZ290dGVuLgo+Ck15IHRlc3Qg
+c2hvd3MgcmVnaXN0ZXJzIHNldHRpbmcgZG9lc24ndCBsb3NlIGFmdGVyIGRhYy9hZGMgc2h1dGRv
+d24gOi0pCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
