@@ -1,8 +1,7 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv3 12/20] OMAP: McBSP: Configure NO IDLE mode
-	for DMA mode different of threshold
-Date: Thu, 13 Aug 2009 17:35:25 +0300
-Message-ID: <1250174133-451-13-git-send-email-eduardo.valentin__48381.0260113843$1250174952$gmane$org@nokia.com>
+Subject: [PATCHv3 07/20] OMAP: McBSP: Rename thres sysfs symbols
+Date: Thu, 13 Aug 2009 17:35:20 +0300
+Message-ID: <1250174133-451-8-git-send-email-eduardo.valentin__9059.95560247011$1250174968$gmane$org@nokia.com>
 References: <1250174133-451-1-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-2-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-3-git-send-email-eduardo.valentin@nokia.com>
@@ -10,16 +9,11 @@ References: <1250174133-451-1-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-5-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-6-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-7-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-8-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-9-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-10-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-11-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-12-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1250174133-451-12-git-send-email-eduardo.valentin@nokia.com>
+In-Reply-To: <1250174133-451-7-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,34 +27,72 @@ To: alsa-devel@alsa-project.org
 Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use dma mode property to configure NO IDLE or SMART IDLE of McBSPs.
+This patch renames the symbols that handles threshold
+sysfs properties. This way we can add more sysfs properties
+to them.
 
 Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
 ---
- arch/arm/plat-omap/mcbsp.c |   10 +++++++++-
- 1 files changed, 9 insertions(+), 1 deletions(-)
+ arch/arm/plat-omap/mcbsp.c |   20 ++++++++++----------
+ 1 files changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-index 1db2ebc..8a78b61 100644
+index 2c97051..13e7ce3 100644
 --- a/arch/arm/plat-omap/mcbsp.c
 +++ b/arch/arm/plat-omap/mcbsp.c
-@@ -317,7 +317,15 @@ static inline void omap34xx_mcbsp_request(struct omap_mcbsp *mcbsp)
+@@ -1063,24 +1063,24 @@ static DEVICE_ATTR(prop, 0644, prop##_show, prop##_store);
+ THRESHOLD_PROP_BUILDER(max_tx_thres);
+ THRESHOLD_PROP_BUILDER(max_rx_thres);
  
- 		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
- 		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03) | CLOCKACTIVITY(0x03));
--		syscon |= (ENAWAKEUP | SIDLEMODE(0x02) | CLOCKACTIVITY(0x02));
-+
-+		spin_lock_irq(&mcbsp->lock);
-+		if (mcbsp->dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
-+			syscon |= SIDLEMODE(0x02);
-+		else
-+			syscon |= SIDLEMODE(0x01);
-+		spin_unlock_irq(&mcbsp->lock);
-+
-+		syscon |= (ENAWAKEUP | CLOCKACTIVITY(0x02));
- 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
+-static const struct attribute *threshold_attrs[] = {
++static const struct attribute *additional_attrs[] = {
+ 	&dev_attr_max_tx_thres.attr,
+ 	&dev_attr_max_rx_thres.attr,
+ 	NULL,
+ };
  
- 		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, XRDYEN | RRDYEN);
+-static const struct attribute_group threshold_attr_group = {
+-	.attrs = (struct attribute **)threshold_attrs,
++static const struct attribute_group additional_attr_group = {
++	.attrs = (struct attribute **)additional_attrs,
+ };
+ 
+-static inline int __devinit omap_thres_add(struct device *dev)
++static inline int __devinit omap_additional_add(struct device *dev)
+ {
+-	return sysfs_create_group(&dev->kobj, &threshold_attr_group);
++	return sysfs_create_group(&dev->kobj, &additional_attr_group);
+ }
+ 
+-static inline void __devexit omap_thres_remove(struct device *dev)
++static inline void __devexit omap_additional_remove(struct device *dev)
+ {
+-	sysfs_remove_group(&dev->kobj, &threshold_attr_group);
++	sysfs_remove_group(&dev->kobj, &additional_attr_group);
+ }
+ 
+ static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp)
+@@ -1088,9 +1088,9 @@ static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp)
+ 	if (cpu_is_omap34xx()) {
+ 		mcbsp->max_tx_thres = max_thres(mcbsp);
+ 		mcbsp->max_rx_thres = max_thres(mcbsp);
+-		if (omap_thres_add(mcbsp->dev))
++		if (omap_additional_add(mcbsp->dev))
+ 			dev_warn(mcbsp->dev,
+-				"Unable to create threshold controls\n");
++				"Unable to create additional controls\n");
+ 	} else {
+ 		mcbsp->max_tx_thres = -EINVAL;
+ 		mcbsp->max_rx_thres = -EINVAL;
+@@ -1100,7 +1100,7 @@ static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp)
+ static inline void __devexit omap34xx_device_exit(struct omap_mcbsp *mcbsp)
+ {
+ 	if (cpu_is_omap34xx())
+-		omap_thres_remove(mcbsp->dev);
++		omap_additional_remove(mcbsp->dev);
+ }
+ #else
+ static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp) {}
 -- 
 1.6.2.GIT
 
