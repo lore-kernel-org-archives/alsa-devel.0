@@ -1,32 +1,19 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv3 19/20] ASoC: OMAP: Use McBSP threshold to
-	playback and capture
-Date: Thu, 13 Aug 2009 17:35:32 +0300
-Message-ID: <1250174133-451-20-git-send-email-eduardo.valentin__14760.8621082783$1250175088$gmane$org@nokia.com>
+Subject: [PATCHv3 06/20] OMAP3: McBSP: Lower the maximum
+	buffersize for McBSP1, 3, 4, 5
+Date: Thu, 13 Aug 2009 17:35:19 +0300
+Message-ID: <1250174133-451-7-git-send-email-eduardo.valentin__2173.72279516912$1250175099$gmane$org@nokia.com>
 References: <1250174133-451-1-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-2-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-3-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-4-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-5-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-6-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-7-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-8-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-9-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-10-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-11-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-12-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-13-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-14-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-15-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-16-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-17-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-18-git-send-email-eduardo.valentin@nokia.com>
-	<1250174133-451-19-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1250174133-451-19-git-send-email-eduardo.valentin@nokia.com>
+In-Reply-To: <1250174133-451-6-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,163 +24,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+Cc: "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch changes the way DMA is done in omap-pcm.c
-in order to reduce power consumption. There is no need
-to have so much SW control in order to have DMA in idle
-state during audio streaming. Configuring McBSP threshold value
-and DMA to FRAME_SYNC are sufficient.
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 
-Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
+Do not allow applications to use the full buffer found on
+McBSP1,3,4,5. Using the full buffer in threshold mode causes
+the McBSP buffer to run dry, which can be observed as channels
+are switching (in reality the channels are shifting).
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
- sound/soc/omap/omap-mcbsp.c |   47 +++++++++++++++++++++++++++++++++++++-----
- sound/soc/omap/omap-pcm.c   |    7 +++++-
- sound/soc/omap/omap-pcm.h   |    2 +
- 3 files changed, 49 insertions(+), 7 deletions(-)
+ arch/arm/mach-omap2/mcbsp.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 0272d3f..8a7b5ef 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -139,28 +139,59 @@ static const unsigned long omap34xx_mcbsp_port[][2] = {
- static const unsigned long omap34xx_mcbsp_port[][2] = {};
- #endif
- 
-+static void omap_mcbsp_set_threshold(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
-+	int samples = snd_pcm_lib_period_bytes(substream) >> 1;
-+
-+	/* Configure McBSP internal buffer usage */
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		omap_mcbsp_set_tx_threshold(mcbsp_data->bus_id, samples - 1);
-+	else
-+		omap_mcbsp_set_rx_threshold(mcbsp_data->bus_id, samples - 1);
-+}
-+
- static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
- 				  struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
- 	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
-+	int bus_id = mcbsp_data->bus_id;
- 	int err = 0;
- 
--	if (cpu_is_omap343x() && mcbsp_data->bus_id == 1) {
-+	if (!cpu_dai->active)
-+		err = omap_mcbsp_request(bus_id);
-+
-+	if (cpu_is_omap343x()) {
-+		int max_period;
-+
- 		/*
- 		 * McBSP2 in OMAP3 has 1024 * 32-bit internal audio buffer.
- 		 * Set constraint for minimum buffer size to the same than FIFO
- 		 * size in order to avoid underruns in playback startup because
- 		 * HW is keeping the DMA request active until FIFO is filled.
- 		 */
-+		if (bus_id == 1)
-+			snd_pcm_hw_constraint_minmax(substream->runtime,
-+					SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
-+					4096, UINT_MAX);
-+
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			max_period = omap_mcbsp_get_max_tx_threshold(bus_id);
-+		else
-+			max_period = omap_mcbsp_get_max_rx_threshold(bus_id);
-+
-+		max_period++;
-+		max_period <<= 1;
-+
- 		snd_pcm_hw_constraint_minmax(substream->runtime,
--			SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 4096, UINT_MAX);
-+						SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
-+						32, max_period);
- 	}
- 
--	if (!cpu_dai->active)
--		err = omap_mcbsp_request(mcbsp_data->bus_id);
--
- 	return err;
- }
- 
-@@ -220,7 +251,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
- 	struct omap_mcbsp_reg_cfg *regs = &mcbsp_data->regs;
- 	int dma, bus_id = mcbsp_data->bus_id, id = cpu_dai->id;
--	int wlen, channels, wpf;
-+	int wlen, channels, wpf, sync_mode = OMAP_DMA_SYNC_ELEMENT;
- 	unsigned long port;
- 	unsigned int format;
- 
-@@ -236,6 +267,9 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 	} else if (cpu_is_omap343x()) {
- 		dma = omap24xx_dma_reqs[bus_id][substream->stream];
- 		port = omap34xx_mcbsp_port[bus_id][substream->stream];
-+		omap_mcbsp_dai_dma_params[id][substream->stream].set_threshold =
-+						omap_mcbsp_set_threshold;
-+		sync_mode = OMAP_DMA_SYNC_FRAME;
- 	} else {
- 		return -ENODEV;
- 	}
-@@ -243,6 +277,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 		substream->stream ? "Audio Capture" : "Audio Playback";
- 	omap_mcbsp_dai_dma_params[id][substream->stream].dma_req = dma;
- 	omap_mcbsp_dai_dma_params[id][substream->stream].port_addr = port;
-+	omap_mcbsp_dai_dma_params[id][substream->stream].sync_mode = sync_mode;
- 	cpu_dai->dma_data = &omap_mcbsp_dai_dma_params[id][substream->stream];
- 
- 	if (mcbsp_data->configured) {
-diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-index 5d41371..5e24e08 100644
---- a/sound/soc/omap/omap-pcm.c
-+++ b/sound/soc/omap/omap-pcm.c
-@@ -148,7 +148,7 @@ static int omap_pcm_prepare(struct snd_pcm_substream *substream)
- 	 */
- 	dma_params.data_type			= OMAP_DMA_DATA_TYPE_S16;
- 	dma_params.trigger			= dma_data->dma_req;
--	dma_params.sync_mode			= OMAP_DMA_SYNC_ELEMENT;
-+	dma_params.sync_mode			= dma_data->sync_mode;
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		dma_params.src_amode		= OMAP_DMA_AMODE_POST_INC;
- 		dma_params.dst_amode		= OMAP_DMA_AMODE_CONSTANT;
-@@ -186,6 +186,7 @@ static int omap_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct omap_runtime_data *prtd = runtime->private_data;
-+	struct omap_pcm_dma_data *dma_data = prtd->dma_data;
- 	unsigned long flags;
- 	int ret = 0;
- 
-@@ -195,6 +196,10 @@ static int omap_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		prtd->period_index = 0;
-+		/* Configure McBSP internal buffer usage */
-+		if (dma_data->set_threshold)
-+			dma_data->set_threshold(substream);
-+
- 		omap_start_dma(prtd->dma_ch);
- 		break;
- 
-diff --git a/sound/soc/omap/omap-pcm.h b/sound/soc/omap/omap-pcm.h
-index 8d9d269..38a821d 100644
---- a/sound/soc/omap/omap-pcm.h
-+++ b/sound/soc/omap/omap-pcm.h
-@@ -29,6 +29,8 @@ struct omap_pcm_dma_data {
- 	char		*name;		/* stream identifier */
- 	int		dma_req;	/* DMA request line */
- 	unsigned long	port_addr;	/* transmit/receive register */
-+	int		sync_mode;	/* DMA sync mode */
-+	void (*set_threshold)(struct snd_pcm_substream *substream);
+diff --git a/arch/arm/mach-omap2/mcbsp.c b/arch/arm/mach-omap2/mcbsp.c
+index f837114..7d22caf 100644
+--- a/arch/arm/mach-omap2/mcbsp.c
++++ b/arch/arm/mach-omap2/mcbsp.c
+@@ -129,7 +129,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+ 		.rx_irq		= INT_24XX_MCBSP1_IRQ_RX,
+ 		.tx_irq		= INT_24XX_MCBSP1_IRQ_TX,
+ 		.ops		= &omap2_mcbsp_ops,
+-		.buffer_size	= 0x7F,
++		.buffer_size	= 0x6F,
+ 	},
+ 	{
+ 		.phys_base	= OMAP34XX_MCBSP2_BASE,
+@@ -147,7 +147,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+ 		.rx_irq		= INT_24XX_MCBSP3_IRQ_RX,
+ 		.tx_irq		= INT_24XX_MCBSP3_IRQ_TX,
+ 		.ops		= &omap2_mcbsp_ops,
+-		.buffer_size	= 0x7F,
++		.buffer_size	= 0x6F,
+ 	},
+ 	{
+ 		.phys_base	= OMAP34XX_MCBSP4_BASE,
+@@ -156,7 +156,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+ 		.rx_irq		= INT_24XX_MCBSP4_IRQ_RX,
+ 		.tx_irq		= INT_24XX_MCBSP4_IRQ_TX,
+ 		.ops		= &omap2_mcbsp_ops,
+-		.buffer_size	= 0x7F,
++		.buffer_size	= 0x6F,
+ 	},
+ 	{
+ 		.phys_base	= OMAP34XX_MCBSP5_BASE,
+@@ -165,7 +165,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+ 		.rx_irq		= INT_24XX_MCBSP5_IRQ_RX,
+ 		.tx_irq		= INT_24XX_MCBSP5_IRQ_TX,
+ 		.ops		= &omap2_mcbsp_ops,
+-		.buffer_size	= 0x7F,
++		.buffer_size	= 0x6F,
+ 	},
  };
- 
- extern struct snd_soc_platform omap_soc_platform;
+ #define OMAP34XX_MCBSP_PDATA_SZ		ARRAY_SIZE(omap34xx_mcbsp_pdata)
 -- 
 1.6.2.GIT
 
