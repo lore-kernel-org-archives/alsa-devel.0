@@ -1,18 +1,23 @@
-From: Kai Vehmanen <kvehmanen@eca.cx>
-Subject: Re: snd_pcm_delay, hw buffers and driver api (v2)
-Date: Fri, 14 Aug 2009 00:57:47 +0300 (EEST)
-Message-ID: <alpine.DEB.1.10.0908140039270.3417@ecabase.localdomain>
-References: <alpine.DEB.1.10.0908140023240.3417@ecabase.localdomain>
+From: Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH 2/4] Allow passing platform_data for
+	pxa2xx-ac97
+Date: Fri, 14 Aug 2009 01:34:22 +0200
+Message-ID: <200908140134.22716.marek.vasut@gmail.com>
+References: <200907211633.14388.marek.vasut@gmail.com>
+	<200907300255.01675.marek.vasut@gmail.com>
+	<20090813204033.GA7519@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gw01.mail.saunalahti.fi (gw01.mail.saunalahti.fi
-	[195.197.172.115])
-	by alsa0.perex.cz (Postfix) with ESMTP id 73BEC103878
+Received: from mail-bw0-f205.google.com (mail-bw0-f205.google.com
+	[209.85.218.205])
+	by alsa0.perex.cz (Postfix) with ESMTP id C7A4A1038B5
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Aug 2009 23:57:26 +0200 (CEST)
-In-Reply-To: <alpine.DEB.1.10.0908140023240.3417@ecabase.localdomain>
+	Fri, 14 Aug 2009 01:34:44 +0200 (CEST)
+Received: by bwz1 with SMTP id 1so993941bwz.46
+	for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2009 16:34:43 -0700 (PDT)
+In-Reply-To: <20090813204033.GA7519@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,50 +27,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.arm.linux.org.uk
+Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>, dwmw2@infradead.org, cbou@mail.ru, Eric Miao <eric.y.miao@gmail.com>, avorontsov@ru.mvista.com, Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-[ continuing to restart the thread. Here's a reply to Mark's mail to the
-   original misplaced thread at:
-   http://kerneltrap.org/mailarchive/alsa-devel/2009/7/30/6272573 ]
-
-On Thu, 13 Aug 2009, Mark Brown wrote:
-> On Thu, Aug 13, 2009 at 11:46:52PM +0300, Kai Vehmanen wrote:
->> But how would a driver expose both bits of info to apps (in a standard
->> fashion): 1) the hw_ptr for shuffling bits out of the ringbuffer, and 2)
->> the delay to next played-out/captured sample. For application developers,
->> (2) is the piece of info we are mostly interested in (if I write a sample
->> now, how long it will be until it's played out).
->
-> Both bits of information are very interesting to applications - some
-> applications want to work on the data they're sending for as long as
-> possible (things like pulse which do mixing are the obvious example of
-> this).
-
-For sure, that's true. I was meaning to say, that when using 
-snd_pcm_delay(), (2) is what applications are mostly interested in. But 
-yeah, snd_pcm_avail()/snd_pcm_avail_delay() are certainly important to 
-applications as well. But I initialled ignored this part, as it would seem 
-this part of the API is already in good shape (especially after the recent 
-updates like snd_pcm_avail_delay()).
-
->> Any update/ideas on this topic? Personally I think adding a new driver
->> callback would make most sense, as that would allow to take full benefit
->> from hardware that allows to query sample-accurate position of playout
->> (i.e. not just support exposing a fixed latency). Of course that's
->> potentially a big change. In alsa-lib, snd_pcm_hwsync() could call this
->> driver callback, and a new variant of snd_pcm_delay() could present the
->> information to the applications.
->
-> If we're adding a new API it should be possible to add one which
-> provides the required information without disturbing the semantics of
-> the existing APIs.
-
-For sure. Changes to e.g. snd_pcm_delay() semantics (especially with 
-current set of drivers) would cause no end of nasty bugs, agreed. Probably 
-reusing snd_pcm_hwsync() is a bad idea as well. Maybe just add a new 
-snd_pcm_hwdelay() or some such which calls the new driver callback (-> 
-provides an atomic snapshot of snd_pcm_avail_delay + fill-status of ext-hw 
-buffers).
+RG5lIMSMdCAxMy4gc3JwbmEgMjAwOSAyMjo0MDozNCBNYXJrIEJyb3duIG5hcHNhbChhKToKPiBP
+biBUaHUsIEp1bCAzMCwgMjAwOSBhdCAwMjo1NTowMUFNICswMjAwLCBNYXJlayBWYXN1dCB3cm90
+ZToKPiA+IEZyb20gMjA3ZDU0MjQ0NzY4ZTk0Y2UwMTQ0Y2JhNTVhY2Y0YWUwNjVlNmNlMCBNb24g
+U2VwIDE3IDAwOjAwOjAwIDIwMDEKPiA+IEZyb206IE1hcmVrIFZhc3V0IDxtYXJlay52YXN1dEBn
+bWFpbC5jb20+Cj4gPiBEYXRlOiBUdWUsIDIxIEp1bCAyMDA5IDE2OjIyOjI5ICswMjAwCj4gPiBT
+dWJqZWN0OiBbUEFUQ0hdIEFsbG93IHBhc3NpbmcgcGxhdGZvcm1fZGF0YSBmb3IgcHhhMnh4LWFj
+OTcKPiA+Cj4gPiBUaGlzIHBhdGNoIGFkZHMgc3VwcG9ydCBmb3IgcGFzc2luZyBwbGF0Zm9ybSBk
+YXRhIHRvIGFjOTcgYnVzIGRldmljZXMKPiA+IGZyb20gUFhBMnh4LUFDOTcgZHJpdmVyLi4KPgo+
+IEkndmUgYXBwbGllZCB0aGlzIG9uZSB0b28gc2luY2UgaXQncyBBTFNBIG9ubHkgYW5kIGl0J2xs
+IGVhc2UgbWVyZ2UKPiBpc3N1ZXMgbmV4dCBtZXJnZSB3aW5kb3cgLSB3ZSBjYW4gcmV2aXNpdCBp
+ZiBhbnkgb2YgdGhlIG90aGVyIHBhdGNoZXMKPiBnZXQgYXBwbGllZCBiZWZvcmUuCgpIaSwKCnRo
+YW5rcywgSSB0aGluayB5b3UgY2FuIGFwcGx5IHRoZSAzLzQgYW5kIDQvNCBhcyB3ZWxsLiBCdXQg
+eW91IHNob3VsZCBwcm9iYWJseSAKdGFsayB0byBBbnRvbiBhYm91dCB0aGUgMy80IGlmIGhlIHdh
+bnRzIHRvIG1lcmdlIGl0IHRocm91Z2ggeW91ciB0cmVlIG9yIGhpcyAKb3Igd2hhdGV2ZXIuIEhl
+IGFja2VkIGl0IHByZXZpb3VzbHksIGl0J3MgaW4gdGhhdCBodWdlIHRocmVhZCBmcm9tIGp1bHku
+IFRoZSAKbWFpbCdzIHN1YmplY3QgaXMgIltQQVRDSCAyLzRdIEFsbG93IHBhc3NpbmcgcGxhdGZv
+cm1fZGF0YSBmb3IgcHhhMnh4LWFjOTciIAphbmQgaXQncyBmcm9tIDIyLzA3LzIwMDkuCgpDaGVl
+cnMhCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
