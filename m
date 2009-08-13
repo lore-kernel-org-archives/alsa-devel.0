@@ -1,7 +1,8 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv3 10/20] OMAP: McBSP: Change wakeup signals
-Date: Thu, 13 Aug 2009 17:35:23 +0300
-Message-ID: <1250174133-451-11-git-send-email-eduardo.valentin__14618.7176499099$1250175038$gmane$org@nokia.com>
+Subject: [PATCHv3 17/20] ASoC: Add runtime check for RFIG and
+	XFIG
+Date: Thu, 13 Aug 2009 17:35:30 +0300
+Message-ID: <1250174133-451-18-git-send-email-eduardo.valentin__18288.5859547698$1250175055$gmane$org@nokia.com>
 References: <1250174133-451-1-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-2-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-3-git-send-email-eduardo.valentin@nokia.com>
@@ -12,11 +13,18 @@ References: <1250174133-451-1-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-8-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-9-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-10-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-11-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-12-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-13-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-14-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-15-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-16-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-17-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1250174133-451-10-git-send-email-eduardo.valentin@nokia.com>
+In-Reply-To: <1250174133-451-17-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,62 +35,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+Cc: "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, Eero Nurkkala <ext-eero.nurkkala@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Configure only XRDYEN and RRDYEN wakeup signals
-in order to get better power consumption.
+From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 
-Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
+This is, no RFIG or XFIG (Not defined in 34xx), correct
+initiliazation of rccr and xccr.
+
+Signed-off-by: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 ---
- arch/arm/plat-omap/include/mach/mcbsp.h |    3 ---
- arch/arm/plat-omap/mcbsp.c              |    7 ++-----
- 2 files changed, 2 insertions(+), 8 deletions(-)
+ sound/soc/omap/omap-mcbsp.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/plat-omap/include/mach/mcbsp.h b/arch/arm/plat-omap/include/mach/mcbsp.h
-index 2c5612a..776ea4d 100644
---- a/arch/arm/plat-omap/include/mach/mcbsp.h
-+++ b/arch/arm/plat-omap/include/mach/mcbsp.h
-@@ -273,9 +273,6 @@
- #define REOFEN			0x0004
- #define RFSREN			0x0002
- #define RSYNCERREN		0x0001
--#define WAKEUPEN_ALL		(XEMPTYEOFEN | XRDYEN | XEOFEN | XFSXEN | \
--				 XSYNCERREN | RRDYEN | REOFEN | RFSREN | \
--				 RSYNCERREN)
- 
- /* we don't do multichannel for now */
- struct omap_mcbsp_reg_cfg {
-diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-index eb2147d..c2fd038 100644
---- a/arch/arm/plat-omap/mcbsp.c
-+++ b/arch/arm/plat-omap/mcbsp.c
-@@ -320,7 +320,7 @@ static inline void omap34xx_mcbsp_request(struct omap_mcbsp *mcbsp)
- 		syscon |= (ENAWAKEUP | SIDLEMODE(0x02));
- 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
- 
--		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, WAKEUPEN_ALL);
-+		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, XRDYEN | RRDYEN);
- 	}
- }
- 
-@@ -331,15 +331,12 @@ static inline void omap34xx_mcbsp_free(struct omap_mcbsp *mcbsp)
- 	 */
- 	if (cpu_is_omap34xx()) {
- 		u16 syscon;
--		u16 wakeupen;
- 
- 		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
- 		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03));
- 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
- 
--		wakeupen = OMAP_MCBSP_READ(mcbsp->io_base, WAKEUPEN);
--		wakeupen &= ~WAKEUPEN_ALL;
--		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, wakeupen);
-+		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, 0);
- 	}
- }
- #else
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index a5d46a7..8f361b1 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -321,8 +321,11 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 	/* Generic McBSP register settings */
+ 	regs->spcr2	|= XINTM(3) | FREE;
+ 	regs->spcr1	|= RINTM(3);
+-	regs->rcr2	|= RFIG;
+-	regs->xcr2	|= XFIG;
++	/* RFIG and XFIG are not defined in 34xx */
++	if (!cpu_is_omap34xx()) {
++		regs->rcr2	|= RFIG;
++		regs->xcr2	|= XFIG;
++	}
+ 	if (cpu_is_omap2430() || cpu_is_omap34xx()) {
+ 		regs->xccr = DXENDLY(1) | XDMAEN;
+ 		regs->rccr = RFULL_CYCLE | RDMAEN;
 -- 
 1.6.2.GIT
 
