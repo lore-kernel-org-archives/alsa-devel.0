@@ -1,27 +1,26 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: ALSA and MP3
-Date: Thu, 13 Aug 2009 10:23:49 +0100
-Message-ID: <h60m38$hkk$1@ger.gmane.org>
-References: <8aaaf9230908130118hec83f4awe28fb5e53b5e02a6@mail.gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Subject: Re: [Uclinux-dist-devel] [PATCH 1/3] new ad1836 codec
+	driver based on asoc
+Date: Thu, 13 Aug 2009 05:34:11 -0400
+Message-ID: <8bd0f97a0908130234r305186d6x70a3a69898b9014e@mail.gmail.com>
+References: <1250051574-25119-1-git-send-email-21cnbao@gmail.com>
+	<1250051574-25119-2-git-send-email-21cnbao@gmail.com>
+	<20090812134645.GC11898@rakim.wolfsonmicro.main>
+	<3c17e3570908122041m29a1843agd0f9fd0e415181c3@mail.gmail.com>
+	<20090813090801.GA31504@sirena.org.uk>
+	<8bd0f97a0908130222x7ad7e57bw5d61c9ec6c826dde@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 47E9C243D2
+Received: from mail-yx0-f176.google.com (mail-yx0-f176.google.com
+	[209.85.210.176])
+	by alsa0.perex.cz (Postfix) with ESMTP id BA9E6243E4
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Aug 2009 11:24:03 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1MbWXR-0001VQ-HB
-	for alsa-devel@alsa-project.org; Thu, 13 Aug 2009 09:24:01 +0000
-Received: from brent.tribalogic.net ([78.86.109.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2009 09:24:01 +0000
-Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2009 09:24:01 +0000
-In-Reply-To: <8aaaf9230908130118hec83f4awe28fb5e53b5e02a6@mail.gmail.com>
+	Thu, 13 Aug 2009 11:34:31 +0200 (CEST)
+Received: by yxe6 with SMTP id 6so808388yxe.16
+	for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2009 02:34:31 -0700 (PDT)
+In-Reply-To: <8bd0f97a0908130222x7ad7e57bw5d61c9ec6c826dde@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,55 +30,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and gammay at 13/08/09 09:18 did gyre and gimble:
-> Hello,
-> I am looking at making this product use case possible:
-> Audio samples are streamed over wire/wireless from a source device to a sink
-> device. The streaming format is in mp3. On the source device I need to
-> capture locally played mp3 samples and stream to the sink device. The sink
-> device takes care of uncompressing and playback.
-> 
-> Can we capture compressed mp3 streams directly using ALSA? It is possible to
-> capture uncompressed PCM samples using file plug or by other means in
-> ALSA. While it is possible to directly read from the mp3 file, I would
-> rather grap the samples that a media player sends out because a) it takes
-> care of timing b) I can control the media player to play/pause the stream
-> and for playlist management. For the user it is transperent - he/she will
-> use only the local media player to control the streaming.
-> 
-> I am not sure if this lies in the domain of ALSA at all - as I understand
-> once we are in ALSA we are dealing with only PCM. In such case, please give
-> me some pointers where I can look at to make this possible. I am using
-> mplayer, but can also look at other types (non-GUI, command-line based). Can
-> we do this in a non-media player specific way?
-
-Sounds like something that is much more in the gstreamer domain I think.
-
-For general purpose interaction with network devices generally for 
-desktop audio systems, pulseaudio is more appropriate (it already 
-interacts with UPnP devices, native pulseaudio servers and Apple RAOP 
-Airtunes devices over the network). It does not deal with codecs at 
-present however, but some kind of work in that area will probably have 
-to be done eventually (tho' it wont do any encoding/decoding by itself - 
-it would always hand over to e.g. gstreamer for this job).
-
-Jump on IRC and have a chat over at #gstreamer or #pulseaudio for 
-inspiration.
-
-Col
-
--- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-   Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-   Mandriva Linux Contributor [http://www.mandriva.com/]
-   PulseAudio Hacker [http://www.pulseaudio.org/]
-   Trac Hacker [http://trac.edgewall.org/]
+T24gVGh1LCBBdWcgMTMsIDIwMDkgYXQgMDU6MjIsIE1pa2UgRnJ5c2luZ2VyIHdyb3RlOgo+IE9u
+IFRodSwgQXVnIDEzLCAyMDA5IGF0IDA1OjA4LCBNYXJrIEJyb3duIHdyb3RlOgo+PiBPbiBUaHUs
+IEF1ZyAxMywgMjAwOSBhdCAxMTo0MToxM0FNICswODAwLCBCYXJyeSBTb25nIHdyb3RlOgo+Pj4g
+T24gV2VkLCBBdWcgMTIsIDIwMDkgYXQgOTo0NiBQTSwgTWFyayBCcm93biB3cm90ZToKPj4+ID4g
+SnVzdCAiYWQxODM2IiAtIHRoZSBmYWN0IHRoYXQgaXQncyBjb250cm9sbGVkIHZpYSBTUEkgaXMg
+Y2xlYXIgZnJvbSB0aGUKPj4+ID4gZmFjdCB0aGF0IHRoaXMgaXMgYSBzdHJ1Y3Qgc3BpX2RyaXZl
+ci4KPj4+Cj4+PiBJIGFncmVlIHRoZSBzcGkgc3RydWN0dXJlIGltcGxpZXMgdGhlIG1lYW5pbmcg
+b2Ygc3BpLiDCoEJ1dCBmaWxlcyBpbgo+Pj4gYXJjaC9ibGFja2Zpbi9tYWNoLi4uIGFyZSB1c2lu
+ZyBuYW1lcyBsaWtlICJ4eHgtc3BpIiBmb3IgYWxtb3N0IGFsbAo+Pj4gc3BpIGRldmljZXMuIEhv
+dyBhYm91dCBrZWVwaW5nIHRoZSBjb2hlcmVuY2U/Cj4+Cj4+IE9oIGRlYXIuIMKgTG9va3MgbGlr
+ZSB5b3UndmUgZXNzZW50aWFsbHkgZ290IGEgY2hvaWNlIGJldHdlZW4gYmVpbmcKPj4gY29uc2lz
+dGVudCB3aXRoIHRoZSByZXN0IG9mIHRoZSB3b3JsZCBhbmQgYmVpbmcgY29uc2lzdGVudCB3aXRo
+IHdoYXQgdGhlCj4+IGJsYWNrZmluIHN0dWZmIGlzIGRvaW5nLgo+Cj4gaXQgcmVhbGx5IGlzbnQg
+dGhhdCBiYWQuIMKgdGhlIGRyaXZlcnMgdGhhdCB1c2UgIi1zcGkiIHN1ZmZpeDoKPiDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoC5tb2RhbGlhcyA9ICJhZDE4MzYtc3BpIiwgwqAgIyBhdWRpbwo+IMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgLm1vZGFsaWFzID0gImFkMTkzOC1zcGkiLCDCoCAjIGF1ZGlv
+Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAubW9kYWxpYXMgPSAiYWQ3MTQ3LXNwaSIsIMKgICMg
+aW5wdXQKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoC5tb2RhbGlhcyA9ICJhZDk5NjAtc3BpIiwg
+wqAgIyBkZWFkCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAubW9kYWxpYXMgPSAiYmZpbi1scTAz
+NXExLXNwaSIsIMKgIyB2aWRlbwo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgLm1vZGFsaWFzID0g
+ImZ4by1zcGkiLCDCoCAjIGRlYWQKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoC5tb2RhbGlhcyA9
+ICJmeHMtc3BpIiwgwqAgIyBkZWFkCj4KPiBkcm9wcGluZyB0aGUgZGVhZCBkZXZpY2VzIGxlYXZl
+cyB1cyB3aXRoIDQgZHJpdmVycyB0byBmaXgsIHR3byBvZgo+IHdoaWNoIGFyZSBhdWRpby4gwqBz
+aG91bGQgYmUgZWFzeSBmb3IgdXMgdG8gZml4LgoKc2VtaS1zY3JhdGNoIHRoYXQuICBpdmUgcHVu
+dGVkIHRoZSBkZWFkIGRldmljZXMgZnJvbSBvdXIgdHJlZSwgYnV0IHRoZQpiZmluLWxxMDM1cTEt
+c3BpIGlzIGNvcnJlY3QgYXMgdGhhdCBkZXZpY2UgZHJpdmVyIHJlcXVpcmVzIHR3byB0aGluZ3MK
+LS0gYSBwbGF0Zm9ybSBkcml2ZXIgbmFtZWQgImJmaW4tbHEwMzVxMSIgYW5kIGEgc3BpIGRyaXZl
+ciBuYW1lZAoiYmZpbi1scTAzNXExLXNwaSIuCgppJ2xsIGhhdmUgdG8gc2VuZCBhIHBhdGNoIG91
+dCBmb3IgdGhlIGFkNzE0Ny1zcGkgc2luY2UgaXQncyBiZWVuCm1lcmdlZCBpbnRvIHRoZSBpbnB1
+dCB0cmVlIGlpcmMsIGJ1dCBCYXJyeSBjYW4gaGFuZGxlIHRoZXNlIHR3bwpjb2RlY3MuCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
