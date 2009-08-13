@@ -1,16 +1,25 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv3 03/20] OMAP: McBSP: Use appropriate value for
-	startup delay
-Date: Thu, 13 Aug 2009 17:35:16 +0300
-Message-ID: <1250174133-451-4-git-send-email-eduardo.valentin__8216.42519808865$1250174946$gmane$org@nokia.com>
+Subject: [PATCHv3 12/20] OMAP: McBSP: Configure NO IDLE mode
+	for DMA mode different of threshold
+Date: Thu, 13 Aug 2009 17:35:25 +0300
+Message-ID: <1250174133-451-13-git-send-email-eduardo.valentin__48381.0260113843$1250174952$gmane$org@nokia.com>
 References: <1250174133-451-1-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-2-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-3-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-4-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-5-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-6-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-7-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-8-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-9-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-10-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-11-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-12-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1250174133-451-3-git-send-email-eduardo.valentin@nokia.com>
+In-Reply-To: <1250174133-451-12-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,30 +33,34 @@ To: alsa-devel@alsa-project.org
 Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
+Use dma mode property to configure NO IDLE or SMART IDLE of McBSPs.
+
 Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
 ---
- arch/arm/plat-omap/mcbsp.c |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
+ arch/arm/plat-omap/mcbsp.c |   10 +++++++++-
+ 1 files changed, 9 insertions(+), 1 deletions(-)
 
 diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-index 84cc323..2383b08 100644
+index 1db2ebc..8a78b61 100644
 --- a/arch/arm/plat-omap/mcbsp.c
 +++ b/arch/arm/plat-omap/mcbsp.c
-@@ -359,7 +359,13 @@ void omap_mcbsp_start(unsigned int id)
- 	w = OMAP_MCBSP_READ(io_base, SPCR1);
- 	OMAP_MCBSP_WRITE(io_base, SPCR1, w | 1);
+@@ -317,7 +317,15 @@ static inline void omap34xx_mcbsp_request(struct omap_mcbsp *mcbsp)
  
--	udelay(100);
-+	/*
-+	 * Worst case: CLKSRG*2 = 8000khz: (1/8000) * 2 * 2 usec
-+	 * REVISIT: 100us may give enough time for two CLKSRG, however
-+	 * due to some unknown PM related, clock gating etc. reason it
-+	 * is now at 500us.
-+	 */
-+	udelay(500);
+ 		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
+ 		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03) | CLOCKACTIVITY(0x03));
+-		syscon |= (ENAWAKEUP | SIDLEMODE(0x02) | CLOCKACTIVITY(0x02));
++
++		spin_lock_irq(&mcbsp->lock);
++		if (mcbsp->dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
++			syscon |= SIDLEMODE(0x02);
++		else
++			syscon |= SIDLEMODE(0x01);
++		spin_unlock_irq(&mcbsp->lock);
++
++		syscon |= (ENAWAKEUP | CLOCKACTIVITY(0x02));
+ 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
  
- 	/* Start frame sync */
- 	w = OMAP_MCBSP_READ(io_base, SPCR2);
+ 		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, XRDYEN | RRDYEN);
 -- 
 1.6.2.GIT
 
