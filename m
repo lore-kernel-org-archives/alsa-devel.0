@@ -1,21 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Audio support for TLV320AIC23 on Simtec S3C24XX
- products
-Date: Thu, 13 Aug 2009 14:40:22 +0100
-Message-ID: <20090813134022.GD21652@rakim.wolfsonmicro.main>
-References: <20090806230149.440747780@fluff.org.uk>
-	<20090807101052.GB639@sirena.org.uk>
-	<4A84140E.1010008@simtec.co.uk>
+Subject: Re: tlv320aic3x: Allow driver to use already
+ registered i2c device
+Date: Thu, 13 Aug 2009 14:48:27 +0100
+Message-ID: <20090813134827.GE21652@rakim.wolfsonmicro.main>
+References: <20090806230204.992074844@fluff.org.uk>
+	<20090807094301.GA639@sirena.org.uk>
+	<4A84148E.7050307@simtec.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D623E24546
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BBD4E103878
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Aug 2009 15:40:23 +0200 (CEST)
+	Thu, 13 Aug 2009 15:48:28 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4A84140E.1010008@simtec.co.uk>
+In-Reply-To: <4A84148E.7050307@simtec.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,25 +29,19 @@ To: Ben Dooks <ben@simtec.co.uk>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 13, 2009 at 02:24:30PM +0100, Ben Dooks wrote:
+On Thu, Aug 13, 2009 at 02:26:38PM +0100, Ben Dooks wrote:
 > Mark Brown wrote:
 
-> >Also, as I've mentioned to you on a number of previous occasions please
-> >do try to remember to CC subsystem maintainers when submitting patches.
+> >Why would you want to do this?  I suspect that perhaps you want to
+> >convert the driver to use the standard device model instead but without
+> >understanding your motivation for making this change it is very hard to
+> >comment in detail.
 
-> I thought you where the ASoC maintainer? Who else should I be CC'ing?
+> The device is registered by the code that sets the initial devices
+> up that have been passed from the bootloader, thus the tlv320aic33
+> fails to initialise as there is already an i2c device on the i2c bus
+> when it comes along.
 
-You'd only sent the patches to the list, there wasn't a CC to me.
-
-> >So I'm guessing that this is muting through powering off?  In that case
-> >(and probably in general) this would be better implemented as a DAPM
-> >widget with a SND_SOC_DAPM_PIN_SWITCH() control set up to provide the
-> >mute functionality.  Doing this will allow the speaker to be powered off
-> >when no audio is being played, saving power and helping avoid any pops
-> >or clicks being amplified by it.
-
-> I tried it that way first, unfortunately the AMP itself makes a POP
-> when powering up and down, the headphone output of the TLV320AIC23
-> doesn't seem to have a problem with pops.
-
-But it doesn't pop when people use the mute control?  OK, anyway.
+OK, that's what I thought.  You need to convert the driver to use the
+normal device model probe methods rather than using bodges like this.
+See drivers like wm8731 for an example of how the conversion looks.
