@@ -1,17 +1,21 @@
-From: gammay <gammay@gmail.com>
-Subject: ALSA and MP3
-Date: Thu, 13 Aug 2009 13:48:01 +0530
-Message-ID: <8aaaf9230908130118hec83f4awe28fb5e53b5e02a6@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3] new ad1836 codec driver based on asoc
+Date: Thu, 13 Aug 2009 10:08:02 +0100
+Message-ID: <20090813090801.GA31504@sirena.org.uk>
+References: <1250051574-25119-1-git-send-email-21cnbao@gmail.com>
+	<1250051574-25119-2-git-send-email-21cnbao@gmail.com>
+	<20090812134645.GC11898@rakim.wolfsonmicro.main>
+	<3c17e3570908122041m29a1843agd0f9fd0e415181c3@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.147])
-	by alsa0.perex.cz (Postfix) with ESMTP id CA6FE2443E
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 16E9D2433C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Aug 2009 10:18:01 +0200 (CEST)
-Received: by ey-out-1920.google.com with SMTP id 13so153209eye.56
-	for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2009 01:18:01 -0700 (PDT)
+	Thu, 13 Aug 2009 11:08:04 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <3c17e3570908122041m29a1843agd0f9fd0e415181c3@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,29 +25,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Barry Song <21cnbao@gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-I am looking at making this product use case possible:
-Audio samples are streamed over wire/wireless from a source device to a sink
-device. The streaming format is in mp3. On the source device I need to
-capture locally played mp3 samples and stream to the sink device. The sink
-device takes care of uncompressing and playback.
+On Thu, Aug 13, 2009 at 11:41:13AM +0800, Barry Song wrote:
+> On Wed, Aug 12, 2009 at 9:46 PM, Mark
+> Brown<broonie@opensource.wolfsonmicro.com> wrote:
 
-Can we capture compressed mp3 streams directly using ALSA? It is possible to
-capture uncompressed PCM samples using file plug or by other means in
-ALSA. While it is possible to directly read from the mp3 file, I would
-rather grap the samples that a media player sends out because a) it takes
-care of timing b) I can control the media player to play/pause the stream
-and for playlist management. For the user it is transperent - he/she will
-use only the local media player to control the streaming.
+> > Just "ad1836" - the fact that it's controlled via SPI is clear from the
+> > fact that this is a struct spi_driver.
 
-I am not sure if this lies in the domain of ALSA at all - as I understand
-once we are in ALSA we are dealing with only PCM. In such case, please give
-me some pointers where I can look at to make this possible. I am using
-mplayer, but can also look at other types (non-GUI, command-line based). Can
-we do this in a non-media player specific way?
+> I agree the spi structure implies the meaning of spi.  But files in
+> arch/blackfin/mach... are using names like "xxx-spi" for almost all
+> spi devices. How about keeping the coherence?
 
-Thank you,
-Girish
+Oh dear.  Looks like you've essentially got a choice between being
+consistent with the rest of the world and being consistent with what the
+blackfin stuff is doing.
+
+> > The power control will be handled by DAPM but your driver still needs to
+> > restore things like the volume settings - when the driver is powered off
+> > the register settings will be forgotten.
+
+> My test shows registers setting doesn't lose after dac/adc shutdown :-)
+
+Probably your board is maintaining power to the chip even during
+suspend.
