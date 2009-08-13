@@ -1,8 +1,8 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv3 13/20] OMAP: McBSP: Do not enable wakeups for
-	no-idle mode
-Date: Thu, 13 Aug 2009 17:35:26 +0300
-Message-ID: <1250174133-451-14-git-send-email-eduardo.valentin__40102.2279089831$1250175005$gmane$org@nokia.com>
+Subject: [PATCHv3 20/20] ASoC: OMAP: Use DMA operating mode of
+	McBSP
+Date: Thu, 13 Aug 2009 17:35:33 +0300
+Message-ID: <1250174133-451-21-git-send-email-eduardo.valentin__26612.9922857091$1250175024$gmane$org@nokia.com>
 References: <1250174133-451-1-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-2-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-3-git-send-email-eduardo.valentin@nokia.com>
@@ -16,11 +16,18 @@ References: <1250174133-451-1-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-11-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-12-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-13-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-14-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-15-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-16-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-17-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-18-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-19-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-20-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1250174133-451-13-git-send-email-eduardo.valentin@nokia.com>
+In-Reply-To: <1250174133-451-20-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,49 +38,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, Eero Nurkkala <ext-eero.nurkkala@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, "\\\"Ujfalusi Peter (Nokia-D/Tampere)\\\"" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
-
-When no-idle mode is taken, wakeups need not to be enabled.
-Moreover, CLOCKACTIVITY bits are unnecessary with this mode
-also.
-
-Signed-off-by: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
-Acked-by: Eduardo Valentin <eduardo.valentin@nokia.com>
+Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
 ---
- arch/arm/plat-omap/mcbsp.c |   13 +++++++------
- 1 files changed, 7 insertions(+), 6 deletions(-)
+ sound/soc/omap/omap-mcbsp.c |   18 +++++++++++++++---
+ 1 files changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-index 8a78b61..c6df47d 100644
---- a/arch/arm/plat-omap/mcbsp.c
-+++ b/arch/arm/plat-omap/mcbsp.c
-@@ -319,16 +319,17 @@ static inline void omap34xx_mcbsp_request(struct omap_mcbsp *mcbsp)
- 		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03) | CLOCKACTIVITY(0x03));
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index 8a7b5ef..4369622 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -144,7 +144,14 @@ static void omap_mcbsp_set_threshold(struct snd_pcm_substream *substream)
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+ 	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
+-	int samples = snd_pcm_lib_period_bytes(substream) >> 1;
++	int dma_op_mode = omap_mcbsp_get_dma_op_mode(mcbsp_data->bus_id);
++	int samples;
++
++	/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
++	if (dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
++		samples = snd_pcm_lib_period_bytes(substream) >> 1;
++	else
++		samples = 1;
  
- 		spin_lock_irq(&mcbsp->lock);
--		if (mcbsp->dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
--			syscon |= SIDLEMODE(0x02);
--		else
-+		if (mcbsp->dma_op_mode == MCBSP_DMA_MODE_THRESHOLD) {
-+			syscon |= (ENAWAKEUP | SIDLEMODE(0x02) |
-+					CLOCKACTIVITY(0x02));
-+			OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN,
-+					XRDYEN | RRDYEN);
-+		} else {
- 			syscon |= SIDLEMODE(0x01);
-+		}
- 		spin_unlock_irq(&mcbsp->lock);
+ 	/* Configure McBSP internal buffer usage */
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+@@ -166,6 +173,7 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
+ 		err = omap_mcbsp_request(bus_id);
  
--		syscon |= (ENAWAKEUP | CLOCKACTIVITY(0x02));
- 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
--
--		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, XRDYEN | RRDYEN);
+ 	if (cpu_is_omap343x()) {
++		int dma_op_mode = omap_mcbsp_get_dma_op_mode(bus_id);
+ 		int max_period;
+ 
+ 		/*
+@@ -187,7 +195,8 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
+ 		max_period++;
+ 		max_period <<= 1;
+ 
+-		snd_pcm_hw_constraint_minmax(substream->runtime,
++		if (dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
++			snd_pcm_hw_constraint_minmax(substream->runtime,
+ 						SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
+ 						32, max_period);
  	}
- }
- 
+@@ -269,7 +278,10 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
+ 		port = omap34xx_mcbsp_port[bus_id][substream->stream];
+ 		omap_mcbsp_dai_dma_params[id][substream->stream].set_threshold =
+ 						omap_mcbsp_set_threshold;
+-		sync_mode = OMAP_DMA_SYNC_FRAME;
++		/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
++		if (omap_mcbsp_get_dma_op_mode(bus_id) ==
++						MCBSP_DMA_MODE_THRESHOLD)
++			sync_mode = OMAP_DMA_SYNC_FRAME;
+ 	} else {
+ 		return -ENODEV;
+ 	}
 -- 
 1.6.2.GIT
 
