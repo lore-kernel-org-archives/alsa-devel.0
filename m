@@ -1,7 +1,7 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv3 15/20] ASoC: OMAP: Make DMA 64 aligned
-Date: Thu, 13 Aug 2009 17:35:28 +0300
-Message-ID: <1250174133-451-16-git-send-email-eduardo.valentin__43731.7907847047$1250175138$gmane$org@nokia.com>
+Subject: [PATCHv3 16/20] ASoC: OMAP: Enable DMA burst mode
+Date: Thu, 13 Aug 2009 17:35:29 +0300
+Message-ID: <1250174133-451-17-git-send-email-eduardo.valentin__32153.7052667283$1250175150$gmane$org@nokia.com>
 References: <1250174133-451-1-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-2-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-3-git-send-email-eduardo.valentin@nokia.com>
@@ -17,11 +17,12 @@ References: <1250174133-451-1-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-13-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-14-git-send-email-eduardo.valentin@nokia.com>
 	<1250174133-451-15-git-send-email-eduardo.valentin@nokia.com>
+	<1250174133-451-16-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1250174133-451-15-git-send-email-eduardo.valentin@nokia.com>
+In-Reply-To: <1250174133-451-16-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,31 +38,23 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
 ---
- sound/soc/omap/omap-pcm.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/omap/omap-pcm.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-index 84a1950..2422a42 100644
+index 2422a42..5d41371 100644
 --- a/sound/soc/omap/omap-pcm.c
 +++ b/sound/soc/omap/omap-pcm.c
-@@ -288,7 +288,7 @@ static struct snd_pcm_ops omap_pcm_ops = {
- 	.mmap		= omap_pcm_mmap,
- };
+@@ -176,6 +176,9 @@ static int omap_pcm_prepare(struct snd_pcm_substream *substream)
  
--static u64 omap_pcm_dmamask = DMA_BIT_MASK(32);
-+static u64 omap_pcm_dmamask = DMA_BIT_MASK(64);
+ 	omap_enable_dma_irq(prtd->dma_ch, OMAP_DMA_FRAME_IRQ);
  
- static int omap_pcm_preallocate_dma_buffer(struct snd_pcm *pcm,
- 	int stream)
-@@ -338,7 +338,7 @@ int omap_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
- 	if (!card->dev->dma_mask)
- 		card->dev->dma_mask = &omap_pcm_dmamask;
- 	if (!card->dev->coherent_dma_mask)
--		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
-+		card->dev->coherent_dma_mask = DMA_BIT_MASK(64);
++	omap_set_dma_src_burst_mode(prtd->dma_ch, OMAP_DMA_DATA_BURST_16);
++	omap_set_dma_dest_burst_mode(prtd->dma_ch, OMAP_DMA_DATA_BURST_16);
++
+ 	return 0;
+ }
  
- 	if (dai->playback.channels_min) {
- 		ret = omap_pcm_preallocate_dma_buffer(pcm,
 -- 
 1.6.2.GIT
 
