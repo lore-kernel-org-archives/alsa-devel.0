@@ -1,23 +1,16 @@
-From: Anton Vorontsov <avorontsov@ru.mvista.com>
-Subject: Re: [PATCH 2/4] Allow passing platform_data for
- pxa2xx-ac97
-Date: Fri, 14 Aug 2009 03:42:01 +0400
-Message-ID: <20090813234201.GA15769@oksana.dev.rtsoft.ru>
-References: <200907211633.14388.marek.vasut@gmail.com>
-	<200907300255.01675.marek.vasut@gmail.com>
-	<20090813204033.GA7519@sirena.org.uk>
-	<200908140134.22716.marek.vasut@gmail.com>
-Reply-To: avorontsov@ru.mvista.com
+From: Barry Song <21cnbao@gmail.com>
+Subject: [PATCH] delete -spi suffix in name and free private
+	data while registers fail
+Date: Fri, 14 Aug 2009 12:06:38 +0800
+Message-ID: <1250222798-19507-1-git-send-email-21cnbao@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buildserver.ru.mvista.com (unknown [213.79.90.228])
-	by alsa0.perex.cz (Postfix) with ESMTP id E9A041038E1
+Received: from nwd2mail11.analog.com (nwd2mail11.analog.com [137.71.25.57])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3E63F24633
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Aug 2009 01:42:03 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200908140134.22716.marek.vasut@gmail.com>
+	Fri, 14 Aug 2009 06:04:50 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,31 +20,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>, dwmw2@infradead.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, cbou@mail.ru, Eric Miao <eric.y.miao@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel@lists.arm.linux.org.uk
+To: broonie@opensource.wolfsonmicro.com
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBBdWcgMTQsIDIwMDkgYXQgMDE6MzQ6MjJBTSArMDIwMCwgTWFyZWsgVmFzdXQgd3Jv
-dGU6Cj4gRG5lIMSMdCAxMy4gc3JwbmEgMjAwOSAyMjo0MDozNCBNYXJrIEJyb3duIG5hcHNhbChh
-KToKPiA+IE9uIFRodSwgSnVsIDMwLCAyMDA5IGF0IDAyOjU1OjAxQU0gKzAyMDAsIE1hcmVrIFZh
-c3V0IHdyb3RlOgo+ID4gPiBGcm9tIDIwN2Q1NDI0NDc2OGU5NGNlMDE0NGNiYTU1YWNmNGFlMDY1
-ZTZjZTAgTW9uIFNlcCAxNyAwMDowMDowMCAyMDAxCj4gPiA+IEZyb206IE1hcmVrIFZhc3V0IDxt
-YXJlay52YXN1dEBnbWFpbC5jb20+Cj4gPiA+IERhdGU6IFR1ZSwgMjEgSnVsIDIwMDkgMTY6MjI6
-MjkgKzAyMDAKPiA+ID4gU3ViamVjdDogW1BBVENIXSBBbGxvdyBwYXNzaW5nIHBsYXRmb3JtX2Rh
-dGEgZm9yIHB4YTJ4eC1hYzk3Cj4gPiA+Cj4gPiA+IFRoaXMgcGF0Y2ggYWRkcyBzdXBwb3J0IGZv
-ciBwYXNzaW5nIHBsYXRmb3JtIGRhdGEgdG8gYWM5NyBidXMgZGV2aWNlcwo+ID4gPiBmcm9tIFBY
-QTJ4eC1BQzk3IGRyaXZlci4uCj4gPgo+ID4gSSd2ZSBhcHBsaWVkIHRoaXMgb25lIHRvbyBzaW5j
-ZSBpdCdzIEFMU0Egb25seSBhbmQgaXQnbGwgZWFzZSBtZXJnZQo+ID4gaXNzdWVzIG5leHQgbWVy
-Z2Ugd2luZG93IC0gd2UgY2FuIHJldmlzaXQgaWYgYW55IG9mIHRoZSBvdGhlciBwYXRjaGVzCj4g
-PiBnZXQgYXBwbGllZCBiZWZvcmUuCj4gCj4gSGksCj4gCj4gdGhhbmtzLCBJIHRoaW5rIHlvdSBj
-YW4gYXBwbHkgdGhlIDMvNCBhbmQgNC80IGFzIHdlbGwuIEJ1dCB5b3Ugc2hvdWxkIHByb2JhYmx5
-IAo+IHRhbGsgdG8gQW50b24gYWJvdXQgdGhlIDMvNCBpZiBoZSB3YW50cyB0byBtZXJnZSBpdCB0
-aHJvdWdoIHlvdXIgdHJlZSBvciBoaXMgCj4gb3Igd2hhdGV2ZXIuIEhlIGFja2VkIGl0IHByZXZp
-b3VzbHksIGl0J3MgaW4gdGhhdCBodWdlIHRocmVhZCBmcm9tIGp1bHkuIFRoZSAKPiBtYWlsJ3Mg
-c3ViamVjdCBpcyAiW1BBVENIIDIvNF0gQWxsb3cgcGFzc2luZyBwbGF0Zm9ybV9kYXRhIGZvciBw
-eGEyeHgtYWM5NyIgCj4gYW5kIGl0J3MgZnJvbSAyMi8wNy8yMDA5LgoKSSdtIGZpbmUgd2l0aCBp
-dCBnb2luZyB0aHJvdWdoIE1hcmsncyB0cmVlLiBUaGFua3MhCgotLSAKQW50b24gVm9yb250c292
-CmVtYWlsOiBjYm91YXRtYWlscnVAZ21haWwuY29tCmlyYzovL2lyYy5mcmVlbm9kZS5uZXQvYmQy
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Signed-off-by: Barry Song <21cnbao@gmail.com>
+---
+ sound/soc/codecs/ad1938.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/codecs/ad1938.c b/sound/soc/codecs/ad1938.c
+index 051f68c..e62b277 100644
+--- a/sound/soc/codecs/ad1938.c
++++ b/sound/soc/codecs/ad1938.c
+@@ -456,7 +456,7 @@ static int __devexit ad1938_spi_remove(struct spi_device *spi)
+ 
+ static struct spi_driver ad1938_spi_driver = {
+ 	.driver = {
+-		.name	= "ad1938-spi",
++		.name	= "ad1938",
+ 		.bus	= &spi_bus_type,
+ 		.owner	= THIS_MODULE,
+ 	},
+@@ -543,6 +543,7 @@ static int ad1938_register(struct ad1938_priv *ad1938)
+ 	ret = snd_soc_register_codec(codec);
+ 	if (ret != 0) {
+ 		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
++		kfree(ad1938);
+ 		return ret;
+ 	}
+ 
+@@ -550,6 +551,7 @@ static int ad1938_register(struct ad1938_priv *ad1938)
+ 	if (ret != 0) {
+ 		dev_err(codec->dev, "Failed to register DAI: %d\n", ret);
+ 		snd_soc_unregister_codec(codec);
++		kfree(ad1938);
+ 		return ret;
+ 	}
+ 
+-- 
+1.5.6.3
