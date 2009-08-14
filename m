@@ -1,18 +1,16 @@
-From: James Courtier-Dutton <james.dutton@gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: snd_pcm_delay, hw buffers and driver api (v2)
-Date: Fri, 14 Aug 2009 11:38:10 +0100
-Message-ID: <ad2655cb0908140338q21ed09d6xd750bff561805d5a@mail.gmail.com>
+Date: Fri, 14 Aug 2009 14:13:00 +0200
+Message-ID: <4A8554CC.2060009@ladisch.de>
 References: <alpine.DEB.1.10.0908140023240.3417@ecabase.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.154])
-	by alsa0.perex.cz (Postfix) with ESMTP id C5C5910390C
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 28A7E24721
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Aug 2009 12:38:10 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id e21so362052fga.21
-	for <alsa-devel@alsa-project.org>; Fri, 14 Aug 2009 03:38:10 -0700 (PDT)
+	Fri, 14 Aug 2009 14:13:08 +0200 (CEST)
 In-Reply-To: <alpine.DEB.1.10.0908140023240.3417@ecabase.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,33 +25,23 @@ To: Kai Vehmanen <kvehmanen@eca.cx>
 Cc: alsa-devel@alsa-project.org, Ujfalusi Peter <peter.ujfalusi@nokia.com>, ext-eero.nurkkala@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-2009/8/13 Kai Vehmanen <kvehmanen@eca.cx>:
-> Hi,
->
->
-> Any update/ideas on this topic? Personally I think adding a new driver
-> callback would make most sense, as that would allow to take full benefit
-> from hardware that allows to query sample-accurate position of playout
-> (i.e. not just support exposing a fixed latency). Of course that's
-> potentially a big change. In alsa-lib, snd_pcm_hwsync() could call this
-> driver callback, and a new variant of snd_pcm_delay() could present the
-> information to the applications.
+Kai Vehmanen wrote:
+> ...
+> In both cases, this value (hw_ptr) shows the status of sending data to an 
+> separate entity, and one that has its own buffer (multiple ms) before the 
+> actual DAC/ADC.
+> 
+> So when application developer uses snd_pcm_delay(), the result is not 
+> quite what the ALSA API says: ...
 
-snd_pcm_delay() does not just support exposing a fixed latency. The
-value returned is dynamic.
+snd_pcm_avail() returns the free part of the buffer.
+snd_pcm_delay() returns the filled part of the buffer plus
+the additional delay imposed by the device.
 
-In the current ALSA implementation, the value returns a real time
-count of how many samples are already in the hardware buffer.
-So, if one makes a call to snd_pcm_delay(), waits for a period of a
-few samples, the new value returned in snd_pcm_delay() is going to be
-different, but only for sound cards that support this level of
-accuracy.
+The additional delay can be set by the driver in
+pcm_substream->runtime->delay.  (Currently, only
+the USB audio driver bothers to set this.)
 
-So, I think the snd_pcm_delay() function is already doing what you want.
-It was me who originally requested the snd_pcm_delay() function to be
-introduced into the API, for the purposes of audio/video sync in the
-media player xine.
 
-Kind Regards
-
-James
+HTH
+Clemens
