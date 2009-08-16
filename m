@@ -1,18 +1,18 @@
-From: Damien Zammit <damien.zammit@gmail.com>
-Subject: Re: Digidesign Mbox2 - usb support
-Date: Sun, 16 Aug 2009 18:27:34 +1000
-Message-ID: <98ec50f0908160127k17249517x9026107d30938977@mail.gmail.com>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: [PATCH] hda: enable speaker output of HP 2510p
+Date: Sun, 16 Aug 2009 17:05:13 +0800
+Message-ID: <20090816090513.GA25325@localhost>
+References: <20090816085317.GA23959@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
-	[209.85.219.223])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4C0F524153
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 16AAD24368
 	for <alsa-devel@alsa-project.org>;
-	Sun, 16 Aug 2009 10:27:35 +0200 (CEST)
-Received: by ewy23 with SMTP id 23so2454034ewy.32
-	for <alsa-devel@alsa-project.org>; Sun, 16 Aug 2009 01:27:34 -0700 (PDT)
+	Sun, 16 Aug 2009 11:11:44 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20090816085317.GA23959@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,226 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The Speaker/HP volumes of 2510p is binded, so shall the mute state.
 
-I wrote an addition to usbquirks.h to provide support for "Digidesign
-Mbox 2" but I need someone to point me in the right direction as to
-which interfaces to use.  I'm not sure if the MIDI interface is a
-standard device, and I'm not sure which interfaces to ignore.
-I am about to compile a new alsa + kernel with my changes to
-usbquirks.h to test the device.
+Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
+---
+ sound/pci/hda/patch_analog.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Here is my usbquirks.h addition:
-
-/* DIGIDESIGN MBOX 2 addition to usbquirks.h */
-
-{
-	/* Damien Zammit <damien.zammit@gmail.com>
-	 * 16 August 2009
-	 *
-	 * Interface topology of Digidesign Mbox 2, it has 7 interfaces:
-	 * 	0 - Proprietary firmware updates
-	 * 	1 - Audio control device
-	 * 	2 - Double endpoint IN-OUT PCM
-	 * 	3 - Double endpoint OUT-IN PCM
-	 * 	4 - Single endpoint IEC1937 AC3	/ PCM (selectable by altsetting)
-	 * 	5 - Single endpoint PCM (supports full 24bit 48000Hz)
-	 * 	6 - Triple endpoint MIDI (Interrupt + 1 IN + 1 OUT)
-	 *
-	 * As I am unsure which interfaces to try, I have provided _all_ the settings
-	 * I can in this file to hand to the usb-audio developers.
-	 * I have no idea what .altset_idx does or where to find it, so I set
-it to 1 in all cases.
-	 *
-	 * I am currently testing with just interfaces 5 and 6 (not sure if
-it will work)
-	 */
-	
-	USB_DEVICE(0x0dba, 0x3000),
-	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-		.vendor_name = "Digidesign",
-		.product_name = "Mbox 2",
-		.ifnum = QUIRK_ANY_INTERFACE,
-		.type = QUIRK_COMPOSITE,
-		.data = (const struct snd_usb_audio_quirk[]) {
-			/* Proprietary firmware updater interface - ignore for now */
-			{
-				.ifnum = 0,
-				.type = QUIRK_IGNORE_INTERFACE
-			},
-
-			/* Audio control interface - altsetting = 0 not sure what to do with this */
-			{
-				.ifnum = 1,
-				.type = QUIRK_IGNORE_INTERFACE
-			},
-			{
-				.ifnum = 2,
-				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-				.data = & (const struct audioformat) {
-					.format = SNDDRV_PCM_FORMAT_S24_3LE,
-					.channels = 2,
-					.iface = 2,
-					.altsetting = 3, /* 0 is also available but has no endpoints */
-					.altset_idx = 1,
-					.endpoint = 0x03, /* IN or 0x83 OUT */
-					.ep_attr = 0x05,
-					.rates = SNDRV_PCM_RATE_CONTINUOUS,
-					.rate_min = 8000,
-					.rate_max = 48000
-				}
-			},
-			{
-                                .ifnum = 3,
-                                .type = QUIRK_AUDIO_FIXED_ENDPOINT,
-                                .data = & (const struct audioformat) {
-                                        .format = SNDDRV_PCM_FORMAT_S24_3LE,
-                                        .channels = 2,
-                                        .iface = 3,
-                                        .altsetting = 3, /* 0 is also
-available, but has no endpoints */
-                                        .altset_idx = 1,
-                                        .endpoint = 0x04, /* OUT or 0x84 IN */
-                                        .ep_attr = 0x05,
-                                        .rates = SNDRV_PCM_RATE_CONTINUOUS,
-                                        .rate_min = 8000,
-                                        .rate_max = 48000
-                                }
-                        },
-			{
-                                .ifnum = 4,
-                                .type = QUIRK_AUDIO_FIXED_ENDPOINT,
-                                .data = & (const struct audioformat) {
-                                        .format = <<<<< Type III -
-IEC1937_AC3 (16 bit) >>>>>
-                                        .channels = 2,
-                                        .iface = 3,
-                                        .altsetting = 6,
-                                        .altset_idx = 1,
-					.endpoint = 0x04,
-                                        .ep_attr = 0x05,
-                                        .rates = SNDRV_PCM_RATE_CONTINUOUS,
-                                        .rate_min = 8000,
-                                        .rate_max = 48000
-                                }
-                        },
-			{
-                                .ifnum = 5,
-                                .type = QUIRK_AUDIO_FIXED_ENDPOINT,
-                                .data = & (const struct audioformat) {
-                                        .format = SNDDRV_PCM_FORMAT_S24_3LE,
-                                        .channels = 2,
-                                        .iface = 5,
-                                        .altsetting = 3,
-                                        .altset_idx = 1,
-                                        .endpoint = 0x86, /* Single
-endpoint only */
-                                        .ep_attr = 0x0D,
-                                        .rates = SNDRV_PCM_RATE_CONTINUOUS,
-                                        .rate_min = 8000,
-                                        .rate_max = 48000
-                                }
-                        },
-
-			{
-
-/* MIDI INTERFACE DESCRIPTION
- * Is this a standard USB MIDI device?
- * It has 2 Interface descriptors for the same altsetting...
-
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        6
-      bAlternateSetting       0
-      bNumEndpoints           3
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      0
-      bInterfaceProtocol      0
-      iInterface              0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0010  1x 16 bytes
-        bInterval               1
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        6
-      bAlternateSetting       0
-      bNumEndpoints           3
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      0
-      bInterfaceProtocol      0
-      iInterface              0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0010  1x 16 bytes
-        bInterval               1
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0010  1x 16 bytes
-        bInterval               0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x02  EP 2 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0010  1x 16 bytes
-        bInterval               0
-*/
-
-				.ifnum = 6,
-				.type = QUIRK_MIDI_FIXED_ENDPOINT,
-				.data = & (const struct snd_usb_midi_endpoint_info) {
-					/* I am not certain of the "cables" flags or how
-					 * to find out what they are.
-					 */
-					.out_ep = 2,
-					.out_interval = 0x00,
-					.in_ep = 2,
-					.in_interval = 0x00,
-					.out_cables = 0x0001,
-					.in_cables = 0x0001
-				}
-
-			},
-			{
-				.ifnum = -1
-			}
-		}
-	}
-},
+--- sound-2.6.orig/sound/pci/hda/patch_analog.c	2009-08-16 16:59:20.000000000 +0800
++++ sound-2.6/sound/pci/hda/patch_analog.c	2009-08-16 17:01:34.000000000 +0800
+@@ -1512,7 +1512,7 @@ static struct hda_verb ad1981_hp_init_ve
+ 	{}
+ };
+ 
+-/* turn on/off EAPD (+ mute HP) as a master switch */
++/* turn on/off EAPD (+ mute Speaker/HP) as a master switch */
+ static int ad1981_hp_master_sw_put(struct snd_kcontrol *kcontrol,
+ 				   struct snd_ctl_elem_value *ucontrol)
+ {
+@@ -1525,7 +1525,10 @@ static int ad1981_hp_master_sw_put(struc
+ 	snd_hda_codec_write(codec, 0x05, 0,
+ 			    AC_VERB_SET_PIN_WIDGET_CONTROL,
+ 			    spec->cur_eapd ? PIN_OUT : 0);
+-	/* toggle HP mute appropriately */
++	/* toggle Speaker/HP mute appropriately */
++	snd_hda_codec_amp_stereo(codec, 0x05, HDA_OUTPUT, 0,
++				 HDA_AMP_MUTE,
++				 spec->cur_eapd ? 0 : HDA_AMP_MUTE);
+ 	snd_hda_codec_amp_stereo(codec, 0x06, HDA_OUTPUT, 0,
+ 				 HDA_AMP_MUTE,
+ 				 spec->cur_eapd ? 0 : HDA_AMP_MUTE);
+@@ -1724,6 +1727,7 @@ static struct snd_pci_quirk ad1981_cfg_t
+ 	SND_PCI_QUIRK(0x1014, 0x0597, "Lenovo Z60", AD1981_THINKPAD),
+ 	SND_PCI_QUIRK(0x1014, 0x05b7, "Lenovo Z60m", AD1981_THINKPAD),
+ 	/* All HP models */
++	SND_PCI_QUIRK(0x103c, 0x30c9, "HP 2510p", AD1981_HP),
+ 	SND_PCI_QUIRK_VENDOR(0x103c, "HP nx", AD1981_HP),
+ 	SND_PCI_QUIRK(0x1179, 0x0001, "Toshiba U205", AD1981_TOSHIBA),
+ 	/* Lenovo Thinkpad T60/X60/Z6xx */
