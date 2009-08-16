@@ -1,19 +1,19 @@
-From: ruchi sirauthiya <ruchisirauthiya@gmail.com>
-Subject: Error enabling dmix with ALSA
-Date: Sun, 16 Aug 2009 15:49:11 +0530
-Message-ID: <3a2444df0908160319q790d7460l171fa52be7c29aca@mail.gmail.com>
-References: <3a2444df0908150606p7a1cb237qad6d31dedae3ec4a@mail.gmail.com>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: [PATCH] hda: enable speaker output for Compaq
+	6530s/6531s
+Date: Sun, 16 Aug 2009 19:01:10 +0800
+Message-ID: <20090816110110.GA32187@localhost>
+References: <20090816085317.GA23959@localhost> <s5hvdkoi04w.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.242])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4C6C824353
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4B24324365
 	for <alsa-devel@alsa-project.org>;
-	Sun, 16 Aug 2009 12:19:32 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c37so937834anc.2
-	for <alsa-devel@alsa-project.org>; Sun, 16 Aug 2009 03:19:31 -0700 (PDT)
-In-Reply-To: <3a2444df0908150606p7a1cb237qad6d31dedae3ec4a@mail.gmail.com>
+	Sun, 16 Aug 2009 13:01:31 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hvdkoi04w.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,173 +23,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sun, Aug 16, 2009 at 05:22:23PM +0800, Takashi Iwai wrote:
+> At Sun, 16 Aug 2009 16:53:17 +0800,
+> Wu Fengguang wrote:
+> > 
+> > There are 3 causes to the silence of Compaq 6530s' internal speaker:
+> > - HP pin 0x11 always return 0xffff,ffff (pin_presence=1),
+> >   which automutes the speaker at module loading time.
+> 
+> This is odd.  Is the sense-trigger issued before reading the pin sense?
 
-I am trying to enable a software mixer (using ALSA and dmix) on an OMAP3
-based embedded target board using the twl4030 codec.
+Sorry, what do you mean?  The facts I explored are:
+- ad1884a_hp_automute() will be explicitly called by ad1884a_hp_init()
+- ad1884a_hp_unsol_event() is never called on plug events
+- I tried manually execute AC_VERB_SET_PIN_SENSE then read pin sense,
+  it takes effect on the impedance, but pin_presence still remains 1.
 
-When I try to play audio using the command,
+> > - HP pin 0x11 won't emit unsol events on jack plug/unplug,
+> >   so the speaker have no chance to be unmuted.
+> 
+> Can it be fixed with enable_msi=1 option?
 
-# aplay -D playback rec.wav
+Not yet, will try it.
 
-I am getting the following error:
+> > - pin 0x1c must be set to PIN_OUT mode to make the speaker work
+> >   this is the most weird part - line-in pin 0x1c and speaker pin 0x16
+> >   seem to be unrelated.
+> 
+> Hm, sounds strange.
 
-ALSA lib pcm_direct.c:1098:(snd_pcm_direct_initialize_poll_fd) unable to
-open timer 'hw:CLASS=3,SCLASS=0,CARD=0,DEV=0,SUBDEV=0'
-ALSA lib pcm_dmix.c:943:(snd_pcm_dmix_open) unable to initialize poll_fd
-aplay: main:546: audio open error: No such file or directory
+Yes. Note that the 6530s I have is a test box. Another 6531s which
+is bought directly from market don't have this bug.
 
-The contents of my /etc/asound.conf is given below.
+> > Fix the problems by
+> > - add "Speaker" and "Headphone" mixers to allow hand tuning by user
+> 
+> It's a bit buggy because the auto-mute feature can turn on/off these
+> silently.  If any, these controls have to be notified at changing the
+> state via plugging.
 
-pcm.playback {
-   type dmix
-   ipc_key 2048
-   ipc_key_add_uid true
-   ipc_gid 1
-   slave {
-      rate 44100
-      pcm hw:0
-   }
-}
+OK. Are there code examples for doing this? Thank you!
 
-I have tested it on two kernel versions, 2.6.22 and 2.6.29, but it fails on
-both.
-Playback and recording works fine if -D option is not provided.
+Thanks,
+Fengguang
 
-I also tried configuring ALSA (dmix) with a different configuration file
-which is given in the following link:
-http://amarok.kde.org/wiki/Setting_up_Dmix_for_ALSA
-
-# aplay -D plug:ossmix /mnt/Audio1_1.wav
-ALSA lib pcm_direct.c:1098:(snd_pcm_direct_initialize_poll_fd) unable to
-open timer 'hw:CLASS=3,SCLASS=0,CARD=0,DEV=0,SUBDEV=0'
-ALSA lib pcm_dmix.c:943:(snd_pcm_dmix_open) unable to initialize poll_fd
-aplay: main:546: audio open error: No such file or directory
-
-But as you can see the same error turns up again.
-
-The topic discussed in the following link (a similar issue) suggests that it
-is unable to open a second timer.
-http://osdir.com/ml/linux.distributions.crux.general/2005-11/msg00134.html
-
-What could be the cause of this error?
-
-Is the above error related to my ALSA configuration (for dmix) or is it
-related to the sound hardware (or driver)?
-Do I need to patch the kernel or ALSA for using dmix?
-
-Please help me resolve this issue. Let me know if any more setup info is
-required.
-
-Thanks and Regards,
-
-Ruchi Sirauthiya.
-
-
-
-Some information I obtained from the proc filesystem is given below for your
-reference.
-
------------------------
-For Linux kernel 2.6.29
------------------------
-
-[root@OMAP3 tests]# cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.19
-
-
-[root@OMAP3 tests]# cat /proc/asound/cards
- 0 [omap3evm       ]: twl4030 - omap3evm
-                      omap3evm (twl4030)
-
-[root@OMAP3 tests]# omap-dss: Could not find exact pixel clock. Requested
-25188 kHz, got 25187 kHz
-
-[root@OMAP3 tests]# cat /proc/asound/devices
-  2:        : timer
-  3: [ 0- 0]: digital audio playback
-  4: [ 0- 0]: digital audio capture
-  5: [ 0]   : control
-
-[root@OMAP3 tests]# cat /proc/asound/timers
-G0: system timer : 7812.500us (10000000 ticks)
-P0-0-0: PCM playback 0-0-0 : SLAVE
-P0-0-1: PCM capture 0-0-1 : SLAVE
-
-[root@OMAP3 tests]# cat /proc/asound/pcm
-00-00: TWL4030 twl4030-0 :  : playback 1 : capture 1
-
-[root@OMAP3 tests]# cat /proc/asound/devices
-  2:        : timer
-   3: [ 0- 0]: digital audio playback
-  4: [ 0- 0]: digital audio capture
-  5: [ 0]   : control
-
-[root@OMAP3 tests]# cat /proc/asound/pcm
-00-00: TWL4030 twl4030-0 :  : playback 1 : capture 1
-
-[root@OMAP3 tests]# cat /proc/asound/oss/devices
-  3: [0- 0]: digital audio
-  4: [0- 0]: digital audio
-
-[root@OMAP3 tests]# cat /proc/asound/oss/sndstat
-Sound Driver:3.8.1a-980706 (ALSA v1.0.19 emulation code)
-Kernel: Linux OMAP3 2.6.29-rc3-omap1 #1 Fri Jul 24 14:45:37 IST 2009 armv7l
-Config options: 0
-Installed drivers:
-Type 10: ALSA emulation
-
-Card config:
-omap3evm (twl4030)
-
-Audio devices:
-0:  (DUPLEX)
-
-Synth devices: NOT ENABLED IN CONFIG
-
-Midi devices: NOT ENABLED IN CONFIG
-
-Timers:
-31: system timer
-
-Mixers: NOT ENABLED IN CONFIG
-
-[root@OMAP3 tests]# aplay -D playback /mnt/Audio1_1.wav
-ALSA lib pcm_direct.c:1098:(snd_pcm_direct_initialize_poll_fd) unable to
-open timer 'hw:CLASS=3,SCLASS=0,CARD=0,DEV=0,SUBDEV=0'
-ALSA lib pcm_dmix.c:943:(snd_pcm_dmix_open) unable to initialize poll_fd
-aplay: main:546: audio open error: No such file or directory
-
-
------------------------
-For Linux kernel 2.6.22
------------------------
-
-[root@OMAP3 tests]# cat /proc/asound/devices
-  2:        : timer
-  3: [ 0- 0]: digital audio playback
-  4: [ 0- 0]: digital audio capture
-  5: [ 0]   : control
-
-[root@OMAP3 tests]# cat /proc/asound/pcm
-00-00: OMAP PCM : omap alsa pcm : playback 1 : capture 1
-
-[root@OMAP3 tests]# cat /proc/asound/timers
-G0: system timer : 7812.500us (10000000 ticks)
-P0-0-0: PCM playback 0-0-0 : SLAVE
-P0-0-1: PCM capture 0-0-1 : SLAVE
-
-[root@OMAP3 tests]# cat /proc/asound/
-/proc/asound/TWL4030/  /proc/asound/devices   /proc/asound/timers
-/proc/asound/card0/    /proc/asound/hwdep     /proc/asound/version
-/proc/asound/cards     /proc/asound/pcm
-
-[root@OMAP3 tests]# cat /proc/asound/cards
- 0 [TWL4030        ]: OMAP_ALSA - TWL4030
-                      TWL4030
-
-/proc/asound/oss was not found in the proc file system when booted with
-kernel 2.6.22.
+> 
+> thanks,
+> 
+> Takashi
+> 
+> > - add the 0x1c PIN_OUT quirk
+> > 
+> > Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
+> > ---
+> >  sound/pci/hda/patch_analog.c |    8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > 
+> > --- sound-2.6.orig/sound/pci/hda/patch_analog.c	2009-08-05 09:40:13.000000000 +0800
+> > +++ sound-2.6/sound/pci/hda/patch_analog.c	2009-08-16 16:49:39.000000000 +0800
+> > @@ -3717,6 +3717,8 @@ static struct snd_kcontrol_new ad1884a_l
+> >  	HDA_CODEC_VOLUME("Master Playback Volume", 0x21, 0x0, HDA_OUTPUT),
+> >  	HDA_CODEC_MUTE("Master Playback Switch", 0x21, 0x0, HDA_OUTPUT),
+> >  	HDA_CODEC_MUTE("Dock Playback Switch", 0x12, 0x0, HDA_OUTPUT),
+> > +	HDA_CODEC_MUTE("Headphone Playback Switch", 0x11, 0x0, HDA_OUTPUT),
+> > +	HDA_CODEC_MUTE("Speaker Playback Switch", 0x16, 0x0, HDA_OUTPUT),
+> >  	HDA_CODEC_VOLUME("PCM Playback Volume", 0x20, 0x5, HDA_INPUT),
+> >  	HDA_CODEC_MUTE("PCM Playback Switch", 0x20, 0x5, HDA_INPUT),
+> >  	HDA_CODEC_VOLUME("Mic Playback Volume", 0x20, 0x00, HDA_INPUT),
+> > @@ -3837,8 +3839,10 @@ static struct hda_verb ad1884a_laptop_ve
+> >  	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
+> >  	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
+> >  	/* Port-F pin */
+> > -	{0x16, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
+> > +	{0x16, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
+> >  	{0x16, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
+> > +	/* required for compaq 6530s speaker output */
+> > +	{0x1c, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
+> >  	/* Port-C pin - internal mic-in */
+> >  	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
+> >  	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, 0x7002}, /* raise mic as default */
+> > @@ -4003,6 +4007,8 @@ static struct snd_pci_quirk ad1884a_cfg_
+> >  	SND_PCI_QUIRK(0x103c, 0x3030, "HP", AD1884A_MOBILE),
+> >  	SND_PCI_QUIRK(0x103c, 0x3037, "HP 2230s", AD1884A_LAPTOP),
+> >  	SND_PCI_QUIRK(0x103c, 0x3056, "HP", AD1884A_MOBILE),
+> > +	SND_PCI_QUIRK(0x103c, 0x30e8, "HP Compaq 6530s", AD1884A_LAPTOP),
+> > +	SND_PCI_QUIRK(0x103c, 0x30e9, "HP Compaq 6531s", AD1884A_LAPTOP),
+> >  	SND_PCI_QUIRK_MASK(0x103c, 0xfff0, 0x3070, "HP", AD1884A_MOBILE),
+> >  	SND_PCI_QUIRK_MASK(0x103c, 0xfff0, 0x30d0, "HP laptop", AD1884A_LAPTOP),
+> >  	SND_PCI_QUIRK_MASK(0x103c, 0xfff0, 0x30e0, "HP laptop", AD1884A_LAPTOP),
+> > 
