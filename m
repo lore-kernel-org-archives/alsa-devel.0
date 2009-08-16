@@ -1,19 +1,18 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: [PATCH] hda: enable speaker output of HP 2510p
-Date: Sun, 16 Aug 2009 19:03:54 +0800
-Message-ID: <20090816110354.GB32187@localhost>
-References: <20090816085317.GA23959@localhost>
-	<20090816090513.GA25325@localhost> <s5htz08i01o.wl%tiwai@suse.de>
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: snd_pcm_drain() and O_NONBLOCK
+Date: Sun, 16 Aug 2009 10:20:23 -0400
+Message-ID: <9e4733910908160720ud493ad5xf2e659bc238e8d99@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id E641424369
+Received: from mail-yx0-f176.google.com (mail-yx0-f176.google.com
+	[209.85.210.176])
+	by alsa0.perex.cz (Postfix) with ESMTP id C34FA2435A
 	for <alsa-devel@alsa-project.org>;
-	Sun, 16 Aug 2009 13:04:11 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5htz08i01o.wl%tiwai@suse.de>
+	Sun, 16 Aug 2009 16:20:24 +0200 (CEST)
+Received: by yxe6 with SMTP id 6so3045858yxe.16
+	for <alsa-devel@alsa-project.org>; Sun, 16 Aug 2009 07:20:23 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,59 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Aug 16, 2009 at 05:24:19PM +0800, Takashi Iwai wrote:
-> At Sun, 16 Aug 2009 17:05:13 +0800,
-> Wu Fengguang wrote:
-> > 
-> > The Speaker/HP volumes of 2510p is binded, so shall the mute state.
-> > 
-> > Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
-> 
-> Actually it wasn't needed because EAPD disables the speaker output.
-> But additional muting is harmless, though.
+I'm trying to fix brutefir to properly drain the driver before exiting.
 
-Right, what I care is the unmute part, which fixed the silence bug :)
+This sequence does not work on a running stream.  snd_pcm_nonblock()
+removes the O_NONBLOCK flag from the file handle but the change does
+not get copied to stream->f_flags. snd_pcm_drain() returns -EAGAIN
+since the flags have not be copied.
 
-Thanks,
-Fengguang
+	    snd_pcm_nonblock(handles[IO][n], 0);
+	    snd_pcm_drain(handles[IO][n]);
+	    snd_pcm_nonblock(handles[IO][n], SND_PCM_NONBLOCK);
 
-> > ---
-> >  sound/pci/hda/patch_analog.c |    8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > 
-> > --- sound-2.6.orig/sound/pci/hda/patch_analog.c	2009-08-16 16:59:20.000000000 +0800
-> > +++ sound-2.6/sound/pci/hda/patch_analog.c	2009-08-16 17:01:34.000000000 +0800
-> > @@ -1512,7 +1512,7 @@ static struct hda_verb ad1981_hp_init_ve
-> >  	{}
-> >  };
-> >  
-> > -/* turn on/off EAPD (+ mute HP) as a master switch */
-> > +/* turn on/off EAPD (+ mute Speaker/HP) as a master switch */
-> >  static int ad1981_hp_master_sw_put(struct snd_kcontrol *kcontrol,
-> >  				   struct snd_ctl_elem_value *ucontrol)
-> >  {
-> > @@ -1525,7 +1525,10 @@ static int ad1981_hp_master_sw_put(struc
-> >  	snd_hda_codec_write(codec, 0x05, 0,
-> >  			    AC_VERB_SET_PIN_WIDGET_CONTROL,
-> >  			    spec->cur_eapd ? PIN_OUT : 0);
-> > -	/* toggle HP mute appropriately */
-> > +	/* toggle Speaker/HP mute appropriately */
-> > +	snd_hda_codec_amp_stereo(codec, 0x05, HDA_OUTPUT, 0,
-> > +				 HDA_AMP_MUTE,
-> > +				 spec->cur_eapd ? 0 : HDA_AMP_MUTE);
-> >  	snd_hda_codec_amp_stereo(codec, 0x06, HDA_OUTPUT, 0,
-> >  				 HDA_AMP_MUTE,
-> >  				 spec->cur_eapd ? 0 : HDA_AMP_MUTE);
-> > @@ -1724,6 +1727,7 @@ static struct snd_pci_quirk ad1981_cfg_t
-> >  	SND_PCI_QUIRK(0x1014, 0x0597, "Lenovo Z60", AD1981_THINKPAD),
-> >  	SND_PCI_QUIRK(0x1014, 0x05b7, "Lenovo Z60m", AD1981_THINKPAD),
-> >  	/* All HP models */
-> > +	SND_PCI_QUIRK(0x103c, 0x30c9, "HP 2510p", AD1981_HP),
-> >  	SND_PCI_QUIRK_VENDOR(0x103c, "HP nx", AD1981_HP),
-> >  	SND_PCI_QUIRK(0x1179, 0x0001, "Toshiba U205", AD1981_TOSHIBA),
-> >  	/* Lenovo Thinkpad T60/X60/Z6xx */
-> > 
+static int snd_pcm_pre_drain_init(struct snd_pcm_substream *substream,
+int state)
+{
+	printk("snd_pcm_pre_drain_init flags %x\n", substream->f_flags);
+	if (substream->f_flags & O_NONBLOCK)
+		return -EAGAIN;
+	printk("snd_pcm_pre_drain_init 1\n");
+	substream->runtime->trigger_master = substream;
+	return 0;
+}
+
+Searching through the ALSA code the only way f_flags gets copied from
+the file handle to the stream handle is via snd_pcm_prepare(). But I
+can't do a snd_pcm_prepare() on a running stream. I can't find any way
+to change the NONBLOCK status on a running stream.
+
+I also tried implementing the wait for drain the the user app.
+snd_pcm_drain() always returns -EAGAIN of O_NONBLOCK is set. It can't
+be used to poll for the drain status.
+
+So how do I wait for a stream to drain?
+
+-- 
+Jon Smirl
+jonsmirl@gmail.com
