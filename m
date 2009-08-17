@@ -1,7 +1,8 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv4 15/20] ASoC: OMAP: Make DMA 64 aligned
-Date: Mon, 17 Aug 2009 14:51:14 +0300
-Message-ID: <1250509879-6703-16-git-send-email-eduardo.valentin__926.579236011271$1250510816$gmane$org@nokia.com>
+Subject: [PATCHv4 12/20] OMAP: McBSP: Configure NO IDLE mode
+	for DMA mode different of threshold
+Date: Mon, 17 Aug 2009 14:51:11 +0300
+Message-ID: <1250509879-6703-13-git-send-email-eduardo.valentin__35372.1119849526$1250510822$gmane$org@nokia.com>
 References: <1250509879-6703-1-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -23,33 +24,34 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
 
+Use dma mode property to configure NO IDLE or SMART IDLE of McBSPs.
+
 Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
 ---
- sound/soc/omap/omap-pcm.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/plat-omap/mcbsp.c |   10 +++++++++-
+ 1 files changed, 9 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-index dd9e728..f769a52 100644
---- a/sound/soc/omap/omap-pcm.c
-+++ b/sound/soc/omap/omap-pcm.c
-@@ -305,7 +305,7 @@ static struct snd_pcm_ops omap_pcm_ops = {
- 	.mmap		= omap_pcm_mmap,
- };
+diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
+index 2c274e6..85176a5 100644
+--- a/arch/arm/plat-omap/mcbsp.c
++++ b/arch/arm/plat-omap/mcbsp.c
+@@ -317,7 +317,15 @@ static inline void omap34xx_mcbsp_request(struct omap_mcbsp *mcbsp)
  
--static u64 omap_pcm_dmamask = DMA_BIT_MASK(32);
-+static u64 omap_pcm_dmamask = DMA_BIT_MASK(64);
+ 		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
+ 		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03) | CLOCKACTIVITY(0x03));
+-		syscon |= (ENAWAKEUP | SIDLEMODE(0x02) | CLOCKACTIVITY(0x02));
++
++		spin_lock_irq(&mcbsp->lock);
++		if (mcbsp->dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
++			syscon |= SIDLEMODE(0x02);
++		else
++			syscon |= SIDLEMODE(0x01);
++		spin_unlock_irq(&mcbsp->lock);
++
++		syscon |= (ENAWAKEUP | CLOCKACTIVITY(0x02));
+ 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
  
- static int omap_pcm_preallocate_dma_buffer(struct snd_pcm *pcm,
- 	int stream)
-@@ -355,7 +355,7 @@ static int omap_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
- 	if (!card->dev->dma_mask)
- 		card->dev->dma_mask = &omap_pcm_dmamask;
- 	if (!card->dev->coherent_dma_mask)
--		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
-+		card->dev->coherent_dma_mask = DMA_BIT_MASK(64);
- 
- 	if (dai->playback.channels_min) {
- 		ret = omap_pcm_preallocate_dma_buffer(pcm,
+ 		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, XRDYEN | RRDYEN);
 -- 
 1.6.2.GIT
 
