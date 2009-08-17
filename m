@@ -1,16 +1,14 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCHv4 20/20] ASoC: OMAP: Use DMA operating mode
-	of McBSP
-Date: Mon, 17 Aug 2009 17:02:02 +0300
-Message-ID: <20090817140201.GZ7278__35501.4633424163$1250517833$gmane$org@atomide.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCHv4 00/20] OMAP ASoC changes in DMA
+	utilization
+Date: Mon, 17 Aug 2009 17:05:49 +0300
+Message-ID: <20090817170549.f0adf2a4.jhnikula@gmail.com>
 References: <1250509879-6703-1-git-send-email-eduardo.valentin@nokia.com>
-	<1250509879-6703-21-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
-In-Reply-To: <1250509879-6703-21-git-send-email-eduardo.valentin@nokia.com>
+In-Reply-To: <1250509879-6703-1-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,70 +22,42 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-* Eduardo Valentin <eduardo.valentin@nokia.com> [090817 15:06]:
-> From: Eduardo Valentin <eduardo.valentin@nokia.com>
+On Mon, 17 Aug 2009 14:50:59 +0300
+Eduardo Valentin <eduardo.valentin@nokia.com> wrote:
 
-And this one too.
- 
-> Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
-> ---
->  sound/soc/omap/omap-mcbsp.c |   18 +++++++++++++++---
->  1 files changed, 15 insertions(+), 3 deletions(-)
+> Hello again guys,
 > 
-> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-> index 2aec7a6..60c360b 100644
-> --- a/sound/soc/omap/omap-mcbsp.c
-> +++ b/sound/soc/omap/omap-mcbsp.c
-> @@ -144,7 +144,14 @@ static void omap_mcbsp_set_threshold(struct snd_pcm_substream *substream)
->  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->  	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
->  	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
-> -	int samples = snd_pcm_lib_period_bytes(substream) >> 1;
-> +	int dma_op_mode = omap_mcbsp_get_dma_op_mode(mcbsp_data->bus_id);
-> +	int samples;
-> +
-> +	/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
-> +	if (dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
-> +		samples = snd_pcm_lib_period_bytes(substream) >> 1;
-> +	else
-> +		samples = 1;
->  
->  	/* Configure McBSP internal buffer usage */
->  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> @@ -166,6 +173,7 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
->  		err = omap_mcbsp_request(bus_id);
->  
->  	if (cpu_is_omap343x()) {
-> +		int dma_op_mode = omap_mcbsp_get_dma_op_mode(bus_id);
->  		int max_period;
->  
->  		/*
-> @@ -187,7 +195,8 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
->  		max_period++;
->  		max_period <<= 1;
->  
-> -		snd_pcm_hw_constraint_minmax(substream->runtime,
-> +		if (dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
-> +			snd_pcm_hw_constraint_minmax(substream->runtime,
->  						SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
->  						32, max_period);
->  	}
-> @@ -268,7 +277,10 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
->  		port = omap34xx_mcbsp_port[bus_id][substream->stream];
->  		omap_mcbsp_dai_dma_params[id][substream->stream].set_threshold =
->  						omap_mcbsp_set_threshold;
-> -		sync_mode = OMAP_DMA_SYNC_FRAME;
-> +		/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
-> +		if (omap_mcbsp_get_dma_op_mode(bus_id) ==
-> +						MCBSP_DMA_MODE_THRESHOLD)
-> +			sync_mode = OMAP_DMA_SYNC_FRAME;
->  	} else {
->  		return -ENODEV;
->  	}
-> -- 
-> 1.6.2.GIT
+> Here is version 4 of these changes. No real changes from previous versions.
+> The only thing is that now I've rebased on top of Takashi's tree:
+> http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=summary
 > 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> as there are pending things there which Jarkko has pointed on previous series.
+> 
+Here's my ack to the ASoC part. I tested the set on top of these
+Janusz's patches:
+
+http://mailman.alsa-project.org/pipermail/alsa-devel/2009-August/020170.html
+http://mailman.alsa-project.org/pipermail/alsa-devel/2009-August/020171.html
+http://mailman.alsa-project.org/pipermail/alsa-devel/2009-August/020262.html
+
+Note, that I posted modified version for the patch 16 based on Janusz's
+[PATCH 3/3 v3].
+
+Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+
+> 
+>  arch/arm/mach-omap2/mcbsp.c             |    5 +
+>  arch/arm/plat-omap/include/mach/mcbsp.h |   49 ++++
+>  arch/arm/plat-omap/mcbsp.c              |  377 ++++++++++++++++++++++++++++++-
+>  sound/soc/omap/omap-mcbsp.c             |   78 ++++++-
+>  sound/soc/omap/omap-pcm.c               |   14 +-
+>  sound/soc/omap/omap-pcm.h               |    2 +
+>  6 files changed, 511 insertions(+), 14 deletions(-)
+> 
+Tony, if you are ok with the OMAP McBSP changes, how it would be best
+get these merged? Via ASoC, LKML or separately from both
+subsystems during the merge window?
+
+
+-- 
+Jarkko
