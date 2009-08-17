@@ -1,22 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3 v3] ASoC: OMAP: Enhance OMAP1510 DMA
- progress software counter
-Date: Mon, 17 Aug 2009 11:03:14 +0100
-Message-ID: <20090817100313.GA5756@rakim.wolfsonmicro.main>
-References: <200908101050.08074.jkrzyszt@tis.icnet.pl>
-	<200908110107.11485.jkrzyszt@tis.icnet.pl>
-	<200908112144.30731.jkrzyszt@tis.icnet.pl>
-	<20090817122605.0b240ea7.jhnikula@gmail.com>
+Subject: Re: [PATCH] ASoC: UDA134X Codec: Fix mute/unmute
+	code	mistake and add ADC/DAC power control support
+Date: Mon, 17 Aug 2009 11:32:49 +0100
+Message-ID: <20090817103248.GA4464@sirena.org.uk>
+References: <1250498216.2764.1.camel@shinel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CB87A103811
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 756DC2468D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Aug 2009 12:03:15 +0200 (CEST)
+	Mon, 17 Aug 2009 12:32:52 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20090817122605.0b240ea7.jhnikula@gmail.com>
+In-Reply-To: <1250498216.2764.1.camel@shinel>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,15 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.arm.linux.org.uk" <linux-arm-kernel@lists.arm.linux.org.uk>
+To: Shine Liu <shinel@foxmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 17, 2009 at 12:26:05PM +0300, Jarkko Nikula wrote:
+On Mon, Aug 17, 2009 at 04:36:56PM +0800, Shine Liu wrote:
+> There is a mistake in current uda134x_mute function: mute_reg has been
+> changed in line 162 or line 164, so uda134x_write should write
+> "mute_reg" but not "mute_reg & ~(1<<2)" to 
+> UDA134X_DATA010.
 
-> I'm fine with this 3rd version. Probably Mark would like to have git
-> format-patch formatted version for avoiding manual commit log editing.
+This is OK but please split it out into a separate patch and resend
+since...
 
-> Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+> Besides, because there is no DAPM configuration for uda134x, when system
+> starts up, snd_soc_int_card calls snd_soc_dapm_new_widgets, and
+> snd_soc_dapm_new_widgets calls dapm_power_widgets. In function
+> dapm_power_widgets, codec->dapm_widgets has no list entry, so sys_power
+> retains it's original value zero. Then
 
-Applied both 2-3, thanks.
+...this isn't, partly because I can't really follow what you're trying
+to do here.  It looks awfully like you're trying to implement DAPM
+support - certainly things like adding the switches for DAC and ADC
+power shouldn't be there, they should be automatically managed in the
+drivers.
