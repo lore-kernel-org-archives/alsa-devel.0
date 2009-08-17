@@ -1,7 +1,8 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv4 07/20] OMAP: McBSP: Rename thres sysfs symbols
-Date: Mon, 17 Aug 2009 14:51:06 +0300
-Message-ID: <1250509879-6703-8-git-send-email-eduardo.valentin__11624.9624560171$1250510968$gmane$org@nokia.com>
+Subject: [PATCHv4 01/20] OMAP: McBSP: Provide functions for
+	ASoC frame syncronization
+Date: Mon, 17 Aug 2009 14:51:00 +0300
+Message-ID: <1250509879-6703-2-git-send-email-eduardo.valentin__16306.2246786014$1250510971$gmane$org@nokia.com>
 References: <1250509879-6703-1-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -18,77 +19,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Eero Nurkkala <ext-eero.nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
+From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 
-This patch renames the symbols that handles threshold
-sysfs properties. This way we can add more sysfs properties
-to them.
+ASoC has an annoying bug letting either L or R channel to be
+played on L channel. In other words, L and R channels can
+switch at random. This provides McBSP funtionality that may
+be used to fix this feature.
 
-Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
+Signed-off-by: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 ---
- arch/arm/plat-omap/mcbsp.c |   20 ++++++++++----------
- 1 files changed, 10 insertions(+), 10 deletions(-)
+ arch/arm/plat-omap/include/mach/mcbsp.h |    2 +
+ arch/arm/plat-omap/mcbsp.c              |   52 +++++++++++++++++++++++++++++++
+ 2 files changed, 54 insertions(+), 0 deletions(-)
 
+diff --git a/arch/arm/plat-omap/include/mach/mcbsp.h b/arch/arm/plat-omap/include/mach/mcbsp.h
+index 57249bb..b85e6e6 100644
+--- a/arch/arm/plat-omap/include/mach/mcbsp.h
++++ b/arch/arm/plat-omap/include/mach/mcbsp.h
+@@ -389,6 +389,8 @@ int omap_mcbsp_request(unsigned int id);
+ void omap_mcbsp_free(unsigned int id);
+ void omap_mcbsp_start(unsigned int id, int tx, int rx);
+ void omap_mcbsp_stop(unsigned int id, int tx, int rx);
++void omap_mcbsp_xmit_enable(unsigned int id, u8 enable);
++void omap_mcbsp_recv_enable(unsigned int id, u8 enable);
+ void omap_mcbsp_xmit_word(unsigned int id, u32 word);
+ u32 omap_mcbsp_recv_word(unsigned int id);
+ 
 diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-index 0bbc912..ccaa9ae 100644
+index a3d2313..0aa2524 100644
 --- a/arch/arm/plat-omap/mcbsp.c
 +++ b/arch/arm/plat-omap/mcbsp.c
-@@ -1077,24 +1077,24 @@ static DEVICE_ATTR(prop, 0644, prop##_show, prop##_store);
- THRESHOLD_PROP_BUILDER(max_tx_thres);
- THRESHOLD_PROP_BUILDER(max_rx_thres);
- 
--static const struct attribute *threshold_attrs[] = {
-+static const struct attribute *additional_attrs[] = {
- 	&dev_attr_max_tx_thres.attr,
- 	&dev_attr_max_rx_thres.attr,
- 	NULL,
- };
- 
--static const struct attribute_group threshold_attr_group = {
--	.attrs = (struct attribute **)threshold_attrs,
-+static const struct attribute_group additional_attr_group = {
-+	.attrs = (struct attribute **)additional_attrs,
- };
- 
--static inline int __devinit omap_thres_add(struct device *dev)
-+static inline int __devinit omap_additional_add(struct device *dev)
- {
--	return sysfs_create_group(&dev->kobj, &threshold_attr_group);
-+	return sysfs_create_group(&dev->kobj, &additional_attr_group);
+@@ -412,6 +412,58 @@ void omap_mcbsp_stop(unsigned int id, int tx, int rx)
  }
+ EXPORT_SYMBOL(omap_mcbsp_stop);
  
--static inline void __devexit omap_thres_remove(struct device *dev)
-+static inline void __devexit omap_additional_remove(struct device *dev)
++void omap_mcbsp_xmit_enable(unsigned int id, u8 enable)
++{
++	struct omap_mcbsp *mcbsp;
++	void __iomem *io_base;
++	u16 w;
++
++	if (!(cpu_is_omap2430() || cpu_is_omap34xx()))
++		return;
++
++	if (!omap_mcbsp_check_valid_id(id)) {
++		printk(KERN_ERR "%s: Invalid id (%d)\n", __func__, id + 1);
++		return;
++	}
++
++	mcbsp = id_to_mcbsp_ptr(id);
++	io_base = mcbsp->io_base;
++
++	w = OMAP_MCBSP_READ(io_base, XCCR);
++
++	if (enable)
++		OMAP_MCBSP_WRITE(io_base, XCCR, w & ~(XDISABLE));
++	else
++		OMAP_MCBSP_WRITE(io_base, XCCR, w | XDISABLE);
++}
++EXPORT_SYMBOL(omap_mcbsp_xmit_enable);
++
++void omap_mcbsp_recv_enable(unsigned int id, u8 enable)
++{
++	struct omap_mcbsp *mcbsp;
++	void __iomem *io_base;
++	u16 w;
++
++	if (!(cpu_is_omap2430() || cpu_is_omap34xx()))
++		return;
++
++	if (!omap_mcbsp_check_valid_id(id)) {
++		printk(KERN_ERR "%s: Invalid id (%d)\n", __func__, id + 1);
++		return;
++	}
++
++	mcbsp = id_to_mcbsp_ptr(id);
++	io_base = mcbsp->io_base;
++
++	w = OMAP_MCBSP_READ(io_base, RCCR);
++
++	if (enable)
++		OMAP_MCBSP_WRITE(io_base, RCCR, w & ~(RDISABLE));
++	else
++		OMAP_MCBSP_WRITE(io_base, RCCR, w | RDISABLE);
++}
++EXPORT_SYMBOL(omap_mcbsp_recv_enable);
++
+ /* polled mcbsp i/o operations */
+ int omap_mcbsp_pollwrite(unsigned int id, u16 buf)
  {
--	sysfs_remove_group(&dev->kobj, &threshold_attr_group);
-+	sysfs_remove_group(&dev->kobj, &additional_attr_group);
- }
- 
- static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp)
-@@ -1102,9 +1102,9 @@ static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp)
- 	if (cpu_is_omap34xx()) {
- 		mcbsp->max_tx_thres = max_thres(mcbsp);
- 		mcbsp->max_rx_thres = max_thres(mcbsp);
--		if (omap_thres_add(mcbsp->dev))
-+		if (omap_additional_add(mcbsp->dev))
- 			dev_warn(mcbsp->dev,
--				"Unable to create threshold controls\n");
-+				"Unable to create additional controls\n");
- 	} else {
- 		mcbsp->max_tx_thres = -EINVAL;
- 		mcbsp->max_rx_thres = -EINVAL;
-@@ -1114,7 +1114,7 @@ static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp)
- static inline void __devexit omap34xx_device_exit(struct omap_mcbsp *mcbsp)
- {
- 	if (cpu_is_omap34xx())
--		omap_thres_remove(mcbsp->dev);
-+		omap_additional_remove(mcbsp->dev);
- }
- #else
- static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp) {}
 -- 
 1.6.2.GIT
 
