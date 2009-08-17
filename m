@@ -1,7 +1,7 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv4 10/20] OMAP: McBSP: Change wakeup signals
-Date: Mon, 17 Aug 2009 14:51:09 +0300
-Message-ID: <1250509879-6703-11-git-send-email-eduardo.valentin__14440.9426524819$1250510956$gmane$org@nokia.com>
+Subject: [PATCHv4 07/20] OMAP: McBSP: Rename thres sysfs symbols
+Date: Mon, 17 Aug 2009 14:51:06 +0300
+Message-ID: <1250509879-6703-8-git-send-email-eduardo.valentin__11624.9624560171$1250510968$gmane$org@nokia.com>
 References: <1250509879-6703-1-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -23,59 +23,72 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
 
-Configure only XRDYEN and RRDYEN wakeup signals
-in order to get better power consumption.
+This patch renames the symbols that handles threshold
+sysfs properties. This way we can add more sysfs properties
+to them.
 
 Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
 ---
- arch/arm/plat-omap/include/mach/mcbsp.h |    3 ---
- arch/arm/plat-omap/mcbsp.c              |    7 ++-----
- 2 files changed, 2 insertions(+), 8 deletions(-)
+ arch/arm/plat-omap/mcbsp.c |   20 ++++++++++----------
+ 1 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm/plat-omap/include/mach/mcbsp.h b/arch/arm/plat-omap/include/mach/mcbsp.h
-index 333061d..fe10ae8 100644
---- a/arch/arm/plat-omap/include/mach/mcbsp.h
-+++ b/arch/arm/plat-omap/include/mach/mcbsp.h
-@@ -273,9 +273,6 @@
- #define REOFEN			0x0004
- #define RFSREN			0x0002
- #define RSYNCERREN		0x0001
--#define WAKEUPEN_ALL		(XEMPTYEOFEN | XRDYEN | XEOFEN | XFSXEN | \
--				 XSYNCERREN | RRDYEN | REOFEN | RFSREN | \
--				 RSYNCERREN)
- 
- /* we don't do multichannel for now */
- struct omap_mcbsp_reg_cfg {
 diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-index 136f8c5..86bfad8 100644
+index 0bbc912..ccaa9ae 100644
 --- a/arch/arm/plat-omap/mcbsp.c
 +++ b/arch/arm/plat-omap/mcbsp.c
-@@ -320,7 +320,7 @@ static inline void omap34xx_mcbsp_request(struct omap_mcbsp *mcbsp)
- 		syscon |= (ENAWAKEUP | SIDLEMODE(0x02));
- 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
+@@ -1077,24 +1077,24 @@ static DEVICE_ATTR(prop, 0644, prop##_show, prop##_store);
+ THRESHOLD_PROP_BUILDER(max_tx_thres);
+ THRESHOLD_PROP_BUILDER(max_rx_thres);
  
--		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, WAKEUPEN_ALL);
-+		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, XRDYEN | RRDYEN);
- 	}
+-static const struct attribute *threshold_attrs[] = {
++static const struct attribute *additional_attrs[] = {
+ 	&dev_attr_max_tx_thres.attr,
+ 	&dev_attr_max_rx_thres.attr,
+ 	NULL,
+ };
+ 
+-static const struct attribute_group threshold_attr_group = {
+-	.attrs = (struct attribute **)threshold_attrs,
++static const struct attribute_group additional_attr_group = {
++	.attrs = (struct attribute **)additional_attrs,
+ };
+ 
+-static inline int __devinit omap_thres_add(struct device *dev)
++static inline int __devinit omap_additional_add(struct device *dev)
+ {
+-	return sysfs_create_group(&dev->kobj, &threshold_attr_group);
++	return sysfs_create_group(&dev->kobj, &additional_attr_group);
  }
  
-@@ -331,15 +331,12 @@ static inline void omap34xx_mcbsp_free(struct omap_mcbsp *mcbsp)
- 	 */
+-static inline void __devexit omap_thres_remove(struct device *dev)
++static inline void __devexit omap_additional_remove(struct device *dev)
+ {
+-	sysfs_remove_group(&dev->kobj, &threshold_attr_group);
++	sysfs_remove_group(&dev->kobj, &additional_attr_group);
+ }
+ 
+ static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp)
+@@ -1102,9 +1102,9 @@ static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp)
  	if (cpu_is_omap34xx()) {
- 		u16 syscon;
--		u16 wakeupen;
- 
- 		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
- 		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03));
- 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
- 
--		wakeupen = OMAP_MCBSP_READ(mcbsp->io_base, WAKEUPEN);
--		wakeupen &= ~WAKEUPEN_ALL;
--		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, wakeupen);
-+		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, 0);
- 	}
+ 		mcbsp->max_tx_thres = max_thres(mcbsp);
+ 		mcbsp->max_rx_thres = max_thres(mcbsp);
+-		if (omap_thres_add(mcbsp->dev))
++		if (omap_additional_add(mcbsp->dev))
+ 			dev_warn(mcbsp->dev,
+-				"Unable to create threshold controls\n");
++				"Unable to create additional controls\n");
+ 	} else {
+ 		mcbsp->max_tx_thres = -EINVAL;
+ 		mcbsp->max_rx_thres = -EINVAL;
+@@ -1114,7 +1114,7 @@ static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp)
+ static inline void __devexit omap34xx_device_exit(struct omap_mcbsp *mcbsp)
+ {
+ 	if (cpu_is_omap34xx())
+-		omap_thres_remove(mcbsp->dev);
++		omap_additional_remove(mcbsp->dev);
  }
  #else
+ static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp) {}
 -- 
 1.6.2.GIT
 
