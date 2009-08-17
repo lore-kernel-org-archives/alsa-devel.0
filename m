@@ -1,23 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: UDA134X Codec: Fix mute/unmute
-	code	mistake and add ADC/DAC power control support
-Date: Mon, 17 Aug 2009 12:56:33 +0100
-Message-ID: <20090817115633.GC4464@sirena.org.uk>
-References: <1250498216.2764.1.camel@shinel>
-	<20090817103248.GA4464@sirena.org.uk>
-	<1250508154.1932.37.camel@shinel>
-	<20090817112756.GA19898@rakim.wolfsonmicro.main>
-	<1250509995.1932.44.camel@shinel>
+From: Eduardo Valentin <eduardo.valentin@nokia.com>
+Subject: Re: [PATCHv3 00/20] OMAP ASoC changes in DMA
+ utilization
+Date: Mon, 17 Aug 2009 14:45:05 +0300
+Message-ID: <20090817114505.GB8831@esdhcp037198.research.nokia.com>
+References: <1250174133-451-1-git-send-email-eduardo.valentin@nokia.com>
+	<200908171122.30731.peter.ujfalusi@nokia.com>
+	<20090817120737.caff7f92.jhnikula@gmail.com>
+	<20090817113659.GA8831@esdhcp037198.research.nokia.com>
+	<20090817115258.GB4464@sirena.org.uk>
+Reply-To: eduardo.valentin@nokia.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id AEF7224698
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id C7C6D2469B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Aug 2009 13:56:37 +0200 (CEST)
+	Mon, 17 Aug 2009 13:59:06 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1250509995.1932.44.camel@shinel>
+In-Reply-To: <20090817115258.GB4464@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,12 +28,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shine Liu <shinel@foxmail.com>
-Cc: alsa-devel@alsa-project.org
+To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 17, 2009 at 07:53:15PM +0800, Shine Liu wrote:
+On Mon, Aug 17, 2009 at 01:52:58PM +0200, ext Mark Brown wrote:
+> On Mon, Aug 17, 2009 at 02:36:59PM +0300, Eduardo Valentin wrote:
+> 
+> > Cool. I've rebased and tested the series with beagle using Takashi's tree.
+> > I'm about to send version #4 based on his tree then.
 
-> Should be "sys_power = codec->bias_level != SND_SOC_BIAS_STANDBY;" ?
+Forgot to mention that I've tested this also using those three patches from Janusz Krzysztofik.
 
-Yes.
+> 
+> Please could you use --no-chain-reply-to when sending?  It works a lot
+> better with threaded mail readers.
+
+Sure!
+
+-- 
+Eduardo Valentin
