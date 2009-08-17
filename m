@@ -1,23 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] ASoC: pxa-ssp.c,
-	Automatically set	TDM when needed
-Date: Mon, 17 Aug 2009 17:08:44 +0100
-Message-ID: <20090817160844.GA29225@sirena.org.uk>
-References: <1249570519-32622-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1249570519-32622-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<20090812181724.GZ19257@buzzloop.caiaq.de>
-	<1250266661.18028.249.camel@brutus>
-	<20090817153548.GB19257@buzzloop.caiaq.de>
+From: Daniel Chen <seven.steps@gmail.com>
+Subject: Re: Strange div-by-zero in alsa-lib 1.0.20's
+	snd_pcm_mmap_begin()
+Date: Mon, 17 Aug 2009 12:16:12 -0400
+Message-ID: <604760770908170916q4ef25836x25bb0c9194d00a29@mail.gmail.com>
+References: <604760770908161524w207a4a44m72793fa9438c2ef4@mail.gmail.com>
+	<s5h3a7rvssh.wl%tiwai@suse.de>
+	<20090817143615.GA16548@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7D91F2479D
+Received: from mail-bw0-f205.google.com (mail-bw0-f205.google.com
+	[209.85.218.205])
+	by alsa0.perex.cz (Postfix) with ESMTP id 80DD1103801
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Aug 2009 18:08:45 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20090817153548.GB19257@buzzloop.caiaq.de>
+	Mon, 17 Aug 2009 18:16:14 +0200 (CEST)
+Received: by bwz1 with SMTP id 1so2705829bwz.46
+	for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2009 09:16:12 -0700 (PDT)
+In-Reply-To: <20090817143615.GA16548@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,38 +27,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: Paul Shen <boshen9@gmail.com>, alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>, Daniel Ribeiro <drwyrm@gmail.com>
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Daniel Chen <seven.steps@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 17, 2009 at 05:35:48PM +0200, Daniel Mack wrote:
-> On Fri, Aug 14, 2009 at 01:17:41PM -0300, Daniel Ribeiro wrote:
+Hi Lennart,
 
-> > Or when pxa is master, on pxa3xx only, with set_tdm_slot(3, 3, 2, 16).
+On Mon, Aug 17, 2009 at 10:36 AM, Lennart Poettering<mznyfn@0pointer.de> wrote:
+> Could you get us the output of the PA startup phase when running
+> "pulsaudio -vvvv"? This should show us to which value the buffer_size
+> is initialized in the snd_pcm_t.
 
-> Again - shouldn't we care for a consistent calling convention here and
-> handle the special cases in the implementation rather than feeding
-> nebulous integer arguments to it, which vary depending on the clocking
-> directions?
+The requested debug output is available at
+http://launchpadlibrarian.net/30422583/pulseaudio .
 
-Yes, the arguments to set_tdm_slot() should have a consistent meaning
-over all devices and configurations of those devices.  There will be an
-inversion of the input vs. output between two connected devices but that
-would be the only difference.
-
-The key issue here is if we're looking at stereo slots or mono slots.
-Stereo is probably a bit easier to work with when you're using that
-(especially for I2S derived modes where the interface is fundamentally
-stereo) but obviously there's the potential to run into cases where that
-causes issues so mono covers our bets more.
-
-> > This still violates the "DMYSTOP must be clear on network mode" rule,
-> > but as all slots are active its not really network mode. And it seems to
-> > work for you, so... ;)
-
-> Yeah, that makes no sense at all. I think we should ignore that comment.
-> It seems to be simply wrong, or we're not in network mode afterall, even
-> though we selected it. I don't know.
-
-Or the network mode is perfectly happy to support a range slot numbers
-including zero.
+Thanks,
+Dan
