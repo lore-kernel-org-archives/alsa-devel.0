@@ -1,8 +1,8 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv4 20/20] ASoC: OMAP: Use DMA operating mode of
-	McBSP
-Date: Mon, 17 Aug 2009 14:51:19 +0300
-Message-ID: <1250509879-6703-21-git-send-email-eduardo.valentin__33326.1200962172$1250510892$gmane$org@nokia.com>
+Subject: [PATCHv4 14/20] OMAP: McBSP: Let element DMA mode hit
+	retention also
+Date: Mon, 17 Aug 2009 14:51:13 +0300
+Message-ID: <1250509879-6703-15-git-send-email-eduardo.valentin__23666.3471012891$1250510904$gmane$org@nokia.com>
 References: <1250509879-6703-1-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -19,66 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Eero Nurkkala <ext-eero.nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
+From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 
-Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
+The device no longer hits retention if element DMA
+mode is taken for at least the duration of the
+serial console timeout. Force element DMA mode to
+shut down through smartidle.
+
+Signed-off-by: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+Acked-by: Eduardo Valentin <eduardo.valentin@nokia.com>
 ---
- sound/soc/omap/omap-mcbsp.c |   18 +++++++++++++++---
- 1 files changed, 15 insertions(+), 3 deletions(-)
+ arch/arm/plat-omap/mcbsp.c |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 2aec7a6..60c360b 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -144,7 +144,14 @@ static void omap_mcbsp_set_threshold(struct snd_pcm_substream *substream)
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
- 	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
--	int samples = snd_pcm_lib_period_bytes(substream) >> 1;
-+	int dma_op_mode = omap_mcbsp_get_dma_op_mode(mcbsp_data->bus_id);
-+	int samples;
+diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
+index 56a5688..b63a720 100644
+--- a/arch/arm/plat-omap/mcbsp.c
++++ b/arch/arm/plat-omap/mcbsp.c
+@@ -343,6 +343,15 @@ static inline void omap34xx_mcbsp_free(struct omap_mcbsp *mcbsp)
+ 
+ 		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
+ 		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03) | CLOCKACTIVITY(0x03));
++		/*
++		 * HW bug workaround - If no_idle mode is taken, we need to
++		 * go to smart_idle before going to always_idle, or the
++		 * device will not hit retention anymore.
++		 */
++		syscon |= SIDLEMODE(0x02);
++		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
 +
-+	/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
-+	if (dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
-+		samples = snd_pcm_lib_period_bytes(substream) >> 1;
-+	else
-+		samples = 1;
++		syscon &= ~(SIDLEMODE(0x03));
+ 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
  
- 	/* Configure McBSP internal buffer usage */
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-@@ -166,6 +173,7 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
- 		err = omap_mcbsp_request(bus_id);
- 
- 	if (cpu_is_omap343x()) {
-+		int dma_op_mode = omap_mcbsp_get_dma_op_mode(bus_id);
- 		int max_period;
- 
- 		/*
-@@ -187,7 +195,8 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
- 		max_period++;
- 		max_period <<= 1;
- 
--		snd_pcm_hw_constraint_minmax(substream->runtime,
-+		if (dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
-+			snd_pcm_hw_constraint_minmax(substream->runtime,
- 						SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
- 						32, max_period);
- 	}
-@@ -268,7 +277,10 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 		port = omap34xx_mcbsp_port[bus_id][substream->stream];
- 		omap_mcbsp_dai_dma_params[id][substream->stream].set_threshold =
- 						omap_mcbsp_set_threshold;
--		sync_mode = OMAP_DMA_SYNC_FRAME;
-+		/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
-+		if (omap_mcbsp_get_dma_op_mode(bus_id) ==
-+						MCBSP_DMA_MODE_THRESHOLD)
-+			sync_mode = OMAP_DMA_SYNC_FRAME;
- 	} else {
- 		return -ENODEV;
- 	}
+ 		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, 0);
 -- 
 1.6.2.GIT
 
