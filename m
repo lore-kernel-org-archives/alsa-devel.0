@@ -1,14 +1,14 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv5 03/20] OMAP: McBSP: Use appropriate value for
-	startup delay
-Date: Mon, 17 Aug 2009 17:09:03 +0300
-Message-ID: <1250518143-13336-1-git-send-email-eduardo.valentin@nokia.com>
-References: <20090817135632.GW7278@atomide.com>
+Subject: [PATCHv4 02/20] OMAP: McBSP: Add IRQEN, IRQSTATUS,
+	THRESHOLD2 and THRESHOLD1 registers.
+Date: Mon, 17 Aug 2009 17:13:18 +0300
+Message-ID: <1250518398-13657-1-git-send-email-eduardo.valentin__14991.9509924532$1250519262$gmane$org@nokia.com>
+References: <20090817135301.GV7278@atomide.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20090817135632.GW7278@atomide.com>
+In-Reply-To: <20090817135301.GV7278@atomide.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,37 +24,28 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
 
-Increasing startup delay value as worst case:
- CLKSRG*2 = 8000khz: (1/8000) * 2 * 2 usec
-
-Although, 100us may give enough time for two CLKSRG,
-due to some unknown PM related, clock gating etc. reason,
-this patch increases it to 500us.
+Adding McBSP register definition for IRQEN, IRQSTATUS, THRESHOLD2 and THRESHOLD1 registers.
 
 Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
 ---
- arch/arm/plat-omap/mcbsp.c |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
+ arch/arm/plat-omap/include/mach/mcbsp.h |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-index 0aa2524..e9dd703 100644
---- a/arch/arm/plat-omap/mcbsp.c
-+++ b/arch/arm/plat-omap/mcbsp.c
-@@ -365,7 +365,13 @@ void omap_mcbsp_start(unsigned int id, int tx, int rx)
- 	w = OMAP_MCBSP_READ(io_base, SPCR1);
- 	OMAP_MCBSP_WRITE(io_base, SPCR1, w | (rx & 1));
+diff --git a/arch/arm/plat-omap/include/mach/mcbsp.h b/arch/arm/plat-omap/include/mach/mcbsp.h
+index b85e6e6..ceaf9ee 100644
+--- a/arch/arm/plat-omap/include/mach/mcbsp.h
++++ b/arch/arm/plat-omap/include/mach/mcbsp.h
+@@ -134,6 +134,10 @@
+ #define OMAP_MCBSP_REG_XCERG	0x74
+ #define OMAP_MCBSP_REG_XCERH	0x78
+ #define OMAP_MCBSP_REG_SYSCON	0x8C
++#define OMAP_MCBSP_REG_THRSH2	0x90
++#define OMAP_MCBSP_REG_THRSH1	0x94
++#define OMAP_MCBSP_REG_IRQST	0xA0
++#define OMAP_MCBSP_REG_IRQEN	0xA4
+ #define OMAP_MCBSP_REG_XCCR	0xAC
+ #define OMAP_MCBSP_REG_RCCR	0xB0
  
--	udelay(100);
-+	/*
-+	 * Worst case: CLKSRG*2 = 8000khz: (1/8000) * 2 * 2 usec
-+	 * REVISIT: 100us may give enough time for two CLKSRG, however
-+	 * due to some unknown PM related, clock gating etc. reason it
-+	 * is now at 500us.
-+	 */
-+	udelay(500);
- 
- 	if (idle) {
- 		/* Start frame sync */
 -- 
 1.6.2.GIT
 
