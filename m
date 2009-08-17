@@ -1,8 +1,7 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv4 03/20] OMAP: McBSP: Use appropriate value for
-	startup delay
-Date: Mon, 17 Aug 2009 14:51:02 +0300
-Message-ID: <1250509879-6703-4-git-send-email-eduardo.valentin__13087.7839671031$1250510804$gmane$org@nokia.com>
+Subject: [PATCHv4 15/20] ASoC: OMAP: Make DMA 64 aligned
+Date: Mon, 17 Aug 2009 14:51:14 +0300
+Message-ID: <1250509879-6703-16-git-send-email-eduardo.valentin__926.579236011271$1250510816$gmane$org@nokia.com>
 References: <1250509879-6703-1-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -26,28 +25,31 @@ From: Eduardo Valentin <eduardo.valentin@nokia.com>
 
 Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
 ---
- arch/arm/plat-omap/mcbsp.c |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
+ sound/soc/omap/omap-pcm.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-index 0aa2524..e9dd703 100644
---- a/arch/arm/plat-omap/mcbsp.c
-+++ b/arch/arm/plat-omap/mcbsp.c
-@@ -365,7 +365,13 @@ void omap_mcbsp_start(unsigned int id, int tx, int rx)
- 	w = OMAP_MCBSP_READ(io_base, SPCR1);
- 	OMAP_MCBSP_WRITE(io_base, SPCR1, w | (rx & 1));
+diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
+index dd9e728..f769a52 100644
+--- a/sound/soc/omap/omap-pcm.c
++++ b/sound/soc/omap/omap-pcm.c
+@@ -305,7 +305,7 @@ static struct snd_pcm_ops omap_pcm_ops = {
+ 	.mmap		= omap_pcm_mmap,
+ };
  
--	udelay(100);
-+	/*
-+	 * Worst case: CLKSRG*2 = 8000khz: (1/8000) * 2 * 2 usec
-+	 * REVISIT: 100us may give enough time for two CLKSRG, however
-+	 * due to some unknown PM related, clock gating etc. reason it
-+	 * is now at 500us.
-+	 */
-+	udelay(500);
+-static u64 omap_pcm_dmamask = DMA_BIT_MASK(32);
++static u64 omap_pcm_dmamask = DMA_BIT_MASK(64);
  
- 	if (idle) {
- 		/* Start frame sync */
+ static int omap_pcm_preallocate_dma_buffer(struct snd_pcm *pcm,
+ 	int stream)
+@@ -355,7 +355,7 @@ static int omap_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
+ 	if (!card->dev->dma_mask)
+ 		card->dev->dma_mask = &omap_pcm_dmamask;
+ 	if (!card->dev->coherent_dma_mask)
+-		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
++		card->dev->coherent_dma_mask = DMA_BIT_MASK(64);
+ 
+ 	if (dai->playback.channels_min) {
+ 		ret = omap_pcm_preallocate_dma_buffer(pcm,
 -- 
 1.6.2.GIT
 
