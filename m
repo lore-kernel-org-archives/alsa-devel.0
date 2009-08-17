@@ -1,8 +1,8 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv4 02/20] OMAP: McBSP: Add IRQEN, IRQSTATUS,
-	THRESHOLD2 and THRESHOLD1 registers.
-Date: Mon, 17 Aug 2009 14:51:01 +0300
-Message-ID: <1250509879-6703-3-git-send-email-eduardo.valentin@nokia.com>
+Subject: [PATCHv4 04/20] OMAP: McBSP: Add transmit/receive
+	threshold handler
+Date: Mon, 17 Aug 2009 14:51:03 +0300
+Message-ID: <1250509879-6703-5-git-send-email-eduardo.valentin__2680.93909039653$1250510784$gmane$org@nokia.com>
 References: <1250509879-6703-1-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,26 +24,34 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
 
+This patch adds a way to handle transmit/receive threshold.
+It export to mcbsp users a callback registration procedure.
+
 Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
 ---
- arch/arm/plat-omap/include/mach/mcbsp.h |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
+ arch/arm/plat-omap/include/mach/mcbsp.h |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
 
 diff --git a/arch/arm/plat-omap/include/mach/mcbsp.h b/arch/arm/plat-omap/include/mach/mcbsp.h
-index b85e6e6..ceaf9ee 100644
+index ceaf9ee..2544aa5 100644
 --- a/arch/arm/plat-omap/include/mach/mcbsp.h
 +++ b/arch/arm/plat-omap/include/mach/mcbsp.h
-@@ -134,6 +134,10 @@
- #define OMAP_MCBSP_REG_XCERG	0x74
- #define OMAP_MCBSP_REG_XCERH	0x78
- #define OMAP_MCBSP_REG_SYSCON	0x8C
-+#define OMAP_MCBSP_REG_THRSH2	0x90
-+#define OMAP_MCBSP_REG_THRSH1	0x94
-+#define OMAP_MCBSP_REG_IRQST	0xA0
-+#define OMAP_MCBSP_REG_IRQEN	0xA4
- #define OMAP_MCBSP_REG_XCCR	0xAC
- #define OMAP_MCBSP_REG_RCCR	0xB0
- 
+@@ -389,6 +389,15 @@ int omap_mcbsp_init(void);
+ void omap_mcbsp_register_board_cfg(struct omap_mcbsp_platform_data *config,
+ 					int size);
+ void omap_mcbsp_config(unsigned int id, const struct omap_mcbsp_reg_cfg * config);
++#ifdef CONFIG_ARCH_OMAP34XX
++void omap_mcbsp_set_tx_threshold(unsigned int id, u16 threshold);
++void omap_mcbsp_set_rx_threshold(unsigned int id, u16 threshold);
++#else
++static inline void omap_mcbsp_set_tx_threshold(unsigned int id, u16 threshold)
++{ }
++static inline void omap_mcbsp_set_rx_threshold(unsigned int id, u16 threshold)
++{ }
++#endif
+ int omap_mcbsp_request(unsigned int id);
+ void omap_mcbsp_free(unsigned int id);
+ void omap_mcbsp_start(unsigned int id, int tx, int rx);
 -- 
 1.6.2.GIT
 
