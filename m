@@ -1,8 +1,8 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv4 06/20] OMAP3: McBSP: Lower the maximum
-	buffersize for McBSP1, 3, 4, 5
-Date: Mon, 17 Aug 2009 14:51:05 +0300
-Message-ID: <1250509879-6703-7-git-send-email-eduardo.valentin__6876.13733248344$1250510879$gmane$org@nokia.com>
+Subject: [PATCHv4 20/20] ASoC: OMAP: Use DMA operating mode of
+	McBSP
+Date: Mon, 17 Aug 2009 14:51:19 +0300
+Message-ID: <1250509879-6703-21-git-send-email-eduardo.valentin__33326.1200962172$1250510892$gmane$org@nokia.com>
 References: <1250509879-6703-1-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -19,61 +19,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
+Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+From: Eduardo Valentin <eduardo.valentin@nokia.com>
 
-Do not allow applications to use the full buffer found on
-McBSP1,3,4,5. Using the full buffer in threshold mode causes
-the McBSP buffer to run dry, which can be observed as channels
-are switching (in reality the channels are shifting).
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
 ---
- arch/arm/mach-omap2/mcbsp.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/omap/omap-mcbsp.c |   18 +++++++++++++++---
+ 1 files changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/mach-omap2/mcbsp.c b/arch/arm/mach-omap2/mcbsp.c
-index f837114..7d22caf 100644
---- a/arch/arm/mach-omap2/mcbsp.c
-+++ b/arch/arm/mach-omap2/mcbsp.c
-@@ -129,7 +129,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
- 		.rx_irq		= INT_24XX_MCBSP1_IRQ_RX,
- 		.tx_irq		= INT_24XX_MCBSP1_IRQ_TX,
- 		.ops		= &omap2_mcbsp_ops,
--		.buffer_size	= 0x7F,
-+		.buffer_size	= 0x6F,
- 	},
- 	{
- 		.phys_base	= OMAP34XX_MCBSP2_BASE,
-@@ -147,7 +147,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
- 		.rx_irq		= INT_24XX_MCBSP3_IRQ_RX,
- 		.tx_irq		= INT_24XX_MCBSP3_IRQ_TX,
- 		.ops		= &omap2_mcbsp_ops,
--		.buffer_size	= 0x7F,
-+		.buffer_size	= 0x6F,
- 	},
- 	{
- 		.phys_base	= OMAP34XX_MCBSP4_BASE,
-@@ -156,7 +156,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
- 		.rx_irq		= INT_24XX_MCBSP4_IRQ_RX,
- 		.tx_irq		= INT_24XX_MCBSP4_IRQ_TX,
- 		.ops		= &omap2_mcbsp_ops,
--		.buffer_size	= 0x7F,
-+		.buffer_size	= 0x6F,
- 	},
- 	{
- 		.phys_base	= OMAP34XX_MCBSP5_BASE,
-@@ -165,7 +165,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
- 		.rx_irq		= INT_24XX_MCBSP5_IRQ_RX,
- 		.tx_irq		= INT_24XX_MCBSP5_IRQ_TX,
- 		.ops		= &omap2_mcbsp_ops,
--		.buffer_size	= 0x7F,
-+		.buffer_size	= 0x6F,
- 	},
- };
- #define OMAP34XX_MCBSP_PDATA_SZ		ARRAY_SIZE(omap34xx_mcbsp_pdata)
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index 2aec7a6..60c360b 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -144,7 +144,14 @@ static void omap_mcbsp_set_threshold(struct snd_pcm_substream *substream)
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+ 	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
+-	int samples = snd_pcm_lib_period_bytes(substream) >> 1;
++	int dma_op_mode = omap_mcbsp_get_dma_op_mode(mcbsp_data->bus_id);
++	int samples;
++
++	/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
++	if (dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
++		samples = snd_pcm_lib_period_bytes(substream) >> 1;
++	else
++		samples = 1;
+ 
+ 	/* Configure McBSP internal buffer usage */
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+@@ -166,6 +173,7 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
+ 		err = omap_mcbsp_request(bus_id);
+ 
+ 	if (cpu_is_omap343x()) {
++		int dma_op_mode = omap_mcbsp_get_dma_op_mode(bus_id);
+ 		int max_period;
+ 
+ 		/*
+@@ -187,7 +195,8 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
+ 		max_period++;
+ 		max_period <<= 1;
+ 
+-		snd_pcm_hw_constraint_minmax(substream->runtime,
++		if (dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
++			snd_pcm_hw_constraint_minmax(substream->runtime,
+ 						SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
+ 						32, max_period);
+ 	}
+@@ -268,7 +277,10 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
+ 		port = omap34xx_mcbsp_port[bus_id][substream->stream];
+ 		omap_mcbsp_dai_dma_params[id][substream->stream].set_threshold =
+ 						omap_mcbsp_set_threshold;
+-		sync_mode = OMAP_DMA_SYNC_FRAME;
++		/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
++		if (omap_mcbsp_get_dma_op_mode(bus_id) ==
++						MCBSP_DMA_MODE_THRESHOLD)
++			sync_mode = OMAP_DMA_SYNC_FRAME;
+ 	} else {
+ 		return -ENODEV;
+ 	}
 -- 
 1.6.2.GIT
 
