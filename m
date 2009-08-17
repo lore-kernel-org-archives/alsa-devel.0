@@ -1,20 +1,13 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Strange div-by-zero in alsa-lib
-	1.0.20's	snd_pcm_mmap_begin()
-Date: Mon, 17 Aug 2009 16:36:15 +0200
-Message-ID: <20090817143615.GA16548@tango.0pointer.de>
-References: <604760770908161524w207a4a44m72793fa9438c2ef4@mail.gmail.com>
-	<s5h3a7rvssh.wl%tiwai@suse.de>
+From: Eduardo Valentin <eduardo.valentin@nokia.com>
+Subject: [PATCH] ASoC: OMAP: Enable DMA burst mode
+Date: Mon, 17 Aug 2009 17:29:49 +0300
+Message-ID: <1250519389-14521-1-git-send-email-eduardo.valentin@nokia.com>
+References: <20090817140128.GY7278@atomide.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1C7DB24752
-	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Aug 2009 16:36:41 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5h3a7rvssh.wl%tiwai@suse.de>
+In-Reply-To: <20090817140128.GY7278@atomide.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,47 +18,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Daniel Chen <seven.steps@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Eduardo Valentin <eduardo.valentin@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 17.08.09 08:49, Takashi Iwai (tiwai@suse.de) wrote:
+From: Eduardo Valentin <eduardo.valentin@nokia.com>
 
-> 
-> At Sun, 16 Aug 2009 18:24:35 -0400,
-> Daniel Chen wrote:
-> > 
-> > Hi,
-> > 
-> > In https://bugs.launchpad.net/ubuntu/+source/alsa-lib/+bug/412677
-> > we're debugging an issue where snd_pcm_mmap_begin(), at line 6409 with
-> > 
-> > *offset = *pcm->appl.ptr % pcm->buffer_size;
-> > 
-> > appears to have pcm->buffer_size == 0. What's the correct approach in
-> > handling this corner case?
-> 
-> We could add a sanity check in the function, of course.
-> But relying on it doesn't sound nice.
-> 
-> At least, the caller should be surely at the certain state that the
-> buffer has been set up, i.e. checking whether snd_pcm_state() returns
-> SETUP or better condition.
+Improve DMA transfers by enabling Burst transaction.
 
-Hmm, this bug is triggered in PA apparently. PA doesn't call
-snd_pcm_mmap_begin() before the setup finished completely. Not sure
-what's going on here, but this smells as if pcm->buffer_size is not
-properly initialized.
+Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
+---
+ sound/soc/omap/omap-pcm.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
-Daniel, does this happen right-away on PA startup? Or does it
-happen sometime while playing?
-
-Could you get us the output of the PA startup phase when running
-"pulsaudio -vvvv"? This should show us to which value the buffer_size
-is initialized in the snd_pcm_t.
-
-Lennart
-
+diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
+index eab4533..b9633d5 100644
+--- a/sound/soc/omap/omap-pcm.c
++++ b/sound/soc/omap/omap-pcm.c
+@@ -195,6 +195,9 @@ static int omap_pcm_prepare(struct snd_pcm_substream *substream)
+ 	else
+ 		omap_enable_dma_irq(prtd->dma_ch, OMAP_DMA_FRAME_IRQ);
+ 
++	omap_set_dma_src_burst_mode(prtd->dma_ch, OMAP_DMA_DATA_BURST_16);
++	omap_set_dma_dest_burst_mode(prtd->dma_ch, OMAP_DMA_DATA_BURST_16);
++
+ 	return 0;
+ }
+ 
 -- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+1.6.3.3
+
