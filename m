@@ -1,14 +1,20 @@
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv4 20/20] ASoC: OMAP: Use DMA operating mode of
-	McBSP
-Date: Mon, 17 Aug 2009 17:19:47 +0300
-Message-ID: <1250518787-13915-1-git-send-email-eduardo.valentin__15315.772422082$1250519724$gmane$org@nokia.com>
-References: <20090817140201.GZ7278@atomide.com>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: Strange div-by-zero in alsa-lib
+	1.0.20's	snd_pcm_mmap_begin()
+Date: Mon, 17 Aug 2009 16:36:15 +0200
+Message-ID: <20090817143615.GA16548@tango.0pointer.de>
+References: <604760770908161524w207a4a44m72793fa9438c2ef4@mail.gmail.com>
+	<s5h3a7rvssh.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20090817140201.GZ7278@atomide.com>
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1C7DB24752
+	for <alsa-devel@alsa-project.org>;
+	Mon, 17 Aug 2009 16:36:41 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5h3a7rvssh.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,72 +25,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Eduardo Valentin <eduardo.valentin@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Daniel Chen <seven.steps@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
+On Mon, 17.08.09 08:49, Takashi Iwai (tiwai@suse.de) wrote:
 
-Configures DMA sync mode depending on McBSP operating mode value.
-The value is configurable by McBSP instance. So, depending
-on McBSP operating mode, the DMA sync mode is passed from
-omap-mcbsp to omap-pcm. Besides that, it also configures
-McBSP threshold value depending on which McBSP mode is activated.
+> 
+> At Sun, 16 Aug 2009 18:24:35 -0400,
+> Daniel Chen wrote:
+> > 
+> > Hi,
+> > 
+> > In https://bugs.launchpad.net/ubuntu/+source/alsa-lib/+bug/412677
+> > we're debugging an issue where snd_pcm_mmap_begin(), at line 6409 with
+> > 
+> > *offset = *pcm->appl.ptr % pcm->buffer_size;
+> > 
+> > appears to have pcm->buffer_size == 0. What's the correct approach in
+> > handling this corner case?
+> 
+> We could add a sanity check in the function, of course.
+> But relying on it doesn't sound nice.
+> 
+> At least, the caller should be surely at the certain state that the
+> buffer has been set up, i.e. checking whether snd_pcm_state() returns
+> SETUP or better condition.
 
-Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
----
- sound/soc/omap/omap-mcbsp.c |   18 +++++++++++++++---
- 1 files changed, 15 insertions(+), 3 deletions(-)
+Hmm, this bug is triggered in PA apparently. PA doesn't call
+snd_pcm_mmap_begin() before the setup finished completely. Not sure
+what's going on here, but this smells as if pcm->buffer_size is not
+properly initialized.
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 2aec7a6..60c360b 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -144,7 +144,14 @@ static void omap_mcbsp_set_threshold(struct snd_pcm_substream *substream)
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
- 	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
--	int samples = snd_pcm_lib_period_bytes(substream) >> 1;
-+	int dma_op_mode = omap_mcbsp_get_dma_op_mode(mcbsp_data->bus_id);
-+	int samples;
-+
-+	/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
-+	if (dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
-+		samples = snd_pcm_lib_period_bytes(substream) >> 1;
-+	else
-+		samples = 1;
- 
- 	/* Configure McBSP internal buffer usage */
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-@@ -166,6 +173,7 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
- 		err = omap_mcbsp_request(bus_id);
- 
- 	if (cpu_is_omap343x()) {
-+		int dma_op_mode = omap_mcbsp_get_dma_op_mode(bus_id);
- 		int max_period;
- 
- 		/*
-@@ -187,7 +195,8 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
- 		max_period++;
- 		max_period <<= 1;
- 
--		snd_pcm_hw_constraint_minmax(substream->runtime,
-+		if (dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
-+			snd_pcm_hw_constraint_minmax(substream->runtime,
- 						SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
- 						32, max_period);
- 	}
-@@ -268,7 +277,10 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 		port = omap34xx_mcbsp_port[bus_id][substream->stream];
- 		omap_mcbsp_dai_dma_params[id][substream->stream].set_threshold =
- 						omap_mcbsp_set_threshold;
--		sync_mode = OMAP_DMA_SYNC_FRAME;
-+		/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
-+		if (omap_mcbsp_get_dma_op_mode(bus_id) ==
-+						MCBSP_DMA_MODE_THRESHOLD)
-+			sync_mode = OMAP_DMA_SYNC_FRAME;
- 	} else {
- 		return -ENODEV;
- 	}
+Daniel, does this happen right-away on PA startup? Or does it
+happen sometime while playing?
+
+Could you get us the output of the PA startup phase when running
+"pulsaudio -vvvv"? This should show us to which value the buffer_size
+is initialized in the snd_pcm_t.
+
+Lennart
+
 -- 
-1.6.2.GIT
-
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
