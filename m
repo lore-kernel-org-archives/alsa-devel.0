@@ -1,29 +1,27 @@
-From: Joonyoung Shim <jy0922.shim@samsung.com>
-Subject: Re: [PATCH] ASoC: Fix data format configuration for
- S3C64XX IISv2
-Date: Tue, 18 Aug 2009 23:54:35 +0900
-Message-ID: <4A8AC0AB.9070706@samsung.com>
-References: <4A8AA4F3.3010907@samsung.com>
-	<20090818130524.GA24620@sirena.org.uk> <4A8AB7E5.8090008@samsung.com>
-	<20090818142327.GA29377@rakim.wolfsonmicro.main>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH 3/3 v3] ASoC: OMAP: Enhance OMAP1510 DMA
+ progress software counter
+Date: Tue, 18 Aug 2009 19:57:01 +0300
+Message-ID: <20090818195701.6f260d33.jhnikula@gmail.com>
+References: <200908101050.08074.jkrzyszt@tis.icnet.pl>
+	<200908110107.11485.jkrzyszt@tis.icnet.pl>
+	<200908112144.30731.jkrzyszt@tis.icnet.pl>
+	<20090817122605.0b240ea7.jhnikula@gmail.com>
+	<20090817100313.GA5756@rakim.wolfsonmicro.main>
+	<4A8AAFAD.9050705@tis.icnet.pl>
+	<20090818134540.GB24620@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8531724721
+Received: from mail-ew0-f220.google.com (mail-ew0-f220.google.com
+	[209.85.219.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5FBFE1037FE
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Aug 2009 16:54:38 +0200 (CEST)
-Received: from epmmp1 (mailout4.samsung.com [203.254.224.34])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KOK00C96UQZWH@mailout1.samsung.com> for
-	alsa-devel@alsa-project.org; Tue, 18 Aug 2009 23:54:35 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KOK001CGUQZPK@mmp1.samsung.com> for
-	alsa-devel@alsa-project.org; Tue, 18 Aug 2009 23:54:35 +0900 (KST)
-In-reply-to: <20090818142327.GA29377@rakim.wolfsonmicro.main>
+	Tue, 18 Aug 2009 18:55:31 +0200 (CEST)
+Received: by ewy20 with SMTP id 20so3715610ewy.46
+	for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2009 09:55:30 -0700 (PDT)
+In-Reply-To: <20090818134540.GB24620@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,21 +32,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: ben@simtec.co.uk, alsa-devel@alsa-project.org, kyungmin.park@samsung.com
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.arm.linux.org.uk" <linux-arm-kernel@lists.arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 8/18/2009 11:23 PM, Mark Brown wrote:
-> On Tue, Aug 18, 2009 at 11:17:09PM +0900, Joonyoung Shim wrote:
->> On 8/18/2009 10:05 PM, Mark Brown wrote:
-> 
->>> Can you confirm if you've got the device DMAing usable audio (and if so
->>> in what configuration)?
-> 
->> Do you mean which target board i use?
-> 
-> That's useful, yes, but I was more wondering about the configuration of
-> the DAI - mostly what's master.
-> 
+On Tue, 18 Aug 2009 14:45:41 +0100
+Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
 
-I use the configuration that the DAI of codec is master and the DAI of
-cpu is slave.
+> On Tue, Aug 18, 2009 at 03:42:05PM +0200, Janusz Krzysztofik wrote:
+> 
+> > And now, how is the patch 1/3 supposed to get into the mainline? Whom  
+> > should I ping from time to time to get it integrated? If not then, as  
+> > you know for sure, applying patch 2/3 whithout 1/3 will result in ASoC  
+> > support for OMAP1510 broken.
+> 
+> Normally the OMAP tree, though that's possibly a bit tricky due to the
+> ARM tree closing early.  If Tony's OK with merging via the ALSA tree we
+> could also apply the ARM patch there?
+
+I would say that it's better to keep in Tony's hand since otherwise
+there can be risk for DMA code being out-of-sync as there are quite
+frequent other PM, OMAP4, errata, etc. patches coming into it.
+
+Of course it means that OMAP1510 audio is broken until the patch 1/3 is
+merged but probably patch can be merged as a fix if merge window is
+missed.
+
+
+-- 
+Jarkko
