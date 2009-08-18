@@ -1,16 +1,22 @@
-From: "Candelaria Villareal, Jorge" <x0107209@ti.com>
-Subject: [PATCH] ASoC: SDP3430: Fix TWL GPIO6 pin mux request
-Date: Mon, 17 Aug 2009 13:48:27 -0500
-Message-ID: <2256F256009DAA4CBE661E9F41EAC84B6E0D0103@dlee01.ent.ti.com>
+From: Barry Song <21cnbao@gmail.com>
+Subject: Re: [PATCH V2 2/3] add set_tdm_slot in tdm dai to
+	define the relationship between audio channel and tdm slot
+Date: Tue, 18 Aug 2009 10:53:39 +0800
+Message-ID: <3c17e3570908171953l65c9d04i99ad6fa72b88d001@mail.gmail.com>
+References: <1250137511-24034-1-git-send-email-21cnbao@gmail.com>
+	<20090817175010.GA19707@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 93E9F245D6
+Received: from mail-gx0-f226.google.com (mail-gx0-f226.google.com
+	[209.85.217.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id 996FA243A1
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Aug 2009 20:48:36 +0200 (CEST)
-Content-Language: en-US
+	Tue, 18 Aug 2009 04:54:00 +0200 (CEST)
+Received: by gxk26 with SMTP id 26so4452672gxk.22
+	for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2009 19:53:59 -0700 (PDT)
+In-Reply-To: <20090817175010.GA19707@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,58 +26,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fix the write to PMBR1 register through I2C. Also, the constant which
-holds the value to write is now called TWL4030_GPIO6_PWM0_MUTE. This
-name is based on TRM to avoid confusion.
- 
-Signed-off-by: Jorge Eduardo Candelaria <x0107209@ti.com>
----
- sound/soc/omap/sdp3430.c |   15 +++++++++++----
- 1 files changed, 11 insertions(+), 4 deletions(-)
- 
-diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
-index f7e5b74..2eb1a69 100644
---- a/sound/soc/omap/sdp3430.c
-+++ b/sound/soc/omap/sdp3430.c
-@@ -40,8 +40,10 @@
- #include "omap-pcm.h"
- #include "../codecs/twl4030.h"
- 
--#define TWL4030_INTBR_PMBR1 0x0D
--#define EXTMUTE(value)  (value << 2)
-+/* TWL4030 PMBR1 Register */
-+#define TWL4030_INTBR_PMBR1  0x0D
-+/* TWL4030 PMBR1 Register GPIO6 mux bit */
-+#define TWL4030_GPIO6_PWM0_MUTE(value) (value << 2)
- 
- static struct snd_soc_card snd_soc_sdp3430;
- 
-@@ -299,6 +301,7 @@ static struct platform_device *sdp3430_snd_device;
- static int __init sdp3430_soc_init(void)
- {
-  int ret;
-+ u8 pin_mux;
- 
-  if (!machine_is_omap_3430sdp()) {
-   pr_debug("Not SDP3430!\n");
-@@ -318,8 +321,12 @@ static int __init sdp3430_soc_init(void)
-  *(unsigned int *)sdp3430_dai[1].cpu_dai->private_data = 2; /* McBSP3 */
- 
-  /* Set TWL4030 GPIO6 as EXTMUTE signal */
-- twl4030_i2c_write_u8(TWL4030_MODULE_INTBR, EXTMUTE(0x02),
--       TWL4030_MODULE_INTBR);
-+ twl4030_i2c_write_u8(TWL4030_MODULE_INTBR, &pin_mux,
-+      TWL4030_INTBR_PMBR1);
-+ pin_mux &= ~TWL4030_GPIO6_PWM0_MUTE(0x3);
-+ pin_mux |= TWL4030_GPIO6_PWM0_MUTE(0x2);
-+ twl4030_i2c_write_u8(TWL4030_MODULE_INTBR, pin_mux,
-+      TWL4030_INTBR_PMBR1);
- 
-  ret = platform_device_add(sdp3430_snd_device);
-  if (ret)
--- 
-1.6.0.4
+T24gVHVlLCBBdWcgMTgsIDIwMDkgYXQgMTo1MCBBTSwgTWFyawpCcm93bjxicm9vbmllQG9wZW5z
+b3VyY2Uud29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gVGh1LCBBdWcgMTMsIDIwMDkgYXQg
+MTI6MjU6MTFQTSArMDgwMCwgQmFycnkgU29uZyB3cm90ZToKPgo+PiBGb3IgYWQxOTM4LCB0aGUg
+YXVkaW8gY2hhbm5lbCBuIGp1c3QgdXNlcyBzbG90IG4sIGJ1dCBmb3IgYWQxODM2LCBpdCdzCj4+
+IGRpZmZlcmVudCwgY2hhbm5lbCAwIHVzZXMgc2xvdCAwLCBjaGFubmVsIDEgdXNlcyBzbG90IDQs
+IGNoYW5uZWxzIDIgdXNlcwo+PiBzbG90MSwgLi4uIFNvIGFkZCBzZXRfdGRtX3Nsb3QgZW50cnkg
+YW5kIHVzZSB0aGUgbWFzayBmaWVsZCB0byBkZWZpbmUKPj4gdGhlIHJlbGF0aW9uc2hpcCBiZXR3
+ZWVuIGF1ZGlvIGNoYW5uZWwgYW5kIHNsb3QgbnVtYmVyLgo+Cj4gSSB0aGluayB3aGF0IHlvdSdy
+ZSB0cnlpbmcgdG8gZGVzY3JpYmUgaGVyZSBpcyB0aGF0IHRoZSBkZXZpY2UgaXMKPiBleHBlY3Rp
+bmcgdG8gc2VlIGFsbCB0aGUgbGVmdCBjaGFubmVscyBvbiB0aGUgYnVzIGZvbGxvd2VkIGJ5IGFs
+bCB0aGUKPiByaWdodCBjaGFubmVscz8gwqBUaGlzIGlzIHRoZSBub3JtYWwgY2FzZSBmb3IgSTJT
+IFRETSBzbyBubyB1bnVzdWFsCj4gY29uZmlndXJhdGlvbiBpcyByZXF1aXJlZCBpbiBvcmRlciB0
+byBpbXBsZW1lbnQgaXQuCj4KPiBJIHJlYWxseSBkb24ndCB0aGluayB3ZSBzaG91bGQgaGF2ZSBC
+bGFja2ZpbiBpbXBsZW1lbnRpbmcgYSBkaWZmZXJlbnQKPiBBUEkgaGVyZSAtIGl0IG1ha2VzIHRo
+ZSBURE0gc2xvdCBBUEkgbXVjaCBoYXJkZXIgdG8gdXNlLiDCoEluc3RlYWQgd2UKPiBzaG91bGQg
+aGF2ZSBhIGNvbnNpc3RlbnQgQVBJIGJldHdlZW4gYWxsIGRldmljZXMuIMKgVGhpcyBtYXkgbWVh
+biB0aGF0IHdlCj4gbmVlZCB0byBleHRlbmQgdGhlIEFQSXMgaGVyZS4KPgpEbyB5b3UgbWVhbiB5
+b3Ugd2lsbCBleHRlbmQgVERNIEFQSSB0byBoYW5kbGUgdGhpcz8gSSBjYW4gZm9sbG93IHlvdXIK
+b24tZ29pbmcgY2hhbmdlcy4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
