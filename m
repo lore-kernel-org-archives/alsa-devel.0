@@ -1,19 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Fix data format configuration
-	for	S3C64XX IISv2
-Date: Tue, 18 Aug 2009 14:05:25 +0100
-Message-ID: <20090818130524.GA24620@sirena.org.uk>
-References: <4A8AA4F3.3010907@samsung.com>
+Subject: Re: [PATCH V2 2/3] add set_tdm_slot in tdm dai to
+ define the relationship between audio channel and tdm slot
+Date: Tue, 18 Aug 2009 14:11:17 +0100
+Message-ID: <20090818131117.GA12512@rakim.wolfsonmicro.main>
+References: <1250137511-24034-1-git-send-email-21cnbao@gmail.com>
+	<20090817175010.GA19707@rakim.wolfsonmicro.main>
+	<3c17e3570908171953l65c9d04i99ad6fa72b88d001@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 63795246B5
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9DEAC246C5
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Aug 2009 15:05:27 +0200 (CEST)
+	Tue, 18 Aug 2009 15:11:18 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4A8AA4F3.3010907@samsung.com>
+In-Reply-To: <3c17e3570908171953l65c9d04i99ad6fa72b88d001@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,17 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joonyoung Shim <jy0922.shim@samsung.com>
-Cc: ben@simtec.co.uk, alsa-devel@alsa-project.org, kyungmin.park@samsung.com
+To: Barry Song <21cnbao@gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 18, 2009 at 09:56:19PM +0900, Joonyoung Shim wrote:
-> The data format configuration for S3C64xx IISv2 was hardcoded for IISMOD
-> register. This patch changes to the defined values it.
+On Tue, Aug 18, 2009 at 10:53:39AM +0800, Barry Song wrote:
+> On Tue, Aug 18, 2009 at 1:50 AM, Mark
+> Brown<broonie@opensource.wolfsonmicro.com> wrote:
 
-> And instead of bits 9 and 10 of IISMOD we should clear bits 13 and 14.
+> > I think what you're trying to describe here is that the device is
+> > expecting to see all the left channels on the bus followed by all the
+> > right channels? =A0This is the normal case for I2S TDM so no unusual
+> > configuration is required in order to implement it.
 
-Thanks - there's quite a few problems with this area.
+> Do you mean you will extend TDM API to handle this? I can follow your
+> on-going changes.
 
-Can you confirm if you've got the device DMAing usable audio (and if so
-in what configuration)?
+It's possible, though I'd not hold my breath since I don't have any
+systems which can use it.  Could you confirm which mode your device is
+operating in for this configuration - if it's I2S then there should be
+nothing needed.
