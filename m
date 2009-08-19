@@ -1,27 +1,18 @@
-From: Shane W <shane-alsa@csy.ca>
-Subject: Nvidia MSI Geforce 9500
-Date: Wed, 19 Aug 2009 14:29:03 -0700
-Message-ID: <20090819212902.GA5748@csy.ca>
-References: <20090819200036.GA12401@csy.ca>
+From: Mads Kiilerich <mads@kiilerich.com>
+Subject: Re: Support for ALC662 on FUJITSU SIEMENS AMILO Li3710
+Date: Thu, 20 Aug 2009 00:45:39 +0200
+Message-ID: <4A8C8093.9030507@kiilerich.com>
+References: <4A6B8D20.6070601@kiilerich.com>	<s5hskgjddzq.wl%tiwai@suse.de>	<4A6C94D0.8040705@kiilerich.com>	<s5hd47m7iv2.wl%tiwai@suse.de>	<4A6D7BA6.4020402@kiilerich.com>
+	<s5hy6qaa12u.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from viper.wapvi.bc.ca (viper.wapvi.bc.ca [209.52.235.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id E5FA4103809
+Received: from smtp.knis.dk (smtp.knis.dk [213.150.52.155])
+	by alsa0.perex.cz (Postfix) with ESMTP id B044A245DB
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Aug 2009 23:51:39 +0200 (CEST)
-Received: from continuum.csy.ca (S0106001a4d4d4a63.vs.shawcable.net
-	[70.71.65.71]) (authenticated bits=0)
-	by viper.wapvi.bc.ca (8.14.2/8.14.2/Debian-2build1) with ESMTP id
-	n7JLpZr0018065
-	(version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=NOT)
-	for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2009 14:51:37 -0700
-Received: from shane by continuum.csy.ca with local (Exim 4.69)
-	(envelope-from <shane-alsa@csy.ca>) id 1MdsiN-0001aV-28
-	for alsa-devel@alsa-project.org; Wed, 19 Aug 2009 14:29:03 -0700
-Content-Disposition: inline
-In-Reply-To: <20090819200036.GA12401@csy.ca>
+	Thu, 20 Aug 2009 00:45:42 +0200 (CEST)
+In-Reply-To: <s5hy6qaa12u.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,86 +22,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Takashi Iwai wrote, On 07/27/2009 12:10 PM:
+> At Mon, 27 Jul 2009 12:04:22 +0200,
+> Mads Kiilerich wrote:
+>    
+>> Takashi Iwai wrote, On 07/27/2009 08:14 AM:
+>>      
+>>> At Sun, 26 Jul 2009 19:39:28 +0200,
+>>> Mads Kiilerich wrote:
+>>>
+>>>        
+>>>> Takashi Iwai wrote, On 07/26/2009 10:50 AM:
+>>>>
+>>>>          
+>>>>> At Sun, 26 Jul 2009 00:54:24 +0200,
+>>>>> Mads Kiilerich wrote:
+>>>>>
+>>>>>
+>>>>>            
+>>>>>> On a friends FUJITSU SIEMENS AMILO Li3710 10601011427 sound didn't work
+>>>>>> with kernel-PAE-2.6.29.6-213.fc11.i686
+>>>>>>
+>>>>>>
+>>>>>>              
+>>>>> How about with the latest alsa-driver snapshot?
+>>>>>        ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
+>>>>>
+>>>>>
+>>>>>            
+>>>> Thanks.
+>>>>
+>>>> I looked at your sound-2.6.git tree and found no quirk for this card
+>>>> (AFAICS) and assumed that it hadn't been reported and fixed yet.
+>>>>
+>>>>          
+>>> When no quirk is set, the automatic mode is used as default.
+>>> And, it's possible that the automatic mode has been fixed in the
+>>> upstream.  That's why I asked to test with the latest one.
+>>> We should avoid any device-specific quirk as much as possible, but
+>>> rather fix the automatic parser.
+>>>
+>>>        
+>> Ok, if you think that would be possible. I assumed that it was broken
+>> beond repair.
+>>      
+...
+>>>>> Also, please give alsa-info.sh output.  Run with --no-upload and attach
+>>>>> the generated file.
+>>>>>
+>>>>>
+>>>>>            
+>>>> I became aware of that command after having visited my friend. I have
+>>>> output of dmesg and  lshal and lspci - is that sufficient?
+>>>>
+>>>>          
+>>> No
+>>>        
+>> Ok, thanks for the hints to help me understand.
+>>
+>> I will try alsa-drivers-snapshot and alsa-info.sh next time I get access
+>> to that computer - that will probably take more than a month.
+>>      
+> OK, let me know any results.
+>    
 
-think this might belong on the devel list. After some
-searching, looks like my Geforce 9500 card is not
-recognized by the hda_intel driver. I tried adding:
-{ PCI_DEVICE(0x10de, 0x0640), .driver_data = AZX_DRIVER_NVIDIA },
+Ok, I got access to the machine and tested successfully. The ALC662 on 
+this machine works with the latest snapshot, so I assume that it 
+eventually will start working with vanilla upstream kernels - somewhere 
+between 2.6.30 and 2.6.32.
 
-to hda_intel.c but I get:
-HDA Intel 0000:01:00.0: PCI INT A -> GSI 16 (level, low) -> IRQ 16
-HDA Intel 0000:01:00.0: setting latency timer to 64
-hda-intel: no codecs found!
-HDA Intel 0000:01:00.0: PCI INT A disabled
+http://www.alsa-project.org/db/?f=c72a5f49d7f21b99173358a421ea9e0f18898810
 
-So looks like it isn't that simple. Anyone encountered this card as yet? Anywhere elese I should be looking?
+Thanks!
 
-On Wed, Aug 19, 2009 at 01:00:36PM -0700, Shane W wrote:
-> Hey all,
-> 
-> So just installed a Geforce 9500 video card with an HDMI
-> port but udev isn't probing an alsa driver for it. I'm
-> wondering what I need to load. I tried snd_codec_nvhdmi and
-> snd_codec_intel but proc/asound/cards still says "no cards
-> installed". Linux 2.6.30 (Debian) with Alsa 1.0.20 is being
-> used.  Any help greatly appreciated.
-> 
-> Shane
-> 
-> lspci -vvv:
-> 01:00.0 VGA compatible controller: nVidia Corporation G96 [GeForce 9500 GT] (rev
->  a1) (prog-if 00 [VGA controller])
->         Subsystem: Micro-Star International Co., Ltd. Device 1575
->         Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Step
-> ping- SERR- FastB2B- DisINTx-
->         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort-
-> <MAbort- >SERR- <PERR- INTx-
->         Latency: 0
->         Interrupt: pin A routed to IRQ 16
->         Region 0: Memory at f6000000 (32-bit, non-prefetchable) [size=16M]
->         Region 1: Memory at e0000000 (64-bit, prefetchable) [size=256M]
->         Region 3: Memory at f4000000 (64-bit, non-prefetchable) [size=32M]
->         Region 5: I/O ports at a000 [size=128]
->         [virtual] Expansion ROM at f7000000 [disabled] [size=512K]
->         Capabilities: [60] Power Management version 3
->                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot
-> -,D3cold-)
->                 Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
->         Capabilities: [68] MSI: Enable- Count=1/1 Maskable- 64bit+
->                 Address: 0000000000000000  Data: 0000
->         Capabilities: [78] Express (v1) Endpoint, MSI 00
->                 DevCap: MaxPayload 128 bytes, PhantFunc 0, Latency L0s <512ns, L
-> 1 <4us
->                         ExtTag+ AttnBtn- AttnInd- PwrInd- RBE+ FLReset-
->                 DevCtl: Report errors: Correctable- Non-Fatal- Fatal- Unsupporte
-> d-
->                         RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop+
->                         MaxPayload 128 bytes, MaxReadReq 512 bytes
->                 DevSta: CorrErr- UncorrErr- FatalErr- UnsuppReq- AuxPwr- TransPe
-> nd-
->                 LnkCap: Port #0, Speed 2.5GT/s, Width x16, ASPM L0s L1, Latency
-> L0 <512ns, L1 <1us
->                         ClockPM- Surprise- LLActRep- BwNot-
->                 LnkCtl: ASPM Disabled; RCB 128 bytes Disabled- Retrain- CommClk+
->                         ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
->                 LnkSta: Speed 2.5GT/s, Width x16, TrErr- Train- SlotClk+ DLActiv
-> e- BWMgmt- ABWMgmt-
->         Capabilities: [b4] Vendor Specific Information <?>
->         Capabilities: [100] Virtual Channel <?>
->         Capabilities: [128] Power Budgeting <?>
->         Capabilities: [600] Vendor Specific Information <?>
->         Kernel driver in use: nvidia
-> 
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________
-> Alsa-user mailing list
-> Alsa-user@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-user
+/Mads
