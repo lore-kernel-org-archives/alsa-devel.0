@@ -1,66 +1,51 @@
-From: Magnus Damm <magnus.damm@gmail.com>
-Subject: Re: [PATCH 1/3] Add SuperH FSI driver support for ALSA
-Date: Wed, 19 Aug 2009 22:59:56 +0900
-Message-ID: <aec7e5c30908190659n4b81272ek6e06f23f4ee71a15@mail.gmail.com>
-References: <uljlg59ls.wl%morimoto.kuninori@renesas.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/3] Add FSI-AK464x sound support for
+	ms7724se
+Date: Wed, 19 Aug 2009 15:02:56 +0100
+Message-ID: <20090819140256.GA31305@rakim.wolfsonmicro.main>
+References: <uiqgk59lj.wl%morimoto.kuninori@renesas.com>
+	<20090819120058.GB20227@rakim.wolfsonmicro.main>
+	<aec7e5c30908190646l1af450e8w3178683893a17437@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <uljlg59ls.wl%morimoto.kuninori@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-Cc: linux-sh@vger.kernel.org, alsa-devel@alsa-project.org, lethal@linux-sh.org, Takashi Iwai <tiwai@suse.de>, broonie@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5AE3E103895
+	for <alsa-devel@alsa-project.org>;
+	Wed, 19 Aug 2009 16:02:58 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <aec7e5c30908190646l1af450e8w3178683893a17437@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Magnus Damm <magnus.damm@gmail.com>
+Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, lethal@linux-sh.org, linux-sh@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Morimoto-san,
+On Wed, Aug 19, 2009 at 10:46:34PM +0900, Magnus Damm wrote:
+> On Wed, Aug 19, 2009 at 9:00 PM, Mark
+> Brown<broonie@opensource.wolfsonmicro.com> wrote:
 
-Thanks for your work on this!
+> >> + =A0 =A0 gpio_request(GPIO_FN_FSIMCKA, =A0 =A0NULL);
 
-On Wed, Aug 19, 2009 at 8:25 PM, Kuninori
-Morimoto<morimoto.kuninori@renesas.com> wrote:
-> This driver is very simple.
-> It support playback only now.
-> It is tested by ms7724se board.
->
-> Signed-off-by: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-> ---
+> > Is this something that the FSI driver should do for itself? =A0It looks
+> > like there's no pin options here, just fixed functions for FSI A or B so
+> > replicating per-board seems redundant. =A0On the other hand, if it's
+> > idiomatic for SH better keep it this way.
 
-[snip]
+> These GPIO_FN_ values are processor specific, sh7724 in this case. I
+> suspect we will see the FSI block reused in future processors so
+> keeping processor-specific bits out of the driver itself may be a good
+> plan. Long term I'd be more than happy to pass along processors
+> specific GPIOs to each driver, but at this point I don't know any
+> clean and standard way to do that.
 
-> --- /dev/null
-> +++ b/include/sound/fsi.h
-
-How about using sh_fsi.h or sh_mobile_fsi.h? I think
-include/sound/fsi.h is polluting the name space.
-
-> --- /dev/null
-> +++ b/sound/soc/sh/fsi.c
-[snip]
-> +struct fsi_master {
-> + =A0 =A0 =A0 void __iomem *base;
-> + =A0 =A0 =A0 atomic_t user;
-> + =A0 =A0 =A0 int irq;
-> + =A0 =A0 =A0 struct clk *clk;
-> + =A0 =A0 =A0 struct fsi_priv fsia;
-> + =A0 =A0 =A0 struct fsi_priv fsib;
-> + =A0 =A0 =A0 struct sh_fsi_platform_info *info;
-> +};
-> +
-> +struct fsi_master *master;
-
-Is it really necessary to have "master" as a global variable? Maybe
-this global variable is there to work around some framework issue?
-
-If possible please try to avoid using a global variable like this.
-=46uture processors may come with multiple FSI blocks.
-
-Right now I'm quite happy that the CEU driver does not use global
-variables. Remember the case with a single CEU in sh7722 and now we
-have two CEU blocks in sh7724. It was easy to support sh7724 because I
-avoided using global variables when I initially wrote the driver for
-sh7722.
-
-Cheers,
-
-/ magnus
+Is it possible to build kernels for more than one processor?  The way
+the code looks that's not the case...
