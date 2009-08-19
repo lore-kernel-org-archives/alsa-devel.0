@@ -1,17 +1,31 @@
-From: Shine Liu <shinel@foxmail.com>
-Subject: [PATCH] pcm_lib.c: Fixed inaccurate calculation of
- hw_ptr_interrupt in snd_pcm_update_hw_ptr_interrupt function
-Date: Wed, 19 Aug 2009 18:22:19 +0800
-Message-ID: <1250677339.3516.17.camel@shinel>
-Reply-To: shinel@foxmail.com
+From: Stefan Schoenleitner <dev.c0debabe@gmail.com>
+Subject: implement delay in ioplug alsa plugin
+Date: Wed, 19 Aug 2009 12:29:59 +0200
+Message-ID: <4A8BD427.7000607@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpbg64.qq.com (smtpbg64.qq.com [119.147.10.223])
-	by alsa0.perex.cz (Postfix) with SMTP id 39DF024502
+Received: from netfinity.tbmn.org (mail.tbmn.org [88.117.197.126])
+	by alsa0.perex.cz (Postfix) with ESMTP id B629E24532
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Aug 2009 12:22:39 +0200 (CEST)
+	Wed, 19 Aug 2009 12:30:13 +0200 (CEST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by netfinity.tbmn.org (Postfix) with ESMTP id 5725A4BE05
+	for <alsa-devel@alsa-project.org>;
+	Wed, 19 Aug 2009 12:30:18 +0200 (CEST)
+Received: from netfinity.tbmn.org ([127.0.0.1])
+	by localhost (netfinity.tbmn.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id XJ5tqdc1ZDqS for <alsa-devel@alsa-project.org>;
+	Wed, 19 Aug 2009 12:30:18 +0200 (CEST)
+Received: from [192.168.1.5] (chello080108001212.35.11.tuwien.teleweb.at
+	[80.108.1.212])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: mne@tbmn.org)
+	by netfinity.tbmn.org (Postfix) with ESMTPSA id EB04B4BDFA
+	for <alsa-devel@alsa-project.org>;
+	Wed, 19 Aug 2009 12:30:17 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,41 +35,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-There's no restriction on that the runtime->period_size should be the
-multiplicator of the runtime->buffer_size in current kernel code.
+Hi,
 
-So "hw_ptr_interrupt = runtime->hw_ptr_interrupt +
-runtime->period_size;" is not always the trueth.
+I managed to write an ioplug plugin which dumps a raw PCM stream to a
+file (similar to the way the file or tee plugins do, but without a slave
+device).
 
-I've encounter the problem of this bug, the kernel told me "PCM:
-Unexpected hw_pointer value (stream=0, pos=8, intr_ptr=16384)".
+However, instead of immediately writing all the samples to the file, I
+would like to add some delay so that the samples are written to the file
+in real time at the frequency of the sampling rate.
 
-The period_size and buffer_size I used was 0x800 and 0x3e80 when the bug
-occured.
+Thus if there is a single channel stream with 16bits being played at a
+sampling rate of 8kHz, each 1/8000sec exactly 16 bits should be written
+to the file.
 
-Following patch will fix the bug.
+The reason for this is that I have a DSP attached over SPI which needs
+exactly one audio sample per interval.
+In order to talk to the DSP there is a SPI device-file which my ioplugin
+would use to write the samples to.
 
+What is the best way to implement such a delay ?
 
+I'm pretty sure that just adding some usleep calls() won't work very
+well, since the write operations to the device file probably don't take
+the same amount of time every time.
+Maybe it would work with non-blocking writes to the device file and a
+high precision timer ?
 
-Signed-off-by: Shine Liu <shinel@foxmail.com>
------------------------------------------------------------------------
-
---- a/sound/core/pcm_lib.c	2009-08-14 06:43:34.000000000 +0800
-+++ b/sound/core/pcm_lib.c	2009-08-19 17:59:00.000000000 +0800
-@@ -248,6 +248,12 @@
- 	hw_base = runtime->hw_ptr_base;
- 	new_hw_ptr = hw_base + pos;
- 	hw_ptr_interrupt = runtime->hw_ptr_interrupt + runtime->period_size;
-+	/* if the period_size is not the multiplicator of the 
-+ 	 * buffer_size, the hw_ptr_interrupt calculated above 
-+ 	 * may not be correct, should be fixed. 
-+ 	 */
-+	if(hw_ptr_interrupt > hw_base + runtime->buffer_size)
-+		hw_ptr_interrupt = hw_base + runtime->buffer_size;
- 	delta = new_hw_ptr - hw_ptr_interrupt;
- 	if (hw_ptr_interrupt >= runtime->boundary) {
- 		hw_ptr_interrupt -= runtime->boundary;
+cheers,
+Stefan
