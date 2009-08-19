@@ -1,110 +1,67 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] Add ak464x codec support
-Date: Wed, 19 Aug 2009 12:54:18 +0100
-Message-ID: <20090819115418.GA20227@rakim.wolfsonmicro.main>
-References: <uk51059ln.wl%morimoto.kuninori@renesas.com>
+Subject: Re: [PATCH 3/3] Add FSI-AK464x sound support for
+	ms7724se
+Date: Wed, 19 Aug 2009 13:00:58 +0100
+Message-ID: <20090819120058.GB20227@rakim.wolfsonmicro.main>
+References: <uiqgk59lj.wl%morimoto.kuninori@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5671624385
+	for <alsa-devel@alsa-project.org>;
+	Wed, 19 Aug 2009 14:00:59 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <uk51059ln.wl%morimoto.kuninori@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
+In-Reply-To: <uiqgk59lj.wl%morimoto.kuninori@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-Cc: linux-sh@vger.kernel.org, alsa-devel@alsa-project.org, Magnus Damm <magnus.damm@gmail.com>, lethal@linux-sh.org, Takashi Iwai <tiwai@suse.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, lethal@linux-sh.org, Magnus Damm <magnus.damm@gmail.com>, linux-sh@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 19, 2009 at 08:25:24PM +0900, Kuninori Morimoto wrote:
-> This is very simple driver for ALSA
-> It supprt headphone output and stereo input only
+On Wed, Aug 19, 2009 at 08:25:28PM +0900, Kuninori Morimoto wrote:
 
-> Signed-off-by: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+>  arch/sh/boards/Kconfig                   |    9 +++
+>  arch/sh/boards/mach-se/7724/Makefile     |    3 +-
+>  arch/sh/boards/mach-se/7724/fsi-ak464x.c |   90 ++++++++++++++++++++++++++++++
 
-Looks mostly good, a few comments below the major one being that the
-driver should be changed to use the new device model registration
-method.
+the machine driver itself should be under sound/soc/sh.
 
-I'm basically OK with the use of fixed register write sequences to get
-things going for your platform.  However, it'd be good if you could
-document in the changelog or in comments in the code exactly what the
-settings you need for your platform are so that if someone comes along
-and does implement more complete support for these CODECs they know what
-needs to be done to keep your platform working.  There's likely to be
-some register bits you're setting simply because they're in the same
-register that aren't actually required for your system.  This applies
-especially for the clock configuration which will depend on your input
-clock rate.
-
-Using snd_soc_update_bits() to set only the bits you need setting might
-help, but comments explaining what exactly the setup you have should
-cover it.
-
-> +/*
-> + * ak464x register cache
-> + */
-> +static const u16 ak464x_reg[AK464X_CACHEREGNUM] = {
-> +    0x0000, 0x0000, 0x0001, 0x0000,
-> +    0x0002, 0x0000, 0x0000, 0x0000,
-> +    0x00e1, 0x00e1, 0x0018, 0x0000,
-> +    0x00e1, 0x0018, 0x0011, 0x0008,
-> +    0x0000, 0x0000, 0x0000, 0x0000,
-> +    0x0000, 0x0000, 0x0000, 0x0000,
-> +    0x0000, 0x0000, 0x0000, 0x0000,
-> +    0x0000, 0x0000, 0x0000, 0x0000,
-> +    0x0000, 0x0000, 0x0000, 0x0000,
-> +    0x0000,
-> +};
-
-These should be indented with a tab (some of the existing drivers do get
-this wrong).
-
-> +/*
-> + * read ak464x register cache
-> + */
-> +static inline unsigned int ak464x_read_reg_cache(struct snd_soc_codec *codec,
-> +	unsigned int reg)
-
-It'd be worth considering using the newly added soc-cache.c to factor
-out some of this code (you'll need to add new register types).  Not
-essential, though.
-
-> +static int ak464x_set_bias_level(struct snd_soc_codec *codec,
-> +				 enum snd_soc_bias_level level)
+> +static int machine_init(struct snd_soc_codec *codec)
 > +{
-> +	codec->bias_level = level;
+> +	snd_soc_dapm_sync(codec);
 > +	return 0;
 > +}
 
-Hrm, the core doesn't take care of that for you if there's no
-set_bias_level() - I'll fix that shortly so you can remove this
-function.
+This should just be removed - the core will do this for you.
 
-> +struct snd_soc_dai ak464x_dai = {
-> +	.name = "AK464X",
-> +	.playback = {
-> +		.stream_name = "Playback",
-> +		.channels_min = 1,
-> +		.channels_max = 2,
-> +		.rates = SNDRV_PCM_RATE_8000_48000,
-> +		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,},
+> +	/* enable FSI */
+> +	gpio_request(GPIO_FN_FSIMCKB,    NULL);
+> +	gpio_request(GPIO_FN_FSIMCKA,    NULL);
+> +	gpio_request(GPIO_FN_FSIOASD,    NULL);
+> +	gpio_request(GPIO_FN_FSIIABCK,   NULL);
+> +	gpio_request(GPIO_FN_FSIIALRCK,  NULL);
+> +	gpio_request(GPIO_FN_FSIOABCK,   NULL);
+> +	gpio_request(GPIO_FN_FSIOALRCK,  NULL);
+> +	gpio_request(GPIO_FN_CLKAUDIOAO, NULL);
+> +	gpio_request(GPIO_FN_FSIIBSD,    NULL);
+> +	gpio_request(GPIO_FN_FSIOBSD,    NULL);
+> +	gpio_request(GPIO_FN_FSIIBBCK,   NULL);
+> +	gpio_request(GPIO_FN_FSIIBLRCK,  NULL);
+> +	gpio_request(GPIO_FN_FSIOBBCK,   NULL);
+> +	gpio_request(GPIO_FN_FSIOBLRCK,  NULL);
+> +	gpio_request(GPIO_FN_CLKAUDIOBO, NULL);
+> +	gpio_request(GPIO_FN_FSIIASD,    NULL);
 
-Does the device automatically detect things like the word size or are
-your fixed write sequences only handling some cases?
-
-> +
-> +static int __init ak464x_modinit(void)
-> +{
-> +	return snd_soc_register_dai(&ak464x_dai);
-> +}
-> +module_init(ak464x_modinit);
-
-> +static void __exit ak464x_exit(void)
-> +{
-> +	snd_soc_unregister_dai(&ak464x_dai);
-> +}
-> +module_exit(ak464x_exit);
-
-The driver should be converted to use the normal device model
-registration methods - the registration of the DAIs in the module
-startup is a compatibility hack that's being used for old drivers that
-haven't yet made the transition.  The WM8731 driver has a fairly
-straightforward example of how the transition can be done.
+Is this something that the FSI driver should do for itself?  It looks
+like there's no pin options here, just fixed functions for FSI A or B so
+replicating per-board seems redundant.  On the other hand, if it's
+idiomatic for SH better keep it this way.
