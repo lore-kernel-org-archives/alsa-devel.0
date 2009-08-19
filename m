@@ -1,42 +1,58 @@
-From: Shine Liu <shinel@foxmail.com>
-Subject: Re: [PATCH] pcm_lib.c: Fixed inaccurate calculation of
- hw_ptr_interrupt in snd_pcm_update_hw_ptr_interrupt function
-Date: Wed, 19 Aug 2009 13:01:50 +0000
-Message-ID: <1250686910.2060.20.camel@sl>
-References: <1250677339.3516.17.camel@shinel> <s5hd46scctf.wl%tiwai@suse.de>
-	<1250679571.500.20.camel@shinel> <s5h7hx0c8l2.wl%tiwai@suse.de>
-	<1250686106.2060.16.camel@sl>  <s5hocqcarrx.wl%tiwai@suse.de>
+From: Magnus Damm <magnus.damm@gmail.com>
+Subject: Re: [PATCH 3/3] Add FSI-AK464x sound support for ms7724se
+Date: Wed, 19 Aug 2009 22:46:34 +0900
+Message-ID: <aec7e5c30908190646l1af450e8w3178683893a17437@mail.gmail.com>
+References: <uiqgk59lj.wl%morimoto.kuninori@renesas.com>
+	 <20090819120058.GB20227@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpbg73.qq.com (smtpbg73.qq.com [119.147.10.232])
-	by alsa0.perex.cz (Postfix) with SMTP id D74372441D
-	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Aug 2009 15:02:07 +0200 (CEST)
-In-Reply-To: <s5hocqcarrx.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <20090819120058.GB20227@rakim.wolfsonmicro.main>
+Sender: linux-sh-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, linux-sh@vger.kernel.org, alsa-devel@alsa-project.org, lethal@linux-sh.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2009-08-19 at 14:53 +0200, Takashi Iwai wrote:
-> 
-> It is hardware dependent, i.e. how the irq is generated.
-> If the irq is generated in a way like timer, the period size doesn't
-> have to be aligned with the buffer size.  But your case doesn't look
-> like that.
-> 
-> 
-> Takashi
-> 
+Hi Mark,
 
-Thanks, I'll find a way to fix this bug for the AsoC s3c24xx platform.
+Thanks for your feedback!
+
+On Wed, Aug 19, 2009 at 9:00 PM, Mark
+Brown<broonie@opensource.wolfsonmicro.com> wrote:
+> On Wed, Aug 19, 2009 at 08:25:28PM +0900, Kuninori Morimoto wrote:
+>> + =A0 =A0 /* enable FSI */
+>> + =A0 =A0 gpio_request(GPIO_FN_FSIMCKB, =A0 =A0NULL);
+>> + =A0 =A0 gpio_request(GPIO_FN_FSIMCKA, =A0 =A0NULL);
+>> + =A0 =A0 gpio_request(GPIO_FN_FSIOASD, =A0 =A0NULL);
+>> + =A0 =A0 gpio_request(GPIO_FN_FSIIABCK, =A0 NULL);
+>> + =A0 =A0 gpio_request(GPIO_FN_FSIIALRCK, =A0NULL);
+>> + =A0 =A0 gpio_request(GPIO_FN_FSIOABCK, =A0 NULL);
+>> + =A0 =A0 gpio_request(GPIO_FN_FSIOALRCK, =A0NULL);
+>> + =A0 =A0 gpio_request(GPIO_FN_CLKAUDIOAO, NULL);
+>> + =A0 =A0 gpio_request(GPIO_FN_FSIIBSD, =A0 =A0NULL);
+>> + =A0 =A0 gpio_request(GPIO_FN_FSIOBSD, =A0 =A0NULL);
+>> + =A0 =A0 gpio_request(GPIO_FN_FSIIBBCK, =A0 NULL);
+>> + =A0 =A0 gpio_request(GPIO_FN_FSIIBLRCK, =A0NULL);
+>> + =A0 =A0 gpio_request(GPIO_FN_FSIOBBCK, =A0 NULL);
+>> + =A0 =A0 gpio_request(GPIO_FN_FSIOBLRCK, =A0NULL);
+>> + =A0 =A0 gpio_request(GPIO_FN_CLKAUDIOBO, NULL);
+>> + =A0 =A0 gpio_request(GPIO_FN_FSIIASD, =A0 =A0NULL);
+>
+> Is this something that the FSI driver should do for itself? =A0It loo=
+ks
+> like there's no pin options here, just fixed functions for FSI A or B=
+ so
+> replicating per-board seems redundant. =A0On the other hand, if it's
+> idiomatic for SH better keep it this way.
+
+These GPIO_FN_ values are processor specific, sh7724 in this case. I
+suspect we will see the FSI block reused in future processors so
+keeping processor-specific bits out of the driver itself may be a good
+plan. Long term I'd be more than happy to pass along processors
+specific GPIOs to each driver, but at this point I don't know any
+clean and standard way to do that.
+
+Cheers,
+
+/ magnus
