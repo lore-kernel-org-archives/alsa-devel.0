@@ -1,63 +1,66 @@
-From: pHilipp Zabel <philipp.zabel@gmail.com>
-Subject: Re: [PATCH 2/3] Add ak464x codec support
-Date: Wed, 19 Aug 2009 15:52:08 +0200
-Message-ID: <74d0deb30908190652h78df814dlc6eda9c81be9b424@mail.gmail.com>
-References: <uk51059ln.wl%morimoto.kuninori@renesas.com>
+From: Magnus Damm <magnus.damm@gmail.com>
+Subject: Re: [PATCH 1/3] Add SuperH FSI driver support for ALSA
+Date: Wed, 19 Aug 2009 22:59:56 +0900
+Message-ID: <aec7e5c30908190659n4b81272ek6e06f23f4ee71a15@mail.gmail.com>
+References: <uljlg59ls.wl%morimoto.kuninori@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
-	[209.85.220.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1CE5D10389C
-	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Aug 2009 15:52:11 +0200 (CEST)
-Received: by fxm3 with SMTP id 3so103551fxm.32
-	for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2009 06:52:09 -0700 (PDT)
-In-Reply-To: <uk51059ln.wl%morimoto.kuninori@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <uljlg59ls.wl%morimoto.kuninori@renesas.com>
+Sender: linux-sh-owner@vger.kernel.org
 To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, broonie@opensource.wolfsonmicro.com, Magnus Damm <magnus.damm@gmail.com>, lethal@linux-sh.org
+Cc: linux-sh@vger.kernel.org, alsa-devel@alsa-project.org, lethal@linux-sh.org, Takashi Iwai <tiwai@suse.de>, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Morimoto-san,
 
-On Wed, Aug 19, 2009 at 1:25 PM, Kuninori
+Thanks for your work on this!
+
+On Wed, Aug 19, 2009 at 8:25 PM, Kuninori
 Morimoto<morimoto.kuninori@renesas.com> wrote:
-> This is very simple driver for ALSA
-> It supprt headphone output and stereo input only
+> This driver is very simple.
+> It support playback only now.
+> It is tested by ms7724se board.
 >
 > Signed-off-by: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-[...]
-> diff --git a/sound/soc/codecs/ak464x.c b/sound/soc/codecs/ak464x.c
-> new file mode 100644
-> index 0000000..d2ef80d
+> ---
+
+[snip]
+
 > --- /dev/null
-> +++ b/sound/soc/codecs/ak464x.c
-> @@ -0,0 +1,525 @@
-> +/*
-> + * ak464x.c =A0-- =A0AK464x ALSA Soc Audio driver
-[...]
+> +++ b/include/sound/fsi.h
 
-Should this driver also be able to drive AK4641? I'm asking because I
-was going to submit a driver for that chip, written by Harald Welte,
-which I updated for the new device model registration:
+How about using sh_fsi.h or sh_mobile_fsi.h? I think
+include/sound/fsi.h is polluting the name space.
 
-http://git.linuxtogo.org/?p=3Dph5/kernel.git;a=3Dcommit;h=3Da5d321110db38c4=
-f469c2b8c438b3509ef3b20d1
+> --- /dev/null
+> +++ b/sound/soc/sh/fsi.c
+[snip]
+> +struct fsi_master {
+> + =A0 =A0 =A0 void __iomem *base;
+> + =A0 =A0 =A0 atomic_t user;
+> + =A0 =A0 =A0 int irq;
+> + =A0 =A0 =A0 struct clk *clk;
+> + =A0 =A0 =A0 struct fsi_priv fsia;
+> + =A0 =A0 =A0 struct fsi_priv fsib;
+> + =A0 =A0 =A0 struct sh_fsi_platform_info *info;
+> +};
+> +
+> +struct fsi_master *master;
 
-AK4641 only seems to have registers 0x00 to 0x13, so if it is
-sufficiently different to warrant a separate driver, maybe this driver
-should be renamed to AK4643 or whatever is the lowest numbered AK464x
-that has the register layout in your patch.
+Is it really necessary to have "master" as a global variable? Maybe
+this global variable is there to work around some framework issue?
 
-regards
-Philipp
+If possible please try to avoid using a global variable like this.
+=46uture processors may come with multiple FSI blocks.
+
+Right now I'm quite happy that the CEU driver does not use global
+variables. Remember the case with a single CEU in sh7722 and now we
+have two CEU blocks in sh7724. It was easy to support sh7724 because I
+avoided using global variables when I initially wrote the driver for
+sh7722.
+
+Cheers,
+
+/ magnus
