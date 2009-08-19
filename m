@@ -1,20 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] Add SuperH FSI driver support for ALSA
-Date: Wed, 19 Aug 2009 13:42:07 +0100
-Message-ID: <20090819124206.GA20838@rakim.wolfsonmicro.main>
-References: <uljlg59ls.wl%morimoto.kuninori@renesas.com>
-	<20090819122801.GC20227@rakim.wolfsonmicro.main>
-	<s5hvdkkasgl.wl%tiwai@suse.de>
+From: Shine Liu <shinel@foxmail.com>
+Subject: Re: [PATCH] pcm_lib.c: Fixed inaccurate calculation of
+ hw_ptr_interrupt in snd_pcm_update_hw_ptr_interrupt function
+Date: Wed, 19 Aug 2009 12:48:26 +0000
+Message-ID: <1250686106.2060.16.camel@sl>
+References: <1250677339.3516.17.camel@shinel> <s5hd46scctf.wl%tiwai@suse.de>
+	<1250679571.500.20.camel@shinel>  <s5h7hx0c8l2.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3499F243F1
+Received: from smtpbg76.qq.com (smtpbg76.qq.com [119.147.10.235])
+	by alsa0.perex.cz (Postfix) with SMTP id 40F6224405
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Aug 2009 14:42:08 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hvdkkasgl.wl%tiwai@suse.de>
+	Wed, 19 Aug 2009 14:49:06 +0200 (CEST)
+In-Reply-To: <s5h7hx0c8l2.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,15 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, alsa-devel@alsa-project.org, lethal@linux-sh.org, Magnus Damm <magnus.damm@gmail.com>, linux-sh@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 19, 2009 at 02:39:06PM +0200, Takashi Iwai wrote:
+On Wed, 2009-08-19 at 14:05 +0200, Takashi Iwai wrote:
+> > 
+> > But the irq last issued should be at 0x3e80, but not 0x3800 + 0x800 =
+> > 0x4000. The DMA engine loaded 0x680 frame not 0x800 frame at the last
+> > time.
+> 
+> Then it's a driver bug.  If unaligned period size is allowed, it means
+> that the irq is really generated in that period, not at the buffer
+> boundary.  Otherwise, it must have a proper hw-constraint to align the
+> period size to the buffer size.
+> 
+> What hardware is it?
 
-> Note that it's snd_pcm_lib_malloc_pages(), not the kernel's standard
-> one like alloc_pages().  The former frees the old buffer by itself
-> when resized, so you don't need to call snd_pcm_lib_free_pages()
-> (as long as it's called in hw_free callback).
+Yes, but there's no constraint code currently to force to align the
+period size to the buffer size. The bug occurs on linux-2.6.31-rc6 on
+ASoC s3c24xx platform.
 
-Oh, so it does - I misread the code as only shrinking an existing
-buffer.
+The constraint to force to align the period size to the buffer size
+should not be hardware depended, it shoud be done in the generic layer,
+is it?
+
+> 
+> 
+> thanks,
+> 
+> Takashi
