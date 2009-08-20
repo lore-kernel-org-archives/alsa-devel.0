@@ -1,8 +1,8 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv5 14/20] OMAP: McBSP: Let element DMA mode hit
-	retention also
-Date: Thu, 20 Aug 2009 16:18:20 +0300
-Message-ID: <1250774306-7581-14-git-send-email-eduardo.valentin__40808.8932083503$1250775425$gmane$org@nokia.com>
+Subject: [PATCHv5 06/20] OMAP3: McBSP: Lower the maximum
+	buffersize for McBSP1, 3, 4, 5
+Date: Thu, 20 Aug 2009 16:18:12 +0300
+Message-ID: <1250774306-7581-6-git-send-email-eduardo.valentin__29407.1525255733$1250775439$gmane$org@nokia.com>
 References: <1250774306-7581-1-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -19,42 +19,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Eero Nurkkala <ext-eero.nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 
-The device no longer hits retention if element DMA
-mode is taken for at least the duration of the
-serial console timeout. Force element DMA mode to
-shut down through smartidle.
+Do not allow applications to use the full buffer found on
+McBSP1,3,4,5. Using the full buffer in threshold mode causes
+the McBSP buffer to run dry, which can be observed as channels
+are switching (in reality the channels are shifting).
 
-Signed-off-by: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
-Acked-by: Eduardo Valentin <eduardo.valentin@nokia.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
- arch/arm/plat-omap/mcbsp.c |    9 +++++++++
- 1 files changed, 9 insertions(+), 0 deletions(-)
+ arch/arm/mach-omap2/mcbsp.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-index 56a5688..b63a720 100644
---- a/arch/arm/plat-omap/mcbsp.c
-+++ b/arch/arm/plat-omap/mcbsp.c
-@@ -343,6 +343,15 @@ static inline void omap34xx_mcbsp_free(struct omap_mcbsp *mcbsp)
- 
- 		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
- 		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03) | CLOCKACTIVITY(0x03));
-+		/*
-+		 * HW bug workaround - If no_idle mode is taken, we need to
-+		 * go to smart_idle before going to always_idle, or the
-+		 * device will not hit retention anymore.
-+		 */
-+		syscon |= SIDLEMODE(0x02);
-+		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
-+
-+		syscon &= ~(SIDLEMODE(0x03));
- 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
- 
- 		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, 0);
+diff --git a/arch/arm/mach-omap2/mcbsp.c b/arch/arm/mach-omap2/mcbsp.c
+index 85d4fd0..0447d26 100644
+--- a/arch/arm/mach-omap2/mcbsp.c
++++ b/arch/arm/mach-omap2/mcbsp.c
+@@ -128,7 +128,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+ 		.rx_irq		= INT_24XX_MCBSP1_IRQ_RX,
+ 		.tx_irq		= INT_24XX_MCBSP1_IRQ_TX,
+ 		.ops		= &omap2_mcbsp_ops,
+-		.buffer_size	= 0x7F,
++		.buffer_size	= 0x6F,
+ 	},
+ 	{
+ 		.phys_base	= OMAP34XX_MCBSP2_BASE,
+@@ -146,7 +146,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+ 		.rx_irq		= INT_24XX_MCBSP3_IRQ_RX,
+ 		.tx_irq		= INT_24XX_MCBSP3_IRQ_TX,
+ 		.ops		= &omap2_mcbsp_ops,
+-		.buffer_size	= 0x7F,
++		.buffer_size	= 0x6F,
+ 	},
+ 	{
+ 		.phys_base	= OMAP34XX_MCBSP4_BASE,
+@@ -155,7 +155,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+ 		.rx_irq		= INT_24XX_MCBSP4_IRQ_RX,
+ 		.tx_irq		= INT_24XX_MCBSP4_IRQ_TX,
+ 		.ops		= &omap2_mcbsp_ops,
+-		.buffer_size	= 0x7F,
++		.buffer_size	= 0x6F,
+ 	},
+ 	{
+ 		.phys_base	= OMAP34XX_MCBSP5_BASE,
+@@ -164,7 +164,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+ 		.rx_irq		= INT_24XX_MCBSP5_IRQ_RX,
+ 		.tx_irq		= INT_24XX_MCBSP5_IRQ_TX,
+ 		.ops		= &omap2_mcbsp_ops,
+-		.buffer_size	= 0x7F,
++		.buffer_size	= 0x6F,
+ 	},
+ };
+ #define OMAP34XX_MCBSP_PDATA_SZ		ARRAY_SIZE(omap34xx_mcbsp_pdata)
 -- 
 1.6.2.GIT
 
