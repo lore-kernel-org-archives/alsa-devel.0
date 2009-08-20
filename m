@@ -1,11 +1,20 @@
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv5 00/20] OMAP ASoC changes in DMA utilization
-Date: Thu, 20 Aug 2009 16:22:03 +0300
-Message-ID: <1250774523-7950-1-git-send-email-eduardo.valentin__28696.0661564537$1250775452$gmane$org@nokia.com>
+From: Shine Liu <shinel@foxmail.com>
+Subject: Re: [PATCH] ASoC: s3c24xx platform: Fix
+ s3c2410_dma_started called at wrong time
+Date: Thu, 20 Aug 2009 21:38:00 +0800
+Message-ID: <1250775480.1404.19.camel@sl>
+References: <1250761331.4412.70.camel@shinel>
+	<20090820101549.GA23141@rakim.wolfsonmicro.main>
+	<1250769588.3684.28.camel@sl>  <20090820121851.GB11699@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtpbg92.qq.com (smtpbg92.qq.com [119.147.10.251])
+	by alsa0.perex.cz (Postfix) with SMTP id 01EE91038BC
+	for <alsa-devel@alsa-project.org>;
+	Thu, 20 Aug 2009 15:38:23 +0200 (CEST)
+In-Reply-To: <20090820121851.GB11699@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -15,62 +24,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: ben@simtec.co.uk, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello guys,
+On Thu, 2009-08-20 at 13:18 +0100, Mark Brown wrote:
+> 
+> Yes, I understand the problem.  The callback I suggest above ought to
+> allow the appropriate sequencing - the DMA driver can call the callback
+> to start the DAI in between starting the DMA and kicking the DMA API to
+> queue the next block.  That would avoid the abstraction problems.
+> 
 
-I've updated this series after some previous confusion from my side.
+Callback is a elegant way to solve the problem. But I have a question
+that when should the DMA driver call the callback funtion? There is no
+event to tell it to call. Periodly checking? It will not only cause
+latency but also increase the system load. 
 
-Now that all dependencies are merged (Janusz's patches and Jarkko's patch),
-I've based this series on Takashi's tree (master branch).
-
-I've also talked with Tony and he agrees to have this changes merged
-by alsa tree. And as pointed by Jarkko, the mcbsp code is currently
-used only by Audio inside OMAP code. So, that should be safe.
-
-It is the same series. It now includes patch description for
-every patch. And also, as I already said, it is based on master
-branch of sound-2.6.
-
-Tested with beagle and rx51. Compiled tested for n770.
-
-BR,
-
-Eduardo Valentin (11):
-  OMAP: McBSP: Add IRQEN, IRQSTATUS, THRESHOLD2 and THRESHOLD1
-    registers.
-  OMAP: McBSP: Use appropriate value for startup delay
-  OMAP: McBSP: Add transmit/receive threshold handler
-  OMAP: McBSP: Create and export max_(r|t)x_thres property
-  OMAP: McBSP: Rename thres sysfs symbols
-  OMAP: McBSP: Change wakeup signals
-  OMAP: McBSP: Configure NO IDLE mode for DMA mode different of
-    threshold
-  ASoC: OMAP: Enable DMA burst mode
-  ASoC: OMAP: Make DMA 64 aligned
-  ASoC: OMAP: Use McBSP threshold to playback and capture
-  ASoC: OMAP: Use DMA operating mode of McBSP
-
-Eero Nurkkala (7):
-  OMAP: McBSP: Provide functions for ASoC frame syncronization
-  OMAP: McBSP: Wakeups utilized
-  OMAP: McBSP: Retain McBSP FCLK clockactivity
-  OMAP: McBSP: Do not enable wakeups for no-idle mode
-  OMAP: McBSP: Let element DMA mode hit retention also
-  ASoC: Add runtime check for RFIG and XFIG
-  ASoC: Always syncronize audio transfers on frames
-
-Peter Ujfalusi (2):
-  OMAP3: McBSP: Lower the maximum buffersize for McBSP1,3,4,5
-  OMAP: McBSP: Add link DMA mode selection
-
- arch/arm/mach-omap2/mcbsp.c             |    5 +
- arch/arm/plat-omap/include/mach/mcbsp.h |   49 ++++
- arch/arm/plat-omap/mcbsp.c              |  377 ++++++++++++++++++++++++++++++-
- sound/soc/omap/omap-mcbsp.c             |   77 ++++++-
- sound/soc/omap/omap-pcm.c               |   14 +-
- sound/soc/omap/omap-pcm.h               |    2 +
- 6 files changed, 511 insertions(+), 13 deletions(-)
-
+Thanks.
