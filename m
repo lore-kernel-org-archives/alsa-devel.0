@@ -1,20 +1,23 @@
-From: Shine Liu <shinel@foxmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] ASoC: s3c24xx platform: Fix
  s3c2410_dma_started called at wrong time
-Date: Thu, 20 Aug 2009 21:38:00 +0800
-Message-ID: <1250775480.1404.19.camel@sl>
+Date: Thu, 20 Aug 2009 15:52:07 +0100
+Message-ID: <20090820145207.GA25143@rakim.wolfsonmicro.main>
 References: <1250761331.4412.70.camel@shinel>
 	<20090820101549.GA23141@rakim.wolfsonmicro.main>
-	<1250769588.3684.28.camel@sl>  <20090820121851.GB11699@sirena.org.uk>
+	<1250769588.3684.28.camel@sl>
+	<20090820121851.GB11699@sirena.org.uk>
+	<1250775480.1404.19.camel@sl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpbg92.qq.com (smtpbg92.qq.com [119.147.10.251])
-	by alsa0.perex.cz (Postfix) with SMTP id 01EE91038BC
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DB68A1037F8
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Aug 2009 15:38:23 +0200 (CEST)
-In-Reply-To: <20090820121851.GB11699@sirena.org.uk>
+	Thu, 20 Aug 2009 16:52:08 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1250775480.1404.19.camel@sl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,21 +27,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Shine Liu <shinel@foxmail.com>
 Cc: ben@simtec.co.uk, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2009-08-20 at 13:18 +0100, Mark Brown wrote:
-> 
-> Yes, I understand the problem.  The callback I suggest above ought to
-> allow the appropriate sequencing - the DMA driver can call the callback
-> to start the DAI in between starting the DMA and kicking the DMA API to
-> queue the next block.  That would avoid the abstraction problems.
-> 
+On Thu, Aug 20, 2009 at 09:38:00PM +0800, Shine Liu wrote:
 
-Callback is a elegant way to solve the problem. But I have a question
-that when should the DMA driver call the callback funtion? There is no
-event to tell it to call. Periodly checking? It will not only cause
-latency but also increase the system load. 
+> Callback is a elegant way to solve the problem. But I have a question
+> that when should the DMA driver call the callback funtion? There is no
+> event to tell it to call. Periodly checking? It will not only cause
+> latency but also increase the system load. 
 
-Thanks.
+The callback doesn't need to be set up within the trigger function - if
+it's done before the trigger functions are called then the DMA trigger
+can call it.  Off the top of my head I'd expect it's possible to set it
+up when the device is opened.
