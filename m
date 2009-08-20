@@ -1,21 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv5 00/20] OMAP ASoC changes in DMA
- utilization
-Date: Thu, 20 Aug 2009 20:17:29 +0100
-Message-ID: <20090820191729.GI5032@sirena.org.uk>
-References: <1250774523-7950-1-git-send-email-eduardo.valentin@nokia.com>
-	<20090820143017.GH12309@atomide.com>
-	<20090820191542.bc7b0d4d.jhnikula@gmail.com>
+Subject: ASoC updates for 2.6.32
+Date: Thu, 20 Aug 2009 21:10:52 +0100
+Message-ID: <20090820201051.GA18415@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id A5C67103857
+	by alsa0.perex.cz (Postfix) with ESMTP id 4700C24149
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Aug 2009 21:17:36 +0200 (CEST)
+	Thu, 20 Aug 2009 22:10:59 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20090820191542.bc7b0d4d.jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,20 +20,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Eduardo Valentin <eduardo.valentin@nokia.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 20, 2009 at 07:15:42PM +0300, Jarkko Nikula wrote:
-> Tony Lindgren <tony@atomide.com> wrote:
+The following changes since commit 474e09ca017bd0f6e9bf41af643364a21bc27f43:
+  Mark Brown (1):
+        ASoC: Provide default set_bias_level() implementation
 
-> > You might want to merge patches 5 and 6 together as 5 adds the
-> > fifo, then 6 limits it's size. But in general, for patches
-> > 1 - 14: Acked-by: Tony Lindgren <tony@atomide.com>
+are available in the git repository at:
 
-> 15-20: Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.32
 
-OK, applied all of them - thanks guys!
+Eduardo Valentin (11):
+      OMAP: McBSP: Add IRQEN, IRQSTATUS, THRESHOLD2 and THRESHOLD1 registers.
+      OMAP: McBSP: Use appropriate value for startup delay
+      OMAP: McBSP: Add transmit/receive threshold handler
+      OMAP: McBSP: Create and export max_(r|t)x_thres property
+      OMAP: McBSP: Rename thres sysfs symbols
+      OMAP: McBSP: Change wakeup signals
+      OMAP: McBSP: Configure NO IDLE mode for DMA mode different of threshold
+      ASoC: OMAP: Enable DMA burst mode
+      ASoC: OMAP: Make DMA 64 aligned
+      ASoC: OMAP: Use McBSP threshold to playback and capture
+      ASoC: OMAP: Use DMA operating mode of McBSP
 
-One procedural issue, though, Eduardo - since you were sending out the
-patches they should all have had your Signed-off-by.
+Eero Nurkkala (7):
+      OMAP: McBSP: Provide functions for ASoC frame syncronization
+      OMAP: McBSP: Wakeups utilized
+      OMAP: McBSP: Retain McBSP FCLK clockactivity
+      OMAP: McBSP: Do not enable wakeups for no-idle mode
+      OMAP: McBSP: Let element DMA mode hit retention also
+      ASoC: Add runtime check for RFIG and XFIG
+      ASoC: Always syncronize audio transfers on frames
+
+Kuninori Morimoto (1):
+      ASoC: Add SuperH FSI driver support for ALSA
+
+Mark Brown (1):
+      ALSA: Restore support for DMAless DAIs on PXA
+
+Peter Ujfalusi (2):
+      OMAP3: McBSP: Lower the maximum buffersize for McBSP1, 3, 4, 5
+      OMAP: McBSP: Add link DMA mode selection
+
+Shine Liu (1):
+      ASoC: S3C24XX : Align the peroid size to the buffer size
+
+ arch/arm/mach-omap2/mcbsp.c             |    5 +
+ arch/arm/plat-omap/include/mach/mcbsp.h |   49 ++
+ arch/arm/plat-omap/mcbsp.c              |  377 ++++++++++++-
+ include/sound/sh_fsi.h                  |   83 +++
+ sound/arm/pxa2xx-pcm-lib.c              |    3 +
+ sound/soc/omap/omap-mcbsp.c             |   77 +++-
+ sound/soc/omap/omap-pcm.c               |   14 +-
+ sound/soc/omap/omap-pcm.h               |    2 +
+ sound/soc/s3c24xx/s3c24xx-pcm.c         |    1 +
+ sound/soc/sh/Kconfig                    |    7 +-
+ sound/soc/sh/Makefile                   |    2 +
+ sound/soc/sh/fsi.c                      | 1004 +++++++++++++++++++++++++++++++
+ 12 files changed, 1610 insertions(+), 14 deletions(-)
+ create mode 100644 include/sound/sh_fsi.h
+ create mode 100644 sound/soc/sh/fsi.c
