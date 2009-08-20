@@ -1,17 +1,16 @@
-From: Shine Liu <shinel@foxmail.com>
-Subject: [PATCH] ASoC: s3c24xx platform: Fix
- s3c2410_dma_started called at wrong time
-Date: Thu, 20 Aug 2009 17:42:11 +0800
-Message-ID: <1250761331.4412.70.camel@shinel>
-Reply-To: shinel@foxmail.com
+From: prashant chopade <prashantchopade@yahoo.com>
+Subject: Re: unable to do simultaneous playback and recording
+Date: Thu, 20 Aug 2009 15:35:41 +0530 (IST)
+Message-ID: <688368.16575.qm@web94708.mail.in2.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpbg74.qq.com (smtpbg74.qq.com [119.147.10.233])
-	by alsa0.perex.cz (Postfix) with SMTP id DE805103838
+Received: from n10-vm0.bullet.mail.in.yahoo.com
+	(n10-vm0.bullet.mail.in.yahoo.com [202.86.4.194])
+	by alsa0.perex.cz (Postfix) with SMTP id 92049103853
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Aug 2009 11:42:42 +0200 (CEST)
+	Thu, 20 Aug 2009 12:05:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,107 +20,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-s3c24xx dma has the auto reload feature, when the the trnasfer is done,
-CURR_TC(DSTAT[19:0], current value of transfer count) reaches 0, and DMA
-ACK becomes 1, and then, TC(DCON[19:0]) will be loaded into CURR_TC. So
-the transmission is repeated.
-
-IRQ is issued while auto reload occurs. We change the DISRC and
-DCON[19:0] in the ISR, but at this time, the auto reload has been
-performed already. The first block is being re-transmitted by the DMA.
-
-So we need rewrite the DISRC and DCON[19:0] for the next block
-immediatly after the this block has been started to be transported.
-
-The function s3c2410_dma_started() is for this perpose, which is called
-in the form of "s3c2410_dma_ctrl(prtd->params->channel,
-S3C2410_DMAOP_STARTED);" in s3c24xx_pcm_trigger().
-
-But it is not correct. DMA transmission won't start until DMA REQ signal
-arrived, it is the time s3c24xx_snd_txctrl(1) or s3c24xx_snd_rxctrl(1)
-is called in s3c24xx_i2s_trigger().
-
-In the current framework, s3c24xx_pcm_trigger() is always called before
-s3c24xx_pcm_trigger(). So the s3c2410_dma_started() should be called in
-s3c24xx_pcm_trigger() after s3c24xx_snd_txctrl(1) or
-s3c24xx_snd_rxctrl(1) is called in this function.
-
-However, s3c2410_dma_started() is dma related, to call this function we
-should provide the channel number, which is given by
-substream->runtime->private_data->params->channel. The private_data
-points to a struct s3c24xx_runtime_data object, which is define in
-s3c24xx_pcm.c, so s3c2410_dma_started() can't be called in s3c24xx_i2s.c
-
-To move the struct s3c24xx_runtime_data defination to s3c24xx-pcm.h is
-one solution.
-
-If not moved, the patch shold be like:
-
-
-Signed-off-by: Shine Liu <shinel@foxmail.com>
-----------------------------------------------------------------
-
---- a/sound/soc/s3c24xx/s3c24xx-pcm.h	2009-08-14 06:43:34.000000000 +0800
-+++ b/sound/soc/s3c24xx/s3c24xx-pcm.h	2009-08-20 16:06:14.000000000 +0800
-@@ -28,4 +28,6 @@
- extern struct snd_soc_platform s3c24xx_soc_platform;
- extern struct snd_ac97_bus_ops s3c24xx_ac97_ops;
- 
-+void s3c24xx_pcm_dma_started(struct snd_pcm_substream *substream);
-+
- #endif
---- a/sound/soc/s3c24xx/s3c24xx-pcm.c	2009-08-14 06:43:34.000000000 +0800
-+++ b/sound/soc/s3c24xx/s3c24xx-pcm.c	2009-08-20 15:56:46.000000000 +0800
-@@ -66,6 +66,28 @@
- 	struct s3c24xx_pcm_dma_params *params;
- };
- 
-+/* s3c24xx_pcm_dma_started
-+ *
-+ * To load the second dma buffer immediately after the 
-+ * first dma buffer has been started transferring, so that 
-+ * in the dma autoreload situation, the first data block
-+ * won't be re-transferred after the first irq issued.
-+ * 
-+ * This function is called in the s3c24xx-i2s-trigger() of 
-+ * s3c24xx-i2s.c, just after the dma transfer is really started.
-+ *
-+ * It's ugly here. Need a elegant way to fix this bug.
-+ * FIXME
-+ *
-+ */
-+
-+void s3c24xx_pcm_dma_started(struct snd_pcm_substream *substream)
-+{
-+	struct s3c24xx_runtime_data *prtd = substream->runtime->private_data;
-+	s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_STARTED);
-+
-+}
-+
- /* s3c24xx_pcm_enqueue
-  *
-  * place a dma buffer onto the queue for the dma system
-@@ -255,7 +277,6 @@
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		prtd->state |= ST_RUNNING;
- 		s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_START);
--		s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_STARTED);
- 		break;
- 
- 	case SNDRV_PCM_TRIGGER_STOP:
---- a/sound/soc/s3c24xx/s3c24xx-i2s.c	2009-08-14 06:43:34.000000000 +0800
-+++ b/sound/soc/s3c24xx/s3c24xx-i2s.c	2009-08-20 16:08:06.000000000 +0800
-@@ -296,6 +296,9 @@
- 			s3c24xx_snd_rxctrl(1);
- 		else
- 			s3c24xx_snd_txctrl(1);
-+
-+		/* DMA transfer is really started, equeue the next buffer */
-+		s3c24xx_pcm_dma_started(substream);
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
+SGVsbG8sCgpNeSB1bmRlcnN0YW5kaW5nczoKCj5EZWZpbmUgeW91ciBtZWFuaW5nIG9mICJzaW11
+bHRhbmVvdXMgcGxheWJhY2sgYW5kIHJlY29yZGluZyIgbW9yZQo+ZXhhY3RseS4KCkkgbWVhbjog
+UGxheWluZyBhdWRpbyBmaWxlIHN0b3JlZCBvbiBkaXNrIG9uIHNwZWFrZXIgYW5kIGF0IHRoZSBz
+YW1lIHRpbWUgcmVjb3JkaW5nIGF1ZGlvIGZyb20gTUlDIGFuZCBzdG9yaW5nIGl0IG9uIGRpc2su
+CgpJIGRvbix0IHdhbnQgdG8gZG8gbXVsdGlwbGF5YmFjaywgSSBtZWFuIGkgZG9uLHQgd2FudCB0
+byBwbGF5IHR3byBvciBtb3JlIGF1ZGlvIGZpbGVzIGF0IGEgdGltZS4KClNvIHlvdSBhcmUgc2F5
+aW5nIHRoYXQgbXkgZHJpdmVyKEFUTUVMLUFUOTFTQU05MjYzLUFDOTdjKSBpcyBub3Qgc3VwcG9y
+dGluZyB0aGUgZnVsbCBkdXBsZXggbW9kZT8KClRoYW5rcyAmIFJlZ2FyZHMsCgpQcmFzaGFudCBD
+LgoKPnByYXNoYW50IGNob3BhZGUgd3JvdGU6Cj4gCj4gSGVsbG8sCj4gCj4gQXMgcGVyIGRpc2N1
+c3Npb24sIEkga25vdyB0aGF0IEFMU0EgZHJpdmVyIGRvZXMgbm90IGhhdmUgc3VwcG9ydCBmb3IK
+PiBzaW11bHRhbmVvdXMgcGxheWJhY2sgYW5kIHJlY29yZGluZy4KCkh1aD/CoCBUaGUgZnVsbC1k
+dXBsZXggaXMgb2YgY291cnNlIHN1cHBvcnRlZC4KWW91ciBleGFtcGxlIHNob3duIGluIHRoZSB0
+aHJlYWQgZG9lc24ndCBpbmRpY2F0ZSB0aGUgbXVsdGkgcGxheWJhY2tzCm9yIHNvLgoKPiBXZSBh
+cmUgdXNpbmcgQUQxOTgxQiBjb2RlYywgc28gb3VyIGhhcmR3YXJlIGhhcyBhIHN1cHBvcnQgZm9y
+Cj4gc2ltdWx0YW5lb3VzIHBsYXliYWNrIGFuZCByZWNvcmRpbmcgb2YgYW4gYXVkaW8uCgpJIHRo
+aW5rIHlvdSBhcmUgY29uZnVzZWQuCgoKPiBTbyB3aGF0IGV4YWN0bHkgSSBoYXZlIHRvIGRvIHRv
+IGdldCBhIHN1cHBvcnQgZm9yIHNpbXVsdGFuZW91cwo+IHBsYXliYWNrIGFuZCByZWNvcmRpbmc/
+IAo+IFNoYWxsIEkgaGF2ZSB0byB1c2Ugc291bmQgc2VydmVyIGRlbW9ucz8KPiAKPiBJcyBpdCBy
+ZWFsbHkgcG9zc2libGUgdG8gZG8gc2ltdWx0YW5lb3VzIHBsYXliYWNrIGFuZCByZWNvcmRpbmcg
+aW4KPiBsaW51eD8KCkRlZmluZSB5b3VyIG1lYW5pbmcgb2YgInNpbXVsdGFuZW91cyBwbGF5YmFj
+ayBhbmQgcmVjb3JkaW5nIiBtb3JlCmV4YWN0bHkuCgpJZiBpdCdzIGFib3V0IGZ1bGwtZHVwbGV4
+LCB0aGUgYW5zd2VyIGlzIGRlZmluaXRlbHkgeWVzLgpJZiBpdCdzIG11bHRpLXN0cmVhbXMsIHRo
+ZSBhbnN3ZXIgaXMgeWVzLCBidXQgdGhlcmUgYXJlCiBjaG9pY2VzLCBlLmcuCmRtaXgvZHNub29w
+IHBsdWdpbiBvciBhIHNvdW5kIHNlcnZlci4KCgpUYWthc2hpCgoKPiBwcmFzaGFudCBjaG9wYWRl
+IHdyb3RlOgo+ID4gCj4gPiAKPiA+IAo+ID4gCj4gPiAKPiA+IEhlbGxvLAo+ID4gCj4gPiBXZSB1
+c2luZyBsaW51eC0yLjYuMjcgb24gdGFyZ2V0IGJvYXJkLUFUOTFTQU05MjYzRUsuCj4gPsKgIFdl
+IGFyZSB1c2luZyBBTFNBIGxpYnJhcnkgdXRpbGl0aWVzIChhcGxheSAmCj4gPiBhcmVjb3JkKS4g
+QnV0IGJ5IHVzaW5nIHRoZXNlIHV0aWxpdGllcyB3ZSBjYW7igJl0IGRvIHNpbXVsdGFuZW91cyBw
+bGF5YmFjayBhbmQKPiA+IHJlY29yZGluZy4KPiA+IAo+ID7CoCAKPiA+IAo+ID4gV2UgcGVyZm9y
+bWVkIGZvbGxvd2luZyBhY3Rpdml0eSB0byBjb21lIHRvIHRoaXMgY29uY2x1c2lvbjoKPiA+IAo+
+ID7CoCAKPiA+IAo+ID4gLy9BdCB0aGUgYmFja2dyb3VuZCB3ZSB3ZXJlIHJlY29yZGluZwo+ID4g
+Cj4gPiAjYXJlY29yZCDigJNmIGNkIHJlY29yZF90ZXN0X2ZpbGUgJgo+ID4gCj4gPsKgIAo+ID4g
+Cj4gPiAvL0F0IHRoZSBmb3JlZnJvbnQgd2Ugd2VyZSBwbGF5aW5nIHByZS1yZWNvcmRlZCBhdWRp
+byBmaWxlCj4gPiAKPiA+ICNhcGxheSDigJNmIGNkIHByZV9yZWNvcmRlZF9maWxlCj4gPiAKPiA+
+wqAKIAo+ID4gCj4gPiBPdXIgb2JzZXJ2YXRpb24gaXMgdGhhdCwgcmVjb3JkaW5nIHN0b3BzIHdo
+ZW4gc3RhcnQgcGxheWluZwo+ID4gZmlsZS4KPiAKPiBJbiB0aGUgQVBJIHNpZGUsIHRoZSBhYm92
+ZSBzaG91bGQgd29yayBmaW5lLsKgIEl0IG11c3QgYmUgdGhlIGRyaXZlciAKPiB0aGF0IGRvZXNu
+J3Qgd29yayB3aXRoIGZ1bGwtZHVwbGV4Lgo+IAo+IAo+IFRha2FzaGkKCgoKICAgICAgWWFob28h
+IHJlY29tbWVuZHMgdGhhdCB5b3UgdXBncmFkZSB0byB0aGUgbmV3IGFuZCBzYWZlciBJbnRlcm5l
+dCBFeHBsb3JlciA4LiBodHRwOi8vZG93bmxvYWRzLnlhaG9vLmNvbS9pbi9pbnRlcm5ldGV4cGxv
+cmVyLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
