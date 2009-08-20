@@ -1,21 +1,25 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] pcm_lib.c: Fixed inaccurate calculation of
- hw_ptr_interrupt in snd_pcm_update_hw_ptr_interrupt function
-Date: Thu, 20 Aug 2009 10:42:46 +0200
-Message-ID: <4A8D0C86.50604@ladisch.de>
-References: <1250677339.3516.17.camel@shinel>
-	<s5hd46scctf.wl%tiwai@suse.de>	<1250679571.500.20.camel@shinel>
-	<s5h7hx0c8l2.wl%tiwai@suse.de>	<1250686106.2060.16.camel@sl>
-	<s5hocqcarrx.wl%tiwai@suse.de> <1250752842.5644.34.camel@shinel>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/3] Add FSI-AK464x sound support
+	for	ms7724se
+Date: Thu, 20 Aug 2009 09:52:05 +0100
+Message-ID: <20090820085204.GA11699@sirena.org.uk>
+References: <uiqgk59lj.wl%morimoto.kuninori@renesas.com>
+	<20090819120058.GB20227@rakim.wolfsonmicro.main>
+	<aec7e5c30908190646l1af450e8w3178683893a17437@mail.gmail.com>
+	<20090819140256.GA31305@rakim.wolfsonmicro.main>
+	<aec7e5c30908190718j40459a55w614093c6366800db@mail.gmail.com>
+	<20090819144547.GB3323@rakim.wolfsonmicro.main>
+	<u3a7ndj20.wl%morimoto.kuninori@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 96A672433C
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 823ED2434F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Aug 2009 10:43:40 +0200 (CEST)
-In-Reply-To: <1250752842.5644.34.camel@shinel>
+	Thu, 20 Aug 2009 10:52:06 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <u3a7ndj20.wl%morimoto.kuninori@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,23 +29,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: shinel@foxmail.com
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+Cc: alsa-devel@alsa-project.org, Magnus Damm <magnus.damm@gmail.com>, philipp.zabel@gmail.com, linux-sh@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Shine Liu wrote:
->     I carefully read the pcm_lib.c and pcm_native.c but I didn't found
-> any alignmnet constraint API. Althought there's a function called
-> snd_pcm_hw_constraint_step, but this function can't be used in the
-> situation referred in the last mail which one hw parameter should be
-> aligned to the other hw parameter.
+On Thu, Aug 20, 2009 at 04:46:15PM +0900, Kuninori Morimoto wrote:
 
-The period size, the buffer size, and the number of periods are all
-related, so you can align the period size to the buffer size by
-restricting the number of periods to be an integer:
+> Dear Mark, pHilipp, Magnus
 
-  snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
+It's a bit easier to follow things if you reply to individual mails
+rather than stitching things together into a singel mail like this.
 
+> > Should this driver also be able to drive AK4641? I'm asking because I
 
-HTH
-Clemens
+> I checked datasheet.
+> My codec is AK4643, and it is compatible with AK4642.
+> And AK4642 is not compatible AK4641 (^^;
+
+> I will re-name it AK464x -> AK4642.
+> Can you agree with me ?
+
+Yes, that sounds lkike a good approach.  You can add entries to the I2C
+device ID table for both ak4642 and ak4643 so it's clear that both
+devices are supported.
+
+> > +#define PREALLOC_BUFFER		(32 * 1024)
+> > +#define PREALLOC_BUFFER_MAX	(32 * 1024)
+
+> > Is it worth letting machines override these in the platform data or is
+> > there no point?
+
+> do you mean it should be possible to change size ?
+> If so, is it good as future tasks ?
+> This time, 32k is good for me.
+
+It's OK for you but is it going to be the right choice for every system?
+
+> > If possible please try to avoid using a global variable like this.
+> > Future processors may come with multiple FSI blocks.
+
+> > Right now I'm quite happy that the CEU driver does not use global
+
+> hmm... I can agree with you.
+> But this time, is it good as future tasks ?
+> I will fix this problem if I can get free time
+
+> >  arch/sh/boards/mach-se/7724/Makefile     |    3 +-
+> >  arch/sh/boards/mach-se/7724/fsi-ak464x.c |   90 ++++++++++++++++++++++++++++++
+
+> > the machine driver itself should be under sound/soc/sh.
+
+> if fsi-ak464x.c is in arch/sh/boards/mach-se/7724/
+> it works, and it say
+
+You will be able to load the driver, yes, this is a coding style sort of
+issue.  Placing machine drivers outside of ASoC will create maintinance
+problems since the ASoC APIs change relatively often.
+
+> but when I tried to move it to sound/soc/sh,
+> then it be doesn't work. it say
+> ------------
+> ALSA device list:
+>   No soundcards found.
+> ------------
+
+This needn't be anything to worry about - cards can be started at any
+time, this is just a snapshot of the cards that were ready at this point
+during system startup.
+
+> there is no "AK4642 Audio Codec 0.0.1" print,
+> so, snd_soc_codec_device :: probe isn't called.
+> can you give me advice ?
+
+If you could repost with the driver under sound/soc/sh it may be
+possible to identify where the problem lies.
