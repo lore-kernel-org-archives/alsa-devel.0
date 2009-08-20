@@ -1,25 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] Add FSI-AK464x sound support
-	for	ms7724se
-Date: Thu, 20 Aug 2009 09:52:05 +0100
-Message-ID: <20090820085204.GA11699@sirena.org.uk>
-References: <uiqgk59lj.wl%morimoto.kuninori@renesas.com>
-	<20090819120058.GB20227@rakim.wolfsonmicro.main>
-	<aec7e5c30908190646l1af450e8w3178683893a17437@mail.gmail.com>
-	<20090819140256.GA31305@rakim.wolfsonmicro.main>
-	<aec7e5c30908190718j40459a55w614093c6366800db@mail.gmail.com>
-	<20090819144547.GB3323@rakim.wolfsonmicro.main>
-	<u3a7ndj20.wl%morimoto.kuninori@renesas.com>
+From: Shine Liu <shinel@foxmail.com>
+Subject: [PATCH] ASoC: s3c24xx platform: Fix
+ s3c2410_dma_started called at wrong time
+Date: Thu, 20 Aug 2009 17:42:11 +0800
+Message-ID: <1250761331.4412.70.camel@shinel>
+Reply-To: shinel@foxmail.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 823ED2434F
+Received: from smtpbg74.qq.com (smtpbg74.qq.com [119.147.10.233])
+	by alsa0.perex.cz (Postfix) with SMTP id DE805103838
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Aug 2009 10:52:06 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <u3a7ndj20.wl%morimoto.kuninori@renesas.com>
+	Thu, 20 Aug 2009 11:42:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,77 +21,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-Cc: alsa-devel@alsa-project.org, Magnus Damm <magnus.damm@gmail.com>, philipp.zabel@gmail.com, linux-sh@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 20, 2009 at 04:46:15PM +0900, Kuninori Morimoto wrote:
+s3c24xx dma has the auto reload feature, when the the trnasfer is done,
+CURR_TC(DSTAT[19:0], current value of transfer count) reaches 0, and DMA
+ACK becomes 1, and then, TC(DCON[19:0]) will be loaded into CURR_TC. So
+the transmission is repeated.
 
-> Dear Mark, pHilipp, Magnus
+IRQ is issued while auto reload occurs. We change the DISRC and
+DCON[19:0] in the ISR, but at this time, the auto reload has been
+performed already. The first block is being re-transmitted by the DMA.
 
-It's a bit easier to follow things if you reply to individual mails
-rather than stitching things together into a singel mail like this.
+So we need rewrite the DISRC and DCON[19:0] for the next block
+immediatly after the this block has been started to be transported.
 
-> > Should this driver also be able to drive AK4641? I'm asking because I
+The function s3c2410_dma_started() is for this perpose, which is called
+in the form of "s3c2410_dma_ctrl(prtd->params->channel,
+S3C2410_DMAOP_STARTED);" in s3c24xx_pcm_trigger().
 
-> I checked datasheet.
-> My codec is AK4643, and it is compatible with AK4642.
-> And AK4642 is not compatible AK4641 (^^;
+But it is not correct. DMA transmission won't start until DMA REQ signal
+arrived, it is the time s3c24xx_snd_txctrl(1) or s3c24xx_snd_rxctrl(1)
+is called in s3c24xx_i2s_trigger().
 
-> I will re-name it AK464x -> AK4642.
-> Can you agree with me ?
+In the current framework, s3c24xx_pcm_trigger() is always called before
+s3c24xx_pcm_trigger(). So the s3c2410_dma_started() should be called in
+s3c24xx_pcm_trigger() after s3c24xx_snd_txctrl(1) or
+s3c24xx_snd_rxctrl(1) is called in this function.
 
-Yes, that sounds lkike a good approach.  You can add entries to the I2C
-device ID table for both ak4642 and ak4643 so it's clear that both
-devices are supported.
+However, s3c2410_dma_started() is dma related, to call this function we
+should provide the channel number, which is given by
+substream->runtime->private_data->params->channel. The private_data
+points to a struct s3c24xx_runtime_data object, which is define in
+s3c24xx_pcm.c, so s3c2410_dma_started() can't be called in s3c24xx_i2s.c
 
-> > +#define PREALLOC_BUFFER		(32 * 1024)
-> > +#define PREALLOC_BUFFER_MAX	(32 * 1024)
+To move the struct s3c24xx_runtime_data defination to s3c24xx-pcm.h is
+one solution.
 
-> > Is it worth letting machines override these in the platform data or is
-> > there no point?
+If not moved, the patch shold be like:
 
-> do you mean it should be possible to change size ?
-> If so, is it good as future tasks ?
-> This time, 32k is good for me.
 
-It's OK for you but is it going to be the right choice for every system?
+Signed-off-by: Shine Liu <shinel@foxmail.com>
+----------------------------------------------------------------
 
-> > If possible please try to avoid using a global variable like this.
-> > Future processors may come with multiple FSI blocks.
-
-> > Right now I'm quite happy that the CEU driver does not use global
-
-> hmm... I can agree with you.
-> But this time, is it good as future tasks ?
-> I will fix this problem if I can get free time
-
-> >  arch/sh/boards/mach-se/7724/Makefile     |    3 +-
-> >  arch/sh/boards/mach-se/7724/fsi-ak464x.c |   90 ++++++++++++++++++++++++++++++
-
-> > the machine driver itself should be under sound/soc/sh.
-
-> if fsi-ak464x.c is in arch/sh/boards/mach-se/7724/
-> it works, and it say
-
-You will be able to load the driver, yes, this is a coding style sort of
-issue.  Placing machine drivers outside of ASoC will create maintinance
-problems since the ASoC APIs change relatively often.
-
-> but when I tried to move it to sound/soc/sh,
-> then it be doesn't work. it say
-> ------------
-> ALSA device list:
->   No soundcards found.
-> ------------
-
-This needn't be anything to worry about - cards can be started at any
-time, this is just a snapshot of the cards that were ready at this point
-during system startup.
-
-> there is no "AK4642 Audio Codec 0.0.1" print,
-> so, snd_soc_codec_device :: probe isn't called.
-> can you give me advice ?
-
-If you could repost with the driver under sound/soc/sh it may be
-possible to identify where the problem lies.
+--- a/sound/soc/s3c24xx/s3c24xx-pcm.h	2009-08-14 06:43:34.000000000 +0800
++++ b/sound/soc/s3c24xx/s3c24xx-pcm.h	2009-08-20 16:06:14.000000000 +0800
+@@ -28,4 +28,6 @@
+ extern struct snd_soc_platform s3c24xx_soc_platform;
+ extern struct snd_ac97_bus_ops s3c24xx_ac97_ops;
+ 
++void s3c24xx_pcm_dma_started(struct snd_pcm_substream *substream);
++
+ #endif
+--- a/sound/soc/s3c24xx/s3c24xx-pcm.c	2009-08-14 06:43:34.000000000 +0800
++++ b/sound/soc/s3c24xx/s3c24xx-pcm.c	2009-08-20 15:56:46.000000000 +0800
+@@ -66,6 +66,28 @@
+ 	struct s3c24xx_pcm_dma_params *params;
+ };
+ 
++/* s3c24xx_pcm_dma_started
++ *
++ * To load the second dma buffer immediately after the 
++ * first dma buffer has been started transferring, so that 
++ * in the dma autoreload situation, the first data block
++ * won't be re-transferred after the first irq issued.
++ * 
++ * This function is called in the s3c24xx-i2s-trigger() of 
++ * s3c24xx-i2s.c, just after the dma transfer is really started.
++ *
++ * It's ugly here. Need a elegant way to fix this bug.
++ * FIXME
++ *
++ */
++
++void s3c24xx_pcm_dma_started(struct snd_pcm_substream *substream)
++{
++	struct s3c24xx_runtime_data *prtd = substream->runtime->private_data;
++	s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_STARTED);
++
++}
++
+ /* s3c24xx_pcm_enqueue
+  *
+  * place a dma buffer onto the queue for the dma system
+@@ -255,7 +277,6 @@
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		prtd->state |= ST_RUNNING;
+ 		s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_START);
+-		s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_STARTED);
+ 		break;
+ 
+ 	case SNDRV_PCM_TRIGGER_STOP:
+--- a/sound/soc/s3c24xx/s3c24xx-i2s.c	2009-08-14 06:43:34.000000000 +0800
++++ b/sound/soc/s3c24xx/s3c24xx-i2s.c	2009-08-20 16:08:06.000000000 +0800
+@@ -296,6 +296,9 @@
+ 			s3c24xx_snd_rxctrl(1);
+ 		else
+ 			s3c24xx_snd_txctrl(1);
++
++		/* DMA transfer is really started, equeue the next buffer */
++		s3c24xx_pcm_dma_started(substream);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
