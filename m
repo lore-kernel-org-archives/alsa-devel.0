@@ -1,7 +1,8 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv5 10/20] OMAP: McBSP: Change wakeup signals
-Date: Thu, 20 Aug 2009 16:18:16 +0300
-Message-ID: <1250774306-7581-10-git-send-email-eduardo.valentin__44964.1169667759$1250775359$gmane$org@nokia.com>
+Subject: [PATCHv5 17/20] ASoC: Add runtime check for RFIG and
+	XFIG
+Date: Thu, 20 Aug 2009 16:18:23 +0300
+Message-ID: <1250774306-7581-17-git-send-email-eduardo.valentin__38454.4123117395$1250775370$gmane$org@nokia.com>
 References: <1250774306-7581-1-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -18,64 +19,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Eero Nurkkala <ext-eero.nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
+From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 
-Configure only XRDYEN and RRDYEN wakeup signals
-in order to get better power consumption.
+This is, no RFIG or XFIG (Not defined in 34xx), correct
+initiliazation of rccr and xccr.
 
-Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
+Signed-off-by: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 ---
- arch/arm/plat-omap/include/mach/mcbsp.h |    3 ---
- arch/arm/plat-omap/mcbsp.c              |    7 ++-----
- 2 files changed, 2 insertions(+), 8 deletions(-)
+ sound/soc/omap/omap-mcbsp.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/plat-omap/include/mach/mcbsp.h b/arch/arm/plat-omap/include/mach/mcbsp.h
-index 333061d..fe10ae8 100644
---- a/arch/arm/plat-omap/include/mach/mcbsp.h
-+++ b/arch/arm/plat-omap/include/mach/mcbsp.h
-@@ -273,9 +273,6 @@
- #define REOFEN			0x0004
- #define RFSREN			0x0002
- #define RSYNCERREN		0x0001
--#define WAKEUPEN_ALL		(XEMPTYEOFEN | XRDYEN | XEOFEN | XFSXEN | \
--				 XSYNCERREN | RRDYEN | REOFEN | RFSREN | \
--				 RSYNCERREN)
- 
- /* we don't do multichannel for now */
- struct omap_mcbsp_reg_cfg {
-diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-index 136f8c5..86bfad8 100644
---- a/arch/arm/plat-omap/mcbsp.c
-+++ b/arch/arm/plat-omap/mcbsp.c
-@@ -320,7 +320,7 @@ static inline void omap34xx_mcbsp_request(struct omap_mcbsp *mcbsp)
- 		syscon |= (ENAWAKEUP | SIDLEMODE(0x02));
- 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
- 
--		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, WAKEUPEN_ALL);
-+		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, XRDYEN | RRDYEN);
- 	}
- }
- 
-@@ -331,15 +331,12 @@ static inline void omap34xx_mcbsp_free(struct omap_mcbsp *mcbsp)
- 	 */
- 	if (cpu_is_omap34xx()) {
- 		u16 syscon;
--		u16 wakeupen;
- 
- 		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
- 		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03));
- 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
- 
--		wakeupen = OMAP_MCBSP_READ(mcbsp->io_base, WAKEUPEN);
--		wakeupen &= ~WAKEUPEN_ALL;
--		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, wakeupen);
-+		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, 0);
- 	}
- }
- #else
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index 6a837ff..a7b0961 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -321,8 +321,11 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 	/* Generic McBSP register settings */
+ 	regs->spcr2	|= XINTM(3) | FREE;
+ 	regs->spcr1	|= RINTM(3);
+-	regs->rcr2	|= RFIG;
+-	regs->xcr2	|= XFIG;
++	/* RFIG and XFIG are not defined in 34xx */
++	if (!cpu_is_omap34xx()) {
++		regs->rcr2	|= RFIG;
++		regs->xcr2	|= XFIG;
++	}
+ 	if (cpu_is_omap2430() || cpu_is_omap34xx()) {
+ 		regs->xccr = DXENDLY(1) | XDMAEN;
+ 		regs->rccr = RFULL_CYCLE | RDMAEN;
 -- 
 1.6.2.GIT
 
