@@ -1,17 +1,17 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: unable to do simultaneous playback and recording
-Date: Thu, 20 Aug 2009 08:49:19 +0200
-Message-ID: <4A8CF1EF.2000204@ladisch.de>
-References: <909731.61887.qm@web94704.mail.in2.yahoo.com>
+Subject: Re: Nvidia MSI Geforce 9500
+Date: Thu, 20 Aug 2009 08:53:47 +0200
+Message-ID: <4A8CF2FB.1030200@ladisch.de>
+References: <20090819200036.GA12401@csy.ca> <20090819212902.GA5748@csy.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 16C64243C7
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 990FA243D4
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Aug 2009 08:49:13 +0200 (CEST)
-In-Reply-To: <909731.61887.qm@web94704.mail.in2.yahoo.com>
+	Thu, 20 Aug 2009 08:53:31 +0200 (CEST)
+In-Reply-To: <20090819212902.GA5748@csy.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,21 +21,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: prashant chopade <prashantchopade@yahoo.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Shane W <shane-alsa@csy.ca>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-prashant chopade wrote:
-> As per discussion, I know that ALSA driver does not have support for
-> simultaneous playback and recording.
+Shane W wrote:
+> think this might belong on the devel list. After some
+> searching, looks like my Geforce 9500 card is not
+> recognized by the hda_intel driver. I tried adding:
+> { PCI_DEVICE(0x10de, 0x0640), .driver_data = AZX_DRIVER_NVIDIA },
+> 
+>> lspci -vvv:
+>> 01:00.0 VGA compatible controller: nVidia Corporation G96 [GeForce 9500 GT]
+>> (rev a1) (prog-if 00 [VGA controller])
 
-ALSA _does_ support full duplex, if the hardware and driver support it.
-
-> We are using AD1981B codec, so our hardware has a support for
-> simultaneous playback and recording of an audio.
-
-It looks as if your AC'97 controller driver is buggy.
+This PCI ID is for the video part; the HDMI interface should have a
+second entry in the lspci output.
 
 
-Best regards,
+HTH
 Clemens
