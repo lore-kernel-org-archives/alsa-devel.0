@@ -1,17 +1,18 @@
 From: Ben Dooks <ben@simtec.co.uk>
-Subject: [patch 4/4] S3C24XX: Support for Simtec Hermes boards
-Date: Thu, 20 Aug 2009 22:50:43 +0100
-Message-ID: <20090820215122.121179817@fluff.org>
+Subject: [patch 3/4] tlv320aic3x: fixup board device changes
+Date: Thu, 20 Aug 2009 22:50:42 +0100
+Message-ID: <20090820215121.950753888@fluff.org>
 References: <20090820215039.380849394@fluff.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ben-laptop (unknown [78.146.176.60])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0144E243C7
+	by alsa0.perex.cz (Postfix) with ESMTP id D715E243C7
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Aug 2009 23:52:57 +0200 (CEST)
-Content-Disposition: inline; filename=asoc-simtec-hermes.patch
+	Thu, 20 Aug 2009 23:52:59 +0200 (CEST)
+Content-Disposition: inline;
+	filename=asoc-simtec-tlv320aic33-dev-tmp-board.patch
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,207 +26,119 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Add support for the tlv320aic3x CODEC on the Simtec Hermes board.
+Fixup the device changes by modifying the files that we just removed the
+explicit device creation from with i2c_register_board_info() until this
+can be moved into the relevant board files.
 
 Signed-off-by: Ben Dooks <ben@simtec.co.uk>
 
 ---
- sound/soc/s3c24xx/Kconfig                 |    7 +
- sound/soc/s3c24xx/Makefile                |    3 
- sound/soc/s3c24xx/s3c24xx_simtec_hermes.c |  153 ++++++++++++++++++++++++++++++
- 3 files changed, 163 insertions(+)
+ sound/soc/davinci/davinci-evm.c |   10 ++++++++++
+ sound/soc/omap/n810.c           |   10 ++++++++++
+ sound/soc/s6000/s6105-ipcam.c   |   10 ++++++++++
+ 3 files changed, 30 insertions(+)
 
-Index: b/sound/soc/s3c24xx/Kconfig
+Index: b/sound/soc/s6000/s6105-ipcam.c
 ===================================================================
---- a/sound/soc/s3c24xx/Kconfig	2009-08-20 08:37:55.000000000 +0100
-+++ b/sound/soc/s3c24xx/Kconfig	2009-08-20 08:45:31.000000000 +0100
-@@ -91,3 +91,10 @@ config SND_S3C24XX_SOC_SIMTEC_TLV320AIC2
- 	select SND_S3C24XX_SOC_I2S
- 	select SND_SOC_TLV320AIC23
- 	select SND_S3C24XX_SOC_SIMTEC
-+
-+config SND_S3C24XX_SOC_SIMTEC_HERMES
-+	tristate "SoC I2S Audio support for Simtec Hermes board"
-+	depends on SND_S3C24XX_SOC
-+	select SND_S3C24XX_SOC_I2S
-+	select SND_SOC_TLV320AIC3X
-+	select SND_S3C24XX_SOC_SIMTEC
-Index: b/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ b/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c	2009-08-20 08:45:31.000000000 +0100
-@@ -0,0 +1,153 @@
-+/* sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
-+ *
-+ * Copyright 2009 Simtec Electronics
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+*/
-+
-+#include <linux/module.h>
-+#include <linux/clk.h>
-+#include <linux/platform_device.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+#include <plat/audio-simtec.h>
-+
-+#include "s3c24xx-pcm.h"
-+#include "s3c24xx-i2s.h"
-+#include "s3c24xx_simtec.h"
-+
-+#include "../codecs/tlv320aic3x.h"
-+
-+static const struct snd_soc_dapm_widget dapm_widgets[] = {
-+	SND_SOC_DAPM_LINE("GSM Out", NULL),
-+	SND_SOC_DAPM_LINE("GSM In", NULL),
-+	SND_SOC_DAPM_LINE("Line In", NULL),
-+	SND_SOC_DAPM_LINE("Line Out", NULL),
-+	SND_SOC_DAPM_LINE("ZV", NULL),
-+	SND_SOC_DAPM_MIC("Mic Jack", NULL),
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route base_map[] = {
-+	/* Headphone connected to HP{L,R}OUT and HP{L,R}COM */
-+
-+	{ "Headphone Jack", NULL, "HPLOUT" },
-+	{ "Headphone Jack", NULL, "HPLCOM" },
-+	{ "Headphone Jack", NULL, "HPROUT" },
-+	{ "Headphone Jack", NULL, "HPRCOM" },
-+
-+	/* ZV connected to Line1 */
-+
-+	{ "LINE1L", NULL, "ZV" },
-+	{ "LINE1R", NULL, "ZV" },
-+
-+	/* Line In connected to Line2 */
-+
-+	{ "LINE2L", NULL, "Line In" },
-+	{ "LINE2R", NULL, "Line In" },
-+
-+	/* Microphone connected to MIC3R and MIC_BIAS */
-+
-+	{ "MIC3L", NULL, "Mic Jack" },
-+
-+	/* GSM connected to MONO_LOUT and MIC3L (in) */
-+
-+	{ "GSM Out", NULL, "MONO_LOUT" },
-+	{ "MIC3L", NULL, "GSM In" },
-+
-+	/* Speaker is connected to LINEOUT{LN,LP,RN,RP}, however we are
-+	 * not using the DAPM to power it up and down as there it makes
-+	 * a click when powering up. */
-+};
-+
-+/**
-+ * simtec_hermes_init - initialise and add controls
-+ * @codec; The codec instance to attach to.
-+ *
-+ * Attach our controls and configure the necessary codec
-+ * mappings for our sound card instance.
-+*/
-+static int simtec_hermes_init(struct snd_soc_codec *codec)
-+{
-+	snd_soc_dapm_new_controls(codec, dapm_widgets,
-+				  ARRAY_SIZE(dapm_widgets));
-+
-+	snd_soc_dapm_add_routes(codec, base_map, ARRAY_SIZE(base_map));
-+
-+	snd_soc_dapm_enable_pin(codec, "Headphone Jack");
-+	snd_soc_dapm_enable_pin(codec, "Line In");
-+	snd_soc_dapm_enable_pin(codec, "Line Out");
-+	snd_soc_dapm_enable_pin(codec, "Mic Jack");
-+
-+	simtec_audio_init(codec);
-+	snd_soc_dapm_sync(codec);
-+
-+	return 0;
-+}
-+
-+static struct aic3x_setup_data codec_setup = {
-+};
-+
-+static struct snd_soc_dai_link simtec_dai_aic33 = {
-+	.name		= "tlv320aic33",
-+	.stream_name	= "TLV320AIC33",
-+	.cpu_dai	= &s3c24xx_i2s_dai,
-+	.codec_dai	= &aic3x_dai,
-+	.init		= simtec_hermes_init,
-+};
-+
-+/* simtec audio machine driver */
-+static struct snd_soc_card snd_soc_machine_simtec_aic33 = {
-+	.name		= "Simtec-Hermes",
-+	.platform	= &s3c24xx_soc_platform,
-+	.dai_link	= &simtec_dai_aic33,
-+	.num_links	= 1,
-+};
-+
-+/* simtec audio subsystem */
-+static struct snd_soc_device simtec_snd_devdata_aic33 = {
-+	.card		= &snd_soc_machine_simtec_aic33,
-+	.codec_dev	= &soc_codec_dev_aic3x,
-+	.codec_data	= &codec_setup,
-+};
-+
-+static int __devinit simtec_audio_hermes_probe(struct platform_device *pd)
-+{
-+	dev_info(&pd->dev, "probing....\n");
-+	return simtec_audio_core_probe(pd, &simtec_snd_devdata_aic33);
-+}
-+
-+static struct platform_driver simtec_audio_hermes_platdrv = {
-+	.driver	= {
-+		.owner	= THIS_MODULE,
-+		.name	= "s3c24xx-simtec-hermes-snd",
-+		.pm	= simtec_audio_pm,
-+	},
-+	.probe	= simtec_audio_hermes_probe,
-+	.remove	= __devexit_p(simtec_audio_remove),
-+};
-+
-+MODULE_ALIAS("platform:s3c24xx-simtec-hermes-snd");
-+
-+static int __init simtec_hermes_modinit(void)
-+{
-+	return platform_driver_register(&simtec_audio_hermes_platdrv);
-+}
-+
-+static void __exit simtec_hermes_modexit(void)
-+{
-+	platform_driver_unregister(&simtec_audio_hermes_platdrv);
-+}
-+
-+module_init(simtec_hermes_modinit);
-+module_exit(simtec_hermes_modexit);
-+
-+MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
-+MODULE_DESCRIPTION("ALSA SoC Simtec Audio support");
-+MODULE_LICENSE("GPL");
-Index: b/sound/soc/s3c24xx/Makefile
-===================================================================
---- a/sound/soc/s3c24xx/Makefile	2009-08-20 08:37:55.000000000 +0100
-+++ b/sound/soc/s3c24xx/Makefile	2009-08-20 08:45:31.000000000 +0100
-@@ -21,6 +21,7 @@ snd-soc-smdk2443-wm9710-objs := smdk2443
- snd-soc-ln2440sbc-alc650-objs := ln2440sbc_alc650.o
- snd-soc-s3c24xx-uda134x-objs := s3c24xx_uda134x.o
- snd-soc-s3c24xx-simtec-objs := s3c24xx_simtec.o
-+snd-soc-s3c24xx-simtec-hermes-objs := s3c24xx_simtec_hermes.o
- snd-soc-s3c24xx-simtec-tlv320aic23-objs := s3c24xx_simtec_tlv320aic23.o
+--- a/sound/soc/s6000/s6105-ipcam.c	2009-08-20 08:38:01.000000000 +0100
++++ b/sound/soc/s6000/s6105-ipcam.c	2009-08-20 08:45:26.000000000 +0100
+@@ -14,6 +14,7 @@
+ #include <linux/timer.h>
+ #include <linux/interrupt.h>
+ #include <linux/platform_device.h>
++#include <linux/i2c.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/soc.h>
+@@ -209,10 +210,19 @@ static struct s6000_snd_platform_data __
  
- obj-$(CONFIG_SND_S3C24XX_SOC_JIVE_WM8750) += snd-soc-jive-wm8750.o
-@@ -30,4 +31,6 @@ obj-$(CONFIG_SND_S3C24XX_SOC_SMDK2443_WM
- obj-$(CONFIG_SND_S3C24XX_SOC_LN2440SBC_ALC650) += snd-soc-ln2440sbc-alc650.o
- obj-$(CONFIG_SND_S3C24XX_SOC_S3C24XX_UDA134X) += snd-soc-s3c24xx-uda134x.o
- obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC) += snd-soc-s3c24xx-simtec.o
-+obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC_HERMES) += snd-soc-s3c24xx-simtec-hermes.o
- obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC_TLV320AIC23) += snd-soc-s3c24xx-simtec-tlv320aic23.o
+ static struct platform_device *s6105_snd_device;
+ 
++/* temporary i2c device creation until this can be moved into the machine
++ * support file.
++*/
++static struct i2c_board_info i2c_device[] = {
++	{ I2C_BOARD_INFO("tlv320aic33", 0x18), }
++};
 +
+ static int __init s6105_init(void)
+ {
+ 	int ret;
+ 
++	i2c_register_board_info(0, i2c_device, ARRAY_SIZE(i2c_device));
++
+ 	s6105_snd_device = platform_device_alloc("soc-audio", -1);
+ 	if (!s6105_snd_device)
+ 		return -ENOMEM;
+Index: b/sound/soc/davinci/davinci-evm.c
+===================================================================
+--- a/sound/soc/davinci/davinci-evm.c	2009-08-20 08:38:01.000000000 +0100
++++ b/sound/soc/davinci/davinci-evm.c	2009-08-20 08:45:26.000000000 +0100
+@@ -14,6 +14,7 @@
+ #include <linux/timer.h>
+ #include <linux/interrupt.h>
+ #include <linux/platform_device.h>
++#include <linux/i2c.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/soc.h>
+@@ -249,6 +250,13 @@ static struct snd_soc_device da850_evm_s
+ 
+ static struct platform_device *evm_snd_device;
+ 
++/* temporary i2c device creation until this can be moved into the machine
++ * support file.
++*/
++static struct i2c_board_info i2c_device[] = {
++	{ I2C_BOARD_INFO("tlv320aic33", 0x1b), }
++};
++
+ static int __init evm_init(void)
+ {
+ 	struct snd_soc_device *evm_snd_dev_data;
+@@ -273,6 +281,8 @@ static int __init evm_init(void)
+ 	} else
+ 		return -EINVAL;
+ 
++	i2c_register_board_info(1, i2c_device, ARRAY_SIZE(i2c_device));
++
+ 	evm_snd_device = platform_device_alloc("soc-audio", index);
+ 	if (!evm_snd_device)
+ 		return -ENOMEM;
+Index: b/sound/soc/omap/n810.c
+===================================================================
+--- a/sound/soc/omap/n810.c	2009-08-20 08:38:01.000000000 +0100
++++ b/sound/soc/omap/n810.c	2009-08-20 08:45:26.000000000 +0100
+@@ -22,6 +22,7 @@
+  */
+ 
+ #include <linux/clk.h>
++#include <linux/i2c.h>
+ #include <linux/platform_device.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -335,6 +336,13 @@ static struct snd_soc_device n810_snd_de
+ 
+ static struct platform_device *n810_snd_device;
+ 
++/* temporary i2c device creation until this can be moved into the machine
++ * support file.
++*/
++static struct i2c_board_info i2c_device[] = {
++	{ I2C_BOARD_INFO("tlv320aic3x", 0x1b), }
++};
++
+ static int __init n810_soc_init(void)
+ {
+ 	int err;
+@@ -343,6 +351,8 @@ static int __init n810_soc_init(void)
+ 	if (!(machine_is_nokia_n810() || machine_is_nokia_n810_wimax()))
+ 		return -ENODEV;
+ 
++	i2c_register_board_info(1, i2c_device, ARRAY_SIZE(i2c_device));
++
+ 	n810_snd_device = platform_device_alloc("soc-audio", -1);
+ 	if (!n810_snd_device)
+ 		return -ENOMEM;
 
 -- 
