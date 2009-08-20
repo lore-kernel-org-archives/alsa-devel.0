@@ -1,8 +1,8 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv5 20/20] ASoC: OMAP: Use DMA operating mode of
-	McBSP
-Date: Thu, 20 Aug 2009 16:18:26 +0300
-Message-ID: <1250774306-7581-20-git-send-email-eduardo.valentin__33914.6634484225$1250775317$gmane$org@nokia.com>
+Subject: [PATCHv5 12/20] OMAP: McBSP: Configure NO IDLE mode
+	for DMA mode different of threshold
+Date: Thu, 20 Aug 2009 16:18:18 +0300
+Message-ID: <1250774306-7581-12-git-send-email-eduardo.valentin__39363.1930616268$1250775330$gmane$org@nokia.com>
 References: <1250774306-7581-1-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,67 +24,34 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
 
-Configures DMA sync mode depending on McBSP operating mode value.
-The value is configurable by McBSP instance. So, depending
-on McBSP operating mode, the DMA sync mode is passed from
-omap-mcbsp to omap-pcm. Besides that, it also configures
-McBSP threshold value depending on which McBSP mode is activated.
+Use dma mode property to configure NO IDLE or SMART IDLE of McBSPs.
 
 Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
 ---
- sound/soc/omap/omap-mcbsp.c |   18 +++++++++++++++---
- 1 files changed, 15 insertions(+), 3 deletions(-)
+ arch/arm/plat-omap/mcbsp.c |   10 +++++++++-
+ 1 files changed, 9 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 580de5a..f5387d9 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -144,7 +144,14 @@ static void omap_mcbsp_set_threshold(struct snd_pcm_substream *substream)
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
- 	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
--	int samples = snd_pcm_lib_period_bytes(substream) >> 1;
-+	int dma_op_mode = omap_mcbsp_get_dma_op_mode(mcbsp_data->bus_id);
-+	int samples;
+diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
+index 2c274e6..85176a5 100644
+--- a/arch/arm/plat-omap/mcbsp.c
++++ b/arch/arm/plat-omap/mcbsp.c
+@@ -317,7 +317,15 @@ static inline void omap34xx_mcbsp_request(struct omap_mcbsp *mcbsp)
+ 
+ 		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
+ 		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03) | CLOCKACTIVITY(0x03));
+-		syscon |= (ENAWAKEUP | SIDLEMODE(0x02) | CLOCKACTIVITY(0x02));
 +
-+	/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
-+	if (dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
-+		samples = snd_pcm_lib_period_bytes(substream) >> 1;
-+	else
-+		samples = 1;
++		spin_lock_irq(&mcbsp->lock);
++		if (mcbsp->dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
++			syscon |= SIDLEMODE(0x02);
++		else
++			syscon |= SIDLEMODE(0x01);
++		spin_unlock_irq(&mcbsp->lock);
++
++		syscon |= (ENAWAKEUP | CLOCKACTIVITY(0x02));
+ 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
  
- 	/* Configure McBSP internal buffer usage */
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-@@ -166,6 +173,7 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
- 		err = omap_mcbsp_request(bus_id);
- 
- 	if (cpu_is_omap343x()) {
-+		int dma_op_mode = omap_mcbsp_get_dma_op_mode(bus_id);
- 		int max_period;
- 
- 		/*
-@@ -187,7 +195,8 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
- 		max_period++;
- 		max_period <<= 1;
- 
--		snd_pcm_hw_constraint_minmax(substream->runtime,
-+		if (dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
-+			snd_pcm_hw_constraint_minmax(substream->runtime,
- 						SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
- 						32, max_period);
- 	}
-@@ -269,7 +278,10 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 		port = omap34xx_mcbsp_port[bus_id][substream->stream];
- 		omap_mcbsp_dai_dma_params[id][substream->stream].set_threshold =
- 						omap_mcbsp_set_threshold;
--		sync_mode = OMAP_DMA_SYNC_FRAME;
-+		/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
-+		if (omap_mcbsp_get_dma_op_mode(bus_id) ==
-+						MCBSP_DMA_MODE_THRESHOLD)
-+			sync_mode = OMAP_DMA_SYNC_FRAME;
- 	} else {
- 		return -ENODEV;
- 	}
+ 		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, XRDYEN | RRDYEN);
 -- 
 1.6.2.GIT
 
