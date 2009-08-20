@@ -1,26 +1,18 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: Re: [PATCH V2 2/3] add set_tdm_slot in tdm dai to
-	define the relationship between audio channel and tdm slot
-Date: Thu, 20 Aug 2009 10:37:25 +0800
-Message-ID: <3c17e3570908191937h53f5bcf0mb9c753b94402e3f5@mail.gmail.com>
-References: <1250137511-24034-1-git-send-email-21cnbao@gmail.com>
-	<20090817175010.GA19707@rakim.wolfsonmicro.main>
-	<3c17e3570908171953l65c9d04i99ad6fa72b88d001@mail.gmail.com>
-	<20090818131117.GA12512@rakim.wolfsonmicro.main>
-	<3c17e3570908181834q6dd0e0c5n157697bd02836b35@mail.gmail.com>
-	<20090819113400.GC18285@rakim.wolfsonmicro.main>
+From: prashant chopade <prashantchopade@yahoo.com>
+Subject: Re: unable to do simultaneous playback and recording
+Date: Thu, 20 Aug 2009 11:45:40 +0530 (IST)
+Message-ID: <909731.61887.qm@web94704.mail.in2.yahoo.com>
+References: <s5h1vn8c7wq.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f176.google.com (mail-yx0-f176.google.com
-	[209.85.210.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id DD4162440A
+Received: from n6-vm1.bullet.mail.in.yahoo.com
+	(n6-vm1.bullet.mail.in.yahoo.com [202.86.4.133])
+	by alsa0.perex.cz (Postfix) with SMTP id B241F24338
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Aug 2009 04:37:47 +0200 (CEST)
-Received: by yxe6 with SMTP id 6so5919031yxe.16
-	for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2009 19:37:45 -0700 (PDT)
-In-Reply-To: <20090819113400.GC18285@rakim.wolfsonmicro.main>
+	Thu, 20 Aug 2009 08:15:42 +0200 (CEST)
+In-Reply-To: <s5h1vn8c7wq.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,21 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBBdWcgMTksIDIwMDkgYXQgNzozNCBQTSwgTWFyawpCcm93bjxicm9vbmllQG9wZW5z
-b3VyY2Uud29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gV2VkLCBBdWcgMTksIDIwMDkgYXQg
-MDk6MzQ6MTZBTSArMDgwMCwgQmFycnkgU29uZyB3cm90ZToKPgo+PiBUaGUgdGltaW5nIGlzIGxp
-a2UgdGhlIGF0dGFjaGVkIGRpYWdyYW0sIEkgdGhpbmsgaXQncyBub3QgSTJTIGJ1dCBsaWtlIERT
-UC4KPgo+IFl1cCwgdGhhdCBEU1AgbW9kZSB3aXRoIEkyUyBsaWtlIGNoYW5uZWwgbGF5b3V0IChk
-b2VzIGl0IGFsc28gZG8gVERNIGluCj4gSTJTIG1vZGUgYnkgYW55IGNoYW5jZT8pLiDCoENvdWxk
-IHlvdSBzdWJtaXQgYSB2ZXJzaW9uIG9mIHlvdXIgcGF0Y2gKPiB3aGljaCB1c2VzIHRoZSBkZWZh
-dWx0IFRETSBsYXlvdXQgLSBhbiBBUEkgdG8gcmV3cml0ZSB0aGluZ3MgaXMgbGlrZWx5Cj4gdG8g
-YmUgYSBzZXBhcmF0ZSBBUEk/Cj4KSSBkb24ndCBrbm93IHdoYXQgaXMgeW91ciBleGFjdCBtZWFu
-aW5nLiAgRG8geW91IG1lYW4gSSBzZW5kIGEgcGF0Y2gKd2hvc2UgdGRtIHNsb3QgaXMgbm90IGNo
-YW5nZWQsIHRoZW4gc2VuZCBhIHBhdGNoIHdoaWNoIGNoYW5nZSB0aGUgdGRtCnNsb3Q/Cl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+SGVsbG8sCgpBcyBwZXIgZGlzY3Vzc2lvbiwgSSBrbm93IHRoYXQgQUxTQSBkcml2ZXIgZG9lcyBu
+b3QgaGF2ZSBzdXBwb3J0IGZvciBzaW11bHRhbmVvdXMgcGxheWJhY2sgYW5kIHJlY29yZGluZy4K
+CldlIGFyZSB1c2luZyBBRDE5ODFCIGNvZGVjLCBzbyBvdXIgaGFyZHdhcmUgaGFzIGEgc3VwcG9y
+dCBmb3Igc2ltdWx0YW5lb3VzIHBsYXliYWNrIGFuZCByZWNvcmRpbmcgb2YgYW4gYXVkaW8uCgpT
+byB3aGF0IGV4YWN0bHkgSSBoYXZlIHRvIGRvIHRvIGdldCBhIHN1cHBvcnQgZm9yIHNpbXVsdGFu
+ZW91cyBwbGF5YmFjayBhbmQgcmVjb3JkaW5nPwpTaGFsbCBJIGhhdmUgdG8gdXNlIHNvdW5kIHNl
+cnZlciBkZW1vbnM/CgpJcyBpdCByZWFsbHkgcG9zc2libGUgdG8gZG8gc2ltdWx0YW5lb3VzIHBs
+YXliYWNrIGFuZCByZWNvcmRpbmcgaW4gbGludXg/CgpUaGFua3MgJiBSZWdhcmRzLApQcmFzaGFu
+dCBDLgoKCi0tLSBPbiBXZWQsIDE5LzgvMDksIFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4g
+d3JvdGU6CgpGcm9tOiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+ClN1YmplY3Q6IFJlOiBb
+YWxzYS1kZXZlbF0gdW5hYmxlIHRvIGRvIHNpbXVsdGFuZW91cyBwbGF5YmFjayBhbmQgcmVjb3Jk
+aW5nClRvOiAicHJhc2hhbnQgY2hvcGFkZSIgPHByYXNoYW50Y2hvcGFkZUB5YWhvby5jb20+CkNj
+OiBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKRGF0ZTogV2VkbmVzZGF5LCAxOSBBdWd1c3Qs
+IDIwMDksIDU6NTAgUE0KCkF0IFR1ZSwgMTggQXVnIDIwMDkgMDU6MDU6MTAgLTA3MDAgKFBEVCks
+CnByYXNoYW50IGNob3BhZGUgd3JvdGU6Cj4gCj4gCj4gCj4gCj4gCj4gSGVsbG8sCj4gCj4gV2Ug
+dXNpbmcgbGludXgtMi42LjI3IG9uIHRhcmdldCBib2FyZC1BVDkxU0FNOTI2M0VLLgo+wqAgV2Ug
+YXJlIHVzaW5nIEFMU0EgbGlicmFyeSB1dGlsaXRpZXMgKGFwbGF5ICYKPiBhcmVjb3JkKS4gQnV0
+IGJ5IHVzaW5nIHRoZXNlIHV0aWxpdGllcyB3ZSBjYW7igJl0IGRvIHNpbXVsdGFuZW91cyBwbGF5
+YmFjayBhbmQKPiByZWNvcmRpbmcuCj4gCj4gIAo+IAo+IFdlIHBlcmZvcm1lZCBmb2xsb3dpbmcg
+YWN0aXZpdHkgdG8gY29tZSB0byB0aGlzIGNvbmNsdXNpb246Cj4gCj4gIAo+IAo+IC8vQXQgdGhl
+IGJhY2tncm91bmQgd2Ugd2VyZSByZWNvcmRpbmcKPiAKPiAjYXJlY29yZCDigJNmIGNkIHJlY29y
+ZF90ZXN0X2ZpbGUgJgo+IAo+ICAKPiAKPiAvL0F0IHRoZSBmb3JlZnJvbnQgd2Ugd2VyZSBwbGF5
+aW5nIHByZS1yZWNvcmRlZCBhdWRpbyBmaWxlCj4gCj4gI2FwbGF5IOKAk2YgY2QgcHJlX3JlY29y
+ZGVkX2ZpbGUKPiAKPiAgCj4gCj4gT3VyIG9ic2VydmF0aW9uIGlzIHRoYXQsIHJlY29yZGluZyBz
+dG9wcyB3aGVuIHN0YXJ0IHBsYXlpbmcKPiBmaWxlLgoKSW4gdGhlIEFQSSBzaWRlLCB0aGUgYWJv
+dmUgc2hvdWxkIHdvcmsgZmluZS7CoCBJdCBtdXN0IGJlIHRoZSBkcml2ZXIgCnRoYXQgZG9lc24n
+dCB3b3JrIHdpdGggZnVsbC1kdXBsZXguCgoKVGFrYXNoaQpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKCgoKICAgICAgWWFob28hIHJlY29tbWVuZHMgdGhhdCB5
+b3UgdXBncmFkZSB0byB0aGUgbmV3IGFuZCBzYWZlciBJbnRlcm5ldCBFeHBsb3JlciA4LiBodHRw
+Oi8vZG93bmxvYWRzLnlhaG9vLmNvbS9pbi9pbnRlcm5ldGV4cGxvcmVyLwpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
