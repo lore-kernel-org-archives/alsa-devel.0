@@ -1,7 +1,8 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: [PATCHv5 16/20] ASoC: OMAP: Make DMA 64 aligned
-Date: Thu, 20 Aug 2009 16:18:22 +0300
-Message-ID: <1250774306-7581-16-git-send-email-eduardo.valentin__3265.114039141$1250775348$gmane$org@nokia.com>
+Subject: [PATCHv5 11/20] OMAP: McBSP: Retain McBSP FCLK
+	clockactivity
+Date: Thu, 20 Aug 2009 16:18:17 +0300
+Message-ID: <1250774306-7581-11-git-send-email-eduardo.valentin__7088.34819165549$1250775351$gmane$org@nokia.com>
 References: <1250774306-7581-1-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -18,40 +19,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
+Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Eero Nurkkala <ext-eero.nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
+From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 
-Align DMA address to DMA burst transaction sizes.
+FCLK may get autogated so that it prevents the McBSP
+to work properly. It is the bit 9 that must be set
+for maintaining the McBSP FCLK.
 
+Signed-off-by: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
+Acked-by: Jarkko Nikula <jarkko.nikula@nokia.com>
 ---
- sound/soc/omap/omap-pcm.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/plat-omap/include/mach/mcbsp.h |    1 +
+ arch/arm/plat-omap/mcbsp.c              |    6 +++---
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-index 7cae7c4..b9633d5 100644
---- a/sound/soc/omap/omap-pcm.c
-+++ b/sound/soc/omap/omap-pcm.c
-@@ -310,7 +310,7 @@ static struct snd_pcm_ops omap_pcm_ops = {
- 	.mmap		= omap_pcm_mmap,
- };
+diff --git a/arch/arm/plat-omap/include/mach/mcbsp.h b/arch/arm/plat-omap/include/mach/mcbsp.h
+index fe10ae8..70e950e 100644
+--- a/arch/arm/plat-omap/include/mach/mcbsp.h
++++ b/arch/arm/plat-omap/include/mach/mcbsp.h
+@@ -254,6 +254,7 @@
+ #define RDISABLE		0x0001
  
--static u64 omap_pcm_dmamask = DMA_BIT_MASK(32);
-+static u64 omap_pcm_dmamask = DMA_BIT_MASK(64);
+ /********************** McBSP SYSCONFIG bit definitions ********************/
++#define CLOCKACTIVITY(value)	((value)<<8)
+ #define SIDLEMODE(value)	((value)<<3)
+ #define ENAWAKEUP		0x0004
+ #define SOFTRST			0x0002
+diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
+index 86bfad8..2c274e6 100644
+--- a/arch/arm/plat-omap/mcbsp.c
++++ b/arch/arm/plat-omap/mcbsp.c
+@@ -316,8 +316,8 @@ static inline void omap34xx_mcbsp_request(struct omap_mcbsp *mcbsp)
+ 		u16 syscon;
  
- static int omap_pcm_preallocate_dma_buffer(struct snd_pcm *pcm,
- 	int stream)
-@@ -360,7 +360,7 @@ static int omap_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
- 	if (!card->dev->dma_mask)
- 		card->dev->dma_mask = &omap_pcm_dmamask;
- 	if (!card->dev->coherent_dma_mask)
--		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
-+		card->dev->coherent_dma_mask = DMA_BIT_MASK(64);
+ 		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
+-		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03));
+-		syscon |= (ENAWAKEUP | SIDLEMODE(0x02));
++		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03) | CLOCKACTIVITY(0x03));
++		syscon |= (ENAWAKEUP | SIDLEMODE(0x02) | CLOCKACTIVITY(0x02));
+ 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
  
- 	if (dai->playback.channels_min) {
- 		ret = omap_pcm_preallocate_dma_buffer(pcm,
+ 		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, XRDYEN | RRDYEN);
+@@ -333,7 +333,7 @@ static inline void omap34xx_mcbsp_free(struct omap_mcbsp *mcbsp)
+ 		u16 syscon;
+ 
+ 		syscon = OMAP_MCBSP_READ(mcbsp->io_base, SYSCON);
+-		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03));
++		syscon &= ~(ENAWAKEUP | SIDLEMODE(0x03) | CLOCKACTIVITY(0x03));
+ 		OMAP_MCBSP_WRITE(mcbsp->io_base, SYSCON, syscon);
+ 
+ 		OMAP_MCBSP_WRITE(mcbsp->io_base, WAKEUPEN, 0);
 -- 
 1.6.2.GIT
 
