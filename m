@@ -1,16 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.32
-Date: Thu, 20 Aug 2009 21:10:52 +0100
-Message-ID: <20090820201051.GA18415@sirena.org.uk>
+From: Ben Dooks <ben@simtec.co.uk>
+Subject: [patch 4/4] S3C24XX: Support for Simtec Hermes boards
+Date: Thu, 20 Aug 2009 22:50:43 +0100
+Message-ID: <20090820215122.121179817@fluff.org>
+References: <20090820215039.380849394@fluff.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4700C24149
+Received: from ben-laptop (unknown [78.146.176.60])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0144E243C7
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Aug 2009 22:10:59 +0200 (CEST)
-Content-Disposition: inline
+	Thu, 20 Aug 2009 23:52:57 +0200 (CEST)
+Content-Disposition: inline; filename=asoc-simtec-hermes.patch
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,65 +21,211 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 474e09ca017bd0f6e9bf41af643364a21bc27f43:
-  Mark Brown (1):
-        ASoC: Provide default set_bias_level() implementation
+Add support for the tlv320aic3x CODEC on the Simtec Hermes board.
 
-are available in the git repository at:
+Signed-off-by: Ben Dooks <ben@simtec.co.uk>
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.32
+---
+ sound/soc/s3c24xx/Kconfig                 |    7 +
+ sound/soc/s3c24xx/Makefile                |    3 
+ sound/soc/s3c24xx/s3c24xx_simtec_hermes.c |  153 ++++++++++++++++++++++++++++++
+ 3 files changed, 163 insertions(+)
 
-Eduardo Valentin (11):
-      OMAP: McBSP: Add IRQEN, IRQSTATUS, THRESHOLD2 and THRESHOLD1 registers.
-      OMAP: McBSP: Use appropriate value for startup delay
-      OMAP: McBSP: Add transmit/receive threshold handler
-      OMAP: McBSP: Create and export max_(r|t)x_thres property
-      OMAP: McBSP: Rename thres sysfs symbols
-      OMAP: McBSP: Change wakeup signals
-      OMAP: McBSP: Configure NO IDLE mode for DMA mode different of threshold
-      ASoC: OMAP: Enable DMA burst mode
-      ASoC: OMAP: Make DMA 64 aligned
-      ASoC: OMAP: Use McBSP threshold to playback and capture
-      ASoC: OMAP: Use DMA operating mode of McBSP
+Index: b/sound/soc/s3c24xx/Kconfig
+===================================================================
+--- a/sound/soc/s3c24xx/Kconfig	2009-08-20 08:37:55.000000000 +0100
++++ b/sound/soc/s3c24xx/Kconfig	2009-08-20 08:45:31.000000000 +0100
+@@ -91,3 +91,10 @@ config SND_S3C24XX_SOC_SIMTEC_TLV320AIC2
+ 	select SND_S3C24XX_SOC_I2S
+ 	select SND_SOC_TLV320AIC23
+ 	select SND_S3C24XX_SOC_SIMTEC
++
++config SND_S3C24XX_SOC_SIMTEC_HERMES
++	tristate "SoC I2S Audio support for Simtec Hermes board"
++	depends on SND_S3C24XX_SOC
++	select SND_S3C24XX_SOC_I2S
++	select SND_SOC_TLV320AIC3X
++	select SND_S3C24XX_SOC_SIMTEC
+Index: b/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ b/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c	2009-08-20 08:45:31.000000000 +0100
+@@ -0,0 +1,153 @@
++/* sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
++ *
++ * Copyright 2009 Simtec Electronics
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++*/
++
++#include <linux/module.h>
++#include <linux/clk.h>
++#include <linux/platform_device.h>
++
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++
++#include <plat/audio-simtec.h>
++
++#include "s3c24xx-pcm.h"
++#include "s3c24xx-i2s.h"
++#include "s3c24xx_simtec.h"
++
++#include "../codecs/tlv320aic3x.h"
++
++static const struct snd_soc_dapm_widget dapm_widgets[] = {
++	SND_SOC_DAPM_LINE("GSM Out", NULL),
++	SND_SOC_DAPM_LINE("GSM In", NULL),
++	SND_SOC_DAPM_LINE("Line In", NULL),
++	SND_SOC_DAPM_LINE("Line Out", NULL),
++	SND_SOC_DAPM_LINE("ZV", NULL),
++	SND_SOC_DAPM_MIC("Mic Jack", NULL),
++	SND_SOC_DAPM_HP("Headphone Jack", NULL),
++};
++
++static const struct snd_soc_dapm_route base_map[] = {
++	/* Headphone connected to HP{L,R}OUT and HP{L,R}COM */
++
++	{ "Headphone Jack", NULL, "HPLOUT" },
++	{ "Headphone Jack", NULL, "HPLCOM" },
++	{ "Headphone Jack", NULL, "HPROUT" },
++	{ "Headphone Jack", NULL, "HPRCOM" },
++
++	/* ZV connected to Line1 */
++
++	{ "LINE1L", NULL, "ZV" },
++	{ "LINE1R", NULL, "ZV" },
++
++	/* Line In connected to Line2 */
++
++	{ "LINE2L", NULL, "Line In" },
++	{ "LINE2R", NULL, "Line In" },
++
++	/* Microphone connected to MIC3R and MIC_BIAS */
++
++	{ "MIC3L", NULL, "Mic Jack" },
++
++	/* GSM connected to MONO_LOUT and MIC3L (in) */
++
++	{ "GSM Out", NULL, "MONO_LOUT" },
++	{ "MIC3L", NULL, "GSM In" },
++
++	/* Speaker is connected to LINEOUT{LN,LP,RN,RP}, however we are
++	 * not using the DAPM to power it up and down as there it makes
++	 * a click when powering up. */
++};
++
++/**
++ * simtec_hermes_init - initialise and add controls
++ * @codec; The codec instance to attach to.
++ *
++ * Attach our controls and configure the necessary codec
++ * mappings for our sound card instance.
++*/
++static int simtec_hermes_init(struct snd_soc_codec *codec)
++{
++	snd_soc_dapm_new_controls(codec, dapm_widgets,
++				  ARRAY_SIZE(dapm_widgets));
++
++	snd_soc_dapm_add_routes(codec, base_map, ARRAY_SIZE(base_map));
++
++	snd_soc_dapm_enable_pin(codec, "Headphone Jack");
++	snd_soc_dapm_enable_pin(codec, "Line In");
++	snd_soc_dapm_enable_pin(codec, "Line Out");
++	snd_soc_dapm_enable_pin(codec, "Mic Jack");
++
++	simtec_audio_init(codec);
++	snd_soc_dapm_sync(codec);
++
++	return 0;
++}
++
++static struct aic3x_setup_data codec_setup = {
++};
++
++static struct snd_soc_dai_link simtec_dai_aic33 = {
++	.name		= "tlv320aic33",
++	.stream_name	= "TLV320AIC33",
++	.cpu_dai	= &s3c24xx_i2s_dai,
++	.codec_dai	= &aic3x_dai,
++	.init		= simtec_hermes_init,
++};
++
++/* simtec audio machine driver */
++static struct snd_soc_card snd_soc_machine_simtec_aic33 = {
++	.name		= "Simtec-Hermes",
++	.platform	= &s3c24xx_soc_platform,
++	.dai_link	= &simtec_dai_aic33,
++	.num_links	= 1,
++};
++
++/* simtec audio subsystem */
++static struct snd_soc_device simtec_snd_devdata_aic33 = {
++	.card		= &snd_soc_machine_simtec_aic33,
++	.codec_dev	= &soc_codec_dev_aic3x,
++	.codec_data	= &codec_setup,
++};
++
++static int __devinit simtec_audio_hermes_probe(struct platform_device *pd)
++{
++	dev_info(&pd->dev, "probing....\n");
++	return simtec_audio_core_probe(pd, &simtec_snd_devdata_aic33);
++}
++
++static struct platform_driver simtec_audio_hermes_platdrv = {
++	.driver	= {
++		.owner	= THIS_MODULE,
++		.name	= "s3c24xx-simtec-hermes-snd",
++		.pm	= simtec_audio_pm,
++	},
++	.probe	= simtec_audio_hermes_probe,
++	.remove	= __devexit_p(simtec_audio_remove),
++};
++
++MODULE_ALIAS("platform:s3c24xx-simtec-hermes-snd");
++
++static int __init simtec_hermes_modinit(void)
++{
++	return platform_driver_register(&simtec_audio_hermes_platdrv);
++}
++
++static void __exit simtec_hermes_modexit(void)
++{
++	platform_driver_unregister(&simtec_audio_hermes_platdrv);
++}
++
++module_init(simtec_hermes_modinit);
++module_exit(simtec_hermes_modexit);
++
++MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
++MODULE_DESCRIPTION("ALSA SoC Simtec Audio support");
++MODULE_LICENSE("GPL");
+Index: b/sound/soc/s3c24xx/Makefile
+===================================================================
+--- a/sound/soc/s3c24xx/Makefile	2009-08-20 08:37:55.000000000 +0100
++++ b/sound/soc/s3c24xx/Makefile	2009-08-20 08:45:31.000000000 +0100
+@@ -21,6 +21,7 @@ snd-soc-smdk2443-wm9710-objs := smdk2443
+ snd-soc-ln2440sbc-alc650-objs := ln2440sbc_alc650.o
+ snd-soc-s3c24xx-uda134x-objs := s3c24xx_uda134x.o
+ snd-soc-s3c24xx-simtec-objs := s3c24xx_simtec.o
++snd-soc-s3c24xx-simtec-hermes-objs := s3c24xx_simtec_hermes.o
+ snd-soc-s3c24xx-simtec-tlv320aic23-objs := s3c24xx_simtec_tlv320aic23.o
+ 
+ obj-$(CONFIG_SND_S3C24XX_SOC_JIVE_WM8750) += snd-soc-jive-wm8750.o
+@@ -30,4 +31,6 @@ obj-$(CONFIG_SND_S3C24XX_SOC_SMDK2443_WM
+ obj-$(CONFIG_SND_S3C24XX_SOC_LN2440SBC_ALC650) += snd-soc-ln2440sbc-alc650.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_S3C24XX_UDA134X) += snd-soc-s3c24xx-uda134x.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC) += snd-soc-s3c24xx-simtec.o
++obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC_HERMES) += snd-soc-s3c24xx-simtec-hermes.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC_TLV320AIC23) += snd-soc-s3c24xx-simtec-tlv320aic23.o
++
 
-Eero Nurkkala (7):
-      OMAP: McBSP: Provide functions for ASoC frame syncronization
-      OMAP: McBSP: Wakeups utilized
-      OMAP: McBSP: Retain McBSP FCLK clockactivity
-      OMAP: McBSP: Do not enable wakeups for no-idle mode
-      OMAP: McBSP: Let element DMA mode hit retention also
-      ASoC: Add runtime check for RFIG and XFIG
-      ASoC: Always syncronize audio transfers on frames
-
-Kuninori Morimoto (1):
-      ASoC: Add SuperH FSI driver support for ALSA
-
-Mark Brown (1):
-      ALSA: Restore support for DMAless DAIs on PXA
-
-Peter Ujfalusi (2):
-      OMAP3: McBSP: Lower the maximum buffersize for McBSP1, 3, 4, 5
-      OMAP: McBSP: Add link DMA mode selection
-
-Shine Liu (1):
-      ASoC: S3C24XX : Align the peroid size to the buffer size
-
- arch/arm/mach-omap2/mcbsp.c             |    5 +
- arch/arm/plat-omap/include/mach/mcbsp.h |   49 ++
- arch/arm/plat-omap/mcbsp.c              |  377 ++++++++++++-
- include/sound/sh_fsi.h                  |   83 +++
- sound/arm/pxa2xx-pcm-lib.c              |    3 +
- sound/soc/omap/omap-mcbsp.c             |   77 +++-
- sound/soc/omap/omap-pcm.c               |   14 +-
- sound/soc/omap/omap-pcm.h               |    2 +
- sound/soc/s3c24xx/s3c24xx-pcm.c         |    1 +
- sound/soc/sh/Kconfig                    |    7 +-
- sound/soc/sh/Makefile                   |    2 +
- sound/soc/sh/fsi.c                      | 1004 +++++++++++++++++++++++++++++++
- 12 files changed, 1610 insertions(+), 14 deletions(-)
- create mode 100644 include/sound/sh_fsi.h
- create mode 100644 sound/soc/sh/fsi.c
+-- 
