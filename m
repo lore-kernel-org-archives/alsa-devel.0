@@ -1,52 +1,53 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCHv5 00/20] OMAP ASoC changes in DMA
-	utilization
-Date: Thu, 20 Aug 2009 19:15:42 +0300
-Message-ID: <20090820191542.bc7b0d4d.jhnikula__14039.2325506129$1250784895$gmane$org@gmail.com>
-References: <1250774523-7950-1-git-send-email-eduardo.valentin@nokia.com>
-	<20090820143017.GH12309@atomide.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH v2 2/4] Add ak464x codec support
+Date: Thu, 20 Aug 2009 19:58:36 +0100
+Message-ID: <20090820185835.GE5032@sirena.org.uk>
+References: <uws4yd793.wl%morimoto.kuninori@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20090820143017.GH12309@atomide.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Eduardo Valentin <eduardo.valentin@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <uws4yd793.wl%morimoto.kuninori@renesas.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+Cc: linux-sh@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, lethal@linux-sh.org, Magnus Damm <magnus.damm@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 20 Aug 2009 17:30:18 +0300
-Tony Lindgren <tony@atomide.com> wrote:
+On Thu, Aug 20, 2009 at 09:01:12PM +0900, Kuninori Morimoto wrote:
+> This is very simple driver for ALSA
+> It supprt headphone output and stereo input only
+> This patch is tested by ms7724se
 
-> * Eduardo Valentin <eduardo.valentin@nokia.com> [090820 16:36]:
-> > Hello guys,
-> > 
-> > I've updated this series after some previous confusion from my side.
-> > 
-> > Now that all dependencies are merged (Janusz's patches and Jarkko's patch),
-> > I've based this series on Takashi's tree (master branch).
-> > 
-Mark: Set applies and works (with Beagle) on top of both master and
-topic/asoc branches.
+Thanks, this looks good but it needs updating for a recent change in th=
+e
+current ASoC tree at:
 
-> > I've also talked with Tony and he agrees to have this changes merged
-> > by alsa tree. And as pointed by Jarkko, the mcbsp code is currently
-> > used only by Audio inside OMAP code. So, that should be safe.
-> 
-> You might want to merge patches 5 and 6 together as 5 adds the
-> fifo, then 6 limits it's size. But in general, for patches
-> 1 - 14: Acked-by: Tony Lindgren <tony@atomide.com>
->  
-15-20: Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git f=
+or-2.6.32
 
+sound/soc/codecs/ak4642.c: In function =E2=80=98ak4642_read=E2=80=99:
+sound/soc/codecs/ak4642.c:130: warning: passing argument 2 of =E2=80=98=
+codec->hw_read=E2=80=99 makes integer from pointer without a cast
+sound/soc/codecs/ak4642.c:130: error: too many arguments to function =E2=
+=80=98codec->hw_read=E2=80=99
+sound/soc/codecs/ak4642.c: In function =E2=80=98ak4642_init=E2=80=99:
+sound/soc/codecs/ak4642.c:332: warning: assignment from incompatible po=
+inter type
 
--- 
-Jarkko
+Also, a couple of minor issues:
+
+> +static const struct i2c_device_id ak4642_i2c_id[] =3D {
+> +	{ "ak4642", 0 },
+> +	{ }
+> +};
+
+Since the ak4643 is also supported you should add an entry for it to
+this table.
+
+> +struct ak4642_setup_data {
+> +	int            i2c_bus;
+> +	unsigned short i2c_address;
+> +};
+
+This struct isn't used any more and so should be removed.
