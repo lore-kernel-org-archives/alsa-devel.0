@@ -1,19 +1,15 @@
-From: Shine Liu <shinel@foxmail.com>
-Subject: [PATCH] ASoC: S3C24XX : Align the peroid size to the
- buffer size
-Date: Thu, 20 Aug 2009 23:02:23 +0800
-Message-ID: <1250780543.1404.57.camel@sl>
-References: <1250677339.3516.17.camel@shinel> <s5hd46scctf.wl%tiwai@suse.de>
-	<1250679571.500.20.camel@shinel>  <s5h7hx0c8l2.wl%tiwai@suse.de>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCHv5 00/20] OMAP ASoC changes in DMA
+	utilization
+Date: Thu, 20 Aug 2009 17:30:18 +0300
+Message-ID: <20090820143017.GH12309@atomide.com>
+References: <1250774523-7950-1-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpbg79.qq.com (smtpbg79.qq.com [119.147.10.238])
-	by alsa0.perex.cz (Postfix) with SMTP id 36894243EE
-	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Aug 2009 17:02:53 +0200 (CEST)
-In-Reply-To: <s5h7hx0c8l2.wl%tiwai@suse.de>
+Content-Disposition: inline
+In-Reply-To: <1250774523-7950-1-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,77 +19,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: ben@simtec.co.uk, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2009-08-19 at 14:05 +0200, Takashi Iwai wrote:
-> At Wed, 19 Aug 2009 18:59:31 +0800,
-> Shine Liu wrote:
-> > 
-> > On Wed, 2009-08-19 at 12:34 +0200, Takashi Iwai wrote:
-> > > At Wed, 19 Aug 2009 18:22:19 +0800,
-> > > Shine Liu wrote:
-> > > > 
-> > > > There's no restriction on that the runtime->period_size should be the
-> > > > multiplicator of the runtime->buffer_size in current kernel code.
-> > > > 
-> > > > So "hw_ptr_interrupt = runtime->hw_ptr_interrupt +
-> > > > runtime->period_size;" is not always the trueth.
-> > > 
-> > > The hw_ptr_interrupt is the expected position where the current irq is
-> > > issued.  So, the current code should be correct -- it's simply
-> > > increased in the size of period_size.
-> > 
-> > Yes, the period_size and buffer_size I used was 0x800 and 0x3e80.
-> > 
-> > The log from the kernel is :
-> > 
-> > period_update: pcmC0D0p:0: pos=0x809/0x800/0x3e80, hwptr=0x1c, hw_base=0x0, hw_intr=0x0
-> > period_update: pcmC0D0p:0: pos=0x1008/0x800/0x3e80, hwptr=0x809, hw_base=0x0, hw_intr=0x800
-> > period_update: pcmC0D0p:0: pos=0x1808/0x800/0x3e80, hwptr=0x10e3, hw_base=0x0, hw_intr=0x1000
-> > period_update: pcmC0D0p:0: pos=0x2006/0x800/0x3e80, hwptr=0x1808, hw_base=0x0, hw_intr=0x1800
-> > period_update: pcmC0D0p:0: pos=0x2808/0x800/0x3e80, hwptr=0x203f, hw_base=0x0, hw_intr=0x2000
-> > period_update: pcmC0D0p:0: pos=0x3008/0x800/0x3e80, hwptr=0x2808, hw_base=0x0, hw_intr=0x2800
-> > period_update: pcmC0D0p:0: pos=0x3808/0x800/0x3e80, hwptr=0x30e9, hw_base=0x0, hw_intr=0x3000
-> > period_update: pcmC0D0p:0: pos=0x8/0x800/0x3e80, hwptr=0x3808, hw_base=0x0, hw_intr=0x3800
-> > PCM: Unexpected hw_pointer value (stream=0, pos=8, intr_ptr=16384)
-> > 
-> > It's true that irq was issued when hw_ptr_interrupt is
-> > 0x800,0x1000,0x1800,...,0x3800,0x3e80.
-> > 
-> > But the irq last issued should be at 0x3e80, but not 0x3800 + 0x800 =
-> > 0x4000. The DMA engine loaded 0x680 frame not 0x800 frame at the last
-> > time.
+* Eduardo Valentin <eduardo.valentin@nokia.com> [090820 16:36]:
+> Hello guys,
 > 
-> Then it's a driver bug.  If unaligned period size is allowed, it means
-> that the irq is really generated in that period, not at the buffer
-> boundary.  Otherwise, it must have a proper hw-constraint to align the
-> period size to the buffer size.
+> I've updated this series after some previous confusion from my side.
 > 
-> What hardware is it?
+> Now that all dependencies are merged (Janusz's patches and Jarkko's patch),
+> I've based this series on Takashi's tree (master branch).
 > 
-> 
-> thanks,
-> 
-> Takashi
-> 
+> I've also talked with Tony and he agrees to have this changes merged
+> by alsa tree. And as pointed by Jarkko, the mcbsp code is currently
+> used only by Audio inside OMAP code. So, that should be safe.
 
-This patch will fix the bug metioned in the above mail. Force the peroid
-size to be aligned with the buffer size.
-
-Based and tested on linux-2.6.31-rc6.
-
-Signed-off-by: Shine Liu <shinel@foxmail.com>
----------------------------------------------------------------------------
-
---- a/sound/soc/s3c24xx/s3c24xx-pcm.c	2009-08-14 06:43:34.000000000 +0800
-+++ b/sound/soc/s3c24xx/s3c24xx-pcm.c	2009-08-20 22:33:58.000000000 +0800
-@@ -318,6 +318,7 @@
+You might want to merge patches 5 and 6 together as 5 adds the
+fifo, then 6 limits it's size. But in general, for patches
+1 - 14: Acked-by: Tony Lindgren <tony@atomide.com>
  
- 	pr_debug("Entered %s\n", __func__);
- 
-+	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
- 	snd_soc_set_runtime_hwparams(substream, &s3c24xx_pcm_hardware);
- 
- 	prtd = kzalloc(sizeof(struct s3c24xx_runtime_data), GFP_KERNEL);
+> It is the same series. It now includes patch description for
+> every patch. And also, as I already said, it is based on master
+> branch of sound-2.6.
+> 
+> Tested with beagle and rx51. Compiled tested for n770.
+> 
+> BR,
+> 
+> Eduardo Valentin (11):
+>   OMAP: McBSP: Add IRQEN, IRQSTATUS, THRESHOLD2 and THRESHOLD1
+>     registers.
+>   OMAP: McBSP: Use appropriate value for startup delay
+>   OMAP: McBSP: Add transmit/receive threshold handler
+>   OMAP: McBSP: Create and export max_(r|t)x_thres property
+>   OMAP: McBSP: Rename thres sysfs symbols
+>   OMAP: McBSP: Change wakeup signals
+>   OMAP: McBSP: Configure NO IDLE mode for DMA mode different of
+>     threshold
+>   ASoC: OMAP: Enable DMA burst mode
+>   ASoC: OMAP: Make DMA 64 aligned
+>   ASoC: OMAP: Use McBSP threshold to playback and capture
+>   ASoC: OMAP: Use DMA operating mode of McBSP
+> 
+> Eero Nurkkala (7):
+>   OMAP: McBSP: Provide functions for ASoC frame syncronization
+>   OMAP: McBSP: Wakeups utilized
+>   OMAP: McBSP: Retain McBSP FCLK clockactivity
+>   OMAP: McBSP: Do not enable wakeups for no-idle mode
+>   OMAP: McBSP: Let element DMA mode hit retention also
+>   ASoC: Add runtime check for RFIG and XFIG
+>   ASoC: Always syncronize audio transfers on frames
+> 
+> Peter Ujfalusi (2):
+>   OMAP3: McBSP: Lower the maximum buffersize for McBSP1,3,4,5
+>   OMAP: McBSP: Add link DMA mode selection
+> 
+>  arch/arm/mach-omap2/mcbsp.c             |    5 +
+>  arch/arm/plat-omap/include/mach/mcbsp.h |   49 ++++
+>  arch/arm/plat-omap/mcbsp.c              |  377 ++++++++++++++++++++++++++++++-
+>  sound/soc/omap/omap-mcbsp.c             |   77 ++++++-
+>  sound/soc/omap/omap-pcm.c               |   14 +-
+>  sound/soc/omap/omap-pcm.h               |    2 +
+>  6 files changed, 511 insertions(+), 13 deletions(-)
+> 
