@@ -1,12 +1,18 @@
-From: Damien Zammit <damien.zammit@gmail.com>
-Subject: [PATCH 1/1] sound: usb-audio: support for Digidesign
-	Mbox 2
-Date: Sat, 22 Aug 2009 01:20:21 +1000
-Message-ID: <4A8EBB35.2010604@gmail.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Subject: [PATCH] Convert WM97xx-battery to dev_pm_ops
+Date: Sat, 22 Aug 2009 01:05:52 +0200
+Message-ID: <200908220105.52244.marek.vasut@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_QhyjKeNN/AFcCQ2"
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
+	[209.85.220.207])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7B50D2454D
+	for <alsa-devel@alsa-project.org>;
+	Sat, 22 Aug 2009 01:06:14 +0200 (CEST)
+Received: by fxm3 with SMTP id 3so694655fxm.32
+	for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2009 16:06:14 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -16,477 +22,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: avorontsov@ru.mvista.com, Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel@lists.infradead.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-             Provides magic boot sequence which activates the device,
-             must loop until device is ready, (returns status bytes).
-             Provides extra magic to set the device into 24 bit mode.
+--Boundary-00=_QhyjKeNN/AFcCQ2
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-             -Playback works @ 24-bit
-	    -MIDI I/O works
-             -Capture is untested, but PCM stream is active
-             -S/PDIF (RCA) I/O is untested, but lights activate on the device
+Hi,
 
-             S/PDIF mode works by setting the required flag
-             in usbaudio.c. I think the device can't do both simultaneously,
-             since different altsettings are required to set it.
+Anton, are you fine with this one? Mark, in case Anton is ok, would you mind 
+applying? Thanks!
 
-             Remaining issues:
-                 1) Double check endianess of 24 bit capture.
-                 2) Check duplex stability
-                 3) Tell ALSA to correctly detect S24_3BE on the device.
-                     Currently, speaker-test assumes S16_LE
-                     and won't allow S24_3BE mode,
-                     but jackd 0.116-2 detects and plays S24_3BE ?
-                 4) Create a kernel module switch to select spdif/analogue I/O
+Cheers!
+Marek Vasut
 
-             Playback sample format  : S24_3BE
-             MIDI format             : MIDIMAN protocol
+--Boundary-00=_QhyjKeNN/AFcCQ2
+Content-Type: text/x-patch;
+  charset="UTF-8";
+  name="0001-Convert-WM97xx-battery-to-dev_pm_ops.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="0001-Convert-WM97xx-battery-to-dev_pm_ops.patch"
 
-Signed-off-by: Damien Zammit <damien.zammit@gmail.com>
+=46rom 90955155d905ac8222af37317379cb084ba850ea Mon Sep 17 00:00:00 2001
+=46rom: Marek Vasut <marek.vasut@gmail.com>
+Date: Sat, 22 Aug 2009 00:36:43 +0200
+Subject: [PATCH] Convert WM97xx-battery to dev_pm_ops
 
-diff --git a/sound/usb/usbaudio.c b/sound/usb/usbaudio.c
-index 43d7d88..3060941 100644
---- a/sound/usb/usbaudio.c
-+++ b/sound/usb/usbaudio.c
-@@ -943,7 +943,7 @@ static snd_pcm_uframes_t snd_usb_pcm_pointer(struct snd_pcm_substream *substream
-  {
-  	struct snd_usb_substream *subs;
-  	snd_pcm_uframes_t hwptr_done;
--	
-+
-  	subs = (struct snd_usb_substream *)substream->runtime->private_data;
-  	spin_lock(&subs->lock);
-  	hwptr_done = subs->hwptr_done;
-@@ -2441,6 +2441,12 @@ static int parse_audio_format_i_type(struct snd_usb_audio *chip, struct audiofor
-  				   fp->altsetting, sample_width, sample_bytes);
-  			break;
-  		}
-+
-+                /* Digidesign Mbox 2 workaround:
-+                 * supports S24_3BE BIG ENDIAN  */
-+                if (chip->usb_id == USB_ID(0x0dba, 0x3000))
-+                        pcm_format = SNDRV_PCM_FORMAT_S24_3BE;
-+
-  		break;
-  	case USB_AUDIO_FORMAT_PCM8:
-  		pcm_format = SNDRV_PCM_FORMAT_U8;
-@@ -2550,13 +2556,20 @@ static int parse_audio_format_i(struct snd_usb_audio *chip, struct audioformat *
-  		switch (chip->usb_id) {
+Signed-off-by: Marek Vasut <marek.vasut@gmail.com>
+=2D--
+ drivers/power/wm97xx_battery.c |   17 ++++++++++-------
+ 1 files changed, 10 insertions(+), 7 deletions(-)
 
-  		case USB_ID(0x0763, 0x2003): /* M-Audio Audiophile USB */
--			if (device_setup[chip->index] == 0x00 &&
-+			if (device_setup[chip->index] == 0x00 &&
-  			    fp->altsetting == 6)
-  				pcm_format = SNDRV_PCM_FORMAT_S16_BE;
-  			else
-  				pcm_format = SNDRV_PCM_FORMAT_S16_LE;
-  			break;
--		default:
+diff --git a/drivers/power/wm97xx_battery.c b/drivers/power/wm97xx_battery.c
+index 98f2f37..af6d3cd 100644
+=2D-- a/drivers/power/wm97xx_battery.c
++++ b/drivers/power/wm97xx_battery.c
+@@ -144,20 +144,22 @@ static irqreturn_t wm97xx_chrg_irq(int irq, void *dat=
+a)
+ }
+=20
+ #ifdef CONFIG_PM
+=2Dstatic int wm97xx_bat_suspend(struct platform_device *dev, pm_message_t =
+state)
++static int wm97xx_bat_suspend(struct device *dev)
+ {
+ 	flush_scheduled_work();
+ 	return 0;
+ }
+=20
+=2Dstatic int wm97xx_bat_resume(struct platform_device *dev)
++static int wm97xx_bat_resume(struct device *dev)
+ {
+ 	schedule_work(&bat_work);
+ 	return 0;
+ }
+=2D#else
+=2D#define wm97xx_bat_suspend NULL
+=2D#define wm97xx_bat_resume NULL
 +
-+                /* Digidesign Mbox 2 supports SPDIF 24 bit (havent tested endianess) */
-+                case USB_ID(0x0dba, 0x3000):
-+                        pcm_format = SNDRV_PCM_FORMAT_S24_3BE;
-+                        break;
-+
-+                default:
-+			snd_printdd("Format III detected, setting default S16_LE\n");
-  			pcm_format = SNDRV_PCM_FORMAT_S16_LE;
-  		}
-  	} else {
-@@ -2655,6 +2668,8 @@ static unsigned char parse_datainterval(struct snd_usb_audio *chip,
-
-  static int audiophile_skip_setting_quirk(struct snd_usb_audio *chip,
-  					 int iface, int altno);
-+static int mbox2_skip_setting_quirk(struct snd_usb_audio *chip,
-+                                        int iface, int altno);
-  static int parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
-  {
-  	struct usb_device *dev;
-@@ -2700,13 +2715,19 @@ static int parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
-  		stream = (get_endpoint(alts, 0)->bEndpointAddress & USB_DIR_IN) ?
-  			SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
-  		altno = altsd->bAlternateSetting;
--	
-+
-  		/* audiophile usb: skip altsets incompatible with device_setup
-  		 */
--		if (chip->usb_id == USB_ID(0x0763, 0x2003) &&
-+		if (chip->usb_id == USB_ID(0x0763, 0x2003) &&
-  		    audiophile_skip_setting_quirk(chip, iface_no, altno))
-  			continue;
-
-+                /* Digidesign Mbox 2: skip altsets incompatible with device_setup
-+                 */
-+                if (chip->usb_id == USB_ID(0x0dba, 0x3000) &&
-+                    mbox2_skip_setting_quirk(chip, iface_no, altno))
-+                        continue;
-+
-  		/* get audio formats */
-  		fmt = snd_usb_find_csint_desc(alts->extra, alts->extralen, NULL, AS_GENERAL);
-  		if (!fmt) {
-@@ -2995,7 +3016,7 @@ static int create_standard_audio_quirk(struct snd_usb_audio *chip,
-  }
-
-  /*
-- * Create a stream for an Edirol UA-700/UA-25/UA-4FX interface.
-+ * Create a stream for an Edirol UA-700/UA-25/UA-4FX interface.
-   * The only way to detect the sample rate is by looking at wMaxPacketSize.
-   */
-  static int create_uaxx_quirk(struct snd_usb_audio *chip,
-@@ -3264,6 +3285,97 @@ static int snd_usb_extigy_boot_quirk(struct usb_device *dev, struct usb_interfac
-  	return 0;
-  }
-
-+
-+#define MBOX2_FIRMWARE_SIZE    646
-+#define MBOX2_BOOT_LOADING     0x01 /* Hard coded into the device */
-+#define MBOX2_BOOT_READY       0x02 /* Hard coded into the device */
-+
-+static int snd_usb_mbox2_boot_quirk(struct usb_device *dev)
-+{
-+        struct usb_host_config *config = dev->actconfig;
-+        int err;
-+        u8 enablemagic[3];
-+        u8 bootresponse;
-+        int fwsize;
-+
-+        if ((fwsize = le16_to_cpu(get_cfg_desc(config)->wTotalLength)) == MBOX2_FIRMWARE_SIZE) {
-+                snd_printdd("Sending Digidesign Mbox 2 boot sequence...\n");
-+
-+                        /* From USB Snoop,
-+                         *
-+                         * SetupPacket = RT RQ VHVL INDX SIZE
-+                         * RT = 0xRT Request Type
-+                         * RQ = 0xRQ Request
-+                         * VHVL = 0xVLVH Value in reverse byte order
-+                         * INDX = 0xDXIN Index in reverse byte order
-+                         * SIZE = 0xZESI Size in reverse byte order
-+                         *
-+                         * Magic boot code setup packet: c0 85 01 00 00 00 12 00
-+                         *           RQ    RT    VLVH    DXIN                 ZESI
-+                         * becomes 0x85, 0xc0, 0x0001, 0x0000, &RETURNDATA, 0x0012, TIMEOUT
-+                         * for snd_usb_ctl_msg()
-+                         */
-+
-+mbox2_reboot:
-+                snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0),
-+                        0x85, 0xc0, 0x0001, 0x0000, &bootresponse, 0x0012, 1000);
-+
-+                if (bootresponse == MBOX2_BOOT_LOADING) {
-+                        snd_printdd("device not ready, resending boot sequence...\n");
-+                        goto mbox2_reboot;
-+                }
-+
-+                if (bootresponse == MBOX2_BOOT_READY) {
-+                        snd_printdd("device initialised!\n");
-+
-+                        err = usb_get_descriptor(dev, USB_DT_DEVICE, 0,
-+                                &dev->descriptor, sizeof(dev->descriptor));
-+                        config = dev->actconfig;
-+                        if (err < 0) snd_printdd("error usb_get_descriptor: %d\n", err);
-+                        err = usb_reset_configuration(dev);
-+                        if (err < 0) snd_printdd("error usb_reset_configuration: %d\n", err);
-+                        snd_printdd("mbox2_boot: new boot length = %d\n",
-+                            le16_to_cpu(get_cfg_desc(config)->wTotalLength));
-+
-+                        /* Successful boot, (should reset all altsettings to 0 like windows does, but works without it)
-+                         * but now we will try sending capture/playback enable magic
-+                         *
-+                         * 80 bb 00 = 24bit mode - S24_3BE
-+                         * 44 ac 00 = 16bit mode?
-+                         *
-+                         */
-+                        //enablemagic[0]=0x44;
-+                        //enablemagic[1]=0xac;
-+                        //enablemagic[2]=0x00;
-+
-+                        /* We want 24 bit mode for now */
-+                        enablemagic[0]=0x80;
-+                        enablemagic[1]=0xbb;
-+                        enablemagic[2]=0x00;
-+
-+                        /* Send the magic! */
-+                        snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+                                0x01, 0x22, 0x0100, 0x0085, &enablemagic, 0x0003, 1000);
-+
-+                        snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+                                0x81, 0xa2, 0x0100, 0x0085, &enablemagic, 0x0003, 1000);
-+
-+                        snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+                                0x81, 0xa2, 0x0100, 0x0086, &enablemagic, 0x0003, 1000);
-+
-+                        snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+                                0x81, 0xa2, 0x0100, 0x0003, &enablemagic, 0x0003, 1000);
-+
-+                        return 0; /* Succesful boot */
-+                }
-+
-+                snd_printdd("unknown bootresponse, ignoring device: %d\n",bootresponse);
-+                return -ENODEV;
-+        }
-+        snd_printdd("Invalid firmware size: %d\n",fwsize);
-+        return -ENODEV;
-+}
-+
-  static int snd_usb_audigy2nx_boot_quirk(struct usb_device *dev)
-  {
-  	u8 buf = 1;
-@@ -3366,10 +3478,79 @@ static int audiophile_skip_setting_quirk(struct snd_usb_audio *chip,
-  		if ((device_setup[chip->index] & AUDIOPHILE_SET_MASK) ==
-  		    AUDIOPHILE_SET_16B_48K_NOTDI && altno != 5)
-  			return 1; /* skip this altsetting */
--	}	
-+	}
-  	return 0; /* keep this altsetting */
-  }
-
-+/* Digidesign Mbox 2 I/O selector
-+ * Uncomment this line to enable SPDIF */
-+//#define MBOX2_SPDIF_IO
-+
-+#define MBOX2_FIRMWARE_INTERFACE       0
-+#define MBOX2_CONTROL_INTERFACE        1
-+#define MBOX2_MIDI_INTERFACE           6
-+
-+static int mbox2_skip_setting_quirk(struct snd_usb_audio *chip,
-+                                        int iface, int altno)
-+{
-+       /* Reset ifaces 2-5 to 0 altsetting. */
-+       usb_set_interface(chip->dev, iface, 0);
-+
-+#ifdef MBOX2_SPDIF_IO
-+       /* Enable SPDIF altsettings */
-+        switch (iface) {
-+                case MBOX2_FIRMWARE_INTERFACE:
-+                case MBOX2_CONTROL_INTERFACE:
-+                        return 0; /*keep*/
-+                        break;
-+                case 2:
-+                        if (altno == 2) return 0; else return 1;
-+                        break;
-+                case 3:
-+                        return 1;
-+                        break;
-+                case 4:
-+                        if (altno == 2) return 0; else return 1;
-+                        break;
-+                case 5:
-+                        return 1;
-+                        break;
-+                case MBOX2_MIDI_INTERFACE:
-+                        return 0; /*keep*/
-+                        break;
-+                default:
-+                        snd_printdd("Invalid interface for Mbox 2: %d\n",iface);
-+                        return 1; /* skip altsetting */
-+        }
-+#else
-+       /* Use analogue I/O */
-+       switch (iface) {
-+               case MBOX2_FIRMWARE_INTERFACE:
-+               case MBOX2_CONTROL_INTERFACE:
-+                       return 0;
-+                       break;
-+               case 2:
-+                       if (altno == 3) return 0; else return 1;
-+                       break;
-+               case 3:
-+                       if (altno == 6) return 0; else return 1;
-+                       break;
-+               case 4:
-+                       if (altno == 3) return 0; else return 1;
-+                       break;
-+               case 5:
-+                       if (altno == 3) return 0; else return 1;
-+                       break;
-+               case MBOX2_MIDI_INTERFACE:
-+                       return 0;
-+                       break;
-+               default:
-+                       snd_printdd("Invalid interface for Mbox 2: %d\n",iface);
-+                       return 1; /* skip altsetting */
-+       }
++static const struct dev_pm_ops wm97xx_bat_pm_ops =3D {
++	.suspend	=3D wm97xx_bat_suspend,
++	.resume		=3D wm97xx_bat_resume,
++};
+ #endif
+=20
+ static int __devinit wm97xx_bat_probe(struct platform_device *dev)
+@@ -273,11 +275,12 @@ static struct platform_driver wm97xx_bat_driver =3D {
+ 	.driver	=3D {
+ 		.name	=3D "wm97xx-battery",
+ 		.owner	=3D THIS_MODULE,
++#ifdef CONFIG_PM
++		.pm	=3D &wm97xx_bat_pm_ops,
 +#endif
-+}
-+
-  /*
-   * audio-interface quirks
-   *
-@@ -3392,6 +3573,7 @@ static int snd_usb_create_quirk(struct snd_usb_audio *chip,
-  		[QUIRK_MIDI_YAMAHA] = snd_usb_create_midi_interface,
-  		[QUIRK_MIDI_MIDIMAN] = snd_usb_create_midi_interface,
-  		[QUIRK_MIDI_NOVATION] = snd_usb_create_midi_interface,
-+		[QUIRK_MIDI_MBOX2] = snd_usb_create_midi_interface,
-  		[QUIRK_MIDI_FASTLANE] = snd_usb_create_midi_interface,
-  		[QUIRK_MIDI_EMAGIC] = snd_usb_create_midi_interface,
-  		[QUIRK_MIDI_CME] = snd_usb_create_midi_interface,
-@@ -3425,7 +3607,7 @@ static void proc_audio_usbid_read(struct snd_info_entry *entry, struct snd_info_
-  {
-  	struct snd_usb_audio *chip = entry->private_data;
-  	if (!chip->shutdown)
--		snd_iprintf(buffer, "%04x:%04x\n",
-+		snd_iprintf(buffer, "%04x:%04x\n",
-  			    USB_ID_VENDOR(chip->usb_id),
-  			    USB_ID_PRODUCT(chip->usb_id));
-  }
-@@ -3616,6 +3798,12 @@ static void *snd_usb_audio_probe(struct usb_device *dev,
-  			goto __err_val;
-  	}
+ 	},
+ 	.probe		=3D wm97xx_bat_probe,
+ 	.remove		=3D __devexit_p(wm97xx_bat_remove),
+=2D	.suspend	=3D wm97xx_bat_suspend,
+=2D	.resume		=3D wm97xx_bat_resume,
+ };
+=20
+ static int __init wm97xx_bat_init(void)
+=2D-=20
+1.6.3.3
 
-+        /* Digidesign Mbox 2 needs magic boot sequence */
-+        if (id == USB_ID(0x0dba, 0x3000)) {
-+                if (snd_usb_mbox2_boot_quirk(dev) < 0)
-+                        goto __err_val;
-+	}
-+
-  	/*
-  	 * found a config.  now register to ALSA
-  	 */
-diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
-index 8e7f789..21aab48 100644
---- a/sound/usb/usbaudio.h
-+++ b/sound/usb/usbaudio.h
-@@ -157,6 +157,7 @@ enum quirk_type {
-  	QUIRK_MIDI_EMAGIC,
-  	QUIRK_MIDI_CME,
-  	QUIRK_MIDI_US122L,
-+	QUIRK_MIDI_MBOX2,
-  	QUIRK_AUDIO_STANDARD_INTERFACE,
-  	QUIRK_AUDIO_FIXED_ENDPOINT,
-  	QUIRK_AUDIO_EDIROL_UA1000,
-diff --git a/sound/usb/usbmidi.c b/sound/usb/usbmidi.c
-index 0eff19c..bc11fe4 100644
---- a/sound/usb/usbmidi.c
-+++ b/sound/usb/usbmidi.c
-@@ -423,7 +423,7 @@ static void snd_usbmidi_maudio_broken_running_status_input(
-  			u8 cin = buffer[i] & 0x0f;
-  			struct usbmidi_in_port *port = &ep->ports[cable];
-  			int length;
--			
-+
-  			length = snd_usbmidi_cin_length[cin];
-  			if (cin == 0xf && buffer[i + 1] >= 0xf8)
-  				; /* realtime msg: no running status change */
-@@ -617,13 +617,13 @@ static struct usb_protocol_ops snd_usbmidi_standard_ops = {
 
-  static struct usb_protocol_ops snd_usbmidi_midiman_ops = {
-  	.input = snd_usbmidi_midiman_input,
--	.output = snd_usbmidi_standard_output,
-+	.output = snd_usbmidi_standard_output,
-  	.output_packet = snd_usbmidi_output_midiman_packet,
-  };
+--Boundary-00=_QhyjKeNN/AFcCQ2
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-  static struct usb_protocol_ops snd_usbmidi_maudio_broken_running_status_ops = {
-  	.input = snd_usbmidi_maudio_broken_running_status_input,
--	.output = snd_usbmidi_standard_output,
-+	.output = snd_usbmidi_standard_output,
-  	.output_packet = snd_usbmidi_output_standard_packet,
-  };
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-@@ -1577,7 +1577,7 @@ static int snd_usbmidi_detect_endpoints(struct snd_usb_midi* umidi,
-  		snd_usbmidi_switch_roland_altsetting(umidi);
-
-  	if (endpoint[0].out_ep || endpoint[0].in_ep)
--		return 0;	
-+		return 0;
-
-  	intf = umidi->iface;
-  	if (!intf || intf->num_altsetting < 1)
-@@ -1615,7 +1615,7 @@ static int snd_usbmidi_detect_per_port_endpoints(struct snd_usb_midi* umidi,
-  						 struct snd_usb_midi_endpoint_info* endpoints)
-  {
-  	int err, i;
--	
-+
-  	err = snd_usbmidi_detect_endpoints(umidi, endpoints, MIDI_MAX_ENDPOINTS);
-  	for (i = 0; i < MIDI_MAX_ENDPOINTS; ++i) {
-  		if (endpoints[i].out_ep)
-@@ -1876,6 +1876,18 @@ int snd_usb_create_midi_interface(struct snd_usb_audio* chip,
-  		umidi->usb_protocol_ops = &snd_usbmidi_novation_ops;
-  		err = snd_usbmidi_detect_per_port_endpoints(umidi, endpoints);
-  		break;
-+        case QUIRK_MIDI_MBOX2:
-+                /* Digidesign Mbox 2 uses MIDIMAN MIDI protocol */
-+                umidi->usb_protocol_ops = &snd_usbmidi_midiman_ops;
-+                /*
-+                 * We have to make sure that the USB core looks
-+                 * again at interface 6 by calling usb_set_interface() on it.
-+                 */
-+                usb_set_interface(umidi->chip->dev, 6, 0);
-+                memcpy(&endpoints[0], quirk->data,
-+                       sizeof(struct snd_usb_midi_endpoint_info));
-+                err = 0;
-+                break;
-  	case QUIRK_MIDI_FASTLANE:
-  		umidi->usb_protocol_ops = &snd_usbmidi_raw_ops;
-  		/*
-diff --git a/sound/usb/usbquirks.h b/sound/usb/usbquirks.h
-index f6f201e..e961f5e 100644
---- a/sound/usb/usbquirks.h
-+++ b/sound/usb/usbquirks.h
-@@ -2082,6 +2082,60 @@ YAMAHA_DEVICE(0x7010, "UB99"),
-  	}
-  },
-
-+/* DIGIDESIGN MBOX 2 */
-+{
-+       /* Damien Zammit <damien.zammit@gmail.com> */
-+
-+       USB_DEVICE(0x0dba, 0x3000),
-+       .driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-+               .vendor_name = "Digidesign",
-+               .product_name = "Mbox 2",
-+               .ifnum = QUIRK_ANY_INTERFACE,
-+               .type = QUIRK_COMPOSITE,
-+               .data = (const struct snd_usb_audio_quirk[]) {
-+                       {
-+                               .ifnum = 0,
-+                               .type = QUIRK_AUDIO_STANDARD_INTERFACE
-+                       },
-+                       {
-+                               .ifnum = 1,
-+                               .type = QUIRK_AUDIO_STANDARD_INTERFACE
-+                       },
-+                       {
-+                               .ifnum = 2,
-+                               .type = QUIRK_AUDIO_STANDARD_INTERFACE
-+                       },
-+                       {
-+                               .ifnum = 3,
-+                               .type = QUIRK_AUDIO_STANDARD_INTERFACE
-+                       },
-+                       {
-+                                .ifnum = 4,
-+                               .type = QUIRK_AUDIO_STANDARD_INTERFACE
-+                       },
-+                       {
-+                                .ifnum = 5,
-+                               .type = QUIRK_AUDIO_STANDARD_INTERFACE
-+                       },
-+                       {
-+                               .ifnum = 6,
-+                               .type = QUIRK_MIDI_MBOX2,
-+                               .data = & (const struct snd_usb_midi_endpoint_info) {
-+                                       .out_ep =  0x02,
-+                                       .out_cables = 0x0001,
-+                                       .in_ep = 0x81,
-+                                       .in_interval = 0x01,
-+                                       .in_cables = 0x0001
-+                               }
-+
-+                       },
-+                       {
-+                               .ifnum = -1
-+                       }
-+               }
-+       }
-+},
-+
-  {
-  	/*
-  	 * Some USB MIDI devices don't have an audio control interface,
--- 
-1.5.4.3
+--Boundary-00=_QhyjKeNN/AFcCQ2--
