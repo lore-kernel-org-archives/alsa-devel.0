@@ -1,18 +1,19 @@
-From: arif setiawan <n.arif.setiawan@gmail.com>
-Subject: ALSA synchronization
-Date: Fri, 21 Aug 2009 14:37:15 +0700
-Message-ID: <c697747b0908210037g341b0a52mdff52c955d5814a1@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [patch 2/4] tlv320aic3x: Change to use device model
+Date: Fri, 21 Aug 2009 10:49:23 +0100
+Message-ID: <20090821094923.GA19601@rakim.wolfsonmicro.main>
+References: <20090820215039.380849394@fluff.org>
+	<20090820215121.748784224@fluff.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f187.google.com (mail-iw0-f187.google.com
-	[209.85.223.187])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6BF741038E8
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 395AA24536
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 Aug 2009 09:37:16 +0200 (CEST)
-Received: by iwn17 with SMTP id 17so217485iwn.16
-	for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2009 00:37:15 -0700 (PDT)
+	Fri, 21 Aug 2009 11:49:27 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20090820215121.748784224@fluff.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,20 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Ben Dooks <ben@simtec.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Thu, Aug 20, 2009 at 10:50:41PM +0100, Ben Dooks wrote:
 
-We are developing a AES based speech encryption module using beagleboard. We
-have two beagleboard: one for encryption and other for decryption. We use
-audio-in/audio-out for sending speech. We have problem with synchronization
-of audio stream from encryption board to decryption board. Since AES is
-block cipher, the buffer content received by decryption board must be the
-same as sent from encryption board. Right now, we want to use some bytes as
-data header, but we don't now how to make this work. Any idea how to solve
-synchronization in ALSA?
+>  
+>  struct aic3x_setup_data {
+> -	int i2c_bus;
+> -	unsigned short i2c_address;
+>  	unsigned int gpio_func[2];
+>  };
 
-Best Regards,
-
-Arif
+I'll apply this but it should really be refactored to make this proper
+platform data for the CODEC; that can be dealt with in a future patch.
