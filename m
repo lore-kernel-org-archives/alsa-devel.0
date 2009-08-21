@@ -1,18 +1,18 @@
-From: Damien Zammit <damien.zammit@gmail.com>
-Subject: Need help compiling alsa-kernel from git
-Date: Fri, 21 Aug 2009 16:58:47 +1000
-Message-ID: <98ec50f0908202358j1233d47ci9c7e1e64873a956b@mail.gmail.com>
+From: arif setiawan <n.arif.setiawan@gmail.com>
+Subject: ALSA synchronization
+Date: Fri, 21 Aug 2009 14:37:15 +0700
+Message-ID: <c697747b0908210037g341b0a52mdff52c955d5814a1@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f220.google.com (mail-ew0-f220.google.com
-	[209.85.219.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6A744103897
+Received: from mail-iw0-f187.google.com (mail-iw0-f187.google.com
+	[209.85.223.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6BF741038E8
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 Aug 2009 08:58:47 +0200 (CEST)
-Received: by ewy20 with SMTP id 20so477006ewy.46
-	for <alsa-devel@alsa-project.org>; Thu, 20 Aug 2009 23:58:47 -0700 (PDT)
+	Fri, 21 Aug 2009 09:37:16 +0200 (CEST)
+Received: by iwn17 with SMTP id 17so217485iwn.16
+	for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2009 00:37:15 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,22 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi all,
 
-I downloaded a 2.6.30.4 vanilla kernel source tree, merged it with alsa 1.0.20
-by copying the files into my kernel source tree, and used that as a
-base for modifying a sound driver module.
+We are developing a AES based speech encryption module using beagleboard. We
+have two beagleboard: one for encryption and other for decryption. We use
+audio-in/audio-out for sending speech. We have problem with synchronization
+of audio stream from encryption board to decryption board. Since AES is
+block cipher, the buffer content received by decryption board must be the
+same as sent from encryption board. Right now, we want to use some bytes as
+data header, but we don't now how to make this work. Any idea how to solve
+synchronization in ALSA?
 
-I want to submit a patch because I got a new device working.
-I cloned alsa-kernel git and merged my changes into the tree and committed it.
+Best Regards,
 
-Now, how do I compile it to test it? Do I need to clone linux-2.6 git?
-I would prefer not to clone that whole tree if possible...
-I tried copying the sound directory from my working alsa-kernel git
-tree into a 2.6.30.4 vanilla kernel tree,
-but it doesnt work.
-
-Please help.
+Arif
