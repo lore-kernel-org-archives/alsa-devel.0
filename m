@@ -1,18 +1,21 @@
-From: Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH] Convert WM97xx-battery to dev_pm_ops
-Date: Sat, 22 Aug 2009 01:05:52 +0200
-Message-ID: <200908220105.52244.marek.vasut@gmail.com>
+From: arif setiawan <n.arif.setiawan@gmail.com>
+Subject: Re: ALSA synchronization
+Date: Sat, 22 Aug 2009 18:50:14 +0700
+Message-ID: <c697747b0908220450j79489e6fmc037a85024aaeecc@mail.gmail.com>
+References: <c697747b0908210037g341b0a52mdff52c955d5814a1@mail.gmail.com>
+	<4A8E654D.1040700@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_QhyjKeNN/AFcCQ2"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
-	[209.85.220.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7B50D2454D
+Received: from mail-iw0-f187.google.com (mail-iw0-f187.google.com
+	[209.85.223.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id 796AB246A8
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Aug 2009 01:06:14 +0200 (CEST)
-Received: by fxm3 with SMTP id 3so694655fxm.32
-	for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2009 16:06:14 -0700 (PDT)
+	Sat, 22 Aug 2009 13:50:15 +0200 (CEST)
+Received: by iwn17 with SMTP id 17so523155iwn.16
+	for <alsa-devel@alsa-project.org>; Sat, 22 Aug 2009 04:50:14 -0700 (PDT)
+In-Reply-To: <4A8E654D.1040700@superbug.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,103 +25,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: avorontsov@ru.mvista.com, Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel@lists.infradead.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
-
---Boundary-00=_QhyjKeNN/AFcCQ2
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 
 Hi,
 
-Anton, are you fine with this one? Mark, in case Anton is ok, would you mind 
-applying? Thanks!
+We are working on audio processing (encryption-decryption) and audio will be
+sent using radio.
 
-Cheers!
-Marek Vasut
+Our configuration is :
 
---Boundary-00=_QhyjKeNN/AFcCQ2
-Content-Type: text/x-patch;
-  charset="UTF-8";
-  name="0001-Convert-WM97xx-battery-to-dev_pm_ops.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="0001-Convert-WM97xx-battery-to-dev_pm_ops.patch"
+Audio source - ALSA audio in - encryption - ALSA audio out - transmission
+over radio (now we still use audio cable) - ALSA audio in - decryption -
+ALSA audio out - speaker.
 
-=46rom 90955155d905ac8222af37317379cb084ba850ea Mon Sep 17 00:00:00 2001
-=46rom: Marek Vasut <marek.vasut@gmail.com>
-Date: Sat, 22 Aug 2009 00:36:43 +0200
-Subject: [PATCH] Convert WM97xx-battery to dev_pm_ops
+So data will be sent through radio channel and its converted to analog form
+by ALSA PCM during playback. We want to solve synchronization issue by using
+data header so that we can decrypt correct data block. So far we still
+unable to verify that data we received in the decryption side is similar to
+data that we sent from encryption box. Supposed that we filled buffer in
+encryption box with some values, when we check buffer in decryption box, we
+can't get same data. Our guess that data somehow changed in
+digital-analog/analog-digital conversion or we might make mistakes in
+filling the buffer so data is not compatible with ALSA PCM.
 
-Signed-off-by: Marek Vasut <marek.vasut@gmail.com>
-=2D--
- drivers/power/wm97xx_battery.c |   17 ++++++++++-------
- 1 files changed, 10 insertions(+), 7 deletions(-)
+Any suggestion to solve this problem?
 
-diff --git a/drivers/power/wm97xx_battery.c b/drivers/power/wm97xx_battery.c
-index 98f2f37..af6d3cd 100644
-=2D-- a/drivers/power/wm97xx_battery.c
-+++ b/drivers/power/wm97xx_battery.c
-@@ -144,20 +144,22 @@ static irqreturn_t wm97xx_chrg_irq(int irq, void *dat=
-a)
- }
-=20
- #ifdef CONFIG_PM
-=2Dstatic int wm97xx_bat_suspend(struct platform_device *dev, pm_message_t =
-state)
-+static int wm97xx_bat_suspend(struct device *dev)
- {
- 	flush_scheduled_work();
- 	return 0;
- }
-=20
-=2Dstatic int wm97xx_bat_resume(struct platform_device *dev)
-+static int wm97xx_bat_resume(struct device *dev)
- {
- 	schedule_work(&bat_work);
- 	return 0;
- }
-=2D#else
-=2D#define wm97xx_bat_suspend NULL
-=2D#define wm97xx_bat_resume NULL
-+
-+static const struct dev_pm_ops wm97xx_bat_pm_ops =3D {
-+	.suspend	=3D wm97xx_bat_suspend,
-+	.resume		=3D wm97xx_bat_resume,
-+};
- #endif
-=20
- static int __devinit wm97xx_bat_probe(struct platform_device *dev)
-@@ -273,11 +275,12 @@ static struct platform_driver wm97xx_bat_driver =3D {
- 	.driver	=3D {
- 		.name	=3D "wm97xx-battery",
- 		.owner	=3D THIS_MODULE,
-+#ifdef CONFIG_PM
-+		.pm	=3D &wm97xx_bat_pm_ops,
-+#endif
- 	},
- 	.probe		=3D wm97xx_bat_probe,
- 	.remove		=3D __devexit_p(wm97xx_bat_remove),
-=2D	.suspend	=3D wm97xx_bat_suspend,
-=2D	.resume		=3D wm97xx_bat_resume,
- };
-=20
- static int __init wm97xx_bat_init(void)
-=2D-=20
-1.6.3.3
+Thank you,
 
+Best Regards,
 
---Boundary-00=_QhyjKeNN/AFcCQ2
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---Boundary-00=_QhyjKeNN/AFcCQ2--
+Arif
