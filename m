@@ -1,24 +1,15 @@
-From: Halim Sahin <halim.sahin@freenet.de>
-Subject: a11y: howto reduce latency with alsa's dmix plugin?
-Date: Sun, 23 Aug 2009 09:55:18 +0000 (UTC)
-Message-ID: <20090823095517.GA27741@halim>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.32
+Date: Sun, 23 Aug 2009 11:16:57 +0100
+Message-ID: <20090823101656.GA11491@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id B450B24346
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id E91702432C
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Aug 2009 11:55:42 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.50) id 1Mf9nY-0004wY-1u
-	for alsa-devel@alsa-project.org; Sun, 23 Aug 2009 11:55:40 +0200
-Received: from pd9e3f341.dip.t-dialin.net ([217.227.243.65])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 23 Aug 2009 11:55:40 +0200
-Received: from halim.sahin by pd9e3f341.dip.t-dialin.net with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 23 Aug 2009 11:55:40 +0200
+	Sun, 23 Aug 2009 12:17:03 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,29 +20,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-Is there a way to reduce latency on audiocard if the dmix plugin is in
-use?
-I am asking because there is a strange problem with asistive
-technologies which are outputing through alsa.
-E. G. speech-dispatcher takes almost a half sec to stop the
-speech-synthesizer.
-If the user navigates quickly through menus, there are simultane outputs
-at a time.
-(tested with an usb logitech headset, snd-intel8x0 based card,
-snd-hda-intel).
-The same problem can be reproduced by running mplayer with alsa output
-driver and pressing
-quickly left/right arrow.
-You should hear several samples at a time.
+The following changes since commit a0a499c5792b8656cd51e11d5e0db9fb21640f58:
+  Eduardo Valentin (1):
+        ASoC: OMAP: Use DMA operating mode of McBSP
 
-Using an sblive card which doesn't use dmix doesn't have such problems.
+are available in the git repository at:
 
-Using the dmix plugin should audio much faster to avoid this problem.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.32
 
-Please help!!!
-Regards
-Halim
+Ben Dooks (4):
+      ASoC: S3C24XX: Add audio core and tlv320aic23 for Simtec boards
+      ASoC: tlv320aic3x: Change to use device model
+      ASoC: tlv320aic3x: fixup board device changes
+      ASoC: S3C24XX: Support for Simtec Hermes boards
+
+Kuninori Morimoto (2):
+      ASoC: Add ak4642/ak4643 codec support
+      ASoC: Add FSI-AK4642 sound support for SuperH
+
+Marek Vasut (5):
+      power_supply: Make wm97xx-core pass platform_data to battery, ts
+      power_supply: Convert WM97xx battery to use platform_data
+      power_supply: Let wm97xx-battery use irq to detect charger state
+      [ARM] pxa: Convert all platforms to pass platform_data to wm97xx battery
+      ASoC: Pass correct platform data from pxa2xx-ac97
+
+Mark Brown (1):
+      ASoC: Add DAPM widget power decision debugfs files
+
+Roel Kluin (1):
+      ASoC: free socdev if init_card() fails in wm9705_soc_probe()
+
+ arch/arm/mach-pxa/mioa701.c                    |   10 +-
+ arch/arm/mach-pxa/palmld.c                     |   19 +-
+ arch/arm/mach-pxa/palmt5.c                     |   19 +-
+ arch/arm/mach-pxa/palmte2.c                    |   20 +-
+ arch/arm/mach-pxa/palmtx.c                     |   19 +-
+ arch/arm/mach-pxa/palmz72.c                    |   20 +-
+ arch/arm/mach-pxa/treo680.c                    |    1 -
+ arch/arm/plat-s3c/include/plat/audio-simtec.h  |   37 ++
+ drivers/input/touchscreen/wm97xx-core.c        |    3 +
+ drivers/power/wm97xx_battery.c                 |   56 ++-
+ include/linux/wm97xx.h                         |   18 +
+ include/linux/wm97xx_batt.h                    |   26 --
+ include/sound/soc-dapm.h                       |    1 +
+ include/sound/soc.h                            |    1 +
+ sound/arm/pxa2xx-ac97.c                        |    4 +-
+ sound/soc/codecs/Kconfig                       |    4 +
+ sound/soc/codecs/Makefile                      |    2 +
+ sound/soc/codecs/ak4642.c                      |  502 ++++++++++++++++++++++++
+ sound/soc/codecs/ak4642.h                      |   20 +
+ sound/soc/codecs/tlv320aic3x.c                 |  221 ++++++-----
+ sound/soc/codecs/tlv320aic3x.h                 |    2 -
+ sound/soc/codecs/wm9705.c                      |    2 +-
+ sound/soc/davinci/davinci-evm.c                |   12 +-
+ sound/soc/omap/n810.c                          |   12 +-
+ sound/soc/pxa/pxa2xx-ac97.c                    |    4 +-
+ sound/soc/s3c24xx/Kconfig                      |   19 +
+ sound/soc/s3c24xx/Makefile                     |    7 +
+ sound/soc/s3c24xx/s3c24xx_simtec.c             |  394 +++++++++++++++++++
+ sound/soc/s3c24xx/s3c24xx_simtec.h             |   22 +
+ sound/soc/s3c24xx/s3c24xx_simtec_hermes.c      |  153 +++++++
+ sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c |  137 +++++++
+ sound/soc/s6000/s6105-ipcam.c                  |   12 +-
+ sound/soc/sh/Kconfig                           |    8 +
+ sound/soc/sh/Makefile                          |    2 +
+ sound/soc/sh/fsi-ak4642.c                      |  107 +++++
+ sound/soc/soc-core.c                           |    8 +
+ sound/soc/soc-dapm.c                           |   86 ++++
+ 37 files changed, 1784 insertions(+), 206 deletions(-)
+ create mode 100644 arch/arm/plat-s3c/include/plat/audio-simtec.h
+ delete mode 100644 include/linux/wm97xx_batt.h
+ create mode 100644 sound/soc/codecs/ak4642.c
+ create mode 100644 sound/soc/codecs/ak4642.h
+ create mode 100644 sound/soc/s3c24xx/s3c24xx_simtec.c
+ create mode 100644 sound/soc/s3c24xx/s3c24xx_simtec.h
+ create mode 100644 sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
+ create mode 100644 sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
+ create mode 100644 sound/soc/sh/fsi-ak4642.c
